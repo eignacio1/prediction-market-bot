@@ -142,6 +142,45 @@
 
 ---
 
+## IF-DS-Q-C2 — Qualitative Data Sources → Feature Store *(Phase 6+ / Pending DS-01 operationalization)*
+
+**Version:** 1.0 (SKELETON — 2026-05-28)  
+**Producer:** Qualitative classification CSVs (`qualitative_data/<source>/<QS-ID>_classifications.csv`)  
+**Consumer:** C2 Feature Store via `QualitativeSignalStore` (`c2_feature_store/qualitative_store.py`)  
+**Downstream acknowledgement:** AO — **PENDING: activate when first QS snapshot is populated**
+
+*This interface covers any qualitative data source (DS-01 PAM, DS-04+). Each source has its own schema definition in `qualitative_data/<source>/SCHEMA.md`; this contract defines the shared columns that all qualitative sources must provide for the temporal join to work.*
+
+**Shared required columns (all qualitative sources must include these):**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `player_id` | integer | YES | NBA player ID — join key to feature DataFrame |
+| `effective_from` | YYYY-MM-DD | YES | Earliest game_date for which this classification applies (QTI-01) |
+| `effective_until` | YYYY-MM-DD or NULL | NO | Last game_date (exclusive); NULL = currently active |
+| `classification_date` | YYYY-MM-DD | YES | When this classification was made |
+| `classified_by` | string | YES | Classifier identity (for audit trail) |
+| `classification_basis` | string | YES | What data informed this classification (QTI-02) |
+| `backdated` | boolean (0/1) | YES | Whether effective_from is set prior to classification_date |
+| `backdating_rationale` | string | conditional | Required when backdated=1 |
+
+**Source-specific feature columns:** Defined in each source's SCHEMA.md. DS-01 adds `prf_primary`, `prf_secondary`, `prf_hybrid_weight`, `mod_01`…`mod_32`.
+
+**Join semantics:**
+```
+LEFT JOIN qualitative_df ON (
+    feature_df.player_id == qualitative_df.player_id
+    AND feature_df.game_date >= qualitative_df.effective_from
+    AND (qualitative_df.effective_until IS NULL
+         OR feature_df.game_date < qualitative_df.effective_until)
+)
+```
+Non-matching rows produce NaN for all qualitative feature columns. This is correct — NaN means "unclassified for this period," not an error.
+
+**Feature ID assignment:** All qualitative features use F-100+ range. See DATA_FLOWS_LINEAGE.md for specific ID assignments per source.
+
+---
+
 ## IF-C6-C8 — Audit Logger → Visual Dashboard *(Phase 5+; read-only)*
 
 **Version:** 1.0 (STUB — design only; implemented at Phase 5)  

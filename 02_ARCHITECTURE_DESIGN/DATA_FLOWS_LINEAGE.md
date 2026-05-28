@@ -132,7 +132,45 @@
 
 *F-099 not active in Phase 3 — placeholder value 0.50 used for all backtesting.*
 
-*Active features F-001–F-031 confirmed TI-01 compliant (automated tests in test_c2_features.py). F-032–F-038 were TI-01 compliant but pruned in v1.2.0 (HYP-005 falsified). Source for all features: DS-01 via nba_api (C1 NBAIngestionClient). Owner: RL. First used: FEATURE_VERSION 1.0.0 (F-001–F-031), introduced 1.1.0 (F-032–F-038), pruned 1.2.0 (F-032–F-038).*
+---
+
+### Qualitative Features — F-100+ (Phase 6+ / Pending DS-01 Operationalization)
+
+Qualitative features are loaded by `c2_feature_store/qualitative_store.py` via the `QualitativeSignalStore` module. They are joined to the feature DataFrame by `player_id` with an `effective_from` date guard (QTI-01). See `08_MODEL_RISK_GOVERNANCE/QUALITATIVE_SIGNALS.md` for full governance.
+
+**Temporal safety:** Enforced by `effective_from` join guard, not by rolling window. Rows before `effective_from` receive NaN — not an error.
+
+#### DS-01 PAM — PRF Archetype Features (F-100–F-149)
+
+| Feature ID | Feature Name | Source | Transformation | Temporal Safety |
+|-----------|-------------|--------|----------------|-----------------|
+| F-100 | prf_primary | DS-01 PAM QS snapshot | Integer 1–15; player's primary PRF archetype | ✅ effective_from guard (QTI-01) |
+| F-101 | prf_secondary | DS-01 PAM QS snapshot | Integer 0–15; secondary archetype (0=none) | ✅ effective_from guard |
+| F-102 | prf_hybrid_weight | DS-01 PAM QS snapshot | Float 0–1; weight of primary in hybrid notation; NaN for pure archetype | ✅ effective_from guard |
+| F-103–F-149 | (reserved) | DS-01 PAM | Reserved for future PRF-derived composite features | — |
+
+#### DS-01 PAM — Modifier Features (F-150–F-181)
+
+| Feature ID | Feature Name | Source | Transformation | Temporal Safety |
+|-----------|-------------|--------|----------------|-----------------|
+| F-150 | mod_01 | DS-01 PAM QS snapshot | Binary 0/1; Modifier 1 (name per DS-01 document) | ✅ effective_from guard |
+| F-151 | mod_02 | DS-01 PAM QS snapshot | Binary 0/1; Modifier 2 | ✅ effective_from guard |
+| F-152–F-181 | mod_03 … mod_32 | DS-01 PAM QS snapshot | Binary 0/1; Modifiers 3–32 | ✅ effective_from guard |
+| F-182–F-199 | (reserved) | DS-01 PAM | Reserved for future modifier-derived features | — |
+
+#### Reserved Ranges for Future Qualitative Sources
+
+| Range | Reserved For | Source |
+|-------|-------------|--------|
+| F-200–F-249 | DS-04 (future source 1) | TBD |
+| F-250–F-299 | DS-05 (future source 2) | TBD |
+| F-300–F-399 | Cross-source composites | Multiple qualitative sources |
+
+**Status:** All F-100+ features are PENDING. `QualitativeSignalStore` is implemented as a stub. Features will be NaN for all rows until DS-01 QS snapshot is populated and registered.
+
+---
+
+*Active features F-001–F-031 confirmed TI-01 compliant (automated tests in test_c2_features.py). F-032–F-038 were TI-01 compliant but pruned in v1.2.0 (HYP-005 falsified). Source for all quantitative features: DS-02 via nba_api (C1 NBAIngestionClient). Qualitative features F-100+: source DS-01 PAM + future sources via QualitativeSignalStore; governed by QUALITATIVE_SIGNALS.md.*
 
 ---
 
@@ -142,10 +180,14 @@ These rules exist to prevent look-ahead bias — the primary data contamination 
 
 | Rule | Description | Enforcement |
 |------|-------------|-------------|
-| TI-01 | All features must be computable using only data available at or before T_forecast (the time of forecast generation) | Temporal safety column in lineage register; automated check in backtesting framework |
+| TI-01 | All quantitative features must be computable using only data available at or before T_forecast | Temporal safety column in lineage register; automated check in backtesting framework |
 | TI-02 | Training window must end before validation/test window begins (chronological split only; no random shuffling) | EXPERIMENTS must specify exact date splits; overlap check automated |
 | TI-03 | Outcome data (T_resolution) must never appear in training data | Outcome field excluded from feature store; ingested separately after event resolution |
-| TI-04 | Market prices used as features must be from a defined look-back window (e.g., 24h pre-event), not from post-event | Feature definition must specify exact time offset |
+| TI-04 | Market prices used as features must be from a defined look-back window (e.g., ≥1 min pre-event), not from post-event | Feature definition must specify exact time offset |
+| QTI-01 | Qualitative features must only be joined to game rows where game_date ≥ classification.effective_from | Enforced in QualitativeSignalStore.enrich_features() effective_from guard |
+| QTI-02 | Classification effective_from must not predate the seasons used as classification basis | Documented in QS snapshot classification_basis field; enforced by operator discipline |
+| QTI-03 | Historical backdating requires explicit evidence and second review | backdated + backdating_rationale fields in QS snapshot schema; see QUALITATIVE_SIGNALS.md §3 |
+| QTI-04 | QS snapshots are immutable once registered | QS-ID registry in QUALITATIVE_REGISTRY.md; no silent modification after registration |
 
 ---
 

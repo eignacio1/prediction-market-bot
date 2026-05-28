@@ -75,11 +75,19 @@ dmypy.json
 data/raw/
 data/live/
 *.xlsx
-*.csv
 *.parquet
 *.jsonl
 !tests/fixtures/*.csv
 !tests/fixtures/*.json
+
+# --- Game-log CSVs excluded (large; registered as snapshots) ---
+exp_output/**/*.csv
+
+# --- Qualitative classification CSVs ARE committed (immutable registered snapshots) ---
+# Template and QS snapshots in qualitative_data/ are version-controlled.
+*.csv
+!qualitative_data/**/*.csv
+!tests/fixtures/*.csv
 
 # --- Model artifacts (large files — register in ARTIFACT_REGISTRY.md) ---
 models/
