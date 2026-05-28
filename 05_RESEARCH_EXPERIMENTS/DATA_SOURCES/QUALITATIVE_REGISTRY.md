@@ -27,15 +27,15 @@
 | Source document | `05_RESEARCH_EXPERIMENTS/DATA_SOURCES/DS-01_Player_Attribute_Matrix_v4.docx` |
 | Schema definition | `qualitative_data/pam_v4/SCHEMA.md` |
 | Classification template | `qualitative_data/pam_v4/PAM_CLASSIFICATION_TEMPLATE.csv` |
-| Active QS snapshots | None — classifications not yet populated for 50-player cohort |
+| Active QS snapshots | **QS-2026-05-28-001** (`qualitative_data/pam_v4/QS-2026-05-28-001_classifications.csv`) — all 50 cohort players classified 2026-05-28 |
 | Feature IDs | F-100–F-149 (PRF archetype), F-150–F-199 (modifiers) — reserved in DATA_FLOWS_LINEAGE.md |
-| **Operationalization status** | **❌ PENDING** — framework document registered; 50-player classifications not yet produced; QualitativeSignalStore not yet wired for DS-01 |
-| What must happen to activate | (1) Classify all 50 cohort players using PAM framework; (2) populate PAM_CLASSIFICATION_TEMPLATE.csv; (3) register QS snapshot; (4) implement DS-01 feature extraction in qualitative_store.py; (5) run EXP measuring Brier Δ |
+| **Operationalization status** | **🟡 PARTIAL** — QS-2026-05-28-001 populated and validated (50/50 players, PRFs 1–15, all modifiers binary). QualitativeSignalStore load/enrich stubs still require implementation before features reach experiments. |
+| What must happen to activate | (1) ✅ Classify all 50 cohort players — done (QS-2026-05-28-001); (2) ✅ QS snapshot registered; (3) Implement load_ds01_snapshot() temporal join in qualitative_store.py; (4) Wire enrich_features() after compute_features_bulk() in experiment runner; (5) Run EXP measuring Brier Δ with vs without qualitative features |
 
 **Coverage as of 2026-05-28:**
 - Document defines framework for 15 PRF archetypes + 32 modifiers
-- Applied examples cover 2026 NBA Conference Finals rosters only
-- **Gap:** 50-player cohort (TARGET_PLAYER_IDS in run_exp001.py) does not yet have individual classifications
+- Applied examples in document cover 2026 NBA Conference Finals rosters (SAS, OKC, NYK, CLE)
+- **QS-2026-05-28-001:** All 50 TARGET_PLAYER_IDS classified — effective_from 2025-10-22 (start of 2025-26 season)
 
 **DS-01 PRF Taxonomy summary (15 archetypes):**
 
@@ -97,7 +97,7 @@ Qualitative snapshots follow the same immutability rules as game-log snapshots (
 
 | QS-ID | DS-ID | Covers | Player count | effective_from | effective_until | Created | Status |
 |-------|-------|--------|--------------|----------------|-----------------|---------|--------|
-| *(none)* | — | — | — | — | — | — | Pending first DS-01 classification run |
+| QS-2026-05-28-001 | DS-01 | 50-player cohort (TARGET_PLAYER_IDS) | 50 | 2025-10-22 | NULL (active) | 2026-05-28 | ✅ Registered — awaiting QualitativeSignalStore implementation |
 
 ---
 
