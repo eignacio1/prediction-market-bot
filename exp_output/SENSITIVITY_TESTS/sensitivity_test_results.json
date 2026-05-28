@@ -1,0 +1,137 @@
+{
+  "run_at": "2026-05-28T17:36:39.957Z",
+  "feature_csv": "exp_output/EXP-001/EXP-001_feature_matrix.csv",
+  "feature_version": "1.2.0",
+  "baseline_brier_improvement_g4": 0.0084,
+  "overall": "ALL PASS",
+  "tests": {
+    "ST-001": {
+      "st_id": "ST-001",
+      "status": "PASS",
+      "results": {
+        "A_median_baseline": {
+          "brier_improvement": 0.005371,
+          "ece": 0.031403,
+          "delta_vs_baseline": 0.0,
+          "pass": true
+        },
+        "B_forward_fill": {
+          "brier_improvement": 0.005371,
+          "ece": 0.031403,
+          "delta_vs_baseline": 0.0,
+          "pass": true
+        },
+        "C_zero_fill": {
+          "brier_improvement": 0.005371,
+          "ece": 0.031403,
+          "delta_vs_baseline": 0.0,
+          "pass": true
+        }
+      }
+    },
+    "ST-002": {
+      "st_id": "ST-002",
+      "status": "PASS",
+      "results": {
+        "25pct": {
+          "n_train": 1260,
+          "brier_improvement": 0.004503,
+          "pass": true
+        },
+        "50pct_baseline": {
+          "n_train": 2521,
+          "brier_improvement": 0.005459,
+          "pass": true
+        },
+        "100pct": {
+          "n_train": 5042,
+          "brier_improvement": 0.005371,
+          "pass": true
+        }
+      }
+    },
+    "ST-003": {
+      "st_id": "ST-003",
+      "status": "PASS",
+      "results": {
+        "C_0.01": {
+          "C": 0.01,
+          "brier_improvement": 0.006143,
+          "best_improvement": 0.006143,
+          "delta_from_best": 0.0
+        },
+        "C_0.1": {
+          "C": 0.1,
+          "brier_improvement": 0.005669,
+          "best_improvement": 0.006143,
+          "delta_from_best": 0.000474
+        },
+        "C_1.0": {
+          "C": 1.0,
+          "brier_improvement": 0.005371,
+          "best_improvement": 0.006143,
+          "delta_from_best": 0.000772
+        },
+        "C_10.0": {
+          "C": 10.0,
+          "brier_improvement": 0.005305,
+          "best_improvement": 0.006143,
+          "delta_from_best": 0.000838
+        },
+        "C_100.0": {
+          "C": 100.0,
+          "brier_improvement": 0.005297,
+          "best_improvement": 0.006143,
+          "delta_from_best": 0.000846
+        }
+      },
+      "best_C_improvement": 0.006143
+    },
+    "ST-004": {
+      "st_id": "ST-004",
+      "status": "PASS",
+      "results": {
+        "baseline_brier": 0.244629,
+        "n_features": 31,
+        "n_permutation_repeats": 5,
+        "dominant_feature": "pts_season_mean",
+        "dominant_feature_share": 0.2695,
+        "total_positive_importance": 0.043709,
+        "feature_importances": {
+          "pts_season_mean": 0.011781,
+          "fga_l10_mean": 0.007946,
+          "fg3a_l10_mean": 0.00663,
+          "ts_pct_l10_mean": 0.004646,
+          "fg3m_l10_mean": 0.004079,
+          "min_season_mean": 0.001619,
+          "ft_pct_l10_mean": 0.001247,
+          "min_l10_std": 0.001005,
+          "plus_minus_l10_std": 0.000861,
+          "fgm_l10_mean": 0.000823,
+          "pts_l10_mean": 0.000786,
+          "pts_cold_flag": 0.000574,
+          "fg_pct_l10_mean": 0.000551,
+          "ast_tov_l10_mean": 0.000326,
+          "fta_l10_mean": 0.000247,
+          "pts_hot_flag": 0.000234,
+          "plus_minus_l10_mean": 9.6e-05,
+          "fg3_pct_l10_mean": 6.6e-05,
+          "ast_l10_mean": 5.4e-05,
+          "min_l10_mean": 5.4e-05,
+          "pf_l10_mean": 4e-05,
+          "blk_l10_mean": 1.9e-05,
+          "reb_l10_std": 1.5e-05,
+          "usage_proxy_l10_mean": 1e-05,
+          "stl_l10_mean": 0.0,
+          "ftm_l10_mean": -1.4e-05,
+          "ast_l10_std": -2.7e-05,
+          "tov_l10_mean": -3e-05,
+          "reb_l10_mean": -3.7e-05,
+          "games_played_prior": -4.2e-05,
+          "pts_l10_std": -8e-05
+        },
+        "pass": true
+      }
+    }
+  }
+}

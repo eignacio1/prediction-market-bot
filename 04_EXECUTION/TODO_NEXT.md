@@ -80,9 +80,9 @@
 | T-050 | C8 Visual Dashboard — Phase 5 panels | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests; 267/267 total |
 | T-051 | Kill switch drill (TC-007, NFR-03) | EL/DS | HIGH | ✅ COMPLETE 2026-05-28 — halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; VALIDATION_SIGNOFF.md TC-007 row signed; APR-0013 recorded; G5 kill switch blocker CLEARED |
 | T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | 🔴 BLOCKED — requires DS-02 (live venue prices); blocked until DS-02 active |
-| T-053 | SENSITIVITY_STRESS_TESTS.md — run ST-001 through ST-004 | MV | MEDIUM | 🔲 PENDING |
-| T-054 | MODEL_CARD.md 7/10 → 10/10 update | EL | LOW | 🔲 PENDING |
-| T-055 | CAPACITY_PLANNING.md — create | EL | LOW | 🔲 PENDING |
+| T-053 | SENSITIVITY_STRESS_TESTS.md — run ST-001 through ST-004 | MV | MEDIUM | ✅ COMPLETE 2026-05-28 — ST-001–004 ALL PASS; results in exp_output/SENSITIVITY_TESTS/; script: run_sensitivity_tests.py |
+| T-054 | MODEL_CARD.md 7/10 → 10/10 update | EL | LOW | ✅ COMPLETE 2026-05-28 |
+| T-055 | CAPACITY_PLANNING.md — create | EL | LOW | ✅ COMPLETE 2026-05-28 |
 | T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | 🔲 PENDING |
 
 ### Operator Actions Remaining
@@ -107,7 +107,13 @@
 
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
-| — | Venue API integration | ENV-03 only; C5 not yet implemented | Phase 5 / G5 |
-| — | Live credentials | ACC-0002 pending | G5 |
+| T-052 / ST-005 | EXP-004 / HYP-003 (vig survival test) | DS-02-B-001: Kalshi API TLS/WAF block on this machine — see RID_LOG.md | Install Homebrew interactively + verify API key activation in Kalshi dashboard |
+| — | Venue API integration | ENV-03 only; C5 not yet implemented | Phase 6 |
 | — | BOT_C4_ACTIVE=true | Phase gate — not set until G5 | G5 |
 | — | arb/ incorporation | APR-0010 pending | Indefinite |
+
+**DS-02-B-001 Detail:** `api.elections.kalshi.com` (Kalshi's current endpoint, CloudFront) drops the TLS handshake from this machine for ALL clients (Python/OpenSSL 3.0, LibreSSL, Apple nscurl, curl_cffi). TCP connects; TLS ClientHello is sent; server closes connection before handshake completes. Root cause: likely CloudFront WAF blocking based on TLS fingerprint or IP. Resolution path:
+1. Run `! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (needs interactive sudo)
+2. `brew install python@3.11` (will have proper OpenSSL, potentially different fingerprint)
+3. Log into Kalshi dashboard and verify API key is active for `api.elections.kalshi.com`
+4. Re-test connectivity; if still blocked, contact Kalshi support re: IP allowlisting
