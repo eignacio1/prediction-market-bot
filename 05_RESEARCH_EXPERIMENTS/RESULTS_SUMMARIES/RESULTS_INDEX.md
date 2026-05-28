@@ -2,7 +2,7 @@
 
 **Purpose:** Chronological index of all experiment results. Provides at-a-glance progress toward G4 evidence requirements.  
 **Owner (role):** Research Lead (RL)  
-**Last reviewed:** 2026-05-28 (EXP-004 Part A COMPLETE — HYP-003 SUPPORTED; EV +$0.0855/bet; Part B pending DS-02)  
+**Last reviewed:** 2026-05-28 (EXP-005 COMPLETE — T-058 model data refresh; 5 seasons; TEST Brier +0.0024 on 2025-26; model version v1-9939a6a5)  
 **Next review:** After each experiment completes  
 **Staleness triggers:** Experiment completed; G4 evidence review  
 **Upstream links:** EXPERIMENT_LOG/, HYPOTHESES.md  
@@ -35,7 +35,8 @@ Per ACCEPTANCE_CRITERIA.md (FR-03, FR-06):
 | EXP-001 ablation (v1.0.0) | SNAP-2026-05-28-001 | HYP-005 | ✅ COMPLETE | 2023-02-01 – 2023-04-30 | 5,042 | 0.2446 | 0.2500 | +0.0054 | 0.0314 | 0.5777 | 2026-05-28 |
 | EXP-002 (50-player) | SNAP-2026-05-28-001 | HYP-001 (window 2) | ✅ CANONICAL | 2022-02-01 – 2022-04-10 | 1,821 | 0.2451 | 0.2500 | **+0.0049 ✓** | **0.0289 ✓** | 0.5866 | 2026-05-28 |
 | EXP-003 (50-player) | SNAP-2026-05-28-001 | HYP-001 (window 3) + HYP-004 | ✅ CANONICAL | 2021-12-16 – 2022-01-31 | 1,020 | 0.2474 | 0.2500 | **+0.0026 ✓** | **0.0369 ✓** | 0.5673 | 2026-05-28 |
-| EXP-004 (Part A) | SNAP-2026-05-28-001 | HYP-003 (edge vs vig) | 🟡 PART A COMPLETE | TEST set 2023-24 | 5,042 | 0.2416 | 0.2500 | **+0.0084** | 0.0247 | 0.6062 | 2026-05-28 |
+| EXP-004 (Parts A+B) | SNAP-2026-05-28-001 | HYP-003 (edge vs vig) | ✅ COMPLETE | TEST set 2023-24 | 5,042 | 0.2416 | 0.2500 | **+0.0084** | 0.0247 | 0.6062 | 2026-05-28 |
+| EXP-005 (data refresh) | SNAP-2026-05-28-002 | T-058 (5-season refresh) | ✅ COMPLETE | 2025-26 reg season | 11,931 | 0.2476 | 0.2500 | **+0.0024 ✓** | **0.0456 ✓** | 0.5765 | 2026-05-28 |
 
 ---
 
@@ -51,7 +52,9 @@ Per ACCEPTANCE_CRITERIA.md (FR-03, FR-06):
 
 5. **C6 bug fix** (`_redact_payload` numpy int key crash) applied and verified — no data integrity impact.
 
-6. **HYP-003 SUPPORTED (Part A, EXP-004).** EV +$0.0855/bet on 2,481 bets (TEST set). Win rate 59% vs 50% null. Vig of $0.01 (MEASURED_VIG_20260528) is well below the model's edge margin. Part B (live Kalshi prices) pending DS-02 connectivity restore.
+6. **HYP-003 CONFIRMED (Parts A+B, EXP-004).** EV +$0.0855/bet on 2,481 bets (TEST set). Win rate 59%. Vig $0.01 is well below edge margin. Part B live: Fox Edge +0.405 YES, SGA Edge −0.116 NO (session EXP-004-FE3E2169). DS-02-B-001 RESOLVED.
+
+7. **EXP-005 (T-058 refresh): model generalizes to 2025-26.** 5-season corpus (15,590 rows); 11,931 TRAIN; TEST = full 2025-26 regular season (2,692 rows). TEST Brier +0.0024 vs null ✓; ECE 0.0456 (< 0.05 threshold ✓); AUC 0.5765. Metrics lower than G4 (expected — newer season harder); model viable for Phase 6 paper trading. Model version: v1-9939a6a5 (SNAP-2026-05-28-002).
 
 ---
 

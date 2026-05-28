@@ -268,6 +268,8 @@ These 7 rules are absolute. They must be restored to any context that loses them
 
 **APR-0007 ACCEPTED 2026-05-28. G5 CLOSED. Phase 6 Planning begins.**
 
+**T-058 ✅ COMPLETE 2026-05-28** — EXP-005 data refresh: 5 seasons (2021-26), 15,590 rows, 11,931 TRAIN; TEST = 2025-26 reg season (2,692 rows); Brier +0.0024 / ECE 0.0456 / AUC 0.5765; model v1-9939a6a5; SNAP-2026-05-28-002. Production candidate for Phase 6 paper trading.
+
 See TODO_NEXT.md for session-level task tracking.
 
 ---

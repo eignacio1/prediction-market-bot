@@ -91,7 +91,7 @@
 
 | # | Task | Owner | Priority | Status |
 |---|------|-------|----------|--------|
-| T-058 | Model data refresh — retrain on 2024-25 + 2025-26 seasons | EL | HIGH | 🔲 NEXT — Current model trained on 2021-24; production use requires current season data |
+| T-058 | Model data refresh — retrain on 2024-25 + 2025-26 seasons | EL | HIGH | ✅ COMPLETE 2026-05-28 — EXP-005 (session EXP-005-957B4A9C); 5 seasons; 11,931 TRAIN rows; TEST Brier +0.0024 / ECE 0.0456 / AUC 0.5765 on 2025-26 season; model v1-9939a6a5 (SNAP-2026-05-28-002) |
 | T-059 | VPS provisioning for scheduled cron runs | IO | HIGH | 🔲 NEXT — Datacenter IP bypasses Kalshi CloudFront WAF; needed for automated pre-game runs (~90 min before tip-off) |
 | T-060 | Paper trading pipeline (PIPE-03) implementation | EL | HIGH | 🔲 — C5 order submission stub; paper trade tracking; P&L log |
 | T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After paper trading evidence accumulated; not yet |

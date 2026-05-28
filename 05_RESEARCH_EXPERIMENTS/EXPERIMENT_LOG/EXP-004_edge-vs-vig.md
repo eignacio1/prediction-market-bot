@@ -1,6 +1,6 @@
 # Experiment Record — EXP-004: Edge vs Kalshi Vig (HYP-003)
 
-**Status:** COMPLETE (Part A) / PART B PENDING (DS-02 live connectivity required)
+**Status:** COMPLETE (Parts A+B — 2026-05-28; DS-02-B-001 RESOLVED)
 **Experiment ID:** EXP-004
 **Owner:** RL
 **Hypothesis tested:** HYP-003

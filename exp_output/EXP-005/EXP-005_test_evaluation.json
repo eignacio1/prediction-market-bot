@@ -1,0 +1,29 @@
+{
+  "exp_id": "EXP-005",
+  "session_id": "EXP-005-957B4A9C",
+  "snapshot_id": "SNAP-2026-05-28-002",
+  "model_version": "v1-9939a6a5",
+  "test_set": "2025-26 Regular Season",
+  "test_rows": 2692,
+  "test_metrics": {
+    "set": "TEST",
+    "n_samples": 2692,
+    "brier_score": 0.24756131660923664,
+    "log_loss": 0.6885016216706995,
+    "auc_roc": 0.5765311578339641,
+    "ece": 0.04556091287268248,
+    "ece_n_bins": 7
+  },
+  "test_null_metrics": {
+    "set": "TEST_null",
+    "n_samples": 2692,
+    "brier_score": 0.25,
+    "log_loss": 0.6931471805599453,
+    "auc_roc": 0.5,
+    "ece": 0.030832095096582468,
+    "ece_n_bins": 1,
+    "null_model": true
+  },
+  "g4_baseline_brier": 0.2416,
+  "g4_baseline_ece": 0.0247
+}
