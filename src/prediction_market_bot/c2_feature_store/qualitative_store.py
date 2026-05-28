@@ -2,8 +2,8 @@
 C2 Sub-module: Qualitative Signal Store
 ========================================
 Component:    C2 (Feature Store) — qualitative enrichment sub-module
-Phase active: Phase 6+ (first qualitative experiment — pending DS-01 operationalization)
-Status:       SKELETON — structure defined; activation pending QS snapshot population
+Phase active: Phase 6+
+Status:       IMPLEMENTED — 2026-05-28
 Upstream:     Qualitative classification CSVs (qualitative_data/<source>/<QS-ID>_classifications.csv)
 Downstream:   C2 FeatureStore.compute_features_bulk() (enrichment step)
 Interfaces:   IF-DS-Q-C2 (see INTERFACES_CONTRACTS.md)
@@ -189,16 +189,13 @@ class QualitativeSignalStore:
             Path to the populated QS snapshot CSV. Must conform to
             qualitative_data/pam_v4/SCHEMA.md.
         qs_id:
-            QS snapshot ID (e.g., "QS-2026-05-28-001"). Must be registered
-            in QUALITATIVE_REGISTRY.md before calling this method.
+            QS snapshot ID registered in QUALITATIVE_REGISTRY.md.
         session_id:
             Current run session ID.
 
         Returns
         -------
         bool — False on C6 write failure or schema validation error.
-
-        Status: STUB — implement when QS snapshot is populated.
         """
         run_id = _qs_run_id()
 
@@ -211,32 +208,90 @@ class QualitativeSignalStore:
         if not ok:
             return False
 
-        # --- STUB: implement below when QS snapshot is populated ---
-        # Steps to implement:
-        #   1. Read CSV: df = pd.read_csv(csv_path)
-        #   2. Validate required columns (_REQUIRED_COLUMNS) are present
-        #   3. Validate prf_primary in range 1–15; mod_XX in {0, 1}
-        #   4. Parse effective_from / effective_until as dates
-        #   5. Assign to self._ds01_df
-        #   6. Set self._ds01_qs_id = qs_id
-        #   7. Log success with row count, player count, effective date range
-        # --- END STUB ---
+        try:
+            df = pd.read_csv(csv_path, dtype={"player_id": int})
 
-        ok = self._log(
-            "qs_load_stub",
-            {
-                "qs_id": qs_id,
-                "note": (
-                    "QualitativeSignalStore.load_ds01_snapshot() is not yet implemented. "
-                    "Populate qualitative_data/pam_v4/PAM_CLASSIFICATION_TEMPLATE.csv "
-                    "and register a QS snapshot before activating this code path."
-                ),
-            },
-            severity="WARNING",
-            session_id=session_id,
-            run_id=run_id,
-        )
-        return ok
+            # Validate required columns
+            missing_cols = _REQUIRED_COLUMNS - set(df.columns)
+            if missing_cols:
+                ok = self._log(
+                    "qs_load_error",
+                    {"qs_id": qs_id, "missing_columns": sorted(missing_cols)},
+                    severity="ERROR",
+                    session_id=session_id,
+                    run_id=run_id,
+                )
+                return False
+
+            # Validate PRF range
+            bad_prf = df[~df["prf_primary"].between(1, 15)]
+            if not bad_prf.empty:
+                ok = self._log(
+                    "qs_load_error",
+                    {
+                        "qs_id": qs_id,
+                        "error": f"{len(bad_prf)} rows have prf_primary outside 1–15",
+                        "bad_player_ids": bad_prf["player_id"].tolist(),
+                    },
+                    severity="ERROR",
+                    session_id=session_id,
+                    run_id=run_id,
+                )
+                return False
+
+            # Parse temporal columns
+            df["effective_from"] = pd.to_datetime(df["effective_from"], errors="coerce")
+            df["effective_until"] = pd.to_datetime(df["effective_until"], errors="coerce")
+
+            if df["effective_from"].isna().any():
+                ok = self._log(
+                    "qs_load_error",
+                    {"qs_id": qs_id, "error": "effective_from has null values — required on all rows"},
+                    severity="ERROR",
+                    session_id=session_id,
+                    run_id=run_id,
+                )
+                return False
+
+            # Coerce modifier columns to numeric
+            mod_cols = [c for c in df.columns if c.startswith("mod_")]
+            for col in mod_cols:
+                df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(float)
+
+            # Coerce PRF columns to numeric
+            df["prf_primary"] = pd.to_numeric(df["prf_primary"], errors="coerce")
+            df["prf_secondary"] = pd.to_numeric(df.get("prf_secondary", 0), errors="coerce").fillna(0)
+            df["prf_hybrid_weight"] = pd.to_numeric(df.get("prf_hybrid_weight", float("nan")), errors="coerce")
+
+            self._ds01_df = df
+            self._ds01_qs_id = qs_id
+            self._loaded_sources.append(qs_id)
+
+            eff_from_min = df["effective_from"].min().strftime("%Y-%m-%d")
+            eff_from_max = df["effective_from"].max().strftime("%Y-%m-%d")
+            ok = self._log(
+                "qs_load_complete",
+                {
+                    "qs_id": qs_id,
+                    "player_count": len(df),
+                    "effective_from_range": f"{eff_from_min} – {eff_from_max}",
+                    "has_effective_until": int(df["effective_until"].notna().sum()),
+                    "feature_columns": DS01_FEATURE_NAMES,
+                },
+                session_id=session_id,
+                run_id=run_id,
+            )
+            return ok
+
+        except Exception as exc:
+            ok = self._log(
+                "qs_load_error",
+                {"qs_id": qs_id, "error": repr(exc)},
+                severity="ERROR",
+                session_id=session_id,
+                run_id=run_id,
+            )
+            return False
 
     # ------------------------------------------------------------------
     # Feature enrichment
@@ -291,43 +346,87 @@ class QualitativeSignalStore:
         if not ok:
             return False, feature_df
 
-        # --- STUB: implement temporal join below when QS snapshot is loaded ---
-        # Steps to implement:
-        #   1. If self._ds01_df is None: append NaN columns and return (warn logged)
-        #   2. Parse feature_df["game_date"] as datetime
-        #   3. Expand self._ds01_df to per-game rows via effective_from/until guard:
-        #        join_df = self._ds01_df[
-        #            (feature_df["game_date"] >= row["effective_from"])
-        #            & ((row["effective_until"].isna()) | (feature_df["game_date"] < row["effective_until"]))
-        #        ]
-        #   4. Left-merge feature_df with join_df on player_id
-        #   5. Select only DS01_FEATURE_NAMES from the merged result
-        #   6. Append to feature_df; rows with no match → NaN
-        #   7. Log enrichment stats: rows_enriched, rows_missing_classification
-        # --- END STUB ---
+        if self._ds01_df is None:
+            # No snapshot loaded — append all-NaN columns and warn
+            result = feature_df.copy()
+            for col in DS01_FEATURE_NAMES:
+                if col not in result.columns:
+                    result[col] = float("nan")
+            ok = self._log(
+                "qs_enrich_no_snapshot",
+                {
+                    "output_rows": len(result),
+                    "note": "No QS snapshot loaded; all qualitative features are NaN.",
+                },
+                severity="WARNING",
+                session_id=session_id,
+                run_id=run_id,
+            )
+            return ok, result
 
-        # Stub: append NaN qualitative columns so the DataFrame schema is stable
-        for col in DS01_FEATURE_NAMES:
-            if col not in feature_df.columns:
-                feature_df = feature_df.copy()
-                feature_df[col] = float("nan")
+        try:
+            # Columns to pull from QS snapshot (feature columns + temporal guard columns)
+            qs_cols = ["player_id", "effective_from", "effective_until"] + DS01_FEATURE_NAMES
+            qs_df = self._ds01_df[[c for c in qs_cols if c in self._ds01_df.columns]].copy()
 
-        ok = self._log(
-            "qs_enrich_stub",
-            {
-                "output_rows": len(feature_df),
-                "qualitative_cols_appended": DS01_FEATURE_NAMES,
-                "note": (
-                    "QualitativeSignalStore.enrich_features() is running in stub mode. "
-                    "All qualitative features are NaN. Implement temporal join when "
-                    "DS-01 QS snapshot is loaded."
-                ),
-            },
-            severity="WARNING",
-            session_id=session_id,
-            run_id=run_id,
-        )
-        return ok, feature_df
+            # Left-join on player_id — one QS row per player, so this is a 1:many join
+            # (one classification row joins to many game rows for the same player)
+            merged = feature_df.reset_index(drop=True).merge(
+                qs_df,
+                on="player_id",
+                how="left",
+                suffixes=("", "_qs"),
+            )
+
+            # Apply temporal guard (QTI-01):
+            # Nullify qualitative columns for rows outside the effective window
+            game_dates = pd.to_datetime(merged["game_date"], errors="coerce")
+            eff_from = merged["effective_from"]
+            eff_until = merged["effective_until"]
+
+            before_window = game_dates < eff_from
+            after_window = eff_until.notna() & (game_dates >= eff_until)
+            outside_window = before_window | after_window
+
+            for col in DS01_FEATURE_NAMES:
+                if col in merged.columns:
+                    merged.loc[outside_window, col] = float("nan")
+
+            # Drop the temporal guard columns — they're metadata, not features
+            result = merged.drop(
+                columns=["effective_from", "effective_until"],
+                errors="ignore",
+            )
+
+            n_enriched = int((~outside_window).sum())
+            n_outside = int(outside_window.sum())
+            n_no_player = int(result["prf_primary"].isna().sum()) - n_outside
+
+            ok = self._log(
+                "qs_enrich_complete",
+                {
+                    "qs_id": self._ds01_qs_id,
+                    "input_rows": len(feature_df),
+                    "output_rows": len(result),
+                    "rows_within_window": n_enriched,
+                    "rows_outside_window": n_outside,
+                    "rows_no_player_match": max(0, n_no_player),
+                    "qualitative_feature_count": len(DS01_FEATURE_NAMES),
+                },
+                session_id=session_id,
+                run_id=run_id,
+            )
+            return ok, result
+
+        except Exception as exc:
+            ok = self._log(
+                "qs_enrich_error",
+                {"error": repr(exc), "qs_id": self._ds01_qs_id},
+                severity="ERROR",
+                session_id=session_id,
+                run_id=run_id,
+            )
+            return False, feature_df
 
     # ------------------------------------------------------------------
     # Feature name registry
@@ -335,15 +434,11 @@ class QualitativeSignalStore:
 
     def get_qualitative_feature_names(self) -> list[str]:
         """
-        Return the list of qualitative feature column names for all loaded sources.
-        Used by ModelForecaster to register qualitative features alongside
-        quantitative features (get_feature_names() in FeatureStore).
-
-        Call this AFTER loading all desired QS snapshots.
-        Until DS-01 is loaded: returns DS01_FEATURE_NAMES (all will be NaN).
+        Return qualitative feature column names for all loaded snapshots.
+        Only includes DS-01 names when a snapshot is actually loaded.
         """
         names: list[str] = []
-        if self._ds01_df is not None or True:  # include when stub is active too
+        if self._ds01_df is not None:
             names.extend(DS01_FEATURE_NAMES)
         return names
 

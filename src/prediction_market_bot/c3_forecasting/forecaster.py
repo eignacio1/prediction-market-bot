@@ -336,8 +336,11 @@ class ModelForecaster:
                 )
                 return False
 
-            # Replace remaining NaN with column median (imputation strategy v1)
+            # Replace remaining NaN with column median (imputation strategy v1).
+            # All-NaN columns (e.g. qualitative features absent from training window)
+            # get median=NaN → fall back to 0.0 so sklearn receives no NaN input.
             col_medians = np.nanmedian(X_clean, axis=0)
+            col_medians = np.where(np.isnan(col_medians), 0.0, col_medians)
             nan_mask = np.isnan(X_clean)
             X_clean[nan_mask] = np.take(col_medians, np.where(nan_mask)[1])
 

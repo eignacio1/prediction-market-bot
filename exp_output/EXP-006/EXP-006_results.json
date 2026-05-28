@@ -1,0 +1,39 @@
+{
+  "exp_id": "EXP-006",
+  "session_id": "EXP-006-3E358635",
+  "run_at": "2026-05-28T21:58:28.842Z",
+  "qs_id": "QS-2026-05-28-001",
+  "qs_effective_from": "2025-10-22",
+  "feature_counts": {
+    "quantitative": 31,
+    "qualitative": 35,
+    "total": 66
+  },
+  "split": {
+    "train_rows": 11931,
+    "val_rows": 817,
+    "test_rows": 2692,
+    "train_rows_with_qual_features": 0,
+    "test_rows_with_qual_features": 2685
+  },
+  "quant_only_baseline": {
+    "brier": 0.247561,
+    "brier_improvement": 0.002439,
+    "ece": 0.045561,
+    "auc_roc": 0.576531
+  },
+  "quant_plus_qual": {
+    "brier": 0.247561,
+    "brier_improvement": 0.002439,
+    "ece": 0.045561,
+    "auc_roc": 0.576531
+  },
+  "delta": {
+    "brier": -0.0,
+    "ece": -0.0,
+    "auc_roc": 0.0
+  },
+  "exp005_baseline_brier": 0.2476,
+  "null_brier": 0.25,
+  "finding": "negligible_signal_effective_from_constraint"
+}
