@@ -1,0 +1,26 @@
+# requirements-base.txt
+# Base runtime dependencies — pinned for ENV-01 (Research), ENV-02 (Paper), ENV-03 (Live)
+# Generated: 2026-05-22 (Phase 1 — preliminary lock); updated 2026-05-23 (Phase 3 entry — nba_api added)
+# Python: 3.11+
+# Lock policy: See 02_ARCHITECTURE_DESIGN/DEPENDENCIES.md Version Lock Policy
+# DO NOT modify manually — update via: pip install <package> && pip freeze > requirements-base.txt
+
+# --- Data processing ---
+pandas==2.2.2
+numpy==1.26.4
+pyarrow==16.1.0
+
+# --- Forecasting / Modeling ---
+scikit-learn==1.4.2
+scipy==1.13.0
+
+# --- NBA Data (Phase 3 proxy — ADR-0003 OQ-015 resolution 2026-05-23) ---
+# Wraps NBA.com stats API. No auth required. Box scores, play-by-play, tracking endpoints.
+# Synergy Sports / Second Spectrum deferred to Phase 4 if Phase 3 proxy insufficient.
+nba_api>=1.5.0
+
+# --- Logging / Audit ---
+jsonlines==4.0.0
+
+# --- Secrets / Config ---
+python-dotenv==1.0.1

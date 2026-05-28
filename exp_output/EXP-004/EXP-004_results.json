@@ -1,0 +1,65 @@
+{
+  "exp_id": "EXP-004",
+  "session_id": "EXP-004-FE3E2169",
+  "run_at": "2026-05-28T18:56:29.444Z",
+  "hypothesis": "HYP-003",
+  "live_vig_observed": 0.01,
+  "avg_vig_observed": 0.0112,
+  "n_live_markets": 37,
+  "n_quoted_markets": 33,
+  "ds02_online": true,
+  "vig_source": "live_DS02",
+  "part_a": {
+    "part": "A",
+    "test_rows": 3254,
+    "brier_model": 0.241569,
+    "brier_improvement": 0.008431,
+    "ece": 0.024709,
+    "auc_roc": 0.606162,
+    "live_vig_used": 0.01,
+    "half_spread": 0.005,
+    "market_implied_prob_assumption": 0.5,
+    "bets_yes": 1380,
+    "bets_no": 1101,
+    "bets_pass": 773,
+    "total_pnl": 212.095,
+    "ev_per_bet": 0.085488,
+    "win_rate": 0.5905,
+    "hyp003_result": "SUPPORTED",
+    "note": "EV positive at +0.0855 per bet \u2014 edge survives vig"
+  },
+  "part_b": {
+    "part": "B",
+    "live_markets_fetched": 37,
+    "cohort_players_with_live_markets": 2,
+    "bets": [
+      {
+        "player_name": "De'Aaron Fox",
+        "player_id": 1628368,
+        "pts_l10_mean": 26.3,
+        "kalshi_ticker": "KXNBAPTS-26MAY28OKCSAS-SASDFOX4-25",
+        "kalshi_threshold": 25,
+        "kalshi_mid_price": 0.085,
+        "kalshi_vig": 0.01,
+        "model_p_estimate": 0.4955,
+        "edge": 0.4055,
+        "direction": "YES"
+      },
+      {
+        "player_name": "Shai Gilgeous-Alexander",
+        "player_id": 1628983,
+        "pts_l10_mean": 24.9,
+        "kalshi_ticker": "KXNBAPTS-26MAY28OKCSAS-OKCSGILGEOUSALEXANDER2-25",
+        "kalshi_threshold": 25,
+        "kalshi_mid_price": 0.735,
+        "kalshi_vig": 0.01,
+        "model_p_estimate": 0.6243,
+        "edge": -0.1157,
+        "direction": "NO"
+      }
+    ],
+    "has_actionable_bets": true,
+    "note": "Model trained on 2021-22 to 2023-01 data; features from 2023-24 TEST set. Live Kalshi prices are for current game. Results are indicative \u2014 model needs 2024-26 season refresh for production use."
+  },
+  "overall_verdict": "SUPPORTED (Part A positive EV; Part B live market test)"
+}

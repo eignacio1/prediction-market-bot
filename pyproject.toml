@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prediction-market-bot"
+version = "0.1.0"
+description = "Prediction market trading bot — research phase"
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "Proprietary"}
+
+# Phase 3+ dependencies — pinned at Phase 3 entry per DEPENDENCY_LOCKS/
+# These are placeholders; exact versions locked in DEPENDENCY_LOCKS/requirements-*.txt
+dependencies = [
+    "pandas>=2.2.0,<2.3",
+    "numpy>=1.26.0,<2.0",
+    "scikit-learn>=1.4.0,<1.5",
+    "scipy>=1.12.0,<1.13",
+    "jsonlines>=4.0.0,<5.0",
+    "python-dotenv>=1.0.0,<2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.0,<9.0",
+    "pytest-cov>=5.0.0,<6.0",
+    "black>=24.0.0,<25.0",
+    "mypy>=1.9.0,<2.0",
+    "pre-commit>=3.7.0,<4.0",
+    "bandit[toml]>=1.7.0,<2.0",
+    "detect-secrets>=1.4.0,<2.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+skip-string-normalization = false
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_reexport = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--tb=short --strict-markers"
+markers = [
+    "unit: fast, isolated unit tests",
+    "integration: tests requiring real I/O",
+    "temporal: temporal integrity validation tests",
+    "calibration: model calibration tests",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

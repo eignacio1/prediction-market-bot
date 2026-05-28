@@ -1,0 +1,30 @@
+# requirements-dev.txt
+# Development and test dependencies — ENV-01 only (never deployed to ENV-02 or ENV-03)
+# Generated: 2026-05-22 (Phase 1 — preliminary lock; re-lock at Phase 3 entry)
+# Python: 3.11+
+# Includes base: -r requirements-base.txt
+
+-r requirements-base.txt
+
+# --- Testing ---
+pytest==8.2.0
+pytest-cov==5.0.0
+
+# --- Code quality ---
+black==24.4.2
+flake8==7.0.0
+mypy==1.9.0
+
+# --- Type stubs ---
+pandas-stubs==2.2.1.240316
+numpy==1.26.4
+
+# --- Security ---
+bandit==1.7.8
+detect-secrets==1.4.0
+
+# --- Pre-commit ---
+pre-commit==3.7.1
+
+# --- Notebook stripping ---
+nbstripout==0.7.1

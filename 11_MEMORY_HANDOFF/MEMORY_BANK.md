@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-28 (ST-001–004 ALL PASS; ACC-0002 logged; DS-02-B-001 documented; run_sensitivity_tests.py committed; all Phase 5 non-blocked tasks complete)  
+**Last reviewed:** 2026-05-28 (EXP-004 Parts A+B ✅ — HYP-003 🟢 CONFIRMED; APR-0007 ACCEPTED; **G5 gate CLOSED**; DS-02-B-001 RESOLVED; hygiene fixes H-001/H-002/H-003 applied)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -17,13 +17,13 @@
 | Field | Value |
 |-------|-------|
 | Project | Prediction Market Trading Bot |
-| Current phase | **Phase 4 COMPLETE → Phase 5 Operational Readiness** (G4 ✅ CLOSED 2026-05-28; Phase 5 now active) |
+| Current phase | **Phase 5 COMPLETE → Phase 6 Planning** (G5 ✅ CLOSED 2026-05-28; APR-0007 ACCEPTED) |
 | Operator | Earl Ignacio |
 | Started | 2026-05-21 |
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **G4 CLOSED 2026-05-28** — TEST set Brier 0.2416 (+0.0084 vs null) / ECE 0.0247 / AUC 0.6062; ADR-0004 ACCEPTED (APR-0012); VALIDATION_SIGNOFF.md all 4 roles signed; Phase 5 (C7 + C8) unblocked |
+| Last major milestone | **G5 CLOSED 2026-05-28** — APR-0007 ACCEPTED; EXP-004 Parts A+B ✅; HYP-003 🟢 CONFIRMED (EV +$0.0855/bet, 37 live markets, session EXP-004-FE3E2169); DS-02-B-001 RESOLVED; hygiene fixes H-001/002/003; 267/267 tests |
 
 ---
 
@@ -124,7 +124,7 @@ These 7 rules are absolute. They must be restored to any context that loses them
 |---------|--------|-----------|------------|
 | PLAN.md | ACTIVE | 8/10 | G3 CLOSED; Phase 3 Research Build; G0-G9 roadmap |
 | TODO_NEXT.md | ACTIVE | 10/10 | Current session tasks; next-up |
-| RID_LOG.md | **CANONICAL (G3); updated 2026-05-28** | 8/10 | DS-02-B-001 (Kalshi TLS block, P1) active; RID-D001 partially resolved; RID-006 RESOLVED (APR-0013); RID-D002/D003 archived |
+| RID_LOG.md | **CANONICAL (G5); updated 2026-05-28** | 9/10 | DS-02-B-001 RESOLVED (EXP-004 Part B on hotspot); RID-006 RESOLVED (APR-0013); RID-D001/D002/D003 archived |
 | RESOURCE_BUDGET.md | ACTIVE | 7/10 | Capital budget by phase (all TBD until G6) |
 | STATUS_REPORTS/ | ACTIVE | 9/10 | STATUS_2026-05-22.md (current) |
 
@@ -254,24 +254,19 @@ These 7 rules are absolute. They must be restored to any context that loses them
 
 **Phase 3, 4 — COMPLETE ✅** All tasks done (T-035–T-048). G4 CLOSED 2026-05-28. ADR-0004 ACCEPTED.
 
-**Phase 5 (Operational Readiness) — IN PROGRESS:**
+**Phase 5 (Operational Readiness) — ✅ COMPLETE (G5 CLOSED 2026-05-28):**
 
-1. **T-049 ✅ COMPLETE 2026-05-28** — C7 `c7_monitoring/monitor.py`; `SystemMonitor` with rolling Brier/ECE/edge; L1–L4 drift ladder; thread-safe kill switch; `run_kill_switch_drill()` method; 55 tests
-2. **T-050 ✅ COMPLETE 2026-05-28** — C8 `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests
-3. **T-051 ✅ COMPLETE 2026-05-28** — Kill switch drill PASSED; halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; APR-0013 signed; VALIDATION_SIGNOFF.md TC-007 row complete; **G5 kill switch gate CLEARED**
-4. **T-052 🔴 BLOCKED** — EXP-004/HYP-003 (edge vs vig); requires DS-02 (Kalshi API creds/ACC-0002)
-5. **T-053 ✅ COMPLETE 2026-05-28** — ST-001–004 ALL PASS; `run_sensitivity_tests.py` created; results in `exp_output/SENSITIVITY_TESTS/sensitivity_test_results.json`
-   - ST-001 (imputation): PASS — all 3 strategies yield identical Δ Brier (+0.0054)
-   - ST-002 (training window): PASS — beats null at 25%/50%/100% window
-   - ST-003 (C parameter): PASS — C=1.0 within 0.0008 of best C=0.01
-   - ST-004 (permutation importance): PASS — dominant feature `pts_season_mean` at 27% (< 50%)
-6. **T-054 ✅ COMPLETE 2026-05-28** — MODEL_CARD.md 10/10; TEST set populated; C7 monitoring wired; LIM-003 updated
-7. **T-055 ✅ COMPLETE 2026-05-28** — CAPACITY_PLANNING.md stub created
-8. **ACC-0002 ✅ LOGGED 2026-05-28** — Kalshi read-only API key provisioned; ACCESS_REQUESTS.md updated
+1. **T-049 ✅** — C7 `c7_monitoring/monitor.py`; `SystemMonitor`; L1–L4 drift ladder; kill switch; 55 tests
+2. **T-050 ✅** — C8 `c8_dashboard/dashboard.py`; 3 panels; reads C6 JSONL; CLI; 33 tests
+3. **T-051 ✅** — Kill switch drill PASSED; halt 0.340ms; KS-C8D7D90AF942; APR-0013
+4. **T-052 ✅ COMPLETE 2026-05-28** — EXP-004 Parts A+B: EV +$0.0855/bet, 59% win rate, 2,481 TEST bets; Part B live (37 KXNBAPTS markets, session EXP-004-FE3E2169); HYP-003 🟢 CONFIRMED; DS-02-B-001 RESOLVED
+5. **T-053 ✅** — ST-001–004 ALL PASS; sensitivity tests complete
+6. **T-054 ✅** — MODEL_CARD.md 10/10
+7. **T-055 ✅** — CAPACITY_PLANNING.md stub created
+8. **ACC-0002 ✅** — Kalshi read-only API key provisioned
+9. **T-057 ✅ 2026-05-28** — T-3 hygiene check: H-001 (`penalty="l2"` in C3), H-002 (same in sensitivity tests), H-003 (`df.apply()` replaced with `_build_target()` in run_exp004); 267/267 tests green
 
-**DS-02-B-001 BLOCKER (open):** `api.elections.kalshi.com` drops TLS handshake from this machine for all clients. Blocks T-052/ST-005. Resolution: install Homebrew interactively (`! /bin/bash -c "$(curl ...)"` needs sudo), then `brew install python@3.11` + verify API key in Kalshi dashboard. RID_LOG.md DS-02-B-001.
-
-**All Phase 5 non-blocked tasks complete.** T-052 remains blocked (DS-02-B-001 / Kalshi API TLS).
+**APR-0007 ACCEPTED 2026-05-28. G5 CLOSED. Phase 6 Planning begins.**
 
 See TODO_NEXT.md for session-level task tracking.
 
@@ -285,7 +280,7 @@ See TODO_NEXT.md for session-level task tracking.
 | M2 Open Question Count | 11 open OQs — 4 resolved (OQ-001/003/006/015); remaining non-critical-path ✅ |
 | M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004); ADR-0005 pending at G6 ✅ |
 | M4 Assumption Validation | ASM-001–009; EXP-001–003 validated 3 experiments ✅ |
-| M5 Risk Register Currency | 6 active risks; no new risks added in Phase 5 build ✅ |
-| M6 Gate Progress | G0–G4 ✅ ALL CLOSED | Phase 5 🟡 In Progress — all non-blocked tasks complete; T-051 drill ✅ APR-0013; T-052 🔴 BLOCKED (DS-02) |
-| M7 Component Implementation | C1 ✅ C2 ✅ C3 ✅ C4 ✅ C6 ✅ **C7 ✅ (Phase 5) C8 ✅ (Phase 5)**; Backtester ✅; C5 skeleton only; **267/267 tests** |
-| M8 Experiment Progress | EXP-001/002/003 ✅ COMPLETE; G4 MET; ADR-0004 ✅ ACCEPTED; EXP-004 🔴 BLOCKED (DS-02) |
+| M5 Risk Register Currency | DS-02-B-001 RESOLVED 2026-05-28; 5 active risks remain; all non-blocking for G5 ✅ |
+| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** — APR-0007 ACCEPTED 2026-05-28; Phase 6 Planning active |
+| M7 Component Implementation | C1 ✅ C2 ✅ C3 ✅ C4 ✅ C6 ✅ C7 ✅ C8 ✅ C5 ✅; Backtester ✅; **267/267 tests**; hygiene H-001/002/003 applied |
+| M8 Experiment Progress | EXP-001/002/003 ✅ COMPLETE; **EXP-004 Parts A+B ✅ COMPLETE**; HYP-003 🟢 CONFIRMED (+$0.0855 EV/bet; session EXP-004-FE3E2169) |

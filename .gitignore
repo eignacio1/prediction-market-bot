@@ -1,0 +1,104 @@
+# ============================================================
+# Prediction Market Bot — .gitignore
+# CRITICAL: Never commit secrets, credentials, or live data
+# NFR-05: Zero hardcoded secrets — violations are CRITICAL
+# ============================================================
+
+# --- SECRETS AND CREDENTIALS (NEVER COMMIT) ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+vault/
+credentials/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+.tox/
+.nox/
+
+# --- Type checking ---
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# --- Data files (NEVER COMMIT RAW DATA — use snapshots) ---
+# Raw data files are registered in DATA_SNAPSHOTS_INDEX.md
+# and referenced by hash, not committed to VCS
+data/raw/
+data/live/
+*.xlsx
+*.csv
+*.parquet
+*.jsonl
+!tests/fixtures/*.csv
+!tests/fixtures/*.json
+
+# --- Model artifacts (large files — register in ARTIFACT_REGISTRY.md) ---
+models/
+*.pkl
+*.joblib
+*.h5
+*.onnx
+
+# --- Logs (never commit audit logs — retained per DATA_RETENTION_DELETION.md) ---
+logs/
+*.log
+audit_logs/
+
+# --- Jupyter (exploration only — see NOTEBOOKS_POLICY.md) ---
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Dependency lock files are committed (exception) ---
+!06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/
+
+# --- OS ---
+Thumbs.db

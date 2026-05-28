@@ -116,7 +116,6 @@ def _fit_predict(
 ) -> np.ndarray:
     """Fit LR+Platt on training data and return validation probabilities."""
     base = LogisticRegression(
-        penalty="l2",
         C=C,
         solver="lbfgs",
         max_iter=1000,

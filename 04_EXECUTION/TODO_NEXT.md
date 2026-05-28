@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-28 (T-051 ✅ COMPLETE — kill switch drill PASSED 0.340ms; APR-0013 signed; G5 kill switch gate cleared; all Phase 5 non-blocked tasks complete)  
+**Last reviewed:** 2026-05-28 (EXP-004 Part A ✅ — HYP-003 SUPPORTED; EV +$0.0855/bet; T-052 95% complete; Part B pending DS-02 live connectivity)  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  
@@ -79,11 +79,11 @@
 | T-049 | C7 Monitoring + Kill Switch implementation | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c7_monitoring/monitor.py` (SystemMonitor, DriftSnapshot, KillSwitchResult); 55 tests; rolling Brier/ECE/edge; L1–L4 drift ladder; thread-safe kill switch; drill method |
 | T-050 | C8 Visual Dashboard — Phase 5 panels | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests; 267/267 total |
 | T-051 | Kill switch drill (TC-007, NFR-03) | EL/DS | HIGH | ✅ COMPLETE 2026-05-28 — halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; VALIDATION_SIGNOFF.md TC-007 row signed; APR-0013 recorded; G5 kill switch blocker CLEARED |
-| T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | 🔴 BLOCKED — requires DS-02 (live venue prices); blocked until DS-02 active |
+| T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | 🟡 PART A COMPLETE 2026-05-28 — EV +$0.0855/bet (2,481 bets, 59% win rate, TEST set); Part B (live Kalshi prices) pending DS-02-B-001 resolution on home WiFi; re-run on hotspot/VPN to complete |
 | T-053 | SENSITIVITY_STRESS_TESTS.md — run ST-001 through ST-004 | MV | MEDIUM | ✅ COMPLETE 2026-05-28 — ST-001–004 ALL PASS; results in exp_output/SENSITIVITY_TESTS/; script: run_sensitivity_tests.py |
 | T-054 | MODEL_CARD.md 7/10 → 10/10 update | EL | LOW | ✅ COMPLETE 2026-05-28 |
 | T-055 | CAPACITY_PLANNING.md — create | EL | LOW | ✅ COMPLETE 2026-05-28 |
-| T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | 🔲 PENDING |
+| T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | ✅ COMPLETE 2026-05-28 — `11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-28_G5-readiness.md` |
 
 ### Operator Actions Remaining
 
@@ -107,13 +107,14 @@
 
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
-| T-052 / ST-005 | EXP-004 / HYP-003 (vig survival test) | DS-02-B-001: Kalshi API TLS/WAF block on this machine — see RID_LOG.md | Install Homebrew interactively + verify API key activation in Kalshi dashboard |
+| T-052 Part B / ST-005 | EXP-004 Part B (live Kalshi prices) / HYP-003 full confirmation | DS-02-B-001: home WiFi IP-blocked by Kalshi CloudFront WAF; Homebrew Python 3.11 + OpenSSL 3.6.2 works on mobile hotspot | Run on mobile hotspot or VPN; no code changes needed |
 | — | Venue API integration | ENV-03 only; C5 not yet implemented | Phase 6 |
 | — | BOT_C4_ACTIVE=true | Phase gate — not set until G5 | G5 |
 | — | arb/ incorporation | APR-0010 pending | Indefinite |
 
-**DS-02-B-001 Detail:** `api.elections.kalshi.com` (Kalshi's current endpoint, CloudFront) drops the TLS handshake from this machine for ALL clients (Python/OpenSSL 3.0, LibreSSL, Apple nscurl, curl_cffi). TCP connects; TLS ClientHello is sent; server closes connection before handshake completes. Root cause: likely CloudFront WAF blocking based on TLS fingerprint or IP. Resolution path:
-1. Run `! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (needs interactive sudo)
-2. `brew install python@3.11` (will have proper OpenSSL, potentially different fingerprint)
-3. Log into Kalshi dashboard and verify API key is active for `api.elections.kalshi.com`
-4. Re-test connectivity; if still blocked, contact Kalshi support re: IP allowlisting
+**DS-02-B-001 Detail (updated 2026-05-28):**
+- Root cause: Kalshi CloudFront WAF blocks requests from home WiFi IP. TCP connects; server sends 0 bytes in TLS handshake.
+- Homebrew Python 3.11 (OpenSSL 3.6.2) successfully connected on mobile hotspot in prior session — exchange_active=true confirmed, 37 KXNBAPTS markets fetched.
+- Switching back to home WiFi re-blocked the connection (same TLS EOF behavior).
+- **Resolution:** Run EXP-004 Part B on mobile hotspot or VPN. No code changes needed — `run_exp004.py` handles DS-02 offline gracefully (Part A runs; Part B skipped with clear note).
+- Vig is measured: MEASURED_VIG_20260528 = 0.01 (from 37 KXNBAPTS markets, OKC-SAS game, 2026-05-28).

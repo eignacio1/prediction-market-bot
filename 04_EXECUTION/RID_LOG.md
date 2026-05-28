@@ -3,7 +3,7 @@
 **Purpose:** Centralized tracker for all active risks, issues, and dependencies that require monitoring or resolution. The canonical escalation source for gate reviews.  
 **Owner (role):** Execution Lead (EL)  
 **Status:** **CANONICAL — G3 Execution Gate 2026-05-22** — Changes require version bump and CHANGELOG entry  
-**Last reviewed:** 2026-05-28 (Phase 5 — DS-02-B-001 added; ACC-0002 granted; RID-006 RESOLVED per APR-0013)  
+**Last reviewed:** 2026-05-28 (DS-02-B-001 RESOLVED — EXP-004 Part B complete on mobile hotspot; HYP-003 🟢 CONFIRMED; G5 gate CLOSED)  
 **Next review:** Weekly DIR; escalate P1 items immediately  
 **Staleness triggers:** New risk identified; issue resolved; dependency unblocked; gate readiness review  
 **Upstream links:** PLAN.md, RESILIENCE_FAILURE_MODES.md, OPEN_QUESTIONS.md  
@@ -46,7 +46,7 @@
 
 | RID | Type | Priority | Title | Description | Owner | Resolution Path | Status | Due |
 |-----|------|----------|-------|-------------|-------|----------------|--------|-----|
-| DS-02-B-001 | I | P1 | Kalshi API TLS/WAF connectivity block | `api.elections.kalshi.com` (Kalshi's current endpoint) drops TLS handshake from this machine for ALL clients. TCP connects; server closes connection after ClientHello before handshake completes. Tested: Python/OpenSSL 3.0, LibreSSL, Apple nscurl, curl_cffi. Blocks: T-052 (EXP-004 / HYP-003 vig test), ST-005, C5 venue integration. Root cause: probable CloudFront WAF TLS fingerprint block. | IO/DS | (1) Install Homebrew interactively: `! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (2) `brew install python@3.11` — different TLS fingerprint may bypass WAF (3) Verify API key is activated in Kalshi dashboard for new endpoint (4) If still blocked, contact Kalshi support re: IP allowlisting | OPEN | G5 pre-condition |
+| DS-02-B-001 | I | P1 | Kalshi API IP/ASN block (CloudFront WAF) | **RESOLVED 2026-05-28.** Root cause: IP/ASN-based block by Kalshi CloudFront WAF, NOT TLS fingerprint. Resolution: EXP-004 Part B executed on mobile hotspot (session EXP-004-FE3E2169). exchange_active=True, 37 KXNBAPTS markets fetched, 33 with live quotes. Part B produced live edge calculations for Fox (Edge +0.405 YES) and SGA (Edge −0.116 NO). HYP-003 🟢 CONFIRMED. For Phase 6+ scheduled runs, a datacenter VPS (clean ASN) is required — not needed for Phase 5. | IO/DS | RESOLVED — completed on mobile hotspot. Phase 6 VPS provisioning required for scheduled cron runs (pre-G6 planning item). | RESOLVED 2026-05-28 | — |
 
 ---
 

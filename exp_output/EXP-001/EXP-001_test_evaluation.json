@@ -1,0 +1,29 @@
+{
+  "gate": "G4",
+  "experiment": "EXP-001",
+  "split": "TEST",
+  "evaluated_at": "2026-05-28T16:33:43.791Z",
+  "snapshot_id": "SNAP-2026-05-28-001",
+  "feature_version": "1.2.0",
+  "model_version": "v1-9939a6a5",
+  "model_class": "LogisticRegression+PlattScaling",
+  "test_date_range": {
+    "start": "2023-10-24",
+    "end": "2024-04-14"
+  },
+  "test_rows": 3254,
+  "train_rows": 5042,
+  "metrics": {
+    "brier_model": 0.2416,
+    "brier_null": 0.25,
+    "brier_improvement": 0.0084,
+    "ece": 0.0247,
+    "auc_roc": 0.6062
+  },
+  "g4_criteria": {
+    "brier_beats_null": true,
+    "ece_lt_005": true,
+    "overall_pass": true
+  },
+  "null_model": "market_implied_prob = 0.50 (DS-02 not active in Phase 3)"
+}

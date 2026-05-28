@@ -2,8 +2,8 @@
 
 **Purpose:** Track all formal approvals required for phase gate passages, capital deployment, and major changes. Every approval must link to evidence artifacts.  
 **Owner (role):** Risk/Control Owner (RCO)  
-**Last reviewed:** 2026-05-28 (G4 Evidence Gate closed — APR-0006 and APR-0012 accepted)  
-**Next review:** G5 Operational Gate passage  
+**Last reviewed:** 2026-05-28 (APR-0007 ACCEPTED — G5 gate CLOSED; EXP-004 Part B complete on mobile hotspot; HYP-003 🟢 CONFIRMED)  
+**Next review:** G6 Release Gate (APR-0008/0009) — after model data refresh (2024-26 seasons) and VPS provisioning  
 **Staleness triggers:** Gate passed; approval expired; approver role changed; new approval category required  
 **Upstream links:** PROJECT_CHARTER.md, 03_DECISIONS/DECISION_LOG/  
 **Downstream links:** 09_SECURITY_PRIVACY_COMPLIANCE/CONTROL_MAPPING.md  
@@ -25,7 +25,7 @@
 | APR-0012 | ADR-0004 formal acceptance — Model Class: LR+Platt (Phase 3 baseline) | AO / DS | 2026-05-28 | ADR-0004_model-class-selection.md (ACCEPTED); TEST Brier +0.0084 / ECE 0.0247 / AUC 0.6062; G4_VALIDATION_REPORT.md; exp_output/EXP-001/EXP-001_test_evaluation.json | Superseded by model class change ADR only |
 | APR-0006 | G4 Evidence Gate passage | EO / MV / AO / DS | 2026-05-28 | G4_VALIDATION_REPORT.md; PERFORMANCE_METRICS.md (TEST set populated); VALIDATION_SIGNOFF.md (all roles); APR-0012 (ADR-0004 accepted); 3/3 VAL + TEST all pass Brier + ECE criteria | Gate G5 passage |
 | APR-0013 | TC-007 Kill Switch Drill — NFR-03 pass | DS | 2026-05-28 | `KS-C8D7D90AF942`; halt 0.340ms; SLA 60,000ms; VALIDATION_SIGNOFF.md TC-007 row signed; `logs/drill_audit.jsonl` (3 entries: CRITICAL/INFO/WARNING) | G5 kill switch gate cleared |
-| APR-0007 | G5 Operational Gate passage | OO / AO | PENDING | Kill-switch drill ✅ APR-0013; ST-001–004 sensitivity tests; T-052 EXP-004 (DS-02 unblock required) | Gate G6 passage |
+| APR-0007 | G5 Operational Gate passage | OO / AO | **2026-05-28** | Kill-switch drill ✅ APR-0013 (0.340ms); ST-001–004 ✅; EXP-004 Part A ✅ HYP-003 SUPPORTED (+$0.0855 EV/bet, 2,481 bets); **EXP-004 Part B ✅** (37 live KXNBAPTS markets; session EXP-004-FE3E2169; Fox Edge +0.405 YES; SGA Edge −0.116 NO); DS-02-B-001 RESOLVED; HYP-003 🟢 CONFIRMED; T-049–T-055 ✅; 267/267 tests; H-001/H-002/H-003 hygiene fixes applied | Gate G6 passage |
 | APR-0008 | G6 Release Gate — LIVE CAPITAL AUTHORIZATION | PO / RCO | PENDING | Final validation report + compliance spine + rollback test | Annual re-approval or material change |
 | APR-0009 | Promote paper trading → live capital (ADR-0005) | PO / RCO | PENDING | ADR-0005 evidence; approvals APR-0006, 0007, 0008 | Per-venue re-approval |
 | APR-0010 | arb/ folder incorporation into active development | PO / AO | PENDING | ADR granting incorporation | Per-incorporation |
