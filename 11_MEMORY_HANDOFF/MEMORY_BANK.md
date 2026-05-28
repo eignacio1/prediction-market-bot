@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-28 (T-051 ✅ COMPLETE — kill switch drill PASSED 0.340ms / APR-0013; all Phase 5 non-blocked tasks complete; G5 kill switch gate cleared)  
+**Last reviewed:** 2026-05-28 (ST-001–004 ALL PASS; ACC-0002 logged; DS-02-B-001 documented; run_sensitivity_tests.py committed; all Phase 5 non-blocked tasks complete)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -124,7 +124,7 @@ These 7 rules are absolute. They must be restored to any context that loses them
 |---------|--------|-----------|------------|
 | PLAN.md | ACTIVE | 8/10 | G3 CLOSED; Phase 3 Research Build; G0-G9 roadmap |
 | TODO_NEXT.md | ACTIVE | 10/10 | Current session tasks; next-up |
-| RID_LOG.md | **CANONICAL (G3 2026-05-22)** | 8/10 | RID-001 through RID-006 active; RID-D001/D004 open; RID-D002/D003 archived (resolved) |
+| RID_LOG.md | **CANONICAL (G3); updated 2026-05-28** | 8/10 | DS-02-B-001 (Kalshi TLS block, P1) active; RID-D001 partially resolved; RID-006 RESOLVED (APR-0013); RID-D002/D003 archived |
 | RESOURCE_BUDGET.md | ACTIVE | 7/10 | Capital budget by phase (all TBD until G6) |
 | STATUS_REPORTS/ | ACTIVE | 9/10 | STATUS_2026-05-22.md (current) |
 
@@ -260,11 +260,18 @@ These 7 rules are absolute. They must be restored to any context that loses them
 2. **T-050 ✅ COMPLETE 2026-05-28** — C8 `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests
 3. **T-051 ✅ COMPLETE 2026-05-28** — Kill switch drill PASSED; halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; APR-0013 signed; VALIDATION_SIGNOFF.md TC-007 row complete; **G5 kill switch gate CLEARED**
 4. **T-052 🔴 BLOCKED** — EXP-004/HYP-003 (edge vs vig); requires DS-02 (Kalshi API creds/ACC-0002)
-5. **T-053 ✅ COMPLETE 2026-05-28** — SENSITIVITY_STRESS_TESTS.md created; ST-001–004 defined (runnable against SNAP-002); ST-005 blocked (DS-02)
+5. **T-053 ✅ COMPLETE 2026-05-28** — ST-001–004 ALL PASS; `run_sensitivity_tests.py` created; results in `exp_output/SENSITIVITY_TESTS/sensitivity_test_results.json`
+   - ST-001 (imputation): PASS — all 3 strategies yield identical Δ Brier (+0.0054)
+   - ST-002 (training window): PASS — beats null at 25%/50%/100% window
+   - ST-003 (C parameter): PASS — C=1.0 within 0.0008 of best C=0.01
+   - ST-004 (permutation importance): PASS — dominant feature `pts_season_mean` at 27% (< 50%)
 6. **T-054 ✅ COMPLETE 2026-05-28** — MODEL_CARD.md 10/10; TEST set populated; C7 monitoring wired; LIM-003 updated
 7. **T-055 ✅ COMPLETE 2026-05-28** — CAPACITY_PLANNING.md stub created
+8. **ACC-0002 ✅ LOGGED 2026-05-28** — Kalshi read-only API key provisioned; ACCESS_REQUESTS.md updated
 
-**All Phase 5 non-blocked tasks complete.** Only T-052 remains blocked (DS-02 required).
+**DS-02-B-001 BLOCKER (open):** `api.elections.kalshi.com` drops TLS handshake from this machine for all clients. Blocks T-052/ST-005. Resolution: install Homebrew interactively (`! /bin/bash -c "$(curl ...)"` needs sudo), then `brew install python@3.11` + verify API key in Kalshi dashboard. RID_LOG.md DS-02-B-001.
+
+**All Phase 5 non-blocked tasks complete.** T-052 remains blocked (DS-02-B-001 / Kalshi API TLS).
 
 See TODO_NEXT.md for session-level task tracking.
 
