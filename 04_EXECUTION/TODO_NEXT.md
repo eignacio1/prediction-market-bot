@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-28 (EXP-004 Part A ✅ — HYP-003 SUPPORTED; EV +$0.0855/bet; T-052 95% complete; Part B pending DS-02 live connectivity)  
+**Last reviewed:** 2026-05-28 (G5 CLOSED — APR-0007 ACCEPTED; EXP-004 Parts A+B ✅; HYP-003 🟢 CONFIRMED; DS-02-B-001 RESOLVED; hygiene H-001/002/003; 267/267 tests; Phase 6 Planning begins)  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  
@@ -79,11 +79,23 @@
 | T-049 | C7 Monitoring + Kill Switch implementation | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c7_monitoring/monitor.py` (SystemMonitor, DriftSnapshot, KillSwitchResult); 55 tests; rolling Brier/ECE/edge; L1–L4 drift ladder; thread-safe kill switch; drill method |
 | T-050 | C8 Visual Dashboard — Phase 5 panels | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests; 267/267 total |
 | T-051 | Kill switch drill (TC-007, NFR-03) | EL/DS | HIGH | ✅ COMPLETE 2026-05-28 — halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; VALIDATION_SIGNOFF.md TC-007 row signed; APR-0013 recorded; G5 kill switch blocker CLEARED |
-| T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | 🟡 PART A COMPLETE 2026-05-28 — EV +$0.0855/bet (2,481 bets, 59% win rate, TEST set); Part B (live Kalshi prices) pending DS-02-B-001 resolution on home WiFi; re-run on hotspot/VPN to complete |
+| T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | ✅ COMPLETE 2026-05-28 — Parts A+B: EV +$0.0855/bet (2,481 TEST bets, 59% win rate); Part B live (37 KXNBAPTS markets, session EXP-004-FE3E2169); HYP-003 🟢 CONFIRMED; DS-02-B-001 RESOLVED |
 | T-053 | SENSITIVITY_STRESS_TESTS.md — run ST-001 through ST-004 | MV | MEDIUM | ✅ COMPLETE 2026-05-28 — ST-001–004 ALL PASS; results in exp_output/SENSITIVITY_TESTS/; script: run_sensitivity_tests.py |
 | T-054 | MODEL_CARD.md 7/10 → 10/10 update | EL | LOW | ✅ COMPLETE 2026-05-28 |
 | T-055 | CAPACITY_PLANNING.md — create | EL | LOW | ✅ COMPLETE 2026-05-28 |
 | T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | ✅ COMPLETE 2026-05-28 — `11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-28_G5-readiness.md` |
+
+### Phase 6 — Paper Trading (Next Phase)
+
+**G5 CLOSED 2026-05-28. Phase 6 (paper trading / pre-live) is next.**
+
+| # | Task | Owner | Priority | Status |
+|---|------|-------|----------|--------|
+| T-058 | Model data refresh — retrain on 2024-25 + 2025-26 seasons | EL | HIGH | 🔲 NEXT — Current model trained on 2021-24; production use requires current season data |
+| T-059 | VPS provisioning for scheduled cron runs | IO | HIGH | 🔲 NEXT — Datacenter IP bypasses Kalshi CloudFront WAF; needed for automated pre-game runs (~90 min before tip-off) |
+| T-060 | Paper trading pipeline (PIPE-03) implementation | EL | HIGH | 🔲 — C5 order submission stub; paper trade tracking; P&L log |
+| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After paper trading evidence accumulated; not yet |
+| T-062 | Context Pack for Phase 6 handoff | DS | LOW | 🔲 — At start of Phase 6 work |
 
 ### Operator Actions Remaining
 
@@ -107,14 +119,9 @@
 
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
-| T-052 Part B / ST-005 | EXP-004 Part B (live Kalshi prices) / HYP-003 full confirmation | DS-02-B-001: home WiFi IP-blocked by Kalshi CloudFront WAF; Homebrew Python 3.11 + OpenSSL 3.6.2 works on mobile hotspot | Run on mobile hotspot or VPN; no code changes needed |
-| — | Venue API integration | ENV-03 only; C5 not yet implemented | Phase 6 |
-| — | BOT_C4_ACTIVE=true | Phase gate — not set until G5 | G5 |
+| T-059 | VPS provisioning | Phase 6 planning | Phase 6 start |
+| T-060 | Paper trading pipeline | Model data refresh (T-058) | After T-058 |
+| T-061 | ADR-0005 live capital | Paper trading evidence (G6) | Phase 7 |
 | — | arb/ incorporation | APR-0010 pending | Indefinite |
 
-**DS-02-B-001 Detail (updated 2026-05-28):**
-- Root cause: Kalshi CloudFront WAF blocks requests from home WiFi IP. TCP connects; server sends 0 bytes in TLS handshake.
-- Homebrew Python 3.11 (OpenSSL 3.6.2) successfully connected on mobile hotspot in prior session — exchange_active=true confirmed, 37 KXNBAPTS markets fetched.
-- Switching back to home WiFi re-blocked the connection (same TLS EOF behavior).
-- **Resolution:** Run EXP-004 Part B on mobile hotspot or VPN. No code changes needed — `run_exp004.py` handles DS-02 offline gracefully (Part A runs; Part B skipped with clear note).
-- Vig is measured: MEASURED_VIG_20260528 = 0.01 (from 37 KXNBAPTS markets, OKC-SAS game, 2026-05-28).
+**DS-02-B-001: RESOLVED 2026-05-28** — EXP-004 Part B completed on mobile hotspot. VPS (datacenter IP) needed for Phase 6 scheduled runs.
