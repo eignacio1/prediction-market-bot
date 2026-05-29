@@ -134,6 +134,13 @@
 | T-083 | Cross-venue market mapper (normalization rules) | EL | MED | ✅ COMPLETE 2026-05-29 — `c5_execution/market_mapper.py`; `normalize_player_name()` + `PlayerMarketKey` + `group_by_key()`; accent/apostrophe/period normalization; 26 tests; VenueRouter deduplication upgraded to use normalized keys |
 | T-084 | Multi-band execution orchestrator (P6 rules) | EL | HIGH | ✅ COMPLETE 2026-05-29 — `execution_bands_orchestrator.py`; `BandSignal` + `BandDecision` + `MultiBandOrchestrator`; T3>T2>T1 priority; CONFIRM/FADE/NEUTRAL rules; batch_decide(); 46 tests; T3 cron schedule extended to 20-23,0-3 UTC for late games |
 
+### Phase 6 — Newly Registered Tasks (2026-05-29 handoff audit)
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| T-091 | C7 paper P&L monitoring alert | EL | MED | Add to SystemMonitor: WARNING at total_pnl < -$50 (5% bankroll); L2 at < -$100 (10%); KI-012; requires DS threshold sign-off first |
+| T-092 | Elevate T-072 to required pre-2026-27 | DS | MED | Model staleness KI-013 — T-072 must retrain before paper trading resumes in Oct 2026; not optional; needs new ADR |
+
 ### Operator Actions Remaining
 
 | # | Action | Why It Matters |

@@ -1,5 +1,13 @@
 # /session-end — End-of-Session Handoff Protocol
 
+## ⚠️ TRIGGER THIS IMMEDIATELY WHEN CONTEXT WINDOW REACHES ~80%
+
+Do not wait until "a good stopping point." At 80% context: stop all implementation work, run this protocol in full, commit, and push. The cost of losing a session's decisions permanently exceeds the cost of any implementation delay. When in doubt, trigger early.
+
+**Signs you are near 80%:** responses are slower, the conversation has been running for many tool calls, or the user references that the window is getting full.
+
+---
+
 Run this at the end of every Claude Code session before closing. Updates all navigation artifacts so the next session has full context.
 
 **CRITICAL:** Step 1A (Strategic Decisions) is mandatory and must run FIRST. Judgment calls that aren't captured here are permanently lost across context windows.
@@ -16,6 +24,8 @@ For each strategic decision:
 3. Mark it as an ANTI-CONTEXT-EROSION INVARIANT in MEMORY_BANK.md if it must survive every future context window
 
 If no strategic decisions were made, write: *"None — implementation-only session."* and continue.
+
+**Also scan every artifact modified this session for conditional language** ("may be revised," "could be adjusted," "threshold may change," "possibly," "if needed"). Any conditional language found must be resolved — either converted to a signed decision (APR-XXXX) or explicitly marked "TBD — requires APR-XXXX by [date]." Do not let conditional language survive the session. See CHANGE_CONTROL.md Conditional Language Governance and LL-008.
 
 ## Step 1B — Summarize What Was Done
 

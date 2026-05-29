@@ -37,7 +37,14 @@
 
 ## ONE THING PENDING (if any)
 
-[What is the single most important thing the next session must know to continue? Run command, pending operator action, etc.]
+[What is the single most important thing the next session must know to continue?]
+
+**Precision standard for in-flight work:** Do not write "experiment pending (~15 min)." Write the exact current state:
+- Is data already pulled? → "Cache exists at exp_output/EXP-NNN/. Run with `SKIP_PULL=1` — completes in <2 min."
+- Is a process still running? → "Script launched at HH:MM UTC. Output at exp_output/EXP-NNN/. Expected done by HH:MM UTC."
+- Is it waiting on operator? → "Waiting for [specific operator action] at [specific URL or path]. Infrastructure is ready."
+
+Ambiguous state descriptions are the most common source of wasted time in the next session.
 
 ---
 

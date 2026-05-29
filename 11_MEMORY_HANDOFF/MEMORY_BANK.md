@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-29 sprint 2 (EXP-014 ✅ line shopping; EXP-015 ✅ HYP-008 FALSIFIED; PIPE-03 → VenueRouter ✅; 519/519 tests)  
+**Last reviewed:** 2026-05-29 sprint 4 (handoff audit complete; LL-008/009; FAQ Phase 6; KI-010–013; CP-2026-05-29; T-091/092; APR-0016; all workflow structural gaps closed)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -48,6 +48,26 @@ These 9 rules are absolute. They must be restored to any context that loses them
 8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. Seasonally bounded by NBA Finals end (~2026-06-22). Window extends to first 30 days of 2026-27 regular season if not reached. Do not revert to 50 without a new APR.
 
 9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.** Judgment calls (threshold changes, sequencing pivots, dark-period plans) are as load-bearing as code changes. Handoff documents must include a "Strategic Decisions" section separate from "Tasks Completed." If a decision was made verbally in a session and is not in these files, it did not happen.
+
+---
+
+## Mid-Session Decision Protocol (Read Before Every Session)
+
+**If a strategic decision is made at any point during a session, write it to `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` immediately — not at session end.**
+
+Context windows compress. /session-end may not run. If it was decided, it goes in the file now.
+
+**A decision is anything that changes:**
+- A threshold, limit, or gate criterion
+- A sequencing choice or prioritization order
+- A hold/unblock/defer ruling on a task or gate item
+- A risk assessment conclusion from a holistic review
+- A build strategy (pilot-first vs. infrastructure-first, dark period plan, etc.)
+
+**⚠️ Conditional language in canonical registers is a governance failure, not documentation.**
+"May be revised," "could be adjusted," "threshold may change" = decision NOT made. If you see this language in APPROVALS_REGISTER, ROADMAP, or KNOWN_ISSUES, treat it as an open gap requiring DS escalation, not as a recorded decision. Replace it with either a signed decision or "TBD — requires APR-XXXX before [date]."
+
+**When context window reaches ~80%:** Stop all implementation work. Run /session-end immediately. Produce SESSION_HANDOFF, commit, and push before context compresses further. This is non-negotiable — the cost of losing a session's decisions exceeds the cost of any implementation delay.
 
 ---
 
@@ -311,7 +331,7 @@ See TODO_NEXT.md for session-level task tracking.
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
 | M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
-| M5 Risk Register Currency | All risks non-blocking | EXP-012 data pull risk: nba_api rate limits (~20 min pull) | cron midnight wrap noted (T3 `*/15 20-23,0-3` — test on VPS before activating) |
+| M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-008/009 RESOLVED | T-091 (P&L alert) + T-092 (T-072 elevation) registered |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
 | M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/05/06 ✅ | **533/533 tests** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |

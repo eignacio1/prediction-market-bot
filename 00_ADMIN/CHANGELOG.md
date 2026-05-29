@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-05-29 — Workflow Hardening: PDTP Audit, LL-008/009, KI-010–013, Phase 6 CP, FAQ Phase 6
+
+**Change type:** Governance / process hardening — closes all structural gaps identified by PDTP assessment of handoff/memory retention workflow  
+**Summary:** PDTP surfaced 7 remaining structural gaps after the initial handoff audit repair. All gaps closed in this pass. **(1) Mid-session decision protocol** added to MEMORY_BANK.md — write to DECISION_LOG immediately when a strategic decision is made, not at session end. **(2) 80% context window trigger** documented in /session-end header — mandatory immediate trigger; stop all implementation work and produce handoff when reached. **(3) Conditional language governance** added to CHANGE_CONTROL.md — "may be revised," "could be adjusted," etc. in canonical registers are governance failures requiring immediate escalation; checklist updated to scan for conditional language before session end. **(4) LL-008** — conditional language lesson documented with full impact, mitigation, and APR-0016 as evidence. **(5) LL-009** — pilot-before-infrastructure lesson documented; /new-exp Step 0 added with explicit check before scaffolding. **(6) FAQ.md Phase 6** — 5 stale answers updated: G6 gate (30 bets, APR-0016), dark period plan, model class (ADR-0004 confirmed LR+Platt), G4 status (CLOSED), test count (533/533). **(7) CP-2026-05-29_phase6-active.md** — Phase 6/7 context pack produced (G5 CP was the last; new CP covers full Phase 6/7 operational state, all 16 experiments, all strategic decisions). **(8) KI-010** (inter-series gap), **(9) KI-011** (player injury), **(10) KI-012** (negative P&L — no monitoring threshold; T-091 registered), **(11) KI-013** (model staleness — T-072 elevated to required; T-092 registered) — all 4 risks from the original strategic review edge case table that had never been registered. **(12) KI-008/009** moved to Resolved Issues table. **(13) DECISION_LOG** — 2 sequencing principles added (pilot-first rule, T-072 elevation). **(14) SESSION_HANDOFF template** — state precision standard added for in-flight work. **(15) MEMORY_BANK M5** updated to reflect all 4 new KIs and T-091/092.  
+**ADR references:** None new — all governance changes  
+**Artifacts created:** CP-2026-05-29_phase6-active.md  
+**Artifacts modified:** MEMORY_BANK.md, CHANGE_CONTROL.md, LESSONS_LEARNED.md (LL-008/009), FAQ.md, KNOWN_ISSUES.md (KI-010–013), TODO_NEXT.md (T-091/092), DECISION_LOG.md, /session-end, /new-exp, TEMPLATE_SESSION_HANDOFF.md, CHANGELOG.md  
+**Tests:** 533/533 (unchanged)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | G6 gate: 0/30 bets | All workflow structural gaps: CLOSED  
+**Changed by:** DS
+
+---
+
 ## 2026-05-29 — Handoff Audit + Structural Repair: APR-0016, Dark Period Plan, ctx.md Rewrite
 
 **Change type:** Governance repair + structural fix  

@@ -62,6 +62,31 @@ Risk limits (RISK_APPETITE_CONSTRAINTS.md) deserve special mention:
 
 ---
 
+## Conditional Language Governance
+
+**Conditional language in canonical registers is a governance failure, not documentation.**
+
+The following phrases in APPROVALS_REGISTER, ROADMAP_MILESTONES, KNOWN_ISSUES, or ASSUMPTIONS_REGISTER are red flags that a decision has NOT been made:
+
+- "may be revised"
+- "could be adjusted"
+- "threshold may change"
+- "possibly extended"
+- "if needed"
+- "subject to DS decision"
+
+**What to do instead:**
+
+| Situation | Correct form |
+|-----------|-------------|
+| Decision has been made | Record it with DS sign-off, APR-XXXX, and date |
+| Decision is pending | "TBD — requires APR-XXXX, owner DS, by [date or gate]" |
+| Decision is actively deferred | Record it as an open question in OPEN_QUESTIONS.md with a resolution deadline |
+
+**Any conditional language found during an artifact review must be escalated to DS and resolved before the session ends.** Do not leave it for the next session — conditional language that survives a context window transition looks like a decision to the next context window.
+
+---
+
 ## Change Review Checklist
 
 Before implementing any Class A or B change:
@@ -71,3 +96,4 @@ Before implementing any Class A or B change:
 - [ ] If Class B: CHANGELOG entry created before or immediately after implementation
 - [ ] Downstream links updated (interfaces, runbooks, linked artifacts)
 - [ ] No shadow changes (implementation must match documented change)
+- [ ] No conditional language left in any canonical register updated this session

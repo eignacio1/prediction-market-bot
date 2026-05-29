@@ -2,7 +2,7 @@
 
 **Purpose:** Document lessons from the prior iteration and any new lessons encountered during this build. Each lesson maps directly to a mitigation in the current architecture. This is a living document — new lessons are added as they are discovered.  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-05-22  
+**Last reviewed:** 2026-05-29 (LL-008 conditional language; LL-009 pilot-before-infrastructure)  
 **Next review:** After each gate; after any incident or near-miss; at project close  
 **Staleness triggers:** New lesson discovered; mitigation found to be insufficient; gate reveals new failure mode  
 **Upstream links:** ADR-0001 (Compass OS adoption rationale), RESILIENCE_FAILURE_MODES.md  
@@ -130,6 +130,47 @@ These are the identified failure modes from the prior iteration. Each has a dire
 - APPROVALS_REGISTER.md requires explicit sign-off per gate
 - Compass OS cadence creates a rhythm of review that is harder to skip than a one-time check
 - This lesson is flagged as ASM-006 (solo operator cadences are sustainable)
+
+---
+
+### LL-008 — Conditional Language in Canonical Registers Is Not Documentation
+
+**Observed / What happened:** During Phase 6 sprint (2026-05-29), the G6 evidence threshold was discussed and a DS decision was made to lower it from 50 to 30 bets. This was recorded in ROADMAP_MILESTONES.md as "The threshold *may* be revised downward to 30 resolved bets... via APR-0016 sign-off." APR-0016 was never created. In the next context window, the threshold appeared documented when it was not actually decided. The new session operated with the wrong G6 gate.
+
+**Phase:** Phase 6 (2026-05-29)
+
+**Impact:** New context window operated with the wrong G6 gate (50 bets, not 30). Strategic decision was lost. Required a full handoff audit to recover. Directly instantiates LL-001 (context rot) — the same failure mode that ended the prior iteration.
+
+**Lesson:** "May be revised," "could be adjusted," "threshold may change," and all similar conditional language in APPROVALS_REGISTER, ROADMAP, or KNOWN_ISSUES is not documentation — it is a deferred decision that *looks* documented. Any conditional language in a canonical register is a governance flag. The decision must be formally made (DS sign-off, APR-XXXX) or the language must be replaced with "TBD — requires APR-XXXX before [date]." Conditional language that survives a context window transition is indistinguishable from a signed decision to the next context.
+
+**Mitigation:**
+- CHANGE_CONTROL.md: "Conditional Language Governance" section added — explicit red-flag list and resolution protocol
+- MEMORY_BANK.md: Mid-Session Decision Protocol section added — write to DECISION_LOG immediately, not at session end
+- /session-end: Step 1A updated to scan for conditional language in any artifacts modified this session
+- APR-0016 signed retroactively (2026-05-29); all "50" references swept to "30"
+
+**Status:** MITIGATED
+
+---
+
+### LL-009 — Pilot Experiment Before Infrastructure
+
+**Observed / What happened:** During Phase 7 build-ahead (2026-05-29), full infrastructure components were built before experiments validated the hypotheses. TeamStatsStore + C1 schema extensions (T-075, 78 features FEATURE_VERSION 1.3.0) and ScoringDistributionModel (T-076) were fully implemented with 31+26 tests before EXP-012 and EXP-013 ran. Both hypotheses were falsified: HYP-006 (Δ Brier = 0.0000) and HYP-007 (NB Brier 0.2671 vs LR 0.2461). The infrastructure is sound but the hypothesis-specific use cases are stranded.
+
+**Phase:** Phase 7 build-ahead (2026-05-29)
+
+**Impact:** ~3-5 hours of implementation work on components whose primary use case was invalidated before they were built. FEATURE_VERSION reverted to 1.2.0. TeamStatsStore is dormant. The opp_def_rating feature is infrastructure without a home. The NB model's role is narrowed to multi-line pricing only.
+
+**Lesson:** Run the minimal experiment to test the hypothesis BEFORE building the supporting infrastructure. A targeted script that evaluates the Brier delta on existing data is sufficient to confirm or falsify. Build the full component only if the hypothesis is confirmed. The sequencing rule is: hypothesis registered → minimal pilot experiment → CONFIRMED → full infrastructure build. Never build full infrastructure first, then test.
+
+**Why this happens:** Building infrastructure feels productive. Experiments feel uncertain. The temptation is to "get the plumbing ready" so the experiment can run faster. But if the hypothesis fails, the plumbing is mostly wasted and the experiment queue advances without evidence.
+
+**Mitigation:**
+- /new-exp: Step 0 check added — confirm that supporting infrastructure is NOT being built ahead of pilot experiment confirmation
+- DECISION_LOG: standing sequencing principle added (2026-05-29)
+- Going forward: any T-0XX task that builds infrastructure for an unconfirmed hypothesis must be flagged as "contingent on EXP-YYY confirmation"
+
+**Status:** MITIGATED
 
 ---
 

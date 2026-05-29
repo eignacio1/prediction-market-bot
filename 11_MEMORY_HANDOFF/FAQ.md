@@ -2,7 +2,7 @@
 
 **Purpose:** Answer common questions about this project with authoritative, defensible answers. Prevents re-derivation of settled questions across context windows. Questions here are closed — they have canonical answers backed by artifacts.  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-05-22  
+**Last reviewed:** 2026-05-29 (Phase 6 state — G6 gate, model class, tests, season calendar updated)  
 **Next review:** Weekly; add new question whenever one is asked for the second time  
 **Staleness triggers:** Answer becomes outdated; referenced artifact changes; new canonical answer established  
 **Upstream links:** MEMORY_BANK.md (index), all referenced artifacts  
@@ -56,13 +56,16 @@ A: The null model is the market-implied probability: `mid_price = (bid + ask) / 
 A: `edge = p_estimate - market_implied_prob - vig`. If edge > threshold (threshold TBD at G4), a position is considered. If edge ≤ 0, no position is placed. See METHODOLOGY.md and HYPOTHESES.md HYP-003.
 
 **Q: What model class are we using?**  
-A: TBD — selected at ADR-0003 during Phase 3. Candidates: logistic regression (calibrated, simple), XGBoost with Platt scaling, isotonic regression wrapper. See METHODOLOGY.md Model Selection Criteria.
+A: LogisticRegression + Platt scaling (CalibratedClassifierCV, sigmoid, cv=3), confirmed via ADR-0004 (APR-0012, 2026-05-28). Model v1-28483b21, 78 features (31 quant + 47 qual), FEATURE_VERSION 1.2.0, sklearn 1.8.0. Brier +0.0039 vs null, ECE 0.0342, EV +$0.0958/bet. Frozen — retraining requires new ADR + G4-equivalent evidence. See ADR-0004 and METHODOLOGY.md.
 
 **Q: What is "calibration" and why is it required?**  
 A: Calibration means a model's predicted probability matches the empirical frequency of outcomes. A model that says "70% probability" should be right approximately 70% of the time. Without calibration, position sizing (Kelly) is unreliable. ECE < 0.05 is the requirement. See METHODOLOGY.md Calibration Approach.
 
 **Q: How many experiments are needed before G4?**  
-A: Minimum 3 independent experiments to avoid cherry-picking. All experiments must use the same methodology, chronological splits, and held-out test set. See RESULTS_SUMMARIES/RESULTS_INDEX.md G4 evidence requirements and TEST_STRATEGY.md.
+A: G4 is CLOSED (APR-0006/APR-0012, 2026-05-28). Evidence: 3/3 VAL windows beat null (Brier +0.0026 to +0.0056), TEST Brier +0.0084, ECE 0.0247. All 16 registered experiments (EXP-001–016) are complete. See G4_VALIDATION_REPORT.md.
+
+**Q: How many tests are passing?**  
+A: 533/533 as of 2026-05-29. See MEMORY_BANK.md Current State Snapshot.
 
 ---
 
@@ -78,7 +81,10 @@ A: Hard limit breaches (daily loss, session loss, maximum position size, simulta
 A: The pipeline halts locally. Orders already submitted to the venue that were not yet confirmed cancelled are logged as "unconfirmed." The operator must manually verify position state at the venue before any restart. See RUNBOOK_kill-switch.md Step 4.
 
 **Q: Can we go live with real capital before G6?**  
-A: No. Live capital deployment is gated behind G6 Release Gate, which requires: ADR-0005 accepted, kill switch tested and confirmed ≤60s, paper trading performance documented, all compliance gaps resolved, DS + RCO sign-off. See ROADMAP_MILESTONES.md and APPROVALS_REGISTER.md. This is invariant #4 in MEMORY_BANK.md.
+A: No. G6 requires: **30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29 — NOT 50), ADR-0005 accepted, kill switch confirmed ≤60s, all compliance gaps resolved, DS + RCO sign-off. The 30-bet threshold is seasonally bounded by the NBA Finals end (~2026-06-22). See ROADMAP_MILESTONES.md, APPROVALS_REGISTER.md APR-0016, and invariant #8 in MEMORY_BANK.md.
+
+**Q: What is the NBA dark period and why does it matter?**  
+A: The NBA goes dark from approximately 2026-06-22 (Finals end) to approximately 2026-10 (2026-27 preseason). During this window, there are zero NBA markets on Kalshi, zero paper bets can accumulate, and the cron pipelines produce no output. This is a planned build window — not idle time. Use it for: Polymarket activation (T-077), DS-04 qualitative source (T-073), ADR-0005 live capital draft, Phase 8 preparation. See DECISION_LOG (2026-05-29 dark period plan entry).
 
 ---
 
