@@ -2,13 +2,27 @@
 
 **Purpose:** Record all significant project-level changes in reverse-chronological order. NOT a git commit log — this tracks architectural, governance, and scope changes.  
 **Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-29 (Phase 6/7 — full hygiene sprint; 533 tests; dual-window cron; EXP-016 pending)  
+**Last reviewed:** 2026-05-29 (EXP-016 complete; HYP-009 CONFIRMED; KI-008 RESOLVED; all 9 hypotheses resolved)  
 **Next review:** Updated continuously; reviewed weekly at DIR  
 **Staleness triggers:** Any major change without a corresponding entry  
 **Upstream links:** 03_DECISIONS/DECISION_LOG/ (ADRs are the decision record; this is the timeline view)  
 **Downstream links:** 11_MEMORY_HANDOFF/MEMORY_BANK.md  
 **Decision references:** ADR-0001  
 **Confidence:** 10/10 — Clean slate  
+
+---
+
+## 2026-05-29 — EXP-016 Run: HYP-009 CONFIRMED (Playoff Generalization)
+
+**Change type:** Experiment result + governance update  
+**Summary:** EXP-016 (session EXP-016-B8BA8CAC) executed using cached playoff data (2021-22 through 2024-25, 1,805 rows). Model trained on regular season TRAIN (9,507 rows, 78 features). Regular TEST Brier = 0.2465; Playoff ALL Brier = 0.2455; Δ = -0.0010 — well within gate (< 0.012). **HYP-009 CONFIRMED**: the production model (v1-28483b21) generalizes to playoff conditions with no material degradation. Paper bets placed during 2026 NBA playoffs are valid G6 evidence at full confidence. No weighting adjustment needed.  
+**Governance updates:** HYP-009 → 🟢 CONFIRMED | ASM-011 → ✅ VALIDATED | KI-008 → ✅ RESOLVED (no longer a G6 blocker) | T-072 playoff model refresh demoted to optional post-Finals enrichment  
+**ADR references:** ADR-0004 (LR model retained); no new ADR required  
+**Artifacts created:** exp_output/EXP-016/EXP-016_results.json  
+**Artifacts modified:** HYPOTHESES.md (HYP-009 status + archive), ASSUMPTIONS_REGISTER.md (ASM-011 validated), KNOWN_ISSUES.md (KI-008 resolved), MEMORY_BANK.md (M4/M8 updated), CHANGELOG.md  
+**Tests:** 533/533 (unchanged)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | All 9 hypotheses resolved ✅  
+**Changed by:** DS
 
 ---
 

@@ -164,9 +164,9 @@
 | Basis | Rolling box-score features (pts_l10_mean, etc.) should capture player-level form regardless of game type. However, playoff-specific effects (defensive intensity, rotation compression, rest patterns) are not present in training data. |
 | Risk if false | Model is miscalibrated for playoffs; paper bets placed during 2026 playoffs are unreliable G6 evidence; playoff bets must be weighted as lower-confidence until T-072 model refresh (post-Finals). |
 | Validation method | EXP-016: evaluate Brier on held-out playoff rows (2021-22 through 2024-25 seasons) vs regular season TEST Brier. Δ < 0.012 → confirmed. |
-| Status | UNVALIDATED — EXP-016 in progress (2026-05-29) |
+| Status | ✅ VALIDATED (2026-05-29, EXP-016) — Δ Brier = -0.0010; gate < 0.012 PASSED; playoff paper bets are valid G6 evidence |
 | Owner | RL |
-| Revisit at | EXP-016 result; T-072 model refresh post-Finals |
+| Revisit at | T-072 model refresh post-Finals (optional enrichment, not required) |
 
 ---
 

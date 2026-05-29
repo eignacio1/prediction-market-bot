@@ -163,7 +163,7 @@ Each hypothesis follows the structure:
 | Consequence if confirmed | Paper bets placed during 2026 playoffs are valid G6 evidence at full confidence; no weighting adjustment needed |
 | Consequence if falsified | Playoff-era paper bets must be annotated as lower-confidence G6 evidence; T-072 playoff data refresh elevated to pre-G6 requirement; playoff model retraining required (new ADR) |
 | Gate rationale | Current EV = $0.0958/bet against vig $0.030 (3.2× ratio). A +0.012 Brier degradation would reduce expected win rate by ~2pp, cutting EV/bet by ~$0.05 (to ~$0.045). Below this, edge-to-vig ratio becomes unreliable for live capital decisions. |
-| Status | ⏳ PENDING — EXP-016 runner ready (2026-05-29); requires playoff data pull (~15 min via nba_api) |
+| Status | 🟢 CONFIRMED (2026-05-29, EXP-016-B8BA8CAC) — Δ Brier = -0.0010 (playoff ALL 0.2455 vs regular TEST 0.2465); gate < 0.012 ✅. Paper bets during 2026 playoffs are valid G6 evidence at full confidence. |
 | Experiment(s) | EXP-016 (playoff generalization ablation; HYP-009 verdict) |
 
 ---
@@ -180,7 +180,7 @@ Each hypothesis follows the structure:
 | HYP-006 | Opp def rating + home/away context add signal | 🔴 FALSIFIED | EXP-012 | Δ Brier = 0.0000; FEATURE_VERSION stays 1.2.0 |
 | HYP-007 | NB model competitive with LR for calibration | 🔴 FALSIFIED | EXP-013 | NB Brier 0.2671 vs LR 0.2461; Δ=0.0210; multi-line use retained |
 | HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | 🔴 FALSIFIED | EXP-015 | EV ratio 0.84 at drift_std=0.020; T3 useful as FADE gate only |
-| HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | ⏳ PENDING | EXP-016 | Δ < 0.012 → confirmed; G6 paper evidence valid for playoffs |
+| HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | 🟢 CONFIRMED | EXP-016 | Δ = -0.0010; G6 paper evidence valid for playoffs at full confidence |
 
 ---
 
@@ -193,3 +193,4 @@ Each hypothesis follows the structure:
 | HYP-004 | Signal is stable across time windows | CONFIRMED | 2026-05-28 | AUC 0.567–0.587 consistent across 3 chronological windows |
 | HYP-005 | ERI + schedule features add incremental signal | FALSIFIED | 2026-05-28 | T-044 ablation: Δ Brier = +0.0002 (threshold: 0.005) |
 | HYP-007 | NB model competitive with LR for calibration | FALSIFIED | 2026-05-29 | EXP-013: NB Brier 0.2671 vs LR 0.2461; Δ=0.0210 |
+| HYP-009 | Regular-season model generalizes to playoff games | CONFIRMED | 2026-05-29 | EXP-016: Δ Brier = -0.0010 (gate < 0.012); playoff paper bets valid G6 evidence |

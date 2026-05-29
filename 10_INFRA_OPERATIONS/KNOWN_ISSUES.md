@@ -145,9 +145,9 @@
 | Workaround | EXP-016 (T-072) quantifies the Brier degradation on held-out playoff rows. If Δ Brier < 0.012 (HYP-009 gate), paper results remain valid. If falsified, playoff-era paper bets must be annotated as lower-confidence G6 evidence. |
 | Blocks gate | G6 — paper evidence reliability is partially dependent on playoff/regular distinction |
 | Resolution path | 1. Run EXP-016 to get Δ Brier verdict (HYP-009). 2. If falsified, register playoff bets separately in paper portfolio and apply a confidence discount. 3. T-072: after 2025-26 Finals, retrain model with playoff data and evaluate Brier delta (ADR required). |
-| Open question | None — resolution path is clear |
+| Open question | None — resolved |
 | Registered | 2026-05-29 |
-| Status | OPEN — EXP-016 in progress |
+| Status | ✅ RESOLVED (2026-05-29, EXP-016) — HYP-009 CONFIRMED; Δ Brier = -0.0010; playoff paper bets are valid G6 evidence at full confidence; T-072 post-Finals refresh is optional enrichment only |
 
 ---
 
