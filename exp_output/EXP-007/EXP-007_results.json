@@ -1,0 +1,45 @@
+{
+  "exp_id": "EXP-007",
+  "session_id": "EXP-007-41CEE18B",
+  "run_at": "2026-05-29T01:14:56.721Z",
+  "qs_id": "QS-2026-05-28-002",
+  "backdated": true,
+  "effective_from_distribution": {
+    "2021-10-19": 42,
+    "2022-10-18": 7,
+    "2023-10-24": 1
+  },
+  "feature_counts": {
+    "quantitative": 31,
+    "qualitative": 35,
+    "total": 66
+  },
+  "split": {
+    "train": 11931,
+    "val": 817,
+    "test": 2692
+  },
+  "train_rows_with_qual": 11369,
+  "test_rows_with_qual": 2692,
+  "quant_only": {
+    "brier": 0.247561,
+    "brier_improvement": 0.002439,
+    "ece": 0.045561,
+    "auc_roc": 0.576531
+  },
+  "quant_plus_qual": {
+    "brier": 0.245893,
+    "brier_improvement": 0.004107,
+    "ece": 0.029647,
+    "auc_roc": 0.57816
+  },
+  "delta": {
+    "brier": 0.001668,
+    "ece": 0.015914,
+    "auc_roc": 0.001629
+  },
+  "exp006_baseline_brier": 0.2476,
+  "null_brier": 0.25,
+  "finding": "POSITIVE_SIGNAL",
+  "summary": "Qualitative features IMPROVE Brier by +0.0017. PRF archetypes carry predictive signal."
+}

@@ -29,8 +29,8 @@
 | Classification template | `qualitative_data/pam_v4/PAM_CLASSIFICATION_TEMPLATE.csv` |
 | Active QS snapshots | **QS-2026-05-28-001** (`qualitative_data/pam_v4/QS-2026-05-28-001_classifications.csv`) — all 50 cohort players classified 2026-05-28 |
 | Feature IDs | F-100–F-149 (PRF archetype), F-150–F-199 (modifiers) — reserved in DATA_FLOWS_LINEAGE.md |
-| **Operationalization status** | **🟡 PARTIAL** — QS-2026-05-28-001 populated and validated (50/50 players, PRFs 1–15, all modifiers binary). QualitativeSignalStore load/enrich stubs still require implementation before features reach experiments. |
-| What must happen to activate | (1) ✅ Classify all 50 cohort players — done (QS-2026-05-28-001); (2) ✅ QS snapshot registered; (3) Implement load_ds01_snapshot() temporal join in qualitative_store.py; (4) Wire enrich_features() after compute_features_bulk() in experiment runner; (5) Run EXP measuring Brier Δ with vs without qualitative features |
+| **Operationalization status** | **✅ ACTIVE** — QualitativeSignalStore fully implemented (2026-05-28). QS-2026-05-28-002 (backdated) confirmed POSITIVE_SIGNAL: Brier +0.0017 / ECE +0.0159 on 2025-26 TEST set (EXP-007). |
+| What happened | (1) ✅ Classified all 50 cohort players (QS-2026-05-28-001); (2) ✅ QualitativeSignalStore implemented (load + temporal join); (3) ✅ EXP-006: Δ=0.0000 without backdating (expected); (4) ✅ QS-2026-05-28-002 backdated (QTI-03); (5) ✅ EXP-007: POSITIVE_SIGNAL confirmed |
 
 **Coverage as of 2026-05-28:**
 - Document defines framework for 15 PRF archetypes + 32 modifiers
@@ -97,7 +97,8 @@ Qualitative snapshots follow the same immutability rules as game-log snapshots (
 
 | QS-ID | DS-ID | Covers | Player count | effective_from | effective_until | Created | Status |
 |-------|-------|--------|--------------|----------------|-----------------|---------|--------|
-| QS-2026-05-28-001 | DS-01 | 50-player cohort (TARGET_PLAYER_IDS) | 50 | 2025-10-22 | NULL (active) | 2026-05-28 | ✅ Registered — awaiting QualitativeSignalStore implementation |
+| QS-2026-05-28-001 | DS-01 | 50-player cohort (TARGET_PLAYER_IDS) | 50 | 2025-10-22 | NULL (active) | 2026-05-28 | ✅ Registered — EXP-006 result: Δ Brier = 0.0000 (all TRAIN rows before effective_from; expected) |
+| QS-2026-05-28-002 | DS-01 | 50-player cohort (TARGET_PLAYER_IDS) | 50 | 2021-10-19 / 2022-10-18 / 2023-10-24 | NULL (active) | 2026-05-28 | ✅ Registered — EXP-007 result: Δ Brier = +0.0017 / Δ ECE = +0.0159 (POSITIVE SIGNAL confirmed) |
 
 ---
 

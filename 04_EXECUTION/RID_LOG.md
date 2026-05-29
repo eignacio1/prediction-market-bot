@@ -3,7 +3,7 @@
 **Purpose:** Centralized tracker for all active risks, issues, and dependencies that require monitoring or resolution. The canonical escalation source for gate reviews.  
 **Owner (role):** Execution Lead (EL)  
 **Status:** **CANONICAL — G3 Execution Gate 2026-05-22** — Changes require version bump and CHANGELOG entry  
-**Last reviewed:** 2026-05-28 (DS-02-B-001 RESOLVED — EXP-004 Part B complete on mobile hotspot; HYP-003 🟢 CONFIRMED; G5 gate CLOSED)  
+**Last reviewed:** 2026-05-28 (DS-02-B-001 RESOLVED — hotel wifi also confirmed working; block is home ISP + work ISP specific; mobile hotspot and hotel wifi both pass Kalshi CloudFront WAF)  
 **Next review:** Weekly DIR; escalate P1 items immediately  
 **Staleness triggers:** New risk identified; issue resolved; dependency unblocked; gate readiness review  
 **Upstream links:** PLAN.md, RESILIENCE_FAILURE_MODES.md, OPEN_QUESTIONS.md  
@@ -46,7 +46,7 @@
 
 | RID | Type | Priority | Title | Description | Owner | Resolution Path | Status | Due |
 |-----|------|----------|-------|-------------|-------|----------------|--------|-----|
-| DS-02-B-001 | I | P1 | Kalshi API IP/ASN block (CloudFront WAF) | **RESOLVED 2026-05-28.** Root cause: IP/ASN-based block by Kalshi CloudFront WAF, NOT TLS fingerprint. Resolution: EXP-004 Part B executed on mobile hotspot (session EXP-004-FE3E2169). exchange_active=True, 37 KXNBAPTS markets fetched, 33 with live quotes. Part B produced live edge calculations for Fox (Edge +0.405 YES) and SGA (Edge −0.116 NO). HYP-003 🟢 CONFIRMED. For Phase 6+ scheduled runs, a datacenter VPS (clean ASN) is required — not needed for Phase 5. | IO/DS | RESOLVED — completed on mobile hotspot. Phase 6 VPS provisioning required for scheduled cron runs (pre-G6 planning item). | RESOLVED 2026-05-28 | — |
+| DS-02-B-001 | I | P1 | Kalshi API IP/ASN block (CloudFront WAF) | **RESOLVED 2026-05-28.** Root cause: IP/ASN-based block by Kalshi CloudFront WAF — home ISP and work ISP blocked; mobile hotspot and hotel wifi both work (different ASN). EXP-004 Part B executed on mobile hotspot (session EXP-004-FE3E2169). Confirmed hotel wifi also passes (2026-05-28). For Phase 6+ scheduled runs, a datacenter VPS (clean ASN) is required — not needed for manual runs. | IO/DS | RESOLVED — mobile hotspot and hotel wifi both confirmed working. Phase 6 VPS provisioning required for scheduled cron runs. | RESOLVED 2026-05-28 | — |
 
 ---
 
