@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-05-29 — Handoff Audit + Structural Repair: APR-0016, Dark Period Plan, ctx.md Rewrite
+
+**Change type:** Governance repair + structural fix  
+**Summary:** Comprehensive audit revealed that the prior session handoff failed to capture a strategic decision (G6 threshold 50→30 bets) and had no mechanism for retaining judgment calls across context windows. Root cause: handoffs recorded code completions but had no "Strategic Decisions" section. Additionally, ctx.md (the `/ctx` restore command) was critically outdated (267 tests, missing EXP-012–016, wrong G6 threshold, T-072/075/076/080/083/084 incorrectly marked as "Post-G6" or "blocked" when complete). **Fixes applied:** (1) **APR-0016 ACCEPTED** — G6 threshold formally revised 50 → 30 resolved paper bets; seasonal constraint documented; signed DS 2026-05-29. (2) **50→30 sweep** — updated ROADMAP_MILESTONES, KNOWN_ISSUES KI-009 (RESOLVED), MEMORY_BANK, TODO_NEXT T-070, ctx.md. (3) **ctx.md complete rewrite** — tests 267→533, all EXP-012–016 added, cron schedule corrected (22:00 UTC + 06:00 UTC added), all completed Phase 7 tasks marked correctly, dark period build queue added. (4) **ANTI-CONTEXT-EROSION INVARIANTS #8 and #9 added** to MEMORY_BANK — invariant #8 locks G6 gate at 30 bets; invariant #9 requires strategic decisions to be captured in DECISION_LOG + APPROVALS_REGISTER before session end. (5) **DECISION_LOG updated** — 3 judgment call entries added: APR-0016 threshold, dark period plan, handoff procedure upgrade. (6) **TEMPLATE_SESSION_HANDOFF.md created** — mandatory "Strategic Decisions This Session" table; 30-bet gate; resume command format. (7) **FEATURE_VERSION corrected** in MEMORY_BANK snapshot — 1.3.0 → 1.2.0 (1.3.0 was built but FALSIFIED by EXP-012; stays 1.2.0).  
+**ADR references:** APR-0016 (new)  
+**Artifacts created:** TEMPLATE_SESSION_HANDOFF.md  
+**Artifacts modified:** APPROVALS_REGISTER.md (APR-0016), ROADMAP_MILESTONES.md, KNOWN_ISSUES.md (KI-009 RESOLVED), MEMORY_BANK.md, TODO_NEXT.md, DECISION_LOG.md, ctx.md, CHANGELOG.md  
+**Tests:** 533/533 (unchanged)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | G6 gate: 0/30 bets  
+**Changed by:** DS
+
+---
+
 ## 2026-05-29 — EXP-016 Run: HYP-009 CONFIRMED (Playoff Generalization)
 
 **Change type:** Experiment result + governance update  

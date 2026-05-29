@@ -29,7 +29,7 @@
 
 ## ANTI-CONTEXT-EROSION INVARIANTS
 
-These 7 rules are absolute. They must be restored to any context that loses them.
+These 9 rules are absolute. They must be restored to any context that loses them.
 
 1. **arb/ folder = REFERENCE ONLY.** Do not incorporate into any active work, experiment, or component until ADR is accepted (APR-0010 is the future gate). See REJECTED_OPTIONS.md RO-001.
 
@@ -44,6 +44,10 @@ These 7 rules are absolute. They must be restored to any context that loses them
 6. **Zero hardcoded secrets** (NFR-05). No API key, password, or token in code, VCS, or logs. Vault/env-var protocol only.
 
 7. **Kill switch must halt all components within ≤60 seconds** (NFR-03). Tested before G5. No bypass path.
+
+8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. Seasonally bounded by NBA Finals end (~2026-06-22). Window extends to first 30 days of 2026-27 regular season if not reached. Do not revert to 50 without a new APR.
+
+9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.** Judgment calls (threshold changes, sequencing pivots, dark-period plans) are as load-bearing as code changes. Handoff documents must include a "Strategic Decisions" section separate from "Tasks Completed." If a decision was made verbally in a session and is not in these files, it did not happen.
 
 ---
 
@@ -229,15 +233,15 @@ These 7 rules are absolute. They must be restored to any context that loses them
 **Phase:** 6/7 ACTIVE — G0–G5 ✅ ALL CLOSED; Phase 6 paper trading live; Phase 7 infrastructure built  
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
-**FEATURE_VERSION:** 1.3.0 (33 features: 31 quant + 2 new opponent/venue context)  
-**Tests:** 533/533 passing (was 519; +14 new: MIN_BET_USD floor ×5, run_resolve ×9)  
+**FEATURE_VERSION:** 1.2.0 (78 features: 31 quant + 47 qual) — 1.3.0 infrastructure built (F-039/040) but FALSIFIED by EXP-012; version stays 1.2.0  
+**Tests:** 533/533 passing  
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/05/06 ✅  
-**Experiments run:** EXP-001–015 ✅ (014=line shopping; 015=T3 backtest HYP-008 FALSIFIED) | EXP-012 runner ready (needs data pull)  
+**Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010)  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
 **ADRs accepted:** 4 (ADR-0001/002/003/004) | ADR-0005 pending at G6  
 **Open questions:** OQ-021 (L3 amplification) | OQ-022 (nba_api backup source) — both non-blocking  
 **Active risks:** All non-blocking  
-**Live capital:** NOT DEPLOYED — G6 gate requires 50+ resolved paper bets with positive P&L  
+**Live capital:** NOT DEPLOYED — G6 gate requires 30+ resolved paper bets with positive P&L (APR-0016: revised from 50; seasonal constraint; signed 2026-05-29)  
 **Domain:** NBA basketball; Kalshi primary venue (ADR-0003)  
 
 ---
@@ -308,6 +312,6 @@ See TODO_NEXT.md for session-level task tracking.
 | M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
 | M5 Risk Register Currency | All risks non-blocking | EXP-012 data pull risk: nba_api rate limits (~20 min pull) | cron midnight wrap noted (T3 `*/15 20-23,0-3` — test on VPS before activating) |
-| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) |
+| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
 | M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/05/06 ✅ | **533/533 tests** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |

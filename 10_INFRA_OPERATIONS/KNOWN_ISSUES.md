@@ -151,21 +151,21 @@
 
 ---
 
-### KI-009 — G6 50-Bet Gate Unreachable Within 2025-26 Season
+### KI-009 — G6 Bet Gate Calendar Constraint (RESOLVED via APR-0016)
 
 | Field | Detail |
 |-------|--------|
 | Issue ID | KI-009 |
 | Severity | MEDIUM |
 | Category | Project timeline |
-| Description | The G6 gate requires 50+ resolved paper bets with positive P&L. Paper trading commenced 2026-05-29 with the NBA Western Conference Finals in progress. At ~2 bets per game day and ~10-15 remaining playoff games before Finals end (~2026-06-22), the maximum achievable bet count before season end is ~30-45. After the Finals, the NBA goes dark until the 2026-27 season opens in October 2026. |
-| Impact | G6 gate slips to Q1 2027 unless (a) the 50-bet threshold is formally adjusted via DS sign-off, or (b) the bet accumulation rate increases via the dual-window cron (PIPE-03 at 22:00 UTC + 01:30 UTC). |
-| Workaround | Dual-window PIPE-03 cron (2026-05-29 update) increases expected bets to ~4/game day, making 50 bets achievable within the playoff window if games continue. If season ends short, carry evidence forward to 2026-27 regular season. |
-| Blocks gate | G6 — calendar-bound |
-| Resolution path | DS formal note in APPROVALS_REGISTER.md: G6 evidence window extends through first 30 days of 2026-27 regular season if 50-bet threshold not met by 2026-06-22. Threshold may be revised to 30 resolved bets + Brier-consistent EV via APR-0016. |
-| Open question | None — operator decision required |
+| Description | The original G6 gate required 50+ resolved paper bets. Paper trading commenced 2026-05-29 with the NBA Western Conference Finals in progress. At ~4 bets per game day (dual-window PIPE-03), and ~10-15 remaining playoff games before Finals end (~2026-06-22), reaching 50 was borderline impossible within the season. |
+| Impact | Managed via APR-0016: threshold revised to 30 resolved bets. If not reached by Finals end, accumulation window extends to first 30 days of 2026-27 regular season (October 2026). |
+| Workaround | APR-0016 applied. Dark period (~2026-06-22 to ~2026-10) used for pre-season infrastructure build. |
+| Blocks gate | G6 — resolved; 30-bet target is achievable within playoff window |
+| Resolution path | ✅ RESOLVED — APR-0016 ACCEPTED 2026-05-29. Threshold = 30 resolved bets + positive Brier-consistent EV. |
+| Open question | None |
 | Registered | 2026-05-29 |
-| Status | OPEN — monitoring bet accumulation rate |
+| Status | ✅ RESOLVED — APR-0016 accepted; threshold = 30 bets |
 
 ---
 

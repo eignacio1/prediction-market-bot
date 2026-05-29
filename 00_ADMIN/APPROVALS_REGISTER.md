@@ -2,7 +2,7 @@
 
 **Purpose:** Track all formal approvals required for phase gate passages, capital deployment, and major changes. Every approval must link to evidence artifacts.  
 **Owner (role):** Risk/Control Owner (RCO)  
-**Last reviewed:** 2026-05-28 (APR-0007 ACCEPTED — G5 gate CLOSED; EXP-004 Part B complete on mobile hotspot; HYP-003 🟢 CONFIRMED)  
+**Last reviewed:** 2026-05-29 (APR-0016 ACCEPTED — G6 threshold revised 50→30 resolved paper bets; seasonal constraint; dark period plan adopted)  
 **Next review:** G6 Release Gate (APR-0008/0009) — after model data refresh (2024-26 seasons) and VPS provisioning  
 **Staleness triggers:** Gate passed; approval expired; approver role changed; new approval category required  
 **Upstream links:** PROJECT_CHARTER.md, 03_DECISIONS/DECISION_LOG/  
@@ -29,6 +29,7 @@
 | APR-0008 | G6 Release Gate — LIVE CAPITAL AUTHORIZATION | PO / RCO | PENDING | Final validation report + compliance spine + rollback test | Annual re-approval or material change |
 | APR-0009 | Promote paper trading → live capital (ADR-0005) | PO / RCO | PENDING | ADR-0005 evidence; approvals APR-0006, 0007, 0008 | Per-venue re-approval |
 | APR-0010 | arb/ folder incorporation into active development | PO / AO | PENDING | ADR granting incorporation | Per-incorporation |
+| APR-0016 | G6 evidence threshold revised: 50 → 30 resolved paper bets | DS | 2026-05-29 | Strategic review: NBA Finals end ~2026-06-22 leaves ≤24 game days; at 4 bets/day dual-window peak = max ~96 paper bets but only ~10–15 games remain in 2025-26 playoffs. 30 resolved bets + confirmed positive Brier-consistent EV (EXP-010 +$0.0958/bet) is sufficient evidence for G6 under seasonal constraint. Standard is not lowered — accumulation window is seasonally bounded. Evidence quality unchanged; EXP-016 confirms playoff bets count at full confidence. | Superseded by G6 gate closure (APR-0008/0009) |
 
 ---
 

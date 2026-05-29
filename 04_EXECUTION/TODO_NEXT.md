@@ -105,9 +105,9 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| T-070 | Accumulate paper trading evidence (50+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target 50 resolved positions; 0/50 as of 2026-05-29; dual-window cron now firing to accelerate accumulation |
+| T-070 | Accumulate paper trading evidence (30+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target **30 resolved positions** (APR-0016: revised from 50 per seasonal constraint); 0/30 as of 2026-05-29; dual-window cron firing; NBA dark period ~2026-06-22 if not reached |
 | T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players; v2=~80 players; lookup_player_id.py utility added |
-| T-072 | Playoff generalization ablation (EXP-016 / HYP-009) | EL | HIGH | 🟡 RUNNER READY 2026-05-29 — `run_exp016.py` built; pulls nba_api playoff logs 2021-22→2024-25; evaluates Brier on playoff-only vs regular TEST; gate: Δ < 0.012; **run in fresh terminal**: `PYTHONPATH=src python3 src/prediction_market_bot/run_exp016.py` |
+| T-072 | Playoff generalization ablation (EXP-016 / HYP-009) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-016-B8BA8CAC; Δ Brier = -0.0010 (gate < 0.012); HYP-009 CONFIRMED; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence |
 | T-073 | DS-04 qualitative source registration | RL | LOW | First new qualitative source beyond PAM (coaching fit, matchup context, etc.) |
 | T-074 | Session handoffs CP-2026-05-29 | DS | LOW | ✅ COMPLETE 2026-05-29 — SESSION_HANDOFF_20260529_1651.md + SESSION_HANDOFF_20260529_2030.md |
 | T-085 | PIPE-03R resolution-only pipeline | EL | HIGH | ✅ COMPLETE 2026-05-29 — `run_resolve.py`; 06:00 UTC cron; resolves late-game positions after nba_api updates; 9 tests |

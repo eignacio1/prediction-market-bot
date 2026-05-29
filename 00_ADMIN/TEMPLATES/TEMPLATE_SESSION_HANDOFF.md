@@ -1,0 +1,78 @@
+# Session Handoff — YYYY-MM-DDTHH:MMZ
+
+**Trigger:** [Context window near limit / clean cutover / operator-initiated]
+**Last commit:** `[hash]` (main) — pushed to GitHub + VPS
+
+---
+
+## Status
+
+- **Phase:** [e.g., 6/7 ACTIVE]
+- **Tests:** [N/N passing]
+- **Capital:** NO live capital — paper trading only
+- **VPS:** 157.230.91.33 — cron [running / not running]
+- **Paper bets:** [N/30 resolved] — G6 gate
+
+---
+
+## ⚠️ STRATEGIC DECISIONS THIS SESSION
+
+*This section is MANDATORY. Judgment calls, threshold changes, sequencing pivots, and holistic review outcomes belong here — not just in the task list. If a decision was made verbally during this session and is not recorded here, it will be lost across context windows.*
+
+| Decision | Rationale | Canonical Reference | Owner |
+|----------|-----------|--------------------|----|
+| [What was decided] | [Why — the constraint, deadline, or stakeholder driver] | [Which file now holds the authoritative record] | DS |
+
+*If no strategic decisions were made this session, write: "None — session was implementation-only."*
+
+---
+
+## Tasks Completed This Session
+
+| Item | Result |
+|------|--------|
+| [Task ID / description] | ✅ [outcome] |
+
+---
+
+## ONE THING PENDING (if any)
+
+[What is the single most important thing the next session must know to continue? Run command, pending operator action, etc.]
+
+---
+
+## Current Paper Portfolio
+
+- Bankroll: $[amount] ([N]% drawdown from [N] open bets)
+- Open: [list]
+- Closed/Resolved: [N] | G6 gate: [N]/30
+
+---
+
+## Active Cron on VPS (157.230.91.33)
+
+```
+21:00 UTC  — Health check
+21:30 UTC  — PIPE-02 inference (run_pregame.py)
+22:00 UTC  — PIPE-03 early (paper bets, 7pm ET games)
+01:30 UTC  — PIPE-03 late (paper bets, 9pm+ ET games)
+06:00 UTC  — PIPE-03R resolve-only (run_resolve.py)
+14:00 UTC Mon — Model freshness check
+```
+
+---
+
+## Key Constraints to Remember
+
+1. Work wifi blocks Kalshi API — use any other network
+2. No live capital until G6 (**30 resolved paper bets** + positive P&L — APR-0016)
+3. [Any session-specific constraint]
+
+---
+
+## Resume Command
+
+```bash
+cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
+# Tell Claude: "Read 11_MEMORY_HANDOFF/MEMORY_BANK.md and SESSION_HANDOFF_[YYYYMMDD_HHMM].md, confirm [N] tests"
+```
