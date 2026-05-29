@@ -113,8 +113,8 @@ Each hypothesis follows the structure:
 | Significance threshold | Δ Brier ≥ 0.001 (v1.3.0 vs v1.2.0 baseline Brier 0.2461) |
 | Falsification condition | Δ Brier < 0.001 on TEST; features show near-zero permutation importance |
 | Consequence if falsified | F-039/F-040 dropped; FEATURE_VERSION stays at 1.2.0; TeamStatsStore demoted to reference only |
-| Status | ⏳ PENDING — EXP-012 runner ready; requires fresh data pull (~20 min; `EXP012_SKIP_PULL=1` to reuse cache; run on any non-work network) |
-| Experiment(s) | EXP-012 (v1.3.0 ablation; HYP-006 verdict) |
+| Status | 🔴 FALSIFIED (2026-05-29, EXP-012) — v1.3.0 TEST Brier 0.2480 vs v1.2.0 TEST Brier 0.2480; Δ = 0.0000 (gate: 0.001). F-039/F-040 add zero signal over rolling box-score. Consequence applied: FEATURE_VERSION stays at 1.2.0; F-039/F-040 dropped; TeamStatsStore demoted to reference only. |
+| Experiment(s) | EXP-012 (72 players × 5 seasons; 20,361 rows; TRAIN 12,265 / VAL 4,238 / TEST 3,657) |
 
 ---
 

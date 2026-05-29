@@ -1,0 +1,42 @@
+{
+  "exp_id": "EXP-012",
+  "session_id": "EXP-012-54AEB56C",
+  "run_at": "2026-05-29T17:55:23.378Z",
+  "feature_version": "1.3.0",
+  "baseline_brier": 0.2461,
+  "v1.3.0_val": {
+    "brier": 0.247439,
+    "ece": 0.042523,
+    "auc_roc": 0.590708,
+    "brier_improvement": 0.002561,
+    "n_features": 80,
+    "n_rows": 4238
+  },
+  "v1.3.0_test": {
+    "brier": 0.248034,
+    "ece": 0.02736,
+    "auc_roc": 0.564429,
+    "brier_improvement": 0.001966,
+    "n_features": 80,
+    "n_rows": 3657
+  },
+  "v1.2.0_subset_val": {
+    "brier": 0.247428,
+    "ece": 0.043885,
+    "auc_roc": 0.590797,
+    "brier_improvement": 0.002572,
+    "n_features": 78,
+    "n_rows": 4238
+  },
+  "v1.2.0_subset_test": {
+    "brier": 0.248027,
+    "ece": 0.027296,
+    "auc_roc": 0.564435,
+    "brier_improvement": 0.001973,
+    "n_features": 78,
+    "n_rows": 3657
+  },
+  "hyp_006_verdict": "FALSIFIED",
+  "delta_vs_v12": -7e-06,
+  "delta_vs_baseline": -0.001934
+}
