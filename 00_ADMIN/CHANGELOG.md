@@ -2,13 +2,39 @@
 
 **Purpose:** Record all significant project-level changes in reverse-chronological order. NOT a git commit log — this tracks architectural, governance, and scope changes.  
 **Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-29 (Phase 6 ACTIVE — VPS deployed; PIPE-02+PIPE-03 running; qualitative pipeline validated; paper trading live)  
+**Last reviewed:** 2026-05-29 (Phase 6/7 — full hygiene sprint; 533 tests; dual-window cron; EXP-016 pending)  
 **Next review:** Updated continuously; reviewed weekly at DIR  
 **Staleness triggers:** Any major change without a corresponding entry  
 **Upstream links:** 03_DECISIONS/DECISION_LOG/ (ADRs are the decision record; this is the timeline view)  
 **Downstream links:** 11_MEMORY_HANDOFF/MEMORY_BANK.md  
 **Decision references:** ADR-0001  
 **Confidence:** 10/10 — Clean slate  
+
+---
+
+## 2026-05-29 — Phase 6 Hygiene Sprint: Dual-Window Cron, MIN_BET Floor, Playoff Ablation, Full Register Update
+
+**Change type:** Operational hygiene + strategic depth — addressed all findings from holistic project review  
+**Summary:** (1) **Ingestion date parse fix** — `pd.to_datetime(format="mixed")` on both player and team log paths in ingestion.py (lines 189, 535); eliminates ~150 noisy warnings per EXP run. (2) **C4 MIN_BET_USD floor** — added CHECK 7 in RiskEngine: bets sized below $10 rejected with `min_bet_floor`; sub-threshold Kelly positions logged but not placed; ensures every paper bet carries meaningful P&L signal. (3) **PIPE-03R (run_resolve.py)** — new resolution-only pipeline; runs at 06:00 UTC to settle late-game positions after nba_api updates; does NOT place bets; 9 tests. (4) **Dual-window PIPE-03 cron** — added 22:00 UTC run (6pm ET) to capture 7pm ET tip-off markets that closed before the prior 01:30 UTC run; expected to double bet accumulation rate from ~2 to ~4 bets/game day; directly addresses KI-009. (5) **EXP-016 / HYP-009** — playoff generalization ablation runner created (T-072 advanced from deferred to active); pulls nba_api playoff logs 2021-22 through 2024-25; evaluates Brier on playoff-only rows vs regular TEST; gate Δ < 0.012. (6) **cron.conf cleaned** — inline multi-line Python extracted to `deploy/check_model_freshness.py`; cron.conf now valid and installable without parse error. (7) **VPS crontab replaced** — clean cron.conf installed on 157.230.91.33; duplicate entries removed. (8) **Governance registers updated** — KI-008 (playoff model validity, HIGH, G6 blocker), KI-009 (50-bet gate calendar risk, MEDIUM), ASM-010 (strategy concentration), ASM-011 (playoff generalization, UNVALIDATED), HYP-009 (registered), ROADMAP G6 calendar constraint with APR-0016 extension path. (9) **git author identity** — `git config --global user.email earlignacio1@gmail.com`. (10) **Connectivity assumption corrected** — work wifi blocked (strict outbound policy); all other networks pass WAF; "hotspot required" language removed from all forward-looking registers.  
+**ADR references:** ADR-0001/002/003/004 (all unchanged)  
+**Artifacts created:** run_resolve.py, run_exp016.py, deploy/check_model_freshness.py, tests/test_run_resolve.py, SESSION_HANDOFF_20260529_2030.md  
+**Artifacts modified:** ingestion.py, c4_risk_engine/risk.py, deploy/cron.conf, tests/test_c4_risk.py, KNOWN_ISSUES.md (KI-008/009), ASSUMPTIONS_REGISTER.md (ASM-010/011), HYPOTHESES.md (HYP-009 + corrected HYP-006/007/008 statuses), ROADMAP_MILESTONES.md (G6 calendar note), MEMORY_BANK.md, SESSION_HANDOFF_20260529_2030.md, project memory  
+**Tests:** 519 → 533/533 (+5 MIN_BET_USD, +9 run_resolve)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | EXP-016 pending (HYP-009)  
+**Changed by:** DS
+
+---
+
+## 2026-05-29 — Phase 3 VPS Deployment: GitHub Repo, VPS Sync, PIPE-03 Verified, EXP-012
+
+**Change type:** Operational milestone — Phase 3 VPS deployment complete  
+**Summary:** (1) **GitHub repo created** — `github.com/eignacio1/prediction-market-bot` (private); `gh` CLI installed; deploy key provisioned on VPS (SSH ed25519). (2) **VPS synced** — `git pull` on 157.230.91.33; venv rebuilt (broken bin/ dir); nba_api + kalshi-python reinstalled; sklearn upgraded to 1.8.0 to match production model. (3) **PIPE-03 VenueRouter migration verified** — live run on VPS produced 41 markets, 2 paper bets placed (De'Aaron Fox YES 15+pts $56.55; SGA NO 30+pts $7.18); kalshi_only mode confirmed. (4) **EXP-012 run** — HYP-006 FALSIFIED: opp_def_rating + is_home_game Δ Brier = 0.0000 (gate 0.001); FEATURE_VERSION stays 1.2.0; F-039/F-040 dropped; TeamStatsStore demoted to reference. (5) **sklearn constraint fixed** — pyproject.toml updated from `<1.5` to `>=1.8.0,<2.0`. (6) **VPS git tracking** — `master` branch set to track `origin/main`.  
+**ADR references:** ADR-0003 (Kalshi primary), ADR-0004 (LR+Platt retained)  
+**Artifacts created:** exp_output/EXP-012/EXP-012_results.json, SESSION_HANDOFF_20260529_1651.md  
+**Artifacts modified:** pyproject.toml, deploy/cron.conf, HYPOTHESES.md (HYP-006 FALSIFIED), MEMORY_BANK.md, project memory  
+**Tests:** 519/519 (unchanged — EXP-012 is a runner, not a test module)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | VPS fully synced  
+**Changed by:** DS
 
 ---
 

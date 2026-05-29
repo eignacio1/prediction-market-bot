@@ -44,15 +44,15 @@
 
 ## ONE THING PENDING: EXP-016 (HYP-009)
 
-**EXP-016 has NOT been run yet.** Run it in a fresh terminal:
+**Playoff data already pulled and cached** (1,805 rows across 4 seasons). Bug fixed (game_date_dt Timestamp in feature set). Run with cache in a fresh terminal:
 
 ```bash
 cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
-PYTHONPATH=src python3 src/prediction_market_bot/run_exp016.py
+EXP016_SKIP_PULL=1 PYTHONPATH=src python3 src/prediction_market_bot/run_exp016.py
 ```
 
-- Takes ~15 min (nba_api playoff pull: 4 seasons × 72 players)
-- On re-runs use cache: `EXP016_SKIP_PULL=1 PYTHONPATH=src python3 ...`
+- Cache already at: `exp_output/EXP-016/EXP-016_playoff_matrix.csv`
+- Skip the 15 min data pull — use `EXP016_SKIP_PULL=1`
 - Output: `exp_output/EXP-016/EXP-016_results.json`
 - Verdict: HYP-009 CONFIRMED (Δ < 0.012) or FALSIFIED
 

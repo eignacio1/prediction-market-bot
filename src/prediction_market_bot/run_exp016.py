@@ -112,6 +112,7 @@ PLAYER_IDS: list[int] = get_player_ids_v2()
 
 _NON_FEATURE = {
     "player_id","player_name","team_id","team_abbreviation","game_id","game_date",
+    "game_date_dt",  # Timestamp column added during split — must not be a feature
     "season","season_type","matchup","opponent_team_abbr","min","pts","reb","ast",
     "stl","blk","tov","pf","fgm","fga","fg_pct","fg3m","fg3a","fg3_pct","ftm",
     "fta","ft_pct","plus_minus","snapshot_id","ingestion_run_id","ingested_at",
@@ -119,7 +120,7 @@ _NON_FEATURE = {
     "prf_primary","prf_secondary","prf_hybrid_weight",
     "season_type_is_playoffs","days_since_last_game","b2b_flag","load_games_l7d",
     "eri_prev_hot","eri_prev_cold","eri_consec_cold_games",
-    "is_home_game","opp_def_rating_l10_mean","opponent_team_abbr",
+    "is_home_game","opp_def_rating_l10_mean",
 }
 
 

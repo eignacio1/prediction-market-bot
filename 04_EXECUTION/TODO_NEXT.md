@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-29 (EXP-013 ✅ HYP-007 FALSIFIED; T-071 cohort expansion ✅; T-077 Polymarket provisioning ✅ infrastructure; 482/482 tests)  
+**Last reviewed:** 2026-05-29 (Phase 3 VPS deployment ✅; full hygiene sprint ✅; 533/533 tests; EXP-016 runner created; dual-window cron deployed)  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  
@@ -105,11 +105,17 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| T-070 | Accumulate paper trading evidence (50+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target 50 resolved positions |
-| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players (original); v2=~80 players (+OKC Holmgren/Williams, BOS Brown/Pritchard, DEN Murray/MPJ, IND Turner/Mathurin, HOU Sengun/Green/VanVleet, SAS Wembanyama, etc.); run_exp005.py + run_exp012.py now import from cohort.py; `lookup_player_id.py` utility for adding more |
-| T-072 | 2025-26 playoffs data pull + model refresh | EL | MED | Regular season model only; retrain with playoff games for better playoff inference |
+| T-070 | Accumulate paper trading evidence (50+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target 50 resolved positions; 0/50 as of 2026-05-29; dual-window cron now firing to accelerate accumulation |
+| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players; v2=~80 players; lookup_player_id.py utility added |
+| T-072 | Playoff generalization ablation (EXP-016 / HYP-009) | EL | HIGH | 🟡 RUNNER READY 2026-05-29 — `run_exp016.py` built; pulls nba_api playoff logs 2021-22→2024-25; evaluates Brier on playoff-only vs regular TEST; gate: Δ < 0.012; **run in fresh terminal**: `PYTHONPATH=src python3 src/prediction_market_bot/run_exp016.py` |
 | T-073 | DS-04 qualitative source registration | RL | LOW | First new qualitative source beyond PAM (coaching fit, matchup context, etc.) |
-| T-074 | Context Pack CP-2026-05-29 | DS | LOW | Session handoff context pack |
+| T-074 | Session handoffs CP-2026-05-29 | DS | LOW | ✅ COMPLETE 2026-05-29 — SESSION_HANDOFF_20260529_1651.md + SESSION_HANDOFF_20260529_2030.md |
+| T-085 | PIPE-03R resolution-only pipeline | EL | HIGH | ✅ COMPLETE 2026-05-29 — `run_resolve.py`; 06:00 UTC cron; resolves late-game positions after nba_api updates; 9 tests |
+| T-086 | C4 MIN_BET_USD floor ($10) | EL | MED | ✅ COMPLETE 2026-05-29 — CHECK 7 in risk.py; sub-floor bets → `min_bet_floor` REJECTED; 5 tests |
+| T-087 | Dual-window PIPE-03 cron | IO | HIGH | ✅ COMPLETE 2026-05-29 — 22:00 UTC early + 01:30 UTC late; VPS crontab replaced; cron.conf inline Python extracted to check_model_freshness.py |
+| T-088 | Governance registers KI-008/009/ASM-010/011/HYP-009 | DS | HIGH | ✅ COMPLETE 2026-05-29 — KI-008 playoff validity (HIGH G6 blocker); KI-009 50-bet calendar gap; ASM-010 strategy concentration; ASM-011 playoff generalization; HYP-009 registered; ROADMAP G6 calendar note + APR-0016 path |
+| T-089 | ingestion.py date parse fix | EL | LOW | ✅ COMPLETE 2026-05-29 — `format="mixed"` on both player + team log paths; eliminates ~150 warnings per EXP run |
+| T-090 | git author identity + VPS connectivity note | IO | LOW | ✅ COMPLETE 2026-05-29 — `earlignacio1@gmail.com`; "hotspot required" language removed from all forward-looking registers |
 
 ### Phase 7 — Planned Tasks (unblocked after G6)
 
@@ -151,6 +157,6 @@
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
 | T-061 | ADR-0005 live capital | 50+ resolved paper positions with positive P&L | After G6 evidence |
-| T-072 | Playoff model refresh | 2025-26 playoff game log availability (in progress) | June 2026 post-Finals |
 | T-073 | DS-04 qualitative source | Operator decision on which source to register next | When ready |
+| T-077 | Polymarket API key (T-077) | polymarket.com KYC approval (1-3 days) | Operator action |
 | T-081 | arb/ incorporation (Strategy C) | APR-0010 pending; T-078 VenueRouter required first | Phase 7 — after T-078 complete |
