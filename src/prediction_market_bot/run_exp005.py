@@ -65,6 +65,7 @@ from prediction_market_bot.c2_feature_store.features import FeatureStore
 from prediction_market_bot.c3_forecasting.forecaster import ModelForecaster
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.cohort import get_player_ids_v1
 
 # ---------------------------------------------------------------------------
 # Experiment configuration
@@ -94,63 +95,8 @@ PLACEHOLDER_MARKET_IMPLIED_PROB = 0.50
 FEATURE_WINDOW = 10
 MIN_TRAIN_SAMPLES = 30
 
-# Same 50-player cohort as EXP-001 (T-043)
-TARGET_PLAYER_IDS: list[int] = [
-    # Original Phase 3 cohort (10)
-    2544,      # LeBron James
-    201142,    # Kevin Durant
-    201939,    # Stephen Curry
-    203507,    # Giannis Antetokounmpo
-    203999,    # Nikola Jokic
-    203954,    # Joel Embiid
-    203081,    # Damian Lillard
-    1629029,   # Luka Doncic
-    1628369,   # Jayson Tatum
-    202710,    # Jimmy Butler
-    # Phase 4 guards (15)
-    1629630,   # Ja Morant
-    1626164,   # Devin Booker
-    1628378,   # Donovan Mitchell
-    1629027,   # Trae Young
-    203897,    # Zach LaVine
-    1630162,   # Anthony Edwards
-    1628368,   # De'Aaron Fox
-    201942,    # DeMar DeRozan
-    202681,    # Kyrie Irving
-    203078,    # Bradley Beal
-    203468,    # CJ McCollum
-    1629639,   # Tyler Herro
-    1630169,   # Tyrese Haliburton
-    1628386,   # Dejounte Murray
-    1628983,   # Shai Gilgeous-Alexander
-    # Phase 4 wings/forwards (15)
-    202695,    # Kawhi Leonard
-    203471,    # Paul George
-    1627783,   # Pascal Siakam
-    203944,    # Julius Randle
-    1627742,   # Brandon Ingram
-    203114,    # Khris Middleton
-    1630567,   # Scottie Barnes
-    203952,    # Andrew Wiggins
-    1628973,   # Jalen Brunson
-    1628969,   # Mikal Bridges
-    1628384,   # OG Anunoby
-    203932,    # Aaron Gordon
-    203110,    # Draymond Green
-    1629628,   # RJ Barrett
-    1630532,   # Franz Wagner
-    # Phase 4 bigs/centers (10)
-    1628389,   # Bam Adebayo
-    1626157,   # Karl-Anthony Towns
-    203497,    # Rudy Gobert
-    1627734,   # Domantas Sabonis
-    202696,    # Nikola Vucevic
-    203991,    # Clint Capela
-    1630596,   # Evan Mobley
-    201572,    # Brook Lopez
-    1629636,   # Darius Garland
-    1628991,   # Jaren Jackson Jr.
-]
+# v1 cohort (50 players) — imported from canonical cohort.py (T-071)
+TARGET_PLAYER_IDS: list[int] = get_player_ids_v1()
 
 
 # ---------------------------------------------------------------------------

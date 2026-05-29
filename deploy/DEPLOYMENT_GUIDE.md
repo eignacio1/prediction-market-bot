@@ -13,7 +13,7 @@
 **Alternative:** Hetzner CX11 — ~€4/month (same specs, European datacenter)
 
 Both providers use datacenter IP ranges (ASNs) that pass Kalshi's CloudFront WAF.
-Home ISP and work ISP are blocked. Mobile hotspot and hotel wifi also work for manual runs.
+Work ISP is blocked (strict outbound security policy). Any other network passes — home ISP, hotel wifi, hotspot, etc.
 
 **OS:** Ubuntu 22.04 LTS (recommended; scripts below written for Ubuntu/Debian)  
 **Region:** US East (New York or Toronto) — closer to Kalshi's infrastructure

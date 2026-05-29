@@ -2,7 +2,7 @@
 
 **Purpose:** Track all access grants for data, compute, secrets, and external systems. Every access point is documented before use.  
 **Owner (role):** Risk/Control Owner (RCO)  
-**Last reviewed:** 2026-05-28 (ACC-0002 granted — Kalshi API read-only key provisioned)  
+**Last reviewed:** 2026-05-29 (ACC-0003 registered PENDING — Polymarket US API key provisioning initiated T-077)  
 **Next review:** Monthly, or when any new access is requested  
 **Staleness triggers:** New API integration; new data source; new compute environment; credential rotation; venue confirmed  
 **Upstream links:** PROJECT_CHARTER.md, 09_SECURITY_PRIVACY_COMPLIANCE/ACCESS_CONTROL_MATRIX.md  
@@ -26,7 +26,7 @@
 | Access ID | Access Type | Resource / System | Justification | Required By Gate | Status |
 |-----------|------------|-------------------|---------------|-----------------|--------|
 | ACC-0002 | API credentials (read-only) | Kalshi trading API | Live data ingestion; EXP-004 (HYP-003) | G5 (Ops) minimum | ✅ GRANTED 2026-05-28 — moved to Active Grants above |
-| ACC-0003 | External data feed | Player/market attribute data source | Signal enrichment beyond Player_Attribute_Matrix | G1 (Spec) | PENDING — DATA_REQUIREMENTS.md sign-off required |
+| ACC-0003 | API credentials (read-only) | Polymarket US CLOB API (`clob.polymarket.com`) | Line shopping (Strategy E); complement lock detection (Strategy C); VenueRouter best_price mode activation | Phase 7 (T-077) | **PENDING PROVISIONING** — operator must create account at polymarket.com and generate API key; see RUNBOOK_polymarket-activation.md |
 | ACC-0004 | Secrets vault | API keys, credentials storage | Secure credential management | G4 (Evidence) | PENDING |
 | ACC-0005 | Production compute | Cloud / server environment | Live execution | G5 (Ops) | PENDING |
 

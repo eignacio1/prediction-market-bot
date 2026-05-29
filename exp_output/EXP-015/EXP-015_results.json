@@ -1,0 +1,104 @@
+{
+  "exp_id": "EXP-015",
+  "session_id": "EXP-015-7B997013",
+  "run_at": "2026-05-29T16:45:50.054Z",
+  "hyp_id": "HYP-008",
+  "hyp_verdict": "FALSIFIED",
+  "parameters": {
+    "t1_kelly": 0.25,
+    "t3_kelly": 0.1,
+    "confirm_multiplier": 1.15,
+    "fade_multiplier": 0.75,
+    "momentum_threshold": 0.025,
+    "n_simulations": 10000,
+    "random_seed": 42,
+    "drift_std_values": [
+      0.01,
+      0.015,
+      0.02,
+      0.025,
+      0.03
+    ]
+  },
+  "test_set": {
+    "n_bets": 872,
+    "n_yes": 252,
+    "n_no": 620,
+    "t1_win_rate": 0.6112
+  },
+  "primary_run_drift020": {
+    "drift_std": 0.02,
+    "confirm_rate": 0.1055216743119266,
+    "fade_rate": 0.10550756880733946,
+    "neutral_rate": 0.7889707568807339,
+    "ev_per_bet_mean": 0.011287937279368119,
+    "ev_ratio": 0.837509132244284,
+    "size_efficiency": 0.46,
+    "faded_miss_rate": 0.6111185988222072,
+    "confirm_win_rate": 0.6113857646968045
+  },
+  "breakeven_confirm_rate": 0.1852,
+  "sensitivity_grid": [
+    {
+      "drift_std": 0.01,
+      "confirm_rate": 0.006222133027522936,
+      "fade_rate": 0.006214220183486239,
+      "neutral_rate": 0.9875636467889908,
+      "ev_per_bet_mean": 0.013348853084387042,
+      "ev_ratio": 0.9904188946545294,
+      "size_efficiency": 0.46,
+      "faded_miss_rate": 0.6036945449176939,
+      "confirm_win_rate": 0.6088799601894687
+    },
+    {
+      "drift_std": 0.015,
+      "confirm_rate": 0.04781100917431193,
+      "fade_rate": 0.04770321100917431,
+      "neutral_rate": 0.9044857798165138,
+      "ev_per_bet_mean": 0.01248710924295585,
+      "ev_ratio": 0.9264817625645914,
+      "size_efficiency": 0.46,
+      "faded_miss_rate": 0.6113897089227159,
+      "confirm_win_rate": 0.6126472732854895
+    },
+    {
+      "drift_std": 0.02,
+      "confirm_rate": 0.10545252293577982,
+      "fade_rate": 0.1057908256880734,
+      "neutral_rate": 0.7887566513761468,
+      "ev_per_bet_mean": 0.011284374759565367,
+      "ev_ratio": 0.8372448108900132,
+      "size_efficiency": 0.46,
+      "faded_miss_rate": 0.6107690439850145,
+      "confirm_win_rate": 0.6111907397781079
+    },
+    {
+      "drift_std": 0.025,
+      "confirm_rate": 0.15874426605504588,
+      "fade_rate": 0.15851536697247706,
+      "neutral_rate": 0.6827403669724771,
+      "ev_per_bet_mean": 0.010185396349709861,
+      "ev_ratio": 0.7557060468435843,
+      "size_efficiency": 0.46,
+      "faded_miss_rate": 0.6111170595274096,
+      "confirm_win_rate": 0.6110059599060863
+    },
+    {
+      "drift_std": 0.03,
+      "confirm_rate": 0.20225057339449543,
+      "fade_rate": 0.2023665137614679,
+      "neutral_rate": 0.5953829128440367,
+      "ev_per_bet_mean": 0.009279808357700687,
+      "ev_ratio": 0.6885158955707998,
+      "size_efficiency": 0.46,
+      "faded_miss_rate": 0.6113430758524704,
+      "confirm_win_rate": 0.6112767736905521
+    }
+  ],
+  "gates": {
+    "ev_ratio_gate": 0.9,
+    "win_rate_gate": 0.66,
+    "ev_ratio_achieved": 0.8375,
+    "confirm_wr_achieved": 0.6114
+  }
+}

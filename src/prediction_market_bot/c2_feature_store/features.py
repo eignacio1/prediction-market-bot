@@ -1,6 +1,7 @@
 """
 C2: Feature Store — PRF-Aligned Feature Derivation
 ====================================================
+
 Component:    C2 (Feature Store)
 Phase active: Phase 3+ (Research Build)
 Status:       CANONICAL (Phase 3 2026-05-26)
@@ -26,6 +27,15 @@ Feature version policy:
   - FEATURE_VERSION is incremented when any feature definition changes.
   - All experiment records must cite the feature_version used.
   - Model retrain is required after any feature change in ENV-03.
+
+v1.3.0 additions (2026-05-29 — T-075):
+  - F-039: is_home_game — binary (1=home, 0=away) from C1 MATCHUP parsing.
+    Passed through from C1 output; requires matchup column in game log data.
+  - F-040: opp_def_rating_l10_mean — opponent team's rolling mean pts_allowed
+    over prior 10 games (= pts_scored - plus_minus from TeamGameLog).
+    Requires TeamStatsStore built from TeamGameLog data.
+    NaN when TeamStatsStore not provided or opponent data insufficient.
+  Total features: 33 (was 31 in v1.2.0; +2 new opponent/context features)
 
 v1.2.0 changes (2026-05-28 — T-046):
   - PRUNED: F-032–F-038 (schedule/load and ERI v0 features)
@@ -68,10 +78,13 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from prediction_market_bot.c1_signal_ingestion.team_stats_store import TeamStatsStore
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
@@ -82,7 +95,7 @@ from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 COMPONENT = "C2"
 
 # Feature set version — increment on any feature definition change
-FEATURE_VERSION = "1.2.0"
+FEATURE_VERSION = "1.3.0"
 
 # Rolling window size (games)
 DEFAULT_WINDOW = 10
@@ -313,7 +326,46 @@ def _compute_rolling_features(
     # ---------------------------------------------------------------------------
     df["temporal_cutoff"] = df["game_date"].shift(1)
 
+    # ---------------------------------------------------------------------------
+    # F-039: is_home_game — passed through from C1 MATCHUP parsing (v1.3.0+)
+    # Already present as Int8 column from C1 if matchup data was pulled.
+    # No computation needed here — C1 derives it. We just ensure it's present.
+    # ---------------------------------------------------------------------------
+    if "is_home_game" not in df.columns:
+        df["is_home_game"] = pd.array([pd.NA] * len(df), dtype="Int8")
+
     return df
+
+
+def _compute_opponent_features(
+    df: pd.DataFrame,
+    team_stats_store: "TeamStatsStore",
+    window: int = DEFAULT_WINDOW,
+) -> pd.DataFrame:
+    """
+    Compute opponent-context features for each row using TeamStatsStore.
+
+    Called once per player-group after _compute_rolling_features().
+    Temporal integrity: TeamStatsStore.get_opp_def_rating() uses games
+    strictly before the player's game_date (TI-01 preserved).
+
+    Features computed:
+      F-040: opp_def_rating_l10_mean — opponent team's rolling mean pts_allowed
+    """
+    opp_def: list[float] = []
+
+    for _, row in df.iterrows():
+        opp_abbr = row.get("opponent_team_abbr")
+        game_date = row.get("game_date")
+        if pd.isna(opp_abbr) or opp_abbr is None or pd.isna(game_date):
+            opp_def.append(np.nan)
+        else:
+            rating = team_stats_store.get_opp_def_rating(
+                str(opp_abbr), str(game_date), window=window
+            )
+            opp_def.append(rating if rating is not None else np.nan)
+
+    return pd.DataFrame({"opp_def_rating_l10_mean": opp_def}, index=df.index)
 
 
 # ---------------------------------------------------------------------------
@@ -395,6 +447,7 @@ class FeatureStore:
         self,
         game_log_df: pd.DataFrame,
         session_id: str | None = None,
+        team_stats_store: "TeamStatsStore | None" = None,
     ) -> tuple[bool, pd.DataFrame]:
         """
         Compute PRF-aligned features for all players in a game-log DataFrame.
@@ -413,6 +466,10 @@ class FeatureStore:
             fg3m, fg3a, fg3_pct, ftm, fta, ft_pct, plus_minus, pf.
         session_id:
             Current bot run session ID for audit trail.
+        team_stats_store:
+            Optional TeamStatsStore built from TeamGameLog data (T-075).
+            When provided, computes F-040 opp_def_rating_l10_mean for each row.
+            When None, opp_def_rating_l10_mean is left as NaN (backward compatible).
 
         Returns
         -------
@@ -459,6 +516,14 @@ class FeatureStore:
                     window=self._window,
                     min_periods=MIN_PERIODS,
                 )
+                # F-040: opponent defensive rating (v1.3.0+) — requires TeamStatsStore
+                if team_stats_store is not None:
+                    opp_df = _compute_opponent_features(
+                        player_features, team_stats_store, window=self._window
+                    )
+                    player_features = player_features.join(opp_df, how="left")
+                else:
+                    player_features["opp_def_rating_l10_mean"] = np.nan
                 player_chunks.append(player_features)
 
             if not player_chunks:
@@ -622,5 +687,8 @@ class FeatureStore:
 
         # Season context
         names += ["games_played_prior", "pts_season_mean", "min_season_mean"]
+
+        # v1.3.0: opponent and venue context (F-039, F-040)
+        names += ["is_home_game", "opp_def_rating_l10_mean"]
 
         return names

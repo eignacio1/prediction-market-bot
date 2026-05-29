@@ -96,8 +96,12 @@ Confirmed at G3. See `.env.example` in project root for template.
 | `LOG_DIR` | All | Path for C6 audit log output (e.g., `./logs/`) | Plain |
 | `SNAPSHOT_DIR` | All | Path to data snapshots directory | Plain |
 | `VENUE_ID` | ENV-02, ENV-03 only | Identifies target venue (parameter — never hardcoded; per ADR-0003) | Plain |
-| `VENUE_API_KEY` | ENV-02, ENV-03 only | Venue authentication | Vault (G5+) / .env file — NEVER committed to VCS |
+| `VENUE_API_KEY` | ENV-02, ENV-03 only | Kalshi venue authentication | Vault (G5+) / .env file — NEVER committed to VCS |
 | `VENUE_API_SECRET` | ENV-03 only | Order signing credential | Vault (G5+) — NEVER in .env or plaintext |
+| `VENUE_ROUTER_MODE` | ENV-02, ENV-03 | VenueRouter routing mode: `kalshi_only` (default) or `best_price` | Plain |
+| `POLYMARKET_API_KEY` | ENV-02, ENV-03 | Polymarket US authentication (Phase 7 — T-077) | Vault / .env — NEVER committed |
+| `PRIZEPICKS_API_KEY` | ENV-02, ENV-03 | PrizePicks authentication (Phase 7+ — new ADR required) | Vault / .env — NEVER committed |
+| `UNDERDOG_API_KEY` | ENV-02, ENV-03 | Underdog Fantasy authentication (Phase 7+ — new ADR required) | Vault / .env — NEVER committed |
 
 ---
 

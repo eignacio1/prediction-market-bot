@@ -96,14 +96,14 @@ def _make_mock_logger(write_ok: bool = True) -> MagicMock:
 
 class TestFeatureVersion:
     @pytest.mark.unit
-    def test_version_is_1_2_0(self):
-        assert FEATURE_VERSION == "1.2.0"
+    def test_version_is_1_3_0(self):
+        assert FEATURE_VERSION == "1.3.0"
 
     @pytest.mark.unit
     def test_get_feature_names_count(self):
         store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
         names = store.get_feature_names()
-        assert len(names) == 31, f"Expected 31 features, got {len(names)}: {names}"
+        assert len(names) == 33, f"Expected 33 features, got {len(names)}: {names}"
 
     @pytest.mark.unit
     def test_pruned_schedule_features_absent_from_names(self):
@@ -151,11 +151,11 @@ class TestFeatureVersion:
 
 class TestFeatureStoreBulk:
     @pytest.mark.unit
-    def test_compute_features_bulk_feature_version_is_1_2_0(self):
+    def test_compute_features_bulk_feature_version_is_1_3_0(self):
         df = _make_player_df(n=20)
         store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
         _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
-        assert (feature_df["feature_version"] == "1.2.0").all()
+        assert (feature_df["feature_version"] == "1.3.0").all()
 
     @pytest.mark.unit
     def test_compute_features_bulk_has_core_columns(self):

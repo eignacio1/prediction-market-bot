@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-29 (Phase 6 fully active — T-058/059/060 ✅; VPS live; PIPE-02+PIPE-03 deployed; qualitative pipeline EXP-006–011 complete; paper bankroll $1,000 running)  
+**Last reviewed:** 2026-05-29 (EXP-013 ✅ HYP-007 FALSIFIED; T-071 cohort expansion ✅; T-077 Polymarket provisioning ✅ infrastructure; 482/482 tests)  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  
@@ -106,10 +106,27 @@
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
 | T-070 | Accumulate paper trading evidence (50+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target 50 resolved positions |
-| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | Current cohort = 50 players; expand for better market coverage in playoffs |
+| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players (original); v2=~80 players (+OKC Holmgren/Williams, BOS Brown/Pritchard, DEN Murray/MPJ, IND Turner/Mathurin, HOU Sengun/Green/VanVleet, SAS Wembanyama, etc.); run_exp005.py + run_exp012.py now import from cohort.py; `lookup_player_id.py` utility for adding more |
 | T-072 | 2025-26 playoffs data pull + model refresh | EL | MED | Regular season model only; retrain with playoff games for better playoff inference |
 | T-073 | DS-04 qualitative source registration | RL | LOW | First new qualitative source beyond PAM (coaching fit, matchup context, etc.) |
 | T-074 | Context Pack CP-2026-05-29 | DS | LOW | Session handoff context pack |
+
+### Phase 7 — Planned Tasks (unblocked after G6)
+
+**Prerequisite:** G6 gate cleared (ADR-0005 signed; T-061). Priority order reflects strategy research recommendation — B and I before E+C.
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| T-075 | Strategy B — Opponent def rating + home/away (EXP-012) | EL | HIGH | ✅ COMPLETE 2026-05-29 — FEATURE_VERSION 1.3.0; F-039 is_home_game + F-040 opp_def_rating_l10_mean; C1 schema updated (matchup/is_home_game/opponent_team_abbr); TeamStatsStore built; run_exp012.py ready; HYP-006 pending operator run (~20 min data pull: 50 players + 30 teams × 5 seasons) |
+| T-076 | Strategy I — Poisson/NB scoring distribution model (EXP-013) | EL | HIGH | ✅ COMPLETE 2026-05-29 — ScoringDistributionModel in c3_forecasting/scoring_distribution.py; NB via method-of-moments; price_all_lines() for any threshold; run_exp013.py ready (uses existing EXP-005 matrix); HYP-007 pending operator run |
+| T-077 | Strategy E — Line Shopping: Polymarket US API access | IO | HIGH | 🟡 INFRASTRUCTURE COMPLETE 2026-05-29 — PolymarketVenueAdapter fully implemented (REST+CLOB, Bearer auth, `_parse_market()` regex, graceful failure); ACC-0003 registered PENDING in ACCESS_REQUESTS.md; RUNBOOK_polymarket-activation.md written; **OPERATOR ACTION REQUIRED: provision API key at polymarket.com → set POLYMARKET_API_KEY in .env → run activation runbook** |
+| T-078 | Strategy E — C5 VenueRouter abstraction layer | EL | HIGH | 🟡 SKELETON COMPLETE 2026-05-29 — VenueAdapter Protocol + KalshiVenueAdapter + VenueRouter built; PIPE-05/06 deployed; Polymarket adapter stub ready; activate at T-077 API provisioning |
+| T-079 | Strategy E — EXP-014: EV re-estimation with line shopping active | RL | MED | Quantify $/bet improvement from best-price routing vs. Kalshi-only baseline |
+| T-080 | Strategy C — Complement lock scanner (cross-venue) | EL | MED | ✅ COMPLETE 2026-05-29 — `c5_execution/complement_lock_scanner.py`; `LockOpportunity` + `ComplementLockScanner`; scan_snapshot() + scan_single(); 22 tests; detection-only (APR-0010 required for execution) |
+| T-081 | Strategy C — APR-0010 sign-off | DS | MED | DS governance sign-off to activate arb/ module; unblocks after T-078 VenueRouter is live; replaces "Indefinite" blocker in blocked items |
+| T-082 | Phase 7 context pack | DS | LOW | CP-2026-Phase7 handoff |
+| T-083 | Cross-venue market mapper (normalization rules) | EL | MED | ✅ COMPLETE 2026-05-29 — `c5_execution/market_mapper.py`; `normalize_player_name()` + `PlayerMarketKey` + `group_by_key()`; accent/apostrophe/period normalization; 26 tests; VenueRouter deduplication upgraded to use normalized keys |
+| T-084 | Multi-band execution orchestrator (P6 rules) | EL | HIGH | ✅ COMPLETE 2026-05-29 — `execution_bands_orchestrator.py`; `BandSignal` + `BandDecision` + `MultiBandOrchestrator`; T3>T2>T1 priority; CONFIRM/FADE/NEUTRAL rules; batch_decide(); 46 tests; T3 cron schedule extended to 20-23,0-3 UTC for late games |
 
 ### Operator Actions Remaining
 
@@ -136,4 +153,4 @@
 | T-061 | ADR-0005 live capital | 50+ resolved paper positions with positive P&L | After G6 evidence |
 | T-072 | Playoff model refresh | 2025-26 playoff game log availability (in progress) | June 2026 post-Finals |
 | T-073 | DS-04 qualitative source | Operator decision on which source to register next | When ready |
-| — | arb/ incorporation | APR-0010 pending | Indefinite |
+| T-081 | arb/ incorporation (Strategy C) | APR-0010 pending; T-078 VenueRouter required first | Phase 7 — after T-078 complete |

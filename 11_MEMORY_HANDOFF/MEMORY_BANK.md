@@ -2,13 +2,13 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-29 (Phase 6 fully active — VPS live at 157.230.91.33; PIPE-02 + PIPE-03 deployed; paper trading running; qualitative pipeline validated EXP-006–011; ADR-0004 confirmed retained)  
+**Last reviewed:** 2026-05-29 sprint 2 (EXP-014 ✅ line shopping; EXP-015 ✅ HYP-008 FALSIFIED; PIPE-03 → VenueRouter ✅; 519/519 tests)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
 **Downstream links:** TODO_NEXT.md (current work); STATUS_REPORTS/ (phase snapshots)  
 **Decision references:** ADR-0001 (Compass OS adoption)  
-**Confidence:** 10/10 — Reflects complete G4 gate state as of 2026-05-28
+**Confidence:** 10/10 — Reflects complete Phase 7 infrastructure state as of 2026-05-29
 
 ---
 
@@ -17,13 +17,13 @@
 | Field | Value |
 |-------|-------|
 | Project | Prediction Market Trading Bot |
-| Current phase | **Phase 6 ACTIVE — Paper Trading** (G5 ✅ CLOSED 2026-05-28; PIPE-02 + PIPE-03 deployed 2026-05-29) |
+| Current phase | **Phase 6/7 ACTIVE** (G5 ✅ CLOSED 2026-05-28; Phase 7 infrastructure built 2026-05-29; paper trading live; experiments EXP-012/013 pending operator run) |
 | Operator | Earl Ignacio |
 | Started | 2026-05-21 |
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **Phase 6 PIPE-03 deployed 2026-05-29** — VPS live (DigitalOcean NYC3, 157.230.91.33); PIPE-02 (inference) + PIPE-03 (paper trading) running via cron; paper bankroll $1,000 initialized; qualitative pipeline active (EXP-007 +0.0017 Brier, +0.0159 ECE); EV +$0.0958/bet (EXP-010); ADR-0004 confirmed retained after EXP-011 GBM test |
+| Last major milestone | **Phase 7 infrastructure complete 2026-05-29** — cross-venue market mapper + complement lock scanner (T-080/083); multi-band orchestrator P6 rules (T-084); FEATURE_VERSION 1.3.0 with opp_def_rating + is_home_game (T-075); ScoringDistributionModel NB/Poisson (T-076); TeamStatsStore for opponent features; EXP-012 + EXP-013 runners ready; 464/464 tests |
 
 ---
 
@@ -92,6 +92,9 @@ These 7 rules are absolute. They must be restored to any context that loses them
 | EXECUTION_ARCHITECTURE.md | CANONICAL | 8/10 | 4 execution modes; kill switch design; Kelly formula |
 | THREAT_MODEL.md | **CANONICAL (G2 2026-05-22)** | 6/10 | STRIDE; TH-01 through TH-09; C4/C5 corrected |
 | DEPENDENCIES.md | CANONICAL | 7/10 | Python stack; dependency risk register |
+| STRATEGY_OVERVIEW.md | **CANONICAL (2026-05-29)** | 9/10 | All 11 strategies (A–K) + T1–T5 execution bands PDTP; mechanics, edge sources, risk profiles, Kalshi constraints, activation gates |
+| EXECUTION_BANDS.md | **CANONICAL (2026-05-29)** | 9/10 | T1–T5 time-horizon bands; Kelly/SLA/compute per band; PDTP; activation gates; cron schedules |
+| VENUE_REGISTRY.md | **CANONICAL (2026-05-29)** | 8/10 | V-001–V-005 CA-eligible venues; edge formulas by venue type; activation roadmap |
 
 ---
 
@@ -221,26 +224,21 @@ These 7 rules are absolute. They must be restored to any context that loses them
 
 ---
 
-## Current State Snapshot (2026-05-28)
+## Current State Snapshot (2026-05-29)
 
-**Phase:** 3 (Research Build) — G3 ✅ CLOSED (APR-0005 2026-05-22); Phase 3 target **2026-06-21** (compressed — NBA playoffs end)  
-**G0 gate:** ✅ COMPLETE — APR-0002 signed 2026-05-22  
-**G1 gate:** ✅ COMPLETE — APR-0003 signed 2026-05-22 (all 5 exit criteria met)  
-**G2 gate:** ✅ COMPLETE — APR-0004 signed 2026-05-22 (all 4 arch artifacts CANONICAL; C4/C5 corrected)  
-**G3 gate:** ✅ COMPLETE — APR-0005 signed 2026-05-22 (RUN_INSTRUCTIONS + ENVIRONMENTS + RID_LOG CANONICAL)  
-**All modules:** COMPLETE (11/11; 74 artifacts + Phase 1–3 additions)  
-**Phase 3 build:** T-031–T-034 ✅ COMPLETE (2026-05-26); T-035–T-042 ✅ ALL COMPLETE (2026-05-27/28); **G4 NOT MET** — 1/3 experiments beat null (need 2/3)  
-**Components implemented:** C6 AuditLogger ✅ | C1 NBAIngestionClient ✅ | C2 FeatureStore ✅ | C3 ModelForecaster ✅ | C4 RiskEngine ✅ | C5/C7 skeleton only  
-**T-043 status:** ✅ COMPLETE 2026-05-28 — 50-player run; EXP-001 +0.0056/ECE 0.0345; EXP-002 +0.0049/0.0289; EXP-003 +0.0026/0.0369; G4 MET  
-**T-044 status:** ✅ COMPLETE 2026-05-28 — Ablation: v1.0.0 (31 feat) Δ Brier = +0.0002 vs v1.1.0; HYP-005 FALSIFIED  
-**Experiments run:** 3/3 complete — ✅ G4 MET; FEATURE_VERSION 1.2.0 queued (prune 7 v1.1.0 features)  
-**Snapshots registered:** 3 (SNAP-001 DS-01; SNAP-002 EXP-001 raw game logs; SNAP-003 backtest fresh pull pre-registered)  
-**ADRs accepted:** 3 (ADR-0001, ADR-0002, ADR-0003)  
-**ADRs pending:** 2 (ADR-0004, ADR-0005 at correct gates)  
-**Open questions:** 11 open (OQ-001 ✅ OQ-003 ✅ OQ-006 ✅ OQ-015 ✅ resolved; remaining OQs non-blocking)  
-**Active risks:** 6 (RID-001 through RID-006; RID-D002/D003 archived)  
-**Live capital:** NOT DEPLOYED  
-**Domain:** NBA basketball — dynamically agnostic event types; Kalshi primary venue (ACCEPTED ADR-0003)  
+**Phase:** 6/7 ACTIVE — G0–G5 ✅ ALL CLOSED; Phase 6 paper trading live; Phase 7 infrastructure built  
+**G0–G5 gates:** ✅ ALL COMPLETE  
+**All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
+**FEATURE_VERSION:** 1.3.0 (33 features: 31 quant + 2 new opponent/venue context)  
+**Tests:** 519/519 passing (was 482; +37 new: EXP-014 ×13, EXP-015 ×20, venue router compat ×4)  
+**Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/05/06 ✅  
+**Experiments run:** EXP-001–015 ✅ (014=line shopping; 015=T3 backtest HYP-008 FALSIFIED) | EXP-012 runner ready (needs data pull)  
+**Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
+**ADRs accepted:** 4 (ADR-0001/002/003/004) | ADR-0005 pending at G6  
+**Open questions:** OQ-021 (L3 amplification) | OQ-022 (nba_api backup source) — both non-blocking  
+**Active risks:** All non-blocking  
+**Live capital:** NOT DEPLOYED — G6 gate requires 50+ resolved paper bets with positive P&L  
+**Domain:** NBA basketball; Kalshi primary venue (ADR-0003)  
 
 ---
 
@@ -287,19 +285,29 @@ These 7 rules are absolute. They must be restored to any context that loses them
 
 **Active cron on 157.230.91.33:** 21:00 UTC health check | 21:30 UTC PIPE-02 (inference) | 01:30 UTC PIPE-03 (paper trading)
 
+**T-080 ✅ COMPLETE 2026-05-29** — Complement lock scanner: `c5_execution/complement_lock_scanner.py`; `LockOpportunity` + `ComplementLockScanner`; `scan_snapshot()` (all markets) + `scan_single()` (targeted); 22 tests; detection-only — APR-0010 required before any execution; sorted by net_profit descending.
+
+**T-083 ✅ COMPLETE 2026-05-29** — Cross-venue market mapper: `c5_execution/market_mapper.py`; `normalize_player_name()` (NFKD, accent strip, apostrophe/period removal); `PlayerMarketKey` NamedTuple; `group_by_key()`; 26 tests; `VenueRouter._deduplicate_best_price()` upgraded to use normalized keys; accent names (Dončić) and apostrophes (De'Aaron) now deduplicate correctly across venues.
+
+**T-084 ✅ COMPLETE 2026-05-29** — Multi-band execution orchestrator: `execution_bands_orchestrator.py`; `BandSignal` + `BandDecision` + `MultiBandOrchestrator`; implements P6 rules (T3>T2>T1 priority; CONFIRM→PROCEED; FADE→HOLD; NEUTRAL→base band); `batch_decide()` for full game-day processing; 46 tests; T3 cron schedule extended to `*/15 20-23,0-3 * * *` for late 10pm ET games.
+
+**T-075 ✅ COMPLETE 2026-05-29 (infrastructure)** — Strategy B / FEATURE_VERSION 1.3.0: C1 schema extended with `matchup`, `is_home_game`, `opponent_team_abbr` (parsed from MATCHUP); `c1_signal_ingestion/team_stats_store.py` (`TeamStatsStore` — holds per-team rolling `pts_allowed` for opponent features); C2 v1.3.0 adds F-039 `is_home_game` + F-040 `opp_def_rating_l10_mean`; `run_exp012.py` ready; **HYP-006 pending operator run** (~20 min: 50 players + 30 teams × 5 seasons via nba_api; `EXP012_SKIP_PULL=1` to reuse cache on re-runs).
+
+**T-076 ✅ COMPLETE 2026-05-29 (infrastructure)** — Strategy I / ScoringDistributionModel: `c3_forecasting/scoring_distribution.py`; `PlayerDistribution` + `ScoringDistributionModel`; method-of-moments NB fit per player; `predict_threshold_prob()` + `price_all_lines()` for any Kalshi threshold from one fit; 31 tests; `run_exp013.py` ready; **HYP-007 pending operator run** (offline — uses EXP-005 matrix).
+
 See TODO_NEXT.md for session-level task tracking.
 
 ---
 
-## Compass OS Health (as of 2026-05-28)
+## Compass OS Health (as of 2026-05-29)
 
 | Metric | Status |
 |--------|--------|
-| M1 Artifact Freshness | MEMORY_BANK, TODO_NEXT, PLAN, CHANGELOG all updated 2026-05-29 ✅ |
-| M2 Open Question Count | OQ-017 ✅ RESOLVED (PRF one-hot); OQ-020 ✅ RESOLVED (QTI-03 standard); OQ-021 open (L3 amplification study design) |
-| M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004); ADR-0005 pending at G6; ADR-0004 confirmed retained (EXP-011) ✅ |
-| M4 Assumption Validation | EXP-001–011 complete; qualitative signal validated (EXP-007); GBM vs LR resolved (EXP-011) ✅ |
-| M5 Risk Register Currency | All risks non-blocking; DS-02-B-001 RESOLVED; hotel wifi + datacenter IP both confirmed working ✅ |
-| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED**; Phase 6 ACTIVE — PIPE-02 + PIPE-03 deployed on VPS |
-| M7 Component Implementation | C1–C8 ✅; PaperTrader ✅; QualitativeSignalStore ✅; QualitativeAmplifier (stub) ✅; **267/267 tests** |
-| M8 Experiment Progress | EXP-001–011 all complete; best model LR L1+L2 Brier 0.2461; EV +$0.0958/bet (EXP-010); paper trading live |
+| M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | all Phase 7 new modules documented | project_prediction_market_compass.md ✅ |
+| M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
+| M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
+| M4 Assumption Validation | EXP-001–013 registered (011 complete; 012/013 pending operator run) | HYP-006 (opp def rating) + HYP-007 (NB model) pending | T3 momentum signal untested (paper data accumulating) |
+| M5 Risk Register Currency | All risks non-blocking | EXP-012 data pull risk: nba_api rate limits (~20 min pull) | cron midnight wrap noted (T3 `*/15 20-23,0-3` — test on VPS before activating) |
+| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/05/06 ✅ | **519/519 tests** |
+| M8 Experiment Progress | EXP-001–015 registered | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 EV ratio 0.84; CONFIRM win_rate 61.1%; T3 value = FADE gate, not confidence booster) | EXP-012 runner ready (HYP-006; ~20 min data pull; run on any non-work network) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet | paper trading live |

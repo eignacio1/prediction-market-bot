@@ -151,6 +151,29 @@ The bot is a **pipeline-based forecasting and execution system** composed of six
 
 ---
 
+---
+
+## Phase 6 Idle Build — New Components (2026-05-29)
+
+The following components were added during the Phase 6 idle period (waiting for paper bet accumulation). All are buildable on current cron infrastructure; T4/T5 are Phase 8+ stubs only.
+
+| Component | File | Purpose | Phase |
+|-----------|------|---------|-------|
+| ExecutionBand framework | `execution_bands.py` | T1–T5 time-horizon bands; Kelly/SLA/compute per band | Phase 7 |
+| VenueAdapter Protocol | `c5_execution/venue_adapter.py` | Abstract interface for all venue integrations | Phase 7 |
+| KalshiVenueAdapter | `c5_execution/venue_adapter.py` | Wraps KalshiMarketClient; conforms to VenueAdapter | Phase 7 |
+| PolymarketVenueAdapter | `c5_execution/venue_adapter.py` | Stub — T-077; slots in when API key provisioned | Phase 7 |
+| DFSPickemVenueAdapter | `c5_execution/venue_adapter.py` | Stub — new ADR required (PrizePicks/Underdog/Sleeper) | Phase 7+ |
+| VenueRouter | `c5_execution/venue_router.py` | Best-execution routing across venues; transparent to C3/C4 | Phase 7 |
+| PIPE-05 (T2) | `run_t2_sameday.py` | Same-day injury overlay skeleton (DS-04 pending T-075) | Phase 7 |
+| PIPE-06 (T3) | `run_t3_pretip.py` | Pre-tip momentum scan; reads T1 output + live prices | Phase 7 |
+
+**Interface changes:** `PlayerMarket.venue` field added (default `"kalshi"` — backward-compatible). New contracts IF-VENUE-ADAPTER and IF-ROUTER in INTERFACES_CONTRACTS.md.
+
+**Design docs:** EXECUTION_BANDS.md (T1–T5 canonical spec); VENUE_REGISTRY.md (V-001–V-005 CA-eligible venues).
+
+---
+
 ## Technology Stack (Confirmed at G2)
 
 *Core language and logging confirmed at G2. Storage, secrets vault, and monitoring selections deferred to G3/G5 respectively.*

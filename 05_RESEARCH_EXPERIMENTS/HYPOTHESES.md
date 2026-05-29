@@ -102,6 +102,54 @@ Each hypothesis follows the structure:
 
 ---
 
+## HYP-006 — Opponent Defensive Rating + Home/Away Context Add Incremental Signal
+
+| Field | Detail |
+|-------|--------|
+| Research Question | SQ-001 (extended) |
+| H0 (Null) | Adding opponent defensive rating (F-040) and home/away context (F-039) does not improve Brier score vs. v1.2.0 baseline by ≥ 0.001 |
+| H1 (Alternative) | FEATURE_VERSION 1.3.0 (33 features) achieves Brier improvement ≥ 0.001 over v1.2.0 (31 features) on the same 5-season TEST window |
+| Test method | EXP-012: fresh data pull with v1.3.0 columns; refit LR on TRAIN; compare Brier on TEST vs EXP-007 baseline |
+| Significance threshold | Δ Brier ≥ 0.001 (v1.3.0 vs v1.2.0 baseline Brier 0.2461) |
+| Falsification condition | Δ Brier < 0.001 on TEST; features show near-zero permutation importance |
+| Consequence if falsified | F-039/F-040 dropped; FEATURE_VERSION stays at 1.2.0; TeamStatsStore demoted to reference only |
+| Status | ⏳ PENDING — EXP-012 runner ready; requires fresh data pull (~20 min; `EXP012_SKIP_PULL=1` to reuse cache; run on any non-work network) |
+| Experiment(s) | EXP-012 (v1.3.0 ablation; HYP-006 verdict) |
+
+---
+
+## HYP-007 — NB Scoring Distribution Model Is Competitive with LR for Calibration
+
+| Field | Detail |
+|-------|--------|
+| Research Question | RSQ-001 |
+| H0 (Null) | NB Brier score is not within 0.005 of LR Brier on same-threshold TEST comparisons |
+| H1 (Alternative) | NB Brier is within 0.005 of LR Brier; NB can price all threshold lines with equivalent accuracy |
+| Test method | EXP-013: fit NB per player on TRAIN; compare NB vs LR Brier on TEST; show multi-line pricing |
+| Significance threshold | NB Brier within 0.005 of LR Brier (COMPETITIVE_GATE) on TEST set |
+| Falsification condition | NB Brier > LR Brier + 0.005; or NB systematically overestimates/underestimates probabilities |
+| Consequence if falsified | NB useful for multi-line pricing only; LR remains primary calibration model; ADR-0004 unchanged |
+| Status | 🔴 FALSIFIED (2026-05-29, EXP-013) — NB Brier 0.2671 vs LR Brier 0.2461; Δ = 0.0210, far above 0.005 threshold. NB is NOT a drop-in replacement for LR on calibration. Secondary finding: NB is useful for pricing multiple threshold lines from a single distribution fit — strategy I repurposed for multi-line discovery, not primary forecasting. ADR-0004 retained. |
+| Experiment(s) | EXP-013 (NB vs LR Brier; HYP-007 FALSIFIED 2026-05-29) |
+
+---
+
+## HYP-008 — T3 CONFIRM Filter Preserves ≥90% of T1 EV After Kelly Reduction
+
+| Field | Detail |
+|-------|--------|
+| Research Question | EQ-001 (extended — T3 band viability) |
+| H0 (Null) | Kelly reduction (T1 0.25 → T3 0.10) destroys more value than the CONFIRM quality filter adds; EV ratio < 0.90 |
+| H1 (Alternative) | CONFIRM-filtered bets win at > 66% rate, preserving EV ratio > 0.90 relative to T1-only baseline |
+| Test method | EXP-015 analytical simulation (offline; EXP-005 TEST set; 5 drift_std scenarios; 10,000 Monte Carlo draws per scenario) |
+| Significance threshold | EV_T3/EV_T1 > 0.90 OR confirm-signal bets win_rate > 0.66 (5pp above 61.08% T1 baseline) |
+| Falsification condition | EV_T3/EV_T1 ≤ 0.90 AND confirm-signal bets win_rate ≤ 0.66 across all drift_std scenarios |
+| Consequence if falsified | T3 CONFIRM filter reduces EV materially; T3 band NEUTRAL path preferred over CONFIRM at T3_KELLY; T3 may add value only as gate (allow/block) rather than confidence booster |
+| Status | ⏳ PLANNED → EXP-015 |
+| Experiment(s) | EXP-015 (T3 analytical simulation; HYP-008 verdict) |
+
+---
+
 ## Hypothesis Status Summary
 
 | ID | Hypothesis | Status | Experiment | Target |
@@ -111,6 +159,9 @@ Each hypothesis follows the structure:
 | HYP-003 | Model edge exceeds vig | 🟢 CONFIRMED | EXP-004 Parts A+B | EV +$0.0855/bet; Part B live Kalshi confirmed 2026-05-28 |
 | HYP-004 | Signal is stable over time | 🟢 CONFIRMED | EXP-003/002/001 (50-player) | AUC 0.567–0.587 consistent; no decay |
 | HYP-005 | ERI + schedule features provide incremental signal | 🔴 FALSIFIED | T-044 ablation | Δ Brier = +0.0002; prune to v1.0.0 (31 features) |
+| HYP-006 | Opp def rating + home/away context add signal | ⏳ PENDING | EXP-012 | Δ Brier ≥ 0.001 vs v1.2.0 baseline |
+| HYP-007 | NB model competitive with LR for calibration | 🔴 FALSIFIED | EXP-013 | NB Brier 0.2671 vs LR 0.2461; Δ=0.0210; multi-line use retained |
+| HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | ⏳ PLANNED | EXP-015 | EV ratio > 0.90 OR confirm win_rate > 66% |
 
 ---
 
@@ -122,3 +173,4 @@ Each hypothesis follows the structure:
 | HYP-002 | Model probabilities are calibrated (ECE < 0.05) | CONFIRMED | 2026-05-28 | All 3 experiments ECE < 0.037, 50-player cohort |
 | HYP-004 | Signal is stable across time windows | CONFIRMED | 2026-05-28 | AUC 0.567–0.587 consistent across 3 chronological windows |
 | HYP-005 | ERI + schedule features add incremental signal | FALSIFIED | 2026-05-28 | T-044 ablation: Δ Brier = +0.0002 (threshold: 0.005) |
+| HYP-007 | NB model competitive with LR for calibration | FALSIFIED | 2026-05-29 | EXP-013: NB Brier 0.2671 vs LR 0.2461; Δ=0.0210 |

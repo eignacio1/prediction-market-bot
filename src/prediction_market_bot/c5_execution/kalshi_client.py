@@ -93,6 +93,7 @@ class PlayerMarket:
     volume: float            # total volume in dollars
     status: str              # "active", "closed", etc.
     fetched_at: str          # UTC ISO timestamp
+    venue: str = "kalshi"    # venue identifier — default "kalshi"; overridden by VenueAdapter
 
     @property
     def half_spread(self) -> float:

@@ -56,8 +56,9 @@ os.environ["BOT_C4_ACTIVE"] = "true"
 
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
+from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 # ---------------------------------------------------------------------------
@@ -185,17 +186,19 @@ def main() -> None:
     print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | Open positions: {n_open_pos}")
 
     # ------------------------------------------------------------------
-    # 5. Fetch live Kalshi markets
+    # 5. Fetch live markets via VenueRouter (kalshi_only default until T-077)
     # ------------------------------------------------------------------
-    print("[DS-02] Fetching live KXNBAPTS markets...")
+    print("[DS-02] Fetching live KXNBAPTS markets via VenueRouter...")
     try:
-        client   = KalshiMarketClient.from_env()
-        ok, stat = client.check_connectivity()
-        if not ok:
-            logger.error("PIPE-03", "ds02_failed", payload=stat, session_id=SESSION_ID)
-            print(f"ERROR: DS-02 unavailable: {stat}", file=sys.stderr); sys.exit(1)
+        router       = VenueRouter.from_env()
+        connectivity = router.check_all_connectivity()
+        kalshi_ok, kalshi_stat = connectivity.get("kalshi", (False, {}))
+        if not kalshi_ok:
+            logger.error("PIPE-03", "ds02_failed", payload=kalshi_stat, session_id=SESSION_ID)
+            print(f"ERROR: DS-02 (Kalshi) unavailable: {kalshi_stat}", file=sys.stderr)
+            sys.exit(1)
 
-        ok2, snap = client.fetch_player_points_markets()
+        ok2, snap = router.fetch_all_markets()
         if not ok2 or not snap.markets:
             print("  No KXNBAPTS markets available. No games today or pre-market.")
             _write_report([], bankroll, trader)
@@ -204,9 +207,12 @@ def main() -> None:
         quoted = [m for m in snap.markets if m.has_live_quotes]
         if quoted:
             avg_vig = np.mean([m.vig for m in quoted])
-            print(f"  {len(snap.markets)} markets | {len(quoted)} quoted | avg vig {avg_vig:.4f}")
+            print(f"  {len(snap.markets)} markets | {len(quoted)} quoted | "
+                  f"avg vig {avg_vig:.4f} | venues: {router.active_venues}")
         else:
-            print(f"  {len(snap.markets)} markets — no live quotes yet.")
+            print(f"  {len(snap.markets)} markets — no live quotes yet. | venues: {router.active_venues}")
+
+        _scan_and_log_locks(snap.markets, router.active_venues, logger, SESSION_ID)
     except EnvironmentError as e:
         print(f"ERROR: {e}", file=sys.stderr); sys.exit(1)
 
@@ -317,6 +323,43 @@ def main() -> None:
                          "bankroll": summary["bankroll_usd"],
                          "total_pnl": summary["total_realized_pnl"]},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+
+
+def _scan_and_log_locks(
+    markets: list,
+    active_venues: list,
+    logger: AuditLogger,
+    session_id: str,
+) -> None:
+    """Detection-only. APR-0010 not signed. Only runs when ≥2 venues are active."""
+    if len(active_venues) < 2:
+        return
+    scanner = ComplementLockScanner(
+        fee_per_contract=0.030,
+        min_net_profit=0.001,
+        require_cross_venue=True,
+    )
+    opportunities = scanner.scan_snapshot(markets)
+    for opp in opportunities:
+        logger.info(
+            "PIPE-03",
+            "lock_detected",
+            payload={
+                "player_name":    opp.player_name,
+                "threshold":      opp.threshold,
+                "buy_yes_venue":  opp.buy_yes_venue,
+                "buy_no_venue":   opp.buy_no_venue,
+                "net_profit":     opp.net_profit,
+                "governance":     "detection_only_APR-0010_required",
+            },
+            session_id=session_id,
+        )
+    logger.info(
+        "PIPE-03",
+        "lock_scan_complete",
+        payload={"opportunities_found": len(opportunities), "venues": active_venues},
+        session_id=session_id,
+    )
 
 
 def _write_report(orders: list, bankroll: float, trader: PaperTrader) -> None:

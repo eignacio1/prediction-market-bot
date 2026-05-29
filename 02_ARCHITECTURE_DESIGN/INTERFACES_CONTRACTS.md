@@ -204,6 +204,46 @@ Non-matching rows produce NaN for all qualitative feature columns. This is corre
 
 ---
 
+## IF-VENUE-ADAPTER — VenueAdapter Protocol (Phase 7+)
+
+**Version:** 1.0 (CANONICAL 2026-05-29)
+**Producer:** KalshiVenueAdapter, PolymarketVenueAdapter, DFS pick'em adapters
+**Consumer:** VenueRouter
+**Downstream acknowledgement:** AO — Phase 7+ multi-venue activation
+
+All venue adapters must satisfy the VenueAdapter Protocol (`c5_execution/venue_adapter.py`):
+
+| Method / Property | Type | Description |
+|-------------------|------|-------------|
+| `venue_id` | str | Unique venue identifier: `"kalshi"`, `"polymarket"`, `"prizepicks"` etc. |
+| `implied_prob_method` | str | `"market"` (dynamic supply/demand) or `"bookmaker"` (static line) |
+| `check_connectivity()` | `(bool, dict)` | Verify API key + connectivity; call before any other method |
+| `fetch_player_points_markets(sport, status)` | `(bool, DS02Snapshot)` | All open player-points markets; each PlayerMarket has `venue` field set |
+| `fetch_market_detail(ticker)` | `(bool, PlayerMarket \| None)` | Single market by ticker |
+
+**PlayerMarket.venue field:** Added 2026-05-29 (backward-compatible default `"kalshi"`). All existing code unaffected.
+
+---
+
+## IF-ROUTER — VenueRouter → Consumers (Phase 7+)
+
+**Version:** 1.0 (CANONICAL 2026-05-29)
+**Producer:** VenueRouter (`c5_execution/venue_router.py`)
+**Consumer:** PIPE-02 (run_pregame.py), PIPE-06 (run_t3_pretip.py), ComplementLockScanner
+
+VenueRouter is transparent to C3, C4 — consumers call it exactly as they called KalshiMarketClient.
+
+| Method | Returns | Notes |
+|--------|---------|-------|
+| `fetch_all_markets(sport, status)` | `(bool, DS02Snapshot)` | Merged snapshot from all registered adapters; deduplicates by tightest vig |
+| `get_best_market(player, threshold, direction)` | `(bool, PlayerMarket \| None)` | Best execution price for direction across all venues |
+| `get_all_quotes(player, threshold)` | `dict[str, PlayerMarket \| None]` | One quote per venue — used by ComplementLockScanner |
+| `check_all_connectivity()` | `dict[str, (bool, dict)]` | Connectivity check per venue |
+| `active_venues` | `list[str]` | Currently registered venue IDs |
+| `mode` | `str` | `"kalshi_only"` or `"best_price"` |
+
+---
+
 ## IF-C7-C8 — Monitoring + Kill Switch → Visual Dashboard *(Phase 5+; read-only)*
 
 **Version:** 1.0 (STUB — design only; implemented at Phase 5)  

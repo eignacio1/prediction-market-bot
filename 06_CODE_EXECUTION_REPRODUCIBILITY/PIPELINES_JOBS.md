@@ -56,6 +56,34 @@
 | Failure handling | On risk check failure: REJECTED (log reason). On kill switch: halt. On any pipeline failure: halt + alert. |
 | Gate required | ADR-0004 accepted |
 
+### PIPE-05 — T2 Same-Day Injury Overlay (Phase 7)
+
+| Attribute | Detail |
+|-----------|--------|
+| Purpose | Apply injury/lineup adjustment on T1 forecasts 4–6h before tip-off |
+| Trigger | **Cron: 17:00 UTC daily on game days** |
+| Runner | `src/prediction_market_bot/run_t2_sameday.py` |
+| Band | T2_SAME_DAY (ExecutionBand) — Kelly 0.20 |
+| Steps | (1) Load T1 pregame report → (2) Fetch injury/availability (DS-04, T-075) → (3) Apply usage overlay → (4) Write `logs/t2_YYYYMMDD.json` |
+| Status | **SKELETON** — injury overlay stub pending DS-04 (T-075); pipeline runs and passes T1 forecasts through with T2 band tag |
+| Gate required | DS-04 injury data source + FEATURE_VERSION 1.3.0 (T-075) |
+
+---
+
+### PIPE-06 — T3 Pre-Tip Momentum Scan (Phase 7)
+
+| Attribute | Detail |
+|-----------|--------|
+| Purpose | Momentum signal scan 15–60 min before tip-off; confirm or fade T1 forecasts based on price drift |
+| Trigger | **Cron: `*/15 21-23 * * *`** (every 15 min, 21:00–23:00 UTC) |
+| Runner | `src/prediction_market_bot/run_t3_pretip.py` |
+| Band | T3_PRE_TIP (ExecutionBand) — Kelly 0.10 |
+| Steps | (1) Load T1 report → (2) Fetch current live prices (VenueRouter) → (3) Compute price drift per player → (4) Emit CONFIRM/FADE/NEUTRAL signal → (5) Write `logs/t3_YYYYMMDD_HHMM.json` |
+| Failure handling | No T1 report → exit 0 (PIPE-02 hasn't run); no live markets → exit 0 |
+| Gate required | Phase 7 entry; no additional data sources (uses existing VenueRouter) |
+
+---
+
 ### PIPE-04 — Live Capital Pipeline (Phase 8+)
 
 | Attribute | Detail |

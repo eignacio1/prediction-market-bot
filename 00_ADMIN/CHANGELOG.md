@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-05-29 — Phase 6 Idle Build: Execution Bands + Multi-Venue Architecture + Strategy Overview
+
+**Change type:** Architecture expansion — Phase 6 idle period (waiting for paper bet accumulation T-070)
+**Summary:** Full Phase 7 architecture skeleton deployed during idle period. (1) **ExecutionBand framework** — T1–T5 time-horizon bands (execution_bands.py); BandConfig per band (Kelly fraction, compute budget, SLA, pipeline ID, cron schedule); EXECUTION_BANDS.md canonical spec with PDTP assessment 9/10. (2) **Multi-venue architecture** — VenueAdapter Protocol (structural typing; no inheritance required); KalshiVenueAdapter (wraps existing KalshiMarketClient — zero changes to existing client); PolymarketVenueAdapter stub (T-077 slot-in); DFSPickemVenueAdapter stub (PrizePicks/Underdog/Sleeper, new ADR); VenueRouter (kalshi_only default; best_price routing when Polymarket live); PlayerMarket.venue field added (backward-compatible default "kalshi"); VENUE_REGISTRY.md (V-001–V-005 CA-eligible venues). (3) **PIPE-05 T2 skeleton** — run_t2_sameday.py; injury overlay stub (DS-04 pending T-075); cron 17:00 UTC. (4) **PIPE-06 T3 momentum scan** — run_t3_pretip.py; reads T1 pregame report + live VenueRouter prices; CONFIRM/FADE/NEUTRAL signal; edge adjustment ×1.15/×0.75; Kelly 0.10; cron */15 21-23 UTC. (5) **STRATEGY_OVERVIEW.md** — Section 5 Execution Bands PDTP added (full 4-pass analysis; 9/10 self-assessment); upstream links updated. (6) **62 new tests** — 267→329/329 passing; test_execution_bands.py, test_c5_venue_adapter.py, test_c5_venue_router.py. (7) **Governance** — PIPELINES_JOBS.md (PIPE-05/06); ENVIRONMENTS.md (VENUE_ROUTER_MODE, POLYMARKET_API_KEY, DFS keys); INTERFACES_CONTRACTS.md (IF-VENUE-ADAPTER, IF-ROUTER); ARCHITECTURE_OVERVIEW.md (Phase 6 idle build section). (8) **Slash commands updated** — /ctx /hygiene /pregame /status /retrain all reflect new components.
+**ADR references:** ADR-0001/002/003/004 (all unchanged); new ADRs needed for DFS pick'em venues (Phase 7+)
+**Artifacts created:** execution_bands.py, c5_execution/venue_adapter.py, c5_execution/venue_router.py, run_t2_sameday.py, run_t3_pretip.py, EXECUTION_BANDS.md, VENUE_REGISTRY.md, test_execution_bands.py, test_c5_venue_adapter.py, test_c5_venue_router.py
+**Artifacts modified:** kalshi_client.py (venue field), ARCHITECTURE_OVERVIEW.md, INTERFACES_CONTRACTS.md, PIPELINES_JOBS.md, ENVIRONMENTS.md, STRATEGY_OVERVIEW.md, MEMORY_BANK.md, TODO_NEXT.md, all 8 slash commands
+**Tests:** 267 → 329/329 passing
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | Phase 7 architecture skeleton 🟡 deployed
+**Changed by:** DS
+
+---
+
 ## 2026-05-29 — Phase 6 Active: VPS Deployed, Paper Trading Live, Qualitative Pipeline Validated
 
 **Change type:** Phase 6 entry — multiple major deliverables across two session days (2026-05-28/29)  

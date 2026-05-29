@@ -86,6 +86,9 @@ _OUTPUT_COLUMNS = [
     "game_date",
     "season",
     "season_type",
+    "matchup",           # Raw MATCHUP string from nba_api (e.g. "OKC vs. SAS")
+    "is_home_game",      # 1 = home ("vs."), 0 = away ("@"), null if unparseable
+    "opponent_team_abbr",# 3-letter opponent team abbreviation parsed from MATCHUP
     "min",
     "pts",
     "reb",
@@ -147,7 +150,7 @@ def _normalize_game_log_df(
         # nba_api PlayerGameLog column → IF-C1-C2 column
         "GAME_ID": "game_id",
         "GAME_DATE": "game_date",
-        "MATCHUP": "_matchup",  # kept internally; not in output schema
+        "MATCHUP": "matchup",   # retained in output schema (v1.3.0+)
         "WL": "_wl",
         "MIN": "min",
         "FGM": "fgm",
@@ -184,6 +187,20 @@ def _normalize_game_log_df(
 
     # Normalize game_date to YYYY-MM-DD string
     df["game_date"] = pd.to_datetime(df["game_date"]).dt.strftime("%Y-%m-%d")
+
+    # Derive home/away and opponent abbreviation from MATCHUP string.
+    # Formats: "TEAM vs. OPP" (home) or "TEAM @ OPP" (away).
+    if "matchup" in df.columns:
+        df["is_home_game"] = (
+            df["matchup"].str.contains(r"\bvs\.", na=False, regex=True)
+            .astype("Int8")
+        )
+        df["opponent_team_abbr"] = df["matchup"].str.extract(
+            r"(?:vs\.\s*|@\s*)([A-Z]{2,4})", expand=False
+        )
+    else:
+        df["is_home_game"] = pd.array([pd.NA] * len(df), dtype="Int8")
+        df["opponent_team_abbr"] = None
 
     # Keep only output schema columns (drop internal _* and any surplus cols)
     present = [c for c in _OUTPUT_COLUMNS if c in df.columns]

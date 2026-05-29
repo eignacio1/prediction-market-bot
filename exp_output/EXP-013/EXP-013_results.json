@@ -1,0 +1,162 @@
+{
+  "exp_id": "EXP-013",
+  "session_id": "EXP-013-436E29C1",
+  "run_at": "2026-05-29T16:00:59.043Z",
+  "n_fitted_players": 50,
+  "test_rows_nb": 2692,
+  "nb_brier": 0.267121,
+  "nb_ece": 0.107185,
+  "nb_auc": 0.573662,
+  "lr_brier_full": 0.24606,
+  "lr_brier_subset": 0.24606,
+  "delta_nb_lr_brier": -0.021061,
+  "hyp_007_verdict": "FALSIFIED",
+  "competitive_gate": 0.01,
+  "dist_summary_sample": [
+    {
+      "player_id": 2544,
+      "dist_type": "nb",
+      "mu": 27.36,
+      "r": 22.045,
+      "n_samples": 233
+    },
+    {
+      "player_id": 201142,
+      "dist_type": "nb",
+      "mu": 28.05,
+      "r": 27.433,
+      "n_samples": 221
+    },
+    {
+      "player_id": 201572,
+      "dist_type": "nb",
+      "mu": 13.81,
+      "r": 6.468,
+      "n_samples": 224
+    },
+    {
+      "player_id": 201939,
+      "dist_type": "nb",
+      "mu": 26.31,
+      "r": 10.81,
+      "n_samples": 241
+    },
+    {
+      "player_id": 201942,
+      "dist_type": "nb",
+      "mu": 24.85,
+      "r": 14.032,
+      "n_samples": 279
+    },
+    {
+      "player_id": 202681,
+      "dist_type": "nb",
+      "mu": 26.3,
+      "r": 14.17,
+      "n_samples": 192
+    },
+    {
+      "player_id": 202695,
+      "dist_type": "nb",
+      "mu": 23.18,
+      "r": 13.87,
+      "n_samples": 135
+    },
+    {
+      "player_id": 202696,
+      "dist_type": "nb",
+      "mu": 18.08,
+      "r": 14.557,
+      "n_samples": 284
+    },
+    {
+      "player_id": 202710,
+      "dist_type": "nb",
+      "mu": 20.91,
+      "r": 11.363,
+      "n_samples": 211
+    },
+    {
+      "player_id": 203078,
+      "dist_type": "nb",
+      "mu": 20.62,
+      "r": 9.736,
+      "n_samples": 181
+    },
+    {
+      "player_id": 203081,
+      "dist_type": "nb",
+      "mu": 26.84,
+      "r": 11.336,
+      "n_samples": 205
+    },
+    {
+      "player_id": 203110,
+      "dist_type": "nb",
+      "mu": 8.34,
+      "r": 5.78,
+      "n_samples": 216
+    },
+    {
+      "player_id": 203114,
+      "dist_type": "nb",
+      "mu": 16.44,
+      "r": 7.514,
+      "n_samples": 177
+    },
+    {
+      "player_id": 203468,
+      "dist_type": "nb",
+      "mu": 21.07,
+      "r": 10.268,
+      "n_samples": 245
+    },
+    {
+      "player_id": 203471,
+      "dist_type": "nb",
+      "mu": 13.44,
+      "r": 4.273,
+      "n_samples": 262
+    },
+    {
+      "player_id": 203497,
+      "dist_type": "nb",
+      "mu": 13.54,
+      "r": 10.921,
+      "n_samples": 264
+    },
+    {
+      "player_id": 203507,
+      "dist_type": "nb",
+      "mu": 30.63,
+      "r": 18.524,
+      "n_samples": 246
+    },
+    {
+      "player_id": 203897,
+      "dist_type": "nb",
+      "mu": 23.82,
+      "r": 12.347,
+      "n_samples": 217
+    },
+    {
+      "player_id": 203932,
+      "dist_type": "nb",
+      "mu": 14.78,
+      "r": 8.945,
+      "n_samples": 249
+    },
+    {
+      "player_id": 203944,
+      "dist_type": "nb",
+      "mu": 22.1,
+      "r": 9.355,
+      "n_samples": 240
+    }
+  ],
+  "lr_comparison": {
+    "brier": 0.2461,
+    "ece": 0.0342,
+    "auc": 0.5765
+  }
+}
