@@ -2,9 +2,9 @@
 
 **Purpose:** Define what qualitative signals are, how they enter the pipeline, how they are versioned, and what temporal integrity rules govern their use in model training and inference.  
 **Owner (role):** Research Lead (RL) + Architecture Owner (AO)  
-**Status:** CANONICAL — 2026-05-28 (initial structure; T-058 context)  
+**Status:** CANONICAL — 2026-05-28 (updated after EXP-007 positive signal; three-layer amplification principle added)  
 **Last reviewed:** 2026-05-28  
-**Next review:** Before first qualitative feature experiment (EXP-006+); after any new qualitative source is registered  
+**Next review:** After EXP-008 (PRF one-hot); after QualitativeAmplifier first experiment  
 **Staleness triggers:** New qualitative source registered; operationalization of an existing source completed; temporal integrity protocol revised  
 **Upstream links:** DATA_FLOWS_LINEAGE.md, INTERFACES_CONTRACTS.md (IF-DS-Q-C2)  
 **Downstream links:** 05_RESEARCH_EXPERIMENTS/DATA_SOURCES/QUALITATIVE_REGISTRY.md, c2_feature_store/qualitative_store.py  
@@ -134,11 +134,70 @@ Step 8 is required before any qualitative feature is promoted to production (ENV
 
 ---
 
-## 7. Current Qualitative Sources
+## 7. The Three-Layer Auxiliary Architecture
+
+Qualitative signals are explicitly **auxiliary** to quantitative computation. They do not replace rolling box-score features; they enhance them in a structured hierarchy. This hierarchy has three layers with distinct roles and distinct failure modes.
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  LAYER 1 — QUANTITATIVE  (F-001–F-031)                               │
+│  "What has this player done recently?"                               │
+│  Source: nba_api rolling box-score (per-game, shift(1) window)       │
+│  Signal: works in the AGGREGATE — 10 RBG is 10 RBG                  │
+│  Failure mode: cannot distinguish structural player type             │
+│   → Wemby's 10 RBG ≠ Zubac's 10 RBG in implication                 │
+├──────────────────────────────────────────────────────────────────────┤
+│  LAYER 2 — QUALITATIVE   (F-100–F-299)                               │
+│  "Who is this player structurally?"                                  │
+│  Source: PAM v4 PRF archetypes + modifiers (seasonal cadence)        │
+│  Signal: player TYPE — role, tendencies, structural profile          │
+│  Failure mode: applied uniformly — does not account for context      │
+│   → M-16 (clutch) applied equally to OT and 20-pt blowouts          │
+├──────────────────────────────────────────────────────────────────────┤
+│  LAYER 3 — AMPLIFICATION (F-300+)                                    │
+│  "When does this player's qualitative profile matter most?"          │
+│  Source: F-100+ × game context signals (per-game, from L1 features) │
+│  Signal: CONDITIONAL qualitative effect — archetype × situation      │
+│  Principle: qualitative factors are amplified in high-leverage,      │
+│   high-variance, or emotionally-loaded game contexts                 │
+│   → M-17 (High Variance) × long cold streak = strong signal         │
+│   → M-16 (Clutch) × close game = strong signal                      │
+│   → PRF-1 (Heliocentric) × clutch possession = dominant signal      │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**Why ERI v0 failed (and what it teaches):**
+The pruned ERI features (F-036–F-038: eri_prev_hot, eri_prev_cold, eri_consec_cold_games) measured momentum from outcomes but applied the signal uniformly across ALL game contexts. The signal existed but was diluted — a hot player in a 20-point blowout carries the same eri_prev_hot flag as a hot player entering overtime. Layer 3 addresses this by making qualitative effects conditional on game context. ERI-style momentum signals re-emerge naturally as F-300+ amplification features once they are gated by situational context rather than applied globally.
+
+**The sports betting implication:**
+In the aggregate, the mathematics resolves. Over thousands of player-game observations, rolling box-score statistics predict outcomes with measurable Brier improvement. What makes sports betting uncertain is the "loose variable" layer — qualitative factors that cause specific games to deviate from the aggregate. These loose variables are not uniformly distributed: they cluster in high-stakes, emotionally loaded, momentum-driven situations. Layer 3 is the mechanism for mapping this effect rather than averaging it away.
+
+**Implementation status:**
+- Layer 1: ✅ IMPLEMENTED (F-001–F-031, FEATURE_VERSION 1.2.0)
+- Layer 2: ✅ IMPLEMENTED (F-100–F-181, QS-2026-05-28-002, EXP-007 POSITIVE_SIGNAL)
+- Layer 3: 🔲 SKELETON (F-300+, QualitativeAmplifier, OQ-021 defines study)
+
+---
+
+## 8. PRF Weighted One-Hot Encoding
+
+The PAM v4's weighted hybrid notation (PRF-X [N%] / PRF-Y [M%]) must be encoded properly as model input. Integer encoding (`prf_primary = 9`) implies spurious ordinality — PRF-9 is not "more than" PRF-1. The correct encoding is **weighted one-hot**: 15 continuous features `prf_w01`…`prf_w15` where values sum to 1.0 and hybrid weights distribute fractionally.
+
+| Player | prf_primary | prf_secondary | prf_hybrid_weight | prf_w09 | prf_w11 | all others |
+|--------|-------------|---------------|-------------------|---------|---------|-----------|
+| Gobert (PRF-9 pure) | 9 | 0 | — | 1.00 | 0.00 | 0 |
+| Mobley (PRF-9 [60%] / PRF-11 [40%]) | 9 | 11 | 0.60 | 0.60 | 0.40 | 0 |
+| Draymond (PRF-11 [50%] / PRF-3 [30%]) | 11 | 3 | 0.50 | 0.00 | 0.50 | prf_w03=0.30 |
+
+This encoding is implemented in `QualitativeSignalStore.compute_prf_onehot()`. Feature IDs: `prf_w01`…`prf_w15` (F-103–F-117, replacing F-100/F-101/F-102 integer columns).
+
+---
+
+## 9. Current Qualitative Sources
 
 | DS-ID | Name | Status | Coverage | Operationalized |
 |-------|------|--------|----------|-----------------|
-| DS-01 | Player_Attribute_Matrix v4 (PAM) | Registered (SNAP-2026-05-22-001); not operationalized | 2026 Conference Finals rosters | ❌ Pending full 50-player classification + schema implementation |
+| DS-01 | Player_Attribute_Matrix v4 (PAM) | ✅ ACTIVE — EXP-007 POSITIVE_SIGNAL (+0.0017 Brier, +0.0159 ECE) | 50-player cohort, effective 2021-10-19+ | ✅ QS-2026-05-28-002 (backdated); one-hot encoding EXP-008 |
 | DS-04 | (Reserved — future source) | — | — | — |
 | DS-05 | (Reserved — future source) | — | — | — |
 

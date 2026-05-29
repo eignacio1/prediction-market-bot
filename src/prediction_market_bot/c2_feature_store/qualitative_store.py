@@ -50,19 +50,25 @@ from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 COMPONENT = "C2-QS"
 
-# DS-01 PAM feature columns — names that appear in the merged DataFrame
-# Populated when DS-01 operationalization is complete
-_DS01_PRF_FEATURES: list[str] = [
-    "prf_primary",         # F-100: primary archetype (integer 1–15)
-    "prf_secondary",       # F-101: secondary archetype (integer 0–15; 0=none)
-    "prf_hybrid_weight",   # F-102: primary weight in hybrid notation (float 0–1; NaN if pure)
+# DS-01 PAM raw columns loaded from CSV (used internally, not directly as model features)
+_DS01_PRF_RAW: list[str] = [
+    "prf_primary",       # integer 1–15 (used to compute one-hot; not a model feature)
+    "prf_secondary",     # integer 0–15 (used to compute one-hot; not a model feature)
+    "prf_hybrid_weight", # float 0–1   (used to compute one-hot; not a model feature)
 ]
+
+# Weighted one-hot PRF features (F-103–F-117) — replace raw integer columns
+# prf_w01 = weight assigned to PRF-1 archetype for this player (0.0–1.0)
+# For pure players: prf_w{primary} = 1.0, all others = 0.0
+# For hybrids:      prf_w{primary} = prf_hybrid_weight, prf_w{secondary} = 1-weight
+PRF_ONEHOT_FEATURES: list[str] = [f"prf_w{i:02d}" for i in range(1, 16)]  # F-103–F-117
 
 _DS01_MODIFIER_FEATURES: list[str] = [
     f"mod_{i:02d}" for i in range(1, 33)   # F-150–F-181: binary flags
 ]
 
-DS01_FEATURE_NAMES: list[str] = _DS01_PRF_FEATURES + _DS01_MODIFIER_FEATURES
+# Full feature name list for model input (one-hot PRF + modifiers, no raw integers)
+DS01_FEATURE_NAMES: list[str] = PRF_ONEHOT_FEATURES + _DS01_MODIFIER_FEATURES
 
 # Required columns in any qualitative classification CSV
 _REQUIRED_COLUMNS = {
@@ -347,9 +353,9 @@ class QualitativeSignalStore:
             return False, feature_df
 
         if self._ds01_df is None:
-            # No snapshot loaded — append all-NaN columns and warn
+            # No snapshot loaded — append all-NaN columns (one-hot PRF + modifiers) and warn
             result = feature_df.copy()
-            for col in DS01_FEATURE_NAMES:
+            for col in DS01_FEATURE_NAMES:  # PRF_ONEHOT_FEATURES + modifiers
                 if col not in result.columns:
                     result[col] = float("nan")
             ok = self._log(
@@ -365,9 +371,14 @@ class QualitativeSignalStore:
             return ok, result
 
         try:
-            # Columns to pull from QS snapshot (feature columns + temporal guard columns)
-            qs_cols = ["player_id", "effective_from", "effective_until"] + DS01_FEATURE_NAMES
-            qs_df = self._ds01_df[[c for c in qs_cols if c in self._ds01_df.columns]].copy()
+            # Columns to pull from QS snapshot: raw PRF integers + modifiers + temporal guards.
+            # prf_w01…prf_w15 are DERIVED (computed below) — they don't exist in the CSV.
+            raw_join_cols = (
+                ["player_id", "effective_from", "effective_until"]
+                + _DS01_PRF_RAW          # prf_primary, prf_secondary, prf_hybrid_weight
+                + _DS01_MODIFIER_FEATURES  # mod_01…mod_32
+            )
+            qs_df = self._ds01_df[[c for c in raw_join_cols if c in self._ds01_df.columns]].copy()
 
             # Left-join on player_id — one QS row per player, so this is a 1:many join
             # (one classification row joins to many game rows for the same player)
@@ -398,9 +409,16 @@ class QualitativeSignalStore:
                 errors="ignore",
             )
 
+            # Convert raw PRF integers to weighted one-hot (prf_w01…prf_w15)
+            # and drop the raw integer columns from the feature vector
+            result = self.compute_prf_onehot(result)
+            result = result.drop(columns=_DS01_PRF_RAW, errors="ignore")
+
             n_enriched = int((~outside_window).sum())
             n_outside = int(outside_window.sum())
-            n_no_player = int(result["prf_primary"].isna().sum()) - n_outside
+            # prf_w01 is NaN for unclassified rows (outside window or no player match)
+            n_prf_nan = int(result["prf_w01"].isna().sum()) if "prf_w01" in result.columns else 0
+            n_no_player = max(0, n_prf_nan - n_outside)
 
             ok = self._log(
                 "qs_enrich_complete",
@@ -427,6 +445,63 @@ class QualitativeSignalStore:
                 run_id=run_id,
             )
             return False, feature_df
+
+    # ------------------------------------------------------------------
+    # PRF weighted one-hot encoding
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def compute_prf_onehot(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Convert prf_primary / prf_secondary / prf_hybrid_weight columns into
+        15 weighted continuous features prf_w01…prf_w15 (F-103–F-117).
+
+        Encoding rules (PAM v4 weighted hybrid notation):
+          - Pure player (prf_secondary == 0 or NaN): prf_w{primary} = 1.0
+          - Hybrid player: prf_w{primary} = prf_hybrid_weight
+                           prf_w{secondary} = 1 - prf_hybrid_weight
+          - Unclassified (prf_primary NaN): all prf_wXX = NaN
+
+        Values sum to 1.0 per row (for classified rows).
+        Integer encoding (PRF-9 > PRF-1) is replaced — proper ordinality-free
+        representation that lets LR learn separate coefficients per archetype.
+        """
+        result = df.copy()
+        for col in PRF_ONEHOT_FEATURES:
+            result[col] = 0.0
+
+        primary  = pd.to_numeric(df.get("prf_primary",   pd.Series(dtype=float)), errors="coerce")
+        secondary = pd.to_numeric(df.get("prf_secondary", pd.Series(dtype=float)), errors="coerce").fillna(0)
+        weight    = pd.to_numeric(df.get("prf_hybrid_weight", pd.Series(dtype=float)), errors="coerce")
+
+        has_primary = primary.notna() & primary.between(1, 15)
+        is_pure     = has_primary & ((secondary == 0) | secondary.isna())
+        is_hybrid   = has_primary & secondary.between(1, 15)
+
+        # Primary weight: 1.0 for pure players; prf_hybrid_weight for hybrids
+        primary_w = pd.Series(float("nan"), index=df.index)
+        primary_w[is_pure]   = 1.0
+        primary_w[is_hybrid] = weight[is_hybrid].fillna(1.0)
+
+        # Distribute primary weight
+        for prf_id in range(1, 16):
+            col  = f"prf_w{prf_id:02d}"
+            mask = has_primary & (primary == prf_id)
+            result.loc[mask, col] = primary_w[mask]
+
+        # Distribute secondary weight (1 - primary_w)
+        secondary_w = (1.0 - primary_w).where(is_hybrid, other=0.0)
+        for prf_id in range(1, 16):
+            col  = f"prf_w{prf_id:02d}"
+            mask = is_hybrid & (secondary == prf_id)
+            result.loc[mask, col] += secondary_w[mask]
+
+        # Unclassified rows → NaN (not 0 — model must distinguish "no data" from "PRF weight = 0")
+        no_prf = ~has_primary
+        for col in PRF_ONEHOT_FEATURES:
+            result.loc[no_prf, col] = float("nan")
+
+        return result
 
     # ------------------------------------------------------------------
     # Feature name registry

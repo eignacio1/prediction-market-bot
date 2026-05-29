@@ -1,0 +1,40 @@
+{
+  "exp_id": "EXP-008",
+  "session_id": "EXP-008-1BBCE5AB",
+  "run_at": "2026-05-29T01:31:13.245Z",
+  "qs_id": "QS-2026-05-28-002",
+  "encoding": "weighted_one_hot_prf",
+  "feature_counts": {
+    "quantitative": 31,
+    "qualitative": 47,
+    "prf_onehot": 15,
+    "modifiers": 32,
+    "total": 78
+  },
+  "split": {
+    "train": 11931,
+    "val": 817,
+    "test": 2692
+  },
+  "quant_only": {
+    "brier": 0.247561,
+    "brier_improvement": 0.002439,
+    "ece": 0.045561,
+    "auc_roc": 0.576531
+  },
+  "quant_plus_qual": {
+    "brier": 0.246056,
+    "brier_improvement": 0.003944,
+    "ece": 0.03421,
+    "auc_roc": 0.577678
+  },
+  "delta": {
+    "brier": 0.001505,
+    "ece": 0.011351,
+    "auc_roc": 0.001146
+  },
+  "vs_exp007_brier": -0.000156,
+  "exp007_baseline_brier": 0.2459,
+  "null_brier": 0.25,
+  "finding": "POSITIVE \u2014 one-hot encoding improves over integer PRF"
+}
