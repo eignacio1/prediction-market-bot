@@ -146,14 +146,23 @@
 ---
 
 ## Phase 7 — Promotion Gate
-**Gate: G6 Release | Status: 🔴 Not Started**
+**Gate: G6 Release | Status: 🟡 IN PROGRESS (paper trading active; evidence accumulating)**
 
-| Milestone | Owner | Due |
-|-----------|-------|-----|
-| ADR-0005 drafted (live capital authorization) | AO | Phase 7 |
-| Final validation report (TEST set + live paper results) | MV/EO | Phase 7 |
-| Live credentials (ACC-0002 confirmed) | EL | Phase 7 |
-| G6 exit: All release gate criteria; ADR-0005 accepted; APR-0009 signed | DS/RCO | G6 |
+| Milestone | Owner | Due | Status |
+|-----------|-------|-----|--------|
+| Paper trading live (T-060) | EL | — | ✅ 2026-05-29 — PIPE-03 running |
+| 50+ resolved paper bets with positive P&L (T-070) | DS | ~2026-07+ | 🟡 In progress — 0/50 resolved (day 1) |
+| EXP-016 playoff generalization (HYP-009 verdict) | RL | 2026-05-29 | 🟡 In progress |
+| ADR-0005 drafted (live capital authorization) | AO | After evidence | 🔲 Not started |
+| Final validation report (TEST set + live paper results) | MV/EO | After evidence | 🔲 Not started |
+| Live credentials (ACC-0002 confirmed for write-mode) | EL | Phase 7 | 🔲 Not started |
+| G6 exit: All release gate criteria; ADR-0005 accepted; APR-0009 signed | DS/RCO | G6 | 🔲 Not started |
+
+**⚠️ Calendar Constraint (KI-009):**
+The 50-bet evidence gate is time-bounded by the NBA season calendar. The 2025-26 NBA Finals end approximately 2026-06-22. With paper trading at 2 bets/game day (dual-window PIPE-03 raises to ~4/game day), the maximum achievable bet count before season end is 40-80 depending on game frequency. After Finals end, the NBA goes dark until October 2026 (2026-27 preseason).
+
+**DS Decision Required (APR-0016):**
+If 50 resolved bets are not achieved by 2026-06-22, the G6 evidence window formally extends through the first 30 days of the 2026-27 regular season. The threshold may be revised downward to 30 resolved bets + confirmed positive Brier-consistent EV via APR-0016 sign-off. This does not lower the evidence standard — it acknowledges the seasonal nature of the domain and extends the accumulation window.
 
 ---
 

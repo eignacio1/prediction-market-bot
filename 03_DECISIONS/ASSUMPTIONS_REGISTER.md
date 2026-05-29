@@ -142,6 +142,32 @@
 | Owner | RL |
 | Revisit at | Phase 4 feature importance analysis |
 
+### ASM-010 — Strategy A Is the Sole Active Signal Source Through G6
+
+| Field | Detail |
+|-------|--------|
+| Class | C — Operational |
+| Assumption | From paper trading start through G6 gate clearance, Strategy A (ML +EV) is the only strategy generating live paper bets. Strategies B (falsified), G (Kelly sizing derivative of A), H (risk constraints), I (falsified), and C/D/E/F/J/K (all infrastructure-blocked) contribute no independent signal. |
+| Basis | EXP-012 (B falsified), EXP-013 (I falsified), T-077 (E blocked by Polymarket KYC), APR-0010 not signed (C blocked), DS-02 not provisioned (D/J/K blocked) |
+| Risk if false | If A degrades and no other strategy is active, paper P&L will be negative with no compensating signal. G6 evidence would be invalidated. |
+| Validation method | Monitor Strategy A win rate and Brier in rolling 20-bet window via C7. Kill switch triggers at win rate < 48% over 100 bets. |
+| Status | ACKNOWLEDGED — documented constraint; no mitigation until T-077 unblocks E |
+| Owner | DS |
+| Revisit at | G6; when T-077 unblocks Strategy E |
+
+### ASM-011 — Regular-Season Model Generalizes to Playoff Games Within EV Margin
+
+| Field | Detail |
+|-------|--------|
+| Class | A — Research |
+| Assumption | The production model (v1-28483b21, trained on regular season 2021-26) produces calibrated probability estimates during NBA playoff games with Brier degradation < 0.012 vs. regular-season TEST performance (HYP-009 gate). |
+| Basis | Rolling box-score features (pts_l10_mean, etc.) should capture player-level form regardless of game type. However, playoff-specific effects (defensive intensity, rotation compression, rest patterns) are not present in training data. |
+| Risk if false | Model is miscalibrated for playoffs; paper bets placed during 2026 playoffs are unreliable G6 evidence; playoff bets must be weighted as lower-confidence until T-072 model refresh (post-Finals). |
+| Validation method | EXP-016: evaluate Brier on held-out playoff rows (2021-22 through 2024-25 seasons) vs regular season TEST Brier. Δ < 0.012 → confirmed. |
+| Status | UNVALIDATED — EXP-016 in progress (2026-05-29) |
+| Owner | RL |
+| Revisit at | EXP-016 result; T-072 model refresh post-Finals |
+
 ---
 
 ## Falsified Assumptions

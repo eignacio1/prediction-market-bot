@@ -133,6 +133,42 @@
 
 ---
 
+### KI-008 — Production Model Untested on Playoff Data
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-008 |
+| Severity | HIGH |
+| Category | Model validity / data distribution |
+| Description | The production model (v1-28483b21, LR+Platt, 78 features) was trained and validated exclusively on regular season game logs (2021-26). All experiments EXP-001 through EXP-015 used `SEASON_TYPE_REGULAR`. Paper trading began 2026-05-29 during the NBA Western Conference Finals — a fundamentally different distribution: compressed rotations, elevated defensive intensity, no back-to-back scheduling, and high-stakes rest patterns not present in regular season data. |
+| Impact | Paper trading bets placed during playoffs may not reflect the model's validated EV (+$0.0958/bet, EXP-010). If the model is miscalibrated for playoff conditions, paper P&L is not reliable G6 evidence. |
+| Workaround | EXP-016 (T-072) quantifies the Brier degradation on held-out playoff rows. If Δ Brier < 0.012 (HYP-009 gate), paper results remain valid. If falsified, playoff-era paper bets must be annotated as lower-confidence G6 evidence. |
+| Blocks gate | G6 — paper evidence reliability is partially dependent on playoff/regular distinction |
+| Resolution path | 1. Run EXP-016 to get Δ Brier verdict (HYP-009). 2. If falsified, register playoff bets separately in paper portfolio and apply a confidence discount. 3. T-072: after 2025-26 Finals, retrain model with playoff data and evaluate Brier delta (ADR required). |
+| Open question | None — resolution path is clear |
+| Registered | 2026-05-29 |
+| Status | OPEN — EXP-016 in progress |
+
+---
+
+### KI-009 — G6 50-Bet Gate Unreachable Within 2025-26 Season
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-009 |
+| Severity | MEDIUM |
+| Category | Project timeline |
+| Description | The G6 gate requires 50+ resolved paper bets with positive P&L. Paper trading commenced 2026-05-29 with the NBA Western Conference Finals in progress. At ~2 bets per game day and ~10-15 remaining playoff games before Finals end (~2026-06-22), the maximum achievable bet count before season end is ~30-45. After the Finals, the NBA goes dark until the 2026-27 season opens in October 2026. |
+| Impact | G6 gate slips to Q1 2027 unless (a) the 50-bet threshold is formally adjusted via DS sign-off, or (b) the bet accumulation rate increases via the dual-window cron (PIPE-03 at 22:00 UTC + 01:30 UTC). |
+| Workaround | Dual-window PIPE-03 cron (2026-05-29 update) increases expected bets to ~4/game day, making 50 bets achievable within the playoff window if games continue. If season ends short, carry evidence forward to 2026-27 regular season. |
+| Blocks gate | G6 — calendar-bound |
+| Resolution path | DS formal note in APPROVALS_REGISTER.md: G6 evidence window extends through first 30 days of 2026-27 regular season if 50-bet threshold not met by 2026-06-22. Threshold may be revised to 30 resolved bets + Brier-consistent EV via APR-0016. |
+| Open question | None — operator decision required |
+| Registered | 2026-05-29 |
+| Status | OPEN — monitoring bet accumulation rate |
+
+---
+
 ## Resolved Issues
 
 *Populated as issues are resolved.*

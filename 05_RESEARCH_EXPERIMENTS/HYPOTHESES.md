@@ -145,8 +145,26 @@ Each hypothesis follows the structure:
 | Significance threshold | EV_T3/EV_T1 > 0.90 OR confirm-signal bets win_rate > 0.66 (5pp above 61.08% T1 baseline) |
 | Falsification condition | EV_T3/EV_T1 ≤ 0.90 AND confirm-signal bets win_rate ≤ 0.66 across all drift_std scenarios |
 | Consequence if falsified | T3 CONFIRM filter reduces EV materially; T3 band NEUTRAL path preferred over CONFIRM at T3_KELLY; T3 may add value only as gate (allow/block) rather than confidence booster |
-| Status | ⏳ PLANNED → EXP-015 |
-| Experiment(s) | EXP-015 (T3 analytical simulation; HYP-008 verdict) |
+| Status | 🔴 FALSIFIED (2026-05-29, EXP-015) — EV ratio 0.8375 at drift_std=0.020 (gate: > 0.90); CONFIRM bets win at 61.1% (gate: > 66%). T3 useful as FADE gate only, not confidence booster. Kelly reduction (0.25→0.10) not offset by edge multiplier (1.15×). |
+| Experiment(s) | EXP-015 (Monte Carlo, 10,000 draws, 5 drift_std scenarios, EXP-005 TEST set) |
+
+---
+
+## HYP-009 — Regular-Season Model Generalizes to Playoff Games
+
+| Field | Detail |
+|-------|--------|
+| Research Question | KI-008 (playoff validity gap) |
+| H0 (Null) | The production model (v1-28483b21, trained on regular season 2021-26) exhibits Brier degradation ≥ 0.012 on held-out playoff game rows vs. regular season TEST performance |
+| H1 (Alternative) | Playoff Brier degradation < 0.012 vs. regular TEST Brier (0.2461); model generalizes within EV-preserving tolerance |
+| Test method | EXP-016: pull playoff game logs (2021-22 through 2024-25) via nba_api; apply v1.2.0 feature pipeline; train on regular season TRAIN (same split as EXP-005); evaluate on regular TEST and all playoff rows separately |
+| Significance threshold | Δ Brier (playoff − regular TEST) < 0.012 |
+| Falsification condition | Δ Brier ≥ 0.012 on playoff rows — model materially miscalibrated for playoff conditions |
+| Consequence if confirmed | Paper bets placed during 2026 playoffs are valid G6 evidence at full confidence; no weighting adjustment needed |
+| Consequence if falsified | Playoff-era paper bets must be annotated as lower-confidence G6 evidence; T-072 playoff data refresh elevated to pre-G6 requirement; playoff model retraining required (new ADR) |
+| Gate rationale | Current EV = $0.0958/bet against vig $0.030 (3.2× ratio). A +0.012 Brier degradation would reduce expected win rate by ~2pp, cutting EV/bet by ~$0.05 (to ~$0.045). Below this, edge-to-vig ratio becomes unreliable for live capital decisions. |
+| Status | ⏳ PENDING — EXP-016 runner ready (2026-05-29); requires playoff data pull (~15 min via nba_api) |
+| Experiment(s) | EXP-016 (playoff generalization ablation; HYP-009 verdict) |
 
 ---
 
@@ -159,9 +177,10 @@ Each hypothesis follows the structure:
 | HYP-003 | Model edge exceeds vig | 🟢 CONFIRMED | EXP-004 Parts A+B | EV +$0.0855/bet; Part B live Kalshi confirmed 2026-05-28 |
 | HYP-004 | Signal is stable over time | 🟢 CONFIRMED | EXP-003/002/001 (50-player) | AUC 0.567–0.587 consistent; no decay |
 | HYP-005 | ERI + schedule features provide incremental signal | 🔴 FALSIFIED | T-044 ablation | Δ Brier = +0.0002; prune to v1.0.0 (31 features) |
-| HYP-006 | Opp def rating + home/away context add signal | ⏳ PENDING | EXP-012 | Δ Brier ≥ 0.001 vs v1.2.0 baseline |
+| HYP-006 | Opp def rating + home/away context add signal | 🔴 FALSIFIED | EXP-012 | Δ Brier = 0.0000; FEATURE_VERSION stays 1.2.0 |
 | HYP-007 | NB model competitive with LR for calibration | 🔴 FALSIFIED | EXP-013 | NB Brier 0.2671 vs LR 0.2461; Δ=0.0210; multi-line use retained |
-| HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | ⏳ PLANNED | EXP-015 | EV ratio > 0.90 OR confirm win_rate > 66% |
+| HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | 🔴 FALSIFIED | EXP-015 | EV ratio 0.84 at drift_std=0.020; T3 useful as FADE gate only |
+| HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | ⏳ PENDING | EXP-016 | Δ < 0.012 → confirmed; G6 paper evidence valid for playoffs |
 
 ---
 

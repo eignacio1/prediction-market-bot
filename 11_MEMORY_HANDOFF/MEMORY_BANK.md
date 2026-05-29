@@ -230,7 +230,7 @@ These 7 rules are absolute. They must be restored to any context that loses them
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
 **FEATURE_VERSION:** 1.3.0 (33 features: 31 quant + 2 new opponent/venue context)  
-**Tests:** 519/519 passing (was 482; +37 new: EXP-014 ×13, EXP-015 ×20, venue router compat ×4)  
+**Tests:** 533/533 passing (was 519; +14 new: MIN_BET_USD floor ×5, run_resolve ×9)  
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/05/06 ✅  
 **Experiments run:** EXP-001–015 ✅ (014=line shopping; 015=T3 backtest HYP-008 FALSIFIED) | EXP-012 runner ready (needs data pull)  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
@@ -283,7 +283,7 @@ These 7 rules are absolute. They must be restored to any context that loses them
 
 **T-060 ✅ COMPLETE 2026-05-29** — PIPE-03 paper trading pipeline: PaperTrader ($1,000 bankroll, position tracking, nba_api outcome resolution); run_paper_trade.py (C4 active, BOT_ENV=paper guard); cron 01:30 UTC daily; tested live on Droplet.
 
-**Active cron on 157.230.91.33:** 21:00 UTC health check | 21:30 UTC PIPE-02 (inference) | 01:30 UTC PIPE-03 (paper trading)
+**Active cron on 157.230.91.33:** 21:00 UTC health | 21:30 UTC PIPE-02 (inference) | 22:00 UTC PIPE-03 early | 01:30 UTC PIPE-03 late | 06:00 UTC PIPE-03R (resolve-only)
 
 **T-080 ✅ COMPLETE 2026-05-29** — Complement lock scanner: `c5_execution/complement_lock_scanner.py`; `LockOpportunity` + `ComplementLockScanner`; `scan_snapshot()` (all markets) + `scan_single()` (targeted); 22 tests; detection-only — APR-0010 required before any execution; sorted by net_profit descending.
 

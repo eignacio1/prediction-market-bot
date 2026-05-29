@@ -186,7 +186,7 @@ def _normalize_game_log_df(
     df["ingested_at"] = _utc_now_iso()
 
     # Normalize game_date to YYYY-MM-DD string
-    df["game_date"] = pd.to_datetime(df["game_date"]).dt.strftime("%Y-%m-%d")
+    df["game_date"] = pd.to_datetime(df["game_date"], format="mixed").dt.strftime("%Y-%m-%d")
 
     # Derive home/away and opponent abbreviation from MATCHUP string.
     # Formats: "TEAM vs. OPP" (home) or "TEAM @ OPP" (away).
@@ -532,7 +532,7 @@ class NBAIngestionClient:
             df["snapshot_id"] = self._snapshot_id
             df["ingestion_run_id"] = run_id
             df["ingested_at"] = _utc_now_iso()
-            df["game_date"] = pd.to_datetime(df["game_date"]).dt.strftime("%Y-%m-%d")
+            df["game_date"] = pd.to_datetime(df["game_date"], format="mixed").dt.strftime("%Y-%m-%d")
 
             ok = self._logger.info(
                 COMPONENT,

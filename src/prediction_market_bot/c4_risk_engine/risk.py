@@ -35,6 +35,7 @@ Hard limits (TBD at G4 — stubs only):
   MAX_DAILY_LOSS              — daily stop-loss
   MAX_CONCURRENT_POSITIONS    — open position count limit
   MAX_DRAWDOWN_PCT            — portfolio drawdown trigger
+  MIN_BET_USD (10.0)          — minimum bet floor; sub-floor bets rejected
 
 Kill switch integration (NFR-03):
   If any hard limit is breached:
@@ -79,6 +80,11 @@ DEFAULT_KELLY_FRACTION: float = 0.25
 
 # Minimum edge required to enter a position (even after Kelly sizing)
 MIN_EDGE_TO_APPROVE: float = 0.02
+
+# Minimum position size in USD. Bets sized below this floor carry negligible
+# P&L signal and inflate position counts without contributing evidence.
+# Applies in all modes (paper and live). Change requires ADR evidence.
+MIN_BET_USD: float = 10.0
 
 # Hard limit stubs — TBD at G4 review
 # Values are placeholders; must be set in RISK_APPETITE_CONSTRAINTS.md before G5
@@ -521,6 +527,28 @@ class RiskEngine:
                     eval_id, "kelly_size_zero", checks_passed, forecast_id
                 )
             checks_passed.append("kelly_size_positive")
+
+            # CHECK 7 — Minimum bet floor (paper + live)
+            if approved_size < MIN_BET_USD:
+                ok = self._log(
+                    "risk_eval_rejected",
+                    {
+                        "risk_eval_id": eval_id,
+                        "reason": "min_bet_floor",
+                        "approved_size": approved_size,
+                        "min_bet_usd": MIN_BET_USD,
+                    },
+                    severity="INFO",
+                    session_id=session_id,
+                    risk_eval_id=eval_id,
+                    forecast_id=forecast_id,
+                )
+                if not ok:
+                    all_ok = False
+                return all_ok, self._build_rejection(
+                    eval_id, "min_bet_floor", checks_passed, forecast_id
+                )
+            checks_passed.append("min_bet_floor")
 
             # ------------------------------------------------------------------
             # APPROVED

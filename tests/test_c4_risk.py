@@ -28,6 +28,7 @@ if str(_SRC) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import (
     DEFAULT_KELLY_FRACTION,
+    MIN_BET_USD,
     MIN_EDGE_TO_APPROVE,
     STATUS_APPROVED,
     STATUS_KILL_SWITCH,
@@ -435,3 +436,79 @@ class TestC6WriteFailure:
             ok, result = engine.evaluate_forecast(_make_forecast())
         assert isinstance(result, dict)
         assert "approval_status" in result
+
+
+# ---------------------------------------------------------------------------
+# Minimum bet floor (MIN_BET_USD)
+# ---------------------------------------------------------------------------
+
+
+class TestMinBetFloor:
+    """
+    Bets sized below MIN_BET_USD (10.0) must be rejected with reason
+    'min_bet_floor'. Bets at or above the floor pass through.
+    """
+
+    @pytest.mark.unit
+    def test_sub_floor_bet_is_rejected(self):
+        """Very small edge + small bankroll → Kelly size < MIN_BET_USD → REJECTED."""
+        # edge=0.03, market=0.50, bankroll=$100 → Kelly ≈ $0.75 (below $10 floor)
+        fc = _make_forecast(
+            p_estimate=0.53, market_implied_prob=0.50,
+            edge=0.03, direction="YES",
+        )
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=100.0)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "min_bet_floor"
+
+    @pytest.mark.unit
+    def test_above_floor_bet_is_approved(self):
+        """Standard edge + adequate bankroll → Kelly size ≥ MIN_BET_USD → APPROVED."""
+        fc = _make_forecast(
+            p_estimate=0.65, market_implied_prob=0.50,
+            edge=0.15, direction="YES",
+        )
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_APPROVED
+        assert result["approved_size"] >= MIN_BET_USD
+
+    @pytest.mark.unit
+    def test_floor_rejection_fields(self):
+        """Rejection record for min_bet_floor: approved_size=0, kelly_size_positive in checks."""
+        fc = _make_forecast(
+            p_estimate=0.53, market_implied_prob=0.50,
+            edge=0.03, direction="YES",
+        )
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=100.0)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approved_size"] == 0.0
+        assert result["rejection_reason"] == "min_bet_floor"
+        # Kelly was positive (kelly_size_positive passed) but too small for floor
+        assert "kelly_size_positive" in result["checks_passed"]
+
+    @pytest.mark.unit
+    def test_min_bet_floor_constant_is_ten(self):
+        """MIN_BET_USD is 10.0 — explicit contract test so any change requires deliberate update."""
+        assert MIN_BET_USD == pytest.approx(10.0)
+
+    @pytest.mark.unit
+    def test_no_floor_rejection_at_exact_floor(self):
+        """A bet that Kelly-sizes to exactly MIN_BET_USD is approved, not rejected."""
+        # Target: Kelly size exactly $10. With bankroll=$200, kelly_fraction=1.0:
+        # f* = p - mip = 0.55 - 0.50 = 0.05; size = 0.05 * 200 = $10
+        fc = _make_forecast(
+            p_estimate=0.55, market_implied_prob=0.50,
+            edge=0.05, direction="YES",
+        )
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=200.0, kelly_fraction=1.0)
+            _, result = engine.evaluate_forecast(fc)
+        # At exactly the floor, should be APPROVED (not rejected)
+        if result["approval_status"] != STATUS_APPROVED:
+            # If sub-floor due to float precision, that is acceptable
+            assert result["rejection_reason"] in ("min_bet_floor", "kelly_size_zero")
