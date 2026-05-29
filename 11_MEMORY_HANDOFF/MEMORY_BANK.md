@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-28 (EXP-004 Parts A+B ✅ — HYP-003 🟢 CONFIRMED; APR-0007 ACCEPTED; **G5 gate CLOSED**; DS-02-B-001 RESOLVED; hygiene fixes H-001/H-002/H-003 applied)  
+**Last reviewed:** 2026-05-29 (Phase 6 fully active — VPS live at 157.230.91.33; PIPE-02 + PIPE-03 deployed; paper trading running; qualitative pipeline validated EXP-006–011; ADR-0004 confirmed retained)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -17,13 +17,13 @@
 | Field | Value |
 |-------|-------|
 | Project | Prediction Market Trading Bot |
-| Current phase | **Phase 5 COMPLETE → Phase 6 Planning** (G5 ✅ CLOSED 2026-05-28; APR-0007 ACCEPTED) |
+| Current phase | **Phase 6 ACTIVE — Paper Trading** (G5 ✅ CLOSED 2026-05-28; PIPE-02 + PIPE-03 deployed 2026-05-29) |
 | Operator | Earl Ignacio |
 | Started | 2026-05-21 |
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **G5 CLOSED 2026-05-28** — APR-0007 ACCEPTED; EXP-004 Parts A+B ✅; HYP-003 🟢 CONFIRMED (EV +$0.0855/bet, 37 live markets, session EXP-004-FE3E2169); DS-02-B-001 RESOLVED; hygiene fixes H-001/002/003; 267/267 tests |
+| Last major milestone | **Phase 6 PIPE-03 deployed 2026-05-29** — VPS live (DigitalOcean NYC3, 157.230.91.33); PIPE-02 (inference) + PIPE-03 (paper trading) running via cron; paper bankroll $1,000 initialized; qualitative pipeline active (EXP-007 +0.0017 Brier, +0.0159 ECE); EV +$0.0958/bet (EXP-010); ADR-0004 confirmed retained after EXP-011 GBM test |
 
 ---
 
@@ -266,9 +266,26 @@ These 7 rules are absolute. They must be restored to any context that loses them
 8. **ACC-0002 ✅** — Kalshi read-only API key provisioned
 9. **T-057 ✅ 2026-05-28** — T-3 hygiene check: H-001 (`penalty="l2"` in C3), H-002 (same in sensitivity tests), H-003 (`df.apply()` replaced with `_build_target()` in run_exp004); 267/267 tests green
 
-**APR-0007 ACCEPTED 2026-05-28. G5 CLOSED. Phase 6 Planning begins.**
+**APR-0007 ACCEPTED 2026-05-28. G5 CLOSED. Phase 6 ACTIVE.**
 
-**T-058 ✅ COMPLETE 2026-05-28** — EXP-005 data refresh: 5 seasons (2021-26), 15,590 rows, 11,931 TRAIN; TEST = 2025-26 reg season (2,692 rows); Brier +0.0024 / ECE 0.0456 / AUC 0.5765; model v1-9939a6a5; SNAP-2026-05-28-002. Production candidate for Phase 6 paper trading.
+**T-058 ✅ COMPLETE 2026-05-28** — EXP-005 data refresh: 5 seasons (2021-26); TEST Brier +0.0024 / ECE 0.0456; model v1-9939a6a5 (SNAP-2026-05-28-002).
+
+**Qualitative pipeline (2026-05-28/29):**
+- QUALITATIVE_SIGNALS.md + QUALITATIVE_REGISTRY.md — three-layer architecture documented (L1 quant / L2 qual / L3 amplification)
+- QS-2026-05-28-001 (effective_from 2025-10-22) → EXP-006: Δ Brier = 0.0000 (expected — all TRAIN before effective_from)
+- QS-2026-05-28-002 (backdated QTI-03; 42 players → 2021-10-19) → EXP-007: **+0.0017 Brier / +0.0159 ECE — POSITIVE SIGNAL**
+- EXP-008 (PRF one-hot prf_w01…prf_w15): Δ vs EXP-007 = negligible (LR insensitive to ordinality at this scale)
+- EXP-009 (Layer 3 amplification, 35 features): Δ = -0.0004 — L3 needs non-linear model class
+- EXP-010 (EV re-estimation, hotel wifi): **EV +$0.0958/bet** (vs EXP-004's +$0.0855); live vig 0.030; 871 bets; 61.1% win rate
+- EXP-011 (HistGradientBoosting vs LR): **LR RETAINED** — HGBC Δ = -0.0008 (below ADR trigger 0.003); ADR-0004 unchanged
+
+**Production model (current best):** LR L1+L2, 78 features, QS-2026-05-28-002, Brier 0.2461, ECE 0.0342, v1-28483b21
+
+**T-059 ✅ COMPLETE 2026-05-29** — VPS live: DigitalOcean NYC3, Ubuntu 24.04, 157.230.91.33; Python 3.12 + sklearn 1.8.0 venv; model retrained on VPS (v1-28483b21); deploy/ infrastructure; 8-point health check all green; Kalshi API reachable from datacenter IP.
+
+**T-060 ✅ COMPLETE 2026-05-29** — PIPE-03 paper trading pipeline: PaperTrader ($1,000 bankroll, position tracking, nba_api outcome resolution); run_paper_trade.py (C4 active, BOT_ENV=paper guard); cron 01:30 UTC daily; tested live on Droplet.
+
+**Active cron on 157.230.91.33:** 21:00 UTC health check | 21:30 UTC PIPE-02 (inference) | 01:30 UTC PIPE-03 (paper trading)
 
 See TODO_NEXT.md for session-level task tracking.
 
@@ -278,11 +295,11 @@ See TODO_NEXT.md for session-level task tracking.
 
 | Metric | Status |
 |--------|--------|
-| M1 Artifact Freshness | All Phase 5 artifacts updated 2026-05-28; MEMORY_BANK, TODO_NEXT, RUN_INSTRUCTIONS, MODEL_CARD, SENSITIVITY_STRESS_TESTS, CAPACITY_PLANNING all current ✅ |
-| M2 Open Question Count | 11 open OQs — 4 resolved (OQ-001/003/006/015); remaining non-critical-path ✅ |
-| M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004); ADR-0005 pending at G6 ✅ |
-| M4 Assumption Validation | ASM-001–009; EXP-001–003 validated 3 experiments ✅ |
-| M5 Risk Register Currency | DS-02-B-001 RESOLVED 2026-05-28; 5 active risks remain; all non-blocking for G5 ✅ |
-| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** — APR-0007 ACCEPTED 2026-05-28; Phase 6 Planning active |
-| M7 Component Implementation | C1 ✅ C2 ✅ C3 ✅ C4 ✅ C6 ✅ C7 ✅ C8 ✅ C5 ✅; Backtester ✅; **267/267 tests**; hygiene H-001/002/003 applied |
-| M8 Experiment Progress | EXP-001/002/003 ✅ COMPLETE; **EXP-004 Parts A+B ✅ COMPLETE**; HYP-003 🟢 CONFIRMED (+$0.0855 EV/bet; session EXP-004-FE3E2169) |
+| M1 Artifact Freshness | MEMORY_BANK, TODO_NEXT, PLAN, CHANGELOG all updated 2026-05-29 ✅ |
+| M2 Open Question Count | OQ-017 ✅ RESOLVED (PRF one-hot); OQ-020 ✅ RESOLVED (QTI-03 standard); OQ-021 open (L3 amplification study design) |
+| M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004); ADR-0005 pending at G6; ADR-0004 confirmed retained (EXP-011) ✅ |
+| M4 Assumption Validation | EXP-001–011 complete; qualitative signal validated (EXP-007); GBM vs LR resolved (EXP-011) ✅ |
+| M5 Risk Register Currency | All risks non-blocking; DS-02-B-001 RESOLVED; hotel wifi + datacenter IP both confirmed working ✅ |
+| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED**; Phase 6 ACTIVE — PIPE-02 + PIPE-03 deployed on VPS |
+| M7 Component Implementation | C1–C8 ✅; PaperTrader ✅; QualitativeSignalStore ✅; QualitativeAmplifier (stub) ✅; **267/267 tests** |
+| M8 Experiment Progress | EXP-001–011 all complete; best model LR L1+L2 Brier 0.2461; EV +$0.0958/bet (EXP-010); paper trading live |

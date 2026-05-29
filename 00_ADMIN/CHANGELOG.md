@@ -2,13 +2,25 @@
 
 **Purpose:** Record all significant project-level changes in reverse-chronological order. NOT a git commit log — this tracks architectural, governance, and scope changes.  
 **Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-28 (G4 Evidence Gate CLOSED — TEST set evaluated; ADR-0004 ACCEPTED; Phase 5 active)  
+**Last reviewed:** 2026-05-29 (Phase 6 ACTIVE — VPS deployed; PIPE-02+PIPE-03 running; qualitative pipeline validated; paper trading live)  
 **Next review:** Updated continuously; reviewed weekly at DIR  
 **Staleness triggers:** Any major change without a corresponding entry  
 **Upstream links:** 03_DECISIONS/DECISION_LOG/ (ADRs are the decision record; this is the timeline view)  
 **Downstream links:** 11_MEMORY_HANDOFF/MEMORY_BANK.md  
 **Decision references:** ADR-0001  
 **Confidence:** 10/10 — Clean slate  
+
+---
+
+## 2026-05-29 — Phase 6 Active: VPS Deployed, Paper Trading Live, Qualitative Pipeline Validated
+
+**Change type:** Phase 6 entry — multiple major deliverables across two session days (2026-05-28/29)  
+**Summary:** Complete Phase 6 activation. (1) **G5 CLOSED / APR-0007 ACCEPTED** — EXP-004 Parts A+B (HYP-003 🟢 CONFIRMED; EV +$0.0855/bet; 37 live markets); DS-02-B-001 RESOLVED (hotel wifi + datacenter IP both pass Kalshi WAF). (2) **T-058 EXP-005** — 5-season model refresh (2021-26); 15,590 rows; TEST Brier +0.0024/ECE 0.0456 on 2025-26; model v1-9939a6a5. (3) **Qualitative signal pipeline** — Three-layer architecture documented (L1 quant/L2 qual/L3 amplification); QUALITATIVE_SIGNALS.md + QUALITATIVE_REGISTRY.md; QualitativeSignalStore implemented; QS-2026-05-28-001/002 (50 players classified; QS-002 backdated QTI-03); EXP-006 Δ=0 (expected); EXP-007 +0.0017 Brier/+0.0159 ECE POSITIVE SIGNAL; EXP-008 PRF one-hot (prf_w01…prf_w15) negligible vs EXP-007; EXP-009 L3 amplification Δ=-0.0004 (LR cannot exploit); EXP-010 EV +$0.0958/bet (hotel wifi, live vig 0.030); EXP-011 HGBC vs LR — LR RETAINED/ADR-0004 unchanged. (4) **T-059 VPS** — DigitalOcean NYC3 Droplet 157.230.91.33; Ubuntu 24.04; Python 3.12+sklearn 1.8.0 venv; model retrained natively (v1-28483b21); deploy/ infrastructure; 8-point health check all pass. (5) **T-060 PIPE-03** — PaperTrader ($1,000 paper bankroll; nba_api outcome resolution; C4 active); run_paper_trade.py; cron 01:30 UTC daily; tested live.  
+**ADR references:** ADR-0001/002/003/004 (all accepted); ADR-0004 confirmed retained after EXP-011  
+**Artifacts created:** qualitative_store.py, qualitative_amplifier.py, paper_trader.py, run_paper_trade.py, run_pregame.py, train_and_save_model.py, deploy/, run_exp005–011.py, QS-2026-05-28-001/002, QUALITATIVE_SIGNALS.md, QUALITATIVE_REGISTRY.md, qualitative_data/pam_v4/  
+**Artifacts modified:** ENVIRONMENTS.md (ENV-02 VPS), PIPELINES_JOBS.md (PIPE-02 cron), DATA_FLOWS_LINEAGE.md (F-100+/QTI rules), INTERFACES_CONTRACTS.md (IF-DS-Q-C2), OPEN_QUESTIONS.md (OQ-017/020 resolved; OQ-021 added), forecaster.py (all-NaN imputation fix), APPROVALS_REGISTER.md (APR-0007 ACCEPTED), HYPOTHESES.md (HYP-003 CONFIRMED), RID_LOG.md (DS-02-B-001 RESOLVED)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE  
+**Changed by:** DS
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-28 (G4 Evidence Gate CLOSED — TEST Brier +0.0084/ECE 0.0247; ADR-0004 ACCEPTED APR-0012; Phase 5 active)  
+**Last reviewed:** 2026-05-29 (Phase 6 ACTIVE — G5 CLOSED; VPS deployed; PIPE-02+PIPE-03 running; paper trading live; EXP-006–011 complete)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -135,20 +135,36 @@
 | ADR-0004 (LR+Platt model class confirmation) | AO | ✅ 2026-05-28 — T-047; APR-0012 ACCEPTED |
 | G4 TEST set evaluation | MV | ✅ 2026-05-28 — T-048; Brier +0.0084/ECE 0.0247/AUC 0.6062 |
 
-## Current Phase: Phase 5 — Operational Readiness
+## Phase 5 — Operational Readiness ✅ COMPLETE
 
-**Gate:** G5 Operational | **Target:** TBD | **Status:** 🟡 Active — Started 2026-05-28
+**Gate:** G5 Operational | **Closed:** 2026-05-28 | **Status:** ✅ APR-0007 ACCEPTED
 
-### Phase 5 Key Deliverables
+| Deliverable | Owner | Status |
+|------------|-------|--------|
+| C7 Monitoring + Kill Switch (T-049) | EL | ✅ 0.340ms drill; APR-0013 |
+| C8 Visual Dashboard (T-050) | EL | ✅ 3 panels; CLI |
+| Kill switch drill TC-007 (T-051) | EL/DS | ✅ KS-C8D7D90AF942 |
+| EXP-004 HYP-003 Parts A+B (T-052) | RL | ✅ EV +$0.0855/bet; CONFIRMED |
+| Sensitivity tests ST-001–004 (T-053) | MV | ✅ All PASS |
+
+---
+
+## Current Phase: Phase 6 — Paper Trading
+
+**Gate:** G6 Release (live capital) | **Started:** 2026-05-29 | **Status:** 🟢 Active
+
+### Phase 6 Key Deliverables
 
 | Deliverable | Owner | Priority | Status |
 |------------|-------|----------|--------|
-| C7 Monitoring + Kill Switch implementation (T-049) | EL | HIGH | 🔲 Not started |
-| Kill switch drill (TC-007 — NFR-03 ≤60s) (T-051) | EL/DS | HIGH | 🔲 Not started — G5 gate blocker |
-| C8 Visual Dashboard — Phase 5 panels (T-050) | EL | HIGH | 🔲 Not started |
-| EXP-004 / HYP-003 — edge vs Kalshi vig (T-052) | RL | HIGH | 🔲 BLOCKED — DS-02 required |
-| Sensitivity/stress tests ST-001–ST-004 (T-053) | MV | MEDIUM | 🔲 Not started |
-| CAPACITY_PLANNING.md stub (T-055) | EL | LOW | 🔲 Not started |
+| Model data refresh 5 seasons (T-058) | EL | HIGH | ✅ 2026-05-28 — EXP-005; Brier +0.0024; v1-9939a6a5 |
+| Qualitative pipeline (QS + EXP-006–008) | RL | HIGH | ✅ 2026-05-28/29 — EXP-007 +0.0017 Brier CONFIRMED |
+| Gradient boosting experiment (T-065/EXP-011) | EL | MED | ✅ 2026-05-29 — LR RETAINED; ADR-0004 unchanged |
+| EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
+| VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
+| Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
+| Accumulate paper evidence 50+ bets (T-070) | DS | HIGH | 🟡 IN PROGRESS — cron fires nightly |
+| ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
 ---
 

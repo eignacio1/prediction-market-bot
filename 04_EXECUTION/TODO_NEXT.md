@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-28 (G5 CLOSED — APR-0007 ACCEPTED; EXP-004 Parts A+B ✅; HYP-003 🟢 CONFIRMED; DS-02-B-001 RESOLVED; hygiene H-001/002/003; 267/267 tests; Phase 6 Planning begins)  
+**Last reviewed:** 2026-05-29 (Phase 6 fully active — T-058/059/060 ✅; VPS live; PIPE-02+PIPE-03 deployed; qualitative pipeline EXP-006–011 complete; paper bankroll $1,000 running)  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  
@@ -85,17 +85,31 @@
 | T-055 | CAPACITY_PLANNING.md — create | EL | LOW | ✅ COMPLETE 2026-05-28 |
 | T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | ✅ COMPLETE 2026-05-28 — `11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-28_G5-readiness.md` |
 
-### Phase 6 — Paper Trading (Next Phase)
+### Phase 6 — Paper Trading (ACTIVE 2026-05-29)
 
-**G5 CLOSED 2026-05-28. Phase 6 (paper trading / pre-live) is next.**
+**G5 CLOSED 2026-05-28. Phase 6 ACTIVE. Paper trading running on VPS.**
 
 | # | Task | Owner | Priority | Status |
 |---|------|-------|----------|--------|
-| T-058 | Model data refresh — retrain on 2024-25 + 2025-26 seasons | EL | HIGH | ✅ COMPLETE 2026-05-28 — EXP-005 (session EXP-005-957B4A9C); 5 seasons; 11,931 TRAIN rows; TEST Brier +0.0024 / ECE 0.0456 / AUC 0.5765 on 2025-26 season; model v1-9939a6a5 (SNAP-2026-05-28-002) |
-| T-059 | VPS provisioning for scheduled cron runs | IO | HIGH | 🔲 NEXT — Datacenter IP bypasses Kalshi CloudFront WAF; needed for automated pre-game runs (~90 min before tip-off) |
-| T-060 | Paper trading pipeline (PIPE-03) implementation | EL | HIGH | 🔲 — C5 order submission stub; paper trade tracking; P&L log |
-| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After paper trading evidence accumulated; not yet |
-| T-062 | Context Pack for Phase 6 handoff | DS | LOW | 🔲 — At start of Phase 6 work |
+| T-058 | Model data refresh — 5 seasons 2021-26 | EL | HIGH | ✅ COMPLETE 2026-05-28 — EXP-005; 11,931 TRAIN; Brier +0.0024; model v1-9939a6a5 |
+| T-059 | VPS provisioning | IO | HIGH | ✅ COMPLETE 2026-05-29 — DigitalOcean NYC3, 157.230.91.33, Ubuntu 24.04, Python 3.12; health check 8/8 pass; cron installed |
+| T-060 | Paper trading pipeline (PIPE-03) | EL | HIGH | ✅ COMPLETE 2026-05-29 — PaperTrader + run_paper_trade.py; $1,000 bankroll; C4 active; nba_api resolution; cron 01:30 UTC |
+| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After 50+ paper bets with positive P&L; not yet |
+| T-062 | Context Pack for Phase 6 | DS | LOW | 🔲 — Create CP-2026-05-29_phase6-active.md |
+| T-063 | OQ-021 Amplification study (EXP-009 done; GBM tried) | RL | MED | ✅ COMPLETE 2026-05-29 — EXP-009 L3 Δ=-0.0004 (LR); EXP-011 GBM Δ=-0.0008; L3 needs more data or context-stratified approach |
+| T-064 | PRF coefficient analysis (EXP-008 one-hot) | RL | MED | ✅ COMPLETE 2026-05-29 — prf_w features implemented; encoded as weighted continuous |
+| T-065 | Gradient boosting model experiment | EL | MED | ✅ COMPLETE 2026-05-29 — EXP-011 HGBC vs LR; LR RETAINED; ADR-0004 unchanged |
+| T-069 | EV re-estimation with refreshed model | RL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-010: EV +$0.0958/bet; win 61.1%; live vig 0.030; 871/2,692 bets |
+
+### Phase 6 — Next Tasks
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| T-070 | Accumulate paper trading evidence (50+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target 50 resolved positions |
+| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | Current cohort = 50 players; expand for better market coverage in playoffs |
+| T-072 | 2025-26 playoffs data pull + model refresh | EL | MED | Regular season model only; retrain with playoff games for better playoff inference |
+| T-073 | DS-04 qualitative source registration | RL | LOW | First new qualitative source beyond PAM (coaching fit, matchup context, etc.) |
+| T-074 | Context Pack CP-2026-05-29 | DS | LOW | Session handoff context pack |
 
 ### Operator Actions Remaining
 
@@ -119,9 +133,7 @@
 
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
-| T-059 | VPS provisioning | Phase 6 planning | Phase 6 start |
-| T-060 | Paper trading pipeline | Model data refresh (T-058) | After T-058 |
-| T-061 | ADR-0005 live capital | Paper trading evidence (G6) | Phase 7 |
+| T-061 | ADR-0005 live capital | 50+ resolved paper positions with positive P&L | After G6 evidence |
+| T-072 | Playoff model refresh | 2025-26 playoff game log availability (in progress) | June 2026 post-Finals |
+| T-073 | DS-04 qualitative source | Operator decision on which source to register next | When ready |
 | — | arb/ incorporation | APR-0010 pending | Indefinite |
-
-**DS-02-B-001: RESOLVED 2026-05-28** — EXP-004 Part B completed on mobile hotspot. VPS (datacenter IP) needed for Phase 6 scheduled runs.
