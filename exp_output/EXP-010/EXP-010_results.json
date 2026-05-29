@@ -1,0 +1,67 @@
+{
+  "exp_id": "EXP-010",
+  "session_id": "EXP-010-0F530AAE",
+  "run_at": "2026-05-29T01:42:59.182Z",
+  "qs_id": "QS-2026-05-28-002",
+  "feature_count": 78,
+  "ds02_online": true,
+  "live_vig": 0.03,
+  "vig_source": "live_DS02",
+  "part_a": {
+    "part": "A",
+    "test_rows": 2692,
+    "brier": 0.246061,
+    "ece": 0.033931,
+    "auc_roc": 0.577732,
+    "brier_improvement": 0.003939,
+    "vig": 0.03,
+    "bets_yes": 252,
+    "bets_no": 619,
+    "bets_pass": 1821,
+    "total_pnl": 83.435,
+    "ev_per_bet": 0.095792,
+    "win_rate": 0.6108,
+    "exp004_ev_per_bet": 0.0855,
+    "delta_ev_vs_exp004": 0.010292
+  },
+  "part_b": {
+    "part": "B",
+    "live_markets_fetched": 40,
+    "cohort_players_matched": 2,
+    "bets": [
+      {
+        "player_name": "De'Aaron Fox",
+        "player_id": 1628368,
+        "prf": "PRF-2",
+        "pts_l10_mean": 15.0,
+        "kalshi_ticker": "KXNBAPTS-26MAY28OKCSAS-SASDFOX4-15",
+        "kalshi_threshold": 15,
+        "mid_price": 0.085,
+        "vig": 0.05,
+        "p_estimate": 0.5694,
+        "edge": 0.4594,
+        "direction": "YES"
+      },
+      {
+        "player_name": "Shai Gilgeous-Alexander",
+        "player_id": 1628983,
+        "prf": "PRF-1",
+        "pts_l10_mean": 29.0,
+        "kalshi_ticker": "KXNBAPTS-26MAY28OKCSAS-OKCSGILGEOUSALEXANDER2-30",
+        "kalshi_threshold": 30,
+        "mid_price": 0.28,
+        "vig": 0.04,
+        "p_estimate": 0.4777,
+        "edge": 0.1777,
+        "direction": "YES"
+      }
+    ],
+    "actionable_count": 2,
+    "has_actionable": true
+  },
+  "exp004_comparison": {
+    "ev_per_bet": 0.0855,
+    "test_set": "2023-24 regular season",
+    "brier_model": 0.2416
+  }
+}

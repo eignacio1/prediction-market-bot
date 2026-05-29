@@ -2,8 +2,8 @@
 C2 Sub-module: Qualitative Amplifier — Layer 3 Context-Conditional Features
 =============================================================================
 Component:    C2 (Feature Store) — Layer 3 amplification sub-module
-Phase active: Phase 6+ (pending first amplification experiment)
-Status:       SKELETON — architecture defined; implementation pending OQ-021 study design
+Phase active: Phase 6+
+Status:       IMPLEMENTED — 2026-05-28 (EXP-009)
 Feature IDs:  F-300–F-399
 Interfaces:   Consumes Layer 1 (F-001–F-031) + Layer 2 (F-100+) features
               Produces F-300+ interaction/amplification features
@@ -125,14 +125,11 @@ class QualitativeAmplifier:
     Layer 1 game-context signals. Produces per-game amplification scores
     that reflect WHEN a player's qualitative profile matters most.
 
-    Status: SKELETON — compute_amplification() is stubbed.
-    Implement after OQ-021 study design is resolved.
-
-    Usage (once implemented)::
+    Usage::
 
         amp = QualitativeAmplifier(logger=audit_logger, snapshot_id=snap_id)
         ok, enriched_df = amp.compute_amplification(
-            feature_df=qualitatively_enriched_df,
+            feature_df=qualitatively_enriched_df,   # must have L1 + L2 features
             session_id=session_id,
         )
         if not ok:
@@ -183,49 +180,95 @@ class QualitativeAmplifier:
             return False, feature_df
 
         result = feature_df.copy()
+        idx = feature_df.index
 
-        # --- STUB: implement each amplification context ---
-        # CTX-2/3: PRF archetype × streak (cold/hot flag)
-        # cold_flag = feature_df.get("pts_cold_flag", pd.Series(0, index=feature_df.index))
-        # hot_flag  = feature_df.get("pts_hot_flag",  pd.Series(0, index=feature_df.index))
-        # for i, prf_col in enumerate(PRF_ONEHOT_FEATURES):
-        #     prf_w = feature_df.get(prf_col, pd.Series(float("nan"), index=feature_df.index))
-        #     result[_PRF_COLD_FEATURES[i]] = prf_w * cold_flag
-        #     result[_PRF_HOT_FEATURES[i]]  = prf_w * hot_flag
-        #
-        # CTX-4: Modifier × season stakes
-        # stage = _season_stage(feature_df.get("games_played_prior", pd.Series(0)))
-        # m16 = pd.to_numeric(feature_df.get("mod_16", 0), errors="coerce").fillna(0)
-        # m17 = pd.to_numeric(feature_df.get("mod_17", 0), errors="coerce").fillna(0)
-        # m19 = pd.to_numeric(feature_df.get("mod_19", 0), errors="coerce").fillna(0)
-        # m31 = pd.to_numeric(feature_df.get("mod_31", 0), errors="coerce").fillna(0)
-        # result["amp_m16_clutch_stakes"]  = m16 * stage
-        # result["amp_m17_variance_cold"]  = m17 * cold_flag
-        # result["amp_m17_variance_hot"]   = m17 * hot_flag
-        # result["amp_m19_load_stress"]    = m19 * (stage > 0.7).astype(float)
-        # result["amp_m31_late_season"]    = m31 * stage
-        # --- END STUB ---
+        def _col(name: str, default: float = 0.0) -> pd.Series:
+            """Safe column fetch: returns default-filled numeric Series."""
+            if name in feature_df.columns:
+                return pd.to_numeric(feature_df[name], errors="coerce").fillna(default)
+            return pd.Series(default, index=idx, dtype=float)
 
-        # Stub: append NaN columns so schema is stable for experiment runners
-        for col in AMP_FEATURE_NAMES:
-            if col not in result.columns:
-                result[col] = float("nan")
+        # ------------------------------------------------------------------
+        # CTX-2: PRF archetype × cold streak (F-300–F-314)
+        # Captures which archetype players in cold form deviate most from mean.
+        # PRF-1 (heliocentric) cold: team-wide possession disruption.
+        # PRF-9 (rim protector) cold: mostly noise (scoring not their role).
+        # ------------------------------------------------------------------
+        cold_flag = _col("pts_cold_flag")
+        for i, prf_col in enumerate(PRF_ONEHOT_FEATURES):
+            prf_w = feature_df[prf_col] if prf_col in feature_df.columns else pd.Series(float("nan"), index=idx)
+            result[_PRF_COLD_FEATURES[i]] = prf_w * cold_flag
+
+        # ------------------------------------------------------------------
+        # CTX-3: PRF archetype × hot streak (F-315–F-329)
+        # Captures hot-hand amplification by archetype.
+        # PRF-1 (heliocentric) hot: elevated usage + confidence compounds scoring.
+        # PRF-17 (high-variance, via M-17) hot: regression-to-mean risk.
+        # ------------------------------------------------------------------
+        hot_flag = _col("pts_hot_flag")
+        for i, prf_col in enumerate(PRF_ONEHOT_FEATURES):
+            prf_w = feature_df[prf_col] if prf_col in feature_df.columns else pd.Series(float("nan"), index=idx)
+            result[_PRF_HOT_FEATURES[i]] = prf_w * hot_flag
+
+        # ------------------------------------------------------------------
+        # CTX-4/5: Modifier × situational context (F-330–F-334)
+        # ------------------------------------------------------------------
+        stage = _season_stage(_col("games_played_prior"))
+
+        m16 = _col("mod_16")   # Elite Clutch Process
+        m17 = _col("mod_17")   # High Variance / Streak Profile
+        m19 = _col("mod_19")   # Injury-Managed / Load-Sensitive
+        m31 = _col("mod_31")   # Late-Career Athletic Decline
+
+        # amp_m16_clutch_stakes: clutch identity amplified as season progresses.
+        # Late-season games concentrate high-leverage possessions (playoff races,
+        # seeding games) — M-16 players matter more per possession than at mid-season.
+        result["amp_m16_clutch_stakes"] = m16 * stage
+
+        # amp_m17_variance_cold: high-variance player in a cold streak.
+        # M-17 players have wider σ(per-game pts). In cold streaks, their
+        # variance works against consistency — amplified downside signal.
+        result["amp_m17_variance_cold"] = m17 * cold_flag
+
+        # amp_m17_variance_hot: high-variance player in a hot streak.
+        # Opposite direction — hot M-17 players are above their true mean,
+        # elevating the probability of exceeding their rolling threshold.
+        result["amp_m17_variance_hot"] = m17 * hot_flag
+
+        # amp_m19_load_stress: injury-managed player late in season.
+        # M-19 players' injury risk and performance degradation are most
+        # acute in the final quarter of the season (stage > 0.75).
+        # Binary amplification at late-season threshold.
+        late_season = (stage >= 0.75).astype(float)
+        result["amp_m19_load_stress"] = m19 * late_season
+
+        # amp_m31_late_season: late-career athletic decline amplified by season stage.
+        # M-31 players show most visible decline in minutes-intensive late-season
+        # stretches where fatigue accumulates. Continuous stage multiplier.
+        result["amp_m31_late_season"] = m31 * stage
+
+        # ------------------------------------------------------------------
+        # Summary stats for audit log
+        # ------------------------------------------------------------------
+        n_amp_rows = int(result[_PRF_COLD_FEATURES[0]].notna().sum())  # PRF-1 cold as probe
+        n_cold_active = int((cold_flag > 0).sum())
+        n_hot_active  = int((hot_flag > 0).sum())
 
         ok = self._log(
-            "amp_compute_stub",
+            "amp_compute_complete",
             {
                 "output_rows": len(result),
-                "amp_cols_appended": AMP_FEATURE_NAMES,
-                "note": (
-                    "QualitativeAmplifier.compute_amplification() is running in stub mode. "
-                    "All F-300+ features are NaN. Resolve OQ-021 before implementing."
-                ),
+                "amp_feature_count": len(AMP_FEATURE_NAMES),
+                "rows_with_amp_values": n_amp_rows,
+                "cold_flag_active_rows": n_cold_active,
+                "hot_flag_active_rows": n_hot_active,
+                "contexts": ["CTX-2 PRF×cold", "CTX-3 PRF×hot",
+                             "CTX-4 M16×stage", "CTX-4b M17×streak", "CTX-5 M19/M31×stage"],
             },
-            severity="WARNING",
             session_id=session_id, run_id=run_id,
         )
         return ok, result
 
     def get_amplification_feature_names(self) -> list[str]:
-        """Return F-300+ feature names. Empty until stub is implemented."""
-        return []  # Return empty until implemented — avoids NaN-all columns in model
+        """Return F-300+ feature names (35 total: 15 PRF×cold + 15 PRF×hot + 5 mod×context)."""
+        return list(AMP_FEATURE_NAMES)

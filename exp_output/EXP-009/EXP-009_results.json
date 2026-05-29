@@ -1,0 +1,56 @@
+{
+  "exp_id": "EXP-009",
+  "session_id": "EXP-009-E0D048CF",
+  "run_at": "2026-05-29T01:40:47.885Z",
+  "feature_counts": {
+    "quant": 31,
+    "qual": 47,
+    "amp": 35,
+    "total": 113
+  },
+  "split": {
+    "train": 11931,
+    "val": 817,
+    "test": 2692
+  },
+  "l1_only": {
+    "brier": 0.247561,
+    "ece": 0.045561,
+    "auc_roc": 0.576531
+  },
+  "l1_l2": {
+    "brier": 0.246056,
+    "ece": 0.03421,
+    "auc_roc": 0.577678
+  },
+  "l1_l2_l3": {
+    "brier": 0.246415,
+    "ece": 0.0393,
+    "auc_roc": 0.574093
+  },
+  "deltas": {
+    "l2_over_l1": 0.001505,
+    "l3_over_l12": -0.000358,
+    "l3_over_l1": 0.001147
+  },
+  "per_context_ablation": {
+    "CTX-2 PRF\u00d7cold": {
+      "features_added": 15,
+      "brier": 0.246483,
+      "delta_vs_l12": -0.000426
+    },
+    "CTX-3 PRF\u00d7hot": {
+      "features_added": 15,
+      "brier": 0.24617,
+      "delta_vs_l12": -0.000114
+    },
+    "CTX-4/5 mod\u00d7ctx": {
+      "features_added": 5,
+      "brier": 0.246145,
+      "delta_vs_l12": -8.9e-05
+    }
+  },
+  "exp008_baseline_brier": 0.2461,
+  "null_brier": 0.25,
+  "amp_signal": "NEGLIGIBLE"
+}
