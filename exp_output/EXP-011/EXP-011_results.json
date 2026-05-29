@@ -1,0 +1,58 @@
+{
+  "exp_id": "EXP-011",
+  "session_id": "EXP-011-05E7F07F",
+  "run_at": "2026-05-29T01:48:22.972Z",
+  "feature_counts": {
+    "l1": 31,
+    "l12": 78,
+    "l123": 113
+  },
+  "split": {
+    "train": 11931,
+    "val": 817,
+    "test": 2692
+  },
+  "results": {
+    "A_lr_l12": {
+      "brier": 0.246056,
+      "ece": 0.03421,
+      "auc_roc": 0.577678,
+      "brier_improvement": 0.003944,
+      "inference_ms": 3.5
+    },
+    "B_hgbc_l1": {
+      "brier": 0.247424,
+      "ece": 0.043794,
+      "auc_roc": 0.575975,
+      "brier_improvement": 0.002576,
+      "inference_ms": 84.8
+    },
+    "C_hgbc_l12": {
+      "brier": 0.24686,
+      "ece": 0.042783,
+      "auc_roc": 0.577952,
+      "brier_improvement": 0.00314,
+      "inference_ms": 71.7
+    },
+    "D_hgbc_l123": {
+      "brier": 0.247004,
+      "ece": 0.041192,
+      "auc_roc": 0.57686,
+      "brier_improvement": 0.002996,
+      "inference_ms": 66.9
+    }
+  },
+  "lr_baselines": {
+    "l1": 0.2476,
+    "l12": 0.2461,
+    "l123": 0.2464
+  },
+  "hgbc_vs_lr_brier_delta": -0.000804,
+  "l3_effect_on_hgbc": -0.000144,
+  "adr_trigger_threshold": 0.003,
+  "model_class_finding": "LR_RETAINED",
+  "l3_finding": "L3_NOT_EXPLOITED_BY_HGBC",
+  "model_class_message": "HGBC does not improve over LR at this dataset scale. LR (ADR-0004) remains the appropriate model class.",
+  "l3_message": "Layer 3 does not improve HGBC (-0.0001). Amplification contexts may need refinement.",
+  "null_brier": 0.25
+}
