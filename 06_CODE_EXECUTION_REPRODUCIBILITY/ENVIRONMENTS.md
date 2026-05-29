@@ -36,18 +36,25 @@
 
 ---
 
-### ENV-02 — Paper Trading (Phase 6)
+### ENV-02 — Paper Trading VPS (Phase 6)
 
 | Attribute | Detail |
 |-----------|--------|
-| Purpose | Full end-to-end pipeline simulation; no real capital |
-| Who can access | Operator only |
-| Data | Live venue data feed (DS-02) — requires ADR-0003 + ACC-0002 |
-| Live API access | Market data feed only; no order submission API credentials |
-| Capital at risk | Simulated only |
-| Dependency pinning | REQUIRED — identical lock file to paper trading model deployment |
-| Audit logging | REQUIRED — C6 active; paper order records logged |
-| Gate required | ADR-0004 accepted before activation |
+| Purpose | Scheduled pre-game live inference (PIPE-02); paper trading pipeline (PIPE-03 pending T-060) |
+| Who can access | Operator only (Earl Ignacio via SSH) |
+| Infrastructure | VPS — DigitalOcean Droplet or Hetzner CX11; datacenter IP (passes Kalshi CloudFront WAF) |
+| Python version | **3.11** (Homebrew-equivalent; OpenSSL 3.6+ required for Kalshi TLS) |
+| sklearn version | **1.4.2** (must match training environment to load prod_model.joblib cleanly) |
+| Model | `models/prod_model.joblib` — serialized LR+Platt, 78 features, v1-28483b21 |
+| Data | Live DS-02 (Kalshi KXNBAPTS market data) — read-only, no order submission |
+| Live API access | Market data feed only (VENUE_API_KEY read-only); no order submission |
+| Capital at risk | None (paper trading uses simulated fills) |
+| Secrets | `VENUE_API_KEY` in `/opt/prediction-market-bot/.env` (chmod 600; never committed) |
+| Cron schedule | PIPE-02 at 21:30 UTC + 01:30 UTC daily; health check 21:00 UTC |
+| Audit logging | REQUIRED — C6 at `logs/audit.jsonl`; append-only |
+| Deployment | `deploy/DEPLOYMENT_GUIDE.md` — setup.sh + env.template + cron.conf |
+| Gate required | ADR-0004 accepted ✅ (Phase 6 active) |
+| Kill switch | Pre-game runner exits on C6 write failure (NFR-03 compatible); C7 not wired in PIPE-02 |
 
 ---
 

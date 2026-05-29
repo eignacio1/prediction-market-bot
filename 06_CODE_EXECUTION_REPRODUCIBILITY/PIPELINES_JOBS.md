@@ -28,18 +28,20 @@
 | Reproducibility | 100% reproducible given same Snapshot IDs + dependency lock + code commit hash |
 | Gate required | Phase 3 entry |
 
-### PIPE-02 — Live Inference Pipeline (Phase 5+)
+### PIPE-02 — Live Inference Pipeline (Phase 6, ENV-02 VPS)
 
 | Attribute | Detail |
 |-----------|--------|
-| Purpose | Generate forecasts from live market data; no order submission |
-| Trigger | Scheduled or event-driven (TBD at G5) |
-| Steps | (1) Ingest live market data (C1) → (2) Derive features (C2) → (3) Forecast (C3) → (4) Log to C6 → (5) C7 monitors |
-| Inputs | Live DS-02 market data feed |
-| Outputs | Forecast records logged to C6; no orders |
-| Pre-checks | Kill switch active; C7 monitoring active; no live order credentials present |
-| Failure handling | On any step failure: halt pipeline; log to C6; alert via C7 |
-| Gate required | G5 Operational Gate |
+| Purpose | Pre-game edge calculations from live Kalshi prices; no orders; paper trading decision feed |
+| Trigger | **Cron: 21:30 UTC + 01:30 UTC daily** (VPS cron.conf) |
+| Runner | `src/prediction_market_bot/run_pregame.py` |
+| Steps | (1) Load serialized model (models/prod_model.joblib) → (2) Load static L10 features (EXP-005 matrix) → (3) Apply qualitative enrichment (QS-002) → (4) Fetch live Kalshi KXNBAPTS markets → (5) Compute edges per player → (6) Log to C6 → (7) Write `logs/pregame_YYYYMMDD.json` |
+| Inputs | `models/prod_model.joblib`; `exp_output/EXP-005/EXP-005_feature_matrix.csv`; `VENUE_API_KEY` (DS-02 read-only) |
+| Outputs | Forecast records in C6 audit log; `logs/pregame_YYYYMMDD.json` edge report |
+| Pre-checks | healthcheck.sh (21:00 UTC): model present, VENUE_API_KEY set, DS-02 reachable, BOT_C4_ACTIVE absent |
+| Graceful exit | If no active KXNBAPTS markets (off-season, pre-market): exit 0, empty JSON report |
+| Failure handling | DS-02 connectivity failure → exit 1, log error; C6 write failure → exit 1 |
+| Gate required | G5 ✅ (Phase 6 active); VPS provisioned (T-059) |
 
 ### PIPE-03 — Paper Trading Pipeline (Phase 6+)
 
