@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-29 sprint 4 (handoff audit complete; LL-008/009; FAQ Phase 6; KI-010–013; CP-2026-05-29; T-091/092; APR-0016; all workflow structural gaps closed)  
+**Last reviewed:** 2026-05-30 G7 readiness sprint (Bug H/G + ImportError all fixed and deployed; PIPE-03 operational; 550/550 tests; live gate check passed; see SESSION_HANDOFF_20260530_G7READY.md)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -17,13 +17,13 @@
 | Field | Value |
 |-------|-------|
 | Project | Prediction Market Trading Bot |
-| Current phase | **Phase 6/7 ACTIVE** (G5 ✅ CLOSED 2026-05-28; Phase 7 infrastructure built 2026-05-29; paper trading live; experiments EXP-012/013 pending operator run) |
+| Current phase | **Phase 6/7 ACTIVE** (G5 ✅ CLOSED 2026-05-28; Phase 7 infrastructure built 2026-05-29; paper trading live; all 16 experiments complete; all 9 hypotheses resolved) |
 | Operator | Earl Ignacio |
 | Started | 2026-05-21 |
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **Phase 7 infrastructure complete 2026-05-29** — cross-venue market mapper + complement lock scanner (T-080/083); multi-band orchestrator P6 rules (T-084); FEATURE_VERSION 1.3.0 with opp_def_rating + is_home_game (T-075); ScoringDistributionModel NB/Poisson (T-076); TeamStatsStore for opponent features; EXP-012 + EXP-013 runners ready; 464/464 tests |
+| Last major milestone | **G7 readiness sprint complete 2026-05-30** — Bug H (KI-015: drawdown now uses total_realized_pnl; DS sign-off granted), Bug G (KI-014: LOG_DIR now absolute in run_paper_trade.py + run_resolve.py), and ImportError (VPS execution_bands.py stale — synced). 550/550 tests. Live gate check passed: 0.00% realized drawdown, kill switch will not fire, idempotency holds. PIPE-03 fully operational for G7. |
 
 ---
 
@@ -47,7 +47,30 @@ These 9 rules are absolute. They must be restored to any context that loses them
 
 8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. Seasonally bounded by NBA Finals end (~2026-06-22). Window extends to first 30 days of 2026-27 regular season if not reached. Do not revert to 50 without a new APR.
 
-9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.** Judgment calls (threshold changes, sequencing pivots, dark-period plans) are as load-bearing as code changes. Handoff documents must include a "Strategic Decisions" section separate from "Tasks Completed." If a decision was made verbally in a session and is not in these files, it did not happen.
+9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.**
+
+10. **No strategic or architectural document may be marked CANONICAL without `**Decisions logged:** true` in its header.** Every judgment call, threshold choice, and methodology decision in the document must have a corresponding DECISION_LOG.md row before CANONICAL status is granted. PDTP documents require Pass 5 (Decision Extraction) as the final step before CANONICAL. At session start, run the governance scan: `grep -rn "^\*\*Decisions logged:\*\* false" 02_ARCHITECTURE_DESIGN/ 08_MODEL_RISK_GOVERNANCE/ 01_SPEC/`. Any match is a governance debt — resolve or register a T-NNN task before any implementation work. See CHANGE_CONTROL.md — CANONICAL Status and `decisions_logged:` Requirement. Judgment calls (threshold changes, sequencing pivots, dark-period plans) are as load-bearing as code changes. Handoff documents must include a "Strategic Decisions" section separate from "Tasks Completed." If a decision was made verbally in a session and is not in these files, it did not happen.
+
+---
+
+## Session-Start Governance Scan (MANDATORY — Before Any Work)
+
+Before writing any code or modifying any artifact, run:
+
+```bash
+grep -rn "^\*\*Decisions logged:\*\* false" \
+  "02_ARCHITECTURE_DESIGN/" \
+  "08_MODEL_RISK_GOVERNANCE/" \
+  "01_SPEC/" 2>/dev/null
+```
+
+Each match is a **governance debt** — a document with strategic decisions that have not been logged in `DECISION_LOG.md`. For each match:
+1. Either extract its decisions to `DECISION_LOG.md` now (if this session will touch it) and set field to `true`
+2. Or register a `T-NNN` task in `TODO_NEXT.md` for the extraction before proceeding
+
+**This scan takes 30 seconds. Skipping it risks building on undocumented strategic assumptions — the root cause of context rot.**
+
+See `08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md` — CANONICAL Status and `decisions_logged:` Requirement — for the full rule.
 
 ---
 
@@ -68,6 +91,43 @@ Context windows compress. /session-end may not run. If it was decided, it goes i
 "May be revised," "could be adjusted," "threshold may change" = decision NOT made. If you see this language in APPROVALS_REGISTER, ROADMAP, or KNOWN_ISSUES, treat it as an open gap requiring DS escalation, not as a recorded decision. Replace it with either a signed decision or "TBD — requires APR-XXXX before [date]."
 
 **When context window reaches ~80%:** Stop all implementation work. Run /session-end immediately. Produce SESSION_HANDOFF, commit, and push before context compresses further. This is non-negotiable — the cost of losing a session's decisions exceeds the cost of any implementation delay.
+
+---
+
+## Mid-Session Checkpoint Protocol (MANDATORY — Between Every Task Block)
+
+**The problem /session-end alone doesn't solve:** If the context window is exhausted before /session-end is invoked, no SESSION_HANDOFF file is written. The system compacts automatically and silently. Decisions made in the last block are at risk.
+
+**The fix:** Write a lightweight CHECKPOINT file at the boundary between every major task block — not just at session end.
+
+### What triggers a checkpoint (invoke /checkpoint immediately when any of these occur)
+
+| Trigger | Example |
+|---------|---------|
+| PDTP review or holistic analysis completed | Strategy review, architecture holistic pass |
+| Governance sprint completed | DECISION_LOG backfill, decisions_logged: field updates |
+| Implementation sprint completed | All planned tasks done, tests passing |
+| Experiment run and logged | EXP-NNN complete, results in register |
+| Phase gate closed | G0–G9 gate formal close |
+| Category switch | Governance → implementation, implementation → research |
+| **30+ tool calls since last checkpoint** | Hard failsafe — trigger regardless of block status |
+
+### How to invoke
+
+Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` from `00_ADMIN/TEMPLATES/TEMPLATE_CHECKPOINT.md`.
+
+**A checkpoint is NOT a /session-end.** It does not update MEMORY_BANK.md, PLAN.md, or produce a git commit message. It writes ~20 lines capturing: block completed, decisions made, governance state, next block. Takes < 2 minutes.
+
+### What the checkpoint captures
+
+- Block completed (specific — file names, task IDs, test counts)
+- Decisions made this block → already written to DECISION_LOG.md
+- Governance scan result (anchored grep — clean or debt list)
+- Next block: exact next action and file to read first
+
+### The invariant
+
+**No task block starts without a checkpoint for the block just completed.** If a checkpoint does not exist for the prior block, write it before doing anything else. The cost of 2 minutes to write a checkpoint is always less than the cost of reconstructing a lost decision.
 
 ---
 
@@ -254,7 +314,7 @@ Context windows compress. /session-end may not run. If it was decided, it goes i
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
 **FEATURE_VERSION:** 1.2.0 (78 features: 31 quant + 47 qual) — 1.3.0 infrastructure built (F-039/040) but FALSIFIED by EXP-012; version stays 1.2.0  
-**Tests:** 533/533 passing  
+**Tests:** 550/550 passing  
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/05/06 ✅  
 **Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010)  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
@@ -331,7 +391,7 @@ See TODO_NEXT.md for session-level task tracking.
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
 | M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
-| M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-008/009 RESOLVED | T-091 (P&L alert) + T-092 (T-072 elevation) registered |
+| M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-091/092 registered |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
-| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/05/06 ✅ | **533/533 tests** |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **550/550 tests** | Bugs C/D/F/G/H+ordering+ImportError ALL FIXED | **PIPE-03 OPERATIONAL** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |

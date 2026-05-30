@@ -58,6 +58,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import Qualitative
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
+from prediction_market_bot.execution_bands import BAND_REGISTRY
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
@@ -73,7 +74,7 @@ FEATURE_CSV   = Path("exp_output/EXP-005/EXP-005_feature_matrix.csv")
 QS_CSV        = Path("qualitative_data/pam_v4/QS-2026-05-28-002_classifications.csv")
 QS_ID         = "QS-2026-05-28-002"
 SNAPSHOT_ID   = "SNAP-2026-05-28-002"
-LOG_DIR       = Path(os.environ.get("LOG_DIR", "logs"))
+LOG_DIR       = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
 PORTFOLIO_PATH = LOG_DIR / "paper_portfolio.json"
 REPORT_PATH   = LOG_DIR / f"paper_{GAME_DATE}.json"
 
@@ -96,6 +97,20 @@ _NON_FEATURE = {
 
 def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+
+def _ticker_to_game_date(ticker: str) -> str:
+    """Parse game date from Kalshi ticker. KXNBAPTS-26MAY30SASOKC-... -> 2026-05-30."""
+    import re
+    m = re.search(r"-([0-9]{2})([A-Z]{3})([0-9]{2})", ticker)
+    if m:
+        try:
+            from datetime import datetime as _dt
+            return _dt.strptime(f"20{m.group(1)}{m.group(2)}{m.group(3)}", "%Y%b%d").strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+
 
 def _build_target(df: pd.DataFrame) -> pd.Series:
     col = f"pts_l{FEATURE_WINDOW}_mean"
@@ -126,6 +141,19 @@ def main() -> None:
     logger.info("PIPE-03", "paper_run_start",
                 payload={"session_id": SESSION_ID, "game_date": GAME_DATE},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+
+    # ------------------------------------------------------------------
+    # Band registry startup validation (pre-G6 requirement)
+    # Violations are WARNINGS only — SKELETON/BLOCKED are expected states
+    # ------------------------------------------------------------------
+    band_violations = BAND_REGISTRY.validate()
+    if band_violations:
+        for v in band_violations:
+            print(f"[BAND_REGISTRY] WARNING: {v}")
+            logger.warning("PIPE-03", "band_registry_violation",
+                           payload={"violation": v}, session_id=SESSION_ID)
+    else:
+        print("[BAND_REGISTRY] OK — no violations")
 
     # ------------------------------------------------------------------
     # 1. Resolve yesterday's open positions
@@ -178,10 +206,15 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 4. Initialize C4 Risk Engine
     # ------------------------------------------------------------------
-    bankroll = trader.get_state()["bankroll_usd"]
+    _state   = trader.get_state()
+    bankroll = _state["bankroll_usd"]
     engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
-    daily_loss = trader.get_state().get("current_daily_loss", 0.0)
-    n_open_pos = len(trader.get_state().get("open_positions", []))
+    daily_loss = _state.get("current_daily_loss", 0.0)
+    n_open_pos = len(_state.get("open_positions", []))
+    _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
+    # Bug H fix: drawdown is realized losses only — open stakes are not losses
+    _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
+    current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
 
     print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | Open positions: {n_open_pos}")
 
@@ -242,9 +275,14 @@ def main() -> None:
             continue
 
         closest = min(player_mkts, key=lambda m: abs(m.threshold - pts_mean))
+        # Idempotency: skip if already holding an open position on this ticker
+        _open_tickers = {p["kalshi_ticker"] for p in trader.get_state().get("open_positions", [])}
+        if closest.ticker in _open_tickers:
+            print(f"  [IDEMPOTENCY] SKIP {player_name} — {closest.ticker} already in portfolio "
+                  f"({len(_open_tickers)} open tickers; portfolio: {PORTFOLIO_PATH})")
+            continue
         X = _impute(
-            np.array([[row[c] for c in feature_names if c in row.index] +
-                      [np.nan] * sum(1 for c in feature_names if c not in row.index)], dtype=float),
+            np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
             col_medians,
         )
         p_est = float(pipeline.predict_proba(X)[0, 1])
@@ -265,6 +303,7 @@ def main() -> None:
             forecast_record=forecast_rec,
             current_daily_loss=daily_loss,
             current_open_positions=n_open_pos,
+            current_drawdown_pct=current_drawdown_pct,
             session_id=SESSION_ID,
         )
 
@@ -285,7 +324,7 @@ def main() -> None:
                 kalshi_threshold=closest.threshold,
                 mid_price=mid,
                 vig=closest.vig,
-                game_date=datetime.now(tz=timezone.utc).strftime("%Y-%m-%d"),
+                game_date=_ticker_to_game_date(closest.ticker),
                 session_id=SESSION_ID,
             )
             size = approval.get("approved_size", 0)
@@ -293,6 +332,12 @@ def main() -> None:
                   f"edge={edge:+.3f}  mkt={closest.threshold}+ pts")
             if pos:
                 orders.append(pos)
+                _state = trader.get_state()
+                bankroll = _state["bankroll_usd"]
+                _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
+                _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
+                current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
+                engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
                 n_open_pos += 1
                 daily_loss += size if edge < 0 else 0
         else:

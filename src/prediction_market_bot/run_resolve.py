@@ -46,7 +46,7 @@ from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 SESSION_ID     = f"RESOLVE-{uuid.uuid4().hex[:8].upper()}"
 GAME_DATE      = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
-LOG_DIR        = Path(os.environ.get("LOG_DIR", "logs"))
+LOG_DIR        = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
 PORTFOLIO_PATH = LOG_DIR / "paper_portfolio.json"
 SNAPSHOT_ID    = "SNAP-2026-05-28-002"
 

@@ -94,7 +94,7 @@
 | T-058 | Model data refresh — 5 seasons 2021-26 | EL | HIGH | ✅ COMPLETE 2026-05-28 — EXP-005; 11,931 TRAIN; Brier +0.0024; model v1-9939a6a5 |
 | T-059 | VPS provisioning | IO | HIGH | ✅ COMPLETE 2026-05-29 — DigitalOcean NYC3, 157.230.91.33, Ubuntu 24.04, Python 3.12; health check 8/8 pass; cron installed |
 | T-060 | Paper trading pipeline (PIPE-03) | EL | HIGH | ✅ COMPLETE 2026-05-29 — PaperTrader + run_paper_trade.py; $1,000 bankroll; C4 active; nba_api resolution; cron 01:30 UTC |
-| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After 50+ paper bets with positive P&L; not yet |
+| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After 30 resolved paper positions with positive P&L (APR-0016); 0/30 as of 2026-05-29; not yet |
 | T-062 | Context Pack for Phase 6 | DS | LOW | 🔲 — Create CP-2026-05-29_phase6-active.md |
 | T-063 | OQ-021 Amplification study (EXP-009 done; GBM tried) | RL | MED | ✅ COMPLETE 2026-05-29 — EXP-009 L3 Δ=-0.0004 (LR); EXP-011 GBM Δ=-0.0008; L3 needs more data or context-stratified approach |
 | T-064 | PRF coefficient analysis (EXP-008 one-hot) | RL | MED | ✅ COMPLETE 2026-05-29 — prf_w features implemented; encoded as weighted continuous |
@@ -123,8 +123,8 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| T-075 | Strategy B — Opponent def rating + home/away (EXP-012) | EL | HIGH | ✅ COMPLETE 2026-05-29 — FEATURE_VERSION 1.3.0; F-039 is_home_game + F-040 opp_def_rating_l10_mean; C1 schema updated (matchup/is_home_game/opponent_team_abbr); TeamStatsStore built; run_exp012.py ready; HYP-006 pending operator run (~20 min data pull: 50 players + 30 teams × 5 seasons) |
-| T-076 | Strategy I — Poisson/NB scoring distribution model (EXP-013) | EL | HIGH | ✅ COMPLETE 2026-05-29 — ScoringDistributionModel in c3_forecasting/scoring_distribution.py; NB via method-of-moments; price_all_lines() for any threshold; run_exp013.py ready (uses existing EXP-005 matrix); HYP-007 pending operator run |
+| T-075 | Strategy B — Opponent def rating + home/away (EXP-012) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-012-54AEB56C; HYP-006 FALSIFIED; v1.3.0 TEST Brier 0.2480 vs v1.2.0 TEST Brier 0.2480; delta_vs_v12 = -7e-06 (negligible); opp_def_rating + home/away carry no additive signal; FEATURE_VERSION stays 1.2.0; Strategy B remains SKELETON |
+| T-076 | Strategy I — Poisson/NB scoring distribution model (EXP-013) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-013-436E29C1; HYP-007 FALSIFIED; NB Brier 0.2671 vs LR Brier 0.2461; Δ = -0.0211 (gate ≤ 0.010); NB not competitive for calibration; ScoringDistributionModel retained for multi-line pricing use case only; Strategy I remains SKELETON |
 | T-077 | Strategy E — Line Shopping: Polymarket US API access | IO | HIGH | 🟡 INFRASTRUCTURE COMPLETE 2026-05-29 — PolymarketVenueAdapter fully implemented (REST+CLOB, Bearer auth, `_parse_market()` regex, graceful failure); ACC-0003 registered PENDING in ACCESS_REQUESTS.md; RUNBOOK_polymarket-activation.md written; **OPERATOR ACTION REQUIRED: provision API key at polymarket.com → set POLYMARKET_API_KEY in .env → run activation runbook** |
 | T-078 | Strategy E — C5 VenueRouter abstraction layer | EL | HIGH | 🟡 SKELETON COMPLETE 2026-05-29 — VenueAdapter Protocol + KalshiVenueAdapter + VenueRouter built; PIPE-05/06 deployed; Polymarket adapter stub ready; activate at T-077 API provisioning |
 | T-079 | Strategy E — EXP-014: EV re-estimation with line shopping active | RL | MED | Quantify $/bet improvement from best-price routing vs. Kalshi-only baseline |
@@ -140,6 +140,24 @@
 |---|------|-------|----------|-------|
 | T-091 | C7 paper P&L monitoring alert | EL | MED | Add to SystemMonitor: WARNING at total_pnl < -$50 (5% bankroll); L2 at < -$100 (10%); KI-012; requires DS threshold sign-off first |
 | T-092 | Elevate T-072 to required pre-2026-27 | DS | MED | Model staleness KI-013 — T-072 must retrain before paper trading resumes in Oct 2026; not optional; needs new ADR |
+| T-100 | Fix Bug H — drawdown includes open stakes (KI-015) | EL | HIGH | ✅ COMPLETE 2026-05-30 — `run_paper_trade.py` lines 215+334: `current_drawdown_pct = realized_loss / initial_bankroll`; DS sign-off granted by operator same session; deployed VPS; live check: 0.00% realized drawdown |
+| T-101 | Fix Bug G — idempotency check failure (KI-014) | EL | HIGH | ✅ COMPLETE 2026-05-30 — Root cause: `LOG_DIR` was relative path; cron ran from different CWD → fresh portfolio each run → 3× positions. Fix: `_SRC_ROOT / "logs"` absolute default in `run_paper_trade.py` + `run_resolve.py`. Idempotency logging added. Deployed VPS. |
+
+### Governance Debt — decisions_logged: false (registered 2026-05-29)
+
+*These documents contain unlogged strategic decisions. Each must be resolved before the document can be marked CANONICAL. Low priority unless the document is being actively modified — resolve before any session that touches the document.*
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| T-093 | Extract decisions from EXECUTION_ARCHITECTURE.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: 4 execution mode design, paper fill assumptions (mid-price, no slippage), idempotency key requirement, decision cycle ordering |
+| T-094 | Extract decisions from MONITORING_DRIFT_PLAN.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: L1–L4 drift ladder thresholds (Brier 0.255/0.265/0.275/0.280; win rate 54%/52%/48%), monitoring metric selection rationale |
+| T-095 | Extract decisions from METHODOLOGY.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: PRF framework methodology choices, ±0.02 edge threshold selection, strategy architecture A–H sequencing rationale |
+| T-096 | Extract decisions from VENUE_REGISTRY.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: V-001–V-005 venue prioritization order, activation roadmap sequencing, edge formula choices per venue type |
+| T-097 | Extract decisions from RISK_APPETITE_CONSTRAINTS.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: rationale for specific numerical thresholds ($500/bet, $1,000/day, 20% drawdown) attributed to this document specifically |
+| T-098 | Extract decisions from QUALITATIVE_SIGNALS.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: three-layer L1/L2/L3 amplification architecture decision, qualitative signal governance rules |
+| T-099 | Extract decisions from ROADMAP_MILESTONES.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: G7–G9 gate criteria and phase sequencing decisions not yet in DECISION_LOG.md (G0–G5 captured via gate APRs) |
+
+---
 
 ### Operator Actions Remaining
 
@@ -163,7 +181,7 @@
 
 | # | Task | Blocked By | ETA to Unblock |
 |---|------|-----------|----------------|
-| T-061 | ADR-0005 live capital | 50+ resolved paper positions with positive P&L | After G6 evidence |
+| T-061 | ADR-0005 live capital | 30 resolved paper positions with positive P&L (APR-0016) | After G6 evidence |
 | T-073 | DS-04 qualitative source | Operator decision on which source to register next | When ready |
 | T-077 | Polymarket API key (T-077) | polymarket.com KYC approval (1-3 days) | Operator action |
 | T-081 | arb/ incorporation (Strategy C) | APR-0010 pending; T-078 VenueRouter required first | Phase 7 — after T-078 complete |
