@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-31 SESSION 5 COMPLETE — T-111 RESOLVED (Kalshi auth: wrong base URL fixed; _kalshi_base_url() added); T-112 COMPLETE (VPS deploy: cryptography installed, VENUE_PRIVATE_KEY_PATH set, HEAD 92539b9); first live demo order executed (Order 363c5f5b YES $0.62, status executed); submit_order bug fixed; APR-0016 "4 bets/game-day" corrected; bot fully armed; clean G6 evidence begins Finals G1 Jun 3. PRIORITIES: T-110 (G6 monitoring) > T-105 (EXP-017 Part B) > T-109 (resolve_local after each game day)
+**Last reviewed:** 2026-06-01 — T-114 COMPLETE (price discovery now always hits production; _price_discovery_url() added; 30 tests; 438/438 passing). PRIORITIES: T-113 (draft new G6 gate) > T-105 (EXP-017 Part B) > T-110 (G6 monitoring) > T-109 (resolve_local after each game day)
 
 ---
 
@@ -11,7 +11,7 @@
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
 | T-113 | **Draft new G6 promotion gate to supersede APR-0016 — multi-dimensional evidence standard** | HIGH — required before Finals G1 bets count toward G6 | APR-0016 "30 resolved bets" is architecturally weak: count is blind to calibration, commercial validity, and execution quality. Proposed four-tier framework in DECISION_LOG 2026-05-31. Requires operator review and formal APR-XXXX before operative. Suggested structure: Tier 0 preconditions → Tier 1 execution integrity → Tier 2 performance trends → Tier 3 risk control. Statistical floor: ≥50 resolved bets (not the gate itself — a floor for statistical validity). See SESSION_HANDOFF_20260531_2200.md. |
-| T-114 | **Resolve Kalshi demo price validity question before counting Finals G1 bets toward G6** | HIGH — required before any G6 evidence counting | If demo prices are artificial/seeded, edge = model_p - fake_price → meaningless; P&L against fake prices does not prove commercial viability. Fix if artificial: `_price_discovery_url()` in kalshi_client.py always returns production URL; BOT_ENV=paper suppresses order submission only. How to confirm: compare KXNBAPTS price on demo vs. production simultaneously on a live market. If prices diverge → demo is artificial. ~1 hour to implement fix. |
+| ~~T-114~~ | ~~**Resolve Kalshi demo price validity question before counting Finals G1 bets toward G6**~~ | ~~HIGH~~ | ✅ COMPLETE 2026-06-01 — `_price_discovery_url()` added to kalshi_client.py: always returns `_KALSHI_LIVE_BASE_URL` regardless of BOT_ENV. `_get()` now uses `_price_discovery_url()` for unauthenticated calls (market data) and `_kalshi_base_url()` for authenticated calls (portfolio/orders). BOT_ENV=paper now suppresses order submission only — price discovery always hits production. 30 tests added in test_kalshi_client.py; 3 URL-routing invariant tests permanently lock the behavior. 438/438 passing. Decision logged. |
 
 ---
 

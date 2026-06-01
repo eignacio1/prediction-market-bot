@@ -17,6 +17,13 @@ Connectivity requirement (DS-02-B-001 resolved 2026-05-28):
     Correct URLs: demo=external-api.demo.kalshi.co, live=external-api.kalshi.com.
     Base URL now selected by BOT_ENV at runtime.
 
+URL routing (T-114 2026-06-01):
+  - Market data / price discovery (unauthenticated GETs) → always production.
+    BOT_ENV=paper suppresses order submission only. Edge = model_p - market_price
+    requires real market prices or the calculation is meaningless.
+  - Order submission and portfolio endpoints (authenticated) → follow BOT_ENV:
+    paper → demo sandbox; live → production.
+
 Authentication (ADR-0008):
   - Kalshi v2 API uses RSA-PS256 (PSS+SHA256) request signing for all authenticated endpoints
   - Public endpoints (/exchange/status, /markets) require no auth
@@ -85,8 +92,18 @@ _KALSHI_LIVE_BASE_URL = "https://external-api.kalshi.com/trade-api/v2"
 
 
 def _kalshi_base_url() -> str:
+    """Authenticated endpoints (portfolio balance, order submission) — follow BOT_ENV."""
     env = os.environ.get("BOT_ENV", "paper").lower()
     return _KALSHI_LIVE_BASE_URL if env == "live" else _KALSHI_DEMO_BASE_URL
+
+
+def _price_discovery_url() -> str:
+    """Market data (prices, quotes, status) — always production regardless of BOT_ENV.
+
+    T-114: paper mode suppresses order submission only. Using demo prices for edge
+    calculations produces edge = model_p - fake_price which is meaningless.
+    """
+    return _KALSHI_LIVE_BASE_URL
 
 
 SERIES_PLAYER_POINTS = "KXNBAPTS"
@@ -307,8 +324,13 @@ class KalshiMarketClient:
     # ------------------------------------------------------------------
 
     def _get(self, path: str, params: dict | None = None, authenticated: bool = False) -> tuple[bool, Any]:
-        """GET with retry. Returns (ok, response_data)."""
-        url = f"{_kalshi_base_url()}{path}"
+        """GET with retry. Returns (ok, response_data).
+
+        Unauthenticated (market data) → _price_discovery_url() always production.
+        Authenticated (portfolio) → _kalshi_base_url() follows BOT_ENV.
+        """
+        base = _kalshi_base_url() if authenticated else _price_discovery_url()
+        url = f"{base}{path}"
         full_path = f"/trade-api/v2{path}"
 
         for attempt in range(MAX_RETRIES):
