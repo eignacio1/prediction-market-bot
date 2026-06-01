@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-29 (Phase 6 ACTIVE — G5 CLOSED; VPS deployed; PIPE-02+PIPE-03 running; paper trading live; EXP-006–011 complete)  
+**Last reviewed:** 2026-05-31 (Phase 6/7 ACTIVE — T-111/T-112 complete; Kalshi auth fully operational; first live demo order executed; G6 clean evidence begins Finals G1 Jun 3; demo price validity question open before counting bets)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
