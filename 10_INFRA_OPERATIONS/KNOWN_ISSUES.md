@@ -377,6 +377,23 @@
 
 ---
 
+### KI-022 — Single Threshold Per Player: run_paper_trade.py Suppresses ~7-8× Throughput vs. Design Intent
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-022 |
+| Severity | MEDIUM |
+| Category | Throughput / architecture |
+| Description | `run_paper_trade.py` line 290: `closest = min(player_mkts, key=lambda m: abs(m.threshold - pts_mean))` selects ONE market per player — the threshold closest to the player's rolling average. All other available threshold markets for that player are ignored. Kalshi offers ~7–8 threshold markets per player per game (confirmed: 38 markets fetched for 5 matched players in Finals pregame_20260531.json = 7.6 thresholds/player). The bot currently evaluates 1/7.6 of available market depth. |
+| Impact | At current single-threshold behavior: Finals game yields 3–5 bets; regular season game yields ~3–10 bets. If all thresholds were evaluated: Finals game ~11–12 bets; regular season ~25–40 bets from T1 alone. This is a ~7-8× throughput suppression vs. design intent. At full design (all thresholds + T2/T3 + multi-stat), the gap grows to 100×. The 66-bet G6 floor is not crossed in regular season operation with single-threshold behavior; it is trivially crossed with all-threshold behavior. |
+| Workaround | None — Finals constraint means low throughput is tolerable until regular season. Do not mask: this issue directly determines how quickly G6 evidence accumulates. |
+| Blocks gate | Non-blocking for Finals. **Must resolve before 2026-27 regular season paper trading begins** — G6 evidence accumulation depends on it. |
+| Resolution path | Replace line 290 single-select with a loop: evaluate EACH `player_mkts` entry as an independent signal. Idempotency check already uses `closest.ticker` per market — the pattern extends cleanly. Estimated change: ~15 lines. Requires test update. Designate as T-115. |
+| Registered | 2026-06-01 |
+| Status | OPEN — tolerable for Finals; must resolve before 2026-27 regular season. |
+
+---
+
 ## Resolved Issues
 
 *Populated as issues are resolved.*
