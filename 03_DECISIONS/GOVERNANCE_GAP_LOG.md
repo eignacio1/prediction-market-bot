@@ -106,7 +106,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | Operator review 2026-05-31. Earl identified that count is the wrong primary metric — the same conceptual insight that produced ADR-0006 (count wrong in C4) applied to G6. Human synthesis connected these two; no automated scan would have. |
 | Discovery method | Human eye test — NOT caught by any protocol step |
 | Resolution | Q7 added to ARE WE COMPROMISED? in CLAUDE.md and MEMORY_BANK.md. APR-0017 drafted 2026-06-01: 4-tier sequential evidence standard (Tier 0 commercial preconditions, Tier 1 execution integrity, Tier 2 model performance trends, Tier 3 risk control validation). Statistical floor ≥50 resolved bets + ≥5 game nights. Each criterion includes broken-system test. T0-B already met (T-114). |
-| Status | **PENDING OPERATOR SIGN-OFF** — APR-0017 drafted 2026-06-01; awaiting PO/DS sign-off to become operative and supersede APR-0016 |
+| Status | **RESOLVED 2026-06-01** — APR-0017 v2 ACCEPTED (PO/DS sign-off 2026-06-01). Q7 protocol established. APR-0016 superseded. |
 
 ---
 
@@ -117,6 +117,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-001 | 2026-06-01 | ADR-0006: count gate deleted; pipeline + Kelly + kill switch are the risk framework |
 | GG-002 | 2026-06-01 | ADR-0006 covers this; ARE WE COMPROMISED? watchdog added |
 | GG-003 | 2026-06-01 | ADR-0007: GOVERNANCE_GAP_LOG.md mandated; ARE WE COMPROMISED? protocol added |
+| GG-005 | 2026-06-01 | APR-0017 v2 ACCEPTED: all criteria expressed as rates/slopes with derived thresholds; Q7 protocol in CLAUDE.md |
 
 ---
 
