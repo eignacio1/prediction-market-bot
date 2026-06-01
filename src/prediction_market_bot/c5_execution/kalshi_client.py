@@ -533,6 +533,7 @@ class KalshiMarketClient:
         contracts = max(1, math.floor(size_usd / (price_cents / 100.0)))
         actual_cost = round(contracts * price_cents / 100.0, 4)
 
+        # API requires exactly one of yes_price or no_price (not both)
         body: dict[str, Any] = {
             "ticker": ticker,
             "client_order_id": client_order_id,
@@ -540,8 +541,7 @@ class KalshiMarketClient:
             "action": "buy",
             "side": side,
             "count": contracts,
-            "yes_price": price_cents if side == "yes" else (100 - price_cents),
-            "no_price": price_cents if side == "no" else (100 - price_cents),
+            "yes_price" if side == "yes" else "no_price": price_cents,
         }
 
         ok, data = self._post("/portfolio/orders", body)
