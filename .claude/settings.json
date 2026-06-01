@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/earlignacio/Documents/Claude/Projects/Prediction Markets/.claude/hooks/governance_scan.sh'"
+          }
+        ]
+      }
+    ]
+  }
+}

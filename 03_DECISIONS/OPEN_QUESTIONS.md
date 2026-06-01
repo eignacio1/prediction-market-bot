@@ -46,6 +46,14 @@
 
 ---
 
+## Open Questions — Commercial Validity
+
+| ID | Question | Why It Matters | Owner | Target Resolution | Gate |
+|----|----------|----------------|-------|------------------|------|
+| OQ-023 | Does the model generate positive expected value against actual Kalshi market prices — not a 0.50 null baseline? | This is the commercial question the project is built to answer. All EV figures to date (EXP-004, EXP-010) used `mip=0.50`. Kalshi market makers use injury reports, advanced stats, and betting flow. The model does not. If the model cannot beat real prices, the bot has no edge and should not deploy live capital. See KI-017 and GG-004. | RL/DS | EXP-017 (dark period) | G6 — must be answered before live capital |
+
+---
+
 ## Open Questions — Risk / Execution
 
 | ID | Question | Why It Matters | Owner | Target Resolution | Gate |

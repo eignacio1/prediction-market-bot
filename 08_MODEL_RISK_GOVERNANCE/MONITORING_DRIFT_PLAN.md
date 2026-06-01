@@ -9,6 +9,7 @@
 **Downstream links:** 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_model-drift.md, SLA_SLO_SLI.md  
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 6/10 — Monitoring design is complete; thresholds are placeholders pending G4 evidence
+**Decisions logged:** false — L1–L4 drift ladder threshold choices (Brier 0.255/0.265/0.275/0.280; win rate 54%/52%/48%) and monitoring metric selection not yet in DECISION_LOG.md. See T-094 in TODO_NEXT.md.
 
 ---
 

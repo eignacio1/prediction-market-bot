@@ -8,9 +8,39 @@ Do not wait until "a good stopping point." At 80% context: stop all implementati
 
 ---
 
+## /checkpoint vs /session-end — Know the difference
+
+**`/checkpoint`** — Run between task blocks (every 30 tool calls or at every block boundary). Writes a ~20-line `CHECKPOINT_YYYYMMDD_HHMM.md`. Does NOT update PLAN.md, MEMORY_BANK.md, or produce a commit message. Fast (<2 min). See `.claude/commands/checkpoint.md`.
+
+**`/session-end`** (this file) — Run at true session end OR at 80% context. Full update of all navigation artifacts + commit message + SESSION_HANDOFF file. The heavyweight version.
+
+**If /session-end is being run but /checkpoint was NEVER run this session:** Before running Steps 0–7 below, check whether the session included multiple task blocks. If yes, write a CHECKPOINT for each prior block as part of Step 1B (Tasks Completed). The SESSION_HANDOFF supersedes them but the checkpoints serve as the detailed record.
+
+---
+
 Run this at the end of every Claude Code session before closing. Updates all navigation artifacts so the next session has full context.
 
 **CRITICAL:** Step 1A (Strategic Decisions) is mandatory and must run FIRST. Judgment calls that aren't captured here are permanently lost across context windows.
+
+---
+
+## Step 0 — Governance Scan (Run FIRST, before anything else)
+
+Run this exact command:
+```bash
+grep -rn "^\*\*Decisions logged:\*\* false" \
+  "02_ARCHITECTURE_DESIGN/" \
+  "08_MODEL_RISK_GOVERNANCE/" \
+  "01_SPEC/" 2>/dev/null
+```
+
+For each file returned:
+- **If you modified it this session:** extract its decisions to `DECISION_LOG.md` now, then set its `**Decisions logged:**` field to `true` before committing
+- **If you did not modify it:** add a T-NNN task to `TODO_NEXT.md`: "Extract decisions from [FILENAME] → DECISION_LOG.md, set decisions_logged: true"
+
+**A session that creates or modifies a `decisions_logged: false` document without either resolving it or registering a T-NNN is incomplete and represents a governance gap.**
+
+If no matches: write "Governance scan: clean — no decisions_logged: false documents found" and proceed.
 
 ---
 

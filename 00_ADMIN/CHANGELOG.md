@@ -12,6 +12,32 @@
 
 ---
 
+## 2026-05-30 — Bug-Fix Sprint: Bugs C/D/F + Feature Vector Ordering (PIPE-02, PIPE-03)
+
+**Change type:** Bug fix — production pipeline correctness  
+**Summary:** Five source-code bugs fixed across three files, all deployed to VPS at `/opt/prediction-market-bot/`. All fixes were previously catalogued by a 3-consecutive-scan T3 CT audit. **(1) Bug C** (`run_paper_trade.py`): `current_drawdown_pct` was never passed to `engine.evaluate_forecast()` — the drawdown kill switch was permanently dormant. Fix: compute drawdown from `trader.get_state()` at startup and refresh after each bet, pass as `current_drawdown_pct=` argument. **(2) Bug D** (`run_paper_trade.py`): Kelly sizing used a single stale bankroll value for all bets in a run. Fix: reconstruct `RiskEngine` from fresh `trader.get_state()["bankroll_usd"]` after each approved `open_position()`. **(3) Feature vector ordering** (`run_paper_trade.py` + `run_pregame.py`): missing features were appended to the END of the array rather than inserted at canonical index positions, corrupting the feature matrix. Fix: single-pass comprehension `[row[c] if c in row.index else np.nan for c in feature_names]`. **(4) Bug F** (`c2_feature_store/qualitative_store.py`): temporal guard loop iterated over `DS01_FEATURE_NAMES` (which includes `prf_w01…prf_w15` one-hots that don't exist yet at loop time), silently skipping nullification of raw PRF integer columns (`prf_primary`, `prf_secondary`, `prf_hybrid_weight`). Fix: add separate loop over `_DS01_PRF_RAW` before calling `compute_prf_onehot()`. **(5) Post-fix portfolio inspection** revealed two new bugs: KI-014 (idempotency check failure — Fox and SGA each placed 3× on same ticker across cron runs) and KI-015 (drawdown calculation includes open-position stakes, not realized losses — causes kill switch to fire at 23.78% drawdown when $237.84 is in open positions, not lost). KI-014 and KI-015 registered in KNOWN_ISSUES.md; T-100/101 registered in TODO_NEXT.md.  
+**ADR references:** None — all bug fixes, no strategy changes  
+**Artifacts created:** `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260530.md`  
+**Artifacts modified:** `run_paper_trade.py` (Bugs C, D, feature ordering, D post-bet refresh), `run_pregame.py` (feature ordering), `c2_feature_store/qualitative_store.py` (Bug F), `KNOWN_ISSUES.md` (KI-014, KI-015), `TODO_NEXT.md` (T-100, T-101), `MEMORY_BANK.md` (tests 533→550, KI-014/015, milestone update), `CHANGELOG.md` (this entry)  
+**Tests:** 550/550 (up from 533; 17 paper_trader tests added prior session)  
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | G6 gate: 0/30 resolved bets | **PIPE-03 halted by KI-015 (drawdown kill switch firing) — resolve or fix before next bet**  
+**Changed by:** EL
+
+---
+
+## 2026-05-29 — Band Framework Governance + RESULTS_INDEX Full Update (EXP-006–016)
+
+**Change type:** Governance hardening + documentation repair — closes two documentation gaps identified at session start
+**Summary:** Three categories of work completed. **(1) Band framework governance incorporated across all quant strategies:** STRATEGY_OVERVIEW.md — "Band Assignment Registry" section added after header block; 11-row BandSpec table (Strategies A–K) sourced directly from `BAND_REGISTRY.all_specs()` so documentation cannot drift from code. EXECUTION_BANDS.md — "Band Assignment Protocol" section added after Arb Activation Gates; Four-Criterion Test table (C1: compute fit, C2: SLA achievable, C3: signal exists, C4: evidence validated); Band Status Semantics with machine enforcement rationale; 7-step "Adding a New Strategy" checklist. CHANGE_CONTROL.md — new Class A row ("band assignment change for a strategy currently executing live capital"); new "Band Assignment Changes" section with 6-type governance table, SKELETON→ACTIVE promotion 6-step checklist. run_pregame.py (PIPE-02) + run_paper_trade.py (PIPE-03) — `BAND_REGISTRY` imported; `BAND_REGISTRY.validate()` called at startup immediately after logger initialization; violations logged as WARNING only (SKELETON/BLOCKED are expected valid states — hard failure would prevent startup with a healthy registry). **(2) RESULTS_INDEX.md complete rewrite:** All 11 missing experiments (EXP-006 through EXP-016) added. Table split into three sections: Phase 3–4 core (EXP-001–005), Phase 6 model enhancement (EXP-006–011), Phase 6 strategy (EXP-012–016). Key Findings expanded from 6 → 16 numbered entries. Falsified Hypotheses table updated: HYP-006/007/008 added. Validated Hypotheses updated: HYP-009 added, HYP-003 updated with EXP-010 EV. Production Model Reference table added (canonical values for next context window). **(3) TODO_NEXT.md corrections:** T-075 updated from "HYP-006 pending operator run" → EXP-012-54AEB56C result logged (FALSIFIED, delta_vs_v12 = -7e-06). T-076 updated from "HYP-007 pending operator run" → EXP-013-436E29C1 result logged (FALSIFIED, NB Brier 0.2671 vs LR 0.2461). T-061 and Blocked Items both corrected from "50+" → "30 resolved paper positions (APR-0016)" — aligns with APR-0016 which was signed in a prior session but missed in these two locations.
+**ADR references:** No new ADRs — all governance changes to existing documents
+**Artifacts created:** None
+**Artifacts modified:** STRATEGY_OVERVIEW.md (Band Assignment Registry section), EXECUTION_BANDS.md (Band Assignment Protocol section), CHANGE_CONTROL.md (band assignment Class A row + full section), run_pregame.py (BAND_REGISTRY.validate() startup call), run_paper_trade.py (BAND_REGISTRY.validate() startup call), RESULTS_INDEX.md (full rewrite; EXP-006–016 added), TODO_NEXT.md (T-075/076 corrected to FALSIFIED; T-061 + Blocked Items 50→30), CHANGELOG.md (this entry)
+**Tests:** 533/533 (unchanged — governance + documentation only; no code changes)
+**Phase gate status:** G0–G5 ✅ ALL CLOSED | Phase 6 🟢 ACTIVE | G6 gate: 0/30 bets | All 9 hypotheses resolved ✅ | Governance debt: 7 pre-existing (T-093–T-099, unchanged)
+**Changed by:** DS
+
+---
+
 ## 2026-05-29 — Workflow Hardening: PDTP Audit, LL-008/009, KI-010–013, Phase 6 CP, FAQ Phase 6
 
 **Change type:** Governance / process hardening — closes all structural gaps identified by PDTP assessment of handoff/memory retention workflow  

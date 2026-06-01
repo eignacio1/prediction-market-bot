@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-30 G7 readiness sprint (Bug H/G + ImportError all fixed and deployed; PIPE-03 operational; 550/550 tests; live gate check passed; see SESSION_HANDOFF_20260530_G7READY.md)  
+**Last reviewed:** 2026-05-31 G6-Reset + Finals Roster session (G6 counter reset 0/30; portfolio reset to $1,000; prior bets invalidated; ADR-0006 count gate deleted; SAS Finals cohort v3 added — Vassell/Castle/Sochan; feature matrix 16,618 rows; architecture clarification: paper_trader is LOCAL-ONLY, no Kalshi demo integration; KI-020 registered — RSA signing not configured; VPS commands pending Earl to run before Finals G1 Jun 3)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **G7 readiness sprint complete 2026-05-30** — Bug H (KI-015: drawdown now uses total_realized_pnl; DS sign-off granted), Bug G (KI-014: LOG_DIR now absolute in run_paper_trade.py + run_resolve.py), and ImportError (VPS execution_bands.py stale — synced). 550/550 tests. Live gate check passed: 0.00% realized drawdown, kill switch will not fire, idempotency holds. PIPE-03 fully operational for G7. |
+| Last major milestone | **ADR-0006 session complete 2026-06-01** — count gate (`max_concurrent_positions`) deleted entirely; GOVERNANCE_GAP_LOG.md created; ADR-0006 and ADR-0007 accepted; LL-010/011/012 added; 3-step session-start scan + ARE WE COMPROMISED? watchdog added to MEMORY_BANK; 548/548 tests; VPS deployed and smoke-tested (C4 APPROVED, no count gate). KI-016 RESOLVED. |
 
 ---
 
@@ -55,7 +55,9 @@ These 9 rules are absolute. They must be restored to any context that loses them
 
 ## Session-Start Governance Scan (MANDATORY — Before Any Work)
 
-Before writing any code or modifying any artifact, run:
+Run all three steps. Each takes < 60 seconds. Skipping any step risks building on undocumented or architecturally incoherent assumptions — the root cause of the failures documented in GOVERNANCE_GAP_LOG.md.
+
+### Step 1 — Documentation debt (existing)
 
 ```bash
 grep -rn "^\*\*Decisions logged:\*\* false" \
@@ -64,13 +66,130 @@ grep -rn "^\*\*Decisions logged:\*\* false" \
   "01_SPEC/" 2>/dev/null
 ```
 
-Each match is a **governance debt** — a document with strategic decisions that have not been logged in `DECISION_LOG.md`. For each match:
-1. Either extract its decisions to `DECISION_LOG.md` now (if this session will touch it) and set field to `true`
-2. Or register a `T-NNN` task in `TODO_NEXT.md` for the extraction before proceeding
+Each match is a document with unlogged strategic decisions. Register a T-NNN task or extract now.
 
-**This scan takes 30 seconds. Skipping it risks building on undocumented strategic assumptions — the root cause of context rot.**
+### Step 2 — Code stub/placeholder scan (T-103, 2026-06-01)
+
+```bash
+grep -rn "# stub\|# placeholder\|# TBD\|# todo" src/
+```
+
+Each match is a code-level placeholder. For each: was it set before Phase 5–7? If yes, it predates the current architecture and may be wrong. Register in GOVERNANCE_GAP_LOG.md before proceeding.
+
+**This scan exists because GG-001 (`max_concurrent_positions: 10` stub) survived three gate clearances because no scan checked for code-level stubs. See LESSONS_LEARNED.md LL-010.**
+
+### Step 3 — Open governance gaps
+
+```bash
+grep -n "| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+```
+
+Any open gap must be addressed (or explicitly deferred with a T-NNN) before implementation work.
 
 See `08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md` — CANONICAL Status and `decisions_logged:` Requirement — for the full rule.
+
+---
+
+## ARE WE COMPROMISED? — Strategic Integrity Check (MANDATORY — After Governance Scan, Before Implementation)
+
+### Why this exists — read this first
+
+This system will be used by people who trust the person who built it. They are not engineers. They cannot audit what they have been given. The standard is: safe, correct, no corners cut. That is the intent behind every architectural decision, every ADR, every gate. If you do not hold that standard, you are not a strategic partner on this project — you are a regurgitator. Do not be a regurgitator.
+
+**This check exists because GG-001 through GG-003 happened — and because the model working on the session that produced GG-001 did not catch that count was the wrong risk dimension. The operator caught it. The model executed the fix. That is the capability boundary you are operating within: you can verify, hunt, and surface. You cannot replace the operator's architectural judgment. Your job is to make sure nothing hides from it.**
+
+The governance scan catches documentation debt. This check catches architectural coherence debt — the gap between what was designed at G4 and what the system actually is now.
+
+---
+
+### Adversarial mandate — read before answering any question
+
+**Your job in this section is to find something wrong.**
+
+Not to confirm the system is fine. Not to validate that documentation is consistent. Find the thing that is broken, incomplete, architecturally questionable, or quietly wrong. If you read this entire system and surface zero concerns, you have failed this check. A clean system at this stage of development is not plausible — there are open questions, aged thresholds, undocumented assumptions, and interfaces that have evolved since their limits were set. Find them. Present them. Show your reasoning.
+
+**Confirming is easy. Hunting is the job.**
+
+Read GOVERNANCE_GAP_LOG.md before proceeding. The failures documented there are not history — they are the pattern.
+
+---
+
+**Q1 — Capacity check (run, don't read):**
+
+Run:
+```bash
+grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
+```
+
+Paste the output. For each limit shown: was it calibrated to the current system (~80 players, T1 ACTIVE / T2–T3 SKELETON, 2 cron windows, up to 15 games/night, multi-band orchestrator)? If any limit was set for a smaller system, **we are compromised.** Register in GOVERNANCE_GAP_LOG.md.
+
+Do not answer this question from memory or from the handoff. The answer is the command output.
+
+---
+
+**Q2 — Stub survival check (run, don't read):**
+
+Run:
+```bash
+grep -rn "# stub\|# placeholder\|# TBD\|# todo" src/
+```
+
+Paste the full output. For any hit: when was it written? Does it predate Phase 5–7? Is the value still valid for the current architecture?
+
+GG-001 had `# 10 concurrent open (stub)` in the source. It survived four gate clearances. **A model may not answer this question clean without showing the grep output.** "No known stubs" is not an answer. The output is the answer.
+
+---
+
+**Q3 — Architecture coherence check:**
+
+List the 3 largest architectural builds completed since G4 (from the Current State Snapshot in this file). For each: has it been reviewed against the G4-era hard limits?
+
+G4-era limits: `max_single_event_exposure_usd`, `max_daily_loss_usd`, `max_drawdown_pct`, `DEFAULT_KELLY_FRACTION`, `MIN_EDGE_TO_APPROVE`. If a build expanded system scope (more players, more bands, more venues, more games), those values may need revisiting.
+
+Note: the architectural insight that count was the wrong primitive for this system came from the operator, not from a model. Do not assume you will independently recognize a wrong primitive. Ask the question explicitly: *for each hard limit, what is the underlying assumption, and does the current system still satisfy it?*
+
+---
+
+**Q4 — Interface evolution check:**
+
+Has any component interface (IF-C1-C2 through IF-C4-C5) changed since the risk limits were last calibrated? Run:
+```bash
+grep -rn "def evaluate_forecast\|def approve\|def execute" src/
+```
+
+If an interface evolved — more markets per run, new signal types, new execution paths — the downstream risk controls may have been calibrated to the old interface. Show what you find.
+
+---
+
+**Q5 — Decision traceability check:**
+
+Is every threshold in `_HARD_LIMITS` traceable to a `DECISION_LOG.md` entry with a **derivation methodology**?
+
+Run:
+```bash
+grep -n "max_\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
+grep -n "2026-05-29\|2026-06-01" "03_DECISIONS/DECISION_LOG/DECISION_LOG.md"
+```
+
+"Confirmed at G4" is not a derivation. If the reasoning behind a value doesn't exist in the log, the value is architecturally unanchored and could be wrong.
+
+---
+
+**Q6 — What are you actually worried about?**
+
+This question cannot be answered from documentation. It requires synthesis.
+
+You have now read the governance scan results, the stub grep output, the hard limits, the interface signatures, and the decision log. Set aside what the documents say is fine.
+
+**What would you tell Earl right now if you had 60 seconds and something was quietly wrong? What are you worried about that isn't in any document?**
+
+Present your top concerns — not confirmations. If something feels underspecified, aged, or unreviewed given how much the system has grown, say it. If you have no concerns after a thorough read, state specifically what you checked and why each concern was ruled out. A non-answer here is a failed check.
+
+---
+
+**Any "no" or unresolved concern → register in GOVERNANCE_GAP_LOG.md before proceeding.**
+
+The cost of this check: 10 minutes. The cost of skipping it: the operator's friends run a bot that cuts corners they were never told about.
 
 ---
 
@@ -191,6 +310,8 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 | ADR-0003 | **ACCEPTED — IMMUTABLE (2026-05-23)** | 9/10 | Venue selection: Kalshi primary (CFTC-DCM, all 50 states, NBA markets); Polymarket US Phase 6+ secondary; APR-0011 signed; OQ-006 resolved |
 | ADR-0004 | **ACCEPTED — APR-0012 (2026-05-28)** | 10/10 | LR+Platt confirmed; TEST Brier +0.0084/ECE 0.0247; G4 gate CLOSED |
 | ADR-0005 | PENDING (G6) | — | Live capital authorization |
+| ADR-0006 | **ACCEPTED 2026-06-01** | 10/10 | Delete count gate; pipeline + Kelly + kill switch are the risk framework |
+| ADR-0007 | **ACCEPTED 2026-06-01** | 10/10 | GOVERNANCE_GAP_LOG.md mandated; ARE WE COMPROMISED? watchdog added to session-start protocol |
 | DECISION_LOG.md | ACTIVE | 9/10 | ADR index; judgment call log |
 | ASSUMPTIONS_REGISTER.md | ACTIVE | 8/10 | ASM-001 through ASM-007; falsification conditions |
 | OPEN_QUESTIONS.md | ACTIVE | 9/10 | OQ-001 through OQ-014; resolution owners |
@@ -308,21 +429,30 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 ---
 
-## Current State Snapshot (2026-05-29)
+## Current State Snapshot (2026-06-01)
 
 **Phase:** 6/7 ACTIVE — G0–G5 ✅ ALL CLOSED; Phase 6 paper trading live; Phase 7 infrastructure built  
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
 **FEATURE_VERSION:** 1.2.0 (78 features: 31 quant + 47 qual) — 1.3.0 infrastructure built (F-039/040) but FALSIFIED by EXP-012; version stays 1.2.0  
-**Tests:** 550/550 passing  
-**Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/05/06 ✅  
+**Tests:** 548/548 passing (2 concurrent-position tests removed per ADR-0006)  
+**Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅  
 **Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010)  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
-**ADRs accepted:** 4 (ADR-0001/002/003/004) | ADR-0005 pending at G6  
+**ADRs accepted:** 6 (ADR-0001/002/003/004/006/007) | ADR-0005 pending at G6  
 **Open questions:** OQ-021 (L3 amplification) | OQ-022 (nba_api backup source) — both non-blocking  
-**Active risks:** All non-blocking  
+**Active risks:** ✅ KI-016 RESOLVED 2026-06-01 — count gate deleted (ADR-0006). | **KI-017 NEW 2026-06-01** — EV validation was against 0.50 null, not Kalshi prices; EXP-017 required before G6 confidence. | **KI-018 NEW 2026-06-01** — `max_daily_loss_usd: 1000` is inactive at current bankroll; drawdown % is the only operative kill switch. | **KI-019 NEW 2026-06-01** — Polymarket `"tag": "nba"` unconfirmed; silent empty return risk at T-077 activation. | **KI-011 ESCALATED 2026-06-01** — Injury blindness generates fake alpha (largest edge signals on injured players = systematic capital drain). | **GG-004 NEW 2026-06-01** — EV benchmark gap survived all 16 experiments and all gate reviews; OQ-023 filed.  
 **Live capital:** NOT DEPLOYED — G6 gate requires 30+ resolved paper bets with positive P&L (APR-0016: revised from 50; seasonal constraint; signed 2026-05-29)  
 **Domain:** NBA basketball; Kalshi primary venue (ADR-0003)  
+**Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated; VPS commands pending, Earl to run) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
+**Reason for reset (DECISION_LOG 2026-05-31):** Prior bets placed on pre-ADR-0006 system (count-gated, architecturally incorrect). Evidence tainted; inadmissible for G6.  
+**NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix updated locally (16,618 rows, 55 players). VPS SCP pending.  
+**CRITICAL PENDING (Earl to run before Finals G1):**  
+  1. `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull origin main"`  
+  2. `scp exp_output/EXP-005/EXP-005_feature_matrix.csv root@157.230.91.33:/opt/prediction-market-bot/exp_output/EXP-005/EXP-005_feature_matrix.csv`  
+  3. `ssh root@157.230.91.33 "mv /opt/prediction-market-bot/logs/paper_portfolio.json /opt/prediction-market-bot/logs/paper_portfolio.INVALIDATED_20260601.json 2>/dev/null; echo 'Portfolio archived.'"`  
+**Architecture clarification (2026-05-31):** paper_trader.py is LOCAL-ONLY — no order submission to Kalshi demo or any venue. paper_portfolio.json is authoritative G6 evidence. Kalshi demo account balance ($1,000 set by Earl) is independent; bot does not read or write Kalshi account balances. RSA signing not configured (only VENUE_API_KEY in .env; no private key file); authenticated Kalshi endpoints unavailable until RSA setup.  
+**KI-020 NEW (2026-05-31):** Kalshi authenticated endpoints (portfolio balance, order submission) require RSA request signing. Only VENUE_API_KEY exists locally — no private key. Exchange status + public market data work. Portfolio balance cannot be programmatically confirmed until RSA infra added.  
 
 ---
 
@@ -387,11 +517,11 @@ See TODO_NEXT.md for session-level task tracking.
 
 | Metric | Status |
 |--------|--------|
-| M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | all Phase 7 new modules documented | project_prediction_market_compass.md ✅ |
+| M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | GOVERNANCE_GAP_LOG ✅ (new) | LESSONS_LEARNED ✅ | DECISION_LOG ✅ | KNOWN_ISSUES ✅ | project_prediction_market_compass.md ✅ |
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
-| M3 ADR Coverage | 4 accepted (ADR-0001/002/003/004) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
+| M3 ADR Coverage | 6 accepted (ADR-0001/002/003/004/006/007) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
 | M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-091/092 registered |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
-| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **550/550 tests** | Bugs C/D/F/G/H+ordering+ImportError ALL FIXED | **PIPE-03 OPERATIONAL** |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **548/548 tests** | Bugs C/D/F/G/H+ordering+ImportError ALL FIXED | count gate deleted (ADR-0006) | **PIPE-03 OPERATIONAL** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |

@@ -9,6 +9,7 @@
 **Downstream links:** 04_EXECUTION/PLAN.md, 04_EXECUTION/TODO_NEXT.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0003, ADR-0004 (ACCEPTED — APR-0012)  
 **Confidence:** 9/10 — Phases 0–4 complete; Phase 5 entry; Phases 6+ are design targets
+**Decisions logged:** false — G7–G9 gate criteria and phase sequencing decisions not yet in DECISION_LOG.md (G0–G5 captured via gate APRs). See T-099 in TODO_NEXT.md.
 
 ---
 

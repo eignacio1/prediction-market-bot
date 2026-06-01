@@ -9,6 +9,36 @@
 **Upstream links:** METHODOLOGY.md (Section 4 Strategy Architecture A–H); ADR-0002 (forecast-only); ADR-0003 (Kalshi primary); EXECUTION_ARCHITECTURE.md; EXECUTION_BANDS.md; VENUE_REGISTRY.md
 **Downstream links:** METHODOLOGY.md (Section 4); TODO_NEXT.md (activation tasks); ADR-0005 (live capital); execution_bands.py; venue_adapter.py; venue_router.py
 **Confidence:** 8/10 — Mechanics and constraints well-understood; EV estimates are backtested, not live
+**Decisions logged:** true — 9 entries in DECISION_LOG.md (2026-05-29 retroactive batch: strategy architecture A–K, Kelly vs. flat betting, quarter-Kelly fraction, hard bankroll limits, T1–T5 execution bands, Kelly fractions per band, multi-band interaction rules, Phase 7 priority order, EXP-014 elevation of Strategy E)
+
+---
+
+## Band Assignment Registry
+
+**Source of truth:** `src/prediction_market_bot/execution_bands.py` — `BAND_REGISTRY`. This table is machine-generated from `BAND_REGISTRY.all_specs()` and must stay in sync with the code. Any band status change requires a DECISION_LOG entry (see CHANGE_CONTROL.md — Band Assignment Changes).
+
+Full protocol: `02_ARCHITECTURE_DESIGN/BAND_ASSIGNMENT_FRAMEWORK.md`
+
+| Strategy | Signal Type | Detection Band | Execution Band | Band Status | Evidence Basis | Activation Gate | Phase |
+|----------|-------------|---------------|---------------|-------------|---------------|-----------------|-------|
+| A — ML+EV Forecast | model_edge | T1 | T3 | **ACTIVE** | EXP-010 (871 bets; +$0.0958/bet; ECE 0.0342) | G6 (ADR-0005) for live capital; paper active | 6 |
+| B — Data Aggregation | model_edge | T1 | T1 | SKELETON | HYP-005 falsified at N<800; N>2000 required | EXP validating B/D features at N>2000 | 7 |
+| C — Complement Lock Arb | arb_lock | T1 | T3 | **BLOCKED** | APR-0010 pending; arb/ reference-only (RO-001) | APR-0010 + write-capable C5 + T-077 | 7 |
+| D — Statistical Arb | arb_spread | T1 | T2 | **BLOCKED** | DS-02 price history required (≥2 seasons/pair); no ADR | DS-02 upgrade + new ADR + T-077 | 8 |
+| E — Line Shopping | arb_route | T1 | T3 | SKELETON | EXP-014 (+7.8% max EV T1 routing); T3/T4 unvalidated | T-077 Polymarket KYC + VenueRouter multi-venue | 7 |
+| F — Correlated Parlays | model_edge_joint | T1 | T1 | **BLOCKED** | Joint distribution model required; no ADR | New ADR + EXP validating joint P(X,Y) | 7 |
+| G — Kelly Sizing | sizing | — | — | **ACTIVE** | ADR-0004 + EXP-010 calibration confirmation | G6 (ADR-0005) for live capital; paper active | 6 |
+| H — Risk Envelope | risk_envelope | — | — | **ACTIVE** | ADR-0004 + APR-0013 (kill switch tested 0.340ms) | Active at all phases; non-negotiable | 6 |
+| I — Poisson/NB Distribution | model_edge | T1 | T1 | SKELETON | EXP-013 incomplete; ScoringDistributionModel built | EXP confirming NB Brier improvement over LR | 7 |
+| J — Momentum | momentum | T3 | T3 | **BLOCKED** | DS-02 intraday price series required | DS-02 + EXP confirming CONFIRM/FADE win rate | 7 |
+| K — In-Play Scalping | execution_scalp | T4 | T4 | **BLOCKED** | Phase 8+; real-time C5 rebuild required | Phase 8 real-time infra ADR + DS-02 websocket | 8 |
+
+**Status legend:** ACTIVE = validated, executing; SKELETON = built, signals logged, not driving bets; BLOCKED = gate condition unmet, no execution.
+
+**Critical constraints:**
+- T2 and T3 are SKELETON for Strategy A — signals are logged but do not drive bet sizing. T1 is the sole ACTIVE execution band.
+- SKELETON status is machine-enforced: `BandRegistry.validate()` runs at startup; SKELETON/BLOCKED strategies cannot execute bets.
+- Kalshi T3 constraint: `max_api_calls_per_decision = 1` (350ms P90 latency vs. 500ms SLA; hard constraint in `VENUE_BAND_CONSTRAINTS`).
 
 ---
 
@@ -283,171 +313,222 @@ Evidence says individual features are noisy at this data scale. Expected to unlo
 **Classification:** Type 2 — Structural Mispricing (risk-free)
 **Status:** ❌ BLOCKED (APR-0010 pending)
 **Governance:** Blocked per ADR-0002 and RO-001 until APR-0010 signed
+**Full framework:** `02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md` Section 4.1
 
 ### Mechanics
 
-On any binary market, the complement lock condition is:
+On any binary market, the complement lock condition (venue-agnostic form):
 
 ```
-ask_YES + ask_NO < $1.00
+ask_YES + ask_NO < 1.00 - (fee_rate_YES + fee_rate_NO)
 
-Profit = $1.00 - ask_YES - ask_NO - fees
+net_profit = (1.00 - ask_YES - ask_NO)
+             - (ask_YES × fee_rate_YES_venue)
+             - (ask_NO  × fee_rate_NO_venue)
 ```
 
-If this condition holds, simultaneously buying YES and NO guarantees a profit regardless of outcome — one contract always settles at $1.00 while the other settles at $0.00, and total cost was less than $1.00.
+When this holds, simultaneously buying YES and NO guarantees a profit — one always settles at $1.00, cost was less than $1.00 after fees. The venue-agnostic form is critical: the fee structure is injected from `VenueParams.fee_rate`, not hardcoded, enabling single-venue and cross-venue locks to use identical math.
 
-**Example:**
+**Single-venue example (Kalshi, vig 0.030):**
 ```
-ask_YES = $0.44
-ask_NO  = $0.54
-Total   = $0.98 → $0.02 profit guaranteed (before fees)
-After vig ≈ 0.03: net = $0.02 - $0.03 = −$0.01 → NOT profitable
+ask_YES = $0.44, ask_NO = $0.54
+gross = $0.02, net = $0.02 − 0.030×0.44 − 0.030×0.54 = $0.02 − $0.029 = −$0.009 → NO
 ```
 
-This is the key constraint on Kalshi: the vig (0.030 per EXP-010) is typically larger than complement lock gaps. For the strategy to work, the lock condition must be:
+**Cross-venue example (Kalshi YES + Polymarket NO, est. vig 0.020):**
+```
+ask_YES_Kalshi = $0.44, ask_NO_Polymarket = $0.52
+gross = $0.04, net = $0.04 − 0.030×0.44 − 0.020×0.52 = $0.04 − $0.0236 = $0.0164 → YES
+```
 
-```
-ask_YES + ask_NO < $1.00 - 2 × fee_per_contract
-```
+Cross-venue lock is the primary viability path. Single-venue Kalshi locks are rare (vig > typical gap).
+
+### Time-Horizon Segmentation
+
+**Detection band ≠ Execution band.** C is detected at T1/T2 (full market scan) and executed at T3/T4 (verify and fire). The expensive computation happens early; execution is lookup + fire.
+
+| Band | Role | Decision tree | Ops |
+|------|------|--------------|-----|
+| T1 (detection) | Full market scan; build opportunity table | `scan_all_markets()` → compute net_profit per market → filter > 0 → rank → write lookup table | ~50 ops; 30,000ms budget |
+| T2 (refresh) | Re-validate top candidates; update prices | Read T1 table → fetch_current_ask(top-N) → recompute → prune expired | ~10 ops; 5,000ms budget |
+| T3 (verify + fire) | Confirm lock still holds; submit orders | fetch_current_ask(market_id) [1 API call] → compute_net_profit() [1 op] → submit_leg_YES() → submit_leg_NO() | 4–5 ops; 500ms budget |
+| T4 (fire only) | Execute pre-staged orders | lookup_table[market_id] → boolean → fire pre-staged orders | 1–2 ops; 50ms budget |
+| T5 | Not applicable | Near-deterministic settlement removes arb payoff structure | — |
+
+**T4 requirement:** Orders must be pre-staged at T3. At T4 trigger, zero API calls — submit pre-built order objects. Requires `VenueParams.simultaneous_legs = True` or provably sequential sub-50ms execution.
 
 ### When It Appears
 
-- Immediately after a large order moves one side of the book
-- During thin liquidity windows (early morning before game)
-- On markets with stale quotes not yet refreshed
-- Cross-venue: Kalshi YES at $0.44, Polymarket NO at $0.52 → lock at $0.96 (Strategy C + E combined)
+- After large order moves one side of the book (momentary imbalance)
+- Thin liquidity windows (early morning before game-day markets open)
+- Stale quotes on low-volume markets
+- Cross-venue: Kalshi YES + Polymarket NO (primary target once V-002 is live)
 
 ### Risk Profile
 
-| Risk | Severity | Likelihood |
-|------|----------|------------|
-| Second leg fills at worse price (execution risk) | HIGH | MED |
-| Fee change eliminates profitability | MED | MED |
-| API rate limit prevents simultaneous order submission | MED | HIGH |
-| Opportunity window is < 1 second (latency) | HIGH | HIGH |
-
-### Kalshi Constraints
-
-- Requires write-capable API key (ACC-0002 is read-only)
-- Requires simultaneous order submission — current C5 is single-leg sequential
-- Opportunity windows are milliseconds to seconds in efficient markets; Kalshi is less efficient but still fast
+| Risk | Severity | Likelihood | Mitigation |
+|------|----------|------------|------------|
+| Second leg fills at worse price | HIGH | MED | Pre-stage both legs; compute fill_probability_joint before firing |
+| API rate limit blocks simultaneous submission | MED | HIGH | T4 pre-staging; pre-built order objects |
+| Opportunity window < 1 second (latency) | HIGH | HIGH | T1 pre-computation; T4 lookup-only execution |
+| Fee change eliminates profitability | MED | LOW | VenueParams.fee_rate is injected; auto-recalculates |
+| Cross-venue fill mismatch (one fills, one doesn't) | HIGH | MED | EV check: net_profit × fill_probability_joint > 0 before fire |
 
 ### Activation Requirements
 
 1. APR-0010 signed by DS
-2. C5 upgraded to write-capable mode (new key provisioned)
-3. Complement lock scanner added to PIPE-02
-4. Execution engine handles simultaneous two-leg orders
-5. Test: fill both legs before price moves on ≥95% of simulated opportunities
+2. C5 write-capable mode (ACC-0002 upgrade or new key)
+3. `ComplementLockScanner` built (ARB_FRAMEWORK.md Section 9)
+4. `ArbOpportunityLog` wired (centralized record across venues)
+5. T3 verify + fire tested: fill both legs on ≥95% of simulated opportunities
 
-### Confidence in Strategy Concept: 9/10 | Confidence in Kalshi Viability: 5/10
+### Confidence in Strategy Concept: 9/10 | Confidence in Kalshi-only Viability: 3/10 | Confidence in Cross-Venue Viability: 7/10
 
-The mathematical logic is airtight. The operational reality — vig > typical lock margin — means this only works in exceptional liquidity windows or cross-venue. High effort for uncertain frequency of opportunity.
+Single-venue: vig (0.030) is typically larger than lock gap. Cross-venue: materially more viable once Polymarket is active (estimated vig 0.020 + lower liquidity pressure). C is a Phase 7 strategy conditioned on V-002 provisioning (T-077).
 
 ---
 
-## Strategy D — Statistical Arbitrage (Mean Reversion)
+## Strategy D — Statistical Arbitrage (OU Mean Reversion)
 
 **Classification:** Type 1/2 hybrid — Relative mispricing between correlated markets
 **Status:** ❌ BLOCKED (DS-02 real-time price feed required)
 **Governance:** Phase 6+ gate; requires new ADR for activation
+**Full framework:** `02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md` Section 4.2
 
 ### Mechanics
 
-Two player prop markets for correlated players exhibit a stable spread. When the spread deviates beyond a z-score threshold, the spread is expected to revert.
+Two player prop markets for correlated players exhibit a stable spread. When the spread deviates beyond a z-score threshold, reversion is expected.
 
-**Ornstein-Uhlenbeck (OU) process:**
+**OU process (venue-agnostic — price_A and price_B from any venue):**
 ```
-dX_t = κ(μ - X_t)dt + σdW_t
+spread_t = price_A_t - price_B_t
+z_score  = (spread_t - μ_spread) / σ_spread
 
-X_t    = spread between market prices of player A and player B
-κ      = mean-reversion speed
-μ      = long-run equilibrium spread
-σ      = volatility of spread
-```
-
-**Entry/exit:**
-```
-Enter long spread when:  (X_t - μ) / σ < -2.0  (spread below mean — expect up)
-Enter short spread when: (X_t - μ) / σ > +2.0  (spread above mean — expect down)
-Exit:                     |X_t - μ| / σ < 0.5   (near mean)
+Entry long spread:  z_score < -2.0
+Entry short spread: z_score > +2.0
+Exit:               |z_score| < 0.5
 ```
 
-**Example pair:** Luka Dončić pts vs. Kyrie Irving pts — both Dallas Mavericks, high positive correlation. On a game where both are playing, their point expectations are connected through team offensive load. When Luka's market prices him at 0.72 (≥30 pts) but Kyrie's market prices him at 0.48 (≥22 pts) and historically their ratio is different — the relative mispricing is the trade.
+**Example pair:** Luka Dončić pts (V-001) vs. Kyrie Irving pts (V-001) — Mavericks shared offensive load. When Luka's market prices him at 0.72 (≥30 pts) but the historical spread implies 0.68: z-score diverged → trade the spread.
+
+**Cross-venue extension (Phase 8):** Same market on Kalshi and Polymarket should price identically at equilibrium. When they diverge beyond 2σ, buy the cheaper side and sell the more expensive — pure arbitrage, not forecast-dependent.
+
+### Time-Horizon Segmentation
+
+D is a **T1/T2 strategy only.** OU mean reversion requires time to materialize (hours, not seconds). In-play execution (T4/T5) is not viable — the reversion horizon exceeds the game window.
+
+| Band | Role | Decision tree | Ops |
+|------|------|--------------|-----|
+| T1 (estimation) | Full OU parameter estimation; rank pairs | Load historical price series → estimate μ, σ, κ per pair → compute current z_scores → rank → write opportunity table with OU params | Full computation; 30,000ms budget |
+| T2 (update) | z-score refresh on active pairs | Read cached OU params → fetch current prices [N API calls] → recompute z_scores → update table | ~10-20 ops; 5,000ms budget |
+| T3 (fire if valid) | Check z-score still in entry zone; submit | Read cached z_score → fetch 1 price per leg → if in zone: submit orders | 4–5 ops; 500ms budget |
+| T4/T5 | Not applicable | OU reversion horizon > in-play window | — |
 
 ### Data Requirements
 
-- Continuous price feed for ≥2 correlated markets simultaneously (DS-02)
-- Historical price series for spread calibration (OU parameter estimation)
-- Pair correlation matrix (which player pairs are genuinely correlated?)
+- Historical price series ≥2 seasons per pair (DS-02 required)
+- Correlation matrix: which player pairs are genuinely correlated and stable
+- Live price feed during T2/T3 updates (DS-02 websocket or REST polling)
 
 ### Risk Profile
 
-| Risk | Severity | Likelihood |
-|------|----------|------------|
-| Correlation breaks (player trade, injury, role change) | HIGH | MED |
-| OU parameters are non-stationary (regime shift mid-season) | HIGH | MED |
-| Spread diverges further before mean-reversion (deep drawdown) | HIGH | LOW-MED |
-| Thin liquidity prevents full position execution at modeled price | MED | HIGH |
+| Risk | Severity | Likelihood | Mitigation |
+|------|----------|------------|------------|
+| Correlation breaks (trade, injury, role change) | HIGH | MED | Pair selection requires 2+ seasons stability; re-estimate at season start |
+| OU params non-stationary (regime shift) | HIGH | MED | z_score threshold tightens mid-season if σ increases |
+| Spread diverges before reversion (drawdown) | HIGH | LOW-MED | Kelly sizing accounts for OU σ; max_arb_position_pct_bankroll = 10% |
+| Binary discrete settlement creates edge cases in OU model | MED | HIGH | Binary markets are NOT continuous paths; OU is approximate, not exact. Backtest required before activation. |
 
 ### Activation Requirements
 
-1. DS-02: real-time price feed (requires C5 upgrade + paid data source or Kalshi websocket)
-2. OU parameter estimation: 2+ seasons of price history per pair
-3. Pair selection model: correlation matrix over player pairs
-4. Position management: two-leg simultaneous tracking with covariance Kelly
+1. DS-02 real-time price feed (Kalshi websocket or paid data provider)
+2. OU parameter estimation: ≥2 seasons price history per pair (DS-02 historical)
+3. Pair selection model: correlation matrix, stability test
+4. New ADR for D activation (not covered by ADR-0002 scope expansion)
+5. Phase 8 infrastructure (T2/T3 need near-live price data)
 
 ### Confidence: 6/10
 
-Well-established in equity markets; application to binary prediction markets is less proven. The discrete binary settlement (vs. continuous price paths in equity stat arb) creates edge cases in the OU model. Treat as Phase 7 strategy.
+Well-established in equity markets. Application to binary prediction markets is less proven — discrete binary settlement creates OU edge cases. Treat as Phase 8 strategy. Phase 7 can build the pair selection model as research; live activation waits for DS-02.
 
 ---
 
-## Strategy E — Line Shopping (Best Price)
+## Strategy E — Line Shopping (Best Execution Routing)
 
-**Classification:** Type 2 — Structural (venue arbitrage without risk-free guarantee)
+**Classification:** Type 2 — Structural (venue routing without directional hedge)
 **Status:** ❌ BLOCKED (C5 is Kalshi-only; Polymarket US Phase 6+ secondary per ADR-0003)
 **Governance:** ADR-0003 permits Polymarket US as Phase 6+ secondary
+**Full framework:** `02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md` Section 4.3
 
 ### Mechanics
 
-For any given bet, the optimal execution venue is the one offering the best price on your desired direction. This is not arbitrage — you are not hedging both sides. You are simply finding the cheapest cost for the same exposure.
+For any planned bet, route to the venue offering the best ask price for the desired direction. This is not a hedge — it is cost reduction on the same directional exposure.
 
+**Edge formula (venue-agnostic):**
 ```
-Kalshi ask_YES  = $0.46
-Polymarket ask_YES = $0.44
+Binary market venues (Kalshi, Polymarket):
+  edge_improvement = ask_current_venue - ask_best_venue
 
-Buy Polymarket: saves $0.02/contract × position size
+Bookmaker-fixed venues (PrizePicks, Underdog, Sleeper):
+  edge_improvement = model_p̂ - 0.50
+  [bookmaker targets 0.50; improvement is the full model edge, not just the routing delta]
 ```
 
-Over 871 bets (EXP-010 scale), $0.02 average improvement = +$17.42 to P&L. Compounding over larger volume, this is meaningful.
+**Why DFS venues provide larger edges:**  DFS pick'em lines are set once, algorithmically, against a retail participant base — not continuously repriced by sophisticated market participants. The effective edge against bookmaker-fixed venues is `p̂ - 0.50` (model vs. bookmaker), typically much larger than `p̂ - mid_price` on Kalshi (model vs. crowd). Strategy E is the primary reason DFS venue activation (Phase 7+) is high-priority.
+
+### Time-Horizon Segmentation
+
+E is the only arb strategy that spans T1–T4. It is a **routing decision** applied at the moment of bet placement, not a separate trade.
+
+| Band | Role | Decision tree | Ops |
+|------|------|--------------|-----|
+| T1 (cache) | Full venue comparison; build routing table | Query all registered venues → normalize prices → rank by ask_price per market → write routing_table {market_id: best_venue_id} | Full computation; 30,000ms budget |
+| T2 (refresh) | Apply injury adjustment to routing table | Re-query active venues → apply injury_adj factor → update routing table | ~10 ops; 5,000ms budget |
+| T3 (live route) | Live comparison at bet placement | Query registered venues [N API calls] → normalize → compare → route | N+2 ops; 500ms budget |
+| T4 (cached route) | Lookup pre-cached routing at execution | routing_table[market_id] → venue_id | 1 op; 50ms budget |
+| T5 (cached route) | Same as T4 | Same as T4 | 1 op; 5ms budget |
+
+**Price normalization across venue types:**
+```python
+# Binary market venues: price is already comparable
+normalized = raw_ask  # [0, 1]
+
+# Bookmaker-fixed: effective cost is 0.50 regardless of display price
+normalized = 0.50
+
+# Route to venue with min(normalized_ask) for the desired direction
+```
 
 ### Venue Comparison Matrix
 
-| Venue | Contract type | Vig | Liquidity | Status |
-|-------|-------------|-----|-----------|--------|
-| Kalshi | Binary YES/NO | ~3% | Low-Medium | Primary (ADR-0003) |
-| Polymarket US | Binary | ~2% (est.) | Medium | Phase 6+ secondary |
-| PredictIt | Binary | Higher fees | Low | Not modeled |
+| Venue | Type | Vig / cost | Edge formula | Phase |
+|-------|------|------------|-------------|-------|
+| V-001 Kalshi | binary_market | 0.030 confirmed | `p̂ - mid_price` | ✅ Primary |
+| V-002 Polymarket US | binary_market | ~0.020 est. | `p̂ - mid_price` | Phase 7 (T-077) |
+| V-003 PrizePicks | bookmaker_fixed | embedded in multiplier | `p̂ - 0.50` | Phase 7+ new ADR |
+| V-004 Underdog | bookmaker_fixed | embedded | `p̂ - 0.50` | Phase 7+ new ADR |
+| V-005 Sleeper | bookmaker_fixed | embedded | `p̂ - 0.50` | Phase 7+ new ADR |
 
 ### Risk Profile
 
-| Risk | Severity | Likelihood |
-|------|----------|------------|
-| Venue-specific regulatory risk | HIGH | LOW (both CFTC-regulated) |
-| Price synchronization lag (prices move while routing) | LOW | MED |
-| API differences between venues requiring C5 abstraction | MED | CERTAIN |
+| Risk | Severity | Likelihood | Mitigation |
+|------|----------|------------|------------|
+| Price moves during routing (synchronization lag) | LOW | MED | T4 pre-cached routing eliminates live API calls |
+| Venue API differences requiring normalization errors | MED | CERTAIN | VenueParams.implied_prob_method enforces normalization path |
+| Venue-specific regulatory change | HIGH | LOW | Both CFTC-regulated venues in current scope |
+| Bookmaker venues change lines frequently | MED | MED | T2 refresh cadence; T1 cache max age = 30 min |
 
 ### Activation Requirements
 
-1. C5 upgraded with multi-venue abstraction layer (VenueRouter)
-2. Polymarket US API access provisioned
-3. Normalized price format across venues
-4. Best-execution logic: route to venue with best price for direction
+1. VenueRouter multi-venue abstraction (currently skeleton — Kalshi only)
+2. Polymarket US API provisioned (T-077)
+3. Normalized price format implemented for all venue types
+4. `ArbOpportunityLog` wired for line-shop savings tracking
+5. Routing table cache layer with 30-min TTL
 
 ### Confidence: 8/10
 
-Mechanically simple, high-certainty positive impact. Main uncertainty is Polymarket US availability and liquidity depth for NBA player props specifically.
+Mechanically straightforward. Positive impact is certain once ≥2 venues are active. Main uncertainty: Polymarket US NBA player prop availability and liquidity. The DFS venue opportunity (V-003/V-004/V-005) is potentially larger in absolute edge magnitude but requires new ADRs and different settlement handling.
 
 ---
 

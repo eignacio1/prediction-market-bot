@@ -9,7 +9,8 @@
 **Upstream links:** VISION_OUTCOMES.md, SCOPE_IN_OUT.md, PROJECT_CHARTER.md  
 **Downstream links:** ACCEPTANCE_CRITERIA.md, 07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md, 07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 9/10 — FROZEN at G1; venue-specific API requirements (order format, rate limits) will be captured in a separate interface specification at G3 without requiring requirements re-open  
+**Confidence:** 9/10 — FROZEN at G1; venue-specific API requirements (order format, rate limits) will be captured in a separate interface specification at G3 without requiring requirements re-open
+**Decisions logged:** true — FR-01–FR-09 requirement decisions captured at G1 gate (APR-0003); frozen; any change requires Class A ADR  
 
 ---
 

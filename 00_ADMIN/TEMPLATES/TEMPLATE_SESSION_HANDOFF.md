@@ -77,6 +77,22 @@ Ambiguous state descriptions are the most common source of wasted time in the ne
 
 ---
 
+## ⚙️ DECISION AUDIT (Required at Sprint Close — Skip for Mid-Sprint Handoffs)
+
+*Complete when closing a sprint, phase gate, or any session that created/modified a strategic document.*
+
+**Step 1:** Run `grep -rn "^\*\*Decisions logged:\*\* false" 02_ARCHITECTURE_DESIGN/ 08_MODEL_RISK_GOVERNANCE/ 01_SPEC/ 2>/dev/null`
+
+**Step 2:** For each document created or substantially modified this session:
+
+| Document | Decisions logged field | DECISION_LOG entries written | Status |
+|----------|----------------------|------------------------------|--------|
+| [filename] | true / false | [entry IDs or "none needed"] | ✅ / ❌ need T-NNN |
+
+*Sprint is NOT closed if any row shows `false` without a corresponding T-NNN registered in TODO_NEXT.md.*
+
+---
+
 ## Resume Command
 
 ```bash

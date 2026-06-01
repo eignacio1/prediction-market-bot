@@ -9,7 +9,8 @@
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, INTERFACES_CONTRACTS.md  
 **Downstream links:** 10_INFRA_OPERATIONS/RUNBOOKS/, 08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 7/10 — Known failure modes catalogued; live-mode failure modes expand at G5  
+**Confidence:** 7/10 — Known failure modes catalogued; live-mode failure modes expand at G5
+**Decisions logged:** true — FM-01–FM-08 failure mode prioritization captured at G2 gate (APR-0004) and G5 kill switch drill (APR-0013)  
 
 ---
 

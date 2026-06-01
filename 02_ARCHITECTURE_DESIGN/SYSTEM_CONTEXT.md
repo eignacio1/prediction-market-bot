@@ -9,6 +9,7 @@
 **Downstream links:** INTERFACES_CONTRACTS.md, EXECUTION_ARCHITECTURE.md, 09_SECURITY_PRIVACY_COMPLIANCE/  
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 7/10 — External actors identified; venue details pending ADR-0003
+**Decisions logged:** true — System boundary decisions captured in ADR-0001 (scope), ADR-0002 (strategy class), ADR-0003 (venue)
 
 ---
 

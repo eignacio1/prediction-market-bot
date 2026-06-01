@@ -9,7 +9,8 @@
 **Upstream links:** 01_SPEC/REQUIREMENTS.md, 01_SPEC/NON_FUNCTIONAL_REQUIREMENTS.md, 01_SPEC/SCOPE_IN_OUT.md  
 **Downstream links:** DATA_FLOWS_LINEAGE.md, INTERFACES_CONTRACTS.md, EXECUTION_ARCHITECTURE.md, RESILIENCE_FAILURE_MODES.md, 06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 9/10 — Architecture canonical at G2; execution layer details pending venue confirmation (ADR-0003)  
+**Confidence:** 9/10 — Architecture canonical at G2; execution layer details pending venue confirmation (ADR-0003)
+**Decisions logged:** true — C1–C8 component design decisions captured in ADR-0001, ADR-0002, ADR-0004, and G2 gate (APR-0004)  
 
 ---
 

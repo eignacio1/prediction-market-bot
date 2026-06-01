@@ -9,7 +9,8 @@
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, DATA_FLOWS_LINEAGE.md  
 **Downstream links:** All components that implement these interfaces; 06_CODE_EXECUTION_REPRODUCIBILITY/PIPELINES_JOBS.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 8/10 — Interface shapes canonical at G2; venue-specific fields (IF-C5-VENUE) finalized at ADR-0003 acceptance  
+**Confidence:** 8/10 — Interface shapes canonical at G2; venue-specific fields (IF-C5-VENUE) finalized at ADR-0003 acceptance
+**Decisions logged:** true — Interface design decisions captured at G2 gate (APR-0004); venue interface decisions in ADR-0003 (APR-0011)  
 
 ---
 

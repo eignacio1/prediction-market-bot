@@ -8,7 +8,8 @@
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, 01_SPEC/DATA_REQUIREMENTS.md  
 **Downstream links:** INTERFACES_CONTRACTS.md, 06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md, 08_MODEL_RISK_GOVERNANCE/DATA_PROVENANCE.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 6/10 — Research-phase flows defined; live-data flows pending venue confirmation  
+**Confidence:** 6/10 — Research-phase flows defined; live-data flows pending venue confirmation
+**Decisions logged:** true — TI-01–TI-04 temporal integrity rules are procedural constraints captured at G2 gate (APR-0004); FEATURE_VERSION decisions captured in ADR-0004  
 
 ---
 

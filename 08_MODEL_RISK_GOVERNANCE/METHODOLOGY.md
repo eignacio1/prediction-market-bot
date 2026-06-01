@@ -9,6 +9,7 @@
 **Downstream links:** EXPERIMENT_LOG/, MODEL_CARD.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0003, ADR-0004 (PENDING)  
 **Confidence:** 8/10 — Model class and features implemented; specifics (Kelly fraction, hard limits, strategy activation sequence) confirmed at G4
+**Decisions logged:** false — PRF framework methodology choices, edge threshold selection (±0.02 signal gates), and strategy architecture A–H sequencing not yet individually logged in DECISION_LOG.md. See T-095 in TODO_NEXT.md.
 
 ---
 

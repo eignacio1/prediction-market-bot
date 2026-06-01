@@ -8,7 +8,8 @@
 **Upstream links:** PROJECT_CHARTER.md, VISION_OUTCOMES.md  
 **Downstream links:** REQUIREMENTS.md (FR-05, FR-09), 02_ARCHITECTURE_DESIGN/RESILIENCE_FAILURE_MODES.md, 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_kill-switch.md  
 **Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 7/10 — Structure is authoritative; specific numerical thresholds require venue confirmation and G4 backtesting evidence to finalize  
+**Confidence:** 7/10 — Structure is authoritative; specific numerical thresholds require venue confirmation and G4 backtesting evidence to finalize
+**Decisions logged:** false — Specific numerical thresholds ($500/bet cap, $1,000/day, 20% drawdown) are now confirmed via G4/ADR-0004 but the rationale for those specific values not yet extracted to DECISION_LOG.md (captured broadly in retroactive batch but not attributed to this document). See T-097 in TODO_NEXT.md.  
 
 ---
 
@@ -38,7 +39,6 @@
 |-------|-----------|---------------|-------------------|
 | Max single-event position | TBD at G4 — Placeholder: ≤5% of total capital | Immediate order rejection | Pre-order risk check |
 | Max daily loss | TBD at G4 — Placeholder: ≤10% of total capital | Kill switch auto-trigger | Real-time PnL monitor |
-| Max open positions simultaneously | TBD at G4 — Placeholder: ≤10 concurrent markets | Order rejection | Position inventory check |
 | Max order rate | TBD at G6 (venue-dependent) | Order rejection + alert | Rate limiter at execution layer |
 | Max drawdown (rolling 7-day) | TBD at G4 — Placeholder: ≤20% of capital | Human review required; bot paused | PnL monitor + alert |
 | Kill switch response time | ≤60 seconds | N/A (is the limit itself) | Tested at G5; documented in runbook |

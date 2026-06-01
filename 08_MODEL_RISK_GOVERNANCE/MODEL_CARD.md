@@ -9,6 +9,7 @@
 **Downstream links:** ARTIFACT_REGISTRY.md, MONITORING_DRIFT_PLAN.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (ACCEPTED APR-0012 2026-05-28)  
 **Confidence:** 10/10 — All performance metrics populated (VAL + TEST); G4 closed; C7 monitoring and drift thresholds wired (Phase 5)
+**Decisions logged:** true — Model class, calibration approach, and promotion criteria captured in ADR-0004 (APR-0012) and G4 gate (APR-0006)
 
 ---
 

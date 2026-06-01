@@ -187,21 +187,21 @@
 
 ---
 
-### KI-011 — Key Player Injury Eliminates Market Category Mid-Paper Run
+### KI-011 — Injury Blindness: Model Generates Fake Alpha on Injured/Questionable Players
 
 | Field | Detail |
 |-------|--------|
 | Issue ID | KI-011 |
-| Severity | MEDIUM |
-| Category | Paper trading / portfolio integrity |
-| Description | The current paper trading cohort (~80 players) concentrates on high-usage players who generate KXNBAPTS markets. If a key player (e.g., SGA, Fox, Jokić) suffers a game-ending or season-ending injury, Kalshi may stop listing markets for that player entirely. Existing open positions would need to be resolved (nba_api will show DNP). Future bets for that player become impossible. |
-| Impact | Reduces the effective betting universe mid-paper run. If multiple players are injured simultaneously (not uncommon in playoffs), the pipeline may find 0 eligible markets per session and bet accumulation stalls without obvious error. |
-| Workaround | run_resolve.py (PIPE-03R) will handle resolution via nba_api DNP detection. Bet accumulation gap is unmitigated — it is an inherent risk of a concentrated player cohort during playoffs. |
-| Blocks gate | G6 indirectly — stalls bet accumulation |
-| Resolution path | Monitor paper_portfolio.json for consecutive sessions with 0 bets placed (cron runs successfully but 0 markets eligible). If confirmed, expand cohort or adjust to team-level markets if available. |
-| Open question | None |
-| Registered | 2026-05-29 |
-| Status | OPEN — monitoring |
+| Severity | HIGH |
+| Category | Model validity / systematic false signal |
+| Description | The model has no access to injury or availability information. Kalshi market makers do. When a player is injured or questionable, Kalshi prices in a dramatically reduced probability of performance (e.g., mid_price = 0.085 for a player who averages 15+ points). The model, blind to this information, produces a p_estimate based on historical performance and assigns a large positive edge (e.g., +0.46). This is not alpha — it is the model being systematically wrong in exactly the situations where the market has publicly available information the model lacks. **The injury blindness failure mode does not just eliminate markets: it generates the largest apparent edge signals in the entire system, and those signals are reliably wrong.** A model that places bets on injured/questionable players will lose nearly every time on those bets, and the loss magnitude scales with the apparent edge — which is highest precisely when the player is injured. |
+| Impact | Systematic source of capital drain masquerading as alpha. Any paper bet placed on a questionable player is a contaminated G6 evidence data point. This is the primary risk to positive P&L in paper trading. |
+| Workaround | Manual: check Kalshi mid-prices before each session; any market priced below 0.15 for a historically high-usage player is a likely injury signal. Do not bet into these. Automated fix requires DS-04 injury feed (T2 overlay). |
+| Blocks gate | G6 — paper P&L reliability is compromised by injury-blind bets; injuries can drain bankroll while generating misleading high-edge signals |
+| Resolution path | (1) T2 injury overlay (run_t2_sameday.py stub, T-075): implement DS-04 injury feed check before bet placement — if player is OUT or QUESTIONABLE, remove from t2_forecasts or reduce kelly_fraction to 0.05. (2) Interim: add a market price filter — reject bets where Kalshi mid_price deviates >0.25 from model p_estimate as a likely injury/information signal. (3) EXP-017 must control for this when backtesting edge vs actual Kalshi prices. |
+| Open question | OQ-023 — does the model generate positive EV against actual Kalshi prices once injury signals are excluded? |
+| Registered | 2026-05-29 (updated 2026-06-01 — severity escalated; failure mode corrected) |
+| Status | OPEN — HIGH severity; injury overlay is the fix; required before G6 |
 
 ---
 
@@ -241,6 +241,124 @@
 
 ---
 
+### KI-014 — Idempotency Check Failure: Duplicate Open Positions Per Ticker
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-014 |
+| Severity | HIGH |
+| Category | Paper trading / position integrity |
+| Description | PIPE-03 placed 3 open positions on the same Kalshi ticker in one session (Fox YES 15+ and SGA NO 30+, all for 2026-05-30 SAS vs OKC). The idempotency check reads `trader.get_state().get("open_positions", [])` and skips any ticker already in the set. Despite the first run placing Fox and SGA at 17:40 UTC, the 22:00 UTC and 01:30 UTC cron runs also placed positions on identical tickers. Root cause is unknown — likely a cron working-directory mismatch causing `_load_or_init()` to fall back to a fresh empty state, or a ticker representation mismatch between stored string and Kalshi API response. |
+| Impact | 3× intended exposure on De'Aaron Fox ($154.07 staked vs ~$56 intended) and SGA ($83.77 vs ~$28 intended). $237.84 total at-risk for one game. Inflated apparent drawdown (23.78%). If all positions lose, realized loss is 3× expected. |
+| Workaround | Monitor `logs/paper_portfolio.json` after each PIPE-03 run. If duplicate tickers appear, resolve manually. Add diagnostic logging at startup to confirm portfolio file path and loaded state count. |
+| Blocks gate | G6 indirectly — inflated position size distorts paper P&L evidence quality |
+| Resolution path | (1) Add startup logging in `run_paper_trade.py`: log `portfolio_path.resolve()` and `len(open_positions)` before the inference loop. (2) Reproduce on VPS to confirm whether state file was being read correctly. (3) Fix root cause once identified. |
+| Registered | 2026-05-30 |
+| Status | ✅ RESOLVED 2026-05-30 — T-101 complete; root cause confirmed: relative LOG_DIR caused each cron run to start with a fresh portfolio; fixed to absolute path; idempotency now working correctly; 3× legacy positions remain open and will close naturally |
+
+---
+
+### KI-015 — Drawdown Includes Open Position Stakes (Not Realized Losses Only)
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-015 |
+| Severity | HIGH (operational blocker) |
+| Category | Risk engine / paper trading |
+| Description | `current_drawdown_pct` is computed as `1.0 - bankroll / initial_bankroll` where `bankroll` is the cash balance AFTER deducting open position stakes. This means placing bets causes apparent drawdown even if no losses have been realized. With $237.84 in open stakes (Bug G inflated this 3×), apparent drawdown = 23.78%, which exceeds the 20% kill switch threshold. PIPE-03 will KILL_SWITCH at 22:00 UTC tonight. This bug was latent until Bug C was fixed (which made drawdown evaluation active). |
+| Impact | PIPE-03 halted every run until: (a) open positions resolve and bankroll recovers below 80% of initial, or (b) Bug H is fixed. G6 bet accumulation (T-070) is blocked during this window. |
+| Workaround | Wait for PIPE-03R (06:00 UTC 2026-05-31) to resolve the 6 open positions. If bankroll recovers above $800 (drawdown < 20%), PIPE-03 can resume. If all positions lose, bankroll stays at $762.16 and permanent fix is required. |
+| Blocks gate | G6 — paper bet accumulation blocked while kill switch fires |
+| Resolution path | Fix: compute drawdown from realized losses only. `Option A (preferred)`: `realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))` / `initial_bankroll`. `Option B`: add open stakes back to effective bankroll before computing ratio. This is a Class A change (kill switch behavior) — requires DS sign-off before deployment. Register as a new fix task. |
+| Registered | 2026-05-30 |
+| Status | ✅ RESOLVED 2026-05-30 — T-100 complete; drawdown now uses `total_realized_pnl` only; DS sign-off granted; deployed to VPS; kill switch confirmed cold at 0.00% realized drawdown |
+
+---
+
+### KI-016 — max_concurrent_positions: 10 Is an Unresolved G4 Stub ✓ RESOLVED
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-016 |
+| Severity | HIGH |
+| Category | Risk engine / architectural gap |
+| Description | `_HARD_LIMITS["max_concurrent_positions"]` was set to `10.0` in `risk.py` with the comment `# 10 concurrent open (stub)`. This value was never resolved at G4 and was architecturally wrong for an 80-player, multi-band, multi-game system. |
+| Impact | Portfolio reached 9/10 positions; Finals G2 bets would have been silently rejected. Regular season would routinely hit limit and suppress bet accumulation. |
+| Resolution | ADR-0006 (2026-06-01): count gate deleted entirely. No replacement count primitive. Pipeline filtering → Kelly sizing → $500/event cap → $1,000 daily loss → 20% drawdown kill switch are the complete risk framework. `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, and 2 tests. `RISK_APPETITE_CONSTRAINTS.md` and `EXECUTION_ARCHITECTURE.md` updated. |
+| Registered | 2026-05-31 |
+| Status | RESOLVED — 2026-06-01 (ADR-0006; T-102 complete) |
+
+---
+
+### KI-017 — EV Validation Is Against a Coin Flip, Not Kalshi Market Prices
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-017 |
+| Severity | HIGH |
+| Category | Model validity / commercial question unanswered |
+| Description | Every EV figure produced by this project — `+$0.0958/bet` (EXP-010), `+$0.0855/bet` (EXP-004), `59% win rate` — was computed using `mip = 0.50` as the market implied probability. See `run_exp010.py:164`: `mip = 0.50  # market_implied_prob = 0.50 (conservative null)`. This means the system has validated "model beats a coin flip." It has not validated "model beats an informed professional Kalshi market." These are categorically different questions. EXP-004 Part B and EXP-010 Part B used live prices, but only spot-checked 2 players on a single day — this is a sanity check, not statistical validation. All 16 experiments completed; zero of them answer the commercial question the project is built to answer. |
+| Impact | The core commercial claim of this system — that the model generates positive expected value when competing against real Kalshi prices — is unvalidated. G6 paper trading results will show real P&L against real prices, which will be the first real evidence. But this should have been a backtest question answered at G4. |
+| Workaround | None — this is a measurement gap, not a code bug. Paper trading is accumulating real-world evidence, but variance over 30 bets is too high to be conclusive. |
+| Blocks gate | G6 indirectly — if EXP-017 shows negative EV vs real prices, G6 evidence is compromised |
+| Resolution path | EXP-017: backtest edge against actual historical Kalshi prices (not 0.50). Pull historical mid-prices for test-set games, re-run edge computation as `edge = model_p - kalshi_mid_price`, re-compute EV distribution. Requires historical Kalshi price data for the TEST period (2023-24 season). Register as T-105. |
+| Open question | OQ-023 |
+| Registered | 2026-06-01 |
+| Status | OPEN — HIGH; EXP-017 required before G6 gate can be cleared with confidence |
+
+---
+
+### KI-018 — Zombie Daily Loss Limit: max_daily_loss_usd Cannot Fire at Current Bankroll
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-018 |
+| Severity | MEDIUM |
+| Category | Risk engine / risk communication |
+| Description | `_HARD_LIMITS["max_daily_loss_usd"] = 1000.0` was calibrated to a $1,000 starting bankroll. Current bankroll is $683.41. The 20% drawdown kill switch fires at ~$136.68 of realized loss. The daily loss limit requires $1,000 of loss in a single day — which cannot occur without losing more than the entire bankroll. The code presents two independent financial kill switches; there is effectively one. Anyone reading the risk configuration sees "$1,000 daily protection" — the real protection is $137. This is a risk communication failure that will matter when live capital is deployed. |
+| Impact | No immediate operational risk — the drawdown % kill switch is the real guard and works correctly. Risk is that future operators or the live capital ADR process treats the daily loss limit as a meaningful independent constraint when it is not, leading to underestimation of daily risk. |
+| Workaround | Drawdown % kill switch is operative. Document in risk.py that daily loss limit is currently inactive and will be recalibrated at G6. |
+| Blocks gate | G6 (live capital ADR must address this) |
+| Resolution path | At G6, when live bankroll is set: update `max_daily_loss_usd` to `live_bankroll * 0.10` (10% of bankroll as daily floor) or equivalent justified value via ADR. Until then, add a comment in `_HARD_LIMITS` noting the limit is inactive at current paper bankroll scale. |
+| Registered | 2026-06-01 |
+| Status | OPEN — MEDIUM; non-blocking for paper trading; must be addressed in G6 live capital ADR |
+
+---
+
+### KI-019 — Polymarket Tag Stub: Silent Empty Market Return on Wrong NBA Tag
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-019 |
+| Severity | MEDIUM |
+| Category | Execution / silent failure |
+| Description | `c5_execution/venue_adapter.py:251` has `"tag": "nba"` hardcoded as the Polymarket market filter with a `# TODO: confirm Polymarket's NBA tag name` comment. Polymarket's actual API tag structure for NBA player props is unconfirmed — it may be `"sports"`, `"basketball"`, `"nba-player-props"`, or another value. When T-077 (Polymarket KYC) is completed and Polymarket is activated, a wrong tag returns an empty market list with no error, no exception, and no log warning. The pipeline proceeds, finds no opportunities, and the operator has no signal that anything is wrong. This is the same class of silent suppression as the count gate (KI-016). |
+| Impact | Polymarket integration silently non-functional at activation. All bets route to Kalshi only with no indication that line shopping is failing. EXP-014 line shopping benefit (+7.8% EV) cannot be realized. |
+| Workaround | None until T-077 is attempted. At T-077 activation time: test VenueAdapter directly, confirm market list is non-empty, verify tag before enabling VENUE_ROUTER_MODE=best_price. |
+| Blocks gate | Non-blocking until T-077; blocks line shopping strategy (Strategy E) benefit |
+| Resolution path | Before activating Polymarket (T-077): (1) confirm actual NBA player props tag via Polymarket API documentation or test call; (2) update `venue_adapter.py:251` with confirmed tag; (3) add assertion: if adapter returns 0 markets on a day with known NBA games, raise VenueAdapterError, do not silently return empty. |
+| Registered | 2026-06-01 |
+| Status | OPEN — MEDIUM; non-blocking until T-077; must be resolved before Polymarket activation |
+
+---
+
+### KI-020 — Kalshi Authenticated Endpoints Require RSA Signing — Not Configured
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-020 |
+| Severity | MEDIUM |
+| Category | Infrastructure / authentication gap |
+| Description | `VENUE_API_KEY` in `.env` is the Kalshi API key ID (36 chars). Kalshi's authenticated endpoints (`/portfolio/balance`, order submission, etc.) require RSA request signing: `KALSHI-ACCESS-KEY` header + `KALSHI-ACCESS-SIGNATURE` (RSA-SHA256 over timestamp+method+path). No private key file exists in the project. Current `KalshiMarketClient` uses Bearer token auth which works for public endpoints (`/exchange/status`) but returns HTTP 401 + `"signature is missing from headers"` on authenticated endpoints. |
+| Impact | (1) Cannot programmatically confirm Kalshi portfolio balance. (2) Order submission to Kalshi (live or demo) requires RSA infrastructure that does not exist. (3) `paper_trader.py` is LOCAL-ONLY — no Kalshi demo integration — so this is non-blocking for paper trading. Becomes blocking when live order submission is required at G6+. |
+| Workaround | Confirm Kalshi account balance via web UI. Paper trading operates entirely locally via `paper_portfolio.json`. |
+| Blocks gate | Non-blocking for G6 (paper trading is local). Blocks live order submission — must be resolved before any real-money execution. |
+| Resolution path | (1) Generate RSA key pair via Kalshi dashboard; store private key outside VCS, reference via `VENUE_PRIVATE_KEY_PATH` env var. (2) Add RSA signing middleware to `KalshiMarketClient`. (3) Add `get_balance()` and `submit_order()` methods. New ADR required before order submission is wired into any pipeline. |
+| Registered | 2026-05-31 |
+| Status | OPEN — MEDIUM; non-blocking for paper trading G6; blocks live order submission |
+
+---
+
 ## Resolved Issues
 
 *Populated as issues are resolved.*
@@ -249,6 +367,9 @@
 |----------|----------------|-------------------|
 | KI-008 | 2026-05-29 | EXP-016 run; HYP-009 CONFIRMED; Δ Brier = -0.0010 (gate < 0.012); playoff paper bets = full G6 evidence |
 | KI-009 | 2026-05-29 | APR-0016 signed; G6 threshold revised 50 → 30 resolved bets; seasonal constraint formally acknowledged |
+| KI-014 | 2026-05-30 | T-101 complete — root cause was relative `LOG_DIR` path causing cron to start fresh each run; fixed to `_SRC_ROOT / "logs"` absolute in `run_paper_trade.py` + `run_resolve.py`; idempotency logging added; deployed VPS; 3× legacy positions remain open and will resolve naturally |
+| KI-015 | 2026-05-30 | T-100 complete — drawdown now computed from `total_realized_pnl` only, not bankroll depletion; DS sign-off granted same session; deployed VPS; kill switch confirmed cold at 0.00% realized drawdown |
+| KI-016 | 2026-06-01 | ADR-0006: count gate deleted entirely — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. Pipeline + Kelly + kill switch are the complete risk framework. No count primitive anywhere in the codebase. |
 
 ---
 

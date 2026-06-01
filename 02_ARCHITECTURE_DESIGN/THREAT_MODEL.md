@@ -10,6 +10,7 @@
 **Downstream links:** 09_SECURITY_PRIVACY_COMPLIANCE/, 10_INFRA_OPERATIONS/RUNBOOKS/  
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 6/10 — Threats identified for current scope; live-capital threat surface expands significantly at G5–G6
+**Decisions logged:** true — TH-01–TH-09 threat prioritization and STRIDE scope decisions captured at G2 gate (APR-0004)
 
 ---
 
