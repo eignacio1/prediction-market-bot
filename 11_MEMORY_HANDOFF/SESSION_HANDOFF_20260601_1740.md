@@ -1,17 +1,17 @@
-# Session Handoff — 2026-06-01T17:40Z
+# Session Handoff — 2026-06-01T17:58Z
 
 **Trigger:** Context window near limit (operator-initiated)
-**Last commit:** `16116bb` (main) — local only; NOT YET PUSHED TO VPS
+**Last commit:** `379a376` (main) — pushed to GitHub + VPS ✅
 
 ---
 
 ## Status
 
 - **Phase:** 6/7 ACTIVE
-- **Tests:** 581/581 passing
+- **Tests:** 581/581 passing (verified locally + VPS post-deploy)
 - **Capital:** NO live capital — paper trading only
-- **VPS:** 157.230.91.33 — cron running; **⚠️ VPS IS 4+ COMMITS BEHIND LOCAL**
-- **Paper bets:** 0/66 resolved — G6 gate (APR-0017; new floor is ≥66, not 30)
+- **VPS:** 157.230.91.33 — cron running; HEAD=379a376 ✅ FULLY DEPLOYED
+- **Paper bets:** 0/66 resolved — G6 gate (APR-0017; floor is ≥66, not 30)
 
 ---
 
@@ -43,15 +43,7 @@
 
 ## ONE THING PENDING
 
-**VPS deploy before Finals G1 (Jun 3, ~22:00 UTC).**
-
-The VPS is running commit 92539b9 (may also be at 16116bb if a previous session pushed). Local is at `16116bb` with APR-0017 artifacts, EXP-017 Part B code, and fetch_kalshi_prices.py. Without the deploy, the T1 cron on Jun 3 will run old code and the fetch procedure won't be available.
-
-```bash
-ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"
-```
-
-Then verify: `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git log --oneline -3"`
+**✅ VPS deployed (379a376, 581/581 tests passing on VPS). Ready for Finals G1 Jun 3.**
 
 After Finals G1 resolves, run T-109 standing procedure:
 ```bash
@@ -126,5 +118,5 @@ cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 
 ```
 NEXT SESSION PRIMER:
-VPS must be deployed before Finals G1 (Jun 3, ~22:00 UTC): ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull". After each Finals game, run the T-109 standing procedure: (1) run_resolve_local.py, (2) fetch_kalshi_prices.py --portfolio, (3) re-run EXP-017 when ≥66 markets accumulated. G6 gate is now APR-0017 (≥66 bets, ≥5 game nights); commercial validation (GG-004) is OPEN and DIRECTIONAL_POSITIVE at n=2.
+VPS is at 379a376 (deployed 2026-06-01T17:58Z, 581/581 tests passing). After each Finals game, run T-109 standing procedure: (1) run_resolve_local.py, (2) fetch_kalshi_prices.py --portfolio, (3) re-run EXP-017 when ≥66 markets accumulated. G6 gate is APR-0017 (≥66 bets, ≥5 game nights); GG-004 OPEN and DIRECTIONAL_POSITIVE at n=2.
 ```
