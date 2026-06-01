@@ -105,8 +105,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | APR-0016 would have allowed G6 live capital promotion based on one lucky game night's bets (30+ bets at Finals throughput). A miscalibrated model with execution bugs producing one lucky variance run would have cleared G6. No calibration evidence required. No commercial validation required. No execution integrity required. |
 | Discovery | Operator review 2026-05-31. Earl identified that count is the wrong primary metric — the same conceptual insight that produced ADR-0006 (count wrong in C4) applied to G6. Human synthesis connected these two; no automated scan would have. |
 | Discovery method | Human eye test — NOT caught by any protocol step |
-| Resolution | Q7 added to ARE WE COMPROMISED? in CLAUDE.md and MEMORY_BANK.md: "For each active gate criterion, what broken system could produce passing evidence?" T-113: APR-XXXX (multi-dimensional evidence standard) to supersede APR-0016. |
-| Status | **IN PROGRESS** — Q7 added 2026-05-31; T-113 registered; APR-XXXX pending operator sign-off |
+| Resolution | Q7 added to ARE WE COMPROMISED? in CLAUDE.md and MEMORY_BANK.md. APR-0017 drafted 2026-06-01: 4-tier sequential evidence standard (Tier 0 commercial preconditions, Tier 1 execution integrity, Tier 2 model performance trends, Tier 3 risk control validation). Statistical floor ≥50 resolved bets + ≥5 game nights. Each criterion includes broken-system test. T0-B already met (T-114). |
+| Status | **PENDING OPERATOR SIGN-OFF** — APR-0017 drafted 2026-06-01; awaiting PO/DS sign-off to become operative and supersede APR-0016 |
 
 ---
 
