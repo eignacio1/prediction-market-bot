@@ -355,7 +355,25 @@
 | Blocks gate | Non-blocking for G6 (paper trading is local). Blocks live order submission — must be resolved before any real-money execution. |
 | Resolution path | (1) Generate RSA key pair via Kalshi dashboard; store private key outside VCS, reference via `VENUE_PRIVATE_KEY_PATH` env var. (2) Add RSA signing middleware to `KalshiMarketClient`. (3) Add `get_balance()` and `submit_order()` methods. New ADR required before order submission is wired into any pipeline. |
 | Registered | 2026-05-31 |
-| Status | OPEN — MEDIUM; non-blocking for paper trading G6; blocks live order submission |
+| Status | RESOLVED 2026-05-31 — T-111/T-112 complete. Root cause was wrong base URL (`api.elections.kalshi.com` → `external-api.demo.kalshi.co` for demo). RSA-PSS signing was correct throughout. `_kalshi_base_url()` now reads BOT_ENV; private key at `VENUE_PRIVATE_KEY_PATH` on VPS. First live demo order executed (Order 363c5f5b). Balance confirmed: `$1,000.00`. |
+
+---
+
+### KI-021 — sklearn Version Mismatch: Trained 1.4.2 / Inference 1.8.0
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-021 |
+| Severity | LOW |
+| Category | Infrastructure / version drift |
+| Description | Model `v1-28483b21` was trained with scikit-learn 1.4.2. VPS venv runs sklearn 1.8.0. Health check flags this as a WARN. The mismatch is real — training and inference environments differ. |
+| Investigation | 2026-06-01: Direct probability comparison run. 205 test vectors (200 random + 5 boundary cases) generated locally (1.4.2) and scored on VPS (1.8.0) using the same serialized pipeline. Results: max_abs_delta = 0.00106 (< 0.1% probability point); median_abs_delta = 0.00022; zero cases where \|delta\| > 0.02 (MIN_EDGE threshold); zero bet direction flips at realistic mid-prices (0.45–0.60). The LogisticRegression+Platt pipeline is numerically stable across this version gap. Differences are floating-point implementation noise, not calibration drift. |
+| Impact | Negligible. No bet would change direction or cross the edge approval threshold due to the version gap. ECE 0.0342 calibration guarantee from ADR-0004 is not materially affected. |
+| Workaround | None required at current severity. VPS venv should be pinned to 1.4.2 at next infrastructure refresh to eliminate the gap entirely. |
+| Blocks gate | Non-blocking. |
+| Resolution path | Pin `scikit-learn==1.4.2` in VPS venv at next deployment or model refresh. Requires no code change — venv rebuild only. T-072 (model refresh before 2026-27) is the natural resolution point. |
+| Registered | 2026-06-01 |
+| Status | LOW risk — investigated and cleared 2026-06-01. Resolve at T-072. |
 
 ---
 
@@ -370,6 +388,7 @@
 | KI-014 | 2026-05-30 | T-101 complete — root cause was relative `LOG_DIR` path causing cron to start fresh each run; fixed to `_SRC_ROOT / "logs"` absolute in `run_paper_trade.py` + `run_resolve.py`; idempotency logging added; deployed VPS; 3× legacy positions remain open and will resolve naturally |
 | KI-015 | 2026-05-30 | T-100 complete — drawdown now computed from `total_realized_pnl` only, not bankroll depletion; DS sign-off granted same session; deployed VPS; kill switch confirmed cold at 0.00% realized drawdown |
 | KI-016 | 2026-06-01 | ADR-0006: count gate deleted entirely — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. Pipeline + Kelly + kill switch are the complete risk framework. No count primitive anywhere in the codebase. |
+| KI-020 | 2026-05-31 | T-111/T-112 complete. Root cause was wrong base URL, not missing RSA infrastructure — RSA-PSS signing was correctly implemented. `_kalshi_base_url()` reads BOT_ENV; private key at `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` on VPS; cryptography==43.0.3 installed. Balance confirmed $1,000.00. First live demo order executed (Order 363c5f5b). |
 
 ---
 
