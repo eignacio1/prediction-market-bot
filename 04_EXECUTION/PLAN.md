@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-31 (Phase 6/7 ACTIVE — T-111/T-112 complete; Kalshi auth fully operational; first live demo order executed; G6 clean evidence begins Finals G1 Jun 3; demo price validity question open before counting bets)  
+**Last reviewed:** 2026-06-01 (Phase 6/7 ACTIVE — T-113 COMPLETE: APR-0017 ACCEPTED (multi-dimensional G6 gate, supersedes APR-0016); T-105 COMPLETE: EXP-017 Part B live mode, n=2 DIRECTIONAL_POSITIVE, GG-005 RESOLVED; GG-004 OPEN until ≥66 resolved markets; VPS deploy needed before Finals G1 Jun 3)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,7 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence 50+ bets (T-070) | DS | HIGH | 🟡 IN PROGRESS — cron fires nightly |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 0/66; Finals G1 Jun 3 |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
 ---

@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-31 SESSION 5 — T-111 RESOLVED (Kalshi auth: wrong base URL; _kalshi_base_url() function added); T-112 COMPLETE (VPS deploy: cryptography installed, VENUE_PRIVATE_KEY_PATH set, HEAD 92539b9); first live Kalshi demo order executed (Order 363c5f5b, YES $0.62, WTA tennis, status executed); submit_order bug fixed (one price field only); APR-0016 "4 bets/game-day" assumption corrected in DECISION_LOG and MEMORY_BANK; bot fully armed, clean G6 evidence begins Finals G1 Jun 3  
+**Last reviewed:** 2026-06-01 SESSION 6 — T-113 COMPLETE (APR-0017 v2 ACCEPTED: multi-dimensional G6 evidence standard, no arbitrary counts, derived rate+slope thresholds; PO/DS sign-off received); T-105 COMPLETE (EXP-017 Part B live mode; n=2 unique markets, EV=+$0.01/bet, DIRECTIONAL_POSITIVE, GG-004 OPEN); fetch_kalshi_prices.py built; GG-005 RESOLVED; 581/581 tests; VPS deploy needed (4 commits behind)  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -45,7 +45,7 @@ These 9 rules are absolute. They must be restored to any context that loses them
 
 7. **Kill switch must halt all components within ≤60 seconds** (NFR-03). Tested before G5. No bypass path.
 
-8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. The APR-0016 rationale used a "4 bets/game-day" estimate — that figure is **invalidated by ADR-0006** (count gate deleted 2026-06-01; see DECISION_LOG corrective entry 2026-05-31). Corrected throughput: ~17-40+ bets per Finals game night (cohort players × Kalshi markets × edge approval rate; no count ceiling). **⚠ APR-0016 FLAGGED FOR STRUCTURAL REWORK (2026-05-31):** "30 resolved bets" is the wrong primary metric — count is blind to calibration, commercial validity, and execution quality. A multi-dimensional evidence standard (four sequential tiers: preconditions → execution integrity → performance trends → risk control) has been proposed and logged in DECISION_LOG. **A formal APR-XXXX must supersede APR-0016 before Finals G1 bets count toward any gate. T-113 registered.** APR-0016 remains operative until superseded — do not begin G6 evidence counting without the new APR.
+8. **G6 evidence gate = APR-0017 (ACCEPTED 2026-06-01), supersedes APR-0016.** Four-tier sequential evidence standard: Tier 0 (commercial preconditions: EXP-017 Part B CONFIRMED + production price discovery) → Tier 1 (execution integrity: rate+slope criteria, zero-tolerance idempotency/audit) → Tier 2 (model performance trends: calibration, EV, Brier, P&L slope) → Tier 3 (risk control validation). Statistical floor: **≥66 resolved bets** (derived from T2-A calibration power formula) + **≥5 game nights** (derived from slope regression df ≥ 3). All numeric thresholds derived — no arbitrary counts. T0-B already met (T-114). T0-A (EXP-017 Part B CONFIRMED) is the remaining Tier 0 precondition. GG-004 is OPEN (n=2 unique markets, directional positive; floor is 66). Clean G6 evidence begins Finals G1 Jun 3. See `00_ADMIN/APR-0017_g6-multi-dimensional-evidence-standard.md`.
 
 9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.**
 
@@ -454,19 +454,19 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
 **FEATURE_VERSION:** 1.2.0 (78 features: 31 quant + 47 qual) — 1.3.0 infrastructure built (F-039/040) but FALSIFIED by EXP-012; version stays 1.2.0  
-**Tests:** 548/548 passing (2 concurrent-position tests removed per ADR-0006)  
+**Tests:** 581/581 passing (2 concurrent-position tests removed per ADR-0006)  
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅  
-**Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010)  
+**Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010) | **EXP-017 Part B LIVE (T-105) — n=2 unique markets, EV=+$0.01/bet, DIRECTIONAL_POSITIVE; GG-004 OPEN (floor ≥66)**  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
 **ADRs accepted:** 7 (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6  
 **Open questions:** OQ-021 (L3 amplification) | OQ-022 (nba_api backup source) — both non-blocking  
-**Active risks:** ✅ KI-016 RESOLVED 2026-06-01 — count gate deleted (ADR-0006). | **KI-017 NEW 2026-06-01** — EV validation was against 0.50 null, not Kalshi prices; EXP-017 required before G6 confidence. | **KI-018 NEW 2026-06-01** — `max_daily_loss_usd: 1000` is inactive at current bankroll; drawdown % is the only operative kill switch. | **KI-019 NEW 2026-06-01** — Polymarket `"tag": "nba"` unconfirmed; silent empty return risk at T-077 activation. | **KI-011 ESCALATED 2026-06-01** — Injury blindness generates fake alpha (largest edge signals on injured players = systematic capital drain). | **GG-004 NEW 2026-06-01** — EV benchmark gap survived all 16 experiments and all gate reviews; OQ-023 filed.  
-**Live capital:** NOT DEPLOYED — G6 gate requires 30+ resolved paper bets with positive P&L (APR-0016: revised from 50; seasonal constraint; signed 2026-05-29)  
+**Active risks:** ✅ KI-016 RESOLVED 2026-06-01 — count gate deleted (ADR-0006). | **KI-017 OPEN** — EV validation was against 0.50 null, not Kalshi prices; EXP-017 Part B is DIRECTIONAL_POSITIVE but n=2 (floor ≥66); GG-004 OPEN until ≥66 markets. | **KI-018 NEW 2026-06-01** — `max_daily_loss_usd: 1000` is inactive at current bankroll; drawdown % is the only operative kill switch. | **KI-019 NEW 2026-06-01** — Polymarket `"tag": "nba"` unconfirmed; silent empty return risk at T-077 activation. | **KI-011 ESCALATED 2026-06-01** — Injury blindness generates fake alpha. | ✅ **GG-005 RESOLVED 2026-06-01** — APR-0016 structural failure remediated by APR-0017 (multi-dimensional tiered evidence standard; T-113 COMPLETE). | **GG-004 OPEN** — commercial EV claim not yet validated at ≥66 market floor; accumulating across Finals.  
+**Live capital:** NOT DEPLOYED — G6 gate governed by **APR-0017** (ACCEPTED 2026-06-01; supersedes APR-0016). Four-tier multi-dimensional standard; ≥66 resolved bets + ≥5 game nights statistical floor. EXP-017 Part B CONFIRMED required as Tier 0 precondition (GG-004 OPEN).  
 **Domain:** NBA basketball; Kalshi primary venue (ADR-0003)  
-**Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
+**Paper portfolio (2026-06-01):** $683.41 bankroll | $0.00 realized PnL | 0/66 resolved bets (APR-0017 floor) | G6 counter = 0. 3 open bets: KAT YES (mid=0.375), Anunoby NO (mid=0.61), Brunson NO (mid=0.545) for Finals G1 Jun 3. Clean evidence begins Finals G1.  
 **Reason for reset (DECISION_LOG 2026-05-31):** Prior bets placed on pre-ADR-0006 system (count-gated, architecturally incorrect). Evidence tainted; inadmissible for G6.  
 **NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix 16,619 rows on VPS (55 players).  
-**VPS DEPLOY COMPLETE (2026-05-31 SESSION 5):** git HEAD = 92539b9; cryptography==43.0.3 installed; VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem; balance confirmed $999.36 / portfolio_value $0.62 (open demo Costoulas YES). Bot fully armed.  
+**VPS DEPLOY NEEDED (2026-06-01):** VPS git HEAD = 92539b9; local is 4+ commits ahead (b235b6f, 7be22d1, 9cc74d1, 2f7a5c1, + session 6 commits). Run: `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"`. Bot was fully armed at 92539b9; new commits add APR-0017 artifacts + EXP-017 Part B + fetch_kalshi_prices.py.  
 **T-111 RESOLVED 2026-05-31:** Root cause was wrong base URL. `api.elections.kalshi.com` is legacy (public endpoints only). Fix: `_kalshi_base_url()` reads BOT_ENV → demo=`external-api.demo.kalshi.co`, live=`external-api.kalshi.com`. RSA-PSS signing was correct throughout. KI-020 RESOLVED.  
 **T-112 COMPLETE 2026-05-31:** VPS fully armed. `cryptography==43.0.3` installed. `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` in .env. VPS HEAD 92539b9. Cron intact.  
 **First live Kalshi demo order 2026-05-31:** Order 363c5f5b — KXWTACHALLENGERMATCH-26JUN01SAKCOS-COS YES 1 contract at $0.62, status `executed`. End-to-end proven. Demo balance $999.36 post-order.  
@@ -528,16 +528,17 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 **ADR-0008 FULLY OPERATIONAL (2026-05-31):** Kalshi RSA-PSS signing working. _kalshi_base_url() routes BOT_ENV=paper → demo URL, BOT_ENV=live → live URL. Order submission proven. KI-020 RESOLVED.
 
-**NEXT PRIORITIES (T-110 / T-105 / T-109):**
-1. **G6 evidence (T-110):** Monitor VPS cron after Finals G1 Jun 3 (22:00 UTC). Check `logs/paper_portfolio.json`. Throughput: 17-40+ bets/game night.
-2. **EXP-017 Part B (T-105):** OPERATOR ACTION — pull Kalshi historical prices, run `run_exp017.py --kalshi-prices`. Closes GG-004 (G6 blocker).
-3. **Resolution (T-109):** After each game day: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py` (VPS 403 blocks nba_api).
+**NEXT PRIORITIES (T-110 / T-109 / VPS deploy):**
+1. **VPS deploy (IMMEDIATE):** `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` — 4+ commits behind. Must run before Finals G1 Jun 3.
+2. **G6 evidence (T-110):** Monitor VPS cron after Finals G1 Jun 3 (22:00 UTC). Check `logs/paper_portfolio.json`. Throughput: 17-40+ bets/game night. APR-0017 floor: ≥66 bets across ≥5 game nights.
+3. **Resolution (T-109 standing procedure):** After each game: (1) `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`, (2) `PYTHONPATH=src python3 src/prediction_market_bot/fetch_kalshi_prices.py --portfolio`, (3) re-run EXP-017 when ≥66 markets (GG-004).
+~~4. **EXP-017 Part B (T-105) ✅ COMPLETE** — Part B live mode built and run; n=2 DIRECTIONAL_POSITIVE. Accumulate to ≥66.~~
 
 See TODO_NEXT.md for session-level task tracking.
 
 ---
 
-## Compass OS Health (as of 2026-05-31 SESSION 5)
+## Compass OS Health (as of 2026-06-01 SESSION 6)
 
 | Metric | Status |
 |--------|--------|
@@ -546,6 +547,6 @@ See TODO_NEXT.md for session-level task tracking.
 | M3 ADR Coverage | 7 accepted (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
 | M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-091/092 registered |
-| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
-| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ (local-only; Kalshi submission wired ADR-0008 — blocked T-111) | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **548/548 tests** | ADR-0008 ACCEPTED | **PIPE-03 OPERATIONAL (local-only)** |
-| M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |
+| M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | G6 gate: **APR-0017** (≥66 bets + ≥5 nights); T-110 accumulating (0/66) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | fetch_kalshi_prices.py ✅ | run_exp017.py --from-pregame ✅ | **581/581 tests** | ADR-0008 ACCEPTED | **PIPE-03 OPERATIONAL** |
+| M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-017 Part B LIVE (n=2, DIRECTIONAL_POSITIVE, GG-004 OPEN) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet vs null | **EXP-017 Part B CONFIRMED requires ≥66 resolved markets** — re-run after each Finals game via T-109 standing procedure |
