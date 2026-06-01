@@ -45,7 +45,7 @@ These 9 rules are absolute. They must be restored to any context that loses them
 
 7. **Kill switch must halt all components within ≤60 seconds** (NFR-03). Tested before G5. No bypass path.
 
-8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. Seasonally bounded by NBA Finals end (~2026-06-22). Window extends to first 30 days of 2026-27 regular season if not reached. Do not revert to 50 without a new APR.
+8. **G6 evidence gate = 30 resolved paper bets with positive P&L** (APR-0016, signed 2026-05-29). NOT 50. The APR-0016 rationale used a "4 bets/game-day" estimate — that figure is **invalidated by ADR-0006** (count gate deleted 2026-06-01; see DECISION_LOG corrective entry 2026-05-31). Corrected throughput: ~17-40+ bets per Finals game night (cohort players × Kalshi markets × edge approval rate; no count ceiling). **30 bets may be reached in the first 1-2 Finals game nights.** Dark period fallback (first 30 days of 2026-27 regular season) remains available but is now a low-probability scenario. Do not revert to 50 without a new APR.
 
 9. **Strategic decisions made in holistic reviews must be captured in DECISION_LOG.md AND APPROVALS_REGISTER.md before session end.**
 

@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-31 (SESSION 4: ADR-0008 Kalshi demo order execution implemented; RSA signing infrastructure built; Kalshi auth blocker open — NOT_FOUND on /portfolio/balance; VPS deployed HEAD dce071e)
+**Last reviewed:** 2026-05-31 (SESSION 5: T-111 RESOLVED — Kalshi auth working; root cause was wrong base URL: api.elections.kalshi.com → external-api.demo.kalshi.co; balance confirmed $1,000.00; APR-0016 "4 bets/game-day" assumption corrected in DECISION_LOG — stale pre-ADR-0006 figure; T-112 next)
 
 ---
 
@@ -10,8 +10,8 @@
 
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
-| T-111 | **Resolve Kalshi auth: NOT_FOUND on /portfolio/balance** | **BLOCKER — Kalshi live orders** | RSA signing (both PKCS1v15 and PSS) returns `NOT_FOUND`. Bearer token with UUID returns `token authentication failure`. Root cause investigation required next session. Two hypotheses: (1) demo keys use session-based auth — try `POST /trade-api/v2/log_in` with email/password to get JWT, then `Authorization: Bearer <jwt>`; (2) RSA public key not uploaded/associated in Kalshi dashboard. Until resolved, bot runs in local-only mode (paper_portfolio.json only). Check Kalshi API docs for demo auth flow specifically. |
-| T-112 | **Deploy RSA key to VPS after T-111 resolves** | HIGH (blocked on T-111) | Once local balance check works: `scp -i ~/.ssh/id_ed25519_droplet ~/.ssh/kalshi_bot.pem root@157.230.91.33:/root/.ssh/kalshi_bot.pem && chmod 600`. Add `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` to VPS `.env`. Test: `BOT_ENV=paper python3 -c "from dotenv import load_dotenv; load_dotenv(); from src.prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient; c=KalshiMarketClient.from_env(); print(c.get_balance())"` |
+| ~~T-111~~ | ~~**Resolve Kalshi auth: NOT_FOUND on /portfolio/balance**~~ | ~~BLOCKER~~ | ✅ COMPLETE 2026-05-31 — Root cause: wrong base URL. Legacy `api.elections.kalshi.com` serves public endpoints only; authenticated endpoints (portfolio/balance, portfolio/orders) require `external-api.demo.kalshi.co` (demo) or `external-api.kalshi.com` (live). Fix: `_kalshi_base_url()` function reads BOT_ENV at runtime — paper→demo, live→live. Balance endpoint parsing also fixed (flat response, not nested). Confirmed: `Balance: True {'balance_usd': 1000.0, 'portfolio_value_usd': 0.0}`. RSA-PSS signing was correct throughout — only the server was wrong. |
+| T-112 | **Deploy cryptography + updated kalshi_client.py to VPS** | HIGH | Unblocked by T-111. Steps: (1) `pip install cryptography` on VPS — added to requirements-base.txt; (2) `scp -i ~/.ssh/id_ed25519_droplet ~/.ssh/kalshi_bot.pem root@157.230.91.33:/root/.ssh/kalshi_bot.pem && ssh root@157.230.91.33 "chmod 600 /root/.ssh/kalshi_bot.pem"`; (3) add `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` to VPS `.env`; (4) deploy updated code via git pull on VPS; (5) test: `BOT_ENV=paper PYTHONPATH=src python3 -c "from dotenv import load_dotenv; load_dotenv(); from src.prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient; c=KalshiMarketClient.from_env(); print(c.get_balance())"`. |
 
 ---
 

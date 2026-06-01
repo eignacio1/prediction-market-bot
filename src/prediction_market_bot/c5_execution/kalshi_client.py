@@ -4,15 +4,18 @@ C5: Kalshi Market Data + Order Execution Client
 Component:    C5 (Execution Engine)
 Phase active: Phase 5+ (market data); Phase 6+ (order execution — ADR-0008)
 Status:       CANONICAL (ADR-0008 2026-05-31)
-Upstream:     Kalshi trading API (api.elections.kalshi.com)
+Upstream:     Kalshi trading API (demo: external-api.demo.kalshi.co; live: external-api.kalshi.com)
 Downstream:   C3 Forecasting (market_implied_prob), C4 Risk Engine (edge calc),
               C5 PaperTrader (order submission)
 Interfaces:   IF-C5-VENUE (ADR-0003 read; ADR-0008 write)
 
 Connectivity requirement (DS-02-B-001 resolved 2026-05-28):
   - REQUIRES Homebrew Python 3.11 (/usr/local/bin/python3.11) or .venv311
-  - OpenSSL 3.6.2+ required for TLS handshake with api.elections.kalshi.com
+  - OpenSSL 3.6.2+ required for TLS handshake with Kalshi APIs
   - LibreSSL (system Python) and older OpenSSL fail the TLS handshake (CloudFront WAF)
+  - T-111 (2026-05-31): legacy api.elections.kalshi.com returns 404 on authenticated endpoints.
+    Correct URLs: demo=external-api.demo.kalshi.co, live=external-api.kalshi.com.
+    Base URL now selected by BOT_ENV at runtime.
 
 Authentication (ADR-0008):
   - Kalshi v2 API uses RSA-PS256 (PSS+SHA256) request signing for all authenticated endpoints
@@ -73,7 +76,19 @@ import requests
 # ---------------------------------------------------------------------------
 
 COMPONENT = "C5"
-KALSHI_BASE_URL = "https://api.elections.kalshi.com/trade-api/v2"
+
+# Environment-aware base URLs (T-111: legacy api.elections.kalshi.com returns 404
+# on authenticated endpoints — correct URLs confirmed from Kalshi official docs).
+# BOT_ENV=paper routes to demo sandbox; BOT_ENV=live routes to production.
+_KALSHI_DEMO_BASE_URL = "https://external-api.demo.kalshi.co/trade-api/v2"
+_KALSHI_LIVE_BASE_URL = "https://external-api.kalshi.com/trade-api/v2"
+
+
+def _kalshi_base_url() -> str:
+    env = os.environ.get("BOT_ENV", "paper").lower()
+    return _KALSHI_LIVE_BASE_URL if env == "live" else _KALSHI_DEMO_BASE_URL
+
+
 SERIES_PLAYER_POINTS = "KXNBAPTS"
 
 # Request timeouts and retry config
@@ -293,7 +308,7 @@ class KalshiMarketClient:
 
     def _get(self, path: str, params: dict | None = None, authenticated: bool = False) -> tuple[bool, Any]:
         """GET with retry. Returns (ok, response_data)."""
-        url = f"{KALSHI_BASE_URL}{path}"
+        url = f"{_kalshi_base_url()}{path}"
         full_path = f"/trade-api/v2{path}"
 
         for attempt in range(MAX_RETRIES):
@@ -332,7 +347,7 @@ class KalshiMarketClient:
         if not self._private_key:
             return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
 
-        url = f"{KALSHI_BASE_URL}{path}"
+        url = f"{_kalshi_base_url()}{path}"
         full_path = f"/trade-api/v2{path}"
 
         try:
@@ -467,13 +482,14 @@ class KalshiMarketClient:
         ok, data = self._get("/portfolio/balance", authenticated=True)
         if not ok:
             return False, data
-        balance = data.get("balance", {})
-        # Kalshi returns balance in cents
-        balance_cents = balance.get("balance", 0)
-        payout_cents = balance.get("payout", 0)
+        # Response: {"balance": <cents int>, "balance_dollars": "<str>",
+        #            "portfolio_value": <cents int>, "updated_ts": <unix>}
+        balance_cents = data.get("balance", 0)
+        portfolio_value_cents = data.get("portfolio_value", 0)
         return True, {
             "balance_usd": balance_cents / 100.0,
-            "payout_usd": payout_cents / 100.0,
+            "portfolio_value_usd": portfolio_value_cents / 100.0,
+            "balance_dollars": data.get("balance_dollars", ""),
         }
 
     def submit_order(
