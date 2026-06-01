@@ -390,7 +390,7 @@
 | Blocks gate | Non-blocking for Finals. **Must resolve before 2026-27 regular season paper trading begins** — G6 evidence accumulation depends on it. |
 | Resolution path | Replace line 290 single-select with a loop: evaluate EACH `player_mkts` entry as an independent signal. Idempotency check already uses `closest.ticker` per market — the pattern extends cleanly. Estimated change: ~15 lines. Requires test update. Designate as T-115. |
 | Registered | 2026-06-01 |
-| Status | OPEN — tolerable for Finals; must resolve before 2026-27 regular season. |
+| Status | ✅ RESOLVED 2026-06-01 — T-115 complete. `closest = min(...)` replaced with `for mkt in player_mkts:` loop. All thresholds evaluated as independent signals. 438/438 tests pass. |
 
 ---
 
@@ -406,6 +406,7 @@
 | KI-015 | 2026-05-30 | T-100 complete — drawdown now computed from `total_realized_pnl` only, not bankroll depletion; DS sign-off granted same session; deployed VPS; kill switch confirmed cold at 0.00% realized drawdown |
 | KI-016 | 2026-06-01 | ADR-0006: count gate deleted entirely — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. Pipeline + Kelly + kill switch are the complete risk framework. No count primitive anywhere in the codebase. |
 | KI-020 | 2026-05-31 | T-111/T-112 complete. Root cause was wrong base URL, not missing RSA infrastructure — RSA-PSS signing was correctly implemented. `_kalshi_base_url()` reads BOT_ENV; private key at `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` on VPS; cryptography==43.0.3 installed. Balance confirmed $1,000.00. First live demo order executed (Order 363c5f5b). |
+| KI-022 | 2026-06-01 | T-115 complete. `closest = min(player_mkts, ...)` replaced with `for mkt in player_mkts:` loop in `run_paper_trade.py`. Features computed once per player; all available Kalshi thresholds evaluated as independent signals through idempotency + C4 + PaperTrader. Restores ~25–40 bets/game regular season T1. 438/438 tests pass. |
 
 ---
 
