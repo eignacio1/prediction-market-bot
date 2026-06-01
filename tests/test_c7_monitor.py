@@ -712,6 +712,137 @@ class TestCheckPortfolioPnl:
         assert "loss_pct" in payload
         assert abs(payload["loss_pct"] - 0.06) < 1e-6
 
+
+# ---------------------------------------------------------------------------
+# SystemMonitor — shadow model tracking (ADR-0009)
+# ---------------------------------------------------------------------------
+
+
+from prediction_market_bot.c7_monitoring.monitor import (
+    SHADOW_MIN_WINDOW,
+    SHADOW_PROMOTION_DELTA,
+)
+
+
+def _record_shadow(monitor: SystemMonitor, p_shadow: float, y: int) -> None:
+    monitor.record_shadow_outcome(shadow_p_estimate=p_shadow, outcome=y)
+
+
+class TestShadowModelTracking:
+    @pytest.mark.unit
+    def test_snapshot_shadow_n_events_zero_initially(self):
+        monitor, _ = _make_monitor()
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_n_events == 0
+
+    @pytest.mark.unit
+    def test_snapshot_shadow_brier_none_below_min_window(self):
+        monitor, _ = _make_monitor()
+        for _ in range(SHADOW_MIN_WINDOW - 1):
+            _record_shadow(monitor, 0.6, 1)
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_brier_30 is None
+        assert snap.shadow_promotion_flag is False
+
+    @pytest.mark.unit
+    def test_snapshot_shadow_brier_computed_at_min_window(self):
+        monitor, _ = _make_monitor()
+        for _ in range(SHADOW_MIN_WINDOW):
+            _record_shadow(monitor, 0.6, 1)
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_brier_30 is not None
+        # p=0.6, y=1 → Brier = (0.6 - 1)^2 = 0.16
+        assert snap.shadow_brier_30 == pytest.approx(0.16, abs=1e-6)
+
+    @pytest.mark.unit
+    def test_shadow_promotion_flag_not_set_when_similar(self):
+        """Shadow and prod similar → no promotion flag."""
+        monitor, _ = _make_monitor(brier_baseline=BRIER_BASELINE)
+        # Load prod window with calibrated records (Brier ~0.21)
+        for i in range(30):
+            y = 1 if i % 10 < 7 else 0
+            _record(monitor, p=0.70, y=y)
+        # Load shadow window with same pattern
+        for i in range(SHADOW_MIN_WINDOW):
+            y = 1 if i % 10 < 7 else 0
+            _record_shadow(monitor, 0.70, y)
+        snap = monitor.get_drift_snapshot()
+        # Shadow Brier ≈ prod Brier → no flag
+        assert snap.shadow_promotion_flag is False
+
+    @pytest.mark.unit
+    def test_shadow_promotion_flag_fires_when_shadow_clearly_better(self):
+        """Shadow beats prod by > SHADOW_PROMOTION_DELTA → flag fires."""
+        monitor, _ = _make_monitor()
+        # Prod window: poor calibration — p=0.20, y=1 repeatedly → Brier ~0.64
+        for _ in range(30):
+            _record(monitor, p=0.20, y=1)
+        # Shadow window: good calibration — p=0.70, y=1 repeatedly → Brier ~0.09
+        for _ in range(SHADOW_MIN_WINDOW):
+            _record_shadow(monitor, 0.70, 1)
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_promotion_flag is True
+        assert snap.shadow_brier_30 is not None
+        assert snap.rolling_brier is not None
+        assert snap.rolling_brier - snap.shadow_brier_30 >= SHADOW_PROMOTION_DELTA
+
+    @pytest.mark.unit
+    def test_check_and_alert_logs_shadow_promotion_event(self):
+        """When promotion flag fires, check_and_alert emits shadow_promotion_flag WARNING."""
+        monitor, logger = _make_monitor()
+        # Load prod with poor calibration
+        for _ in range(30):
+            _record(monitor, p=0.20, y=1)
+        # Load shadow with good calibration
+        for _ in range(SHADOW_MIN_WINDOW):
+            _record_shadow(monitor, 0.70, 1)
+        monitor.check_and_alert(session_id="SES-SHADOW-TEST")
+        event_types = [c[1]["event_type"] for c in logger.log.call_args_list]
+        assert "shadow_promotion_flag" in event_types
+
+    @pytest.mark.unit
+    def test_check_and_alert_logs_shadow_drift_computed(self):
+        """When shadow window has events, check_and_alert emits shadow_drift_computed."""
+        monitor, logger = _make_monitor()
+        for _ in range(30):
+            _record(monitor, p=0.70, y=1)
+        for _ in range(SHADOW_MIN_WINDOW):
+            _record_shadow(monitor, 0.70, 1)
+        monitor.check_and_alert(session_id="SES-SHADOW-TEST")
+        event_types = [c[1]["event_type"] for c in logger.log.call_args_list]
+        assert "shadow_drift_computed" in event_types
+
+    @pytest.mark.unit
+    def test_shadow_promotion_flag_not_in_health_snapshot_when_absent(self):
+        monitor, _ = _make_monitor()
+        snap = monitor.get_health_snapshot()
+        assert "shadow_promotion_flag" in snap
+        assert snap["shadow_promotion_flag"] is False
+
+    @pytest.mark.unit
+    def test_shadow_window_rolls_over_at_max_size(self):
+        """Shadow window respects maxlen — oldest records are evicted."""
+        monitor, _ = _make_monitor(window_size=10)
+        for i in range(25):
+            _record_shadow(monitor, 0.5, i % 2)
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_n_events == 10  # capped at window_size
+
+    @pytest.mark.unit
+    def test_record_shadow_outcome_thread_safe(self):
+        """Concurrent shadow outcome recording doesn't lose records."""
+        monitor, _ = _make_monitor(window_size=1000)
+        threads = [
+            threading.Thread(target=lambda: _record_shadow(monitor, 0.6, 1))
+            for _ in range(100)
+        ]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        snap = monitor.get_drift_snapshot()
+        assert snap.shadow_n_events <= 1000
+
     @pytest.mark.unit
     def test_zero_initial_bankroll_no_crash(self):
         monitor, logger = _make_monitor()

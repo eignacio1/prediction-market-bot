@@ -394,6 +394,24 @@
 
 ---
 
+### KI-023 — Kalshi Market Liquidity: Bot Order Flow May Move Own Prices at Full Operational Scale
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-023 |
+| Severity | HIGH (pre-live-capital) |
+| Category | Market microstructure / execution risk |
+| Description | No estimate of KXNBAPTS market depth exists. At full operational scale (100-300+ bets/night T1-only, 300-1,000+ with T2/T3 active, multi-venue), the bot's own order flow may move prices on thin prediction market markets. The $500/bet position cap is a blunt instrument calibrated to risk exposure per event, not to Kalshi market depth. If a KXNBAPTS market has $2,000-5,000 in visible depth and the bot submits $500 per market across multiple similar markets per game, market impact is real. EV estimates from backtesting and EXP-017 are derived from static historical prices that do not include the bot's own market impact — paper P&L will not reveal this issue since paper orders are simulated at mid-price with no market impact. |
+| Impact | Two failure modes: (1) at live capital scale, bot moves prices against itself, reducing realized EV below the +$0.0958/bet backtest figure; (2) at full throughput, bot could inadvertently dominate thin markets on a single player's threshold (e.g., placing 7-8 bets across all Kalshi thresholds for one player in a thin Finals market concentrates impact). Both cases produce G6 paper evidence that overstates live EV. |
+| Workaround | During paper trading: no market impact (simulated mid-price fills). This issue is invisible until live capital executes real orders. Monitor: no current workaround. |
+| Blocks gate | G6 (live capital ADR-0005 must address this before real order submission) |
+| Resolution path | Before G6 live capital ADR-0005: (1) Query Kalshi REST API for KXNBAPTS market order book depth (available via `/markets/{ticker}/orderbook`); (2) estimate market impact per order size as fraction of visible depth; (3) establish a per-market depth check: reject orders where proposed stake exceeds X% of visible depth (suggest ≤5% as initial threshold — derive via ADR); (4) update `_HARD_LIMITS` with a `max_order_pct_of_depth` limit. |
+| Open question | What is the actual order book depth for KXNBAPTS markets during Finals and regular season? This data is accessible via Kalshi API — collect during Finals G1-G7 paper trading window. |
+| Registered | 2026-06-01 — identified via PDTP strategic analysis (Session 8) as ungated HIGH-severity risk |
+| Status | OPEN — HIGH severity pre-live-capital; LOW severity during paper trading (simulated fills); must be addressed in G6 live capital ADR |
+
+---
+
 ## Resolved Issues
 
 *Populated as issues are resolved.*

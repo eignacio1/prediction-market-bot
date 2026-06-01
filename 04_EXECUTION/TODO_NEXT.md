@@ -2,7 +2,30 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-01 SESSION 9 — GG-006 SUBSTANTIALLY RESOLVED (Kalshi DCM v1.26 + DCO v1.4 rulebooks read in full; position accountability framework understood). T-117 registered: verify KXNBAPTS contract-specific Terms page before G6. PRIORITIES: T-109 (resolve_local after each Finals game day) > T-117 (verify KXNBAPTS contract Terms — dark period) > T-116 (pre-season stress test)
+**Last reviewed:** 2026-06-01 SESSION 10 — ADR-0009 ACCEPTED; T-119/T-120 COMPLETE; 612/612 tests. Multi-arm architecture Layer 2 (shadow model) operational. Next tasks: T-122 (EXP-017 exact-ticker join), T-107 (Polymarket NBA tag), T-121 (shadow outcome wiring). PRIORITIES: T-109 (resolve_local each Finals game day) > VPS deploy > T-122 > T-107 > T-121
+
+---
+
+## SESSION 2026-06-01 SESSION 10 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| ~~ADR-0009~~ | ~~Shadow model policy accepted~~ | ✅ COMPLETE 2026-06-01 — `03_DECISIONS/ADR-0009_shadow-model-policy.md` accepted before code per Compass OS invariant. Isolation guarantee: shadow never routes to C4. Promotion gate: shadow_brier_30 ≤ prod_brier - 0.005 over ≥30 events → WARNING; ADR-0010 required for promotion. Frozen model extension: shadow version-pinned at deployment. |
+| ~~T-119~~ | ~~Model version hash guard~~ | ✅ COMPLETE 2026-06-01 — `run_pregame.py`: after loading prod_model.joblib, checks `artifact["model_version"]` vs `prod_model_meta.json`. Mismatch → CRITICAL log + exit(1). Absent meta file → guard skips (backward compatible). |
+| ~~T-120~~ | ~~ShadowForecaster C3 + PIPE-02 integration~~ | ✅ COMPLETE 2026-06-01 — `c3_forecasting/shadow_forecaster.py`: optional parallel inference; C6-only; non-fatal (_load() + predict_shadow() both catch all exceptions). C7 monitor: `_shadow_window` deque + `record_shadow_outcome()` + shadow Brier computed independently of production window + `shadow_promotion_flag` in DriftSnapshot. PIPE-02 wired: `shadow_p_estimate` + `shadow_model_version` in all forecast records. 15 new C3 shadow tests + 11 new C7 shadow tests. 612/612 pass. |
+
+---
+
+## SESSION 2026-06-01 SESSION 10 — NEW TASKS
+
+| # | Task | Priority | Notes |
+|---|------|----------|-------|
+| T-121 | **Wire record_shadow_outcome() to resolve pipeline** | MEDIUM — Finals window | `run_resolve.py` reads pregame logs (which now carry `shadow_p_estimate`). For each resolved bet, extract `shadow_p_estimate` and call `SystemMonitor.record_shadow_outcome(shadow_p, outcome)`. Prerequisite: shadow model artifact must be trained and deployed first — without an artifact, shadow_p_estimate will be None in all pregame logs, so this wiring produces nothing. Register as T-121 but defer execution until shadow artifact is deployed in dark period. |
+| T-122 | **Update EXP-017 Part B to join on exact kalshi_ticker (not ±3 threshold proximity match)** | HIGH — next session Track 2 | `run_exp017.py --from-pregame` currently uses fuzzy `±3` threshold match to join pregame logs to portfolio. Pregame logs post-T-118 carry exact `kalshi_ticker`. Join should be `pregame["kalshi_ticker"] == portfolio["kalshi_ticker"]`. Fuzzy match may create false joins when multiple thresholds exist for the same player. Exact-ticker join eliminates this. |
+| T-123 | **TI-04 enforcement test** | MEDIUM — Track 2 | Assert any feature with `_price` or `_market` in its name has a documented `look_back_window` attribute in `DATA_FLOWS_LINEAGE.md`. Prevents temporal leakage of pricing features in future feature additions. |
+| T-124 | **QTI backdating framework — DS-01 PAM to 2021-22** | MEDIUM — dark period | Backdate DS-01 PAM classifications for all 50 cohort players to 2021-22 per QTI-03. Requires `backdated: true` + `backdating_rationale` + second review flag in QS CSV. ~5× qualitative signal training coverage. |
+| T-125 | **Polymarket adapter test expansion** | MEDIUM — Track 3 | Empty-market assertion (zero markets returned is an error not silence), `_parse_market()` regex test for edge cases, VenueRouter multi-venue routing test. Required before T-077 Polymarket activation. |
+| T-126 | **EXP-014-B line shopping EV at T2/T3** | LOW — dark period | Bound EV range per execution band with Polymarket active. Depends on T-077 (Polymarket KYC) and T-107 (NBA tag confirmed). |
 
 ---
 
