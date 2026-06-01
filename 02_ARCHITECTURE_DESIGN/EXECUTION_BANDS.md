@@ -3,13 +3,14 @@
 **Purpose:** Define the five execution time-horizon bands (T1–T5) and their model complexity, execution quality, and Kelly sizing requirements. The authoritative design document for multi-band trading strategy implementation.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-05-29 (initial build — Phase 6 idle period)
+**Last reviewed:** 2026-05-31 (T-106: T2 activation gate corrected — FEATURE_VERSION 1.3.0 removed; gate now requires DS-04 operational + EXP validation. EXP-012 falsified injury signal at current N.)
 **Next review:** On any band activation; on Phase 8 real-time infrastructure scope
 **Staleness triggers:** New band activated; Kelly fraction adjusted by ADR; execution SLA changed; new pipeline deployed
 **Upstream links:** STRATEGY_OVERVIEW.md (strategy context); PIPELINES_JOBS.md (pipeline registry); METHODOLOGY.md (model classes)
 **Downstream links:** execution_bands.py (implementation); PIPELINES_JOBS.md (PIPE-02/05/06/07/08); cron.conf (schedules)
 **Decision references:** ADR-0001; ADR-0002; ADR-0004 (Kelly fraction)
 **Confidence:** 9/10
+**Decisions logged:** true — T1–T5 framework, Kelly fractions per band, and multi-band interaction rules captured in DECISION_LOG.md (2026-05-29 retroactive batch, entries 5/6/7)
 
 ---
 
@@ -186,7 +187,110 @@ T2 and T3 cron lines are commented out until Phase 7 activation. Add to VPS cron
 | Band | Gate condition |
 |------|---------------|
 | T1 | ✅ G6 (ADR-0005) for live capital; paper already running |
-| T2 | DS-04 injury data source registered (T-075); FEATURE_VERSION 1.3.0 |
+| T2 | DS-04 operational (T-075 + commissioning); dedicated EXP confirming injury overlay Brier improvement ≥ 0.001 at N ≥ 100 (EXP-012 falsified this signal at current N — scale constraint applies) |
 | T3 | Phase 7 entry; no additional data sources required |
 | T4 | Phase 8 + real-time infrastructure ADR + DS-02 websocket upgrade |
 | T5 | Phase 8 + T4 infrastructure (T5 is an extension of T4 infra) |
+
+---
+
+## Arbitrage Strategies by Band
+
+Arb strategies (C, D, E) map differently to execution bands than model-edge strategies. The governing principle remains identical — shorter horizon = shorter decision tree — but arb has a critical structural distinction: **detection band ≠ execution band.**
+
+The expensive computation (market scan, OU estimation, venue comparison) happens at T1/T2. Execution at T3/T4 is pure lookup + fire. Without T1/T2 pre-computation, arb strategies cannot meet T3/T4 SLAs.
+
+Full decision tree specification: `02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md`
+
+### Arb Strategy Band Matrix
+
+| Band | Strategy C (Complement Lock) | Strategy D (Stat Arb) | Strategy E (Line Shopping) |
+|------|------------------------------|----------------------|---------------------------|
+| T1 | **Detection:** Full market scan → build lock opportunity table | **Detection:** Full OU estimation → rank correlated pairs | **Cache:** Full venue comparison → build routing table |
+| T2 | **Refresh:** Re-validate top-N candidates; update ask prices | **Update:** Fetch live prices → recompute z-scores (no OU re-est.) | **Refresh:** Re-query venues + injury adjustment → update routing table |
+| T3 | **Execute:** Verify lock holds (1 API call) → submit both legs | **Execute:** Check z-score in entry zone → submit if valid | **Route:** Query all venues live → normalize → route to best price |
+| T4 | **Execute:** Lookup pre-staged flag → fire pre-built order pair | Not applicable (OU reversion > game window) | **Route:** Lookup pre-cached routing_table[market_id] |
+| T5 | Not applicable (near-deterministic settlement) | Not applicable | Lookup pre-cached routing_table[market_id] |
+
+### Decision Tree Depth — Arb vs. Strategy A
+
+```
+                T1          T2          T3          T4          T5
+Strategy A:   [FULL]     [overlay]  [momentum]  [Bayesian]  [arithmetic]
+               78 feat     cached+    1 signal    1 update    2 ops
+
+Strategy C:  [SCAN]     [REFRESH]  [VERIFY+FIRE] [LOOKUP]    N/A
+              all mkt     top-N      1 API+1 op    1 op
+
+Strategy D:  [ESTIMATE]  [UPDATE]  [CHECK+FIRE]   N/A        N/A
+              OU params    z-score   cached+1 op
+
+Strategy E:  [COMPARE]  [REFRESH]  [LIVE ROUTE]  [CACHED]  [CACHED]
+              all venues  inj adj    N API calls   1 lookup   1 lookup
+```
+
+The arb strategies share the band infrastructure (pipelines, VPS cron, C5) with Strategy A but require additional modules: `ComplementLockScanner`, `StatArbScanner`, `LineShoppingRouter`, and `ArbOpportunityLog`. These are Phase 7 builds, post-G6.
+
+### Arb Activation Gates by Band
+
+| Strategy | Band | Phase | Primary blocker |
+|----------|------|-------|----------------|
+| E | T1/T2/T3 | 7 | Polymarket API (T-077); VenueRouter multi-venue |
+| E | T4 | 8 | Real-time C5 rebuild |
+| C | T1/T2 scan | 7 | APR-0010 (DS decision) |
+| C | T3/T4 execute | 7/8 | Write-capable C5 (ACC-0002 upgrade); APR-0010 |
+| D | T1/T2 | 8 | DS-02 price history (≥2 seasons per pair); new ADR |
+| D | T3 | 8 | DS-02 live feed |
+
+---
+
+## Band Assignment Protocol
+
+**Full specification:** `02_ARCHITECTURE_DESIGN/BAND_ASSIGNMENT_FRAMEWORK.md`
+
+**Registry:** `src/prediction_market_bot/execution_bands.py` — `BAND_REGISTRY` singleton. All strategies A–K must be registered in `BAND_REGISTRY` before deployment. Unregistered strategies cannot be activated.
+
+### Four-Criterion Test (C1–C4)
+
+Before assigning a strategy to a band, all four criteria must pass:
+
+| Criterion | Test | Fail condition |
+|-----------|------|---------------|
+| **C1 — Compute fit** | Can the strategy's full decision tree complete within the band's `max_compute_ms`? | Strategy computation exceeds band budget at P90 latency |
+| **C2 — SLA achievable** | Can a bet be submitted before the execution SLA expires, given venue API latency? | `venue_api_p90_ms + compute_ms > sla_ms` for target band |
+| **C3 — Signal exists** | Does the strategy have a validated signal for this band's time horizon? | No signal or signal is untested at this horizon |
+| **C4 — Evidence validated** | Has the band assignment been confirmed by a registered experiment (EXP-NNN)? | No EXP result; hypothesis unvalidated |
+
+A strategy passes C1–C2 (feasibility) before C3–C4 (evidence). A strategy may be SKELETON if it passes C1–C2 but is pending C3–C4 evidence.
+
+### Band Status Semantics
+
+| Status | Meaning | Execution behavior |
+|--------|---------|-------------------|
+| **ACTIVE** | C1–C4 all pass; validated by EXP | Eligible to drive bet sizing |
+| **SKELETON** | C1–C2 pass; C3–C4 pending evidence | Signals logged; bet sizing blocked |
+| **BLOCKED** | C1–C2 fail OR gate condition unmet | No execution; no signals |
+
+`band_status` is machine-enforced, not a documentation label. `BandRegistry.validate()` runs at bot startup and logs violations as WARNINGS.
+
+### Adding a New Strategy
+
+1. Create a `StrategyBandSpec` dataclass instance with all 11 required fields.
+2. Register it via `BAND_REGISTRY.register(spec)`.
+3. Assign `band_status = "SKELETON"` initially (C3–C4 evidence pending).
+4. Run the 4-criterion test; document in BAND_ASSIGNMENT_FRAMEWORK.md.
+5. Write a DECISION_LOG entry for the assignment decision.
+6. Promote to `ACTIVE` only after a registered EXP confirms signal quality.
+7. Promotion from SKELETON→ACTIVE requires a DECISION_LOG entry + CHANGE_CONTROL Class A review.
+
+### Band Change Governance
+
+| Change | Documentation required |
+|--------|----------------------|
+| New strategy registered (any status) | DECISION_LOG entry |
+| SKELETON → ACTIVE promotion | DECISION_LOG entry + DS sign-off (CHANGE_CONTROL Class A) |
+| SKELETON → BLOCKED demotion | DECISION_LOG entry + DS sign-off |
+| Band reassignment (e.g., T1 → T2) | DECISION_LOG entry + DS sign-off + may require new ADR |
+| ACTIVE → BLOCKED (evidence invalidated) | DECISION_LOG entry + DS sign-off + ADR if strategy was live capital |
+
+See `08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md` — Band Assignment Changes section.

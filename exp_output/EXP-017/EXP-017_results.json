@@ -1,0 +1,144 @@
+{
+  "exp_id": "EXP-017",
+  "session_id": "EXP-017-3FFE6C28",
+  "run_at": "2026-06-01T02:20:36.904Z",
+  "governance_gap": "GG-004",
+  "open_question": "OQ-023",
+  "test_rows": 2692,
+  "part_a": {
+    "part": "A",
+    "test_rows": 2692,
+    "vig_assumed": 0.01,
+    "sweep_results": [
+      {
+        "market_implied_prob": 0.4,
+        "n_yes_bets": 2226,
+        "n_no_bets": 211,
+        "n_pass": 255,
+        "n_bets": 2437,
+        "win_rate": 0.5051,
+        "ev_per_bet": 0.082813,
+        "total_pnl": 201.815
+      },
+      {
+        "market_implied_prob": 0.43,
+        "n_yes_bets": 1948,
+        "n_no_bets": 359,
+        "n_pass": 385,
+        "n_bets": 2307,
+        "win_rate": 0.5288,
+        "ev_per_bet": 0.072039,
+        "total_pnl": 166.195
+      },
+      {
+        "market_implied_prob": 0.45,
+        "n_yes_bets": 1717,
+        "n_no_bets": 466,
+        "n_pass": 509,
+        "n_bets": 2183,
+        "win_rate": 0.5346,
+        "ev_per_bet": 0.058239,
+        "total_pnl": 127.135
+      },
+      {
+        "market_implied_prob": 0.47,
+        "n_yes_bets": 1527,
+        "n_no_bets": 648,
+        "n_pass": 517,
+        "n_bets": 2175,
+        "win_rate": 0.5485,
+        "ev_per_bet": 0.05563,
+        "total_pnl": 120.995
+      },
+      {
+        "market_implied_prob": 0.49,
+        "n_yes_bets": 1306,
+        "n_no_bets": 865,
+        "n_pass": 521,
+        "n_bets": 2171,
+        "win_rate": 0.5615,
+        "ev_per_bet": 0.058524,
+        "total_pnl": 127.055
+      },
+      {
+        "market_implied_prob": 0.5,
+        "n_yes_bets": 1200,
+        "n_no_bets": 975,
+        "n_pass": 517,
+        "n_bets": 2175,
+        "win_rate": 0.5591,
+        "ev_per_bet": 0.05408,
+        "total_pnl": 117.625
+      },
+      {
+        "market_implied_prob": 0.51,
+        "n_yes_bets": 1089,
+        "n_no_bets": 1068,
+        "n_pass": 535,
+        "n_bets": 2157,
+        "win_rate": 0.5628,
+        "ev_per_bet": 0.057721,
+        "total_pnl": 124.505
+      },
+      {
+        "market_implied_prob": 0.52,
+        "n_yes_bets": 976,
+        "n_no_bets": 1165,
+        "n_pass": 551,
+        "n_bets": 2141,
+        "win_rate": 0.5652,
+        "ev_per_bet": 0.061922,
+        "total_pnl": 132.575
+      },
+      {
+        "market_implied_prob": 0.53,
+        "n_yes_bets": 866,
+        "n_no_bets": 1275,
+        "n_pass": 551,
+        "n_bets": 2141,
+        "win_rate": 0.5689,
+        "ev_per_bet": 0.069624,
+        "total_pnl": 149.065
+      },
+      {
+        "market_implied_prob": 0.55,
+        "n_yes_bets": 718,
+        "n_no_bets": 1492,
+        "n_pass": 482,
+        "n_bets": 2210,
+        "win_rate": 0.5661,
+        "ev_per_bet": 0.078575,
+        "total_pnl": 173.65
+      },
+      {
+        "market_implied_prob": 0.57,
+        "n_yes_bets": 581,
+        "n_no_bets": 1716,
+        "n_pass": 395,
+        "n_bets": 2297,
+        "win_rate": 0.5646,
+        "ev_per_bet": 0.094238,
+        "total_pnl": 216.465
+      },
+      {
+        "market_implied_prob": 0.6,
+        "n_yes_bets": 405,
+        "n_no_bets": 1974,
+        "n_pass": 313,
+        "n_bets": 2379,
+        "win_rate": 0.5561,
+        "ev_per_bet": 0.117068,
+        "total_pnl": 278.505
+      }
+    ],
+    "ev_at_null_050": 0.05408,
+    "breakeven_upper_mip": 0.6,
+    "conclusion": "Sensitivity complete \u2014 provides directional answer but not commercial validation"
+  },
+  "part_b": {
+    "part": "B",
+    "status": "SKIPPED",
+    "reason": "No --kalshi-prices CSV provided",
+    "next_action": "Collect historical Kalshi prices for TEST period (2025-04-14 onward) using Kalshi API /trade-api/v2/markets?series_ticker=KXNBAPTS&closed=true. See script header for full format spec."
+  }
+}

@@ -2,7 +2,47 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-29 (Phase 3 VPS deployment ✅; full hygiene sprint ✅; 533/533 tests; EXP-016 runner created; dual-window cron deployed)  
+**Last reviewed:** 2026-05-31 (SESSION 3: Resolution pipeline fixed — Bug I date format + Bug J drawdown reporting; run_resolve_local.py created; 6 positions resolved; G6 evidence 6/30; +$103.46 P&L)
+
+---
+
+## SESSION 2026-05-31 — NEW TASKS
+
+| # | Task | Priority | Notes |
+|---|------|----------|-------|
+| T-109 | **Run run_resolve_local.py after each game day (standing procedure)** | HIGH | VPS 403 blocks nba_api; resolution must run locally. `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Jun 3 NYK vs SAS positions will be resolvable after Jun 3. |
+| T-110 | **G6 evidence tracking: 6/30 resolved bets** | HIGH | 6 resolved (3W 3L), +$103.46 P&L, bankroll $1,024.70. Note: 3 of the Fox wins + 3 SGA losses are from a single game (SAS vs OKC May 30) across 3 position-slots (idempotency bug pre-T-101). Operator to confirm whether all 6 count toward G6 or only 2 unique markets. |
+| T-105 | **EXP-017 Part B — Collect Kalshi historical prices and run full market validation** | **BLOCKER — G6** | Part A complete (2026-06-01) — sensitivity sweep shows EV positive at ALL market price levels 0.40–0.60. Part B requires operator to collect Kalshi historical prices for TEST period (2025-04-14 onward). **Collection method**: `GET /trade-api/v2/markets?series_ticker=KXNBAPTS&closed=true` via VENUE_API_KEY, or extract from paper_portfolio.json. Save as `exp_output/EXP-017/kalshi_prices.csv` (cols: player_id, game_date, kalshi_threshold, kalshi_mid_price, kalshi_vig). Then: `PYTHONPATH=src python3 src/prediction_market_bot/run_exp017.py --kalshi-prices exp_output/EXP-017/kalshi_prices.csv`. GG-004 closes on CONFIRMED result. |
+| ~~T-106~~ | ~~Fix stale T2 activation gate in EXECUTION_BANDS.md~~ | ~~HIGH~~ | ✅ COMPLETE 2026-05-31 — EXECUTION_BANDS.md:190 updated: `FEATURE_VERSION 1.3.0` removed; gate now reads `DS-04 operational (T-075 + commissioning); dedicated EXP confirming injury overlay Brier improvement ≥ 0.001 at N ≥ 100`. Aligns with BAND_ASSIGNMENT_FRAMEWORK.md. Decision logged. |
+| T-107 | **Confirm Polymarket NBA tag name before T-077 activates (KI-019)** | HIGH | `venue_adapter.py:251`: `"tag": "nba"` unconfirmed. Wrong tag = silent empty market returns. Before T-077 (Polymarket KYC + activation): test VenueAdapter call, confirm non-empty return, add empty-market assertion. |
+| ~~T-108~~ | ~~Document zombie daily loss limit in risk.py (KI-018)~~ | ~~MEDIUM~~ | ✅ COMPLETE 2026-06-01 — `max_daily_loss_usd` comment updated in `risk.py` `_HARD_LIMITS` with KI-018 reference and note that 20% drawdown is the operative kill switch at current bankroll. |
+
+---
+
+## SESSION 2026-05-31 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Bug I | **Fix `pd.to_datetime` format in `resolve_pending`** | ✅ COMPLETE 2026-05-31 — Same T-089 pattern: nba_api returns "Apr 28, 2026" format; `format="mixed"` added to both Regular Season and Playoffs lookups in paper_trader.py. This was the root cause of ALL resolution failures (date parse threw ValueError → swallowed → `actual_pts=None`). |
+| Bug J | **Fix misleading `drawdown_pct` in `summary()`** | ✅ COMPLETE 2026-05-31 — `drawdown_pct` removed; replaced by `realized_drawdown_pct` (closed losses / initial) and `deployed_pct` (open stakes / initial). C4 kill switch was already correct; this fixes the report. run_paper_trade.py + run_resolve.py + tests updated. |
+| KI-020 | **VPS 403 blocks nba_api resolution** | ✅ DOCUMENTED 2026-05-31 — stats.nba.com hard-blocks DigitalOcean IPs. resolve_pending now logs errors instead of silently discarding. run_resolve_local.py created as the canonical resolution path. VPS run_resolve.py is kept but won't resolve without IP change. |
+
+---
+
+## ⚠️ SESSION 2026-06-01 — OPEN ITEM (operator action required)
+
+| # | Task | Priority | Notes |
+|---|------|----------|-------|
+| T-104 | **Investigate broken token/context window efficiency auto-flags** | MEDIUM | Earl has flagged this across multiple sessions — the token maximization and context window efficiency auto-flags have never fired once. Zero attention or resolution. This is a Claude Code tooling/config issue, not a bot code issue. Operator should check: (1) Claude Code settings/hooks config; (2) whether the feature requires a specific plan tier or setting to activate; (3) file a report at https://github.com/anthropics/claude-code/issues if no config fix is found. |
+
+---
+
+## ✅ SESSION 2026-06-01 — COMPLETED
+
+| # | Task | Priority | Status |
+|---|------|----------|--------|
+| T-102 | **Fix max_concurrent_positions stub — count gate deleted (ADR-0006)** | ~~BLOCKER~~ | ✅ COMPLETE 2026-06-01 — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. KI-016 RESOLVED. |
+| T-103 | **Add stub/placeholder scan to session-start governance protocol** | ~~HIGH~~ | ✅ COMPLETE 2026-06-01 — 3-step session-start scan + ARE WE COMPROMISED? added to MEMORY_BANK.md per ADR-0007. GOVERNANCE_GAP_LOG.md created. LL-010/011/012 added. |  
 **Next review:** Start of every work session; end of every session (update status)  
 **Staleness triggers:** Any completed task; any new blocker; session end  
 **Upstream links:** PLAN.md, RID_LOG.md  

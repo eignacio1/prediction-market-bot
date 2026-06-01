@@ -223,6 +223,10 @@ class PaperTrader:
 
         Returns (ok, list_of_resolved_positions).
         Logs each resolution to C6.
+
+        Note: stats.nba.com blocks datacenter IPs (403). If running from a
+        cloud server, this method will log a warning and return no resolved
+        positions. Use run_resolve_local.py to resolve from a non-blocked IP.
         """
         today = _today()
         with self._lock:
@@ -267,23 +271,39 @@ class PaperTrader:
                 log = PlayerGameLog(player_id=player_id, season=season,
                                     season_type_all_star="Regular Season")
                 df = log.get_data_frames()[0]
-                df["GAME_DATE"] = pd.to_datetime(df["GAME_DATE"]).dt.strftime("%Y-%m-%d")
+                df["GAME_DATE"] = pd.to_datetime(df["GAME_DATE"], format="mixed").dt.strftime("%Y-%m-%d")
                 row = df[df["GAME_DATE"] == game_date]
                 if not row.empty:
                     actual_pts = float(row.iloc[0]["PTS"])
-            except Exception:
-                # Try playoffs if regular season failed
+            except Exception as e:
+                self._logger.warning(
+                    COMPONENT, "player_stats_fetch_failed",
+                    payload={"player_id": player_id, "game_date": game_date,
+                             "season": season, "season_type": "Regular Season",
+                             "error": str(e)},
+                    session_id=session_id,
+                )
+
+            # Always try Playoffs if Regular Season had no result (playoff games return
+            # empty rows from Regular Season endpoint without throwing)
+            if actual_pts is None:
                 try:
                     time.sleep(0.6)
                     log = PlayerGameLog(player_id=player_id, season=season,
                                         season_type_all_star="Playoffs")
                     df = log.get_data_frames()[0]
-                    df["GAME_DATE"] = pd.to_datetime(df["GAME_DATE"]).dt.strftime("%Y-%m-%d")
+                    df["GAME_DATE"] = pd.to_datetime(df["GAME_DATE"], format="mixed").dt.strftime("%Y-%m-%d")
                     row = df[df["GAME_DATE"] == game_date]
                     if not row.empty:
                         actual_pts = float(row.iloc[0]["PTS"])
-                except Exception:
-                    pass
+                except Exception as e:
+                    self._logger.warning(
+                        COMPONENT, "player_stats_fetch_failed",
+                        payload={"player_id": player_id, "game_date": game_date,
+                                 "season": season, "season_type": "Playoffs",
+                                 "error": str(e)},
+                        session_id=session_id,
+                    )
 
             if actual_pts is None:
                 continue  # Game not found yet — try again tomorrow
@@ -294,11 +314,11 @@ class PaperTrader:
                 won = yes_won
                 # Payout: win $1 - ask price; lose stake
                 yes_ask = mid + pos["vig_at_entry"] / 2
-                pnl = (1.0 - yes_ask) * size if won else -yes_ask * size
+                pnl = size * (1.0 - yes_ask) / yes_ask if won else -size
             else:  # direction == "NO"
                 won = not yes_won
                 no_ask = (1.0 - mid) + pos["vig_at_entry"] / 2
-                pnl = (1.0 - no_ask) * size if won else -no_ask * size
+                pnl = size * (1.0 - no_ask) / no_ask if won else -size
 
             pnl = round(pnl, 4)
             outcome = "WIN" if won else "LOSS"
@@ -341,18 +361,37 @@ class PaperTrader:
         return all_ok, resolved
 
     def summary(self) -> dict[str, Any]:
-        """Return a human-readable portfolio summary."""
+        """Return a human-readable portfolio summary.
+
+        Two distinct capital metrics:
+          realized_drawdown_pct — closed losses as % of initial bankroll.
+              This is what C4's kill switch monitors. Zero until a bet resolves.
+          deployed_pct — open stakes as % of initial bankroll.
+              Money in flight; returns to bankroll when positions resolve.
+              NOT a drawdown — it is not permanently lost.
+        """
         s = self._state
-        n_open   = len(s["open_positions"])
-        n_closed = len(s["closed_positions"])
-        wins     = sum(1 for p in s["closed_positions"] if p.get("outcome") == "WIN")
+        n_open   = len(s.get("open_positions", []))
+        n_closed = len(s.get("closed_positions", []))
+        wins     = sum(1 for p in s.get("closed_positions", []) if p.get("outcome") == "WIN")
         win_rate = wins / n_closed if n_closed > 0 else None
-        drawdown = 1.0 - s["bankroll_usd"] / s["initial_bankroll_usd"]
+
+        initial      = s["initial_bankroll_usd"]
+        realized_pnl = s.get("total_realized_pnl", 0.0)
+        realized_loss = max(0.0, -realized_pnl)
+        realized_drawdown = realized_loss / initial
+
+        # Stakes in open positions = initial - current_bankroll - realized_pnl
+        # (realized gains would have already been added back to bankroll)
+        open_stakes  = initial - s["bankroll_usd"] + realized_pnl
+        deployed_pct = max(0.0, open_stakes) / initial
+
         return {
             "bankroll_usd": s["bankroll_usd"],
-            "initial_bankroll_usd": s["initial_bankroll_usd"],
-            "total_realized_pnl": s["total_realized_pnl"],
-            "drawdown_pct": round(drawdown * 100, 2),
+            "initial_bankroll_usd": initial,
+            "total_realized_pnl": realized_pnl,
+            "realized_drawdown_pct": round(realized_drawdown * 100, 2),
+            "deployed_pct": round(deployed_pct * 100, 2),
             "open_positions": n_open,
             "closed_positions": n_closed,
             "win_rate": round(win_rate, 3) if win_rate is not None else None,

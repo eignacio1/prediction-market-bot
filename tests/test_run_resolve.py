@@ -58,7 +58,8 @@ def _make_mock_trader(open_positions=None, resolved=None, bankroll=1000.0):
         "open_positions": len(open_positions or []),
         "closed_positions": n_closed,
         "win_rate": win_rate,
-        "drawdown_pct": 0.0,
+        "realized_drawdown_pct": 0.0,
+        "deployed_pct": 0.0,
     }
     return trader
 

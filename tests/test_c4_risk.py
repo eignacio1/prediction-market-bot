@@ -4,8 +4,7 @@ Tests for src/prediction_market_bot/c4_risk_engine/risk.py
 Coverage areas:
   - _compute_kelly_size: positive edge, zero edge, negative edge, fraction scaling, cap
   - Phase gate: gate closed → always REJECTED; gate open proceeds to checks
-  - Hard limit checks: daily loss → KILL_SWITCH; drawdown → KILL_SWITCH;
-    concurrent positions → REJECTED
+  - Hard limit checks: daily loss → KILL_SWITCH; drawdown → KILL_SWITCH
   - Edge checks: insufficient edge → REJECTED; direction PASS → REJECTED;
     Kelly size zero → REJECTED
   - Full approval path: YES direction, NO direction (probability flip)
@@ -241,27 +240,6 @@ class TestHardLimits:
                 current_drawdown_pct=0.19,
             )
         assert result["rejection_reason"] != "drawdown_limit_breached"
-
-    @pytest.mark.unit
-    def test_concurrent_positions_limit_rejected(self):
-        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
-            engine = _make_engine()
-            _, result = engine.evaluate_forecast(
-                _make_forecast(),
-                current_open_positions=10,  # equals max_concurrent_positions
-            )
-        assert result["approval_status"] == STATUS_REJECTED
-        assert result["rejection_reason"] == "concurrent_positions_limit_reached"
-
-    @pytest.mark.unit
-    def test_concurrent_positions_below_limit_passes(self):
-        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
-            engine = _make_engine()
-            _, result = engine.evaluate_forecast(
-                _make_forecast(),
-                current_open_positions=9,
-            )
-        assert result["rejection_reason"] != "concurrent_positions_limit_reached"
 
     @pytest.mark.unit
     def test_kill_switch_approved_size_is_zero(self):

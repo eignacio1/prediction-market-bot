@@ -99,7 +99,8 @@ def main() -> None:
     if summary["win_rate"] is not None:
         print(f"  Win rate:           {summary['win_rate']:.1%}  "
               f"({summary['closed_positions']} resolved bets)")
-    print(f"  Drawdown:           {summary['drawdown_pct']:.1f}%")
+    print(f"  Realized drawdown:  {summary['realized_drawdown_pct']:.1f}%")
+    print(f"  Deployed (stakes):  {summary['deployed_pct']:.1f}%")
 
     logger.info("PIPE-03R", "resolve_run_complete",
                 payload={

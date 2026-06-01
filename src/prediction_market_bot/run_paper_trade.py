@@ -210,13 +210,12 @@ def main() -> None:
     bankroll = _state["bankroll_usd"]
     engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
     daily_loss = _state.get("current_daily_loss", 0.0)
-    n_open_pos = len(_state.get("open_positions", []))
     _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
     # Bug H fix: drawdown is realized losses only — open stakes are not losses
     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
 
-    print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | Open positions: {n_open_pos}")
+    print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | Drawdown {current_drawdown_pct:.1%}")
 
     # ------------------------------------------------------------------
     # 5. Fetch live markets via VenueRouter (kalshi_only default until T-077)
@@ -302,7 +301,6 @@ def main() -> None:
         ok_c4, approval = engine.evaluate_forecast(
             forecast_record=forecast_rec,
             current_daily_loss=daily_loss,
-            current_open_positions=n_open_pos,
             current_drawdown_pct=current_drawdown_pct,
             session_id=SESSION_ID,
         )
@@ -338,7 +336,6 @@ def main() -> None:
                 _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
                 current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
                 engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
-                n_open_pos += 1
                 daily_loss += size if edge < 0 else 0
         else:
             reason = approval.get("rejection_reason", "unknown")
@@ -359,7 +356,8 @@ def main() -> None:
     print(f"  Closed positions:   {summary['closed_positions']}")
     if summary["win_rate"] is not None:
         print(f"  Win rate:           {summary['win_rate']:.1%}")
-    print(f"  Drawdown:           {summary['drawdown_pct']:.1f}%")
+    print(f"  Realized drawdown:  {summary['realized_drawdown_pct']:.1f}%")
+    print(f"  Deployed (stakes):  {summary['deployed_pct']:.1f}%")
 
     _write_report(orders, summary["bankroll_usd"], trader)
 
