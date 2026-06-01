@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-31 SESSION 4 — ADR-0008 Kalshi demo order execution; RSA signing infrastructure built (kalshi_client.py rewritten, paper_trader.py updated, run_paper_trade.py updated); Kalshi auth OPEN BLOCKER: NOT_FOUND on /portfolio/balance — root cause unknown; VPS deployed HEAD dce071e; bot in local-only mode until T-111 resolves  
+**Last reviewed:** 2026-05-31 SESSION 5 — T-111 RESOLVED (Kalshi auth: wrong base URL; _kalshi_base_url() function added); T-112 COMPLETE (VPS deploy: cryptography installed, VENUE_PRIVATE_KEY_PATH set, HEAD 92539b9); first live Kalshi demo order executed (Order 363c5f5b, YES $0.62, WTA tennis, status executed); submit_order bug fixed (one price field only); APR-0016 "4 bets/game-day" assumption corrected in DECISION_LOG and MEMORY_BANK; bot fully armed, clean G6 evidence begins Finals G1 Jun 3  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **ADR-0008 session complete 2026-05-31** — Kalshi demo order execution infrastructure built; RSA signing (PS256/PSS) added to kalshi_client.py; PaperTrader updated for optional Kalshi submission (degraded mode on failure); run_paper_trade.py prints mode at startup; cryptography>=42.0.0 added to pyproject.toml; VPS deployed (HEAD dce071e). OPEN BLOCKER: Kalshi auth NOT_FOUND (T-111). Bot in local-only mode. |
+| Last major milestone | **T-111/T-112 complete 2026-05-31** — Kalshi auth fully operational: wrong base URL identified and fixed (_kalshi_base_url() reads BOT_ENV; demo=external-api.demo.kalshi.co); cryptography==43.0.3 installed on VPS; first live demo order executed (Order 363c5f5b, YES $0.62 WTA tennis, executed); submit_order bug fixed (one price field only); VPS HEAD 92539b9, paper_portfolio.json clean slate $1,000.00; G6 evidence begins Finals G1 Jun 3. |
 
 ---
 
@@ -447,9 +447,10 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
 **Reason for reset (DECISION_LOG 2026-05-31):** Prior bets placed on pre-ADR-0006 system (count-gated, architecturally incorrect). Evidence tainted; inadmissible for G6.  
 **NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix 16,619 rows on VPS (55 players).  
-**VPS DEPLOY COMPLETE (2026-05-31):** git HEAD = dce071e (ADR-0008); feature matrix 16,619 lines confirmed; paper_portfolio.json archived as paper_portfolio.INVALIDATED_20260601.json; clean slate ready.  
-**ADR-0008 (2026-05-31):** Kalshi demo order execution infrastructure BUILT. RSA signing (PS256/PSS) in kalshi_client.py. PaperTrader submits to Kalshi if RSA key loaded; degraded mode on failure; local ledger authoritative. Env vars: `VENUE_API_KEY=863c33ff-283d-4a11-a113-e3fea2c6d567`, `VENUE_PRIVATE_KEY_PATH=/Users/earlignacio/.ssh/kalshi_bot.pem`.  
-**KI-020 OPEN (2026-05-31):** Kalshi /portfolio/balance returns `NOT_FOUND` with RSA signing (both PKCS1v15 and PSS tested). Bearer token with UUID also fails. Root cause unknown — possibly demo keys use session-based auth (POST /log_in → JWT), not RSA signing. T-111 registered. Bot in local-only mode (degraded mode by design — no halt). Kalshi demo order submission cannot be tested until T-111 resolves.  
+**VPS DEPLOY COMPLETE (2026-05-31 SESSION 5):** git HEAD = 92539b9; cryptography==43.0.3 installed; VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem; balance confirmed $999.36 / portfolio_value $0.62 (open demo Costoulas YES). Bot fully armed.  
+**T-111 RESOLVED 2026-05-31:** Root cause was wrong base URL. `api.elections.kalshi.com` is legacy (public endpoints only). Fix: `_kalshi_base_url()` reads BOT_ENV → demo=`external-api.demo.kalshi.co`, live=`external-api.kalshi.com`. RSA-PSS signing was correct throughout. KI-020 RESOLVED.  
+**T-112 COMPLETE 2026-05-31:** VPS fully armed. `cryptography==43.0.3` installed. `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` in .env. VPS HEAD 92539b9. Cron intact.  
+**First live Kalshi demo order 2026-05-31:** Order 363c5f5b — KXWTACHALLENGERMATCH-26JUN01SAKCOS-COS YES 1 contract at $0.62, status `executed`. End-to-end proven. Demo balance $999.36 post-order.  
 
 ---
 
@@ -506,17 +507,22 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 **T-076 ✅ COMPLETE 2026-05-29 (infrastructure)** — Strategy I / ScoringDistributionModel: `c3_forecasting/scoring_distribution.py`; `PlayerDistribution` + `ScoringDistributionModel`; method-of-moments NB fit per player; `predict_threshold_prob()` + `price_all_lines()` for any Kalshi threshold from one fit; 31 tests; `run_exp013.py` ready; **HYP-007 pending operator run** (offline — uses EXP-005 matrix).
 
-**ADR-0008 (2026-05-31):** Kalshi demo order execution infrastructure BUILT. RSA signing in kalshi_client.py. PaperTrader updated. **OPEN BLOCKER: T-111 — NOT_FOUND on /portfolio/balance.** Bot in local-only mode (degraded mode — no halt). Must resolve before Finals G1 bets have Kalshi external confirmation.
+**ADR-0008 FULLY OPERATIONAL (2026-05-31):** Kalshi RSA-PSS signing working. _kalshi_base_url() routes BOT_ENV=paper → demo URL, BOT_ENV=live → live URL. Order submission proven. KI-020 RESOLVED.
+
+**NEXT PRIORITIES (T-110 / T-105 / T-109):**
+1. **G6 evidence (T-110):** Monitor VPS cron after Finals G1 Jun 3 (22:00 UTC). Check `logs/paper_portfolio.json`. Throughput: 17-40+ bets/game night.
+2. **EXP-017 Part B (T-105):** OPERATOR ACTION — pull Kalshi historical prices, run `run_exp017.py --kalshi-prices`. Closes GG-004 (G6 blocker).
+3. **Resolution (T-109):** After each game day: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py` (VPS 403 blocks nba_api).
 
 See TODO_NEXT.md for session-level task tracking.
 
 ---
 
-## Compass OS Health (as of 2026-05-31)
+## Compass OS Health (as of 2026-05-31 SESSION 5)
 
 | Metric | Status |
 |--------|--------|
-| M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | GOVERNANCE_GAP_LOG ✅ (new) | LESSONS_LEARNED ✅ | DECISION_LOG ✅ | KNOWN_ISSUES ✅ | project_prediction_market_compass.md ✅ |
+| M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | GOVERNANCE_GAP_LOG ✅ | LESSONS_LEARNED ✅ | DECISION_LOG ✅ | KNOWN_ISSUES ✅ | SESSION_HANDOFF ✅ |
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
 | M3 ADR Coverage | 7 accepted (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |

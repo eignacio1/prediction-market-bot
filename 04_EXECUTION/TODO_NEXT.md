@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-31 (SESSION 5: T-111 RESOLVED — Kalshi auth working; root cause was wrong base URL: api.elections.kalshi.com → external-api.demo.kalshi.co; balance confirmed $1,000.00; APR-0016 "4 bets/game-day" assumption corrected in DECISION_LOG — stale pre-ADR-0006 figure; T-112 next)
+**Last reviewed:** 2026-05-31 SESSION 5 COMPLETE — T-111 RESOLVED (Kalshi auth: wrong base URL fixed; _kalshi_base_url() added); T-112 COMPLETE (VPS deploy: cryptography installed, VENUE_PRIVATE_KEY_PATH set, HEAD 92539b9); first live demo order executed (Order 363c5f5b YES $0.62, status executed); submit_order bug fixed; APR-0016 "4 bets/game-day" corrected; bot fully armed; clean G6 evidence begins Finals G1 Jun 3. PRIORITIES: T-110 (G6 monitoring) > T-105 (EXP-017 Part B) > T-109 (resolve_local after each game day)
 
 ---
 
