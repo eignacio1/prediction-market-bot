@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-01 (Phase 6/7 ACTIVE — T-113 COMPLETE: APR-0017 ACCEPTED (multi-dimensional G6 gate, supersedes APR-0016); T-105 COMPLETE: EXP-017 Part B live mode, n=2 DIRECTIONAL_POSITIVE, GG-005 RESOLVED; GG-004 OPEN until ≥66 resolved markets; VPS deploy needed before Finals G1 Jun 3)  
+**Last reviewed:** 2026-06-01 SESSION 8 (T-115 COMPLETE: KI-022 RESOLVED — all thresholds evaluated per player; T-091 COMPLETE: KI-012 RESOLVED — P&L alert wired; 589/589 VPS tests; Finals G1 Jun 3 ready)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  

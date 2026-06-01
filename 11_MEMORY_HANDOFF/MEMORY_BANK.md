@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-01 SESSION 7 — KI-021 CLEARED (sklearn 1.4.2→1.8.0 gap: max delta 0.00106, zero direction flips); KI-022 REGISTERED (single-threshold-per-player suppresses 7-8× throughput; T-115 created); DESIGN THROUGHPUT INVARIANT locked into CLAUDE.md + MEMORY_BANK.md + APR-0017 + DECISION_LOG; VPS synced to 7307503 (3 new commits); T-109 dry-run PASS (SCP connectivity confirmed; clean fail on missing portfolio as expected post-reset); paper portfolio CLEAN SLATE ($1,000, 0 bets, cron creates file Finals G1 Jun 3)  
+**Last reviewed:** 2026-06-01 SESSION 8 — T-115 COMPLETE: KI-022 RESOLVED — all Kalshi thresholds evaluated per player (for-loop replaces single min()); T-091 COMPLETE: KI-012 RESOLVED — P&L monitoring alert (5%/10% percentage-based thresholds) wired into PIPE-03 + PIPE-03R; 589/589 VPS tests pass; all governance docs updated (710e8bf); Finals G1 Jun 3 ready  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-01 SESSION 7** — KI-021 cleared (sklearn gap; max delta 0.00106, zero direction flips). KI-022 registered: run_paper_trade.py:290 evaluates 1-of-~7-8 available Kalshi thresholds per player — suppresses 7-8× throughput vs. design intent; T-115 created (must resolve before 2026-27 regular season). Design throughput invariant permanently locked. VPS at 7307503. Portfolio CLEAN SLATE: paper_portfolio.json deleted (INVALIDATED); cron creates fresh $1,000 file at Finals G1 Jun 3. T-109 dry-run PASS. |
+| Last major milestone | **2026-06-01 SESSION 8** — T-115 COMPLETE: KI-022 RESOLVED — `for mkt in player_mkts:` loop replaces `closest = min(...)` in `run_paper_trade.py`; all ~7-8 Kalshi thresholds evaluated per player as independent signals; restores design throughput ~25–40 bets/game T1. T-091 COMPLETE: KI-012 RESOLVED — `check_portfolio_pnl()` added to SystemMonitor with 5%/10% percentage-based thresholds; wired into PIPE-03 + PIPE-03R. 589/589 VPS tests. System ready for Finals G1 Jun 3. VPS at 710e8bf. |
 
 ---
 
