@@ -1,11 +1,11 @@
 # APR-0017 — G6 Multi-Dimensional Evidence Standard
 
-**Status:** PENDING — operator review and sign-off required  
-**Supersedes:** APR-0016 (G6 evidence threshold: 30 resolved paper bets with positive P&L)  
-**Approval required from:** PO (Earl Ignacio, operator), DS (Earl Ignacio, strategy)  
+**Status:** ACCEPTED — 2026-06-01  
+**Supersedes:** APR-0016 (G6 evidence threshold: 30 resolved paper bets with positive P&L) — APR-0016 is now inoperative  
+**Approved by:** PO / DS — Earl Ignacio — 2026-06-01  
 **Drafted:** 2026-06-01 (v1 — arbitrary count draft)  
 **Revised:** 2026-06-01 (v2 — all count thresholds replaced with derived rate/slope criteria)  
-**Effective when:** Signed by PO + DS; immediately supersedes APR-0016  
+**Effective:** 2026-06-01 — immediately supersedes APR-0016  
 **Expiry:** Superseded by G6 gate closure (APR-0008/0009)
 
 **Why this version supersedes v1:** v1 replaced APR-0016's count gate with new count thresholds (≥5 game nights, ≥20 confirmed resolutions). These are dimensionally identical to APR-0016's "30 bets" — counts picked without principled derivation. Q7 requires every threshold to be derived from what it is actually measuring. v2 replaces all count thresholds with rate + slope criteria. Where a count floor appears (statistical validity), the derivation is shown.
@@ -304,23 +304,23 @@ G6 promotion (APR-0008/0009)
 
 ## Operator Approval
 
-**Review checklist (confirm each tier's derivations are acceptable):**
-- [ ] T0: EXP-017 Part B is the right commercial validation; price discovery fix (T-114) is sufficient for T0-B
-- [ ] T1-A: 5% error rate level floor and non-increasing slope are the right pipeline reliability criteria
-- [ ] T1-B: Idempotency is correctly zero-tolerance (not rate-based)
-- [ ] T1-C: 85% resolution fidelity floor and non-decreasing slope are the right resolution criteria
-- [ ] T1-D: Audit completeness is correctly zero-tolerance
-- [ ] T2-A: ±15pp calibration deviation (derived from 6× ECE) and non-increasing slope are the right calibration criteria
-- [ ] T2-B: Rolling EV > 0 and non-decreasing slope (not just net positive endpoint) are the right EV criteria
-- [ ] T2-C: L1 Brier threshold (0.265) and non-increasing slope are the right model degradation criteria
-- [ ] T2-D: Positive P&L slope (not just positive P&L) is the right system-level performance criterion
-- [ ] T3-A: Per-bet cap is correctly zero-tolerance
-- [ ] T3-B: 15% drawdown ceiling (derived from 75% of kill-switch trigger) is the right paper bound
-- [ ] T3-C: 20–80% rejection rate range (derived from 2× expected rate margin) is the right selectivity criterion
-- [ ] Statistical floor: 66-bet minimum (derived from T2-A calibration power at α=0.05, 80% power) is acceptable
-- [ ] Statistical floor: 5-game-night minimum (derived from slope regression df ≥ 3) is acceptable
+**Review checklist (confirmed by operator 2026-06-01):**
+- [x] T0: EXP-017 Part B is the right commercial validation; price discovery fix (T-114) is sufficient for T0-B
+- [x] T1-A: 5% error rate level floor and non-increasing slope are the right pipeline reliability criteria
+- [x] T1-B: Idempotency is correctly zero-tolerance (not rate-based)
+- [x] T1-C: 85% resolution fidelity floor and non-decreasing slope are the right resolution criteria
+- [x] T1-D: Audit completeness is correctly zero-tolerance
+- [x] T2-A: ±15pp calibration deviation (derived from 6× ECE) and non-increasing slope are the right calibration criteria
+- [x] T2-B: Rolling EV > 0 and non-decreasing slope (not just net positive endpoint) are the right EV criteria
+- [x] T2-C: L1 Brier threshold (0.265) and non-increasing slope are the right model degradation criteria
+- [x] T2-D: Positive P&L slope (not just positive P&L) is the right system-level performance criterion
+- [x] T3-A: Per-bet cap is correctly zero-tolerance
+- [x] T3-B: 15% drawdown ceiling (derived from 75% of kill-switch trigger) is the right paper bound
+- [x] T3-C: 20–80% rejection rate range (derived from 2× expected rate margin) is the right selectivity criterion
+- [x] Statistical floor: 66-bet minimum (derived from T2-A calibration power at α=0.05, 80% power) is acceptable
+- [x] Statistical floor: 5-game-night minimum (derived from slope regression df ≥ 3) is acceptable
 
-**Sign-off:** ________________________________ Date: ___________  
-**Role:** PO / DS (Earl Ignacio)
+**Sign-off:** Earl Ignacio &nbsp;&nbsp;&nbsp; Date: 2026-06-01  
+**Role:** PO / DS
 
-*Upon signing, APR-0016 is superseded and this framework becomes operative immediately.*
+*APR-0016 is superseded. This framework is operative immediately as of 2026-06-01.*
