@@ -219,7 +219,7 @@
 | Resolution path | (1) Add a P&L monitoring alert to C7 SystemMonitor: if paper `total_pnl` < -$50 (5% of bankroll), emit WARNING. (2) If total_pnl < -$100, emit L2 drift alert. (3) DS review before continuing paper run. This is a buildable enhancement (T-091). |
 | Open question | What is the appropriate early-warning threshold? Suggest -$50 (5% bankroll) as L1 and -$100 (10%) as L2. Requires DS sign-off. |
 | Registered | 2026-05-29 |
-| Status | OPEN — no monitoring threshold set; manual check required |
+| Status | ✅ RESOLVED 2026-06-01 — T-091 complete. `check_portfolio_pnl()` added to `SystemMonitor`. L1 (5% of initial bankroll) → INFO `pnl_alert_l1_watch`; L2 (10%) → WARNING `pnl_alert_l2_loss`. Wired into PIPE-03 (`run_paper_trade.py`) and PIPE-03R (`run_resolve.py`). DS sign-off: Earl Ignacio 2026-06-01. 589/589 VPS tests pass. |
 
 ---
 
@@ -407,6 +407,7 @@
 | KI-016 | 2026-06-01 | ADR-0006: count gate deleted entirely — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. Pipeline + Kelly + kill switch are the complete risk framework. No count primitive anywhere in the codebase. |
 | KI-020 | 2026-05-31 | T-111/T-112 complete. Root cause was wrong base URL, not missing RSA infrastructure — RSA-PSS signing was correctly implemented. `_kalshi_base_url()` reads BOT_ENV; private key at `VENUE_PRIVATE_KEY_PATH=/root/.ssh/kalshi_bot.pem` on VPS; cryptography==43.0.3 installed. Balance confirmed $1,000.00. First live demo order executed (Order 363c5f5b). |
 | KI-022 | 2026-06-01 | T-115 complete. `closest = min(player_mkts, ...)` replaced with `for mkt in player_mkts:` loop in `run_paper_trade.py`. Features computed once per player; all available Kalshi thresholds evaluated as independent signals through idempotency + C4 + PaperTrader. Restores ~25–40 bets/game regular season T1. 438/438 tests pass. |
+| KI-012 | 2026-06-01 | T-091 complete. `check_portfolio_pnl()` added to `SystemMonitor`. L1 (≥5% loss of initial bankroll) → C6 INFO `pnl_alert_l1_watch`; L2 (≥10%) → C6 WARNING `pnl_alert_l2_loss`. Percentage-based thresholds scale correctly as bankroll changes. Wired into PIPE-03 and PIPE-03R. 8 new tests; 589/589 VPS tests pass. |
 
 ---
 

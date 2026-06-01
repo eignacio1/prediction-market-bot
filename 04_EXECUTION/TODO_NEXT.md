@@ -204,7 +204,7 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| T-091 | C7 paper P&L monitoring alert | EL | MED | Add to SystemMonitor: WARNING at total_pnl < -$50 (5% bankroll); L2 at < -$100 (10%); KI-012; requires DS threshold sign-off first |
+| ~~T-091~~ | ~~C7 paper P&L monitoring alert~~ | ~~EL~~ | ~~MED~~ | ✅ COMPLETE 2026-06-01 — `check_portfolio_pnl()` added to SystemMonitor. L1 (5% loss) → INFO `pnl_alert_l1_watch`; L2 (10% loss) → WARNING `pnl_alert_l2_loss`. Wired into PIPE-03 and PIPE-03R. 8 new tests. 589/589 VPS tests pass. KI-012 RESOLVED. DS sign-off: Earl Ignacio 2026-06-01. |
 | T-092 | Elevate T-072 to required pre-2026-27 | DS | MED | Model staleness KI-013 — T-072 must retrain before paper trading resumes in Oct 2026; not optional; needs new ADR |
 | T-100 | Fix Bug H — drawdown includes open stakes (KI-015) | EL | HIGH | ✅ COMPLETE 2026-05-30 — `run_paper_trade.py` lines 215+334: `current_drawdown_pct = realized_loss / initial_bankroll`; DS sign-off granted by operator same session; deployed VPS; live check: 0.00% realized drawdown |
 | T-101 | Fix Bug G — idempotency check failure (KI-014) | EL | HIGH | ✅ COMPLETE 2026-05-30 — Root cause: `LOG_DIR` was relative path; cron ran from different CWD → fresh portfolio each run → 3× positions. Fix: `_SRC_ROOT / "logs"` absolute default in `run_paper_trade.py` + `run_resolve.py`. Idempotency logging added. Deployed VPS. |
