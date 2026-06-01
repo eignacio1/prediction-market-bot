@@ -1,0 +1,81 @@
+{
+  "session_id": "PG-A6805048",
+  "game_date": "20260531",
+  "run_at": "2026-05-31T21:30:06.881Z",
+  "model_version": "v1-28483b21",
+  "markets_fetched": 38,
+  "players_matched": 5,
+  "actionable": 3,
+  "forecasts": [
+    {
+      "player_name": "Karl-Anthony Towns",
+      "player_id": 1626157,
+      "pts_l10_mean": 20.2,
+      "kalshi_ticker": "KXNBAPTS-26JUN03NYKSAS-NYKKTOWNS32-20",
+      "kalshi_threshold": 20,
+      "mid_price": 0.375,
+      "vig": 0.03,
+      "p_estimate": 0.471,
+      "edge": 0.081,
+      "direction": "YES",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-31T21:30:06.835Z"
+    },
+    {
+      "player_name": "De'Aaron Fox",
+      "player_id": 1628368,
+      "pts_l10_mean": 15.0,
+      "kalshi_ticker": "KXNBAPTS-26JUN03NYKSAS-SASDFOX4-15",
+      "kalshi_threshold": 15,
+      "mid_price": 0.565,
+      "vig": 0.01,
+      "p_estimate": 0.5667,
+      "edge": -0.0033,
+      "direction": "PASS",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-31T21:30:06.849Z"
+    },
+    {
+      "player_name": "OG Anunoby",
+      "player_id": 1628384,
+      "pts_l10_mean": 17.2,
+      "kalshi_ticker": "KXNBAPTS-26JUN03NYKSAS-NYKOANUNOBY8-15",
+      "kalshi_threshold": 15,
+      "mid_price": 0.615,
+      "vig": 0.03,
+      "p_estimate": 0.4821,
+      "edge": -0.1479,
+      "direction": "NO",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-31T21:30:06.866Z"
+    },
+    {
+      "player_name": "Mikal Bridges",
+      "player_id": 1628969,
+      "pts_l10_mean": 13.8,
+      "kalshi_ticker": "KXNBAPTS-26JUN03NYKSAS-NYKMBRIDGES25-15",
+      "kalshi_threshold": 15,
+      "mid_price": 0.475,
+      "vig": 0.01,
+      "p_estimate": 0.4888,
+      "edge": 0.0088,
+      "direction": "PASS",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-31T21:30:06.873Z"
+    },
+    {
+      "player_name": "Jalen Brunson",
+      "player_id": 1628973,
+      "pts_l10_mean": 24.4,
+      "kalshi_ticker": "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-25",
+      "kalshi_threshold": 25,
+      "mid_price": 0.535,
+      "vig": 0.01,
+      "p_estimate": 0.5103,
+      "edge": -0.0297,
+      "direction": "NO",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-31T21:30:06.879Z"
+    }
+  ]
+}

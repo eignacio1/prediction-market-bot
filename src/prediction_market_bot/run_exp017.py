@@ -435,6 +435,231 @@ def run_part_b(df: pd.DataFrame, prices: pd.DataFrame) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Part B (Live): Pre-game log + portfolio EV validation
+# ---------------------------------------------------------------------------
+
+def _load_pregame_forecasts(pregame_dir: Path) -> pd.DataFrame:
+    """Load pregame_YYYYMMDD.json files from dir. Deduplicates by kalshi_ticker,
+    keeping the earliest capture (T1 night-before window)."""
+    records = []
+    for f in sorted(pregame_dir.glob("pregame_*.json")):
+        try:
+            data = json.loads(f.read_text())
+            for fc in data.get("forecasts", []):
+                fc["source_file"] = f.name
+                records.append(fc)
+        except Exception as e:
+            print(f"  WARNING: skipping {f.name}: {e}", file=sys.stderr)
+    if not records:
+        return pd.DataFrame()
+    df = pd.DataFrame(records)
+    df["forecast_at"] = pd.to_datetime(df["forecast_at"], utc=True)
+    # keep earliest capture per market (T1 = night before, lowest forecast_at)
+    df = df.sort_values("forecast_at").drop_duplicates(subset="kalshi_ticker", keep="first")
+    return df.reset_index(drop=True)
+
+
+def _load_portfolio_outcomes(portfolio_path: Path) -> pd.DataFrame:
+    """Load closed_positions from portfolio JSON. Adds y_target (1=YES outcome)."""
+    data = json.loads(portfolio_path.read_text())
+    positions = data.get("closed_positions", [])
+    if not positions:
+        return pd.DataFrame()
+    df = pd.DataFrame(positions)
+    df["actual_pts"]      = pd.to_numeric(df["actual_pts"], errors="coerce")
+    df["kalshi_threshold"] = pd.to_numeric(df["kalshi_threshold"], errors="coerce")
+    # y_target=1 if YES outcome (actual_pts >= threshold)
+    df["y_target"] = (df["actual_pts"] >= df["kalshi_threshold"]).astype(int)
+    return df
+
+
+def run_part_b_live(pregame_dir: Path, portfolio_path: Path) -> dict:
+    """
+    Part B (Live): EV validation using pre-game JSON logs + resolved paper portfolio.
+
+    Uses actual Kalshi entry prices (mid_price_at_entry) from the portfolio,
+    matched with model p_estimates from pre-game forecast logs via kalshi_ticker.
+
+    Statistical note: n=2 unique resolved markets at time of writing (far below
+    APR-0017 floor of >= 66). Result is directional only; GG-004 remains OPEN.
+    """
+    APR_FLOOR = 66
+
+    print("\n" + "=" * 65)
+    print("PART B (LIVE) — Pre-Game Log + Portfolio EV Validation")
+    print("GG-004 | OQ-023 | Source: pre-game logs + resolved portfolio")
+    print("=" * 65)
+
+    pregame_df   = _load_pregame_forecasts(pregame_dir)
+    portfolio_df = _load_portfolio_outcomes(portfolio_path)
+
+    if pregame_df.empty:
+        print("  ERROR: No pregame forecasts found in directory.", file=sys.stderr)
+        return {"part": "B_live", "status": "NO_PREGAME_DATA"}
+    if portfolio_df.empty:
+        print("  ERROR: No closed positions in portfolio.", file=sys.stderr)
+        return {"part": "B_live", "status": "NO_PORTFOLIO_DATA"}
+
+    n_unique_markets = portfolio_df["kalshi_ticker"].nunique()
+    n_positions      = len(portfolio_df)
+    print(f"\n  Pregame unique markets (earliest T1 per ticker): {len(pregame_df)}")
+    print(f"  Portfolio closed positions: {n_positions} entries, {n_unique_markets} unique markets")
+    print(f"\n  APR-0017 statistical floor: >= {APR_FLOOR} unique resolved markets")
+    print(f"  This run: n={n_unique_markets} unique markets — DIRECTIONAL ONLY, not conclusive")
+
+    # Join all portfolio positions with pregame p_estimate via kalshi_ticker
+    all_pos = pregame_df[["kalshi_ticker", "p_estimate"]].merge(
+        portfolio_df[[
+            "kalshi_ticker", "player_name", "kalshi_threshold",
+            "mid_price_at_entry", "vig_at_entry", "direction",
+            "actual_pts", "y_target", "outcome", "entered_at",
+        ]],
+        on="kalshi_ticker", how="inner",
+    )
+
+    if all_pos.empty:
+        print("  WARNING: No kalshi_ticker matches between pregame forecasts and portfolio.")
+        return {"part": "B_live", "status": "NO_MATCHES", "n_unique_markets": 0}
+
+    all_pos["entered_at"] = pd.to_datetime(all_pos["entered_at"], utc=True)
+
+    # Per-unique-market subset: earliest portfolio entry per ticker
+    unique_pos = (
+        all_pos.sort_values("entered_at")
+        .drop_duplicates(subset="kalshi_ticker", keep="first")
+        .copy()
+    )
+
+    # -------------------------------------------------------------------
+    # Per-market detail
+    # -------------------------------------------------------------------
+    print(f"\n  --- Per-market detail ({len(unique_pos)} unique markets) ---")
+    for _, row in unique_pos.iterrows():
+        p_est    = float(row["p_estimate"])
+        mip      = float(row["mid_price_at_entry"])
+        vig      = float(row["vig_at_entry"])
+        half_vig = vig / 2.0
+        y        = int(row["y_target"])
+        direction = str(row["direction"])
+
+        edge_vs_market = p_est - mip          # positive = YES edge, negative = NO edge
+        edge_vs_null   = p_est - 0.50
+
+        if direction == "YES":
+            price_paid = mip + half_vig
+            pnl_unit   = (1.0 - price_paid) if y == 1 else -price_paid
+        else:
+            price_paid = (1.0 - mip) + half_vig
+            pnl_unit   = (1.0 - price_paid) if y == 0 else -price_paid
+
+        print(f"\n  Market: {row['kalshi_ticker']}")
+        print(f"    Player: {row['player_name']}")
+        print(f"    Bet: {direction} over {row['kalshi_threshold']} pts")
+        print(f"    Model p_estimate: {p_est:.4f}  |  Kalshi mid at entry: {mip:.4f}  |  Vig: {vig:.3f}")
+        print(f"    Edge vs market: {edge_vs_market:+.4f}  (vs null 0.50: {edge_vs_null:+.4f})")
+        print(f"    Actual pts: {row['actual_pts']}  |  y_target={y}  |  outcome={row['outcome']}")
+        print(f"    P&L per unit stake: {pnl_unit:+.4f}")
+
+    # -------------------------------------------------------------------
+    # Aggregate analysis helper
+    # -------------------------------------------------------------------
+    def _analyze_live(subset: pd.DataFrame, label: str) -> dict:
+        p_est     = subset["p_estimate"].to_numpy(dtype=float)
+        mip       = subset["mid_price_at_entry"].to_numpy(dtype=float)
+        vig       = subset["vig_at_entry"].to_numpy(dtype=float)
+        y         = subset["y_target"].astype(int).to_numpy()
+        half_vig  = vig / 2.0
+        direction = subset["direction"].to_numpy()
+
+        edge_vs_market = p_est - mip
+        edge_vs_null   = p_est - 0.50
+
+        # Use actual direction from C4 (already approved vs MIN_EDGE)
+        yes_bets = direction == "YES"
+        no_bets  = direction == "NO"
+        n_yes  = int(yes_bets.sum())
+        n_no   = int(no_bets.sum())
+        n_bets = n_yes + n_no
+
+        yes_price = mip + half_vig
+        no_price  = (1.0 - mip) + half_vig
+
+        pnl_yes = np.where(yes_bets, np.where(y == 1, 1.0 - yes_price, -yes_price), 0.0)
+        pnl_no  = np.where(no_bets,  np.where(y == 0, 1.0 - no_price,  -no_price),  0.0)
+        total_pnl  = float((pnl_yes + pnl_no).sum())
+        ev_per_bet = total_pnl / n_bets if n_bets > 0 else 0.0
+
+        win_yes  = int((yes_bets & (y == 1)).sum())
+        win_no   = int((no_bets  & (y == 0)).sum())
+        win_rate = (win_yes + win_no) / n_bets if n_bets > 0 else 0.0
+
+        mean_edge_market = float(np.mean(edge_vs_market))
+        mean_edge_null   = float(np.mean(edge_vs_null))
+
+        print(f"\n  [{label}]")
+        print(f"  n={len(subset)}  |  YES bets: {n_yes}  NO bets: {n_no}")
+        print(f"  Win rate: {win_rate:.1%}  (YES wins: {win_yes}/{n_yes}, NO wins: {win_no}/{n_no})")
+        print(f"  EV per bet vs market: {ev_per_bet:+.4f}  |  Total P&L: {total_pnl:+.4f}")
+        print(f"  Mean edge vs market: {mean_edge_market:+.4f}  (vs null: {mean_edge_null:+.4f})")
+
+        verdict = "POSITIVE_EV" if ev_per_bet > 0 else ("NO_BETS" if n_bets == 0 else "NEGATIVE_EV")
+        print(f"  Verdict: {verdict}")
+
+        return {
+            "label":             label,
+            "n":                 len(subset),
+            "n_yes_bets":        n_yes,
+            "n_no_bets":         n_no,
+            "win_rate":          round(win_rate, 4),
+            "ev_per_bet":        round(ev_per_bet, 6),
+            "total_pnl":         round(total_pnl, 6),
+            "mean_edge_vs_market": round(mean_edge_market, 4),
+            "mean_edge_vs_null": round(mean_edge_null, 4),
+            "verdict":           verdict,
+        }
+
+    print(f"\n  --- Aggregate analysis ---")
+    result_unique = _analyze_live(unique_pos, f"Per unique market (n={len(unique_pos)}, first entry price)")
+    result_all    = _analyze_live(
+        all_pos,
+        f"All positions (n={len(all_pos)}) — NOT independent (idempotency bug; {n_unique_markets} unique markets)"
+    )
+
+    # -------------------------------------------------------------------
+    # GG-004 verdict
+    # -------------------------------------------------------------------
+    print(f"\n  GG-004 / OQ-023 VERDICT:")
+    if result_unique["verdict"] == "POSITIVE_EV":
+        verdict = (
+            f"DIRECTIONAL_POSITIVE — positive EV vs actual Kalshi prices "
+            f"(EV={result_unique['ev_per_bet']:+.4f}/bet, n={len(unique_pos)} unique markets). "
+            f"Statistical power INSUFFICIENT: n << APR-0017 floor of >= {APR_FLOOR}. "
+            f"GG-004 remains OPEN. Accumulate >= {APR_FLOOR} resolved markets for confirmatory run."
+        )
+    else:
+        verdict = (
+            f"DIRECTIONAL_NEGATIVE — negative or zero EV vs actual Kalshi prices "
+            f"(EV={result_unique['ev_per_bet']:+.4f}/bet, n={len(unique_pos)} unique markets). "
+            f"Statistical power INSUFFICIENT: n << APR-0017 floor of >= {APR_FLOOR}. "
+            f"GG-004 remains OPEN."
+        )
+    print(f"  {verdict}")
+    print(f"\n  GG-004 STATUS: OPEN — n={n_unique_markets} resolved markets (floor: >= {APR_FLOOR})")
+
+    return {
+        "part":                     "B_live",
+        "n_unique_markets":         n_unique_markets,
+        "n_portfolio_positions":    n_positions,
+        "statistical_floor_apr_0017": APR_FLOOR,
+        "statistical_power":        "INSUFFICIENT",
+        "per_unique_market":        result_unique,
+        "all_positions_not_independent": result_all,
+        "verdict":                  verdict,
+        "gg_004_status":            "OPEN",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -444,7 +669,23 @@ def main() -> None:
         "--kalshi-prices",
         type=Path,
         default=None,
-        help="Path to operator-provided Kalshi historical prices CSV (enables Part B)",
+        help="Path to operator-provided Kalshi historical prices CSV (enables Part B CSV mode)",
+    )
+    parser.add_argument(
+        "--from-pregame",
+        type=Path,
+        default=None,
+        metavar="DIR",
+        help=(
+            "Directory containing pregame_YYYYMMDD.json files (enables Part B live mode). "
+            "Requires --portfolio to supply resolved outcomes."
+        ),
+    )
+    parser.add_argument(
+        "--portfolio",
+        type=Path,
+        default=None,
+        help="Path to paper_portfolio JSON file with closed_positions (required for --from-pregame).",
     )
     args = parser.parse_args()
 
@@ -471,8 +712,23 @@ def main() -> None:
     # Part A
     results_a = run_part_a(df)
 
-    # Part B
-    if args.kalshi_prices is not None:
+    # Part B — three modes: live (--from-pregame), CSV (--kalshi-prices), or skipped
+    if args.from_pregame is not None:
+        portfolio_path = args.portfolio
+        if portfolio_path is None:
+            print(
+                "ERROR: --from-pregame requires --portfolio <path/to/paper_portfolio.json>",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        if not args.from_pregame.is_dir():
+            print(f"ERROR: --from-pregame path is not a directory: {args.from_pregame}", file=sys.stderr)
+            sys.exit(1)
+        if not portfolio_path.exists():
+            print(f"ERROR: portfolio file not found: {portfolio_path}", file=sys.stderr)
+            sys.exit(1)
+        results_b = run_part_b_live(args.from_pregame, portfolio_path)
+    elif args.kalshi_prices is not None:
         prices = _load_kalshi_prices(args.kalshi_prices)
         if prices is not None:
             print(f"\n[PART B] Kalshi prices loaded: {len(prices):,} rows")
@@ -482,27 +738,17 @@ def main() -> None:
             results_b = {"part": "B", "status": "LOAD_FAILED", "path": str(args.kalshi_prices)}
     else:
         print(f"\n{'='*65}")
-        print("PART B — SKIPPED (no --kalshi-prices argument provided)")
+        print("PART B — SKIPPED (no Part B arguments provided)")
         print("=" * 65)
-        print("  To run Part B: obtain Kalshi historical prices for the TEST period")
-        print("  and re-run with --kalshi-prices <path/to/kalshi_prices.csv>")
-        print(f"\n  Required CSV columns:")
-        print(f"    player_id, game_date, kalshi_threshold, kalshi_mid_price, kalshi_vig")
-        print(f"\n  Data collection options (priority order):")
-        print(f"    1. Kalshi API: GET /trade-api/v2/markets?series_ticker=KXNBAPTS&closed=true")
-        print(f"       Filter: game_date in TEST period (2025-04-14 to present)")
-        print(f"       Requires: VENUE_API_KEY in environment")
-        print(f"    2. Paper portfolio: extract mid_price_at_entry from paper_portfolio.json")
-        print(f"    3. EXP-004 Part B output: exp_output/EXP-004/EXP-004_results.json")
+        print("  Option 1 — Live mode (pre-game logs + portfolio):")
+        print("    python run_exp017.py --from-pregame exp_output/EXP-017/ \\")
+        print("        --portfolio exp_output/EXP-017/paper_portfolio_invalidated.json")
+        print("  Option 2 — CSV mode (historical prices CSV):")
+        print("    python run_exp017.py --kalshi-prices exp_output/EXP-017/kalshi_prices.csv")
         results_b = {
             "part": "B",
             "status": "SKIPPED",
-            "reason": "No --kalshi-prices CSV provided",
-            "next_action": (
-                "Collect historical Kalshi prices for TEST period (2025-04-14 onward) "
-                "using Kalshi API /trade-api/v2/markets?series_ticker=KXNBAPTS&closed=true. "
-                "See script header for full format spec."
-            ),
+            "reason": "No Part B arguments provided",
         }
 
     # Summary
@@ -516,14 +762,21 @@ def main() -> None:
     else:
         print(f"  Part A: Edge negative at all swept MIP values")
 
-    if results_b.get("status") in ("SKIPPED", "LOAD_FAILED", "NO_MATCHES", "NO_THRESHOLD_MATCHES"):
-        print(f"  Part B: {results_b['status']} — commercial question (OQ-023 / GG-004) still open")
+    part_b_status = results_b.get("status", "")
+    part_b_gg_status = results_b.get("gg_004_status", "")
+    if part_b_status in ("SKIPPED", "LOAD_FAILED", "NO_MATCHES", "NO_THRESHOLD_MATCHES",
+                         "NO_PREGAME_DATA", "NO_PORTFOLIO_DATA"):
+        print(f"  Part B: {part_b_status} — commercial question (OQ-023 / GG-004) still open")
         print(f"  GG-004 STATUS: OPEN — EXP-017 Part B has not been run")
     else:
         verdict = results_b.get("verdict", "UNKNOWN")
         print(f"  Part B: {verdict}")
-        is_confirmed = "CONFIRMED" in verdict or "CONDITIONAL" in verdict
-        print(f"  GG-004 STATUS: {'RESOLVED' if is_confirmed else 'OPEN — commercial case not proven'}")
+        # GG-004 only RESOLVES on CONFIRMED (full statistical power, positive EV)
+        is_resolved = "CONFIRMED" in verdict and "DIRECTIONAL" not in verdict
+        if part_b_gg_status:
+            print(f"  GG-004 STATUS: {part_b_gg_status}")
+        else:
+            print(f"  GG-004 STATUS: {'RESOLVED' if is_resolved else 'OPEN — commercial case not proven'}")
 
     # Save results
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
