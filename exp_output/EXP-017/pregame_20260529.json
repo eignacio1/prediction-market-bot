@@ -1,0 +1,39 @@
+{
+  "session_id": "PG-6BC6DA27",
+  "game_date": "20260529",
+  "run_at": "2026-05-29T21:30:06.538Z",
+  "model_version": "v1-28483b21",
+  "markets_fetched": 41,
+  "players_matched": 2,
+  "actionable": 2,
+  "forecasts": [
+    {
+      "player_name": "De'Aaron Fox",
+      "player_id": 1628368,
+      "pts_l10_mean": 15.0,
+      "kalshi_ticker": "KXNBAPTS-26MAY30SASOKC-SASDFOX4-15",
+      "kalshi_threshold": 15,
+      "mid_price": 0.43,
+      "vig": 0.02,
+      "p_estimate": 0.5667,
+      "edge": 0.1267,
+      "direction": "YES",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-29T21:30:06.527Z"
+    },
+    {
+      "player_name": "Shai Gilgeous-Alexander",
+      "player_id": 1628983,
+      "pts_l10_mean": 29.0,
+      "kalshi_ticker": "KXNBAPTS-26MAY30SASOKC-OKCSGILGEOUSALEXANDER2-30",
+      "kalshi_threshold": 30,
+      "mid_price": 0.57,
+      "vig": 0.04,
+      "p_estimate": 0.4759,
+      "edge": -0.1141,
+      "direction": "NO",
+      "model_version": "v1-28483b21",
+      "forecast_at": "2026-05-29T21:30:06.535Z"
+    }
+  ]
+}

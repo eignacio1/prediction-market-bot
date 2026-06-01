@@ -1,7 +1,7 @@
 {
   "exp_id": "EXP-017",
-  "session_id": "EXP-017-3FFE6C28",
-  "run_at": "2026-06-01T02:20:36.904Z",
+  "session_id": "EXP-017-33331AA7",
+  "run_at": "2026-06-01T17:25:08.100Z",
   "governance_gap": "GG-004",
   "open_question": "OQ-023",
   "test_rows": 2692,
@@ -136,9 +136,36 @@
     "conclusion": "Sensitivity complete \u2014 provides directional answer but not commercial validation"
   },
   "part_b": {
-    "part": "B",
-    "status": "SKIPPED",
-    "reason": "No --kalshi-prices CSV provided",
-    "next_action": "Collect historical Kalshi prices for TEST period (2025-04-14 onward) using Kalshi API /trade-api/v2/markets?series_ticker=KXNBAPTS&closed=true. See script header for full format spec."
+    "part": "B_live",
+    "n_unique_markets": 2,
+    "n_portfolio_positions": 6,
+    "statistical_floor_apr_0017": 66,
+    "statistical_power": "INSUFFICIENT",
+    "per_unique_market": {
+      "label": "Per unique market (n=2, first entry price)",
+      "n": 2,
+      "n_yes_bets": 1,
+      "n_no_bets": 1,
+      "win_rate": 0.5,
+      "ev_per_bet": 0.01,
+      "total_pnl": 0.02,
+      "mean_edge_vs_market": 0.0563,
+      "mean_edge_vs_null": 0.0213,
+      "verdict": "POSITIVE_EV"
+    },
+    "all_positions_not_independent": {
+      "label": "All positions (n=6) \u2014 NOT independent (idempotency bug; 2 unique markets)",
+      "n": 6,
+      "n_yes_bets": 3,
+      "n_no_bets": 3,
+      "win_rate": 0.5,
+      "ev_per_bet": 0.04,
+      "total_pnl": 0.24,
+      "mean_edge_vs_market": 0.0263,
+      "mean_edge_vs_null": 0.0213,
+      "verdict": "POSITIVE_EV"
+    },
+    "verdict": "DIRECTIONAL_POSITIVE \u2014 positive EV vs actual Kalshi prices (EV=+0.0100/bet, n=2 unique markets). Statistical power INSUFFICIENT: n << APR-0017 floor of >= 66. GG-004 remains OPEN. Accumulate >= 66 resolved markets for confirmatory run.",
+    "gg_004_status": "OPEN"
   }
 }
