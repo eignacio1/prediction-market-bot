@@ -259,6 +259,20 @@ Round conservatively to **66** (80% power at α=0.10, one-sided), accepting that
 
 *Consequence: if fewer than 66 bets are resolved at Finals end, the paper period extends to the 2026-27 regular season opening (per the dark period plan). Tier 2 checks are not evaluated below this floor.*
 
+**⚠ THROUGHPUT FRAMING — READ BEFORE INTERPRETING THIS FLOOR:**
+
+The 66-bet floor was derived assuming the Finals paper window (1 game/night, ~38 markets, T1-only). This produces ~13 bets/night — a structural limitation of the current paper window, not a representation of design throughput.
+
+**Design intent throughput:** T1+T2+T3+T4 active, regular season (10+ simultaneous games, 400+ markets/night) = **hundreds to thousands of bets per night**. In regular season under T1 alone, the 66-bet floor is exceeded in 1-2 nights. The floor is non-binding in design-intent operation.
+
+**What actually gates G6:** The BINDING constraints are:
+1. GG-004 resolved — EXP-017 Part B must confirm positive EV vs. real Kalshi prices (not the null MIP=0.50 baseline).
+2. ≥5 game nights — slope regression requires df ≥ 3; the trend analyses are only meaningful across ≥5 distinct nights.
+
+Bet count is not the binding constraint. Any session that treats "we need to accumulate 66 bets" as the primary G6 challenge has misread this document. If both binding constraints above are met in the first week of 2026-27 regular season, G6 can close that week.
+
+**What the dark period is actually for:** Get T2/T3 production-ready and retrain the model before October 2026 — so that when regular season starts, the binding constraints (EXP-017 Part B + ≥5 game nights with quality slope data) are met quickly. The critical path item is T2/T3 readiness and model freshness, not bet accumulation.
+
 ### Minimum game nights: 5
 
 **Derivation (from slope regression degrees of freedom):**
