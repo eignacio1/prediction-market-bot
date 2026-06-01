@@ -209,6 +209,24 @@ Present your top concerns. If you have none after a thorough read, state specifi
 
 ---
 
+**Q7 — Gate criteria coherence (paste output, then reason):**
+
+```bash
+grep -n "G6\|paper bet\|resolved\|APR-0016\|30 bet\|count" "00_ADMIN/APPROVALS_REGISTER.md" | head -20
+```
+
+For each active gate criterion, ask: **What broken system could produce passing evidence while actually failing?**
+
+A well-constructed gate is hard to pass when the system is broken and easy to pass when the system works. If you can describe a plausible broken system that passes the gate — the gate is measuring the wrong dimension.
+
+**The APR-0016 failure case (GG-005, 2026-05-31):** "30 resolved bets with positive P&L" is blind to: (1) calibration failure — a miscalibrated model accumulates lucky bets; (2) artificial price pollution — bets at demo seeded prices produce meaningless P&L; (3) one-night variance — 30 bets in one lucky Finals night is noise, not signal; (4) execution bugs — a pipeline with duplicate-bet bugs still passes on a good variance run. Count is a proxy. Proxies fail.
+
+**Rule:** Q1–Q5 check the execution system. Q7 checks the governance system. Both must pass. Any gate criterion that fails the broken-system test → register in GOVERNANCE_GAP_LOG.md.
+
+This check exists because APR-0016 survived undetected from 2026-05-29 to 2026-05-31 despite Q1–Q6. The human operator caught it. The protocol did not. Q7 closes that gap. Do not skip it.
+
+---
+
 **Any unresolved concern → register in GOVERNANCE_GAP_LOG.md before proceeding.**
 
 ---

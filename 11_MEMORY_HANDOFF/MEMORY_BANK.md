@@ -187,6 +187,25 @@ Present your top concerns — not confirmations. If something feels underspecifi
 
 ---
 
+**Q7 — Gate criteria coherence (paste output, then reason):**
+
+Run:
+```bash
+grep -n "G6\|paper bet\|resolved\|APR-0016\|30 bet\|count" "00_ADMIN/APPROVALS_REGISTER.md" | head -20
+```
+
+For each active gate criterion, ask: **What broken system could produce passing evidence under this gate while the system is actually failing?**
+
+A well-constructed gate is hard to pass when the system is broken and easy to pass when it works. If you can describe a plausible broken system that passes the gate — the gate is measuring the wrong dimension.
+
+**The APR-0016 failure case (GG-005, 2026-05-31):** "30 resolved bets with positive P&L" is blind to calibration failure, artificial demo prices, single-night variance, and execution bugs. All four failure modes can produce 30 lucky bets. Count is a proxy for evidence. Proxies fail. The current replacement framework (four-tier multi-dimensional standard, T-113) is the remediation.
+
+**Q1–Q5 check the execution system. Q7 checks the governance system.** Both must pass. Any gate criterion that fails the broken-system test → register in GOVERNANCE_GAP_LOG.md immediately.
+
+This question was not in the protocol from 2026-06-01 through 2026-05-31. APR-0016 survived that entire period unchallenged. GG-005 documents the failure. Q7 exists to prevent recurrence.
+
+---
+
 **Any "no" or unresolved concern → register in GOVERNANCE_GAP_LOG.md before proceeding.**
 
 The cost of this check: 10 minutes. The cost of skipping it: the operator's friends run a bot that cuts corners they were never told about.
