@@ -58,6 +58,7 @@ os.environ["BOT_C4_ACTIVE"] = "true"
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
+from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.execution_bands import BAND_REGISTRY
@@ -376,6 +377,12 @@ def main() -> None:
     print(f"  Deployed (stakes):  {summary['deployed_pct']:.1f}%")
 
     _write_report(orders, summary["bankroll_usd"], trader)
+
+    SystemMonitor(logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID).check_portfolio_pnl(
+        total_realized_pnl=summary["total_realized_pnl"],
+        initial_bankroll=summary["initial_bankroll_usd"],
+        session_id=SESSION_ID,
+    )
 
     logger.info("PIPE-03", "paper_run_complete",
                 payload={"bets_placed": len(orders), "rejected": len(passes),
