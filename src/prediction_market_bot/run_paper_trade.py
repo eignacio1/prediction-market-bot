@@ -287,75 +287,77 @@ def main() -> None:
         if np.isnan(pts_mean):
             continue
 
-        closest = min(player_mkts, key=lambda m: abs(m.threshold - pts_mean))
-        # Idempotency: skip if already holding an open position on this ticker
-        _open_tickers = {p["kalshi_ticker"] for p in trader.get_state().get("open_positions", [])}
-        if closest.ticker in _open_tickers:
-            print(f"  [IDEMPOTENCY] SKIP {player_name} — {closest.ticker} already in portfolio "
-                  f"({len(_open_tickers)} open tickers; portfolio: {PORTFOLIO_PATH})")
-            continue
+        # Compute features once per player; evaluate all available thresholds independently
         X = _impute(
             np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
             col_medians,
         )
         p_est = float(pipeline.predict_proba(X)[0, 1])
-        mid   = closest.mid_price
-        half  = closest.half_spread
-        edge  = p_est - mid - half
-        direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
-        # Route through C4 risk engine
-        forecast_rec = {
-            "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
-            "p_estimate": p_est,
-            "market_implied_prob": mid,
-            "edge": edge,
-            "recommended_direction": direction,
-        }
-        ok_c4, approval = engine.evaluate_forecast(
-            forecast_record=forecast_rec,
-            current_daily_loss=daily_loss,
-            current_drawdown_pct=current_drawdown_pct,
-            session_id=SESSION_ID,
-        )
+        for mkt in player_mkts:
+            # Idempotency: skip if already holding an open position on this ticker
+            _open_tickers = {p["kalshi_ticker"] for p in trader.get_state().get("open_positions", [])}
+            if mkt.ticker in _open_tickers:
+                print(f"  [IDEMPOTENCY] SKIP {player_name} — {mkt.ticker} already in portfolio "
+                      f"({len(_open_tickers)} open tickers; portfolio: {PORTFOLIO_PATH})")
+                continue
+            mid   = mkt.mid_price
+            half  = mkt.half_spread
+            edge  = p_est - mid - half
+            direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
-        status = approval.get("approval_status", "UNKNOWN")
-
-        if status == "KILL_SWITCH":
-            logger.critical("PIPE-03", "kill_switch_from_c4",
-                            payload=approval, session_id=SESSION_ID)
-            print(f"  KILL SWITCH triggered by C4 — halting PIPE-03.", file=sys.stderr)
-            sys.exit(1)
-
-        if status == "APPROVED":
-            ok_pos, pos = trader.open_position(
-                approval=approval,
-                player_name=player_name,
-                player_id=player_id,
-                kalshi_ticker=closest.ticker,
-                kalshi_threshold=closest.threshold,
-                mid_price=mid,
-                vig=closest.vig,
-                game_date=_ticker_to_game_date(closest.ticker),
+            # Route through C4 risk engine
+            forecast_rec = {
+                "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
+                "p_estimate": p_est,
+                "market_implied_prob": mid,
+                "edge": edge,
+                "recommended_direction": direction,
+            }
+            ok_c4, approval = engine.evaluate_forecast(
+                forecast_record=forecast_rec,
+                current_daily_loss=daily_loss,
+                current_drawdown_pct=current_drawdown_pct,
                 session_id=SESSION_ID,
             )
-            size = approval.get("approved_size", 0)
-            print(f"  BET  {player_name:<22} {direction:<4}  ${size:.2f}  "
-                  f"edge={edge:+.3f}  mkt={closest.threshold}+ pts")
-            if pos:
-                orders.append(pos)
-                _state = trader.get_state()
-                bankroll = _state["bankroll_usd"]
-                _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
-                _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
-                current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
-                engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
-                daily_loss += size if edge < 0 else 0
-        else:
-            reason = approval.get("rejection_reason", "unknown")
-            if direction != "PASS":
-                passes.append({"player": player_name, "direction": direction,
-                               "edge": round(edge, 3), "reason": reason})
+
+            status = approval.get("approval_status", "UNKNOWN")
+
+            if status == "KILL_SWITCH":
+                logger.critical("PIPE-03", "kill_switch_from_c4",
+                                payload=approval, session_id=SESSION_ID)
+                print(f"  KILL SWITCH triggered by C4 — halting PIPE-03.", file=sys.stderr)
+                sys.exit(1)
+
+            if status == "APPROVED":
+                ok_pos, pos = trader.open_position(
+                    approval=approval,
+                    player_name=player_name,
+                    player_id=player_id,
+                    kalshi_ticker=mkt.ticker,
+                    kalshi_threshold=mkt.threshold,
+                    mid_price=mid,
+                    vig=mkt.vig,
+                    game_date=_ticker_to_game_date(mkt.ticker),
+                    session_id=SESSION_ID,
+                )
+                size = approval.get("approved_size", 0)
+                print(f"  BET  {player_name:<22} {direction:<4}  ${size:.2f}  "
+                      f"edge={edge:+.3f}  mkt={mkt.threshold}+ pts")
+                if pos:
+                    orders.append(pos)
+                    _state = trader.get_state()
+                    bankroll = _state["bankroll_usd"]
+                    _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
+                    _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
+                    current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
+                    engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
+                    daily_loss += size if edge < 0 else 0
+            else:
+                reason = approval.get("rejection_reason", "unknown")
+                if direction != "PASS":
+                    passes.append({"player": player_name, "direction": direction,
+                                   "edge": round(edge, 3), "reason": reason})
 
     # ------------------------------------------------------------------
     # 7. Summary

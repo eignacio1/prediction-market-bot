@@ -59,7 +59,7 @@
 
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
-| T-115 | **Expand run_paper_trade.py to evaluate ALL thresholds per player (not just closest)** | HIGH — before 2026-27 | KI-022. Line 290: `min(player_mkts, ...)` evaluates 1 of ~7–8 available Kalshi thresholds per player. At current single-threshold behavior, regular season yields ~3–10 bets/game. All-thresholds behavior yields ~25–40 bets/game from T1 alone. The 66-bet G6 floor is not crossed in regular season under single-threshold. Replace `min(...)` with loop evaluating each `player_mkts` entry as independent signal; idempotency check already per-ticker so pattern extends cleanly. ~15-line change. Must resolve before 2026-27 regular season. |
+| ~~T-115~~ | ~~**Expand run_paper_trade.py to evaluate ALL thresholds per player (not just closest)**~~ | ~~HIGH — before 2026-27~~ | ✅ COMPLETE 2026-06-01 — `closest = min(player_mkts, ...)` replaced with `for mkt in player_mkts:` loop. `X` and `p_est` computed once per player; each threshold evaluated independently through idempotency check + C4 + PaperTrader. Restores design throughput: ~25–40 bets/game regular season T1 (vs ~3–10 single-threshold). Finals: 175–280 bets across 7 games vs ~70 borderline. KI-022 RESOLVED. 438/438 tests pass. Decision logged. |
 
 ---
 
