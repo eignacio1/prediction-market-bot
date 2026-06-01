@@ -447,10 +447,7 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated; VPS commands pending, Earl to run) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
 **Reason for reset (DECISION_LOG 2026-05-31):** Prior bets placed on pre-ADR-0006 system (count-gated, architecturally incorrect). Evidence tainted; inadmissible for G6.  
 **NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix updated locally (16,618 rows, 55 players). VPS SCP pending.  
-**CRITICAL PENDING (Earl to run before Finals G1):**  
-  1. `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull origin main"`  
-  2. `scp exp_output/EXP-005/EXP-005_feature_matrix.csv root@157.230.91.33:/opt/prediction-market-bot/exp_output/EXP-005/EXP-005_feature_matrix.csv`  
-  3. `ssh root@157.230.91.33 "mv /opt/prediction-market-bot/logs/paper_portfolio.json /opt/prediction-market-bot/logs/paper_portfolio.INVALIDATED_20260601.json 2>/dev/null; echo 'Portfolio archived.'"`  
+**VPS DEPLOY COMPLETE (2026-05-31):** git HEAD = 16b27b2; feature matrix 16,619 lines confirmed on VPS; paper_portfolio.json archived as paper_portfolio.INVALIDATED_20260601.json; clean slate ready. Next cron (01:30 UTC) creates fresh $1,000 portfolio.  
 **Architecture clarification (2026-05-31):** paper_trader.py is LOCAL-ONLY — no order submission to Kalshi demo or any venue. paper_portfolio.json is authoritative G6 evidence. Kalshi demo account balance ($1,000 set by Earl) is independent; bot does not read or write Kalshi account balances. RSA signing not configured (only VENUE_API_KEY in .env; no private key file); authenticated Kalshi endpoints unavailable until RSA setup.  
 **KI-020 NEW (2026-05-31):** Kalshi authenticated endpoints (portfolio balance, order submission) require RSA request signing. Only VENUE_API_KEY exists locally — no private key. Exchange status + public market data work. Portfolio balance cannot be programmatically confirmed until RSA infra added.  
 
