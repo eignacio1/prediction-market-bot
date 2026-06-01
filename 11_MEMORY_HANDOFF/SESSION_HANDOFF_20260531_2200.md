@@ -123,9 +123,66 @@ Run this the morning after each Finals game (after ~10:00 AM ET when nba_api upd
 
 ---
 
+---
+
+## ⚠️ STRUCTURAL: G6 Promotion Gate Rework Required (T-113) — APR-0016 Flagged
+
+APR-0016 ("30 resolved bets with positive P&L") is architecturally weak. Earl identified this as requiring a meaningful realignment. **A formal APR must supersede APR-0016 before Finals G1 bets count toward any gate.**
+
+### Why APR-0016 fails
+
+| Problem | Why it matters |
+|---------|----------------|
+| Count is wrong primary metric | 30 bets can accumulate in one game night at Finals throughput (17-40+/night); one night's result is variance-dominated, not signal |
+| Count is blind to calibration | 30 lucky bets on a miscalibrated model passes the gate |
+| Count is blind to commercial validity | 30 bets placed at artificial demo prices against fake market prices passes without proving real edge |
+| Count is blind to execution quality | 30 bets produced by a system with duplicate-bet bugs or missed audit events passes |
+| "Positive P&L" is a single endpoint | A system can be negative for 28 bets and lucky on 2 and still pass |
+
+### Proposed multi-dimensional evidence standard (requires APR-XXXX to become operative)
+
+**Sequential — each tier is a prerequisite for the next. Failure in any tier halts promotion regardless of bet count.**
+
+**Tier 0 — Commercial Preconditions (must be true before any evidence counting begins)**
+- [ ] EXP-017 Part B: model_p vs. real Kalshi historical prices → positive EV confirmed
+- [ ] Price discovery confirmed using production API prices (demo validity resolved; or fix implemented)
+
+**Tier 1 — Execution Integrity (the machine works reliably)**
+- [ ] Pipeline fires correctly on ≥5 distinct game nights with no system errors or missed cron windows
+- [ ] Zero duplicate bets detected across all cron windows (idempotency confirmed live, not just tested)
+- [ ] Resolution pipeline confirms correct outcomes for ≥20 resolved positions against nba_api
+- [ ] C6 audit log: no unlogged events; full traceability of every approved/rejected bet
+
+**Tier 2 — Model Performance Trends (the model works — trends, not endpoints)**
+- [ ] Realized win rate within ±15% of predicted probability across resolved bets (calibration holds live)
+- [ ] Realized EV (P&L / amount wagered) positive at minimum statistical floor
+- [ ] Paper Brier score on resolved bets ≤ 0.265 (within L1 drift threshold — model not degraded in live paper period)
+- [ ] **P&L slope trending positive** — cumulative P&L curve has positive slope over the paper game nights, not just net positive at sample end (trend, not endpoint)
+
+**Tier 3 — Risk Control Validation (the guardrails work)**
+- [ ] No realized bet exceeded per-event cap ($500)
+- [ ] Realized drawdown never exceeded 15% during paper period
+- [ ] C4 rejection rate 20–80% (selectivity confirmed — rejects low-edge bets; doesn't reject everything)
+
+**Statistical floor (validity threshold, not the gate):**
+- ≥50 resolved bets provides meaningful statistical power
+- ≥5 distinct game nights ensures trends are not one-night variance
+- Meeting the floor while failing any Tier 2 trend criterion = automatic gate failure
+
+### What this means practically
+
+- The "when does G6 open?" question is now answered by trend evidence over multiple game nights, not a bet count
+- Tier 0 must complete before the paper trading period is even running properly (EXP-017 Part B is a precondition, not a concurrent task)
+- A system that accumulates 30 bets in one lucky Finals night does NOT clear G6 under this framework
+- A system that accumulates 60 bets across 5 game nights with positive trend and clean execution does clear G6
+
+**Next session: T-113 = draft the formal APR, present to Earl, get sign-off. APR-0016 remains operative until superseded.**
+
+---
+
 ## ONE THING PENDING
 
-**The demo price validity question must be answered before Finals G1 bets count toward G6.** If demo prices are artificial, the evidence is hollow. The fix (production price discovery in paper mode) is a one-hour implementation task. Do not let this slide past Finals G1.
+**Two pre-conditions must be satisfied before any Finals G1 bets count toward G6:** (1) T-114: Kalshi demo price validity resolved (fix if artificial); (2) T-113: APR-XXXX signed to supersede APR-0016 with multi-dimensional evidence standard. Both are one-session tasks. Do not begin G6 evidence counting without them.
 
 ---
 

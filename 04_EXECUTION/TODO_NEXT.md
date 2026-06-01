@@ -6,6 +6,15 @@
 
 ---
 
+## SESSION 2026-05-31 HANDOFF — NEW HIGH PRIORITY TASKS
+
+| # | Task | Priority | Notes |
+|---|------|----------|-------|
+| T-113 | **Draft new G6 promotion gate to supersede APR-0016 — multi-dimensional evidence standard** | HIGH — required before Finals G1 bets count toward G6 | APR-0016 "30 resolved bets" is architecturally weak: count is blind to calibration, commercial validity, and execution quality. Proposed four-tier framework in DECISION_LOG 2026-05-31. Requires operator review and formal APR-XXXX before operative. Suggested structure: Tier 0 preconditions → Tier 1 execution integrity → Tier 2 performance trends → Tier 3 risk control. Statistical floor: ≥50 resolved bets (not the gate itself — a floor for statistical validity). See SESSION_HANDOFF_20260531_2200.md. |
+| T-114 | **Resolve Kalshi demo price validity question before counting Finals G1 bets toward G6** | HIGH — required before any G6 evidence counting | If demo prices are artificial/seeded, edge = model_p - fake_price → meaningless; P&L against fake prices does not prove commercial viability. Fix if artificial: `_price_discovery_url()` in kalshi_client.py always returns production URL; BOT_ENV=paper suppresses order submission only. How to confirm: compare KXNBAPTS price on demo vs. production simultaneously on a live market. If prices diverge → demo is artificial. ~1 hour to implement fix. |
+
+---
+
 ## SESSION 2026-06-01 — NEW TASKS (ADR-0008 Kalshi auth blocker)
 
 | # | Task | Priority | Notes |
