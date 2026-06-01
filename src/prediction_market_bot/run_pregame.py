@@ -51,6 +51,7 @@ if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
+from prediction_market_bot.c3_forecasting.shadow_forecaster import ShadowForecaster
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import BAND_REGISTRY
@@ -64,6 +65,7 @@ SESSION_ID  = f"PG-{uuid.uuid4().hex[:8].upper()}"
 GAME_DATE   = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
 
 MODEL_PATH   = Path("models/prod_model.joblib")
+MODEL_META   = Path("models/prod_model_meta.json")
 FEATURE_CSV  = Path("exp_output/EXP-005/EXP-005_feature_matrix.csv")
 QS_CSV       = Path("qualitative_data/pam_v4/QS-2026-05-28-002_classifications.csv")
 QS_ID        = "QS-2026-05-28-002"
@@ -138,6 +140,27 @@ def main() -> None:
     col_medians    = artifact["col_medians"]
     model_version  = artifact["model_version"]
     print(f"[MODEL] {model_version} | {len(feature_names)} features")
+
+    # T-119: Model version hash guard (ADR-0009)
+    # Verify loaded artifact matches prod_model_meta.json to detect silent substitution.
+    if MODEL_META.exists():
+        _meta = json.loads(MODEL_META.read_text())
+        _expected = _meta.get("model_version")
+        if _expected and model_version != _expected:
+            logger.error(COMPONENT, "model_version_mismatch",
+                         payload={"expected": _expected, "actual": model_version},
+                         session_id=SESSION_ID)
+            print(f"FATAL: model_version_mismatch — expected={_expected} got={model_version}",
+                  file=sys.stderr)
+            sys.exit(1)
+        print(f"[MODEL] version guard OK — {model_version}")
+
+    # Shadow model (ADR-0009) — optional parallel inference, C6-only output
+    shadow = ShadowForecaster(logger=logger, snapshot_id=SNAPSHOT_ID)
+    if shadow.available:
+        print(f"[SHADOW] {shadow.model_version} loaded — shadow inference active")
+    else:
+        print("[SHADOW] No shadow model found — production only")
 
     # ------------------------------------------------------------------
     # 2. Load static feature matrix + QS enrichment
@@ -219,53 +242,64 @@ def main() -> None:
         if np.isnan(pts_mean):
             continue
 
-        closest = min(player_mkts, key=lambda m: abs(m.threshold - pts_mean))
-
-        # Build feature vector
+        # Build feature vector once per player; evaluate all available thresholds independently
         X = np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float)
         X = _impute(X, col_medians)
+        p_est = float(pipeline.predict_proba(X)[0, 1])
 
-        p_est  = float(pipeline.predict_proba(X)[0, 1])
-        mid    = closest.mid_price
-        half   = closest.half_spread
-        edge   = p_est - mid - half
-        direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
+        # Shadow inference (ADR-0009) — once per player, same feature row
+        p_shadow = shadow.predict_shadow(row, session_id=SESSION_ID) if shadow.available else None
 
-        print(f"  {player_name:<28} p={p_est:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}")
+        for mkt in player_mkts:
+            mid   = mkt.mid_price
+            half  = mkt.half_spread
+            edge  = p_est - mid - half
+            direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
-        fc = {
-            "player_name": player_name, "player_id": player_id,
-            "pts_l10_mean": round(pts_mean, 2),
-            "kalshi_ticker": closest.ticker,
-            "kalshi_threshold": closest.threshold,
-            "mid_price": round(mid, 4), "vig": round(closest.vig, 4),
-            "p_estimate": round(p_est, 4), "edge": round(edge, 4),
-            "direction": direction,
-            "model_version": model_version,
-            "forecast_at": _utc_now(),
-        }
-        forecasts.append(fc)
+            print(f"  {player_name:<28} thr={mkt.threshold:>3}  p={p_est:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}")
 
-        logger.info(COMPONENT, "forecast_emitted",
-                    payload={k: v for k, v in fc.items() if k != "forecast_at"},
-                    session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+            fc = {
+                "player_name": player_name, "player_id": player_id,
+                "pts_l10_mean": round(pts_mean, 2),
+                "kalshi_ticker": mkt.ticker,
+                "kalshi_threshold": mkt.threshold,
+                "mid_price": round(mid, 4), "vig": round(mkt.vig, 4),
+                "p_estimate": round(p_est, 4), "edge": round(edge, 4),
+                "direction": direction,
+                "model_version": model_version,
+                "shadow_p_estimate": round(p_shadow, 4) if p_shadow is not None else None,
+                "shadow_model_version": shadow.model_version if shadow.available else None,
+                "forecast_at": _utc_now(),
+            }
+            forecasts.append(fc)
+
+            logger.info(COMPONENT, "forecast_emitted",
+                        payload={k: v for k, v in fc.items() if k != "forecast_at"},
+                        session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
 
     # ------------------------------------------------------------------
     # 5. Write report
     # ------------------------------------------------------------------
+    players_matched = len({f["player_id"] for f in forecasts})
     actionable = [f for f in forecasts if f["direction"] != "PASS"]
     report = {
         "session_id": SESSION_ID, "game_date": GAME_DATE, "run_at": _utc_now(),
-        "model_version": model_version, "markets_fetched": len(live),
-        "players_matched": len(forecasts), "actionable": len(actionable),
+        "model_version": model_version,
+        "shadow_model_version": shadow.model_version if shadow.available else None,
+        "markets_fetched": len(live),
+        "players_matched": players_matched,
+        "markets_logged": len(forecasts),
+        "actionable": len(actionable),
         "forecasts": forecasts,
     }
     OUTPUT_PATH.write_text(json.dumps(report, indent=2))
 
-    print(f"\n[DONE] {len(forecasts)} players | {len(actionable)} actionable | report: {OUTPUT_PATH}")
+    print(f"\n[DONE] {players_matched} players | {len(forecasts)} markets | {len(actionable)} actionable | report: {OUTPUT_PATH}")
 
     logger.info(COMPONENT, "pregame_run_complete",
-                payload={"players_matched": len(forecasts), "actionable": len(actionable),
+                payload={"players_matched": players_matched,
+                         "markets_logged": len(forecasts),
+                         "actionable": len(actionable),
                          "output_path": str(OUTPUT_PATH)},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
 

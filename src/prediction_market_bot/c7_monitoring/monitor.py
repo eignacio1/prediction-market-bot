@@ -9,13 +9,20 @@ Upstream:     Forecast outcome records (pipeline driver feeds p_estimate + outco
 Downstream:   C8 Visual Dashboard (IF-C7-C8 metric stream)
               All components check is_kill_switch_active before operating
 Interfaces:   IF-ALL-C6 (writes drift + kill events); IF-C7-C8 (health snapshot)
-ADR refs:     ADR-0001 (Compass OS), ADR-0002 (forecast-only)
+ADR refs:     ADR-0001 (Compass OS), ADR-0002 (forecast-only), ADR-0009 (shadow model)
 Policy refs:  MONITORING_DRIFT_PLAN.md, RUNBOOKS/RUNBOOK_kill-switch.md,
               SLA_SLO_SLI.md (ALT-001 through ALT-008), OBSERVABILITY.md
 
 Kill switch SLA: ≤60 seconds (NFR-03). Drilled before G5 (TC-007).
 Drift baselines: Brier=0.2416, ECE=0.0247 (G4 TEST set; ADR-0004).
 No bypass path. No partial halt. No override without ADR + RCO approval.
+
+Shadow model tracking (ADR-0009):
+  Separate _shadow_window tracks resolved shadow outcomes independently.
+  shadow_promotion_flag fires when shadow_brier_30 <= prod_brier - 0.005
+  over >= 30 resolved events. Flag is informational — no auto-promotion.
+  Promotion requires operator review + ADR-0010 (DS sign-off).
+  Wire via record_shadow_outcome() from resolve pipeline (T-121).
 
 Audit events emitted:
   drift_metric_computed      (INFO)     — rolling window computation
@@ -28,6 +35,8 @@ Audit events emitted:
   kill_switch_triggered      (CRITICAL) — kill switch activated
   kill_switch_reset          (WARNING)  — kill switch reset (drill recovery only)
   kill_switch_drill_result   (INFO)     — drill pass/fail record
+  shadow_drift_computed      (INFO)     — shadow Brier rolling window (ADR-0009)
+  shadow_promotion_flag      (WARNING)  — shadow beats prod by >= 0.005 over 30+ events (ADR-0009)
 """
 
 from __future__ import annotations
@@ -68,6 +77,10 @@ ECE_L2_THRESHOLD: float = ECE_BASELINE + ECE_L2_DELTA
 # P&L alert thresholds (KI-012; DS sign-off 2026-06-01 T-091)
 PNL_L1_LOSS_PCT: float = 0.05   # 5% of initial bankroll → L1 watch (INFO)
 PNL_L2_LOSS_PCT: float = 0.10   # 10% of initial bankroll → L2 alert (WARNING)
+
+# Shadow model promotion thresholds (ADR-0009)
+SHADOW_PROMOTION_DELTA: float = 0.005  # shadow Brier must beat prod by this margin
+SHADOW_MIN_WINDOW: int = 30            # minimum resolved outcomes for promotion comparison
 
 # NFR-03 kill switch SLA in milliseconds
 KILL_SWITCH_SLA_MS: int = 60_000
@@ -114,6 +127,10 @@ class DriftSnapshot:
     brier_baseline: float
     ece_baseline: float
     computed_at: str  # ISO-8601 UTC
+    # Shadow model fields (ADR-0009)
+    shadow_n_events: int = 0
+    shadow_brier_30: float | None = None
+    shadow_promotion_flag: bool = False
 
 
 @dataclass
@@ -231,6 +248,10 @@ class SystemMonitor:
         self._window: deque[ForecastOutcomeRecord] = deque(maxlen=window_size)
         self._window_lock = threading.Lock()
 
+        # Shadow model window (ADR-0009) — (shadow_p_estimate, outcome) pairs
+        self._shadow_window: deque[tuple[float, int]] = deque(maxlen=window_size)
+        self._shadow_lock = threading.Lock()
+
         # Kill switch state
         self._kill_event = threading.Event()
         self._kill_reason: str | None = None
@@ -260,7 +281,7 @@ class SystemMonitor:
         outcome: int,
         market_implied_prob: float,
     ) -> None:
-        """Add one resolved forecast to the rolling drift window."""
+        """Add one resolved production forecast to the rolling drift window."""
         record = ForecastOutcomeRecord(
             p_estimate=float(p_estimate),
             outcome=int(outcome),
@@ -268,6 +289,21 @@ class SystemMonitor:
         )
         with self._window_lock:
             self._window.append(record)
+
+    def record_shadow_outcome(
+        self,
+        shadow_p_estimate: float,
+        outcome: int,
+    ) -> None:
+        """
+        Add one resolved shadow forecast to the shadow rolling window (ADR-0009).
+
+        Called from the resolve pipeline (T-121) when a bet resolves, alongside
+        record_forecast_outcome(). outcome must be the same game outcome (0/1).
+        Shadow window size mirrors the production window.
+        """
+        with self._shadow_lock:
+            self._shadow_window.append((float(shadow_p_estimate), int(outcome)))
 
     # ------------------------------------------------------------------
     # Drift computation
@@ -277,6 +313,17 @@ class SystemMonitor:
         """Compute rolling drift metrics over the current window."""
         with self._window_lock:
             records = list(self._window)
+        with self._shadow_lock:
+            shadow_records = list(self._shadow_window)
+
+        # Shadow Brier is independent of production window — compute first
+        shadow_brier: float | None = None
+        shadow_promotion = False
+        n_shadow = len(shadow_records)
+        if n_shadow >= SHADOW_MIN_WINDOW:
+            shadow_brier = float(np.mean(
+                [(p - y) ** 2 for p, y in shadow_records]
+            ))
 
         n = len(records)
         if n == 0:
@@ -290,6 +337,9 @@ class SystemMonitor:
                 brier_baseline=self._brier_baseline,
                 ece_baseline=self._ece_baseline,
                 computed_at=_utc_now_iso(),
+                shadow_n_events=n_shadow,
+                shadow_brier_30=shadow_brier,
+                shadow_promotion_flag=False,
             )
 
         brier = _compute_brier(records)
@@ -333,6 +383,16 @@ class SystemMonitor:
                 alert_level = ALERT_L1_WATCH
             messages.append(f"Mean edge {mean_edge:.4f} < 0 — ALT-003")
 
+        # Shadow promotion check — requires both prod and shadow Brier to be valid
+        if shadow_brier is not None and not np.isnan(brier):
+            if shadow_brier <= brier - SHADOW_PROMOTION_DELTA:
+                shadow_promotion = True
+                messages.append(
+                    f"Shadow Brier {shadow_brier:.4f} beats prod {brier:.4f} "
+                    f"by {brier - shadow_brier:.4f} >= {SHADOW_PROMOTION_DELTA} "
+                    f"over {n_shadow} events — ADR-0010 review required"
+                )
+
         return DriftSnapshot(
             n_events=n,
             rolling_brier=None if np.isnan(brier) else brier,
@@ -343,6 +403,9 @@ class SystemMonitor:
             brier_baseline=self._brier_baseline,
             ece_baseline=self._ece_baseline,
             computed_at=_utc_now_iso(),
+            shadow_n_events=n_shadow,
+            shadow_brier_30=shadow_brier,
+            shadow_promotion_flag=shadow_promotion,
         )
 
     # ------------------------------------------------------------------
@@ -418,6 +481,42 @@ class SystemMonitor:
                 reason=f"L4 drift threshold breached: {'; '.join(snap.alert_messages)}",
                 operator=None,
                 session_id=sid,
+            )
+
+        # Shadow model promotion flag (ADR-0009) — informational, no auto-action
+        if snap.shadow_n_events > 0:
+            self._logger.log(
+                component=COMPONENT,
+                event_type="shadow_drift_computed",
+                payload={
+                    "shadow_n_events": snap.shadow_n_events,
+                    "shadow_brier_30": snap.shadow_brier_30,
+                    "prod_brier": snap.rolling_brier,
+                    "shadow_promotion_flag": snap.shadow_promotion_flag,
+                },
+                severity="INFO",
+                session_id=sid,
+                snapshot_id=self._snapshot_id,
+            )
+        if snap.shadow_promotion_flag:
+            self._logger.log(
+                component=COMPONENT,
+                event_type="shadow_promotion_flag",
+                payload={
+                    "shadow_brier_30": snap.shadow_brier_30,
+                    "prod_brier": snap.rolling_brier,
+                    "delta": (
+                        round(snap.rolling_brier - snap.shadow_brier_30, 4)
+                        if snap.rolling_brier is not None and snap.shadow_brier_30 is not None
+                        else None
+                    ),
+                    "shadow_n_events": snap.shadow_n_events,
+                    "promotion_threshold": SHADOW_PROMOTION_DELTA,
+                    "action_required": "Operator review + ADR-0010 required before promotion",
+                },
+                severity="WARNING",
+                session_id=sid,
+                snapshot_id=self._snapshot_id,
             )
 
         return snap
@@ -653,4 +752,8 @@ class SystemMonitor:
             "brier_l2_threshold": BRIER_L2_THRESHOLD,
             "brier_l3_threshold": BRIER_L3_THRESHOLD,
             "snapshot_computed_at": snap.computed_at,
+            # Shadow model (ADR-0009)
+            "shadow_n_events": snap.shadow_n_events,
+            "shadow_brier_30": snap.shadow_brier_30,
+            "shadow_promotion_flag": snap.shadow_promotion_flag,
         }
