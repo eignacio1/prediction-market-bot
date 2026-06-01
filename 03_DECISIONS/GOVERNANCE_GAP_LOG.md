@@ -92,6 +92,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-005 — Gate criteria dimensional coherence was never audited by ARE WE COMPROMISED? (Q1–Q6)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-005 |
+| Category | Systemic governance blind spot — wrong dimension, not wrong value |
+| What was missed | ARE WE COMPROMISED? Q1–Q6 audits code artifacts: hard limits in risk.py, stubs in src/, interface signatures, decision traceability. No question asked: "for each active gate criterion, what broken system could produce passing evidence?" APR-0016 ("30 resolved bets with positive P&L") survived from 2026-05-29 to 2026-05-31 without any protocol step asking whether count was the right primary metric. The 2026-05-31 corrective entry fixed the throughput math (4 bets/day → 17-40+ bets/night) but missed the structural issue: count is categorically the wrong dimension regardless of the throughput number. |
+| When it should have been caught | When APR-0016 was written (2026-05-29) — the same session that included a multi-band, 80-player execution architecture discussion. Or at the latest when ADR-0006 deleted the count gate from C4 (2026-06-01), making the dimensional incoherence explicit: if count is wrong in C4, count is wrong in G6. |
+| Phases it survived | G6 paper trading phase (2026-05-29 through 2026-05-31) |
+| Why it survived | Q1–Q5 audit code and numerical values. No question in the protocol asked: "Is the gate criterion measuring the right dimension?" The distinction between "wrong value" (e.g., 10 for max_concurrent_positions) and "wrong dimension" (e.g., count as a gate metric) was not part of any scan, template, or prompt. Count looks like a reasonable metric until you ask what broken system passes it. |
+| Impact | APR-0016 would have allowed G6 live capital promotion based on one lucky game night's bets (30+ bets at Finals throughput). A miscalibrated model with execution bugs producing one lucky variance run would have cleared G6. No calibration evidence required. No commercial validation required. No execution integrity required. |
+| Discovery | Operator review 2026-05-31. Earl identified that count is the wrong primary metric — the same conceptual insight that produced ADR-0006 (count wrong in C4) applied to G6. Human synthesis connected these two; no automated scan would have. |
+| Discovery method | Human eye test — NOT caught by any protocol step |
+| Resolution | Q7 added to ARE WE COMPROMISED? in CLAUDE.md and MEMORY_BANK.md: "For each active gate criterion, what broken system could produce passing evidence?" T-113: APR-XXXX (multi-dimensional evidence standard) to supersede APR-0016. |
+| Status | **IN PROGRESS** — Q7 added 2026-05-31; T-113 registered; APR-XXXX pending operator sign-off |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

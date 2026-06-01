@@ -78,6 +78,10 @@
 
 ---
 
+| 2026-05-31 | **Q7 added to ARE WE COMPROMISED? protocol — gate criteria dimensional coherence check (GG-005)** | Q1–Q6 audit code artifacts. No step asked whether active gate criteria were measuring the right dimension. APR-0016 ("30 resolved bets") survived the entire paper trading phase without any protocol challenge because count looks like a valid metric until you ask: "what broken system passes this gate?" A miscalibrated model on a lucky variance night clears APR-0016. That question was never asked — not by Q1–Q6, not by any governance scan, not by any gate review. The operator caught it. GG-005 documents the failure. Q7 closes the gap. Rule: Q1–Q5 check the execution system. Q7 checks the governance system. Both must pass at session start. | DS |
+
+---
+
 ## Decision Principles
 
 These principles guide all decisions in this project:
