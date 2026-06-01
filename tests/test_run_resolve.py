@@ -54,6 +54,7 @@ def _make_mock_trader(open_positions=None, resolved=None, bankroll=1000.0):
     win_rate = 1.0 if n_closed > 0 else None
     trader.summary.return_value = {
         "bankroll_usd": bankroll,
+        "initial_bankroll_usd": 1000.0,
         "total_realized_pnl": sum(r.get("pnl", 0) for r in (resolved or [])),
         "open_positions": len(open_positions or []),
         "closed_positions": n_closed,

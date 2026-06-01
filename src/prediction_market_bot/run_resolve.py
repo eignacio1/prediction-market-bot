@@ -43,6 +43,7 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
 
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 
 SESSION_ID     = f"RESOLVE-{uuid.uuid4().hex[:8].upper()}"
 GAME_DATE      = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
@@ -101,6 +102,12 @@ def main() -> None:
               f"({summary['closed_positions']} resolved bets)")
     print(f"  Realized drawdown:  {summary['realized_drawdown_pct']:.1f}%")
     print(f"  Deployed (stakes):  {summary['deployed_pct']:.1f}%")
+
+    SystemMonitor(logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID).check_portfolio_pnl(
+        total_realized_pnl=summary["total_realized_pnl"],
+        initial_bankroll=summary["initial_bankroll_usd"],
+        session_id=SESSION_ID,
+    )
 
     logger.info("PIPE-03R", "resolve_run_complete",
                 payload={

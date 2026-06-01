@@ -23,6 +23,8 @@ Audit events emitted:
   drift_alert_l2_alert       (WARNING)  — Brier > baseline + 0.05 (ALT-001)
   drift_alert_l3_pause       (ERROR)    — Brier > baseline + 0.10 (ALT-002)
   drift_alert_mean_edge_neg  (WARNING)  — mean edge < 0 (ALT-003)
+  pnl_alert_l1_watch         (INFO)     — realized loss ≥ 5% of initial bankroll (KI-012)
+  pnl_alert_l2_loss          (WARNING)  — realized loss ≥ 10% of initial bankroll (KI-012)
   kill_switch_triggered      (CRITICAL) — kill switch activated
   kill_switch_reset          (WARNING)  — kill switch reset (drill recovery only)
   kill_switch_drill_result   (INFO)     — drill pass/fail record
@@ -62,6 +64,10 @@ BRIER_L1_THRESHOLD: float = BRIER_BASELINE + BRIER_L1_DELTA
 BRIER_L2_THRESHOLD: float = BRIER_BASELINE + BRIER_L2_DELTA
 BRIER_L3_THRESHOLD: float = BRIER_BASELINE + BRIER_L3_DELTA
 ECE_L2_THRESHOLD: float = ECE_BASELINE + ECE_L2_DELTA
+
+# P&L alert thresholds (KI-012; DS sign-off 2026-06-01 T-091)
+PNL_L1_LOSS_PCT: float = 0.05   # 5% of initial bankroll → L1 watch (INFO)
+PNL_L2_LOSS_PCT: float = 0.10   # 10% of initial bankroll → L2 alert (WARNING)
 
 # NFR-03 kill switch SLA in milliseconds
 KILL_SWITCH_SLA_MS: int = 60_000
@@ -415,6 +421,49 @@ class SystemMonitor:
             )
 
         return snap
+
+    # ------------------------------------------------------------------
+    # Portfolio P&L monitoring (KI-012 / T-091)
+    # ------------------------------------------------------------------
+
+    def check_portfolio_pnl(
+        self,
+        total_realized_pnl: float,
+        initial_bankroll: float,
+        session_id: str | None = None,
+    ) -> None:
+        """Emit C6 alert if realized P&L loss exceeds 5% (L1) or 10% (L2) of initial bankroll."""
+        if initial_bankroll <= 0:
+            return
+        loss_pct = -total_realized_pnl / initial_bankroll
+        if loss_pct < PNL_L1_LOSS_PCT:
+            return
+        sid = session_id or self._session_id
+        payload: dict[str, Any] = {
+            "total_realized_pnl": total_realized_pnl,
+            "initial_bankroll": initial_bankroll,
+            "loss_pct": round(loss_pct, 4),
+            "l1_threshold_pct": PNL_L1_LOSS_PCT,
+            "l2_threshold_pct": PNL_L2_LOSS_PCT,
+        }
+        if loss_pct >= PNL_L2_LOSS_PCT:
+            self._logger.log(
+                component=COMPONENT,
+                event_type="pnl_alert_l2_loss",
+                payload=payload,
+                severity="WARNING",
+                session_id=sid,
+                snapshot_id=self._snapshot_id,
+            )
+        else:
+            self._logger.log(
+                component=COMPONENT,
+                event_type="pnl_alert_l1_watch",
+                payload=payload,
+                severity="INFO",
+                session_id=sid,
+                snapshot_id=self._snapshot_id,
+            )
 
     # ------------------------------------------------------------------
     # Kill switch

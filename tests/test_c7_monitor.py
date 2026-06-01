@@ -48,6 +48,8 @@ from prediction_market_bot.c7_monitoring.monitor import (
     KILL_SWITCH_SLA_MS,
     KS_ARMED,
     KS_TRIGGERED,
+    PNL_L1_LOSS_PCT,
+    PNL_L2_LOSS_PCT,
     DriftSnapshot,
     ForecastOutcomeRecord,
     KillSwitchResult,
@@ -646,3 +648,72 @@ class TestThreadSafety:
         for t in threads:
             t.join()
         assert monitor.is_kill_switch_active
+
+
+# ---------------------------------------------------------------------------
+# SystemMonitor — check_portfolio_pnl (KI-012 / T-091)
+# ---------------------------------------------------------------------------
+
+
+class TestCheckPortfolioPnl:
+    @pytest.mark.unit
+    def test_no_alert_when_profitable(self):
+        monitor, logger = _make_monitor()
+        monitor.check_portfolio_pnl(total_realized_pnl=10.0, initial_bankroll=1000.0)
+        logger.log.assert_not_called()
+
+    @pytest.mark.unit
+    def test_no_alert_below_l1_threshold(self):
+        monitor, logger = _make_monitor()
+        loss = 1000.0 * PNL_L1_LOSS_PCT - 0.01  # just under 5%
+        monitor.check_portfolio_pnl(total_realized_pnl=-loss, initial_bankroll=1000.0)
+        logger.log.assert_not_called()
+
+    @pytest.mark.unit
+    def test_l1_alert_at_5pct_loss(self):
+        monitor, logger = _make_monitor()
+        loss = 1000.0 * PNL_L1_LOSS_PCT  # exactly 5%
+        monitor.check_portfolio_pnl(total_realized_pnl=-loss, initial_bankroll=1000.0)
+        assert logger.log.called
+        call_kwargs = logger.log.call_args[1]
+        assert call_kwargs["event_type"] == "pnl_alert_l1_watch"
+        assert call_kwargs["severity"] == "INFO"
+
+    @pytest.mark.unit
+    def test_l2_alert_at_10pct_loss(self):
+        monitor, logger = _make_monitor()
+        loss = 1000.0 * PNL_L2_LOSS_PCT  # exactly 10%
+        monitor.check_portfolio_pnl(total_realized_pnl=-loss, initial_bankroll=1000.0)
+        assert logger.log.called
+        call_kwargs = logger.log.call_args[1]
+        assert call_kwargs["event_type"] == "pnl_alert_l2_loss"
+        assert call_kwargs["severity"] == "WARNING"
+
+    @pytest.mark.unit
+    def test_l2_alert_above_10pct(self):
+        monitor, logger = _make_monitor()
+        monitor.check_portfolio_pnl(total_realized_pnl=-150.0, initial_bankroll=1000.0)
+        call_kwargs = logger.log.call_args[1]
+        assert call_kwargs["event_type"] == "pnl_alert_l2_loss"
+
+    @pytest.mark.unit
+    def test_l1_not_l2_between_thresholds(self):
+        monitor, logger = _make_monitor()
+        loss = 1000.0 * (PNL_L1_LOSS_PCT + PNL_L2_LOSS_PCT) / 2  # between 5% and 10%
+        monitor.check_portfolio_pnl(total_realized_pnl=-loss, initial_bankroll=1000.0)
+        call_kwargs = logger.log.call_args[1]
+        assert call_kwargs["event_type"] == "pnl_alert_l1_watch"
+
+    @pytest.mark.unit
+    def test_payload_contains_loss_pct(self):
+        monitor, logger = _make_monitor()
+        monitor.check_portfolio_pnl(total_realized_pnl=-60.0, initial_bankroll=1000.0)
+        payload = logger.log.call_args[1]["payload"]
+        assert "loss_pct" in payload
+        assert abs(payload["loss_pct"] - 0.06) < 1e-6
+
+    @pytest.mark.unit
+    def test_zero_initial_bankroll_no_crash(self):
+        monitor, logger = _make_monitor()
+        monitor.check_portfolio_pnl(total_realized_pnl=-50.0, initial_bankroll=0.0)
+        logger.log.assert_not_called()
