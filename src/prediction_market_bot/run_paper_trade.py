@@ -20,7 +20,8 @@ Steps:
 
 Security:
   BOT_C4_ACTIVE is set in-process only after BOT_ENV=paper is verified.
-  No real order submission — PaperTrader writes to local JSON only.
+  If VENUE_PRIVATE_KEY_PATH is set, orders fire to Kalshi demo (ADR-0008).
+  If VENUE_PRIVATE_KEY_PATH is unset, PaperTrader runs local-only (degraded mode).
   BOT_C4_ACTIVE must NOT be set externally in ENV-02's .env.
 
 How to run:
@@ -57,6 +58,7 @@ os.environ["BOT_C4_ACTIVE"] = "true"
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.execution_bands import BAND_REGISTRY
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
@@ -132,11 +134,23 @@ def _impute(X: np.ndarray, medians: np.ndarray) -> np.ndarray:
 def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     logger = AuditLogger(LOG_DIR / "audit.jsonl", min_severity="INFO")
-    trader = PaperTrader(PORTFOLIO_PATH, logger)
+
+    # Kalshi client — loads RSA key if VENUE_PRIVATE_KEY_PATH is set (ADR-0008)
+    try:
+        kalshi_client = KalshiMarketClient.from_env()
+        signing_ready = kalshi_client.has_signing_key()
+    except Exception as e:
+        kalshi_client = None
+        signing_ready = False
+        logger.warning("PIPE-03", "kalshi_client_init_failed",
+                       payload={"error": str(e)}, session_id=SESSION_ID)
+
+    trader = PaperTrader(PORTFOLIO_PATH, logger, kalshi_client=kalshi_client)
 
     print(f"\n[PIPE-03] Paper trading — {GAME_DATE}")
     print(f"Session:  {SESSION_ID}")
     print(f"BOT_ENV:  {os.environ.get('BOT_ENV')}  |  C4: ACTIVE")
+    print(f"Kalshi:   {'LIVE ORDERS (demo)' if signing_ready else 'local-only (no RSA key)'}")
 
     logger.info("PIPE-03", "paper_run_start",
                 payload={"session_id": SESSION_ID, "game_date": GAME_DATE},

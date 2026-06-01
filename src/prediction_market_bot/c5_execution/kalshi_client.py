@@ -1,22 +1,33 @@
 """
-C5: Kalshi Market Data Client — DS-02 Price Feed
-==================================================
-Component:    C5 (Execution Engine) — market data sub-module
-Phase active: Phase 5+ (Operational Readiness; DS-02)
-Status:       CANONICAL (Phase 5 2026-05-28)
+C5: Kalshi Market Data + Order Execution Client
+================================================
+Component:    C5 (Execution Engine)
+Phase active: Phase 5+ (market data); Phase 6+ (order execution — ADR-0008)
+Status:       CANONICAL (ADR-0008 2026-05-31)
 Upstream:     Kalshi trading API (api.elections.kalshi.com)
-Downstream:   C3 Forecasting (market_implied_prob), C4 Risk Engine (edge calc)
-Interfaces:   IF-C5-VENUE (read-only market data; ADR-0003)
+Downstream:   C3 Forecasting (market_implied_prob), C4 Risk Engine (edge calc),
+              C5 PaperTrader (order submission)
+Interfaces:   IF-C5-VENUE (ADR-0003 read; ADR-0008 write)
 
 Connectivity requirement (DS-02-B-001 resolved 2026-05-28):
   - REQUIRES Homebrew Python 3.11 (/usr/local/bin/python3.11) or .venv311
   - OpenSSL 3.6.2+ required for TLS handshake with api.elections.kalshi.com
   - LibreSSL (system Python) and older OpenSSL fail the TLS handshake (CloudFront WAF)
 
+Authentication (ADR-0008):
+  - Kalshi v2 API uses RSA-PS256 (PSS+SHA256) request signing for all authenticated endpoints
+  - Public endpoints (/exchange/status, /markets) require no auth
+  - Authenticated endpoints (/portfolio/balance, /portfolio/orders) require:
+      KALSHI-ACCESS-KEY:       API key ID (VENUE_API_KEY env var)
+      KALSHI-ACCESS-TIMESTAMP: Unix milliseconds as string
+      KALSHI-ACCESS-SIGNATURE: base64(RSA-SHA256(private_key, timestamp+METHOD+path))
+  - Private key loaded from path in VENUE_PRIVATE_KEY_PATH env var
+  - Private key file must NOT be in VCS (NFR-05)
+
 Security (NFR-05):
-  - API key loaded from environment variable VENUE_API_KEY
-  - Key never logged, never hardcoded, never written to disk
-  - Read-only scope only — no order submission (ENV-01/02 guard in RiskEngine)
+  - API key ID and private key path loaded from environment only
+  - Private key never logged, never hardcoded, never written to disk
+  - ENV guard: BOT_ENV=paper permits demo orders; BOT_ENV=live permits live orders
 
 Series used:
   - KXNBAPTS: Pro Basketball Player Points (individual game thresholds)
@@ -27,7 +38,13 @@ Market structure:
   - Binary market: YES = player scores >= threshold points in the game
   - Price in USD (0.00–1.00); YES ask + NO ask typically = $1.01 (1% vig)
   - mid_price = (yes_ask + yes_bid) / 2
-  - vig = yes_ask - yes_bid (half-spread for one side)
+  - vig = yes_ask - yes_bid (full spread)
+
+Order sizing (ADR-0008):
+  - contracts = floor(approved_size_usd / mid_price)
+  - yes_price_cents = round(mid_price * 100)
+  - Actual cost = contracts * yes_price_cents / 100
+  - Minimum 1 contract per order
 
 Kill switch constraint (NFR-03):
   - All public methods return (bool, data).
@@ -37,11 +54,16 @@ Kill switch constraint (NFR-03):
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import math
 import os
 import re
 import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import requests
@@ -93,7 +115,7 @@ class PlayerMarket:
     volume: float            # total volume in dollars
     status: str              # "active", "closed", etc.
     fetched_at: str          # UTC ISO timestamp
-    venue: str = "kalshi"    # venue identifier — default "kalshi"; overridden by VenueAdapter
+    venue: str = "kalshi"    # venue identifier
 
     @property
     def half_spread(self) -> float:
@@ -114,7 +136,6 @@ class DS02Snapshot:
     markets: list[PlayerMarket] = field(default_factory=list)
 
     def for_player(self, player_name_fragment: str) -> list[PlayerMarket]:
-        """Return all markets matching a player name fragment (case-insensitive)."""
         frag = player_name_fragment.upper()
         return [m for m in self.markets if frag in m.player_name.upper()]
 
@@ -123,14 +144,88 @@ class DS02Snapshot:
         player_name_fragment: str,
         target_threshold: float,
     ) -> PlayerMarket | None:
-        """
-        Return the market with threshold closest to target_threshold.
-        Used to align Kalshi fixed thresholds to our model's rolling-mean threshold.
-        """
         candidates = self.for_player(player_name_fragment)
         if not candidates:
             return None
         return min(candidates, key=lambda m: abs(m.threshold - target_threshold))
+
+
+@dataclass
+class KalshiOrder:
+    """
+    Result of a submitted Kalshi order (ADR-0008).
+
+    Returned by submit_order(). ok=False if the order was rejected or failed.
+    order_id is Kalshi's server-assigned ID; client_order_id is ours.
+    contracts and filled_price_cents reflect what actually got filled.
+    """
+    ok: bool
+    order_id: str            # Kalshi's order ID (empty string on failure)
+    client_order_id: str     # Our UUID
+    ticker: str
+    side: str                # "yes" or "no"
+    contracts: int           # number of contracts submitted
+    yes_price_cents: int     # limit price in cents
+    actual_cost_usd: float   # contracts * price / 100
+    status: str              # "resting", "filled", "canceled", "rejected", "error"
+    error: str = ""          # populated on failure
+
+
+# ---------------------------------------------------------------------------
+# RSA signing utilities (ADR-0008)
+# ---------------------------------------------------------------------------
+
+
+def _load_private_key(key_path: str):
+    """Load RSA private key from PEM file. Returns cryptography key object."""
+    try:
+        from cryptography.hazmat.primitives.serialization import load_pem_private_key
+        pem_bytes = Path(key_path).read_bytes()
+        return load_pem_private_key(pem_bytes, password=None)
+    except ImportError:
+        raise ImportError(
+            "cryptography package required for RSA signing: pip install cryptography"
+        )
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"RSA private key not found at {key_path}. "
+            "Set VENUE_PRIVATE_KEY_PATH to the path of your Kalshi RSA private key .pem file. "
+            "Do NOT commit this file to VCS (NFR-05)."
+        )
+
+
+def _sign_request(private_key, timestamp_ms: str, method: str, path: str) -> str:
+    """
+    Produce base64-encoded RSA-PS256 signature for a Kalshi API request.
+
+    Kalshi v2 uses RSA-PSS with SHA-256 (PS256). PKCS1v15 is rejected.
+    Signature message: timestamp_ms + METHOD_UPPER + path_without_query
+    """
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric import padding
+
+    path_no_query = path.split("?")[0]
+    message = (timestamp_ms + method.upper() + path_no_query).encode("utf-8")
+    signature = private_key.sign(
+        message,
+        padding.PSS(
+            mgf=padding.MGF1(hashes.SHA256()),
+            salt_length=padding.PSS.MAX_LENGTH,
+        ),
+        hashes.SHA256(),
+    )
+    return base64.b64encode(signature).decode("utf-8")
+
+
+def _auth_headers(key_id: str, private_key, method: str, path: str) -> dict:
+    """Build Kalshi authentication headers for a signed request."""
+    timestamp_ms = str(int(time.time() * 1000))
+    signature = _sign_request(private_key, timestamp_ms, method, path)
+    return {
+        "KALSHI-ACCESS-KEY": key_id,
+        "KALSHI-ACCESS-TIMESTAMP": timestamp_ms,
+        "KALSHI-ACCESS-SIGNATURE": signature,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -140,63 +235,80 @@ class DS02Snapshot:
 
 class KalshiMarketClient:
     """
-    Read-only Kalshi market data client for DS-02.
+    Kalshi market data + order execution client (ADR-0003 read; ADR-0008 write).
 
-    Retrieves player-points markets from api.elections.kalshi.com using
-    a Bearer token. No order submission — read-only price feed.
+    Read-only methods (no RSA key required):
+        check_connectivity(), fetch_player_points_markets(), fetch_market_detail()
 
-    Requires:
-        VENUE_API_KEY environment variable set to a valid Kalshi API key.
-        Python linked against OpenSSL 3.6+ (Homebrew Python 3.11).
+    Authenticated methods (RSA key required — set VENUE_PRIVATE_KEY_PATH):
+        get_balance(), submit_order()
 
     Usage::
 
         client = KalshiMarketClient.from_env()
         ok, snapshot = client.fetch_player_points_markets()
-        if not ok:
-            trigger_kill_switch("DS-02 price feed unavailable")
-        sga_markets = snapshot.for_player("Gilgeous-Alexander")
+        ok, balance = client.get_balance()
+        ok, order = client.submit_order(ticker, side, size_usd, mid_price)
     """
 
-    def __init__(self, api_key: str) -> None:
-        if not api_key or len(api_key) < 10:
+    def __init__(self, api_key_id: str, private_key=None) -> None:
+        if not api_key_id or len(api_key_id) < 10:
             raise ValueError("VENUE_API_KEY is missing or too short — check .env (NFR-05)")
-        self._api_key = api_key
+        self._key_id = api_key_id
+        self._private_key = private_key  # None → authenticated endpoints unavailable
         self._session = requests.Session()
         self._session.headers.update({
-            "Authorization": f"Bearer {api_key}",
             "Accept": "application/json",
+            "Content-Type": "application/json",
             "User-Agent": "prediction-market-bot/0.1.0",
         })
 
     @classmethod
     def from_env(cls) -> "KalshiMarketClient":
-        """Construct from VENUE_API_KEY environment variable (NFR-05)."""
-        key = os.environ.get("VENUE_API_KEY", "")
-        if not key:
+        """
+        Construct from environment variables (NFR-05).
+
+        Required:  VENUE_API_KEY       — Kalshi API key ID
+        Optional:  VENUE_PRIVATE_KEY_PATH — path to RSA private key .pem file
+                   (required for get_balance() and submit_order())
+        """
+        key_id = os.environ.get("VENUE_API_KEY", "")
+        if not key_id:
             raise EnvironmentError(
-                "VENUE_API_KEY not set. Load .env before importing: "
-                "python-dotenv or `export VENUE_API_KEY=...`"
+                "VENUE_API_KEY not set. Load .env before importing."
             )
-        return cls(key)
+        private_key = None
+        key_path = os.environ.get("VENUE_PRIVATE_KEY_PATH", "")
+        if key_path:
+            private_key = _load_private_key(key_path)
+        return cls(api_key_id=key_id, private_key=private_key)
+
+    def has_signing_key(self) -> bool:
+        """True if RSA private key is loaded — authenticated endpoints available."""
+        return self._private_key is not None
 
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _get(self, path: str, params: dict | None = None) -> tuple[bool, Any]:
-        """
-        GET request with retry. Returns (ok, response_data).
-        ok=False on any network/API error.
-        """
+    def _get(self, path: str, params: dict | None = None, authenticated: bool = False) -> tuple[bool, Any]:
+        """GET with retry. Returns (ok, response_data)."""
         url = f"{KALSHI_BASE_URL}{path}"
+        full_path = f"/trade-api/v2{path}"
+
         for attempt in range(MAX_RETRIES):
             try:
-                r = self._session.get(url, params=params, timeout=REQUEST_TIMEOUT_S)
+                headers = {}
+                if authenticated:
+                    if not self._private_key:
+                        return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
+                    headers = _auth_headers(self._key_id, self._private_key, "GET", full_path)
+
+                r = self._session.get(url, params=params, headers=headers, timeout=REQUEST_TIMEOUT_S)
                 if r.status_code == 200:
                     return True, r.json()
                 if r.status_code == 401:
-                    return False, {"error": "Unauthorized — check VENUE_API_KEY"}
+                    return False, {"error": "Unauthorized", "detail": r.text[:200]}
                 if r.status_code == 429:
                     time.sleep(RETRY_DELAY_S * (attempt + 1))
                     continue
@@ -215,21 +327,36 @@ class KalshiMarketClient:
                 return False, {"error": type(e).__name__, "detail": str(e)}
         return False, {"error": f"Max retries ({MAX_RETRIES}) exceeded"}
 
+    def _post(self, path: str, body: dict) -> tuple[bool, Any]:
+        """POST with RSA signing. Returns (ok, response_data)."""
+        if not self._private_key:
+            return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
+
+        url = f"{KALSHI_BASE_URL}{path}"
+        full_path = f"/trade-api/v2{path}"
+
+        try:
+            import json as _json
+            headers = _auth_headers(self._key_id, self._private_key, "POST", full_path)
+            r = self._session.post(url, json=body, headers=headers, timeout=REQUEST_TIMEOUT_S)
+            if r.status_code in (200, 201):
+                return True, r.json()
+            return False, {"error": f"HTTP {r.status_code}", "body": r.text[:500]}
+        except Exception as e:
+            return False, {"error": type(e).__name__, "detail": str(e)}
+
     @staticmethod
     def _parse_market(raw: dict) -> PlayerMarket | None:
-        """Parse a raw Kalshi market dict into a PlayerMarket. Returns None on parse failure."""
         try:
             ticker = raw.get("ticker", "")
             title = raw.get("title", "")
 
-            # Extract threshold from ticker (last segment after final "-")
             parts = ticker.split("-")
             try:
                 threshold = int(parts[-1])
             except (ValueError, IndexError):
                 return None
 
-            # Extract game date from event_ticker (format: KXNBAPTS-26MAY28GAMEID)
             event_ticker = raw.get("event_ticker", "")
             game_date = ""
             date_match = re.search(r"(\d{2})([A-Z]{3})(\d{2})", event_ticker)
@@ -242,9 +369,7 @@ class KalshiMarketClient:
                 }
                 game_date = f"20{yr}-{months.get(mon_str, '00')}-{day}"
 
-            # Extract player name and team from title ("Player Name: 25+ points")
             player_name = title.split(":")[0].strip() if ":" in title else title
-            # Team abbr from ticker segment before player ID
             team_abbr = ""
             if len(parts) >= 3:
                 team_segment = parts[2]
@@ -252,7 +377,6 @@ class KalshiMarketClient:
                 if team_match:
                     team_abbr = team_match.group(1)
 
-            # Prices — API returns *_dollars fields in detail view
             yes_ask = float(raw.get("yes_ask_dollars") or raw.get("yes_ask") or 0)
             yes_bid = float(raw.get("yes_bid_dollars") or raw.get("yes_bid") or 0)
             no_ask = float(raw.get("no_ask_dollars") or raw.get("no_ask") or 0)
@@ -265,44 +389,30 @@ class KalshiMarketClient:
             status = raw.get("status", "unknown")
 
             return PlayerMarket(
-                ticker=ticker,
-                title=title,
-                player_name=player_name,
-                team_abbr=team_abbr,
-                threshold=threshold,
-                game_date=game_date,
-                event_ticker=event_ticker,
-                yes_ask=yes_ask,
-                yes_bid=yes_bid,
-                no_ask=no_ask,
-                no_bid=no_bid,
-                mid_price=mid_price,
-                vig=vig,
-                volume=volume,
-                status=status,
+                ticker=ticker, title=title, player_name=player_name,
+                team_abbr=team_abbr, threshold=threshold, game_date=game_date,
+                event_ticker=event_ticker, yes_ask=yes_ask, yes_bid=yes_bid,
+                no_ask=no_ask, no_bid=no_bid, mid_price=mid_price, vig=vig,
+                volume=volume, status=status,
                 fetched_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
             )
         except Exception:
             return None
 
     # ------------------------------------------------------------------
-    # Public API
+    # Public API — read-only (no RSA required)
     # ------------------------------------------------------------------
 
     def check_connectivity(self) -> tuple[bool, dict]:
-        """
-        Verify API key and connectivity. Returns (ok, status_dict).
-        Call this before any other method.
-        """
+        """Verify connectivity. Does NOT require RSA key."""
         ok, data = self._get("/exchange/status")
         if not ok:
             return False, data
-        exchange_active = data.get("exchange_active", False)
-        trading_active = data.get("trading_active", False)
         return True, {
-            "exchange_active": exchange_active,
-            "trading_active": trading_active,
+            "exchange_active": data.get("exchange_active", False),
+            "trading_active": data.get("trading_active", False),
             "api_reachable": True,
+            "signing_key_loaded": self.has_signing_key(),
         }
 
     def fetch_player_points_markets(
@@ -310,19 +420,7 @@ class KalshiMarketClient:
         status: str = "open",
         limit: int = 200,
     ) -> tuple[bool, DS02Snapshot]:
-        """
-        Fetch all open NBA player-points markets (KXNBAPTS series).
-
-        Returns (ok, snapshot) where snapshot.markets contains PlayerMarket records.
-        ok=False if the API call fails — caller must check before use.
-
-        Parameters
-        ----------
-        status:
-            "open", "closed", or "settled". Default: "open".
-        limit:
-            Max markets to fetch (Kalshi max per page = 200). Default: 200.
-        """
+        """Fetch all open NBA player-points markets (KXNBAPTS series)."""
         ok, data = self._get(
             "/markets",
             params={"limit": limit, "status": status, "series_ticker": SERIES_PLAYER_POINTS},
@@ -335,7 +433,6 @@ class KalshiMarketClient:
         markets: list[PlayerMarket] = []
 
         for raw in raw_markets:
-            # Fetch detailed view for each market to get dollar prices
             ticker = raw.get("ticker", "")
             ok_detail, detail = self._get(f"/markets/{ticker}")
             if ok_detail:
@@ -349,15 +446,110 @@ class KalshiMarketClient:
         return True, DS02Snapshot(fetched_at=fetched_at, markets=markets)
 
     def fetch_market_detail(self, ticker: str) -> tuple[bool, PlayerMarket | None]:
-        """
-        Fetch a single market by ticker. Returns (ok, PlayerMarket or None).
-        """
+        """Fetch a single market by ticker."""
         ok, data = self._get(f"/markets/{ticker}")
         if not ok:
             return False, None
         market_data = data.get("market", data)
         parsed = self._parse_market(market_data)
         return parsed is not None, parsed
+
+    # ------------------------------------------------------------------
+    # Public API — authenticated (RSA key required)
+    # ------------------------------------------------------------------
+
+    def get_balance(self) -> tuple[bool, dict]:
+        """
+        Fetch portfolio balance from Kalshi. Requires RSA private key.
+
+        Returns (ok, {"balance_usd": float, "payout_usd": float}).
+        """
+        ok, data = self._get("/portfolio/balance", authenticated=True)
+        if not ok:
+            return False, data
+        balance = data.get("balance", {})
+        # Kalshi returns balance in cents
+        balance_cents = balance.get("balance", 0)
+        payout_cents = balance.get("payout", 0)
+        return True, {
+            "balance_usd": balance_cents / 100.0,
+            "payout_usd": payout_cents / 100.0,
+        }
+
+    def submit_order(
+        self,
+        ticker: str,
+        side: str,
+        size_usd: float,
+        mid_price: float,
+        client_order_id: str | None = None,
+    ) -> KalshiOrder:
+        """
+        Submit a limit order to Kalshi (ADR-0008).
+
+        Parameters
+        ----------
+        ticker:          Kalshi market ticker (e.g. KXNBAPTS-26JUN03...-20)
+        side:            "yes" or "no"
+        size_usd:        Kelly-approved bet size in USD
+        mid_price:       Market mid price (0.00–1.00) — used as limit price
+        client_order_id: Optional idempotency key; auto-generated if None
+
+        Returns KalshiOrder with ok=True on success, ok=False on any failure.
+        """
+        if not self._private_key:
+            return KalshiOrder(
+                ok=False, order_id="", client_order_id=client_order_id or "",
+                ticker=ticker, side=side, contracts=0,
+                yes_price_cents=0, actual_cost_usd=0.0,
+                status="error", error="RSA private key not loaded",
+            )
+
+        client_order_id = client_order_id or str(uuid.uuid4())
+
+        # Convert USD size + mid_price to contract count + cent price
+        if side == "yes":
+            price = mid_price
+        else:
+            price = 1.0 - mid_price
+
+        price_cents = max(1, min(99, round(price * 100)))
+        contracts = max(1, math.floor(size_usd / (price_cents / 100.0)))
+        actual_cost = round(contracts * price_cents / 100.0, 4)
+
+        body: dict[str, Any] = {
+            "ticker": ticker,
+            "client_order_id": client_order_id,
+            "type": "limit",
+            "action": "buy",
+            "side": side,
+            "count": contracts,
+            "yes_price": price_cents if side == "yes" else (100 - price_cents),
+            "no_price": price_cents if side == "no" else (100 - price_cents),
+        }
+
+        ok, data = self._post("/portfolio/orders", body)
+
+        if not ok:
+            return KalshiOrder(
+                ok=False, order_id="", client_order_id=client_order_id,
+                ticker=ticker, side=side, contracts=contracts,
+                yes_price_cents=price_cents, actual_cost_usd=actual_cost,
+                status="error", error=str(data.get("error", data)),
+            )
+
+        order_data = data.get("order", data)
+        return KalshiOrder(
+            ok=True,
+            order_id=order_data.get("order_id", ""),
+            client_order_id=client_order_id,
+            ticker=ticker,
+            side=side,
+            contracts=contracts,
+            yes_price_cents=price_cents,
+            actual_cost_usd=actual_cost,
+            status=order_data.get("status", "submitted"),
+        )
 
 
 def _utc_now() -> str:

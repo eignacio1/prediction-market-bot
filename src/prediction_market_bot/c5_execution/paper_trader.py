@@ -1,14 +1,22 @@
 """
-C5 Sub-module: Paper Trader — Simulated Order Execution (PIPE-03)
-==================================================================
+C5 Sub-module: Paper Trader — Order Execution + Local Ledger (PIPE-03)
+=======================================================================
 Component:    C5 (Execution Engine) — paper trading sub-module
 Phase active: Phase 6 (paper trading; ENV-02 only)
-Status:       IMPLEMENTED — 2026-05-29
-Gate:         BOT_ENV=paper required; no order submission API used
+Status:       UPDATED — 2026-05-31 (ADR-0008: Kalshi demo order submission added)
+Gate:         BOT_ENV=paper required
 
 Responsibility:
-  Record C4-approved forecasts as simulated paper bets, track the paper
-  portfolio (positions + P&L), and resolve settled positions via nba_api.
+  Submit C4-approved bets to Kalshi demo AND record them locally.
+  Local paper_portfolio.json is the authoritative G6 evidence ledger.
+  Kalshi demo orders are the live execution confirmation.
+
+Order submission (ADR-0008):
+  If KalshiMarketClient is provided with a loaded RSA private key, every
+  open_position() call submits a real order to Kalshi demo. The Kalshi
+  order_id and status are recorded in the position. If Kalshi submission
+  fails, the position is still recorded locally (degraded mode) and a
+  warning is logged. Local ledger is always authoritative for G6 P&L.
 
 Portfolio state:
   Persisted to logs/paper_portfolio.json after every operation.
@@ -22,10 +30,7 @@ Outcome resolution:
 
 Kill switch:
   All public methods return (bool, ...). False = C6 write failure → halt.
-
-Governance:
-  This module is active ONLY in ENV-02 (BOT_ENV=paper).
-  It has no real order submission path — it only writes to a local JSON file.
+  Kalshi submission failure does NOT trigger kill switch — degraded mode only.
 """
 
 from __future__ import annotations
@@ -36,11 +41,14 @@ import time
 import uuid
 from datetime import datetime, date, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, Optional
 
 import pandas as pd
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+
+if TYPE_CHECKING:
+    from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 
 COMPONENT = "C5-PAPER"
 
@@ -86,9 +94,11 @@ class PaperTrader:
         self,
         portfolio_path: Path,
         logger: AuditLogger,
+        kalshi_client: Optional["KalshiMarketClient"] = None,
     ) -> None:
         self._path = portfolio_path
         self._logger = logger
+        self._kalshi = kalshi_client  # None → local-only mode
         self._lock = threading.Lock()
         self._state = self._load_or_init()
 
@@ -194,7 +204,38 @@ class PaperTrader:
                 "risk_eval_id": risk_id,
                 "forecast_id": forecast_id,
                 "status": "OPEN",
+                "kalshi_order_id": None,
+                "kalshi_order_status": "local_only",
+                "kalshi_contracts": None,
             }
+
+            # Submit to Kalshi demo if client is available (ADR-0008)
+            if self._kalshi and self._kalshi.has_signing_key() and kalshi_ticker:
+                side = direction.lower()  # "yes" or "no"
+                order = self._kalshi.submit_order(
+                    ticker=kalshi_ticker,
+                    side=side,
+                    size_usd=size,
+                    mid_price=mid_price,
+                    client_order_id=pos["position_id"],
+                )
+                if order.ok:
+                    pos["kalshi_order_id"] = order.order_id
+                    pos["kalshi_order_status"] = order.status
+                    pos["kalshi_contracts"] = order.contracts
+                else:
+                    pos["kalshi_order_status"] = f"failed: {order.error}"
+                    self._logger.warning(
+                        COMPONENT, "kalshi_order_failed",
+                        payload={
+                            "position_id": pos["position_id"],
+                            "ticker": kalshi_ticker,
+                            "error": order.error,
+                            "note": "local position recorded; Kalshi order not placed",
+                        },
+                        session_id=session_id,
+                    )
+
             self._state["open_positions"].append(pos)
 
             ok_save = self._save()
@@ -209,6 +250,9 @@ class PaperTrader:
                     "kalshi_threshold": kalshi_threshold,
                     "bankroll_after": self._state["bankroll_usd"],
                     "game_date": game_date,
+                    "kalshi_order_id": pos["kalshi_order_id"],
+                    "kalshi_order_status": pos["kalshi_order_status"],
+                    "kalshi_contracts": pos["kalshi_contracts"],
                 },
                 session_id=session_id,
             )
