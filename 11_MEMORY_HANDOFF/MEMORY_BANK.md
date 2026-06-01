@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-05-31 G6-Reset + Finals Roster session (G6 counter reset 0/30; portfolio reset to $1,000; prior bets invalidated; ADR-0006 count gate deleted; SAS Finals cohort v3 added — Vassell/Castle/Sochan; feature matrix 16,618 rows; architecture clarification: paper_trader is LOCAL-ONLY, no Kalshi demo integration; KI-020 registered — RSA signing not configured; VPS commands pending Earl to run before Finals G1 Jun 3)  
+**Last reviewed:** 2026-05-31 SESSION 4 — ADR-0008 Kalshi demo order execution; RSA signing infrastructure built (kalshi_client.py rewritten, paper_trader.py updated, run_paper_trade.py updated); Kalshi auth OPEN BLOCKER: NOT_FOUND on /portfolio/balance — root cause unknown; VPS deployed HEAD dce071e; bot in local-only mode until T-111 resolves  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **ADR-0006 session complete 2026-06-01** — count gate (`max_concurrent_positions`) deleted entirely; GOVERNANCE_GAP_LOG.md created; ADR-0006 and ADR-0007 accepted; LL-010/011/012 added; 3-step session-start scan + ARE WE COMPROMISED? watchdog added to MEMORY_BANK; 548/548 tests; VPS deployed and smoke-tested (C4 APPROVED, no count gate). KI-016 RESOLVED. |
+| Last major milestone | **ADR-0008 session complete 2026-05-31** — Kalshi demo order execution infrastructure built; RSA signing (PS256/PSS) added to kalshi_client.py; PaperTrader updated for optional Kalshi submission (degraded mode on failure); run_paper_trade.py prints mode at startup; cryptography>=42.0.0 added to pyproject.toml; VPS deployed (HEAD dce071e). OPEN BLOCKER: Kalshi auth NOT_FOUND (T-111). Bot in local-only mode. |
 
 ---
 
@@ -439,17 +439,17 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅  
 **Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010)  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
-**ADRs accepted:** 6 (ADR-0001/002/003/004/006/007) | ADR-0005 pending at G6  
+**ADRs accepted:** 7 (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6  
 **Open questions:** OQ-021 (L3 amplification) | OQ-022 (nba_api backup source) — both non-blocking  
 **Active risks:** ✅ KI-016 RESOLVED 2026-06-01 — count gate deleted (ADR-0006). | **KI-017 NEW 2026-06-01** — EV validation was against 0.50 null, not Kalshi prices; EXP-017 required before G6 confidence. | **KI-018 NEW 2026-06-01** — `max_daily_loss_usd: 1000` is inactive at current bankroll; drawdown % is the only operative kill switch. | **KI-019 NEW 2026-06-01** — Polymarket `"tag": "nba"` unconfirmed; silent empty return risk at T-077 activation. | **KI-011 ESCALATED 2026-06-01** — Injury blindness generates fake alpha (largest edge signals on injured players = systematic capital drain). | **GG-004 NEW 2026-06-01** — EV benchmark gap survived all 16 experiments and all gate reviews; OQ-023 filed.  
 **Live capital:** NOT DEPLOYED — G6 gate requires 30+ resolved paper bets with positive P&L (APR-0016: revised from 50; seasonal constraint; signed 2026-05-29)  
 **Domain:** NBA basketball; Kalshi primary venue (ADR-0003)  
-**Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated; VPS commands pending, Earl to run) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
+**Paper portfolio (2026-05-31 RESET):** $1,000.00 bankroll (RESET — all prior bets invalidated) | $0.00 realized PnL | 0/30 resolved bets | G6 counter reset to 0. Clean evidence begins Finals G1 Jun 3.  
 **Reason for reset (DECISION_LOG 2026-05-31):** Prior bets placed on pre-ADR-0006 system (count-gated, architecturally incorrect). Evidence tainted; inadmissible for G6.  
-**NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix updated locally (16,618 rows, 55 players). VPS SCP pending.  
-**VPS DEPLOY COMPLETE (2026-05-31):** git HEAD = 16b27b2; feature matrix 16,619 lines confirmed on VPS; paper_portfolio.json archived as paper_portfolio.INVALIDATED_20260601.json; clean slate ready. Next cron (01:30 UTC) creates fresh $1,000 portfolio.  
-**Architecture clarification (2026-05-31):** paper_trader.py is LOCAL-ONLY — no order submission to Kalshi demo or any venue. paper_portfolio.json is authoritative G6 evidence. Kalshi demo account balance ($1,000 set by Earl) is independent; bot does not read or write Kalshi account balances. RSA signing not configured (only VENUE_API_KEY in .env; no private key file); authenticated Kalshi endpoints unavailable until RSA setup.  
-**KI-020 NEW (2026-05-31):** Kalshi authenticated endpoints (portfolio balance, order submission) require RSA request signing. Only VENUE_API_KEY exists locally — no private key. Exchange status + public market data work. Portfolio balance cannot be programmatically confirmed until RSA infra added.  
+**NBA Finals:** NYK vs SAS — G1 Jun 3 (clean slate). Cohort v3 added: Vassell (1630170), Castle (1642264), Sochan (1631110); feature matrix 16,619 rows on VPS (55 players).  
+**VPS DEPLOY COMPLETE (2026-05-31):** git HEAD = dce071e (ADR-0008); feature matrix 16,619 lines confirmed; paper_portfolio.json archived as paper_portfolio.INVALIDATED_20260601.json; clean slate ready.  
+**ADR-0008 (2026-05-31):** Kalshi demo order execution infrastructure BUILT. RSA signing (PS256/PSS) in kalshi_client.py. PaperTrader submits to Kalshi if RSA key loaded; degraded mode on failure; local ledger authoritative. Env vars: `VENUE_API_KEY=[REDACTED-GG-116-ROTATED]`, `VENUE_PRIVATE_KEY_PATH=/Users/earlignacio/.ssh/kalshi_bot.pem`.  
+**KI-020 OPEN (2026-05-31):** Kalshi /portfolio/balance returns `NOT_FOUND` with RSA signing (both PKCS1v15 and PSS tested). Bearer token with UUID also fails. Root cause unknown — possibly demo keys use session-based auth (POST /log_in → JWT), not RSA signing. T-111 registered. Bot in local-only mode (degraded mode by design — no halt). Kalshi demo order submission cannot be tested until T-111 resolves.  
 
 ---
 
@@ -506,19 +506,21 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 **T-076 ✅ COMPLETE 2026-05-29 (infrastructure)** — Strategy I / ScoringDistributionModel: `c3_forecasting/scoring_distribution.py`; `PlayerDistribution` + `ScoringDistributionModel`; method-of-moments NB fit per player; `predict_threshold_prob()` + `price_all_lines()` for any Kalshi threshold from one fit; 31 tests; `run_exp013.py` ready; **HYP-007 pending operator run** (offline — uses EXP-005 matrix).
 
+**ADR-0008 (2026-05-31):** Kalshi demo order execution infrastructure BUILT. RSA signing in kalshi_client.py. PaperTrader updated. **OPEN BLOCKER: T-111 — NOT_FOUND on /portfolio/balance.** Bot in local-only mode (degraded mode — no halt). Must resolve before Finals G1 bets have Kalshi external confirmation.
+
 See TODO_NEXT.md for session-level task tracking.
 
 ---
 
-## Compass OS Health (as of 2026-05-29)
+## Compass OS Health (as of 2026-05-31)
 
 | Metric | Status |
 |--------|--------|
 | M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | GOVERNANCE_GAP_LOG ✅ (new) | LESSONS_LEARNED ✅ | DECISION_LOG ✅ | KNOWN_ISSUES ✅ | project_prediction_market_compass.md ✅ |
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
-| M3 ADR Coverage | 6 accepted (ADR-0001/002/003/004/006/007) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
+| M3 ADR Coverage | 7 accepted (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
 | M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | KI-012 (negative P&L — no monitoring threshold) | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-091/092 registered |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | T-070 accumulating paper bets (G6 gate: **30 bets**, APR-0016) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
-| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **548/548 tests** | Bugs C/D/F/G/H+ordering+ImportError ALL FIXED | count gate deleted (ADR-0006) | **PIPE-03 OPERATIONAL** |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ (local-only; Kalshi submission wired ADR-0008 — blocked T-111) | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **548/548 tests** | ADR-0008 ACCEPTED | **PIPE-03 OPERATIONAL (local-only)** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-012 ✅ HYP-006 FALSIFIED | EXP-014 ✅ line shopping (+7.8% max EV) | EXP-015 ✅ HYP-008 FALSIFIED (T3 FADE gate only) | **EXP-016 ✅ HYP-009 CONFIRMED** (Δ Brier = -0.0010; gate < 0.012 ✅; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet |
