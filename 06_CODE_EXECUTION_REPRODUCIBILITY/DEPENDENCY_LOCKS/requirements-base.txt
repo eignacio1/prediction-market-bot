@@ -24,3 +24,7 @@ jsonlines==4.0.0
 
 # --- Secrets / Config ---
 python-dotenv==1.0.1
+
+# --- Crypto / API signing ---
+# Required for Kalshi RSA-PSS request signing (ADR-0008, T-111)
+cryptography>=42.0.0
