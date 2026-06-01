@@ -2,7 +2,7 @@
 
 **Purpose:** Document lessons from the prior iteration and any new lessons encountered during this build. Each lesson maps directly to a mitigation in the current architecture. This is a living document — new lessons are added as they are discovered.  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-05-29 (LL-008 conditional language; LL-009 pilot-before-infrastructure)  
+**Last reviewed:** 2026-06-01 (LL-010 stub survival; LL-011 architecture coherence drift; LL-012 ARE WE COMPROMISED? watchdog)  
 **Next review:** After each gate; after any incident or near-miss; at project close  
 **Staleness triggers:** New lesson discovered; mitigation found to be insufficient; gate reveals new failure mode  
 **Upstream links:** ADR-0001 (Compass OS adoption rationale), RESILIENCE_FAILURE_MODES.md  
@@ -171,6 +171,102 @@ These are the identified failure modes from the prior iteration. Each has a dire
 - Going forward: any T-0XX task that builds infrastructure for an unconfirmed hypothesis must be flagged as "contingent on EXP-YYY confirmation"
 
 **Status:** MITIGATED
+
+---
+
+### LL-010 — Stubs Set at an Early Gate Survived Undetected Through Three Subsequent Gate Clearances
+
+**Observed / What happened:** `_HARD_LIMITS["max_concurrent_positions"] = 10.0` was placed in `risk.py:94` at G4 with an explicit `# 10 concurrent open (stub)` comment and a module-level docstring note reading `MAX_CONCURRENT_POSITIONS — open position count limit (TBD at G4)`. The G4 gate review confirmed that the check *worked* — it was syntactically correct and the tests passed. It never asked whether 10 was the right number. Three subsequent gate clearances (G5, G6, G7) passed without the value being revisited. The system ran the first real game with 9/10 positions filled and one slot remaining before the count gate would have silently rejected Finals G2 bets.
+
+**Phase:** G4 (stub set 2026-05-28) → G5 → G6 → G7 readiness sprint (gap discovered 2026-05-31)
+
+**Impact:** Count gate was architecturally wrong for an 80-player, multi-band, multi-game system. Would have silently suppressed bet accumulation on every multi-game regular season night. Live gate check passed because the stub hadn't fired yet — not because it was correct.
+
+**Lesson:** A governance scan that asks "does this work?" is not the same as a governance scan that asks "is this value correct for the architecture we just built?" Code stubs with `# TBD at G4` survive gate reviews when the gate review confirms *functionality* but not *architectural coherence*. Every stub that is set as a placeholder must be registered with a named gate for its resolution — and that gate must actually resolve it, not just clear the surrounding code.
+
+**Mitigation:**
+- Session-start scan Step 2 added: `grep -rn "# stub\|# placeholder\|# TBD\|# todo" src/` — any match is a governance debt
+- GOVERNANCE_GAP_LOG.md (ADR-0007): gaps registered permanently so future sessions see this history
+- ARE WE COMPROMISED? check (MEMORY_BANK.md): question 2 asks explicitly whether any stub predates Phase 5–7
+
+**Status:** MITIGATED (ADR-0006: count gate deleted; ADR-0007: watchdog added)
+
+---
+
+### LL-011 — Architecture Built in Phases Without Coherence Checkpoints Against Phase-Zero Constraints
+
+**Observed / What happened:** The T1–T5 execution band architecture, multi-band orchestrator, 80-player cohort, dual-window cron, and VenueRouter were all built across multiple sessions in Phases 5–7. Each was correct in isolation and passed its tests. No session asked: "The risk framework (C4) was designed at G4 for a smaller system — has any component we just built exceeded the assumptions C4 was built on?" The answer, had anyone asked, was yes: `max_concurrent_positions: 10` was set when the system had 10 players and one execution band. By Phase 7 it had 80 players, five bands, two cron windows, and 15 possible games per night.
+
+**Phase:** Phase 5–7 build-out (2026-05-28 to 2026-05-31)
+
+**Impact:** The system was operationally live with a risk framework that was 6x smaller than the execution architecture it was supposed to govern. This class of failure — architecture outgrowing its constraints — is invisible to standard governance scans that look for undocumented decisions. The decision *was* documented (the stub comment was there). What was missing was a mechanism to ask whether that documented decision was still valid.
+
+**Lesson:** Incremental architecture build requires incremental coherence checkpoints. After any major Phase 5+ build, before the next gate review, ask: which Phase 0–4 decisions did we just render potentially obsolete? The cost of this question is 5 minutes. The cost of not asking is a live system running on wrong architecture.
+
+**Mitigation:**
+- ARE WE COMPROMISED? check (MEMORY_BANK.md) question 3: "Have the 3 largest builds since G4 been reviewed against G4-era hard limits?"
+- ARE WE COMPROMISED? question 4: "Has any component interface evolved since risk limits were last calibrated?"
+- Mid-session checkpoint trigger updated: any major component build now prompts a coherence check before the next task block
+
+**Status:** MITIGATED (ARE WE COMPROMISED? watchdog added to session-start protocol)
+
+---
+
+### LL-012 — Context Rot Watchdog: ARE WE COMPROMISED?
+
+**Observed / What happened:** The prior iteration failed to context rot → hallucination → contamination. The current iteration built Compass OS, ADRs, decision logs, gate reviews, session handoffs, and checkpoint protocols — all of which address the *documentation* dimension of context rot. None of them address the *architectural coherence* dimension. GG-001 through GG-003 (see GOVERNANCE_GAP_LOG.md) are proof that the documentation system was working — the stub comment was there, the `# TBD at G4` was there — but the architecture had grown past what the documented decision assumed, and nothing asked whether the document was still valid.
+
+**Phase:** Discovered 2026-06-01 during T-102 remediation discussion
+
+**Impact:** The system ran its first real game (NBA Finals G1, 2026-05-31) with a risk architecture that was incoherent with its execution architecture. The misalignment would not have been caught by any automated governance scan. It was caught by an operator asking: "Does this limit make sense given everything we've built?"
+
+**Lesson:** Governance documentation is necessary but not sufficient. What is also required is a periodic *architectural integrity* question: does the current system, as a whole, make sense? Are there values, thresholds, or interfaces that were calibrated to an earlier, smaller version of this system and were never revisited? This question cannot be automated — it requires human judgment about coherence. It can, however, be prompted structurally.
+
+**The question to ask at every session start:** ARE WE COMPROMISED?
+
+This is not a rhetorical question. It has 5 specific sub-questions (see MEMORY_BANK.md — ARE WE COMPROMISED? section). Any "no" answer is a governance gap requiring registration in GOVERNANCE_GAP_LOG.md before implementation proceeds.
+
+**The error this is designed to prevent:**
+- Building a system that passes every test but fails at runtime because a G4-era assumption no longer holds
+- Clearing gates because the code works, without asking whether the *values* are still correct
+- Completing a session feeling productive because 10 tasks were checked off, while a structural misalignment accumulates
+
+**What this is NOT:**
+- A mandate to revisit every decision at every session — that would be paralysis
+- A requirement that everything be correct before any work proceeds — the ARE WE COMPROMISED? check is a triage, not a freeze
+
+**Mitigation:**
+- ARE WE COMPROMISED? strategic integrity check added to MEMORY_BANK.md (mandatory, 5 questions, before any implementation)
+- GOVERNANCE_GAP_LOG.md created (ADR-0007) — permanent record of process failures visible to every future session
+- LL-010 and LL-011 in this file — specific past failures with their root causes, readable at session start
+
+**Status:** MITIGATED (ARE WE COMPROMISED? watchdog added; GOVERNANCE_GAP_LOG.md created)
+
+---
+
+### LL-013 — Cohort Scope Not Matched to Competition Scope
+
+**Observed / What happened:** The NBA Finals began NYK vs SAS. The EXP-005 feature matrix (the live inference data source) contained zero SAS players. Victor Wembanyama was registered in cohort.py (v2, 2026-05-29) but the feature pull was never run for v2 players — the matrix was built from the v1 50-player pull on 2026-05-28, one day earlier. Result: the bot placed paper bets exclusively on NYK players for Finals G1 with zero SAS-side coverage. The scope gap was not caught during any gate review because no gate checklist asked: "does the cohort cover all teams in the active competition?"
+
+**Phase:** Discovered 2026-05-31, Finals G1 (Jun 3) prep
+
+**Impact:** All Finals bets are structurally one-sided (NYK only). The G6 evidence being accumulated is unrepresentative — the bot cannot demonstrate edge on Finals participants from both sides. This reduces the value of paper trading evidence for the live capital decision.
+
+**Lesson:** The cohort and feature matrix must be kept in sync with the active competition bracket. When the competition scope changes (playoff round advances), the following checklist must run before the next game day:
+1. Who are the new matchup participants?
+2. Which of those players are in `cohort.py`?
+3. Which of those players have feature data in the active feature matrix?
+4. For any gap in (3): run a targeted data pull and update the matrix.
+
+This is not a model correctness issue — it is a **coverage protocol** failure. The model generalizes to unseen players; the pipeline simply never saw them.
+
+**Mitigation:**
+- Standing pre-round protocol: before each playoff round, run `python -c "check_finals_coverage.py"` (check cohort vs. bracket participants)
+- Targeted pull script (`run_add_players.py`) created 2026-05-31 for quick roster expansion
+- DECISION_LOG updated: all prior paper bets invalidated; G6 counter reset to 0/30
+- Feature matrix updated with SAS roster before Finals G1 (2026-06-03)
+
+**Status:** MITIGATED (targeted pull executed 2026-05-31; matrix updated before Finals G1)
 
 ---
 

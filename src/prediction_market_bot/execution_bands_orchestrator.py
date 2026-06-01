@@ -33,7 +33,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
+from prediction_market_bot.execution_bands import (
+    ExecutionBand,
+    get_band_config,
+    BAND_REGISTRY,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -328,3 +332,246 @@ class MultiBandOrchestrator:
                 f"kelly={neutral_kelly}"
             ),
         )
+
+
+# ---------------------------------------------------------------------------
+# Arb signal schema — separate from BandSignal (incompatible schemas)
+# ---------------------------------------------------------------------------
+#
+# BandSignal is model-edge only: directional YES/NO, single leg, p_estimate.
+# Arb strategies (C, D, E) produce multi-leg, non-directional signals with
+# net_profit_usd as the primary metric. These are routed by ArbBandOrchestrator,
+# not MultiBandOrchestrator.
+#
+# See: 02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md for full schema rationale.
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class ArbLegSignal:
+    """A single leg of a multi-leg arb opportunity signal."""
+    venue_id: str
+    market_id: str
+    direction: str      # "YES" | "NO" | "LONG" | "SHORT"
+    price: float        # ask price at detection time
+    size_usd: float     # proposed position size
+    fee_rate: float     # venue fee rate (decimal)
+
+
+@dataclass(frozen=True)
+class ArbBandSignal:
+    """
+    Arb signal from scanner strategies (C, D, E).
+
+    Incompatible with BandSignal — arb is multi-leg and non-directional.
+    net_profit_usd is the primary metric (not edge). Routed by ArbBandOrchestrator.
+
+    Fields
+    ------
+    strategy_id : str
+        "C" (complement lock), "D" (stat arb), or "E" (line shopping).
+    opportunity_id : str
+        Unique ID for deduplication (format: {strategy_id}-{market_id}-{timestamp_ms}).
+    detection_band : ExecutionBand
+        Band where this opportunity was identified (expensive computation).
+    execution_band : ExecutionBand
+        Band where this opportunity should be executed (lookup + fire).
+    legs : tuple[ArbLegSignal, ...]
+        All legs of the opportunity (1-2 for C/D; N for E routing comparison).
+    gross_profit_usd : float
+        Gross profit before fees and fill slippage.
+    net_profit_usd : float
+        Net profit after fees. Primary viability metric.
+    net_profit_pct : float
+        net_profit_usd / total_invested. Percentage return.
+    fill_probability : float
+        Estimated probability that all legs fill (0.0–1.0).
+    decision_tree_depth : int
+        Number of operations to reach execution decision. Lower = faster.
+        Must fit within execution_band compute budget.
+    detected_at: str
+        ISO timestamp when the opportunity was identified.
+    expires_at : str
+        ISO timestamp when the opportunity window closes (market reprices).
+    band_status : str
+        Inherited from BAND_REGISTRY.get(strategy_id).band_status at detection time.
+        Ensures SKELETON/BLOCKED strategies cannot accidentally execute.
+    """
+    strategy_id: str
+    opportunity_id: str
+    detection_band: ExecutionBand
+    execution_band: ExecutionBand
+    legs: tuple[ArbLegSignal, ...]
+    gross_profit_usd: float
+    net_profit_usd: float
+    net_profit_pct: float
+    fill_probability: float
+    decision_tree_depth: int
+    detected_at: str
+    expires_at: str
+    band_status: str
+
+    @property
+    def expected_value_usd(self) -> float:
+        """EV = net_profit_usd * fill_probability."""
+        return self.net_profit_usd * self.fill_probability
+
+
+@dataclass(frozen=True)
+class ArbBandDecision:
+    """
+    Routing decision for an arb opportunity.
+
+    Consumed by arb execution engines (Phase 7+). Does NOT flow through
+    C4 RiskEngine — arb sizing is governed by net_profit_usd (risk-neutral),
+    not Kelly (directional confidence).
+
+    Fields
+    ------
+    opportunity_id : str
+        Matches ArbBandSignal.opportunity_id for correlation.
+    strategy_id : str
+        "C", "D", or "E".
+    action : str
+        "PROCEED" — submit to execution engine.
+        "SKIP"    — opportunity does not meet viability threshold.
+        "REQUEUE" — opportunity is valid but execution band is not yet open;
+                    re-check at next scan cycle (Strategy C only).
+    execution_band : ExecutionBand
+        Band governing execution timing.
+    net_profit_usd : float
+        From the originating ArbBandSignal.
+    fill_probability : float
+        From the originating ArbBandSignal.
+    rationale : str
+        Human-readable explanation of the routing decision.
+    """
+    opportunity_id: str
+    strategy_id: str
+    action: str             # "PROCEED" | "SKIP" | "REQUEUE"
+    execution_band: ExecutionBand
+    net_profit_usd: float
+    fill_probability: float
+    rationale: str
+
+    @property
+    def should_proceed(self) -> bool:
+        """True when action == 'PROCEED' — ready for execution engine."""
+        return self.action == "PROCEED"
+
+
+# ---------------------------------------------------------------------------
+# Arb band orchestrator — routes arb signals to execution decisions
+# ---------------------------------------------------------------------------
+
+
+class ArbBandOrchestrator:
+    """
+    Routes arb signals (Strategy C/D/E) to execution decisions.
+
+    Separate from MultiBandOrchestrator — arb signals have incompatible schemas,
+    different routing logic, and risk-neutral sizing (net_profit_usd, not Kelly).
+
+    Viability filters applied:
+    1. band_status gate — BLOCKED strategies are rejected immediately
+    2. SKELETON gate — signals logged but not executed (paper only when activated)
+    3. Minimum net_profit_usd — below this, slippage risk exceeds profit
+    4. Minimum fill_probability — below this, EV is negative despite gross profit
+
+    Usage::
+
+        orch = ArbBandOrchestrator()
+        decision = orch.route(arb_signal)
+        if decision.should_proceed:
+            execution_engine.submit(decision)
+
+        # Batch routing (sorted by EV descending):
+        decisions = orch.batch_route(signals)
+    """
+
+    MIN_NET_PROFIT_USD: float = 0.01   # below this, slippage risk > profit
+    MIN_FILL_PROBABILITY: float = 0.70  # below this, EV < 0 despite gross profit
+
+    def route(self, signal: ArbBandSignal) -> ArbBandDecision:
+        """Route a single arb opportunity to an execution decision."""
+        spec = BAND_REGISTRY.get(signal.strategy_id)
+
+        if spec.band_status == "BLOCKED":
+            return ArbBandDecision(
+                opportunity_id=signal.opportunity_id,
+                strategy_id=signal.strategy_id,
+                action="SKIP",
+                execution_band=signal.execution_band,
+                net_profit_usd=signal.net_profit_usd,
+                fill_probability=signal.fill_probability,
+                rationale=(
+                    f"Strategy {signal.strategy_id} is BLOCKED — "
+                    f"gate: {spec.activation_gate}"
+                ),
+            )
+
+        if spec.band_status == "SKELETON":
+            return ArbBandDecision(
+                opportunity_id=signal.opportunity_id,
+                strategy_id=signal.strategy_id,
+                action="SKIP",
+                execution_band=signal.execution_band,
+                net_profit_usd=signal.net_profit_usd,
+                fill_probability=signal.fill_probability,
+                rationale=(
+                    f"Strategy {signal.strategy_id} is SKELETON — "
+                    f"opportunity logged; bets not executed until ACTIVE"
+                ),
+            )
+
+        if signal.net_profit_usd < self.MIN_NET_PROFIT_USD:
+            return ArbBandDecision(
+                opportunity_id=signal.opportunity_id,
+                strategy_id=signal.strategy_id,
+                action="SKIP",
+                execution_band=signal.execution_band,
+                net_profit_usd=signal.net_profit_usd,
+                fill_probability=signal.fill_probability,
+                rationale=(
+                    f"net_profit_usd={signal.net_profit_usd:.4f} below "
+                    f"minimum {self.MIN_NET_PROFIT_USD}"
+                ),
+            )
+
+        if signal.fill_probability < self.MIN_FILL_PROBABILITY:
+            return ArbBandDecision(
+                opportunity_id=signal.opportunity_id,
+                strategy_id=signal.strategy_id,
+                action="SKIP",
+                execution_band=signal.execution_band,
+                net_profit_usd=signal.net_profit_usd,
+                fill_probability=signal.fill_probability,
+                rationale=(
+                    f"fill_probability={signal.fill_probability:.2f} below "
+                    f"minimum {self.MIN_FILL_PROBABILITY} — EV negative"
+                ),
+            )
+
+        return ArbBandDecision(
+            opportunity_id=signal.opportunity_id,
+            strategy_id=signal.strategy_id,
+            action="PROCEED",
+            execution_band=signal.execution_band,
+            net_profit_usd=signal.net_profit_usd,
+            fill_probability=signal.fill_probability,
+            rationale=(
+                f"Strategy {signal.strategy_id}: "
+                f"net_profit=${signal.net_profit_usd:.4f}; "
+                f"fill_p={signal.fill_probability:.2f}; "
+                f"ev=${signal.expected_value_usd:.4f}; "
+                f"band={signal.execution_band.value}"
+            ),
+        )
+
+    def batch_route(self, signals: list[ArbBandSignal]) -> list[ArbBandDecision]:
+        """
+        Route a list of arb signals. Results sorted by net_profit_usd descending
+        so higher-value opportunities are presented first to the execution engine.
+        """
+        ranked = sorted(signals, key=lambda s: s.net_profit_usd, reverse=True)
+        return [self.route(s) for s in ranked]

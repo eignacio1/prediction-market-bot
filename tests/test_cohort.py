@@ -29,9 +29,9 @@ class TestCohortIntegrity:
             assert "position" in entry, f"Player {pid} missing position"
             assert "cohort_version" in entry, f"Player {pid} missing cohort_version"
 
-    def test_cohort_version_values_are_1_or_2(self):
+    def test_cohort_version_values_are_valid(self):
         for pid, entry in COHORT.items():
-            assert entry["cohort_version"] in (1, 2), \
+            assert entry["cohort_version"] in (1, 2, 3), \
                 f"Player {pid} has invalid cohort_version {entry['cohort_version']}"
 
     def test_known_player_ids_present(self):

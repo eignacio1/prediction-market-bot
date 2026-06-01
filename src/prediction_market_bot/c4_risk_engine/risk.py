@@ -30,12 +30,15 @@ Kelly sizing formula (fractional):
     f_live = f_yes × kelly_fraction        (fractional Kelly)
   Fractional Kelly (kelly_fraction): TBD at G4. Skeleton uses 0.25.
 
-Hard limits (TBD at G4 — stubs only):
-  MAX_SINGLE_EVENT_EXPOSURE   — max $ per event
-  MAX_DAILY_LOSS              — daily stop-loss
-  MAX_CONCURRENT_POSITIONS    — open position count limit
-  MAX_DRAWDOWN_PCT            — portfolio drawdown trigger
+Hard limits (ADR-0006 — pipeline + Kelly + kill switch are the risk framework):
+  MAX_SINGLE_EVENT_EXPOSURE   — max $ per event (caps Kelly output)
+  MAX_DAILY_LOSS              — daily stop-loss (KILL_SWITCH trigger)
+  MAX_DRAWDOWN_PCT            — portfolio drawdown (KILL_SWITCH trigger)
   MIN_BET_USD (10.0)          — minimum bet floor; sub-floor bets rejected
+
+  NOTE: max_concurrent_positions was deleted (ADR-0006, 2026-06-01).
+  Count is the wrong primitive. The pipeline IS the filter. Kelly handles sizing.
+  The drawdown kill switch is the backstop. See GOVERNANCE_GAP_LOG.md GG-001.
 
 Kill switch integration (NFR-03):
   If any hard limit is breached:
@@ -86,13 +89,12 @@ MIN_EDGE_TO_APPROVE: float = 0.02
 # Applies in all modes (paper and live). Change requires ADR evidence.
 MIN_BET_USD: float = 10.0
 
-# Hard limit stubs — TBD at G4 review
-# Values are placeholders; must be set in RISK_APPETITE_CONSTRAINTS.md before G5
+# Hard limits — confirmed at G4/ADR-0004; count gate deleted per ADR-0006 (2026-06-01)
+# Revise all values via new APR at G6 when live bankroll is set.
 _HARD_LIMITS: dict[str, float] = {
-    "max_single_event_exposure_usd": 500.0,    # $500 per event (stub)
-    "max_daily_loss_usd": 1000.0,               # $1,000 daily stop-loss (stub)
-    "max_concurrent_positions": 10.0,            # 10 concurrent open (stub)
-    "max_drawdown_pct": 0.20,                    # 20% portfolio drawdown (stub)
+    "max_single_event_exposure_usd": 500.0,    # $500 per event; caps Kelly output
+    "max_daily_loss_usd": 1000.0,               # KI-018: INACTIVE at paper bankroll scale — 20% drawdown fires first; recalibrate at G6
+    "max_drawdown_pct": 0.20,                   # 20% realized drawdown; KILL_SWITCH — operative kill switch at current bankroll
 }
 
 # Approval status values (IF-C4-C5)
@@ -174,7 +176,6 @@ class RiskEngine:
         ok, approval = engine.evaluate_forecast(
             forecast_record=forecast_row,
             current_daily_loss=0.0,
-            current_open_positions=0,
             session_id=session_id,
         )
         if not ok:
@@ -285,7 +286,6 @@ class RiskEngine:
         self,
         forecast_record: dict[str, Any] | pd.Series,
         current_daily_loss: float = 0.0,
-        current_open_positions: int = 0,
         current_drawdown_pct: float = 0.0,
         session_id: str | None = None,
     ) -> tuple[bool, dict[str, Any]]:
@@ -303,8 +303,6 @@ class RiskEngine:
               forecast_id (optional but strongly encouraged for traceability).
         current_daily_loss:
             Cumulative realized daily loss in USD. 0.0 = no loss today.
-        current_open_positions:
-            Number of currently open positions.
         current_drawdown_pct:
             Current portfolio drawdown as a fraction (0.0 = no drawdown, 0.2 = 20%).
         session_id:
@@ -333,7 +331,6 @@ class RiskEngine:
                 "edge": fc.get("edge"),
                 "recommended_direction": fc.get("recommended_direction"),
                 "current_daily_loss": current_daily_loss,
-                "current_open_positions": current_open_positions,
                 "current_drawdown_pct": current_drawdown_pct,
             },
             session_id=session_id,
@@ -414,29 +411,7 @@ class RiskEngine:
                 )
             checks_passed.append("drawdown_limit")
 
-            # CHECK 3 — Concurrent positions limit
-            if current_open_positions >= int(_HARD_LIMITS["max_concurrent_positions"]):
-                ok = self._log(
-                    "risk_eval_rejected",
-                    {
-                        "risk_eval_id": eval_id,
-                        "reason": "concurrent_positions_limit_reached",
-                        "current_open_positions": current_open_positions,
-                        "limit": _HARD_LIMITS["max_concurrent_positions"],
-                    },
-                    severity="WARNING",
-                    session_id=session_id,
-                    risk_eval_id=eval_id,
-                    forecast_id=forecast_id,
-                )
-                if not ok:
-                    all_ok = False
-                return all_ok, self._build_rejection(
-                    eval_id, "concurrent_positions_limit_reached", checks_passed, forecast_id
-                )
-            checks_passed.append("concurrent_positions_limit")
-
-            # CHECK 4 — Edge threshold (minimum edge to trade)
+            # CHECK 3 — Edge threshold (minimum edge to trade)
             edge = float(fc.get("edge", 0.0) or 0.0)
             if abs(edge) < MIN_EDGE_TO_APPROVE:
                 ok = self._log(
@@ -459,7 +434,7 @@ class RiskEngine:
                 )
             checks_passed.append("edge_threshold")
 
-            # CHECK 5 — Direction is actionable
+            # CHECK 4 — Direction is actionable
             direction = fc.get("recommended_direction", "PASS")
             if direction == "PASS":
                 ok = self._log(

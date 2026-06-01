@@ -53,6 +53,7 @@ if str(_SRC_ROOT) not in sys.path:
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.execution_bands import BAND_REGISTRY
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -107,6 +108,19 @@ def main() -> None:
     logger.info(COMPONENT, "pregame_run_start",
                 payload={"session_id": SESSION_ID, "game_date": GAME_DATE},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+
+    # ------------------------------------------------------------------
+    # Band registry startup validation (pre-G6 requirement)
+    # Violations are WARNINGS only — SKELETON/BLOCKED are expected states
+    # ------------------------------------------------------------------
+    band_violations = BAND_REGISTRY.validate()
+    if band_violations:
+        for v in band_violations:
+            print(f"[BAND_REGISTRY] WARNING: {v}")
+            logger.warning(COMPONENT, "band_registry_violation",
+                           payload={"violation": v}, session_id=SESSION_ID)
+    else:
+        print("[BAND_REGISTRY] OK — no violations")
 
     # ------------------------------------------------------------------
     # 1. Load serialized model
@@ -208,9 +222,7 @@ def main() -> None:
         closest = min(player_mkts, key=lambda m: abs(m.threshold - pts_mean))
 
         # Build feature vector
-        feat_cols = [c for c in feature_names if c in row.index]
-        missing   = [c for c in feature_names if c not in row.index]
-        X = np.array([[row[c] for c in feat_cols] + [np.nan]*len(missing)], dtype=float)
+        X = np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float)
         X = _impute(X, col_medians)
 
         p_est  = float(pipeline.predict_proba(X)[0, 1])

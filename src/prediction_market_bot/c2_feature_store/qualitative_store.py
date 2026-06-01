@@ -402,6 +402,12 @@ class QualitativeSignalStore:
             for col in DS01_FEATURE_NAMES:
                 if col in merged.columns:
                     merged.loc[outside_window, col] = float("nan")
+            # Nullify raw PRF integer columns for outside-window rows so that
+            # compute_prf_onehot() produces NaN weights instead of incorrect values
+            # (DS01_FEATURE_NAMES only covers prf_w* one-hots which don't exist yet)
+            for col in _DS01_PRF_RAW:
+                if col in merged.columns:
+                    merged.loc[outside_window, col] = float("nan")
 
             # Drop the temporal guard columns — they're metadata, not features
             result = merged.drop(

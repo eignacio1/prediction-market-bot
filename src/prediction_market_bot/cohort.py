@@ -128,7 +128,7 @@ COHORT: dict[int, PlayerEntry] = {
     1631100:   {"name": "Benedict Mathurin",      "team": "IND", "position": "F",   "cohort_version": 2},
 
     # -- New York Knicks --
-    1628413:   {"name": "Josh Hart",              "team": "NYK", "position": "F",   "cohort_version": 2},
+    1628404:   {"name": "Josh Hart",              "team": "NYK", "position": "F",   "cohort_version": 2},
 
     # -- Minnesota Timberwolves --
     1630167:   {"name": "Jaden McDaniels",        "team": "MIN", "position": "F",   "cohort_version": 2},
@@ -144,6 +144,9 @@ COHORT: dict[int, PlayerEntry] = {
 
     # -- San Antonio Spurs --
     1641705:   {"name": "Victor Wembanyama",      "team": "SAS", "position": "C",   "cohort_version": 2},
+    1630170:   {"name": "Devin Vassell",          "team": "SAS", "position": "G",   "cohort_version": 3},
+    1642264:   {"name": "Stephon Castle",         "team": "SAS", "position": "G",   "cohort_version": 3},
+    1631110:   {"name": "Jeremy Sochan",          "team": "SAS", "position": "F",   "cohort_version": 3},
 
     # -- New Orleans Pelicans --
     1629627:   {"name": "Zion Williamson",        "team": "NOP", "position": "F",   "cohort_version": 2},
