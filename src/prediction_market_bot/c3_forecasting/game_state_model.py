@@ -9,10 +9,14 @@ ADR refs:     ADR-0004 (base model); future Phase 8 infrastructure ADR required
               before T4/T5 activation with live capital.
 
 What this module does:
-    T4 (Bayesian update): Updates the T1 pre-game probability estimate given
-    the current game state. Uses a Poisson model of remaining scoring
-    opportunities. The T1 prior is never discarded — it is the prior;
-    game state provides the likelihood.
+    T4 (Poisson current-state model): Computes a fresh probability estimate
+    from current game state: P(total_pts >= threshold | pts_so_far,
+    time_remaining, pace). p_t1 is NOT incorporated into this calculation —
+    it serves two roles only: (1) materiality gate (|p_t4 - p_t1| >=
+    T4_MIN_DELTA_P required to act), and (2) the fire condition requires
+    p_t4 > mip + vig. Design rationale: by T4 time, current game state is
+    the dominant sufficient statistic; p_t1 is the pre-game benchmark, not
+    the Bayesian prior.
 
     T5 (Arithmetic certainty): Classifies a player-threshold market as
     NEAR_CERTAIN_YES, NEAR_CERTAIN_NO, or UNCERTAIN in the final 3 minutes
@@ -91,8 +95,8 @@ class T4Signal:
     """Updated probability estimate from T4 Bayesian inference."""
     player_id: str
     threshold: float
-    p_t1: float               # T1 pre-game prior
-    p_t4: float               # T4 updated probability
+    p_t1: float               # T1 pre-game benchmark (from C3 LR model)
+    p_t4: float               # T4 Poisson estimate (fresh from game state; not a posterior)
     delta_p: float            # p_t4 - p_t1; material if |delta_p| >= T4_MIN_DELTA_P
     pts_so_far: float
     pts_needed: float         # max(0, threshold - pts_so_far)
@@ -161,9 +165,10 @@ class GameStateModel:
     """
     T4 in-play inference engine.
 
-    Accepts a GameState snapshot and the T1 prior probability, returns
-    an updated T4Signal. The T1 prior is the starting point — game state
-    accumulates evidence on top of it via Bayesian update (Poisson likelihood).
+    Accepts a GameState snapshot and the T1 benchmark probability, returns
+    a T4Signal with a fresh Poisson estimate. p_t4 is computed entirely from
+    current game state (pts_so_far, pace, time_remaining) — p_t1 appears only
+    in delta_p and the fire condition, not in the probability computation.
 
     Compute budget: 50ms. Actual runtime: ~0.01ms (pure Python arithmetic).
     No external calls. No model artifacts loaded. Deterministic given inputs.

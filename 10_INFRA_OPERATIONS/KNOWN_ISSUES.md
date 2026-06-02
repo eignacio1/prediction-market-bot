@@ -413,6 +413,23 @@
 
 ---
 
+### KI-024 — T4 Poisson λ Uses Pre-Game Pace: `pace_pts_per_min` Is Never Updated Mid-Game
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-024 |
+| Severity | HIGH (Phase 8 pre-activation) / LOW (current skeleton) |
+| Category | Model data staleness / DS-02 data spec |
+| Description | `GameState.pace_pts_per_min` is set at T1 time from C2 feature store (rolling 10-game pace × opponent defensive rating adjustment) and never refreshed during the game. The Poisson λ = `pace_pts_per_min × time_remaining_min` is the single parameter driving all T4 and T5 probability estimates. If a player gets in foul trouble (pace drops to ~0), has a burst start (pace materially higher than pre-game estimate), or the opponent switches to a box-and-one, the model is running on a stale λ for the entire game. At T5 (final 3 minutes), a 1-minute error in effective pace estimate has a disproportionate effect: λ_remaining is small (≤3.0 at max), so pace error directly translates to P(hit threshold) error. |
+| Impact | T4 model may fire on stale edge: a player benched with foul trouble still has `pace_pts_per_min` from their clean first-quarter rate. T5 NEAR_CERTAIN verdicts in final minutes may be driven by an incorrect pace rate, producing false certainty. At live capital, this translates to misfires at T4/T5 Kelly fractions (0.05 and 0.15 respectively). |
+| Workaround | None during paper skeleton phase — T4/T5 not active. Fully invisible in current paper trading. |
+| Blocks gate | Phase 8 T4 activation (one of the three Phase 8 ADR blockers) |
+| Resolution path | DS-02 source ADR must explicitly require live rolling pace as a feed field — not just `pts_so_far`, `time_remaining_min`, and `quarter`. Minimum viable: 5-minute rolling pts/min recomputed from play-by-play. Preferred: per-possession pace updated on each scoring event. `GameState` dataclass is already structured to receive it — the fix is a data sourcing requirement on DS-02, not a code change. |
+| Registered | 2026-06-02 — identified during ARE WE COMPROMISED? review of game_state_model.py |
+| Status | OPEN — LOW severity now (skeleton); HIGH severity before Phase 8 T4 activation |
+
+---
+
 ## Resolved Issues
 
 *Populated as issues are resolved.*
