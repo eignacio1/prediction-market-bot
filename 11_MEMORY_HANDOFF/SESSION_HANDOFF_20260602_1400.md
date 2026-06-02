@@ -10,7 +10,7 @@
 - **Phase:** 6/7 ACTIVE
 - **Tests:** 695/695 passing (local + VPS)
 - **Capital:** NO live capital — paper trading only
-- **VPS:** 157.230.91.33 — cron running; G1 fires ~22:00 UTC tonight
+- **VPS:** 157.230.91.33 — cron running; G1 fires ~22:00 UTC Jun 3
 - **Paper bets:** 0/66 resolved — G6 gate (APR-0017); Finals G1 Jun 3 is first eligible game
 
 ---
@@ -51,7 +51,7 @@
 
 ## ONE THING PENDING
 
-**G1 fires tonight at ~22:00 UTC.** After the game ends (expected ~01:00–02:00 UTC Jun 4), run the resolve procedure locally:
+**G1 fires Jun 3 at ~22:00 UTC.** After the game ends (expected ~01:00–02:00 UTC Jun 4), run the resolve procedure locally:
 
 ```bash
 cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
@@ -69,7 +69,7 @@ This resolves paper bets against nba_api stats, updates paper_portfolio.json on 
 - **Bankroll:** $1,000 starting (paper_portfolio.json lives on VPS — not present locally)
 - **Open:** 0 positions (G1 hasn't fired yet)
 - **Closed/Resolved:** 0 | G6 gate: 0/66 (APR-0017)
-- **First eligible bets:** Tonight at 22:00 UTC (G1 NYK vs SAS)
+- **First eligible bets:** Jun 3 at ~22:00 UTC (G1 NYK vs SAS)
 
 ---
 
@@ -133,6 +133,6 @@ This resolves paper bets against nba_api stats, updates paper_portfolio.json on 
 ```bash
 cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 # Tell Claude: "Read 11_MEMORY_HANDOFF/MEMORY_BANK.md and SESSION_HANDOFF_20260602_1400.md, confirm 695 tests. 
-# Tonight was G1 NYK vs SAS. Run the session-start protocol then check paper_portfolio.json on VPS 
+# G1 NYK vs SAS is Jun 3. Run the session-start protocol then check paper_portfolio.json on VPS 
 # for G1 results. Run resolve procedure if game is complete."
 ```
