@@ -2,7 +2,23 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 14 — All pre-G2 tasks complete: ADR-0010 (band Kelly hierarchy, T1=0.10/T4=0.20/T5=0.25) + ADR-0011 (Phase 8 paper-scope infra) accepted; T-129 Path B Poisson CDF fix implemented in run_paper_trade.py (GG-008 RESOLVED); DS-02 ds02_nba_live.py + run_t4_inplay.py kill switch wired; paper_portfolio.json reset to $1,000 on VPS; VPS deployed (both commits pushed, confirmed). 692/692 tests. G1 cron fires ~22:00 UTC tonight with corrected architecture.
+**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED); initial_bankroll parameter added to RiskEngine; two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED: DECISION_LOG entries logged + decisions_logged: true in 7 files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed + VPS pulled. G1 cron fires ~22:00 UTC tonight.
+
+---
+
+## SESSION 2026-06-02 SESSION 15 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| ~~KI-018~~ | ~~Fix zombie daily loss limit (max_daily_loss_usd=1000.0 inactive at $1,000 bankroll)~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — `MAX_DAILY_LOSS_PCT=0.15` replaces `max_daily_loss_usd` in `risk.py`. `initial_bankroll` parameter added to `RiskEngine.__init__()`. Daily loss threshold = 15% of initial_bankroll = $150 (fires before 20% drawdown = $200). Two independent kill switches restored. ADR-0012 ACCEPTED. |
+| ~~RESERVE_MANDATE_PCT wire~~ | ~~Advisory warning in evaluate_forecast() for single bet exceeding 60% of bankroll~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — `risk_reserve_mandate_warning` log emitted (severity=WARNING) when `approved_size > bankroll * (1 - RESERVE_MANDATE_PCT=0.40)`. Warning-only at paper scale; blocking enforcement deferred to PIPE-03 batch-level check (dark period). |
+| ~~T-093~~ | ~~Extract decisions from EXECUTION_ARCHITECTURE.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-094~~ | ~~Extract decisions from MONITORING_DRIFT_PLAN.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-095~~ | ~~Extract decisions from METHODOLOGY.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-096~~ | ~~Extract decisions from VENUE_REGISTRY.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-097~~ | ~~Extract decisions from RISK_APPETITE_CONSTRAINTS.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-098~~ | ~~Extract decisions from QUALITATIVE_SIGNALS.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
+| ~~T-099~~ | ~~Extract decisions from ROADMAP_MILESTONES.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
 
 ---
 
@@ -295,13 +311,13 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| T-093 | Extract decisions from EXECUTION_ARCHITECTURE.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: 4 execution mode design, paper fill assumptions (mid-price, no slippage), idempotency key requirement, decision cycle ordering |
-| T-094 | Extract decisions from MONITORING_DRIFT_PLAN.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: L1–L4 drift ladder thresholds (Brier 0.255/0.265/0.275/0.280; win rate 54%/52%/48%), monitoring metric selection rationale |
-| T-095 | Extract decisions from METHODOLOGY.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: PRF framework methodology choices, ±0.02 edge threshold selection, strategy architecture A–H sequencing rationale |
-| T-096 | Extract decisions from VENUE_REGISTRY.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: V-001–V-005 venue prioritization order, activation roadmap sequencing, edge formula choices per venue type |
-| T-097 | Extract decisions from RISK_APPETITE_CONSTRAINTS.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: rationale for specific numerical thresholds ($500/bet, $1,000/day, 20% drawdown) attributed to this document specifically |
-| T-098 | Extract decisions from QUALITATIVE_SIGNALS.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: three-layer L1/L2/L3 amplification architecture decision, qualitative signal governance rules |
-| T-099 | Extract decisions from ROADMAP_MILESTONES.md → DECISION_LOG.md; set decisions_logged: true | DS | LOW | Unlogged: G7–G9 gate criteria and phase sequencing decisions not yet in DECISION_LOG.md (G0–G5 captured via gate APRs) |
+| ~~T-093~~ | ~~Extract decisions from EXECUTION_ARCHITECTURE.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-094~~ | ~~Extract decisions from MONITORING_DRIFT_PLAN.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-095~~ | ~~Extract decisions from METHODOLOGY.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-096~~ | ~~Extract decisions from VENUE_REGISTRY.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-097~~ | ~~Extract decisions from RISK_APPETITE_CONSTRAINTS.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-098~~ | ~~Extract decisions from QUALITATIVE_SIGNALS.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
+| ~~T-099~~ | ~~Extract decisions from ROADMAP_MILESTONES.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
 
 ---
 
