@@ -45,7 +45,7 @@ project_root = Path(__file__).resolve().parents[1]
 if str(project_root / "src") not in sys.path:
     sys.path.insert(0, str(project_root / "src"))
 
-from prediction_market_bot.c5_execution.kalshi_client import KalshiClient
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -68,8 +68,8 @@ def fetch_orderbook(client: KalshiClient, ticker: str) -> dict[str, Any] | None:
     Endpoint uses price discovery URL (always live) — unauthenticated.
     """
     try:
-        data = client._get(f"/markets/{ticker}/orderbook", authenticated=False)
-        return data
+        ok, data = client._get(f"/markets/{ticker}/orderbook")
+        return data if ok else None
     except Exception as exc:
         print(f"  ERROR fetching {ticker}: {exc}")
         return None
@@ -199,7 +199,7 @@ def main() -> None:
                         help="Max markets to query in --all mode (default: 5)")
     args = parser.parse_args()
 
-    client = KalshiClient()
+    client = KalshiMarketClient.from_env()
     results = []
     tickers_to_query: list[str] = []
 
@@ -209,12 +209,12 @@ def main() -> None:
         # Fetch active KXNBAPTS markets
         print("Fetching active KXNBAPTS markets from Kalshi...", flush=True)
         try:
-            markets = client.fetch_player_points_markets()
-            if not markets:
+            ok, snapshot = client.fetch_player_points_markets()
+            if not ok or not snapshot.markets:
                 print("No active KXNBAPTS markets found.")
                 sys.exit(0)
-            tickers_to_query = [m["ticker"] for m in markets[: args.limit]]
-            print(f"Found {len(markets)} markets. Querying {len(tickers_to_query)}.")
+            tickers_to_query = [m.ticker for m in snapshot.markets[: args.limit]]
+            print(f"Found {len(snapshot.markets)} markets. Querying {len(tickers_to_query)}.")
         except Exception as exc:
             print(f"ERROR fetching markets: {exc}")
             sys.exit(1)
