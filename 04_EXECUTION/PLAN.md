@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 13 (GG-008 registered: phantom edge on extreme thresholds; Path B Poisson CDF fix approved + T4/T5 paper prototype activation approved; band Kelly hierarchy restructuring direction set; paper portfolio reset before G2 approved; dark period reframed as MLB/NFL expansion; 692/692 tests)  
+**Last reviewed:** 2026-06-02 SESSION 14 (ADR-0010 band Kelly hierarchy accepted; ADR-0011 Phase 8 paper-scope ADR accepted; T-129 Path B Poisson CDF fix in run_paper_trade.py; DS-02 adapter + kill switch wired; portfolio reset to $1,000 on VPS; GG-008 RESOLVED; 692/692 tests)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
