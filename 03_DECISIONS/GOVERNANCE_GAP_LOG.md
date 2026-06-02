@@ -148,6 +148,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-008 — All-threshold loop uses player-level p_model; `kalshi_threshold` absent from C3 feature vector — phantom edge on extreme thresholds
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-008 |
+| Category | Architectural misspecification — model feature gap |
+| What was missed | `run_paper_trade.py` (T-115 implementation) computes `p_est` once per player from 78 player-level features. `kalshi_threshold` is NOT in the feature vector. The same `p_est` is then compared against market implied probability for EVERY Kalshi threshold listed for that player. For extreme thresholds (far from player's pts_l10_mean), the market prices them correctly via Poisson(pts_l10_mean) — e.g., KAT YES 25 ≈ 16.8¢ — but the model returns p_est ≈ 0.47–0.57 regardless of threshold, creating apparent edges of 30–50¢ that don't exist. Only positions within ±~3pt of pts_l10_mean have calibrated edge (ADR-0004 ECE=0.034 applies). All other threshold positions have phantom edge. |
+| When it should have been caught | T-115 decision (2026-06-01) — when the all-threshold loop was designed. The loop was engineered for evidence volume throughput, but the feature alignment question ("does the model output a threshold-specific probability?") was not asked before enabling multi-threshold bet sizing. |
+| Phases it survived | T-115 landed SESSION 11 (2026-06-01); survived through SESSION 13 (2026-06-02). First live evidence is Finals G1 (Jun 3, 2026) — portfolio already deployed. |
+| Why it survived | ARE WE COMPROMISED? checks hard limits, stubs, interface evolution, and threshold traceability. It does not ask: "for every loop over market objects, does the model output a signal specific to the loop variable?" Feature-variable alignment was not a protocol check item. |
+| Impact | Monte Carlo (50,000 runs, Poisson(pts_l10_mean) ground truth, Jun 3 Finals G1 portfolio of 25 positions / $911.53 staked): **expected P&L -$528 (-58%); win rate 6.4%; P50 -$634.** 24 of 25 positions have negative expected P&L under Poisson pricing. KAT YES 20 (threshold ≈ mean) is the only position with genuine positive EV (+$14). Phantom edge inflates paper stake on extreme threshold positions (e.g., KAT NO 10: $97 staked; Fox YES 25: $92 staked). G6 evidence quality is degraded while this misspecification is active. |
+| Discovery | Monte Carlo pre-Finals portfolio assessment, SESSION 13 (2026-06-02). Back-solving from Kelly inverse formula confirmed p_est is player-level only. VPS `prod_model.joblib` feature names inspected: 78 features, `kalshi_threshold` absent from all. Poisson CDF cross-check: Kalshi market prices for extreme thresholds match Poisson(pts_l10_mean) closely; model prices diverge. |
+| Resolution | T-129 registered. Two candidate fix paths (operator decision required): **(A)** Add `kalshi_threshold` (normalized) as a C3 feature → requires model retrain; blocked until T-072 (Oct 2026). **(B)** Replace `p_est` at each threshold with `Poisson_CDF(threshold, pts_l10_mean)` in the all-threshold loop — immediate fix, no retrain; architecturally correct for threshold-specific markets; edge = P(score ≥ threshold) - market_price. Path B is implementable before Finals G2 (Jun 5). T4's GameStateModel already uses this approach correctly. |
+| Status | OPEN — HIGH severity for G6 evidence quality; paper only at current scale; immediate fix available (Path B pending DS decision) |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
