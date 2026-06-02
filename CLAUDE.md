@@ -55,18 +55,6 @@ Venues are abstracted behind a `VenueAdapter` protocol. `VenueRouter` handles be
 
 When the architecture is correct, adding NFL means: new C1 data module, new C2 feature set, new C3 model trained on football data, new market type registered in `market_mapper.py`. C4 through C8 require no changes. If adding a sport requires more than this, something is architecturally wrong and should be surfaced before building.
 
-### Design throughput — do not dismiss this
-
-**This bot produces hundreds to thousands of bets per game night at full operation.** This is not aspirational — it is the design intent that has been restated across 20+ sessions and must not be lost in context transitions.
-
-Full operation = T1+T2+T3+T4 active, regular season with 10+ simultaneous games (400+ markets/night), Kalshi + Polymarket + DFS pick'em all active. The correct mental model: a quant strategy with qual enhancers, firing on every market where the model finds edge, segmented by time horizon tier. A single regular season night under **T1 alone** produces 100–300+ bets. With T2/T3 active, 300–1,000+. At full multi-sport multi-venue scale: thousands.
-
-**What this means for G6:** The 66-bet statistical floor is trivially exceeded in the first 1-2 regular season game nights. It is NOT a meaningful accumulation challenge. The BINDING G6 constraints are: (1) GG-004 resolved — EXP-017 Part B confirms positive EV vs. real Kalshi prices; (2) ≥5 game nights for slope regression quality. G6 can close within the first week of 2026-27 regular season if EXP-017 Part B is confirmed and T2/T3 are production-ready.
-
-**What the dark period is for:** Make T2/T3 production-ready, retrain the model before October 2026, and confirm EXP-017 Part B — so that G6 evidence accumulates and closes quickly once regular season begins. Not to slowly accumulate 66 bets.
-
-Any session that frames "accumulating 66 bets" as the G6 bottleneck has missed the design throughput. The bottleneck is EXP-017 Part B and T2/T3 readiness.
-
 ### The commercial validation gap
 
 **The EV claim for this system has not been validated against actual market prices.** All experiments to date measured model edge against a 0.50 null baseline — a coin flip, not an informed Kalshi market. The commercial question — does the model beat real market prices? — is answered by EXP-017, which has not yet been run. Until it is, no model working on this project should assert the commercial case is proven.
@@ -218,24 +206,6 @@ You have run the scans. You have seen the outputs. Set aside what the documents 
 **What would you tell Earl right now if you had 60 seconds and something was quietly wrong? What are you worried about that isn't in any document?**
 
 Present your top concerns. If you have none after a thorough read, state specifically what you checked and why each concern was ruled out. A non-answer is a failed check.
-
----
-
-**Q7 — Gate criteria coherence (paste output, then reason):**
-
-```bash
-grep -n "G6\|paper bet\|resolved\|APR-0016\|30 bet\|count" "00_ADMIN/APPROVALS_REGISTER.md" | head -20
-```
-
-For each active gate criterion, ask: **What broken system could produce passing evidence while actually failing?**
-
-A well-constructed gate is hard to pass when the system is broken and easy to pass when the system works. If you can describe a plausible broken system that passes the gate — the gate is measuring the wrong dimension.
-
-**The APR-0016 failure case (GG-005, 2026-05-31):** "30 resolved bets with positive P&L" is blind to: (1) calibration failure — a miscalibrated model accumulates lucky bets; (2) artificial price pollution — bets at demo seeded prices produce meaningless P&L; (3) one-night variance — 30 bets in one lucky Finals night is noise, not signal; (4) execution bugs — a pipeline with duplicate-bet bugs still passes on a good variance run. Count is a proxy. Proxies fail.
-
-**Rule:** Q1–Q5 check the execution system. Q7 checks the governance system. Both must pass. Any gate criterion that fails the broken-system test → register in GOVERNANCE_GAP_LOG.md.
-
-This check exists because APR-0016 survived undetected from 2026-05-29 to 2026-05-31 despite Q1–Q6. The human operator caught it. The protocol did not. Q7 closes that gap. Do not skip it.
 
 ---
 

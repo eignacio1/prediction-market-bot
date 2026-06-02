@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-01 SESSION 10 — Multi-arm architecture Layer 2 built: ADR-0009 accepted (shadow model policy); ShadowForecaster (C3) + C7 shadow Brier tracking + record_shadow_outcome() + T-119 version hash guard + PIPE-02 integration ALL COMPLETE. 612/612 tests pass. Shadow model artifact not yet trained — infrastructure ready, dark period action. VPS deploy required before Finals G1 Jun 3.  
+**Last reviewed:** 2026-06-01 SESSION 12 — T4/T5 dark-period infrastructure built: game_state_model.py (Poisson Bayesian, T4+T5, 33 tests), staged_order_store.py (SQLite pre-staging handoff, 31 tests), run_t4_inplay.py PIPE-07 skeleton (16 tests). 692/692 tests (+80). scripts/resolve_procedure.sh (T-109 automation) + scripts/query_orderbook_depth.py (T-127 automation). scipy/sklearn upgraded (1.12→1.17.1 / 1.4→1.8, numpy 2.x compatibility). Phase 8 blocked on 3 operator ADRs: DS-02 source, kill switch redesign (NFR-03 60s→<5s), Phase 8 infra ADR.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-01 SESSION 10** — ADR-0009 ACCEPTED: shadow model policy. ShadowForecaster (C3) + C7 shadow Brier tracking + T-119 version guard + PIPE-02 integration COMPLETE. Multi-arm architecture Layer 2 (shadow model warm standby) operational. 612/612 tests. VPS deploy required before Jun 3. |
+| Last major milestone | **2026-06-01 SESSION 12** — Dark-period T4/T5 infrastructure COMPLETE: `game_state_model.py` (Poisson Bayesian T4 engine + T5 late-game arithmetic, pure Python stdlib, 33 tests), `staged_order_store.py` (SQLite append-only WAL pre-staging handoff, 31 tests), `run_t4_inplay.py` PIPE-07 skeleton (unified T4 decision tree: kill switch → expire_stale → pre-staged → Bayesian → T5 → NO_ACTION, 16 tests). 692/692 tests local (+80). scripts: `resolve_procedure.sh` (T-109 automation) + `query_orderbook_depth.py` (T-127 automation). scipy 1.12→1.17.1 / sklearn 1.4→1.8 upgraded for numpy 2.x. 4 strategic decisions logged: pre-staging principle, T4_MIN_DELTA_P=0.08, Poisson CDF stdlib, Phase 7/8/9 iteration sequencing. |
 
 ---
 
@@ -456,8 +456,8 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **G0–G5 gates:** ✅ ALL COMPLETE  
 **All modules:** COMPLETE (11/11; 74 artifacts + all Phase 1–7 additions)  
 **FEATURE_VERSION:** 1.2.0 (78 features: 31 quant + 47 qual) — 1.3.0 infrastructure built (F-039/040) but FALSIFIED by EXP-012; version stays 1.2.0  
-**Tests:** 581/581 passing (2 concurrent-position tests removed per ADR-0006)  
-**Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅  
+**Tests:** 692/692 passing locally (+80 SESSION 12; VPS at 612/612 — not yet pushed)
+**Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | **ShadowForecaster ✅** | **GameStateModel ✅ (SKELETON)** | **StagedOrderStore ✅ (SKELETON)** | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **PIPE-07 skeleton ✅ (run_t4_inplay.py, BLOCKED Phase 8+)**  
 **Experiments run:** EXP-001–016 ✅ ALL COMPLETE | EXP-012 HYP-006 FALSIFIED | EXP-013 HYP-007 FALSIFIED | EXP-014 line shopping +7.8% | EXP-015 HYP-008 FALSIFIED | EXP-016 HYP-009 CONFIRMED (Δ Brier=-0.0010) | **EXP-017 Part B LIVE (T-105) — n=2 unique markets, EV=+$0.01/bet, DIRECTIONAL_POSITIVE; GG-004 OPEN (floor ≥66)**  
 **Snapshots registered:** SNAP-001 (DS-01) | SNAP-002 (EXP-001 raw) | SNAP-003 (backtest pre-reg) | SNAP-2026-05-28-001/002 (50-player/refreshed)  
 **ADRs accepted:** 9 (ADR-0001/002/003/004/006/007/008/009) | ADR-0005 pending at G6 | ADR-0010 required for shadow promotion  
@@ -530,11 +530,13 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 **ADR-0008 FULLY OPERATIONAL (2026-05-31):** Kalshi RSA-PSS signing working. _kalshi_base_url() routes BOT_ENV=paper → demo URL, BOT_ENV=live → live URL. Order submission proven. KI-020 RESOLVED.
 
-**NEXT PRIORITIES (T-110 / T-109 / VPS deploy):**
-1. **VPS deploy (IMMEDIATE):** `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` — 4+ commits behind. Must run before Finals G1 Jun 3.
-2. **G6 evidence (T-110):** Monitor VPS cron after Finals G1 Jun 3 (22:00 UTC). Check `logs/paper_portfolio.json`. Throughput: 17-40+ bets/game night. APR-0017 floor: ≥66 bets across ≥5 game nights.
-3. **Resolution (T-109 standing procedure):** After each game: (1) `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`, (2) `PYTHONPATH=src python3 src/prediction_market_bot/fetch_kalshi_prices.py --portfolio`, (3) re-run EXP-017 when ≥66 markets (GG-004).
-~~4. **EXP-017 Part B (T-105) ✅ COMPLETE** — Part B live mode built and run; n=2 DIRECTIONAL_POSITIVE. Accumulate to ≥66.~~
+**NEXT PRIORITIES (SESSION 13+):**
+1. **VPS deploy (IMMEDIATE):** `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` — SESSION 12 code not yet pushed. Must push + VPS pull before Finals G2 (Jun 5). SESSION 12 adds ~80 tests + automation scripts; no VPS-breaking changes.
+2. **T-109 (each Finals game):** `bash scripts/resolve_procedure.sh` locally after each game. Resolves portfolio, syncs pregame logs, accumulates EXP-017 data. G6 counter: 0/66 resolved.
+3. **T-127 (before Jun 22):** `python3 scripts/query_orderbook_depth.py` to measure KXNBAPTS orderbook depth for G6 ADR-0005. This window closes Jun 22.
+4. **Phase 8 ADRs (Earl's decisions, dark period):** Three operator architectural decisions required to unblock T4 live execution: (a) DS-02 source ADR; (b) kill switch redesign ADR (NFR-03 60s→<5s); (c) Phase 8 infra ADR. Each requires Earl to review trade-offs and sign.
+5. **G6 evidence (T-110):** ≥66 resolved bets + ≥5 game nights (APR-0017). EXP-017 Part B CONFIRMED (GG-004) is Tier 0 precondition. Both constraints likely met in first week of 2026-27 regular season (October).
+~~6. **EXP-017 Part B (T-105) ✅ COMPLETE** — Part B live mode built and run; n=2 DIRECTIONAL_POSITIVE. Accumulate to ≥66.~~
 
 See TODO_NEXT.md for session-level task tracking.
 
@@ -550,5 +552,5 @@ See TODO_NEXT.md for session-level task tracking.
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
 | M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | ✅ KI-012 RESOLVED 2026-06-01 — T-091 complete; `check_portfolio_pnl()` wired PIPE-03 + PIPE-03R | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-092 registered |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | G6 gate: **APR-0017** (≥66 bets + ≥5 nights); T-110 accumulating (0/66) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
-| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | **ShadowForecaster ✅ (ADR-0009)** | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | fetch_kalshi_prices.py ✅ | run_exp017.py --from-pregame ✅ | **612/612 tests** | ADR-0009 ACCEPTED | **PIPE-03 OPERATIONAL** |
+| M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | **ShadowForecaster ✅ (ADR-0009)** | **GameStateModel ✅ SKELETON (Poisson T4+T5)** | **StagedOrderStore ✅ SKELETON (SQLite pre-staging)** | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **PIPE-07 skeleton ✅ (run_t4_inplay.py, BLOCKED Phase 8+)** | fetch_kalshi_prices.py ✅ | run_exp017.py --from-pregame ✅ | scripts/resolve_procedure.sh ✅ | scripts/query_orderbook_depth.py ✅ | **692/692 tests local (VPS 612/612 — push pending)** | ADR-0009 ACCEPTED | **PIPE-03 OPERATIONAL** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-017 Part B LIVE (n=2, DIRECTIONAL_POSITIVE, GG-004 OPEN) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet vs null | **EXP-017 Part B CONFIRMED requires ≥66 resolved markets** — re-run after each Finals game via T-109 standing procedure |

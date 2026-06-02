@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-01 SESSION 9 (GG-006 SUBSTANTIALLY RESOLVED — Kalshi rulebooks read; position accountability framework understood; T-117 registered for contract Terms verification before G6; no code changes; 589/589 tests unchanged)  
+**Last reviewed:** 2026-06-01 SESSION 12 (T4/T5 dark-period infrastructure built: game_state_model, staged_order_store, PIPE-07 skeleton, automation scripts; scipy/sklearn upgraded; 692/692 tests; Phase 8 blocked on 3 operator ADRs: DS-02 + kill switch redesign + Phase 8 infra)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
