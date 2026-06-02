@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-01 SESSION 12 (T4/T5 dark-period infrastructure built: game_state_model, staged_order_store, PIPE-07 skeleton, automation scripts; scipy/sklearn upgraded; 692/692 tests; Phase 8 blocked on 3 operator ADRs: DS-02 + kill switch redesign + Phase 8 infra)  
+**Last reviewed:** 2026-06-02 SESSION 13 (GG-008 registered: phantom edge on extreme thresholds; Path B Poisson CDF fix approved + T4/T5 paper prototype activation approved; band Kelly hierarchy restructuring direction set; paper portfolio reset before G2 approved; dark period reframed as MLB/NFL expansion; 692/692 tests)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  

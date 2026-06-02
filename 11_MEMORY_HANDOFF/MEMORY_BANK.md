@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-01 SESSION 12 — T4/T5 dark-period infrastructure built: game_state_model.py (Poisson Bayesian, T4+T5, 33 tests), staged_order_store.py (SQLite pre-staging handoff, 31 tests), run_t4_inplay.py PIPE-07 skeleton (16 tests). 692/692 tests (+80). scripts/resolve_procedure.sh (T-109 automation) + scripts/query_orderbook_depth.py (T-127 automation). scipy/sklearn upgraded (1.12→1.17.1 / 1.4→1.8, numpy 2.x compatibility). Phase 8 blocked on 3 operator ADRs: DS-02 source, kill switch redesign (NFR-03 60s→<5s), Phase 8 infra ADR.  
+**Last reviewed:** 2026-06-02 SESSION 13 — GG-008 registered (all-threshold loop model misspecification: kalshi_threshold absent from 78-feature vector, phantom edge on extreme thresholds). Monte Carlo: -$528 expected P&L on Finals G1 $911.53 portfolio. Path B (Poisson CDF per threshold) approved, T4/T5 paper prototype activation approved (target Finals G2 Jun 5). Band Kelly hierarchy restructuring direction set (T1=0.10, T4=0.20, T5=0.25 — ADR required). Paper portfolio reset to $1,000 before G2 approved. Dark period reframed: MLB/NFL C1/C2/C3 buildout (not NBA pause). KI-024 (stale pace) and GG-007 (T4/T5 skeleton thresholds) registered. T-128/EXP-018/EXP-019/T-129 queued.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,8 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-01 SESSION 12** — Dark-period T4/T5 infrastructure COMPLETE: `game_state_model.py` (Poisson Bayesian T4 engine + T5 late-game arithmetic, pure Python stdlib, 33 tests), `staged_order_store.py` (SQLite append-only WAL pre-staging handoff, 31 tests), `run_t4_inplay.py` PIPE-07 skeleton (unified T4 decision tree: kill switch → expire_stale → pre-staged → Bayesian → T5 → NO_ACTION, 16 tests). 692/692 tests local (+80). scripts: `resolve_procedure.sh` (T-109 automation) + `query_orderbook_depth.py` (T-127 automation). scipy 1.12→1.17.1 / sklearn 1.4→1.8 upgraded for numpy 2.x. 4 strategic decisions logged: pre-staging principle, T4_MIN_DELTA_P=0.08, Poisson CDF stdlib, Phase 7/8/9 iteration sequencing. |
+| Last major milestone | **2026-06-02 SESSION 13**  — GG-008 (phantom edge on extreme thresholds) registered; Path B Poisson CDF fix approved; T4/T5 paper prototype activation approved (target G2 Jun 5); band Kelly hierarchy restructured direction (T1=0.10→T4=0.20→T5=0.25, ADR required); paper portfolio reset before G2 confirmed; dark period reframed as MLB/NFL expansion (not pause). 5 strategic decisions logged to DECISION_LOG. |
+| Previous major milestone | **2026-06-01 SESSION 12** — Dark-period T4/T5 infrastructure COMPLETE: `game_state_model.py` (Poisson Bayesian T4 engine + T5 late-game arithmetic, pure Python stdlib, 33 tests), `staged_order_store.py` (SQLite append-only WAL pre-staging handoff, 31 tests), `run_t4_inplay.py` PIPE-07 skeleton (unified T4 decision tree: kill switch → expire_stale → pre-staged → Bayesian → T5 → NO_ACTION, 16 tests). 692/692 tests local (+80). scripts: `resolve_procedure.sh` (T-109 automation) + `query_orderbook_depth.py` (T-127 automation). scipy 1.12→1.17.1 / sklearn 1.4→1.8 upgraded for numpy 2.x. 4 strategic decisions logged: pre-staging principle, T4_MIN_DELTA_P=0.08, Poisson CDF stdlib, Phase 7/8/9 iteration sequencing. |
 
 ---
 
@@ -450,7 +451,7 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 ---
 
-## Current State Snapshot (2026-06-01)
+## Current State Snapshot (2026-06-02 SESSION 13)
 
 **Phase:** 6/7 ACTIVE — G0–G5 ✅ ALL CLOSED; Phase 6 paper trading live; Phase 7 infrastructure built  
 **G0–G5 gates:** ✅ ALL COMPLETE  
@@ -530,13 +531,15 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 **ADR-0008 FULLY OPERATIONAL (2026-05-31):** Kalshi RSA-PSS signing working. _kalshi_base_url() routes BOT_ENV=paper → demo URL, BOT_ENV=live → live URL. Order submission proven. KI-020 RESOLVED.
 
-**NEXT PRIORITIES (SESSION 13+):**
-1. **VPS deploy (IMMEDIATE):** `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` — SESSION 12 code not yet pushed. Must push + VPS pull before Finals G2 (Jun 5). SESSION 12 adds ~80 tests + automation scripts; no VPS-breaking changes.
-2. **T-109 (each Finals game):** `bash scripts/resolve_procedure.sh` locally after each game. Resolves portfolio, syncs pregame logs, accumulates EXP-017 data. G6 counter: 0/66 resolved.
-3. **T-127 (before Jun 22):** `python3 scripts/query_orderbook_depth.py` to measure KXNBAPTS orderbook depth for G6 ADR-0005. This window closes Jun 22.
-4. **Phase 8 ADRs (Earl's decisions, dark period):** Three operator architectural decisions required to unblock T4 live execution: (a) DS-02 source ADR; (b) kill switch redesign ADR (NFR-03 60s→<5s); (c) Phase 8 infra ADR. Each requires Earl to review trade-offs and sign.
-5. **G6 evidence (T-110):** ≥66 resolved bets + ≥5 game nights (APR-0017). EXP-017 Part B CONFIRMED (GG-004) is Tier 0 precondition. Both constraints likely met in first week of 2026-27 regular season (October).
-~~6. **EXP-017 Part B (T-105) ✅ COMPLETE** — Part B live mode built and run; n=2 DIRECTIONAL_POSITIVE. Accumulate to ≥66.~~
+**NEXT PRIORITIES (SESSION 14 — IMMEDIATE — before Finals G2 Jun 5):**
+1. **T-129 (URGENT — implement before Jun 5 G2 cron):** Path B Poisson CDF fix in `run_paper_trade.py`. Replace `p_est` at each threshold with `Poisson_CDF(threshold, pts_l10_mean, direction)`. Edge formula: `edge = poisson_cdf(threshold, pts_l10_mean, direction) - mid - half`. Stdlib math.exp implementation (same as game_state_model.py). No retrain required.
+2. **Band Kelly ADR (before G2 cron):** T1=0.10, T4=0.20, T5=0.25. Capital reserve mandate: ≥40% bankroll floor before T1 fires. New ADR required — write and accept before implementation.
+3. **Paper portfolio reset to $1,000 before G2:** paper_portfolio.json reset script or manual overwrite. G1 positions are tainted (phantom-edge architecture). Clean slate.
+4. **T4/T5 paper prototype activation (target G2):** (a) DS-02 minimal adapter — NBA Stats API play-by-play polling, ~30-60s lag, paper prototype only; (b) kill switch in-memory file flag; (c) Phase 8 paper-scope infra ADR. Document explicitly as prototype (not production SLA).
+5. **VPS deploy:** Push SESSION 13 commits + pull on VPS before G2 cron.
+6. **T-109 (each Finals game):** `bash scripts/resolve_procedure.sh` locally after each game.
+~~7. **Phase 8 ADRs (production scope) — dark period.** Production DS-02 (real-time stream), production kill switch redesign. Not blocking paper prototype.~~
+~~8. **EXP-017 Part B (T-105) ✅ COMPLETE** — Part B live mode built and run; n=2 DIRECTIONAL_POSITIVE. Accumulate to ≥66.~~
 
 See TODO_NEXT.md for session-level task tracking.
 
@@ -548,9 +551,9 @@ See TODO_NEXT.md for session-level task tracking.
 |--------|--------|
 | M1 Artifact Freshness | MEMORY_BANK ✅ | TODO_NEXT ✅ | GOVERNANCE_GAP_LOG ✅ | LESSONS_LEARNED ✅ | DECISION_LOG ✅ | KNOWN_ISSUES ✅ | SESSION_HANDOFF ✅ |
 | M2 Open Question Count | OQ-021 open (L3 amplification needs non-linear model or more data) | OQ-022 open (nba_api backup source — register before G6) | both non-blocking |
-| M3 ADR Coverage | 7 accepted (ADR-0001/002/003/004/006/007/008) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | ADRs needed for DFS pick'em venues (Phase 8+) |
+| M3 ADR Coverage | 9 accepted (ADR-0001/002/003/004/006/007/008/009) | ADR-0005 pending at G6 | APR-0010 pending (complement lock execution gate) | **Band Kelly hierarchy ADR PENDING (T1=0.10/T4=0.20/T5=0.25 — write before G2)** | Phase 8 paper-scope infra ADR PENDING | ADR-0010 required for shadow promotion |
 | M4 Assumption Validation | All 9 hypotheses resolved (HYP-001–009) | HYP-009 ✅ CONFIRMED 2026-05-29 (EXP-016) | T3 momentum signal untested (paper data accumulating) | ASM-011 VALIDATED |
-| M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | ✅ KI-012 RESOLVED 2026-06-01 — T-091 complete; `check_portfolio_pnl()` wired PIPE-03 + PIPE-03R | KI-013 (model staleness at 2026-27 open) | KI-014 (idempotency LOG_DIR fixed; 3× legacy positions remain in portfolio — will close naturally) | KI-015 (drawdown fix DEPLOYED — uses realized P&L; 0.00% current) | KI-008/009 RESOLVED | T-092 registered |
+| M5 Risk Register Currency | KI-010 (inter-series gap) | KI-011 (player injury) | ✅ KI-012 RESOLVED 2026-06-01 | KI-013 (model staleness at 2026-27 open) | **KI-024 OPEN (stale pace_pts_per_min in T4/T5 — DS-02 ADR must require live pace)** | **GG-007 OPEN (T4/T5 skeleton threshold constants uncalibrated — EXP-018/019 required)** | **GG-008 OPEN HIGH — phantom edge on extreme thresholds (Path B approved, implement next session)** |
 | M6 Gate Progress | **G0–G5 ✅ ALL CLOSED** | Phase 6/7 ACTIVE | G6 gate: **APR-0017** (≥66 bets + ≥5 nights); T-110 accumulating (0/66) | T-077 operator-gated (Polymarket API key) | T-081 DS sign-off pending (APR-0010) | **NBA dark period ~2026-06-22 to 2026-10**: use for pre-season build — Polymarket activation, DS-04 qual source, live capital ADR-0005 draft |
 | M7 Component Implementation | C1–C8 ✅ | PaperTrader ✅ | VenueAdapter/Router ✅ | PolymarketVenueAdapter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | **ShadowForecaster ✅ (ADR-0009)** | **GameStateModel ✅ SKELETON (Poisson T4+T5)** | **StagedOrderStore ✅ SKELETON (SQLite pre-staging)** | cohort.py ✅ | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **PIPE-07 skeleton ✅ (run_t4_inplay.py, BLOCKED Phase 8+)** | fetch_kalshi_prices.py ✅ | run_exp017.py --from-pregame ✅ | scripts/resolve_procedure.sh ✅ | scripts/query_orderbook_depth.py ✅ | **692/692 tests local (VPS 612/612 — push pending)** | ADR-0009 ACCEPTED | **PIPE-03 OPERATIONAL** |
 | M8 Experiment Progress | EXP-001–016 ✅ ALL COMPLETE | EXP-017 Part B LIVE (n=2, DIRECTIONAL_POSITIVE, GG-004 OPEN) | best model LR L1+L2 Brier 0.2461 EV +$0.0958/bet vs null | **EXP-017 Part B CONFIRMED requires ≥66 resolved markets** — re-run after each Finals game via T-109 standing procedure |
