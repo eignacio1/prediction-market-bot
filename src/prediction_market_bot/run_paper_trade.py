@@ -228,10 +228,10 @@ def main() -> None:
     # ------------------------------------------------------------------
     _state   = trader.get_state()
     bankroll = _state["bankroll_usd"]
-    engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
-                          kelly_fraction=T1_KELLY)
-    daily_loss = _state.get("current_daily_loss", 0.0)
     _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
+    engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
+                          kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll)
+    daily_loss = _state.get("current_daily_loss", 0.0)
     # Bug H fix: drawdown is realized losses only — open stakes are not losses
     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
@@ -368,7 +368,7 @@ def main() -> None:
                     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
                     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
                     engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
-                                       kelly_fraction=T1_KELLY)
+                                       kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll)
                     daily_loss += size if edge < 0 else 0
             else:
                 reason = approval.get("rejection_reason", "unknown")

@@ -84,6 +84,11 @@ DEFAULT_KELLY_FRACTION: float = 0.25
 # Minimum edge required to enter a position (even after Kelly sizing)
 MIN_EDGE_TO_APPROVE: float = 0.02
 
+# Maximum daily loss as a fraction of initial bankroll (ADR-0012).
+# 15% fires before the 20% drawdown kill switch — restoring two independent kill switches.
+# Recalibrate at G6 when live bankroll is set.
+MAX_DAILY_LOSS_PCT: float = 0.15
+
 # Minimum position size in USD. Bets sized below this floor carry negligible
 # P&L signal and inflate position counts without contributing evidence.
 # Applies in all modes (paper and live). Change requires ADR evidence.
@@ -97,8 +102,8 @@ RESERVE_MANDATE_PCT: float = 0.40
 # Revise all values via new APR at G6 when live bankroll is set.
 _HARD_LIMITS: dict[str, float] = {
     "max_single_event_exposure_usd": 500.0,    # $500 per event; caps Kelly output
-    "max_daily_loss_usd": 1000.0,               # KI-018: INACTIVE at paper bankroll scale — 20% drawdown fires first; recalibrate at G6
-    "max_drawdown_pct": 0.20,                   # 20% realized drawdown; KILL_SWITCH — operative kill switch at current bankroll
+    "max_drawdown_pct": 0.20,                   # 20% realized drawdown; KILL_SWITCH
+    # max_daily_loss_usd removed — replaced by MAX_DAILY_LOSS_PCT (ADR-0012)
 }
 
 # Approval status values (IF-C4-C5)
@@ -202,6 +207,7 @@ class RiskEngine:
         snapshot_id: str,
         bankroll: float = 10000.0,
         kelly_fraction: float = DEFAULT_KELLY_FRACTION,
+        initial_bankroll: float | None = None,
     ) -> None:
         """
         Parameters
@@ -216,11 +222,18 @@ class RiskEngine:
         kelly_fraction:
             Fraction of full Kelly to bet (default 0.25 — quarter Kelly).
             Confirmed at G4; do not change without ADR evidence.
+        initial_bankroll:
+            Session-start bankroll used to anchor MAX_DAILY_LOSS_PCT threshold
+            (ADR-0012). If None, defaults to bankroll. Callers that refresh the
+            engine mid-session should pass the original session-start value here
+            so the threshold remains stable across the run.
         """
         self._logger = logger
         self._snapshot_id = snapshot_id
         self._bankroll = bankroll
         self._kelly_fraction = kelly_fraction
+        self._initial_bankroll = initial_bankroll if initial_bankroll is not None else bankroll
+        self._daily_loss_threshold = self._initial_bankroll * MAX_DAILY_LOSS_PCT
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -371,15 +384,17 @@ class RiskEngine:
             # Hard limit checks (evaluated in order; first failure → reject/kill)
             # ------------------------------------------------------------------
 
-            # CHECK 1 — Daily loss limit
-            if current_daily_loss >= _HARD_LIMITS["max_daily_loss_usd"]:
+            # CHECK 1 — Daily loss limit (ADR-0012: percentage-based, anchored to initial_bankroll)
+            if current_daily_loss >= self._daily_loss_threshold:
                 ok = self._log(
                     "risk_eval_kill_switch",
                     {
                         "risk_eval_id": eval_id,
                         "trigger": "daily_loss_limit_breached",
                         "current_daily_loss": current_daily_loss,
-                        "limit": _HARD_LIMITS["max_daily_loss_usd"],
+                        "limit_usd": self._daily_loss_threshold,
+                        "limit_pct": MAX_DAILY_LOSS_PCT,
+                        "initial_bankroll": self._initial_bankroll,
                     },
                     severity="CRITICAL",
                     session_id=session_id,
@@ -528,6 +543,27 @@ class RiskEngine:
                     eval_id, "min_bet_floor", checks_passed, forecast_id
                 )
             checks_passed.append("min_bet_floor")
+
+            # Reserve mandate advisory warning (ADR-0010) — warning-only at paper scale;
+            # blocking enforcement belongs in PIPE-03 batch-level check (dark period).
+            # Fires when a single bet would exceed the uncommitted capital allowance.
+            if approved_size > self._bankroll * (1.0 - RESERVE_MANDATE_PCT):
+                ok = self._log(
+                    "risk_reserve_mandate_warning",
+                    {
+                        "risk_eval_id": eval_id,
+                        "approved_size": approved_size,
+                        "bankroll": self._bankroll,
+                        "reserve_mandate_pct": RESERVE_MANDATE_PCT,
+                        "uncommitted_floor_usd": self._bankroll * RESERVE_MANDATE_PCT,
+                    },
+                    severity="WARNING",
+                    session_id=session_id,
+                    risk_eval_id=eval_id,
+                    forecast_id=forecast_id,
+                )
+                if not ok:
+                    all_ok = False
 
             # ------------------------------------------------------------------
             # APPROVED

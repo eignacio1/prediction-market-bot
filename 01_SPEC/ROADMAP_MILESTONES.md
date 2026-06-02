@@ -9,7 +9,7 @@
 **Downstream links:** 04_EXECUTION/PLAN.md, 04_EXECUTION/TODO_NEXT.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0003, ADR-0004 (ACCEPTED — APR-0012)  
 **Confidence:** 9/10 — Phases 0–4 complete; Phase 5 entry; Phases 6+ are design targets
-**Decisions logged:** false — G7–G9 gate criteria and phase sequencing decisions not yet in DECISION_LOG.md (G0–G5 captured via gate APRs). See T-099 in TODO_NEXT.md.
+**Decisions logged:** true — T-099 logged 2026-06-02: G7 (multi-sport gate), G8 (multi-venue/V-002 activation gate), G9 (scaled live operation gate), phase sequencing rationale. G0–G5 captured via APRs. See DECISION_LOG.md 2026-06-02.
 
 ---
 

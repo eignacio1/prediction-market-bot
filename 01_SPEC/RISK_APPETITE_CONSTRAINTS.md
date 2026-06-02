@@ -9,7 +9,7 @@
 **Downstream links:** REQUIREMENTS.md (FR-05, FR-09), 02_ARCHITECTURE_DESIGN/RESILIENCE_FAILURE_MODES.md, 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_kill-switch.md  
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 7/10 — Structure is authoritative; specific numerical thresholds require venue confirmation and G4 backtesting evidence to finalize
-**Decisions logged:** false — Specific numerical thresholds ($500/bet cap, $1,000/day, 20% drawdown) are now confirmed via G4/ADR-0004 but the rationale for those specific values not yet extracted to DECISION_LOG.md (captured broadly in retroactive batch but not attributed to this document). See T-097 in TODO_NEXT.md.  
+**Decisions logged:** true — T-097 logged 2026-06-02: $500/bet cap + 20% drawdown confirmed via G4/ADR-0004 (retroactive 2026-05-29 entry); $1,000/day limit superseded by ADR-0012 (MAX_DAILY_LOSS_PCT=0.15). See DECISION_LOG.md 2026-06-02.
 
 ---
 
