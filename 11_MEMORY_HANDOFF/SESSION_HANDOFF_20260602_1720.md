@@ -10,7 +10,7 @@
 - **Phase:** 6/7 ACTIVE
 - **Tests:** 692/692 passing
 - **Capital:** NO live capital — paper trading only
-- **VPS:** 157.230.91.33 — cron running; G1 fires ~22:00 UTC tonight (Jun 2)
+- **VPS:** 157.230.91.33 — cron running; T1 pre-game bets for G1 (Jun 3) fire via Jun 2 22:00 UTC cron (night-before T1 band)
 - **Paper bets:** 0/66 resolved — G6 gate (APR-0017); clean slate begins Finals G1 Jun 3
 
 ---
@@ -50,7 +50,7 @@
 
 ## ONE THING PENDING
 
-**G1 paper cron fires at ~22:00 UTC tonight (Jun 2) — first run with corrected architecture.**
+**T1 pre-game cron for G1 (Jun 3) fires at ~22:00 UTC Jun 2 — first run with corrected architecture. G1 game is Jun 3.**
 
 Infrastructure is ready. The corrected PIPE-03 cron will use:
 - Poisson CDF per threshold (T-129 Path B, GG-008 fix)

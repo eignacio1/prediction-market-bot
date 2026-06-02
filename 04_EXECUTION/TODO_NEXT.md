@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED); initial_bankroll parameter added to RiskEngine; two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED: DECISION_LOG entries logged + decisions_logged: true in 7 files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed + VPS pulled. G1 cron fires ~22:00 UTC tonight.
+**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED); initial_bankroll parameter added to RiskEngine; two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED: DECISION_LOG entries logged + decisions_logged: true in 7 files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed + VPS pulled. T1 pre-game bets for G1 (Jun 3) placed by Jun 2 22:00 UTC cron (night-before T1 band).
 
 ---
 

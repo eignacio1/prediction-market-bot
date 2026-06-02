@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED). initial_bankroll parameter added to RiskEngine; daily loss threshold = $150 (15% × $1,000 paper bankroll), fires before 20% drawdown ($200). Two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire: evaluate_forecast() emits WARNING when single bet exceeds 60% of bankroll. Documentation debt T-093–T-099 CLEARED: 8 DECISION_LOG entries (T-093–T-099 + ADR-0012 summary) + decisions_logged: true in 7 spec/governance files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed to GitHub + VPS pulled. G1 cron fires ~22:00 UTC tonight.  
+**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED). initial_bankroll parameter added to RiskEngine; daily loss threshold = $150 (15% × $1,000 paper bankroll), fires before 20% drawdown ($200). Two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire: evaluate_forecast() emits WARNING when single bet exceeds 60% of bankroll. Documentation debt T-093–T-099 CLEARED: 8 DECISION_LOG entries (T-093–T-099 + ADR-0012 summary) + decisions_logged: true in 7 spec/governance files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed to GitHub + VPS pulled. G1 cron fires ~22:00 UTC Jun 3.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,7 +23,7 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-02 SESSION 15** — KI-018 RESOLVED: ADR-0012 ACCEPTED (MAX_DAILY_LOSS_PCT=0.15; initial_bankroll parameter; two independent kill switches restored). RESERVE_MANDATE_PCT=0.40 advisory wired in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED (7 files; 8 DECISION_LOG entries). 695/695 tests. Committed 9337d14; VPS current. G1 cron fires ~22:00 UTC tonight. |
+| Last major milestone | **2026-06-02 SESSION 15** — KI-018 RESOLVED: ADR-0012 ACCEPTED (MAX_DAILY_LOSS_PCT=0.15; initial_bankroll parameter; two independent kill switches restored). RESERVE_MANDATE_PCT=0.40 advisory wired in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED (7 files; 8 DECISION_LOG entries). 695/695 tests. Committed 9337d14; VPS current. G1 cron fires ~22:00 UTC Jun 3. |
 | Previous major milestone | **2026-06-02 SESSION 13** — GG-008 (phantom edge on extreme thresholds) registered; Path B Poisson CDF fix approved; T4/T5 paper prototype activation approved; band Kelly hierarchy restructuring direction set (T1=0.10→T4=0.20→T5=0.25, ADR required); paper portfolio reset before G2 confirmed; dark period reframed as MLB/NFL expansion. 5 strategic decisions logged. |
 
 ---
