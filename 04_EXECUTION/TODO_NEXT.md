@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 13 — Bayesian framing corrected in game_state_model.py + run_t4_inplay.py (p_t4 is Poisson current-state, not Bayesian posterior); KI-024 (stale pace) registered; GG-007 (T4/T5 threshold calibration) registered; T-128 / EXP-018 / EXP-019 queued. Operator action queue: T-109 (each Finals game) → T-127 (any day before Jun 22) → T-128 + EXP-018/019 (dark period) → T-117 (Week 1 dark period) → T-077 (Polymarket KYC) → DS-02/kill-switch/Phase 8 infra ADRs (dark period) → T-092 (July) → T-073 (August) → T-116 (September)
+**Last reviewed:** 2026-06-02 SESSION 13 — GG-008 registered (phantom edge / all-threshold loop misspecification); Path B approved; T4/T5 paper prototype activation approved; band Kelly hierarchy restructuring direction set; paper portfolio reset before G2 approved; dark period reframed as MLB/NFL expansion. Immediate queue (before Finals G2 Jun 5): T-129 (Path B Poisson CDF fix) → Band Kelly ADR → paper_portfolio.json reset → T4/T5 paper prototype activation (DS-02 NBA Stats adapter + in-memory kill switch + Phase 8 paper-scope ADR) → VPS deploy. Then: T-109 (each Finals game) → T-127 (before Jun 22) → dark period MLB/NFL buildout.
 
 ---
 
