@@ -10,7 +10,7 @@
 **Downstream links:** venue_adapter.py (implementation); venue_router.py (routing); ENVIRONMENTS.md (API keys)
 **Decision references:** ADR-0002 (forecast-only); ADR-0003 (Kalshi primary; Polymarket secondary)
 **Confidence:** 8/10
-**Decisions logged:** false — V-001–V-005 venue prioritization order, activation roadmap sequencing, and edge formula choices per venue type not yet in DECISION_LOG.md. See T-096 in TODO_NEXT.md.
+**Decisions logged:** true — T-096 logged 2026-06-02: V-001–V-005 priority order and rationale, activation gates, edge formula per venue type (CFTC vs. DFS). See DECISION_LOG.md 2026-06-02.
 
 ---
 

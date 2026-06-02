@@ -10,7 +10,7 @@
 **Downstream links:** 05_RESEARCH_EXPERIMENTS/DATA_SOURCES/QUALITATIVE_REGISTRY.md, c2_feature_store/qualitative_store.py  
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 9/10 — Framework defined; operationalization of individual sources is pending
-**Decisions logged:** false — Three-layer L1/L2/L3 amplification architecture decision and qualitative signal governance rules not yet in DECISION_LOG.md. See T-098 in TODO_NEXT.md.
+**Decisions logged:** true — T-098 logged 2026-06-02: L1/L2/L3 layer definitions, temporal isolation (shift(1)) requirement, L3 promotion gate (Brier improvement ≥0.001 at N≥100), QUALITATIVE_REGISTRY.md as source registration requirement. See DECISION_LOG.md 2026-06-02.
 
 ---
 

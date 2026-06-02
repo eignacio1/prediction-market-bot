@@ -9,7 +9,7 @@
 **Downstream links:** 01_SPEC/RISK_APPETITE_CONSTRAINTS.md, 08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md, 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_kill-switch.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (pending), ADR-0005 (pending)  
 **Confidence:** 5/10 — Design is intentional; execution layer is gated and not yet implemented; venue-specific details pending ADR-0003
-**Decisions logged:** false — 4 execution mode design decisions, paper fill assumptions (fills at mid-price, no slippage), idempotency key requirement, and decision cycle ordering not yet in DECISION_LOG.md. See T-093 in TODO_NEXT.md.
+**Decisions logged:** true — T-093 logged 2026-06-02: paper fill assumptions (mid-price, zero slippage), idempotency key (ticker+game_date), execution mode gate sequence, T1 decision cycle ordering. See DECISION_LOG.md 2026-06-02.
 
 ---
 

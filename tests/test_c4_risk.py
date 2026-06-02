@@ -27,6 +27,7 @@ if str(_SRC) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import (
     DEFAULT_KELLY_FRACTION,
+    MAX_DAILY_LOSS_PCT,
     MIN_BET_USD,
     MIN_EDGE_TO_APPROVE,
     STATUS_APPROVED,
@@ -68,6 +69,7 @@ def _make_engine(
     logger=None,
     bankroll: float = 10_000.0,
     kelly_fraction: float = DEFAULT_KELLY_FRACTION,
+    initial_bankroll: float | None = None,
 ) -> RiskEngine:
     if logger is None:
         logger = _make_mock_logger()
@@ -76,6 +78,7 @@ def _make_engine(
         snapshot_id="SNAP-TEST",
         bankroll=bankroll,
         kelly_fraction=kelly_fraction,
+        initial_bankroll=initial_bankroll,
     )
 
 
@@ -201,24 +204,63 @@ class TestPhaseGate:
 class TestHardLimits:
     @pytest.mark.unit
     def test_daily_loss_limit_triggers_kill_switch(self):
+        # Default engine: bankroll=initial_bankroll=$10,000; threshold = 15% = $1,500
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine()
             _, result = engine.evaluate_forecast(
                 _make_forecast(),
-                current_daily_loss=1_000.0,  # equals max_daily_loss_usd
+                current_daily_loss=1_500.0,  # exactly at MAX_DAILY_LOSS_PCT threshold
             )
         assert result["approval_status"] == STATUS_KILL_SWITCH
         assert result["rejection_reason"] == "daily_loss_limit_breached"
 
     @pytest.mark.unit
     def test_daily_loss_below_limit_passes(self):
+        # Default engine: threshold = $1,500; $1,499 must not trigger
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine()
             _, result = engine.evaluate_forecast(
                 _make_forecast(),
-                current_daily_loss=999.0,
+                current_daily_loss=1_499.0,
             )
         assert result["rejection_reason"] != "daily_loss_limit_breached"
+
+    @pytest.mark.unit
+    def test_daily_loss_pct_at_threshold_triggers_kill_switch(self):
+        # Paper bankroll scale: $1,000 bankroll; threshold = 15% = $150 (ADR-0012)
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, initial_bankroll=1_000.0)
+            _, result = engine.evaluate_forecast(
+                _make_forecast(),
+                current_daily_loss=150.0,  # exactly 15% of $1,000
+            )
+        assert result["approval_status"] == STATUS_KILL_SWITCH
+        assert result["rejection_reason"] == "daily_loss_limit_breached"
+
+    @pytest.mark.unit
+    def test_daily_loss_pct_below_threshold_passes(self):
+        # $149 is below the $150 threshold at $1,000 paper bankroll
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, initial_bankroll=1_000.0)
+            _, result = engine.evaluate_forecast(
+                _make_forecast(),
+                current_daily_loss=149.0,
+            )
+        assert result["rejection_reason"] != "daily_loss_limit_breached"
+
+    @pytest.mark.unit
+    def test_zombie_daily_loss_no_longer_inactive(self):
+        # Regression guard: $1,000 daily loss on a $1,000 bankroll should trigger
+        # the kill switch (threshold=$150). Under the old $1,000 fixed limit it was
+        # structurally inactive; ADR-0012 makes it the first-line daily kill switch.
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, initial_bankroll=1_000.0)
+            _, result = engine.evaluate_forecast(
+                _make_forecast(),
+                current_daily_loss=1_000.0,
+            )
+        assert result["approval_status"] == STATUS_KILL_SWITCH
+        assert result["rejection_reason"] == "daily_loss_limit_breached"
 
     @pytest.mark.unit
     def test_drawdown_limit_triggers_kill_switch(self):
@@ -243,11 +285,12 @@ class TestHardLimits:
 
     @pytest.mark.unit
     def test_kill_switch_approved_size_is_zero(self):
+        # Daily loss threshold at default $10k bankroll = 15% = $1,500
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine()
             _, result = engine.evaluate_forecast(
                 _make_forecast(),
-                current_daily_loss=1_001.0,
+                current_daily_loss=1_500.0,
             )
         assert result["approved_size"] == 0.0
 
