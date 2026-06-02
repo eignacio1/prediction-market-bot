@@ -409,6 +409,7 @@
 | Open question | What is the actual order book depth for KXNBAPTS markets during Finals and regular season? This data is accessible via Kalshi API — collect during Finals G1-G7 paper trading window. |
 | Registered | 2026-06-01 — identified via PDTP strategic analysis (Session 8) as ungated HIGH-severity risk |
 | Status | OPEN — HIGH severity pre-live-capital; LOW severity during paper trading (simulated fills); must be addressed in G6 live capital ADR |
+| T-127 run 1 | 2026-06-02 (pre-game): 38/38 KXNBAPTS markets found for Finals G1 (Jun 3 NYK vs SAS). Orderbook depth = $0.00 across ALL markets 24h pre-game. Confirms Kalshi posts MM liquidity on game day, not in advance. Audit log: `logs/orderbook_depth_20260602_151325.json`. **Re-run required on Jun 3 (game day) during active trading to measure real depth.** |
 
 ---
 
