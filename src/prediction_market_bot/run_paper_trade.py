@@ -61,7 +61,7 @@ from prediction_market_bot.c5_execution.complement_lock_scanner import Complemen
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
-from prediction_market_bot.execution_bands import BAND_REGISTRY
+from prediction_market_bot.execution_bands import BAND_REGISTRY, get_band_config, ExecutionBand
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c3_forecasting.game_state_model import _poisson_cdf
@@ -85,6 +85,10 @@ REPORT_PATH   = LOG_DIR / f"paper_{GAME_DATE}.json"
 EDGE_YES = 0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
+
+# ADR-0010: T1 band Kelly fraction (0.10). Read from execution_bands so that any
+# future ADR updating the band config automatically propagates here.
+T1_KELLY = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
 
 _NON_FEATURE = {
     "player_id","player_name","team_id","team_abbreviation",
@@ -224,7 +228,8 @@ def main() -> None:
     # ------------------------------------------------------------------
     _state   = trader.get_state()
     bankroll = _state["bankroll_usd"]
-    engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
+    engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
+                          kelly_fraction=T1_KELLY)
     daily_loss = _state.get("current_daily_loss", 0.0)
     _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
     # Bug H fix: drawdown is realized losses only — open stakes are not losses
@@ -362,7 +367,8 @@ def main() -> None:
                     _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
                     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
                     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
-                    engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll)
+                    engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
+                                       kelly_fraction=T1_KELLY)
                     daily_loss += size if edge < 0 else 0
             else:
                 reason = approval.get("rejection_reason", "unknown")
