@@ -1,7 +1,7 @@
 # Session Handoff — 2026-06-01T16:30Z
 
 **Trigger:** Operator-initiated (/session-end)
-**Last commit:** `1b325e0` (main) — prior session; SESSION 12 changes pending commit + push
+**Last commit:** `bdfc821` (main) — pushed to GitHub ✅
 
 ---
 
@@ -48,13 +48,11 @@
 
 ## ONE THING PENDING
 
-**SESSION 12 code is NOT yet committed or pushed to VPS.** The next session must:
+**SESSION 12 committed and pushed (bdfc821). VPS has NOT yet pulled.** The next session must:
 
-1. `git add src/prediction_market_bot/c3_forecasting/game_state_model.py src/prediction_market_bot/c4_risk_engine/staged_order_store.py src/prediction_market_bot/run_t4_inplay.py tests/test_c3_game_state_model.py tests/test_c4_staged_order_store.py tests/test_run_t4_inplay.py scripts/resolve_procedure.sh scripts/query_orderbook_depth.py 11_MEMORY_HANDOFF/ 04_EXECUTION/ 03_DECISIONS/ pyproject.toml`
-2. Commit with message: `[HANDOFF] Session end 2026-06-01 SESSION 12 — T4/T5 dark-period infrastructure built; 692/692 tests`
-3. `git push origin main`
-4. `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` (VPS pull)
-5. VPS test: `python3 -m pytest --tb=no -q` to confirm 692/692 on VPS (sklearn 1.8 already installed from local fix — verify VPS env separately)
+1. `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull"` (VPS pull from bdfc821)
+2. VPS test: `python3 -m pytest --tb=no -q` to confirm test count on VPS (VPS has sklearn 1.8 from VPS venv — confirm it sees the new test files)
+3. Note: the +80 new tests include game_state_model, staged_order_store, run_t4_inplay — all pure Python, no VPS-env issues expected
 
 After that: run T-109 procedure (`bash scripts/resolve_procedure.sh`) after Finals G1 (Jun 3) to start G6 evidence accumulation.
 
@@ -120,4 +118,4 @@ cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 
 ## NEXT SESSION PRIMER
 
-SESSION 12 code is built and all governance docs updated but NOT YET COMMITTED. The session opens with a commit + VPS push: 7 new files (game_state_model.py, staged_order_store.py, run_t4_inplay.py, 3 test files, 2 scripts) plus doc updates. After push, if Finals G1 (Jun 3) has passed: run `bash scripts/resolve_procedure.sh` to start G6 evidence accumulation. Then check if Earl has made any of the 3 Phase 8 architectural decisions (DS-02 source, kill switch redesign, Phase 8 infra ADR) — these are the only unblocking actions for T4 live wiring.
+SESSION 12 committed (bdfc821) and pushed. Open with VPS pull + test count verification. If Finals G1 (Jun 3) has passed: run `bash scripts/resolve_procedure.sh` to start G6 evidence accumulation. Then check if Earl has made any of the 3 Phase 8 architectural decisions (DS-02 source, kill switch redesign, Phase 8 infra ADR) — these are the only unblocking actions for T4 live wiring.
