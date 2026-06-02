@@ -29,22 +29,25 @@ class TestBandConfigs:
         assert isinstance(cfg, BandConfig)
 
     def test_t1_kelly_fraction(self):
-        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.25
+        # ADR-0010: T1 reduced to 0.10 (player-level LR, σ_λ=2.055)
+        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.10
 
-    def test_t2_kelly_less_than_t1(self):
+    def test_t2_kelly_greater_than_t1(self):
+        # ADR-0010: T2 > T1 because injury overlay adds signal layer (0.13 > 0.10)
         t1 = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
         t2 = get_band_config(ExecutionBand.T2_SAME_DAY).kelly_fraction
-        assert t2 < t1
+        assert t2 > t1
 
     def test_t3_kelly_less_than_t2(self):
         t2 = get_band_config(ExecutionBand.T2_SAME_DAY).kelly_fraction
         t3 = get_band_config(ExecutionBand.T3_PRE_TIP).kelly_fraction
         assert t3 < t2
 
-    def test_t4_kelly_less_than_t3(self):
+    def test_t4_kelly_greater_than_t3(self):
+        # ADR-0010: T4 > T3 — threshold-specific Poisson; Q4 σ_λ ≈ 0.5 (0.20 > 0.07)
         t3 = get_band_config(ExecutionBand.T3_PRE_TIP).kelly_fraction
         t4 = get_band_config(ExecutionBand.T4_IN_PLAY).kelly_fraction
-        assert t4 < t3
+        assert t4 > t3
 
     def test_t5_kelly_higher_than_t4(self):
         # T5 = arithmetic near-certainty → higher fraction than T4
