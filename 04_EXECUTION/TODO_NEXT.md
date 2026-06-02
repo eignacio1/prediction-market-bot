@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-01 SESSION 10 — ADR-0009 ACCEPTED; T-119/T-120 COMPLETE; 612/612 tests. Multi-arm architecture Layer 2 (shadow model) operational. Next tasks: T-122 (EXP-017 exact-ticker join), T-107 (Polymarket NBA tag), T-121 (shadow outcome wiring). PRIORITIES: T-109 (resolve_local each Finals game day) > VPS deploy > T-122 > T-107 > T-121
+**Last reviewed:** 2026-06-01 SESSION 12 — T4/T5 dark-period infrastructure built (game_state_model, staged_order_store, run_t4_inplay PIPE-07 skeleton, resolve_procedure.sh, query_orderbook_depth.py); scipy/sklearn upgraded; 692/692 tests (+80). Operator action queue: T-109 (each Finals game) → T-127 (any day before Jun 22) → T-117 (Week 1 dark period) → T-077 (Polymarket KYC) → DS-02/kill-switch/Phase 8 infra ADRs (dark period) → T-092 (July) → T-073 (August) → T-116 (September)
 
 ---
 
@@ -16,12 +16,44 @@
 
 ---
 
+## SESSION 2026-06-01 SESSION 12 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| T4/T5 Iteration Plan | **Dark-period T4/T5 roadmap designed** | ✅ COMPLETE 2026-06-01 — Jane Street pre-computation principle applied: detection band ≠ execution band. Phase 7/8/9 sequencing adopted. Three Phase 8 blockers identified (DS-02 ADR, kill switch redesign ADR, Phase 8 infra ADR) — all require operator decision. |
+| `game_state_model.py` | **T4 Bayesian engine + T5 late-game arithmetic** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/c3_forecasting/game_state_model.py`. Poisson CDF pure Python stdlib. `GameState`, `GameStateModel.update()` → `T4Signal`, `LateGameArithmetic.evaluate()` → `T5Signal`. Constants: T4_MIN_DELTA_P=0.08, T5_TIME_THRESHOLD_MIN=3.0, T5_YES_CERTAINTY=0.85, T5_NO_CERTAINTY=0.15, KELLY_T4=0.05, KELLY_T5=0.15. 33 tests (test_c3_game_state_model.py). Phase: SKELETON. |
+| `staged_order_store.py` | **SQLite pre-staging handoff layer** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/c4_risk_engine/staged_order_store.py`. Append-only, WAL mode. Statuses: STAGED/FIRED/EXPIRED/CANCELLED. `stage_order()`, `get_staged()`, `mark_fired()`, `mark_cancelled()`, `expire_stale()`, `summary()`. Default db_path: `logs/staged_orders.db`. 31 tests (test_c4_staged_order_store.py). |
+| `run_t4_inplay.py` | **PIPE-07 skeleton + unified T4 decision tree** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/run_t4_inplay.py`. `T4EventLoop.on_game_state_event()` → `T4RoutingResult`: kill switch (<5ms) → expire_stale → pre-staged lookup → Bayesian (T4) → T5 → NO_ACTION. `--demo` flag runs synthetic scenarios. 16 tests (test_run_t4_inplay.py). BLOCKED: kill switch armed check placeholder; C4 approve + C5 execute placeholders. Phase 8+. |
+| `scripts/resolve_procedure.sh` | **T-109 automation script** | ✅ COMPLETE 2026-06-01 — `scripts/resolve_procedure.sh` (chmod +x). Automates full resolve + EXP-017 update procedure after each Finals game. Logs to `logs/resolve_auto.log`. Step 3 reports G6 evidence count. Must run locally (VPS 403 blocks stats.nba.com). |
+| `scripts/query_orderbook_depth.py` | **T-127 automation script (KI-023)** | ✅ COMPLETE 2026-06-01 — `scripts/query_orderbook_depth.py`. Queries Kalshi orderbook for 3–5 active KXNBAPTS contracts. Reports total depth, tight depth (±10¢), paper/live cap as % of visible depth. Flags if cap exceeds DEPTH_IMPACT_THRESHOLD_PCT=0.05. Audit log: `logs/orderbook_depth_YYYYMMDD_HHMMSS.json`. |
+| scipy/sklearn upgrade | **numpy 2.x compatibility fix** | ✅ COMPLETE 2026-06-01 — scipy 1.12→1.17.1, sklearn 1.4.2→1.8.0. Pre-existing import error (`_ARRAY_API not found`) caused by numpy 2.4.6 in local .venv311. VPS was already working (612 tests). 692/692 tests pass locally after upgrade. |
+| Tests | **+80 new tests** | ✅ COMPLETE 2026-06-01 — 612 → 692 total. test_c3_game_state_model.py (+33), test_c4_staged_order_store.py (+31), test_run_t4_inplay.py (+16). |
+
+---
+
+## SESSION 2026-06-01 SESSION 11 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| VPS deploy | **Deploy SESSION 8-10 code to VPS** | ✅ COMPLETE 2026-06-01 — git push origin main (SESSION 10 commit 1b325e0); VPS git pull at /opt/prediction-market-bot. VPS now at HEAD 1b325e0. 612/612 tests pass on VPS. T-119 (model hash guard) + T-120 (ShadowForecaster + C7 shadow Brier) now live. Ready for Finals G1 Jun 3 cron window. |
+| ~~T-122~~ | ~~EXP-017 exact-ticker join~~ | ✅ CLOSED — already satisfied in run_part_b_live; no code change required (see task detail below). |
+
+---
+
+## SESSION 2026-06-01 SESSION 11 — NEW TASKS (PDTP priority list retrofit)
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| T-127 | **Query KXNBAPTS orderbook depth during Finals window (KI-023 resolution)** | DS / IO | **HIGH — Finals window Jun 3–22** | KI-023: no estimate of KXNBAPTS market depth exists. At full operational scale (300+ bets/night), bot order flow may move own prices. The Finals window is the only active KXNBAPTS opportunity before October 2026. Action: during Finals (any game day before Jun 22), call `GET /markets/{ticker}/orderbook` via Kalshi REST API for 3–5 active KXNBAPTS contracts. Record: (1) total visible depth (YES + NO sides); (2) depth within $500 of best price; (3) approximate `max_order_pct_of_depth` at our $10–80/bet paper scale vs. $500/bet live cap. If live cap ($500) exceeds ~5% of visible depth on a typical market, register new `max_order_pct_of_depth` limit in `_HARD_LIMITS` via ADR before G6. Data captured here feeds G6 live capital ADR-0005. If this window is missed, no equivalent data exists until 2026-27 pre-season. |
+
+---
+
 ## SESSION 2026-06-01 SESSION 10 — NEW TASKS
 
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
 | T-121 | **Wire record_shadow_outcome() to resolve pipeline** | MEDIUM — Finals window | `run_resolve.py` reads pregame logs (which now carry `shadow_p_estimate`). For each resolved bet, extract `shadow_p_estimate` and call `SystemMonitor.record_shadow_outcome(shadow_p, outcome)`. Prerequisite: shadow model artifact must be trained and deployed first — without an artifact, shadow_p_estimate will be None in all pregame logs, so this wiring produces nothing. Register as T-121 but defer execution until shadow artifact is deployed in dark period. |
-| T-122 | **Update EXP-017 Part B to join on exact kalshi_ticker (not ±3 threshold proximity match)** | HIGH — next session Track 2 | `run_exp017.py --from-pregame` currently uses fuzzy `±3` threshold match to join pregame logs to portfolio. Pregame logs post-T-118 carry exact `kalshi_ticker`. Join should be `pregame["kalshi_ticker"] == portfolio["kalshi_ticker"]`. Fuzzy match may create false joins when multiple thresholds exist for the same player. Exact-ticker join eliminates this. |
+| ~~T-122~~ | ~~Update EXP-017 Part B to join on exact kalshi_ticker~~ | ✅ CLOSED 2026-06-01 SESSION 11 — `run_part_b_live` (the `--from-pregame` path) already joins on exact `kalshi_ticker` (line 511-517). The ±3 fuzzy match exists only in `run_part_b` (CSV prices path, not invoked by `--from-pregame`). Task description was written before final implementation settled. No code change required. |
 | T-123 | **TI-04 enforcement test** | MEDIUM — Track 2 | Assert any feature with `_price` or `_market` in its name has a documented `look_back_window` attribute in `DATA_FLOWS_LINEAGE.md`. Prevents temporal leakage of pricing features in future feature additions. |
 | T-124 | **QTI backdating framework — DS-01 PAM to 2021-22** | MEDIUM — dark period | Backdate DS-01 PAM classifications for all 50 cohort players to 2021-22 per QTI-03. Requires `backdated: true` + `backdating_rationale` + second review flag in QS CSV. ~5× qualitative signal training coverage. |
 | T-125 | **Polymarket adapter test expansion** | MEDIUM — Track 3 | Empty-market assertion (zero markets returned is an error not silence), `_parse_market()` regex test for edge cases, VenueRouter multi-venue routing test. Required before T-077 Polymarket activation. |
@@ -197,7 +229,7 @@
 | T-070 | Accumulate paper trading evidence (30+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target **30 resolved positions** (APR-0016: revised from 50 per seasonal constraint); 0/30 as of 2026-05-29; dual-window cron firing; NBA dark period ~2026-06-22 if not reached |
 | T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players; v2=~80 players; lookup_player_id.py utility added |
 | T-072 | Playoff generalization ablation (EXP-016 / HYP-009) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-016-B8BA8CAC; Δ Brier = -0.0010 (gate < 0.012); HYP-009 CONFIRMED; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence |
-| T-073 | DS-04 qualitative source registration | RL | LOW | First new qualitative source beyond PAM (coaching fit, matchup context, etc.) |
+| T-073 | DS-04 qualitative source registration | RL | LOW — August 2026 | First new qualitative source beyond PAM (coaching fit, matchup context, etc.). Decision required before T2 execution band can become ACTIVE. Timeline: August 2026 before dark period model retrain (T-092) so DS-04 features can be included in T-092 retrained model. |
 | T-074 | Session handoffs CP-2026-05-29 | DS | LOW | ✅ COMPLETE 2026-05-29 — SESSION_HANDOFF_20260529_1651.md + SESSION_HANDOFF_20260529_2030.md |
 | T-085 | PIPE-03R resolution-only pipeline | EL | HIGH | ✅ COMPLETE 2026-05-29 — `run_resolve.py`; 06:00 UTC cron; resolves late-game positions after nba_api updates; 9 tests |
 | T-086 | C4 MIN_BET_USD floor ($10) | EL | MED | ✅ COMPLETE 2026-05-29 — CHECK 7 in risk.py; sub-floor bets → `min_bet_floor` REJECTED; 5 tests |
@@ -230,7 +262,7 @@
 | ~~T-091~~ | ~~C7 paper P&L monitoring alert~~ | ~~EL~~ | ~~MED~~ | ✅ COMPLETE 2026-06-01 — `check_portfolio_pnl()` added to SystemMonitor. L1 (5% loss) → INFO `pnl_alert_l1_watch`; L2 (10% loss) → WARNING `pnl_alert_l2_loss`. Wired into PIPE-03 and PIPE-03R. 8 new tests. 589/589 VPS tests pass. KI-012 RESOLVED. DS sign-off: Earl Ignacio 2026-06-01. |
 | T-092 | Elevate T-072 to required pre-2026-27 | DS | MED | Model staleness KI-013 — T-072 must retrain before paper trading resumes in Oct 2026; not optional; needs new ADR |
 | T-116 | Pre-season multi-game night pipeline stress test (KI-023) | IO/EL | HIGH — before 2026-27 | PIPE-02 + PIPE-03 have only been tested in single-game Finals context (1 game/night). Regular season (10+ simultaneous games, 400+ markets/night) is structurally different: concurrent nba_api pulls, parallel pregame log writes, overlapping PIPE-03 execution windows. If PIPE-02 fails silently for any player on a multi-game night, EXP-017 cannot join on that game's prices — G6 evidence is silently contaminated. Test plan: simulate a 10-game night locally before 2026-27 season tip-off. Verify: (1) run_pregame.py captures pregame logs for all 75 cohort players across simultaneous games without silent failures; (2) PIPE-03 processes all players without timing collisions; (3) EXP-017 join succeeds on a simulated multi-game pregame directory. Resolve before October 2026 season start. |
-| T-117 | Verify KXNBAPTS contract-specific Terms and Conditions for PAL and Position Limit values (GG-006 final close) | DS | LOW — dark period | DCM Rulebook v1.26 does NOT contain numerical Position Accountability Levels or Position Limits — those are in each individual contract's Terms and Conditions on Kalshi's website. Remaining GG-006 item: log into Kalshi, navigate to any active KXNBAPTS (NBA player points) contract, read the Terms and Conditions tab, and record: (1) stated Position Accountability Level (soft threshold for disclosure); (2) stated Position Limit (hard cap). If both are above $500 (our bet cap), no changes to risk.py required. If either is below $500, register a task to add `max_position_usd_per_market` to `_HARD_LIMITS` and enforce in C4. Required before G6 ADR-0005 draft. LOW risk at current paper trading bankroll ($683, $10–80/bet) — economic constraint from DCO Fully Collateralized rule binds first. |
+| T-117 | **Formal Kalshi TOS + contract Terms review (GG-006 final close)** | DS | **HIGH — Week 1 dark period (by 2026-06-30)** | Two documents to read formally before G6 ADR-0005 can be drafted: **(1) Kalshi Participant Agreement** — the account-level legal document Earl agreed to at account creation. GG-006 partial resolution confirmed automated trading permitted via web search; formal document reading not yet done. Look for: algorithmic trading restrictions, prohibited strategies, account termination triggers. **(2) KXNBAPTS contract-specific Terms and Conditions** — DCM Rulebook v1.26 does NOT contain numerical Position Accountability Levels or Position Limits; those are in each contract's Terms tab on Kalshi's website. Navigate to any active KXNBAPTS contract → Terms and Conditions tab → record: (a) stated Position Accountability Level (soft threshold for disclosure); (b) stated Position Limit (hard cap). If both above $500 (our bet cap), no changes to risk.py required. If either below $500, add `max_position_usd_per_market` to `_HARD_LIMITS` via ADR. Stakes: prevents live capital on disallowed activity — must complete before G6. LOW risk at current paper bankroll ($683, $10–80/bet). |
 | T-100 | Fix Bug H — drawdown includes open stakes (KI-015) | EL | HIGH | ✅ COMPLETE 2026-05-30 — `run_paper_trade.py` lines 215+334: `current_drawdown_pct = realized_loss / initial_bankroll`; DS sign-off granted by operator same session; deployed VPS; live check: 0.00% realized drawdown |
 | T-101 | Fix Bug G — idempotency check failure (KI-014) | EL | HIGH | ✅ COMPLETE 2026-05-30 — Root cause: `LOG_DIR` was relative path; cron ran from different CWD → fresh portfolio each run → 3× positions. Fix: `_SRC_ROOT / "logs"` absolute default in `run_paper_trade.py` + `run_resolve.py`. Idempotency logging added. Deployed VPS. |
 
