@@ -79,7 +79,9 @@ class GameStateEvent:
     Fields mirror GameState but include market context (market_id, p_t1, mip, vig)
     needed for the routing decision.
 
-    p_t1:  T1 model probability (from C3 pre-game forecast, stored at T1 time)
+    p_t1:  T1 model probability (from C3 pre-game forecast, stored at T1 time).
+           Used as materiality benchmark (|p_t4 - p_t1| >= T4_MIN_DELTA_P) and
+           fire condition (p_t4 > mip + vig). NOT incorporated into p_t4 itself.
     mip:   current market implied probability (mid-price from DS-02 price feed)
     vig:   current market vig estimate (ask - bid spread / 2)
     """
