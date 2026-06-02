@@ -64,6 +64,7 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.execution_bands import BAND_REGISTRY
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c3_forecasting.game_state_model import _poisson_cdf
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -288,7 +289,7 @@ def main() -> None:
         if np.isnan(pts_mean):
             continue
 
-        # Compute features once per player; evaluate all available thresholds independently
+        # Compute features once per player; LR p_est used for C6 logging only.
         X = _impute(
             np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
             col_medians,
@@ -302,15 +303,24 @@ def main() -> None:
                 print(f"  [IDEMPOTENCY] SKIP {player_name} — {mkt.ticker} already in portfolio "
                       f"({len(_open_tickers)} open tickers; portfolio: {PORTFOLIO_PATH})")
                 continue
+
+            # T-129 Path B: threshold-specific probability via Poisson(pts_l10_mean).
+            # LR p_est is player-level (no kalshi_threshold feature) → same value for
+            # all thresholds → phantom edge at extremes (GG-008). Poisson CDF gives the
+            # correct per-threshold estimate without retraining the model.
+            thresh_int = int(mkt.threshold)
+            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)
+
             mid   = mkt.mid_price
             half  = mkt.half_spread
-            edge  = p_est - mid - half
+            edge  = p_threshold - mid - half
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
             # Route through C4 risk engine
             forecast_rec = {
                 "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
-                "p_estimate": p_est,
+                "p_estimate": p_threshold,
+                "p_estimate_lr": p_est,
                 "market_implied_prob": mid,
                 "edge": edge,
                 "recommended_direction": direction,
@@ -344,7 +354,7 @@ def main() -> None:
                 )
                 size = approval.get("approved_size", 0)
                 print(f"  BET  {player_name:<22} {direction:<4}  ${size:.2f}  "
-                      f"edge={edge:+.3f}  mkt={mkt.threshold}+ pts")
+                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts")
                 if pos:
                     orders.append(pos)
                     _state = trader.get_state()

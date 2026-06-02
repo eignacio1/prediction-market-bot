@@ -31,11 +31,10 @@ Design constraints:
     No scipy dependency — Poisson CDF implemented in pure Python (stdlib math)
     Unit-testable now without real-time feed (BLOCKED until DS-02 is active)
 
-Kelly fractions by band (from EXECUTION_BANDS.md):
-    T1 = 0.25, T4 = 0.05, T5 = 0.15
-    T5 is higher than T4 because the near-certainty classification gates entry:
-    only very high-P outcomes reach T5 execution. The uncertainty band has
-    collapsed by definition.
+Kelly fractions by band (ADR-0010):
+    T1 = 0.10, T4 = 0.20, T5 = 0.25
+    Variance-scaling principle: k ∝ 1/σ_λ. T4/T5 use threshold-specific Poisson
+    (lower σ) → higher k. T1 uses player-level LR estimate (higher σ) → lower k.
 
 Governance:
     T4/T5 activation requires a new Phase 8 ADR (kill switch redesign +
@@ -54,19 +53,22 @@ from dataclasses import dataclass
 # ---------------------------------------------------------------------------
 
 # T4: minimum absolute change in probability to treat as material.
-# Small deltas don't overcome vig at Kelly 0.05; this avoids thrash.
+# 2σ noise floor at Q4 late (min 44+): 0.069; economic floor (MIN_EDGE+VIG_HALF): 0.045.
+# 0.08 is phase-appropriate for late Q4; EXP-018 calibrates phase-dependent values.
 T4_MIN_DELTA_P: float = 0.08
 
 # T5: game time threshold for late-game arithmetic activation.
 T5_TIME_THRESHOLD_MIN: float = 3.0
 
-# T5: probability bounds for near-certainty classification.
+# T5: probability bounds for near-certainty classification (ADR-0010 / EXP-019).
+# Derived: λ_rem≈1.25 at ≤3 min; P(≥3 more pts)=0.131 → p≥0.85 means ≤1 pt needed.
+# Economic floor: p_min = market + MIN_EDGE + VIG_HALF = 0.845 at market=0.80; 0.85 clears it.
 T5_YES_CERTAINTY: float = 0.85
 T5_NO_CERTAINTY: float  = 0.15
 
-# Kelly fractions by execution band (mirrored from EXECUTION_BANDS.md)
-KELLY_T4: float = 0.05
-KELLY_T5: float = 0.15
+# Kelly fractions by execution band (ADR-0010; mirrored from execution_bands.py)
+KELLY_T4: float = 0.20
+KELLY_T5: float = 0.25
 
 
 # ---------------------------------------------------------------------------

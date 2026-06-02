@@ -62,6 +62,9 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
     T5Signal,
 )
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+from prediction_market_bot.c1_signal_ingestion.ds02_nba_live import (
+    kill_switch_armed, KILL_SWITCH_PATH,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -150,16 +153,16 @@ class T4EventLoop:
 
     def _kill_switch_armed(self) -> bool:
         """
-        Check kill switch state in <5ms.
+        Check kill switch state in <5ms (file stat only).
 
-        BLOCKED: Phase 8 kill switch redesign ADR required. Current C7 kill
-        switch SLA is 60s — too slow for T4. Placeholder reads a file flag.
-        Replace with C7 MonitorAgent in-memory state check at Phase 8.
+        Paper prototype: reads KILL_SWITCH_PATH flag file (logs/t4_kill_switch.flag).
+        Arm:   touch logs/t4_kill_switch.flag
+        Disarm: rm logs/t4_kill_switch.flag
+
+        Phase 8 ADR replaces this with C7 MonitorAgent in-memory state check
+        for <5s SLA compliance (NFR-03).
         """
-        # BLOCKED: replace with C7 in-memory flag at Phase 8
-        # For now: always returns False (kill switch not armed)
-        # Do not activate in production until this is wired to C7.
-        return False
+        return kill_switch_armed(KILL_SWITCH_PATH)
 
     def _to_game_state(self, event: GameStateEvent) -> GameState:
         return GameState(

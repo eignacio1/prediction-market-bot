@@ -11,18 +11,20 @@ Inspired by HFT time-horizon principle:
   - Ultra-low latency (T4/T5): execution quality IS the edge; minimal model
   - Longer horizon (T1/T2/T3): model complexity scales with available compute time
 
-Band summary:
-  T1 — Multi-day:    Full LR+Platt (78 feat); PIPE-02; Kelly 0.25
-  T2 — Same-day:     Injury overlay on T1; PIPE-05; Kelly 0.20
-  T3 — Pre-tip:      Momentum signal only; PIPE-06; Kelly 0.10
-  T4 — In-play:      Bayesian game-state; PIPE-07 (real-time infra required)
-  T5 — Late-game:    Arithmetic certainty; PIPE-08 (real-time infra required)
+Band summary (ADR-0010 Kelly fractions):
+  T1 — Multi-day:    Full LR+Platt (78 feat); PIPE-02; Kelly 0.10
+  T2 — Same-day:     Injury overlay on T1; PIPE-05; Kelly 0.13
+  T3 — Pre-tip:      Momentum signal only; PIPE-06; Kelly 0.07
+  T4 — In-play:      Poisson game-state; PIPE-07 (real-time infra required); Kelly 0.20
+  T5 — Late-game:    Arithmetic certainty; PIPE-08 (real-time infra required); Kelly 0.25
 
 Governance:
   T1/T2/T3 are buildable on current cron infrastructure.
   T4/T5 require full real-time C5 rebuild (Phase 8+).
-  Kelly fractions decrease at shorter horizons (lower model confidence).
-  T5 is an exception — arithmetic certainty warrants higher sizing.
+  Kelly fractions follow variance-scaling (ADR-0010): higher fraction at lower
+  λ-estimation uncertainty. T4/T5 are threshold-specific (lower σ) → higher k.
+  T1 uses player-level LR estimate (higher σ) → lower k. Reserve mandate: ≥40%
+  bankroll uncommitted after T1 batch (warning-only at paper scale).
 """
 
 from __future__ import annotations
@@ -106,7 +108,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="full_lr_platt",         # LR+Platt, 78 features, qualitative enrichment
         max_compute_ms=30_000,               # 30s — full pipeline; batched; irrelevant to edge
         execution_sla_s=3600,                # 1 hour — execution timing immaterial at this horizon
-        kelly_fraction=0.25,                 # Quarter-Kelly (ADR-0004)
+        kelly_fraction=0.10,                 # ADR-0010: σ_λ=2.055 (pts_l10_mean); 2× operational premium over derived 0.049
         pipeline_id="PIPE-02",
         cron_schedule="30 21 * * *",         # 21:30 UTC daily (pre-game)
         requires_realtime=False,
@@ -117,7 +119,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="injury_overlay",        # T1 output + injury/lineup adjustment (T-075)
         max_compute_ms=5_000,                # 5s — fast overlay on cached T1 output
         execution_sla_s=1800,                # 30 min — still relaxed; 4-8h before tip
-        kelly_fraction=0.20,                 # Slightly reduced (injury data adds uncertainty)
+        kelly_fraction=0.13,                 # ADR-0010: tentative; injury overlay uncertainty; 2× premium over derived 0.061
         pipeline_id="PIPE-05",
         cron_schedule="0 17 * * *",          # 17:00 UTC (12pm ET — afternoon of game day)
         requires_realtime=False,
@@ -128,7 +130,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="momentum_signal",       # Price drift vs T1 forecast; no historical data
         max_compute_ms=500,                  # 500ms — reads cached T1 + live price only
         execution_sla_s=300,                 # 5 min — window closes at tip-off
-        kelly_fraction=0.10,                 # Half of T1 (signal is thinner; confirmation only)
+        kelly_fraction=0.07,                 # ADR-0010: tentative; momentum confirmation only; 2× premium over derived 0.032
         pipeline_id="PIPE-06",
         # Extended to 03:00 UTC to cover late 10pm ET tip-offs (02:00 UTC).
         # Two entries needed because cron hour ranges cannot wrap midnight in one expr.
@@ -142,7 +144,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="bayesian_game_state",   # Bayesian update: current score + time remaining
         max_compute_ms=50,                   # 50ms — must be faster than market update latency
         execution_sla_s=5,                   # 5s — in-play window is seconds
-        kelly_fraction=0.05,                 # Minimal (no historical calibration on live model)
+        kelly_fraction=0.20,                 # ADR-0010: σ_λ≈0.5 in Q3/Q4 firing window; Q4 only (Phase 8 ACTIVE requires EXP-018)
         pipeline_id="PIPE-07",
         cron_schedule=None,                  # Event-driven — not cron-based
         requires_realtime=True,              # BLOCKED: requires real-time C5 rebuild (Phase 8+)
@@ -153,7 +155,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="arithmetic_certainty",  # pts_needed / pace / time_remaining
         max_compute_ms=5,                    # 5ms — pure arithmetic; no model
         execution_sla_s=1,                   # 1s — final minutes; sub-second preferred
-        kelly_fraction=0.15,                 # Higher than T4 — near-certainty warrants more
+        kelly_fraction=0.25,                 # ADR-0010: arithmetic certainty gate p≥0.85; quarter-Kelly on f*
         pipeline_id="PIPE-08",
         cron_schedule=None,                  # Event-driven
         requires_realtime=True,              # BLOCKED: Phase 8+

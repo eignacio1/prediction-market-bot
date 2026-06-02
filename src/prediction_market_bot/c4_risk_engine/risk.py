@@ -89,6 +89,10 @@ MIN_EDGE_TO_APPROVE: float = 0.02
 # Applies in all modes (paper and live). Change requires ADR evidence.
 MIN_BET_USD: float = 10.0
 
+# Reserve mandate: ≥40% bankroll uncommitted after T1 batch so T4/T5 have capital
+# at game time (ADR-0010). Warning-only at paper scale; blocking at live capital.
+RESERVE_MANDATE_PCT: float = 0.40
+
 # Hard limits — confirmed at G4/ADR-0004; count gate deleted per ADR-0006 (2026-06-01)
 # Revise all values via new APR at G6 when live bankroll is set.
 _HARD_LIMITS: dict[str, float] = {
