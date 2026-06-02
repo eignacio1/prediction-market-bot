@@ -161,7 +161,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | Monte Carlo (50,000 runs, Poisson(pts_l10_mean) ground truth, Jun 3 Finals G1 portfolio of 25 positions / $911.53 staked): **expected P&L -$528 (-58%); win rate 6.4%; P50 -$634.** 24 of 25 positions have negative expected P&L under Poisson pricing. KAT YES 20 (threshold ≈ mean) is the only position with genuine positive EV (+$14). Phantom edge inflates paper stake on extreme threshold positions (e.g., KAT NO 10: $97 staked; Fox YES 25: $92 staked). G6 evidence quality is degraded while this misspecification is active. |
 | Discovery | Monte Carlo pre-Finals portfolio assessment, SESSION 13 (2026-06-02). Back-solving from Kelly inverse formula confirmed p_est is player-level only. VPS `prod_model.joblib` feature names inspected: 78 features, `kalshi_threshold` absent from all. Poisson CDF cross-check: Kalshi market prices for extreme thresholds match Poisson(pts_l10_mean) closely; model prices diverge. |
 | Resolution | T-129 registered. Two candidate fix paths (operator decision required): **(A)** Add `kalshi_threshold` (normalized) as a C3 feature → requires model retrain; blocked until T-072 (Oct 2026). **(B)** Replace `p_est` at each threshold with `Poisson_CDF(threshold, pts_l10_mean)` in the all-threshold loop — immediate fix, no retrain; architecturally correct for threshold-specific markets; edge = P(score ≥ threshold) - market_price. Path B is implementable before Finals G2 (Jun 5). T4's GameStateModel already uses this approach correctly. |
-| Status | OPEN — HIGH severity for G6 evidence quality; paper only at current scale; immediate fix available (Path B pending DS decision) |
+| Status | RESOLVED — 2026-06-02 SESSION 14. Path B implemented in `run_paper_trade.py` (T-129). `p_est` (player-level LR) replaced with `Poisson_CDF(threshold, pts_l10_mean)` per threshold in the all-threshold loop. `p_est` retained in `forecast_rec` as `p_estimate_lr` for C6 logging. `_poisson_cdf` imported from `game_state_model` (same function T4 uses). No retrain required. Path A (add threshold as feature + retrain) deferred to T-072 (Oct 2026). G1 portfolio (25 positions / $911.53) already tainted — wiped and reset to $1,000 before Finals G1 cron (Jun 3 22:00 UTC). GG-008 closed. |
 
 ---
 
@@ -173,6 +173,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-002 | 2026-06-01 | ADR-0006 covers this; ARE WE COMPROMISED? watchdog added |
 | GG-003 | 2026-06-01 | ADR-0007: GOVERNANCE_GAP_LOG.md mandated; ARE WE COMPROMISED? protocol added |
 | GG-005 | 2026-06-01 | APR-0017 v2 ACCEPTED: all criteria expressed as rates/slopes with derived thresholds; Q7 protocol in CLAUDE.md |
+| GG-008 | 2026-06-02 | T-129 Path B: `p_est` replaced with `Poisson_CDF(threshold, pts_l10_mean)` per threshold in `run_paper_trade.py`; tainted G1 portfolio wiped; clean slate on $1,000 for Finals G1 cron |
 
 ---
 
