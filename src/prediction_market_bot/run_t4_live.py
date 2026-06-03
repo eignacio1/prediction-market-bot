@@ -369,7 +369,7 @@ def main() -> None:
     arith  = LateGameArithmetic()
     loop   = T4EventLoop(store, model, arith)
     trader = PaperTrader(portfolio_path=_PORTFOLIO_PATH, logger=audit)
-    kalshi = KalshiMarketClient()
+    kalshi = KalshiMarketClient.from_env()
 
     # ---- Game ID discovery ----
     game_ids = _discover_game_ids()
