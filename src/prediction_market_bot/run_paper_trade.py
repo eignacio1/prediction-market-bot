@@ -10,11 +10,12 @@ Steps:
   1. Verify ENV-02 (BOT_ENV=paper); activate C4 in-process
   2. Resolve any open positions from previous game days (nba_api)
   3. Load serialized model + qualitative enrichment
-  4. Fetch live Kalshi KXNBAPTS markets (DS-02)
-  5. For each cohort player with active market:
-     a. Generate p_estimate
-     b. Route through C4 RiskEngine (Kelly sizing, hard limits)
-     c. If APPROVED: record paper order via PaperTrader
+  4. Fetch ALL live Kalshi KXNBAPTS markets (DS-02, paginated)
+  5. For each player with active market (market-first, not cohort-first):
+     a. Cohort players: EXP-005 feature vector + Poisson CDF (Path B)
+     b. Non-cohort players: dynamic nba_api pts_l10_mean + Poisson CDF only
+     c. Route through C4 RiskEngine (Kelly sizing, hard limits, reserve gate)
+     d. If APPROVED and reserve mandate satisfied: record paper order
   6. Log everything to C6; write paper_YYYYMMDD.json report
   7. Print portfolio summary
 
@@ -55,9 +56,16 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
 # Activate C4 in-process (paper trading; verified ENV-02 above)
 os.environ["BOT_C4_ACTIVE"] = "true"
 
+from collections import defaultdict
+
+from prediction_market_bot.c1_signal_ingestion.ingestion import (
+    NBAIngestionClient,
+    SEASON_TYPE_REGULAR,
+)
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
+from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
@@ -85,6 +93,8 @@ REPORT_PATH   = LOG_DIR / f"paper_{GAME_DATE}.json"
 EDGE_YES = 0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
+RESERVE_MANDATE_PCT = 0.40  # batch reserve gate — stops new bets when bankroll nears floor
+DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player stat lookup
 
 # ADR-0010: T1 band Kelly fraction (0.10). Read from execution_bands so that any
 # future ADR updating the band config automatically propagates here.
@@ -270,62 +280,102 @@ def main() -> None:
         print(f"ERROR: {e}", file=sys.stderr); sys.exit(1)
 
     # ------------------------------------------------------------------
-    # 6. Generate forecasts + C4 evaluation + paper orders
+    # 6. Generate forecasts + C4 evaluation + paper orders (market-first)
+    #
+    # Iterates over ALL live Kalshi markets (not just the EXP-005 cohort).
+    # For cohort players: uses EXP-005 feature vector + Poisson CDF (Path B).
+    # For non-cohort players: fetches pts_l10_mean from nba_api dynamically,
+    #   then Poisson CDF only (p_estimate_lr = None in C6 log).
     # ------------------------------------------------------------------
     orders, passes = [], []
 
+    # Build O(1) cohort lookup by normalized player name
+    cohort_lookup: dict[str, pd.Series] = {}
     for _, row in latest.iterrows():
-        player_name = str(row.get("player_name", ""))
-        player_id   = int(row.get("player_id", 0))
-        last_name   = player_name.split()[-1] if player_name else ""
-        first_init  = player_name[0].upper() if player_name else ""
+        norm = normalize_player_name(str(row.get("player_name", "")))
+        cohort_lookup[norm] = row
 
-        player_mkts = [
-            m for m in snap.markets
-            if last_name.upper() in m.player_name.upper()
-            and first_init in m.player_name.upper()
-            and m.status == "active"
-            and m.has_live_quotes
-        ]
-        if not player_mkts:
-            continue
+    # Group active quoted markets by Kalshi player name
+    markets_by_player: dict[str, list] = defaultdict(list)
+    for m in snap.markets:
+        if m.status == "active" and m.has_live_quotes:
+            markets_by_player[m.player_name].append(m)
 
-        pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+    print(f"  {len(markets_by_player)} players in live markets | "
+          f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
+
+    # Ingester + cache for non-cohort dynamic stat fetch (rate-limited by C1 throttle)
+    _ingester = NBAIngestionClient(logger=logger, snapshot_id=SNAPSHOT_ID)
+    _pts_cache: dict[str, float] = {}
+
+    _reserve_halted = False
+
+    for kalshi_player_name, player_mkts in markets_by_player.items():
+        if _reserve_halted:
+            break
+
+        norm = normalize_player_name(kalshi_player_name)
+
+        # --- Resolve player stats ---
+        row = cohort_lookup.get(norm)
+        if row is not None:
+            player_id = int(row.get("player_id", 0))
+            pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+            X = _impute(
+                np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
+                col_medians,
+            )
+            p_est_lr: float | None = float(pipeline.predict_proba(X)[0, 1])
+        else:
+            # Non-cohort: dynamic nba_api fetch (Poisson path only — no LR model)
+            if norm in _pts_cache:
+                pts_mean = _pts_cache[norm]
+            else:
+                nba_id = NBAIngestionClient.get_player_id_by_name(kalshi_player_name)
+                if nba_id is None:
+                    print(f"  [SKIP] {kalshi_player_name} — not in cohort, nba_api lookup failed")
+                    continue
+                ok_f, gl_df = _ingester.fetch_player_game_log(
+                    player_id=nba_id,
+                    season=DYNAMIC_FETCH_SEASON,
+                    season_type=SEASON_TYPE_REGULAR,
+                    session_id=SESSION_ID,
+                )
+                if not ok_f or gl_df.empty:
+                    print(f"  [SKIP] {kalshi_player_name} — dynamic fetch returned no data")
+                    continue
+                gl_df["_gd"] = pd.to_datetime(gl_df["game_date"], errors="coerce")
+                pts_mean = float(gl_df.sort_values("_gd").tail(10)["pts"].mean())
+                _pts_cache[norm] = pts_mean
+            player_id = 0
+            p_est_lr = None
+
         if np.isnan(pts_mean):
             continue
 
-        # Compute features once per player; LR p_est used for C6 logging only.
-        X = _impute(
-            np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
-            col_medians,
-        )
-        p_est = float(pipeline.predict_proba(X)[0, 1])
-
         for mkt in player_mkts:
+            if _reserve_halted:
+                break
+
             # Idempotency: skip if already holding an open position on this ticker
             _open_tickers = {p["kalshi_ticker"] for p in trader.get_state().get("open_positions", [])}
             if mkt.ticker in _open_tickers:
-                print(f"  [IDEMPOTENCY] SKIP {player_name} — {mkt.ticker} already in portfolio "
-                      f"({len(_open_tickers)} open tickers; portfolio: {PORTFOLIO_PATH})")
+                print(f"  [IDEMPOTENCY] SKIP {kalshi_player_name} — {mkt.ticker} already open")
                 continue
 
-            # T-129 Path B: threshold-specific probability via Poisson(pts_l10_mean).
-            # LR p_est is player-level (no kalshi_threshold feature) → same value for
-            # all thresholds → phantom edge at extremes (GG-008). Poisson CDF gives the
-            # correct per-threshold estimate without retraining the model.
+            # T-129 Path B: Poisson CDF gives threshold-specific probability
             thresh_int = int(mkt.threshold)
             p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)
 
-            mid   = mkt.mid_price
-            half  = mkt.half_spread
-            edge  = p_threshold - mid - half
+            mid  = mkt.mid_price
+            half = mkt.half_spread
+            edge = p_threshold - mid - half
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
-            # Route through C4 risk engine
             forecast_rec = {
                 "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
                 "p_estimate": p_threshold,
-                "p_estimate_lr": p_est,
+                "p_estimate_lr": p_est_lr,
                 "market_implied_prob": mid,
                 "edge": edge,
                 "recommended_direction": direction,
@@ -346,9 +396,28 @@ def main() -> None:
                 sys.exit(1)
 
             if status == "APPROVED":
+                approved_size = approval.get("approved_size", 0)
+
+                # Batch reserve gate: block if this bet would drop bankroll below 40% floor
+                if bankroll - approved_size < RESERVE_MANDATE_PCT * _initial_bankroll:
+                    reserve_floor = RESERVE_MANDATE_PCT * _initial_bankroll
+                    print(f"  [RESERVE GATE] BATCH HALT — "
+                          f"${bankroll:.2f} - ${approved_size:.2f} = "
+                          f"${bankroll - approved_size:.2f} < ${reserve_floor:.2f} floor. "
+                          f"No further bets.")
+                    logger.warning("PIPE-03", "reserve_mandate_batch_halt",
+                                   payload={"bankroll": bankroll,
+                                            "proposed_size": approved_size,
+                                            "reserve_floor": reserve_floor,
+                                            "player": kalshi_player_name,
+                                            "ticker": mkt.ticker},
+                                   session_id=SESSION_ID)
+                    _reserve_halted = True
+                    break
+
                 ok_pos, pos = trader.open_position(
                     approval=approval,
-                    player_name=player_name,
+                    player_name=kalshi_player_name,
                     player_id=player_id,
                     kalshi_ticker=mkt.ticker,
                     kalshi_threshold=mkt.threshold,
@@ -357,9 +426,9 @@ def main() -> None:
                     game_date=_ticker_to_game_date(mkt.ticker),
                     session_id=SESSION_ID,
                 )
-                size = approval.get("approved_size", 0)
-                print(f"  BET  {player_name:<22} {direction:<4}  ${size:.2f}  "
-                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts")
+                dyn_tag = "  [dyn]" if p_est_lr is None else ""
+                print(f"  BET  {kalshi_player_name:<22} {direction:<4}  ${approved_size:.2f}  "
+                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts{dyn_tag}")
                 if pos:
                     orders.append(pos)
                     _state = trader.get_state()
@@ -369,11 +438,11 @@ def main() -> None:
                     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
                     engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
                                        kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll)
-                    daily_loss += size if edge < 0 else 0
+                    daily_loss += approved_size if edge < 0 else 0
             else:
                 reason = approval.get("rejection_reason", "unknown")
                 if direction != "PASS":
-                    passes.append({"player": player_name, "direction": direction,
+                    passes.append({"player": kalshi_player_name, "direction": direction,
                                    "edge": round(edge, 3), "reason": reason})
 
     # ------------------------------------------------------------------

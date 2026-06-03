@@ -455,21 +455,38 @@ class KalshiMarketClient:
     def fetch_player_points_markets(
         self,
         status: str = "open",
-        limit: int = 200,
+        page_size: int = 200,
     ) -> tuple[bool, DS02Snapshot]:
-        """Fetch all open NBA player-points markets (KXNBAPTS series)."""
-        ok, data = self._get(
-            "/markets",
-            params={"limit": limit, "status": status, "series_ticker": SERIES_PLAYER_POINTS},
-        )
-        if not ok:
-            return False, DS02Snapshot(fetched_at=_utc_now(), markets=[])
+        """Fetch ALL open NBA player-points markets (KXNBAPTS series) with cursor pagination."""
+        all_raw: list[dict] = []
+        cursor: str | None = None
 
-        raw_markets = data.get("markets", [])
+        while True:
+            params: dict = {
+                "limit": page_size,
+                "status": status,
+                "series_ticker": SERIES_PLAYER_POINTS,
+            }
+            if cursor:
+                params["cursor"] = cursor
+
+            ok, data = self._get("/markets", params=params)
+            if not ok:
+                if not all_raw:
+                    return False, DS02Snapshot(fetched_at=_utc_now(), markets=[])
+                break
+
+            page = data.get("markets", [])
+            all_raw.extend(page)
+
+            cursor = data.get("cursor")
+            if not cursor or len(page) < page_size:
+                break
+
         fetched_at = _utc_now()
         markets: list[PlayerMarket] = []
 
-        for raw in raw_markets:
+        for raw in all_raw:
             ticker = raw.get("ticker", "")
             ok_detail, detail = self._get(f"/markets/{ticker}")
             if ok_detail:
