@@ -2,20 +2,36 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 19 (PDT) — Bug H drawdown fix + PAPER_T4_VIRTUAL mode applied to `run_t4_live.py` (commit `706264b`). Old screen `139678.t4_live` killed; `140907.t4_live` running with fix. G1/G2 game labels corrected throughout (SESSION 18 mislabeled G1 as G2). Finals schedule: G1=Jun 3 PDT, G2=Jun 5 PDT, G3=Jun 8 PDT. 695/695 tests on VPS.
+**Last reviewed:** 2026-06-02 SESSION 20 (PDT) — ADR-0013 T4 band budget architecture: `run_t4_live.py` updated, `ADR-0013_t4-throughput-capital-budget.md` written, `scripts/run_t4_budget_sim.py` verified. KI-026 architecture resolved. Pre-G1 Monte Carlo clean. DECISION_LOG updated. VPS deployment pending (must deploy before Finals G1 tip-off 00:30 UTC Jun 4).
 
 ---
 
-## SESSION 2026-06-02 SESSION 19 (PDT) — OPEN ITEMS
+## SESSION 2026-06-02 SESSION 20 (PDT) — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
+| **VPS deploy ADR-0013** | **Deploy updated `run_t4_live.py` to VPS before Finals G1 tip-off (00:30 UTC Jun 4)** | IO | **CRITICAL — before game** | `ssh root@157.230.91.33 'cd /opt/prediction-market-bot && git pull && screen -r 140907'`. Verify screen running updated code (check `T4 band budget` startup log line). If screen dead: `screen -S t4_live -dm bash -c 'BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_live.py'`. |
+| **Post-G1 T4 calibration** | **Run `run_t4_budget_sim.py --from-log logs/audit_t4.jsonl` after G1 to calibrate stubs** | DS | **HIGH — after G1** | Extract: (1) T4_BAND_WEIGHT = total_deployed / (bankroll × 0.60) at 50% coverage target; (2) T4_EXPECTED_TOTAL_EDGE = sum(edge) across all VIRTUAL fires. Replace stubs in `run_t4_live.py`. Log derivation in DECISION_LOG. Operator sign-off. Redeploy before G2. |
 | Finals Game 1 resolve | **Run `run_resolve_local.py` after Finals Game 1 ends (Jun 3 PDT ~11:30 PM EDT)** | DS | **HIGH — immediately after game** | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Then `fetch_kalshi_prices.py --portfolio` to sync pregame files for EXP-017. 11 open positions; all resolve on player stats (Kalshi order status irrelevant). EXP-017 n=2 → will grow. |
-| T4 monitor Finals Game 1 | **Monitor `140907.t4_live` during Finals Game 1 (00:30–03:30 UTC Jun 4 = Jun 3 PDT 8:30 PM–midnight)** | IO | **HIGH — game night** | `ssh root@157.230.91.33 'tail -f /opt/prediction-market-bot/logs/t4_live.log'`. Watch for: STATUS_SCHEDULED → STATUS_IN_PROGRESS transition; first cycle evaluation; "T4 VIRTUAL" lines (scale proof). Kill switch: `touch /opt/prediction-market-bot/logs/t4_kill_switch.flag`. |
-| KI-026 T4 sizing ADR | **Register T4 per-bet sizing model as required pre-Phase 8 task** | DS | HIGH — before T4 ACTIVE | T4 Kelly=0.20 at $600 bankroll = ~$120/bet. 5 bets depletes capital ceiling. Design intent (~1000 evaluations/game) requires radically smaller per-bet sizing model. PAPER_T4_VIRTUAL=true is correct interim mode. Must be resolved via ADR before T4 ACTIVE — separate from EXP-018 (which calibrates T4_MIN_DELTA_P, not bet size). |
+| T4 monitor Finals Game 1 | **Monitor `140907.t4_live` during Finals Game 1 (00:30–03:30 UTC Jun 4 = Jun 3 PDT 8:30 PM–midnight)** | IO | **HIGH — game night** | `ssh root@157.230.91.33 'tail -f /opt/prediction-market-bot/logs/t4_live.log'`. Watch for: `T4 band budget` startup line (confirms ADR-0013 deployed); STATUS_SCHEDULED → STATUS_IN_PROGRESS transition; `T4 VIRTUAL` lines with `budget_track=$X/$37` (scale proof + budget tracking). Kill switch: `touch /opt/prediction-market-bot/logs/t4_kill_switch.flag`. |
 | KI-027 API rate errors | **Investigate Kalshi HTTP 503/429 in second PIPE-03 window (01:30 UTC Jun 3)** | IO | MEDIUM | 4 positions recorded with failed-HTTP status (Wembanyama NO 40/35/30, Castle NO 30). Paper resolution unaffected. Root cause: rate limit (429) or server error (503)? Check VPS logs. May require backoff/retry logic in `paper_trader.py`. |
 | Portfolio reset option | **Evaluate portfolio reset to $1,000 before Finals Game 2 (Jun 5 PDT)** | DS | MEDIUM — post-Finals Game 1 resolve | After Finals Game 1 resolves: review bankroll, P&L, position outcomes. If mixed signal (canceled + failed positions muddy the evidence), reset to $1,000 clean slate before Finals Game 2 T1 cron (21:55 UTC Jun 5). Recommendation from SESSION 19: let Finals Game 1 run; reassess post-resolution. |
 | Finals Game 2 MC verify | **Run Monte Carlo before Finals Game 2 T1 cron to verify expected bet count** | DS | HIGH — Jun 5 PDT before 2:55 PM PDT | `BOT_ENV=paper PYTHONPATH=src python3 scripts/run_monte_carlo.py --label pre-g2`. Expect 40–50 bets (vs 11 for Finals Game 1 where first-window architecture was old). If still low: check cursor pagination, reserve floor, market availability. |
+
+---
+
+## SESSION 2026-06-02 SESSION 20 (PDT) — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| KI-026 ADR-0013 architecture | **T4 band budget architecture: Kelly scoped to `t4_band_budget`, not full portfolio bankroll** | ✅ COMPLETE 2026-06-02 SESSION 20 — `run_t4_live.py` updated (import RESERVE_MANDATE_PCT, T4_BAND_WEIGHT=0.10 stub, T4_EXPECTED_TOTAL_EDGE=5.0 stub, `_compute_t4_band_budget()`, `_make_engines(t4_band_budget)`, `_run_cycle()` returns updated `t4_deployed_usd`, main loop accumulates `t4_deployed_game`). ADR-0013 written at `03_DECISIONS/ADR-0013_t4-throughput-capital-budget.md`. Syntax OK. |
+| run_t4_budget_sim.py | **Write and verify T4 budget Monte Carlo simulation script** | ✅ COMPLETE 2026-06-02 SESSION 20 — `scripts/run_t4_budget_sim.py` written. Parametric mode (pre-G1) and empirical mode (`--from-log`, post-G1 calibration). Verified at $618.03 bankroll: budget=$37.08, avg 37 bets, exhausts at cycle 125/200 (63% into game), all bets floor to $1 paper minimum. Sensitivity: band_weight=0.15 → 73% exhaustion rate; band_weight=0.20 → 6.6% exhaustion rate. |
+| T1 Monte Carlo verification | **Confirm T1 Monte Carlo unaffected by T4 architecture changes** | ✅ COMPLETE 2026-06-02 SESSION 20 — `scripts/run_monte_carlo.py --label pre-G1-ADR-0013` ran clean. Same T1 logic, same bet structure. T4 changes isolated to `run_t4_live.py`. |
+| DECISION_LOG ADR-0013 entry | **Log ADR-0013 in DECISION_LOG per CLAUDE.md Rule 7** | ✅ COMPLETE 2026-06-02 SESSION 20 — ADR-0013 added to ADR Index table + Notable Judgment Calls with full derivation rationale. |
+
+---
+
+## SESSION 2026-06-02 SESSION 19 (PDT) — OPEN ITEMS (carried forward above)
 
 ---
 
