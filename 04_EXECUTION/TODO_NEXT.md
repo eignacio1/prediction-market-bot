@@ -2,7 +2,24 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED); initial_bankroll parameter added to RiskEngine; two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED: DECISION_LOG entries logged + decisions_logged: true in 7 files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed + VPS pulled. T1 pre-game bets for G1 (Jun 3) placed by Jun 2 22:00 UTC cron (night-before T1 band).
+**Last reviewed:** 2026-06-02 SESSION 16 — Monte Carlo protocol established: `scripts/run_monte_carlo.py` + `MONTE_CARLO_PROTOCOL.md` committed d8ec72d; DECISION_LOG Session 16 entry written. G1 T1 cron fired 22:00 UTC Jun 2: 7 bets / $381.97 deployed / bankroll $618.03. MC predicted 23 bets / $796 — discrepancy flagged for investigation. 695/695 tests on VPS.
+
+---
+
+## SESSION 2026-06-02 SESSION 16 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Monte Carlo protocol | **`scripts/run_monte_carlo.py` + `03_DECISIONS/MONTE_CARLO_PROTOCOL.md`** | ✅ COMPLETE 2026-06-02 SESSION 16 — CLI-parameterized general assessment tool; mirrors PIPE-03 Path B + Kelly exactly; 10k sims; BOT STATISTICS (bets placed/YES/NO split, bets exp. to WIN/LOSE, MC averages, total staked, reserve, per-player breakdown, bet-level detail, rejected list with reasons) + EV + P/L distribution + governance footer. `--label` + `--out` flags enable before/after comparison. `MONTE_CARLO_PROTOCOL.md` defines 8 trigger conditions, run procedures, output interpretation, known limitations. Decision logged in DECISION_LOG Session 16. Commit d8ec72d; VPS current. |
+| G1 T1 cron observation | **7 bets placed / $381.97 deployed (MC predicted 23 / $796)** | ✅ OBSERVED — G1 T1 cron fired 22:00 UTC Jun 2. Bankroll: $1,000 → $618.03. 7 open positions, 0 resolved. MC vs actual discrepancy (23 predicted → 7 placed) is the primary investigation item for next session. Hypothesis: Kalshi prices moved between PIPE-02 capture (21:30 UTC) and PIPE-03 execution (22:00 UTC), reducing edge below MIN_EDGE on most markets. |
+
+---
+
+## SESSION 2026-06-02 SESSION 16 — NEW OPEN ITEMS
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| KI-025 | **Investigate MC vs actual bet-count discrepancy (23 predicted → 7 placed in G1)** | DS | **HIGH — before G2** | MC predicted 23 bets / $796 deployed from pregame_20260603.json. VPS placed only 7 bets / $381.97. Two hypotheses: (1) Price drift — Kalshi prices moved in the 30 min between PIPE-02 capture (21:30 UTC) and PIPE-03 execution (22:00 UTC), dropping many markets below MIN_EDGE; (2) Market availability — some KXNBAPTS markets for non-Finals players may not have been active. Investigation: compare pregame_20260603.json `mid_price` values against actual execution prices in paper_early_cron.log. If hypothesis 1 confirmed, consider adding a "price staleness" check to MONTE_CARLO_PROTOCOL.md (caveat on MC accuracy when markets are moving pre-game). If prices were stable but bets weren't placed, check PIPE-03 idempotency logs. Check: `ssh root@157.230.91.33 "tail -200 /opt/prediction-market-bot/logs/paper_early_cron.log"` |
 
 ---
 

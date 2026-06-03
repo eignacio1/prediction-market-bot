@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-02 SESSION 15 — KI-018 RESOLVED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie max_daily_loss_usd=1000.0 (ADR-0012 ACCEPTED). initial_bankroll parameter added to RiskEngine; daily loss threshold = $150 (15% × $1,000 paper bankroll), fires before 20% drawdown ($200). Two independent kill switches restored. RESERVE_MANDATE_PCT=0.40 advisory wire: evaluate_forecast() emits WARNING when single bet exceeds 60% of bankroll. Documentation debt T-093–T-099 CLEARED: 8 DECISION_LOG entries (T-093–T-099 + ADR-0012 summary) + decisions_logged: true in 7 spec/governance files. 695/695 tests (+3 KI-018 regression guards). Committed 9337d14; pushed to GitHub + VPS pulled. G1 cron fires ~22:00 UTC Jun 3.  
+**Last reviewed:** 2026-06-02 SESSION 16 — Monte Carlo pre-game assessment protocol established. `scripts/run_monte_carlo.py` (general-purpose, CLI-parameterized; mirrors PIPE-03 Path B + Kelly exactly; 10k sims; BOT STATISTICS + EV + P/L distribution) + `03_DECISIONS/MONTE_CARLO_PROTOCOL.md` (trigger conditions, before/after comparison pattern, known limitations) committed d8ec72d; pushed to GitHub + VPS pulled. 695/695 tests on VPS. G1 T1 cron fired 22:00 UTC Jun 2: 7 bets placed / $381.97 deployed / bankroll $618.03 / 0 resolved. KEY FINDING: MC predicted 23 bets / $796 deployed but only 7 placed — live price divergence from pregame snapshot is the suspected cause (prices moved between 21:30 UTC PIPE-02 capture and 22:00 UTC PIPE-03 execution). Must monitor and flag if systematic.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,8 +23,8 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-02 SESSION 15** — KI-018 RESOLVED: ADR-0012 ACCEPTED (MAX_DAILY_LOSS_PCT=0.15; initial_bankroll parameter; two independent kill switches restored). RESERVE_MANDATE_PCT=0.40 advisory wired in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED (7 files; 8 DECISION_LOG entries). 695/695 tests. Committed 9337d14; VPS current. G1 cron fires ~22:00 UTC Jun 3. |
-| Previous major milestone | **2026-06-02 SESSION 13** — GG-008 (phantom edge on extreme thresholds) registered; Path B Poisson CDF fix approved; T4/T5 paper prototype activation approved; band Kelly hierarchy restructuring direction set (T1=0.10→T4=0.20→T5=0.25, ADR required); paper portfolio reset before G2 confirmed; dark period reframed as MLB/NFL expansion. 5 strategic decisions logged. |
+| Last major milestone | **2026-06-02 SESSION 16** — Monte Carlo protocol established: `scripts/run_monte_carlo.py` + `MONTE_CARLO_PROTOCOL.md`. G1 T1 cron fired (22:00 UTC Jun 2): 7 bets / $381.97 deployed / bankroll $618.03. MC vs actual discrepancy (23 predicted → 7 placed) registered as investigation item for next session. 695/695 tests; commit d8ec72d; VPS current. |
+| Previous major milestone | **2026-06-02 SESSION 15** — KI-018 RESOLVED: ADR-0012 ACCEPTED (MAX_DAILY_LOSS_PCT=0.15; initial_bankroll parameter; two independent kill switches restored). RESERVE_MANDATE_PCT=0.40 advisory wired in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED (7 files; 8 DECISION_LOG entries). 695/695 tests. Committed 9337d14; VPS current. |
 
 ---
 
