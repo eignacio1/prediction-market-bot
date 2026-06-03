@@ -35,12 +35,24 @@ C4, C6, C7, C8 are sport-agnostic and do not change when new sports are added. C
 
 ### Execution timing (T1–T5 bands)
 
-Bets are organized by when they are placed relative to game time:
+**The bands are not pre-decided time-horizon thresholds. The model computation determines which decision-tree bucket a bet routes to.**
+
+A bet that fires during a live game does not automatically belong to T4. The model evaluates available information — time remaining, score state, player stats, market price — and that computation determines which decision tree applies and therefore which band the bet executes on. Multiple bands can fire on the same market in the same game window. A bet in the third quarter might resolve to T1 (stale pregame model still dominates), T4 (live Bayesian update carries the signal), or both (CONFIRM/FADE protocol applies). The math decides.
+
+This framing has a direct architectural implication: **if the bot works as designed, one game — not one night of games, one game — produces approximately 1,000 bet evaluations by itself.** And it produces those 1,000 evaluations within the capital constraint, whether that ceiling is $500, $1,000, or $1M. The architecture must fit this. Capital sizing, kill switches, and decision routing cannot assume a small, discrete set of pre-scheduled bet events. They must be dynamically agnostic — operating per bucket, approaching per bet.
+
+Kill switches follow the same logic: a band-level kill switch (e.g., T4 budget exhausted) halts only that band. The system-level kill switch halts everything. Both tiers must be active simultaneously, independently, and without coupling to each other or to static game-time thresholds.
+
+**Every session must hold this framing.** When you are sizing a bet, designing a kill switch, writing a decision tree, or reviewing risk limits — the correct mental model is: ~1,000 evaluations per game, capital-ceiling agnostic, dynamically routed by model computation. If your implementation only makes sense for 10–20 bets per game night, something is architecturally wrong.
+
+The current band structure:
 
 - **T1:** Night-before baseline — the primary active band
 - **T2:** Same-day with injury overlay — skeleton; requires DS-04 qualitative source
 - **T3:** Pre-tip momentum scan — skeleton
 - **T4/T5:** In-play — future; post-G6
+
+The longer the time horizon, the more complex the decision tree (more data sources, more interaction effects, more model inputs). T1 is the simplest — historical rolling stats and rest factors. T4/T5 are the most complex — live Bayesian updates, real-time score state, within-game momentum, market microstructure. This complexity gradient is intentional and governs activation sequencing: simpler bands are activated first, complex bands after their decision trees are calibrated.
 
 ### Venue architecture
 
@@ -233,3 +245,4 @@ Then address what the user asked.
 6. Kill switch must halt all components within ≤60 seconds (NFR-03).
 7. Every strategic decision made in a session goes into DECISION_LOG.md immediately — not at session end.
 8. When context reaches ~80%: stop implementation, run /session-end, produce SESSION_HANDOFF, commit and push.
+9. **Design throughput is ~1,000 bet evaluations per game, capital-ceiling agnostic, dynamically routed by model computation — not 10–20 pre-scheduled bets per game night.** Any implementation that only makes sense at low throughput is architecturally wrong. Bet sizing, kill switches, and decision routing must all be designed to this scale. The model's computation determines which band a bet routes to — bands are not pre-decided time-horizon thresholds. Kill switches operate per bucket, approaching per bet.
