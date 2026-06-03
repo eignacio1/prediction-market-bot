@@ -183,6 +183,12 @@ class PaperTrader:
 
             entry_cost = size  # cost = size (we pay mid_price per $1 contract)
 
+            model_p    = float(approval.get("model_p", 0.0))
+            gross_edge = float(approval.get("edge", 0.0))
+            fee_per_contract = round(0.07 * mid_price * (1.0 - mid_price), 6)
+            fee_net_edge = round(gross_edge - fee_per_contract, 6)
+            probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)
+
             if pool_isolated:
                 # T4 flat-sizing mode: position recorded; main bankroll unchanged.
                 # T4 tracks its own pool via t4_deployed_usd in run_t4_live.py.
@@ -216,6 +222,12 @@ class PaperTrader:
                 "kalshi_order_id": None,
                 "kalshi_order_status": "local_only",
                 "kalshi_contracts": None,
+                "model_p": round(model_p, 6),
+                "gross_edge": round(gross_edge, 6),
+                "fee_per_contract": fee_per_contract,
+                "fee_net_edge": fee_net_edge,
+                "fee_contaminated": bool(fee_net_edge < 0.0),
+                "probable_injury_signal": probable_injury_signal,
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)
