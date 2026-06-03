@@ -182,6 +182,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-010 — T5 Band Budget Shares T4 Allocation: T4 Depletion Can Starve T5 Firing Window
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-010 |
+| Category | Architectural note — shared in-play budget; resolved by design intent |
+| What was missed | `run_t4_live.py` passes the same `t4_band_budget` to both T4 and T5 RiskEngine calls. Concern was T4 depleting budget before T5's Q4 firing window. |
+| When it should have been caught | ADR-0013 design. |
+| Phases it survived | ADR-0013 ACCEPTED 2026-06-02 → SESSION 22/23 paper validation |
+| Why it survived | T5 was SKELETON; the shared budget was implicit. |
+| Impact | Under correct validity-math calibration: T5's arithmetic certainty gate is strict (p ≥ 0.85, final 3 min only) — T5 events are infrequent enough that T4 budget depletion before a T5 window is not a realistic scenario. If T4 IS depleting before T5 fires, the root cause is T4_MIN_DELTA_P miscalibration (T4 firing too aggressively), not a budget allocation design flaw. Fix is EXP-018 (T4_MIN_DELTA_P calibration), not a separate T5 budget. |
+| Discovery | 2026-06-03 SESSION 23 — ADR-0014 T-130. |
+| Resolution | **DS decision 2026-06-03 SESSION 23:** No dedicated band budgets. Bands are bucket filters with independent kill switches and specific validity math. Shared budget is correct; per-band kill switches prevent runaway. If T5 is starved, that indicates T4 validity math is miscalibrated — fix EXP-018, not the budget architecture. ADR-0014 Q2 resolved: Option A (shared, current) is design intent, not a fallback. |
+| Status | RESOLVED — 2026-06-03 SESSION 23; DS decision: no dedicated band budgets; shared budget + per-band kill switches is the correct architecture |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
@@ -191,6 +208,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-003 | 2026-06-01 | ADR-0007: GOVERNANCE_GAP_LOG.md mandated; ARE WE COMPROMISED? protocol added |
 | GG-005 | 2026-06-01 | APR-0017 v2 ACCEPTED: all criteria expressed as rates/slopes with derived thresholds; Q7 protocol in CLAUDE.md |
 | GG-008 | 2026-06-02 | T-129 Path B: `p_est` replaced with `Poisson_CDF(threshold, pts_l10_mean)` per threshold in `run_paper_trade.py`; tainted G1 portfolio wiped; clean slate on $1,000 for Finals G1 cron |
+| GG-010 | 2026-06-03 | DS decision: no dedicated band budgets; shared budget + per-band kill switches is design intent. If T5 starved → root cause is T4_MIN_DELTA_P miscalibration → fix EXP-018, not budget architecture. ADR-0014 Q2 closed. |
 
 ---
 
