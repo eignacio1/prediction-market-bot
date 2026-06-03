@@ -93,7 +93,7 @@ REPORT_PATH   = LOG_DIR / f"paper_{GAME_DATE}.json"
 EDGE_YES = 0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
-RESERVE_MANDATE_PCT = 0.40  # batch reserve gate — stops new bets when bankroll nears floor
+RESERVE_MANDATE_PCT = float(os.environ.get("RESERVE_MANDATE_PCT", "0.40"))  # batch reserve gate; override in .env for paper testing (e.g. 0.20 with T4 VIRTUAL)
 DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player stat lookup
 
 # ADR-0010: T1 band Kelly fraction (0.10). Read from execution_bands so that any
