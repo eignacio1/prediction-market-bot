@@ -574,6 +574,7 @@ def _run_cycle(
                     vig=vig,
                     game_date=game_date,
                     session_id=session_id,
+                    pool_isolated=PAPER_T4_FLAT_SIZING,
                 )
                 if not ok:
                     logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)

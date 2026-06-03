@@ -159,11 +159,15 @@ class PaperTrader:
         vig: float,
         game_date: str,
         session_id: str | None = None,
+        pool_isolated: bool = False,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Record a C4-approved paper bet.
 
-        Deducts the approved size from the paper bankroll.
+        Deducts the approved size from the paper bankroll unless pool_isolated=True,
+        in which case the position is recorded but the main bankroll is not touched.
+        Used for T4 flat-sizing paper mode where T4 tracks its own pool independently
+        (PAPER_T4_FLAT_SIZING=True) so T1 and T4 do not compete for the same bankroll.
         Logs to C6. Returns (ok, position_record).
         """
         with self._lock:
@@ -177,17 +181,22 @@ class PaperTrader:
             if size <= 0 or direction == "PASS":
                 return True, {}
 
-            # Deduct from bankroll
             entry_cost = size  # cost = size (we pay mid_price per $1 contract)
-            if entry_cost > self._state["bankroll_usd"]:
-                ok = self._logger.warning(
-                    COMPONENT, "insufficient_bankroll",
-                    payload={"required": entry_cost, "available": self._state["bankroll_usd"]},
-                    session_id=session_id,
-                )
-                return ok, {}
 
-            self._state["bankroll_usd"] = round(self._state["bankroll_usd"] - entry_cost, 4)
+            if pool_isolated:
+                # T4 flat-sizing mode: position recorded; main bankroll unchanged.
+                # T4 tracks its own pool via t4_deployed_usd in run_t4_live.py.
+                pass
+            else:
+                # Deduct from bankroll
+                if entry_cost > self._state["bankroll_usd"]:
+                    ok = self._logger.warning(
+                        COMPONENT, "insufficient_bankroll",
+                        payload={"required": entry_cost, "available": self._state["bankroll_usd"]},
+                        session_id=session_id,
+                    )
+                    return ok, {}
+                self._state["bankroll_usd"] = round(self._state["bankroll_usd"] - entry_cost, 4)
 
             pos = {
                 "position_id": f"POS-{uuid.uuid4().hex[:10].upper()}",
