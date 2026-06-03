@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-02 SESSION 17 — Market-first coverage + batch reserve gate + cursor pagination + cron retiming. Three root causes of 24-bet ceiling identified and fixed: (1) KI-025 price drift (PIPE-02 21:30→21:55 UTC + second PIPE-02 at 01:25 UTC); (2) 55-player cohort ceiling → market-first loop + dynamic nba_api fallback for non-cohort players (Poisson-only); (3) 200-market API cap → cursor pagination in `fetch_player_points_markets`. Batch reserve gate added to PIPE-03 (`RESERVE_MANDATE_PCT=0.40 * _initial_bankroll`). 5 DECISION_LOG entries written. Commit e74cd52; 695/695 tests on VPS; VPS deployed.  
+**Last reviewed:** 2026-06-03 SESSION 18 — PIPE-07 T4 live execution fully wired and deployed. `run_t4_live.py` built: ESPN API replaces blocked NBA CDN (Akamai WAF blocks DO cloud IPs); `_espn_poll_once()` + `_espn_game_ids_today()`; 45s polling cycle; T4EventLoop → staged_order_store → C4 → PaperTrader; ghost-protection ordering (ACID SQLite stage BEFORE JSON open); per-cycle `fired_tickers` deduplication; `MIN_BET_T4_PAPER=1.0` paper override; `BOT_C4_ACTIVE` env guard. VPS: screen `139678.t4_live` live, polling ESPN game 401859963 (NYK vs SAS, 00:30 UTC Jun 4). 4 DECISION_LOG entries. 695/695 tests on VPS. Commits: `451abf2`, `47e9a2b`, `2446a02`.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,8 +23,8 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-02 SESSION 17** — 24-bet ceiling root-caused and fixed: market-first loop (covers all Kalshi players), dynamic nba_api fallback (non-cohort Poisson path), cursor pagination (all KXNBAPTS pages), batch reserve gate (PIPE-03 halts at 40% reserve floor), cron retiming (KI-025 RESOLVED). 5 DECISION_LOG entries. Commit e74cd52; 695/695 tests; VPS deployed. |
-| Previous major milestone | **2026-06-02 SESSION 16** — Monte Carlo protocol established: `scripts/run_monte_carlo.py` + `MONTE_CARLO_PROTOCOL.md`. G1 T1 cron fired (22:00 UTC Jun 2): 7 bets / $381.97 deployed / bankroll $618.03. MC vs actual discrepancy (23 predicted → 7 placed) root-caused and fixed in Session 17. 695/695 tests; commit d8ec72d; VPS current. |
+| Last major milestone | **2026-06-03 SESSION 18** — PIPE-07 T4 live execution built and deployed. `run_t4_live.py`: ESPN API (NBA CDN blocked on VPS), 45s poll cycle, T4EventLoop→C4→PaperTrader full wiring, ghost-protection, per-cycle dedup, paper $1 floor. VPS screen `139678.t4_live` live — will auto-activate when NYK vs SAS G2 tip-off status changes to IN_PROGRESS (00:30 UTC Jun 4). 4 DECISION_LOG entries. 695/695 tests. Commits `451abf2`/`47e9a2b`/`2446a02`. |
+| Previous major milestone | **2026-06-02 SESSION 17** — 24-bet ceiling root-caused and fixed: market-first loop (covers all Kalshi players), dynamic nba_api fallback (non-cohort Poisson path), cursor pagination (all KXNBAPTS pages), batch reserve gate (PIPE-03 halts at 40% reserve floor), cron retiming (KI-025 RESOLVED). 5 DECISION_LOG entries. Commit e74cd52; 695/695 tests; VPS deployed. |
 
 ---
 

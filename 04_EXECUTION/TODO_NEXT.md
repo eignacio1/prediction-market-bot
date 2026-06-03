@@ -2,7 +2,28 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 17 — Market-first coverage + batch reserve gate + cursor pagination + cron retiming. All four root causes of 24-bet ceiling fixed. KI-025 RESOLVED. Commit e74cd52; 695/695 tests on VPS; VPS deployed.
+**Last reviewed:** 2026-06-03 SESSION 18 — PIPE-07 T4 live execution fully wired and deployed on VPS. ESPN API replaces blocked NBA CDN. `run_t4_live.py` committed (`2446a02`), screen session `139678.t4_live` running, confirmed polling ESPN game 401859963 (NYK vs SAS, 00:30 UTC Jun 4). 695/695 tests on VPS.
+
+---
+
+## SESSION 2026-06-03 SESSION 18 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| PIPE-07 T4 live | **`run_t4_live.py` — full PIPE-07 wiring T4EventLoop → staged_order_store → C4 → PaperTrader** | ✅ COMPLETE 2026-06-03 SESSION 18 — `src/prediction_market_bot/run_t4_live.py` built from scratch. 45s poll cycle, ESPN live boxscore, per-cycle `fired_tickers` deduplication, ghost-protection ordering (stage BEFORE open), `MIN_BET_T4_PAPER=1.0` paper override. ESPN API replaces blocked NBA CDN (`cdn.nba.com` / `stats.nba.com` return 403 from DO VPS via Akamai WAF). `KalshiMarketClient.from_env()` fix committed. `BOT_C4_ACTIVE=true` added to VPS `.env`. Commits: `451abf2` (from_env fix), `47e9a2b` (PIPE-07 build), `2446a02` (ESPN main loop). VPS screen `139678.t4_live` running; confirmed polling game `401859963` (NYK vs SAS), sleeping until tip-off 00:30 UTC Jun 4. 695/695 tests on VPS. |
+| ESPN API source | **Replace NBALiveFeed with ESPN API for T4 live data** | ✅ COMPLETE 2026-06-03 SESSION 18 — `_espn_game_ids_today()`, `_parse_espn_clock()`, `_espn_poll_once()` implemented in `run_t4_live.py`. Player matching via `name_to_pregame` dict (normalized lowercase). `_load_pregame_context()` updated to return 3-tuple (by_player_id, by_ticker, name_to_pregame). Main loop: `for gid in game_ids: all_states.extend(_espn_poll_once(gid, name_to_pregame))`. Decision logged. |
+| risk.py MIN_BET_USD | **Add `min_bet_usd` init param to RiskEngine for paper T4 override** | ✅ COMPLETE 2026-06-03 SESSION 18 — `min_bet_usd: float | None = None` param on `RiskEngine.__init__()`. CHECK 7 uses `self._min_bet_usd` instead of `MIN_BET_USD`. Live path unchanged. Paper T4 uses `$1.0` floor. No ADR required (paper-only). Decision logged. |
+| Session documentation | **DECISION_LOG entries (4 decisions), TODO_NEXT, MEMORY_BANK, SESSION_HANDOFF** | ✅ COMPLETE 2026-06-03 SESSION 18 — All governance artifacts updated. |
+
+---
+
+## SESSION 2026-06-03 SESSION 18 — OPEN ITEMS (game night)
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| G2 resolve | **Run `run_resolve_local.py` after G2 tip-off resolves (Jun 4 post-game)** | DS | **HIGH — immediately after game** | After NYK vs SAS G2 ends: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Then run `fetch_kalshi_prices.py --portfolio` to sync VPS pregame files for EXP-017. EXP-017 n=2 → will grow to n=2 + Finals G2 market count (~35 markets). |
+| T4 monitor | **Monitor t4_live screen session during G2 (00:30–03:30 UTC Jun 4)** | IO | **HIGH — game night** | `ssh root@157.230.91.33 'tail -f /opt/prediction-market-bot/logs/t4_live.log'`. Watch for: (1) status transitions from STATUS_SCHEDULED → STATUS_IN_PROGRESS; (2) first `_run_cycle()` execution; (3) FIRE_BAYESIAN / FIRE_T5 events; (4) any ESPN fetch errors or NameError. Kill switch: `ssh root@157.230.91.33 'touch /opt/prediction-market-bot/logs/t4_kill_switch.flag'` |
+| T4 session doc | **Register ESPN API source decision in a new ADR (DS-02 replacement ADR) if T4 goes ACTIVE** | DS | MEDIUM — dark period | ADR-0011 scoped T4 to "NBA Stats API CDN polling" — that's now ESPN API. If T4 evidence (EXP-018) validates the approach, ADR-0011 should be superseded by an ADR that explicitly names ESPN as the DS-02 source and documents its limitations (unofficial API, no SLA guarantee, schema may change). |
 
 ---
 
