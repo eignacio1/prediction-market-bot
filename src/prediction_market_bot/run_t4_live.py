@@ -248,8 +248,10 @@ def _espn_poll_once(
 
 POLL_INTERVAL_S = 45
 PACE_MINUTES_PER_GAME = 36.0   # approx starter minutes used for pace_pts_per_min calc
-MIN_BET_T4_PAPER = 1.0         # paper T4: $1 floor (live uses $10 global MIN_BET_USD)
-PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "true").lower() in ("true", "1", "yes")
+MIN_BET_T4_PAPER = 0.01        # paper T4: Kalshi actual minimum (1 contract at lowest price)
+PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "false").lower() in ("true", "1", "yes")
+PAPER_T4_FLAT_SIZING = os.environ.get("PAPER_T4_FLAT_SIZING", "true").lower() in ("true", "1", "yes")
+PAPER_T4_POOL_USD = float(os.environ.get("PAPER_T4_POOL_USD", "500.0"))
 SNAPSHOT_ID = "T4-LIVE"
 SESSION_ID_PREFIX = "T4"
 
@@ -507,6 +509,13 @@ def _run_cycle(
 
             approved_size = float(approval["approved_size"])
 
+            # Flat sizing: 1 contract at market price (paper throughput validation).
+            # Overrides Kelly so every approved bet fires at the same unit cost,
+            # decoupling actual bet COUNT from the Kelly-sized amount.
+            if PAPER_T4_FLAT_SIZING:
+                approved_size = mip
+                approval = {**approval, "approved_size": approved_size}
+
             # ---- Ghost protection: stage before portfolio write ----
             valid_until = (
                 datetime.now(timezone.utc) + timedelta(hours=4)
@@ -662,12 +671,27 @@ def main() -> None:
     # ---- T4 band budget (ADR-0013) ----
     # Computed once at session start from current portfolio state.
     # Held fixed for the game; Kelly operates on this allocation, not full bankroll.
-    t4_band_budget = _compute_t4_band_budget(trader.get_state())
+    # PAPER_T4_FLAT_SIZING=true: use PAPER_T4_POOL_USD directly — flat 1-contract sizing
+    # decouples bet count from Kelly amount; pool must accommodate ~1,050 × avg market price.
+    if PAPER_T4_FLAT_SIZING:
+        t4_band_budget = PAPER_T4_POOL_USD
+    else:
+        t4_band_budget = _compute_t4_band_budget(trader.get_state())
     t4_deployed_game = 0.0
-    logger.info(
-        "T4 band budget: $%.2f  (T4_BAND_WEIGHT=%.2f × deployable)  [ADR-0013 — STUB values until G1 calibration]",
-        t4_band_budget, T4_BAND_WEIGHT,
-    )
+    if PAPER_T4_FLAT_SIZING:
+        logger.info(
+            "T4 band budget: $%.2f  (PAPER_T4_POOL_USD — flat sizing mode, bypasses ADR-0013 Kelly budget)",
+            t4_band_budget,
+        )
+        logger.info(
+            "PAPER_T4_FLAT_SIZING=true: 1-contract flat sizing active. "
+            "~1,050 bets × avg $0.50/contract ≈ $525 total stake. Pool=$%.2f", PAPER_T4_POOL_USD,
+        )
+    else:
+        logger.info(
+            "T4 band budget: $%.2f  (T4_BAND_WEIGHT=%.2f × deployable)  [ADR-0013 — STUB values until G1 calibration]",
+            t4_band_budget, T4_BAND_WEIGHT,
+        )
     if PAPER_T4_VIRTUAL:
         logger.info(
             "PAPER_T4_VIRTUAL=true: budget tracked for calibration, ceiling NOT enforced. "
@@ -675,8 +699,7 @@ def main() -> None:
         )
     else:
         logger.info(
-            "PAPER_T4_VIRTUAL=false: band budget ceiling ENFORCED. "
-            "Ensure T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE are calibrated from G1 data (ADR-0013)."
+            "PAPER_T4_VIRTUAL=false: band budget ceiling ENFORCED. Bets fire as actual paper positions."
         )
 
     # ---- Main polling loop ----
