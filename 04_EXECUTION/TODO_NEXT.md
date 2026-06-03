@@ -2,7 +2,18 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-03 SESSION 18 — PIPE-07 T4 live execution fully wired and deployed on VPS. ESPN API replaces blocked NBA CDN. `run_t4_live.py` committed (`2446a02`), screen session `139678.t4_live` running, confirmed polling ESPN game 401859963 (NYK vs SAS, 00:30 UTC Jun 4). 695/695 tests on VPS.
+**Last reviewed:** 2026-06-02 SESSION 19 (PDT) — Bug H drawdown fix + PAPER_T4_VIRTUAL mode applied to `run_t4_live.py` (commit `706264b`). Old screen `139678.t4_live` killed; `140907.t4_live` running with fix. G1/G2 game labels corrected throughout (game 401859963 = **Finals G1**, tips Jun 3 PDT; G2=Jun 5 PDT; G3=Jun 8 PDT). 695/695 tests on VPS.
+
+---
+
+## SESSION 2026-06-02 SESSION 19 (PDT) — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Bug H drawdown fix (T4) | **Fix drawdown calculation in `run_t4_live.py` — deployed T1 capital counted as realized loss** | ✅ COMPLETE 2026-06-02 SESSION 19 — `_realized_loss = max(0.0, -portfolio.get("total_realized_pnl", 0.0))`. Old formula: `(initial - current) / initial` counted deployed T1 capital (~$540) as loss → 54% false drawdown → C4 kill switch rejected ALL T4 bets pre-game. Fix matches PIPE-03 reference pattern. Commit `706264b`. |
+| PAPER_T4_VIRTUAL mode | **Add virtual mode: C4 evaluates + stages bets without bankroll deduction** | ✅ COMPLETE 2026-06-02 SESSION 19 — `PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "true").lower() in ("true", "1", "yes")`. Virtual path: `store.mark_fired()` + logger `"T4 VIRTUAL"` line, no `trader.open_position()`. Proves architecture fires at ~1000s/game without depleting T1 capital pool. Commit `706264b`. |
+| VPS screen restart | **Kill old screen `139678.t4_live`; restart with Bug H fix** | ✅ COMPLETE 2026-06-02 SESSION 19 — Old screen ran stale code with drawdown bug. `git pull` → commit `706264b`. New screen `140907.t4_live` confirmed running, polling game 401859963 (STATUS_SCHEDULED → will auto-activate at G1 tip-off 00:30 UTC Jun 4). |
+| G1/G2 label correction | **Correct game label errors: SESSION 18 mislabeled game 401859963 as G2; corrected to G1** | ✅ COMPLETE 2026-06-02 SESSION 19 — ESPN confirmed: 401859963 = NYK vs SAS 2026-06-04T00:30Z = Finals **G1** (Jun 3 PDT). MEMORY_BANK + TODO_NEXT corrected throughout. Finals schedule pinned: G1=Jun 3 PDT (401859963), G2=Jun 5 PDT (401859964), G3=Jun 8 PDT (401859965). |
 
 ---
 
@@ -21,8 +32,8 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| G2 resolve | **Run `run_resolve_local.py` after G2 tip-off resolves (Jun 4 post-game)** | DS | **HIGH — immediately after game** | After NYK vs SAS G2 ends: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Then run `fetch_kalshi_prices.py --portfolio` to sync VPS pregame files for EXP-017. EXP-017 n=2 → will grow to n=2 + Finals G2 market count (~35 markets). |
-| T4 monitor | **Monitor t4_live screen session during G2 (00:30–03:30 UTC Jun 4)** | IO | **HIGH — game night** | `ssh root@157.230.91.33 'tail -f /opt/prediction-market-bot/logs/t4_live.log'`. Watch for: (1) status transitions from STATUS_SCHEDULED → STATUS_IN_PROGRESS; (2) first `_run_cycle()` execution; (3) FIRE_BAYESIAN / FIRE_T5 events; (4) any ESPN fetch errors or NameError. Kill switch: `ssh root@157.230.91.33 'touch /opt/prediction-market-bot/logs/t4_kill_switch.flag'` |
+| G1 resolve | **Run `run_resolve_local.py` after G1 tip-off resolves (Jun 4 UTC post-game)** | DS | **HIGH — immediately after game** | After NYK vs SAS **G1** ends (tips 00:30 UTC Jun 4 = Jun 3 PDT 8:30 PM EDT): `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Then run `fetch_kalshi_prices.py --portfolio` to sync VPS pregame files for EXP-017. EXP-017 n=2 → will grow to n=2 + Finals **G1** market count (~35 markets). |
+| T4 monitor | **Monitor t4_live screen session during G1 (00:30–03:30 UTC Jun 4 = Jun 3 PDT evening)** | IO | **HIGH — G1 game night Jun 3 PDT** | `ssh root@157.230.91.33 'tail -f /opt/prediction-market-bot/logs/t4_live.log'`. Watch for: (1) status transitions from STATUS_SCHEDULED → STATUS_IN_PROGRESS; (2) first `_run_cycle()` execution; (3) T4 VIRTUAL log lines (scale proof); (4) any ESPN fetch errors or NameError. Kill switch: `ssh root@157.230.91.33 'touch /opt/prediction-market-bot/logs/t4_kill_switch.flag'` |
 | T4 session doc | **Register ESPN API source decision in a new ADR (DS-02 replacement ADR) if T4 goes ACTIVE** | DS | MEDIUM — dark period | ADR-0011 scoped T4 to "NBA Stats API CDN polling" — that's now ESPN API. If T4 evidence (EXP-018) validates the approach, ADR-0011 should be superseded by an ADR that explicitly names ESPN as the DS-02 source and documents its limitations (unofficial API, no SLA guarantee, schema may change). |
 
 ---
@@ -43,7 +54,7 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| MC verify | **Verify next Finals game bet count with new architecture** | DS | **HIGH — G3 (Jun 9)** | All four fixes are live on VPS. The next Finals game is the first real test: expect 40–50 bets (vs 7 in G1 and 24 MC prediction from stale cohort-first data). If bet count is still low, check: (1) how many active KXNBAPTS markets Kalshi has for the game; (2) whether non-cohort players resolve via dynamic nba_api path; (3) whether `_reserve_halted` fires prematurely. Run MC after PIPE-02 fires (21:55 UTC) to compare prediction vs actual. |
+| MC verify | **Verify next Finals game bet count with new architecture** | DS | **HIGH — G2 (Jun 5 PDT / Jun 6 00:30 UTC, game 401859964)** | All four fixes are live on VPS. G2 is the first real test of the market-first loop + cursor pagination + cron retiming: expect 40–50 bets (vs 7 in G1 with old architecture). If bet count is still low, check: (1) how many active KXNBAPTS markets Kalshi has for the game; (2) whether non-cohort players resolve via dynamic nba_api path; (3) whether `_reserve_halted` fires prematurely. Run MC after PIPE-02 fires (21:55 UTC) to compare prediction vs actual. Finals schedule: G1=Jun 3 PDT, G2=Jun 5 PDT, G3=Jun 8 PDT, G4=Jun 10 PDT, G5=Jun 13 PDT. |
 | EXP-017 | **Re-run EXP-017 after each game to accumulate n toward G6 floor (≥66)** | DS | HIGH | n=2 unique resolved markets as of session end. Every Finals game adds ~7–50 markets. Run T-109 procedure after each game (local resolution, then fetch pregame files from VPS). |
 
 ---
