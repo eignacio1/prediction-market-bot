@@ -29,6 +29,13 @@ MIN_BET override:
     paper mode passes min_bet_usd=1.0 to RiskEngine, bypassing the
     live $10 floor. Evidence accumulation at paper scale requires
     volume, not dollar threshold. Change requires ADR at G6.
+
+PAPER_T4_VIRTUAL mode (default: enabled):
+    When PAPER_T4_VIRTUAL=true, C4 evaluates + stages every approved
+    bet, but does NOT deduct from bankroll. This proves the architecture
+    fires at scale (~1000s of bets per game) without depleting T1 capital.
+    Disable with PAPER_T4_VIRTUAL=false to use real portfolio deduction.
+    Virtual bets appear in logs/audit_t4.jsonl and staged_orders.db.
 """
 
 from __future__ import annotations
@@ -242,6 +249,7 @@ def _espn_poll_once(
 POLL_INTERVAL_S = 45
 PACE_MINUTES_PER_GAME = 36.0   # approx starter minutes used for pace_pts_per_min calc
 MIN_BET_T4_PAPER = 1.0         # paper T4: $1 floor (live uses $10 global MIN_BET_USD)
+PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "true").lower() in ("true", "1", "yes")
 SNAPSHOT_ID = "T4-LIVE"
 SESSION_ID_PREFIX = "T4"
 
@@ -353,7 +361,11 @@ def _run_cycle(
     current_bankroll   = portfolio["bankroll_usd"]
     initial_bankroll   = portfolio.get("initial_bankroll_usd", current_bankroll)
     current_daily_loss = portfolio.get("current_daily_loss", 0.0)
-    drawdown = max(0.0, (initial_bankroll - current_bankroll) / initial_bankroll)
+    # Bug H fix: drawdown = realized losses only (deployed T1 capital is not a loss).
+    # Without this fix, T1 deploying $382 shows 38.2% drawdown — above the 20% kill
+    # switch — and C4 rejects every T4 bet before the game starts.
+    _realized_loss = max(0.0, -portfolio.get("total_realized_pnl", 0.0))
+    drawdown = _realized_loss / initial_bankroll if initial_bankroll > 0 else 0.0
 
     state_by_id = {ls.player_id: ls for ls in live_states}
 
@@ -469,30 +481,41 @@ def _run_cycle(
                 logger.warning("stage_order failed for %s: %s — skipping", ticker, exc)
                 continue
 
-            # ---- Execute: portfolio write ----
-            ok, pos = trader.open_position(
-                approval=approval,
-                player_name=mkt_ctx["player_name"],
-                player_id=int(player_id),
-                kalshi_ticker=ticker,
-                kalshi_threshold=int(mkt_ctx["threshold"]),
-                mid_price=mip,
-                vig=vig,
-                game_date=game_date,
-                session_id=session_id,
-            )
-            if not ok:
-                logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)
-                return evaluated, fired
-
-            if pos:
+            # ---- Execute: virtual log OR portfolio write ----
+            if PAPER_T4_VIRTUAL:
+                # Virtual mode: C4 approved — stage + log, no bankroll deduction.
+                # Proves architecture fires at scale without depleting T1 capital.
                 store.mark_fired(order_id)
                 fired_tickers.add(ticker)
                 fired += 1
                 logger.info(
-                    "T4 FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f  cycle=%s",
+                    "T4 VIRTUAL %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f  cycle=%s",
                     ticker, direction, approved_size, p_est, mip, edge, cycle_id,
                 )
+            else:
+                ok, pos = trader.open_position(
+                    approval=approval,
+                    player_name=mkt_ctx["player_name"],
+                    player_id=int(player_id),
+                    kalshi_ticker=ticker,
+                    kalshi_threshold=int(mkt_ctx["threshold"]),
+                    mid_price=mip,
+                    vig=vig,
+                    game_date=game_date,
+                    session_id=session_id,
+                )
+                if not ok:
+                    logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)
+                    return evaluated, fired
+
+                if pos:
+                    store.mark_fired(order_id)
+                    fired_tickers.add(ticker)
+                    fired += 1
+                    logger.info(
+                        "T4 FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f  cycle=%s",
+                        ticker, direction, approved_size, p_est, mip, edge, cycle_id,
+                    )
 
     return evaluated, fired
 
