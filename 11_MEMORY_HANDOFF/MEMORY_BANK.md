@@ -452,7 +452,7 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 
 ---
 
-## Current State Snapshot (2026-06-03 SESSION 22/23)
+## Current State Snapshot (2026-06-03 SESSION 24)
 
 **Phase:** 6/7 ACTIVE — G0–G5 ✅ ALL CLOSED; Phase 6 paper trading live; Phase 7 infrastructure built  
 **G0–G5 gates:** ✅ ALL COMPLETE  
@@ -461,11 +461,11 @@ Run `/checkpoint`. It creates `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` fr
 **Tests:** 695/695 passing locally and on VPS  
 **Components implemented:** C1–C8 ✅ | PaperTrader ✅ | VenueAdapter ✅ | VenueRouter ✅ | ExecutionBands ✅ | market_mapper ✅ | complement_lock_scanner ✅ | execution_bands_orchestrator ✅ | TeamStatsStore ✅ | ScoringDistributionModel ✅ | **ShadowForecaster ✅** | **GameStateModel ✅ (SKELETON)** | **StagedOrderStore ✅ (SKELETON)** | PIPE-02/03(VenueRouter)/03R/05/06 ✅ | **PIPE-07 LIVE ✅ (`run_t4_live.py` — PAPER_T4_VIRTUAL=false, PAPER_T4_FLAT_SIZING=true, PAPER_T4_POOL_USD=500.0; nohup process on VPS — VERIFY BEFORE Finals Game 1 tip)**  
 **Experiments run:** EXP-001–016 ✅ ALL COMPLETE | **EXP-017 Part B LIVE — n=2 unique markets, DIRECTIONAL_POSITIVE; GG-004 OPEN (floor ≥66)**  
-**ADRs accepted:** 13 (ADR-0001/002/003/004/006/007/008/009/010/011/012/013) | ADR-0005 pending at gate G6  
+**ADRs accepted:** 14 (ADR-0001/002/003/004/006/007/008/009/010/011/012/013/014) | ADR-0005 pending at gate G6  
 **Active risks:** **KI-017 OPEN** — EV vs. real Kalshi prices unvalidated; GG-004 OPEN. | **KI-019 OPEN** — Polymarket NBA tag unconfirmed. | **KI-011 OPEN** — Injury blindness blocks T2. | **KI-023 OPEN** — Kalshi market depth unknown at full scale. | **GG-004 OPEN** — commercial EV unvalidated at ≥66 floor. EXP-017 EV figures are OVERSTATED — taker fee not subtracted (GG-009). | **GG-006 SUBSTANTIALLY RESOLVED** — T-117 (formal document reads) required before gate G6 ADR-0005. | **GG-007 OPEN** — T4/T5 threshold constants uncalibrated; LOW now, HIGH before Phase 8 activation. | **GG-009 NEW (2026-06-03)** — Kalshi taker fee (0.07×P×(1−P)) absent from MIN_EDGE gate. At P=0.50: $0.0175/contract = 87% of MIN_EDGE=0.02. T-131 ADR required before G6. | **KI-027 OPEN** — Kalshi HTTP 503/429 in second PIPE-03 window; paper resolution unaffected. | ~~KI-026 RESOLVED~~ — T4 per-bet sizing resolved: flat 1-contract for paper validation (SESSION 22/23).  
 **Live capital:** NOT DEPLOYED — gate G6 governed by APR-0017. Four-tier standard; ≥66 resolved bets + ≥5 game nights + EXP-017 Part B CONFIRMED (GG-004 OPEN). Note: GG-009 means all current EV estimates are fee-overstated.  
-**VPS:** git HEAD = `00d0525` (2026-06-03 SESSION 22/23). 695/695 tests. T4 nohup process started — **VERIFY RUNNING before Finals Game 1 tip 00:30 UTC Jun 4**: `ssh root@157.230.91.33 'ps aux | grep run_t4 | grep -v grep'`. Expected env: PAPER_T4_VIRTUAL=False, PAPER_T4_FLAT_SIZING=True.  
-**Paper portfolio (Jun 3 game):** $459.47 remaining from $1,000 | 11 open positions for Finals Game 1 | 4 filled at Kalshi (KAT YES 20/15/10, Fox YES 10) | 3 canceled by Kalshi (Fox NO 25/20, Anunoby NO 25) | 4 failed HTTP (Wembanyama NO 40/35/30, Castle NO 30) | All 11 positions under Path B (Poisson CDF) corrected architecture. Resolve after Finals Game 1 ends.  
+**VPS:** git HEAD = `dfb16f0` (2026-06-03 SESSION 24). 695/695 tests. T4 confirmed running PID 153790 — `pool_isolated=True`, `PAPER_T4_FLAT_SIZING=True`, `PAPER_T4_POOL_USD=500.0`. T4 restart command if dies: `ssh root@157.230.91.33 'cd /opt/prediction-market-bot && nohup bash -c "set -a; source .env; set +a; source venv/bin/activate; PYTHONPATH=src python3 src/prediction_market_bot/run_t4_live.py >> logs/t4_live.log 2>&1" > /dev/null 2>&1 &'`.  
+**Paper portfolio (post-SESSION 24 reset):** $1,000.00 reset before Finals Game 1 | 0 open positions at session start | T1 bets fired at 22:00 UTC Jun 3 PIPE-03 cron (~33 bets, ~$827 total stake) | T4 running PID 153790 — fires at STATUS_IN_PROGRESS (00:30 UTC Jun 4) | Resolved: 0/66 (APR-0017 G6 gate — clean evidence window begins Finals Game 1). Prior SESSION 22/23 state was: $459.47 bankroll, 11 open positions (4 Kalshi-filled KAT/Fox YES, 3 Kalshi-canceled, 4 failed-HTTP Wembanyama/Castle); that window superseded by portfolio reset.  
 **NBA Finals schedule:** Finals Game 1 Jun 3 PDT (NYK at SAS, 8:30 PM EDT = 00:30 UTC Jun 4) | Finals Game 2 Jun 5 PDT | Finals Game 3 Jun 8 PDT | Finals Game 4 Jun 10 PDT  
 **NAMING STANDARD:** "Finals Game 1" = the NBA game. "Gate G6" = live capital authorization gate. Never abbreviate both as G1/G6 in the same context.  
 

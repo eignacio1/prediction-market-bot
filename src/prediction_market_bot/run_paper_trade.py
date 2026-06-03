@@ -417,6 +417,11 @@ def main() -> None:
                     _reserve_halted = True
                     break
 
+                approval = {
+                    **approval,
+                    "model_p": float(forecast_rec["p_estimate"]),
+                    "edge": float(forecast_rec["edge"]),
+                }
                 ok_pos, pos = trader.open_position(
                     approval=approval,
                     player_name=kalshi_player_name,

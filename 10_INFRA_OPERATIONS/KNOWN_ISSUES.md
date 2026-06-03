@@ -413,6 +413,24 @@
 
 ---
 
+### KI-027 — Kalshi HTTP 503/429 Rate Errors in Second PIPE-03 Window
+
+| Field | Detail |
+|-------|--------|
+| Issue ID | KI-027 |
+| Severity | MEDIUM |
+| Category | Execution / Kalshi API reliability |
+| Description | In the second PIPE-03 window (01:30 UTC Jun 3), 4 paper positions were recorded with `kalshi_order_status: "failed: ..."`. The affected markets were Wembanyama NO 40pts, NO 35pts, NO 30pts, and Castle NO 30pts. HTTP response was either 503 (server error) or 429 (rate limit) — exact status not disambiguated in current logging. The position is recorded in `paper_portfolio.json` and a C6 warning is emitted. The second PIPE-03 window runs ~3.5h after the first (22:00 → 01:30 UTC), suggesting either Kalshi API instability late at night or a cumulative rate limit from the first window's order submissions. |
+| Impact | 4 positions in paper portfolio have no Kalshi demo order ID. These positions are valid G6 evidence (resolution is nba_api stats-based and unaffected by Kalshi order state). Does not affect P&L accuracy. At live capital, failed HTTP means an order was NOT submitted to Kalshi — a missed execution, not just a missing record. |
+| Workaround | Paper trading: no action needed — positions resolve correctly via nba_api. Monitor: check VPS logs after each PIPE-03 window for `kalshi_order_failed` C6 events. |
+| Blocks gate | Non-blocking for paper G6. Must resolve before live capital — failed HTTP at live scale means missed bets. |
+| Resolution path | (1) Disambiguate 503 vs 429 in `paper_trader.py` error handling — log actual HTTP status code in the `failed: ` message. (2) If 429: implement exponential backoff + retry (3 attempts) in `KalshiMarketClient.submit_order()`. (3) If 503: transient retry with 5s delay. (4) If rate limit: check whether first PIPE-03 window exhausts daily Kalshi API quota (10k/day) before the second window runs. |
+| Open question | Is this a rate limit (429) or a server error (503)? Check VPS logs for raw HTTP status in `failed: ` message. |
+| Registered | 2026-06-03 SESSION 22/23 |
+| Status | OPEN — MEDIUM; non-blocking for paper; must resolve before live capital |
+
+---
+
 ### KI-024 — T4 Poisson λ Uses Pre-Game Pace: `pace_pts_per_min` Is Never Updated Mid-Game
 
 | Field | Detail |

@@ -516,6 +516,8 @@ def _run_cycle(
                 approved_size = mip
                 approval = {**approval, "approved_size": approved_size}
 
+            approval = {**approval, "model_p": float(p_est), "edge": float(edge)}
+
             # ---- Ghost protection: stage before portfolio write ----
             valid_until = (
                 datetime.now(timezone.utc) + timedelta(hours=4)
