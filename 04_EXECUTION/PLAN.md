@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-03 SESSION 22/23 (T4 throughput validation: PAPER_T4_VIRTUAL→false, PAPER_T4_FLAT_SIZING=true, PAPER_T4_POOL_USD=500.0, MIN_BET_T4_PAPER→0.01; GG-009 registered taker fee gap; T-131 ADR registered; 695/695 tests)  
+**Last reviewed:** 2026-06-03 SESSION 24 (Disconnect 1+2 resolved: RESERVE_MANDATE_PCT=0.05 + pool_isolated=True deployed; VPS commit dfb16f0; T4 PID 153790; 695/695 tests)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
