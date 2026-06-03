@@ -208,6 +208,7 @@ class RiskEngine:
         bankroll: float = 10000.0,
         kelly_fraction: float = DEFAULT_KELLY_FRACTION,
         initial_bankroll: float | None = None,
+        min_bet_usd: float | None = None,
     ) -> None:
         """
         Parameters
@@ -227,6 +228,10 @@ class RiskEngine:
             (ADR-0012). If None, defaults to bankroll. Callers that refresh the
             engine mid-session should pass the original session-start value here
             so the threshold remains stable across the run.
+        min_bet_usd:
+            Override the global MIN_BET_USD floor. Pass 1.0 for paper-mode T4
+            to allow sub-$10 Kelly bets without changing the live floor. If None,
+            uses the global MIN_BET_USD constant.
         """
         self._logger = logger
         self._snapshot_id = snapshot_id
@@ -234,6 +239,7 @@ class RiskEngine:
         self._kelly_fraction = kelly_fraction
         self._initial_bankroll = initial_bankroll if initial_bankroll is not None else bankroll
         self._daily_loss_threshold = self._initial_bankroll * MAX_DAILY_LOSS_PCT
+        self._min_bet_usd = min_bet_usd if min_bet_usd is not None else MIN_BET_USD
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -522,15 +528,15 @@ class RiskEngine:
                 )
             checks_passed.append("kelly_size_positive")
 
-            # CHECK 7 — Minimum bet floor (paper + live)
-            if approved_size < MIN_BET_USD:
+            # CHECK 7 — Minimum bet floor (uses instance override for paper T4)
+            if approved_size < self._min_bet_usd:
                 ok = self._log(
                     "risk_eval_rejected",
                     {
                         "risk_eval_id": eval_id,
                         "reason": "min_bet_floor",
                         "approved_size": approved_size,
-                        "min_bet_usd": MIN_BET_USD,
+                        "min_bet_usd": self._min_bet_usd,
                     },
                     severity="INFO",
                     session_id=session_id,
