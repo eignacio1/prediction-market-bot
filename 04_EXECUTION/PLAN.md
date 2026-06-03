@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-02 SESSION 15 (ADR-0012 ACCEPTED: MAX_DAILY_LOSS_PCT=0.15 replaces zombie daily loss limit KI-018; RESERVE_MANDATE_PCT advisory wired; documentation debt T-093–T-099 cleared; 695/695 tests)  
+**Last reviewed:** 2026-06-02 SESSION 20 (ADR-0013 ACCEPTED: T4 band budget architecture, KI-026 resolved; CLAUDE.md Hard Rule 9 + design throughput framing; T-130 decision tree mechanics registered; scripts/run_t4_budget_sim.py verified; 695/695 tests)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
