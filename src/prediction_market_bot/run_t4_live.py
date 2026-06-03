@@ -64,7 +64,7 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
 )
 from prediction_market_bot.run_t4_inplay import T4EventLoop, GameStateEvent
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
-from prediction_market_bot.c4_risk_engine.risk import RiskEngine
+from prediction_market_bot.c4_risk_engine.risk import RiskEngine, RESERVE_MANDATE_PCT
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -253,10 +253,54 @@ PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "true").lower() in ("true"
 SNAPSHOT_ID = "T4-LIVE"
 SESSION_ID_PREFIX = "T4"
 
+# ---------------------------------------------------------------------------
+# T4 Band Budget — ADR-0013
+# ---------------------------------------------------------------------------
+# T4 operates on a per-game capital allocation, not the full portfolio bankroll.
+# Without this, the high-throughput T4 band (~1000 evaluations/game) exhausts
+# capital after ~60 bets, leaving 940+ opportunities unfunded.
+#
+# Architecture: T4 RiskEngine receives t4_band_budget as its 'bankroll'.
+#   t4_band_budget = deployable_capital × T4_BAND_WEIGHT
+#   deployable_capital = bankroll × (1 - RESERVE_MANDATE_PCT)
+#   bet_size = edge × KELLY_T4 × t4_band_budget
+#
+# This scales correctly with capital ceiling:
+#   $618 bankroll, weight=0.10 → $37 budget → ~$0.37/bet at edge=0.05
+#   $10k bankroll, weight=0.10 → $600 budget → ~$6.00/bet at edge=0.05
+#   $1M bankroll, weight=0.10 → $60k budget → ~$600/bet at edge=0.05
+#
+# PAPER_T4_VIRTUAL=true (calibration mode): track deployment, do NOT enforce ceiling.
+#   G1/G2 PAPER_T4_VIRTUAL data calibrates T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE.
+# PAPER_T4_VIRTUAL=false (active mode): enforce band budget ceiling — stop firing when
+#   t4_deployed_game >= t4_band_budget. Evaluation continues for log data.
+#
+# T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE are STUBS pending G1 calibration.
+# Do not set PAPER_T4_VIRTUAL=false until both are calibrated and ADR-0013 is signed.
+# See scripts/run_t4_budget_sim.py to verify budget behaviour before G1.
+T4_BAND_WEIGHT: float = 0.10           # STUB — calibrate from G1 PAPER_T4_VIRTUAL data
+T4_EXPECTED_TOTAL_EDGE: float = 5.0    # STUB — calibrate from G1: sum(edge) across all VIRTUAL fires
+
 _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio.json"
 _STAGED_DB_PATH = str(_LOGS_DIR / "staged_orders.db")
 _AUDIT_LOG_PATH = _LOGS_DIR / "audit_t4.jsonl"
+
+
+# ---------------------------------------------------------------------------
+# T4 band budget helpers
+# ---------------------------------------------------------------------------
+
+
+def _compute_t4_band_budget(portfolio: dict) -> float:
+    """
+    T4 band budget = deployable_capital × T4_BAND_WEIGHT.
+    Computed once at game start from live portfolio state.
+    T4 RiskEngine uses this as 'bankroll' so Kelly operates within band allocation.
+    """
+    bankroll = portfolio["bankroll_usd"]
+    deployable = bankroll * (1.0 - RESERVE_MANDATE_PCT)
+    return max(deployable * T4_BAND_WEIGHT, 0.0)
 
 
 # ---------------------------------------------------------------------------
@@ -347,11 +391,16 @@ def _run_cycle(
     trader: PaperTrader,
     store: StagedOrderStore,
     game_date: str,
-) -> tuple[int, int]:
+    t4_band_budget: float,
+    t4_deployed_usd: float,
+) -> tuple[int, int, float]:        # (evaluated, fired, updated_t4_deployed_usd)
     """
     Evaluate all live player × market pairs and fire approved bets.
 
-    Returns (evaluated, fired) counts.
+    Returns (evaluated, fired, updated_t4_deployed_usd).
+    t4_deployed_usd accumulates across cycles for the full game.
+    PAPER_T4_VIRTUAL=true: tracks deployment for calibration, does NOT enforce budget.
+    PAPER_T4_VIRTUAL=false: enforces band budget; stops firing when budget exhausted.
     """
     evaluated = 0
     fired = 0
@@ -451,7 +500,7 @@ def _run_cycle(
             )
             if not ok:
                 logger.error("C4/C6 write failure at %s — halting cycle", ticker)
-                return evaluated, fired
+                return evaluated, fired, t4_deployed_usd
 
             if approval.get("approval_status") != "APPROVED":
                 continue
@@ -483,16 +532,29 @@ def _run_cycle(
 
             # ---- Execute: virtual log OR portfolio write ----
             if PAPER_T4_VIRTUAL:
-                # Virtual mode: C4 approved — stage + log, no bankroll deduction.
-                # Proves architecture fires at scale without depleting T1 capital.
+                # Virtual mode (calibration): C4 approved — stage + log, no bankroll deduction.
+                # Budget is tracked but NOT enforced here — we want to see unconstrained
+                # would-be deployment so G1 data can calibrate T4_BAND_WEIGHT (ADR-0013).
                 store.mark_fired(order_id)
                 fired_tickers.add(ticker)
                 fired += 1
+                t4_deployed_usd += approved_size
                 logger.info(
-                    "T4 VIRTUAL %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f  cycle=%s",
-                    ticker, direction, approved_size, p_est, mip, edge, cycle_id,
+                    "T4 VIRTUAL %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f"
+                    "  budget_track=$%.2f/%.2f  cycle=%s",
+                    ticker, direction, approved_size, p_est, mip, edge,
+                    t4_deployed_usd, t4_band_budget, cycle_id,
                 )
             else:
+                # Active mode: enforce band budget ceiling (ADR-0013).
+                # Stop firing when band is exhausted; continue evaluating for log data.
+                if t4_deployed_usd + approved_size > t4_band_budget:
+                    logger.info(
+                        "T4 BAND_BUDGET_EXHAUSTED %-45s  remaining=$%.2f",
+                        ticker, max(0.0, t4_band_budget - t4_deployed_usd),
+                    )
+                    continue
+
                 ok, pos = trader.open_position(
                     approval=approval,
                     player_name=mkt_ctx["player_name"],
@@ -506,18 +568,21 @@ def _run_cycle(
                 )
                 if not ok:
                     logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)
-                    return evaluated, fired
+                    return evaluated, fired, t4_deployed_usd
 
                 if pos:
                     store.mark_fired(order_id)
                     fired_tickers.add(ticker)
                     fired += 1
+                    t4_deployed_usd += approved_size
                     logger.info(
-                        "T4 FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f  cycle=%s",
-                        ticker, direction, approved_size, p_est, mip, edge, cycle_id,
+                        "T4 FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f"
+                        "  budget_used=$%.2f/%.2f  cycle=%s",
+                        ticker, direction, approved_size, p_est, mip, edge,
+                        t4_deployed_usd, t4_band_budget, cycle_id,
                     )
 
-    return evaluated, fired
+    return evaluated, fired, t4_deployed_usd
 
 
 # ---------------------------------------------------------------------------
@@ -565,15 +630,21 @@ def main() -> None:
     game_ids = _discover_game_ids()
     logger.info("Initial game IDs: %s", game_ids or "(none yet)")
 
-    def _make_engines() -> tuple[RiskEngine, RiskEngine]:
-        """Create fresh RiskEngine instances with current bankroll."""
+    def _make_engines(t4_band_budget: float) -> tuple[RiskEngine, RiskEngine]:
+        """
+        Create fresh RiskEngine instances for T4/T5.
+
+        'bankroll' = t4_band_budget so Kelly sizes within the band allocation (ADR-0013).
+        'initial_bankroll' = real session-start bankroll to anchor kill-switch thresholds —
+        the system-level kill switch (drawdown/daily-loss) remains anchored to the full
+        portfolio, not the band budget.
+        """
         state = trader.get_state()
-        br  = state["bankroll_usd"]
-        ibr = state.get("initial_bankroll_usd", br)
+        ibr = state.get("initial_bankroll_usd", state["bankroll_usd"])
         e4 = RiskEngine(
             logger=audit,
             snapshot_id=SNAPSHOT_ID,
-            bankroll=br,
+            bankroll=t4_band_budget,
             kelly_fraction=KELLY_T4,
             initial_bankroll=ibr,
             min_bet_usd=MIN_BET_T4_PAPER,
@@ -581,12 +652,32 @@ def main() -> None:
         e5 = RiskEngine(
             logger=audit,
             snapshot_id=SNAPSHOT_ID,
-            bankroll=br,
+            bankroll=t4_band_budget,
             kelly_fraction=KELLY_T5,
             initial_bankroll=ibr,
             min_bet_usd=MIN_BET_T4_PAPER,
         )
         return e4, e5
+
+    # ---- T4 band budget (ADR-0013) ----
+    # Computed once at session start from current portfolio state.
+    # Held fixed for the game; Kelly operates on this allocation, not full bankroll.
+    t4_band_budget = _compute_t4_band_budget(trader.get_state())
+    t4_deployed_game = 0.0
+    logger.info(
+        "T4 band budget: $%.2f  (T4_BAND_WEIGHT=%.2f × deployable)  [ADR-0013 — STUB values until G1 calibration]",
+        t4_band_budget, T4_BAND_WEIGHT,
+    )
+    if PAPER_T4_VIRTUAL:
+        logger.info(
+            "PAPER_T4_VIRTUAL=true: budget tracked for calibration, ceiling NOT enforced. "
+            "G1 data → calibrate T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE before T4 ACTIVE."
+        )
+    else:
+        logger.info(
+            "PAPER_T4_VIRTUAL=false: band budget ceiling ENFORCED. "
+            "Ensure T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE are calibrated from G1 data (ADR-0013)."
+        )
 
     # ---- Main polling loop ----
     cycle_n = 0
@@ -630,11 +721,12 @@ def main() -> None:
 
         live_prices = {m.ticker: m for m in snapshot.markets}
 
-        # Build fresh engines (tracks current bankroll)
-        engine_t4, engine_t5 = _make_engines()
+        # Build fresh engines each cycle — bankroll = t4_band_budget (ADR-0013).
+        # t4_band_budget is fixed for the game; engine refresh tracks kill-switch state.
+        engine_t4, engine_t5 = _make_engines(t4_band_budget)
         cycle_id = f"C{cycle_n:04d}-{uuid.uuid4().hex[:6]}"
 
-        ev, fi = _run_cycle(
+        ev, fi, t4_deployed_game = _run_cycle(
             cycle_id=cycle_id,
             session_id=session_id,
             live_states=all_states,
@@ -646,15 +738,20 @@ def main() -> None:
             trader=trader,
             store=store,
             game_date=game_date,
+            t4_band_budget=t4_band_budget,
+            t4_deployed_usd=t4_deployed_game,
         )
 
         cycle_n += 1
         total_evaluated += ev
         total_fired += fi
 
+        budget_pct = (t4_deployed_game / t4_band_budget * 100.0) if t4_band_budget > 0 else 0.0
         logger.info(
-            "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d bankroll=$%.2f",
+            "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d"
+            " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f",
             cycle_id, ev, fi, total_evaluated, total_fired,
+            t4_deployed_game, t4_band_budget, budget_pct,
             trader.get_state()["bankroll_usd"],
         )
 
