@@ -165,6 +165,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-009 — Taker Fee Absent From Edge Formula: MIN_EDGE=0.02 Does Not Cover Kalshi Taker Cost
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-009 |
+| Category | Architectural misspecification — fee not in edge gate |
+| What was missed | `MIN_EDGE_TO_APPROVE = 0.02` in `risk.py` does not include Kalshi taker fees. Kalshi taker fee formula: `0.07 × P × (1−P)` per contract. At P=0.50 (typical market): taker fee = $0.0175/contract. At a bet sized at 1 contract ($0.50 stake), fee = $0.0175 = 87% of the total edge approved by MIN_EDGE=0.02. The bot may be systematically approving and placing bets where the net-of-fee EV is negative even when gross edge is positive. This applies immediately to paper T4 flat 1-contract bets (SESSION 23) and to T1 bets at small Kelly sizes. |
+| When it should have been caught | EXP-017 Part A design (2026-06-01) — when edge formula was used to evaluate EV. Or any session that computed fee structure from Kalshi docs. |
+| Phases it survived | G4 → G5 → paper trading phase → SESSION 22/23 |
+| Why it survived | No governance artifact asked "does the edge gate account for transaction costs?" GG-004 asked whether EV is positive vs real prices — but not whether the fee structure is included in the edge gate itself. The Kalshi fee formula was first sourced in SESSION 22 (2026-06-03) via web search — fee was never in any prior design doc. |
+| Impact | At $0.50 market, taker fee = $0.0175. MIN_EDGE = 0.02. Net fee-adjusted edge threshold = 0.0025 (12.5% of nominal edge). Bets at 50¢ market approved at MIN_EDGE=0.02 have an expected fee cost that is 87% of gross edge. This is architecturally serious: the bot may be betting with essentially zero or negative fee-adjusted edge at the current threshold. Maker orders (fee = 0.25× taker = $0.004375 at 50¢) are more favorable but require limit order infrastructure (not yet built). |
+| Discovery | SESSION 22 (2026-06-03) — Kalshi operational constraints research. Fee formula sourced from Kalshi API docs: `fee = 0.07 × P × (1-P)` taker; `fee = 0.0175 × P × (1-P)` maker. Calculation: at P=0.50, taker fee = $0.0175 vs MIN_EDGE=0.02 gross. |
+| Resolution | Three options: (1) **Raise MIN_EDGE**: set `MIN_EDGE = 0.02 + fee_at_50c = 0.0375` (a ~2× increase — materially reduces approved bets); (2) **Fee-adjusted edge gate**: `net_edge = gross_edge - fee(mip)` where `fee(mip) = 0.07 × mip × (1−mip)` — approved only if `net_edge >= MIN_EDGE`; (3) **Maker-first policy**: place as limit (maker) order at MIP, reducing fee 4×. Requires limit order infrastructure. **Resolution requires ADR** (changes to MIN_EDGE or edge formula are architectural). Register T-131. Block on before G6 (EXP-017 EV figures without fee correction are overstated). |
+| Status | OPEN — 2026-06-03 SESSION 22/23; high severity for live capital authorization; medium severity for paper (P&L impact real but no capital at risk) |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
