@@ -42,8 +42,9 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
+import requests
+
 from prediction_market_bot.c1_signal_ingestion.ds02_nba_live import (
-    NBALiveFeed,
     LivePlayerState,
     kill_switch_armed,
     KILL_SWITCH_PATH,
@@ -62,6 +63,177 @@ from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# ESPN live feed (primary data source — NBA CDN blocked on cloud IPs)
+# ---------------------------------------------------------------------------
+
+_ESPN_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+_ESPN_SUMMARY    = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary"
+_ESPN_HEADERS    = {"User-Agent": "Mozilla/5.0"}
+
+_ESPN_STATUS_SCHEDULED = "STATUS_SCHEDULED"
+_ESPN_STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS"
+_ESPN_STATUS_FINAL = "STATUS_FINAL"
+
+# Stat label positions in ESPN boxscore statistics array
+_ESPN_STAT_LABELS = ["MIN", "PTS", "FG", "3PT", "FT", "REB", "AST", "TO", "STL", "BLK", "OREB", "DREB", "PF", "+/-"]
+
+
+def _espn_game_ids_today() -> list[str]:
+    """Return ESPN game IDs for today's NBA games (in-progress first)."""
+    try:
+        today_str = date.today().strftime("%Y%m%d")
+        r = requests.get(
+            _ESPN_SCOREBOARD,
+            params={"dates": today_str, "limit": 20},
+            headers=_ESPN_HEADERS,
+            timeout=10,
+        )
+        r.raise_for_status()
+        events = r.json().get("events", [])
+        in_progress = [
+            e["id"] for e in events
+            if e.get("status", {}).get("type", {}).get("name") == _ESPN_STATUS_IN_PROGRESS
+        ]
+        scheduled = [
+            e["id"] for e in events
+            if e.get("status", {}).get("type", {}).get("name") == _ESPN_STATUS_SCHEDULED
+        ]
+        return in_progress + scheduled
+    except Exception as exc:
+        logger.warning("ESPN game ID discovery failed: %s", exc)
+        return []
+
+
+def _parse_espn_clock(display_clock: str, period: int) -> float:
+    """
+    Convert ESPN displayClock + period to full-game minutes remaining.
+
+    displayClock format: "5:32" (min:sec) or "0.0" (scheduled/final).
+    period: 1-4 (regulation), 5+ (OT).
+    Returns total game minutes remaining.
+    """
+    try:
+        if ":" in (display_clock or ""):
+            parts = display_clock.split(":")
+            clock_min = float(parts[0]) + float(parts[1]) / 60.0
+        else:
+            clock_min = float(display_clock or "0") / 60.0
+    except (ValueError, IndexError):
+        clock_min = 0.0
+
+    if period <= 0:
+        return 48.0
+    if period <= 4:
+        quarters_remaining = max(0, 4 - period)
+        return quarters_remaining * 12.0 + clock_min
+    return clock_min   # OT: just current period clock
+
+
+def _espn_poll_once(
+    espn_game_id: str,
+    name_to_pregame: dict[str, dict],  # {normalized_name: {player_id, ...}}
+) -> list[LivePlayerState]:
+    """
+    Fetch live boxscore from ESPN for one game.
+    Returns [] if game not in progress or request fails.
+    Maps player names to NBA player IDs via pregame context.
+    """
+    try:
+        r = requests.get(
+            _ESPN_SUMMARY,
+            params={"event": espn_game_id},
+            headers=_ESPN_HEADERS,
+            timeout=10,
+        )
+        r.raise_for_status()
+        d = r.json()
+    except Exception as exc:
+        logger.error("ESPN boxscore fetch failed game=%s: %s", espn_game_id, exc)
+        return []
+
+    # Game state from header
+    h = d.get("header", {})
+    comps = h.get("competitions", [{}])
+    if not comps:
+        return []
+    comp = comps[0]
+    status = comp.get("status", {})
+    status_name = status.get("type", {}).get("name", "")
+
+    if status_name != _ESPN_STATUS_IN_PROGRESS:
+        logger.info("ESPN game %s status=%s — not polling", espn_game_id, status_name)
+        return []
+
+    period = int(status.get("period") or 0)
+    display_clock = str(status.get("displayClock") or "0:00")
+    time_remaining = _parse_espn_clock(display_clock, period)
+
+    # Player stats from boxscore
+    bx = d.get("boxscore", {})
+    players_teams = bx.get("players", [])
+    states: list[LivePlayerState] = []
+
+    for team_data in players_teams:
+        stats_groups = team_data.get("statistics", [])
+        if not stats_groups:
+            continue
+        sg = stats_groups[0]
+        labels = sg.get("labels", _ESPN_STAT_LABELS)
+
+        try:
+            pts_idx = labels.index("PTS")
+            min_idx = labels.index("MIN")
+        except ValueError:
+            pts_idx, min_idx = 1, 0   # fallback to expected positions
+
+        for athlete_entry in sg.get("athletes", []):
+            athlete = athlete_entry.get("athlete", {})
+            name = athlete.get("displayName", "")
+            stats = athlete_entry.get("stats", [])
+
+            if not stats:
+                continue
+
+            norm = name.lower().replace(" ", "")
+            ctx = name_to_pregame.get(norm)
+            if ctx is None:
+                continue   # player not in pregame context
+
+            try:
+                pts = int(float(stats[pts_idx] or 0))
+            except (IndexError, ValueError, TypeError):
+                pts = 0
+
+            try:
+                min_str = str(stats[min_idx] or "0")
+                mins_played = float(min_str) if ":" not in min_str else (
+                    float(min_str.split(":")[0]) + float(min_str.split(":")[1]) / 60.0
+                )
+            except (IndexError, ValueError, TypeError):
+                mins_played = 0.0
+
+            states.append(LivePlayerState(
+                player_id=int(ctx["player_id"]),
+                player_name=name,
+                team_id=0,
+                pts_so_far=pts,
+                rebounds=0,
+                assists=0,
+                minutes_played=mins_played,
+                quarter=period,
+                time_remaining_min=time_remaining,
+                game_id=espn_game_id,
+                game_status=2,
+            ))
+
+    if states:
+        logger.info(
+            "ESPN poll: game=%s  Q%d  clock=%s  time_rem=%.1f min  %d players",
+            espn_game_id, period, display_clock, time_remaining, len(states),
+        )
+    return states
 
 # ---------------------------------------------------------------------------
 # Config
@@ -83,13 +255,14 @@ _AUDIT_LOG_PATH = _LOGS_DIR / "audit_t4.jsonl"
 # Pregame context loader
 # ---------------------------------------------------------------------------
 
-def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict]]:
+def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dict[str, dict]]:
     """
     Load the latest pregame JSON from logs/pregame_*.json.
 
     Returns:
-        by_player_id  {player_id (int): [market_ctx, ...]}
-        by_ticker     {ticker (str): market_ctx}
+        by_player_id   {player_id (int): [market_ctx, ...]}
+        by_ticker      {ticker (str): market_ctx}
+        name_to_pregame  {normalized_name (str): first market_ctx for player}
 
     Each market_ctx dict contains:
         ticker, threshold, p_t1, pts_l10_mean, player_name, player_id
@@ -107,10 +280,12 @@ def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict]]:
 
     by_player_id: dict[int, list[dict]] = {}
     by_ticker: dict[str, dict] = {}
+    name_to_pregame: dict[str, dict] = {}
 
     for fc in forecasts:
         pid = fc.get("player_id")
         ticker = fc.get("kalshi_ticker", "")
+        player_name = fc.get("player_name", "")
         if not pid or not ticker:
             continue
         pid = int(pid)
@@ -119,39 +294,32 @@ def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict]]:
             "threshold": int(fc.get("kalshi_threshold", 0)),
             "p_t1": float(fc.get("p_estimate") or 0.5),
             "pts_l10_mean": float(fc.get("pts_l10_mean") or 20.0),
-            "player_name": fc.get("player_name", ""),
+            "player_name": player_name,
             "player_id": pid,
         }
         by_player_id.setdefault(pid, []).append(ctx)
         by_ticker[ticker] = ctx
+        norm = player_name.lower().replace(" ", "")
+        if norm not in name_to_pregame:
+            name_to_pregame[norm] = ctx   # first market seen for this player
 
     logger.info(
         "Loaded %d player(s), %d market(s) from %s",
         len(by_player_id), len(by_ticker), path.name,
     )
-    return by_player_id, by_ticker
+    return by_player_id, by_ticker, name_to_pregame
 
 
 # ---------------------------------------------------------------------------
-# Game ID discovery
+# Game ID discovery (ESPN primary — NBA CDN blocked on cloud IPs)
 # ---------------------------------------------------------------------------
 
 def _discover_game_ids() -> list[str]:
     """
-    Return today's NBA game IDs from the live scoreboard.
-    In-progress games (status=2) returned before scheduled (status=1).
-    Returns [] if no games found or API call fails.
+    Return today's ESPN game IDs (in-progress first, then scheduled).
+    Uses ESPN API — NBA CDN/stats API are blocked on cloud provider IPs.
     """
-    try:
-        from nba_api.live.nba.endpoints import scoreboard as sb_ep
-        sb = sb_ep.ScoreBoard()
-        games = sb.get_dict().get("scoreboard", {}).get("games", [])
-        in_progress = [str(g["gameId"]) for g in games if g.get("gameStatus") == 2]
-        scheduled   = [str(g["gameId"]) for g in games if g.get("gameStatus") == 1]
-        return in_progress + scheduled
-    except Exception as exc:
-        logger.warning("Game ID discovery failed: %s", exc)
-        return []
+    return _espn_game_ids_today()
 
 
 # ---------------------------------------------------------------------------
@@ -358,8 +526,7 @@ def main() -> None:
     logger.info("=" * 60)
 
     # ---- Load pregame context ----
-    by_player_id, _by_ticker = _load_pregame_context()
-    cohort_ids = list(by_player_id.keys())
+    by_player_id, _by_ticker, name_to_pregame = _load_pregame_context()
     game_date = date.today().isoformat()
 
     # ---- Initialize components (once per session) ----
@@ -374,19 +541,6 @@ def main() -> None:
     # ---- Game ID discovery ----
     game_ids = _discover_game_ids()
     logger.info("Initial game IDs: %s", game_ids or "(none yet)")
-
-    live_feeds: dict[str, NBALiveFeed] = {}
-
-    def _refresh_feeds() -> None:
-        for gid in game_ids:
-            if gid not in live_feeds:
-                live_feeds[gid] = NBALiveFeed(
-                    game_id=gid,
-                    cohort_ids=cohort_ids,
-                )
-                logger.info("NBALiveFeed initialized for game %s", gid)
-
-    _refresh_feeds()
 
     def _make_engines() -> tuple[RiskEngine, RiskEngine]:
         """Create fresh RiskEngine instances with current bankroll."""
@@ -429,17 +583,15 @@ def main() -> None:
             game_ids[:] = _discover_game_ids()
             if game_ids:
                 logger.info("Game(s) discovered: %s", game_ids)
-                _refresh_feeds()
             else:
                 logger.debug("No active games found — sleeping 60s")
                 time.sleep(60)
                 continue
 
-        # Poll all tracked games
+        # Poll all tracked games via ESPN
         all_states: list[LivePlayerState] = []
-        for gid, feed in list(live_feeds.items()):
-            states = feed.poll_once()
-            all_states.extend(states)
+        for gid in game_ids:
+            all_states.extend(_espn_poll_once(gid, name_to_pregame))
 
         if not all_states:
             logger.info("No live states — game not in progress. Sleeping 60s.")
