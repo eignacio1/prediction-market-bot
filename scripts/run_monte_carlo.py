@@ -27,6 +27,7 @@ Exit codes: 0 = success, 1 = no pregame file, 2 = no actionable bets
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,7 +43,7 @@ from scipy.stats import poisson
 DEFAULT_T1_KELLY = 0.10          # ADR-0010
 DEFAULT_MIN_EDGE = 0.02          # EDGE_YES / EDGE_NO in run_paper_trade.py
 DEFAULT_MAX_EXPOSURE = 500.0     # _HARD_LIMITS["max_single_event_exposure_usd"]
-DEFAULT_MIN_BET = 10.0           # risk.py MIN_BET_USD
+DEFAULT_MIN_BET = float(os.environ.get("MIN_BET_T1_PAPER", "1.0"))  # paper floor; mirrors run_paper_trade.py; live uses risk.py MIN_BET_USD=10.0
 DEFAULT_BANKROLL = 1000.0
 MAX_DAILY_LOSS_PCT = 0.15        # ADR-0012
 RESERVE_MANDATE_PCT = 0.40       # advisory at paper; blocking at live capital
@@ -214,9 +215,10 @@ def build_report(
     min_edge: float,
     max_exposure: float,
     label: Optional[str],
+    min_bet: float = DEFAULT_MIN_BET,
 ) -> str:
     markets, meta = _load_markets(pregame_path)
-    bets, rejected = compute_bets(markets, bankroll, kelly, min_edge, max_exposure)
+    bets, rejected = compute_bets(markets, bankroll, kelly, min_edge, max_exposure, min_bet)
     pnl, win_matrix = simulate(bets)
 
     n_markets = len(markets)
@@ -381,7 +383,7 @@ def build_report(
         sep,
         f"  Generated  : {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ')}",
         f"  Source     : {pregame_path.name}",
-        f"  Parameters : kelly={kelly}  min_edge={min_edge}  max_exposure={max_exposure}",
+        f"  Parameters : kelly={kelly}  min_edge={min_edge}  max_exposure={max_exposure}  min_bet={min_bet}",
         sep,
     ]
 
@@ -405,6 +407,8 @@ def main() -> None:
                         help=f"Min edge override (default {DEFAULT_MIN_EDGE})")
     parser.add_argument("--max-exposure", type=float, default=DEFAULT_MAX_EXPOSURE, dest="max_exposure",
                         help=f"Max single-bet exposure $ override (default {DEFAULT_MAX_EXPOSURE})")
+    parser.add_argument("--min-bet", type=float, default=DEFAULT_MIN_BET, dest="min_bet",
+                        help=f"Min bet $ override (default {DEFAULT_MIN_BET}; paper floor)")
     args = parser.parse_args()
 
     # Resolve pregame file
@@ -427,6 +431,7 @@ def main() -> None:
         min_edge=args.min_edge,
         max_exposure=args.max_exposure,
         label=args.label,
+        min_bet=args.min_bet,
     )
 
     print(report)
@@ -439,7 +444,7 @@ def main() -> None:
 
     # Exit 2 if no bets placed
     markets, _ = _load_markets(pregame_path)
-    bets, _ = compute_bets(markets, bankroll, args.kelly, args.min_edge, args.max_exposure)
+    bets, _ = compute_bets(markets, bankroll, args.kelly, args.min_edge, args.max_exposure, args.min_bet)
     if not bets:
         sys.exit(2)
 

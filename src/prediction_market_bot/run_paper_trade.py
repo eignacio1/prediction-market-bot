@@ -94,6 +94,7 @@ EDGE_YES = 0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
 RESERVE_MANDATE_PCT = float(os.environ.get("RESERVE_MANDATE_PCT", "0.40"))  # batch reserve gate; override in .env for paper testing (e.g. 0.20 with T4 VIRTUAL)
+MIN_BET_T1_PAPER = float(os.environ.get("MIN_BET_T1_PAPER", "1.0"))  # paper-mode min bet floor; mirrors MIN_BET_T4_PAPER=1.0; live uses risk.py MIN_BET_USD=10.0
 DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player stat lookup
 
 # ADR-0010: T1 band Kelly fraction (0.10). Read from execution_bands so that any
@@ -240,7 +241,8 @@ def main() -> None:
     bankroll = _state["bankroll_usd"]
     _initial_bankroll = _state.get("initial_bankroll_usd", 1000.0)
     engine   = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
-                          kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll)
+                          kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll,
+                          min_bet_usd=MIN_BET_T1_PAPER)
     daily_loss = _state.get("current_daily_loss", 0.0)
     # Bug H fix: drawdown is realized losses only — open stakes are not losses
     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
@@ -437,7 +439,8 @@ def main() -> None:
                     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
                     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
                     engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
-                                       kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll)
+                                       kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll,
+                                       min_bet_usd=MIN_BET_T1_PAPER)
                     daily_loss += approved_size if edge < 0 else 0
             else:
                 reason = approval.get("rejection_reason", "unknown")
