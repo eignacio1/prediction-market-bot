@@ -2,7 +2,20 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-03 SESSION 24 — Disconnect 1 (RESERVE_MANDATE_PCT 0.20→0.05, all 33 T1 bets fire) and Disconnect 2 (pool_isolated=True, T4 no longer depletes T1 bankroll) both resolved. VPS commit dfb16f0. T4 running PID 153790. Next session: hygiene and diagnosis only.
+**Last reviewed:** 2026-06-03 SESSION 25 — Fee annotation + injury signal fields deployed to all paper positions (commit 8321900). T4 restarted PID 154947 with annotated code. Session-end protocol executed. Next session: Finals Game 1 resolve + T4 calibration.
+
+---
+
+## SESSION 2026-06-03 SESSION 25 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Fee annotation fields added | **6 fields added to every paper position: `model_p`, `gross_edge`, `fee_per_contract`, `fee_net_edge`, `fee_contaminated`, `probable_injury_signal`** | ✅ COMPLETE 2026-06-03 SESSION 25 — `paper_trader.py:open_position()` computes and records all six fields. `run_paper_trade.py` and `run_t4_live.py` enrich approval dict with `model_p`/`edge` before calling `open_position()`. Backward-compatible: defaults to 0.0 when fields absent. G6 evidence ledger is now self-annotating — fee-clean and injury-clean subgroup filters run directly from `paper_portfolio.json`. DECISION_LOG entry added. 695/695 tests pass. Commit `8321900`. |
+| KI-027 registered | **Kalshi HTTP 503/429 in second PIPE-03 window formally registered** | ✅ COMPLETE 2026-06-03 SESSION 25 — KI-027 entry added to `10_INFRA_OPERATIONS/KNOWN_ISSUES.md`. 4 positions with failed-HTTP status (Wembanyama NO 40/35/30, Castle NO 30). Paper resolution unaffected. Root cause investigation deferred. |
+| SESSION 20 OPEN ITEMS closed | **"VPS deploy ADR-0013" and "T4 monitor Finals Game 1" marked COMPLETE in TODO_NEXT.md** | ✅ COMPLETE 2026-06-03 SESSION 25 — Both rows updated with SESSION 24 completion context (nohup PID 153790, pool_isolated=True). |
+| MEMORY_BANK portfolio update | **Post-SESSION 24 portfolio state reflected in MEMORY_BANK.md** | ✅ COMPLETE 2026-06-03 SESSION 25 — $1,000 reset, 0 open positions, T4 PID state updated. |
+| T4 restart with annotation code | **VPS T4 process killed (PID 153790) and restarted (PID 154947) to pick up new annotation code** | ✅ COMPLETE 2026-06-03 SESSION 25 — Startup log confirmed: `PAPER_T4_FLAT_SIZING=true`, `PAPER_T4_VIRTUAL=false`, `Pool=$500.00`, watching `STATUS_SCHEDULED`. New annotated `open_position()` now active for Finals Game 1. |
+| DECISION_LOG SESSION 25 entry | **Fee annotation + injury signal architecture decision logged** | ✅ COMPLETE 2026-06-03 SESSION 25 — Notable Judgment Calls entry added: annotate every paper position with 6 fields to make G6 evidence self-annotating without retroactive join. |
 
 ---
 
