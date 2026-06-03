@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-06-02 SESSION 16 — Monte Carlo pre-game assessment protocol established. `scripts/run_monte_carlo.py` (general-purpose, CLI-parameterized; mirrors PIPE-03 Path B + Kelly exactly; 10k sims; BOT STATISTICS + EV + P/L distribution) + `03_DECISIONS/MONTE_CARLO_PROTOCOL.md` (trigger conditions, before/after comparison pattern, known limitations) committed d8ec72d; pushed to GitHub + VPS pulled. 695/695 tests on VPS. G1 T1 cron fired 22:00 UTC Jun 2: 7 bets placed / $381.97 deployed / bankroll $618.03 / 0 resolved. KEY FINDING: MC predicted 23 bets / $796 deployed but only 7 placed — live price divergence from pregame snapshot is the suspected cause (prices moved between 21:30 UTC PIPE-02 capture and 22:00 UTC PIPE-03 execution). Must monitor and flag if systematic.  
+**Last reviewed:** 2026-06-02 SESSION 17 — Market-first coverage + batch reserve gate + cursor pagination + cron retiming. Three root causes of 24-bet ceiling identified and fixed: (1) KI-025 price drift (PIPE-02 21:30→21:55 UTC + second PIPE-02 at 01:25 UTC); (2) 55-player cohort ceiling → market-first loop + dynamic nba_api fallback for non-cohort players (Poisson-only); (3) 200-market API cap → cursor pagination in `fetch_player_points_markets`. Batch reserve gate added to PIPE-03 (`RESERVE_MANDATE_PCT=0.40 * _initial_bankroll`). 5 DECISION_LOG entries written. Commit e74cd52; 695/695 tests on VPS; VPS deployed.  
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
 **Upstream links:** All artifacts (this file indexes everything)  
@@ -23,8 +23,8 @@
 | Framework | Compass OS (ADR-0001) |
 | Strategy class | Forecast-only (ADR-0002); arb/ reference-only pending APR-0010 |
 | Capital status | NO LIVE CAPITAL — research and paper trading only until G6 |
-| Last major milestone | **2026-06-02 SESSION 16** — Monte Carlo protocol established: `scripts/run_monte_carlo.py` + `MONTE_CARLO_PROTOCOL.md`. G1 T1 cron fired (22:00 UTC Jun 2): 7 bets / $381.97 deployed / bankroll $618.03. MC vs actual discrepancy (23 predicted → 7 placed) registered as investigation item for next session. 695/695 tests; commit d8ec72d; VPS current. |
-| Previous major milestone | **2026-06-02 SESSION 15** — KI-018 RESOLVED: ADR-0012 ACCEPTED (MAX_DAILY_LOSS_PCT=0.15; initial_bankroll parameter; two independent kill switches restored). RESERVE_MANDATE_PCT=0.40 advisory wired in evaluate_forecast(). Documentation debt T-093–T-099 CLEARED (7 files; 8 DECISION_LOG entries). 695/695 tests. Committed 9337d14; VPS current. |
+| Last major milestone | **2026-06-02 SESSION 17** — 24-bet ceiling root-caused and fixed: market-first loop (covers all Kalshi players), dynamic nba_api fallback (non-cohort Poisson path), cursor pagination (all KXNBAPTS pages), batch reserve gate (PIPE-03 halts at 40% reserve floor), cron retiming (KI-025 RESOLVED). 5 DECISION_LOG entries. Commit e74cd52; 695/695 tests; VPS deployed. |
+| Previous major milestone | **2026-06-02 SESSION 16** — Monte Carlo protocol established: `scripts/run_monte_carlo.py` + `MONTE_CARLO_PROTOCOL.md`. G1 T1 cron fired (22:00 UTC Jun 2): 7 bets / $381.97 deployed / bankroll $618.03. MC vs actual discrepancy (23 predicted → 7 placed) root-caused and fixed in Session 17. 695/695 tests; commit d8ec72d; VPS current. |
 
 ---
 
