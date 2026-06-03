@@ -8,13 +8,12 @@ Environment:  ENV-02 (VPS with datacenter IP — passes Kalshi CloudFront WAF)
 
 Steps:
   1. Load serialized production model (models/prod_model.joblib)
-  2. Fetch live KXNBAPTS markets from Kalshi DS-02
-  3. For each cohort player with an active quoted market:
-     a. Load their most recent feature vector from static feature matrix
-     b. Apply qualitative enrichment (QS-2026-05-28-002)
-     c. Generate p_estimate from serialized model
-     d. Compute edge = p_estimate - kalshi_mid - half_spread
-     e. Recommend YES / NO / PASS
+  2. Fetch ALL live KXNBAPTS markets from Kalshi DS-02 (paginated)
+  3. For each player with an active quoted market (market-first):
+     a. If in EXP-005 cohort: load feature vector, LR p_estimate, Poisson CDF per threshold
+     b. If not in cohort: fetch pts_l10_mean from nba_api dynamically, Poisson CDF only
+     c. Compute edge = p_threshold - kalshi_mid - half_spread
+     d. Recommend YES / NO / PASS
   4. Log all forecasts to C6 audit log
   5. Write edge report to logs/pregame_YYYYMMDD.json
   6. Exit 0 (no markets today is not an error)
@@ -50,9 +49,16 @@ _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
+from collections import defaultdict
+
+from prediction_market_bot.c1_signal_ingestion.ingestion import (
+    NBAIngestionClient,
+    SEASON_TYPE_REGULAR,
+)
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 from prediction_market_bot.c3_forecasting.shadow_forecaster import ShadowForecaster
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import BAND_REGISTRY
 
@@ -76,6 +82,7 @@ OUTPUT_PATH  = LOG_DIR / f"pregame_{GAME_DATE}.json"
 EDGE_YES =  0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
+DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player stat lookup
 
 _NON_FEATURE = {
     "player_id","player_name","team_id","team_abbreviation",
@@ -219,52 +226,92 @@ def main() -> None:
         print(f"ERROR: {e}", file=sys.stderr); sys.exit(1)
 
     # ------------------------------------------------------------------
-    # 4. Compute edges for cohort players with live markets
+    # 4. Compute edges — market-first (all live players, not just cohort)
+    #
+    # Cohort players: use EXP-005 feature vector + Poisson CDF (Path B).
+    # Non-cohort players: fetch pts_l10_mean from nba_api dynamically,
+    #   Poisson CDF only (p_estimate = None in report).
     # ------------------------------------------------------------------
+    from prediction_market_bot.c3_forecasting.game_state_model import _poisson_cdf
+
     forecasts = []
+
+    # Build cohort lookup by normalized name
+    cohort_lookup: dict[str, pd.Series] = {}
     for _, row in latest.iterrows():
-        player_name = str(row.get("player_name", ""))
-        player_id   = int(row.get("player_id", 0))
-        last_name   = player_name.split()[-1] if player_name else ""
-        first_init  = player_name[0].upper() if player_name else ""
+        norm = normalize_player_name(str(row.get("player_name", "")))
+        cohort_lookup[norm] = row
 
-        player_mkts = [
-            m for m in live
-            if last_name.upper() in m.player_name.upper()
-            and first_init in m.player_name.upper()
-            and m.status == "active"
-            and m.has_live_quotes
-        ]
-        if not player_mkts:
-            continue
+    # Group active quoted markets by Kalshi player name
+    markets_by_player: dict[str, list] = defaultdict(list)
+    for m in live:
+        if m.status == "active" and m.has_live_quotes:
+            markets_by_player[m.player_name].append(m)
 
-        pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+    print(f"  {len(markets_by_player)} players in live markets | "
+          f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
+
+    _ingester = NBAIngestionClient(logger=logger, snapshot_id=SNAPSHOT_ID)
+    _pts_cache: dict[str, float] = {}
+
+    for kalshi_player_name, player_mkts in markets_by_player.items():
+        norm = normalize_player_name(kalshi_player_name)
+
+        row = cohort_lookup.get(norm)
+        if row is not None:
+            player_id = int(row.get("player_id", 0))
+            pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+            X = np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float)
+            X = _impute(X, col_medians)
+            p_est_lr: float | None = float(pipeline.predict_proba(X)[0, 1])
+            p_shadow = shadow.predict_shadow(row, session_id=SESSION_ID) if shadow.available else None
+        else:
+            if norm in _pts_cache:
+                pts_mean = _pts_cache[norm]
+            else:
+                nba_id = NBAIngestionClient.get_player_id_by_name(kalshi_player_name)
+                if nba_id is None:
+                    print(f"  [SKIP] {kalshi_player_name} — not in cohort, nba_api lookup failed")
+                    continue
+                ok_f, gl_df = _ingester.fetch_player_game_log(
+                    player_id=nba_id,
+                    season=DYNAMIC_FETCH_SEASON,
+                    season_type=SEASON_TYPE_REGULAR,
+                    session_id=SESSION_ID,
+                )
+                if not ok_f or gl_df.empty:
+                    print(f"  [SKIP] {kalshi_player_name} — dynamic fetch returned no data")
+                    continue
+                gl_df["_gd"] = pd.to_datetime(gl_df["game_date"], errors="coerce")
+                pts_mean = float(gl_df.sort_values("_gd").tail(10)["pts"].mean())
+                _pts_cache[norm] = pts_mean
+            player_id = 0
+            p_est_lr = None
+            p_shadow = None
+
         if np.isnan(pts_mean):
             continue
 
-        # Build feature vector once per player; evaluate all available thresholds independently
-        X = np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float)
-        X = _impute(X, col_medians)
-        p_est = float(pipeline.predict_proba(X)[0, 1])
-
-        # Shadow inference (ADR-0009) — once per player, same feature row
-        p_shadow = shadow.predict_shadow(row, session_id=SESSION_ID) if shadow.available else None
-
         for mkt in player_mkts:
-            mid   = mkt.mid_price
-            half  = mkt.half_spread
-            edge  = p_est - mid - half
+            mid  = mkt.mid_price
+            half = mkt.half_spread
+            thresh_int = int(mkt.threshold)
+            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)
+            edge = p_threshold - mid - half
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
-            print(f"  {player_name:<28} thr={mkt.threshold:>3}  p={p_est:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}")
+            dyn_tag = " [dyn]" if p_est_lr is None else ""
+            print(f"  {kalshi_player_name:<28} thr={mkt.threshold:>3}  "
+                  f"p={p_threshold:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}{dyn_tag}")
 
             fc = {
-                "player_name": player_name, "player_id": player_id,
+                "player_name": kalshi_player_name, "player_id": player_id,
                 "pts_l10_mean": round(pts_mean, 2),
                 "kalshi_ticker": mkt.ticker,
                 "kalshi_threshold": mkt.threshold,
                 "mid_price": round(mid, 4), "vig": round(mkt.vig, 4),
-                "p_estimate": round(p_est, 4), "edge": round(edge, 4),
+                "p_estimate": round(p_threshold, 4), "edge": round(edge, 4),
+                "p_estimate_lr": round(p_est_lr, 4) if p_est_lr is not None else None,
                 "direction": direction,
                 "model_version": model_version,
                 "shadow_p_estimate": round(p_shadow, 4) if p_shadow is not None else None,
