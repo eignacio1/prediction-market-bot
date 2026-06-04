@@ -2,7 +2,18 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-04 SESSION 28 — Finals Game 1 resolved (1417 positions, −$95.20 P&L, 30.1% win rate). EXP-017 Part B: DIRECTIONAL_NEGATIVE (n=32, EV=−$0.162). Same-day resolution bug fixed. T4_EXPECTED_TOTAL_EDGE calibrated 441.38. GG-011 registered. VPS deploy + Finals Game 2 prep are the immediate priorities.
+**Last reviewed:** 2026-06-04 SESSION 29 — PDTP Finals G1 analysis written and committed (3abae30). VPS deploy complete (f32efa9 deployed, same-day fix live, T4 PID 205448 running). Finals Game 2 MC verify + portfolio reset decision remain open. EXP-017 DIRECTIONAL_NEGATIVE — path to G6 requires T-072 (opponent features + retrain) before further evidence accumulation.
+
+---
+
+## SESSION 2026-06-04 SESSION 29 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| PDTP Finals G1 document | **Formal Princeton Deep Thinking Protocol analysis of Finals Game 1** | ✅ COMPLETE 2026-06-04 SESSION 29 — `05_RESEARCH_EXPERIMENTS/EXPERIMENT_LOG/PDTP_FINALS_G1_20260604.md` written and committed (3abae30, pushed). Covers: architecture PASS (T1/T4 separation, pool_isolated, kill switch, audit logs all worked); commercial FAIL (EXP-017 DIRECTIONAL_NEGATIVE); root cause (missing opponent features F-040); T4 IDEMPOTENCY interference pattern (T4 pre-empts late T1 cron, collapses ~33 MC bets to ~3 actual); path to G6 (T-072 first, then EXP-017 v2, then evidence accumulation on FIXED model). |
+| T1 vs T4 bet count explanation | **Answered operator question: "33 bets is the total? What happened to the ~1000s of bets?"** | ✅ COMPLETE 2026-06-04 SESSION 29 — 33 = MC prediction for full T1 capacity. Actual G1 T1 = ~3–6 Kelly-sized bets (large Kelly sizes exhaust bankroll fast; T4 IDEMPOTENCY locks remaining tickers). 1,414 = T4 flat-contract in-game bets from $500 pool_isolated pool. Architecture separation worked as designed. Incorporated into PDTP document. |
+| VPS deploy (SESSION 28 fixes) | **Push paper_trader.py same-day fix + run_t4_live.py T4_EXPECTED_TOTAL_EDGE=441.38** | ✅ COMPLETE 2026-06-04 SESSION 29 — f32efa9 deployed to VPS via git pull. T4 old process (PID 154947) killed; new T4 (PID 205448) started with SESSION 28 code. 695/695 tests confirmed. |
+| DECISION_LOG SESSION 29 entry | **T4 IDEMPOTENCY interference pattern logged** | ✅ COMPLETE 2026-06-04 SESSION 29 — Notable Judgment Calls entry added: T4 pre-empts T1 late cron via ticker namespace overlap; architectural note for T4 ACTIVE ADR. |
 
 ---
 
@@ -22,7 +33,7 @@
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| **VPS deploy SESSION 28 changes** | **Push `paper_trader.py` same-day fix + `run_t4_live.py` T4_EXPECTED_TOTAL_EDGE update to VPS before Finals Game 2** | IO | **CRITICAL — before Jun 5 2:55 PM PDT** | Without deploy: same-day resolve bug still live on VPS; T4_EXPECTED_TOTAL_EDGE still shows stub value 5.0. Commands: `git push && ssh root@157.230.91.33 'cd /opt/prediction-market-bot && git pull && source venv/bin/activate && python -m pytest tests/ -q'`. |
+| **VPS deploy SESSION 28 changes** | **COMPLETE — f32efa9 deployed, same-day fix live, T4 PID 205448** | IO | ~~CRITICAL~~ DONE | Deployed via git pull on 2026-06-04. T4 old PID 154947 killed; new T4 PID 205448 started with SESSION 28 code. 695/695 tests confirmed on VPS. |
 | **Finals Game 2 MC verify** | **Run Monte Carlo before Finals Game 2 T1 cron (Jun 5)** | DS | **HIGH — before Jun 5 2:55 PM PDT** | `BOT_ENV=paper PYTHONPATH=src python3 scripts/run_monte_carlo.py --label pre-g2`. Expect 30–45 bets. If low: check reserve floor, pagination, market availability. |
 | **Portfolio reset decision** | **Evaluate reset to $1,500 ($1,000 T1 + $500 T4 pool) before Finals Game 2** | DS | MEDIUM | Current T1 bankroll ~$404.80. If EXP-017 root cause (opponent features) understood and strategy adjustment planned: reset gives cleaner signal for G2. If not: run G2 on reduced bankroll and treat as continued evidence accumulation. |
 | **GG-004 next step** | **Add opponent defensive features to C2/C3 for EXP-017 re-run** | DS | HIGH — before G6 | T1 model overestimates win prob by 13.7pp vs. Kalshi. Root cause: no opponent quality in feature set. Path: (1) enable TeamStatsStore F-040 `opp_def_rating_l10_mean` in C2 v1.3.0; (2) retrain with new ADR; (3) re-run EXP-017 Part B on Finals G2+. Note: T-072 model refresh (dark period) is the natural vehicle for this — coordinate. |
