@@ -277,11 +277,19 @@ SESSION_ID_PREFIX = "T4"
 # PAPER_T4_VIRTUAL=false (active mode): enforce band budget ceiling — stop firing when
 #   t4_deployed_game >= t4_band_budget. Evaluation continues for log data.
 #
-# T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE are STUBS pending G1 calibration.
-# Do not set PAPER_T4_VIRTUAL=false until both are calibrated and ADR-0013 is signed.
-# See scripts/run_t4_budget_sim.py to verify budget behaviour before G1.
-T4_BAND_WEIGHT: float = 0.10           # STUB — calibrate from G1 PAPER_T4_VIRTUAL data
-T4_EXPECTED_TOTAL_EDGE: float = 5.0    # STUB — calibrate from G1: sum(edge) across all VIRTUAL fires
+# T4_BAND_WEIGHT: STUB — calibration methodology requires PAPER_T4_VIRTUAL=true data.
+# G1 ran PAPER_T4_FLAT_SIZING=true (non-virtual); uncapped Kelly deployment = $81,226
+# across 1434 approved bets (87× any reasonable band budget at KELLY_T4=0.20 and
+# ~1,434 evaluations/game). The existing fractional-allocation formula is architecturally
+# incompatible with high-throughput T4 at design scale. New ADR required before T4 ACTIVE.
+# Paper mode overrides this via PAPER_T4_POOL_USD — value not active in paper execution.
+# See scripts/run_t4_budget_sim.py for the calibration procedure (requires VIRTUAL data).
+#
+# T4_EXPECTED_TOTAL_EDGE: calibrated from Finals G1 2026-06-03 (PAPER_T4_FLAT_SIZING=true,
+# 1446 evaluations, KELLY_T4=0.20). Sum of edge across all risk_eval_start records = 441.38.
+# Monitoring/planning constant only — not used in bet sizing computation.
+T4_BAND_WEIGHT: float = 0.10           # STUB — needs new ADR; incompatible with high-throughput T4 (see above)
+T4_EXPECTED_TOTAL_EDGE: float = 441.38 # G1 calibrated 2026-06-04: sum(edge) across 1446 evals, KELLY_T4=0.20
 
 _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio.json"

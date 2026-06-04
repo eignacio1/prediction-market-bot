@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-03 SESSION 25 (fee annotation + injury signal fields deployed to all paper positions; commit 8321900; T4 PID 154947; 695/695 tests)  
+**Last reviewed:** 2026-06-04 SESSION 28 (Finals G1 resolved: 1417 positions, −$95.20 P&L, 30.1% win rate; EXP-017 Part B DIRECTIONAL_NEGATIVE n=32; same-day resolve bug fixed; T4_EXPECTED_TOTAL_EDGE=441.38; GG-011 registered)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
