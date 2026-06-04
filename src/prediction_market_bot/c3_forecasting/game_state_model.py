@@ -70,6 +70,17 @@ T5_NO_CERTAINTY: float  = 0.15
 KELLY_T4: float = 0.20
 KELLY_T5: float = 0.25
 
+# ---------------------------------------------------------------------------
+# T1 opponent adjustment (ADR-0015)
+# ---------------------------------------------------------------------------
+
+# 2025-26 NBA season average points allowed per game across all 30 teams.
+# Update via DECISION_LOG entry at season rollover — no new ADR required.
+LEAGUE_AVG_PTS_ALLOWED: float = 113.0
+
+OPP_ADJ_MIN: float = 0.70  # floor: suppress at most 30% below league avg
+OPP_ADJ_MAX: float = 1.30  # ceiling: inflate at most 30% above league avg
+
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -139,6 +150,58 @@ def _poisson_cdf(k: int, lam: float) -> float:
         cumulative += term
         term *= lam / (i + 1)
     return min(1.0, cumulative)
+
+
+def parse_ticker_opponent(ticker: str) -> str | None:
+    """
+    Extract opponent team abbreviation from a Kalshi KXNBAPTS ticker.
+
+    Format: KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20
+      Segment[1] = date(7 chars) + team_a(3) + team_b(3)
+      Segment[2] = player_team(3) + player_id
+
+    Returns None on parse failure or if player team does not appear in matchup.
+    """
+    parts = ticker.split("-")
+    if len(parts) < 3:
+        return None
+    seg1 = parts[1]
+    if len(seg1) < 13:
+        return None
+    team_a = seg1[7:10]
+    team_b = seg1[10:13]
+    player_team = parts[2][:3]
+    if player_team == team_a:
+        return team_b
+    if player_team == team_b:
+        return team_a
+    return None
+
+
+def opp_adjusted_lambda(
+    pts_mean: float,
+    ticker: str,
+    team_store,  # TeamStatsStore | None — duck-typed to avoid package import cycle
+    game_date_iso: str,
+) -> float:
+    """
+    Apply opponent defensive adjustment to Poisson λ (ADR-0015).
+
+    adj_λ = pts_mean × clip(opp_def_l10 / LEAGUE_AVG_PTS_ALLOWED, 0.70, 1.30)
+
+    Falls back to raw pts_mean if: team_store is None, ticker unparseable,
+    or opponent defensive rating unavailable (< 3 prior games).
+    """
+    if team_store is None or not ticker:
+        return pts_mean
+    opp = parse_ticker_opponent(ticker)
+    if opp is None:
+        return pts_mean
+    opp_def = team_store.get_opp_def_rating(opp, as_of_date=game_date_iso)
+    if opp_def is None:
+        return pts_mean
+    factor = max(OPP_ADJ_MIN, min(OPP_ADJ_MAX, opp_def / LEAGUE_AVG_PTS_ALLOWED))
+    return pts_mean * factor
 
 
 def p_exceeds_threshold(pts_so_far: float, threshold: float, lam_remaining: float) -> float:

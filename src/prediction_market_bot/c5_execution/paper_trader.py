@@ -184,7 +184,9 @@ class PaperTrader:
             entry_cost = size  # cost = size (we pay mid_price per $1 contract)
 
             model_p    = float(approval.get("model_p", 0.0))
-            gross_edge = float(approval.get("edge", 0.0))
+            # ADR-0016: approval["gross_edge"] is pre-fee; "edge" is net-of-fee.
+            # Prefer explicit gross_edge key; fall back to edge for backward compat.
+            gross_edge = float(approval.get("gross_edge", approval.get("edge", 0.0)))
             fee_per_contract = round(0.07 * mid_price * (1.0 - mid_price), 6)
             fee_net_edge = round(gross_edge - fee_per_contract, 6)
             probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)

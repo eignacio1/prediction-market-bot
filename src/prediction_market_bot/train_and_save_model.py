@@ -63,6 +63,7 @@ _PRUNED_V110 = {
 _NON_FEATURE = {
     "player_id","player_name","team_id","team_abbreviation",
     "game_id","game_date","season","season_type",
+    "matchup","opponent_team_abbr",  # EXP-012 columns — not model features
     "min","pts","reb","ast","stl","blk","tov","pf",
     "fgm","fga","fg_pct","fg3m","fg3a","fg3_pct","ftm","fta","ft_pct","plus_minus",
     "snapshot_id","ingestion_run_id","ingested_at",

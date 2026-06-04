@@ -314,3 +314,103 @@ class TestComputeBudget:
         elapsed_ms = (time.perf_counter() - start) * 1000
         per_call_ms = elapsed_ms / runs
         assert per_call_ms < 5.0, f"T5 arithmetic took {per_call_ms:.3f}ms (budget: 5ms)"
+
+
+# ---------------------------------------------------------------------------
+# parse_ticker_opponent (ADR-0015)
+# ---------------------------------------------------------------------------
+
+from prediction_market_bot.c3_forecasting.game_state_model import (
+    LEAGUE_AVG_PTS_ALLOWED,
+    OPP_ADJ_MAX,
+    OPP_ADJ_MIN,
+    opp_adjusted_lambda,
+    parse_ticker_opponent,
+)
+
+
+class TestParseTickerOpponent:
+    def test_nyk_player_returns_sas(self):
+        ticker = "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20"
+        assert parse_ticker_opponent(ticker) == "SAS"
+
+    def test_sas_player_returns_nyk(self):
+        ticker = "KXNBAPTS-26JUN03NYKSAS-SASVWEMBANYAMA1-40"
+        assert parse_ticker_opponent(ticker) == "NYK"
+
+    def test_malformed_too_few_parts(self):
+        assert parse_ticker_opponent("KXNBAPTS-26JUN03NYKSAS") is None
+
+    def test_malformed_short_segment1(self):
+        assert parse_ticker_opponent("KXNBAPTS-26JUN03-NYKBRUNSON-20") is None
+
+    def test_empty_string(self):
+        assert parse_ticker_opponent("") is None
+
+    def test_player_team_not_in_matchup(self):
+        # OKC player in a NYK-SAS ticker
+        ticker = "KXNBAPTS-26JUN03NYKSAS-OKCSGA-20"
+        assert parse_ticker_opponent(ticker) is None
+
+    def test_different_matchup(self):
+        ticker = "KXNBAPTS-26MAY15BOSGSW-BOSTATUM0-25"
+        assert parse_ticker_opponent(ticker) == "GSW"
+
+    def test_away_team_player(self):
+        ticker = "KXNBAPTS-26MAY15BOSGSW-GSWCURRY30-30"
+        assert parse_ticker_opponent(ticker) == "BOS"
+
+
+# ---------------------------------------------------------------------------
+# opp_adjusted_lambda (ADR-0015)
+# ---------------------------------------------------------------------------
+
+class _MockStore:
+    """Minimal TeamStatsStore interface for unit testing."""
+    def __init__(self, rating):  # float | None
+        self._rating = rating
+
+    def get_opp_def_rating(self, opp, as_of_date, **kw):
+        return self._rating
+
+
+class TestOppAdjustedLambda:
+    def test_no_store_returns_raw(self):
+        result = opp_adjusted_lambda(25.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", None, "2026-06-03")
+        assert result == 25.0
+
+    def test_strong_defense_reduces_lambda(self):
+        store = _MockStore(90.0)  # well below league avg 113
+        result = opp_adjusted_lambda(25.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result < 25.0
+        assert result == pytest.approx(25.0 * (90.0 / LEAGUE_AVG_PTS_ALLOWED))
+
+    def test_weak_defense_increases_lambda(self):
+        store = _MockStore(130.0)  # above league avg
+        result = opp_adjusted_lambda(20.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result > 20.0
+
+    def test_floor_clamps_extreme_defense(self):
+        store = _MockStore(50.0)  # very strong D → factor = 50/113 = 0.44 → clamped to 0.70
+        result = opp_adjusted_lambda(25.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result == pytest.approx(25.0 * OPP_ADJ_MIN)
+
+    def test_ceiling_clamps_extreme_offense(self):
+        store = _MockStore(200.0)  # very weak D → factor = 200/113 = 1.77 → clamped to 1.30
+        result = opp_adjusted_lambda(20.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result == pytest.approx(20.0 * OPP_ADJ_MAX)
+
+    def test_league_avg_defense_returns_unchanged(self):
+        store = _MockStore(LEAGUE_AVG_PTS_ALLOWED)
+        result = opp_adjusted_lambda(22.5, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result == pytest.approx(22.5)
+
+    def test_unparseable_ticker_returns_raw(self):
+        store = _MockStore(90.0)
+        result = opp_adjusted_lambda(25.0, "BAD-TICKER", store, "2026-06-03")
+        assert result == 25.0
+
+    def test_unknown_opponent_returns_raw(self):
+        store = _MockStore(None)  # store returns None for unknown team
+        result = opp_adjusted_lambda(25.0, "KXNBAPTS-26JUN03NYKSAS-NYKJBRUNSON11-20", store, "2026-06-03")
+        assert result == 25.0

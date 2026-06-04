@@ -55,7 +55,9 @@ from prediction_market_bot.c1_signal_ingestion.ingestion import (
     NBAIngestionClient,
     SEASON_TYPE_REGULAR,
 )
+from prediction_market_bot.c1_signal_ingestion.team_stats_store import TeamStatsStore
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
+from prediction_market_bot.c3_forecasting.game_state_model import opp_adjusted_lambda, parse_ticker_opponent
 from prediction_market_bot.c3_forecasting.shadow_forecaster import ShadowForecaster
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
@@ -68,7 +70,8 @@ from prediction_market_bot.execution_bands import BAND_REGISTRY
 
 COMPONENT   = "PIPE-02"
 SESSION_ID  = f"PG-{uuid.uuid4().hex[:8].upper()}"
-GAME_DATE   = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+GAME_DATE     = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+GAME_DATE_ISO = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
 
 MODEL_PATH   = Path("models/prod_model.joblib")
 MODEL_META   = Path("models/prod_model_meta.json")
@@ -78,6 +81,7 @@ QS_ID        = "QS-2026-05-28-002"
 SNAPSHOT_ID  = "SNAP-2026-05-28-002"
 LOG_DIR      = Path(os.environ.get("LOG_DIR", "logs"))
 OUTPUT_PATH  = LOG_DIR / f"pregame_{GAME_DATE}.json"
+TEAM_STATS_CACHE = LOG_DIR / f"team_stats_cache_{GAME_DATE}.json"
 
 EDGE_YES =  0.02
 EDGE_NO  = -0.02
@@ -254,6 +258,42 @@ def main() -> None:
     _ingester = NBAIngestionClient(logger=logger, snapshot_id=SNAPSHOT_ID)
     _pts_cache: dict[str, float] = {}
 
+    # ------------------------------------------------------------------
+    # 4a. Build opponent defensive stats store (ADR-0015)
+    # Fetches 30 team game logs; cached to TEAM_STATS_CACHE for PIPE-03 use.
+    # Falls back gracefully — raw λ used if build fails.
+    # ------------------------------------------------------------------
+    team_store: TeamStatsStore | None = None
+    try:
+        teams = NBAIngestionClient.get_all_teams()
+        store = TeamStatsStore()
+        _tss_ok = 0
+        for _team in teams:
+            _ok, _df = _ingester.fetch_team_game_log(
+                team_id=_team["id"],
+                season=DYNAMIC_FETCH_SEASON,
+                session_id=SESSION_ID,
+            )
+            if _ok and not _df.empty:
+                store.add_team_log(_team["abbreviation"], _df)
+                _tss_ok += 1
+        team_store = store
+        print(f"[TSS] Team stats store: {_tss_ok}/{len(teams)} teams loaded (ADR-0015)")
+        logger.info(COMPONENT, "team_stats_store_built",
+                    payload={"teams_loaded": _tss_ok, "teams_total": len(teams)},
+                    session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+        # Cache for PIPE-03 (runs ~5 min after PIPE-02)
+        try:
+            TEAM_STATS_CACHE.write_text(json.dumps(store.to_cache_dict()))
+            print(f"[TSS] Cache written: {TEAM_STATS_CACHE}")
+        except Exception as _ce:
+            logger.warning(COMPONENT, "team_stats_cache_write_failed",
+                           payload={"error": str(_ce)}, session_id=SESSION_ID)
+    except Exception as _tss_err:
+        logger.warning(COMPONENT, "team_stats_store_build_failed",
+                       payload={"error": str(_tss_err)}, session_id=SESSION_ID)
+        print(f"[TSS] Build failed — using raw λ (fallback): {_tss_err}")
+
     for kalshi_player_name, player_mkts in markets_by_player.items():
         norm = normalize_player_name(kalshi_player_name)
 
@@ -292,25 +332,37 @@ def main() -> None:
         if np.isnan(pts_mean):
             continue
 
+        # Resolve opponent once per player (same game for all their thresholds)
+        _opp_team = parse_ticker_opponent(player_mkts[0].ticker) if player_mkts else None
+
         for mkt in player_mkts:
             mid  = mkt.mid_price
             half = mkt.half_spread
             thresh_int = int(mkt.threshold)
-            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)
-            edge = p_threshold - mid - half
+            adj_lam = opp_adjusted_lambda(pts_mean, mkt.ticker, team_store, GAME_DATE_ISO)
+            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, adj_lam)
+            gross_edge = p_threshold - mid - half
+            kalshi_fee = round(0.07 * mid * (1.0 - mid), 6)  # ADR-0016 taker fee
+            edge = gross_edge - kalshi_fee                     # net-of-fee edge
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
             dyn_tag = " [dyn]" if p_est_lr is None else ""
+            opp_tag = f" opp={_opp_team} λ={adj_lam:.1f}" if team_store and _opp_team else ""
             print(f"  {kalshi_player_name:<28} thr={mkt.threshold:>3}  "
-                  f"p={p_threshold:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}{dyn_tag}")
+                  f"p={p_threshold:.3f}  mid={mid:.3f}  edge={edge:+.3f}  → {direction}{dyn_tag}{opp_tag}")
 
             fc = {
                 "player_name": kalshi_player_name, "player_id": player_id,
                 "pts_l10_mean": round(pts_mean, 2),
+                "opp_team": _opp_team,
+                "opp_adj_lambda": round(adj_lam, 3),
                 "kalshi_ticker": mkt.ticker,
                 "kalshi_threshold": mkt.threshold,
                 "mid_price": round(mid, 4), "vig": round(mkt.vig, 4),
-                "p_estimate": round(p_threshold, 4), "edge": round(edge, 4),
+                "p_estimate": round(p_threshold, 4),
+                "gross_edge": round(gross_edge, 4),
+                "kalshi_fee": kalshi_fee,
+                "edge": round(edge, 4),
                 "p_estimate_lr": round(p_est_lr, 4) if p_est_lr is not None else None,
                 "direction": direction,
                 "model_version": model_version,

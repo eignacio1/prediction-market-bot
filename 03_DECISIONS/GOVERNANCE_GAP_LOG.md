@@ -178,7 +178,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | At $0.50 market, taker fee = $0.0175. MIN_EDGE = 0.02. Net fee-adjusted edge threshold = 0.0025 (12.5% of nominal edge). Bets at 50¢ market approved at MIN_EDGE=0.02 have an expected fee cost that is 87% of gross edge. This is architecturally serious: the bot may be betting with essentially zero or negative fee-adjusted edge at the current threshold. Maker orders (fee = 0.25× taker = $0.004375 at 50¢) are more favorable but require limit order infrastructure (not yet built). |
 | Discovery | SESSION 22 (2026-06-03) — Kalshi operational constraints research. Fee formula sourced from Kalshi API docs: `fee = 0.07 × P × (1-P)` taker; `fee = 0.0175 × P × (1-P)` maker. Calculation: at P=0.50, taker fee = $0.0175 vs MIN_EDGE=0.02 gross. |
 | Resolution | Three options: (1) **Raise MIN_EDGE**: set `MIN_EDGE = 0.02 + fee_at_50c = 0.0375` (a ~2× increase — materially reduces approved bets); (2) **Fee-adjusted edge gate**: `net_edge = gross_edge - fee(mip)` where `fee(mip) = 0.07 × mip × (1−mip)` — approved only if `net_edge >= MIN_EDGE`; (3) **Maker-first policy**: place as limit (maker) order at MIP, reducing fee 4×. Requires limit order infrastructure. **Resolution requires ADR** (changes to MIN_EDGE or edge formula are architectural). Register T-131. Block on before G6 (EXP-017 EV figures without fee correction are overstated). |
-| Status | OPEN — 2026-06-03 SESSION 22/23; high severity for live capital authorization; medium severity for paper (P&L impact real but no capital at risk) |
+| Status | **RESOLVED — 2026-06-04 SESSION 30** — ADR-0016 ACCEPTED: `net_edge = gross_edge - 0.07 × mid × (1-mid)`; fee-negative bets rejected at edge gate; `fee_contaminated` position flag (SESSION 25) logically always False for new bets post-ADR-0016; GG-009 closed |
 
 ---
 
@@ -225,6 +225,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-003 | 2026-06-01 | ADR-0007: GOVERNANCE_GAP_LOG.md mandated; ARE WE COMPROMISED? protocol added |
 | GG-005 | 2026-06-01 | APR-0017 v2 ACCEPTED: all criteria expressed as rates/slopes with derived thresholds; Q7 protocol in CLAUDE.md |
 | GG-008 | 2026-06-02 | T-129 Path B: `p_est` replaced with `Poisson_CDF(threshold, pts_l10_mean)` per threshold in `run_paper_trade.py`; tainted G1 portfolio wiped; clean slate on $1,000 for Finals G1 cron |
+| GG-009 | 2026-06-04 | ADR-0016: `net_edge = gross_edge - 0.07 × mid × (1-mid)`; fee-negative bets rejected at gate; `fee_contaminated` always False for new bets post-ADR-0016 |
 | GG-010 | 2026-06-03 | DS decision: no dedicated band budgets; shared budget + per-band kill switches is design intent. If T5 starved → root cause is T4_MIN_DELTA_P miscalibration → fix EXP-018, not budget architecture. ADR-0014 Q2 closed. |
 
 ---
