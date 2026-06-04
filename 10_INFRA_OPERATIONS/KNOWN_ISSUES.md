@@ -410,6 +410,7 @@
 | Registered | 2026-06-01 — identified via PDTP strategic analysis (Session 8) as ungated HIGH-severity risk |
 | Status | OPEN — HIGH severity pre-live-capital; LOW severity during paper trading (simulated fills); must be addressed in G6 live capital ADR |
 | T-127 run 1 | 2026-06-02 (pre-game): 38/38 KXNBAPTS markets found for Finals G1 (Jun 3 NYK vs SAS). Orderbook depth = $0.00 across ALL markets 24h pre-game. Confirms Kalshi posts MM liquidity on game day, not in advance. Audit log: `logs/orderbook_depth_20260602_151325.json`. **Re-run required on Jun 3 (game day) during active trading to measure real depth.** |
+| T-127 run 2 | 2026-06-04 02:01 UTC (in-game, scheduled cloud agent): 0 KXNBAPTS markets returned. All Kalshi API endpoints return HTTP 403 "Host not in allowlist" from Anthropic cloud IPs — external-api.kalshi.com, trading-api.kalshi.com, demo-api.kalshi.co, and kalshi.com public website all blocked. This is a Kalshi IP allowlist restriction, NOT a sign the game has ended. **New finding: cloud-based scheduled agents cannot directly query Kalshi API.** All KXNBAPTS depth measurements must originate from VPS 157.230.91.33 (which is on Kalshi's allowlist). Real in-game depth data from this window is in VPS cron logs (logs/orderbook_depth_g1_*ingame*.log on 157.230.91.33). Requires manual VPS log retrieval to complete KI-023 in-game measurement. Future T-127 re-runs must be scheduled as VPS cron jobs, not cloud agents. |
 
 ---
 
