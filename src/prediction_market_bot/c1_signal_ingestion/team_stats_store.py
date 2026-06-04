@@ -176,3 +176,27 @@ class TeamStatsStore:
 
     def __contains__(self, team_abbr: str) -> bool:
         return team_abbr.upper() in self._logs
+
+    def to_cache_dict(self) -> dict[str, list[dict]]:
+        """Serialize to a JSON-safe dict for file caching between PIPE-02 and PIPE-03."""
+        out: dict[str, list[dict]] = {}
+        for abbr, df in self._logs.items():
+            keep = [c for c in ("game_date", "pts", "plus_minus", "pts_allowed") if c in df.columns]
+            out[abbr] = df[keep].to_dict(orient="records")
+        return out
+
+    @classmethod
+    def from_cache_dict(cls, data: dict[str, list[dict]]) -> "TeamStatsStore":
+        """Deserialize from a cache dict written by to_cache_dict()."""
+        store = cls()
+        for abbr, records in data.items():
+            if not records:
+                continue
+            df = pd.DataFrame(records)
+            for col in ("pts", "plus_minus", "pts_allowed"):
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors="coerce")
+            if "game_date" in df.columns:
+                df = df.sort_values("game_date").reset_index(drop=True)
+            store._logs[abbr.upper()] = df
+        return store

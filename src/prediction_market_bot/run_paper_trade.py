@@ -62,7 +62,13 @@ from prediction_market_bot.c1_signal_ingestion.ingestion import (
     NBAIngestionClient,
     SEASON_TYPE_REGULAR,
 )
+from prediction_market_bot.c1_signal_ingestion.team_stats_store import TeamStatsStore
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
+from prediction_market_bot.c3_forecasting.game_state_model import (
+    _poisson_cdf,
+    opp_adjusted_lambda,
+    parse_ticker_opponent,
+)
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
@@ -72,14 +78,14 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.execution_bands import BAND_REGISTRY, get_band_config, ExecutionBand
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
-from prediction_market_bot.c3_forecasting.game_state_model import _poisson_cdf
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
-SESSION_ID = f"PT-{uuid.uuid4().hex[:8].upper()}"
-GAME_DATE  = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+SESSION_ID    = f"PT-{uuid.uuid4().hex[:8].upper()}"
+GAME_DATE     = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+GAME_DATE_ISO = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
 
 MODEL_PATH    = Path("models/prod_model.joblib")
 FEATURE_CSV   = Path("exp_output/EXP-005/EXP-005_feature_matrix.csv")
@@ -89,6 +95,7 @@ SNAPSHOT_ID   = "SNAP-2026-05-28-002"
 LOG_DIR       = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
 PORTFOLIO_PATH = LOG_DIR / "paper_portfolio.json"
 REPORT_PATH   = LOG_DIR / f"paper_{GAME_DATE}.json"
+TEAM_STATS_CACHE = LOG_DIR / f"team_stats_cache_{GAME_DATE}.json"
 
 EDGE_YES = 0.02
 EDGE_NO  = -0.02
@@ -310,6 +317,48 @@ def main() -> None:
     _ingester = NBAIngestionClient(logger=logger, snapshot_id=SNAPSHOT_ID)
     _pts_cache: dict[str, float] = {}
 
+    # ------------------------------------------------------------------
+    # 5a. Load opponent defensive stats store (ADR-0015)
+    # PIPE-02 writes the cache ~5 min earlier; load from it if present.
+    # Falls back to fresh build; falls back to raw λ if both fail.
+    # ------------------------------------------------------------------
+    team_store: TeamStatsStore | None = None
+    if TEAM_STATS_CACHE.exists():
+        try:
+            _cache_data = json.loads(TEAM_STATS_CACHE.read_text())
+            team_store = TeamStatsStore.from_cache_dict(_cache_data)
+            print(f"[TSS] Loaded {len(team_store)} teams from cache (ADR-0015)")
+            logger.info("PIPE-03", "team_stats_store_cache_hit",
+                        payload={"teams": len(team_store), "cache": str(TEAM_STATS_CACHE)},
+                        session_id=SESSION_ID)
+        except Exception as _ce:
+            logger.warning("PIPE-03", "team_stats_cache_load_failed",
+                           payload={"error": str(_ce)}, session_id=SESSION_ID)
+    if team_store is None or len(team_store) == 0:
+        print("[TSS] Cache miss — building fresh team stats store...")
+        try:
+            teams = NBAIngestionClient.get_all_teams()
+            store = TeamStatsStore()
+            _tss_ok = 0
+            for _team in teams:
+                _ok, _df = _ingester.fetch_team_game_log(
+                    team_id=_team["id"],
+                    season=DYNAMIC_FETCH_SEASON,
+                    session_id=SESSION_ID,
+                )
+                if _ok and not _df.empty:
+                    store.add_team_log(_team["abbreviation"], _df)
+                    _tss_ok += 1
+            team_store = store
+            print(f"[TSS] Built fresh: {_tss_ok}/{len(teams)} teams loaded (ADR-0015)")
+            logger.info("PIPE-03", "team_stats_store_built",
+                        payload={"teams_loaded": _tss_ok, "teams_total": len(teams)},
+                        session_id=SESSION_ID)
+        except Exception as _tss_err:
+            logger.warning("PIPE-03", "team_stats_store_build_failed",
+                           payload={"error": str(_tss_err)}, session_id=SESSION_ID)
+            print(f"[TSS] Build failed — using raw λ (fallback): {_tss_err}")
+
     _reserve_halted = False
 
     for kalshi_player_name, player_mkts in markets_by_player.items():
@@ -355,6 +404,9 @@ def main() -> None:
         if np.isnan(pts_mean):
             continue
 
+        # Resolve opponent once per player (same game for all their thresholds)
+        _opp_team = parse_ticker_opponent(player_mkts[0].ticker) if player_mkts else None
+
         for mkt in player_mkts:
             if _reserve_halted:
                 break
@@ -365,13 +417,16 @@ def main() -> None:
                 print(f"  [IDEMPOTENCY] SKIP {kalshi_player_name} — {mkt.ticker} already open")
                 continue
 
-            # T-129 Path B: Poisson CDF gives threshold-specific probability
+            # T-129 Path B: Poisson CDF with opponent-adjusted λ (ADR-0015)
             thresh_int = int(mkt.threshold)
-            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)
+            adj_lam = opp_adjusted_lambda(pts_mean, mkt.ticker, team_store, GAME_DATE_ISO)
+            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, adj_lam)
 
             mid  = mkt.mid_price
             half = mkt.half_spread
-            edge = p_threshold - mid - half
+            gross_edge = p_threshold - mid - half
+            kalshi_fee = 0.07 * mid * (1.0 - mid)  # ADR-0016 taker fee
+            edge = gross_edge - kalshi_fee           # net-of-fee edge
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
             forecast_rec = {
@@ -379,7 +434,9 @@ def main() -> None:
                 "p_estimate": p_threshold,
                 "p_estimate_lr": p_est_lr,
                 "market_implied_prob": mid,
-                "edge": edge,
+                "gross_edge": gross_edge,
+                "kalshi_fee": round(kalshi_fee, 6),
+                "edge": edge,       # net-of-fee; this is what C4 gates on
                 "recommended_direction": direction,
             }
             ok_c4, approval = engine.evaluate_forecast(
@@ -420,7 +477,8 @@ def main() -> None:
                 approval = {
                     **approval,
                     "model_p": float(forecast_rec["p_estimate"]),
-                    "edge": float(forecast_rec["edge"]),
+                    "edge": float(forecast_rec["edge"]),           # net-of-fee
+                    "gross_edge": float(forecast_rec["gross_edge"]),  # pre-fee (for paper_trader annotation)
                 }
                 ok_pos, pos = trader.open_position(
                     approval=approval,

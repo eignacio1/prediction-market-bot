@@ -136,3 +136,41 @@ class TestGetOppPtsScored:
     def test_returns_none_for_unknown_team(self):
         store = TeamStatsStore()
         assert store.get_opp_pts_scored("FAKE", "2025-01-06") is None
+
+
+# ---------------------------------------------------------------------------
+# TeamStatsStore cache serialization (ADR-0015)
+# ---------------------------------------------------------------------------
+
+class TestCacheSerialization:
+    def test_round_trip_preserves_teams(self):
+        store = TeamStatsStore()
+        store.add_team_log("NYK", _make_team_log([110, 105, 115], [5, -3, 8],
+                                                   ["2026-01-01", "2026-01-03", "2026-01-05"]))
+        store.add_team_log("SAS", _make_team_log([108, 112, 102], [2, -1, 6],
+                                                   ["2026-01-02", "2026-01-04", "2026-01-06"]))
+        cache = store.to_cache_dict()
+        restored = TeamStatsStore.from_cache_dict(cache)
+        assert set(restored.teams_loaded) == {"NYK", "SAS"}
+
+    def test_round_trip_preserves_ratings(self):
+        store = TeamStatsStore()
+        store.add_team_log("GSW", _make_team_log([115, 110, 120], [5, -3, 8],
+                                                   ["2026-01-01", "2026-01-03", "2026-01-05"]))
+        cache = store.to_cache_dict()
+        restored = TeamStatsStore.from_cache_dict(cache)
+        original_rating = store.get_opp_def_rating("GSW", "2026-01-06", min_periods=3)
+        restored_rating = restored.get_opp_def_rating("GSW", "2026-01-06", min_periods=3)
+        assert restored_rating == pytest.approx(original_rating)
+
+    def test_empty_store_round_trips(self):
+        store = TeamStatsStore()
+        cache = store.to_cache_dict()
+        restored = TeamStatsStore.from_cache_dict(cache)
+        assert len(restored) == 0
+
+    def test_from_cache_dict_empty_records_skipped(self):
+        cache = {"NYK": [], "SAS": [{"game_date": "2026-01-01", "pts": 110, "plus_minus": 5, "pts_allowed": 105}]}
+        restored = TeamStatsStore.from_cache_dict(cache)
+        assert "NYK" not in restored
+        assert "SAS" in restored
