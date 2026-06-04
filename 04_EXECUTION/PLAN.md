@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-04 SESSION 28 (Finals G1 resolved: 1417 positions, −$95.20 P&L, 30.1% win rate; EXP-017 Part B DIRECTIONAL_NEGATIVE n=32; same-day resolve bug fixed; T4_EXPECTED_TOTAL_EDGE=441.38; GG-011 registered)  
+**Last reviewed:** 2026-06-04 SESSION 29 (PDTP Finals G1 analysis committed 3abae30; VPS deploy complete f32efa9; T4 PID 205448; path to G6 = T-072 first)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
