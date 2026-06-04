@@ -6,6 +6,15 @@
 
 ---
 
+## SESSION 2026-06-03 SESSION 27 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Bloomberg terminal rewrite | **`scripts/live_terminal.py` — multi-panel curses layout replacing global-scroll single-pad approach** | ✅ COMPLETE 2026-06-03 SESSION 27 — Full rewrite: 8 independent panels (PORTFOLIO, LIVE POSITIONS, MARKET SNAPSHOT, TODAY'S BETS, ALERTS, RECENTLY RESOLVED, SYSTEM STATUS, T4 LOG TAIL), each with its own curses pad and `scroll_y`. 2-column layout (56%/44%). Tab/Shift+Tab cycles panel focus (focused title turns cyan bold + `↕NN%` scroll indicator). Arrow keys / PgUp/PgDn / Home/End scroll within focused panel. Footer shows control hints. Layout adapts to terminal size via `_compute_layout()`. Atomic curses update via `doupdate()` — zero flicker. |
+| Curses ordering bug fix | **Fixed blank-panel rendering: stdscr erased content areas; pad writes were invisible** | ✅ COMPLETE 2026-06-03 SESSION 27 — Root cause: `draw_panel()` called `ps.pad.noutrefresh()` inside each panel draw, then `stdscr.noutrefresh()` ran last → stdscr's blank content areas overwrote pad content in curses' virtual screen buffer → `doupdate()` rendered blank panels despite data present. Fix: moved all pad `noutrefresh` calls to a separate `refresh_pad()` pass that runs AFTER `stdscr.noutrefresh()`. stdscr wins on borders; pads win on content. Data confirmed flowing: 1416 T4 positions, $499.95 deployed, 3 T1 bets. |
+
+---
+
 ## SESSION 2026-06-03 SESSION 26 — COMPLETED
 
 | # | Task | Status |
