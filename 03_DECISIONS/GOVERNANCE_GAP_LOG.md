@@ -199,6 +199,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-011 — T4_BAND_WEIGHT Fractional-Allocation Formula Incompatible with High-Throughput T4
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-011 |
+| Category | Architectural — T4 sizing model unfit for high-throughput operation |
+| What was missed | `T4_BAND_WEIGHT` assumes `t4_band_budget = bankroll × (1−RESERVE_MANDATE_PCT) × T4_BAND_WEIGHT`. At KELLY_T4=0.20 and ~1,434 evaluations/game with avg edge=0.305, uncapped Kelly deployment = $81,226 across one game — 87× any reasonable band budget. The budget exhausts after ~12 bets, leaving 1,400+ evaluations unfunded. The formula is valid only if T4 fires 10–20 bets/game (pre-ADR-0006 count-gate era), not at design-intent throughput. |
+| When it should have been caught | ADR-0013 design (2026-06-02 SESSION 20) when T4_BAND_WEIGHT was first introduced as a stub. |
+| Phases it survived | ADR-0013 ACCEPTED 2026-06-02 → G1 paper execution 2026-06-03 |
+| Why it survived | G1 ran PAPER_T4_FLAT_SIZING=true which overrides the formula via PAPER_T4_POOL_USD. The stub was never exercised in production — paper mode bypasses it. Calibration script `run_t4_budget_sim.py` requires PAPER_T4_VIRTUAL=true data; G1 ran non-virtual so calibration was never attempted. |
+| Impact | LOW now — paper mode overrides T4_BAND_WEIGHT via PAPER_T4_POOL_USD; stub not active in any current execution path. HIGH before T4 ACTIVE: live mode uses `_compute_t4_band_budget()` which applies the formula. If activated with current formula, T4 depletes its entire band budget in ~12 bets and goes dark for the remaining 1,400+ evaluations per game. |
+| Discovery | 2026-06-04 SESSION 28 — G1 calibration attempt. Calibration script returned "No T4 VIRTUAL fires found." Manual analysis of audit_t4.jsonl: 1434 approved bets × avg approved_size=$56.64 = $81,226 uncapped Kelly deployment. |
+| Resolution | **OPEN** — new ADR required to specify per-evaluation sizing for high-throughput T4. Options: (1) per-evaluation budget normalization: `bet_size = edge × KELLY_T4 × (band_budget / expected_bets_per_game)` — each bet gets a budget slice; (2) fixed per-contract sizing (current paper approach) extended to live; (3) dynamic budget refresh per quarter. None of these are validated. Gate: resolve before T4 ACTIVE designation. |
+| Status | OPEN — 2026-06-04 SESSION 28; LOW severity now (paper mode bypasses formula); HIGH severity before T4 ACTIVE designation |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

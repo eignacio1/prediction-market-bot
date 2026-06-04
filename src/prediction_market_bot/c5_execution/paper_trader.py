@@ -297,7 +297,7 @@ class PaperTrader:
         with self._lock:
             pending = [
                 p for p in self._state["open_positions"]
-                if p.get("game_date", today) < today
+                if p.get("game_date", today) <= today
             ]
 
         if not pending:

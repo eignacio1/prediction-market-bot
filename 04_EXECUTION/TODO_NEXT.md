@@ -2,7 +2,32 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-03 SESSION 26 — Finals Game 1 T-109 automation deployed (`scripts/poll_and_resolve_g1.py`, PID 5865 + caffeinate). Pre-game hygiene confirmed green. T-132 registered (CHANGE_CONTROL.md governance debt). Poll script running, fallback 2026-06-04T07:30Z.
+**Last reviewed:** 2026-06-04 SESSION 28 — Finals Game 1 resolved (1417 positions, −$95.20 P&L, 30.1% win rate). EXP-017 Part B: DIRECTIONAL_NEGATIVE (n=32, EV=−$0.162). Same-day resolution bug fixed. T4_EXPECTED_TOTAL_EDGE calibrated 441.38. GG-011 registered. VPS deploy + Finals Game 2 prep are the immediate priorities.
+
+---
+
+## SESSION 2026-06-04 SESSION 28 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| Finals G1 resolution | **1417 paper positions resolved via `run_resolve_local.py`** | ✅ COMPLETE 2026-06-04 SESSION 28 — Runtime ~37 min (Playoffs season-type fallback: 2 API calls × 0.6s/position). Results: 1417 settled, 0 open, bankroll $1,404.80, P&L −$95.20 (−6.3%), win rate 30.1%, drawdown 9.5%. Portfolio synced to VPS. Same-day resolution bug fixed: `paper_trader.py:resolve_pending()` `<` → `<=`. Root cause: local PDT date = game date = 2026-06-03; strict `<` excluded all same-day games. |
+| EXP-017 Part B G1 | **First real commercial validation run with Finals G1 Kalshi prices** | ✅ COMPLETE 2026-06-04 SESSION 28 — n=32 unique markets, win_rate=21.9%, EV=−$0.162/bet, mean_edge_vs_market=+0.1366. DIRECTIONAL_NEGATIVE. Model beats null (Part A +$0.054) but loses to actual Kalshi prices. Root cause: no opponent quality/defensive intensity features. GG-004 remains OPEN. |
+| T4_EXPECTED_TOTAL_EDGE calibration | **Calibrated from Finals G1 T4 audit log** | ✅ COMPLETE 2026-06-04 SESSION 28 — 1446 risk_eval_start records, sum(edge)=441.38. Updated `run_t4_live.py` 5.0 → 441.38. T4_BAND_WEIGHT blocked (GG-011 registered). |
+| DECISION_LOG SESSION 28 | **G1 resolution, EXP-017 Part B, G6 floor revision flag** | ✅ COMPLETE 2026-06-04 SESSION 28 — 3 new entries added. |
+| MEMORY_BANK/TODO update | **State updated to reflect G1 resolution results** | ✅ COMPLETE 2026-06-04 SESSION 28 |
+
+---
+
+## SESSION 2026-06-04 SESSION 28 — OPEN ITEMS
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| **VPS deploy SESSION 28 changes** | **Push `paper_trader.py` same-day fix + `run_t4_live.py` T4_EXPECTED_TOTAL_EDGE update to VPS before Finals Game 2** | IO | **CRITICAL — before Jun 5 2:55 PM PDT** | Without deploy: same-day resolve bug still live on VPS; T4_EXPECTED_TOTAL_EDGE still shows stub value 5.0. Commands: `git push && ssh root@157.230.91.33 'cd /opt/prediction-market-bot && git pull && source venv/bin/activate && python -m pytest tests/ -q'`. |
+| **Finals Game 2 MC verify** | **Run Monte Carlo before Finals Game 2 T1 cron (Jun 5)** | DS | **HIGH — before Jun 5 2:55 PM PDT** | `BOT_ENV=paper PYTHONPATH=src python3 scripts/run_monte_carlo.py --label pre-g2`. Expect 30–45 bets. If low: check reserve floor, pagination, market availability. |
+| **Portfolio reset decision** | **Evaluate reset to $1,500 ($1,000 T1 + $500 T4 pool) before Finals Game 2** | DS | MEDIUM | Current T1 bankroll ~$404.80. If EXP-017 root cause (opponent features) understood and strategy adjustment planned: reset gives cleaner signal for G2. If not: run G2 on reduced bankroll and treat as continued evidence accumulation. |
+| **GG-004 next step** | **Add opponent defensive features to C2/C3 for EXP-017 re-run** | DS | HIGH — before G6 | T1 model overestimates win prob by 13.7pp vs. Kalshi. Root cause: no opponent quality in feature set. Path: (1) enable TeamStatsStore F-040 `opp_def_rating_l10_mean` in C2 v1.3.0; (2) retrain with new ADR; (3) re-run EXP-017 Part B on Finals G2+. Note: T-072 model refresh (dark period) is the natural vehicle for this — coordinate. |
+| **T-131 — Fee-adjusted edge ADR** | **GG-009: taker fee absent from MIN_EDGE gate** | DS | HIGH — before G6 | See existing entry in SESSION 22/23 open items below. |
+| **GG-011 — T4_BAND_WEIGHT ADR** | **New ADR required before T4 ACTIVE for per-evaluation sizing** | DS | LOW now / HIGH before T4 ACTIVE | See GG-011 in GOVERNANCE_GAP_LOG. |
 
 ---
 
@@ -79,7 +104,7 @@
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
 | **VPS deploy ADR-0013** | ~~Deploy updated `run_t4_live.py` to VPS before Finals G1 tip-off~~ | IO | ~~CRITICAL — before game~~ | ✅ COMPLETE — SESSION 24. VPS on commit `dfb16f0`. Old `140907.t4_live` screen superseded by nohup PID 153790 with `pool_isolated=True` + `PAPER_T4_FLAT_SIZING=True`. ADR-0013 code deployed. |
-| **Post-G1 T4 calibration** | **Run `run_t4_budget_sim.py --from-log logs/audit_t4.jsonl` after G1 to calibrate stubs** | DS | **HIGH — after G1** | Extract: (1) T4_BAND_WEIGHT = total_deployed / (bankroll × 0.60) at 50% coverage target; (2) T4_EXPECTED_TOTAL_EDGE = sum(edge) across all VIRTUAL fires. Replace stubs in `run_t4_live.py`. Log derivation in DECISION_LOG. Operator sign-off. Redeploy before G2. |
+| **Post-G1 T4 calibration** | ~~Run `run_t4_budget_sim.py --from-log logs/audit_t4.jsonl` after G1 to calibrate stubs~~ | DS | ~~HIGH~~ | ✅ PARTIAL — SESSION 28 (2026-06-04). (1) T4_EXPECTED_TOTAL_EDGE updated 5.0 → 441.38 (G1: 1446 evals, sum edge from risk_eval_start records, KELLY_T4=0.20). DECISION_LOG updated. (2) T4_BAND_WEIGHT cannot be calibrated: calibration script requires VIRTUAL data, G1 ran non-virtual flat-sizing. Critical finding: uncapped Kelly deployment = $81,226 across 1434 bets = 87× any band budget — fractional-allocation formula is architecturally incompatible with high-throughput T4. GG-011 registered. New ADR required before T4 ACTIVE. |
 | Finals Game 1 resolve | **Run `run_resolve_local.py` after Finals Game 1 ends (Jun 3 PDT ~11:30 PM EDT)** | DS | **HIGH — immediately after game** | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py`. Then `fetch_kalshi_prices.py --portfolio` to sync pregame files for EXP-017. 11 open positions; all resolve on player stats (Kalshi order status irrelevant). EXP-017 n=2 → will grow. |
 | T4 monitor Finals Game 1 | ~~Monitor `140907.t4_live` during Finals Game 1~~ | IO | ~~HIGH — game night~~ | ✅ COMPLETE — SESSION 24. `140907.t4_live` screen was dead (old code); replaced by nohup PID 153790 running updated `run_t4_live.py`. Finals Game 1 T4 monitoring complete. |
 | KI-027 API rate errors | **Investigate Kalshi HTTP 503/429 in second PIPE-03 window (01:30 UTC Jun 3)** | IO | MEDIUM | 4 positions recorded with failed-HTTP status (Wembanyama NO 40/35/30, Castle NO 30). Paper resolution unaffected. Root cause: rate limit (429) or server error (503)? Check VPS logs. May require backoff/retry logic in `paper_trader.py`. |
