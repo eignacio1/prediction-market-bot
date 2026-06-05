@@ -277,18 +277,17 @@ SESSION_ID_PREFIX = "T4"
 # PAPER_T4_VIRTUAL=false (active mode): enforce band budget ceiling — stop firing when
 #   t4_deployed_game >= t4_band_budget. Evaluation continues for log data.
 #
-# T4_BAND_WEIGHT: STUB — calibration methodology requires PAPER_T4_VIRTUAL=true data.
-# G1 ran PAPER_T4_FLAT_SIZING=true (non-virtual); uncapped Kelly deployment = $81,226
-# across 1434 approved bets (87× any reasonable band budget at KELLY_T4=0.20 and
-# ~1,434 evaluations/game). The existing fractional-allocation formula is architecturally
-# incompatible with high-throughput T4 at design scale. New ADR required before T4 ACTIVE.
-# Paper mode overrides this via PAPER_T4_POOL_USD — value not active in paper execution.
-# See scripts/run_t4_budget_sim.py for the calibration procedure (requires VIRTUAL data).
+# T4_BAND_WEIGHT: Phase 8 placeholder only — NOT used in PAPER_T4_FLAT_SIZING=true mode.
+# ADR-0017 (2026-06-05): the fractional-allocation formula is architecturally incompatible
+# with high-throughput T4 (~1,447 approved bets/game, G1 data). Budget exhausts in ~16 bets
+# at 0.10 weight; 99% of evaluations go unfunded. PAPER_T4_FLAT_SIZING=true (default)
+# bypasses this via PAPER_T4_POOL_USD — value is inactive in all current execution paths.
+# Phase 8 per-bet sizing formula defined in ADR-0018 (required before T4 ACTIVE designation).
 #
 # T4_EXPECTED_TOTAL_EDGE: calibrated from Finals G1 2026-06-03 (PAPER_T4_FLAT_SIZING=true,
-# 1446 evaluations, KELLY_T4=0.20). Sum of edge across all risk_eval_start records = 441.38.
+# 1459 evaluations, 1447 approved, KELLY_T4=0.20). Sum of edge = 442.52.
 # Monitoring/planning constant only — not used in bet sizing computation.
-T4_BAND_WEIGHT: float = 0.10           # STUB — needs new ADR; incompatible with high-throughput T4 (see above)
+T4_BAND_WEIGHT: float = 0.10           # Phase 8 placeholder — ADR-0017; inactive in PAPER_T4_FLAT_SIZING=true mode
 T4_EXPECTED_TOTAL_EDGE: float = 441.38 # G1 calibrated 2026-06-04: sum(edge) across 1446 evals, KELLY_T4=0.20
 
 _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
