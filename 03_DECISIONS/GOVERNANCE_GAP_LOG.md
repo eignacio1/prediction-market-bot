@@ -229,7 +229,41 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | (1) **ADR-0015 adj_λ was never applied to any G2 bet.** All 9 G2 paper positions use unadjusted Poisson λ (raw `pts_l10_mean`). (2) **EXP-018 cannot validate ADR-0015 commercial correction.** G2 outcomes will tell us whether unadjusted Poisson beats market prices — not whether opponent adjustment improves over unadjusted. The experiment design is broken for this game. (3) **PIPE-02 late window (01:25 UTC Jun 5) will also fail** unless the fix is deployed before that window. |
 | Discovery | 2026-06-04 SESSION 31 — timing sweep + MC investigation. `[TSS] Built fresh: 0/30 teams loaded` in paper_early_cron.log. Cross-referenced with pregame file listing: no `pregame_20260604.json`. Cross-referenced with pregame_cron.log: two FATAL exits at end. Cross-referenced `.env`: `BOT_C4_ACTIVE=true` at line 23. |
 | Resolution | Removed `BOT_C4_ACTIVE` guard from `run_pregame.py __main__`. Updated docstring. PIPE-02 now runs unconditionally — it is read-only by design and should not be blocked by C4 activation state. 715/715 tests. T-134 registered for monitoring task: add alert when TeamStatsStore loads 0 teams in PIPE-03. EXP-018 analysis note: G2 bets are valid (positive directional edge at unadjusted λ) but do not test ADR-0015. ADR-0015 validation deferred to a future game night where PIPE-02 succeeds before PIPE-03 runs. |
-| Status | PARTIALLY RESOLVED — 2026-06-04 SESSION 31. Code fix deployed. PIPE-02 late window (01:25 UTC Jun 5) will run correctly IF deployed before then. T-134 (monitoring alert for TSS size=0) remains OPEN. EXP-018 G2 evidence cannot be treated as ADR-0015 validation. |
+| Status | RESOLVED — 2026-06-05 SESSION 32. PIPE-02 ran at 01:25 UTC Jun 5 (`pregame_20260605.json` confirmed). T-134 (monitoring alert for TSS size=0) remains OPEN under TODO_NEXT. TSS 0/30 continues but for a different root cause registered as GG-013 (NBA API blocked from VPS IP). EXP-018 evidence is baseline Poisson vs. market, not ADR-0015 validation. |
+
+---
+
+### GG-013 — NBA Stats API Blocked from VPS: ADR-0015 adj_λ Has Never Applied to Any Live Run
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-013 |
+| Category | Data source integrity — deployment environment incompatibility |
+| What was missed | The NBA Stats API (stats.nba.com) is protected by Akamai CDN, which identifies and blocks requests from DigitalOcean datacenter IPs. All `TeamGameLog` requests from VPS 157.230.91.33 return an empty HTTP response body. `nba_api` raises `JSONDecodeError: Expecting value: line 1 column 1 (char 0)` for every team. Result: `TeamStatsStore` loads 0/30 teams for every run. `opp_adjusted_lambda()` silently returns raw `pts_l10_mean` (line 202: `if opp_def is None: return pts_mean`). The fallback is correct behavior, but no alert fires and no audit event distinguishes "TSS empty because PIPE-02 failed" from "TSS empty because API is blocked." |
+| When it should have been caught | When ADR-0015 was drafted and the VPS IP class was not checked against stats.nba.com access patterns. Alternatively: first PIPE-02 deployment (Jun 4 22:00 UTC) — the `[TSS] Team stats store: 0/30 teams loaded` message should have triggered investigation before running PIPE-03. |
+| Phases it survived | All PIPE-02/PIPE-03 runs since Jun 4 22:00 UTC (first TSS build attempt). 0 successful team fetches across 90 attempts (3 TSS build cycles × 30 teams). |
+| Why it survived | (1) GG-012 was the working hypothesis for TSS 0/30 — once the BOT_C4_ACTIVE fix was applied, it appeared the TSS issue would self-resolve. (2) No session verified TSS success after the fix. (3) The `team_stats_cache_{date}.json = {}` file was not checked until SESSION 32. (4) No monitoring alerts on TSS success/failure rate. |
+| Impact | ADR-0015 (`adj_λ = pts_l10_mean × clip(opp_def_l10/113.0, 0.70, 1.30)`) has **never been applied to any live PIPE-03 bet** since deployment. All paper bets use unadjusted Poisson λ. EXP-018 (which was registered as "ADR-0015 validation") will actually measure unadjusted Poisson vs. market — a different question. ADR-0015's claimed improvement in EV cannot be validated until the API block is resolved. LOW severity now (paper period; unadjusted λ is the training baseline). HIGH severity pre-G6: ADR-0015 must be validated before live capital. |
+| Discovery | 2026-06-05 SESSION 32 — `team_stats_cache_20260605.json = {}`. Audit log confirmed 90 fetch errors, 0 successes, all with error `"Expecting value: line 1 column 1 (char 0)"`. Manual VPS test: both `season_type="Regular Season"` and `season_type="Playoffs"` return `ok=False, rows=0` for SAS and all other teams. |
+| Resolution | **OPEN** — T-135 registered. Options: (1) route NBA API requests through a residential proxy (adds infrastructure complexity); (2) replace `nba_api` `TeamGameLog` with nba.com public endpoint with different headers/user-agent; (3) pre-cache team defensive ratings from a non-VPS machine and sync to VPS before each cron window; (4) hard-code Finals opponent defensive ratings (NYK, SAS) as a paper-period patch until regular season resumes. Gate: must resolve before G6 (ADR-0015 validation requires real opponent data). |
+| Status | OPEN — 2026-06-05 SESSION 32; LOW severity now (paper period; unadjusted λ is valid baseline); HIGH severity pre-G6 activation |
+
+---
+
+### GG-014 — Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-014 |
+| Category | Execution integrity — rate limit characterization missing |
+| What was missed | Kalshi's order placement API rate limits were not characterized before PIPE-03 was activated for multi-market execution. With 25+ bets per game night executing within a ~2 second burst window, Kalshi's `/portfolio/orders` endpoint returns HTTP 429 (Too Many Requests) for roughly 50% of calls. Paper mode logs positions regardless (portfolio write is local; the Kalshi API call is best-effort for order confirmation), so paper P&L tracking is unaffected. No retry logic exists. At live capital, these would be real execution failures — the bot would have C4-approved edge and model signal but fail to deploy capital for ~50% of intended bets. |
+| When it should have been caught | Before PIPE-03 first activation; the Kalshi API rate limits should have been verified against the expected burst sizing (~25 orders in ~2s) before any live-mode execution ran. |
+| Phases it survived | All PIPE-03 runs since Jun 4 22:00 UTC. 12 of 25 G3 positions have `kalshi_order_status: "failed: HTTP 429"`. |
+| Why it survived | (1) Paper mode masks the severity — portfolio state is correct regardless of API status. (2) No monitoring alert fires on 429 response patterns. (3) The first game nights had fewer concurrent markets (Finals structure: 1 game/night, ~25 bets) — at regular season scale (400+ markets/night) the failure rate would likely be higher. |
+| Impact | LOW now (paper mode; P&L unaffected). HIGH pre-G6: live capital execution failures for ~50% of approved bets means approximately half the model's edge is never deployed. Risk-adjusted return would be materially lower than paper period suggests. Also possible: systematic bias if 429 failures are not random (e.g., later bets in the burst are more likely to fail, meaning low-threshold / high-probability bets fail more often). |
+| Discovery | 2026-06-05 SESSION 32 — `paper_portfolio.json` review: 12/25 open positions have `kalshi_order_status: "failed: HTTP 429"`. |
+| Resolution | **OPEN** — T-136 registered. Options: (1) add per-order delay between placements (e.g., 0.5s spacing in burst window); (2) implement exponential backoff retry (max 3 retries, 1s base); (3) characterize Kalshi's rate limit tier and request elevated limits if available. Gate: must resolve before G6 — live execution failure rate > 5% is a G6 blocker. |
+| Status | OPEN — 2026-06-05 SESSION 32; LOW severity now (paper mode); HIGH severity pre-G6 |
 
 ---
 
@@ -244,6 +278,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-008 | 2026-06-02 | T-129 Path B: `p_est` replaced with `Poisson_CDF(threshold, pts_l10_mean)` per threshold in `run_paper_trade.py`; tainted G1 portfolio wiped; clean slate on $1,000 for Finals G1 cron |
 | GG-009 | 2026-06-04 | ADR-0016: `net_edge = gross_edge - 0.07 × mid × (1-mid)`; fee-negative bets rejected at gate; `fee_contaminated` always False for new bets post-ADR-0016 |
 | GG-010 | 2026-06-03 | DS decision: no dedicated band budgets; shared budget + per-band kill switches is design intent. If T5 starved → root cause is T4_MIN_DELTA_P miscalibration → fix EXP-018, not budget architecture. ADR-0014 Q2 closed. |
+| GG-012 | 2026-06-05 | PIPE-02 BOT_C4_ACTIVE guard removed (commit 2997c71). PIPE-02 now runs unconditionally — confirmed by pregame_20260605.json. TSS 0/30 continues for separate reason (GG-013). T-134 remains open. |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-04 SESSION 31 — GG-012 PIPE-02 silent failure diagnosed and fixed (BOT_C4_ACTIVE guard removed). T-133 DECISION_LOG entry committed. G2 Monte Carlo run (portfolio-based, EV=+$60.02, P(profit)=82.7%). Timing sweep: GAME_DATE design confirmed correct. T-134 registered. 715/715 tests. All commits deployed to VPS.
+**Last reviewed:** 2026-06-05 SESSION 32 — Session-start protocol complete. GG-012 RESOLVED (PIPE-02 ran at 01:25 UTC Jun 5; pregame_20260605.json confirmed). GG-013 registered: NBA Stats API blanket-blocked from VPS IP — ADR-0015 adj_λ has never applied to any live run. GG-014 registered: Kalshi API HTTP 429 — ~50% of paper orders rate-limited. T-135 registered (TSS fix). T-136 registered (Kalshi 429). G3 portfolio: 25 open positions ($743.66 deployed, $256.34 remaining). Game tonight: NYK vs SAS.
 
 ---
 
@@ -18,13 +18,22 @@
 
 ---
 
-## SESSION 2026-06-04 SESSION 31 — OPEN ITEMS
+## SESSION 2026-06-05 SESSION 32 — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| **T-134 — PIPE-03 TeamStatsStore size=0 alert** | **Add WARNING audit event when TSS builds fresh but loads 0 teams** | DS | **MEDIUM — before next PIPE-02 failure scenario** | GG-012 was invisible for 2 cron cycles. When `team_store` is empty after a fresh build attempt, PIPE-03 currently treats this as graceful fallback (raw `pts_mean`). Should emit `logger.warning()` or audit ERROR that C7 monitoring can catch. Implement in `run_paper_trade.py` at the TeamStatsStore load/build path. |
-| **EXP-018 — G2 result analysis** | **After G2 resolves (06:00 UTC Jun 6), run EXP-018 analysis on resolved positions** | DS | **HIGH — after G2 resolves** | G2 resolves at 06:00 UTC Jun 6 (PIPE-03R). All 9 positions use unadjusted Poisson λ (not adj_λ — GG-012 caused PIPE-02 failure). EXP-018 will test baseline Poisson vs. market. ADR-0015 validation deferred to G3+ where PIPE-02 succeeds. Note: fee_contaminated=True positions with direction=NO are clean (T-133 fix). |
-| **GG-012 monitoring follow-through** | **GG-012 PARTIALLY RESOLVED — code fix deployed; T-134 monitoring still open** | DS | MEDIUM | Code fix committed 2997c71. PIPE-02 late window (01:25 UTC Jun 5) will now run correctly. T-134 monitoring is the remaining item. GG-012 remains open until T-134 complete. |
+| **T-135 — Fix TSS NBA API block (GG-013)** | **Resolve: NBA Stats API blocked from VPS IP — ADR-0015 never applied** | DS | **HIGH — before G6** | VPS 157.230.91.33 (DigitalOcean) is blocked by Akamai on stats.nba.com. All 30 team game log fetches return empty body → JSONDecodeError → 0/30 teams → adj_λ silently falls back to raw pts_l10_mean. Confirmed via audit.jsonl (90 failures, 0 successes since Jun 4 22:00 UTC). Both Regular Season and Playoffs season types fail. Options: (A) add per-request delay + retry with modified headers; (B) route through residential proxy; (C) fetch from local machine and sync to VPS pre-cron; (D) hard-code Finals opponent DEF ratings (NYK ≈ 110.2, SAS ≈ 113.4 per 25-26 RS) as paper-period patch. Severity: LOW now; HIGH before G6 (ADR-0015 validation requires real data). |
+| **T-136 — Kalshi 429 rate limit investigation (GG-014)** | **Characterize Kalshi order rate limits; add retry/spacing logic** | DS | **HIGH — before G6** | 12/25 G3 positions have `kalshi_order_status: "failed: HTTP 429"`. ~50% execution failure rate. Paper mode P&L unaffected (local portfolio write). At live capital: real execution failures. Need to: (1) measure exact rate limit (requests/second or requests/window); (2) add per-order delay (suggest 0.5–1.0s between placements) or retry with backoff. Note: 25 bets over ~2s burst = 12+ req/s — almost certainly above Kalshi's demo API rate limit tier. |
+| **T-134 — PIPE-03 TeamStatsStore size=0 alert** | **Add WARNING audit event when TSS builds fresh but loads 0 teams** | DS | **MEDIUM** | GG-012/GG-013 both invisible because TSS 0/30 is treated as graceful fallback. Should emit `logger.warning()` + structured audit ERROR so C7 monitoring can catch. Implement in `run_paper_trade.py` at TSS load path. |
+| **EXP-018 — G3 result analysis** | **After G3 resolves (~06:00 UTC Jun 6), run EXP-018 analysis** | DS | **HIGH — after G3 resolves** | G3 = 25 positions, all `game_date: "2026-06-05"`, all unadjusted Poisson λ (GG-013). EXP-018 tests baseline Poisson vs. market. ADR-0015 validation requires T-135 first. Note: 5 positions have `kalshi_order_status: "failed: HTTP 429"` or `null` order ID — paper P&L still resolves via score check, not fill status. Note from G2: GG-012's PIPE-02 failure means G2 positions used old pregame (pregame_20260602.json). G3 used pregame_20260605.json (fresh). Check resolution for both batches. |
+
+---
+
+## SESSION 2026-06-04 SESSION 31 — OPEN ITEMS (carried)
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| **EXP-018 — G2 result analysis** | **After G2 resolves (06:00 UTC Jun 6), run EXP-018 analysis on G2 positions** | DS | **HIGH — after G2 resolves** | Wait — SESSION 31 said "G2 resolves at 06:00 UTC Jun 6." But current portfolio only shows G3 positions (game_date: 2026-06-05). G2 positions were from the early PIPE-03 window using pregame_20260602.json data. These may have already been resolved or the portfolio was restarted. Verify G2 position log on VPS before running EXP-018. |
 
 ---
 
