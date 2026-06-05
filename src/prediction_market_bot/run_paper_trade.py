@@ -521,6 +521,8 @@ def main() -> None:
                     "model_p": float(forecast_rec["p_estimate"]),
                     "edge": float(forecast_rec["edge"]),           # net-of-fee
                     "gross_edge": float(forecast_rec["gross_edge"]),  # pre-fee (for paper_trader annotation)
+                    "t3_signal": forecast_rec.get("t3_signal", "NEUTRAL"),  # EXP-018 isolation
+                    "t1_edge": forecast_rec.get("t1_edge", forecast_rec["gross_edge"]),  # pre-T3 raw edge
                 }
                 ok_pos, pos = trader.open_position(
                     approval=approval,

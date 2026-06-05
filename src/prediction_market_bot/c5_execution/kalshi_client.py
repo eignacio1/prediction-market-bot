@@ -365,22 +365,28 @@ class KalshiMarketClient:
         return False, {"error": f"Max retries ({MAX_RETRIES}) exceeded"}
 
     def _post(self, path: str, body: dict) -> tuple[bool, Any]:
-        """POST with RSA signing. Returns (ok, response_data)."""
+        """POST with RSA signing and exponential backoff on 429. Returns (ok, response_data)."""
         if not self._private_key:
             return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
 
         url = f"{_kalshi_base_url()}{path}"
         full_path = f"/trade-api/v2{path}"
 
-        try:
-            import json as _json
-            headers = _auth_headers(self._key_id, self._private_key, "POST", full_path)
-            r = self._session.post(url, json=body, headers=headers, timeout=REQUEST_TIMEOUT_S)
-            if r.status_code in (200, 201):
-                return True, r.json()
-            return False, {"error": f"HTTP {r.status_code}", "body": r.text[:500]}
-        except Exception as e:
-            return False, {"error": type(e).__name__, "detail": str(e)}
+        for attempt in range(MAX_RETRIES):
+            try:
+                headers = _auth_headers(self._key_id, self._private_key, "POST", full_path)
+                r = self._session.post(url, json=body, headers=headers, timeout=REQUEST_TIMEOUT_S)
+                if r.status_code in (200, 201):
+                    return True, r.json()
+                if r.status_code == 429:
+                    # T-138/GG-014: exponential backoff — 2s, 4s, 8s
+                    delay = RETRY_DELAY_S * (2 ** (attempt + 1))
+                    time.sleep(delay)
+                    continue
+                return False, {"error": f"HTTP {r.status_code}", "body": r.text[:500]}
+            except Exception as e:
+                return False, {"error": type(e).__name__, "detail": str(e)}
+        return False, {"error": f"HTTP 429 — max retries ({MAX_RETRIES}) exceeded"}
 
     @staticmethod
     def _parse_market(raw: dict) -> PlayerMarket | None:
