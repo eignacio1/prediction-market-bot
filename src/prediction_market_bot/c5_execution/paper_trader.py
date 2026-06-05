@@ -189,6 +189,10 @@ class PaperTrader:
             gross_edge = float(approval.get("gross_edge", approval.get("edge", 0.0)))
             fee_per_contract = round(0.07 * mid_price * (1.0 - mid_price), 6)
             fee_net_edge = round(gross_edge - fee_per_contract, 6)
+            # fee_contaminated: True only when the bet's directional net edge is negative.
+            # gross_edge is signed YES-direction; NO bets have negative gross_edge, so we
+            # must flip the sign before applying the fee to avoid false-positive contamination.
+            _directional_gross = gross_edge if direction == "YES" else -gross_edge
             probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)
 
             if pool_isolated:
@@ -228,7 +232,7 @@ class PaperTrader:
                 "gross_edge": round(gross_edge, 6),
                 "fee_per_contract": fee_per_contract,
                 "fee_net_edge": fee_net_edge,
-                "fee_contaminated": bool(fee_net_edge < 0.0),
+                "fee_contaminated": bool(_directional_gross - fee_per_contract < 0.0),
                 "probable_injury_signal": probable_injury_signal,
             }
 
