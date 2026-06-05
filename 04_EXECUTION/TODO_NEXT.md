@@ -2,11 +2,34 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-05 SESSION 33 — T-135 (GG-013 ESPN fix), T-136 (Kalshi 429 sleep), T-134 (TSS monitoring alert), T-137 (GHA cron timing fix) all implemented. GG-015 registered and resolved. DECISION_LOG + GOVERNANCE_GAP_LOG updated. Code committed and deployed to VPS. GHA fires at 20:30 UTC tonight — first live adj_λ test on Finals G2 (tips 00:30 UTC Jun 6, resolves ~06:00 UTC Jun 6).
+**Last reviewed:** 2026-06-05 SESSION 34 — T3 momentum overlay integrated into PIPE-03 (t3_signal_loader.py + 6 edits to run_paper_trade.py + 19 tests). Non-contamination guarantee implemented and tested. PIPE-06 cron activated on VPS (both `*/15 20-23` and `*/15 0-3` uncommented). G2 MC: EV=+$36.90, P(profit)=95.2%. All systems on auto for Finals G2 (tips 00:30 UTC Jun 6). 734/734 tests. Commit d91b30b deployed.
 
 ---
 
-## SESSION 2026-06-04 SESSION 31 — COMPLETED
+## SESSION 2026-06-05 SESSION 34 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| **T3 momentum overlay — PIPE-03 integration** | **`t3_signal_loader.py` (new), `run_paper_trade.py` (6 edits), `tests/test_t3_integration.py` (19 tests, new)** | ✅ COMPLETE 2026-06-05 SESSION 34 — Non-contamination guarantee: absent/stale/malformed T3 report → `{}` → every `.get(ticker, "NEUTRAL")` → pure T1 path. CONFIRM×1.15, FADE×0.75. Staleness guard = 900s (matches PIPE-06 cron interval). `t1_edge` preserved in `forecast_rec` for EXP-018 isolation. DECISION_LOG entry written (SESSION 34 row). 715→734 tests. Commit d91b30b. |
+| **PIPE-06 cron activated on VPS** | **Both `*/15 20-23` and `*/15 0-3` lines uncommented in VPS crontab** | ✅ COMPLETE 2026-06-05 SESSION 34 — Previously commented out with gate note "verify Polymarket connectivity (T-077)." Activated since Kalshi is primary venue and T3 signals only require VenueRouter (Kalshi). PIPE-06 first fires at 20:00 UTC — signals available 2+ hours before PIPE-03 at 22:00 UTC. |
+| **G2 Monte Carlo (with T3 integration)** | **EV=+$36.90, P(profit)=95.2%, P50=+$39.52 | $256.34 bankroll** | ✅ COMPLETE 2026-06-05 SESSION 34 — N=10,000 sims, seed=42, bankroll=$256.34. T3 non-contamination confirmed: MC path identical to T1-only unless T3 signals present. |
+| **T4 MC analysis** | **Determined not feasible until GG-011 ADR written** | ✅ ASSESSED 2026-06-05 SESSION 34 — T4_BAND_WEIGHT=0.10 is STUB (GG-011 OPEN). run_monte_carlo.py is T1-band scoped. T4 MC requires game-state simulation + Bayesian updates. Action: pull T4 virtual logs from VPS after G2 resolves → write T4_BAND_WEIGHT ADR → flip PAPER_T4_VIRTUAL=false for Finals G3 (Jun 8). |
+| **RESERVE_MANDATE_PCT confirmed** | **VPS has RESERVE_MANDATE_PCT=0.05 → floor=$50 → no BATCH HALT** | ✅ CONFIRMED 2026-06-05 SESSION 34 — $256.34 bankroll >> $50 floor. Previously feared 0.40 default would halt all bets. |
+
+---
+
+## SESSION 2026-06-05 SESSION 34 — OPEN ITEMS
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| **EXP-018 — G2/T3 result analysis** | **After G2 resolves (~06:00 UTC Jun 6), run EXP-018 + T3 signal analysis** | DS | **HIGH — after G2 resolves** | First run with T3 overlay active. Check: (1) How many bets had CONFIRM/FADE signals vs NEUTRAL? (2) Did T3-adjusted bets outperform T1-only? (3) Were HTTP 429s reduced vs G3? Filter by `t3_signal` field in paper_portfolio.json. Also verify PIPE-06 log at `/opt/prediction-market-bot/logs/t3_cron.log`. |
+| **GG-011 / T4 MC ADR** | **Pull T4 virtual logs → write T4_BAND_WEIGHT ADR → flip PAPER_T4_VIRTUAL=false for G3** | DS | **HIGH — before Finals G3 (Jun 8)** | T4_BAND_WEIGHT=0.10 STUB incompatible with high-throughput T4. ADR must derive weight from G1/G2 virtual deployment data. Once resolved: (1) flip PAPER_T4_VIRTUAL=false in VPS .env; (2) run_monte_carlo.py can be extended to T4. |
+| **GG-014 effectiveness verification** | **After G2 cron, check paper_portfolio 429 rates** | DS | **HIGH — after G2 resolves** | Target: ≤5% HTTP 429 rate. Check `kalshi_order_status` in paper_portfolio.json. T3 overlay means more per-market logs — check if T3 log volume created any issues. |
+| **Verify PIPE-06 ran for G2** | **Check t3_cron.log on VPS after 20:00 UTC Jun 5** | DS | HIGH | SSH: `tail -50 /opt/prediction-market-bot/logs/t3_cron.log`. Confirm T3 signals were generated and loaded by PIPE-03 at 22:00 UTC. |
+
+---
+
+## SESSION 2026-06-05 SESSION 33 — OPEN ITEMS (carried)
 
 | # | Task | Status |
 |---|------|--------|
