@@ -359,6 +359,13 @@ def main() -> None:
                            payload={"error": str(_tss_err)}, session_id=SESSION_ID)
             print(f"[TSS] Build failed — using raw λ (fallback): {_tss_err}")
 
+    # T-134/GG-012/GG-013: emit ERROR when TSS resolves to 0 teams — suppresses silent adj_λ failures
+    if team_store is None or len(team_store) == 0:
+        logger.error("PIPE-03", "team_stats_store_empty",
+                     payload={"note": "adj_λ inactive — all bets use raw pts_l10_mean; check API access or GHA cache"},
+                     session_id=SESSION_ID)
+        print("[TSS] WARNING: 0 teams loaded — adj_λ (ADR-0015) inactive this run")
+
     _reserve_halted = False
 
     for kalshi_player_name, player_mkts in markets_by_player.items():

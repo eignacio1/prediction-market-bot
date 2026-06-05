@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-05 SESSION 33 — GG-013 RESOLVED (T-135 complete). ESPN scoreboard API replaces nba_api; GitHub Actions IPs also blocked by Akamai. End-to-end verified: GHA run 27021048445, 30 teams/279 records, VPS confirmed. ADR-0015 adj_λ activates on next game day (Finals G2, Jun 6). T-136 (Kalshi 429) and T-134 (TSS monitoring alert) remain open. EXP-018 pending G3 resolution (~06:00 UTC Jun 6).
+**Last reviewed:** 2026-06-05 SESSION 33 — T-135 (GG-013 ESPN fix), T-136 (Kalshi 429 sleep), T-134 (TSS monitoring alert), T-137 (GHA cron timing fix) all implemented. GG-015 registered and resolved. DECISION_LOG + GOVERNANCE_GAP_LOG updated. Code committed and deployed to VPS. GHA fires at 20:30 UTC tonight — first live adj_λ test on Finals G2 (tips 00:30 UTC Jun 6, resolves ~06:00 UTC Jun 6).
 
 ---
 
@@ -18,14 +18,23 @@
 
 ---
 
-## SESSION 2026-06-05 SESSION 32 — OPEN ITEMS
+## SESSION 2026-06-05 SESSION 32–33 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| T-135 — Fix TSS NBA API block (GG-013) | ESPN scoreboard API replaces nba_api; GHA cron delivers cache to VPS | ✅ RESOLVED — SESSION 33. ESPN scoreboard API (site.api.espn.com) unblocked from all environments. GHA run 27021048445: 30 teams/279 records, confirmed on VPS. Abbreviation normalization (GS→GSW, NY→NYK, SA→SAS, NO→NOP, UTAH→UTA, WSH→WAS). GG-013 RESOLVED. |
+| T-137 — GHA cron timing fix (GG-015) | Move GHA from 00:30 UTC to 20:30 UTC to align GAME_DATE | ✅ RESOLVED — SESSION 33. At 00:30 UTC, GAME_DATE=N+1; PIPE-02 at 21:55 UTC has GAME_DATE=N — cache always missed. At 20:30 UTC, GAME_DATE=N matches PIPE-02. GG-015 registered and resolved. DECISION_LOG entry written. |
+| T-136 — Kalshi 429 rate limit fix (GG-014) | Add time.sleep(0.5) between Kalshi order placements | ✅ DEPLOYED — SESSION 33. `time.sleep(0.5)` added in `paper_trader.py` inside Kalshi submission block. Reduces burst from ~12 req/s to ~2 req/s. Effectiveness verified after Finals G2 cron (00:30 UTC Jun 6). GG-014 status → PARTIAL. |
+| T-134 — PIPE-03 TeamStatsStore size=0 alert | Add logger.error() + print warning when TSS resolves to 0 teams | ✅ DEPLOYED — SESSION 33. `logger.error("PIPE-03", "team_stats_store_empty", ...)` + `print("[TSS] WARNING: 0 teams loaded")` added in `run_paper_trade.py`. Fires when `team_store is None or len(team_store) == 0`. C7 can now catch TSS failures. |
+
+## SESSION 2026-06-05 SESSION 33 — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| **T-135 — Fix TSS NBA API block (GG-013)** | **✅ RESOLVED — 2026-06-05 SESSION 33** | DS | HIGH | ESPN scoreboard API replaces nba_api (GitHub Actions also blocked by Akamai/Azure). 60-day lookback, 60 requests, ~3s. Abbreviation normalization added (GS→GSW, NY→NYK, SA→SAS, NO→NOP, UTAH→UTA, WSH→WAS). GHA run 27021048445: 30 teams/279 game-records, SCP'd to VPS, file confirmed. ADR-0015 adj_λ activates on Finals G2 (Jun 6). No operator action required. |
-| **T-136 — Kalshi 429 rate limit investigation (GG-014)** | **Characterize Kalshi order rate limits; add retry/spacing logic** | DS | **HIGH — before G6** | 12/25 G3 positions have `kalshi_order_status: "failed: HTTP 429"`. ~50% execution failure rate. Paper mode P&L unaffected (local portfolio write). At live capital: real execution failures. Need to: (1) measure exact rate limit (requests/second or requests/window); (2) add per-order delay (suggest 0.5–1.0s between placements) or retry with backoff. Note: 25 bets over ~2s burst = 12+ req/s — almost certainly above Kalshi's demo API rate limit tier. |
-| **T-134 — PIPE-03 TeamStatsStore size=0 alert** | **Add WARNING audit event when TSS builds fresh but loads 0 teams** | DS | **MEDIUM** | GG-012/GG-013 both invisible because TSS 0/30 is treated as graceful fallback. Should emit `logger.warning()` + structured audit ERROR so C7 monitoring can catch. Implement in `run_paper_trade.py` at TSS load path. |
-| **EXP-018 — G3 result analysis** | **After G3 resolves (~06:00 UTC Jun 6), run EXP-018 analysis** | DS | **HIGH — after G3 resolves** | G3 = 25 positions, all `game_date: "2026-06-05"`, all unadjusted Poisson λ (GG-013). EXP-018 tests baseline Poisson vs. market. ADR-0015 validation requires T-135 first. Note: 5 positions have `kalshi_order_status: "failed: HTTP 429"` or `null` order ID — paper P&L still resolves via score check, not fill status. Note from G2: GG-012's PIPE-02 failure means G2 positions used old pregame (pregame_20260602.json). G3 used pregame_20260605.json (fresh). Check resolution for both batches. |
+| **EXP-018 — G3 result analysis** | **After G3 resolves (~06:00 UTC Jun 6), run EXP-018 analysis** | DS | **HIGH — after G3 resolves** | G3 = 25 positions, all `game_date: "2026-06-05"`, all unadjusted Poisson λ (GG-013 was open during G3 bet placement). EXP-018 tests baseline Poisson vs. real Kalshi prices. ADR-0015 (adj_λ) will apply for the FIRST TIME to Finals G3 (Jun 8) — GHA now operational. Also check: did the T-136 sleep(0.5) fix reduce 429s for tonight's G3 late cron? |
+| **GG-014 effectiveness verification** | **After G3 cron run, check paper_portfolio for 429 rates** | DS | **HIGH — after G3 resolves** | Check `kalshi_order_status` breakdown in paper_portfolio.json after G3 cron (00:30 UTC Jun 6). Target: ≤5% HTTP 429 rate. If still failing, escalate to exponential backoff retry. |
+| **EXP-017 Part B re-run on G3 data** | **After G3 resolution, re-run EXP-017 Part B to update GG-004** | DS | MEDIUM | G1 had EV=−$0.162/bet (DIRECTIONAL_NEGATIVE, n=32). G3 uses same unadjusted λ model. Need ≥66 unique markets total for APR-0017 statistical floor. G3 adds ~25 more unique markets → total ~57 unique across G1+G3 (below floor, but trend data is valuable). |
+| **Verify adj_λ activation on Finals G3** | **Confirm GHA cache pre-populates VPS before G3 PIPE-02 (21:55 UTC Jun 8)** | DS | **HIGH** | GHA now runs at 20:30 UTC. Next game night: Finals G3, Jun 8. Verify: (1) GHA run succeeds at 20:30 UTC Jun 8; (2) `team_stats_cache_20260608.json` uploaded to VPS; (3) PIPE-03R log shows `adj_λ` values ≠ raw pts_l10_mean for SAS/NYK opponent matchup. This is the first live test of ADR-0015 end-to-end. |
 
 ---
 

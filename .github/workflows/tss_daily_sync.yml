@@ -8,7 +8,11 @@ name: TSS Daily Sync
 
 on:
   schedule:
-    - cron: '30 0 * * *'  # 00:30 UTC — 55 min before PIPE-02 late cron at ~01:25 UTC
+    - cron: '30 20 * * *'  # 20:30 UTC — 85 min before PIPE-02 early cron at 21:55 UTC
+    # GAME_DATE at 20:30 UTC = today (N). PIPE-02 early at 21:55 UTC also has GAME_DATE=N.
+    # Previously 00:30 UTC: GHA GAME_DATE=N+1, early cron GAME_DATE=N — mismatched files.
+    # Late cron (01:25 UTC, GAME_DATE=N+1) no longer finds cache; acceptable for Finals
+    # (early cron depletes bankroll before late cron fires). Revisit for regular season.
   workflow_dispatch:
 
 jobs:

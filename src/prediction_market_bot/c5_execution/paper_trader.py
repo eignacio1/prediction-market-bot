@@ -262,6 +262,7 @@ class PaperTrader:
                         },
                         session_id=session_id,
                     )
+                time.sleep(0.5)  # T-136/GG-014: space orders to stay under Kalshi rate limit
 
             self._state["open_positions"].append(pos)
 

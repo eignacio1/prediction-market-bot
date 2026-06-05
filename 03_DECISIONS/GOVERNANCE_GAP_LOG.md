@@ -246,7 +246,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | ADR-0015 (`adj_λ = pts_l10_mean × clip(opp_def_l10/113.0, 0.70, 1.30)`) has **never been applied to any live PIPE-03 bet** since deployment. All paper bets use unadjusted Poisson λ. EXP-018 (which was registered as "ADR-0015 validation") will actually measure unadjusted Poisson vs. market — a different question. ADR-0015's claimed improvement in EV cannot be validated until the API block is resolved. LOW severity now (paper period; unadjusted λ is the training baseline). HIGH severity pre-G6: ADR-0015 must be validated before live capital. |
 | Discovery | 2026-06-05 SESSION 32 — `team_stats_cache_20260605.json = {}`. Audit log confirmed 90 fetch errors, 0 successes, all with error `"Expecting value: line 1 column 1 (char 0)"`. Manual VPS test: both `season_type="Regular Season"` and `season_type="Playoffs"` return `ok=False, rows=0` for SAS and all other teams. |
 | Resolution | **RESOLVED — 2026-06-05 SESSION 32/33.** stats.nba.com blocked from both VPS (DigitalOcean ASN 14061, HTTP 403) AND GitHub Actions (Azure, connection timeout). nba_api approach abandoned. Switched to ESPN scoreboard API (site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard) — confirmed unblocked from all environments. 60-day lookback, 60 sequential calls, ~3s total. Adds ESPN→NBA abbreviation normalization (GS→GSW, NY→NYK, SA→SAS, NO→NOP, UTAH→UTA, WSH→WAS). End-to-end verified: GitHub Actions run 27021048445 completed in 25s, wrote 30 teams / 279 game-records, SCP'd `team_stats_cache_20260605.json` to VPS. File confirmed on VPS (22254 bytes, 14:33 UTC). NYK: 18 games, SAS: 22 games including Finals G1 (NYK 105, SAS 95). VPS_SSH_KEY secret pre-configured in prior run; no further one-time setup needed. |
-| Status | **RESOLVED — 2026-06-05 SESSION 33.** Daily cron at 00:30 UTC fully automated. First game-day run will deliver pre-populated cache to VPS before PIPE-02 at 01:25 UTC. ADR-0015 adj_λ will apply to next game day's bets. |
+| Status | **RESOLVED — 2026-06-05 SESSION 33.** Daily GHA cron at 20:30 UTC (T-137: moved from 00:30 UTC to align GAME_DATE with PIPE-02 early cron at 21:55 UTC — see GG-015). First game-day run will deliver pre-populated cache to VPS before PIPE-02 at 21:55 UTC. ADR-0015 adj_λ will apply to next game day's bets. |
 
 ---
 
@@ -262,8 +262,25 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | (1) Paper mode masks the severity — portfolio state is correct regardless of API status. (2) No monitoring alert fires on 429 response patterns. (3) The first game nights had fewer concurrent markets (Finals structure: 1 game/night, ~25 bets) — at regular season scale (400+ markets/night) the failure rate would likely be higher. |
 | Impact | LOW now (paper mode; P&L unaffected). HIGH pre-G6: live capital execution failures for ~50% of approved bets means approximately half the model's edge is never deployed. Risk-adjusted return would be materially lower than paper period suggests. Also possible: systematic bias if 429 failures are not random (e.g., later bets in the burst are more likely to fail, meaning low-threshold / high-probability bets fail more often). |
 | Discovery | 2026-06-05 SESSION 32 — `paper_portfolio.json` review: 12/25 open positions have `kalshi_order_status: "failed: HTTP 429"`. |
-| Resolution | **OPEN** — T-136 registered. Options: (1) add per-order delay between placements (e.g., 0.5s spacing in burst window); (2) implement exponential backoff retry (max 3 retries, 1s base); (3) characterize Kalshi's rate limit tier and request elevated limits if available. Gate: must resolve before G6 — live execution failure rate > 5% is a G6 blocker. |
-| Status | OPEN — 2026-06-05 SESSION 32; LOW severity now (paper mode); HIGH severity pre-G6 |
+| Resolution | **PARTIAL — 2026-06-05 SESSION 33 (T-136).** Option (1) implemented: `time.sleep(0.5)` added in `paper_trader.py` after each Kalshi order submission. Reduces burst rate from ~12 req/s to ~2 req/s. Effectiveness unverified until next game-night run (Finals G2, 00:30 UTC Jun 6). If 429s persist, next step is exponential backoff retry (option 2). Characterizing Kalshi's exact rate limit tier is TBD. Gate: must verify ≤5% execution failure rate before G6. |
+| Status | PARTIAL — 2026-06-05 SESSION 33; sleep(0.5) fix deployed; effectiveness confirmed after Finals G2 cron run |
+
+---
+
+### GG-015 — GHA Cache Timing Gap: adj_λ Cache GAME_DATE Mismatch Between GHA Run and PIPE-02 Early Cron
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-015 |
+| Category | Architectural timing — deployment environment mismatch |
+| What was missed | `GAME_DATE` in `run_pregame.py` is computed as `datetime.now(utc).strftime("%Y%m%d")`. At PIPE-02 early cron time (21:55 UTC, day N), GAME_DATE=N. The GHA workflow was scheduled at 00:30 UTC (day N+1), which also computes GAME_DATE=N+1. The GHA cache is `team_stats_cache_{N+1}.json`; PIPE-02 looks for `team_stats_cache_{N}.json`. **They never matched.** adj_λ was structurally unreachable for the early cron on every game day, even after GG-013 was resolved. |
+| When it should have been caught | When the GHA workflow was initially scheduled (SESSION 32). The cron time was set to 00:30 UTC by convention without verifying GAME_DATE alignment with the VPS cron schedule. |
+| Phases it survived | All GHA cache runs since workflow activation. The mismatch meant adj_λ would silently fall back to raw λ even after GG-013 was fixed — this would not have been caught without Q6 analysis. |
+| Why it survived | No end-to-end test of GAME_DATE matching between GHA and VPS cron. GG-013 was the active hypothesis for TSS=0 failures; the timing gap was a second independent failure mode that would have been masked by GG-013 resolution. |
+| Impact | LOW now (paper mode; adj_λ fallback is silent not wrong). MEDIUM pre-G6: ADR-0015 validation requires adj_λ to actually apply. If this gap persisted post-G6, live bets would use unadjusted λ with no alert, and any measured edge from adj_λ in paper experiments would not transfer to live. |
+| Discovery | 2026-06-05 SESSION 33 — Q6 ARE WE COMPROMISED? analysis traced GAME_DATE computation in `run_pregame.py` against GHA cron timing. |
+| Resolution | **RESOLVED — 2026-06-05 SESSION 33 (T-137).** GHA cron moved from `30 0 * * *` to `30 20 * * *` (20:30 UTC). At 20:30 UTC day N, GAME_DATE=N. PIPE-02 early cron at 21:55 UTC day N also computes GAME_DATE=N — same file. Trade-off: late cron at 01:25 UTC day N+1 (GAME_DATE=N+1) no longer has GHA cache. Acceptable for Finals (bankroll depleted by early cron before late cron fires). Needs revisit for regular season: two GHA runs/day or late-cron cache strategy. |
+| Status | **RESOLVED — 2026-06-05 SESSION 33.** Cron timing fix committed. Regular-season two-run strategy deferred to T-072 scope. |
 
 ---
 
@@ -279,6 +296,9 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-009 | 2026-06-04 | ADR-0016: `net_edge = gross_edge - 0.07 × mid × (1-mid)`; fee-negative bets rejected at gate; `fee_contaminated` always False for new bets post-ADR-0016 |
 | GG-010 | 2026-06-03 | DS decision: no dedicated band budgets; shared budget + per-band kill switches is design intent. If T5 starved → root cause is T4_MIN_DELTA_P miscalibration → fix EXP-018, not budget architecture. ADR-0014 Q2 closed. |
 | GG-012 | 2026-06-05 | PIPE-02 BOT_C4_ACTIVE guard removed (commit 2997c71). PIPE-02 now runs unconditionally — confirmed by pregame_20260605.json. TSS 0/30 continues for separate reason (GG-013). T-134 remains open. |
+| GG-013 | 2026-06-05 | ESPN scoreboard API replaces nba_api (blocked by Akamai from VPS and GitHub Actions). 30 teams/279 records verified. GHA cron auto-delivers cache to VPS before PIPE-02. |
+| GG-014 | 2026-06-05 | PARTIAL: time.sleep(0.5) added after each Kalshi order (T-136). Reduces burst from ~12 req/s to ~2 req/s. Effectiveness verified after Finals G2 cron. |
+| GG-015 | 2026-06-05 | GHA cron moved 00:30→20:30 UTC (T-137). GAME_DATE now aligned between GHA and PIPE-02 early cron. Late-cron mismatch acceptable for Finals; regular-season two-run strategy deferred. |
 
 ---
 
