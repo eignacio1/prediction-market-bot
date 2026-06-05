@@ -24,7 +24,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install nba_api pandas
+        run: pip install requests
 
       - name: Build TSS cache
         run: python scripts/build_tss_cache.py
