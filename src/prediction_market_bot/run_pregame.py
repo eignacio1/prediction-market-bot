@@ -20,7 +20,7 @@ Steps:
 
 Security (NFR-05):
   VENUE_API_KEY loaded from environment only. Never logged.
-  BOT_C4_ACTIVE must NOT be set (read-only; no orders).
+  Read-only — writes pregame JSON and team_stats_cache; never places orders.
 
 How to run:
   # On VPS (ENV-02):
@@ -412,7 +412,4 @@ def _write_empty_report() -> None:
 
 
 if __name__ == "__main__":
-    if os.environ.get("BOT_C4_ACTIVE"):
-        print("FATAL: BOT_C4_ACTIVE is set. PIPE-02 does not place orders — unset and retry.",
-              file=sys.stderr); sys.exit(1)
     main()

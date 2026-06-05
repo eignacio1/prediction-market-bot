@@ -216,6 +216,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-012 — PIPE-02 Silently Failed Due to BOT_C4_ACTIVE Guard: ADR-0015 adj_λ Never Applied to Live PIPE-03 Runs
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-012 |
+| Category | Pipeline integrity — silent failure, no alert, governance-invisible |
+| What was missed | `run_pregame.py` contained a guard: `if os.environ.get("BOT_C4_ACTIVE"): sys.exit(1)`. The `.env` file on VPS has `BOT_C4_ACTIVE=true` (set for PIPE-03 live execution). The cron for PIPE-02 sources `.env` via `export $(grep -v '^#' .env | xargs)` before running, loading `BOT_C4_ACTIVE=true`. Result: PIPE-02 exits immediately at startup with "FATAL: BOT_C4_ACTIVE is set" — writes nothing to disk. The guard was written as a manual safety check (don't run PIPE-02 in a live shell where orders might fire). It should never have applied to the automated cron, which uses a separate `.env` sourcing step. |
+| When it should have been caught | When ADR-0015 was deployed and `BOT_C4_ACTIVE=true` was already in `.env` — a sanity check of the cron environment should have caught this. Alternatively: when the G2 bet log shows `[TSS] Cache miss — building fresh team stats store... 0/30 teams loaded`, this should have triggered an alert. It did not because no PIPE-03 monitoring watches for TeamStatsStore size = 0. |
+| Phases it survived | PIPE-02 failed at 21:55 UTC Jun 3 (G2 pregame attempt) and 21:55 UTC Jun 4 (G2 pregame retry). 2 consecutive cron cycles, 0 alerts. The paper_early_cron.log had the evidence (`0/30 teams loaded`) but no monitoring process read it. |
+| Why it survived | (1) The guard was written for a different use context (manual interactive safety) and was never reviewed for cron compatibility. (2) No monitoring checks whether PIPE-02 succeeded before PIPE-03 fires. (3) No alert fires when TeamStatsStore loads 0 teams — PIPE-03 treats it as a graceful fallback (raw pts_mean), not an error. (4) PIPE-03's log line "Cache miss — building fresh... 0/30 teams" looks like a recoverable condition, not a signal that an upstream dependency entirely failed. |
+| Impact | (1) **ADR-0015 adj_λ was never applied to any G2 bet.** All 9 G2 paper positions use unadjusted Poisson λ (raw `pts_l10_mean`). (2) **EXP-018 cannot validate ADR-0015 commercial correction.** G2 outcomes will tell us whether unadjusted Poisson beats market prices — not whether opponent adjustment improves over unadjusted. The experiment design is broken for this game. (3) **PIPE-02 late window (01:25 UTC Jun 5) will also fail** unless the fix is deployed before that window. |
+| Discovery | 2026-06-04 SESSION 31 — timing sweep + MC investigation. `[TSS] Built fresh: 0/30 teams loaded` in paper_early_cron.log. Cross-referenced with pregame file listing: no `pregame_20260604.json`. Cross-referenced with pregame_cron.log: two FATAL exits at end. Cross-referenced `.env`: `BOT_C4_ACTIVE=true` at line 23. |
+| Resolution | Removed `BOT_C4_ACTIVE` guard from `run_pregame.py __main__`. Updated docstring. PIPE-02 now runs unconditionally — it is read-only by design and should not be blocked by C4 activation state. 715/715 tests. T-134 registered for monitoring task: add alert when TeamStatsStore loads 0 teams in PIPE-03. EXP-018 analysis note: G2 bets are valid (positive directional edge at unadjusted λ) but do not test ADR-0015. ADR-0015 validation deferred to a future game night where PIPE-02 succeeds before PIPE-03 runs. |
+| Status | PARTIALLY RESOLVED — 2026-06-04 SESSION 31. Code fix deployed. PIPE-02 late window (01:25 UTC Jun 5) will run correctly IF deployed before then. T-134 (monitoring alert for TSS size=0) remains OPEN. EXP-018 G2 evidence cannot be treated as ADR-0015 validation. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
