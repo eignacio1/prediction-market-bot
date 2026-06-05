@@ -234,6 +234,8 @@ class PaperTrader:
                 "fee_net_edge": fee_net_edge,
                 "fee_contaminated": bool(_directional_gross - fee_per_contract < 0.0),
                 "probable_injury_signal": probable_injury_signal,
+                "t3_signal": str(approval.get("t3_signal", "NEUTRAL")),   # EXP-018: T3 overlay signal at entry
+                "t1_edge": round(float(approval.get("t1_edge", gross_edge)), 6),  # EXP-018: raw T1 edge pre-T3
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)
