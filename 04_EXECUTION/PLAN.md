@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-04 SESSION 31 (GG-012 PIPE-02 guard removed; T-133/GG-012 DECISION_LOG committed; G2 MC EV=+$60.02; T-134 registered; 715/715 tests; VPS deployed 25dcb7c)  
+**Last reviewed:** 2026-06-05 SESSION 33 (T-136/T-137/T-134 deployed; GG-014 PARTIAL; GG-015 registered+resolved; all governance artifacts current; 715/715 tests; VPS deployed 173b7cd)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
