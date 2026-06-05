@@ -211,8 +211,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | G1 ran PAPER_T4_FLAT_SIZING=true which overrides the formula via PAPER_T4_POOL_USD. The stub was never exercised in production — paper mode bypasses it. Calibration script `run_t4_budget_sim.py` requires PAPER_T4_VIRTUAL=true data; G1 ran non-virtual so calibration was never attempted. |
 | Impact | LOW now — paper mode overrides T4_BAND_WEIGHT via PAPER_T4_POOL_USD; stub not active in any current execution path. HIGH before T4 ACTIVE: live mode uses `_compute_t4_band_budget()` which applies the formula. If activated with current formula, T4 depletes its entire band budget in ~12 bets and goes dark for the remaining 1,400+ evaluations per game. |
 | Discovery | 2026-06-04 SESSION 28 — G1 calibration attempt. Calibration script returned "No T4 VIRTUAL fires found." Manual analysis of audit_t4.jsonl: 1434 approved bets × avg approved_size=$56.64 = $81,226 uncapped Kelly deployment. |
-| Resolution | **OPEN** — new ADR required to specify per-evaluation sizing for high-throughput T4. Options: (1) per-evaluation budget normalization: `bet_size = edge × KELLY_T4 × (band_budget / expected_bets_per_game)` — each bet gets a budget slice; (2) fixed per-contract sizing (current paper approach) extended to live; (3) dynamic budget refresh per quarter. None of these are validated. Gate: resolve before T4 ACTIVE designation. |
-| Status | OPEN — 2026-06-04 SESSION 28; LOW severity now (paper mode bypasses formula); HIGH severity before T4 ACTIVE designation |
+| Resolution | **RESOLVED for Phase 6/7 — ADR-0017 ACCEPTED 2026-06-05 SESSION 35.** ADR-0017 documents the formula incompatibility, confirms PAPER_T4_FLAT_SIZING=true as the correct paper architecture (bypasses T4_BAND_WEIGHT entirely), clarifies PAPER_T4_VIRTUAL was already false, and reconciles KELLY_T4=0.20 as the operative paper value. Phase 8 (T4 ACTIVE) per-bet sizing formula deferred to ADR-0018 with specific inputs defined. T4_BAND_WEIGHT=0.10 stub updated comment to reference ADR-0017. |
+| Status | **RESOLVED for Phase 6/7 — 2026-06-05 SESSION 35 (ADR-0017).** HIGH severity obligation transferred to ADR-0018 pre-condition list before T4 ACTIVE designation. |
 
 ---
 
@@ -284,6 +284,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-016 — PIPE-06 BOT_C4_ACTIVE Guard: T3 Signal Scan Silently Dead Since Activation
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-016 |
+| Category | Architectural guard copy-paste error — same root cause as GG-012 |
+| What was missed | `run_t3_pretip.py` contained a `BOT_C4_ACTIVE` guard (lines 253-256) that exited with `FATAL: BOT_C4_ACTIVE is set. PIPE-06 does not place orders.` The VPS `.env` has `BOT_C4_ACTIVE=true`. PIPE-06 exited fatally on every cron tick since SESSION 34 activation — T3 signals were never generated. PIPE-03 correctly fell back to T1-only via the non-contamination guarantee, so no incorrect bets were placed, but the T3 overlay was silently dead despite being marked "LIVE" in the session handoff. |
+| When it should have been caught | When SESSION 34 activated PIPE-06 cron. The cron was commented out with a gate note before SESSION 34 — the gate note was about Polymarket connectivity, not BOT_C4_ACTIVE. The guard was in the script from initial authoring and should have been removed before activation. |
+| Phases it survived | SESSION 34 PIPE-06 cron activation (2026-06-05) through SESSION 35 protocol check (2026-06-05). All PIPE-06 cron ticks since activation: every 15 minutes 20:00–23:00 UTC and 00:00–03:00 UTC on Jun 5. |
+| Why it survived | (1) The non-contamination guarantee worked — PIPE-03 saw no stale/empty T3 report and defaulted to T1-only silently. (2) SESSION 34 handoff stated "T3 overlay LIVE" based on the code path being in place, not on verifying PIPE-06 actually produced signals. (3) No automated alert fires when `t3_cron.log` contains only FATAL lines. (4) The TODO_NEXT "Verify PIPE-06 ran for G2" item was the intended catch, but was not actioned before this session. |
+| Impact | LOW (paper mode; PIPE-03 non-contamination guarantee prevented incorrect T3-adjusted bets). The Finals G2 bets placed by PIPE-03 are pure T1 — same as if T3 had never been activated. EXP-018 T3 isolation field (`t3_signal`) will show all NEUTRAL. The CONFIRM/FADE analysis in EXP-018 will have no T3 signal data from G2. |
+| Discovery | 2026-06-05 SESSION 35 — Q6 ARE WE COMPROMISED? check: "Verify PIPE-06 ran for G2" → `tail -80 /opt/prediction-market-bot/logs/t3_cron.log` showed only FATAL lines. |
+| Resolution | **RESOLVED — 2026-06-05 SESSION 35.** Guard removed from `run_t3_pretip.py` (`__main__` block now calls `main()` directly). Docstring updated: "BOT_C4_ACTIVE may be set (read-only scan — no orders placed)." Committed 6cf87d8. Deployed to VPS. Manual run at 21:58 UTC confirmed: 32 forecasts evaluated, 0 CONFIRM, 0 FADE, 32 NEUTRAL. T3 cron now functional. PIPE-03 early at 22:00 UTC will load fresh `t3_20260605_2158.json` (within 900s staleness window). 19/19 T3 integration tests pass. |
+| Status | **RESOLVED — 2026-06-05 SESSION 35.** GG-016 registered and closed. Root cause pattern (BOT_C4_ACTIVE guard incorrectly applied to non-order-placing scripts) now documented as a known copy-paste failure mode. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
@@ -299,6 +316,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-013 | 2026-06-05 | ESPN scoreboard API replaces nba_api (blocked by Akamai from VPS and GitHub Actions). 30 teams/279 records verified. GHA cron auto-delivers cache to VPS before PIPE-02. |
 | GG-014 | 2026-06-05 | PARTIAL: time.sleep(0.5) added after each Kalshi order (T-136). Reduces burst from ~12 req/s to ~2 req/s. Effectiveness verified after Finals G2 cron. |
 | GG-015 | 2026-06-05 | GHA cron moved 00:30→20:30 UTC (T-137). GAME_DATE now aligned between GHA and PIPE-02 early cron. Late-cron mismatch acceptable for Finals; regular-season two-run strategy deferred. |
+| GG-011 | 2026-06-05 | ADR-0017 ACCEPTED. PAPER_T4_FLAT_SIZING=true confirmed as paper architecture (bypasses formula). Phase 8 per-bet sizing deferred to ADR-0018. T4_BAND_WEIGHT stub comment updated. |
+| GG-016 | 2026-06-05 | BOT_C4_ACTIVE guard removed from run_t3_pretip.py (commit 6cf87d8). PIPE-06 now runs cleanly. T3 signals confirmed at 21:58 UTC Jun 5 — 32 NEUTRAL, cron functional. |
 
 ---
 
