@@ -260,39 +260,55 @@ def main() -> None:
 
     # ------------------------------------------------------------------
     # 4a. Build opponent defensive stats store (ADR-0015)
-    # Fetches 30 team game logs; cached to TEAM_STATS_CACHE for PIPE-03 use.
-    # Falls back gracefully — raw λ used if build fails.
+    # Pre-populated cache (GitHub Actions tss_daily_sync, GG-013 fix) takes
+    # priority. Falls back to API build if absent; raw λ if both fail.
     # ------------------------------------------------------------------
     team_store: TeamStatsStore | None = None
-    try:
-        teams = NBAIngestionClient.get_all_teams()
-        store = TeamStatsStore()
-        _tss_ok = 0
-        for _team in teams:
-            _ok, _df = _ingester.fetch_team_game_log(
-                team_id=_team["id"],
-                season=DYNAMIC_FETCH_SEASON,
-                session_id=SESSION_ID,
-            )
-            if _ok and not _df.empty:
-                store.add_team_log(_team["abbreviation"], _df)
-                _tss_ok += 1
-        team_store = store
-        print(f"[TSS] Team stats store: {_tss_ok}/{len(teams)} teams loaded (ADR-0015)")
-        logger.info(COMPONENT, "team_stats_store_built",
-                    payload={"teams_loaded": _tss_ok, "teams_total": len(teams)},
-                    session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
-        # Cache for PIPE-03 (runs ~5 min after PIPE-02)
+    _cache_loaded = False
+    if TEAM_STATS_CACHE.exists():
         try:
-            TEAM_STATS_CACHE.write_text(json.dumps(store.to_cache_dict()))
-            print(f"[TSS] Cache written: {TEAM_STATS_CACHE}")
+            _cache_data = json.loads(TEAM_STATS_CACHE.read_text())
+            if _cache_data:
+                team_store = TeamStatsStore.from_cache_dict(_cache_data)
+                _tss_ok = len(team_store)
+                _cache_loaded = True
+                print(f"[TSS] Loaded from pre-populated cache: {_tss_ok} teams (ADR-0015)")
+                logger.info(COMPONENT, "team_stats_store_loaded",
+                            payload={"teams_loaded": _tss_ok, "source": "pre_populated_cache"},
+                            session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
         except Exception as _ce:
-            logger.warning(COMPONENT, "team_stats_cache_write_failed",
+            logger.warning(COMPONENT, "team_stats_cache_load_failed",
                            payload={"error": str(_ce)}, session_id=SESSION_ID)
-    except Exception as _tss_err:
-        logger.warning(COMPONENT, "team_stats_store_build_failed",
-                       payload={"error": str(_tss_err)}, session_id=SESSION_ID)
-        print(f"[TSS] Build failed — using raw λ (fallback): {_tss_err}")
+    if not _cache_loaded:
+        try:
+            teams = NBAIngestionClient.get_all_teams()
+            store = TeamStatsStore()
+            _tss_ok = 0
+            for _team in teams:
+                _ok, _df = _ingester.fetch_team_game_log(
+                    team_id=_team["id"],
+                    season=DYNAMIC_FETCH_SEASON,
+                    session_id=SESSION_ID,
+                )
+                if _ok and not _df.empty:
+                    store.add_team_log(_team["abbreviation"], _df)
+                    _tss_ok += 1
+            team_store = store
+            print(f"[TSS] Team stats store: {_tss_ok}/{len(teams)} teams loaded (ADR-0015)")
+            logger.info(COMPONENT, "team_stats_store_built",
+                        payload={"teams_loaded": _tss_ok, "teams_total": len(teams)},
+                        session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+            # Cache for PIPE-03 (runs ~5 min after PIPE-02)
+            try:
+                TEAM_STATS_CACHE.write_text(json.dumps(store.to_cache_dict()))
+                print(f"[TSS] Cache written: {TEAM_STATS_CACHE}")
+            except Exception as _ce:
+                logger.warning(COMPONENT, "team_stats_cache_write_failed",
+                               payload={"error": str(_ce)}, session_id=SESSION_ID)
+        except Exception as _tss_err:
+            logger.warning(COMPONENT, "team_stats_store_build_failed",
+                           payload={"error": str(_tss_err)}, session_id=SESSION_ID)
+            print(f"[TSS] Build failed — using raw λ (fallback): {_tss_err}")
 
     for kalshi_player_name, player_mkts in markets_by_player.items():
         norm = normalize_player_name(kalshi_player_name)

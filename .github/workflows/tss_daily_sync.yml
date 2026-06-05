@@ -1,0 +1,45 @@
+name: TSS Daily Sync
+
+# Runs on GitHub's servers (not blocked by Akamai/NBA).
+# Pre-populates team_stats_cache_{GAME_DATE}.json on VPS before PIPE-02 fires.
+# Fixes GG-013: DigitalOcean IP blocked at stats.nba.com.
+#
+# Required GitHub Actions secret: VPS_SSH_KEY (private key for root@157.230.91.33)
+
+on:
+  schedule:
+    - cron: '30 0 * * *'  # 00:30 UTC — 55 min before PIPE-02 late cron at ~01:25 UTC
+  workflow_dispatch:
+
+jobs:
+  tss-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install nba_api pandas
+
+      - name: Build TSS cache
+        run: python scripts/build_tss_cache.py
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          chmod 600 ~/.ssh/vps_key
+          ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
+
+      - name: Upload cache to VPS
+        run: |
+          GAME_DATE=$(python3 -c "from datetime import datetime, timezone; print(datetime.now(tz=timezone.utc).strftime('%Y%m%d'))")
+          scp -i ~/.ssh/vps_key \
+            "team_stats_cache_${GAME_DATE}.json" \
+            root@157.230.91.33:/opt/prediction-market-bot/logs/team_stats_cache_${GAME_DATE}.json
+          echo "Uploaded team_stats_cache_${GAME_DATE}.json to VPS"
