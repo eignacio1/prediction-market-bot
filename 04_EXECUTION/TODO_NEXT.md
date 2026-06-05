@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-05 SESSION 34 — T3 momentum overlay integrated into PIPE-03 (t3_signal_loader.py + 6 edits to run_paper_trade.py + 19 tests). Non-contamination guarantee implemented and tested. PIPE-06 cron activated on VPS (both `*/15 20-23` and `*/15 0-3` uncommented). G2 MC: EV=+$36.90, P(profit)=95.2%. All systems on auto for Finals G2 (tips 00:30 UTC Jun 6). 734/734 tests. Commit d91b30b deployed.
+**Last reviewed:** 2026-06-05 SESSION 35 — GG-016 fixed (PIPE-06 BOT_C4_ACTIVE guard removed; commit 6cf87d8). ADR-0017 written (GG-011 resolved for Phase 6/7; T4 flat-sizing confirmed correct). T-138 deployed (exponential backoff retry in kalshi_client._post(); T-136 sleep(0.5) found ineffective — 50% 429 rate unchanged). EXP-018 prereq: t3_signal + t1_edge now stored per paper position. GG-014 reopened. VPS HEAD: 459ba3e. 734/734 tests. PIPE-06 confirmed running (3 cron ticks post-fix). Finals G2 tips 00:30 UTC Jun 6.
 
 ---
 
@@ -18,14 +18,34 @@
 
 ---
 
-## SESSION 2026-06-05 SESSION 34 — OPEN ITEMS
+## SESSION 2026-06-05 SESSION 35 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **Verify PIPE-06 ran for G2** | ✅ COMPLETE → CRITICAL BUG (GG-016): BOT_C4_ACTIVE guard blocked PIPE-06 since SESSION 34 activation. Fixed (commit 6cf87d8). PIPE-06 confirmed running: 21:58, 22:00, 22:15 UTC — 32 NEUTRAL signals each. T3 data available from G3+. |
+| **GG-011 / T4 MC ADR** | ✅ COMPLETE → ADR-0017 written and deployed. PAPER_T4_VIRTUAL already false (default). KELLY_T4=0.20 endorsed. GG-011 RESOLVED for Phase 6/7. ADR-0018 gated on Phase 8. |
+| **EXP-018 + GG-014 effectiveness verification** | ⏳ PARTIAL — Cannot fully complete until Finals G2 resolves (~06:00 UTC Jun 6). Pre-G2 work done: (1) GG-014 re-assessed: T-136 sleep(0.5) ineffective (50% 429 rate unchanged). T-138 deployed: exponential backoff retry in `_post()`. (2) EXP-018 prereq: `t3_signal` + `t1_edge` fields now stored per paper position. (3) GG-014 reopened. First game with t3_signal data: Finals G3 (Jun 8). |
+
+---
+
+## SESSION 2026-06-05 SESSION 35 — OPEN ITEMS
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **EXP-018 — Finals G2 result analysis** | DS | **HIGH — after G2 resolves ~06:00 UTC Jun 6** | After G2 resolves, check: (1) GG-014: `kalshi_order_status` breakdown — did T-138 exponential backoff reduce 429 rate vs pre-T-138? Target: ≤5% failure. (2) P&L for G2 positions (game_date: 2026-06-05 Finals game bets). (3) T3 signal breakdown: expect all NEUTRAL (GG-016 bug — PIPE-06 was down during G2 bet placement). EXP-018 T3 isolation data starts at G3. |
+| **Verify adj_λ activation on Finals G3** | DS | **HIGH — before G3 (Jun 8)** | GHA cron at 20:30 UTC Jun 8. Verify: `team_stats_cache_20260608.json` uploaded to VPS, PIPE-03R shows adj_λ ≠ raw pts_l10_mean. First live test of ADR-0015. |
+| **EXP-017 Part B re-run on G2 data** | DS | MEDIUM | After G2 resolution. Update GG-004 status (commercial EV). Need ≥66 unique markets for APR-0017 statistical floor. |
+
+---
+
+## SESSION 2026-06-05 SESSION 34 — OPEN ITEMS (now superseded by SESSION 35)
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
-| **EXP-018 — G2/T3 result analysis** | **After G2 resolves (~06:00 UTC Jun 6), run EXP-018 + T3 signal analysis** | DS | **HIGH — after G2 resolves** | First run with T3 overlay active. Check: (1) How many bets had CONFIRM/FADE signals vs NEUTRAL? (2) Did T3-adjusted bets outperform T1-only? (3) Were HTTP 429s reduced vs G3? Filter by `t3_signal` field in paper_portfolio.json. Also verify PIPE-06 log at `/opt/prediction-market-bot/logs/t3_cron.log`. |
-| **GG-011 / T4 MC ADR** | **Pull T4 virtual logs → write T4_BAND_WEIGHT ADR → flip PAPER_T4_VIRTUAL=false for G3** | DS | **HIGH — before Finals G3 (Jun 8)** | T4_BAND_WEIGHT=0.10 STUB incompatible with high-throughput T4. ADR must derive weight from G1/G2 virtual deployment data. Once resolved: (1) flip PAPER_T4_VIRTUAL=false in VPS .env; (2) run_monte_carlo.py can be extended to T4. |
-| **GG-014 effectiveness verification** | **After G2 cron, check paper_portfolio 429 rates** | DS | **HIGH — after G2 resolves** | Target: ≤5% HTTP 429 rate. Check `kalshi_order_status` in paper_portfolio.json. T3 overlay means more per-market logs — check if T3 log volume created any issues. |
-| **Verify PIPE-06 ran for G2** | **Check t3_cron.log on VPS after 20:00 UTC Jun 5** | DS | HIGH | SSH: `tail -50 /opt/prediction-market-bot/logs/t3_cron.log`. Confirm T3 signals were generated and loaded by PIPE-03 at 22:00 UTC. |
+| **EXP-018 — G2/T3 result analysis** | **After G2 resolves (~06:00 UTC Jun 6), run EXP-018 + T3 signal analysis** | DS | **HIGH — after G2 resolves** | ~~First run with T3 overlay active.~~ **NOTE: T3 overlay data not available for G2 (GG-016 bug — PIPE-06 was silently failing). All G2 bets will have t3_signal=NEUTRAL. First game with T3 data: Finals G3 (Jun 8). EXP-018 will analyze GG-014 429 reduction (T-138) and P&L.** |
+| **GG-011 / T4 MC ADR** | ✅ RESOLVED — ADR-0017 (SESSION 35). See completed items above. |
+| **GG-014 effectiveness verification** | DS | **OPEN — T-138 deployed** | T-136 found ineffective. T-138 (exponential backoff) deployed. Verify after G2 cron. |
+| **Verify PIPE-06 ran for G2** | ✅ COMPLETE — GG-016 fixed (SESSION 35). PIPE-06 running. |
 
 ---
 
