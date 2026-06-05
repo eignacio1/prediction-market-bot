@@ -29,7 +29,7 @@ Output:
   logs/t3_YYYYMMDD_HHMM.json — T3 momentum-adjusted forecast report
 
 Security (NFR-05):
-  VENUE_API_KEY loaded from environment only. BOT_C4_ACTIVE must NOT be set.
+  VENUE_API_KEY loaded from environment only. BOT_C4_ACTIVE may be set (read-only scan — no orders placed).
 
 How to run:
   # On VPS (ENV-02):
@@ -251,7 +251,4 @@ def _write_empty_report(session_id: str, reason: str) -> None:
 
 
 if __name__ == "__main__":
-    if os.environ.get("BOT_C4_ACTIVE"):
-        print("FATAL: BOT_C4_ACTIVE is set. PIPE-06 does not place orders.", file=sys.stderr)
-        sys.exit(1)
     main()
