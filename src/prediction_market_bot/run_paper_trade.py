@@ -78,6 +78,7 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.execution_bands import BAND_REGISTRY, get_band_config, ExecutionBand
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.t3_signal_loader import load_t3_signals, T3_MAX_STALENESS_S
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -107,6 +108,10 @@ DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player sta
 # ADR-0010: T1 band Kelly fraction (0.10). Read from execution_bands so that any
 # future ADR updating the band config automatically propagates here.
 T1_KELLY = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
+
+# T3 momentum overlay multipliers — must stay in sync with run_t3_pretip.py
+T3_CONFIRM_MULTIPLIER: float = 1.15
+T3_FADE_MULTIPLIER:    float = 0.75
 
 _NON_FEATURE = {
     "player_id","player_name","team_id","team_abbreviation",
@@ -366,6 +371,22 @@ def main() -> None:
                      session_id=SESSION_ID)
         print("[TSS] WARNING: 0 teams loaded — adj_λ (ADR-0015) inactive this run")
 
+    # T3 momentum overlay: load PIPE-06 signals once, before the player loop.
+    # Absent or stale report → empty dict → every ticker lookup returns "NEUTRAL"
+    # → edge unchanged → pure T1 path. Non-contamination guarantee.
+    t3_signals = load_t3_signals(LOG_DIR, GAME_DATE)
+    if t3_signals:
+        _t3_confirm = sum(1 for s in t3_signals.values() if s == "CONFIRM")
+        _t3_fade    = sum(1 for s in t3_signals.values() if s == "FADE")
+        print(f"[T3] {len(t3_signals)} momentum signals — "
+              f"{_t3_confirm} CONFIRM / {_t3_fade} FADE")
+        logger.info("PIPE-03", "t3_signals_loaded",
+                    payload={"count": len(t3_signals),
+                             "confirm": _t3_confirm, "fade": _t3_fade},
+                    session_id=SESSION_ID)
+    else:
+        print("[T3] No T3 signals (PIPE-06 not run or stale) — pure T1 path")
+
     _reserve_halted = False
 
     for kalshi_player_name, player_mkts in markets_by_player.items():
@@ -433,7 +454,19 @@ def main() -> None:
             half = mkt.half_spread
             gross_edge = p_threshold - mid - half
             kalshi_fee = 0.07 * mid * (1.0 - mid)  # ADR-0016 taker fee
-            edge = gross_edge - kalshi_fee           # net-of-fee edge
+            edge = gross_edge - kalshi_fee           # net-of-fee edge (T1 base)
+            t1_edge   = edge
+            t3_signal = t3_signals.get(mkt.ticker, "NEUTRAL")
+            if t3_signal == "CONFIRM":
+                edge = t1_edge * T3_CONFIRM_MULTIPLIER
+            elif t3_signal == "FADE":
+                edge = t1_edge * T3_FADE_MULTIPLIER
+            if t3_signal != "NEUTRAL":
+                logger.info("PIPE-03", "t3_edge_overlay",
+                            payload={"ticker": mkt.ticker, "signal": t3_signal,
+                                     "t1_edge": round(t1_edge, 6),
+                                     "adj_edge": round(edge, 6)},
+                            session_id=SESSION_ID)
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
 
             forecast_rec = {
@@ -443,7 +476,9 @@ def main() -> None:
                 "market_implied_prob": mid,
                 "gross_edge": gross_edge,
                 "kalshi_fee": round(kalshi_fee, 6),
-                "edge": edge,       # net-of-fee; this is what C4 gates on
+                "edge": edge,                      # T3-adjusted net-of-fee (C4 gates on this)
+                "t1_edge": round(t1_edge, 6),      # raw T1 edge pre-overlay (EXP-018 isolation)
+                "t3_signal": t3_signal,
                 "recommended_direction": direction,
             }
             ok_c4, approval = engine.evaluate_forecast(
@@ -499,8 +534,9 @@ def main() -> None:
                     session_id=SESSION_ID,
                 )
                 dyn_tag = "  [dyn]" if p_est_lr is None else ""
+                t3_tag  = f"  [T3:{t3_signal}]" if t3_signal != "NEUTRAL" else ""
                 print(f"  BET  {kalshi_player_name:<22} {direction:<4}  ${approved_size:.2f}  "
-                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts{dyn_tag}")
+                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts{dyn_tag}{t3_tag}")
                 if pos:
                     orders.append(pos)
                     _state = trader.get_state()

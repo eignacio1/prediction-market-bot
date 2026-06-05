@@ -4,7 +4,7 @@ PIPE-06: T3 Pre-Tip Momentum Scan
 Pipeline:     PIPE-06 (T3 Execution Band — Pre-Tip Momentum)
 Band:         T3_PRE_TIP (ExecutionBand)
 Phase:        Phase 7 (buildable on current cron infrastructure)
-Schedule:     Every 15 min, 21:00–23:00 UTC (cron: */15 21-23 * * *)
+Schedule:     Every 15 min, 20:00–03:00 UTC (cron: */15 20-23,0-3 * * *); extended per T-084 for late 10pm ET games
 Environment:  ENV-02 (VPS — same as PIPE-02)
 
 Purpose:
