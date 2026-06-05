@@ -2,7 +2,29 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-04 SESSION 30 — T-072 opponent-adjusted Poisson λ (ADR-0015) + T-131 fee-adjusted edge gate (ADR-0016) both COMPLETE. VPS deployed, 715/715 tests. Portfolio reset to $1,000. Wakeup scheduled for G2 MC verify (after PIPE-02 fires 22:00 UTC Jun 5). EXP-017 DIRECTIONAL_NEGATIVE root cause addressed by adj_λ — EXP-018 will validate.
+**Last reviewed:** 2026-06-04 SESSION 31 — GG-012 PIPE-02 silent failure diagnosed and fixed (BOT_C4_ACTIVE guard removed). T-133 DECISION_LOG entry committed. G2 Monte Carlo run (portfolio-based, EV=+$60.02, P(profit)=82.7%). Timing sweep: GAME_DATE design confirmed correct. T-134 registered. 715/715 tests. All commits deployed to VPS.
+
+---
+
+## SESSION 2026-06-04 SESSION 31 — COMPLETED
+
+| # | Task | Status |
+|---|------|--------|
+| T-133 DECISION_LOG entry | **Governance entry for fee_contaminated NO-direction false-positive fix** | ✅ COMPLETE 2026-06-04 SESSION 31 — Root cause: `fee_contaminated` flag set on NO-direction bets (mid > 0.5, no adjustment needed). Fix: only flag when `direction == "YES"`. 5 of 9 G2 positions affected (Wembanyama YES 20, Castle YES 20/15/10, Vassell YES 30). Commit 1b7ee83. DECISION_LOG updated. |
+| GG-012 — PIPE-02 BOT_C4_ACTIVE silent failure | **Diagnosed and fixed: adj_λ (ADR-0015) was never applied to any live PIPE-03 run** | ✅ COMPLETE 2026-06-04 SESSION 31 — Root cause: `run_pregame.py __main__` had `if os.environ.get("BOT_C4_ACTIVE"): sys.exit(1)`; `.env` has `BOT_C4_ACTIVE=true`. PIPE-02 failed silently Jun 3 21:55 + Jun 4 21:55 UTC, 0 alerts. Confirmed via: pregame_cron.log (two FATAL exits), absence of pregame_20260604.json, paper_early_cron.log `[TSS] Built fresh: 0/30 teams loaded`. Fix: removed guard. Commit 2997c71. Deployed to VPS. GG-012 registered. DECISION_LOG entry commit 25dcb7c. |
+| Timing sweep | **Thorough review of all date/time handling across PIPE-02/03/03R** | ✅ COMPLETE 2026-06-04 SESSION 31 — 5 timing properties analyzed. GAME_DATE=run date design confirmed correct. PIPE-03R date format mismatch confirmed non-issue. PIPE-03 idempotency by ticker confirmed safe. G2 resolution timeline confirmed: tips ~23:00 UTC Jun 5, PIPE-03R fires 06:00 UTC Jun 6. No functional bugs except GG-012. |
+| G2 Monte Carlo | **Portfolio-based MC for 9 open Finals G2 positions** | ✅ COMPLETE 2026-06-04 SESSION 31 — N=10,000 sims, seed=42, bankroll=$636.24, deployed=$363.76. EV=+$60.02 (+16.5% ROI). P(profit)=82.7%, kill-switch risk=0.11%. p5=-$31.18, p50=+$61.55, p95=+$137.64. Note: all `model_p` values use unadjusted Poisson λ (PIPE-02 guard prevented adj_λ application). EXP-018 will test unadjusted Poisson, not ADR-0015. |
+| T-134 registered | **Monitoring: alert when TeamStatsStore loads 0 teams in PIPE-03** | ✅ REGISTERED 2026-06-04 SESSION 31 — GG-012 was invisible for 2 cron cycles because TSS size=0 is treated as graceful fallback. T-134 = add WARNING/ERROR audit event when this occurs. |
+
+---
+
+## SESSION 2026-06-04 SESSION 31 — OPEN ITEMS
+
+| # | Task | Owner | Priority | Notes |
+|---|------|-------|----------|-------|
+| **T-134 — PIPE-03 TeamStatsStore size=0 alert** | **Add WARNING audit event when TSS builds fresh but loads 0 teams** | DS | **MEDIUM — before next PIPE-02 failure scenario** | GG-012 was invisible for 2 cron cycles. When `team_store` is empty after a fresh build attempt, PIPE-03 currently treats this as graceful fallback (raw `pts_mean`). Should emit `logger.warning()` or audit ERROR that C7 monitoring can catch. Implement in `run_paper_trade.py` at the TeamStatsStore load/build path. |
+| **EXP-018 — G2 result analysis** | **After G2 resolves (06:00 UTC Jun 6), run EXP-018 analysis on resolved positions** | DS | **HIGH — after G2 resolves** | G2 resolves at 06:00 UTC Jun 6 (PIPE-03R). All 9 positions use unadjusted Poisson λ (not adj_λ — GG-012 caused PIPE-02 failure). EXP-018 will test baseline Poisson vs. market. ADR-0015 validation deferred to G3+ where PIPE-02 succeeds. Note: fee_contaminated=True positions with direction=NO are clean (T-133 fix). |
+| **GG-012 monitoring follow-through** | **GG-012 PARTIALLY RESOLVED — code fix deployed; T-134 monitoring still open** | DS | MEDIUM | Code fix committed 2997c71. PIPE-02 late window (01:25 UTC Jun 5) will now run correctly. T-134 monitoring is the remaining item. GG-012 remains open until T-134 complete. |
 
 ---
 
