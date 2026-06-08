@@ -1,7 +1,7 @@
 {
   "exp_id": "EXP-017",
-  "session_id": "EXP-017-66CC8A11",
-  "run_at": "2026-06-04T04:31:16.614Z",
+  "session_id": "EXP-017-E70A0614",
+  "run_at": "2026-06-08T16:39:53.343Z",
   "governance_gap": "GG-004",
   "open_question": "OQ-023",
   "test_rows": 2692,
@@ -137,35 +137,35 @@
   },
   "part_b": {
     "part": "B_live",
-    "n_unique_markets": 32,
-    "n_portfolio_positions": 1417,
+    "n_unique_markets": 35,
+    "n_portfolio_positions": 35,
     "statistical_floor_apr_0017": 66,
     "statistical_power": "INSUFFICIENT",
     "per_unique_market": {
-      "label": "Per unique market (n=32, first entry price)",
-      "n": 32,
-      "n_yes_bets": 32,
-      "n_no_bets": 0,
-      "win_rate": 0.2188,
-      "ev_per_bet": -0.162188,
-      "total_pnl": -5.19,
-      "mean_edge_vs_market": 0.1366,
-      "mean_edge_vs_null": -0.0003,
-      "verdict": "NEGATIVE_EV"
+      "label": "Per unique market (n=33, first entry price)",
+      "n": 33,
+      "n_yes_bets": 15,
+      "n_no_bets": 18,
+      "win_rate": 0.8182,
+      "ev_per_bet": 0.104242,
+      "total_pnl": 3.44,
+      "mean_edge_vs_market": 0.0375,
+      "mean_edge_vs_null": -0.0486,
+      "verdict": "POSITIVE_EV"
     },
     "all_positions_not_independent": {
-      "label": "All positions (n=1417) \u2014 NOT independent (idempotency bug; 32 unique markets)",
-      "n": 1417,
-      "n_yes_bets": 1416,
-      "n_no_bets": 1,
-      "win_rate": 0.3013,
-      "ev_per_bet": -0.073119,
-      "total_pnl": -103.61,
-      "mean_edge_vs_market": 0.1413,
-      "mean_edge_vs_null": -0.0058,
-      "verdict": "NEGATIVE_EV"
+      "label": "All positions (n=33) \u2014 NOT independent (idempotency bug; 35 unique markets)",
+      "n": 33,
+      "n_yes_bets": 15,
+      "n_no_bets": 18,
+      "win_rate": 0.8182,
+      "ev_per_bet": 0.104242,
+      "total_pnl": 3.44,
+      "mean_edge_vs_market": 0.0375,
+      "mean_edge_vs_null": -0.0486,
+      "verdict": "POSITIVE_EV"
     },
-    "verdict": "DIRECTIONAL_NEGATIVE \u2014 negative or zero EV vs actual Kalshi prices (EV=-0.1622/bet, n=32 unique markets). Statistical power INSUFFICIENT: n << APR-0017 floor of >= 66. GG-004 remains OPEN.",
+    "verdict": "DIRECTIONAL_POSITIVE \u2014 positive EV vs actual Kalshi prices (EV=+0.1042/bet, n=33 unique markets). Statistical power INSUFFICIENT: n << APR-0017 floor of >= 66. GG-004 remains OPEN. Accumulate >= 66 resolved markets for confirmatory run.",
     "gg_004_status": "OPEN"
   }
 }
