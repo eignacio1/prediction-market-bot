@@ -30,13 +30,17 @@ if str(_SRC) not in sys.path:
 from prediction_market_bot.c8_dashboard.dashboard import (
     extract_forecast_outcomes,
     get_component_last_seen,
+    get_pipeline_timestamps,
     get_recent_alerts,
     main,
     read_audit_log,
+    read_portfolio,
     render_alert_feed,
     render_dashboard,
     render_drift_panel,
+    render_portfolio_panel,
     render_system_health,
+    render_throughput_panel,
 )
 
 
@@ -65,6 +69,56 @@ def _write_jsonl(path: Path, entries: list[dict]) -> None:
     with open(path, "w") as f:
         for e in entries:
             f.write(json.dumps(e) + "\n")
+
+
+def _make_portfolio(
+    bankroll: float = 958.99,
+    initial: float = 1000.0,
+    pnl: float = 75.67,
+    open_positions: list | None = None,
+    closed_positions: list | None = None,
+) -> dict:
+    return {
+        "bankroll_usd": bankroll,
+        "initial_bankroll_usd": initial,
+        "total_realized_pnl": pnl,
+        "current_daily_loss": 0.0,
+        "open_positions": open_positions or [],
+        "closed_positions": closed_positions or [],
+        "last_updated": "2026-06-08T20:00:00Z",
+    }
+
+
+def _make_position(
+    player: str = "Test Player",
+    size: float = 10.0,
+    game_date: str = "2026-06-08",
+    status: str = "OPEN",
+    t3_signal: str = "NEUTRAL",
+    outcome: str | None = None,
+    pnl: float = 0.0,
+) -> dict:
+    pos: dict = {
+        "position_id": "POS-TEST",
+        "player_name": player,
+        "kalshi_ticker": "KXNBAPTS-TEST",
+        "kalshi_threshold": 20,
+        "direction": "NO",
+        "size_usd": size,
+        "game_date": game_date,
+        "entered_at": "2026-06-08T22:00:00Z",
+        "status": status,
+        "model_p": 0.05,
+        "gross_edge": 0.10,
+        "fee_net_edge": 0.09,
+        "t3_signal": t3_signal,
+        "t1_edge": 0.09,
+    }
+    if outcome is not None:
+        pos["outcome"] = outcome
+        pos["pnl"] = pnl
+        pos["resolved_at"] = "2026-06-09T06:00:00Z"
+    return pos
 
 
 def _make_health(
@@ -427,3 +481,353 @@ class TestMainCli:
         main(["--log-path", str(path)])
         out = capsys.readouterr().out
         assert "ARMED" in out
+
+    @pytest.mark.unit
+    def test_main_accepts_portfolio_path(self, tmp_path, capsys):
+        log = tmp_path / "audit.jsonl"
+        log.write_text("")
+        port = tmp_path / "portfolio.json"
+        port.write_text(
+            '{"bankroll_usd": 500.0, "initial_bankroll_usd": 1000.0, '
+            '"total_realized_pnl": -50.0, "open_positions": [], "closed_positions": []}'
+        )
+        main([
+            "--log-path", str(log),
+            "--portfolio-path", str(port),
+            "--t4-portfolio-path", str(tmp_path / "no_t4.json"),
+            "--log-dir", str(tmp_path),
+        ])
+        out = capsys.readouterr().out
+        assert "500.00" in out
+
+    @pytest.mark.unit
+    def test_main_game_date_arg(self, tmp_path, capsys):
+        log = tmp_path / "audit.jsonl"
+        log.write_text("")
+        main([
+            "--log-path", str(log),
+            "--log-dir", str(tmp_path),
+            "--game-date", "2026-06-08",
+        ])
+        out = capsys.readouterr().out
+        assert "2026-06-08" in out
+
+
+# ---------------------------------------------------------------------------
+# read_portfolio
+# ---------------------------------------------------------------------------
+
+
+class TestReadPortfolio:
+    @pytest.mark.unit
+    def test_missing_path_returns_empty(self, tmp_path):
+        assert read_portfolio(tmp_path / "none.json") == {}
+
+    @pytest.mark.unit
+    def test_none_path_returns_empty(self):
+        assert read_portfolio(None) == {}
+
+    @pytest.mark.unit
+    def test_valid_json_returned(self, tmp_path):
+        p = tmp_path / "portfolio.json"
+        p.write_text('{"bankroll_usd": 500.0}')
+        result = read_portfolio(p)
+        assert result["bankroll_usd"] == 500.0
+
+    @pytest.mark.unit
+    def test_malformed_json_returns_empty(self, tmp_path):
+        p = tmp_path / "portfolio.json"
+        p.write_text("{broken")
+        assert read_portfolio(p) == {}
+
+
+# ---------------------------------------------------------------------------
+# get_pipeline_timestamps
+# ---------------------------------------------------------------------------
+
+
+class TestGetPipelineTimestamps:
+    @pytest.mark.unit
+    def test_empty_dir_returns_empty(self, tmp_path):
+        result = get_pipeline_timestamps(tmp_path)
+        assert result == {}
+
+    @pytest.mark.unit
+    def test_detects_pipe03_log(self, tmp_path):
+        (tmp_path / "paper_early_cron.log").write_text("some output")
+        result = get_pipeline_timestamps(tmp_path)
+        assert "PIPE-03" in result
+
+    @pytest.mark.unit
+    def test_picks_newer_of_two_logs(self, tmp_path):
+        import time
+        (tmp_path / "paper_early_cron.log").write_text("early")
+        time.sleep(0.05)
+        (tmp_path / "paper_late_cron.log").write_text("late")
+        result = get_pipeline_timestamps(tmp_path)
+        assert "PIPE-03" in result
+
+    @pytest.mark.unit
+    def test_returns_utc_string_format(self, tmp_path):
+        (tmp_path / "pregame_cron.log").write_text("x")
+        result = get_pipeline_timestamps(tmp_path)
+        ts = result.get("PIPE-02", "")
+        assert "T" in ts and "Z" in ts
+
+
+# ---------------------------------------------------------------------------
+# render_portfolio_panel
+# ---------------------------------------------------------------------------
+
+
+class TestRenderPortfolioPanel:
+    @pytest.mark.unit
+    def test_shows_not_found_when_empty(self):
+        lines = render_portfolio_panel({}, {})
+        text = "\n".join(lines)
+        assert "not found" in text
+
+    @pytest.mark.unit
+    def test_shows_bankroll(self):
+        port = _make_portfolio(bankroll=958.99)
+        lines = render_portfolio_panel(port, {})
+        text = "\n".join(lines)
+        assert "958.99" in text
+
+    @pytest.mark.unit
+    def test_shows_pnl(self):
+        port = _make_portfolio(pnl=75.67)
+        lines = render_portfolio_panel(port, {})
+        text = "\n".join(lines)
+        assert "75.67" in text
+
+    @pytest.mark.unit
+    def test_shows_win_rate_from_closed(self):
+        closed = [
+            _make_position(status="CLOSED", outcome="WIN"),
+            _make_position(status="CLOSED", outcome="LOSS"),
+        ]
+        port = _make_portfolio(closed_positions=closed)
+        lines = render_portfolio_panel(port, {})
+        text = "\n".join(lines)
+        assert "50.0%" in text
+
+    @pytest.mark.unit
+    def test_t4_no_portfolio_shown(self):
+        lines = render_portfolio_panel({}, {})
+        text = "\n".join(lines)
+        assert "T4" in text
+        assert "no portfolio" in text
+
+    @pytest.mark.unit
+    def test_t4_portfolio_stats_shown(self):
+        t4 = _make_portfolio(bankroll=500.0, pnl=10.0)
+        lines = render_portfolio_panel({}, t4)
+        text = "\n".join(lines)
+        assert "T4" in text
+
+    @pytest.mark.unit
+    def test_returns_list_of_strings(self):
+        lines = render_portfolio_panel({}, {})
+        assert isinstance(lines, list)
+        assert all(isinstance(l, str) for l in lines)
+
+    @pytest.mark.unit
+    def test_panel_1_label_in_output(self):
+        lines = render_portfolio_panel({}, {})
+        text = "\n".join(lines)
+        assert "PANEL 1" in text
+
+
+# ---------------------------------------------------------------------------
+# render_throughput_panel
+# ---------------------------------------------------------------------------
+
+
+class TestRenderThroughputPanel:
+    @pytest.mark.unit
+    def test_shows_game_date(self):
+        lines = render_throughput_panel({}, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "2026-06-08" in text
+
+    @pytest.mark.unit
+    def test_no_portfolio_shows_no_portfolio(self):
+        lines = render_throughput_panel({}, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "no portfolio" in text
+
+    @pytest.mark.unit
+    def test_counts_t1_positions_for_date(self):
+        pos = [_make_position(game_date="2026-06-08", size=15.0)]
+        port = _make_portfolio(open_positions=pos)
+        lines = render_throughput_panel(port, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "T1" in text
+        assert "1 bet" in text
+
+    @pytest.mark.unit
+    def test_excludes_positions_on_other_date(self):
+        pos = [_make_position(game_date="2026-06-07", size=15.0)]
+        port = _make_portfolio(open_positions=pos)
+        lines = render_throughput_panel(port, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "0 position" in text or "no position" in text.lower()
+
+    @pytest.mark.unit
+    def test_shows_t3_signal_breakdown(self):
+        pos = [
+            _make_position(game_date="2026-06-08", t3_signal="CONFIRM"),
+            _make_position(game_date="2026-06-08", t3_signal="NEUTRAL"),
+            _make_position(game_date="2026-06-08", t3_signal="NEUTRAL"),
+        ]
+        port = _make_portfolio(open_positions=pos)
+        lines = render_throughput_panel(port, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "CONFIRM" in text
+        assert "NEUTRAL" in text
+
+    @pytest.mark.unit
+    def test_t4_large_volume_aggregated(self):
+        """~1000 T4 positions must aggregate, not list individually."""
+        positions = [
+            _make_position(player=f"Player {i % 10}", game_date="2026-06-08")
+            for i in range(500)
+        ]
+        t4 = _make_portfolio(open_positions=positions)
+        lines = render_throughput_panel({}, t4, "2026-06-08")
+        text = "\n".join(lines)
+        assert "500" in text
+        assert len(lines) < 30
+
+    @pytest.mark.unit
+    def test_t4_resolved_shows_win_rate(self):
+        closed = [
+            _make_position(
+                game_date="2026-06-08",
+                status="CLOSED",
+                outcome="WIN",
+                pnl=5.0,
+            ),
+            _make_position(
+                game_date="2026-06-08",
+                status="CLOSED",
+                outcome="LOSS",
+                pnl=-5.0,
+            ),
+        ]
+        t4 = _make_portfolio(closed_positions=closed)
+        lines = render_throughput_panel({}, t4, "2026-06-08")
+        text = "\n".join(lines)
+        assert "50.0%" in text
+
+    @pytest.mark.unit
+    def test_returns_list_of_strings(self):
+        lines = render_throughput_panel({}, {}, "2026-06-08")
+        assert isinstance(lines, list)
+        assert all(isinstance(l, str) for l in lines)
+
+    @pytest.mark.unit
+    def test_panel_2_label_in_output(self):
+        lines = render_throughput_panel({}, {}, "2026-06-08")
+        text = "\n".join(lines)
+        assert "PANEL 2" in text
+
+
+# ---------------------------------------------------------------------------
+# render_alert_feed — deduplication
+# ---------------------------------------------------------------------------
+
+
+class TestRenderAlertFeedDedup:
+    @pytest.mark.unit
+    def test_deduplicates_consecutive_same_type(self):
+        alerts = [
+            _make_entry("C1", "player_game_log_empty", severity="WARNING")
+            for _ in range(10)
+        ]
+        lines = render_alert_feed(alerts)
+        text = "\n".join(lines)
+        assert "×10" in text
+
+    @pytest.mark.unit
+    def test_does_not_collapse_different_types(self):
+        alerts = [
+            _make_entry("C1", "event_a", severity="WARNING"),
+            _make_entry("C1", "event_b", severity="WARNING"),
+        ]
+        lines = render_alert_feed(alerts)
+        text = "\n".join(lines)
+        assert "event_a" in text
+        assert "event_b" in text
+
+    @pytest.mark.unit
+    def test_panel_5_label(self):
+        lines = render_alert_feed([])
+        text = "\n".join(lines)
+        assert "PANEL 5" in text
+
+
+# ---------------------------------------------------------------------------
+# render_system_health — pipeline timestamps
+# ---------------------------------------------------------------------------
+
+
+class TestRenderSystemHealthPipeline:
+    @pytest.mark.unit
+    def test_shows_pipeline_timestamps_when_provided(self):
+        pipe_ts = {"PIPE-02": "2026-06-08T21:55:00Z", "PIPE-03": "2026-06-08T22:00:00Z"}
+        lines = render_system_health(_make_health(), {}, pipeline_timestamps=pipe_ts)
+        text = "\n".join(lines)
+        assert "PIPE-02" in text
+        assert "2026-06-08T21:55:00Z" in text
+
+    @pytest.mark.unit
+    def test_falls_back_to_audit_timestamps_when_none(self):
+        last_seen = {"C3": "2026-05-28T10:00:00.000Z"}
+        lines = render_system_health(_make_health(), last_seen, pipeline_timestamps=None)
+        text = "\n".join(lines)
+        assert "C3" in text
+
+    @pytest.mark.unit
+    def test_panel_3_label(self):
+        lines = render_system_health(_make_health(), {})
+        text = "\n".join(lines)
+        assert "PANEL 3" in text
+
+
+# ---------------------------------------------------------------------------
+# render_dashboard — full integration with new panels
+# ---------------------------------------------------------------------------
+
+
+class TestRenderDashboardIntegration:
+    @pytest.mark.unit
+    def test_contains_all_five_panels(self):
+        result = render_dashboard(_make_health(), [])
+        for i in range(1, 6):
+            assert f"PANEL {i}" in result
+
+    @pytest.mark.unit
+    def test_portfolio_data_appears_in_output(self):
+        port = _make_portfolio(bankroll=958.99, pnl=75.67)
+        result = render_dashboard(_make_health(), [], t1_portfolio=port)
+        assert "958.99" in result
+        assert "75.67" in result
+
+    @pytest.mark.unit
+    def test_t4_portfolio_appears_in_output(self):
+        t4 = _make_portfolio(bankroll=500.0)
+        result = render_dashboard(_make_health(), [], t4_portfolio=t4)
+        assert "T4" in result
+
+    @pytest.mark.unit
+    def test_pipeline_timestamps_in_output(self):
+        pipe_ts = {"PIPE-03": "2026-06-08T22:00:00Z"}
+        result = render_dashboard(_make_health(), [], pipeline_timestamps=pipe_ts)
+        assert "PIPE-03" in result
+
+    @pytest.mark.unit
+    def test_game_date_in_output(self):
+        result = render_dashboard(_make_health(), [], game_date="2026-06-08")
+        assert "2026-06-08" in result
