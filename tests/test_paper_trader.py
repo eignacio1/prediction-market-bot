@@ -448,6 +448,71 @@ class TestSummary:
         assert trader.summary()["win_rate"] == round(2 / 3, 3)
 
 
+class TestIdempotencyFilter:
+    """
+    Verify the idempotency guard filtering logic used in run_paper_trade.py.
+
+    The guard must block re-placement only for CONFIRMED positions. Positions
+    with kalshi_order_status starting "failed:" are transient placement errors
+    (503/429) and must NOT block a retry bet on a later cron run.
+    """
+
+    @staticmethod
+    def _confirmed_tickers(open_positions: list) -> set:
+        """Mirrors the set comprehension in run_paper_trade.py idempotency guard."""
+        return {
+            p["kalshi_ticker"]
+            for p in open_positions
+            if not str(p.get("kalshi_order_status", "")).startswith("failed:")
+        }
+
+    @pytest.mark.unit
+    def test_confirmed_position_blocks_retry(self):
+        pos = {**_make_position(_PAST_DATE), "kalshi_order_status": "resting"}
+        result = self._confirmed_tickers([pos])
+        assert pos["kalshi_ticker"] in result
+
+    @pytest.mark.unit
+    def test_local_only_position_blocks_retry(self):
+        pos = {**_make_position(_PAST_DATE), "kalshi_order_status": "local_only"}
+        result = self._confirmed_tickers([pos])
+        assert pos["kalshi_ticker"] in result
+
+    @pytest.mark.unit
+    def test_missing_status_field_blocks_retry(self):
+        pos = _make_position(_PAST_DATE)  # no kalshi_order_status key
+        result = self._confirmed_tickers([pos])
+        assert pos["kalshi_ticker"] in result
+
+    @pytest.mark.unit
+    def test_failed_503_does_not_block_retry(self):
+        pos = {**_make_position(_PAST_DATE), "kalshi_order_status": "failed: http_503"}
+        result = self._confirmed_tickers([pos])
+        assert pos["kalshi_ticker"] not in result
+
+    @pytest.mark.unit
+    def test_failed_429_does_not_block_retry(self):
+        pos = {**_make_position(_PAST_DATE), "kalshi_order_status": "failed: http_429"}
+        result = self._confirmed_tickers([pos])
+        assert pos["kalshi_ticker"] not in result
+
+    @pytest.mark.unit
+    def test_mixed_positions_only_confirmed_block(self):
+        confirmed = {
+            **_make_position(_PAST_DATE),
+            "kalshi_ticker": "KXNBAPTS-26JUN08TICKER-A",
+            "kalshi_order_status": "resting",
+        }
+        failed = {
+            **_make_position(_PAST_DATE),
+            "kalshi_ticker": "KXNBAPTS-26JUN08TICKER-B",
+            "kalshi_order_status": "failed: http_503",
+        }
+        result = self._confirmed_tickers([confirmed, failed])
+        assert "KXNBAPTS-26JUN08TICKER-A" in result
+        assert "KXNBAPTS-26JUN08TICKER-B" not in result
+
+
 class TestResolveExceptionLogging:
     @pytest.mark.unit
     def test_regular_season_exception_is_logged(self, tmp_path):
