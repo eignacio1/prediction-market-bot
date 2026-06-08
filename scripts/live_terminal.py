@@ -907,11 +907,45 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
             time.sleep(0.05)
             continue
 
+        # ── Input — drain full key queue before drawing ────────────────────
+        # Processing all pending keys first means the draw reflects the final
+        # scroll position immediately, and held-key acceleration works at
+        # whatever rate the OS fires key-repeat events.
+        focused_id = _SCROLL_PANELS[focus_idx % len(_SCROLL_PANELS)]
+        while True:
+            c = stdscr.getch()
+            if c == -1:
+                break
+            if c in (ord("q"), ord("Q"), 3):
+                _stop_event.set()
+                return
+            elif c == 9:  # Tab — next panel
+                focus_idx  = (focus_idx + 1) % len(_SCROLL_PANELS)
+                focused_id = _SCROLL_PANELS[focus_idx]
+            elif c == curses.KEY_BTAB:  # Shift+Tab — prev panel
+                focus_idx  = (focus_idx - 1) % len(_SCROLL_PANELS)
+                focused_id = _SCROLL_PANELS[focus_idx]
+            else:
+                ps = panels.get(focused_id)
+                if ps:
+                    ms      = _panel_max_scroll(ps)
+                    inner_h = ps.height - 2
+                    if c == curses.KEY_DOWN:
+                        ps.scroll_y = min(ps.scroll_y + 1, ms)
+                    elif c == curses.KEY_UP:
+                        ps.scroll_y = max(ps.scroll_y - 1, 0)
+                    elif c == curses.KEY_NPAGE:
+                        ps.scroll_y = min(ps.scroll_y + max(1, inner_h - 1), ms)
+                    elif c == curses.KEY_PPAGE:
+                        ps.scroll_y = max(ps.scroll_y - max(1, inner_h - 1), 0)
+                    elif c == curses.KEY_HOME:
+                        ps.scroll_y = 0
+                    elif c == curses.KEY_END:
+                        ps.scroll_y = ms
+
         # ── Draw ───────────────────────────────────────────────────────────
         stdscr.erase()
         draw_header(stdscr, args.remote, max_x)
-
-        focused_id = _SCROLL_PANELS[focus_idx % len(_SCROLL_PANELS)]
 
         for pid, ps in panels.items():
             draw_panel(stdscr, ps, focused=(pid == focused_id), max_y=max_y, max_x=max_x)
@@ -925,38 +959,7 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
             refresh_pad(ps, max_y, max_x)
         curses.doupdate()
 
-        # ── Input ──────────────────────────────────────────────────────────
-        c = stdscr.getch()
-
-        if c in (ord("q"), ord("Q"), 3):
-            _stop_event.set()
-            return
-
-        elif c == 9:  # Tab — next panel
-            focus_idx = (focus_idx + 1) % len(_SCROLL_PANELS)
-
-        elif c == curses.KEY_BTAB:  # Shift+Tab — prev panel
-            focus_idx = (focus_idx - 1) % len(_SCROLL_PANELS)
-
-        else:
-            ps = panels.get(focused_id)
-            if ps:
-                ms          = _panel_max_scroll(ps)
-                inner_h     = ps.height - 2
-                if c == curses.KEY_DOWN:
-                    ps.scroll_y = min(ps.scroll_y + 1, ms)
-                elif c == curses.KEY_UP:
-                    ps.scroll_y = max(ps.scroll_y - 1, 0)
-                elif c == curses.KEY_NPAGE:
-                    ps.scroll_y = min(ps.scroll_y + max(1, inner_h - 1), ms)
-                elif c == curses.KEY_PPAGE:
-                    ps.scroll_y = max(ps.scroll_y - max(1, inner_h - 1), 0)
-                elif c == curses.KEY_HOME:
-                    ps.scroll_y = 0
-                elif c == curses.KEY_END:
-                    ps.scroll_y = ms
-
-        time.sleep(0.05)
+        time.sleep(0.016)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Entry point
