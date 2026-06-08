@@ -439,8 +439,14 @@ def main() -> None:
             if _reserve_halted:
                 break
 
-            # Idempotency: skip if already holding an open position on this ticker
-            _open_tickers = {p["kalshi_ticker"] for p in trader.get_state().get("open_positions", [])}
+            # Idempotency: skip if already holding a successfully placed open position on this
+            # ticker. Positions with kalshi_order_status starting "failed:" are transient
+            # placement failures (503/429) — they don't block a retry on the next cron run.
+            _open_tickers = {
+                p["kalshi_ticker"]
+                for p in trader.get_state().get("open_positions", [])
+                if not str(p.get("kalshi_order_status", "")).startswith("failed:")
+            }
             if mkt.ticker in _open_tickers:
                 print(f"  [IDEMPOTENCY] SKIP {kalshi_player_name} — {mkt.ticker} already open")
                 continue
