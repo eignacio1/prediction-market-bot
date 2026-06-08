@@ -347,7 +347,8 @@ class KalshiMarketClient:
                 if r.status_code == 401:
                     return False, {"error": "Unauthorized", "detail": r.text[:200]}
                 if r.status_code in (429, 503):
-                    time.sleep(RETRY_DELAY_S * (attempt + 1))
+                    # T-138/GG-014: exponential backoff on rate-limit and transient server errors
+                    time.sleep(RETRY_DELAY_S * (2 ** (attempt + 1)))
                     continue
                 return False, {"error": f"HTTP {r.status_code}", "body": r.text[:200]}
             except requests.exceptions.SSLError as e:

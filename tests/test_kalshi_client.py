@@ -392,3 +392,26 @@ class TestTransientRetry:
 
         assert ok is True
         assert data == {"order_id": "xyz789"}
+
+    def test_get_uses_exponential_backoff_on_503(self, monkeypatch):
+        """_get() exponential backoff: delays must be 2s, 4s for attempts 0, 1 (matching _post)."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = self._make_client()
+        sleep_calls = []
+
+        responses = iter([503, 503, 200])
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = next(responses)
+            resp.json.return_value = {"markets": []}
+            resp.text = "Service Unavailable"
+            return resp
+
+        with patch("prediction_market_bot.c5_execution.kalshi_client.time.sleep",
+                   side_effect=lambda s: sleep_calls.append(s)):
+            client._session.get = fake_get
+            ok, _ = client._get("/markets", authenticated=False)
+
+        assert ok is True
+        assert sleep_calls == [2.0, 4.0]  # RETRY_DELAY_S=1.0; 1*(2^1)=2, 1*(2^2)=4

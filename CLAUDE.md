@@ -164,7 +164,7 @@ grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/
 
 For each limit: was it calibrated to the current system (~80 players, T1 ACTIVE / T2–T3 SKELETON, 2 cron windows, up to 15 games/night)? If any limit was set for a smaller system, register in GOVERNANCE_GAP_LOG.md.
 
-Current known issue: `max_daily_loss_usd: 1000.0` was calibrated to a $1,000 starting bankroll. Current bankroll is $683.41. The 20% drawdown kill switch fires at ~$137 of loss — before the daily loss limit can trigger. The daily loss limit is currently inactive as an independent check. Track bankroll and reassess at G6.
+Current bankroll is $958.99 (as of 2026-06-08, G2 resolution). The 20% drawdown kill switch fires at ~$192 of loss. `max_daily_loss_usd` was removed and replaced by `MAX_DAILY_LOSS_PCT` per ADR-0012. Formally revise all hard limits via ADR at G6 when live bankroll is set.
 
 ---
 
