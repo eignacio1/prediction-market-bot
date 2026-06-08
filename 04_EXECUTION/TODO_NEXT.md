@@ -2,7 +2,32 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 37 (continued) — PIPE-07 T4 paper activation: portfolio isolation fix (`paper_portfolio_t4.json` + `staged_orders_t4.db`), PIPE-07R-LOCAL script created, cron.conf PIPE-07 entry added at 23:00 UTC, DECISION_LOG entry written. 739/739 tests. Pending: commit + VPS deploy. **Earlier in SESSION 37:** G3 pre-game hardening (GG-014 completeness, TSS warning, CLAUDE.md bankroll correction). **SESSION 36:** adj_λ cache pre-uploaded, G2 resolved (+$75.67, G6 30-bet CROSSED), EXP-017 Part B DIRECTIONAL_POSITIVE.
+**Last reviewed:** 2026-06-08 SESSION 38 — Institutional sprint: (1) stub scan perma-fixes (5 stubs → CLEAN); (2) VPS deploy of SESSION 37 + SESSION 38 changes; (3) PIPE-06 cron.conf sync gap caught + fixed (deploy had silently deactivated T3 scan); (4) idempotency guard fix implemented + 6 tests (deploy post-G3 — see open item); (5) DECISION_LOG updated. 745/745 tests. VPS HEAD: 0720fc8 (idempotency fix is local only — commit 341ab97, deploy pending post-G3).
+
+---
+
+## SESSION 2026-06-08 SESSION 38 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **Stub scan perma-fixes (5 stubs)** | ✅ COMPLETE — `run_exp001.py:681`, `run_t2_sameday.py:112/130`, `venue_adapter.py:158/251` all cleaned. Keywords removed; governance traceability (T-075, KI-019, T-077) preserved. Scan returns CLEAN. |
+| **VPS deploy: SESSION 37 + SESSION 38 commits** | ✅ COMPLETE — VPS HEAD: `0720fc8`. PIPE-07 cron at 23:00 UTC active. PIPE-06 T3 scan active (see fix below). |
+| **PIPE-06 cron.conf sync gap** | ✅ FIXED — `deploy/cron.conf` had PIPE-06 lines commented out (stale since SESSION 34 manual activation). SESSION 38 deploy silently deactivated T3 scan. Uncommented PIPE-06 lines, removed stale T-077 gate comment, redeployed. VPS crontab confirmed active. Commit `0720fc8`. Decision: `cron.conf` is canonical — manual VPS edits must be reflected immediately. |
+| **Idempotency guard fix + 6 tests** | ✅ IMPLEMENTED — `run_paper_trade.py`: failed positions (`kalshi_order_status.startswith("failed:")`) no longer block retry. `TestIdempotencyFilter` (6 tests). 745/745 pass. Commit `341ab97`. **NOT deployed to VPS yet — see open item.** |
+| **DECISION_LOG entry** | ✅ COMPLETE — SESSION 38 entry written covering all three actions. |
+
+---
+
+## SESSION 2026-06-08 SESSION 38 — OPEN ITEMS (tonight + post-G3)
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **T-140: Verify TSS cache before PIPE-02 at ~21:30 UTC** | DS | **CRITICAL TONIGHT** | Run: `ssh root@157.230.91.33 "wc -c /opt/prediction-market-bot/logs/team_stats_cache_20260608.json"`. GHA fires at 20:30 UTC and may overwrite with empty `{}`. If result < 100 bytes, manually rebuild and SCP. Current cache is 18,854 bytes (pre-uploaded SESSION 36) — GHA may overwrite. |
+| **Deploy idempotency guard fix post-G3** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | Run `run_resolve_local.py` first (clears G3 open_positions → closed). Then: `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull && echo done"`. No crontab change needed. Safe after resolution because `open_positions` is empty — no double-bet risk. Must deploy before G4 (Jun 10). |
+| **Run PIPE-07R-LOCAL after G3 resolves** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` — resolves ~1,000 T4 positions into `paper_portfolio_t4.json`. Feeds EXP-017 Part B n-count. |
+| **Re-run EXP-017 Part B after G3 + T4 resolve** | DS | MEDIUM — after both resolutions | T4 positions pool-isolated — verify EXP-017 handles them. Target n should cross 66 (33 G2 + ~20 T1 G3 + T4 contribution). GG-004 status update. |
+| **EXP-018: G3 adj_λ + T3 analysis** | DS | MEDIUM — after G3 resolves | First live adj_λ test (ADR-0015) + first game with non-NEUTRAL T3 signals. Compare adj_λ vs raw λ forecasts; T3 CONFIRM/FADE/NEUTRAL distribution. |
+| **Monitor tonight's crons** | DS | MONITORING | PIPE-02 at 21:55 UTC — should log `[TSS] Loaded from pre-populated cache: 30 teams`. PIPE-03 at 22:00 UTC — ~150-200 bets expected (18 tickers blocked by idempotency pre-fix; ~150-200 fresh tickers from new forecasts). PIPE-07 T4 at 23:00 UTC — first non-virtual T4 paper run. GG-014: check 503/429 rate in logs post-run; target ≤5%. |
 
 ---
 
