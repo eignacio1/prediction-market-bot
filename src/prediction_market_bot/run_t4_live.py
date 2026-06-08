@@ -23,19 +23,20 @@ Re-entry policy:
 Ghost protection:
     Every approved bet is staged in SQLite (WAL / ACID) BEFORE the
     portfolio JSON write. C6 JSONL is the canonical record.
-    paper_portfolio.json is derived state.
+    paper_portfolio_t4.json is derived state.
 
 MIN_BET override:
     paper mode passes min_bet_usd=1.0 to RiskEngine, bypassing the
     live $10 floor. Evidence accumulation at paper scale requires
     volume, not dollar threshold. Change requires ADR at G6.
 
-PAPER_T4_VIRTUAL mode (default: enabled):
+PAPER_T4_VIRTUAL mode (default: disabled — non-virtual paper positions):
     When PAPER_T4_VIRTUAL=true, C4 evaluates + stages every approved
     bet, but does NOT deduct from bankroll. This proves the architecture
     fires at scale (~1000s of bets per game) without depleting T1 capital.
-    Disable with PAPER_T4_VIRTUAL=false to use real portfolio deduction.
-    Virtual bets appear in logs/audit_t4.jsonl and staged_orders.db.
+    Default is false: positions are recorded in paper_portfolio_t4.json
+    with pool_isolated=True (T1 bankroll untouched; T4 pool is separate).
+    Virtual bets appear in logs/audit_t4.jsonl and staged_orders_t4.db.
 """
 
 from __future__ import annotations
@@ -291,8 +292,8 @@ T4_BAND_WEIGHT: float = 0.10           # Phase 8 placeholder — ADR-0017; inact
 T4_EXPECTED_TOTAL_EDGE: float = 441.38 # G1 calibrated 2026-06-04: sum(edge) across 1446 evals, KELLY_T4=0.20
 
 _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
-_PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio.json"
-_STAGED_DB_PATH = str(_LOGS_DIR / "staged_orders.db")
+_PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio_t4.json"
+_STAGED_DB_PATH = str(_LOGS_DIR / "staged_orders_t4.db")
 _AUDIT_LOG_PATH = _LOGS_DIR / "audit_t4.jsonl"
 
 
