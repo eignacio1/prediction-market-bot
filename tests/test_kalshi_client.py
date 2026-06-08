@@ -296,3 +296,99 @@ class TestDS02Snapshot:
     def test_closest_to_threshold_returns_none_on_unknown_player(self):
         snap = DS02Snapshot(fetched_at="2026-06-03T00:00:00Z", markets=[])
         assert snap.closest_to_threshold("UnknownPlayer", 25) is None
+
+
+# ---------------------------------------------------------------------------
+# GG-014: 503 retry — _get() and _post() must retry on 503 (transient server errors)
+# ---------------------------------------------------------------------------
+
+class TestTransientRetry:
+    """_get() and _post() must retry on both 429 and 503."""
+
+    def _make_client(self):
+        return KalshiMarketClient(api_key_id="x" * 20)
+
+    def test_get_retries_on_503_and_succeeds(self, monkeypatch):
+        """_get() returns success after two 503s followed by a 200."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = self._make_client()
+
+        responses = iter([503, 503, 200])
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = next(responses)
+            resp.json.return_value = {"markets": []}
+            resp.text = "Service Unavailable"
+            return resp
+
+        with patch("prediction_market_bot.c5_execution.kalshi_client.time.sleep"):
+            client._session.get = fake_get
+            ok, data = client._get("/markets", authenticated=False)
+
+        assert ok is True
+        assert data == {"markets": []}
+
+    def test_get_fails_after_max_retries_on_503(self, monkeypatch):
+        """_get() returns failure when all attempts return 503."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = self._make_client()
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = 503
+            resp.text = "Service Unavailable"
+            return resp
+
+        with patch("prediction_market_bot.c5_execution.kalshi_client.time.sleep"):
+            client._session.get = fake_get
+            ok, data = client._get("/markets", authenticated=False)
+
+        assert ok is False
+        assert "retries" in data.get("error", "").lower() or "503" in data.get("body", "")
+
+    def test_post_retries_on_503_and_succeeds(self, monkeypatch):
+        """_post() returns success after two 503s followed by a 201."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = self._make_client()
+        client._private_key = MagicMock()
+
+        responses = iter([503, 503, 201])
+
+        def fake_post(url, json=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = next(responses)
+            resp.json.return_value = {"order_id": "abc123"}
+            resp.text = "Service Unavailable"
+            return resp
+
+        with patch("prediction_market_bot.c5_execution.kalshi_client._auth_headers", return_value={}), \
+             patch("prediction_market_bot.c5_execution.kalshi_client.time.sleep"):
+            client._session.post = fake_post
+            ok, data = client._post("/portfolio/orders", {"type": "limit"})
+
+        assert ok is True
+        assert data == {"order_id": "abc123"}
+
+    def test_post_retries_on_429_and_succeeds(self, monkeypatch):
+        """_post() returns success after one 429 followed by a 200 — existing T-138 behaviour."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = self._make_client()
+        client._private_key = MagicMock()
+
+        responses = iter([429, 200])
+
+        def fake_post(url, json=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = next(responses)
+            resp.json.return_value = {"order_id": "xyz789"}
+            resp.text = "Too Many Requests"
+            return resp
+
+        with patch("prediction_market_bot.c5_execution.kalshi_client._auth_headers", return_value={}), \
+             patch("prediction_market_bot.c5_execution.kalshi_client.time.sleep"):
+            client._session.post = fake_post
+            ok, data = client._post("/portfolio/orders", {"type": "limit"})
+
+        assert ok is True
+        assert data == {"order_id": "xyz789"}
