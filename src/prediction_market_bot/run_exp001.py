@@ -678,7 +678,7 @@ def run_experiment(
         engine = RiskEngine(
             logger=logger,
             snapshot_id=SNAPSHOT_ID,
-            bankroll=10000.0,  # Stub — no live capital
+            bankroll=10000.0,  # EXP-001 experiment bankroll; no live capital
         )
         ok, c4_decision = engine.evaluate_forecast(
             forecast_record=sample_forecast,
