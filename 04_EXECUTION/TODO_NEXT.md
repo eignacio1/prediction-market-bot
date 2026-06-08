@@ -2,7 +2,30 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 37 — G3 pre-game operational hardening: (1) `_get()` backoff corrected to exponential 2s/4s/8s (was linear 1s/2s/3s) — GG-014 completeness fix. (2) TSS empty-cache WARNING added to run_pregame.py (T-134/T-140 partial). (3) CLAUDE.md bankroll corrected $683→$958.99. (4) New test verifies `_get()` sleep values. 739/739 tests. Committed and deployed to VPS. **SESSION 36:** adj_λ cache pre-uploaded, G2 resolved (35 bets, 28W/7L, +$75.67, bankroll $958.99, G6 30-bet CROSSED), GG-014 503 fix deployed (4dd2c3d), EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+0.1042, n=33). VPS HEAD: this session's commit.
+**Last reviewed:** 2026-06-08 SESSION 37 (continued) — PIPE-07 T4 paper activation: portfolio isolation fix (`paper_portfolio_t4.json` + `staged_orders_t4.db`), PIPE-07R-LOCAL script created, cron.conf PIPE-07 entry added at 23:00 UTC, DECISION_LOG entry written. 739/739 tests. Pending: commit + VPS deploy. **Earlier in SESSION 37:** G3 pre-game hardening (GG-014 completeness, TSS warning, CLAUDE.md bankroll correction). **SESSION 36:** adj_λ cache pre-uploaded, G2 resolved (+$75.67, G6 30-bet CROSSED), EXP-017 Part B DIRECTIONAL_POSITIVE.
+
+---
+
+## SESSION 2026-06-08 SESSION 37 (continued) — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **PIPE-07 T4 portfolio isolation fix** | ✅ COMPLETE — `run_t4_live.py`: `_PORTFOLIO_PATH` → `paper_portfolio_t4.json`, `_STAGED_DB_PATH` → `staged_orders_t4.db`. Prevents T4/T1 position interleaving. Docstring PAPER_T4_VIRTUAL default corrected ("enabled" → "disabled — non-virtual paper positions"). |
+| **PIPE-07R-LOCAL: run_t4_resolve_local.py** | ✅ COMPLETE — T4-specific resolution script created. SCP pull `paper_portfolio_t4.json` from VPS → local nba_api resolution → SCP push back. Appends to `audit_t4.jsonl`. Run: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` |
+| **deploy/cron.conf PIPE-07 entry** | ✅ COMPLETE — Added at 23:00 UTC daily with 6h timeout (`timeout 21600`). `BOT_ENV=paper BOT_C4_ACTIVE=true PAPER_T4_FLAT_SIZING=true`. Covers full NBA window (7pm–11pm ET = 23:00–03:00 UTC). |
+| **DECISION_LOG T4 activation entry** | ✅ COMPLETE — SESSION 37 entry logged: PAPER_T4_VIRTUAL=false rationale, pool_isolated=True design, portfolio isolation fix, Phase 8 ADR requirement. |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — Both updated with T4 activation state. |
+
+---
+
+## SESSION 2026-06-08 SESSION 37 (continued) — OPEN ITEMS
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **Commit + VPS deploy (PIPE-07 activation)** | DS | **IMMEDIATE** | Auto-commit standing instruction. Files changed: `run_t4_live.py`, `run_t4_resolve_local.py` (new), `deploy/cron.conf`, DECISION_LOG, MEMORY_BANK, TODO_NEXT. Deploy cron.conf to VPS: `scp deploy/cron.conf root@157.230.91.33:/opt/prediction-market-bot/deploy/ && ssh root@157.230.91.33 "crontab /opt/prediction-market-bot/deploy/cron.conf"` |
+| **Manual start command for G3 tonight (if cron not yet active)** | DS | **TONIGHT ~00:30 UTC** | `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && source venv/bin/activate && export $(grep -v '^#' .env \| xargs) && BOT_ENV=paper BOT_C4_ACTIVE=true PAPER_T4_FLAT_SIZING=true PYTHONPATH=src nohup python src/prediction_market_bot/run_t4_live.py >> logs/t4_live_g3.log 2>&1 &"` |
+| **Run PIPE-07R-LOCAL after G3 resolves** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` — resolves ~1,000 T4 positions into `paper_portfolio_t4.json`. Feeds EXP-017 Part B n-count. |
+| **Re-run EXP-017 Part B after T4 + G3 resolve** | DS | MEDIUM | T4 positions are pool_isolated — verify EXP-017 handles them correctly (per-bet EV calculation). Target n should grow significantly (~1,000 T4 + ~20 T1 G3). |
 
 ---
 
