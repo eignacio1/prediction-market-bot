@@ -2,7 +2,20 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 36 — Institutional sprint for Finals G3. (1) adj_λ cache manually pre-uploaded to VPS (18,854 bytes, 30 teams, team_stats_cache_20260608.json). (2) G2 resolved: 35 bets, 28W/7L, +$75.67, 80% win rate, bankroll $958.99; G6 30-bet threshold CROSSED. (3) GG-014 503 fix: kalshi_client._post()/_get() now retry on (429, 503); exponential backoff 2s/4s/8s; 738/738 tests; commit 4dd2c3d; deployed to VPS. (4) EXP-017 Part B (live): DIRECTIONAL_POSITIVE — EV=+0.1042/bet, n=33 unique markets, 81.8% win rate vs actual Kalshi prices; GG-004 OPEN (n<APR-0017 floor of 66). VPS HEAD: 4dd2c3d.
+**Last reviewed:** 2026-06-08 SESSION 37 — G3 pre-game operational hardening: (1) `_get()` backoff corrected to exponential 2s/4s/8s (was linear 1s/2s/3s) — GG-014 completeness fix. (2) TSS empty-cache WARNING added to run_pregame.py (T-134/T-140 partial). (3) CLAUDE.md bankroll corrected $683→$958.99. (4) New test verifies `_get()` sleep values. 739/739 tests. Committed and deployed to VPS. **SESSION 36:** adj_λ cache pre-uploaded, G2 resolved (35 bets, 28W/7L, +$75.67, bankroll $958.99, G6 30-bet CROSSED), GG-014 503 fix deployed (4dd2c3d), EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+0.1042, n=33). VPS HEAD: this session's commit.
+
+---
+
+## SESSION 2026-06-08 SESSION 37 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **GG-014 completeness: `_get()` exponential backoff** | ✅ COMPLETE — `_get()` was using linear backoff (1s/2s/3s) while `_post()` used exponential (2s/4s/8s). Both now match: `RETRY_DELAY_S * (2 ** (attempt+1))`. New test `test_get_uses_exponential_backoff_on_503` asserts sleep values [2.0, 4.0]. 739/739 tests. |
+| **T-134/T-140: TSS empty-cache WARNING** | ✅ COMPLETE — `run_pregame.py` now emits `logger.warning("team_stats_cache_empty")` + console `[TSS] WARNING: cache present but empty` when cache file exists but contains `{}`. Visible in `pregame_cron.log` — removes silent degradation to raw λ. |
+| **CLAUDE.md bankroll correction** | ✅ COMPLETE — Updated $683.41→$958.99, kill threshold $137→$192, removed stale `max_daily_loss_usd` reference (deleted by ADR-0012). |
+| **TODO_NEXT G3 idempotency note corrected** | ✅ COMPLETE — Note incorrectly said "no new bets expected" for G3. G2 is fully resolved; G3 game_date=2026-06-08 is fresh. New bets ARE expected at 22:00 UTC. |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — Test count 738→739, session header updated to SESSION 37. |
+| **Commit + VPS deploy** | ✅ COMPLETE — All changes committed and deployed. |
 
 ---
 
@@ -25,7 +38,7 @@
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|
 | **Monitor PIPE-02 tonight (21:55 UTC)** | DS | **CRITICAL TONIGHT** | Should log `[TSS] Loaded from pre-populated cache: 30 teams (ADR-0015)`. Confirms adj_λ fires for first time in G3. First live test of ADR-0015 end-to-end. |
-| **Monitor PIPE-03 tonight (22:00 UTC)** | DS | HIGH | G3 players (SAS/NYK Finals) should hit idempotency check and skip — same players have open positions from G2. No new bets expected. |
+| **Monitor PIPE-03 tonight (22:00 UTC)** | DS | HIGH | G2 fully resolved — no open G2 positions. G3 game_date=2026-06-08 is fresh. **New bets ARE expected.** Late run at 01:30 UTC will hit idempotency and skip (G3 positions already open from 22:00 UTC run). |
 | **Run run_resolve_local.py after G3** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | 20 open positions (game_date: 2026-06-08, Finals G3). Adds ~20 resolved markets. After resolution: re-run EXP-017 Part B (target n≈53, still below APR-0017 floor of 66). |
 | **Re-run EXP-017 Part B after G3 resolves** | DS | MEDIUM — after G3 resolves | Target n≈53 (33 G2 + 20 G3). Still below APR-0017 floor of 66. GG-004 remains OPEN until regular season (n≥66). Track directional trend. |
 | **T-139: Monitor G4 order status distribution** | DS | MEDIUM — after G4 | Check paper_portfolio after G4 for 503 vs 429 breakdown post-fix. Target: ≤5% failure rate combined. First true test of T-138 503 extension. |

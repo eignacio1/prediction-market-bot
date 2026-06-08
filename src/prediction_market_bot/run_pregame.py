@@ -276,6 +276,13 @@ def main() -> None:
                 logger.info(COMPONENT, "team_stats_store_loaded",
                             payload={"teams_loaded": _tss_ok, "source": "pre_populated_cache"},
                             session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+            else:
+                # T-134/T-140: cache file present but empty — adj_λ will degrade to raw λ
+                logger.warning(COMPONENT, "team_stats_cache_empty",
+                               payload={"path": str(TEAM_STATS_CACHE),
+                                        "size_bytes": TEAM_STATS_CACHE.stat().st_size},
+                               session_id=SESSION_ID)
+                print(f"[TSS] WARNING: cache present but empty — falling back to API build: {TEAM_STATS_CACHE}")
         except Exception as _ce:
             logger.warning(COMPONENT, "team_stats_cache_load_failed",
                            payload={"error": str(_ce)}, session_id=SESSION_ID)
