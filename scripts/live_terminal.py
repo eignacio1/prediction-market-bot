@@ -26,6 +26,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import threading
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -233,12 +234,41 @@ def _data_from_local(log_dir: str) -> dict:
     portfolio = _load_json(d / "paper_portfolio.json")
     bets_raw  = _load_json(d / f"paper_{td}.json")
     return {
-        "portfolio": portfolio,
-        "bets":      bets_raw.get("orders", []) if isinstance(bets_raw, dict) else [],
-        "pregame":   _load_json(d / f"pregame_{td}.json"),
-        "audit":     _load_jsonl(d / "audit.jsonl"),
-        "t4_tail":   _load_tail(d / "t4_live.log"),
+        "portfolio":    portfolio,
+        "t4_portfolio": _load_json(d / "paper_portfolio_t4.json"),
+        "bets":         bets_raw.get("orders", []) if isinstance(bets_raw, dict) else [],
+        "pregame":      _load_json(d / f"pregame_{td}.json"),
+        "audit":        _load_jsonl(d / "audit.jsonl"),
+        "t4_tail":      _load_tail(d / "t4_live.log", n=25),
     }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Background fetch thread — decouples SSH latency from the render loop
+# ─────────────────────────────────────────────────────────────────────────────
+@dataclass
+class _FetchState:
+    lock:        threading.Lock = field(default_factory=threading.Lock)
+    data:        dict            = field(default_factory=dict)
+    last_ok:     float           = 0.0
+    error_count: int             = 0
+
+
+def _fetch_worker(args: argparse.Namespace, state: _FetchState,
+                  stop: threading.Event) -> None:
+    while not stop.is_set():
+        try:
+            new = (fetch_remote(args.remote, args.log_dir)
+                   if args.remote else _data_from_local(args.log_dir))
+            if new:
+                with state.lock:
+                    state.data        = new
+                    state.last_ok     = time.time()
+                    state.error_count = 0
+        except Exception:
+            with state.lock:
+                state.error_count += 1
+        stop.wait(args.interval)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Remote fetch — single SSH round-trip with ControlMaster
@@ -273,16 +303,17 @@ def rt(p, n=10):
     return [l.rstrip() for l in lines[-n:]]
 
 for key, path, fn, args in [
-    ('portfolio', d / 'paper_portfolio.json',     rj,  []),
-    ('bets_raw',  d / f'paper_{today}.json',       rj,  []),
-    ('pregame',   d / f'pregame_{today}.json',     rj,  []),
-    ('audit',     d / 'audit.jsonl',               rjl, [300]),
-    ('t4_tail',   d / 't4_live.log',               rt,  [10]),
+    ('portfolio',    d / 'paper_portfolio.json',    rj,  []),
+    ('t4_portfolio', d / 'paper_portfolio_t4.json', rj,  []),
+    ('bets_raw',     d / f'paper_{today}.json',     rj,  []),
+    ('pregame',      d / f'pregame_{today}.json',   rj,  []),
+    ('audit',        d / 'audit.jsonl',             rjl, [300]),
+    ('t4_tail',      d / 't4_live.log',             rt,  [25]),
 ]:
     try:
         result[key] = fn(path, *args)
     except Exception:
-        result[key] = {} if key in ('portfolio', 'pregame', 'bets_raw') else []
+        result[key] = {} if key in ('portfolio', 'pregame', 'bets_raw', 't4_portfolio') else []
 
 print(json.dumps(result))
 """
@@ -310,6 +341,7 @@ def fetch_remote(host: str, log_dir: str) -> dict:
         # Normalise bets key
         bets_raw = d.get("bets_raw", {})
         d["bets"] = bets_raw.get("orders", []) if isinstance(bets_raw, dict) else []
+        d.setdefault("t4_portfolio", {})
         return d
     except Exception:
         return {}
@@ -334,7 +366,7 @@ def content_portfolio(data: dict, iw: int) -> list[str]:
     open_p   = p.get("open_positions", [])
     closed_p = p.get("closed_positions", [])
     deployed = sum(float(x.get("size_usd", 0)) for x in open_p)
-    dd_pct   = max(0.0, (initial - bankroll) / initial * 100) if initial > 0 else 0.0
+    dd_pct   = max(0.0, -pnl / initial * 100) if initial > 0 else 0.0
     wins     = sum(1 for x in closed_p if x.get("outcome") == "WIN")
     losses   = sum(1 for x in closed_p if x.get("outcome") == "LOSS")
     total    = wins + losses
@@ -798,9 +830,17 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
     panels: dict[str, PanelState] = {}
     last_layout: tuple = (0, 0)
 
-    focus_idx   = 0   # index into _SCROLL_PANELS
-    last_fetch  = 0.0
-    data: dict  = {}
+    focus_idx    = 0
+    last_data_ts = 0.0
+    data: dict   = {}
+
+    _fetch_state = _FetchState()
+    _stop_event  = threading.Event()
+    _thread      = threading.Thread(
+        target=_fetch_worker, args=(args, _fetch_state, _stop_event),
+        daemon=True, name="pmbot-fetch",
+    )
+    _thread.start()
 
     def _make_panels(max_y: int, max_x: int) -> None:
         layout = _compute_layout(max_y, max_x)
@@ -841,15 +881,16 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
         now          = time.time()
         max_y, max_x = stdscr.getmaxyx()
 
-        # ── Fetch data on interval ─────────────────────────────────────────
-        if now - last_fetch >= args.interval:
-            new = (fetch_remote(args.remote, args.log_dir)
-                   if args.remote else _data_from_local(args.log_dir))
-            if new:
-                data = new
-            last_fetch = now
-            footer_y = _make_panels(max_y, max_x)
-            last_layout = (max_y, max_x)
+        # ── Pick up fresh data from background fetch thread ────────────────
+        with _fetch_state.lock:
+            _ts_now = _fetch_state.last_ok
+            _new    = _fetch_state.data
+
+        if _ts_now != last_data_ts and _new:
+            data         = _new
+            last_data_ts = _ts_now
+            footer_y     = _make_panels(max_y, max_x)
+            last_layout  = (max_y, max_x)
 
         # ── Rebuild on terminal resize ─────────────────────────────────────
         if (max_y, max_x) != last_layout and panels:
@@ -888,6 +929,7 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
         c = stdscr.getch()
 
         if c in (ord("q"), ord("Q"), 3):
+            _stop_event.set()
             return
 
         elif c == 9:  # Tab — next panel
