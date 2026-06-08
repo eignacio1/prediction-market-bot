@@ -2,7 +2,20 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 38 FINAL — G3 readiness MC (EV=+$138.47, P(profit)=95.1%); T-140 automated (`scripts/run_t140_check.py`, cron 21:25 UTC); CLAUDE.md kill switch 20%→15% corrected; PAM/LR shadow model architecture confirmed (Poisson CDF primary, LR+Platt shadow). 745/745 tests. VPS HEAD: da793e0. G3 running tonight — post-G3 sequence in open items.
+**Last reviewed:** 2026-06-08 SESSION 39 — `live_terminal.py` crash + scroll fixes deployed. G3 monitoring active. VPS HEAD: 07210a0.
+
+---
+
+## SESSION 2026-06-08 SESSION 39 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **`live_terminal.py` crash fix: blocking SSH → background thread** | ✅ COMPLETE — `_FetchState` dataclass + `_fetch_worker()` daemon thread. Main curses loop no longer blocks on SSH. Panel content rebuilds on each `last_ok` timestamp change. `stop_event.set()` on quit for clean shutdown. Commit `fd4cea5`. |
+| **`live_terminal.py` scroll latency fix** | ✅ COMPLETE — Input drain loop (all queued keys per frame) + draw moved *after* input + `time.sleep` 50ms → 16ms. Scroll latency ~26ms max (was ~110ms). Held arrow key tracks OS repeat rate directly. Commit `07210a0`. |
+| **`live_terminal.py` T4 portfolio fetch + t4_tail** | ✅ COMPLETE — `paper_portfolio_t4.json` added to `_REMOTE_SCRIPT` and `_data_from_local()`. `t4_tail` increased 10 → 25 lines. No visual change. |
+| **`live_terminal.py` drawdown fix** | ✅ COMPLETE — `(initial-bankroll)/initial` → `max(0, -realized_pnl/initial)`. Was showing 4.1% (deployed stakes miscounted as loss); now 0.0% correct. |
+| **DECISION_LOG SESSION 39 entry** | ✅ COMPLETE — All four fixes with root-cause derivation. |
+| **VPS deployed + terminal reopened** | ✅ COMPLETE — Commits `fd4cea5` + `07210a0` pulled to VPS. New window launched. |
 
 ---
 
