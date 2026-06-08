@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 37 (PIPE-07 T4 paper activated: portfolio isolation fix paper_portfolio_t4.json, PIPE-07R-LOCAL script, cron.conf PIPE-07 at 23:00 UTC; 739/739 tests; commit b9a00b3 deployed to VPS)  
+**Last reviewed:** 2026-06-08 SESSION 38 FINAL (T-140 automated; CLAUDE.md kill switch 20%→15% corrected; PAM/LR shadow confirmed; G3 MC EV=+$138.47; 745/745 tests; VPS da793e0)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  

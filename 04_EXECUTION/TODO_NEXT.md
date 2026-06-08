@@ -2,7 +2,19 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 38 — Institutional sprint: (1) stub scan perma-fixes (5 stubs → CLEAN); (2) VPS deploy of SESSION 37 + SESSION 38 changes; (3) PIPE-06 cron.conf sync gap caught + fixed (deploy had silently deactivated T3 scan); (4) idempotency guard fix implemented + 6 tests (deploy post-G3 — see open item); (5) DECISION_LOG updated. 745/745 tests. VPS HEAD: 0720fc8 (idempotency fix is local only — commit 341ab97, deploy pending post-G3).
+**Last reviewed:** 2026-06-08 SESSION 38 FINAL — G3 readiness MC (EV=+$138.47, P(profit)=95.1%); T-140 automated (`scripts/run_t140_check.py`, cron 21:25 UTC); CLAUDE.md kill switch 20%→15% corrected; PAM/LR shadow model architecture confirmed (Poisson CDF primary, LR+Platt shadow). 745/745 tests. VPS HEAD: da793e0. G3 running tonight — post-G3 sequence in open items.
+
+---
+
+## SESSION 2026-06-08 SESSION 38 FINAL — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **G3 readiness assessment + MC run** | ✅ COMPLETE — 34 markets → 29 bets, EV=+$138.47, P(profit)=95.1%, kill switch risk 0.19%. Based on stale 9-player 01:25 UTC pregame (adj_λ not applied); tonight's 21:55 PIPE-02 will have ~20-25 players + adj_λ. |
+| **T-140 automated** | ✅ COMPLETE — `scripts/run_t140_check.py` cron at 21:25 UTC. Checks TSS cache ≥ 1000 bytes; rebuilds from ESPN if stale. VPS deploy confirmed; dry run: TSS cache OK (18,854 bytes). Manual T-140 check retired. |
+| **CLAUDE.md kill switch correction** | ✅ COMPLETE — Corrected 20%/~$192 → 15%/~$144. `MAX_DAILY_LOSS_PCT=0.15` in `risk.py:90` and `run_monte_carlo.py:48`. |
+| **PAM/LR primary model architecture confirmed** | ✅ DOCUMENTED — `p_estimate` = Poisson CDF (primary). `p_estimate_lr` = LR+Platt 78-feature (shadow, not in decision path). Wembanyama >35: Poisson=0.0485 vs LR=0.4629 (10x gap). Decision logged. |
+| **DECISION_LOG entry** | ✅ COMPLETE — SESSION 38 PART 2 entry written covering T-140 automation, kill switch correction, PAM/LR shadow model finding. |
 
 ---
 
@@ -22,7 +34,7 @@
 
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|
-| **T-140: Verify TSS cache before PIPE-02 at ~21:30 UTC** | DS | **CRITICAL TONIGHT** | Run: `ssh root@157.230.91.33 "wc -c /opt/prediction-market-bot/logs/team_stats_cache_20260608.json"`. GHA fires at 20:30 UTC and may overwrite with empty `{}`. If result < 100 bytes, manually rebuild and SCP. Current cache is 18,854 bytes (pre-uploaded SESSION 36) — GHA may overwrite. |
+| ~~**T-140: Verify TSS cache before PIPE-02 at ~21:30 UTC**~~ | — | ✅ AUTOMATED (SESSION 38) | `scripts/run_t140_check.py` cron at 25 21 * * * — auto-checks cache ≥ 1000 bytes and rebuilds from ESPN if stale. Dry run confirmed OK (18,854 bytes). VPS HEAD da793e0. |
 | **Deploy idempotency guard fix post-G3** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | Run `run_resolve_local.py` first (clears G3 open_positions → closed). Then: `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && git pull && echo done"`. No crontab change needed. Safe after resolution because `open_positions` is empty — no double-bet risk. Must deploy before G4 (Jun 10). |
 | **Run PIPE-07R-LOCAL after G3 resolves** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` — resolves ~1,000 T4 positions into `paper_portfolio_t4.json`. Feeds EXP-017 Part B n-count. |
 | **Re-run EXP-017 Part B after G3 + T4 resolve** | DS | MEDIUM — after both resolutions | T4 positions pool-isolated — verify EXP-017 handles them. Target n should cross 66 (33 G2 + ~20 T1 G3 + T4 contribution). GG-004 status update. |
