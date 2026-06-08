@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 36 (G2 resolved 35 bets 28W/7L +$75.67 bankroll $958.99; G6 30-bet threshold CROSSED; GG-014 503 fix commit 4dd2c3d; EXP-017 Part B DIRECTIONAL_POSITIVE EV=+0.1042/bet n=33; 738/738 tests; VPS HEAD 4dd2c3d)  
+**Last reviewed:** 2026-06-08 SESSION 37 (PIPE-07 T4 paper activated: portfolio isolation fix paper_portfolio_t4.json, PIPE-07R-LOCAL script, cron.conf PIPE-07 at 23:00 UTC; 739/739 tests; commit b9a00b3 deployed to VPS)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,8 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 35/66 unique markets (G2); ≥5 nights binding; Finals G3 Jun 8 tonight |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 35/66 T1 markets (G2); PIPE-07 T4 active (adds ~1,000 T4 positions/game); G3 in progress Jun 8 |
+| PIPE-07 T4 in-play paper trading (PIPE-07) | EL | HIGH | ✅ 2026-06-08 SESSION 37 — portfolio isolation fix, cron.conf 23:00 UTC, PIPE-07R-LOCAL script |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
 ---
