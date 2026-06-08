@@ -346,7 +346,7 @@ class KalshiMarketClient:
                     return True, r.json()
                 if r.status_code == 401:
                     return False, {"error": "Unauthorized", "detail": r.text[:200]}
-                if r.status_code == 429:
+                if r.status_code in (429, 503):
                     time.sleep(RETRY_DELAY_S * (attempt + 1))
                     continue
                 return False, {"error": f"HTTP {r.status_code}", "body": r.text[:200]}
@@ -378,15 +378,15 @@ class KalshiMarketClient:
                 r = self._session.post(url, json=body, headers=headers, timeout=REQUEST_TIMEOUT_S)
                 if r.status_code in (200, 201):
                     return True, r.json()
-                if r.status_code == 429:
-                    # T-138/GG-014: exponential backoff — 2s, 4s, 8s
+                if r.status_code in (429, 503):
+                    # T-138/GG-014: exponential backoff on rate-limit and transient server errors
                     delay = RETRY_DELAY_S * (2 ** (attempt + 1))
                     time.sleep(delay)
                     continue
                 return False, {"error": f"HTTP {r.status_code}", "body": r.text[:500]}
             except Exception as e:
                 return False, {"error": type(e).__name__, "detail": str(e)}
-        return False, {"error": f"HTTP 429 — max retries ({MAX_RETRIES}) exceeded"}
+        return False, {"error": f"transient error — max retries ({MAX_RETRIES}) exceeded"}
 
     @staticmethod
     def _parse_market(raw: dict) -> PlayerMarket | None:
