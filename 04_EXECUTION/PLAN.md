@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-05 SESSION 33 (T-136/T-137/T-134 deployed; GG-014 PARTIAL; GG-015 registered+resolved; all governance artifacts current; 715/715 tests; VPS deployed 173b7cd)  
+**Last reviewed:** 2026-06-08 SESSION 36 (G2 resolved 35 bets 28W/7L +$75.67 bankroll $958.99; G6 30-bet threshold CROSSED; GG-014 503 fix commit 4dd2c3d; EXP-017 Part B DIRECTIONAL_POSITIVE EV=+0.1042/bet n=33; 738/738 tests; VPS HEAD 4dd2c3d)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,7 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 0/66; Finals G1 Jun 3 |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 35/66 unique markets (G2); ≥5 nights binding; Finals G3 Jun 8 tonight |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
 ---
