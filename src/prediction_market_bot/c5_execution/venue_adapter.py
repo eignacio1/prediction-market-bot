@@ -155,7 +155,7 @@ class KalshiVenueAdapter:
 
 
 # ---------------------------------------------------------------------------
-# Placeholder adapters — slot-in stubs for Phase 7+ venues
+# Phase 7+ venue adapters
 # ---------------------------------------------------------------------------
 
 
@@ -248,7 +248,7 @@ class PolymarketVenueAdapter:
             params = {
                 "active": "true",
                 "closed": "false",
-                "tag": "nba",      # TODO: confirm Polymarket's NBA tag name
+                "tag": "nba",      # KI-019 — Polymarket NBA tag unconfirmed until T-077
             }
             resp = requests.get(
                 f"{self._BASE_URL}{self._MARKETS_ENDPOINT}",

@@ -107,19 +107,9 @@ def main() -> None:
     print(f"[T1] Loaded {len(t1_forecasts)} forecasts from {T1_REPORT.name}")
 
     # ------------------------------------------------------------------
-    # 2. Injury overlay (STUB — T-075)
+    # 2. Injury overlay (DS-04 deferred — T-075)
     # ------------------------------------------------------------------
-    # TODO (T-075): Replace this stub with real injury data from DS-04.
-    # Steps:
-    #   a. Fetch PlayerAvailability from nba_api (or DS-04 injury feed)
-    #   b. For each player in t1_forecasts:
-    #      - Check if key usage-share teammates are listed as OUT
-    #      - If yes: apply TEAMMATE_OUT_USAGE_BOOST to p_estimate
-    #      - If player themselves is QUESTIONABLE: reduce kelly_fraction to 0.05
-    #      - If player themselves is OUT: remove from t2_forecasts entirely
-    #   c. Log all adjustments to C6 with event_type='t2_injury_adjustment'
-    #
-    # For now: pass T1 forecasts through unchanged with T2 band tag
+    # DS-04 injury overlay not yet registered. Passes T1 forecasts through unchanged.
 
     t2_forecasts = []
     for fc in t1_forecasts:
@@ -127,7 +117,7 @@ def main() -> None:
             **fc,
             "band":           BAND.value,
             "kelly_fraction": BAND_CFG.kelly_fraction,
-            "injury_overlay": "not_applied",   # TODO: replace with DS-04 result
+            "injury_overlay": "not_applied",   # DS-04 deferred — T-075
             "t2_p_estimate":  fc.get("p_estimate"),
             "t2_edge":        fc.get("edge"),
         }
