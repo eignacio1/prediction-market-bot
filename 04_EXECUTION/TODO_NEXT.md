@@ -2,7 +2,46 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-05 SESSION 35 — GG-016 fixed (PIPE-06 BOT_C4_ACTIVE guard removed; commit 6cf87d8). ADR-0017 written (GG-011 resolved for Phase 6/7; T4 flat-sizing confirmed correct). T-138 deployed (exponential backoff retry in kalshi_client._post(); T-136 sleep(0.5) found ineffective — 50% 429 rate unchanged). EXP-018 prereq: t3_signal + t1_edge now stored per paper position. GG-014 reopened. VPS HEAD: 459ba3e. 734/734 tests. PIPE-06 confirmed running (3 cron ticks post-fix). Finals G2 tips 00:30 UTC Jun 6.
+**Last reviewed:** 2026-06-08 SESSION 36 — Institutional sprint for Finals G3. (1) adj_λ cache manually pre-uploaded to VPS (18,854 bytes, 30 teams, team_stats_cache_20260608.json). (2) G2 resolved: 35 bets, 28W/7L, +$75.67, 80% win rate, bankroll $958.99; G6 30-bet threshold CROSSED. (3) GG-014 503 fix: kalshi_client._post()/_get() now retry on (429, 503); exponential backoff 2s/4s/8s; 738/738 tests; commit 4dd2c3d; deployed to VPS. (4) EXP-017 Part B (live): DIRECTIONAL_POSITIVE — EV=+0.1042/bet, n=33 unique markets, 81.8% win rate vs actual Kalshi prices; GG-004 OPEN (n<APR-0017 floor of 66). VPS HEAD: 4dd2c3d.
+
+---
+
+## SESSION 2026-06-08 SESSION 36 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **G2 resolution: run_resolve_local.py** | ✅ COMPLETE — 35 positions resolved, 28W/7L, +$75.67, bankroll $50.96→$958.99, 80% win rate. G6 milestone: 35 > 30-bet threshold CROSSED. Paper portfolio pulled from VPS post-resolution. |
+| **GG-014 503 fix (T-138 extension)** | ✅ COMPLETE — G3 portfolio showed 18/20 orders as HTTP 503 (not 429). 503 was not in retry condition. Extended `_post()` and `_get()` retry from `(429,)` to `(429, 503)`. Same exponential backoff: 2s/4s/8s on attempts 0/1/2. Added 4 new tests in `TestTransientRetry`. 738/738 tests. Commit 4dd2c3d deployed to VPS. First true post-fix test: G4. T-139 registered (monitor G4 order status distribution). |
+| **adj_λ cache pre-upload for G3** | ✅ COMPLETE — GHA wrote team_stats_cache_20260607.json (Jun 7 date). PIPE-02 for Jun 8 expects 20260608. Late cron wrote `{}`. Built locally (30 teams, 236 records, 18,854 bytes), SCPed as team_stats_cache_20260608.json to VPS. T-140 registered: verify TSS cache size > 1000 bytes before each PIPE-02. |
+| **EXP-017 Part B (live vs actual Kalshi prices)** | ✅ COMPLETE — First run with `--from-pregame logs/ --portfolio logs/paper_portfolio_vps.json`. n=33 unique markets (2 of 35 portfolio tickers had no pregame match). EV=+0.1042/bet, 81.8% win rate, mean edge vs market +0.0375. Key insight: mean edge vs null = −0.0486 (prior mip=0.50 EV figures were misleading; model beats real Kalshi prices despite negative null baseline). GG-004 remains OPEN — n=33 < APR-0017 floor of 66. DIRECTIONAL_POSITIVE verdict logged. |
+| **GOVERNANCE_GAP_LOG.md updated** | ✅ COMPLETE — GG-004: DIRECTIONAL_POSITIVE, n=33, EV=+0.1042/bet. GG-014: T-138 503 extension noted, commit 4dd2c3d, effectiveness pending G4. |
+| **DECISION_LOG.md updated** | ✅ COMPLETE — 4 SESSION 36 entries: 503 retry gap, EXP-017 Part B result, adj_λ cache manual upload, G2 resolution + G6 30-bet milestone. |
+| **MEMORY_BANK.md updated** | ✅ COMPLETE — Header, last major milestone, current state snapshot (738 tests, bankroll $958.99, VPS HEAD 4dd2c3d, GG-004 DIRECTIONAL_POSITIVE). |
+
+---
+
+## SESSION 2026-06-08 SESSION 36 — OPEN ITEMS
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **Monitor PIPE-02 tonight (21:55 UTC)** | DS | **CRITICAL TONIGHT** | Should log `[TSS] Loaded from pre-populated cache: 30 teams (ADR-0015)`. Confirms adj_λ fires for first time in G3. First live test of ADR-0015 end-to-end. |
+| **Monitor PIPE-03 tonight (22:00 UTC)** | DS | HIGH | G3 players (SAS/NYK Finals) should hit idempotency check and skip — same players have open positions from G2. No new bets expected. |
+| **Run run_resolve_local.py after G3** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | 20 open positions (game_date: 2026-06-08, Finals G3). Adds ~20 resolved markets. After resolution: re-run EXP-017 Part B (target n≈53, still below APR-0017 floor of 66). |
+| **Re-run EXP-017 Part B after G3 resolves** | DS | MEDIUM — after G3 resolves | Target n≈53 (33 G2 + 20 G3). Still below APR-0017 floor of 66. GG-004 remains OPEN until regular season (n≥66). Track directional trend. |
+| **T-139: Monitor G4 order status distribution** | DS | MEDIUM — after G4 | Check paper_portfolio after G4 for 503 vs 429 breakdown post-fix. Target: ≤5% failure rate combined. First true test of T-138 503 extension. |
+| **T-140: Verify TSS cache size > 1000 bytes pre-PIPE-02** | DS | MEDIUM | Each game night: confirm `team_stats_cache_YYYYMMDD.json` > 1000 bytes on VPS before PIPE-02 at 21:55 UTC. If `{}` (2 bytes), manually build and upload. |
+| **EXP-018 — G3 adj_λ analysis** | DS | MEDIUM — after G3 resolves | G3 is the first live test of adj_λ (ADR-0015). After resolution: compare adj_λ forecasts vs unadjusted λ forecasts on G3 positions. t3_signal field also populated for first time (PIPE-06 was running). Analyze: (1) adj_λ EV contribution; (2) T3 CONFIRM/FADE signal distribution. |
+| **Item 4 — Temp filesystem full** | OPS | LOW | `/Users/earlignacio/.claude/tmp` at 0MB. Breaks Step 1 documentation debt scan in session-start protocol. |
+
+---
+
+## SESSION 2026-06-05 SESSION 35 — OPEN ITEMS (status updated SESSION 36)
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **EXP-018 — Finals G2 result analysis** | DS | ⬜ PARTIAL → resolved in SESSION 36 | G2 P&L analyzed: +$75.67, 80% win rate. GG-014 503 root cause found (18/20 orders HTTP 503). T3 signals all NEUTRAL for G2 (GG-016 bug — PIPE-06 was down). T3 isolation data starts G3. |
+| **Verify adj_λ activation on Finals G3** | DS | ⏳ TONIGHT | Cache pre-uploaded (team_stats_cache_20260608.json, 18,854 bytes). Awaiting PIPE-02 at 21:55 UTC. |
+| **EXP-017 Part B re-run on G2 data** | DS | ✅ DONE → DIRECTIONAL_POSITIVE | n=33, EV=+0.1042/bet, 81.8% win rate. Re-run after G3 resolves (target n≈53). |
 
 ---
 
