@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 40 (PIPE-03 false kill switch fixed; live_terminal T4 log path; T4 crash guard; post_game_g3_resolve.sh scheduled; 783/783 tests)  
+**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — ADR-0018 ACCEPTED (APR-0018, band exit mechanics); EXP-019A complete (NOISE_BUFFER_BAND analytic: T1/T2/T3=0.22053, T4=0.13905, T5=0.13328); GG-017 registered; 783/783 tests  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
