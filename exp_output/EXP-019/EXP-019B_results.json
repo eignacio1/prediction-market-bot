@@ -1,0 +1,24 @@
+{
+  "exp_id": "EXP-019B",
+  "mode": "analytic",
+  "game_date": "2026-06-08",
+  "noise_buffer_band_t4": 0.13905,
+  "tip_off_utc": "2026-06-09T00:00:00Z",
+  "n_positions": 1114,
+  "n_exit_fired": 433,
+  "n_fired_on_losses": 433,
+  "n_fired_on_wins_false": 0,
+  "policy_1_hold": {
+    "total_pnl": 39.4387,
+    "e_log_return": 6.815e-05
+  },
+  "policy_2_full_exit": {
+    "total_pnl": 39.6575,
+    "e_log_return": 6.852e-05
+  },
+  "policy_3_partial": {
+    "total_pnl": 39.6575,
+    "e_log_return": 6.852e-05
+  },
+  "verdict": "PARTIAL_KELLY"
+}
