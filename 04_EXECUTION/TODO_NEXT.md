@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 41 (cont.) — EXP-019 sprint complete. EXP-019B: 79.9% losers caught, 0% false exits, PARTIAL_KELLY = FULL_EXIT, +0.5% E[log_r] lift. run_t4_live.py: spread+trajectory logging deployed to VPS (active from G4). EXP-019C skeleton written (blocked on data). VPS deploy OK at /opt/prediction-market-bot.
+**Last reviewed:** 2026-06-08 SESSION 41 (cont.#2) — G4 post-game workflow: `post_game_g4_resolve.sh` (10 steps) + cron `0 23 10 6 *` (11 PM PDT Jun 10). EXP-018 COMPLETE: CONFIRMED_NEGATIVE overall (EV=-$0.0014/bet, n=66), injury-filtered DIRECTIONAL_POSITIVE (+$0.0202). YES +$0.0733 vs NO -$0.0440. Hypothesis C technically triggered — requires DS decision on GG-004 trajectory.
 
 ---
 
@@ -28,7 +28,8 @@
 | **EXP-019B (analytic)** | — | ✅ DONE 2026-06-09 | Analytic simulation on G3 1,114 T4 positions. 433 exits fired (79.9% of YES losses, 0% false exits on YES wins). Policy 2 = Policy 3 (Kelly fraction ≈ 0 at exit boundary → partial collapses to full). E[log_r] lift: +0.5%. NOISE_BUFFER_BAND_T4=0.13905 confirmed as correctly calibrated. Results: `exp_output/EXP-019/EXP-019B_results.json`. Empirical validation (3 game nights trajectory data) still needed to move from T-146/T-147 BLOCKED to ACTIVE. |
 | **EXP-019B empirical** | DS | MEDIUM — blocked on trajectory data | Requires `logs/t4_position_trajectories.jsonl` from ≥3 game nights (G4 Jun 10 + G5). run_t4_live.py now logs per-cycle p_t4 trajectories. Available after G5 (~Jun 12). Unblocks T-146/T-147. |
 | **EXP-019C** | DS | MEDIUM — blocked on spread data | Requires `logs/spread_observations.jsonl` from ≥3 game nights. run_t4_live.py now logs bid/ask per cycle (active from G4). Skeleton: `scripts/run_exp019c_spread.py`. Available after G5 (~Jun 12). |
-| **EXP-018** | DS | MEDIUM | adj_λ + T3 EV validation. First adj_λ data = G3+. Run after G4 resolved. |
+| **EXP-018** | — | ✅ DONE 2026-06-08 | G2+G3, n=66 unique markets (at APR-0017 floor). Overall: CONFIRMED_NEGATIVE (EV=-$0.0014/bet). Injury-filtered: DIRECTIONAL_POSITIVE (+$0.0202). YES bets +$0.0733 (n=24), NO bets -$0.0440 (n=42). opp_adj_factor=0.9586 < 1.0 ✓. Hypothesis C technically triggered (EV ≤ 0 at n=66). G4 will add data. **Requires DS decision: is Hypothesis C live or does injury-filter view govern?** Results: `exp_output/EXP-018/EXP-018_results.json`. |
+| **post_game_g4_resolve.sh** | — | ✅ DONE 2026-06-08 | 10-step script: T1+T4 resolve, SCP T1+T4 portfolios + pregame_20260610.json + spread_observations.jsonl + t4_position_trajectories.jsonl, VPS git pull, EXP-017 Part B rerun, EXP-018. Cron: `0 23 10 6 *` (11 PM PDT Jun 10). |
 
 ---
 

@@ -1,0 +1,26 @@
+{
+  "exp_id": "EXP-018",
+  "adj_lambda_from": "2026-06-05",
+  "game_dates": [
+    "2026-06-05",
+    "2026-06-08"
+  ],
+  "n_unique_markets": 66,
+  "at_apr_floor": true,
+  "n_yes": 24,
+  "n_no": 42,
+  "n_injury_excluded": 6,
+  "win_rate": 0.697,
+  "ev_per_bet_all": -0.001364,
+  "ev_per_bet_yes": 0.073333,
+  "ev_per_bet_no": -0.044048,
+  "ev_per_bet_injury_filtered": 0.020167,
+  "mean_opp_adj_factor": 0.9586,
+  "verdict_all": "CONFIRMED_NEGATIVE",
+  "verdict_injury_filtered": "DIRECTIONAL_POSITIVE",
+  "attribution": {
+    "exp_017_g1_raw_lambda_ev": -0.162,
+    "exp_018_adj_lambda_ev": -0.001364,
+    "improvement": 0.160636
+  }
+}
