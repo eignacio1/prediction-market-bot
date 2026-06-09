@@ -1,10 +1,10 @@
 # ADR-0018 — Band Exit Mechanics: Symmetric Filter-Out for All Execution Bands
 
-**Status:** DRAFT — pending DS (Earl Ignacio) sign-off before ACCEPTED  
+**Status:** ACCEPTED — APR-0018 signed 2026-06-09  
 **Date:** 2026-06-09 SESSION 40  
 **Decisions logged:** true  
 **Author:** Claude Code (GG-017 resolution path)  
-**Approval required:** DS (Earl Ignacio)  
+**Approved by:** DS (Earl Ignacio) — 2026-06-09 SESSION 40  
 **Supersedes:** Nothing — extends ADR-0014 (per-band decision trees) with symmetric exit logic  
 **Related:** GG-017, ADR-0014 (per-band decision trees), ADR-0010 (Kelly hierarchy), ADR-0016 (fee-adjusted edge gate), ADR-0013 (T4 band budget)
 
