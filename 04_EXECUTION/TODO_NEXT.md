@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — Band filter-out architectural decision registered; GG-017 opened; T-145 registered (ADR-0018 Band Exit Mechanics). Tests: 783/783.
+**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — EXP-019A analytic derivation complete. NOISE_BUFFER_BAND candidate values: T1/T2/T3=0.22053, T4=0.13905, T5=0.13328. DECISION_LOG logged. Tests: 783/783.
 
 ---
 
@@ -21,8 +21,9 @@
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|
 | **T-145: ADR-0018 — Band Exit Mechanics** | DS | ✅ COMPLETE — ADR-0018 ACCEPTED (APR-0018, 2026-06-09) | Framework: exit signal `mip_current > p_current + cost`; time-weighted Poisson; noise buffer via 2σ_p derivation; Kelly-inverse sizing; per-band spread cost model. All numeric parameters deferred to EXP-019A/B/C. |
-| **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — after ADR-0018 signed | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. Records exit price, P&L delta, exit reason in closed position. |
-| **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — after ADR-0018 signed | In `_run_cycle()`: after computing `p_t4`, check open positions for exit condition before evaluating entry. Exit path runs before entry path — exit takes priority over new entry on same ticker. |
+| **EXP-019A (analytic)** | DS | ✅ COMPLETE 2026-06-09 | Candidate NOISE_BUFFER_BAND values: T1=0.22053, T2=0.22053, T3=0.22053, T4=0.13905, T5=0.13328. All statistical-binding (2σ_p >> taker fee). Script: `scripts/run_exp019a_analytic.py`. DECISION_LOG logged. T1/T2/T3 σ_λ requires empirical validation. |
+| **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — blocked on EXP-019A empirical validation | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. Records exit price, P&L delta, exit reason in closed position. NOISE_BUFFER_BAND values must be empirically validated before activating. |
+| **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — blocked on EXP-019A empirical validation | In `_run_cycle()`: after computing `p_t4`, check open positions for exit condition before evaluating entry. Exit path runs before entry path — exit takes priority over new entry on same ticker. |
 
 ---
 
