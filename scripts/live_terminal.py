@@ -239,7 +239,7 @@ def _data_from_local(log_dir: str) -> dict:
         "bets":         bets_raw.get("orders", []) if isinstance(bets_raw, dict) else [],
         "pregame":      _load_json(d / f"pregame_{td}.json"),
         "audit":        _load_jsonl(d / "audit.jsonl"),
-        "t4_tail":      _load_tail(d / "t4_live.log", n=25),
+        "t4_tail":      _load_tail(d / "t4_live_cron.log", n=25),
     }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -308,7 +308,7 @@ for key, path, fn, args in [
     ('bets_raw',     d / f'paper_{today}.json',     rj,  []),
     ('pregame',      d / f'pregame_{today}.json',   rj,  []),
     ('audit',        d / 'audit.jsonl',             rjl, [300]),
-    ('t4_tail',      d / 't4_live.log',             rt,  [25]),
+    ('t4_tail',      d / 't4_live_cron.log',         rt,  [25]),
 ]:
     try:
         result[key] = fn(path, *args)
