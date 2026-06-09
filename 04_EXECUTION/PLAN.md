@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 39 (`live_terminal.py` crash + scroll fixes; 745/745 tests; remote HEAD a3d7fb8)  
+**Last reviewed:** 2026-06-08 SESSION 40 (PIPE-03 false kill switch fixed; live_terminal T4 log path; T4 crash guard; post_game_g3_resolve.sh scheduled; 783/783 tests)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
