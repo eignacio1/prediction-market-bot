@@ -1,4 +1,4 @@
-# ADR-0018 — Band Exit Mechanics: Bayesian Filter-Out for Execution Bands
+# ADR-0018 — Band Exit Mechanics: Symmetric Filter-Out for All Execution Bands
 
 **Status:** DRAFT — pending DS (Earl Ignacio) sign-off before ACCEPTED  
 **Date:** 2026-06-09 SESSION 40  
@@ -6,141 +6,271 @@
 **Author:** Claude Code (GG-017 resolution path)  
 **Approval required:** DS (Earl Ignacio)  
 **Supersedes:** Nothing — extends ADR-0014 (per-band decision trees) with symmetric exit logic  
-**Related:** GG-017, ADR-0014 (per-band decision trees), ADR-0013 (T4 band budget), DECISION_LOG 2026-06-09
+**Related:** GG-017, ADR-0014, ADR-0010 (Kelly hierarchy), ADR-0013 (T4 band budget), DECISION_LOG 2026-06-09
 
 ---
 
 ## Context
 
-ADR-0014 specified per-band decision trees covering entry mechanics for T1–T5: probability method (Poisson CDF), sizing (Kelly by band), edge gate (MIN_EDGE), kill switches. Exit mechanics were not specified — ADR-0014 implicitly treated positions as hold-to-expiry.
-
-Prediction markets are bilateral instruments. Kalshi supports both BUY (entry) and SELL (exit) of YES/NO contracts for any open position. A system that can only enter is not exploiting the full decision-space that the venue provides.
-
-**GG-017** (registered SESSION 40) documents the architectural gap: every band has filter-IN logic but no filter-OUT logic. When in-game Bayesian evidence reverses against an open position, the system holds with no mechanism to exit — even when the same math that fired the entry now argues against the position.
+ADR-0014 specified per-band decision trees for T1–T5: probability method, sizing, edge gate, kill switches. Exit mechanics were not specified. The system currently holds all positions to market expiry regardless of subsequent signal behavior.
 
 **Operator mandate (Earl Ignacio, 2026-06-09):**  
-> "Each bucket not only has a filter into — but should have a filter out of, all using quantifiable strategies (with qual enhancers). Yes — let's absolutely build it out, no need to cancel or change anything that's already in right now."
+> "Each bucket not only has a filter into — but should have a filter out of, all using quantifiable strategies (with qual enhancers)."
 
-### Motivating example from Finals G3 (2026-06-08)
+Prediction markets are bilateral instruments. Kalshi supports SELL YES and BUY NO on any open position. The full decision-space — symmetric entry AND exit per band — has not been exploited.
 
-Bridges: T1 YES bets placed (model forecast ~55%+ for >10 pts). Final stat: 2 pts. At halftime (6 pts pace, Knicks losing, Bridges on bench), `p_t4` would have dropped to <5%. System held all YES positions to expiry at a total loss. Exit mechanics would have recovered some or all of the stake once the signal reversed below the cost-of-exit threshold.
+**This ADR governs exit mechanics universally across T1–T5.** It defines the mathematical framework for each component; calibration of band-specific parameters is deferred to EXP-019 (regression analysis against each band's math).
 
 ---
 
-## Decision
+## Architectural Principle
 
-**Each execution band has symmetric filter-IN and filter-OUT logic.** The same Bayesian/Poisson math that generates entry signals is evaluated in reverse for exit signals on open positions. The exit decision is fully quantifiable with the same data already available to the entry path.
+**Each band's filter-out is the inverse of its filter-in, operating on the same mathematical framework.**
 
-### 1. Exit Trigger (when to consider exiting)
+- Entry: `Kelly_optimal(p_entry, mip_entry, band) > 0` AND `net_edge > MIN_EDGE` → open position
+- Exit: `Kelly_optimal(p_current, mip_current, band) < holding_size` → reduce to `Kelly_optimal`, or fully exit if `Kelly_optimal ≤ 0`
+- Same probability method (Poisson CDF for T1–T4; arithmetic for T5). Same Kelly hierarchy. Same cost deduction. Same qual enhancers — entry amplifiers become exit amplifiers when signal reverses.
 
-For each open YES position on ticker `T`:
+The exit decision is fully quantifiable from the same data already available to the entry path. No rule-based overrides, no time gates — math decides.
+
+---
+
+## Component 1 — Exit Trigger
+
+### Formula
+
+For each open position on ticker `T` with direction `D` (YES or NO):
+
 ```
-exit_candidate = (p_t4 < p_t1 - EXIT_THRESHOLD) AND (p_t4 < MIP)
+p_current  = Poisson_CDF(threshold, adj_lambda(game_state))   # live T4 estimate
+f_star     = kelly_optimal(p_current, mip_current, band_kelly_fraction)
+holding    = current_stake / (1 - mip_entry)                  # contracts held
+
+exit_signal = f_star < holding
 ```
-For NO positions, symmetric:
+
+Where `kelly_optimal` is:
 ```
-exit_candidate = (p_t4 > p_t1 + EXIT_THRESHOLD) AND (p_t4 > (1 - MIP))
+f_star = max(0, (p_current - mip_current) / (1 - mip_current)) * band_kelly_fraction * capital
 ```
 
-**EXIT_THRESHOLD = 0.10** (initial paper calibration value — 2× T4_MIN_DELTA_P=0.08, providing margin above noise floor; must be calibrated from live exit data via EXP-019).
+When `f_star = 0`: Kelly says hold nothing — full exit candidate.  
+When `0 < f_star < holding`: Kelly says hold less — partial exit candidate.  
+When `f_star ≥ holding`: Kelly says hold current size or more — no exit.
 
-Rationale: if `p_t4` has dropped 10pp below the pre-game prior AND below the current market implied probability, the market is now pricing the outcome more accurately than our entry signal did. Holding compounds the expected loss.
+### Per-Band Kelly Fractions (from ADR-0010)
 
-### 2. Exit Instrument (how to exit)
+| Band | Kelly Fraction | Probability Method | Entry capital base |
+|------|---------------|--------------------|--------------------|
+| T1 | 0.10 | Poisson CDF (pre-game adj_λ) | Full deployable bankroll |
+| T2 | 0.13 | Poisson CDF (adj_λ + injury overlay) | Full deployable bankroll |
+| T3 | 0.07 | Poisson CDF (T1 base, T3 applies CONFIRM/FADE multiplier) | Kelly of T1 position size |
+| T4 | 0.20 | Poisson CDF (live game state, flat paper sizing active) | T4 band budget |
+| T5 | 0.25 | Arithmetic certainty (p≥0.85 / p≤0.15) | T4 band budget (shared) |
 
-**Primary: SELL YES contract** (close the long position directly).  
-**Fallback: BUY NO contract** (hedge — used when SELL spread is wider than BUY NO spread).
+The same fraction governs both entry sizing and the exit `kelly_optimal` computation. If T1 entered at Kelly=0.10, the exit threshold evaluates at Kelly=0.10. There is no band-specific EXIT_THRESHOLD constant — the Kelly formula IS the threshold.
 
-Selection rule: compare `(ask_no - bid_no)` vs `(ask_yes - bid_yes)`. Use the side with the narrower spread. In paper mode, record the exit at mid-price (same fill model as entry).
+### Noise Buffering
 
-### 3. Exit Sizing (how much to exit)
+Because `p_current` has estimation uncertainty, `f_star` fluctuates within a band around the true value. A materiality buffer prevents churning on estimation noise:
 
-**Full exit by default.** On initial implementation, exit the entire open position when the trigger fires. Partial exit (sized by Kelly on the reversal magnitude) is a Phase 2 enhancement — adds complexity without enough data to calibrate the partial-exit Kelly fraction.
-
-Partial exit formula (reserved for ADR amendment post-calibration):  
-`exit_contracts = Kelly(f*, reversal_magnitude) × total_open_contracts`
-
-### 4. Qual Enhancer: T3 FADE Signal
-
-T3 FADE signal amplifies the exit decision — it does NOT gate it. If `t3_signal == "FADE"` AND exit trigger fires: proceed to cost model and execute. If `t3_signal == "FADE"` alone (without trigger): no exit (qual signal cannot override quantitative trigger).
-
-This mirrors the T3 entry architecture: T3 modifies edge, it does not originate the bet.
-
-### 5. Time Gate: Final-N-Minutes Illiquidity Protection
-
-No exits in the final `EXIT_TIME_GATE_MINUTES = 3` minutes of regulation. Rationale: bid/ask spreads widen dramatically near market close (market makers reduce inventory risk). The spread cost of exit exceeds the expected loss from holding in most cases. EXIT_TIME_GATE_MINUTES aligns with T5's firing window (final 3 min) — positions in the T5 window are near-resolution and hold is correct behavior.
-
-### 6. Cost Model: Only Exit When It Pays
-
-Exit fires only if:
 ```
-E[holding_loss] > spread_cost_of_exit
+exit_signal = f_star < holding - EXIT_BUFFER_BAND
 ```
+
+`EXIT_BUFFER_BAND` is the minimum meaningful reduction in Kelly position before triggering exit. It is band-specific and must be derived via regression analysis in EXP-019. Pre-calibration stub values:
+
+| Band | EXIT_BUFFER_BAND (stub) | Derivation basis |
+|------|------------------------|-----------------|
+| T1 | 0.05 × initial_stake | T1 has the widest pre-game uncertainty (σ_λ=2.055); small fluctuations in p_current are noise |
+| T2 | 0.04 × initial_stake | Narrower than T1 (injury overlay adds directional signal confidence) |
+| T3 | 0.06 × initial_stake | Wider buffer: T3 positions are sized small; exit overhead cost is proportionally higher |
+| T4 | 0.03 × initial_stake | T4 has the tightest uncertainty (live score state; σ_λ≈0.5 in Q3/Q4); exits are more confident |
+| T5 | 0.02 × initial_stake | Arithmetic certainty regime; uncertainty is near-zero; exits are near-binary |
+
+**These are stubs.** EXP-019 must replace all five via regression analysis before any exit path is designated ACTIVE. The regression inputs: (kelly_fraction, min_edge, p_entry, mip_entry, Δp_signal, time_to_expiry_min). The regression target: optimal exit timing that maximizes E[log(wealth)] across simulated position trajectories.
+
+---
+
+## Component 2 — Exit Sizing
+
+### Kelly-Inverse Position Sizing
+
+Exit sizing is not a separate formula — it is the same Kelly framework applied to the current state:
+
+```
+target_holding = kelly_optimal(p_current, mip_current, band_kelly_fraction)
+exit_contracts = max(0, holding - target_holding)
+```
+
+Three cases:
+
+| Case | Condition | Action |
+|------|-----------|--------|
+| Full exit | `target_holding ≤ 0` | Sell all `holding` contracts; optionally open NO position if `kelly_optimal(1-p_current, ...)` > 0 |
+| Partial exit | `0 < target_holding < holding` | Sell `holding - target_holding` contracts; retain `target_holding` |
+| Hold | `target_holding ≥ holding` | No exit; entry evaluation continues normally |
+
+### NO Position After Full Exit
+
+If after a full exit, Kelly is positive on the NO side (`p_current < mip_current - MIN_EDGE - fee`), the system may open a NO position. This is governed by the same entry filter as any other trade — it goes through the full entry pipeline, not a special exit path. The exit and the new NO entry are independent events.
+
+### Regression Analysis Required (EXP-019)
+
+The Kelly-inverse formula is mathematically exact for a single isolated position. In the context of a multi-position book with correlated outcomes (multiple players in the same game), the optimal partial exit fraction may deviate from the single-position formula. EXP-019 must validate:
+
+1. Does Kelly-inverse partial exit improve E[log(wealth)] vs hold-to-expiry across the G3 position book?
+2. What is the optimal EXIT_BUFFER_BAND per band (minimize churn while capturing genuine reversals)?
+3. At what `Δp_signal` magnitude does partial exit produce better outcomes than full exit?
+
+---
+
+## Component 3 — Cost Model
+
+### Formula
+
+Exit only fires if net benefit exceeds transaction cost:
+
+```
+E_holding_loss = (p_entry - p_current) × stake          # expected loss from holding
+exit_cost      = taker_fee(mip_current) + spread_cost   # cost to execute the exit
+
+net_exit_benefit = E_holding_loss - exit_cost
+exit_executes = net_exit_benefit > 0
+```
+
 Where:
-- `E[holding_loss] = (p_current - p_t4) × stake` — expected additional loss if model is right
-- `spread_cost_of_exit = (ask - mid) × contracts` — cost to execute the exit at current ask
+```
+taker_fee(mip) = 0.07 × mip × (1 - mip)   # ADR-0016 formula
+spread_cost    = bid_ask_spread × contracts  # from live Kalshi bid/ask data
+```
 
-In paper mode: spread is estimated as `mid_price × VIG_SPREAD_ESTIMATE` where `VIG_SPREAD_ESTIMATE = 0.04` (calibration value — needs real bid/ask data at G6). If spread data is unavailable, fall back to EXIT_SPREAD_FLOOR = 0.02 (Kalshi taker fee baseline).
+In paper mode (no real bid/ask data): `spread_cost = SPREAD_ESTIMATE_BAND × contracts`, where `SPREAD_ESTIMATE_BAND` is a per-band stub pending real data characterization in EXP-019:
 
-### 7. Kill Switch Interaction
+| Band | SPREAD_ESTIMATE_BAND (stub) | Rationale |
+|------|-----------------------------|-----------|
+| T1 | 0.06 | Night-before thin liquidity; widest spreads |
+| T2 | 0.05 | Same-day, slightly more liquid |
+| T3 | 0.04 | Pre-tip; market makers active |
+| T4 | 0.04 | In-play; active market; spread varies with score state |
+| T5 | 0.08 | Near-expiry; spreads widen as uncertainty resolves |
 
-Exit evaluation is part of the existing `_run_cycle()` loop. Exit orders are subject to the same T4 band kill switch: if `T4_BUDGET_EXHAUSTED`, no new entries OR exits — the kill switch halts the entire band. System-level kill switch halts everything including exit attempts. This is correct: the kill switch is a global halt, not a selective filter.
+**Note on T5:** T5 spread is widest near expiry because the outcome is near-certain and market makers reduce inventory risk. This is reflected in `SPREAD_ESTIMATE_BAND = 0.08` for T5 — making the cost model naturally more conservative about exits late in the game. No time gate is needed; the cost model captures this quantitatively. If the net_exit_benefit still exceeds cost despite wide T5 spreads, the exit is justified.
+
+**Note on time-to-expiry:** Spread widens as contracts approach expiry. EXP-019 should characterize `spread_cost ~ f(time_to_expiry_min)` per band operating window and fit this into the cost model, replacing the flat stub.
 
 ---
 
-## Implementation Targets (Phase 6/7 paper scope)
+## Component 4 — Qual Enhancer: T3 FADE
 
-| Component | Change |
-|---|---|
-| `paper_trader.py` | Add `exit_position(ticker, reason, price)` method. Records exit in closed position with `exit_reason`, `exit_price`, `exit_pnl`. |
-| `VenueAdapter` / `KalshiClient` | Add `sell_order(ticker, contracts)` method. Routes to Kalshi SELL endpoint. Paper mode: no-op + return mid-price. |
-| `run_t4_live.py:_run_cycle()` | Before entry evaluation loop: iterate open positions, compute `p_t4` for each, evaluate exit trigger + cost model. Exits precede entries. |
-| `paper_portfolio_t4.json` | New fields per closed position: `exit_reason`, `exit_price`, `exit_pnl`, `exit_trigger_p`. |
-| Tests | `TestExitPosition` class: trigger fires, cost model blocks, time gate blocks, qual enhancer amplifies, kill switch prevents. |
+T3 FADE amplifies the exit decision; it does NOT gate it.
 
-**Phase 8 additions (reserved for superseding ADR):**
-- Live SELL order execution with real bid/ask spread data
-- Partial exit sizing (Kelly on reversal magnitude)
-- EXIT_THRESHOLD empirical calibration from paper exit data (EXP-019)
+```
+if t3_signal == "FADE":
+    exit_threshold_multiplier = 0.85   # 15% reduction in required net_exit_benefit
+elif t3_signal == "CONFIRM":
+    exit_threshold_multiplier = 1.15   # 15% increase — CONFIRM signal argues against exit
+else:  # NEUTRAL
+    exit_threshold_multiplier = 1.00
+```
+
+Effective gate: `net_exit_benefit > 0 × exit_threshold_multiplier`.
+
+T3 CONFIRM makes the system slightly more reluctant to exit (confidence in the entry signal is reinforced). T3 FADE makes the system slightly more willing to exit (pre-tip momentum was already pointing the wrong way). Neither overrides the quantitative exit trigger — they modulate the threshold symmetrically with how they modulate the entry edge (ADR-0014).
+
+---
+
+## Component 5 — Universal Exit Evaluator
+
+**All open positions from any band (T1–T5) are eligible for exit evaluation.** T4's live Poisson cycle is the real-time evaluator for all bands during game hours. T1 positions (largest, placed night-before) are the most important to exit when signals reverse — they are not exempt from exit consideration.
+
+### Exit Evaluation Architecture
+
+```
+run_t4_live.py:_run_cycle():
+    1. [EXIT PATH — runs first, before entry evaluation]
+       For each open position (from any band: T1, T2, T3, T4, T5):
+           p_current = GameStateModel.compute(game_state, player, threshold)
+           f_star = kelly_optimal(p_current, mip_current, band_kelly_fraction_for_position)
+           if f_star < holding - EXIT_BUFFER_BAND[band]:
+               if cost_model(p_current, mip_current, holding) > 0:
+                   apply qual enhancer (t3_signal)
+                   execute exit (partial or full per Kelly-inverse sizing)
+    
+    2. [ENTRY PATH — runs after exits settled]
+       Evaluate new entry signals on all tickers (existing T4 logic)
+```
+
+Exit runs before entry so that capital freed by exits is available for new entries in the same cycle. Exit and entry on the same ticker in the same cycle is permitted — if a T1 YES position exits and Kelly is positive on the NO side at current price, a NO entry may follow.
+
+### Pre-Game Exit: Market Drift
+
+Between T1 placement (22:00 UTC) and tip-off (~23:00 UTC), there is no live game state. If `mip_current` drifts significantly against an open T1 position pre-game (market makers incorporating new information), a market-drift exit may be appropriate:
+
+```
+pre_game_exit_signal = (mip_current - mip_entry) > MARKET_DRIFT_THRESHOLD
+```
+
+`MARKET_DRIFT_THRESHOLD` is stub pending EXP-019 calibration. Pre-game exit evaluator runs as part of PIPE-03 late window (01:30 UTC) rather than in T4 live cycle (game not yet started). This is a Phase 2 implementation — initial ADR-0018 scope covers in-game (T4 cycle) exits only.
+
+---
+
+## Implementation Targets — All Bands
+
+| Component | File | Change |
+|---|---|---|
+| Position exit method | `c5_execution/paper_trader.py` | `exit_position(ticker, contracts, price, reason, band)` — closes partial or full position; records `exit_reason`, `exit_price`, `exit_contracts`, `exit_pnl_realized`, `exit_trigger_p` in the position's closed record. |
+| Exit evaluation logic | `c4_risk_engine/risk.py` | `evaluate_exit(position, p_current, mip_current, t3_signal) → ExitDecision(contracts_to_exit, reason)` — encapsulates Kelly-inverse + cost model + qual enhancer. Callable from any band's execution path. |
+| Live exit cycle | `run_t4_live.py:_run_cycle()` | Before entry loop: iterate `trader.open_positions` (all bands), call `risk_engine.evaluate_exit()`, call `trader.exit_position()` when exit fires. |
+| VenueAdapter sell interface | `c5_execution/venue_adapter.py` | `sell_order(ticker, contracts) → OrderResult` — sells YES contracts (exits long). KalshiClient implements against SELL endpoint. Paper mode: no-op with mid-price fill. |
+| Position record schema | `paper_portfolio.json` / `paper_portfolio_t4.json` | New fields on closed positions: `exit_reason: str`, `exit_price: float`, `exit_contracts: int`, `exit_pnl_realized: float`, `exit_trigger_p: float`, `exit_t3_signal: str`. |
+| Exit constants | `c4_risk_engine/execution_bands.py` | `EXIT_BUFFER_BAND: dict[str, float]` — per-band stub values (pending EXP-019). `SPREAD_ESTIMATE_BAND: dict[str, float]` — per-band stub values (pending EXP-019). |
+| Tests | `tests/` | `TestExitPosition` — Kelly-inverse sizing (full/partial/hold cases), cost model blocks unprofitable exits, T3 FADE amplifies threshold, T3 CONFIRM raises threshold, kill switch prevents exit, NO position opened after full exit, all-band position eligibility, exit runs before entry in cycle. |
+
+---
+
+## Experiments Required
+
+| Experiment | Scope | Gate |
+|---|---|---|
+| **EXP-019A** | Regression: EXIT_BUFFER_BAND per band vs simulated position trajectories | Must PASS before any band's exit path designated ACTIVE |
+| **EXP-019B** | Regression: SPREAD_ESTIMATE_BAND per band vs real Kalshi bid/ask data | Must PASS before G6 live capital (paper spread estimates are acceptable for paper exit path) |
+| **EXP-019C** | Kelly-inverse partial exit validation vs hold-to-expiry on paper position book | Validates that partial exits improve E[log(wealth)] on the actual paper book |
+
+EXP-019 data collection begins from the first game where exit mechanics are active in paper mode.
+
+---
+
+## Kill Switch Interaction
+
+Exit evaluation is subject to all existing kill switch tiers:
+- **Band-level kill switch** (e.g., T4 budget exhausted): halts new entries AND exit evaluations for that band.
+- **System-level kill switch**: halts all activity including exits.
+
+If a band's kill switch has fired, positions opened under that band hold to expiry — the kill switch is a global halt and exit attempts are not a workaround. This is correct: the kill switch exists to stop all activity when limits are breached; selective exit after kill switch would partially circumvent the halt.
 
 ---
 
 ## What This ADR Does NOT Change
 
-- Current open positions — no retroactive exits on any G3 or earlier positions
-- T1 band — T1 positions run to expiry by design (no T4 live data during T1 window). Exit mechanics apply only when same-day T4 data is available for a T1 ticker.
-- Kelly entry sizing — unchanged for all bands
+- Current open positions — no retroactive exits; no G3 or earlier positions touched
+- Kelly entry sizing for any band — unchanged
 - MIN_EDGE gate — unchanged
 - Kill switch thresholds — unchanged
-- Any ADR-0001 through ADR-0017 decisions
-
----
-
-## Risks and Mitigations
-
-| Risk | Mitigation |
-|---|---|
-| EXIT_THRESHOLD miscalibration → churning (exits on noise, re-enters) | Cost model prevents churn: exit only if E[holding_loss] > spread_cost. EXP-019 calibrates EXIT_THRESHOLD from paper exit data before T4 ACTIVE. |
-| Spread estimate inaccurate in paper mode → wrong cost model decision | Conservative VIG_SPREAD_ESTIMATE=0.04 deliberately overestimates cost — biases system toward holding, not churning. Error is recoverable. |
-| Exit logic adds latency to _run_cycle() (extra p_t4 computations) | Exit evaluation uses same GameStateModel call as entry path. Incremental cost is O(open_positions) Poisson CDF calls — sub-millisecond at current portfolio size. |
-| Exit fires in final minutes → wide spread, bad fill | Time gate (EXIT_TIME_GATE_MINUTES=3) prevents this. T5 window is protected. |
+- ADR-0001 through ADR-0017 — all unchanged
+- `arb/` folder — reference only, APR-0010 required (ADR-0002)
 
 ---
 
 ## Gate for Activation
 
-This ADR is DRAFT. Implementation is blocked until DS (Earl Ignacio) signs off. Once ACCEPTED:
-1. Implement `exit_position()` in `paper_trader.py` (T-146)
-2. Implement exit evaluation in `run_t4_live.py:_run_cycle()` (T-147)
-3. Add `sell_order()` to `VenueAdapter` interface (paper no-op first)
-4. Register EXP-019: EXIT_THRESHOLD calibration from paper exit data
-5. GG-017 status updated to RESOLVED
+**Status: DRAFT.** All implementation is blocked until DS sign-off.
 
----
-
-## Decision Principles Applied
-
-- **Symmetric decision trees** — entry and exit use the same mathematical framework; no asymmetric information usage.
-- **Qual enhancers amplify, never originate** — T3 FADE amplifies exit decision; it cannot trigger an exit on its own.
-- **Paper scope first** — live SELL execution deferred; paper mode proves the exit path before real fills.
-- **Cost model prevents churn** — exit only when it economically makes sense; not on every signal reversal.
+Post sign-off implementation sequence:
+1. `exit_position()` in `paper_trader.py` (T-146)
+2. `evaluate_exit()` in `risk.py` (T-146)
+3. Exit cycle in `run_t4_live.py:_run_cycle()` (T-147)
+4. `sell_order()` in `VenueAdapter` / `KalshiClient` (T-147)
+5. EXP-019A/B/C data collection begins (paper mode)
+6. EXIT_BUFFER_BAND and SPREAD_ESTIMATE_BAND replaced with regression-derived values
+7. GG-017 status updated to RESOLVED
