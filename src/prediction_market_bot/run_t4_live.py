@@ -726,70 +726,78 @@ def main() -> None:
             time.sleep(10)
             continue
 
-        # Re-discover games if we have none yet
-        if not game_ids:
-            game_ids[:] = _discover_game_ids()
-            if game_ids:
-                logger.info("Game(s) discovered: %s", game_ids)
-            else:
-                logger.debug("No active games found — sleeping 60s")
+        try:
+            # Re-discover games if we have none yet
+            if not game_ids:
+                game_ids[:] = _discover_game_ids()
+                if game_ids:
+                    logger.info("Game(s) discovered: %s", game_ids)
+                else:
+                    logger.debug("No active games found — sleeping 60s")
+                    time.sleep(60)
+                    continue
+
+            # Poll all tracked games via ESPN
+            all_states: list[LivePlayerState] = []
+            for gid in game_ids:
+                all_states.extend(_espn_poll_once(gid, name_to_pregame))
+
+            if not all_states:
+                logger.info("No live states — game not in progress. Sleeping 60s.")
                 time.sleep(60)
                 continue
 
-        # Poll all tracked games via ESPN
-        all_states: list[LivePlayerState] = []
-        for gid in game_ids:
-            all_states.extend(_espn_poll_once(gid, name_to_pregame))
+            # Fetch live Kalshi prices
+            ok, snapshot = kalshi.fetch_player_points_markets()
+            if not ok or not snapshot.markets:
+                logger.warning("Kalshi price fetch failed — skipping cycle, sleeping %ds", POLL_INTERVAL_S)
+                time.sleep(POLL_INTERVAL_S)
+                continue
 
-        if not all_states:
-            logger.info("No live states — game not in progress. Sleeping 60s.")
-            time.sleep(60)
-            continue
+            live_prices = {m.ticker: m for m in snapshot.markets}
 
-        # Fetch live Kalshi prices
-        ok, snapshot = kalshi.fetch_player_points_markets()
-        if not ok or not snapshot.markets:
-            logger.warning("Kalshi price fetch failed — skipping cycle, sleeping %ds", POLL_INTERVAL_S)
+            # Build fresh engines each cycle — bankroll = t4_band_budget (ADR-0013).
+            # t4_band_budget is fixed for the game; engine refresh tracks kill-switch state.
+            engine_t4, engine_t5 = _make_engines(t4_band_budget)
+            cycle_id = f"C{cycle_n:04d}-{uuid.uuid4().hex[:6]}"
+
+            ev, fi, t4_deployed_game = _run_cycle(
+                cycle_id=cycle_id,
+                session_id=session_id,
+                live_states=all_states,
+                live_prices=live_prices,
+                pregame_by_player_id=by_player_id,
+                loop=loop,
+                engine_t4=engine_t4,
+                engine_t5=engine_t5,
+                trader=trader,
+                store=store,
+                game_date=game_date,
+                t4_band_budget=t4_band_budget,
+                t4_deployed_usd=t4_deployed_game,
+            )
+
+            cycle_n += 1
+            total_evaluated += ev
+            total_fired += fi
+
+            budget_pct = (t4_deployed_game / t4_band_budget * 100.0) if t4_band_budget > 0 else 0.0
+            logger.info(
+                "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d"
+                " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f",
+                cycle_id, ev, fi, total_evaluated, total_fired,
+                t4_deployed_game, t4_band_budget, budget_pct,
+                trader.get_state()["bankroll_usd"],
+            )
+
             time.sleep(POLL_INTERVAL_S)
-            continue
 
-        live_prices = {m.ticker: m for m in snapshot.markets}
-
-        # Build fresh engines each cycle — bankroll = t4_band_budget (ADR-0013).
-        # t4_band_budget is fixed for the game; engine refresh tracks kill-switch state.
-        engine_t4, engine_t5 = _make_engines(t4_band_budget)
-        cycle_id = f"C{cycle_n:04d}-{uuid.uuid4().hex[:6]}"
-
-        ev, fi, t4_deployed_game = _run_cycle(
-            cycle_id=cycle_id,
-            session_id=session_id,
-            live_states=all_states,
-            live_prices=live_prices,
-            pregame_by_player_id=by_player_id,
-            loop=loop,
-            engine_t4=engine_t4,
-            engine_t5=engine_t5,
-            trader=trader,
-            store=store,
-            game_date=game_date,
-            t4_band_budget=t4_band_budget,
-            t4_deployed_usd=t4_deployed_game,
-        )
-
-        cycle_n += 1
-        total_evaluated += ev
-        total_fired += fi
-
-        budget_pct = (t4_deployed_game / t4_band_budget * 100.0) if t4_band_budget > 0 else 0.0
-        logger.info(
-            "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d"
-            " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f",
-            cycle_id, ev, fi, total_evaluated, total_fired,
-            t4_deployed_game, t4_band_budget, budget_pct,
-            trader.get_state()["bankroll_usd"],
-        )
-
-        time.sleep(POLL_INTERVAL_S)
+        except Exception as exc:
+            logger.error(
+                "Unhandled exception in main loop — sleeping %ds before retry: %s",
+                POLL_INTERVAL_S, exc, exc_info=True,
+            )
+            time.sleep(POLL_INTERVAL_S)
 
 
 if __name__ == "__main__":
