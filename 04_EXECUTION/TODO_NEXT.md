@@ -20,7 +20,7 @@
 
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|
-| **T-145: Draft ADR-0018 — Band Exit Mechanics (Bayesian filter-out)** | DS | HIGH — before G4 | Scope defined in DECISION_LOG 2026-06-09 + GG-017. Exit trigger: `p_t4 < p_t1 - EXIT_THRESHOLD` AND open YES exists. Exit instrument: SELL YES or BUY NO. Kelly inverse sizing. T3 FADE qual enhancer. Time gate (no exits final N min). Cost model: E[holding loss] > spread. Implementation targets: `paper_trader.py:exit_position()`, `VenueAdapter` sell order type, `run_t4_live.py:_run_cycle()`. ADR required before any code change. |
+| **T-145: ADR-0018 — Band Exit Mechanics** | DS | ✅ COMPLETE — ADR-0018 ACCEPTED (APR-0018, 2026-06-09) | Framework: exit signal `mip_current > p_current + cost`; time-weighted Poisson; noise buffer via 2σ_p derivation; Kelly-inverse sizing; per-band spread cost model. All numeric parameters deferred to EXP-019A/B/C. |
 | **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — after ADR-0018 signed | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. Records exit price, P&L delta, exit reason in closed position. |
 | **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — after ADR-0018 signed | In `_run_cycle()`: after computing `p_t4`, check open positions for exit condition before evaluating entry. Exit path runs before entry path — exit takes priority over new entry on same ticker. |
 

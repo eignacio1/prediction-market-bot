@@ -314,7 +314,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | MEDIUM. Current paper mode impact: open YES positions on underperforming players held to expiry → full loss on stake rather than partial recovery via exit. Commercial impact grows with capital scale and T4 throughput (~1,000 evaluations/game). At live capital, inability to exit a 300-position T4 book when signals reverse is a material risk that no kill switch addresses (kill switches halt new entries, not existing positions). |
 | Discovery | 2026-06-09 SESSION 40 — post-G3 game analysis. Bridges 2 pts (Knicks lost, SAS won 115-111). Operator question: "Wouldn't the T-4 bucket trade those Bridges contracts out?" Answer: no mechanism exists. |
 | Resolution path | ADR-0018 required before any implementation. Scope: exit trigger (Bayesian reversal threshold), exit instrument (SELL YES vs BUY NO selection), exit sizing (Kelly on inverse probability), qual enhancer (T3 FADE amplifies exit), time gate (no exits in final N minutes), cost model (E[holding loss] > spread cost). Implementation targets: `paper_trader.py:exit_position()`, `VenueAdapter` sell order type, `run_t4_live.py:_run_cycle()` exit evaluation path. |
-| Status | OPEN — 2026-06-09 SESSION 40. T-145 registered (ADR-0018 draft). Operator explicitly authorized build: "Yes — let's absolutely build it out, no need to cancel or change anything that's already in right now." |
+| Status | OPEN — ADR-0018 ACCEPTED (APR-0018, 2026-06-09). Implementation blocked on EXP-019A analytic derivation (T-146/T-147). Resolution path clear; gap closes when EXP-019A/B/C complete and all NOISE_BUFFER_BAND values populated in execution_bands.py. |
 
 ---
 
