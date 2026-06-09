@@ -2,7 +2,26 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 39 — `live_terminal.py` crash + scroll fixes deployed. G3 monitoring active. VPS HEAD: 07210a0.
+**Last reviewed:** 2026-06-08 SESSION 40 — PIPE-03 false kill switch root cause found + fixed; live_terminal T4 log path fix; T4 crash guard; post_game_g3_resolve.sh scheduled. Tests: 783/783.
+
+---
+
+## SESSION 2026-06-08 SESSION 40 — COMPLETED
+
+| Task | Status |
+|------|--------|
+| **T-141: PIPE-03 false kill switch root cause + fix (CRITICAL)** | ✅ COMPLETE — `run_paper_trade.py:558`: `daily_loss += approved_size if edge < 0 else 0` removed. NO bets always have `edge < 0` by convention; line was silently accumulating all NO stake sizes as daily losses. Root sequence: G2 realized losses ($130.08 from portfolio) + $43.03 NO stakes → $173.11 ≥ $150 threshold → kill switch. Fix: removed the spurious accumulation; `daily_loss` is loaded from `portfolio.current_daily_loss` only (set correctly by `close_position()`). 783/783 tests pass. |
+| **T-142: live_terminal.py T4 log path fix** | ✅ COMPLETE — Both `_data_from_local()` and `_REMOTE_SCRIPT` updated from `t4_live.log` → `t4_live_cron.log`. Active T4 cron (PIPE-07, 23:00 UTC) writes to `t4_live_cron.log`; `t4_live.log` was stale from pre-cron manual run (last line 19:58 UTC). Dashboard now reads live T4 activity. |
+| **T-143: run_t4_live.py crash guard** | ✅ COMPLETE — Main `while True` loop body wrapped in `try/except Exception`. ConnectionError/HTTPError no longer kills T4 process. Kill switch check remains OUTSIDE the guard (unbreakable). |
+| **T-144: post_game_g3_resolve.sh — automated post-game deploy** | ✅ COMPLETE — `scripts/post_game_g3_resolve.sh` created. 5 steps: (1) T1 resolve, (2) T4 resolve, (3) SCP portfolio to local, (4) VPS git pull (idempotency fix), (5) EXP-017 Part B rerun. Scheduled via Mac crontab `0 23 8 6 *` (11 PM PDT Jun 8 → 06:00 UTC Jun 9). |
+| **DECISION_LOG SESSION 40 entry** | ✅ COMPLETE — Entry written: (1) PIPE-03 false kill switch root cause and fix, (2) live_terminal log path, (3) T4 crash guard. |
+
+### Post-G3 (automated tonight via post_game_g3_resolve.sh at 11 PM PDT):
+- T1 resolve (run_resolve.py with game_date=2026-06-08)
+- T4 resolve (PIPE-07R-LOCAL)
+- SCP paper_portfolio.json local
+- VPS git pull (idempotency fix T-101 HEAD now on VPS)
+- EXP-017 Part B rerun (target n≥66)
 
 ---
 
