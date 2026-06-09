@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — ADR-0018 ACCEPTED (APR-0018, band exit mechanics); EXP-019A complete (NOISE_BUFFER_BAND analytic: T1/T2/T3=0.22053, T4=0.13905, T5=0.13328); GG-017 registered; 783/783 tests  
+**Last reviewed:** 2026-06-09 SESSION 41 (cont.#2) — EXP-018 COMPLETE (G2+G3, n=66): CONFIRMED_NEGATIVE overall (EV=-$0.0014/bet); injury-filtered DIRECTIONAL_POSITIVE (+$0.0202). post_game_g4_resolve.sh + cron scheduled Jun 10. GG-004 Hypothesis C pending DS decision. 783/783 tests (no code changes this block)  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,7 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — 35/66 T1 markets (G2); PIPE-07 T4 active (adds ~1,000 T4 positions/game); G3 in progress Jun 8 |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — T1: 66/66 unique markets (at floor) ✓; 2/5 game nights (need 3 more: G4+G5+G6 or 2026-27 season); EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+$0.0050, n=66); EXP-018 CONFIRMED_NEGATIVE overall / injury-filtered POSITIVE — Hypothesis C pending DS decision (GG-004); G4 auto-resolves Jun 10 |
 | PIPE-07 T4 in-play paper trading (PIPE-07) | EL | HIGH | ✅ 2026-06-08 SESSION 37 — portfolio isolation fix, cron.conf 23:00 UTC, PIPE-07R-LOCAL script |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
