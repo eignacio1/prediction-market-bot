@@ -555,7 +555,9 @@ def main() -> None:
                     engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=bankroll,
                                        kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll,
                                        min_bet_usd=MIN_BET_T1_PAPER)
-                    daily_loss += approved_size if edge < 0 else 0
+                    # daily_loss is loaded from portfolio.current_daily_loss (close_position accumulates
+                    # realized losses). Do NOT add bet stakes here — NO bets have edge<0 by convention
+                    # and the old line 558 incorrectly accumulated all NO stakes as daily losses.
             else:
                 reason = approval.get("rejection_reason", "unknown")
                 if direction != "PASS":
