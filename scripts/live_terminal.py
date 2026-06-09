@@ -899,7 +899,12 @@ def _curses_loop(stdscr, args: argparse.Namespace) -> None:
 
         # ── Initial render on startup ──────────────────────────────────────
         if not panels:
-            # Show connecting message immediately while first fetch runs
+            # Show connecting message immediately while first fetch runs.
+            # Still drain keys so 'q' works before data arrives.
+            c = stdscr.getch()
+            if c in (ord("q"), ord("Q"), 3):
+                _stop_event.set()
+                return
             stdscr.erase()
             stdscr.addstr(max_y // 2, max(0, max_x // 2 - 15),
                           "  Connecting to VPS...  ", curses.A_DIM)
