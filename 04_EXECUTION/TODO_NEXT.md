@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — EXP-019A analytic derivation complete. NOISE_BUFFER_BAND candidate values: T1/T2/T3=0.22053, T4=0.13905, T5=0.13328. DECISION_LOG logged. Tests: 783/783.
+**Last reviewed:** 2026-06-09 SESSION 41 — Finals G3 resolved. T1: P&L $-123.17 cumulative, 82 bets, 64.6% win rate, drawdown 12.3%. T4 first live run: +$39.44, 1,115 bets, 51.4% win rate. EXP-017 Part B: DIRECTIONAL_POSITIVE (n=66, at APR-0017 floor). GG-018 registered (T4 evidence pooling invalidates APR-0017 T1-only floor). T-148 registered.
 
 ---
 
@@ -16,23 +16,35 @@
 | **T-144: post_game_g3_resolve.sh — automated post-game deploy** | ✅ COMPLETE — `scripts/post_game_g3_resolve.sh` created. 5 steps: (1) T1 resolve, (2) T4 resolve, (3) SCP portfolio to local, (4) VPS git pull (idempotency fix), (5) EXP-017 Part B rerun. Scheduled via Mac crontab `0 23 8 6 *` (11 PM PDT Jun 8 → 06:00 UTC Jun 9). |
 | **DECISION_LOG SESSION 40 entry** | ✅ COMPLETE — Entry written: (1) PIPE-03 false kill switch root cause and fix, (2) live_terminal log path, (3) T4 crash guard. |
 
-## SESSION 40 (cont.) — PENDING
+## SESSION 41 — CURRENT
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **post_game_g3_resolve.sh — COMPLETE** | — | ✅ DONE 05:08Z | ALL STEPS OK. T1: 47 settled, bankroll $876.83, cumulative P&L $-123.17, 12.3% drawdown. T4: 215 positions, +$39.44, pool $1,539.42. EXP-017 Part B: DIRECTIONAL_POSITIVE (n=66). VPS idempotency fix deployed. |
+| **MEMORY_BANK + GG-018 + T-148 logged** | — | ✅ DONE (this session) | G3 results, T4 first-run data, GG-018 registered in GOVERNANCE_GAP_LOG.md. |
+| **T-148: APR-0017 ≥66-bet floor regression analysis** | DS | HIGH — required before G6 can be called | GG-018: APR-0017 floor derived T1-only; T4 live with 1,115 bets/game. Analysis needed: (1) which bet types count for which Tier evidence requirement; (2) does T4 need its own calibration floor; (3) re-derive statistical floor for mixed-model scenario. Output: ADR superseding or amending APR-0017 Tier 2 + statistical floor sections. Do NOT call G6 until resolved. |
+| **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — blocked on EXP-019B empirical validation | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. NOISE_BUFFER_BAND values must be empirically validated before activating. |
+| **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — blocked on EXP-019B empirical validation | In `_run_cycle()`: exit path before entry path. Exit takes priority on same ticker. |
+| **EXP-019B** | DS | MEDIUM | Full vs partial exit sizing (n≥50 exit events). Unblocks T-146/T-147. |
+| **EXP-018** | DS | MEDIUM | adj_λ + T3 EV validation. First adj_λ data = G3+. Run after G4 resolved. |
+
+---
+
+## SESSION 40 (cont.) — COMPLETED
 
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|
 | **T-145: ADR-0018 — Band Exit Mechanics** | DS | ✅ COMPLETE — ADR-0018 ACCEPTED (APR-0018, 2026-06-09) | Framework: exit signal `mip_current > p_current + cost`; time-weighted Poisson; noise buffer via 2σ_p derivation; Kelly-inverse sizing; per-band spread cost model. All numeric parameters deferred to EXP-019A/B/C. |
 | **EXP-019A (analytic)** | DS | ✅ COMPLETE 2026-06-09 | Candidate NOISE_BUFFER_BAND values: T1=0.22053, T2=0.22053, T3=0.22053, T4=0.13905, T5=0.13328. All statistical-binding (2σ_p >> taker fee). Script: `scripts/run_exp019a_analytic.py`. DECISION_LOG logged. T1/T2/T3 σ_λ requires empirical validation. |
-| **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — blocked on EXP-019A empirical validation | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. Records exit price, P&L delta, exit reason in closed position. NOISE_BUFFER_BAND values must be empirically validated before activating. |
-| **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — blocked on EXP-019A empirical validation | In `_run_cycle()`: after computing `p_t4`, check open positions for exit condition before evaluating entry. Exit path runs before entry path — exit takes priority over new entry on same ticker. |
 
 ---
 
-### Post-G3 (automated tonight via post_game_g3_resolve.sh at 11 PM PDT):
-- T1 resolve (run_resolve.py with game_date=2026-06-08)
-- T4 resolve (PIPE-07R-LOCAL)
-- SCP paper_portfolio.json local
-- VPS git pull (idempotency fix T-101 HEAD now on VPS)
-- EXP-017 Part B rerun (target n≥66)
+### Post-G3 (COMPLETE via post_game_g3_resolve.sh — 05:08Z Jun 9 UTC):
+- ✅ T1 resolve: 47 positions, bankroll $876.83, P&L $-123.17 cumulative
+- ✅ T4 resolve: 215 positions, +$39.44, pool $1,539.42
+- ✅ SCP paper_portfolio.json local
+- ✅ VPS git pull (idempotency fix deployed)
+- ✅ EXP-017 Part B: DIRECTIONAL_POSITIVE (n=66, at APR-0017 floor)
 
 ---
 
