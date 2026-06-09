@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-08 SESSION 40 — PIPE-03 false kill switch root cause found + fixed; live_terminal T4 log path fix; T4 crash guard; post_game_g3_resolve.sh scheduled. Tests: 783/783.
+**Last reviewed:** 2026-06-09 SESSION 40 (cont.) — Band filter-out architectural decision registered; GG-017 opened; T-145 registered (ADR-0018 Band Exit Mechanics). Tests: 783/783.
 
 ---
 
@@ -15,6 +15,16 @@
 | **T-143: run_t4_live.py crash guard** | ✅ COMPLETE — Main `while True` loop body wrapped in `try/except Exception`. ConnectionError/HTTPError no longer kills T4 process. Kill switch check remains OUTSIDE the guard (unbreakable). |
 | **T-144: post_game_g3_resolve.sh — automated post-game deploy** | ✅ COMPLETE — `scripts/post_game_g3_resolve.sh` created. 5 steps: (1) T1 resolve, (2) T4 resolve, (3) SCP portfolio to local, (4) VPS git pull (idempotency fix), (5) EXP-017 Part B rerun. Scheduled via Mac crontab `0 23 8 6 *` (11 PM PDT Jun 8 → 06:00 UTC Jun 9). |
 | **DECISION_LOG SESSION 40 entry** | ✅ COMPLETE — Entry written: (1) PIPE-03 false kill switch root cause and fix, (2) live_terminal log path, (3) T4 crash guard. |
+
+## SESSION 40 (cont.) — PENDING
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **T-145: Draft ADR-0018 — Band Exit Mechanics (Bayesian filter-out)** | DS | HIGH — before G4 | Scope defined in DECISION_LOG 2026-06-09 + GG-017. Exit trigger: `p_t4 < p_t1 - EXIT_THRESHOLD` AND open YES exists. Exit instrument: SELL YES or BUY NO. Kelly inverse sizing. T3 FADE qual enhancer. Time gate (no exits final N min). Cost model: E[holding loss] > spread. Implementation targets: `paper_trader.py:exit_position()`, `VenueAdapter` sell order type, `run_t4_live.py:_run_cycle()`. ADR required before any code change. |
+| **T-146: Implement exit_position() in paper_trader.py** | DS | MEDIUM — after ADR-0018 signed | Add `exit_position(ticker, reason)` method to `PaperTrader`. Pool-isolated exit for T4 paper mode. Records exit price, P&L delta, exit reason in closed position. |
+| **T-147: Implement exit evaluation path in run_t4_live.py** | DS | MEDIUM — after ADR-0018 signed | In `_run_cycle()`: after computing `p_t4`, check open positions for exit condition before evaluating entry. Exit path runs before entry path — exit takes priority over new entry on same ticker. |
+
+---
 
 ### Post-G3 (automated tonight via post_game_g3_resolve.sh at 11 PM PDT):
 - T1 resolve (run_resolve.py with game_date=2026-06-08)
