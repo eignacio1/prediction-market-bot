@@ -295,6 +295,8 @@ _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio_t4.json"
 _STAGED_DB_PATH = str(_LOGS_DIR / "staged_orders_t4.db")
 _AUDIT_LOG_PATH = _LOGS_DIR / "audit_t4.jsonl"
+_SPREAD_LOG_PATH = _LOGS_DIR / "spread_observations.jsonl"    # EXP-019C
+_TRAJ_LOG_PATH   = _LOGS_DIR / "t4_position_trajectories.jsonl"  # EXP-019B empirical
 
 
 # ---------------------------------------------------------------------------
@@ -416,6 +418,10 @@ def _run_cycle(
     fired = 0
     fired_tickers: set[str] = set()   # one bet per ticker per cycle
 
+    _spread_buf: list[str] = []
+    _traj_buf: list[str] = []
+    _cycle_ts = datetime.now(timezone.utc).isoformat()
+
     portfolio = trader.get_state()
     current_bankroll   = portfolio["bankroll_usd"]
     initial_bankroll   = portfolio.get("initial_bankroll_usd", current_bankroll)
@@ -450,6 +456,18 @@ def _run_cycle(
             if mip <= 0.0 or mip >= 1.0:
                 continue
 
+            # EXP-019C: log spread for every live quote seen this cycle
+            _spread_buf.append(json.dumps({
+                "ticker": ticker,
+                "timestamp_utc": _cycle_ts,
+                "bid": pm.yes_bid,
+                "ask": pm.yes_ask,
+                "mid": mip,
+                "time_remaining_min": ls.time_remaining_min,
+                "pts_so_far": float(ls.pts_so_far),
+                "threshold": int(mkt_ctx["threshold"]),
+            }))
+
             event = GameStateEvent(
                 market_id=ticker,
                 player_id=str(player_id),
@@ -465,6 +483,19 @@ def _run_cycle(
 
             result = loop.on_game_state_event(event)
             evaluated += 1
+
+            # EXP-019B empirical: log p_t4 per cycle for all evaluated tickers
+            if result.action in ("FIRE_BAYESIAN", "NO_ACTION") and result.signal is not None:
+                _traj_buf.append(json.dumps({
+                    "ticker": ticker,
+                    "cycle_id": cycle_id,
+                    "timestamp_utc": _cycle_ts,
+                    "p_t4": float(result.signal.p_t4),
+                    "mip": mip,
+                    "pts_so_far": float(ls.pts_so_far),
+                    "time_remaining_min": ls.time_remaining_min,
+                    "action": result.action,
+                }))
 
             if result.action not in ("FIRE_BAYESIAN", "FIRE_T5"):
                 continue
@@ -601,6 +632,13 @@ def _run_cycle(
                         ticker, direction, approved_size, p_est, mip, edge,
                         t4_deployed_usd, t4_band_budget, cycle_id,
                     )
+
+    if _spread_buf:
+        with open(_SPREAD_LOG_PATH, "a") as _f:
+            _f.write("\n".join(_spread_buf) + "\n")
+    if _traj_buf:
+        with open(_TRAJ_LOG_PATH, "a") as _f:
+            _f.write("\n".join(_traj_buf) + "\n")
 
     return evaluated, fired, t4_deployed_usd
 
