@@ -301,6 +301,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-017 — No Exit Path on Any Execution Band: System Holds All Positions to Expiry Regardless of Signal Reversal
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-017 |
+| Category | Architectural gap — missing symmetric filter-out across all bands |
+| What was missed | Every execution band (T1–T5) has filter-IN logic (Poisson CDF entry signal, MIN_EDGE gate, Kelly sizing) but NO filter-OUT logic. When in-game Bayesian evidence reverses against an open position — e.g., `p_t4` drops sharply after a player injury or foul trouble — the system holds the position to market expiry with no mechanism to exit. Prediction markets are bilateral instruments: SELL YES and BUY NO are both valid exit mechanisms. A system that can only enter is not exploiting the full strategy space. The architectural principle is: each band's decision tree should be symmetric — filter-IN when edge is positive, filter-OUT when edge reverses. |
+| When it should have been caught | ADR-0014 (T-130, 2026-06-03 SESSION 23) — when per-band decision trees were formalized. Entry logic was specified for all bands; exit logic was not addressed. |
+| Phases it survived | ADR-0014 through SESSION 40 (2026-06-09). Exposed by G3 post-game analysis: Bridges 2 pts (heavily bet YES positions held to expiry with no exit mechanism despite real-time scoring data showing miss trajectory). |
+| Why it survived | ADR-0014 scoped decision trees to entry mechanics only. Exit mechanics were not framed as a missing component — the prior mental model treated prediction markets like binary futures (hold to settlement). The bilateral nature of Kalshi contracts (BUY and SELL both supported) was understood at the venue layer but not integrated into band decision tree design. |
+| Impact | MEDIUM. Current paper mode impact: open YES positions on underperforming players held to expiry → full loss on stake rather than partial recovery via exit. Commercial impact grows with capital scale and T4 throughput (~1,000 evaluations/game). At live capital, inability to exit a 300-position T4 book when signals reverse is a material risk that no kill switch addresses (kill switches halt new entries, not existing positions). |
+| Discovery | 2026-06-09 SESSION 40 — post-G3 game analysis. Bridges 2 pts (Knicks lost, SAS won 115-111). Operator question: "Wouldn't the T-4 bucket trade those Bridges contracts out?" Answer: no mechanism exists. |
+| Resolution path | ADR-0018 required before any implementation. Scope: exit trigger (Bayesian reversal threshold), exit instrument (SELL YES vs BUY NO selection), exit sizing (Kelly on inverse probability), qual enhancer (T3 FADE amplifies exit), time gate (no exits in final N minutes), cost model (E[holding loss] > spread cost). Implementation targets: `paper_trader.py:exit_position()`, `VenueAdapter` sell order type, `run_t4_live.py:_run_cycle()` exit evaluation path. |
+| Status | OPEN — 2026-06-09 SESSION 40. T-145 registered (ADR-0018 draft). Operator explicitly authorized build: "Yes — let's absolutely build it out, no need to cancel or change anything that's already in right now." |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
