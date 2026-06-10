@@ -37,7 +37,7 @@ import json
 import os
 import sys
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import joblib
@@ -256,6 +256,10 @@ def main() -> None:
                           kelly_fraction=T1_KELLY, initial_bankroll=_initial_bankroll,
                           min_bet_usd=MIN_BET_T1_PAPER)
     daily_loss = _state.get("current_daily_loss", 0.0)
+    # Stale-date guard (mirrors run_t4_live.py a300a51): current_daily_loss is stamped
+    # by close_position at resolution time; a prior game night's value must not gate today.
+    if _state.get("daily_loss_date", "") != date.today().isoformat():
+        daily_loss = 0.0
     # Bug H fix: drawdown is realized losses only — open stakes are not losses
     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
