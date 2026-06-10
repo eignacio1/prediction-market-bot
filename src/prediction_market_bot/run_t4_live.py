@@ -67,6 +67,7 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
 from prediction_market_bot.execution_bands import (
     NOISE_BUFFER_BAND_T4,
     EXIT_MIN_TIME_REMAINING_MIN,
+    EXIT_MECHANICS_ACTIVE,
 )
 from prediction_market_bot.run_t4_inplay import T4EventLoop, GameStateEvent
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
@@ -449,8 +450,9 @@ def _run_cycle(
     #              p_current > mip_current + NOISE_BUFFER_BAND_T4   (NO)
     # EXP-019B analytic: full exit always (Kelly fraction → 0 at boundary).
     # Time guard: no exits in final EXIT_MIN_TIME_REMAINING_MIN (T5 takes over).
+    # Gate: EXIT_MECHANICS_ACTIVE must be True (ADR-0019 Tier 2). Default: False.
     # ------------------------------------------------------------------
-    for open_pos in list(portfolio.get("open_positions", [])):
+    for open_pos in (list(portfolio.get("open_positions", [])) if EXIT_MECHANICS_ACTIVE else []):
         ticker    = open_pos.get("kalshi_ticker", "")
         player_id = int(open_pos.get("player_id", 0))
         threshold = float(open_pos.get("kalshi_threshold", 0))
