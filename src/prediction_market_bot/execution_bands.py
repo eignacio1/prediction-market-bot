@@ -203,6 +203,13 @@ NOISE_BUFFER_BAND_T5: float = 0.13328   # EXP-019A analytic; near-deterministic 
 # Exit guard: no exits in the final N minutes — T5 arithmetic certainty logic takes over.
 EXIT_MIN_TIME_REMAINING_MIN: float = 3.0
 
+# ADR-0019 Tier 2 activation gate.
+# SESSION 43 DS override: set True for G4/G5 paper trading. Rationale: EXP-019B
+# analytic validated (79.9% correct exits, 0 false exits); empirical data (T-152)
+# can only be collected by running exits; T4 pool is isolated (no real capital risk).
+# GG-017 Tier 2 gate remains OPEN until T-152/T-153 complete.
+EXIT_MECHANICS_ACTIVE: bool = True
+
 
 # ---------------------------------------------------------------------------
 # Strategy band specification — mandatory structural interface for all strategies
