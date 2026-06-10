@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 42 — T-146/T-147 + ADR-0019 COMPLETE. Exit mechanics implemented (code live, NOT active). 816/816 tests. Deployed to VPS.  
+**Last reviewed:** 2026-06-09 SESSION 43 — APR-0019 ACCEPTED. GG-018 RESOLVED. EXIT_MECHANICS_ACTIVE=True deployed. MC adj_λ upgrade deployed. 817/817 tests. G4 cron tonight.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
