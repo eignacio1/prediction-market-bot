@@ -16,7 +16,17 @@
 | **T-144: post_game_g3_resolve.sh — automated post-game deploy** | ✅ COMPLETE — `scripts/post_game_g3_resolve.sh` created. 5 steps: (1) T1 resolve, (2) T4 resolve, (3) SCP portfolio to local, (4) VPS git pull (idempotency fix), (5) EXP-017 Part B rerun. Scheduled via Mac crontab `0 23 8 6 *` (11 PM PDT Jun 8 → 06:00 UTC Jun 9). |
 | **DECISION_LOG SESSION 40 entry** | ✅ COMPLETE — Entry written: (1) PIPE-03 false kill switch root cause and fix, (2) live_terminal log path, (3) T4 crash guard. |
 
-## SESSION 41 — CURRENT
+## SESSION 42 — CURRENT
+
+| Task | Owner | Priority | Notes |
+|------|-------|----------|-------|
+| **Worry 3: tmpfs ENOSPC fix** | — | ✅ DONE (this session) | `export CLAUDE_CODE_TMPDIR="/Users/earlignacio/.claude/tmp"` added to `~/.zshrc`. Step 1 documentation debt scan unblocked for next session. |
+| **T-149: T4 C4 fee gate fix** | — | ✅ DONE (this session) | `run_t4_live.py` now computes `kalshi_fee = 0.07 * mip * (1.0 - mip)` and passes `net_edge` to C4 (not gross). `fc_record["gross_edge"]` preserved for `paper_trader.py` annotation. Approval dict carries both keys. 10 new tests in `tests/test_t149_t4_fee_gate.py`. 793/793 tests pass. GG-019 Part A resolved. **Deploy to VPS before G4 (cron Jun 10).** |
+| **T-150: Aggregate fee break-even analysis** | — | ✅ DONE (this session) | Empirical from G2+G3 data. T4: $14.28/game (1,115 bets, avg mip=0.45, avg fee=$0.01281/contract); T1: $12.89/game avg (Kelly-sized, ~45 contracts/bet at paper bankroll). Combined ~$27/game Finals scale. Fee as % of gross EV: T4=4.4%, T1=8.2% — manageable. MIN_EDGE_TO_APPROVE=0.02 > max taker fee (0.0175 at mip=0.50) — C4 always enforces positive net edge post-T-149. ADR-0005 implication: fee structure documented; EXP-017 commercial validation still required before live capital. DECISION_LOG updated. GG-019 Part B resolved. |
+
+---
+
+## SESSION 41 — PRIOR (rolled up)
 
 | Task | Owner | Priority | Notes |
 |------|-------|----------|-------|

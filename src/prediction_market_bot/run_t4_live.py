@@ -290,6 +290,8 @@ SESSION_ID_PREFIX = "T4"
 # Monitoring/planning constant only — not used in bet sizing computation.
 T4_BAND_WEIGHT: float = 0.10           # Phase 8 placeholder — ADR-0017; inactive in PAPER_T4_FLAT_SIZING=true mode
 T4_EXPECTED_TOTAL_EDGE: float = 441.38 # G1 calibrated 2026-06-04: sum(edge) across 1446 evals, KELLY_T4=0.20
+                                       # NOTE: this was calibrated on GROSS edge (pre-T-149 fee fix);
+                                       # net-of-fee total ≈ 416 at G1 throughput. Recalibrate post-G4.
 
 _LOGS_DIR = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio_t4.json"
@@ -524,11 +526,16 @@ def _run_cycle(
                 edge = p_est - mip
                 engine = engine_t4
 
+            gross_edge = edge
+            kalshi_fee = 0.07 * mip * (1.0 - mip)  # ADR-0016 taker fee
+            net_edge = gross_edge - kalshi_fee
+
             fc_record = {
                 "forecast_id": f"T4-{cycle_id}-{ticker[-12:]}",
                 "p_estimate": p_est,
                 "market_implied_prob": mip,
-                "edge": edge,
+                "edge": net_edge,          # net-of-fee — C4 gates on this (GG-019 fix)
+                "gross_edge": gross_edge,  # pre-fee — for paper_trader annotation (ADR-0016)
                 "recommended_direction": direction,
             }
 
@@ -555,7 +562,7 @@ def _run_cycle(
                 approved_size = mip
                 approval = {**approval, "approved_size": approved_size}
 
-            approval = {**approval, "model_p": float(p_est), "edge": float(edge)}
+            approval = {**approval, "model_p": float(p_est), "edge": float(net_edge), "gross_edge": float(gross_edge)}
 
             # ---- Ghost protection: stage before portfolio write ----
             valid_until = (
@@ -592,7 +599,7 @@ def _run_cycle(
                 logger.info(
                     "T4 VIRTUAL %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f"
                     "  budget_track=$%.2f/%.2f  cycle=%s",
-                    ticker, direction, approved_size, p_est, mip, edge,
+                    ticker, direction, approved_size, p_est, mip, net_edge,
                     t4_deployed_usd, t4_band_budget, cycle_id,
                 )
             else:
@@ -629,7 +636,7 @@ def _run_cycle(
                     logger.info(
                         "T4 FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f"
                         "  budget_used=$%.2f/%.2f  cycle=%s",
-                        ticker, direction, approved_size, p_est, mip, edge,
+                        ticker, direction, approved_size, p_est, mip, net_edge,
                         t4_deployed_usd, t4_band_budget, cycle_id,
                     )
 
