@@ -62,6 +62,11 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
     LateGameArithmetic,
     KELLY_T4,
     KELLY_T5,
+    p_exceeds_threshold,
+)
+from prediction_market_bot.execution_bands import (
+    NOISE_BUFFER_BAND_T4,
+    EXIT_MIN_TIME_REMAINING_MIN,
 )
 from prediction_market_bot.run_t4_inplay import T4EventLoop, GameStateEvent
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
@@ -407,7 +412,7 @@ def _run_cycle(
     game_date: str,
     t4_band_budget: float,
     t4_deployed_usd: float,
-) -> tuple[int, int, float]:        # (evaluated, fired, updated_t4_deployed_usd)
+) -> tuple[int, int, int, float]:   # (evaluated, fired, exited, updated_t4_deployed_usd)
     """
     Evaluate all live player × market pairs and fire approved bets.
 
@@ -418,6 +423,7 @@ def _run_cycle(
     """
     evaluated = 0
     fired = 0
+    exited = 0
     fired_tickers: set[str] = set()   # one bet per ticker per cycle
 
     _spread_buf: list[str] = []
@@ -435,6 +441,70 @@ def _run_cycle(
     drawdown = _realized_loss / initial_bankroll if initial_bankroll > 0 else 0.0
 
     state_by_id = {ls.player_id: ls for ls in live_states}
+
+    # ------------------------------------------------------------------
+    # Exit evaluation pass (ADR-0018/0019 — symmetric filter-out)
+    # Check all open positions before evaluating new entries.
+    # Exit signal: mip_current > p_current + NOISE_BUFFER_BAND_T4  (YES)
+    #              p_current > mip_current + NOISE_BUFFER_BAND_T4   (NO)
+    # EXP-019B analytic: full exit always (Kelly fraction → 0 at boundary).
+    # Time guard: no exits in final EXIT_MIN_TIME_REMAINING_MIN (T5 takes over).
+    # ------------------------------------------------------------------
+    for open_pos in list(portfolio.get("open_positions", [])):
+        ticker    = open_pos.get("kalshi_ticker", "")
+        player_id = int(open_pos.get("player_id", 0))
+        threshold = float(open_pos.get("kalshi_threshold", 0))
+        direction = open_pos.get("direction", "YES")
+
+        pm = live_prices.get(ticker)
+        if pm is None or not pm.has_live_quotes:
+            continue
+
+        ls = state_by_id.get(player_id)
+        if ls is None:
+            continue
+
+        # Time guard: T5 handles final 3 minutes, exit mechanics stop here
+        if ls.time_remaining_min <= EXIT_MIN_TIME_REMAINING_MIN:
+            continue
+
+        # Recompute p_current using same Poisson CDF as T4 entry (ADR-0018 §1)
+        pts_mean = pregame_by_player_id.get(player_id, [{}])[0].get("pts_l10_mean", 20.0)
+        pace = pts_mean / PACE_MINUTES_PER_GAME
+        lam_remaining = pace * ls.time_remaining_min
+        p_current = p_exceeds_threshold(ls.pts_so_far, threshold, lam_remaining)
+
+        mip_current = pm.mid_price
+        if direction == "YES":
+            should_exit = mip_current > p_current + NOISE_BUFFER_BAND_T4
+        else:  # NO
+            should_exit = p_current > mip_current + NOISE_BUFFER_BAND_T4
+
+        if not should_exit:
+            continue
+
+        position_id = open_pos["position_id"]
+        exit_reason = (
+            f"BAYESIAN_REVERSAL  p_current={p_current:.4f}"
+            f"  mip={mip_current:.4f}  buffer={NOISE_BUFFER_BAND_T4}"
+        )
+        ok, closed = trader.exit_position(
+            position_id=position_id,
+            exit_mip=mip_current,
+            p_current=p_current,
+            exit_reason=exit_reason,
+            session_id=session_id,
+        )
+        if not ok:
+            logger.error("PaperTrader C6 write failure on exit for %s — halting cycle", ticker)
+            return evaluated, fired, exited, t4_deployed_usd
+        if closed:
+            exited += 1
+            logger.info(
+                "T4 EXIT  %-45s  %-3s  p_cur=%.3f  mip=%.3f  pnl=%+.4f  reason=%s",
+                ticker, direction, p_current, mip_current,
+                closed.get("exit_pnl", 0.0), "BAYESIAN_REVERSAL",
+            )
 
     for player_id, markets in pregame_by_player_id.items():
         ls = state_by_id.get(player_id)
@@ -548,7 +618,7 @@ def _run_cycle(
             )
             if not ok:
                 logger.error("C4/C6 write failure at %s — halting cycle", ticker)
-                return evaluated, fired, t4_deployed_usd
+                return evaluated, fired, exited, t4_deployed_usd
 
             if approval.get("approval_status") != "APPROVED":
                 continue
@@ -626,7 +696,7 @@ def _run_cycle(
                 )
                 if not ok:
                     logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)
-                    return evaluated, fired, t4_deployed_usd
+                    return evaluated, fired, exited, t4_deployed_usd
 
                 if pos:
                     store.mark_fired(order_id)
@@ -647,7 +717,10 @@ def _run_cycle(
         with open(_TRAJ_LOG_PATH, "a") as _f:
             _f.write("\n".join(_traj_buf) + "\n")
 
-    return evaluated, fired, t4_deployed_usd
+    if exited > 0:
+        logger.info("T4 EXIT PASS  exited=%d this cycle", exited)
+
+    return evaluated, fired, exited, t4_deployed_usd
 
 
 # ---------------------------------------------------------------------------
@@ -762,6 +835,7 @@ def main() -> None:
     cycle_n = 0
     total_evaluated = 0
     total_fired = 0
+    total_exited = 0
 
     while True:
         if kill_switch_armed(KILL_SWITCH_PATH):
@@ -806,7 +880,7 @@ def main() -> None:
             engine_t4, engine_t5 = _make_engines(t4_band_budget)
             cycle_id = f"C{cycle_n:04d}-{uuid.uuid4().hex[:6]}"
 
-            ev, fi, t4_deployed_game = _run_cycle(
+            ev, fi, ex, t4_deployed_game = _run_cycle(
                 cycle_id=cycle_id,
                 session_id=session_id,
                 live_states=all_states,
@@ -825,12 +899,14 @@ def main() -> None:
             cycle_n += 1
             total_evaluated += ev
             total_fired += fi
+            total_exited += ex
 
             budget_pct = (t4_deployed_game / t4_band_budget * 100.0) if t4_band_budget > 0 else 0.0
             logger.info(
-                "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d"
+                "─ cycle=%s  eval=%d fired=%d exited=%d │ session: eval=%d fired=%d exited=%d"
                 " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f",
-                cycle_id, ev, fi, total_evaluated, total_fired,
+                cycle_id, ev, fi, ex,
+                total_evaluated, total_fired, total_exited,
                 t4_deployed_game, t4_band_budget, budget_pct,
                 trader.get_state()["bankroll_usd"],
             )
