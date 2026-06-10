@@ -27,6 +27,7 @@ Coverage:
     - exit does NOT fire when mip_current <= p_current + NOISE_BUFFER_BAND_T4
     - time guard: no exit when time_remaining_min <= EXIT_MIN_TIME_REMAINING_MIN
     - NO position: exit fires when p_current > mip_current + NOISE_BUFFER_BAND_T4
+    - EXIT_MECHANICS_ACTIVE=False: exit pass is skipped entirely (ADR-0019 gate)
 """
 
 import json
@@ -465,7 +466,8 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True):
+             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
+             patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-001",
                 session_id="session-exit-001",
@@ -519,7 +521,8 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True):
+             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
+             patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-002",
                 session_id="session-exit-002",
@@ -570,7 +573,8 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True):
+             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
+             patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-003",
                 session_id="session-exit-003",
@@ -588,4 +592,54 @@ class TestRunCycleExitPass:
             )
 
         assert ex == 0, f"Expected 0 exits (time guard active), got {ex}"
+        assert len(trader.get_state()["open_positions"]) == 1
+
+    def test_exit_blocked_when_mechanics_inactive(self, tmp_path):
+        """
+        ADR-0019 Tier 2 gate: when EXIT_MECHANICS_ACTIVE=False (default), the exit
+        evaluation pass is skipped entirely — no exits regardless of signal strength.
+        """
+        ticker = "NBA_EXIT_TEST_004"
+        player_id = 45
+        trader = _make_trader_with_open_yes(
+            tmp_path, ticker=ticker, entry_mip=0.50, size=0.50
+        )
+
+        mock_loop = self._make_mock_loop_no_fire(ticker, player_id)
+        mock_engine_t4, mock_engine_t5 = self._make_mock_engines()
+        store = StagedOrderStore(str(tmp_path / "staged_exit_test4.db"))
+
+        # Signal would fire (same conditions as test 1): 4 min remaining, 2 pts vs 22 threshold
+        live_states = [_make_live_state_ext(player_id=player_id, pts=2, time_remaining=4.0)]
+        live_prices = {ticker: _make_player_market_ext(ticker, mip=0.50)}
+        pregame_ctx = {
+            player_id: [{
+                "ticker": ticker,
+                "threshold": 22,
+                "p_t1": 0.50,
+                "pts_l10_mean": 20.0,
+                "player_name": "Test Player",
+            }]
+        }
+
+        with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
+             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
+             patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", False):
+            ev, fi, ex, dep = _run_cycle(
+                cycle_id="cycle-exit-004",
+                session_id="session-exit-004",
+                live_states=live_states,
+                live_prices=live_prices,
+                pregame_by_player_id=pregame_ctx,
+                loop=mock_loop,
+                engine_t4=mock_engine_t4,
+                engine_t5=mock_engine_t5,
+                trader=trader,
+                store=store,
+                game_date="2026-06-10",
+                t4_band_budget=500.0,
+                t4_deployed_usd=0.0,
+            )
+
+        assert ex == 0, f"Expected 0 exits (gate inactive), got {ex}"
         assert len(trader.get_state()["open_positions"]) == 1
