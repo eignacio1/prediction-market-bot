@@ -1,0 +1,58 @@
+name: Post-Game Resolve
+
+# Resolves T1 and T4 paper positions after game end.
+# Runs on GitHub's servers — bypasses the stats.nba.com 403 block on VPS datacenter IPs.
+# Mirrors Mac post_game_gX_resolve.sh steps 1–2 as a VPS-independent fallback.
+#
+# Required GitHub Actions secret: VPS_SSH_KEY (private key for root@157.230.91.33)
+# Same secret as tss_daily_sync.yml.
+#
+# Schedule: 05:30 UTC daily (after typical NBA game end ~03:00–04:00 UTC)
+# If the Mac cron already resolved positions, both scripts exit cleanly (0 open positions).
+
+on:
+  schedule:
+    # 05:30 UTC = 10:30 PM PDT — ~2-3h after most NBA games end
+    # Fires before Mac post_game_gX_resolve.sh at 06:00 UTC, serving as primary auto-resolve.
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  post-game-resolve:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          # Install nba_api separately — not in pyproject.toml (GG-013: VPS blocked, GHA is not)
+          pip install "nba_api>=1.5.0"
+          # Install bot package with its declared deps (pyproject.toml)
+          pip install -e .
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519_droplet
+          chmod 600 ~/.ssh/id_ed25519_droplet
+          ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
+
+      - name: Resolve T1 positions
+        env:
+          BOT_ENV: paper
+        run: |
+          PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_local.py
+        continue-on-error: true
+
+      - name: Resolve T4 positions
+        env:
+          BOT_ENV: paper
+        run: |
+          PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py
+        continue-on-error: true
