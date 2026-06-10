@@ -2,7 +2,30 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 43 — APR-0019 ACCEPTED (DS: Earl). GG-018 RESOLVED. Kalshi fee 0.07 partially verified (≥2 sources; one source suggests 0.06 for sports; T-151 remains open). run_t4_live.py EXIT_MECHANICS_ACTIVE gate committed + deployed. MC adj_λ upgrade deployed. 817/817 tests. G4 cron runs 23:00 UTC tonight.
+**Last reviewed:** 2026-06-10 SESSION 44 — G4 READINESS COMPLETE. T4 stale daily-loss kill switch bug fixed (`run_t4_live.py:438`, commit `a300a51`). GHA post-game resolve live (`.github/workflows/post_game_resolve.yml`, commit `aa263fb`, verified workflow_dispatch run 27253281067). System fully automatic for G4. 817/817 tests.
+
+---
+
+## SESSION 44 — COMPLETE
+
+| Task | Status |
+|------|--------|
+| **T4 daily-loss stale-date kill switch bug** | ✅ FIXED — `run_t4_live.py:438`: `current_daily_loss=$157.89` from G3 would have fired kill switch on every G4 bet. Added date-check reset: when `portfolio_data.get("daily_loss_date") != today_str`, resets `current_daily_loss=0.0` before entering game loop. Commit `a300a51`, deployed to VPS. |
+| **GHA post-game resolve workflow** | ✅ LIVE — `.github/workflows/post_game_resolve.yml` created. Root cause: nba_api 403-blocked on VPS (Akamai WAF) + Mac cron Mac-dependent. Fix: GHA runners (not blocked) run T1+T4 resolve at 05:30 UTC daily via `VPS_SSH_KEY` secret. SSH key written to `~/.ssh/id_ed25519_droplet` (matches hardcoded path in both resolve scripts). `continue-on-error: true` on each step. Both scripts idempotent (0 open positions → clean exit). Verified workflow_dispatch run 27253281067 (35s, all green). Commit `aa263fb`, deployed VPS. Mac `post_game_g4_resolve.sh` cron `0 23 10 6 *` remains as secondary fallback + experiment runner (EXP-017/018). **G4 fully automatic — no operator action required.** |
+| **DECISION_LOG entries** | ✅ COMPLETE — Both SESSION 44 decisions logged: T4 stale daily-loss fix + GHA auto-resolve architecture. |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
+
+---
+
+## SESSION 43 — COMPLETED (prior session)
+
+| Task | Status |
+|------|--------|
+| **APR-0019 ACCEPTED** | ✅ DS: Earl — EXIT_MECHANICS_ACTIVE=True gate added to `run_t4_live.py`. |
+| **GG-018 RESOLVED** | ✅ APR-0017 floor derivation amended; T-155 registered. |
+| **Kalshi fee 0.07 partial verification** | ✅ GG-020: ≥2 sources support 0.07; T-151 open for receipt confirmation post-G6. |
+| **EXIT_MECHANICS_ACTIVE=True deployed** | ✅ Committed + deployed VPS. |
+| **MC adj_λ upgrade deployed** | ✅ run_monte_carlo.py updated with TSS adj_λ support. |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 43 — APR-0019 ACCEPTED. GG-018 RESOLVED. EXIT_MECHANICS_ACTIVE=True deployed. MC adj_λ upgrade deployed. 817/817 tests. G4 cron tonight.  
+**Last reviewed:** 2026-06-10 SESSION 44 — G4 readiness complete. T4 stale daily-loss kill switch bug fixed. GHA post-game resolve live at 05:30 UTC. System fully automatic for G4. 817/817 tests.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,7 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — T1: 82/66 bets ✓; 3/5 game nights (need 2 more: G4 Jun 10 + G5 ~Jun 12); EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+$0.0050, n=66); EXP-018 CONFIRMED_NEGATIVE overall / injury-filtered POSITIVE — Hypothesis C pending DS decision (GG-004); G4 auto-resolves Jun 10 via post_game_g4_resolve.sh cron |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — T1: 82/66 bets ✓; 3/5 game nights (need 2 more: G4 Jun 10 + G5 ~Jun 12); EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+$0.0050, n=66); EXP-018 CONFIRMED_NEGATIVE overall / injury-filtered POSITIVE — Hypothesis C pending DS decision (GG-004); G4 auto-resolves Jun 11 via GHA workflow `post_game_resolve.yml` at 05:30 UTC (primary) + Mac cron `post_game_g4_resolve.sh` `0 23 10 6 *` (fallback + experiment runner) |
 | PIPE-07 T4 in-play paper trading (PIPE-07) | EL | HIGH | ✅ 2026-06-08 SESSION 37 — portfolio isolation fix, cron.conf 23:00 UTC, PIPE-07R-LOCAL script |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
