@@ -185,6 +185,26 @@ def get_active_bands(include_realtime: bool = False) -> list[BandConfig]:
 
 
 # ---------------------------------------------------------------------------
+# Band exit noise buffers — ADR-0018 + ADR-0019
+# ---------------------------------------------------------------------------
+# Derived analytically in EXP-019A: NOISE_BUFFER_BAND = max(2×σ_p, EXIT_NET_COST_BAND)
+# where σ_p = |dP/dλ| × σ_λ evaluated at the band's representative firing window.
+# EXP-019B analytic confirms FULL_EXIT (Kelly fraction → 0 at exit boundary).
+# Empirical validation pending EXP-019B/C (≥3 game nights trajectory + spread data, G4+).
+# Before activation: run EXP-019B empirical; if observed buffer deviates >20% from these
+# analytic values, update via ADR amendment (T-152). See ADR-0019 for full gate structure.
+
+NOISE_BUFFER_BAND_T1: float = 0.22053   # EXP-019A analytic; σ_λ_ingame=1.45 (Q2 midpoint, 24min elapsed)
+NOISE_BUFFER_BAND_T2: float = 0.22053   # same σ_λ basis as T1
+NOISE_BUFFER_BAND_T3: float = 0.22053   # same σ_λ basis as T1
+NOISE_BUFFER_BAND_T4: float = 0.13905   # EXP-019A analytic; σ_λ=0.5 (Q3/Q4 firing window)
+NOISE_BUFFER_BAND_T5: float = 0.13328   # EXP-019A analytic; near-deterministic (final 3 min)
+
+# Exit guard: no exits in the final N minutes — T5 arithmetic certainty logic takes over.
+EXIT_MIN_TIME_REMAINING_MIN: float = 3.0
+
+
+# ---------------------------------------------------------------------------
 # Strategy band specification — mandatory structural interface for all strategies
 # ---------------------------------------------------------------------------
 #

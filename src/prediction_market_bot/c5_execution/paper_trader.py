@@ -225,6 +225,7 @@ class PaperTrader:
                 "risk_eval_id": risk_id,
                 "forecast_id": forecast_id,
                 "status": "OPEN",
+                "pool_isolated": pool_isolated,  # ADR-0019: exit_position uses this to skip bankroll update
                 "kalshi_order_id": None,
                 "kalshi_order_status": "local_only",
                 "kalshi_contracts": None,
@@ -287,6 +288,111 @@ class PaperTrader:
                 session_id=session_id,
             )
             return (ok_save and ok_log), pos
+
+    def exit_position(
+        self,
+        position_id: str,
+        exit_mip: float,
+        p_current: float,
+        exit_reason: str,
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """
+        Early exit from an open position (ADR-0018/0019 — band exit mechanics).
+
+        Sells the position at the current market mid price before expiry.
+        EXP-019B analytic: Kelly fraction → 0 at exit boundary, so full exit
+        is always the correct action. Partial exit is never implemented.
+
+        PnL formula (pre-fee):
+          YES: pnl = size × (exit_mip / entry_mip  − 1)
+          NO:  pnl = size × ((1−exit_mip) / (1−entry_mip) − 1)
+
+        Kalshi charges a taker fee on exit in the same form as entry
+        (ADR-0016): fee = 0.07 × exit_mip × (1−exit_mip).
+        We record this but do NOT deduct from paper P&L — paper fees are
+        notional until G6 live capital (T-151).
+
+        pool_isolated positions (T4 flat-sizing): bankroll is NOT adjusted
+        (never was deducted on entry); only total_realized_pnl updated.
+        Returns (ok, closed_position_record). Empty dict if position not found.
+        """
+        with self._lock:
+            pos = next(
+                (p for p in self._state["open_positions"] if p["position_id"] == position_id),
+                None,
+            )
+            if pos is None:
+                return True, {}
+
+            size        = pos["size_usd"]
+            entry_mip   = pos["mid_price_at_entry"]
+            direction   = pos["direction"]
+            pool_isolated = pos.get("pool_isolated", False)
+
+            if direction == "YES":
+                exit_proceeds = size * (exit_mip / entry_mip) if entry_mip > 0 else 0.0
+            else:
+                entry_no = 1.0 - entry_mip
+                exit_no  = 1.0 - exit_mip
+                exit_proceeds = size * (exit_no / entry_no) if entry_no > 0 else 0.0
+
+            pnl = round(exit_proceeds - size, 4)
+
+            # Exit taker fee (notional in paper mode — not deducted from P&L per T-151)
+            exit_fee_per_contract = round(0.07 * exit_mip * (1.0 - exit_mip), 6)
+
+            # Remove from open positions
+            self._state["open_positions"] = [
+                p for p in self._state["open_positions"]
+                if p["position_id"] != position_id
+            ]
+
+            closed_pos = {
+                **pos,
+                "status": "EXITED",
+                "exit_mip": round(exit_mip, 6),
+                "p_current_at_exit": round(p_current, 6),
+                "exit_reason": exit_reason,
+                "exit_pnl": pnl,
+                "exit_fee_per_contract": exit_fee_per_contract,
+                "exited_at": _utc_now(),
+            }
+            self._state["closed_positions"].append(closed_pos)
+            self._state["total_realized_pnl"] = round(
+                self._state["total_realized_pnl"] + pnl, 4,
+            )
+            if pnl < 0:
+                self._state["current_daily_loss"] = round(
+                    self._state["current_daily_loss"] + abs(pnl), 4,
+                )
+            # pool_isolated: bankroll was never decremented on entry, so do not modify it.
+            # Non-isolated: return stake + pnl to bankroll.
+            if not pool_isolated:
+                self._state["bankroll_usd"] = round(
+                    self._state["bankroll_usd"] + size + pnl, 4,
+                )
+
+            ok_save = self._save()
+            ok_log  = self._logger.info(
+                COMPONENT, "paper_position_exited",
+                payload={
+                    "position_id": position_id,
+                    "player_name": pos["player_name"],
+                    "direction": direction,
+                    "threshold": pos["kalshi_threshold"],
+                    "size_usd": size,
+                    "entry_mip": entry_mip,
+                    "exit_mip": exit_mip,
+                    "p_current": p_current,
+                    "pnl": pnl,
+                    "exit_reason": exit_reason,
+                    "bankroll_after": self._state["bankroll_usd"],
+                    "pool_isolated": pool_isolated,
+                },
+                session_id=session_id,
+            )
+            return (ok_save and ok_log), closed_pos
 
     def resolve_pending(
         self,

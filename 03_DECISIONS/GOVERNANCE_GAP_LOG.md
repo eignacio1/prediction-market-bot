@@ -346,7 +346,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | ADR-0016 was written as a T1 fix; T4's edge computation is structurally different (gross = p_t4 - mip, no signed gross_edge key) so the parallel was not checked. ARE WE COMPROMISED? protocol checks `MIN_EDGE_TO_APPROVE` values in risk.py but does not verify that every execution path subtracts fees before that gate. No test asserts fee subtraction in T4 path. |
 | Impact | **Part A (paper mode):** T4 paper bets with gross_edge 0.020–0.0375 at P≈0.50 have been placed with near-zero or negative net edge. At 1,115 bets/game and unknown distribution of edge values, some fraction of T4 paper bets are fee-negative. Paper P&L does not track Kalshi fees as a real cash cost (paper fees are notional), so T4 paper P&L is overstated by aggregate fee drag (~$19/game at G3 throughput). G6 evidence from T4 paper does not account for this cost. **Part B (live capital):** At live capital, ~$19/game T4 + ~$2/game T1 in fees at Finals scale → ~$21/Finals-game cost that must be covered by gross edge. At regular season scale (10+ games/night, T1 + T4), aggregate daily fee drag at designed throughput is a material input to break-even analysis that has never been computed. This must be in ADR-0005 (live capital authorization). |
 | Resolution path | **Part A:** Fix T4 edge computation to subtract fee before C4: in `run_t4_live.py` before `fc_record`, add `kalshi_fee = 0.07 × mip × (1-mip)` and set `fc_record["edge"] = edge - kalshi_fee`, `fc_record["gross_edge"] = edge`. Requires T-NNN + new tests. **Part B:** Compute aggregate fee budget at designed throughput and add to ADR-0005 break-even analysis: (a) T4 flat-sizing: n_bets × avg_fee = throughput × 0.07 × E[mid × (1-mid)]; (b) T1 Kelly-sizing: derive from approved bet distribution; (c) total at regular-season scale. Neither fix requires an ADR independently, but Part B must be resolved before ADR-0005 can be accepted. Register T-149 (code fix) and T-150 (break-even analysis). |
-| Status | OPEN — T-149 (T4 fee gate fix) and T-150 (aggregate fee break-even analysis) registered. Part A is a code fix; Part B is required input to ADR-0005. |
+| Status | **RESOLVED — 2026-06-09 SESSION 42.** T-149 (T4 fee gate code fix) deployed; T-150 (aggregate fee break-even analysis) complete. Net-of-fee edge now in C4 gate for T4. Aggregate fee drag documented in DECISION_LOG SESSION 42 entry. |
+
+---
+
+### GG-020 — Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-020 |
+| Discovered | 2026-06-09 SESSION 42 — operator question on fee rate provenance during institutional hygiene sprint |
+| Category | Governance provenance gap — documentation-sourced constant, no empirical verification |
+| What was missed | `ADR-0016` establishes `fee(P) = 0.07 × P × (1−P)` as the Kalshi taker fee formula. `GG-009` discovery note states "Fee formula sourced from Kalshi API docs" — verbal assertion only. No URL is cited in ADR-0016 or GG-009. No documentation version is recorded. No verification against an actual Kalshi transaction receipt has been performed. Verification is structurally impossible in paper trading (no real orders are placed, no real fees charged). The 0.07 rate was taken from documentation at face value in SESSION 22 (2026-06-03) and embedded directly into ADR-0016, `run_paper_trade.py`, `run_pregame.py`, `run_t4_live.py`, `paper_trader.py`, and all fee-adjusted edge computations. |
+| What is NOT a validation | `complement_lock_scanner.py:DEFAULT_FEE_PER_CONTRACT = 0.030` (labeled "EXP-010 confirmed Kalshi vig") is the bid-ask spread — a different cost metric. EXP-010 confirming the vig does NOT validate the taker fee rate. These are distinct quantities. |
+| When it should have been caught | ADR-0016 acceptance (2026-06-04 SESSION 30) — when the fee formula was formally adopted, a source citation and verification plan should have been part of the acceptance criteria. |
+| Impact | LOW now (paper mode; fee is notional; direction of impact well-understood). MEDIUM pre-G6: ADR-0005 break-even analysis depends on the fee drag numbers from T-150, which are computed using 0.07. If Kalshi's actual taker fee differs — e.g., 0.05 or 0.10 — all fee-adjusted edge computations, the T-149 C4 gate threshold, and T-150 break-even estimates are wrong by a proportional factor. At Finals throughput (~$27/game combined T1+T4 fee drag from T-150 analysis), a 30% error in the fee rate = ~$8/game error in the break-even model. |
+| Discovery method | Operator question: "Is that 0.07 an arbitrary number? Did you log it as the metric for the fees based on scrubbing through the entire Kalshi database?" — SESSION 42 audit of fee rate provenance revealed no URL, no version, no receipt verification anywhere in the governance artifacts. |
+| Resolution path | **Before ADR-0005 (live capital authorization):** (1) Locate the current Kalshi API documentation fee schedule and verify `fee = 0.07 × P × (1−P)` taker. Record URL and access date in ADR-0016 amendment. (2) Place one real live trade post-G6 authorization and verify the fee charged on the receipt matches the formula. If the rate differs, supersede ADR-0016 with corrected constant and rerun T-150 break-even analysis. (3) Both verifications must be complete before ADR-0005 is accepted. Register T-151 (operator action: read current Kalshi fee documentation and record URL + rate in governance artifact). |
+| Status | **OPEN — 2026-06-09 SESSION 42.** T-151 registered: pre-ADR-0005 operator action to verify fee rate against current Kalshi documentation and first live receipt. |
 
 ---
 
@@ -367,6 +384,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-015 | 2026-06-05 | GHA cron moved 00:30→20:30 UTC (T-137). GAME_DATE now aligned between GHA and PIPE-02 early cron. Late-cron mismatch acceptable for Finals; regular-season two-run strategy deferred. |
 | GG-011 | 2026-06-05 | ADR-0017 ACCEPTED. PAPER_T4_FLAT_SIZING=true confirmed as paper architecture (bypasses formula). Phase 8 per-bet sizing deferred to ADR-0018. T4_BAND_WEIGHT stub comment updated. |
 | GG-016 | 2026-06-05 | BOT_C4_ACTIVE guard removed from run_t3_pretip.py (commit 6cf87d8). PIPE-06 now runs cleanly. T3 signals confirmed at 21:58 UTC Jun 5 — 32 NEUTRAL, cron functional. |
+| GG-019 | 2026-06-09 | T-149 deployed (T4 fee gate now subtracts kalshi_fee before C4 evaluation). T-150 complete (aggregate fee drag: T4 $14.28/game, T1 $12.89/game, combined ~$27/game at Finals scale; documented in DECISION_LOG SESSION 42). GG-020 registered as new gap: fee rate source citation + receipt verification required pre-ADR-0005. |
 
 ---
 
