@@ -435,6 +435,8 @@ def _run_cycle(
     current_bankroll   = portfolio["bankroll_usd"]
     initial_bankroll   = portfolio.get("initial_bankroll_usd", current_bankroll)
     current_daily_loss = portfolio.get("current_daily_loss", 0.0)
+    if portfolio.get("daily_loss_date", "") != date.today().isoformat():
+        current_daily_loss = 0.0
     # Bug H fix: drawdown = realized losses only (deployed T1 capital is not a loss).
     # Without this fix, T1 deploying $382 shows 38.2% drawdown — above the 20% kill
     # switch — and C4 rejects every T4 bet before the game starts.
