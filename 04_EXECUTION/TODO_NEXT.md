@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-09 SESSION 42 (sprint) — T-146 + T-147 COMPLETE. ADR-0019 accepted. Exit mechanics in paper_trader.py + run_t4_live.py. 816/816 tests. T-152 + T-153 registered (pre-activation empirical gates). DEPLOY TO VPS BEFORE G4.
+**Last reviewed:** 2026-06-09 SESSION 43 — APR-0019 ACCEPTED (DS: Earl). GG-018 RESOLVED. Kalshi fee 0.07 partially verified (≥2 sources; one source suggests 0.06 for sports; T-151 remains open). run_t4_live.py EXIT_MECHANICS_ACTIVE gate committed + deployed. MC adj_λ upgrade deployed. 817/817 tests. G4 cron runs 23:00 UTC tonight.
 
 ---
 
