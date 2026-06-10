@@ -86,16 +86,24 @@ def _read_bankroll() -> float:
 
 def _load_markets(pregame_path: Path) -> Tuple[List[dict], dict]:
     data = json.loads(pregame_path.read_text())
-    markets = [
-        {
+    markets = []
+    for f in data.get("forecasts", []):
+        # Use opp_adj_lambda (ADR-0015) for Poisson draws when available.
+        adj_lam = f.get("opp_adj_lambda")
+        sim_lam = float(adj_lam) if adj_lam is not None else float(f["pts_l10_mean"])
+        # Use pre-computed p_estimate and fee-adjusted net edge (ADR-0016/T-149) when available.
+        p_precomp = float(f["p_estimate"]) if f.get("p_estimate") is not None else None
+        net_edge_precomp = float(f["edge"]) if f.get("edge") is not None else None
+        markets.append({
             "player": f["player_name"],
             "lam": float(f["pts_l10_mean"]),
+            "sim_lam": sim_lam,
             "threshold": int(f["kalshi_threshold"]),
             "mid": float(f["mid_price"]),
             "vig": float(f["vig"]),
-        }
-        for f in data.get("forecasts", [])
-    ]
+            "p_precomp": p_precomp,
+            "net_edge_precomp": net_edge_precomp,
+        })
     return markets, data
 
 
@@ -129,9 +137,20 @@ def compute_bets(
         mid = float(m["mid"])
         vig = float(m["vig"])
 
-        half = vig / 2.0
-        p_model = _poisson_sf(threshold, lam)
-        edge = p_model - mid - half
+        # Use pre-computed p_estimate (adj_λ applied, ADR-0015) when available;
+        # fall back to recomputing from raw pts_l10_mean (pre-ADR-0015 behaviour).
+        if m.get("p_precomp") is not None:
+            p_model = m["p_precomp"]
+        else:
+            p_model = _poisson_sf(threshold, lam)
+
+        # Use fee-adjusted net edge (ADR-0016/T-149) when available;
+        # fall back to vig-adjusted gross edge (pre-ADR-0016 behaviour).
+        if m.get("net_edge_precomp") is not None:
+            edge = m["net_edge_precomp"]
+        else:
+            half = vig / 2.0
+            edge = p_model - mid - half
 
         if edge > min_edge:
             direction = "YES"
@@ -190,7 +209,8 @@ def simulate(bets: List[dict], n_sims: int = N_SIMS) -> Tuple[np.ndarray, np.nda
 
     rng = np.random.default_rng(SEED)
     players = list({b["player"] for b in bets})
-    lambda_map = {b["player"]: b["lam"] for b in bets}
+    # Use adj_λ (sim_lam) for score draws when available (ADR-0015); else raw lam.
+    lambda_map = {b["player"]: b.get("sim_lam", b["lam"]) for b in bets}
     scores = {p: rng.poisson(lambda_map[p], size=n_sims) for p in players}
 
     pnl = np.zeros(n_sims)
@@ -239,12 +259,17 @@ def build_report(
     lines: List[str] = []
 
     label_str = f"  Label: {label}" if label else ""
+    adj_lam_applied = any(m.get("net_edge_precomp") is not None for m in markets)
+    t3_note = "NEUTRAL (pre-game; PIPE-06 not yet run)"
 
     lines += [
         sep,
         "  PIPE-03 Monte Carlo Pre-Game Assessment",
         f"  game_date={meta.get('game_date','?')}  |  pregame_run={meta.get('run_at','?')}",
         f"  Bankroll=${bankroll:.2f}  |  T1_KELLY={kelly}  |  MIN_EDGE={min_edge}  |  N={N_SIMS:,}",
+        f"  adj_λ (ADR-0015): {'APPLIED — opp_adj_lambda + fee-adjusted net edge from pregame' if adj_lam_applied else 'NOT in pregame — recomputed from pts_l10_mean'}",
+        f"  T3 signals       : {t3_note}",
+        f"  Exit mechanics   : T4 only (EXIT_MECHANICS_ACTIVE=True); not modeled in T1 MC",
     ]
     if label_str:
         lines.append(label_str)
