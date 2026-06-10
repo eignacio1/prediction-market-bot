@@ -137,7 +137,22 @@ class PaperTrader:
         today = _today()
         if self._state.get("daily_loss_date") != today:
             self._state["current_daily_loss"] = 0.0
+            self._state["daily_net_pnl"] = 0.0
             self._state["daily_loss_date"] = today
+
+    def _accumulate_daily_loss(self, pnl: float) -> None:
+        """Net daily-loss semantics: wins offset losses within the same day.
+
+        current_daily_loss = max(0, -daily_net_pnl), so MAX_DAILY_LOSS_PCT
+        (ADR-0012) gates on true net daily loss. Gross-only accumulation made
+        a profitable high-churn night able to halt betting (G3: gross $317.76
+        vs net -$198.84). ADR-0012 amendment registered as T-156.
+        """
+        self._reset_daily_loss_if_new_day()
+        self._state["daily_net_pnl"] = round(
+            self._state.get("daily_net_pnl", 0.0) + pnl, 4)
+        self._state["current_daily_loss"] = round(
+            max(0.0, -self._state["daily_net_pnl"]), 4)
 
     # ------------------------------------------------------------------
     # Public API
@@ -362,10 +377,7 @@ class PaperTrader:
             self._state["total_realized_pnl"] = round(
                 self._state["total_realized_pnl"] + pnl, 4,
             )
-            if pnl < 0:
-                self._state["current_daily_loss"] = round(
-                    self._state["current_daily_loss"] + abs(pnl), 4,
-                )
+            self._accumulate_daily_loss(pnl)
             # pool_isolated: bankroll was never decremented on entry, so do not modify it.
             # Non-isolated: return stake + pnl to bankroll.
             if not pool_isolated:
@@ -515,9 +527,7 @@ class PaperTrader:
                 self._state["bankroll_usd"] = round(self._state["bankroll_usd"] + size + pnl, 4)
                 self._state["total_realized_pnl"] = round(
                     self._state["total_realized_pnl"] + pnl, 4)
-                if pnl < 0:
-                    self._state["current_daily_loss"] = round(
-                        self._state["current_daily_loss"] + abs(pnl), 4)
+                self._accumulate_daily_loss(pnl)
                 self._save()
 
             ok = self._logger.info(
