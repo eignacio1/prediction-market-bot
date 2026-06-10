@@ -1,6 +1,6 @@
 # APR-0019 — G6 Evidence Standard Amendment: Per-Bucket Evidence Separation
 
-**Status:** DRAFT — pending DS sign-off  
+**Status:** ACCEPTED — DS sign-off 2026-06-09  
 **Amends:** APR-0017 (G6 Multi-Dimensional Evidence Standard, 2026-06-01)  
 **Does NOT supersede:** APR-0017 in full. APR-0017 remains operative in all sections not explicitly modified below.  
 **Approved by:** [pending — DS: Earl Ignacio]  
@@ -183,11 +183,6 @@ EXP-018 (2026-06-08) found structural asymmetry between YES and NO bet performan
 - [ ] YES/NO direction tracking: monitoring only, not a current G6 gate — acceptable
 - [ ] APR-0017 remains operative in all non-amended sections — acceptable
 
-**Pending DS approval.** Upon sign-off:
-1. Update APPROVALS_REGISTER.md with APR-0019 row
-2. Update GG-018 status: OPEN (ADR required) → RESOLVED (APR-0019 accepted)
-3. Log in DECISION_LOG.md
-
-**Sign-off:** _________________________  
-**Date:** _________________________  
+**Sign-off:** Earl Ignacio  
+**Date:** 2026-06-09  
 **Role:** DS — Earl Ignacio
