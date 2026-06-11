@@ -473,10 +473,11 @@ class TestMinBetFloor:
     @pytest.mark.unit
     def test_sub_floor_bet_is_rejected(self):
         """Very small edge + small bankroll → Kelly size < MIN_BET_USD → REJECTED."""
-        # edge=0.03, market=0.50, bankroll=$100 → Kelly ≈ $0.75 (below $10 floor)
+        # edge=0.05 (clears ADR-0020 MIN_EDGE=0.04), market=0.50, bankroll=$100
+        # → Kelly size well below the $10 floor
         fc = _make_forecast(
-            p_estimate=0.53, market_implied_prob=0.50,
-            edge=0.03, direction="YES",
+            p_estimate=0.55, market_implied_prob=0.50,
+            edge=0.05, direction="YES",
         )
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine(bankroll=100.0)
@@ -501,8 +502,8 @@ class TestMinBetFloor:
     def test_floor_rejection_fields(self):
         """Rejection record for min_bet_floor: approved_size=0, kelly_size_positive in checks."""
         fc = _make_forecast(
-            p_estimate=0.53, market_implied_prob=0.50,
-            edge=0.03, direction="YES",
+            p_estimate=0.55, market_implied_prob=0.50,
+            edge=0.05, direction="YES",
         )
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine(bankroll=100.0)

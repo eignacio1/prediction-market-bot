@@ -12,11 +12,15 @@ What this module does:
     T4 (Poisson current-state model): Computes a fresh probability estimate
     from current game state: P(total_pts >= threshold | pts_so_far,
     time_remaining, pace). p_t1 is NOT incorporated into this calculation —
-    it serves two roles only: (1) materiality gate (|p_t4 - p_t1| >=
-    T4_MIN_DELTA_P required to act), and (2) the fire condition requires
-    p_t4 > mip + vig. Design rationale: by T4 time, current game state is
-    the dominant sufficient statistic; p_t1 is the pre-game benchmark, not
-    the Bayesian prior.
+    it is the pre-game benchmark carried for telemetry, not the Bayesian
+    prior. Materiality (ADR-0021, resolves GG-025) is judged on the
+    INCREMENTAL signal delta_p_incr = p_t4 - p_t4_baseline, where the
+    baseline is the same Poisson model evaluated at the tip-off null state
+    (0 pts, full game remaining). This cancels the raw-Poisson-vs-Platt
+    calibration gap by construction: at tip-off delta_p_incr = 0 identically,
+    and E[delta_p_incr] = 0 whenever the player scores at the pregame rate
+    (Poisson additivity). The fire condition additionally requires
+    p_t4 > mip + vig.
 
     T5 (Arithmetic certainty): Classifies a player-threshold market as
     NEAR_CERTAIN_YES, NEAR_CERTAIN_NO, or UNCERTAIN in the final 3 minutes
@@ -52,12 +56,26 @@ from dataclasses import dataclass
 # Constants
 # ---------------------------------------------------------------------------
 
-# T4: minimum absolute change in probability to treat as material.
-# ADR-0020: raised 0.08→0.50. Derivation: mean+1σ of calibration-gap distribution at
-# game start (t=48, 0 pts scored): mean=0.376, σ=0.165, mean+1σ=0.541→0.50 rounded.
-# Sets threshold above noise floor of raw-Poisson vs Platt-scaled T1 calibration gap.
-# Band-aid fix; architectural fix (incremental delta_p) tracked under GG-025.
-T4_MIN_DELTA_P: float = 0.50
+# T4 materiality gate (ADR-0021; supersedes ADR-0020 D2; resolves GG-025).
+#
+# The gate is computed per ticker per cycle — no fixed delta threshold:
+#   material ⟺ |delta_p_incr| >= max(T4_DELTA_SIGMA_Z · σ_null(t), T4_MIN_DELTA_FLOOR)
+#
+#   delta_p_incr  = p_t4(current state) - p_t4(tip-off null state). Stateless and
+#                   restart-safe: the baseline is deterministic from (pace, threshold),
+#                   both fixed pregame — no stored game-start snapshot required.
+#   σ_null(t)     = exact standard deviation of delta_p_incr at the current elapsed
+#                   time under the null hypothesis that the player scores at the
+#                   pregame rate. Enumerated from the Poisson pmf (closed form, no MC).
+#                   Because Poisson(pace·elapsed) + Poisson(pace·remaining) =
+#                   Poisson(pace·48), the null delta has mean exactly 0.
+#   Z = 2.0       = house noise-envelope convention (EXP-019A σ-methodology, ADR-0018).
+#   FLOOR = 0.04  = economic floor; mirrors C4 MIN_EDGE_TO_APPROVE (ADR-0020). A
+#                   probability move below the minimum actionable edge cannot be
+#                   commercially material regardless of statistical significance.
+GAME_MINUTES_TOTAL: float = 48.0
+T4_DELTA_SIGMA_Z: float = 2.0
+T4_MIN_DELTA_FLOOR: float = 0.04
 
 # T5: game time threshold for late-game arithmetic activation.
 T5_TIME_THRESHOLD_MIN: float = 3.0
@@ -110,9 +128,12 @@ class T4Signal:
     """Updated probability estimate from T4 Bayesian inference."""
     player_id: str
     threshold: float
-    p_t1: float               # T1 pre-game benchmark (from C3 LR model)
+    p_t1: float               # T1 pre-game benchmark (from C3 LR model) — telemetry only
     p_t4: float               # T4 Poisson estimate (fresh from game state; not a posterior)
-    delta_p: float            # p_t4 - p_t1; material if |delta_p| >= T4_MIN_DELTA_P
+    delta_p: float            # p_t4 - p_t1; calibration-contaminated, kept for telemetry
+    p_t4_baseline: float      # p_t4 at the tip-off null state (0 pts, full game remaining)
+    delta_p_incr: float       # p_t4 - p_t4_baseline; live game-state signal only (ADR-0021)
+    sigma_null: float         # exact null σ of delta_p_incr at current elapsed time
     pts_so_far: float
     pts_needed: float         # max(0, threshold - pts_so_far)
     lambda_remaining: float   # Poisson lambda (expected pts remaining)
@@ -206,6 +227,52 @@ def opp_adjusted_lambda(
     return pts_mean * factor
 
 
+def null_delta_sigma(pace_pts_per_min: float, threshold: float, time_remaining_min: float) -> float:
+    """
+    Exact standard deviation of delta_p_incr under the null hypothesis that
+    the player scores at the pregame rate (pace_pts_per_min) all game.
+
+    At elapsed time τ = GAME_MINUTES_TOTAL − time_remaining, the null says
+    pts_so_far ~ Poisson(pace·τ). For each outcome k, the model would report
+    p_t4(k) = P(total ≥ threshold | k pts, λ_rem = pace·time_remaining).
+    Poisson additivity gives Σ_k pmf(k)·p_t4(k) = p_t4_baseline exactly, so
+    the null delta has mean 0 and Var = Σ_k pmf(k)·(p_t4(k) − baseline)².
+
+    Structural facts (asserted by tests):
+      σ = 0 at tip-off (no information yet);
+      σ → sqrt(b·(1−b)) at the final horn (b = baseline) — full resolution;
+      σ is non-decreasing in elapsed time (martingale variance accumulation).
+
+    Pure stdlib math; O(λ_elapsed + threshold) per call — well inside the
+    50ms T4 compute budget.
+    """
+    t_rem = max(0.0, time_remaining_min)
+    elapsed = max(0.0, GAME_MINUTES_TOTAL - t_rem)
+    lam_elapsed = pace_pts_per_min * elapsed
+    lam_remaining = pace_pts_per_min * t_rem
+    baseline = p_exceeds_threshold(0.0, threshold, pace_pts_per_min * GAME_MINUTES_TOTAL)
+    if lam_elapsed <= 0.0:
+        return 0.0
+
+    var = 0.0
+    pmf = math.exp(-lam_elapsed)
+    cum = 0.0
+    k = 0
+    # Hard cap guards against pathological inputs from a bad live feed.
+    k_cap = int(lam_elapsed + 12.0 * math.sqrt(lam_elapsed) + 30.0)
+    while k <= k_cap and cum < 1.0 - 1e-12:
+        p_k = p_exceeds_threshold(float(k), threshold, lam_remaining)
+        d = p_k - baseline
+        var += pmf * d * d
+        cum += pmf
+        k += 1
+        pmf *= lam_elapsed / k
+    # Residual tail mass sits at high k where p_t4 ≈ 1 → delta ≈ 1 − baseline.
+    tail = max(0.0, 1.0 - cum)
+    var += tail * (1.0 - baseline) * (1.0 - baseline)
+    return math.sqrt(max(0.0, var))
+
+
 def p_exceeds_threshold(pts_so_far: float, threshold: float, lam_remaining: float) -> float:
     """
     P(total_pts >= threshold | pts_so_far, lambda_remaining).
@@ -260,6 +327,13 @@ class GameStateModel:
         lam = gs.pace_pts_per_min * gs.time_remaining_min
         p_t4 = p_exceeds_threshold(gs.pts_so_far, threshold, lam)
         delta_p = p_t4 - p_t1
+        p_t4_baseline = p_exceeds_threshold(
+            0.0, threshold, gs.pace_pts_per_min * GAME_MINUTES_TOTAL
+        )
+        delta_p_incr = p_t4 - p_t4_baseline
+        sigma_null = null_delta_sigma(
+            gs.pace_pts_per_min, threshold, gs.time_remaining_min
+        )
         pts_needed = max(0.0, threshold - gs.pts_so_far)
         t5_eligible = (
             gs.time_remaining_min <= T5_TIME_THRESHOLD_MIN
@@ -271,6 +345,9 @@ class GameStateModel:
             p_t1=p_t1,
             p_t4=p_t4,
             delta_p=delta_p,
+            p_t4_baseline=p_t4_baseline,
+            delta_p_incr=delta_p_incr,
+            sigma_null=sigma_null,
             pts_so_far=gs.pts_so_far,
             pts_needed=pts_needed,
             lambda_remaining=lam,
@@ -279,8 +356,12 @@ class GameStateModel:
         )
 
     def is_material(self, signal: T4Signal) -> bool:
-        """True if the T4 update is large enough to act on."""
-        return abs(signal.delta_p) >= T4_MIN_DELTA_P
+        """
+        True if the live game-state move clears both the per-ticker null
+        noise envelope (Z·σ_null) and the economic floor (ADR-0021).
+        """
+        gate = max(T4_DELTA_SIGMA_Z * signal.sigma_null, T4_MIN_DELTA_FLOOR)
+        return abs(signal.delta_p_incr) >= gate
 
 
 # ---------------------------------------------------------------------------

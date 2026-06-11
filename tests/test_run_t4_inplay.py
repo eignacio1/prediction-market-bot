@@ -5,8 +5,8 @@ Covers:
     - Kill switch: KILL_SWITCH action when armed
     - Pre-staged order: FIRE_STAGED action when valid staged order exists
     - Pre-staged order: NO_ACTION when staged but expired
-    - Bayesian path: FIRE_BAYESIAN when delta_p material and p_t4 > mip+vig
-    - Bayesian path: NO_ACTION when delta_p < T4_MIN_DELTA_P
+    - Bayesian path: FIRE_BAYESIAN when delta_p_incr material and p_t4 > mip+vig
+    - Bayesian path: NO_ACTION when delta_p_incr below max(Z*sigma_null, floor)
     - T5 path: FIRE_T5 when near-certain in Q4 final minutes
     - T5 overrides Bayesian: when both trigger, T5 takes precedence
     - T4 routing result fields are well-formed
@@ -195,7 +195,7 @@ class TestBayesianPath:
             quarter=2,
         )
         result = loop.on_game_state_event(event)
-        # delta_p might be small; if < T4_MIN_DELTA_P → NO_ACTION
+        # delta_p_incr is small on expectation; if below the ADR-0021 gate → NO_ACTION
         # (or FIRE_BAYESIAN if it happens to be material — both valid)
         assert result.action in {"NO_ACTION", "FIRE_BAYESIAN", "FIRE_T5"}
 

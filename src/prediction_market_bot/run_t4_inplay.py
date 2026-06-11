@@ -27,7 +27,9 @@ Architecture:
         2. StagedOrderStore.get_staged(market_id) — pre-staged path (Strategy C/E)
            If found and not expired: fire pre-built order → C4 → C5
         3. GameStateModel.update(gs, threshold, p_t1) — Bayesian path (Strategy A)
-           If |delta_p| >= T4_MIN_DELTA_P AND p_t4 > mip + vig: → C4 → C5
+           If |delta_p_incr| >= max(Z·σ_null, floor) AND p_t4 > mip + vig: → C4 → C5
+           (ADR-0021: incremental materiality vs tip-off baseline, per-ticker
+           noise envelope — not a fixed delta threshold)
         4. T5 eligibility check: Q4 ≤ 3 min → LateGameArithmetic.evaluate()
            If NEAR_CERTAIN: → C4 → C5 (Kelly 0.15)
 
@@ -54,7 +56,8 @@ from typing import Optional
 from prediction_market_bot.c3_forecasting.game_state_model import (
     KELLY_T4,
     KELLY_T5,
-    T4_MIN_DELTA_P,
+    T4_DELTA_SIGMA_Z,
+    T4_MIN_DELTA_FLOOR,
     GameState,
     GameStateModel,
     LateGameArithmetic,
@@ -83,8 +86,9 @@ class GameStateEvent:
     needed for the routing decision.
 
     p_t1:  T1 model probability (from C3 pre-game forecast, stored at T1 time).
-           Used as materiality benchmark (|p_t4 - p_t1| >= T4_MIN_DELTA_P) and
-           fire condition (p_t4 > mip + vig). NOT incorporated into p_t4 itself.
+           Telemetry benchmark only (ADR-0021) — materiality is judged on
+           delta_p_incr vs the tip-off baseline, and the fire condition is
+           p_t4 > mip + vig. NOT incorporated into p_t4 itself.
     mip:   current market implied probability (mid-price from DS-02 price feed)
     vig:   current market vig estimate (ask - bid spread / 2)
     """
@@ -198,15 +202,19 @@ class T4EventLoop:
         self, event: GameStateEvent, signal: T4Signal
     ) -> T4RoutingResult:
         """Strategy A path: Bayesian update exceeds threshold and beats market."""
+        gate = max(T4_DELTA_SIGMA_Z * signal.sigma_null, T4_MIN_DELTA_FLOOR)
         logger.info(
-            "T4 BAYESIAN path: market=%s p_t1=%.3f p_t4=%.3f delta=%.3f",
-            event.market_id, signal.p_t1, signal.p_t4, signal.delta_p,
+            "T4 BAYESIAN path: market=%s p_t1=%.3f p_t4=%.3f delta_p_incr=%.3f gate=%.3f",
+            event.market_id, signal.p_t1, signal.p_t4, signal.delta_p_incr, gate,
         )
         # BLOCKED: C4 approve + C5 execute at Phase 8
         return T4RoutingResult(
             market_id=event.market_id,
             action="FIRE_BAYESIAN",
-            reason=f"delta_p={signal.delta_p:.3f} >= threshold; p_t4={signal.p_t4:.3f} > mip+vig",
+            reason=(
+                f"delta_p_incr={signal.delta_p_incr:.3f} >= gate={gate:.3f};"
+                f" p_t4={signal.p_t4:.3f} > mip+vig"
+            ),
             signal=signal,
             staged_order=None,
             kelly_fraction=KELLY_T4,
@@ -283,9 +291,12 @@ class T4EventLoop:
                 return self._route_t5(event, t5_signal)
 
         # No action
+        gate = max(T4_DELTA_SIGMA_Z * signal.sigma_null, T4_MIN_DELTA_FLOOR)
         reason = (
-            f"delta_p={signal.delta_p:.3f} < {T4_MIN_DELTA_P} or p_t4={signal.p_t4:.3f}"
-            f" <= mip+vig={event.mip + event.vig:.3f}"
+            f"delta_p_incr={signal.delta_p_incr:.3f} < gate={gate:.3f}"
+            f" (2sigma_null={T4_DELTA_SIGMA_Z * signal.sigma_null:.3f},"
+            f" floor={T4_MIN_DELTA_FLOOR})"
+            f" or p_t4={signal.p_t4:.3f} <= mip+vig={event.mip + event.vig:.3f}"
         )
         logger.debug("T4 NO_ACTION: market=%s %s", event.market_id, reason)
         return T4RoutingResult(
