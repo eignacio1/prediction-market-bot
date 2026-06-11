@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-10 SESSION 45 — G4 pre-tip sprint. T1 stale daily-loss kill switch found FIRED on G4 early cron (0 bets placed) — fixed `b6cedd0`, manual recovery run placed 33 bets pre-tip. Daily-loss semantics gross→net (`424698a`, T-156 ADR-0012 amendment registered). T4 restarted with new code. Portfolio MC: EV=+$152, P(profit)=95.3%. Hypothesis C deferred to post-G4 (DS). 817/817 tests.
+**Last reviewed:** 2026-06-10 SESSION 45 CLOSE (00:40 UTC Jun 11) — G4 pre-tip sprint complete + PDTP assessment registered (GG-021/GG-022/LL-014, T-157..T-160, priority queue reordered). G4 in progress at close: T1 33 bets live, T4 polling with exits active. **NEXT SESSION = POST-G4 INSTITUTIONAL SPRINT — see SESSION_HANDOFF_20260611_0040.md Phase A–D runbook.** 817/817 tests.
 
 ---
 

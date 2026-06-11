@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-10 SESSION 44 — G4 readiness complete. T4 stale daily-loss kill switch bug fixed. GHA post-game resolve live at 05:30 UTC. System fully automatic for G4. 817/817 tests.  
+**Last reviewed:** 2026-06-10 SESSION 45 — G4 pre-tip sprint (T1 stale-kill fix `b6cedd0`, net daily-loss semantics `424698a`, T4 restart) + PDTP project assessment (GG-021 stop criterion, GG-022 paper-fill realism, LL-014; T-157..T-160). G4 live at session close; post-G4 sprint runbook in SESSION_HANDOFF_20260611_0040.md. 817/817 tests.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
