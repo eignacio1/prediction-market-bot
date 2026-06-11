@@ -284,6 +284,16 @@ SESSION_ID_PREFIX = "T4"
 # PAPER_T4_VIRTUAL=false (active mode): enforce band budget ceiling — stop firing when
 #   t4_deployed_game >= t4_band_budget. Evaluation continues for log data.
 #
+# Budget semantics (ADR-0022, resolves GG-023 — supersedes the monotonic counter):
+#   t4_deployed_game = open T4 exposure + realized T4 losses this game.
+#   Exits credit capital back at REALIZED value: entry cost on a winning exit
+#   (capacity never exceeds the original budget — wins do not expand risk
+#   authorization), entry cost + pnl on a losing exit (losses permanently
+#   consume budget). Aggregate worst case: the band's net realized loss is
+#   bounded by t4_band_budget itself. The G4 failure — budget pinned at 100%
+#   by Q2 while 29 exits freed economic capital, fired=0 all second half —
+#   cannot recur.
+#
 # T4_BAND_WEIGHT: Phase 8 placeholder only — NOT used in PAPER_T4_FLAT_SIZING=true mode.
 # ADR-0017 (2026-06-05): the fractional-allocation formula is architecturally incompatible
 # with high-throughput T4 (~1,447 approved bets/game, G1 data). Budget exhausts in ~16 bets
@@ -321,6 +331,46 @@ def _compute_t4_band_budget(portfolio: dict) -> float:
     bankroll = portfolio["bankroll_usd"]
     deployable = bankroll * (1.0 - RESERVE_MANDATE_PCT)
     return max(deployable * T4_BAND_WEIGHT, 0.0)
+
+
+def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
+    """
+    Budget credit for an exited T4 position (ADR-0022 realized-value credit).
+
+    Winning exit (pnl >= 0): credit the entry cost only — capacity is restored
+    to its pre-entry level, never expanded beyond the authorized band budget.
+    Losing exit (pnl < 0): credit entry cost + pnl — the realized loss
+    permanently consumes budget, bounding the band's aggregate net loss at
+    t4_band_budget.
+    """
+    return size_usd + min(0.0, exit_pnl)
+
+
+def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
+    """
+    Rebuild t4_deployed_game from portfolio state after a process restart
+    (ADR-0022 restart safety — the G4 T4 process died mid-game; a fresh
+    process must not see an empty ledger while positions are open).
+
+    deployed = open T4 exposure + realized T4 losses for this game_date.
+    T4 positions are identified by pool_isolated=True (PAPER_T4_FLAT_SIZING).
+    """
+    open_exposure = sum(
+        p.get("size_usd", 0.0)
+        for p in portfolio.get("open_positions", [])
+        if p.get("pool_isolated") and p.get("game_date") == game_date
+    )
+    # Per-exit losses, not net: a winning exit restores exactly its own entry
+    # cost (contributes 0 here) and never offsets another position's loss —
+    # identical arithmetic to applying _exit_budget_credit at each exit.
+    realized_losses = sum(
+        max(0.0, -p.get("exit_pnl", 0.0))
+        for p in portfolio.get("closed_positions", [])
+        if p.get("pool_isolated")
+        and p.get("game_date") == game_date
+        and p.get("status") == "EXITED"
+    )
+    return open_exposure + realized_losses
 
 
 # ---------------------------------------------------------------------------
@@ -417,8 +467,12 @@ def _run_cycle(
     """
     Evaluate all live player × market pairs and fire approved bets.
 
-    Returns (evaluated, fired, updated_t4_deployed_usd).
-    t4_deployed_usd accumulates across cycles for the full game.
+    Returns (evaluated, fired, exited, updated_t4_deployed_usd).
+    t4_deployed_usd is the ADR-0022 band ledger: open exposure + realized
+    losses this game. Entries increment it by approved_size; exits credit it
+    back at realized value via _exit_budget_credit (entry cost on a win,
+    entry cost + pnl on a loss). Capacity recycles; aggregate net loss is
+    bounded by t4_band_budget.
     PAPER_T4_VIRTUAL=true: tracks deployment for calibration, does NOT enforce budget.
     PAPER_T4_VIRTUAL=false: enforces band budget; stops firing when budget exhausted.
     """
@@ -504,10 +558,16 @@ def _run_cycle(
             return evaluated, fired, exited, t4_deployed_usd
         if closed:
             exited += 1
+            credit = _exit_budget_credit(
+                closed.get("size_usd", 0.0), closed.get("exit_pnl", 0.0),
+            )
+            t4_deployed_usd = max(0.0, t4_deployed_usd - credit)
             logger.info(
-                "T4 EXIT  %-45s  %-3s  p_cur=%.3f  mip=%.3f  pnl=%+.4f  reason=%s",
+                "T4 EXIT  %-45s  %-3s  p_cur=%.3f  mip=%.3f  pnl=%+.4f  reason=%s"
+                "  budget_credit=$%.2f  budget_used=$%.2f/%.2f",
                 ticker, direction, p_current, mip_current,
                 closed.get("exit_pnl", 0.0), "BAYESIAN_REVERSAL",
+                credit, t4_deployed_usd, t4_band_budget,
             )
 
     for player_id, markets in pregame_by_player_id.items():
@@ -813,7 +873,16 @@ def main() -> None:
         t4_band_budget = PAPER_T4_POOL_USD
     else:
         t4_band_budget = _compute_t4_band_budget(trader.get_state())
-    t4_deployed_game = 0.0
+    # ADR-0022: reconstruct the deployment ledger from portfolio state so a
+    # mid-game process restart (G4 failure mode) resumes with the true open
+    # exposure + realized losses instead of an empty counter.
+    t4_deployed_game = _reconstruct_t4_ledger(trader.get_state(), game_date)
+    if t4_deployed_game > 0.0:
+        logger.info(
+            "T4 ledger reconstructed from portfolio: $%.2f already deployed for %s "
+            "(open exposure + realized losses)",
+            t4_deployed_game, game_date,
+        )
     if PAPER_T4_FLAT_SIZING:
         logger.info(
             "T4 band budget: $%.2f  (PAPER_T4_POOL_USD — flat sizing mode, bypasses ADR-0013 Kelly budget)",
