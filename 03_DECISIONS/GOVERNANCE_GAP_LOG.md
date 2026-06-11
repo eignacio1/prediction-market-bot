@@ -440,7 +440,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-025 |
-| Status | OPEN |
+| Status | RESOLVED (2026-06-10, ADR-0021) |
 | Severity | MEDIUM |
 | Discovered | 2026-06-10 (SESSION 46) |
 | Registered by | ADR-0020 derivation analysis |
@@ -450,6 +450,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 **Correct fix:** Compute incremental delta_p = p_t4_current - p_t4_t0 (change from game-start p_t4, not from p_t1). This isolates live game-state signal from calibration bias. Estimated threshold for incremental version: mean+2σ ≈ 0.48 (G4 trajectory data, n=36 tickers).
 
 **Remediation:** New ADR required. Architectural change — involves storing per-ticker game-start p_t4 and updating GameStateModel.update() and T4EventLoop. Post-G6 scope.
+
+**Resolution (2026-06-10, SESSION 46):** DS overrode the post-G6 deferral ("the architecture needs the correct fix"). ADR-0021 implemented same session. Improvement on the registered fix: no stored game-start snapshot needed — `p_t4_baseline = p_exceeds_threshold(0, threshold, pace×48)` is deterministic from pregame pace, making the fix stateless and restart-safe (G4 mid-game process death would have corrupted a stored-snapshot design). Gate is `|delta_p_incr| ≥ max(2·σ_null(t), 0.04)` where σ_null is the exact Poisson null envelope — no fitted constants. G4 replay (n=2,193): materiality pass rate 74.6% → 9.7%; Q1 false-fire flood eliminated (89.3% → 10.8%) while Q4 sensitivity increased (1.4% → 13.5%), confirming calibration bias is cancelled rather than signal suppressed. T4_MIN_DELTA_P removed; ADR-0020 D2 superseded.
 
 ---
 
@@ -472,6 +474,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-016 | 2026-06-05 | BOT_C4_ACTIVE guard removed from run_t3_pretip.py (commit 6cf87d8). PIPE-06 now runs cleanly. T3 signals confirmed at 21:58 UTC Jun 5 — 32 NEUTRAL, cron functional. |
 | GG-018 | 2026-06-09 | APR-0019 ACCEPTED (DS: Earl Ignacio). Per-bucket T1/T4 evidence separation; T1 floor ≥66, T4 floor ≥50 (new derivation); Tier 2 evaluated independently; eligible bets defined; YES/NO direction monitoring registered. APPROVALS_REGISTER.md updated. |
 | GG-019 | 2026-06-09 | T-149 deployed (T4 fee gate now subtracts kalshi_fee before C4 evaluation). T-150 complete (aggregate fee drag: T4 $14.28/game, T1 $12.89/game, combined ~$27/game at Finals scale; documented in DECISION_LOG SESSION 42). GG-020 registered as new gap: fee rate source citation + receipt verification required pre-ADR-0005. |
+| GG-025 | 2026-06-10 | ADR-0021: materiality gated on `delta_p_incr = p_t4 − p_t4_baseline` (calibration gap cancels algebraically) vs exact Poisson null envelope `max(2σ_null(t), 0.04)`. Stateless/restart-safe; zero fitted constants. G4 replay: pass rate 74.6%→9.7%, Q1 89.3%→10.8%, Q4 1.4%→13.5%. T4_MIN_DELTA_P removed; ADR-0020 D2 superseded. |
 
 ---
 

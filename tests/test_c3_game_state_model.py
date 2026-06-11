@@ -5,7 +5,9 @@ Covers:
     - Poisson CDF correctness (known mathematical values)
     - p_exceeds_threshold edge cases (already hit, impossible, half-points)
     - GameStateModel.update() T4 signal properties
-    - T4 materiality check (T4_MIN_DELTA_P)
+    - T4 materiality gate (ADR-0021: |delta_p_incr| >= max(Z·σ_null, floor))
+    - null_delta_sigma structural invariants (tip-off zero, final-horn limit,
+      martingale monotonicity, Poisson-additivity mean-zero)
     - T5 eligibility flag (Q4 + ≤3 min)
     - LateGameArithmetic.evaluate() verdict classification
     - Kelly fraction assignment
@@ -17,9 +19,11 @@ import time
 import pytest
 
 from prediction_market_bot.c3_forecasting.game_state_model import (
+    GAME_MINUTES_TOTAL,
     KELLY_T4,
     KELLY_T5,
-    T4_MIN_DELTA_P,
+    T4_DELTA_SIGMA_Z,
+    T4_MIN_DELTA_FLOOR,
     T5_NO_CERTAINTY,
     T5_TIME_THRESHOLD_MIN,
     T5_YES_CERTAINTY,
@@ -27,6 +31,7 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
     GameStateModel,
     LateGameArithmetic,
     _poisson_cdf,
+    null_delta_sigma,
     p_exceeds_threshold,
 )
 
@@ -192,29 +197,149 @@ class TestGameStateModel:
         signal = self.model.update(gs, threshold=22.5, p_t1=0.50)
         assert signal.t5_eligible is True
 
-    def test_is_material_above_threshold(self):
+    def test_is_material_consistent_with_gate(self):
         gs = make_gs(pts_so_far=20.0, time_remaining_min=20.0)
         signal = self.model.update(gs, threshold=22.5, p_t1=0.50)
-        # p_t4 will be high (only needs 3 more pts with 20 min left)
-        if abs(signal.delta_p) >= T4_MIN_DELTA_P:
-            assert self.model.is_material(signal) is True
-        else:
-            assert self.model.is_material(signal) is False
+        gate = max(T4_DELTA_SIGMA_Z * signal.sigma_null, T4_MIN_DELTA_FLOOR)
+        assert self.model.is_material(signal) == (abs(signal.delta_p_incr) >= gate)
 
-    def test_is_material_false_for_small_delta(self):
-        # Construct a scenario where delta is guaranteed < T4_MIN_DELTA_P
-        # p_t1 = 0.50 and player is exactly on pace → P_t4 ≈ 0.50
-        gs = make_gs(pts_so_far=11.25, time_remaining_min=22.5, pace_pts_per_min=0.5)
+    def test_not_material_at_tipoff(self):
+        # At tip-off the current state IS the null state: delta_p_incr = 0
+        # identically, regardless of any calibration gap vs p_t1.
+        gs = make_gs(pts_so_far=0.0, time_remaining_min=48.0)
+        signal = self.model.update(gs, threshold=22.5, p_t1=0.01)
+        assert signal.delta_p_incr == pytest.approx(0.0, abs=1e-12)
+        assert self.model.is_material(signal) is False
+
+    def test_not_material_when_on_expectation_midgame(self):
+        # Player scoring exactly at pregame pace at halftime → the game has
+        # confirmed the prior, not moved it. Must not fire.
+        gs = make_gs(pts_so_far=12.0, time_remaining_min=24.0, pace_pts_per_min=0.5)
+        signal = self.model.update(gs, threshold=24.5, p_t1=0.50)
+        assert self.model.is_material(signal) is False
+
+    def test_material_when_far_above_expectation(self):
+        # 20 pts by halftime on a 0.4 pts/min pace (expected ~9.6) chasing a
+        # 22.5 threshold: genuine live signal, must fire.
+        gs = make_gs(pts_so_far=20.0, time_remaining_min=24.0, pace_pts_per_min=0.4)
         signal = self.model.update(gs, threshold=22.5, p_t1=0.50)
-        # With lam=11.25 and pts_needed=11.25, P is roughly middling
-        # delta might be small enough
-        materiality = self.model.is_material(signal)
-        assert isinstance(materiality, bool)
+        assert signal.delta_p_incr > 0
+        assert self.model.is_material(signal) is True
+
+    def test_baseline_is_stateless_and_restart_safe(self):
+        # Baseline depends only on (pace, threshold) — identical regardless of
+        # the game state it is computed from (process-restart safety).
+        gs_early = make_gs(pts_so_far=2.0, time_remaining_min=44.0)
+        gs_late = make_gs(pts_so_far=18.0, time_remaining_min=10.0)
+        s1 = self.model.update(gs_early, threshold=22.5, p_t1=0.50)
+        s2 = self.model.update(gs_late, threshold=22.5, p_t1=0.50)
+        assert s1.p_t4_baseline == pytest.approx(s2.p_t4_baseline, abs=1e-12)
 
     def test_lambda_correctly_computed(self):
         gs = make_gs(pace_pts_per_min=0.4, time_remaining_min=10.0)
         signal = self.model.update(gs, threshold=22.5, p_t1=0.50)
         assert signal.lambda_remaining == pytest.approx(4.0, abs=1e-9)
+
+
+# ---------------------------------------------------------------------------
+# null_delta_sigma — structural invariants of the ADR-0021 noise envelope
+# ---------------------------------------------------------------------------
+
+class TestNullDeltaSigma:
+    """
+    The materiality gate is only sound if the null envelope obeys the
+    mathematical structure it claims. Each test asserts one structural
+    invariant — these are the institutional coverage for ADR-0021.
+    """
+
+    PACE = 0.5          # 24 expected pts over 48 min
+    THRESHOLD = 22.5
+
+    def test_zero_at_tipoff(self):
+        # No game information yet → no noise envelope.
+        assert null_delta_sigma(self.PACE, self.THRESHOLD, 48.0) == 0.0
+
+    def test_final_horn_limit(self):
+        # At t_rem=0 the outcome is fully resolved: delta is a shifted
+        # Bernoulli(baseline) → σ = sqrt(b·(1−b)) exactly.
+        b = p_exceeds_threshold(0.0, self.THRESHOLD, self.PACE * GAME_MINUTES_TOTAL)
+        sigma = null_delta_sigma(self.PACE, self.THRESHOLD, 0.0)
+        assert sigma == pytest.approx((b * (1.0 - b)) ** 0.5, abs=1e-6)
+
+    def test_monotone_nondecreasing_in_elapsed_time(self):
+        # Martingale variance accumulates: σ_null can only grow as the game
+        # progresses. Sweep the full game at 1-minute resolution.
+        sigmas = [
+            null_delta_sigma(self.PACE, self.THRESHOLD, float(t_rem))
+            for t_rem in range(48, -1, -1)
+        ]
+        for earlier, later in zip(sigmas, sigmas[1:]):
+            assert later >= earlier - 1e-9
+
+    def test_null_mean_is_zero_by_poisson_additivity(self):
+        # Σ_k pmf(k)·p_t4(k) must equal the baseline exactly — this is the
+        # property that makes delta_p_incr calibration-free.
+        import math as _math
+        t_rem = 24.0
+        lam_e = self.PACE * (GAME_MINUTES_TOTAL - t_rem)
+        lam_r = self.PACE * t_rem
+        baseline = p_exceeds_threshold(0.0, self.THRESHOLD, self.PACE * GAME_MINUTES_TOTAL)
+        mean = 0.0
+        pmf = _math.exp(-lam_e)
+        for k in range(200):
+            mean += pmf * p_exceeds_threshold(float(k), self.THRESHOLD, lam_r)
+            pmf *= lam_e / (k + 1)
+        assert mean == pytest.approx(baseline, abs=1e-9)
+
+    def test_zero_pace_no_crash(self):
+        # Scratch player / bad feature data: envelope collapses to zero,
+        # economic floor governs the gate.
+        assert null_delta_sigma(0.0, self.THRESHOLD, 24.0) == 0.0
+
+    def test_bad_feed_time_beyond_regulation(self):
+        # t_rem > 48 clamps elapsed to 0 → σ = 0 (no envelope inflation
+        # from a malformed feed).
+        assert null_delta_sigma(self.PACE, self.THRESHOLD, 55.0) == 0.0
+
+    def test_negative_time_clamped(self):
+        # t_rem < 0 (feed glitch at final horn) behaves as t_rem = 0.
+        s_neg = null_delta_sigma(self.PACE, self.THRESHOLD, -2.0)
+        s_zero = null_delta_sigma(self.PACE, self.THRESHOLD, 0.0)
+        assert s_neg == pytest.approx(s_zero, abs=1e-9)
+
+    def test_envelope_bounded_by_bernoulli_max(self):
+        # σ_null can never exceed the final-horn Bernoulli σ — the variance
+        # of a bounded martingale is maximal at resolution.
+        b = p_exceeds_threshold(0.0, self.THRESHOLD, self.PACE * GAME_MINUTES_TOTAL)
+        cap = (b * (1.0 - b)) ** 0.5 + 1e-9
+        for t_rem in (40.0, 30.0, 20.0, 10.0, 5.0, 1.0):
+            assert null_delta_sigma(self.PACE, self.THRESHOLD, t_rem) <= cap
+
+    def test_high_pace_star_player(self):
+        # λ_full = 48·0.9 = 43.2 (Brunson-class load) — enumeration must stay
+        # exact and bounded; mean-zero property must still hold.
+        import math as _math
+        pace, thr, t_rem = 0.9, 30.5, 18.0
+        lam_e = pace * (GAME_MINUTES_TOTAL - t_rem)
+        lam_r = pace * t_rem
+        baseline = p_exceeds_threshold(0.0, thr, pace * GAME_MINUTES_TOTAL)
+        mean = 0.0
+        pmf = _math.exp(-lam_e)
+        for k in range(300):
+            mean += pmf * p_exceeds_threshold(float(k), thr, lam_r)
+            pmf *= lam_e / (k + 1)
+        assert mean == pytest.approx(baseline, abs=1e-8)
+        sigma = null_delta_sigma(pace, thr, t_rem)
+        assert 0.0 < sigma < 0.5
+
+    def test_compute_budget(self):
+        # Full-game sweep across 5 thresholds in well under the 50ms budget.
+        start = time.perf_counter()
+        for thr in (10.5, 15.5, 20.5, 25.5, 30.5):
+            for t_rem in range(0, 49, 4):
+                null_delta_sigma(0.7, thr, float(t_rem))
+        elapsed_ms = (time.perf_counter() - start) * 1000.0
+        assert elapsed_ms < 50.0
 
 
 # ---------------------------------------------------------------------------
