@@ -40,6 +40,8 @@ import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
 
+import requests
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -296,6 +298,36 @@ def main() -> None:
         _scan_and_log_locks(snap.markets, router.active_venues, logger, SESSION_ID)
     except EnvironmentError as e:
         print(f"ERROR: {e}", file=sys.stderr); sys.exit(1)
+
+    # ------------------------------------------------------------------
+    # T-162/GG-024: Abort bet placement if any NBA game for GAME_DATE is
+    # already in progress. Late crons firing mid-game produce anti-informed
+    # bets against a market that has already repriced to live state.
+    # ------------------------------------------------------------------
+    _ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+    try:
+        _sb_r = requests.get(
+            _ESPN_SB,
+            params={"dates": GAME_DATE},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10,
+        )
+        _sb_events = _sb_r.json().get("events", [])
+        _in_progress = [
+            e["id"] for e in _sb_events
+            if e.get("status", {}).get("type", {}).get("name") == "STATUS_IN_PROGRESS"
+        ]
+        if _in_progress:
+            print(f"[PIPE-03] Game(s) in progress {_in_progress} — aborting bet placement (T-162/GG-024)")
+            logger.info(
+                "PIPE-03", "paper_run_skipped_game_in_progress",
+                payload={"game_ids": _in_progress, "session_id": SESSION_ID},
+                session_id=SESSION_ID,
+            )
+            _write_report([], bankroll, trader)
+            sys.exit(0)
+    except Exception as _exc:
+        print(f"[PIPE-03] ESPN game-state check failed ({_exc}) — proceeding")
 
     # ------------------------------------------------------------------
     # 6. Generate forecasts + C4 evaluation + paper orders (market-first)
