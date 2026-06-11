@@ -2,7 +2,21 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-10 SESSION 44 — G4 READINESS COMPLETE. T4 stale daily-loss kill switch bug fixed (`run_t4_live.py:438`, commit `a300a51`). GHA post-game resolve live (`.github/workflows/post_game_resolve.yml`, commit `aa263fb`, verified workflow_dispatch run 27253281067). System fully automatic for G4. 817/817 tests.
+**Last reviewed:** 2026-06-10 SESSION 45 — G4 pre-tip sprint. T1 stale daily-loss kill switch found FIRED on G4 early cron (0 bets placed) — fixed `b6cedd0`, manual recovery run placed 33 bets pre-tip. Daily-loss semantics gross→net (`424698a`, T-156 ADR-0012 amendment registered). T4 restarted with new code. Portfolio MC: EV=+$152, P(profit)=95.3%. Hypothesis C deferred to post-G4 (DS). 817/817 tests.
+
+---
+
+## SESSION 45 — G4 PRE-TIP SPRINT (2026-06-10)
+
+| Task | Status |
+|------|--------|
+| **T1 stale daily-loss kill switch (G4 early cron fired KILL_SWITCH, 0 bets)** | ✅ FIXED — `run_paper_trade.py:261` date-reset guard (same class as a300a51, T1 path). Commit `b6cedd0`, deployed. Manual PIPE-03 recovery run 23:50 UTC: 33 bets, $757.69 deployed, 0 order failures (15 resting/18 executed — T-139 ≤5% met). |
+| **Daily-loss net semantics (gross → net)** | ✅ DEPLOYED — `paper_trader._accumulate_daily_loss()`: wins offset losses; `current_daily_loss = max(0, -daily_net_pnl)`. Commit `424698a`. Tonight-critical: exits active → T4 gross losses would cross $150 mid-game. |
+| **T-156: ADR-0012 amendment — formalize net daily-loss semantics + add accumulation tests** | ⬜ REGISTERED — no test covered accumulation (817 passed untouched by semantics change). Draft ADR amendment post-G4. |
+| **T4 process restart with new code** | ✅ DONE — old process predated deploys; relaunched 00:00 UTC (PID 372067, timeout 18000). Note: first attempt left T4 down ~3 min (local tmp ENOSPC); verified recovery. |
+| **Portfolio MC on actual G4 book (33 positions, N=100k)** | ✅ DONE — EV=+$152.08, P(profit)=95.3%, P(trip 20% system kill)=1.07%, worst sim -$310.69. Caveat: same model class missed G3. |
+| **EXP-018 Hypothesis C — DS ruling** | ✅ DEFERRED to post-G4 EXP-018 rerun (DS: Earl, 2026-06-10). Rule at larger n tomorrow. |
+| **DECISION_LOG SESSION 45 entries** | ✅ COMPLETE — both entries written. |
 
 ---
 
