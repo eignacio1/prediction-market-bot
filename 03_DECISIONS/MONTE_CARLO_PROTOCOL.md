@@ -136,3 +136,16 @@ Per CLAUDE.md rule #7: every strategic decision that triggers this assessment **
 4. **Sequential bankroll depletion:** Stakes are computed sequentially in market iteration order. High-edge bets that arrive late in the iteration may be rejected at `min_bet_floor` because earlier bets have already deployed most of the bankroll. This is a known gap (batch-level capital allocation deferred to dark period). It does NOT mean those markets have no edge — it means the current architecture can't size them at paper scale.
 
 5. **No T4/T5 bets in this sim:** This script models T1 pre-game bets only. T4/T5 fire during the game and use whatever capital remains after T1 batch. The reserve figure in BOT STATISTICS is the T4/T5 budget.
+
+---
+
+## MC Track Record (T1 predictions vs. realized T1 P&L)
+
+| Game | Predicted EV | Realized P&L | Miss | P(profit) | P(kill switch) | Notes |
+|------|-------------|-------------|------|-----------|----------------|-------|
+| G3 (2026-06-08) | +$138.47 | -$198.84 | -$337 | >95% | ~1% | Independence assumption failed: Brunson 42 pts → Castle/Hart underperformed vs pre-game λ |
+| G4 (2026-06-10) | +$152.08 | -$119.58 | -$272 | 95.3% | 1.07% | Same failure mode: Brunson 36 pts dominated → Wemby 24 pts, correlated defensive effort. 2 of 35 bets were late-cron mid-game (ineligible per APR-0019). |
+
+**Pattern (2 games):** Both G3 and G4 were >95% confidence positives that produced realized losses. The independence assumption (player scores modeled as independent Poisson) fails when a single player (Brunson) has an outsized game that suppresses teammates and opponents via pace/defensive load effects. True P/L variance is materially higher than reported — treat MC P(profit) as overstated until cross-player correlation is modeled.
+
+**Standing instruction:** Do not cite MC P(profit) >95% as evidence of safety when placing new pre-game bets. It is a model consistency check, not a calibrated probability of realized profit. Realized drawdown as of G4: 24.3% (above 20% kill-switch threshold — DS reset decision required before G5).
