@@ -417,6 +417,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-024 — PIPE-03 Late Cron Places T1 Bets on Games Already in Progress
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-024 |
+| Discovered | 2026-06-11 SESSION 46 — audit log review, Phase A post-G4 resolve |
+| Category | Architectural gap — PIPE-03 has no in-progress game guard on bet placement |
+| What was missed | PIPE-03 (T1 pipeline) checks GAME_DATE but does not check whether the target game has already started before placing new positions. The late cron fires at 01:30 UTC; Finals G4 tipped at 00:30 UTC (~60 min into the game). Audit shows `paper_order_opened` × 2 at 01:31:22 and 01:31:27 UTC for Stephon Castle and Josh Hart — both placed mid-Q2 with live game in progress. These bets used pre-game model estimates (Poisson CDF on pre-game `pts_l10_mean`) against market prices that had already repriced to reflect 60 min of live play. The T1 model has no informational advantage at that point; the market's live price is more informative than the T1 forecast. |
+| When it should have been caught | PIPE-03 cron design review (SESSION 10–12) — when the late cron window was established, the overlap with game-in-progress time was not explicitly ruled out. |
+| Phases it survived | Every game night since the late cron was activated. G1–G3 likely fired the same way but were not audited at this granularity. |
+| Why it survived | The concern was always about the early cron (pre-tip timing), not the late cron. The late cron was designed as a "same-day with T3 overlay" backup window; the guard discussion focused on date alignment (GG-015), not game-start state. |
+| Impact | MEDIUM. Bets placed on in-progress games are anti-informed: market has live signal, model does not. In paper trading this is a data quality issue (degrades EXP-017B/EXP-018 evidence — bets placed at a systematic disadvantage). In live trading this would be financially harmful. Also creates ambiguity in G6 evidence: "eligible bets" definition (APR-0019) should exclude mid-game placements. |
+| Discovery | Audit log: `player_stats_fetch_failed` × 66 (01:30:10–01:30:56 UTC) then `paper_order_opened` × 2 at 01:31:22/01:31:27 UTC; confirmed `paper_order_opened` payloads show `player_name: Stephon Castle` and `player_name: Josh Hart`; ESPN poll confirmed Q2/clock=~25min at that timestamp. |
+| Resolution | T-162: Add game-start guard to PIPE-03 — before the bet-placement loop, check ESPN game status (already polled by T4). If `STATUS_IN_PROGRESS` or past scheduled tip time: skip placement, log `paper_run_skipped_game_in_progress`. Fix is low-complexity (single check against ESPN game state or tip-time comparison). G6 evidence audit: flag any bets placed mid-game as ineligible per APR-0019. |
+| Status | RESOLVED — T-162 implemented 2026-06-11 SESSION 46. ESPN `STATUS_IN_PROGRESS` guard added to `run_paper_trade.py` before bet-placement loop (commit `c8a59f2`). Deployed to VPS. 817/817 tests pass. G4 late-cron bets (Castle + Hart) flagged ineligible per APR-0019. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
