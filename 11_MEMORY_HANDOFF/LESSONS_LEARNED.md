@@ -287,6 +287,8 @@ This is not a model correctness issue — it is a **coverage protocol** failure.
 
 **Status:** MONITORING (rule is behavioral; T-159 is the structural component)
 
+**G4 tracking (SESSION 46):** G4 was NOT the first clean night. Two new architectural problems were discovered at runtime: GG-023 (T4 budget monotonic — entry dead all second half despite 29 exits) and GG-024 (late cron placed 2 mid-game bets while G4 was live). Additionally, realized drawdown hit 24.3% (above the 20% kill-switch threshold). T-162 resolved GG-024 in the same session. GG-023 remains open (T-161). The clean-night target is still unmet going into G5.
+
 ---
 
 ## Template for New Lessons
