@@ -82,7 +82,7 @@ _GATE_ENV_VAR = "BOT_C4_ACTIVE"
 DEFAULT_KELLY_FRACTION: float = 0.25
 
 # Minimum edge required to enter a position (even after Kelly sizing)
-MIN_EDGE_TO_APPROVE: float = 0.02
+MIN_EDGE_TO_APPROVE: float = 0.04  # ADR-0020: raised 0.02→0.04; filters sub-threshold NO bets
 
 # Maximum daily loss as a fraction of initial bankroll (ADR-0012).
 # 15% fires before the 20% drawdown kill switch — restoring two independent kill switches.

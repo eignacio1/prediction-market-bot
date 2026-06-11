@@ -435,6 +435,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-025 — T4 delta_p Mixes Calibration Gap with Live Signal (Architectural)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-025 |
+| Status | OPEN |
+| Severity | MEDIUM |
+| Discovered | 2026-06-10 (SESSION 46) |
+| Registered by | ADR-0020 derivation analysis |
+
+**The gap:** `delta_p = p_t4 - p_t1` where p_t4 is raw Poisson and p_t1 is Platt-scaled. At game start (t=48, 0 pts scored), the baseline calibration gap is mean=0.376, σ=0.165 — a systematic model difference, not a live game-state signal. ADR-0020 raises T4_MIN_DELTA_P to 0.50 as a band-aid (above mean+1σ noise floor), but this does not address Q3/Q4 scenarios where the Kalshi market has converged to p_t4, causing |delta_p| to fall to 0.01-0.04. A massive Q4 reversal would not trigger T4 even with budget available because the market has already priced in the game state.
+
+**Correct fix:** Compute incremental delta_p = p_t4_current - p_t4_t0 (change from game-start p_t4, not from p_t1). This isolates live game-state signal from calibration bias. Estimated threshold for incremental version: mean+2σ ≈ 0.48 (G4 trajectory data, n=36 tickers).
+
+**Remediation:** New ADR required. Architectural change — involves storing per-ticker game-start p_t4 and updating GameStateModel.update() and T4EventLoop. Post-G6 scope.
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
