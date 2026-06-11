@@ -270,6 +270,25 @@ This is not a model correctness issue — it is a **coverage protocol** failure.
 
 ---
 
+### LL-014 — Readiness Declarations Are Systematically Overconfident; Partial Fixes Get Declared Complete
+
+**Observed / What happened:** Three consecutive game-night readiness declarations were falsified by the next game night. The sharpest instance: SESSION 44 declared "G4 READINESS COMPLETE. ALL SYSTEMS AUTO" (MEMORY_BANK header, confidence 10/10) hours after fixing the stale daily-loss bug in `run_t4_live.py` only — the identical bug class in `run_paper_trade.py` (T1 path) was not audited, and it fired the kill switch on the G4 early cron, placing 0 bets. Caught pre-tip only because the operator opened a session and the start-protocol scan ran. Pattern across GG-012, Bug H, and the stale daily-loss pair: a model fixes the *instance* it was shown, declares the *class* resolved, and the readiness summary inherits the unearned confidence.
+
+**Phase:** Discovered 2026-06-10 SESSION 45 (PDTP self-assessment, adversarial pass), spanning SESSIONS 31–45
+
+**Impact:** G4 early cron blanked (recovered manually 23:50 UTC). More broadly: readiness language ("ALL SYSTEMS AUTO," "10/10") has been a lagging indicator of actual state, which corrodes the operator's ability to trust any green dashboard.
+
+**Lesson:** Two rules. (1) **A fix to a bug found in one consumer of shared state is not complete until every consumer of that state is audited** — grep for every reader of the mutated field before declaring the class closed. (2) **Readiness declarations must state what was NOT verified.** "All systems auto" without an exclusion list is a marketing sentence, not an engineering finding. A READY claim should enumerate: paths exercised end-to-end vs. paths assumed-good, and the most recent falsified declaration as base-rate calibration.
+
+**Mitigation:**
+- T-159 registered: portfolio state-machine invariant test suite to kill the shared-state bug class structurally (schema owner + cross-consumer tests), complementing T-156
+- This LL entry serves as the standing calibration reference: any session writing a readiness declaration must check it against LL-014
+- MEMORY_BANK confidence-header inflation noted (10/10 stamped while bugs were live); headers should carry evidence-linked confidence per PDTP Category 4
+
+**Status:** MONITORING (rule is behavioral; T-159 is the structural component)
+
+---
+
 ## Template for New Lessons
 
 When a new lesson is discovered, add it here:

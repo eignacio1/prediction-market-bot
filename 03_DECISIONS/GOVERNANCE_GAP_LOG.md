@@ -367,6 +367,38 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-021 — No Project-Level Stop Criterion: No Documented Evidence Standard for Concluding the Edge Does Not Exist
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-021 |
+| Discovered | 2026-06-10 SESSION 45 — PDTP full-project self-assessment (operator-directed), blind-spot pass |
+| Category | Governance asymmetry — all gates govern *advancing*; nothing governs *stopping* |
+| What was missed | The governance system defines what evidence authorizes forward motion (G6: positive P&L, EXP-017 Part B CONFIRMED, ≥66 bets, ≥5 nights, DS sign-off) but defines nowhere what evidence would force the conclusion that the model has no commercial edge and the project should halt or pivot. Current paper record (cumulative P&L −$123.17 / 82 bets; EXP-018 overall CONFIRMED_NEGATIVE) is being correctly scoped as "underpowered, adverse window" — but without a pre-committed falsification standard, *any* negative result can be scoped away indefinitely. The default trajectory of a well-governed project with no stop criterion is to remain well-governed forever. |
+| When it should have been caught | APR-0017 acceptance (2026-06-01) — a multi-tier evidence standard for GO should have included the symmetric NO-GO tier. |
+| Impact | LOW during paper trading (no capital at risk). HIGH at first regular-season evaluation: deciding what failure looks like *after* seeing the data invites motivated reasoning at exactly the moment live capital is on the table. |
+| Discovery method | PDTP Pass 4 blind-spot scan: "Top 3 that could flip the decision" — item 1. |
+| Resolution path | T-157: draft stop/pivot criterion as OPEN_QUESTIONS entry now; DS decides and ratifies via ADR **before 2026-27 regular season data begins** (cold decision, warm data prohibited). Must specify: metric (e.g., EXP-017B CONFIRMED_NEGATIVE at adequate power), sample floor, and the action (halt, model-class pivot per ADR-0004 supersession, or scope retreat). Companion watch item: G6 criteria have been superseded once (APR-0016→0017); each future revision must be checked for passability drift — revision direction logged in DECISION_LOG. |
+| Status | OPEN — T-157 registered 2026-06-10 |
+
+---
+
+### GG-022 — Paper-Fill Realism: All Paper P&L Used as G6 Evidence Assumes Fills Without Spread Crossing
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-022 |
+| Discovered | 2026-06-10 SESSION 45 — PDTP self-assessment, contradiction scan |
+| Category | Evidence integrity — G6 Tier 1/2 inputs systematically biased in the favorable direction |
+| What was missed | Paper fills execute at observed market prices without modeling bid-ask spread crossing, queue position, or market impact. This biases ALL paper P&L upward — T1 and T4 — and that P&L is the core G6 Tier 2 evidence (P&L slope) and the G6 headline criterion (positive cumulative P&L). The contradiction that surfaced it: T4 pool grew $500→$1,539.42 (+108%) at a 51.4% win rate across 1,115 bets while EXP-018 ruled the same underlying λ model CONFIRMED_NEGATIVE on EV — paper-fill optimism is the most parsimonious reconciliation. T4 is worst-exposed (fires into thin in-play books where the fill assumption is least realistic), but T1 resting orders carry the same assumption in milder form. T-153 (spread model) exists but is scoped to ADR-0019 Tier 2 exit validation — not to G6 evidence integrity generally. |
+| When it should have been caught | APR-0017 acceptance — paper-fill realism is a precondition for treating paper P&L as gate evidence. |
+| Impact | MEDIUM now; HIGH at G6 evaluation: if spread costs consume the measured edge, the G6 gate could clear on evidence that does not survive contact with real execution. Direction of error is systematically anti-conservative — the dangerous direction. |
+| Discovery method | PDTP Pass 3 contradiction scan: T4 paper profit vs. EXP-018 negative EV cannot both be face-value true. |
+| Resolution path | Expand T-153 scope: spread model must produce a fill-realism haircut applied to *all* paper P&L lines reported as G6 evidence (T1 + T4), not only exit-mechanics validation. G4/G5 spread logging (deployed SESSION 41) is the data source. Until the haircut exists, every G6-facing P&L report must carry the caveat "unhaircut paper fills." APR-0017 amendment required if haircut materially changes Tier 2 thresholds. |
+| Status | OPEN — T-153 scope expansion registered 2026-06-10 |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
