@@ -399,6 +399,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-023 — T4 Entry Budget Is Monotonic: Exits Free Economic Capital but Never Replenish Entry Capacity
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-023 |
+| Discovered | 2026-06-11 SESSION 46 (UTC; 2026-06-10 PDT) — live observation during Finals G4, mid-Q2 |
+| Category | Incremental architecture — exit mechanics (ADR-0018/0019) bolted onto a budget design (ADR-0013) that predates them |
+| What was missed | `t4_deployed_usd` in `run_t4_live.py` accumulates monotonically (`+= approved_size` at fire, lines 672/709) and is never decremented by the exit pass. When a position exits, its stake is economically freed (PnL realized, position closed in the T4 portfolio) but the entry-budget counter still counts it as deployed. Observed live in G4: T4 fired 1,199 bets and hit $499.95/$500.00 (100%) **before halftime**; 29 exits then fired correctly and freed capital, but `budget_used` stayed pinned at $499.95 — every subsequent cycle logged `fired=0`. The entire second half, where live Bayesian updates carry the densest signal, had zero entry capacity. |
+| When it should have been caught | ADR-0019 acceptance / SESSION 43 DS activation override — activating exits changed the meaning of "deployed" from a one-way commitment to a revolving quantity, and the budget accounting was not re-examined against that change. |
+| Phases it survived | Designed pre-exit (ADR-0013); survived ADR-0018, ADR-0019, T-146/T-147 implementation review, and SESSION 43 activation. |
+| Why it survived | No test or review question asked "what does an exit do to the budget counter?" Exit tests (test_t146_t147_exit_mechanics.py) validate PnL formulas and signal logic, not budget interaction. The budget-exhaustion halt is *designed* behavior (band-level kill: ADR-0013, GG-010 resolution), which made the observation pattern-match to "working as intended." |
+| Impact | MEDIUM now (paper only; T4 pool isolated). Distinct from and NOT relitigating GG-010 (DS ruled shared budget + per-band kills is design intent — that ruling concerned cross-band allocation; this gap concerns within-band accounting after exits). Capacity cost is measurable from G4 logs: T4 was entry-dead from ~Q2 onward with ~24+ min of game remaining. Also degrades T-152 empirical exit-event collection: no new entries in the second half means no second-half exit events. Direction of error is conservative (under-deployment, never over-deployment) — but it silently halves the very evidence window the DS override was created to collect. |
+| Discovery | Live log read during G4 (session cycle summaries: `fired=0` every cycle post-01:21 UTC with budget pinned at $499.95 after 29 exits), confirmed against source. Human-directed registration (operator: Earl). |
+| Resolution | T-161: DS decision + ADR-0013 amendment (or new ADR) on exit-credit semantics. Options to be evaluated with G4/G5 data: (a) credit full exited stake back to entry budget (revolving budget); (b) keep monotonic — budget = gross commitment cap per game (status quo, document explicitly); (c) credit exited stake only up to realized value (no credit for losing exits). Interaction to check: daily-loss net semantics (`424698a`) and kill-switch inputs must stay coherent with whichever option is chosen. No remediation direction chosen at registration — deliberately left to DS cold review post-G4. |
+| Status | OPEN — T-161 registered 2026-06-11 |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
