@@ -6,6 +6,21 @@
 
 ---
 
+## PRIORITY QUEUE (updated 2026-06-10 SESSION 45 — PDTP assessment; ordered high-governance → low-level)
+
+| Pri | Task | What / Why | Due |
+|-----|------|-----------|-----|
+| **1 — HIGH (governing)** | **T-157: Project-level stop criterion (GG-021)** | Draft OPEN_QUESTIONS entry + ADR defining what evidence forces "no edge — halt/pivot." Must be ratified COLD — before 2026-27 regular-season data exists. Includes standing watch: every G6-criteria revision checked for passability drift. | Pre-regular-season; draft within 2 sessions |
+| **2 — HIGH (governing)** | **T-153 (EXPANDED, GG-022): fill-realism haircut on ALL paper P&L** | Spread model from G4/G5 spread logs must haircut T1+T4 P&L used as G6 evidence — not just exit validation. Until then, all G6-facing P&L reports carry "unhaircut paper fills" caveat. T4's +108% pool at 51.4% win rate is presumed optimistic until haircut applied. | Post-G4/G5 data; before any G6 Tier 2 evaluation |
+| **3 — HIGH** | **T-158: Dark-period plan (June–Oct 2026)** | Finals may end within days; G6 commercial evidence is structurally unavailable until regular season. Ratify a plan document: backtest infrastructure, T2/DS-04 injury sourcing (KI-011), T-153 spread model, multi-sport C1 groundwork, cadence + drift controls for the no-feedback stretch. | Within 1 week of Finals end |
+| **4 — MEDIUM** | **T-156: ADR-0012 amendment + daily-loss accumulation tests** | Formalize net semantics; first tests ever on kill-switch input accumulation. | Post-G4 |
+| **5 — MEDIUM** | **T-159: Portfolio state-machine invariant tests + schema owner (LL-014)** | Kill the stale-state bug class structurally: every consumer of persisted portfolio fields tested for cross-day transitions; portfolio JSON schema gets an owning module. Risk-shaped coverage, not feature-shaped. | Post-G4/G5 |
+| **6 — LOW** | **T-160: Root-folder document hygiene** | Unversioned strategy docs (Princeton Protocol.txt, templates, progress assessments, PDTP txt) into numbered structure or ARCHIVE/ so governance scans see them. | Opportunistic |
+
+Standing post-G4 items (automatic tonight, review tomorrow): EXP-018 rerun → Hypothesis C DS ruling; EXP-017 Part B update (GG-004); T-152 exit-event empirical data; T-139 order-failure rate check.
+
+---
+
 ## SESSION 45 — G4 PRE-TIP SPRINT (2026-06-10)
 
 | Task | Status |
