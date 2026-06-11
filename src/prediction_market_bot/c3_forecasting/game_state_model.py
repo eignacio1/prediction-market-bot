@@ -53,9 +53,11 @@ from dataclasses import dataclass
 # ---------------------------------------------------------------------------
 
 # T4: minimum absolute change in probability to treat as material.
-# 2σ noise floor at Q4 late (min 44+): 0.069; economic floor (MIN_EDGE+VIG_HALF): 0.045.
-# 0.08 is phase-appropriate for late Q4; EXP-018 calibrates phase-dependent values.
-T4_MIN_DELTA_P: float = 0.08
+# ADR-0020: raised 0.08→0.50. Derivation: mean+1σ of calibration-gap distribution at
+# game start (t=48, 0 pts scored): mean=0.376, σ=0.165, mean+1σ=0.541→0.50 rounded.
+# Sets threshold above noise floor of raw-Poisson vs Platt-scaled T1 calibration gap.
+# Band-aid fix; architectural fix (incremental delta_p) tracked under GG-025.
+T4_MIN_DELTA_P: float = 0.50
 
 # T5: game time threshold for late-game arithmetic activation.
 T5_TIME_THRESHOLD_MIN: float = 3.0
