@@ -455,6 +455,22 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-026 — T4 Band Budget Architecture: PAPER_T4_FLAT_SIZING Bypasses Production Kelly Budget Path
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-026 |
+| Discovered | 2026-06-10 SESSION 46 CLOSE — DS review: "I don't want arbitrary capital restraint (ie $500) — no bandaid fixes" |
+| Category | Architectural shortcut outliving its original scope |
+| What was missed | `PAPER_T4_FLAT_SIZING=true` (default) hardcodes `t4_band_budget = PAPER_T4_POOL_USD` ($500 flat) and bypasses the production path `_compute_t4_band_budget(portfolio)` = `deployable × T4_BAND_WEIGHT`. The flat $500 was the correct pool size when first set (SESSION 24, G1 launch). By G4/G5, the T4 pool has grown to $1,869.68 through paper wins — the flat cap is now 26.7% of the actual pool and no longer represents a principled fraction of capital. Additionally, `T4_BAND_WEIGHT = 0.10` is explicitly marked "Phase 8 placeholder — inactive in PAPER_T4_FLAT_SIZING=true mode" — it was never calibrated. If the flag were removed today, the production path would give $186.97 band budget ($1,869.68 × 0.10) — less than the flat cap, not more. The transition from flat to proportional is undocumented, unplanned, and the calibration constant is a stub. |
+| When it should have been caught | ADR-0011/ADR-0017 acceptance — when PAPER_T4_FLAT_SIZING was introduced as a "paper architecture" shortcut, a sunset condition (pool growth trigger, or G-gate) should have been specified. GG-011 resolution (2026-06-05) explicitly confirmed the bypass as paper architecture; no calibration review was triggered. |
+| Phases it survived | G1 launch (pool=$500, flat cap=$500 — coincidentally correct); G2, G3, G4 (pool grew 3.7×, cap unchanged). |
+| Impact | MEDIUM now. The cap is effectively underspecified: $500 is neither the current pool size nor a calibrated fraction of it. At G5 with ADR-0021 active (fire volume ~10% of G4's), budget exhaustion should be rare regardless of cap level — but the cap will grow increasingly mismatched as the pool continues to grow. Direction of error is conservative (under-deployment) but arbitrary — the cap has no principled relationship to the system's capital position. |
+| Resolution path | T-163: ADR-0023 — remove PAPER_T4_FLAT_SIZING flag; activate `_compute_t4_band_budget(portfolio)` production path; calibrate T4_BAND_WEIGHT from Kelly math (expected concurrent positions × Kelly fraction × expected edge → target utilization fraction). Derivation must be grounded in G1–G4 trajectory data — no arbitrary constant. T4_BAND_WEIGHT update per ADR-0023; `pool_isolated` flag wiring retained. |
+| Status | OPEN — T-163 registered 2026-06-10 SESSION 46 CLOSE |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-10 SESSION 45 — G4 pre-tip sprint (T1 stale-kill fix `b6cedd0`, net daily-loss semantics `424698a`, T4 restart) + PDTP project assessment (GG-021 stop criterion, GG-022 paper-fill realism, LL-014; T-157..T-160). G4 live at session close; post-G4 sprint runbook in SESSION_HANDOFF_20260611_0040.md. 817/817 tests.  
+**Last reviewed:** 2026-06-10 SESSION 46 CLOSE — Post-G4 institutional sprint complete. ADR-0021 (GG-025 resolved) + ADR-0022/T-161 (GG-023 resolved) accepted and deployed. Bankroll reset $1,000. 843/843 tests. GG-026 registered (T4 pool architecture); T-163 pre-G5 critical. G5 = Saturday.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
@@ -163,7 +163,7 @@
 | EV re-estimation (T-069/EXP-010) | RL | HIGH | ✅ 2026-05-29 — +$0.0958/bet; 61.1% win rate |
 | VPS provisioning (T-059) | IO | HIGH | ✅ 2026-05-29 — 157.230.91.33; cron active |
 | Paper trading pipeline PIPE-03 (T-060) | EL | HIGH | ✅ 2026-05-29 — $1,000 bankroll; running |
-| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — T1: 82/66 bets ✓; 3/5 game nights (need 2 more: G4 Jun 10 + G5 ~Jun 12); EXP-017 Part B DIRECTIONAL_POSITIVE (EV=+$0.0050, n=66); EXP-018 CONFIRMED_NEGATIVE overall / injury-filtered POSITIVE — Hypothesis C pending DS decision (GG-004); G4 auto-resolves Jun 11 via GHA workflow `post_game_resolve.yml` at 05:30 UTC (primary) + Mac cron `post_game_g4_resolve.sh` `0 23 10 6 *` (fallback + experiment runner) |
+| Accumulate paper evidence ≥66 bets / ≥5 nights (T-110, APR-0017) | DS | HIGH | 🟡 IN PROGRESS — T1: 114/66 bets ✓ (post-G4 resolve); 4/5 game nights (G5 Saturday closes this); EXP-017B DIRECTIONAL_NEGATIVE vs Kalshi prices (-$0.0361/bet, n=96) — GG-004 OPEN, G6 live capital blocked; EXP-018 Hypothesis C DS ruling REQUIRED before G5 (injury-filtered view flipped CONFIRMED_NEGATIVE at n=98); T4 ADR-0021+0022 deployed; bankroll reset $1,000 |
 | PIPE-07 T4 in-play paper trading (PIPE-07) | EL | HIGH | ✅ 2026-06-08 SESSION 37 — portfolio isolation fix, cron.conf 23:00 UTC, PIPE-07R-LOCAL script |
 | ADR-0005 live capital authorization (T-061) | AO/DS | LOW | 🔲 After paper evidence |
 
