@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 56 — T-169/GG-031 RESOLVED (twin annotations + EXP-018 dedupe filter); GG-033 registered (deploy silently broken since S55; recovered; T-171 queued); YES-only gate LIVE (`PAPER_YES_ONLY`, S47/S56 DS ruling); T-148 reaffirmed G6 blocker (segmented promotion thresholds); GG-007 EXPs renumbered EXP-020/021; T-172 registered (G6 checklist); T-160 hygiene sweep DONE. Commits `9c91bd4`→`0da335b`+, VPS deployed with HEAD verification. 852/852 tests.
+**Last reviewed:** 2026-06-12 SESSION 57 — Q6 worry sweep: PORTFOLIO banner fixed (VPS live book via ssh cache); open-position reconciliation CLEAN (VPS ledger to the cent); S46 reset-equity nuance logged (T-172 must use Σpnl); T-166 row annotated (per-ticker guard shipped S53, remaining scope is run-level game_date guard). Commit `3718015`, VPS deployed. 852/852 tests.
 
 ---
 
