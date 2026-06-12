@@ -12,6 +12,7 @@ Coverage areas:
 
 from __future__ import annotations
 
+import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -23,6 +24,8 @@ import pytest
 _SRC = Path(__file__).parent.parent / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
+
+os.environ.setdefault("BOT_ENV", "paper")
 
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader, INITIAL_BANKROLL_USD
 
@@ -511,6 +514,73 @@ class TestIdempotencyFilter:
         result = self._confirmed_tickers([confirmed, failed])
         assert "KXNBAPTS-26JUN08TICKER-A" in result
         assert "KXNBAPTS-26JUN08TICKER-B" not in result
+
+
+class TestGameDateRunLevelGuard:
+    """
+    Verify the run-level game_date idempotency guard logic (T-166 remaining scope).
+
+    The guard counts open positions whose ticker game_date matches the current
+    run's GAME_DATE_ISO. If count > 0, placement is blocked for the entire run
+    while YES-only counterfactual logging still proceeds.
+
+    Tests mirror the count expression in run_paper_trade.py:
+        sum(1 for p in open_positions
+            if _ticker_to_game_date(p["kalshi_ticker"]) == game_date_iso)
+    """
+
+    @staticmethod
+    def _guard_count(open_positions: list, game_date_iso: str) -> int:
+        """Mirrors the count expression in run_paper_trade.py game_date guard."""
+        from prediction_market_bot.run_paper_trade import _ticker_to_game_date
+        return sum(
+            1 for p in open_positions
+            if _ticker_to_game_date(p["kalshi_ticker"]) == game_date_iso
+        )
+
+    @pytest.mark.unit
+    def test_guard_fires_when_today_positions_exist(self):
+        """Position with today's game_date → guard count > 0 → guard fires."""
+        pos = _make_position("2026-06-13")
+        pos["kalshi_ticker"] = "KXNBAPTS-26JUN13BOSOKC-TST-20"
+        count = self._guard_count([pos], "2026-06-13")
+        assert count > 0
+
+    @pytest.mark.unit
+    def test_guard_does_not_fire_for_past_positions(self):
+        """Position with past game_date → guard count = 0 → guard does not fire."""
+        pos = _make_position(_PAST_DATE)
+        pos["kalshi_ticker"] = "KXNBAPTS-26MAY30SASOKC-TST-20"
+        count = self._guard_count([pos], "2026-06-13")
+        assert count == 0
+
+    @pytest.mark.unit
+    def test_guard_empty_portfolio(self):
+        """Empty open_positions → guard count = 0 → guard does not fire."""
+        count = self._guard_count([], "2026-06-13")
+        assert count == 0
+
+    @pytest.mark.unit
+    def test_guard_counts_only_today_in_mixed_portfolio(self):
+        """Mixed today+past positions → only today's count toward guard."""
+        today_pos = _make_position("2026-06-13")
+        today_pos["kalshi_ticker"] = "KXNBAPTS-26JUN13BOSOKC-TST-20"
+        past_pos = _make_position(_PAST_DATE)
+        past_pos["kalshi_ticker"] = "KXNBAPTS-26MAY30SASOKC-TST-20"
+        count = self._guard_count([today_pos, past_pos], "2026-06-13")
+        assert count == 1
+
+    @pytest.mark.unit
+    def test_guard_count_reflects_multiple_today_positions(self):
+        """Multiple today positions → count matches number of today positions."""
+        pos_a = _make_position("2026-06-13")
+        pos_a["kalshi_ticker"] = "KXNBAPTS-26JUN13BOSOKC-PLYA-20"
+        pos_b = _make_position("2026-06-13")
+        pos_b["kalshi_ticker"] = "KXNBAPTS-26JUN13BOSOKC-PLYB-25"
+        pos_past = _make_position(_PAST_DATE)
+        pos_past["kalshi_ticker"] = "KXNBAPTS-26MAY30SASOKC-TST-20"
+        count = self._guard_count([pos_a, pos_b, pos_past], "2026-06-13")
+        assert count == 2
 
 
 class TestResolveExceptionLogging:

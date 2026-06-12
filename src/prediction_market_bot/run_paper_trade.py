@@ -448,6 +448,29 @@ def main() -> None:
 
     _reserve_halted = False
 
+    # Run-level game_date guard (T-166 remaining scope, GG-028 defense-in-depth).
+    # Per-ticker _open_tickers guard covers normal re-execution at ticker granularity;
+    # this guard catches the full second-cron-window case cleanly at run level.
+    # YES-only counterfactual logging still runs inside the loop — only C4 evaluation
+    # and placement are blocked.
+    _game_date_deployed_count = sum(
+        1 for p in trader.get_state().get("open_positions", [])
+        if _ticker_to_game_date(p["kalshi_ticker"]) == GAME_DATE_ISO
+    )
+    _game_date_guard_fired = _game_date_deployed_count > 0
+    if _game_date_guard_fired:
+        logger.info(
+            "PIPE-03", "paper_run_game_date_guard_active",
+            payload={"game_date": GAME_DATE_ISO,
+                     "open_positions_for_date": _game_date_deployed_count},
+            session_id=SESSION_ID,
+        )
+        print(
+            f"[GAME-DATE GUARD] {_game_date_deployed_count} open position(s) already "
+            f"deployed for {GAME_DATE_ISO}. C4 evaluation + placement blocked; "
+            f"YES-only counterfactual logging still active."
+        )
+
     for kalshi_player_name, player_mkts in markets_by_player.items():
         if _reserve_halted:
             break
@@ -556,6 +579,17 @@ def main() -> None:
                             session_id=SESSION_ID)
                 print(f"  [YES-ONLY] FILTER {kalshi_player_name:<22} NO    "
                       f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts")
+                continue
+
+            # Run-level game_date guard: block C4 + placement if already deployed.
+            # YES-only counterfactual logging (above) has already run for this ticker.
+            if _game_date_guard_fired:
+                logger.info(
+                    "PIPE-03", "paper_run_skipped_already_deployed",
+                    payload={"ticker": mkt.ticker, "player": kalshi_player_name,
+                             "game_date": GAME_DATE_ISO},
+                    session_id=SESSION_ID,
+                )
                 continue
 
             forecast_rec = {

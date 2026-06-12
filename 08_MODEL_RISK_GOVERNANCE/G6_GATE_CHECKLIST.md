@@ -1,0 +1,176 @@
+# G6 Gate Checklist — Release to Live Capital
+
+**Purpose:** Mechanical, per-criterion evidence checklist for the G6 promotion decision.  
+**Gate:** G6 Release (live capital authorization)  
+**Formal approval required:** APR-0008 (final validation report) + APR-0009 (live capital authorization)  
+**Evidence standard:** APR-0017 (2026-06-01) as amended by APR-0019 (2026-06-09)  
+**Last reviewed:** 2026-06-12 SESSION 57  
+**Owner:** DS — Earl Ignacio  
+
+**Sequential rule:** Tier 0 must pass before any other tier evidence counts. Failure in any tier halts G6 regardless of results in subsequent tiers.
+
+---
+
+## How to Use This Checklist
+
+For each criterion: read the pass condition, locate the evidence artifact, measure the current value, mark PASS / FAIL / PENDING. Do not mark PASS without sourcing the artifact. Do not defer a measurement because the value is probably fine.
+
+At G6 evaluation time: every row must be PASS before APR-0008 is drafted.
+
+---
+
+## Pre-Checklist Invariants
+
+Before evaluating any tier criterion, confirm these hold:
+
+| # | Invariant | Source | Status |
+|---|-----------|--------|--------|
+| I-1 | P&L figures use **Σpnl fields**, not equity−initial | S46 reset-equity nuance: at bankroll reset S46, $142.46 of G4 stakes were still deployed. Equity−initial overstates P&L by $142.46. Use `total_realized_pnl` from `paper_portfolio.json`. | ⚠️ APPLY — do not use equity−initial |
+| I-2 | Tier 2 eligible bets exclude injury-contaminated positions | APR-0019 Mod 3: bets where model inputs were incomplete at prediction time (KI-011). Currently 6 documented ineligible T1 bets (EXP-018). Each ineligible bet must have documented KI-NNN basis; outcome-based exclusion prohibited. | RULE ACTIVE |
+| I-3 | T1 and T4 Tier 2 evaluated **independently** — no cross-bucket pooling | APR-0019 Mod 2: T1 uses Poisson CDF, T4 uses live Bayesian GameStateModel — different model classes, different error distributions. | RULE ACTIVE |
+| I-4 | G6 closure requires **all active buckets** to pass Tier 2 | APR-0019: T1 and T4 both currently active. Partial promotion not permitted. | RULE ACTIVE |
+| I-5 | YES/NO direction P&L tracked separately | APR-0019 Mod 4: structural asymmetry found (EXP-018). Not a current gate, but must be reported in APR-0008. DS may exclude NO bets from T1 T2-B with documented basis and sign-off. | MONITOR |
+
+---
+
+## Tier 0 — Commercial Preconditions
+
+*Must be satisfied before any paper bets count as G6 evidence.*
+
+| ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
+|----|-----------|----------------|-------------------|----------------|
+| **T0-A** | EXP-017 Part B: positive EV vs. real Kalshi prices | `run_exp017.py --kalshi-prices kalshi_prices.csv` → positive EV estimate with 90% CI lower bound > 0 on **structurally adequate sample** (ADR-0024: ≥500 unique markets + ≥15 distinct opponents, OR ≥2 sports each with n ≥150). Same model version hash as VPS deployed model. | EXP-017 Part B results. ADR-0024 defines adequate sample. | 🔴 **OPEN — BLOCKING** — scope shifted to MLB 2026 + NBA 26-27 regular season per ADR-0024. Last measurements: G2 EV=+$0.1042/bet (n=33, DIRECTIONAL_POSITIVE, insufficient power); G4 EV=−$0.0361/bet (n=96, DIRECTIONAL_NEGATIVE, insufficient power). Both inconclusive at Finals scale. GG-004 OPEN. |
+| **T0-B** | Price discovery uses production API in paper mode | `_price_discovery_url()` returns `_KALSHI_LIVE_BASE_URL` regardless of BOT_ENV. Regression = CI failure. | `test_unauthenticated_get_uses_production_url_in_paper_mode` in test_kalshi_client.py | ✅ **COMPLETE** — T-114, 2026-06-01 |
+
+**Tier 0 verdict: BLOCKED — T0-A not met. G6 evaluation cannot proceed until EXP-017 CONFIRMED_POSITIVE on ADR-0024 adequate sample.**
+
+---
+
+## Statistical Floor (APR-0019 per-bucket)
+
+*Minimum sample for Tier 2 trend analyses to be statistically valid. Meeting the floor is necessary but not sufficient.*
+
+| Bucket | Floor | Derivation | Current Count | Status |
+|--------|-------|------------|---------------|--------|
+| T1 eligible bets | ≥ 66 resolved | T2-A calibration power formula at α=0.10, power=0.80, δ=15pp, p̂=0.60 (APR-0017/0019) | 82 resolved as of Finals G3 (2026-06-08). Subtract 6 ineligible injury-contaminated → **76 eligible**. | ✅ **MET** — 76 > 66 |
+| T4 eligible bets | ≥ 50 resolved | T2-A at α=0.05, power=0.80, δ=20pp, p̂=0.514 (APR-0019) | ~1,115 G3 bets + subsequent games | ✅ **MET** (trivially) |
+| Game nights | ≥ 5 | Slope regression df ≥ 3 (APR-0017). NBA Finals series must last ≥5 games. | G5 is Finals Game 5; series ongoing. G6 adds 5th game night if it resolves. | 🟡 **PENDING** — meets floor if Finals series is ≥5 games (≥5 game nights of paper data) |
+
+**Binding G6 constraints (not bet count):**
+1. GG-004 resolved — EXP-017 Part B CONFIRMED_POSITIVE on ADR-0024 adequate sample
+2. ≥5 game nights — needed for slope regression df ≥ 3
+
+---
+
+## Tier 1 — Execution Integrity
+
+*The machine works reliably. Sequential: evaluate only after Tier 0 passes.*
+
+| ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
+|----|-----------|----------------|-------------------|----------------|
+| **T1-A** | Pipeline execution error rate ≤ 5% | (1) Cumulative error rate ≤ 5% over paper period (≤1 error per 20 scheduled sessions). (2) Slope of per-game-night error rate ≤ 0 (non-increasing). | C6 JSONL events with severity `ERROR` during PIPE-03 session_ids; VPS cron logs for missed windows. | 🔴 **NOT MET** — G5 peak-window: 9/29 = 31% failures at 22:00 UTC (GG-014). Cause: server-side Kalshi congestion, not bot's own rate pressure. T-164 effective off-peak (0/12 at 01:30 UTC) but does not reduce peak failures. **Confirmation deferred to 2026-27 Season Day 1 cron batch (Oct 2026) per DARK_PERIOD_PLAN.md.** |
+| **T1-B** | Idempotency — zero duplicate client_order_ids | Zero duplicate `client_order_id` values across all PIPE-03 sessions. No position has `duplicate=True` without `duplicate_of` annotation confirming it is a known twin, not a live double-fire. | C6 JSONL idempotency log entries; `paper_portfolio.json` open_positions; `duplicate_of` annotations. | 🟡 **SUBSTANTIALLY MET** — per-ticker `_open_tickers` guard shipped S53 (d6283b1); blocks exact failed-transient→late-window mechanism. 9 G5 twins annotated `duplicate_of` (pre-guard, GG-028 → RESOLVED). T-166 run-level game_date guard (defense-in-depth) ships this session. Full confirmation requires zero-duplicate measurement over paper period from C6. |
+| **T1-C** | Resolution fidelity ≥ 85% | (1) Cumulative resolution rate ≥ 85% over paper period. (2) Slope of per-game-night rate ≥ 0 (non-decreasing). | `paper_portfolio.json` `closed_positions`; `resolution_source` field; `resolved_at` timestamps. | 🟡 **PENDING MEASUREMENT** — 117 positions resolved. Rate has not been formally measured against eligible-resolution denominator. Measure: count positions with `resolution_source: "nba_api"` / total positions eligible for resolution at time of evaluation. |
+| **T1-D** | Audit completeness — zero-tolerance | For every PIPE-03 session: C6 `approve` + `reject` count = total C4 evaluations. No position in `paper_portfolio.json` without corresponding C6 `approve` event with matching `client_order_id`. | C6 JSONL `approve` and `reject` events cross-referenced against `paper_portfolio.json` and C4 evaluation count per session. | 🟡 **PENDING MEASUREMENT** — completeness has not been formally audited across all paper sessions. Requires C6 JSONL cross-reference script. |
+
+---
+
+## Tier 2 — Model Performance Trends (T1 Bucket)
+
+*T1 evidence only. Slope-primary — trends over game nights, not endpoints.*
+
+| ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
+|----|-----------|----------------|-------------------|----------------|
+| **T2-A (T1)** | Calibration deviation ≤ 15pp, slope ≤ 0 | (1) Cumulative calibration deviation ≤ 15pp over paper period (6× TEST ECE of 0.0247). (2) Slope of per-game-night deviation ≤ 0. | `paper_portfolio.json` closed T1 positions; per-game-night \|realized win rate − mean predicted prob\|. | 🟡 **PENDING MEASUREMENT** — requires per-game-night calibration analysis on eligible T1 resolved positions. |
+| **T2-B (T1)** | Rolling EV > 0, slope ≥ 0 | (1) Rolling per-bet EV at paper period close > 0. (2) Slope of rolling EV over game nights ≥ 0 (not deteriorating). Apply eligible-bet filter (ineligible = injury-contaminated). YES/NO direction P&L reported separately. | EXP-018 methodology; `paper_portfolio.json` T1 `pnl` fields (eligible subset). | 🟡 **DIRECTIONAL — NOT YET CONFIRMED** — EXP-018 (n=60 eligible, injury-filtered): EV = +$0.0202/bet (DIRECTIONAL_POSITIVE, borderline). YES: +$0.0733/bet (n=24); NO: −$0.0440/bet (n=42). Overall EV −$0.0361/bet (EXP-017B G4, n=96, includes pre-eligible-filter period). Slope and G5 data not yet incorporated. YES-only gate now active (EXP-018 Hypothesis C, S47/S56 DS ruling) — future T1 bets are YES-only, which will isolate YES EV going forward. |
+| **T2-C (T1)** | Brier ≤ 0.265, slope ≤ 0 | (1) Rolling Brier ≤ 0.265 (L1 drift threshold) at paper period close. (2) Slope of rolling Brier over game nights ≤ 0. | `paper_portfolio.json` T1 eligible positions; per-game-night Brier calculation. TEST baseline: 0.2480 (ADR-0004). | 🟡 **PENDING MEASUREMENT** — Brier not formally measured on live paper positions. Requires per-game-night calculation on eligible T1 resolved positions. |
+| **T2-D (T1)** | P&L slope > 0 | Slope of cumulative T1 P&L curve over game nights > 0 (linear regression on [game_night_index, cumulative_P&L]). | `paper_portfolio.json` T1 `pnl` fields, per game night. | 🔴 **NOT CURRENTLY MET** — Current total_realized_pnl = −$8.46 (use Σpnl per I-1 invariant). Cumulative P&L has been declining over the Finals paper window. GG-004 (adverse Finals window, insufficient power for commercial conclusions). Will be re-evaluated with G5 data and after EXP-017 on adequate sample. |
+
+---
+
+## Tier 2 — Model Performance Trends (T4 Bucket)
+
+*T4 evidence only — independent evaluation required (APR-0019).*
+
+| ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
+|----|-----------|----------------|-------------------|----------------|
+| **T2-A (T4)** | Calibration deviation ≤ 20pp, slope ≤ 0 | (1) Cumulative calibration deviation ≤ 20pp (conservative: no validated ECE baseline for T4 live Bayesian model). (2) Slope ≤ 0. | C6 T4 JSONL events; `paper_portfolio.json` T4 positions; T4 model predictions vs resolved outcomes. | 🟡 **PENDING** — T4 win rate G3: 51.4% (n=1,115). No formal per-game-night calibration analysis run. Dark period work required. |
+| **T2-B (T4)** | Rolling EV > 0, slope ≥ 0 | (1) Rolling T4 EV > 0. (2) Slope ≥ 0. T4 flat-sizing; EV = P&L / total amount wagered. | T4 pool: $478.41 remaining (initial $500). T4 `pnl` fields in C6 or T4-specific portfolio file. | 🟡 **PENDING MEASUREMENT** — T4 pool tracking: $478.41 / $500 initial = −$21.59 net. Formal per-game-night EV not calculated. |
+| **T2-C (T4)** | Brier ≤ 0.265, slope ≤ 0 | Rolling T4 Brier ≤ 0.265 at period close. Slope ≤ 0. | T4 resolved positions, predicted prob vs outcome. | 🟡 **PENDING MEASUREMENT** |
+| **T2-D (T4)** | P&L slope > 0 | Slope of cumulative T4 P&L curve > 0. | T4 pool P&L per game night. | 🟡 **PENDING MEASUREMENT** |
+
+---
+
+## Tier 3 — Risk Control Validation
+
+*The guardrails are operative.*
+
+| ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
+|----|-----------|----------------|-------------------|----------------|
+| **T3-A** | Per-bet cap — zero-tolerance (≤ $500) | Zero bets with `approved_size_usd` > $500.00 in any PIPE-03 session across paper period. | C6 JSONL `approve` events; `approved_size_usd` field. | 🟡 **PENDING AUDIT** — $500 cap enforced by `_HARD_LIMITS["max_single_event_exposure_usd"]` in risk.py. No violations reported. Formal C6 audit across all paper sessions required for sign-off. |
+| **T3-B** | Drawdown < 15%, slope ≤ 0 | (1) Peak realized drawdown at any point during paper period < 15%. (2) Slope of per-game-night drawdown ≤ 0 at paper period close. Kill switch fires at 20% (NFR-03); 15% paper ceiling = 75% of kill switch trigger. | `paper_portfolio.json` bankroll history; per-game-night drawdown calculation. | ✅ **PASSING** — Current realized drawdown: 0.8% (−$8.46 / $1000 initial). Well within bounds. Peak drawdown across G2–G5 paper period needs formal measurement at period close. |
+| **T3-C** | Rejection rate [20%, 80%] | (1) Cumulative rejection rate in [20%, 80%] at paper period close. (2) \|slope\| ≤ 10pp per game night. Note: YES-only gate (PAPER_YES_ONLY) is an EXP-018 research gate, NOT a C4 rejection. T3-C measures C4 `reject` events (edge < MIN_EDGE) only. | C6 JSONL `reject` vs `approve` events per PIPE-03 session. | 🟡 **PENDING MEASUREMENT** — Rejection rate not formally calculated from C6 logs across paper period. |
+
+---
+
+## Formal Gate Prerequisites
+
+*These are administrative/governance actions required before APR-0008 can be signed. Not measurable evidence criteria — they are process gates.*
+
+| Prerequisite | Description | Current Status | Blocker |
+|-------------|-------------|----------------|---------|
+| **T-117** | Two formal document readings: (1) Kalshi Participant Agreement (formal read, not informal web search); (2) KXNBAPTS contract Terms and Conditions for numerical PAL and Position Limit values | 🔴 **OPEN** — Week 1 dark period action (by 2026-06-30). Automated trading confirmed permitted; limit values not yet formally read from per-contract Terms. If limits > $500: no risk.py change. If limits < $500: add `max_position_usd_per_market` to `_HARD_LIMITS` via ADR. | Required before ADR-0005 draft |
+| **GG-014** | Order failure rate ≤ 5% confirmed on adequate sample | 🔴 **OPEN — deferred** — G5 peak: 31% failures (server-side Kalshi congestion). Off-peak (01:30 UTC): 0%. T-164 partially effective. Fix path: earlier cron window or rate-limit tier escalation. Confirmation deferred to 2026-27 Season Day 1 per DARK_PERIOD_PLAN.md. | Required for T1-A criterion |
+| **GG-020** | Kalshi taker fee rate verified against actual transaction receipts | 🔴 **OPEN** — Current rate: 0.07 (supported by ≥2 independent sources; one source suggests 0.06 for sports; neither confirmed by actual receipts). Paper mode: notional — LOW risk now. Pre-ADR-0005: MEDIUM risk. Must verify post-G6: place first live trade and verify receipt matches 0.07 formula. If 0.06 is correct: direction is conservative (EV understated, not overstated). T-151 owner action. | Required for ADR-0005 break-even analysis |
+| **ADR-0005** | Live capital authorization — DS sign-off | 🔴 **PENDING** — Not drafted. Requires: T-117 complete, GG-014 confirmation, GG-020 receipt verified, all tier criteria met, T-148 APR signed (✅ APR-0019), break-even analysis (T-150 complete ✅ at Finals scale; needs regular-season scale). | Gate blocker |
+| **GG-033 / T-171** | Untrack `logs/paper_portfolio.json` from git | 🔴 **OPEN** — Live portfolio in git breaks `git pull --ff-only` deploys. Safe dance required every deploy until resolved. T-171: untrack portfolio + GHA auto-deploy as one unit (post-G5 resolution). | Not a G6 blocker but a deploy-integrity prerequisite for live capital operation |
+| **APR-0008** | Final validation report signed | 🔴 **PENDING** — Requires all tier criteria PASS, formal audit complete, APR-0017/0019 criteria documented | Final G6 gate signature |
+| **APR-0009** | Live capital authorization co-signed | 🔴 **PENDING** — Countersignature required after APR-0008 | Final G6 gate signature |
+
+---
+
+## T-148 / APR-0019 Status
+
+T-148 registered (SESSION 43) for regression analysis to determine whether T1 and T4 evidence must be segregated. Analysis completed: APR-0019 accepted 2026-06-09. **T-148 is RESOLVED.** APR-0019 is operative:
+
+- T1 floor: ≥66 eligible T1 bets ✅ MET (76 eligible as of G3)
+- T4 floor: ≥50 eligible T4 bets ✅ MET (trivially)
+- Per-bucket Tier 2 independence: ACTIVE
+- Eligible bets definition: ACTIVE (injury-contaminated bets excluded with documented basis)
+
+---
+
+## S46 Equity Nuance (Applied Throughout)
+
+At the S46 bankroll reset (2026-05-29), $142.46 of G4 stakes were still deployed. Effective post-reset equity = $1,142.46, not $1,000. Any P&L figure derived as `(current_bankroll − initial_bankroll)` overstates loss by $142.46.
+
+**Rule:** All P&L figures in G6 evidence must use `total_realized_pnl` (Σpnl) from `paper_portfolio.json`. Do not use equity−initial arithmetic. Current Σpnl = −$8.46. This is the authoritative P&L figure.
+
+---
+
+## Binding G6 Constraints Summary
+
+| Constraint | Source | Status |
+|-----------|--------|--------|
+| EXP-017 Part B CONFIRMED_POSITIVE on ADR-0024 adequate sample | GG-004, APR-0017 T0-A | 🔴 OPEN — primary blocker |
+| T1-A: pipeline error rate ≤ 5% | APR-0017, GG-014 | 🔴 OPEN — deferred Oct 2026 |
+| T-117: Kalshi document formal reads | GG-003 resolution path | 🔴 OPEN — dark period Week 1 |
+| ADR-0005: DS live capital sign-off | APR-0017 | 🔴 PENDING |
+| Tier 2 (T1 + T4 per-bucket): EV > 0, slope ≥ 0 | APR-0017/0019 | 🟡 NOT YET EVALUABLE — insufficient window (Finals) per ADR-0024 |
+| ≥5 game nights | APR-0017 | 🟡 PENDING — depends on Finals series length |
+
+**Bet count is not the binding constraint.** 117 resolved bets numerically exceeds the 30-bet floor from APR-0016 (now superseded) and the 66-eligible-T1-bet floor from APR-0017. The binding constraints are GG-004 (commercial validation) and ADR-0005 (formal authorization), not bet accumulation.
+
+---
+
+## G6 Verdict (as of 2026-06-12 SESSION 57)
+
+**NOT READY.** Tier 0 is blocked (T0-A). No tier evaluation is operative until T0-A passes.
+
+Critical path:
+1. **Dark period (2026-06-22 to ~2026-09):** T2/T3 production-readiness, model retrain (T-072), T-117 document reads, T-151 fee documentation
+2. **MLB 2026 season (Aug–Sep):** EXP-017 commercial validation attempt (ADR-0024 path 2: ≥2 sports × n≥150)
+3. **NBA 26-27 regular season (Oct 2026+):** EXP-017 primary path (n≥500, ≥15 opponents); GG-014 confirmation (Season Day 1 cron batch); all tier criteria evaluated on ≥5 game nights
+4. **ADR-0005 + APR-0008 + APR-0009:** drafted and signed only after all criteria confirmed
+
+The dark period is for making the system ready to collect G6-quality evidence quickly in October — not for accumulating evidence. The bet count clock starts running when T0-A is confirmed.
