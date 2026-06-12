@@ -2,11 +2,11 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 54 — SESSION 53 implementation verified (commit `d6283b1`): T-166/GG-028 RESOLVED, T-164 cron shift deployed, T-167/GG-029 RESOLVED. SESSION 54 pre-Game-5 hygiene audit: all three changes clean, no bugs found. T3 primary-window behavior confirmed correct (NEUTRAL at 18:00 UTC by design). 852/852 tests.
+**Last reviewed:** 2026-06-12 SESSION 55 — T-168/GG-030 RESOLVED (MC correlation fix), T-170/GG-032 RESOLVED (T4 ledger corrected), GG-031 registered. Commit `530e1c3`, VPS deployed. 851/852 tests (1 pre-existing timing flake).
 
 ---
 
-## PRIORITY QUEUE (updated 2026-06-11 SESSION 54 — T-166/T-164/T-167 deployed; hygiene audit clean)
+## PRIORITY QUEUE (updated 2026-06-12 SESSION 55 — T-168/T-170 DONE; GG-031 registered)
 
 | Pri | Task | What / Why | Due |
 |-----|------|-----------|-----|
@@ -24,11 +24,26 @@
 | **7 — LOW (MLB gate)** | **T-165: Full PAM integration across T2/T3/T5 bands + EnvironmentClassifier ADR (GG-027)** | T1 and T4 archetype register wired (SESSION 50). Remaining scope: (a) EnvironmentClassifier module in C2 — game-level pressure score (elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players with expanded duties); (b) archetype × environment uncertainty multiplier in C3 (wider confidence interval for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE per environment class in decision tree routing; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. Requires new ADR before activation. | Pre-MLB activation |
 | **8 — HIGH (DARK PERIOD Phase 1 P1)** | **T-166: PIPE-03 idempotency guard — same game_date re-execution (GG-028)** | Add check at top of bet-placement loop: if open positions with `game_date == target_date` already exist, log `paper_run_skipped_already_deployed` and exit. Also investigate what triggered the 01:00 UTC second run on G5 night (process restart? manual? cron misconfiguration?). Critical for live capital safety — without this guard, a process crash + restart in live trading would double-deploy real capital on same markets. | Phase 1 of dark period (before 2026-27 season launch) |
 | **9 — HIGH (DARK PERIOD Phase 1 P2)** | **T-167: MC script rewrite — analyze committed positions, not pregame forecasts (GG-029)** | Rewrite `scripts/run_monte_carlo.py` to: (1) read committed positions from `logs/paper_portfolio.json`; (2) use actual risk engine parameters from `risk.py` (not hardcoded kelly=0.1, min_edge=0.02); (3) simulate P/L from `model_p`, `direction`, `mid_price_at_entry`, `size_usd` per position; (4) report actual portfolio risk distribution. Current MC has reported hypothetical re-deploy figures for all Finals games — G5 MC reported $106 staked while actual $1,003 was deployed. | Phase 1 of dark period (before G6 evidence review) |
-| **10 — HIGH (pre-Game-5 if possible)** | **T-168: MC portfolio mode — correlate within-player threshold ladders (GG-030)** | `run_monte_carlo.py:144` portfolio mode draws each position as an independent Bernoulli; Brunson NO 25/30/35/40 (×2) and Wemby NO 35/40 (×2) ladders are perfectly correlated in reality. Fix: draw one Poisson score per player (as `--preview` mode already does at lines 424–438) and resolve all positions against it. Re-run G5 MC; the P(kill switch)=0.00% headline is unfounded under correlation. | Before next MC-based risk report |
-| **11 — MEDIUM (post-G5 resolve)** | **T-169: GG-028 book reconciliation — 9 duplicated tickers, $402.49 (GG-031)** | All 9 failed 22:00 UTC tickers were re-bet at 01:30 UTC (not just 2 Wemby): Brunson NO×4, Hart YES×2, KAT YES×1, Wemby NO×2. DS ruling needed: annotate twins (`duplicate_of`, exclude from per-market experiment n) or accept as committed double exposure. Side-finding: GG-028's "01:00 UTC trigger" investigation is CLOSED — it was the scheduled 01:30 UTC late PIPE-03 window in cron.conf (entered_at timestamps match). | Before EXP-017B/018 G5 reruns |
-| **12 — MEDIUM (before any T4 evidence claim)** | **T-170: T4 ledger reconciliation (GG-032)** | `paper_portfolio_t4.json`: bankroll $1,869.68 vs initial $1,000 vs realized P&L −$21.59 — irreconcilable (~$891 gap). Reconstruct from 2,315 closed_positions + C6 audit; determine true epoch-consistent T4 P&L; correct the file; document which figure feeds APR-0019 T4 Tier 2 evidence. Until then, cite no T4 performance figures. | Before G6 Tier 2 evaluation |
+| **10 — ✅ DONE (SESSION 55)** | **T-168: MC portfolio mode — correlate within-player threshold ladders (GG-030 RESOLVED)** | `simulate_portfolio()` now draws one Poisson score per player; `_infer_lambda()` fits lambda via least-squares on (threshold, model_p) pairs. Bug found+fixed: initial NO-bet inversion. G5 MC: P(profit)=98.3%, kill-switch risk=1.28%, mean P/L=+$244.23. Deployed to VPS. Commit `530e1c3`. | ✅ 2026-06-12 |
+| **11 — MEDIUM (post-G5 resolve)** | **T-169: GG-028/031 book reconciliation — 9 duplicated tickers, $402.49 (GG-031)** | All 9 failed 22:00 UTC tickers were re-bet at 01:30 UTC: Brunson NO×4, Hart YES×2, KAT YES×1, Wemby NO×2. DS ruling needed: annotate twins (`duplicate_of`, exclude from per-market experiment n) or accept as committed double exposure. Side-finding confirmed: "01:00 UTC mystery trigger" = scheduled 01:30 UTC late PIPE-03 cron window — no mystery. | Before EXP-017B/018 G5 reruns |
+| **12 — ✅ DONE (SESSION 55)** | **T-170: T4 ledger reconciliation (GG-032 RESOLVED)** | `paper_portfolio_t4.json` corrected on VPS: `bankroll_usd` 1869.68→478.41, `initial_bankroll_usd` 1000→500. Root cause: ADR-0022 `_reconstruct_t4_ledger()` wrote T1 system bankroll to T4 file. True T4 pool = $478.41. Note: do NOT cite T4 "+87% growth" narrative — it was based on the wrong field. Backup at `paper_portfolio_t4.json.bak_t170`. | ✅ 2026-06-12 |
 
-G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). **T-164 fix deployed (SESSION 49) — VPS deploy required before G5 tip-off.** Resolve locally after game using run_resolve_local.py. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-157 stop criterion draft (within 2 sessions).
+G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 primary + 12 late-cron twins), bankroll $130.62. Corrected MC: P(profit)=98.3%, kill-switch risk=1.28% at $20 trigger. Resolve locally after game using run_resolve_local.py. Next action: T-169 DS ruling post-resolve. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-153 fill-realism haircut.
+
+---
+
+## SESSION 55 — COMPLETE (2026-06-12)
+
+| Task | Status |
+|------|--------|
+| **T-168 (GG-030 RESOLVED): MC correlated simulation** | ✅ COMPLETE — `simulate_portfolio()` draws one Poisson score per player. `_infer_lambda()` fits lambda via least-squares on (threshold, model_p) pairs. Direction-invariant (NO bets use raw model_p). G5 MC deployed to VPS. |
+| **GG-031 registered** | ✅ REGISTERED — 9 duplicated tickers ($402 doubled exposure), not 2. T-169 queued for DS ruling. |
+| **GG-032 registered** | ✅ REGISTERED — T4 bankroll irreconcilable; ADR-0022 root cause identified. |
+| **T-170 (GG-032): T4 ledger correction** | ✅ COMPLETE — `paper_portfolio_t4.json` on VPS: bankroll_usd→478.41, initial_bankroll_usd→500.0. Backup preserved. |
+| **DECISION_LOG SESSION 55 entry** | ✅ COMPLETE |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE |
+| **Tests** | ✅ 851/852 (1 pre-existing timing flake in `test_compute_budget`; unrelated) |
+| **VPS deploy** | ✅ COMPLETE — Commit `530e1c3` pushed and VPS `git pull` + scp confirmed. |
 
 ---
 
