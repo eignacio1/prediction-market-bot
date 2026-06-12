@@ -103,6 +103,12 @@ TEAM_STATS_CACHE = LOG_DIR / f"team_stats_cache_{GAME_DATE}.json"
 EDGE_YES = 0.02
 EDGE_NO  = -0.02
 FEATURE_WINDOW = 10
+# YES-only diagnostic gate (EXP-018 Hypothesis C DS ruling, SESSION 47; reaffirmed
+# SESSION 56: operative for every batch as a continuous diagnostic leg until DS
+# rescinds). EXP-018 n=98 found YES +$0.0733/bet vs NO -$0.0440/bet. NO-direction
+# signals are logged as a C6 counterfactual event but not sized or placed.
+# Defaults ON so the gate holds even if the VPS crontab lags cron.conf.
+PAPER_YES_ONLY = os.environ.get("PAPER_YES_ONLY", "true").lower() == "true"
 RESERVE_MANDATE_PCT = float(os.environ.get("RESERVE_MANDATE_PCT", "0.40"))  # batch reserve gate; override in .env for paper testing (e.g. 0.20 with T4 VIRTUAL)
 MIN_BET_T1_PAPER = float(os.environ.get("MIN_BET_T1_PAPER", "1.0"))  # paper-mode min bet floor; mirrors MIN_BET_T4_PAPER=1.0; live uses risk.py MIN_BET_USD=10.0
 DYNAMIC_FETCH_SEASON = "2025-26"  # current NBA season for non-cohort player stat lookup
@@ -182,9 +188,11 @@ def main() -> None:
     print(f"Session:  {SESSION_ID}")
     print(f"BOT_ENV:  {os.environ.get('BOT_ENV')}  |  C4: ACTIVE")
     print(f"Kalshi:   {'LIVE ORDERS (demo)' if signing_ready else 'local-only (no RSA key)'}")
+    print(f"Gate:     YES-ONLY {'ACTIVE' if PAPER_YES_ONLY else 'OFF'} (EXP-018 diagnostic, S47/S56 DS ruling)")
 
     logger.info("PIPE-03", "paper_run_start",
-                payload={"session_id": SESSION_ID, "game_date": GAME_DATE},
+                payload={"session_id": SESSION_ID, "game_date": GAME_DATE,
+                         "yes_only_gate": PAPER_YES_ONLY},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
 
     # ------------------------------------------------------------------
@@ -529,6 +537,26 @@ def main() -> None:
                                      "adj_edge": round(edge, 6)},
                             session_id=SESSION_ID)
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
+
+            # YES-only diagnostic gate: NO signals are recorded as counterfactuals
+            # (full pricing context preserved for the YES/NO edge comparison) and
+            # skipped before C4 sizing. PASS falls through and is rejected by C4
+            # as before.
+            if PAPER_YES_ONLY and direction == "NO":
+                logger.info("PIPE-03", "yes_only_gate_filtered",
+                            payload={"ticker": mkt.ticker,
+                                     "player": kalshi_player_name,
+                                     "direction": "NO",
+                                     "edge": round(edge, 6),
+                                     "t1_edge": round(t1_edge, 6),
+                                     "gross_edge": round(gross_edge, 6),
+                                     "p_estimate": round(p_threshold, 6),
+                                     "market_implied_prob": mid,
+                                     "t3_signal": t3_signal},
+                            session_id=SESSION_ID)
+                print(f"  [YES-ONLY] FILTER {kalshi_player_name:<22} NO    "
+                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts")
+                continue
 
             forecast_rec = {
                 "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
