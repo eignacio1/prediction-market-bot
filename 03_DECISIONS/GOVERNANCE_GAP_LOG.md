@@ -486,6 +486,39 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-028 — PIPE-03 No Idempotency Guard: Second Cron Execution Places Duplicate Positions for Same game_date
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-028 |
+| Discovered | 2026-06-12 SESSION 52 — G5 portfolio audit: 41 open positions vs expected 29; two batch timestamps confirmed (22:00 UTC 29 bets, 01:00 UTC 12 bets) |
+| Category | Operational gap — pipeline has no guard against re-execution for an already-deployed game_date |
+| What was missed | PIPE-03 (`run_paper_trade.py`) has no check for existing open positions before running the bet-placement loop. If the script runs twice for the same game_date, it evaluates all markets afresh and places any new bets that pass the edge filter — including markets where positions already exist from the first run. G5 result: the 22:00 UTC batch placed 29 bets; a second run at 01:00 UTC placed 12 more bets, including duplicate Wemby NO ≥40 and NO ≥35 positions (the two that failed in the first batch — the pipeline saw no "resting" order and re-deployed them). Total T1 deployment: $1,003.38 from a $1,000 bankroll reset, pushing reserve to 13% (below RESERVE_MANDATE 15%). T-162's game-in-progress guard (added SESSION 46) guards against in-progress games only — it does not guard against same-game_date re-execution when the game has not yet started. |
+| When it should have been caught | GG-024 resolution — when T-162's in-progress guard was added, idempotency for pre-game re-execution should have been addressed in the same pass. |
+| Phases it survived | G5 paper trading only; no live capital impact. Likely occurred in other finals games but was not audited at this granularity. |
+| Why it survived | GG-024 focused on mid-game placement (game in progress). The idempotency case (game not yet started, positions already open for this game_date) was not explicitly addressed. The second cron may have been triggered by PIPE-03 restart or manual rerun — cause unknown. |
+| Impact | MEDIUM. In paper mode: extra bets, reserve mandate breach (~13% vs 15% target), data quality degradation (duplicate positions inflate sample n). In live trading: this would double-deploy real capital on the same market, potentially violating per-event exposure caps. A PIPE-03 accidental rerun (process crash + restart) in live trading would cause material unintended exposure. |
+| Resolution path | T-166: Add idempotency guard to `run_paper_trade.py` — before the bet-placement loop, check portfolio for existing open positions with `game_date == target_date`. If any exist: log `paper_run_skipped_already_deployed: {n} positions exist for {game_date}` and exit. Also: investigate what triggered the 01:00 UTC second run (process restart? manual? cron misconfiguration?). |
+| Status | OPEN — T-166 registered. DARK PERIOD scope: Phase 1 P1 (implement before 2026-27 season launch; critical for live capital safety). |
+
+---
+
+### GG-029 — MC Script Analyzes Pregame Forecasts, Not Committed Positions: Wrong Source and Wrong Parameters
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-029 |
+| Discovered | 2026-06-12 SESSION 52 — MC script reported $106.21 staked; actual portfolio had $1,003.38 deployed; source confirmed as `pregame_20260612.json`, not `paper_portfolio.json` |
+| Category | Tooling gap — risk analysis tool not connected to actual system state |
+| What was missed | `scripts/run_monte_carlo.py` reads from `pregame_YYYYMMDD.json` (the model's forecast output) rather than `logs/paper_portfolio.json` (the actual committed positions). It then re-applies Kelly sizing with hardcoded parameters: `kelly=0.1, min_edge=0.02, max_exposure=500.0` — none of which match the actual risk engine (`DEFAULT_KELLY_FRACTION=0.25, MIN_EDGE_TO_APPROVE=0.04`). Result: every MC run throughout the Finals has simulated a hypothetical re-deploy of the residual bankroll, not the actual risk exposure of committed positions. G5 example: MC reported $106.21 staked from $130.62 bankroll (81% utilization) while the actual portfolio had $1,003.38 deployed. The kill switch risk and P/L distribution the MC reported were for a different portfolio than the one that will resolve. |
+| When it should have been caught | MC script introduction (SESSION ~30?) — the source data and parameter alignment were never validated against the actual risk engine configuration. |
+| Phases it survived | All Finals games (G1–G5). Every MC report produced this session analyzed a hypothetical portfolio. |
+| Impact | MEDIUM. The MC is a governance and operator-communication tool — Earl uses its output to assess risk before game day. If the tool is analyzing a different portfolio than the one deployed, all MC-based risk assessments are systematically disconnected from actual exposure. P/L distribution tails, kill switch risk probabilities, and player concentration figures are all wrong. Actual G5 portfolio analysis (run manually SESSION 52): EV=+$246.67, P(profit)=99.8%, P(kill switch)=0.00%, p50 end bankroll=$382. |
+| Resolution path | T-167: Rewrite `run_monte_carlo.py` to: (1) read from `logs/paper_portfolio.json` as primary source; (2) use risk engine constants from `risk.py` (not hardcoded); (3) simulate actual win/loss outcomes for each committed position using stored `model_p`, `direction`, `mid_price_at_entry`, `size_usd`; (4) report actual P/L distribution, not hypothetical re-deploy. Keep `pregame_YYYYMMDD.json` as an optional "pre-deploy preview" mode for analysis before committing. |
+| Status | OPEN — T-167 registered. DARK PERIOD scope: Phase 1 P2. Required before next paper trading season (MC must be correct before G6 evidence review). |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
@@ -499,7 +532,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-010 | 2026-06-03 | DS decision: no dedicated band budgets; shared budget + per-band kill switches is design intent. If T5 starved → root cause is T4_MIN_DELTA_P miscalibration → fix EXP-018, not budget architecture. ADR-0014 Q2 closed. |
 | GG-012 | 2026-06-05 | PIPE-02 BOT_C4_ACTIVE guard removed (commit 2997c71). PIPE-02 now runs unconditionally — confirmed by pregame_20260605.json. TSS 0/30 continues for separate reason (GG-013). T-134 remains open. |
 | GG-013 | 2026-06-05 | ESPN scoreboard API replaces nba_api (blocked by Akamai from VPS and GitHub Actions). 30 teams/279 records verified. GHA cron auto-delivers cache to VPS before PIPE-02. |
-| GG-014 | 2026-06-11 | **PARTIALLY RESOLVED — T-164 deployed (SESSION 49).** Root cause: 29-order burst exhausts rate-limit window; T-138 backoff window (14s total) < rate-limit reset window. Fix: inter-order sleep 0.5→2.0s; MAX_RETRIES 3→4; RETRY_DELAY_S 1.0→2.0 (delay schedule 4/8/16/32s = 60s total). Batch order integrity report added to PIPE-03 run (fail rate logged + WARN >5%). **DARK PERIOD NOTE (SESSION 51, 2026-06-11):** Production confirmation of ≤5% failure rate is structurally impossible before 2026-27 regular season. G5 bets were placed before T-164 deployed (SESSION 49 deploy was post-G5-placement). If Knicks close Finals June 13, no additional PIPE-03 runs occur until 2026-27 regular season. G6 gate (≤5% failure rate) confirmation deferred to 2026-27 Season Day 1 paper batch — registered as Phase 4 P0 gate in DARK_PERIOD_PLAN.md. Status: OPEN; next viable confirmation window: October 2026. |
+| GG-014 | 2026-06-11 | **PARTIALLY RESOLVED — T-164 deployed (SESSION 49).** Root cause: 29-order burst exhausts rate-limit window; T-138 backoff window (14s total) < rate-limit reset window. Fix: inter-order sleep 0.5→2.0s; MAX_RETRIES 3→4; RETRY_DELAY_S 1.0→2.0 (delay schedule 4/8/16/32s = 60s total). Batch order integrity report added to PIPE-03 run (fail rate logged + WARN >5%). **G5 FINAL SNAPSHOT (SESSION 52, 2026-06-12):** 22:00 UTC batch (29 bets): 9/29 failed = **31% failure rate** — identical to pre-T-164 rate; T-164 did not reduce failures at peak API congestion window. 01:00 UTC batch (12 bets): 0/12 failed = 0% — T-164 is effective when API is uncongested (off-peak). Interpretation: failures are congestion-driven (server-side Kalshi rate limiting at ~22:00 UTC betting rush), not rate-limiting caused by the bot's own request cadence. T-164's 2.0s inter-order sleep addresses self-generated rate pressure but not server-side congestion. Fix path may require moving the primary cron earlier (e.g., 18:00 UTC) or requesting a higher rate limit tier. **DARK PERIOD NOTE (SESSION 51, 2026-06-11):** G6 gate (≤5% failure rate) confirmation deferred to 2026-27 Season Day 1 paper batch — registered as Phase 4 P0 gate in DARK_PERIOD_PLAN.md. Status: OPEN; next viable confirmation window: October 2026. |
 | GG-015 | 2026-06-05 | GHA cron moved 00:30→20:30 UTC (T-137). GAME_DATE now aligned between GHA and PIPE-02 early cron. Late-cron mismatch acceptable for Finals; regular-season two-run strategy deferred. |
 | GG-011 | 2026-06-05 | ADR-0017 ACCEPTED. PAPER_T4_FLAT_SIZING=true confirmed as paper architecture (bypasses formula). Phase 8 per-bet sizing deferred to ADR-0018. T4_BAND_WEIGHT stub comment updated. |
 | GG-016 | 2026-06-05 | BOT_C4_ACTIVE guard removed from run_t3_pretip.py (commit 6cf87d8). PIPE-06 now runs cleanly. T3 signals confirmed at 21:58 UTC Jun 5 — 32 NEUTRAL, cron functional. |

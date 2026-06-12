@@ -2,11 +2,11 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 51 — T-157 COMPLETE (ADR-0024 stop/pivot criterion accepted); T-158 COMPLETE (DARK_PERIOD_PLAN.md ratified); GG-021 RESOLVED; EXP-017 scope transitioned to MLB/regular season; GG-014 dark-period gap documented (2026-27 Season Day 1 confirmation). 852/852 tests (no code changes this session).
+**Last reviewed:** 2026-06-12 SESSION 52 — G5 portfolio analysis complete (41 positions, $1,003.38 deployed, EV +$246.67, P(profit)=99.8%). GG-028 registered (PIPE-03 idempotency gap — second cron placed 12 duplicate bets). GG-029 registered (MC script analyzes pregame forecast, not committed positions). GG-014 final snapshot: 22:00 UTC batch 31% failure (unchanged from pre-T-164), 01:00 UTC batch 0% (T-164 effective at off-peak). T-166 + T-167 registered. DECISION_LOG updated. No code changes. 852/852 tests.
 
 ---
 
-## PRIORITY QUEUE (updated 2026-06-11 SESSION 51 — T-157/T-158 COMPLETE; entering dark period)
+## PRIORITY QUEUE (updated 2026-06-12 SESSION 52 — G5 portfolio analysis; GG-028/029 registered; T-166/167 registered)
 
 | Pri | Task | What / Why | Due |
 |-----|------|-----------|-----|
@@ -22,8 +22,23 @@
 | **5c — ✅ DONE (SESSION 46)** | **T-162: PIPE-03 in-progress game guard (GG-024)** | ESPN `STATUS_IN_PROGRESS` check added to `run_paper_trade.py` before bet-placement loop. Aborts with `paper_run_skipped_game_in_progress` log entry. Deployed VPS commit `c8a59f2`. G4 Castle+Hart late-cron bets flagged ineligible per APR-0019. GG-024 closed. | ✅ 2026-06-11 |
 | **6 — LOW** | **T-160: Root-folder document hygiene** | Unversioned strategy docs (Princeton Protocol.txt, templates, progress assessments, PDTP txt) into numbered structure or ARCHIVE/ so governance scans see them. | Opportunistic |
 | **7 — LOW (MLB gate)** | **T-165: Full PAM integration across T2/T3/T5 bands + EnvironmentClassifier ADR (GG-027)** | T1 and T4 archetype register wired (SESSION 50). Remaining scope: (a) EnvironmentClassifier module in C2 — game-level pressure score (elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players with expanded duties); (b) archetype × environment uncertainty multiplier in C3 (wider confidence interval for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE per environment class in decision tree routing; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. Requires new ADR before activation. | Pre-MLB activation |
+| **8 — HIGH (DARK PERIOD Phase 1 P1)** | **T-166: PIPE-03 idempotency guard — same game_date re-execution (GG-028)** | Add check at top of bet-placement loop: if open positions with `game_date == target_date` already exist, log `paper_run_skipped_already_deployed` and exit. Also investigate what triggered the 01:00 UTC second run on G5 night (process restart? manual? cron misconfiguration?). Critical for live capital safety — without this guard, a process crash + restart in live trading would double-deploy real capital on same markets. | Phase 1 of dark period (before 2026-27 season launch) |
+| **9 — HIGH (DARK PERIOD Phase 1 P2)** | **T-167: MC script rewrite — analyze committed positions, not pregame forecasts (GG-029)** | Rewrite `scripts/run_monte_carlo.py` to: (1) read committed positions from `logs/paper_portfolio.json`; (2) use actual risk engine parameters from `risk.py` (not hardcoded kelly=0.1, min_edge=0.02); (3) simulate P/L from `model_p`, `direction`, `mid_price_at_entry`, `size_usd` per position; (4) report actual portfolio risk distribution. Current MC has reported hypothetical re-deploy figures for all Finals games — G5 MC reported $106 staked while actual $1,003 was deployed. | Phase 1 of dark period (before G6 evidence review) |
 
 G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). **T-164 fix deployed (SESSION 49) — VPS deploy required before G5 tip-off.** Resolve locally after game using run_resolve_local.py. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-157 stop criterion draft (within 2 sessions).
+
+---
+
+## SESSION 52 — COMPLETE (2026-06-12)
+
+| Task | Status |
+|------|--------|
+| **G5 portfolio MC** | ✅ COMPLETE — Direct MC on 41 committed positions: EV +$246.67 (24.6% ROI), P(profit)=99.8%, P(kill switch)=0.00%, p50 end bankroll=$382.40. MC script gap documented (GG-029). |
+| **Second cron confirmed — GG-028 registered** | ✅ COMPLETE — 22:00 UTC batch (29 bets, expected) + 01:00 UTC batch (12 bets, unexpected, 0% failures). Duplicate Wemby NO 40/35 positions placed. T-166 registered. |
+| **GG-014 final snapshot** | ✅ COMPLETE — 22:00 batch: 31% failure (unchanged from pre-T-164). 01:00 batch: 0% failure. T-164 fixes off-peak congestion; primary window still congestion-limited. GOVERNANCE_GAP_LOG updated. |
+| **GG-029 registered** | ✅ COMPLETE — MC script analyzes pregame forecasts (kelly=0.1, min_edge=0.02) not committed positions. T-167 registered. |
+| **DECISION_LOG SESSION 52** | ✅ COMPLETE |
+| **Tests** | ✅ 852/852 pass (no code changes) |
 
 ---
 
