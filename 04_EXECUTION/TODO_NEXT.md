@@ -2,11 +2,11 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 52 — G5 portfolio analysis complete (41 positions, $1,003.38 deployed, EV +$246.67, P(profit)=99.8%). GG-028 registered (PIPE-03 idempotency gap — second cron placed 12 duplicate bets). GG-029 registered (MC script analyzes pregame forecast, not committed positions). GG-014 final snapshot: 22:00 UTC batch 31% failure (unchanged from pre-T-164), 01:00 UTC batch 0% (T-164 effective at off-peak). T-166 + T-167 registered. DECISION_LOG updated. No code changes. 852/852 tests.
+**Last reviewed:** 2026-06-11 SESSION 54 — SESSION 53 implementation verified (commit `d6283b1`): T-166/GG-028 RESOLVED, T-164 cron shift deployed, T-167/GG-029 RESOLVED. SESSION 54 pre-Game-5 hygiene audit: all three changes clean, no bugs found. T3 primary-window behavior confirmed correct (NEUTRAL at 18:00 UTC by design). 852/852 tests.
 
 ---
 
-## PRIORITY QUEUE (updated 2026-06-12 SESSION 52 — G5 portfolio analysis; GG-028/029 registered; T-166/167 registered)
+## PRIORITY QUEUE (updated 2026-06-11 SESSION 54 — T-166/T-164/T-167 deployed; hygiene audit clean)
 
 | Pri | Task | What / Why | Due |
 |-----|------|-----------|-----|
@@ -26,6 +26,33 @@
 | **9 — HIGH (DARK PERIOD Phase 1 P2)** | **T-167: MC script rewrite — analyze committed positions, not pregame forecasts (GG-029)** | Rewrite `scripts/run_monte_carlo.py` to: (1) read committed positions from `logs/paper_portfolio.json`; (2) use actual risk engine parameters from `risk.py` (not hardcoded kelly=0.1, min_edge=0.02); (3) simulate P/L from `model_p`, `direction`, `mid_price_at_entry`, `size_usd` per position; (4) report actual portfolio risk distribution. Current MC has reported hypothetical re-deploy figures for all Finals games — G5 MC reported $106 staked while actual $1,003 was deployed. | Phase 1 of dark period (before G6 evidence review) |
 
 G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). **T-164 fix deployed (SESSION 49) — VPS deploy required before G5 tip-off.** Resolve locally after game using run_resolve_local.py. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-157 stop criterion draft (within 2 sessions).
+
+---
+
+## SESSION 54 — COMPLETE (2026-06-11)
+
+| Task | Status |
+|------|--------|
+| **Pre-Game-5 hygiene audit** | ✅ COMPLETE — All three Session 53 changes verified clean. No bugs found. |
+| **T-166 idempotency verification** | ✅ VERIFIED — `open_positions` schema confirmed OPEN-only (paper_trader removes on close/exit). No status filter needed. `_open_tickers` rebuild per-market-iteration picks up intra-run placements correctly. |
+| **T-164 cron timing verification** | ✅ VERIFIED — T3 staleness guard returns `{}` at 18:00 UTC (no T3 reports exist until 20:00 UTC). Primary cron correctly runs as pure T1. Late 01:30 UTC window receives T3 overlays from running games. Architecturally correct. |
+| **T-167 MC formula verification** | ✅ VERIFIED — NO bet `win_odds = mid/(1-mid)` confirmed correct: Kalshi NO costs `(1-mid)`, collects $1, net `mid/(1-mid)` per dollar. `p_win = 1 - model_p` confirmed correct: model_p is P(≥threshold), NO wins when score < threshold. |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
+
+---
+
+## SESSION 53 — COMPLETE (2026-06-11)
+
+| Task | Status |
+|------|--------|
+| **T-166 (GG-028 RESOLVED): PIPE-03 idempotency fix** | ✅ COMPLETE — `run_paper_trade.py`: removed `if not str(p.get("kalshi_order_status", "")).startswith("failed:")` from `_open_tickers` set construction. All open positions block re-entry regardless of Kalshi order status. Root cause of G5 duplicate bets patched. |
+| **T-164: Primary cron window shift 22:00→18:00 UTC** | ✅ COMPLETE — `deploy/cron.conf`: health check, T-140, PIPE-02 primary, PIPE-03 primary all shifted to 17:00/17:25/17:55/18:00 UTC. `PAPER_T4_FLAT_SIZING=true` synced to T4 entry. VPS crontab confirmed updated. |
+| **T-167 (GG-029 RESOLVED): MC script rewrite** | ✅ COMPLETE — `scripts/run_monte_carlo.py`: portfolio mode default (reads `paper_portfolio.json`, kelly=0.25, min_edge=0.04); `--preview` flag preserves old behavior; `--exclude-failed`, `--yes-only`, `--no-only`, `--haircut` scenario flags; Bernoulli simulation using committed `model_p`. |
+| **GG-028 RESOLVED in GOVERNANCE_GAP_LOG** | ✅ COMPLETE |
+| **GG-029 RESOLVED in GOVERNANCE_GAP_LOG** | ✅ COMPLETE |
+| **DECISION_LOG SESSION 53 entry** | ✅ COMPLETE |
+| **VPS deploy** | ✅ COMPLETE — Commit `d6283b1`. 5 files, 419 insertions, 169 deletions. Crontab confirmed. |
+| **Tests** | ✅ 852/852 pass |
 
 ---
 
