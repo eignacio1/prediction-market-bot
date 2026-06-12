@@ -16,7 +16,7 @@ Coverage:
     - exit_fee_per_contract recorded (notional — not deducted per T-151)
 
   execution_bands constants:
-    - NOISE_BUFFER_BAND_T4 = 0.13905 (EXP-019A analytic)
+    - NOISE_BUFFER_BAND_T4 = 0.19 (EXP-019B/C empirical; G4 obs mean=0.182, p50=0.187; ADR-0019-A01)
     - NOISE_BUFFER_BAND_T1 = NOISE_BUFFER_BAND_T2 = NOISE_BUFFER_BAND_T3 = 0.22053
     - NOISE_BUFFER_BAND_T5 = 0.13328
     - T4 > T5 (wider buffer at longer time horizon)
@@ -126,9 +126,9 @@ def _open_no_pos(trader: PaperTrader, mid_price: float = 0.50, size_usd: float =
 # ---------------------------------------------------------------------------
 
 class TestNoiseBufferConstants:
-    def test_t4_analytic_value(self):
-        """NOISE_BUFFER_BAND_T4 must be 0.13905 (EXP-019A analytic)."""
-        assert NOISE_BUFFER_BAND_T4 == pytest.approx(0.13905, abs=1e-5)
+    def test_t4_empirical_value(self):
+        """NOISE_BUFFER_BAND_T4 must be 0.19 (EXP-019B/C empirical G4; ADR-0019-A01)."""
+        assert NOISE_BUFFER_BAND_T4 == pytest.approx(0.19, abs=1e-5)
 
     def test_t1_analytic_value(self):
         """NOISE_BUFFER_BAND_T1 must be 0.22053 (EXP-019A analytic)."""
@@ -444,7 +444,7 @@ class TestRunCycleExitPass:
         # To make exit fire: p_current must be LOW, mip_current must be HIGH.
         # Use: pts_so_far=2, threshold=22, time_remaining=4min (late game, very behind)
         # λ_remaining = (20/36) × 4 ≈ 2.22 → p(X≥20|Poisson(2.22)) ≈ 0.0001 (tiny)
-        # Set mip_current = 0.50 → 0.50 > 0.0001 + 0.13905 ✓ exit should fire.
+        # Set mip_current = 0.50 → 0.50 > 0.0001 + 0.19 ✓ exit should fire.
         trader = _make_trader_with_open_yes(
             tmp_path, ticker=ticker, entry_mip=entry_mip, size=0.50
         )
