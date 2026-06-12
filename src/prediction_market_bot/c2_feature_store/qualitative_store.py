@@ -510,6 +510,70 @@ class QualitativeSignalStore:
         return result
 
     # ------------------------------------------------------------------
+    # Archetype register — point lookup (GG-027)
+    # ------------------------------------------------------------------
+
+    def get_archetype(
+        self,
+        player_id: int,
+        game_date: str,
+    ) -> dict | None:
+        """
+        Point-lookup: PAM classification for a single player on a given date.
+
+        Respects QTI-01 temporal guard. Returns None if no snapshot is loaded,
+        no player match, or game_date is outside the classification window.
+
+        Returns dict with keys:
+            prf_primary      — integer 1–15
+            prf_primary_name — human-readable archetype name (may be empty)
+            active_modifiers — list of modifier IDs (1–32) with flag == 1
+            prf_secondary    — (only if hybrid) integer 1–15
+            prf_secondary_name — (only if hybrid) name
+            prf_hybrid_weight  — (only if hybrid) float 0–1
+        """
+        if self._ds01_df is None:
+            return None
+        gd = pd.to_datetime(game_date, errors="coerce")
+        if pd.isna(gd):
+            return None
+        rows = self._ds01_df[self._ds01_df["player_id"] == player_id]
+        if rows.empty:
+            return None
+
+        eff_from = pd.to_datetime(rows["effective_from"], errors="coerce")
+        eff_until = pd.to_datetime(rows.get("effective_until", pd.Series(dtype="datetime64[ns]")), errors="coerce")
+        in_window = (eff_from <= gd) & (eff_until.isna() | (eff_until > gd))
+        valid = rows[in_window]
+        if valid.empty:
+            return None
+
+        r = valid.iloc[-1]
+        prf_primary = int(r["prf_primary"])
+        prf_name = str(r.get("prf_primary_name") or "")
+
+        mod_cols = [c for c in r.index if c.startswith("mod_")]
+        active_mods = [
+            int(c.split("_")[1]) for c in mod_cols
+            if pd.notna(r[c]) and float(r[c]) == 1.0
+        ]
+
+        result: dict = {
+            "prf_primary": prf_primary,
+            "prf_primary_name": prf_name,
+            "active_modifiers": active_mods,
+        }
+
+        sec = r.get("prf_secondary", 0)
+        if pd.notna(sec) and float(sec or 0) != 0:
+            result["prf_secondary"] = int(sec)
+            result["prf_secondary_name"] = str(r.get("prf_secondary_name") or "")
+            w = r.get("prf_hybrid_weight")
+            result["prf_hybrid_weight"] = float(w) if pd.notna(w) else 1.0
+
+        return result
+
+    # ------------------------------------------------------------------
     # Feature name registry
     # ------------------------------------------------------------------
 

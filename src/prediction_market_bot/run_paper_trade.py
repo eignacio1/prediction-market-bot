@@ -480,6 +480,9 @@ def main() -> None:
             player_id = 0
             p_est_lr = None
 
+        # PAM archetype register lookup (GG-027): cohort players only; non-cohort returns None
+        _pam = qs.get_archetype(player_id, GAME_DATE_ISO) if player_id != 0 else None
+
         if np.isnan(pts_mean):
             continue
 
@@ -537,6 +540,7 @@ def main() -> None:
                 "t1_edge": round(t1_edge, 6),      # raw T1 edge pre-overlay (EXP-018 isolation)
                 "t3_signal": t3_signal,
                 "recommended_direction": direction,
+                "pam_archetype": _pam,             # GG-027: PAM register; None for non-cohort
             }
             ok_c4, approval = engine.evaluate_forecast(
                 forecast_record=forecast_rec,
@@ -594,8 +598,9 @@ def main() -> None:
                 )
                 dyn_tag = "  [dyn]" if p_est_lr is None else ""
                 t3_tag  = f"  [T3:{t3_signal}]" if t3_signal != "NEUTRAL" else ""
+                pam_tag = f"  [PRF-{_pam['prf_primary']}]" if _pam else ""
                 print(f"  BET  {kalshi_player_name:<22} {direction:<4}  ${approved_size:.2f}  "
-                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts{dyn_tag}{t3_tag}")
+                      f"edge={edge:+.3f}  p={p_threshold:.3f}  mkt={mkt.threshold}+ pts{dyn_tag}{t3_tag}{pam_tag}")
                 if pos:
                     orders.append(pos)
                     _state = trader.get_state()
