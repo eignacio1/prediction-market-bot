@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 59 — Institutional sprint (4 Q6 worries): (1) GHA silent-failure fixed: `post_game_resolve.yml` — step IDs added, T4 step `if: always()`, "Check resolve outcomes" step fails job if either script exits non-zero. Green checkmark now trustworthy. (2) T-153/GG-022 COMPLETE: `scripts/run_t153_haircut.py` implemented and run. Haircut HIGH ($86–$136 combined G1–G4, p50/mean bounds). GG-022 partially resolved; APR-0017 amendment pending DS. ADR-0019 Tier 2 CLOSED (T-152+T-153 both done). (3) T-171: `deploy.yml` GHA auto-deploy workflow written; T-171 migration runbook documented below. Pending post-G5 execution (Jun 14+). (4) Step 1 tmpfs resolved: CLEAN (no documentation debt) via CLAUDE_CODE_TMPDIR override. 923/923 tests.
+**Last reviewed:** 2026-06-12 SESSION 60 — Protocol sprint: governance scan identified 2 blind spots, both fixed. (1) GG-020 grep-invisible: status line `**OPEN` → `OPEN — **` so Kalshi fee-rate gap is now visible to mandatory step-3 scan (same fix as GG-004 in S56c). (2) deploy.yml dirty-tree guard: pre-flight `git status --porcelain` check added — if VPS tree is dirty, job fails with explicit T-171 migration message rather than cryptic git abort. Session 59 close artifacts also finalized: T-171 runbook documented, DECISION_LOG SESSION 59 entry added, MEMORY_BANK updated, GG-017 resolved. Commits `606e07b` / `3fa8453` / `3c1daa2`. 923/923 tests (no code changes).
 
 ---
 

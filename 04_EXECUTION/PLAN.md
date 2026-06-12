@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 58 — Implementation sprint complete: T-172, T-166, T-156 (ADR-0025), T-159 (portfolio_schema.py). 923/923 tests. Commit `1cc66d6`. Dark period begins ~Jun 22 post-Finals.  
+**Last reviewed:** 2026-06-12 SESSION 60 — Protocol sprint: GG-020 grep-invisible fixed; deploy.yml dirty-tree guard. 923/923 tests. Commit `3c1daa2`. Dark period begins ~Jun 22 post-Finals.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
