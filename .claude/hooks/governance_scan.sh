@@ -55,21 +55,55 @@ grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" "src/prediction_market_bot
   | while read -r line; do echo "  $line"; done
 
 # --- Portfolio quick state ---
+# GG-033/T-171: the git-tracked logs/paper_portfolio.json is a stale snapshot;
+# the live book is written by cron on the VPS. Fetch the VPS copy (cached 10 min
+# so this hook stays fast), and label the source so no session mistakes a stale
+# snapshot for live state.
 echo ""
-echo "PORTFOLIO:"
+CACHE="logs/.vps_portfolio_cache.json"
+CACHE_MAX_AGE=600
+fetch_needed=1
+if [ -f "$CACHE" ]; then
+    age=$(( $(date +%s) - $(stat -f %m "$CACHE" 2>/dev/null || echo 0) ))
+    [ "$age" -lt "$CACHE_MAX_AGE" ] && fetch_needed=0
+fi
+if [ "$fetch_needed" -eq 1 ]; then
+    if ssh -o ConnectTimeout=3 -o BatchMode=yes prediction-market-vps \
+         'cat /opt/prediction-market-bot/logs/paper_portfolio.json' > "$CACHE.tmp" 2>/dev/null \
+       && python3 -c "import json; json.load(open('$CACHE.tmp'))" 2>/dev/null; then
+        mv "$CACHE.tmp" "$CACHE"
+    else
+        rm -f "$CACHE.tmp"
+    fi
+fi
 python3 - <<'EOF'
-import json, os
-path = 'logs/paper_portfolio.json'
+import json, os, time
+
+cache = 'logs/.vps_portfolio_cache.json'
+local = 'logs/paper_portfolio.json'
+
+if os.path.exists(cache):
+    path = cache
+    age_min = (time.time() - os.path.getmtime(cache)) / 60
+    label = f'PORTFOLIO (VPS LIVE BOOK, fetched {age_min:.0f} min ago):'
+else:
+    path = local
+    label = ('PORTFOLIO (LOCAL GIT SNAPSHOT — STALE, NOT THE LIVE BOOK; '
+             'VPS unreachable — see GG-033/T-171):')
+print(label)
 try:
     with open(path) as f:
         d = json.load(f)
-    open_pos   = len(d.get('open_positions', []))
+    open_list  = d.get('open_positions', [])
+    open_pos   = len(open_list)
+    deployed   = sum(float(p.get('size_usd', 0)) for p in open_list)
     closed_pos = len(d.get('closed_positions', []))
     bankroll   = d.get('bankroll_usd', 'unknown')
     initial    = d.get('initial_bankroll_usd', 1000.0)
     pnl        = d.get('total_realized_pnl', 0.0)
     realized_dd = max(0.0, -pnl) / initial
-    print(f'  Bankroll: ${bankroll:.2f} | Open: {open_pos} | Resolved: {closed_pos}/30 (G6) | Realized drawdown: {realized_dd:.1%} | P&L: ${pnl:+.2f}')
+    print(f'  Bankroll: ${bankroll:.2f} | Open: {open_pos} (${deployed:.2f} deployed) | '
+          f'Resolved: {closed_pos}/30 (G6) | Realized drawdown: {realized_dd:.1%} | P&L: ${pnl:+.2f}')
 except Exception as e:
     print(f'  Could not read portfolio: {e}')
 EOF
