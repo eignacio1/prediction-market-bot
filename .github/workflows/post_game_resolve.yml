@@ -14,6 +14,10 @@ on:
   schedule:
     # 05:30 UTC = 10:30 PM PDT — ~2-3h after most NBA games end
     # Fires before Mac post_game_gX_resolve.sh at 06:00 UTC, serving as primary auto-resolve.
+    # KNOWN DRIFT (observed S56, 2026-06-12): GitHub Actions scheduled runs fire
+    # ~3.5–4h late in practice (~09:00–09:50 UTC, not 05:30). Treat ~10:00 UTC as
+    # the earliest reliable resolution time; run EXP reruns after that, or trigger
+    # manually via workflow_dispatch / run_resolve_local.py if needed sooner.
     - cron: '30 5 * * *'
   workflow_dispatch:
 
