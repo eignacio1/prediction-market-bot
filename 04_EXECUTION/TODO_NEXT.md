@@ -2,16 +2,17 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 47 — ADR-0023 ACCEPTED (T-163 CLOSED, GG-026 RESOLVED). T4_BAND_WEIGHT=0.27; PAPER_T4_FLAT_SIZING removed. EXP-018 n=98 CONFIRMED_NEGATIVE; DS ruling: calibration gap. EXP-019B empirical: TP=0.281 (DIVERGED). EXP-019C: p90 spread=0.170 > buffer. 843/843 tests. Commit 72ba619, VPS deployed. **G5 Saturday Jun 12 — system ready.**
+**Last reviewed:** 2026-06-12 SESSION 48 — G4 resolved (2W/1L, net -$8.46), VPS bankroll $285.27. G5 bets placed (29, $848.73 deployed, game_date=2026-06-13). YES-only gate not implemented pre-G5 (too late; G6 if DS ruling still operative). GG-014 BREACHED (9/29 = 31% failures at G5 vs ≤5% gate). T-164 registered: throttled order submission. G5 MC: EV +$209.70, +24.71% ROI, 97.5% P(profit).
 
 ---
 
-## PRIORITY QUEUE (updated 2026-06-11 SESSION 47 — T-163 DONE; G5 Saturday Jun 12; YES-only diagnostic mode)
+## PRIORITY QUEUE (updated 2026-06-12 SESSION 48 — G5 placed game_date=2026-06-13; GG-014 BREACHED; T-164 registered)
 
 | Pri | Task | What / Why | Due |
 |-----|------|-----------|-----|
 | **0 — ✅ DONE (SESSION 47)** | **T-163: ADR-0023 — Remove PAPER_T4_FLAT_SIZING; T4 budget proportional to bankroll (GG-026)** | T4_BAND_WEIGHT=0.27 derived from G4 empirical ($499.95/$1,869.68=0.267→0.27). PAPER_T4_FLAT_SIZING and PAPER_T4_POOL_USD constants removed. _compute_t4_band_budget is single budget path (no RESERVE_MANDATE deduction). pool_isolated=True hardcoded. Flat sizing (1 contract/bet) retained as hardcoded paper policy (ADR-0023). G5 budget ~$504.81. ADR-0023 ACCEPTED. GG-026 RESOLVED. 843/843 tests. Commit 72ba619, VPS deployed. | ✅ 2026-06-11 |
-| **0b — ✅ DONE (SESSION 47)** | **EXP-018 Hypothesis C — DS ruling: calibration gap** | n=98, both all-bets and injury-filtered CONFIRMED_NEGATIVE. DS ruling: calibration gap — need to structure math better. NOT T1 Tier 2B FAILS. Multi-sport scale (MLB/NFL) addresses sample size. G5 diagnostic: YES-only mode (filters NO bets to isolate YES vs NO edge; requires YES_ONLY config gate in run_paper_trade.py before G5 cron). | ✅ 2026-06-11 |
+| **0b — ✅ DONE (SESSION 47)** | **EXP-018 Hypothesis C — DS ruling: calibration gap** | n=98, both all-bets and injury-filtered CONFIRMED_NEGATIVE. DS ruling: calibration gap — need to structure math better. NOT T1 Tier 2B FAILS. Multi-sport scale (MLB/NFL) addresses sample size. G5 diagnostic: YES-only mode (filters NO bets to isolate YES vs NO edge; requires YES_ONLY config gate in run_paper_trade.py before G5 cron). G5 fired WITHOUT YES-only gate (gate not implemented in time). G6 if DS ruling still applies. | ✅ 2026-06-11 |
+| **0c — HIGH (PRE-G6)** | **T-164: Throttled order submission (GG-014 G6 gate — 31% failure rate at G5)** | G5: 9/29 = 31% failure rate ("transient error — max retries exceeded"). T-138 exponential backoff (2s/4s/8s) ineffective at 29-order burst. Pattern: first ~20 succeed, last ~9 fail persistently — classic rate-limit burst. Root cause diagnosis needed: (1) confirm 429 vs 503 classification, (2) characterize Kalshi rate limit window size, (3) implement inter-order throttle (sleep between orders) or batch sizing. G6 gate requires ≤5% failure rate. Paper P&L unaffected (positions tracked regardless), but GG-014 states HIGH severity at live capital. | Before G6 live capital |
 | **1 — HIGH (governing)** | **T-157: Project-level stop criterion (GG-021)** | Draft OPEN_QUESTIONS entry + ADR defining what evidence forces "no edge — halt/pivot." Must be ratified COLD — before 2026-27 regular-season data exists. Includes standing watch: every G6-criteria revision checked for passability drift. | Pre-regular-season; draft within 2 sessions |
 | **2 — HIGH (governing)** | **T-153 (EXPANDED, GG-022): fill-realism haircut on ALL paper P&L** | Spread model from G4/G5 spread logs must haircut T1+T4 P&L used as G6 evidence — not just exit validation. Until then, all G6-facing P&L reports carry "unhaircut paper fills" caveat. T4's +108% pool at 51.4% win rate is presumed optimistic until haircut applied. | Post-G4/G5 data; before any G6 Tier 2 evaluation |
 | **3 — HIGH** | **T-158: Dark-period plan (June–Oct 2026)** | Finals may end within days; G6 commercial evidence is structurally unavailable until regular season. Ratify a plan document: backtest infrastructure, T2/DS-04 injury sourcing (KI-011), T-153 spread model, multi-sport C1 groundwork, cadence + drift controls for the no-feedback stretch. | Within 1 week of Finals end |
@@ -21,7 +22,22 @@
 | **5c — ✅ DONE (SESSION 46)** | **T-162: PIPE-03 in-progress game guard (GG-024)** | ESPN `STATUS_IN_PROGRESS` check added to `run_paper_trade.py` before bet-placement loop. Aborts with `paper_run_skipped_game_in_progress` log entry. Deployed VPS commit `c8a59f2`. G4 Castle+Hart late-cron bets flagged ineligible per APR-0019. GG-024 closed. | ✅ 2026-06-11 |
 | **6 — LOW** | **T-160: Root-folder document hygiene** | Unversioned strategy docs (Princeton Protocol.txt, templates, progress assessments, PDTP txt) into numbered structure or ARCHIVE/ so governance scans see them. | Opportunistic |
 
-Standing pre-G5 items: YES-only config gate in run_paper_trade.py (G5 diagnostic — T-164 if registered); T-152 exit-event empirical (EXP-019B/C gate for activation); T-139 order-failure rate check post-G4; T-157 stop criterion draft (within 2 sessions).
+G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). Resolve locally after game using run_resolve_local.py. T-164 is the G6 blocker from GG-014. Standing items: T-152 exit-event empirical (EXP-019B/C gate for activation); T-157 stop criterion draft (within 2 sessions).
+
+---
+
+## SESSION 48 — COMPLETE (2026-06-12)
+
+| Task | Status |
+|------|--------|
+| **G4 positions resolved** | ✅ COMPLETE — run_resolve_local.py: Brunson NO-40 WIN (+$8.57), Vassell NO-25 WIN (+$1.16), OG Anunoby NO-25 LOSS (-$18.20). Net -$8.46. VPS bankroll: $285.27. Portfolio synced. |
+| **VPS portfolio discrepancy investigation** | ✅ COMPLETE — VPS has 32 open (3 G4 + 29 G5); local `logs/paper_portfolio.json` was stale pre-G5. G5 bets placed by T1 early cron Jun 11 for game_date=2026-06-13. VPS is authoritative. |
+| **G5 YES-only gate** | ❌ NOT IMPLEMENTED PRE-G5 — G5 fired WITHOUT YES-only filter. 20 NO + 9 YES bets placed. G5 data analyzable post-hoc with YES/NO breakdown but not a clean YES-only test. G6 implementation pending DS ruling confirmation. |
+| **Monte Carlo with ADR-0023 components** | ✅ COMPLETE — G5 MC: 29 bets, $848.73 deployed, EV +$209.70 (+24.71% ROI), P(profit)=97.5%, kill switch risk 0.10%. Reserve mandate exceeded (84.9% > 60%) but batch enforcement deferred. All bets match ADR-0023 parameters. |
+| **T4 budget sim (ADR-0023 verification)** | ✅ RUN — Shows $302.89 budget (stale formula: uses RESERVE_MANDATE deduction). Correct ADR-0023 budget = $504.81 ($1,869.68 × 0.27). run_t4_budget_sim.py is stale (simulation tooling only; production run_t4_live.py is correct). |
+| **GG-014 G5 update** | ✅ LOGGED — 9/29 = 31% failure rate. T-138 INEFFECTIVE at 29-order burst. T-164 registered. GG-014 status updated: G6 gate BREACHED. |
+| **DECISION_LOG SESSION 48 entry** | ✅ COMPLETE — All 4 findings logged. ADR-0023 added to ADR Index. |
+| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
 
 ---
 
