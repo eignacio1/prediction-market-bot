@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
+from scipy.optimize import minimize_scalar
 from scipy.stats import poisson
 
 # ---------------------------------------------------------------------------
@@ -127,21 +128,55 @@ def _build_portfolio_bets(positions: List[dict], haircut_pct: float = 0.0) -> Li
     return bets
 
 
+def _infer_lambda(player_bets: List[dict]) -> float:
+    """Fit Poisson lambda to a player's (threshold, model_p) observations.
+    model_p = P(score >= threshold | lambda) regardless of direction.
+    Direction only determines which side of the threshold wins — it does
+    not change the underlying lambda.
+    Uses bounded minimization; returns best-fit lambda in [0.1, 80].
+    """
+    observations = [
+        (b["threshold"], b["model_p"])
+        for b in player_bets
+    ]
+
+    def residual(lam: float) -> float:
+        return sum((float(poisson.sf(t - 1, lam)) - p) ** 2
+                   for t, p in observations)
+
+    result = minimize_scalar(residual, bounds=(0.1, 80.0), method="bounded")
+    return float(result.x)
+
+
 def simulate_portfolio(
     bets: List[dict],
     n_sims: int = N_SIMS,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Simulate P&L from committed positions using per-position Bernoulli draws.
-    Returns (pnl_array, win_matrix)."""
+    """Simulate P&L from committed positions with correlated within-player draws.
+
+    Draws one Poisson score per player per simulation (same approach as preview
+    mode) so threshold ladders on the same player are correctly correlated.
+    Lambda is inferred from each player's (threshold, model_p) pairs via least-
+    squares fit to P(score >= threshold | lambda).
+
+    Returns (pnl_array, win_matrix).
+    """
     if not bets:
         return np.zeros(n_sims), np.zeros((n_sims, 0), dtype=bool)
 
     rng = np.random.default_rng(SEED)
+
+    players = list({b["player"] for b in bets})
+    player_bets_map = {p: [b for b in bets if b["player"] == p] for p in players}
+    lambda_map = {p: _infer_lambda(pb) for p, pb in player_bets_map.items()}
+    scores = {p: rng.poisson(lambda_map[p], size=n_sims) for p in players}
+
     pnl = np.zeros(n_sims)
     win_matrix = np.zeros((n_sims, len(bets)), dtype=bool)
 
     for i, b in enumerate(bets):
-        wins = rng.random(n_sims) < b["p_win"]
+        s = scores[b["player"]]
+        wins = (s >= b["threshold"]) if b["direction"] == "YES" else (s < b["threshold"])
         win_matrix[:, i] = wins
         pnl += np.where(wins, b["stake"] * b["win_odds"], -b["stake"])
 
@@ -294,11 +329,11 @@ def build_portfolio_report(
     lines += [
         "",
         "GOVERNANCE",
-        "  Simulated as independent Bernoulli draws using model_p per position.",
-        "  Multiple thresholds on same player are correlated in reality —",
-        "  actual variance is higher than reported. P5/P95 are optimistic on downside.",
-        "  GG-028 (T-166): failed Kalshi positions included in idempotency guard.",
-        "  Use --exclude-failed to simulate Kalshi-confirmed positions only.",
+        "  T-168 (GG-030): correlated simulation — one Poisson score per player;",
+        "  threshold ladders resolved against the same draw. Lambda inferred via",
+        "  least-squares fit to (threshold, model_p) observations per player.",
+        "  GG-031: 9 duplicated tickers ($402 doubled exposure) — both twins",
+        "  included in default run. Use --exclude-failed to drop failed-order twins.",
         "  GG-004: EV compares model vs market mid — NOT adversarial validation.",
         "  EXP-017 is the binding commercial test.",
         sep,

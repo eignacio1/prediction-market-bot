@@ -519,6 +519,60 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-030 — Portfolio MC Draws Positions as Independent Bernoullis: Within-Player Threshold-Ladder Correlation Ignored
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-030 |
+| Discovered | 2026-06-12 SESSION 55 — pre-Game-5 protocol review of `run_monte_carlo.py` portfolio mode (T-167 rewrite) |
+| Category | Tooling gap — risk model structurally understates correlated tail risk |
+| What was missed | Portfolio mode (`run_monte_carlo.py:144`) simulates each committed position as an **independent** Bernoulli draw (`rng.random(n_sims) < p_win` with a fresh draw per position). But the G5 book holds threshold *ladders* on single players — e.g., Brunson NO 25/30/35/40 (×2 each after GG-028 duplicates) and Wembanyama NO 35/40 (×2). In reality these rungs are perfectly correlated: one 40-point game loses every rung simultaneously. The script's own caveat text (line 297–298) acknowledges this, but the headline numbers reported to the operator (G5: P(profit)=99.8%, P(kill switch)=0.00%) come from the uncorrelated path. Notably, the legacy `--preview` mode does this *correctly* — it draws one Poisson score per player and compares it against all thresholds (line 424–438) — so the T-167 rewrite regressed correlation structure while fixing position sourcing. Compounding: the draws use the model's own `model_p` as ground truth, so the MC cannot see model miscalibration — the exact failure mode EXP-017B (DIRECTIONAL_NEGATIVE vs real prices) and the G3 MC miss (predicted +$138 @ 95.1%; actual -$199) point at. |
+| When it should have been caught | T-167 implementation review (SESSION 53) / SESSION 54 hygiene audit — the audit verified per-position formulas but not the joint distribution. |
+| Phases it survived | G5 risk reporting (SESSION 52 manual analysis used the same independent-draw structure). |
+| Why it survived | Hygiene audit checked formula correctness per position, not portfolio-level dependence. The caveat in the report footer made the limitation feel "documented" without changing the headline numbers. |
+| Impact | MEDIUM-HIGH for operator communication. With $323 on Wembanyama NO rungs and ~$102 on Brunson NO rungs (each rung duplicated), a single star eruption in an elimination game realizes losses approaching the $200 kill-switch trigger (20% of $1,000) — yet the MC reports P(kill switch)=0.00%. The reported risk profile of the G5 book is materially understated in the left tail. No live capital impact (paper). |
+| Discovery | Human-prompted adversarial review (SESSION 55 Q6), grep of simulation structure vs live book composition. |
+| Resolution | T-168: portfolio mode should draw one latent outcome per player (Poisson score, as preview mode already does) and resolve all of that player's positions against it; treat duplicated tickers as summed exposure. Re-run G5 MC and re-report tail/kill-switch figures. |
+| Status | OPEN — registered 2026-06-12 |
+
+---
+
+### GG-031 — GG-028 Blast Radius Understated: 9 Duplicated Tickers ($402.49, 40% of G5 Deployment), Not 2
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-031 |
+| Discovered | 2026-06-12 SESSION 55 — direct audit of VPS `paper_portfolio.json` open positions: `Counter((ticker, direction))` |
+| Category | Incident scoping gap — resolved-gap record documents partial blast radius |
+| What was missed | GG-028's record states the 01:30 UTC batch placed "duplicate Wemby NO ≥40 and NO ≥35 positions." The actual count: **all 9 tickers whose 22:00 UTC orders failed were re-bet at 01:30 UTC** — Wemby NO-40/-35, Brunson NO-40/-35/-30/-25, Hart YES-15/-10, KAT YES-10. Every duplicated pair shows one `failed: transient` position (22:0x UTC) and one `resting` position (01:30 UTC). Total stake in duplicated tickers: $402.49 of $1,003.38 deployed (40%). Also resolved as side-finding: the "unexplained" 01:00 UTC second run flagged in GG-028's resolution path is simply the scheduled 01:30 UTC late PIPE-03 window in `cron.conf` — `entered_at` timestamps match exactly. No mystery trigger exists; the investigation item can close. |
+| When it should have been caught | SESSION 52 portfolio audit (it identified 2 of 9) and SESSION 53 T-166 close-out (fix was verified, but the existing book was not re-audited under the fix's logic). |
+| Phases it survived | G5 book as currently committed; will flow into G5 resolution P&L and any G6-facing evidence unless annotated. |
+| Why it survived | The SESSION 52 audit spotted the largest duplicates (Wemby) by eye; no systematic ticker-level duplicate scan was run. T-166 fixed the mechanism prospectively without retrospectively reconciling the already-committed book. |
+| Impact | MEDIUM. (1) G5 P&L will double-count 9 markets — G6 evidence (already Finals-excluded per ADR-0024, but logged) and EXP-017B/018 G5 inputs need dedupe-or-annotate. (2) Doubles tail exposure on exactly the positions GG-030 shows the MC can't see. (3) Bankroll accounting carries both stakes ($130.62 remaining). |
+| Discovery | SESSION 55 protocol — direct VPS book audit. |
+| Resolution | T-169: decide DS treatment of the 9 failed-order twins (annotate as `duplicate_of` and exclude from per-market experiment n; or accept as committed allocations with documented double exposure); update GG-028 resolution summary; close the "01:00 UTC trigger" investigation as RESOLVED (scheduled late window). |
+| Status | OPEN — registered 2026-06-12 |
+
+---
+
+### GG-032 — T4 Portfolio Accounting Incoherence: bankroll +$869.68 vs total_realized_pnl −$21.59
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-032 |
+| Discovered | 2026-06-12 SESSION 55 — VPS `paper_portfolio_t4.json` top-level field audit |
+| Category | Data integrity gap — headline T4 performance metric cannot be reconciled from the file that stores it |
+| What was missed | `paper_portfolio_t4.json` shows `bankroll_usd=1869.68`, `initial_bankroll_usd=1000.0`, `total_realized_pnl=-21.59`. These cannot all be true under bankroll = initial + realized P&L: the implied gap is ~$891. Probable contributors: the pool actually started at $500 (PAPER_T4_POOL_USD era) while `initial_bankroll_usd` recorded 1000; the SESSION 46 reset touched realized P&L epochs differently from bankroll; and/or pool-isolated open/close paths credit `bankroll_usd` asymmetrically from `total_realized_pnl`. Whatever the mix, the widely-cited "T4 pool +87% / +108% growth at 51.4% win rate" narrative and the file's own realized P&L (negative since reset) tell opposite stories. |
+| When it should have been caught | SESSION 46 bankroll reset (epoch boundary not applied consistently to T4 file) or T-148/APR-0019 T4 evidence separation work. |
+| Phases it survived | G3–G5 T4 reporting; MEMORY_BANK milestone entries cite pool growth figures. |
+| Why it survived | T4 pool figures were read as a single number (bankroll_usd) without reconciling against initial + realized; pool_isolated semantics made cross-checking against T1 conventions feel inapplicable. |
+| Impact | MEDIUM. T4's G6-facing evidence (APR-0019 T4 floor ≥50) depends on knowing whether T4 is actually up ~$870 or down ~$22 since its epoch start. Until reconciled, no T4 performance claim should be cited. Fill-realism haircut (T-153/GG-022) compounds the uncertainty in the same direction. |
+| Discovery | SESSION 55 protocol — field-level file audit. |
+| Resolution | T-170: reconstruct T4 ledger from `closed_positions` (2,315 records) + C6 audit log; determine true epoch-consistent P&L; correct either `bankroll_usd`, `total_realized_pnl`, or `initial_bankroll_usd`; document which figure feeds APR-0019 Tier 2 T4 evidence. |
+| Status | OPEN — registered 2026-06-12 |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
