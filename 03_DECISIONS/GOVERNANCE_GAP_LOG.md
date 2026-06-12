@@ -533,7 +533,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | MEDIUM-HIGH for operator communication. With $323 on Wembanyama NO rungs and ~$102 on Brunson NO rungs (each rung duplicated), a single star eruption in an elimination game realizes losses approaching the $200 kill-switch trigger (20% of $1,000) — yet the MC reports P(kill switch)=0.00%. The reported risk profile of the G5 book is materially understated in the left tail. No live capital impact (paper). |
 | Discovery | Human-prompted adversarial review (SESSION 55 Q6), grep of simulation structure vs live book composition. |
 | Resolution | T-168: portfolio mode should draw one latent outcome per player (Poisson score, as preview mode already does) and resolve all of that player's positions against it; treat duplicated tickers as summed exposure. Re-run G5 MC and re-report tail/kill-switch figures. |
-| Status | OPEN — registered 2026-06-12 |
+| Status | RESOLVED 2026-06-12 — T-168 SESSION 55: `simulate_portfolio()` now draws one Poisson score per player via `_infer_lambda()` (least-squares fit on threshold/model_p pairs); direction-invariant (NO bets use raw model_p, not 1−model_p); NO-bet inversion bug found and fixed in same session. G5 MC re-run: P(profit)=98.3%, kill-switch risk=1.28%, mean P&L=+$244.23. Commit `530e1c3`. |
 
 ---
 
@@ -551,7 +551,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | MEDIUM. (1) G5 P&L will double-count 9 markets — G6 evidence (already Finals-excluded per ADR-0024, but logged) and EXP-017B/018 G5 inputs need dedupe-or-annotate. (2) Doubles tail exposure on exactly the positions GG-030 shows the MC can't see. (3) Bankroll accounting carries both stakes ($130.62 remaining). |
 | Discovery | SESSION 55 protocol — direct VPS book audit. |
 | Resolution | T-169: decide DS treatment of the 9 failed-order twins (annotate as `duplicate_of` and exclude from per-market experiment n; or accept as committed allocations with documented double exposure); update GG-028 resolution summary; close the "01:00 UTC trigger" investigation as RESOLVED (scheduled late window). |
-| Status | OPEN — registered 2026-06-12 |
+| Status | RESOLVED 2026-06-12 SESSION 56 — DS ruling: Option A. 9 late-cron (01:30 UTC) resting positions annotated with `duplicate_of: <original_position_id>` (original = failed 22:00 UTC attempt). EXP-017B/018 reruns must filter `duplicate_of` positions from per-market n. G5 P&L still resolves all 41 positions (double exposure stands as committed). Backup at `paper_portfolio.json.bak_t169`. "01:00 UTC mystery trigger" confirmed RESOLVED — scheduled 01:30 UTC late PIPE-03 window in `cron.conf`; no mystery trigger. |
 
 ---
 
@@ -569,7 +569,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | MEDIUM. T4's G6-facing evidence (APR-0019 T4 floor ≥50) depends on knowing whether T4 is actually up ~$870 or down ~$22 since its epoch start. Until reconciled, no T4 performance claim should be cited. Fill-realism haircut (T-153/GG-022) compounds the uncertainty in the same direction. |
 | Discovery | SESSION 55 protocol — field-level file audit. |
 | Resolution | T-170: reconstruct T4 ledger from `closed_positions` (2,315 records) + C6 audit log; determine true epoch-consistent P&L; correct either `bankroll_usd`, `total_realized_pnl`, or `initial_bankroll_usd`; document which figure feeds APR-0019 Tier 2 T4 evidence. |
-| Status | OPEN — registered 2026-06-12 |
+| Status | RESOLVED 2026-06-12 — T-170 SESSION 55: `paper_portfolio_t4.json` corrected on VPS — `bankroll_usd` 1869.68→**478.41**, `initial_bankroll_usd` 1000→**500.0**. Root cause: ADR-0022 `_reconstruct_t4_ledger()` wrote T1 system bankroll into T4 file. True T4 pool = $500 initial + (-$21.59 realized P&L) = **$478.41**. Backup at `paper_portfolio_t4.json.bak_t170`. Do not cite "+87% growth" T4 narrative — based on wrong field. |
 
 ---
 
@@ -588,6 +588,9 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-013 | 2026-06-05 | ESPN scoreboard API replaces nba_api (blocked by Akamai from VPS and GitHub Actions). 30 teams/279 records verified. GHA cron auto-delivers cache to VPS before PIPE-02. |
 | GG-028 | 2026-06-11 | T-166: `_open_tickers` set includes ALL open positions regardless of Kalshi order status. Second cron now correctly blocked from re-deploying failed positions. |
 | GG-029 | 2026-06-11 | T-167: MC script rewritten — portfolio mode default; constants corrected; scenario flags added. |
+| GG-030 | 2026-06-12 | T-168: `simulate_portfolio()` draws one Poisson score per player (`_infer_lambda()` least-squares); direction-invariant; NO-bet inversion fixed. G5 MC: P(profit)=98.3%, kill-switch risk=1.28%. Commit `530e1c3`. |
+| GG-032 | 2026-06-12 | T-170: `paper_portfolio_t4.json` on VPS corrected — bankroll_usd→478.41, initial_bankroll_usd→500.0. True T4 pool=$478.41. Backup preserved. |
+| GG-031 | 2026-06-12 | T-169: DS ruling Option A — 9 late-cron twins annotated `duplicate_of` on VPS. EXP reruns exclude duplicates from per-market n. Double exposure stands. "01:00 UTC trigger" confirmed as scheduled 01:30 UTC late window. |
 | GG-014 | 2026-06-11 | **PARTIALLY RESOLVED — T-164 deployed (SESSION 49).** Root cause: 29-order burst exhausts rate-limit window; T-138 backoff window (14s total) < rate-limit reset window. Fix: inter-order sleep 0.5→2.0s; MAX_RETRIES 3→4; RETRY_DELAY_S 1.0→2.0 (delay schedule 4/8/16/32s = 60s total). Batch order integrity report added to PIPE-03 run (fail rate logged + WARN >5%). **G5 FINAL SNAPSHOT (SESSION 52, 2026-06-12):** 22:00 UTC batch (29 bets): 9/29 failed = **31% failure rate** — identical to pre-T-164 rate; T-164 did not reduce failures at peak API congestion window. 01:00 UTC batch (12 bets): 0/12 failed = 0% — T-164 is effective when API is uncongested (off-peak). Interpretation: failures are congestion-driven (server-side Kalshi rate limiting at ~22:00 UTC betting rush), not rate-limiting caused by the bot's own request cadence. T-164's 2.0s inter-order sleep addresses self-generated rate pressure but not server-side congestion. Fix path may require moving the primary cron earlier (e.g., 18:00 UTC) or requesting a higher rate limit tier. **DARK PERIOD NOTE (SESSION 51, 2026-06-11):** G6 gate (≤5% failure rate) confirmation deferred to 2026-27 Season Day 1 paper batch — registered as Phase 4 P0 gate in DARK_PERIOD_PLAN.md. Status: OPEN; next viable confirmation window: October 2026. |
 | GG-015 | 2026-06-05 | GHA cron moved 00:30→20:30 UTC (T-137). GAME_DATE now aligned between GHA and PIPE-02 early cron. Late-cron mismatch acceptable for Finals; regular-season two-run strategy deferred. |
 | GG-011 | 2026-06-05 | ADR-0017 ACCEPTED. PAPER_T4_FLAT_SIZING=true confirmed as paper architecture (bypasses formula). Phase 8 per-bet sizing deferred to ADR-0018. T4_BAND_WEIGHT stub comment updated. |

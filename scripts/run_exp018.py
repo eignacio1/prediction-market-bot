@@ -69,14 +69,23 @@ def load_pregame_lambda_map() -> dict:
 
 
 def load_adj_lambda_positions() -> list[dict]:
-    """Load closed positions from adj_λ era (game_date >= ADJ_LAMBDA_FROM)."""
+    """Load closed positions from adj_λ era (game_date >= ADJ_LAMBDA_FROM).
+
+    Positions carrying `duplicate_of` are excluded from experiment n per
+    T-169/GG-031 DS ruling (Option A): late-cron re-bets of failed orders
+    are committed exposure but not independent market observations.
+    """
     data = json.loads(PORTFOLIO.read_text())
-    return [
+    positions = [
         p for p in data.get("closed_positions", [])
         if p.get("game_date", "") >= ADJ_LAMBDA_FROM
         and (p.get("status") in ("RESOLVED", "resolved")
              or p.get("actual_pts") is not None)
     ]
+    n_dups = sum(1 for p in positions if p.get("duplicate_of"))
+    if n_dups:
+        print(f"  T-169 dedupe: excluding {n_dups} duplicate_of positions from experiment n")
+    return [p for p in positions if not p.get("duplicate_of")]
 
 
 # ── EV calculation (same methodology as EXP-017 Part B live) ──────────────────
