@@ -4,6 +4,7 @@
 **Decision makers:** DS (Earl Ignacio)  
 **Supersedes:** `max_daily_loss_usd: 1000.0` in `_HARD_LIMITS` (retroactive DECISION_LOG.md entry 2026-05-29, confirmed G4/ADR-0004)  
 **Superseded by:** —  
+**Amended by:** ADR-0025 (net daily-loss semantics — 2026-06-12)  
 **Related:** KI-018 (zombie daily loss limit), ADR-0004 (G4 risk framework acceptance), ADR-0010 (band Kelly hierarchy + reserve mandate)
 
 ---
