@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 57 — Q6 worry sweep. PORTFOLIO banner fixed (VPS live book, not stale snapshot). Reconciliation CLEAN. S46 reset-equity nuance logged. T-166 annotated. 852/852 tests. Commit `3718015`. Finals G5 Jun 13 pending; dark period begins ~Jun 22.  
+**Last reviewed:** 2026-06-12 SESSION 58 — Implementation sprint complete: T-172, T-166, T-156 (ADR-0025), T-159 (portfolio_schema.py). 923/923 tests. Commit `1cc66d6`. Dark period begins ~Jun 22 post-Finals.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
