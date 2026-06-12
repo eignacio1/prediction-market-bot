@@ -1,0 +1,434 @@
+PROJECT DIRECTORY TEMPLATE — Archetype: Model Risk + Infrastructure + Research + Code Execution
+Version: 1.0 (dynamically-agnostic; module-based)
+Last updated: YYYY-MM-DD
+
+HOW TO USE (Operating Rules)
+- Canonical index: 11_MEMORY_HANDOFF/MEMORY_BANK.md is the “source of truth index” (it points to the current canonical artifacts).
+- Traceability invariant: Requirements -> Design -> Implementation -> Tests -> Validation Evidence -> Approvals/Decisions.
+- Reproducibility invariant: Every result must be re-runnable with pinned code + pinned environment + referenced data snapshot IDs.
+- Decision hygiene: Major changes require an ADR (03_DECISIONS/DECISION_LOG/).
+- Staleness control: Every artifact has Last Reviewed / Next Review + explicit “staleness triggers.”
+- Archive policy: Move stale/superseded artifacts to ARCHIVE/ with a short rationale and pointers to replacements.
+
+================================================================================
+00_ADMIN/  (Meta, governance, navigation)
+================================================================================
+00_ADMIN/
+  README.md
+  PROJECT_CHARTER.md
+  GLOSSARY.md
+  STAKEHOLDERS_RACI.md
+  COMMUNICATIONS_PLAN.md
+  APPROVALS_REGISTER.md
+  ACCESS_REQUESTS.md
+  MEETING_NOTES/
+    YYYY/
+      YYYY-MM-DD_topic.md
+  TEMPLATES/
+    TEMPLATE_UNIVERSAL_HEADER.md
+    TEMPLATE_ADR.md
+    TEMPLATE_MODEL_CARD.md
+    TEMPLATE_VALIDATION_REPORT.md
+    TEMPLATE_RUNBOOK.md
+    TEMPLATE_EXPERIMENT_RECORD.md
+  CHANGELOG.md
+
+README.md (template)
+- Purpose: Directory map + “start here”
+- Sections:
+  - What this project is (1 paragraph)
+  - Where to find: Spec, Architecture, ADRs, Run Instructions, Validation Evidence, Runbooks
+  - Canonical artifacts (links)
+  - Update cadence + owners
+
+PROJECT_CHARTER.md (template)
+- Purpose / outcomes
+- Non-goals
+- Stakeholders
+- Constraints (policy, time, budget, data, compute)
+- Success criteria (measurable)
+- Phase gates (research -> validation -> production)
+- Risks (top 5) + mitigations
+- Owner / review cadence / staleness triggers
+
+GLOSSARY.md (template)
+- Term | Project-specific meaning | Notes | Owner | Last reviewed
+
+STAKEHOLDERS_RACI.md (template)
+- Workstream | Responsible | Accountable | Consulted | Informed
+- Include: Model Owner, Validator, Infra Owner, Security, Compliance, Data Owner, PM
+
+COMMUNICATIONS_PLAN.md (template)
+- Cadence: standup / weekly status / monthly steering
+- Channels: chat, email, ticketing, incident channel
+- Escalation path + severity definitions
+
+APPROVALS_REGISTER.md (template)
+- Approval ID | What is approved | Approver role | Date | Evidence link | Expiry/review trigger
+
+ACCESS_REQUESTS.md (template)
+- Access type (data/compute/secrets) | Requester role | Justification | Approver | Evidence link | Expiry
+
+================================================================================
+01_SPEC/  (What & why)
+================================================================================
+01_SPEC/
+  VISION_OUTCOMES.md
+  SCOPE_IN_OUT.md
+  REQUIREMENTS.md
+  ACCEPTANCE_CRITERIA.md
+  NON_FUNCTIONAL_REQUIREMENTS.md
+  RISK_APPETITE_CONSTRAINTS.md
+  DATA_REQUIREMENTS.md
+  ROADMAP_MILESTONES.md
+
+REQUIREMENTS.md (template)
+- Requirement ID
+- Statement (testable)
+- Rationale
+- Priority
+- Owner role
+- Acceptance test reference (link to 07_TEST_VALIDATION_EVIDENCE/)
+- Evidence pointer (where proof will live)
+- Dependencies
+- Staleness triggers (e.g., policy change, data source change)
+
+ACCEPTANCE_CRITERIA.md (template)
+- Requirement ID -> Acceptance criteria -> Test method -> Evidence location
+
+NON_FUNCTIONAL_REQUIREMENTS.md (template)
+- Security, privacy, latency, availability, resiliency, accessibility, auditability, cost/compute limits
+
+DATA_REQUIREMENTS.md (template)
+- Data sources (logical)
+- Minimum quality thresholds
+- Lineage expectations
+- Retention/deletion constraints
+- Access constraints
+
+================================================================================
+02_ARCHITECTURE_DESIGN/  (How)
+================================================================================
+02_ARCHITECTURE_DESIGN/
+  ARCHITECTURE_OVERVIEW.md
+  SYSTEM_CONTEXT.md
+  DATA_FLOWS_LINEAGE.md
+  INTERFACES_CONTRACTS.md
+  EXECUTION_ARCHITECTURE.md
+  DEPENDENCIES.md
+  RESILIENCE_FAILURE_MODES.md
+  THREAT_MODEL.md
+  MIGRATION_PLAN.md
+  DESIGN_REVIEWS/
+    YYYY-MM-DD_review.md
+
+RESILIENCE_FAILURE_MODES.md (template)
+- Failure mode | Cause | Detection signal | Impact | Mitigation | Owner | Runbook link | Revisit trigger
+
+INTERFACES_CONTRACTS.md (template)
+- Interface name | Producer | Consumer | Contract/schema | Versioning | Backward compatibility | Test coverage
+
+EXECUTION_ARCHITECTURE.md (template)
+- Execution modes (interactive/batch/service)
+- Schedulers/orchestrators (tool-agnostic)
+- Isolation boundaries (tenancy, network, IAM)
+- Resource limits + quotas
+- Rollback strategy
+
+================================================================================
+03_DECISIONS/  (Why)
+================================================================================
+03_DECISIONS/
+  DECISION_LOG/
+    ADR-0001_title.md
+  ASSUMPTIONS_REGISTER.md
+  OPEN_QUESTIONS.md
+  TRADEOFFS.md
+  REJECTED_OPTIONS.md
+
+TEMPLATE_ADR.md
+- ADR ID / Title
+- Status: Proposed / Accepted / Superseded
+- Context (why now)
+- Options considered
+- Decision drivers (criteria)
+- Decision + rationale
+- Consequences (positive/negative)
+- Follow-ups (tasks + owners)
+- Revisit triggers (drift, incident, scale threshold, policy change)
+- Links: spec, architecture, evidence
+
+ASSUMPTIONS_REGISTER.md (template)
+- Assumption | Why believed | Evidence grade | Owner | Risk if wrong | Test to validate | Review date
+
+OPEN_QUESTIONS.md (template)
+- Question | Impact | Owner | Due date | Where tracked | Resolution link
+
+================================================================================
+04_EXECUTION/  (Plan, status, delivery control)
+================================================================================
+04_EXECUTION/
+  PLAN.md
+  TODO_NEXT.md
+  STATUS_REPORTS/
+    YYYY-WW_status.md
+  RID_LOG.md
+  RETROS/
+    YYYY-MM-DD_retro.md
+  RESOURCE_BUDGET.md
+
+RID_LOG.md (template)
+- ID | Type (Risk/Issue/Dependency) | Description | Severity | Owner | Mitigation | Due | Status | Evidence link
+
+STATUS_REPORT.md (template)
+- Summary (5 bullets)
+- Progress vs plan
+- Upcoming milestones
+- Risks/issues/dependencies (top)
+- Decisions needed
+- Metrics (optional)
+- Links to updated artifacts
+
+================================================================================
+05_RESEARCH_EXPERIMENTS/  (Research rigor + provenance)
+================================================================================
+05_RESEARCH_EXPERIMENTS/
+  RESEARCH_QUESTIONS.md
+  HYPOTHESES.md
+  LITERATURE_REVIEW/
+  EXPERIMENT_LOG/
+    EXP-YYYY-MM-DD_short-title.md
+  RESULTS_SUMMARIES/
+    YYYY-MM-DD_summary.md
+  DATA_EXPLORATION_NOTES/
+
+TEMPLATE_EXPERIMENT_RECORD.md
+- Experiment ID / Date
+- Question
+- Hypothesis
+- Method
+- Data snapshot ID(s) (link to 06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md)
+- Code reference (commit/tag)
+- Environment reference (container/spec)
+- Metrics + results
+- Interpretation
+- Limitations / threats to validity
+- Next experiment
+- Confidence (1–10) + why
+
+================================================================================
+06_CODE_EXECUTION_REPRODUCIBILITY/  (Run-ability + environment control)
+================================================================================
+06_CODE_EXECUTION_REPRODUCIBILITY/
+  RUN_INSTRUCTIONS.md
+  ENVIRONMENTS.md
+  DEPENDENCY_LOCKS/
+  DATA_SNAPSHOTS_INDEX.md
+  PIPELINES_JOBS.md
+  SECRETS_HANDLING.md
+  NOTEBOOKS_POLICY.md
+  ARTIFACT_REGISTRY.md
+
+RUN_INSTRUCTIONS.md (template)
+- Quickstart (minimal steps)
+- Inputs (data IDs, parameters)
+- Outputs (where written; schemas)
+- Side effects (writes, notifications)
+- Runtime + resource needs
+- Failure modes (common) + fixes
+- Rollback / cleanup
+- Evidence capture (what logs/outputs to store in 07/)
+
+ENVIRONMENTS.md (template)
+- Environment name | Purpose | How to provision | IAM requirements | Network constraints | Approval link
+
+DATA_SNAPSHOTS_INDEX.md (template)
+- Snapshot ID | Source | Time window | Extraction method | Hash/identifier | Access path (logical) | Retention | Owner
+
+SECRETS_HANDLING.md (template)
+- Secret types | Storage mechanism | Rotation | Injection method | Prohibited practices | Incident procedure
+
+PIPELINES_JOBS.md (template)
+- Job name | Trigger | Parameters | Dependencies | Backfill procedure | Monitoring | Owner | Runbook link
+
+================================================================================
+07_TEST_VALIDATION_EVIDENCE/  (Proof)
+================================================================================
+07_TEST_VALIDATION_EVIDENCE/
+  TEST_STRATEGY.md
+  TEST_CASES/
+  VALIDATION_PLAN.md
+  VALIDATION_REPORTS/
+  BENCHMARKS/
+  UAT_SIGNOFFS/
+  EVIDENCE/
+
+TEST_STRATEGY.md (template)
+- Test levels (unit/integration/system)
+- Coverage goals
+- Data test strategy (quality, schema, drift)
+- Security testing (as applicable)
+- Evidence capture requirements
+
+VALIDATION_PLAN.md (template)
+- What is being validated (scope)
+- Validation criteria (mapped to requirements)
+- Methods (backtesting, stress tests, sensitivity, challenger models, etc.—tool-agnostic)
+- Sign-off roles + gates
+- Re-validation triggers
+
+TEMPLATE_VALIDATION_REPORT.md
+- Executive summary
+- Scope + intended use
+- Data provenance summary
+- Methodology summary
+- Results (metrics, thresholds, exceptions)
+- Limitations
+- Requirement mapping table: Req ID -> Test -> Result -> Evidence link
+- Recommendations + remediation plan
+- Sign-offs + dates + evidence pointers
+
+================================================================================
+08_MODEL_RISK_GOVERNANCE/  (Model documentation + monitoring)
+================================================================================
+08_MODEL_RISK_GOVERNANCE/
+  MODEL_CARD.md
+  METHODOLOGY.md
+  ASSUMPTIONS_LIMITATIONS.md
+  DATA_PROVENANCE.md
+  PERFORMANCE_METRICS.md
+  SENSITIVITY_STRESS_TESTS.md
+  FAIRNESS_BIAS_ASSESSMENT.md
+  MONITORING_DRIFT_PLAN.md
+  CHANGE_CONTROL.md
+  VALIDATION_SIGNOFF.md
+
+TEMPLATE_MODEL_CARD.md
+- Model/system name
+- Purpose + intended use
+- Prohibited use
+- Stakeholders (owner/validator/users)
+- Inputs/outputs (high level)
+- Key assumptions
+- Limitations
+- Performance summary + thresholds
+- Monitoring plan (what, how often, triggers)
+- Change control summary
+- Links: spec, architecture, validation report, runbooks
+
+MONITORING_DRIFT_PLAN.md (template)
+- Metrics monitored | Baselines | Thresholds | Alerting | Owner | Response runbook | Re-validation trigger
+
+CHANGE_CONTROL.md (template)
+- Change type | Examples | Requires ADR? | Requires re-validation? | Approval roles | Evidence required
+
+================================================================================
+09_SECURITY_PRIVACY_COMPLIANCE/  (Audit spine)
+================================================================================
+09_SECURITY_PRIVACY_COMPLIANCE/
+  POLICY_REQUIREMENTS.md
+  CONTROL_MAPPING.md
+  ACCESS_CONTROL_MATRIX.md
+  DATA_RETENTION_DELETION.md
+  VENDOR_RISK.md
+  AUDIT_EVIDENCE/
+
+CONTROL_MAPPING.md (template)
+- Control ID | Control statement | Applicability | Implementation artifact link | Evidence link | Owner | Review cadence
+
+ACCESS_CONTROL_MATRIX.md (template)
+- Resource | Access level | Roles allowed | Approval required | Logging/monitoring | Review cadence
+
+DATA_RETENTION_DELETION.md (template)
+- Data class | Retention period | Deletion method | Owner | Evidence | Exceptions
+
+VENDOR_RISK.md (template)
+- Vendor/component | Purpose | Data shared | Risk assessment | Controls | Evidence | Renewal/review trigger
+
+================================================================================
+10_INFRA_OPERATIONS/  (Runbooks + reliability)
+================================================================================
+10_INFRA_OPERATIONS/
+  SLA_SLO_SLI.md
+  OBSERVABILITY.md
+  RUNBOOKS/
+  ONCALL.md
+  CAPACITY_PLANNING.md
+  INCIDENTS_POSTMORTEMS/
+  KNOWN_ISSUES.md
+  RELEASE_CHANGE_NOTES/
+
+TEMPLATE_RUNBOOK.md
+- Service/job name
+- Symptoms
+- Triage steps
+- Diagnostics (logs/metrics)
+- Mitigations
+- Rollback
+- Escalation
+- Post-incident actions (update docs, ADR revisit triggers)
+
+INCIDENT_POSTMORTEM.md (template)
+- Summary
+- Timeline
+- Root cause
+- Contributing factors
+- Customer/user impact
+- Detection gaps
+- Corrective actions (owners/dates)
+- Learnings -> updates required (runbooks, architecture, monitoring, change control)
+
+================================================================================
+11_MEMORY_HANDOFF/  (Anti-context-rot core)
+================================================================================
+11_MEMORY_HANDOFF/
+  MEMORY_BANK.md
+  CONTEXT_PACKS/
+    CP-YYYY-MM-DD_handoff.md
+  FAQ.md
+  LESSONS_LEARNED.md
+
+MEMORY_BANK.md (template)
+- Stable facts (rarely change)
+- Current truths (timestamped)
+- Constraints & invariants (“do not break”)
+- Canonical links (spec, architecture, ADR index, run instructions, validation report, runbooks)
+- Key decisions (ADR index)
+- Known unknowns
+- Next 2 milestones
+- If you only read 3 things (top pointers)
+
+CONTEXT_PACK (template)
+- Why this handoff exists (trigger)
+- 1-page summary
+- Current state (what’s done / what’s next)
+- Top risks + mitigations
+- Key decisions + links
+- How to run + where evidence lives
+- Contacts (roles) + escalation
+
+================================================================================
+ARCHIVE/  (Superseded artifacts)
+================================================================================
+ARCHIVE/
+  YYYY/
+    superseded_item.md
+
+ARCHIVE RULE
+- Every archived item must include:
+  - What replaced it (link)
+  - Why it was archived
+  - Date + owner
+
+================================================================================
+UNIVERSAL HEADER (paste into every artifact)
+================================================================================
+Purpose:
+Owner (role):
+Last reviewed:
+Next review:
+Staleness triggers:
+Upstream links:
+Downstream links:
+Decision references (ADR IDs):
+Confidence (1–10) + why:

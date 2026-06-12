@@ -181,9 +181,9 @@ class PaperTrader:
 
         Deducts the approved size from the paper bankroll unless pool_isolated=True,
         in which case the position is recorded but the main bankroll is not touched.
-        Used for T4 flat-sizing paper mode where T4 tracks its own pool independently
-        (PAPER_T4_FLAT_SIZING=True) so T1 and T4 do not compete for the same bankroll.
-        Logs to C6. Returns (ok, position_record).
+        Used for T4 paper mode, where T4 tracks its own isolated pool (ADR-0023:
+        pool_isolated=True hardcoded) so T1 and T4 do not compete for the same
+        bankroll. Logs to C6. Returns (ok, position_record).
         """
         with self._lock:
             self._reset_daily_loss_if_new_day()

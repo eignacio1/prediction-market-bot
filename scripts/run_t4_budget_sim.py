@@ -46,13 +46,12 @@ from pathlib import Path
 from typing import Optional
 
 # ---------------------------------------------------------------------------
-# Constants — mirror run_t4_live.py ADR-0013 values exactly
+# Constants — mirror run_t4_live.py ADR-0023 values exactly
 # ---------------------------------------------------------------------------
-DEFAULT_BAND_WEIGHT = 0.10       # T4_BAND_WEIGHT stub
+DEFAULT_BAND_WEIGHT = 0.27       # T4_BAND_WEIGHT (ADR-0023, G4-calibrated)
 DEFAULT_KELLY_T4 = 0.20          # KELLY_T4 from game_state_model.py (ADR-0010)
 DEFAULT_MIN_EDGE = 0.02          # MIN_EDGE_TO_APPROVE from risk.py
 DEFAULT_BANKROLL = 1000.0
-RESERVE_MANDATE_PCT = 0.40       # from risk.py
 MIN_BET_PAPER = 1.0              # MIN_BET_T4_PAPER
 MAX_EXPOSURE = 500.0             # _HARD_LIMITS max_single_event_exposure_usd
 
@@ -98,8 +97,9 @@ def _read_bankroll(bankroll_override: Optional[float]) -> float:
 
 
 def _compute_band_budget(bankroll: float, band_weight: float) -> float:
-    deployable = bankroll * (1.0 - RESERVE_MANDATE_PCT)
-    return deployable * band_weight
+    # ADR-0023: T4 budget = bankroll × weight, single path. T4 pool is isolated
+    # capital — no RESERVE_MANDATE deduction (that gate applies to T1 batches).
+    return bankroll * band_weight
 
 
 # ---------------------------------------------------------------------------
@@ -252,10 +252,10 @@ def _parse_t4_log(log_path: Path) -> list[dict]:
 
 def _band_weight_needed(total_deployed: float, bankroll: float) -> float:
     """Back-calculate T4_BAND_WEIGHT needed to cover total_deployed exactly."""
-    deployable = bankroll * (1.0 - RESERVE_MANDATE_PCT)
-    if deployable <= 0:
+    # ADR-0023: weight applies to full bankroll (no RESERVE_MANDATE deduction).
+    if bankroll <= 0:
         return 0.0
-    return total_deployed / deployable
+    return total_deployed / bankroll
 
 
 def _percentile(data: list, pct: float) -> float:
@@ -292,9 +292,9 @@ def build_parametric_report(
 
     lines += [
         sep,
-        "  T4 BAND BUDGET SIMULATION — ADR-0013 Verification (Parametric)",
+        "  T4 BAND BUDGET SIMULATION — ADR-0023 Verification (Parametric)",
         f"  Bankroll=${bankroll:.2f}  |  T4_BAND_WEIGHT={band_weight}  |  KELLY_T4={kelly}",
-        f"  band_budget=${band_budget:.2f}  |  deployable=${bankroll*(1-RESERVE_MANDATE_PCT):.2f}",
+        f"  band_budget=${band_budget:.2f} (bankroll × weight; ADR-0023 single path)",
         f"  N_SIMS={N_SIMS:,}  |  GAME_CYCLES={GAME_CYCLES}  |  N_PLAYERS={n_players}",
         f"  FIRE_RATE={FIRE_RATE_PER_PLAYER_CYCLE}  |  EDGE_MEAN={EDGE_MEAN}  |  EDGE_STD={EDGE_STD}",
     ]

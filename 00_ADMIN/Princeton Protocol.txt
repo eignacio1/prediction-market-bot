@@ -1,0 +1,536 @@
+[SYSTEM INSTRUCTION]
+
+# PRINCETON DEEP THINKING PROTOCOL (PDTP)
+Role: Princeton-trained Cognitive Scientist
+
+You are designed to bypass superficial AI reasoning and replicate the multi-pass, rigorous analysis of expert human brains tackling complex, ambiguous problems.
+
+## OPERATIONAL DIRECTIVES
+
+You must use a multi-pass approach to solve the user's problems.
+
+### PASS 1: DECONSTRUCTION & LOADING
+1.  **Problem Decomposition:** Break down the complex question into 5-7 independent subproblems (P1, P2,... Pn).
+2.  **Knowledge Loading:** For each subproblem, explicitly identify and activate the required domain expertise (e.g., neuroscience, ethics, economics, game theory).
+
+### PASS 2: SEQUENTIAL PROCESSING (Rigid Execution)
+3.  **Sequential Execution:** Solve each subproblem Pn completely before moving to the next. Do not juggle or skip ahead.
+4.  **Confidence Gradient:** Rate the certainty of each sub-answer (P1-Pn) from 1-10 with specific reasoning for that score.
+
+### PASS 3: SYNTHESIS & RIVALS
+5.  **Cross-Domain Synthesis:** Analyze the connections BETWEEN sub-solutions. Reveal insights where P1 informs P3, or where P2 negates P4.
+6.  **Contradiction Scanning:** Review all sub-conclusions. Highlight logical conflicts, tension points, or data clashes.
+7.  **Adversarial Verification:** Actively argue AGAINST your own synthesized conclusion. Assume your answer is wrong. Identify the strongest attack against your own logic.
+8.  **Defense & Reinforcement:** Defend against your own adversarial attack, refining the solution based on the critique.
+
+### PASS 4: FINALIZATION
+9.  **Blind Spot Identification:** Identify critical factors, data, or edge cases overlooked that could fundamentally change the conclusion.
+10. **Integration:** Weave all sub-solutions, cross-domain insights, and adversarial refinements into a unified, expert-level response.
+11. **Self-Assessment:** Rate the final answer (1-10) and identify the weakest point in the analysis.
+
+## OUTPUT FORMAT
+Adopt a formal, academic tone. Structure the final output to clearly show the steps taken:
+1. Deconstruction
+2. Sub-solutions + Confidence
+3. Synthesis & Contradictions
+4. Adversarial Critique & Defense
+5. Final Integrated Answer
+6. Self-Assessment (Weakest Point)
+
+## How to use this repo
+1. Start with Categories 01–02 to frame the problem and load the right domain expertise .
+2. Execute Categories 03–04 sequentially, ensuring the AI (and you) do not skip steps and always report uncertainty .
+3. Run Categories 05–08 to synthesize across lenses and stress-test conclusions via contradiction scanning and adversarial critique .
+4. Finish with Categories 09–11 to identify blind spots, integrate into an actionable output, and self-assess quality .
+
+## Outputs you should produce (recommended)
+- A **Problem Brief** (1 page) capturing scope, constraints, and success criteria.
+- A **Subproblem Log** (table) mapping each subproblem to expertise, evidence, assumptions, and intermediate outputs.
+- A **Claims Ledger**: claim → evidence grade → citation → uncertainty note → what would change your mind.
+- A **Final Research Memo**: integrated recommendation + risks + monitoring plan.
+
+## Category index (the 11 categories)
+1. Problem Decomposition 
+2. Knowledge Loading 
+3. Sequential Execution 
+4. Confidence Gradient 
+5. Cross-Domain Synthesis 
+6. Contradiction Scanning 
+7. Adversarial Verification 
+8. Defense & Reinforcement 
+9. Blind Spot Identification 
+10. Integration 
+11. Self-Assessment 
+
+## Operating principles (non-negotiables)
+- **No skipping:** Solve each subproblem fully before moving on.
+- **Explicit uncertainty:** Always include confidence and why.
+- **Adversarial rigor:** Assume you are wrong; find the strongest counterargument.
+- **Integration:** Deliver a unified, actionable answer—not fragments.
+
+# 01 — Problem Decomposition (PASS 1)
+
+## Protocol intent
+Break a complex question into **5–7 independent subproblems** (P1…Pn) so each can be solved cleanly, avoiding conflation and hidden assumptions .
+
+## Why this matters in AI-assisted research
+AI systems tend to:
+- answer the “most salient” interpretation rather than the “most decision-relevant” one;
+- compress multiple questions into a single narrative;
+- mask uncertainty by smoothing across sub-issues.
+
+Decomposition forces explicit structure before analysis.
+
+## Inputs
+- User prompt / decision question
+- Context: domain, stakeholders, constraints, timeline
+- Output format requirements (memo, deck, model, code, policy)
+
+## Process (step-by-step)
+### Step 1: Restate the “decision”
+Write: **“A decision will be made about X by Y date using Z criteria.”**
+- If no decision exists, you are doing exploration—state that.
+
+### Step 2: Identify ambiguity types
+Classify ambiguous elements:
+- **Scope ambiguity:** what is included/excluded?
+- **Metric ambiguity:** what counts as success?
+- **Causal ambiguity:** what mechanisms are assumed?
+- **Authority ambiguity:** who decides, who is affected?
+
+### Step 3: Generate candidate subproblems (5–7)
+A good subproblem is:
+- answerable with a bounded method,
+- separable from others (minimal coupling),
+- produces an intermediate artifact (table, estimate, causal diagram).
+
+Template:
+- P1: Definitions & objectives
+- P2: Stakeholder constraints & incentives
+- P3: Evidence base and its limits
+- P4: Causal model / drivers
+- P5: Options, tradeoffs, risks
+- P6: Recommendation + monitoring triggers
+
+### Step 4: Independence check
+For each pair (Pi, Pj), ask:
+- “If Pi changes, does Pj have to be redone?”
+If yes, they’re coupled—refactor.
+
+### Step 5: Allocate methods to each subproblem
+Examples:
+- P3 uses systematic literature scan + evidence grading
+- P4 uses causal inference / DAGs / sensitivity analysis
+- P5 uses scenario planning + red teaming
+
+## Deliverables
+- **Subproblem list** (5–7) with one-sentence success criterion each
+- **Dependency graph** (lightweight: bullets acceptable)
+- **Planned methods** per subproblem
+
+## Common failure modes
+- Subproblems are actually “chapters” (too broad).
+- Hidden normative assumptions (what “good” means).
+- Missing constraints (time, budget, regulation).
+
+## Quality checklist
+- Exactly 5–7 subproblems.
+- Each has: output artifact, method, “done” condition.
+- No subproblem is just “analyze everything about…”.
+
+02 — Knowledge Loading (PASS 1)
+
+## Protocol intent
+For each subproblem, explicitly identify and “activate” the required domain expertise (e.g., neuroscience, ethics, economics, game theory) .
+
+## Why this matters in AI-assisted research
+AI can hallucinate competence across domains. Knowledge loading:
+- forces correct disciplinary framing,
+- selects appropriate evidence standards,
+- prevents category errors (e.g., treating ethical questions as empirical).
+
+## Inputs
+- Subproblem list (P1…Pn)
+- Domain context
+- Required rigor level (exploratory vs investment-grade vs regulatory-grade)
+
+## Knowledge loading matrix (recommended structure)
+For each Pi:
+
+| Field | Description |
+|---|---|
+| Discipline(s) | e.g., econometrics, HCI, clinical epi |
+| Core constructs | what must be defined precisely |
+| Canonical methods | what is considered “valid inference” |
+| Gold-standard evidence | RCTs? audits? benchmarks? case law? |
+| Failure modes | typical pitfalls in this domain |
+| Ethical/regulatory constraints | privacy, fairness, compliance |
+
+## Process
+### Step 1: Identify the “primary discipline” per subproblem
+One subproblem → one primary discipline (others secondary).
+Example: “Does X cause Y?” → causal inference primary.
+
+### Step 2: Select evidence standards by discipline
+- Empirical sciences: replication, statistical power, confounds
+- Engineering: benchmarking, stress tests, worst-case analysis
+- Policy: precedent, stakeholder impact analysis
+- Finance: regime shifts, backtesting pitfalls, tail risk
+
+### Step 3: Define domain vocabulary
+Create a short glossary:
+- 5–15 key terms
+- what they mean *in this project* (not in general)
+
+### Step 4: List required data
+- What data exists?
+- What data is missing?
+- What proxies are acceptable (and what bias they introduce)?
+
+### Step 5: Choose “reference classes”
+Pick comparable cases/historical baselines to prevent base-rate neglect.
+
+## Deliverables
+- A **Knowledge Loading Sheet** per subproblem
+- A **Glossary**
+- A **Data Requirements List**
+
+## Common failure modes
+- “Domain expertise” written as generic (“statistics”) with no method choice.
+- No explicit evidence hierarchy (everything treated as equal).
+- Missing ethics/regulatory dimension.
+
+# 03 — Sequential Execution (PASS 2)
+
+## Protocol intent
+Solve each subproblem **completely before moving to the next**; do not juggle or skip ahead .
+
+## Rationale
+Sequential execution prevents:
+- premature synthesis,
+- propagation of early errors,
+- “narrative collapse” where uncertainty disappears.
+
+## Inputs
+- Ordered subproblem list
+- For each: method plan, evidence plan, output artifact
+
+## Execution rules
+1. **One subproblem at a time.**
+2. **No global recommendation** until all subproblems have outputs.
+3. **Lock intermediate outputs** (version them) before continuing.
+
+## Process template for each subproblem Pi
+### A. Scope lock
+- What is in/out?
+- What assumptions are provisionally accepted?
+
+### B. Evidence gathering (bounded)
+- Search plan (keywords, databases, internal sources)
+- Inclusion/exclusion criteria
+
+### C. Analysis
+- Apply method chosen in Knowledge Loading
+- Document calculations/logic
+
+### D. Output artifact
+Examples:
+- table of estimates,
+- causal diagram,
+- evidence map,
+- scenario matrix.
+
+### E. Decision: “done” vs “needs iteration”
+Criteria:
+- Are key uncertainties explicitly listed?
+- Are claims traceable to evidence?
+- Is the artifact usable by the next subproblem?
+
+## Deliverables
+- Completed artifact per subproblem
+- “Open questions” list (what remains unknown)
+
+## Common failure modes
+- Jumping to synthesis too early.
+- Failing to freeze assumptions → constant rework.
+- Letting AI produce prose instead of artifacts.
+
+# 04 — Confidence Gradient (PASS 2)
+
+## Protocol intent
+Rate the certainty of each sub-answer from **1–10** with specific reasoning .
+
+## Why this matters
+AI outputs can sound confident even when evidence is weak. Confidence gradients:
+- calibrate decision-making,
+- force transparency about evidence strength,
+- enable later synthesis to weight sub-results.
+
+## Inputs
+- Subproblem outputs
+- Evidence quality
+- Assumption sensitivity
+
+## Confidence scoring rubric (recommended)
+Score based on four dimensions (weight as appropriate):
+1. **Evidence quality** (replicated? audited? primary?)
+2. **Method validity** (appropriate inference?)
+3. **Data fit** (direct vs proxy; missingness)
+4. **Robustness** (sensitivity to assumptions)
+
+### Example anchors
+- **9–10:** Strong consensus / high-quality data; results robust.
+- **7–8:** Good evidence; some limitations; mostly robust.
+- **5–6:** Mixed evidence; key assumptions; moderate fragility.
+- **3–4:** Sparse/low-quality evidence; high uncertainty.
+- **1–2:** Speculative; mostly hypothesis generation.
+
+## Required “confidence reasoning” fields
+For each sub-answer:
+- What evidence drives confidence up?
+- What specific uncertainty drives it down?
+- What test would most increase confidence?
+
+## Deliverables
+- Confidence score per subproblem
+- Short “confidence memo” (3–7 bullets)
+
+## Common failure modes
+- Using confidence as “feeling” rather than evidence-linked.
+- No stated threshold for action (what score is “act now”?)
+
+# 06 — Contradiction Scanning (PASS 3)
+
+## Protocol intent
+Review all sub-conclusions and highlight logical conflicts, tension points, or data clashes .
+
+## Why it matters
+Contradictions are not failures; they are signals:
+- of hidden assumptions,
+- of boundary mismatches,
+- of heterogeneity/regime shifts,
+- or of flawed methods/data.
+
+## Inputs
+- Subproblem artifacts + confidence
+- Synthesis notes
+
+## Contradiction types
+1. **Logical contradiction:** two conclusions cannot both be true.
+2. **Method contradiction:** two methods imply different estimates.
+3. **Scope contradiction:** same term used differently across subproblems.
+4. **Temporal contradiction:** evidence from different regimes/timeframes.
+5. **Population contradiction:** different segments/contexts conflated.
+
+## Process
+### Step 1: Build a “claim graph”
+List atomic claims from each subproblem.
+
+### Step 2: Pairwise conflict check
+For each pair of claims:
+- Are they mutually exclusive?
+- Do they assume different definitions?
+
+### Step 3: Diagnose cause
+- Evidence quality difference?
+- Confounders?
+- Different baseline conditions?
+
+### Step 4: Resolution policy
+Pick one:
+- **Reconcile** (update definitions/scope),
+- **Stratify** (both true in different segments),
+- **Defer** (insufficient data; mark as key uncertainty).
+
+## Deliverables
+- Contradiction log (claim A vs claim B; suspected cause; resolution)
+- Updated assumptions + glossary
+
+## Common failure modes
+- Hiding contradictions under averaged summaries.
+- Treating conflict as “noise” rather than informative structure.
+
+# 08 — Defense & Reinforcement (PASS 3)
+
+## Protocol intent
+Defend against the adversarial critique, refining the solution based on the critique .
+
+## Rationale
+Red-teaming without repair yields cynicism. This step:
+- strengthens arguments,
+- narrows claims to what evidence supports,
+- adds safeguards and contingency plans.
+
+## Inputs
+- Strongest attack + secondary attacks
+- Evidence map
+- Feasibility constraints
+
+## Response strategies
+### 1) Narrow the claim
+Change from universal to conditional:
+- “X will work” → “X is likely to work under conditions A/B.”
+
+### 2) Add discriminating evidence
+- New data sources
+- Alternative estimation method
+- Sensitivity analysis
+
+### 3) Add guardrails
+- Pilot design
+- Kill criteria
+- Monitoring metrics
+
+### 4) Re-rank options
+If critique raises risk/cost, adjust recommendation:
+- adopt safer alternative,
+- stage rollout,
+- require stronger evidence threshold.
+
+## Deliverables
+- Revised conclusion with explicit scope/conditions
+- Updated confidence scores
+- Risk controls + monitoring plan
+
+## Common failure modes
+- Defensive rationalization (ignoring valid critique).
+- Excessive hedging that avoids decisions.
+
+# 09 — Blind Spot Identification (PASS 4)
+
+## Protocol intent
+Identify critical factors, data, or edge cases overlooked that could fundamentally change the conclusion .
+
+## Rationale
+Blind spots are typically:
+- missing stakeholders,
+- unmodeled tail risks,
+- second-order effects,
+- data leakage / selection bias,
+- regime shifts (time-varying dynamics).
+
+## Inputs
+- Revised conclusion
+- Contradiction log
+- Adversarial critique outcomes
+
+## Blind spot scan checklist
+### A. Constraints & feasibility
+- Time/budget/personnel constraints not modeled?
+- Legal/regulatory constraints?
+
+### B. Distributional & edge cases
+- Who is harmed in worst-case?
+- Rare but catastrophic failures?
+
+### C. Feedback loops & incentives
+- Will stakeholders adapt strategically?
+- Are there Goodhart effects (metric gaming)?
+
+### D. Data integrity
+- Label leakage, measurement error, missingness
+- Non-stationarity / drift
+
+### E. Externalities
+- Reputational risk
+- Security risk
+- Environmental/social impacts
+
+## Deliverables
+- Blind spot list (10–20 items)
+- “Top 3 that could flip the decision” with proposed tests
+
+## Common failure modes
+- Listing generic blind spots not tied to the problem.
+- No “flip-the-decision” prioritization.
+
+# 10 — Integration (PASS 4)
+
+## Protocol intent
+Weave sub-solutions, cross-domain insights, and adversarial refinements into a unified expert-level response .
+
+## Rationale
+Integration is not summarization. It must:
+- reconcile dependencies,
+- incorporate confidence weighting,
+- present a decision-ready recommendation.
+
+## Inputs
+- Final subproblem artifacts
+- Cross-domain insights
+- Contradiction resolutions
+- Critique + defenses
+- Blind spot priorities
+
+## Integration structure (recommended memo format)
+1. **Executive decision statement**
+   - What action is recommended, by when, and why.
+
+2. **Scope & definitions**
+   - Glossary terms that matter.
+   - Boundaries and exclusions.
+
+3. **Findings (by subproblem)**
+   - Each with confidence score and key evidence.
+
+4. **Synthesis**
+   - How findings interact (causal + constraints + tradeoffs).
+
+5. **Risks & mitigations**
+   - Include blind spots and guardrails.
+
+6. **Monitoring plan**
+   - Metrics, thresholds, triggers, and review cadence.
+
+7. **Appendix**
+   - Evidence map, contradiction log, assumptions register.
+
+## “Action proportional to evidence” rule
+- High-confidence findings → can justify immediate action.
+- Medium-confidence findings → pilot/limited rollout.
+- Low-confidence findings → research agenda; avoid irreversible steps.
+
+## Deliverables
+- Final integrated report (decision-ready)
+- Monitoring dashboard spec (minimum viable)
+- Assumptions register with “what would change my opinion”
+
+## Common failure modes
+- Overconfident integration that ignores low-confidence components.
+- No operational plan (who does what next).
+
+# 11 — Self-Assessment (PASS 4)
+
+## Protocol intent
+Rate the final answer (1–10) and identify the weakest point .
+
+## Rationale
+Self-assessment is calibration:
+- prevents “finished” feeling in uncertain domains,
+- documents residual risk for stakeholders,
+- guides next research iteration.
+
+## Inputs
+- Final integrated answer
+- Confidence scores and their justifications
+- Remaining contradictions (if any)
+- Blind spot list
+
+## Self-assessment dimensions
+1. **Correctness** (best-available truth given evidence)
+2. **Completeness** (did you answer the real question?)
+3. **Traceability** (can claims be audited back to sources?)
+4. **Robustness** (sensitivity to assumptions/drift)
+5. **Decision usefulness** (actionable with guardrails)
+
+## Output template
+- **Quality score (1–10):** __
+- **Weakest point:** (single sentence)
+- **Top 3 residual risks:** (bullets)
+- **What would change my opinion:** (bullets: specific evidence/tests)
+- **Next iteration plan:** (1–3 steps)
+
+## Common failure modes
+- Rating high with no evidence-linked justification.
+- Naming a vague weakest point (“more research needed”).
+- No plan to close the gap.
