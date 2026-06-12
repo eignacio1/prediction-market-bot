@@ -1,0 +1,338 @@
+OPERATING WORKFLOW — PROJECT DIRECTORY COMPASS OS (Plug-and-Play Context File)
+Version: 1.0
+Purpose: Provide an operating workflow that keeps a large, complex project’s Project Directory coherent, current, and audit-ready, resisting context erosion when most components are worked on independently.
+Portability: Tool-agnostic, industry-agnostic. Works with any directory template that includes: Spec, Architecture, Decisions, Execution, Evidence, Risk/Compliance, Operations, Memory/Handoff.
+
+=====================================================================
+0) HOW TO USE THIS FILE (READ FIRST)
+=====================================================================
+Use this workflow alongside your Project Directory template.
+
+Implementation sequence (recommended):
+1. Assign roles (Section 2) and publish RACI.
+2. Instantiate the “Minimum Enforcement Set” (Section 3).
+3. Start cadences immediately (Section 5), even if artifacts are incomplete.
+4. Enforce gates (Section 6) before major commitments/releases.
+5. Run retrieval drills + metrics (Section 7) to continuously improve.
+
+Non-negotiable principle:
+- If it isn’t in the directory (or linked from it), it doesn’t exist for governance/handoff purposes.
+
+=====================================================================
+1) OPERATING PRINCIPLES (ANTI-CONTEXT-EROSION INVARIANTS)
+=====================================================================
+I1. Canonicality (Single Source of Truth)
+- Every “truth” has exactly one canonical home. All other mentions must link to it.
+
+I2. Traceability (Claim → Artifact → Evidence)
+- Every major claim (requirements, risk posture, validation result, operational readiness) must be traceable to an artifact and, where applicable, evidence.
+
+I3. Time Semantics (Freshness + Staleness Triggers)
+- Every artifact has: Last Reviewed, Next Review, and explicit Staleness Triggers (events that force updates).
+
+I4. Decision Binding (No Silent Drift)
+- Major changes require a decision record (ADR or equivalent). Accepted decisions are immutable; changes are made via superseding decisions.
+
+I5. Interface Primacy (Coupling Managed Explicitly)
+- Cross-team coupling is managed through explicit interface contracts (schemas/APIs/data contracts), not tribal knowledge.
+
+I6. Handoff as a Deliverable (Not a Meeting)
+- Every transition (new owner, phase gate, vendor swap, incident handoff) produces a Context Pack artifact.
+
+I7. Evidence-First Governance
+- Approvals and sign-offs must point to evidence artifacts (test outputs, validation reports, control evidence), not just narrative.
+
+=====================================================================
+2) ROLES & OWNERSHIP MODEL (RACI AT ARTIFACT LEVEL)
+=====================================================================
+Define roles by function (titles vary by organization). Each artifact must have:
+- 1 Responsible (writes/updates)
+- 1 Accountable (approves)
+- Consulted (interfaces/cross-cutting)
+- Informed (stakeholders)
+
+Core roles (portable):
+- Directory Steward (DS): Owns directory health, structure, link integrity, archiving, and health reporting.
+- Product/Problem Owner (PO): Owns intent, scope, requirements, acceptance criteria.
+- Architecture Owner (AO): Owns architecture, interfaces, NFRs, failure modes.
+- Execution Lead (EL): Owns plan, status reporting, dependency tracking, delivery coordination.
+- Evidence Owner (EO): Owns test strategy, validation plan, evidence capture, sign-off readiness.
+- Risk/Control Owner (RCO): Owns control mapping, audit evidence spine, approvals register.
+- Operations Owner (OO): Owns runbooks, SLOs, observability, incident process.
+- Research Lead (RL): Owns research questions, experiment logs, research summaries.
+- Model Owner / Validator (MO/V): Owns model documentation, limitations, monitoring/drift plan, validation report (if applicable).
+
+Rule: No artifact without an owner. No owner without a review cadence.
+
+=====================================================================
+3) MINIMUM ENFORCEMENT SET (THE “COMPASS” CONTROLS)
+=====================================================================
+These controls are mandatory for large, complex projects.
+
+C1. Universal Artifact Header (required on every artifact)
+- Purpose
+- Owner (role)
+- Last Reviewed / Next Review
+- Staleness Triggers
+- Upstream Links (inputs)
+- Downstream Links (consumers)
+- Decision References (ADR IDs)
+- Confidence (1–10) + why
+
+C2. Decision Records for Major Changes
+- Any change that affects scope, requirements, interfaces, risk posture, validation conclusions, or operational readiness requires an ADR (or equivalent).
+
+C3. Interface Contracts for Cross-Team Boundaries
+- Any boundary between components/teams must have an explicit contract artifact (schema/API/data contract) and a downstream impact list.
+
+C4. Frozen Baselines at Gates
+- Before validation/release/major commitments, freeze baseline artifacts (spec/architecture/interfaces) and reference them in evidence.
+
+C5. Context Packs for Handoffs
+- Every handoff produces a Context Pack (see Section 8).
+
+C6. Control/Evidence Spine (when risk/compliance applies)
+- Maintain a control mapping: Control → Evidence pointer(s) → Owner → Review cadence.
+
+=====================================================================
+4) ARTIFACT LIFECYCLE (STATE MACHINE)
+=====================================================================
+Each artifact must be in exactly one state:
+
+DRAFT (D): Being authored; incomplete allowed.
+REVIEWED (R): Peer-reviewed for correctness + link integrity.
+CANONICAL (C): Approved; the reference version.
+FROZEN (F): Snapshot for a gate (baseline for validation/release).
+SUPERSEDED (S): Replaced by a newer canonical artifact; must link forward/back.
+ARCHIVED (A): No longer active; retained for traceability.
+
+Lifecycle rules:
+- Canonical artifacts must be linkable and discoverable from the Memory Bank (or README index).
+- Superseded artifacts must point to the superseding artifact and the reason for supersession.
+- Archived artifacts must include: archive date + rationale + pointer to current canonical.
+
+=====================================================================
+5) CADENCES & CEREMONIES (SYNCHRONIZATION LOOPS)
+=====================================================================
+Goal: Keep parallel workstreams coherent without forcing serial execution.
+
+Daily (15 min) — Execution Sync (run by EL)
+Inputs:
+- TODO_NEXT
+- Blockers
+- New dependencies
+Outputs (must be written):
+- Updated TODO_NEXT
+- New/updated RID entries (Risks/Issues/Dependencies)
+- Any “decision needed” flags
+
+Weekly (60–90 min) — Directory Integrity Review (DIR) (run by DS)
+Checks:
+- Freshness SLA breaches (Last Reviewed overdue)
+- Orphan artifacts (not linked from canonical index)
+- Broken links / missing upstream/downstream references
+- Major changes without ADR references
+Outputs:
+- Directory Health Report (1 page)
+- Remediation assignments (owner + due date)
+
+Weekly (60 min) — Cross-Cutting Concerns Council (C4) (run by AO or RCO)
+Attendees:
+- AO, RCO, OO, EO, MO/V (if applicable), Security/Privacy as needed
+Agenda:
+- Changes impacting holistic factors: security, privacy, reliability, performance, model risk, compliance
+Outputs:
+- New ADRs or updates to: threat model, control mapping, monitoring plan, runbooks
+
+Biweekly (60–120 min) — Integration Review (run by AO)
+Focus:
+- Interface contracts
+- End-to-end flows
+- Failure modes and mitigations
+Outputs:
+- Integration issues list
+- Updated interface contracts + downstream acknowledgements
+
+Monthly (60–90 min) — Gate Readiness Review (run by EL + DS)
+Focus:
+- Upcoming gate checklist completion
+Outputs:
+- Gate readiness decision (go/no-go) + required freezes
+
+Quarterly (90 min) — Retrieval Drill + Workflow Retrospective (run by DS)
+Focus:
+- Can a new team member answer key questions quickly using only the directory?
+Outputs:
+- Retrieval scorecard
+- Meta-ADR proposals (workflow/template changes)
+
+=====================================================================
+6) INTEGRATION GATES (PREVENT “LOCAL DONE, GLOBAL BROKEN”)
+=====================================================================
+Gates are passed only when required artifacts are FROZEN and evidence pointers exist.
+
+Gate G0 — Intent Gate
+Requires (Frozen):
+- Charter, Scope In/Out, Glossary, RACI
+Exit criteria:
+- Stakeholders aligned; open questions enumerated
+
+Gate G1 — Spec Gate
+Requires (Frozen):
+- Requirements + Acceptance Criteria + NFRs
+Exit criteria:
+- Requirements testable; priorities explicit; assumptions logged
+
+Gate G2 — Architecture Gate
+Requires (Frozen):
+- Architecture Overview, Interfaces/Contracts, Data Flows/Lineage, Failure Modes, Threat Model (if applicable)
+Exit criteria:
+- Interfaces stable enough for parallel build; risks identified
+
+Gate G3 — Execution Gate
+Requires (Frozen):
+- Plan/Milestones, Dependency Map, RID Log baseline
+Exit criteria:
+- Delivery path credible; owners assigned; constraints acknowledged
+
+Gate G4 — Evidence Gate
+Requires (Frozen):
+- Test Strategy, Validation Plan, Evidence Capture Plan, Control Mapping coverage (if applicable)
+Exit criteria:
+- Evidence collection is planned before execution; sign-off path clear
+
+Gate G5 — Operational Gate
+Requires (Frozen):
+- SLOs/SLAs, Observability Plan, Runbooks, On-call/Escalation, Rollback Plan
+Exit criteria:
+- Operable by someone other than the builder
+
+Gate G6 — Release/Change Gate
+Requires (Frozen):
+- Release baseline (spec/arch/interfaces), approvals register pointers, final validation report pointers
+Exit criteria:
+- Change control satisfied; rollback tested/credible; monitoring active
+
+Rule: If a gate fails, record the reason and remediation plan as an artifact (not just meeting notes).
+
+=====================================================================
+7) TELEMETRY & ENFORCEMENT (DETECT ROT EARLY)
+=====================================================================
+Directory Health Metrics (minimum):
+M1. Freshness: % artifacts reviewed within SLA
+M2. Orphans: count of artifacts not linked from canonical index
+M3. Decision Coverage: count of major changes without ADR references
+M4. Evidence Coverage: controls/tests without evidence pointers
+M5. Interface Drift: interface changes without downstream acknowledgement
+M6. Handoff Completeness: % transitions with Context Packs
+
+Escalation ladder:
+- SLA breach → owner ping (48h)
+- Repeat breach → accountable review (1 week)
+- Systemic breach → gate freeze (cannot pass next gate)
+
+Anti-shadow-doc rule:
+- If a document is used to make a decision, it must be moved into the directory or linked from it within 24–72 hours.
+
+=====================================================================
+8) CONTEXT PACKS (STANDARD HANDOFF BUNDLE)
+=====================================================================
+A Context Pack is a short, structured artifact produced at every handoff.
+
+Context Pack contents (max 1–3 pages + links):
+1. One-paragraph project summary (what/why/where we are)
+2. Current state (what is true now; timestamped)
+3. Top 10 canonical links (spec, architecture, ADR index, run instructions, validation evidence, runbooks)
+4. Current risks/issues/dependencies (top 5)
+5. Next milestones (next 2–4)
+6. “Do not break” invariants (interfaces, constraints, risk posture)
+7. Open questions + decision deadlines
+8. Contacts + escalation path
+
+Context Pack triggers:
+- New team member joins/leaves
+- Ownership transfer
+- Phase gate
+- Vendor/third-party change
+- Incident handoff
+- Major scope pivot
+
+=====================================================================
+9) CHANGE CONTROL (KEEPING COHERENCE UNDER CHANGE)
+=====================================================================
+Change classification (portable):
+- Minor: editorial, clarifications, no downstream impact
+- Major: affects requirements, interfaces, risk posture, validation conclusions, operational readiness
+
+Major change procedure:
+1. Create/Update ADR (decision binding)
+2. Update impacted canonical artifacts (spec/arch/interfaces)
+3. Update downstream impact list + notify consulted owners
+4. Update evidence plan if validation is affected
+5. Freeze new baseline at next gate (or immediate freeze if urgent)
+
+=====================================================================
+10) RETRIEVAL DRILLS (EMPIRICAL TEST AGAINST CONTEXT EROSION)
+=====================================================================
+Purpose: Measure whether the directory prevents context erosion.
+
+Drill format (quarterly or at major milestones):
+- Select 10 questions a new owner must answer, e.g.:
+  Q1: What is the system/model supposed to do (acceptance criteria)?
+  Q2: Why was approach X chosen (decision + tradeoffs)?
+  Q3: What are the key interfaces and contracts?
+  Q4: What evidence supports validation claims?
+  Q5: What are the top risks and mitigations?
+  Q6: How do I run it safely (env, inputs/outputs, rollback)?
+  Q7: What monitoring detects failure/drift?
+  Q8: What changed recently and why?
+  Q9: What is prohibited/out-of-scope?
+  Q10: Who owns what and how to escalate?
+
+Scoring:
+- Time-to-answer
+- Correctness
+- Artifact pointer quality (did they land on canonical sources?)
+
+Outputs:
+- Retrieval scorecard
+- Remediation backlog (add missing links, clarify artifacts, create ADRs)
+
+=====================================================================
+11) ITERATION PLAN (EVOLVE WITHOUT BREAKING PORTABILITY)
+=====================================================================
+Versioning:
+- v1.x: additive changes (new optional modules, new templates)
+- v2.0: breaking changes (renames/restructures)
+
+Workflow changes require a meta-decision record (Meta-ADR):
+- What changed
+- Why
+- Expected benefit
+- Migration plan
+
+Quarterly pruning:
+- Archive unused/stale artifacts with rationale
+- Remove redundant docs; strengthen canonical index
+
+=====================================================================
+12) QUICK START CHECKLIST (FIRST 72 HOURS)
+=====================================================================
+Day 1:
+- Appoint Directory Steward
+- Publish README + canonical index (Memory Bank)
+- Assign owners for: Spec, Architecture, Decisions, Execution, Evidence, Risk/Compliance, Ops, Memory/Handoff
+
+Day 2:
+- Create initial ADR-0001: “Adopt Directory Compass OS”
+- Stand up TODO_NEXT + RID log
+- Define interface contract placeholders for known boundaries
+
+Day 3:
+- Run first DIR (Directory Integrity Review)
+- Schedule C4 council + Integration Review
+- Draft first Context Pack (baseline handoff)
+
+=====================================================================
+END OF FILE
+=====================================================================

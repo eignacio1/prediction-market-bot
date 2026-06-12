@@ -1,0 +1,287 @@
+BEGINNING THE PREDICTION MARKET BOT — STARTUP WORKFLOW (Context-Rot Resistant)
+Version: 1.0
+Purpose: Provide a step-by-step operating workflow to begin a prediction market bot project in a way that withstands context erosion, using the Project Directory Compass OS and PDTP rigor.
+Portability: Tool-agnostic. Works whether you are building a trading agent, market-making bot, forecasting assistant, or research prototype.
+
+NOTE ON GOVERNANCE
+- If it isn’t in the directory (or linked from it), it doesn’t exist for governance/handoff purposes. (Compass OS principle)
+- Major changes require a decision record (ADR). (Compass OS principle)
+- Every artifact must have: Purpose, Owner, Last Reviewed/Next Review, Staleness Triggers, Links, Decision refs, Confidence. (Compass OS control set)
+
+=====================================================================
+1) DECONSTRUCTION (PASS 1)
+=====================================================================
+Decision restatement:
+A decision will be made about how to start and operationalize the prediction market bot project (scope, architecture, execution plan, and governance) by the end of the initial setup window (typically 48–72 hours) using criteria: traceability, reproducibility, safety/compliance, and operational readiness.
+
+Ambiguities to resolve early:
+- Market venue: internal simulation vs external prediction market vs paper trading.
+- Bot role: market maker vs directional trader vs forecaster vs arbitrage.
+- Data sources: public news, internal research, structured feeds, human inputs.
+- Execution constraints: latency, rate limits, capital limits, risk limits.
+- Compliance constraints: permitted instruments/venues, recordkeeping, approvals.
+
+Subproblems (P1–P6):
+P1: Define scope, success criteria, and constraints (charter/spec).
+P2: Define market mechanics + bot strategy class (research framing).
+P3: Define architecture + interfaces (system design).
+P4: Define reproducible execution environment + data provenance (run-ability).
+P5: Define validation, monitoring, and risk controls (evidence + ops).
+P6: Define governance workflow to prevent context erosion (Compass OS + PDTP).
+
+Knowledge loading (disciplines activated):
+- Market microstructure & prediction markets (mechanism design, liquidity, scoring rules)
+- Quant research & forecasting (calibration, Brier/log loss, backtesting pitfalls)
+- Software/infrastructure engineering (reliability, observability, change control)
+- Risk management (limits, drawdowns, tail risk, kill switches)
+- Security/compliance (access control, audit trails, data handling)
+- Cognitive science / knowledge management (handoff design, retrieval cues)
+
+=====================================================================
+2) SUB-SOLUTIONS + CONFIDENCE (PASS 2 — SEQUENTIAL)
+=====================================================================
+
+-------------------------
+P1) Scope, success criteria, constraints (Charter + Spec)
+-------------------------
+Actions (Day 0–1):
+1. Create PROJECT_CHARTER.md:
+   - Purpose/outcomes (what “good” means)
+   - Non-goals (explicitly)
+   - Constraints: capital, venues, latency, compute, policy
+   - Success metrics: forecasting accuracy, PnL (if applicable), uptime, max loss, auditability
+2. Create REQUIREMENTS.md + ACCEPTANCE_CRITERIA.md:
+   - Functional: ingest signals, generate forecasts, place/cancel orders, record decisions
+   - Non-functional: reproducibility, logging, safety, rate-limit compliance, rollback
+3. Create RISK_APPETITE_CONSTRAINTS.md:
+   - Hard limits (max position, max daily loss, max order rate)
+   - Prohibited behaviors (e.g., spoofing-like patterns, disallowed venues)
+
+Outputs (artifacts):
+- 00_ADMIN/PROJECT_CHARTER.md
+- 01_SPEC/REQUIREMENTS.md
+- 01_SPEC/ACCEPTANCE_CRITERIA.md
+- 01_SPEC/NON_FUNCTIONAL_REQUIREMENTS.md
+- 01_SPEC/RISK_APPETITE_CONSTRAINTS.md
+
+Confidence: 9/10
+Reason: These are universal startup artifacts for any complex bot; low dependence on venue specifics.
+
+-------------------------
+P2) Market mechanics + strategy class (Research framing)
+-------------------------
+Actions (Day 1–2):
+1. Define the market mechanism:
+   - Continuous double auction vs AMM vs order book vs bookmaker-like
+   - Settlement rules, fees, tick sizes, position constraints
+2. Choose strategy class (initially one):
+   - Market making (spread + inventory control)
+   - Directional trading (forecast -> position sizing)
+   - Arbitrage (cross-market inconsistencies)
+   - Forecast-only assistant (no execution)
+3. Define evaluation metrics:
+   - Forecast: Brier score, log loss, calibration curves
+   - Trading: PnL, Sharpe, max drawdown, slippage, fill rates
+4. Create EXPERIMENT_LOG template usage:
+   - Hypothesis -> method -> data snapshot -> code ref -> results -> confidence
+
+Outputs:
+- 05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md
+- 05_RESEARCH_EXPERIMENTS/HYPOTHESES.md
+- 05_RESEARCH_EXPERIMENTS/EXPERIMENT_LOG/EXP-YYYY-MM-DD_*.md
+- 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/YYYY-MM-DD_summary.md
+
+Confidence: 7/10
+Reason: Correct structure is stable; specifics depend on venue rules and available data.
+
+-------------------------
+P3) Architecture + interfaces (System design)
+-------------------------
+Actions (Day 1–3):
+1. Draft ARCHITECTURE_OVERVIEW.md:
+   - Components: data ingestion, feature store, forecaster, execution engine, risk engine, logger/audit, monitoring
+2. Draft INTERFACES_CONTRACTS.md:
+   - Data contracts (schemas), API contracts, message formats
+   - Versioning + backward compatibility rules
+3. Draft RESILIENCE_FAILURE_MODES.md:
+   - Failure mode -> detection -> mitigation -> runbook link
+4. Draft THREAT_MODEL.md (if any external connectivity or sensitive data):
+   - Secrets, auth boundaries, abuse cases
+
+Outputs:
+- 02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md
+- 02_ARCHITECTURE_DESIGN/INTERFACES_CONTRACTS.md
+- 02_ARCHITECTURE_DESIGN/RESILIENCE_FAILURE_MODES.md
+- 02_ARCHITECTURE_DESIGN/THREAT_MODEL.md
+
+Confidence: 8/10
+Reason: Architecture patterns are standard; integration details vary.
+
+-------------------------
+P4) Reproducible execution environment + data provenance
+-------------------------
+Actions (Day 2–4):
+1. Create RUN_INSTRUCTIONS.md:
+   - Quickstart, inputs/outputs, side effects, rollback/cleanup
+2. Create ENVIRONMENTS.md:
+   - dev/test/prod (or research/validation/prod), provisioning steps, IAM needs
+3. Create DEPENDENCY_LOCKS/:
+   - Lockfiles/container specs; pin versions
+4. Create DATA_SNAPSHOTS_INDEX.md:
+   - Snapshot IDs, extraction method, hashes/identifiers, retention
+5. Create SECRETS_HANDLING.md:
+   - Storage, rotation, injection, prohibited practices
+
+Outputs:
+- 06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md
+- 06_CODE_EXECUTION_REPRODUCIBILITY/ENVIRONMENTS.md
+- 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/
+- 06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md
+- 06_CODE_EXECUTION_REPRODUCIBILITY/SECRETS_HANDLING.md
+
+Confidence: 8/10
+Reason: Reproducibility controls are well-known; exact tooling differs.
+
+-------------------------
+P5) Validation, monitoring, risk controls (Evidence + Ops)
+-------------------------
+Actions (Day 3–7):
+1. Create TEST_STRATEGY.md + VALIDATION_PLAN.md:
+   - Unit/integration/system tests
+   - Backtesting/simulation plan; stress tests; sensitivity
+2. Create VALIDATION_REPORTS/ skeleton:
+   - Requirement mapping table: Req ID -> Test -> Result -> Evidence link
+3. Create MONITORING_DRIFT_PLAN.md:
+   - Metrics, thresholds, alerting, response runbooks
+4. Create runbooks + kill switch procedure:
+   - How to disable trading/execution safely
+5. Create SLA_SLO_SLI.md + OBSERVABILITY.md:
+   - Uptime, latency, error budgets, logging requirements
+
+Outputs:
+- 07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md
+- 07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md
+- 07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/
+- 10_INFRA_OPERATIONS/SLA_SLO_SLI.md
+- 10_INFRA_OPERATIONS/OBSERVABILITY.md
+- 10_INFRA_OPERATIONS/RUNBOOKS/
+- 08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md (if forecasting model is material)
+
+Confidence: 7/10
+Reason: Structure is robust; thresholds and tests depend on strategy and venue.
+
+-------------------------
+P6) Governance workflow to prevent context erosion (Compass OS + PDTP)
+-------------------------
+Actions (immediate; Day 0 onward):
+1. Appoint Directory Steward (DS) and publish STAKEHOLDERS_RACI.md.
+2. Create ADR-0001: “Adopt Directory Compass OS for Prediction Market Bot.”
+3. Start cadences immediately:
+   - Daily execution sync (TODO_NEXT + RID updates)
+   - Weekly Directory Integrity Review (freshness, orphans, missing ADR refs)
+   - Weekly Cross-Cutting Concerns Council (risk, security, ops, model governance)
+4. Enforce gates:
+   - G0 Intent, G1 Spec, G2 Architecture, G4 Evidence, G5 Ops, G6 Release
+5. Require Context Packs for handoffs and phase transitions.
+
+Outputs:
+- 03_DECISIONS/DECISION_LOG/ADR-0001_*.md
+- 04_EXECUTION/TODO_NEXT.md
+- 04_EXECUTION/RID_LOG.md
+- 11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-YYYY-MM-DD_*.md
+
+Confidence: 9/10
+Reason: Governance primitives are venue-agnostic and directly target context erosion.
+
+=====================================================================
+3) SYNTHESIS & CONTRADICTIONS (PASS 3)
+=====================================================================
+Cross-domain synthesis:
+- P2 (strategy class) constrains P3 (architecture) and P5 (validation). A market-making bot needs inventory/risk loops; a forecast-only bot needs evaluation/calibration but not execution safety.
+- P4 (reproducibility) is the backbone for P5 (evidence). Without pinned environments and data snapshot IDs, validation evidence cannot be trusted.
+- P6 (governance) prevents P1–P5 from drifting apart under parallel work by enforcing ADRs, interface contracts, and frozen baselines.
+
+Contradiction scanning (common tension points):
+- “Move fast” vs “audit-ready”: resolved by minimal enforcement set + artifact headers + ADR discipline.
+- “Research flexibility” vs “production safety”: resolved by separating research artifacts (05) from execution controls (06/10) and using gates to promote changes.
+- “Forecast accuracy” vs “PnL”: can diverge; must be explicit in charter metrics and validation plan.
+
+=====================================================================
+4) ADVERSARIAL CRITIQUE & DEFENSE (PASS 3)
+=====================================================================
+Strongest attack:
+“This workflow is too heavy for starting; you’ll spend days writing docs instead of building. Also, prediction markets are noisy; early validation may be misleading.”
+
+Defense & reinforcement:
+- Narrow the claim: In the first 72 hours, produce only the minimum viable canonical set (Charter, Requirements, Architecture sketch, Run Instructions, ADR-0001, TODO/RID, Memory Bank).
+- Add guardrails: timebox documentation (e.g., 2 hours/day) and require that every doc has staleness triggers so it doesn’t rot.
+- Stage validation: start with simulation/backtest sanity checks; defer high-confidence claims until evidence accumulates.
+
+=====================================================================
+5) FINAL INTEGRATED ANSWER (PASS 4)
+=====================================================================
+FIRST 72 HOURS — STARTUP CHECKLIST (minimum viable, context-rot resistant)
+Day 1:
+- Appoint Directory Steward; publish RACI.
+- Create PROJECT_CHARTER.md + SCOPE_IN_OUT.md.
+- Create ADR-0001 (adopt Compass OS).
+- Create TODO_NEXT.md + RID_LOG.md.
+- Create MEMORY_BANK.md with canonical links.
+
+Day 2:
+- Draft REQUIREMENTS.md + ACCEPTANCE_CRITERIA.md + NFRs.
+- Draft ARCHITECTURE_OVERVIEW.md + INTERFACES_CONTRACTS.md.
+- Draft RUN_INSTRUCTIONS.md + ENVIRONMENTS.md.
+
+Day 3:
+- Create EXPERIMENT_LOG skeleton + first experiment record.
+- Draft TEST_STRATEGY.md + VALIDATION_PLAN.md (even if incomplete).
+- Draft OBSERVABILITY.md + first RUNBOOK (kill switch / disable execution).
+- Run first Directory Integrity Review (DIR) and produce a 1-page health report.
+
+WEEK 1 — HARDENING
+- Implement evidence capture and validation report mapping.
+- Implement monitoring/drift plan and operational gate readiness.
+- Run first retrieval drill (10 questions) and fix discoverability gaps.
+
+=====================================================================
+6) SELF-ASSESSMENT (WEAKEST POINT) (PASS 4)
+=====================================================================
+Quality score (1–10): 8/10
+Weakest point: Venue-specific compliance and execution constraints are not specified; they can materially change required controls and architecture.
+Top residual risks:
+- Shadow docs outside the directory
+- Unpinned data/environment leading to irreproducible results
+- Strategy/venue mismatch causing invalid validation conclusions
+What would change my opinion:
+- Confirmed venue rules, rate limits, and compliance constraints
+- A concrete strategy choice (market making vs directional vs forecast-only)
+Next iteration plan:
+- Fill in venue-specific constraints in Charter + NFRs
+- Add a control mapping if compliance requires it
+- Run retrieval drill after first integration milestone
+
+
+DIVERGENCE NOTES:
+A) Conflicts with the Project Directory Template (what/where)
+- Omitted artifacts that the template expects for this archetype: approvals register + access requests are not produced as outputs in the prediction workflow.
+- Compliance/audit spine not instantiated: template's 09_SECURITY_PRIVACY_COMPLIANCE/CONTROL_MAPPING.md are not created in the prediction workflow outputs.
+- Model risk governance treated as conditional: prediction workflow makes monitoring drift plan conditional whereas the template archetype includes a full 08 module.
+
+B) Conflicts with Compass OS Workflow (operating system)
+- Gate mismatch: prediction workflow omits G3 Execution Gate from its enforced gates list, while Compass OS defines it as a standard gate.
+- Control/evidence spine not explicitly implemented: Compass OS C6 requires control mapping when risk/compliance applies; prediction workflow flags compliance as an ambiguity but doesn't instantiate the spine.
+- Interface governance weaker than Compass OS intent: contracts exist, but downstream acknowledgement is not explicit (Compass OS expects it via integration review outputs).
+
+C) Why sections were changed/updated/omitted/committed
+- Changed/committed: PDTP multi-pass structure is embedded directly into the prediction workflow (Deconstruction --> Sub-solutions --> Synthesis --> Adversarial --> Final), consistent with PDTP's required output format.
+- Omitted/deferred: approvals/access/control mapping likely deferred due to the workflow's explicit 48-72h startup window and its portability across bot types (some may be research-only, no external connectivity).
+- Updated: model risk governance is made conditional to keep the workflow portable across "forecast-only assistant" vs. "execution bot" variants, whereas the directory template is explicitly for a model-risk archetype.
+
+D) Practical recommendation (to reconcile without slowing down)
+- Add G3 to the prediction workflow gate list and require a minimal frozen execution baseline (plan + RID + dependencies).
+- Add a compliance trigger section: if any external venue/sensitive data, instantiate 09_SECURITY_PRIVACY_COMPLIANCE/ and APPROVALS_REGISTER.md/ACCESS_REQUESTS.md skeletons Day 1.
+- Add downstream acknowledgement requirement for interface contract changes.
+- The correct framing is: not many hard conflicts, but several high-risk omissions that become hard conflicts under common conditions (external venue, sensitive data, regulated environment).
+
+END OF FILE

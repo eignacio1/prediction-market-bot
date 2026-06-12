@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 55 — T-168/GG-030 RESOLVED (MC correlation fix), T-170/GG-032 RESOLVED (T4 ledger corrected), GG-031 registered. Commit `530e1c3`, VPS deployed. 851/852 tests (1 pre-existing timing flake).
+**Last reviewed:** 2026-06-12 SESSION 56 — T-169/GG-031 RESOLVED (twin annotations + EXP-018 dedupe filter); GG-033 registered (deploy silently broken since S55; recovered; T-171 queued); YES-only gate LIVE (`PAPER_YES_ONLY`, S47/S56 DS ruling); T-148 reaffirmed G6 blocker (segmented promotion thresholds); GG-007 EXPs renumbered EXP-020/021; T-172 registered (G6 checklist); T-160 hygiene sweep DONE. Commits `9c91bd4`→`0da335b`+, VPS deployed with HEAD verification. 852/852 tests.
 
 ---
 
@@ -20,7 +20,7 @@
 | **5 — MEDIUM** | **T-159: Portfolio state-machine invariant tests + schema owner (LL-014)** | Kill the stale-state bug class structurally: every consumer of persisted portfolio fields tested for cross-day transitions; portfolio JSON schema gets an owning module. Risk-shaped coverage, not feature-shaped. | Post-G4/G5 |
 | **5b — ✅ DONE (SESSION 46)** | **T-161: T4 exit budget-credit semantics (GG-023)** | DS ruling: realized-value credit (ADR-0022, amends ADR-0013). Exits credit budget at realized value — wins restore entry cost, losses consume permanently; band net loss bounded by budget. Restart-safe `_reconstruct_t4_ledger()`; G5 strip starts clean at $0 by game_date keying. 13 new tests; 843/843. GG-023 closed. | ✅ 2026-06-10 |
 | **5c — ✅ DONE (SESSION 46)** | **T-162: PIPE-03 in-progress game guard (GG-024)** | ESPN `STATUS_IN_PROGRESS` check added to `run_paper_trade.py` before bet-placement loop. Aborts with `paper_run_skipped_game_in_progress` log entry. Deployed VPS commit `c8a59f2`. G4 Castle+Hart late-cron bets flagged ineligible per APR-0019. GG-024 closed. | ✅ 2026-06-11 |
-| **6 — LOW** | **T-160: Root-folder document hygiene** | Unversioned strategy docs (Princeton Protocol.txt, templates, progress assessments, PDTP txt) into numbered structure or ARCHIVE/ so governance scans see them. | Opportunistic |
+| **6 — ✅ DONE (SESSION 56)** | **T-160: Root-folder document hygiene** | Strategy/workflow docs → `00_ADMIN/`; assessments (12-Day, PDTP Fable) → `ARCHIVE/2026/assessments/`; PAM v4 docx → `qualitative_data/pam_v4/`; Kalshi CF arbitrage template → `arb/` (reference-only quarantine); stale root team_stats caches → `ARCHIVE/2026/data/`; Word lock file deleted. `.gitignore`: added `.venv311/`, `arb/` (hard rule 1), `team_stats_cache_*.json`, `~$*.docx`. Dead `PAPER_T4_FLAT_SIZING=true` scrubbed from cron.conf T4 line + paper_trader.py docstring (ADR-0023). `run_t4_budget_sim.py` formula fixed: budget = bankroll × weight, no RESERVE_MANDATE deduction; DEFAULT_BAND_WEIGHT 0.10 stub → 0.27. Root folder clean. | ✅ 2026-06-12 |
 | **7 — LOW (MLB gate)** | **T-165: Full PAM integration across T2/T3/T5 bands + EnvironmentClassifier ADR (GG-027)** | T1 and T4 archetype register wired (SESSION 50). Remaining scope: (a) EnvironmentClassifier module in C2 — game-level pressure score (elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players with expanded duties); (b) archetype × environment uncertainty multiplier in C3 (wider confidence interval for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE per environment class in decision tree routing; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. Requires new ADR before activation. | Pre-MLB activation |
 | **8 — HIGH (DARK PERIOD Phase 1 P1)** | **T-166: PIPE-03 idempotency guard — same game_date re-execution (GG-028)** | Add check at top of bet-placement loop: if open positions with `game_date == target_date` already exist, log `paper_run_skipped_already_deployed` and exit. Also investigate what triggered the 01:00 UTC second run on G5 night (process restart? manual? cron misconfiguration?). Critical for live capital safety — without this guard, a process crash + restart in live trading would double-deploy real capital on same markets. | Phase 1 of dark period (before 2026-27 season launch) |
 | **9 — HIGH (DARK PERIOD Phase 1 P2)** | **T-167: MC script rewrite — analyze committed positions, not pregame forecasts (GG-029)** | Rewrite `scripts/run_monte_carlo.py` to: (1) read committed positions from `logs/paper_portfolio.json`; (2) use actual risk engine parameters from `risk.py` (not hardcoded kelly=0.1, min_edge=0.02); (3) simulate P/L from `model_p`, `direction`, `mid_price_at_entry`, `size_usd` per position; (4) report actual portfolio risk distribution. Current MC has reported hypothetical re-deploy figures for all Finals games — G5 MC reported $106 staked while actual $1,003 was deployed. | Phase 1 of dark period (before G6 evidence review) |
@@ -33,6 +33,23 @@
 | **15 — MEDIUM (DARK PERIOD Phase 1)** | **T-172: G6 gate checklist document (operator-approved S56)** | Single mechanical checklist for the G6 call so the gate decision is evidence-driven, not judgment-in-the-moment. Must enumerate: 30-resolved-bets count (numerically satisfied post-G5, ~137 closed) with positive P&L **after T-153 fill-realism haircut**; EXP-017 CONFIRMED_POSITIVE on ADR-0024 adequate sample (GG-004); T-148 segmented promotion thresholds ADR signed; T-117 Kalshi document readings; GG-014 ≤5% failure confirmation; GG-020/T-151 fee basis; ADR-0005 DS sign-off. Each line: criterion, evidence artifact, status. Lives in `08_MODEL_RISK_GOVERNANCE/`. | Dark period Phase 1 |
 
 G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 primary + 12 late-cron twins annotated), bankroll $130.62. Corrected MC: P(profit)=98.3%, kill-switch risk=1.28% at $20 trigger. Resolve locally after game using run_resolve_local.py. **EXP-017B/018 G5 reruns** ready once resolved — EXP-018 now auto-excludes `duplicate_of` positions (deployed `9c91bd4`); use `--exclude-failed` for MC scenarios. **YES-only gate LIVE (S56):** `PAPER_YES_ONLY` defaults true in `run_paper_trade.py` + explicit in cron.conf; NO signals logged as `yes_only_gate_filtered` C6 counterfactuals; continuous diagnostic leg per DS ruling — deactivation requires DS ruling. Standing items: T-153 fill-realism haircut; T-156 (ADR-0012 amendment, scope expanded to include session-start bankroll anchoring behavior at low-bankroll states). **MLB build (GG-004 critical path) starts the session after the Finals end** — NBA sessions maximized until then (operator directive S56).
+
+---
+
+## SESSION 56 — COMPLETE (2026-06-12)
+
+| Task | Status |
+|------|--------|
+| **T-169 (GG-031 RESOLVED): Option A twin annotations** | ✅ COMPLETE — 9 VPS positions annotated `duplicate_of`; EXP-018 dedupe filter deployed; close paths verified to preserve annotation. |
+| **GG-033 registered + deploy recovery** | ✅ COMPLETE — VPS silently stuck at `cea8a19` since S55; recovered via backup-first dance; T-171 queued (untrack + GHA auto-deploy as one unit, post-G5). |
+| **YES-only gate (S47/S56 DS ruling)** | ✅ LIVE — `PAPER_YES_ONLY` default-true in run_paper_trade.py + explicit in cron.conf; NO signals → C6 `yes_only_gate_filtered` counterfactuals; VPS crontab reinstalled. Continuous diagnostic leg; deactivation requires DS ruling. |
+| **T-148 DS ruling** | ✅ LOGGED — Still G6 blocker; NOT absorbed by ADR-0024. Segmented per-band promotion thresholds + aggregate P&L/capital goal via APR-0017-superseding ADR. Priority queue item 14. |
+| **GG-007 EXP ID collision** | ✅ FIXED — calibration experiments renumbered EXP-020/EXP-021. |
+| **GG-004 scan visibility** | ✅ FIXED — status line reformatted; session-start grep now catches it. |
+| **T-172 registered** | ✅ — G6 gate checklist doc (criterion/evidence/status), dark period Phase 1. |
+| **T-152 census** | ✅ — 244 unique exited positions on VPS (≥50 floor comfortably met); empirical validation of 0.19 buffer runnable in Phase 1 regardless of Finals outcome. |
+| **T-160 hygiene sweep** | ✅ COMPLETE — root folder cleaned; dead PAPER_T4_FLAT_SIZING scrubbed; budget sim formula fixed to ADR-0023. |
+| **Tests** | ✅ 852/852. |
 
 ---
 

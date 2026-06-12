@@ -39,11 +39,20 @@ MANIFEST
 
 # --- Virtual Environments ---
 .venv/
+.venv311/
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
+
+# --- arb/ is REFERENCE ONLY (CLAUDE.md hard rule 1; ADR-0002) ---
+# Never version-controlled until APR-0010 is signed.
+arb/
+
+# --- Local team-stats cache artifacts (regenerable; canonical copies in logs/) ---
+team_stats_cache_*.json
+~$*.docx
 
 # --- Testing ---
 .pytest_cache/

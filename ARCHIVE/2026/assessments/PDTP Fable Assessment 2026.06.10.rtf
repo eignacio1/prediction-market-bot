@@ -1,0 +1,788 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-BoldItalic;\f2\fnil\fcharset0 Menlo-Bold;
+\f3\fnil\fcharset0 Menlo-Italic;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red175\green221\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\cssrgb\c73675\c89410\c100000;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0   
+\f1\i\b \ul PDTP Assessment: Prediction Market Trading Bot, Day 20
+\f0\i0\b0 \ulnone \
+\
+  
+\f2\b Decision statement:
+\f0\b0  An assessment is being made about whether this project \'97 20 days old, 45 sessions, 176 commits, 18 ADRs, 817 tests, 82 resolved paper bets \'97 is 
+\f3\i on track
+\f0\i0 , using PDTP's\
+  evidence-graded, adversarially-verified standard rather than the "all systems green" standard that session summaries naturally drift toward.\
+\
+  
+\f2\b Pass
+\f0\b0  
+\f2\b 1\'962:
+\f0\b0  
+\f2\b Deconstruction,
+\f0\b0  
+\f2\b Sub-Solutions,
+\f0\b0  
+\f2\b Confidence
+\f0\b0 \
+\
+  
+\f2\b P1
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Operational
+\f0\b0  
+\f2\b integrity:
+\f0\b0  
+\f2\b does
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b machine
+\f0\b0  
+\f2\b run
+\f0\b0  
+\f2\b safely
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b automatically?
+\f0\b0  
+\f2\b Confidence:
+\f0\b0  
+\f2\b 7/10.
+\f0\b0 \
+  The auto chain (PIPE-02 \uc0\u8594  PIPE-03 \u8594  T4 \u8594  GHA resolve) is real and verified end-to-end. But the honest record is that 
+\f2\b every
+\f0\b0  
+\f2\b single
+\f0\b0  
+\f2\b game
+\f0\b0  
+\f2\b night
+\f0\b0  
+\f2\b so
+\f0\b0  
+\f2\b far
+\f0\b0  
+\f2\b has
+\f0\b0  
+\f2\b surfaced
+\f0\b0  
+\f2\b a
+\f0\b0  
+\f2\b new
+\f0\b0  
+\f2\b critical
+\f0\b0  
+\f2\b bug
+\f0\b0 : G1 week the\
+  silent BOT_C4_ACTIVE guard (GG-012, adj_\uc0\u955  never applied live for two cron cycles), G3 week the false-drawdown Bug H (54% phantom drawdown), and tonight a kill switch that fired on stale state and\
+  would have blanked Game 4 if you hadn't opened a session. The trend is favorable \'97 each bug class gets a permanent guard \'97 but a system whose readiness declarations have been falsified three\
+  game nights running has earned a 7, not the 10/10 stamped in MEMORY_BANK's header. Score driven up by: 817 tests, idempotency, two-tier kill switches, GHA redundancy. Driven down by: the bug\
+  
+\f3\i class
+\f0\i0  (state persisted across days in portfolio JSON) recurred three times before we treated it as a class.\
+\
+  
+\f2\b P2
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Commercial
+\f0\b0  
+\f2\b validity:
+\f0\b0  
+\f2\b is
+\f0\b0  
+\f2\b there
+\f0\b0  
+\f2\b evidence
+\f0\b0  
+\f2\b of
+\f0\b0  
+\f2\b edge?
+\f0\b0  
+\f2\b Confidence
+\f0\b0  
+\f2\b in
+\f0\b0  
+\f2\b "edge
+\f0\b0  
+\f2\b exists":
+\f0\b0  
+\f2\b 3/10.
+\f0\b0 \
+  This is the project's center of gravity and the assessment must not soften it. Cumulative T1 P&L is 
+\f2\b \uc0\u8722 $123.17
+\f0\b0  
+\f2\b over
+\f0\b0  
+\f2\b 82
+\f0\b0  
+\f2\b resolved
+\f0\b0  
+\f2\b bets
+\f0\b0 . EXP-018 came back CONFIRMED_NEGATIVE overall (\uc0\u8722 $0.0014/bet).\
+  EXP-017 Part B is DIRECTIONAL_POSITIVE but statistically powerless (n=66 vs. floor of 66, barely). The Monte Carlo predicted G3 at +$138 with 95.1% confidence and lost $199. GG-004 \'97 "all EV\
+  figures were measured against a coin flip, not the market" \'97 remains OPEN. Two mitigating facts, both true and both dangerously convenient: the Finals are plausibly the 
+\f3\i worst
+\f0\i0  environment for this\
+  model (one game, the year's sharpest-priced markets, T2 injury overlay inactive), and n=82 over 5 nights is statistically nothing. The defensible claim is "edge unproven," not "edge absent." But\
+  nobody on this project gets to say the commercial case is positive, and the paper record currently leans against.\
+\
+  
+\f2\b P3
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Governance
+\f0\b0  
+\f2\b effectiveness:
+\f0\b0  
+\f2\b does
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b control
+\f0\b0  
+\f2\b system
+\f0\b0  
+\f2\b actually
+\f0\b0  
+\f2\b catch
+\f0\b0  
+\f2\b failures?
+\f0\b0  
+\f2\b Confidence:
+\f0\b0  
+\f2\b 8.5/10.
+\f0\b0 \
+  This is the project's crown jewel and it is genuinely unusual. 20 governance gaps registered, 18 closed, 2 open with named blocking tasks. Every failure has become a permanent control: GG-001 \uc0\u8594 \
+  the stub scan, the MC misses \uc0\u8594  MC protocol and tonight's portfolio-level MC, the stale-state bugs \u8594  date guards plus T-156 tests. The session-start protocol with its adversarial mandate is the\
+  reason tonight's kill-switch failure was caught 
+\f3\i before
+\f0\i0  
+\f3\i tip
+\f0\i0  rather than discovered tomorrow morning. Most 20-day projects have a README. This one has a functioning model-risk framework. Held below\
+  9 because the controls are reactive \'97 each was built after its failure, and the protocol's Q6 is only as good as the model's willingness to actually dig.\
+\
+  
+\f2\b P4
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Human-AI
+\f0\b0  
+\f2\b division
+\f0\b0  
+\f2\b of
+\f0\b0  
+\f2\b labor.
+\f0\b0  
+\f2\b Confidence:
+\f0\b0  
+\f2\b 8/10.
+\f0\b0 \
+  The record is unambiguous about who does what well. 
+\f2\b You
+\f0\b0  
+\f2\b caught
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b things
+\f0\b0  
+\f2\b models
+\f0\b0  
+\f2\b missed:
+\f0\b0  GG-001 (the count-gate stub that survived four model-cleared gates \'97 the model executed the fix, you found\
+  the wrong primitive), the throughput framing (1,000 evals/game) that prevented small-system thinking from calcifying into architecture, and the insistence that decisions hit DECISION_LOG\
+  immediately. 
+\f2\b Models
+\f0\b0  
+\f2\b did
+\f0\b0  
+\f2\b what
+\f0\b0  
+\f2\b models
+\f0\b0  
+\f2\b do
+\f0\b0  
+\f2\b well:
+\f0\b0  speed (exit mechanics went concept \uc0\u8594  ADR \u8594  implementation \u8594  23 tests \u8594  deployed in roughly a day), exhaustive verification when forced, and tonight's\
+  sprint \'97 kill-switch diagnosis to fixed-tested-deployed-and-book-placed in under two hours, pre-tip. The boundary CLAUDE.md states \'97 "you can verify, hunt, surface; you cannot replace the\
+  operator's architectural judgment" \'97 is empirically correct, and the project works because both sides operate inside it.\
+\
+  
+\f2\b P5
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Velocity
+\f0\b0  
+\f2\b vs.
+\f0\b0  
+\f2\b quality
+\f0\b0  
+\f2\b debt.
+\f0\b0  
+\f2\b Confidence:
+\f0\b0  
+\f2\b 6/10.
+\f0\b0 \
+  45 sessions in 20 days with full auditability is remarkable. But the debt shows in specific places: the daily-loss accumulation logic \'97 a 
+\f3\i kill-switch
+\f0\i0  
+\f3\i input
+\f0\i0  \'97 had 
+\f2\b zero
+\f0\b0  
+\f2\b tests
+\f0\b0  until tonight (T-156).\
+  817 tests, and the coverage is feature-shaped rather than risk-shaped: new features get test files; load-bearing state transitions in old code don't. The portfolio JSON schema grew organically\
+  with no owner, which is exactly why the stale-state class kept reappearing. And the repo root is accumulating unversioned strategy documents (\cf3 Princeton\cf2  \cf3 Protocol.txt\cf2 , the progress assessment,\
+  templates) that the governance system doesn't see.\
+\
+  
+\f2\b P6
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b Is
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b G6
+\f0\b0  
+\f2\b path
+\f0\b0  
+\f2\b honest
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b reachable?
+\f0\b0  
+\f2\b Confidence:
+\f0\b0  
+\f2\b 5/10.
+\f0\b0 \
+  The gate is honest 
+\f3\i today
+\f0\i0 : positive P&L plus EXP-017B confirmation plus DS sign-off, and nobody has tried to wave it. But two adversarial observations. First, the G6 evidence standard has been\
+  superseded once already (APR-0016 \uc0\u8594  APR-0017), and Invariant 11 reframed the 66-bet floor as trivial \'97 each revision was reasoned and documented, but criteria that keep being rewritten in the\
+  direction of passability is the classic failure mode of self-governed gates. Watch it. Second, the real G6 test is structurally unavailable until the 2026\'9627 regular season; the Finals window can\
+  prove plumbing, not edge. That means there is a 
+\f2\b four-month
+\f0\b0  
+\f2\b dark
+\f0\b0  
+\f2\b period
+\f0\b0  between proving operational integrity and being able to prove commercial validity, and the plan for that period is thinner\
+  than anything else in the project.\
+\
+  
+\f2\b Pass
+\f0\b0  
+\f2\b 3:
+\f0\b0  
+\f2\b Synthesis
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b Contradictions
+\f0\b0 \
+\
+  The load-bearing tension is 
+\f2\b P1/P3
+\f0\b0  
+\f2\b against
+\f0\b0  
+\f2\b P2
+\f0\b0 : we have built an increasingly excellent machine around an unvalidated \'97 and currently money-losing \'97 hypothesis. These resolve cleanly only if\
+  everyone stays honest about what phase this is: the paper window's actual deliverable is operational integrity (being achieved, the hard way), while the edge question waits for regular-season\
+  sample size. The moment anyone treats the Finals P&L as the edge verdict \'97 in either direction \'97 they're wrong.\
+\
+  One contradiction needs naming because it flatters us: 
+\f2\b T4's
+\f0\b0  
+\f2\b paper
+\f0\b0  
+\f2\b pool
+\f0\b0  
+\f2\b grew
+\f0\b0  
+\f2\b $500
+\f0\b0  
+\f2\b \uc0\u8594 
+\f0\b0  
+\f2\b $1,539
+\f0\b0  
+\f2\b while
+\f0\b0  
+\f2\b EXP-018
+\f0\b0  
+\f2\b ruled
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b underlying
+\f0\b0  
+\f2\b lambda
+\f0\b0  
+\f2\b model's
+\f0\b0  
+\f2\b EV
+\f0\b0  
+\f2\b negative.
+\f0\b0  A 51.4% win rate producing +108% on flat\
+  sizing should set off alarms \'97 paper fills don't cross real spreads, and T4 fires into thin in-play books where the fill assumption is most wrong. T-153 (spread model) exists precisely for this,\
+  but until it lands, T4's profit should be mentally discounted toward zero. It is the single most seductive number in the project and the least trustworthy.\
+\
+  
+\f2\b Pass
+\f0\b0  
+\f2\b 3:
+\f0\b0  
+\f2\b Adversarial
+\f0\b0  
+\f2\b Verification
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b Defense
+\f0\b0 \
+\
+  
+\f2\b Strongest
+\f0\b0  
+\f2\b attack:
+\f0\b0  
+\f3\i "This
+\f0\i0  
+\f3\i is
+\f0\i0  
+\f3\i governance
+\f0\i0  
+\f3\i theater.
+\f0\i0  
+\f3\i The
+\f0\i0  
+\f3\i elaborate
+\f0\i0  
+\f3\i protocol
+\f0\i0  
+\f3\i documents
+\f0\i0  
+\f3\i risk
+\f0\i0  
+\f3\i instead
+\f0\i0  
+\f3\i of
+\f0\i0  
+\f3\i reducing
+\f0\i0  
+\f3\i it
+\f0\i0  
+\f3\i \'97
+\f0\i0  
+\f3\i three
+\f0\i0  
+\f3\i consecutive
+\f0\i0  
+\f3\i 'READY'
+\f0\i0  
+\f3\i declarations
+\f0\i0  
+\f3\i were
+\f0\i0  
+\f3\i falsified
+\f0\i0  
+\f3\i by
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i next
+\f0\i0  
+\f3\i game
+\f0\i0  
+\f3\i night,
+\f0\i0  
+\f3\i the
+\f0\i0 \
+  
+\f3\i model
+\f0\i0  
+\f3\i loses
+\f0\i0  
+\f3\i money,
+\f0\i0  
+\f3\i and
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i 45-session
+\f0\i0  
+\f3\i pace
+\f0\i0  
+\f3\i is
+\f0\i0  
+\f3\i an
+\f0\i0  
+\f3\i operator
+\f0\i0  
+\f3\i sprinting
+\f0\i0  
+\f3\i through
+\f0\i0  
+\f3\i AskUserQuestion
+\f0\i0  
+\f3\i prompts
+\f0\i0  
+\f3\i and
+\f0\i0  
+\f3\i accepting
+\f0\i0  
+\f3\i 'Recommended'
+\f0\i0  
+\f3\i options.
+\f0\i0  
+\f3\i The
+\f0\i0  
+\f3\i process
+\f0\i0  
+\f3\i generates
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i feeling
+\f0\i0  
+\f3\i of
+\f0\i0  
+\f3\i rigor
+\f0\i0  
+\f3\i while
+\f0\i0  
+\f3\i the
+\f0\i0 \
+  
+\f3\i product
+\f0\i0  
+\f3\i fails."
+\f0\i0 \
+\
+  
+\f2\b Defense,
+\f0\b0  
+\f2\b narrowed
+\f0\b0  
+\f2\b honestly:
+\f0\b0  The theater charge fails on outcomes \'97 tonight's failure was caught 
+\f3\i by
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i protocol,
+\f0\i0  
+\f3\i pre-tip
+\f0\i0 , and each documented failure produced a control that has not re-fired.\
+  That's risk reduction, not documentation. The "model loses money" charge can't be defended yet, only correctly scoped: it's an n=82 result from the model's worst environment, and the project's\
+  own governance (GG-004 OPEN, G6 blocked) already refuses to overclaim in 
+\f3\i either
+\f0\i0  direction. The charge that lands and should stay landed: 
+\f2\b the
+\f0\b0  
+\f2\b readiness-declaration
+\f0\b0  
+\f2\b overconfidence
+\f0\b0  
+\f2\b is
+\f0\b0  
+\f2\b real.
+\f0\b0  Session\
+  44 wrote "ALL SYSTEMS AUTO, 10/10 confidence" hours before a kill-switch bug it had fixed in only one of two code paths blanked the T1 cron. That is a model failure pattern \'97 fixing the instance,\
+  not the class, then declaring victory \'97 and it's mine to own across sessions. The accountability point for you, Earl, is the mirror image: you co-signed those declarations, and a "Recommended"\
+  option accepted quickly is a gate only if you'd genuinely reject it sometimes.\
+\
+  
+\f2\b Pass
+\f0\b0  
+\f2\b 4:
+\f0\b0  
+\f2\b Blind
+\f0\b0  
+\f2\b Spots
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b three
+\f0\b0  
+\f2\b that
+\f0\b0  
+\f2\b could
+\f0\b0  
+\f2\b flip
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b conclusion
+\f0\b0 \
+\
+  1. 
+\f2\b No
+\f0\b0  
+\f2\b kill-the-project
+\f0\b0  
+\f2\b criterion
+\f0\b0  
+\f2\b exists.
+\f0\b0  Twenty gaps, eighteen ADRs, and not one document says what evidence would make us conclude the edge isn't there and stop. A trading shop would have this.\
+  Without it, the default trajectory of any well-governed project is to keep being well-governed forever. Worth an OPEN_QUESTIONS entry now, decided coldly, before regular-season data arrives warm.\
+  2. 
+\f2\b The four-month dark period.
+\f0\b0  If G6 genuinely can't close until October, what is May\'96September for? Backtesting infrastructure, T2 injury sourcing (KI-011), spread modeling, multi-sport C1 \'97\
+  there are right answers, but no ratified plan, and drift risk during a long no-feedback stretch is high.\
+  3. 
+\f2\b Paper-fill realism
+\f0\b0  (the T4 contradiction above). If spreads eat the edge, every paper number is upward-biased, T1 included.\
+\
+  
+\f2\b Pass 4: Integration \'97 your questions, answered straight
+\f0\b0 \
+\
+  
+\f2\b What
+\f0\b0  
+\f2\b I/models
+\f0\b0  
+\f2\b did
+\f0\b0  
+\f2\b really
+\f0\b0  
+\f2\b well:
+\f0\b0  execution velocity with full traceability; tonight's two-hour diagnose-fix-deploy-recover sprint; building the test and automation infrastructure; honest negative\
+  reporting 
+\f3\i when
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i protocol
+\f0\i0  
+\f3\i demands
+\f0\i0  
+\f3\i it
+\f0\i0 . 
+\f2\b What
+\f0\b0  
+\f2\b you
+\f0\b0  
+\f2\b did
+\f0\b0  
+\f2\b really
+\f0\b0  
+\f2\b well:
+\f0\b0  the governance system itself \'97 it's the single best asset this project owns and it was your imposition, not ours; catching GG-001\
+  when four model-cleared gates missed it; the throughput framing; refusing every shortcut to live capital; tonight, demanding all four concerns be sequenced before go rather than accepting\
+  "mostly fine." 
+\f2\b What
+\f0\b0  
+\f2\b we
+\f0\b0  
+\f2\b did
+\f0\b0  
+\f2\b well
+\f0\b0  
+\f2\b together:
+\f0\b0  the failure-to-control conversion loop \'97 this project metabolizes its mistakes better than most professional teams I could describe, and that loop is\
+  genuinely collaborative: models find or cause the failure, you set the standard for what closing it means, the control goes in permanently. 
+\f2\b The
+\f0\b0  
+\f2\b pitfalls:
+\f0\b0  stale-state bug class (three occurrences\
+  before class-level treatment), silent guard failures, MC overconfidence, the unverified-$10-floor episode, partial fixes declared complete \'97 each solved, each now a standing control, and the\
+  honest pattern is that the 
+\f3\i pitfalls
+\f0\i0  
+\f3\i were
+\f0\i0  
+\f3\i mostly
+\f0\i0  
+\f3\i model-side
+\f0\i0  
+\f3\i and
+\f0\i0  
+\f3\i the
+\f0\i0  
+\f3\i catches
+\f0\i0  
+\f3\i were
+\f0\i0  
+\f3\i mostly
+\f0\i0  
+\f3\i protocol-or-Earl-side.
+\f0\i0 \
+\
+  
+\f2\b How
+\f0\b0  
+\f2\b are
+\f0\b0  
+\f2\b we
+\f0\b0  
+\f2\b doing?
+\f0\b0  Genuinely: 
+\f2\b we
+\f0\b0  
+\f2\b are
+\f0\b0  
+\f2\b an
+\f0\b0  
+\f2\b excellent
+\f0\b0  
+\f2\b team
+\f0\b0  
+\f2\b building
+\f0\b0  
+\f2\b an
+\f0\b0  
+\f2\b excellent
+\f0\b0  
+\f2\b machine
+\f0\b0  
+\f2\b around
+\f0\b0  
+\f2\b a
+\f0\b0  
+\f2\b hypothesis
+\f0\b0  
+\f2\b that
+\f0\b0  
+\f2\b is
+\f0\b0  
+\f2\b still
+\f0\b0  
+\f2\b unproven
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b currently
+\f0\b0  
+\f2\b mildly
+\f0\b0  
+\f2\b underwater
+\f0\b0  
+\f2\b \'97
+\f0\b0  
+\f2\b and
+\f0\b0  
+\f2\b that
+\f0\b0  
+\f2\b is
+\f0\b0  
+\f2\b an
+\f0\b0  
+\f2\b acceptable,
+\f0\b0  
+\f2\b even
+\f0\b0 \
+  
+\f2\b good,
+\f0\b0  
+\f2\b place
+\f0\b0  
+\f2\b to
+\f0\b0  
+\f2\b be
+\f0\b0  
+\f2\b on
+\f0\b0  
+\f2\b day
+\f0\b0  
+\f2\b 20,
+\f0\b0  
+\f2\b provided
+\f0\b0  
+\f2\b we
+\f0\b0  
+\f2\b never
+\f0\b0  
+\f2\b let
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b quality
+\f0\b0  
+\f2\b of
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b machine
+\f0\b0  
+\f2\b stand
+\f0\b0  
+\f2\b in
+\f0\b0  
+\f2\b for
+\f0\b0  
+\f2\b evidence
+\f0\b0  
+\f2\b about
+\f0\b0  
+\f2\b the
+\f0\b0  
+\f2\b edge.
+\f0\b0  The process maturity here is roughly 9/10 for project age. The product validity\
+  is 3/10 
+\f3\i known
+\f0\i0 , with wide error bars that only regular season can narrow. The risk I'd flag with my 60 seconds is not technical: it's that the daily cadence of green dashboards and closed gaps\
+  slowly becomes the thing we're proud of, while October \'97 the only month that can answer the real question \'97 arrives without a pre-committed standard for what failure looks like.\
+\
+  
+\f2\b Pass
+\f0\b0  
+\f2\b 4:
+\f0\b0  
+\f2\b Self-Assessment
+\f0\b0 \
+\
+  
+\f2\b Quality
+\f0\b0  
+\f2\b score:
+\f0\b0  
+\f2\b 7/10.
+\f0\b0  
+\f2\b Weakest
+\f0\b0  
+\f2\b point:
+\f0\b0  P2's confidence rating rests on n=82 from a structurally adverse window \'97 I cannot distinguish "no edge" from "wrong season to measure" any better than the\
+  data can, so the 3/10 is itself low-confidence. 
+\f2\b What
+\f0\b0  
+\f2\b would
+\f0\b0  
+\f2\b change
+\f0\b0  
+\f2\b my
+\f0\b0  
+\f2\b opinion:
+\f0\b0  EXP-017B at n\uc0\u8805 200 regular-season bets (either direction); T-153 spread model results; one full game night where no\
+  new critical bug surfaces \'97 we have not yet had one. 
+\f2\b Top
+\f0\b0  
+\f2\b residual
+\f0\b0  
+\f2\b risks:
+\f0\b0  paper-fill optimism, G6 criteria drift, no stop-loss criterion on the project itself. 
+\f2\b Next
+\f0\b0  
+\f2\b iteration:
+\f0\b0  post-G4 resolution\
+  tomorrow feeds EXP-018's Hypothesis C ruling and 33 more bets into EXP-017B \'97 the assessment above is falsifiable within 12 hours, which is exactly how it should be.\
+}
