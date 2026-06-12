@@ -467,7 +467,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Phases it survived | G1 launch (pool=$500, flat cap=$500 — coincidentally correct); G2, G3, G4 (pool grew 3.7×, cap unchanged). |
 | Impact | MEDIUM now. The cap is effectively underspecified: $500 is neither the current pool size nor a calibrated fraction of it. At G5 with ADR-0021 active (fire volume ~10% of G4's), budget exhaustion should be rare regardless of cap level — but the cap will grow increasingly mismatched as the pool continues to grow. Direction of error is conservative (under-deployment) but arbitrary — the cap has no principled relationship to the system's capital position. |
 | Resolution path | T-163: ADR-0023 — remove PAPER_T4_FLAT_SIZING flag; activate `_compute_t4_band_budget(portfolio)` production path; calibrate T4_BAND_WEIGHT from Kelly math (expected concurrent positions × Kelly fraction × expected edge → target utilization fraction). Derivation must be grounded in G1–G4 trajectory data — no arbitrary constant. T4_BAND_WEIGHT update per ADR-0023; `pool_isolated` flag wiring retained. |
-| Status | OPEN — T-163 registered 2026-06-10 SESSION 46 CLOSE |
+| Status | RESOLVED 2026-06-11 SESSION 47 — ADR-0023 ACCEPTED; T4_BAND_WEIGHT=0.27 (G4 empirical: $499.95/$1,869.68); PAPER_T4_FLAT_SIZING and PAPER_T4_POOL_USD removed; `_compute_t4_band_budget` is now the single budget path; pool_isolated=True hardcoded; 843/843 tests. |
 
 ---
 
