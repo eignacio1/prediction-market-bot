@@ -1,0 +1,50 @@
+{
+  "script": "run_t153_haircut.py",
+  "governance": "T-153 / GG-022",
+  "spread_estimate": "mean",
+  "spread_model": {
+    "low": 0.0771,
+    "mid": 0.1013,
+    "high": 0.0641
+  },
+  "t1": {
+    "label": "T1",
+    "n_positions": 114,
+    "n_win": 71,
+    "n_loss": 43,
+    "n_exited": 0,
+    "total_staked_usd": 2274.23,
+    "total_paper_pnl": -242.7489,
+    "total_haircut_usd": 83.0915,
+    "total_adjusted_pnl": -325.8404,
+    "haircut_pct_of_paper_pnl": -34.2,
+    "pnl_change_pct_of_staked": 3.65
+  },
+  "t4": {
+    "label": "T4",
+    "n_positions": 2315,
+    "n_win": 926,
+    "n_loss": 1145,
+    "n_exited": 244,
+    "total_staked_usd": 999.97,
+    "total_paper_pnl": -21.5908,
+    "total_haircut_usd": 52.7142,
+    "total_adjusted_pnl": -74.305,
+    "haircut_pct_of_paper_pnl": -244.2,
+    "pnl_change_pct_of_staked": 5.27
+  },
+  "combined": {
+    "total_staked_usd": 3274.2,
+    "total_paper_pnl": -264.3397,
+    "total_haircut_usd": 135.8057,
+    "total_adjusted_pnl": -400.1454,
+    "haircut_pct_of_staked": 4.15
+  },
+  "g6_materiality": "HIGH \u2014 haircut > $20; adjusted P&L materially changes G6 picture",
+  "caveats": [
+    "T1 resting orders may be maker fills (zero spread cost) \u2014 haircut is upper bound",
+    "Spread model from G4 in-play data only; pre-game spreads may differ",
+    "T4 exited two-leg haircut assumes same spread at entry and exit",
+    "G5 positions still OPEN \u2014 not included"
+  ]
+}

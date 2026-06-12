@@ -1,0 +1,42 @@
+name: Deploy to VPS
+
+# Automatically deploys the main branch to the VPS on every push.
+# Part of T-171: ships as ONE UNIT with untracking paper_portfolio.json from git.
+# Do NOT activate this workflow before T-171 migration is complete —
+# git pull on a VPS with a dirty (git-tracked) portfolio file will abort.
+#
+# Required GitHub Actions secret: VPS_SSH_KEY (private key for root@157.230.91.33)
+# Same secret as post_game_resolve.yml and tss_daily_sync.yml.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519_droplet
+          chmod 600 ~/.ssh/id_ed25519_droplet
+          ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          ssh -i ~/.ssh/id_ed25519_droplet \
+              -o StrictHostKeyChecking=no \
+              -o ConnectTimeout=15 \
+              root@157.230.91.33 \
+              "cd /opt/prediction-market-bot && git pull origin main 2>&1"
+
+      - name: Verify HEAD
+        run: |
+          ssh -i ~/.ssh/id_ed25519_droplet \
+              -o StrictHostKeyChecking=no \
+              -o ConnectTimeout=15 \
+              root@157.230.91.33 \
+              "cd /opt/prediction-market-bot && echo '--- VPS HEAD ---' && git log -1 --oneline"
