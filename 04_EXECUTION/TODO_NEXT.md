@@ -38,7 +38,7 @@ G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed ord
 | **DECISION_LOG SESSION 49 entry** | ✅ COMPLETE — ADR-0019-A01 + T-164 (both parts) + reserve hygiene. All four changes documented with derivation methodology. |
 | **GOVERNANCE_GAP_LOG updated** | ✅ COMPLETE — GG-014 status: PARTIALLY RESOLVED. GG-017 T-152 update gate noted. |
 | **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-| **VPS deploy** | ⏳ PENDING — Must deploy before G5 tip-off (Jun 13). Run: `git push && ssh prediction-market-vps "cd /opt/prediction-market-bot && git pull && systemctl restart prediction-market-bot"` or standard deploy procedure. |
+| **VPS deploy** | ✅ COMPLETE — Commit d68d5c2 deployed. `git pull` on VPS: 11 files, fast-forward, DEPLOY OK. |
 
 ---
 
