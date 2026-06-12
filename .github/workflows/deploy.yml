@@ -31,7 +31,16 @@ jobs:
               -o StrictHostKeyChecking=no \
               -o ConnectTimeout=15 \
               root@157.230.91.33 \
-              "cd /opt/prediction-market-bot && git pull origin main 2>&1"
+              "cd /opt/prediction-market-bot && \
+               DIRTY=\$(git status --porcelain 2>/dev/null); \
+               if [ -n \"\$DIRTY\" ]; then \
+                 echo 'WARNING: VPS working tree is dirty — T-171 migration not yet complete.'; \
+                 echo 'Tracked portfolio files are being written by cron. git pull aborted.'; \
+                 echo 'Run T-171 migration (see TODO_NEXT.md #13) then re-push.'; \
+                 echo \"Dirty files: \$DIRTY\"; \
+                 exit 1; \
+               fi && \
+               git pull origin main 2>&1"
 
       - name: Verify HEAD
         run: |
