@@ -71,7 +71,7 @@ from prediction_market_bot.execution_bands import (
 )
 from prediction_market_bot.run_t4_inplay import T4EventLoop, GameStateEvent
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
-from prediction_market_bot.c4_risk_engine.risk import RiskEngine, RESERVE_MANDATE_PCT
+from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -257,30 +257,26 @@ POLL_INTERVAL_S = 45
 PACE_MINUTES_PER_GAME = 36.0   # approx starter minutes used for pace_pts_per_min calc
 MIN_BET_T4_PAPER = 0.01        # paper T4: Kalshi actual minimum (1 contract at lowest price)
 PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "false").lower() in ("true", "1", "yes")
-PAPER_T4_FLAT_SIZING = os.environ.get("PAPER_T4_FLAT_SIZING", "true").lower() in ("true", "1", "yes")
-PAPER_T4_POOL_USD = float(os.environ.get("PAPER_T4_POOL_USD", "500.0"))
 SNAPSHOT_ID = "T4-LIVE"
 SESSION_ID_PREFIX = "T4"
 
 # ---------------------------------------------------------------------------
-# T4 Band Budget — ADR-0013
+# T4 Band Budget — ADR-0013 / ADR-0023
 # ---------------------------------------------------------------------------
 # T4 operates on a per-game capital allocation, not the full portfolio bankroll.
 # Without this, the high-throughput T4 band (~1000 evaluations/game) exhausts
 # capital after ~60 bets, leaving 940+ opportunities unfunded.
 #
 # Architecture: T4 RiskEngine receives t4_band_budget as its 'bankroll'.
-#   t4_band_budget = deployable_capital × T4_BAND_WEIGHT
-#   deployable_capital = bankroll × (1 - RESERVE_MANDATE_PCT)
+#   t4_band_budget = pool_bankroll × T4_BAND_WEIGHT   (ADR-0023 — no RESERVE_MANDATE)
 #   bet_size = edge × KELLY_T4 × t4_band_budget
 #
-# This scales correctly with capital ceiling:
-#   $618 bankroll, weight=0.10 → $37 budget → ~$0.37/bet at edge=0.05
-#   $10k bankroll, weight=0.10 → $600 budget → ~$6.00/bet at edge=0.05
-#   $1M bankroll, weight=0.10 → $60k budget → ~$600/bet at edge=0.05
+# Scales with pool:
+#   $1,869.68 pool, weight=0.27 → $504.81 budget (G5 baseline)
+#   $3,000 pool, weight=0.27 → $810 budget
+#   $1M pool, weight=0.27 → $270k budget
 #
 # PAPER_T4_VIRTUAL=true (calibration mode): track deployment, do NOT enforce ceiling.
-#   G1/G2 PAPER_T4_VIRTUAL data calibrates T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE.
 # PAPER_T4_VIRTUAL=false (active mode): enforce band budget ceiling — stop firing when
 #   t4_deployed_game >= t4_band_budget. Evaluation continues for log data.
 #
@@ -294,17 +290,15 @@ SESSION_ID_PREFIX = "T4"
 #   by Q2 while 29 exits freed economic capital, fired=0 all second half —
 #   cannot recur.
 #
-# T4_BAND_WEIGHT: Phase 8 placeholder only — NOT used in PAPER_T4_FLAT_SIZING=true mode.
-# ADR-0017 (2026-06-05): the fractional-allocation formula is architecturally incompatible
-# with high-throughput T4 (~1,447 approved bets/game, G1 data). Budget exhausts in ~16 bets
-# at 0.10 weight; 99% of evaluations go unfunded. PAPER_T4_FLAT_SIZING=true (default)
-# bypasses this via PAPER_T4_POOL_USD — value is inactive in all current execution paths.
-# Phase 8 per-bet sizing formula defined in ADR-0018 (required before T4 ACTIVE designation).
+# T4_BAND_WEIGHT: calibrated from G4 empirical data (ADR-0023, 2026-06-11).
+# Derivation: G4 total flat-sizing deployment ($499.95) / T4 pool at game start ($1,869.68)
+# = 0.267 → 0.27. Formula: budget = pool × T4_BAND_WEIGHT (RESERVE_MANDATE not applied —
+# T4 pool is already isolated capital; RESERVE_MANDATE governs the T1 bankroll, not this pool).
+# At current pool: $1,869.68 × 0.27 = $504.81. Scales proportionally as pool grows or shrinks.
 #
-# T4_EXPECTED_TOTAL_EDGE: calibrated from Finals G1 2026-06-03 (PAPER_T4_FLAT_SIZING=true,
-# 1459 evaluations, 1447 approved, KELLY_T4=0.20). Sum of edge = 442.52.
+# T4_EXPECTED_TOTAL_EDGE: calibrated from Finals G1 2026-06-03, 1,459 evaluations.
 # Monitoring/planning constant only — not used in bet sizing computation.
-T4_BAND_WEIGHT: float = 0.10           # Phase 8 placeholder — ADR-0017; inactive in PAPER_T4_FLAT_SIZING=true mode
+T4_BAND_WEIGHT: float = 0.27           # ADR-0023: G4 derived: 499.95/1869.68 = 0.267 → 0.27
 T4_EXPECTED_TOTAL_EDGE: float = 441.38 # G1 calibrated 2026-06-04: sum(edge) across 1446 evals, KELLY_T4=0.20
                                        # NOTE: this was calibrated on GROSS edge (pre-T-149 fee fix);
                                        # net-of-fee total ≈ 416 at G1 throughput. Recalibrate post-G4.
@@ -324,13 +318,10 @@ _TRAJ_LOG_PATH   = _LOGS_DIR / "t4_position_trajectories.jsonl"  # EXP-019B empi
 
 def _compute_t4_band_budget(portfolio: dict) -> float:
     """
-    T4 band budget = deployable_capital × T4_BAND_WEIGHT.
-    Computed once at game start from live portfolio state.
-    T4 RiskEngine uses this as 'bankroll' so Kelly operates within band allocation.
+    T4 band budget = pool × T4_BAND_WEIGHT (ADR-0023).
+    No RESERVE_MANDATE deduction — T4 pool is isolated capital, not the T1 bankroll.
     """
-    bankroll = portfolio["bankroll_usd"]
-    deployable = bankroll * (1.0 - RESERVE_MANDATE_PCT)
-    return max(deployable * T4_BAND_WEIGHT, 0.0)
+    return max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0)
 
 
 def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
@@ -353,7 +344,7 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
     process must not see an empty ledger while positions are open).
 
     deployed = open T4 exposure + realized T4 losses for this game_date.
-    T4 positions are identified by pool_isolated=True (PAPER_T4_FLAT_SIZING).
+    T4 positions are identified by pool_isolated=True (ADR-0013/ADR-0023).
     """
     open_exposure = sum(
         p.get("size_usd", 0.0)
@@ -692,12 +683,10 @@ def _run_cycle(
 
             approved_size = float(approval["approved_size"])
 
-            # Flat sizing: 1 contract at market price (paper throughput validation).
-            # Overrides Kelly so every approved bet fires at the same unit cost,
-            # decoupling actual bet COUNT from the Kelly-sized amount.
-            if PAPER_T4_FLAT_SIZING:
-                approved_size = mip
-                approval = {**approval, "approved_size": approved_size}
+            # T4 paper policy: 1 contract at market price (ADR-0023).
+            # Flat sizing decouples bet count from Kelly-sized amount for throughput validation.
+            approved_size = mip
+            approval = {**approval, "approved_size": approved_size}
 
             approval = {**approval, "model_p": float(p_est), "edge": float(net_edge), "gross_edge": float(gross_edge)}
 
@@ -759,7 +748,7 @@ def _run_cycle(
                     vig=vig,
                     game_date=game_date,
                     session_id=session_id,
-                    pool_isolated=PAPER_T4_FLAT_SIZING,
+                    pool_isolated=True,
                 )
                 if not ok:
                     logger.error("PaperTrader C6 write failure at %s — halting cycle", ticker)
@@ -864,48 +853,26 @@ def main() -> None:
         )
         return e4, e5
 
-    # ---- T4 band budget (ADR-0013) ----
-    # Computed once at session start from current portfolio state.
-    # Held fixed for the game; Kelly operates on this allocation, not full bankroll.
-    # PAPER_T4_FLAT_SIZING=true: use PAPER_T4_POOL_USD directly — flat 1-contract sizing
-    # decouples bet count from Kelly amount; pool must accommodate ~1,050 × avg market price.
-    if PAPER_T4_FLAT_SIZING:
-        t4_band_budget = PAPER_T4_POOL_USD
-    else:
-        t4_band_budget = _compute_t4_band_budget(trader.get_state())
-    # ADR-0022: reconstruct the deployment ledger from portfolio state so a
-    # mid-game process restart (G4 failure mode) resumes with the true open
-    # exposure + realized losses instead of an empty counter.
-    t4_deployed_game = _reconstruct_t4_ledger(trader.get_state(), game_date)
+    # ---- T4 band budget (ADR-0013 / ADR-0023) ----
+    # Proportional: pool × T4_BAND_WEIGHT. No hardcoded floor — scales with capital.
+    t4_state = trader.get_state()
+    t4_band_budget = _compute_t4_band_budget(t4_state)
+    # ADR-0022: reconstruct deployment ledger so process restart resumes with true ledger.
+    t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
     if t4_deployed_game > 0.0:
         logger.info(
             "T4 ledger reconstructed from portfolio: $%.2f already deployed for %s "
             "(open exposure + realized losses)",
             t4_deployed_game, game_date,
         )
-    if PAPER_T4_FLAT_SIZING:
-        logger.info(
-            "T4 band budget: $%.2f  (PAPER_T4_POOL_USD — flat sizing mode, bypasses ADR-0013 Kelly budget)",
-            t4_band_budget,
-        )
-        logger.info(
-            "PAPER_T4_FLAT_SIZING=true: 1-contract flat sizing active. "
-            "~1,050 bets × avg $0.50/contract ≈ $525 total stake. Pool=$%.2f", PAPER_T4_POOL_USD,
-        )
-    else:
-        logger.info(
-            "T4 band budget: $%.2f  (T4_BAND_WEIGHT=%.2f × deployable)  [ADR-0013 — STUB values until G1 calibration]",
-            t4_band_budget, T4_BAND_WEIGHT,
-        )
+    logger.info(
+        "T4 band budget: $%.2f  (pool=$%.2f × T4_BAND_WEIGHT=%.2f  ADR-0023)",
+        t4_band_budget, t4_state["bankroll_usd"], T4_BAND_WEIGHT,
+    )
     if PAPER_T4_VIRTUAL:
-        logger.info(
-            "PAPER_T4_VIRTUAL=true: budget tracked for calibration, ceiling NOT enforced. "
-            "G1 data → calibrate T4_BAND_WEIGHT and T4_EXPECTED_TOTAL_EDGE before T4 ACTIVE."
-        )
+        logger.info("PAPER_T4_VIRTUAL=true: budget tracked for calibration, ceiling NOT enforced.")
     else:
-        logger.info(
-            "PAPER_T4_VIRTUAL=false: band budget ceiling ENFORCED. Bets fire as actual paper positions."
-        )
+        logger.info("PAPER_T4_VIRTUAL=false: band budget ceiling ENFORCED.")
 
     # ---- Main polling loop ----
     cycle_n = 0

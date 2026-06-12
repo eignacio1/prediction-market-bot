@@ -1,0 +1,32 @@
+{
+  "exp_id": "EXP-019B",
+  "mode": "empirical",
+  "game_date": "2026-06-10",
+  "noise_buffer_band_t4": 0.13905,
+  "n_yes_positions": 1199,
+  "n_closed": 955,
+  "n_exited": 244,
+  "n_win_positions": 360,
+  "n_loss_positions": 839,
+  "exit_accuracy": {
+    "correct_exits_on_loss": 236,
+    "false_exits_on_win": 8,
+    "unknown_outcome": 0,
+    "true_positive_rate": 0.2813,
+    "false_positive_rate": 0.0222,
+    "analytic_tp_rate": 0.799,
+    "analytic_fp_rate": 0.0
+  },
+  "noise_buffer_observed": {
+    "mean": 0.18216,
+    "p50": 0.18725,
+    "p10": 0.14032,
+    "within_20pct": false
+  },
+  "pnl_comparison": {
+    "n_compared": 244,
+    "mean_exit_pnl": 0.1052,
+    "mean_hold_pnl_cf": -0.3075,
+    "mean_improvement": 0.4127
+  }
+}

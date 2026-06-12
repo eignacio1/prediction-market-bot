@@ -469,7 +469,6 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
              patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-001",
@@ -524,7 +523,6 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
              patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-002",
@@ -576,7 +574,6 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
              patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", True):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-003",
@@ -626,7 +623,6 @@ class TestRunCycleExitPass:
         }
 
         with patch("prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False), \
-             patch("prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True), \
              patch("prediction_market_bot.run_t4_live.EXIT_MECHANICS_ACTIVE", False):
             ev, fi, ex, dep = _run_cycle(
                 cycle_id="cycle-exit-004",

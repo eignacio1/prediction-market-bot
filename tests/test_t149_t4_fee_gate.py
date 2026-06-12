@@ -214,8 +214,6 @@ class TestRunCycleFeeSubtraction:
 
         with patch(
             "prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False
-        ), patch(
-            "prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True
         ):
             _run_cycle(
                 cycle_id="cycle-test-001",
@@ -303,8 +301,6 @@ class TestRunCycleFeeSubtraction:
 
         with patch(
             "prediction_market_bot.run_t4_live.PAPER_T4_VIRTUAL", False
-        ), patch(
-            "prediction_market_bot.run_t4_live.PAPER_T4_FLAT_SIZING", True
         ):
             _run_cycle(
                 cycle_id="cycle-test-002",
