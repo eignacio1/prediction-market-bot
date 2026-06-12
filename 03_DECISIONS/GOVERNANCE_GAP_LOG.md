@@ -573,6 +573,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-033 — Live Portfolio State Tracked in Git: Deploy Pipeline Silently Broken Since SESSION 55
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-033 |
+| Discovered | 2026-06-12 SESSION 56 — VPS `git pull --ff-only` aborted on dirty tree during EXP-018 filter deploy |
+| Category | Deploy integrity gap — live mutable state in VCS blocks deploys and risks state destruction |
+| What was missed | `logs/paper_portfolio.json` is git-tracked. Every cron write dirties the VPS working tree, so every `git pull` aborts. SESSION 55's deploy record ("git pull + scp confirmed") was inaccurate: the pull failed on this same conflict, and the scp of `run_monte_carlo.py` masked it. Result: VPS sat at `cea8a19` (SESSION 54 close) through SESSION 55–56 while MEMORY_BANK recorded it as current — the T-168 MC fix existed on the VPS only as an uncommitted working-tree file. Verified identical to the committed version this session (no drift), but nothing guaranteed that. |
+| When it should have been caught | SESSION 55 deploy verification — "DEPLOY OK" was asserted without `git log -1` confirmation on the VPS. |
+| Phases it survived | SESSION 55 (T-168 deploy), SESSION 56 (T-169 sprint) until this session's pull attempt. |
+| Why it survived | scp side-channel made the working tree look current; no deploy step verified VPS HEAD == origin/main. |
+| Impact | HIGH for live-capital era, MEDIUM now. (1) Two failure modes: deploys silently no-op (stale risk code in production), or a future `git checkout .`/`git reset --hard` on the VPS destroys the live book — open positions, annotations, bankroll. (2) Local repo copy of the portfolio is stale ($1,000/3-open vs VPS $130.62/41-open), so the session-start governance hook prints misleading portfolio state. |
+| Discovery | SESSION 56 — pull abort during EXP-018 dedupe filter deploy. |
+| Resolution | T-171: (1) `git rm --cached logs/paper_portfolio.json` (and `paper_portfolio_t4.json` if tracked) + add to `.gitignore`; (2) coordinated VPS migration: backup live file outside repo → checkout → pull (file removed from tree) → restore → verify untracked; (3) add `git log -1` HEAD verification to the /vps deploy skill so "deployed" claims require commit-hash proof; (4) decide what the session-start hook PORTFOLIO line should read once local copy is gone (VPS fetch or label as N/A). Schedule for dark period — do NOT perform the untracking migration while 41 positions are open and crons are writing. |
+| Status | OPEN — T-171 registered 2026-06-12; migration deferred to dark period Phase 1 (post-G5 resolution) |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
