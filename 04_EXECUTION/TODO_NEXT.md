@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 57 — Q6 worry sweep: PORTFOLIO banner fixed (VPS live book via ssh cache); open-position reconciliation CLEAN (VPS ledger to the cent); S46 reset-equity nuance logged (T-172 must use Σpnl); T-166 row annotated (per-ticker guard shipped S53, remaining scope is run-level game_date guard). Commit `3718015`, VPS deployed. 852/852 tests.
+**Last reviewed:** 2026-06-12 SESSION 58 — Implementation sprint: T-172 G6 gate checklist DONE; T-166 run-level game_date guard DONE (5 new tests); T-156 ADR-0025 ACCEPTED + 28 daily-loss accumulation tests DONE; T-159 portfolio_schema.py + 38 invariant tests DONE. All 4 sprint tasks complete. 923/923 tests. Commit `1cc66d6`, VPS deployed.
 
 ---
 
