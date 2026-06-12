@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 50 — PAM archetype register wired T1+T4. GG-027 registered. T-165 registered (MLB gate). 852/852 tests. VPS commit `4d5cd43`. Dark period begins ~Jun 22; G5 Jun 13 is last Finals game.  
+**Last reviewed:** 2026-06-12 SESSION 57 — Q6 worry sweep. PORTFOLIO banner fixed (VPS live book, not stale snapshot). Reconciliation CLEAN. S46 reset-equity nuance logged. T-166 annotated. 852/852 tests. Commit `3718015`. Finals G5 Jun 13 pending; dark period begins ~Jun 22.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
