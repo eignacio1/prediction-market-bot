@@ -48,6 +48,7 @@ jobs:
           ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
 
       - name: Resolve T1 positions
+        id: t1_resolve
         env:
           BOT_ENV: paper
         run: |
@@ -55,8 +56,23 @@ jobs:
         continue-on-error: true
 
       - name: Resolve T4 positions
+        id: t4_resolve
+        if: always()
         env:
           BOT_ENV: paper
         run: |
           PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py
         continue-on-error: true
+
+      - name: Check resolve outcomes
+        if: always()
+        run: |
+          T1="${{ steps.t1_resolve.outcome }}"
+          T4="${{ steps.t4_resolve.outcome }}"
+          echo "T1 resolve: $T1"
+          echo "T4 resolve: $T4"
+          if [[ "$T1" == "failure" || "$T4" == "failure" ]]; then
+            echo "ERROR: one or more resolve steps failed — check step logs above."
+            exit 1
+          fi
+          echo "Both resolve steps completed successfully."
