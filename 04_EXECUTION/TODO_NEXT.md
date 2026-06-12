@@ -2,20 +2,20 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 50 — PAM archetype register wired to T1 and T4. `get_archetype()` added to QualitativeSignalStore; T1 logs `[PRF-X]` per decision; T4 EventLoop accepts archetype_register and includes pam_archetype in RoutingResult. GG-027 registered; T-165 registered (full band integration + env classifier — MLB gate). 852/852 tests.
+**Last reviewed:** 2026-06-11 SESSION 51 — T-157 COMPLETE (ADR-0024 stop/pivot criterion accepted); T-158 COMPLETE (DARK_PERIOD_PLAN.md ratified); GG-021 RESOLVED; EXP-017 scope transitioned to MLB/regular season; GG-014 dark-period gap documented (2026-27 Season Day 1 confirmation). 852/852 tests (no code changes this session).
 
 ---
 
-## PRIORITY QUEUE (updated 2026-06-11 SESSION 49 — institutional sprint complete; VPS deploy pending pre-G5)
+## PRIORITY QUEUE (updated 2026-06-11 SESSION 51 — T-157/T-158 COMPLETE; entering dark period)
 
 | Pri | Task | What / Why | Due |
 |-----|------|-----------|-----|
 | **0 — ✅ DONE (SESSION 47)** | **T-163: ADR-0023 — Remove PAPER_T4_FLAT_SIZING; T4 budget proportional to bankroll (GG-026)** | T4_BAND_WEIGHT=0.27 derived from G4 empirical ($499.95/$1,869.68=0.267→0.27). PAPER_T4_FLAT_SIZING and PAPER_T4_POOL_USD constants removed. _compute_t4_band_budget is single budget path (no RESERVE_MANDATE deduction). pool_isolated=True hardcoded. Flat sizing (1 contract/bet) retained as hardcoded paper policy (ADR-0023). G5 budget ~$504.81. ADR-0023 ACCEPTED. GG-026 RESOLVED. 843/843 tests. Commit 72ba619, VPS deployed. | ✅ 2026-06-11 |
 | **0b — ✅ DONE (SESSION 47)** | **EXP-018 Hypothesis C — DS ruling: calibration gap** | n=98, both all-bets and injury-filtered CONFIRMED_NEGATIVE. DS ruling: calibration gap — need to structure math better. NOT T1 Tier 2B FAILS. Multi-sport scale (MLB/NFL) addresses sample size. G5 diagnostic: YES-only mode (filters NO bets to isolate YES vs NO edge; requires YES_ONLY config gate in run_paper_trade.py before G5 cron). G5 fired WITHOUT YES-only gate (gate not implemented in time). G6 if DS ruling still applies. | ✅ 2026-06-11 |
 | **0c — ✅ DEPLOYED (SESSION 49)** | **T-164: Throttled order submission (GG-014 G6 gate — 31% failure rate at G5)** | Inter-order sleep 0.5→2.0s; MAX_RETRIES 3→4; RETRY_DELAY_S 1.0→2.0; delay schedule 4/8/16/32s=60s. Root cause: 29-order burst saturates rate-limit window in ~14s. Batch order integrity report added to PIPE-03 run. GG-014 status: PARTIALLY RESOLVED. G6 gate (≤5% failure rate) will be confirmed in next batch run. 852/852 tests. VPS deploy pending. **OPEN until G6 batch confirms ≤5%.** | ✅ 2026-06-11 (monitoring pending) |
-| **1 — HIGH (governing)** | **T-157: Project-level stop criterion (GG-021)** | Draft OPEN_QUESTIONS entry + ADR defining what evidence forces "no edge — halt/pivot." Must be ratified COLD — before 2026-27 regular-season data exists. Includes standing watch: every G6-criteria revision checked for passability drift. | Pre-regular-season; draft within 2 sessions |
+| **1 — ✅ DONE (SESSION 51)** | **T-157: Project-level stop criterion (GG-021)** | ADR-0024 ACCEPTED. Tier 1 (n≥150, ≥2 months): EV/bet < -$0.03 → diagnostic sprint. Tier 2 (structurally adequate: n≥500, ≥15 opponents OR ≥2 sports): CONFIRMED_NEGATIVE → halt + ADR-0004 supersession. Passability drift watch standing. EXP-017 scope transition to MLB/regular season logged. GG-021 RESOLVED. | ✅ 2026-06-11 |
 | **2 — HIGH (governing)** | **T-153 (EXPANDED, GG-022): fill-realism haircut on ALL paper P&L** | Spread model from G4/G5 spread logs must haircut T1+T4 P&L used as G6 evidence — not just exit validation. Until then, all G6-facing P&L reports carry "unhaircut paper fills" caveat. T4's +108% pool at 51.4% win rate is presumed optimistic until haircut applied. | Post-G4/G5 data; before any G6 Tier 2 evaluation |
-| **3 — HIGH** | **T-158: Dark-period plan (June–Oct 2026)** | Finals may end within days; G6 commercial evidence is structurally unavailable until regular season. Ratify a plan document: backtest infrastructure, T2/DS-04 injury sourcing (KI-011), T-153 spread model, multi-sport C1 groundwork, cadence + drift controls for the no-feedback stretch. | Within 1 week of Finals end |
+| **3 — ✅ DONE (SESSION 51)** | **T-158: Dark-period plan (June–Oct 2026)** | DARK_PERIOD_PLAN.md ratified at `04_EXECUTION/DARK_PERIOD_PLAN.md`. Four phases: (1) Post-Finals close — G5 resolve, EXP-017B/018 G5 run, T-153/156/159; (2) July — model retrain, DS-04, Polymarket; (3) Aug-Sep — MLB C1/C2/C3, EXP-017 MLB validation, ADR-0024 Tier 1 check; (4) Oct — GG-014 confirmation, G6 evidence review, ADR-0005. | ✅ 2026-06-11 |
 | **4 — MEDIUM** | **T-156: ADR-0012 amendment + daily-loss accumulation tests** | Formalize net semantics; first tests ever on kill-switch input accumulation. | Post-G5 |
 | **5 — MEDIUM** | **T-159: Portfolio state-machine invariant tests + schema owner (LL-014)** | Kill the stale-state bug class structurally: every consumer of persisted portfolio fields tested for cross-day transitions; portfolio JSON schema gets an owning module. Risk-shaped coverage, not feature-shaped. | Post-G4/G5 |
 | **5b — ✅ DONE (SESSION 46)** | **T-161: T4 exit budget-credit semantics (GG-023)** | DS ruling: realized-value credit (ADR-0022, amends ADR-0013). Exits credit budget at realized value — wins restore entry cost, losses consume permanently; band net loss bounded by budget. Restart-safe `_reconstruct_t4_ledger()`; G5 strip starts clean at $0 by game_date keying. 13 new tests; 843/843. GG-023 closed. | ✅ 2026-06-10 |
@@ -24,6 +24,19 @@
 | **7 — LOW (MLB gate)** | **T-165: Full PAM integration across T2/T3/T5 bands + EnvironmentClassifier ADR (GG-027)** | T1 and T4 archetype register wired (SESSION 50). Remaining scope: (a) EnvironmentClassifier module in C2 — game-level pressure score (elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players with expanded duties); (b) archetype × environment uncertainty multiplier in C3 (wider confidence interval for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE per environment class in decision tree routing; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. Requires new ADR before activation. | Pre-MLB activation |
 
 G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). **T-164 fix deployed (SESSION 49) — VPS deploy required before G5 tip-off.** Resolve locally after game using run_resolve_local.py. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-157 stop criterion draft (within 2 sessions).
+
+---
+
+## SESSION 51 — COMPLETE (2026-06-11)
+
+| Task | Status |
+|------|--------|
+| **ADR-0024: Stop/Pivot Criterion (T-157)** | ✅ COMPLETE — `03_DECISIONS/ADR-0024_stop-pivot-criterion.md`. Tier 1 (n≥150): EV/bet < -$0.03 → diagnostic sprint. Tier 2 (structurally adequate sample): CONFIRMED_NEGATIVE → halt + ADR-0004 supersession. Passability drift watch: standing. GG-021 RESOLVED. |
+| **DARK_PERIOD_PLAN.md ratified (T-158)** | ✅ COMPLETE — `04_EXECUTION/DARK_PERIOD_PLAN.md`. Four phases. Phase 3 (Aug-Sep): MLB C1/C2/C3 + EXP-017 MLB commercial validation. Phase 4 (Oct): GG-014 confirmation, G6 review, ADR-0005. |
+| **EXP-017 scope transition — DS ruling** | ✅ COMPLETE — NBA Finals sample structurally insufficient. EXP-017 transitions to MLB 2026 + NBA 26-27 regular season. ADR-0024 defines structurally adequate sample standard. GG-004 status updated. |
+| **GG-014 dark-period gap documented** | ✅ COMPLETE — T-164 deployed but G5 placed before fix. No additional PIPE-03 runs possible before dark period. GG-014 G6 gate confirmation deferred to 2026-27 Season Day 1. GOVERNANCE_GAP_LOG + DARK_PERIOD_PLAN Phase 4 updated. |
+| **DECISION_LOG SESSION 51 entry** | ✅ COMPLETE |
+| **Tests** | ✅ 852/852 pass (no code changes) |
 
 ---
 
