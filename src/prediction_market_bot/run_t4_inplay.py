@@ -68,6 +68,7 @@ from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderS
 from prediction_market_bot.c1_signal_ingestion.ds02_nba_live import (
     kill_switch_armed, KILL_SWITCH_PATH,
 )
+from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +119,7 @@ class T4RoutingResult:
     staged_order: Optional[dict]
     kelly_fraction: float
     timestamp_iso: str
+    pam_archetype: Optional[dict] = None  # GG-027: PAM register lookup; None if no snapshot or unclassified
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +149,7 @@ class T4EventLoop:
         risk_engine=None,    # C4 RiskEngine.evaluate_forecast()
         venue_router=None,   # C5 VenueRouter.execute()
         audit_logger=None,   # C6 AuditLogger.log_event()
+        archetype_register: QualitativeSignalStore | None = None,  # GG-027: PAM register
     ) -> None:
         self._store = staged_order_store
         self._model = game_state_model
@@ -154,6 +157,7 @@ class T4EventLoop:
         self._risk_engine = risk_engine
         self._router = venue_router
         self._audit = audit_logger
+        self._archetype_register = archetype_register
 
     def _kill_switch_armed(self) -> bool:
         """
@@ -249,6 +253,15 @@ class T4EventLoop:
         All NO_ACTION returns are logged to C6 with reason.
         """
         ts = datetime.now(timezone.utc).isoformat()
+        game_date = ts[:10]  # YYYY-MM-DD from ISO timestamp
+
+        # PAM archetype register lookup (GG-027) — best-effort; never blocks routing
+        _pam: dict | None = None
+        if self._archetype_register is not None:
+            try:
+                _pam = self._archetype_register.get_archetype(int(event.player_id), game_date)
+            except (ValueError, TypeError):
+                pass
 
         # Step 1: Kill switch — must be < 5ms
         if self._kill_switch_armed():
@@ -269,7 +282,13 @@ class T4EventLoop:
         # Step 3: Pre-staged path (Strategy C/E — table lookup)
         staged = self._store.get_staged(event.market_id)
         if staged is not None:
-            return self._route_pre_staged(event, staged)
+            result = self._route_pre_staged(event, staged)
+            return T4RoutingResult(
+                market_id=result.market_id, action=result.action, reason=result.reason,
+                signal=result.signal, staged_order=result.staged_order,
+                kelly_fraction=result.kelly_fraction, timestamp_iso=result.timestamp_iso,
+                pam_archetype=_pam,
+            )
 
         # Step 4: Bayesian update path (Strategy A)
         gs = self._to_game_state(event)
@@ -280,15 +299,33 @@ class T4EventLoop:
             if signal.t5_eligible:
                 t5_signal = self._arithmetic.evaluate(gs, event.threshold)
                 if t5_signal.verdict != "UNCERTAIN":
-                    return self._route_t5(event, t5_signal)
+                    result = self._route_t5(event, t5_signal)
+                    return T4RoutingResult(
+                        market_id=result.market_id, action=result.action, reason=result.reason,
+                        signal=result.signal, staged_order=result.staged_order,
+                        kelly_fraction=result.kelly_fraction, timestamp_iso=result.timestamp_iso,
+                        pam_archetype=_pam,
+                    )
 
-            return self._route_bayesian(event, signal)
+            result = self._route_bayesian(event, signal)
+            return T4RoutingResult(
+                market_id=result.market_id, action=result.action, reason=result.reason,
+                signal=result.signal, staged_order=result.staged_order,
+                kelly_fraction=result.kelly_fraction, timestamp_iso=result.timestamp_iso,
+                pam_archetype=_pam,
+            )
 
         # Step 5: T5 eligibility even if Bayesian delta is not material
         if signal.t5_eligible:
             t5_signal = self._arithmetic.evaluate(gs, event.threshold)
             if t5_signal.verdict != "UNCERTAIN":
-                return self._route_t5(event, t5_signal)
+                result = self._route_t5(event, t5_signal)
+                return T4RoutingResult(
+                    market_id=result.market_id, action=result.action, reason=result.reason,
+                    signal=result.signal, staged_order=result.staged_order,
+                    kelly_fraction=result.kelly_fraction, timestamp_iso=result.timestamp_iso,
+                    pam_archetype=_pam,
+                )
 
         # No action
         gate = max(T4_DELTA_SIGMA_Z * signal.sigma_null, T4_MIN_DELTA_FLOOR)
@@ -307,6 +344,7 @@ class T4EventLoop:
             staged_order=None,
             kelly_fraction=0.0,
             timestamp_iso=ts,
+            pam_archetype=_pam,
         )
 
 

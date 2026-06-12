@@ -471,6 +471,21 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-027 — PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environment Classifier Not Built
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-027 |
+| Discovered | 2026-06-11 SESSION 50 — operator architectural direction: pressure-context categorization for decision tree filters |
+| Category | Architectural capability gap — registered feature not yet integrated across full band stack |
+| What was missed | The Player Archetype Matrix (PAM v4) is operationalized in C2 (`QualitativeSignalStore`) and the prod model uses 47 PAM features (prf_w01–15, mod_01–32). However: (1) T2/T3/T5 bands have no PAM wiring — `run_t2_sameday.py`, `run_t3_pretip.py`, and T5 LateGameArithmetic operate without archetype context; (2) T4 `T4EventLoop` received archetype register wiring in SESSION 50 but the archetype does not yet affect the routing math (passed through to audit log only); (3) the "pressure-context environment classifier" described by the operator — game-environment categorical modifiers (high-pressure Finals/elimination context, expanded-role context for role players, crowd/psychological context) — is entirely unbuilt as of SESSION 50; (4) QS snapshot age: classifications dated 2026-05-28 have not been updated for Finals-specific role changes (e.g. Alvarado Q4 expanded role in G4). |
+| When it should have been caught | ADR-0019 (exit mechanics) acceptance — when PAM features were confirmed live in the model, a task for full band integration should have been registered. The operator's architectural direction toward environment-context categorization makes the gap more visible. |
+| Impact | LOW now — T2/T3/T5 are SKELETON/BLOCKED; T4 routing is correct without archetype math (ADR-0021 handles materiality). HIGH pre-MLB activation — regular season requires full band coverage; environment classifier is architecturally essential for the "Wemby 10 RBG ≠ Zubac 10 RBG" disambiguation at scale. |
+| Resolution path | T-165: Full PAM integration across T2/T3/T5 bands + environment classifier ADR — MLB activation gate. Scope: (a) EnvironmentClassifier in C2 (game-level pressure score: elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players); (b) archetype × environment interaction in C3 (uncertainty multiplier on model_p for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE in decision tree routing per environment class; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. |
+| Status | OPEN — T-165 registered. Low severity until T2/T3/T5 approach active status. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

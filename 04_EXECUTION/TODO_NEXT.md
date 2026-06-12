@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-11 SESSION 49 — Institutional sprint complete: NOISE_BUFFER_BAND_T4 0.139→0.19 (ADR-0019-A01); T-164 deployed (sleep 2.0s, MAX_RETRIES=4, RETRY_DELAY_S=2.0, delay 4/8/16/32s=60s); PIPE-03 reserve mandate hygiene + order integrity report. 852/852 tests. VPS deploy pending (must deploy pre-G5 Jun 13).
+**Last reviewed:** 2026-06-11 SESSION 50 — PAM archetype register wired to T1 and T4. `get_archetype()` added to QualitativeSignalStore; T1 logs `[PRF-X]` per decision; T4 EventLoop accepts archetype_register and includes pam_archetype in RoutingResult. GG-027 registered; T-165 registered (full band integration + env classifier — MLB gate). 852/852 tests.
 
 ---
 
@@ -21,8 +21,23 @@
 | **5b — ✅ DONE (SESSION 46)** | **T-161: T4 exit budget-credit semantics (GG-023)** | DS ruling: realized-value credit (ADR-0022, amends ADR-0013). Exits credit budget at realized value — wins restore entry cost, losses consume permanently; band net loss bounded by budget. Restart-safe `_reconstruct_t4_ledger()`; G5 strip starts clean at $0 by game_date keying. 13 new tests; 843/843. GG-023 closed. | ✅ 2026-06-10 |
 | **5c — ✅ DONE (SESSION 46)** | **T-162: PIPE-03 in-progress game guard (GG-024)** | ESPN `STATUS_IN_PROGRESS` check added to `run_paper_trade.py` before bet-placement loop. Aborts with `paper_run_skipped_game_in_progress` log entry. Deployed VPS commit `c8a59f2`. G4 Castle+Hart late-cron bets flagged ineligible per APR-0019. GG-024 closed. | ✅ 2026-06-11 |
 | **6 — LOW** | **T-160: Root-folder document hygiene** | Unversioned strategy docs (Princeton Protocol.txt, templates, progress assessments, PDTP txt) into numbered structure or ARCHIVE/ so governance scans see them. | Opportunistic |
+| **7 — LOW (MLB gate)** | **T-165: Full PAM integration across T2/T3/T5 bands + EnvironmentClassifier ADR (GG-027)** | T1 and T4 archetype register wired (SESSION 50). Remaining scope: (a) EnvironmentClassifier module in C2 — game-level pressure score (elimination_flag, series_momentum, crowd_premium, role_expansion_flag for role players with expanded duties); (b) archetype × environment uncertainty multiplier in C3 (wider confidence interval for sparse-data role players in high-pressure contexts); (c) dynamic MIN_EDGE_TO_APPROVE per environment class in decision tree routing; (d) T2/T3/T5 archetype register wiring matching T1/T4 pattern. Requires new ADR before activation. | Pre-MLB activation |
 
 G5 status: game_date=2026-06-13, 29 bets placed ($848.73 deployed), 9 failed orders (31% — GG-014 breach). MC: EV +$209.70, 97.5% P(profit). **T-164 fix deployed (SESSION 49) — VPS deploy required before G5 tip-off.** Resolve locally after game using run_resolve_local.py. Standing items: T-152 (exit-event empirical, Tier 2 gate for ADR-0019); T-157 stop criterion draft (within 2 sessions).
+
+---
+
+## SESSION 50 — COMPLETE (2026-06-11)
+
+| Task | Status |
+|------|--------|
+| **PAM archetype register — `get_archetype()` added to QualitativeSignalStore** | ✅ COMPLETE — `qualitative_store.py`: point-lookup method with QTI-01 temporal guard. Returns `{prf_primary, prf_primary_name, active_modifiers, prf_secondary/name/weight if hybrid}`. None if no snapshot or outside window. |
+| **T1 archetype logging (`run_paper_trade.py`)** | ✅ COMPLETE — `_pam = qs.get_archetype(player_id, GAME_DATE_ISO)` per cohort player; `pam_archetype` field in `forecast_rec`; `[PRF-X]` tag in BET print output. Non-cohort players return None (no QS classification). |
+| **T4 archetype register wiring (`run_t4_inplay.py`)** | ✅ COMPLETE — `QualitativeSignalStore` imported; `archetype_register` param added to `T4EventLoop.__init__`; `pam_archetype: dict | None = None` field added to `T4RoutingResult`; archetype looked up at event entry and propagated through all routing paths (FIRE_STAGED, FIRE_BAYESIAN, FIRE_T5, NO_ACTION). KILL_SWITCH path receives no archetype (intentional — routing halted before player context matters). |
+| **GG-027 registered** | ✅ COMPLETE — Full T2/T3/T5 PAM integration + EnvironmentClassifier not built. LOW now (bands SKELETON/BLOCKED); HIGH pre-MLB activation. |
+| **T-165 registered** | ✅ COMPLETE — Full band integration + env classifier ADR — MLB gate. |
+| **DECISION_LOG SESSION 50 entry** | ✅ COMPLETE |
+| **Tests** | ✅ 852/852 pass |
 
 ---
 
