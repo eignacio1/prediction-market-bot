@@ -110,8 +110,8 @@ SERIES_PLAYER_POINTS = "KXNBAPTS"
 
 # Request timeouts and retry config
 REQUEST_TIMEOUT_S = 15
-MAX_RETRIES = 3
-RETRY_DELAY_S = 1.0
+MAX_RETRIES = 4      # T-164/GG-014: raised 3→4; delays 4+8+16+32=60s covers most rate-limit windows
+RETRY_DELAY_S = 2.0  # T-164/GG-014: raised 1.0→2.0; delays = RETRY_DELAY_S × 2^(attempt+1)
 
 # Vig threshold — markets with vig > this are too wide to trade (per risk policy)
 MAX_ACCEPTABLE_VIG = 0.05

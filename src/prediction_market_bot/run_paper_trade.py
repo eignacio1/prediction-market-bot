@@ -268,6 +268,21 @@ def main() -> None:
 
     print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | Drawdown {current_drawdown_pct:.1%}")
 
+    # Reserve mandate health — show deployed fraction prominently so operator can see the state.
+    _pre_deployed_usd = max(0.0, _initial_bankroll - bankroll)
+    _pre_deployed_pct = _pre_deployed_usd / _initial_bankroll if _initial_bankroll > 0 else 0.0
+    _reserve_floor_usd = RESERVE_MANDATE_PCT * _initial_bankroll
+    print(f"[C4] Reserve mandate: {RESERVE_MANDATE_PCT:.0%} floor (${_reserve_floor_usd:.2f}) | "
+          f"Deployed: ${_pre_deployed_usd:.2f} ({_pre_deployed_pct:.1%}) | Available: ${bankroll:.2f}")
+    if _pre_deployed_pct > 0.80:
+        print(f"  [WARN] RESERVE ALERT: {_pre_deployed_pct:.1%} of initial bankroll already deployed "
+              f"(>{80:.0%} threshold) — reserve gate may halt batch early.", file=sys.stderr)
+        logger.warning("PIPE-03", "reserve_alert_high_deployment",
+                       payload={"deployed_pct": round(_pre_deployed_pct, 4),
+                                "bankroll": bankroll,
+                                "initial_bankroll": _initial_bankroll},
+                       session_id=SESSION_ID)
+
     # ------------------------------------------------------------------
     # 5. Fetch live markets via VenueRouter (kalshi_only default until T-077)
     # ------------------------------------------------------------------
@@ -603,6 +618,25 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 7. Summary
     # ------------------------------------------------------------------
+    # Batch order integrity report (GG-014 hygiene — T-164)
+    _kalshi_submitted = [p for p in orders if p.get("kalshi_order_status") not in (None, "local_only")]
+    _kalshi_failed    = [p for p in orders if str(p.get("kalshi_order_status", "")).startswith("failed:")]
+    _kalshi_ok        = [p for p in _kalshi_submitted if p not in _kalshi_failed]
+    if _kalshi_submitted:
+        _failure_rate = len(_kalshi_failed) / len(_kalshi_submitted)
+        print(f"\n[ORDER INTEGRITY] Submitted: {len(_kalshi_submitted)} | "
+              f"OK: {len(_kalshi_ok)} | Failed: {len(_kalshi_failed)} | "
+              f"Failure rate: {_failure_rate:.1%}")
+        logger.info("PIPE-03", "batch_order_summary",
+                    payload={"submitted": len(_kalshi_submitted),
+                             "ok": len(_kalshi_ok),
+                             "failed": len(_kalshi_failed),
+                             "failure_rate": round(_failure_rate, 4)},
+                    session_id=SESSION_ID)
+        if _failure_rate > 0.05:
+            print(f"  [WARN] GG-014: failure rate {_failure_rate:.1%} exceeds 5% G6 gate. "
+                  f"See T-164.", file=sys.stderr)
+
     summary = trader.summary()
     print(f"\n[SUMMARY]")
     print(f"  Bets placed today:  {len(orders)}")

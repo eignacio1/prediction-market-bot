@@ -414,4 +414,4 @@ class TestTransientRetry:
             ok, _ = client._get("/markets", authenticated=False)
 
         assert ok is True
-        assert sleep_calls == [2.0, 4.0]  # RETRY_DELAY_S=1.0; 1*(2^1)=2, 1*(2^2)=4
+        assert sleep_calls == [4.0, 8.0]  # RETRY_DELAY_S=2.0; 2*(2^1)=4, 2*(2^2)=8
