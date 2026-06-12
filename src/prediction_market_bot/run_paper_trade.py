@@ -493,13 +493,14 @@ def main() -> None:
             if _reserve_halted:
                 break
 
-            # Idempotency: skip if already holding a successfully placed open position on this
-            # ticker. Positions with kalshi_order_status starting "failed:" are transient
-            # placement failures (503/429) — they don't block a retry on the next cron run.
+            # Idempotency: skip if ANY open position exists for this ticker, including
+            # positions where the Kalshi order failed. A recorded position represents a
+            # committed capital allocation regardless of Kalshi order status. The second
+            # cron window is a connectivity redundancy guard — not a re-evaluation window
+            # that should re-price bets on a smaller bankroll. (GG-028 fix, T-166)
             _open_tickers = {
                 p["kalshi_ticker"]
                 for p in trader.get_state().get("open_positions", [])
-                if not str(p.get("kalshi_order_status", "")).startswith("failed:")
             }
             if mkt.ticker in _open_tickers:
                 print(f"  [IDEMPOTENCY] SKIP {kalshi_player_name} — {mkt.ticker} already open")
