@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 48 — G4 resolved (2W/1L, -$8.46), G5 bets placed (29, game_date=2026-06-13, EV +$209.70 MC). GG-014 G6 gate breached: 9/29 = 31% demo order failures; T-164 registered. 114/66 bets ✓, 4/5 game nights (G5 closes this). 843/843 tests. VPS bankroll: $285.27.  
+**Last reviewed:** 2026-06-11 SESSION 50 — PAM archetype register wired T1+T4. GG-027 registered. T-165 registered (MLB gate). 852/852 tests. VPS commit `4d5cd43`. Dark period begins ~Jun 22; G5 Jun 13 is last Finals game.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
