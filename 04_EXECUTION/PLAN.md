@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-12 SESSION 60 — Protocol sprint: GG-020 grep-invisible fixed; deploy.yml dirty-tree guard. 923/923 tests. Commit `3c1daa2`. Dark period begins ~Jun 22 post-Finals.  
+**Last reviewed:** 2026-06-13 SESSION 62 — Audit session, no plan changes. GG-034 registered (realized-P&L scalar desync; drawdown kill switch blind; G6 P&L gate measured on false number) → T-174 added to Dark Period Phase 1 alongside T-171. Dark period begins ~Jun 22 post-Finals. *(Previous, SESSION 60:)* GG-020 grep-invisible fixed; deploy.yml dirty-tree guard. 923/923 tests. Commit `3c1daa2`.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
