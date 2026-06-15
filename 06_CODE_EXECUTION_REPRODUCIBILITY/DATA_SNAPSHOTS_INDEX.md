@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative registry of all data snapshots used in experiments. Every dataset that enters the pipeline must be registered here before use. Immutability guarantee: once registered, a snapshot is never modified.  
 **Owner (role):** Research Lead (RL)  
-**Last reviewed:** 2026-05-28 (SNAP-2026-05-28-001 registered — T-043 50-player cohort)  
+**Last reviewed:** 2026-06-14 (SNAP-2026-06-14-001 registered — T-174 canonical NBA Finals clean bet dataset)  
 **Next review:** Before each experiment run; updated as new snapshots are registered  
 **Staleness triggers:** New snapshot registered; snapshot used in new experiment; data source schema change  
 **Upstream links:** DATA_FLOWS_LINEAGE.md, DATA_REQUIREMENTS.md  
@@ -34,11 +34,13 @@ Per DATA_FLOWS_LINEAGE.md:
 | SNAP-2026-05-27-002 | NBA Game Logs (10 players × 3 seasons) — Backtest fresh pull | DS-02 (nba_api) | nba_api v0.9.x | TBD — populated if run_backtest.py is run without --raw-csv | exp_output/BACKTEST/SNAP-2026-05-27-002_raw_game_logs.csv | TBD — populated after ingestion run | IF-C1-C2 v1.0 (29-column schema) | Fresh C1 pull for backtesting (T-036); same cohort as SNAP-2026-05-27-001 (10 players × 3 seasons 2021-22/2022-23/2023-24 Regular Season). Use SNAP-2026-05-27-001 via --raw-csv to avoid a second pull. | EXP-002; EXP-003 (if fresh pull used) |
 
 | SNAP-2026-05-28-001 | NBA Game Logs (50 players × 3 seasons) | DS-02 (nba_api) | nba_api v0.9.x | 2026-05-28 | exp_output/EXP-001/SNAP-2026-05-28-001_raw_game_logs.csv | TBD — populated after T-043 run | IF-C1-C2 v1.0 (29-column schema) | T-043 expansion: 50 players (original 10 + 40 additions); same seasons 2021-22/2022-23/2023-24 Regular Season. Registered before run per snapshot discipline. | EXP-001 (T-043); EXP-002/003 rerun (Phase 4) |
+| SNAP-2026-06-14-001 | NBA Finals 2026 Clean Bet Dataset (canonical NBA T1+T4 paper track record) | DS-02 derived (PaperTrader ledger + C6 audit log) | bet_record_contract v1.0 | 2026-06-14 | data/nba_finals_clean_dataset.csv | 158 bets (117 CLOSED + 41 OPEN G5) | bet_record_contract v1.0 (28 canonical fields) | **T-174 WS2/WS3 canonical NBA close-out record.** Built by `scripts/build_clean_dataset.py` from the corrected PaperTrader ledger; contamination is LABELED not dropped (`duplicate_twin`/`fee_contaminated`/`kalshi_order_failed`/`order_local_only` + `is_clean` flag). Reconciles to true realized P&L **−$251.21 (−25.1%)** headline; **clean-only −$302.98 (−30.3%)** — contaminated bets netted +$51.76. **sha256 `bf5652c3edd88a93b4b3060ac2541a19418eeba2b29d1156e14b645c178314b8`.** Summary JSON `data/nba_finals_clean_dataset_summary.json` sha256 `eee43a7236f5652f22e64749bba7cdf819aae03aacfde655e9e76ecfb9095cd7`. CSV gitignored (data CSV convention); registered by hash. **41 G5 rows remain OPEN — see GG-036; re-freeze as a new snapshot if G5 resolves.** | G6 baseline ratification (2026-06-14); EXP-017-style commercial validation (post-season audit) |
 
 **Alias:** SNAP-001 (shorthand for SNAP-2026-05-22-001; internal references)  
 **Alias:** SNAP-002 (shorthand for SNAP-2026-05-27-001; EXP-001 10-player raw game logs)  
 **Alias:** SNAP-003 (shorthand for SNAP-2026-05-27-002; backtest fresh pull — optional)  
-**Alias:** SNAP-004 (shorthand for SNAP-2026-05-28-001; T-043 50-player raw game logs)
+**Alias:** SNAP-004 (shorthand for SNAP-2026-05-28-001; T-043 50-player raw game logs)  
+**Alias:** SNAP-005 (shorthand for SNAP-2026-06-14-001; canonical NBA Finals clean bet dataset)
 
 ---
 
