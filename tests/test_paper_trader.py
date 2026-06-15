@@ -417,10 +417,16 @@ class TestSummary:
 
     @pytest.mark.unit
     def test_realized_drawdown_reflects_closed_losses(self, tmp_path):
-        """realized_drawdown_pct tracks permanent losses from resolved positions only."""
+        """realized_drawdown_pct tracks permanent losses from resolved positions only.
+
+        GG-034: drawdown derives from the closed-position ledger, not a stored
+        scalar — so the loss must be backed by a real closed position.
+        """
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         trader._state["initial_bankroll_usd"] = 1000.0
-        trader._state["total_realized_pnl"] = -150.0
+        trader._state["closed_positions"] = [
+            {"position_id": "X", "status": "CLOSED", "outcome": "LOSS", "pnl": -150.0},
+        ]
         trader._state["bankroll_usd"] = 850.0  # 1000 - 150 lost
         summary = trader.summary()
         assert summary["realized_drawdown_pct"] == 15.0
@@ -428,10 +434,16 @@ class TestSummary:
 
     @pytest.mark.unit
     def test_deployed_pct_and_realized_drawdown_independent(self, tmp_path):
-        """Both metrics can be nonzero simultaneously."""
+        """Both metrics can be nonzero simultaneously.
+
+        GG-034: realized loss is backed by a closed position; deployed_pct then
+        reflects the remaining open stakes via the cash identity.
+        """
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         trader._state["initial_bankroll_usd"] = 1000.0
-        trader._state["total_realized_pnl"] = -100.0   # $100 realized loss
+        trader._state["closed_positions"] = [
+            {"position_id": "X", "status": "CLOSED", "outcome": "LOSS", "pnl": -100.0},
+        ]
         trader._state["bankroll_usd"] = 700.0           # $900 - $200 in open stakes
         summary = trader.summary()
         assert summary["realized_drawdown_pct"] == 10.0

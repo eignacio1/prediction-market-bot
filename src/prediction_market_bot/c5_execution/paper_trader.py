@@ -39,9 +39,16 @@ import json
 import threading
 import time
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, date, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Iterator, Optional
+
+try:
+    import fcntl  # POSIX only (Linux VPS + macOS dev); absent on Windows.
+    _HAS_FCNTL = True
+except ImportError:  # pragma: no cover - non-POSIX fallback
+    _HAS_FCNTL = False
 
 import pandas as pd
 
@@ -53,6 +60,22 @@ if TYPE_CHECKING:
 COMPONENT = "C5-PAPER"
 
 INITIAL_BANKROLL_USD: float = 1000.00
+
+# GG-034: a closed position carries `pnl` (resolved/CLOSED) XOR `exit_pnl`
+# (early-exit/EXITED). The two keys are mutually exclusive per position, so
+# summing both is the single authoritative realized-P&L source. Any derivation
+# that reads only `pnl` silently under-counts every EXITED position.
+RECONCILE_TOLERANCE_USD: float = 0.01
+
+
+def _position_pnl(p: dict[str, Any]) -> float:
+    """Realized P&L of one closed position, covering both resolve and exit paths."""
+    return float(p.get("pnl", 0.0)) + float(p.get("exit_pnl", 0.0))
+
+
+class PortfolioReconciliationError(RuntimeError):
+    """Raised when the stored realized-P&L scalar diverges from the ledger
+    beyond RECONCILE_TOLERANCE_USD under strict reconciliation (GG-034)."""
 
 
 def _utc_now() -> str:
@@ -101,6 +124,10 @@ class PaperTrader:
         self._kalshi = kalshi_client  # None → local-only mode
         self._lock = threading.Lock()
         self._state = self._load_or_init()
+        # GG-034: detect a desynced realized-P&L scalar at load time and adopt the
+        # ledger value before any health surface reads it. In-memory only — does not
+        # write the file (correction persists on the next real mutation's _save()).
+        self.reconcile()
 
     # ------------------------------------------------------------------
     # State management
@@ -124,14 +151,143 @@ class PaperTrader:
             "last_updated": _utc_now(),
         }
 
+    def _ledger_realized_pnl(self) -> float:
+        """Authoritative realized P&L = Σ over the immutable closed-position ledger.
+
+        GG-034: this replaces the old `total_realized_pnl` accumulator, which was
+        incremented in-memory under an in-process lock only and drifted when
+        concurrent runner processes clobbered each other's load→mutate→save.
+        The closed_positions list and the C6 audit log are append-only ground
+        truth; this value is now derived from them and can no longer desync.
+        """
+        return round(
+            sum(_position_pnl(p) for p in self._state.get("closed_positions", [])),
+            4,
+        )
+
+    def _ledger_bankroll(self) -> float:
+        """Authoritative free cash, derived from the position ledger (GG-034).
+
+        Cash identity (non-isolated positions only):
+            bankroll = initial
+                       + Σ realized pnl on closed positions   (stake returned + pnl)
+                       − Σ entry cost of still-open positions  (stake out in flight)
+
+        pool_isolated (T4) positions never touch the main bankroll on entry or
+        close, so they are excluded from both sums. Deriving this also fixes the
+        latent resolve_pending bug where the resolve path credited the bankroll
+        unconditionally, ignoring pool_isolated.
+        """
+        initial = float(self._state.get("initial_bankroll_usd", INITIAL_BANKROLL_USD))
+        closed_pnl = sum(
+            _position_pnl(p)
+            for p in self._state.get("closed_positions", [])
+            if not p.get("pool_isolated", False)
+        )
+        open_cost = sum(
+            float(p.get("size_usd", 0.0))
+            for p in self._state.get("open_positions", [])
+            if not p.get("pool_isolated", False)
+        )
+        return round(initial + closed_pnl - open_cost, 4)
+
+    # ------------------------------------------------------------------
+    # Cross-process safety (GG-034)
+    # ------------------------------------------------------------------
+    # The portfolio JSON is written by four separate runner processes
+    # (run_paper_trade, run_resolve, run_t4_live, run_t4_resolve_local). A
+    # threading.Lock only serialises threads within ONE process; across
+    # processes, load→mutate→save races clobber appended positions. Every
+    # mutating section therefore runs under an exclusive file lock and re-reads
+    # the latest committed state from disk before applying its single change.
+
+    @contextmanager
+    def _file_lock(self) -> Iterator[None]:
+        if not _HAS_FCNTL:  # pragma: no cover - non-POSIX fallback
+            yield
+            return
+        lock_path = self._path.with_suffix(self._path.suffix + ".lock")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        fd = open(lock_path, "w")
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            yield
+        finally:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+            fd.close()
+
+    def _reload_locked(self) -> None:
+        """Re-read the latest committed state from disk. Call only while holding
+        _file_lock so a concurrent writer's appends are not lost on save."""
+        if self._path.exists():
+            try:
+                self._state = json.loads(self._path.read_text())
+            except Exception:
+                pass
+
     def _save(self) -> bool:
         try:
             self._path.parent.mkdir(parents=True, exist_ok=True)
+            # GG-034: realized P&L and bankroll are derived from the ledger on every
+            # save, never incremented. Any in-memory drift is corrected here before
+            # persistence, so no scalar can desync from the position lists.
+            self._state["total_realized_pnl"] = self._ledger_realized_pnl()
+            self._state["bankroll_usd"] = self._ledger_bankroll()
             self._state["last_updated"] = _utc_now()
             self._path.write_text(json.dumps(self._state, indent=2))
             return True
         except OSError:
             return False
+
+    def reconcile(
+        self,
+        *,
+        strict: bool = False,
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """Check the stored realized-P&L scalar against the ledger (GG-034).
+
+        The drawdown kill switch (risk.py), C7 monitor, C8 dashboard, and the G6
+        gate all read `total_realized_pnl`. If that scalar has drifted from the
+        closed-position ledger, every one of those health surfaces is reporting a
+        false number — the exact failure mode that left the −25% drawdown blind to
+        the 20% kill switch. This logs the drift loudly and adopts the ledger value
+        as authoritative (or raises under strict=True for invariant tests/asserts).
+
+        Pure check: does not write the file. The corrected value is persisted only
+        when the next real mutation calls _save().
+        """
+        stored = float(self._state.get("total_realized_pnl", 0.0))
+        derived = self._ledger_realized_pnl()
+        drift = round(stored - derived, 4)
+        report = {
+            "stored_total_realized_pnl": stored,
+            "ledger_total_realized_pnl": derived,
+            "drift_usd": drift,
+            "n_closed": len(self._state.get("closed_positions", [])),
+        }
+        ok = True
+        if abs(drift) > RECONCILE_TOLERANCE_USD:
+            ok = self._logger.warning(
+                COMPONENT, "portfolio_pnl_desync",
+                payload={
+                    **report,
+                    "note": (
+                        "GG-034: stored total_realized_pnl diverged from the "
+                        "closed-position ledger; ledger is authoritative. All "
+                        "health surfaces (kill switch/monitor/dashboard/G6) were "
+                        "reading the corrupted scalar."
+                    ),
+                },
+                session_id=session_id,
+            )
+            if strict:
+                raise PortfolioReconciliationError(
+                    f"realized-P&L desync: stored={stored} ledger={derived} "
+                    f"drift={drift} (tolerance ${RECONCILE_TOLERANCE_USD})"
+                )
+            self._state["total_realized_pnl"] = derived
+        return ok, report
 
     def _reset_daily_loss_if_new_day(self) -> None:
         today = _today()
@@ -185,7 +341,10 @@ class PaperTrader:
         pool_isolated=True hardcoded) so T1 and T4 do not compete for the same
         bankroll. Logs to C6. Returns (ok, position_record).
         """
-        with self._lock:
+        with self._lock, self._file_lock():
+            # GG-034: re-read the latest committed state so a concurrent runner's
+            # appended positions are not clobbered by this load→mutate→save.
+            self._reload_locked()
             self._reset_daily_loss_if_new_day()
 
             size    = float(approval.get("approved_size", 0.0))
@@ -215,7 +374,9 @@ class PaperTrader:
                 # T4 tracks its own pool via t4_deployed_usd in run_t4_live.py.
                 pass
             else:
-                # Deduct from bankroll
+                # Reject if free cash cannot cover the stake. Bankroll itself is
+                # DERIVED from the ledger in _save() (GG-034) — appending this open
+                # position is what reduces it; do not decrement the scalar here.
                 if entry_cost > self._state["bankroll_usd"]:
                     ok = self._logger.warning(
                         COMPONENT, "insufficient_bankroll",
@@ -223,7 +384,6 @@ class PaperTrader:
                         session_id=session_id,
                     )
                     return ok, {}
-                self._state["bankroll_usd"] = round(self._state["bankroll_usd"] - entry_cost, 4)
 
             pos = {
                 "position_id": f"POS-{uuid.uuid4().hex[:10].upper()}",
@@ -332,7 +492,11 @@ class PaperTrader:
         (never was deducted on entry); only total_realized_pnl updated.
         Returns (ok, closed_position_record). Empty dict if position not found.
         """
-        with self._lock:
+        with self._lock, self._file_lock():
+            # GG-034: re-read latest committed state under the file lock. The lookup
+            # below then doubles as a guard — if a concurrent runner already closed
+            # this position it will be absent and we no-op rather than double-close.
+            self._reload_locked()
             pos = next(
                 (p for p in self._state["open_positions"] if p["position_id"] == position_id),
                 None,
@@ -374,16 +538,11 @@ class PaperTrader:
                 "exited_at": _utc_now(),
             }
             self._state["closed_positions"].append(closed_pos)
-            self._state["total_realized_pnl"] = round(
-                self._state["total_realized_pnl"] + pnl, 4,
-            )
+            # GG-034: both total_realized_pnl and bankroll_usd are derived from the
+            # ledger in _save() — moving this position from open→closed is what
+            # returns its stake+pnl to the derived bankroll (pool_isolated excluded
+            # by _ledger_bankroll). No imperative scalar updates here.
             self._accumulate_daily_loss(pnl)
-            # pool_isolated: bankroll was never decremented on entry, so do not modify it.
-            # Non-isolated: return stake + pnl to bankroll.
-            if not pool_isolated:
-                self._state["bankroll_usd"] = round(
-                    self._state["bankroll_usd"] + size + pnl, 4,
-                )
 
             ok_save = self._save()
             ok_log  = self._logger.info(
@@ -515,7 +674,15 @@ class PaperTrader:
             pnl = round(pnl, 4)
             outcome = "WIN" if won else "LOSS"
 
-            with self._lock:
+            with self._lock, self._file_lock():
+                # GG-034: re-read latest committed state under the file lock, then
+                # guard against double-resolution — if a concurrent runner already
+                # resolved this position, skip it rather than append a second
+                # closed record (which would corrupt the realized-P&L ledger).
+                self._reload_locked()
+                if not any(p["position_id"] == pos["position_id"]
+                           for p in self._state["open_positions"]):
+                    continue
                 # Remove from open, add to closed
                 self._state["open_positions"] = [
                     p for p in self._state["open_positions"]
@@ -524,9 +691,10 @@ class PaperTrader:
                 closed_pos = {**pos, "actual_pts": actual_pts, "outcome": outcome,
                               "pnl": pnl, "resolved_at": _utc_now(), "status": "CLOSED"}
                 self._state["closed_positions"].append(closed_pos)
-                self._state["bankroll_usd"] = round(self._state["bankroll_usd"] + size + pnl, 4)
-                self._state["total_realized_pnl"] = round(
-                    self._state["total_realized_pnl"] + pnl, 4)
+                # GG-034: bankroll_usd + total_realized_pnl are derived from the
+                # ledger in _save(). The old imperative credit here added stake+pnl
+                # unconditionally, ignoring pool_isolated — the derived bankroll now
+                # excludes isolated positions, fixing that latent bug.
                 self._accumulate_daily_loss(pnl)
                 self._save()
 
@@ -567,7 +735,9 @@ class PaperTrader:
         win_rate = wins / n_closed if n_closed > 0 else None
 
         initial      = s["initial_bankroll_usd"]
-        realized_pnl = s.get("total_realized_pnl", 0.0)
+        # GG-034: derive from the ledger, never trust the stored scalar here — the
+        # drawdown figure below is what the kill switch acts on.
+        realized_pnl = self._ledger_realized_pnl()
         realized_loss = max(0.0, -realized_pnl)
         realized_drawdown = realized_loss / initial
 
