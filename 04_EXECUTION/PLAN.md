@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-06-13 SESSION 62 — Audit session, no plan changes. GG-034 registered (realized-P&L scalar desync; drawdown kill switch blind; G6 P&L gate measured on false number) → T-174 added to Dark Period Phase 1 alongside T-171. Dark period begins ~Jun 22 post-Finals. *(Previous, SESSION 60:)* GG-020 grep-invisible fixed; deploy.yml dirty-tree guard. 923/923 tests. Commit `3c1daa2`.  
+**Last reviewed:** 2026-06-14 SESSION 63 — **Dark period OPEN (Knicks won the Finals).** T-174 + T-171 DEPLOYED + live book corrected; GG-034 + GG-033 RESOLVED (VPS HEAD `52607f2`, governance closure `c52d298`). G6 baseline RATIFIED negative (−$251.21/−25.1% headline; −$302.98/−30.3% clean-only) — number-of-record only; Tier 0/EXP-017 (GG-004) is still the binding G6 blocker, positive-P&L gate FAILING. New Dark Period Phase 1 items: GG-035 (build C4 portfolio free-cash invariant, pre-live), GG-036 (retry G5 resolve / evaluate ESPN fallback box-score source). MLB C1 data-source selection pending operator/DS (do not fabricate). 965/965 tests. *(Previous, SESSION 62:)* GG-034 registered; T-174 added alongside T-171.  
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
 **Upstream links:** ROADMAP_MILESTONES.md, REQUIREMENTS.md, ARCHITECTURE_OVERVIEW.md  
