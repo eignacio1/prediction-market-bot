@@ -4,7 +4,7 @@
 **Gate:** G6 Release (live capital authorization)  
 **Formal approval required:** APR-0008 (final validation report) + APR-0009 (live capital authorization)  
 **Evidence standard:** APR-0017 (2026-06-01) as amended by APR-0019 (2026-06-09)  
-**Last reviewed:** 2026-06-12 SESSION 57  
+**Last reviewed:** 2026-06-15 SESSION 63 (baseline RATIFIED at true figure — see ratification block at end)  
 **Owner:** DS — Earl Ignacio  
 
 **Sequential rule:** Tier 0 must pass before any other tier evidence counts. Failure in any tier halts G6 regardless of results in subsequent tiers.
@@ -110,6 +110,7 @@ Before evaluating any tier criterion, confirm these hold:
 | **T3-A** | Per-bet cap — zero-tolerance (≤ $500) | Zero bets with `approved_size_usd` > $500.00 in any PIPE-03 session across paper period. | C6 JSONL `approve` events; `approved_size_usd` field. | 🟡 **PENDING AUDIT** — $500 cap enforced by `_HARD_LIMITS["max_single_event_exposure_usd"]` in risk.py. No violations reported. Formal C6 audit across all paper sessions required for sign-off. |
 | **T3-B** | Drawdown < 15%, slope ≤ 0 | (1) Peak realized drawdown at any point during paper period < 15%. (2) Slope of per-game-night drawdown ≤ 0 at paper period close. Kill switch fires at 20% (NFR-03); 15% paper ceiling = 75% of kill switch trigger. | `paper_portfolio.json` bankroll history; per-game-night drawdown calculation. | 🔴 **FAILING (GG-034 — was falsely ✅ PASSING on the corrupted scalar).** True realized drawdown = **25.1%** (−$251.21 / $1000), or **30.3% on the clean subset** (−$302.98). Both exceed the 15% paper ceiling AND the 20% kill-switch trigger (NFR-03) — the switch never fired only because it read the desynced −$8.46 (0.8%) scalar. The prior "✅ PASSING — 0.8%" entry was the blind kill switch manifesting in the gate evidence itself. Source: `data/nba_finals_clean_dataset.csv`. Resolution gated on DS retroactive-halt ruling + live-book correction (T-174 WS3). |
 | **T3-C** | Rejection rate [20%, 80%] | (1) Cumulative rejection rate in [20%, 80%] at paper period close. (2) \|slope\| ≤ 10pp per game night. Note: YES-only gate (PAPER_YES_ONLY) is an EXP-018 research gate, NOT a C4 rejection. T3-C measures C4 `reject` events (edge < MIN_EDGE) only. | C6 JSONL `reject` vs `approve` events per PIPE-03 session. | 🟡 **PENDING MEASUREMENT** — Rejection rate not formally calculated from C6 logs across paper period. |
+| **T3-E** | Aggregate deployed capital ≤ available cash | No portfolio state where `Σ open non-isolated stake > initial + Σ closed non-isolated pnl` (free cash ≥ 0). **NEW criterion — no such invariant existed at G5.** | `paper_portfolio.json` derived `bankroll_usd`; cash-identity decomposition. | 🔴 **FAILING (GG-035 — surfaced by the GG-034 correction).** Corrected `bankroll_usd` = **−$254.59**: $1003.38 deployed into 41 open G5 stakes = **100.3% of $1,000 initial / ~134% of $748.79 equity**. The corrupted scalar hid an over-leverage condition, not just a drawdown. No portfolio-level free-cash gate exists in C4 (per-event + Kelly caps do not sum to a global cash constraint). Resolution: add free-cash invariant to C4 (GG-035); post-season audit must rule whether the over-leveraged G5 book is admissible. |
 
 ---
 
@@ -174,3 +175,21 @@ Critical path:
 4. **ADR-0005 + APR-0008 + APR-0009:** drafted and signed only after all criteria confirmed
 
 The dark period is for making the system ready to collect G6-quality evidence quickly in October — not for accumulating evidence. The bet count clock starts running when T0-A is confirmed.
+
+---
+
+## G6 Baseline Ratification — 2026-06-15 (SESSION 63)
+
+**Ratified by:** Earl Ignacio (DS / operator), 2026-06-14/15, dark-period close.
+
+The NBA Finals paper-trading track record is hereby ratified **at its true, ledger-derived figure** as the canonical G6 baseline, superseding every prior citation built on the corrupted `total_realized_pnl` scalar (GG-034):
+
+- **Headline realized P&L: −$251.21 (−25.1% of $1,000 initial)** — 117 resolved bets. Source: `data/nba_finals_clean_dataset.csv` (SNAP-2026-06-14-001, sha256 `bf5652c3…`).
+- **Clean-only realized P&L: −$302.98 (−30.3%)** — contamination labeled-out; contaminated bets netted +$51.76, so the clean subset is *worse* than the headline.
+- **The G6 positive-P&L gate is FAILING, not passing.** T2-D (P&L slope) and T3-B (drawdown < 15%) are both 🔴 on the true figure. The prior "✅ PASSING / 0.8% drawdown" entries were the blind kill switch (GG-034) manifesting inside the gate evidence itself.
+
+**Findings folded into this ratification:**
+- **GG-035 (over-leverage):** deployed capital reached $1003.38 = 100.3% of initial / ~134% of equity; the corruption masked it. New criterion T3-E added (🔴 FAILING). C4 needs a portfolio-level free-cash invariant before live capital.
+- **GG-036 (G5 unresolvable):** 41 G5 positions ($1003.38 stake) cannot be settled — nba_api has no 2026-06-13 box scores. Outcomes NOT fabricated. Baseline reflects 117 of 158 bets; **re-ratification required if/when G5 resolves.**
+
+**What this ratification does NOT do:** it does not advance G6. Tier 0 (T0-A / EXP-017 commercial validation) remains the binding blocker; this ratification only fixes the *number of record* so the dark-period audit and all downstream evidence are computed against truth, not a lying scalar. The adverse Finals window is GG-004 (insufficient power for commercial conclusions) — a negative baseline is the honest starting point, not a project verdict.

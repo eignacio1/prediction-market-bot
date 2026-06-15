@@ -1,8 +1,22 @@
 # RUNBOOK — Dark-Period Close: T-174 deploy + live-book correction + T-171 untrack
 
-**Status:** ⛔ GATED — requires operator OK **and** a DS retroactive-halt ruling before any step that writes the live VPS book or pushes to deploy.
+**Status:** ✅ EXECUTED 2026-06-15 SESSION 63 (operator OK given; GG-034/GG-033 RESOLVED). Deviations from the planned sequence recorded below — read them before reusing this runbook.
 **Owner:** Earl Ignacio (operator) + DS sign-off
 **Prepared:** 2026-06-14 SESSION 63 (T-174 WS1/WS2 code-complete, all local; nothing deployed)
+**Executed:** 2026-06-15 ~01:54 UTC — VPS HEAD `52607f2`; main book `total_realized_pnl` −251.2134, drawdown 25.12%, kill switch un-blinded; C6 `portfolio_pnl_desync` EVT-4CED1860AFCB.
+
+---
+
+## EXECUTION RECORD (2026-06-15) — deviations from plan
+
+The runbook was followed in spirit (backup-first, verify-between-steps) but with four material deviations:
+
+1. **Manual deploy, not `deploy.yml` (step 3).** GHA auto-deploy aborts on a dirty/untracked VPS tree, and the VPS carried pre-existing untracked files (`team_stats_store.py`, a `.pre-s28-backup`). Deploy was done **by hand**: quiesce (cron stopped + `run_t4_live` killed) → backup books + crontab → `git checkout HEAD -- paper_portfolio.json` → `git pull` → restore book from backup → restore cron. HEAD verified `52607f2`.
+2. **Only the MAIN book needed correcting (steps 5–6).** The T4 book was **already consistent** (stored 4.8242 == ledger 4.8242) — the −$21.59/−$47.25 desync this runbook anticipated had already been fixed by GG-032/T-170. Step 6 was a no-op; verified, not applied.
+3. **Only `paper_portfolio.json` was git-tracked (step 2).** `paper_portfolio_t4.json` was already untracked, so the untrack/gitignore touched the main book only.
+4. **Precondition "zero open positions" was NOT met → G5 left OPEN.** G5 (2026-06-13) could not resolve — `run_resolve.py` returns "game results not available" (nba_api has no 2026-06-13 box scores). Outcomes were **NOT fabricated**. The correction was performed with 41 positions still open; this surfaced **GG-035** (over-leverage: corrected `bankroll_usd` = −$254.59, $1003.38 = 100.3% of initial deployed) and **GG-036** (G5 unresolvable, capital locked). Operator authorized proceeding with G5 open.
+
+**Python note:** the VPS uses `venv/bin/python` (NOT `.venv311` — that is local-only). The step-5/7 commands below say `.venv311`; on the VPS they were run as `venv/bin/python`.
 
 ---
 
@@ -97,9 +111,8 @@ ssh prediction-market-vps "cd /opt/prediction-market-bot && git log -1 --oneline
 Restore from `*.bak_t174` (step 0) on the VPS; `git revert` the untrack commit
 locally. Backups are the recovery path for every write step.
 
-## After completion
+## After completion — DONE (2026-06-15)
 
-- Record DS ruling + corrected G6 baseline in DECISION_LOG and `G6_GATE_CHECKLIST.md`.
-- Mark GG-034 RESOLVED (currently CODE-COMPLETE, NOT DEPLOYED) and T-171 COMPLETE.
-- Re-run `scripts/build_clean_dataset.py` against the corrected book for the final
-  frozen record.
+- ✅ Corrected G6 baseline ratified in `G6_GATE_CHECKLIST.md` (ratification block) and DECISION_LOG (2026-06-15 deploy row). DS retroactive-halt question: deferred into the post-season audit (operator directive — "the post-season audit will include all of these fixes"); the kill switch is now un-blinded so any *future* mutation halts on the true 25.12%.
+- ✅ GG-034 RESOLVED; GG-033 / T-171 RESOLVED; GG-035 + GG-036 registered.
+- ⏳ Re-run `scripts/build_clean_dataset.py`: **NOT needed now** — correcting the scalar does not change any per-position ledger value, so the dataset is unchanged (still 117 closed + 41 open, −$251.21). **Re-run + re-freeze required if/when G5 resolves (GG-036).**
