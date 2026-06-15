@@ -1,0 +1,45 @@
+{
+  "n_bets_total": 158,
+  "n_open": 41,
+  "n_closed": 117,
+  "n_clean": 103,
+  "n_contaminated": 55,
+  "realized_pnl_total": -251.2134,
+  "realized_pnl_clean": -302.975,
+  "realized_pnl_contaminated": 51.7616,
+  "contamination_reasons": {
+    "duplicate_twin": 9,
+    "fee_contaminated": 5,
+    "kalshi_order_failed": 43
+  },
+  "by_finals_game": {
+    "G2": {
+      "n_total": 35,
+      "n_closed": 35,
+      "realized_pnl": 75.6694,
+      "n_clean": 16,
+      "n_contaminated": 19
+    },
+    "G3": {
+      "n_total": 47,
+      "n_closed": 47,
+      "realized_pnl": -198.8382,
+      "n_clean": 29,
+      "n_contaminated": 18
+    },
+    "G4": {
+      "n_total": 35,
+      "n_closed": 35,
+      "realized_pnl": -128.0446,
+      "n_clean": 35,
+      "n_contaminated": 0
+    },
+    "G5": {
+      "n_total": 41,
+      "n_closed": 0,
+      "realized_pnl": 0.0,
+      "n_clean": 23,
+      "n_contaminated": 18
+    }
+  }
+}
