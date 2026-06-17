@@ -66,6 +66,7 @@ from prediction_market_bot.c1_signal_ingestion.ingestion import (
 )
 from prediction_market_bot.c1_signal_ingestion.team_stats_store import TeamStatsStore
 from prediction_market_bot.c2_feature_store.qualitative_store import QualitativeSignalStore
+from prediction_market_bot.c3_forecasting.calibration import calibrate_probability
 from prediction_market_bot.c3_forecasting.game_state_model import (
     _poisson_cdf,
     opp_adjusted_lambda,
@@ -540,7 +541,11 @@ def main() -> None:
             # T-129 Path B: Poisson CDF with opponent-adjusted λ (ADR-0015)
             thresh_int = int(mkt.threshold)
             adj_lam = opp_adjusted_lambda(pts_mean, mkt.ticker, team_store, GAME_DATE_ISO)
-            p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, adj_lam)
+            p_threshold_raw = 1.0 - _poisson_cdf(thresh_int - 1, adj_lam)
+            # ADR-0027 (GG-037): correct Poisson overconfidence via temperature
+            # scaling before the edge gate / Kelly sizing read it. Per-sport;
+            # identity for sports without resolved calibration data.
+            p_threshold = calibrate_probability(p_threshold_raw, sport="nba")
 
             mid  = mkt.mid_price
             half = mkt.half_spread
@@ -594,7 +599,8 @@ def main() -> None:
 
             forecast_rec = {
                 "forecast_id": f"FCST-{uuid.uuid4().hex[:8].upper()}",
-                "p_estimate": p_threshold,
+                "p_estimate": p_threshold,             # ADR-0027: calibrated (drives edge+Kelly)
+                "p_estimate_raw": round(p_threshold_raw, 6),  # pre-calibration Poisson (audit)
                 "p_estimate_lr": p_est_lr,
                 "market_implied_prob": mid,
                 "gross_edge": gross_edge,
@@ -605,11 +611,17 @@ def main() -> None:
                 "recommended_direction": direction,
                 "pam_archetype": _pam,             # GG-027: PAM register; None for non-cohort
             }
+            # ADR-0026 (GG-035): supply portfolio state so C4 can enforce the
+            # aggregate free-cash invariant. Snapshot is taken fresh each forecast
+            # (open exposure grows as bets are placed within this batch).
+            _exp = trader.exposure_snapshot()
             ok_c4, approval = engine.evaluate_forecast(
                 forecast_record=forecast_rec,
                 current_daily_loss=daily_loss,
                 current_drawdown_pct=current_drawdown_pct,
                 session_id=SESSION_ID,
+                current_open_exposure_usd=_exp["open_exposure_usd"],
+                portfolio_equity_usd=_exp["equity_usd"],
             )
 
             status = approval.get("approval_status", "UNKNOWN")
@@ -623,7 +635,10 @@ def main() -> None:
             if status == "APPROVED":
                 approved_size = approval.get("approved_size", 0)
 
-                # Batch reserve gate: block if this bet would drop bankroll below 40% floor
+                # Batch reserve gate: block if this bet would drop bankroll below 40% floor.
+                # Defense-in-depth secondary to C4's ADR-0026 aggregate free-cash invariant
+                # (GG-035), which is now the authoritative portfolio-level control; this
+                # batch-bankroll floor remains as a redundant halt and predates it.
                 if bankroll - approved_size < RESERVE_MANDATE_PCT * _initial_bankroll:
                     reserve_floor = RESERVE_MANDATE_PCT * _initial_bankroll
                     print(f"  [RESERVE GATE] BATCH HALT — "

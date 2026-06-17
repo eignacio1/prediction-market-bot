@@ -98,11 +98,21 @@ MIN_BET_USD: float = 10.0
 # at game time (ADR-0010). Warning-only at paper scale; blocking at live capital.
 RESERVE_MANDATE_PCT: float = 0.40
 
+# ADR-0026 (GG-035): portfolio-level aggregate deployment cap. The per-bet reserve
+# mandate (RESERVE_MANDATE_PCT, advisory above) was never enforced in aggregate —
+# nothing summed open stakes to a global cash constraint, so the G5 book deployed
+# 100.3% of initial / 134% of equity while the corrupted scalar (GG-034) reported
+# headroom. This cap is the PORTFOLIO-level expression of the same 40% reserve:
+# aggregate open non-isolated stake is held at or below (1 - reserve) of equity.
+MAX_PORTFOLIO_DEPLOYMENT_PCT: float = 1.0 - RESERVE_MANDATE_PCT  # 0.60
+
 # Hard limits — confirmed at G4/ADR-0004; count gate deleted per ADR-0006 (2026-06-01)
 # Revise all values via new APR at G6 when live bankroll is set.
 _HARD_LIMITS: dict[str, float] = {
     "max_single_event_exposure_usd": 500.0,    # $500 per event; caps Kelly output
     "max_drawdown_pct": 0.20,                   # 20% realized drawdown; KILL_SWITCH
+    "max_portfolio_deployment_pct": MAX_PORTFOLIO_DEPLOYMENT_PCT,  # ADR-0026: aggregate open stake ≤ 60% equity → REJECT
+    # Hard solvency invariant (open stake ≤ 100% equity → KILL_SWITCH) is implicit at 1.0 — see CHECK 8a.
     # max_daily_loss_usd removed — replaced by MAX_DAILY_LOSS_PCT (ADR-0012)
 }
 
@@ -311,6 +321,8 @@ class RiskEngine:
         current_daily_loss: float = 0.0,
         current_drawdown_pct: float = 0.0,
         session_id: str | None = None,
+        current_open_exposure_usd: float = 0.0,
+        portfolio_equity_usd: float | None = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Evaluate a forecast record and return a risk approval decision.
@@ -330,6 +342,17 @@ class RiskEngine:
             Current portfolio drawdown as a fraction (0.0 = no drawdown, 0.2 = 20%).
         session_id:
             Current run session ID.
+        current_open_exposure_usd:
+            ADR-0026: aggregate open NON-isolated stake already deployed (Σ open
+            stake on the book this bet would join). Used by the portfolio-level
+            free-cash invariant (CHECK 8). Caller (C5/orchestrator) owns the
+            position ledger and passes a snapshot — same pattern as drawdown/loss.
+        portfolio_equity_usd:
+            ADR-0026: current equity (initial_bankroll + Σ closed non-isolated
+            pnl). When None (default), the portfolio invariant is SKIPPED —
+            backward compatible for callers that do not yet supply portfolio
+            state (EXP harnesses, T4 isolated-pool path). run_paper_trade.py
+            supplies it, so the T1 main book is always gated.
 
         Returns
         -------
@@ -355,6 +378,8 @@ class RiskEngine:
                 "recommended_direction": fc.get("recommended_direction"),
                 "current_daily_loss": current_daily_loss,
                 "current_drawdown_pct": current_drawdown_pct,
+                "current_open_exposure_usd": current_open_exposure_usd,
+                "portfolio_equity_usd": portfolio_equity_usd,
             },
             session_id=session_id,
             risk_eval_id=eval_id,
@@ -550,6 +575,77 @@ class RiskEngine:
                 )
             checks_passed.append("min_bet_floor")
 
+            # ------------------------------------------------------------------
+            # CHECK 8 — Portfolio-level aggregate deployment invariant
+            # (ADR-0026 / GG-035). Enforced only when the caller supplies
+            # portfolio_equity_usd (backward compatible — None ⇒ skip).
+            #
+            # Per-event caps and per-bet Kelly do NOT sum to a global cash
+            # constraint. GG-035: the G5 book deployed $1003.38 (100.3% of
+            # initial / 134% of equity) one bet at a time, each individually
+            # under the $500 event cap, with nothing watching the aggregate.
+            # 8a is the hard solvency invariant (free cash ≥ 0 — KILL_SWITCH);
+            # 8b is the policy cap that prevents reaching 8a incrementally —
+            # each over-cap bet REJECTS (per-bet expression, not a batch break),
+            # so exposure plateaus at the cap instead of growing past equity.
+            # ------------------------------------------------------------------
+            if portfolio_equity_usd is not None:
+                equity = float(portfolio_equity_usd)
+                projected_exposure = float(current_open_exposure_usd) + float(approved_size)
+
+                # 8a — Hard solvency invariant: open stake must never exceed
+                # equity (free cash ≥ 0). Breach = over-leverage = KILL_SWITCH.
+                if projected_exposure > equity:
+                    ok = self._log(
+                        "risk_eval_kill_switch",
+                        {
+                            "risk_eval_id": eval_id,
+                            "trigger": "portfolio_over_leverage",
+                            "current_open_exposure_usd": float(current_open_exposure_usd),
+                            "approved_size": float(approved_size),
+                            "projected_exposure_usd": projected_exposure,
+                            "portfolio_equity_usd": equity,
+                            "free_cash_usd": equity - projected_exposure,
+                        },
+                        severity="CRITICAL",
+                        session_id=session_id,
+                        risk_eval_id=eval_id,
+                        forecast_id=forecast_id,
+                    )
+                    if not ok:
+                        all_ok = False
+                    return all_ok, self._build_kill_switch(
+                        eval_id, "portfolio_over_leverage", checks_passed, forecast_id
+                    )
+
+                # 8b — Policy deployment cap: hold aggregate stake ≤ cap × equity
+                # (ADR-0010 reserve enforced in aggregate). Breach = REJECT.
+                deployment_cap = _HARD_LIMITS["max_portfolio_deployment_pct"] * equity
+                if projected_exposure > deployment_cap:
+                    ok = self._log(
+                        "risk_eval_rejected",
+                        {
+                            "risk_eval_id": eval_id,
+                            "reason": "aggregate_deployment_cap",
+                            "current_open_exposure_usd": float(current_open_exposure_usd),
+                            "approved_size": float(approved_size),
+                            "projected_exposure_usd": projected_exposure,
+                            "deployment_cap_usd": deployment_cap,
+                            "max_portfolio_deployment_pct": _HARD_LIMITS["max_portfolio_deployment_pct"],
+                            "portfolio_equity_usd": equity,
+                        },
+                        severity="INFO",
+                        session_id=session_id,
+                        risk_eval_id=eval_id,
+                        forecast_id=forecast_id,
+                    )
+                    if not ok:
+                        all_ok = False
+                    return all_ok, self._build_rejection(
+                        eval_id, "aggregate_deployment_cap", checks_passed, forecast_id
+                    )
+                checks_passed.append("aggregate_deployment_cap")
+
             # Reserve mandate advisory warning (ADR-0010) — warning-only at paper scale;
             # blocking enforcement belongs in PIPE-03 batch-level check (dark period).
             # Fires when a single bet would exceed the uncommitted capital allowance.
@@ -585,6 +681,13 @@ class RiskEngine:
                 "forecast_id": forecast_id,
                 "kelly_fraction": self._kelly_fraction,
                 "bankroll": self._bankroll,
+                # ADR-0026 portfolio telemetry (None when caller did not supply state)
+                "portfolio_equity_usd": (
+                    float(portfolio_equity_usd) if portfolio_equity_usd is not None else None
+                ),
+                "open_exposure_before_usd": (
+                    float(current_open_exposure_usd) if portfolio_equity_usd is not None else None
+                ),
             }
 
             ok = self._log(

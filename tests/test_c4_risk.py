@@ -28,8 +28,10 @@ if str(_SRC) not in sys.path:
 from prediction_market_bot.c4_risk_engine.risk import (
     DEFAULT_KELLY_FRACTION,
     MAX_DAILY_LOSS_PCT,
+    MAX_PORTFOLIO_DEPLOYMENT_PCT,
     MIN_BET_USD,
     MIN_EDGE_TO_APPROVE,
+    RESERVE_MANDATE_PCT,
     STATUS_APPROVED,
     STATUS_KILL_SWITCH,
     STATUS_REJECTED,
@@ -534,3 +536,155 @@ class TestMinBetFloor:
         if result["approval_status"] != STATUS_APPROVED:
             # If sub-floor due to float precision, that is acceptable
             assert result["rejection_reason"] in ("min_bet_floor", "kelly_size_zero")
+
+
+# ---------------------------------------------------------------------------
+# Portfolio-level aggregate deployment invariant (ADR-0026 / GG-035)
+# ---------------------------------------------------------------------------
+
+
+class TestPortfolioDeploymentInvariant:
+    """
+    ADR-0026: C4 must hold aggregate open NON-isolated stake at or below the
+    deployment cap (60% of equity → REJECT) and must NEVER allow it to exceed
+    equity (free cash < 0 → KILL_SWITCH). The invariant is enforced only when
+    the caller supplies portfolio_equity_usd; otherwise it is skipped
+    (backward compatible). Root gap: GG-035 — the G5 book deployed 100.3% of
+    initial / 134% of equity one sub-$500 bet at a time with nothing watching
+    the aggregate.
+    """
+
+    @pytest.mark.unit
+    def test_cap_constant_ties_to_reserve_mandate(self):
+        """Deployment cap is the aggregate expression of the 40% reserve (ADR-0010)."""
+        assert MAX_PORTFOLIO_DEPLOYMENT_PCT == pytest.approx(1.0 - RESERVE_MANDATE_PCT)
+        assert MAX_PORTFOLIO_DEPLOYMENT_PCT == pytest.approx(0.60)
+
+    @pytest.mark.unit
+    def test_no_state_supplied_skips_invariant(self):
+        """portfolio_equity_usd=None ⇒ invariant skipped, no new check, telemetry None."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            _, result = engine.evaluate_forecast(fc)  # no portfolio args
+        assert result["approval_status"] == STATUS_APPROVED
+        assert "aggregate_deployment_cap" not in result["checks_passed"]
+        assert result["portfolio_equity_usd"] is None
+        assert result["open_exposure_before_usd"] is None
+
+    @pytest.mark.unit
+    def test_clean_book_passes_and_records_check(self):
+        """Zero existing exposure + ample equity ⇒ APPROVED, check recorded, telemetry set."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            _, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=0.0, portfolio_equity_usd=10_000.0
+            )
+        assert result["approval_status"] == STATUS_APPROVED
+        assert "aggregate_deployment_cap" in result["checks_passed"]
+        assert result["portfolio_equity_usd"] == pytest.approx(10_000.0)
+        assert result["open_exposure_before_usd"] == pytest.approx(0.0)
+
+    @pytest.mark.unit
+    def test_exposure_at_cap_rejects_next_bet(self):
+        """Open exposure already at the 60% cap ⇒ any further bet REJECTED."""
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, kelly_fraction=0.25)
+            _, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=600.0, portfolio_equity_usd=1_000.0
+            )
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "aggregate_deployment_cap"
+        assert result["approved_size"] == 0.0
+
+    @pytest.mark.unit
+    def test_exposure_at_equity_kill_switch(self):
+        """Open exposure at/above equity ⇒ over-leverage ⇒ KILL_SWITCH (8a, hard invariant)."""
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, kelly_fraction=0.25)
+            _, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=1_000.0, portfolio_equity_usd=1_000.0
+            )
+        assert result["approval_status"] == STATUS_KILL_SWITCH
+        assert result["rejection_reason"] == "portfolio_over_leverage"
+        assert result["approved_size"] == 0.0
+
+    @pytest.mark.unit
+    def test_solvency_breach_takes_priority_over_cap(self):
+        """A book already past equity must KILL, not merely REJECT (8a before 8b)."""
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, kelly_fraction=0.25)
+            # 1003.38 > equity 748.79 — this is the literal GG-035 forensic state
+            _, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=1003.38, portfolio_equity_usd=748.79
+            )
+        assert result["approval_status"] == STATUS_KILL_SWITCH
+        assert result["rejection_reason"] == "portfolio_over_leverage"
+
+    @pytest.mark.unit
+    def test_below_cap_is_approved(self):
+        """Exposure comfortably below cap ⇒ bet still approved."""
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1_000.0, kelly_fraction=0.25)
+            _, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=100.0, portfolio_equity_usd=1_000.0
+            )
+        assert result["approval_status"] == STATUS_APPROVED
+        assert "aggregate_deployment_cap" in result["checks_passed"]
+
+    @pytest.mark.unit
+    def test_c6_failure_during_cap_rejection_propagates_false(self):
+        """C6 write failure during the aggregate-cap rejection returns ok=False."""
+        logger = _make_mock_logger(write_ok=False)
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(logger=logger, bankroll=1_000.0, kelly_fraction=0.25)
+            ok, result = engine.evaluate_forecast(
+                fc, current_open_exposure_usd=600.0, portfolio_equity_usd=1_000.0
+            )
+        assert ok is False
+        assert result["rejection_reason"] == "aggregate_deployment_cap"
+
+    @pytest.mark.unit
+    def test_g5_overleverage_forensic_would_have_been_blocked(self):
+        """
+        INSTITUTIONAL VERIFICATION (GG-035): replay the G5 deployment dynamic.
+
+        Going into G5 the book had equity = $1000 initial − $251.21 realized
+        (G2+G3+G4) = $748.79. The bot actually deployed $1003.38 (100.3% of
+        initial, 134% of equity). With ADR-0026 active, C4 holds aggregate
+        deployment at ≤ 60% of equity ($449.27) — every bet past the cap is
+        REJECTED, so the over-leveraged $1003.38 state is unreachable.
+        """
+        equity = 748.79
+        cap = MAX_PORTFOLIO_DEPLOYMENT_PCT * equity  # 449.27
+        # Each bet sizes to $50 (bankroll 500, p=0.70, mip=0.50, kf=0.25 → f_live=0.1)
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+
+        deployed = 0.0
+        approvals = 0
+        rejected_for_cap = False
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=500.0, kelly_fraction=0.25)
+            for _ in range(41):  # G5 actually placed 41 bets
+                _, res = engine.evaluate_forecast(
+                    fc,
+                    current_open_exposure_usd=deployed,
+                    portfolio_equity_usd=equity,
+                )
+                if res["approval_status"] == STATUS_APPROVED:
+                    deployed += res["approved_size"]
+                    approvals += 1
+                elif res["rejection_reason"] == "aggregate_deployment_cap":
+                    rejected_for_cap = True
+                    break
+
+        assert rejected_for_cap, "cap must engage before all 41 bets clear"
+        assert deployed <= cap + 1e-6, f"deployed {deployed} exceeded cap {cap}"
+        assert deployed < 1003.38, "must never reach the real over-leveraged exposure"
+        assert approvals < 41, "not all G5 bets should have been allowed"
