@@ -1,12 +1,12 @@
 {
   "n_bets_total": 158,
-  "n_open": 41,
-  "n_closed": 117,
+  "n_open": 0,
+  "n_closed": 158,
   "n_clean": 103,
   "n_contaminated": 55,
-  "realized_pnl_total": -251.2134,
-  "realized_pnl_clean": -302.975,
-  "realized_pnl_contaminated": 51.7616,
+  "realized_pnl_total": -248.8997,
+  "realized_pnl_clean": -212.2465,
+  "realized_pnl_contaminated": -36.6532,
   "contamination_reasons": {
     "duplicate_twin": 9,
     "fee_contaminated": 5,
@@ -36,8 +36,8 @@
     },
     "G5": {
       "n_total": 41,
-      "n_closed": 0,
-      "realized_pnl": 0.0,
+      "n_closed": 41,
+      "realized_pnl": 2.3137,
       "n_clean": 23,
       "n_contaminated": 18
     }

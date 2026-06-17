@@ -191,6 +191,37 @@ class PaperTrader:
         )
         return round(initial + closed_pnl - open_cost, 4)
 
+    def exposure_snapshot(self) -> dict[str, float]:
+        """Portfolio-state snapshot for C4's ADR-0026 deployment invariant (GG-035).
+
+        Returns the two figures the free-cash invariant needs, derived from the
+        same ledger identity as _ledger_bankroll (non-isolated positions only):
+
+            open_exposure_usd — Σ entry cost of still-open NON-isolated positions
+                                (capital currently in flight).
+            equity_usd        — initial + Σ closed non-isolated pnl
+                                (= bankroll + open_exposure; the deployable base).
+
+        T4 (pool_isolated) positions are excluded — they run their own budget
+        (ADR-0013/0022/0023). free_cash_usd == _ledger_bankroll() by construction.
+        """
+        initial = float(self._state.get("initial_bankroll_usd", INITIAL_BANKROLL_USD))
+        closed_pnl = sum(
+            _position_pnl(p)
+            for p in self._state.get("closed_positions", [])
+            if not p.get("pool_isolated", False)
+        )
+        open_exposure = sum(
+            float(p.get("size_usd", 0.0))
+            for p in self._state.get("open_positions", [])
+            if not p.get("pool_isolated", False)
+        )
+        return {
+            "open_exposure_usd": round(open_exposure, 4),
+            "equity_usd": round(initial + closed_pnl, 4),
+            "free_cash_usd": round(initial + closed_pnl - open_exposure, 4),
+        }
+
     # ------------------------------------------------------------------
     # Cross-process safety (GG-034)
     # ------------------------------------------------------------------
