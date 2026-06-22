@@ -38,6 +38,17 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
+## SESSION 66 — COMPLETE (2026-06-22)
+
+| Task | Status |
+|------|--------|
+| **T-179 (SESSION 66) — ADR-0029 DRAFTED: T4 sub-band architecture** | 🔄 DRAFT COMPLETE — PENDING DS SIGN-OFF. Full 804-line architecture document written: 11 sub-bands (T4-MICRO, T4-STAGED, T4-EVENT, T4-LINEUP, T4-FLOW, T4-SENTIMENT, T4-PROJ, T4-ARITH, T4-BOUNDARY, T4-CORR, T4-EXIT), three-layer execution architecture, immediate execution principle, dynamic game-phase Kelly schedule for T4-PROJ (supersedes ADR-0010 monolithic T4=0.20), FLOW-BLOWOUT as blowout-consequences architecture, T4-CORR convergence signal formalization, budget partitioning (shared pool within T4_BAND_WEIGHT=0.27). Three amendments: ADR-0010 T4 superseded, ADR-0014 T4 section superseded, ADR-0018/ADR-0019 T4 noise buffer superseded. ADR-0028 T4 Activation Gate PLACEHOLDER completed. Three new governance gaps: GG-038 (T4 kill switch ≤5s, Phase 8 prereq), GG-039 (T4 price cache, Phase 8 prereq), GG-040 (T4 real-time data sources, Phase 8 prereq). DECISION_LOG entry written (CLAUDE.md rule 7). **Code changes in execution_bands.py, t4_execution_engine.py, t4_price_cache.py, c7 kill switch: BLOCKED pending DS sign-off on ADR-0029.** |
+| **GG-038/039/040 REGISTERED** | ✅ COMPLETE — GOVERNANCE_GAP_LOG.md updated with three new Phase 8 prerequisite gaps. |
+| **Tests** | ✅ 988/988 (no code changes this session — design-only) |
+| **VPS** | ✅ HEAD `97e66ae` unchanged (no code deploy — governance artifacts only) |
+
+---
+
 ## SESSION 65 — COMPLETE (2026-06-22)
 
 | Task | Status |
@@ -69,7 +80,8 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 - **T-176 — HIGH (dark period, before MLB launch):** MLB calibration temperature derivation. Run `scripts/derive_calibration.py` on the dark-period MLB resolved dataset once it exists; write the derived T into `CALIBRATION_TEMPERATURE["mlb"]` via an ADR-0027 amendment (currently identity 1.0).
 - **T-177 — HIGH (G6 BLOCKER, DS):** Edge-inversion / no-alpha resolution. The model edge is anti-predictive vs the Kalshi price even after calibration. Either (a) interim halt-on-anti-predictive monitor / guard, and/or (b) resolve via EXP-017 at scale. GG-037 alpha half + GG-004 ride on this. Do NOT call G6 until alpha is demonstrated.
 - **T-178 — ✅ DONE (SESSION 65):** `market_mapper.py` / C1–C2 MLB pre-flight audit — architecture claim VERIFIED: C4/C6/C7/C8 sport-agnostic; C5 NBA defaults are caller-supplied (expected); `KXNBAPTS` series ticker (C-3) is C5-layer, not a C4–C8 violation. Pre-documented constraints C-1 (threshold int type) and C-2 (sport-partitioned runs) stand.
-- **T-179 — HIGH (Phase 8 design blocker) — NEXT SESSION:** T4 internal sub-band segmentation design. Current T4 band is monolithic — one SLA (5s), one compute budget (50ms), one Kelly fraction (0.20), one BAND_REGISTRY entry (Strategy K BLOCKED). DS directive (SESSION 65): "In-game trading is the most diverse section — can be the most complex or simple dependent on the route. It can't just be clumped as one aggregate bucket." Required design: (1) define T4 sub-band taxonomy spanning the full execution window from sub-millisecond scalping (pure execution quality, zero model) through multi-minute model-driven position holds (richer Bayesian update, approaches T3 complexity); (2) assign SLA, compute budget, Kelly fraction, filtering mechanism, signal type, and model requirements to each sub-band; (3) update `execution_bands.py` BAND_CONFIGS and BAND_REGISTRY to split T4 into named sub-bands (e.g., T4-HFT, T4-TICK, T4-FAST, T4-MED — naming TBD by DS); (4) write new ADR for T4 sub-band architecture (ADR-0029 or equivalent); (5) update ADR-0028 T4 Activation Gate to be sub-band-aware — per-sub-band Tier 2 criteria replace the current single-T4 floor. **ADR-0028 T4 Activation Gate section is a PLACEHOLDER until T-179 completes.** Priority: must complete before T4 Activation Gate can be finalized or signed off.
+- **T-179 — 🔄 DRAFT COMPLETE (SESSION 66) — PENDING DS SIGN-OFF:** ADR-0029 drafted (`03_DECISIONS/ADR-0029_t4-sub-band-architecture.md`, 804 lines). 11 sub-bands specified with decision trees, Kelly frameworks, EXP prerequisites. ADR-0028 T4 Activation Gate PLACEHOLDER completed. Code changes to `execution_bands.py`, new `t4_execution_engine.py` + `t4_price_cache.py`, C7 kill switch amendment: **all blocked pending DS sign-off.**
+- **T-180 — HIGH (Phase 8 code implementation, post ADR-0029 sign-off):** Split `T4_IN_PLAY` in `execution_bands.py` into 11 sub-band `ExecutionBand` enum values with per-sub-band `BandConfig` and `StrategyBandSpec` entries. Add `NOISE_BUFFER` constants per sub-band (provisional EXP-required values marked). Update Kalshi `VenueBandConstraint` entries per sub-band. Scaffold `t4_execution_engine.py` (Layer 1/2 skeleton, BLOCKED Phase 8). Scaffold `t4_price_cache.py` (GG-039 resolution component). C7 kill switch fast-halt design (GG-038 resolution ADR required). **NOT executable until DS signs off on ADR-0029.**
 
 ---
 
