@@ -8,7 +8,8 @@
 **Upstream links:** ADR-0001, RISK_APPETITE_CONSTRAINTS.md  
 **Downstream links:** 03_DECISIONS/, 00_ADMIN/CHANGELOG.md  
 **Decision references:** ADR-0001  
-**Confidence:** 8/10 — Change types are well-defined; application to edge cases requires judgment
+**Confidence:** 8/10 — Change types are well-defined; application to edge cases requires judgment  
+**Decisions logged:** true — T-154 (SESSION 65 2026-06-22): four framework decisions extracted to DECISION_LOG.md Notable Judgment Calls (three-tier classification; SKELETON→ACTIVE Class A; no emergency override; conditional-language escalation rule)
 
 ---
 

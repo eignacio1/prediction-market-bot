@@ -5,6 +5,7 @@
 set -uo pipefail
 
 PROJ="/opt/prediction-market-bot"
+PYTHON="$PROJ/venv/bin/python"
 ERRORS=0
 
 pass() { echo "[OK] $1"; }
@@ -16,15 +17,15 @@ echo "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 echo ""
 
 # 1. Python 3.11 with OpenSSL 3.x
-if /usr/local/bin/python3.11 -c "import ssl; v=ssl.OPENSSL_VERSION; assert '3.' in v, v" 2>/dev/null; then
-    OPENSSL_VER=$(/usr/local/bin/python3.11 -c "import ssl; print(ssl.OPENSSL_VERSION)")
+if $PYTHON -c "import ssl; v=ssl.OPENSSL_VERSION; assert '3.' in v, v" 2>/dev/null; then
+    OPENSSL_VER=$($PYTHON -c "import ssl; print(ssl.OPENSSL_VERSION)")
     pass "Python 3.11 | $OPENSSL_VER"
 else
     fail "Python 3.11 with OpenSSL 3.x not found (required for Kalshi TLS)"
 fi
 
 # 2. sklearn version matches training
-SKLEARN_VER=$(/usr/local/bin/python3.11 -c "import sklearn; print(sklearn.__version__)" 2>/dev/null || echo "missing")
+SKLEARN_VER=$($PYTHON -c "import sklearn; print(sklearn.__version__)" 2>/dev/null || echo "missing")
 if [ "$SKLEARN_VER" = "1.4.2" ]; then
     pass "sklearn 1.4.2 (matches training environment)"
 else
@@ -34,7 +35,7 @@ fi
 # 3. Model file
 if [ -f "$PROJ/models/prod_model.joblib" ]; then
     SIZE=$(du -h "$PROJ/models/prod_model.joblib" | cut -f1)
-    TRAINED_AT=$(/usr/local/bin/python3.11 -c "
+    TRAINED_AT=$($PYTHON -c "
 import json; m=json.load(open('$PROJ/models/prod_model_meta.json'))
 print(m.get('trained_at','unknown'))" 2>/dev/null || echo "unknown")
     pass "Model present ($SIZE, trained $TRAINED_AT)"
@@ -82,7 +83,7 @@ fi
 # 7. Kalshi API connectivity
 echo ""
 echo "[DS-02] Testing Kalshi API connectivity..."
-CONNECTIVITY=$(/usr/local/bin/python3.11 -c "
+CONNECTIVITY=$($PYTHON -c "
 import sys, os
 sys.path.insert(0, '$PROJ/src')
 os.environ.setdefault('VENUE_API_KEY', os.popen('grep VENUE_API_KEY $PROJ/.env | cut -d= -f2').read().strip())
