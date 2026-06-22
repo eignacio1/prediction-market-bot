@@ -10,9 +10,25 @@ from prediction_market_bot.execution_bands import (
 
 
 class TestExecutionBandEnum:
-    def test_all_five_bands_defined(self):
+    def test_base_aggregate_bands_defined(self):
+        # Five aggregate time-horizon bands (ADR-0010). T4_IN_PLAY is now the
+        # aggregate parent over the ADR-0029 T4 sub-bands.
         values = {b.value for b in ExecutionBand}
-        assert values == {"T1", "T2", "T3", "T4", "T5"}
+        assert {"T1", "T2", "T3", "T4", "T5"} <= values
+
+    def test_t4_subbands_defined(self):
+        # ADR-0029 (Tier A accepted; roster Tier B/provisional): 10 T4 sub-bands
+        # beneath the T4_IN_PLAY aggregate. T4-MICRO was carved out to ADR-0030.
+        from prediction_market_bot.execution_bands import T4_SUBBANDS
+        assert len(T4_SUBBANDS) == 10
+        assert {b.value for b in T4_SUBBANDS} == {
+            "T4-STAGED", "T4-EVENT", "T4-LINEUP", "T4-FLOW", "T4-SENTIMENT",
+            "T4-PROJ", "T4-ARITH", "T4-BOUNDARY", "T4-CORR", "T4-EXIT",
+        }
+        # T4-MICRO is intentionally absent (no model_p; ADR-0030 carve-out).
+        assert "T4-MICRO" not in {b.value for b in ExecutionBand}
+        # 5 aggregate bands + 10 sub-bands.
+        assert len(list(ExecutionBand)) == 15
 
     def test_band_string_values(self):
         assert ExecutionBand.T1_MULTI_DAY.value == "T1"
@@ -106,6 +122,66 @@ class TestGetActiveBands:
         assert ExecutionBand.T4_IN_PLAY   not in active_bands
         assert ExecutionBand.T5_LATE_GAME not in active_bands
 
-    def test_include_realtime_returns_all_five(self):
+    def test_excludes_t4_subbands_by_default(self):
+        # All ADR-0029 T4 sub-bands are requires_realtime=True (Phase 8) → excluded by default.
+        from prediction_market_bot.execution_bands import T4_SUBBANDS
+        active_bands = {cfg.band for cfg in get_active_bands()}
+        for sub in T4_SUBBANDS:
+            assert sub not in active_bands
+
+    def test_include_realtime_returns_all_bands(self):
+        # 5 aggregate (T1–T5) + 10 T4 sub-bands (ADR-0029) = 15.
         all_bands = get_active_bands(include_realtime=True)
-        assert len(all_bands) == 5
+        assert len(all_bands) == 15
+
+
+class TestT4SubBandRegistry:
+    """ADR-0029 Tier B governance invariants — the scaffold must keep these true."""
+
+    def test_validate_clean(self):
+        from prediction_market_bot.execution_bands import validate_t4_subbands
+        assert validate_t4_subbands() == []
+
+    def test_registry_matches_roster(self):
+        from prediction_market_bot.execution_bands import (
+            T4_SUBBANDS, T4_SUBBAND_REGISTRY,
+        )
+        assert set(T4_SUBBAND_REGISTRY) == set(T4_SUBBANDS)
+
+    def test_all_subbands_blocked(self):
+        # No T4 sub-band may be ACTIVE without an activation ADR (ADR-0029 Tier B; rule 2).
+        from prediction_market_bot.execution_bands import T4_SUBBAND_REGISTRY
+        for band, spec in T4_SUBBAND_REGISTRY.items():
+            assert spec.status == "BLOCKED", f"{band.value} must be BLOCKED"
+
+    def test_all_subbands_phase8_realtime(self):
+        from prediction_market_bot.execution_bands import (
+            T4_SUBBANDS, get_band_config,
+        )
+        for sub in T4_SUBBANDS:
+            cfg = get_band_config(sub)
+            assert cfg.requires_realtime is True
+            assert cfg.phase_active == "Phase 8"
+
+    def test_parent_rollup_to_aggregate(self):
+        from prediction_market_bot.execution_bands import (
+            T4_SUBBANDS, t4_parent, is_t4_subband,
+        )
+        for sub in T4_SUBBANDS:
+            assert is_t4_subband(sub) is True
+            assert t4_parent(sub) is ExecutionBand.T4_IN_PLAY
+        # Aggregate + non-T4 bands are not sub-bands and map to themselves.
+        assert is_t4_subband(ExecutionBand.T4_IN_PLAY) is False
+        assert t4_parent(ExecutionBand.T1_MULTI_DAY) is ExecutionBand.T1_MULTI_DAY
+
+    def test_proj_near_certain_kelly_held_below_ceiling(self):
+        # T4-PROJ provisional Kelly must not exceed the LATE-regime hold (0.167) and must
+        # stay strictly below the project hard ceiling (DEFAULT_KELLY_FRACTION = 0.25),
+        # per the ADR-0029 tail-calibration constraint (EXP-PROJ-01 pending).
+        from prediction_market_bot.execution_bands import T4_SUBBAND_REGISTRY
+        proj = T4_SUBBAND_REGISTRY[ExecutionBand.T4_PROJ]
+        arith = T4_SUBBAND_REGISTRY[ExecutionBand.T4_ARITH]
+        assert proj.provisional_kelly <= 0.167
+        assert arith.provisional_kelly <= 0.167  # 0.22 placeholder held non-operational
+        assert proj.provisional_kelly < 0.25
+        assert proj.exp_gate == ("EXP-PROJ-01",)

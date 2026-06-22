@@ -246,16 +246,17 @@ No partial promotion. All conditions must pass simultaneously.
 
 ---
 
-## T4 Activation Gate (Phase 8 Pre-Requisite) — PLACEHOLDER
+## T4 Activation Gate (Phase 8 Pre-Requisite) — TAXONOMY RESOLVED BY ADR-0029
 
-> **DESIGN INCOMPLETE — T-179 REQUIRED FIRST (SESSION 65 DS directive).**
+> **SUB-BAND TAXONOMY NOW DEFINED — see ADR-0029 (ACCEPTED, Tier A frozen, DS sign-off 2026-06-22 SESSION 67).**
 >
-> T4 is not a monolithic bucket. DS directive 2026-06-22: "In-game trading is the most diverse section — can be the most complex or simple dependent on the route. It can't just be clumped as one aggregate bucket." T4 spans the full execution range from sub-millisecond scalping (pure execution quality, zero model) to multi-minute model-driven holds (rich Bayesian update). Each sub-window requires a different strategy, filtering mechanism, execution prong, and governance gate.
+> T4 is not a monolithic bucket. DS directive 2026-06-22: "In-game trading is the most diverse section — can be the most complex or simple dependent on the route. It can't just be clumped as one aggregate bucket." T4 spans the full execution range from pre-staged resting orders through multi-minute model-driven holds (rich Bayesian update). T-179/ADR-0029 resolved this into **10 information-class sub-bands** (T4-MICRO carved out to ADR-0030 as a no-`model_p` strategy class). Each sub-band carries its own SLA, compute budget, Kelly framework, signal type, and model requirements.
 >
-> **T-179 (next session)** must define T4 sub-band taxonomy and assign SLA, compute budget, Kelly fraction, signal type, and model requirements to each sub-band. A separate ADR (ADR-0029 or equivalent) will specify the T4 sub-band architecture. Until T-179 completes:
-> - The criteria below apply to T4 as a single notional bucket for planning purposes only
-> - The sub-band-level Tier 2 criteria, statistical floors, and T-AGG will need to be re-specified per sub-band once the taxonomy is defined
-> - This section cannot be signed off until T-179 + ADR-0029 are complete
+> **Gate structure (Tier A, frozen by ADR-0029):** the T4 Activation Gate is **per-sub-band** — each of the 10 sub-bands clears its own gate independently and freezes its then-current values under its own activation ADR (APR-XXXX). The single-bucket criteria below are retained as the **structural template** each sub-band's gate instantiates.
+>
+> **Still pending (NOT cleared by the ADR-0029 sign-off):**
+> - The per-sub-band Tier 2 criteria, statistical floors, T-AGG, and all numeric values are **Tier B (provisional)** under ADR-0029 — directional until each sub-band's own Phase 8 Activation Gate, revisable via DECISION_LOG (not a superseding ADR).
+> - **ADR-0028's own DS sign-off (T-148) is still pending** — accepting ADR-0029 resolved the *taxonomy* dependency, not ADR-0028's own acceptance.
 
 **This gate must be satisfied before any T4 strategy (Strategy K or equivalent) can be promoted from BLOCKED to ACTIVE.** It is independent of G6 — G6 may close before this gate opens. This gate applies when T4 strategies are operating in live paper mode at Phase 8.
 
