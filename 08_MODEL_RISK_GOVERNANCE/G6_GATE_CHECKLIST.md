@@ -3,7 +3,7 @@
 **Purpose:** Mechanical, per-criterion evidence checklist for the G6 promotion decision.  
 **Gate:** G6 Release (live capital authorization)  
 **Formal approval required:** APR-0008 (final validation report) + APR-0009 (live capital authorization)  
-**Evidence standard:** APR-0017 (2026-06-01) as amended by APR-0019 (2026-06-09)  
+**Evidence standard:** APR-0017 (2026-06-01) as amended by APR-0019 (2026-06-09) + ADR-0028 (PENDING DS sign-off)  
 **Last reviewed:** 2026-06-15 SESSION 63 (baseline RATIFIED at true figure — see ratification block at end)  
 **Owner:** DS — Earl Ignacio  
 
@@ -28,7 +28,7 @@ Before evaluating any tier criterion, confirm these hold:
 | I-1 | P&L figures use **Σpnl over `closed_positions`** (the ledger), NOT the stored scalar and NOT equity−initial | **GG-034 (2026-06-13/14):** the stored `total_realized_pnl` scalar was desynced (−$8.46) from the ledger (−$251.21) by cross-process clobbering. The T-174 fix makes `total_realized_pnl` ledger-derived (Σ `pnl`+`exit_pnl`); the live scalar now reconciles to the ledger (−$248.90 == −$248.90 post-G5-resolve). Still, **any G6 figure must be sourced from the closed-position ledger / `data/nba_finals_clean_dataset.csv`, never a stored scalar.** Also (S46 reset-equity nuance) equity−initial overstates by $142.46 — do not use it. | ⚠️ APPLY — ledger-derived only (GG-034) |
 | I-2 | Tier 2 eligible bets exclude injury-contaminated positions | APR-0019 Mod 3: bets where model inputs were incomplete at prediction time (KI-011). Currently 6 documented ineligible T1 bets (EXP-018). Each ineligible bet must have documented KI-NNN basis; outcome-based exclusion prohibited. | RULE ACTIVE |
 | I-3 | T1 and T4 Tier 2 evaluated **independently** — no cross-bucket pooling | APR-0019 Mod 2: T1 uses Poisson CDF, T4 uses live Bayesian GameStateModel — different model classes, different error distributions. | RULE ACTIVE |
-| I-4 | G6 closure requires **all active buckets** to pass Tier 2 | APR-0019: T1 and T4 both currently active. Partial promotion not permitted. | RULE ACTIVE |
+| I-4 | G6 closure requires **all active buckets** to pass Tier 2 | **ADR-0028 rework (2026-06-22):** G6 is a T1 live capital gate. T4 strategies are BLOCKED in BAND_REGISTRY (Strategy K BLOCKED, Phase 8+, `requires_realtime=True`). T4 is NOT a G6 active bucket. **T4 Tier 2 and T-AGG are moved to the T4 Activation Gate (Phase 8 pre-requisite).** At G6, T1 is the only active bucket. APR-0019 Mod 2 T4-floor (≥50) now applies at T4 Activation Gate, not G6. | RULE ACTIVE — ADR-0028 (PENDING sign-off) |
 | I-5 | YES/NO direction P&L tracked separately | APR-0019 Mod 4: structural asymmetry found (EXP-018). Not a current gate, but must be reported in APR-0008. DS may exclude NO bets from T1 T2-B with documented basis and sign-off. | MONITOR |
 | I-6 | T2-B and T2-D criteria evaluate **post-haircut P&L** (T-153 p50 methodology) | **ADR-0028 Mod 5 (2026-06-22):** T2-B (EV > 0) and T2-D (P&L slope > 0) evaluate fill-realism-adjusted P&L, not nominal paper P&L. Run `scripts/run_t153_haircut.py` on full paper period immediately before APR-0008 is drafted. T1 haircut is an upper bound (resting orders may be maker fills). T4 uses two-leg haircut formula. Resolves GG-022. | RULE ACTIVE — ADR-0028 Mod 5 |
 | I-7 | T1 Tier 2 evaluates YES-direction eligible bets while PAPER_YES_ONLY gate is active | **ADR-0028 Mod 9 (2026-06-22):** YES-only gate active since 2026-06-12 (DS ruling, SESSION 56c). All T1 bets placed after this date are YES-direction. T1 T2-A/B/C/D evaluated on YES-direction eligible bets for the regular-season paper period. NO counterfactuals preserved in C6 for analysis but excluded from G6 evidence. | RULE ACTIVE — gate active until DS rescinds |
@@ -55,7 +55,7 @@ Before evaluating any tier criterion, confirm these hold:
 | Bucket | Floor | Derivation | Current Count | Status |
 |--------|-------|------------|---------------|--------|
 | T1 eligible bets | ≥ 66 resolved | T2-A calibration power formula at α=0.10, power=0.80, δ=15pp, p̂=0.60 (APR-0017/0019) | 82 resolved as of Finals G3 (2026-06-08). Subtract 6 ineligible injury-contaminated → **76 eligible**. | ✅ **MET** — 76 > 66 |
-| T4 eligible bets | ≥ 50 resolved | T2-A at α=0.05, power=0.80, δ=20pp, p̂=0.514 (APR-0019) | ~1,115 G3 bets + subsequent games | ✅ **MET** (trivially) |
+| T4 eligible bets | ≥ 50 resolved | T2-A at α=0.05, power=0.80, δ=20pp, p̂=0.514 (APR-0019) | ~1,115 G3 bets + subsequent games | ⚪ **T4 ACTIVATION GATE — not G6** — ADR-0028 rework removes T4 floor from G6 scope. T4 strategies BLOCKED (Phase 8+). |
 | Game nights | ≥ 5 | Slope regression df ≥ 3 (APR-0017). NBA Finals series must last ≥5 games. | G5 is Finals Game 5; series ongoing. G6 adds 5th game night if it resolves. | 🟡 **PENDING** — meets floor if Finals series is ≥5 games (≥5 game nights of paper data) |
 
 **Binding G6 constraints (not bet count):**
@@ -90,9 +90,11 @@ Before evaluating any tier criterion, confirm these hold:
 
 ---
 
-## Tier 2 — Model Performance Trends (T4 Bucket)
+## Tier 2 — Model Performance Trends (T4 Bucket) [T4 ACTIVATION GATE — NOT G6]
 
-*T4 evidence only — independent evaluation required (APR-0019).*
+> **SCOPE NOTE (ADR-0028 rework, 2026-06-22):** These criteria belong to the **T4 Activation Gate** (Phase 8 pre-requisite), NOT to G6. T4 strategies are BLOCKED in BAND_REGISTRY (Phase 8+). G6 is a T1 live capital gate. T4 Tier 2 is retained here for reference and future measurement, but it does NOT block G6 closure. Rows below are labelled GATE = T4-ACTIVATION throughout.
+
+*T4 evidence only — independent evaluation required (APR-0019); evaluated at T4 Activation Gate (Phase 8), not G6.*
 
 | ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
 |----|-----------|----------------|-------------------|----------------|
@@ -116,9 +118,11 @@ Before evaluating any tier criterion, confirm these hold:
 
 ---
 
-## Tier 2 — Aggregate Portfolio Level (T-AGG)
+## Tier 2 — Aggregate Portfolio Level (T-AGG) [T4 ACTIVATION GATE — NOT G6]
 
-*Evaluated AFTER all per-bucket Tier 2 criteria pass. Added by ADR-0028 (APR-0022, 2026-06-22). Per-bucket passing is necessary but not sufficient for T-AGG.*
+> **SCOPE NOTE (ADR-0028 rework, 2026-06-22):** T-AGG requires combined T1+T4 evidence. At G6, T4 is BLOCKED. T-AGG belongs to the **T4 Activation Gate** (Phase 8 pre-requisite), evaluated after T4 is in live paper mode. This section is retained here for future measurement reference; it does NOT block G6 closure.
+
+*Evaluated AFTER all per-bucket Tier 2 criteria pass at the T4 Activation Gate. Added by ADR-0028 Mod 8. Per-bucket T4 Tier 2 passing is necessary but not sufficient for T-AGG.*
 
 | ID | Criterion | Pass Condition | Evidence Artifact | Current Status |
 |----|-----------|----------------|-------------------|----------------|
@@ -143,14 +147,16 @@ Before evaluating any tier criterion, confirm these hold:
 
 ---
 
-## T-148 / APR-0019 Status
+## T-148 / APR-0019 / ADR-0028 Status
 
-T-148 registered (SESSION 43) for regression analysis to determine whether T1 and T4 evidence must be segregated. Analysis completed: APR-0019 accepted 2026-06-09. **T-148 is RESOLVED.** APR-0019 is operative:
+T-148 registered (SESSION 43) for regression analysis to determine whether T1 and T4 evidence must be segregated. Analysis completed: APR-0019 accepted 2026-06-09. APR-0019 is operative:
 
 - T1 floor: ≥66 eligible T1 bets ✅ MET (76 eligible as of G3)
-- T4 floor: ≥50 eligible T4 bets ✅ MET (trivially)
-- Per-bucket Tier 2 independence: ACTIVE
+- T4 floor: ≥50 eligible T4 bets — ⚪ applies at T4 Activation Gate, not G6 (ADR-0028 rework)
+- Per-bucket Tier 2 independence: ACTIVE (at the gate where each bucket applies)
 - Eligible bets definition: ACTIVE (injury-contaminated bets excluded with documented basis)
+
+**ADR-0028 (T-148 amendment):** DRAFT — DS sign-off pending. Initial draft (SESSION 65 2026-06-22) was declined. Rework (SESSION 65 2026-06-22): T4 Tier 2 (Mods 6, 7) and T-AGG (Mod 8) removed from G6 and moved to a T4 Activation Gate (Phase 8 pre-requisite). G6 closure condition is now T1-only. Mods 5 (fill-realism) and 9 (YES-only gate) remain at G6 scope. **T-148 remains OPEN pending ADR-0028 DS sign-off (APR-0022).**
 
 ---
 
@@ -170,7 +176,7 @@ At the S46 bankroll reset (2026-05-29), $142.46 of G4 stakes were still deployed
 | T1-A: pipeline error rate ≤ 5% | APR-0017, GG-014 | 🔴 OPEN — deferred Oct 2026 |
 | T-117: Kalshi document formal reads | GG-003 resolution path | 🔴 OPEN — dark period Week 1 |
 | ADR-0005: DS live capital sign-off | APR-0017 | 🔴 PENDING |
-| Tier 2 (T1 + T4 per-bucket): EV > 0, slope ≥ 0 | APR-0017/0019 | 🟡 NOT YET EVALUABLE — insufficient window (Finals) per ADR-0024 |
+| Tier 2 (T1 per-bucket): EV > 0, slope ≥ 0 | APR-0017/0019 + ADR-0028 Mod 5/9 | 🟡 NOT YET EVALUABLE — insufficient window (Finals) per ADR-0024. T4 Tier 2 moved to T4 Activation Gate (Phase 8). |
 | ≥5 game nights | APR-0017 | 🟡 PENDING — depends on Finals series length |
 
 **Bet count is not the binding constraint.** 158 resolved bets numerically exceeds the 30-bet floor from APR-0016 (now superseded) and the 66-eligible-T1-bet floor from APR-0017. The binding constraints are GG-004 (commercial validation) and ADR-0005 (formal authorization), not bet accumulation.

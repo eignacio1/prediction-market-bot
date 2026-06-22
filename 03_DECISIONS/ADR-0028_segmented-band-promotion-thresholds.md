@@ -1,12 +1,25 @@
 # ADR-0028 — Segmented Per-Band Promotion Thresholds
 
-**Status:** ACCEPTED — DS sign-off 2026-06-22  
+**Status:** DRAFT — rework in progress (initial draft 2026-06-22; DS sign-off declined 2026-06-22; rework 2026-06-22)  
 **Amends:** APR-0017 (G6 Multi-Dimensional Evidence Standard, 2026-06-01) + APR-0019 (Per-Bucket Evidence Amendment, 2026-06-09)  
 **Does NOT supersede:** APR-0017 or APR-0019 in full. Both remain operative in all sections not explicitly modified below.  
 **Registered by:** T-148 (DECISION_LOG 2026-06-22 SESSION 65)  
 **Analysis input:** T-148 regression analysis (DECISION_LOG 2026-06-09 SESSION 43); T-153 fill-realism haircut (DECISION_LOG 2026-06-12 SESSION 59); GG-022 (partially resolved — APR-0017 amendment deferred)  
 **Drafted:** 2026-06-22 SESSION 65  
+**Reworked:** 2026-06-22 SESSION 65 — T4 criteria and T-AGG moved from G6 to T4 Activation Gate (see Rework Note below)  
 **Effective:** Upon DS sign-off; applies to all G6 evidence collected under APR-0017 / APR-0019
+
+---
+
+## Rework Note (2026-06-22)
+
+Initial draft required T4 Tier 2 (Mods 6, 7) and T-AGG (Mod 8) for G6 closure. DS feedback: "the segmentation for the promotion bands are still not fully aligned with the current structure per band."
+
+Root misalignment identified: The BAND_REGISTRY shows all T4 strategies are BLOCKED (Strategy K, C — Phase 8+, `requires_realtime=True`). T4 cannot generate real paper evidence during Phase 6/7 paper trading. APR-0019 established T4 as a G6 "active bucket" based on G3 virtual paper bets that predate BAND_REGISTRY enforcement. That premise is no longer structurally correct.
+
+**Correction:** G6 is the T1 live capital gate. The only currently ACTIVE evidence-generating bucket is T1 (Strategy A, PIPE-02). T4 Tier 2 and T-AGG are moved to a separate "T4 Activation Gate" — a Phase 8 pre-requisite required before T4 strategies can be promoted from BLOCKED to ACTIVE.
+
+**APR-0019 amendment:** APR-0019 Mod 1 (per-bucket independence) and Mod 2 (separate T1/T4 floors) remain operative. This ADR narrows the scope of those buckets in the G6 gate: at G6, only T1 is an active bucket. T4 becomes a separate gate. APR-0019's other provisions (Mods 3–5: eligible bets definition, YES/NO direction monitoring, injury-contaminated exclusion) remain fully operative.
 
 ---
 
@@ -27,21 +40,19 @@ The T-153 decision log (2026-06-12 SESSION 59) explicitly noted: "APR-0017 amend
 
 ### Gap 2 — T4 Tier 2 thresholds implicit, not formally derived
 
-APR-0019 established per-bucket independence and per-bucket calibration floors (T1 ≥66, T4 ≥50). The G6 gate checklist (T-172) carried T4 Tier 2 thresholds (T2-A ≤ 20pp, T2-C ≤ 0.265) derived from the checklist author's judgment, not from a formal ADR derivation.
+APR-0019 established per-bucket independence and per-bucket calibration floors (T1 ≥66, T4 ≥50). The G6 gate checklist (T-172) carried T4 Tier 2 thresholds derived from the checklist author's judgment, not from a formal ADR derivation.
 
 T4 uses a live Bayesian GameStateModel with no validated ECE or Brier baseline. Inheriting T1's numeric thresholds without derivation from T4's own properties violates the APR-0017 design principle: every pass/fail criterion must be derived from what it is actually measuring.
 
-Additionally, T4 has a two-leg fill structure (entry ask + exit bid) with a higher per-bet fill cost than T1's one-leg entry. T2-B (EV > 0) and T2-D (P&L slope > 0) applied to T4 must use T4's two-leg haircut, not T1's one-leg formula.
+Additionally, T4 has a two-leg fill structure (entry ask + exit bid) with a higher per-bet fill cost than T1's one-leg entry.
+
+**Note (rework):** This gap is real and must be resolved before T4 can be activated. However, it belongs to the T4 Activation Gate (Phase 8 pre-requisite), not to G6. G6 is a T1 gate; formal T4 threshold derivation is required at Phase 8, not Phase 6/7.
 
 ### Gap 3 — No aggregate portfolio P&L/capital goal
 
-APR-0017 + APR-0019 require each active bucket to pass Tier 2 independently. There is no single portfolio-level criterion. This is insufficient for promotion decisions for two reasons:
+APR-0017 + APR-0019 require each active bucket to pass Tier 2 independently. There is no single portfolio-level criterion. The 2026-06-12 DS ruling (DECISION_LOG SESSION 56c) explicitly required "one aggregate P&L/capital goal at portfolio level" as a G6 gate.
 
-1. **Volume asymmetry**: T1 produces ~13 bets/game (Finals) vs T4's ~1,000 bets/game. At design throughput, T4 dominates portfolio capital deployed. A T4 EV slightly above zero at a barely-adequate sample could be statistical noise. Per-bucket Tier 2 does not detect whether the portfolio as a whole is generating expected value.
-
-2. **Fill cost interaction**: T1 and T4 have different fill cost structures and different bet volumes. Their individual post-haircut EVs do not sum simply to a portfolio EV. An aggregate criterion directly measures what G6 is actually deciding: does deploying capital across all active bands generate a positive expected return?
-
-The 2026-06-12 DS ruling (DECISION_LOG SESSION 56c) explicitly required "one aggregate P&L/capital goal at portfolio level" as a G6 gate. APR-0017 + APR-0019 provide no such criterion.
+**Note (rework):** T-AGG requires combined T1+T4 evidence. Since T4 is BLOCKED at G6, T-AGG cannot be evaluated at G6. T-AGG is moved to the T4 Activation Gate where both buckets are simultaneously active and generating live evidence. At G6, the T1 bucket's individual Tier 2 criteria (T2-B, T2-D) are the portfolio-level EV gate — they are sufficient because T1 is the only active capital-deploying bucket.
 
 ---
 
@@ -56,6 +67,8 @@ Every pass/fail criterion must be a rate, a slope, or a proportion. Counts appea
 ## Modifications to APR-0017 / APR-0019
 
 ### Modification 5 — Fill-realism mandate for Tier 2 evaluation (resolves GG-022)
+
+**Scope:** G6 gate (T1 bucket) + T4 Activation Gate (T4 bucket). Both gates evaluate P&L/EV criteria on fill-realism-adjusted figures.
 
 **Supersedes:** APR-0017 § Tier 2 header's implicit nominal-P&L assumption.
 
@@ -78,18 +91,22 @@ where `spread_bucket(mid)` is the p50 spread from T-153's three-bucket model:
 
 The exact bucket values are sourced from `scripts/run_t153_haircut.py` and re-derived at each G6 evaluation from the available spread data (requires ≥ 1,000 observations per bucket for stability). Do not hardcode bucket values — re-derive.
 
-T4 two-leg exit (entry ask + exit bid):
+T4 two-leg exit (entry ask + exit bid) — applied at T4 Activation Gate:
 ```
 haircut_two_leg = entry_mid × (spread_bucket(entry_mid) / 2) + exit_mip × (spread_bucket(exit_mip) / 2)
 ```
 
-**Application:** Run `scripts/run_t153_haircut.py` on the complete G6 paper period data immediately before APR-0008 is drafted. The haircut output from that run is authoritative for G6 Tier 2 T2-B and T2-D evaluation.
+**Application at G6:** Run `scripts/run_t153_haircut.py` on the complete G6 paper period data immediately before APR-0008 is drafted. The haircut output from that run is authoritative for G6 Tier 2 T2-B and T2-D evaluation (T1 bucket only).
+
+**Application at T4 Activation Gate:** Run `scripts/run_t153_haircut.py` on the complete T4 paper period data immediately before the T4 Activation Gate is evaluated. Two-leg formula applies.
 
 **What does NOT change:** T2-A (calibration deviation — based on predicted vs realized win rates, not P&L) and T2-C (Brier score) are not P&L metrics and are unaffected by this modification.
 
 ---
 
-### Modification 6 — T4 Tier 2 thresholds — formal derivation
+### Modification 6 — T4 Tier 2 thresholds — formal derivation [T4 ACTIVATION GATE]
+
+**Scope:** T4 Activation Gate (Phase 8 pre-requisite). Does NOT apply to G6 — T4 is BLOCKED at Phase 6/7.
 
 **Supersedes:** The implicit T4 Tier 2 threshold values in G6_GATE_CHECKLIST.md that were unanchored to a formal derivation.
 
@@ -102,39 +119,38 @@ haircut_two_leg = entry_mid × (spread_bucket(entry_mid) / 2) + exit_mip × (spr
 **T4 Tier 2 criteria (formally derived):**
 
 #### T2-A (T4): Calibration deviation ≤ 20pp, slope ≤ 0
-*Unchanged from APR-0019 — included here for completeness of formal derivation record.*
 
-**Derivation:** T1's T2-A tolerance = 15pp = 6× TEST ECE (0.0247). T4 has no TEST ECE baseline. Conservative multiplier: use 8× a proxy ECE. Without a validated ECE, use the monitored L1 drift threshold (0.265 Brier, see T2-C below) to bound the implied ECE via ECE ≤ Brier. At Brier = 0.265, worst-case ECE (perfectly-binned but miscalibrated) ≈ 0.265. 8× is too loose; instead anchor at: T4 operates at near-null win rate (51.4% vs expected 60%), suggesting wider inherent variance. Set tolerance at T1_tolerance × (T1_expected_win_variance / T4_expected_win_variance)^0.5 = 15pp × (0.60×0.40 / 0.514×0.486)^0.5 ≈ 15pp × 1.04 ≈ 16pp. Round up generously to **20pp** to account for live-inference noise and absent ECE baseline. Slope criterion (≤ 0) is derivation-independent: calibration must not be worsening.
+**Derivation:** T1's T2-A tolerance = 15pp = 6× TEST ECE (0.0247). T4 has no TEST ECE baseline. Without a validated ECE, anchor at: T4 operates at near-null win rate (51.4% vs expected 60%), suggesting wider inherent variance. Set tolerance at T1_tolerance × (T1_expected_win_variance / T4_expected_win_variance)^0.5 = 15pp × (0.60×0.40 / 0.514×0.486)^0.5 ≈ 15pp × 1.04 ≈ 16pp. Round up generously to **20pp** to account for live-inference noise and absent ECE baseline. Slope criterion (≤ 0) is derivation-independent: calibration must not be worsening.
 
 #### T2-B (T4): Fill-realism-adjusted rolling EV > 0, slope ≥ 0
 
-**Level threshold derivation:** The level criterion is EV > 0 after T4's two-leg haircut. The EV threshold of 0 is non-arbitrary: it is the commercial validity floor. A system with EV ≤ 0 post-haircut loses money in expectation under realistic execution conditions. The threshold is not raised above 0 because T4 flat-sizing (1 contract/bet) already operates at minimal nominal size; a thin positive post-haircut EV confirms edge exists even after execution costs.
+**Level threshold derivation:** EV > 0 after T4's two-leg haircut (Mod 5). The EV threshold of 0 is non-arbitrary: it is the commercial validity floor. A system with EV ≤ 0 post-haircut loses money in expectation under realistic execution conditions.
 
-**Slope criterion:** Same derivation as T1 T2-B: slope ≥ 0 (non-deteriorating) is the minimum. A system whose post-haircut EV is positive but declining toward zero across game nights is a system losing its edge over time — this is the broken-system case that APR-0016 missed.
+**Slope criterion:** Slope ≥ 0 (non-deteriorating). A system whose post-haircut EV is positive but declining toward zero is losing its edge over time.
 
-**Application:** T4's two-leg haircut formula (Modification 5) applies. Eligible bets only (APR-0019 Modification 3 definition applies equally to T4).
+**Application:** T4's two-leg haircut formula (Modification 5) applies. Eligible bets only (APR-0019 Modification 3 applies equally to T4).
 
 #### T2-C (T4): Brier ≤ 0.265, slope ≤ 0
 
-**Level threshold derivation:** T4 has no TEST-set Brier baseline analogous to T1's 0.2480. The monitoring L1 threshold (0.265) is the appropriate ceiling for two reasons: (1) L1 is calibrated as the first alert level for the monitoring system — a model that has drifted enough to trigger L1 alert is a model that should not proceed to G6; (2) 0.265 is conservative relative to T1's TEST Brier (0.2480) but is the right anchor when no TEST baseline exists for the production model. The ceiling is applied identically to T4 as to T1 — if the L1 threshold is appropriate as a model health guard for T1, it applies equally to T4's live inference.
-
-**Slope criterion:** Brier slope ≤ 0 (non-increasing). Same derivation as T1 T2-C: each game night's T4 predictions should not be getting worse.
+**Level threshold derivation:** T4 has no TEST-set Brier baseline. The monitoring L1 threshold (0.265) is the appropriate ceiling: L1 is calibrated as the first alert level — a model that has drifted enough to trigger L1 should not pass the T4 Activation Gate. Slope criterion: Brier slope ≤ 0 (non-increasing).
 
 #### T2-D (T4): Fill-realism-adjusted P&L slope > 0
 
-**Derivation:** Positive slope of the cumulative post-haircut T4 P&L over game nights is the direct measure of whether T4 generates value over time. The threshold of > 0 is non-arbitrary — anything ≤ 0 means T4's expected P&L per game night is zero or negative, which is the definition of a system that should not receive live capital. The two-leg haircut formula applies.
+**Derivation:** Positive slope of the cumulative post-haircut T4 P&L over game nights is the direct measure of whether T4 generates value over time. The threshold of > 0 is non-arbitrary — ≤ 0 means T4's expected P&L per game night is zero or negative. Two-leg haircut formula applies.
 
-**Statistical floor for T4 slope criterion:** ≥ 5 game nights (explicitly derived here — see Modification 7).
+**Statistical floor for T4 slope criterion:** ≥ 5 game nights (see Modification 7).
 
 ---
 
-### Modification 7 — Minimum game nights: explicit for T4
+### Modification 7 — Minimum game nights: explicit for T4 [T4 ACTIVATION GATE]
 
-**Adds to:** APR-0019, as a clarification of the game-night floor.
+**Scope:** T4 Activation Gate. Does NOT apply to G6.
+
+**Adds to:** APR-0019, as a clarification of the game-night floor for T4.
 
 **New rule:**
 
-> The ≥ 5 game night floor (APR-0017 § Statistical Validity Floor, "Minimum game nights: 5") applies equally to T4 slope criteria (T2-A slope, T2-B slope, T2-D slope, and T3-B drawdown slope for the T4 pool). T4 slope criteria cannot be evaluated with fewer than 5 game nights of T4-resolved data, for the same df ≥ 3 reason as T1.
+> The ≥ 5 game night floor (APR-0017 § Statistical Validity Floor) applies equally to T4 slope criteria (T2-A slope, T2-B slope, T2-D slope, and T3-B drawdown slope for the T4 pool). T4 slope criteria cannot be evaluated with fewer than 5 game nights of T4-resolved data, for the same df ≥ 3 reason as T1.
 
 **Derivation:** T4 slope criteria (T2-A, T2-B, T2-D, T3-B) all use linear regression on (game_night_index, metric_value). Slope t-test requires df = n − 2 ≥ 3, meaning n ≥ 5 data points. This is identical to T1's derivation. APR-0019 did not explicitly state the floor for T4; this modification closes the gap.
 
@@ -142,39 +158,45 @@ haircut_two_leg = entry_mid × (spread_bucket(entry_mid) / 2) + exit_mip × (spr
 
 ---
 
-### Modification 8 — Aggregate portfolio P&L/capital goal (T-AGG)
+### Modification 8 — Aggregate portfolio P&L/capital goal (T-AGG) [T4 ACTIVATION GATE]
 
-**Adds to:** APR-0017 § Tier 2, as a new portfolio-level criterion evaluated after all per-bucket criteria pass.
+**Scope:** T4 Activation Gate. Does NOT apply to G6.
+
+**Rationale for scope assignment:** T-AGG requires combined T1+T4 evidence. At G6, T4 is BLOCKED. T-AGG can only be evaluated when both T1 and T4 are simultaneously generating live evidence — i.e., after T4 has been activated to Phase 8 paper mode but before T4 strategies receive live capital. T-AGG evaluates the portfolio-level case for deploying live capital across both bands. This is a T4 Activation Gate requirement, not a G6 requirement.
+
+**Adds to:** APR-0017 § Tier 2, as a new portfolio-level criterion evaluated after all per-bucket criteria pass at the T4 Activation Gate.
 
 **New criterion: T-AGG — Aggregate Portfolio EV (Portfolio Level)**
 
-This criterion is evaluated AFTER all per-bucket Tier 2 and Tier 3 criteria pass. It is a necessary additional condition — per-bucket Tier 2 passing is not sufficient for T-AGG; T-AGG is evaluated independently.
+This criterion is evaluated AFTER all per-bucket Tier 2 and Tier 3 criteria pass at the T4 Activation Gate. Per-bucket Tier 2 passing is not sufficient for T-AGG; T-AGG is evaluated independently.
 
 #### T-AGG-A — Portfolio EV Level
 
-**Pass condition:** Combined fill-realism-adjusted EV per dollar staked across **all active bands** > 0 at G6 evaluation.
+**Pass condition:** Combined fill-realism-adjusted EV per dollar staked across **all active bands** > 0 at T4 Activation Gate evaluation.
 
 **Metric:** `portfolio_EV = Σ_bands (post_haircut_P&L) / Σ_bands (total_staked)`
 
-- Numerator: sum of T-153-adjusted P&L across all resolved positions in all active bands (T1 + T4, and any other bands active at G6)
+- Numerator: sum of T-153-adjusted P&L across all resolved positions in all active bands (T1 + T4, and any other bands active at T4 gate evaluation)
 - Denominator: sum of all amounts staked across all active bands
 - Eligible positions only (APR-0019 Modification 3 ineligibility rules apply)
 
-**Derivation of level threshold (> 0):** The aggregate EV must be positive after fill costs. This is the commercial case for deploying live capital: the portfolio as a whole makes money in expectation. The threshold cannot be set higher without a structural derivation, and setting it at 0 is the minimum non-trivial bar. Setting it lower than 0 would permit a loss-generating portfolio to proceed to live capital — this would violate G6's purpose.
+**Derivation of level threshold (> 0):** The aggregate EV must be positive after fill costs. This is the commercial case for deploying live capital across both T1 and T4: the portfolio as a whole makes money in expectation. Setting it lower than 0 would permit a loss-generating portfolio to proceed to live T4 capital.
 
-**Why per-bucket passing is not sufficient:** If T1 has EV = +$0.05/bet at 13 bets/game and T4 has EV = +$0.001/bet at 1,000 bets/game, and the combined portfolio's T4-dominated aggregate EV after haircut is −$0.002/bet, the portfolio loses money in expectation even though both buckets pass their individual criteria. T-AGG catches this scenario. Conversely, if T4 barely passes its individual T2-B (EV = +$0.001/bet post-haircut) but this implies a portfolio EV < 0 given T1's smaller positive contribution, T-AGG fails and G6 is blocked.
+**Why per-bucket passing is not sufficient:** If T1 has EV = +$0.05/bet at 13 bets/game and T4 has EV = +$0.001/bet at 1,000 bets/game, and T4 dominates portfolio capital deployed, the combined portfolio EV after haircut may be negative even though both buckets individually pass. T-AGG catches this scenario.
 
 #### T-AGG-B — Aggregate P&L Slope
 
 **Pass condition:** Slope of the cumulative aggregate post-haircut P&L curve over game nights > 0 (linear regression; requires ≥ 5 game nights).
 
-**Derivation:** Same logic as T1's T2-D: a positive net-positive P&L achieved by early lucky bets is not sufficient. The system must demonstrate that each game night, in expectation, the portfolio gains. A negative or zero aggregate slope means the portfolio is not generating value over time.
+**Derivation:** Same logic as T1's T2-D: a positive net-positive P&L achieved by early lucky bets is not sufficient. The portfolio must demonstrate that each game night, in expectation, the aggregate gains.
 
 **Metric construction:** At each game night index n, compute cumulative aggregate post-haircut P&L = Σ over all bands of T-153-adjusted P&L for all eligible positions resolved through night n. Fit a linear regression on (n, cumulative_P&L). The slope coefficient must be > 0.
 
 ---
 
-### Modification 9 — YES-only gate interaction with T1 Tier 2
+### Modification 9 — YES-only gate interaction with T1 Tier 2 [G6 SCOPE]
+
+**Scope:** G6 gate (T1 Tier 2 only).
 
 **Adds to:** APR-0019 § Direction-Specific Evidence (monitoring note), as a clarification.
 
@@ -182,29 +204,28 @@ This criterion is evaluated AFTER all per-bucket Tier 2 and Tier 3 criteria pass
 
 > As of 2026-06-12 (DS ruling, SESSION 56c), the YES-only diagnostic gate (`PAPER_YES_ONLY`) is active for T1 PIPE-03 runs as a continuous diagnostic leg. All T1 bets placed after this date are YES-direction only. For the regular-season paper period (2026-27 NBA / MLB 2026 onwards), **T1 Tier 2 criteria (T2-A through T2-D) are evaluated exclusively on YES-direction eligible bets**. NO-direction counterfactuals are logged as `yes_only_gate_filtered` C6 events and preserved for analysis but do not contribute to G6 evidence.
 
-**Derivation:** This is not a new restriction — it is a clarification of the natural consequence of an active YES-only gate. When the gate is operative, all T1 C4 evaluations that proceed to placement are YES-direction. The Tier 2 criteria must evaluate the deployed model, not a hypothetical model that would also place NO bets. Evaluating T2-A (calibration) or T2-B (EV) on a mixed sample that includes NO-bet counterfactuals (never actually placed) would contaminate the evidence.
+**Derivation:** When the gate is operative, all T1 C4 evaluations that proceed to placement are YES-direction. The Tier 2 criteria must evaluate the deployed model, not a hypothetical model that would also place NO bets. Evaluating T2-A (calibration) or T2-B (EV) on a mixed sample that includes NO-bet counterfactuals (never actually placed) would contaminate the evidence.
 
-**Deactivation path:** If the DS rescinds the YES-only gate (requiring a DS ruling), T1 Tier 2 reverts to evaluating both YES and NO direction eligible bets. This is tracked as a standing modification that lifts automatically when the gate is rescinded.
+**Deactivation path:** If the DS rescinds the YES-only gate (requiring a DS ruling), T1 Tier 2 reverts to evaluating both YES and NO direction eligible bets.
 
 ---
 
 ## Summary of Modifications
 
-| Modification | Amends | Change |
-|---|---|---|
-| 5 — Fill-realism mandate | APR-0017 T2-B, T2-D (all buckets) | T2-B and T2-D evaluate post-haircut P&L (T-153 p50); previously used nominal paper P&L |
-| 6 — T4 Tier 2 thresholds | APR-0019 (implicit checklist values) | Formally derives T4 T2-A (20pp), T2-B (EV>0 post-haircut), T2-C (Brier ≤0.265), T2-D (slope>0 post-haircut) |
-| 7 — T4 game-night floor | APR-0019 (unstated) | Explicitly applies ≥5 game nights to T4 slope criteria; same df≥3 derivation as T1 |
-| 8 — T-AGG portfolio goal | APR-0017 (gap — no such criterion existed) | New portfolio-level criterion: aggregate post-haircut EV > 0 (T-AGG-A) and aggregate P&L slope > 0 (T-AGG-B) |
-| 9 — YES-only gate / T1 T2 | APR-0019 Mod 4 | Clarifies that active YES-only gate means T1 Tier 2 evaluates YES-direction eligible bets only for the regular-season paper period |
+| Modification | Amends | Change | Gate scope |
+|---|---|---|---|
+| 5 — Fill-realism mandate | APR-0017 T2-B, T2-D (all buckets) | T2-B and T2-D evaluate post-haircut P&L (T-153 p50); previously used nominal paper P&L | G6 (T1) + T4 Activation Gate (T4) |
+| 6 — T4 Tier 2 thresholds | APR-0019 (implicit checklist values) | Formally derives T4 T2-A (20pp), T2-B (EV>0 post-haircut), T2-C (Brier ≤0.265), T2-D (slope>0 post-haircut) | T4 Activation Gate only |
+| 7 — T4 game-night floor | APR-0019 (unstated) | Explicitly applies ≥5 game nights to T4 slope criteria; same df≥3 derivation as T1 | T4 Activation Gate only |
+| 8 — T-AGG portfolio goal | APR-0017 (gap — no such criterion existed) | New portfolio-level criterion: aggregate post-haircut EV > 0 (T-AGG-A) and aggregate P&L slope > 0 (T-AGG-B) | T4 Activation Gate only |
+| 9 — YES-only gate / T1 T2 | APR-0019 Mod 4 | Clarifies that active YES-only gate means T1 Tier 2 evaluates YES-direction eligible bets only for the regular-season paper period | G6 (T1 only) |
 
 **What does NOT change:**
 - Tier 0 (T0-A, T0-B)
 - Tier 1 (T1-A, T1-B, T1-C, T1-D)
-- Per-bucket floors (T1 ≥66 eligible, T4 ≥50 eligible) from APR-0019
+- Per-bucket floors (T1 ≥66 eligible, T4 ≥50 eligible) from APR-0019 — T4 floor now applies at T4 Activation Gate
 - Tier 3 (T3-A, T3-B, T3-C, T3-E)
 - T2-A and T2-C criteria (calibration deviation, Brier) — not P&L metrics; unaffected by fill-realism mandate
-- Minimum game nights floor: ≥5 (already in APR-0017; Modification 7 adds explicit T4 coverage)
 - ADR-0024 (stop/pivot criterion)
 - C4 risk limits, cron schedule, formal G6 approval gates (APR-0008/0009)
 
@@ -212,18 +233,32 @@ This criterion is evaluated AFTER all per-bucket Tier 2 and Tier 3 criteria pass
 
 ## Updated G6 Closure Condition
 
-For G6 to close, ALL of the following must be met:
+**G6 is a T1 live capital gate.** T4 is BLOCKED (BAND_REGISTRY: Strategy K BLOCKED, Phase 8+). T4 criteria belong to the T4 Activation Gate (see below). For G6 to close, ALL of the following must be met:
 
 1. **Tier 0** — T0-A (EXP-017 Part B CONFIRMED_POSITIVE on ADR-0024 adequate sample) + T0-B (already met)
-2. **Statistical floors** — T1 ≥66 eligible bets + T4 ≥50 eligible bets + ≥5 game nights (both buckets)
+2. **Statistical floor** — T1 ≥66 eligible bets + ≥5 game nights (T1 slope regression df ≥ 3)
 3. **Tier 1** — T1-A, T1-B, T1-C, T1-D all pass
-4. **Tier 2 (T1)** — T2-A, T2-B (post-haircut), T2-C, T2-D (post-haircut) all pass, evaluated on YES-only eligible bets
-5. **Tier 2 (T4)** — T2-A, T2-B (post-haircut, two-leg), T2-C, T2-D (post-haircut, two-leg) all pass
-6. **T-AGG** — aggregate portfolio post-haircut EV > 0 (T-AGG-A) + aggregate P&L slope > 0 (T-AGG-B)
-7. **Tier 3** — T3-A, T3-B, T3-C, T3-E all pass
-8. **Formal gate prerequisites** — ADR-0005, T-117, GG-014 (confirmed), GG-020, APR-0008, APR-0009
+4. **Tier 2 (T1)** — T2-A, T2-B (post-haircut, T-153 p50, one-leg), T2-C, T2-D (post-haircut) all pass; evaluated on YES-direction eligible bets while YES-only gate is active (Mod 9)
+5. **Tier 3** — T3-A, T3-B, T3-C, T3-E all pass
+6. **Formal gate prerequisites** — ADR-0005, T-117, GG-014 (confirmed), GG-020, APR-0008, APR-0009
 
 No partial promotion. All conditions must pass simultaneously.
+
+---
+
+## T4 Activation Gate (Phase 8 Pre-Requisite)
+
+**This gate must be satisfied before any T4 strategy (Strategy K or equivalent) can be promoted from BLOCKED to ACTIVE.** It is independent of G6 — G6 may close before this gate opens. This gate applies when T4 strategies are operating in live paper mode at Phase 8.
+
+For the T4 Activation Gate to clear, ALL of the following must be met:
+
+1. **Statistical floor** — T4 ≥50 eligible bets + ≥5 game nights (Mod 7)
+2. **T4 Tier 2** — T2-A (≤20pp calibration deviation, slope ≤0), T2-B (post-haircut two-leg EV>0, slope≥0), T2-C (Brier ≤0.265, slope ≤0), T2-D (post-haircut two-leg P&L slope>0) — all pass (Mod 6, Mod 7)
+3. **T-AGG** — T-AGG-A (aggregate portfolio post-haircut EV > 0) + T-AGG-B (aggregate portfolio P&L slope > 0 over ≥5 game nights) — both pass (Mod 8)
+4. **Formal prerequisites** — BLOCKED→ACTIVE promotion ADR for Strategy K + DS sign-off (APR-XXXX) + real-time C5 infrastructure ADR + kill switch SLA revision to <5s (per Strategy K notes: "Kill switch 60s SLA is 12x too slow for T4/T5; requires <5s")
+5. **ADR-0019 Tier 2 activation gate** — EXIT_MECHANICS_ACTIVE confirmed active and T-152/T-153 empirical validation complete
+
+Passing G6 (T1 live capital) does NOT automatically satisfy the T4 Activation Gate. These are independent gates with independent evidence requirements.
 
 ---
 
@@ -232,10 +267,10 @@ No partial promotion. All conditions must pass simultaneously.
 | Criterion | Broken system that passes | Mitigation |
 |---|---|---|
 | Mod 5 (haircut mandate) | System with EV = +$0.05/bet on paper fills, EV = −$0.02/bet after realistic costs — passes T2-B without haircut | Fixed: T2-B evaluates post-haircut EV; positive only if positive after fill costs |
-| Mod 6 (T4 thresholds) | T4 with EV = +$0.003/bet pre-haircut, EV = −$0.01/bet post two-leg haircut — "passes" if haircut not applied | Fixed: T4 T2-B explicitly requires two-leg haircut |
-| Mod 8 T-AGG-A | T1 EV = +$0.10 (13 bets/game), T4 EV = +$0.001 (1,000 bets/game) → aggregate = +$0.0012 but well below fill-cost breakeven | Note: if both bucket T2-Bs pass post-haircut, aggregate T-AGG-A is likely met by construction for these values. T-AGG catches the case where T4 BARELY passes per-bucket but aggregate is negative after costs — specific scenario: T4 EV = +$0.001 but haircut = 0.015 → T4 negative → per-bucket T2-B fails → G6 already blocked. T-AGG adds defense-in-depth for portfolio-level interactions. |
+| Mod 6 (T4 thresholds) | T4 with EV = +$0.003/bet pre-haircut, EV = −$0.01/bet post two-leg haircut — "passes" if haircut not applied | Fixed: T4 T2-B explicitly requires two-leg haircut at T4 Activation Gate |
+| Mod 8 T-AGG-A | T1 EV = +$0.10 (13 bets/game), T4 EV = +$0.001 (1,000 bets/game) → aggregate EV positive per-bucket but combined post-haircut aggregate may be negative | Fixed: T-AGG-A directly measures combined portfolio EV; both buckets must be simultaneously active at T4 Activation Gate |
 | Mod 8 T-AGG-B | Lucky early runs give positive aggregate P&L but slope is negative | Fixed: slope criterion requires P&L to be increasing over game nights, not just positive at endpoint |
-| Mod 9 (YES-only) | Include NO counterfactuals (never placed) in T1 T2-B to inflate n and dilute negative-EV NO bets into the average | Fixed: only placed (YES-direction) eligible bets count toward T1 Tier 2 |
+| Mod 9 (YES-only) | Include NO counterfactuals (never placed) in T1 T2-B to inflate n and dilute negative-EV NO bets into the average | Fixed: only placed (YES-direction) eligible bets count toward T1 Tier 2 at G6 |
 
 ---
 
@@ -249,17 +284,19 @@ No partial promotion. All conditions must pass simultaneously.
 
 **Review checklist:**
 
-- [ ] Mod 5 — Fill-realism mandate: T2-B and T2-D evaluate post-haircut P&L at T-153 p50 estimate — acceptable
+- [ ] Rework rationale — T4 removed from G6 (BLOCKED/Phase 8+); T4 criteria moved to T4 Activation Gate — acceptable
+- [ ] Mod 5 — Fill-realism mandate: T2-B and T2-D evaluate post-haircut P&L at T-153 p50 estimate, scoped to G6 (T1) and T4 Activation Gate (T4) — acceptable
 - [ ] Mod 5 — T1 haircut is upper bound (resting orders may be maker fills, zero cost) — conservative direction confirmed
-- [ ] Mod 6 — T4 T2-A: calibration deviation ≤ 20pp, slope ≤ 0 (formally derived) — acceptable
-- [ ] Mod 6 — T4 T2-B: fill-realism-adjusted EV > 0, slope ≥ 0 (two-leg haircut) — acceptable
-- [ ] Mod 6 — T4 T2-C: Brier ≤ 0.265, slope ≤ 0 (L1 threshold as ceiling without T4 TEST baseline) — acceptable
-- [ ] Mod 6 — T4 T2-D: fill-realism-adjusted P&L slope > 0 (two-leg haircut) — acceptable
-- [ ] Mod 7 — T4 game-night floor: ≥5 nights (df ≥ 3, same as T1) — acceptable
-- [ ] Mod 8 — T-AGG-A: aggregate post-haircut EV > 0 — acceptable
-- [ ] Mod 8 — T-AGG-B: aggregate P&L slope > 0 over ≥5 game nights — acceptable
-- [ ] Mod 9 — T1 Tier 2 evaluates YES-direction eligible bets while YES-only gate is active — acceptable
-- [ ] G6 closure condition (all 8 items) — acceptable
+- [ ] Mod 6 — T4 T2-A: calibration deviation ≤ 20pp, slope ≤ 0 (formally derived); T4 Activation Gate scope — acceptable
+- [ ] Mod 6 — T4 T2-B: fill-realism-adjusted EV > 0, slope ≥ 0 (two-leg haircut); T4 Activation Gate scope — acceptable
+- [ ] Mod 6 — T4 T2-C: Brier ≤ 0.265, slope ≤ 0 (L1 threshold as ceiling without T4 TEST baseline); T4 Activation Gate scope — acceptable
+- [ ] Mod 6 — T4 T2-D: fill-realism-adjusted P&L slope > 0 (two-leg haircut); T4 Activation Gate scope — acceptable
+- [ ] Mod 7 — T4 game-night floor: ≥5 nights (df ≥ 3, same as T1); T4 Activation Gate scope — acceptable
+- [ ] Mod 8 — T-AGG-A: aggregate post-haircut EV > 0; T4 Activation Gate scope — acceptable
+- [ ] Mod 8 — T-AGG-B: aggregate P&L slope > 0 over ≥5 game nights; T4 Activation Gate scope — acceptable
+- [ ] Mod 9 — T1 Tier 2 evaluates YES-direction eligible bets while YES-only gate is active; G6 scope — acceptable
+- [ ] G6 closure condition (6 items, T1-only) — acceptable
+- [ ] T4 Activation Gate conditions (5 items) — acceptable
 - [ ] GG-022 status: RESOLVED upon sign-off — acceptable
 
 **Sign-off:** _______________  
