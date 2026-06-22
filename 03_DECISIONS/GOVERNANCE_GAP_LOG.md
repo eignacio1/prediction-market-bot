@@ -661,6 +661,59 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | SESSION 64 — post-sprint full-database assessment (this session). |
 | Status | **PARTIALLY RESOLVED 2026-06-16 SESSION 64 (calibration half) — OPEN (alpha half).** DS directive: "recalibrate and record it disproved miscalibration." **(A) Calibration RESOLVED via ADR-0027 ACCEPTED.** Root located: production T1 `model_p` is the **pure Poisson** survival prob (`game_state_model._poisson_cdf`, `run_paper_trade.py:543`), NOT LR+Platt (`prod_model.joblib` only logs `p_estimate_lr`) — so recalibrating Platt would have been a **no-op**; the overconfidence is Poisson ignoring NBA over-dispersion (var>mean; `scoring_distribution.py` already has an unused NB path). Fix: a **temperature-scaling layer** `p_cal=σ(logit(p)/T)` in new `c3_forecasting/calibration.py`, wired at the single production prob site; per-sport registry with **fail-safe identity (T=1.0)** so MLB cannot inherit NBA's shrink. NBA T=**2.05** (OOS-validated: fit G2–G4, test G5 → Brier 0.315→0.282, confidence 0.807→0.731 vs 0.537; in-sample optimum was 3.10 — conservative OOS chosen). Re-derivable + monitored via `scripts/derive_calibration.py` (the GG-037 calibration+edge-decile monitor, item 2). 14 new tests; full suite **988 passed**. **(B) MISCALIBRATION HYPOTHESIS DISPROVED — alpha half stays OPEN.** Recalibration does **NOT** create alpha: after calibration the residual edge vs the Kalshi price is still **anti-predictive** — edge>0 winrate **0.356** vs edge≤0 **0.747**; highest-edge tercile 0.346 vs lowest 0.792. The edge inversion **survives calibration** — it was never just overconfidence. Calibration makes the bot honest (declines ~70% of prior bets) but not profitable on Finals data. **GG-037 remains OPEN** for the no-alpha finding; deferred to EXP-017 at scale (MLB dark period + NBA regular season) per DS ("we have the rest of season MLB testing data to toggle it"). Does NOT relieve [[GG-004]]. NBA T=2.05 inherits the n=158 single-series limit (ADR-0024) — provisional, re-derive on adequate sample at G6. Linked: ADR-0027, [[GG-004]], audit directive (calibration collapse CONFIRMED, now corrected), ADR-0024, ADR-0004/ADR-0015 (amended), GG-008. |
 
+---
+
+### GG-038 — T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-038 |
+| Category | Architectural gap — safety SLA insufficient for new execution regime |
+| What was missed | NFR-03 specifies kill switch ≤60 seconds. At Kalshi's 60 calls/min execution rate, 60 seconds = up to 60 additional bets submitted between kill trigger and halt. For monolithic T4 with a small pre-scheduled bet set, this was acceptable. For continuous T4 evaluation potentially approving multiple bets per second, 60 seconds of uncontrolled execution after a kill trigger represents unacceptable capital exposure. |
+| When it should have been caught | When ADR-0029 T4 sub-band architecture was first designed — the moment continuous evaluation was proposed, the kill switch SLA should have been immediately re-examined. |
+| Phases it survived | T4 is BLOCKED (Phase 8+), so no live harm has occurred. |
+| Why it survived | NFR-03 was designed for a batch-bet system (T1: ~10–20 bets per night). The T4 continuous evaluation architecture is new (SESSION 66). |
+| Impact | **HIGH pre-Phase 8.** Without a T4-specific fast-halt mechanism (≤5s), a kill trigger during a live T4 evaluation burst could result in 60+ bets submitted before halt — the exact scenario the kill switch exists to prevent. |
+| Discovery | SESSION 66 — ADR-0029 hygiene check. Surfaced during three-layer T4 architecture design. |
+| Resolution | New ADR amending NFR-03 for T4 band + C7 implementation of two-tier fast-halt mechanism: (1) T4-specific halt in ≤5s; (2) system-level halt preserves current 60s SLA for T1/T2/T3. Both tiers must operate independently. |
+| Status | **OPEN.** Phase 8 prerequisite — must resolve before any T4 sub-band activates. Linked: ADR-0029, NFR-03. |
+
+---
+
+### GG-039 — T4 Price Cache / Staleness Check Architecture
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-039 |
+| Category | Architectural gap — missing component required for Layer 2 staleness arbitration |
+| What was missed | ADR-0029's Layer 2 execution queue requires current Kalshi market prices to run the staleness check on each dequeued bet. The existing venue constraint for T4 specifies `max_api_calls_per_decision = 0` — zero live API calls at execution time. These two requirements are in direct tension: the staleness check needs current prices but cannot call the API at execution time. |
+| When it should have been caught | When the staleness-arbitration execution queue was designed in T-179 (SESSION 66). This gap is intrinsic to the architecture — it cannot be discovered before the architecture is specified. |
+| Phases it survived | T4 is BLOCKED. No live harm. |
+| Why it survived | The gap is created by the architecture specified in this session. It has not had time to "survive" any phase. |
+| Impact | **MEDIUM — design gap only; no live capital risk until Phase 8.** If unresolved, the staleness check cannot function as designed and the execution queue would either need to drop all bets without a price check (unsafe) or use stale prices from trade time (defeats the purpose). |
+| Discovery | SESSION 66 — ADR-0029 hygiene check. |
+| Resolution | Design and implement a separate read-only price polling loop: polls Kalshi market prices for all open markets at a cadence ≤ the shortest expected edge window across active T4 sub-bands; writes to an in-memory price cache; operates independently of the execution rate limit budget (not counted as execution API calls). Cache staleness windows per sub-band defined in ADR-0029. Full architectural design requires a separate ADR. |
+| Status | **OPEN.** Phase 8 prerequisite — must resolve before T4 sub-band activation. Linked: ADR-0029. |
+
+---
+
+### GG-040 — T4 Real-Time Data Sources: Required Feeds Not in Current C1 Architecture
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-040 |
+| Category | Architectural gap — data source prerequisite for T4 sub-band activation |
+| What was missed | T4 sub-bands require data feeds that do not exist in the current C1 implementation. Current C1 uses ESPN scoreboard API for box scores with multi-minute latency — insufficient for T4-EVENT (requires ≤2s event detection) and T4-LINEUP (requires ≤5s substitution detection). T4-MICRO requires real-time order book feed. T4-SENTIMENT requires Kalshi tick-level price history. None of these are built. |
+| When it should have been caught | During T4 Phase 8 planning. The gap exists because T4 is BLOCKED and no Phase 8 data source planning has been done. |
+| Phases it survived | T4 BLOCKED — no live harm. |
+| Why it survived | T4 Phase 8 data source requirements were never formally inventoried. ADR-0029 is the first document to specify them concretely. |
+| Impact | **HIGH pre-Phase 8; LOW now.** Without Phase 8 data sources, T4-EVENT, T4-LINEUP, T4-MICRO, and T4-SENTIMENT cannot function as designed. T4-STAGED and T4-PROJ can function with enhanced versions of current C1 data. |
+| Discovery | SESSION 66 — ADR-0029 design analysis. |
+| Resolution | Phase 8 C1 rebuild to add: (1) Live box score feed with ≤2s event detection latency (T4-EVENT, T4-ARITH); (2) Live play-by-play / lineups API with ≤5s substitution detection (T4-LINEUP); (3) Kalshi tick-level market price feed (T4-MICRO, T4-SENTIMENT). Each requires vendor evaluation and C1 module design. Full data source ADR required before Phase 8. |
+| Status | **OPEN.** Phase 8 prerequisite. Low urgency now — Phase 8 not imminent. Linked: ADR-0029, GG-038, GG-039. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
