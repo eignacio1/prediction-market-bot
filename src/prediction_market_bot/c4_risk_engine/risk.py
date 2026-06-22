@@ -323,6 +323,7 @@ class RiskEngine:
         session_id: str | None = None,
         current_open_exposure_usd: float = 0.0,
         portfolio_equity_usd: float | None = None,
+        pool_isolated: bool = False,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Evaluate a forecast record and return a risk approval decision.
@@ -348,11 +349,19 @@ class RiskEngine:
             free-cash invariant (CHECK 8). Caller (C5/orchestrator) owns the
             position ledger and passes a snapshot — same pattern as drawdown/loss.
         portfolio_equity_usd:
-            ADR-0026: current equity (initial_bankroll + Σ closed non-isolated
-            pnl). When None (default), the portfolio invariant is SKIPPED —
-            backward compatible for callers that do not yet supply portfolio
-            state (EXP harnesses, T4 isolated-pool path). run_paper_trade.py
-            supplies it, so the T1 main book is always gated.
+            ADR-0026: current equity (initial_bankroll + Σ closed pnl for the
+            relevant pool). When None (default), the portfolio invariant is
+            SKIPPED — backward compatible for callers that do not supply
+            portfolio state. run_paper_trade.py supplies T1 equity; T4 live
+            supplies t4_band_budget when not in VIRTUAL mode.
+        pool_isolated:
+            T-175 (ADR-0026 extension): when True, this call represents a
+            capital-isolated pool (e.g. T4 band budget). CHECK 8a (solvency
+            KILL — projected stake > equity) applies. CHECK 8b (60% policy
+            cap REJECT) is SKIPPED because the reserve-for-T4 constraint
+            does not apply to the T4 pool itself. EXP harnesses pass
+            pool_isolated=False (default) — they are always phase-gate
+            rejected before CHECK 8 is reached, so the value is moot.
 
         Returns
         -------
@@ -380,6 +389,7 @@ class RiskEngine:
                 "current_drawdown_pct": current_drawdown_pct,
                 "current_open_exposure_usd": current_open_exposure_usd,
                 "portfolio_equity_usd": portfolio_equity_usd,
+                "pool_isolated": pool_isolated,
             },
             session_id=session_id,
             risk_eval_id=eval_id,
@@ -620,31 +630,34 @@ class RiskEngine:
 
                 # 8b — Policy deployment cap: hold aggregate stake ≤ cap × equity
                 # (ADR-0010 reserve enforced in aggregate). Breach = REJECT.
-                deployment_cap = _HARD_LIMITS["max_portfolio_deployment_pct"] * equity
-                if projected_exposure > deployment_cap:
-                    ok = self._log(
-                        "risk_eval_rejected",
-                        {
-                            "risk_eval_id": eval_id,
-                            "reason": "aggregate_deployment_cap",
-                            "current_open_exposure_usd": float(current_open_exposure_usd),
-                            "approved_size": float(approved_size),
-                            "projected_exposure_usd": projected_exposure,
-                            "deployment_cap_usd": deployment_cap,
-                            "max_portfolio_deployment_pct": _HARD_LIMITS["max_portfolio_deployment_pct"],
-                            "portfolio_equity_usd": equity,
-                        },
-                        severity="INFO",
-                        session_id=session_id,
-                        risk_eval_id=eval_id,
-                        forecast_id=forecast_id,
-                    )
-                    if not ok:
-                        all_ok = False
-                    return all_ok, self._build_rejection(
-                        eval_id, "aggregate_deployment_cap", checks_passed, forecast_id
-                    )
-                checks_passed.append("aggregate_deployment_cap")
+                # Skipped for isolated pools (pool_isolated=True) — the 60%
+                # reserve-for-T4 constraint does not apply to T4's own budget.
+                if not pool_isolated:
+                    deployment_cap = _HARD_LIMITS["max_portfolio_deployment_pct"] * equity
+                    if projected_exposure > deployment_cap:
+                        ok = self._log(
+                            "risk_eval_rejected",
+                            {
+                                "risk_eval_id": eval_id,
+                                "reason": "aggregate_deployment_cap",
+                                "current_open_exposure_usd": float(current_open_exposure_usd),
+                                "approved_size": float(approved_size),
+                                "projected_exposure_usd": projected_exposure,
+                                "deployment_cap_usd": deployment_cap,
+                                "max_portfolio_deployment_pct": _HARD_LIMITS["max_portfolio_deployment_pct"],
+                                "portfolio_equity_usd": equity,
+                            },
+                            severity="INFO",
+                            session_id=session_id,
+                            risk_eval_id=eval_id,
+                            forecast_id=forecast_id,
+                        )
+                        if not ok:
+                            all_ok = False
+                        return all_ok, self._build_rejection(
+                            eval_id, "aggregate_deployment_cap", checks_passed, forecast_id
+                        )
+                    checks_passed.append("aggregate_deployment_cap")
 
             # Reserve mandate advisory warning (ADR-0010) — warning-only at paper scale;
             # blocking enforcement belongs in PIPE-03 batch-level check (dark period).
@@ -681,13 +694,14 @@ class RiskEngine:
                 "forecast_id": forecast_id,
                 "kelly_fraction": self._kelly_fraction,
                 "bankroll": self._bankroll,
-                # ADR-0026 portfolio telemetry (None when caller did not supply state)
+                # ADR-0026 / T-175 portfolio telemetry (None when caller did not supply state)
                 "portfolio_equity_usd": (
                     float(portfolio_equity_usd) if portfolio_equity_usd is not None else None
                 ),
                 "open_exposure_before_usd": (
                     float(current_open_exposure_usd) if portfolio_equity_usd is not None else None
                 ),
+                "pool_isolated": pool_isolated,
             }
 
             ok = self._log(

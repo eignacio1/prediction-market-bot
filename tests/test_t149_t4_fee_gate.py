@@ -171,7 +171,8 @@ class TestRunCycleFeeSubtraction:
         # --- Mock RiskEngine: capture fc_record, return APPROVED ---
         captured_fc = {}
 
-        def fake_evaluate(forecast_record, current_daily_loss, current_drawdown_pct, session_id):
+        def fake_evaluate(forecast_record, current_daily_loss, current_drawdown_pct, session_id,
+                          current_open_exposure_usd=0.0, portfolio_equity_usd=None, pool_isolated=False):
             captured_fc.update(forecast_record)
             approval = {
                 "approval_status": "APPROVED",
