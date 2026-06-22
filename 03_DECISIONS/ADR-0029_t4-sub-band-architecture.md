@@ -1,13 +1,41 @@
 # ADR-0029 — T4 Sub-Band Architecture: Multi-Tree Routing, Continuous Evaluation, Immediate Execution
 
-**Status:** DRAFT — pending DS sign-off  
-**Registered by:** T-179 (SESSION 66, 2026-06-22)  
-**Drafted:** 2026-06-22 SESSION 66  
+**Status:** ACCEPTED — Tier A frozen (DS sign-off Earl Ignacio, 2026-06-22 SESSION 67). Tier B provisional per the two-tier acceptance model below.  
+**Registered by:** T-179 (SESSION 66, 2026-06-22); scoped SESSION 67 (2026-06-22)  
+**Drafted:** 2026-06-22 SESSION 66; scoped + accepted 2026-06-22 SESSION 67  
+**Accepted:** 2026-06-22 SESSION 67 — DS sign-off (Earl Ignacio). Tier A organizing commitments are now immutable (hard rule #3); Tier B roster/numerics/hypotheses remain provisional and revisable via DECISION_LOG until each sub-band's Phase 8 Activation Gate.  
 **Amends:** ADR-0010 (T4 Kelly fraction — superseded for T4; T1/T2/T3/T5 fractions unchanged), ADR-0014 (T4 decision tree section superseded), ADR-0018/ADR-0019 (NOISE_BUFFER_BAND_T4 superseded by per-sub-band derivation)  
 **Completes:** ADR-0028 T4 Activation Gate placeholder (DESIGN INCOMPLETE notice removed upon DS sign-off on this ADR)  
+**Carves out:** T4-MICRO (no-model market-microstructure / spread capture) — removed from this ADR's taxonomy and forwarded to **ADR-0030** as a distinct strategy class (execution-quality edge, not forecast edge). See "Scope Boundary" below.  
 **Does NOT supersede:** ADR-0013 (T4 budget architecture — T4_BAND_WEIGHT=0.27 aggregate is unchanged), ADR-0022 (T4 realized-value exit credit semantics), ADR-0023 (proportional T4 band budget — aggregate unchanged), ADR-0026 (portfolio free-cash invariant — applies across all T4 sub-bands)  
 **New governance gaps registered:** GG-038 (T4 kill switch SLA), GG-039 (T4 price cache / staleness check), GG-040 (T4 real-time data sources)  
-**Effective:** Upon DS sign-off; governs T4 Phase 8 architecture design, all subsequent T4 code, and all T4 Activation Gate evidence criteria
+**Effective:** Upon DS sign-off; governs T4 Phase 8 architecture design, all subsequent T4 code, and all T4 Activation Gate evidence criteria — **subject to the two-tier acceptance model below.**
+
+---
+
+## Scope Boundary and Two-Tier Acceptance
+
+This ADR was scoped after a pre-sign-off alignment review (SESSION 67). Two structural decisions govern how it is to be read and signed.
+
+### Why this architecture is built before alpha is demonstrated
+
+The model has no demonstrated edge against Kalshi even at T1 (GG-004/GG-037 OPEN; edge currently anti-predictive). A fair challenge is therefore: why design an elaborate in-game architecture before the foundational edge question is answered?
+
+**DS ruling (SESSION 67):** The T4 architecture is **strategy-agnostic scaffolding**, not a bet on any specific edge hypothesis. The organizing principle — "beat the situation, not the market" — is portfolio-management discipline, not a win-rate claim. A correct trade is evaluated against context (liquidity, volatility, target allocation, concentration, risk tolerance, cash-flow needs, macro alignment), not a binary profit/loss coin flip. The routing/evaluation/execution machinery (continuous evaluation → staleness arbitration → immediate execution) is reusable regardless of which specific edge strategy survives EXP validation. The edge/alpha math is treated as a separate, ongoing workstream (T-177) with the same rigor; locking the *architecture* now does not commit to any *edge claim*. This explicitly accepts the proportionality trade-off rather than ignoring it.
+
+### Tier A vs Tier B — what sign-off freezes and what it does not
+
+ADRs are immutable once accepted (hard rule #3). To avoid freezing unvalidated specifics, acceptance is **two-tier**:
+
+- **Tier A — ACCEPTED ON SIGN-OFF (stable architecture):** The three-layer architecture (continuous evaluation → staleness-arbitrated queue → immediate C5 + C6 audit); the six design principles; the immediate-execution / staleness-arbitration model; the per-sub-band budget *mechanism* (shared pool + caps, not the cap values); the T4 Activation Gate *structure*; the kill-switch tier structure and ≤5s requirement. These are organizing commitments. Changing them requires a superseding ADR.
+
+- **Tier B — PROVISIONAL (directional reference, not frozen):** The specific sub-band *roster* (which sub-bands exist, and how many); every numeric value (Kelly fractions, noise buffers, exposure caps, materiality gates, persistence thresholds, convergence premia); the alpha hypotheses each sub-band rests on. Tier B is a design hypothesis pending the first in-game EXP. A sub-band may be added, merged, split, or dropped, and any number revised, **without a superseding ADR** — only a DECISION_LOG entry — until its Phase 8 Activation Gate is cleared, at which point that sub-band's then-current values are frozen by its activation ADR (APR-XXXX). Tier B values are non-operational until their named EXP completes (Principle 5).
+
+This means sign-off endorses the *machine and the method*, not the roster of 10 sub-bands or any number in this document. Nothing in Tier B can deploy capital before its EXP gate clears.
+
+### T4-MICRO carve-out
+
+T4-MICRO (pure order-book spread capture) has **no `model_p`** — its edge is execution quality, not forecast accuracy. That is a different strategy thesis from this project's core claim (`model_p > mip + vig`), closer in kind to the `arb/` folder (quarantined pending APR-0010) and DFS pick'em (requires its own ADR). It is therefore removed from this ADR's taxonomy and forwarded to **ADR-0030 (placeholder, registered SESSION 67)**, where it must carry its own thesis, activation gate, and EXP before any consideration. It is neither approved nor rejected here — only quarantined into the correct governance lane. This ADR's taxonomy is consequently **10 sub-bands**, all of which are `model_p`-based (or portfolio-structural overlays on `model_p`-based bets).
 
 ---
 
@@ -21,9 +49,11 @@ It isn't. DS directive 2026-06-22 (T-179 registration, DECISION_LOG SESSION 65):
 
 The in-game window contains signal classes that differ in: what information they act on, what compute they require, what model class processes them, what execution mechanism they use, how long their edge window persists, and what governance review they require. Each of these dimensions drives architecture. Combining them into one band conflates architecturally distinct things.
 
-**What was wrong about the previous design attempts:** An earlier design iteration organized sub-bands by clock time (5-second bucket, 1-minute bucket, 10-minute bucket). DS rejected this:
+**What was wrong about the previous design attempts:** An earlier design iteration organized sub-bands by clock time (5-second bucket, 1-minute bucket, 10-minute bucket). DS rejected this. The directive, paraphrased from the SESSION 66 design discussion (recorded in SESSION_HANDOFF_20260622_1300.md line 23; not captured verbatim in DECISION_LOG):
 
-> "Those are still arbitrary band segments... those buckets CAN serve as a foundational reference point for the rest of the architecture."
+> Time buckets are "arbitrary band segments" — they *can* serve as a foundational reference point for the architecture, but they cannot be the taxonomy's defining principle.
+
+*(Attribution note: this is a reconstructed paraphrase, not a verbatim transcript. The verbatim DS directives on record are the SESSION 65 "most diverse… can't just be clumped" entry [DECISION_LOG] and the SESSION 66 "immediate execution / nothing can be held" entry [handoff line 22]. DS to confirm or correct the paraphrase at sign-off.)*
 
 The correct organizing principle: **what information is being acted on, and what does that require architecturally?** Time horizon emerges from that question as a consequence — it is not the definition. Clock buckets are reference points only; they do not create execution timing mandates.
 
@@ -54,7 +84,6 @@ These principles extend ADR-0014's existing per-band decision tree framework:
 │  LAYER 1 — CONTINUOUS EVALUATION ENGINE                     │
 │                                                             │
 │  Each tree runs at its natural update frequency:            │
-│  T4-MICRO   → every order book tick (ms)                    │
 │  T4-STAGED  → each Kalshi price update (continuous)         │
 │  T4-EVENT   → each qualifying game event (seconds)         │
 │  T4-LINEUP  → each roster change detected (seconds)        │
@@ -174,40 +203,11 @@ Strategy naming for BAND_REGISTRY: existing Strategy K ("In-Play Scalping") is s
 
 ---
 
-### T4-MICRO — Market Microstructure
+### T4-MICRO — CARVED OUT TO ADR-0030 (not in this taxonomy)
 
-**Information class:** Pure order book — bid/ask spread, queue depth, order flow imbalance. Zero game state dependency.
+T4-MICRO (pure order-book spread capture / liquidity provision) is **removed from this ADR** and forwarded to **ADR-0030 (placeholder)**. Rationale: it has no `model_p` — its edge is execution quality, not forecast accuracy — which makes it a distinct strategy class from the forecast-edge thesis governing every other T4 sub-band. Folding a no-model HFT scalping leg into the forecast bot's T4 band would conflate two unrelated edge theses under one activation gate. Per the same governance discipline that quarantines `arb/` (APR-0010) and DFS pick'em (separate ADR), it gets its own lane.
 
-**Natural update frequency:** Every order book tick (milliseconds).
-
-**Decision tree:**
-```
-tick: spread > cost_threshold AND depth ≥ min_position_size
-→ SIGNAL: place resting limit at inside bid (YES) or ask (NO)
-→ Cancel if no fill within N ms (N: EXP-derived)
-```
-
-**Model class:** None — pure threshold comparison. This is execution quality edge, not model edge.
-
-**Kelly fraction:** Not applicable. Sized by spread width and available depth:
-```
-size = min(depth_available × participation_rate, position_floor)
-```
-where `participation_rate` and `position_floor` are EXP-derived. Kelly does not apply to spread capture without a probabilistic model.
-
-**Noise buffer:** Not applicable — exits are deterministic (resting order fills or cancels; no mid-position delta to buffer).
-
-**Execution prong:** Pre-staged resting limit orders. Zero live API calls at execution time. This is the ONLY sub-band that uses resting order management rather than new order submission. T4-MICRO bypasses the Layer 2 execution queue entirely — resting orders fill passively when the market arrives at the trigger price.
-
-**Expected edge window duration:** Milliseconds to seconds. Edge window closes when order book state changes.
-
-**Queue survival rate:** N/A — resting orders do not queue.
-
-**C5 path:** Resting order manager (distinct from new order submission path). Requires separate C5 module.
-
-**Currently activatable:** NO. Kalshi REST API P90 latency = 350ms makes new order submission non-viable at ms resolution. Resting order management is viable in principle but requires WebSocket API or equivalent low-latency feed for bid/ask monitoring. Blocked pending venue infrastructure (GG-038 data source component).
-
-**Phase 8 activation gate:** Venue WebSocket API confirmed + order book feed operational + EXP confirming spread capture is positive EV after transaction costs.
+It is neither approved nor rejected here. ADR-0030 must establish its own thesis, its own activation gate, its own EXP (does Kalshi order-book spread capture clear fees?), and its own C5 resting-order module before any consideration. Until ADR-0030 is drafted and signed, T4-MICRO does not exist as an executable strategy.
 
 ---
 
@@ -450,7 +450,11 @@ where `k_T4_ref = 0.20`, `σ_λ_T4_ref = 0.50` (Q4 reference, ADR-0010 anchor).
 - 24 min elapsed (halftime): σ_λ = 3.16 → k = 0.20 × (0.50/3.16) = **0.032**
 - 36 min elapsed (Q3 end): σ_λ = 1.29 → k = 0.20 × (0.50/1.29) = **0.078**
 - 42 min elapsed (Q4 mid): σ_λ = 0.60 → k = 0.20 × (0.50/0.60) = **0.167**
-- 46 min elapsed (Q4 late): σ_λ = 0.19 → k = 0.20 × (0.50/0.19) = **0.526** [capped at T5 ceiling = 0.25]
+- 46 min elapsed (Q4 late): σ_λ = 0.19 → k = 0.20 × (0.50/0.19) = **0.526** [exceeds project max; HARD-CAPPED at 0.25 — see caveat]
+
+**⚠️ Formula-breakdown caveat (Tier B; EXP-required before any near-certain sizing).** The inverse-variance formula `k ∝ 1/σ_λ` diverges as σ_λ → 0: at 46 min it produces k = 0.526, which is **2.1× the project-wide maximum Kelly (DEFAULT_KELLY_FRACTION = 0.25)** and more than full-Kelly territory for a single position. The 0.25 cap is therefore a **hard governance ceiling, not a derived value** — the formula is *out of its valid regime* in the NEAR-CERTAIN band, and capping is a band-aid, not a derivation. Two distinct problems must be resolved by EXP before T4-PROJ activates in the NEAR-CERTAIN regime:
+1. **Re-derivation, not capping:** the near-certain Kelly must be derived from a model valid at low σ_λ (e.g., arithmetic-survival sizing as in T4-ARITH / T5), not by truncating a diverging inverse-variance term.
+2. **Calibration-vs-confidence conflict:** the model is documented to be *overconfident in the tails* (Poisson over-dispersion; the NBA T = 2.05 temperature shrink, ADR-0027; the Wembanyama NO concentration episode). Sizing at or near the project maximum *precisely* in the near-certain tail — where the model is least calibrated — is the highest-leverage place to be wrong. EXP-PROJ-01 must confirm post-calibration tail reliability *before* any NEAR-CERTAIN Kelly above the MID-regime level is permitted. Until then, NEAR-CERTAIN sizing is provisionally held at the LATE-regime ceiling (≤ 0.167), **not** 0.25.
 
 **Dynamic Kelly schedule for T4-PROJ:**
 
@@ -459,7 +463,7 @@ where `k_T4_ref = 0.20`, `σ_λ_T4_ref = 0.50` (Q4 reference, ADR-0010 anchor).
 | EARLY (< 24min) | < 0.032 | 0.010 (floor) | Worse than T1; use floor to prevent near-zero sizing noise |
 | MID (24–36min) | 0.032–0.078 | EXP-derived | Full game-phase formula applies |
 | LATE (36–44min) | 0.078–0.167 | EXP-derived | Primary T4-PROJ value zone |
-| NEAR-CERTAIN (> 44min) | > 0.167 | min(k_derived, 0.25) | Capped at T5 Kelly ceiling; prevents over-sizing at near-certainty |
+| NEAR-CERTAIN (> 44min) | > 0.167 (formula diverges — invalid regime) | **provisional ≤ 0.167** until EXP-PROJ-01; hard ceiling 0.25 thereafter | Inverse-variance formula breaks down here (see caveat). Re-derive from arithmetic-survival model; do NOT size above MID/LATE level until tail calibration confirmed |
 
 **This supersedes the monolithic T4 Kelly = 0.20 in ADR-0010 for T4-PROJ. The 0.20 was the anchor; the dynamic schedule is the operational derivation.**
 
@@ -514,7 +518,7 @@ Scoring event for player with (threshold - current_stat) ≤ ARITH_ENTRY_WINDOW:
 
 **`ARITH_ENTRY_WINDOW`:** EXP-derived. Maximum gap (in stat units) to trigger T4-ARITH routing. Expected: 2–4 stat units (e.g., ≤3 points remaining to threshold with 10+ min left).
 
-**Kelly fraction:** Higher than T4-PROJ (lower uncertainty in the near-certain regime); lower than T5 (not fully arithmetic). EXP-derived. Provisional: 0.22 (midpoint between T4-PROJ LATE regime and T5).
+**Kelly fraction:** Higher than T4-PROJ (lower uncertainty in the near-certain regime); lower than T5 (not fully arithmetic). EXP-derived. Provisional: 0.22 (midpoint between T4-PROJ LATE regime and T5). **Subject to the same tail-calibration constraint as T4-PROJ NEAR-CERTAIN** — T4-ARITH operates in exactly the near-certain regime where the model is documented to be overconfident. The 0.22 provisional is held *non-operational* until EXP-ARITH-01 confirms post-calibration reliability of `p_arith` in the high-certainty band; it must not be read as an approved size.
 
 ---
 
@@ -670,7 +674,7 @@ All per-sub-band caps are provisional and must be formally derived from EXP data
 
 **What replaces T4 Kelly = 0.20:** The per-sub-band Kelly framework above. T4-PROJ in LATE regime (36–44 min elapsed) has the same derivation basis as the original T4 = 0.20 — this is where the monolithic value lived. The ADR-0010 anchor (0.20 at σ_λ = 0.50) remains the reference for T4-PROJ LATE regime; other sub-bands derive from it.
 
-**Code change required:** `execution_bands.py` BAND_CONFIGS for `T4_IN_PLAY` → split into 11 sub-band entries. The `kelly_fraction` field for each sub-band either reflects its EXP-derived value (when available) or the placeholder from this ADR.
+**Code change required:** `execution_bands.py` BAND_CONFIGS for `T4_IN_PLAY` → split into 10 sub-band entries (T4-MICRO excluded; ADR-0030). The `kelly_fraction` field for each sub-band either reflects its EXP-derived value (when available) or the placeholder from this ADR.
 
 ### Amendment 2 — ADR-0014 (T4 Decision Tree Section)
 
@@ -706,7 +710,7 @@ Layer 2 staleness check requires current Kalshi market prices per queued bet. Ve
 T4 sub-bands require data feeds not in the current C1 architecture:
 - Live box score with ≤2s event detection latency (T4-EVENT, T4-ARITH)
 - Live play-by-play / lineups API with ≤5s substitution detection (T4-LINEUP)
-- Kalshi tick-level market price feed (T4-MICRO, T4-SENTIMENT)
+- Kalshi tick-level market price feed (T4-SENTIMENT; the tick/order-book feed for T4-MICRO is an ADR-0030 prerequisite, not tracked here)
 Current C1 uses ESPN scoreboard API for box scores (multi-minute latency). Phase 8 C1 rebuild required. Severity: HIGH pre-Phase 8. Low now — Phase 8 is not imminent.
 
 ---
@@ -715,9 +719,10 @@ Current C1 uses ESPN scoreboard API for box scores (multi-minute latency). Phase
 
 No sub-band activates with unresolved "EXP-required" markers. The following EXPs must complete before each sub-band receives Phase 8 ACTIVE status:
 
+*(T4-MICRO and EXP-MICRO-01 are carved out to ADR-0030 — no longer part of this gate.)*
+
 | Sub-band | Required EXP | Key question |
 |---|---|---|
-| T4-MICRO | EXP-MICRO-01 | Does Kalshi order book support resting limit strategy? Is spread capture EV+ after fees? |
 | T4-STAGED | No new EXP required | T3 signal quality (ADR-0010) applies; fill slippage measurement needed but not a blocker |
 | T4-EVENT | EXP-EVENT-01 | Does Kalshi systematically reprice slowly after discrete game events? Measure per tree type. |
 | T4-EVENT | EXP-EVENT-02 | Per-tree Kelly derivation: measure signal-specific σ at event time across game phases |
@@ -759,9 +764,9 @@ Sub-bands activate independently. T4-PROJ may activate before T4-FLOW if T4-PROJ
 
 | File | Change | Notes |
 |---|---|---|
-| `execution_bands.py` | Split `T4_IN_PLAY` into 11 sub-band `ExecutionBand` enum values; add `BandConfig` for each; add `StrategyBandSpec` for each entry sub-band (T4-CORR and T4-EXIT get system-level config objects, not StrategyBandSpec) | T4_IN_PLAY superseded; backwards-compatibility note in docstring |
+| `execution_bands.py` | Split `T4_IN_PLAY` into 10 sub-band `ExecutionBand` enum values; add `BandConfig` for each; add `StrategyBandSpec` for each entry sub-band (T4-CORR and T4-EXIT get system-level config objects, not StrategyBandSpec) | T4_IN_PLAY superseded; backwards-compatibility note in docstring. T4-MICRO excluded (ADR-0030). **Gated on Tier A sign-off; per-sub-band roster is Tier B (may change via DECISION_LOG before code lands)** |
 | `execution_bands.py` | Add `NOISE_BUFFER` constants per sub-band; mark EXP-required values as provisional | Replaces single `NOISE_BUFFER_BAND_T4` for T4 |
-| `execution_bands.py` | Update `VenueBandConstraint` entries for Kalshi: T4 splits into sub-band-specific latency/SLA constraints | T4-PROJ/T4-FLOW can tolerate live API calls; T4-MICRO/T4-EVENT require pre-staging or zero calls |
+| `execution_bands.py` | Update `VenueBandConstraint` entries for Kalshi: T4 splits into sub-band-specific latency/SLA constraints | T4-PROJ/T4-FLOW can tolerate live API calls; T4-EVENT requires pre-staging or zero calls |
 | New: `t4_execution_engine.py` | Layer 1 continuous evaluation engine skeleton; Layer 2 execution queue; staleness check framework; T4-CORR overlay | Phase 8 infrastructure — BLOCKED until GG-038/039/040 resolved |
 | New: `t4_price_cache.py` | Read-only Kalshi price polling loop; in-memory cache per market; staleness window enforcement | GG-039 resolution component |
 | `c7_monitoring/kill_switch.py` | T4-specific fast-halt mechanism (≤5s SLA) | GG-038 resolution component; requires new ADR |
@@ -773,9 +778,18 @@ Sub-bands activate independently. T4-PROJ may activate before T4-FLOW if T4-PROJ
 
 **Review checklist:**
 
+*Scoping decisions (SESSION 67) — confirm first:*
+
+- [ ] **Two-tier acceptance model** — Tier A (three-layer architecture, six principles, budget mechanism, gate structure, kill-switch tiers) is frozen on sign-off; Tier B (sub-band roster, all numerics, alpha hypotheses) is provisional/directional and revisable via DECISION_LOG until each sub-band's Activation Gate — understood and acceptable
+- [ ] **Strategy-agnostic scaffolding rationale** — building the T4 architecture before alpha is demonstrated is accepted because the machinery is reusable regardless of which edge survives; "beat the situation, not the market" is the organizing discipline; edge/alpha math remains a separate workstream (T-177) — acceptable
+- [ ] **T4-MICRO carve-out** — removed from this taxonomy and forwarded to ADR-0030 (no `model_p`; distinct strategy class) — acceptable
+- [ ] **DS quote attribution** — the "arbitrary band segments" blockquote is a reconstructed paraphrase (handoff line 23), not verbatim; confirm or correct — acknowledged
+
+*Architecture (Tier A):*
+
 - [ ] Three-layer architecture (continuous evaluation → staleness-arbitrated queue → immediate C5) — acceptable
 - [ ] Immediate execution principle (no execution time mandates; staleness check is the gate) — acceptable
-- [ ] Eleven sub-bands, organized by information class — taxonomy correct and complete (or: DS redirects on specific sub-bands)
+- [ ] Ten sub-bands, organized by information class — taxonomy directionally correct (Tier B; DS may redirect on specific sub-bands without a superseding ADR)
 - [ ] T4-STAGED counted as T4 budget, T3 signal quality — acceptable
 - [ ] T4-EVENT alpha hypothesis requires EXP confirmation before activation — acceptable
 - [ ] T4-LINEUP cascading multi-market exposure per lineup event — acceptable
@@ -783,8 +797,9 @@ Sub-bands activate independently. T4-PROJ may activate before T4-FLOW if T4-PROJ
 - [ ] FLOW-BLOWOUT as primary carrier of blowout-context consequences on individual markets — acceptable
 - [ ] T4-SENTIMENT lower confidence; EXP-required before activation — acceptable
 - [ ] T4-PROJ dynamic Kelly framework (game-phase dependent; extends ADR-0010 methodology) — acceptable
+- [ ] **T4-PROJ NEAR-CERTAIN Kelly** — inverse-variance formula breaks down at low σ_λ (yields 0.526); NEAR-CERTAIN sizing held provisionally ≤ 0.167 pending EXP-PROJ-01 tail-calibration confirmation; 0.25 is a hard ceiling, not a derived value — acceptable
 - [ ] T4-PROJ BLOWOUT-POSTERIOR regime (bidirectional edge; trailing/leading star adjustments) — acceptable
-- [ ] T4-ARITH as pre-T5 near-certainty sub-band — acceptable
+- [ ] T4-ARITH as pre-T5 near-certainty sub-band; provisional 0.22 Kelly held non-operational pending EXP-ARITH-01 tail calibration — acceptable
 - [ ] T4-BOUNDARY structural reset (exits + halftime overlay + new entry scan) — acceptable
 - [ ] T4-CORR downward-only invariant (cannot increase C4-approved sizes) — acceptable
 - [ ] T4-CORR convergence signal (N mechanistically independent signals → convergence premium) — acceptable

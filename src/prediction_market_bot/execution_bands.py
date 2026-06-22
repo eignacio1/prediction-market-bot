@@ -50,8 +50,27 @@ class ExecutionBand(Enum):
     T1_MULTI_DAY = "T1"    # Full ML pipeline — current PIPE-02; Strategy A primary
     T2_SAME_DAY  = "T2"    # Injury/lineup overlay on T1 — PIPE-05; Strategy B
     T3_PRE_TIP   = "T3"    # Momentum signal scan — PIPE-06; Strategy J simplified
-    T4_IN_PLAY   = "T4"    # Bayesian game-state update — PIPE-07; requires real-time
+    T4_IN_PLAY   = "T4"    # AGGREGATE PARENT — in-play budget/risk unit (ADR-0013 T4_BAND_WEIGHT=0.27);
+                           #   sub-bands below route beneath it (ADR-0029). PIPE-07; requires real-time.
     T5_LATE_GAME = "T5"    # Arithmetic certainty (pts needed/time) — PIPE-08; requires real-time
+
+    # --- T4 sub-bands (ADR-0029, ACCEPTED Tier A; sub-band ROSTER is Tier B / PROVISIONAL) ---
+    # These are in-game routing destinations beneath the T4_IN_PLAY aggregate. ADR-0029's
+    # two-tier acceptance model: the existence of a sub-band layer (the "machine") is Tier A
+    # (frozen); WHICH sub-bands exist, and every numeric attached to them, is Tier B —
+    # revisable via DECISION_LOG (NOT a superseding ADR) until each sub-band clears its own
+    # Phase 8 Activation Gate. ALL are BLOCKED (requires_realtime=True, Phase 8). T4-MICRO is
+    # NOT here — it was carved out to ADR-0030 as a no-`model_p` execution-quality strategy class.
+    T4_STAGED    = "T4-STAGED"     # Pre-game conditional fill (resting order placed at T3)
+    T4_EVENT     = "T4-EVENT"      # Discrete stat-event reaction (multi-tree by event type)
+    T4_LINEUP    = "T4-LINEUP"     # Live lineup / rotation change (portfolio cascade)
+    T4_FLOW      = "T4-FLOW"       # Accumulated game-state / context pattern (incl. blowout)
+    T4_SENTIMENT = "T4-SENTIMENT"  # Market price drift (informed vs noise classification)
+    T4_PROJ      = "T4-PROJ"       # Bayesian posterior full-game projection (richest signal)
+    T4_ARITH     = "T4-ARITH"      # Threshold-approaching arithmetic near-certainty (pre-T5)
+    T4_BOUNDARY  = "T4-BOUNDARY"   # Quarter/halftime structural reset (structural overlay)
+    T4_CORR      = "T4-CORR"       # Cross-market correlation overlay (downward-only, portfolio)
+    T4_EXIT      = "T4-EXIT"       # Active position management / exit signals (portfolio)
 
 
 # ---------------------------------------------------------------------------
@@ -161,7 +180,165 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         requires_realtime=True,              # BLOCKED: Phase 8+
         phase_active="Phase 8",
     ),
+
+    # -----------------------------------------------------------------------
+    # T4 sub-band configs (ADR-0029) — Tier B PROVISIONAL. ALL BLOCKED Phase 8.
+    # -----------------------------------------------------------------------
+    # kelly_fraction values here are the ADR-0029 PROVISIONAL placeholders (Tier B):
+    # they are non-operational until each sub-band's named EXP completes (Principle 5),
+    # and several are deliberately held below their formula output pending tail-calibration
+    # (T4-PROJ NEAR-CERTAIN, T4-ARITH). The authoritative Tier B governance metadata
+    # (exposure caps, EXP gates, alpha hypotheses, BLOCKED status) lives in
+    # T4_SUBBAND_REGISTRY below — BandConfig only carries timing/sizing for uniformity.
+    # execution_sla_s is nominal (immediate-execution principle: no time mandate; the
+    # Layer-2 staleness check is the only execution gate). Sub-bands share PIPE-07.
+    ExecutionBand.T4_STAGED: BandConfig(
+        band=ExecutionBand.T4_STAGED,
+        model_class="t3_resting_order",      # T3 decision; resting limit order fills in T4 time
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.07,                 # ADR-0029: inherits T3 Kelly (signal is a T3 decision)
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_EVENT: BandConfig(
+        band=ExecutionBand.T4_EVENT,
+        model_class="event_conditional_update",
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.05,                 # PROVISIONAL: EXP-EVENT-02 required; repricing-lag hypothesis unconfirmed
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_LINEUP: BandConfig(
+        band=ExecutionBand.T4_LINEUP,
+        model_class="t4proj_rotation",       # T4-PROJ posterior + rotation model (EXP-required)
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.05,                 # PROVISIONAL max (ADR-0029): EXP-LINEUP-01 required; below T4-PROJ
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_FLOW: BandConfig(
+        band=ExecutionBand.T4_FLOW,
+        model_class="context_multiplier",
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.08,                 # PROVISIONAL: ADR-0029 range 0.08–0.12 by phase/context; EXP-FLOW-01/02
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_SENTIMENT: BandConfig(
+        band=ExecutionBand.T4_SENTIMENT,
+        model_class="drift_classifier",      # informed vs noise drift classification
+        max_compute_ms=50,
+        execution_sla_s=120,                 # NOMINAL: re-eval every 30–120s of sustained drift (EXP-SENT-01)
+        kelly_fraction=0.05,                 # PROVISIONAL: EXP-SENT-01 required; lowest-confidence signal
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_PROJ: BandConfig(
+        band=ExecutionBand.T4_PROJ,
+        model_class="bayesian_posterior",    # Full Poisson survival, game-state-updated lambda (richest signal)
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.167,                # PROVISIONAL LATE-regime ceiling. Dynamic schedule (ADR-0029):
+                                             #   EARLY 0.010 / MID 0.032–0.078 / LATE 0.078–0.167.
+                                             #   NEAR-CERTAIN held ≤0.167 (formula diverges; 0.25 is a HARD
+                                             #   ceiling, NOT derived) until EXP-PROJ-01 confirms tail calibration.
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_ARITH: BandConfig(
+        band=ExecutionBand.T4_ARITH,
+        model_class="arithmetic_survival",   # near-certainty pre-T5; re-derive from arithmetic model, not 1/σ_λ
+        max_compute_ms=10,
+        execution_sla_s=5,
+        kelly_fraction=0.167,                # PROVISIONAL & NON-OPERATIONAL. ADR-0029 placeholder is 0.22 but it
+                                             #   is HELD at the T4-PROJ LATE ceiling (0.167) here until EXP-ARITH-01
+                                             #   confirms p_arith tail reliability. Do NOT raise without EXP.
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_BOUNDARY: BandConfig(
+        band=ExecutionBand.T4_BOUNDARY,
+        model_class="structural_reset",      # quarter/halftime re-evaluation; no independent Kelly
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.167,                # Inherits T4-PROJ (new entries) / T4-EXIT (exits); no independent size
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_CORR: BandConfig(
+        band=ExecutionBand.T4_CORR,
+        model_class="correlation_overlay",   # downward-only invariant; convergence premium for independent signals
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.0,                  # Overlay — modifies other sub-bands' sizing; no own position
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4_EXIT: BandConfig(
+        band=ExecutionBand.T4_EXIT,
+        model_class="exit_management",       # continuous position monitoring; priority/bypass queue
+        max_compute_ms=50,
+        execution_sla_s=5,                   # ≤5s priority (same as T4 kill-switch requirement, GG-038)
+        kelly_fraction=0.0,                  # Manages existing positions; no new sizing
+        pipeline_id="PIPE-07",
+        cron_schedule=None,
+        requires_realtime=True,
+        phase_active="Phase 8",
+    ),
 }
+
+
+# T4 sub-band roster (ADR-0029 Tier B — PROVISIONAL; revisable via DECISION_LOG).
+# Order follows the ADR taxonomy. T4-MICRO is intentionally absent (ADR-0030 carve-out).
+T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4_STAGED,
+    ExecutionBand.T4_EVENT,
+    ExecutionBand.T4_LINEUP,
+    ExecutionBand.T4_FLOW,
+    ExecutionBand.T4_SENTIMENT,
+    ExecutionBand.T4_PROJ,
+    ExecutionBand.T4_ARITH,
+    ExecutionBand.T4_BOUNDARY,
+    ExecutionBand.T4_CORR,
+    ExecutionBand.T4_EXIT,
+)
+
+
+def is_t4_subband(band: ExecutionBand) -> bool:
+    """True if `band` is one of the ADR-0029 T4 sub-bands (not the T4_IN_PLAY aggregate)."""
+    return band in T4_SUBBANDS
+
+
+def t4_parent(band: ExecutionBand) -> ExecutionBand:
+    """
+    Return the aggregate parent band for a T4 sub-band.
+
+    T4 sub-bands roll up to ExecutionBand.T4_IN_PLAY for budget (ADR-0013 T4_BAND_WEIGHT)
+    and aggregate risk accounting. Non-sub-band bands return themselves.
+    """
+    return ExecutionBand.T4_IN_PLAY if is_t4_subband(band) else band
 
 
 def get_band_config(band: ExecutionBand) -> BandConfig:
@@ -200,6 +377,19 @@ NOISE_BUFFER_BAND_T3: float = 0.22053   # same σ_λ basis as T1
 NOISE_BUFFER_BAND_T4: float = 0.19      # EXP-019B/C empirical (G4): obs mean=0.182, p50=0.187; ADR-0019-A01
 NOISE_BUFFER_BAND_T5: float = 0.13328   # EXP-019A analytic; near-deterministic (final 3 min)
 
+# --- Per-sub-band noise buffers (ADR-0029) — Tier B PROVISIONAL ---
+# NOISE_BUFFER_BAND_T4 (0.19) REMAINS the aggregate default and the live-exit basis in
+# run_t4_live.py — it is NOT split away. Sub-bands inherit it unless ADR-0029 specifies
+# otherwise. EXP-019D must re-derive these per sub-band (max(2·σ_p_at_firing, EXIT_NET_COST).
+# `None` = EXP-required, no provisional value; callers must fall back to NOISE_BUFFER_BAND_T4.
+NOISE_BUFFER_T4_STAGED: float = NOISE_BUFFER_BAND_T3      # 0.22053 — sized/approved at T3; T3 buffer governs
+NOISE_BUFFER_T4_FLOW: float = NOISE_BUFFER_BAND_T4        # 0.19 — monolithic-T4 empirical basis is closest match
+NOISE_BUFFER_T4_PROJ: float = NOISE_BUFFER_BAND_T4        # 0.19 — direct inheritance; primary intended basis
+NOISE_BUFFER_T4_EVENT: Optional[float] = None            # EXP-EVENT required; expected tighter (< 0.19, short window)
+NOISE_BUFFER_T4_LINEUP: Optional[float] = None           # EXP-LINEUP required; expected moderate (portfolio-level)
+NOISE_BUFFER_T4_SENTIMENT: Optional[float] = None        # EXP-SENT required
+NOISE_BUFFER_T4_ARITH: Optional[float] = None            # EXP-ARITH required; expected < 0.19 (near-certainty)
+
 # Exit guard: no exits in the final N minutes — T5 arithmetic certainty logic takes over.
 EXIT_MIN_TIME_REMAINING_MIN: float = 3.0
 
@@ -209,6 +399,238 @@ EXIT_MIN_TIME_REMAINING_MIN: float = 3.0
 # can only be collected by running exits; T4 pool is isolated (no real capital risk).
 # GG-017 Tier 2 gate remains OPEN until T-152/T-153 complete.
 EXIT_MECHANICS_ACTIVE: bool = True
+
+
+# ---------------------------------------------------------------------------
+# T4 sub-band governance registry — ADR-0029 Tier B (PROVISIONAL)
+# ---------------------------------------------------------------------------
+#
+# GOVERNANCE: This registry is the code-level encoding of ADR-0029's two-tier
+# acceptance model. The EXISTENCE of a sub-band layer beneath T4_IN_PLAY is Tier A
+# (frozen on DS sign-off, 2026-06-22 S67). Everything in THIS registry — the roster,
+# every Kelly fraction, exposure cap, noise buffer, and alpha hypothesis — is Tier B:
+# PROVISIONAL and revisable via a DECISION_LOG entry (NOT a superseding ADR) until each
+# sub-band clears its own Phase 8 Activation Gate, at which point its then-current values
+# are frozen by an activation ADR (APR-XXXX).
+#
+# HARD INVARIANTS (do not weaken without a superseding ADR):
+#   - Every sub-band is status="BLOCKED" until its Phase 8 Activation Gate clears.
+#   - No sub-band may deploy capital while any exp_gate EXP is unmet (Principle 5).
+#   - max_concurrent_exposure_pct_t4 caps are % of the T4 AGGREGATE budget (T4_BAND_WEIGHT
+#     × bankroll, ADR-0013), not of total equity; the ADR-0026 60%-equity invariant and
+#     the T4 aggregate cap both still bind on top of these.
+# T4-MICRO is absent by design (carved out to ADR-0030 — no `model_p`).
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class T4SubBandSpec:
+    """
+    Tier B (provisional) governance spec for a single T4 sub-band (ADR-0029).
+
+    Separate from BandConfig: BandConfig carries timing/sizing for uniformity with
+    T1–T5; this carries the provisional governance metadata that ADR-0029 explicitly
+    leaves un-frozen. `status` must remain "BLOCKED" until the sub-band's Phase 8
+    Activation Gate clears.
+
+    Fields
+    ------
+    band : ExecutionBand
+        The sub-band enum member.
+    information_class : str
+        What information the sub-band acts on (the ADR's organizing principle).
+    provisional_kelly : float | None
+        ADR-0029 placeholder Kelly. PROVISIONAL — non-operational until exp_gate clears.
+        None for pure overlays (T4-CORR) / position-managers (T4-EXIT) with no own size.
+    kelly_basis : str
+        Derivation status / EXP gate / hold note for the Kelly value.
+    noise_buffer : float | None
+        Provisional exit noise buffer. None = EXP-required (fall back to NOISE_BUFFER_BAND_T4).
+    max_concurrent_exposure_pct_t4 : float | None
+        Max concurrent exposure as a fraction of the T4 aggregate budget. None = overlay /
+        inherits parent (no independent cap).
+    exp_gate : tuple[str, ...]
+        Named EXPs that must complete before this sub-band can leave BLOCKED.
+    alpha_hypothesis : str
+        The falsifiable edge claim this sub-band rests on (Tier B — may be disproven).
+    status : str
+        "BLOCKED" until Phase 8 Activation Gate. Never "ACTIVE" without an activation ADR.
+    notes : str
+        Cross-references, dependencies, structural role.
+    """
+    band: ExecutionBand
+    information_class: str
+    provisional_kelly: Optional[float]
+    kelly_basis: str
+    noise_buffer: Optional[float]
+    max_concurrent_exposure_pct_t4: Optional[float]
+    exp_gate: tuple[str, ...]
+    alpha_hypothesis: str
+    status: str = "BLOCKED"
+    notes: str = ""
+
+
+T4_SUBBAND_REGISTRY: dict[ExecutionBand, T4SubBandSpec] = {
+    ExecutionBand.T4_STAGED: T4SubBandSpec(
+        band=ExecutionBand.T4_STAGED,
+        information_class="Pre-game T3 decision → resting limit order that fills in T4 time",
+        provisional_kelly=0.07,
+        kelly_basis="Inherits T3 Kelly (ADR-0010); tracks T3 if T3 Kelly changes. Not independent.",
+        noise_buffer=NOISE_BUFFER_T4_STAGED,
+        max_concurrent_exposure_pct_t4=0.30,
+        exp_gate=(),  # T3-derived; no T4 EXP — but infra (resting-order C5) still required
+        alpha_hypothesis="A T3-approved bet can be filled at a better in-game price via a resting order.",
+        notes="Fills charged to T4 budget (execute in T4 time/capital), not T3. Zero live T4 API calls.",
+    ),
+    ExecutionBand.T4_EVENT: T4SubBandSpec(
+        band=ExecutionBand.T4_EVENT,
+        information_class="Discrete stat event (made shot, foul, sub) → event-conditional posterior",
+        provisional_kelly=0.05,
+        kelly_basis="PROVISIONAL. ADR-0010 variance-scaling at event-time σ_λ; per-tree. EXP-EVENT-02 required.",
+        noise_buffer=NOISE_BUFFER_T4_EVENT,
+        max_concurrent_exposure_pct_t4=0.20,
+        exp_gate=("EXP-EVENT-01", "EXP-EVENT-02"),
+        alpha_hypothesis="Kalshi systematically lags repricing after discrete game events (a capturable edge window).",
+        notes="Borrows λ from T4-PROJ posterior; uses T1 prior until first T4-PROJ posterior exists.",
+    ),
+    ExecutionBand.T4_LINEUP: T4SubBandSpec(
+        band=ExecutionBand.T4_LINEUP,
+        information_class="Live lineup / rotation change → revised minutes projection",
+        provisional_kelly=0.05,
+        kelly_basis="PROVISIONAL maximum (ADR-0029): below T4-PROJ (cascading risk, harder σ_λ). EXP-LINEUP-01.",
+        noise_buffer=NOISE_BUFFER_T4_LINEUP,
+        max_concurrent_exposure_pct_t4=0.15,
+        exp_gate=("EXP-LINEUP-01",),
+        alpha_hypothesis="Kalshi reprices slowly after substitution events; minutes-dependent markets misprice.",
+        notes="Per-event exposure cap (≤15% T4 budget per lineup event); T4-CORR discounts correlated players.",
+    ),
+    ExecutionBand.T4_FLOW: T4SubBandSpec(
+        band=ExecutionBand.T4_FLOW,
+        information_class="Accumulated game-state / context pattern (foul trouble, pace, blowout)",
+        provisional_kelly=0.08,
+        kelly_basis="PROVISIONAL 0.08–0.12 by phase/context. Variance-scaling incl. context-multiplier variance. EXP-FLOW-01/02.",
+        noise_buffer=NOISE_BUFFER_T4_FLOW,
+        max_concurrent_exposure_pct_t4=0.40,
+        exp_gate=("EXP-FLOW-01", "EXP-FLOW-02"),
+        alpha_hypothesis="Sustained context shifts (e.g. blowout, foul trouble) move true λ before the market reprices.",
+        notes="Primary carrier of blowout-consequence betting on individual player markets (FLOW-BLOWOUT tree).",
+    ),
+    ExecutionBand.T4_SENTIMENT: T4SubBandSpec(
+        band=ExecutionBand.T4_SENTIMENT,
+        information_class="Market price drift (no game event) → informed-vs-noise classification",
+        provisional_kelly=0.05,
+        kelly_basis="PROVISIONAL. Lowest-confidence signal (depends on drift classification). EXP-SENT-01.",
+        noise_buffer=NOISE_BUFFER_T4_SENTIMENT,
+        max_concurrent_exposure_pct_t4=0.15,
+        exp_gate=("EXP-SENT-01",),
+        alpha_hypothesis="The system can classify price drift as informed vs noise better than chance.",
+        notes="Re-evaluated every 30–120s of sustained drift via the Layer-2 price cache.",
+    ),
+    ExecutionBand.T4_PROJ: T4SubBandSpec(
+        band=ExecutionBand.T4_PROJ,
+        information_class="Accumulated in-game stats → full Poisson survival posterior on T1 prior (richest signal)",
+        provisional_kelly=0.167,
+        kelly_basis=(
+            "DYNAMIC by game phase (ADR-0029): EARLY 0.010 / MID 0.032–0.078 / LATE 0.078–0.167. "
+            "NEAR-CERTAIN held ≤0.167 — inverse-variance formula diverges (k=0.526 @46min); 0.25 is a "
+            "HARD GOVERNANCE CEILING, not a derived value. Re-derive from arithmetic-survival model; "
+            "EXP-PROJ-01 must confirm post-calibration tail reliability before any NEAR-CERTAIN size > MID/LATE."
+        ),
+        noise_buffer=NOISE_BUFFER_T4_PROJ,
+        max_concurrent_exposure_pct_t4=0.60,
+        exp_gate=("EXP-PROJ-01",),
+        alpha_hypothesis="In-game stats let the posterior beat the market's implied λ in Q3/Q4 (approaching T1 evidence quality).",
+        notes="Supersedes monolithic T4 Kelly=0.20 (ADR-0010). Primary T4 capital home. Model documented overconfident in tails.",
+    ),
+    ExecutionBand.T4_ARITH: T4SubBandSpec(
+        band=ExecutionBand.T4_ARITH,
+        information_class="Threshold-approaching arithmetic near-certainty (pts needed vs time/pace), pre-T5",
+        provisional_kelly=0.167,
+        kelly_basis=(
+            "ADR-0029 placeholder is 0.22 but HELD NON-OPERATIONAL at the T4-PROJ LATE ceiling (0.167) "
+            "until EXP-ARITH-01 confirms p_arith tail reliability — same near-certain regime where the "
+            "model is documented overconfident. Must NOT be read as an approved size."
+        ),
+        noise_buffer=NOISE_BUFFER_T4_ARITH,
+        max_concurrent_exposure_pct_t4=0.30,
+        exp_gate=("EXP-ARITH-01",),
+        alpha_hypothesis="When a stat is within a few units of threshold with ample time, survival is near-certain and mispriced.",
+        notes="Routing gated by T4_ARITH_CONFIDENCE_GATE (EXP: ~0.70–0.80) and ARITH_ENTRY_WINDOW (EXP: ~2–4 units).",
+    ),
+    ExecutionBand.T4_BOUNDARY: T4SubBandSpec(
+        band=ExecutionBand.T4_BOUNDARY,
+        information_class="Quarter / halftime structural reset → re-evaluate all open positions + new entries",
+        provisional_kelly=None,
+        kelly_basis="No independent Kelly. New entries inherit T4-PROJ; exits inherit T4-EXIT.",
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,  # inherits T4-PROJ cap; not independent capital
+        exp_gate=(),
+        alpha_hypothesis="Structural breaks (quarter/half) are systematic re-pricing moments worth a forced re-evaluation.",
+        notes="Structural overlay, not an independent capital sub-band.",
+    ),
+    ExecutionBand.T4_CORR: T4SubBandSpec(
+        band=ExecutionBand.T4_CORR,
+        information_class="Cross-market correlation across simultaneously-firing sub-bands (portfolio overlay)",
+        provisional_kelly=None,
+        kelly_basis="Overlay — modifies other sub-bands' sizing. Downward-only invariant; convergence premium for "
+                    "N mechanistically-independent same-direction signals (EXP-derived ~0.10–0.25 per signal).",
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,  # overlay; no own position
+        exp_gate=("EXP-CORR-01",),
+        alpha_hypothesis="Independent signals converging on the same direction are confirmatory, not redundant; "
+                         "correlated exposure must be discounted downward only.",
+        notes="DOWNWARD-ONLY invariant: T4-CORR may only reduce, never increase, aggregate correlated exposure.",
+    ),
+    ExecutionBand.T4_EXIT: T4SubBandSpec(
+        band=ExecutionBand.T4_EXIT,
+        information_class="Continuous monitoring of open T4 positions → priority EXIT signals",
+        provisional_kelly=None,
+        kelly_basis="Manages existing positions; no new sizing.",
+        noise_buffer=None,  # uses each position's own sub-band buffer
+        max_concurrent_exposure_pct_t4=None,
+        exp_gate=(),
+        alpha_hypothesis="Edge decays intra-game; active exit on edge reversal / noise-buffer breach beats hold-to-resolution.",
+        notes="EXIT signals bypass the standard queue (≤5s, GG-038). Uses each position's sub-band noise buffer.",
+    ),
+}
+
+
+def get_t4_subband_spec(band: ExecutionBand) -> T4SubBandSpec:
+    """Return the Tier B governance spec for a T4 sub-band. Raises KeyError otherwise."""
+    return T4_SUBBAND_REGISTRY[band]
+
+
+def validate_t4_subbands() -> list[str]:
+    """
+    Structural validation of the T4 sub-band registry. Returns violation messages.
+
+    Enforces ADR-0029 Tier B invariants:
+      - registry roster matches the T4_SUBBANDS tuple exactly,
+      - every sub-band has a BandConfig and is BLOCKED + requires_realtime (Phase 8),
+      - no sub-band is ACTIVE (would require an activation ADR not yet written).
+    Empty list = clean.
+    """
+    violations: list[str] = []
+    if set(T4_SUBBAND_REGISTRY) != set(T4_SUBBANDS):
+        violations.append(
+            "T4_SUBBAND_REGISTRY roster does not match T4_SUBBANDS tuple "
+            f"(registry-only={set(T4_SUBBAND_REGISTRY) - set(T4_SUBBANDS)}, "
+            f"tuple-only={set(T4_SUBBANDS) - set(T4_SUBBAND_REGISTRY)})."
+        )
+    for band, spec in T4_SUBBAND_REGISTRY.items():
+        if spec.status != "BLOCKED":
+            violations.append(
+                f"{band.value}: status={spec.status!r}; T4 sub-bands must be BLOCKED until a "
+                f"Phase 8 Activation Gate / activation ADR clears them (ADR-0029 Tier B)."
+            )
+        cfg = BAND_CONFIGS.get(band)
+        if cfg is None:
+            violations.append(f"{band.value}: missing BandConfig entry.")
+        elif not cfg.requires_realtime:
+            violations.append(
+                f"{band.value}: BandConfig.requires_realtime=False; all T4 sub-bands are Phase 8+."
+            )
+    return violations
 
 
 # ---------------------------------------------------------------------------
@@ -627,7 +1049,11 @@ BAND_REGISTRY.register(StrategyBandSpec(
     fallback_chain="T4_fail→PASS (no T3 fallback — scalp opportunity is strictly time-bounded)",
     compute_budget_ms=50,
     phase_active="Phase 8",
-    notes="Kill switch 60s SLA is 12x too slow for T4/T5 (requires <5s). Cannot activate until NFR-03 SLA is revised via ADR and tested. No fallback — scalp window is seconds.",
+    notes="Kill switch 60s SLA is 12x too slow for T4/T5 (requires <5s). Cannot activate until NFR-03 SLA is revised via ADR and tested. No fallback — scalp window is seconds. "
+          "ADR-0029: T4 is now sub-banded — the strategy↔sub-band mapping is Tier B (provisional, pending). "
+          "OPEN governance question: K's 'execution_scalp' identity overlaps the T4-MICRO carve-out (ADR-0030, "
+          "no `model_p`); whether K is re-homed to ADR-0030 or re-scoped onto model_p sub-bands is a separate "
+          "strategy-level decision. Held at the T4_IN_PLAY aggregate here pending that ruling.",
 ))
 
 
@@ -687,7 +1113,10 @@ VENUE_BAND_CONSTRAINTS: list[VenueBandConstraint] = [
         rate_limit_per_min=60,
         min_market_depth_usd=25.0,
         phase_availability="Phase 8",
-        constraint_notes="BLOCKED: T4 50ms SLA is impossible with 350ms P90 latency. All orders must be pre-staged at T3. Zero live API calls permitted at T4.",
+        constraint_notes="BLOCKED: T4 50ms SLA is impossible with 350ms P90 latency. All orders must be pre-staged at T3. Zero live API calls permitted at T4. "
+                         "ADR-0029: all T4 sub-bands INHERIT this aggregate constraint (zero live execution API calls; the Layer-2 read-only price cache, GG-039, "
+                         "supplies staleness-check prices off a separate polling loop). Per-sub-band VenueBandConstraint rows are Tier B and added only if a sub-band "
+                         "ever needs to diverge from this aggregate (none currently do).",
     ),
     VenueBandConstraint(
         venue_id="V-001", venue_name="Kalshi",
