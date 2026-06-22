@@ -374,6 +374,8 @@ def run_experiment(
     # ------------------------------------------------------------------
     if len(val_forecast_df) > 0:
         engine = RiskEngine(logger=logger, snapshot_id=SNAPSHOT_ID, bankroll=10000.0)
+        # portfolio_equity_usd omitted (T-175): expects phase-gate rejection;
+        # BOT_C4_ACTIVE is not set in ENV-01, so CHECK 8 is never reached.
         ok, c4_decision = engine.evaluate_forecast(
             forecast_record=val_forecast_df.iloc[0].to_dict(),
             session_id=SESSION_ID,

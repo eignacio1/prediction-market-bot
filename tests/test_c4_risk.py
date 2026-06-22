@@ -688,3 +688,55 @@ class TestPortfolioDeploymentInvariant:
         assert deployed <= cap + 1e-6, f"deployed {deployed} exceeded cap {cap}"
         assert deployed < 1003.38, "must never reach the real over-leveraged exposure"
         assert approvals < 41, "not all G5 bets should have been allowed"
+
+
+class TestPoolIsolated:
+    """T-175 (ADR-0026 extension): pool_isolated=True skips 8b, applies 8a."""
+
+    def test_pool_isolated_skips_policy_cap(self):
+        """
+        When pool_isolated=True, a bet that would breach the 60% cap still
+        passes — the policy cap does not apply to isolated-pool callers.
+        """
+        # equity=$1000, exposure=$700 → would breach 60% cap ($600) for T1
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1000.0)
+            _, result = engine.evaluate_forecast(
+                fc,
+                current_open_exposure_usd=700.0,
+                portfolio_equity_usd=1000.0,
+                pool_isolated=True,
+            )
+        assert result["approval_status"] == STATUS_APPROVED
+        assert "aggregate_deployment_cap" not in result.get("checks_passed", [])
+
+    def test_pool_isolated_applies_solvency_kill(self):
+        """
+        When pool_isolated=True, a bet that would exceed equity still triggers
+        CHECK 8a KILL_SWITCH — solvency applies to isolated pools too.
+        """
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=500.0)
+            _, result = engine.evaluate_forecast(
+                fc,
+                current_open_exposure_usd=500.0,  # already at equity
+                portfolio_equity_usd=500.0,
+                pool_isolated=True,
+            )
+        assert result["approval_status"] == STATUS_KILL_SWITCH
+        assert result["rejection_reason"] == "portfolio_over_leverage"
+
+    def test_pool_isolated_telemetry_field(self):
+        """pool_isolated is recorded in the approval record (T-175 audit trail)."""
+        fc = _make_forecast(p_estimate=0.70, market_implied_prob=0.50, edge=0.20, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=1000.0)
+            _, result = engine.evaluate_forecast(
+                fc,
+                current_open_exposure_usd=0.0,
+                portfolio_equity_usd=1000.0,
+                pool_isolated=True,
+            )
+        assert result["pool_isolated"] is True

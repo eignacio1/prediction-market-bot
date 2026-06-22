@@ -680,6 +680,8 @@ def run_experiment(
             snapshot_id=SNAPSHOT_ID,
             bankroll=10000.0,  # EXP-001 experiment bankroll; no live capital
         )
+        # portfolio_equity_usd omitted (T-175): this call expects REJECTED at the
+        # phase gate (BOT_C4_ACTIVE not set in ENV-01); CHECK 8 is never reached.
         ok, c4_decision = engine.evaluate_forecast(
             forecast_record=sample_forecast,
             session_id=SESSION_ID,

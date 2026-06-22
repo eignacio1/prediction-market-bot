@@ -668,11 +668,19 @@ def _run_cycle(
             }
 
             # ---- C4 risk evaluation ----
+            # T-175 (ADR-0026 extension): pass T4 pool state so C4 CHECK 8a
+            # (solvency KILL) fires if this bet would exceed the band budget.
+            # pool_isolated=True skips CHECK 8b (60% cap — does not apply to
+            # T4's own isolated budget). VIRTUAL mode skips CHECK 8 entirely
+            # (budget ceiling not enforced in calibration mode by design).
             ok, approval = engine.evaluate_forecast(
                 forecast_record=fc_record,
                 current_daily_loss=current_daily_loss,
                 current_drawdown_pct=drawdown,
                 session_id=session_id,
+                current_open_exposure_usd=t4_deployed_usd,
+                portfolio_equity_usd=t4_band_budget if not PAPER_T4_VIRTUAL else None,
+                pool_isolated=True,
             )
             if not ok:
                 logger.error("C4/C6 write failure at %s — halting cycle", ticker)
@@ -730,7 +738,9 @@ def _run_cycle(
                 )
             else:
                 # Active mode: enforce band budget ceiling (ADR-0013).
-                # Stop firing when band is exhausted; continue evaluating for log data.
+                # C4 CHECK 8a (T-175) now catches this at the risk-eval level
+                # (KILL_SWITCH → continues above). This check is a belt-and-
+                # suspenders guard for any path that bypasses C4 pool state.
                 if t4_deployed_usd + approved_size > t4_band_budget:
                     logger.info(
                         "T4 BAND_BUDGET_EXHAUSTED %-45s  remaining=$%.2f",

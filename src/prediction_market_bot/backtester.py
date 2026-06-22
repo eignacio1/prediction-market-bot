@@ -603,6 +603,8 @@ class Backtester:
                 snapshot_id=window_def.snapshot_id,
                 bankroll=10000.0,
             )
+            # portfolio_equity_usd omitted (T-175): backtester calls C4 as a
+            # gate check only; BOT_C4_ACTIVE is not set, so CHECK 8 is never reached.
             ok, c4_decision = engine.evaluate_forecast(
                 forecast_record=sample_forecast,
                 session_id=session_id,
