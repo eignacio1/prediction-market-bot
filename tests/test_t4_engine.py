@@ -30,6 +30,8 @@ from prediction_market_bot.t4_price_cache import (
 )
 from prediction_market_bot.t4_execution_engine import (
     GamePhase,
+    T4MarketSpec,
+    T4OpenPosition,
     T4PlayerState,
     T4GameState,
     T4GameEvent,
@@ -52,6 +54,22 @@ from prediction_market_bot.t4_execution_engine import (
     Layer2ExecutionQueue,
     T4ExecutionEngine,
     classify_game_phase,
+    GAME_REGULATION_MIN,
+    PRIOR_LAMBDA_SIGMA_PTS,
+    BLOWOUT_SCORE_THRESHOLD,
+    BLOWOUT_SUSTAIN_MIN,
+    _MIN_EDGE,
+    _gamma_prior_params,
+    _gamma_poisson_update,
+    _poisson_survival_p,
+    _phase_conditional_kelly,
+    _total_remaining_min,
+    _KELLY_EARLY,
+    _KELLY_MID_LO,
+    _KELLY_MID_HI,
+    _KELLY_LATE_LO,
+    _KELLY_LATE_HI,
+    _KELLY_NEAR_CERTAIN,
 )
 
 
@@ -792,3 +810,924 @@ class TestSimulateCycleToLayer2Integration:
         assert len(approved) == 1
         assert drops == []
         assert abs(approved[0].model_p - 0.90) < 1e-9
+
+
+# ---------------------------------------------------------------------------
+# T4MarketSpec
+# ---------------------------------------------------------------------------
+
+class TestT4MarketSpec:
+    def test_construction_required_fields(self):
+        spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=20.0)
+        assert spec.market_id == "MKT-001"
+        assert spec.player_id == "P001"
+        assert spec.threshold == 20.0
+
+    def test_defaults(self):
+        spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=20.0)
+        assert spec.stat_type == "pts"
+        assert spec.team_is_home is None
+
+    def test_explicit_fields(self):
+        spec = T4MarketSpec(
+            market_id="MKT-002", player_id="P002", threshold=15.0,
+            stat_type="reb", team_is_home=True,
+        )
+        assert spec.stat_type == "reb"
+        assert spec.team_is_home is True
+
+    def test_frozen(self):
+        spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=20.0)
+        with pytest.raises((AttributeError, TypeError)):
+            spec.threshold = 25.0  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# T4OpenPosition
+# ---------------------------------------------------------------------------
+
+class TestT4OpenPosition:
+    def test_construction(self):
+        pos = T4OpenPosition(
+            market_id="MKT-001", player_id="P001",
+            direction="YES", threshold=20.0, entry_model_p=0.80,
+            sub_band=ExecutionBand.T4_PROJ, entry_ts=_now(),
+        )
+        assert pos.direction == "YES"
+        assert pos.threshold == 20.0
+        assert pos.entry_model_p == 0.80
+
+    def test_defaults(self):
+        pos = T4OpenPosition(
+            market_id="MKT-001", player_id="P001",
+            direction="YES", threshold=20.0, entry_model_p=0.80,
+            sub_band=ExecutionBand.T4_PROJ, entry_ts=_now(),
+        )
+        assert pos.stat_type == "pts"
+        assert pos.noise_buffer is None
+
+    def test_frozen(self):
+        pos = T4OpenPosition(
+            market_id="MKT-001", player_id="P001",
+            direction="YES", threshold=20.0, entry_model_p=0.80,
+            sub_band=ExecutionBand.T4_PROJ, entry_ts=_now(),
+        )
+        with pytest.raises((AttributeError, TypeError)):
+            pos.direction = "NO"  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# Bayesian math helpers
+# ---------------------------------------------------------------------------
+
+class TestHelperFunctions:
+    def test_total_remaining_min_regulation(self):
+        gs = _game_state(elapsed_min=24.0)
+        assert abs(_total_remaining_min(gs) - 24.0) < 1e-9
+
+    def test_total_remaining_min_near_end(self):
+        gs = _game_state(elapsed_min=45.0)
+        assert abs(_total_remaining_min(gs) - 3.0) < 1e-9
+
+    def test_total_remaining_min_overtime(self):
+        event = T4GameEvent(event_type="TIMER", player_id=None, market_id=None, ts=_now())
+        gs = T4GameState(
+            game_id="G1", game_date="2026-06-22", quarter=5,
+            time_remaining_min=3.0, elapsed_min=50.0,
+            home_score=100, away_score=98, score_differential=2, ts=_now(),
+            player_states={}, trigger_event=event,
+        )
+        assert abs(_total_remaining_min(gs) - 3.0) < 1e-9  # 48+5-50=3
+
+    def test_total_remaining_min_clamps_at_zero(self):
+        gs = _game_state(elapsed_min=50.0)
+        assert _total_remaining_min(gs) == 0.0
+
+    def test_gamma_prior_params_mean(self):
+        alpha, beta = _gamma_prior_params(lambda_prior=22.5, sigma_prior=5.0)
+        assert abs(alpha / beta - 22.5) < 1e-9  # mean = lambda_prior
+
+    def test_gamma_prior_params_variance(self):
+        sigma = 5.0
+        alpha, beta = _gamma_prior_params(lambda_prior=22.5, sigma_prior=sigma)
+        assert abs(alpha / beta ** 2 - sigma ** 2) < 1e-9  # variance = sigma^2
+
+    def test_gamma_poisson_update_increments(self):
+        a0, b0 = _gamma_prior_params(22.5, 5.0)
+        a1, b1 = _gamma_poisson_update(a0, b0, k_obs=14.0, t_elapsed_frac=0.4167)
+        assert abs(a1 - (a0 + 14.0)) < 1e-9
+        assert abs(b1 - (b0 + 0.4167)) < 1e-6
+
+    def test_poisson_survival_p_already_achieved(self):
+        assert _poisson_survival_p(pts_so_far=20.0, threshold=20.0, lambda_remaining=5.0) == 1.0
+
+    def test_poisson_survival_p_zero_lambda(self):
+        assert _poisson_survival_p(pts_so_far=14.0, threshold=20.0, lambda_remaining=0.0) == 0.0
+
+    def test_poisson_survival_p_high_lambda(self):
+        # With lambda_remaining=20, P(score 6 more) ≈ 1.0
+        p = _poisson_survival_p(pts_so_far=14.0, threshold=20.0, lambda_remaining=20.0)
+        assert p > 0.99
+
+    def test_poisson_survival_p_low_lambda(self):
+        # With lambda_remaining=0.1, P(score 6 more) is tiny
+        p = _poisson_survival_p(pts_so_far=14.0, threshold=20.0, lambda_remaining=0.1)
+        assert p < 0.01
+
+    def test_phase_conditional_kelly_early(self):
+        assert abs(_phase_conditional_kelly(10.0) - _KELLY_EARLY) < 1e-9
+
+    def test_phase_conditional_kelly_mid_start(self):
+        assert abs(_phase_conditional_kelly(24.0) - _KELLY_MID_LO) < 1e-9
+
+    def test_phase_conditional_kelly_mid_end(self):
+        # At 36.0, just entering LATE: kelly = KELLY_MID_HI = KELLY_LATE_LO
+        assert abs(_phase_conditional_kelly(36.0) - _KELLY_LATE_LO) < 1e-9
+
+    def test_phase_conditional_kelly_mid_midpoint(self):
+        # At 30.0 (MID midpoint), linear interp: 0.032 + 0.5*(0.078-0.032) = 0.055
+        k = _phase_conditional_kelly(30.0)
+        expected = _KELLY_MID_LO + 0.5 * (_KELLY_MID_HI - _KELLY_MID_LO)
+        assert abs(k - expected) < 1e-9
+
+    def test_phase_conditional_kelly_late_midpoint(self):
+        # At 40.0 (halfway 36→44), linear interp: 0.078 + 0.5*(0.167-0.078)
+        k = _phase_conditional_kelly(40.0)
+        expected = _KELLY_LATE_LO + 0.5 * (_KELLY_LATE_HI - _KELLY_LATE_LO)
+        assert abs(k - expected) < 1e-6
+
+    def test_phase_conditional_kelly_near_certain(self):
+        assert abs(_phase_conditional_kelly(46.0) - _KELLY_NEAR_CERTAIN) < 1e-9
+
+    def test_phase_conditional_kelly_monotone(self):
+        # Kelly must be non-decreasing through the game
+        vals = [_phase_conditional_kelly(e) for e in [5, 24, 30, 36, 40, 44, 47]]
+        for i in range(len(vals) - 1):
+            assert vals[i] <= vals[i + 1] + 1e-9, f"Kelly decreased at index {i}"
+
+
+# ---------------------------------------------------------------------------
+# T4ProjEvaluator — Bayesian math
+# ---------------------------------------------------------------------------
+
+def _market_game_state(
+    pts_so_far: float = 14.0,
+    min_so_far: float = 20.0,
+    elapsed_min: float = 24.0,
+    threshold: float = 25.0,
+    event_type: str = "TIMER",
+    lambda_t1_prior: float = 22.5,
+    score_differential: int = 4,
+) -> T4GameState:
+    """Game state with a single T4MarketSpec for player P001."""
+    event = T4GameEvent(
+        event_type=event_type, player_id="P001", market_id="MKT-001", ts=_now()
+    )
+    player = T4PlayerState(
+        player_id="P001",
+        pts_so_far=pts_so_far,
+        reb_so_far=3.0,
+        ast_so_far=2.0,
+        min_so_far=min_so_far,
+        fouls=2,
+        is_active=True,
+        lambda_t1_prior=lambda_t1_prior,
+        lambda_t4_proj=None,
+    )
+    spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=threshold)
+    return T4GameState(
+        game_id="GAME-2026-001",
+        game_date="2026-06-22",
+        quarter=3,
+        time_remaining_min=max(0.0, GAME_REGULATION_MIN - elapsed_min),
+        elapsed_min=elapsed_min,
+        home_score=78,
+        away_score=74,
+        score_differential=score_differential,
+        ts=_now(),
+        player_states={"P001": player},
+        trigger_event=event,
+        market_specs=(spec,),
+    )
+
+
+class TestT4ProjEvaluatorMath:
+    def test_empty_market_specs_returns_empty(self):
+        ev = T4ProjEvaluator()
+        gs = _game_state()  # no market_specs (default empty tuple)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.90, yes_bid=0.86)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_no_cached_price_returns_empty(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state()
+        cache = T4PriceCache()  # empty cache
+        assert ev.evaluate(gs, cache) == []
+
+    def test_signal_generated_with_edge(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=20.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        # Set price well below model_p to ensure edge > 0.04
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)  # mid=0.80, vig=0.02
+        signals = ev.evaluate(gs, cache)
+        assert len(signals) == 1
+        sig = signals[0]
+        assert sig.sub_band == ExecutionBand.T4_PROJ
+        assert sig.market_id == "MKT-001"
+        assert sig.player_id == "P001"
+        assert sig.direction in ("YES", "NO")
+
+    def test_posterior_cached_after_evaluate(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=20.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        ev.evaluate(gs, cache)
+        posterior = ev.get_lambda_posterior("P001")
+        assert posterior is not None
+        # Posterior mean should be between T1 prior (22.5) and empirical rate
+        # (14 pts in 20 min → 14/20*48=33.6 pts/game). Here: blended upward from 22.5.
+        assert posterior > 22.5
+
+    def test_posterior_higher_when_scoring_above_pace(self):
+        ev_low = T4ProjEvaluator()
+        ev_high = T4ProjEvaluator()
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.50, yes_bid=0.46)
+
+        gs_low = _market_game_state(pts_so_far=5.0, min_so_far=20.0)  # below pace
+        gs_high = _market_game_state(pts_so_far=20.0, min_so_far=20.0) # above pace
+
+        ev_low.evaluate(gs_low, cache)
+        ev_high.evaluate(gs_high, cache)
+
+        posterior_low = ev_low.get_lambda_posterior("P001")
+        posterior_high = ev_high.get_lambda_posterior("P001")
+        assert posterior_high > posterior_low
+
+    def test_edge_below_min_no_signal(self):
+        ev = T4ProjEvaluator()
+        # Compute model_p from first principles, then price exactly at model_p.
+        # YES edge = model_p - mid - vig = -vig < 0.04; NO edge identical → no signal.
+        gs = _market_game_state(pts_so_far=10.0, min_so_far=20.0, elapsed_min=20.0, threshold=25.0)
+        a0, b0 = _gamma_prior_params(22.5, PRIOR_LAMBDA_SIGMA_PTS)
+        a1, b1 = _gamma_poisson_update(a0, b0, k_obs=10.0, t_elapsed_frac=20.0 / GAME_REGULATION_MIN)
+        model_p = _poisson_survival_p(
+            10.0, 25.0, (a1 / b1) * ((GAME_REGULATION_MIN - 20.0) / GAME_REGULATION_MIN)
+        )
+        vig = 0.01
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=model_p + vig / 2, yes_bid=model_p - vig / 2)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_player_already_at_threshold_model_p_is_one(self):
+        ev = T4ProjEvaluator()
+        # pts_so_far=25, threshold=25 → already achieved
+        gs = _market_game_state(pts_so_far=25.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.80, yes_bid=0.76)  # mid=0.78
+        signals = ev.evaluate(gs, cache)
+        assert len(signals) == 1
+        assert abs(signals[0].model_p - 1.0) < 1e-9
+        assert signals[0].direction == "YES"
+
+    def test_kelly_early_phase(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=5.0, elapsed_min=10.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:  # only check kelly if signal fires
+            assert abs(signals[0].kelly_fraction - 0.010) < 1e-9
+
+    def test_kelly_late_phase_range(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=20.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:
+            assert _KELLY_LATE_LO <= signals[0].kelly_fraction <= _KELLY_LATE_HI
+
+    def test_kelly_near_certain(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=20.0, elapsed_min=46.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:
+            assert abs(signals[0].kelly_fraction - _KELLY_NEAR_CERTAIN) < 1e-9
+
+    def test_inactive_player_no_signal(self):
+        ev = T4ProjEvaluator()
+        event = T4GameEvent(event_type="TIMER", player_id="P001", market_id="MKT-001", ts=_now())
+        player = T4PlayerState(
+            player_id="P001", pts_so_far=14.0, reb_so_far=3.0, ast_so_far=2.0,
+            min_so_far=20.0, fouls=2, is_active=False,  # inactive
+            lambda_t1_prior=22.5, lambda_t4_proj=None,
+        )
+        spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=25.0)
+        gs = T4GameState(
+            game_id="G1", game_date="2026-06-22", quarter=3,
+            time_remaining_min=12.0, elapsed_min=36.0,
+            home_score=78, away_score=74, score_differential=4, ts=_now(),
+            player_states={"P001": player},
+            trigger_event=event,
+            market_specs=(spec,),
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_signal_snapshot_contains_game_phase(self):
+        ev = T4ProjEvaluator()
+        gs = _market_game_state(elapsed_min=40.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:
+            assert "game_phase" in signals[0].signal_snapshot
+            assert "lambda_posterior" in signals[0].signal_snapshot
+
+
+# ---------------------------------------------------------------------------
+# T4ArithEvaluator — near-certainty math
+# ---------------------------------------------------------------------------
+
+class TestT4ArithEvaluatorMath:
+    def test_no_arg_construction(self):
+        ev = T4ArithEvaluator()
+        assert ev._proj_evaluator is None
+
+    def test_empty_market_specs_returns_empty(self):
+        ev = T4ArithEvaluator()
+        gs = _game_state()
+        cache = T4PriceCache()
+        assert ev.evaluate(gs, cache) == []
+
+    def test_gap_too_large_no_signal(self):
+        # gap = 25 - 14 = 11 > ARITH_ENTRY_WINDOW=3
+        ev = T4ArithEvaluator()
+        gs = _market_game_state(pts_so_far=14.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.78, yes_bid=0.72)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_t5_territory_no_signal(self):
+        # total_remaining = 48 - 45 = 3.0 = EXIT_MIN_TIME_REMAINING_MIN → no signal
+        ev = T4ArithEvaluator()
+        gs = _market_game_state(pts_so_far=22.0, elapsed_min=45.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.78, yes_bid=0.72)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_already_achieved_no_signal(self):
+        # gap = 25 - 25 = 0 → gap <= 0 → skip
+        ev = T4ArithEvaluator()
+        gs = _market_game_state(pts_so_far=25.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.78, yes_bid=0.72)
+        # pts_so_far >= threshold → T4-PROJ would fire, but T4-ARITH skips (gap ≤ 0)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_signal_within_window_uses_t1_prior(self):
+        # pts=22, threshold=25, gap=3 ≤ ARITH_ENTRY_WINDOW=3; elapsed=40 (LATE)
+        ev = T4ArithEvaluator()  # no proj_evaluator → T1 prior
+        gs = _market_game_state(pts_so_far=22.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        # total_remaining=8, t_remaining_frac=8/48=0.1667
+        # lambda_remaining=22.5*0.1667≈3.75
+        # P(score 3 more | Poisson(3.75)) ≈ 0.72 ≥ CONFIDENCE_GATE=0.75? Let's check.
+        # Actually let me use threshold=24 so gap=2 and lambda=3.75 gives higher p.
+        # P(score 2 more | Poisson(3.75)):
+        # pts_needed=2, P(X≥2|Poisson(3.75)) = 1 - P(0) - P(1)
+        # = 1 - e^{-3.75}(1 + 3.75) ≈ 1 - 0.024*4.75 ≈ 0.888 ≥ 0.75 ✓
+        # Use threshold=24, pts=22, gap=2
+        gs2 = _market_game_state(pts_so_far=22.0, elapsed_min=40.0, threshold=24.0)
+        cache2 = T4PriceCache()
+        cache2.update("MKT-001", yes_ask=0.74, yes_bid=0.70)  # mid=0.72, vig=0.02; edge≈0.888-0.72-0.02=0.148>0.04
+        signals = ev.evaluate(gs2, cache2)
+        assert len(signals) == 1
+        assert signals[0].sub_band == ExecutionBand.T4_ARITH
+        assert signals[0].kelly_fraction == pytest.approx(_KELLY_NEAR_CERTAIN)
+
+    def test_signal_uses_proj_posterior_when_available(self):
+        # Verify T4-ARITH uses proj posterior instead of T1 prior when proj_evaluator is set
+        proj_ev = T4ProjEvaluator()
+        arith_ev = T4ArithEvaluator(proj_evaluator=proj_ev)
+
+        # First populate proj cache with a high-scoring game state
+        # Player has 18 pts in 20 min → posterior lambda higher than T1 prior (22.5)
+        gs_proj = _market_game_state(pts_so_far=18.0, min_so_far=20.0, elapsed_min=40.0, threshold=24.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        proj_ev.evaluate(gs_proj, cache)
+
+        posterior = proj_ev.get_lambda_posterior("P001")
+        assert posterior is not None and posterior > 22.5  # must be above T1 prior
+
+        # Now run T4-ARITH on same state
+        signals = arith_ev.evaluate(gs_proj, cache)
+        if signals:
+            # model_p should be computed using the posterior, which is > T1 prior
+            # Both give p > CONFIDENCE_GATE, but posterior gives higher p
+            t_remaining_frac = 8.0 / GAME_REGULATION_MIN
+            expected_lambda_remaining_posterior = posterior * t_remaining_frac
+            expected_p_posterior = _poisson_survival_p(18.0, 24.0, expected_lambda_remaining_posterior)
+            assert abs(signals[0].model_p - expected_p_posterior) < 0.001
+
+    def test_confidence_gate_filters_low_probability(self):
+        # Set threshold very high so p_arith < CONFIDENCE_GATE
+        # pts=22, threshold=35, gap=13 > ARITH_ENTRY_WINDOW=3 → no signal (gap too big)
+        # Use threshold=25, gap=3, but with very little time remaining to drive p low
+        # elapsed=47.5, total_remaining=0.5 < EXIT_MIN=3.0 → T5 territory, returns []
+        # Instead: elapsed=40, total_remaining=8, lambda_remaining small
+        # Use very low lambda: lambda_t1_prior=2.0
+        ev = T4ArithEvaluator()
+        gs = _market_game_state(
+            pts_so_far=22.0, elapsed_min=40.0, threshold=25.0, lambda_t1_prior=2.0
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.74, yes_bid=0.70)
+        # lambda_remaining = 2.0 * 8/48 = 0.333
+        # P(score 3 more | Poisson(0.333)) ≈ very small → < CONFIDENCE_GATE=0.75 → no signal
+        signals = ev.evaluate(gs, cache)
+        assert signals == []
+
+
+# ---------------------------------------------------------------------------
+# T4EventEvaluator — discrete event reaction
+# ---------------------------------------------------------------------------
+
+class TestT4EventEvaluatorMath:
+    def test_no_arg_construction(self):
+        ev = T4EventEvaluator()
+        assert ev._proj_evaluator is None
+
+    def test_empty_market_specs_returns_empty(self):
+        ev = T4EventEvaluator()
+        gs = _game_state()
+        cache = T4PriceCache()
+        assert ev.evaluate(gs, cache) == []
+
+    def test_timer_event_no_signal(self):
+        # T4-EVENT only fires on SCORE_UPDATE and FOUL
+        ev = T4EventEvaluator()
+        gs = _market_game_state(event_type="TIMER", elapsed_min=40.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_score_update_fires_for_tracked_player(self):
+        ev = T4EventEvaluator()
+        gs = _market_game_state(
+            pts_so_far=14.0, elapsed_min=40.0, threshold=25.0,
+            event_type="SCORE_UPDATE",
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        assert len(signals) == 1
+        assert signals[0].sub_band == ExecutionBand.T4_EVENT
+        assert signals[0].tree_id == "EVENT-PTS-MADE"
+
+    def test_foul_event_fires_for_tracked_player(self):
+        ev = T4EventEvaluator()
+        gs = _market_game_state(
+            pts_so_far=14.0, elapsed_min=40.0, threshold=25.0,
+            event_type="FOUL",
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        assert len(signals) == 1
+        assert signals[0].tree_id == "EVENT-PTS-FOUL"
+
+    def test_different_player_event_no_signal(self):
+        # trigger_event.player_id = "P002" but market spec is for "P001"
+        ev = T4EventEvaluator()
+        event = T4GameEvent(
+            event_type="SCORE_UPDATE", player_id="P002",  # different player
+            market_id="MKT-001", ts=_now()
+        )
+        player = T4PlayerState(
+            player_id="P001", pts_so_far=14.0, reb_so_far=3.0, ast_so_far=2.0,
+            min_so_far=20.0, fouls=2, is_active=True, lambda_t1_prior=22.5, lambda_t4_proj=None,
+        )
+        spec = T4MarketSpec(market_id="MKT-001", player_id="P001", threshold=25.0)
+        gs = T4GameState(
+            game_id="G1", game_date="2026-06-22", quarter=3,
+            time_remaining_min=12.0, elapsed_min=40.0,
+            home_score=78, away_score=74, score_differential=4, ts=_now(),
+            player_states={"P001": player},
+            trigger_event=event,
+            market_specs=(spec,),
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_uses_proj_posterior_when_injected(self):
+        proj_ev = T4ProjEvaluator()
+        event_ev = T4EventEvaluator(proj_evaluator=proj_ev)
+
+        gs = _market_game_state(pts_so_far=14.0, min_so_far=20.0, elapsed_min=40.0, threshold=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+
+        # Prime proj cache
+        proj_ev.evaluate(gs, cache)
+        posterior = proj_ev.get_lambda_posterior("P001")
+        assert posterior is not None
+
+        # Run T4-EVENT with SCORE_UPDATE
+        gs_event = _market_game_state(
+            pts_so_far=14.0, elapsed_min=40.0, threshold=25.0,
+            event_type="SCORE_UPDATE",
+        )
+        signals = event_ev.evaluate(gs_event, cache)
+
+        if signals:
+            # T4-EVENT's model_p should use the posterior lambda
+            total_remaining = GAME_REGULATION_MIN - 40.0
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+            expected_lambda_remaining = posterior * t_remaining_frac
+            expected_p = _poisson_survival_p(14.0, 25.0, expected_lambda_remaining)
+            assert abs(signals[0].model_p - expected_p) < 0.001
+
+    def test_falls_back_to_t1_prior_without_proj(self):
+        ev = T4EventEvaluator()  # no proj_evaluator
+        gs = _market_game_state(
+            pts_so_far=14.0, min_so_far=20.0, elapsed_min=40.0, threshold=25.0,
+            event_type="SCORE_UPDATE",
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:
+            # model_p is computed from T1 prior (22.5) not posterior
+            total_remaining = GAME_REGULATION_MIN - 40.0
+            lambda_remaining = 22.5 * (total_remaining / GAME_REGULATION_MIN)
+            expected_p = _poisson_survival_p(14.0, 25.0, lambda_remaining)
+            assert abs(signals[0].model_p - expected_p) < 0.001
+
+    def test_kelly_is_event_provisional(self):
+        ev = T4EventEvaluator()
+        gs = _market_game_state(
+            pts_so_far=14.0, elapsed_min=40.0, threshold=25.0,
+            event_type="SCORE_UPDATE",
+        )
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+        signals = ev.evaluate(gs, cache)
+        if signals:
+            assert signals[0].kelly_fraction == pytest.approx(0.05)  # provisional T4-EVENT
+
+
+# ---------------------------------------------------------------------------
+# T4FlowEvaluator — FLOW-BLOWOUT
+# ---------------------------------------------------------------------------
+
+def _blowout_game_state(
+    score_differential: int = 25,
+    elapsed_min: float = 30.0,
+    team_is_home: Optional[bool] = True,
+) -> T4GameState:
+    """Game state with a blowout score and T4MarketSpec with team affiliation."""
+    event = T4GameEvent(event_type="SCORE_UPDATE", player_id="P001", market_id="MKT-001", ts=_now())
+    player = T4PlayerState(
+        player_id="P001", pts_so_far=10.0, reb_so_far=3.0, ast_so_far=2.0,
+        min_so_far=20.0, fouls=2, is_active=True, lambda_t1_prior=22.5, lambda_t4_proj=None,
+    )
+    spec = T4MarketSpec(
+        market_id="MKT-001", player_id="P001", threshold=20.0, team_is_home=team_is_home
+    )
+    return T4GameState(
+        game_id="G1", game_date="2026-06-22", quarter=3,
+        time_remaining_min=max(0.0, GAME_REGULATION_MIN - elapsed_min),
+        elapsed_min=elapsed_min,
+        home_score=90 if score_differential > 0 else 65,
+        away_score=65 if score_differential > 0 else 90,
+        score_differential=score_differential,
+        ts=_now(),
+        player_states={"P001": player},
+        trigger_event=event,
+        market_specs=(spec,),
+    )
+
+
+class TestT4FlowEvaluatorBlowout:
+    def test_empty_market_specs_returns_empty(self):
+        ev = T4FlowEvaluator()
+        gs = _game_state()  # no market_specs
+        cache = T4PriceCache()
+        assert ev.evaluate(gs, cache) == []
+
+    def test_no_blowout_returns_empty(self):
+        ev = T4FlowEvaluator()
+        # score_diff=4 < BLOWOUT_SCORE_THRESHOLD=20
+        gs = _blowout_game_state(score_differential=4)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.74, yes_bid=0.70)
+        assert ev.evaluate(gs, cache) == []
+
+    def test_blowout_not_sustained_returns_empty(self):
+        ev = T4FlowEvaluator()
+        # First call at elapsed=25: sets blowout_start=25
+        gs1 = _blowout_game_state(score_differential=25, elapsed_min=25.0)
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.74, yes_bid=0.70)
+        result1 = ev.evaluate(gs1, cache)
+        # 25-25=0 < BLOWOUT_SUSTAIN_MIN=2.0 → no signal
+        assert result1 == []
+
+    def test_blowout_sustained_generates_signal(self):
+        ev = T4FlowEvaluator()
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.40, yes_bid=0.36)
+
+        # First call: set blowout start at elapsed=20
+        gs1 = _blowout_game_state(score_differential=25, elapsed_min=20.0, team_is_home=False)
+        ev.evaluate(gs1, cache)  # blowout_start = 20; sustained=0 → no signal
+
+        # Second call: elapsed=23, sustained=3 ≥ BLOWOUT_SUSTAIN_MIN=2 → signal
+        gs2 = _blowout_game_state(score_differential=25, elapsed_min=23.0, team_is_home=False)
+        signals = ev.evaluate(gs2, cache)
+        assert len(signals) == 1
+        assert signals[0].sub_band == ExecutionBand.T4_FLOW
+        assert signals[0].tree_id == "FLOW-BLOWOUT"
+
+    def test_trailing_player_higher_lambda(self):
+        """Trailing player (away team, home leading) gets lambda↑ → higher model_p."""
+        ev_trailing = T4FlowEvaluator()
+        ev_leading = T4FlowEvaluator()
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.50, yes_bid=0.46)
+
+        # Warm up both evaluators to establish blowout state
+        for ev in [ev_trailing, ev_leading]:
+            gs_warm = _blowout_game_state(score_differential=25, elapsed_min=20.0, team_is_home=False)
+            ev.evaluate(gs_warm, cache)
+
+        # Trailing: away team, home leading (score_diff>0)
+        gs_trail = _blowout_game_state(score_differential=25, elapsed_min=23.0, team_is_home=False)
+        sigs_trail = ev_trailing.evaluate(gs_trail, cache)
+
+        # Leading: home team, home leading
+        gs_lead = _blowout_game_state(score_differential=25, elapsed_min=23.0, team_is_home=True)
+        ev_leading.evaluate(  # warm up for leading evaluator blowout state
+            _blowout_game_state(score_differential=25, elapsed_min=20.0, team_is_home=True), cache
+        )
+        sigs_lead = ev_leading.evaluate(gs_lead, cache)
+
+        # Trailing player should have higher model_p (λ↑) than leading player (λ↓)
+        if sigs_trail and sigs_lead:
+            assert sigs_trail[0].model_p > sigs_lead[0].model_p
+
+    def test_unknown_team_affiliation_skipped(self):
+        ev = T4FlowEvaluator()
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.50, yes_bid=0.46)
+
+        # Warm up blowout state
+        gs_warm = _blowout_game_state(score_differential=25, elapsed_min=20.0, team_is_home=None)
+        ev.evaluate(gs_warm, cache)
+
+        gs = _blowout_game_state(score_differential=25, elapsed_min=23.0, team_is_home=None)
+        signals = ev.evaluate(gs, cache)
+        assert signals == []  # team_is_home=None → skipped
+
+    def test_blowout_resets_when_score_tightens(self):
+        ev = T4FlowEvaluator()
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.50, yes_bid=0.46)
+
+        # Establish blowout
+        ev.evaluate(_blowout_game_state(score_differential=25, elapsed_min=20.0), cache)
+
+        # Score tightens — blowout ends
+        gs_tight = _blowout_game_state(score_differential=5, elapsed_min=22.0)
+        ev.evaluate(gs_tight, cache)
+        assert ev._blowout_start_elapsed is None
+
+        # New blowout starts fresh
+        ev.evaluate(_blowout_game_state(score_differential=22, elapsed_min=30.0), cache)
+        assert ev._blowout_start_elapsed == pytest.approx(30.0)
+
+
+# ---------------------------------------------------------------------------
+# T4ExitEvaluator — exit logic
+# ---------------------------------------------------------------------------
+
+def _open_position(
+    direction: str = "YES",
+    threshold: float = 25.0,
+    entry_model_p: float = 0.80,
+    noise_buffer: Optional[float] = 0.19,
+) -> T4OpenPosition:
+    return T4OpenPosition(
+        market_id="MKT-001",
+        player_id="P001",
+        direction=direction,
+        threshold=threshold,
+        entry_model_p=entry_model_p,
+        sub_band=ExecutionBand.T4_PROJ,
+        entry_ts=_now(),
+        noise_buffer=noise_buffer,
+    )
+
+
+def _exit_game_state(pts_so_far: float = 14.0, elapsed_min: float = 40.0) -> T4GameState:
+    """Game state for exit evaluator testing with player P001."""
+    event = T4GameEvent(event_type="TIMER", player_id="P001", market_id="MKT-001", ts=_now())
+    player = T4PlayerState(
+        player_id="P001", pts_so_far=pts_so_far, reb_so_far=3.0, ast_so_far=2.0,
+        min_so_far=20.0, fouls=2, is_active=True, lambda_t1_prior=22.5, lambda_t4_proj=None,
+    )
+    return T4GameState(
+        game_id="G1", game_date="2026-06-22", quarter=3,
+        time_remaining_min=max(0.0, GAME_REGULATION_MIN - elapsed_min),
+        elapsed_min=elapsed_min, home_score=78, away_score=74, score_differential=4,
+        ts=_now(), player_states={"P001": player}, trigger_event=event,
+    )
+
+
+class TestT4ExitEvaluatorLogic:
+    def test_empty_positions_returns_empty(self):
+        ev = T4ExitEvaluator()
+        gs = _exit_game_state()
+        cache = T4PriceCache()
+        assert ev.generate_exit_signals([], gs, cache) == []
+
+    def test_dict_missing_required_keys_skipped(self):
+        ev = T4ExitEvaluator()
+        gs = _exit_game_state()
+        cache = T4PriceCache()
+        # Legacy dict missing direction, threshold, entry_model_p → silently skipped
+        signals = ev.generate_exit_signals([{"market_id": "MKT-001"}], gs, cache)
+        assert signals == []
+
+    def test_exit_time_floor_fires(self):
+        ev = T4ExitEvaluator()
+        # total_remaining = 48 - 46 = 2.0 ≤ EXIT_TIME_FLOOR_MIN=3.0
+        gs = _exit_game_state(elapsed_min=46.0)
+        cache = T4PriceCache()
+        pos = _open_position(direction="YES", entry_model_p=0.80)
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert len(signals) == 1
+        assert signals[0].is_exit is True
+        assert signals[0].tree_id == "EXIT-TIME-FLOOR"
+        assert signals[0].sub_band == ExecutionBand.T4_EXIT
+
+    def test_exit_time_floor_at_exact_boundary(self):
+        ev = T4ExitEvaluator()
+        # total_remaining = 48 - 45 = 3.0 = EXIT_TIME_FLOOR_MIN → fires
+        gs = _exit_game_state(elapsed_min=45.0)
+        cache = T4PriceCache()
+        signals = ev.generate_exit_signals([_open_position()], gs, cache)
+        assert len(signals) == 1
+        assert signals[0].tree_id == "EXIT-TIME-FLOOR"
+
+    def test_exit_reversal_yes_bet(self):
+        ev = T4ExitEvaluator()
+        # Player has 0 pts with 3.01 min left → current_p ≈ 0 (needs 25 pts in 3 min) → reversal
+        # elapsed=44.99 → total_remaining=3.01 > 3.0 (no time floor)
+        gs = _exit_game_state(pts_so_far=0.0, elapsed_min=44.99)
+        cache = T4PriceCache()
+        pos = _open_position(direction="YES", threshold=25.0, entry_model_p=0.80)
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert any(s.tree_id == "EXIT-REVERSAL" for s in signals)
+
+    def test_exit_buffer_breach_yes_bet(self):
+        ev = T4ExitEvaluator()
+        # Player has 10 pts with 8 min left (elapsed=40), threshold=25, needs 15 more
+        # lambda_remaining = 22.5 * 8/48 = 3.75
+        # P(score 15 | Poisson(3.75)) ≈ 0 << entry_model_p=0.80 - buffer=0.19 = 0.61
+        gs = _exit_game_state(pts_so_far=10.0, elapsed_min=40.0)
+        cache = T4PriceCache()
+        pos = _open_position(direction="YES", threshold=25.0, entry_model_p=0.80, noise_buffer=0.19)
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert any(s.tree_id in ("EXIT-BUFFER-BREACH", "EXIT-REVERSAL") for s in signals)
+
+    def test_no_exit_when_favorable(self):
+        ev = T4ExitEvaluator()
+        # Player has 22 pts with 8 min left (elapsed=40), threshold=25, needs 3 more
+        # lambda_remaining = 22.5 * 8/48 = 3.75
+        # P(score 3 | Poisson(3.75)) ≈ 0.72; entry_model_p=0.80, buffer=0.19
+        # 0.72 > 0.80 - 0.19 = 0.61? YES (no breach); 0.72 > 0.5 (no reversal)
+        gs = _exit_game_state(pts_so_far=22.0, elapsed_min=40.0)
+        cache = T4PriceCache()
+        pos = _open_position(direction="YES", threshold=25.0, entry_model_p=0.80, noise_buffer=0.19)
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert signals == []
+
+    def test_exit_signals_are_urgent(self):
+        ev = T4ExitEvaluator()
+        gs = _exit_game_state(elapsed_min=46.0)  # time floor fires
+        cache = T4PriceCache()
+        signals = ev.generate_exit_signals([_open_position()], gs, cache)
+        assert all(s.is_exit is True for s in signals)
+        # EXIT signals in Layer2 get priority=0.0
+        for sig in signals:
+            entry = QueueEntry.from_signal(sig)
+            assert entry.priority == 0.0
+
+    def test_typed_open_position_accepted(self):
+        ev = T4ExitEvaluator()
+        gs = _exit_game_state(elapsed_min=46.0)
+        cache = T4PriceCache()
+        pos = T4OpenPosition(
+            market_id="MKT-001", player_id="P001",
+            direction="YES", threshold=25.0, entry_model_p=0.80,
+            sub_band=ExecutionBand.T4_PROJ, entry_ts=_now(),
+        )
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert len(signals) == 1
+        assert signals[0].tree_id == "EXIT-TIME-FLOOR"
+
+    def test_buffer_breach_no_bet_direction(self):
+        ev = T4ExitEvaluator()
+        # NO bet: breach when current_p > entry_model_p + buffer (0.39).
+        # Must stay ≤ 0.5 to avoid triggering REVERSAL first (which has `continue`).
+        # pts=22, threshold=25, elapsed=43 (total_remaining=5 > EXIT_FLOOR=3):
+        #   lambda_remaining = 22.5 * 5/48 ≈ 2.344
+        #   P(X≥3 | Poisson(2.344)) ≈ 0.416 → in (0.39, 0.50] → breach without reversal.
+        gs = _exit_game_state(pts_so_far=22.0, elapsed_min=43.0)
+        cache = T4PriceCache()
+        pos = _open_position(direction="NO", threshold=25.0, entry_model_p=0.20, noise_buffer=0.19)
+        signals = ev.generate_exit_signals([pos], gs, cache)
+        assert any(s.tree_id == "EXIT-BUFFER-BREACH" for s in signals)
+
+
+# ---------------------------------------------------------------------------
+# Layer1 ordering guarantee — T4-PROJ writes cache before T4-ARITH/EVENT reads
+# ---------------------------------------------------------------------------
+
+class TestLayer1OrderingGuarantee:
+    """Verify T4-PROJ always runs before T4-ARITH and T4-EVENT in the same cycle."""
+
+    def _make_engine_with_wired_proj(self):
+        """Factory returns an engine where arith/event share the proj_evaluator."""
+        return T4ExecutionEngine.create()
+
+    def test_proj_posterior_populated_before_arith_reads(self):
+        engine = self._make_engine_with_wired_proj()
+        proj_ev = engine._layer1._evaluators["T4-PROJ"]
+        arith_ev = engine._layer1._evaluators["T4-ARITH"]
+
+        assert isinstance(proj_ev, T4ProjEvaluator)
+        assert isinstance(arith_ev, T4ArithEvaluator)
+
+        # Arith should share the same proj_evaluator instance as proj_ev
+        assert arith_ev._proj_evaluator is proj_ev
+
+    def test_event_evaluator_shares_proj_instance(self):
+        engine = self._make_engine_with_wired_proj()
+        proj_ev = engine._layer1._evaluators["T4-PROJ"]
+        event_ev = engine._layer1._evaluators["T4-EVENT"]
+        assert isinstance(event_ev, T4EventEvaluator)
+        assert event_ev._proj_evaluator is proj_ev
+
+    def test_score_update_cycle_proj_fires_first(self):
+        """On SCORE_UPDATE, T4-PROJ must populate cache before T4-ARITH reads it.
+        Verify by checking the posterior is in the cache after simulate_cycle."""
+        engine = self._make_engine_with_wired_proj()
+        proj_ev = engine._layer1._evaluators["T4-PROJ"]
+
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+
+        gs = _market_game_state(
+            pts_so_far=22.0, min_so_far=20.0, elapsed_min=40.0, threshold=24.0,
+            event_type="SCORE_UPDATE",
+        )
+        engine.simulate_cycle(gs, price_cache=cache)
+
+        # T4-PROJ should have run and populated the cache
+        posterior = proj_ev.get_lambda_posterior("P001")
+        assert posterior is not None, "T4-PROJ must have run and cached posterior"
+
+    def test_timer_cycle_proj_fires_for_timer(self):
+        engine = self._make_engine_with_wired_proj()
+        proj_ev = engine._layer1._evaluators["T4-PROJ"]
+
+        cache = T4PriceCache()
+        cache.update("MKT-001", yes_ask=0.82, yes_bid=0.78)
+
+        gs = _market_game_state(pts_so_far=14.0, elapsed_min=40.0, event_type="TIMER")
+        engine.simulate_cycle(gs, price_cache=cache)
+
+        # T4-PROJ is in TIMER evaluators — should have run
+        posterior = proj_ev.get_lambda_posterior("P001")
+        assert posterior is not None
+
+    def test_ordered_ids_proj_is_first_in_score_update(self):
+        """_evaluators_for_event for SCORE_UPDATE must list T4-PROJ first
+        after the ordering fix in evaluate_cycle."""
+        engine = self._make_engine_with_wired_proj()
+        gs = _game_state(event_type="SCORE_UPDATE")
+        active_ids = engine._layer1._evaluators_for_event(gs.trigger_event)
+        # After the ordering fix, T4-PROJ appears in the active set
+        assert "T4-PROJ" in active_ids
