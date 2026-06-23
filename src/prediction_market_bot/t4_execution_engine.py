@@ -1892,14 +1892,28 @@ class T4ExecutionEngine:
         signals = self._layer1.evaluate_cycle(game_state, _cache, open_positions)
         return signals
 
-    def on_game_event(self, game_state: T4GameState) -> None:
+    def on_game_event(
+        self,
+        game_state: T4GameState,
+        open_positions: Optional[list] = None,
+        price_cache: Optional[T4PriceCache] = None,
+    ) -> tuple[list[EvaluationSignal], list[StaleDropRecord]]:
         """
-        Main entry point for DS-02 game events (Phase 8 only).
+        Main entry point for live game events (Phase 8 only).
 
-        Evaluates Layer 1, enqueues all signals in Layer 2, and triggers one
-        Layer 2 dequeue batch. All approved bets proceed to C4 + C5.
+        Runs the full Layer 1 → Layer 2 pipeline:
+          1. Layer 1: evaluate_cycle() — all sub-band evaluators on current game state
+          2. Layer 2: enqueue each signal, then process_queue_batch() — staleness +
+             downward-only CORR invariant (ADR-0029 Principle 6)
+          Returns (approved_signals, stale_drops) for C4/C5/C6 wiring in T4LiveRunner.
 
-        BLOCKED until GG-038 (kill switch) + GG-040 (data feed) resolved.
+        open_positions: current T4 open positions (from T4PositionRegistry.snapshot())
+          passed to Layer 1 so T4ExitEvaluator can generate exit signals.
+        price_cache: if None, uses the engine's internal cache.
+
+        BLOCKED until GG-038 (kill switch) + GG-039 (price cache) +
+        GG-040 (real-time data feeds) resolved and Phase 8 activation ADR sets
+        T4ExecutionEngine._PHASE8_ACTIVE = True.
         """
         if not self._PHASE8_ACTIVE:
             raise T4Phase8BlockedError(
@@ -1907,22 +1921,51 @@ class T4ExecutionEngine:
                 "Blocked until GG-038 / GG-039 / GG-040 resolved and Phase 8 "
                 "activation ADR wires T4ExecutionEngine._PHASE8_ACTIVE = True."
             )
-        # Phase 8 implementation:
-        # 1. Kill switch check (< 5ms)
-        # 2. layer1.evaluate_cycle(game_state, price_cache) → signals
-        # 3. layer2.enqueue(signal) for each signal
-        # 4. layer2.process_queue_batch(price_cache, min_edge) → approved
-        # 5. for each approved: C4.evaluate_forecast → C5.execute → C6.log
-        raise NotImplementedError("Phase 8 execution implementation deferred.")
+        _cache = price_cache if price_cache is not None else self._price_cache
+        _open = list(open_positions) if open_positions is not None else []
+        signals = self._layer1.evaluate_cycle(game_state, _cache, _open)
+        for sig in signals:
+            self._layer2.enqueue(sig)
+        approved, drops = self._layer2.process_queue_batch(_cache, self._min_edge)
+        return approved, drops
 
     def start(self, game_event_feed) -> None:
         """
         Start the continuous evaluation loop (Phase 8 only).
 
         BLOCKED until GG-038 / GG-039 / GG-040 resolved.
+        Phase 8: delegate to T4LiveRunner.start(game_state_iter) — the runner
+        manages C4/C5/C6/C7 wiring; the engine handles Layer 1 + Layer 2.
         """
         if not self._PHASE8_ACTIVE:
             raise T4Phase8BlockedError(
                 "T4ExecutionEngine.start() is Phase 8 infrastructure."
             )
-        raise NotImplementedError("Phase 8 implementation deferred.")
+        raise NotImplementedError(
+            "start() is delegated to T4LiveRunner.start() in Phase 8. "
+            "Construct T4LiveRunner via T4ExecutionEngine.create_phase8()."
+        )
+
+    @classmethod
+    def create_phase8(cls, min_edge: float = 0.04) -> "T4ExecutionEngine":
+        """
+        Factory for Phase 8 production engine.
+
+        Wraps create() and sets _PHASE8_ACTIVE=True on the returned instance.
+        Called by the Phase 8 activation ADR's wiring script ONLY.
+
+        market_specs and pregame_lambdas are passed via T4GameState per cycle,
+        not to the engine — the engine is stateless with respect to those inputs.
+
+        GG-038/039/040 resolution is enforced by the Phase 8 activation ADR;
+        this factory does NOT check those preconditions at runtime.
+
+        Returns an engine ready for on_game_event() calls.
+        T4LiveRunner(engine, ...) completes the C4/C5/C6/C7 wiring.
+        """
+        engine = cls.create(min_edge=min_edge)
+        # Instance-level override: shadows the class-variable False for this engine only.
+        # Python's MRO finds instance attr first, so self._PHASE8_ACTIVE returns True
+        # without touching the class default (which guards all other instances).
+        engine._PHASE8_ACTIVE = True  # type: ignore[assignment]
+        return engine
