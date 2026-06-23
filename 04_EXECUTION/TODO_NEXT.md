@@ -38,6 +38,15 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
+## SESSION 69 — COMPLETE (2026-06-22)
+
+| Task | Status |
+|------|--------|
+| **DS decision: Option C — feature-set diagnosis sprint** | ✅ LOGGED — DECISION_LOG S69 entry written. Diagnosis conducted on n=103 clean NBA Finals bets. Root cause identified: missing playoff-context λ multiplier. Three feature fixes scoped into T-072. If EXP-017 still ANTI-PREDICTIVE after fix, escalation = Option A. |
+| **Feature-set diagnosis (run_t177 Option C sprint)** | ✅ COMPLETE — Key findings: (1) YES bets 38.9% win rate vs NO bets 68.7%. (2) Model error on YES: +0.315 (vs market +0.150); market error on NO: +0.006 — Kalshi is essentially perfectly calibrated on NO bets. (3) Implied λ compression: model assumes λ=14.0/16.1/19.6 at thr=10/15/20; actual scoring implies λ=12.8/12.8/13.8 → compression factors 0.911/0.792/0.703. (4) Within-series compression worsens: G2 avg_pts=17.3 → G5 avg_pts=7.7 as game plans adapt. Root cause: opp_adj_lambda uses regular-season defensive ratings; Finals defensive intensity suppresses scoring 9-30% beyond what the model accounts for. (5) This is a feature engineering gap, NOT a model class failure. Poisson architecture is valid; the λ input is wrong. |
+
+---
+
 ## SESSION 68 — COMPLETE (2026-06-22)
 
 | Task | Status |
@@ -97,9 +106,9 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 **New tasks registered this session (added to priority queue):**
 - **T-175 — ✅ DONE (confirmed S68 cont.):** `run_t4_live.py:682` already passes `portfolio_equity_usd=t4_band_budget if not PAPER_T4_VIRTUAL else None, pool_isolated=True` to `evaluate_forecast()` (T-175 comment on line 671). EXP harnesses are pure analysis — no `evaluate_forecast()` calls. Coverage gap closed.
 - **T-176 — HIGH (dark period Phase 3, before MLB launch):** MLB calibration temperature derivation. Run `scripts/derive_calibration.py` on the dark-period MLB resolved dataset once it exists; write the derived T into `CALIBRATION_TEMPERATURE["mlb"]` via an ADR-0027 amendment (currently identity 1.0). **Blocked on MLB data — will unblock in Phase 3 (Aug-Sep).**
-- **T-177 — 🔄 PARTIAL (S68 DONE — monitor built; DS decision OPEN):** `scripts/run_t177_edge_monitor.py` built (29 tests; 1137 total). Live portfolio verification: n=144 clean, Fisher p=0.0505, edge>0 wr=0.500 vs edge≤0 wr=0.674 → ANTI-PREDICTIVE. **DS decision required before EXP-017 MLB run:** commit to option A (halt+ADR-0004), B (direction inversion — NOT trivially safe), or C (feature-set diagnosis) if MLB data also shows ANTI-PREDICTIVE at ADR-0024 adequate sample (n≥500/≥15 opponents/≥2 sports). G6 BLOCKER alongside GG-004.
+- **T-177 — 🔄 PARTIAL (S69: DS decision made → Option C; diagnosis complete; feature fix scoped into T-072):** Monitor built (1137 tests). Live VPS: n=144 clean, p=0.0505, ANTI-PREDICTIVE. **DS decision (Earl Ignacio, 2026-06-22 S69): Option C — feature-set diagnosis sprint.** Diagnosis conducted on n=103 clean Finals bets (see DECISION_LOG S69). **Root cause identified:** model λ is calibrated on regular-season rolling averages; NBA Finals scoring is 0.70-0.91× regular-season λ (compression factor worsens at higher thresholds and deepens within-series as game plans adjust). Kalshi market is almost perfectly calibrated on NO bets (+0.006 error) and 2.1× better than the model on YES bets (+0.150 vs +0.315 error) — market incorporates Finals-context defensive information the model lacks. **Three feature fixes scoped into T-072:** (i) `playoff_round_multiplier` feature in C2 λ derivation; (ii) replace regular-season opp defensive ratings with playoff-opponent trailing-N-games stats; (iii) within-series momentum feature (player's scoring in current series vs regular-season rolling avg). **GG-037 alpha half + GG-004 status unchanged** — diagnosis identifies mechanism but does not close; EXP-017 at ADR-0024 adequate sample required. If EXP-017 still fires ANTI-PREDICTIVE after feature fix incorporated, escalation defaults to Option A (halt + ADR-0004 review). G6 BLOCKER alongside GG-004.
 - **PHASE 2 NOW ACTIVE (NBA Finals ended 2026-06-22 — July 1 start):**
-  - **T-072 — P0 (deadline 2026-10-15):** Model retrain on 2025-26 complete regular season + Finals data. Requires ADR superseding ADR-0004 (frozen model policy — no automated retrain). New model version + paper validation + ADR.
+  - **T-072 — P0 (deadline 2026-10-15):** Model retrain on 2025-26 complete regular season + Finals data. Requires ADR superseding ADR-0004 (frozen model policy — no automated retrain). New model version + paper validation + ADR. **S69 SCOPE ADDITION:** retrain must incorporate three feature fixes from Option C diagnosis — playoff_round_multiplier, playoff-opponent defensive stats, within-series momentum feature. See DECISION_LOG S69 for full specification.
   - **T-073 — P1:** DS-04 injury source. KI-011: T2 is injury-blind; without DS-04, T2 activation generates fake alpha. Required before T2 active. Evaluate: Rotoworld / FantasyLabs / ESPN API injury reports.
   - **T-077 — P1 (operator action):** Polymarket KYC. VenueAdapter already built; execution gated on operator KYC completion. Second venue adds line-shopping (+7.8% EV per EXP-014).
   - **ADR-0005 — P2 (draft now, finalize at G6):** Live capital framework parameters. Draft can begin (bankroll size, per-bet limits, reserve fraction, kill-switch thresholds at live scale). Cannot finalize until EXP-017 positive + T-153 haircut complete.
