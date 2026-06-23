@@ -395,7 +395,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | MEDIUM now; HIGH at G6 evaluation: if spread costs consume the measured edge, the G6 gate could clear on evidence that does not survive contact with real execution. Direction of error is systematically anti-conservative — the dangerous direction. |
 | Discovery method | PDTP Pass 3 contradiction scan: T4 paper profit vs. EXP-018 negative EV cannot both be face-value true. |
 | Resolution path | Expand T-153 scope: spread model must produce a fill-realism haircut applied to *all* paper P&L lines reported as G6 evidence (T1 + T4), not only exit-mechanics validation. G4/G5 spread logging (deployed SESSION 41) is the data source. Until the haircut exists, every G6-facing P&L report must carry the caveat "unhaircut paper fills." APR-0017 amendment required if haircut materially changes Tier 2 thresholds. |
-| Status | **RESOLVED 2026-06-22 SESSION 65** — ADR-0028 (APR-0022, pending DS sign-off) formally amends APR-0017 + APR-0019 with Modification 5: T2-B and T2-D (all buckets) evaluate post-haircut P&L at T-153 p50 methodology. This is the required APR-0017 amendment. T-153 haircut tool and methodology remain operative; re-run at G6 evaluation on full paper period data. *(Prior: PARTIALLY RESOLVED 2026-06-12 SESSION 59 — `scripts/run_t153_haircut.py` implemented; combined haircut G1–G4: −$86.31 p50 / −$135.81 mean on $3,274.20 staked; HIGH materiality confirmed.)* |
+| Status | **RESOLVED 2026-06-22 SESSION 72** — ADR-0028 ACCEPTED (DS sign-off Earl Ignacio, 2026-06-22 SESSION 72). All 14 checklist items approved. Modification 5 formally amends APR-0017 + APR-0019: T2-B and T2-D (all buckets) evaluate post-haircut P&L at T-153 p50 methodology. T-153 haircut tool and methodology remain operative; re-run at G6 evaluation on full paper period data. *(Prior: PARTIALLY RESOLVED 2026-06-12 SESSION 59 — `scripts/run_t153_haircut.py` implemented; combined haircut G1–G4: −$86.31 p50 / −$135.81 mean on $3,274.20 staked; HIGH materiality confirmed. ADR-0028 drafted SESSION 65.)* |
 
 ---
 
@@ -711,6 +711,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | SESSION 66 — ADR-0029 design analysis. |
 | Resolution | Phase 8 C1 rebuild to add: (1) Live box score feed with ≤2s event detection latency (T4-EVENT, T4-ARITH); (2) Live play-by-play / lineups API with ≤5s substitution detection (T4-LINEUP); (3) Kalshi tick-level market price feed (T4-MICRO, T4-SENTIMENT). Each requires vendor evaluation and C1 module design. Full data source ADR required before Phase 8. |
 | Status | **OPEN.** Phase 8 prerequisite. Low urgency now — Phase 8 not imminent. Linked: ADR-0029, GG-038, GG-039. |
+
+---
+
+### GG-041 — KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis Absent
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-041 |
+| Discovered | SESSION 72 — 2026-06-22; T-127 execution attempt found no active KXNBAPTS markets |
+| Category | Data collection miss — evidence required for ADR-0005 hard limit not captured during the only available window |
+| What was missed | Live KXNBAPTS orderbook depth data was not captured during the 2026 NBA Finals window (Jun 3–22). T-127 required querying `GET /markets/{ticker}/orderbook` during an active Finals game day to set an empirical `max_order_pct_of_depth` limit for ADR-0005. The one logged run (`logs/orderbook_depth_20260602_151325.json`, 2026-06-02) queried before Finals markets opened — all 5 markets showed `combined_depth_usd: 0`. No subsequent script run was triggered during any Finals game day. VPS has zero orderbook depth logs. All KXNBAPTS markets finalized 2026-06-14 (after G5 on 2026-06-13). |
+| When it should have been caught | Any Finals game day Jun 3–13 during active market hours. T-127 was registered as HIGH priority with explicit "if this window is missed, no equivalent data exists until 2026-27 pre-season" warning. |
+| Phases survived | G5 |
+| Why it survived | T-127 script automation was registered as COMPLETE (script built); but script execution during an active game day was not automated or calendared. The single pre-Finals run returned zeros and was not flagged as "wrong window." No VPS cron for orderbook depth polling was set up. |
+| Impact | **LOW now (dark period, no live capital).** ADR-0005 (`max_order_pct_of_depth` hard limit in `_HARD_LIMITS`) cannot be set on empirical Finals orderbook data. The limit must use a conservative placeholder or be deferred to 2026-27 regular season Day 1 data collection. Impact is LOW because no live capital is at risk until G6; the limit is a G6 prerequisite, not a paper-trading constraint. |
+| Discovery | SESSION 72 — `python3 scripts/query_orderbook_depth.py` returned "No active KXNBAPTS markets found." Confirmed via VPS run and direct Kalshi API orderbook query (empty `yes_dollars`/`no_dollars` arrays on finalized markets). |
+| Resolution | Re-run `scripts/query_orderbook_depth.py` on 2026-27 regular season Day 1 (target October 2026, Phase 4). Capture live depth for 3–5 active KXNBAPTS contracts during a regular-season game window. Use result to set `max_order_pct_of_depth` in ADR-0005. Until then: ADR-0005 must not specify an empirical `max_order_pct_of_depth` value; any placeholder must be labeled provisional pending Phase 4 data. |
+| Status | **OPEN.** Deferred to Phase 4 (October 2026 — 2026-27 regular season Day 1). LOW urgency. Linked: T-127, KI-023, ADR-0005. |
 
 ---
 
