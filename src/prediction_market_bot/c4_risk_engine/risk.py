@@ -530,10 +530,11 @@ class RiskEngine:
                 p_effective = p_estimate
                 mip_effective = market_implied_prob
 
+            kelly_frac = float(fc.get("kelly_fraction", self._kelly_fraction))
             approved_size = _compute_kelly_size(
                 p_estimate=p_effective,
                 market_implied_prob=mip_effective,
-                kelly_fraction=self._kelly_fraction,
+                kelly_fraction=kelly_frac,
                 bankroll=self._bankroll,
             )
 
