@@ -1,13 +1,16 @@
 """
-Tests for src/prediction_market_bot/c2_feature_store/features.py — v1.2.0
+Tests for src/prediction_market_bot/c2_feature_store/features.py — v1.4.0
 
 Coverage areas:
-  - FEATURE_VERSION is "1.2.0"
-  - get_feature_names() returns 31 features (F-001 to F-031; v1.1.0 ERI/schedule pruned)
+  - FEATURE_VERSION is "1.4.0"
+  - get_feature_names() returns 36 features (+3 playoff context: F-041/F-042/F-043)
   - Pruned v1.1.0 features (F-032–F-038) are absent from feature names and output
   - Core rolling mean, std, efficiency, regime, and season context features present
   - Temporal integrity: no look-ahead in any feature
   - FeatureStore.compute_features_bulk smoke test
+  - playoff_round_multiplier (F-041): 1.0 for regular season
+  - series_scoring_delta (F-043): 0.0 for regular season, computed for playoff games
+  - opp_playoff_def_rating_l5_mean (F-042): NaN when no playoff store provided
 """
 
 from __future__ import annotations
@@ -28,6 +31,8 @@ from prediction_market_bot.c2_feature_store.features import (
     FEATURE_VERSION,
     FeatureStore,
     _compute_rolling_features,
+    _compute_playoff_features,
+    _PLAYOFF_ROUND_MULTIPLIERS,
 )
 
 
@@ -96,14 +101,14 @@ def _make_mock_logger(write_ok: bool = True) -> MagicMock:
 
 class TestFeatureVersion:
     @pytest.mark.unit
-    def test_version_is_1_3_0(self):
-        assert FEATURE_VERSION == "1.3.0"
+    def test_version_is_1_4_0(self):
+        assert FEATURE_VERSION == "1.4.0"
 
     @pytest.mark.unit
     def test_get_feature_names_count(self):
         store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
         names = store.get_feature_names()
-        assert len(names) == 33, f"Expected 33 features, got {len(names)}: {names}"
+        assert len(names) == 36, f"Expected 36 features, got {len(names)}: {names}"
 
     @pytest.mark.unit
     def test_pruned_schedule_features_absent_from_names(self):
@@ -151,11 +156,11 @@ class TestFeatureVersion:
 
 class TestFeatureStoreBulk:
     @pytest.mark.unit
-    def test_compute_features_bulk_feature_version_is_1_3_0(self):
+    def test_compute_features_bulk_feature_version_is_1_4_0(self):
         df = _make_player_df(n=20)
         store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
         _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
-        assert (feature_df["feature_version"] == "1.3.0").all()
+        assert (feature_df["feature_version"] == "1.4.0").all()
 
     @pytest.mark.unit
     def test_compute_features_bulk_has_core_columns(self):
@@ -192,3 +197,201 @@ class TestFeatureStoreBulk:
         df = _make_player_df(n=20)
         ok, _ = store.compute_features_bulk(df, session_id="TEST-SESSION")
         assert ok is False
+
+    @pytest.mark.unit
+    def test_playoff_features_present_in_bulk_output(self):
+        """F-041/F-042/F-043 columns must exist in bulk output (v1.4.0)."""
+        df = _make_player_df(n=20)
+        store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
+        _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
+        for col in ["playoff_round_multiplier", "opp_playoff_def_rating_l5_mean", "series_scoring_delta"]:
+            assert col in feature_df.columns, f"'{col}' missing from v1.4.0 bulk output"
+
+
+# ---------------------------------------------------------------------------
+# v1.4.0 playoff context features (F-041, F-042, F-043)
+# ---------------------------------------------------------------------------
+
+
+def _make_playoff_player_df(
+    n_regular: int = 10,
+    n_series1: int = 4,
+    pts_regular: float = 25.0,
+    pts_series: list[float] | None = None,
+    opponent: str = "GSW",
+) -> pd.DataFrame:
+    """Build a game log with regular-season games followed by playoff series games."""
+    import numpy as np
+    from datetime import date, timedelta
+
+    start = date(2026, 1, 1)
+    rows = []
+    for i in range(n_regular):
+        rows.append({
+            "player_id": 2544,
+            "player_name": "LeBron",
+            "team_id": 1610612747,
+            "team_abbreviation": "LAL",
+            "game_id": f"0022{1000 + i}",
+            "game_date": (start + timedelta(days=2 * i)).isoformat(),
+            "season": "2025-26",
+            "season_type": "Regular Season",
+            "pts": pts_regular,
+            "reb": 5.0, "ast": 7.0, "stl": 1.0, "blk": 0.5, "tov": 3.0, "min": 35.0,
+            "fgm": 8.0, "fga": 17.0, "fg_pct": 0.47, "fg3m": 2.0, "fg3a": 6.0,
+            "fg3_pct": 0.33, "ftm": 5.0, "fta": 6.0, "ft_pct": 0.83,
+            "plus_minus": 5.0, "pf": 2.0,
+            "opponent_team_abbr": "BOS",
+            "snapshot_id": "SNAP-TEST", "ingestion_run_id": "TEST-RUN",
+            "ingested_at": "2026-01-01T00:00:00.000Z",
+        })
+
+    playoff_start = start + timedelta(days=2 * n_regular + 30)
+    pts_list = pts_series if pts_series is not None else [float(20 - j) for j in range(n_series1)]
+    for j in range(n_series1):
+        rows.append({
+            "player_id": 2544,
+            "player_name": "LeBron",
+            "team_id": 1610612747,
+            "team_abbreviation": "LAL",
+            "game_id": f"0042{2000 + j}",
+            "game_date": (playoff_start + timedelta(days=2 * j)).isoformat(),
+            "season": "2025-26",
+            "season_type": "Playoffs",
+            "pts": float(pts_list[j]),
+            "reb": 5.0, "ast": 7.0, "stl": 1.0, "blk": 0.5, "tov": 3.0, "min": 35.0,
+            "fgm": 8.0, "fga": 17.0, "fg_pct": 0.47, "fg3m": 2.0, "fg3a": 6.0,
+            "fg3_pct": 0.33, "ftm": 5.0, "fta": 6.0, "ft_pct": 0.83,
+            "plus_minus": 5.0, "pf": 2.0,
+            "opponent_team_abbr": opponent,
+            "snapshot_id": "SNAP-TEST", "ingestion_run_id": "TEST-RUN",
+            "ingested_at": "2026-01-01T00:00:00.000Z",
+        })
+
+    return pd.DataFrame(rows)
+
+
+class TestPlayoffFeatures:
+    """v1.4.0 — F-041 playoff_round_multiplier, F-042 opp_playoff_def_rating_l5_mean,
+    F-043 series_scoring_delta."""
+
+    @pytest.mark.unit
+    def test_multiplier_constant_keys(self):
+        """_PLAYOFF_ROUND_MULTIPLIERS must have keys 0 and 1."""
+        assert 0 in _PLAYOFF_ROUND_MULTIPLIERS
+        assert 1 in _PLAYOFF_ROUND_MULTIPLIERS
+
+    @pytest.mark.unit
+    def test_multiplier_constant_regular_season_is_1(self):
+        """Regular-season key must be exactly 1.0 (no adjustment)."""
+        assert _PLAYOFF_ROUND_MULTIPLIERS[0] == 1.0
+
+    @pytest.mark.unit
+    def test_playoff_features_in_get_feature_names(self):
+        store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
+        names = store.get_feature_names()
+        for col in ["playoff_round_multiplier", "opp_playoff_def_rating_l5_mean", "series_scoring_delta"]:
+            assert col in names, f"'{col}' missing from get_feature_names() v1.4.0"
+
+    @pytest.mark.unit
+    def test_regular_season_multiplier_is_one(self):
+        """playoff_round_multiplier must be 1.0 for all regular-season rows."""
+        df = _make_player_df(n=20, season_type="Regular Season")
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        # Need opponent_team_abbr for playoff features
+        result["opponent_team_abbr"] = "BOS"
+        playoff_df = _compute_playoff_features(result, window=10)
+        assert (playoff_df["playoff_round_multiplier"] == 1.0).all()
+
+    @pytest.mark.unit
+    def test_regular_season_series_delta_is_zero(self):
+        """series_scoring_delta must be 0.0 for all regular-season rows."""
+        df = _make_player_df(n=20, season_type="Regular Season")
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        result["opponent_team_abbr"] = "BOS"
+        playoff_df = _compute_playoff_features(result, window=10)
+        assert (playoff_df["series_scoring_delta"] == 0.0).all()
+
+    @pytest.mark.unit
+    def test_playoff_game1_series_delta_is_zero(self):
+        """Game 1 of a playoff series has no prior series data — delta must be 0.0."""
+        df = _make_playoff_player_df(n_regular=10, n_series1=4, pts_regular=25.0,
+                                     pts_series=[20.0, 15.0, 12.0, 10.0])
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        playoff_df = _compute_playoff_features(result, window=10)
+        playoff_rows = playoff_df[result["season_type"] == "Playoffs"]
+        game1_delta = playoff_rows.iloc[0]["series_scoring_delta"]
+        assert game1_delta == 0.0, f"Game 1 series_scoring_delta should be 0.0, got {game1_delta}"
+
+    @pytest.mark.unit
+    def test_playoff_game2_series_delta_uses_game1_pts(self):
+        """Game 2 delta = game1_pts - pts_l10_mean_at_game2."""
+        pts_series = [20.0, 15.0, 12.0, 10.0]
+        df = _make_playoff_player_df(n_regular=10, n_series1=4, pts_regular=25.0,
+                                     pts_series=pts_series)
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        playoff_df = _compute_playoff_features(result, window=10)
+
+        playoff_rows = result[result["season_type"] == "Playoffs"].reset_index()
+        playoff_deltas = playoff_df[result["season_type"] == "Playoffs"].reset_index()
+
+        game2_idx = playoff_rows.index[1]
+        expected_series_mean = pts_series[0]  # only game 1 is prior
+        baseline = playoff_rows.iloc[1]["pts_l10_mean"]
+        expected_delta = expected_series_mean - baseline
+        actual_delta = playoff_deltas.iloc[1]["series_scoring_delta"]
+        assert abs(actual_delta - expected_delta) < 1e-9, \
+            f"Game 2 delta: expected {expected_delta:.4f}, got {actual_delta:.4f}"
+
+    @pytest.mark.unit
+    def test_series_delta_temporal_integrity(self):
+        """series_scoring_delta for game N must only use games 1..N-1 of the series."""
+        pts_series = [30.0, 10.0, 20.0, 15.0]
+        df = _make_playoff_player_df(n_regular=10, n_series1=4, pts_regular=25.0,
+                                     pts_series=pts_series)
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        playoff_df = _compute_playoff_features(result, window=10)
+
+        playoff_result = result[result["season_type"] == "Playoffs"].reset_index()
+        playoff_feats = playoff_df[result["season_type"] == "Playoffs"].reset_index()
+
+        # Game 3 (index 2): prior series pts = [30.0, 10.0], mean = 20.0
+        g3_baseline = playoff_result.iloc[2]["pts_l10_mean"]
+        expected_g3_delta = (30.0 + 10.0) / 2 - g3_baseline
+        actual_g3_delta = playoff_feats.iloc[2]["series_scoring_delta"]
+        assert abs(actual_g3_delta - expected_g3_delta) < 1e-9, \
+            f"Game 3 delta (TI check): expected {expected_g3_delta:.4f}, got {actual_g3_delta:.4f}"
+
+        # Game 4: prior series pts = [30.0, 10.0, 20.0], mean = 20.0
+        g4_baseline = playoff_result.iloc[3]["pts_l10_mean"]
+        expected_g4_delta = (30.0 + 10.0 + 20.0) / 3 - g4_baseline
+        actual_g4_delta = playoff_feats.iloc[3]["series_scoring_delta"]
+        assert abs(actual_g4_delta - expected_g4_delta) < 1e-9, \
+            f"Game 4 delta (TI check): expected {expected_g4_delta:.4f}, got {actual_g4_delta:.4f}"
+
+    @pytest.mark.unit
+    def test_opp_playoff_def_nan_when_no_playoff_store(self):
+        """F-042 must be NaN for all rows when playoff_team_stats_store is None."""
+        df = _make_playoff_player_df(n_regular=10, n_series1=4)
+        store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
+        _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
+        assert feature_df["opp_playoff_def_rating_l5_mean"].isna().all(), \
+            "F-042 should be NaN when no playoff_team_stats_store provided"
+
+    @pytest.mark.unit
+    def test_opp_playoff_def_nan_for_regular_season_rows(self):
+        """F-042 must be NaN for regular-season rows regardless of playoff store."""
+        df = _make_player_df(n=20, season_type="Regular Season")
+        store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
+        _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
+        assert feature_df["opp_playoff_def_rating_l5_mean"].isna().all(), \
+            "F-042 should be NaN for all regular-season rows"
+
+    @pytest.mark.unit
+    def test_bulk_output_row_count_unchanged_with_playoff_features(self):
+        """Adding playoff features must not drop or duplicate rows."""
+        df = _make_playoff_player_df(n_regular=15, n_series1=5)
+        store = FeatureStore(logger=_make_mock_logger(), snapshot_id="SNAP-TEST")
+        _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
+        assert len(feature_df) == 20, \
+            f"Expected 20 rows (15 regular + 5 playoff), got {len(feature_df)}"
