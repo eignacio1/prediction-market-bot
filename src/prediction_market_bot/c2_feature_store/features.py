@@ -28,6 +28,28 @@ Feature version policy:
   - All experiment records must cite the feature_version used.
   - Model retrain is required after any feature change in ENV-03.
 
+v1.4.0 additions (2026-06-23 — T-072 Part A, ADR-0031):
+  - F-041: playoff_round_multiplier — λ correction factor for playoff context.
+    1.0 for regular-season games (no adjustment). For playoff games: currently
+    1.0 as a NON-DISTORTING PLACEHOLDER — empirical values to be derived from
+    NBA playoff historical scoring data during T-072 Part B retrain.
+    S69 diagnosis: Finals scoring 9-30% below model-implied λ; the Kalshi market
+    incorporates this context; the model (v1-28483b21) does not.
+    Consumed by C3 opp_adjusted_lambda() to scale λ in playoff context.
+  - F-042: opp_playoff_def_rating_l5_mean — opponent's rolling mean pts_allowed
+    over prior 5 PLAYOFF games (not regular-season). NaN for regular-season
+    games, when playoff_team_stats_store is not provided, or when < 3 prior
+    playoff games exist for the opponent. Requires a separate TeamStatsStore
+    built from playoff game logs only (new optional parameter in
+    compute_features_bulk). Falls back to NaN when unavailable.
+  - F-043: series_scoring_delta — player's mean points in the current playoff
+    series (prior games in this series only) minus their pts_l10_mean baseline.
+    Captures within-series game-plan compression (S69 Finding 5: win rates
+    collapse G2→G5 as opponents adjust defensively). 0.0 for regular-season
+    games and game 1 of a series (no prior series data). NaN when
+    pts_l10_mean is unavailable.
+  Total features: 36 (was 33 in v1.3.0; +3 new playoff-context features)
+
 v1.3.0 additions (2026-05-29 — T-075):
   - F-039: is_home_game — binary (1=home, 0=away) from C1 MATCHUP parsing.
     Passed through from C1 output; requires matchup column in game log data.
@@ -95,7 +117,7 @@ from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 COMPONENT = "C2"
 
 # Feature set version — increment on any feature definition change
-FEATURE_VERSION = "1.3.0"
+FEATURE_VERSION = "1.4.0"
 
 # Rolling window size (games)
 DEFAULT_WINDOW = 10
@@ -147,6 +169,17 @@ _ROLLING_MEAN_STATS = [
 
 # Rolling std features (subset — model variance, not all stats)
 _ROLLING_STD_STATS = ["pts", "reb", "ast", "min", "plus_minus"]
+
+# F-041: playoff λ correction multipliers — applied by C3 opp_adjusted_lambda().
+# Key 0 = regular season (no adjustment). Key 1 = all playoff rounds.
+# All values are 1.0: NON-DISTORTING PLACEHOLDERS pending T-072 Part B empirical
+# calibration from NBA playoff historical scoring data (ADR-0031).
+# S69 diagnosis confirmed Finals scoring 9-30% below model-implied λ; calibrated
+# values will be < 1.0. Do not replace with guesses.
+_PLAYOFF_ROUND_MULTIPLIERS: dict[int, float] = {
+    0: 1.0,  # regular season
+    1: 1.0,  # all playoff rounds — UNCALIBRATED (T-072 Part B required)
+}
 
 
 # ---------------------------------------------------------------------------
@@ -337,10 +370,14 @@ def _compute_rolling_features(
     return df
 
 
+_PLAYOFF_OPP_DEF_WINDOW = 5  # games: narrower window captures recent playoff form
+
+
 def _compute_opponent_features(
     df: pd.DataFrame,
     team_stats_store: "TeamStatsStore",
     window: int = DEFAULT_WINDOW,
+    playoff_team_stats_store: "TeamStatsStore | None" = None,
 ) -> pd.DataFrame:
     """
     Compute opponent-context features for each row using TeamStatsStore.
@@ -350,22 +387,128 @@ def _compute_opponent_features(
     strictly before the player's game_date (TI-01 preserved).
 
     Features computed:
-      F-040: opp_def_rating_l10_mean — opponent team's rolling mean pts_allowed
+      F-040: opp_def_rating_l10_mean — opponent's rolling pts_allowed (regular-season
+             store, prior {window} games before game_date).
+      F-042: opp_playoff_def_rating_l5_mean — opponent's rolling pts_allowed from
+             prior {_PLAYOFF_OPP_DEF_WINDOW} PLAYOFF games only. NaN for regular-season
+             games, when playoff_team_stats_store is None, or insufficient data.
+
+    Parameters
+    ----------
+    playoff_team_stats_store:
+        Optional TeamStatsStore built exclusively from playoff game logs (C1
+        fetch with season_type="Playoffs"). Required to populate F-042.
+        When None, opp_playoff_def_rating_l5_mean is NaN for all rows.
     """
     opp_def: list[float] = []
+    opp_playoff_def: list[float] = []
 
     for _, row in df.iterrows():
         opp_abbr = row.get("opponent_team_abbr")
         game_date = row.get("game_date")
+        season_type = str(row.get("season_type", "")).lower()
+        is_playoff = "playoff" in season_type
+
         if pd.isna(opp_abbr) or opp_abbr is None or pd.isna(game_date):
             opp_def.append(np.nan)
+            opp_playoff_def.append(np.nan)
         else:
             rating = team_stats_store.get_opp_def_rating(
                 str(opp_abbr), str(game_date), window=window
             )
             opp_def.append(rating if rating is not None else np.nan)
 
-    return pd.DataFrame({"opp_def_rating_l10_mean": opp_def}, index=df.index)
+            if not is_playoff or playoff_team_stats_store is None:
+                opp_playoff_def.append(np.nan)
+            else:
+                playoff_rating = playoff_team_stats_store.get_opp_def_rating(
+                    str(opp_abbr), str(game_date), window=_PLAYOFF_OPP_DEF_WINDOW
+                )
+                opp_playoff_def.append(
+                    playoff_rating if playoff_rating is not None else np.nan
+                )
+
+    return pd.DataFrame(
+        {
+            "opp_def_rating_l10_mean": opp_def,
+            "opp_playoff_def_rating_l5_mean": opp_playoff_def,
+        },
+        index=df.index,
+    )
+
+
+def _compute_playoff_features(
+    player_df: pd.DataFrame,
+    window: int,
+) -> pd.DataFrame:
+    """
+    Compute playoff-context features for a single player's game log.
+
+    MUST be called AFTER _compute_rolling_features() — series_scoring_delta
+    reads pts_l{window}_mean from the input DataFrame.
+
+    Temporal integrity (TI-01): both features are derived exclusively from games
+    strictly before the current game (index < current position after sort).
+
+    Features:
+      F-041: playoff_round_multiplier — λ correction factor for C3.
+             1.0 for regular-season games. _PLAYOFF_ROUND_MULTIPLIERS[1] for all
+             playoff games (currently 1.0 — UNCALIBRATED placeholder; T-072 Part B
+             derives empirical values from full NBA playoff historical data).
+      F-043: series_scoring_delta — player's mean pts across prior games in this
+             series minus pts_l{window}_mean baseline at the time of the current game.
+             Captures within-series game-plan compression: S69 showed win rates
+             collapsing G2→G5 as opponents lock in their defensive adjustment.
+             0.0 for regular-season games. 0.0 for game 1 of a series (no prior
+             data). NaN when pts_l{window}_mean is unavailable.
+    """
+    df = player_df.copy().sort_values("game_date", ascending=True).reset_index(drop=True)
+    pts_mean_col = f"pts_l{window}_mean"
+
+    multipliers: list[float] = []
+    deltas: list[float] = []
+
+    for idx in range(len(df)):
+        row = df.iloc[idx]
+        season_type = str(row.get("season_type", "")).lower()
+        is_playoff = "playoff" in season_type
+
+        if not is_playoff:
+            multipliers.append(_PLAYOFF_ROUND_MULTIPLIERS[0])
+            deltas.append(0.0)
+            continue
+
+        multipliers.append(_PLAYOFF_ROUND_MULTIPLIERS[1])
+
+        opp = row.get("opponent_team_abbr")
+        season = row.get("season")
+
+        prior_series_mask = (
+            (df.index < idx)
+            & (df["season_type"].str.lower().str.contains("playoff", na=False))
+            & (df["opponent_team_abbr"] == opp)
+            & (df["season"] == season)
+        )
+        prior_pts = df.loc[prior_series_mask, "pts"]
+
+        if len(prior_pts) == 0:
+            deltas.append(0.0)
+            continue
+
+        series_mean = float(prior_pts.mean())
+        baseline = row.get(pts_mean_col)
+        if baseline is None or (isinstance(baseline, float) and pd.isna(baseline)):
+            deltas.append(np.nan)
+        else:
+            deltas.append(series_mean - float(baseline))
+
+    return pd.DataFrame(
+        {
+            "playoff_round_multiplier": multipliers,
+            "series_scoring_delta": deltas,
+        },
+        index=df.index,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -448,6 +591,7 @@ class FeatureStore:
         game_log_df: pd.DataFrame,
         session_id: str | None = None,
         team_stats_store: "TeamStatsStore | None" = None,
+        playoff_team_stats_store: "TeamStatsStore | None" = None,
     ) -> tuple[bool, pd.DataFrame]:
         """
         Compute PRF-aligned features for all players in a game-log DataFrame.
@@ -467,9 +611,14 @@ class FeatureStore:
         session_id:
             Current bot run session ID for audit trail.
         team_stats_store:
-            Optional TeamStatsStore built from TeamGameLog data (T-075).
+            Optional TeamStatsStore built from all game logs (T-075).
             When provided, computes F-040 opp_def_rating_l10_mean for each row.
-            When None, opp_def_rating_l10_mean is left as NaN (backward compatible).
+            When None, F-040 is NaN (backward compatible).
+        playoff_team_stats_store:
+            Optional TeamStatsStore built exclusively from playoff game logs
+            (v1.4.0 — ADR-0031 T-072). When provided, computes F-042
+            opp_playoff_def_rating_l5_mean for playoff-context rows.
+            When None, F-042 is NaN for all rows.
 
         Returns
         -------
@@ -516,14 +665,21 @@ class FeatureStore:
                     window=self._window,
                     min_periods=MIN_PERIODS,
                 )
-                # F-040: opponent defensive rating (v1.3.0+) — requires TeamStatsStore
+                # F-040 + F-042: opponent defensive rating (v1.3.0+, F-042 v1.4.0+)
                 if team_stats_store is not None:
                     opp_df = _compute_opponent_features(
-                        player_features, team_stats_store, window=self._window
+                        player_features,
+                        team_stats_store,
+                        window=self._window,
+                        playoff_team_stats_store=playoff_team_stats_store,
                     )
                     player_features = player_features.join(opp_df, how="left")
                 else:
                     player_features["opp_def_rating_l10_mean"] = np.nan
+                    player_features["opp_playoff_def_rating_l5_mean"] = np.nan
+                # F-041 + F-043: playoff context (v1.4.0+) — ADR-0031 / T-072 Part A
+                playoff_df = _compute_playoff_features(player_features, window=self._window)
+                player_features = player_features.join(playoff_df, how="left")
                 player_chunks.append(player_features)
 
             if not player_chunks:
@@ -690,5 +846,12 @@ class FeatureStore:
 
         # v1.3.0: opponent and venue context (F-039, F-040)
         names += ["is_home_game", "opp_def_rating_l10_mean"]
+
+        # v1.4.0: playoff context (F-041, F-042, F-043) — ADR-0031 / T-072 Part A
+        names += [
+            "playoff_round_multiplier",
+            "opp_playoff_def_rating_l5_mean",
+            "series_scoring_delta",
+        ]
 
         return names
