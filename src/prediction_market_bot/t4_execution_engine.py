@@ -58,15 +58,19 @@ from __future__ import annotations
 
 import heapq
 import logging
+import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
+from scipy.stats import poisson as _sp_poisson
+
 from prediction_market_bot.execution_bands import (
     EXIT_MIN_TIME_REMAINING_MIN,
     ExecutionBand,
+    NOISE_BUFFER_BAND_T4,
     T4_SUBBAND_REGISTRY,
     T4_SUBBANDS,
     is_t4_subband,
@@ -113,8 +117,82 @@ def classify_game_phase(elapsed_min: float) -> GamePhase:
 
 
 # ---------------------------------------------------------------------------
+# T4 Bayesian math constants (ADR-0029 Tier B — all provisional)
+# ---------------------------------------------------------------------------
+
+GAME_REGULATION_MIN: float = 48.0   # NBA regulation game length
+OVERTIME_PERIOD_MIN: float = 5.0    # NBA overtime period length
+
+# Prior variance for Gamma-Poisson λ estimate. σ=5 pts means 1σ covers a
+# 5-pt deviation from λ_prior per full game (~1 scoring category).
+# EXP-PROJ-01 must calibrate from T1 λ residuals before T4-PROJ activation.
+PRIOR_LAMBDA_SIGMA_PTS: float = 5.0
+
+# Phase-conditional Kelly schedule (ADR-0029 Tier B).
+# Linear interpolation within MID (0.032→0.078) and LATE (0.078→0.167).
+# NEAR_CERTAIN held at LATE ceiling until EXP-PROJ-01 confirms tail calibration.
+_KELLY_EARLY: float = 0.010          # EARLY: σ_λ ≫ T1 prior; sparse firing
+_KELLY_MID_LO: float = 0.032         # MID entry: σ_λ comparable to T1
+_KELLY_MID_HI: float = 0.078         # MID exit / LATE entry
+_KELLY_LATE_LO: float = 0.078        # LATE entry
+_KELLY_LATE_HI: float = 0.167        # LATE exit = NEAR_CERTAIN cap
+_KELLY_NEAR_CERTAIN: float = 0.167   # Held at LATE ceiling (EXP-PROJ-01 pending)
+
+# Phase elapsed-minute boundaries for Kelly interpolation (must match _PHASE_BOUNDARIES).
+_PHASE_MID_START_MIN: float = 24.0
+_PHASE_LATE_START_MIN: float = 36.0
+_PHASE_NC_START_MIN: float = 44.0
+
+# Blowout constants (EXP-FLOW-03 required — all provisional).
+# FLOW-BLOWOUT fires when |score_differential| >= threshold sustained for >= sustain_min.
+BLOWOUT_SCORE_THRESHOLD: int = 20
+BLOWOUT_SUSTAIN_MIN: float = 2.0
+# Provisional λ multipliers: trailing star scores more (garbage-time usage),
+# leading star scores less (rested). EXP-FLOW-03 must calibrate these.
+_BLOWOUT_TRAILING_LAMBDA_MULT: float = 1.15
+_BLOWOUT_LEADING_LAMBDA_MULT: float = 0.80
+
+# Minimum edge threshold. Mirrors MIN_EDGE_TO_APPROVE in c4_risk_engine/risk.py.
+# Local constant avoids importing risk.py into the T4 engine test path (pandas dep).
+# Must stay in sync with risk.py when that value changes.
+_MIN_EDGE: float = 0.04
+
+
+# ---------------------------------------------------------------------------
 # Game state snapshot (Layer 1 input)
 # ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class T4MarketSpec:
+    """
+    A market that Layer 1 evaluators should track during a game.
+
+    Passed via T4GameState.market_specs. Evaluators iterate over market_specs
+    to determine which markets to evaluate each cycle. When empty (the default),
+    evaluators return [] without running any Bayesian math — preserving backward
+    compatibility with tests that construct T4GameState without market_specs.
+
+    Fields
+    ------
+    market_id : str
+        Kalshi market ticker.
+    player_id : str
+        Player whose stat this market tracks.
+    threshold : float
+        Stat value the player must reach (e.g., 20.0 for "20+ points").
+    stat_type : str
+        Stat category: "pts" | "reb" | "ast" | "pra". Default "pts".
+    team_is_home : Optional[bool]
+        True if the player is on the home team; False if away; None if unknown.
+        Required by T4-FLOW FLOW-BLOWOUT to determine leading/trailing side.
+        None → FLOW-BLOWOUT skips this market (cannot determine blowout side).
+    """
+    market_id: str
+    player_id: str
+    threshold: float
+    stat_type: str = "pts"
+    team_is_home: Optional[bool] = None
+
 
 @dataclass(frozen=True)
 class T4PlayerState:
@@ -175,6 +253,56 @@ class T4GameState:
     ts: datetime
     player_states: dict[str, T4PlayerState]   # player_id → T4PlayerState
     trigger_event: Optional[T4GameEvent]       # what triggered this evaluation cycle
+    market_specs: tuple[T4MarketSpec, ...] = field(default_factory=tuple)
+    # Markets to evaluate this cycle. Empty tuple → all evaluators return [].
+    # Default is empty for backward compatibility with existing tests.
+
+
+# ---------------------------------------------------------------------------
+# Open position record (for T4-EXIT monitoring)
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class T4OpenPosition:
+    """
+    Typed record of an open T4 position for T4-EXIT monitoring.
+
+    T4ExitEvaluator.generate_exit_signals() accepts list[T4OpenPosition] or
+    the legacy list[dict] format. Dict entries missing required keys are
+    silently skipped (backward-compatible with existing test fixtures).
+
+    Fields
+    ------
+    market_id : str
+        Kalshi market ticker for the open position.
+    player_id : str
+        Player the market tracks.
+    direction : str
+        "YES" or "NO" at position entry.
+    threshold : float
+        Stat threshold the market tracks.
+    entry_model_p : float
+        Model probability at position entry time.
+    sub_band : ExecutionBand
+        Which sub-band originated this position (governs noise buffer selection).
+    entry_ts : datetime
+        UTC time the position was opened.
+    stat_type : str
+        Stat category: "pts" | "reb" | "ast" | "pra". Default "pts".
+    noise_buffer : Optional[float]
+        Per-position noise buffer override. None → sub-band default or
+        NOISE_BUFFER_BAND_T4 aggregate fallback.
+    """
+    market_id: str
+    player_id: str
+    direction: str          # "YES" | "NO"
+    threshold: float
+    entry_model_p: float
+    sub_band: ExecutionBand
+    entry_ts: datetime
+    stat_type: str = "pts"
+    noise_buffer: Optional[float] = None
 
 
 # ---------------------------------------------------------------------------
@@ -314,6 +442,87 @@ class CorrAdjustmentRecord:
 
 
 # ---------------------------------------------------------------------------
+# T4 Bayesian math helpers (all O(1) analytic — safe at ~1,000 evals/game)
+# ---------------------------------------------------------------------------
+
+
+def _total_remaining_min(game_state: T4GameState) -> float:
+    """Total game minutes remaining, including overtime periods."""
+    if game_state.quarter <= 4:
+        return max(0.0, GAME_REGULATION_MIN - game_state.elapsed_min)
+    ot_periods = game_state.quarter - 4
+    game_total = GAME_REGULATION_MIN + ot_periods * OVERTIME_PERIOD_MIN
+    return max(0.0, game_total - game_state.elapsed_min)
+
+
+def _gamma_prior_params(lambda_prior: float, sigma_prior: float) -> tuple[float, float]:
+    """
+    Compute Gamma(alpha, beta) prior parameters via moment matching.
+
+    For rate-parameterized Gamma with mean=lambda_prior, variance=sigma_prior²:
+        alpha = (lambda_prior / sigma_prior)²
+        beta  = lambda_prior / sigma_prior²
+    """
+    alpha = (lambda_prior / sigma_prior) ** 2
+    beta = lambda_prior / (sigma_prior ** 2)
+    return alpha, beta
+
+
+def _gamma_poisson_update(
+    alpha0: float, beta0: float, k_obs: float, t_elapsed_frac: float
+) -> tuple[float, float]:
+    """
+    Gamma-Poisson conjugate update.
+
+    Prior:      λ ~ Gamma(alpha0, beta0)
+    Likelihood: k_obs ~ Poisson(λ × t_elapsed_frac)
+    Posterior:  λ ~ Gamma(alpha0 + k_obs, beta0 + t_elapsed_frac)
+    """
+    return alpha0 + k_obs, beta0 + t_elapsed_frac
+
+
+def _poisson_survival_p(
+    pts_so_far: float, threshold: float, lambda_remaining: float
+) -> float:
+    """
+    P(player reaches threshold | pts already scored, expected pts remaining).
+
+    Models additional pts scored ~ Poisson(lambda_remaining).
+    Uses scipy Poisson CDF (C extension — O(1) for integer k, safe at high eval rate).
+    """
+    if pts_so_far >= threshold:
+        return 1.0
+    pts_needed = int(math.ceil(threshold - pts_so_far))
+    if pts_needed <= 0:
+        return 1.0
+    if lambda_remaining <= 0.0:
+        return 0.0
+    return float(1.0 - _sp_poisson.cdf(pts_needed - 1, lambda_remaining))
+
+
+def _phase_conditional_kelly(elapsed_min: float) -> float:
+    """
+    ADR-0029 dynamic Kelly schedule by game phase.
+
+    EARLY (<24 min):    0.010 (flat; σ_λ ≫ T1 prior, data sparse)
+    MID (24–36 min):    linear 0.032 → 0.078
+    LATE (36–44 min):   linear 0.078 → 0.167
+    NEAR_CERTAIN (≥44): 0.167 (held at LATE ceiling; EXP-PROJ-01 pending)
+    """
+    phase = classify_game_phase(elapsed_min)
+    if phase == GamePhase.EARLY:
+        return _KELLY_EARLY
+    elif phase == GamePhase.MID:
+        t = (elapsed_min - _PHASE_MID_START_MIN) / (_PHASE_LATE_START_MIN - _PHASE_MID_START_MIN)
+        return _KELLY_MID_LO + t * (_KELLY_MID_HI - _KELLY_MID_LO)
+    elif phase == GamePhase.LATE:
+        t = (elapsed_min - _PHASE_LATE_START_MIN) / (_PHASE_NC_START_MIN - _PHASE_LATE_START_MIN)
+        return _KELLY_LATE_LO + t * (_KELLY_LATE_HI - _KELLY_LATE_LO)
+    else:  # NEAR_CERTAIN
+        return _KELLY_NEAR_CERTAIN
+
+
+# ---------------------------------------------------------------------------
 # Layer 1 — SubBandEvaluator ABC
 # ---------------------------------------------------------------------------
 
@@ -439,15 +648,97 @@ class T4EventEvaluator(SubBandEvaluator):
     def sub_band(self) -> ExecutionBand:
         return ExecutionBand.T4_EVENT
 
-    def __init__(self) -> None:
+    def __init__(self, proj_evaluator: Optional["T4ProjEvaluator"] = None) -> None:
         self._assert_sub_band_blocked()
+        # Borrows T4-PROJ posterior (written earlier in the same cycle) to avoid
+        # redundant Bayesian computation for the same player. Falls back to T1 prior.
+        # No-arg construction (proj_evaluator=None) required for test fixture compatibility.
+        self._proj_evaluator = proj_evaluator
 
     def evaluate(
         self,
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
-        return []  # BLOCKED — requires live event feed (GG-040)
+        """
+        React to discrete stat events (SCORE_UPDATE, FOUL) for tracked players.
+
+        Only fires for the player identified in trigger_event.player_id.
+        Uses T4-PROJ posterior if available (written by T4-PROJ earlier this cycle).
+        Alpha hypothesis: Kalshi lags repricing after discrete events (1–10s window).
+        """
+        if not game_state.market_specs:
+            return []
+
+        trigger = game_state.trigger_event
+        if trigger is None or trigger.event_type not in ("SCORE_UPDATE", "FOUL"):
+            return []  # T4-EVENT only reacts to discrete stat events
+
+        triggered_player_id = trigger.player_id
+        if triggered_player_id is None:
+            return []
+
+        now = datetime.now(timezone.utc)
+        total_remaining = _total_remaining_min(game_state)
+        phase = classify_game_phase(game_state.elapsed_min)
+        signals: list[EvaluationSignal] = []
+
+        for spec in game_state.market_specs:
+            if spec.player_id != triggered_player_id:
+                continue  # only react to the player who triggered this event
+
+            player = game_state.player_states.get(spec.player_id)
+            if player is None or not player.is_active:
+                continue
+
+            # Borrow T4-PROJ posterior; fall back to T1 prior
+            lambda_est: float = player.lambda_t1_prior
+            if self._proj_evaluator is not None:
+                posterior = self._proj_evaluator.get_lambda_posterior(spec.player_id)
+                if posterior is not None:
+                    lambda_est = posterior
+
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+            lambda_remaining = lambda_est * t_remaining_frac
+
+            model_p = _poisson_survival_p(player.pts_so_far, spec.threshold, lambda_remaining)
+
+            cached_price = price_cache.get_raw(spec.market_id)
+            if cached_price is None:
+                continue
+
+            edge = model_p - cached_price.mid - cached_price.vig
+            if abs(edge) < _MIN_EDGE:
+                continue
+
+            direction = "YES" if model_p > 0.5 else "NO"
+            event_suffix = "MADE" if trigger.event_type == "SCORE_UPDATE" else "FOUL"
+            signals.append(EvaluationSignal(
+                sub_band=ExecutionBand.T4_EVENT,
+                tree_id=f"EVENT-{spec.stat_type.upper()}-{event_suffix}",
+                market_id=spec.market_id,
+                player_id=spec.player_id,
+                direction=direction,
+                model_p=model_p,
+                mip_at_signal=cached_price.mid,
+                vig_at_signal=cached_price.vig,
+                edge_at_signal=edge,
+                kelly_fraction=0.05,  # PROVISIONAL: EXP-EVENT-02 required (ADR-0029)
+                signal_snapshot={
+                    "trigger_event": trigger.event_type,
+                    "triggered_player": triggered_player_id,
+                    "lambda_est": round(lambda_est, 4),
+                    "lambda_remaining": round(lambda_remaining, 4),
+                    "pts_so_far": player.pts_so_far,
+                    "threshold": spec.threshold,
+                    "total_remaining": round(total_remaining, 2),
+                },
+                ts=now,
+                is_exit=False,
+                game_phase=phase,
+            ))
+
+        return signals
 
 
 class T4LineupEvaluator(SubBandEvaluator):
@@ -511,13 +802,114 @@ class T4FlowEvaluator(SubBandEvaluator):
 
     def __init__(self) -> None:
         self._assert_sub_band_blocked()
+        # Tracks the elapsed_min at which the current blowout condition started.
+        # None = no blowout currently active. Resets when |score_diff| < threshold.
+        self._blowout_start_elapsed: Optional[float] = None
 
     def evaluate(
         self,
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
-        return []  # BLOCKED — requires context multiplier calibration (EXP-FLOW-01/02)
+        """
+        FLOW-BLOWOUT: fire when score differential sustained at ≥ BLOWOUT_SCORE_THRESHOLD.
+
+        Applies λ multipliers: trailing star λ↑ (garbage-time usage),
+        leading star λ↓ (rested). T4MarketSpec.team_is_home required;
+        markets without team affiliation are skipped.
+
+        FLOW-FOUL, FLOW-PACE, FLOW-ROTATION: deferred to Phase 8 data sources.
+        EXP-FLOW-01/02/03 required before activation.
+        """
+        if not game_state.market_specs:
+            return []
+
+        score_diff = game_state.score_differential
+        elapsed = game_state.elapsed_min
+
+        # Update blowout state
+        in_blowout = abs(score_diff) >= BLOWOUT_SCORE_THRESHOLD
+        if in_blowout:
+            if self._blowout_start_elapsed is None:
+                self._blowout_start_elapsed = elapsed
+        else:
+            self._blowout_start_elapsed = None
+
+        if not in_blowout:
+            return []
+        # Guard: blowout start may not have been set if evaluate() was never called
+        # before the threshold crossed — shouldn't happen in normal flow but defensive.
+        if self._blowout_start_elapsed is None:
+            return []
+        if (elapsed - self._blowout_start_elapsed) < BLOWOUT_SUSTAIN_MIN:
+            return []  # blowout not yet sustained long enough
+
+        home_leading = score_diff > 0
+        now = datetime.now(timezone.utc)
+        total_remaining = _total_remaining_min(game_state)
+        phase = classify_game_phase(elapsed)
+        signals: list[EvaluationSignal] = []
+
+        for spec in game_state.market_specs:
+            if spec.team_is_home is None:
+                continue  # team affiliation unknown; cannot determine blowout side
+
+            player = game_state.player_states.get(spec.player_id)
+            if player is None or not player.is_active:
+                continue
+
+            player_on_home = spec.team_is_home
+            player_trailing = (home_leading and not player_on_home) or (not home_leading and player_on_home)
+            lambda_mult = _BLOWOUT_TRAILING_LAMBDA_MULT if player_trailing else _BLOWOUT_LEADING_LAMBDA_MULT
+
+            # Base lambda: T4-PROJ posterior (via T4PlayerState) if available, else T1 prior
+            lambda_base = (
+                player.lambda_t4_proj
+                if player.lambda_t4_proj is not None
+                else player.lambda_t1_prior
+            )
+            lambda_adjusted = lambda_base * lambda_mult
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+            lambda_remaining = lambda_adjusted * t_remaining_frac
+
+            model_p = _poisson_survival_p(player.pts_so_far, spec.threshold, lambda_remaining)
+
+            cached_price = price_cache.get_raw(spec.market_id)
+            if cached_price is None:
+                continue
+
+            edge = model_p - cached_price.mid - cached_price.vig
+            if abs(edge) < _MIN_EDGE:
+                continue
+
+            direction = "YES" if model_p > 0.5 else "NO"
+            signals.append(EvaluationSignal(
+                sub_band=ExecutionBand.T4_FLOW,
+                tree_id="FLOW-BLOWOUT",
+                market_id=spec.market_id,
+                player_id=spec.player_id,
+                direction=direction,
+                model_p=model_p,
+                mip_at_signal=cached_price.mid,
+                vig_at_signal=cached_price.vig,
+                edge_at_signal=edge,
+                kelly_fraction=0.08,  # PROVISIONAL: ADR-0029 range 0.08–0.12 (EXP-FLOW-01/02)
+                signal_snapshot={
+                    "score_differential": score_diff,
+                    "blowout_start_elapsed": self._blowout_start_elapsed,
+                    "elapsed": elapsed,
+                    "lambda_mult": lambda_mult,
+                    "lambda_base": round(lambda_base, 4),
+                    "lambda_adjusted": round(lambda_adjusted, 4),
+                    "player_trailing": player_trailing,
+                    "player_on_home": player_on_home,
+                },
+                ts=now,
+                is_exit=False,
+                game_phase=phase,
+            ))
+
+        return signals
 
 
 class T4SentimentEvaluator(SubBandEvaluator):
@@ -593,7 +985,89 @@ class T4ProjEvaluator(SubBandEvaluator):
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
-        return []  # BLOCKED — requires EXP-PROJ-01 + calibration + GG-040 data feed
+        """
+        Gamma-Poisson Bayesian posterior update for each tracked market.
+
+        Prior:      λ ~ Gamma(α₀, β₀) via moment-match to (λ_t1_prior, PRIOR_LAMBDA_SIGMA_PTS)
+        Likelihood: pts_so_far ~ Poisson(λ × t_elapsed_frac)
+        Posterior:  λ ~ Gamma(α₀ + pts_so_far, β₀ + t_elapsed_frac)
+
+        Posterior mean = (α₀ + pts_so_far) / (β₀ + t_elapsed_frac) estimates full-game λ.
+        Expected remaining pts = posterior_mean × (total_remaining / GAME_REGULATION_MIN).
+
+        WARNING: λ_t1_prior inherits T1's opp_adj_lambda, which is calibrated from
+        regular-season defensive ratings. This causes the same bias identified in S69
+        (Finals scoring 9–30% below model-implied λ). The Bayesian update self-corrects
+        as game data accumulates, but EARLY-phase (< 24 min) estimates remain biased.
+        KELLY_EARLY = 0.010 is intentionally conservative to account for this.
+        T-072 playoff_round_multiplier will fix the prior; required before T4-PROJ activation.
+        """
+        if not game_state.market_specs:
+            return []
+
+        now = datetime.now(timezone.utc)
+        phase = classify_game_phase(game_state.elapsed_min)
+        kelly = _phase_conditional_kelly(game_state.elapsed_min)
+        total_remaining = _total_remaining_min(game_state)
+        signals: list[EvaluationSignal] = []
+
+        for spec in game_state.market_specs:
+            player = game_state.player_states.get(spec.player_id)
+            if player is None or not player.is_active:
+                continue
+
+            t_elapsed_frac = player.min_so_far / GAME_REGULATION_MIN
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+
+            # Gamma-Poisson update
+            alpha0, beta0 = _gamma_prior_params(player.lambda_t1_prior, PRIOR_LAMBDA_SIGMA_PTS)
+            alpha_post, beta_post = _gamma_poisson_update(
+                alpha0, beta0, player.pts_so_far, t_elapsed_frac
+            )
+            lambda_posterior = alpha_post / beta_post
+
+            # Write to cache — consumed by T4-EVENT and T4-ARITH in the same cycle
+            self._posterior_cache[spec.player_id] = lambda_posterior
+
+            lambda_remaining = lambda_posterior * t_remaining_frac
+            model_p = _poisson_survival_p(player.pts_so_far, spec.threshold, lambda_remaining)
+
+            cached_price = price_cache.get_raw(spec.market_id)
+            if cached_price is None:
+                continue
+
+            edge = model_p - cached_price.mid - cached_price.vig
+            if abs(edge) < _MIN_EDGE:
+                continue
+
+            direction = "YES" if model_p > 0.5 else "NO"
+            signals.append(EvaluationSignal(
+                sub_band=ExecutionBand.T4_PROJ,
+                tree_id=f"PROJ-{spec.stat_type.upper()}",
+                market_id=spec.market_id,
+                player_id=spec.player_id,
+                direction=direction,
+                model_p=model_p,
+                mip_at_signal=cached_price.mid,
+                vig_at_signal=cached_price.vig,
+                edge_at_signal=edge,
+                kelly_fraction=kelly,
+                signal_snapshot={
+                    "game_phase": phase.value,
+                    "lambda_posterior": round(lambda_posterior, 4),
+                    "lambda_remaining": round(lambda_remaining, 4),
+                    "pts_so_far": player.pts_so_far,
+                    "threshold": spec.threshold,
+                    "t_elapsed_frac": round(t_elapsed_frac, 4),
+                    "alpha_post": round(alpha_post, 4),
+                    "beta_post": round(beta_post, 4),
+                },
+                ts=now,
+                is_exit=False,
+                game_phase=phase,
+            ))
+
+        return signals
 
 
 class T4ArithEvaluator(SubBandEvaluator):
@@ -626,15 +1100,95 @@ class T4ArithEvaluator(SubBandEvaluator):
     def sub_band(self) -> ExecutionBand:
         return ExecutionBand.T4_ARITH
 
-    def __init__(self) -> None:
+    def __init__(self, proj_evaluator: Optional["T4ProjEvaluator"] = None) -> None:
         self._assert_sub_band_blocked()
+        # Borrows T4-PROJ posterior to avoid recomputing λ in the same cycle.
+        # Falls back to T1 prior (player.lambda_t1_prior) when proj_evaluator is None
+        # or no posterior exists yet. No-arg construction (proj_evaluator=None) is
+        # required for the parametrized test_evaluator_returns_empty_list fixture.
+        self._proj_evaluator = proj_evaluator
 
     def evaluate(
         self,
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
-        return []  # BLOCKED — requires EXP-ARITH-01 + T4-PROJ posterior (EXP-PROJ-01)
+        """
+        Fire when player is within ARITH_ENTRY_WINDOW of threshold and p_arith ≥ CONFIDENCE_GATE.
+
+        Uses T4-PROJ posterior lambda for the survival computation (written earlier
+        in the same cycle). Falls back to T1 prior if no posterior available.
+        Does not fire in the final EXIT_MIN_TIME_REMAINING_MIN minutes (T5 territory).
+        """
+        if not game_state.market_specs:
+            return []
+
+        total_remaining = _total_remaining_min(game_state)
+        if total_remaining <= EXIT_MIN_TIME_REMAINING_MIN:
+            return []  # T5 territory — do not compete with arithmetic certainty sub-band
+
+        now = datetime.now(timezone.utc)
+        phase = classify_game_phase(game_state.elapsed_min)
+        signals: list[EvaluationSignal] = []
+
+        for spec in game_state.market_specs:
+            player = game_state.player_states.get(spec.player_id)
+            if player is None or not player.is_active:
+                continue
+
+            gap = spec.threshold - player.pts_so_far
+            if gap <= 0 or gap > self._ARITH_ENTRY_WINDOW:
+                continue  # already achieved or too far from threshold
+
+            # Borrow T4-PROJ posterior; fall back to T1 prior
+            lambda_est: float = player.lambda_t1_prior
+            if self._proj_evaluator is not None:
+                posterior = self._proj_evaluator.get_lambda_posterior(spec.player_id)
+                if posterior is not None:
+                    lambda_est = posterior
+
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+            lambda_remaining = lambda_est * t_remaining_frac
+
+            p_arith = _poisson_survival_p(player.pts_so_far, spec.threshold, lambda_remaining)
+            if p_arith < self._CONFIDENCE_GATE:
+                continue
+
+            cached_price = price_cache.get_raw(spec.market_id)
+            if cached_price is None:
+                continue
+
+            edge = p_arith - cached_price.mid - cached_price.vig
+            if abs(edge) < _MIN_EDGE:
+                continue
+
+            direction = "YES" if p_arith > 0.5 else "NO"
+            signals.append(EvaluationSignal(
+                sub_band=ExecutionBand.T4_ARITH,
+                tree_id=f"ARITH-{spec.stat_type.upper()}",
+                market_id=spec.market_id,
+                player_id=spec.player_id,
+                direction=direction,
+                model_p=p_arith,
+                mip_at_signal=cached_price.mid,
+                vig_at_signal=cached_price.vig,
+                edge_at_signal=edge,
+                kelly_fraction=_KELLY_NEAR_CERTAIN,  # ADR-0029: ARITH held at LATE ceiling
+                signal_snapshot={
+                    "gap": round(gap, 2),
+                    "lambda_est": round(lambda_est, 4),
+                    "lambda_remaining": round(lambda_remaining, 4),
+                    "pts_so_far": player.pts_so_far,
+                    "threshold": spec.threshold,
+                    "arith_entry_window": self._ARITH_ENTRY_WINDOW,
+                    "confidence_gate": self._CONFIDENCE_GATE,
+                },
+                ts=now,
+                is_exit=False,
+                game_phase=phase,
+            ))
+
+        return signals
 
 
 class T4BoundaryEvaluator(SubBandEvaluator):
@@ -789,18 +1343,138 @@ class T4ExitEvaluator(PortfolioOverlay):
 
     def generate_exit_signals(
         self,
-        open_positions: list[dict],
+        open_positions: list,
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
         """
-        Evaluate all open T4 positions and return EXIT signals for those that
-        meet the exit conditions.
+        Evaluate all open T4 positions against three exit conditions.
 
-        Returns BLOCKED stub at Phase 6/7 — no open T4 positions exist in the
-        new engine yet. At Phase 8: full reversal + noise buffer + time-floor check.
+        Accepts list[T4OpenPosition] (typed) or list[dict] (legacy). Dict entries
+        missing required keys (market_id, player_id, direction, threshold,
+        entry_model_p) are silently skipped for backward compatibility.
+
+        Exit conditions (evaluated in priority order, first match wins):
+          1. TIME FLOOR:    total_remaining ≤ EXIT_TIME_FLOOR_MIN (3 min → T5 territory)
+          2. REVERSAL:      model_p crosses 0.5 vs entry direction
+          3. BUFFER BREACH: model_p moved > noise_buffer AGAINST bet direction
+
+        All EXIT signals carry is_exit=True → priority=0.0 in Layer 2 queue (URGENT).
         """
-        return []  # BLOCKED — Phase 8 only; no open positions in new engine
+        if not open_positions:
+            return []
+
+        total_remaining = _total_remaining_min(game_state)
+        now = datetime.now(timezone.utc)
+        signals: list[EvaluationSignal] = []
+
+        for pos in open_positions:
+            # Unpack: support both T4OpenPosition typed objects and legacy dicts
+            if isinstance(pos, T4OpenPosition):
+                market_id = pos.market_id
+                player_id = pos.player_id
+                direction = pos.direction
+                threshold = pos.threshold
+                entry_model_p = pos.entry_model_p
+                noise_buf = pos.noise_buffer
+            elif isinstance(pos, dict):
+                market_id = pos.get("market_id")
+                player_id = pos.get("player_id")
+                direction = pos.get("direction")
+                threshold = pos.get("threshold")
+                entry_model_p = pos.get("entry_model_p")
+                noise_buf = pos.get("noise_buffer")
+                # Skip dicts missing required keys; this preserves backward compatibility
+                # with test fixtures that pass minimal dicts (e.g. {"market_id": "MKT-001"}).
+                if not all([market_id, player_id, direction,
+                            threshold is not None, entry_model_p is not None]):
+                    continue
+            else:
+                continue
+
+            buffer = noise_buf if noise_buf is not None else NOISE_BUFFER_BAND_T4
+
+            # Condition 1: Time floor — hand off to T5
+            if total_remaining <= self.EXIT_TIME_FLOOR_MIN:
+                signals.append(self._make_exit_signal(
+                    market_id=market_id, player_id=player_id, direction=direction,
+                    model_p=entry_model_p, game_state=game_state,
+                    tree_id="EXIT-TIME-FLOOR", ts=now,
+                ))
+                continue
+
+            # Compute current model probability for this position
+            player = game_state.player_states.get(player_id)
+            if player is None:
+                continue
+
+            lambda_est = (
+                player.lambda_t4_proj
+                if player.lambda_t4_proj is not None
+                else player.lambda_t1_prior
+            )
+            t_remaining_frac = total_remaining / GAME_REGULATION_MIN
+            lambda_remaining = lambda_est * t_remaining_frac
+            current_p = _poisson_survival_p(player.pts_so_far, threshold, lambda_remaining)
+
+            # Condition 2: Directional reversal (model_p crossed 0.5 vs entry direction)
+            entry_is_yes = direction == "YES"
+            current_implies_yes = current_p > 0.5
+            if entry_is_yes != current_implies_yes:
+                signals.append(self._make_exit_signal(
+                    market_id=market_id, player_id=player_id, direction=direction,
+                    model_p=current_p, game_state=game_state,
+                    tree_id="EXIT-REVERSAL", ts=now,
+                ))
+                continue
+
+            # Condition 3: Noise buffer breach AGAINST bet direction
+            if direction == "YES" and current_p < entry_model_p - buffer:
+                signals.append(self._make_exit_signal(
+                    market_id=market_id, player_id=player_id, direction=direction,
+                    model_p=current_p, game_state=game_state,
+                    tree_id="EXIT-BUFFER-BREACH", ts=now,
+                ))
+            elif direction == "NO" and current_p > entry_model_p + buffer:
+                signals.append(self._make_exit_signal(
+                    market_id=market_id, player_id=player_id, direction=direction,
+                    model_p=current_p, game_state=game_state,
+                    tree_id="EXIT-BUFFER-BREACH", ts=now,
+                ))
+
+        return signals
+
+    def _make_exit_signal(
+        self,
+        market_id: str,
+        player_id: str,
+        direction: str,
+        model_p: float,
+        game_state: T4GameState,
+        tree_id: str,
+        ts: datetime,
+    ) -> EvaluationSignal:
+        """Construct an EXIT EvaluationSignal (priority=0.0 in Layer 2 queue)."""
+        return EvaluationSignal(
+            sub_band=ExecutionBand.T4_EXIT,
+            tree_id=tree_id,
+            market_id=market_id,
+            player_id=player_id,
+            direction=direction,
+            model_p=model_p,
+            mip_at_signal=0.0,   # price irrelevant to the exit decision
+            vig_at_signal=0.0,
+            edge_at_signal=0.0,  # EXIT signals bypass edge check in Layer 2
+            kelly_fraction=0.0,  # no new sizing; managing existing position
+            signal_snapshot={
+                "exit_reason": tree_id,
+                "total_remaining": round(_total_remaining_min(game_state), 2),
+                "elapsed": game_state.elapsed_min,
+            },
+            ts=ts,
+            is_exit=True,
+            game_phase=classify_game_phase(game_state.elapsed_min),
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -904,8 +1578,14 @@ class Layer1EvaluationEngine:
         signals that are immediately enqueued in Layer 2.
         """
         active_ids = self._evaluators_for_event(game_state.trigger_event)
+        # T4-PROJ must always evaluate before T4-ARITH and T4-EVENT in the same cycle.
+        # Both borrow T4-PROJ's _posterior_cache; if they run first they get a stale
+        # posterior and fall back to the T1 prior (losing the in-game update).
+        # _SCORE_UPDATE_EVALUATORS is a frozenset (unordered) so we enforce order here.
+        _PROJ_FIRST = ["T4-PROJ"]
+        ordered_ids = _PROJ_FIRST + [bid for bid in active_ids if bid not in _PROJ_FIRST]
         signals: list[EvaluationSignal] = []
-        for band_id in active_ids:
+        for band_id in ordered_ids:
             evaluator = self._evaluators.get(band_id)
             if evaluator is not None:
                 try:
@@ -1166,11 +1846,11 @@ class T4ExecutionEngine:
         Layer 2 constructor.
         """
         proj_eval     = T4ProjEvaluator()
-        event_eval    = T4EventEvaluator()
+        event_eval    = T4EventEvaluator(proj_evaluator=proj_eval)
         lineup_eval   = T4LineupEvaluator()
         flow_eval     = T4FlowEvaluator()
         sentiment_eval = T4SentimentEvaluator()
-        arith_eval    = T4ArithEvaluator()
+        arith_eval    = T4ArithEvaluator(proj_evaluator=proj_eval)
         boundary_eval = T4BoundaryEvaluator()
         staged_eval   = T4StagedEvaluator()
         exit_eval     = T4ExitEvaluator()
