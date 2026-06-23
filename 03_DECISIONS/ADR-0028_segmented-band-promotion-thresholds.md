@@ -1,6 +1,6 @@
 # ADR-0028 — Segmented Per-Band Promotion Thresholds
 
-**Status:** DRAFT — rework in progress (initial draft 2026-06-22; DS sign-off declined 2026-06-22; rework 2026-06-22)  
+**Status:** ACCEPTED — DS sign-off Earl Ignacio, 2026-06-22 SESSION 72 (initial draft 2026-06-22; DS sign-off declined 2026-06-22; rework 2026-06-22; accepted 2026-06-22 SESSION 72)  
 **Amends:** APR-0017 (G6 Multi-Dimensional Evidence Standard, 2026-06-01) + APR-0019 (Per-Bucket Evidence Amendment, 2026-06-09)  
 **Does NOT supersede:** APR-0017 or APR-0019 in full. Both remain operative in all sections not explicitly modified below.  
 **Registered by:** T-148 (DECISION_LOG 2026-06-22 SESSION 65)  
@@ -294,21 +294,21 @@ Passing G6 (T1 live capital) does NOT automatically satisfy the T4 Activation Ga
 
 **Review checklist:**
 
-- [ ] Rework rationale — T4 removed from G6 (BLOCKED/Phase 8+); T4 criteria moved to T4 Activation Gate — acceptable
-- [ ] Mod 5 — Fill-realism mandate: T2-B and T2-D evaluate post-haircut P&L at T-153 p50 estimate, scoped to G6 (T1) and T4 Activation Gate (T4) — acceptable
-- [ ] Mod 5 — T1 haircut is upper bound (resting orders may be maker fills, zero cost) — conservative direction confirmed
-- [ ] Mod 6 — T4 T2-A: calibration deviation ≤ 20pp, slope ≤ 0 (formally derived); T4 Activation Gate scope — acceptable
-- [ ] Mod 6 — T4 T2-B: fill-realism-adjusted EV > 0, slope ≥ 0 (two-leg haircut); T4 Activation Gate scope — acceptable
-- [ ] Mod 6 — T4 T2-C: Brier ≤ 0.265, slope ≤ 0 (L1 threshold as ceiling without T4 TEST baseline); T4 Activation Gate scope — acceptable
-- [ ] Mod 6 — T4 T2-D: fill-realism-adjusted P&L slope > 0 (two-leg haircut); T4 Activation Gate scope — acceptable
-- [ ] Mod 7 — T4 game-night floor: ≥5 nights (df ≥ 3, same as T1); T4 Activation Gate scope — acceptable
-- [ ] Mod 8 — T-AGG-A: aggregate post-haircut EV > 0; T4 Activation Gate scope — acceptable
-- [ ] Mod 8 — T-AGG-B: aggregate P&L slope > 0 over ≥5 game nights; T4 Activation Gate scope — acceptable
-- [ ] Mod 9 — T1 Tier 2 evaluates YES-direction eligible bets while YES-only gate is active; G6 scope — acceptable
-- [ ] G6 closure condition (6 items, T1-only) — acceptable
-- [ ] T4 Activation Gate conditions (5 items) — acceptable
-- [ ] GG-022 status: RESOLVED upon sign-off — acceptable
+- [x] Rework rationale — T4 removed from G6 (BLOCKED/Phase 8+); T4 criteria moved to T4 Activation Gate — acceptable
+- [x] Mod 5 — Fill-realism mandate: T2-B and T2-D evaluate post-haircut P&L at T-153 p50 estimate, scoped to G6 (T1) and T4 Activation Gate (T4) — acceptable
+- [x] Mod 5 — T1 haircut is upper bound (resting orders may be maker fills, zero cost) — conservative direction confirmed
+- [x] Mod 6 — T4 T2-A: calibration deviation ≤ 20pp, slope ≤ 0 (formally derived); T4 Activation Gate scope — acceptable
+- [x] Mod 6 — T4 T2-B: fill-realism-adjusted EV > 0, slope ≥ 0 (two-leg haircut); T4 Activation Gate scope — acceptable
+- [x] Mod 6 — T4 T2-C: Brier ≤ 0.265, slope ≤ 0 (L1 threshold as ceiling without T4 TEST baseline); T4 Activation Gate scope — acceptable
+- [x] Mod 6 — T4 T2-D: fill-realism-adjusted P&L slope > 0 (two-leg haircut); T4 Activation Gate scope — acceptable
+- [x] Mod 7 — T4 game-night floor: ≥5 nights (df ≥ 3, same as T1); T4 Activation Gate scope — acceptable
+- [x] Mod 8 — T-AGG-A: aggregate post-haircut EV > 0; T4 Activation Gate scope — acceptable
+- [x] Mod 8 — T-AGG-B: aggregate P&L slope > 0 over ≥5 game nights; T4 Activation Gate scope — acceptable
+- [x] Mod 9 — T1 Tier 2 evaluates YES-direction eligible bets while YES-only gate is active; G6 scope — acceptable
+- [x] G6 closure condition (6 items, T1-only) — acceptable
+- [x] T4 Activation Gate conditions (5 items) — acceptable
+- [x] GG-022 status: RESOLVED upon sign-off — acceptable
 
-**Sign-off:** _______________  
-**Date:** _______________  
+**Sign-off:** Earl Ignacio  
+**Date:** 2026-06-22  
 **Role:** DS — Earl Ignacio
