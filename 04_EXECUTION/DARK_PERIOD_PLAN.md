@@ -49,16 +49,20 @@ The dark period is not a pause. Three load-bearing things must happen before the
 
 | Task | Priority | Notes |
 |------|----------|-------|
-| T-072: Model retrain | P0 | ADR-0004 requires supersession for any retrain. Retrain on 2025-26 complete regular season + Finals data. Must complete by 2026-10-15 (T-072 deadline). Frozen model policy: no automated retrain; retrain = new model version + paper validation + ADR. |
+| T-072: Model retrain + λ feature fix | P0 | ADR-0004 requires supersession for any retrain. Retrain on 2025-26 complete regular season + Finals data. Must complete by 2026-10-15. **S69 SCOPE ADDITION (authorized DECISION_LOG S69):** retrain must incorporate the three Option C feature fixes: (i) `playoff_round_multiplier` in C2 λ derivation (1.0 regular season; calibrate from NBA playoff historical data); (ii) replace regular-season opp defensive ratings with opponent's trailing-N playoff-game stats; (iii) within-series momentum feature (player scoring in current series vs rolling avg). All three derived from empirical data — no guessed multipliers. **Phase 3 START GATE:** T-072 must close (feature fixes implemented + new model passes ADR-0009 shadow gate) AND a post-fix `run_t177` backtest on available NBA data must return INCONCLUSIVE or MONOTONIC (not ANTI-PREDICTIVE, p > 0.05) before Phase 3 MLB C1 build begins. Building MLB infrastructure on a model with a known systematic λ overestimation replicates the same structural error at greater cost. |
 | DS-04 injury source (T-073) | P1 | KI-011: T2 is injury-blind. Without DS-04, T2 activation generates fake alpha (injury blindness). Required before T2 active. Evaluate sources: Rotoworld, FantasyLabs, ESPN API injury reports. |
 | T-077: Polymarket activation | P1 | Operator KYC. VenueAdapter already built; execution gated on KYC completion. Second venue adds line-shopping (Strategy E, +7.8% EV per EXP-014). |
 | ADR-0005 draft: live capital framework | P2 | Parameters for live capital deployment: bankroll size, per-bet limits, reserve fraction, kill switch thresholds at live scale. Requires: EXP-017 positive at adequate sample, T-153 haircut complete. Cannot finalize until commercial validation is confirmed but draft can be prepared. |
 | T-153 completion (spread model) | P2 | Spread model for EXIT_NET_COST_BAND (all time-remaining buckets). Unblocks ADR-0019 Tier 2 (exit mechanics fully validated). Requires G4/G5 spread data + additional regular-season spread observations. |
-| T-148: APR-0017 floor regression (T4 evidence standard) | P2 | T4 produces different model architecture than T1; pooling premise needs formal analysis. T-148 registered; ADR superseding APR-0017 Tier 2 T4 section needed. |
+| ~~T-148: APR-0017 floor regression (T4 evidence standard)~~ | ~~P2~~ | ✅ DONE SESSION 72 — ADR-0028 ACCEPTED (DS sign-off Earl Ignacio 2026-06-22). G6 scoped to T1-only; T4 Tier 2 moved to T4 Activation Gate (Phase 8 pre-requisite). GG-022 RESOLVED. |
 
 ---
 
 ## Phase 3 — MLB Commercial Validation (August–September 2026)
+
+**Phase 3 Prerequisites (GATE — do not start MLB C1 build until both are met):**
+1. **T-072 CLOSED:** The three Option C λ feature fixes are implemented and the retrained model passes the ADR-0009 shadow gate (Brier improvement over v1-28483b21, ECE ≤ 0.05).
+2. **Post-fix backtest passes:** `scripts/run_t177_edge_monitor.py` run on available NBA data with the fixed model returns INCONCLUSIVE or MONOTONIC — not ANTI-PREDICTIVE (p > 0.05). Rationale: if the known λ overestimation is not corrected first, EXP-017 MLB will test a structurally biased model at ADR-0024-adequate sample size. A CONFIRMED_NEGATIVE at that scale triggers ADR-0024 Tier 2 diagnostic sprint — the same root cause diagnosed in S69, found at greater cost.
 
 This is the most strategically significant phase. Per ADR-0024, commercial validation requires a structurally adequate sample (n ≥ 500, ≥ 15 opponents, or ≥ 2 sports). MLB provides the scale and diversity that the NBA Finals window could not.
 
@@ -92,6 +96,7 @@ This is the most strategically significant phase. Per ADR-0024, commercial valid
 | Item | Cadence | Notes |
 |------|---------|-------|
 | VPS health check | Monthly | Confirm cron jobs are running, no silent failures, logs rotating correctly |
+| VPS cron dark-period output review | Monthly | PIPE-02/PIPE-03/PIPE-06 crons keep firing on NBA dark-period nights. Paper trading is kill-switch halted so no bets execute, but empty runs and inference errors accumulate silently. Check VPS logs once/month: `ssh prediction-market-vps "tail -100 /opt/prediction-market-bot/logs/cron_*.log"`. Flag any non-empty error output for investigation. |
 | ADR-0009 Brier tracking | Monthly (or per-game if MLB paper trading active) | Shadow model drift detection. If Brier rises > 10% over 3-week window: retrain gate triggers |
 | EXP-017 running total | Per-game (MLB active) | Accumulate unique market count toward ADR-0024 Tier 1 / Tier 2 floors |
 | GOVERNANCE_GAP_LOG review | Monthly | Any new OPEN entries from implementation work? |
