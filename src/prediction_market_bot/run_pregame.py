@@ -182,7 +182,7 @@ def main() -> None:
         print(f"ERROR: {FEATURE_CSV} not found.", file=sys.stderr)
         sys.exit(1)
 
-    df = pd.read_csv(FEATURE_CSV)
+    df = pd.read_csv(FEATURE_CSV, low_memory=False)
     qs = QualitativeSignalStore(logger=logger, snapshot_id=SNAPSHOT_ID)
     if not qs.load_ds01_snapshot(QS_CSV, QS_ID, session_id=SESSION_ID):
         print("ERROR: QS load failed.", file=sys.stderr); sys.exit(1)
