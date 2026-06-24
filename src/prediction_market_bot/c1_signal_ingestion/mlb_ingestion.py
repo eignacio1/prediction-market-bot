@@ -106,6 +106,25 @@ _FALLBACK_TEAM_ABBR: dict[int, str] = {
     144: "ATL", 145: "CWS", 146: "MIA", 147: "NYY", 158: "MIL",
 }
 
+def _ip_to_decimal(ip_raw: str | float) -> float:
+    """Convert MLB Stats API inningsPitched to decimal innings.
+
+    The API uses baseball notation: "5.2" = 5 innings + 2 outs = 5⅔ = 5.667.
+    Decimal digits 0/1/2 represent 0, 1/3, 2/3 of an inning respectively.
+    Any other decimal digit (should not occur) is treated as 0 outs.
+    """
+    try:
+        s = str(ip_raw).strip()
+        if "." in s:
+            whole_s, frac_s = s.split(".", 1)
+            whole = int(whole_s) if whole_s else 0
+            outs = int(frac_s[0]) if frac_s else 0  # only first digit is outs (0, 1, 2)
+            return float(whole) + outs / 3.0
+        return float(s)
+    except (ValueError, TypeError):
+        return 0.0
+
+
 _GAME_TYPE_LABELS: dict[str, str] = {
     "R": "Regular Season",
     "P": "Postseason",
@@ -301,11 +320,7 @@ class MLBIngestionClient:
                 f"{team_abbr} vs. {opp_abbr}" if is_home
                 else f"{team_abbr} @ {opp_abbr}"
             )
-            ip_raw = stat.get("inningsPitched", "0.0")
-            try:
-                ip = float(ip_raw)
-            except (ValueError, TypeError):
-                ip = 0.0
+            ip = _ip_to_decimal(stat.get("inningsPitched", "0.0"))
             rows.append({
                 "player_id": player_id,
                 "player_name": player_name,
