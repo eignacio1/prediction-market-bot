@@ -108,6 +108,11 @@ def _price_discovery_url() -> str:
 
 SERIES_PLAYER_POINTS = "KXNBAPTS"
 
+# MLB series ticker — PLACEHOLDER. Confirm via live Kalshi API before activating
+# MLB paper trading (T-181 KI: wrong ticker returns empty markets silently).
+# Candidate: "KXMLBHITS" — unconfirmed. Run: GET /series to enumerate active series.
+SERIES_MLB_PLAYER_HITS: str = "KXMLBHITS"  # TODO: confirm via live Kalshi /series endpoint
+
 # Request timeouts and retry config
 REQUEST_TIMEOUT_S = 15
 MAX_RETRIES = 4      # T-164/GG-014: raised 3→4; delays 4+8+16+32=60s covers most rate-limit windows

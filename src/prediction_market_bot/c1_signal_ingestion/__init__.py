@@ -6,5 +6,13 @@
 # CRITICAL: Outcome data (DS-03) must NEVER enter this component — separate path only.
 
 from prediction_market_bot.c1_signal_ingestion.ingestion import NBAIngestionClient
+from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import MLBIngestionClient
+from prediction_market_bot.c1_signal_ingestion.mlb_team_stats_store import MLBTeamStatsStore
+from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import MLBPitcherStatsStore
 
-__all__ = ["NBAIngestionClient"]
+__all__ = [
+    "NBAIngestionClient",
+    "MLBIngestionClient",
+    "MLBTeamStatsStore",
+    "MLBPitcherStatsStore",
+]
