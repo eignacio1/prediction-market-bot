@@ -74,7 +74,8 @@ This is the most strategically significant phase. Per ADR-0024, commercial valid
 | EXP-017 MLB run | P0 — commercial validation gate | Backtest MLB model edge vs actual Kalshi MLB market prices. This is the ADR-0024 commercial validation experiment. ADR-0024 Tier 1 check fires at n ≥ 150 MLB unique markets. |
 | EXP-018 MLB calibration | P1 | Model vs null on MLB data. Calibration power is higher at MLB scale (hundreds of games/day). |
 | ADR-0024 Tier 1 review | P0 gate | At n ≥ 150 MLB unique markets: compute EV/bet. If < -$0.03: diagnostic sprint per ADR-0024. If > 0: strong signal to proceed. If inconclusive: continue to Tier 2 floor. |
-| MLB paper trading activation | P2 | Live MLB paper bets via T1 pipeline (game-day pregame only; no T4 until MLB T4 decision tree built). Venue: Kalshi (MLB markets active). |
+| MLB paper trading activation | P2 | Live MLB paper bets via T1 pipeline (game-day pregame only; no T4 until MLB T4 decision tree built). Venue: Kalshi (MLB markets active). Fresh $1,000 paper book (`logs/paper_portfolio_mlb.json`) — DS decision SESSION 74; separate from NBA book. |
+| T-186: F-042 playoff TeamGameLog pull + v2b retrain | P1 (NBA debt, Phase 3 window) | v2-065b9510 was trained with F-042=NaN everywhere (playoff opponent defensive stats deferred). The primary Brier gain came from F-039/F-040, not the playoff compression fix. Pull playoff TeamGameLog for 8-10 NBA teams via nba_api, repopulate F-042 for training rows, retrain v2b, re-run T-177. If complete before October, deploy v2b instead of v2 in Phase 4. Can run in parallel with MLB C1/C2 build during August-September. |
 
 ---
 
@@ -87,7 +88,9 @@ This is the most strategically significant phase. Per ADR-0024, commercial valid
 | GG-014 confirmation | P0 gate | First 2026-27 regular season paper batch (day 1): check order failure rate. T-164 fix must show ≤5% to close GG-014 G6 gate. This is the first viable production confirmation. |
 | T2/DS-04 activation readiness | P2 | If DS-04 injury source is live by Phase 4, T2 can be activated for 2026-27. Requires: DS-04 built, T2 model overlay tested, T2 decision tree reviewed vs T1 non-contamination guarantee. |
 | ADR-0005 finalization | P0 gate | Live capital parameters finalized once G6 evidence review confirms gate is clearable. Cannot finalize until T-153 haircut, EXP-017 commercial validation, and GG-014 confirmation all complete. |
-| Model retrain verification | P0 | Confirm retrained model passes ADR-0009 shadow model gate: Brier improvement over v1-28483b21, ECE ≤ 0.05 (relaxed from 0.0342 for cross-sport scope). |
+| T-185: v2 model deploy + paper trading restart (T-185) | P0 — DS decision required | See TODO_NEXT T-185 runbook. Three prerequisite decisions: (1) NBA 26-27 book reset option A/B/C (DECISION_LOG SESSION 74); (2) deploy v2 vs v2b (T-186 completion determines this); (3) operator witnesses first paper batch. **Alpha framing: shadow gate PASSED means calibration improved (Brier/ECE); it does NOT mean alpha vs Kalshi confirmed. Deploying v2 in October is evidence-collection on an improved feature set, not a confirmed-alpha deployment. EXP-017 at adequate sample (ADR-0024) remains the alpha gate.** |
+| T-116: Multi-game night stress test | P0 — before Oct 20 | PIPE-02/PIPE-03 tested only in single-game Finals context. Regular season is 10+ simultaneous games (400+ markets/night). Simulate before season start. |
+| Model retrain verification | P0 | If T-186 (v2b retrain) completed during Phase 3: v2b replaces v2-065b9510 as the deploy target. Otherwise: v2-065b9510 deploys with F-042 limitation documented (ADR-0031 Known Limitations). Do not treat the v2 shadow gate PASS as validation of the playoff compression fix. |
 
 ---
 
