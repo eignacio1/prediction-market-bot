@@ -415,3 +415,165 @@ class TestTransientRetry:
 
         assert ok is True
         assert sleep_calls == [4.0, 8.0]  # RETRY_DELAY_S=2.0; 2*(2^1)=4, 2*(2^2)=8
+
+
+# ---------------------------------------------------------------------------
+# T-187C: fetch_player_points_markets series_ticker parameterization
+# ---------------------------------------------------------------------------
+
+
+class TestFetchPlayerPointsMarketsSeriesTicker:
+    """fetch_player_points_markets() must pass the correct series_ticker to the API.
+
+    Regression guard: before T-187C, the method hardcoded SERIES_PLAYER_POINTS
+    (KXNBAPTS). Calling with series_ticker=SERIES_MLB_PLAYER_HITS would silently
+    return NBA markets instead of MLB markets.
+    """
+
+    def _make_client(self, monkeypatch):
+        monkeypatch.setenv("BOT_ENV", "paper")
+        return KalshiMarketClient(api_key_id="x" * 20)
+
+    def test_default_uses_nba_series(self, monkeypatch):
+        """Default call (no series_ticker arg) must use KXNBAPTS."""
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_PLAYER_POINTS
+        client = self._make_client(monkeypatch)
+        captured_params = []
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            if params:
+                captured_params.append(dict(params))
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.json.return_value = {"markets": [], "cursor": None}
+            return resp
+
+        client._session.get = fake_get
+        client.fetch_player_points_markets()
+
+        assert len(captured_params) >= 1
+        assert captured_params[0].get("series_ticker") == SERIES_PLAYER_POINTS
+
+    def test_mlb_series_ticker_is_passed_through(self, monkeypatch):
+        """Calling with SERIES_MLB_PLAYER_HITS must send KXMLBHIT to the API."""
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_MLB_PLAYER_HITS
+        client = self._make_client(monkeypatch)
+        captured_params = []
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            if params:
+                captured_params.append(dict(params))
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.json.return_value = {"markets": [], "cursor": None}
+            return resp
+
+        client._session.get = fake_get
+        client.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
+
+        assert len(captured_params) >= 1
+        assert captured_params[0].get("series_ticker") == SERIES_MLB_PLAYER_HITS
+
+    def test_nba_and_mlb_series_differ(self):
+        """Sanity: the two series constants must be different values."""
+        from prediction_market_bot.c5_execution.kalshi_client import (
+            SERIES_MLB_PLAYER_HITS,
+            SERIES_PLAYER_POINTS,
+        )
+        assert SERIES_PLAYER_POINTS != SERIES_MLB_PLAYER_HITS
+        assert SERIES_PLAYER_POINTS == "KXNBAPTS"
+        assert SERIES_MLB_PLAYER_HITS == "KXMLBHIT"
+
+    def test_custom_series_ticker_forwarded(self, monkeypatch):
+        """An arbitrary series_ticker is forwarded verbatim — no hard-coding."""
+        client = self._make_client(monkeypatch)
+        captured_params = []
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            if params:
+                captured_params.append(dict(params))
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.json.return_value = {"markets": [], "cursor": None}
+            return resp
+
+        client._session.get = fake_get
+        client.fetch_player_points_markets(series_ticker="KXCUSTOMSERIES")
+
+        assert captured_params[0].get("series_ticker") == "KXCUSTOMSERIES"
+
+
+class TestKalshiVenueAdapterSportRouting:
+    """KalshiVenueAdapter.fetch_player_points_markets() must route sport to series_ticker."""
+
+    def test_nba_routes_to_kxnbapts(self, monkeypatch):
+        """sport='NBA' must call the underlying client with SERIES_PLAYER_POINTS."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_PLAYER_POINTS
+        from prediction_market_bot.c5_execution.venue_adapter import KalshiVenueAdapter
+
+        mock_client = MagicMock()
+        mock_client.fetch_player_points_markets.return_value = (
+            True,
+            DS02Snapshot(fetched_at="2026-06-24T00:00:00.000Z", markets=[]),
+        )
+        adapter = KalshiVenueAdapter(mock_client)
+        adapter.fetch_player_points_markets(sport="NBA")
+
+        mock_client.fetch_player_points_markets.assert_called_once_with(
+            status="open", series_ticker=SERIES_PLAYER_POINTS
+        )
+
+    def test_mlb_routes_to_kxmlbhit(self, monkeypatch):
+        """sport='MLB' must call the underlying client with SERIES_MLB_PLAYER_HITS."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_MLB_PLAYER_HITS
+        from prediction_market_bot.c5_execution.venue_adapter import KalshiVenueAdapter
+
+        mock_client = MagicMock()
+        mock_client.fetch_player_points_markets.return_value = (
+            True,
+            DS02Snapshot(fetched_at="2026-06-24T00:00:00.000Z", markets=[]),
+        )
+        adapter = KalshiVenueAdapter(mock_client)
+        adapter.fetch_player_points_markets(sport="MLB")
+
+        mock_client.fetch_player_points_markets.assert_called_once_with(
+            status="open", series_ticker=SERIES_MLB_PLAYER_HITS
+        )
+
+    def test_sport_is_case_insensitive(self, monkeypatch):
+        """sport='mlb' (lowercase) must resolve to KXMLBHIT."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_MLB_PLAYER_HITS
+        from prediction_market_bot.c5_execution.venue_adapter import KalshiVenueAdapter
+
+        mock_client = MagicMock()
+        mock_client.fetch_player_points_markets.return_value = (
+            True,
+            DS02Snapshot(fetched_at="2026-06-24T00:00:00.000Z", markets=[]),
+        )
+        adapter = KalshiVenueAdapter(mock_client)
+        adapter.fetch_player_points_markets(sport="mlb")
+
+        mock_client.fetch_player_points_markets.assert_called_once_with(
+            status="open", series_ticker=SERIES_MLB_PLAYER_HITS
+        )
+
+    def test_unknown_sport_defaults_to_nba(self, monkeypatch):
+        """Unknown sport strings must fall back to SERIES_PLAYER_POINTS (safe default)."""
+        monkeypatch.setenv("BOT_ENV", "paper")
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_PLAYER_POINTS
+        from prediction_market_bot.c5_execution.venue_adapter import KalshiVenueAdapter
+
+        mock_client = MagicMock()
+        mock_client.fetch_player_points_markets.return_value = (
+            True,
+            DS02Snapshot(fetched_at="2026-06-24T00:00:00.000Z", markets=[]),
+        )
+        adapter = KalshiVenueAdapter(mock_client)
+        adapter.fetch_player_points_markets(sport="CRICKET")
+
+        mock_client.fetch_player_points_markets.assert_called_once_with(
+            status="open", series_ticker=SERIES_PLAYER_POINTS
+        )
