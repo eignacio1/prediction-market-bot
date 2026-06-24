@@ -1,0 +1,2074 @@
+{
+  "BOS": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 103,
+      "plus_minus": 17.0,
+      "pts_allowed": 86.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 109,
+      "plus_minus": 9.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 93,
+      "plus_minus": -2.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 107,
+      "plus_minus": 9.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 120,
+      "plus_minus": 31.0,
+      "pts_allowed": 89.0
+    },
+    {
+      "game_date": "2025-05-05",
+      "pts": 105,
+      "plus_minus": -3.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2025-05-07",
+      "pts": 90,
+      "plus_minus": -1.0,
+      "pts_allowed": 91.0
+    },
+    {
+      "game_date": "2025-05-10",
+      "pts": 115,
+      "plus_minus": 22.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-05-12",
+      "pts": 113,
+      "plus_minus": -8.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-05-14",
+      "pts": 127,
+      "plus_minus": 25.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2025-05-16",
+      "pts": 81,
+      "plus_minus": -38.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2026-04-19",
+      "pts": 123,
+      "plus_minus": 32.0,
+      "pts_allowed": 91.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 97,
+      "plus_minus": -14.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 108,
+      "plus_minus": 8.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 128,
+      "plus_minus": 32.0,
+      "pts_allowed": 96.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 97,
+      "plus_minus": -16.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 93,
+      "plus_minus": -13.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2026-05-02",
+      "pts": 100,
+      "plus_minus": -9.0,
+      "pts_allowed": 109.0
+    }
+  ],
+  "CLE": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 121,
+      "plus_minus": 21.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 121,
+      "plus_minus": 9.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 124,
+      "plus_minus": 37.0,
+      "pts_allowed": 87.0
+    },
+    {
+      "game_date": "2025-04-28",
+      "pts": 138,
+      "plus_minus": 55.0,
+      "pts_allowed": 83.0
+    },
+    {
+      "game_date": "2025-05-04",
+      "pts": 112,
+      "plus_minus": -9.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-05-06",
+      "pts": 119,
+      "plus_minus": -1.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2025-05-09",
+      "pts": 126,
+      "plus_minus": 22.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2025-05-11",
+      "pts": 109,
+      "plus_minus": -20.0,
+      "pts_allowed": 129.0
+    },
+    {
+      "game_date": "2025-05-13",
+      "pts": 105,
+      "plus_minus": -9.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 126,
+      "plus_minus": 13.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 115,
+      "plus_minus": 10.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 104,
+      "plus_minus": -22.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 89,
+      "plus_minus": -4.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 125,
+      "plus_minus": 5.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 110,
+      "plus_minus": -2.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2026-05-03",
+      "pts": 114,
+      "plus_minus": 12.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2026-05-05",
+      "pts": 101,
+      "plus_minus": -10.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2026-05-07",
+      "pts": 97,
+      "plus_minus": -10.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-05-09",
+      "pts": 116,
+      "plus_minus": 7.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-05-11",
+      "pts": 112,
+      "plus_minus": 9.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-05-13",
+      "pts": 117,
+      "plus_minus": 4.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-05-15",
+      "pts": 94,
+      "plus_minus": -21.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-05-17",
+      "pts": 125,
+      "plus_minus": 31.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-05-19",
+      "pts": 104,
+      "plus_minus": -11.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-05-21",
+      "pts": 93,
+      "plus_minus": -16.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-05-23",
+      "pts": 108,
+      "plus_minus": -13.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2026-05-25",
+      "pts": 93,
+      "plus_minus": -37.0,
+      "pts_allowed": 130.0
+    }
+  ],
+  "DEN": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 112,
+      "plus_minus": 2.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2025-04-21",
+      "pts": 102,
+      "plus_minus": -3.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 83,
+      "plus_minus": -34.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 101,
+      "plus_minus": 2.0,
+      "pts_allowed": 99.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 131,
+      "plus_minus": 16.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2025-05-01",
+      "pts": 105,
+      "plus_minus": -6.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2025-05-03",
+      "pts": 120,
+      "plus_minus": 19.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2025-05-05",
+      "pts": 121,
+      "plus_minus": 2.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2025-05-07",
+      "pts": 106,
+      "plus_minus": -43.0,
+      "pts_allowed": 149.0
+    },
+    {
+      "game_date": "2025-05-09",
+      "pts": 113,
+      "plus_minus": 9.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2025-05-11",
+      "pts": 87,
+      "plus_minus": -5.0,
+      "pts_allowed": 92.0
+    },
+    {
+      "game_date": "2025-05-13",
+      "pts": 105,
+      "plus_minus": -7.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2025-05-15",
+      "pts": 119,
+      "plus_minus": 12.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2025-05-18",
+      "pts": 93,
+      "plus_minus": -32.0,
+      "pts_allowed": 125.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 116,
+      "plus_minus": 11.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 114,
+      "plus_minus": -5.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 96,
+      "plus_minus": -17.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 96,
+      "plus_minus": -16.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 125,
+      "plus_minus": 12.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 98,
+      "plus_minus": -12.0,
+      "pts_allowed": 110.0
+    }
+  ],
+  "GSW": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 95,
+      "plus_minus": 10.0,
+      "pts_allowed": 85.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 94,
+      "plus_minus": -15.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 104,
+      "plus_minus": 11.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-04-28",
+      "pts": 109,
+      "plus_minus": 3.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2025-04-30",
+      "pts": 116,
+      "plus_minus": -15.0,
+      "pts_allowed": 131.0
+    },
+    {
+      "game_date": "2025-05-02",
+      "pts": 107,
+      "plus_minus": -8.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2025-05-04",
+      "pts": 103,
+      "plus_minus": 14.0,
+      "pts_allowed": 89.0
+    },
+    {
+      "game_date": "2025-05-06",
+      "pts": 99,
+      "plus_minus": 11.0,
+      "pts_allowed": 88.0
+    },
+    {
+      "game_date": "2025-05-08",
+      "pts": 93,
+      "plus_minus": -24.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-05-10",
+      "pts": 97,
+      "plus_minus": -5.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2025-05-12",
+      "pts": 110,
+      "plus_minus": -7.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-05-14",
+      "pts": 110,
+      "plus_minus": -11.0,
+      "pts_allowed": 121.0
+    }
+  ],
+  "HOU": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 85,
+      "plus_minus": -10.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 109,
+      "plus_minus": 15.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 93,
+      "plus_minus": -11.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2025-04-28",
+      "pts": 106,
+      "plus_minus": -3.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-04-30",
+      "pts": 131,
+      "plus_minus": 15.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2025-05-02",
+      "pts": 115,
+      "plus_minus": 8.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2025-05-04",
+      "pts": 89,
+      "plus_minus": -14.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 98,
+      "plus_minus": -9.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 94,
+      "plus_minus": -7.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 108,
+      "plus_minus": -4.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 115,
+      "plus_minus": 19.0,
+      "pts_allowed": 96.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 99,
+      "plus_minus": 6.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 78,
+      "plus_minus": -20.0,
+      "pts_allowed": 98.0
+    }
+  ],
+  "LAC": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 110,
+      "plus_minus": -2.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2025-04-21",
+      "pts": 105,
+      "plus_minus": 3.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 117,
+      "plus_minus": 34.0,
+      "pts_allowed": 83.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 99,
+      "plus_minus": -2.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 115,
+      "plus_minus": -16.0,
+      "pts_allowed": 131.0
+    },
+    {
+      "game_date": "2025-05-01",
+      "pts": 111,
+      "plus_minus": 6.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2025-05-03",
+      "pts": 101,
+      "plus_minus": -19.0,
+      "pts_allowed": 120.0
+    }
+  ],
+  "LAL": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 95,
+      "plus_minus": -22.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 94,
+      "plus_minus": 9.0,
+      "pts_allowed": 85.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 104,
+      "plus_minus": -12.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 113,
+      "plus_minus": -3.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2025-04-30",
+      "pts": 96,
+      "plus_minus": -7.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 107,
+      "plus_minus": 9.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 101,
+      "plus_minus": 7.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 112,
+      "plus_minus": 4.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 96,
+      "plus_minus": -19.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 93,
+      "plus_minus": -6.0,
+      "pts_allowed": 99.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 98,
+      "plus_minus": 20.0,
+      "pts_allowed": 78.0
+    },
+    {
+      "game_date": "2026-05-05",
+      "pts": 90,
+      "plus_minus": -18.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-07",
+      "pts": 107,
+      "plus_minus": -18.0,
+      "pts_allowed": 125.0
+    },
+    {
+      "game_date": "2026-05-09",
+      "pts": 108,
+      "plus_minus": -23.0,
+      "pts_allowed": 131.0
+    },
+    {
+      "game_date": "2026-05-11",
+      "pts": 110,
+      "plus_minus": -5.0,
+      "pts_allowed": 115.0
+    }
+  ],
+  "MIA": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 100,
+      "plus_minus": -21.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 112,
+      "plus_minus": -9.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 87,
+      "plus_minus": -37.0,
+      "pts_allowed": 124.0
+    },
+    {
+      "game_date": "2025-04-28",
+      "pts": 83,
+      "plus_minus": -55.0,
+      "pts_allowed": 138.0
+    }
+  ],
+  "MIL": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 98,
+      "plus_minus": -19.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 115,
+      "plus_minus": -8.0,
+      "pts_allowed": 123.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 117,
+      "plus_minus": 16.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 103,
+      "plus_minus": -26.0,
+      "pts_allowed": 129.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 118,
+      "plus_minus": -1.0,
+      "pts_allowed": 119.0
+    }
+  ],
+  "MIN": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 117,
+      "plus_minus": 22.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 85,
+      "plus_minus": -9.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 116,
+      "plus_minus": 12.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 116,
+      "plus_minus": 3.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2025-04-30",
+      "pts": 103,
+      "plus_minus": 7.0,
+      "pts_allowed": 96.0
+    },
+    {
+      "game_date": "2025-05-06",
+      "pts": 88,
+      "plus_minus": -11.0,
+      "pts_allowed": 99.0
+    },
+    {
+      "game_date": "2025-05-08",
+      "pts": 117,
+      "plus_minus": 24.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-05-10",
+      "pts": 102,
+      "plus_minus": 5.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2025-05-12",
+      "pts": 117,
+      "plus_minus": 7.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2025-05-14",
+      "pts": 121,
+      "plus_minus": 11.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2025-05-20",
+      "pts": 88,
+      "plus_minus": -26.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2025-05-22",
+      "pts": 103,
+      "plus_minus": -15.0,
+      "pts_allowed": 118.0
+    },
+    {
+      "game_date": "2025-05-24",
+      "pts": 143,
+      "plus_minus": 42.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2025-05-26",
+      "pts": 126,
+      "plus_minus": -2.0,
+      "pts_allowed": 128.0
+    },
+    {
+      "game_date": "2025-05-28",
+      "pts": 94,
+      "plus_minus": -30.0,
+      "pts_allowed": 124.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 105,
+      "plus_minus": -11.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 119,
+      "plus_minus": 5.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 113,
+      "plus_minus": 17.0,
+      "pts_allowed": 96.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 112,
+      "plus_minus": 16.0,
+      "pts_allowed": 96.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 113,
+      "plus_minus": -12.0,
+      "pts_allowed": 125.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 110,
+      "plus_minus": 12.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-05-04",
+      "pts": 104,
+      "plus_minus": 2.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2026-05-06",
+      "pts": 95,
+      "plus_minus": -38.0,
+      "pts_allowed": 133.0
+    },
+    {
+      "game_date": "2026-05-08",
+      "pts": 108,
+      "plus_minus": -7.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-05-10",
+      "pts": 114,
+      "plus_minus": 5.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-05-12",
+      "pts": 97,
+      "plus_minus": -29.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2026-05-15",
+      "pts": 109,
+      "plus_minus": -30.0,
+      "pts_allowed": 139.0
+    }
+  ],
+  "NYK": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 123,
+      "plus_minus": 11.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2025-04-21",
+      "pts": 94,
+      "plus_minus": -6.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 118,
+      "plus_minus": 2.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 94,
+      "plus_minus": 1.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 103,
+      "plus_minus": -3.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2025-05-01",
+      "pts": 116,
+      "plus_minus": 3.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2025-05-05",
+      "pts": 108,
+      "plus_minus": 3.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2025-05-07",
+      "pts": 91,
+      "plus_minus": 1.0,
+      "pts_allowed": 90.0
+    },
+    {
+      "game_date": "2025-05-10",
+      "pts": 93,
+      "plus_minus": -22.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2025-05-12",
+      "pts": 121,
+      "plus_minus": 8.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2025-05-14",
+      "pts": 102,
+      "plus_minus": -25.0,
+      "pts_allowed": 127.0
+    },
+    {
+      "game_date": "2025-05-16",
+      "pts": 119,
+      "plus_minus": 38.0,
+      "pts_allowed": 81.0
+    },
+    {
+      "game_date": "2025-05-21",
+      "pts": 135,
+      "plus_minus": -3.0,
+      "pts_allowed": 138.0
+    },
+    {
+      "game_date": "2025-05-23",
+      "pts": 109,
+      "plus_minus": -5.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2025-05-25",
+      "pts": 106,
+      "plus_minus": 6.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2025-05-27",
+      "pts": 121,
+      "plus_minus": -9.0,
+      "pts_allowed": 130.0
+    },
+    {
+      "game_date": "2025-05-29",
+      "pts": 111,
+      "plus_minus": 17.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-05-31",
+      "pts": 108,
+      "plus_minus": -17.0,
+      "pts_allowed": 125.0
+    },
+    {
+      "game_date": "2026-04-18",
+      "pts": 113,
+      "plus_minus": 11.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 106,
+      "plus_minus": -1.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 108,
+      "plus_minus": -1.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 114,
+      "plus_minus": 16.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 126,
+      "plus_minus": 29.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 140,
+      "plus_minus": 51.0,
+      "pts_allowed": 89.0
+    },
+    {
+      "game_date": "2026-05-04",
+      "pts": 137,
+      "plus_minus": 39.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-05-06",
+      "pts": 108,
+      "plus_minus": 6.0,
+      "pts_allowed": 102.0
+    },
+    {
+      "game_date": "2026-05-08",
+      "pts": 108,
+      "plus_minus": 14.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-05-10",
+      "pts": 144,
+      "plus_minus": 30.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-05-19",
+      "pts": 115,
+      "plus_minus": 11.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2026-05-21",
+      "pts": 109,
+      "plus_minus": 16.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-05-23",
+      "pts": 121,
+      "plus_minus": 13.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-25",
+      "pts": 130,
+      "plus_minus": 37.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-06-03",
+      "pts": 105,
+      "plus_minus": 10.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2026-06-05",
+      "pts": 105,
+      "plus_minus": 1.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2026-06-08",
+      "pts": 111,
+      "plus_minus": -4.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-06-10",
+      "pts": 107,
+      "plus_minus": 1.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2026-06-13",
+      "pts": 94,
+      "plus_minus": 4.0,
+      "pts_allowed": 90.0
+    }
+  ],
+  "ORL": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 86,
+      "plus_minus": -17.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2025-04-23",
+      "pts": 100,
+      "plus_minus": -9.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 95,
+      "plus_minus": 2.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 98,
+      "plus_minus": -9.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 89,
+      "plus_minus": -31.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2026-04-19",
+      "pts": 112,
+      "plus_minus": 11.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2026-04-22",
+      "pts": 83,
+      "plus_minus": -15.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 113,
+      "plus_minus": 8.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 94,
+      "plus_minus": 6.0,
+      "pts_allowed": 88.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 109,
+      "plus_minus": -7.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 79,
+      "plus_minus": -14.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-05-03",
+      "pts": 94,
+      "plus_minus": -22.0,
+      "pts_allowed": 116.0
+    }
+  ],
+  "IND": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 117,
+      "plus_minus": 19.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 123,
+      "plus_minus": 8.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2025-04-25",
+      "pts": 101,
+      "plus_minus": -16.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 129,
+      "plus_minus": 26.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 119,
+      "plus_minus": 1.0,
+      "pts_allowed": 118.0
+    },
+    {
+      "game_date": "2025-05-04",
+      "pts": 121,
+      "plus_minus": 9.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2025-05-06",
+      "pts": 120,
+      "plus_minus": 1.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2025-05-09",
+      "pts": 104,
+      "plus_minus": -22.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2025-05-11",
+      "pts": 129,
+      "plus_minus": 20.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-05-13",
+      "pts": 114,
+      "plus_minus": 9.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2025-05-21",
+      "pts": 138,
+      "plus_minus": 3.0,
+      "pts_allowed": 135.0
+    },
+    {
+      "game_date": "2025-05-23",
+      "pts": 114,
+      "plus_minus": 5.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-05-25",
+      "pts": 100,
+      "plus_minus": -6.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2025-05-27",
+      "pts": 130,
+      "plus_minus": 9.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-05-29",
+      "pts": 94,
+      "plus_minus": -17.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2025-05-31",
+      "pts": 125,
+      "plus_minus": 17.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2025-06-05",
+      "pts": 111,
+      "plus_minus": 1.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2025-06-08",
+      "pts": 107,
+      "plus_minus": -16.0,
+      "pts_allowed": 123.0
+    },
+    {
+      "game_date": "2025-06-11",
+      "pts": 116,
+      "plus_minus": 9.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2025-06-13",
+      "pts": 104,
+      "plus_minus": -7.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2025-06-16",
+      "pts": 109,
+      "plus_minus": -11.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2025-06-19",
+      "pts": 108,
+      "plus_minus": 17.0,
+      "pts_allowed": 91.0
+    },
+    {
+      "game_date": "2025-06-22",
+      "pts": 91,
+      "plus_minus": -12.0,
+      "pts_allowed": 103.0
+    }
+  ],
+  "OKC": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 131,
+      "plus_minus": 51.0,
+      "pts_allowed": 80.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 118,
+      "plus_minus": 19.0,
+      "pts_allowed": 99.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 114,
+      "plus_minus": 6.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 117,
+      "plus_minus": 2.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2025-05-05",
+      "pts": 119,
+      "plus_minus": -2.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2025-05-07",
+      "pts": 149,
+      "plus_minus": 43.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2025-05-09",
+      "pts": 104,
+      "plus_minus": -9.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2025-05-11",
+      "pts": 92,
+      "plus_minus": 5.0,
+      "pts_allowed": 87.0
+    },
+    {
+      "game_date": "2025-05-13",
+      "pts": 112,
+      "plus_minus": 7.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2025-05-15",
+      "pts": 107,
+      "plus_minus": -12.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2025-05-18",
+      "pts": 125,
+      "plus_minus": 32.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2025-05-20",
+      "pts": 114,
+      "plus_minus": 26.0,
+      "pts_allowed": 88.0
+    },
+    {
+      "game_date": "2025-05-22",
+      "pts": 118,
+      "plus_minus": 15.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2025-05-24",
+      "pts": 101,
+      "plus_minus": -42.0,
+      "pts_allowed": 143.0
+    },
+    {
+      "game_date": "2025-05-26",
+      "pts": 128,
+      "plus_minus": 2.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2025-05-28",
+      "pts": 124,
+      "plus_minus": 30.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-06-05",
+      "pts": 110,
+      "plus_minus": -1.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2025-06-08",
+      "pts": 123,
+      "plus_minus": 16.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2025-06-11",
+      "pts": 107,
+      "plus_minus": -9.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2025-06-13",
+      "pts": 111,
+      "plus_minus": 7.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2025-06-16",
+      "pts": 120,
+      "plus_minus": 11.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2025-06-19",
+      "pts": 91,
+      "plus_minus": -17.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2025-06-22",
+      "pts": 103,
+      "plus_minus": 12.0,
+      "pts_allowed": 91.0
+    },
+    {
+      "game_date": "2026-04-19",
+      "pts": 119,
+      "plus_minus": 35.0,
+      "pts_allowed": 84.0
+    },
+    {
+      "game_date": "2026-04-22",
+      "pts": 120,
+      "plus_minus": 13.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 121,
+      "plus_minus": 12.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 131,
+      "plus_minus": 9.0,
+      "pts_allowed": 122.0
+    },
+    {
+      "game_date": "2026-05-05",
+      "pts": 108,
+      "plus_minus": 18.0,
+      "pts_allowed": 90.0
+    },
+    {
+      "game_date": "2026-05-07",
+      "pts": 125,
+      "plus_minus": 18.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-05-09",
+      "pts": 131,
+      "plus_minus": 23.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-11",
+      "pts": 115,
+      "plus_minus": 5.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2026-05-18",
+      "pts": 115,
+      "plus_minus": -7.0,
+      "pts_allowed": 122.0
+    },
+    {
+      "game_date": "2026-05-20",
+      "pts": 122,
+      "plus_minus": 9.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-05-22",
+      "pts": 123,
+      "plus_minus": 15.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-24",
+      "pts": 82,
+      "plus_minus": -21.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-05-26",
+      "pts": 127,
+      "plus_minus": 13.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-05-28",
+      "pts": 91,
+      "plus_minus": -27.0,
+      "pts_allowed": 118.0
+    },
+    {
+      "game_date": "2026-05-30",
+      "pts": 103,
+      "plus_minus": -8.0,
+      "pts_allowed": 111.0
+    }
+  ],
+  "MEM": [
+    {
+      "game_date": "2025-04-20",
+      "pts": 80,
+      "plus_minus": -51.0,
+      "pts_allowed": 131.0
+    },
+    {
+      "game_date": "2025-04-22",
+      "pts": 99,
+      "plus_minus": -19.0,
+      "pts_allowed": 118.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 108,
+      "plus_minus": -6.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2025-04-26",
+      "pts": 115,
+      "plus_minus": -2.0,
+      "pts_allowed": 117.0
+    }
+  ],
+  "DET": [
+    {
+      "game_date": "2025-04-19",
+      "pts": 112,
+      "plus_minus": -11.0,
+      "pts_allowed": 123.0
+    },
+    {
+      "game_date": "2025-04-21",
+      "pts": 100,
+      "plus_minus": 6.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-04-24",
+      "pts": 116,
+      "plus_minus": -2.0,
+      "pts_allowed": 118.0
+    },
+    {
+      "game_date": "2025-04-27",
+      "pts": 93,
+      "plus_minus": -1.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2025-04-29",
+      "pts": 106,
+      "plus_minus": 3.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2025-05-01",
+      "pts": 113,
+      "plus_minus": -3.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2026-04-19",
+      "pts": 101,
+      "plus_minus": -11.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2026-04-22",
+      "pts": 98,
+      "plus_minus": 15.0,
+      "pts_allowed": 83.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 105,
+      "plus_minus": -8.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 88,
+      "plus_minus": -6.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 116,
+      "plus_minus": 7.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 93,
+      "plus_minus": 14.0,
+      "pts_allowed": 79.0
+    },
+    {
+      "game_date": "2026-05-03",
+      "pts": 116,
+      "plus_minus": 22.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-05-05",
+      "pts": 111,
+      "plus_minus": 10.0,
+      "pts_allowed": 101.0
+    },
+    {
+      "game_date": "2026-05-07",
+      "pts": 107,
+      "plus_minus": 10.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2026-05-09",
+      "pts": 109,
+      "plus_minus": -7.0,
+      "pts_allowed": 116.0
+    },
+    {
+      "game_date": "2026-05-11",
+      "pts": 103,
+      "plus_minus": -9.0,
+      "pts_allowed": 112.0
+    },
+    {
+      "game_date": "2026-05-13",
+      "pts": 113,
+      "plus_minus": -4.0,
+      "pts_allowed": 117.0
+    },
+    {
+      "game_date": "2026-05-15",
+      "pts": 115,
+      "plus_minus": 21.0,
+      "pts_allowed": 94.0
+    },
+    {
+      "game_date": "2026-05-17",
+      "pts": 94,
+      "plus_minus": -31.0,
+      "pts_allowed": 125.0
+    }
+  ],
+  "ATL": [
+    {
+      "game_date": "2026-04-18",
+      "pts": 102,
+      "plus_minus": -11.0,
+      "pts_allowed": 113.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 107,
+      "plus_minus": 1.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 109,
+      "plus_minus": 1.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 98,
+      "plus_minus": -16.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 97,
+      "plus_minus": -29.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 89,
+      "plus_minus": -51.0,
+      "pts_allowed": 140.0
+    }
+  ],
+  "PHI": [
+    {
+      "game_date": "2026-04-19",
+      "pts": 91,
+      "plus_minus": -32.0,
+      "pts_allowed": 123.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 111,
+      "plus_minus": 14.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 100,
+      "plus_minus": -8.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 96,
+      "plus_minus": -32.0,
+      "pts_allowed": 128.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 113,
+      "plus_minus": 16.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2026-04-30",
+      "pts": 106,
+      "plus_minus": 13.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-05-02",
+      "pts": 109,
+      "plus_minus": 9.0,
+      "pts_allowed": 100.0
+    },
+    {
+      "game_date": "2026-05-04",
+      "pts": 98,
+      "plus_minus": -39.0,
+      "pts_allowed": 137.0
+    },
+    {
+      "game_date": "2026-05-06",
+      "pts": 102,
+      "plus_minus": -6.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-08",
+      "pts": 94,
+      "plus_minus": -14.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-10",
+      "pts": 114,
+      "plus_minus": -30.0,
+      "pts_allowed": 144.0
+    }
+  ],
+  "PHX": [
+    {
+      "game_date": "2026-04-19",
+      "pts": 84,
+      "plus_minus": -35.0,
+      "pts_allowed": 119.0
+    },
+    {
+      "game_date": "2026-04-22",
+      "pts": 107,
+      "plus_minus": -13.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2026-04-25",
+      "pts": 109,
+      "plus_minus": -12.0,
+      "pts_allowed": 121.0
+    },
+    {
+      "game_date": "2026-04-27",
+      "pts": 122,
+      "plus_minus": -9.0,
+      "pts_allowed": 131.0
+    }
+  ],
+  "POR": [
+    {
+      "game_date": "2026-04-19",
+      "pts": 98,
+      "plus_minus": -13.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 106,
+      "plus_minus": 3.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 108,
+      "plus_minus": -12.0,
+      "pts_allowed": 120.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 93,
+      "plus_minus": -21.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 95,
+      "plus_minus": -19.0,
+      "pts_allowed": 114.0
+    }
+  ],
+  "SAS": [
+    {
+      "game_date": "2026-04-19",
+      "pts": 111,
+      "plus_minus": 13.0,
+      "pts_allowed": 98.0
+    },
+    {
+      "game_date": "2026-04-21",
+      "pts": 103,
+      "plus_minus": -3.0,
+      "pts_allowed": 106.0
+    },
+    {
+      "game_date": "2026-04-24",
+      "pts": 120,
+      "plus_minus": 12.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 114,
+      "plus_minus": 21.0,
+      "pts_allowed": 93.0
+    },
+    {
+      "game_date": "2026-04-28",
+      "pts": 114,
+      "plus_minus": 19.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2026-05-04",
+      "pts": 102,
+      "plus_minus": -2.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2026-05-06",
+      "pts": 133,
+      "plus_minus": 38.0,
+      "pts_allowed": 95.0
+    },
+    {
+      "game_date": "2026-05-08",
+      "pts": 115,
+      "plus_minus": 7.0,
+      "pts_allowed": 108.0
+    },
+    {
+      "game_date": "2026-05-10",
+      "pts": 109,
+      "plus_minus": -5.0,
+      "pts_allowed": 114.0
+    },
+    {
+      "game_date": "2026-05-12",
+      "pts": 126,
+      "plus_minus": 29.0,
+      "pts_allowed": 97.0
+    },
+    {
+      "game_date": "2026-05-15",
+      "pts": 139,
+      "plus_minus": 30.0,
+      "pts_allowed": 109.0
+    },
+    {
+      "game_date": "2026-05-18",
+      "pts": 122,
+      "plus_minus": 7.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-05-20",
+      "pts": 113,
+      "plus_minus": -9.0,
+      "pts_allowed": 122.0
+    },
+    {
+      "game_date": "2026-05-22",
+      "pts": 108,
+      "plus_minus": -15.0,
+      "pts_allowed": 123.0
+    },
+    {
+      "game_date": "2026-05-24",
+      "pts": 103,
+      "plus_minus": 21.0,
+      "pts_allowed": 82.0
+    },
+    {
+      "game_date": "2026-05-26",
+      "pts": 114,
+      "plus_minus": -13.0,
+      "pts_allowed": 127.0
+    },
+    {
+      "game_date": "2026-05-28",
+      "pts": 118,
+      "plus_minus": 27.0,
+      "pts_allowed": 91.0
+    },
+    {
+      "game_date": "2026-05-30",
+      "pts": 111,
+      "plus_minus": 8.0,
+      "pts_allowed": 103.0
+    },
+    {
+      "game_date": "2026-06-03",
+      "pts": 95,
+      "plus_minus": -10.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2026-06-05",
+      "pts": 104,
+      "plus_minus": -1.0,
+      "pts_allowed": 105.0
+    },
+    {
+      "game_date": "2026-06-08",
+      "pts": 115,
+      "plus_minus": 4.0,
+      "pts_allowed": 111.0
+    },
+    {
+      "game_date": "2026-06-10",
+      "pts": 106,
+      "plus_minus": -1.0,
+      "pts_allowed": 107.0
+    },
+    {
+      "game_date": "2026-06-13",
+      "pts": 90,
+      "plus_minus": -4.0,
+      "pts_allowed": 94.0
+    }
+  ],
+  "TOR": [
+    {
+      "game_date": "2026-04-18",
+      "pts": 113,
+      "plus_minus": -13.0,
+      "pts_allowed": 126.0
+    },
+    {
+      "game_date": "2026-04-20",
+      "pts": 105,
+      "plus_minus": -10.0,
+      "pts_allowed": 115.0
+    },
+    {
+      "game_date": "2026-04-23",
+      "pts": 126,
+      "plus_minus": 22.0,
+      "pts_allowed": 104.0
+    },
+    {
+      "game_date": "2026-04-26",
+      "pts": 93,
+      "plus_minus": 4.0,
+      "pts_allowed": 89.0
+    },
+    {
+      "game_date": "2026-04-29",
+      "pts": 120,
+      "plus_minus": -5.0,
+      "pts_allowed": 125.0
+    },
+    {
+      "game_date": "2026-05-01",
+      "pts": 112,
+      "plus_minus": 2.0,
+      "pts_allowed": 110.0
+    },
+    {
+      "game_date": "2026-05-03",
+      "pts": 102,
+      "plus_minus": -12.0,
+      "pts_allowed": 114.0
+    }
+  ]
+}

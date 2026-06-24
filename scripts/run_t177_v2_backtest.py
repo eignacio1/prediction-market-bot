@@ -119,7 +119,11 @@ def _fisher_pvalue(n_pos_win: int, n_pos_tot: int, n_neg_win: int, n_neg_tot: in
 # Main
 # ---------------------------------------------------------------------------
 
-def main(exclude_contaminated: bool = True, verbose: bool = False) -> int:
+def main(
+    exclude_contaminated: bool = True,
+    verbose: bool = False,
+    model_path: Path = V2_MODEL_PATH,
+) -> int:
     # ------------------------------------------------------------------
     # 1. Load portfolio positions
     # ------------------------------------------------------------------
@@ -163,7 +167,7 @@ def main(exclude_contaminated: bool = True, verbose: bool = False) -> int:
     # ------------------------------------------------------------------
     # 3. Load v2 model
     # ------------------------------------------------------------------
-    v2_artifact = joblib.load(V2_MODEL_PATH)
+    v2_artifact = joblib.load(model_path)
     v2_pipe     = v2_artifact["pipeline"]
     v2_features = v2_artifact["feature_names"]
     v2_medians  = v2_artifact["col_medians"]
@@ -324,6 +328,12 @@ if __name__ == "__main__":
     parser.add_argument("--clean",   action="store_true", default=False,
                         help="Exclude fee-contaminated positions (default: include all)")
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--model",   type=str, default=str(V2_MODEL_PATH),
+                        help="Path to model artifact (default: models/v2_model.joblib)")
     args = parser.parse_args()
 
-    sys.exit(main(exclude_contaminated=args.clean, verbose=args.verbose))
+    sys.exit(main(
+        exclude_contaminated=args.clean,
+        verbose=args.verbose,
+        model_path=Path(args.model),
+    ))
