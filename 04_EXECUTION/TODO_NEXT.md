@@ -43,10 +43,11 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | Task | Status |
 |------|--------|
 | **T-187E — `run_resolve_mlb.py` (PIPE-05R)** | ✅ COMPLETE — MLB paper position resolution pipeline. `PaperTrader.settle_position()` added (sport-agnostic; stat_label="actual_hits" for MLB, default "actual_pts" for NBA backward compat). `run_resolve_mlb.py` (new): MLB Stats API gameLog fetch, Regular→Postseason fallback, full resolve loop, C7 monitor, C6 audit. `deploy/cron.conf` corrected: feature refresh renamed PIPE-05FX; PIPE-05R properly assigned to MLB resolve at 06:30 UTC. 34 new tests in `tests/test_t187e_mlb_resolve.py`. Suite 1704→**1737/1737**. |
-| **Tests** | ✅ 1737/1737 (0 failures, 1 skipped). |
-| **VPS deploy** | ⏳ PENDING — push + VPS pull. |
-| **DECISION_LOG SESSION 82** | ⏳ PENDING. |
-| **T-187F — MLB calibration monitor** | ⏳ NEXT |
+| **T-187F — `scripts/run_mlb_calib_monitor.py` (PIPE-05C)** | ✅ COMPLETE — MLB calibration monitor. Reads `paper_portfolio_mlb.json` closed positions; computes ECE per threshold (t∈{1,2}; t=3 excluded per GG-042); derives recommended temperature T via `minimize_scalar` on log-loss; reports reliability buckets; anti-predictive check (edge>0 cohort win rate vs edge≤0). T_global derived on combined dataset for statistical power; per-threshold diagnosis reuses T_global to avoid underfitting. Exit codes: 0=CALIBRATED/insufficient, 1=MISCALIBRATED (ECE>0.05), 2=ANTI_PREDICTIVE. Does NOT write to `calibration.py` — temperature changes require ADR. `deploy/cron.conf` PIPE-05C entry: Mondays 14:10 UTC. 35 new tests in `tests/test_t187f_mlb_calib_monitor.py`. Suite 1737→**1772/1772**. |
+| **Tests** | ✅ 1772/1772 (0 failures, 1 skipped). |
+| **VPS deploy** | ⏳ PENDING — push + VPS pull (T-187E + T-187F). |
+| **DECISION_LOG SESSION 82** | ⏳ PENDING (T-187F entry). |
+| **T-187G — Live SP overlay for t=3 reconsideration** | ⏳ NEXT |
 
 ---
 
