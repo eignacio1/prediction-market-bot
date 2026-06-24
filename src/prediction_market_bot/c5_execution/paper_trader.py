@@ -24,9 +24,12 @@ Portfolio state:
 
 Outcome resolution:
   For any open position where game_date < today: fetch the player's
-  actual points from nba_api and compare to the Kalshi bet threshold.
-  YES wins if actual_pts >= threshold; NO wins if actual_pts < threshold.
+  actual stat from the sport's data source and compare to the Kalshi
+  bet threshold. YES wins if actual_stat >= threshold; NO wins otherwise.
   Bankroll updated accordingly.
+  Sport-agnostic: settle_position() handles P&L + ledger; the caller
+  fetches the stat. resolve_pending() is the NBA-specific wrapper that
+  uses nba_api. run_resolve_mlb.py is the MLB-specific resolver.
 
 Kill switch:
   All public methods return (bool, ...). False = C6 write failure → halt.
@@ -748,6 +751,91 @@ class PaperTrader:
             resolved.append(closed_pos)
 
         return all_ok, resolved
+
+    def settle_position(
+        self,
+        position_id: str,
+        actual_stat: float,
+        *,
+        stat_label: str = "actual_pts",
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """Sport-agnostic position settlement.
+
+        The caller fetches the actual stat from the sport's data source
+        (nba_api pts for NBA; MLB Stats API hits for MLB). This method
+        handles outcome determination, P&L computation, and ledger mutation
+        under the file lock — the same GG-034 invariant as resolve_pending().
+
+        actual_stat: raw outcome value (points, hits, etc.)
+        stat_label:  field name stored in the closed record.
+                     Default "actual_pts" preserves NBA backward compat.
+                     Pass "actual_hits" for MLB.
+
+        Returns (ok, closed_position_record). Empty dict if position_id is
+        not found in open_positions (idempotent — already settled is a no-op).
+        """
+        with self._lock, self._file_lock():
+            self._reload_locked()
+            pos = next(
+                (p for p in self._state["open_positions"]
+                 if p["position_id"] == position_id),
+                None,
+            )
+            if pos is None:
+                return True, {}
+
+            threshold = pos["kalshi_threshold"]
+            direction = pos["direction"]
+            size      = float(pos["size_usd"])
+            mid       = float(pos["mid_price_at_entry"])
+            vig       = float(pos["vig_at_entry"])
+
+            yes_won = actual_stat >= threshold
+            if direction == "YES":
+                won     = yes_won
+                yes_ask = mid + vig / 2
+                pnl     = size * (1.0 - yes_ask) / yes_ask if won else -size
+            else:  # NO
+                won    = not yes_won
+                no_ask = (1.0 - mid) + vig / 2
+                pnl    = size * (1.0 - no_ask) / no_ask if won else -size
+
+            pnl     = round(pnl, 4)
+            outcome = "WIN" if won else "LOSS"
+
+            self._state["open_positions"] = [
+                p for p in self._state["open_positions"]
+                if p["position_id"] != position_id
+            ]
+            closed_pos = {
+                **pos,
+                stat_label: actual_stat,
+                "outcome": outcome,
+                "pnl": pnl,
+                "resolved_at": _utc_now(),
+                "status": "CLOSED",
+            }
+            self._state["closed_positions"].append(closed_pos)
+            # GG-034: bankroll derived from ledger in _save(); no imperative scalar.
+            self._accumulate_daily_loss(pnl)
+            self._save()
+
+        ok = self._logger.info(
+            COMPONENT, "paper_position_resolved",
+            payload={
+                "position_id": position_id,
+                "player_name": pos["player_name"],
+                "direction": direction,
+                "threshold": threshold,
+                stat_label: actual_stat,
+                "outcome": outcome,
+                "pnl": pnl,
+                "bankroll_after": self._state["bankroll_usd"],
+            },
+            session_id=session_id,
+        )
+        return ok, closed_pos
 
     def summary(self) -> dict[str, Any]:
         """Return a human-readable portfolio summary.
