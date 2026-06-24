@@ -403,3 +403,249 @@ class TestModelThresholds:
     def test_threshold_4_not_in_model(self, monkeypatch):
         runner = _import_runner(monkeypatch)
         assert 4 not in runner._MODEL_THRESHOLDS
+
+
+# ---------------------------------------------------------------------------
+# T-187G: _safe_int
+# ---------------------------------------------------------------------------
+
+
+class TestSafeInt:
+    def _get_fn(self, monkeypatch):
+        return _import_runner(monkeypatch)._safe_int
+
+    def test_none_returns_none(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        assert fn(None) is None
+
+    def test_nan_returns_none(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        assert fn(float("nan")) is None
+
+    def test_valid_int_string(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        assert fn("660670") == 660670
+
+    def test_valid_float(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        assert fn(123.9) == 123
+
+    def test_non_numeric_string_returns_none(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        assert fn("abc") is None
+
+
+# ---------------------------------------------------------------------------
+# T-187G: _SP_OVERRIDE_FIELDS constant
+# ---------------------------------------------------------------------------
+
+
+class TestSpOverrideFields:
+    def test_contains_expected_keys(self, monkeypatch):
+        runner = _import_runner(monkeypatch)
+        assert runner._SP_OVERRIDE_FIELDS == frozenset({
+            "opp_sp_era_l5", "opp_sp_k9_l5", "opp_sp_bb9_l5", "opp_sp_is_known"
+        })
+
+
+# ---------------------------------------------------------------------------
+# T-187G: _build_mlb_feature_vector with sp_override
+# ---------------------------------------------------------------------------
+
+
+class TestBuildMLBFeatureVectorSpOverride:
+    def _get_fn(self, monkeypatch):
+        return _import_runner(monkeypatch)._build_mlb_feature_vector
+
+    def _make_row(self) -> pd.Series:
+        return pd.Series({
+            "ba_l10": 0.280,
+            "opp_sp_era_l5": 4.0,   # stale historical SP
+            "opp_sp_k9_l5": 8.0,
+            "opp_sp_bb9_l5": 3.0,
+            "opp_sp_is_known": 1.0,
+        })
+
+    def test_sp_override_replaces_sp_field(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        row = self._make_row()
+        feature_names = ["opp_sp_era_l5"]
+        medians = np.array([4.0])
+        override = {"opp_sp_era_l5": 2.50}
+
+        X = fn(row, feature_names=feature_names, col_medians=medians, sp_override=override)
+        assert X[0, 0] == pytest.approx(2.50)
+
+    def test_sp_override_none_value_imputed_from_median(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        row = self._make_row()
+        feature_names = ["opp_sp_era_l5"]
+        medians = np.array([3.75])
+        override = {"opp_sp_era_l5": None}   # API returned no value
+
+        X = fn(row, feature_names=feature_names, col_medians=medians, sp_override=override)
+        assert X[0, 0] == pytest.approx(3.75)
+
+    def test_non_sp_field_still_uses_row_when_override_provided(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        row = self._make_row()
+        feature_names = ["ba_l10", "opp_sp_era_l5"]
+        medians = np.array([0.25, 4.0])
+        override = {"opp_sp_era_l5": 2.50}
+
+        X = fn(row, feature_names=feature_names, col_medians=medians, sp_override=override)
+        assert X[0, 0] == pytest.approx(0.280)  # ba_l10 from row
+        assert X[0, 1] == pytest.approx(2.50)   # era from override
+
+    def test_sp_override_none_falls_back_to_row(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        row = self._make_row()
+        feature_names = ["opp_sp_era_l5"]
+        medians = np.array([4.0])
+
+        X = fn(row, feature_names=feature_names, col_medians=medians, sp_override=None)
+        assert X[0, 0] == pytest.approx(4.0)   # historical value from row
+
+    def test_opp_sp_is_known_from_override(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        row = self._make_row()
+        feature_names = ["opp_sp_is_known"]
+        medians = np.array([1.0])
+        override = {"opp_sp_is_known": 0.0}   # SP unknown tonight
+
+        X = fn(row, feature_names=feature_names, col_medians=medians, sp_override=override)
+        assert X[0, 0] == pytest.approx(0.0)
+
+
+# ---------------------------------------------------------------------------
+# T-187G: _build_live_sp_override
+# ---------------------------------------------------------------------------
+
+
+def _make_pitcher_log_df() -> pd.DataFrame:
+    """5 starts prior to 2026-06-24 for a pitcher with pid=999."""
+    return pd.DataFrame({
+        "game_date": ["2026-06-01", "2026-06-06", "2026-06-11",
+                      "2026-06-16", "2026-06-21"],
+        "ip":        [6.0, 7.0, 5.0, 6.0, 7.0],
+        "er":        [2.0, 1.0, 3.0, 2.0, 1.0],
+        "k":         [7.0, 9.0, 5.0, 8.0, 10.0],
+        "bb":        [2.0, 1.0, 3.0, 1.0, 2.0],
+        "is_start":  [1, 1, 1, 1, 1],
+    })
+
+
+class TestBuildLiveSpOverride:
+    def _get_fn(self, monkeypatch):
+        return _import_runner(monkeypatch)._build_live_sp_override
+
+    def _make_logger(self) -> MagicMock:
+        m = MagicMock()
+        m.info = MagicMock()
+        m.warning = MagicMock()
+        return m
+
+    def _make_client(self, starters_ok=True, starters=None, log_ok=True, log_df=None):
+        c = MagicMock()
+        c.fetch_game_starters.return_value = (starters_ok, starters or {})
+        c.fetch_pitcher_game_log.return_value = (log_ok, log_df)
+        return c
+
+    def test_returns_empty_on_api_failure(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        client = self._make_client(starters_ok=False)
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [147]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        assert result == {}
+
+    def test_returns_empty_when_no_starters(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        client = self._make_client(starters_ok=True, starters={})
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [147]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        assert result == {}
+
+    def test_player_not_playing_tonight_excluded(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # Game only has team_id=147 (NYY) vs team_id=111 (BOS)
+        starters = {1001: {
+            "home_team_id": 147, "away_team_id": 111,
+            "home_sp_id": 999,  "away_sp_id": 888,
+        }}
+        client = self._make_client(starters=starters, log_df=_make_pitcher_log_df())
+        # Player is on team 133 (OAK) — not playing tonight
+        latest_df = pd.DataFrame({"player_id": [777777], "team_id": [133]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        assert result == {}
+
+    def test_home_player_gets_away_sp(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # Player 660670 is on the HOME team (147); opp SP is the AWAY SP (888)
+        starters = {1001: {
+            "home_team_id": 147, "away_team_id": 111,
+            "home_sp_id": 999,  "away_sp_id": 888,
+        }}
+        client = self._make_client(starters=starters, log_df=_make_pitcher_log_df())
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [147]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        # fetch_pitcher_game_log should have been called with away SP id = 888
+        client.fetch_pitcher_game_log.assert_called_once_with(
+            888, "2026", session_id="SID-001",
+        )
+        assert 660670 in result
+        assert result[660670]["opp_sp_is_known"] == pytest.approx(1.0)
+
+    def test_away_player_gets_home_sp(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # Player 660670 is on the AWAY team (111); opp SP is the HOME SP (999)
+        starters = {1001: {
+            "home_team_id": 147, "away_team_id": 111,
+            "home_sp_id": 999,  "away_sp_id": 888,
+        }}
+        client = self._make_client(starters=starters, log_df=_make_pitcher_log_df())
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [111]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        # fetch_pitcher_game_log should have been called with home SP id = 999
+        client.fetch_pitcher_game_log.assert_called_once_with(
+            999, "2026", session_id="SID-001",
+        )
+        assert 660670 in result
+
+    def test_unknown_sp_sets_is_known_zero(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # SP not yet announced (None)
+        starters = {1001: {
+            "home_team_id": 147, "away_team_id": 111,
+            "home_sp_id": None, "away_sp_id": None,
+        }}
+        client = self._make_client(starters=starters)
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [147]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        assert 660670 in result
+        assert result[660670]["opp_sp_is_known"] == pytest.approx(0.0)
+        assert result[660670]["opp_sp_era_l5"] is None
+        client.fetch_pitcher_game_log.assert_not_called()
+
+    def test_happy_path_stats_populated(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        starters = {1001: {
+            "home_team_id": 147, "away_team_id": 111,
+            "home_sp_id": 999,  "away_sp_id": 888,
+        }}
+        client = self._make_client(starters=starters, log_df=_make_pitcher_log_df())
+        latest_df = pd.DataFrame({"player_id": [660670], "team_id": [147]})
+
+        result = fn("2026-06-24", latest_df, client, self._make_logger(), "SID-001")
+        assert 660670 in result
+        override = result[660670]
+        assert override["opp_sp_is_known"] == pytest.approx(1.0)
+        # ERA = 9 ER / 31 IP * 9 ≈ 2.613; k9 = 39k/31ip*9 ≈ 11.32; bb9 = 9bb/31ip*9 ≈ 2.61
+        assert override["opp_sp_era_l5"] == pytest.approx(9.0 / 31.0 * 9, rel=1e-3)
+        assert override["opp_sp_k9_l5"] == pytest.approx(39.0 / 31.0 * 9, rel=1e-3)
+        assert override["opp_sp_bb9_l5"] == pytest.approx(9.0 / 31.0 * 9, rel=1e-3)

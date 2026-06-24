@@ -82,6 +82,10 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
 # Activate C4 in-process (paper trading; verified ENV-02 above)
 os.environ["BOT_C4_ACTIVE"] = "true"
 
+from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import MLBIngestionClient
+from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import (
+    MLBPitcherStatsStore,
+)
 from prediction_market_bot.c3_forecasting.calibration import calibrate_probability
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
@@ -199,21 +203,133 @@ def _is_mlb_game_in_progress(game_date: str) -> bool:
     return False
 
 
+def _safe_int(v: object) -> int | None:
+    """Return int(v) or None if v is None/NaN/non-numeric."""
+    if v is None:
+        return None
+    try:
+        f = float(v)  # type: ignore[arg-type]
+        if np.isnan(f):
+            return None
+        return int(f)
+    except (TypeError, ValueError):
+        return None
+
+
+_SP_OVERRIDE_FIELDS = frozenset({
+    "opp_sp_era_l5", "opp_sp_k9_l5", "opp_sp_bb9_l5", "opp_sp_is_known"
+})
+
+
 def _build_mlb_feature_vector(
     row: pd.Series,
     feature_names: list[str],
     col_medians: np.ndarray,
+    sp_override: dict | None = None,
 ) -> np.ndarray:
-    """Build a (1, n_features) feature matrix for one player row."""
+    """Build a (1, n_features) feature matrix for one player row.
+
+    If sp_override is provided, SP fields are taken from the override dict
+    (tonight's live SP) rather than the stale historical row value.
+    """
     vals: list[float] = []
     for col in feature_names:
-        if col in row.index:
+        if sp_override is not None and col in _SP_OVERRIDE_FIELDS:
+            v = sp_override.get(col)
+            vals.append(float(v) if v is not None else np.nan)
+        elif col in row.index:
             v = row[col]
             vals.append(float(v) if pd.notna(v) else np.nan)
         else:
             vals.append(np.nan)
     X = np.array([vals], dtype=float)
     return _impute(X, col_medians)
+
+
+def _build_live_sp_override(
+    today_iso: str,
+    latest_df: pd.DataFrame,
+    client: MLBIngestionClient,
+    logger: AuditLogger,
+    session_id: str,
+) -> dict[int, dict]:
+    """Fetch tonight's actual starting pitchers and return per-player SP override dicts.
+
+    Returns a dict keyed by player_id (int). Each value has keys matching
+    _SP_OVERRIDE_FIELDS. Returns {} on API failure so the caller can fall back
+    to historical SP data without halting.
+    """
+    ok, starters = client.fetch_game_starters(today_iso, session_id)
+    if not ok or not starters:
+        return {}
+
+    # Build team_id → (game_pk, is_home) mapping for tonight's games
+    team_to_game: dict[int, tuple[int, bool]] = {}
+    for game_pk, info in starters.items():
+        htid = _safe_int(info.get("home_team_id"))
+        atid = _safe_int(info.get("away_team_id"))
+        if htid is not None:
+            team_to_game[htid] = (game_pk, True)
+        if atid is not None:
+            team_to_game[atid] = (game_pk, False)
+
+    # Build player_id → opp_sp_id mapping from the latest CSV row
+    sp_ids_needed: set[int] = set()
+    player_sp_map: dict[int, int | None] = {}
+    player_sp_known: dict[int, bool] = {}
+
+    for _, row in latest_df.iterrows():
+        pid = _safe_int(row.get("player_id"))
+        tid = _safe_int(row.get("team_id"))
+        if pid is None or tid is None or tid not in team_to_game:
+            continue
+        game_pk, is_home = team_to_game[tid]
+        sp_key = "away_sp_id" if is_home else "home_sp_id"
+        sp_id_raw = starters[game_pk].get(sp_key)
+        sp_id = _safe_int(sp_id_raw)
+        known = sp_id is not None
+        player_sp_map[pid] = sp_id
+        player_sp_known[pid] = known
+        if known:
+            sp_ids_needed.add(sp_id)  # type: ignore[arg-type]
+
+    if not player_sp_map:
+        return {}
+
+    # Fetch pitcher game logs for each unique SP playing tonight
+    pitcher_store = MLBPitcherStatsStore()
+    current_season = str(date.today().year)
+    for sp_id in sp_ids_needed:
+        ok_p, df_p = client.fetch_pitcher_game_log(
+            sp_id, current_season, session_id=session_id
+        )
+        if ok_p and df_p is not None and not df_p.empty:
+            pitcher_store.add_pitcher_log(sp_id, df_p)
+
+    logger.info(
+        "PIPE-05", "live_sp_overlay_fetched",
+        payload={
+            "n_games": len(starters),
+            "n_players_mapped": len(player_sp_map),
+            "n_sp_fetched": len(sp_ids_needed),
+        },
+        session_id=session_id,
+    )
+
+    # Build per-player override dict
+    result: dict[int, dict] = {}
+    for pid, sp_id in player_sp_map.items():
+        is_known = player_sp_known.get(pid, False)
+        era = pitcher_store.get_era_l5(sp_id, today_iso) if sp_id is not None else None
+        k9  = pitcher_store.get_k_per_9_l5(sp_id, today_iso) if sp_id is not None else None
+        bb9 = pitcher_store.get_bb_per_9_l5(sp_id, today_iso) if sp_id is not None else None
+        result[pid] = {
+            "opp_sp_era_l5":  era,
+            "opp_sp_k9_l5":   k9,
+            "opp_sp_bb9_l5":  bb9,
+            "opp_sp_is_known": 1.0 if is_known else 0.0,
+        }
+    return result
 
 
 def _write_report(orders: list, bankroll: float, trader: PaperTrader) -> None:
@@ -361,6 +477,30 @@ def main() -> None:
         payload={"csv_rows": len(df), "players": len(latest)},
         session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID,
     )
+
+    # ------------------------------------------------------------------
+    # 3b. Build live SP overlay (T-187G)
+    # Fetches tonight's actual SPs via MLB Stats API and overwrites stale
+    # opp_sp_* values from the historical feature CSV. Falls back to
+    # historical values silently if the API call fails.
+    # ------------------------------------------------------------------
+    mlb_client = MLBIngestionClient(logger, SNAPSHOT_ID)
+    sp_override_by_player: dict[int, dict] = {}
+    try:
+        sp_override_by_player = _build_live_sp_override(
+            today_iso=GAME_DATE_ISO,
+            latest_df=latest,
+            client=mlb_client,
+            logger=logger,
+            session_id=SESSION_ID,
+        )
+        print(f"[SP OVERLAY] Live SP stats fetched for {len(sp_override_by_player)} players")
+    except Exception as e:
+        logger.warning(
+            "PIPE-05", "live_sp_overlay_failed",
+            payload={"error": str(e)}, session_id=SESSION_ID,
+        )
+        print(f"[SP OVERLAY] Failed — falling back to historical SP stats: {e}")
 
     # ------------------------------------------------------------------
     # 4. Initialize C4 Risk Engine
@@ -535,10 +675,12 @@ def main() -> None:
                 continue
 
             # Build feature vector and dispatch to per-threshold pipeline
+            sp_override = sp_override_by_player.get(player_id)
             X = _build_mlb_feature_vector(
                 row=row,
                 feature_names=feature_names,
                 col_medians=col_medians,
+                sp_override=sp_override,
             )
 
             p_raw = float(pipelines[int(mkt.threshold)].predict_proba(X)[0, 1])
