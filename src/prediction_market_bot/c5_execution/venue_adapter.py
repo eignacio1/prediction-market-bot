@@ -42,6 +42,8 @@ from prediction_market_bot.c5_execution.kalshi_client import (
     DS02Snapshot,
     KalshiMarketClient,
     PlayerMarket,
+    SERIES_MLB_PLAYER_HITS,
+    SERIES_PLAYER_POINTS,
     _utc_now,
 )
 
@@ -138,10 +140,14 @@ class KalshiVenueAdapter:
         sport: str = "NBA",
         status: str = "open",
     ) -> tuple[bool, DS02Snapshot]:
-        ok, snapshot = self._client.fetch_player_points_markets(status=status)
+        _SPORT_SERIES: dict[str, str] = {
+            "nba": SERIES_PLAYER_POINTS,
+            "mlb": SERIES_MLB_PLAYER_HITS,
+        }
+        series = _SPORT_SERIES.get(sport.lower(), SERIES_PLAYER_POINTS)
+        ok, snapshot = self._client.fetch_player_points_markets(status=status, series_ticker=series)
         if not ok:
             return False, snapshot
-        # Tag each market with venue='kalshi'
         tagged = [_tag_market(m, self.venue_id) for m in snapshot.markets]
         return True, DS02Snapshot(fetched_at=snapshot.fetched_at, markets=tagged)
 

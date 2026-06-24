@@ -469,8 +469,14 @@ class KalshiMarketClient:
         self,
         status: str = "open",
         page_size: int = 200,
+        series_ticker: str = SERIES_PLAYER_POINTS,
     ) -> tuple[bool, DS02Snapshot]:
-        """Fetch ALL open NBA player-points markets (KXNBAPTS series) with cursor pagination."""
+        """Fetch ALL open markets for the given series with cursor pagination.
+
+        series_ticker selects the sport:
+          SERIES_PLAYER_POINTS   (KXNBAPTS) — NBA points markets (default)
+          SERIES_MLB_PLAYER_HITS (KXMLBHIT) — MLB hits markets
+        """
         all_raw: list[dict] = []
         cursor: str | None = None
 
@@ -478,7 +484,7 @@ class KalshiMarketClient:
             params: dict = {
                 "limit": page_size,
                 "status": status,
-                "series_ticker": SERIES_PLAYER_POINTS,
+                "series_ticker": series_ticker,
             }
             if cursor:
                 params["cursor"] = cursor
