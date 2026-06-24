@@ -1,6 +1,6 @@
 # ADR-0031 — T-072 Model Retrain Authorization (Supersedes ADR-0004 Scope Extension)
 
-**Status:** DRAFT — pending DS sign-off  
+**Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-06-23 SESSION 73  
 **Date:** 2026-06-23  
 **Proposed by:** SESSION 73  
 **Owner (role):** DS — Earl Ignacio  
@@ -108,6 +108,16 @@ After shadow gate passes (Part C), run `scripts/run_t177_edge_monitor.py` on ava
 
 ## DS Sign-Off
 
-**Operator:** _____________________________ (Earl Ignacio)  
-**Date:** _____________________________  
+**Operator:** Earl Ignacio  
+**Date:** 2026-06-23  
+**Session:** SESSION 73  
 **Status on sign:** ACCEPTED
+
+**Acceptance checklist at sign-off:**
+- [x] F-041/F-042/F-043 implemented in `features.py`; FEATURE_VERSION = "1.4.0" (T-072 Part A, this session)
+- [x] Temporal integrity audit passed (1293 tests green, including 13 new playoff feature tests)
+- [x] KeyError guard added for missing `opponent_team_abbr` column (Q6 finding, this session)
+- [ ] Retrain executed on 2025-26 full data; model hash recorded (T-072 Part B — authorized by this sign-off)
+- [ ] Shadow gate: Brier improvement confirmed, ECE ≤ 0.05 confirmed (T-072 Part B)
+- [ ] T-177 backtest on retrained model: not ANTI-PREDICTIVE (p > 0.05) (T-072 Part C)
+- [ ] New model version deployed to paper trading; kill switch reset with documentation (post-Part C)

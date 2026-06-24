@@ -395,3 +395,16 @@ class TestPlayoffFeatures:
         _, feature_df = store.compute_features_bulk(df, session_id="TEST-SESSION")
         assert len(feature_df) == 20, \
             f"Expected 20 rows (15 regular + 5 playoff), got {len(feature_df)}"
+
+    @pytest.mark.unit
+    def test_playoff_features_no_keyerror_when_opp_abbr_column_absent(self):
+        """_compute_playoff_features must not raise KeyError when opponent_team_abbr
+        column is absent from input — falls back to delta=0.0 for playoff rows."""
+        df = _make_player_df(n=5, season_type="Playoffs")
+        # _make_player_df does NOT include opponent_team_abbr — this tests the guard
+        result = _compute_rolling_features(df, window=10, min_periods=3)
+        # Must not raise KeyError:
+        playoff_df = _compute_playoff_features(result, window=10)
+        assert "series_scoring_delta" in playoff_df.columns
+        assert (playoff_df["series_scoring_delta"] == 0.0).all(), \
+            "Without opponent_team_abbr, delta must default to 0.0 (no series context)"

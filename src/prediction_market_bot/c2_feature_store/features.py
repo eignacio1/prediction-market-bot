@@ -483,6 +483,12 @@ def _compute_playoff_features(
         opp = row.get("opponent_team_abbr")
         season = row.get("season")
 
+        # Guard: if opponent_team_abbr column absent (e.g. experiment-only DataFrames
+        # without full C1 schema), we cannot identify series boundaries — delta = 0.0.
+        if "opponent_team_abbr" not in df.columns or opp is None:
+            deltas.append(0.0)
+            continue
+
         prior_series_mask = (
             (df.index < idx)
             & (df["season_type"].str.lower().str.contains("playoff", na=False))
