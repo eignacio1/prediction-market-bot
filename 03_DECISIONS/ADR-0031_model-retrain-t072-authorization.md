@@ -93,6 +93,43 @@ After shadow gate passes (Part C), run `scripts/run_t177_edge_monitor.py` on ava
 
 ---
 
+## Known Limitations at Acceptance (SESSION 73 / 2026-06-23)
+
+These limitations were identified at the time of DS sign-off and must be understood by any reader before treating v2 as a complete fix.
+
+### 1. F-042 contributed zero signal — the core playoff opponent defensive fix is NOT in v2
+
+`opp_playoff_def_rating_l5_mean` (F-042) was NaN everywhere in the training data because the playoff TeamGameLog pull was deferred during Part B execution. The LR model imputed NaN → 0.0, effectively zeroing the feature's weight. F-042 was designed to replace regular-season opponent defensive ratings with opponent's trailing playoff defensive performance — the most directly targeted fix for the λ compression identified in S69 (Finding 2: Kalshi incorporates playoff defensive information the model does not).
+
+**Consequence:** v2-065b9510's playoff opponent adjustment consists entirely of:
+- F-041: a single empirical multiplier of 0.959603 (≈4% λ reduction for all playoff contexts) — derived from only 31 in-training playoff rows
+- F-043: within-series scoring delta (83 non-zero rows)
+
+The S69 diagnosis found 9–30% compression at thr=10–20. A 4% global multiplier addresses perhaps 15–45% of the identified compression magnitude.
+
+### 2. Brier improvement source — the shadow gate passed for the wrong reason
+
+The primary Brier gain in v2 (Δ=+0.001507) came from F-039 (`is_home_game`) and F-040 (`opp_def_rating_l10_mean`) — features present in the training matrix but absent from v1's 78-feature set. This is an independent improvement unrelated to the playoff compression fix. The three Option C features (F-041/F-042/F-043) likely contributed marginally or zero to the Brier improvement; F-042 contributed definitively zero.
+
+**What this means:** The shadow gate passing does NOT validate that the playoff compression problem is fixed. It validates that the new feature matrix, with additional baseline features included, is better calibrated than v1. The improvement would have appeared even without F-041/F-042/F-043.
+
+### 3. T-177 INCONCLUSIVE interpretation
+
+v2's T-177 result (p=0.1639, edge>0 winrate 67.6% vs edge≤0 53.5%) shows a direction reversal from v1's ANTI-PREDICTIVE pattern (edge>0 winrate 35.6%). This is directionally positive and meets the Phase 3 gate condition (p > 0.05). However:
+- n=114 is below ADR-0024's structural adequacy threshold (n≥500, ≥15 opponents)
+- The reversal is consistent with the F-039/F-040 improvements, not specifically the playoff compression fix
+- The model deployed in October may still fail T-177 when tested at adequate sample in the 2026-27 regular season
+
+### 4. Required follow-up before NBA 26-27 paper trading restarts (T-186)
+
+Pull playoff TeamGameLog for 8-10 NBA teams (≈5-10 min via nba_api), repopulate F-042 for all playoff training rows, retrain v2b, re-run T-177. If T-186 completes before October 2026, deploy v2b instead of v2-065b9510. T-186 is registered in TODO_NEXT Phase 3 section.
+
+### 5. Deployment framing
+
+**Shadow gate PASSED ≠ alpha confirmed.** Deploying v2 in October 2026 is an evidence-collection decision on an improved feature set. The commercial question — does the model beat Kalshi prices? — is answered by EXP-017 at ADR-0024 adequate sample (GG-004, GG-037). Both governance gaps remain OPEN.
+
+---
+
 ## Acceptance checklist
 
 - [x] DS sign-off (Earl Ignacio)
