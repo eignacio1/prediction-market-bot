@@ -349,11 +349,11 @@ class TestExtractFeatureMatrix:
         _, feature_names = _extract_feature_matrix(df)
         assert "ba_l10" in feature_names
 
-    def test_includes_threshold_when_present(self) -> None:
+    def test_excludes_threshold_when_present(self) -> None:
         df = _make_feature_df(n=2)
         df["threshold"] = 1.0
         _, feature_names = _extract_feature_matrix(df)
-        assert "threshold" in feature_names
+        assert "threshold" not in feature_names
 
     def test_columns_sorted_alphabetically(self) -> None:
         df = _make_feature_df(n=2)
@@ -395,8 +395,8 @@ class TestNonFeatureSet:
     def test_ba_l10_not_in_non_feature(self) -> None:
         assert "ba_l10" not in _NON_FEATURE_MLB
 
-    def test_threshold_not_in_non_feature(self) -> None:
-        assert "threshold" not in _NON_FEATURE_MLB
+    def test_threshold_in_non_feature(self) -> None:
+        assert "threshold" in _NON_FEATURE_MLB
 
     def test_is_home_game_not_in_non_feature(self) -> None:
         assert "is_home_game" not in _NON_FEATURE_MLB
@@ -473,7 +473,7 @@ class TestShadowGateLogic:
         assert MIN_TRAIN_SAMPLES == 30
 
     def test_thresholds_constant(self) -> None:
-        assert THRESHOLDS == [1, 2, 3]
+        assert THRESHOLDS == [1, 2]
 
 
 # ---------------------------------------------------------------------------
@@ -504,11 +504,11 @@ class TestModelArtifact:
         feature_names = ["f1", "f2", "f3"]
         medians = np.array([0.0, 0.0, 0.0])
         artifact = {
-            "pipeline": pipe,
+            "pipelines": {1: pipe, 2: pipe},
             "feature_names": feature_names,
             "col_medians": medians,
             "model_version": "mlb-v1-testtest",
-            "thresholds": [1, 2, 3],
+            "thresholds": [1, 2],
             "sport": "mlb",
         }
         path = tmp_path / "mlb_v1_model.joblib"
@@ -521,18 +521,18 @@ class TestModelArtifact:
     def test_loaded_pipeline_predicts_probabilities(self, tmp_path: Path) -> None:
         pipe = self._make_pipeline()
         artifact = {
-            "pipeline": pipe,
+            "pipelines": {1: pipe, 2: pipe},
             "feature_names": ["f1", "f2", "f3"],
             "col_medians": np.array([0.0, 0.0, 0.0]),
             "model_version": "mlb-v1-testtest",
-            "thresholds": [1, 2, 3],
+            "thresholds": [1, 2],
             "sport": "mlb",
         }
         path = tmp_path / "mlb_v1_model.joblib"
         joblib.dump(artifact, path)
         loaded = joblib.load(path)
         X_test = np.array([[0.1, 0.2, 0.3]])
-        probs = loaded["pipeline"].predict_proba(X_test)
+        probs = loaded["pipelines"][1].predict_proba(X_test)
         assert probs.shape == (1, 2)
         assert 0.0 <= probs[0, 1] <= 1.0
 
@@ -555,11 +555,11 @@ class TestModelArtifact:
         pipe = self._make_pipeline()
         medians = np.array([1.1, 2.2, 3.3])
         artifact = {
-            "pipeline": pipe,
+            "pipelines": {1: pipe, 2: pipe},
             "feature_names": ["f1", "f2", "f3"],
             "col_medians": medians,
             "model_version": "mlb-v1-testtest",
-            "thresholds": [1, 2, 3],
+            "thresholds": [1, 2],
             "sport": "mlb",
         }
         path = tmp_path / "mlb_v1_model.joblib"
@@ -721,7 +721,7 @@ class TestEndToEndDryRun:
 
     def test_guard_fires_on_insufficient_train_rows(self, tmp_path: Path) -> None:
         csv = tmp_path / "matrix.csv"
-        _write_synthetic_csv(csv, n_train=5, n_holdout=15)  # 5*3=15 expanded < MIN_TRAIN_SAMPLES
+        _write_synthetic_csv(csv, n_train=5, n_holdout=15)  # 5*2=10 expanded < MIN_TRAIN_SAMPLES
         with pytest.raises(SystemExit) as exc_info:
             main(csv_path=csv, dry_run=True, force_save=True,
                  model_path=tmp_path / "m.joblib", meta_path=tmp_path / "m.json")
@@ -771,7 +771,7 @@ class TestEndToEndDryRun:
         main(csv_path=csv, dry_run=False, force_save=True,
              model_path=model_path, meta_path=meta_path)
         meta = json.loads(meta_path.read_text())
-        assert meta["thresholds"] == [1, 2, 3]
+        assert meta["thresholds"] == [1, 2]
 
     def test_saved_artifact_has_feature_names(self, tmp_path: Path) -> None:
         csv = tmp_path / "matrix.csv"
@@ -782,7 +782,7 @@ class TestEndToEndDryRun:
              model_path=model_path, meta_path=meta_path)
         artifact = joblib.load(model_path)
         assert "feature_names" in artifact
-        assert "threshold" in artifact["feature_names"]
+        assert "threshold" not in artifact["feature_names"]
 
     def test_saved_artifact_predicts_probabilities(self, tmp_path: Path) -> None:
         csv = tmp_path / "matrix.csv"
@@ -794,7 +794,7 @@ class TestEndToEndDryRun:
         artifact = joblib.load(model_path)
         n_features = len(artifact["feature_names"])
         X_test = np.zeros((1, n_features))
-        probs = artifact["pipeline"].predict_proba(X_test)
+        probs = artifact["pipelines"][1].predict_proba(X_test)
         assert probs.shape[1] == 2
         assert 0.0 <= probs[0, 1] <= 1.0
 
