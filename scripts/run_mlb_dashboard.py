@@ -560,7 +560,7 @@ def render_alert_feed(audit_entries: list[dict], w: int, max_alerts: int = 15) -
         evt  = str(entry.get("event_type", "?"))
         suffix = f" ×{count}" if count > 1 else ""
         sev_colored = _red(sev) if sev in ("ERROR", "CRITICAL") else _yellow(sev)
-        lines.append(_row(f"  {ts}  {sev_colored}  {_col(comp, 6)} {evt}{suffix}", w))
+        lines.append(_row(f"  {ts}  {_col(sev_colored, 8)}  {_col(comp, 8)} {evt}{suffix}", w))
 
     lines.append(_box_bot(w))
     return lines
