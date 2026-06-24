@@ -121,7 +121,7 @@ MIN_BET_PAPER = float(os.environ.get("MIN_BET_MLB_PAPER", "1.0"))
 T1_KELLY = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
 
 # MLB Kalshi hit market thresholds the model was trained on
-_MODEL_THRESHOLDS: frozenset[int] = frozenset({1, 2, 3})
+_MODEL_THRESHOLDS: frozenset[int] = frozenset({1, 2})
 
 # MLB Stats API
 _MLB_SCHEDULE_URL = "https://statsapi.mlb.com/api/v1/schedule"
@@ -138,6 +138,7 @@ _NON_FEATURE_MLB: frozenset[str] = frozenset({
     "temporal_cutoff", "train_test_label", "ingestion_run_id", "ingested_at",
     "ab", "h", "doubles", "triples", "hr", "rbi", "bb", "k", "hbp", "sf",
     "y_target", "game_date_dt",
+    "threshold",  # not in feature matrix — each pipeline is threshold-specific
 })
 
 
@@ -200,21 +201,13 @@ def _is_mlb_game_in_progress(game_date: str) -> bool:
 
 def _build_mlb_feature_vector(
     row: pd.Series,
-    threshold: float,
     feature_names: list[str],
     col_medians: np.ndarray,
 ) -> np.ndarray:
-    """Build a (1, n_features) feature matrix for one player+threshold pair.
-
-    threshold is injected here because the MLB model treats it as a numeric
-    feature (train_mlb_model.py _build_mlb_target adds threshold=float(t)
-    before training; it is NOT in _NON_FEATURE_MLB).
-    """
+    """Build a (1, n_features) feature matrix for one player row."""
     vals: list[float] = []
     for col in feature_names:
-        if col == "threshold":
-            vals.append(threshold)
-        elif col in row.index:
+        if col in row.index:
             v = row[col]
             vals.append(float(v) if pd.notna(v) else np.nan)
         else:
@@ -327,11 +320,11 @@ def main() -> None:
         sys.exit(1)
 
     artifact      = joblib.load(MODEL_PATH)
-    pipeline      = artifact["pipeline"]
+    pipelines     = artifact["pipelines"]
     feature_names: list[str] = artifact["feature_names"]
     col_medians: np.ndarray  = artifact["col_medians"]
     model_version: str       = artifact["model_version"]
-    model_thresholds: list[int] = artifact.get("thresholds", [1, 2, 3])
+    model_thresholds: list[int] = artifact.get("thresholds", [1, 2])
     sport_label: str         = artifact.get("sport", "mlb")
 
     if sport_label.lower() != "mlb":
@@ -541,15 +534,14 @@ def main() -> None:
                 print(f"  [IDEMPOTENCY] SKIP {kalshi_player_name} — {mkt.ticker} already open")
                 continue
 
-            # Build feature vector with threshold injected
+            # Build feature vector and dispatch to per-threshold pipeline
             X = _build_mlb_feature_vector(
                 row=row,
-                threshold=float(mkt.threshold),
                 feature_names=feature_names,
                 col_medians=col_medians,
             )
 
-            p_raw = float(pipeline.predict_proba(X)[0, 1])
+            p_raw = float(pipelines[int(mkt.threshold)].predict_proba(X)[0, 1])
             p_calibrated = calibrate_probability(p_raw, sport="mlb")
 
             mid   = mkt.mid_price

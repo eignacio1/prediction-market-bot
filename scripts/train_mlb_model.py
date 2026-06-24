@@ -85,7 +85,8 @@ MLB_V1_MODEL_PATH = MODEL_DIR / "mlb_v1_model.joblib"
 MLB_V1_META_PATH = MODEL_DIR / "mlb_v1_model_meta.json"
 
 FEATURE_VERSION = "1.0.0"
-THRESHOLDS: list[int] = [1, 2, 3]
+THRESHOLDS: list[int] = [1, 2]          # Active thresholds — per-threshold models trained here
+_EXCLUDED_THRESHOLDS: list[int] = [3]   # t=3 excluded: Brier delta ≈ +0.0002 at base rate 3.9%; see GG-042
 HOLDOUT_CUTOFF = "2026-01-01"  # Fixed before training — do not change
 
 SHADOW_GATE_BRIER_DELTA = 0.001
@@ -111,6 +112,10 @@ _NON_FEATURE_MLB: frozenset[str] = frozenset({
     "y_target",
     # Temporal helper
     "game_date_dt",
+    # Row-filtering key — present in expanded DataFrame for split logic but
+    # excluded from feature matrix because each per-threshold pipeline sees
+    # only its own threshold's rows (constant column → degenerate feature).
+    "threshold",
 })
 
 
@@ -274,65 +279,79 @@ def main(
         )
         sys.exit(1)
 
-    # 5. Build feature matrices
-    print("[5/8] Building feature matrices...")
-    X_train, feature_names = _extract_feature_matrix(train_df)
-    X_holdout, _ = _extract_feature_matrix(holdout_df)
-
-    y_train = train_df["y_target"].astype(int).to_numpy()
-    y_holdout = holdout_df["y_target"].astype(int).to_numpy()
-
-    col_medians = np.nanmedian(X_train, axis=0)
-    X_train = _impute(X_train, col_medians)
-    X_holdout = _impute(X_holdout, col_medians)
+    # 5. Build shared feature matrix (col_medians computed on all train rows;
+    #    features are identical across thresholds — only labels differ).
+    print("[5/8] Building feature matrices (shared across thresholds)...")
+    X_train_all, feature_names = _extract_feature_matrix(train_df)
+    col_medians = np.nanmedian(X_train_all, axis=0)
     print(f"      Features: {len(feature_names)}")
 
     model_version = _mlb_model_version(feature_names)
 
-    # 6. Fit: StandardScaler → CalibratedClassifierCV(LR, cv=3, sigmoid)
-    #    Matches forecaster.py pipeline (ADR-0004).
-    print("[6/8] Fitting LR + Platt calibration (ADR-0004)...")
-    base_clf = LogisticRegression(
-        C=1.0,
-        solver="lbfgs",
-        max_iter=1000,
-        random_state=42,
-        class_weight="balanced",
-    )
-    pipe = Pipeline([
-        ("scaler", StandardScaler()),
-        ("clf", CalibratedClassifierCV(base_clf, method="sigmoid", cv=3)),
-    ])
-    pipe.fit(X_train, y_train)
+    # 6. Per-threshold training loop.
+    #    One pipeline per active threshold; each sees only its own rows.
+    print("[6/8] Fitting per-threshold LR + Platt pipelines (ADR-0004)...")
+    pipelines: dict[int, Pipeline] = {}
+    threshold_metrics: dict[int, dict] = {}
 
-    # 7. Evaluate shadow gate (ADR-0009)
-    print("[7/8] Evaluating shadow gate (ADR-0009)...")
-    y_prob = pipe.predict_proba(X_holdout)[:, 1]
+    for t in THRESHOLDS:
+        t_train = train_df[train_df["threshold"] == float(t)].copy()
+        t_hold = holdout_df[holdout_df["threshold"] == float(t)].copy()
 
-    brier_model = float(brier_score_loss(y_holdout, y_prob))
-    null_positive_rate = float(y_holdout.mean())
-    brier_null = float(brier_score_loss(y_holdout, np.full_like(y_prob, null_positive_rate)))
-    brier_delta = brier_null - brier_model
+        X_t_train, _ = _extract_feature_matrix(t_train)
+        X_t_hold, _ = _extract_feature_matrix(t_hold)
+        y_t_train = t_train["y_target"].astype(int).to_numpy()
+        y_t_hold = t_hold["y_target"].astype(int).to_numpy()
 
-    ece = _compute_ece(y_holdout, y_prob)
-    auc = (
-        float(roc_auc_score(y_holdout, y_prob))
-        if len(np.unique(y_holdout)) > 1
-        else float("nan")
-    )
+        X_t_train = _impute(X_t_train, col_medians)
+        X_t_hold = _impute(X_t_hold, col_medians)
 
-    gate_brier = brier_delta >= SHADOW_GATE_BRIER_DELTA
-    gate_ece = ece <= SHADOW_GATE_ECE_MAX
-    gate_pass = gate_brier and gate_ece
+        base_clf = LogisticRegression(
+            C=1.0, solver="lbfgs", max_iter=1000, random_state=42, class_weight="balanced",
+        )
+        pipe = Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", CalibratedClassifierCV(base_clf, method="sigmoid", cv=3)),
+        ])
+        pipe.fit(X_t_train, y_t_train)
 
-    print(f"      Brier(model):  {brier_model:.4f}")
-    print(f"      Brier(null):   {brier_null:.4f}")
-    print(f"      Brier delta:   {brier_delta:+.4f}  (need >= +{SHADOW_GATE_BRIER_DELTA})")
-    print(f"      ECE:           {ece:.4f}  (need <= {SHADOW_GATE_ECE_MAX})")
-    print(f"      AUC-ROC:       {auc:.4f}")
-    print(f"\n      Brier gate:  {'PASS' if gate_brier else 'FAIL'}")
-    print(f"      ECE gate:    {'PASS' if gate_ece else 'FAIL'}")
-    print(f"      Shadow gate: {'PASS' if gate_pass else 'FAIL'}")
+        y_prob = pipe.predict_proba(X_t_hold)[:, 1]
+        null_rate = float(y_t_hold.mean())
+        brier_m = float(brier_score_loss(y_t_hold, y_prob))
+        brier_n = float(brier_score_loss(y_t_hold, np.full_like(y_prob, null_rate)))
+        bd = brier_n - brier_m
+        ece = _compute_ece(y_t_hold, y_prob)
+        auc = (
+            float(roc_auc_score(y_t_hold, y_prob))
+            if len(np.unique(y_t_hold)) > 1
+            else float("nan")
+        )
+
+        g_brier = bd >= SHADOW_GATE_BRIER_DELTA
+        g_ece = ece <= SHADOW_GATE_ECE_MAX
+        print(f"      t={t}: Brier delta={bd:+.4f} ({'PASS' if g_brier else 'FAIL'})  "
+              f"ECE={ece:.4f} ({'PASS' if g_ece else 'FAIL'})  AUC={auc:.4f}")
+
+        pipelines[t] = pipe
+        threshold_metrics[t] = {
+            "null_positive_rate": round(null_rate, 6),
+            "brier_model": round(brier_m, 6),
+            "brier_null": round(brier_n, 6),
+            "brier_delta": round(bd, 6),
+            "ece": round(ece, 4),
+            "auc_roc": round(auc, 4) if not np.isnan(auc) else None,
+            "gate_brier": g_brier,
+            "gate_ece": g_ece,
+            "gate_pass": g_brier and g_ece,
+        }
+
+    # 7. Evaluate combined shadow gate (ADR-0009): ALL thresholds must PASS.
+    print("[7/8] Evaluating combined shadow gate (ADR-0009)...")
+    gate_pass = all(m["gate_pass"] for m in threshold_metrics.values())
+    for t, m in threshold_metrics.items():
+        status = "PASS" if m["gate_pass"] else "FAIL"
+        print(f"      t={t}: {status}")
+    print(f"\n      Combined shadow gate: {'PASS' if gate_pass else 'FAIL'}")
 
     if not gate_pass and not force_save:
         logger.log(
@@ -340,12 +359,7 @@ def main(
             "mlb_shadow_gate_fail",
             payload={
                 "model_version": model_version,
-                "brier_model": round(brier_model, 6),
-                "brier_null": round(brier_null, 6),
-                "brier_delta": round(brier_delta, 6),
-                "ece": round(ece, 4),
-                "gate_brier": gate_brier,
-                "gate_ece": gate_ece,
+                "threshold_metrics": threshold_metrics,
             },
             session_id=session_id,
             severity="ERROR",
@@ -365,7 +379,7 @@ def main(
     else:
         print("\n[8/8] Saving model artifact...")
         artifact = {
-            "pipeline": pipe,
+            "pipelines": pipelines,
             "feature_names": feature_names,
             "col_medians": col_medians,
             "model_version": model_version,
@@ -377,9 +391,10 @@ def main(
         meta = {
             "model_version": model_version,
             "feature_version": FEATURE_VERSION,
-            "model_class": "LogisticRegression+PlattScaling (ADR-0004)",
+            "model_class": "LogisticRegression+PlattScaling per-threshold (ADR-0004)",
             "sport": "mlb",
             "thresholds": THRESHOLDS,
+            "excluded_thresholds": _EXCLUDED_THRESHOLDS,
             "feature_names": feature_names,
             "feature_count": len(feature_names),
             "holdout_cutoff": HOLDOUT_CUTOFF,
@@ -387,12 +402,7 @@ def main(
             "session_id": session_id,
             "train_rows": int(len(train_df)),
             "holdout_rows": int(len(holdout_df)),
-            "null_positive_rate": round(null_positive_rate, 6),
-            "brier_model": round(brier_model, 6),
-            "brier_null": round(brier_null, 6),
-            "brier_delta": round(brier_delta, 6),
-            "ece": round(ece, 4),
-            "auc_roc": round(auc, 4) if not np.isnan(auc) else None,
+            "threshold_metrics": threshold_metrics,
             "shadow_gate_pass": gate_pass,
             "shadow_gate_brier_delta_required": SHADOW_GATE_BRIER_DELTA,
             "shadow_gate_ece_max": SHADOW_GATE_ECE_MAX,

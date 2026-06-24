@@ -191,61 +191,44 @@ class TestBuildMLBFeatureVector:
             "park_factor_hits": 1.0,
         })
 
-    def test_threshold_injected_in_vector(self, monkeypatch):
+    def test_known_column_value_preserved(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         row = self._make_row()
-        feature_names = ["ba_l10", "days_rest", "threshold"]  # simplified
-        medians = np.array([0.250, 1, 1.5])
+        feature_names = ["ba_l10", "days_rest"]
+        medians = np.array([0.250, 1.0])
 
-        X = fn(row, threshold=2.0, feature_names=feature_names, col_medians=medians)
-        assert X.shape == (1, 3)
-        assert X[0, 2] == pytest.approx(2.0)  # threshold at index 2
-
-    def test_threshold_1_vs_3_differ(self, monkeypatch):
-        fn = self._get_fn(monkeypatch)
-        row = self._make_row()
-        feature_names = ["ba_l10", "threshold"]
-        medians = np.array([0.250, 1.5])
-
-        X1 = fn(row, threshold=1.0, feature_names=feature_names, col_medians=medians)
-        X3 = fn(row, threshold=3.0, feature_names=feature_names, col_medians=medians)
-        # Only threshold column should differ
-        assert X1[0, 0] == pytest.approx(X3[0, 0])  # ba_l10 same
-        assert X1[0, 1] == pytest.approx(1.0)
-        assert X3[0, 1] == pytest.approx(3.0)
+        X = fn(row, feature_names=feature_names, col_medians=medians)
+        assert X.shape == (1, 2)
+        assert X[0, 0] == pytest.approx(0.280)  # ba_l10 from row
 
     def test_nan_imputed_with_median(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        row = pd.Series({"known_col": np.nan, "threshold": None})
-        feature_names = ["known_col", "threshold"]
-        medians = np.array([0.300, 1.5])
+        row = pd.Series({"known_col": np.nan})
+        feature_names = ["known_col"]
+        medians = np.array([0.300])
 
-        X = fn(row, threshold=1.0, feature_names=feature_names, col_medians=medians)
-        # known_col was NaN → imputed with median 0.300
+        X = fn(row, feature_names=feature_names, col_medians=medians)
         assert X[0, 0] == pytest.approx(0.300)
-        # threshold is explicitly injected → 1.0 (not NaN → not imputed from median)
-        assert X[0, 1] == pytest.approx(1.0)
 
     def test_missing_column_treated_as_nan(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         row = pd.Series({"ba_l10": 0.280})  # missing "ops_l10"
-        feature_names = ["ba_l10", "ops_l10", "threshold"]
-        medians = np.array([0.250, 0.750, 1.5])
+        feature_names = ["ba_l10", "ops_l10"]
+        medians = np.array([0.250, 0.750])
 
-        X = fn(row, threshold=2.0, feature_names=feature_names, col_medians=medians)
-        assert X.shape == (1, 3)
+        X = fn(row, feature_names=feature_names, col_medians=medians)
+        assert X.shape == (1, 2)
         assert X[0, 0] == pytest.approx(0.280)
         assert X[0, 1] == pytest.approx(0.750)  # imputed from median
-        assert X[0, 2] == pytest.approx(2.0)
 
     def test_output_shape(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         row = self._make_row()
-        n_features = 19
-        feature_names = [f"f{i}" for i in range(n_features - 1)] + ["threshold"]
+        n_features = 18
+        feature_names = [f"f{i}" for i in range(n_features)]
         medians = np.zeros(n_features)
 
-        X = fn(row, threshold=1.0, feature_names=feature_names, col_medians=medians)
+        X = fn(row, feature_names=feature_names, col_medians=medians)
         assert X.shape == (1, n_features)
 
 
@@ -257,9 +240,9 @@ class TestBuildMLBFeatureVector:
 class TestNonFeatureMLBConsistency:
     """Validate that _NON_FEATURE_MLB in runner matches train_mlb_model.py."""
 
-    def test_threshold_not_in_non_features(self, monkeypatch):
+    def test_threshold_in_non_features(self, monkeypatch):
         runner = _import_runner(monkeypatch)
-        assert "threshold" not in runner._NON_FEATURE_MLB
+        assert "threshold" in runner._NON_FEATURE_MLB
 
     def test_player_id_in_non_features(self, monkeypatch):
         runner = _import_runner(monkeypatch)
@@ -289,11 +272,11 @@ class TestMainWrongSportGuard:
         import prediction_market_bot.run_mlb_paper_trade as runner
 
         fake_artifact = {
-            "pipeline": MagicMock(),
-            "feature_names": ["ba_l10", "threshold"],
-            "col_medians": np.array([0.25, 1.5]),
+            "pipelines": {1: MagicMock(), 2: MagicMock()},
+            "feature_names": ["ba_l10", "days_rest"],
+            "col_medians": np.array([0.25, 1.0]),
             "model_version": "mlb_v1_wrong",
-            "thresholds": [1, 2, 3],
+            "thresholds": [1, 2],
             "sport": "nba",          # wrong sport
         }
         model_path = tmp_path / "mlb_v1_model.joblib"
@@ -336,11 +319,11 @@ class TestMainNoMarkets:
 
     def _make_artifact(self) -> dict:
         return {
-            "pipeline": MagicMock(),
-            "feature_names": ["ba_l10", "threshold"],
-            "col_medians": np.array([0.25, 1.5]),
+            "pipelines": {1: MagicMock(), 2: MagicMock()},
+            "feature_names": ["ba_l10", "days_rest"],
+            "col_medians": np.array([0.25, 1.0]),
             "model_version": "mlb_v1_test",
-            "thresholds": [1, 2, 3],
+            "thresholds": [1, 2],
             "sport": "mlb",
         }
 
@@ -415,7 +398,7 @@ class TestMainNoMarkets:
 class TestModelThresholds:
     def test_model_thresholds_match_training(self, monkeypatch):
         runner = _import_runner(monkeypatch)
-        assert runner._MODEL_THRESHOLDS == frozenset({1, 2, 3})
+        assert runner._MODEL_THRESHOLDS == frozenset({1, 2})
 
     def test_threshold_4_not_in_model(self, monkeypatch):
         runner = _import_runner(monkeypatch)

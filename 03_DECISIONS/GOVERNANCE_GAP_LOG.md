@@ -732,6 +732,20 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+| Gap ID | GG-042 |
+| Discovered | SESSION 81 — 2026-06-24; T-187B per-threshold model diagnostic |
+| Category | Active scope exclusion — threshold with inadequate Brier signal deferred pending feature injection |
+| What was missed | MLB KXMLBHIT threshold t=3 (3+ hits per game) excluded from `THRESHOLDS` in `train_mlb_model.py` and `_MODEL_THRESHOLDS` in `run_mlb_paper_trade.py`. Exclusion rationale: at t=3, base rate=3.9% and AUC=0.61 produce a Brier improvement of only +0.0002 (shadow gate requires ≥0.001). Even if Brier passed, t=3 bets would almost never fire — model predicts ~3.9% while Kalshi asks ~8¢, always negative edge. The t=3 market exists on Kalshi (threshold 4 in Kalshi ticker format: `KXMLBHIT-...-4`) but the bot will skip it with a C6 log entry on every run. |
+| When it should have been caught | Before T-183 architecture was committed. The pooled-model approach masked per-threshold base-rate divergence; the ECE failure on the pooled model forced the per-threshold redesign that revealed t=3 inadequacy. |
+| Phases survived | N/A — pre-paper-trading discovery; no capital at risk. |
+| Why it survived | T-183 (initial training) used a pooled model which never triggered per-threshold Brier checks; the ECE failure on the first real training run (T-187B setup) forced the diagnostic. |
+| Impact | **LOW — paper trading only.** t=3 markets are skipped silently; no bets are placed. No capital risk. EXP-017 commercial validation accumulates t=1 and t=2 bets only, which is the statistically meaningful sample. t=3 exclusion does not affect G6 evidence review. |
+| Discovery | SESSION 81 — T-187B per-threshold diagnostic: separate pipeline fit per threshold revealed t=3 Brier delta=+0.0002 < 0.001 gate. Confirmed that even at AUC=0.61, the low base rate (3.9%) means correct t=3 predictions contribute near-zero Brier improvement in absolute terms. |
+| Resolution | T-187G — live starting pitcher overlay injection. When `opp_sp_era_l5`, `opp_sp_k9_l5` have well-populated training rows for 3+ hit contexts AND the SP overlay provides discrimination at the t=3 base rate, re-run T-187B with t=3 included. If Brier gate passes, add t=3 to `THRESHOLDS` and re-deploy. Until then, t=3 remains excluded. |
+| Status | **OPEN.** Deferred to T-187G (live SP overlay injection). LOW urgency. Linked: T-187B, T-187G, GG-004. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |
