@@ -24,7 +24,7 @@ The dark period is not a pause. Three load-bearing things must happen before the
 |--------|-------|-------|
 | June 13–30 | Phase 1 — Post-Finals Close | Resolve G5, run post-game experiments, governance debt |
 | July 2026 | Phase 2 — Infrastructure Sprint | Model retrain, T2 injury source, Polymarket, ADR-0005 |
-| August–September 2026 | Phase 3 — MLB Commercial Validation | MLB C1/C2 build, EXP-017 MLB run, ADR-0024 Tier 1 check |
+| June 24 – September 2026 | Phase 3 — MLB Commercial Validation | **LIVE as of 2026-06-24** (started 5-6 weeks ahead of original August plan). MLB C1–C3 + PIPE-05 stack complete (T-187 A–H). EXP-017 MLB run after ≥20 closed positions. ADR-0024 Tier 1 check at n≥150. |
 | October 2026 | Phase 4 — Pre-Season | Final integration, G6 evidence review, live capital prep |
 
 ---
