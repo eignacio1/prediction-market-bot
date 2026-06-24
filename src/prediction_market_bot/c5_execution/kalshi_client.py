@@ -43,6 +43,10 @@ Series used:
   - KXNBAPTS: Pro Basketball Player Points (individual game thresholds)
   - Ticker format: KXNBAPTS-{DATE}{HOMETEAM}{AWAYTEAM}-{TEAMABBRV}{PLAYERID}-{THRESHOLD}
   - Example: KXNBAPTS-26MAY28OKCSAS-OKCSGILGEOUSALEXANDER2-25
+  - KXMLBHIT: Pro Baseball Hits (individual game thresholds, confirmed 2026-06-23)
+  - Ticker format: KXMLBHIT-{DATE}{TIME}{AWAYTEAM}{HOMETEAM}-{TEAMABBRV}{PLAYERID}-{THRESHOLD}
+  - Example: KXMLBHIT-26JUN241607BALLAA-LAAJADELL7-4
+  - Note: MLB uses AWAY-HOME team order (vs NBA HOME-AWAY); includes 4-digit time (HHMM EDT)
 
 Market structure:
   - Binary market: YES = player scores >= threshold points in the game
@@ -108,10 +112,7 @@ def _price_discovery_url() -> str:
 
 SERIES_PLAYER_POINTS = "KXNBAPTS"
 
-# MLB series ticker — PLACEHOLDER. Confirm via live Kalshi API before activating
-# MLB paper trading (T-181 KI: wrong ticker returns empty markets silently).
-# Candidate: "KXMLBHITS" — unconfirmed. Run: GET /series to enumerate active series.
-SERIES_MLB_PLAYER_HITS: str = "KXMLBHITS"  # TODO: confirm via live Kalshi /series endpoint
+SERIES_MLB_PLAYER_HITS: str = "KXMLBHIT"  # Confirmed 2026-06-23 via GET /series (live Kalshi API)
 
 # Request timeouts and retry config
 REQUEST_TIMEOUT_S = 15
