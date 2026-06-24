@@ -48,7 +48,7 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | **T-187 REGISTERED** | ✅ REGISTERED — `scripts/run_mlb_paper_trade.py` MLB paper trading runner needed before August 2026. Requires: KXMLBHIT market fetching, MLB C1/C2/C3 integration, fresh $1,000 `logs/paper_portfolio_mlb.json` book. No cron entries for MLB in `deploy/cron.conf` (expected; needed before August). |
 | **DECISION_LOG SESSION 80 entries** | ✅ COMPLETE — T-117/GG-006 entry + T-186 entry written. CLAUDE.md rule 7. |
 | **Tests** | ✅ 1650/1650 (+41 this session: 31 T-186 + 10 cross-ref). |
-| **VPS deploy** | ⬜ PENDING — Commit + push + VPS deploy. |
+| **VPS deploy** | ✅ COMPLETE — Commit 89d795c pushed + VPS deployed (HEAD confirmed). |
 
 ---
 
