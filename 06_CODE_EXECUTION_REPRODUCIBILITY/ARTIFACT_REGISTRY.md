@@ -25,9 +25,10 @@
 
 | Model ID | Version | Description | Feature Version | Training Window | Brier Score (Test) | Promotion Date | Environment | Promoted By | Notes |
 |----------|---------|-------------|----------------|----------------|-------------------|---------------|-------------|-------------|-------|
-| — | — | — | — | — | — | — | — | — | — |
+| prod_model.joblib | v1-28483b21 | LR + Platt, 78 features (31 quant + 47 qual), 5-season regular season data | 1.3.0 | 5 NBA seasons through 2025-26 regular season (2026-05-29 cutoff) | Brier=0.246622 (holdout ≥2026-02-01, n=1179) | 2026-05-29 SESSION | paper | Earl Ignacio (ADR-0004) | Production model v1; superseded by v2-065b9510 per ADR-0031 |
+| v2_model.joblib | v2-065b9510 | LR + Platt, 83 features (36 quant + 47 qual), adds F-041/F-042/F-043 playoff context | 1.4.0 | Same as v1 + additional rows; holdout cutoff 2026-02-01; 15,274 train rows | Brier=0.245115 (same holdout, n=1179); ECE=0.0426; AUC=0.5822 | 2026-06-23 SESSION 73 | paper (pending deployment) | Earl Ignacio (ADR-0031) | Shadow gate PASSED (Δ=+0.001507); T-177 INCONCLUSIVE (p=0.1639); F-042=NaN (known limitation); supersedes v1-28483b21 |
 
-*No models promoted yet. First entry created at Phase 6 paper trading activation (requires ADR-0004).*
+*v1-28483b21 superseded by ADR-0031. v2-065b9510 pending deployment to paper trading (dark period — deploy at 2026-27 season start).*
 
 ---
 

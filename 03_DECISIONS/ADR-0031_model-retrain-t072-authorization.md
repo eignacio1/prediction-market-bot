@@ -95,14 +95,14 @@ After shadow gate passes (Part C), run `scripts/run_t177_edge_monitor.py` on ava
 
 ## Acceptance checklist
 
-- [ ] DS sign-off (Earl Ignacio)
-- [ ] F-041/F-042/F-043 implemented in `features.py`; FEATURE_VERSION = "1.4.0"
-- [ ] All three features pass temporal integrity audit (no look-ahead)
-- [ ] Retrain executed on 2025-26 full data; model hash recorded
-- [ ] Shadow gate: Brier improvement confirmed, ECE ≤ 0.05 confirmed
-- [ ] T-177 backtest on retrained model: result is not ANTI-PREDICTIVE (p > 0.05)
+- [x] DS sign-off (Earl Ignacio)
+- [x] F-041/F-042/F-043 implemented in `features.py`; FEATURE_VERSION = "1.4.0"
+- [x] All three features pass temporal integrity audit (no look-ahead)
+- [x] Retrain executed on 2025-26 full data; model hash recorded (v2-065b9510)
+- [x] Shadow gate: Brier improvement confirmed (Δ=+0.001507), ECE ≤ 0.05 confirmed (ECE=0.0426)
+- [x] T-177 backtest on retrained model: INCONCLUSIVE (p=0.1639 all, p=0.3131 clean) — not ANTI-PREDICTIVE
 - [ ] New model version deployed to paper trading (kill switch reset with documentation)
-- [ ] DECISION_LOG entry written with retrain results (Brier, ECE, T-177 result, model hash)
+- [x] DECISION_LOG entry written with retrain results (SESSION 73)
 
 ---
 
@@ -113,11 +113,20 @@ After shadow gate passes (Part C), run `scripts/run_t177_edge_monitor.py` on ava
 **Session:** SESSION 73  
 **Status on sign:** ACCEPTED
 
-**Acceptance checklist at sign-off:**
-- [x] F-041/F-042/F-043 implemented in `features.py`; FEATURE_VERSION = "1.4.0" (T-072 Part A, this session)
+**Acceptance checklist at sign-off (Part A — SESSION 73):**
+- [x] F-041/F-042/F-043 implemented in `features.py`; FEATURE_VERSION = "1.4.0" (T-072 Part A, SESSION 73)
 - [x] Temporal integrity audit passed (1293 tests green, including 13 new playoff feature tests)
-- [x] KeyError guard added for missing `opponent_team_abbr` column (Q6 finding, this session)
-- [ ] Retrain executed on 2025-26 full data; model hash recorded (T-072 Part B — authorized by this sign-off)
-- [ ] Shadow gate: Brier improvement confirmed, ECE ≤ 0.05 confirmed (T-072 Part B)
-- [ ] T-177 backtest on retrained model: not ANTI-PREDICTIVE (p > 0.05) (T-072 Part C)
-- [ ] New model version deployed to paper trading; kill switch reset with documentation (post-Part C)
+- [x] KeyError guard added for missing `opponent_team_abbr` column (Q6 finding, SESSION 73)
+
+**Acceptance checklist update (Part B/C — SESSION 73, same session):**
+- [x] Retrain executed; model v2-065b9510 saved to `models/v2_model.joblib`
+  - Training rows: 15,274 (through 2026-02-01 holdout cutoff)
+  - Holdout rows: 1,179 (2026-02-01 onwards, incl. 72 playoff rows)
+  - F-041 multiplier: 0.959603 (empirical, 31 in-training playoff rows)
+  - F-042: NaN everywhere — playoff TeamGameLog pull deferred (see known limitations in `scripts/train_model_v2.py`)
+  - F-043: 83 non-zero series delta rows
+- [x] Shadow gate PASSED: Brier v1=0.246622 → v2=0.245115 (Δ=+0.001507 ≥ 0.001), ECE=0.0426 ≤ 0.05
+- [x] T-177 backtest INCONCLUSIVE: v2 p=0.1639 (n=114 all) / p=0.3131 (n=109 clean). Phase 3 gate OPEN.
+  - v2 edge signal direction correct: edge>0 winrate=67.6%, edge≤0 winrate=53.5% (monotonic tendency)
+  - Note: original ANTI-PREDICTIVE finding (n=144, p=0.0505) used full clean dataset CSV incl. G5 (June 13 games); these are not in the live portfolio JSON. Full replication with G5 games pending future data pull.
+- [ ] New model version deployed to paper trading; kill switch reset with documentation (pending operator action — dark period, no active games; document baseline at 2026-27 season start)
