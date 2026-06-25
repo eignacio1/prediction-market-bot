@@ -554,7 +554,10 @@ class MLBIngestionClient:
         )
         data = self._get(
             f"{MLB_BASE_URL}/api/v1/schedule",
-            params={"sportId": 1, "date": game_date, "hydrate": "probablePitcher,venue,team"},
+            # Note: "venue" hydrate returns 406 from DigitalOcean/Fastly CDN.
+            # venue_id/venue_name will be absent; park_factor_hits uses team abbr
+            # from static lookup so venue data is not needed at inference time.
+            params={"sportId": 1, "date": game_date, "hydrate": "probablePitcher,team"},
         )
         if data is None:
             self._logger.log(

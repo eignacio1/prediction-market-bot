@@ -273,6 +273,17 @@ class PaperTrader:
         except OSError:
             return False
 
+    def ensure_persisted(self) -> None:
+        """Write the portfolio file if it does not yet exist.
+
+        Called at pipeline start so monitoring tools and the MLB dashboard
+        see the file even when no bets are placed (e.g., contamination guard
+        fires before the first bet). Safe to call multiple times — no-op if
+        the file is already on disk.
+        """
+        if not self._path.exists():
+            self._save()
+
     def reconcile(
         self,
         *,

@@ -59,7 +59,7 @@ import re
 import sys
 import uuid
 from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import joblib
@@ -101,8 +101,14 @@ from prediction_market_bot.execution_bands import BAND_REGISTRY, ExecutionBand, 
 # ---------------------------------------------------------------------------
 
 SESSION_ID    = f"PT-MLB-{uuid.uuid4().hex[:8].upper()}"
-GAME_DATE     = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
-GAME_DATE_ISO = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+# T1 night-before baseline: target tomorrow's games so that cron at 23:30 UTC
+# (7:30pm ET) fires before any of tomorrow's games are live. The contamination
+# guard (_is_mlb_game_in_progress) checks GAME_DATE_ISO — tomorrow's games are
+# always "Preview" at 23:30 UTC so the guard correctly passes.
+_now_utc      = datetime.now(tz=timezone.utc)
+_target_date  = (_now_utc + timedelta(days=1)).date()
+GAME_DATE     = _target_date.strftime("%Y%m%d")
+GAME_DATE_ISO = _target_date.strftime("%Y-%m-%d")
 
 MODEL_PATH    = Path("models/mlb_v1_model.joblib")
 FEATURE_CSV   = Path("exp_output/MLB/mlb_feature_matrix.csv")
@@ -373,6 +379,9 @@ def main() -> None:
         logger,
         kalshi_client=kalshi_client,
     )
+    # Ensure the portfolio file exists so dashboard and monitoring tools see it
+    # even when no bets are placed (e.g., contamination guard fires before bets).
+    trader.ensure_persisted()
 
     print(f"\n[PIPE-05] MLB Paper trading — {GAME_DATE}")
     print(f"Session:  {SESSION_ID}")
@@ -606,7 +615,10 @@ def main() -> None:
     markets_by_player: dict[str, list] = defaultdict(list)
     for m in snap.markets:
         if m.status == "active" and m.has_live_quotes:
-            markets_by_player[m.player_name].append(m)
+            # Only process markets whose ticker resolves to the target game date.
+            # Prevents evaluating today's in-progress markets alongside tomorrow's.
+            if _ticker_to_game_date(m.ticker) == GAME_DATE_ISO:
+                markets_by_player[m.player_name].append(m)
 
     print(f"  {len(markets_by_player)} players in live MLB markets | "
           f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")

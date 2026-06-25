@@ -98,13 +98,13 @@ class TestTickerToGameDate:
         result = fn("KXMLBHIT-15APR251900NYYBOS-NYYAAJUDG7-2")
         assert result == "2025-04-15"
 
-    def test_invalid_ticker_returns_today(self, monkeypatch):
-        fn = self._get_fn(monkeypatch)
+    def test_invalid_ticker_returns_game_date_iso(self, monkeypatch):
+        mod = _import_runner(monkeypatch)
+        fn = mod._ticker_to_game_date
         result = fn("KXMLBHIT-INVALID-TICKER")
-        # Should return today's date (GAME_DATE_ISO)
-        from datetime import datetime, timezone
-        today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
-        assert result == today
+        # Fallback is GAME_DATE_ISO (tomorrow at 23:30 UTC cron time — T1 night-before
+        # baseline, fixed S84). An unparseable ticker resolves to the target date.
+        assert result == mod.GAME_DATE_ISO
 
     def test_january(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
