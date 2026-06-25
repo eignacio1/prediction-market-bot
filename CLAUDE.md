@@ -50,7 +50,10 @@ The current band structure:
 - **T1:** Night-before baseline — the primary active band
 - **T2:** Same-day with injury overlay — skeleton; requires DS-04 qualitative source
 - **T3:** Pre-tip momentum scan — skeleton
-- **T4/T5:** In-play — future; post-G6
+- **T4 (NBA, PIPE-07):** Built, deployed, cron-scheduled (23:00 UTC daily). NBA-specific: polls ESPN NBA scoreboard + NBA pregame context. Generates ~1,000 bet evaluations per game via 45-second evaluation loop across all active markets. Currently dark (NBA off-season — 0 active games). **NOT future. NOT post-G6.** Code: `run_t4_live.py`, `t4_live_runner.py`, `t4_price_cache.py`.
+- **T4 (MLB):** Does not exist. Must be built before MLB accumulation reaches T4 throughput.
+- **T4 (ADR-0029 Tier A — new architecture):** Built (`t4_execution_engine.py`) but explicitly Phase 8 blocked pending GG-038/GG-039/GG-040. Separate from the deployed NBA T4.
+- **T5:** Not built. Future; requires real-time infrastructure.
 
 The longer the time horizon, the more complex the decision tree (more data sources, more interaction effects, more model inputs). T1 is the simplest — historical rolling stats and rest factors. T4/T5 are the most complex — live Bayesian updates, real-time score state, within-game momentum, market microstructure. This complexity gradient is intentional and governs activation sequencing: simpler bands are activated first, complex bands after their decision trees are calibrated.
 
