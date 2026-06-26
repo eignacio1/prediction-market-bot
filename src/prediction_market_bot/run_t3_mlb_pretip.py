@@ -47,7 +47,7 @@ _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
 
@@ -158,7 +158,7 @@ def main() -> None:
             print(f"ERROR: DS-02 connectivity failed: {status}", file=sys.stderr)
             sys.exit(1)
 
-        ok2, snapshot = client.fetch_player_points_markets(sport="MLB")
+        ok2, snapshot = client.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
         if not ok2 or not snapshot.markets:
             print("[T3-MLB] No KXMLBHIT markets available. Exiting.")
             logger.info(COMPONENT, "t3_mlb_no_markets",

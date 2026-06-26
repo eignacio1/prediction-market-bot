@@ -65,7 +65,7 @@ from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import (
     MLBPitcherStatsStore,
 )
 from prediction_market_bot.c3_forecasting.calibration import calibrate_probability
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
@@ -323,7 +323,7 @@ def main() -> None:
             sys.exit(1)
         print(f"  Exchange active: {status['exchange_active']}")
 
-        ok2, snapshot = client.fetch_player_points_markets(sport="MLB")
+        ok2, snapshot = client.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
         if not ok2 or not snapshot.markets:
             print("  No KXMLBHIT markets available. No games today or pre-market.")
             logger.info(COMPONENT, "no_mlb_markets_today",
