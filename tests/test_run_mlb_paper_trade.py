@@ -344,8 +344,14 @@ class TestMainNoMarkets:
         import prediction_market_bot.run_mlb_paper_trade as runner
 
         feature_csv = tmp_path / "mlb_feature_matrix.csv"
-        feature_csv.write_text("player_id,player_name,game_date,ba_l10,threshold\n"
-                                "660670,Juan Soto,2024-04-01,0.280,1\n")
+        # Use today's date so the freshness guard (T-193) does not halt before
+        # the "no markets" exit path is reached.
+        from datetime import date
+        today_iso = date.today().isoformat()
+        feature_csv.write_text(
+            f"player_id,player_name,game_date,ba_l10,threshold\n"
+            f"660670,Juan Soto,{today_iso},0.280,1\n"
+        )
         model_path = tmp_path / "model.joblib"
         model_path.write_bytes(b"fake")
 
