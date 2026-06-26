@@ -13,7 +13,7 @@
 | T-NNN | Task | Status | Notes |
 |-------|------|--------|-------|
 | **T-192** | Phase MLB-G1 integration test suite (`tests/integration/`) | ✅ COMPLETE S88 | conftest.py + test_mlb_api_connectivity.py + test_mlb_name_matching.py + test_mlb_pipeline_smoke.py. Run with `pytest tests/integration/ -v -m integration`. |
-| **T-193** | Feature CSV freshness guard in `run_mlb_paper_trade.py` + C7 alert | 🔴 NOT STARTED | >3 days → WARNING; >7 days → sys.exit(1). Must also trigger C7 alert. |
+| **T-193** | Feature CSV freshness guard in `run_mlb_paper_trade.py` + C7 alert | ✅ COMPLETE S89 | >3 days → WARNING + logger.warning; >7 days → sys.exit(1) + logger.error. Embedded in main() after feature CSV load, uses _now_utc.date() − df["game_date_dt"].max(). 23 tests (`tests/test_t193_mlb_freshness_guard.py`). Fixed AuditLogger import in integration smoke test. |
 | **T-194** | Resolution age-out: positions open >48h that can't resolve → `aged_open` + C7 alert | 🔴 NOT STARTED | Currently they sit open indefinitely. |
 | **T-195** | Silent fallback audit: every MLB `except Exception: continue` must be C7 alert or documented silent-by-design | 🔴 NOT STARTED | Files: run_mlb_paper_trade.py (SP overlay, lineup, contamination), run_mlb_pregame.py, run_t2_mlb_sameday.py |
 | **T-196** | Fix T1 cron timing comment in `run_mlb_paper_trade.py` (says 03:00 UTC; must be 11:00 UTC) | 🔴 NOT STARTED | On re-enable, cron.conf comment already shows 11:00 UTC — just update source comment |

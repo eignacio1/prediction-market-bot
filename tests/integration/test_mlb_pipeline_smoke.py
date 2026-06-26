@@ -394,7 +394,7 @@ class TestPipelineDryRun:
         Uses a dummy market value — no real money involved.
         """
         from prediction_market_bot.c4_risk_engine.risk import RiskEngine
-        from prediction_market_bot.c6_audit_logger.logger import AuditLogger
+        from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
         import io
 
         # Null logger to /dev/null

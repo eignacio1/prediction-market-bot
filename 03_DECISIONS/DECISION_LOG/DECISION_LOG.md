@@ -2,7 +2,7 @@
 
 **Purpose:** Chronological index of all decisions (ADRs, approvals, and notable judgment calls) made during this project. Single source of truth for "why did we decide X."  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-06-01 SESSION 10 (ADR-0009 accepted: shadow model policy + multi-arm architecture Layer 2 built; T-119 model version guard live; ShadowForecaster C3 + C7 shadow Brier tracking + run_pregame integration complete; 612/612 tests pass)  
+**Last reviewed:** 2026-06-25 SESSION 89 CLOSE — implementation-only (T-193: feature CSV freshness guard embedded in run_mlb_paper_trade.py main(); 23 new tests; 1970/1970 passing)  
 **Next review:** G5 Operational Gate; any new ADR/approval  
 **Staleness triggers:** New ADR accepted; approval decision made; major judgment call not captured elsewhere  
 **Upstream links:** 03_DECISIONS/  
