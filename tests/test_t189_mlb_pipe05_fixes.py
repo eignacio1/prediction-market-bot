@@ -27,38 +27,43 @@ from unittest.mock import MagicMock, patch
 # ---------------------------------------------------------------------------
 
 
-class TestGameDateIsTomorrow(unittest.TestCase):
-    """GAME_DATE logic: cron at 23:30 UTC must target tomorrow's games."""
+class TestGameDateIsToday(unittest.TestCase):
+    """GAME_DATE logic: cron at 03:00 UTC targets today's (UTC) games.
+
+    S87 FIX: Original 23:30 UTC cron used timedelta(days=1) to target tomorrow;
+    Kalshi hadn't published next-day markets at that hour (VPS confirmed 0 players).
+    Fixed: same-day targeting at 03:00 UTC — today's (ET) games start ≥17:05 UTC,
+    so the contamination guard always passes at cron time.
+    """
 
     def _compute_game_date(self, now_utc: datetime) -> tuple[str, str]:
         """Mirror the run_mlb_paper_trade.py GAME_DATE computation."""
-        target = (now_utc + timedelta(days=1)).date()
+        target = now_utc.date()
         return target.strftime("%Y%m%d"), target.strftime("%Y-%m-%d")
 
-    def test_game_date_is_next_calendar_day_in_utc(self):
-        now = datetime(2026, 6, 24, 23, 30, tzinfo=timezone.utc)
+    def test_game_date_is_utc_today(self):
+        now = datetime(2026, 6, 25, 3, 0, tzinfo=timezone.utc)
         gd, gd_iso = self._compute_game_date(now)
         self.assertEqual(gd, "20260625")
         self.assertEqual(gd_iso, "2026-06-25")
 
     def test_game_date_crosses_month_boundary(self):
-        now = datetime(2026, 6, 30, 23, 30, tzinfo=timezone.utc)
+        now = datetime(2026, 7, 1, 3, 0, tzinfo=timezone.utc)
         gd, gd_iso = self._compute_game_date(now)
         self.assertEqual(gd, "20260701")
         self.assertEqual(gd_iso, "2026-07-01")
 
-    def test_game_date_is_never_today(self):
-        now = datetime(2026, 6, 24, 23, 30, tzinfo=timezone.utc)
+    def test_game_date_matches_utc_date(self):
+        now = datetime(2026, 6, 25, 3, 0, tzinfo=timezone.utc)
         _, gd_iso = self._compute_game_date(now)
         today_iso = now.strftime("%Y-%m-%d")
-        self.assertNotEqual(gd_iso, today_iso)
+        self.assertEqual(gd_iso, today_iso)
 
     def test_game_date_matches_contamination_guard_target(self):
-        """Guard checks GAME_DATE_ISO; tomorrow's games are all 'Preview' at 23:30 UTC."""
-        now = datetime(2026, 6, 24, 23, 30, tzinfo=timezone.utc)
+        """Guard checks GAME_DATE_ISO; today's ET games are 'Preview' at 03:00 UTC."""
+        now = datetime(2026, 6, 25, 3, 0, tzinfo=timezone.utc)
         _, gd_iso = self._compute_game_date(now)
-        # Tomorrow's games are not live at time of cron — guard should not fire
-        # (verified by manual VPS test: all 9 Jun-25 games returned 'Preview')
+        # Jun-25 ET games start ≥17:05 UTC — all Preview at 03:00 UTC
         self.assertEqual(gd_iso, "2026-06-25")
 
 
@@ -102,16 +107,17 @@ class TestTickerToGameDate(unittest.TestCase):
         result = _ticker_to_game_date("", "2026-06-25")
         self.assertEqual(result, "2026-06-25")
 
-    def test_today_ticker_excluded_when_game_date_is_tomorrow(self):
-        today_ticker = "KXMLBHIT-24JUN261907BOSNYY-1"
-        tomorrow_ticker = "KXMLBHIT-25JUN261907BALLAA-2"
-        game_date_iso = "2026-06-25"
+    def test_yesterday_ticker_excluded_when_game_date_is_today(self):
+        """S87: cron targets today (2026-06-25). Yesterday's markets excluded; today's included."""
+        yesterday_ticker = "KXMLBHIT-24JUN261907BOSNYY-1"
+        today_ticker     = "KXMLBHIT-25JUN261907BALLAA-2"
+        game_date_iso    = "2026-06-25"
 
-        today_date = _ticker_to_game_date(today_ticker, game_date_iso)
-        tomorrow_date = _ticker_to_game_date(tomorrow_ticker, game_date_iso)
+        yesterday_date = _ticker_to_game_date(yesterday_ticker, game_date_iso)
+        today_date     = _ticker_to_game_date(today_ticker, game_date_iso)
 
-        self.assertNotEqual(today_date, game_date_iso, "today's market should be excluded")
-        self.assertEqual(tomorrow_date, game_date_iso, "tomorrow's market should be included")
+        self.assertNotEqual(yesterday_date, game_date_iso, "yesterday's market should be excluded")
+        self.assertEqual(today_date, game_date_iso, "today's market should be included")
 
 
 class TestMarketDateFilter(unittest.TestCase):
@@ -135,18 +141,19 @@ class TestMarketDateFilter(unittest.TestCase):
             "has_live_quotes": True,
         }
 
-    def test_only_tomorrow_markets_included(self):
+    def test_only_today_markets_included(self):
+        """S87: GAME_DATE_ISO = today (2026-06-25). Yesterday's markets excluded."""
         markets = [
-            self._make_market("KXMLBHIT-24JUN261907BOSNYY-1", "Mookie Betts"),  # today
-            self._make_market("KXMLBHIT-25JUN261907BALLAA-1", "Aaron Judge"),   # tomorrow
-            self._make_market("KXMLBHIT-25JUN261907BALLAA-2", "Aaron Judge"),   # tomorrow
+            self._make_market("KXMLBHIT-24JUN261907BOSNYY-1", "Mookie Betts"),  # yesterday
+            self._make_market("KXMLBHIT-25JUN261907BALLAA-1", "Aaron Judge"),   # today
+            self._make_market("KXMLBHIT-25JUN261907BALLAA-2", "Aaron Judge"),   # today
         ]
         result = self._apply_filter(markets, "2026-06-25")
         self.assertNotIn("Mookie Betts", result)
         self.assertIn("Aaron Judge", result)
         self.assertEqual(len(result["Aaron Judge"]), 2)
 
-    def test_all_filtered_if_all_today(self):
+    def test_all_filtered_if_all_yesterday(self):
         markets = [
             self._make_market("KXMLBHIT-24JUN261907BOSNYY-1", "Player A"),
             self._make_market("KXMLBHIT-24JUN262005NYYHOU-1", "Player B"),
