@@ -71,7 +71,7 @@ if str(_SRC_ROOT) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
@@ -666,7 +666,7 @@ def main() -> None:
                 continue
 
             # Fetch live KXMLBHIT prices from Kalshi
-            ok, snapshot = kalshi.fetch_player_points_markets(sport="MLB")
+            ok, snapshot = kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
             if not ok or not snapshot.markets:
                 logger.warning(
                     "Kalshi MLB price fetch failed — sleeping %ds", POLL_INTERVAL_S
