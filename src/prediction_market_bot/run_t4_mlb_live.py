@@ -101,7 +101,6 @@ MIN_BET_T4_PAPER    = 0.01          # paper min: 1 contract at lowest price
 SNAPSHOT_ID         = "T4-MLB-LIVE"
 SESSION_ID_PREFIX   = "T4-MLB"
 AB_PER_GAME_DEFAULT = 3.7           # typical MLB batter ABs per game
-MIN_EDGE_T4         = 0.02          # minimum net edge to fire
 KELLY_T4            = 0.10          # conservative Kelly for T4 paper (ADR-0023)
 
 _LOGS_DIR        = Path(__file__).resolve().parents[2] / "logs"
@@ -266,7 +265,7 @@ def _espn_poll_once_mlb(
     for team_data in players_teams:
         # MLB ESPN boxscore: statistics list, first entry = batting stats
         for stat_group in team_data.get("statistics", []):
-            if stat_group.get("name", "").lower() not in ("batting", ""):
+            if stat_group.get("name", "").lower() != "batting":
                 continue
 
             labels = stat_group.get("labels", _MLB_STAT_LABELS)
@@ -655,10 +654,16 @@ def main() -> None:
                     name_to_pregame.update(name_to_pregame_new)
                     logger.info("Pregame context loaded on retry: %d players", len(by_player_id))
 
-            # Poll all tracked games via ESPN
+            # Poll all tracked games via ESPN — kill switch checked per game (NFR-03 ≤60s halt)
             all_states: list[MLBLiveBatterState] = []
+            _ks_fired = False
             for gid in game_ids:
+                if kill_switch_armed(KILL_SWITCH_PATH):
+                    _ks_fired = True
+                    break
                 all_states.extend(_espn_poll_once_mlb(gid, name_to_pregame))
+            if _ks_fired:
+                continue  # outer loop re-checks kill switch immediately
 
             if not all_states:
                 logger.info("No live MLB batter states — sleeping 60s.")

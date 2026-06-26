@@ -3,7 +3,8 @@ PIPE-05: MLB Paper Trading Pipeline
 ====================================
 Pipeline:     PIPE-05 (MLB simulated decision cycle)
 Phase:        Phase 6 (ENV-02 — paper trading)
-Schedule:     Cron: 23:30 UTC daily (after T1 NBA window)
+Schedule:     Cron: 03:00 UTC daily — Kalshi publishes same-day MLB markets by ~01:00 UTC;
+              all ET-dated games start ≥17:05 UTC so contamination guard always passes
 Environment:  ENV-02 — BOT_ENV=paper required; no real capital
 Prerequisite: models/mlb_v1_model.joblib (run scripts/train_mlb_model.py)
 
@@ -101,12 +102,13 @@ from prediction_market_bot.execution_bands import BAND_REGISTRY, ExecutionBand, 
 # ---------------------------------------------------------------------------
 
 SESSION_ID    = f"PT-MLB-{uuid.uuid4().hex[:8].upper()}"
-# T1 night-before baseline: target tomorrow's games so that cron at 23:30 UTC
-# (7:30pm ET) fires before any of tomorrow's games are live. The contamination
-# guard (_is_mlb_game_in_progress) checks GAME_DATE_ISO — tomorrow's games are
-# always "Preview" at 23:30 UTC so the guard correctly passes.
+# T1 night-before baseline: target today's games (UTC). Cron runs at 03:00 UTC
+# (11pm ET) — all ET-dated games for today haven't started yet (first pitch
+# earliest 17:05 UTC). Kalshi publishes same-day KXMLBHIT markets by ~01:00 UTC.
+# The contamination guard (_is_mlb_game_in_progress) checks GAME_DATE_ISO —
+# today's (ET) games are always "Preview" at 03:00 UTC so the guard passes.
 _now_utc      = datetime.now(tz=timezone.utc)
-_target_date  = (_now_utc + timedelta(days=1)).date()
+_target_date  = _now_utc.date()
 GAME_DATE     = _target_date.strftime("%Y%m%d")
 GAME_DATE_ISO = _target_date.strftime("%Y-%m-%d")
 

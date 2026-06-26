@@ -610,6 +610,77 @@ class MLBIngestionClient:
         return True, result
 
     # ------------------------------------------------------------------
+    # Public API — confirmed batting lineups (for T2 same-day overlay)
+    # ------------------------------------------------------------------
+
+    def fetch_lineups(
+        self,
+        game_date: str,
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[int, dict]]:
+        """Return confirmed batting lineups for all games on game_date.
+
+        Returns (ok, {player_id: {"batting_slot": N, "game_pk": N, "team_id": N}}).
+        batting_slot is 1-indexed (1 = leadoff, 9 = last batter).
+        Returns empty dict if lineups not yet posted (typically posted
+        3–4h before first pitch; safe to call and get empty result).
+        ok=False on HTTP failure; ok=True with empty dict if none available.
+        """
+        self._logger.log(
+            COMPONENT,
+            "lineups_fetch_start",
+            payload={"game_date": game_date},
+            session_id=session_id,
+            snapshot_id=self._snapshot_id,
+            severity="INFO",
+        )
+        data = self._get(
+            f"{MLB_BASE_URL}/api/v1/schedule",
+            params={"sportId": 1, "date": game_date, "hydrate": "lineups,team"},
+        )
+        if data is None:
+            self._logger.log(
+                COMPONENT,
+                "lineups_fetch_error",
+                payload={"game_date": game_date},
+                session_id=session_id,
+                snapshot_id=self._snapshot_id,
+                severity="ERROR",
+            )
+            return False, {}
+
+        result: dict[int, dict] = {}
+        for date_block in data.get("dates", []):
+            for game in date_block.get("games", []):
+                game_pk = game.get("gamePk")
+                if game_pk is None:
+                    continue
+                teams = game.get("teams", {})
+                home_team_id = (teams.get("home", {}).get("team") or {}).get("id")
+                away_team_id = (teams.get("away", {}).get("team") or {}).get("id")
+
+                lineups = game.get("lineups") or {}
+                for side, team_id in (("homePlayers", home_team_id), ("awayPlayers", away_team_id)):
+                    for slot_idx, player in enumerate(lineups.get(side, []), start=1):
+                        pid = player.get("id")
+                        if pid is not None:
+                            result[int(pid)] = {
+                                "batting_slot": slot_idx,
+                                "game_pk": int(game_pk),
+                                "team_id": team_id,
+                            }
+
+        self._logger.log(
+            COMPONENT,
+            "lineups_fetch_complete",
+            payload={"game_date": game_date, "n_players": len(result)},
+            session_id=session_id,
+            snapshot_id=self._snapshot_id,
+            severity="INFO",
+        )
+        return True, result
+
+    # ------------------------------------------------------------------
     # Public API — completed game scores (for MLBTeamStatsStore population)
     # ------------------------------------------------------------------
 
