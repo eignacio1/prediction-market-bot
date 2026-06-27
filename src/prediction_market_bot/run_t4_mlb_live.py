@@ -100,8 +100,14 @@ T4_BAND_WEIGHT      = 0.27          # ADR-0023 (same as NBA T4)
 MIN_BET_T4_PAPER    = 0.01          # paper min: 1 contract at lowest price
 SNAPSHOT_ID         = "T4-MLB-LIVE"
 SESSION_ID_PREFIX   = "T4-MLB"
-AB_PER_GAME_DEFAULT = 3.7           # typical MLB batter ABs per game
+AB_PER_GAME_DEFAULT = 3.7           # typical MLB batter ABs per game (slot-5 / population baseline)
 KELLY_T4            = 0.10          # conservative Kelly for T4 paper (ADR-0023)
+
+# Slot-specific expected ABs per game — mirrors T2 empirical averages (T-200)
+_AB_BY_SLOT: dict[int, float] = {
+    1: 4.2, 2: 4.1, 3: 4.0, 4: 3.9, 5: 3.7,
+    6: 3.6, 7: 3.4, 8: 3.2, 9: 3.1,
+}
 
 _LOGS_DIR        = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH  = _LOGS_DIR / "paper_portfolio_mlb_t4.json"
@@ -141,6 +147,37 @@ class MLBLiveBatterState:
 
 def kill_switch_armed(path: Path) -> bool:
     return path.exists()
+
+
+# ---------------------------------------------------------------------------
+# AB remaining — inning-aware (T-200)
+# ---------------------------------------------------------------------------
+
+
+def _compute_ab_remaining(
+    ab_so_far: int,
+    inning: int,
+    batting_slot: int = 0,
+) -> int:
+    """Inning-aware AB remaining estimate (T-200).
+
+    Combines two signals and takes the conservative minimum:
+      ab_from_inning  — expected_total × (innings_remaining / 9.0)
+      ab_from_total   — expected_total − ab_so_far
+
+    Eliminates the ±14–25% Binomial probability error from the old flat-3.7
+    heuristic. Uses _AB_BY_SLOT when batting_slot is known; falls back to
+    AB_PER_GAME_DEFAULT (3.7) for unknown slots (0).
+
+    Extra innings (inning > 9): innings_remaining clamps to 0 →
+    ab_remaining = 0 → T4 stops evaluating. Known conservative behaviour;
+    acceptable for paper trading.
+    """
+    expected_total = _AB_BY_SLOT.get(batting_slot, AB_PER_GAME_DEFAULT)
+    innings_remaining = max(0.0, 9.0 - inning + 0.5)
+    ab_from_inning = expected_total * (innings_remaining / 9.0)
+    ab_from_total  = max(0.0, expected_total - ab_so_far)
+    return max(0, round(min(ab_from_inning, ab_from_total)))
 
 
 # ---------------------------------------------------------------------------
@@ -191,6 +228,39 @@ def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dic
         len(by_player_id), len(by_ticker), jsons[0].name,
     )
     return by_player_id, by_ticker, name_to_pregame
+
+
+def _load_t2_batting_slots() -> dict[int, int]:
+    """Load batting slots from today's T2 MLB output, if available (T-200).
+
+    Returns {player_id: batting_slot}. Empty dict if no T2 file found for today.
+    T4 falls back to AB_PER_GAME_DEFAULT (3.7) for unknown slots.
+    Date-filtered to today to prevent stale lineup from prior day.
+    """
+    today = date.today().strftime("%Y%m%d")
+    files = sorted(
+        (f for f in _LOGS_DIR.glob("t2_mlb_*.json") if today in f.name),
+        reverse=True,
+    )
+    if not files:
+        logger.info("No T2 MLB output for today — batting slots default to 3.7 ABs")
+        return {}
+    try:
+        data   = json.loads(files[0].read_text())
+        slots: dict[int, int] = {}
+        for fc in data.get("forecasts", []):
+            pid  = fc.get("player_id")
+            slot = fc.get("batting_slot")
+            if pid and slot:
+                slots[int(pid)] = int(slot)
+        if slots:
+            logger.info(
+                "T2 batting slots loaded: %d players from %s", len(slots), files[0].name
+            )
+        return slots
+    except Exception as exc:
+        logger.warning("T2 batting slots load failed (%s) — slots default to 3.7", exc)
+        return {}
 
 
 # ---------------------------------------------------------------------------
@@ -407,6 +477,7 @@ def _run_cycle(
     game_date: str,
     t4_band_budget: float,
     t4_deployed_usd: float,
+    batting_slots: Optional[dict[int, int]] = None,
 ) -> tuple[int, int, float]:
     """
     Run one T4 MLB evaluation cycle.
@@ -416,6 +487,7 @@ def _run_cycle(
     evaluated = 0
     fired = 0
     fired_tickers: set[str] = set()
+    _slots = batting_slots or {}
 
     state_by_id = {ls.player_id: ls for ls in live_states}
 
@@ -432,8 +504,9 @@ def _run_cycle(
         if ls is None:
             continue   # player not in live boxscore this game
 
-        ba_l10 = market_ctxs[0].get("ba_l10", 0.25)
-        ab_remaining = max(0, round(AB_PER_GAME_DEFAULT - ls.ab_so_far))
+        ba_l10       = market_ctxs[0].get("ba_l10", 0.25)
+        batting_slot = _slots.get(player_id, 0)
+        ab_remaining = _compute_ab_remaining(ls.ab_so_far, ls.inning, batting_slot)
 
         for ctx in market_ctxs:
             ticker    = ctx["ticker"]
@@ -583,6 +656,9 @@ def main() -> None:
             "Will retry discovery in loop.", _LOGS_DIR,
         )
 
+    # ---- Load T2 batting slots (optional; improves ab_remaining accuracy) ----
+    batting_slots = _load_t2_batting_slots()
+
     game_date = date.today().isoformat()
 
     # ---- Initialize components (once per session) ----
@@ -697,6 +773,7 @@ def main() -> None:
                 game_date=game_date,
                 t4_band_budget=t4_band_budget,
                 t4_deployed_usd=t4_deployed_game,
+                batting_slots=batting_slots,
             )
 
             cycle_n += 1

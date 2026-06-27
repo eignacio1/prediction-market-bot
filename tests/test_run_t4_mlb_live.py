@@ -656,6 +656,15 @@ class TestConstants:
     def test_ab_per_game_default(self):
         assert runner.AB_PER_GAME_DEFAULT == pytest.approx(3.7)
 
+    def test_ab_by_slot_nine_entries(self):
+        assert len(runner._AB_BY_SLOT) == 9
+        assert runner._AB_BY_SLOT[1] == pytest.approx(4.2)
+        assert runner._AB_BY_SLOT[9] == pytest.approx(3.1)
+
+    def test_ab_by_slot_descending(self):
+        slots = [runner._AB_BY_SLOT[i] for i in range(1, 10)]
+        assert slots == sorted(slots, reverse=True)
+
     def test_kill_switch_path_in_logs(self):
         assert "t4_mlb_kill_switch.flag" in str(runner.KILL_SWITCH_PATH)
 
@@ -665,3 +674,211 @@ class TestConstants:
 
     def test_component_name(self):
         assert runner.COMPONENT == "PIPE-07-MLB"
+
+
+# ---------------------------------------------------------------------------
+# _compute_ab_remaining — T-200 inning-aware formula
+# ---------------------------------------------------------------------------
+
+
+class TestComputeAbRemaining:
+    """Inning-aware AB remaining: takes conservative min of inning-cap and total-minus-used."""
+
+    def test_early_game_reasonable_estimate(self):
+        # Inning 1, 0 ABs so far → should return ~3 (close to full expected)
+        result = runner._compute_ab_remaining(ab_so_far=0, inning=1)
+        assert result == 3
+
+    def test_mid_game_constrained_by_inning(self):
+        # Inning 5, 2 ABs: ab_from_inning = 3.7*4.5/9=1.85, ab_from_total=1.7 → min=1.7 → 2
+        result = runner._compute_ab_remaining(ab_so_far=2, inning=5)
+        assert result == 2
+
+    def test_late_game_nearly_exhausted(self):
+        # Inning 8, 3 ABs: ab_from_inning=3.7*1.5/9=0.617, ab_from_total=0.7 → min=0.617 → 1
+        result = runner._compute_ab_remaining(ab_so_far=3, inning=8)
+        assert result == 1
+
+    def test_final_inning_zero_remaining(self):
+        # Inning 9, 3 ABs: ab_from_inning=3.7*0.5/9=0.206 → rounds to 0
+        result = runner._compute_ab_remaining(ab_so_far=3, inning=9)
+        assert result == 0
+
+    def test_extra_innings_clamps_to_zero(self):
+        # Inning 10+ → innings_remaining=0 → ab_from_inning=0 → returns 0
+        result = runner._compute_ab_remaining(ab_so_far=3, inning=10)
+        assert result == 0
+        result = runner._compute_ab_remaining(ab_so_far=0, inning=12)
+        assert result == 0
+
+    def test_already_exceeded_expected_total(self):
+        # ab_so_far=5 for a slot-5 player (expected=3.7): ab_from_total<0 → clamp to 0
+        result = runner._compute_ab_remaining(ab_so_far=5, inning=7)
+        assert result == 0
+
+    def test_slot_1_leadoff_higher_expected(self):
+        # Slot 1 expects 4.2 ABs vs 3.7 default
+        default = runner._compute_ab_remaining(ab_so_far=0, inning=1, batting_slot=0)
+        slot1   = runner._compute_ab_remaining(ab_so_far=0, inning=1, batting_slot=1)
+        assert slot1 >= default   # leadoff gets ≥ as many expected ABs as average
+
+    def test_slot_9_bottom_order_lower_expected(self):
+        # Slot 9 expects 3.1 ABs → ab_remaining ≤ slot 5 (3.7)
+        slot5 = runner._compute_ab_remaining(ab_so_far=0, inning=3, batting_slot=5)
+        slot9 = runner._compute_ab_remaining(ab_so_far=0, inning=3, batting_slot=9)
+        assert slot9 <= slot5
+
+    def test_unknown_slot_zero_uses_default(self):
+        # batting_slot=0 → falls back to AB_PER_GAME_DEFAULT (3.7)
+        result_unknown = runner._compute_ab_remaining(ab_so_far=0, inning=1, batting_slot=0)
+        result_default = runner._compute_ab_remaining(ab_so_far=0, inning=1)
+        assert result_unknown == result_default
+
+    def test_non_negative_always(self):
+        for inning in range(1, 13):
+            for ab in range(0, 6):
+                assert runner._compute_ab_remaining(ab_so_far=ab, inning=inning) >= 0
+
+    def test_early_game_no_abs_high_remaining(self):
+        # Inning 2, 0 ABs: should return ≥ 2 (plenty of game left)
+        result = runner._compute_ab_remaining(ab_so_far=0, inning=2)
+        assert result >= 2
+
+    def test_all_slots_non_negative(self):
+        for slot in range(0, 10):
+            for inning in range(1, 10):
+                assert runner._compute_ab_remaining(ab_so_far=2, inning=inning,
+                                                    batting_slot=slot) >= 0
+
+
+# ---------------------------------------------------------------------------
+# _load_t2_batting_slots — T-200 T2 slot loader
+# ---------------------------------------------------------------------------
+
+
+def _write_t2_output(tmp_path: Path, filename: str, forecasts: list[dict]) -> Path:
+    today = filename  # caller passes full filename e.g. t2_mlb_20260626_1930.json
+    p = tmp_path / today
+    p.write_text(json.dumps({
+        "run_at": "2026-06-26T19:30:00Z",
+        "forecasts": forecasts,
+        "bets": [],
+    }))
+    return p
+
+
+class TestLoadT2BattingSlots:
+    def test_empty_when_no_t2_files(self, tmp_path):
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            slots = runner._load_t2_batting_slots()
+        assert slots == {}
+
+    def test_loads_batting_slots(self, tmp_path):
+        today = __import__("datetime").date.today().strftime("%Y%m%d")
+        _write_t2_output(tmp_path, f"t2_mlb_{today}_1930.json", [
+            {"player_id": 12345, "batting_slot": 3, "player_name": "Player A",
+             "ticker": "T-A", "threshold": 1},
+            {"player_id": 67890, "batting_slot": 7, "player_name": "Player B",
+             "ticker": "T-B", "threshold": 1},
+        ])
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            slots = runner._load_t2_batting_slots()
+        assert slots == {12345: 3, 67890: 7}
+
+    def test_skips_entries_without_slot(self, tmp_path):
+        today = __import__("datetime").date.today().strftime("%Y%m%d")
+        _write_t2_output(tmp_path, f"t2_mlb_{today}_1930.json", [
+            {"player_id": 11111, "batting_slot": None, "player_name": "No Slot"},
+            {"player_id": 22222, "batting_slot": 4, "player_name": "Has Slot"},
+        ])
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            slots = runner._load_t2_batting_slots()
+        assert 11111 not in slots
+        assert slots.get(22222) == 4
+
+    def test_ignores_prior_day_t2_files(self, tmp_path):
+        # Yesterday's file should NOT be loaded (date filter)
+        yesterday = (__import__("datetime").date.today() -
+                     __import__("datetime").timedelta(days=1)).strftime("%Y%m%d")
+        _write_t2_output(tmp_path, f"t2_mlb_{yesterday}_1930.json", [
+            {"player_id": 99999, "batting_slot": 5, "player_name": "Stale Player"},
+        ])
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            slots = runner._load_t2_batting_slots()
+        assert slots == {}
+
+    def test_corrupted_file_returns_empty(self, tmp_path):
+        today = __import__("datetime").date.today().strftime("%Y%m%d")
+        (tmp_path / f"t2_mlb_{today}_1930.json").write_text("not-json{{")
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            slots = runner._load_t2_batting_slots()
+        assert slots == {}
+
+
+# ---------------------------------------------------------------------------
+# _run_cycle with batting_slots — T-200 integration
+# ---------------------------------------------------------------------------
+
+
+class TestRunCycleWithBattingSlots:
+    """Verify _run_cycle correctly accepts and uses batting_slots param."""
+
+    def test_accepts_batting_slots_param(self, tmp_path):
+        """_run_cycle with batting_slots={} runs without error."""
+        from prediction_market_bot.c4_risk_engine.risk import RiskEngine
+        from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+        from prediction_market_bot.c5_execution.paper_trader import PaperTrader
+        from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+
+        audit  = AuditLogger(log_path=tmp_path / "audit.jsonl")
+        store  = StagedOrderStore(str(tmp_path / "staged.db"))
+        engine = RiskEngine(logger=audit, snapshot_id="T", bankroll=270.0,
+                            kelly_fraction=0.10, initial_bankroll=1000.0, min_bet_usd=0.01)
+        trader = PaperTrader(tmp_path / "p.json", logger=audit)
+
+        live = [_make_live_state(h_so_far=0, ab_so_far=0, inning=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=0.02)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.55, "ba_l10": 0.99, "h_l10_mean": 1.2}]}
+
+        ev, fi, deployed = runner._run_cycle(
+            cycle_id="SLOT-TEST", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            batting_slots={660670: 1},   # slot 1 → 4.2 expected ABs
+        )
+        assert fi >= 0   # ran without error; outcome depends on edge
+
+    def test_none_batting_slots_defaults_gracefully(self, tmp_path):
+        """batting_slots=None (default) does not error."""
+        from prediction_market_bot.c4_risk_engine.risk import RiskEngine
+        from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+        from prediction_market_bot.c5_execution.paper_trader import PaperTrader
+        from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+
+        audit  = AuditLogger(log_path=tmp_path / "audit.jsonl")
+        store  = StagedOrderStore(str(tmp_path / "staged.db"))
+        engine = RiskEngine(logger=audit, snapshot_id="T", bankroll=270.0,
+                            kelly_fraction=0.10, initial_bankroll=1000.0, min_bet_usd=0.01)
+        trader = PaperTrader(tmp_path / "p.json", logger=audit)
+
+        live = [_make_live_state(h_so_far=0, ab_so_far=2, inning=5)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.80, vig=0.04)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 2,
+                              "p_t1": 0.55, "ba_l10": 0.10, "h_l10_mean": 1.2}]}
+
+        ev, fi, deployed = runner._run_cycle(
+            cycle_id="NULL-SLOT", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            # batting_slots omitted → defaults to None → treated as {}
+        )
+        assert fi == 0   # p_t4 very low, should not fire
