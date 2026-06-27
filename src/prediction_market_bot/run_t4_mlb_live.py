@@ -7,7 +7,9 @@ Requires:     BOT_ENV=paper, BOT_C4_ACTIVE=true
               Active MLB game in progress or scheduled today
               pregame_mlb_YYYYMMDD.json in logs/ from today's PIPE-06pre run
 
-Schedule:     0 17 * * * timeout 43200 (1pm ET / 10am PT; full MLB slate 17:00–05:00 UTC)
+Schedule:     0 13 * * * timeout 43200 (9am ET default; self-heal waits until first_pitch−30min)
+              PIPE-08 adjusts live crontab daily to optimal fire time.
+              Self-heal makes crontab timing irrelevant — process always waits correctly.
 Environment:  ENV-02 (VPS paper trading)
 
 Kill switch:
@@ -76,6 +78,15 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# MLB schedule API (self-heal startup)
+# ---------------------------------------------------------------------------
+
+_MLB_SCHEDULE_API     = "https://statsapi.mlb.com/api/v1/schedule"
+_MLB_SPORT_ID         = 1
+_NO_PLAY_STATES       = frozenset({"Postponed", "Cancelled", "Postponed - Rain"})
+T4_STARTUP_BUFFER_MIN = 30  # start this many minutes before first pitch
 
 # ---------------------------------------------------------------------------
 # Guard: paper mode + C4 active
@@ -690,6 +701,95 @@ def _run_cycle(
 
 
 # ---------------------------------------------------------------------------
+# Startup self-heal — crontab-timing-agnostic first-pitch wait
+# ---------------------------------------------------------------------------
+
+
+def _earliest_first_pitch_utc(today: date) -> "Optional[datetime]":
+    """
+    Fetch today's MLB schedule and return the earliest active game start (UTC).
+    Returns None if all games are postponed/cancelled or if the API fails.
+    """
+    date_str = today.strftime("%m/%d/%Y")
+    try:
+        r = requests.get(
+            _MLB_SCHEDULE_API,
+            params={"sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team"},
+            timeout=10,
+        )
+        r.raise_for_status()
+        dates = r.json().get("dates", [])
+        if not dates:
+            return None
+        games = dates[0].get("games", [])
+        starts: list[datetime] = []
+        for g in games:
+            state = g.get("status", {}).get("detailedState", "")
+            if state in _NO_PLAY_STATES:
+                continue
+            gd = g.get("gameDate", "")
+            if not gd:
+                continue
+            try:
+                dt = datetime.fromisoformat(gd.replace("Z", "+00:00"))
+                starts.append(dt)
+            except ValueError:
+                continue
+        return min(starts) if starts else None
+    except Exception as exc:
+        logger.warning("MLB schedule API self-heal query failed: %s", exc)
+        return None
+
+
+def _startup_self_heal() -> None:
+    """
+    Make crontab firing time irrelevant: compute the correct T4 start from the
+    live MLB schedule and sleep until first_pitch - 30min if cron fired us early.
+
+    Cases handled:
+      - PIPE-08 adjusted cron correctly: target already passed → start immediately.
+      - Cron default fired early (e.g. 13:00 UTC, first pitch at 23:05 UTC): sleep ~9.5h.
+      - VPS restart wiped PIPE-08 timing: cron default fires early, self-heal corrects.
+      - All games postponed: start immediately (loop will idle gracefully).
+      - MLB API unavailable: start immediately (failsafe).
+
+    Kill switch is checked every 60 seconds during any wait.
+    """
+    now = datetime.now(timezone.utc)
+    earliest = _earliest_first_pitch_utc(now.date())
+    if earliest is None:
+        logger.info("T4-MLB self-heal: no active games found — starting immediately")
+        return
+
+    target = earliest - timedelta(minutes=T4_STARTUP_BUFFER_MIN)
+    if now >= target:
+        logger.info(
+            "T4-MLB self-heal: first pitch %s, target %s (now %s) — starting immediately",
+            earliest.strftime("%H:%M UTC"), target.strftime("%H:%M UTC"),
+            now.strftime("%H:%M UTC"),
+        )
+        return
+
+    wait_s = (target - now).total_seconds()
+    logger.info(
+        "T4-MLB self-heal: first pitch %s → waiting until %s (%.0f min). Cron fired %s UTC.",
+        earliest.strftime("%H:%M UTC"), target.strftime("%H:%M UTC"),
+        wait_s / 60, now.strftime("%H:%M UTC"),
+    )
+
+    while True:
+        now = datetime.now(timezone.utc)
+        remaining = (target - now).total_seconds()
+        if remaining <= 0:
+            logger.info("T4-MLB self-heal: wait complete — entering eval loop")
+            return
+        if kill_switch_armed(KILL_SWITCH_PATH):
+            logger.warning("T4-MLB kill switch armed during self-heal wait — exiting")
+            sys.exit(0)
+        time.sleep(min(60.0, remaining))
+
+
+# ---------------------------------------------------------------------------
 # Main loop
 # ---------------------------------------------------------------------------
 
@@ -705,6 +805,10 @@ def main() -> None:
     logger.info("PIPE-07-MLB T4 Live  session=%s", session_id)
     logger.info("Kill switch: touch %s", KILL_SWITCH_PATH)
     logger.info("=" * 60)
+
+    # Self-heal: compute correct start time from live MLB schedule regardless of
+    # what time cron fired us. Crontab timing becomes irrelevant.
+    _startup_self_heal()
 
     # Dry-run mode: compute all evaluations, log to JSONL, skip execution (T-202).
     if T4_MLB_DRY_RUN:
