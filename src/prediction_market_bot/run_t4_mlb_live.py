@@ -839,8 +839,18 @@ def main() -> None:
     # ---- Initialize components (once per session) ----
     audit  = AuditLogger(log_path=_AUDIT_LOG_PATH)
     store  = StagedOrderStore(_STAGED_DB_PATH)
-    trader = PaperTrader(portfolio_path=_PORTFOLIO_PATH, logger=audit)
-    kalshi = KalshiMarketClient.from_env()
+    try:
+        kalshi = KalshiMarketClient.from_env()
+        _signing_ready = kalshi.has_signing_key()
+    except Exception as _e:
+        logger.warning("Kalshi client init failed — orders will be local_only: %s", _e)
+        kalshi = None
+        _signing_ready = False
+    trader = PaperTrader(
+        portfolio_path=_PORTFOLIO_PATH,
+        logger=audit,
+        kalshi_client=kalshi if _signing_ready else None,
+    )
 
     # ---- T4 band budget ----
     t4_state = trader.get_state()
