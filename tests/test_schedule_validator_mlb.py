@@ -238,6 +238,18 @@ class TestT1Guard:
         warnings = check_t1_guard(games)
         assert any("T1_RISK" in w for w in warnings)
 
+    def test_no_warning_midnight_era_game(self):
+        """00:40 UTC game = 8:40pm ET — starts 13h40m after T1, not 9h before."""
+        games = [_make_game("LAD @ SD", "2026-06-28T00:40:00Z")]
+        warnings = check_t1_guard(games)
+        assert warnings == []
+
+    def test_no_warning_01_05_utc_game(self):
+        """01:05 UTC = 9:05pm ET — safe, 14h after T1."""
+        games = [_make_game("ATL @ SF", "2026-06-28T01:05:00Z")]
+        warnings = check_t1_guard(games)
+        assert warnings == []
+
 
 # ---------------------------------------------------------------------------
 # T2 guard
@@ -260,6 +272,17 @@ class TestT2Guard:
         assert len(warnings) == 1
         assert "T2_COVERAGE" in warnings[0]
         assert "1/2" in warnings[0]
+
+    def test_midnight_era_game_not_counted_as_early(self):
+        """00:40 UTC = 8:40pm ET — starts AFTER T2 in real time, not before."""
+        games = [
+            _make_game("A @ B", "2026-06-27T17:10:00Z"),  # truly before T2
+            _make_game("C @ D", "2026-06-28T00:40:00Z"),  # 8:40pm ET, after T2
+            _make_game("E @ F", "2026-06-28T01:38:00Z"),  # 9:38pm ET, after T2
+        ]
+        warnings = check_t2_guard(games)
+        assert len(warnings) == 1
+        assert "1/3" in warnings[0]  # only 1 truly early game
 
 
 # ---------------------------------------------------------------------------
