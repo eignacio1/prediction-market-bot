@@ -8,7 +8,7 @@ Schedule:     Cron: 06:30 UTC daily — after all MLB games finish
 Environment:  ENV-02 — BOT_ENV=paper required
 
 Purpose:
-  PIPE-05 places bets at 23:30 UTC. MLB games finish by ~04:00–05:00 UTC.
+  PIPE-05 places bets at 11:00 UTC. MLB games finish by ~04:00–05:00 UTC.
   This script runs at 06:30 UTC to resolve open MLB positions using the
   MLB Stats API (statsapi.mlb.com).
 
@@ -103,8 +103,12 @@ def _fetch_mlb_hits(
         for split in splits:
             if split.get("date", "") == game_date:
                 return float(split.get("stat", {}).get("hits", 0))
-    except Exception:
-        pass
+    except Exception as exc:
+        print(
+            f"  [MLB-API] player_id={player_id} game_date={game_date} "
+            f"game_type={game_type}: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
     return None
 
 

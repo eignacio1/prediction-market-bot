@@ -8,9 +8,9 @@ Schedule:     Cron: 19:30 UTC (3:30pm ET) — after most evening-game lineups po
               Afternoon games (first pitch <19:30 UTC) are skipped by the per-game
               contamination guard.
 
-What T2 adds over T1 (PIPE-05 at 03:00 UTC):
+What T2 adds over T1 (PIPE-05 at 11:00 UTC):
   1. Lineup confirmation — player NOT in today's confirmed batting lineup (scratch /
-     benched) is SKIPPED. T1 has no confirmed lineup data at 03:00 UTC.
+     benched) is SKIPPED. T1 has no confirmed lineup data at 11:00 UTC.
   2. Batting order adjustment — today's confirmed batting slot determines expected
      plate appearances. Top-of-order (slots 1-3) get more ABs; bottom-order (slots
      7-9) get fewer. T2 applies a Binomial adjustment to p_t1 using today's slot.
@@ -88,7 +88,7 @@ RUN_TIME   = NOW_UTC.strftime("%H%M")
 LOG_DIR        = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
 PORTFOLIO_PATH = LOG_DIR / "paper_portfolio_mlb.json"
 REPORT_PATH    = LOG_DIR / f"t2_mlb_{GAME_DATE}_{RUN_TIME}.json"
-AUDIT_LOG_PATH = LOG_DIR / "audit_mlb_t2.jsonl"
+AUDIT_LOG_PATH = LOG_DIR / "audit_mlb.jsonl"
 
 EDGE_YES  = float(os.environ.get("MLB_T2_EDGE_YES", "0.02"))
 PAPER_YES_ONLY = os.environ.get("MLB_PAPER_YES_ONLY", "true").lower() == "true"

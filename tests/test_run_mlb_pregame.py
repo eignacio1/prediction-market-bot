@@ -204,10 +204,12 @@ def _make_artifact() -> dict:
 
 
 def _make_feature_csv(tmp_path: Path) -> Path:
+    from datetime import date, timedelta
+    recent = (date.today() - timedelta(days=1)).isoformat()
     csv = tmp_path / "mlb_feature_matrix.csv"
     csv.write_text(
         "player_id,player_name,game_date,ba_l10,days_rest,h_l10_mean\n"
-        "660670,Juan Soto,2024-04-01,0.280,1,1.0\n"
+        f"660670,Juan Soto,{recent},0.280,1,1.0\n"
     )
     return csv
 
