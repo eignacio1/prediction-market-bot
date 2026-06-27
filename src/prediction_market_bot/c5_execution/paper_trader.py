@@ -848,6 +848,54 @@ class PaperTrader:
         )
         return ok, closed_pos
 
+    def mark_aged_open(
+        self,
+        position_id: str,
+        reason: str = "api_no_result_48h",
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """Tag an open position as aged-open in-place (capital remains deployed).
+
+        Called by run_resolve_mlb.py when a position's game_date is >48h old and
+        the MLB Stats API still returns None hits.  The position stays in
+        open_positions so _ledger_bankroll() continues to count its open_cost —
+        capital is NOT credited back.  The tags make the position visible in
+        monitoring and audits without distorting the bankroll calculation.
+
+        Idempotent: if aged_open is already True, returns (True, existing_pos)
+        without writing again.
+
+        Returns (ok, position_record).  Empty dict if position_id not found.
+        """
+        with self._lock, self._file_lock():
+            self._reload_locked()
+            pos = next(
+                (p for p in self._state["open_positions"]
+                 if p["position_id"] == position_id),
+                None,
+            )
+            if pos is None:
+                return True, {}
+            if pos.get("aged_open") is True:
+                return True, pos
+
+            pos["aged_open"]        = True
+            pos["aged_open_reason"] = reason
+            pos["aged_open_at"]     = _utc_now()
+            self._save()
+
+        ok = self._logger.warning(
+            COMPONENT, "paper_position_aged_open",
+            payload={
+                "position_id": position_id,
+                "player_name": pos.get("player_name", ""),
+                "game_date":   pos.get("game_date", ""),
+                "reason":      reason,
+            },
+            session_id=session_id,
+        )
+        return ok, pos
+
     def summary(self) -> dict[str, Any]:
         """Return a human-readable portfolio summary.
 

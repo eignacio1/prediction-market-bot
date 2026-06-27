@@ -3,7 +3,7 @@ PIPE-05: MLB Paper Trading Pipeline
 ====================================
 Pipeline:     PIPE-05 (MLB simulated decision cycle)
 Phase:        Phase 6 (ENV-02 — paper trading)
-Schedule:     Cron: 03:00 UTC daily — Kalshi publishes same-day MLB markets by ~01:00 UTC;
+Schedule:     Cron: 11:00 UTC daily (7am ET) — Kalshi publishes same-day MLB markets by ~01:00 UTC;
               all ET-dated games start ≥17:05 UTC so contamination guard always passes
 Environment:  ENV-02 — BOT_ENV=paper required; no real capital
 Prerequisite: models/mlb_v1_model.joblib (run scripts/train_mlb_model.py)
@@ -102,11 +102,11 @@ from prediction_market_bot.execution_bands import BAND_REGISTRY, ExecutionBand, 
 # ---------------------------------------------------------------------------
 
 SESSION_ID    = f"PT-MLB-{uuid.uuid4().hex[:8].upper()}"
-# T1 night-before baseline: target today's games (UTC). Cron runs at 03:00 UTC
-# (11pm ET) — all ET-dated games for today haven't started yet (first pitch
+# T1 night-before baseline: target today's games (UTC). Cron runs at 11:00 UTC
+# (7am ET) — all ET-dated games for today haven't started yet (first pitch
 # earliest 17:05 UTC). Kalshi publishes same-day KXMLBHIT markets by ~01:00 UTC.
 # The contamination guard (_is_mlb_game_in_progress) checks GAME_DATE_ISO —
-# today's (ET) games are always "Preview" at 03:00 UTC so the guard passes.
+# today's (ET) games are always "Preview" at 11:00 UTC so the guard passes.
 _now_utc      = datetime.now(tz=timezone.utc)
 _target_date  = _now_utc.date()
 GAME_DATE     = _target_date.strftime("%Y%m%d")
@@ -187,11 +187,16 @@ def _ticker_to_game_date(ticker: str) -> str:
     return GAME_DATE_ISO
 
 
-def _is_mlb_game_in_progress(game_date: str) -> bool:
+def _is_mlb_game_in_progress(
+    game_date: str,
+    logger: AuditLogger | None = None,
+    session_id: str | None = None,
+) -> bool:
     """Check whether any MLB game for game_date is currently live.
 
     Uses MLB Stats API /api/v1/schedule. Returns True if any game has
-    abstractGameState == "Live". Returns False on API failure (permissive).
+    abstractGameState == "Live". Returns False on API failure (permissive —
+    but logs a WARNING via C6 if logger is provided so failures are visible).
     """
     try:
         resp = requests.get(
@@ -206,8 +211,13 @@ def _is_mlb_game_in_progress(game_date: str) -> bool:
                 state = game.get("status", {}).get("abstractGameState", "")
                 if state == "Live":
                     return True
-    except Exception:
-        pass
+    except Exception as exc:
+        if logger is not None:
+            logger.warning(
+                "PIPE-05", "mlb_schedule_api_failed",
+                payload={"game_date": game_date, "error": str(exc)},
+                session_id=session_id,
+            )
     return False
 
 
@@ -659,7 +669,7 @@ def main() -> None:
     # 6. Abort if any MLB game is in progress
     # (mirrors NBA T-162/GG-024 guard but uses MLB Stats API)
     # ------------------------------------------------------------------
-    if _is_mlb_game_in_progress(GAME_DATE_ISO):
+    if _is_mlb_game_in_progress(GAME_DATE_ISO, logger=logger, session_id=SESSION_ID):
         print(
             f"[PIPE-05] MLB game(s) in progress on {GAME_DATE_ISO} — "
             f"aborting bet placement (live market contamination guard)"
