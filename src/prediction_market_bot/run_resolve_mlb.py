@@ -178,18 +178,40 @@ def main() -> None:
         actual_hits = fetch_actual_hits(player_id, game_date)
 
         if actual_hits is None:
-            logger.warning(
-                "PIPE-05R", "player_stats_fetch_failed",
-                payload={
-                    "player_id": player_id,
-                    "player_name": player_name,
-                    "game_date": game_date,
-                    "position_id": position_id,
-                    "note": "MLB Stats API returned no result — position stays open",
-                },
-                session_id=SESSION_ID,
-            )
-            print(f"  [SKIP] {player_name:<24} — no MLB API result for {game_date}")
+            try:
+                game_dt_utc = datetime.strptime(game_date, "%Y-%m-%d").replace(
+                    tzinfo=timezone.utc
+                )
+                age_hours = (datetime.now(timezone.utc) - game_dt_utc).total_seconds() / 3600
+            except ValueError:
+                age_hours = 0.0
+
+            if age_hours > 48:
+                trader.mark_aged_open(
+                    position_id=position_id,
+                    reason="api_no_result_48h",
+                    session_id=SESSION_ID,
+                )
+                print(
+                    f"  [AGED] {player_name:<24} — no MLB API result after "
+                    f"{age_hours:.0f}h (>48h) — tagged aged_open",
+                    file=sys.stderr,
+                )
+            else:
+                logger.warning(
+                    "PIPE-05R", "player_stats_fetch_failed",
+                    payload={
+                        "player_id": player_id,
+                        "player_name": player_name,
+                        "game_date": game_date,
+                        "position_id": position_id,
+                        "age_hours": round(age_hours, 1),
+                        "note": "MLB Stats API returned no result — position stays open",
+                    },
+                    session_id=SESSION_ID,
+                )
+                print(f"  [SKIP] {player_name:<24} — no MLB API result for {game_date} "
+                      f"({age_hours:.0f}h old — within 48h grace period)")
             continue
 
         ok, closed_pos = trader.settle_position(

@@ -746,6 +746,40 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-043 — MLB Kelly fraction inherited from NBA without MLB-specific calibration
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-043 |
+| Category | Architectural placeholder — calibration value ported cross-sport without derivation |
+| What was missed | `DEFAULT_KELLY_FRACTION = 0.25` (global) and T1 MLB band config `kelly_fraction = 0.10` are inherited from the NBA arm. The 0.10 fraction was calibrated for NBA (AUC, variance, and base-rate structure validated at G4). MLB is a structurally different sport: different hit-rate distributions, different market thinness, different base-rate variance across thresholds (t=1 base_rate≈27%, t=2≈6.5%). The fractional Kelly appropriate for MLB has not been derived. |
+| When it should have been caught | Before MLB T1 activation. Should have been a pre-MLB-G1 derivation task. |
+| Phases it survived | MLB pre-G1 (paper trading not yet active) |
+| Why it survived | MLB arm was built using NBA architecture as a template. The band config file propagates the NBA 0.10 fraction; no MLB-specific Kelly derivation task was registered. |
+| Impact | **LOW now — paper trading only, NO live capital.** Kelly fraction affects position size. If 0.10 underestimates the optimal fraction, we under-size bets and accumulate evidence more slowly. If it overestimates, we risk larger drawdowns per resolved bet. Neither consequence is material at paper trading scale ($958.99 bankroll). Risk escalates at G6 (live capital). |
+| Discovery | SESSION 90 (2026-06-27) — T-198 governance gap registration during MLB-G1 gate close. Identified during pre-gate institutional audit. |
+| Resolution | **T-198 (registration).** MLB-specific Kelly fraction derivation required before G6 live capital. Resolution path: after ≥30 MLB paper bets resolved, compute empirical win rate, edge distribution, and variance from MLB paper portfolio. Derive MLB band kelly via `f* = edge / variance`. Register result via ADR before G6 MLB capital authorization. |
+| Status | **OPEN.** Deferred to MLB pre-G6 (requires resolved paper bet sample). LOW urgency at paper stage. Linked: T-198, ADR-0010, DEFAULT_KELLY_FRACTION in risk.py. |
+
+---
+
+### GG-044 — C7 drift baselines use NBA calibration values for MLB sport monitoring
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-044 |
+| Category | Architectural placeholder — monitoring baseline ported cross-sport without derivation |
+| What was missed | `BRIER_BASELINE = 0.2416` and `ECE_BASELINE = 0.0247` in `monitor.py` are NBA G4 TEST set values (fitted on 80-player NBA scoring outcomes). These constants are used by `SystemMonitor` to evaluate drift in the rolling forecast window. MLB hit prediction is a structurally different problem: binary classification (hits ≥ threshold) with lower base rates (t=1: 27%, t=2: 6.5%) vs. NBA points thresholds (base rates 30–50% depending on line). The correct MLB Brier baseline depends on the MLB model's calibration and hit-rate distribution — values that will only be known after the first resolved MLB paper bets. Using NBA baselines for MLB monitoring means the C7 drift alarm could fire incorrectly (NBA baseline too tight for MLB) or miss real drift (NBA baseline too loose). |
+| When it should have been caught | Before MLB monitoring was configured. Should have been a pre-MLB-G1 baseline derivation task. |
+| Phases it survived | MLB pre-G1 (calib_monitor cron not yet enabled — explicitly PAUSED in deploy/cron.conf pending this gap) |
+| Why it survived | `SystemMonitor` is sport-agnostic by design (C7 requires no sport-specific logic). The constants are module-level defaults that were never sport-parameterized. MLB monitoring was parked behind the calib_monitor cron which is NOT enabled at MLB-G1 (requires closed positions). |
+| Impact | **LOW now — calib_monitor cron is explicitly NOT enabled at MLB-G1 (no closed positions to evaluate).** Risk escalates when the calib_monitor cron is enabled (post first MLB resolutions). If enabled with NBA baselines, drift alarms could mis-fire or fail to fire on genuine MLB model degradation. |
+| Discovery | SESSION 90 (2026-06-27) — T-198 governance gap registration during MLB-G1 gate close. Drift baselines flagged during ARE WE COMPROMISED? protocol review. |
+| Resolution | **T-198 (registration).** MLB-specific baselines required before enabling the calib_monitor cron. Resolution path: after ≥30 MLB paper bets resolved, compute empirical MLB Brier score and ECE from the resolved paper portfolio. Register MLB baselines via ADR as sport-specific `BRIER_BASELINE_MLB` / `ECE_BASELINE_MLB` constants, or parameterize `SystemMonitor.__init__` to accept sport-specific baselines. Enable calib_monitor cron only after baseline ADR is accepted. |
+| Status | **OPEN.** Deferred to post-first-MLB-resolutions. LOW urgency (calib_monitor cron not enabled). Linked: T-198, monitor.py BRIER_BASELINE/ECE_BASELINE, calib_monitor cron in deploy/cron.conf. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

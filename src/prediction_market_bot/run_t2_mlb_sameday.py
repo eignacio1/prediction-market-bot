@@ -164,8 +164,16 @@ def _slot_adjust(
     return float(np.clip(p_t1 * ratio, 0.01, 0.99))
 
 
-def _fetch_live_game_pks(game_date: str) -> set[int]:
-    """Return set of game_pks that are currently Live for game_date."""
+def _fetch_live_game_pks(
+    game_date: str,
+    logger: AuditLogger | None = None,
+    session_id: str | None = None,
+) -> set[int]:
+    """Return set of game_pks that are currently Live for game_date.
+
+    Returns empty set on API failure (permissive — treats all games as not-live
+    but logs a WARNING via C6 if logger is provided so failures are visible).
+    """
     try:
         resp = requests.get(
             _MLB_SCHEDULE_URL,
@@ -182,7 +190,13 @@ def _fetch_live_game_pks(game_date: str) -> set[int]:
                     if pk is not None:
                         live.add(int(pk))
         return live
-    except Exception:
+    except Exception as exc:
+        if logger is not None:
+            logger.warning(
+                COMPONENT, "mlb_schedule_api_failed",
+                payload={"game_date": game_date, "error": str(exc)},
+                session_id=session_id,
+            )
         return set()
 
 
@@ -276,7 +290,7 @@ def main() -> None:
     # 3. Fetch live game statuses (per-game contamination guard)
     # ------------------------------------------------------------------
     print("[DS-01] Checking live game statuses...")
-    live_game_pks = _fetch_live_game_pks(GAME_DATE_ISO)
+    live_game_pks = _fetch_live_game_pks(GAME_DATE_ISO, logger=logger, session_id=SESSION_ID)
     if live_game_pks:
         print(f"  {len(live_game_pks)} game(s) already Live — players in those games skipped")
     else:
