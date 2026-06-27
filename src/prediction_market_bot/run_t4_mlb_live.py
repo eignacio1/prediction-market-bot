@@ -366,20 +366,21 @@ def _espn_poll_once_mlb(
     states: list[MLBLiveBatterState] = []
 
     for team_data in players_teams:
-        # MLB ESPN boxscore: statistics list, first entry = batting stats
         for stat_group in team_data.get("statistics", []):
-            if stat_group.get("name", "").lower() != "batting":
-                continue
+            # ESPN MLB API does not include a 'name' field on stat groups.
+            # Identify batting vs pitching by labels: batting has "AB", pitching has "IP".
+            labels = stat_group.get("labels", [])
+            if not labels or "AB" not in labels or "IP" in labels:
+                continue  # skip pitching stat group
 
-            labels = stat_group.get("labels", _MLB_STAT_LABELS)
             try:
                 h_idx  = labels.index("H")
             except ValueError:
-                h_idx = 2   # fallback: AB=0, R=1, H=2
+                h_idx = 3   # fallback position in H-AB, AB, R, H, RBI layout
             try:
                 ab_idx = labels.index("AB")
             except ValueError:
-                ab_idx = 0
+                ab_idx = 1
 
             for athlete_entry in stat_group.get("athletes", []):
                 athlete = athlete_entry.get("athlete", {})
