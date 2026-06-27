@@ -882,3 +882,225 @@ class TestRunCycleWithBattingSlots:
             # batting_slots omitted → defaults to None → treated as {}
         )
         assert fi == 0   # p_t4 very low, should not fire
+
+
+# ---------------------------------------------------------------------------
+# TestDryRunMode — T-202 dry-run branch (T4_MLB_DRY_RUN=true)
+# ---------------------------------------------------------------------------
+
+
+def _make_high_edge_setup(tmp_path: Path):
+    """ba_l10=0.99, threshold=1, h_so_far=0, inning=3 → p_t4 ≈ 1.0; mip=0.20 → edge ≈ +0.75"""
+    engine, trader, store, audit = _make_components(tmp_path)
+    live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=3)]
+    live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=0.02)}
+    pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                          "ticker": TICKER_SOTO, "threshold": 1,
+                          "p_t1": 0.55, "ba_l10": 0.99, "h_l10_mean": 1.2}]}
+    return engine, trader, store, audit, live, live_prices, pregame
+
+
+class TestDryRunMode:
+    def test_no_position_opened_in_dry_run(self, tmp_path):
+        """dry_run=True: portfolio.open_positions stays empty."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        runner._run_cycle(
+            cycle_id="DR-01", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=None,
+        )
+        state = trader.get_state()
+        assert state["open_positions"] == []
+
+    def test_deployed_not_updated_in_dry_run(self, tmp_path):
+        """dry_run=True: returned t4_deployed_usd remains 0.0 (no capital consumed)."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        _ev, _fi, deployed = runner._run_cycle(
+            cycle_id="DR-02", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=None,
+        )
+        assert deployed == pytest.approx(0.0)
+
+    def test_would_fire_count_returned_as_fired(self, tmp_path):
+        """dry_run=True with high-edge setup: fired >= 1 (would_fire counted)."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        _ev, fi, _dep = runner._run_cycle(
+            cycle_id="DR-03", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=None,
+        )
+        assert fi >= 1
+
+    def test_dryrun_jsonl_written(self, tmp_path):
+        """dry_run=True with valid dryrun_log_path: JSONL file is created with at least one line."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_dryrun_test.jsonl"
+        runner._run_cycle(
+            cycle_id="DR-04", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=log_path,
+        )
+        assert log_path.exists()
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) >= 1
+
+    def test_dryrun_jsonl_fields_complete(self, tmp_path):
+        """JSONL records contain all required fields."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_dryrun_fields.jsonl"
+        runner._run_cycle(
+            cycle_id="DR-05", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=log_path,
+        )
+        required_fields = {
+            "ts", "cycle_id", "session_id", "ticker", "player_name", "player_id",
+            "threshold", "p_t4", "mip", "vig", "gross_edge", "net_edge",
+            "ba_l10", "h_so_far", "ab_so_far", "ab_remaining", "inning",
+            "batting_slot", "would_fire",
+        }
+        for line in log_path.read_text().strip().splitlines():
+            record = json.loads(line)
+            assert required_fields.issubset(record.keys()), f"Missing fields: {required_fields - record.keys()}"
+
+    def test_dryrun_would_fire_true_when_edge_positive(self, tmp_path):
+        """High-edge setup: would_fire=True in JSONL record."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_dryrun_wf_true.jsonl"
+        runner._run_cycle(
+            cycle_id="DR-06", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=log_path,
+        )
+        records = [json.loads(l) for l in log_path.read_text().strip().splitlines()]
+        assert any(r["would_fire"] is True for r in records)
+
+    def test_dryrun_would_fire_false_when_edge_negative(self, tmp_path):
+        """Low-edge setup (mip=0.95): would_fire=False and fi=0."""
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=8)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.95, vig=0.04)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.55, "ba_l10": 0.28, "h_l10_mean": 1.0}]}
+        log_path = tmp_path / "t4_mlb_dryrun_wf_false.jsonl"
+        _ev, fi, _dep = runner._run_cycle(
+            cycle_id="DR-07", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=log_path,
+        )
+        assert fi == 0
+        records = [json.loads(l) for l in log_path.read_text().strip().splitlines()]
+        assert all(r["would_fire"] is False for r in records)
+
+    def test_dryrun_ignores_band_budget_exhausted(self, tmp_path):
+        """dry_run=True: fires even when t4_deployed_usd >= t4_band_budget (budget NOT enforced in dry-run)."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        _ev, fi, _dep = runner._run_cycle(
+            cycle_id="DR-08", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=270.0,  # budget fully spent
+            dry_run=True, dryrun_log_path=None,
+        )
+        assert fi >= 1
+
+    def test_live_path_unaffected_by_dry_run_param(self, tmp_path):
+        """dry_run=False (default): high-edge setup opens a position normally."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        _ev, fi, deployed = runner._run_cycle(
+            cycle_id="DR-09", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False,
+        )
+        state = trader.get_state()
+        # High-edge → position should be opened; deployed > 0
+        assert fi >= 1
+        assert deployed > 0.0
+        assert len(state["open_positions"]) >= 1
+
+    def test_dryrun_no_log_path_does_not_crash(self, tmp_path):
+        """dry_run=True with dryrun_log_path=None: no crash, evaluated >= 1."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        ev, fi, _dep = runner._run_cycle(
+            cycle_id="DR-10", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=None,
+        )
+        assert ev >= 1
+
+    def test_dryrun_multiple_cycles_accumulate_records(self, tmp_path):
+        """Three dry-run cycles to the same JSONL path accumulate at least 3 records."""
+        log_path = tmp_path / "t4_mlb_dryrun_multi.jsonl"
+        for i in range(3):
+            engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+            runner._run_cycle(
+                cycle_id=f"DR-11-{i}", session_id="TEST",
+                live_states=live, live_prices=live_prices,
+                pregame_by_player_id=pregame,
+                engine=engine, trader=trader, store=store, audit=audit,
+                game_date="2026-06-26",
+                t4_band_budget=270.0, t4_deployed_usd=0.0,
+                dry_run=True, dryrun_log_path=log_path,
+            )
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) >= 3
+
+    def test_append_dryrun_record_writes_valid_json(self, tmp_path):
+        """_append_dryrun_record: single call produces valid JSON."""
+        log_path = tmp_path / "append_test.jsonl"
+        record = {"ts": "2026-06-26T00:00:00Z", "ticker": "TEST", "would_fire": True, "net_edge": 0.5}
+        runner._append_dryrun_record(log_path, record)
+        line = log_path.read_text().strip()
+        parsed = json.loads(line)
+        assert parsed["ticker"] == "TEST"
+        assert parsed["would_fire"] is True
+
+    def test_append_dryrun_record_appends(self, tmp_path):
+        """_append_dryrun_record: two calls → two separate lines."""
+        log_path = tmp_path / "append_two.jsonl"
+        runner._append_dryrun_record(log_path, {"n": 1})
+        runner._append_dryrun_record(log_path, {"n": 2})
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) == 2
+        assert json.loads(lines[0])["n"] == 1
+        assert json.loads(lines[1])["n"] == 2
