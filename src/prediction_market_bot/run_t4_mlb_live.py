@@ -91,6 +91,14 @@ if os.environ.get("BOT_C4_ACTIVE", "").lower() not in ("true", "1", "yes"):
     sys.exit(1)
 
 # ---------------------------------------------------------------------------
+# Dry-run mode (T-202)
+# When T4_MLB_DRY_RUN=true: compute all evaluations, log to JSONL, skip execution.
+# No positions are opened, no staged orders written, no portfolio mutated.
+# Used to collect evaluation distribution for edge calibration (T-203/GG-007).
+# ---------------------------------------------------------------------------
+T4_MLB_DRY_RUN = os.environ.get("T4_MLB_DRY_RUN", "").lower() in ("true", "1", "yes")
+
+# ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
@@ -147,6 +155,20 @@ class MLBLiveBatterState:
 
 def kill_switch_armed(path: Path) -> bool:
     return path.exists()
+
+
+# ---------------------------------------------------------------------------
+# Dry-run record writer (T-202)
+# ---------------------------------------------------------------------------
+
+
+def _append_dryrun_record(path: Path, record: dict) -> None:
+    """Append one evaluation record to the dry-run JSONL log (append-only)."""
+    try:
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record) + "\n")
+    except Exception as exc:
+        logger.warning("Dry-run record write failed: %s", exc)
 
 
 # ---------------------------------------------------------------------------
@@ -478,6 +500,8 @@ def _run_cycle(
     t4_band_budget: float,
     t4_deployed_usd: float,
     batting_slots: Optional[dict[int, int]] = None,
+    dry_run: bool = False,
+    dryrun_log_path: Optional[Path] = None,
 ) -> tuple[int, int, float]:
     """
     Run one T4 MLB evaluation cycle.
@@ -531,15 +555,49 @@ def _run_cycle(
                 ab_remaining=ab_remaining,
             )
 
-            # Fire condition: p_t4 must exceed market price + vig
             gross_edge = p_t4 - mip - vig
+            kalshi_fee = 0.07 * mip * (1.0 - mip)
+            net_edge   = gross_edge - kalshi_fee
+
+            if dry_run:
+                if dryrun_log_path is not None:
+                    _append_dryrun_record(dryrun_log_path, {
+                        "ts":           datetime.now(timezone.utc).isoformat(),
+                        "cycle_id":     cycle_id,
+                        "session_id":   session_id,
+                        "ticker":       ticker,
+                        "player_name":  ctx["player_name"],
+                        "player_id":    player_id,
+                        "threshold":    threshold,
+                        "p_t4":         round(p_t4, 6),
+                        "mip":          round(mip, 6),
+                        "vig":          round(vig, 6),
+                        "gross_edge":   round(gross_edge, 6),
+                        "net_edge":     round(net_edge, 6),
+                        "ba_l10":       round(ba_l10, 6),
+                        "h_so_far":     ls.h_so_far,
+                        "ab_so_far":    ls.ab_so_far,
+                        "ab_remaining": ab_remaining,
+                        "inning":       ls.inning,
+                        "batting_slot": batting_slot,
+                        "would_fire":   net_edge > 0,
+                    })
+                evaluated += 1
+                if net_edge > 0:
+                    fired += 1
+                    fired_tickers.add(ticker)
+                    logger.info(
+                        "T4-MLB DRY_RUN WOULD_FIRE  %-45s  p=%.3f  mip=%.3f  edge=%+.3f",
+                        ticker, p_t4, mip, net_edge,
+                    )
+                continue
+
+            # Normal execution path
             if gross_edge <= 0.0:
                 evaluated += 1
                 continue
 
             direction = "YES"
-            kalshi_fee = 0.07 * mip * (1.0 - mip)
-            net_edge = gross_edge - kalshi_fee
 
             fc_record = {
                 "forecast_id":         f"T4-MLB-{cycle_id}-{ticker[-12:]}",
@@ -647,6 +705,18 @@ def main() -> None:
     logger.info("PIPE-07-MLB T4 Live  session=%s", session_id)
     logger.info("Kill switch: touch %s", KILL_SWITCH_PATH)
     logger.info("=" * 60)
+
+    # Dry-run mode: compute all evaluations, log to JSONL, skip execution (T-202).
+    if T4_MLB_DRY_RUN:
+        dryrun_log_path: Optional[Path] = (
+            _LOGS_DIR / f"t4_mlb_dryrun_{date.today().strftime('%Y%m%d')}.jsonl"
+        )
+        logger.info("=" * 60)
+        logger.info("T4-MLB DRY-RUN MODE — no positions will be opened")
+        logger.info("Dry-run log: %s", dryrun_log_path)
+        logger.info("=" * 60)
+    else:
+        dryrun_log_path = None
 
     # ---- Load pregame context ----
     by_player_id, _by_ticker, name_to_pregame = _load_pregame_context()
@@ -774,6 +844,8 @@ def main() -> None:
                 t4_band_budget=t4_band_budget,
                 t4_deployed_usd=t4_deployed_game,
                 batting_slots=batting_slots,
+                dry_run=T4_MLB_DRY_RUN,
+                dryrun_log_path=dryrun_log_path,
             )
 
             cycle_n += 1
