@@ -7,7 +7,7 @@ Requires:     BOT_ENV=paper, BOT_C4_ACTIVE=true
               Active MLB game in progress or scheduled today
               pregame_mlb_YYYYMMDD.json in logs/ from today's PIPE-06pre run
 
-Schedule:     0 22 * * * timeout 21600 (10pm UTC / 6pm ET; covers full MLB slate)
+Schedule:     0 17 * * * timeout 43200 (1pm ET / 10am PT; full MLB slate 17:00–05:00 UTC)
 Environment:  ENV-02 (VPS paper trading)
 
 Kill switch:
