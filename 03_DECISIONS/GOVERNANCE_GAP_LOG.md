@@ -780,6 +780,40 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-045 — Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanalyzed
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-045 |
+| Category | Systemic blind spot — scaling ceiling absent from governance documentation |
+| What was missed | Kelly criterion assumes infinite market depth. Kalshi KXMLBHIT player prop markets are thin (estimated $500–$2,000 per market). At $1K bankroll with 25% Kelly fraction, position sizes are $50–$250 — within market depth. At $10K+ bankroll, full Kelly sizing would start moving prices against the bot, degrading edge before the position fills. The maximum effective bankroll this strategy can deploy is constrained by Kalshi market depth, independent of bankroll math or Kelly fraction calibration. This ceiling has never been analyzed or documented. Current paper-trading bankroll ($1,000 reset) is well below any likely ceiling. The gap becomes binding during G8–G9 (multi-sport, large capital deployment). |
+| When it should have been caught | Before G6 go/no-go on live capital. Current $1K paper makes it non-urgent, but the live capital threshold (G6: 30 resolved bets, positive P&L) does not include market depth analysis as a gate condition. If live capital is authorized and then scaled, the ceiling could be hit without warning. |
+| Phases it survived | G0–G5 (bankroll small enough that depth is not binding at any point in the paper period) |
+| Why it survived | Kelly sizing math is correct at current bankroll. Market depth was never explicitly modeled — the system treats Kalshi markets as having infinite liquidity, which is correct at $1K but not at scale. |
+| Impact | LOW now ($1K paper). MEDIUM at G6 live capital ($1K–$5K depending on market). HIGH at G8–G9 (multi-sport deployment, $10K+). If unaddressed, live capital deployment could hit the depth ceiling without a mechanism to detect it — positions partially fill at degraded prices, effective edge disappears, but C4 continues sizing at full Kelly. |
+| Discovery | SESSION 94 (2026-06-26) — strategic read-through of project by external analyst; surfaced in four-point structural assessment of project architecture. |
+| Resolution | Pre-G8: empirical analysis of Kalshi KXMLBHIT order book depth per market; derive maximum effective stake per market as a function of market depth; add depth-aware position size cap to C4 (overrides Kelly when market is thin). Alternatively: accept the ceiling as a known hard limit, document the maximum deployable bankroll explicitly, and commit to never exceeding it without a depth re-analysis. |
+| Status | **OPEN.** LOW urgency (current bankroll $1,000). Must be addressed before G8 live capital scaling beyond estimated market depth ceiling. |
+
+---
+
+### GG-046 — T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-046 |
+| Category | Systemic blind spot — T4 has a distinct alpha hypothesis with no validation experiment registered |
+| What was missed | T4's alpha hypothesis ("market is slow to update to live game state; bot can get there first") is structurally distinct from T1's hypothesis ("calibrated historical model beats pregame market pricing"). EXP-017 tests T1's commercial case. No experiment is registered to test T4's commercial case. The governance framework (GG-004, EXP-017 design, ADR-0024 validation gates) was designed entirely around T1-style hypothesis testing. If T4 wins on a different information edge (market microstructure / reaction speed), T1 failure does not imply T4 failure. Conversely, T1 success does not validate T4. |
+| When it should have been caught | Before T4 (MLB) was enabled for paper trading. ADR-0033 authorized T4 paper positions; T4's independent commercial validation was not a prerequisite. |
+| Phases it survived | All phases — T4 and T1 were conceptually treated as parts of the same strategy without articulating the structural distinction in governance documentation. |
+| Why it survived | The structural distinction (T1 = forecasting accuracy, T4 = market microstructure) was never explicitly documented. T4 was treated as a signal extension of T1 rather than an independent alpha source requiring its own validation track. |
+| Impact | LOW in paper phase (no live capital). MEDIUM post-G6 if live capital is authorized based on T1 EXP-017 evidence and T4 is scaled alongside it — T4 could have negative expected value independently of T1. The kill switch and Kelly sizing provide protection, but a misclassified alpha thesis can bleed slowly without triggering either mechanism. |
+| Discovery | SESSION 94 (2026-06-26) — strategic read-through surfaced the structural distinction between T1 (forecasting accuracy) and T4 (market microstructure / information speed). |
+| Resolution | Define a T4 commercial validation experiment (EXP-T4-01) analogous to EXP-017: compare T4 model_p against live Kalshi market price at the moment each evaluation fired; compute net_edge over resolved bets; apply ADR-0024 Tier 1/2 thresholds independently. Requires ≥30 resolved T4 bets (paper). Gate: T4 should not receive live capital allocation until independently validated by EXP-T4-01. |
+| Status | **OPEN.** LOW urgency in paper phase. Escalates when G6 live capital decision is made. Register EXP-T4-01 once ≥30 MLB T4 bets have resolved. |
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

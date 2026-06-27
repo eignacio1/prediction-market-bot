@@ -6,6 +6,23 @@
 
 ---
 
+## SESSION 94 — COMPLETE (2026-06-26)
+
+| Task | Status |
+|------|--------|
+| **T-203 — Edge calibration ADR (ADR-0033)** | ✅ COMPLETE — ADR-0033 ACCEPTED. MLB T4 uses `MIN_EDGE_TO_APPROVE = 0.04` (system default, C4, ADR-0020). No separate `MIN_EDGE_T4` variable. GG-007 NOT closed (unrelated). Provisional: calibrate empirically after ≥30 resolved T4 bets. |
+| **T-204 — Enable full MLB arm** | ✅ COMPLETE — `deploy/cron.conf` three changes: T4 MLB `T4_MLB_DRY_RUN=true` removed (T4 live), PIPE-05 (T1 MLB, 11:00 UTC) uncommented, PIPE-05.5 (T2 MLB, 19:30 UTC) uncommented. All 7 MLB crons active on VPS. First T1 bets fire June 27 at 11:00 UTC. T4 live as of 22:00 UTC June 26. |
+| **Gap 1 SESSION 93 error correction** | ✅ CORRECTED — SESSION 93 stated `_espn_poll_once_mlb()` returns current-batter only. Wrong — code reads all batting athletes from ESPN boxscore endpoint. ADR-0033 is authoritative correction. DECISION_LOG entry written. |
+| **ARE WE COMPROMISED? protocol** | ✅ RUN — All watchdog Q1–Q6 checks complete. T4 MLB arm confirmed live with all safety gates active (C4, kill switch, 27% band budget cap). No new critical gaps beyond already registered. |
+| **`scripts/run_session_report.py`** | ✅ COMPLETE — SSH-based session-start self-assessment script. 8 sections: VPS git HEAD, cron state, pregame freshness, portfolio state (4 pools), T4 throughput, recent bets, resolutions, cron error scan. Usage: `python3 scripts/run_session_report.py [--days N]`. |
+| **T4 sub-segment scoping** | ✅ DOCUMENTED — Phase 8 blocked (GG-038/039/040). Throughput already ~1,680 evals/game structural (3.5 players × 1.8 thresholds × 240 cycles). Strategy: watch tonight's T4 log; reduce POLL_INTERVAL_S 45s→15s only if materially below 1,000/game. |
+| **Strategic framing documentation** | ✅ COMPLETE — Four structural observations documented in DECISION_LOG SESSION 94 entry. GG-045 (market depth / capital ceiling) and GG-046 (T4 commercial validation separate from T1) registered in GOVERNANCE_GAP_LOG. |
+| **GG-045 + GG-046 registered** | ✅ COMPLETE — GG-045: Kalshi market depth capital ceiling unanalyzed (OPEN, LOW now). GG-046: T4 commercial validation untested independent alpha hypothesis (OPEN, LOW now). |
+| **DECISION_LOG entries** | ✅ COMPLETE — Two entries: (1) Strategic framing — four observations as ongoing factors, GG-045/GG-046 referenced. (2) ADR-0033 + T-204 cron changes. |
+| **Commit + deploy** | ✅ COMPLETE |
+
+---
+
 ## SESSION 93 — COMPLETE (2026-06-26)
 
 | Task | Status |
