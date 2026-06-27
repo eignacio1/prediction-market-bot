@@ -419,17 +419,28 @@ class TestFetchActualHitsPostseasonFallback:
 # main() creates its own PaperTrader; after each run we read back through a
 # fresh instance (_fresh_trader) so we see the on-disk state, not cached state.
 
-def _patched_run(portfolio_path: Path) -> None:
-    """Run main() with PORTFOLIO_PATH redirected to tmp and I/O mocked."""
+def _patched_run(
+    portfolio_path: Path,
+    t4_portfolio_path: Path | None = None,
+) -> None:
+    """Run main() with portfolio paths redirected to tmp and I/O mocked.
+
+    t4_portfolio_path: if None, set to a non-existent path so T4 pool is skipped.
+    """
     import prediction_market_bot.run_resolve_mlb as mod
     from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
     from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 
-    orig_portfolio = mod.PORTFOLIO_PATH
-    orig_log_dir   = mod.LOG_DIR
+    orig_portfolio    = mod.PORTFOLIO_PATH
+    orig_t4_portfolio = mod.T4_PORTFOLIO_PATH
+    orig_log_dir      = mod.LOG_DIR
 
-    mod.PORTFOLIO_PATH = portfolio_path
-    mod.LOG_DIR        = portfolio_path.parent
+    mod.PORTFOLIO_PATH    = portfolio_path
+    mod.T4_PORTFOLIO_PATH = (
+        t4_portfolio_path if t4_portfolio_path is not None
+        else portfolio_path.parent / "paper_portfolio_mlb_t4_nonexistent.json"
+    )
+    mod.LOG_DIR = portfolio_path.parent
     try:
         with patch.object(AuditLogger, "info",    return_value=True), \
              patch.object(AuditLogger, "warning", return_value=True), \
@@ -437,8 +448,9 @@ def _patched_run(portfolio_path: Path) -> None:
              patch.object(SystemMonitor, "check_portfolio_pnl", return_value=None):
             mod.main()
     finally:
-        mod.PORTFOLIO_PATH = orig_portfolio
-        mod.LOG_DIR        = orig_log_dir
+        mod.PORTFOLIO_PATH    = orig_portfolio
+        mod.T4_PORTFOLIO_PATH = orig_t4_portfolio
+        mod.LOG_DIR           = orig_log_dir
 
 
 class TestRunResolveMlbMain:
@@ -450,7 +462,7 @@ class TestRunResolveMlbMain:
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits") as mock_api:
             _patched_run(portfolio_path)
         mock_api.assert_not_called()
-        assert "No open MLB positions" in capsys.readouterr().out
+        assert "No open positions" in capsys.readouterr().out
 
     @pytest.mark.integration
     def test_future_game_date_skipped(self, tmp_path):
@@ -569,3 +581,119 @@ class TestRunResolveMlbMain:
                    return_value=None):
             _patched_run(portfolio_path)
         assert "RESOLVE-MLB-" in capsys.readouterr().out
+
+
+# ---------------------------------------------------------------------------
+# 4. T-201: T4 pool resolution
+# ---------------------------------------------------------------------------
+
+class TestT4PoolResolution:
+    """PIPE-05R resolves T4 portfolio independently of T1/T2 pool (T-201)."""
+
+    @pytest.mark.integration
+    def test_t4_pool_skipped_when_file_missing(self, tmp_path, capsys):
+        """main() runs cleanly when T4 portfolio does not exist yet."""
+        portfolio_path = tmp_path / "paper_portfolio_mlb.json"
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=None):
+            _patched_run(portfolio_path)  # t4_portfolio_path defaults to nonexistent
+        out = capsys.readouterr().out
+        assert "RESOLVE-MLB-" in out    # ran without error
+        assert "T4" in out              # T4 section mentioned
+
+    @pytest.mark.integration
+    def test_t4_win_resolves_independently(self, tmp_path):
+        """T4 YES bet resolves correctly; T1/T2 pool unaffected."""
+        main_path = tmp_path / "paper_portfolio_mlb.json"
+        t4_path   = tmp_path / "paper_portfolio_mlb_t4.json"
+
+        # Open a bet in T1/T2 pool (future date — won't resolve)
+        main_trader = PaperTrader(main_path, _logger())
+        _open_mlb_pos(main_trader, game_date=FUTURE_DATE, player_id=11111,
+                      player_name="Main Player", size=10.0)
+
+        # Open a bet in T4 pool (past date — should resolve)
+        t4_trader = PaperTrader(t4_path, _logger())
+        _open_mlb_pos(t4_trader, game_date=PAST_DATE, player_id=22222,
+                      player_name="T4 Player", threshold=1, size=5.0,
+                      mid=0.50, vig=0.0)
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=2.0):
+            _patched_run(main_path, t4_portfolio_path=t4_path)
+
+        # T1/T2: future bet still open
+        main_state = _fresh_trader(main_path).get_state()
+        assert len(main_state["open_positions"]) == 1
+        assert len(main_state["closed_positions"]) == 0
+
+        # T4: past bet resolved as WIN
+        t4_state = _fresh_trader(t4_path).get_state()
+        assert len(t4_state["open_positions"]) == 0
+        assert len(t4_state["closed_positions"]) == 1
+        assert t4_state["closed_positions"][0]["outcome"] == "WIN"
+
+    @pytest.mark.integration
+    def test_t4_loss_bankroll_correct(self, tmp_path):
+        """T4 YES loss: T4 bankroll decreases by stake; main pool bankroll unaffected."""
+        main_path = tmp_path / "paper_portfolio_mlb.json"
+        t4_path   = tmp_path / "paper_portfolio_mlb_t4.json"
+
+        main_trader = PaperTrader(main_path, _logger())
+        t4_trader   = PaperTrader(t4_path, _logger())
+        t4_pre_bankroll = t4_trader.get_state()["bankroll_usd"]
+
+        _open_mlb_pos(t4_trader, game_date=PAST_DATE, player_id=55555,
+                      player_name="T4 Player", threshold=2, size=10.0,
+                      mid=0.50, vig=0.0, direction="YES")
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=0.0):   # 0 hits < threshold 2 → YES loses
+            _patched_run(main_path, t4_portfolio_path=t4_path)
+
+        t4_state = _fresh_trader(t4_path).get_state()
+        closed   = t4_state["closed_positions"][0]
+        assert closed["outcome"] == "LOSS"
+        assert closed["pnl"] == -10.0
+        assert abs(t4_state["bankroll_usd"] - (t4_pre_bankroll - 10.0)) < 1e-4
+
+    @pytest.mark.integration
+    def test_main_pool_and_t4_pool_resolve_same_run(self, tmp_path):
+        """Both pools resolve in one main() call — independent idempotent settlement."""
+        main_path = tmp_path / "paper_portfolio_mlb.json"
+        t4_path   = tmp_path / "paper_portfolio_mlb_t4.json"
+
+        main_trader = PaperTrader(main_path, _logger())
+        _open_mlb_pos(main_trader, game_date=PAST_DATE, player_id=11111,
+                      player_name="Main Player", threshold=1, size=5.0)
+
+        t4_trader = PaperTrader(t4_path, _logger())
+        _open_mlb_pos(t4_trader, game_date=PAST_DATE, player_id=22222,
+                      player_name="T4 Player", threshold=1, size=5.0)
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=1.0):
+            _patched_run(main_path, t4_portfolio_path=t4_path)
+
+        main_state = _fresh_trader(main_path).get_state()
+        t4_state   = _fresh_trader(t4_path).get_state()
+
+        assert len(main_state["closed_positions"]) == 1
+        assert main_state["closed_positions"][0]["outcome"] == "WIN"
+        assert len(t4_state["closed_positions"]) == 1
+        assert t4_state["closed_positions"][0]["outcome"] == "WIN"
+
+    @pytest.mark.integration
+    def test_t4_empty_portfolio_runs_without_error(self, tmp_path, capsys):
+        """T4 portfolio exists but has no open positions — runs cleanly."""
+        main_path = tmp_path / "paper_portfolio_mlb.json"
+        t4_path   = tmp_path / "paper_portfolio_mlb_t4.json"
+
+        # Create T4 portfolio but leave it empty
+        PaperTrader(t4_path, _logger())
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=None):
+            _patched_run(main_path, t4_portfolio_path=t4_path)
+        # No exception = pass; T4 section says "No open positions"
+        assert "T4" in capsys.readouterr().out

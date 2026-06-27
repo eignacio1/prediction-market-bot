@@ -57,11 +57,12 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 
-SESSION_ID     = f"RESOLVE-MLB-{uuid.uuid4().hex[:8].upper()}"
-GAME_DATE      = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
-LOG_DIR        = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
-PORTFOLIO_PATH = LOG_DIR / "paper_portfolio_mlb.json"
-SNAPSHOT_ID    = "SNAP-MLB-T187E"
+SESSION_ID        = f"RESOLVE-MLB-{uuid.uuid4().hex[:8].upper()}"
+GAME_DATE         = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+LOG_DIR           = Path(os.environ.get("LOG_DIR", str(_SRC_ROOT / "logs")))
+PORTFOLIO_PATH    = LOG_DIR / "paper_portfolio_mlb.json"
+T4_PORTFOLIO_PATH = LOG_DIR / "paper_portfolio_mlb_t4.json"   # T-201: isolated T4 pool
+SNAPSHOT_ID       = "SNAP-MLB-T187E"
 
 _MLB_BASE_URL  = "https://statsapi.mlb.com"
 _RATE_LIMIT_S  = 0.6   # matches mlb_ingestion.py; stays under API rate limit
@@ -125,51 +126,39 @@ def fetch_actual_hits(player_id: int, game_date: str) -> float | None:
 
 
 # ---------------------------------------------------------------------------
-# Main
+# Resolution helper — shared by T1/T2 pool and T4 pool (T-201)
 # ---------------------------------------------------------------------------
 
-def main() -> None:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    logger = AuditLogger(LOG_DIR / "audit_mlb.jsonl", min_severity="INFO")
-    trader = PaperTrader(PORTFOLIO_PATH, logger)
+def _resolve_pool(
+    pool_label: str,
+    trader: PaperTrader,
+    logger: AuditLogger,
+    session_id: str,
+) -> tuple[int, int]:
+    """Resolve all eligible positions in one portfolio pool.
 
-    portfolio = trader.get_state()
+    Returns (resolved_count, still_open_count).
+    Eligible = open positions whose game_date is strictly before today.
+    """
+    portfolio      = trader.get_state()
     open_positions = portfolio.get("open_positions", [])
-    n_open = len(open_positions)
+    n_open         = len(open_positions)
 
-    print(f"\n[PIPE-05R] MLB resolution run — {GAME_DATE}")
-    print(f"Session:  {SESSION_ID}")
-    print(f"Open positions: {n_open}")
-
-    logger.info("PIPE-05R", "resolve_run_start",
-                payload={"session_id": SESSION_ID, "open_positions": n_open,
-                         "game_date": GAME_DATE},
-                session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+    print(f"\n[{pool_label}] Open positions: {n_open}")
 
     if n_open == 0:
-        print("[RESOLVE] No open MLB positions — nothing to do.")
-        logger.info("PIPE-05R", "resolve_run_complete",
-                    payload={"resolved": 0, "still_open": 0},
-                    session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
-        return
+        print(f"[{pool_label}] No open positions — nothing to do.")
+        return 0, 0
 
-    today = date.today().isoformat()
-    pending = [
-        p for p in open_positions
-        if p.get("game_date", today) < today
-    ]
+    today   = date.today().isoformat()
+    pending = [p for p in open_positions if p.get("game_date", today) < today]
 
     if not pending:
-        print(f"[RESOLVE] {n_open} open position(s) — all game dates are today or future. "
-              f"No resolutions yet.")
-        logger.info("PIPE-05R", "resolve_run_complete",
-                    payload={"resolved": 0, "still_open": n_open},
-                    session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
-        return
+        print(f"[{pool_label}] {n_open} open position(s) — all game dates today or future.")
+        return 0, n_open
 
-    print(f"[RESOLVE] {len(pending)} position(s) eligible (game_date < {today})...")
-
-    resolved = []
+    print(f"[{pool_label}] {len(pending)} position(s) eligible (game_date < {today})...")
+    resolved: list[dict] = []
 
     for pos in pending:
         player_id   = int(pos.get("player_id", 0))
@@ -194,10 +183,10 @@ def main() -> None:
                 trader.mark_aged_open(
                     position_id=position_id,
                     reason="api_no_result_48h",
-                    session_id=SESSION_ID,
+                    session_id=session_id,
                 )
                 print(
-                    f"  [AGED] {player_name:<24} — no MLB API result after "
+                    f"  [{pool_label}][AGED] {player_name:<24} — no MLB API result after "
                     f"{age_hours:.0f}h (>48h) — tagged aged_open",
                     file=sys.stderr,
                 )
@@ -205,24 +194,25 @@ def main() -> None:
                 logger.warning(
                     "PIPE-05R", "player_stats_fetch_failed",
                     payload={
-                        "player_id": player_id,
-                        "player_name": player_name,
-                        "game_date": game_date,
-                        "position_id": position_id,
-                        "age_hours": round(age_hours, 1),
-                        "note": "MLB Stats API returned no result — position stays open",
+                        "pool":         pool_label,
+                        "player_id":    player_id,
+                        "player_name":  player_name,
+                        "game_date":    game_date,
+                        "position_id":  position_id,
+                        "age_hours":    round(age_hours, 1),
+                        "note":         "MLB Stats API returned no result — position stays open",
                     },
-                    session_id=SESSION_ID,
+                    session_id=session_id,
                 )
-                print(f"  [SKIP] {player_name:<24} — no MLB API result for {game_date} "
-                      f"({age_hours:.0f}h old — within 48h grace period)")
+                print(f"  [{pool_label}][SKIP] {player_name:<24} — no MLB API result for "
+                      f"{game_date} ({age_hours:.0f}h old — within 48h grace period)")
             continue
 
         ok, closed_pos = trader.settle_position(
             position_id=position_id,
             actual_stat=actual_hits,
             stat_label="actual_hits",
-            session_id=SESSION_ID,
+            session_id=session_id,
         )
 
         if closed_pos:
@@ -230,7 +220,7 @@ def main() -> None:
             outcome = closed_pos.get("outcome", "?")
             sign    = "+" if pnl >= 0 else ""
             label   = "WIN " if outcome == "WIN" else "LOSS"
-            print(f"  {player_name:<24} {label}  "
+            print(f"  [{pool_label}] {player_name:<24} {label}  "
                   f"hits={actual_hits:.0f} vs H≥{threshold}  "
                   f"dir={direction}  P&L={sign}{pnl:.2f}")
             resolved.append(closed_pos)
@@ -238,42 +228,99 @@ def main() -> None:
         if not ok:
             logger.warning(
                 "PIPE-05R", "settle_position_partial_failure",
-                payload={"position_id": position_id, "player_name": player_name},
-                session_id=SESSION_ID,
+                payload={"pool": pool_label, "position_id": position_id,
+                         "player_name": player_name},
+                session_id=session_id,
             )
 
     still_open = len(trader.get_state().get("open_positions", []))
-    summary    = trader.summary()
+    return len(resolved), still_open
 
-    if not resolved:
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    logger = AuditLogger(LOG_DIR / "audit_mlb.jsonl", min_severity="INFO")
+
+    print(f"\n[PIPE-05R] MLB resolution run — {GAME_DATE}")
+    print(f"Session:  {SESSION_ID}")
+
+    logger.info("PIPE-05R", "resolve_run_start",
+                payload={"session_id": SESSION_ID, "game_date": GAME_DATE},
+                session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
+
+    # ---- T1/T2 pool ----
+    trader_main = PaperTrader(PORTFOLIO_PATH, logger)
+    resolved_main, still_open_main = _resolve_pool(
+        pool_label="T1/T2",
+        trader=trader_main,
+        logger=logger,
+        session_id=SESSION_ID,
+    )
+    summary_main = trader_main.summary()
+
+    # ---- T4 pool (T-201) ----
+    resolved_t4 = still_open_t4 = 0
+    summary_t4: dict = {}
+    if T4_PORTFOLIO_PATH.exists():
+        trader_t4 = PaperTrader(T4_PORTFOLIO_PATH, logger)
+        resolved_t4, still_open_t4 = _resolve_pool(
+            pool_label="T4",
+            trader=trader_t4,
+            logger=logger,
+            session_id=SESSION_ID,
+        )
+        summary_t4 = trader_t4.summary()
+    else:
+        print(f"\n[T4] No T4 portfolio at {T4_PORTFOLIO_PATH} — skipping.")
+
+    # ---- Summary ----
+    total_resolved  = resolved_main + resolved_t4
+    total_still_open = still_open_main + still_open_t4
+
+    if total_resolved == 0:
         print("[RESOLVE] No positions settled yet — MLB API results not available.")
     else:
-        print(f"\n[SUMMARY]")
-        print(f"  Resolved this run:  {len(resolved)}")
-        print(f"  Still open:         {still_open}")
-        print(f"  Bankroll:           ${summary['bankroll_usd']:.2f}")
-        print(f"  Total realized P&L: ${summary['total_realized_pnl']:+.2f}")
-        if summary["win_rate"] is not None:
-            print(f"  Win rate:           {summary['win_rate']:.1%}  "
-                  f"({summary['closed_positions']} resolved bets)")
-        print(f"  Realized drawdown:  {summary['realized_drawdown_pct']:.1f}%")
-        print(f"  Deployed (stakes):  {summary['deployed_pct']:.1f}%")
+        print(f"\n[SUMMARY — T1/T2 pool]")
+        print(f"  Resolved this run:  {resolved_main}")
+        print(f"  Still open:         {still_open_main}")
+        print(f"  Bankroll:           ${summary_main['bankroll_usd']:.2f}")
+        print(f"  Total realized P&L: ${summary_main['total_realized_pnl']:+.2f}")
+        if summary_main["win_rate"] is not None:
+            print(f"  Win rate:           {summary_main['win_rate']:.1%}  "
+                  f"({summary_main['closed_positions']} resolved bets)")
+        print(f"  Realized drawdown:  {summary_main['realized_drawdown_pct']:.1f}%")
+
+        if summary_t4:
+            print(f"\n[SUMMARY — T4 pool]")
+            print(f"  Resolved this run:  {resolved_t4}")
+            print(f"  Still open:         {still_open_t4}")
+            print(f"  Bankroll:           ${summary_t4['bankroll_usd']:.2f}")
+            print(f"  Total realized P&L: ${summary_t4['total_realized_pnl']:+.2f}")
+            if summary_t4["win_rate"] is not None:
+                print(f"  Win rate:           {summary_t4['win_rate']:.1%}  "
+                      f"({summary_t4['closed_positions']} resolved bets)")
 
     SystemMonitor(
         logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID
     ).check_portfolio_pnl(
-        total_realized_pnl=summary["total_realized_pnl"],
-        initial_bankroll=summary["initial_bankroll_usd"],
+        total_realized_pnl=summary_main["total_realized_pnl"],
+        initial_bankroll=summary_main["initial_bankroll_usd"],
         session_id=SESSION_ID,
     )
 
     logger.info("PIPE-05R", "resolve_run_complete",
                 payload={
-                    "resolved":           len(resolved),
-                    "still_open":         still_open,
-                    "bankroll":           summary["bankroll_usd"],
-                    "total_realized_pnl": summary["total_realized_pnl"],
-                    "win_rate":           summary["win_rate"],
+                    "resolved_main":       resolved_main,
+                    "resolved_t4":         resolved_t4,
+                    "still_open_main":     still_open_main,
+                    "still_open_t4":       still_open_t4,
+                    "bankroll_main":       summary_main["bankroll_usd"],
+                    "total_realized_pnl":  summary_main["total_realized_pnl"],
+                    "win_rate_main":       summary_main["win_rate"],
                 },
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
 
