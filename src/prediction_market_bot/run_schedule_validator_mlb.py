@@ -254,6 +254,11 @@ def check_t1_guard(active_games: list[dict]) -> list[str]:
     contamination guard may fail if markets flip to Live before T1 finishes.
     MLB has never scheduled a game before 13:00 UTC (9am ET), so this guard
     fires only on truly extraordinary scheduling.
+
+    Midnight-wrap: games starting after midnight UTC (e.g., 00:40 UTC = 8:40pm ET)
+    appear to have a small game_total_min. Adding 1440 (24h) gives the actual
+    forward lead from T1 (11:00 UTC) to those late-night games (~13h+), which is
+    never a T1 risk. Only games in the 11:00–12:29 UTC window can trigger.
     """
     warnings: list[str] = []
     t1_total = T1_FIRE_H * 60 + T1_FIRE_M
@@ -263,6 +268,10 @@ def check_t1_guard(active_games: list[dict]) -> list[str]:
             continue
         game_total = start.hour * 60 + start.minute
         lead_min = game_total - t1_total
+        # Midnight-wrap: games starting after midnight UTC have small game_total.
+        # Their actual lead from T1 is lead_min + 1440 (always safe — 13h+).
+        if lead_min < 0:
+            lead_min += 24 * 60
         if lead_min < T1_DANGER_LEAD_MIN:
             warnings.append(
                 f"T1_RISK: {_matchup(g)} starts at {start.strftime('%H:%M')} UTC — "
@@ -277,11 +286,29 @@ def check_t2_guard(active_games: list[dict]) -> list[str]:
     T2 (PIPE-05.5) fires at 19:30 UTC and requires lineups not yet posted.
     Warn if any game starts before T2 fires (T2 contamination guard will skip those,
     but this reduces coverage). Informational only — T2 handles this gracefully.
+
+    Midnight-wrap: games starting after midnight UTC (00:00–07:59 UTC = 8pm–3am ET)
+    appear to have a small game_total_min but actually start AFTER T2 fires in real
+    time. Discriminate by start hour: hours 0–7 UTC are late-night ET games that are
+    not early-coverage concerns. Hours 8–19 UTC with start < t2_total are genuinely
+    before T2.
     """
     warnings: list[str] = []
     t2_total = T2_FIRE_H * 60 + T2_FIRE_M
-    early = [g for g in active_games
-             if (s := _parse_start_utc(g)) and s.hour * 60 + s.minute < t2_total]
+    early = []
+    for g in active_games:
+        s = _parse_start_utc(g)
+        if not s:
+            continue
+        game_total = s.hour * 60 + s.minute
+        if game_total >= t2_total:
+            continue  # starts at or after T2 in UTC — safe
+        # game_total < t2_total but may be a midnight-era game.
+        # Games with start hour 0–7 UTC are late-night ET (8pm–3am ET) and
+        # actually fire AFTER T2 in real time.
+        if s.hour < 8:
+            continue  # midnight-era: not an early-coverage concern
+        early.append(g)
     if early:
         warnings.append(
             f"T2_COVERAGE: {len(early)}/{len(active_games)} games start before T2 at "
