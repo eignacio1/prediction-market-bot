@@ -869,6 +869,7 @@ def main() -> None:
         )
 
     # ---- Game ID discovery ----
+    _eval_date = date.today()   # tracks which UTC date game_ids/pregame are loaded for
     game_ids: list[str] = _espn_mlb_game_ids_today()
     logger.info("Initial MLB game IDs: %s", game_ids or "(none yet)")
 
@@ -887,6 +888,35 @@ def main() -> None:
             continue
 
         try:
+            # ---- Date-rollover refresh (24/7 systemd service support) ----
+            # When running as a persistent service, UTC date rolls over at midnight.
+            # Refresh game_ids, pregame context, batting slots, and band budget so
+            # tomorrow's games are evaluated with correct state (not yesterday's).
+            today = date.today()
+            if today != _eval_date:
+                logger.info(
+                    "T4-MLB date rollover %s → %s — refreshing game IDs, pregame, band budget",
+                    _eval_date, today,
+                )
+                _eval_date = today
+                game_date = today.isoformat()
+                game_ids[:] = _espn_mlb_game_ids_today()
+                # Refresh pregame context and batting slots for the new day
+                by_player_id_r, _, name_to_pregame_r = _load_pregame_context()
+                by_player_id.clear()
+                by_player_id.update(by_player_id_r)
+                name_to_pregame.clear()
+                name_to_pregame.update(name_to_pregame_r)
+                batting_slots = _load_t2_batting_slots()
+                # Reconstruct band budget for the new date
+                t4_state = trader.get_state()
+                t4_band_budget = _compute_t4_band_budget(t4_state)
+                t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
+                logger.info(
+                    "T4-MLB rollover complete: %d games, %d players, budget=$%.2f",
+                    len(game_ids), len(by_player_id), t4_band_budget,
+                )
+
             # Re-discover games if we have none yet
             if not game_ids:
                 game_ids[:] = _espn_mlb_game_ids_today()

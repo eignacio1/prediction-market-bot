@@ -1,0 +1,26 @@
+[Unit]
+Description=Prediction Market Bot — MLB T4 Live In-Play (PIPE-07 MLB)
+After=network.target
+Documentation=github.com/eignacio1/prediction-market-bot
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/prediction-market-bot
+EnvironmentFile=/opt/prediction-market-bot/.env
+Environment=BOT_ENV=paper
+Environment=BOT_C4_ACTIVE=true
+Environment=PYTHONPATH=/opt/prediction-market-bot/src
+ExecStart=/opt/prediction-market-bot/venv/bin/python \
+    src/prediction_market_bot/run_t4_mlb_live.py
+# Restart on crash (non-zero exit). 60s cooldown prevents tight crash loops.
+Restart=on-failure
+RestartSec=60
+# Do NOT restart when deliberately stopped via systemctl stop (SIGTERM = exit 143).
+RestartPreventExitStatus=143
+StandardOutput=append:/opt/prediction-market-bot/logs/t4_mlb_live_cron.log
+StandardError=append:/opt/prediction-market-bot/logs/t4_mlb_live_cron.log
+SyslogIdentifier=t4-mlb
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=MLB T4 In-Play daily trigger (13:00 UTC; self-heal corrects to first_pitch−30min)
+Requires=t4-mlb.service
+
+[Timer]
+# Daily fire at 13:00 UTC (9am ET) — before any MLB game can start.
+# T4 startup self-heal computes actual eval start from live MLB schedule.
+OnCalendar=*-*-* 13:00:00 UTC
+# Persistent: if VPS was down at 13:00 UTC, fire immediately on next boot.
+# Combined with WantedBy=multi-user.target in the service, this means T4
+# restarts on every VPS reboot regardless of what time the reboot occurs.
+Persistent=true
+Unit=t4-mlb.service
+
+[Install]
+WantedBy=timers.target
