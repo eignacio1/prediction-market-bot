@@ -88,28 +88,34 @@ class TestTickerToGameDate:
 
     def test_standard_format(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # KXMLBHIT-26JUN241607BALLAA-LAAJADELL7-4
-        result = fn("KXMLBHIT-26JUN241607BALLAA-LAAJADELL7-4")
-        assert result == "2024-06-26"
+        # Ticker YY field is ignored; current UTC year (2026) is used.
+        # KXMLBHIT-26JUN271310NYYBOS-... (2026-06-26 game with YY=27 in ticker)
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
+        result = fn("KXMLBHIT-26JUN271310NYYBOS-BOSWABREU52-2")
+        assert result == f"{year}-06-26"
 
     def test_different_month(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # 15APR25 = 2025-04-15
+        # DD=15, MON=APR — year from ticker ignored, current year used
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
         result = fn("KXMLBHIT-15APR251900NYYBOS-NYYAAJUDG7-2")
-        assert result == "2025-04-15"
+        assert result == f"{year}-04-15"
 
     def test_invalid_ticker_returns_game_date_iso(self, monkeypatch):
         mod = _import_runner(monkeypatch)
         fn = mod._ticker_to_game_date
         result = fn("KXMLBHIT-INVALID-TICKER")
-        # Fallback is GAME_DATE_ISO (tomorrow at 23:30 UTC cron time — T1 night-before
-        # baseline, fixed S84). An unparseable ticker resolves to the target date.
+        # Fallback is GAME_DATE_ISO. An unparseable ticker resolves to the target date.
         assert result == mod.GAME_DATE_ISO
 
     def test_january(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
         result = fn("KXMLBHIT-01JAN261200NYYBOS-NYYAAJUDG7-1")
-        assert result == "2026-01-01"
+        assert result == f"{year}-01-01"
 
 
 # ---------------------------------------------------------------------------
