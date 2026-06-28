@@ -845,6 +845,34 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-036 | 2026-06-16 | `nba_api` backfilled the 2026-06-13 G5 box scores ~3 days post-game; all 41 G5 positions settled via `run_resolve_local.py` from real box scores (no fabrication, no ESPN fallback). 22 W / 19 L, G5 net **+$2.31**. Live book now open=0, closed=158, realized **−$248.90** (stored==ledger), `bankroll_usd` −$254.59→**+$751.10**. Dataset re-frozen (158 closed, sha256 `54bac8b2…`); G6 baseline re-ratified −$248.90/−24.9% headline, −$212.25/−21.2% clean (SNAP-2026-06-16-001). Contamination story flipped to a −$36.65 net drag. |
 | GG-035 | 2026-06-16 | **ADR-0026 ACCEPTED** — C4 portfolio-level free-cash invariant. Two tiers on aggregate open non-isolated stake: 8a solvency (`>equity` ⇒ KILL_SWITCH `portfolio_over_leverage`), 8b policy cap (`>0.60×equity` ⇒ REJECT `aggregate_deployment_cap`, per-bet). 60% = `1−RESERVE_MANDATE_PCT` (ADR-0010 reserve promoted from advisory to enforced). C4 stays pure via new `PaperTrader.exposure_snapshot()`; `run_paper_trade.py` supplies it. Verified: G5 replay plateaus at $449.27 cap, never reaches the real $1,003.38. 10 new tests, 974 suite green. Live manifestation already relieved by GG-036 (bankroll +$751.10). 60% threshold re-derived via ADR at G6. |
 
+### GG-047 — T1 MLB Ticker Date Off-By-One: Kalshi Markets Consistently Dated One Day Before Game
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-047 |
+| Discovered | 2026-06-28 SESSION 96 — PIPE-05 ran June 27 with 149 Kalshi markets, matched 0 players. Root cause: `_ticker_to_game_date` extracted June 26 from ticker `KXMLBHIT-26JUN271310NYYBOS-...` but `GAME_DATE_ISO=2026-06-27`. Kalshi uses the market creation date (day before game) in the ticker, not the game date. |
+| Category | Implementation bug — date parsing assumption wrong |
+| What was missed | `_ticker_to_game_date` was written assuming Kalshi's `{DD}` field equals the game date. Observed: Kalshi opens MLB hit markets the day before the game and uses that creation date in the ticker. T1 has been dark since MLB-G1 gate open (no matches, 0 bets placed). |
+| When it should have been caught | Before MLB-G1 gate close (SESSION 90). The function was unit-tested with developer-chosen ticker dates, not live Kalshi samples. |
+| Impact | HIGH during MLB season — T1 blind since MLB-G1 gate open. All 11:00 UTC PIPE-05 runs through June 27 returned 0 matched players. Zero T1 bets placed. |
+| Resolution | T-205: `_ticker_to_game_date` updated to add 1 day to extracted date. Tests updated. Deployed SESSION 96, commit `586c9ca`. First PIPE-05 validation: June 28 11:00 UTC run. |
+| Status | **RESOLVED 2026-06-28 SESSION 96** — Fix: `(kalshi_date + timedelta(days=1))`. 2110/2110 tests pass. |
+
+---
+
+### GG-048 — MLB Stats API 406 Errors: Resolution Pipeline Cannot Score T4 Bets When API Rejects VPS
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-048 |
+| Discovered | 2026-06-28 SESSION 96 — PIPE-05R June 27 morning run: ALL MLB Stats API calls returned `406 Not Acceptable` for player game logs. 80+ T4 bets placed during June 26-27 games were unresolvable. June 28 morning run succeeded (same API, same endpoints). |
+| Category | Operational fragility — external API returns client error; resolution pipeline silently skips all bets with no retry |
+| What was missed | MLB Stats API (`statsapi.mlb.com`) occasionally returns `406 Not Acceptable` for the game log endpoint used in PIPE-05R. The existing `_fetch_mlb_hits()` catch handles the error gracefully (skips with log), but there is no retry with delay, no fallback endpoint, and no alert if the entire resolution run scores 0 bets. |
+| When it should have been caught | Before T4 paper positions were placed. The resolution pipeline was validated with responses but not tested for systematic 406 rejection. |
+| Impact | MEDIUM in paper phase — 406 errors cause T4 bets to age out under 48h grace period if the API is consistently unavailable. P&L signal for those bets is permanently lost. In live trading: every 406 run extends open position exposure and delays capital release. |
+| Resolution path | (1) Add exponential retry (3×, 5s/10s/30s) to `_fetch_mlb_hits()` before returning empty. (2) Add session-level alert if resolution run scores 0 bets but had ≥1 eligible position (possible silent 406 condition). (3) Register T-207. |
+| Status | **OPEN.** LOW urgency (June 27 API recovered by June 28). T-207 to be registered in TODO_NEXT.md. |
+
 ---
 
 ## Gap Registration Template
