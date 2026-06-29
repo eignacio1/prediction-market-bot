@@ -855,8 +855,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | What was missed | `_ticker_to_game_date` was written assuming Kalshi's `{DD}` field equals the game date. Observed: Kalshi opens MLB hit markets the day before the game and uses that creation date in the ticker. T1 has been dark since MLB-G1 gate open (no matches, 0 bets placed). |
 | When it should have been caught | Before MLB-G1 gate close (SESSION 90). The function was unit-tested with developer-chosen ticker dates, not live Kalshi samples. |
 | Impact | HIGH during MLB season — T1 blind since MLB-G1 gate open. All 11:00 UTC PIPE-05 runs through June 27 returned 0 matched players. Zero T1 bets placed. |
-| Resolution | T-205: `_ticker_to_game_date` updated to add 1 day to extracted date. Tests updated. Deployed SESSION 96, commit `586c9ca`. First PIPE-05 validation: June 28 11:00 UTC run. |
-| Status | **RESOLVED 2026-06-28 SESSION 96** — Fix: `(kalshi_date + timedelta(days=1))`. 2110/2110 tests pass. |
+| Resolution | **SESSION 96 fix was wrong.** T-205 assumed `+timedelta(days=1)` because Kalshi creates markets exactly 1 day before the game. **Real ticker format is `{CREATE_DD}{MON}{GAME_DD}{HHMM}`** — the 3rd 2-digit group IS the game day-of-month, not a 2-digit year. Kalshi creates markets 1–3 days early. SESSION 97 (T-206a): regex changed from `r"-([0-9]{2})([A-Z]{3})[0-9]{2}[0-9]{4}"` to `r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}"`, date from `f"{m.group(2)}{m.group(1)}{year}"` (no timedelta). Tests corrected and extended (3 new cases). Committed `d5289a0`. DECISION_LOG entry 2026-06-29. |
+| Status | **RESOLVED 2026-06-29 SESSION 97** — Real fix: extract GAME_DD directly. 2113/2113 tests pass. VPS at `d5289a0`. |
 
 ---
 
