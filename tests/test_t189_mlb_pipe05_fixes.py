@@ -75,18 +75,18 @@ class TestGameDateIsToday(unittest.TestCase):
 def _ticker_to_game_date(ticker: str, fallback_iso: str) -> str:
     """Pure copy of run_mlb_paper_trade._ticker_to_game_date for isolated testing.
 
-    Kalshi opens markets the day before the game; adds 1 day to get true game date.
-    YY in ticker is unreliable; uses current UTC year instead.
+    Format: KXMLBHIT-{CREATE_DD}{MON}{GAME_DD}{HHMM}{AWAYTEAM}{HOMETEAM}-...
+    {GAME_DD} is the actual game day-of-month. Year inferred from current UTC year.
     """
-    from datetime import timezone, timedelta as _td
-    m = re.search(r"-([0-9]{2})([A-Z]{3})[0-9]{2}[0-9]{4}", ticker)
+    from datetime import timezone as _tz
+    m = re.search(r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}", ticker)
     if m:
         try:
-            year = datetime.now(tz=timezone.utc).year
-            kalshi_date = datetime.strptime(
-                f"{m.group(1)}{m.group(2)}{year}", "%d%b%Y"
+            year = datetime.now(tz=_tz.utc).year
+            game_date = datetime.strptime(
+                f"{m.group(2)}{m.group(1)}{year}", "%d%b%Y"
             ).date()
-            return (kalshi_date + _td(days=1)).strftime("%Y-%m-%d")
+            return game_date.strftime("%Y-%m-%d")
         except ValueError:
             pass
     return fallback_iso
@@ -96,14 +96,20 @@ class TestTickerToGameDate(unittest.TestCase):
     """_ticker_to_game_date parses KXMLBHIT tickers correctly."""
 
     def test_standard_format(self):
-        # Ticker day=25 → Kalshi convention +1 day → game date June 26
+        # CREATE_DD=25, MON=JUN, GAME_DD=26 → game date June 26
         ticker = "KXMLBHIT-25JUN261907BALLAA-2"
         result = _ticker_to_game_date(ticker, "2026-06-25")
         self.assertEqual(result, "2026-06-26")
 
+    def test_multi_day_early_creation(self):
+        # Kalshi created June 26 for a June 29 game (3 days early)
+        ticker = "KXMLBHIT-26JUN291840PITPHI-1"
+        result = _ticker_to_game_date(ticker, "2026-06-25")
+        self.assertEqual(result, "2026-06-29")
+
     def test_different_month(self):
-        # Ticker day=04 (July) → Kalshi +1 day → game date July 5
-        ticker = "KXMLBHIT-04JUL261900NYYBOS-1"
+        # CREATE_DD=04, MON=JUL, GAME_DD=05 → game date July 5
+        ticker = "KXMLBHIT-04JUL051900NYYBOS-1"
         result = _ticker_to_game_date(ticker, "2026-06-25")
         self.assertEqual(result, "2026-07-05")
 
@@ -117,11 +123,11 @@ class TestTickerToGameDate(unittest.TestCase):
         self.assertEqual(result, "2026-06-25")
 
     def test_yesterday_ticker_excluded_when_game_date_is_today(self):
-        """Cron targets today (2026-06-25). Kalshi dates markets one day before game.
-        Today's market (June 25 game) has ticker day=24; +1 day = June 25 = game_date_iso.
-        Yesterday's market (June 24 game) has ticker day=23; +1 day = June 24 ≠ game_date_iso."""
-        yesterday_ticker = "KXMLBHIT-23JUN261907BOSNYY-1"  # day=23 → June 24 → excluded
-        today_ticker     = "KXMLBHIT-24JUN261907BALLAA-2"  # day=24 → June 25 → included
+        """Cron targets today (2026-06-25). GAME_DD encodes actual game date directly.
+        Today's market (June 25 game): GAME_DD=25 = game_date_iso.
+        Yesterday's market (June 24 game): GAME_DD=24 ≠ game_date_iso."""
+        yesterday_ticker = "KXMLBHIT-23JUN241907BOSNYY-1"  # GAME_DD=24 → June 24 → excluded
+        today_ticker     = "KXMLBHIT-24JUN251907BALLAA-2"  # GAME_DD=25 → June 25 → included
         game_date_iso    = "2026-06-25"
 
         yesterday_date = _ticker_to_game_date(yesterday_ticker, game_date_iso)
@@ -153,12 +159,12 @@ class TestMarketDateFilter(unittest.TestCase):
         }
 
     def test_only_today_markets_included(self):
-        """GAME_DATE_ISO = today (2026-06-25). Kalshi ticker day = game_day - 1.
-        June 24 game (ticker day=23) excluded; June 25 game (ticker day=24) included."""
+        """GAME_DATE_ISO = today (2026-06-25). GAME_DD encodes actual game date.
+        June 24 game (GAME_DD=24) excluded; June 25 game (GAME_DD=25) included."""
         markets = [
-            self._make_market("KXMLBHIT-23JUN261907BOSNYY-1", "Mookie Betts"),  # June 24 game → excluded
-            self._make_market("KXMLBHIT-24JUN261907BALLAA-1", "Aaron Judge"),   # June 25 game → included
-            self._make_market("KXMLBHIT-24JUN261907BALLAA-2", "Aaron Judge"),   # June 25 game → included
+            self._make_market("KXMLBHIT-23JUN241907BOSNYY-1", "Mookie Betts"),  # GAME_DD=24 → excluded
+            self._make_market("KXMLBHIT-24JUN251907BALLAA-1", "Aaron Judge"),   # GAME_DD=25 → included
+            self._make_market("KXMLBHIT-24JUN251907BALLAA-2", "Aaron Judge"),   # GAME_DD=25 → included
         ]
         result = self._apply_filter(markets, "2026-06-25")
         self.assertNotIn("Mookie Betts", result)
@@ -166,18 +172,26 @@ class TestMarketDateFilter(unittest.TestCase):
         self.assertEqual(len(result["Aaron Judge"]), 2)
 
     def test_all_filtered_if_all_yesterday(self):
-        # June 24 games have ticker day=23; +1 = June 24 ≠ June 25 → all excluded
+        # June 24 games (GAME_DD=24) excluded when game_date_iso=2026-06-25
         markets = [
-            self._make_market("KXMLBHIT-23JUN261907BOSNYY-1", "Player A"),
-            self._make_market("KXMLBHIT-23JUN262005NYYHOU-1", "Player B"),
+            self._make_market("KXMLBHIT-23JUN241907BOSNYY-1", "Player A"),
+            self._make_market("KXMLBHIT-23JUN242005NYYHOU-1", "Player B"),
         ]
         result = self._apply_filter(markets, "2026-06-25")
         self.assertEqual(result, {})
 
+    def test_multi_day_early_creation_still_matches(self):
+        # Kalshi created June 23 for a June 25 game (2 days early): GAME_DD=25
+        markets = [
+            self._make_market("KXMLBHIT-23JUN251907BALLAA-1", "Aaron Judge"),
+        ]
+        result = self._apply_filter(markets, "2026-06-25")
+        self.assertIn("Aaron Judge", result)
+
     def test_inactive_markets_excluded_regardless_of_date(self):
         markets = [
             {
-                "ticker": "KXMLBHIT-25JUN261907BALLAA-1",
+                "ticker": "KXMLBHIT-24JUN251907BALLAA-1",
                 "player_name": "Aaron Judge",
                 "status": "inactive",
                 "has_live_quotes": True,
@@ -189,7 +203,7 @@ class TestMarketDateFilter(unittest.TestCase):
     def test_no_live_quotes_excluded(self):
         markets = [
             {
-                "ticker": "KXMLBHIT-25JUN261907BALLAA-1",
+                "ticker": "KXMLBHIT-24JUN251907BALLAA-1",
                 "player_name": "Aaron Judge",
                 "status": "active",
                 "has_live_quotes": False,
