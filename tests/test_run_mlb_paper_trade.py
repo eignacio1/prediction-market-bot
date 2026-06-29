@@ -88,19 +88,26 @@ class TestTickerToGameDate:
 
     def test_standard_format(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # Kalshi ticker day is one before actual game date (+1 day fix).
-        # KXMLBHIT-26JUN271310NYYBOS-... → day=26, +1 → 2026-06-27 game
+        # CREATE_DD=26, MON=JUN, GAME_DD=27 → June 27 game
         from datetime import datetime, timezone
         year = datetime.now(tz=timezone.utc).year
         result = fn("KXMLBHIT-26JUN271310NYYBOS-BOSWABREU52-2")
         assert result == f"{year}-06-27"
 
-    def test_different_month(self, monkeypatch):
+    def test_multi_day_early_creation(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # DD=15, MON=APR → +1 day → April 16 game
+        # Kalshi created June 26 for a June 29 game (3 days early): GAME_DD=29
         from datetime import datetime, timezone
         year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-15APR251900NYYBOS-NYYAAJUDG7-2")
+        result = fn("KXMLBHIT-26JUN291840PITPHI-PITTCALLIHAN37-3")
+        assert result == f"{year}-06-29"
+
+    def test_different_month(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # CREATE_DD=15, MON=APR, GAME_DD=16 → April 16 game
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
+        result = fn("KXMLBHIT-15APR161900NYYBOS-NYYAAJUDG7-2")
         assert result == f"{year}-04-16"
 
     def test_invalid_ticker_returns_game_date_iso(self, monkeypatch):
@@ -112,10 +119,10 @@ class TestTickerToGameDate:
 
     def test_january(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # DD=01, MON=JAN → +1 day → January 2 game
+        # CREATE_DD=01, MON=JAN, GAME_DD=02 → January 2 game
         from datetime import datetime, timezone
         year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-01JAN261200NYYBOS-NYYAAJUDG7-1")
+        result = fn("KXMLBHIT-01JAN021200NYYBOS-NYYAAJUDG7-1")
         assert result == f"{year}-01-02"
 
 

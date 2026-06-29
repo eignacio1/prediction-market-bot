@@ -173,22 +173,21 @@ def _impute(X: np.ndarray, medians: np.ndarray) -> np.ndarray:
 def _ticker_to_game_date(ticker: str) -> str:
     """Parse KXMLBHIT game date.
 
-    Format: KXMLBHIT-{DD}{MON}{YY}{TIME}{AWAYTEAM}{HOMETEAM}-...
-    Example: KXMLBHIT-26JUN271310NYYBOS-... → 2026-06-27
+    Format: KXMLBHIT-{CREATE_DD}{MON}{GAME_DD}{HHMM}{AWAYTEAM}{HOMETEAM}-...
+    Example: KXMLBHIT-26JUN291840PITPHI-... → 2026-06-29
 
-    Kalshi opens MLB hit markets the day before the game; {DD} is one day
-    before the actual game date. Add 1 day to get the true game date.
-    Kalshi's YY field is also unreliable (observed "27" for 2026 games);
-    use current UTC year instead. MLB runs March–October, no cross-year issues.
+    {GAME_DD} is the actual game day-of-month. {CREATE_DD} is the market
+    creation date (Kalshi may create markets 1–3 days early). Year is inferred
+    from current UTC year — MLB runs March–October, no cross-year issues.
     """
-    m = re.search(r"-([0-9]{2})([A-Z]{3})[0-9]{2}[0-9]{4}", ticker)
+    m = re.search(r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}", ticker)
     if m:
         try:
             year = datetime.now(tz=timezone.utc).year
-            kalshi_date = datetime.strptime(
-                f"{m.group(1)}{m.group(2)}{year}", "%d%b%Y"
+            game_date = datetime.strptime(
+                f"{m.group(2)}{m.group(1)}{year}", "%d%b%Y"
             ).date()
-            return (kalshi_date + timedelta(days=1)).strftime("%Y-%m-%d")
+            return game_date.strftime("%Y-%m-%d")
         except ValueError:
             pass
     return GAME_DATE_ISO
