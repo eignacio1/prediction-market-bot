@@ -6,24 +6,37 @@
 
 ---
 
+## SESSION 99 — COMPLETE (2026-06-29)
+
+| Task | Status |
+|------|--------|
+| **T-208 — Fix T4 MLB re-betting bug (GG-050)** | ✅ COMPLETE — `fired_tickers: set[str] = set()` was inside `_run_cycle()` (reset every cycle). Moved to game-day scope as `already_fired_game: Optional[set] = None`. Main loop passes shared set; clear at date rollover. 2113/2113 tests. `840025f` deployed to VPS. |
+| **EXP-T4-01 RETRACTED** | ✅ CORRECTED — SESSION 98 analysis wrong (n=1274 was 17.5× inflated by re-betting bug). True data: n=73 independent markets, EV=−$0.0025/market, INCONCLUSIVE. DECISION_LOG corrected. |
+| **GG-046 REOPENED** | ✅ — Wrong RESOLVED status corrected. GG-046 OPEN. Needs ≥500 clean unique markets post-fix. |
+| **GG-050 REGISTERED** | ✅ — Re-betting bug documented in GOVERNANCE_GAP_LOG. Code fix = T-208 complete. Portfolio reset required. |
+| **T4 portfolio reset** | ✅ — Contaminated `paper_portfolio_mlb_t4.json` backed up and reset to clean $1,000/0 positions on VPS. Clean accumulation begins tonight. |
+| **GG-048 RESOLVED** | ✅ — T-207 (S98): exponential retry in `run_resolve_mlb.py`. |
+
+---
+
+## SESSION 99 — OPEN ITEMS (carry forward)
+
+| Task | Priority | Description |
+|------|----------|-------------|
+| **Monitor June 30 PIPE-05 (T1)** | **HIGH** | First real T1 MLB bet window with correct ticker code (S97 fix `d5289a0`): June 30 at 11:00 UTC. Check `logs/paper_mlb_cron.log` — should show ">0 players in live MLB markets" and bets placed. If still 0, escalate. |
+| **Monitor T4 MLB re-fires** | **HIGH** | After `840025f` deployed and portfolio reset: verify T4 bets ≤1 per unique ticker per game day in tonight's logs. |
+| **T-206 (EXP-T4-01 re-run)** | MEDIUM | EXP-T4-01 requires clean data post-GG-050 fix. Run after ≥500 unique markets accumulate. ADR-0024 Tier 2 = n≥500. Will take multiple game weeks. GG-046 OPEN until then. |
+| **NBA drawdown blocker** | MEDIUM | NBA paper book at 24.9% realized drawdown vs 20% kill switch threshold. Will block NBA bets in October. Needs ADR or portfolio reset before NBA 26-27 season start. |
+| **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run EXP-017 (`scripts/run_exp017_mlb.py`). GG-004 remains OPEN. |
+
+---
+
 ## SESSION 98 — COMPLETE (2026-06-29)
 
 | Task | Status |
 |------|--------|
-| **T-207 — `run_resolve_mlb.py` exponential retry + alert** | ✅ COMPLETE — `_RETRY_DELAYS_S = (5, 10, 30)`. `_fetch_mlb_hits()` retries 3× on transient errors (5s/10s/30s), date-not-found returns immediately. `_resolve_pool()` emits `logger.warning + stderr alert` if ≥1 eligible position but 0 resolved. GG-048 RESOLVED. 2113/2113 tests. |
-| **T-206 — EXP-T4-01 T4 MLB commercial validation** | ✅ COMPLETE — DIRECTIONAL_POSITIVE. 1274 resolved bets. Model beats MIP in all 7 buckets. H>=1: 55.5% win vs 43.2% avg MIP (+12.3pp); H>=2: 24.2% vs 17.3% (+6.9pp). Net P&L +$101.33 / +$0.0795/bet / +10.1% return. ADR-0024 Tier 2 satisfied (n≥500). HTTP 410 on all demo orders = paper artifact (demo sandbox ≠ production markets). GG-046 RESOLVED. DECISION_LOG S98 written. |
-| **GG-046 RESOLVED** | ✅ — T4 independent alpha hypothesis provisionally validated at paper scale. GG-004 (T1 EXP-017) remains OPEN and independent. |
-| **GG-048 RESOLVED** | ✅ — T-207 implementation. |
-
----
-
-## SESSION 98 — OPEN ITEMS (carry forward)
-
-| Task | Priority | Description |
-|------|----------|-------------|
-| **Monitor June 30 PIPE-05** | **HIGH** | First real T1 MLB bet window with correct ticker code (S97 fix `d5289a0`): June 30 at 11:00 UTC. Check `logs/paper_mlb_cron.log` — should show ">0 players in live MLB markets" and bets placed. If still 0, escalate immediately. |
-| **NBA drawdown blocker** | MEDIUM | NBA paper book at 24.9% realized drawdown vs 20% kill switch threshold. All NBA bets will be blocked when season resumes (October). Needs ADR or portfolio reset before NBA 26-27 season start. Not urgent until September. |
-| **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run EXP-017 (`scripts/run_exp017_mlb.py`) to begin building the T1 commercial validation dataset. GG-004 remains OPEN until EXP-017 CONFIRMED_POSITIVE on adequate sample (ADR-0024). |
+| **T-207 — `run_resolve_mlb.py` exponential retry + alert** | ✅ COMPLETE — GG-048 RESOLVED. 2113/2113 tests. |
+| **T-206 — EXP-T4-01 initial analysis** | ⚠️ RETRACTED IN SESSION 99 — Initial analysis wrong (GG-050 bug inflated n). See SESSION 99. |
 
 ---
 
