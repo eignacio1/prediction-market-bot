@@ -511,6 +511,7 @@ def _run_cycle(
     game_date: str,
     t4_band_budget: float,
     t4_deployed_usd: float,
+    already_fired_game: Optional[set] = None,
     batting_slots: Optional[dict[int, int]] = None,
     dry_run: bool = False,
     dryrun_log_path: Optional[Path] = None,
@@ -520,9 +521,10 @@ def _run_cycle(
 
     Returns (evaluated, fired, updated_t4_deployed_usd).
     """
+    if already_fired_game is None:
+        already_fired_game = set()
     evaluated = 0
     fired = 0
-    fired_tickers: set[str] = set()
     _slots = batting_slots or {}
 
     state_by_id = {ls.player_id: ls for ls in live_states}
@@ -548,7 +550,7 @@ def _run_cycle(
             ticker    = ctx["ticker"]
             threshold = int(ctx["threshold"])
 
-            if ticker in fired_tickers:
+            if ticker in already_fired_game:
                 continue
 
             pm = live_prices.get(ticker)
@@ -597,7 +599,7 @@ def _run_cycle(
                 evaluated += 1
                 if net_edge > 0:
                     fired += 1
-                    fired_tickers.add(ticker)
+                    already_fired_game.add(ticker)
                     logger.info(
                         "T4-MLB DRY_RUN WOULD_FIRE  %-45s  p=%.3f  mip=%.3f  edge=%+.3f",
                         ticker, p_t4, mip, net_edge,
@@ -687,7 +689,7 @@ def _run_cycle(
 
             if pos:
                 store.mark_fired(order_id)
-                fired_tickers.add(ticker)
+                already_fired_game.add(ticker)
                 fired += 1
                 t4_deployed_usd += approved_size
                 logger.info(
@@ -887,6 +889,10 @@ def main() -> None:
     cycle_n = 0
     total_evaluated = 0
     total_fired = 0
+    # Game-day dedup guard: markets that have already received a position this game day.
+    # Reset at UTC midnight (date rollover). Prevents re-betting the same market every
+    # 90-second cycle (GG-050 fix — moved out of _run_cycle where it was per-cycle only).
+    already_fired_game: set[str] = set()
 
     while True:
         if kill_switch_armed(KILL_SWITCH_PATH):
@@ -922,6 +928,7 @@ def main() -> None:
                 t4_state = trader.get_state()
                 t4_band_budget = _compute_t4_band_budget(t4_state)
                 t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
+                already_fired_game.clear()  # new day → new set of fireable markets
                 logger.info(
                     "T4-MLB rollover complete: %d games, %d players, budget=$%.2f",
                     len(game_ids), len(by_player_id), t4_band_budget,
@@ -981,6 +988,7 @@ def main() -> None:
                 live_states=all_states,
                 live_prices=live_prices,
                 pregame_by_player_id=by_player_id,
+                already_fired_game=already_fired_game,
                 engine=engine_t4,
                 trader=trader,
                 store=store,
