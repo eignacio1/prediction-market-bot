@@ -67,6 +67,7 @@ SNAPSHOT_ID       = "SNAP-MLB-T187E"
 _MLB_BASE_URL  = "https://statsapi.mlb.com"
 _RATE_LIMIT_S  = 0.6   # matches mlb_ingestion.py; stays under API rate limit
 _REQUEST_TIMEOUT_S = 15
+_RETRY_DELAYS_S: tuple[int, ...] = (5, 10, 30)  # T-207: exponential backoff for 406 errors
 
 
 # ---------------------------------------------------------------------------
@@ -92,24 +93,36 @@ def _fetch_mlb_hits(
         "season":  str(year),
         "gameType": game_type,
     }
-    try:
-        time.sleep(_RATE_LIMIT_S)
-        resp = requests.get(url, params=params, timeout=_REQUEST_TIMEOUT_S)
-        resp.raise_for_status()
-        data = resp.json()
-        stats_arr = data.get("stats", [])
-        if not stats_arr:
-            return None
-        splits = stats_arr[0].get("splits", [])
-        for split in splits:
-            if split.get("date", "") == game_date:
-                return float(split.get("stat", {}).get("hits", 0))
-    except Exception as exc:
-        print(
-            f"  [MLB-API] player_id={player_id} game_date={game_date} "
-            f"game_type={game_type}: {type(exc).__name__}: {exc}",
-            file=sys.stderr,
-        )
+    for attempt, delay in enumerate((*_RETRY_DELAYS_S, None), start=1):
+        try:
+            time.sleep(_RATE_LIMIT_S)
+            resp = requests.get(url, params=params, timeout=_REQUEST_TIMEOUT_S)
+            resp.raise_for_status()
+            data = resp.json()
+            stats_arr = data.get("stats", [])
+            if not stats_arr:
+                return None
+            splits = stats_arr[0].get("splits", [])
+            for split in splits:
+                if split.get("date", "") == game_date:
+                    return float(split.get("stat", {}).get("hits", 0))
+            return None  # date not found in splits — not a transient error
+        except Exception as exc:
+            if delay is None:
+                print(
+                    f"  [MLB-API] player_id={player_id} game_date={game_date} "
+                    f"game_type={game_type} attempt={attempt}/{len(_RETRY_DELAYS_S)+1}: "
+                    f"{type(exc).__name__}: {exc} — giving up",
+                    file=sys.stderr,
+                )
+            else:
+                print(
+                    f"  [MLB-API] player_id={player_id} game_date={game_date} "
+                    f"game_type={game_type} attempt={attempt}/{len(_RETRY_DELAYS_S)+1}: "
+                    f"{type(exc).__name__}: {exc} — retrying in {delay}s",
+                    file=sys.stderr,
+                )
+                time.sleep(delay)
     return None
 
 
@@ -234,6 +247,26 @@ def _resolve_pool(
             )
 
     still_open = len(trader.get_state().get("open_positions", []))
+
+    # T-207 / GG-048: alert if eligible positions existed but none resolved.
+    # Indicates possible systematic API failure (e.g. 406 from all endpoints).
+    if pending and len(resolved) == 0:
+        logger.warning(
+            "PIPE-05R", "zero_resolved_with_eligible_positions",
+            payload={
+                "pool": pool_label,
+                "eligible_count": len(pending),
+                "resolved_count": 0,
+                "note": "All fetch_actual_hits() calls returned None — possible 406 or API outage",
+            },
+            session_id=session_id,
+        )
+        print(
+            f"  [{pool_label}][ALERT] {len(pending)} eligible position(s) but 0 resolved — "
+            f"possible MLB Stats API 406 or outage (GG-048)",
+            file=sys.stderr,
+        )
+
     return len(resolved), still_open
 
 

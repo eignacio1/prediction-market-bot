@@ -810,7 +810,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | LOW in paper phase (no live capital). MEDIUM post-G6 if live capital is authorized based on T1 EXP-017 evidence and T4 is scaled alongside it — T4 could have negative expected value independently of T1. The kill switch and Kelly sizing provide protection, but a misclassified alpha thesis can bleed slowly without triggering either mechanism. |
 | Discovery | SESSION 94 (2026-06-26) — strategic read-through surfaced the structural distinction between T1 (forecasting accuracy) and T4 (market microstructure / information speed). |
 | Resolution | Define a T4 commercial validation experiment (EXP-T4-01) analogous to EXP-017: compare T4 model_p against live Kalshi market price at the moment each evaluation fired; compute net_edge over resolved bets; apply ADR-0024 Tier 1/2 thresholds independently. Requires ≥30 resolved T4 bets (paper). Gate: T4 should not receive live capital allocation until independently validated by EXP-T4-01. |
-| Status | **OPEN.** LOW urgency in paper phase. Escalates when G6 live capital decision is made. Register EXP-T4-01 once ≥30 MLB T4 bets have resolved. |
+| Status | **RESOLVED 2026-06-29 SESSION 98.** EXP-T4-01 complete. 1274 resolved T4 MLB bets. Model beats MIP in all 7 MIP buckets. H>=1: win 55.5% vs avg MIP 43.2% (+12.3pp); H>=2: win 24.2% vs avg MIP 17.3% (+6.9pp). Net P&L: +$101.33; EV/bet: +$0.0795; return +10.1%. ADR-0024 Tier 2 satisfied (n=1274 ≥ 500). T4's independent alpha hypothesis provisionally validated at paper scale. HTTP 410 on all demo orders is a paper-artifact (demo sandbox ≠ production markets); commercial validation is valid. T4 should not receive live capital allocation without re-running EXP-T4-01 on ≥500 live bets post-G6. GG-004 (T1 EXP-017) remains OPEN and independent. DECISION_LOG SESSION 98 T-206. |
 
 ---
 
@@ -844,6 +844,10 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-033 | 2026-06-15 | T-171 completed in the same deploy as GG-034: `logs/paper_portfolio.json` untracked (`git rm --cached` + `.gitignore`), backup preserved outside repo, VPS tree clean, `git pull` no longer clobbers the live book. Deploy verification now requires VPS HEAD == origin/main proof. |
 | GG-036 | 2026-06-16 | `nba_api` backfilled the 2026-06-13 G5 box scores ~3 days post-game; all 41 G5 positions settled via `run_resolve_local.py` from real box scores (no fabrication, no ESPN fallback). 22 W / 19 L, G5 net **+$2.31**. Live book now open=0, closed=158, realized **−$248.90** (stored==ledger), `bankroll_usd` −$254.59→**+$751.10**. Dataset re-frozen (158 closed, sha256 `54bac8b2…`); G6 baseline re-ratified −$248.90/−24.9% headline, −$212.25/−21.2% clean (SNAP-2026-06-16-001). Contamination story flipped to a −$36.65 net drag. |
 | GG-035 | 2026-06-16 | **ADR-0026 ACCEPTED** — C4 portfolio-level free-cash invariant. Two tiers on aggregate open non-isolated stake: 8a solvency (`>equity` ⇒ KILL_SWITCH `portfolio_over_leverage`), 8b policy cap (`>0.60×equity` ⇒ REJECT `aggregate_deployment_cap`, per-bet). 60% = `1−RESERVE_MANDATE_PCT` (ADR-0010 reserve promoted from advisory to enforced). C4 stays pure via new `PaperTrader.exposure_snapshot()`; `run_paper_trade.py` supplies it. Verified: G5 replay plateaus at $449.27 cap, never reaches the real $1,003.38. 10 new tests, 974 suite green. Live manifestation already relieved by GG-036 (bankroll +$751.10). 60% threshold re-derived via ADR at G6. |
+| GG-046 | 2026-06-29 | EXP-T4-01 DIRECTIONAL_POSITIVE (n=1274 resolved bets; beats MIP in all 7 buckets; EV +$0.0795/bet; +10.1% return). ADR-0024 Tier 2 satisfied (n≥500). T4 independent alpha hypothesis provisionally validated at paper scale. HTTP 410 on demo orders = paper artifact (demo ≠ production markets). GG-004 (T1 EXP-017) independent and OPEN. |
+| GG-047 | 2026-06-29 | S96 fix wrong (`+timedelta(days=1)`). S97 real fix: extract GAME_DD directly from `{CREATE_DD}{MON}{GAME_DD}{HHMM}` format. Regex `r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}"`. 2113/2113 tests. VPS at `d5289a0`. |
+| GG-048 | 2026-06-29 | T-207: exponential retry (3×: 5s/10s/30s) in `_fetch_mlb_hits()`. Zero-resolution alert in `_resolve_pool()`. 2113/2113 tests. |
+| GG-049 | 2026-06-29 | Step 4 (operational heartbeat) added to CLAUDE.md session-start protocol. SSH grep on live cron logs. Commit `eebee34` deployed. |
 
 ### GG-047 — T1 MLB Ticker Date Off-By-One: Kalshi Markets Consistently Dated One Day Before Game
 
@@ -871,7 +875,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | When it should have been caught | Before T4 paper positions were placed. The resolution pipeline was validated with responses but not tested for systematic 406 rejection. |
 | Impact | MEDIUM in paper phase — 406 errors cause T4 bets to age out under 48h grace period if the API is consistently unavailable. P&L signal for those bets is permanently lost. In live trading: every 406 run extends open position exposure and delays capital release. |
 | Resolution path | (1) Add exponential retry (3×, 5s/10s/30s) to `_fetch_mlb_hits()` before returning empty. (2) Add session-level alert if resolution run scores 0 bets but had ≥1 eligible position (possible silent 406 condition). (3) Register T-207. |
-| Status | **OPEN.** LOW urgency (June 27 API recovered by June 28). T-207 to be registered in TODO_NEXT.md. |
+| Status | **RESOLVED 2026-06-29 SESSION 98 (T-207).** Exponential retry (3×: 5s/10s/30s) added to `_fetch_mlb_hits()`. Zero-resolution alert added to `_resolve_pool()` (warns when eligible positions exist but 0 resolved). DECISION_LOG SESSION 98 T-207. 2113/2113 tests. |
 
 ---
 
