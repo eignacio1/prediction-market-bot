@@ -76,6 +76,10 @@ from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderS
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c7_monitoring.semantic_contracts import (
+    ContaminationGuard as SemanticContaminationGuard,
+    T4CorrDownwardViolation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -498,7 +502,7 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
 # ---------------------------------------------------------------------------
 
 
-class ContaminationGuard:
+class LiveDataFreshnessGuard:
     """
     Runtime gate: validates each T4 bet evaluation operates on coherent,
     fresh, and active data before passing to evaluate_forecast().
@@ -513,6 +517,10 @@ class ContaminationGuard:
     Staleness halts (game_state_fresh / snapshot_not_stale) are unexpected —
     they surface as logger.warning in cron output and as CONTAMINATION_HALT
     events in the C6 JSONL audit. Zero staleness_halts per session = healthy.
+
+    Distinct from SemanticContaminationGuard (ADR-0034): this guard checks
+    timestamp freshness and market liveness; SemanticContaminationGuard checks
+    business-logic coherence (mip range, mathematical impossibility, T4-CORR).
     """
 
     _FRESHNESS_WINDOW_S: float = 2.0 * POLL_INTERVAL_S  # 90s
@@ -596,7 +604,7 @@ def _run_cycle(
     batting_slots: Optional[dict[int, int]] = None,
     dry_run: bool = False,
     dryrun_log_path: Optional[Path] = None,
-    contamination_guard: Optional[ContaminationGuard] = None,
+    contamination_guard: Optional[LiveDataFreshnessGuard] = None,
     cycle_start_at: Optional[datetime] = None,
     snapshot_fetched_at: Optional[datetime] = None,
 ) -> tuple[int, int, float]:
@@ -604,7 +612,7 @@ def _run_cycle(
     Run one T4 MLB evaluation cycle.
 
     Returns (evaluated, fired, updated_t4_deployed_usd).
-    contamination_guard: if provided, gates each evaluation via ContaminationGuard.check().
+    contamination_guard: if provided, gates each evaluation via LiveDataFreshnessGuard.check().
     cycle_start_at / snapshot_fetched_at: timestamps for freshness checks in the guard.
     Omitting either timestamp disables that specific freshness check (guard uses now()).
     """
@@ -663,6 +671,35 @@ def _run_cycle(
             vig = pm.vig
             if mip <= 0.0 or mip >= 1.0:
                 continue
+
+            # Layer 3 semantic contract check (ADR-0034): business-logic coherence
+            try:
+                _sem = SemanticContaminationGuard(
+                    ticker=ticker,
+                    player_id=player_id,
+                    has_live_quotes=getattr(pm, "has_live_quotes", False),
+                    mip=mip,
+                    player_in_live_game=True,   # ls not None: checked in outer loop
+                    game_in_progress=bool(live_states),
+                    cycle_id=cycle_id,
+                    audit=audit,
+                    session_id=session_id,
+                    snapshot_id=SNAPSHOT_ID,
+                    h_needed=max(0, threshold - ls.h_so_far),
+                    ab_remaining=ab_remaining,
+                )
+                if not _sem.is_clean():
+                    continue
+            except T4CorrDownwardViolation:
+                audit.log(
+                    component=COMPONENT,
+                    event_type="t4_corr_downward_violation",
+                    payload={"ticker": ticker, "player_id": player_id},
+                    severity="CRITICAL",
+                    session_id=session_id,
+                    snapshot_id=SNAPSHOT_ID,
+                )
+                raise  # propagate to main loop kill switch
 
             p_t4 = p_hits_gte_threshold(
                 h_so_far=ls.h_so_far,
@@ -988,7 +1025,7 @@ def main() -> None:
     logger.info("Initial MLB game IDs: %s", game_ids or "(none yet)")
 
     # ---- Contamination guard (session-scoped) ----
-    contamination_guard = ContaminationGuard(audit=audit, session_id=session_id)
+    contamination_guard = LiveDataFreshnessGuard(audit=audit, session_id=session_id)
 
     # ---- Main polling loop ----
     cycle_n = 0

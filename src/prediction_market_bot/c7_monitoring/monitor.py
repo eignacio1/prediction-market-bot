@@ -52,6 +52,10 @@ from typing import Any
 import numpy as np
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c7_monitoring.semantic_contracts import (
+    SemanticContractMonitor,
+    SemanticHealthState,
+)
 
 # ---------------------------------------------------------------------------
 # Constants — G4 TEST set baselines (ADR-0004 / APR-0012)
@@ -252,6 +256,14 @@ class SystemMonitor:
         self._shadow_window: deque[tuple[float, int]] = deque(maxlen=window_size)
         self._shadow_lock = threading.Lock()
 
+        # Semantic contract monitor (ADR-0034 Layer 3)
+        self._semantic = SemanticContractMonitor(
+            logger=logger,
+            session_id=session_id or "",
+            snapshot_id=snapshot_id,
+        )
+        self._check_counter: int = 0  # tracks check_and_alert() calls for periodic emission
+
         # Kill switch state
         self._kill_event = threading.Event()
         self._kill_reason: str | None = None
@@ -262,6 +274,10 @@ class SystemMonitor:
     # ------------------------------------------------------------------
     # Properties
     # ------------------------------------------------------------------
+
+    @property
+    def semantic_monitor(self) -> SemanticContractMonitor:
+        return self._semantic
 
     @property
     def is_kill_switch_active(self) -> bool:
@@ -420,6 +436,11 @@ class SystemMonitor:
         alert_level and respond per MONITORING_DRIFT_PLAN.md drift ladder.
         """
         snap = self.get_drift_snapshot()
+
+        # Periodic semantic health emission (every 10 calls)
+        self._check_counter += 1
+        if self._check_counter % 10 == 0:
+            self._semantic.emit_health_snapshot()
 
         if snap.n_events == 0:
             return snap
@@ -756,4 +777,6 @@ class SystemMonitor:
             "shadow_n_events": snap.shadow_n_events,
             "shadow_brier_30": snap.shadow_brier_30,
             "shadow_promotion_flag": snap.shadow_promotion_flag,
+            # Semantic contracts (ADR-0034 Layer 3)
+            "semantic_health": self._semantic.get_health_state().__dict__,
         }

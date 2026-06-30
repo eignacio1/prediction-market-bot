@@ -95,24 +95,11 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
+from prediction_market_bot.c7_monitoring.semantic_contracts import (
+    SemanticFloorGuard,
+    SemanticFloorViolation,
+)
 from prediction_market_bot.execution_bands import BAND_REGISTRY, ExecutionBand, get_band_config
-
-# ---------------------------------------------------------------------------
-# Sentinel exceptions
-# ---------------------------------------------------------------------------
-
-
-class SemanticFloorViolation(RuntimeError):
-    """
-    Fired when scheduled_games > 0 AND matched_players == 0.
-
-    The compound condition — games exist in the MLB schedule but nothing
-    resolved in Kalshi markets — indicates ticker format drift, name
-    normalization failure, or cron/quote timing mismatch. Written to C6
-    as event 'SemanticFloorViolation' before sys.exit(2) so cron logs
-    and the Step-4 protocol grep both catch it immediately.
-    """
-
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -749,29 +736,35 @@ def main() -> None:
     print(f"  {len(markets_by_player)} players in live MLB markets | "
           f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
 
-    # Semantic Floor Guard — oracle: games exist but 0 players matched is the alarm.
-    # Only fires when Preview-state games are scheduled AND nothing resolved in Kalshi.
-    # Distinguishes "quiet day" (no games → guard skips) from "silent failure"
-    # (games scheduled but ticker/name pipeline returned nothing → sys.exit(2)).
+    # Semantic Floor Guard (ADR-0034 Layer 3) — canonical oracle.
+    # Only queries schedule API when players=0 to avoid unnecessary latency.
     if len(markets_by_player) == 0:
-        _sfv_scheduled = _count_scheduled_mlb_games(GAME_DATE_ISO)
-        if _sfv_scheduled > 0:
+        _n_games = _count_scheduled_mlb_games(GAME_DATE_ISO)
+        try:
+            SemanticFloorGuard.assert_floor(
+                pipeline_id="PIPE-05",
+                games_fetched=_n_games,
+                matched_players=0,
+                sport="MLB",
+            )
+        except SemanticFloorViolation as _sfv:
             _sfv_quoted = sum(1 for m in snap.markets if m.has_live_quotes)
-            logger.warning(
-                "PIPE-05", "SemanticFloorViolation",
+            logger.log(
+                component="PIPE-05",
+                event_type="semantic_floor_violation",
                 payload={
                     "game_date": GAME_DATE_ISO,
-                    "scheduled_preview_games": _sfv_scheduled,
+                    "scheduled_preview_games": _n_games,
                     "kalshi_markets_total": len(snap.markets),
                     "kalshi_markets_quoted": _sfv_quoted,
+                    "diagnosis": getattr(_sfv, "diagnosis", str(_sfv)),
                 },
+                severity="CRITICAL",
                 session_id=SESSION_ID,
+                snapshot_id=SNAPSHOT_ID,
             )
             print(
-                f"[PIPE-05] SemanticFloorViolation: {_sfv_scheduled} MLB game(s) "
-                f"in Preview for {GAME_DATE_ISO} but 0 players matched "
-                f"({len(snap.markets)} Kalshi markets, {_sfv_quoted} quoted). "
-                "Check: (1) ticker format, (2) quote availability, (3) name normalization.",
+                f"[PIPE-05] CRITICAL semantic_floor_violation: {_sfv}",
                 file=sys.stderr,
             )
             sys.exit(2)
