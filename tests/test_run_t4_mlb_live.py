@@ -1107,24 +1107,27 @@ class TestDryRunMode:
 
 
 # ---------------------------------------------------------------------------
-# ContaminationGuard — Session 101 (T4 pre-fire runtime gate)
+# LiveDataFreshnessGuard — Session 101 (T4 timestamp / liveness gate)
 # ---------------------------------------------------------------------------
 
 
-class TestContaminationGuard:
+class TestLiveDataFreshnessGuard:
     """
-    ContaminationGuard.check() validates 4 conditions before evaluate_forecast().
+    LiveDataFreshnessGuard.check() validates 4 timestamp/liveness conditions.
 
     game_state_fresh   — cycle_start_at within 2× POLL_INTERVAL_S of now
     market_active      — pm.status=active and pm.has_live_quotes=True
     player_in_game     — ls.player_id == player_id
     snapshot_not_stale — snapshot_fetched_at within 2× POLL_INTERVAL_S of now
+
+    Renamed from ContaminationGuard in Session 102 to avoid collision with the
+    canonical SemanticContaminationGuard imported from semantic_contracts (ADR-0034).
     """
 
     def _make_guard(self, tmp_path):
         from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
         audit = AuditLogger(log_path=tmp_path / "audit.jsonl")
-        return runner.ContaminationGuard(audit=audit, session_id="TEST-GUARD")
+        return runner.LiveDataFreshnessGuard(audit=audit, session_id="TEST-GUARD")
 
     def _make_pm(self, status="active", has_live_quotes=True):
         pm = MagicMock()
@@ -1242,7 +1245,7 @@ class TestContaminationGuard:
         assert guard.total_halts == 3
 
     def test_run_cycle_with_guard_skips_inactive_market(self, tmp_path):
-        """_run_cycle with ContaminationGuard skips a market with no live quotes."""
+        """_run_cycle with LiveDataFreshnessGuard skips a market with no live quotes."""
         from datetime import datetime, timezone
         from prediction_market_bot.c4_risk_engine.risk import RiskEngine
         from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
@@ -1254,7 +1257,7 @@ class TestContaminationGuard:
         engine = RiskEngine(logger=audit, snapshot_id="T", bankroll=270.0,
                             kelly_fraction=0.10, initial_bankroll=1000.0, min_bet_usd=0.01)
         trader = PaperTrader(tmp_path / "p.json", logger=audit)
-        guard  = runner.ContaminationGuard(audit=audit, session_id="TEST")
+        guard  = runner.LiveDataFreshnessGuard(audit=audit, session_id="TEST")
 
         live = [_make_live_state(h_so_far=0, ab_so_far=1)]
         pm = _make_market(TICKER_SOTO, mid=0.20, vig=0.02)

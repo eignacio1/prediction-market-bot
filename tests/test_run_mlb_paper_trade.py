@@ -750,7 +750,7 @@ class TestSemanticFloorViolation:
 
         assert count == 0
 
-    def test_violation_class_is_runtime_error(self, monkeypatch):
-        """SemanticFloorViolation is a RuntimeError subclass."""
+    def test_violation_class_is_exception(self, monkeypatch):
+        """SemanticFloorViolation is an Exception subclass (canonical ADR-0034 class)."""
         runner = _import_runner(monkeypatch)
-        assert issubclass(runner.SemanticFloorViolation, RuntimeError)
+        assert issubclass(runner.SemanticFloorViolation, Exception)
