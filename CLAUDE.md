@@ -161,6 +161,17 @@ ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'pla
 
 **What to look for:** Any run that shows `0 players in live MLB markets` during MLB season (March–October) is a signal failure — treat it as a Q6 concern and do not proceed without diagnosing it. Expected healthy output: ≥1 player matched per run when games are scheduled that day.
 
+**Semantic oracle checks (added Session 101):** These two lines surface silent pipeline failures immediately. Zero is healthy for both on a normal game day.
+
+```bash
+# T1 MLB: fires when games exist but 0 players matched → ticker/name pipeline dead
+grep -c "SemanticFloorViolation" /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null || echo "0"
+# T4 MLB: fires per-evaluation when staleness detected → ESPN or Kalshi data is stale
+grep -c "CONTAMINATION_HALT" /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null || echo "0"
+```
+
+`SemanticFloorViolation` count > 0 = T1 pipeline silence (investigate immediately). `CONTAMINATION_HALT` count > 0 in the audit JSONL is expected at game-end (market_active=False normal). Alarm condition: grep for `staleness_halts` > 0 in the JSONL payload, which means ESPN or Kalshi data is arriving stale relative to the 45s poll cycle.
+
 ---
 
 ## ARE WE COMPROMISED? — Run after Steps 1–4, before any implementation

@@ -1104,3 +1104,177 @@ class TestDryRunMode:
         assert len(lines) == 2
         assert json.loads(lines[0])["n"] == 1
         assert json.loads(lines[1])["n"] == 2
+
+
+# ---------------------------------------------------------------------------
+# ContaminationGuard — Session 101 (T4 pre-fire runtime gate)
+# ---------------------------------------------------------------------------
+
+
+class TestContaminationGuard:
+    """
+    ContaminationGuard.check() validates 4 conditions before evaluate_forecast().
+
+    game_state_fresh   — cycle_start_at within 2× POLL_INTERVAL_S of now
+    market_active      — pm.status=active and pm.has_live_quotes=True
+    player_in_game     — ls.player_id == player_id
+    snapshot_not_stale — snapshot_fetched_at within 2× POLL_INTERVAL_S of now
+    """
+
+    def _make_guard(self, tmp_path):
+        from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+        audit = AuditLogger(log_path=tmp_path / "audit.jsonl")
+        return runner.ContaminationGuard(audit=audit, session_id="TEST-GUARD")
+
+    def _make_pm(self, status="active", has_live_quotes=True):
+        pm = MagicMock()
+        pm.status = status
+        pm.has_live_quotes = has_live_quotes
+        return pm
+
+    def _make_ls(self, player_id=660670):
+        return runner.MLBLiveBatterState(
+            player_id=player_id, player_name="Juan Soto",
+            h_so_far=0, ab_so_far=1, inning=3, game_id="401-test",
+        )
+
+    def _fresh_ts(self):
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc)
+
+    def test_all_checks_pass_returns_true(self, tmp_path):
+        guard = self._make_guard(tmp_path)
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(660670),
+            pm=self._make_pm(status="active", has_live_quotes=True),
+            cycle_start_at=self._fresh_ts(),
+            snapshot_fetched_at=self._fresh_ts(),
+        )
+        assert result is True
+        assert guard.total_halts == 0
+        assert guard.staleness_halts == 0
+
+    def test_market_inactive_halts(self, tmp_path):
+        guard = self._make_guard(tmp_path)
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(660670),
+            pm=self._make_pm(status="closed", has_live_quotes=False),
+            cycle_start_at=self._fresh_ts(),
+            snapshot_fetched_at=self._fresh_ts(),
+        )
+        assert result is False
+        assert guard.total_halts == 1
+        assert guard.staleness_halts == 0  # market_active is not a staleness halt
+
+    def test_no_live_quotes_halts(self, tmp_path):
+        guard = self._make_guard(tmp_path)
+        pm = self._make_pm(status="active", has_live_quotes=False)
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(660670),
+            pm=pm,
+            cycle_start_at=self._fresh_ts(),
+            snapshot_fetched_at=self._fresh_ts(),
+        )
+        assert result is False
+        assert guard.total_halts == 1
+
+    def test_player_id_mismatch_halts(self, tmp_path):
+        guard = self._make_guard(tmp_path)
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(player_id=999999),  # wrong player
+            pm=self._make_pm(),
+            cycle_start_at=self._fresh_ts(),
+            snapshot_fetched_at=self._fresh_ts(),
+        )
+        assert result is False
+        assert guard.total_halts == 1
+
+    def test_stale_snapshot_halts_and_increments_staleness_counter(self, tmp_path):
+        from datetime import datetime, timezone, timedelta
+        guard = self._make_guard(tmp_path)
+        stale_ts = datetime.now(timezone.utc) - timedelta(seconds=200)  # > 90s
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(660670),
+            pm=self._make_pm(),
+            cycle_start_at=self._fresh_ts(),
+            snapshot_fetched_at=stale_ts,
+        )
+        assert result is False
+        assert guard.staleness_halts == 1
+
+    def test_stale_cycle_start_halts_and_increments_staleness_counter(self, tmp_path):
+        from datetime import datetime, timezone, timedelta
+        guard = self._make_guard(tmp_path)
+        stale_cycle = datetime.now(timezone.utc) - timedelta(seconds=200)
+        result = guard.check(
+            ticker="KXMLBHIT-26JUN241840PITPHI-PITJSOTO-1",
+            player_id=660670,
+            ls=self._make_ls(660670),
+            pm=self._make_pm(),
+            cycle_start_at=stale_cycle,
+            snapshot_fetched_at=self._fresh_ts(),
+        )
+        assert result is False
+        assert guard.staleness_halts == 1
+
+    def test_halt_counter_accumulates_across_calls(self, tmp_path):
+        guard = self._make_guard(tmp_path)
+        pm_inactive = self._make_pm(status="closed", has_live_quotes=False)
+        for _ in range(3):
+            guard.check(
+                ticker="TICKER",
+                player_id=660670,
+                ls=self._make_ls(),
+                pm=pm_inactive,
+                cycle_start_at=self._fresh_ts(),
+                snapshot_fetched_at=self._fresh_ts(),
+            )
+        assert guard.total_halts == 3
+
+    def test_run_cycle_with_guard_skips_inactive_market(self, tmp_path):
+        """_run_cycle with ContaminationGuard skips a market with no live quotes."""
+        from datetime import datetime, timezone
+        from prediction_market_bot.c4_risk_engine.risk import RiskEngine
+        from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+        from prediction_market_bot.c5_execution.paper_trader import PaperTrader
+        from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+
+        audit  = AuditLogger(log_path=tmp_path / "audit.jsonl")
+        store  = StagedOrderStore(str(tmp_path / "staged.db"))
+        engine = RiskEngine(logger=audit, snapshot_id="T", bankroll=270.0,
+                            kelly_fraction=0.10, initial_bankroll=1000.0, min_bet_usd=0.01)
+        trader = PaperTrader(tmp_path / "p.json", logger=audit)
+        guard  = runner.ContaminationGuard(audit=audit, session_id="TEST")
+
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        pm = _make_market(TICKER_SOTO, mid=0.20, vig=0.02)
+        pm.has_live_quotes = False   # guard will catch this
+        pm.status = "closed"
+        live_prices = {TICKER_SOTO: pm}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.99, "ba_l10": 0.99, "h_l10_mean": 1.2}]}
+
+        _, fi, _ = runner._run_cycle(
+            cycle_id="CG-TEST", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-29",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            contamination_guard=guard,
+            cycle_start_at=datetime.now(timezone.utc),
+            snapshot_fetched_at=datetime.now(timezone.utc),
+        )
+        assert fi == 0
+        assert guard.total_halts == 1  # market_active check failed

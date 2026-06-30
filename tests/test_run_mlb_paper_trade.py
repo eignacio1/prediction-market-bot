@@ -669,3 +669,88 @@ class TestBuildLiveSpOverride:
         assert override["opp_sp_era_l5"] == pytest.approx(9.0 / 31.0 * 9, rel=1e-3)
         assert override["opp_sp_k9_l5"] == pytest.approx(39.0 / 31.0 * 9, rel=1e-3)
         assert override["opp_sp_bb9_l5"] == pytest.approx(9.0 / 31.0 * 9, rel=1e-3)
+
+
+# ---------------------------------------------------------------------------
+# SemanticFloorViolation — Session 101 (semantic oracle guard)
+# ---------------------------------------------------------------------------
+
+
+class TestSemanticFloorViolation:
+    """
+    _count_scheduled_mlb_games and the SemanticFloorViolation guard logic.
+
+    The guard fires when scheduled_preview_games > 0 AND 0 players matched.
+    It must NOT fire when no games are scheduled (quiet day / off-season).
+    """
+
+    def _get_count_fn(self, monkeypatch):
+        runner = _import_runner(monkeypatch)
+        return runner._count_scheduled_mlb_games
+
+    def test_count_returns_preview_games(self, monkeypatch):
+        """_count_scheduled_mlb_games counts only Preview-state games."""
+        runner = _import_runner(monkeypatch)
+        api_resp = {
+            "dates": [{
+                "games": [
+                    {"status": {"abstractGameState": "Preview"}},
+                    {"status": {"abstractGameState": "Preview"}},
+                    {"status": {"abstractGameState": "Final"}},
+                ]
+            }]
+        }
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = api_resp
+
+        with patch("prediction_market_bot.run_mlb_paper_trade.requests.get",
+                   return_value=mock_resp):
+            count = runner._count_scheduled_mlb_games("2026-06-29")
+
+        assert count == 2
+
+    def test_count_excludes_final_games(self, monkeypatch):
+        """Final-only games return 0 — prevents end-of-day false alarm."""
+        runner = _import_runner(monkeypatch)
+        api_resp = {
+            "dates": [{"games": [
+                {"status": {"abstractGameState": "Final"}},
+                {"status": {"abstractGameState": "Final"}},
+            ]}]
+        }
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = api_resp
+
+        with patch("prediction_market_bot.run_mlb_paper_trade.requests.get",
+                   return_value=mock_resp):
+            count = runner._count_scheduled_mlb_games("2026-06-29")
+
+        assert count == 0
+
+    def test_count_returns_zero_on_api_failure(self, monkeypatch):
+        """API failure returns 0 — T1 not blocked by schedule endpoint outage."""
+        runner = _import_runner(monkeypatch)
+        with patch("prediction_market_bot.run_mlb_paper_trade.requests.get",
+                   side_effect=Exception("timeout")):
+            count = runner._count_scheduled_mlb_games("2026-06-29")
+        assert count == 0
+
+    def test_count_returns_zero_when_no_dates(self, monkeypatch):
+        """Empty dates array (off-season / no games today) returns 0."""
+        runner = _import_runner(monkeypatch)
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = {"dates": []}
+
+        with patch("prediction_market_bot.run_mlb_paper_trade.requests.get",
+                   return_value=mock_resp):
+            count = runner._count_scheduled_mlb_games("2026-01-15")
+
+        assert count == 0
+
+    def test_violation_class_is_runtime_error(self, monkeypatch):
+        """SemanticFloorViolation is a RuntimeError subclass."""
+        runner = _import_runner(monkeypatch)
+        assert issubclass(runner.SemanticFloorViolation, RuntimeError)
