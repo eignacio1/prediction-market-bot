@@ -875,6 +875,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-049 — Session-Start Protocol Has No Operational Heartbeat: Active Pipelines Not Verified at Session Open
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-049 |
+| Discovered | 2026-06-29 SESSION 97 — Post-mortem on T1 MLB going dark June 27–28. GG-047 was resolved in S96 with wrong fix (`+timedelta(days=1)`). S97 ARE WE COMPROMISED check did not re-flag it because Step 3 showed GG-047 RESOLVED. No protocol step reads live VPS cron output. |
+| Category | Systemic blind spot — governance protocol checks code and documents but not live operational state |
+| What was missed | Three consecutive protocol runs (S95 Q6 → registered GG-047; S96 trusted resolved doc → did not re-check live logs; S97 → same omission) each passed without ever running `grep` on `paper_mlb_cron.log`. A single grep would have surfaced "0 players in live MLB markets" immediately. |
+| When it should have been caught | S96 session open — after deploying the S96 fix, a cron output check would have confirmed whether the fix actually produced matches. |
+| Phases it survived | MLB-G1 gate through SESSION 97 (active paper trading phase) |
+| Why it survived | Session-start protocol Steps 1–3 are code and document scans. None reads live VPS cron output. There was no operational heartbeat step. A governance doc can say RESOLVED while the underlying pipeline is still dark — and the protocol had no mechanism to distinguish these two states. |
+| Impact | HIGH during active betting phase — T1 MLB placed 0 bets across June 27 and June 28 (2 full game days). Accumulated paper P&L signal permanently lost for those days. The S96 wrong fix was deployed, marked as resolved, and the error went undetected for an entire session. |
+| Discovery | SESSION 97 post-mortem when user noted the 3 prior hygiene checks all missed the failure. |
+| Resolution | SESSION 97: Added Step 4 (Operational Health Check) to CLAUDE.md mandatory session-start protocol. Command SSHes to VPS and greps `paper_mlb_cron.log` for "players in live MLB markets" / "Bets placed today" / PIPE-05 status. Any "0 players" output during MLB season (March–October) is a Q6 blocker. Also checks T4 MLB systemd and T1 NBA log. |
+| Status | **RESOLVED 2026-06-29 SESSION 97** — Step 4 added to protocol. Future sessions will see VPS cron output at every session open. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

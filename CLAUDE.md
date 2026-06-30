@@ -98,7 +98,7 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 
 ## MANDATORY SESSION-START PROTOCOL
 
-**Run all three steps and all six watchdog questions before any other work. Show command outputs — do not summarize or assert clean without evidence.**
+**Run all four steps and all six watchdog questions before any other work. Show command outputs — do not summarize or assert clean without evidence.**
 
 ---
 
@@ -151,7 +151,19 @@ Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) befor
 
 ---
 
-## ARE WE COMPROMISED? — Run after Steps 1–3, before any implementation
+### Step 4 — Operational health check (paste output)
+
+**Root cause of GG-049:** The prior three steps check code and documents but never check whether active cron pipelines are actually producing bets. T1 MLB ran 0 bets for 2+ game days (June 27–28) without the protocol detecting it. This step is mandatory — it is the only place where a dark pipeline becomes immediately visible.
+
+```bash
+ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]' /opt/prediction-market-bot/logs/paper_cron.log 2>/dev/null | tail -6"
+```
+
+**What to look for:** Any run that shows `0 players in live MLB markets` during MLB season (March–October) is a signal failure — treat it as a Q6 concern and do not proceed without diagnosing it. Expected healthy output: ≥1 player matched per run when games are scheduled that day.
+
+---
+
+## ARE WE COMPROMISED? — Run after Steps 1–4, before any implementation
 
 ### Adversarial mandate
 
