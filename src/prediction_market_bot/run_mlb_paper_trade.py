@@ -98,6 +98,23 @@ from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 from prediction_market_bot.execution_bands import BAND_REGISTRY, ExecutionBand, get_band_config
 
 # ---------------------------------------------------------------------------
+# Sentinel exceptions
+# ---------------------------------------------------------------------------
+
+
+class SemanticFloorViolation(RuntimeError):
+    """
+    Fired when scheduled_games > 0 AND matched_players == 0.
+
+    The compound condition — games exist in the MLB schedule but nothing
+    resolved in Kalshi markets — indicates ticker format drift, name
+    normalization failure, or cron/quote timing mismatch. Written to C6
+    as event 'SemanticFloorViolation' before sys.exit(2) so cron logs
+    and the Step-4 protocol grep both catch it immediately.
+    """
+
+
+# ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
@@ -225,6 +242,30 @@ def _is_mlb_game_in_progress(
                 session_id=session_id,
             )
     return False
+
+
+def _count_scheduled_mlb_games(game_date: str) -> int:
+    """Count MLB games in Preview state for game_date (scheduled but not yet started).
+
+    Returns 0 on API failure so T1 is never blocked by a schedule endpoint outage.
+    Preview-only — Final games (already played) do not trigger SemanticFloorViolation.
+    """
+    try:
+        resp = requests.get(
+            _MLB_SCHEDULE_URL,
+            params={"sportId": 1, "date": game_date},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        count = 0
+        for date_block in data.get("dates", []):
+            for game in date_block.get("games", []):
+                if game.get("status", {}).get("abstractGameState", "") == "Preview":
+                    count += 1
+        return count
+    except Exception:
+        return 0
 
 
 def _safe_int(v: object) -> int | None:
@@ -707,6 +748,33 @@ def main() -> None:
 
     print(f"  {len(markets_by_player)} players in live MLB markets | "
           f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
+
+    # Semantic Floor Guard — oracle: games exist but 0 players matched is the alarm.
+    # Only fires when Preview-state games are scheduled AND nothing resolved in Kalshi.
+    # Distinguishes "quiet day" (no games → guard skips) from "silent failure"
+    # (games scheduled but ticker/name pipeline returned nothing → sys.exit(2)).
+    if len(markets_by_player) == 0:
+        _sfv_scheduled = _count_scheduled_mlb_games(GAME_DATE_ISO)
+        if _sfv_scheduled > 0:
+            _sfv_quoted = sum(1 for m in snap.markets if m.has_live_quotes)
+            logger.warning(
+                "PIPE-05", "SemanticFloorViolation",
+                payload={
+                    "game_date": GAME_DATE_ISO,
+                    "scheduled_preview_games": _sfv_scheduled,
+                    "kalshi_markets_total": len(snap.markets),
+                    "kalshi_markets_quoted": _sfv_quoted,
+                },
+                session_id=SESSION_ID,
+            )
+            print(
+                f"[PIPE-05] SemanticFloorViolation: {_sfv_scheduled} MLB game(s) "
+                f"in Preview for {GAME_DATE_ISO} but 0 players matched "
+                f"({len(snap.markets)} Kalshi markets, {_sfv_quoted} quoted). "
+                "Check: (1) ticker format, (2) quote availability, (3) name normalization.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
 
     # Run-level game_date guard (mirrors NBA runner T-166 defense-in-depth)
     _game_date_deployed_count = sum(

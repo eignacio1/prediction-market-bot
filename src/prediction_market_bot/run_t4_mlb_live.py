@@ -494,6 +494,87 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
 
 
 # ---------------------------------------------------------------------------
+# Contamination guard
+# ---------------------------------------------------------------------------
+
+
+class ContaminationGuard:
+    """
+    Runtime gate: validates each T4 bet evaluation operates on coherent,
+    fresh, and active data before passing to evaluate_forecast().
+
+    Four checks per evaluation:
+      game_state_fresh   — cycle started within 2× POLL_INTERVAL_S of now
+      market_active      — Kalshi market status=active with live quotes
+      player_in_game     — player_id in live batter state matches pregame record
+      snapshot_not_stale — Kalshi price snapshot fetched within 2× POLL_INTERVAL_S
+
+    market_active halts are normal at game end (market settles mid-cycle).
+    Staleness halts (game_state_fresh / snapshot_not_stale) are unexpected —
+    they surface as logger.warning in cron output and as CONTAMINATION_HALT
+    events in the C6 JSONL audit. Zero staleness_halts per session = healthy.
+    """
+
+    _FRESHNESS_WINDOW_S: float = 2.0 * POLL_INTERVAL_S  # 90s
+
+    def __init__(self, audit: AuditLogger, session_id: str) -> None:
+        self._audit = audit
+        self._session_id = session_id
+        self.total_halts: int = 0
+        self.staleness_halts: int = 0
+
+    def check(
+        self,
+        *,
+        ticker: str,
+        player_id: int,
+        ls: MLBLiveBatterState,
+        pm: object,
+        cycle_start_at: datetime,
+        snapshot_fetched_at: datetime,
+    ) -> bool:
+        """Return True if all checks pass; False (+ log) on any failure."""
+        now = datetime.now(timezone.utc)
+        checks: dict[str, bool] = {
+            "game_state_fresh": (
+                (now - cycle_start_at).total_seconds() < self._FRESHNESS_WINDOW_S
+            ),
+            "market_active": (
+                getattr(pm, "status", "") == "active"
+                and bool(getattr(pm, "has_live_quotes", False))
+            ),
+            "player_in_game": ls is not None and ls.player_id == player_id,
+            "snapshot_not_stale": (
+                (now - snapshot_fetched_at).total_seconds() < self._FRESHNESS_WINDOW_S
+            ),
+        }
+        failed = [k for k, v in checks.items() if not v]
+        if not failed:
+            return True
+
+        self.total_halts += 1
+        _staleness = {"game_state_fresh", "snapshot_not_stale"}
+        if any(f in _staleness for f in failed):
+            self.staleness_halts += 1
+            logger.warning(
+                "T4-MLB CONTAMINATION_HALT %s — unexpected staleness: %s",
+                ticker, failed,
+            )
+        self._audit.warning(
+            COMPONENT, "CONTAMINATION_HALT",
+            payload={
+                "ticker": ticker,
+                "player_id": player_id,
+                "failed_checks": failed,
+                "total_halts": self.total_halts,
+                "staleness_halts": self.staleness_halts,
+            },
+            session_id=self._session_id,
+        )
+        return False
+
+
+# ---------------------------------------------------------------------------
 # Evaluation cycle
 # ---------------------------------------------------------------------------
 
@@ -515,11 +596,17 @@ def _run_cycle(
     batting_slots: Optional[dict[int, int]] = None,
     dry_run: bool = False,
     dryrun_log_path: Optional[Path] = None,
+    contamination_guard: Optional[ContaminationGuard] = None,
+    cycle_start_at: Optional[datetime] = None,
+    snapshot_fetched_at: Optional[datetime] = None,
 ) -> tuple[int, int, float]:
     """
     Run one T4 MLB evaluation cycle.
 
     Returns (evaluated, fired, updated_t4_deployed_usd).
+    contamination_guard: if provided, gates each evaluation via ContaminationGuard.check().
+    cycle_start_at / snapshot_fetched_at: timestamps for freshness checks in the guard.
+    Omitting either timestamp disables that specific freshness check (guard uses now()).
     """
     if already_fired_game is None:
         already_fired_game = set()
@@ -554,8 +641,23 @@ def _run_cycle(
                 continue
 
             pm = live_prices.get(ticker)
-            if pm is None or not getattr(pm, "has_live_quotes", False):
+            if pm is None:
                 continue
+
+            if contamination_guard is not None:
+                _cg_start = cycle_start_at or datetime.now(timezone.utc)
+                _cg_snap  = snapshot_fetched_at or datetime.now(timezone.utc)
+                if not contamination_guard.check(
+                    ticker=ticker,
+                    player_id=player_id,
+                    ls=ls,
+                    pm=pm,
+                    cycle_start_at=_cg_start,
+                    snapshot_fetched_at=_cg_snap,
+                ):
+                    continue
+            elif not getattr(pm, "has_live_quotes", False):
+                continue  # no guard: fallback to original inline check
 
             mip = pm.mid_price
             vig = pm.vig
@@ -885,6 +987,9 @@ def main() -> None:
     game_ids: list[str] = _espn_mlb_game_ids_today()
     logger.info("Initial MLB game IDs: %s", game_ids or "(none yet)")
 
+    # ---- Contamination guard (session-scoped) ----
+    contamination_guard = ContaminationGuard(audit=audit, session_id=session_id)
+
     # ---- Main polling loop ----
     cycle_n = 0
     total_evaluated = 0
@@ -953,6 +1058,7 @@ def main() -> None:
                     logger.info("Pregame context loaded on retry: %d players", len(by_player_id))
 
             # Poll all tracked games via ESPN — kill switch checked per game (NFR-03 ≤60s halt)
+            cycle_start_at = datetime.now(timezone.utc)
             all_states: list[MLBLiveBatterState] = []
             _ks_fired = False
             for gid in game_ids:
@@ -970,6 +1076,7 @@ def main() -> None:
 
             # Fetch live KXMLBHIT prices from Kalshi
             ok, snapshot = kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
+            snapshot_fetched_at = datetime.now(timezone.utc)
             if not ok or not snapshot.markets:
                 logger.warning(
                     "Kalshi MLB price fetch failed — sleeping %ds", POLL_INTERVAL_S
@@ -999,6 +1106,9 @@ def main() -> None:
                 batting_slots=batting_slots,
                 dry_run=T4_MLB_DRY_RUN,
                 dryrun_log_path=dryrun_log_path,
+                contamination_guard=contamination_guard,
+                cycle_start_at=cycle_start_at,
+                snapshot_fetched_at=snapshot_fetched_at,
             )
 
             cycle_n += 1
@@ -1010,11 +1120,14 @@ def main() -> None:
             ) if t4_band_budget > 0 else 0.0
             logger.info(
                 "─ cycle=%s  eval=%d fired=%d │ session: eval=%d fired=%d"
-                " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f",
+                " │ T4_budget: $%.2f/$%.2f (%.0f%%)  │ bankroll=$%.2f"
+                " │ cg_halts=%d(stale=%d)",
                 cycle_id, ev, fi,
                 total_evaluated, total_fired,
                 t4_deployed_game, t4_band_budget, budget_pct,
                 trader.get_state()["bankroll_usd"],
+                contamination_guard.total_halts,
+                contamination_guard.staleness_halts,
             )
 
             time.sleep(POLL_INTERVAL_S)
