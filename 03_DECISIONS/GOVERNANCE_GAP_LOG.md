@@ -948,6 +948,86 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-053 — GG-052 Staleness Fix Deployed but Unverified Under Live Load
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-053 |
+| Discovered | 2026-07-01 SESSION 104 — session-start protocol operational health check. |
+| Category | Verification gap — fix committed and deployed, but never exercised against real traffic. |
+| What was missed | The GG-052 fix (`cycle_start_at = snapshot_fetched_at` after Kalshi fetch, commit `bbaf86a`) was deployed and the `t4-mlb` service restarted at 2026-07-01 01:19:19 UTC. As of this check (05:01 UTC), every MLB game for the day was still `STATUS_SCHEDULED` — zero live batter states have flowed through the fixed code path. The `audit_mlb_t4.jsonl` tail (last entry 00:02:45 UTC) predates the restart and is the pre-fix incident already logged under GG-052, not new evidence the fix works. |
+| When it should have been caught | N/A — not a missed bug, a verification gap. Should be closed the first time real live-game data runs through the fixed cycle. |
+| Impact | LOW-MEDIUM. If the fix is incomplete (e.g., a different code path still captures a stale timestamp), T4 MLB will silently resume false-positive staleness halts the moment tonight's games go live, and nobody will know until the next manual audit. |
+| Resolution path | At next session start (or mid-game spot check) during a live MLB slate, grep `audit_mlb_t4.jsonl` for `CONTAMINATION_HALT` events timestamped after 2026-07-01T01:19:19Z. Expect near-zero `staleness_halts` growth and actual bet fires consistent with the ~50-100/game design target (CLAUDE.md throughput model), not 2/game. |
+| Status | OPEN — reverify against the next live MLB game night. |
+
+### GG-054 — SemanticFloorViolation Guard Has Never Fired in Production
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-054 |
+| Discovered | 2026-07-01 SESSION 104 — session-start protocol, cross-checking `SemanticFloorViolation` count (0) against 4 consecutive T1 MLB 0-player days (June 26-29). |
+| Category | Verification gap — a safety mechanism built specifically to catch a known failure pattern (GG-049) has zero real-world activations. |
+| What was missed | The guard (ADR-0034, integrated commit `501c4ca8`, 2026-06-29 22:10:14 -0700 = 2026-06-30 05:10 UTC) was deployed *after* the last real 0-player incident it was designed to catch (June 26-29, root-caused as GG-047). The only T1 MLB cron run since deployment (June 30, 11:00 UTC) was healthy — 36 players matched. The guard's fire path (exit code 2, C6 CRITICAL log write) has never executed against genuine bad data end-to-end. |
+| When it should have been caught | N/A — timing artifact of when the fix landed relative to when the bug was live. Not a design flaw. |
+| Impact | MEDIUM. No confirmation that `_count_scheduled_mlb_games()` vs `matched_players` comparison, the exit(2), and the C6 write all actually function together outside of unit tests. If a similar 0-player bug recurs, we are trusting a guard that has never proven itself live. |
+| Resolution path | Consider a deliberate one-time drill: run `run_mlb_paper_trade.py` against a date with known games but an intentionally broken market-matching filter (in a scratch/non-prod invocation) to confirm the guard actually exits non-zero and writes the CRITICAL C6 event, rather than waiting for an unplanned recurrence to be the first test. |
+| Status | OPEN. |
+
+### GG-055 — Ticker Date Parser Fixed Twice; No Month-Boundary Regression Test
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-055 |
+| Discovered | 2026-07-01 SESSION 104 — session-start protocol, reviewing GG-047 resolution history. |
+| Category | Latent risk — two sequential wrong fixes to the same date-parsing function, shipped under deadline pressure. |
+| What was missed | T-205 (SESSION 96, June 28) shipped `_ticker_to_game_date() + timedelta(days=1)`, an incorrect assumption that Kalshi always creates markets exactly one day before the game. It passed its own tests and was documented as resolving GG-047, but T1 stayed dark for June 28 and June 29 anyway. T-206a (SESSION 97, June 29, commit `d5289a0`) shipped the real fix — extracting `GAME_DD` directly from the `{CREATE_DD}{MON}{GAME_DD}{HHMM}` ticker format via regex, with no offset arithmetic. No test case exists for a market created in one calendar month for a game in the next (e.g., created 2026-06-30 for a 2026-07-01 game) — exactly the class of edge case that an offset-based (rather than direct-extraction) bug tends to hide in, and the class of bug this function has already produced twice. |
+| When it should have been caught | T-206a should have added a month-rollover test case alongside the 3 new cases it did add, given the function's track record. |
+| Impact | LOW currently — the current implementation extracts `GAME_DD`/`MON` directly rather than by day-offset, which is structurally safer — but this is unverified by an explicit test, and the same function has now been wrong twice. |
+| Resolution path | Add a test case: a ticker created in month N (e.g., `30JUN...`) for a game whose ticker month field is N+1 (e.g., `01JUL...`), asserting correct game-date extraction across the month boundary. Register a T-NNN. |
+| Status | OPEN. |
+
+### GG-056 — NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-056 |
+| Discovered | 2026-07-01 SESSION 104 — session-start protocol Q1/Q6 cross-check: `risk.py` `max_drawdown_pct = 0.20` (kill-switch trigger) vs. live NBA main-pool realized drawdown of 24.9% (bankroll $751.10 / $1,000 initial, realized P&L -$248.90, per GG-036 ratified baseline). |
+| Category | Systemic blind spot — same failure shape as GG-049 (a pipeline that produces nothing looks identical to "no games," not "kill switch engaged"). |
+| What was missed | The kill switch is working correctly: `current_drawdown_pct` is computed live per-pool in `run_paper_trade.py` and passed into `evaluate_forecast()`, which correctly halts at >= 0.20. NBA is currently off-season (0 games), so this hasn't manifested as an operational failure — no bets are being evaluated at all. But there is no decision on record for what happens when NBA resumes in October 2026 with the pool still 4.9 points above the kill-switch threshold: the very first live `evaluate_forecast()` call will trip `drawdown_limit_breached` and reject every subsequent bet indefinitely, with no reset mechanism currently defined. |
+| When it should have been caught | Should have been flagged as a forward-looking action item when the G5/GG-036 baseline was ratified (-$248.90/-24.9%, SESSION ~66-67) or when the dark-period build plan was adopted, since both predate knowledge that NBA would sit dormant across an off-season while already past its own kill-switch threshold. |
+| Impact | MEDIUM. If unaddressed, October's first NBA cron run will silently place 0 bets and, absent Step 4 of the session-start protocol (or a specific check of the kill-switch reason code), will look identical to "no games scheduled yet" rather than "kill switch permanently engaged." |
+| Resolution path | Decide, before NBA 26-27 season open (or explicitly defer via a registered T-NNN): (a) NBA resumes on the current drawdown baseline and stays dark until a G6-scoped bankroll/limit revision, or (b) the drawdown baseline / initial_bankroll is formally reset for the new season via ADR, consistent with the standing G6 obligation to formally revise all hard limits (CLAUDE.md Q1, DECISION_LOG 2026-05-29 retroactive entries). |
+| Status | OPEN. |
+
+### GG-057 — C8 Web Dashboard Built and Deployed to Production With Zero Governance Trail
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-057 |
+| Discovered | 2026-07-01 SESSION 104 — institutional read comparing untracked files against governance logs. |
+| Category | Process failure — a new production component shipped outside every institutional control this project has (no DECISION_LOG entry, no GOVERNANCE_GAP_LOG mention, no MEMORY_BANK/TODO_NEXT reference, not committed to git). |
+| What was missed | `scripts/web_dashboard.py` (868-line stdlib HTTP server, replaces a curses TUI that crashed on SSH disconnect), `Open Dashboard.command` (Mac launcher), and `scripts/pmbot-web-dashboard.service` (systemd unit) were all built and deployed. The service is confirmed **live in production** on the VPS — `systemctl status pmbot-web-dashboard` shows `active (running) since 2026-07-01 00:54:58 UTC`, serving portfolio/audit data on `127.0.0.1:8050`. All three files are untracked in git (`git status` shows `??`). This is a genuine new C8 component change with zero paper trail — exactly the class of gap the session-start protocol's Step 1 (`decisions_logged: false` scan) and Step 3 (open GG scan) are designed to catch, except this gap predates any doc existing to scan. |
+| When it should have been caught | Before deploying to the VPS — CLAUDE.md hard rule #7 requires every strategic/architectural decision to hit DECISION_LOG.md immediately, not at session end. A new systemd service reading production logs and exposing them on a network port (even localhost-only) is exactly this kind of decision. |
+| Impact | LOW-MEDIUM technical risk (read-only, localhost-bound, hardened with `PrivateTmp`/`NoNewPrivileges`/`ReadOnlyPaths`/`MemoryMax`/`CPUQuota` — the engineering itself is sound). MEDIUM-HIGH process risk: it establishes precedent that production deploys can happen without touching a single governance artifact, which is the exact failure mode this project's entire protocol exists to prevent. |
+| Resolution path | (1) Commit the three files to git with a commit message documenting what/why. (2) Add a retroactive DECISION_LOG.md entry (following the same pattern as the 2026-05-29 retroactive entries) describing the dashboard's purpose, scope (read-only, localhost+SSH-tunnel only, no write path, no secrets), and the fact it was built/deployed before this entry. (3) Add one line to MEMORY_BANK.md's component inventory / Compass OS Health table so future sessions see it exists. |
+| Status | OPEN — recommend closing this session. |
+
+### GG-058 — T4 MLB UTC-Midnight Rollover Drops All In-Progress Games Every Night
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-058 |
+| Discovered | 2026-07-01 SESSION 104 — investigating why zero live evaluations occurred anywhere in `t4_mlb_live_cron.log` since the GG-052 fix restart (2026-07-01 01:19:19 UTC). |
+| Category | **Architectural bug, not a verification gap.** This is more severe than GG-053's framing ("fix hasn't been tested yet, wait and see") — the fix structurally cannot be tested against West-coast late games under current logic, and a real coverage hole exists independent of GG-052/GG-053. |
+| What was missed | `run_t4_mlb_live.py`'s date-rollover refresh (lines 1049-1077, "24/7 systemd service support") uses `date.today()` — the VPS's UTC calendar date — as the day boundary. At UTC midnight every night, it runs `game_ids[:] = _espn_mlb_game_ids_today()`, **replacing** the entire tracked game list with the new UTC day's ESPN slate. Confirmed from `t4_mlb_live_cron.log`: this fires nightly (`2026-06-28 00:00:13`, `2026-06-29 00:00:30`, `2026-06-30 00:00:51`, `2026-07-01 00:03:30` — each logged "rollover complete" with a *different, smaller* game/player count than the prior evening, e.g. June 29→30 dropped from 74 players to 31). The new day's ESPN game-ID list (verified: July 1's IDs `401815979-992` vs June 30's `401815964-978` — disjoint ranges) does **not** include the previous day's still-in-progress West-coast games (first pitch commonly 22:30 UTC-01:45 UTC, i.e. straddling the boundary — the schedule validator itself models this correctly, computing one continuous T4 window from 22:05 UTC through ~06:10 UTC the *next* day). The practical effect: every night, at UTC midnight, T4 MLB stops polling whatever games are still live (often mid-to-late innings — the highest-value evaluation window) and does not pick up the new day's games until they start hours later. Confirmed directly for tonight: the 01:19:19 UTC restart (deploying GG-052) initialized with July 1's 14-game list — the 5 June 30 West-coast games still in progress at that moment (first pitch 01:40 UTC, ~21 min before restart) were never touched again. Zero `cycle=` log lines (the marker for an actual live evaluation cycle) appear anywhere in the log after 01:19:19 UTC as of this check (05:20 UTC) — the process has been sleeping in "No live MLB batter states" for 4+ hours despite West-coast games that were in progress. |
+| When it should have been caught | At T4 MLB (PIPE-07) design time — the schedule validator's own model (one T4 session spans a UTC-midnight-crossing window) is the correct mental model; the live runner's date-rollover code was never reconciled against it. |
+| Impact | **HIGH.** This directly suppresses the ~1,000 evals/game design target (CLAUDE.md throughput mandate) for every West-coast/late game, every single night, not just as a one-off restart artifact. It also means GG-053 cannot be closed by "wait for the next live game" — under current logic, the fix will *never* see live West-coast innings unless the rollover boundary is fixed, because those games get dropped at the exact UTC-midnight instant regardless of restart timing. |
+| Resolution path | Change the rollover trigger from a hard UTC-midnight `date.today()` boundary to one anchored to the schedule validator's actual slate window (e.g., only refresh `game_ids` when ALL currently-tracked games have reached `STATUS_FINAL`/`STATUS_POSTPONED`, or merge-in rather than replace: `game_ids` should be the union of not-yet-final previous-day games and newly discovered today-games, dropping a game only once it resolves). Register a T-NNN for immediate investigation — this blocks meaningful T4 MLB throughput validation more than GG-052/GG-053 do. |
+| Status | OPEN — HIGH priority, recommend before next PIPE-08 validator run (2026-07-01 08:30 UTC) if a same-day patch is feasible, otherwise first thing next session. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
