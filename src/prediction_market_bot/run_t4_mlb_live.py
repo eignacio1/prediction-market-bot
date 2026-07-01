@@ -497,6 +497,26 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
     return open_exposure + realized_losses
 
 
+def _reconstruct_fired_tickers(portfolio: dict, game_date: str) -> set:
+    """T-209: rebuild the game-day dedup guard from the persisted portfolio.
+
+    `already_fired_game` is otherwise a process-local in-memory set that is
+    silently wiped on every restart (crash, RestartSec cooldown, or a deploy-
+    triggered `systemctl restart`). Without this reconstruction, a restart
+    mid-game forgets which tickers already have an open position, and
+    `PaperTrader.open_position()` has no ticker-level duplicate guard of its
+    own — so a restart can cause a real second position on a market this
+    process (or a prior instance of it) already bet.
+    """
+    tickers = set()
+    for p in portfolio.get("open_positions", []) + portfolio.get("closed_positions", []):
+        if p.get("pool_isolated") and p.get("game_date") == game_date:
+            ticker = p.get("kalshi_ticker")
+            if ticker:
+                tickers.add(ticker)
+    return tickers
+
+
 # ---------------------------------------------------------------------------
 # Contamination guard
 # ---------------------------------------------------------------------------
@@ -1034,7 +1054,14 @@ def main() -> None:
     # Game-day dedup guard: markets that have already received a position this game day.
     # Reset at UTC midnight (date rollover). Prevents re-betting the same market every
     # 90-second cycle (GG-050 fix — moved out of _run_cycle where it was per-cycle only).
-    already_fired_game: set[str] = set()
+    # T-209: reconstructed from the persisted portfolio (not started empty) so a process
+    # restart mid-game does not forget which tickers already have an open position.
+    already_fired_game: set[str] = _reconstruct_fired_tickers(t4_state, game_date)
+    if already_fired_game:
+        logger.info(
+            "T4-MLB dedup guard reconstructed: %d ticker(s) already fired for %s",
+            len(already_fired_game), game_date,
+        )
 
     while True:
         if kill_switch_armed(KILL_SWITCH_PATH):
@@ -1070,7 +1097,10 @@ def main() -> None:
                 t4_state = trader.get_state()
                 t4_band_budget = _compute_t4_band_budget(t4_state)
                 t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
-                already_fired_game.clear()  # new day → new set of fireable markets
+                # T-209: reconstruct (not just clear) — new day is normally empty,
+                # but this keeps the guard correct if the date rollover races a restart.
+                already_fired_game.clear()
+                already_fired_game.update(_reconstruct_fired_tickers(t4_state, game_date))
                 logger.info(
                     "T4-MLB rollover complete: %d games, %d players, budget=$%.2f",
                     len(game_ids), len(by_player_id), t4_band_budget,

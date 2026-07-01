@@ -676,7 +676,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | **HIGH pre-Phase 8.** Without a T4-specific fast-halt mechanism (≤5s), a kill trigger during a live T4 evaluation burst could result in 60+ bets submitted before halt — the exact scenario the kill switch exists to prevent. |
 | Discovery | SESSION 66 — ADR-0029 hygiene check. Surfaced during three-layer T4 architecture design. |
 | Resolution | New ADR amending NFR-03 for T4 band + C7 implementation of two-tier fast-halt mechanism: (1) T4-specific halt in ≤5s; (2) system-level halt preserves current 60s SLA for T1/T2/T3. Both tiers must operate independently. |
-| Status | **OPEN.** Phase 8 prerequisite — must resolve before any T4 sub-band activates. Linked: ADR-0029, NFR-03. |
+| Status | **OPEN — paper trading exemption noted (ADR-0036, SESSION 104).** T4FastHalt (≤5s) was built in `t4_live_runner.py` as SESSION 71 work — the mechanism this gap required was already implemented before ADR-0036 was written. ADR-0036 ruling: this gap does NOT block Phase 8 activation for paper trading because the ≤5s mechanism exists. **Remains OPEN** until T4FastHalt is formally validated in production (timed and logged under real live-game load). For live capital activation, formal validation must occur. Linked: ADR-0029, ADR-0036, NFR-03. |
 
 ---
 
@@ -693,7 +693,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | **MEDIUM — design gap only; no live capital risk until Phase 8.** If unresolved, the staleness check cannot function as designed and the execution queue would either need to drop all bets without a price check (unsafe) or use stale prices from trade time (defeats the purpose). |
 | Discovery | SESSION 66 — ADR-0029 hygiene check. |
 | Resolution | Design and implement a separate read-only price polling loop: polls Kalshi market prices for all open markets at a cadence ≤ the shortest expected edge window across active T4 sub-bands; writes to an in-memory price cache; operates independently of the execution rate limit budget (not counted as execution API calls). Cache staleness windows per sub-band defined in ADR-0029. Full architectural design requires a separate ADR. |
-| Status | **OPEN.** Phase 8 prerequisite — must resolve before T4 sub-band activation. Linked: ADR-0029. |
+| Status | **OPEN — paper trading exemption noted (ADR-0036, SESSION 104).** Current 45s Kalshi polling loop provides sufficient price freshness for T4-PROJ/ARITH edge computation in paper mode. `fetch_player_points_markets()` is called at the start of each `_run_cycle()` — the price snapshot used for `gross_edge = model_p - market_implied_probability` is at most 45s old. A dedicated sub-second price cache is an optimization for live capital deployment, not a correctness requirement for paper trading. **Remains OPEN** as a live capital prerequisite — a dedicated price cache may be required before live capital activation to ensure edge computations reflect current market depth. Linked: ADR-0029, ADR-0036. |
 
 ---
 
@@ -710,7 +710,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | **HIGH pre-Phase 8; LOW now.** Without Phase 8 data sources, T4-EVENT, T4-LINEUP, T4-MICRO, and T4-SENTIMENT cannot function as designed. T4-STAGED and T4-PROJ can function with enhanced versions of current C1 data. |
 | Discovery | SESSION 66 — ADR-0029 design analysis. |
 | Resolution | Phase 8 C1 rebuild to add: (1) Live box score feed with ≤2s event detection latency (T4-EVENT, T4-ARITH); (2) Live play-by-play / lineups API with ≤5s substitution detection (T4-LINEUP); (3) Kalshi tick-level market price feed (T4-MICRO, T4-SENTIMENT). Each requires vendor evaluation and C1 module design. Full data source ADR required before Phase 8. |
-| Status | **OPEN.** Phase 8 prerequisite. Low urgency now — Phase 8 not imminent. Linked: ADR-0029, GG-038, GG-039. |
+| Status | **PARTIALLY RESOLVED SESSION 104 (ADR-0036).** Data-sufficient sub-bands unblocked for paper trading: T4-PROJ, T4-ARITH, T4-FLOW, T4-BLOWOUT — current ESPN scoreboard + Kalshi polling infrastructure is sufficient for these sub-bands. Data-deficient sub-bands remain gated: T4-EVENT (requires ≤2s event detection — not available from ESPN scoreboard), T4-LINEUP (requires dedicated lineup feed with ≤5s substitution detection — not integrated), T4-MICRO (ADR-0030 carve-out — requires order-book depth data), T4-SENTIMENT (requires real-time sentiment feed — not built). **Gap remains OPEN for data-deficient sub-bands.** Full resolution requires Phase 8 C1 rebuild for data-deficient feeds. Linked: ADR-0029, ADR-0036, GG-038, GG-039. |
 
 ---
 
