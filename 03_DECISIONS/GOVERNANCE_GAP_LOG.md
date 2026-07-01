@@ -847,6 +847,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | GG-047 | 2026-06-29 | S96 fix wrong (`+timedelta(days=1)`). S97 real fix: extract GAME_DD directly from `{CREATE_DD}{MON}{GAME_DD}{HHMM}` format. Regex `r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}"`. 2113/2113 tests. VPS at `d5289a0`. |
 | GG-048 | 2026-06-29 | T-207: exponential retry (3×: 5s/10s/30s) in `_fetch_mlb_hits()`. Zero-resolution alert in `_resolve_pool()`. 2113/2113 tests. |
 | GG-049 | 2026-06-29 | Step 4 (operational heartbeat) added to CLAUDE.md session-start protocol. SSH grep on live cron logs. Commit `eebee34` deployed. |
+| GG-051 | 2026-06-29 | `c7_semantic_contracts.py` written (ADR-0034). SemanticFloorGuard, ContaminationGuard, BandInvariantChecker, SemanticContractMonitor. Integration patches written. Terminal windows deploy. |
 
 ### GG-050 — T4 MLB Re-Betting Bug: `fired_tickers` Per-Cycle Scope Allowed Same Market to Be Bet 17.5× Per Game Day
 
@@ -910,6 +911,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | SESSION 97 post-mortem when user noted the 3 prior hygiene checks all missed the failure. |
 | Resolution | SESSION 97: Added Step 4 (Operational Health Check) to CLAUDE.md mandatory session-start protocol. Command SSHes to VPS and greps `paper_mlb_cron.log` for "players in live MLB markets" / "Bets placed today" / PIPE-05 status. Any "0 players" output during MLB season (March–October) is a Q6 blocker. Also checks T4 MLB systemd and T1 NBA log. |
 | Status | **RESOLVED 2026-06-29 SESSION 97** — Step 4 added to protocol. Future sessions will see VPS cron output at every session open. |
+
+---
+
+### GG-051 — No Layer 3 Governance: Pipeline Can Be Structurally Sound and Semantically Dark
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-051 |
+| Discovered | 2026-06-29 SESSION 100 — post-mortem synthesis on GG-049 (T1 MLB dark 2 days) and GG-050 (T4 re-betting 17.5×). Both failures were invisible to Layer 1 (architecture review) and Layer 2 (C7 Brier/ECE/P&L monitoring). GG-049 was "resolved" by adding an operational heartbeat to the session-start protocol — a human check, not a machine assertion. The structural absence: no runtime layer asks "is what is currently happening coherent with what this band is supposed to do?" |
+| Category | Systemic blind spot — governance framework has two of three required layers; Layer 3 was never designed |
+| What was missed | Layer 3 semantic contracts: explicit runtime assertions that each pipeline stage and each execution band is behaving consistently with its stated intent. Layer 1 verifies architecture at gate review. Layer 2 verifies model accuracy per monitoring cycle. Neither layer can detect: (a) a pipeline that runs without error but produces no evaluations (GG-049 pattern), (b) a T4 evaluation loop that fires on stale or ghost data (contamination pattern), (c) a band-level model property violation (e.g., T4-CORR increasing a position size, violating ADR-0029 Principle 6). These are not bugs (they pass all tests). They are behavioral coherence failures — the gap between what runs and what was meant. |
+| When it should have been caught | Before active paper trading (MLB-G1 gate). The three-layer governance framework is implied by the architecture (C1→C8 + C7 monitoring) but was never explicitly named or formally designed. |
+| Phases it survived | G0 through SESSION 100 (all phases). The absence was invisible because Layer 1 + Layer 2 appeared to constitute a complete governance framework. The third layer was only articulated after observing two silent failures whose common root cause was the absence of semantic assertions. |
+| Why it survived | Two layers are easier to reason about than three. "Architecture review" + "model monitoring" felt complete. The structural question — "is what's running doing what was intended?" — is a different category of check from both, but was never framed as its own governance requirement. |
+| Impact | HIGH (GG-049: 2 dark betting days, T1 MLB; GG-050: 73 independent markets inflated to 1274 positions by re-betting; EXP-T4-01 verdict contaminated). Any future band can go silent or behave incoherently without triggering either existing layer. T4-CORR upward violation (ADR-0029 Principle 6) would be structurally undetectable without this layer. |
+| Discovery | SESSION 100 — post-mortem synthesis identified the common root cause of GG-049 and GG-050 as behavioral coherence: no layer asserts that what runs is doing what it was designed to do. |
+| Resolution | ADR-0034: `c7_semantic_contracts.py` — SemanticFloorGuard (C1→C2 boundary), ContaminationGuard (T4 pre-evaluation gate), BandInvariantChecker (per-band structural checks), SemanticContractMonitor (C7 health state integration). Integration patches for PIPE-05, run_t4_mlb_live.py, and C7 monitor.py written separately. |
+| Status | **RESOLVED 2026-06-29 SESSION 100** — Module written (`c7_semantic_contracts.py`). Integration patches in `09_INTEGRATION_PATCHES/SEMANTIC_CONTRACTS_INTEGRATION.md`. ADR-0034 registered. Terminal windows deploy. |
 
 ---
 
