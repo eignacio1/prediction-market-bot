@@ -274,7 +274,6 @@ def main() -> None:
     mlb_client = MLBIngestionClient(
         logger=logger,
         snapshot_id=SNAPSHOT_ID,
-        session_id=SESSION_ID,
     )
     ok_lineups, lineup_by_pid = mlb_client.fetch_lineups(GAME_DATE_ISO, SESSION_ID)
     if not ok_lineups:
