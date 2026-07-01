@@ -412,25 +412,22 @@ def update_live_crontab(
             else:
                 log.info("PIPE-06pre: unchanged at %02d:%02d UTC", old_h, old_m)
 
-        # PIPE-07 MLB — T4 live
+        # PIPE-07 MLB — T4 live.
+        # T-209 (2026-07-01): T4 MLB moved to systemd/timer control (t4-mlb.service +
+        # t4-mlb.timer) on 2026-06-27. This legacy cron trigger must never fire again —
+        # a live copy of it survived the migration and PIPE-08 kept dynamically
+        # re-arming it every morning here, causing a second run_t4_mlb_live.py process
+        # to fire alongside the systemd instance daily for 3+ days (duplicate Kalshi
+        # load, no cross-process dedup on bets). Do not restore time/timeout editing
+        # for this line — neutralize it defensively instead, in case some future
+        # deploy step ever leaves it active again.
         elif "run_t4_mlb_live.py" in stripped:
-            m = re.match(r'^(\d+)\s+(\d+)\s+(.*)', stripped)
-            if not m:
-                log.warning("Could not parse PIPE-07 MLB T4 cron line: %s", stripped)
-                continue
-            old_m, old_h, rest = int(m.group(1)), int(m.group(2)), m.group(3)
-            rest_updated = re.sub(r'timeout\s+\d+', f'timeout {t4_timeout_s}', rest)
-            new_line = f"{t4_min} {t4_hour} {rest_updated}\n"
-            if new_line != line:
-                log.info(
-                    "PIPE-07 T4: %02d:%02d → %02d:%02d UTC, timeout → %ds (%.1fh)",
-                    old_h, old_m, t4_hour, t4_min, t4_timeout_s, t4_timeout_s / 3600,
-                )
-                lines[i] = new_line
-                changes["t4_changed"] = True
-            else:
-                log.info("PIPE-07 T4: unchanged at %02d:%02d UTC, timeout %ds",
-                         old_h, old_m, t4_timeout_s)
+            log.warning(
+                "PIPE-07 T4: found ACTIVE legacy cron trigger for run_t4_mlb_live.py — "
+                "T4 MLB is systemd/timer-managed (T-209); neutralizing this line."
+            )
+            lines[i] = "# " + line if not line.startswith("# ") else line
+            changes["t4_changed"] = True
 
     if any(changes.values()):
         new_crontab = "".join(lines)

@@ -18,6 +18,32 @@
 
 ---
 
+## SESSION 104 — COMPLETE (2026-06-30)
+
+| Task | Status |
+|------|--------|
+| **NBA tabling directive** | ✅ COMPLETE — All NBA engineering tabled until ~1 month before 2026-27 season tip-off (operator directive Earl Ignacio 2026-07-01). MLB is sole active development priority. Standing directive logged in TODO_NEXT header and MEMORY_BANK. |
+| **ADR-0036 created** | ✅ COMPLETE — `03_DECISIONS/ADR-0036_phase8-partial-activation-paper-trading.md`. Phase 8 partial activation paper-trading exemption. ACCEPTED DS sign-off Earl Ignacio 2026-06-30. |
+| **DECISION_LOG updated** | ✅ COMPLETE — ADR index entries for ADR-0035 + ADR-0036 added. Header updated to SESSION 104. SESSION 104 Phase 8 judgment call entry added. |
+| **GOVERNANCE_GAP_LOG updated** | ✅ COMPLETE — GG-038 Status: paper-trading exemption noted (T4FastHalt already built SESSION 71). GG-039 Status: paper-trading exemption noted (45s polling sufficient for paper). GG-040 Status: partially resolved — data-sufficient sub-bands unblocked; data-deficient remain gated. |
+| **T-210 registered** | ✅ COMPLETE — Dual concurrent T4 sessions fix (supersedes T-209). See SESSION 104 OPEN ITEMS. |
+| **T-211 registered** | ✅ COMPLETE — Phase 8 partial activation code change. Blocked on T-210. See SESSION 104 OPEN ITEMS. |
+
+---
+
+## SESSION 104 — OPEN ITEMS
+
+| Task | Priority | Description |
+|------|----------|-------------|
+| **T-210 — Fix dual concurrent T4 sessions** | **HIGH** | Supersedes T-209. Two T4 MLB sessions (CE494B3A from 06:30 UTC + B7193041 from 22:05 UTC) running simultaneously. Root fix: systemd `t4-mlb.service` must kill stale sessions on restart — only ONE T4 runner active per game day. Until fixed, activating Phase 8 would amplify rate-limit pressure across all sub-bands simultaneously. Fix: update `deploy/t4-mlb.service` with `KillMode=process` or equivalent to terminate prior session on unit restart. Verify via `systemctl status t4-mlb` + `ps aux | grep t4` after restart. |
+| **T-211 — Phase 8 partial activation code** | **HIGH** (blocked on T-210) | Set `_PHASE8_ACTIVE = True` for T4-PROJ, T4-ARITH, T4-FLOW, T4-BLOWOUT in `t4_execution_engine.py`. T4-EVENT, T4-LINEUP, T4-MICRO, T4-SENTIMENT remain gated. **Must not proceed until T-210 is confirmed complete** — dual sessions under Phase 8 routing would double rate-limit pressure with 4× sub-bands per cycle. Authorized by ADR-0036. |
+| **GG-053 verification** | **HIGH** | Confirm GG-052 fix (bbaf86a) produces ≥50 evals/cycle on next live MLB game night. Target: audit_mlb_t4.jsonl shows evaluation records (not 0-eval cycles) and staleness_halts=0. If still 0-eval: re-investigate. |
+| **T-206 (EXP-T4-01 re-run)** | MEDIUM | Needs ≥500 clean unique T4 markets post-GG-050 fix. GG-046 OPEN. Multiple game weeks required. |
+| **NBA drawdown blocker** | MEDIUM (tabled) | NBA paper book at 24.9% drawdown vs 20% kill switch threshold. Off-season. ADR-0035 ACCEPTED (reset at 2026-27 season start). Tabled per SESSION 104 NBA directive. |
+| **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run `scripts/run_exp017_mlb.py`. GG-004 OPEN. |
+
+---
+
 ## SESSION 103 — COMPLETE (2026-06-30)
 
 | Task | Status |
@@ -26,17 +52,17 @@
 | **GG-052 fix: `cycle_start_at = snapshot_fetched_at`** | ✅ COMPLETE — 2-line fix in `run_t4_mlb_live.py`. `cycle_start_at` now set after `snapshot_fetched_at = datetime.now(timezone.utc)`, after Kalshi fetch completes. Commit `bbaf86a`. |
 | **VPS deploy + t4-mlb restart** | ✅ COMPLETE — `bbaf86a` deployed, `systemctl restart t4-mlb` confirmed. |
 | **GG-052 registered in GOVERNANCE_GAP_LOG.md** | ✅ COMPLETE — Entry added STATUS=RESOLVED 2026-06-30 SESSION 103. |
-| **T-209 registered** | ✅ COMPLETE — Dual concurrent T4 sessions doubling Kalshi API rate-limit pressure. Investigation pending. |
+| **T-209 registered** | ✅ COMPLETE — Dual concurrent T4 sessions doubling Kalshi API rate-limit pressure. Superseded by T-210 (SESSION 104). |
 | **Tests** | ✅ 2109/2109 (unchanged — 2-line logic fix, no test file modifications) |
 
 ---
 
-## SESSION 103 — OPEN ITEMS (carry forward)
+## SESSION 103 — OPEN ITEMS (carry forward to SESSION 104)
 
 | Task | Priority | Description |
 |------|----------|-------------|
-| **T-209 — Dual concurrent T4 sessions** | MEDIUM | Two T4 sessions (CE494B3A from 06:30 UTC + B7193041 from 22:05 UTC) both hitting Kalshi API every 45s. Doubles rate-limit pressure, amplifying the GG-052 staleness burn. Investigate why CE494B3A wasn't terminated when B7193041 started. May need systemd `Restart=on-failure` to kill stale sessions on service restart. |
-| **Monitor July 1 T4 MLB** | **HIGH** | GG-052 fix deployed. July 1 games at 01:19 UTC (scheduled at deployment). Verify `logs/audit_mlb_t4.jsonl` shows evaluations firing per cycle (not 0-eval). Expected: ≥50 evals/cycle with only scattered halts. Zero evals/cycle = fix didn't take or new issue. |
+| **~~T-209~~ → T-210** | MEDIUM→HIGH | T-209 superseded by T-210 (SESSION 104). See SESSION 104 OPEN ITEMS. |
+| **Monitor July 1 T4 MLB** | **HIGH** | GG-052 fix deployed. July 1 games at 01:19 UTC (scheduled at deployment). Verify `logs/audit_mlb_t4.jsonl` shows evaluations firing per cycle (not 0-eval). Expected: ≥50 evals/cycle with only scattered halts. Zero evals/cycle = fix didn't take or new issue. → GG-053 tracking this. |
 | **T-206 (EXP-T4-01 re-run)** | MEDIUM | Needs ≥500 clean unique T4 markets post-GG-050 fix. GG-046 OPEN. Multiple game weeks required. |
 | **NBA drawdown blocker** | MEDIUM | NBA paper book at 24.9% drawdown vs 20% kill switch threshold. Off-season now; ADR-0035 ACCEPTED (reset at 2026-27 season start, October 2026). |
 | **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run `scripts/run_exp017_mlb.py`. GG-004 OPEN. |

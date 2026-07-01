@@ -1,7 +1,7 @@
 [Unit]
 Description=Prediction Market Bot — MLB T4 Live In-Play (PIPE-07 MLB)
 After=network.target
-Documentation=github.com/eignacio1/prediction-market-bot
+Documentation=https://github.com/eignacio1/prediction-market-bot
 
 [Service]
 Type=simple
@@ -11,6 +11,15 @@ EnvironmentFile=/opt/prediction-market-bot/.env
 Environment=BOT_ENV=paper
 Environment=BOT_C4_ACTIVE=true
 Environment=PYTHONPATH=/opt/prediction-market-bot/src
+# T-209 (2026-07-01): kill any run_t4_mlb_live.py process not owned by this unit
+# before starting. systemd already waits for ITS OWN prior instance to fully exit
+# before Restart invokes ExecStartPre/ExecStart again, so anything matched here is
+# by definition external — e.g. a stray cron-fired copy from a since-decommissioned
+# trigger (root cause: PIPE-08 kept re-arming a legacy cron line for 3+ days after
+# the systemd migration — see GOVERNANCE_GAP_LOG.md T-209 / run_schedule_validator_mlb.py
+# fix), or a manual/screen invocation. Leading '-' swallows pkill's exit 1 (no match).
+ExecStartPre=-/usr/bin/pkill -f run_t4_mlb_live.py
+ExecStartPre=/bin/sleep 2
 ExecStart=/opt/prediction-market-bot/venv/bin/python \
     src/prediction_market_bot/run_t4_mlb_live.py
 # Restart on crash (non-zero exit). 60s cooldown prevents tight crash loops.
