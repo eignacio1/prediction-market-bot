@@ -8,6 +8,20 @@ This system will be used by people who trust the person who built it. They are n
 
 ---
 
+## Principal Vision
+
+**This is a calibration engine for probabilistic reasoning, structured as a trading bot.**
+
+Prediction markets are the laboratory. They are the only widely available instrument that provides all three of the following simultaneously: binary-resolved outcomes (you are unambiguously right or wrong), short feedback loops (resolution in hours or days, not quarters), and market-implied probability as an explicit benchmark (you always know what the market said the probability was before you bet). That combination makes prediction markets uniquely rigorous for testing whether a probabilistic model generates consistent edge. There is no survivorship bias, no ambiguity about whether a trade "would have worked" — you know exactly what you bet, what the market said it was worth, and what happened.
+
+**P&L is the score. The methodology is the asset.**
+
+If the methodology works — if a systematically calibrated probabilistic model can be shown to generate consistent edge over market-implied prices in environments where those prices are not maximally efficient — it generalizes. New sport: new C1 data module, new C2 feature set, same methodology. New venue: new VenueAdapter, same methodology. The trading bot is the calibration regime. The transferable value is the framework for building, testing, and proving that kind of edge rigorously.
+
+**Every session should hold this framing.** The pipeline is the instrument. The markets are the laboratory. The resolved binary outcomes are the data. The question being answered is: does the model know something the market doesn't?
+
+---
+
 ## What This Project Is
 
 **A prediction market trading bot** — not an NBA bot. NBA is the first sport implemented. The system is designed to eventually cover any sport where regulated prediction markets exist and reliable statistics data can be sourced.
@@ -17,6 +31,33 @@ This system will be used by people who trust the person who built it. They are n
 Prediction markets price outcomes. When a model's calibrated probability for an outcome is meaningfully higher than what the market implies, there is positive expected value in betting on that outcome. This bot automates that process: ingest data, generate a forecast, check for edge against the market price, size the position via Kelly criterion, place the bet.
 
 The edge condition: `model_p > market_implied_probability + vig`. If the model is right more often than the market prices imply, it makes money over time. If it isn't, it doesn't. The commercial question is that simple — and that hard to answer rigorously.
+
+### Alpha taxonomy — two distinct theses, two independent proofs required
+
+**This is not one strategy. It is two separate alpha hypotheses that happen to share the same pipeline.**
+
+**T1 alpha — pregame calibration edge:**
+The thesis: a model calibrated on historical rolling statistics (ba_l10, rest, home/away, PRF qualitative factors) generates probability estimates that are systematically better-calibrated than pregame market prices. When model_p > MIP + vig, there is edge. This is the classical sports forecasting thesis — historical data produces better pregame odds than the market.
+
+**T4 alpha — live market latency edge:**
+The thesis: prediction markets are slow to incorporate live in-game state. After each at-bat, after each pitch sequence, after each momentum shift, the market price lags behind the true updated probability. The bot evaluates every 45-90 seconds whether the current in-game batter state (h_so_far, ab_so_far, inning, batting_slot, score state) combined with the pregame calibrated model produces a model_p that has drifted above the current MIP + vig. When it has, the edge is structural: the market hasn't updated yet, the bot has.
+
+**These are independent.** T1 can prove edge while T4 has none. T4 can have structural latency edge in markets where T1 has none (because pregame prices were efficient). Each requires separate commercial validation. EXP-017 tests T1. T4 requires its own validation track (GG-046). Do not conflate a T1 verdict with a T4 verdict in any analysis or session discussion.
+
+**The ~1,000 evaluations/game in T4 is a structural consequence of this thesis, not a target.**
+18 batters × 2 thresholds × ~480 cycles per 3-hour game = ~17,000 evaluation slots. At a 2-3% fire rate, that produces 50-100 actual bets per game. The volume is not an objective — it is what the math produces when you ask "does the current state update the edge signal?" every 45 seconds across every live market. The architecture must accommodate this throughput because the thesis requires it.
+
+### Market efficiency gradient — where the strategy is designed to work
+
+**Not all prediction markets are equally efficient. The strategy is designed to exploit markets where pricing is inefficient.**
+
+NBA Finals player props are priced by the sharpest money in sports — professional bettors, sports media, high public volume, enormous liquidity. This is near-maximally efficient territory. The anti-predictive finding from early NBA experiments (GG-037) was produced in the worst-case efficiency conditions for this strategy.
+
+MLB mid-week regular season markets are structurally different: lower public attention, thinner book depth ($500-$2,000 per market estimated), slower price discovery, fewer sharp participants. This is the environment the strategy is designed to exploit.
+
+**This is not a detail. It is a binding constraint on where the system should operate.** When considering adding a new sport or market type, the first question is not "do we have data?" — it is "is this market environment less efficient than what a calibrated model can produce?" Adding a maximally liquid, maximally watched market (Super Bowl props, NBA Finals Game 7) is not expansion — it is trading into hostile conditions.
+
+Market depth also sets a capital ceiling independent of bankroll math. Kelly criterion assumes infinite depth. Kalshi KXMLBHIT lines at $500-$2,000 depth mean position sizing at $50-$250/bet is within the market. At $10K+ bankroll, full Kelly sizing would move the market against the bot, degrading or eliminating edge before the position fills. This ceiling is not addressable by improved modeling — it is structural to the venue. (GG-045 — registered.)
 
 ### The pipeline (C1–C8)
 
