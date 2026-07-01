@@ -1095,7 +1095,6 @@ def main() -> None:
                     logger.info("Pregame context loaded on retry: %d players", len(by_player_id))
 
             # Poll all tracked games via ESPN — kill switch checked per game (NFR-03 ≤60s halt)
-            cycle_start_at = datetime.now(timezone.utc)
             all_states: list[MLBLiveBatterState] = []
             _ks_fired = False
             for gid in game_ids:
@@ -1114,6 +1113,10 @@ def main() -> None:
             # Fetch live KXMLBHIT prices from Kalshi
             ok, snapshot = kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
             snapshot_fetched_at = datetime.now(timezone.utc)
+            # cycle_start_at captured AFTER both fetches — Kalshi pagination with rate-limit
+            # backoff (4+8+16+32s) burns 60–130s before this line; capturing before the fetches
+            # caused game_state_fresh to expire before _run_cycle() ran (GG-052 root cause).
+            cycle_start_at = snapshot_fetched_at
             if not ok or not snapshot.markets:
                 logger.warning(
                     "Kalshi MLB price fetch failed — sleeping %ds", POLL_INTERVAL_S
