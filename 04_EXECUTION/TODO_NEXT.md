@@ -6,6 +6,18 @@
 
 ---
 
+## STANDING OPERATOR DIRECTIVE — NBA WORK TABLED (2026-07-01, SESSION 104)
+
+**Operator directive (Earl Ignacio, 2026-07-01):** Table all NBA component work — no new builds, fixes, or investigation beyond passive monitoring — until approximately **1 month before NBA 2026-27 season tip-off**. Rationale, verbatim: *"We're focused on what's actually live right now — and that market is the MLB."* MLB is the sole active development priority until this window opens.
+
+**Scope of "tabled":** T4 NBA (dark, confirmed inactive), T1/T2/T3 NBA (off-season, no cron), NBA drawdown/kill-switch resolution (GG-056), ADR-0035 NBA portfolio reset implementation, any NBA model/feature work. Passive monitoring only (e.g., confirming `t4-nba` stays inactive during routine health checks) is fine — active engineering on any NBA item is not, until the trigger date.
+
+**Trigger to resume:** ~1 month before NBA 2026-27 regular-season tip-off. Exact date TBD — needs confirming against the official 2026-27 NBA schedule once released (typically mid-October tip-off historically, which would put the resume window at ~mid-September 2026). **Do not assume a specific date without checking the actual published schedule when this becomes relevant.**
+
+**Any session picking up this project:** if you find yourself about to touch `run_t4_live.py`, `t4_live_runner.py`, `t4_price_cache.py`, NBA C1/C2/C3, or GG-056/ADR-0035, stop and confirm the trigger date has arrived before proceeding.
+
+---
+
 ## SESSION 103 — COMPLETE (2026-06-30)
 
 | Task | Status |
