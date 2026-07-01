@@ -930,6 +930,22 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Resolution | ADR-0034: `c7_semantic_contracts.py` — SemanticFloorGuard (C1→C2 boundary), ContaminationGuard (T4 pre-evaluation gate), BandInvariantChecker (per-band structural checks), SemanticContractMonitor (C7 health state integration). Integration patches for PIPE-05, run_t4_mlb_live.py, and C7 monitor.py written separately. |
 | Status | **RESOLVED 2026-06-29 SESSION 100** — Module written (`c7_semantic_contracts.py`). Integration patches in `09_INTEGRATION_PATCHES/SEMANTIC_CONTRACTS_INTEGRATION.md`. ADR-0034 registered. Terminal windows deploy. |
 
+### GG-052 — T4 MLB `cycle_start_at` Captured Before Data Fetches: Freshness Window Burned by Kalshi Pagination
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-052 |
+| Discovered | 2026-06-30 SESSION 103 — full root cause audit of T4 MLB firing 2 bets all day (vs. expected 50–100). Audit JSONL showed all 1632 staleness halts fired at exact same second per cycle — proving _run_cycle() is sub-second, not the slowness source. |
+| Category | Architectural placeholder — freshness window calibrated for a system where data fetches take <5s; actual Kalshi paginated fetch takes 60–130s |
+| What was missed | `cycle_start_at = datetime.now(timezone.utc)` was placed BEFORE the ESPN poll loop and Kalshi paginated fetch. Kalshi `fetch_player_points_markets()` paginates across 3+ pages of KXMLBHIT markets with rate-limit backoff (RETRY_DELAY_S × 2^attempt delays of 4, 8, 16, 32s). Total fetch time: 60–130 seconds per cycle. `_FRESHNESS_WINDOW_S = 2.0 × POLL_INTERVAL_S = 90s`. By the time `_run_cycle()` started, `cycle_start_at` was 90–130s old — all `game_state_fresh` checks failed immediately. |
+| When it should have been caught | Before T4 MLB went live. The freshness guard was designed for a single fast API call; the Kalshi pagination pattern was added later without revisiting the guard timing. |
+| Phases it survived | T4 MLB first live deployment through SESSION 103 (June 30, 2026) |
+| Why it survived | The freshness guard appeared to work in tests (single-game, single-page Kalshi response). In production with 15 games and 500+ KXMLBHIT markets, Kalshi returns 3+ pages and triggers rate-limit retries. The test environment never produced a multi-page response. |
+| Impact | T4 MLB fired 2 bets on June 30 (expected 50–100). All 1632 staleness contamination halts were false positives from expired `cycle_start_at`, not actual data staleness. |
+| Discovery | SESSION 103 — audit JSONL timestamp analysis: all halts per cycle at exact same second → _run_cycle() is sub-second → window burns in the fetch, not the evaluation loop. |
+| Resolution | `run_t4_mlb_live.py`: removed `cycle_start_at` from before ESPN polls (line 1098); added `cycle_start_at = snapshot_fetched_at` after Kalshi fetch completes (after line 1116). Data is always fresh at time of evaluation; 90s window now starts when data was actually fetched, not when the cycle began. Committed SESSION 103. |
+| Status | **RESOLVED 2026-06-30 SESSION 103** |
+
 ---
 
 ## Gap Registration Template
