@@ -1,0 +1,51 @@
+[Unit]
+Description=PMBot Web Dashboard — MLB Live (localhost:8050)
+Documentation=https://github.com/earl/prediction-market-bot
+# Start after network is up and the T1 MLB cron unit is loaded
+After=network-online.target
+Wants=network-online.target
+# Soft dependency: if T1 cron dies, dashboard keeps running
+# (it just shows stale data — which is fine and visible in the UI)
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/prediction-market-bot
+
+# The dashboard reads log files directly — no secrets needed, no API calls
+ExecStart=/usr/bin/python3 /opt/prediction-market-bot/scripts/web_dashboard.py \
+    --log-dir /opt/prediction-market-bot/logs/ \
+    --host 127.0.0.1 \
+    --port 8050
+
+# Restart policy: if it crashes, bring it back in 5 seconds
+# (a crash here is a bug, not a normal condition)
+Restart=always
+RestartSec=5
+
+# Environment
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+
+# Security hardening — dashboard only reads log files, nothing more
+# PrivateTmp prevents access to /tmp of other processes
+PrivateTmp=true
+# NoNewPrivileges prevents privilege escalation
+NoNewPrivileges=true
+# ReadOnlyPaths restricts what systemd will let the process access
+# The logs dir is the only thing it actually needs
+ReadOnlyPaths=/opt/prediction-market-bot/logs/
+
+# Resource limits — dashboard is lightweight; cap it from consuming runaway memory
+# (stdlib HTTP + JSON parsing is tiny)
+MemoryMax=128M
+CPUQuota=10%
+
+# Stdout/stderr go to journald — view with:
+#   journalctl -u pmbot-web-dashboard -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pmbot-web-dashboard
+
+[Install]
+WantedBy=multi-user.target
