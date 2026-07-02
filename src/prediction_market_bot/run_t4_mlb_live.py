@@ -145,6 +145,13 @@ _AUDIT_LOG_PATH  = _LOGS_DIR / "audit_mlb_t4.jsonl"
 KILL_SWITCH_PATH = _LOGS_DIR / "t4_mlb_kill_switch.flag"
 SINGLETON_LOCK_PATH = _LOGS_DIR / "t4_mlb_live.lock"
 
+# GG-067 (SESSION 110): raw per-cycle context, independent of T4_MLB_DRY_RUN.
+# Written for every cycle that reaches the p_t4/gross_edge computation (fired
+# or not) so EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01 have a real data source —
+# previously only the dry-run branch persisted this context, so production
+# runs (the only ones that have ever executed) left no reconstructable record.
+CYCLE_LOG_PATH = _LOGS_DIR / "t4_mlb_cycle_log.jsonl"
+
 # ---------------------------------------------------------------------------
 # ESPN MLB live feed
 # ---------------------------------------------------------------------------
@@ -728,6 +735,7 @@ def _run_cycle(
     contamination_guard: Optional[LiveDataFreshnessGuard] = None,
     cycle_start_at: Optional[datetime] = None,
     snapshot_fetched_at: Optional[datetime] = None,
+    cycle_log_path: Optional[Path] = None,
 ) -> tuple[int, int, float]:
     """
     Run one T4 MLB evaluation cycle.
@@ -736,6 +744,8 @@ def _run_cycle(
     contamination_guard: if provided, gates each evaluation via LiveDataFreshnessGuard.check().
     cycle_start_at / snapshot_fetched_at: timestamps for freshness checks in the guard.
     Omitting either timestamp disables that specific freshness check (guard uses now()).
+    cycle_log_path: if provided, appends the raw per-cycle context (GG-067) for every
+    ctx that reaches the p_t4/gross_edge computation, independent of dry_run/fired status.
     """
     if already_fired_game is None:
         already_fired_game = set()
@@ -832,6 +842,32 @@ def _run_cycle(
             gross_edge = p_t4 - mip - vig
             kalshi_fee = 0.07 * mip * (1.0 - mip)
             net_edge   = gross_edge - kalshi_fee
+
+            # GG-067 (SESSION 110): raw per-cycle context, independent of dry_run/fired
+            # status, so EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01 have real data to backtest
+            # against — previously only the dry_run branch below persisted this context.
+            if cycle_log_path is not None:
+                _append_dryrun_record(cycle_log_path, {
+                    "ts":           datetime.now(timezone.utc).isoformat(),
+                    "cycle_id":     cycle_id,
+                    "session_id":   session_id,
+                    "game_date":    game_date,
+                    "ticker":       ticker,
+                    "player_name":  ctx["player_name"],
+                    "player_id":    player_id,
+                    "threshold":    threshold,
+                    "p_t4":         round(p_t4, 6),
+                    "mip":          round(mip, 6),
+                    "vig":          round(vig, 6),
+                    "gross_edge":   round(gross_edge, 6),
+                    "net_edge":     round(net_edge, 6),
+                    "ba_l10":       round(ba_l10, 6),
+                    "h_so_far":     ls.h_so_far,
+                    "ab_so_far":    ls.ab_so_far,
+                    "ab_remaining": ab_remaining,
+                    "inning":       ls.inning,
+                    "batting_slot": batting_slot,
+                })
 
             if dry_run:
                 if dryrun_log_path is not None:
@@ -1305,6 +1341,7 @@ def main() -> None:
                 contamination_guard=contamination_guard,
                 cycle_start_at=cycle_start_at,
                 snapshot_fetched_at=snapshot_fetched_at,
+                cycle_log_path=CYCLE_LOG_PATH,
             )
 
             cycle_n += 1

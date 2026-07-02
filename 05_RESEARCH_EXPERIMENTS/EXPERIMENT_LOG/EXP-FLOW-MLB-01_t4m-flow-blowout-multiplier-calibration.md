@@ -22,13 +22,12 @@ This experiment answers three things: (1) whether the sustained-blowout conditio
 
 ## Snapshot IDs Used
 
-*Not yet registered — no experiment has run. To be filled per `DATA_SNAPSHOTS_INDEX.md` protocol at Phase 8 Activation, using resolved MLB game logs with per-inning score state plus T4M-PROJ's live cycle/price audit trail.*
+*Not yet registered — no experiment has run. To be filled per `DATA_SNAPSHOTS_INDEX.md` protocol at Phase 8 Activation, using resolved MLB game logs with per-inning score state plus the live per-cycle log below. Corrected per GG-067 (SESSION 110): the dataset descriptions below previously cited a "T4M-PROJ live cycle/price audit trail" and a separate "price cache audit log" that did not exist. The actual and only per-cycle source is `logs/t4_mlb_cycle_log.jsonl`, added this session (GG-067 fix) — it records `mip`/`vig` inline per cycle (from the live `live_prices` dict, not `t4_price_cache.py`), so no separate price-cache log is needed. T4M-FLOW additionally requires the score_diff/inning reconstruction data below, which does not yet exist in any log (see F-FLOW-01, still NOT YET WIRED).*
 
 | Snapshot ID | Dataset | Description | Ingested |
 |-------------|---------|-------------|----------|
 | (TBD) | ESPN MLB boxscore / play-by-play, resolved games | Per-inning score_diff, batting team, to reconstruct blowout onset/duration retrospectively | (TBD) |
-| (TBD) | T4M-PROJ live cycle log | Per-cycle `MLBLiveBatterState` snapshots for at-bats occurring during reconstructed blowout windows | (TBD) |
-| (TBD) | Kalshi KXMLBHIT resolved market prices | Same-cycle `CachedPrice` (mid/vig) during blowout windows, from the existing T4M-PROJ price cache audit log | (TBD) |
+| (TBD) | `logs/t4_mlb_cycle_log.jsonl` (GG-067, SESSION 110) | Per-cycle raw context (h_so_far, ab_so_far, ba_l10, mip, vig, gross_edge, etc.) for at-bats occurring during reconstructed blowout windows, joined by ticker/game_date/ts | (TBD) |
 
 ---
 
@@ -59,8 +58,8 @@ This experiment answers three things: (1) whether the sustained-blowout conditio
 | Feature ID | Feature Name | Source | Temporal Safety |
 |-----------|-------------|--------|----------------|
 | F-FLOW-01 | score_diff, is_batting_team_leading, inning | ESPN live MLB boxscore poll — **not currently parsed into T4M-PROJ's live loop; must be added to the C1 extraction layer before live evaluation, though this experiment can use post-hoc reconstruction from resolved boxscores without touching the live pipeline** | NOT YET WIRED (flagged in `t4_mlb_execution_engine.py`'s module docstring as Phase-8-adjacent follow-up; retrospective reconstruction for this experiment does not require the live wiring to exist first) |
-| F-FLOW-02 | h_so_far, ab_so_far, batting_slot, ba_l10 | Same as T4M-PROJ/T4M-ARITH — existing C1/C2 layers | VERIFIED (already governs live T4M-PROJ) |
-| F-FLOW-03 | mip, vig at evaluation cycle | Kalshi KXMLBHIT price cache | VERIFIED (already governs live T4M-PROJ) |
+| F-FLOW-02 | h_so_far, ab_so_far, batting_slot, ba_l10 | Same as T4M-PROJ/T4M-ARITH — existing C1/C2 layers, now also captured per-cycle in `logs/t4_mlb_cycle_log.jsonl` (GG-067, SESSION 110) | VERIFIED (already governs live T4M-PROJ) |
+| F-FLOW-03 | mip, vig at evaluation cycle | Live `live_prices: dict` populated from `pm.mid_price`/`pm.vig` in `run_t4_mlb_live.py`'s main loop — **not** `t4_price_cache.py` (that module is Phase-8-BLOCKED NBA-oriented infra, never imported by the MLB live loop; corrected per GG-067) | VERIFIED (already governs live T4M-PROJ) |
 
 **Model class:** Binomial threshold-probability (frozen, ADR-0004/ADR-0023) with a multiplicative adjustment to `ba_l10` — same base model class as T4M-PROJ/T4M-ARITH; the multiplier itself is the new parameter under calibration, not a new model class.  
 **Hyperparameters:** `_BLOWOUT_RUN_THRESHOLD`, `_BLOWOUT_SUSTAIN_INNINGS`, `_BLOWOUT_TRAILING_MULT`, `_BLOWOUT_LEADING_MULT` — all four currently hardcoded provisional constants in `t4_mlb_execution_engine.py`, explicitly marked non-calibrated and borrowed from an NBA order-of-magnitude guess pending this experiment.  
@@ -130,15 +129,16 @@ This experiment answers three things: (1) whether the sustained-blowout conditio
 
 ## Follow-Up
 
-| Action | Owner | Due |
-|--------|-------|-----|
-| Build a score_diff/inning reconstruction script from resolved ESPN boxscores (retrospective; does not require live C1 wiring) | EL | Before Phase 8 Activation Gate request |
-| Build an offline backtest runner joining reconstructed blowout windows to T4M-PROJ's resolved cycle log and Kalshi price cache | EL | Same as above |
-| Register data snapshots per `DATA_SNAPSHOTS_INDEX.md` protocol once inputs are finalized | EL | Same as above |
-| Run step 1 (effect existence/direction test) before investing in step 2's grid sweep | EL | Same as above |
-| If step 1 falsifies the premise: document the null result here and in `GOVERNANCE_GAP_LOG.md`; leave T4M-FLOW `status="BLOCKED"` indefinitely; do not proceed to step 2 | EL | After step 1 |
-| If step 1 confirms a real effect: run step 2's grid sweep, populate Results, and draft a Phase 8 Activation Gate request + APR for T4M-FLOW per ADR-0039's Governance Impact section | EL | After step 1 |
-| Separately: live ESPN score_diff extraction must be added to `run_t4_mlb_live.py`'s C1 layer before T4M-FLOW can ever evaluate live/paper cycles, regardless of this experiment's outcome — currently `T4MlbGameContext.score_diff` defaults to `0.0` and is never populated from a live poll | EL | Before any Phase 8 live wiring, independent of this experiment's timeline |
+| Action | Owner | Due | Status |
+|--------|-------|-----|--------|
+| Correct false data-source claims (GG-067): Snapshot IDs table, F-FLOW-02/F-FLOW-03 citations | EL | — | DONE (SESSION 110) |
+| Build a score_diff/inning reconstruction script from resolved ESPN boxscores (retrospective; does not require live C1 wiring) | EL | Before Phase 8 Activation Gate request | OPEN |
+| Build an offline backtest runner joining reconstructed blowout windows to `logs/t4_mlb_cycle_log.jsonl` | EL | Same as above | OPEN — deprioritized this session in favor of EXP-ARITH-MLB-01's runner per explicit "most pressing issue" instruction; ARITH's runner (`scripts/run_exp_arith_mlb_01.py`) can serve as a structural template |
+| Register data snapshots per `DATA_SNAPSHOTS_INDEX.md` protocol once inputs are finalized | EL | Same as above | OPEN |
+| Run step 1 (effect existence/direction test) before investing in step 2's grid sweep | EL | Same as above | OPEN |
+| If step 1 falsifies the premise: document the null result here and in `GOVERNANCE_GAP_LOG.md`; leave T4M-FLOW `status="BLOCKED"` indefinitely; do not proceed to step 2 | EL | After step 1 | OPEN |
+| If step 1 confirms a real effect: run step 2's grid sweep, populate Results, and draft a Phase 8 Activation Gate request + APR for T4M-FLOW per ADR-0039's Governance Impact section | EL | After step 1 | OPEN |
+| Separately: live ESPN score_diff extraction must be added to `run_t4_mlb_live.py`'s C1 layer before T4M-FLOW can ever evaluate live/paper cycles, regardless of this experiment's outcome — currently `T4MlbGameContext.score_diff` defaults to `0.0` and is never populated from a live poll | EL | Before any Phase 8 live wiring, independent of this experiment's timeline | OPEN — F-FLOW-01, pre-existing accurate flag, unrelated to GG-067 |
 
 ---
 
@@ -150,3 +150,6 @@ This experiment answers three things: (1) whether the sustained-blowout conditio
 - Test coverage (construction/logic, not backtest): `tests/test_t4_mlb_engine.py`
 - Task registration: `04_EXECUTION/TODO_NEXT.md` — T-219
 - NBA precedent (structurally analogous, not a substitute — no NBA `EXP-FLOW-01` result exists to borrow calibrated values from as of this writing): `t4_execution_engine.py`'s T4-FLOW sub-band, itself still Phase-8-blocked
+- GG-067 (data-source claim correction, SESSION 110): `03_DECISIONS/GOVERNANCE_GAP_LOG.md`
+- Live per-cycle raw-context log (GG-067 fix): `src/prediction_market_bot/run_t4_mlb_live.py`, written to `logs/t4_mlb_cycle_log.jsonl`
+- EXP-ARITH-MLB-01's backtest runner (`scripts/run_exp_arith_mlb_01.py`), a structural template for T4M-FLOW's not-yet-built runner
