@@ -11,13 +11,23 @@ EnvironmentFile=/opt/prediction-market-bot/.env
 Environment=BOT_ENV=paper
 Environment=BOT_C4_ACTIVE=true
 Environment=PYTHONPATH=/opt/prediction-market-bot/src
-# T-209 (2026-07-01): kill any run_t4_mlb_live.py process not owned by this unit
-# before starting. systemd already waits for ITS OWN prior instance to fully exit
-# before Restart invokes ExecStartPre/ExecStart again, so anything matched here is
-# by definition external — e.g. a stray cron-fired copy from a since-decommissioned
-# trigger (root cause: PIPE-08 kept re-arming a legacy cron line for 3+ days after
-# the systemd migration — see GOVERNANCE_GAP_LOG.md T-209 / run_schedule_validator_mlb.py
-# fix), or a manual/screen invocation. Leading '-' swallows pkill's exit 1 (no match).
+# T-209 (2026-07-01): best-effort cleanup of any run_t4_mlb_live.py process not
+# owned by this unit before starting — e.g. a stray cron-fired copy from a
+# since-decommissioned trigger (root cause: PIPE-08 kept re-arming a legacy cron
+# line for 3+ days after the systemd migration — see GOVERNANCE_GAP_LOG.md T-209 /
+# run_schedule_validator_mlb.py fix), or a manual/screen invocation. Leading '-'
+# swallows pkill's exit 1 (no match).
+#
+# T-216 (2026-07-02, GG-062): this pkill is NOT the safety net — it is
+# pattern-match-and-hope, and GG-062 proved it can race (a second instance can
+# start and register before this pkill's target has fully deregistered,
+# leaving both alive). The actual safety net is now inside
+# run_t4_mlb_live.py:acquire_singleton_lock() — an atomic flock the process
+# takes before touching any shared state. If this pkill ever fails to clear a
+# stray process, the new process's flock acquisition will still correctly
+# refuse to start a second concurrent evaluation loop and exit(1); systemd's
+# Restart=on-failure (60s cooldown, below) will keep retrying until the lock
+# is free. Kept only as a fast-path cleanup, not required for correctness.
 ExecStartPre=-/usr/bin/pkill -f run_t4_mlb_live.py
 ExecStartPre=/bin/sleep 2
 ExecStart=/opt/prediction-market-bot/venv/bin/python \

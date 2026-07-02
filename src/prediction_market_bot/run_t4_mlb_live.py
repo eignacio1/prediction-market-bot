@@ -53,6 +53,8 @@ How to run:
 
 from __future__ import annotations
 
+import errno
+import fcntl
 import json
 import logging
 import math
@@ -137,6 +139,7 @@ _PORTFOLIO_PATH  = _LOGS_DIR / "paper_portfolio_mlb_t4.json"
 _STAGED_DB_PATH  = str(_LOGS_DIR / "staged_orders_mlb_t4.db")
 _AUDIT_LOG_PATH  = _LOGS_DIR / "audit_mlb_t4.jsonl"
 KILL_SWITCH_PATH = _LOGS_DIR / "t4_mlb_kill_switch.flag"
+SINGLETON_LOCK_PATH = _LOGS_DIR / "t4_mlb_live.lock"
 
 # ---------------------------------------------------------------------------
 # ESPN MLB live feed
@@ -173,6 +176,48 @@ class MLBLiveBatterState:
 
 def kill_switch_armed(path: Path) -> bool:
     return path.exists()
+
+
+# ---------------------------------------------------------------------------
+# Singleton lock (T-216 — GG-062 fix)
+#
+# ExecStartPre='pkill -f run_t4_mlb_live.py' is a best-effort cleanup of the
+# *previous* instance: it depends on timing between that process's death and
+# its deregistration, not on an atomic check. GG-062 proved this race can
+# leave an orphan alive for hours, running a second, independently-clocked
+# evaluation loop against the same portfolio/audit files. An flock is race-free
+# by construction — the kernel serializes acquisition, and it self-releases if
+# the holding process dies or is killed, so it can't leak a stale lock across a
+# crash the way a manual PID-file could.
+# ---------------------------------------------------------------------------
+
+_singleton_lock_fh: Optional[object] = None  # keeps the fd alive for process lifetime
+
+
+def acquire_singleton_lock(path: Path = SINGLETON_LOCK_PATH) -> bool:
+    """
+    Acquire an exclusive, non-blocking flock on `path`. Returns True if this
+    process now holds the lock (safe to proceed), False if another live
+    process already holds it (caller must not start a second evaluation loop).
+
+    The lock is held for the lifetime of this process's file descriptor and is
+    released automatically on process exit (normal or crash) — no cleanup step
+    required, and nothing to leak across a restart.
+    """
+    global _singleton_lock_fh
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fh = open(path, "w")
+    try:
+        fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError as exc:
+        fh.close()
+        if exc.errno in (errno.EACCES, errno.EAGAIN):
+            return False
+        raise
+    fh.write(f"{os.getpid()}\n")
+    fh.flush()
+    _singleton_lock_fh = fh  # noqa: F841 — retained only to hold the fd open
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -1015,6 +1060,18 @@ def main() -> None:
     )
 
     session_id = f"{SESSION_ID_PREFIX}-{uuid.uuid4().hex[:8].upper()}"
+
+    # T-216 (GG-062): refuse to start a second concurrent evaluation loop.
+    # Must run before any other setup — a lost race here means this process
+    # exits before touching the shared portfolio/audit/staged-order files.
+    if not acquire_singleton_lock():
+        logger.error(
+            "T4-MLB singleton lock held by another live process (%s) — "
+            "refusing to start a second concurrent evaluation loop (GG-062/T-216). "
+            "Exiting.", SINGLETON_LOCK_PATH,
+        )
+        sys.exit(1)
+
     logger.info("=" * 60)
     logger.info("PIPE-07-MLB T4 Live  session=%s", session_id)
     logger.info("Kill switch: touch %s", KILL_SWITCH_PATH)
