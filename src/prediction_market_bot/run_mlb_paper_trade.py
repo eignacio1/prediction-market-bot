@@ -83,9 +83,14 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
 # Activate C4 in-process (paper trading; verified ENV-02 above)
 os.environ["BOT_C4_ACTIVE"] = "true"
 
+from prediction_market_bot.c1_signal_ingestion.data_contracts import MLB_FEATURE_CSV_CONTRACT
 from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import MLBIngestionClient
 from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import (
     MLBPitcherStatsStore,
+)
+from prediction_market_bot.c1_signal_ingestion.validators import (
+    DataContractViolation,
+    assert_contract,
 )
 from prediction_market_bot.c3_forecasting.calibration import calibrate_probability
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
@@ -517,71 +522,40 @@ def main() -> None:
         sys.exit(1)
 
     df = pd.read_csv(FEATURE_CSV, low_memory=False)
+
+    # ------------------------------------------------------------------
+    # T-212 — Data contract validation (structural: schema, cardinality,
+    # freshness). Supersedes the T-193 ad hoc freshness-only block — this
+    # also catches column drift and row-count collapse/explosion, not just
+    # staleness. Raises DataContractViolation (HALT) on: missing/non-null
+    # columns, physically-impossible values, empty CSV, no valid dates, or
+    # >7 days stale. GG-059.
+    # ------------------------------------------------------------------
+    try:
+        contract_result = assert_contract(
+            df,
+            MLB_FEATURE_CSV_CONTRACT,
+            audit=logger,
+            pipeline_id="PIPE-05",
+            session_id=SESSION_ID,
+            snapshot_id=SNAPSHOT_ID,
+        )
+    except DataContractViolation as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    for _w in contract_result.warnings():
+        print(f"  [WARN] {_w.check_type}: {_w.reason}", file=sys.stderr)
+
     df["game_date_dt"] = pd.to_datetime(df["game_date"], errors="coerce")
     latest = df.sort_values("game_date_dt").groupby("player_id").last().reset_index()
 
-    # ------------------------------------------------------------------
-    # T-193 — Feature CSV freshness guard (MLB-G1 gate requirement)
-    # A stale feature CSV produces silent model errors: the pipeline runs,
-    # places bets, and logs success — but predictions are based on outdated
-    # player stats that no longer reflect current form or roster state.
-    # WARNING at >3 days; HALT at >7 days.
-    # ------------------------------------------------------------------
-    _FRESHNESS_WARN_DAYS = 3
-    _FRESHNESS_HALT_DAYS = 7
     _max_game_date = df["game_date_dt"].max()
-    if pd.isna(_max_game_date):
-        logger.error(
-            "PIPE-05", "feature_csv_no_valid_dates",
-            payload={"csv_path": str(FEATURE_CSV)},
-            session_id=SESSION_ID,
-        )
-        print(
-            "ERROR: Feature CSV has no valid game_date values — cannot assess freshness.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
     _csv_age_days = (_now_utc.date() - _max_game_date.date()).days
     print(
         f"[FEATURE CSV] {len(df)} rows | {len(latest)} players | "
         f"latest game_date: {_max_game_date.date()} ({_csv_age_days} days ago)"
     )
-
-    if _csv_age_days > _FRESHNESS_HALT_DAYS:
-        logger.error(
-            "PIPE-05", "feature_csv_stale_halt",
-            payload={
-                "csv_age_days": _csv_age_days,
-                "max_game_date": str(_max_game_date.date()),
-                "halt_threshold_days": _FRESHNESS_HALT_DAYS,
-            },
-            session_id=SESSION_ID,
-        )
-        print(
-            f"ERROR: Feature CSV is {_csv_age_days} days stale "
-            f"(latest: {_max_game_date.date()}, threshold: {_FRESHNESS_HALT_DAYS} days). "
-            f"Run scripts/generate_mlb_features.py and scp to VPS before re-running.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    if _csv_age_days > _FRESHNESS_WARN_DAYS:
-        logger.warning(
-            "PIPE-05", "feature_csv_stale_warn",
-            payload={
-                "csv_age_days": _csv_age_days,
-                "max_game_date": str(_max_game_date.date()),
-                "warn_threshold_days": _FRESHNESS_WARN_DAYS,
-            },
-            session_id=SESSION_ID,
-        )
-        print(
-            f"  [WARN] Feature CSV is {_csv_age_days} days stale "
-            f"(latest: {_max_game_date.date()}). "
-            f"Refresh recommended — model predictions may not reflect current form.",
-            file=sys.stderr,
-        )
 
     # Name-normalised cohort lookup: normalize_player_name → latest row
     cohort_lookup: dict[str, pd.Series] = {}
