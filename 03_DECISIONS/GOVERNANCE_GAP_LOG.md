@@ -2,7 +2,7 @@
 
 **Purpose:** Register every discovered governance process failure — decisions that should have been made and weren't, thresholds set as placeholders and never revisited, architectural assumptions that went undocumented. This is distinct from DECISION_LOG (records decisions *made*) and KNOWN_ISSUES (records runtime bugs). This records failures of the governance *system itself*.  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-07-02 (SESSION 108 — GG-066 registered, ADR-0039/T-218 MLB T4 sub-band scoping)  
+**Last reviewed:** 2026-07-02 (SESSION 110 — GG-067 registered + RESOLVED same session, EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 data-source correction)  
 **Next review:** Session start (mandatory scan); after every gate review; after any incident  
 **Staleness triggers:** New gap discovered; existing gap resolved  
 **Upstream links:** DECISION_LOG.md, KNOWN_ISSUES.md, LESSONS_LEARNED.md  
@@ -1152,6 +1152,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | 2026-07-02 SESSION 108, during ADR-0039 scoping (T-218), by direct read of `run_t4_mlb_live.py`'s ESPN polling implementation. |
 | Resolution | Not resolved. Requires evaluating real-time or near-real-time MLB event sources (e.g., MLB Stats API live game feed `v1.1/game/{gamePk}/feed/live`, which offers finer-grained play-by-play than the ESPN summary endpoint currently used) as a new C1 MLB data source, scoped under its own task once T4M-EVENT/T4M-LINEUP/T4M-PITCHER implementation is prioritized. Out of scope for T-218 (scoping-only). |
 | Status | OPEN — registered, no task assigned yet. Zero capital risk; blocks three of ten proposed MLB T4 sub-bands from ADR-0039, does not block T-218 itself or G6. |
+
+---
+
+### GG-067 — EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 Design Docs Cite Data Sources That Don't Exist In Production
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-067 |
+| Category | Architectural placeholder / data-availability gap (same class as GG-066, discovered while operationalizing the two experiments GG-066 itself references). |
+| What was missed | Both design docs (T-219, SESSION 109) state "No new data sources are required — this experiment is a retrospective slice-and-recompute over data T4M-PROJ already ingests live." Direct code read of `run_t4_mlb_live.py::_run_cycle()` (SESSION 110) found this false on two independent counts: (1) the raw per-cycle context each experiment needs (`h_so_far`/`ab_so_far`/`ba_l10`/`inning`/`batting_slot`/`mip`/`vig`/`p_t4`) is computed in memory every cycle but is **only persisted to `_append_dryrun_record()`'s JSONL log when `dry_run=True`** — the normal/production execution path (the one actually running on the VPS) discards it after building the minimal `fc_record` passed to `engine.evaluate_forecast()`. (2) Both docs cite `t4_price_cache.py` (`CachedPrice`) as the source of "the existing T4M-PROJ price cache audit log," but `t4_price_cache.py` is Phase-8-blocked NBA-oriented infrastructure (`T4PriceCache._PHASE8_ACTIVE = False`; `start_polling()`/`stop_polling()` raise `T4Phase8BlockedError`) that MLB T4M-PROJ's live path never touches — live MLB prices flow through a separate `live_prices` dict (populated elsewhere in the poll loop) with its own `mid_price`/`vig`/`has_live_quotes` attributes, not `CachedPrice`. |
+| When it should have been caught | At T-219 doc-drafting time (SESSION 109) — the docs asserted data availability without a corresponding code read of the actual normal-path logging behavior or of `t4_price_cache.py`'s Phase 8 gate. |
+| Phases it survived | N/A — first attempt to operationalize either experiment (SESSION 110) is what surfaced this; no prior point existed to catch it. |
+| Why it survived | T-219's scope was evaluator construction + BLOCKED-status registration, not backtest-runner implementation — the docs' data-source claims were written by inference from what T4M-PROJ conceptually "should" log, not verified against the actual `_run_cycle()` code path or `t4_price_cache.py`'s module docstring/guard clauses. |
+| Impact | LOW, zero capital risk — no sub-band gated by this has fired or can fire (both remain `status="BLOCKED"`). Impact is to experiment planning only: neither EXP-ARITH-MLB-01 nor EXP-FLOW-MLB-01 can run against real accumulated data until production-path logging is added and games accumulate post-fix. Without this gap being caught, a future session could have attempted to "run" either experiment against a nonexistent log and produced a false INSUFFICIENT_DATA-vs-fabricated-data ambiguity, or worse, silently proceeded on the incorrect assumption that data already existed. |
+| Discovery | 2026-07-02 SESSION 110, while scoping the EXP-ARITH-MLB-01 backtest runner build (T-219 follow-up), by direct read of `run_t4_mlb_live.py::_run_cycle()`'s normal execution branch and `t4_price_cache.py`'s header/guard clauses. |
+| Resolution | Addressed same session: additive per-cycle raw-context JSONL logging added to `_run_cycle()`'s normal (non-dry-run) execution path (observational only, zero live-path logic change); both design docs corrected to remove the false "no new data sources required" claim and the `t4_price_cache.py` citation; backtest runner built to consume the new production log and correctly report insufficient-data until it accumulates. See DECISION_LOG SESSION 110 entry. |
+| Status | RESOLVED 2026-07-02 (SESSION 110) — logging gap closed by additive change; doc claims corrected. Real experiment data will not exist until games accumulate post-deploy; this is expected, not a reopening condition. |
 
 ---
 

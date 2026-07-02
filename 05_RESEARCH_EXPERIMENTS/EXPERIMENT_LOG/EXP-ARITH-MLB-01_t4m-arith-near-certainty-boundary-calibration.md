@@ -26,8 +26,8 @@ This experiment answers whether that additive edge is real, or whether `p_arith`
 
 | Snapshot ID | Dataset | Description | Ingested |
 |-------------|---------|-------------|----------|
-| (TBD) | T4M-PROJ live cycle log | Per-cycle `MLBLiveBatterState` snapshots (`run_t4_mlb_live.py` audit trail) filtered to cycles where `h_needed <= _ARITH_ENTRY_WINDOW` | (TBD) |
-| (TBD) | Kalshi KXMLBHIT resolved market prices | Same-cycle `CachedPrice` (mid/vig) at each qualifying evaluation, from the existing T4M-PROJ price cache audit log | (TBD) |
+| (TBD) | `logs/t4_mlb_cycle_log.jsonl` (GG-067, SESSION 110) | Raw per-cycle context (`ts, cycle_id, session_id, game_date, ticker, player_name, player_id, threshold, p_t4, mip, vig, gross_edge, net_edge, ba_l10, h_so_far, ab_so_far, ab_remaining, inning, batting_slot`) written unconditionally by `run_t4_mlb_live.py::_run_cycle()` for every cycle reaching the p_t4/gross_edge computation, independent of dry_run/fired status. Did not exist before SESSION 110 — only rows from games since that deploy can appear. | (TBD) |
+| (TBD) | Kalshi KXMLBHIT resolved market prices, via MLB Stats API outcome resolution | `mip`/`vig` are already embedded per-cycle in the row above; final resolved hit totals per player/game are fetched at backtest time via `run_resolve_mlb.fetch_actual_hits(player_id, game_date)`, not from a separate price-cache audit log | (TBD) |
 
 ---
 
@@ -36,7 +36,7 @@ This experiment answers whether that additive edge is real, or whether `p_arith`
 | Item | Detail |
 |------|--------|
 | Commit hash | (TBD — pin to the commit at experiment run time) |
-| Script / notebook | `t4_mlb_execution_engine.py::T4MlbArithEvaluator` (evaluator under test); a dedicated offline backtest runner does not yet exist and must be written before this experiment can move to RUNNING |
+| Script / notebook | `t4_mlb_execution_engine.py::T4MlbArithEvaluator` (evaluator under test); `scripts/run_exp_arith_mlb_01.py` (offline backtest runner, built SESSION 110) — reads `logs/t4_mlb_cycle_log.jsonl`, grid-sweeps `entry_window`/`confidence_gate`, resolves outcomes via `run_resolve_mlb.fetch_actual_hits`, computes EV/ADR-0024 tiering/edge monotonicity (Fisher). Requires `BOT_ENV=paper`. Tests: `tests/test_run_exp_arith_mlb_01.py` (36 tests, no live network calls). |
 | Dependency lock | (TBD) |
 
 ---
@@ -56,9 +56,9 @@ This experiment answers whether that additive edge is real, or whether `p_arith`
 |-----------|-------------|--------|----------------|
 | F-ARITH-01 | h_so_far, ab_so_far, inning, batting_slot | ESPN live MLB boxscore poll (T4M-PROJ's existing C1 layer) | VERIFIED (already governs live T4M-PROJ; same source, no new pipeline) |
 | F-ARITH-02 | ba_l10 | C2 feature store (existing MLB rolling-stat pipeline) | VERIFIED (already governs live T4M-PROJ) |
-| F-ARITH-03 | mip, vig at evaluation cycle | Kalshi KXMLBHIT price cache (`t4_price_cache.py`) | VERIFIED (already governs live T4M-PROJ) |
+| F-ARITH-03 | mip, vig at evaluation cycle | Live `live_prices: dict` populated from `pm.mid_price`/`pm.vig` in `run_t4_mlb_live.py`'s main loop — **not** `t4_price_cache.py` (that module is Phase-8-BLOCKED NBA-oriented infra, never imported by the MLB live loop; corrected per GG-067) | VERIFIED (already governs live T4M-PROJ) |
 
-No new data sources are required — this experiment is a retrospective slice-and-recompute over data T4M-PROJ already ingests live, not a new C1/C2 build.
+**Corrected per GG-067 (SESSION 110):** a new data source WAS required — `logs/t4_mlb_cycle_log.jsonl` did not exist prior to SESSION 110 (only the `dry_run=True` branch persisted per-cycle context via `_append_dryrun_record`; production runs, the only ones that have ever executed, left no reconstructable record). `run_t4_mlb_live.py::_run_cycle()` now writes this log unconditionally (additive, observation-only change; betting logic unaffected — see `tests/test_run_t4_mlb_live.py::TestProductionCycleLog`). This experiment cannot run until enough resolved games accumulate rows in that log post-deploy — it is a prospective data collection, not a purely retrospective slice-and-recompute over data already captured.
 
 **Model class:** Binomial threshold-probability (frozen, ADR-0004/ADR-0023) — same as T4M-PROJ; this experiment does not introduce a new model class, only a new entry condition and threshold sweep over an existing one.  
 **Hyperparameters:** `_ARITH_ENTRY_WINDOW` (candidate values: 0, 1, 2), `_ARITH_CONFIDENCE_GATE` (candidate values: 0.70, 0.75, 0.80, 0.85, 0.90, 0.95) — both currently hardcoded provisional constants in `t4_mlb_execution_engine.py`, explicitly marked non-calibrated pending this experiment.  
@@ -128,13 +128,14 @@ No new data sources are required — this experiment is a retrospective slice-an
 
 ## Follow-Up
 
-| Action | Owner | Due |
-|--------|-------|-----|
-| Build an offline backtest runner against T4M-PROJ's resolved cycle log, filtered to qualifying `h_needed <= entry_window` cycles | EL | Before Phase 8 Activation Gate request |
-| Register data snapshots per `DATA_SNAPSHOTS_INDEX.md` protocol once the backtest runner and its inputs are finalized | EL | Same as above |
-| Run the entry-window/confidence-gate grid sweep and populate the Results table | EL | Same as above |
-| If edge is confirmed: draft Phase 8 Activation Gate request + APR for T4M-ARITH, per ADR-0039's Governance Impact section | EL | After this experiment completes |
-| If edge is not confirmed: leave T4M-ARITH `status="BLOCKED"` indefinitely; document the null result here and in `GOVERNANCE_GAP_LOG.md` | EL | After this experiment completes |
+| Action | Owner | Due | Status |
+|--------|-------|-----|--------|
+| Fix GG-067: add production per-cycle raw-context logging to `run_t4_mlb_live.py`, independent of `dry_run` | EL | Before backtest runner could have real data | DONE (SESSION 110) |
+| Build an offline backtest runner (`scripts/run_exp_arith_mlb_01.py`) against `logs/t4_mlb_cycle_log.jsonl`, filtered to qualifying `h_needed <= entry_window` cycles | EL | Before Phase 8 Activation Gate request | DONE (SESSION 110) |
+| Register data snapshots per `DATA_SNAPSHOTS_INDEX.md` protocol once the backtest runner and its inputs are finalized | EL | Same as above | OPEN — pending enough post-deploy cycle-log rows |
+| Run the entry-window/confidence-gate grid sweep and populate the Results table | EL | Same as above | OPEN — `scripts/run_exp_arith_mlb_01.py` reports INSUFFICIENT_DATA/INCONCLUSIVE until enough resolved MLB games accumulate in the cycle log post-SESSION-110 deploy |
+| If edge is confirmed: draft Phase 8 Activation Gate request + APR for T4M-ARITH, per ADR-0039's Governance Impact section | EL | After this experiment completes | OPEN |
+| If edge is not confirmed: leave T4M-ARITH `status="BLOCKED"` indefinitely; document the null result here and in `GOVERNANCE_GAP_LOG.md` | EL | After this experiment completes | OPEN |
 
 ---
 
@@ -144,5 +145,7 @@ No new data sources are required — this experiment is a retrospective slice-an
 - Registry entry: `execution_bands.py::T4_MLB_SUBBAND_REGISTRY[ExecutionBand.T4M_ARITH]`
 - Evaluator under test: `src/prediction_market_bot/t4_mlb_execution_engine.py::T4MlbArithEvaluator`
 - Test coverage (construction/logic, not backtest): `tests/test_t4_mlb_engine.py`
+- Backtest runner: `scripts/run_exp_arith_mlb_01.py` (SESSION 110); tests: `tests/test_run_exp_arith_mlb_01.py`
+- Data source fix: `GOVERNANCE_GAP_LOG.md` — GG-067 (SESSION 110)
 - Task registration: `04_EXECUTION/TODO_NEXT.md` — T-219
 - NBA precedent (structurally analogous, not a substitute — MLB has no prior EXP-ARITH-01 result to borrow from): `t4_execution_engine.py`'s T4-ARITH sub-band, itself still Phase-8-blocked as of this writing

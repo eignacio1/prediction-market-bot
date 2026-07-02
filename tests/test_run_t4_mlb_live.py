@@ -1198,6 +1198,144 @@ class TestDryRunMode:
         assert json.loads(lines[1])["n"] == 2
 
 
+class TestProductionCycleLog:
+    """GG-067 (SESSION 110): raw per-cycle context logged on the normal
+    (non-dry-run) execution path, independent of fired/not-fired status."""
+
+    _REQUIRED_FIELDS = {
+        "ts", "cycle_id", "session_id", "game_date", "ticker", "player_name",
+        "player_id", "threshold", "p_t4", "mip", "vig", "gross_edge", "net_edge",
+        "ba_l10", "h_so_far", "ab_so_far", "ab_remaining", "inning",
+        "batting_slot",
+    }
+
+    def test_cycle_log_written_on_normal_path_when_fired(self, tmp_path):
+        """dry_run=False + high-edge setup + cycle_log_path set: file is written."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_cycle_log.jsonl"
+        runner._run_cycle(
+            cycle_id="CL-01", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        assert log_path.exists()
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) >= 1
+
+    def test_cycle_log_written_on_normal_path_when_not_fired(self, tmp_path):
+        """dry_run=False + low-edge setup (gross_edge <= 0, early-exit): still logged."""
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=8)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.95, vig=0.04)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.55, "ba_l10": 0.28, "h_l10_mean": 1.0}]}
+        log_path = tmp_path / "t4_mlb_cycle_log_notfired.jsonl"
+        ev, fi, _dep = runner._run_cycle(
+            cycle_id="CL-02", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        assert fi == 0
+        assert log_path.exists()
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) >= 1
+
+    def test_cycle_log_fields_complete(self, tmp_path):
+        """Cycle log records contain all raw-context fields GG-067 requires."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_cycle_log_fields.jsonl"
+        runner._run_cycle(
+            cycle_id="CL-03", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        for line in log_path.read_text().strip().splitlines():
+            record = json.loads(line)
+            assert self._REQUIRED_FIELDS.issubset(record.keys()), (
+                f"Missing fields: {self._REQUIRED_FIELDS - record.keys()}"
+            )
+
+    def test_cycle_log_none_path_does_not_crash(self, tmp_path):
+        """cycle_log_path=None (default): normal path runs exactly as before, no crash."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        ev, fi, deployed = runner._run_cycle(
+            cycle_id="CL-04", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False,
+        )
+        assert fi >= 1
+        assert deployed > 0.0
+
+    def test_cycle_log_betting_logic_unaffected(self, tmp_path):
+        """Writing the cycle log must not change fired count, deployed capital, or
+        open positions relative to the same setup with cycle_log_path=None."""
+        engine_a, trader_a, store_a, audit_a, live_a, prices_a, pregame_a = _make_high_edge_setup(tmp_path)
+        ev_a, fi_a, dep_a = runner._run_cycle(
+            cycle_id="CL-05A", session_id="TEST",
+            live_states=live_a, live_prices=prices_a,
+            pregame_by_player_id=pregame_a,
+            engine=engine_a, trader=trader_a, store=store_a, audit=audit_a,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False,
+        )
+        engine_b, trader_b, store_b, audit_b, live_b, prices_b, pregame_b = _make_high_edge_setup(tmp_path)
+        log_path = tmp_path / "t4_mlb_cycle_log_parity.jsonl"
+        ev_b, fi_b, dep_b = runner._run_cycle(
+            cycle_id="CL-05B", session_id="TEST",
+            live_states=live_b, live_prices=prices_b,
+            pregame_by_player_id=pregame_b,
+            engine=engine_b, trader=trader_b, store=store_b, audit=audit_b,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        assert ev_a == ev_b
+        assert fi_a == fi_b
+        assert dep_a == pytest.approx(dep_b)
+
+    def test_cycle_log_written_in_dry_run_too(self, tmp_path):
+        """cycle_log_path is independent of dry_run — both can write simultaneously
+        to their own separate files without interfering."""
+        engine, trader, store, audit, live, live_prices, pregame = _make_high_edge_setup(tmp_path)
+        dryrun_path = tmp_path / "dryrun.jsonl"
+        cycle_path = tmp_path / "cycle_log.jsonl"
+        runner._run_cycle(
+            cycle_id="CL-06", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=True, dryrun_log_path=dryrun_path,
+            cycle_log_path=cycle_path,
+        )
+        assert dryrun_path.exists()
+        assert cycle_path.exists()
+
+    def test_cycle_log_path_constant_defined(self):
+        """CYCLE_LOG_PATH module constant exists and points inside the logs dir."""
+        assert runner.CYCLE_LOG_PATH.name == "t4_mlb_cycle_log.jsonl"
+        assert runner.CYCLE_LOG_PATH.parent == runner._LOGS_DIR
+
+
 # ---------------------------------------------------------------------------
 # LiveDataFreshnessGuard — Session 101 (T4 timestamp / liveness gate)
 # ---------------------------------------------------------------------------
