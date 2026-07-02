@@ -1223,6 +1223,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-071 — Forward-Compounding Monte Carlo Shows Proportional-Stake Sizing Produces Materially Elevated Permanent-Kill-Switch Breach Probability at High Bet Cadence
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-071 |
+| Category | Systemic risk-model finding — a property of the current proportional-stake sizing mechanic under compounding, not a code defect. |
+| What was missed | No prior session had run a genuine forward-time (calendar-day, compounding) Monte Carlo of either MLB band. All earlier MC work resolved only the currently-open position book plus real closed P&L — a terminal-outcome view, not a forward trajectory view. That masked a property of proportional/Kelly-style stake sizing at T1's real cadence (~26 bets/active-day): compounding a genuinely real, positive edge does not suppress ruin risk — it amplifies both tails simultaneously. |
+| When it should have been caught | Not clearly assignable to a single missed gate — this is a new class of analysis (forward simulation vs. terminal resolution) that the project had not yet built. Flagged here specifically so it is not lost as a one-off artifact finding. |
+| Phases it survived | N/A — first time this analysis has been run. |
+| Why it survived | All prior Monte Carlo work in this project answered "given the open book today, what's the P&L distribution," not "if this edge and cadence persist, what does the bankroll path look like a year out." The forward-simulation script (`mc_forward_projection.py`, this session) is the first to ask the second question. |
+| Impact | MEDIUM-HIGH, forward-looking only (no live capital deployed; G6 not cleared). Real finding: T1's calibrated edge (53.06% win rate, +115.8%/−100% avg win/loss multiple, 1.153% of bankroll staked per bet, 26 bets/active-day) produces a permanent 20%-drawdown kill-switch breach probability of 17.05% by day 30, 43.5% by day 182, 46.45% by day 365 — even though the edge itself is real and positive. This means the current stake-sizing mechanic (proportional/Kelly-style, uncapped fraction growth until the $500/bet hard cap engages at ~$43,373 bankroll) has a ruin-risk profile that has never been formally reviewed or bounded independent of "is the edge real." Before this system scales bet cadence or bankroll further, the stake-sizing/Kelly-fraction policy needs an explicit ruin-risk review — e.g., fractional-Kelly de-rating at high cadence, a lower ceiling before the $500 hard cap engages, or a formal maximum-acceptable P(kill-switch hit) target used to size DEFAULT_KELLY_FRACTION going forward. |
+| Discovery | 2026-07-02 SESSION 113 (continuation) — user requested a genuine forward-projection Monte Carlo (1mo/6mo/1yr, spaghetti-chart format) in `mlb_mc_report.html`. Building it surfaced the kill-switch-probability finding; user explicitly flagged it for future architectural attention ("the compounding effect needs to be addressed in the future. Flag for future look."). |
+| Resolution | **OPEN — T-223 assigned (TODO_NEXT.md).** T-223 registered 2026-07-02 SESSION 113 CONTINUATION to formally review C4's stake-sizing mechanic (`risk.py`) against this ruin-risk finding — candidate directions include cadence-aware Kelly de-rating, a formal max-P(kill-switch) target, or lowering the $500/bet cap threshold. Zero capital risk today (G6 not cleared, no live capital) — this is a pre-live-capital design review item, not an active-incident item. |
+| Status | OPEN — registered 2026-07-02 SESSION 113. Flagged by operator for future look; T-223 assigned SESSION 113 CONTINUATION. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
