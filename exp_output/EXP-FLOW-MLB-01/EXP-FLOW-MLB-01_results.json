@@ -1,0 +1,369 @@
+{
+  "n_raw_cycles": 2393,
+  "headline": {
+    "run_threshold": 6,
+    "sustain_innings": 2,
+    "n_qualifying_cycles": 0,
+    "n_unique_tickers": 0,
+    "n_trailing": 0,
+    "n_leading": 0,
+    "n_resolved": 0,
+    "ev_per_bet": 0.0,
+    "win_rate": 0.0,
+    "total_pnl": 0.0,
+    "tier": {
+      "at_tier1": false,
+      "at_tier2": false,
+      "diagnostic_sprint": false
+    },
+    "verdict": "INCONCLUSIVE",
+    "edge_monotonicity": {
+      "verdict": "INCONCLUSIVE",
+      "reason": "n=0 < MIN_N=20"
+    }
+  },
+  "effect_existence": {
+    "trailing": {
+      "n": 0,
+      "mean_ba_l10": NaN,
+      "win_rate": NaN
+    },
+    "leading": {
+      "n": 0,
+      "mean_ba_l10": NaN,
+      "win_rate": NaN
+    }
+  },
+  "grid": [
+    {
+      "run_threshold": 4,
+      "sustain_innings": 1,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 4,
+      "sustain_innings": 2,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 4,
+      "sustain_innings": 3,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 5,
+      "sustain_innings": 1,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 5,
+      "sustain_innings": 2,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 5,
+      "sustain_innings": 3,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 6,
+      "sustain_innings": 1,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 6,
+      "sustain_innings": 2,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 6,
+      "sustain_innings": 3,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 7,
+      "sustain_innings": 1,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 7,
+      "sustain_innings": 2,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 7,
+      "sustain_innings": 3,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 8,
+      "sustain_innings": 1,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 8,
+      "sustain_innings": 2,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "run_threshold": 8,
+      "sustain_innings": 3,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_trailing": 0,
+      "n_leading": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    }
+  ]
+}

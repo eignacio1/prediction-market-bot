@@ -1155,6 +1155,8 @@ def main() -> None:
 
     # ---- Initialize components (once per session) ----
     audit  = AuditLogger(log_path=_AUDIT_LOG_PATH)
+    # T-213/GG-060 edge-decision classification sink (Phase 2 — T4 parity with T1).
+    edge_logger = AuditLogger(log_path=_LOGS_DIR / "audit_mlb_t4_edge_decisions.jsonl", min_severity="INFO")
     store  = StagedOrderStore(_STAGED_DB_PATH)
     try:
         kalshi = KalshiMarketClient.from_env()
@@ -1193,6 +1195,7 @@ def main() -> None:
             kelly_fraction=KELLY_T4,
             initial_bankroll=ibr,
             min_bet_usd=MIN_BET_T4_PAPER,
+            edge_logger=edge_logger,
         )
 
     # ---- Game ID discovery ----
