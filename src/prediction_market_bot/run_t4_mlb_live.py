@@ -49,6 +49,10 @@ How to run:
   BOT_ENV=paper BOT_C4_ACTIVE=true PYTHONPATH=src \\
       /opt/prediction-market-bot/venv/bin/python \\
       src/prediction_market_bot/run_t4_mlb_live.py
+
+Reclassified under ADR-0039 as sub-band T4M-PROJ — SESSION 109/T-219. No logic in this
+file changed; this is a labeling/traceability update only. See
+execution_bands.py::T4_MLB_SUBBAND_REGISTRY[ExecutionBand.T4M_PROJ].
 """
 
 from __future__ import annotations

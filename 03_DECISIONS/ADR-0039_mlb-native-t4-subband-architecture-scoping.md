@@ -1,12 +1,12 @@
 # ADR-0039 — MLB-Native T4 Sub-Band Architecture: Scoping (Design Only, No Code Authorized)
 
-**Status:** DRAFT (scoping only) — awaiting explicit DS sign-off from Earl Ignacio. Not yet accepted; this ADR authorizes nothing until sign-off is confirmed in a future session.
+**Status:** ACCEPTED (scoped) — DS sign-off received from Earl Ignacio 2026-07-02 (SESSION 109), scoped specifically to implementation authorization for **T4M-PROJ, T4M-ARITH, and T4M-FLOW (including its FLOW-BLOWOUT tree)**. Exact quote: "Yes - you have my sign off. T-4 PROJ / T-4 ARITH / T-4 FLOW + T-4 BLOWOUT can be proceed with." The remaining Tier B roster (T4M-EVENT, T4M-LINEUP, T4M-PITCHER, T4M-BOUNDARY, T4M-STAGED, T4M-CORR, T4M-EXIT) remains scoping-only / not authorized for implementation — this sign-off does not extend to them, including T4M-BOUNDARY despite this ADR having flagged it as an equally cheap next build. Tier A (architecture) is accepted for the whole MLB T4 engine per the two-tier model. **Code authorization ≠ capital authorization**: per Governance Impact below, each of the three authorized sub-bands still requires its own EXP validating its edge hypothesis and a Phase 8 Activation Gate + APR before any paper or live capital deploys.
 **Decision makers:** DS (Earl Ignacio), drafted by EL
 **Registered by:** T-218 (SESSION 108, 2026-07-02), per operator session-open directive: "T-211 is high priority but requires a new task number and its own ADR (the old target was vacated as NBA-only architecture) — scope MLB-native T4 sub-bands before writing code."
 **Drafted:** 2026-07-02 SESSION 108
 **Related:** ADR-0029 (NBA T4 sub-band architecture — Tier A frozen, precedent for the two-tier acceptance model used here), ADR-0030 (T4-MICRO carve-out, NBA), ADR-0037 (correction that vacated T-211 as originally scoped), GG-061 (the process gap ADR-0037 registered: verify a target file's actual domain before authorizing code changes to it)
 **New governance gaps registered:** GG-066 (MLB has no real-time/sub-poll-interval event feed — blocks any event-driven sub-band)
-**Effective:** Upon DS sign-off. Authorizes design/scoping only. **No code changes to `run_t4_mlb_live.py` or any new MLB T4 module are authorized by this ADR.** Implementation requires a follow-up task per sub-band, gated the same way ADR-0029 gates NBA sub-bands (Phase 8 Activation Gate, own EXP, own APR).
+**Effective:** Immediately for T4M-PROJ/T4M-ARITH/T4M-FLOW(+BLOWOUT) implementation (code only — see capital-authorization caveat above). All other Tier B roster items remain design/scoping only. **No code changes are authorized for any sub-band outside the three named above.** Implementation of the three authorized sub-bands still requires the same per-sub-band gating ADR-0029 applies to NBA (Phase 8 Activation Gate, own EXP, own APR) before capital deploys.
 
 ---
 
@@ -169,4 +169,8 @@ None. This ADR authorizes no capital deployment and no code change. It exists to
 
 ## DS Sign-Off
 
-**Pending.** Not confirmed this session — no live exchange with Earl Ignacio occurred to ratify this ADR before session pause. T-218 is registered and this document exists as a scoping draft, but per Status above, it authorizes nothing until Earl explicitly signs off in a future session. Surface this ADR to Earl at next session open before treating any of its Tier B roster or Tier A adoption as settled.
+**Received — scoped.** 2026-07-02, SESSION 109. Earl Ignacio, in response to this ADR being surfaced with its full Tier B roster and caveats (GG-066 blocking 3/10 sub-bands, T4M-PITCHER's missing data source, the extra-innings `_AB_BY_SLOT` bug) at next-session open: **"Yes - you have my sign off. T-4 PROJ / T-4 ARITH / T-4 FLOW + T-4 BLOWOUT can be proceed with."**
+
+This is read as a deliberately scoped authorization, not blanket acceptance of the full Tier B roster — it names three sub-bands specifically and omits T4M-BOUNDARY, which this ADR had flagged as an equally cheap next build alongside T4M-ARITH. That omission is respected: T4M-BOUNDARY is NOT authorized for implementation under this sign-off. Any future extension to additional sub-bands requires its own explicit sign-off, not inference from this one.
+
+Per Governance Impact below, this sign-off authorizes writing code for T4M-PROJ (reclassification/labeling of the existing flat model), T4M-ARITH, and T4M-FLOW(+BLOWOUT) — Phase-8-blocked by default per the ADR-0029 pattern (`_assert_sub_band_blocked()` guard). It does not authorize any paper or live capital deployment for any of the three; that requires each sub-band's own EXP + Activation Gate + APR, unchanged from this ADR's original Governance Impact section.
