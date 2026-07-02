@@ -324,8 +324,10 @@ class TestKalshiMLBMarketConnectivity:
             match = pattern.search(m.ticker)
             if match:
                 try:
+                    # Ticker date segment is YY-MON-DD (group order), not DD-MON-YY —
+                    # the format string must mirror the regex capture order.
                     game_date = datetime.strptime(
-                        match.group(1) + match.group(2) + match.group(3), "%d%b%y"
+                        match.group(1) + match.group(2) + match.group(3), "%y%b%d"
                     ).date()
                     days_past = (today - game_date).days
                     if days_past > 1:  # allow 1 day lag for late-resolving games

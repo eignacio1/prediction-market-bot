@@ -10,6 +10,9 @@ Coverage areas:
   - Full approval path: YES direction, NO direction (probability flip)
   - Approval record contains all required IF-C4-C5 fields
   - C6 write failure propagates as (False, ...)
+  - T-213 (GG-060): edge_decision emission (every outcome, not just approvals),
+    edge sink write-failure isolation, summarize_edge_run() run-state
+    classification and silent-success detection
 """
 
 from __future__ import annotations
@@ -19,6 +22,7 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import jsonlines
 import pytest
 
 _SRC = Path(__file__).parent.parent / "src"
@@ -37,7 +41,9 @@ from prediction_market_bot.c4_risk_engine.risk import (
     STATUS_REJECTED,
     RiskEngine,
     _compute_kelly_size,
+    summarize_edge_run,
 )
+from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 
 # ---------------------------------------------------------------------------
@@ -72,6 +78,7 @@ def _make_engine(
     bankroll: float = 10_000.0,
     kelly_fraction: float = DEFAULT_KELLY_FRACTION,
     initial_bankroll: float | None = None,
+    edge_logger=None,
 ) -> RiskEngine:
     if logger is None:
         logger = _make_mock_logger()
@@ -81,6 +88,7 @@ def _make_engine(
         bankroll=bankroll,
         kelly_fraction=kelly_fraction,
         initial_bankroll=initial_bankroll,
+        edge_logger=edge_logger,
     )
 
 
@@ -740,3 +748,277 @@ class TestPoolIsolated:
                 pool_isolated=True,
             )
         assert result["pool_isolated"] is True
+
+
+# ---------------------------------------------------------------------------
+# T-213 (GG-060) — C4 Edge Accounting
+# ---------------------------------------------------------------------------
+
+
+def _read_jsonl(path: Path) -> list[dict]:
+    with jsonlines.open(str(path), mode="r") as reader:
+        return list(reader)
+
+
+class TestEdgeDecisionEmission:
+    """evaluate_forecast() emits one edge_decision record per call when
+    edge_logger is set — for every outcome, not just approvals."""
+
+    @pytest.mark.unit
+    def test_no_edge_logger_is_backward_compatible(self):
+        """Default (edge_logger=None) — no emission, no error, no behavior change."""
+        fc = _make_forecast()
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine()
+            ok, result = engine.evaluate_forecast(fc)
+        assert ok is True
+        assert result["approval_status"] == STATUS_APPROVED
+
+    @pytest.mark.unit
+    def test_emits_on_approval(self, tmp_path):
+        edge_path = tmp_path / "audit_mlb_edge_decisions.jsonl"
+        edge_logger = AuditLogger(edge_path, min_severity="INFO")
+        fc = _make_forecast(p_estimate=0.60, market_implied_prob=0.50, edge=0.10, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(edge_logger=edge_logger)
+            engine.evaluate_forecast(fc, session_id="SESS-1")
+
+        entries = _read_jsonl(edge_path)
+        assert len(entries) == 1
+        payload = entries[0]["payload"]
+        assert payload["approval_status"] == STATUS_APPROVED
+        assert payload["edge_signal"] is True
+        assert payload["model_p"] == 0.60
+        assert payload["market_implied_p"] == 0.50
+        assert payload["decision"] == STATUS_APPROVED
+        assert entries[0]["session_id"] == "SESS-1"
+
+    @pytest.mark.unit
+    def test_emits_on_insufficient_edge_rejection(self, tmp_path):
+        edge_path = tmp_path / "edge.jsonl"
+        edge_logger = AuditLogger(edge_path, min_severity="INFO")
+        fc = _make_forecast(edge=0.01)  # below MIN_EDGE_TO_APPROVE
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(edge_logger=edge_logger)
+            engine.evaluate_forecast(fc)
+
+        entries = _read_jsonl(edge_path)
+        assert len(entries) == 1
+        payload = entries[0]["payload"]
+        assert payload["approval_status"] == STATUS_REJECTED
+        assert payload["rejection_reason"] == "insufficient_edge"
+        assert payload["edge_signal"] is False
+        assert payload["decision"] == "REJECTED:insufficient_edge"
+
+    @pytest.mark.unit
+    def test_emits_on_phase_gate_closed(self, tmp_path):
+        """Even a gated-closed evaluation is recorded — the run-level summary
+        needs the full population to detect a dark pipeline."""
+        edge_path = tmp_path / "edge.jsonl"
+        edge_logger = AuditLogger(edge_path, min_severity="INFO")
+        fc = _make_forecast()
+        with patch.dict(os.environ, {}, clear=True):
+            os.environ.pop("BOT_C4_ACTIVE", None)
+            engine = _make_engine(edge_logger=edge_logger)
+            engine.evaluate_forecast(fc)
+
+        entries = _read_jsonl(edge_path)
+        assert len(entries) == 1
+        assert entries[0]["payload"]["rejection_reason"] == "phase_gate_not_reached"
+
+    @pytest.mark.unit
+    def test_emits_on_kill_switch(self, tmp_path):
+        edge_path = tmp_path / "edge.jsonl"
+        edge_logger = AuditLogger(edge_path, min_severity="INFO")
+        fc = _make_forecast(edge=0.20)
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(edge_logger=edge_logger, initial_bankroll=1000.0)
+            engine.evaluate_forecast(fc, current_daily_loss=200.0)  # >= 15% of 1000
+
+        entries = _read_jsonl(edge_path)
+        assert len(entries) == 1
+        payload = entries[0]["payload"]
+        assert payload["approval_status"] == STATUS_KILL_SWITCH
+        assert payload["rejection_reason"] == "daily_loss_limit_breached"
+        # A real edge signal existed (0.20 >= MIN_EDGE_TO_APPROVE) even though
+        # the kill switch fired first — this is exactly the RISK_REJECTED
+        # case summarize_edge_run() must be able to distinguish.
+        assert payload["edge_signal"] is True
+
+    @pytest.mark.unit
+    def test_vig_passed_through_when_present(self, tmp_path):
+        edge_path = tmp_path / "edge.jsonl"
+        edge_logger = AuditLogger(edge_path, min_severity="INFO")
+        fc = _make_forecast()
+        fc["vig"] = 0.035
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(edge_logger=edge_logger)
+            engine.evaluate_forecast(fc)
+
+        entries = _read_jsonl(edge_path)
+        assert entries[0]["payload"]["vig"] == 0.035
+
+    @pytest.mark.unit
+    def test_edge_sink_write_failure_does_not_flip_ok_false(self):
+        """A failing edge sink is a WARNING on the primary logger, not a
+        kill-switch-triggering False — it is a secondary analytics sink,
+        not the canonical C6 audit trail (NFR-03 governs the latter only)."""
+        main_logger = _make_mock_logger(write_ok=True)
+        edge_logger = MagicMock()
+        edge_logger.log.return_value = False
+        fc = _make_forecast()
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(logger=main_logger, edge_logger=edge_logger)
+            ok, result = engine.evaluate_forecast(fc)
+
+        assert ok is True
+        assert result["approval_status"] == STATUS_APPROVED
+        warning_calls = [
+            c for c in main_logger.log.call_args_list
+            if c.kwargs.get("event_type") == "edge_decision_write_failed"
+        ]
+        assert len(warning_calls) == 1
+        assert warning_calls[0].kwargs.get("severity") == "WARNING"
+
+
+# ---------------------------------------------------------------------------
+# T-213 (GG-060) — summarize_edge_run()
+# ---------------------------------------------------------------------------
+
+
+def _write_edge_entry(
+    edge_logger: AuditLogger,
+    *,
+    approval_status: str,
+    edge_signal: bool,
+    rejection_reason: str | None = None,
+    session_id: str | None = None,
+) -> None:
+    edge_logger.log(
+        component="C4",
+        event_type="edge_decision",
+        payload={
+            "model_p": 0.5,
+            "market_implied_p": 0.5,
+            "edge": 0.1 if edge_signal else 0.0,
+            "edge_signal": edge_signal,
+            "approval_status": approval_status,
+            "rejection_reason": rejection_reason,
+        },
+        session_id=session_id,
+        severity="INFO",
+    )
+
+
+class TestSummarizeEdgeRun:
+    @pytest.mark.unit
+    def test_missing_file_is_pipeline_broken(self, tmp_path):
+        summary = summarize_edge_run(tmp_path / "does_not_exist.jsonl")
+        assert summary["run_state"] == "PIPELINE_BROKEN"
+        assert summary["total_evaluations"] == 0
+
+    @pytest.mark.unit
+    def test_empty_file_is_pipeline_broken(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        path.touch()
+        summary = summarize_edge_run(path)
+        assert summary["run_state"] == "PIPELINE_BROKEN"
+
+    @pytest.mark.unit
+    def test_evaluations_with_no_edge_signal_is_no_edge(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        for _ in range(5):
+            _write_edge_entry(
+                logger,
+                approval_status=STATUS_REJECTED,
+                edge_signal=False,
+                rejection_reason="insufficient_edge",
+            )
+        summary = summarize_edge_run(path)
+        assert summary["run_state"] == "NO_EDGE"
+        assert summary["total_evaluations"] == 5
+        assert summary["edge_signals_found"] == 0
+        assert summary["bets_approved"] == 0
+
+    @pytest.mark.unit
+    def test_edge_signals_but_none_approved_is_risk_rejected(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        for _ in range(3):
+            _write_edge_entry(
+                logger,
+                approval_status=STATUS_KILL_SWITCH,
+                edge_signal=True,
+                rejection_reason="daily_loss_limit_breached",
+            )
+        summary = summarize_edge_run(path)
+        assert summary["run_state"] == "RISK_REJECTED"
+        assert summary["edge_signals_found"] == 3
+        assert summary["bets_approved"] == 0
+
+    @pytest.mark.unit
+    def test_at_least_one_approval_is_active(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                           rejection_reason="insufficient_edge")
+        _write_edge_entry(logger, approval_status=STATUS_APPROVED, edge_signal=True)
+        summary = summarize_edge_run(path)
+        assert summary["run_state"] == "ACTIVE"
+        assert summary["bets_approved"] == 1
+
+    @pytest.mark.unit
+    def test_silent_success_flag_true_at_50_no_edge_evals(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        for _ in range(50):
+            _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                               rejection_reason="insufficient_edge")
+        summary = summarize_edge_run(path)
+        assert summary["silent_success_flag"] is True
+
+    @pytest.mark.unit
+    def test_silent_success_flag_false_below_50_evals(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        for _ in range(49):
+            _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                               rejection_reason="insufficient_edge")
+        summary = summarize_edge_run(path)
+        assert summary["silent_success_flag"] is False
+
+    @pytest.mark.unit
+    def test_session_id_filtering(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        _write_edge_entry(logger, approval_status=STATUS_APPROVED, edge_signal=True,
+                           session_id="SESS-A")
+        _write_edge_entry(logger, approval_status=STATUS_APPROVED, edge_signal=True,
+                           session_id="SESS-A")
+        _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                           rejection_reason="insufficient_edge", session_id="SESS-B")
+
+        summary_a = summarize_edge_run(path, session_id="SESS-A")
+        assert summary_a["total_evaluations"] == 2
+        assert summary_a["bets_approved"] == 2
+
+        summary_b = summarize_edge_run(path, session_id="SESS-B")
+        assert summary_b["total_evaluations"] == 1
+        assert summary_b["run_state"] == "NO_EDGE"
+
+    @pytest.mark.unit
+    def test_rejection_reason_counts_aggregated(self, tmp_path):
+        path = tmp_path / "edge.jsonl"
+        logger = AuditLogger(path, min_severity="INFO")
+        _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                           rejection_reason="insufficient_edge")
+        _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=False,
+                           rejection_reason="insufficient_edge")
+        _write_edge_entry(logger, approval_status=STATUS_REJECTED, edge_signal=True,
+                           rejection_reason="min_bet_floor")
+        summary = summarize_edge_run(path)
+        assert summary["rejection_reason_counts"] == {
+            "insufficient_edge": 2,
+            "min_bet_floor": 1,
+        }

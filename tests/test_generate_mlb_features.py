@@ -64,6 +64,7 @@ def sample_batter_df() -> pd.DataFrame:
     return pd.DataFrame({
         "player_id": [660670, 660670, 660670],
         "player_name": ["Juan Soto"] * 3,
+        "team_id": [147, 147, 147],
         "team_abbreviation": ["NYY"] * 3,
         "game_id": [717465, 717466, 717467],
         "game_date": ["2024-04-01", "2024-04-02", "2024-04-03"],
@@ -83,6 +84,8 @@ def sample_batter_df() -> pd.DataFrame:
         "hbp": [0, 0, 0],
         "sf": [0, 0, 0],
         "snapshot_id": ["SNAP"] * 3,
+        "ingestion_run_id": ["IRD-001"] * 3,
+        "ingested_at": ["2024-04-01T12:00:00Z", "2024-04-02T12:00:00Z", "2024-04-03T12:00:00Z"],
     })
 
 
@@ -404,7 +407,7 @@ class TestMainDryRun:
                 gmf.main(seasons=[2024], dry_run=True)
         assert exc_info.value.code == 1
 
-    def test_multiple_seasons_combined(self, tmp_dirs, sample_feature_df, monkeypatch):
+    def test_multiple_seasons_combined(self, tmp_dirs, sample_batter_df, sample_feature_df, monkeypatch):
         """Multiple seasons should concatenate into a single CSV."""
         monkeypatch.delenv("BOT_C4_ACTIVE", raising=False)
 
@@ -414,10 +417,7 @@ class TestMainDryRun:
             patch("generate_mlb_features._load_or_fetch_players", return_value=[
                 {"player_id": 660670, "full_name": "Juan Soto"}
             ]),
-            patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=pd.DataFrame({
-                "player_id": [660670], "game_date": ["2024-04-01"],
-                "season_type": ["Regular Season"],
-            })),
+            patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=sample_batter_df),
             patch("generate_mlb_features._load_or_fetch_completed_games", return_value=pd.DataFrame()),
             patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
             patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),

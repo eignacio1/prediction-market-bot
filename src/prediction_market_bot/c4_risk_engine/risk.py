@@ -55,6 +55,19 @@ Audit events emitted:
   - risk_eval_rejected           (WARNING) — check failed, no order
   - risk_eval_kill_switch        (CRITICAL) — hard limit breach → halt
   - risk_eval_error              (ERROR) — unhandled exception
+
+T-213 (GG-060) — C4 Edge Accounting:
+  evaluate_forecast() optionally emits one 'edge_decision' record per call
+  to a secondary sink (edge_logger), independent of approval outcome. This
+  is a per-market-EVALUATION log, not a per-bet log — at ~1,000 evals/game
+  (CLAUDE.md hard rule #9), it is the only place that distinguishes three
+  zero-bet states that are otherwise indistinguishable from bet count alone:
+  pipeline broken (0 evaluations reached C4), no edge (evaluations happened,
+  none cleared MIN_EDGE_TO_APPROVE), and risk-rejected (edge found, every
+  instance rejected downstream). See summarize_edge_run() at module scope.
+  edge_logger is opt-in (None = feature inactive, zero behavior change) —
+  callers construct their own AuditLogger pointed at the sink path, same
+  pattern as the primary `logger` parameter.
 """
 
 from __future__ import annotations
@@ -62,8 +75,10 @@ from __future__ import annotations
 import os
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
+import jsonlines
 import pandas as pd
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -219,6 +234,7 @@ class RiskEngine:
         kelly_fraction: float = DEFAULT_KELLY_FRACTION,
         initial_bankroll: float | None = None,
         min_bet_usd: float | None = None,
+        edge_logger: AuditLogger | None = None,
     ) -> None:
         """
         Parameters
@@ -242,6 +258,15 @@ class RiskEngine:
             Override the global MIN_BET_USD floor. Pass 1.0 for paper-mode T4
             to allow sub-$10 Kelly bets without changing the live floor. If None,
             uses the global MIN_BET_USD constant.
+        edge_logger:
+            T-213 (GG-060): optional secondary AuditLogger pointed at the
+            per-evaluation edge-accounting sink (e.g. logs/audit_mlb_edge_decisions.jsonl).
+            When provided, evaluate_forecast() emits one 'edge_decision' record
+            per call — for every market evaluated, not just approvals. When
+            None (default), edge accounting is inactive and behavior is
+            unchanged from pre-T-213. A write failure on this sink is logged
+            as a WARNING to `logger` — it does NOT trigger the kill switch;
+            this is a secondary analytics sink, not the canonical C6 trail.
         """
         self._logger = logger
         self._snapshot_id = snapshot_id
@@ -250,6 +275,7 @@ class RiskEngine:
         self._initial_bankroll = initial_bankroll if initial_bankroll is not None else bankroll
         self._daily_loss_threshold = self._initial_bankroll * MAX_DAILY_LOSS_PCT
         self._min_bet_usd = min_bet_usd if min_bet_usd is not None else MIN_BET_USD
+        self._edge_logger = edge_logger
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -316,6 +342,88 @@ class RiskEngine:
     # ------------------------------------------------------------------
 
     def evaluate_forecast(
+        self,
+        forecast_record: dict[str, Any] | pd.Series,
+        current_daily_loss: float = 0.0,
+        current_drawdown_pct: float = 0.0,
+        session_id: str | None = None,
+        current_open_exposure_usd: float = 0.0,
+        portfolio_equity_usd: float | None = None,
+        pool_isolated: bool = False,
+    ) -> tuple[bool, dict[str, Any]]:
+        """
+        Evaluate a forecast record and return a risk approval decision.
+
+        Thin wrapper around _evaluate_forecast_impl() that additionally emits
+        a T-213 (GG-060) edge-decision record (when edge_logger is set) for
+        EVERY call — approved, rejected, or kill-switched alike. See the
+        module docstring's "T-213 (GG-060)" section for why this must cover
+        the full evaluation population, not just approvals.
+        """
+        ok, approval = self._evaluate_forecast_impl(
+            forecast_record,
+            current_daily_loss=current_daily_loss,
+            current_drawdown_pct=current_drawdown_pct,
+            session_id=session_id,
+            current_open_exposure_usd=current_open_exposure_usd,
+            portfolio_equity_usd=portfolio_equity_usd,
+            pool_isolated=pool_isolated,
+        )
+        self._emit_edge_decision(forecast_record, approval, session_id)
+        return ok, approval
+
+    def _emit_edge_decision(
+        self,
+        forecast_record: dict[str, Any] | pd.Series,
+        approval: dict[str, Any],
+        session_id: str | None,
+    ) -> None:
+        """T-213 (GG-060): write one per-evaluation record to the edge sink."""
+        if self._edge_logger is None:
+            return
+
+        if isinstance(forecast_record, pd.Series):
+            fc = forecast_record.to_dict()
+        else:
+            fc = dict(forecast_record)
+
+        edge = float(fc.get("edge", 0.0) or 0.0)
+        status = approval.get("approval_status")
+        reason = approval.get("rejection_reason")
+        decision = status if status == STATUS_APPROVED else f"{status}:{reason}"
+
+        wrote = self._edge_logger.log(
+            component=COMPONENT,
+            event_type="edge_decision",
+            payload={
+                "model_p": fc.get("p_estimate"),
+                "market_implied_p": fc.get("market_implied_prob"),
+                "vig": fc.get("vig"),
+                "edge": edge,
+                "edge_signal": abs(edge) >= MIN_EDGE_TO_APPROVE,
+                "recommended_direction": fc.get("recommended_direction"),
+                "approval_status": status,
+                "rejection_reason": reason,
+                "decision": decision,
+                "approved_size": approval.get("approved_size"),
+            },
+            session_id=session_id,
+            snapshot_id=self._snapshot_id,
+            risk_eval_id=approval.get("risk_eval_id"),
+            forecast_id=approval.get("forecast_id"),
+            severity="INFO",
+        )
+        if not wrote:
+            self._log(
+                "edge_decision_write_failed",
+                {"risk_eval_id": approval.get("risk_eval_id")},
+                severity="WARNING",
+                session_id=session_id,
+                risk_eval_id=approval.get("risk_eval_id"),
+                forecast_id=approval.get("forecast_id"),
+            )
+
+    def _evaluate_forecast_impl(
         self,
         forecast_record: dict[str, Any] | pd.Series,
         current_daily_loss: float = 0.0,
@@ -737,3 +845,92 @@ class RiskEngine:
             return False, self._build_rejection(
                 eval_id, f"unhandled_exception: {repr(exc)}", [], forecast_id
             )
+
+
+# ---------------------------------------------------------------------------
+# T-213 (GG-060) — Run-level edge accounting summary
+# ---------------------------------------------------------------------------
+
+
+def summarize_edge_run(
+    edge_log_path: str | Path,
+    session_id: str | None = None,
+) -> dict[str, Any]:
+    """
+    Read an edge-decision JSONL sink (written by RiskEngine.evaluate_forecast()
+    when edge_logger is set) and produce a run-level report.
+
+    GG-060's core problem: at ~1,000 evals/game, "0 bets placed" is ambiguous.
+    It can mean the pipeline never reached C4 (upstream break — C1/C2/C3
+    failure), the market was quiet (no edge found in any evaluation — a
+    legitimate outcome), or C4's own checks rejected every edge signal found
+    (kill switch, sizing floor, exposure cap — a risk-control problem). These
+    three states are indistinguishable from bet count alone; this function
+    reads the full evaluation population and disambiguates them.
+
+    Parameters
+    ----------
+    edge_log_path:
+        Path to the edge-decision JSONL sink.
+    session_id:
+        If provided, restrict the summary to entries matching this session_id.
+        If None, summarizes every entry in the file.
+
+    Returns
+    -------
+    dict with:
+      total_evaluations       — count of edge_decision records read
+      edge_signals_found      — count where edge_signal was True
+      bets_approved           — count where approval_status == APPROVED
+      rejection_reason_counts — {rejection_reason_or_status: count} for
+                                 every non-approved record
+      run_state                — one of PIPELINE_BROKEN / NO_EDGE /
+                                 RISK_REJECTED / ACTIVE
+      silent_success_flag      — True when total_evaluations >= 50 and
+                                 edge_signals_found == 0 (GG-060 resolution
+                                 item 3: flag runs where edge_signals == 0
+                                 for >=50 evaluations)
+    """
+    path = Path(edge_log_path)
+    total_evaluations = 0
+    edge_signals_found = 0
+    bets_approved = 0
+    rejection_reason_counts: dict[str, int] = {}
+
+    if path.exists():
+        with jsonlines.open(str(path), mode="r") as reader:
+            for entry in reader:
+                if session_id is not None and entry.get("session_id") != session_id:
+                    continue
+                payload = entry.get("payload", {}) or {}
+                total_evaluations += 1
+                if payload.get("edge_signal"):
+                    edge_signals_found += 1
+                if payload.get("approval_status") == STATUS_APPROVED:
+                    bets_approved += 1
+                else:
+                    reason = (
+                        payload.get("rejection_reason")
+                        or payload.get("approval_status")
+                        or "unknown"
+                    )
+                    rejection_reason_counts[reason] = rejection_reason_counts.get(reason, 0) + 1
+
+    if total_evaluations == 0:
+        run_state = "PIPELINE_BROKEN"
+    elif edge_signals_found == 0:
+        run_state = "NO_EDGE"
+    elif bets_approved == 0:
+        run_state = "RISK_REJECTED"
+    else:
+        run_state = "ACTIVE"
+
+    return {
+        "session_id": session_id,
+        "total_evaluations": total_evaluations,
+        "edge_signals_found": edge_signals_found,
+        "bets_approved": bets_approved,
+        "rejection_reason_counts": rejection_reason_counts,
+        "run_state": run_state,
+        "silent_success_flag": total_evaluations >= 50 and edge_signals_found == 0,
+    }

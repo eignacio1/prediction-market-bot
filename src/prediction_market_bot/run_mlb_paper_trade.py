@@ -412,6 +412,10 @@ def _write_report(orders: list, bankroll: float, trader: PaperTrader) -> None:
 def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     logger = AuditLogger(LOG_DIR / "audit_mlb.jsonl", min_severity="INFO")
+    # T-213 (GG-060): secondary per-evaluation sink so 0-bet runs are
+    # diagnosable (pipeline-broken vs no-edge vs risk-rejected) — see
+    # risk.summarize_edge_run().
+    edge_logger = AuditLogger(LOG_DIR / "audit_mlb_edge_decisions.jsonl", min_severity="INFO")
 
     # Kalshi client — loads RSA key if VENUE_PRIVATE_KEY_PATH is set (ADR-0008)
     try:
@@ -611,6 +615,7 @@ def main() -> None:
         kelly_fraction=T1_KELLY,
         initial_bankroll=_initial_bankroll,
         min_bet_usd=MIN_BET_PAPER,
+        edge_logger=edge_logger,
     )
     daily_loss = _state.get("current_daily_loss", 0.0)
     if _state.get("daily_loss_date", "") != date.today().isoformat():
@@ -954,6 +959,7 @@ def main() -> None:
                         kelly_fraction=T1_KELLY,
                         initial_bankroll=_initial_bankroll,
                         min_bet_usd=MIN_BET_PAPER,
+                        edge_logger=edge_logger,
                     )
             else:
                 reason = approval.get("rejection_reason", "unknown")

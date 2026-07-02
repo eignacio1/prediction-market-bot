@@ -207,10 +207,26 @@ def _make_feature_csv(tmp_path: Path) -> Path:
     from datetime import date, timedelta
     recent = (date.today() - timedelta(days=1)).isoformat()
     csv = tmp_path / "mlb_feature_matrix.csv"
-    csv.write_text(
-        "player_id,player_name,game_date,ba_l10,days_rest,h_l10_mean\n"
-        f"660670,Juan Soto,{recent},0.280,1,1.0\n"
+    header = (
+        "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
+        "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
+        "doubles,triples,hr,rbi,bb,k,hbp,sf,snapshot_id,ingestion_run_id,"
+        "ingested_at,temporal_cutoff,ba_l10,slg_l10,obp_l10,ops_l10,"
+        "h_l10_mean,k_rate_l10,bb_rate_l10,hr_rate_l10,days_rest,b2b_flag,"
+        "opp_runs_allowed_l10,opp_sp_era_l5,opp_sp_k9_l5,opp_sp_bb9_l5,"
+        "opp_sp_is_known,park_factor_hits,feature_run_id,feature_version,"
+        "train_test_label"
     )
+    row = (
+        f"660670,Juan Soto,147,NYY,717465,{recent},2024,Regular Season,"
+        "NYY vs BOS,1,BOS,4,1,0,0,0,1,1,1,0,0,SNAP,IRD-001,"
+        f"{recent}T12:00:00Z,{recent},0.280,0.450,0.380,0.830,"
+        "1.0,0.22,0.15,0.03,1,0,"
+        "4.5,4.0,8.0,3.0,"
+        "1,1.0,FRD-001,1.0.0,"
+        "train"
+    )
+    csv.write_text(f"{header}\n{row}\n")
     return csv
 
 
