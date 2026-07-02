@@ -423,6 +423,98 @@ class TestEspnPollOnceMlb:
 
 
 # ---------------------------------------------------------------------------
+# _espn_game_status — GG-058
+# ---------------------------------------------------------------------------
+
+
+class TestEspnGameStatus:
+    def test_returns_status_name(self):
+        resp = {"header": {"competitions": [{"status": {"type": {"name": "STATUS_FINAL"}}}]}}
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = resp
+            assert runner._espn_game_status("ESPN1") == "STATUS_FINAL"
+
+    def test_request_exception_returns_empty_string(self):
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.side_effect = ConnectionError("timeout")
+            assert runner._espn_game_status("ESPN1") == ""
+
+    def test_missing_competitions_returns_empty_string(self):
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = {"header": {"competitions": []}}
+            assert runner._espn_game_status("ESPN1") == ""
+
+
+# ---------------------------------------------------------------------------
+# _rollover_game_ids — GG-058: UTC-midnight rollover must merge, not replace
+# ---------------------------------------------------------------------------
+
+
+class TestRolloverGameIds:
+    def test_in_progress_game_carried_over_across_midnight(self):
+        # A West-coast game started yesterday, still live at UTC midnight,
+        # and is not part of today's newly-discovered ESPN slate yet.
+        tracked = ["YESTERDAY_LATE_GAME"]
+        newly_discovered = ["TODAY_GAME_1", "TODAY_GAME_2"]
+        status_fn = lambda gid: "STATUS_IN_PROGRESS"
+        result = runner._rollover_game_ids(tracked, newly_discovered, status_fn)
+        assert "YESTERDAY_LATE_GAME" in result
+        assert "TODAY_GAME_1" in result
+        assert "TODAY_GAME_2" in result
+
+    def test_final_game_dropped_at_rollover(self):
+        tracked = ["YESTERDAY_FINISHED_GAME"]
+        newly_discovered = ["TODAY_GAME_1"]
+        status_fn = lambda gid: "STATUS_FINAL"
+        result = runner._rollover_game_ids(tracked, newly_discovered, status_fn)
+        assert "YESTERDAY_FINISHED_GAME" not in result
+        assert result == ["TODAY_GAME_1"]
+
+    def test_postponed_game_dropped_at_rollover(self):
+        tracked = ["YESTERDAY_POSTPONED_GAME"]
+        result = runner._rollover_game_ids(
+            tracked, [], status_fn=lambda gid: "STATUS_POSTPONED"
+        )
+        assert result == []
+
+    def test_status_fetch_failure_keeps_game_tracked(self):
+        # An ESPN blip (status_fn returns "") must never be treated as terminal —
+        # dropping a live game due to a transient fetch error is the GG-058 failure
+        # mode this fix exists to prevent.
+        tracked = ["FLAKY_STATUS_GAME"]
+        result = runner._rollover_game_ids(tracked, [], status_fn=lambda gid: "")
+        assert result == ["FLAKY_STATUS_GAME"]
+
+    def test_game_present_in_both_lists_not_duplicated(self):
+        tracked = ["GAME_A"]
+        newly_discovered = ["GAME_A", "GAME_B"]
+        status_fn = lambda gid: "STATUS_IN_PROGRESS"
+        result = runner._rollover_game_ids(tracked, newly_discovered, status_fn)
+        assert result.count("GAME_A") == 1
+        assert set(result) == {"GAME_A", "GAME_B"}
+
+    def test_no_carried_over_games_returns_newly_discovered_only(self):
+        result = runner._rollover_game_ids(
+            [], ["TODAY_GAME_1"], status_fn=lambda gid: "STATUS_FINAL"
+        )
+        assert result == ["TODAY_GAME_1"]
+
+    def test_status_fn_only_called_for_carryover_candidates(self):
+        # Games already rediscovered in today's slate don't need a status
+        # check — calling it anyway would be a wasted ESPN API call per game.
+        calls = []
+        def status_fn(gid):
+            calls.append(gid)
+            return "STATUS_IN_PROGRESS"
+        runner._rollover_game_ids(["GAME_A"], ["GAME_A"], status_fn)
+        assert calls == []
+
+
+# ---------------------------------------------------------------------------
 # _run_cycle — core evaluation engine
 # ---------------------------------------------------------------------------
 
