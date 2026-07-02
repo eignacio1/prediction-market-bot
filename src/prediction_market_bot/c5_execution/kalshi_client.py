@@ -591,25 +591,38 @@ class KalshiMarketClient:
         contracts = max(1, math.floor(size_usd / (price_cents / 100.0)))
         actual_cost = round(contracts * price_cents / 100.0, 4)
 
-        # API requires exactly one of yes_price or no_price (not both)
+        # GG-063/T-217: /portfolio/orders (v1) is hard-deprecated by Kalshi —
+        # every MLB order hit HTTP 410 "deprecated_v1_order_endpoint". Migrated
+        # to /portfolio/events/orders (v2), which collapses yes/no + buy/sell
+        # into a single book_side (bid=buy-yes, ask=buy-no) per Kalshi's
+        # published legacy->v2 mapping (docs.kalshi.com/getting_started/order_direction),
+        # and represents count/price as fixed-point decimal strings, not ints.
         body: dict[str, Any] = {
             "ticker": ticker,
             "client_order_id": client_order_id,
-            "type": "limit",
-            "action": "buy",
-            "side": side,
-            "count": contracts,
-            "yes_price" if side == "yes" else "no_price": price_cents,
+            "side": "bid" if side == "yes" else "ask",
+            "count": f"{contracts}.00",
+            "price": f"{price_cents / 100.0:.2f}",
+            "time_in_force": "good_till_canceled",
+            "self_trade_prevention_type": "taker_at_cross",
         }
 
-        ok, data = self._post("/portfolio/orders", body)
+        ok, data = self._post("/portfolio/events/orders", body)
 
         if not ok:
+            # GG-063/T-217: _post() captures the real Kalshi response body under
+            # "body" (HTTP error) or "detail" (exception), but data.get("error", data)
+            # alone discarded it — every MLB order failure surfaced as a bare
+            # "HTTP 410" with no indication of *why* Kalshi rejected the order.
+            error_msg = str(data.get("error", data))
+            error_detail = data.get("body") or data.get("detail")
+            if error_detail:
+                error_msg = f"{error_msg}: {error_detail}"
             return KalshiOrder(
                 ok=False, order_id="", client_order_id=client_order_id,
                 ticker=ticker, side=side, contracts=contracts,
                 yes_price_cents=price_cents, actual_cost_usd=actual_cost,
-                status="error", error=str(data.get("error", data)),
+                status="error", error=error_msg,
             )
 
         order_data = data.get("order", data)
