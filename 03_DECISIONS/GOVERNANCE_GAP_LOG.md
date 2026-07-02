@@ -2,7 +2,7 @@
 
 **Purpose:** Register every discovered governance process failure — decisions that should have been made and weren't, thresholds set as placeholders and never revisited, architectural assumptions that went undocumented. This is distinct from DECISION_LOG (records decisions *made*) and KNOWN_ISSUES (records runtime bugs). This records failures of the governance *system itself*.  
 **Owner (role):** Director/Sponsor (DS)  
-**Last reviewed:** 2026-07-01 (SESSION 108 — GG-063 resolved, GG-064 registered)  
+**Last reviewed:** 2026-07-02 (SESSION 108 — GG-066 registered, ADR-0039/T-218 MLB T4 sub-band scoping)  
 **Next review:** Session start (mandatory scan); after every gate review; after any incident  
 **Staleness triggers:** New gap discovered; existing gap resolved  
 **Upstream links:** DECISION_LOG.md, KNOWN_ISSUES.md, LESSONS_LEARNED.md  
@@ -959,7 +959,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | When it should have been caught | N/A — not a missed bug, a verification gap. Should be closed the first time real live-game data runs through the fixed cycle. |
 | Impact | LOW-MEDIUM. If the fix is incomplete (e.g., a different code path still captures a stale timestamp), T4 MLB will silently resume false-positive staleness halts the moment tonight's games go live, and nobody will know until the next manual audit. |
 | Resolution path | At next session start (or mid-game spot check) during a live MLB slate, grep `audit_mlb_t4.jsonl` for `CONTAMINATION_HALT` events timestamped after 2026-07-01T01:19:19Z. Expect near-zero `staleness_halts` growth and actual bet fires consistent with the ~50-100/game design target (CLAUDE.md throughput model), not 2/game. |
-| Status | OPEN — reverify against the next live MLB game night. |
+| Status | **OPEN — reverified 2026-07-02 SESSION 108, RESULT: FIX DID NOT HOLD.** The 2026-06-30 evening → 2026-07-01 early-morning game night (the first live slate after the GG-052 fix/restart at 01:19:19 UTC) produced 2,120 `CONTAMINATION_HALT` records in `audit_mlb_t4.jsonl`, with the in-session `ContaminationGuard` counter climbing to **`total_halts=1632`, `staleness_halts=1632` — every single halt that session was a staleness halt (0 of any other type)**. This is the exact alarm condition CLAUDE.md's Step 4 semantic-oracle check calls out (`staleness_halts > 0` = ESPN/Kalshi data arriving stale relative to the 45s poll cycle), now confirmed recurring post-fix on real live traffic, not just theoretically possible. Mitigating detail: the guard evidently throttles per-ticker/per-cycle rather than blocking the whole session — 15 T4 bets still fired that night (`paper_portfolio_mlb_t4.json`, all `game_date=2026-06-30`) — so this is not a full dark-pipeline failure, but actual live evaluation coverage that night was almost certainly a small fraction of the ~1,000-evals/game design throughput (CLAUDE.md hard rule #9), since the large majority of cycles were staleness-halted rather than reaching a real edge evaluation. GG-052's specific fix (moving `cycle_start_at` to after the Kalshi fetch) addressed one source of staleness but a second, still-unidentified source is producing the bulk of these halts. Needs root-cause investigation before the next live MLB slate, not just another reverify-and-wait cycle. Severity raised LOW-MEDIUM → **MEDIUM-HIGH** given confirmed recurrence at scale on the most recent live game night. |
 
 ### GG-054 — SemanticFloorViolation Guard Has Never Fired in Production
 
@@ -1135,6 +1135,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | Human-directed (session task list explicitly required running mypy strict as part of T-212/T-213 close-out), not caught by any automated protocol step. |
 | Resolution path | Not resolved in this session — out of scope for T-213 (would require adding `py.typed` markers to 8+ in-repo packages, installing/vendoring `pandas-stubs`, and fixing 8 dict/list generic-argument omissions plus 2 `requests` param-type mismatches across at least 2 files, likely more once the rest of `src/` is checked). Recommend a dedicated task (T-NNN, not yet registered) scoped to: (1) add `py.typed` to all `src/prediction_market_bot/*/` packages, (2) add `pandas-stubs` to dev dependencies, (3) run `mypy --strict` against the full `src/` tree (not per-file) to get a true baseline error count, (4) fix or explicitly `# type: ignore[code]` each remaining error with justification. Until that task closes, no session should assert "mypy strict passes" without re-verifying — the current true state is "installed and runnable, 29+ known pre-existing errors, cross-module type-safety not actually enforced." |
 | Status | OPEN — registered, no task assigned yet. Zero capital risk; does not block T-213 or G6. |
+
+---
+
+### GG-066 — MLB C1 Has No Real-Time/Sub-Poll-Interval Event Feed (Blocks Event-Driven T4 Sub-Bands)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-066 |
+| Category | Architectural placeholder / data-availability gap (same class as NBA's GG-040, discovered independently for MLB). |
+| What was missed | ADR-0039 (T-218, SESSION 108) scoped an MLB-native T4 sub-band taxonomy and, in doing so, confirmed by direct code read of `run_t4_mlb_live.py` that MLB's only live data source is a 45-second poll of the ESPN MLB summary endpoint (`_espn_poll_once_mlb`, `POLL_INTERVAL_S = 45`) that diffs `h_so_far`/`ab_so_far` between cycles. There is no play-by-play, no live event stream, and no sub-45s detection latency anywhere in current MLB C1. |
+| When it should have been caught | This was never claimed to be otherwise — it is a newly surfaced scoping finding, not a regression. Registered proactively as part of ADR-0039's design work rather than being discovered as a live failure. |
+| Phases it survived | N/A — this is the first ADR/task to formally scope event-driven MLB T4 sub-bands, so there was no prior point at which this gap could have been flagged as blocking. |
+| Why it survived | Not applicable in the "should have been caught" sense; flagged as a direct consequence of ADR-0039's Tier B design work applying GG-061's process fix (verify actual data availability before proposing a sub-band that assumes it). |
+| Impact | Blocks T4M-EVENT, T4M-LINEUP, and real-time firing of T4M-ARITH (all three degrade to "same signal as T4M-PROJ, one 45s cycle later" without this). Does not block T4M-BOUNDARY, T4M-ARITH's poll-driven firing, T4M-STAGED, T4M-CORR, or T4M-EXIT, none of which require sub-poll-interval detection. Zero capital risk — no sub-band gated by this has been built or activated. |
+| Discovery | 2026-07-02 SESSION 108, during ADR-0039 scoping (T-218), by direct read of `run_t4_mlb_live.py`'s ESPN polling implementation. |
+| Resolution | Not resolved. Requires evaluating real-time or near-real-time MLB event sources (e.g., MLB Stats API live game feed `v1.1/game/{gamePk}/feed/live`, which offers finer-grained play-by-play than the ESPN summary endpoint currently used) as a new C1 MLB data source, scoped under its own task once T4M-EVENT/T4M-LINEUP/T4M-PITCHER implementation is prioritized. Out of scope for T-218 (scoping-only). |
+| Status | OPEN — registered, no task assigned yet. Zero capital risk; blocks three of ten proposed MLB T4 sub-bands from ADR-0039, does not block T-218 itself or G6. |
 
 ---
 
