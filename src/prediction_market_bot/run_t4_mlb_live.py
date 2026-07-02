@@ -148,6 +148,9 @@ _ESPN_HEADERS        = {"User-Agent": "Mozilla/5.0"}
 
 _ESPN_STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS"
 _ESPN_STATUS_SCHEDULED   = "STATUS_SCHEDULED"
+_ESPN_STATUS_FINAL       = "STATUS_FINAL"
+_ESPN_STATUS_POSTPONED   = "STATUS_POSTPONED"
+_ESPN_TERMINAL_STATUSES  = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
 
 # ESPN MLB batter stat label order — H is typically index 2 in (AB, R, H, HR, RBI, BB, SO)
 _MLB_STAT_LABELS = ["AB", "R", "H", "HR", "RBI", "BB", "SO", "AVG", "OBP", "SLG"]
@@ -329,6 +332,55 @@ def _espn_mlb_game_ids_today() -> list[str]:
     except Exception as exc:
         logger.warning("ESPN MLB game ID discovery failed: %s", exc)
         return []
+
+
+def _espn_game_status(espn_game_id: str) -> str:
+    """Fetch just the status name for one game (GG-058 rollover pruning).
+
+    Used only at UTC-midnight rollover to decide whether a game carried over
+    from the previous day is done (STATUS_FINAL/STATUS_POSTPONED) or still
+    needs tracking. Returns "" on fetch failure — callers must treat "" as
+    non-terminal (keep tracking) rather than assume the game ended, since an
+    ESPN blip must never cause a live game to silently drop off the poll list.
+    """
+    try:
+        r = requests.get(
+            _ESPN_MLB_SUMMARY,
+            params={"event": espn_game_id},
+            headers=_ESPN_HEADERS,
+            timeout=10,
+        )
+        r.raise_for_status()
+        d = r.json()
+    except Exception as exc:
+        logger.warning("ESPN MLB status fetch failed game=%s: %s", espn_game_id, exc)
+        return ""
+    comps = d.get("header", {}).get("competitions", [{}])
+    if not comps:
+        return ""
+    return comps[0].get("status", {}).get("type", {}).get("name", "")
+
+
+def _rollover_game_ids(
+    tracked_game_ids: list[str],
+    newly_discovered: list[str],
+    status_fn=_espn_game_status,
+) -> list[str]:
+    """GG-058: merge-in rollover, never a destructive replace.
+
+    A hard UTC-midnight `game_ids[:] = _espn_mlb_game_ids_today()` dropped
+    every still-in-progress West-coast game every night (first pitch commonly
+    straddles 22:30-01:45 UTC, so the boundary lands mid-game). Carries
+    forward any previously-tracked game that has not reached a terminal ESPN
+    status (STATUS_FINAL/STATUS_POSTPONED); only new-day discovery is
+    additive on top of that.
+    """
+    carried_over = [
+        gid for gid in tracked_game_ids
+        if gid not in newly_discovered
+        and status_fn(gid) not in _ESPN_TERMINAL_STATUSES
+    ]
+    return carried_over + [gid for gid in newly_discovered if gid not in carried_over]
 
 
 def _espn_poll_once_mlb(
@@ -1079,18 +1131,31 @@ def main() -> None:
             # tomorrow's games are evaluated with correct state (not yesterday's).
             today = date.today()
             if today != _eval_date:
+                _prior_eval_date = _eval_date
                 logger.info(
                     "T4-MLB date rollover %s → %s — refreshing game IDs, pregame, band budget",
                     _eval_date, today,
                 )
                 _eval_date = today
                 game_date = today.isoformat()
-                game_ids[:] = _espn_mlb_game_ids_today()
-                # Refresh pregame context and batting slots for the new day
+                newly_discovered = _espn_mlb_game_ids_today()
+                merged = _rollover_game_ids(game_ids, newly_discovered)
+                carried_over = [gid for gid in merged if gid not in newly_discovered]
+                if carried_over:
+                    logger.info(
+                        "T4-MLB rollover: carrying over %d not-yet-final game(s) "
+                        "from %s: %s",
+                        len(carried_over), _prior_eval_date, carried_over,
+                    )
+                game_ids[:] = merged
+                # Refresh pregame context and batting slots for the new day.
+                # GG-058: merge, don't clear-then-replace — if a carried-over
+                # game's players aren't in the new day's pregame file (most
+                # recent file only, per _load_pregame_context()), clearing
+                # first would silently drop their matching context even
+                # though we're still polling their game.
                 by_player_id_r, _, name_to_pregame_r = _load_pregame_context()
-                by_player_id.clear()
                 by_player_id.update(by_player_id_r)
-                name_to_pregame.clear()
                 name_to_pregame.update(name_to_pregame_r)
                 batting_slots = _load_t2_batting_slots()
                 # Reconstruct band budget for the new date
