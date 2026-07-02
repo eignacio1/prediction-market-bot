@@ -291,7 +291,13 @@ class TestSettlePositionIdempotency:
 # ---------------------------------------------------------------------------
 
 class TestFetchMlbHits:
-    """Unit tests for the MLB Stats API fetch layer (requests fully mocked)."""
+    """Unit tests for the MLB Stats API fetch layer (requests fully mocked).
+
+    GG-069/T-221: `_fetch_mlb_hits` now issues a second request (schedule-by-
+    gamePk) to confirm the game is FINAL before trusting the hits total.
+    Tests that only care about gameLog parsing patch `_is_game_final` to True
+    directly, so they don't need to know about the second HTTP call.
+    """
 
     def _make_response(self, splits: list) -> MagicMock:
         m = MagicMock()
@@ -299,15 +305,19 @@ class TestFetchMlbHits:
         m.json.return_value = {"stats": [{"splits": splits}]}
         return m
 
-    def _split(self, game_date: str, hits: int) -> dict:
-        return {"date": game_date, "stat": {"hits": hits}}
+    def _split(self, game_date: str, hits: int, game_pk: int = 999) -> dict:
+        return {"date": game_date, "stat": {"hits": hits}, "game": {"gamePk": game_pk}}
+
+    def _final_patch(self):
+        return patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True)
 
     @pytest.mark.unit
     def test_happy_path_returns_hits(self):
         from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
         resp = self._make_response([self._split(PAST_DATE, 2)])
         with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
-             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             self._final_patch():
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result == 2.0
 
@@ -316,7 +326,8 @@ class TestFetchMlbHits:
         from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
         resp = self._make_response([self._split("2020-01-01", 3)])
         with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
-             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             self._final_patch():
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result is None
 
@@ -358,7 +369,8 @@ class TestFetchMlbHits:
         from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
         resp = self._make_response([self._split(PAST_DATE, 0)])
         with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
-             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             self._final_patch():
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result == 0.0
 
@@ -372,9 +384,96 @@ class TestFetchMlbHits:
             self._split(PAST_DATE, 3),
         ])
         with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
-             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             self._final_patch():
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result == 3.0
+
+
+class TestGameFinalGate:
+    """GG-069/T-221: fetch_actual_hits must not resolve against a non-FINAL game."""
+
+    def _make_response(self, splits: list) -> MagicMock:
+        m = MagicMock()
+        m.raise_for_status.return_value = None
+        m.json.return_value = {"stats": [{"splits": splits}]}
+        return m
+
+    def _split(self, game_date: str, hits: int, game_pk: int | None = 999) -> dict:
+        d = {"date": game_date, "stat": {"hits": hits}}
+        if game_pk is not None:
+            d["game"] = {"gamePk": game_pk}
+        return d
+
+    @pytest.mark.unit
+    def test_in_progress_game_returns_none(self):
+        """Matching split exists but the source game is still live — must not resolve."""
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        resp = self._make_response([self._split(PAST_DATE, 7)])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=False):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result is None
+
+    @pytest.mark.unit
+    def test_final_game_returns_hits(self):
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        resp = self._make_response([self._split(PAST_DATE, 2)])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result == 2.0
+
+    @pytest.mark.unit
+    def test_missing_game_pk_returns_none(self):
+        """Split with no `game.gamePk` — cannot confirm FINAL, so do not resolve."""
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        resp = self._make_response([self._split(PAST_DATE, 4, game_pk=None)])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result is None
+
+    @pytest.mark.unit
+    def test_is_game_final_true_on_final_status(self):
+        from prediction_market_bot.run_resolve_mlb import _is_game_final
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {
+            "dates": [{"games": [{"status": {"abstractGameState": "Final"}}]}]
+        }
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _is_game_final(822791) is True
+
+    @pytest.mark.unit
+    def test_is_game_final_false_on_live_status(self):
+        from prediction_market_bot.run_resolve_mlb import _is_game_final
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {
+            "dates": [{"games": [{"status": {"abstractGameState": "Live"}}]}]
+        }
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _is_game_final(822791) is False
+
+    @pytest.mark.unit
+    def test_is_game_final_false_on_request_exception(self):
+        from prediction_market_bot.run_resolve_mlb import _is_game_final
+        import requests as _req
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=_req.exceptions.ConnectionError("timeout")):
+            assert _is_game_final(822791) is False
+
+    @pytest.mark.unit
+    def test_is_game_final_false_on_malformed_response(self):
+        from prediction_market_bot.run_resolve_mlb import _is_game_final
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {"dates": []}
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _is_game_final(822791) is False
 
 
 class TestFetchActualHitsPostseasonFallback:
