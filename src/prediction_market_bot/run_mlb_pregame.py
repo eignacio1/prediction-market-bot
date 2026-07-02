@@ -60,9 +60,14 @@ _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
+from prediction_market_bot.c1_signal_ingestion.data_contracts import MLB_FEATURE_CSV_CONTRACT
 from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import MLBIngestionClient
 from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import (
     MLBPitcherStatsStore,
+)
+from prediction_market_bot.c1_signal_ingestion.validators import (
+    DataContractViolation,
+    assert_contract,
 )
 from prediction_market_bot.c3_forecasting.calibration import calibrate_probability
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
@@ -280,43 +285,36 @@ def main() -> None:
         sys.exit(1)
 
     df = pd.read_csv(FEATURE_CSV, low_memory=False)
+
+    # ------------------------------------------------------------------
+    # T-212 — Data contract validation (structural: schema, cardinality,
+    # freshness). Supersedes the ad hoc freshness-only guard that mirrored
+    # T-193 in PIPE-05 — this also catches column drift and row-count
+    # collapse/explosion, not just staleness. GG-059.
+    # ------------------------------------------------------------------
+    try:
+        contract_result = assert_contract(
+            df,
+            MLB_FEATURE_CSV_CONTRACT,
+            audit=logger,
+            pipeline_id=COMPONENT,
+            session_id=SESSION_ID,
+            snapshot_id=SNAPSHOT_ID,
+        )
+    except DataContractViolation as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    for _w in contract_result.warnings():
+        print(f"  [WARN] {_w.check_type}: {_w.reason}", file=sys.stderr)
+
     df["game_date_dt"] = pd.to_datetime(df["game_date"], errors="coerce")
     latest = df.sort_values("game_date_dt").groupby("player_id").last().reset_index()
 
-    # Feature CSV freshness guard (mirrors T-193 in PIPE-05)
-    _FRESHNESS_WARN_DAYS = 3
-    _FRESHNESS_HALT_DAYS = 7
     _max_game_date = df["game_date_dt"].max()
-    if pd.isna(_max_game_date):
-        logger.error(COMPONENT, "feature_csv_no_valid_dates",
-                     payload={"csv_path": str(FEATURE_CSV)}, session_id=SESSION_ID)
-        print("ERROR: Feature CSV has no valid game_date values — cannot assess freshness.",
-              file=sys.stderr)
-        sys.exit(1)
     _csv_age_days = (datetime.now(tz=timezone.utc).date() - _max_game_date.date()).days
     print(f"[FEATURE CSV] {len(df)} rows | {len(latest)} players | "
           f"latest game_date: {_max_game_date.date()} ({_csv_age_days} days ago)")
-    if _csv_age_days > _FRESHNESS_HALT_DAYS:
-        logger.error(COMPONENT, "feature_csv_stale_halt",
-                     payload={"csv_age_days": _csv_age_days,
-                              "max_game_date": str(_max_game_date.date()),
-                              "halt_threshold_days": _FRESHNESS_HALT_DAYS},
-                     session_id=SESSION_ID)
-        print(f"ERROR: Feature CSV is {_csv_age_days} days stale "
-              f"(latest: {_max_game_date.date()}, threshold: {_FRESHNESS_HALT_DAYS} days). "
-              f"Run scripts/generate_mlb_features.py and scp to VPS before re-running.",
-              file=sys.stderr)
-        sys.exit(1)
-    if _csv_age_days > _FRESHNESS_WARN_DAYS:
-        logger.warning(COMPONENT, "feature_csv_stale_warn",
-                       payload={"csv_age_days": _csv_age_days,
-                                "max_game_date": str(_max_game_date.date()),
-                                "warn_threshold_days": _FRESHNESS_WARN_DAYS},
-                       session_id=SESSION_ID)
-        print(f"  [WARN] Feature CSV is {_csv_age_days} days stale "
-              f"(latest: {_max_game_date.date()}). "
-              f"T3/T4 context will use aged features. Run generate_mlb_features.py.",
-              file=sys.stderr)
 
     cohort_lookup: dict[str, pd.Series] = {}
     for _, row in latest.iterrows():

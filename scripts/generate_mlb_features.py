@@ -73,6 +73,10 @@ _SRC_ROOT = Path(__file__).parent.parent / "src"
 if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
+from prediction_market_bot.c1_signal_ingestion.data_contracts import (
+    MLB_BATTER_CONTRACT,
+    MLB_PITCHER_CONTRACT,
+)
 from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import (
     DEFAULT_REQUEST_DELAY_S,
     MLB_BASE_URL,
@@ -81,6 +85,10 @@ from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import (
 )
 from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import MLBPitcherStatsStore
 from prediction_market_bot.c1_signal_ingestion.mlb_team_stats_store import MLBTeamStatsStore
+from prediction_market_bot.c1_signal_ingestion.validators import (
+    DataContractViolation,
+    assert_contract,
+)
 from prediction_market_bot.c2_feature_store.mlb_features import MLBFeatureStore
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
@@ -353,6 +361,19 @@ def main(
             print(f"  [SKIP] No batter game logs for {season}.")
             continue
 
+        try:
+            assert_contract(
+                batter_df,
+                MLB_BATTER_CONTRACT,
+                audit=logger,
+                pipeline_id="T187A",
+                session_id=session_id,
+                snapshot_id=SNAPSHOT_ID,
+            )
+        except DataContractViolation as exc:
+            print(f"  [SKIP] Batter log data contract violated for {season}: {exc}")
+            continue
+
         # 3. Completed games → team store
         completed_df = _load_or_fetch_completed_games(season, client, session_id)
         team_store = MLBTeamStatsStore.build_from_games(completed_df) if not completed_df.empty else MLBTeamStatsStore()
@@ -372,6 +393,20 @@ def main(
         sp_ids = sorted(set(sp_ids))
 
         pitcher_df = _load_or_fetch_pitcher_logs(season, sp_ids, client, session_id)
+        if not pitcher_df.empty:
+            try:
+                assert_contract(
+                    pitcher_df,
+                    MLB_PITCHER_CONTRACT,
+                    audit=logger,
+                    pipeline_id="T187A",
+                    session_id=session_id,
+                    snapshot_id=SNAPSHOT_ID,
+                )
+            except DataContractViolation as exc:
+                # Non-fatal: pitcher fetch errors are already tolerated elsewhere
+                # in this script (see _load_or_fetch_pitcher_logs's [WARN] path).
+                print(f"  [WARN] Pitcher log data contract violated for {season}: {exc}")
         pitcher_store = MLBPitcherStatsStore()
         if not pitcher_df.empty and "player_id" in pitcher_df.columns:
             for sp_id, sp_group in pitcher_df.groupby("player_id"):
