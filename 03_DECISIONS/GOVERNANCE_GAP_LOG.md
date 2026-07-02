@@ -1172,6 +1172,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-068 — `mlb_feature_csv` Contract Marked `days_rest`/`train_test_label` Non-Nullable Against Documented, Intentional Null Behavior — HALTed PIPE-06pre During Live Games
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-068 |
+| Category | Contract-calibration defect (T-212's `data_contracts.py`, built SESSION 107, never exercised against real production edge cases before today). |
+| What was missed | `_MLB_FEATURE_CSV_NULLABLE` in `data_contracts.py` omitted `days_rest` and `train_test_label`, both marked non-nullable by default. But `mlb_features.py:225-228` explicitly sets `days_rest=NaN` for a player's first game in the dataset (no prior game to diff against — documented in the function's own docstring), and `mlb_features.py:315`/`features.py:802` explicitly set `train_test_label=None` for "retained" rows with no `temporal_cutoff` (TI-02, deliberately excluded from train/val/test splits). Both nulls are intentional, documented data-model behavior, not sparsity or corruption — the contract simply never accounted for either. |
+| When it should have been caught | At T-212 build time (SESSION 107) — the nullable set was derived by inference from "which columns look like rolling-window features," not by cross-checking every column against `mlb_features.py`'s actual null-producing logic. SESSION 108's regression-fix pass (rebuilding test fixtures to the 44-col schema) also missed it because every fixture row populated all columns — no fixture exercised a first-game-in-dataset or no-cutoff row. |
+| Phases it survived | T-212 build (SESSION 107) → SESSION 108 regression-fix pass (17 tests touched, this one untested) → every VPS cron run since T-212 shipped until today, because no `mlb_feature_csv` regeneration happened to include a fresh first-appearance player or a no-cutoff row in a HALT-checked run until 2026-07-02. |
+| Why it survived | No dedicated `test_data_contracts.py`/`test_validators.py` exists yet (SESSION 108 explicitly deferred this); all coverage was indirect, via runner-level fixtures that always fully populated every row. Unit tests cannot catch a contract/reality mismatch when the test data never contains the real-world null case the contract is supposed to tolerate. |
+| Impact | HIGH for one day, zero capital risk. `run_mlb_pregame.py` (PIPE-06pre) HALTed at 15:20 UTC on 2026-07-02 — `pregame_mlb_20260702.json` was never written. `run_t4_mlb_live.py` fell back to 2026-07-01's stale pregame roster/tickers for the entire day, producing `eval=0 fired=0` on every 45s cycle despite two MLB games live in progress (PIT@PHI, CIN@MIL) at discovery time (18:56 UTC) — meaning the entire day's T4-MLB cycle-log accumulation (the exact data GG-067's fix exists to collect, and the blocker EXP-ARITH-MLB-01 has been waiting on since SESSION 110) was silently lost. No bets were placed on stale data (T1 paper trade also reads the same pregame file, so it was equally dark) — the failure mode is "pipeline goes quiet," not "pipeline acts on wrong data," but the quiet was not caught by the session-start protocol's Step 4 operational health check until this session's SSH investigation. |
+| Discovery | 2026-07-02 SESSION 111, while checking whether `t4_mlb_cycle_log.jsonl` (GG-067's new log) had accumulated data per the SESSION 110 handoff's explicit instruction. Live ESPN scoreboard check showed 2 games in progress; VPS `t4_mlb_live_cron.log` showed batters being found (3 + 1) but `eval=0` every cycle; traced to `pregame_mlb_20260702.json` missing on disk; traced to `pregame_mlb_cron.log`'s `ERROR: DataContractViolation` at the 15:20 UTC run; traced to the two null columns against `mlb_features.py`'s own documented null-producing logic. |
+| Resolution | Added `days_rest`, `train_test_label` to `_MLB_FEATURE_CSV_NULLABLE` in `data_contracts.py`, matching `mlb_features.py`'s documented behavior exactly. Full suite re-verified: 2235 passed / 7 skipped / 1 pre-existing unrelated failure — no regressions (no existing test asserted non-nullability for either column). Deployed to VPS same session; `run_mlb_pregame.py` re-run manually post-fix to recover same-day pregame context for the remainder of the two in-progress games. |
+| Status | RESOLVED 2026-07-02 (SESSION 111) — contract fix deployed and verified same session. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
