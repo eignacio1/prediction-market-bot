@@ -18,6 +18,15 @@
 
 ---
 
+## NEXT SESSION — HIGH PRIORITY (set 2026-07-01 SESSION 106 CLOSE, operator directive)
+
+**Operator instruction, verbatim intent: T-211 and T-217 are now high priority for the next session; T-217 needs to be fixed in the next session (not just diagnosed).**
+
+1. **T-217 (GG-063) — FIX REQUIRED, not just diagnosis.** 100% of all MLB Kalshi demo order submissions have failed since inception (T1 52/52, T4 15/15, `"failed: HTTP 410"`) vs. NBA T1's 73% success rate on the identical `kalshi_client.py` code path. Resolution path registered in GOVERNANCE_GAP_LOG.md GG-063: (1) thread the real Kalshi response body (`r.text[:500]`, already captured in `_post()`/`_get()` but discarded before `submit_order()`'s error path) through to `kalshi_order_status` and the audit payload so the actual rejection reason is finally visible; (2) with real error text in hand, isolate whether this is a market-vs-event ticker mismatch, a KXMLBHIT-specific order-eligibility rule, or a demo-key MLB-series permissions gap; (3) verify the fix with a deliberate manual test order. Zero capital risk (paper mode, local ledger stays G6-authoritative per ADR-0008) but HIGH evidentiary priority — no G6 sign-off narrative should cite MLB Kalshi-side confirmation as evidence until this is fixed.
+2. **T-211 — MLB T4 sub-bands (none exist).** Was VACATED in SESSION 105 (ADR-0037) because the original T-211 target (`t4_execution_engine.py`, ADR-0029) is NBA-only architecture with zero dependency from `run_t4_mlb_live.py` — any real MLB sub-band work needs a **new task number and its own ADR**, scoped to code that actually exists (the flat single-decision-tree `run_t4_mlb_live.py`), not a resurrection of the vacated T-211. Now elevated to high priority for next session per operator instruction. Before writing any code: scope what an MLB-native sub-band architecture would actually look like (T4 MLB currently has one flat evaluator, not the 10-band NBA taxonomy from ADR-0029/0030) and draft the new ADR first.
+
+---
+
 ## SESSION 106 — ITEMS 1–3 COMPLETE, ITEM 4 DEFERRED (2026-07-01)
 
 **Operator instruction: work items sequentially, institutional depth — (1) GG-058, (2) T1 MLB 50-bet anomaly, (3) GG-057 dashboard governance trail, (4) T-211/MLB sub-bands deferred until after 1-3.**
