@@ -17,7 +17,6 @@ import sys
 import unittest
 from datetime import date, datetime, timezone, timedelta
 from io import StringIO
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
@@ -207,41 +206,16 @@ class TestFreshnessGuardThresholds(unittest.TestCase):
             _run_freshness_guard(df_dec, now)
 
 
-class TestFreshnessGuardInSourceCode(unittest.TestCase):
-    """Verify the guard is actually present in run_mlb_paper_trade.py source."""
-
-    def _get_source(self) -> str:
-        src = Path(__file__).parents[1] / "src" / "prediction_market_bot" / "run_mlb_paper_trade.py"
-        return src.read_text()
-
-    def test_freshness_warn_constant_present(self):
-        self.assertIn("_FRESHNESS_WARN_DAYS", self._get_source())
-
-    def test_freshness_halt_constant_present(self):
-        self.assertIn("_FRESHNESS_HALT_DAYS", self._get_source())
-
-    def test_stale_halt_log_event_present(self):
-        self.assertIn("feature_csv_stale_halt", self._get_source())
-
-    def test_stale_warn_log_event_present(self):
-        self.assertIn("feature_csv_stale_warn", self._get_source())
-
-    def test_sys_exit_on_halt(self):
-        src = self._get_source()
-        # sys.exit(1) must appear after the stale_halt log event
-        halt_idx = src.find("feature_csv_stale_halt")
-        exit_idx = src.find("sys.exit(1)", halt_idx)
-        self.assertGreater(exit_idx, halt_idx, "sys.exit(1) not found after feature_csv_stale_halt log")
-
-    def test_warn_does_not_exit(self):
-        src = self._get_source()
-        warn_idx = src.find("feature_csv_stale_warn")
-        halt_idx = src.find("feature_csv_stale_halt")
-        # warning block must come AFTER halt block in source, OR
-        # sys.exit must not appear between warn log and halt log
-        # Simplest check: warn event appears in source, guard is structured warn then halt
-        self.assertGreater(warn_idx, 0)
-        self.assertGreater(halt_idx, 0)
+# TestFreshnessGuardInSourceCode (grep-on-source assertions for
+# _FRESHNESS_WARN_DAYS/_FRESHNESS_HALT_DAYS/feature_csv_stale_{warn,halt})
+# retired T-212 SESSION 108: T-212's assert_contract() intentionally
+# supersedes and removes the T-193 ad hoc freshness-guard block these
+# assertions checked for. Behavioral coverage (halt on stale data, warn
+# below halt threshold) now belongs to tests/test_validators.py /
+# tests/test_data_contracts.py against MLB_FEATURE_CSV_CONTRACT's
+# freshness_warn_days/freshness_halt_days. The remaining classes above
+# (Fresh/Warning/Halt/NoDates/Thresholds) test a locally-mirrored pure
+# function, not production source text, and are retained.
 
 
 if __name__ == "__main__":
