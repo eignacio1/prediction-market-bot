@@ -27,8 +27,9 @@ class TestExecutionBandEnum:
         }
         # T4-MICRO is intentionally absent (no model_p; ADR-0030 carve-out).
         assert "T4-MICRO" not in {b.value for b in ExecutionBand}
-        # 5 aggregate bands + 10 sub-bands.
-        assert len(list(ExecutionBand)) == 15
+        # 5 aggregate bands + 10 NBA T4 sub-bands + 3 MLB-native T4 sub-bands
+        # (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
+        assert len(list(ExecutionBand)) == 18
 
     def test_band_string_values(self):
         assert ExecutionBand.T1_MULTI_DAY.value == "T1"
@@ -130,9 +131,10 @@ class TestGetActiveBands:
             assert sub not in active_bands
 
     def test_include_realtime_returns_all_bands(self):
-        # 5 aggregate (T1–T5) + 10 T4 sub-bands (ADR-0029) = 15.
+        # 5 aggregate (T1–T5) + 10 NBA T4 sub-bands (ADR-0029) + 3 MLB-native T4
+        # sub-bands (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
         all_bands = get_active_bands(include_realtime=True)
-        assert len(all_bands) == 15
+        assert len(all_bands) == 18
 
 
 class TestT4SubBandRegistry:

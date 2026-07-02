@@ -72,6 +72,18 @@ class ExecutionBand(Enum):
     T4_CORR      = "T4-CORR"       # Cross-market correlation overlay (downward-only, portfolio)
     T4_EXIT      = "T4-EXIT"       # Active position management / exit signals (portfolio)
 
+    # --- MLB-native T4 sub-bands (ADR-0039, DS sign-off SESSION 108/T-219) ---
+    # NOT part of the NBA T4_SUBBAND_REGISTRY/T4_SUBBANDS roster above — MLB gets its own
+    # parallel registry (T4_MLB_SUBBAND_REGISTRY) because T4M-PROJ is a documented exception
+    # to the "all T4 sub-bands are BLOCKED" invariant: it is a RELABELING of the flat model
+    # already live in run_t4_mlb_live.py (ADR-0023), not a net-new Phase-8-gated build.
+    # T4M-ARITH and T4M-FLOW ARE net-new and ARE BLOCKED, following the NBA pattern exactly.
+    # Only these three are authorized (T-219) — T4M-BOUNDARY and the rest of ADR-0039's
+    # Tier B roster are scoped but NOT built.
+    T4M_PROJ  = "T4M-PROJ"    # ACTIVE — flat Binomial model, already running (run_t4_mlb_live.py)
+    T4M_ARITH = "T4M-ARITH"   # BLOCKED — near-certain band between p_t4's 0.0/1.0 hard boundaries
+    T4M_FLOW  = "T4M-FLOW"    # BLOCKED — accumulated game-state pattern, incl. FLOW-BLOWOUT tree
+
 
 # ---------------------------------------------------------------------------
 # Band configuration
@@ -305,6 +317,46 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         pipeline_id="PIPE-07",
         cron_schedule=None,
         requires_realtime=True,
+        phase_active="Phase 8",
+    ),
+
+    # -----------------------------------------------------------------------
+    # MLB-native T4 sub-band configs (ADR-0039, T-219). See T4_MLB_SUBBAND_REGISTRY
+    # below for Tier B governance metadata (status, exp_gate, alpha_hypothesis).
+    # -----------------------------------------------------------------------
+    ExecutionBand.T4M_PROJ: BandConfig(
+        band=ExecutionBand.T4M_PROJ,
+        model_class="binomial_flat",         # p_hits_gte_threshold — run_t4_mlb_live.py
+        max_compute_ms=50,
+        execution_sla_s=45,                  # matches the existing 45s poll cycle (POLL_INTERVAL_S)
+        kelly_fraction=0.10,                 # KELLY_T4 in run_t4_mlb_live.py — already ADR-0023 approved
+        pipeline_id="PIPE-07-MLB",
+        cron_schedule=None,                  # Event-driven within the 45s poll loop
+        requires_realtime=False,             # Already running on cron/poll infra, not real-time infra
+        phase_active="Phase 6",              # Live today — not gated behind Phase 8
+    ),
+    ExecutionBand.T4M_ARITH: BandConfig(
+        band=ExecutionBand.T4M_ARITH,
+        model_class="binomial_near_certain",  # near-certain band within p_hits_gte_threshold's boundaries
+        max_compute_ms=10,
+        execution_sla_s=45,
+        kelly_fraction=0.10,                  # PROVISIONAL & NON-OPERATIONAL: held at T4M-PROJ's ceiling
+                                               #   (KELLY_T4) until EXP-ARITH-MLB-01. Do NOT raise without EXP.
+        pipeline_id="PIPE-07-MLB",
+        cron_schedule=None,
+        requires_realtime=True,               # BLOCKED: Phase 8 (net-new sub-band, ADR-0039)
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4M_FLOW: BandConfig(
+        band=ExecutionBand.T4M_FLOW,
+        model_class="context_multiplier_mlb",  # score-differential blowout multiplier on p_t4
+        max_compute_ms=50,
+        execution_sla_s=45,
+        kelly_fraction=0.08,                   # PROVISIONAL: borrows NBA T4-FLOW's starting order of
+                                                #   magnitude (no MLB precedent exists). EXP-FLOW-MLB-01.
+        pipeline_id="PIPE-07-MLB",
+        cron_schedule=None,
+        requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0039)
         phase_active="Phase 8",
     ),
 }
@@ -630,6 +682,147 @@ def validate_t4_subbands() -> list[str]:
             violations.append(
                 f"{band.value}: BandConfig.requires_realtime=False; all T4 sub-bands are Phase 8+."
             )
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# MLB-native T4 sub-band governance registry — ADR-0039 (T-219)
+# ---------------------------------------------------------------------------
+#
+# GOVERNANCE: Deliberately SEPARATE from T4_SUBBAND_REGISTRY/T4_SUBBANDS above, not merged
+# into them. NBA's validate_t4_subbands() hard-asserts every registry entry is status=
+# "BLOCKED" (ADR-0029 Tier B invariant). T4M-PROJ genuinely is NOT blocked — it is the
+# existing flat model in run_t4_mlb_live.py, already live and trading paper capital under
+# ADR-0023. Registering it "BLOCKED" here would be false; adding it to the NBA registry
+# would either violate that registry's own invariant or require weakening it (a superseding
+# ADR this session does not have). So MLB gets its own registry with its own validator that
+# encodes the T4M-PROJ exception explicitly, rather than silently bending NBA's Tier A rule.
+#
+# T4M-ARITH and T4M-FLOW ARE net-new and DO follow the standard BLOCKED pattern — same
+# _assert_sub_band_blocked() guard, same Phase 8 Activation Gate + EXP + APR requirement
+# as every NBA sub-band, per ADR-0039's DS Sign-Off (code authorization != capital
+# authorization).
+#
+# Only T4M-PROJ, T4M-ARITH, and T4M-FLOW exist here. The rest of ADR-0039's Tier B roster
+# (T4M-BOUNDARY, T4M-EVENT, T4M-LINEUP, T4M-PITCHER, T4M-STAGED, T4M-CORR, T4M-EXIT) is
+# scoped in the ADR but explicitly NOT authorized for code — do not add entries for them
+# without a new sign-off.
+# ---------------------------------------------------------------------------
+
+T4_MLB_SUBBAND_REGISTRY: dict[ExecutionBand, T4SubBandSpec] = {
+    ExecutionBand.T4M_PROJ: T4SubBandSpec(
+        band=ExecutionBand.T4M_PROJ,
+        information_class="Live Binomial survival posterior on pregame ba_l10 prior (flat model)",
+        provisional_kelly=0.10,
+        kelly_basis=(
+            "Inherits KELLY_T4 from run_t4_mlb_live.py. NOT a Tier B placeholder — already "
+            "approved and operating under ADR-0023 paper trading. This registry entry is a "
+            "relabeling/traceability addition (ADR-0039, T-219); it changes no live behavior."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,  # governed by T4_BAND_WEIGHT budget check in run_t4_mlb_live.py
+        exp_gate=(),  # already live; no activation gate pending
+        alpha_hypothesis=(
+            "Market is slow to reprice live MLB batter-hit props after each at-bat; the "
+            "Binomial-updated posterior beats the current MIP + vig."
+        ),
+        status="ACTIVE",  # Documented, deliberate exception — see module governance note above.
+        notes=(
+            "Implemented in run_t4_mlb_live.py::p_hits_gte_threshold / _run_cycle. "
+            "No new work required to stand this sub-band up (ADR-0039 Tier B roster)."
+        ),
+    ),
+    ExecutionBand.T4M_ARITH: T4SubBandSpec(
+        band=ExecutionBand.T4M_ARITH,
+        information_class="Threshold-approaching Binomial near-certainty (h needed vs ab_remaining), pre-boundary",
+        provisional_kelly=0.10,
+        kelly_basis=(
+            "PROVISIONAL & NON-OPERATIONAL. Held at T4M-PROJ's existing ceiling (KELLY_T4=0.10) "
+            "until EXP-ARITH-MLB-01 confirms p_arith tail reliability. Do NOT raise without EXP."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=0.30,
+        exp_gate=("EXP-ARITH-MLB-01",),
+        alpha_hypothesis=(
+            "The existing flat model already has degenerate hard boundaries "
+            "(h_so_far >= threshold -> p_t4=1.0; h_needed > ab_remaining -> p_t4=0.0). This "
+            "sub-band formalizes the near-certain band between those boundaries, where Binomial "
+            "variance has contracted enough that a distinct (likely higher) Kelly fraction is "
+            "justified."
+        ),
+        status="BLOCKED",
+        notes=(
+            "Reuses p_hits_gte_threshold/_binomial_pmf/_compute_ab_remaining from "
+            "run_t4_mlb_live.py (t4_mlb_execution_engine.T4MlbArithEvaluator). Routing gated by "
+            "an ARITH entry window + confidence gate, both EXP-required."
+        ),
+    ),
+    ExecutionBand.T4M_FLOW: T4SubBandSpec(
+        band=ExecutionBand.T4M_FLOW,
+        information_class="Accumulated game-state / context pattern (blowout) on MLB batter markets",
+        provisional_kelly=0.08,
+        kelly_basis=(
+            "PROVISIONAL: borrows NBA T4-FLOW's starting order of magnitude — no MLB-specific "
+            "precedent exists. EXP-FLOW-MLB-01 required before this value is operative."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=0.40,
+        exp_gate=("EXP-FLOW-MLB-01",),
+        alpha_hypothesis=(
+            "Sustained run-differential blowouts shift true batter outcome probability "
+            "(garbage-time at-bats vs. tiring relief, or leading-team batters pulled early) "
+            "before the market reprices."
+        ),
+        status="BLOCKED",
+        notes=(
+            "FLOW-BLOWOUT tree (t4_mlb_execution_engine.T4MlbFlowEvaluator). Requires score_diff "
+            "as an evaluator input; live ESPN score extraction is NOT wired as part of T-219 — "
+            "the evaluator is dependency-injection-testable only until that follow-up lands."
+        ),
+    ),
+}
+
+
+T4_MLB_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4M_PROJ,
+    ExecutionBand.T4M_ARITH,
+    ExecutionBand.T4M_FLOW,
+)
+
+
+def get_t4_mlb_subband_spec(band: ExecutionBand) -> T4SubBandSpec:
+    """Return the Tier B governance spec for an MLB T4 sub-band. Raises KeyError otherwise."""
+    return T4_MLB_SUBBAND_REGISTRY[band]
+
+
+def validate_t4_mlb_subbands() -> list[str]:
+    """
+    Structural validation of the MLB T4 sub-band registry. Returns violation messages.
+
+    Unlike validate_t4_subbands() (NBA), this does NOT require every entry to be BLOCKED:
+    T4M-PROJ is a documented ACTIVE exception (relabeling of the already-live flat model).
+    T4M-ARITH and T4M-FLOW must be BLOCKED, same invariant as every NBA sub-band. Drift in
+    either direction — T4M-PROJ ever going non-ACTIVE, or ARITH/FLOW ever going non-BLOCKED
+    without an activation ADR — is flagged. Empty list = clean.
+    """
+    violations: list[str] = []
+    if set(T4_MLB_SUBBAND_REGISTRY) != set(T4_MLB_SUBBANDS):
+        violations.append(
+            "T4_MLB_SUBBAND_REGISTRY roster does not match T4_MLB_SUBBANDS tuple "
+            f"(registry-only={set(T4_MLB_SUBBAND_REGISTRY) - set(T4_MLB_SUBBANDS)}, "
+            f"tuple-only={set(T4_MLB_SUBBANDS) - set(T4_MLB_SUBBAND_REGISTRY)})."
+        )
+    for band, spec in T4_MLB_SUBBAND_REGISTRY.items():
+        expected_status = "ACTIVE" if band is ExecutionBand.T4M_PROJ else "BLOCKED"
+        if spec.status != expected_status:
+            violations.append(
+                f"{band.value}: status={spec.status!r}, expected {expected_status!r}. "
+                f"T4M-PROJ is the sole documented ACTIVE exception (ADR-0039); all other MLB "
+                f"T4 sub-bands must stay BLOCKED until their own Phase 8 Activation Gate clears."
+            )
+        cfg = BAND_CONFIGS.get(band)
+        if cfg is None:
+            violations.append(f"{band.value}: missing BandConfig entry.")
     return violations
 
 
