@@ -265,14 +265,21 @@ def _compute_ab_remaining(
     heuristic. Uses _AB_BY_SLOT when batting_slot is known; falls back to
     AB_PER_GAME_DEFAULT (3.7) for unknown slots (0).
 
-    Extra innings (inning > 9): innings_remaining clamps to 0 →
-    ab_remaining = 0 → T4 stops evaluating. Known conservative behaviour;
-    acceptable for paper trading.
+    Extra innings (inning > 9, T-220): unlike innings 1-9, there is no fixed
+    endpoint to derive an inning-based cap from — the game continues until
+    resolved. Rather than clamping ab_from_inning to 0 (which silently
+    stopped T4 from evaluating any batter once a game went past inning 9),
+    floor it at 1 AB — the batter's next likely plate appearance. ab_from_total
+    still acts as the ceiling, so a batter who has already exceeded their
+    expected ABs for the game correctly returns 0.
     """
     expected_total = _AB_BY_SLOT.get(batting_slot, AB_PER_GAME_DEFAULT)
-    innings_remaining = max(0.0, 9.0 - inning + 0.5)
-    ab_from_inning = expected_total * (innings_remaining / 9.0)
-    ab_from_total  = max(0.0, expected_total - ab_so_far)
+    if inning <= 9:
+        innings_remaining = max(0.0, 9.0 - inning + 0.5)
+        ab_from_inning = expected_total * (innings_remaining / 9.0)
+    else:
+        ab_from_inning = 1.0
+    ab_from_total = max(0.0, expected_total - ab_so_far)
     return max(0, round(min(ab_from_inning, ab_from_total)))
 
 

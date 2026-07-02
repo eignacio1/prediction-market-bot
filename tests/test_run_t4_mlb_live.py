@@ -796,11 +796,20 @@ class TestComputeAbRemaining:
         result = runner._compute_ab_remaining(ab_so_far=3, inning=9)
         assert result == 0
 
-    def test_extra_innings_clamps_to_zero(self):
-        # Inning 10+ → innings_remaining=0 → ab_from_inning=0 → returns 0
+    def test_extra_innings_floors_at_one(self):
+        # T-220: inning > 9 → ab_from_inning floors at 1.0 rather than
+        # clamping to 0, so T4 doesn't go dark once a game reaches extras.
+        # Slot 0 (default expected=3.7), 3 ABs so far: ab_from_total=0.7 → min(1.0,0.7)=0.7 → 1
         result = runner._compute_ab_remaining(ab_so_far=3, inning=10)
-        assert result == 0
+        assert result == 1
+        # 0 ABs so far: ab_from_total=3.7 → min(1.0,3.7)=1.0 → 1
         result = runner._compute_ab_remaining(ab_so_far=0, inning=12)
+        assert result == 1
+
+    def test_extra_innings_still_clamps_when_already_exceeded(self):
+        # Batter already exceeded expected ABs even in extra innings → 0,
+        # since ab_from_total (the ceiling) is 0 regardless of the floor.
+        result = runner._compute_ab_remaining(ab_so_far=5, inning=11)
         assert result == 0
 
     def test_already_exceeded_expected_total(self):
