@@ -1206,6 +1206,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-070 — Session-Start Governance Hook Displayed NBA Ledger Unlabeled as Generic "Portfolio," Indistinguishable From the Active MLB Book
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-070 |
+| Category | Tooling/session-start protocol defect — the hook itself, not the trading system. |
+| What was missed | `.claude/hooks/governance_scan.sh`'s portfolio section read only `paper_portfolio.json` (NBA) and printed it as unlabeled generic `PORTFOLIO (VPS LIVE BOOK)`. NBA and MLB paper trading use fully separate, isolated ledger files (`paper_portfolio.json` vs `paper_portfolio_mlb.json`, confirmed via `PORTFOLIO_PATH` constants in `run_paper_trade.py`/`run_mlb_paper_trade.py`) with independent `initial_bankroll_usd`/`total_realized_pnl`. The hook showed only the NBA figure (frozen, dark, -24.9% drawdown — the already-adjudicated GG-034/GG-037 baseline) with no indication it excluded the live, active MLB pool (currently +$100.00 P&L, 0.0% drawdown, 49/30 resolved). |
+| When it should have been caught | When the hook was written — should have accounted for multi-sport ledgers from the start, especially once MLB became the sole active priority (2026-07-01 operator directive). |
+| Phases it survived | Every session-start scan since the hook's creation through SESSION 113. |
+| Why it survived | No test/assertion on hook output; the hook is bash+inline-python with no review gate of its own. NBA's number happened to look plausible (a real, valid, if stale, historical figure) rather than obviously broken, so nothing forced a recheck until it was read cold in a fresh session. |
+| Impact | MEDIUM — no capital risk (both figures were individually correct, just unlabeled/incomplete), but real time/token cost: SESSION 113 spent a full investigation pass (~20k tokens) re-deriving from source that the 24.9% figure was NBA-only and not a live kill-switch breach, before reaching the same conclusion this gap entry now documents permanently. |
+| Discovery | 2026-07-02 SESSION 113 — user flagged that the hook's drawdown figure has caused this exact re-investigation before and must be delineated permanently. |
+| Resolution | **RESOLVED 2026-07-02 (SESSION 113).** Hook rewritten to fetch and print both `paper_portfolio_mlb.json` and `paper_portfolio.json` from the VPS as two explicitly labeled blocks — `MLB (ACTIVE)` and `NBA (DARK/FROZEN — historical, not live risk)` — with MLB printed first. Verified locally: output now shows both books unambiguously. Memory saved (`feedback_portfolio_ledger_delineation.md`) so future sessions don't re-derive this. |
+| Status | RESOLVED 2026-07-02 (SESSION 113). |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
