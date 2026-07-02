@@ -188,8 +188,19 @@ _MLB_FEATURE_CSV_BOOL_FIELDS = {"is_home_game", "b2b_flag", "opp_sp_is_known"}
 # Feature engineering columns are permitted to be null for players with an
 # incomplete rolling window (e.g. early-season, few prior games) — this is
 # expected data sparsity, not a structural defect.
+#
+# days_rest and train_test_label are also expected-null by design, not sparsity:
+# mlb_features.py:225-228 sets days_rest=NaN for a player's first game in the
+# dataset (no prior game to diff against); mlb_features.py:315/features.py:802
+# set train_test_label=None for "retained" rows with no temporal_cutoff (TI-02
+# excluded from train/val/test splits). Both were omitted here at T-212
+# (SESSION 107) build time and went undetected because unit-test fixtures
+# always populated every row — production data hit the real edge case first
+# on 2026-07-02, HALTing PIPE-06pre and blocking that day's pregame context
+# generation (see DECISION_LOG SESSION 111 entry).
 _MLB_FEATURE_CSV_NULLABLE = _MLB_FEATURE_CSV_RATE_FIELDS | {
     "opp_sp_era_l5", "opp_sp_k9_l5", "opp_sp_bb9_l5",
+    "days_rest", "train_test_label",
 }
 
 
