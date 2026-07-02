@@ -74,6 +74,30 @@ _RETRY_DELAYS_S: tuple[int, ...] = (5, 10, 30)  # T-207: exponential backoff for
 # MLB Stats API fetch
 # ---------------------------------------------------------------------------
 
+def _is_game_final(game_pk: int) -> bool:
+    """GG-069 / T-221: confirm a game is actually over before trusting its box score.
+
+    `gameLog` splits update live during a game, so a matching split can reflect
+    a partial (mid-game) hit total. Queries the lightweight schedule-by-gamePk
+    endpoint (not the full live-feed) and checks `status.abstractGameState`.
+    Any failure (network error, missing field, unrecognized game_pk) returns
+    False — the caller treats that identically to "no result yet," which is
+    the safe default (position stays open, retried on the next cron run).
+    """
+    try:
+        resp = requests.get(
+            f"{_MLB_BASE_URL}/api/v1/schedule",
+            params={"gamePk": game_pk},
+            timeout=_REQUEST_TIMEOUT_S,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        game = data["dates"][0]["games"][0]
+        return game.get("status", {}).get("abstractGameState") == "Final"
+    except Exception:
+        return False
+
+
 def _fetch_mlb_hits(
     player_id: int,
     game_date: str,
@@ -83,7 +107,8 @@ def _fetch_mlb_hits(
 
     game_date: YYYY-MM-DD
     game_type: "R" (Regular) or "P" (Postseason)
-    Returns hits as float, or None if game not found or API unreachable.
+    Returns hits as float, or None if game not found, not yet FINAL
+    (GG-069/T-221), or API unreachable.
     """
     year = int(game_date[:4])
     url = f"{_MLB_BASE_URL}/api/v1/people/{player_id}/stats"
@@ -105,6 +130,9 @@ def _fetch_mlb_hits(
             splits = stats_arr[0].get("splits", [])
             for split in splits:
                 if split.get("date", "") == game_date:
+                    game_pk = split.get("game", {}).get("gamePk")
+                    if game_pk is None or not _is_game_final(game_pk):
+                        return None  # GG-069: not confirmed FINAL — do not resolve
                     return float(split.get("stat", {}).get("hits", 0))
             return None  # date not found in splits — not a transient error
         except Exception as exc:
