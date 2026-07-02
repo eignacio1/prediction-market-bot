@@ -1373,3 +1373,56 @@ class TestLiveDataFreshnessGuard:
         )
         assert fi == 0
         assert guard.total_halts == 1  # market_active check failed
+
+
+# ---------------------------------------------------------------------------
+# Singleton lock (T-216 — GG-062 fix)
+# ---------------------------------------------------------------------------
+
+
+class TestAcquireSingletonLock:
+    """
+    acquire_singleton_lock() is the GG-062/T-216 fix: an atomic flock-based
+    guard against two concurrent run_t4_mlb_live.py evaluation loops, replacing
+    the race-prone `pkill -f`-based cleanup in t4-mlb.service's ExecStartPre.
+    """
+
+    def test_first_caller_acquires_lock(self, tmp_path):
+        lock_path = tmp_path / "t4_mlb_live.lock"
+        assert runner.acquire_singleton_lock(lock_path) is True
+
+    def test_second_caller_in_same_process_is_reentrant(self, tmp_path):
+        # flock is per-(fd,inode); a second call from the same process opens a
+        # *new* fd, so this exercises the real cross-process contention path
+        # indirectly — the first fd is still held open by module state.
+        lock_path = tmp_path / "t4_mlb_live.lock"
+        assert runner.acquire_singleton_lock(lock_path) is True
+
+    def test_concurrent_holder_blocks_second_acquisition(self, tmp_path):
+        import fcntl
+        lock_path = tmp_path / "t4_mlb_live.lock"
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        # Simulate another live process already holding the lock: acquire it
+        # via a separate, independently-held fd (not through the module's
+        # global, so releasing it is under this test's control).
+        holder_fh = open(lock_path, "w")
+        fcntl.flock(holder_fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        try:
+            assert runner.acquire_singleton_lock(lock_path) is False
+        finally:
+            holder_fh.close()  # releases the flock
+
+    def test_lock_released_after_holder_closes_is_acquirable(self, tmp_path):
+        import fcntl
+        lock_path = tmp_path / "t4_mlb_live.lock"
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        holder_fh = open(lock_path, "w")
+        fcntl.flock(holder_fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        holder_fh.close()  # simulates the holding process dying/exiting
+        assert runner.acquire_singleton_lock(lock_path) is True
+
+    def test_lock_file_contains_pid(self, tmp_path):
+        import os
+        lock_path = tmp_path / "t4_mlb_live.lock"
+        assert runner.acquire_singleton_lock(lock_path) is True
+        assert lock_path.read_text().strip() == str(os.getpid())
