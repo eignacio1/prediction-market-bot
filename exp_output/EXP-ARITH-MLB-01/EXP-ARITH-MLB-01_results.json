@@ -1,0 +1,385 @@
+{
+  "n_raw_cycles": 1201,
+  "headline": {
+    "entry_window": 1,
+    "confidence_gate": 0.8,
+    "n_qualifying_cycles": 1,
+    "n_unique_tickers": 1,
+    "n_resolved": 1,
+    "ev_per_bet": -0.67,
+    "win_rate": 0.0,
+    "total_pnl": -0.67,
+    "tier": {
+      "at_tier1": false,
+      "at_tier2": false,
+      "diagnostic_sprint": false
+    },
+    "verdict": "INCONCLUSIVE",
+    "edge_monotonicity": {
+      "verdict": "INCONCLUSIVE",
+      "reason": "n=1 < MIN_N=20"
+    }
+  },
+  "grid": [
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.7,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.75,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.8,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.85,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.9,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 0,
+      "confidence_gate": 0.95,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.7,
+      "n_qualifying_cycles": 58,
+      "n_unique_tickers": 7,
+      "n_resolved": 7,
+      "ev_per_bet": -0.5785714285714285,
+      "win_rate": 0.14285714285714285,
+      "total_pnl": -4.05,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=7 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.75,
+      "n_qualifying_cycles": 25,
+      "n_unique_tickers": 3,
+      "n_resolved": 3,
+      "ev_per_bet": -0.7466666666666667,
+      "win_rate": 0.0,
+      "total_pnl": -2.24,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=3 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.8,
+      "n_qualifying_cycles": 1,
+      "n_unique_tickers": 1,
+      "n_resolved": 1,
+      "ev_per_bet": -0.67,
+      "win_rate": 0.0,
+      "total_pnl": -0.67,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=1 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.85,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.9,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 1,
+      "confidence_gate": 0.95,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.7,
+      "n_qualifying_cycles": 58,
+      "n_unique_tickers": 7,
+      "n_resolved": 7,
+      "ev_per_bet": -0.5785714285714285,
+      "win_rate": 0.14285714285714285,
+      "total_pnl": -4.05,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=7 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.75,
+      "n_qualifying_cycles": 25,
+      "n_unique_tickers": 3,
+      "n_resolved": 3,
+      "ev_per_bet": -0.7466666666666667,
+      "win_rate": 0.0,
+      "total_pnl": -2.24,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=3 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.8,
+      "n_qualifying_cycles": 1,
+      "n_unique_tickers": 1,
+      "n_resolved": 1,
+      "ev_per_bet": -0.67,
+      "win_rate": 0.0,
+      "total_pnl": -0.67,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=1 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.85,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.9,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    },
+    {
+      "entry_window": 2,
+      "confidence_gate": 0.95,
+      "n_qualifying_cycles": 0,
+      "n_unique_tickers": 0,
+      "n_resolved": 0,
+      "ev_per_bet": 0.0,
+      "win_rate": 0.0,
+      "total_pnl": 0.0,
+      "tier": {
+        "at_tier1": false,
+        "at_tier2": false,
+        "diagnostic_sprint": false
+      },
+      "verdict": "INCONCLUSIVE",
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "reason": "n=0 < MIN_N=20"
+      }
+    }
+  ]
+}
