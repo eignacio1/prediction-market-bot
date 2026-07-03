@@ -265,6 +265,76 @@ class TestReconstructT4Ledger:
         assert result == pytest.approx(10.5)
 
 
+class TestReconstructFiredTickerStates:
+    def test_empty_portfolio_returns_empty_dict(self):
+        portfolio = {"open_positions": [], "closed_positions": []}
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {}
+
+    def test_maps_ticker_to_entry_state(self):
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": True, "game_date": "2026-06-24",
+                 "h_so_far_at_entry": 1, "ab_remaining_at_entry": 3, "entered_at": "2026-06-24T18:00:00Z"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {"T1": (1, 3)}
+
+    def test_excludes_not_pool_isolated(self):
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": False, "game_date": "2026-06-24",
+                 "h_so_far_at_entry": 1, "ab_remaining_at_entry": 3, "entered_at": "2026-06-24T18:00:00Z"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {}
+
+    def test_excludes_different_game_date(self):
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": True, "game_date": "2026-06-23",
+                 "h_so_far_at_entry": 1, "ab_remaining_at_entry": 3, "entered_at": "2026-06-23T18:00:00Z"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {}
+
+    def test_excludes_positions_missing_entry_state(self):
+        # Pre-T-225 positions (or non-T4 callers) never set h_so_far_at_entry — must
+        # not crash and must not populate a bogus (None, None) guard entry.
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": True, "game_date": "2026-06-24",
+                 "entered_at": "2026-06-24T18:00:00Z"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {}
+
+    def test_most_recent_entry_wins_across_open_and_closed(self):
+        # Same ticker fired twice this game day: an earlier position now closed,
+        # and a later re-entry still open. Reconstruction must recover the LATEST
+        # state (by entered_at), not whichever list happens to be scanned first.
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": True, "game_date": "2026-06-24",
+                 "h_so_far_at_entry": 2, "ab_remaining_at_entry": 1, "entered_at": "2026-06-24T19:30:00Z"},
+            ],
+            "closed_positions": [
+                {"kalshi_ticker": "T1", "pool_isolated": True, "game_date": "2026-06-24",
+                 "h_so_far_at_entry": 0, "ab_remaining_at_entry": 3, "entered_at": "2026-06-24T18:00:00Z"},
+            ],
+        }
+        result = runner._reconstruct_fired_ticker_states(portfolio, "2026-06-24")
+        assert result == {"T1": (2, 1)}
+
+
 # ---------------------------------------------------------------------------
 # _load_pregame_context
 # ---------------------------------------------------------------------------
@@ -712,6 +782,76 @@ class TestRunCycle:
             assert new_deployed > 0.0
         else:
             assert new_deployed == pytest.approx(0.0)
+
+    def test_reentry_blocked_when_state_unchanged(self, tmp_path):
+        # T-225: a ticker already fired at exactly this (h_so_far, ab_remaining)
+        # must not re-fire on a subsequent cycle where nothing has moved.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=0.02)}
+        pregame = self._pregame(threshold=1, ba_l10=0.99)
+        # ab_remaining for h_so_far=0, ab_so_far=1, inning=5, batting_slot=0 (default
+        # slot map) — computed the same way _run_cycle computes it internally.
+        ab_remaining = runner._compute_ab_remaining(1, 5, 0)
+        already_fired = {TICKER_SOTO: (0, ab_remaining)}
+
+        _, fi, deployed = runner._run_cycle(
+            cycle_id="C8-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            already_fired_game=already_fired,
+        )
+        assert fi == 0
+        assert deployed == pytest.approx(0.0)
+
+    def test_reentry_allowed_when_state_changed(self, tmp_path):
+        # T-225: a ticker that fired at a DIFFERENT (h_so_far, ab_remaining) than
+        # the current cycle's live state must be eligible to fire again.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=0.02)}
+        pregame = self._pregame(threshold=1, ba_l10=0.99)
+        # Prior fire recorded at a state that does NOT match the current cycle's
+        # (h_so_far=0, ab_remaining computed from ab_so_far=1) — simulates the
+        # player having batted again since that fire (state moved on).
+        already_fired = {TICKER_SOTO: (0, 999)}
+
+        _, fi, deployed = runner._run_cycle(
+            cycle_id="C9-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            already_fired_game=already_fired,
+        )
+        assert fi == 1
+        assert deployed > 0.0
+
+    def test_fired_position_records_entry_state(self, tmp_path):
+        # T-225: the opened position must persist the live state at entry so a
+        # restart can reconstruct the re-entry guard correctly.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.40, vig=0.03)}
+        pregame = self._pregame(threshold=1, ba_l10=0.99)
+
+        _, fi, _ = runner._run_cycle(
+            cycle_id="C10-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+        )
+        assert fi == 1
+        state = trader.get_state()
+        pos = state["open_positions"][0]
+        assert pos["h_so_far_at_entry"] == 0
+        assert pos["ab_remaining_at_entry"] is not None
 
     def test_no_live_quotes_market_skipped(self, tmp_path):
         engine, trader, store, audit = _make_components(tmp_path)

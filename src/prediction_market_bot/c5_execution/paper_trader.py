@@ -376,6 +376,8 @@ class PaperTrader:
         game_date: str,
         session_id: str | None = None,
         pool_isolated: bool = False,
+        h_so_far_at_entry: int | None = None,
+        ab_remaining_at_entry: int | None = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Record a C4-approved paper bet.
@@ -457,6 +459,11 @@ class PaperTrader:
                 "probable_injury_signal": probable_injury_signal,
                 "t3_signal": str(approval.get("t3_signal", "NEUTRAL")),   # EXP-018: T3 overlay signal at entry
                 "t1_edge": round(float(approval.get("t1_edge", gross_edge)), 6),  # EXP-018: raw T1 edge pre-T3
+                # T-225: live-state snapshot at entry, used by T4 MLB's per-ticker
+                # re-entry dedup guard to detect whether p_t4's inputs have moved
+                # since this ticker's last fire. None for non-T4 callers.
+                "h_so_far_at_entry": h_so_far_at_entry,
+                "ab_remaining_at_entry": ab_remaining_at_entry,
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)

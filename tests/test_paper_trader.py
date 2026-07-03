@@ -128,6 +128,37 @@ class TestOpenPosition:
         assert len(trader.get_state()["open_positions"]) == 1
 
     @pytest.mark.unit
+    def test_records_entry_state_when_provided(self, tmp_path):
+        # T-225: T4 MLB re-entry dedup relies on these fields being persisted.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        ok, pos = trader.open_position(
+            approval=_make_approval(10.0, "YES"),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+            pool_isolated=True,
+            h_so_far_at_entry=2, ab_remaining_at_entry=3,
+        )
+        assert ok
+        assert pos["h_so_far_at_entry"] == 2
+        assert pos["ab_remaining_at_entry"] == 3
+
+    @pytest.mark.unit
+    def test_entry_state_defaults_none_for_non_t4_callers(self, tmp_path):
+        # T1/T2/T3/NBA callers don't pass these kwargs — must not error, and
+        # must not be silently coerced to some other "unset" sentinel.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        ok, pos = trader.open_position(
+            approval=_make_approval(10.0, "YES"),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXNBAPTS-TEST", kalshi_threshold=20,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        assert pos["h_so_far_at_entry"] is None
+        assert pos["ab_remaining_at_entry"] is None
+
+    @pytest.mark.unit
     def test_rejects_zero_size(self, tmp_path):
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         ok, pos = trader.open_position(
