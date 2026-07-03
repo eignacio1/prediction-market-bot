@@ -14,6 +14,12 @@
 
 ---
 
+## ⚠️ Scope Note (2026-07-02 documentation-remediation pass)
+
+This document's "Current Band Registry — All 11 Strategies" table and all P1–P7 analysis below are **NBA-only** (Strategies A–K registered in the original `BAND_REGISTRY`/`execution_bands.py`) and predate MLB. MLB's band registry is a **separate registry** — `T4_MLB_SUBBAND_REGISTRY`/`T4_MLB_SUBBANDS` in `execution_bands.py` (added under ADR-0039, additive-only, does not touch the NBA registry this document describes). This document was not extended to cover it. If MLB ever needs a comparable Band Assignment Protocol treatment, that is new work, not an update to this file. Not independently re-verified against current NBA code in this pass beyond the T2/T3-SKELETON-in-production observation below, which remains accurate (NBA cron is dark/tabled, not removed).
+
+---
+
 ## PDTP Problem Brief
 
 **Decision statement:** A decision will be made by AO + DS on how to structurally enforce time-horizon band assignment for all quantitative strategies — such that every strategy addition, modification, or removal requires explicit band specification, evidence validation, venue-level feasibility checking, and fallback chain definition.

@@ -10,6 +10,8 @@
 **Decision references:** ADR-0001, ADR-0002  
 **Confidence:** 6/10 — Strategy is defined; test cases written at Phase 3+
 
+**Note added 2026-07-02 (documentation-remediation pass):** the "Gate Required" column below (Phase 3/ADR-0004/G5/etc.) describes when each test tier was *required to exist by*, not current status — those gates have since closed (G4/G5 both CLOSED, ADR-0004 ACCEPTED, test suite now at 2,282 tests) and this document's structure remains an accurate description of the testing approach. No content below was found to be factually wrong, only silent on the current test count and on MLB (which has its own C1–C4 test coverage not enumerated in the Component table below — that table is NBA-component-named but the same test-tier logic applies).
+
 ---
 
 ## Test Levels

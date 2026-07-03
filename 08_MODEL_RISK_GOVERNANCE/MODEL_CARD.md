@@ -13,6 +13,18 @@
 
 ---
 
+## ⚠️ Current Production Model (2026-07-02 documentation-remediation pass — read this before the sections below)
+
+**This document's "Model Overview," "Performance Metrics," and most of "Known Limitations" describe the G4-gate model (`v1-9939a6a5`, FEATURE_VERSION 1.2.0, 31 features) as if it were still current. It is not; that TEST evaluation is retained below as the accurate, immutable G4 gate record — not rewritten — but a reader needs this addendum to avoid treating it as live.**
+
+**Current production model (as of SESSION 73, 2026-06-23, ADR-0031):** `v2-065b9510` — LR L1+L2, **FEATURE_VERSION 1.4.0, 83 features** (adds the qualitative PRF layer: QS-2026-05-28-002, backdated to effective_from 2021-10-19, confirmed positive signal via EXP-007 +0.0017 Brier / +0.0159 ECE). Metrics: Brier 0.2451, ECE 0.0426, AUC-ROC 0.5822. `v1-28483b21` (an intermediate version) was superseded. Model retrained on the VPS per ADR-0031's authorization (T-072).
+
+**Also missing from this document entirely: MLB.** MLB has its own C1/C2/C3 pipeline and its own model, trained and evaluated separately from the NBA model this card describes. This card has never been extended to cover it — a genuinely separate Model Card for the MLB model does not appear to exist in this folder as of this pass. That is a real gap, flagged rather than filled with invented figures.
+
+Also note, since it directly contradicts this document's own header: **ADR-0004 is ACCEPTED** (APR-0012, 2026-05-28) — the Model Overview table below still says "ADR-0004 PENDING formal acceptance," which was already wrong relative to this very file's own Decision references line above it.
+
+---
+
 ## Model Overview
 
 | Field | Detail |
@@ -22,7 +34,7 @@
 | Purpose | Generate calibrated probability estimates for NBA player prop prediction market outcomes |
 | Target variable | Binary: 1 = player exceeded their L10 rolling mean in points for this game; 0 = did not |
 | Output | `p_estimate ∈ [0,1]`; `ci_lower`/`ci_upper` (Wilson 90% CI); `edge`; `recommended_direction` (YES/NO/PASS) |
-| Model class | `LogisticRegression+PlattScaling` — confirmed Phase 3 baseline (ADR-0004 PENDING formal acceptance) |
+| Model class | `LogisticRegression+PlattScaling` — confirmed Phase 3 baseline (**ADR-0004 ACCEPTED, APR-0012, 2026-05-28** — corrected 2026-07-02; this row previously said "PENDING," contradicting this file's own Decision references line) |
 | Training data | DS-01 via nba_api (C1 NBAIngestionClient); SNAP-001 registered; DS-02 deferred to Phase 6+ |
 | Feature set version | FEATURE_VERSION 1.2.0 — 31 features (F-001 to F-031); F-032–F-038 pruned (HYP-005 falsified); see DATA_FLOWS_LINEAGE.md |
 | Training window | EXP-001: 2021-22 season first half (TRAIN); 2022-23 season (VALIDATION) — exact dates in EXP-001 record |

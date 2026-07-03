@@ -8,7 +8,9 @@
 **Upstream links:** 07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md, 07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/  
 **Downstream links:** 00_ADMIN/APPROVALS_REGISTER.md, MODEL_CARD.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (ACCEPTED — APR-0012)  
-**Confidence:** 10/10 — G4 sign-off complete; TEST set evaluated; ADR-0004 accepted; gate CLOSED
+**Confidence:** 10/10 — G4 sign-off complete; TEST set evaluated; ADR-0004 accepted; gate CLOSED (accurate, unedited historical record)
+
+**⚠️ Note added 2026-07-02 (documentation-remediation pass):** this file correctly records the G4 gate sign-off as a point-in-time event and is left unedited below. It has not been extended with a comparable entry for the v2 model retrain (ADR-0031, SESSION 73) or for MLB's model/pipeline (which has no model card or sign-off record identified anywhere in this folder as of this pass). If a v2 or MLB validation sign-off exists elsewhere, cross-check before assuming this file is the complete sign-off history; if it doesn't exist, that's a governance gap worth registering.
 
 ---
 
