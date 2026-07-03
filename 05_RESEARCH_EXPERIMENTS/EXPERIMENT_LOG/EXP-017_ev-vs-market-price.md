@@ -133,3 +133,27 @@ DIRECTIONAL EVIDENCE — edge is positive across the full realistic range of mar
 *Pending — requires operator to provide `exp_output/EXP-017/kalshi_prices.csv`.*
 
 See Pre-Run Checklist for data collection instructions.
+
+**Note (2026-07-03):** this Part B description is NBA-scoped and predates the MLB Part B (Live) results already logged directly in `GOVERNANCE_GAP_LOG.md` GG-004 (G2 Finals n=33 DIRECTIONAL_POSITIVE 2026-06-08; G4 n=96 DIRECTIONAL_NEGATIVE) — not reconciled into this file as part of this session's scope. See Part C below for the current, live commercial-validation track (MLB, T-184).
+
+### Part C — MLB Real Portfolio Data (T-184, ADR-0024, run 2026-07-03)
+
+**Script:** `scripts/run_exp017_mlb.py --portfolio <paper_portfolio_mlb.json>` (built SESSION 79, 2026-06-23; first run against real, non-empty MLB data 2026-07-03)
+**Source:** real T1 MLB paper-trading portfolio (PIPE-05, `run_mlb_paper_trade.py`), 49 closed positions, all unique tickers, 0 duplicates
+**Results saved:** `exp_output/EXP-017-MLB/EXP-017-MLB_results.json`
+
+| Metric | Value |
+|---|---|
+| n (unique markets) | 49 |
+| EV/bet | +$2.0408 |
+| Win rate | 53.1% |
+| Total P&L | +$100.00 |
+| Direction split | YES n=2 (EV=-$0.807/bet, win=50.0%); NO n=47 (EV=+$2.162/bet, win=53.2%) |
+| Threshold breakdown | k=1: n=26, EV=+$3.496/bet, win=42.3%; k=2: n=23, EV=+$0.396/bet, win=65.2% |
+| ADR-0024 tier | Below Tier 1 (n≥150) and Tier 2 (n≥500 single-sport / n≥150 dual-sport, NBA n=0) |
+| Edge Monotonicity (T-177/GG-037 guard) | INCONCLUSIVE — all 49 resolved positions carry edge>0 (the bot only fires above its edge threshold, so there's no natural edge≤0 comparison group in resolved data yet). Terciles all positive: T1 [+0.006,+0.045] win=56.2%; T2 [+0.046,+0.078] win=37.5%; T3 [+0.079,+0.169] win=64.7%. |
+| **Verdict** | **DIRECTIONAL_POSITIVE** |
+
+**Two loader bugs found and fixed during this run** (before the above numbers were trusted): (1) the loader read `p.get("threshold")` but the real producer emits `kalshi_threshold` — fixed with a fallback, 2 regression tests added; (2) the loader trusted a stored `fee_net_edge` field that `paper_trader.py` computes always YES-frame-signed, never flipped for NO-direction bets — corrupted the Edge Monotonicity check specifically (edge>0/edge≤0 exactly matched the YES/NO split before the fix). Fixed by always recomputing via `compute_fee_net_edge(direction, model_p, mip)` instead of trusting the stored value; 2 regression tests added. Full suite 102/102 passing post-fix. Neither bug affected the EV/win-rate/P&L/threshold-breakdown figures above (those read `pnl`/`outcome` directly). See GOVERNANCE_GAP_LOG.md GG-004 (updated) and GG-077 (new) for full derivation, and DECISION_LOG.md 2026-07-03 for the complete narrative.
+
+**GG-004 status after Part C:** Still OPEN. Real MLB money produced a positive signal against actual Kalshi prices for the first time, but n=49 is well short of ADR-0024's adequacy floors. Continue accumulating T1 MLB volume; re-run this script periodically as the portfolio grows toward n=150 (Tier 1 diagnostic check) and n=500 (Tier 2 single-sport confirmation).

@@ -164,17 +164,26 @@ def _load_portfolio(
         except (KeyError, TypeError, ValueError):
             continue
         direction = str(p.get("direction", "YES"))
-        raw_edge = p.get("fee_net_edge")
-        if raw_edge is not None:
-            try:
-                fee_net_edge = float(raw_edge)
-            except (TypeError, ValueError):
-                fee_net_edge = compute_fee_net_edge(direction, model_p, mip)
-        else:
-            fee_net_edge = compute_fee_net_edge(direction, model_p, mip)
+        # NOTE (2026-07-03, T-184 real-data validation, GG-077): the stored
+        # "fee_net_edge" field is NOT trusted here even when present.
+        # paper_trader.py (open_position(), c5_execution) always computes
+        # and stores this field in the YES-frame (gross_edge - fee) and
+        # never flips sign for NO-direction bets — unlike its sibling
+        # "fee_contaminated" field, which the same function DOES flip via
+        # _directional_gross. Confirmed empirically: all 47 real NO-direction
+        # MLB T1 positions (of 49) carry a negative stored fee_net_edge even
+        # though many are profitable, correctly-signaled bets. Trusting the
+        # stored value here silently breaks the edge-monotonicity /
+        # anti-predictive guard (the GG-037/T-177 check class) for any
+        # portfolio that is majority-NO, which real MLB data is. Always
+        # recompute via the direction-aware, already-tested
+        # compute_fee_net_edge() instead.
+        fee_net_edge = compute_fee_net_edge(direction, model_p, mip)
         pnl = float(p.get("pnl", 0.0) or 0.0)
         try:
-            threshold = int(p.get("threshold", 0))
+            # PIPE-05 (run_mlb_paper_trade.py) emits "kalshi_threshold" on real
+            # positions; "threshold" is kept as a fallback for other producers.
+            threshold = int(p.get("kalshi_threshold", p.get("threshold", 0)))
         except (TypeError, ValueError):
             threshold = 0
         positions.append(MLBPosition(
