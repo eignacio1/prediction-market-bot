@@ -295,12 +295,35 @@ class TestLoadPortfolio:
         result = _load_portfolio(tmp_path / "p.json")
         assert len(result) == 0
 
-    def test_uses_stored_fee_net_edge_when_present(self, tmp_path):
+    def test_ignores_stored_fee_net_edge_and_always_recomputes(self, tmp_path):
+        # GG-077 (2026-07-03): paper_trader.py stores "fee_net_edge" in the
+        # YES-frame always, never flipping sign for NO-direction bets — a
+        # real, confirmed production bug. The loader must NOT trust the
+        # stored value under any circumstance; it must always recompute the
+        # direction-effective edge itself, even when a (wrong-sign) stored
+        # value is present.
         d = _pos_as_dict("KXMLBHIT-A-1", outcome="WIN", model_p=0.55, mip=0.45)
-        d["fee_net_edge"] = 0.0999  # stored value — should be used as-is
+        d["fee_net_edge"] = -0.0999  # deliberately wrong-signed stored value
         _write_portfolio_json(tmp_path / "p.json", [d])
         result = _load_portfolio(tmp_path / "p.json")
-        assert result[0].fee_net_edge == pytest.approx(0.0999)
+        expected = compute_fee_net_edge("YES", 0.55, 0.45)
+        assert result[0].fee_net_edge == pytest.approx(expected)
+        assert result[0].fee_net_edge != pytest.approx(-0.0999)
+
+    def test_ignores_stored_fee_net_edge_for_no_direction(self, tmp_path):
+        # The real-world failure mode: NO-direction positions store a
+        # negative fee_net_edge (YES-frame) even when profitable/correctly
+        # signaled. The loader must recompute using the NO-direction formula
+        # instead of trusting the stored, wrong-frame value.
+        d = _pos_as_dict(
+            "KXMLBHIT-A-2", outcome="WIN", model_p=0.35, mip=0.45, direction="NO"
+        )
+        d["fee_net_edge"] = -0.0876  # stored YES-frame value, wrong for NO
+        _write_portfolio_json(tmp_path / "p.json", [d])
+        result = _load_portfolio(tmp_path / "p.json")
+        expected = compute_fee_net_edge("NO", 0.35, 0.45)
+        assert result[0].fee_net_edge == pytest.approx(expected)
+        assert expected > 0  # true direction-effective edge is positive here
 
     def test_computes_fee_net_edge_when_absent(self, tmp_path):
         d = _pos_as_dict("KXMLBHIT-A-1", outcome="WIN", model_p=0.55, mip=0.45)
@@ -313,6 +336,25 @@ class TestLoadPortfolio:
     def test_threshold_stored(self, tmp_path):
         pos = [_pos_as_dict("KXMLBHIT-A-3", outcome="WIN", threshold=3)]
         _write_portfolio_json(tmp_path / "p.json", pos)
+        result = _load_portfolio(tmp_path / "p.json")
+        assert result[0].threshold == 3
+
+    def test_reads_real_pipe05_kalshi_threshold_field(self, tmp_path):
+        # PIPE-05 (run_mlb_paper_trade.py) emits "kalshi_threshold", not
+        # "threshold" — discovered via real MLB portfolio data 2026-07-03.
+        # Without this fallback, threshold_breakdown() silently buckets every
+        # real position under k=0.
+        d = _pos_as_dict("KXMLBHIT-A-2", outcome="WIN")
+        del d["threshold"]
+        d["kalshi_threshold"] = 2
+        _write_portfolio_json(tmp_path / "p.json", [d])
+        result = _load_portfolio(tmp_path / "p.json")
+        assert result[0].threshold == 2
+
+    def test_kalshi_threshold_takes_precedence_over_threshold(self, tmp_path):
+        d = _pos_as_dict("KXMLBHIT-A-1", outcome="WIN", threshold=1)
+        d["kalshi_threshold"] = 3
+        _write_portfolio_json(tmp_path / "p.json", [d])
         result = _load_portfolio(tmp_path / "p.json")
         assert result[0].threshold == 3
 

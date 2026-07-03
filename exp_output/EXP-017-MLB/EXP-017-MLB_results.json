@@ -1,0 +1,90 @@
+{
+  "label": "portfolio paper_portfolio_mlb_20260703.json",
+  "sport": "mlb",
+  "n_total_positions": 49,
+  "n_unique_markets": 49,
+  "at_tier1": false,
+  "at_tier2": false,
+  "tier_detail": {
+    "at_tier1": false,
+    "at_tier2": false,
+    "at_tier2_single": false,
+    "at_tier2_multi": false,
+    "diagnostic_sprint": false,
+    "nba_n": 0
+  },
+  "ev_per_bet": 2.0408265306122457,
+  "win_rate": 0.5306122448979592,
+  "total_pnl": 100.00050000000003,
+  "ev_yes": {
+    "n": 2,
+    "ev_per_bet": -0.8070000000000004,
+    "win_rate": 0.5,
+    "total_pnl": -1.6140000000000008
+  },
+  "ev_no": {
+    "n": 47,
+    "ev_per_bet": 2.1620106382978723,
+    "win_rate": 0.5319148936170213,
+    "total_pnl": 101.6145
+  },
+  "threshold_breakdown": [
+    {
+      "threshold": 1,
+      "n": 26,
+      "ev_per_bet": 3.4960346153846142,
+      "win_rate": 0.4230769230769231,
+      "total_pnl": 90.89689999999997
+    },
+    {
+      "threshold": 2,
+      "n": 23,
+      "ev_per_bet": 0.3958086956521739,
+      "win_rate": 0.6521739130434783,
+      "total_pnl": 9.1036
+    }
+  ],
+  "edge_monotonicity": {
+    "verdict": "INCONCLUSIVE",
+    "n": 49,
+    "n_pos_edge": 49,
+    "n_neg_edge": 0,
+    "winrate_edge_pos": 0.5306122448979592,
+    "winrate_edge_neg": NaN,
+    "fisher_odds_ratio": 1.0,
+    "fisher_pvalue": 1.0,
+    "alpha": 0.1,
+    "terciles": [
+      {
+        "tercile": 1,
+        "n": 16,
+        "edge_min": 0.0063199999999999385,
+        "edge_max": 0.04464075000000001,
+        "edge_mean": 0.02659256250000001,
+        "winrate": 0.5625,
+        "pnl": -2.882100000000001
+      },
+      {
+        "tercile": 2,
+        "n": 16,
+        "edge_min": 0.046220750000000074,
+        "edge_max": 0.07754274999999995,
+        "edge_mean": 0.060472546875000005,
+        "winrate": 0.375,
+        "pnl": -26.797300000000007
+      },
+      {
+        "tercile": 3,
+        "n": 17,
+        "edge_min": 0.07857600000000002,
+        "edge_max": 0.1688949999999999,
+        "edge_mean": 0.10910404411764707,
+        "winrate": 0.6470588235294118,
+        "pnl": 129.6799
+      }
+    ]
+  },
+  "verdict": "DIRECTIONAL_POSITIVE",
+  "adr": "ADR-0024",
+  "gg": "GG-004"
+}
