@@ -1308,6 +1308,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-076 — T4 MLB One-Shot-Per-Ticker Dedup Structurally Conflicts With CLAUDE.md Hard Rule 9's Documented Design Throughput
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-076 |
+| Category | Architecture-vs-documentation conflict — a real, load-bearing design contradiction between the governing spec and the shipped implementation, not a bug in either taken alone. |
+| What was missed | CLAUDE.md Hard Rule 9 states T4 design throughput as "~1,000 evaluations/game... at a 2-3% fire rate, that produces 50-100 actual bets per game," derived from "18 batters x 2 thresholds x ~480 cycles per 3-hour game." This arithmetic implicitly assumes each 45s evaluation cycle is an independent shot at firing. The actual implementation (`already_fired_game` set in `run_t4_mlb_live.py::_run_cycle`) retires a ticker the instant it fires a position — one bet per market per game-day, permanently, for the rest of the game. The two cannot both be true: under a one-shot-per-ticker policy, the true ceiling on fired bets is bounded by (count of distinct tracked tickers that ever cross the edge threshold), not by (evaluation count x fire rate). Direct analysis of real production data (`exp_output/MLB/snapshots/t4_mlb_cycle_log_SNAP-2026-07-02-002.jsonl`, 2,393 cycle-evaluations, 2026-07-02) confirms this: only 63 tickers were tracked all day (3 games), 28 of them (44%) ever crossed net_edge>0 at any point, which is already close to the observed ceiling of 10-20 fired bets/day after C4's MIN_EDGE_TO_APPROVE=0.04 gate and Kelly/budget filtering are applied on top. The system is not "too fresh" or malfunctioning — it is structurally incapable of reaching its own documented design target as currently built. |
+| When it should have been caught | Should have surfaced when ADR-0039 (T4 MLB sub-band architecture, SESSION 109) or the original T4M-PROJ build (`run_t4_mlb_live.py`, ADR-0023) were designed — both post-date CLAUDE.md's Hard Rule 9 throughput language, and neither was checked against it for consistency at build time. |
+| Phases it survived | Entire T4M-PROJ operational period (ADR-0023 to present) plus ADR-0039's Tier A build (T4M-ARITH/T4M-FLOW) — none of which revisited the dedup policy's interaction with documented throughput. |
+| Why it survived | T4M-PROJ has been treated as "working as designed" because it correctly rejects contamination, correctly computes Bayesian edge, and correctly fires when net_edge clears the C4 gate — every individual mechanism is sound. Nobody had directly quantified fired-bet ceiling against Hard Rule 9's stated 50-100/game target until Earl noticed real daily volume (10-20/day, not per game) was an order of magnitude below the documented design and asked for a root-cause diagnosis (2026-07-02 session). |
+| Impact | MEDIUM-HIGH. Not a capital-safety issue (paper trading only, no live capital). Directly affects whether T4M-PROJ can ever produce the evidence volume needed to evaluate the T4 alpha thesis (market-latency edge) at the throughput the project's own design intended — a thin trickle of 10-20 bets/day makes commercial validation (EXP-017-equivalent for T4) slower and noisier to reach a confident verdict than the documented design anticipated. |
+| Discovery | 2026-07-02, direct diagnostic session requested by Earl ("what the fuck is wrong with T-4... firing at only ~10-20 bets a DAY not even a game"). Root-caused via live production JSONL analysis plus source inspection of `run_t4_mlb_live.py`, `run_mlb_pregame.py`, and `c4_risk_engine/risk.py`. |
+| Resolution | **OPEN.** Earl confirmed 2026-07-02: CLAUDE.md's documented throughput target is authoritative — the dedup/position-management implementation is what needs to change, not the doc. Design decision on the replacement policy (allow re-entry/laddered positions per ticker as new edge appears vs. widen the tracked-market surface vs. another mechanism) not yet made. Tasks T-225 through T-229 registered in TODO_NEXT.md to carry this forward, including a companion Kalshi-coverage verification (T-226) since the addressable-market ceiling (63 tickers/3 games on the sampled day) may be an equally binding constraint independent of the dedup policy. |
+| Status | OPEN — registered 2026-07-02, tasks T-225 to T-229 assigned. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
