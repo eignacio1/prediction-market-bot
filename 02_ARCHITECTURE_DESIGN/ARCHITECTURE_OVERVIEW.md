@@ -3,7 +3,7 @@
 **Purpose:** Define the system's component architecture, their responsibilities, and how they interact. The authoritative map of what was built and why.  
 **Owner (role):** Architecture Owner (AO)  
 **Status:** **CANONICAL — G2 Architecture Gate 2026-05-22** — Changes require ADR or formal Change Class A/B record  
-**Last reviewed:** 2026-05-28 (C8 Visual Dashboard registered; SCOPE_IN_OUT.md + INTERFACES_CONTRACTS.md updated; T-046/047 context)  
+**Last reviewed:** 2026-07-02 (documentation-remediation pass — corrected the Phase 6 Idle Build section's T4/T5 status, stale since 2026-05-29; C1–C8 component definitions above were checked and remain accurate — they're sport-agnostic by design and hold for MLB without modification). Prior substantive review: 2026-05-28 (C8 Visual Dashboard registered; SCOPE_IN_OUT.md + INTERFACES_CONTRACTS.md updated; T-046/047 context)  
 **Next review:** On staleness trigger only  
 **Staleness triggers:** New component added; component removed; interface contract changed (ADR required); venue confirmed (affects execution layer); strategy class change  
 **Upstream links:** 01_SPEC/REQUIREMENTS.md, 01_SPEC/NON_FUNCTIONAL_REQUIREMENTS.md, 01_SPEC/SCOPE_IN_OUT.md  
@@ -156,7 +156,9 @@ The bot is a **pipeline-based forecasting and execution system** composed of six
 
 ## Phase 6 Idle Build — New Components (2026-05-29)
 
-The following components were added during the Phase 6 idle period (waiting for paper bet accumulation). All are buildable on current cron infrastructure; T4/T5 are Phase 8+ stubs only.
+**⚠️ Corrected 2026-07-02:** the line below originally read "T4/T5 are Phase 8+ stubs only." That is no longer accurate for T4 and was not accurate for MLB at all (MLB T4 didn't exist as a concept when this section was written). Current state: **T4 (NBA)** is built and deployed (PIPE-07, `run_t4_live.py`/`t4_live_runner.py`, cron-scheduled), currently dark because NBA work is tabled, not because it's unbuilt. **T4 (MLB, T4M-PROJ)** is built and ACTIVE (ADR-0023, `run_t4_mlb_live.py`, systemd `t4-mlb`). **T4 sub-bands** (NBA: ADR-0029, `t4_execution_engine.py`; MLB: ADR-0039, `t4_mlb_execution_engine.py`) are built and unit-tested, registry-gated per sub-band. **T5 remains genuinely unbuilt** for both sports — that part of the original line is still accurate. See `EXECUTION_BANDS.md`'s own 2026-07-02 Implementation Reality Update for the full detail on how the actual T4 build (cron/systemd 45-90s polling) diverged from this document's originally-specified real-time/websocket architecture.
+
+The following components were added during the Phase 6 idle period (waiting for paper bet accumulation). All are buildable on current cron infrastructure; T5 remains a Phase 8+ stub for both sports; T4 status is as corrected above.
 
 | Component | File | Purpose | Phase |
 |-----------|------|---------|-------|

@@ -3,7 +3,7 @@
 **Purpose:** Register all target venues for this system — mechanics, regulatory basis, CA eligibility, pricing structure, edge formula, and activation status.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-05-29 (initial build — Phase 6 idle period)
+**Last reviewed:** 2026-07-02 (documentation-remediation pass — added the MLB KXMLBHIT series and fee-rate caveat this document was silent on; also note the Kalshi order endpoint migrated v1→v2, `/portfolio/events/orders`, per ADR-0038 SESSION 108 after Kalshi deprecated v1 platform-wide). Prior substantive review: 2026-05-29 (initial build — Phase 6 idle period)
 **Next review:** On any new venue activated; on API change; on regulatory status change
 **Staleness triggers:** Venue added or removed; regulatory change; API version change; ADR update
 **Upstream links:** STRATEGY_OVERVIEW.md; ADR-0003 (venue selection); INTERFACES_CONTRACTS.md
@@ -38,8 +38,8 @@ California has no legal retail sports betting (Prop 26/27 both failed). The elig
 | Current key | ACC-0002 (read-only); ACC-0003 (write — Phase 8, ADR-0005) |
 | Pricing structure | Dynamic supply/demand; binary YES/NO; $0.01–$0.99 |
 | Settlement | $1.00 (YES wins) or $0.00 (NO wins) |
-| Vig | ~3% confirmed (EXP-010: vig = 0.030) |
-| Series used | KXNBAPTS — NBA Player Points |
+| Vig | ~3% confirmed for NBA (EXP-010: vig = 0.030). **MLB fee rate NOT independently confirmed** — 0.07×p×(1−p) assumed per marketmath.io + one corroborating source, one conflicting source suggests ~0.06 for sports markets specifically; GG-020 OPEN, no live receipts exist to settle it (paper trading only). Direction of error if 0.06 is correct: conservative (over-deducts fees, rejects some profitable bets at the margin). |
+| Series used | KXNBAPTS — NBA Player Points. **KXMLBHIT — MLB Player Hits, added when MLB C1 unblocked (T-072, SESSION 73) — this row previously listed NBA only.** |
 | Edge formula | `edge = p̂ - mid_price` (market-priced) |
 | Adapter | `KalshiVenueAdapter` (`c5_execution/venue_adapter.py`) |
 | implied_prob_method | `market` |

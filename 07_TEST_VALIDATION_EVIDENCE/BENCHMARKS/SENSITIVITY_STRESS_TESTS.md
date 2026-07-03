@@ -11,6 +11,8 @@
 **Decision references:** ADR-0001, ADR-0004  
 **Confidence:** 9/10 — ST-001–004 complete with results; ST-005 blocked on external dependency
 
+**Note added 2026-07-02 (documentation-remediation pass):** reviewed, no false claims found — this file's Status line is honest and dated, unlike several sibling documents in this remediation pass. Left unedited. Scope caveat for completeness: these tests ran against the G4-era v1 model/NBA data only; no equivalent sensitivity/stress test record exists for the current v2 model or for MLB as of this pass.
+
 ---
 
 ## Overview

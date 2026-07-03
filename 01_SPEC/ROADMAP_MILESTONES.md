@@ -2,14 +2,14 @@
 
 **Purpose:** Map the phase gate sequence to calendar targets and artifact deliverables. Living document — updated at each gate.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-28 (G4 Evidence Gate CLOSED; Phase 4 complete; Phase 5 active)  
-**Next review:** G5 gate passage; monthly review  
+**Last reviewed:** 2026-07-02 (documentation-remediation pass) — corrects a violation of this document's own "monthly review" cadence commitment: it had not been touched since 2026-05-28 despite G5 closing that same week and Phase 6/7 running live for over a month since. See DECISION_LOG.md 2026-07-02 entry.  
+**Next review:** G6 gate passage (EXP-017 CONFIRMED_POSITIVE + DS sign-off); monthly review in the interim — treat a missed monthly review as a staleness incident, not a formality  
 **Staleness triggers:** Phase gate passed; milestone slipped >1 week; major dependency change; scope change  
 **Upstream links:** PROJECT_CHARTER.md, SCOPE_IN_OUT.md, REQUIREMENTS.md  
 **Downstream links:** 04_EXECUTION/PLAN.md, 04_EXECUTION/TODO_NEXT.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0003, ADR-0004 (ACCEPTED — APR-0012)  
-**Confidence:** 9/10 — Phases 0–4 complete; Phase 5 entry; Phases 6+ are design targets
-**Decisions logged:** true — T-099 logged 2026-06-02: G7 (multi-sport gate), G8 (multi-venue/V-002 activation gate), G9 (scaled live operation gate), phase sequencing rationale. G0–G5 captured via APRs. See DECISION_LOG.md 2026-06-02.
+**Confidence:** 9/10 for Phases 0–5 (formally closed, evidenced by signed APRs); 7/10 for Phase 6/7 rows below (reconstructed from MEMORY_BANK.md narrative during this remediation pass, not independently re-verified against the VPS in this session — cross-check bet counts/dates against `MEMORY_BANK.md`'s Current State Snapshot before treating as authoritative)
+**Decisions logged:** true — T-099 logged 2026-06-02: G7 (multi-sport gate), G8 (multi-venue/V-002 activation gate), G9 (scaled live operation gate), phase sequencing rationale. G0–G5 captured via APRs. See DECISION_LOG.md 2026-06-02 and 2026-07-02 (remediation pass).
 
 ---
 
@@ -22,11 +22,13 @@
 | 2 | Architecture + Infrastructure Design | G2 Architecture | 2026-05-22 | ✅ COMPLETE — APR-0004 signed |
 | 3 | Execution + Environment Build | G3 Execution | 2026-05-22 | ✅ COMPLETE — APR-0005 signed |
 | 4 | Research Build + Evidence Capture | G4 Evidence | 2026-05-28 | ✅ COMPLETE — APR-0006 + APR-0012 signed; TEST Brier +0.0084/ECE 0.0247 |
-| 5 | Operational Readiness | G5 Operational | TBD (Phase 5) | 🔴 Not Started |
-| 6 | Paper Trading | — | TBD (Phase 6) | 🔴 Not Started |
-| 7 | Promotion Gate | G6 Release | TBD (Phase 7) | 🔴 Not Started |
+| 5 | Operational Readiness | G5 Operational | 2026-05-28 | ✅ COMPLETE — APR-0007 signed 2026-05-28 |
+| 6 | Paper Trading | — | 2026-05-29 (started) | ✅ ACTIVE — running continuously since T-060; MLB is the current live pool, NBA frozen (see Phase 6/7 addendum below) |
+| 7 | Promotion Gate | G6 Release | Est. Aug–Oct 2026 (MLB accumulation + EXP-017) | 🟡 IN PROGRESS — count+sign threshold met on MLB (49/30), EXP-017 commercial validation + DS sign-off still binding (GG-004 OPEN) |
 | 8 | Live Capital Operations | — | Post-G6 | 🔴 Not Started |
 | 9 | Self-Service Governance | — | Ongoing from Phase 8 | 🔴 Not Started |
+
+*(Corrected 2026-07-02 — this table previously showed Phases 5–7 as "🔴 Not Started," a leftover from before G5 closed on 2026-05-28. It had not been touched since, despite Phase 6/7 running live for the following five-plus weeks. See the Phase 5/6/7 section detail below, which was already partially accurate and is the basis for this correction, and the addendum after Phase 7 for the MLB pivot this table predates entirely.)*
 
 ---
 
@@ -115,7 +117,7 @@
 ---
 
 ## Phase 5 — Operational Readiness
-**Gate: G5 Operational | Status: 🔴 Not Started**
+**Gate: G5 Operational | Status: ✅ COMPLETE — APR-0007 signed 2026-05-28. All milestones below done 2026-05-28 (C7 monitoring/kill switch, C8 dashboard, kill switch drill PASSED at 0.340ms — KS-C8D7D90AF942, SENSITIVITY_STRESS_TESTS.md populated ST-001–004 all pass, CAPACITY_PLANNING.md stub created, ACC-0002 Kalshi read-only key provisioned). *(Status line corrected 2026-07-02 — table below already showed the milestones done; only this header still said "Not Started.")*
 
 | Milestone | Owner | Due |
 |-----------|-------|-----|
@@ -133,37 +135,41 @@
 ---
 
 ## Phase 6 — Paper Trading
-**Gate: — | Status: 🔴 Not Started**
+**Gate: — | Status: ✅ ACTIVE since 2026-05-29 (T-060), running continuously through this writing (2026-07-02). *(Status line corrected 2026-07-02 — was still "Not Started" despite five-plus weeks of live paper trading.)***
 
-| Milestone | Owner | Due |
-|-----------|-------|-----|
-| ADR-0004 formally accepted (APR-0012) | AO | G4 gate |
-| C5 Execution Engine implemented (simulated) | EL | Phase 6 |
-| C8 Visual Dashboard — paper trading panels (P&L, fill rates, position history) | EL | Phase 6 |
-| Live inference pipeline running (no orders) | EL | Phase 6 |
-| Paper trading position sizing and order simulation | EL | Phase 6 |
-| HYP-003 tested (EXP-004 — edge vs vig) | RL | Phase 6 |
+| Milestone | Owner | Due | Status |
+|-----------|-------|-----|--------|
+| ADR-0004 formally accepted (APR-0012) | AO | G4 gate | ✅ Done 2026-05-28 |
+| C5 Execution Engine implemented (simulated) | EL | Phase 6 | ✅ Done — PaperTrader, dual-ledger MLB/NBA |
+| C8 Visual Dashboard — paper trading panels (P&L, fill rates, position history) | EL | Phase 6 | ✅ Done — localhost web dashboard added SESSION 104 (GG-057) |
+| Live inference pipeline running (no orders) | EL | Phase 6 | ✅ Done — PIPE-02/03/06/07 (NBA), T1–T4M-PROJ (MLB) |
+| Paper trading position sizing and order simulation | EL | Phase 6 | ✅ Done |
+| HYP-003 tested (EXP-004 — edge vs vig) | RL | Phase 6 | ✅ CONFIRMED (NBA); MLB commercial validation is a separate open experiment, EXP-017, see Phase 7 |
+
+**MLB extension to Phase 6 (not in the original phase design, added post-facto — no entry below predates this because Phase 6 was originally scoped single-sport/NBA):** MLB C1/C2/C3 unblocked Phase 3 gate (T-072, SESSION 73); MLB T1/T2/T3 paper trading cron-active; MLB T4M-PROJ live under ADR-0023; MLB T4M-ARITH/T4M-FLOW built and unit-tested under ADR-0039 but registry-`BLOCKED` pending their own experiments. This is the mechanism the Principal Vision section of `CLAUDE.md` describes ("New sport: new C1 data module, new C2 feature set, same methodology") operating for real, not a hypothetical — worth noting here since this document's original text gives no indication a second sport was ever added.
 
 ---
 
 ## Phase 7 — Promotion Gate
-**Gate: G6 Release | Status: 🟡 IN PROGRESS (paper trading active; evidence accumulating)**
+**Gate: G6 Release | Status: 🟡 IN PROGRESS (paper trading active on both books; MLB is the active G6 evidence pool)**
 
 | Milestone | Owner | Due | Status |
 |-----------|-------|-----|--------|
-| Paper trading live (T-060) | EL | — | ✅ 2026-05-29 — PIPE-03 running |
-| 30+ resolved paper bets with positive P&L (T-070) | DS | ~2026-06-22 | 🟡 In progress — 0/30 resolved (day 1; APR-0016: revised from 50 per seasonal constraint) |
-| EXP-016 playoff generalization (HYP-009 verdict) | RL | 2026-05-29 | 🟡 In progress |
-| ADR-0005 drafted (live capital authorization) | AO | After evidence | 🔲 Not started |
+| Paper trading live (T-060) | EL | — | ✅ 2026-05-29 — PIPE-03 (NBA) running; MLB T1/T2/T3/T4M-PROJ cron/systemd-active since Phase 3 MLB unblock (T-072) |
+| 30+ resolved paper bets with positive P&L (T-070) | DS | Originally ~2026-06-22 (NBA Finals window) | **NBA: 158/30 resolved but adjudicated a negative baseline (GG-034/GG-037) — frozen, not the active G6 pool.** **MLB (current active pool): 49/30 resolved as of SESSION 113 (2026-07-02), count+sign threshold met, +$100.00 realized P&L.** Count+sign alone does not close G6 — see next row. |
+| EXP-017 commercial validation (real market-price benchmark, GG-004) | RL/DS | Binding G6 blocker | 🔴 **NOT YET RUN.** This is the actual gate, not the 30-bet count above — CLAUDE.md's "commercial validation gap" section governs. Do not treat the 49/30 or 158/30 figures as G6 progress without this. |
+| ADR-0005 drafted (live capital authorization) | AO | After EXP-017 | 🔲 Not started |
 | Final validation report (TEST set + live paper results) | MV/EO | After evidence | 🔲 Not started |
 | Live credentials (ACC-0002 confirmed for write-mode) | EL | Phase 7 | 🔲 Not started |
 | G6 exit: All release gate criteria; ADR-0005 accepted; APR-0009 signed | DS/RCO | G6 | 🔲 Not started |
 
-**⚠️ Calendar Constraint (KI-009):**
-The 50-bet evidence gate is time-bounded by the NBA season calendar. The 2025-26 NBA Finals end approximately 2026-06-22. With paper trading at 2 bets/game day (dual-window PIPE-03 raises to ~4/game day), the maximum achievable bet count before season end is 40-80 depending on game frequency. After Finals end, the NBA goes dark until October 2026 (2026-27 preseason).
+**⚠️ Calendar Constraint (KI-009) — HISTORICAL, superseded by the MLB pivot, retained for record:**
+The original 50-bet (later 30-bet) evidence gate was time-bounded by the NBA season calendar. The 2025-26 NBA Finals ended ~2026-06-22, after which NBA went dark until the 2026-27 season (per operator directive, NBA work is tabled until ~1 month before that tip-off). **This constraint is why MLB became the active G6 pool** — MLB's regular season provided a continuous accumulation window the NBA off-season could not. NBA's 158 resolved bets are frozen at a negative baseline (GG-034/GG-037) and are not being pursued toward G6; MLB is.
 
 **APR-0016 ACCEPTED 2026-05-29 (DS):**
-G6 evidence threshold formally revised from 50 → 30 resolved paper bets. Rationale: NBA Finals end ~2026-06-22; ≤15 playoff games remain; even at 4 bets/day dual-window peak, 50 bets is borderline unreachable. 30 resolved bets + Brier-consistent positive EV (EXP-010: +$0.0958/bet confirmed) is the adopted standard. Evidence quality is unchanged. If 30 bets are not reached by Finals end, the accumulation window extends through the first 30 days of the 2026-27 regular season (October 2026) per the same APR-0016. **NBA dark period (~2026-06-22 to ~2026-10):** Use this window to build Polymarket activation (T-077), DS-04 qualitative source (T-073), ADR-0005 draft, and Phase 8 prep — not to pause work.
+G6 evidence threshold formally revised from 50 → 30 resolved paper bets, applicable to whichever pool is active. Evidence quality standard (Brier-consistent positive EV) is unchanged. This threshold is now being evaluated against MLB, not NBA — see row above. ADR-0028 (ACCEPTED, SESSION 72) further refined this into the current segmented band-promotion / 6-item T1-only closure condition; read `MEMORY_BANK.md` M6 for the exact live wording rather than treating this paragraph as the final formulation.
+
+*(This entire Phase 7 section was last substantively updated when NBA was still the active pool and 0 bets had resolved. Corrected 2026-07-02 to reflect the MLB pivot, current resolved-bet counts, and — most importantly — that EXP-017, not the bet count, is the actual binding blocker. See `03_DECISIONS/GOVERNANCE_GAP_LOG.md` GG-004.)*
 
 ---
 

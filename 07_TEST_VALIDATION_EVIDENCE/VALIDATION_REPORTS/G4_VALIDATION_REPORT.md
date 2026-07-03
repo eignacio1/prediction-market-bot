@@ -8,7 +8,20 @@
 **Upstream links:** VALIDATION_PLAN.md, PERFORMANCE_METRICS.md, 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/RESULTS_INDEX.md  
 **Downstream links:** VALIDATION_SIGNOFF.md, MODEL_CARD.md  
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (ACCEPTED — APR-0012)  
-**Confidence:** 10/10 — VALIDATION and TEST set evidence complete; all sign-offs recorded; G4 CLOSED
+**Confidence:** 10/10 — VALIDATION and TEST set evidence complete; all sign-offs recorded; G4 CLOSED (accurate, unedited historical record of the 2026-05-28 gate)
+
+---
+
+## ⚠️ Status Since Closure (added 2026-07-02, documentation-remediation pass — report body below is intentionally left unedited)
+
+This report is a closed-gate evidence artifact and is not rewritten here, consistent with how this project treats ADRs (immutable, corrected only by superseding artifacts) and formal sign-off records. But five-plus weeks and substantial system growth separate this report's 2026-05-28 date from today, and a reader needs the following to avoid treating it as a live status report:
+
+- **The model evaluated here (`v1-9939a6a5`, FEATURE_VERSION 1.2.0, 31 features) is not the current production model.** Production is `v2-065b9510` (FEATURE_VERSION 1.4.0, 83 features, ADR-0031, SESSION 73). See MODEL_CARD.md/PERFORMANCE_METRICS.md for the same caveat, added there in this same pass.
+- **This report's scope is NBA-only (50 players, `nba_api`).** MLB has since been added (Phase 3 MLB gate opened, T-072, SESSION 73) with its own C1/C2/C3 pipeline and model, and has never had a comparable G4-style evidence report filed anywhere in this folder as of this pass — a real gap, not filled here.
+- **The test suite has grown from whatever count existed at G4 (not recorded in this report) to 2,282 tests** as of SESSION 113 (2026-07-02).
+- **The null-model benchmark used throughout this report (`market_implied_prob = 0.50`) is explicitly NOT the real commercial validation.** That is EXP-017 (GG-004, OPEN, the binding G6 blocker) — this report correctly scopes itself as research-phase evidence, not a commercial claim, and CLAUDE.md's "commercial validation gap" section governs. Do not let this report's ✅ CLOSED status be read as answering the commercial question; it was never meant to.
+
+If a G4-equivalent report for the v2 model or for MLB exists elsewhere, cross-check before assuming this is the only evidence report; if it doesn't exist, that's worth registering as a gap (parallel to the ACCEPTANCE_CRITERIA.md `EVIDENCE/` folder gap found in this same pass).
 
 ---
 

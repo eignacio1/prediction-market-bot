@@ -14,6 +14,17 @@
 
 ---
 
+## ⚠️ Implementation Reality Update (2026-07-02 documentation-remediation pass)
+
+This document is marked CANONICAL and its band definitions/design principle below are left unedited by this pass — they remain the reference for how the system *thinks about* time horizons. But two things the original document could not have anticipated have since happened, and a reader relying on the tables below without this note will draw wrong conclusions:
+
+1. **T4 was actually built as a cron/systemd polling loop (45–90s cycle), not the real-time/websocket architecture this document specifies as T4's infrastructure requirement.** The "Blocked by" row for T4 below (`Real-time C5 rebuild; live game data feed (DS-02 upgrade); kill switch SLA reduction 60s → <5s`) describes a more ambitious build than what shipped. What's actually live: **NBA T4** — `run_t4_live.py`/`t4_live_runner.py`, PIPE-07, deployed and cron-scheduled (dark now only because NBA work is tabled per operator directive, not because it's unbuilt). **MLB T4M-PROJ** — `run_t4_mlb_live.py`, ADR-0023, ACTIVE, systemd-managed (`t4-mlb`). Neither required the websocket upgrade, the sub-5s kill switch, or the "full C5 rebuild" this document lists as blockers — the 45-90s poll interval turned out to be an acceptable substitute for true real-time infrastructure, at least for the current edge thesis. This is worth a governance note (not added here) on whether the original T4 design principle's "sub-second execution IS the edge" framing still describes what was actually built, since a 45-90s poll is not sub-second.
+2. **MLB introduced an entirely new T4 sub-band layer this document has no knowledge of.** ADR-0029 (NBA T4 sub-bands, `t4_execution_engine.py`, 10 sub-bands, Phase 8-gated) and ADR-0039 (MLB-native T4 sub-bands — T4M-PROJ/ARITH/FLOW/BOUNDARY/EVENT/LINEUP/PITCHER/STAGED/CORR/EXIT, `t4_mlb_execution_engine.py`) both post-date this document and are not reconcilable with the single flat "T4 — In-Play Bayesian Update" band described below without reading those ADRs directly. Treat the T4 row in every table below as describing the *original design intent*, not the current registry of what's built, active, or blocked — check `GOVERNANCE_GAP_LOG.md` / `CLAUDE.md`'s band-structure section for the live registry.
+
+T1/T2/T3/T5 status below is still substantively accurate (T5 in particular remains genuinely unbuilt for both sports, as originally scoped).
+
+---
+
 ## Design Principle
 
 Derived from high-frequency trading theory (Jane Street, HRT, Virtu):

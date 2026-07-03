@@ -13,6 +13,18 @@
 
 ---
 
+## ⚠️ Scope Note (2026-07-02 documentation-remediation pass)
+
+**This entire 1,100+ line document is NBA-only and predates MLB entirely.** It has not been rewritten to cover MLB's parallel strategy set, and doing so accurately would require a comparable depth of analysis this remediation pass did not attempt (flagging the gap rather than inventing MLB-specific PDTP analysis). What MLB actually has, for cross-reference: **T1 MLB** (ACTIVE, the MLB analogue of Strategy A), **T4M-PROJ** (ACTIVE, ADR-0023 — a flat single-evaluator band, architecturally simpler than the NBA Strategy K "In-Play Scalping" vision below), and **T4M-ARITH/T4M-FLOW** (built, unit-tested, `BLOCKED` pending their own experiments, ADR-0039). MLB has no Strategy B–K equivalents (data aggregation, arb strategies, momentum, Poisson distribution, etc.) built or scoped — those remain NBA-specific concepts below unless/until someone writes the MLB equivalent.
+
+**Two specific, verifiable errors corrected below in this pass (not a full rewrite):**
+1. Strategy G's Hard Limits table listed `max_daily_loss_usd = $1,000` (superseded by `MAX_DAILY_LOSS_PCT = 0.15`, ADR-0012) and `max_concurrent_positions = 10` (deleted entirely, ADR-0006, 2026-06-01) — both stale, corrected in place.
+2. Strategy A's Activation Gate referenced "50+ paper bets" — revised to 30 by APR-0016 (2026-05-29) — corrected in place.
+
+Everything else below (edge taxonomy, PDTP analysis, Strategy B–K designs, risk profiles) was reviewed for internal consistency but not independently re-verified against current code in this pass — treat as the NBA design intent, not a live status report, and cross-check against `GOVERNANCE_GAP_LOG.md`/`MEMORY_BANK.md` before relying on any specific status claim below.
+
+---
+
 ## Band Assignment Registry
 
 **Source of truth:** `src/prediction_market_bot/execution_bands.py` — `BAND_REGISTRY`. This table is machine-generated from `BAND_REGISTRY.all_specs()` and must stay in sync with the code. Any band status change requires a DECISION_LOG entry (see CHANGE_CONTROL.md — Band Assignment Changes).
@@ -263,7 +275,7 @@ This model adds:
 
 ### Activation Gate
 
-G6: BOT_C4_ACTIVE=true after ADR-0005 signed (requires 50+ paper bets with positive P&L from T-070)
+G6: BOT_C4_ACTIVE=true after ADR-0005 signed (requires 30+ resolved paper bets with positive P&L — revised from 50 by APR-0016, 2026-05-29, per NBA seasonal calendar constraint; count+sign threshold alone does not clear G6, EXP-017 commercial validation is the binding blocker, see GG-004)
 
 ### Confidence: 7/10
 
@@ -625,12 +637,14 @@ This prevents the bankroll from being implicitly leveraged by counting correlate
 
 ### Hard Limits (C4 implementation)
 
+*(Corrected 2026-07-02 — two rows below were stale/removed, see Scope Note above.)*
+
 | Limit | Value | Trigger |
 |-------|-------|---------|
 | max_single_event_exposure_usd | $500 | Kelly output capped per event |
-| max_daily_loss_usd | $1,000 | → KILL_SWITCH (NFR-03) |
-| max_drawdown_pct | 20% | → KILL_SWITCH (NFR-03) |
-| max_concurrent_positions | 10 | → REJECTED (not kill switch) |
+| ~~max_daily_loss_usd~~ → `MAX_DAILY_LOSS_PCT` | ~~$1,000~~ → 15% of session-start bankroll | → daily circuit breaker (ADR-0012 superseded the flat-dollar version) |
+| max_drawdown_pct | 20% | → KILL_SWITCH (NFR-03), permanent halt |
+| ~~max_concurrent_positions~~ | ~~10~~ **DELETED** (ADR-0006, 2026-06-01) | No longer enforced as a distinct limit — superseded by `max_portfolio_deployment_pct` (ADR-0026, aggregate stake ≤60% equity) |
 
 ### Calibration Sensitivity
 

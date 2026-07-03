@@ -1,5 +1,7 @@
 # Prediction Market Trading Bot — Claude Code Session Rules
 
+**Last documentation-remediation pass:** 2026-07-02 (SESSION 113 follow-on). Prior pass had let the T4-MLB band description and a hardcoded bankroll figure go stale for several weeks despite the underlying system changing substantially (dual-ledger split, MLB-native T4 sub-bands). If you find another stale factual claim in this file, fix it in place and note it in `DECISION_LOG.md` per Hard Rule 7 — do not let corrections wait for the next full remediation pass.
+
 ## Read this before doing anything else
 
 This system will be used by people who trust the person who built it. They are not engineers. They cannot audit what they have been given. The standard is: safe, correct, no corners cut. That is the intent behind every architectural decision in this project. Match it.
@@ -86,15 +88,25 @@ Kill switches follow the same logic: a band-level kill switch (e.g., T4 budget e
 
 **Every session must hold this framing.** When you are sizing a bet, designing a kill switch, writing a decision tree, or reviewing risk limits — the correct mental model is: ~1,000 evaluations per game, capital-ceiling agnostic, dynamically routed by model computation. If your implementation only makes sense for 10–20 bets per game night, something is architecturally wrong.
 
-The current band structure:
+The current band structure (NBA and MLB now have separate, non-interchangeable T4 implementations — do not assume one sport's band status describes the other's):
 
-- **T1:** Night-before baseline — the primary active band
-- **T2:** Same-day with injury overlay — skeleton; requires DS-04 qualitative source
-- **T3:** Pre-tip momentum scan — skeleton
-- **T4 (NBA, PIPE-07):** Built, deployed, cron-scheduled (23:00 UTC daily). NBA-specific: polls ESPN NBA scoreboard + NBA pregame context. Generates ~1,000 bet evaluations per game via 45-second evaluation loop across all active markets. Currently dark (NBA off-season — 0 active games). **NOT future. NOT post-G6.** Code: `run_t4_live.py`, `t4_live_runner.py`, `t4_price_cache.py`.
-- **T4 (MLB):** Does not exist. Must be built before MLB accumulation reaches T4 throughput.
-- **T4 (ADR-0029 Tier A — new architecture):** Built (`t4_execution_engine.py`) but explicitly Phase 8 blocked pending GG-038/GG-039/GG-040. Separate from the deployed NBA T4.
-- **T5:** Not built. Future; requires real-time infrastructure.
+**NBA bands (dark/frozen — tabled per operator directive, not actively worked):**
+- **T1:** Night-before baseline — the primary band while NBA was active. 158/30 resolved paper bets, frozen at a negative baseline (GG-034/GG-037-adjudicated).
+- **T2:** Same-day with injury overlay — skeleton; requires DS-04 qualitative source.
+- **T3:** Pre-tip momentum scan — skeleton.
+- **T4 (NBA, PIPE-07):** Built, deployed, cron-scheduled (23:00 UTC daily). Polls ESPN NBA scoreboard + NBA pregame context, ~1,000 bet evaluations per game via 45-second loop. Currently dark (NBA off-season — 0 active games, and tabled per operator directive independent of season). Code: `run_t4_live.py`, `t4_live_runner.py`, `t4_price_cache.py`.
+- **T4 sub-bands (ADR-0029 Tier A — NBA-native architecture):** Built (`t4_execution_engine.py`, 10 sub-bands) but Phase 8-gated; NBA work is tabled, so this stays dark regardless of gate status. Do not confuse this file with the MLB T4 engine below — they are architecturally separate modules (GG-061 — an earlier session conflated them and had to be corrected via ADR-0037).
+
+**MLB bands (ACTIVE — the live G6 pool):**
+- **T1:** Night-before baseline — ACTIVE, cron-scheduled, the primary source of MLB's 49/30 resolved paper bets.
+- **T2:** Same-day with injury overlay — cron-active (`run_t2_mlb_sameday.py`).
+- **T3:** Pre-game signal scan — cron-active.
+- **T4M-PROJ (`run_t4_mlb_live.py`, ADR-0023):** ACTIVE. The flat, single-evaluator MLB T4 engine — polls ESPN MLB scoreboard on a 45s loop, live and cron/systemd-managed on the VPS (`t4-mlb` service).
+- **T4M-ARITH / T4M-FLOW (ADR-0039, MLB-native T4 sub-band architecture):** Built and unit-tested (`t4_mlb_execution_engine.py`), registry status `BLOCKED` — each requires its own experiment (EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01) to confirm edge before activation. Code authorization (DS sign-off, Session 109) is not capital authorization — both stay dark until their EXP clears and a Phase 8 Activation Gate + APR is granted. T4M-FLOW additionally has a live-wiring gap (`score_diff` never populated from a live poll) that must be closed before it can evaluate real cycles at all.
+- **T4M-BOUNDARY / T4M-EVENT / T4M-LINEUP / T4M-PITCHER / T4M-STAGED / T4M-CORR / T4M-EXIT (ADR-0039 Tier B roster):** Scoping-only. Not authorized for implementation — do not build without a fresh, explicit DS sign-off scoped to the specific sub-band.
+- **T5:** Not built, either sport. Future; requires real-time infrastructure.
+
+Before touching any T4 code, confirm in `GOVERNANCE_GAP_LOG.md`/`TODO_NEXT.md` which sport and which specific sub-band you're in — NBA's `t4_execution_engine.py` and MLB's `t4_mlb_execution_engine.py` are separate files with separate registries, separate ADRs, and separate activation status. Conflating them is a recurring, logged failure mode (GG-061).
 
 The longer the time horizon, the more complex the decision tree (more data sources, more interaction effects, more model inputs). T1 is the simplest — historical rolling stats and rest factors. T4/T5 are the most complex — live Bayesian updates, real-time score state, within-game momentum, market microstructure. This complexity gradient is intentional and governs activation sequencing: simpler bands are activated first, complex bands after their decision trees are calibrated.
 
@@ -128,10 +140,12 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 ## Who built this and why it matters
 
 **Operator:** Earl Ignacio  
-**Project:** Prediction market trading bot (Kalshi primary venue; NBA first sport)  
+**Project:** Prediction market trading bot (Kalshi primary venue; NBA was the first sport implemented, MLB is the current active pool)  
 **Phase:** 6/7 ACTIVE — paper trading live on VPS 157.230.91.33  
 **Framework:** Compass OS (ADR-0001)  
-**Capital status:** NO live capital until G6 (30 resolved paper bets with positive P&L)
+**Capital status:** NO live capital until G6 (30 resolved paper bets with positive P&L, per sport/pool)
+
+**Dual-ledger state (current since ADR-0035/ADR-0037, confirmed GG-070 RESOLVED):** MLB and NBA run as two independent paper portfolios, not one. MLB is the ACTIVE pool the G6 gate is being pursued against. NBA is DARK/FROZEN — tabled per standing operator directive (see `04_EXECUTION/TODO_NEXT.md`) until ~1 month before the 2026-27 NBA season, its 24.9% drawdown is historical/adjudicated (GG-034/GG-037), not a live risk signal. Read `MEMORY_BANK.md`'s Current State Snapshot for both books' live figures — do not treat one ledger's numbers as if they describe the whole system.
 
 **Capability boundary you are operating within:** You can verify, hunt, surface findings, and execute fixes. You cannot replace the operator's architectural judgment. The count gate failure (GG-001) was caught by Earl, not by a model. Do not assume you will independently recognize a wrong architectural primitive. Surface your concerns and let the operator decide.
 
@@ -229,21 +243,23 @@ grep -c "CONTAMINATION_HALT" /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 
 grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
 ```
 
-For each limit: was it calibrated to the current system (~80 players, T1 ACTIVE / T2–T3 SKELETON, 2 cron windows, up to 15 games/night)? If any limit was set for a smaller system, register in GOVERNANCE_GAP_LOG.md.
+For each limit: was it calibrated to the current system (MLB ACTIVE with T1–T4M-PROJ live, T4M-ARITH/T4M-FLOW built-but-blocked, NBA dark)? If any limit was set for a smaller or differently-shaped system, register in GOVERNANCE_GAP_LOG.md.
 
-Current bankroll is $958.99 (as of 2026-06-08, G2 resolution). The 15% drawdown kill switch fires at ~$144 of loss (`MAX_DAILY_LOSS_PCT = 0.15` in `risk.py:90`). `max_daily_loss_usd` was removed and replaced by `MAX_DAILY_LOSS_PCT` per ADR-0012. Formally revise all hard limits via ADR at G6 when live bankroll is set.
+**Do not hardcode a bankroll dollar figure in this file** — it decays within days and this exact mistake (a stale $958.99/2026-06-08 figure surviving three weeks of paper trading) was found and corrected in a documentation-remediation pass. Pull the live bankroll from `MEMORY_BANK.md`'s Current State Snapshot (or the session-start governance hook, which prints both the MLB and NBA books labeled separately per GG-070) before reasoning about kill-switch proximity. The mechanism itself is stable and worth stating here: `MAX_DAILY_LOSS_PCT = 0.15` (`risk.py`) fires the daily circuit breaker at 15% of session-start bankroll; `max_drawdown_pct = 0.20` in `_HARD_LIMITS` (`risk.py`) is the *permanent* kill switch on realized drawdown. `max_daily_loss_usd` was removed and replaced by `MAX_DAILY_LOSS_PCT` per ADR-0012. All hard limits (`_HARD_LIMITS` dict in `risk.py`: `max_single_event_exposure_usd=500.0`, `max_drawdown_pct=0.20`, `max_portfolio_deployment_pct` per ADR-0026) still require formal revision via ADR at G6 when live bankroll is set — that obligation, logged 2026-05-29, remains open and unchanged.
+
+**Ruin-risk caveat (GG-071, OPEN, T-223 assigned, registered SESSION 113 2026-07-02):** a forward-time compounding Monte Carlo found that even T1 MLB's real, positive edge (53.06% win rate at time of study) produces a 17.05% / 43.5% / 46.45% probability (1mo/6mo/1yr) of permanently tripping the 20% max-drawdown kill switch under proportional-stake compounding at real bet cadence. EV-positive and capital-safe are not the same claim — the current `_HARD_LIMITS` mechanism does not account for cadence. Treat this as a live open question when reasoning about hard limits, not a closed one.
 
 ---
 
 **Q2 — Stub survival (paste output from Step 2 above):**
 
-Known stubs as of 2026-06-01:
-- `run_exp001.py:681` — experiment bankroll stub; EXP-001 complete; LOW risk
-- `run_t2_sameday.py:112/130` — T2 injury overlay; T2 is SKELETON; LOW now, **must resolve before T2 ACTIVE** (KI-011 — injury blindness generates fake alpha)
-- `venue_adapter.py:158` — design comment; not a value stub
-- `venue_adapter.py:251` — `"tag": "nba"` hardcoded; Polymarket NBA tag unconfirmed; **MEDIUM risk when T-077 activates** — wrong tag returns empty markets silently (KI-019)
+Historical stub list as of 2026-06-01 (superseded — verified CLEAN, zero `# stub|# placeholder|# TBD|# todo` hits, as of a documentation-remediation pass 2026-07-02; run Step 2 fresh every session, do not trust this note in place of the live scan):
+- `run_exp001.py:681` — experiment bankroll stub; EXP-001 complete; was LOW risk; no longer present.
+- `run_t2_sameday.py:112/130` — T2 injury overlay stub; no longer present (T2 MLB is cron-active; confirm NBA T2 separately if NBA work resumes — KI-011 injury-blindness risk applies to whichever T2 is live).
+- `venue_adapter.py:158` — design comment; was not a value stub.
+- `venue_adapter.py:251` — `"tag": "nba"` hardcoded; Polymarket NBA tag unconfirmed; **MEDIUM risk when T-077 (Polymarket KYC) activates** — wrong tag returns empty markets silently (KI-019). Not caught by the stub-comment scan since it isn't marked `# stub`; verify this specific line directly if Polymarket activation is ever picked up.
 
-Any new hits beyond these must be assessed: when was it written, does it predate current architecture, is the value still valid?
+Any new hits from the live scan must be assessed fresh: when was it written, does it predate current architecture, is the value still valid?
 
 **Standing concern baked into Q6:** The EV benchmark issue (KI-017/GG-004) — all prior EV figures used `mip=0.50`. EXP-017 is the experiment that answers the real commercial question. Until it runs, no model should claim the EV case for this system is proven. Ask: has EXP-017 been run? If not, the commercial question is open.
 

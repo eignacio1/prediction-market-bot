@@ -8,7 +8,13 @@
 **Upstream links:** 05_RESEARCH_EXPERIMENTS/EXPERIMENT_LOG/, 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/RESULTS_INDEX.md  
 **Downstream links:** MODEL_CARD.md, 07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/  
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (ACCEPTED — APR-0012)  
-**Confidence:** 10/10 — Validation and TEST set metrics complete; G4 gate closed 2026-05-28
+**Confidence:** 10/10 — Validation and TEST set metrics complete; G4 gate closed 2026-05-28 (this remains an accurate closed-gate record). 4/10 on whether this document reflects the *current* production model — it does not; see addendum immediately below, added 2026-07-02.
+
+---
+
+## ⚠️ Current Production Model Is Not What's Below (2026-07-02 documentation-remediation pass)
+
+The "Current Model Version" table immediately below describes the G4-gate model (`v1-9939a6a5`), frozen as of 2026-05-28. **Production has since moved to `v2-065b9510`** (LR L1+L2, FEATURE_VERSION 1.4.0, 83 features, QS-2026-05-28-002 qualitative layer live, Brier 0.2451 / ECE 0.0426 / AUC 0.5822, ADR-0031, retrained SESSION 73 2026-06-23). The tables below are retained unedited as the accurate G4 gate evidence record — do not read "Current" in the section header literally without this note. **MLB has an entirely separate model/pipeline not represented anywhere in this document** — flagged as a gap, not filled with unverified figures.
 
 ---
 

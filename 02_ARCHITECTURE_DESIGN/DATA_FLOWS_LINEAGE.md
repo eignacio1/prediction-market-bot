@@ -2,7 +2,7 @@
 
 **Purpose:** Document all data flows between components, transformations applied, and lineage from source to output. Required for audit, look-ahead bias prevention, and reproducibility.  
 **Owner (role):** Architecture Owner (AO)  
-**Last reviewed:** 2026-05-28 (T-046 — FEATURE_VERSION 1.2.0; F-032–F-038 pruned; 31 active features)  
+**Last reviewed:** 2026-07-02 (documentation-remediation pass — corrected a materially false "F-100+ PENDING / QualitativeSignalStore is a stub" status; flagged that this document has not been updated for FEATURE_VERSION 1.4.0 (83 features, current production) or MLB's separate C2 feature set at all). Prior substantive review: 2026-05-28 (T-046 — FEATURE_VERSION 1.2.0; F-032–F-038 pruned; 31 active features)  
 **Next review:** After any FEATURE_VERSION bump; G4 evidence review  
 **Staleness triggers:** New data source; new feature added; component interface changed; venue confirmed  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, 01_SPEC/DATA_REQUIREMENTS.md  
@@ -167,7 +167,7 @@ Qualitative features are loaded by `c2_feature_store/qualitative_store.py` via t
 | F-250–F-299 | DS-05 (future source 2) | TBD |
 | F-300–F-399 | Cross-source composites | Multiple qualitative sources |
 
-**Status:** All F-100+ features are PENDING. `QualitativeSignalStore` is implemented as a stub. Features will be NaN for all rows until DS-01 QS snapshot is populated and registered.
+**Status (corrected 2026-07-02 — was materially false):** F-100+ are **ACTIVE, not PENDING.** `QualitativeSignalStore` is fully implemented (`get_archetype()`, SESSION 50), not a stub. QS-2026-05-28-002 (backdated PRF classification, 42 players → effective_from 2021-10-19) is registered and live; EXP-007 confirmed a positive signal from it (+0.0017 Brier / +0.0159 ECE). Production model (v2-065b9510, ADR-0031) uses **FEATURE_VERSION 1.4.0, 83 features** — this document's feature count above (31 active, F-001–F-031) reflects FEATURE_VERSION 1.2.0 and predates the qualitative layer going live; the L1 quantitative features F-001–F-031 above are still individually accurate, but the "31 active features" framing and the F-100+ PENDING status are both stale. A full re-derivation of this document against FEATURE_VERSION 1.4.0's actual feature list was not performed in this pass — flagging the gap rather than inventing the missing ~52 feature rows.
 
 ---
 

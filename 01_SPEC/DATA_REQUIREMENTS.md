@@ -2,13 +2,13 @@
 
 **Purpose:** Define all data sources, quality thresholds, lineage expectations, retention constraints, and access requirements.  
 **Owner (role):** Research Lead (RL) / Architecture Owner (AO)  
-**Last reviewed:** 2026-05-21  
-**Next review:** G1 Spec Gate; then on any new data source addition  
+**Last reviewed:** 2026-07-02 (documentation-remediation pass — DS-02/DS-03 below had sat marked "Pending" since 2026-05-21 despite venue confirmation (ADR-0003, 2026-05-23) and months of live resolution data since)  
+**Next review:** On any new data source addition (staleness trigger below fired at least twice since last review — MLB C1 source, ESPN as primary outcome source — without being acted on; treat this document as under-reviewed relative to its own trigger list)  
 **Staleness triggers:** New data source approved; venue confirmed (adds market data feed); Player_Attribute_Matrix schema changes; retention policy change; external data contract change  
 **Upstream links:** SCOPE_IN_OUT.md, REQUIREMENTS.md (FR-01)  
 **Downstream links:** 02_ARCHITECTURE_DESIGN/DATA_FLOWS_LINEAGE.md, 06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md, 08_MODEL_RISK_GOVERNANCE/DATA_PROVENANCE.md  
-**Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 6/10 — Sources partially known (Player_Attribute_Matrix confirmed); market data feed and external sources pending venue confirmation  
+**Decision references:** ADR-0001, ADR-0002, ADR-0003 (venue selection — resolves DS-02 below)  
+**Confidence:** 6/10 — DS-02/DS-03 status updated below based on MEMORY_BANK narrative and governance-log cross-references (ADR-0003 venue confirmation, `kalshi_client.py` in active use, MLB Stats API/ESPN/`nba_api` cited as resolution sources across multiple GG entries — e.g. GG-063, GG-069), **not** a fresh field-level schema audit of the actual source files performed in this pass. Treat the field-level detail rows below as still needing verification against current code if precision matters for a specific decision.  
 
 ---
 
@@ -30,33 +30,33 @@
 | Retention | Retain indefinitely as research reference; superseded versions archived with rationale |
 | **Canonical status** | **Research input only. NOT canonical spec. Earns production status through G4 validation evidence.** |
 
-### DS-02 — Market Data Feed (Pending)
+### DS-02 — Market Data Feed (RESOLVED — Kalshi confirmed, live in production)
 
 | Field | Detail |
 |-------|--------|
-| Source name | TBD — contingent on ADR-0003 (venue selection) |
+| Source name | **Kalshi** — confirmed primary venue per ADR-0003 (2026-05-23); `kalshi_client.py` in active use for both order submission and price polling |
 | Source type | Real-time and historical prediction market prices, volumes, order book snapshots |
-| Access path | Venue API (credentials via ACC-0002; requires G5 minimum) |
-| Format | Venue-specific (JSON/REST expected; WebSocket for real-time) |
-| Temporal coverage | Historical: TBD by venue; Real-time: Phase 6+ |
-| Refresh cadence | Real-time (Phase 6+); batch historical pulls (Phase 3) |
-| Access control | Requires API credentials (ACC-0002); no credentials before G5 |
-| Quality notes | Bid-ask spread must be recorded (not just mid-price); vig/take rate must be tracked |
-| Retention | Raw snapshots retained per DATA_RETENTION_DELETION.md; historical data pinned at Snapshot IDs |
-| **Canonical status** | **Pending venue confirmation** |
+| Access path | Kalshi REST API (RSA-PSS signed requests, ADR-0008); DEMO environment for paper trading (`BOT_ENV=paper`), live URL reserved for post-G6 |
+| Format | REST/JSON. Order endpoint migrated v1→v2 (`/portfolio/events/orders`) per ADR-0038 (SESSION 108) after Kalshi deprecated v1 platform-wide — a real breaking change this document did not anticipate when it said "Venue-specific, JSON/REST expected" |
+| Temporal coverage | Real-time polling active (T4 bands: 45s cycle); historical price history not separately warehoused beyond what's captured in per-cycle logs |
+| Refresh cadence | Real-time — T1/T2/T3 poll once per scheduled cron run; T4/T4M poll every 45-90s continuously during live games |
+| Access control | API credentials provisioned (ACC-0002) and in active use, vault/env-var protocol (NFR-05) | 
+| Quality notes | Fee-adjusted edge gate implemented (ADR-0016); fee rate (0.07 vs possible 0.06 for sports markets) not fully confirmed against real receipts — GG-020 OPEN, paper-trading-only means no live receipts exist yet |
+| Retention | Per-cycle price data logged to JSONL (e.g. `t4_mlb_cycle_log.jsonl`); Data Snapshot Discipline applied when frozen for backtesting (DATA_SNAPSHOTS_INDEX.md) |
+| **Canonical status** | **RESOLVED and live.** *(Corrected 2026-07-02 — this row said "Pending venue confirmation" for over a month after ADR-0003 confirmed Kalshi.)* |
 
-### DS-03 — Outcome/Resolution Data (Pending)
+### DS-03 — Outcome/Resolution Data (RESOLVED — sport-specific, live in production)
 
 | Field | Detail |
 |-------|--------|
-| Source name | TBD — venue settlement records or authoritative external source |
-| Source type | Ground truth outcomes for settled prediction market events |
-| Access path | Venue settlement API or manual collection |
-| Format | TBD |
-| Temporal coverage | Historical: needed for backtesting; Real-time: Phase 6+ |
-| Quality notes | Critical for calibration evaluation; must be authoritative (not self-reported); settlement edge cases must be documented |
-| Retention | Permanent retention as ground truth for validation |
-| **Canonical status** | **Pending** |
+| Source name | **NBA:** `nba_api` / ESPN NBA scoreboard. **MLB:** MLB Stats API (`gameLog` endpoint) + ESPN MLB scoreboard (used for game-status/FINAL confirmation). |
+| Source type | Ground truth outcomes for settled prediction market events (player stat thresholds) |
+| Access path | Public stats APIs, not venue settlement records — the original design assumed venue settlement would be the ground truth source; production instead resolves independently against the underlying sport's official stats and compares to the market's threshold |
+| Format | JSON (`nba_api`, MLB Stats API), HTML/JSON (ESPN) |
+| Temporal coverage | Historical (backtesting) and real-time (Phase 6+, live) |
+| Quality notes | **Known defect, not yet fixed:** `fetch_actual_hits`/`_fetch_mlb_hits` (`run_resolve_mlb.py`) has no FINAL-game-status gate — it can resolve against in-progress hit totals rather than confirmed-final ones (GG-069, registered SESSION 111, partially addressed via T-221 but cross-check current status in GOVERNANCE_GAP_LOG.md before trusting any MLB resolution pulled without an explicit STATUS_FINAL check). This directly affects data quality for this source and should not be treated as fully resolved just because the source itself is identified. |
+| Retention | Resolved outcomes written to paper portfolio + resolution logs; permanent retention as ground truth |
+| **Canonical status** | **RESOLVED (source identified, live) with an open data-quality defect (GG-069).** *(Corrected 2026-07-02 — this row said "Pending" and didn't anticipate that ground truth would come from independent stats APIs rather than venue settlement.)* |
 
 ---
 
