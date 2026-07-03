@@ -92,6 +92,16 @@ data/live/
 # --- Game-log CSVs excluded (large; registered as snapshots) ---
 exp_output/**/*.csv
 
+# --- GG-073: MLB live-pipeline cache dir (regenerable runtime cache, not an
+# EXP-NNN registered result) -- was untracked-but-uncovered, dirtying the VPS
+# tree and failing every deploy.yml run since 2026-06-24.
+exp_output/MLB/
+
+# --- GG-073: pipeline-generated data contract state (row-count baselines for
+# cardinality drift detection). Rewritten by every PIPE-05/PIPE-06pre run --
+# tracking it in git reproduces the exact paper_portfolio.json/T-171 problem.
+data/data_contracts_state.json
+
 # --- Qualitative classification CSVs ARE committed (immutable registered snapshots) ---
 # Template and QS snapshots in qualitative_data/ are version-controlled.
 *.csv
