@@ -726,6 +726,45 @@ class TestRunCycle:
         )
         assert fi == 0
 
+    def test_no_fire_when_vig_above_ceiling(self, tmp_path):
+        # T-228: even a slam-dunk p_t4 must not fire when vig exceeds VIG_CEILING —
+        # the market is skipped before the Binomial/C4 cost, not merely filtered
+        # downstream on edge.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=runner.VIG_CEILING + 0.01)}
+        pregame = self._pregame(threshold=1, ba_l10=0.99)
+
+        ev, fi, deployed = runner._run_cycle(
+            cycle_id="C10-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+        )
+        assert fi == 0
+        assert deployed == pytest.approx(0.0)
+
+    def test_fires_at_vig_exactly_on_ceiling(self, tmp_path):
+        # Ceiling is exclusive (skip is `vig > VIG_CEILING`) — a market priced
+        # exactly at the ceiling must still be evaluated normally.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=runner.VIG_CEILING)}
+        pregame = self._pregame(threshold=1, ba_l10=0.99)
+
+        ev, fi, deployed = runner._run_cycle(
+            cycle_id="C11-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+        )
+        assert fi == 1
+        assert deployed > 0.0
+
     def test_respects_band_budget_exhausted(self, tmp_path):
         engine, trader, store, audit = _make_components(tmp_path)
         # p_t4 would be high but budget already exhausted
@@ -906,6 +945,11 @@ class TestConstants:
 
     def test_component_name(self):
         assert runner.COMPONENT == "PIPE-07-MLB"
+
+    def test_vig_ceiling_0_30(self):
+        # T-228: derived from real 2026-07-02 production data — the widest vig
+        # on any qualifying (net_edge>=0.04) signal that day was 0.24.
+        assert runner.VIG_CEILING == pytest.approx(0.30)
 
 
 # ---------------------------------------------------------------------------
@@ -1431,6 +1475,36 @@ class TestProductionCycleLog:
         )
         assert fi >= 1
         assert deployed > 0.0
+
+    def test_vig_skip_logged_without_p_t4(self, tmp_path):
+        """T-228: a vig-ceiling skip still writes a lightweight cycle-log record
+        (for EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 visibility) but omits p_t4/edge
+        fields since the Binomial computation was never performed."""
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=runner.VIG_CEILING + 0.01)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.55, "ba_l10": 0.99, "h_l10_mean": 1.0}]}
+        log_path = tmp_path / "t4_mlb_cycle_log_vigskip.jsonl"
+        ev, fi, _dep = runner._run_cycle(
+            cycle_id="CL-VIG", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        assert fi == 0
+        assert log_path.exists()
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) == 1
+        record = json.loads(lines[0])
+        assert record["vig_skip"] is True
+        assert record["vig"] == pytest.approx(runner.VIG_CEILING + 0.01)
+        assert "p_t4" not in record
+        assert "net_edge" not in record
 
     def test_cycle_log_betting_logic_unaffected(self, tmp_path):
         """Writing the cycle log must not change fired count, deployed capital, or

@@ -131,6 +131,13 @@ SNAPSHOT_ID         = "T4-MLB-LIVE"
 SESSION_ID_PREFIX   = "T4-MLB"
 AB_PER_GAME_DEFAULT = 3.7           # typical MLB batter ABs per game (slot-5 / population baseline)
 KELLY_T4            = 0.10          # conservative Kelly for T4 paper (ADR-0023)
+# T-228: skip the Binomial/C4 evaluation cost on markets priced too wide to plausibly
+# clear MIN_EDGE_TO_APPROVE. Ceiling set from real 2026-07-02 production data, not a
+# guess: of 4,971 evaluated cycles that day, the widest vig on any net_edge>=0.04
+# qualifying signal was 0.24 (KXMLBHIT PHIBHARPER3-2, p_t4=0.45, mip=0.15); 0.30 keeps
+# clear margin above every observed real signal while still cutting the fat right tail
+# (477/4,971 rows, ~9.6%, had vig>0.30 and none of them ever qualified).
+VIG_CEILING         = 0.30
 
 # Slot-specific expected ABs per game — mirrors T2 empirical averages (T-200)
 _AB_BY_SLOT: dict[int, float] = {
@@ -823,6 +830,33 @@ def _run_cycle(
             mip = pm.mid_price
             vig = pm.vig
             if mip <= 0.0 or mip >= 1.0:
+                continue
+
+            # T-228: markets priced this wide have never produced a qualifying signal
+            # in production (see VIG_CEILING derivation above) — skip before paying the
+            # Binomial p_t4 / semantic-guard / C4 evaluation cost. Still log a lightweight
+            # record (no p_t4/edge fields) so EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 retain
+            # visibility into how much volume this filter removes (GG-067).
+            if vig > VIG_CEILING:
+                if cycle_log_path is not None:
+                    _append_dryrun_record(cycle_log_path, {
+                        "ts":           datetime.now(timezone.utc).isoformat(),
+                        "cycle_id":     cycle_id,
+                        "session_id":   session_id,
+                        "game_date":    game_date,
+                        "ticker":       ticker,
+                        "player_name":  ctx["player_name"],
+                        "player_id":    player_id,
+                        "threshold":    threshold,
+                        "mip":          round(mip, 6),
+                        "vig":          round(vig, 6),
+                        "vig_skip":     True,
+                        "h_so_far":     ls.h_so_far,
+                        "ab_so_far":    ls.ab_so_far,
+                        "ab_remaining": ab_remaining,
+                        "inning":       ls.inning,
+                        "batting_slot": batting_slot,
+                    })
                 continue
 
             # Layer 3 semantic contract check (ADR-0034): business-logic coherence
