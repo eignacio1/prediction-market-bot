@@ -612,24 +612,35 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
     return open_exposure + realized_losses
 
 
-def _reconstruct_fired_tickers(portfolio: dict, game_date: str) -> set:
-    """T-209: rebuild the game-day dedup guard from the persisted portfolio.
+def _reconstruct_fired_ticker_states(portfolio: dict, game_date: str) -> dict[str, tuple[int, int]]:
+    """T-209/T-225: rebuild the game-day re-entry dedup guard from the persisted portfolio.
 
-    `already_fired_game` is otherwise a process-local in-memory set that is
+    `already_fired_game` is otherwise a process-local in-memory dict that is
     silently wiped on every restart (crash, RestartSec cooldown, or a deploy-
     triggered `systemctl restart`). Without this reconstruction, a restart
-    mid-game forgets which tickers already have an open position, and
+    mid-game forgets each ticker's last-fired live state, and
     `PaperTrader.open_position()` has no ticker-level duplicate guard of its
-    own — so a restart can cause a real second position on a market this
-    process (or a prior instance of it) already bet.
+    own — so a restart could cause a redundant same-state re-fire on a market
+    this process (or a prior instance of it) already bet at that exact state.
+
+    T-225: the guard now maps ticker -> (h_so_far, ab_remaining) at last entry
+    rather than a permanent one-shot set, so a ticker may re-fire once the
+    live state that feeds p_t4 has actually moved. Positions are scanned in
+    `entered_at` order (ascending) so the most recent entry per ticker wins,
+    regardless of whether it currently sits in open_positions or has since
+    closed.
     """
-    tickers = set()
-    for p in portfolio.get("open_positions", []) + portfolio.get("closed_positions", []):
+    states: dict[str, tuple[int, int]] = {}
+    positions = portfolio.get("open_positions", []) + portfolio.get("closed_positions", [])
+    positions.sort(key=lambda p: p.get("entered_at", ""))
+    for p in positions:
         if p.get("pool_isolated") and p.get("game_date") == game_date:
             ticker = p.get("kalshi_ticker")
-            if ticker:
-                tickers.add(ticker)
-    return tickers
+            h_so_far = p.get("h_so_far_at_entry")
+            ab_remaining = p.get("ab_remaining_at_entry")
+            if ticker and h_so_far is not None and ab_remaining is not None:
+                states[ticker] = (h_so_far, ab_remaining)
+    return states
 
 
 # ---------------------------------------------------------------------------
@@ -735,7 +746,7 @@ def _run_cycle(
     game_date: str,
     t4_band_budget: float,
     t4_deployed_usd: float,
-    already_fired_game: Optional[set] = None,
+    already_fired_game: Optional[dict[str, tuple[int, int]]] = None,
     batting_slots: Optional[dict[int, int]] = None,
     dry_run: bool = False,
     dryrun_log_path: Optional[Path] = None,
@@ -755,7 +766,7 @@ def _run_cycle(
     ctx that reaches the p_t4/gross_edge computation, independent of dry_run/fired status.
     """
     if already_fired_game is None:
-        already_fired_game = set()
+        already_fired_game = {}
     evaluated = 0
     fired = 0
     _slots = batting_slots or {}
@@ -783,7 +794,11 @@ def _run_cycle(
             ticker    = ctx["ticker"]
             threshold = int(ctx["threshold"])
 
-            if ticker in already_fired_game:
+            # T-225: allow re-entry once the live state feeding p_t4 has moved
+            # since this ticker's last fire (new hit, new out, or ab_remaining
+            # decay). A same-state re-check is a no-op re-fire and is blocked.
+            last_state = already_fired_game.get(ticker)
+            if last_state is not None and last_state == (ls.h_so_far, ab_remaining):
                 continue
 
             pm = live_prices.get(ticker)
@@ -902,7 +917,7 @@ def _run_cycle(
                 evaluated += 1
                 if net_edge > 0:
                     fired += 1
-                    already_fired_game.add(ticker)
+                    already_fired_game[ticker] = (ls.h_so_far, ab_remaining)
                     logger.info(
                         "T4-MLB DRY_RUN WOULD_FIRE  %-45s  p=%.3f  mip=%.3f  edge=%+.3f",
                         ticker, p_t4, mip, net_edge,
@@ -985,6 +1000,8 @@ def _run_cycle(
                 game_date=game_date,
                 session_id=session_id,
                 pool_isolated=True,
+                h_so_far_at_entry=ls.h_so_far,
+                ab_remaining_at_entry=ab_remaining,
             )
             if not ok_pos:
                 logger.error("PaperTrader write failure at %s — halting cycle", ticker)
@@ -992,7 +1009,7 @@ def _run_cycle(
 
             if pos:
                 store.mark_fired(order_id)
-                already_fired_game.add(ticker)
+                already_fired_game[ticker] = (ls.h_so_far, ab_remaining)
                 fired += 1
                 t4_deployed_usd += approved_size
                 logger.info(
@@ -1210,12 +1227,16 @@ def main() -> None:
     cycle_n = 0
     total_evaluated = 0
     total_fired = 0
-    # Game-day dedup guard: markets that have already received a position this game day.
-    # Reset at UTC midnight (date rollover). Prevents re-betting the same market every
-    # 90-second cycle (GG-050 fix — moved out of _run_cycle where it was per-cycle only).
+    # Game-day dedup guard: ticker -> (h_so_far, ab_remaining) at that ticker's last
+    # entry this game day. Reset at UTC midnight (date rollover). Prevents re-betting
+    # the same market every 90-second cycle while the live state hasn't moved
+    # (GG-050 fix — moved out of _run_cycle where it was per-cycle only).
     # T-209: reconstructed from the persisted portfolio (not started empty) so a process
-    # restart mid-game does not forget which tickers already have an open position.
-    already_fired_game: set[str] = _reconstruct_fired_tickers(t4_state, game_date)
+    # restart mid-game does not forget each ticker's last-fired state.
+    # T-225: re-keyed from a permanent one-shot set to a per-ticker last-state dict —
+    # a ticker may re-fire once (h_so_far, ab_remaining) has actually changed, per the
+    # operator's 2026-07-03 design ruling (DECISION_LOG.md).
+    already_fired_game: dict[str, tuple[int, int]] = _reconstruct_fired_ticker_states(t4_state, game_date)
     if already_fired_game:
         logger.info(
             "T4-MLB dedup guard reconstructed: %d ticker(s) already fired for %s",
@@ -1272,7 +1293,7 @@ def main() -> None:
                 # T-209: reconstruct (not just clear) — new day is normally empty,
                 # but this keeps the guard correct if the date rollover races a restart.
                 already_fired_game.clear()
-                already_fired_game.update(_reconstruct_fired_tickers(t4_state, game_date))
+                already_fired_game.update(_reconstruct_fired_ticker_states(t4_state, game_date))
                 logger.info(
                     "T4-MLB rollover complete: %d games, %d players, budget=$%.2f",
                     len(game_ids), len(by_player_id), t4_band_budget,
