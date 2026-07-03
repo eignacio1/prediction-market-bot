@@ -14,23 +14,44 @@ Panels:
   3. System Health       — kill switch state, pipeline last-run timestamps
   4. Drift Metrics       — rolling Brier, ECE, mean edge vs thresholds (C7)
   5. Alert Feed          — last N WARN/ERROR/CRITICAL, deduplicated by type
+  6. T4 MLB Detail       — the T4 leg in full: evaluation funnel (raw cycle
+                           context -> vig-skip -> gross edge -> net edge ->
+                           C4 MIN_EDGE_TO_APPROVE -> approved -> fired),
+                           re-entry vs first-entry breakdown (T-225), band
+                           budget utilization, contamination guard health,
+                           and sub-band registry status (T4M-PROJ ACTIVE vs
+                           T4M-ARITH/T4M-FLOW BLOCKED). Added 2026-07-03
+                           (post-T-225/226/227/228/229 confidence-gradient
+                           follow-up) — see GG-076, TODO_NEXT.md T-231.
 
 Data sources (in priority order):
-  - logs/paper_portfolio.json        — T1 portfolio state
-  - logs/paper_portfolio_t4.json     — T4 portfolio state (may not exist)
-  - logs/audit.jsonl                 — kill switch state only
-  - logs/*.log (file mtimes)         — pipeline last-run timestamps
+  - logs/paper_portfolio.json              — T1 (NBA) portfolio state
+  - logs/paper_portfolio_t4.json           — T4 (NBA) portfolio state (may not exist)
+  - logs/paper_portfolio_mlb.json          — T1 MLB portfolio state (Panel 6 context)
+  - logs/paper_portfolio_mlb_t4.json       — T4 MLB portfolio state (Panel 6)
+  - logs/t4_mlb_cycle_log.jsonl            — T4 MLB per-cycle raw context (GG-067) — Panel 6 funnel
+  - logs/audit_mlb_t4_edge_decisions.jsonl — T4 MLB C4 edge-decision sink (T-213/GG-060) — Panel 6 funnel
+  - logs/audit_mlb_t4.jsonl                — T4 MLB C6 audit log (CONTAMINATION_HALT) — Panel 6 health
+  - logs/audit.jsonl                       — kill switch state only
+  - logs/*.log (file mtimes)               — pipeline last-run timestamps
 
 Usage (CLI)::
     python -m prediction_market_bot.c8_dashboard.dashboard \\
         [--log-path logs/audit.jsonl] \\
         [--portfolio-path logs/paper_portfolio.json] \\
         [--t4-portfolio-path logs/paper_portfolio_t4.json] \\
+        [--mlb-portfolio-path logs/paper_portfolio_mlb.json] \\
+        [--t4-mlb-portfolio-path logs/paper_portfolio_mlb_t4.json] \\
+        [--t4-mlb-cycle-log-path logs/t4_mlb_cycle_log.jsonl] \\
+        [--t4-mlb-edge-log-path logs/audit_mlb_t4_edge_decisions.jsonl] \\
+        [--t4-mlb-audit-log-path logs/audit_mlb_t4.jsonl] \\
         [--log-dir logs/] \\
         [--game-date YYYY-MM-DD] \\
         [--n-alerts 20]
 
 The dashboard is stateless — each invocation reads current files and renders.
+Panel 6 (T4 MLB Detail) degrades gracefully: any missing file renders as
+"not found" for that section rather than failing the whole dashboard render.
 """
 
 from __future__ import annotations
@@ -42,6 +63,33 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+_SRC_ROOT = Path(__file__).resolve().parents[2]
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
+
+# Panel 6 (T4 MLB Detail) dependencies. Wrapped defensively — the dashboard's
+# design contract is "any missing file/import degrades that section, never
+# crashes the whole render" (see module docstring). execution_bands.py is
+# stdlib-only (safe); c4_risk_engine.risk pulls in pandas/jsonlines, which
+# are already dashboard-adjacent dependencies but are guarded anyway so a
+# broken venv on one component doesn't take down Panels 1-5.
+try:
+    from prediction_market_bot.execution_bands import (
+        ExecutionBand as _ExecutionBand,
+        T4_MLB_SUBBAND_REGISTRY as _T4_MLB_SUBBAND_REGISTRY,
+    )
+    from prediction_market_bot.c4_risk_engine.risk import (
+        MIN_EDGE_TO_APPROVE as _MIN_EDGE_TO_APPROVE,
+        summarize_edge_run as _summarize_edge_run,
+    )
+    _PANEL6_IMPORTS_OK = True
+except Exception:  # pragma: no cover — defensive; see comment above
+    _ExecutionBand = None
+    _T4_MLB_SUBBAND_REGISTRY = None
+    _MIN_EDGE_TO_APPROVE = 0.04
+    _summarize_edge_run = None
+    _PANEL6_IMPORTS_OK = False
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -591,6 +639,333 @@ def render_alert_feed(
 
 
 # ---------------------------------------------------------------------------
+# Panel 6 — T4 MLB Detail (the T4 leg in its entirety)
+# ---------------------------------------------------------------------------
+#
+# Added 2026-07-03 as a direct follow-up to the T4 MLB throughput diagnosis
+# (GG-076) and the T-225/226/227/228/229 remediation batch. Panels 1-2 only
+# ever showed T4 as an aggregate bet count; this panel exposes the full
+# evaluation funnel and sub-band governance state so "is T4 running at
+# optimum" (correct math/filtering/decision trees/execution paths — not a
+# P&L claim, per the operator's own definition) is answerable from one view
+# instead of grepping four separate log files by hand.
+#
+# Every reader below is defensive: a missing/unreadable file renders its
+# section as "not found," it never raises out of render_t4_detail_panel().
+
+
+def read_jsonl_generic(path: str | Path) -> list[dict[str, Any]]:
+    """Read any JSONL file into a list of dicts. Returns [] if missing/unreadable.
+
+    Generic version of read_audit_log() — same tolerant-parse behavior
+    (skips blank lines and malformed JSON lines rather than failing the
+    whole read), used for the T4 MLB cycle log and edge-decision sink,
+    which are not C6 audit-log-shaped but are line-delimited JSON the same
+    way.
+    """
+    p = Path(path)
+    if not p.exists():
+        return []
+    entries: list[dict[str, Any]] = []
+    try:
+        with open(p) as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+    except OSError:
+        return []
+    return entries
+
+
+def _t4_cycle_log_for_date(cycle_entries: list[dict[str, Any]], game_date: str) -> list[dict[str, Any]]:
+    """Filter t4_mlb_cycle_log.jsonl rows to a single game_date."""
+    return [r for r in cycle_entries if r.get("game_date") == game_date]
+
+
+def compute_t4_funnel_stats(cycle_entries: list[dict[str, Any]]) -> dict[str, Any]:
+    """
+    Reconstruct the T4 MLB evaluation funnel from raw per-cycle context
+    (GG-067's cycle log — written for every ctx that reaches the p_t4/edge
+    computation, independent of dry-run/fired status).
+
+    Funnel stages, most permissive to least:
+      total            — every row in the cycle log for this date
+      vig_skipped      — T-228's pre-filter: vig > VIG_CEILING, never reached
+                          the Binomial/C4 evaluation cost at all
+      evaluated        — total - vig_skipped (rows that got a real p_t4)
+      gross_edge_pos   — gross_edge > 0 (before Kalshi taker fee)
+      net_edge_pos     — net_edge > 0 (after fee, before C4's MIN_EDGE gate)
+      net_edge_min     — net_edge >= MIN_EDGE_TO_APPROVE (the real C4-eligible
+                          threshold — this is what actually reaches C4, not
+                          net_edge_pos)
+    Also returns vig distribution (mean/median/max) over non-skipped rows,
+    since a fat-tailed vig distribution was T-228's whole rationale.
+    """
+    total = len(cycle_entries)
+    vig_skipped = sum(1 for r in cycle_entries if r.get("vig_skip") is True)
+    scored = [r for r in cycle_entries if r.get("vig_skip") is not True and "p_t4" in r]
+    evaluated = len(scored)
+    gross_pos = sum(1 for r in scored if (r.get("gross_edge") or 0.0) > 0.0)
+    net_pos = sum(1 for r in scored if (r.get("net_edge") or 0.0) > 0.0)
+    net_min = sum(1 for r in scored if (r.get("net_edge") or 0.0) >= _MIN_EDGE_TO_APPROVE)
+
+    vigs = [r["vig"] for r in scored if isinstance(r.get("vig"), (int, float))]
+    vig_stats: dict[str, float | None] = {"mean": None, "median": None, "max": None}
+    if vigs:
+        vigs_sorted = sorted(vigs)
+        n = len(vigs_sorted)
+        vig_stats["mean"] = sum(vigs_sorted) / n
+        vig_stats["median"] = vigs_sorted[n // 2]
+        vig_stats["max"] = vigs_sorted[-1]
+
+    return {
+        "total": total,
+        "vig_skipped": vig_skipped,
+        "evaluated": evaluated,
+        "gross_edge_pos": gross_pos,
+        "net_edge_pos": net_pos,
+        "net_edge_min_approve": net_min,
+        "vig_stats": vig_stats,
+    }
+
+
+def compute_t4_reentry_stats(t4_positions_today: list[dict[str, Any]]) -> dict[str, Any]:
+    """
+    Split today's T4 MLB positions into first-entries vs re-entries per
+    ticker (T-225 — re-entry is only possible post-deploy; pre-T-225
+    positions are all first-entries by construction since re-entry didn't
+    exist yet). Positions are read in list order, which PaperTrader appends
+    in chronologically, so the first time a ticker is seen this call is its
+    first entry.
+    """
+    seen: dict[str, int] = {}
+    for p in t4_positions_today:
+        ticker = p.get("kalshi_ticker") or "?"
+        seen[ticker] = seen.get(ticker, 0) + 1
+
+    unique_tickers = len(seen)
+    first_entries = unique_tickers
+    re_entries = sum(c - 1 for c in seen.values() if c > 1)
+    tickers_with_reentry = sum(1 for c in seen.values() if c > 1)
+    max_entries_one_ticker = max(seen.values()) if seen else 0
+
+    return {
+        "unique_tickers": unique_tickers,
+        "first_entries": first_entries,
+        "re_entries": re_entries,
+        "tickers_with_reentry": tickers_with_reentry,
+        "max_entries_one_ticker": max_entries_one_ticker,
+    }
+
+
+def compute_t4_contamination_stats(
+    audit_entries: list[dict[str, Any]],
+    game_date: str | None = None,
+) -> dict[str, Any]:
+    """
+    Read CONTAMINATION_HALT events from the T4 MLB C6 audit log
+    (LiveDataFreshnessGuard.check() in run_t4_mlb_live.py). Zero
+    staleness_halts is healthy; market_active halts are expected/benign at
+    game end. Uses the running total_halts/staleness_halts counters each
+    event already carries (session-cumulative), taking the max seen rather
+    than summing, since each event already reports the session total.
+    """
+    halts = [e for e in audit_entries if e.get("event_type") == "CONTAMINATION_HALT"]
+    if game_date:
+        halts = [h for h in halts if (h.get("timestamp") or "").startswith(game_date)]
+    total_halts = 0
+    staleness_halts = 0
+    failed_check_counts: dict[str, int] = {}
+    for h in halts:
+        payload = h.get("payload") or {}
+        total_halts = max(total_halts, int(payload.get("total_halts") or 0))
+        staleness_halts = max(staleness_halts, int(payload.get("staleness_halts") or 0))
+        for fc in payload.get("failed_checks") or []:
+            failed_check_counts[fc] = failed_check_counts.get(fc, 0) + 1
+    return {
+        "event_count": len(halts),
+        "total_halts": total_halts,
+        "staleness_halts": staleness_halts,
+        "failed_check_counts": failed_check_counts,
+    }
+
+
+def render_t4_subband_registry() -> list[str]:
+    """Static sub-band governance table (execution_bands.T4_MLB_SUBBAND_REGISTRY).
+
+    Not date-scoped — reflects code state, not today's activity. Shows every
+    registered MLB T4 sub-band's activation status so "is T4 running at
+    optimum" includes "is anything BLOCKED that shouldn't be, or ACTIVE that
+    shouldn't be" — not just throughput.
+    """
+    lines: list[str] = []
+    if not _PANEL6_IMPORTS_OK or _T4_MLB_SUBBAND_REGISTRY is None:
+        lines.append(_SEP + _pad(
+            "    Sub-band registry: import failed — execution_bands.py unavailable.",
+            _BOX_WIDTH,
+        ) + _SEP)
+        return lines
+
+    lines.append(_SEP + _pad("    Sub-band registry (execution_bands.T4_MLB_SUBBAND_REGISTRY):", _BOX_WIDTH) + _SEP)
+    for band, spec in _T4_MLB_SUBBAND_REGISTRY.items():
+        status = getattr(spec, "status", "?")
+        tag = "ACTIVE " if status == "ACTIVE" else "BLOCKED"
+        gate = ", ".join(getattr(spec, "exp_gate", ()) or ()) or "—"
+        kelly = getattr(spec, "provisional_kelly", None)
+        kelly_str = f"{kelly:.2f}" if isinstance(kelly, (int, float)) else "n/a"
+        lines.append(_SEP + _pad(
+            f"      [{tag}] {band.value:<10}  kelly={kelly_str}  exp_gate={gate}",
+            _BOX_WIDTH,
+        ) + _SEP)
+    return lines
+
+
+def render_t4_detail_panel(
+    t4_mlb_portfolio: dict[str, Any],
+    cycle_entries: list[dict[str, Any]],
+    t4_audit_entries: list[dict[str, Any]],
+    edge_log_path: str | Path | None,
+    game_date: str | None = None,
+) -> list[str]:
+    """
+    Panel 6: T4 MLB leg in full — evaluation funnel, re-entry breakdown, band
+    budget, contamination guard health, and sub-band registry status.
+
+    Every section degrades independently: a missing/empty source renders
+    "not found for this section," it does not blank the whole panel.
+    """
+    gd = game_date or _today_str()
+    lines: list[str] = []
+    lines.append("┌" + _HR + "┐")
+    lines.append(_SEP + _pad(f" PANEL 6 — T4 MLB DETAIL  ({gd})", _BOX_WIDTH) + _SEP)
+    lines.append("├" + _HR + "┤")
+
+    # --- Section A: session/service freshness ---
+    day_cycles = _t4_cycle_log_for_date(cycle_entries, gd)
+    if day_cycles:
+        sessions_today = sorted({r.get("session_id", "?") for r in day_cycles})
+        last_ts = max((r.get("ts") or "" for r in day_cycles), default="")
+        cycle_ids_today = {r.get("cycle_id") for r in day_cycles}
+        lines.append(_SEP + _pad(
+            f"  Sessions today: {len(sessions_today)}  │  Cycles: {len(cycle_ids_today)}"
+            f"  │  Last write: {last_ts[:19] or 'n/a'}",
+            _BOX_WIDTH,
+        ) + _SEP)
+    else:
+        lines.append(_SEP + _pad(
+            f"  No cycle-log activity for {gd} yet (t4_mlb_cycle_log.jsonl).", _BOX_WIDTH
+        ) + _SEP)
+
+    lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+
+    # --- Section B: evaluation funnel ---
+    lines.append(_SEP + _pad("  Evaluation funnel (raw cycle log):", _BOX_WIDTH) + _SEP)
+    if day_cycles:
+        f = compute_t4_funnel_stats(day_cycles)
+        lines.append(_SEP + _pad(
+            f"    Total rows {f['total']}  │  Vig-skipped {f['vig_skipped']}"
+            f"  │  Evaluated {f['evaluated']}",
+            _BOX_WIDTH,
+        ) + _SEP)
+        lines.append(_SEP + _pad(
+            f"    Gross edge>0: {f['gross_edge_pos']}  │  Net edge>0: {f['net_edge_pos']}"
+            f"  │  Net edge>=MIN({_MIN_EDGE_TO_APPROVE:.2f}): {f['net_edge_min_approve']}",
+            _BOX_WIDTH,
+        ) + _SEP)
+        vs = f["vig_stats"]
+        if vs["mean"] is not None:
+            lines.append(_SEP + _pad(
+                f"    Vig (non-skipped): mean={vs['mean']:.3f}  median={vs['median']:.3f}  max={vs['max']:.3f}",
+                _BOX_WIDTH,
+            ) + _SEP)
+    else:
+        lines.append(_SEP + _pad("    No data — see session/service line above.", _BOX_WIDTH) + _SEP)
+
+    # --- Section B2: C4-side funnel (evaluate_forecast's own view) ---
+    if edge_log_path is not None and _summarize_edge_run is not None:
+        try:
+            edge_summary = _summarize_edge_run(edge_log_path)
+        except Exception:
+            edge_summary = None
+        if edge_summary:
+            lines.append(_SEP + _pad(
+                f"    C4 view: evals={edge_summary.get('total_evaluations', 0)}"
+                f"  edge_signals={edge_summary.get('edge_signals_found', 0)}"
+                f"  approved={edge_summary.get('bets_approved', 0)}"
+                f"  state={edge_summary.get('run_state', '?')}",
+                _BOX_WIDTH,
+            ) + _SEP)
+            if edge_summary.get("silent_success_flag"):
+                lines.append(_SEP + _pad(
+                    "    *** SILENT_SUCCESS_FLAG: >=50 evals, 0 edge signals — check upstream. ***",
+                    _BOX_WIDTH,
+                ) + _SEP)
+
+    lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+
+    # --- Section C: fire / re-entry / budget ---
+    lines.append(_SEP + _pad("  Positions fired (re-entry breakdown, T-225):", _BOX_WIDTH) + _SEP)
+    if not t4_mlb_portfolio:
+        lines.append(_SEP + _pad("    paper_portfolio_mlb_t4.json not found.", _BOX_WIDTH) + _SEP)
+    else:
+        s4 = _compute_portfolio_stats(t4_mlb_portfolio)
+        t4_today = _positions_for_date(s4["open_pos"], gd) + _positions_for_date(s4["closed_pos"], gd)
+        if not t4_today:
+            lines.append(_SEP + _pad(f"    0 positions for {gd}.", _BOX_WIDTH) + _SEP)
+        else:
+            r = compute_t4_reentry_stats(t4_today)
+            lines.append(_SEP + _pad(
+                f"    Total fired: {len(t4_today)}  │  Unique tickers: {r['unique_tickers']}"
+                f"  │  Re-entries: {r['re_entries']} (on {r['tickers_with_reentry']} tickers)",
+                _BOX_WIDTH,
+            ) + _SEP)
+            if r["max_entries_one_ticker"] > 1:
+                lines.append(_SEP + _pad(
+                    f"    Max entries on one ticker today: {r['max_entries_one_ticker']}",
+                    _BOX_WIDTH,
+                ) + _SEP)
+
+        bankroll = float(t4_mlb_portfolio.get("bankroll_usd") or 0.0)
+        band_budget = bankroll * 0.27  # T4_BAND_WEIGHT, ADR-0023 — mirrors run_t4_mlb_live.py
+        deployed_today = sum(
+            float(p.get("size_usd") or 0.0)
+            for p in _positions_for_date(s4["open_pos"], gd)
+        )
+        budget_bar = _bar(deployed_today, 0.0, band_budget) if band_budget > 0 else "[n/a]"
+        lines.append(_SEP + _pad(
+            f"    Band budget: ${deployed_today:.2f} / ${band_budget:.2f} {budget_bar}",
+            _BOX_WIDTH,
+        ) + _SEP)
+
+    lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+
+    # --- Section D: contamination guard health ---
+    cg = compute_t4_contamination_stats(t4_audit_entries, game_date=gd)
+    health_tag = "OK" if cg["staleness_halts"] == 0 else "*** STALENESS DETECTED ***"
+    lines.append(_SEP + _pad(
+        f"  Contamination guard [{health_tag}]: halts={cg['total_halts']}"
+        f"  staleness_halts={cg['staleness_halts']}  events={cg['event_count']}",
+        _BOX_WIDTH,
+    ) + _SEP)
+    if cg["failed_check_counts"]:
+        checks_str = "  ".join(f"{k}×{v}" for k, v in sorted(cg["failed_check_counts"].items()))
+        lines.append(_SEP + _pad(f"    Failed checks: {checks_str}", _BOX_WIDTH) + _SEP)
+
+    lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+
+    # --- Section E: sub-band registry (static, not date-scoped) ---
+    lines.extend(render_t4_subband_registry())
+
+    lines.append("└" + _HR + "┘")
+    return lines
+
+
+# ---------------------------------------------------------------------------
 # Main render
 # ---------------------------------------------------------------------------
 
@@ -603,6 +978,11 @@ def render_dashboard(
     t4_portfolio: dict[str, Any] | None = None,
     pipeline_timestamps: dict[str, str] | None = None,
     game_date: str | None = None,
+    t4_mlb_portfolio: dict[str, Any] | None = None,
+    t4_mlb_cycle_entries: list[dict[str, Any]] | None = None,
+    t4_mlb_audit_entries: list[dict[str, Any]] | None = None,
+    t4_mlb_edge_log_path: str | Path | None = None,
+    show_t4_mlb_detail: bool = True,
 ) -> str:
     """
     Render the full C8 dashboard.
@@ -616,14 +996,26 @@ def render_dashboard(
     n_alerts:
         Number of recent alerts in Panel 5.
     t1_portfolio:
-        Loaded paper_portfolio.json dict. None → panel shows "not found".
+        Loaded paper_portfolio.json dict (NBA). None → panel shows "not found".
     t4_portfolio:
-        Loaded paper_portfolio_t4.json dict. None → panel shows "no portfolio yet".
+        Loaded paper_portfolio_t4.json dict (NBA). None → panel shows "no portfolio yet".
     pipeline_timestamps:
         {pipe_name: utc_str} from get_pipeline_timestamps(). None → falls back
         to audit.jsonl component timestamps in Panel 3.
     game_date:
         YYYY-MM-DD for throughput panel. Defaults to today UTC.
+    t4_mlb_portfolio:
+        Loaded paper_portfolio_mlb_t4.json dict. Feeds Panel 6 fire/re-entry/budget.
+    t4_mlb_cycle_entries:
+        Rows from t4_mlb_cycle_log.jsonl (via read_jsonl_generic). Feeds Panel 6 funnel.
+    t4_mlb_audit_entries:
+        Rows from audit_mlb_t4.jsonl (via read_jsonl_generic). Feeds Panel 6 contamination health.
+    t4_mlb_edge_log_path:
+        Path to audit_mlb_t4_edge_decisions.jsonl, passed through to
+        summarize_edge_run() for Panel 6's C4-side funnel view.
+    show_t4_mlb_detail:
+        If False, Panel 6 is omitted entirely (e.g. for a lighter-weight render).
+        Default True — T4 MLB is the active pool.
     """
     now = _utc_now_display()
     header = [
@@ -650,6 +1042,17 @@ def render_dashboard(
         + panel4 + [""]
         + panel5 + [""]
     )
+
+    if show_t4_mlb_detail:
+        panel6 = render_t4_detail_panel(
+            t4_mlb_portfolio=t4_mlb_portfolio or {},
+            cycle_entries=t4_mlb_cycle_entries or [],
+            t4_audit_entries=t4_mlb_audit_entries or [],
+            edge_log_path=t4_mlb_edge_log_path,
+            game_date=game_date,
+        )
+        all_lines = all_lines + panel6 + [""]
+
     return "\n".join(all_lines)
 
 
@@ -675,7 +1078,36 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--t4-portfolio-path",
         default="logs/paper_portfolio_t4.json",
-        help="Path to T4 paper portfolio JSON (default: logs/paper_portfolio_t4.json)",
+        help="Path to T4 (NBA) paper portfolio JSON (default: logs/paper_portfolio_t4.json)",
+    )
+    parser.add_argument(
+        "--t4-mlb-portfolio-path",
+        default="logs/paper_portfolio_mlb_t4.json",
+        help="Path to T4 MLB paper portfolio JSON, feeds Panel 6 "
+             "(default: logs/paper_portfolio_mlb_t4.json)",
+    )
+    parser.add_argument(
+        "--t4-mlb-cycle-log-path",
+        default="logs/t4_mlb_cycle_log.jsonl",
+        help="Path to T4 MLB per-cycle raw context log (GG-067), feeds Panel 6's "
+             "evaluation funnel (default: logs/t4_mlb_cycle_log.jsonl)",
+    )
+    parser.add_argument(
+        "--t4-mlb-edge-log-path",
+        default="logs/audit_mlb_t4_edge_decisions.jsonl",
+        help="Path to T4 MLB C4 edge-decision sink (T-213/GG-060), feeds Panel 6's "
+             "C4-side funnel view (default: logs/audit_mlb_t4_edge_decisions.jsonl)",
+    )
+    parser.add_argument(
+        "--t4-mlb-audit-log-path",
+        default="logs/audit_mlb_t4.jsonl",
+        help="Path to T4 MLB C6 audit log, feeds Panel 6's contamination guard health "
+             "(default: logs/audit_mlb_t4.jsonl)",
+    )
+    parser.add_argument(
+        "--no-t4-mlb-detail",
+        action="store_true",
+        help="Omit Panel 6 (T4 MLB Detail) from the render",
     )
     parser.add_argument(
         "--log-dir",
@@ -703,6 +1135,13 @@ def main(argv: list[str] | None = None) -> None:
     t1_portfolio = read_portfolio(args.portfolio_path)
     t4_portfolio = read_portfolio(args.t4_portfolio_path)
     pipeline_timestamps = get_pipeline_timestamps(args.log_dir)
+
+    # Panel 6 (T4 MLB Detail) data sources — read defensively, same "missing
+    # file degrades that section, never crashes the render" contract as
+    # everything else in this module.
+    t4_mlb_portfolio = read_portfolio(args.t4_mlb_portfolio_path)
+    t4_mlb_cycle_entries = read_jsonl_generic(args.t4_mlb_cycle_log_path)
+    t4_mlb_audit_entries = read_jsonl_generic(args.t4_mlb_audit_log_path)
 
     # Infer kill switch state from audit log (scan newest-first)
     ks_active = False
@@ -739,6 +1178,11 @@ def main(argv: list[str] | None = None) -> None:
         t4_portfolio=t4_portfolio,
         pipeline_timestamps=pipeline_timestamps,
         game_date=args.game_date,
+        t4_mlb_portfolio=t4_mlb_portfolio,
+        t4_mlb_cycle_entries=t4_mlb_cycle_entries,
+        t4_mlb_audit_entries=t4_mlb_audit_entries,
+        t4_mlb_edge_log_path=args.t4_mlb_edge_log_path,
+        show_t4_mlb_detail=not args.no_t4_mlb_detail,
     )
     print(output)
 
