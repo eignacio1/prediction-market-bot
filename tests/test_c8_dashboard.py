@@ -28,18 +28,24 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from prediction_market_bot.c8_dashboard.dashboard import (
+    compute_t4_contamination_stats,
+    compute_t4_funnel_stats,
+    compute_t4_reentry_stats,
     extract_forecast_outcomes,
     get_component_last_seen,
     get_pipeline_timestamps,
     get_recent_alerts,
     main,
     read_audit_log,
+    read_jsonl_generic,
     read_portfolio,
     render_alert_feed,
     render_dashboard,
     render_drift_panel,
     render_portfolio_panel,
     render_system_health,
+    render_t4_detail_panel,
+    render_t4_subband_registry,
     render_throughput_panel,
 )
 
@@ -831,3 +837,299 @@ class TestRenderDashboardIntegration:
     def test_game_date_in_output(self):
         result = render_dashboard(_make_health(), [], game_date="2026-06-08")
         assert "2026-06-08" in result
+
+
+# ---------------------------------------------------------------------------
+# Panel 6 — T4 MLB Detail (added 2026-07-03, GG-076 follow-up, T-231)
+# ---------------------------------------------------------------------------
+
+
+def _make_cycle_row(
+    game_date: str = "2026-07-02",
+    session_id: str = "T4-MLB-TEST",
+    cycle_id: str = "C0001-abc",
+    ticker: str = "KXMLBHIT-TESTGAME-PLAYER1-1",
+    p_t4: float = 0.5,
+    mip: float = 0.4,
+    vig: float = 0.04,
+    gross_edge: float | None = None,
+    net_edge: float | None = None,
+    vig_skip: bool = False,
+    ts: str = "2026-07-02T19:15:00.000000+00:00",
+) -> dict:
+    row = {
+        "ts": ts,
+        "cycle_id": cycle_id,
+        "session_id": session_id,
+        "game_date": game_date,
+        "ticker": ticker,
+        "player_name": "Test Player",
+        "player_id": 1,
+        "threshold": 1,
+        "vig": vig,
+        "ba_l10": 0.3,
+        "h_so_far": 0,
+        "ab_so_far": 1,
+        "ab_remaining": 2,
+        "inning": 3,
+        "batting_slot": 5,
+    }
+    if vig_skip:
+        row["vig_skip"] = True
+        return row
+    row["p_t4"] = p_t4
+    row["mip"] = mip
+    row["gross_edge"] = gross_edge if gross_edge is not None else round(p_t4 - mip, 6)
+    row["net_edge"] = net_edge if net_edge is not None else row["gross_edge"]
+    return row
+
+
+def _make_t4_position(
+    ticker: str = "KXMLBHIT-TESTGAME-PLAYER1-1",
+    game_date: str = "2026-07-02",
+    size_usd: float = 0.5,
+) -> dict:
+    return {
+        "kalshi_ticker": ticker,
+        "game_date": game_date,
+        "size_usd": size_usd,
+        "player_name": "Test Player",
+        "pool_isolated": True,
+    }
+
+
+class TestReadJsonlGeneric:
+    @pytest.mark.unit
+    def test_missing_file_returns_empty(self, tmp_path):
+        assert read_jsonl_generic(tmp_path / "nope.jsonl") == []
+
+    @pytest.mark.unit
+    def test_reads_valid_rows(self, tmp_path):
+        p = tmp_path / "rows.jsonl"
+        _write_jsonl(p, [{"a": 1}, {"a": 2}])
+        assert read_jsonl_generic(p) == [{"a": 1}, {"a": 2}]
+
+    @pytest.mark.unit
+    def test_skips_malformed_line(self, tmp_path):
+        p = tmp_path / "rows.jsonl"
+        p.write_text('{"a": 1}\nnot json\n{"a": 2}\n')
+        assert read_jsonl_generic(p) == [{"a": 1}, {"a": 2}]
+
+
+class TestComputeT4FunnelStats:
+    @pytest.mark.unit
+    def test_empty_input(self):
+        stats = compute_t4_funnel_stats([])
+        assert stats["total"] == 0
+        assert stats["evaluated"] == 0
+        assert stats["vig_stats"]["mean"] is None
+
+    @pytest.mark.unit
+    def test_vig_skip_excluded_from_evaluated(self):
+        rows = [
+            _make_cycle_row(vig_skip=True),
+            _make_cycle_row(p_t4=0.5, mip=0.4),
+        ]
+        stats = compute_t4_funnel_stats(rows)
+        assert stats["total"] == 2
+        assert stats["vig_skipped"] == 1
+        assert stats["evaluated"] == 1
+
+    @pytest.mark.unit
+    def test_edge_threshold_counts(self):
+        rows = [
+            _make_cycle_row(gross_edge=-0.1, net_edge=-0.1),   # neither
+            _make_cycle_row(gross_edge=0.02, net_edge=0.01),   # gross only
+            _make_cycle_row(gross_edge=0.10, net_edge=0.06),   # gross, net, and clears MIN(0.04)
+        ]
+        stats = compute_t4_funnel_stats(rows)
+        assert stats["evaluated"] == 3
+        assert stats["gross_edge_pos"] == 2
+        assert stats["net_edge_pos"] == 2
+        assert stats["net_edge_min_approve"] == 1
+
+    @pytest.mark.unit
+    def test_vig_stats_computed_over_non_skipped_only(self):
+        rows = [
+            _make_cycle_row(vig_skip=True, vig=0.9),
+            _make_cycle_row(vig=0.10),
+            _make_cycle_row(vig=0.20),
+        ]
+        stats = compute_t4_funnel_stats(rows)
+        assert stats["vig_stats"]["mean"] == pytest.approx(0.15)
+        assert stats["vig_stats"]["max"] == pytest.approx(0.20)
+
+
+class TestComputeT4ReentryStats:
+    @pytest.mark.unit
+    def test_empty_input(self):
+        stats = compute_t4_reentry_stats([])
+        assert stats["unique_tickers"] == 0
+        assert stats["re_entries"] == 0
+
+    @pytest.mark.unit
+    def test_all_first_entries_no_reentry(self):
+        positions = [
+            _make_t4_position(ticker="A"),
+            _make_t4_position(ticker="B"),
+        ]
+        stats = compute_t4_reentry_stats(positions)
+        assert stats["unique_tickers"] == 2
+        assert stats["re_entries"] == 0
+        assert stats["tickers_with_reentry"] == 0
+
+    @pytest.mark.unit
+    def test_reentry_counted_correctly(self):
+        positions = [
+            _make_t4_position(ticker="A"),
+            _make_t4_position(ticker="A"),  # re-entry
+            _make_t4_position(ticker="A"),  # second re-entry
+            _make_t4_position(ticker="B"),
+        ]
+        stats = compute_t4_reentry_stats(positions)
+        assert stats["unique_tickers"] == 2
+        assert stats["re_entries"] == 2
+        assert stats["tickers_with_reentry"] == 1
+        assert stats["max_entries_one_ticker"] == 3
+
+
+class TestComputeT4ContaminationStats:
+    @pytest.mark.unit
+    def test_empty_input(self):
+        stats = compute_t4_contamination_stats([])
+        assert stats["total_halts"] == 0
+        assert stats["staleness_halts"] == 0
+
+    @pytest.mark.unit
+    def test_takes_max_of_running_counters(self):
+        entries = [
+            _make_entry(
+                component="PIPE-07-MLB", event_type="CONTAMINATION_HALT",
+                severity="WARNING", timestamp="2026-07-02T19:00:00Z",
+                payload={"total_halts": 1, "staleness_halts": 0, "failed_checks": ["market_active"]},
+            ),
+            _make_entry(
+                component="PIPE-07-MLB", event_type="CONTAMINATION_HALT",
+                severity="WARNING", timestamp="2026-07-02T20:00:00Z",
+                payload={"total_halts": 3, "staleness_halts": 1, "failed_checks": ["game_state_fresh"]},
+            ),
+        ]
+        stats = compute_t4_contamination_stats(entries)
+        assert stats["total_halts"] == 3
+        assert stats["staleness_halts"] == 1
+        assert stats["event_count"] == 2
+        assert stats["failed_check_counts"] == {"market_active": 1, "game_state_fresh": 1}
+
+    @pytest.mark.unit
+    def test_date_filter_excludes_other_days(self):
+        entries = [
+            _make_entry(
+                event_type="CONTAMINATION_HALT", timestamp="2026-07-01T19:00:00Z",
+                payload={"total_halts": 5, "staleness_halts": 2},
+            ),
+        ]
+        stats = compute_t4_contamination_stats(entries, game_date="2026-07-02")
+        assert stats["event_count"] == 0
+        assert stats["total_halts"] == 0
+
+
+class TestRenderT4SubbandRegistry:
+    @pytest.mark.unit
+    def test_shows_all_three_subbands_with_correct_status(self):
+        text = "\n".join(render_t4_subband_registry())
+        assert "T4M-PROJ" in text
+        assert "[ACTIVE ]" in text
+        assert "T4M-ARITH" in text
+        assert "T4M-FLOW" in text
+        assert text.count("[BLOCKED]") == 2
+        assert "EXP-ARITH-MLB-01" in text
+        assert "EXP-FLOW-MLB-01" in text
+
+
+class TestRenderT4DetailPanel:
+    @pytest.mark.unit
+    def test_degrades_gracefully_on_all_empty_inputs(self):
+        # Must not raise — this is the core design contract for Panel 6.
+        lines = render_t4_detail_panel(
+            t4_mlb_portfolio={},
+            cycle_entries=[],
+            t4_audit_entries=[],
+            edge_log_path=None,
+            game_date="2026-07-02",
+        )
+        text = "\n".join(lines)
+        assert "PANEL 6" in text
+        assert "not found" in text.lower() or "no cycle-log activity" in text.lower()
+
+    @pytest.mark.unit
+    def test_funnel_numbers_appear_with_real_cycle_data(self):
+        rows = [
+            _make_cycle_row(ticker="A-1", gross_edge=0.10, net_edge=0.06),
+            _make_cycle_row(ticker="A-2", vig_skip=True),
+        ]
+        lines = render_t4_detail_panel(
+            t4_mlb_portfolio={},
+            cycle_entries=rows,
+            t4_audit_entries=[],
+            edge_log_path=None,
+            game_date="2026-07-02",
+        )
+        text = "\n".join(lines)
+        assert "Total rows 2" in text
+        assert "Vig-skipped 1" in text
+
+    @pytest.mark.unit
+    def test_reentry_and_budget_appear_with_position_data(self):
+        portfolio = _make_portfolio(
+            bankroll=1000.0,
+            open_positions=[
+                _make_t4_position(ticker="A", size_usd=0.4),
+                _make_t4_position(ticker="A", size_usd=0.4),
+            ],
+        )
+        lines = render_t4_detail_panel(
+            t4_mlb_portfolio=portfolio,
+            cycle_entries=[],
+            t4_audit_entries=[],
+            edge_log_path=None,
+            game_date="2026-07-02",
+        )
+        text = "\n".join(lines)
+        assert "Re-entries: 1" in text
+        assert "Band budget" in text
+
+    @pytest.mark.unit
+    def test_staleness_halt_shows_warning_marker(self):
+        entries = [
+            _make_entry(
+                event_type="CONTAMINATION_HALT", timestamp="2026-07-02T19:00:00Z",
+                payload={"total_halts": 1, "staleness_halts": 1, "failed_checks": ["snapshot_not_stale"]},
+            ),
+        ]
+        lines = render_t4_detail_panel(
+            t4_mlb_portfolio={},
+            cycle_entries=[],
+            t4_audit_entries=entries,
+            edge_log_path=None,
+            game_date="2026-07-02",
+        )
+        text = "\n".join(lines)
+        assert "STALENESS DETECTED" in text
+
+
+class TestRenderDashboardWithPanel6:
+    @pytest.mark.unit
+    def test_panel_6_appears_by_default(self):
+        result = render_dashboard(_make_health(), [])
+        assert "PANEL 6" in result
+
+    @pytest.mark.unit
+    def test_panel_6_omitted_when_disabled(self):
+        result = render_dashboard(_make_health(), [], show_t4_mlb_detail=False)
+        assert "PANEL 6" not in result
+
+    @pytest.mark.unit
+    def test_all_six_panels_present_by_default(self):
+        result = render_dashboard(_make_health(), [])
+        for i in range(1, 7):
+            assert f"PANEL {i}" in result
