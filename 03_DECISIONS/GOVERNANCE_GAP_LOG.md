@@ -1361,6 +1361,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-079 — Failed Kalshi Orders (HTTP 410) Remain Counted in `open_positions`, Likely Inflating Deployed-Exposure Calculations
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-079 |
+| Category | Data-integrity gap in position lifecycle state, discovered incidentally while re-checking [[T-230]]'s status (2026-07-04 CONTINUATION, item 2 of this session's sequenced work — "backlog hygiene"). |
+| What was missed | While re-verifying T-230's `_reconstruct_fired_ticker_states` gap against the live `paper_portfolio_mlb_t4.json`, found that 3 of the 07-01 positions sitting in that same gap carry `kalshi_order_status: "failed: HTTP 410"` — meaning the order was never actually accepted/executed by Kalshi (the market had gone (HTTP 410 Gone) by the time the order was submitted) — yet all 3 remain present in the `open_positions` list rather than a rejected/failed bucket. Any downstream code that sums `open_positions` by `pool_isolated`/`game_date` (deployed-exposure math, kill-switch proximity checks, C8 dashboard funnel stats) would count these 3 non-executed orders as real open capital, when in fact no capital was ever actually placed with the venue for them. |
+| When it should have been caught | Should have been caught at the point `paper_trader.py::open_position()` (or its caller) receives a non-2xx order-placement response from Kalshi — a failed order should route to a distinct status/bucket at write time, not rely on a downstream reader to notice the `kalshi_order_status` string. |
+| Phases it survived | At least since these 3 positions were opened (2026-07-01) through this session (2026-07-04) — three days, un-surfaced, until an unrelated T-230 re-check happened to inspect the same JSON rows. |
+| Why it survived | No existing session-start check, stub scan, or governance-gap scan inspects `kalshi_order_status` values inside portfolio JSON files — Steps 1-4 and the Q1-Q6 adversarial checklist in CLAUDE.md check code, docs, and cron/log health, but not position-level data integrity inside the portfolio state files themselves. |
+| Impact | **Not yet quantified this session** (registration only, per this task's explicit "status re-check, do not fix" scope) — magnitude of exposure-math distortion is currently unknown; likely small in dollar terms (3 positions) but the pattern (failed orders silently retained as "open") could recur at any volume if the root cause in the order-placement path is not fixed. Does not affect realized P&L (no real capital was ever placed for these 3), but could affect kill-switch/exposure-cap proximity calculations that assume `open_positions` reflects real deployed capital. |
+| Discovery | 2026-07-04, CONTINUATION session, item 2 (T-230 backlog-hygiene status re-check) — direct query of `paper_portfolio_mlb_t4.json` on the VPS while counting the true scope of T-230's entry-state gap. |
+| Resolution | OPEN. T-234 registered in TODO_NEXT.md: move failed-order positions out of `open_positions` into a rejected/failed bucket, and identify/fix the root cause in the order-placement path so future failed orders route correctly at write time rather than requiring a downstream reader to filter on `kalshi_order_status`. No fix applied this session. |
+| Status | OPEN — registered, unfixed, no owner-priority set yet. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
