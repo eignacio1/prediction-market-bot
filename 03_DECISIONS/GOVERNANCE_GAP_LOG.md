@@ -1378,6 +1378,40 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-080 — Hard Rule 9's "~8,600 Slots/Game" Theoretical Ceiling Has No Clean Per-Game Empirical Referent; Real Rows/Game and Bets/Game Are 9-19x Lower
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-080 |
+| Category | Documentation-arithmetic gap in CLAUDE.md Hard Rule 9 / T4 alpha thesis worked example, discovered while re-deriving [[T-229]]'s throughput math against a second full day of data (2026-07-04 CONTINUATION, item 4 of this session's sequenced work). |
+| What was missed | T-229 (RESOLVED 2026-07-03, commit `ce0979c`) corrected Hard Rule 9's internal arithmetic inconsistencies using exactly one day of real data (2026-07-02: 3,697 rows, 23 qualifying, 5 assumed games), producing "18 batters x 2 thresholds x ~240 cycles/game = ~8,600 slots/game... ~50-55 bets/game." Re-running the same methodology against 07-02 **and** the now-available 07-03 full day surfaced two things T-229 could not have caught with n=1: **(1)** `cycle_id` in `t4_mlb_cycle_log.jsonl` is a single shared counter for the whole `t4-mlb` service process across all concurrently-live games, not a per-game counter — direct query shows 07-02's 4 real games (not 5) shared 209 total cycles for the entire day, and 07-03's 3 games shared 246 total cycles for the entire day. The "~240 cycles per 3-hour game" term in the Hard Rule 9 formula therefore does not have a clean empirical referent as a *per-game* quantity in the actual running architecture. **(2)** Even setting (1) aside, empirical rows/game is far below the theoretical 8,600 ceiling: 07-02 = 924 rows/game (3,697/4 games, ~9.3x below); 07-03 = 464 rows/game (1,393/3 games, ~18.5x below). Real bets/game: 07-02 = 5.75 (23/4), 07-03 = 3.67 (11/3) — both ~9-14x below the documented "~50-55 bets/game." The observed fire-rate *percentage* (0.62%, 0.79%) is consistent with what T-229 found — the gap is entirely in the opportunity-volume terms (slots, rows), not the fire rate. |
+| When it should have been caught | At T-229's original resolution (2026-07-03), if a second day of data or a direct rows-per-game empirical check (rather than a theoretical batters x thresholds x cycles formula) had been available/run at the time. T-229 explicitly flagged itself as "n=1-day" at the time, so this is an expected, not a surprising, follow-on gap — not a defect in T-229's own methodology given the data it had. |
+| Phases it survived | One day (2026-07-03, T-229's resolution) before this session's re-derivation with a second full day of data. |
+| Why it survived | No standing check re-validates a "RESOLVED" documentation-arithmetic task against newly-accumulated production data once the task closes — CLAUDE.md's Hard Rule 9 figures are treated as settled once corrected, with no scheduled re-derivation trigger as more real game-days accumulate. |
+| Impact | Documentation-accuracy only — does not affect any live risk control, kill switch, or capital decision (Hard Rule 9 is a design-intent/architecture-framing section, not a governing parameter consumed by `risk.py` or any executing code). Impact is on operator/DS understanding of true T4 MLB throughput when reasoning about capacity, load, or future architecture decisions. |
+| Discovery | 2026-07-04, CONTINUATION session, item 4 (T-229 throughput re-derivation, explicitly scoped as present-only/no-CLAUDE.md-edit since T-229 is DS-owned) — direct query of `t4_mlb_cycle_log.jsonl` on the VPS across 07-02 and 07-03 full days. |
+| Resolution | OPEN. T-235 registered in TODO_NEXT.md: present these numbers to DS/Earl for a decision on whether to supersede Hard Rule 9's theoretical-ceiling framing with an empirical-rows/bets-per-game framing, and/or reframe the "cycles per game" term given the shared/global `cycle_id` finding. No CLAUDE.md edit made this session, per item 4's explicit scope (T-229 reconciliation is DS-owned, not a model's unilateral call). |
+| Status | OPEN — registered, presented, no CLAUDE.md edit made, awaiting DS/Earl decision. |
+
+---
+
+### GG-081 — Two T4 MLB Tickers Re-Fired at an Identical `(h_so_far, ab_remaining)` State Within the Same Game
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-081 |
+| Category | Possible dedup-guard defect in T4 MLB re-entry logic (T-225, `run_t4_mlb_live.py::_run_cycle`), discovered while validating T-225's live re-entry effect for GG-080/T-235. |
+| What was missed | Querying `t4_mlb_cycle_log.jsonl` for tickers with more than one `net_edge >= 0.04` firing (post-T-225-deploy, 2026-07-02 through 2026-07-04 data) found 8 multi-fire tickers. 6 show the expected clean state-progression re-entry the T-225 redesign was built for (e.g. `ab_remaining` transitioning 3->2, or 3->2 with `h_so_far` 0->1) — this is the first live confirmation that T-225's fix works as designed. The other 2 (`KXMLBHIT-26JUL021940TBKC-TBJCAMINERO13-1` and `-2`, same game) fired twice at the **identical** `(h_so_far=0, ab_remaining=3)` state, ~18 minutes apart. Since the dedup guard is designed to block re-fire only when the current cycle's state exactly matches the last-fired state, two fires at a provably identical recorded state should have been blocked, not allowed — unless some other factor (timing/race, a distinct-but-colliding dedup key, or a display/logging rounding artifact hiding a real state difference) explains it. |
+| When it should have been caught | Immediately, by an automated per-ticker re-fire-state audit — no such audit currently exists; this was found only by manually diffing multi-fire tickers' logged states while doing unrelated throughput analysis. |
+| Phases it survived | Unknown duration — first surfaced 2026-07-04; the underlying event occurred 2026-07-02 23:43-00:01 UTC, ~1.5 days before discovery. |
+| Why it survived | No standing check audits the T-225 dedup guard's *outcomes* (i.e., verifies post hoc that every multi-fire ticker's states actually progressed) — T-225's own test suite covers the guard's logic in isolation, not a live-data conformance check against real production firings. |
+| Impact | Not yet quantified — could be a genuine minor duplicate-exposure event (2 extra positions opened against a state that should have blocked the second), a logging artifact, or a legitimate-but-unexplained distinct-threshold-market interaction (tickers end in `-1` and `-2`, i.e. two different thresholds on the same batter, which the query treated as fully independent tickers — worth checking whether they are actually independent dedup keys or share state incorrectly). Root cause not yet determined. |
+| Discovery | 2026-07-04, CONTINUATION session, item 4 (T-229/T-225 throughput re-derivation) — direct query of `t4_mlb_cycle_log.jsonl` for multi-fire tickers. |
+| Resolution | OPEN. T-236 registered in TODO_NEXT.md: read `_run_cycle`'s dedup-check-and-write ordering directly and pull the two events' full raw log rows (not just the 3 fields queried here) to determine root cause before deciding whether a fix is needed. Not investigated further this session, per item 4's presentation-only scope. |
+| Status | OPEN — registered, root cause not yet determined. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
