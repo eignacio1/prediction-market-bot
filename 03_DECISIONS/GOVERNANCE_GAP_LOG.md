@@ -1463,6 +1463,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-085 — CLAUDE.md's Step 4 `staleness_halts` Alarm Heuristic Thresholded a Cumulative Per-Session Counter, Not a Live Signal
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-085 |
+| Category | Session-start protocol defect — the health-check heuristic itself, not the trading system. |
+| What was missed | CLAUDE.md's Step 4 documented alarm condition read: "grep for `staleness_halts` > 0 in the JSONL payload, which means ESPN or Kalshi data is arriving stale relative to the 45s poll cycle." Direct inspection of `audit_mlb_t4.jsonl` on the VPS (2026-07-04/05 session) found `payload.staleness_halts` is a **cumulative counter scoped to the current `session_id`** — it appears only on `CONTAMINATION_HALT` events where `failed_checks` includes `game_state_fresh`, paired with a `total_halts` field, and increments monotonically for the life of that `session_id`; it only resets to 0 when `t4-mlb` restarts and a new `session_id` begins. A `> 0` threshold check therefore alarms exactly once (correctly, on the first staleness event) and then alarms on every subsequent session-start check for the remainder of that session's uptime — potentially days — regardless of whether data freshness has long since recovered. Real data: 1,703 sampled records at `staleness_halts: 0`, but values climbing steadily into the 900s within one earlier `session_id` (`T4-MLB-B7193041`, 2026-06-30); the current session (`T4-MLB-83AFA288`) shows 0 — the heuristic happened to read healthy this session by chance, not because the check is sound. |
+| When it should have been caught | When the Session 101 semantic-oracle checks were added to CLAUDE.md — should have inspected the field's actual reset semantics (per-session vs. per-cycle) before writing a static threshold against it. |
+| Phases it survived | Session 101 (when added) through this session (2026-07-04/05) — every session-start Step 4 check in between read this line without exercising it against a session with real staleness history, so the false-permanent-alarm failure mode was never triggered in practice. |
+| Why it survived | No test or dry-run of the documented grep command against a real multi-day `audit_mlb_t4.jsonl` was ever performed; the heuristic was written by inference from the field name, not verified against the field's actual write-time behavior in `run_t4_mlb_live.py`. |
+| Impact | LOW-MEDIUM. No capital or code risk — this is a documentation/heuristic defect in a human-facing health check, not a defect in `run_t4_mlb_live.py`'s actual staleness handling (the underlying contamination guard itself was independently verified sound, GG-053/GG-062). Impact is purely on session-start diagnostic accuracy: the heuristic could produce a false "investigate immediately" alarm indefinitely after one old, resolved staleness blip, or (less likely, only immediately post-restart) fail to alarm during a genuine live degradation if checked in the narrow window before the counter has incremented enough to be noticed. |
+| Discovery | 2026-07-04/05, CONTINUATION session, while executing the mandatory Step 4 operational health check and independently verifying (rather than assuming) the semantics of `staleness_halts` before relying on it. |
+| Resolution | **RESOLVED 2026-07-05.** CLAUDE.md's Step 4 section corrected: added a recency-windowed check (`tail -500 audit_mlb_t4.jsonl \| grep -c '"failed_checks": ["game_state_fresh"]'`) that counts *recent* staleness-caused halt events directly, instead of thresholding the cumulative `payload.staleness_halts`/`total_halts` counter. Alarm condition rewritten to explain the counter's actual per-session-cumulative semantics and to direct a model to the recency-windowed count instead. |
+| Status | RESOLVED 2026-07-05. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
