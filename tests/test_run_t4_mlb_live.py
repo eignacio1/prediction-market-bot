@@ -336,6 +336,63 @@ class TestReconstructFiredTickerStates:
 
 
 # ---------------------------------------------------------------------------
+# _game_date_window — GG-081/GG-082 (2026-07-04) UTC-midnight-rollover fix
+# ---------------------------------------------------------------------------
+
+
+class TestGameDateWindow:
+    def test_returns_current_and_prior_day(self):
+        assert runner._game_date_window("2026-07-03") == {"2026-07-03", "2026-07-02"}
+
+    def test_handles_month_boundary(self):
+        assert runner._game_date_window("2026-07-01") == {"2026-07-01", "2026-06-30"}
+
+
+class TestReconstructT4LedgerCrossMidnight:
+    def test_carried_over_game_still_counted_after_rollover(self):
+        # Game started 2026-07-02 (pre-midnight game_date on the position), process
+        # observes the rollover to 2026-07-03. Without the window fix this exposure
+        # silently drops out of the ledger the moment the calendar flips.
+        portfolio = {
+            "open_positions": [
+                {"size_usd": 10.0, "pool_isolated": True, "game_date": "2026-07-02"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-03"))
+        assert result == pytest.approx(10.0)
+
+    def test_two_days_prior_still_excluded(self):
+        portfolio = {
+            "open_positions": [
+                {"size_usd": 10.0, "pool_isolated": True, "game_date": "2026-07-01"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-03"))
+        assert result == pytest.approx(0.0)
+
+
+class TestReconstructFiredTickerStatesCrossMidnight:
+    def test_carried_over_ticker_state_survives_rollover(self):
+        # Reproduces the GG-081 TBJCAMINERO13 double-fire: a ticker fired pre-midnight
+        # (game_date = prior day) must still block a same-state re-fire post-midnight.
+        portfolio = {
+            "open_positions": [
+                {"kalshi_ticker": "KXMLBHIT-26JUL021940TBKC-TBJCAMINERO13-1",
+                 "pool_isolated": True, "game_date": "2026-07-02",
+                 "h_so_far_at_entry": 0, "ab_remaining_at_entry": 3,
+                 "entered_at": "2026-07-02T23:43:50Z"},
+            ],
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_fired_ticker_states(
+            portfolio, runner._game_date_window("2026-07-03")
+        )
+        assert result == {"KXMLBHIT-26JUL021940TBKC-TBJCAMINERO13-1": (0, 3)}
+
+
+# ---------------------------------------------------------------------------
 # _load_pregame_context
 # ---------------------------------------------------------------------------
 
