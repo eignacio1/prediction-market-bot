@@ -69,7 +69,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import requests
 
@@ -605,21 +605,39 @@ def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
     return size_usd + min(0.0, exit_pnl)
 
 
-def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
+def _game_date_window(game_date: str) -> set:
+    """GG-081/GG-082 (2026-07-04): expand a single game_date into {game_date, prior_day}.
+
+    UTC date rollover reassigns `game_date` to the new calendar day while a game that
+    started the evening before (e.g. a 19:40 local first pitch = ~23:40-00:40 UTC) is
+    still live. Reconstructing ledger/dedup state filtered on the new day alone silently
+    drops every position tied to that still-live game's original game_date, both at
+    scheduled midnight rollover and at a cold process restart that happens to land after
+    midnight mid-game. Kalshi tickers embed the actual game date
+    (KXMLBHIT-26JUL021940TBKC-...), so including one extra day carries no collision risk
+    — it only ever adds positions from a genuinely distinct game/date pairing.
+    """
+    d = date.fromisoformat(game_date)
+    return {game_date, (d - timedelta(days=1)).isoformat()}
+
+
+def _reconstruct_t4_ledger(portfolio: dict, game_dates: Union[str, set]) -> float:
+    if isinstance(game_dates, str):
+        game_dates = {game_dates}
     open_exposure = sum(
         p.get("size_usd", 0.0)
         for p in portfolio.get("open_positions", [])
-        if p.get("pool_isolated") and p.get("game_date") == game_date
+        if p.get("pool_isolated") and p.get("game_date") in game_dates
     )
     realized_losses = sum(
         max(0.0, -p.get("exit_pnl", 0.0))
         for p in portfolio.get("closed_positions", [])
-        if p.get("pool_isolated") and p.get("game_date") == game_date
+        if p.get("pool_isolated") and p.get("game_date") in game_dates
     )
     return open_exposure + realized_losses
 
 
-def _reconstruct_fired_ticker_states(portfolio: dict, game_date: str) -> dict[str, tuple[int, int]]:
+def _reconstruct_fired_ticker_states(portfolio: dict, game_dates: Union[str, set]) -> dict[str, tuple[int, int]]:
     """T-209/T-225: rebuild the game-day re-entry dedup guard from the persisted portfolio.
 
     `already_fired_game` is otherwise a process-local in-memory dict that is
@@ -637,11 +655,13 @@ def _reconstruct_fired_ticker_states(portfolio: dict, game_date: str) -> dict[st
     regardless of whether it currently sits in open_positions or has since
     closed.
     """
+    if isinstance(game_dates, str):
+        game_dates = {game_dates}
     states: dict[str, tuple[int, int]] = {}
     positions = portfolio.get("open_positions", []) + portfolio.get("closed_positions", [])
     positions.sort(key=lambda p: p.get("entered_at", ""))
     for p in positions:
-        if p.get("pool_isolated") and p.get("game_date") == game_date:
+        if p.get("pool_isolated") and p.get("game_date") in game_dates:
             ticker = p.get("kalshi_ticker")
             h_so_far = p.get("h_so_far_at_entry")
             ab_remaining = p.get("ab_remaining_at_entry")
@@ -1225,7 +1245,7 @@ def main() -> None:
     # ---- T4 band budget ----
     t4_state = trader.get_state()
     t4_band_budget = _compute_t4_band_budget(t4_state)
-    t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
+    t4_deployed_game = _reconstruct_t4_ledger(t4_state, _game_date_window(game_date))
     if t4_deployed_game > 0.0:
         logger.info(
             "T4-MLB ledger reconstructed: $%.2f already deployed for %s",
@@ -1270,7 +1290,7 @@ def main() -> None:
     # T-225: re-keyed from a permanent one-shot set to a per-ticker last-state dict —
     # a ticker may re-fire once (h_so_far, ab_remaining) has actually changed, per the
     # operator's 2026-07-03 design ruling (DECISION_LOG.md).
-    already_fired_game: dict[str, tuple[int, int]] = _reconstruct_fired_ticker_states(t4_state, game_date)
+    already_fired_game: dict[str, tuple[int, int]] = _reconstruct_fired_ticker_states(t4_state, _game_date_window(game_date))
     if already_fired_game:
         logger.info(
             "T4-MLB dedup guard reconstructed: %d ticker(s) already fired for %s",
@@ -1323,11 +1343,17 @@ def main() -> None:
                 # Reconstruct band budget for the new date
                 t4_state = trader.get_state()
                 t4_band_budget = _compute_t4_band_budget(t4_state)
-                t4_deployed_game = _reconstruct_t4_ledger(t4_state, game_date)
+                # GG-081/GG-082 (2026-07-04): reconstruct against {new_day, prior_day}, not
+                # new_day alone. A game still live across UTC midnight keeps its positions'
+                # game_date pinned to the day it started — filtering on the new day only
+                # silently dropped that game's ledger exposure and dedup state the moment
+                # the clock crossed midnight (confirmed root cause of the TBJCAMINERO13
+                # double-fire, 2026-07-02 23:43/2026-07-03 00:01 UTC, same session_id).
+                t4_deployed_game = _reconstruct_t4_ledger(t4_state, _game_date_window(game_date))
                 # T-209: reconstruct (not just clear) — new day is normally empty,
                 # but this keeps the guard correct if the date rollover races a restart.
                 already_fired_game.clear()
-                already_fired_game.update(_reconstruct_fired_ticker_states(t4_state, game_date))
+                already_fired_game.update(_reconstruct_fired_ticker_states(t4_state, _game_date_window(game_date)))
                 logger.info(
                     "T4-MLB rollover complete: %d games, %d players, budget=$%.2f",
                     len(game_ids), len(by_player_id), t4_band_budget,
