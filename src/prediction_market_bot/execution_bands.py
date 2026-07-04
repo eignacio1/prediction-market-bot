@@ -139,7 +139,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="full_lr_platt",         # LR+Platt, 78 features, qualitative enrichment
         max_compute_ms=30_000,               # 30s — full pipeline; batched; irrelevant to edge
         execution_sla_s=3600,                # 1 hour — execution timing immaterial at this horizon
-        kelly_fraction=0.10,                 # ADR-0010: σ_λ=2.055 (pts_l10_mean); 2× operational premium over derived 0.049
+        kelly_fraction=0.061,                # ADR-0040 (2026-07-04): de-rated from 0.10 (ADR-0010) per GG-071 ruin-risk finding; targets 1yr kill-switch P<=5%
         pipeline_id="PIPE-02",
         cron_schedule="30 21 * * *",         # 21:30 UTC daily (pre-game)
         requires_realtime=False,

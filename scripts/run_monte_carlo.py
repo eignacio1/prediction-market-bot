@@ -40,7 +40,7 @@ from scipy.stats import poisson
 # ---------------------------------------------------------------------------
 # Constants — match production values in risk.py / run_paper_trade.py
 # ---------------------------------------------------------------------------
-DEFAULT_T1_KELLY = 0.25          # DEFAULT_KELLY_FRACTION in risk.py (ADR-0020)
+DEFAULT_T1_KELLY = 0.061         # execution_bands.py T1_MULTI_DAY.kelly_fraction (ADR-0040; was 0.10 per ADR-0010, 0.25 pre-ADR-0010)
 DEFAULT_MIN_EDGE = 0.04          # MIN_EDGE_TO_APPROVE in risk.py (ADR-0020)
 DEFAULT_MAX_EXPOSURE = 500.0     # _HARD_LIMITS["max_single_event_exposure_usd"]
 DEFAULT_MIN_BET = float(os.environ.get("MIN_BET_T1_PAPER", "1.0"))

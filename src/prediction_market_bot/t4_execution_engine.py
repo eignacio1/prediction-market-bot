@@ -958,7 +958,9 @@ class T4ProjEvaluator(SubBandEvaluator):
 
     NEAR-CERTAIN Kelly: inverse-variance formula diverges at low σ_λ (0.526 at
     46 min); held ≤ 0.167 (LATE ceiling) until EXP-PROJ-01 confirms tail
-    calibration. Hard governance ceiling remains 0.25 (DEFAULT_KELLY_FRACTION).
+    calibration. Hard governance ceiling remains 0.25 — a NBA T4-PROJ-scoped
+    literal (ADR-0029), independent of T1 MLB's kelly_fraction (execution_bands.py,
+    ADR-0040) and of risk.py's DEFAULT_KELLY_FRACTION; do not conflate the three.
 
     Kelly schedule: EARLY 0.010 / MID 0.032–0.078 / LATE 0.078–0.167 / NEAR-CERTAIN ≤0.167.
     EXP: EXP-PROJ-01 (confidence_weight curve + NEAR-CERTAIN tail calibration),

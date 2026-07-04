@@ -46,11 +46,12 @@ class TestBandConfigs:
         assert isinstance(cfg, BandConfig)
 
     def test_t1_kelly_fraction(self):
-        # ADR-0010: T1 reduced to 0.10 (player-level LR, σ_λ=2.055)
-        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.10
+        # ADR-0040 (2026-07-04): T1 de-rated to 0.061 from ADR-0010's 0.10, per GG-071
+        # ruin-risk finding (targets 1yr kill-switch probability <= 5%).
+        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.061
 
     def test_t2_kelly_greater_than_t1(self):
-        # ADR-0010: T2 > T1 because injury overlay adds signal layer (0.13 > 0.10)
+        # ADR-0010: T2 > T1 signal layer ordering holds after ADR-0040's T1 de-rate (0.13 > 0.061)
         t1 = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
         t2 = get_band_config(ExecutionBand.T2_SAME_DAY).kelly_fraction
         assert t2 > t1
@@ -178,7 +179,9 @@ class TestT4SubBandRegistry:
 
     def test_proj_near_certain_kelly_held_below_ceiling(self):
         # T4-PROJ provisional Kelly must not exceed the LATE-regime hold (0.167) and must
-        # stay strictly below the project hard ceiling (DEFAULT_KELLY_FRACTION = 0.25),
+        # stay strictly below the NBA T4-PROJ hard ceiling (0.25, a literal set by ADR-0029 —
+        # independent of T1 MLB's kelly_fraction (ADR-0040) and of risk.py's
+        # DEFAULT_KELLY_FRACTION; do not conflate the three),
         # per the ADR-0029 tail-calibration constraint (EXP-PROJ-01 pending).
         from prediction_market_bot.execution_bands import T4_SUBBAND_REGISTRY
         proj = T4_SUBBAND_REGISTRY[ExecutionBand.T4_PROJ]
