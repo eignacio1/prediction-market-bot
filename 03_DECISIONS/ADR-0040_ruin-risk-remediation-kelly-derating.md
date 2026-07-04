@@ -1,10 +1,12 @@
-# ADR-0040 — Ruin-Risk Remediation for Proportional Stake Sizing: Cadence-Aware Kelly De-Rating (PROPOSED)
+# ADR-0040 — Ruin-Risk Remediation for Proportional Stake Sizing: Cadence-Aware Kelly De-Rating (ACCEPTED)
 
-**Status:** PROPOSED — requires operator (Earl) sign-off before any `risk.py` parameter is changed. Not yet accepted.
-**Date:** 2026-07-03
-**Session:** SESSION 117 (continuation)
+**Status:** ACCEPTED — 2026-07-04 (operator sign-off on the corrected target, execution_bands.py's T1_MULTI_DAY.kelly_fraction 0.10 → 0.061, via explicit choice among three sensitivity-table options).
+**Date:** 2026-07-03 (corrected 2026-07-04, SESSION 118 continuation — see "Correction" note below)
+**Session:** SESSION 117 (continuation); corrected SESSION 118 (continuation)
 **Operator:** Earl Ignacio
-**Scope:** C4 risk engine (`risk.py`) — `DEFAULT_KELLY_FRACTION` and/or a new cadence-aware de-rating mechanism. Applies to any band using proportional/Kelly-style sizing (currently T1 MLB; would also apply to any future band inheriting the same mechanic).
+**Scope:** `execution_bands.py` — `BAND_CONFIGS[ExecutionBand.T1_MULTI_DAY].kelly_fraction` (currently `0.10`, set by ADR-0010). This ADR, if accepted, **supersedes ADR-0010's T1 kelly_fraction value only** — ADR-0010's other band values (T2, T3, T4, T5) and its derivation methodology are untouched. Applies to any band using proportional/Kelly-style sizing (currently T1 MLB; would also apply to any future band inheriting the same mechanic).
+
+**Correction (2026-07-04):** This ADR originally proposed editing `risk.py`'s `DEFAULT_KELLY_FRACTION` (0.25 → 0.14). That constant is a `RiskEngine.__init__` default parameter value only — the real T1 MLB production path (`run_mlb_paper_trade.py`) always explicitly passes `kelly_fraction=T1_KELLY`, sourced from `execution_bands.py`'s `T1_MULTI_DAY.kelly_fraction = 0.10` (set by ADR-0010), which overrides the `risk.py` default entirely. `DEFAULT_KELLY_FRACTION` is inert for T1 MLB. Had the originally proposed value (0.14) been mechanically applied to the real 0.10 baseline instead, it would have **increased** live stake sizing by 40% — moving further into the ruin-risk zone GG-071 identified, not away from it. The sensitivity analysis below is unchanged (it is expressed in terms of `stake_frac`, which is source-agnostic), but the Decision section's target file and target value are corrected accordingly.
 
 ---
 
@@ -56,31 +58,32 @@ Baseline (stake_frac=1.153%, cap=$500, starting bankroll $1,000): P(kill switch)
 
 ## Decision (PROPOSED — awaiting operator sign-off)
 
-**Recommend adopting a cadence-aware de-rating of `DEFAULT_KELLY_FRACTION` for T1 MLB, targeting an effective stake fraction in the 0.62%–0.71% range (roughly a 1.7x–1.9x de-rate from the current observed 1.153% average), which the sensitivity table above shows brings 1-year kill-switch probability into the 2–6% range** — a level consistent with "this system should not have close to a coin-flip chance of permanently halting its own paper-trading evidence accumulation before G6 is reached."
+**Recommend adopting a cadence-aware de-rating of `execution_bands.py`'s `T1_MULTI_DAY.kelly_fraction` for T1 MLB, targeting an effective stake fraction of ≈0.70% (the formal ≤5%-1yr-kill-probability target from sensitivity direction (b)), which the sensitivity table above shows brings 1-year kill-switch probability from ~49% to ~5.6%** — a level consistent with "this system should not have close to a coin-flip chance of permanently halting its own paper-trading evidence accumulation before G6 is reached," selected by the operator (2026-07-04) over the steeper 2.0x-de-rate (~1.2%/1yr) and the shallower 1.5x-de-rate (~9.5%/1yr) alternatives.
 
-This is **not** a mechanical halving of `DEFAULT_KELLY_FRACTION` (0.25 → 0.125) — the observed 1.153% average stake fraction is a *function* of `DEFAULT_KELLY_FRACTION` combined with the real edge/odds distribution of fired bets, not a directly configurable constant itself. Translating "target effective stake fraction ≈0.62–0.71%" into a specific `DEFAULT_KELLY_FRACTION` value requires either (i) a direct proportional reduction (since `_compute_kelly_size` scales linearly in `kelly_fraction`, a target of ~0.65%/1.153% ≈ 0.56x of the current average implies `DEFAULT_KELLY_FRACTION` ≈ 0.25 × 0.56 ≈ **0.14**), or (ii) introducing a distinct cadence-aware multiplier applied on top of the existing fractional-Kelly output, kept separate from `DEFAULT_KELLY_FRACTION` so that any future non-T4-cadence band is not silently affected. **This ADR proposes option (i) — reduce `DEFAULT_KELLY_FRACTION` from 0.25 to 0.14 — because it requires no new mechanism, is the most auditable choice (one existing, already-ADR-governed constant), and is directly reproducible from the sensitivity table's 2.0x row (0.577% effective fraction, which is what 0.14/0.25 × 1.153% ≈ 0.645% approximates).**
+The observed 1.153% average stake fraction is a *function* of `kelly_fraction` combined with the real edge/odds distribution of fired bets, not a directly configurable constant itself, but `_compute_kelly_size` scales linearly in `kelly_fraction` — so a target of 0.704%/1.153% ≈ 0.610x of the current average implies **`T1_MULTI_DAY.kelly_fraction` ≈ 0.10 × 0.610 ≈ 0.061** (down from the current 0.10, set by ADR-0010).
 
 **Do not lower `_HARD_LIMITS["max_single_event_exposure_usd"]` ($500 cap) as the primary remediation.** The sensitivity data show it is not effective at the horizon (30 days) where the largest share of the cited ruin risk materializes. It remains a legitimate secondary backstop and is not being removed.
 
-**This ADR does not change any live parameter by itself.** Per Hard Rule 3 (ADRs immutable once accepted) and `risk.py`'s own header constraint (hard limits require ADR evidence before revision), this document proposes the change; the operator (Earl) must explicitly accept it before `DEFAULT_KELLY_FRACTION` is edited in `risk.py`. No code change has been made to `risk.py` in this session.
+**This ADR does not change any live parameter by itself.** Per Hard Rule 3 (ADRs immutable once accepted), ADR-0010 (which set the current 0.10 value) cannot be edited directly — this ADR, once accepted, supersedes ADR-0010's T1 kelly_fraction value specifically. The operator (Earl) must explicitly accept this document before `execution_bands.py` is edited. No code change has been made to `execution_bands.py` or `risk.py` in this session as of this correction.
 
 ---
 
 ## Consequences (if accepted)
 
-- `DEFAULT_KELLY_FRACTION` in `risk.py` changes from `0.25` to `0.14`.
-- All bands currently using `_compute_kelly_size` with the default fraction (T1 MLB) would see roughly a 44% reduction in average stake size and a correspondingly slower bankroll growth path — this is the deliberate tradeoff: EV/bet is unchanged, but variance and compounding-driven ruin risk both fall.
+- `execution_bands.py`'s `BAND_CONFIGS[ExecutionBand.T1_MULTI_DAY].kelly_fraction` changes from `0.10` to `0.061`, with the inline comment updated to reference this ADR as superseding ADR-0010's value for this field.
+- `risk.py`'s `DEFAULT_KELLY_FRACTION` is left at `0.25` (unchanged) — it is inert for T1 MLB's live path and is not part of this remediation. If a future band is added that relies on `RiskEngine`'s default rather than an explicit `kelly_fraction` argument, that default's value should be reviewed on its own merits at that time, not coupled to this decision.
+- T1 MLB would see roughly a 39% reduction in average stake size (0.061/0.10) and a correspondingly slower bankroll growth path — this is the deliberate tradeoff: EV/bet is unchanged, but variance and compounding-driven ruin risk both fall.
 - G6's 30-resolved-paper-bet accumulation continues under the new sizing; no bet history is invalidated (this is forward-looking only).
 - If accepted, T-223 closes and GG-071's status updates to RESOLVED with a reference to this ADR.
-- `mc_forward_projection.py` (T-223, this session) becomes a standing tool — re-run periodically (recommended: whenever `DEFAULT_KELLY_FRACTION`, real win rate, or real bet cadence materially shift) rather than a one-off artifact, since GG-071's core lesson is that this risk must be monitored under a forward-time lens, not just a terminal-P&L lens.
+- `mc_forward_projection.py` (T-223) becomes a standing tool — re-run periodically (recommended: whenever `T1_MULTI_DAY.kelly_fraction`, real win rate, or real bet cadence materially shift) rather than a one-off artifact, since GG-071's core lesson is that this risk must be monitored under a forward-time lens, not just a terminal-P&L lens.
 - **Not addressed by this ADR:** whether T4 MLB (flat 1-contract sizing per ADR-0023, not Kelly-scaled) carries an analogous compounding risk. T4's sizing mechanic is structurally different (flat, not proportional) and was out of scope for this review; if T4 sizing is ever changed to a proportional/Kelly mechanic, this analysis must be re-run for T4's own cadence (~1,000+ evaluations/game) before activation.
 
 ---
 
 ## Open items if this ADR is accepted
 
-1. Update `risk.py`: `DEFAULT_KELLY_FRACTION: float = 0.25` → `0.14`, with an inline comment referencing this ADR.
-2. Update any existing tests that assert the literal `0.25` value.
-3. Update `scripts/run_monte_carlo.py`'s `DEFAULT_T1_KELLY = 0.25` constant (currently hardcoded to match `risk.py` — would drift if not updated together).
-4. Re-run `scripts/mc_forward_projection.py` against the new `DEFAULT_KELLY_FRACTION` once real T1 MLB bets have accumulated at the new sizing, to confirm the observed effective stake fraction lands in the targeted 0.62–0.71% range (the relationship is linear in theory but real bet-level edge/odds distribution could shift the realized average).
+1. Update `execution_bands.py`: `T1_MULTI_DAY.kelly_fraction: 0.10` → `0.061`, with the inline comment updated to reference this ADR (superseding ADR-0010 for this field only).
+2. Update `t4_execution_engine.py:961` and `tests/test_execution_bands.py:181` — both reference "`DEFAULT_KELLY_FRACTION = 0.25`" as if it were the governing T1 MLB ceiling; it is not (it's an NBA T4-PROJ-scoped literal ceiling unrelated to this change) — decouple the comments from `risk.py`'s constant to prevent future conflation of the kind this correction just resolved.
+3. Update `scripts/run_monte_carlo.py:43`'s `DEFAULT_T1_KELLY = 0.25  # DEFAULT_KELLY_FRACTION in risk.py` comment — it already carries the same wrong-constant assumption; correct it to reference `execution_bands.py`'s real value.
+4. Re-run `scripts/mc_forward_projection.py` against the new `kelly_fraction` once real T1 MLB bets have accumulated at the new sizing, to confirm the observed effective stake fraction lands near the targeted 0.70% (the relationship is linear in theory but real bet-level edge/odds distribution could shift the realized average).
 5. Close GG-071 and T-223 with a reference to this ADR's acceptance.
