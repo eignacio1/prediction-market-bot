@@ -125,9 +125,9 @@ When the architecture is correct, adding NFL means: new C1 data module, new C2 f
 
 ### The commercial validation gap
 
-**The EV claim for this system has not been validated against actual market prices.** All experiments to date measured model edge against a 0.50 null baseline — a coin flip, not an informed Kalshi market. The commercial question — does the model beat real market prices? — is answered by EXP-017, which has not yet been run. Until it is, no model working on this project should assert the commercial case is proven.
+**Corrected 2026-07-04 (stale since T-184, 2026-07-03) — the prior text here said EXP-017 "has not yet been run." It has.** `scripts/run_exp017_mlb.py` (T-184) executed 2026-07-03 against real production MLB data, not the old 0.50 null baseline: n=49 resolved T1 MLB positions, EV=+$2.0408/bet, win rate 53.1%, verdict **DIRECTIONAL_POSITIVE** against actual Kalshi market prices. The commercial question has a real, positive-direction answer for the first time. The gap that remains is **sample adequacy, not sample existence**: n=49 is well below the ADR-0024 floors (Tier 1 n≥150 single-sport, Tier 2 n≥500 single-sport or n≥150 dual-sport, NBA n=0). Until MLB T1 volume accumulates past those floors, no model working on this project should assert the commercial case is *proven* — but it should also not be described as untested. Read the direction as encouraging-but-underpowered, not absent.
 
-This is GG-004 (OPEN). It is a G6 blocker. Check `03_DECISIONS/GOVERNANCE_GAP_LOG.md` for current status.
+This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has run). It is a G6 blocker. Check `03_DECISIONS/GOVERNANCE_GAP_LOG.md` for current status and the live n-count.
 
 ### Gate structure
 
