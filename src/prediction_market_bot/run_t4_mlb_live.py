@@ -28,10 +28,14 @@ Bayesian model (MLB — Binomial):
     h_so_far >= threshold → p_t4 = 1.0 (already achieved)
     h_needed > ab_remaining → p_t4 = 0.0 (mathematically impossible)
 
-Fire condition:
-  p_t4 > mip + vig (edge positive after vig, before Kalshi fee)
-  Then: net_edge = p_t4 - mip - kalshi_fee (ADR-0016 taker fee)
-  C4 gates on net_edge (MIN_EDGE via RiskEngine).
+Fire condition (bidirectional — GG-087, 2026-07-05):
+  gross_edge = p_t4 - mip - vig
+  gross_edge > 0  → YES edge candidate; gross_edge < 0 → NO edge candidate
+    (direction is whichever side the market currently misprices; a prior
+    version of this file only ever considered YES, silently discarding all
+    NO-side signal — measured at 41.6x the volume it acted on, GG-087).
+  directional_net_edge = abs(gross_edge) - kalshi_fee (ADR-0016 taker fee)
+  C4 gates on directional_net_edge (MIN_EDGE via RiskEngine).
 
 Portfolio isolation (ADR-0013/ADR-0023):
   Isolated to paper_portfolio_mlb_t4.json. T1 bankroll untouched.
@@ -997,17 +1001,34 @@ def _run_cycle(
                 continue
 
             # Normal execution path
-            if gross_edge <= 0.0:
+            # GG-087: both directions are actionable. gross_edge is the YES-frame
+            # edge (p_t4 - mip - vig); a sufficiently negative gross_edge is a
+            # legitimate NO-direction edge, not noise to discard — the prior
+            # hardcoded YES-only path here silently dropped every NO-side signal,
+            # measured at 41.6x the volume of the YES-side signal it acted on.
+            # `net_edge` above stays YES-frame for the diagnostic cycle log; the
+            # direction-effective edge actually gated/traded on is recomputed
+            # here by flipping gross_edge's sign for NO before subtracting the
+            # fee — do not reuse an unflipped edge value for a NO-direction
+            # gate/position (see GG-077, the sign-convention bug this pattern
+            # is designed to avoid reintroducing).
+            if gross_edge > 0.0:
+                direction = "YES"
+                directional_gross_edge = gross_edge
+            elif gross_edge < 0.0:
+                direction = "NO"
+                directional_gross_edge = -gross_edge
+            else:
                 evaluated += 1
                 continue
 
-            direction = "YES"
+            directional_net_edge = directional_gross_edge - kalshi_fee
 
             fc_record = {
                 "forecast_id":         f"T4-MLB-{cycle_id}-{ticker[-12:]}",
                 "p_estimate":          p_t4,
                 "market_implied_prob": mip,
-                "edge":                net_edge,
+                "edge":                directional_net_edge,
                 "gross_edge":          gross_edge,
                 "recommended_direction": direction,
             }
@@ -1030,10 +1051,11 @@ def _run_cycle(
             if approval.get("approval_status") != "APPROVED":
                 continue
 
-            # T4 paper policy: 1 contract at market price (mirrors NBA T4 ADR-0023)
-            approved_size = mip
+            # T4 paper policy: 1 contract at market price (mirrors NBA T4 ADR-0023).
+            # GG-087: a NO contract's market price is (1 - mip), not mip.
+            approved_size = mip if direction == "YES" else (1.0 - mip)
             approval = {**approval, "approved_size": approved_size,
-                        "model_p": p_t4, "edge": net_edge, "gross_edge": gross_edge}
+                        "model_p": p_t4, "edge": directional_net_edge, "gross_edge": gross_edge}
 
             if t4_deployed_usd + approved_size > t4_band_budget:
                 logger.info(
@@ -1087,7 +1109,7 @@ def _run_cycle(
                 logger.info(
                     "T4-MLB FIRED  %-45s  %-3s  $%5.2f  p=%.3f  mip=%.3f  edge=%+.3f"
                     "  budget_used=$%.2f/%.2f  h=%d ab_rem=%d  cycle=%s",
-                    ticker, direction, approved_size, p_t4, mip, net_edge,
+                    ticker, direction, approved_size, p_t4, mip, directional_net_edge,
                     t4_deployed_usd, t4_band_budget,
                     ls.h_so_far, ab_remaining, cycle_id,
                 )
