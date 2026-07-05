@@ -15,8 +15,12 @@ Order submission (ADR-0008):
   If KalshiMarketClient is provided with a loaded RSA private key, every
   open_position() call submits a real order to Kalshi demo. The Kalshi
   order_id and status are recorded in the position. If Kalshi submission
-  fails, the position is still recorded locally (degraded mode) and a
-  warning is logged. Local ledger is always authoritative for G6 P&L.
+  fails (non-2xx — no capital ever reached the venue), the position is
+  still recorded locally for audit purposes but routed to
+  rejected_positions rather than open_positions (GG-079/T-234), a warning
+  is logged, and open_position() returns an empty position dict so callers'
+  `if pos:` fired/deployed-capital accounting does not count it. Local
+  ledger is always authoritative for G6 P&L.
 
 Portfolio state:
   Persisted to logs/paper_portfolio.json after every operation.
@@ -139,7 +143,10 @@ class PaperTrader:
     def _load_or_init(self) -> dict[str, Any]:
         if self._path.exists():
             try:
-                return json.loads(self._path.read_text())
+                state = json.loads(self._path.read_text())
+                # GG-079/T-234: files written before this bucket existed lack the key.
+                state.setdefault("rejected_positions", [])
+                return state
             except Exception:
                 pass
         return {
@@ -150,6 +157,7 @@ class PaperTrader:
             "daily_loss_date": _today(),
             "open_positions": [],
             "closed_positions": [],
+            "rejected_positions": [],  # GG-079/T-234: orders Kalshi never accepted
             "created_at": _utc_now(),
             "last_updated": _utc_now(),
         }
@@ -256,6 +264,7 @@ class PaperTrader:
         if self._path.exists():
             try:
                 self._state = json.loads(self._path.read_text())
+                self._state.setdefault("rejected_positions", [])
             except Exception:
                 pass
 
@@ -481,17 +490,30 @@ class PaperTrader:
                     pos["kalshi_order_status"] = order.status
                     pos["kalshi_contracts"] = order.contracts
                 else:
+                    # GG-079/T-234: a non-2xx response means Kalshi never accepted
+                    # this order — no capital is at risk with the venue. Route to
+                    # rejected_positions at write time rather than open_positions,
+                    # so exposure math (_reconstruct_t4_ledger, exposure_snapshot,
+                    # kill-switch proximity) never counts a non-executed order as
+                    # deployed capital, and the caller's `if pos:` truthiness check
+                    # (uniform across every T1/T2/T4 caller) does not count it as
+                    # a placed bet either.
                     pos["kalshi_order_status"] = f"failed: {order.error}"
+                    pos["status"] = "REJECTED"
                     self._logger.warning(
                         COMPONENT, "kalshi_order_failed",
                         payload={
                             "position_id": pos["position_id"],
                             "ticker": kalshi_ticker,
                             "error": order.error,
-                            "note": "local position recorded; Kalshi order not placed",
+                            "note": "rejected: Kalshi order not placed, no capital deployed",
                         },
                         session_id=session_id,
                     )
+                    time.sleep(2.0)  # T-164/GG-014: raised 0.5→2.0s; 29-order burst hit rate-limit at 0.5s
+                    self._state.setdefault("rejected_positions", []).append(pos)
+                    ok_save = self._save()
+                    return ok_save, {}
                 time.sleep(2.0)  # T-164/GG-014: raised 0.5→2.0s; 29-order burst hit rate-limit at 0.5s
 
             self._state["open_positions"].append(pos)
@@ -914,8 +936,9 @@ class PaperTrader:
               NOT a drawdown — it is not permanently lost.
         """
         s = self._state
-        n_open   = len(s.get("open_positions", []))
-        n_closed = len(s.get("closed_positions", []))
+        n_open     = len(s.get("open_positions", []))
+        n_closed   = len(s.get("closed_positions", []))
+        n_rejected = len(s.get("rejected_positions", []))  # GG-079/T-234
         wins     = sum(1 for p in s.get("closed_positions", []) if p.get("outcome") == "WIN")
         win_rate = wins / n_closed if n_closed > 0 else None
 
@@ -939,5 +962,6 @@ class PaperTrader:
             "deployed_pct": round(deployed_pct * 100, 2),
             "open_positions": n_open,
             "closed_positions": n_closed,
+            "rejected_positions": n_rejected,
             "win_rate": round(win_rate, 3) if win_rate is not None else None,
         }

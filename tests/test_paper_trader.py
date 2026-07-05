@@ -172,6 +172,118 @@ class TestOpenPosition:
         assert len(trader.get_state()["open_positions"]) == 0
 
 
+class TestFailedKalshiOrderRouting:
+    """GG-079/T-234: a non-2xx Kalshi order response must never land in
+    open_positions — no capital reached the venue, so it must not count as
+    deployed exposure, and open_position() must signal "nothing was opened"
+    to callers via an empty return dict (every T1/T2/T4 caller gates its
+    fired/orders-placed counters on `if pos:`)."""
+
+    @staticmethod
+    def _make_kalshi(ok: bool, error: str = "HTTP 410"):
+        from prediction_market_bot.c5_execution.kalshi_client import KalshiOrder
+        client = MagicMock()
+        client.has_signing_key.return_value = True
+        if ok:
+            client.submit_order.return_value = KalshiOrder(
+                ok=True, order_id="ORD-1", client_order_id="POS-1",
+                ticker="KXMLBHIT-TEST", side="yes", contracts=1,
+                yes_price_cents=45, actual_cost_usd=0.45, status="resting",
+            )
+        else:
+            client.submit_order.return_value = KalshiOrder(
+                ok=False, order_id="", client_order_id="POS-1",
+                ticker="KXMLBHIT-TEST", side="yes", contracts=0,
+                yes_price_cents=45, actual_cost_usd=0.0, status="error",
+                error=error,
+            )
+        return client
+
+    @pytest.mark.unit
+    def test_failed_order_not_in_open_positions(self, tmp_path):
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(),
+                              kalshi_client=self._make_kalshi(ok=False))
+        ok, pos = trader.open_position(
+            approval=_make_approval(0.595, "YES"),
+            player_name="Juan Soto", player_id=665742,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.595, vig=0.09, game_date=_PAST_DATE,
+            pool_isolated=True,
+        )
+        assert ok
+        assert pos == {}  # caller `if pos:` gates must not count this as fired
+        assert len(trader.get_state()["open_positions"]) == 0
+
+    @pytest.mark.unit
+    def test_failed_order_lands_in_rejected_positions(self, tmp_path):
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(),
+                              kalshi_client=self._make_kalshi(ok=False, error="HTTP 410"))
+        trader.open_position(
+            approval=_make_approval(0.595, "YES"),
+            player_name="Juan Soto", player_id=665742,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.595, vig=0.09, game_date=_PAST_DATE,
+            pool_isolated=True,
+        )
+        rejected = trader.get_state()["rejected_positions"]
+        assert len(rejected) == 1
+        assert rejected[0]["status"] == "REJECTED"
+        assert rejected[0]["kalshi_order_status"] == "failed: HTTP 410"
+        assert rejected[0]["player_name"] == "Juan Soto"
+
+    @pytest.mark.unit
+    def test_failed_order_excluded_from_t4_exposure_reconstruction(self, tmp_path):
+        # Mirrors run_t4_mlb_live.py::_reconstruct_t4_ledger's summation logic.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(),
+                              kalshi_client=self._make_kalshi(ok=False))
+        trader.open_position(
+            approval=_make_approval(0.595, "YES"),
+            player_name="Juan Soto", player_id=665742,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.595, vig=0.09, game_date=_PAST_DATE,
+            pool_isolated=True,
+        )
+        state = trader.get_state()
+        open_exposure = sum(
+            p.get("size_usd", 0.0) for p in state["open_positions"]
+            if p.get("pool_isolated") and p.get("game_date") == _PAST_DATE
+        )
+        assert open_exposure == 0.0
+
+    @pytest.mark.unit
+    def test_successful_order_still_recorded_in_open_positions(self, tmp_path):
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(),
+                              kalshi_client=self._make_kalshi(ok=True))
+        ok, pos = trader.open_position(
+            approval=_make_approval(0.45, "YES"),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+            pool_isolated=True,
+        )
+        assert ok
+        assert pos != {}
+        assert pos["kalshi_order_status"] == "resting"
+        assert len(trader.get_state()["open_positions"]) == 1
+        assert len(trader.get_state()["rejected_positions"]) == 0
+
+    @pytest.mark.unit
+    def test_rejected_positions_key_defaults_for_pre_existing_files(self, tmp_path):
+        # Files written before GG-079/T-234 lack the "rejected_positions" key.
+        import json
+        path = tmp_path / "p.json"
+        legacy_state = {
+            "bankroll_usd": 1000.0, "initial_bankroll_usd": 1000.0,
+            "total_realized_pnl": 0.0, "current_daily_loss": 0.0,
+            "daily_loss_date": _PAST_DATE,
+            "open_positions": [], "closed_positions": [],
+            "created_at": "x", "last_updated": "x",
+        }
+        path.write_text(json.dumps(legacy_state))
+        trader = PaperTrader(path, _make_logger())
+        assert trader.get_state()["rejected_positions"] == []
+
+
 # ---------------------------------------------------------------------------
 # resolve_pending — date filtering
 # ---------------------------------------------------------------------------

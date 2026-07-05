@@ -29,6 +29,7 @@ F_DAILY_NET_PNL     = "daily_net_pnl"
 F_DAILY_LOSS_DATE   = "daily_loss_date"
 F_OPEN_POSITIONS    = "open_positions"
 F_CLOSED_POSITIONS  = "closed_positions"
+F_REJECTED_POSITIONS = "rejected_positions"
 F_CREATED_AT        = "created_at"
 F_LAST_UPDATED      = "last_updated"
 
@@ -49,9 +50,11 @@ P_DUPLICATE_OF      = "duplicate_of"
 STATUS_OPEN         = "OPEN"
 STATUS_CLOSED       = "CLOSED"
 STATUS_EXITED       = "EXITED"
+STATUS_REJECTED     = "REJECTED"
 
 OPEN_STATUSES       = frozenset({STATUS_OPEN})
 CLOSED_STATUSES     = frozenset({STATUS_CLOSED, STATUS_EXITED})
+REJECTED_STATUSES   = frozenset({STATUS_REJECTED})
 
 # ---------------------------------------------------------------------------
 # Required top-level fields (must be present in any valid portfolio state)
@@ -101,6 +104,15 @@ def validate_portfolio_state(state: dict[str, Any]) -> list[str]:
         if status not in CLOSED_STATUSES:
             errors.append(
                 f"closed_positions[{i}] has status={status!r}; expected CLOSED or EXITED"
+            )
+
+    # rejected_positions (GG-079/T-234) is optional — older portfolio files
+    # predate this bucket — but any entries present must carry REJECTED status.
+    for i, pos in enumerate(state.get(F_REJECTED_POSITIONS, [])):
+        status = pos.get(P_STATUS)
+        if status not in REJECTED_STATUSES:
+            errors.append(
+                f"rejected_positions[{i}] has status={status!r}; expected REJECTED"
             )
 
     # Numeric fields are non-negative where required
