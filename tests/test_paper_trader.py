@@ -48,13 +48,14 @@ def _make_logger():
     return logger
 
 
-def _make_approval(size: float, direction: str = "YES") -> dict:
+def _make_approval(size: float, direction: str = "YES", **extra) -> dict:
     return {
         "approval_status": "APPROVED",
         "approved_size": size,
         "approved_direction": direction,
         "risk_eval_id": "RISK-TEST001",
         "forecast_id": "FCST-TEST001",
+        **extra,
     }
 
 
@@ -170,6 +171,43 @@ class TestOpenPosition:
         assert ok
         assert pos == {}
         assert len(trader.get_state()["open_positions"]) == 0
+
+    @pytest.mark.unit
+    def test_fee_net_edge_is_direction_effective_for_no_bet(self, tmp_path):
+        # GG-077: gross_edge is always stored YES-frame. A NO bet with
+        # gross_edge=-0.10 is a *good* bet (true directional edge +0.10 net
+        # of fee) — fee_net_edge must reflect that, not the YES-frame sign.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        mid = 0.45
+        gross_edge = -0.10
+        fee = round(0.07 * mid * (1.0 - mid), 6)
+        ok, pos = trader.open_position(
+            approval=_make_approval(30.0, "NO", gross_edge=gross_edge, model_p=0.35),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=mid, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        expected = round(-gross_edge - fee, 6)
+        assert pos["fee_net_edge"] == expected
+        assert expected > 0  # true edge is positive
+        assert pos["fee_contaminated"] is False
+
+    @pytest.mark.unit
+    def test_fee_net_edge_matches_gross_edge_for_yes_bet(self, tmp_path):
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        mid = 0.45
+        gross_edge = 0.10
+        fee = round(0.07 * mid * (1.0 - mid), 6)
+        ok, pos = trader.open_position(
+            approval=_make_approval(30.0, "YES", gross_edge=gross_edge, model_p=0.55),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=mid, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        assert pos["fee_net_edge"] == round(gross_edge - fee, 6)
+        assert pos["fee_contaminated"] is False
 
 
 class TestFailedKalshiOrderRouting:

@@ -278,6 +278,17 @@ _SP_OVERRIDE_FIELDS = frozenset({
 })
 
 
+def _directional_edge(direction: str, gross_edge: float, kalshi_fee: float) -> float:
+    """GG-077: gross_edge is always stored YES-frame. Direction assignment is
+    decided off that raw YES-frame value, but once a direction is chosen the
+    bet's true, fee-net edge must flip sign for NO before CHECK 3
+    (abs(edge) >= MIN_EDGE_TO_APPROVE, risk.py) gates on it — otherwise NO
+    bets are gated on the YES-side edge of the opposite bet.
+    """
+    directional_gross = gross_edge if direction == "YES" else -gross_edge
+    return directional_gross - kalshi_fee
+
+
 def _build_mlb_feature_vector(
     row: pd.Series,
     feature_names: list[str],
@@ -827,9 +838,18 @@ def main() -> None:
             half  = mkt.half_spread
             gross_edge = p_calibrated - mid - half
             kalshi_fee = 0.07 * mid * (1.0 - mid)
+            # Direction is decided off the raw YES-frame quantity against
+            # symmetric +/-0.02 thresholds — this step is unaffected by GG-077.
             edge       = gross_edge - kalshi_fee
 
             direction = ("YES" if edge > EDGE_YES else "NO" if edge < EDGE_NO else "PASS")
+
+            # Recompute edge as direction-effective (GG-077) so CHECK 3 and
+            # the stored position both gate/record the edge of the bet
+            # actually placed. Direction assignment above intentionally
+            # still uses the raw YES-frame edge.
+            if direction != "PASS":
+                edge = _directional_edge(direction, gross_edge, kalshi_fee)
 
             # YES-only diagnostic gate
             if PAPER_YES_ONLY and direction == "NO":
