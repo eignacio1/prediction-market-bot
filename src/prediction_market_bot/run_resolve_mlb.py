@@ -32,8 +32,19 @@ VPS accessibility:
   cadence-dependent. Treat datacenter-IP access to this endpoint as unreliable
   regardless of season. A circuit breaker (below) limits wasted retry time once
   the block is active; positions are never lost (48h grace + aged_open retry
-  every subsequent run), but resolution can be delayed for as long as the block
-  persists. See GG-084/GOVERNANCE_GAP_LOG.md.
+  every subsequent run). See GG-084/GOVERNANCE_GAP_LOG.md.
+
+  ESPN fallback (GG-084/T-241, added 2026-07-05): a live re-probe confirmed the
+  block was still active hours after the circuit-breaker fix landed, meaning
+  resolution could stall indefinitely rather than merely being delayed. When
+  both MLB Stats API attempts (Regular + Postseason) return None,
+  `fetch_actual_hits()` now falls back to ESPN's public site API
+  (site.api.espn.com), which is unaffected by this block (different host/CDN)
+  and is already used successfully in production by run_t4_mlb_live.py for
+  live boxscores. Matches the batter by normalized display name against the
+  position's stored `player_name`, and only trusts a game confirmed
+  STATUS_FINAL/STATUS_POSTPONED. This closes the resolution gap without
+  depending on the MLB Stats API IP block ever being lifted.
 
 How to run:
   BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_mlb.py
@@ -78,6 +89,23 @@ _MLB_BASE_URL  = "https://statsapi.mlb.com"
 _RATE_LIMIT_S  = 0.6   # matches mlb_ingestion.py; stays under API rate limit
 _REQUEST_TIMEOUT_S = 15
 _RETRY_DELAYS_S: tuple[int, ...] = (5, 10, 30)  # T-207: exponential backoff for 406 errors
+
+# GG-084/T-241: ESPN fallback data source. When the MLB Stats API is IP-blocked
+# (GG-084 — confirmed a sustained, not transient, condition), resolution would
+# otherwise stall indefinitely (48h grace, then aged_open — no P&L visibility).
+# ESPN's public site API is unaffected by the Fastly-CDN block (different host,
+# different provider) and is already used successfully in production by
+# run_t4_mlb_live.py for live boxscores. Constants/parsing convention mirrored
+# from there (labels-based stat lookup, not a fixed index, since ESPN's finished-
+# game boxscore label order — H-AB, AB, R, H, RBI, HR, BB, K — differs from the
+# in-progress order documented in run_t4_mlb_live.py; label lookup is robust to
+# either).
+_ESPN_MLB_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
+_ESPN_MLB_SUMMARY    = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/summary"
+_ESPN_HEADERS        = {"User-Agent": "Mozilla/5.0"}
+_ESPN_STATUS_FINAL     = "STATUS_FINAL"
+_ESPN_STATUS_POSTPONED = "STATUS_POSTPONED"
+_ESPN_TERMINAL_STATUSES = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
 
 # GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
 # a sustained condition, not per-request flakiness), every further retry-loop
@@ -196,15 +224,107 @@ def _reset_circuit_breaker() -> None:
     _consecutive_api_failures = 0
 
 
-def fetch_actual_hits(player_id: int, game_date: str) -> float | None:
-    """Fetch actual hits with Postseason fallback.
+def _espn_game_ids_for_date(game_date: str) -> list[str]:
+    """Return ESPN MLB event IDs for all games scheduled on game_date (YYYY-MM-DD).
 
-    Tries Regular Season first; if no result, tries Postseason.
-    Mirrors NBA resolve_pending() Playoffs fallback pattern.
+    Unlike run_t4_mlb_live.py's `_espn_mlb_game_ids_today()` (always "today"),
+    resolution needs an arbitrary past date, so this parameterizes `dates`.
+    """
+    try:
+        date_str = datetime.strptime(game_date, "%Y-%m-%d").strftime("%Y%m%d")
+        resp = requests.get(
+            _ESPN_MLB_SCOREBOARD,
+            params={"dates": date_str, "limit": 30},
+            headers=_ESPN_HEADERS,
+            timeout=_REQUEST_TIMEOUT_S,
+        )
+        resp.raise_for_status()
+        return [e["id"] for e in resp.json().get("events", [])]
+    except Exception as exc:
+        print(f"  [ESPN-FALLBACK] game_date={game_date}: scoreboard fetch failed: "
+              f"{type(exc).__name__}: {exc}", file=sys.stderr)
+        return []
+
+
+def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
+    """GG-084/T-241: fallback hit lookup via ESPN when MLB Stats API is blocked.
+
+    Scans every ESPN game on game_date, matches the batter by normalized
+    display name (same `lower().replace(" ", "")` convention as
+    run_t4_mlb_live.py's pregame-context matching), and returns hits only from
+    a game confirmed STATUS_FINAL/STATUS_POSTPONED — an in-progress or
+    scheduled game's boxscore is not a resolvable result yet, so it is
+    skipped rather than trusted.
+    """
+    norm_target = player_name.lower().replace(" ", "")
+    if not norm_target:
+        return None
+
+    for game_id in _espn_game_ids_for_date(game_date):
+        try:
+            resp = requests.get(
+                _ESPN_MLB_SUMMARY,
+                params={"event": game_id},
+                headers=_ESPN_HEADERS,
+                timeout=_REQUEST_TIMEOUT_S,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+        except Exception as exc:
+            print(f"  [ESPN-FALLBACK] player={player_name} game_id={game_id}: "
+                  f"summary fetch failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            continue
+
+        comps = data.get("header", {}).get("competitions", [{}])
+        if not comps:
+            continue
+        status_name = comps[0].get("status", {}).get("type", {}).get("name", "")
+        if status_name not in _ESPN_TERMINAL_STATUSES:
+            continue  # not over yet — do not trust this game's boxscore
+
+        for team_data in data.get("boxscore", {}).get("players", []):
+            for stat_group in team_data.get("statistics", []):
+                labels = stat_group.get("labels", [])
+                if not labels or "AB" not in labels or "IP" in labels:
+                    continue  # skip pitching stat group
+                try:
+                    h_idx = labels.index("H")
+                except ValueError:
+                    continue  # can't locate hits column — do not guess
+
+                for athlete_entry in stat_group.get("athletes", []):
+                    athlete = athlete_entry.get("athlete", {})
+                    name = athlete.get("displayName", "")
+                    if name.lower().replace(" ", "") != norm_target:
+                        continue
+                    stats = athlete_entry.get("stats", [])
+                    try:
+                        return float(stats[h_idx])
+                    except (IndexError, ValueError, TypeError):
+                        return None
+    return None
+
+
+def fetch_actual_hits(
+    player_id: int,
+    game_date: str,
+    player_name: str | None = None,
+) -> float | None:
+    """Fetch actual hits with Postseason fallback, then ESPN fallback.
+
+    Tries Regular Season first; if no result, tries Postseason (mirrors NBA
+    resolve_pending() Playoffs fallback pattern). GG-084/T-241: if both MLB
+    Stats API attempts return None and a player_name is supplied, falls back
+    to ESPN's boxscore (unaffected by the MLB Stats API IP block) before
+    giving up. player_name is optional and defaults to None so existing
+    callers that only track player_id are unaffected — ESPN fallback is
+    simply skipped in that case.
     """
     hits = _fetch_mlb_hits(player_id, game_date, game_type="R")
     if hits is None:
         hits = _fetch_mlb_hits(player_id, game_date, game_type="P")
+    if hits is None and player_name:
+        hits = _espn_fetch_hits(player_name, game_date)
     return hits
 
 
@@ -251,7 +371,7 @@ def _resolve_pool(
         direction   = pos.get("direction", "YES")
         position_id = pos.get("position_id", "")
 
-        actual_hits = fetch_actual_hits(player_id, game_date)
+        actual_hits = fetch_actual_hits(player_id, game_date, player_name=player_name)
 
         if actual_hits is None:
             try:

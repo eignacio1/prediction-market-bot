@@ -670,7 +670,7 @@ class TestRunResolveMlbMain:
         _open_mlb_pos(setup, game_date=PAST_DATE, player_id=22222,
                       player_name="Soto", threshold=1, size=5.0)
 
-        def _api_side(player_id, game_date):
+        def _api_side(player_id, game_date, player_name=None):
             return 2.0 if player_id == 11111 else None
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
@@ -895,7 +895,7 @@ class TestDegradedResolutionAlert:
             _open_mlb_pos(setup, game_date=PAST_DATE, player_id=10000 + i,
                           player_name=f"Player{i}", threshold=1, size=5.0)
 
-        def _api_side(player_id, game_date):
+        def _api_side(player_id, game_date, player_name=None):
             return 2.0 if player_id in (10000, 10001) else None
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
@@ -913,7 +913,7 @@ class TestDegradedResolutionAlert:
             _open_mlb_pos(setup, game_date=PAST_DATE, player_id=20000 + i,
                           player_name=f"Player{i}", threshold=1, size=5.0)
 
-        def _api_side(player_id, game_date):
+        def _api_side(player_id, game_date, player_name=None):
             return None if player_id in (20000, 20001) else 2.0
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
@@ -937,3 +937,190 @@ class TestDegradedResolutionAlert:
             _patched_run(portfolio_path)
 
         assert "GG-084" not in capsys.readouterr().err
+
+
+class TestEspnFallback:
+    """GG-084/T-241: ESPN fallback when MLB Stats API is IP-blocked.
+
+    fetch_actual_hits() falls back to ESPN's public site API (unaffected by
+    the Fastly-CDN block against statsapi.mlb.com) only after both Regular
+    and Postseason MLB Stats API attempts return None, and only when a
+    player_name is supplied.
+    """
+
+    def _scoreboard_response(self, ids: list[str]) -> MagicMock:
+        m = MagicMock()
+        m.raise_for_status.return_value = None
+        m.json.return_value = {"events": [{"id": i} for i in ids]}
+        return m
+
+    def _summary_response(
+        self,
+        status_name: str,
+        athletes: list[tuple],
+        labels: list[str] | None = None,
+    ) -> MagicMock:
+        """athletes: list of (display_name, stats_list)."""
+        labels = labels or ["H-AB", "AB", "R", "H", "RBI", "HR", "BB", "K"]
+        m = MagicMock()
+        m.raise_for_status.return_value = None
+        m.json.return_value = {
+            "header": {"competitions": [
+                {"status": {"type": {"name": status_name}}}
+            ]},
+            "boxscore": {"players": [
+                {"statistics": [
+                    {
+                        "labels": labels,
+                        "athletes": [
+                            {"athlete": {"displayName": name}, "stats": stats}
+                            for name, stats in athletes
+                        ],
+                    }
+                ]},
+            ]},
+        }
+        return m
+
+    @pytest.mark.unit
+    def test_game_ids_for_date_happy_path(self):
+        from prediction_market_bot.run_resolve_mlb import _espn_game_ids_for_date
+        resp = self._scoreboard_response(["401815979", "401815984"])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _espn_game_ids_for_date(PAST_DATE) == ["401815979", "401815984"]
+
+    @pytest.mark.unit
+    def test_game_ids_for_date_request_exception_returns_empty(self):
+        from prediction_market_bot.run_resolve_mlb import _espn_game_ids_for_date
+        import requests as _req
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=_req.exceptions.ConnectionError("timeout")):
+            assert _espn_game_ids_for_date(PAST_DATE) == []
+
+    @pytest.mark.unit
+    def test_fetch_hits_matches_final_game(self):
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        scoreboard = self._scoreboard_response(["401815979"])
+        summary = self._summary_response(
+            "STATUS_FINAL", [("Gunnar Henderson", ["1-4", "4", "1", "2", "0", "0", "1", "0"])]
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=[scoreboard, summary]):
+            result = _espn_fetch_hits("Gunnar Henderson", PAST_DATE)
+        assert result == 2.0
+
+    @pytest.mark.unit
+    def test_fetch_hits_name_normalization_matches_regardless_of_spacing(self):
+        """Matching uses lower().replace(' ', ''), same convention as
+        run_t4_mlb_live.py's pregame-context matching."""
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        scoreboard = self._scoreboard_response(["401815979"])
+        summary = self._summary_response(
+            "STATUS_FINAL", [("CJ Abrams", ["1-4", "4", "0", "1", "0", "0", "0", "1"])]
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=[scoreboard, summary]):
+            result = _espn_fetch_hits("CJ Abrams", PAST_DATE)
+        assert result == 1.0
+
+    @pytest.mark.unit
+    def test_fetch_hits_in_progress_game_not_trusted(self):
+        """A game still in progress must not be treated as a resolvable result —
+        mirrors GG-069's FINAL-only gate for the MLB Stats API path."""
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        scoreboard = self._scoreboard_response(["401815979"])
+        summary = self._summary_response(
+            "STATUS_IN_PROGRESS", [("Gunnar Henderson", ["1-4", "4", "1", "2", "0", "0", "1", "0"])]
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=[scoreboard, summary]):
+            result = _espn_fetch_hits("Gunnar Henderson", PAST_DATE)
+        assert result is None
+
+    @pytest.mark.unit
+    def test_fetch_hits_no_name_match_returns_none(self):
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        scoreboard = self._scoreboard_response(["401815979"])
+        summary = self._summary_response(
+            "STATUS_FINAL", [("Someone Else", ["1-4", "4", "0", "1", "0", "0", "0", "1"])]
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=[scoreboard, summary]):
+            result = _espn_fetch_hits("Gunnar Henderson", PAST_DATE)
+        assert result is None
+
+    @pytest.mark.unit
+    def test_fetch_hits_empty_name_short_circuits_no_requests(self):
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get") as mock_get:
+            result = _espn_fetch_hits("", PAST_DATE)
+        assert result is None
+        mock_get.assert_not_called()
+
+    @pytest.mark.unit
+    def test_fetch_hits_skips_pitching_stat_group(self):
+        """A pitching stat group (has 'IP', no 'AB') must never be scanned for hits."""
+        from prediction_market_bot.run_resolve_mlb import _espn_fetch_hits
+        scoreboard = self._scoreboard_response(["401815979"])
+        summary = MagicMock()
+        summary.raise_for_status.return_value = None
+        summary.json.return_value = {
+            "header": {"competitions": [{"status": {"type": {"name": "STATUS_FINAL"}}}]},
+            "boxscore": {"players": [
+                {"statistics": [
+                    {
+                        "labels": ["IP", "H", "R", "ER", "BB", "K"],
+                        "athletes": [
+                            {"athlete": {"displayName": "Some Pitcher"}, "stats": ["6.0", "9", "1", "1", "0", "5"]},
+                        ],
+                    },
+                ]},
+            ]},
+        }
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=[scoreboard, summary]):
+            result = _espn_fetch_hits("Some Pitcher", PAST_DATE)
+        assert result is None
+
+
+class TestFetchActualHitsEspnFallback:
+    """fetch_actual_hits() ESPN fallback wiring (GG-084/T-241)."""
+
+    @pytest.mark.unit
+    def test_mlb_api_success_never_calls_espn(self):
+        from prediction_market_bot.run_resolve_mlb import fetch_actual_hits
+        with patch("prediction_market_bot.run_resolve_mlb._fetch_mlb_hits", return_value=3.0), \
+             patch("prediction_market_bot.run_resolve_mlb._espn_fetch_hits") as mock_espn:
+            result = fetch_actual_hits(12345, PAST_DATE, player_name="Judge")
+        assert result == 3.0
+        mock_espn.assert_not_called()
+
+    @pytest.mark.unit
+    def test_both_mlb_api_seasons_fail_falls_back_to_espn(self):
+        from prediction_market_bot.run_resolve_mlb import fetch_actual_hits
+        with patch("prediction_market_bot.run_resolve_mlb._fetch_mlb_hits", return_value=None), \
+             patch("prediction_market_bot.run_resolve_mlb._espn_fetch_hits",
+                   return_value=2.0) as mock_espn:
+            result = fetch_actual_hits(12345, PAST_DATE, player_name="Judge")
+        assert result == 2.0
+        mock_espn.assert_called_once_with("Judge", PAST_DATE)
+
+    @pytest.mark.unit
+    def test_no_player_name_skips_espn_fallback(self):
+        """Backward compatibility: callers that don't pass player_name (none
+        currently exist in production, but the param is optional) must not
+        trigger the ESPN path."""
+        from prediction_market_bot.run_resolve_mlb import fetch_actual_hits
+        with patch("prediction_market_bot.run_resolve_mlb._fetch_mlb_hits", return_value=None), \
+             patch("prediction_market_bot.run_resolve_mlb._espn_fetch_hits") as mock_espn:
+            result = fetch_actual_hits(12345, PAST_DATE)
+        assert result is None
+        mock_espn.assert_not_called()
+
+    @pytest.mark.unit
+    def test_espn_also_fails_returns_none(self):
+        from prediction_market_bot.run_resolve_mlb import fetch_actual_hits
+        with patch("prediction_market_bot.run_resolve_mlb._fetch_mlb_hits", return_value=None), \
+             patch("prediction_market_bot.run_resolve_mlb._espn_fetch_hits", return_value=None):
+            result = fetch_actual_hits(12345, PAST_DATE, player_name="Judge")
+        assert result is None
