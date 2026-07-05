@@ -472,6 +472,37 @@ class TestSafeInt:
 
 
 # ---------------------------------------------------------------------------
+# GG-077: _directional_edge — CHECK 3 must gate on the bet's true,
+# direction-effective edge, not the raw YES-frame gross_edge - fee.
+# ---------------------------------------------------------------------------
+
+
+class TestDirectionalEdge:
+    def _get_fn(self, monkeypatch):
+        return _import_runner(monkeypatch)._directional_edge
+
+    def test_yes_bet_edge_unchanged(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # YES bet: gross_edge already direction-aligned, just subtract fee.
+        assert fn("YES", 0.10, 0.0173) == pytest.approx(0.0827)
+
+    def test_no_bet_flips_sign_before_fee(self, monkeypatch):
+        fn = self._get_fn(monkeypatch)
+        # NO bet with gross_edge=-0.10 (YES-frame) is a *good* NO bet: true
+        # directional edge is +0.10 net of fee, not -0.10 - fee.
+        assert fn("NO", -0.10, 0.0173) == pytest.approx(0.0827)
+
+    def test_no_bet_matches_paper_trader_directional_gross(self, monkeypatch):
+        # Cross-check against paper_trader.py's independent flip so the two
+        # gating paths (CHECK 3 pre-fire, stored fee_net_edge post-fire)
+        # never disagree on the sign convention again.
+        fn = self._get_fn(monkeypatch)
+        gross_edge, mid = -0.15, 0.40
+        fee = round(0.07 * mid * (1.0 - mid), 6)
+        assert fn("NO", gross_edge, fee) == pytest.approx(-gross_edge - fee)
+
+
+# ---------------------------------------------------------------------------
 # T-187G: _SP_OVERRIDE_FIELDS constant
 # ---------------------------------------------------------------------------
 
