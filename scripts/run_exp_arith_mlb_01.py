@@ -187,13 +187,24 @@ def dedupe_earliest(cycles: list[ArithCycle]) -> list[ArithCycle]:
 
 def build_resolution_cache(
     cycles: list[ArithCycle],
-    resolver: Callable[[int, str], Optional[float]],
+    resolver: Callable[[int, str, Optional[str]], Optional[float]],
 ) -> dict[tuple[int, str], Optional[float]]:
-    """Resolve actual hits for every unique (player_id, game_date) pair once."""
-    pairs = {(c.player_id, c.game_date) for c in cycles}
+    """Resolve actual hits for every unique (player_id, game_date) pair once.
+
+    GG-084/T-241: player_name is threaded through to the resolver so its ESPN
+    fallback (unaffected by the MLB Stats API IP block) is reachable here too
+    — previously this cache only ever called resolver(player_id, game_date),
+    silently skipping the fallback for every experiment backtest that shares
+    this helper (found while running EXP-FLOW-MLB-01, 2026-07-05).
+    """
+    names: dict[tuple[int, str], str] = {}
+    for c in cycles:
+        key = (c.player_id, c.game_date)
+        if c.player_name and key not in names:
+            names[key] = c.player_name
     cache: dict[tuple[int, str], Optional[float]] = {}
-    for player_id, game_date in pairs:
-        cache[(player_id, game_date)] = resolver(player_id, game_date)
+    for player_id, game_date in {(c.player_id, c.game_date) for c in cycles}:
+        cache[(player_id, game_date)] = resolver(player_id, game_date, names.get((player_id, game_date)))
     return cache
 
 

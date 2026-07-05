@@ -202,13 +202,27 @@ class TestResolution:
         ]
         calls = []
 
-        def fake_resolver(player_id, game_date):
-            calls.append((player_id, game_date))
+        def fake_resolver(player_id, game_date, player_name=None):
+            calls.append((player_id, game_date, player_name))
             return {1: 2.0, 2: 0.0}.get(player_id)
 
         cache = build_resolution_cache(cycles, fake_resolver)
         assert cache == {(1, "2026-06-01"): 2.0, (2, "2026-06-01"): 0.0}
         assert len(calls) == 2  # one per unique (player_id, game_date), not per cycle
+
+    def test_build_resolution_cache_passes_player_name_for_espn_fallback(self):
+        """GG-084/T-241: player_name must reach the resolver so its ESPN
+        fallback is reachable — previously silently dropped."""
+        cycles = [_make_cycle(ticker="T1", player_id=1, game_date="2026-06-01",
+                               player_name="Test Player")]
+        received = {}
+
+        def fake_resolver(player_id, game_date, player_name=None):
+            received["player_name"] = player_name
+            return 1.0
+
+        build_resolution_cache(cycles, fake_resolver)
+        assert received["player_name"] == "Test Player"
 
     def test_kalshi_fee_formula(self):
         assert kalshi_fee(0.5) == pytest.approx(0.07 * 0.5 * 0.5)
