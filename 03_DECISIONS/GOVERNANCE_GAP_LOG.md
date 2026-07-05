@@ -1514,6 +1514,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-088 — ESPN Fallback (GG-084/T-241) Was Unreachable From Both Experiment Backtest Runners; Prior EXP-ARITH-MLB-01 Rerun Result Is Unreliable
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-088 |
+| Category | Wiring gap in shared experiment-backtest code (`scripts/run_exp_arith_mlb_01.py::build_resolution_cache`) — a downstream consequence of GG-084/T-241, not a new independent root cause. |
+| What was missed | Operator selected "Run EXP-FLOW-MLB-01" as this session's task. The run stalled in a pure MLB Stats API 406 retry storm with zero `[ESPN-FALLBACK]` log lines, despite T-241's ESPN fallback having been built and deployed in a prior session specifically to route around GG-084's IP block. Traced to `build_resolution_cache()` (shared by both `run_exp_arith_mlb_01.py` and `run_exp_flow_mlb_01.py`) calling `resolver(player_id, game_date)` with only 2 positional args — `fetch_actual_hits()`'s `player_name` parameter silently defaulted to `None`, so the `if player_name:` guard gating the ESPN fallback was never satisfied. Both `ArithCycle` and `FlowCycle` already carried `player_name` from the cycle log — this was a pure call-site wiring gap, not a missing-data gap. |
+| When it should have been caught | When T-241's ESPN fallback was built and wired into `fetch_actual_hits()` — the change added an optional parameter to a function with an existing shared caller (`build_resolution_cache`) without checking whether that caller actually passed it through. |
+| Phases it survived | T-241 (built, this session's earlier task) through the start of the EXP-FLOW-MLB-01 task — invisible because T-241's own regression tests exercised `fetch_actual_hits`/`_espn_fetch_hits` directly, not through `build_resolution_cache`'s call site, so the gap wasn't visible to that test suite at all. |
+| Why it survived | No test asserted that `build_resolution_cache` actually forwards `player_name` to its resolver; the two functions were tested in isolation, not integrated. |
+| Impact | MEDIUM. The previously recorded EXP-ARITH-MLB-01 rerun result ("0 resolved, INCONCLUSIVE") was produced entirely through the MLB-Stats-API-only path while GG-084's IP block was live — it should be treated as an artifact of this wiring gap, not evidence that the underlying data is genuinely unresolvable via ESPN. No capital risk (Phase 6, pre-G6, backtest/experiment code only — does not touch live cron resolution or execution paths). |
+| Discovery | 2026-07-05, this session, while standing up the operator-selected EXP-FLOW-MLB-01 run. |
+| Resolution | RESOLVED 2026-07-05. `build_resolution_cache()`'s resolver signature widened to accept and forward `player_name` (first non-empty name seen per `(player_id, game_date)` key). No call-site changes needed — `fetch_actual_hits`'s existing optional third positional parameter absorbed it automatically. `tests/test_run_exp_arith_mlb_01.py`'s `fake_resolver` fixed for the new 3-arg contract; new test `test_build_resolution_cache_passes_player_name_for_espn_fallback` added. Full targeted suite 62/62 passed; full repo suite 2,365 passed / 7 skipped / 1 pre-existing unrelated failure (`test_feature_csv_freshness`). Committed `10003ce`, deployed to VPS. Both EXP-ARITH-MLB-01 and EXP-FLOW-MLB-01 relaunched against the fixed code (99 unique player/date pairs to resolve; results pending as of this entry). |
+| Status | RESOLVED 2026-07-05 (wiring fix landed and deployed; experiment reruns in progress — see DECISION_LOG.md 2026-07-05 for the implementation entry and TODO_NEXT.md for rerun status). |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
