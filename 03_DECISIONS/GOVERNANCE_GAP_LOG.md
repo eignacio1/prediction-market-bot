@@ -1531,6 +1531,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-089 — T-239 Circuit Breaker Never Trips Because `_consecutive_api_failures` Resets on Interleaved Successful Calls, Not Just on Sustained Recovery
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-089 |
+| Category | Design-assumption gap in `run_resolve_mlb.py::_fetch_mlb_hits`'s circuit breaker (GG-084/T-239) — assumed the MLB Stats API 406 block is a persistent, monolithic IP block; live evidence from the EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 reruns (launched post-GG-088, 2026-07-05 ~23:00 UTC) shows it is not. |
+| What was missed | Live log inspection of both running experiments (`/tmp/exp_arith_rerun3_20260705.log`, `/tmp/exp_flow_run1_20260705.log`) shows `consecutive_failures` printed in "giving up" messages repeatedly resetting to 1-2 instead of climbing monotonically toward `_CIRCUIT_BREAKER_THRESHOLD` (5) — e.g. sequence 1,1,1,1,2,1,2,1,3,2,1,2,3,1,2,3,4,1,2,3,4 across ~20 consecutive giving-up events in the ARITH log. `grep -c "circuit breaker open"` returns 0 in both logs despite 45 (ARITH) and 39 (FLOW) full retry-exhaustion events each. Root cause: `_fetch_mlb_hits` resets the counter to 0 on ANY successful HTTP response (line `_consecutive_api_failures = 0` right after `resp.raise_for_status()` succeeds) — including calls that return 200 but find no matching split/game (a normal, frequent outcome, not recovery from the block). The 406 block is evidently intermittent/probabilistic, not a hard, sustained block, so the breaker's "5 consecutive hard failures ⇒ recovery is unlikely, skip retries" assumption never holds long enough to trip. |
+| When it should have been caught | When T-239's circuit breaker was designed/tested — its own tests likely exercised sustained-failure and sustained-recovery scenarios in isolation, not the interleaved partial-failure pattern the real API actually exhibits. |
+| Phases it survived | T-239 (built and marked RESOLVED 2026-07-05) through this session's live experiment reruns — first real-world multi-call exposure of the breaker logic against the live 406 pattern. |
+| Why it survived | No test asserted breaker behavior under an *intermittent* failure pattern (mix of real 200s and 406s), only under fully-sustained failure. |
+| Impact | LOW/performance-only, not correctness. Every fetch still eventually resolves correctly via the ESPN fallback (GG-088-fixed) when the MLB API path is exhausted — no wrong data risk. The cost is pure runtime: every player/date/game_type combination that hits a 406 pays close to the full ~45s retry-and-backoff schedule instead of the intended single cheap probe, because the breaker essentially never opens. This explains why both experiment reruns are taking substantially longer than the session-end estimate (60-100 min) — ~39 min elapsed for ARITH with only 45 exhaustion events logged out of 99 target player/date pairs (each potentially needing 2 API calls). |
+| Discovery | 2026-07-05, ~23:01 UTC, while checking on the two background experiment reruns per operator request. |
+| Resolution | OPEN — not fixed this session (T-242 registered in TODO_NEXT.md). Do not modify the running experiment processes' code (925238/925380) — let them finish under current logic; a fix would only apply to future runs. Candidate fix: scope the breaker to trip on failure *rate* over a rolling window rather than strict consecutive count, or use a separate counter that only resets after N consecutive successes rather than 1. |
+| Status | OPEN |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
