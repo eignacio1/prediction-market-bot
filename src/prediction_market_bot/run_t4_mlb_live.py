@@ -622,12 +622,30 @@ def _game_date_window(game_date: str) -> set:
 
 
 def _reconstruct_t4_ledger(portfolio: dict, game_dates: Union[str, set]) -> float:
+    """GG-086/T-240 (2026-07-05): open exposure is never date-filtered.
+
+    Confirmed in production the day this was found: 33 pool_isolated positions
+    (22 dated 2026-07-02, 11 dated 2026-07-03 — $12.78 combined) were still
+    open against the live T4 ledger, three and two days respectively past
+    their game_date, almost certainly stuck by GG-084's MLB Stats API block
+    preventing `run_resolve_mlb.py` from resolving them. `_game_date_window`
+    only ever widens by one day (today + prior_day), so once a second
+    midnight rollover passes without a position resolving, it permanently
+    drops out of every future reconstruction — the budget check then believes
+    there is more headroom than truly exists, allowing new fires to stack on
+    top of invisible real exposure and silently breach the intended T4 band
+    cap. An open position is real deployed capital until it resolves, no
+    matter how many days that takes — so the open-exposure sum must never be
+    scoped by date. `game_dates` still scopes `realized_losses`, which
+    attributes a closed loss to a specific day's budget by design (a
+    genuinely dated concept, unlike open exposure) — that half is unaffected.
+    """
     if isinstance(game_dates, str):
         game_dates = {game_dates}
     open_exposure = sum(
         p.get("size_usd", 0.0)
         for p in portfolio.get("open_positions", [])
-        if p.get("pool_isolated") and p.get("game_date") in game_dates
+        if p.get("pool_isolated")
     )
     realized_losses = sum(
         max(0.0, -p.get("exit_pnl", 0.0))
