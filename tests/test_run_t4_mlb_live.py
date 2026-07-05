@@ -749,14 +749,18 @@ class TestRunCycle:
             }]
         }
 
-    def test_no_fire_when_p_t4_below_mip(self, tmp_path):
+    def test_no_fire_when_edge_insufficient_either_direction(self, tmp_path):
+        # GG-087: gross_edge <= 0 no longer means "no fire" — it can be a
+        # legitimate NO-direction edge. This case is a true no-edge-either-way
+        # scenario: p_t4=0.28 (Binomial n=1, ba_l10=0.28) against mip=0.24 puts
+        # gross_edge at +0.02 (YES-side), which after the Kalshi fee (~0.0128)
+        # nets to ~0.0072 — below MIN_EDGE (0.04) regardless of direction.
         engine, trader, store, audit = _make_components(tmp_path)
-        # h_so_far=0, threshold=2, ba=0.10 → p_t4 very low
-        live = [_make_live_state(h_so_far=0, ab_so_far=2)]
-        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.80, vig=0.04)}
-        pregame = self._pregame(threshold=2, ba_l10=0.10)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=8)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.24, vig=0.02)}
+        pregame = self._pregame(threshold=1, ba_l10=0.28)
 
-        _, _, _ = runner._run_cycle(
+        _, fi, _ = runner._run_cycle(
             cycle_id="C0-test", session_id="TEST",
             live_states=live, live_prices=live_prices,
             pregame_by_player_id=pregame,
@@ -764,8 +768,36 @@ class TestRunCycle:
             game_date="2026-06-24",
             t4_band_budget=270.0, t4_deployed_usd=0.0,
         )
+        assert fi == 0
         state = trader.get_state()
         assert len(state.get("open_positions", [])) == 0
+
+    def test_fires_no_when_p_t4_clearly_below_mip(self, tmp_path):
+        # GG-087: a market priced at 80% YES (mip=0.80) against a model that
+        # says ~1% (threshold=2, ba=0.10) is a strong NO opportunity that the
+        # prior YES-only engine silently discarded (gross_edge <= 0 → continue).
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=2)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.80, vig=0.04)}
+        pregame = self._pregame(threshold=2, ba_l10=0.10)
+
+        _, fi, deployed = runner._run_cycle(
+            cycle_id="C0B-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+        )
+        assert fi == 1
+        assert deployed > 0.0
+        state = trader.get_state()
+        positions = state.get("open_positions", [])
+        assert len(positions) == 1
+        pos = positions[0]
+        assert pos["direction"] == "NO"
+        # NO contract price is (1 - mip) = 0.20, not mip.
+        assert pos["size_usd"] == pytest.approx(0.20, abs=1e-6)
 
     def test_fires_when_p_t4_clearly_above_mip(self, tmp_path):
         engine, trader, store, audit = _make_components(tmp_path)
@@ -1265,7 +1297,10 @@ class TestRunCycleWithBattingSlots:
             t4_band_budget=270.0, t4_deployed_usd=0.0,
             # batting_slots omitted → defaults to None → treated as {}
         )
-        assert fi == 0   # p_t4 very low, should not fire
+        # GG-087: p_t4 very low against a high mip (0.80) is a strong NO
+        # opportunity, not a non-fire — batting_slots=None still must not error
+        # while correctly evaluating the (now bidirectional) edge.
+        assert fi == 1
 
 
 # ---------------------------------------------------------------------------
@@ -1519,10 +1554,20 @@ class TestProductionCycleLog:
         assert len(lines) >= 1
 
     def test_cycle_log_written_on_normal_path_when_not_fired(self, tmp_path):
-        """dry_run=False + low-edge setup (gross_edge <= 0, early-exit): still logged."""
+        """dry_run=False + no-edge-either-direction setup: still logged.
+
+        GG-087: gross_edge <= 0 is no longer automatically a non-fire (it can
+        be a legitimate NO edge), so this exercises a case with a genuinely
+        tiny edge instead: h_so_far=0, threshold=1, ab_so_far=1, inning=8,
+        ba_l10=0.28 → p_t4=0.28 (Binomial n=1). mip=0.24 puts gross_edge at
+        +0.02 (YES-side), which after the Kalshi fee (~0.0128) nets to
+        ~0.0072 — below MIN_EDGE (0.04) in either direction, so C4 rejects.
+        ab_remaining=1 (>0) keeps this out of the ContaminationGuard's
+        ab_remaining-exhausted path, so it reaches the normal cycle-log write.
+        """
         engine, trader, store, audit = _make_components(tmp_path)
         live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=8)]
-        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.95, vig=0.04)}
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.24, vig=0.02)}
         pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
                               "ticker": TICKER_SOTO, "threshold": 1,
                               "p_t1": 0.55, "ba_l10": 0.28, "h_l10_mean": 1.0}]}
