@@ -20,10 +20,20 @@ Why separate from PIPE-05:
   resolves exactly once (idempotent via settle_position() no-op guard).
 
 VPS accessibility:
-  MLB Stats API is accessible from DigitalOcean (157.230.91.33) for the
-  current season (2026). Historical seasons ≤2025 are Fastly-CDN-blocked from
-  datacenter IPs (HTTP 406). If re-running resolve for 2024/2025 data,
-  run this script locally instead. See SESSION 81 DECISION_LOG.
+  CORRECTED 2026-07-05 (GG-084/T-239) — the prior claim here ("current season
+  is reliably accessible from datacenter IP; only historical seasons 406") is
+  FALSIFIED. Direct testing 2026-07-05 confirmed the datacenter IP (DigitalOcean
+  157.230.91.33) received HTTP 406 on `gameLog` queries for the CURRENT (2026)
+  season, on both gameType=R and gameType=P, for player/date combos that had
+  resolved successfully from the same IP hours earlier — while the identical
+  request from a residential IP returned HTTP 200 the entire time. This is an
+  IP-based Fastly-CDN block/rate-limit that can escalate over the course of a
+  run, not a historical-season-only restriction, and not request-parameter- or
+  cadence-dependent. Treat datacenter-IP access to this endpoint as unreliable
+  regardless of season. A circuit breaker (below) limits wasted retry time once
+  the block is active; positions are never lost (48h grace + aged_open retry
+  every subsequent run), but resolution can be delayed for as long as the block
+  persists. See GG-084/GOVERNANCE_GAP_LOG.md.
 
 How to run:
   BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_resolve_mlb.py
@@ -69,6 +79,18 @@ _RATE_LIMIT_S  = 0.6   # matches mlb_ingestion.py; stays under API rate limit
 _REQUEST_TIMEOUT_S = 15
 _RETRY_DELAYS_S: tuple[int, ...] = (5, 10, 30)  # T-207: exponential backoff for 406 errors
 
+# GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
+# a sustained condition, not per-request flakiness), every further retry-loop
+# exhaustion burns up to 45s for nothing. After _CIRCUIT_BREAKER_THRESHOLD
+# consecutive full exhaustions in this process, drop the retry/backoff
+# schedule down to a single cheap attempt per call (half-open probe) instead
+# of skipping the HTTP call outright — a full skip can never observe recovery
+# since nothing would ever reach the reset line below. Resets to 0 on any
+# response that gets past raise_for_status() (proof the API is reachable
+# again from this IP right now).
+_CIRCUIT_BREAKER_THRESHOLD = 5
+_consecutive_api_failures = 0
+
 
 # ---------------------------------------------------------------------------
 # MLB Stats API fetch
@@ -109,7 +131,17 @@ def _fetch_mlb_hits(
     game_type: "R" (Regular) or "P" (Postseason)
     Returns hits as float, or None if game not found, not yet FINAL
     (GG-069/T-221), or API unreachable.
+
+    GG-084/T-239: once the circuit breaker has tripped (see module-level
+    constants above), the retry/backoff schedule collapses to a single
+    cheap attempt per call — still probing every call for recovery, but
+    without paying the up-to-45s full retry cost while the block is active.
     """
+    global _consecutive_api_failures
+
+    breaker_open = _consecutive_api_failures >= _CIRCUIT_BREAKER_THRESHOLD
+    delays: tuple[int, ...] = () if breaker_open else _RETRY_DELAYS_S
+
     year = int(game_date[:4])
     url = f"{_MLB_BASE_URL}/api/v1/people/{player_id}/stats"
     params = {
@@ -118,11 +150,12 @@ def _fetch_mlb_hits(
         "season":  str(year),
         "gameType": game_type,
     }
-    for attempt, delay in enumerate((*_RETRY_DELAYS_S, None), start=1):
+    for attempt, delay in enumerate((*delays, None), start=1):
         try:
             time.sleep(_RATE_LIMIT_S)
             resp = requests.get(url, params=params, timeout=_REQUEST_TIMEOUT_S)
             resp.raise_for_status()
+            _consecutive_api_failures = 0
             data = resp.json()
             stats_arr = data.get("stats", [])
             if not stats_arr:
@@ -137,21 +170,30 @@ def _fetch_mlb_hits(
             return None  # date not found in splits — not a transient error
         except Exception as exc:
             if delay is None:
+                _consecutive_api_failures += 1
                 print(
                     f"  [MLB-API] player_id={player_id} game_date={game_date} "
-                    f"game_type={game_type} attempt={attempt}/{len(_RETRY_DELAYS_S)+1}: "
-                    f"{type(exc).__name__}: {exc} — giving up",
+                    f"game_type={game_type} attempt={attempt}/{len(delays)+1}: "
+                    f"{type(exc).__name__}: {exc} — giving up "
+                    f"(consecutive_failures={_consecutive_api_failures})"
+                    + (" [circuit breaker open — single-probe attempt]" if breaker_open else ""),
                     file=sys.stderr,
                 )
             else:
                 print(
                     f"  [MLB-API] player_id={player_id} game_date={game_date} "
-                    f"game_type={game_type} attempt={attempt}/{len(_RETRY_DELAYS_S)+1}: "
+                    f"game_type={game_type} attempt={attempt}/{len(delays)+1}: "
                     f"{type(exc).__name__}: {exc} — retrying in {delay}s",
                     file=sys.stderr,
                 )
                 time.sleep(delay)
     return None
+
+
+def _reset_circuit_breaker() -> None:
+    """Test hook: reset the module-level consecutive-failure counter to 0."""
+    global _consecutive_api_failures
+    _consecutive_api_failures = 0
 
 
 def fetch_actual_hits(player_id: int, game_date: str) -> float | None:
@@ -292,6 +334,29 @@ def _resolve_pool(
         print(
             f"  [{pool_label}][ALERT] {len(pending)} eligible position(s) but 0 resolved — "
             f"possible MLB Stats API 406 or outage (GG-048)",
+            file=sys.stderr,
+        )
+    # GG-084/T-239: the zero-resolved alert above never fires on partial-but-
+    # severe degradation (e.g. 2026-07-05's live run: 15/83 resolved, 68 skipped
+    # — 82% failure — produced zero alert under the old all-or-nothing check).
+    # Fire a distinct alert when resolution rate is below 50% on a batch large
+    # enough (n>=5) that a few genuine "not final yet" skips can't explain it.
+    elif pending and len(pending) >= 5 and (len(resolved) / len(pending)) < 0.5:
+        resolved_fraction = len(resolved) / len(pending)
+        logger.warning(
+            "PIPE-05R", "degraded_resolution_rate",
+            payload={
+                "pool": pool_label,
+                "eligible_count": len(pending),
+                "resolved_count": len(resolved),
+                "resolved_fraction": round(resolved_fraction, 3),
+                "note": "Resolution rate below 50% — possible MLB Stats API degradation",
+            },
+            session_id=session_id,
+        )
+        print(
+            f"  [{pool_label}][ALERT] Only {len(resolved)}/{len(pending)} eligible position(s) "
+            f"resolved ({resolved_fraction:.0%}) — possible MLB Stats API degradation (GG-084/GG-048)",
             file=sys.stderr,
         )
 

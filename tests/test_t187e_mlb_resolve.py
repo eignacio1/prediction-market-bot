@@ -86,6 +86,17 @@ def _fresh_trader(portfolio_path: Path) -> PaperTrader:
     return PaperTrader(portfolio_path, _logger())
 
 
+@pytest.fixture(autouse=True)
+def _reset_mlb_circuit_breaker():
+    """GG-084/T-239: the circuit breaker counter is module-level global state —
+    reset it before and after every test so failures in one test can't trip
+    the breaker for an unrelated test later in the run."""
+    from prediction_market_bot.run_resolve_mlb import _reset_circuit_breaker
+    _reset_circuit_breaker()
+    yield
+    _reset_circuit_breaker()
+
+
 # ---------------------------------------------------------------------------
 # 1. PaperTrader.settle_position() — P&L and ledger
 # ---------------------------------------------------------------------------
@@ -796,3 +807,133 @@ class TestT4PoolResolution:
             _patched_run(main_path, t4_portfolio_path=t4_path)
         # No exception = pass; T4 section says "No open positions"
         assert "T4" in capsys.readouterr().out
+
+
+# ---------------------------------------------------------------------------
+# 5. GG-084/T-239: circuit breaker + degraded-resolution alert
+# ---------------------------------------------------------------------------
+
+class TestFetchMlbHitsCircuitBreaker:
+    """GG-084/T-239: once the datacenter IP is hard-blocked, every further
+    retry-loop exhaustion burns up to 45s for nothing. Once
+    _CIRCUIT_BREAKER_THRESHOLD consecutive exhaustions have occurred, the
+    breaker collapses the retry/backoff schedule to a single cheap probe
+    attempt per call — it does not stop calling entirely, since a full skip
+    could never observe recovery (nothing would ever reach the reset line)."""
+
+    def _failing_response(self):
+        import requests as _req
+        m = MagicMock()
+        m.raise_for_status.side_effect = _req.HTTPError("406")
+        return m
+
+    @pytest.mark.unit
+    def test_breaker_collapses_to_single_probe_after_threshold(self):
+        from prediction_market_bot.run_resolve_mlb import (
+            _fetch_mlb_hits, _CIRCUIT_BREAKER_THRESHOLD, _RETRY_DELAYS_S,
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=self._failing_response()) as mock_get, \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            for _ in range(_CIRCUIT_BREAKER_THRESHOLD):
+                result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+                assert result is None
+            calls_before_trip = mock_get.call_count
+            # Full retry schedule (len(_RETRY_DELAYS_S)+1 attempts/call) ran
+            # for all THRESHOLD calls — the breaker only opens *after* the
+            # last one finishes, so none of them were probes yet.
+            assert calls_before_trip == _CIRCUIT_BREAKER_THRESHOLD * (len(_RETRY_DELAYS_S) + 1)
+
+            # Breaker is now open — the next call makes exactly ONE probe
+            # attempt (no backoff retries), not zero and not a full retry.
+            result = _fetch_mlb_hits(99999, PAST_DATE, game_type="R")
+            assert result is None
+            assert mock_get.call_count == calls_before_trip + 1
+
+    @pytest.mark.unit
+    def test_breaker_resets_on_successful_probe(self):
+        from prediction_market_bot.run_resolve_mlb import (
+            _fetch_mlb_hits, _CIRCUIT_BREAKER_THRESHOLD,
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=self._failing_response()), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            for _ in range(_CIRCUIT_BREAKER_THRESHOLD):
+                _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+
+        # Breaker is open. A successful probe response resets the counter...
+        ok_resp = MagicMock()
+        ok_resp.raise_for_status.return_value = None
+        ok_resp.json.return_value = {"stats": []}
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=ok_resp) as mock_ok, \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result is None  # empty stats array
+        assert mock_ok.call_count == 1  # single probe, not a full retry cycle
+
+        # ...so the breaker is closed again: the next failing call goes
+        # through the FULL retry schedule again, not another single probe.
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=self._failing_response()) as mock_get2, \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert mock_get2.call_count > 1  # real retries happened, not a single probe
+
+
+class TestDegradedResolutionAlert:
+    """GG-084/T-239: a partial-but-severe failure rate (e.g. 82% skip) produced
+    zero alert under the old all-or-nothing "zero resolved" check. Verify the
+    new threshold-based alert fires when resolution rate is below 50%."""
+
+    @pytest.mark.integration
+    def test_majority_skip_fires_degraded_alert(self, tmp_path, capsys):
+        """8 eligible positions, only 2 resolve (<50%) — alert must fire."""
+        portfolio_path = tmp_path / "paper_portfolio_mlb.json"
+        setup = PaperTrader(portfolio_path, _logger())
+        for i in range(8):
+            _open_mlb_pos(setup, game_date=PAST_DATE, player_id=10000 + i,
+                          player_name=f"Player{i}", threshold=1, size=5.0)
+
+        def _api_side(player_id, game_date):
+            return 2.0 if player_id in (10000, 10001) else None
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   side_effect=_api_side):
+            _patched_run(portfolio_path)
+
+        assert "GG-084" in capsys.readouterr().err
+
+    @pytest.mark.integration
+    def test_majority_resolve_does_not_fire_degraded_alert(self, tmp_path, capsys):
+        """8 eligible positions, 6 resolve (>=50%) — no degraded alert."""
+        portfolio_path = tmp_path / "paper_portfolio_mlb.json"
+        setup = PaperTrader(portfolio_path, _logger())
+        for i in range(8):
+            _open_mlb_pos(setup, game_date=PAST_DATE, player_id=20000 + i,
+                          player_name=f"Player{i}", threshold=1, size=5.0)
+
+        def _api_side(player_id, game_date):
+            return None if player_id in (20000, 20001) else 2.0
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   side_effect=_api_side):
+            _patched_run(portfolio_path)
+
+        assert "GG-084" not in capsys.readouterr().err
+
+    @pytest.mark.integration
+    def test_small_batch_below_threshold_count_does_not_fire(self, tmp_path, capsys):
+        """Fewer than 5 eligible positions — too small a sample, no alert even
+        if all fail (the existing zero-resolved alert already covers n=0 resolved;
+        this guards against noisy alerts on tiny batches)."""
+        portfolio_path = tmp_path / "paper_portfolio_mlb.json"
+        setup = PaperTrader(portfolio_path, _logger())
+        _open_mlb_pos(setup, game_date=PAST_DATE, player_id=30000,
+                      player_name="Solo", threshold=1, size=5.0)
+
+        with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
+                   return_value=2.0):
+            _patched_run(portfolio_path)
+
+        assert "GG-084" not in capsys.readouterr().err
