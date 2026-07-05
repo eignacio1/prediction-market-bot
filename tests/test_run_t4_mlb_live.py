@@ -231,7 +231,14 @@ class TestReconstructT4Ledger:
         result = runner._reconstruct_t4_ledger(portfolio, "2026-06-24")
         assert result == pytest.approx(0.0)
 
-    def test_excludes_open_different_date(self):
+    def test_open_different_date_still_counted(self):
+        # GG-086/T-240 (2026-07-05): open exposure is NEVER date-filtered — a still-open
+        # position is real deployed capital regardless of its game_date's age. The prior
+        # version of this test asserted the opposite (a buggy exclusion) and was itself
+        # the encoding of the bug: production had $12.78 of genuinely-open T4 exposure
+        # (33 positions, dated 2 and 3 days stale — almost certainly stuck by GG-084's
+        # MLB Stats API block preventing resolution) silently invisible to this ledger,
+        # letting new fires stack on top of unseen real exposure past the T4 band cap.
         portfolio = {
             "open_positions": [
                 {"size_usd": 10.0, "pool_isolated": True, "game_date": "2026-06-23"},
@@ -239,7 +246,7 @@ class TestReconstructT4Ledger:
             "closed_positions": [],
         }
         result = runner._reconstruct_t4_ledger(portfolio, "2026-06-24")
-        assert result == pytest.approx(0.0)
+        assert result == pytest.approx(10.0)
 
     def test_counts_realized_losses_not_gains(self):
         portfolio = {
@@ -362,7 +369,14 @@ class TestReconstructT4LedgerCrossMidnight:
         result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-03"))
         assert result == pytest.approx(10.0)
 
-    def test_two_days_prior_still_excluded(self):
+    def test_two_days_prior_now_still_counted(self):
+        # GG-086/T-240 (2026-07-05): this test previously asserted a position 2 days
+        # stale (older than the 1-day window widens for) drops out of the ledger — that
+        # was the bug, not a spec. Confirmed in production: positions stuck open by
+        # GG-084's resolution failures accumulate real exposure the window can never
+        # reach again once a second midnight passes, understating true deployed capital
+        # forever. Open exposure must survive any number of rollovers until the
+        # position actually resolves.
         portfolio = {
             "open_positions": [
                 {"size_usd": 10.0, "pool_isolated": True, "game_date": "2026-07-01"},
@@ -370,7 +384,35 @@ class TestReconstructT4LedgerCrossMidnight:
             "closed_positions": [],
         }
         result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-03"))
+        assert result == pytest.approx(10.0)
+
+    def test_realized_losses_still_scoped_to_window(self):
+        # The date window still legitimately scopes realized_losses (a closed loss is
+        # attributed to a specific day's budget by design) — only open exposure lost its
+        # date filter. A loss 2 days stale must still be excluded.
+        portfolio = {
+            "open_positions": [],
+            "closed_positions": [
+                {"pool_isolated": True, "game_date": "2026-07-01", "exit_pnl": -4.0},
+            ],
+        }
+        result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-03"))
         assert result == pytest.approx(0.0)
+
+    def test_multi_day_stuck_positions_all_counted(self):
+        # Reproduces the real 2026-07-05 production finding directly: 22 positions
+        # dated 2026-07-02 ($7.69) and 11 dated 2026-07-03 ($5.09) still open at the
+        # 2026-07-05 00:00 UTC rollover (window = {2026-07-05, 2026-07-04}), stuck by
+        # GG-084's MLB Stats API block. Both cohorts must count toward current exposure.
+        portfolio = {
+            "open_positions": (
+                [{"size_usd": 7.69 / 22, "pool_isolated": True, "game_date": "2026-07-02"}] * 22
+                + [{"size_usd": 5.09 / 11, "pool_isolated": True, "game_date": "2026-07-03"}] * 11
+            ),
+            "closed_positions": [],
+        }
+        result = runner._reconstruct_t4_ledger(portfolio, runner._game_date_window("2026-07-05"))
+        assert result == pytest.approx(7.69 + 5.09, abs=0.01)
 
 
 class TestReconstructFiredTickerStatesCrossMidnight:
