@@ -153,7 +153,17 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 
 ## MANDATORY SESSION-START PROTOCOL
 
-**Run all four steps and all six watchdog questions before any other work. Show command outputs — do not summarize or assert clean without evidence.**
+**Run Step 0, all four numbered steps, and all six watchdog questions before any other work. Show command outputs — do not summarize or assert clean without evidence.**
+
+---
+
+### Step 0 — Concurrent-session claim (GG-082)
+
+**Why this exists:** on 2026-07-03, a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative — caught only by chance, same-session. GG-082 registered this as a standing process gap, not a one-off. This step is how it's caught before something is written down, not after.
+
+1. Append one line to `04_EXECUTION/SESSION_CLAIMS.md`: UTC timestamp, intended T-NNN/GG-NNN range if already known (else "TBD"), one-line session focus. Commit and push this line immediately, on its own — do not batch it with other work.
+2. Check that file for any other claim from roughly the last 24 hours. If one exists, another session may still be active or may have left local, unpushed work — do not assume you are the only session touching shared docs today.
+3. **Before writing to any shared navigation file** (`MEMORY_BANK.md`, `PLAN.md`, `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`, `04_EXECUTION/TODO_NEXT.md`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`) at any point in the session — not just at session start — diff the file against `HEAD` or re-read it fresh. Do not trust a narrative already sitting in context/memory as necessarily still current; another session may have changed the file since you last read it.
 
 ---
 
@@ -333,3 +343,4 @@ Then address what the user asked.
 7. Every strategic decision made in a session goes into DECISION_LOG.md immediately — not at session end.
 8. When context reaches ~80%: stop implementation, run /session-end, produce SESSION_HANDOFF, commit and push.
 9. **Design throughput is hundreds of evaluation rows per game-day (MLB T4: 924 rows/game-day on 2026-07-02, 464 on 2026-07-03 — 5.75 and 3.67 bets/game respectively, GG-080/T-235, 2026-07-04, n=2 game-days), capital-ceiling agnostic, dynamically routed by model computation — not a small, discrete, pre-scheduled batch of bets per game night.** The prior "~8,600 slots/game" figure was a theoretical ceiling, superseded 2026-07-04 (GG-080) once real per-game-day data showed it has no clean empirical referent (`cycle_id` is a global counter shared across all concurrently-live games, not per-game) and that measured throughput runs 9-19x below it. Re-derive as more game-days accumulate — this is not yet a stable long-run estimate. The architectural point survives the correction: bet sizing, kill switches, and decision routing must still be designed per-cycle/per-bet, continuously evaluated as new state arrives, not as a batch of pre-scheduled discrete events — any implementation that only makes sense for a small, fixed count of bets decided once per game is architecturally wrong, even though the real count is far lower than the old theoretical figure. The model's computation determines which band a bet routes to — bands are not pre-decided time-horizon thresholds. Kill switches operate per bucket, approaching per bet.
+10. **Before writing to a shared navigation file, diff it against `HEAD` or re-read it fresh — never trust a narrative already loaded in context as necessarily current (GG-082).** Claim your session's intended task range in `04_EXECUTION/SESSION_CLAIMS.md` at session start (see Step 0) so concurrent sessions are visible before they cause a conflation, not after.
