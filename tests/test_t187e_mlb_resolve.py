@@ -851,7 +851,12 @@ class TestFetchMlbHitsCircuitBreaker:
             assert mock_get.call_count == calls_before_trip + 1
 
     @pytest.mark.unit
-    def test_breaker_resets_on_successful_probe(self):
+    def test_breaker_does_not_reset_on_single_successful_probe(self):
+        """GG-089/T-242: a lone interleaved success must NOT clear the failure
+        streak — that was the bug (breaker never tripped under a real
+        sustained block because one lucky call kept resetting the counter).
+        The breaker should still be open (single-probe mode) immediately
+        after just one successful probe."""
         from prediction_market_bot.run_resolve_mlb import (
             _fetch_mlb_hits, _CIRCUIT_BREAKER_THRESHOLD,
         )
@@ -861,7 +866,7 @@ class TestFetchMlbHitsCircuitBreaker:
             for _ in range(_CIRCUIT_BREAKER_THRESHOLD):
                 _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
 
-        # Breaker is open. A successful probe response resets the counter...
+        # Breaker is open. A single successful probe response...
         ok_resp = MagicMock()
         ok_resp.raise_for_status.return_value = None
         ok_resp.json.return_value = {"stats": []}
@@ -872,8 +877,40 @@ class TestFetchMlbHitsCircuitBreaker:
         assert result is None  # empty stats array
         assert mock_ok.call_count == 1  # single probe, not a full retry cycle
 
-        # ...so the breaker is closed again: the next failing call goes
-        # through the FULL retry schedule again, not another single probe.
+        # ...must NOT have cleared the breaker: the next failing call still
+        # gets only a single probe attempt, not the full retry schedule.
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=self._failing_response()) as mock_get2, \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert mock_get2.call_count == 1  # still a single probe — breaker stayed open
+
+    @pytest.mark.unit
+    def test_breaker_resets_after_consecutive_successes(self):
+        """GG-089/T-242: the failure streak clears only after
+        _CONSECUTIVE_SUCCESSES_TO_RESET successes in a row (sustained
+        recovery), not a single lucky call."""
+        from prediction_market_bot.run_resolve_mlb import (
+            _fetch_mlb_hits, _CIRCUIT_BREAKER_THRESHOLD,
+            _CONSECUTIVE_SUCCESSES_TO_RESET,
+        )
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=self._failing_response()), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            for _ in range(_CIRCUIT_BREAKER_THRESHOLD):
+                _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+
+        ok_resp = MagicMock()
+        ok_resp.raise_for_status.return_value = None
+        ok_resp.json.return_value = {"stats": []}
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   return_value=ok_resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"):
+            for _ in range(_CONSECUTIVE_SUCCESSES_TO_RESET):
+                _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+
+        # Breaker should now be closed: the next failing call goes through
+        # the FULL retry schedule again, not a single probe.
         with patch("prediction_market_bot.run_resolve_mlb.requests.get",
                    return_value=self._failing_response()) as mock_get2, \
              patch("prediction_market_bot.run_resolve_mlb.time.sleep"):

@@ -113,11 +113,22 @@ _ESPN_TERMINAL_STATUSES = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
 # consecutive full exhaustions in this process, drop the retry/backoff
 # schedule down to a single cheap attempt per call (half-open probe) instead
 # of skipping the HTTP call outright — a full skip can never observe recovery
-# since nothing would ever reach the reset line below. Resets to 0 on any
-# response that gets past raise_for_status() (proof the API is reachable
-# again from this IP right now).
+# since nothing would ever reach the reset line below.
+#
+# GG-089/T-242 (2026-07-06): the original design reset _consecutive_api_failures
+# to 0 on ANY single call that got past raise_for_status(), which meant the
+# breaker never actually tripped under a real sustained block — a block rarely
+# fails 100% of individual calls, so one interleaved success (a different
+# player_id/date happening to succeed) wiped out an accumulating failure streak
+# before it reached _CIRCUIT_BREAKER_THRESHOLD. Fix: a single success no longer
+# resets the failure count outright — it must be followed by
+# _CONSECUTIVE_SUCCESSES_TO_RESET successes in a row (a sustained-recovery
+# signal, not a lone lucky call) before the failure streak is cleared. Any
+# failure immediately breaks a partial success streak, same as before.
 _CIRCUIT_BREAKER_THRESHOLD = 5
+_CONSECUTIVE_SUCCESSES_TO_RESET = 3
 _consecutive_api_failures = 0
+_consecutive_api_successes = 0
 
 
 # ---------------------------------------------------------------------------
@@ -164,8 +175,12 @@ def _fetch_mlb_hits(
     constants above), the retry/backoff schedule collapses to a single
     cheap attempt per call — still probing every call for recovery, but
     without paying the up-to-45s full retry cost while the block is active.
+
+    GG-089/T-242: the failure streak only clears after
+    _CONSECUTIVE_SUCCESSES_TO_RESET calls in a row succeed, not on a single
+    interleaved success — see module-level comment above the constants.
     """
-    global _consecutive_api_failures
+    global _consecutive_api_failures, _consecutive_api_successes
 
     breaker_open = _consecutive_api_failures >= _CIRCUIT_BREAKER_THRESHOLD
     delays: tuple[int, ...] = () if breaker_open else _RETRY_DELAYS_S
@@ -183,7 +198,10 @@ def _fetch_mlb_hits(
             time.sleep(_RATE_LIMIT_S)
             resp = requests.get(url, params=params, timeout=_REQUEST_TIMEOUT_S)
             resp.raise_for_status()
-            _consecutive_api_failures = 0
+            _consecutive_api_successes += 1
+            if _consecutive_api_successes >= _CONSECUTIVE_SUCCESSES_TO_RESET:
+                _consecutive_api_failures = 0
+                _consecutive_api_successes = 0
             data = resp.json()
             stats_arr = data.get("stats", [])
             if not stats_arr:
@@ -199,6 +217,7 @@ def _fetch_mlb_hits(
         except Exception as exc:
             if delay is None:
                 _consecutive_api_failures += 1
+                _consecutive_api_successes = 0
                 print(
                     f"  [MLB-API] player_id={player_id} game_date={game_date} "
                     f"game_type={game_type} attempt={attempt}/{len(delays)+1}: "
@@ -219,9 +238,10 @@ def _fetch_mlb_hits(
 
 
 def _reset_circuit_breaker() -> None:
-    """Test hook: reset the module-level consecutive-failure counter to 0."""
-    global _consecutive_api_failures
+    """Test hook: reset the module-level consecutive-failure/success counters to 0."""
+    global _consecutive_api_failures, _consecutive_api_successes
     _consecutive_api_failures = 0
+    _consecutive_api_successes = 0
 
 
 def _espn_game_ids_for_date(game_date: str) -> list[str]:

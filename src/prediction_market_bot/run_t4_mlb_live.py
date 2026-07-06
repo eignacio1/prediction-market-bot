@@ -105,15 +105,27 @@ T4_STARTUP_BUFFER_MIN = 30  # start this many minutes before first pitch
 # ---------------------------------------------------------------------------
 # Guard: paper mode + C4 active
 # ---------------------------------------------------------------------------
+# GG-090 (2026-07-06): this used to run unconditionally at module import time,
+# so any script or test that merely *imported* this module (for its shared
+# helper functions, e.g. run_t4_mlb_execution_engine.py, run_exp_flow_mlb_01.py)
+# would crash unless it had already set BOT_ENV/BOT_C4_ACTIVE in the process
+# environment before the import — a fragile, easy-to-forget precondition
+# (EXP-FLOW-MLB-01 hit exactly this crash). The guard is only meaningful for
+# actually *running* this file as the live T4 MLB process, so it now runs
+# under the __main__ block below, not as an import side effect. No behavior
+# change for the systemd-managed live service, which always runs this file
+# directly.
 
-if os.environ.get("BOT_ENV", "").lower() != "paper":
-    print("ERROR: run_t4_mlb_live.py is paper-mode only. Set BOT_ENV=paper.")
-    sys.exit(1)
 
-if os.environ.get("BOT_C4_ACTIVE", "").lower() not in ("true", "1", "yes"):
-    print("ERROR: BOT_C4_ACTIVE not set. T4 requires C4 active.")
-    print("  Set BOT_C4_ACTIVE=true in your environment before running.")
-    sys.exit(1)
+def _enforce_paper_mode_guard() -> None:
+    if os.environ.get("BOT_ENV", "").lower() != "paper":
+        print("ERROR: run_t4_mlb_live.py is paper-mode only. Set BOT_ENV=paper.")
+        sys.exit(1)
+
+    if os.environ.get("BOT_C4_ACTIVE", "").lower() not in ("true", "1", "yes"):
+        print("ERROR: BOT_C4_ACTIVE not set. T4 requires C4 active.")
+        print("  Set BOT_C4_ACTIVE=true in your environment before running.")
+        sys.exit(1)
 
 # ---------------------------------------------------------------------------
 # Dry-run mode (T-202)
@@ -1505,4 +1517,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    _enforce_paper_mode_guard()
     main()
