@@ -63,6 +63,13 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 
 os.environ.setdefault("BOT_ENV", "paper")
+# compute_flow_bets() below does a deferred import of run_t4_mlb_live, which
+# gates itself on BOT_C4_ACTIVE at module scope (GG-090). This script never
+# exercises C4's execution path — it only borrows two pure math helpers — so
+# opening the gate in-process is safe (same in-process pattern already used by
+# run_mlb_paper_trade.py / run_paper_trade.py) and mirrors what
+# tests/test_run_exp_flow_mlb_01.py already had to do to import this module.
+os.environ.setdefault("BOT_C4_ACTIVE", "true")
 
 _SRC_ROOT = Path(__file__).resolve().parent.parent
 if str(_SRC_ROOT / "src") not in sys.path:
