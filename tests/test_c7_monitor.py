@@ -6,10 +6,11 @@ Coverage areas:
   - _compute_brier: empty, single, multi; known values
   - _compute_ece: empty, single bucket, multi-bucket; perfect calibration → ~0
   - _compute_mean_edge: empty, positive, negative
-  - DriftSnapshot: alert_level escalation ladder (OK → L1 → L2 → L4)
+  - DriftSnapshot: alert_level escalation ladder (OK → L1 → L2 → L3 pause)
   - SystemMonitor.record_forecast_outcome: appends to window; maxlen rollover
   - SystemMonitor.get_drift_snapshot: empty window; n < window; correct metrics
-  - SystemMonitor.check_and_alert: L1/L2 logs correct severity; L4 triggers kill
+  - SystemMonitor.check_and_alert: L1/L2/L3 log correct severity; L3 pause does
+      NOT auto-trigger kill (GG-095 — real kill is driven by risk.py, not drift)
   - SystemMonitor.trigger_kill_switch: sets is_kill_switch_active; logs CRITICAL;
       returns KillSwitchResult with halt_time_ms <= SLA; idempotent
   - SystemMonitor.reset_kill_switch: clears flag; logs WARNING; clears state
@@ -37,6 +38,7 @@ if str(_SRC) not in sys.path:
 from prediction_market_bot.c7_monitoring.monitor import (
     ALERT_L1_WATCH,
     ALERT_L2_ALERT,
+    ALERT_L3_PAUSE,
     ALERT_L4_KILL,
     ALERT_OK,
     BRIER_BASELINE,
@@ -313,11 +315,14 @@ class TestDriftSnapshotAlertLevels:
         assert snap.alert_level == ALERT_L2_ALERT
 
     @pytest.mark.unit
-    def test_l4_kill_when_brier_above_l3(self):
+    def test_l3_pause_when_brier_above_l3(self):
+        """GG-095: crossing BRIER_L3_DELTA pauses new positions — it does not
+        by itself set ALERT_L4_KILL. Full kill is driven independently by
+        risk.py's drawdown/daily-loss criteria, not by drift."""
         monitor, _ = _make_monitor()
         _add_bad_records(monitor, n=10)
         snap = monitor.get_drift_snapshot()
-        assert snap.alert_level == ALERT_L4_KILL
+        assert snap.alert_level == ALERT_L3_PAUSE
 
     @pytest.mark.unit
     def test_l1_watch_on_negative_mean_edge(self):
@@ -379,33 +384,66 @@ class TestCheckAndAlert:
         assert "WARNING" in severities
 
     @pytest.mark.unit
-    def test_critical_log_on_l4(self):
+    def test_error_log_on_l3_pause(self):
+        """GG-095: L3 pause logs at ERROR severity (ALT-002), not CRITICAL."""
         monitor, logger = _make_monitor()
         _add_bad_records(monitor, n=10)
         monitor.check_and_alert()
         severities = [c[1]["severity"] for c in logger.log.call_args_list]
-        assert "CRITICAL" in severities
+        assert "ERROR" in severities
+        assert "CRITICAL" not in severities
 
     @pytest.mark.unit
-    def test_l4_auto_triggers_kill_switch(self):
+    def test_l3_pause_does_not_auto_trigger_kill_switch(self):
+        """GG-095: a Brier-drift breach alone must never fire the kill switch —
+        real L4/kill is driven independently by risk.py's drawdown/daily-loss
+        criteria (RISK_APPETITE_CONSTRAINTS.md), not by this drift ladder."""
         monitor, logger = _make_monitor()
         _add_bad_records(monitor, n=10)
         assert not monitor.is_kill_switch_active
         monitor.check_and_alert()
-        assert monitor.is_kill_switch_active
+        assert not monitor.is_kill_switch_active
+        event_types = [c[1].get("event_type") for c in logger.log.call_args_list]
+        assert "drift_alert_l3_pause" in event_types
+        assert "kill_switch_triggered" not in event_types
 
     @pytest.mark.unit
-    def test_l4_does_not_double_trigger(self):
-        """kill_switch_triggered should be emitted exactly once even on repeated L4 checks."""
+    def test_l4_auto_triggers_kill_switch_if_ever_set(self):
+        """The L4 auto-kill branch in check_and_alert() is retained for a future
+        caller that reflects risk.py's independently-triggered kill back into a
+        DriftSnapshot (see monitor.py comment at the L4 branch). Nothing in this
+        module sets ALERT_L4_KILL today (GG-095) — this test exercises the
+        branch directly via a patched snapshot so the dormant idempotency logic
+        stays covered."""
         monitor, logger = _make_monitor()
-        _add_bad_records(monitor, n=10)
-        monitor.check_and_alert()
-        monitor.check_and_alert()
-        ks_trigger_count = sum(
-            1 for c in logger.log.call_args_list
-            if c[1].get("event_type") == "kill_switch_triggered"
+        _add_good_records(monitor, n=1)
+        fake_snap = monitor.get_drift_snapshot()
+        forced = DriftSnapshot(
+            n_events=fake_snap.n_events,
+            rolling_brier=fake_snap.rolling_brier,
+            rolling_ece=fake_snap.rolling_ece,
+            mean_edge=fake_snap.mean_edge,
+            alert_level=ALERT_L4_KILL,
+            alert_messages=["forced L4 for dormant-branch coverage"],
+            brier_baseline=fake_snap.brier_baseline,
+            ece_baseline=fake_snap.ece_baseline,
+            computed_at=fake_snap.computed_at,
+            shadow_n_events=fake_snap.shadow_n_events,
+            shadow_brier_30=fake_snap.shadow_brier_30,
+            shadow_promotion_flag=fake_snap.shadow_promotion_flag,
         )
-        assert ks_trigger_count == 1
+        with patch.object(monitor, "get_drift_snapshot", return_value=forced):
+            assert not monitor.is_kill_switch_active
+            monitor.check_and_alert()
+            assert monitor.is_kill_switch_active
+            severities = [c[1]["severity"] for c in logger.log.call_args_list]
+            assert "CRITICAL" in severities
+            monitor.check_and_alert()
+            ks_trigger_count = sum(
+                1 for c in logger.log.call_args_list
+                if c[1].get("event_type") == "kill_switch_triggered"
+            )
+            assert ks_trigger_count == 1
 
     @pytest.mark.unit
     def test_mean_edge_neg_emits_separate_warning(self):
