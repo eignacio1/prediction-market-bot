@@ -70,8 +70,17 @@ DRIFT_WINDOW_SIZE: int = 30
 # Drift thresholds (MONITORING_DRIFT_PLAN.md)
 BRIER_L1_DELTA: float = 0.02   # watch
 BRIER_L2_DELTA: float = 0.05   # alert   → ALT-001
-BRIER_L3_DELTA: float = 0.10   # pause + kill trigger → ALT-002
+BRIER_L3_DELTA: float = 0.10   # pause new positions (ERROR) → ALT-002
 ECE_L2_DELTA: float = 0.05     # ECE alert
+
+# L4 (full kill switch) is NOT a further Brier delta computed by this module.
+# Per MONITORING_DRIFT_PLAN.md's ladder table, L4 is driven independently by
+# RISK_APPETITE_CONSTRAINTS.md's real kill criteria (MAX_DAILY_LOSS_PCT,
+# max_drawdown_pct — enforced in c4_risk_engine/risk.py). Drift alone, however
+# severe, halts new positions (L3) — it does not by itself fire the kill
+# switch. GG-095 (2026-07-07): a prior bug had this module jump straight from
+# L2 to a full auto-triggered kill switch at the L3 delta, skipping the pause
+# tier entirely and conflating drift monitoring with the real kill trigger.
 
 BRIER_L1_THRESHOLD: float = BRIER_BASELINE + BRIER_L1_DELTA
 BRIER_L2_THRESHOLD: float = BRIER_BASELINE + BRIER_L2_DELTA
@@ -368,9 +377,9 @@ class SystemMonitor:
         # Brier drift ladder
         if not np.isnan(brier):
             if brier > self._brier_baseline + BRIER_L3_DELTA:
-                alert_level = ALERT_L4_KILL
+                alert_level = ALERT_L3_PAUSE
                 messages.append(
-                    f"Brier {brier:.4f} > L3 threshold {self._brier_baseline + BRIER_L3_DELTA:.4f} — L4 kill"
+                    f"Brier {brier:.4f} > L3 threshold {self._brier_baseline + BRIER_L3_DELTA:.4f} — L3 pause (ALT-002)"
                 )
             elif brier > self._brier_baseline + BRIER_L2_DELTA:
                 if alert_level == ALERT_OK:
@@ -496,7 +505,13 @@ class SystemMonitor:
                 snapshot_id=self._snapshot_id,
             )
 
-        # L4 — auto-trigger kill switch
+        # L4 — auto-trigger kill switch.
+        # get_drift_snapshot() no longer sets ALERT_L4_KILL from Brier drift alone
+        # (GG-095 fix, 2026-07-07) — that path now stops at ALERT_L3_PAUSE. This
+        # branch is retained for a future caller that reflects risk.py's
+        # independently-triggered drawdown/daily-loss kill (the real L4, per
+        # RISK_APPETITE_CONSTRAINTS.md) back into a DriftSnapshot for a unified
+        # C8 view; it does not fire from this module's own computation today.
         if snap.alert_level == ALERT_L4_KILL and not self.is_kill_switch_active:
             self.trigger_kill_switch(
                 reason=f"L4 drift threshold breached: {'; '.join(snap.alert_messages)}",
