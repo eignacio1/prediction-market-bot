@@ -29,6 +29,7 @@ dev = [
     "pytest-cov>=5.0.0,<6.0",
     "black>=24.0.0,<25.0",
     "mypy>=1.9.0,<2.0",
+    "pandas-stubs>=2.2.0,<3.1",
     "pre-commit>=3.7.0,<4.0",
     "bandit[toml]>=1.7.0,<2.0",
     "detect-secrets>=1.4.0,<2.0",
@@ -67,3 +68,6 @@ skips = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
