@@ -13,3 +13,4 @@
 | 2026-07-06T16:34Z | T-243, GG-027, GG-082 | GG-027 re-scope (PAM-MLB finding), GG-082 process-guard implementation (this file) |
 2026-07-06T23:50:52Z | T-NNN/GG-NNN: TBD | Focus: advisory discussion on edge-strategy transition (Opus decomposition recommendation review) — no code changes anticipated
 | 2026-07-06T23:54:44Z | GG-054 (done), GG-055 (done), GG-065, GG-074, GG-075 | Continuation of governance-gap sprint: py.typed/mypy strict enforcement (GG-065), stale-doc review process (GG-074), ACCEPTANCE_CRITERIA.md evidence trail (GG-075)
+| 2026-07-07T04:03:06Z | GG-092, GG-093, GG-094, GG-095, GG-096 | Triage batch for 5 new gaps from GG-074 closeout, priority GG-095 (Brier drift ladder mismatch near kill switch) |
