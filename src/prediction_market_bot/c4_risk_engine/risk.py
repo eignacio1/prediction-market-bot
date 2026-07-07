@@ -382,8 +382,9 @@ class RiskEngine:
         if self._edge_logger is None:
             return
 
+        fc: dict[str, Any]
         if isinstance(forecast_record, pd.Series):
-            fc = forecast_record.to_dict()
+            fc = {str(k): v for k, v in forecast_record.to_dict().items()}
         else:
             fc = dict(forecast_record)
 
@@ -478,8 +479,9 @@ class RiskEngine:
             approval_dict — IF-C4-C5 record with approval_status, approved_size, etc.
         """
         eval_id = _risk_eval_id()
+        fc: dict[str, Any]
         if isinstance(forecast_record, pd.Series):
-            fc = forecast_record.to_dict()
+            fc = {str(k): v for k, v in forecast_record.to_dict().items()}
         else:
             fc = dict(forecast_record)
 

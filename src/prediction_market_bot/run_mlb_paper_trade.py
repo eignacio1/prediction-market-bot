@@ -62,8 +62,9 @@ import uuid
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any
 
-import joblib
+import joblib  # type: ignore[import-untyped]  # GG-065: no stubs published for joblib
 import numpy as np
 import pandas as pd
 import requests
@@ -216,7 +217,7 @@ def _is_mlb_game_in_progress(
     try:
         resp = requests.get(
             _MLB_SCHEDULE_URL,
-            params={"sportId": 1, "date": game_date},
+            params={"sportId": "1", "date": game_date},
             timeout=10,
         )
         resp.raise_for_status()
@@ -245,7 +246,7 @@ def _count_scheduled_mlb_games(game_date: str) -> int:
     try:
         resp = requests.get(
             _MLB_SCHEDULE_URL,
-            params={"sportId": 1, "date": game_date},
+            params={"sportId": "1", "date": game_date},
             timeout=10,
         )
         resp.raise_for_status()
@@ -293,7 +294,7 @@ def _build_mlb_feature_vector(
     row: pd.Series,
     feature_names: list[str],
     col_medians: np.ndarray,
-    sp_override: dict | None = None,
+    sp_override: dict[str, Any] | None = None,
 ) -> np.ndarray:
     """Build a (1, n_features) feature matrix for one player row.
 
@@ -320,7 +321,7 @@ def _build_live_sp_override(
     client: MLBIngestionClient,
     logger: AuditLogger,
     session_id: str,
-) -> dict[int, dict]:
+) -> dict[int, dict[str, Any]]:
     """Fetch tonight's actual starting pitchers and return per-player SP override dicts.
 
     Returns a dict keyed by player_id (int). Each value has keys matching
@@ -385,7 +386,7 @@ def _build_live_sp_override(
     )
 
     # Build per-player override dict
-    result: dict[int, dict] = {}
+    result: dict[int, dict[str, Any]] = {}
     for pid, sp_id in player_sp_map.items():
         is_known = player_sp_known.get(pid, False)
         era = pitcher_store.get_era_l5(sp_id, today_iso) if sp_id is not None else None
@@ -400,7 +401,7 @@ def _build_live_sp_override(
     return result
 
 
-def _write_report(orders: list, bankroll: float, trader: PaperTrader) -> None:
+def _write_report(orders: list[dict[str, Any]], bankroll: float, trader: PaperTrader) -> None:
     summary = trader.summary()
     report = {
         "session_id": SESSION_ID,
@@ -596,7 +597,7 @@ def main() -> None:
     # historical values silently if the API call fails.
     # ------------------------------------------------------------------
     mlb_client = MLBIngestionClient(logger, SNAPSHOT_ID)
-    sp_override_by_player: dict[int, dict] = {}
+    sp_override_by_player: dict[int, dict[str, Any]] = {}
     try:
         sp_override_by_player = _build_live_sp_override(
             today_iso=GAME_DATE_ISO,
@@ -711,11 +712,11 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 7. Forecast + C4 evaluation + paper orders (market-first)
     # ------------------------------------------------------------------
-    orders: list[dict] = []
-    passes: list[dict] = []
+    orders: list[dict[str, Any]] = []
+    passes: list[dict[str, Any]] = []
 
     # Group active quoted markets by player name
-    markets_by_player: dict[str, list] = defaultdict(list)
+    markets_by_player: dict[str, list[Any]] = defaultdict(list)
     for m in snap.markets:
         if m.status == "active" and m.has_live_quotes:
             # Only process markets whose ticker resolves to the target game date.
@@ -784,9 +785,9 @@ def main() -> None:
             break
 
         norm = normalize_player_name(kalshi_player_name)
-        row = cohort_lookup.get(norm)
+        player_row = cohort_lookup.get(norm)
 
-        if row is None:
+        if player_row is None:
             logger.info(
                 "PIPE-05", "player_not_in_feature_csv",
                 payload={"player": kalshi_player_name, "norm": norm},
@@ -795,7 +796,7 @@ def main() -> None:
             print(f"  [SKIP] {kalshi_player_name} — not in feature CSV (no MLB fallback lookup)")
             continue
 
-        player_id = int(row.get("player_id", 0))
+        player_id = int(player_row.get("player_id", 0))
 
         for mkt in player_mkts:
             if _reserve_halted:
@@ -825,7 +826,7 @@ def main() -> None:
             # Build feature vector and dispatch to per-threshold pipeline
             sp_override = sp_override_by_player.get(player_id)
             X = _build_mlb_feature_vector(
-                row=row,
+                row=player_row,
                 feature_names=feature_names,
                 col_medians=col_medians,
                 sp_override=sp_override,

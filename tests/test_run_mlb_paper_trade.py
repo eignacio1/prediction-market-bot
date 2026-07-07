@@ -125,6 +125,33 @@ class TestTickerToGameDate:
         result = fn("KXMLBHIT-01JAN021200NYYBOS-NYYAAJUDG7-1")
         assert result == f"{year}-01-02"
 
+    def test_month_boundary_created_in_prior_month(self, monkeypatch):
+        """GG-055: market created 30-Jun for a 1-Jul game.
+
+        This is the exact class of bug that has bitten this function twice:
+        T-205 assumed a fixed CREATE_DD→GAME_DD offset (broke on non-1-day
+        creation lead times); T-206a switched to extracting GAME_DD/MON
+        directly from the ticker instead of doing offset arithmetic — but no
+        test previously exercised a ticker where CREATE_DD's implied month
+        (Jun) differs from MON (Jul), which is exactly where an offset-based
+        approach would silently produce the wrong month while a direct
+        extraction approach (the current implementation) is unaffected.
+        CREATE_DD=30 (June, implied — not itself parsed), MON=JUL, GAME_DD=01.
+        """
+        fn = self._get_fn(monkeypatch)
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
+        result = fn("KXMLBHIT-30JUL011200NYYBOS-NYYAAJUDG7-1")
+        assert result == f"{year}-07-01"
+
+    def test_month_boundary_short_month_to_long_month(self, monkeypatch):
+        """GG-055: market created 31-Jul (month-end) for a 1-Aug game."""
+        fn = self._get_fn(monkeypatch)
+        from datetime import datetime, timezone
+        year = datetime.now(tz=timezone.utc).year
+        result = fn("KXMLBHIT-31AUG011200NYYBOS-NYYAAJUDG7-1")
+        assert result == f"{year}-08-01"
+
 
 # ---------------------------------------------------------------------------
 # _is_mlb_game_in_progress
@@ -424,6 +451,163 @@ class TestMainNoMarkets:
             with pytest.raises(SystemExit) as exc_info:
                 runner.main()
         assert exc_info.value.code == 0
+
+
+# ---------------------------------------------------------------------------
+# GG-054 drill — SemanticFloorViolation guard fires live, end-to-end
+# ---------------------------------------------------------------------------
+
+
+class TestMainSemanticFloorViolationFiresLive:
+    """
+    GG-054: the guard at run_mlb_paper_trade.py's SemanticFloorGuard call site
+    (games_fetched > 0, matched_players == 0) had never been exercised past
+    the unit level for _count_scheduled_mlb_games / the exception class alone
+    — every existing "no markets" test (TestMainNoMarkets) passes an empty
+    `snap.markets`, which exits at the earlier `if not snap.markets: sys.exit(0)`
+    guard (step 5) and never reaches the SemanticFloorGuard call site (step 7).
+
+    This test drives main() through the real branch: `snap.markets` is
+    non-empty (so step 5 does not short-circuit), no market groups into
+    `markets_by_player` (ticker date deliberately mismatched — simulates a
+    broken market-matching filter), the game-in-progress guard is mocked
+    False, and `_count_scheduled_mlb_games` is mocked > 0 — the exact
+    "games fetched but 0 matched" condition SemanticFloorGuard exists to
+    catch. Confirms end-to-end: sys.exit(2), and a real CRITICAL
+    `semantic_floor_violation` entry written to the actual C6 JSONL file
+    (AuditLogger is not mocked — only LOG_DIR is redirected to tmp_path).
+    """
+
+    def _make_artifact(self) -> dict:
+        return {
+            "pipelines": {1: MagicMock(), 2: MagicMock()},
+            "feature_names": ["ba_l10", "days_rest"],
+            "col_medians": np.array([0.25, 1.0]),
+            "model_version": "mlb_v1_test",
+            "thresholds": [1, 2],
+            "sport": "mlb",
+        }
+
+    def _make_state(self) -> dict:
+        return {
+            "bankroll_usd": 1000.0,
+            "initial_bankroll_usd": 1000.0,
+            "total_realized_pnl": 0.0,
+            "current_daily_loss": 0.0,
+            "daily_loss_date": "2026-01-01",
+            "open_positions": [],
+            "closed_positions": [],
+        }
+
+    def test_guard_fires_and_writes_critical_c6_event(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("BOT_ENV", "paper")
+        sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
+        import prediction_market_bot.run_mlb_paper_trade as runner
+
+        from datetime import date
+        today_iso = date.today().isoformat()
+
+        feature_csv = tmp_path / "mlb_feature_matrix.csv"
+        header = (
+            "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
+            "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
+            "doubles,triples,hr,rbi,bb,k,hbp,sf,snapshot_id,ingestion_run_id,"
+            "ingested_at,temporal_cutoff,ba_l10,slg_l10,obp_l10,ops_l10,"
+            "h_l10_mean,k_rate_l10,bb_rate_l10,hr_rate_l10,days_rest,b2b_flag,"
+            "opp_runs_allowed_l10,opp_sp_era_l5,opp_sp_k9_l5,opp_sp_bb9_l5,"
+            "opp_sp_is_known,park_factor_hits,feature_run_id,feature_version,"
+            "train_test_label,threshold"
+        )
+        row = (
+            f"660670,Juan Soto,147,NYY,717465,{today_iso},2024,Regular Season,"
+            "NYY vs BOS,1,BOS,4,1,0,0,0,1,1,1,0,0,SNAP,IRD-001,"
+            f"{today_iso}T12:00:00Z,{today_iso},0.280,0.450,0.380,0.830,"
+            "1.0,0.22,0.15,0.03,1,0,"
+            "4.5,4.0,8.0,3.0,"
+            "1,1.0,FRD-001,1.0.0,"
+            "train,1"
+        )
+        feature_csv.write_text(f"{header}\n{row}\n")
+        model_path = tmp_path / "model.joblib"
+        model_path.write_bytes(b"fake")
+
+        # A non-empty market list whose ticker date does NOT match today —
+        # simulates a broken market-matching filter: markets exist, quotes
+        # exist, but zero players end up matched to today's game date.
+        mock_market = MagicMock()
+        mock_market.status = "active"
+        mock_market.has_live_quotes = True
+        mock_market.vig = 0.05
+        mock_market.player_name = "Juan Soto"
+        mock_market.ticker = "KXMLBHIT-01JAN010000NYYBOS-BOSWABREU52-2"  # wrong month/day
+
+        mock_snap = MagicMock()
+        mock_snap.markets = [mock_market]
+
+        mock_router = MagicMock()
+        mock_router.check_all_connectivity.return_value = {"kalshi": (True, {})}
+        mock_router.fetch_all_markets.return_value = (True, mock_snap)
+        mock_router.active_venues = ["kalshi"]
+
+        audit_log_path = tmp_path / "audit_mlb.jsonl"
+
+        with (
+            patch.object(runner, "MODEL_PATH", model_path),
+            patch.object(runner, "FEATURE_CSV", feature_csv),
+            patch.object(runner, "LOG_DIR", tmp_path),
+            patch.object(runner, "PORTFOLIO_PATH", tmp_path / "portfolio.json"),
+            patch.object(runner, "REPORT_PATH", tmp_path / "report.json"),
+            patch.object(runner, "_is_mlb_game_in_progress", return_value=False),
+            patch.object(runner, "_count_scheduled_mlb_games", return_value=2),
+            patch("prediction_market_bot.run_mlb_paper_trade.joblib") as mock_jl,
+            patch("prediction_market_bot.run_mlb_paper_trade.KalshiMarketClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.PaperTrader") as MockTrader,
+            patch("prediction_market_bot.run_mlb_paper_trade.VenueRouter") as MockRouter,
+            patch("prediction_market_bot.run_mlb_paper_trade.BAND_REGISTRY") as mock_reg,
+        ):
+            mock_jl.load.return_value = self._make_artifact()
+            state = self._make_state()
+            mock_trader_instance = MagicMock()
+            mock_trader_instance.get_state.return_value = state
+            mock_trader_instance.summary.return_value = {
+                **state,
+                "open_positions": 0,
+                "closed_positions": 0,
+                "win_rate": None,
+                "realized_drawdown_pct": 0.0,
+                "deployed_pct": 0.0,
+            }
+            MockTrader.return_value = mock_trader_instance
+            MockRouter.from_env.return_value = mock_router
+            mock_reg.validate.return_value = []
+
+            with pytest.raises(SystemExit) as exc_info:
+                runner.main()
+
+        # 1. The guard actually halts the pipeline with the documented exit code.
+        assert exc_info.value.code == 2
+
+        # 2. A real CRITICAL event was written to the actual C6 audit log file
+        #    (not a mock assertion — the file on disk is read back and parsed).
+        assert audit_log_path.exists(), "C6 audit log file was never created"
+        lines = [
+            json.loads(line)
+            for line in audit_log_path.read_text().splitlines()
+            if line.strip()
+        ]
+        violation_events = [
+            e for e in lines
+            if e.get("event_type") == "semantic_floor_violation"
+            and e.get("severity") == "CRITICAL"
+        ]
+        assert len(violation_events) == 1, (
+            f"Expected exactly one CRITICAL semantic_floor_violation event, "
+            f"found {len(violation_events)} in {lines}"
+        )
+        event = violation_events[0]
+        assert event["payload"]["scheduled_preview_games"] == 2
+        assert event["payload"]["kalshi_markets_total"] == 1
+        assert event["component"] == "PIPE-05"
 
 
 # ---------------------------------------------------------------------------
