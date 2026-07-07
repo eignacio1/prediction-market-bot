@@ -75,9 +75,11 @@ class VenueParams:
 
 **Registered venues (from VENUE_REGISTRY.md):**
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — the Kalshi `fee_rate: 0.030` flat constant below (sourced "per EXP-010," 2026-05-29 or earlier) was superseded by ADR-0016 (2026-06-04, GG-009 resolution), which is the fee model actually implemented in production (`run_paper_trade.py`, `run_mlb_paper_trade.py`, `run_t4_mlb_live.py`, `paper_trader.py`, etc.): `kalshi_fee = 0.07 × mid × (1 − mid)`, not a flat 3% of notional. This is not a rounding difference — at mid=0.44/0.52 (the section 5.2 worked example below), the real ADR-0016 fee is ~$0.0172–0.0175 per contract vs. the ~$0.0132–0.0104 this table's flat rate implies, meaning this framework's arb profit math currently understates true Kalshi fees across most of the price range. This section and the worked example in §5.2 have not been updated to the ADR-0016 formula since arb strategies (Phase 7+) are not yet built — flagging for whoever picks up the Phase 7 `ArbOpportunityLog`/`ComplementLockScanner` build to use the correct fee formula, not this table's flat constant.**
+
 | venue_id | contract_type | fee_rate | implied_prob_method | simultaneous_legs | Phase |
 |----------|--------------|----------|--------------------|--------------------|-------|
-| V-001 (Kalshi) | binary_market | 0.030 | market | False | ✅ Active |
+| V-001 (Kalshi) | binary_market | 0.030 (stale — see correction above; real formula is `0.07 × p × (1-p)` per ADR-0016) | market | False | ✅ Active |
 | V-002 (Polymarket US) | binary_market | ~0.020 est. | market | TBD | Phase 7 |
 | V-003 (PrizePicks) | bookmaker_fixed | embedded | bookmaker | N/A (single pick) | Phase 7+ ADR |
 | V-004 (Underdog) | bookmaker_fixed | embedded | bookmaker | N/A | Phase 7+ ADR |

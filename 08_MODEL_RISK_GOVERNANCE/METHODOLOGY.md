@@ -11,6 +11,16 @@
 **Confidence:** 8/10 — Model class and features implemented; specifics (Kelly fraction, hard limits, strategy activation sequence) confirmed at G4
 **Decisions logged:** true — T-095 logged 2026-06-02: PRF taxonomy (Player quality/Role-fit/Form), MIN_EDGE_TO_APPROVE=0.02 justification, strategy A–K sequencing (see also 2026-05-29 retroactive entry). See DECISION_LOG.md 2026-06-02.
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — several numeric/status claims below are stale by multiple phases; confirmed directly against `src/prediction_market_bot/c4_risk_engine/risk.py` and `c2_feature_store/features.py`.**
+- **FEATURE_VERSION is now 1.4.0**, not the 1.1.0/38-feature set in Section 3 below — the feature set has been revised since this document's last edit (2026-05-27) and Section 3 does not describe the current feature store.
+- **`MIN_EDGE_TO_APPROVE` is now 0.04** (raised from 0.02 per ADR-0020), not the `edge ≥ +0.02` threshold stated in Section 1 step 5. The header's "MIN_EDGE_TO_APPROVE=0.02 justification" decision citation is the historical original value, since superseded.
+- **Section 8's hard-limits table is stale in three places:** `max_daily_loss_usd: $1,000` was removed and replaced by `MAX_DAILY_LOSS_PCT = 0.15` (ADR-0012) — there is no flat-dollar daily loss limit anymore. `max_concurrent_positions: 10` was deleted outright (ADR-0006, 2026-06-01) — not merely stubbed, it no longer exists as a limit. A fourth limit this table omits entirely, `max_portfolio_deployment_pct` (ADR-0026, aggregate open stake ≤ 60% equity → REJECT), is live in `_HARD_LIMITS` and not listed here at all.
+- **Section 1/5's `mid_price = 0.50` Phase 3 placeholder is resolved** — this is the EV-benchmark issue tracked as KI-017/GG-004, resolved for the current system since live Kalshi prices have been used in production for weeks (EXP-017 MLB run: n=151, DIRECTIONAL_POSITIVE, per CLAUDE.md).
+- **ADR-0004 (PENDING)** in the Decision references line — accepted 2026-05-28.
+- **Section 4's Strategy A status ("C4 gated") and Section 8's "GATED — inactive until BOT_C4_ACTIVE=true"** describe the code-level gate mechanism accurately (it is real and still present in `risk.py`), but underclaim current reality: `BOT_C4_ACTIVE=true` is in fact set in the live VPS production environment — C4 has been actively sizing and approving real MLB paper positions for weeks (151 resolved EXP-017 positions did not size themselves). Do not read "gated"/Section 8's framing as meaning C4 is currently inactive.
+- Not independently re-verified this pass: whether `model_version`'s `"v1-"` prefix in Section 2 has been superseded by a `"v2-"` scheme following the temperature-scaling calibration layer added per ADR-0027 (see `08_MODEL_RISK_GOVERNANCE/ASSUMPTIONS_LIMITATIONS.md`'s correction) — worth checking `c3_forecasting/forecaster.py`/`calibration.py` directly if this matters to a future session.
+- This document remains NBA/Phase-3-scoped throughout (FEATURE_VERSION, feature list, strategy table) and has never been re-derived for MLB's own feature set or strategy sequencing — treat Sections 3–4 as historical/NBA-only, not a description of the currently active MLB pool's methodology.
+
 ---
 
 ## 1. Primary Forecasting Framework

@@ -12,6 +12,10 @@
 **Confidence:** 9/10 — Framework defined; operationalization of individual sources is pending
 **Decisions logged:** true — T-098 logged 2026-06-02: L1/L2/L3 layer definitions, temporal isolation (shift(1)) requirement, L3 promotion gate (Brier improvement ≥0.001 at N≥100), QUALITATIVE_REGISTRY.md as source registration requirement. See DECISION_LOG.md 2026-06-02.
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation).** Two points:
+1. **Section 7's "Layer 1: ✅ IMPLEMENTED (F-001–F-031, FEATURE_VERSION 1.2.0)" is stale on the version number** — confirmed via `c2_feature_store/features.py`, `FEATURE_VERSION` is now `1.4.0`, not 1.2.0. The feature set has been revised at least twice since this document's last edit (2026-05-28) without a corresponding update here.
+2. **This entire document (PAM v4 / PRF taxonomy, Layers 1–3, Sections 1–9) is NBA-only and has no MLB counterpart, and this is a real scope gap, not just missing documentation.** Confirmed via direct code inspection: `c2_feature_store/mlb_features.py` (541 lines, `MLB_FEATURE_VERSION = "1.0.0"`) contains zero qualitative/archetype/role/PRF content — it computes only quantitative rolling-batter-stat features. `qualitative_store.py` and `qualitative_amplifier.py` (the modules this document describes in Sections 5 and 7) have no MLB references either. MLB's C2 feature store is quantitative-only; the "baseball analogue of the PRF framework" anticipated in `MLB_BUILDOUT_SCAFFOLD_PLAN.md` was never built. Since MLB is now the ACTIVE paper-trading pool (NBA is DARK/FROZEN), this document currently governs qualitative-signal practice for a book that isn't running, while the book that is running (MLB) has no qualitative-signal governance document or implementation at all. Recommend registering the missing MLB qualitative layer as its own governance-gap candidate if MLB's model is expected to eventually use structural/role context the way NBA's does — not resolved in this pass.
+
 ---
 
 ## 1. What Is a Qualitative Signal?

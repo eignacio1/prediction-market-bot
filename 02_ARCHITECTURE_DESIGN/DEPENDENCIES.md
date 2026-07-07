@@ -10,6 +10,8 @@
 **Decision references:** ADR-0001, ADR-0002, ADR-0003 (pending — venue)  
 **Confidence:** 4/10 — Dependencies are preliminary; exact versions pinned at G2; technology stack TBD
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — the Confidence line above and the "TBD at G2"/"preliminary" framing throughout this document are stale.** G2 closed long ago. The stack is fully pinned and has been in production use for weeks: confirmed directly against `06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-base.txt` and `requirements-dev.txt` (Python 3.11+; `pandas==2.2.2`, `numpy==1.26.4`, `pyarrow==16.1.0`, `scikit-learn==1.4.2`, `scipy==1.13.0`, `nba_api>=1.5.0`, `jsonlines==4.0.0`, `python-dotenv==1.0.1`, `cryptography>=42.0.0`; dev-only: `pytest==8.2.0`, `pytest-cov==5.0.0`, `black==24.4.2`, `flake8==7.0.0`, `mypy==1.9.0`, `bandit==1.7.8`, `detect-secrets==1.4.0`, `pre-commit==3.7.1`). Venue is confirmed Kalshi primary (ADR-0003, 2026-05-23) with RSA-PSS signing via `cryptography` (ADR-0008, 2026-05-31). Model class is confirmed LogisticRegression + Platt scaling (ADR-0004, 2026-05-28), not the XGBoost/LightGBM placeholder below. Secrets management is `.env` + `python-dotenv` + OS env vars (NFR-05), not a "Vault tooling — TBD" product. The per-row "TBD at G2"/"TBD at G5"/"TBD at ADR-0003" cells below were not individually rewritten in this pass (would amount to a full rewrite, out of scope for a dated-correction-note remediation) — treat every such cell as superseded by the pinned values in this note and the lock files themselves, which are the source of truth per this file's own Version Lock Policy section.
+
 ---
 
 ## Dependency Governance Rules
@@ -92,6 +94,8 @@
 | DS-01 | Player Attribute Matrix v4 | Static file (XLSX) | Phase 1+ (staged); Phase 3+ (active) | Available — not yet validated | RL |
 | DS-02 | Market Data Feed | API (venue TBD) | Phase 6+ | Pending ADR-0003 | AO |
 | DS-03 | Outcome / Resolution Data | API (venue TBD) | Phase 3+ (historical); Phase 6+ (live) | Pending ADR-0003 | AO |
+
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — all three status cells above are stale.** ADR-0003 (venue selection, Kalshi primary) was accepted 2026-05-23; DS-02 (live Kalshi market data feed, KXNBAPTS/KXMLBHIT series) and DS-03 (ESPN/MLB Stats API outcome resolution) have both been live in production for weeks, not "Pending." DS-01 (Player Attribute Matrix / F-100+ qualitative features) has a confirmed positive signal since EXP-007 and has been live in the C2 feature store since — "not yet validated" no longer describes it, though see the DS-01 note immediately below for the original scope caveat (research-input status, independent schema validation) which is a separate, narrower point that may still hold.
 
 **DS-01 note:** Player_Attribute_Matrix is a research input only. Requires independent schema validation before use in any experiment. Not a canonical data source until validation is complete and documented.
 
