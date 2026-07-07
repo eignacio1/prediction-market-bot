@@ -10,6 +10,11 @@
 **Decision references:** ADR-0001, ADR-0002, ADR-0004 (PROPOSED)  
 **Confidence:** 8/10 — Limitations well-documented from Phase 3/4 experiments; FEATURE_VERSION 1.2.0
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation).** This document is scoped entirely to the pre-MLB, NBA-points-only, Phase 3/4 research state (same vintage as `STRATEGY_OVERVIEW.md`/`BAND_ASSIGNMENT_FRAMEWORK.md`, corrected in the 2026-07-02 pass) and has several claims stale by two to three phases:
+- **ADR-0004 (PROPOSED)** — accepted 2026-05-28. Not proposed.
+- **MA-002 / LIM-002 (`market_implied_prob` defaults to 0.50, "no live venue prices available")** — this is exactly the EV-benchmark issue tracked as KI-017/GG-004 in `CLAUDE.md`. It is resolved for the current system: live Kalshi prices have been used in production for weeks, and EXP-017 (the real commercial-validation experiment superseding the HYP-003/EXP-004 placeholder referenced below) has run against actual market prices for MLB — n=151, DIRECTIONAL_POSITIVE, ADR-0024 Tier 1 cleared (Tier 2 still open, GG-004 remains OPEN for that reason only). Do not read MA-002's "Status: Active — unvalidated" as still describing the system's current evidence base.
+- **Scope Boundaries ("Market type: NBA player prop markets only")** — MLB is now the ACTIVE paper-trading pool with its own T1–T4M-PROJ bands and its own EXP-017 MLB run; NBA is DARK/FROZEN. This entire document was never re-derived for MLB — treat it as an NBA-only historical artifact, not a description of the model-risk posture for the currently active book.
+
 ---
 
 ## Model Assumptions

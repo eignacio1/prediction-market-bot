@@ -105,6 +105,8 @@
 
 ## IF-C5-VENUE — Execution Engine → Venue API *(Phase 8 only)*
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — this section's "Phase 8 only" / "TBD at ADR-0003" / "GATED: active only after ADR-0005 + G6" framing is stale.** ADR-0003 confirmed the venue (Kalshi) on 2026-05-23, and ADR-0008 (2026-05-31) made this interface real and active during Phase 6 paper trading: `PaperTrader.open_position()` submits live orders to the real Kalshi demo API when an RSA key is loaded (`c5_execution`/`kalshi_client.py`), well before ADR-0005/G6. Local ledger remains authoritative per ADR-0008 (Kalshi confirmation is supplementary, not gating), and MLB order submission has a known, separately-tracked defect (100% `HTTP 410` failures, GG-063/T-217) — but the interface itself is live code, not a Phase-8-gated design placeholder.
+
 **Version:** 1.0 (DRAFT)  
 **Producer:** C5 Execution Engine  
 **Consumer:** Prediction market venue (external; TBD at ADR-0003)  
@@ -144,6 +146,8 @@
 ---
 
 ## IF-DS-Q-C2 — Qualitative Data Sources → Feature Store *(Phase 6+ / Pending DS-01 operationalization)*
+
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — "SKELETON"/"PENDING: activate when first QS snapshot is populated" is stale.** Per the 2026-07-02 remediation pass to `DATA_FLOWS_LINEAGE.md` (DECISION_LOG 2026-07-02), `QualitativeSignalStore` is live (not a stub) and the F-100+ qualitative feature range has carried a confirmed positive signal since EXP-007 (May 2026). This interface has been active in production, not pending, for some time.
 
 **Version:** 1.0 (SKELETON — 2026-05-28)  
 **Producer:** Qualitative classification CSVs (`qualitative_data/<source>/<QS-ID>_classifications.csv`)  
@@ -206,6 +210,8 @@ Non-matching rows produce NaN for all qualitative feature columns. This is corre
 ---
 
 ## IF-VENUE-ADAPTER — VenueAdapter Protocol (Phase 7+)
+
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — "Phase 7+"/"Phase 7+ multi-venue activation" undersells current status.** `VenueRouter`/`KalshiVenueAdapter` are already live, in-use code paths in Phase 6 paper trading (confirmed via grep: `run_paper_trade.py`, `run_mlb_paper_trade.py`, `run_t3_pretip.py`, `t4_live_runner.py` all import and route through `VenueRouter`) — single-venue (Kalshi-only) operation started well before Phase 7. "Phase 7+" correctly describes when *multi-venue* routing (Polymarket, DFS) activates (gated on operator KYC per CLAUDE.md), not when the protocol/router themselves come online.
 
 **Version:** 1.0 (CANONICAL 2026-05-29)
 **Producer:** KalshiVenueAdapter, PolymarketVenueAdapter, DFS pick'em adapters

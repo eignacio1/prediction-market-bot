@@ -1857,6 +1857,10 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 - [ ] Log any new open questions to OPEN_QUESTIONS.md
 - [ ] Log any new RIDs to RID_LOG.md
 
+## Standing Items (Monthly — GG-074 process fix, adopted 2026-07-06)
+
+- [ ] **Grounding-docs staleness review.** Re-run a file-by-file staleness audit across `01_SPEC/`, `02_ARCHITECTURE_DESIGN/`, `07_TEST_VALIDATION_EVIDENCE/`, `08_MODEL_RISK_GOVERNANCE/` — the structured, point-in-time documents that describe the system's designed shape, as distinct from the rolling logs (MEMORY_BANK.md, this file, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md) that already get updated every session. Tie this to the same cadence as MEMORY_BANK.md's Compass OS Health M1 reporting. Rationale: GG-074 found 19+ files had silently drifted from reality over 5+ weeks with no session-start check catching it, because each document's own "staleness trigger" (e.g., "gate passed," "ADR accepted") fired without prompting a re-read of the document that named the trigger. The rolling-log discipline (Hard Rule 7, session-start Step 1) does not cover this failure mode — it needs its own standing trigger, independent of any single gate closing.
+
 ---
 
 ## Blocked Items

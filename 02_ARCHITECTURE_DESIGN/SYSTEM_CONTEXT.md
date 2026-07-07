@@ -11,6 +11,8 @@
 **Confidence:** 7/10 — External actors identified; venue details pending ADR-0003
 **Decisions logged:** true — System boundary decisions captured in ADR-0001 (scope), ADR-0002 (strategy class), ADR-0003 (venue)
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — several "TBD at ADR-0003" / "Phase 8 only" claims below are stale.** ADR-0003 (2026-05-23) confirmed Kalshi as primary venue — the diagram's "Kalshi / Polymarket (TBD — ADR-0003)" box and EA-02/EA-03/EA-04's "(TBD at ADR-0003)" type cells are resolved, not pending. EA-04's "orders outbound (Phase 8 only)" is also stale: ADR-0008 (2026-05-31) made real Kalshi demo order submission live during Phase 6 paper trading (`PaperTrader.open_position()` submits when an RSA key is loaded), well before Phase 8/G6. G5 has also closed — the venue API's "GATED: G5 + ACC-0002 required" and Context Constraint #2's "Local execution only (Phases 0–5)" describe a milestone that has been passed: the system now runs continuously on a VPS (157.230.91.33) via cron/systemd. Kept in place rather than rewritten since the underlying boundary shape (what's in/out of system scope) is still accurate — only the phase/gate status labels have moved on.
+
 ---
 
 ## System Boundary Diagram

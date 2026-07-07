@@ -12,6 +12,8 @@
 **Confidence:** 7/10 — Known failure modes catalogued; live-mode failure modes expand at G5
 **Decisions logged:** true — FM-01–FM-08 failure mode prioritization captured at G2 gate (APR-0004) and G5 kill switch drill (APR-0013)  
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — real gap found, not just staleness.** G5 is closed and the system has been running paper trading in production for weeks, but of the four runbooks marked "(to be created at G5)" below (FM-01 ingestion-failure, FM-02 data-contamination, FM-05 order-duplication, FM-07 audit-log), **none exist** — confirmed via directory listing of `10_INFRA_OPERATIONS/RUNBOOKS/`, which contains only `RUNBOOK_kill-switch.md`, `RUNBOOK_model-drift.md`, and `RUNBOOK_polymarket-activation.md` (matching FM-04/FM-06 and FM-03 respectively, both correctly un-flagged below). This is a genuine operational-readiness gap, not merely a stale citation: FM-02 (data contamination — rated CRITICAL, "silently destroys validity of all downstream validation") and FM-04's sibling FM-05 (order duplication — rated HIGH) have no runbook despite the system now placing real Kalshi demo orders (ADR-0008) and running live MLB paper trading. Recommend registering this as its own governance gap (candidate: missing G5-promised incident runbooks) rather than treating it as closed by this note.
+
 ---
 
 ## FM-01 — Data Ingestion Failure (C1)

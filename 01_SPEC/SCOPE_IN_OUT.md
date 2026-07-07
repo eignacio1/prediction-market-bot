@@ -14,6 +14,8 @@
 
 ## IN SCOPE (Current: Phases 0–4)
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — the "Current: Phases 0–4" header below is stale.** G0–G5 are CLOSED; the system is Phase 6/7 ACTIVE (paper trading live on VPS, MLB is the active pool per CLAUDE.md). All four scope tiers below (Phases 0–4, 5, 6, 8) are now concurrently true of the shipped system, not sequential future states — Phase 6 (paper trading) and Phase 5 (live data/dashboard) items have been operating in production for weeks; only the Phase 8 (live capital) tier remains genuinely not-yet-entered, gated on G6. See `01_SPEC/ROADMAP_MILESTONES.md` for the corrected phase table.
+
 | Item | Detail |
 |------|--------|
 | Prediction market forecasting | Generating calibrated probability estimates for binary/categorical prediction market events |
@@ -33,6 +35,8 @@
 | Monitoring + Kill Switch (C7) | Full wiring and testing of C7; G5 gate requirement |
 
 ## IN SCOPE (Paper Trading — Phase 6, pending ADR-0004)
+
+**⚠️ Corrected 2026-07-06 — "pending ADR-0004" is stale; ADR-0004 was accepted and paper trading has been live in production for weeks (MLB T1/T2/T3/T4M-PROJ all cron/systemd-active; NBA T1 completed 158/30 resolved before being tabled).**
 
 | Item | Detail |
 |------|--------|

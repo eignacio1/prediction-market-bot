@@ -95,6 +95,8 @@ The framework is built on publicly available NBA data and tracking data. Data so
 
 ## DS-02 — Market Data Feed
 
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — "PENDING"/"TBD at ADR-0003" below is stale.** ADR-0003 (2026-05-23) confirmed Kalshi as primary venue and the live market data feed (KXNBAPTS for NBA, KXMLBHIT for MLB) has been active in production for weeks. "Domain: NBA basketball" is also stale — MLB is now the ACTIVE pool with its own KXMLBHIT market data feed; NBA is DARK/FROZEN.
+
 | Field | Detail |
 |-------|--------|
 | Dataset name | Market data feed |
@@ -107,6 +109,8 @@ The framework is built on publicly available NBA data and tracking data. Data so
 ---
 
 ## DS-03 — Outcome / Resolution Data
+
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — "PENDING" below is stale; ESPN/MLB Stats API outcome resolution has been live for both NBA and MLB for weeks, on the separate ingestion path this section requires.** "Domain: NBA" is also stale — MLB outcome resolution is equally active; NBA is DARK/FROZEN, not the sole domain.
 
 | Field | Detail |
 |-------|--------|
