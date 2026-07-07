@@ -1666,6 +1666,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-098 — MLB T1's Positive Aggregate EV Is Carried Almost Entirely by a Small NO-Side Subset; the YES-Direction Sub-Book Is Anti-Predictive
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-098 |
+| Category | Systemic blind spot — a headline commercial-validation metric (EXP-017 Tier-1 +$0.1009/bet) that is not internally decomposed can mask a losing sub-strategy inside a "positive" aggregate. |
+| What was missed | EXP-017 reported a single aggregate EV/bet and a monotonicity guard, but never split the book by bet DIRECTION. Decomposition (EXP-017B) shows all positive edge is NO-side (n=140, +8.71%/staked, +$125.50) while the YES sub-book (n=11) is −62.11%/staked (−$110.27), erasing ~88% of NO profit. The aggregate +$0.1009/bet is bootstrap-insignificant (95% CI [−$1.86,+$2.13], P(EV>0)=53%). |
+| When it should have been caught | At the EXP-017 Tier-1 read (2026-07-06). A Tier verdict on an aggregate should have been paired with a direction/threshold/edge-bucket decomposition before being cited as evidence of edge. |
+| Phases it survived | MLB paper-trading G6 pursuit (49→151 resolved). The EXP-017 script has a monotonicity guard (GG-037/T-177 class) but no direction split. |
+| Why it survived | No internal-validity companion existed for EXP-017; the aggregate + monotonicity guard were treated as sufficient. EXP-017B/C/D were built this session to fill that gap. |
+| Impact | MEDIUM. Does NOT invalidate the Tier-1 milestone, but materially qualifies it: the edge is NO-only, non-monotonic in realized profit, tail-concentrated, and aggregate-insignificant. EXP-017C shows the model is nonetheless well-calibrated (slope CI includes 1) — so the shortfall vs expected is variance, not miscalibration. Risk is over-crediting the aggregate when reasoning about G6/live readiness. |
+| Discovery | 2026-07-07, edge-strategy decomposition session (EXP-017B/C/D), via direct decomposition of the live cached book (`logs/.vps_portfolio_cache_mlb.json`, n=151). Headline reproduced to 4 dp before decomposing. |
+| Resolution | (1) EXP-017B/C/D registered as the standing internal-validity companion to EXP-017 (re-run as n grows). (2) ADR-0042 (PROPOSED) adopts a reversible YES-quarantine + the A/B harness holdout-gate. (3) T-250 wires the flag on sign-off; T-251 re-runs at higher n. Does NOT close GG-004. |
+| Status | OPEN — registered 2026-07-07. Pre-registered re-review trigger: re-evaluate YES sub-book at n_YES ≥ 30 (currently 11). Watch item, not a stop-work signal. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

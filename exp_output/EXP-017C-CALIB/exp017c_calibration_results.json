@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "portfolio": "logs/.vps_portfolio_cache_mlb.json",
+    "n": 151,
+    "bins": 5,
+    "boot": 10000,
+    "seed": 17
+  },
+  "reliability_all": [
+    {
+      "bin": "[0.00,0.20)",
+      "n": 28,
+      "mean_forecast": 0.1790079642857143,
+      "empirical_rate": 0.2857142857142857,
+      "gap": -0.1067063214285714
+    },
+    {
+      "bin": "[0.20,0.40)",
+      "n": 41,
+      "mean_forecast": 0.2595389268292684,
+      "empirical_rate": 0.21951219512195122,
+      "gap": 0.04002673170731716
+    },
+    {
+      "bin": "[0.40,0.60)",
+      "n": 43,
+      "mean_forecast": 0.5576554418604651,
+      "empirical_rate": 0.6511627906976745,
+      "gap": -0.09350734883720935
+    },
+    {
+      "bin": "[0.60,0.80)",
+      "n": 39,
+      "mean_forecast": 0.6542794102564102,
+      "empirical_rate": 0.6153846153846154,
+      "gap": 0.03889479487179481
+    },
+    {
+      "bin": "[0.80,1.00)",
+      "n": 0
+    }
+  ],
+  "brier_murphy_all": {
+    "brier_full": 0.21835673267221192,
+    "brier_binned": 0.2156050641961474,
+    "reliability": 0.005427004266196807,
+    "resolution": 0.037968951166054234,
+    "uncertainty": 0.24814701109600457,
+    "decomposition_(rel-res+unc)": 0.21560506419614714,
+    "binning_gap_(full-binned)": 0.002751668476064534,
+    "base_rate": 0.45695364238410596,
+    "recompose_ok": true
+  },
+  "ece_all": 0.06732838410596027,
+  "calibration_fit_all": {
+    "intercept_a": 0.08554978083730133,
+    "slope_b": 0.852011837780901,
+    "a_ci": [
+      -0.2715228084712768,
+      0.45282804111917113
+    ],
+    "b_ci": [
+      0.4681365703263662,
+      1.3155114729685229
+    ],
+    "b_excludes_1": false,
+    "interpretation": "overconfident"
+  },
+  "per_threshold": {
+    "k=1": {
+      "n": 82,
+      "reliability": [
+        {
+          "bin": "[0.00,0.20)",
+          "n": 0
+        },
+        {
+          "bin": "[0.20,0.40)",
+          "n": 0
+        },
+        {
+          "bin": "[0.40,0.60)",
+          "n": 43,
+          "mean_forecast": 0.5576554418604651,
+          "empirical_rate": 0.6511627906976745,
+          "gap": -0.09350734883720935
+        },
+        {
+          "bin": "[0.60,0.80)",
+          "n": 39,
+          "mean_forecast": 0.6542794102564102,
+          "empirical_rate": 0.6153846153846154,
+          "gap": 0.03889479487179481
+        },
+        {
+          "bin": "[0.80,1.00)",
+          "n": 0
+        }
+      ],
+      "brier_murphy": {
+        "brier_full": 0.23831537868949998,
+        "brier_binned": 0.23699007723430757,
+        "reliability": 0.005304576121693582,
+        "resolution": 0.00031925795936697555,
+        "uncertainty": 0.23200475907198095,
+        "decomposition_(rel-res+unc)": 0.23699007723430757,
+        "binning_gap_(full-binned)": 0.0013253014551924125,
+        "base_rate": 0.6341463414634146,
+        "recompose_ok": true
+      },
+      "ece": 0.06753308536585366,
+      "calibration_fit": {
+        "intercept_a": 0.6766856309686072,
+        "slope_b": -0.29434801334344135,
+        "a_ci": [
+          -0.21086414108664808,
+          1.7359465297249508
+        ],
+        "b_ci": [
+          -2.2606573227276274,
+          1.7383719865935379
+        ],
+        "b_excludes_1": false,
+        "interpretation": "overconfident"
+      }
+    },
+    "k=2": {
+      "n": 69,
+      "reliability": [
+        {
+          "bin": "[0.00,0.20)",
+          "n": 28,
+          "mean_forecast": 0.1790079642857143,
+          "empirical_rate": 0.2857142857142857,
+          "gap": -0.1067063214285714
+        },
+        {
+          "bin": "[0.20,0.40)",
+          "n": 41,
+          "mean_forecast": 0.2595389268292684,
+          "empirical_rate": 0.21951219512195122,
+          "gap": 0.04002673170731716
+        },
+        {
+          "bin": "[0.40,0.60)",
+          "n": 0
+        },
+        {
+          "bin": "[0.60,0.80)",
+          "n": 0
+        },
+        {
+          "bin": "[0.80,1.00)",
+          "n": 0
+        }
+      ],
+      "brier_murphy": {
+        "brier_full": 0.19463776204297095,
+        "brier_binned": 0.19019099073050708,
+        "reliability": 0.005572498582852813,
+        "resolution": 0.0010567861552231504,
+        "uncertainty": 0.18567527830287756,
+        "decomposition_(rel-res+unc)": 0.19019099073050721,
+        "binning_gap_(full-binned)": 0.004446771312463876,
+        "base_rate": 0.2463768115942029,
+        "recompose_ok": true
+      },
+      "ece": 0.06708511594202902,
+      "calibration_fit": {
+        "intercept_a": -2.3193083668220846,
+        "slope_b": -0.9462882751493892,
+        "a_ci": [
+          -5.055575637671558,
+          -0.20235202145820522
+        ],
+        "b_ci": [
+          -2.9063330217326526,
+          0.7104999496107028
+        ],
+        "b_excludes_1": true,
+        "interpretation": "overconfident"
+      }
+    }
+  },
+  "edge_realization": [
+    {
+      "bucket": "1_edge<=0",
+      "n": 3,
+      "model_expected_$/staked": -0.010428349944629193,
+      "calibrated_expected_$/staked": -0.029511835712834184,
+      "realized_$/staked": -1.0,
+      "calib_gap(model-calib)": 0.01908348576820499,
+      "residual(calib-realized)": 0.9704881642871658
+    },
+    {
+      "bucket": "2_(0,0.03]",
+      "n": 42,
+      "model_expected_$/staked": 0.038422744279046656,
+      "calibrated_expected_$/staked": 0.00352610860832562,
+      "realized_$/staked": 0.07818958527422128,
+      "calib_gap(model-calib)": 0.034896635670721037,
+      "residual(calib-realized)": -0.07466347666589565
+    },
+    {
+      "bucket": "3_(0.03,0.06]",
+      "n": 41,
+      "model_expected_$/staked": 0.10382111863935771,
+      "calibrated_expected_$/staked": 0.07193029904612794,
+      "realized_$/staked": -0.23264310768680774,
+      "calib_gap(model-calib)": 0.03189081959322977,
+      "residual(calib-realized)": 0.30457340673293565
+    },
+    {
+      "bucket": "4_(0.06,0.10]",
+      "n": 45,
+      "model_expected_$/staked": 0.19939218758990856,
+      "calibrated_expected_$/staked": 0.17647349325574122,
+      "realized_$/staked": -0.051176837697961976,
+      "calib_gap(model-calib)": 0.02291869433416735,
+      "residual(calib-realized)": 0.22765033095370318
+    },
+    {
+      "bucket": "5_>0.10",
+      "n": 20,
+      "model_expected_$/staked": 0.35547772829287816,
+      "calibrated_expected_$/staked": 0.3164724510977424,
+      "realized_$/staked": 0.34257282536527517,
+      "calib_gap(model-calib)": 0.039005277195135746,
+      "residual(calib-realized)": -0.026100374267532755
+    }
+  ],
+  "invariants": {
+    "reliability_n_sums": 151,
+    "murphy_recompose_ok": true,
+    "n_total": 151
+  }
+}

@@ -30,6 +30,18 @@
 
 ---
 
+## SESSION — EDGE-STRATEGY DECOMPOSITION (2026-07-07; concurrent w/ SESSION 122–124, canonical # TBD)
+
+**EXP-017B/C/D COMPLETE.** Internal-validity decomposition of the n=151 MLB T1 Tier-1 book. Findings: edge is NO-only, non-monotonic, tail-concentrated, and aggregate-insignificant (EXP-017B); the model is well-calibrated and the shortfall is variance, not miscalibration (EXP-017C); YES-quarantine is the only holdout-defensible fix, while min-edge/tail filtering and recalibration fail holdout (EXP-017D). Registered **GG-098**; drafted **ADR-0042 (PROPOSED)**. Scripts: `scripts/run_exp017b_decomp_mlb.py`, `run_exp017c_calibration_mlb.py`, `ab_harness.py`, `run_ab_experiment.py`. Findings under `exp_output/EXP-017{B,C,D}-*`. Numbering renumbered up (ADR-0041→0042, GG-097→098, T-247→250) per SESSION_CLAIMS reconciliation — re-verify at push time.
+
+| Task | Detail |
+|------|--------|
+| T-250 | **Operator/DS decision + wiring:** on sign-off of ADR-0042 (D1), add a reversible YES-quarantine config flag to MLB T1 selection (`paper_trader.py`/band selection). Pre-registered re-review trigger: re-evaluate YES sub-book at n_YES≥30 (currently 11). NOT started — gated on sign-off. |
+| T-251 | **Re-run EXP-017B/C/D as sample grows** toward Tier 2 (n≥500). The decomposition + harness are the standing internal-validity companions to EXP-017; most subgroup verdicts are UNDERPOWERED purely due to n. |
+| T-252 | **Route all future enhancers through the A/B harness holdout gate** (ADR-0042 D2). Applies to the MLB PAM build (GG-094 — multi-session effort, deferred per operator), psychological gradients, multi-factor formula composition. No enhancer activates live without a DEFENSIBLE_IMPROVEMENT holdout verdict. |
+
+---
+
 ## STANDING OPERATOR DIRECTIVE — NBA WORK TABLED (2026-07-01, SESSION 104)
 
 **Operator directive (Earl Ignacio, 2026-07-01):** Table all NBA component work — no new builds, fixes, or investigation beyond passive monitoring — until approximately **1 month before NBA 2026-27 season tip-off**. Rationale, verbatim: *"We're focused on what's actually live right now — and that market is the MLB."* MLB is the sole active development priority until this window opens.
