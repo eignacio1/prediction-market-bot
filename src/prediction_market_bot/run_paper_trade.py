@@ -662,6 +662,7 @@ def main() -> None:
                     "gross_edge": float(forecast_rec["gross_edge"]),  # pre-fee (for paper_trader annotation)
                     "t3_signal": forecast_rec.get("t3_signal", "NEUTRAL"),  # EXP-018 isolation
                     "t1_edge": forecast_rec.get("t1_edge", forecast_rec["gross_edge"]),  # pre-T3 raw edge
+                    "band": "T1",  # T-253
                 }
                 ok_pos, pos = trader.open_position(
                     approval=approval,

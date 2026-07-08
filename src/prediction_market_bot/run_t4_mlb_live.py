@@ -1067,7 +1067,8 @@ def _run_cycle(
             # GG-087: a NO contract's market price is (1 - mip), not mip.
             approved_size = mip if direction == "YES" else (1.0 - mip)
             approval = {**approval, "approved_size": approved_size,
-                        "model_p": p_t4, "edge": directional_net_edge, "gross_edge": gross_edge}
+                        "model_p": p_t4, "edge": directional_net_edge, "gross_edge": gross_edge,
+                        "band": "T4M-PROJ"}  # T-253
 
             if t4_deployed_usd + approved_size > t4_band_budget:
                 logger.info(

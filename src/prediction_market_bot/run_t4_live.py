@@ -697,6 +697,7 @@ def _run_cycle(
             approval = {**approval, "approved_size": approved_size}
 
             approval = {**approval, "model_p": float(p_est), "edge": float(net_edge), "gross_edge": float(gross_edge)}
+            approval = {**approval, "band": "T4"}  # T-253
 
             # ---- Ghost protection: stage before portfolio write ----
             valid_until = (
