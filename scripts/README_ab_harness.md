@@ -13,7 +13,8 @@ A change is **adopt-worthy** only if it produces a **DEFENSIBLE_IMPROVEMENT**: a
 - **Strategy** (`ab_harness.Strategy`): `name`, `description`, **`hypothesis`** (pre-register the expected direction *before* running), `select(rec)->bool`, optional `rescore(rec,params)->model_p`, optional `_fitter(train)->params`. Rescoring changes selection + calibration metrics only, never a bet's pnl.
 - **Primary metric**: `pnl_per_dollar` (Σpnl/Σsize) — sizing-neutral, so a variant can't win just by resizing. Also reports EV/bet ($), win rate, Brier, calibration slope.
 - **Comparison**: paired bootstrap when B ⊆ A (nested — the normal case for filters), else independent. Paired preserves shared-bet covariance and is the correct, tighter test. Reports Δ point, 95% CI, P(Δ>0), and for filters the removed-vs-kept diagnostic (a filter is only defensible if the bets it drops are distinguishably worse).
-- **Verdicts**: `DEFENSIBLE_IMPROVEMENT` / `HARMFUL` / `INCONCLUSIVE` / `UNDERPOWERED`.
+- **Verdicts**: `DEFENSIBLE_IMPROVEMENT` / `HARMFUL` / `INCONCLUSIVE` / `UNDERPOWERED` / `UNDERPOWERED_REMOVAL`.
+- **Over-calibration guard (`MIN_REMOVED_N`=30):** a category-removal filter (e.g. "drop YES bets") cannot earn `DEFENSIBLE_IMPROVEMENT` unless the REMOVED set is itself ≥30. Dropping *k* known-losing bets tautologically improves the book, but *k*<30 cannot establish that the removed *category* is structurally negative-EV — it is variance. Such a filter returns `UNDERPOWERED_REMOVAL`: monitor and keep collecting, do not permanently drop the category. (Added 2026-07-07 after a YES-quarantine over-calibration on n≈11 was rejected by the operator; see ADR-0042.)
 
 ## Usage
 

@@ -46,4 +46,16 @@ Originally reserved ADR-0041/GG-097/T-247; a concurrent session (GG-095) had tak
 
 ## Operator to-do (outside this session's reach)
 
-Push local commits to origin and deploy if desired; assign canonical session number; give ADR-0042 D1/D2 sign-off decision.
+Push local commits to origin and deploy if desired; assign canonical session number; give ADR-0042 **D2** sign-off decision (D1 resolved — see correction below).
+
+---
+
+## CORRECTION (2026-07-07, operator review)
+
+Operator rejected the YES-quarantine (ADR-0042 D1) as over-calibration on n≈11 — correctly. Actions taken:
+
+- **ADR-0042 D1 rewritten:** REJECT quarantine → monitor YES, keep collecting. Revisit only at n_YES≥40 with Fisher p<0.05 AND an identified mechanism. No capital action.
+- **Harness hardened:** added `MIN_REMOVED_N`=30 guard; category-removal filters now return `UNDERPOWERED_REMOVAL` (quarantine_YES now returns this in both modes), not DEFENSIBLE. Encodes the anti-over-calibration principle in the tool.
+- **New evidence:** live book grew **n=151→169**; aggregate sign-flipped **+$15.23→−$44.76** (variance regime confirmed). YES k=2 went 0/7 but that is variance-consistent (Binomial P=0.073); model *under*-predicts k=2 at threshold level — no mechanism.
+- **Docs corrected:** GG-098 (reframed, no "anti-predictive" overclaim), DECISION_LOG (correction row + index row), TODO_NEXT T-250 (reframed to monitor), MEMORY_BANK delta, FINDINGS_ab.md (correction banner), README_ab_harness.md (guard documented).
+- **Principle recorded:** realign a component if the data demands it; do not destroy built capability (or its data stream) on a tiny sample. D2 (harness-as-gate) stands and is stronger for the guard.

@@ -1666,7 +1666,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-098 — MLB T1's Positive Aggregate EV Is Carried Almost Entirely by a Small NO-Side Subset; the YES-Direction Sub-Book Is Anti-Predictive
+### GG-098 — MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (Small-n Subset Structure Masked; Aggregate Sign-Flipped n=151→169)
 
 | Field | Detail |
 |---|---|
@@ -1678,8 +1678,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | No internal-validity companion existed for EXP-017; the aggregate + monotonicity guard were treated as sufficient. EXP-017B/C/D were built this session to fill that gap. |
 | Impact | MEDIUM. Does NOT invalidate the Tier-1 milestone, but materially qualifies it: the edge is NO-only, non-monotonic in realized profit, tail-concentrated, and aggregate-insignificant. EXP-017C shows the model is nonetheless well-calibrated (slope CI includes 1) — so the shortfall vs expected is variance, not miscalibration. Risk is over-crediting the aggregate when reasoning about G6/live readiness. |
 | Discovery | 2026-07-07, edge-strategy decomposition session (EXP-017B/C/D), via direct decomposition of the live cached book (`logs/.vps_portfolio_cache_mlb.json`, n=151). Headline reproduced to 4 dp before decomposing. |
-| Resolution | (1) EXP-017B/C/D registered as the standing internal-validity companion to EXP-017 (re-run as n grows). (2) ADR-0042 (PROPOSED) adopts a reversible YES-quarantine + the A/B harness holdout-gate. (3) T-250 wires the flag on sign-off; T-251 re-runs at higher n. Does NOT close GG-004. |
-| Status | OPEN — registered 2026-07-07. Pre-registered re-review trigger: re-evaluate YES sub-book at n_YES ≥ 30 (currently 11). Watch item, not a stop-work signal. |
+| Resolution | (1) EXP-017B/C/D registered as the standing internal-validity companion to EXP-017 (re-run as n grows). (2) ADR-0042 — **corrected 2026-07-07**: the original proposal to quarantine YES was REJECTED by the operator as over-calibration on n≈11; ADR now monitors YES and keeps collecting. (3) A/B harness given a `MIN_REMOVED_N`=30 guard so category-removal filters return `UNDERPOWERED_REMOVAL` not DEFENSIBLE on tiny removed sets. (4) T-250 reframed to monitor-and-investigate-at-higher-n; T-251 re-runs the decomposition as n grows. Does NOT close GG-004. |
+| Status | OPEN — registered 2026-07-07. The core gap (aggregate metrics cited as milestones while variance-dominated) is reinforced by the aggregate sign-flipping +$15.23 (n=151) → −$44.76 (n=169) in 18 bets. YES underperformance is variance-consistent (Binomial P(≤0)=0.073 on the k=2 0/7 run; model under-predicts k=2 at threshold level). Pre-registered monitor: revisit YES only at n_YES ≥ 40 with Fisher p<0.05 AND an identified mechanism. Watch item — no quarantine, no stop-work. |
+
+---
+
+### GG-099 — Anti-Predictive / Edge-Monotonicity Guards Are Not Wired Per-Band; the ACTIVE T4M-PROJ Band Has No Resolved-Outcome Join, So Its Edge Signal Cannot Be Checked at All
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-099 |
+| Category | Systemic blind spot — a load-bearing safety check (the GG-037/T-177 anti-predictive / edge-monotonicity guard) exists for one band but is absent from, or unmeasurable for, the others — most critically the active, highest-throughput one. |
+| What was missed | The anti-predictive guard (does the edge>0 cohort win MORE than edge≤0, or inversely?) lives only in offline scripts pointed at the T1 pregame book (`run_mlb_calib_monitor.py`, `run_exp017_mlb.py`, EXP-017B/C/D). It is NOT wired per-band. Verified by grep: `run_t4_mlb_live.py` (T4M-PROJ, ACTIVE) and `t4_mlb_execution_engine.py` (T4M-ARITH/FLOW) contain ZERO anti-predictive/monotonicity/fisher logic. `c7_monitoring/monitor.py` has none either (its only `monotonic` tokens are `time.monotonic()`). |
+| When it should have been caught | At T4M-PROJ activation (ADR-0023) — a band going live should not be exempt from the same predictive-integrity check its T1 sibling has. The GG-037 NBA finding (anti-predictive edge in an efficient market) is the precedent that makes this check mandatory for every live band. |
+| Phases it survived | T4M-PROJ's entire live history (the `t4-mlb` systemd service; `t4_position_trajectories.jsonl` has 3,097 decision records, 1,532 `FIRE_BAYESIAN` actions). None have ever been evaluated for anti-predictiveness. |
+| Impact | HIGH (deferred severity). Three compounding holes: (1) **T4M-PROJ has no resolved-outcome join at all** — its trajectory log records decision-time state (`p_t4`, `mip`, `action`) but no `outcome`/`pnl`/`resolved` field, and there is no T4 resolved-bet ledger, so its edge signal is structurally unmeasurable as instrumented. If T4M-PROJ's edge were inverse (the GG-037 pattern) there is currently no way to detect it. (2) The MLB book is **not band-tagged** (169 closed = 167 `FCST-M` + 2 `T2-MLB`, no `band` field), so even the T1 monitors cannot separate bands. (3) `run_t177_edge_monitor.py` defaults to the **stale legacy NBA portfolio** (`logs/paper_portfolio.json`), not the live MLB book, and is pool-level not per-band. Capital risk is currently paper-only, but this must be closed before any T4 band informs live capital. |
+| Discovery | 2026-07-07, code audit prompted by operator question ("do we have anti-predictive structures for ALL decision trees, especially T4?"). Direct grep of src/scripts + inspection of `t4_position_trajectories.jsonl` schema and the MLB book's `forecast_id` tags. |
+| Resolution | Iteration task set registered in TODO_NEXT: T-253 (band-tag the resolved-bet stream), T-254 (T4M-PROJ resolved-outcome join → T4 resolved ledger), T-255 (per-band anti-predictive + calibration monitor, reusing the A/B harness / EXP-017 monotonicity logic), T-256 (fix `run_t177_edge_monitor` default + make band-aware), T-257 (schedule the per-band monitor + band-level anti-predictive alarm), T-258 (verification: backfill on T1 reproduces EXP-017, add unit tests). See ADR-0042 D2 (harness-as-gate) — this operationalizes it for live bands. |
+| Status | OPEN — registered 2026-07-07. Prerequisite before any T4 band is cited as edge evidence or informs live capital. |
 
 ---
 
