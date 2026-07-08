@@ -36,9 +36,24 @@
 
 | Task | Detail |
 |------|--------|
-| T-250 | **Operator/DS decision + wiring:** on sign-off of ADR-0042 (D1), add a reversible YES-quarantine config flag to MLB T1 selection (`paper_trader.py`/band selection). Pre-registered re-review trigger: re-evaluate YES sub-book at n_YES≥30 (currently 11). NOT started — gated on sign-off. |
+| T-250 | **[REFRAMED 2026-07-07 — quarantine REJECTED by operator]** Do NOT quarantine YES (over-calibration on n≈11). Instead **monitor** the YES sub-book and keep collecting. Revisit only at n_YES≥40 if YES EV is still negative with Fisher p<0.05 AND a mechanism is identified (threshold/player-specific over-prediction, not a bare win-rate gap); a realignment would then adjust that mechanism, never blanket-drop the direction. No wiring, no capital action. Book already grew 151→169 with aggregate sign-flipping +$15.23→−$44.76 — variance regime; nothing to act on. |
 | T-251 | **Re-run EXP-017B/C/D as sample grows** toward Tier 2 (n≥500). The decomposition + harness are the standing internal-validity companions to EXP-017; most subgroup verdicts are UNDERPOWERED purely due to n. |
 | T-252 | **Route all future enhancers through the A/B harness holdout gate** (ADR-0042 D2). Applies to the MLB PAM build (GG-094 — multi-session effort, deferred per operator), psychological gradients, multi-factor formula composition. No enhancer activates live without a DEFENSIBLE_IMPROVEMENT holdout verdict. |
+
+---
+
+## GG-099 ITERATION — PER-BAND ANTI-PREDICTIVE COVERAGE (registered 2026-07-07)
+
+Anti-predictive/edge-monotonicity guards (GG-037/T-177) are only wired to the T1 pregame book; the ACTIVE T4M-PROJ band has no resolved-outcome join and cannot be checked at all. Fix set below — dependency-ordered, parallelizable across terminals. **Gate:** no T4 band may be cited as edge evidence or inform live capital until T-255 runs clean on it (ADR-0042 D2).
+
+| Task | Depends on | Detail |
+|------|-----------|--------|
+| **T-253** | — (parallel) | **Band-tag the resolved-bet stream.** Add an explicit `band` field (T1/T2/T3/T4M-PROJ/T4M-ARITH/T4M-FLOW) to every position written by `paper_trader.py` and the T4 engines. Backfill existing MLB book from `forecast_id` prefix (`FCST-M`→T1, `T2-MLB`→T2). Prereq for any per-band split. |
+| **T-254** | — (parallel) | **T4M-PROJ resolved-outcome join.** `t4_position_trajectories.jsonl` logs decisions but no outcome. Build a T4 resolved ledger (or extend the trajectory record) that joins each `FIRE_BAYESIAN` decision to the actual resolved hit outcome via `run_resolve_mlb.py`/`fetch_actual_hits`, writing `outcome`/`pnl`/`model_p`/`mip`/`edge`. Without this, T4 predictiveness is unmeasurable. Biggest gap. |
+| **T-255** | T-253, T-254 | **Per-band anti-predictive + calibration monitor.** Generalize the EXP-017 / `ab_harness` monotonicity + Fisher + calibration-slope + ECE checks to run **per band** on each band's resolved stream, incl. T4M-PROJ. Emit the GG-037 `ANTI-PREDICTIVE` verdict per band. Reuse `run_exp017c_calibration_mlb.py` helpers; do not reimplement fee/edge (GG-077 direction-aware). |
+| **T-256** | — (parallel) | **Fix `run_t177_edge_monitor.py`.** Default currently points at the stale legacy NBA portfolio (`logs/paper_portfolio.json`). Repoint to the live MLB book and make it band-aware (or fold into T-255). |
+| **T-257** | T-255 | **Schedule + band-level alarm.** Wire the per-band monitor to cron/systemd; surface a band-level `ANTI_PREDICTIVE` alarm (warning first; a band-level halt only after DS review — do NOT auto-kill on small n, per the GG-098/MIN_REMOVED_N lesson). |
+| **T-258** | T-255 (, T-257) | **Verification.** Backfill T-255 on the T1 book — must reproduce EXP-017's monotonicity/anti-predictive verdict (regression anchor). Add unit tests for the per-band monitor incl. a synthetic anti-predictive fixture (also closes the spirit of GG-054's "guard never fired" concern for this new guard). |
 
 ---
 

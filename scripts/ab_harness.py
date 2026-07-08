@@ -57,7 +57,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_exp017b_decomp_mlb as d17b   # noqa: E402  loader
 import run_exp017c_calibration_mlb as c17c  # noqa: E402  logit/irls/sigmoid
 
-MIN_N = 30           # ADR-0005 paper-gate floor; below this Δ is UNDERPOWERED
+MIN_N = 30           # ADR-0005 paper-gate floor; below this the KEPT set Δ is UNDERPOWERED
+MIN_REMOVED_N = 30   # a category-removal filter cannot be called DEFENSIBLE off a tiny
+                     # removed set: dropping k known-losing bets tautologically improves
+                     # the book, but k<MIN_REMOVED_N cannot establish that the removed
+                     # CATEGORY is structurally negative-EV (over-calibration guard).
 P_THRESHOLD = 0.05
 
 
@@ -209,10 +213,17 @@ def compare(A: list[dict], B: list[dict], boot: int, rng: random.Random) -> dict
                          "p_kept_gt_removed": p_kept_gt_removed}
 
     ci_excludes_0 = (lo > 0) or (hi < 0)
+    n_removed = removed_block["n_removed"] if removed_block else None
     if mB["n"] < MIN_N:
         verdict = "UNDERPOWERED"
     elif ci_excludes_0 and d_point > 0:
-        verdict = "DEFENSIBLE_IMPROVEMENT"
+        # Guard: a filter that removes a category cannot be DEFENSIBLE for
+        # permanent adoption unless the removed set is itself large enough to
+        # conclude the category (not just these few draws) is negative-EV.
+        if n_removed is not None and n_removed < MIN_REMOVED_N:
+            verdict = "UNDERPOWERED_REMOVAL"
+        else:
+            verdict = "DEFENSIBLE_IMPROVEMENT"
     elif ci_excludes_0 and d_point < 0:
         verdict = "HARMFUL"
     else:

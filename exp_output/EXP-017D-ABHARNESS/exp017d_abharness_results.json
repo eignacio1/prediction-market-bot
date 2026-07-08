@@ -1,7 +1,7 @@
 {
   "meta": {
     "portfolio": "logs/.vps_portfolio_cache_mlb.json",
-    "n": 151,
+    "n": 169,
     "cutoff": "2026-07-03",
     "boot": 10000,
     "seed": 17
@@ -9,161 +9,161 @@
   "in_sample": {
     "universe": {
       "mode": "in_sample",
-      "n": 151
+      "n": 169
     },
     "baseline": "baseline",
     "baseline_metrics": {
-      "n": 151,
-      "win_rate": 0.4966887417218543,
-      "ev_per_bet_usd": 0.10087086092715268,
-      "pnl_per_dollar": 0.00940778251497086,
-      "total_pnl": 15.231500000000054,
-      "brier": 0.21835673267221192,
-      "calib_slope": 0.852011837780901
+      "n": 169,
+      "win_rate": 0.47928994082840237,
+      "ev_per_bet_usd": -0.2648650887573961,
+      "pnl_per_dollar": -0.02481329137676285,
+      "total_pnl": -44.76219999999994,
+      "brier": 0.22337499094527208,
+      "calib_slope": 0.8086468398745974
     },
     "comparisons": {
       "quarantine_YES": {
         "hypothesis": "EXP-017B: YES is anti-predictive (-62%/staked, n=11) -> removing it should IMPROVE the book.",
         "metrics_A": {
-          "n": 151,
-          "win_rate": 0.4966887417218543,
-          "ev_per_bet_usd": 0.10087086092715268,
-          "pnl_per_dollar": 0.00940778251497086,
-          "total_pnl": 15.231500000000054,
-          "brier": 0.21835673267221192,
-          "calib_slope": 0.852011837780901
+          "n": 169,
+          "win_rate": 0.47928994082840237,
+          "ev_per_bet_usd": -0.2648650887573961,
+          "pnl_per_dollar": -0.02481329137676285,
+          "total_pnl": -44.76219999999994,
+          "brier": 0.22337499094527208,
+          "calib_slope": 0.8086468398745974
         },
         "metrics_B": {
-          "n": 140,
-          "win_rate": 0.5214285714285715,
-          "ev_per_bet_usd": 0.8964157142857146,
-          "pnl_per_dollar": 0.08706036227758444,
-          "total_pnl": 125.49820000000005,
-          "brier": 0.21909790027990003,
-          "calib_slope": 0.8911632398545407
+          "n": 157,
+          "win_rate": 0.5031847133757962,
+          "ev_per_bet_usd": 0.44425159235668843,
+          "pnl_per_dollar": 0.042995792857276754,
+          "total_pnl": 69.74750000000009,
+          "brier": 0.2254209567040318,
+          "calib_slope": 0.8341786381677195
         },
-        "delta_ppd_point": 0.07765257976261358,
+        "delta_ppd_point": 0.06780908423403961,
         "delta_ppd_ci": [
-          0.017126353387645996,
-          0.14995334798925142
+          0.014771293656957257,
+          0.13123328792167888
         ],
-        "p_improve": 0.9956,
+        "p_improve": 0.9953,
         "boot_method": "paired",
-        "verdict": "DEFENSIBLE_IMPROVEMENT",
+        "verdict": "UNDERPOWERED_REMOVAL",
         "filter_diag": {
-          "n_removed": 11,
-          "removed_ppd": -0.6211368603681756,
-          "removed_total_pnl": -110.2667,
-          "kept_ppd": 0.08706036227758444,
-          "p_kept_gt_removed": 0.9972
+          "n_removed": 12,
+          "removed_ppd": -0.6299806895641122,
+          "removed_total_pnl": -114.5097,
+          "kept_ppd": 0.042995792857276754,
+          "p_kept_gt_removed": 0.9971
         }
       },
       "min_edge_0.10": {
         "hypothesis": "EXP-017B: profit concentrates in the >0.10 tail -> a min-edge filter should IMPROVE $/staked.",
         "metrics_A": {
-          "n": 151,
-          "win_rate": 0.4966887417218543,
-          "ev_per_bet_usd": 0.10087086092715268,
-          "pnl_per_dollar": 0.00940778251497086,
-          "total_pnl": 15.231500000000054,
-          "brier": 0.21835673267221192,
-          "calib_slope": 0.852011837780901
+          "n": 169,
+          "win_rate": 0.47928994082840237,
+          "ev_per_bet_usd": -0.2648650887573961,
+          "pnl_per_dollar": -0.02481329137676285,
+          "total_pnl": -44.76219999999994,
+          "brier": 0.22337499094527208,
+          "calib_slope": 0.8086468398745974
         },
         "metrics_B": {
-          "n": 20,
-          "win_rate": 0.55,
-          "ev_per_bet_usd": 6.563065,
-          "pnl_per_dollar": 0.34257282536527517,
-          "total_pnl": 131.2613,
-          "brier": 0.24466316837299998,
-          "calib_slope": 0.40184140725273815
+          "n": 23,
+          "win_rate": 0.5217391304347826,
+          "ev_per_bet_usd": 5.5782304347826095,
+          "pnl_per_dollar": 0.30865231990892905,
+          "total_pnl": 128.29930000000002,
+          "brier": 0.2459498657032174,
+          "calib_slope": 0.4575962884210827
         },
-        "delta_ppd_point": 0.3331650428503043,
+        "delta_ppd_point": 0.3334656112856919,
         "delta_ppd_ci": [
-          -0.10127749133691566,
-          0.7952217197483127
+          -0.08516778454480897,
+          0.7785782812662689
         ],
-        "p_improve": 0.9329,
+        "p_improve": 0.9439,
         "boot_method": "paired",
         "verdict": "UNDERPOWERED",
         "filter_diag": {
-          "n_removed": 131,
-          "removed_ppd": -0.0938852161236868,
-          "removed_total_pnl": -116.02979999999991,
-          "kept_ppd": 0.34257282536527517,
-          "p_kept_gt_removed": 0.9344
+          "n_removed": 146,
+          "removed_ppd": -0.12465849946639182,
+          "removed_total_pnl": -173.06149999999988,
+          "kept_ppd": 0.30865231990892905,
+          "p_kept_gt_removed": 0.9458
         }
       },
       "YESquar+min_edge_0.03": {
         "hypothesis": "Combined 'reasonable' filter should IMPROVE the book.",
         "metrics_A": {
-          "n": 151,
-          "win_rate": 0.4966887417218543,
-          "ev_per_bet_usd": 0.10087086092715268,
-          "pnl_per_dollar": 0.00940778251497086,
-          "total_pnl": 15.231500000000054,
-          "brier": 0.21835673267221192,
-          "calib_slope": 0.852011837780901
+          "n": 169,
+          "win_rate": 0.47928994082840237,
+          "ev_per_bet_usd": -0.2648650887573961,
+          "pnl_per_dollar": -0.02481329137676285,
+          "total_pnl": -44.76219999999994,
+          "brier": 0.22337499094527208,
+          "calib_slope": 0.8086468398745974
         },
         "metrics_B": {
-          "n": 95,
-          "win_rate": 0.49473684210526314,
-          "ev_per_bet_usd": 1.1782010526315791,
-          "pnl_per_dollar": 0.09246248333278673,
-          "total_pnl": 111.92910000000002,
-          "brier": 0.2207567419592841,
-          "calib_slope": 0.9432596138752602
+          "n": 111,
+          "win_rate": 0.46846846846846846,
+          "ev_per_bet_usd": 0.43783153153153176,
+          "pnl_per_dollar": 0.035018549650569664,
+          "total_pnl": 48.59930000000003,
+          "brier": 0.2274568864817927,
+          "calib_slope": 0.9037299454064468
         },
-        "delta_ppd_point": 0.08305470081781587,
+        "delta_ppd_point": 0.059831841027332515,
         "delta_ppd_ci": [
-          -0.005236409502166771,
-          0.18288109346487097
+          -0.01878089725729518,
+          0.145990804518003
         ],
-        "p_improve": 0.9657,
+        "p_improve": 0.9333,
         "boot_method": "paired",
         "verdict": "INCONCLUSIVE",
         "filter_diag": {
-          "n_removed": 56,
-          "removed_ppd": -0.23671580130654687,
-          "removed_total_pnl": -96.69759999999998,
-          "kept_ppd": 0.09246248333278673,
-          "p_kept_gt_removed": 0.9656
+          "n_removed": 58,
+          "removed_ppd": -0.22434864603586194,
+          "removed_total_pnl": -93.36149999999998,
+          "kept_ppd": 0.035018549650569664,
+          "p_kept_gt_removed": 0.9278
         }
       },
       "platt_recal_edge>0": {
         "hypothesis": "EXP-017C: calibration slope~0.85 -> recalibration should barely change selection (near-null delta).",
         "metrics_A": {
-          "n": 151,
-          "win_rate": 0.4966887417218543,
-          "ev_per_bet_usd": 0.10087086092715268,
-          "pnl_per_dollar": 0.00940778251497086,
-          "total_pnl": 15.231500000000054,
-          "brier": 0.21835673267221192,
-          "calib_slope": 0.852011837780901
+          "n": 169,
+          "win_rate": 0.47928994082840237,
+          "ev_per_bet_usd": -0.2648650887573961,
+          "pnl_per_dollar": -0.02481329137676285,
+          "total_pnl": -44.76219999999994,
+          "brier": 0.22337499094527208,
+          "calib_slope": 0.8086468398745974
         },
         "metrics_B": {
-          "n": 108,
-          "win_rate": 0.4166666666666667,
-          "ev_per_bet_usd": 0.29452592592592636,
-          "pnl_per_dollar": 0.026174485488617363,
-          "total_pnl": 31.808800000000044,
-          "brier": 0.22721123070296134,
-          "calib_slope": 0.9437540592094446
+          "n": 104,
+          "win_rate": 0.375,
+          "ev_per_bet_usd": 0.08516730769230836,
+          "pnl_per_dollar": 0.007949717190610545,
+          "total_pnl": 8.85740000000007,
+          "brier": 0.2276978415665537,
+          "calib_slope": 1.0470800858669262
         },
-        "delta_ppd_point": 0.016766702973646505,
+        "delta_ppd_point": 0.032763008567373395,
         "delta_ppd_ci": [
-          -0.06180313837470633,
-          0.10192500074350548
+          -0.08722331268263392,
+          0.15891244798274703
         ],
-        "p_improve": 0.6512,
+        "p_improve": 0.7023,
         "boot_method": "paired",
         "verdict": "INCONCLUSIVE",
         "filter_diag": {
-          "n_removed": 43,
-          "removed_ppd": -0.04105608089315731,
-          "removed_total_pnl": -16.5773,
-          "kept_ppd": 0.026174485488617363,
-          "p_kept_gt_removed": 0.6586
+          "n_removed": 65,
+          "removed_ppd": -0.07773405707827369,
+          "removed_total_pnl": -53.61960000000002,
+          "kept_ppd": 0.007949717190610545,
+          "p_kept_gt_removed": 0.7035
         }
       }
     }
@@ -173,167 +173,167 @@
       "mode": "holdout",
       "cutoff": "2026-07-03",
       "n_train": 50,
-      "n_test": 101
+      "n_test": 119
     },
     "baseline": "baseline",
     "baseline_metrics": {
-      "n": 101,
-      "win_rate": 0.48514851485148514,
-      "ev_per_bet_usd": -0.7897168316831681,
-      "pnl_per_dollar": -0.07926178916436027,
-      "total_pnl": -79.76139999999998,
-      "brier": 0.20765352243330693,
-      "calib_slope": 1.012129697627063
+      "n": 119,
+      "win_rate": 0.46218487394957986,
+      "ev_per_bet_usd": -1.1744126050420165,
+      "pnl_per_dollar": -0.11731980000537261,
+      "total_pnl": -139.75509999999997,
+      "brier": 0.21639926556311764,
+      "calib_slope": 0.9174590440405713
     },
     "comparisons": {
       "quarantine_YES": {
         "hypothesis": "EXP-017B: YES is anti-predictive (-62%/staked, n=11) -> removing it should IMPROVE the book.",
         "metrics_A": {
-          "n": 101,
-          "win_rate": 0.48514851485148514,
-          "ev_per_bet_usd": -0.7897168316831681,
-          "pnl_per_dollar": -0.07926178916436027,
-          "total_pnl": -79.76139999999998,
-          "brier": 0.20765352243330693,
-          "calib_slope": 1.012129697627063
+          "n": 119,
+          "win_rate": 0.46218487394957986,
+          "ev_per_bet_usd": -1.1744126050420165,
+          "pnl_per_dollar": -0.11731980000537261,
+          "total_pnl": -139.75509999999997,
+          "brier": 0.21639926556311764,
+          "calib_slope": 0.9174590440405713
         },
         "metrics_B": {
-          "n": 92,
-          "win_rate": 0.5217391304347826,
-          "ev_per_bet_usd": 0.31403586956521734,
-          "pnl_per_dollar": 0.03346031234241991,
-          "total_pnl": 28.891299999999994,
-          "brier": 0.20501527315033694,
-          "calib_slope": 1.127150145990141
+          "n": 109,
+          "win_rate": 0.4954128440366973,
+          "ev_per_bet_usd": -0.24641651376146798,
+          "pnl_per_dollar": -0.02572405592952258,
+          "total_pnl": -26.859400000000008,
+          "brier": 0.21631916782732108,
+          "calib_slope": 0.9967912817983312
         },
-        "delta_ppd_point": 0.11272210150678019,
+        "delta_ppd_point": 0.09159574407585003,
         "delta_ppd_ci": [
-          0.023538784785076233,
-          0.22002101964421006
+          0.019780179631469316,
+          0.17715923683397475
         ],
         "p_improve": 0.9956,
         "boot_method": "paired",
-        "verdict": "DEFENSIBLE_IMPROVEMENT",
+        "verdict": "UNDERPOWERED_REMOVAL",
         "filter_diag": {
-          "n_removed": 9,
-          "removed_ppd": -0.7605882950015225,
-          "removed_total_pnl": -108.6527,
-          "kept_ppd": 0.03346031234241991,
-          "p_kept_gt_removed": 0.9979
+          "n_removed": 10,
+          "removed_ppd": -0.7674941280044053,
+          "removed_total_pnl": -112.89569999999999,
+          "kept_ppd": -0.02572405592952258,
+          "p_kept_gt_removed": 0.997
         }
       },
       "min_edge_0.10": {
         "hypothesis": "EXP-017B: profit concentrates in the >0.10 tail -> a min-edge filter should IMPROVE $/staked.",
         "metrics_A": {
-          "n": 101,
-          "win_rate": 0.48514851485148514,
-          "ev_per_bet_usd": -0.7897168316831681,
-          "pnl_per_dollar": -0.07926178916436027,
-          "total_pnl": -79.76139999999998,
-          "brier": 0.20765352243330693,
-          "calib_slope": 1.012129697627063
+          "n": 119,
+          "win_rate": 0.46218487394957986,
+          "ev_per_bet_usd": -1.1744126050420165,
+          "pnl_per_dollar": -0.11731980000537261,
+          "total_pnl": -139.75509999999997,
+          "brier": 0.21639926556311764,
+          "calib_slope": 0.9174590440405713
         },
         "metrics_B": {
-          "n": 11,
-          "win_rate": 0.45454545454545453,
-          "ev_per_bet_usd": 4.505072727272727,
-          "pnl_per_dollar": 0.2247079025802335,
-          "total_pnl": 49.55579999999999,
-          "brier": 0.22049004519863635,
-          "calib_slope": 1.0390651762739722
+          "n": 14,
+          "win_rate": 0.42857142857142855,
+          "ev_per_bet_usd": 3.3281285714285707,
+          "pnl_per_dollar": 0.1841310840006338,
+          "total_pnl": 46.59379999999999,
+          "brier": 0.22778386006421428,
+          "calib_slope": 1.0332864663999624
         },
-        "delta_ppd_point": 0.30396969174459376,
+        "delta_ppd_point": 0.3014508840060064,
         "delta_ppd_ci": [
-          -0.35290938191509413,
-          0.9627645974983501
+          -0.30025556943927967,
+          0.8947962603739806
         ],
-        "p_improve": 0.8299,
+        "p_improve": 0.8505,
         "boot_method": "paired",
         "verdict": "UNDERPOWERED",
         "filter_diag": {
-          "n_removed": 90,
-          "removed_ppd": -0.1645740669331572,
-          "removed_total_pnl": -129.31719999999999,
-          "kept_ppd": 0.2247079025802335,
-          "p_kept_gt_removed": 0.8317
+          "n_removed": 105,
+          "removed_ppd": -0.19862700867877778,
+          "removed_total_pnl": -186.34889999999996,
+          "kept_ppd": 0.1841310840006338,
+          "p_kept_gt_removed": 0.8513
         }
       },
       "YESquar+min_edge_0.03": {
         "hypothesis": "Combined 'reasonable' filter should IMPROVE the book.",
         "metrics_A": {
-          "n": 101,
-          "win_rate": 0.48514851485148514,
-          "ev_per_bet_usd": -0.7897168316831681,
-          "pnl_per_dollar": -0.07926178916436027,
-          "total_pnl": -79.76139999999998,
-          "brier": 0.20765352243330693,
-          "calib_slope": 1.012129697627063
+          "n": 119,
+          "win_rate": 0.46218487394957986,
+          "ev_per_bet_usd": -1.1744126050420165,
+          "pnl_per_dollar": -0.11731980000537261,
+          "total_pnl": -139.75509999999997,
+          "brier": 0.21639926556311764,
+          "calib_slope": 0.9174590440405713
         },
         "metrics_B": {
-          "n": 58,
-          "win_rate": 0.46551724137931033,
-          "ev_per_bet_usd": 0.22026896551724126,
-          "pnl_per_dollar": 0.018362564492334504,
-          "total_pnl": 12.775599999999994,
-          "brier": 0.21504366565596553,
-          "calib_slope": 1.127807096046587
+          "n": 74,
+          "win_rate": 0.43243243243243246,
+          "ev_per_bet_usd": -0.6831648648648649,
+          "pnl_per_dollar": -0.05790711851313749,
+          "total_pnl": -50.5542,
+          "brier": 0.2263291421809865,
+          "calib_slope": 1.031925478641986
         },
-        "delta_ppd_point": 0.09762435365669478,
+        "delta_ppd_point": 0.059412681492235116,
         "delta_ppd_ci": [
-          -0.031781081563399344,
-          0.24528894173709243
+          -0.045264628685216385,
+          0.1752710602021372
         ],
-        "p_improve": 0.9284,
+        "p_improve": 0.862,
         "boot_method": "paired",
         "verdict": "INCONCLUSIVE",
         "filter_diag": {
-          "n_removed": 43,
-          "removed_ppd": -0.297966555438098,
-          "removed_total_pnl": -92.53699999999999,
-          "kept_ppd": 0.018362564492334504,
-          "p_kept_gt_removed": 0.9207
+          "n_removed": 45,
+          "removed_ppd": -0.28032103348168397,
+          "removed_total_pnl": -89.20089999999999,
+          "kept_ppd": -0.05790711851313749,
+          "p_kept_gt_removed": 0.8565
         }
       },
       "platt_recal_edge>0": {
         "hypothesis": "EXP-017C: calibration slope~0.85 -> recalibration should barely change selection (near-null delta).",
         "metrics_A": {
-          "n": 101,
-          "win_rate": 0.48514851485148514,
-          "ev_per_bet_usd": -0.7897168316831681,
-          "pnl_per_dollar": -0.07926178916436027,
-          "total_pnl": -79.76139999999998,
-          "brier": 0.20765352243330693,
-          "calib_slope": 1.012129697627063
+          "n": 119,
+          "win_rate": 0.46218487394957986,
+          "ev_per_bet_usd": -1.1744126050420165,
+          "pnl_per_dollar": -0.11731980000537261,
+          "total_pnl": -139.75509999999997,
+          "brier": 0.21639926556311764,
+          "calib_slope": 0.9174590440405713
         },
         "metrics_B": {
-          "n": 61,
-          "win_rate": 0.29508196721311475,
-          "ev_per_bet_usd": -1.2287967213114752,
-          "pnl_per_dollar": -0.14421936190427448,
-          "total_pnl": -74.9566,
-          "brier": 0.22909090318012967,
-          "calib_slope": 1.852602914063695
+          "n": 72,
+          "win_rate": 0.2916666666666667,
+          "ev_per_bet_usd": -1.2971277777777777,
+          "pnl_per_dollar": -0.1567921022063464,
+          "total_pnl": -93.3932,
+          "brier": 0.22653649910582135,
+          "calib_slope": 2.117350439599588
         },
-        "delta_ppd_point": -0.0649575727399142,
+        "delta_ppd_point": -0.039472302200973794,
         "delta_ppd_ci": [
-          -0.29013958422323416,
-          0.15653612624372953
+          -0.24970260700387867,
+          0.17017713468617435
         ],
-        "p_improve": 0.2703,
+        "p_improve": 0.3361,
         "boot_method": "paired",
         "verdict": "INCONCLUSIVE",
         "filter_diag": {
-          "n_removed": 40,
-          "removed_ppd": -0.009874978188851552,
-          "removed_total_pnl": -4.804799999999997,
-          "kept_ppd": -0.14421936190427448,
-          "p_kept_gt_removed": 0.2702
+          "n_removed": 47,
+          "removed_ppd": -0.07784300434818307,
+          "removed_total_pnl": -46.36189999999999,
+          "kept_ppd": -0.1567921022063464,
+          "p_kept_gt_removed": 0.3551
         }
       }
     }
   },
   "invariants": {
-    "baseline_n_in_sample": 151,
-    "holdout_train_plus_test": 151
+    "baseline_n_in_sample": 169,
+    "holdout_train_plus_test": 169
   }
 }

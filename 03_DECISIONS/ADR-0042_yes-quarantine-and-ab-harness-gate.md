@@ -1,8 +1,10 @@
-# ADR-0042 — YES-Direction Quarantine (MLB T1) + A/B Edge-Delta Harness as the Enhancer Activation Gate (PROPOSED)
+# ADR-0042 — MLB T1 YES Direction: REJECT Quarantine, Monitor Instead + A/B Edge-Delta Harness as the Enhancer Activation Gate (PROPOSED)
 
-> **Numbering note (2026-07-07):** originally drafted as ADR-0041; renumbered to ADR-0042 per the SESSION_CLAIMS reconciliation note after a concurrent session took ADR-0041 / GG-098 / T-250. GG-098→GG-098, T-250→T-250 throughout. Re-verify at push time — origin may hold numbers not visible locally (no network in the authoring session).
+> **Numbering note (2026-07-07):** originally drafted as ADR-0041; renumbered to ADR-0042 after a concurrent session took ADR-0041 / GG-097 / T-247 (see SESSION_CLAIMS). This ADR uses GG-098 and T-250. Re-verify at push time — origin may hold numbers not visible locally (no network in the authoring session).
 
-**Status:** PROPOSED — awaiting operator (and DS) sign-off. Two coupled decisions: (D1) adopt a reversible YES-direction quarantine on the MLB T1 book; (D2) adopt the A/B edge-delta harness holdout-gate as the mandatory prerequisite for activating any future strategy enhancer (PAM, psychological gradients, multi-factor formulas). D1 changes live paper selection and is therefore capital-adjacent — it does not go live until signed off.
+> **CORRECTION (2026-07-07, operator review — supersedes the original D1).** The first draft of D1 proposed *adopting* a YES-direction quarantine. The operator rejected this as over-calibration on n≈11, and he is correct. D1 below is now **REJECT the quarantine — monitor instead.** The harness has been fixed accordingly (a `MIN_REMOVED_N`=30 guard; quarantine_YES now returns `UNDERPOWERED_REMOVAL`, not DEFENSIBLE). The rest of this ADR (D2, and the calibration/variance findings) is unchanged and stands. Principle applied: **realign components if the data demands it; do not destroy built capability on a tiny sample.**
+
+**Status:** PROPOSED — awaiting operator (and DS) sign-off on D2. (D1 is a decision to NOT change live selection — no capital action; nothing goes dark.) Two decisions: (D1) do **not** quarantine YES — monitor it and keep collecting; (D2) adopt the A/B edge-delta harness holdout-gate as the mandatory prerequisite for activating any future strategy enhancer (PAM, psychological gradients, multi-factor formulas).
 **Date:** 2026-07-07
 **Session:** Edge-Strategy Decomposition (2026-07-07T04:30Z) — canonical session number to be assigned by operator (concurrent with SESSION 122–124).
 **Operator:** Earl Ignacio
@@ -19,19 +21,21 @@ EXP-017 reached ADR-0024 Tier 1 for MLB T1 on 2026-07-06 (n=151, EV=+$0.1009/bet
 - **EXP-017C (calibration root-cause):** the non-monotonicity is NOT a calibration defect. `model_p` is well-calibrated (reliability 0.005; Brier skill +0.12; logistic calibration slope 0.85 with 95% CI [0.47, 1.32] — includes 1.0). Expected edge is monotonic; the mid-band shortfall is the residual/variance term (20–30pp) not the calibration gap (2–4pp). Recalibration would fix a non-problem.
 - **EXP-017D (A/B harness):** of the candidate fixes, only YES-quarantine clears a DEFENSIBLE_IMPROVEMENT bar (Δ$/staked CI excludes 0 in BOTH in-sample and holdout; P(Δ>0)=99.6%; P(kept>removed)=99.7–99.8%). min-edge/tail filtering is UNDERPOWERED and collapses out-of-sample; recalibration is null→harmful; an edge-band filter adds nothing over the direction cut.
 
-Cross-experiment conclusion: **the model is calibrated and has genuine positive *expected* edge; realized P&L at n=151 is variance-dominated.** The binding constraint is sample size, not model quality. The one robust, holdout-surviving selection improvement is removing the YES direction.
+Cross-experiment conclusion: **the model is calibrated and has genuine positive *expected* edge; realized P&L is variance-dominated at this sample size.** The binding constraint is sample size, not model quality.
+
+**Operator-review update (2026-07-07).** Two facts confirm the variance read and defeat the original quarantine proposal: (1) the live book has since grown to **n=169**, and the aggregate has swung from +$15.23 (n=151) to **−$44.76** — an ~$60 move in 18 bets, i.e. no directional verdict is stable yet. (2) The YES losses are concentrated in k=2 (2+ hits): YES k=2 went 0/7, but P(≤0 | Binomial, p≈0.31) = **0.073** — variance-consistent — and at threshold level the model actually *under*-predicts k=2 (0.226 vs 0.273 actual), so there is not even a clean k=2 over-prediction mechanism. Quarantining YES would discard the fine k=1 YES bets and stop the very data collection needed to ever judge YES. The removed-set is n≈11 — far below any bar for concluding a category is structurally negative-EV.
 
 ## Decision
 
-**D1 — YES-direction quarantine (PROPOSED).** Add a reversible configuration flag (not a code fork) that excludes YES-direction bets from the MLB T1 book. Justification: YES is anti-predictive on all evidence to date — Fisher YES-vs-NO p=0.056 (EXP-017B), removed-vs-kept P=99.7% (EXP-017D), dual-mode DEFENSIBLE Δ. Implemented as config so it is trivially reversible and auditable. **Mandatory pre-registered re-review trigger:** re-evaluate at n_YES ≥ 30 resolved YES observations; if the YES sub-book's EV recovers above 0 with p>0.05 the quarantine is lifted. Rationale for caution: the adopt decision rests on only 11 removed bets — defensible on data-to-date, not proven across regimes.
+**D1 — Do NOT quarantine YES; monitor instead.** The YES sub-book (n≈11–12) is NOT quarantined. Keep taking YES bets under the existing model/selection so the sample can accumulate to a size that can actually be judged. Rationale: at n≈11 the underperformance is variance-consistent (Binomial P=0.073), the model is calibrated per threshold, and the aggregate book is itself unstable (sign-flipped n=151→169). Quarantine would be over-calibration and would destroy built capability (YES-direction betting) plus the data needed to evaluate it. **Pre-registered monitor (not an auto-action):** track the YES sub-book; only if, at **n_YES ≥ 40**, YES EV is still negative with Fisher p<0.05 AND a *mechanism* is identified (e.g. a persistent threshold- or player-specific over-prediction, not a bare win-rate gap) does a targeted realignment get proposed — and even then the realignment adjusts the offending mechanism, it does not blanket-drop the direction. This is a monitoring decision, so there is no live/dark state change and no capital action.
 
 **D2 — A/B harness holdout-gate (PROPOSED).** No future strategy enhancer (PAM/MLB, psychological gradients, multi-factor formula composition, new features) is activated in the live paper book until it clears `DEFENSIBLE_IMPROVEMENT` in the A/B harness (`scripts/ab_harness.py`) **holdout mode** — hypothesis pre-registered, rule fit/selected on train days and scored on unseen test days, bootstrap Δ CI excluding 0 at n_B ≥ MIN_N. This operationalizes the Principal-Vision line "the methodology is the asset" and prevents the enhancer phase from becoming in-sample noise-fitting (which EXP-017C/D showed is trivially easy at current n).
 
 ## Consequences
 
-- **Positive:** removes a demonstrably losing sub-book; installs a rigorous, reusable gate for all future edge work; avoids two tempting mistakes (recalibrating a calibrated model; adopting a noise-fit tail filter).
-- **Negative / cost:** D1 reduces bet volume (~7% of positions) — mild headwind to Tier-2 sample accumulation, which is the dominant lever (accepted trade-off given YES is negative-EV). D2 adds a required step before any enhancer activation (intended friction).
-- **Explicitly rejected this session (do not re-propose without new evidence):** min-edge/tail filtering (`edge>0.10`), edge-band filtering (`edge>0.03`), Platt/logistic recalibration of `model_p`. All failed holdout in EXP-017D / were shown unnecessary in EXP-017C.
+- **Positive:** preserves built YES-direction capability and its data stream; installs a rigorous, reusable gate (D2) for all future edge work with an over-calibration guard (`MIN_REMOVED_N`); avoids three tempting mistakes — recalibrating a calibrated model, adopting a noise-fit tail filter, and quarantining a category on ~11 observations.
+- **Negative / cost:** the YES sub-book continues to carry small negative realized P&L while the sample accumulates (accepted — it is the price of the data needed to judge it; the amounts are paper and small). D2 adds a required step before any enhancer activation (intended friction).
+- **Explicitly rejected this session (do not re-propose without new evidence):** (a) **YES quarantine** — over-calibration on n≈11; (b) min-edge/tail filtering (`edge>0.10`) and edge-band filtering (`edge>0.03`) — fail holdout / underpowered; (c) Platt/logistic recalibration of `model_p` — unnecessary (model is calibrated, EXP-017C) and null→harmful in holdout (EXP-017D).
 
 ## Evidence / reproducibility
 
@@ -41,6 +45,6 @@ Cross-experiment conclusion: **the model is calibrated and has genuine positive 
 
 ## Open items
 
-- D1/D2 require operator (and DS per ADR-0005) sign-off before this ADR moves to ACCEPTED and the flag goes live.
-- GG-004 remains OPEN (Tier 2 n≥500 not met). This ADR does not close it.
-- Wiring the quarantine flag into the live selection path (`paper_trader.py` / band selection) is a separate implementation task (T-250) gated on sign-off.
+- D2 requires operator (and DS per ADR-0005) sign-off before it is binding. D1 is a monitor decision — no sign-off gate, no live change.
+- GG-004 remains OPEN (Tier 2 n≥500 not met). This ADR does not close it. Note the aggregate has already sign-flipped (n=151 +$15.23 → n=169 −$44.76), reinforcing that no directional verdict is stable yet.
+- **T-250 (reframed):** no quarantine to wire. Instead, monitor the YES sub-book and re-run EXP-017B/C/D as the book grows; investigate a mechanism only if YES stays negative with p<0.05 at n_YES ≥ 40.

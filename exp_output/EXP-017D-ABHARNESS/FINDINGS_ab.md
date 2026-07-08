@@ -1,5 +1,7 @@
 # EXP-017D — A/B Edge-Delta Harness: Candidate-Fix Evaluation
 
+> **CORRECTION (2026-07-07, operator review).** The original recommendation below to *adopt* YES-quarantine was over-calibration on n≈11 and is **REJECTED** (see ADR-0042 as corrected). Dropping ~11 known-losing bets tautologically improves the book but cannot establish that the YES *category* is negative-EV — at fuller data (book has since grown to n=169) the YES k=2 0/7 run is variance-consistent (Binomial P(≤0)=0.073) and the overall book has swung to −$44.76, confirming the variance regime. The harness has been fixed with a `MIN_REMOVED_N`=30 guard: category-removal filters now return **`UNDERPOWERED_REMOVAL`**, not DEFENSIBLE, when the removed set is small — which is exactly what quarantine_YES now returns in both modes. Correct action: **keep taking YES bets, monitor, do not quarantine.** Read the table below with that correction in mind.
+
 **Date:** 2026-07-06 **Parent:** EXP-017C / 017B / GG-004
 **Data:** `logs/.vps_portfolio_cache_mlb.json` (n=151; holdout cutoff 2026-07-03 → train 50 / test 101)
 **Code:** `scripts/ab_harness.py` (framework) + `scripts/run_ab_experiment.py` (driver). Deterministic seed=17; md5-stable.
