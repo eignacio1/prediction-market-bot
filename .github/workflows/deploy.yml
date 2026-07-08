@@ -1,9 +1,22 @@
 name: Deploy to VPS
 
 # Automatically deploys the main branch to the VPS on every push.
-# Part of T-171: ships as ONE UNIT with untracking paper_portfolio.json from git.
-# Do NOT activate this workflow before T-171 migration is complete —
-# git pull on a VPS with a dirty (git-tracked) portfolio file will abort.
+# T-171 (untracking paper_portfolio.json from git) shipped 2026-06-15 — this
+# workflow has been live since. The comment above previously said "do not
+# activate before T-171" and was stale for three weeks (GG-073).
+#
+# GG-073/GG-102: the original dirty-tree guard checked `git status --porcelain`
+# with NO --untracked-files flag, so it aborted on ANY untracked file — not
+# just tracked-file modifications. The VPS constantly accumulates new
+# untracked runtime output (new exp_output/<EXP-ID>/ dirs, pipeline caches,
+# scratch files) as new components ship, so this guard required perpetual
+# whack-a-mole .gitignore additions and regressed repeatedly (100% failure
+# 2026-06-12→07-03, fixed, then failed again by 2026-07-08). The guard below
+# checks TRACKED-file modifications only (--untracked-files=no) — the actual
+# invariant T-171 needs (don't let `git pull` clobber a locally-modified
+# tracked file) without caring about new untracked scratch output. New
+# pipeline/experiment output no longer needs an individual .gitignore entry
+# just to keep deploys green.
 #
 # Required GitHub Actions secret: VPS_SSH_KEY (private key for root@157.230.91.33)
 # Same secret as post_game_resolve.yml and tss_daily_sync.yml.
@@ -32,15 +45,15 @@ jobs:
               -o ConnectTimeout=15 \
               root@157.230.91.33 \
               "cd /opt/prediction-market-bot && \
-               DIRTY=\$(git status --porcelain 2>/dev/null); \
+               DIRTY=\$(git status --porcelain --untracked-files=no 2>/dev/null); \
                if [ -n \"\$DIRTY\" ]; then \
-                 echo 'WARNING: VPS working tree is dirty — T-171 migration not yet complete.'; \
-                 echo 'Tracked portfolio files are being written by cron. git pull aborted.'; \
-                 echo 'Run T-171 migration (see TODO_NEXT.md #13) then re-push.'; \
-                 echo \"Dirty files: \$DIRTY\"; \
+                 echo 'WARNING: VPS has local modifications to TRACKED files — git pull aborted to avoid clobbering them.'; \
+                 echo 'This means a file already committed to the repo was edited in place on the VPS (not just new pipeline output).'; \
+                 echo 'Investigate and either commit/discard the change on the VPS, or move it to a gitignored path if it is runtime state.'; \
+                 echo \"Modified tracked files: \$DIRTY\"; \
                  exit 1; \
                fi && \
-               git pull origin main 2>&1"
+               git pull --ff-only origin main 2>&1"
 
       - name: Verify HEAD
         run: |
