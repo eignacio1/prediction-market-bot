@@ -17,9 +17,31 @@ T-177 Resolution path:
 If ANTI-PREDICTIVE fires at p<0.10 on a structurally adequate sample (ADR-0024),
 T-177 requires a DS-directed model architecture review per ADR-0004 trigger.
 
+T-256 (2026-07-07): default was `logs/paper_portfolio.json` — the dark/frozen NBA
+book (GG-070 dual-ledger split) — so every unparameterized run silently monitored
+a dead ledger instead of the ACTIVE MLB one. Default is now `--sport mlb`, which
+resolves to the same VPS-synced cache path (`logs/.vps_portfolio_cache_<sport>.json`)
+the CLAUDE.md session-start governance hook uses, so this script and the hook can
+never disagree about which file is "the live book."
+
+Band-awareness caveat (GG-099): `PaperTrader.open_position()` does not persist a
+`band` field on closed positions (T2/T3 MLB construct one internally but it is
+dropped before the record is written), and T4M-PROJ is tracked in a wholly separate
+store (`t4_position_trajectories.jsonl`, pool_isolated) with no resolved-outcome
+join as of this fix. So the MLB book this script reads is band-BLIND — it mixes
+whatever of T1/T2/T3 has resolved into one undifferentiated stream, and it does
+NOT include T4M-PROJ at all. This script does not claim otherwise (see the
+band-mix note printed with every report). True per-band splitting (a real `band`
+field on the position record, plus T4M-PROJ's resolved join) is T-255's scope,
+which depends on T-253/T-254 — do not treat this script's verdict as scoped to
+any single band until T-255 lands.
+
 Usage:
-    # Read live portfolio (default, recommended):
+    # Read the live ACTIVE-pool portfolio (default: MLB, VPS-synced cache):
     python scripts/run_t177_edge_monitor.py
+
+    # Read the dark/frozen NBA book explicitly (historical, not live risk):
+    python scripts/run_t177_edge_monitor.py --sport nba
 
     # Read historical CSV (nba_finals format):
     python scripts/run_t177_edge_monitor.py --csv data/nba_finals_clean_dataset.csv
@@ -49,7 +71,14 @@ from typing import NamedTuple, Optional
 
 MIN_N = 20          # minimum resolved bets for any verdict (below this: INCONCLUSIVE)
 DEFAULT_ALPHA = 0.10  # Fisher's p-value threshold for ANTI-PREDICTIVE / MONOTONIC verdict
-DEFAULT_PORTFOLIO = Path("logs/paper_portfolio.json")
+DEFAULT_SPORT = "mlb"  # GG-070: MLB is the ACTIVE pool; NBA is dark/frozen
+# GG-070 dual-ledger split: each sport is a separate, isolated bankroll pool.
+# These are the same VPS-synced cache paths CLAUDE.md's session-start governance
+# hook reads (.claude/hooks/governance_scan.sh) — keep in sync with that script.
+SPORT_PORTFOLIO = {
+    "mlb": Path("logs/.vps_portfolio_cache_mlb.json"),
+    "nba": Path("logs/.vps_portfolio_cache_nba.json"),
+}
 VERDICT_ANTI = "ANTI-PREDICTIVE"
 VERDICT_MONO = "MONOTONIC"
 VERDICT_INC  = "INCONCLUSIVE"
@@ -342,10 +371,18 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Read from a resolved-bet CSV instead of the live portfolio.",
     )
     p.add_argument(
+        "--sport",
+        choices=sorted(SPORT_PORTFOLIO),
+        default=DEFAULT_SPORT,
+        help=f"Which sport's ledger to monitor (default: {DEFAULT_SPORT} — the "
+             f"ACTIVE pool; GG-070 dual-ledger split). Ignored if --portfolio is given.",
+    )
+    p.add_argument(
         "--portfolio",
         metavar="PATH",
-        default=str(DEFAULT_PORTFOLIO),
-        help=f"Live portfolio JSON (default: {DEFAULT_PORTFOLIO}).",
+        default=None,
+        help="Live portfolio JSON path. Overrides --sport if given "
+             f"(default resolves from --sport: {SPORT_PORTFOLIO[DEFAULT_SPORT]}).",
     )
     p.add_argument(
         "--window",
@@ -392,16 +429,34 @@ def main(argv=None) -> int:
                               exclude_fee_contaminated=exc_fee)
         label = f"CSV {path.name}"
     else:
-        path = Path(args.portfolio)
+        path = Path(args.portfolio) if args.portfolio else SPORT_PORTFOLIO[args.sport]
         if not path.exists():
             print(f"ERROR: portfolio not found: {path}", file=sys.stderr)
+            if not args.portfolio:
+                print(
+                    f"  (no --portfolio given; resolved from --sport={args.sport}. "
+                    "Cache is VPS-synced — run the session-start governance hook, "
+                    "or `ssh prediction-market-vps 'cat "
+                    f"/opt/prediction-market-bot/logs/paper_portfolio"
+                    f"{'_mlb' if args.sport == 'mlb' else ''}.json' > {path}` to refresh it.)",
+                    file=sys.stderr,
+                )
             return 1
         positions = _load_portfolio(path, exclude_duplicates=exc_dup,
                                     exclude_fee_contaminated=exc_fee)
-        label = f"portfolio {path.name}"
+        sport_tag = "ACTIVE" if args.sport == "mlb" else "DARK/FROZEN — historical, not live risk"
+        label = f"{args.sport.upper()} ({sport_tag}) — {path.name}"
 
     result = analyse(positions, alpha=args.alpha, window=args.window, label=label)
     _print_report(result)
+    if not args.csv:
+        print(
+            "  NOTE (GG-099): this book is band-BLIND — PaperTrader does not persist a "
+            "band field, so any resolved T1/T2/T3 MLB positions are mixed together "
+            "undifferentiated, and T4M-PROJ (separate store, no resolved-outcome join "
+            "yet) is NOT included. Do not read this verdict as scoped to one band "
+            "until T-255 lands per-band splitting."
+        )
 
     if args.ci:
         if result["verdict"] == VERDICT_ANTI:
