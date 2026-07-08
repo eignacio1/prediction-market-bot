@@ -948,6 +948,7 @@ def main() -> None:
                     "model_p": float(forecast_rec["p_estimate"]),
                     "edge": float(forecast_rec["edge"]),
                     "gross_edge": float(forecast_rec["gross_edge"]),
+                    "band": "T1",  # T-253
                 }
                 ok_pos, pos = trader.open_position(
                     approval=approval,

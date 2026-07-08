@@ -407,6 +407,7 @@ class PaperTrader:
             direction = str(approval.get("approved_direction", "PASS"))
             risk_id   = str(approval.get("risk_eval_id", ""))
             forecast_id = str(approval.get("forecast_id", ""))
+            band = approval.get("band")  # T-253: T1/T2/T3/T4/T4M-PROJ/... — caller-supplied, no derivation
 
             if size <= 0 or direction == "PASS":
                 return True, {}
@@ -458,6 +459,7 @@ class PaperTrader:
                 "entered_at": _utc_now(),
                 "risk_eval_id": risk_id,
                 "forecast_id": forecast_id,
+                "band": band,
                 "status": "OPEN",
                 "pool_isolated": pool_isolated,  # ADR-0019: exit_position uses this to skip bankroll update
                 "kalshi_order_id": None,

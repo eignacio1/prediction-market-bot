@@ -513,6 +513,7 @@ def main() -> None:
                     "model_p":    p_calibrated,
                     "edge":       net_edge,
                     "gross_edge": gross_edge,
+                    "band":       "T2",  # T-253
                 }
                 ok_pos, pos = trader.open_position(
                     approval=approval,

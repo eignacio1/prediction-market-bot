@@ -160,6 +160,31 @@ class TestOpenPosition:
         assert pos["ab_remaining_at_entry"] is None
 
     @pytest.mark.unit
+    def test_records_band_when_provided(self, tmp_path):
+        # T-253: band is caller-supplied via approval["band"], not derived.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        ok, pos = trader.open_position(
+            approval=_make_approval(10.0, "YES", band="T4M-PROJ"),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        assert pos["band"] == "T4M-PROJ"
+
+    @pytest.mark.unit
+    def test_band_defaults_none_when_not_provided(self, tmp_path):
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        ok, pos = trader.open_position(
+            approval=_make_approval(10.0, "YES"),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXNBAPTS-TEST", kalshi_threshold=20,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        assert pos["band"] is None
+
+    @pytest.mark.unit
     def test_rejects_zero_size(self, tmp_path):
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         ok, pos = trader.open_position(

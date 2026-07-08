@@ -604,6 +604,8 @@ class T4LiveRunner:
             })
             return
 
+        approval = {**approval, "band": sig.sub_band.value}  # T-253
+
         approved_size = float(approval.get("approved_size", 0.0))
         spec = self._market_specs.get(sig.market_id)
         threshold = int(spec.threshold) if spec else 0
