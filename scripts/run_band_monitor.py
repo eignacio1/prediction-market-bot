@@ -1,0 +1,317 @@
+#!/usr/bin/env python3
+"""
+T-255 — Per-Band Anti-Predictive + Calibration Monitor
+GG-099 | GG-100 | GG-098 | Companion to run_exp017_mlb.py / 017b / 017c / ab_harness.py
+
+WHY THIS EXISTS
+---------------
+GG-099 found the standing edge-monotonicity guard (run_t177_edge_monitor.py) has
+zero per-band resolution — it evaluates whatever book it's pointed at as one pool,
+so a band with real anti-predictive behavior can hide inside a healthy aggregate
+and vice versa. GG-100 then showed what happens when a monitor is built without
+care: it read the STORED (YES-frame, wrong-signed for NO bets) fee_net_edge and
+raised a false ANTI-PREDICTIVE alarm on the whole T1 book (p=0.0236) when the
+direction-aware recompute shows p=0.247 (NOT anti-predictive). That bug is not
+repeated here: this monitor NEVER reads a stored edge field. Every edge value is
+recomputed via the audited run_exp017_mlb.compute_fee_net_edge() helper, exactly
+once, per record — for both the T1/T2/T3 book (via run_exp017b_decomp_mlb's
+loader) and the T4M-PROJ ledger (T-254), even though the T4 ledger's own "edge"
+column was already computed direction-aware by build_t4_resolved_ledger.py.
+Recomputing again here is deliberate defense-in-depth, not redundancy: this
+monitor must never depend on any upstream file having gotten the sign right.
+
+WHAT THIS DOES NOT DO
+----------------------
+This monitor never halts a band. GG-098 (the ab_harness MIN_REMOVED_N lesson)
+established that acting on a small-n signal is itself the failure mode — a band
+under MIN_N returns UNDERPOWERED, not a verdict, and even ANTI-PREDICTIVE on a
+sufficiently large band is a WARNING requiring DS review (T-257), never an
+automatic kill. Band-level halts remain a human decision.
+
+COMPOSITION (no reimplementation of fee/edge math)
+---------------------------------------------------
+  run_exp017_mlb.py          MLBPosition, compute_fee_net_edge, edge_monotonicity
+  run_exp017b_decomp_mlb.py  load_records() — T1/T2/T3 book loader (band-tagged)
+  run_exp017c_calibration_mlb.py  calib_fit_ci(), ece()
+  ab_harness.py              metrics() — EV/bet, $/staked, brier, calib_slope
+
+Bands covered:
+  T1, T2, T3    from the band-tagged live MLB book (T-253; band field on every
+                closed position since PaperTrader.open_position() threads it).
+  T4M-PROJ      from the resolved ledger (T-254; scripts/build_t4_resolved_ledger.py).
+  UNTAGGED      catch-all for any resolved position missing a band tag — visibility
+                only, never silently dropped.
+
+Run:
+  python3 scripts/run_band_monitor.py
+  python3 scripts/run_band_monitor.py --portfolio logs/.vps_portfolio_cache_mlb.json \\
+      --t4-ledger logs/t4_mlb_resolved_ledger.jsonl
+  python3 scripts/run_band_monitor.py --ci    # exit 1 iff any band alarms; warn-only,
+                                               # never a kill signal (T-257)
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import random
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_exp017_mlb as e17                 # noqa: E402  MLBPosition, compute_fee_net_edge, edge_monotonicity
+import run_exp017b_decomp_mlb as d17b        # noqa: E402  band-tagged T1/T2/T3 loader
+import run_exp017c_calibration_mlb as c17c   # noqa: E402  calib_fit_ci, ece
+import ab_harness as abh                     # noqa: E402  metrics (EV/bet, $/staked)
+
+MIN_N = 30  # ab_harness.py band-level floor (GG-098: no acting on ~11 bets)
+BOOK_BANDS = ("T1", "T2", "T3")
+
+DEFAULT_PORTFOLIO = Path("logs/.vps_portfolio_cache_mlb.json")
+DEFAULT_T4_LEDGER = Path("logs/t4_mlb_resolved_ledger.jsonl")
+OUT_DIR = Path("exp_output/T255-BAND-MONITOR")
+
+
+# ── record loading ──────────────────────────────────────────────────────────────
+
+def _attach_event(recs: list[dict]) -> None:
+    """Reconstruct the binary hit/miss event from direction+outcome (ab_harness's
+    exact one-liner) — in place, so callers can pass either loader's output."""
+    for r in recs:
+        r["_event"] = 1 if ((r["_dir"] == "YES") == (r["_win"] == 1)) else 0
+
+
+def load_pool_by_band(portfolio_path: Path) -> dict[str, list[dict]]:
+    """T1/T2/T3 (+ UNTAGGED) from the band-tagged live MLB book (T-253)."""
+    recs = d17b.load_records(portfolio_path)
+    _attach_event(recs)
+    by_band: dict[str, list[dict]] = {b: [] for b in BOOK_BANDS}
+    untagged: list[dict] = []
+    for r in recs:
+        b = r.get("band")
+        if b in by_band:
+            by_band[b].append(r)
+        else:
+            untagged.append(r)
+    if untagged:
+        by_band["UNTAGGED"] = untagged
+    return by_band
+
+
+def load_t4_ledger(path: Path) -> list[dict]:
+    """T4M-PROJ resolved ledger (T-254). JSONL, one row per resolved position.
+
+    GG-077 defense-in-depth: recompute _fne via compute_fee_net_edge() even
+    though build_t4_resolved_ledger.py already wrote a direction-aware "edge"
+    column — this monitor must never trust an upstream field's sign, full stop.
+    """
+    recs: list[dict] = []
+    if not path.exists():
+        return recs
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        p = json.loads(line)
+        if p.get("outcome") not in ("WIN", "LOSS") or p.get("model_p") is None:
+            continue
+        try:
+            model_p = float(p["model_p"])
+            mip = float(p["mip"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        direction = str(p.get("direction", "YES"))
+        r = dict(p)
+        r["_model_p"] = model_p
+        r["_mip"] = mip
+        r["_dir"] = direction
+        r["_win"] = 1 if p.get("outcome") == "WIN" else 0
+        r["_pnl"] = float(p.get("pnl", 0.0) or 0.0)
+        r["_size"] = float(p.get("size_usd", 0.0) or 0.0)
+        r["_fne"] = e17.compute_fee_net_edge(direction, model_p, mip)  # never trust p["edge"]
+        try:
+            r["_thr"] = int(p.get("threshold", 0) or 0)
+        except (TypeError, ValueError):
+            r["_thr"] = 0
+        recs.append(r)
+    _attach_event(recs)
+    return recs
+
+
+def to_mlb_positions(recs: list[dict]) -> list[e17.MLBPosition]:
+    """Adapter into e17.MLBPosition so edge_monotonicity() runs bit-for-bit
+    identical logic to EXP-017, regardless of which loader produced `recs`."""
+    positions = []
+    for r in recs:
+        vig = float(r.get("vig_at_entry", r.get("vig", 0.0)) or 0.0)
+        positions.append(e17.MLBPosition(
+            kalshi_ticker=str(r.get("kalshi_ticker", "")),
+            direction=r["_dir"],
+            mip=r["_mip"],
+            vig=vig,
+            model_p=r["_model_p"],
+            fee_net_edge=r["_fne"],
+            outcome="WIN" if r["_win"] else "LOSS",
+            pnl=r["_pnl"],
+            game_date=str(r.get("game_date", "")),
+            threshold=int(r.get("_thr", 0) or 0),
+            player_name=str(r.get("player_name", "")),
+        ))
+    return positions
+
+
+# ── per-band analysis ────────────────────────────────────────────────────────────
+
+def analyze_band(
+    band: str,
+    recs: list[dict],
+    bins: int = 5,
+    boot: int = 10000,
+    seed: int = 17,
+    alpha: float = 0.10,
+) -> dict:
+    n = len(recs)
+    if n < MIN_N:
+        return {
+            "band": band,
+            "verdict": "UNDERPOWERED",
+            "n": n,
+            "min_n": MIN_N,
+            "reason": f"n={n} < MIN_N={MIN_N} — GG-098 discipline: too few "
+                      f"resolved bets to return a verdict, not just a low-confidence one.",
+            "anti_predictive_alarm": False,
+        }
+
+    positions = to_mlb_positions(recs)
+    mono = e17.edge_monotonicity(positions, alpha=alpha)
+    rng = random.Random(seed)
+    fit = c17c.calib_fit_ci(recs, boot, rng)
+    ece_val = c17c.ece(recs, bins)
+    m = abh.metrics(recs)
+    anti_predictive_alarm = mono["verdict"] == e17.E_ANTI
+
+    return {
+        "band": band,
+        "verdict": "ANALYZED",
+        "n": n,
+        "edge_monotonicity": mono,
+        "calibration": fit,
+        "ece": ece_val,
+        "ev_per_bet_usd": m["ev_per_bet_usd"],
+        "pnl_per_dollar": m["pnl_per_dollar"],
+        "win_rate": m["win_rate"],
+        "total_pnl": m["total_pnl"],
+        "anti_predictive_alarm": anti_predictive_alarm,
+    }
+
+
+def run_all_bands(
+    portfolio_path: Path,
+    t4_ledger_path: Path,
+    bins: int = 5,
+    boot: int = 10000,
+    seed: int = 17,
+    alpha: float = 0.10,
+) -> dict[str, dict]:
+    results: dict[str, dict] = {}
+
+    by_band = load_pool_by_band(portfolio_path)
+    for band in BOOK_BANDS:
+        results[band] = analyze_band(band, by_band.get(band, []), bins, boot, seed, alpha)
+    if "UNTAGGED" in by_band:
+        results["UNTAGGED"] = analyze_band("UNTAGGED", by_band["UNTAGGED"], bins, boot, seed, alpha)
+
+    t4_recs = load_t4_ledger(t4_ledger_path)
+    if t4_recs or t4_ledger_path.exists():
+        results["T4M-PROJ"] = analyze_band("T4M-PROJ", t4_recs, bins, boot, seed, alpha)
+    else:
+        results["T4M-PROJ"] = {
+            "band": "T4M-PROJ", "verdict": "NO_DATA", "n": 0,
+            "reason": f"ledger not found: {t4_ledger_path} — run "
+                      f"scripts/build_t4_resolved_ledger.py first",
+            "anti_predictive_alarm": False,
+        }
+
+    return results
+
+
+# ── reporting ────────────────────────────────────────────────────────────────────
+
+def _print_report(results: dict[str, dict]) -> None:
+    print("=" * 96)
+    print("T-255 PER-BAND ANTI-PREDICTIVE + CALIBRATION MONITOR  (GG-099)")
+    print("=" * 96)
+    for band, r in results.items():
+        verdict = r["verdict"]
+        if verdict == "UNDERPOWERED":
+            print(f"\n[{band}] UNDERPOWERED  n={r['n']} (< MIN_N={r['min_n']}) — {r['reason']}")
+            continue
+        if verdict == "NO_DATA":
+            print(f"\n[{band}] NO_DATA — {r['reason']}")
+            continue
+        mono = r["edge_monotonicity"]
+        fit = r["calibration"]
+        alarm = " *** ANTI_PREDICTIVE WARNING ***" if r["anti_predictive_alarm"] else ""
+        print(f"\n[{band}] n={r['n']}{alarm}")
+        print(f"  edge_monotonicity: {mono['verdict']}  "
+              f"(fisher_p={mono.get('fisher_pvalue', float('nan')):.4f}, "
+              f"n_pos_edge={mono.get('n_pos_edge')}, n_neg_edge={mono.get('n_neg_edge')}, "
+              f"winrate_pos={mono.get('winrate_edge_pos', float('nan')):.3f}, "
+              f"winrate_neg={mono.get('winrate_edge_neg', float('nan')):.3f})")
+        print(f"  calibration: slope_b={fit['slope_b']:.3f} b_ci={[round(x, 3) for x in fit['b_ci']]} "
+              f"({fit['interpretation']}, excludes_1={fit['b_excludes_1']})  ECE={r['ece']:.4f}")
+        print(f"  EV/bet=${r['ev_per_bet_usd']:+.4f}  $/staked={r['pnl_per_dollar']*100:+.2f}%  "
+              f"win_rate={r['win_rate']:.3f}  total_pnl=${r['total_pnl']:+.2f}")
+    print("\n" + "=" * 96)
+    alarmed = [b for b, r in results.items() if r.get("anti_predictive_alarm")]
+    if alarmed:
+        print(f"WARNING (warn-only, no auto-kill): ANTI-PREDICTIVE flagged for band(s): "
+              f"{', '.join(alarmed)} — requires DS review before any capital/allocation "
+              f"decision touches this band (GG-098 lesson).")
+    else:
+        print("No band flagged ANTI-PREDICTIVE this run.")
+    print("=" * 96)
+
+
+# ── CLI ──────────────────────────────────────────────────────────────────────────
+
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description="T-255 per-band anti-predictive + calibration monitor (GG-099)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
+    p.add_argument("--portfolio", type=Path, default=DEFAULT_PORTFOLIO,
+                    help=f"Band-tagged T1/T2/T3 MLB portfolio JSON (default: {DEFAULT_PORTFOLIO})")
+    p.add_argument("--t4-ledger", type=Path, default=DEFAULT_T4_LEDGER,
+                    help=f"T4M-PROJ resolved ledger JSONL (default: {DEFAULT_T4_LEDGER})")
+    p.add_argument("--bins", type=int, default=5)
+    p.add_argument("--boot", type=int, default=10000)
+    p.add_argument("--seed", type=int, default=17)
+    p.add_argument("--alpha", type=float, default=0.10)
+    p.add_argument("--out", type=Path, default=OUT_DIR)
+    p.add_argument("--ci", action="store_true",
+                   help="CI mode: exit 1 iff any band alarms ANTI-PREDICTIVE. "
+                        "Warn-only signal — never a kill trigger (T-257).")
+    return p
+
+
+def main(argv=None) -> int:
+    args = _build_parser().parse_args(argv)
+    results = run_all_bands(args.portfolio, args.t4_ledger, args.bins, args.boot,
+                             args.seed, args.alpha)
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    out_json = args.out / "band_monitor_results.json"
+    out_json.write_text(json.dumps(results, indent=2))
+
+    _print_report(results)
+    print(f"\nWrote {out_json}")
+
+    if args.ci:
+        any_alarm = any(r.get("anti_predictive_alarm") for r in results.values())
+        return 1 if any_alarm else 0
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
