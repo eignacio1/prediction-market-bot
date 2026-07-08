@@ -293,6 +293,98 @@ class TestCSVLoader:
 # TestMainCLI
 # ---------------------------------------------------------------------------
 
+class TestGG100SignSafeRecompute:
+    """
+    Regression fixture for GG-100: reproduces the exact mechanism (GG-077
+    YES-framed stored fee_net_edge, wrong-signed for NO bets) that turned a
+    genuinely MONOTONIC (predictive) book into a false ANTI-PREDICTIVE verdict
+    once the T-256 fix pointed the monitor at the real, NO-majority MLB book.
+
+    Group 1 (NO, n=20): true edge +0.2327 (win 75%) — majority, mirrors the
+        live book's ~93% NO composition. Stored fee_net_edge is YES-framed and
+        wrong-signed: -0.2673.
+    Group 2 (YES, n=10): true edge +0.0825 (win 20%) — stored edge matches
+        true edge (no GG-077 bug for YES).
+    Group 3 (YES, n=10): true edge -0.0673 (win 20%) — stored edge matches
+        true edge.
+
+    Direction-aware (correct): edge>0 = Group1+Group2 (n=30, wr=0.567);
+        edge<=0 = Group3 (n=10, wr=0.20) -> MONOTONIC, not anti-predictive.
+    Stored-edge (buggy, GG-100's actual code path before this fix): edge>0 =
+        Group2 only (n=10, wr=0.20); edge<=0 = Group1+Group3 (n=30, wr=0.567)
+        -> ANTI-PREDICTIVE (edge>0 wins LESS) — the false alarm.
+    """
+
+    GROUP1 = {"direction": "NO", "model_p": 0.30, "mid_price_at_entry": 0.55,
+              "buggy_stored_edge": -0.2673, "n_win": 15, "n_loss": 5}
+    GROUP2 = {"direction": "YES", "model_p": 0.60, "mid_price_at_entry": 0.50,
+              "buggy_stored_edge": 0.0825, "n_win": 2, "n_loss": 8}
+    GROUP3 = {"direction": "YES", "model_p": 0.40, "mid_price_at_entry": 0.45,
+              "buggy_stored_edge": -0.0673, "n_win": 2, "n_loss": 8}
+
+    def _portfolio_positions(self) -> list[dict]:
+        positions = []
+        for group in (self.GROUP1, self.GROUP2, self.GROUP3):
+            for _ in range(group["n_win"]):
+                positions.append({
+                    "direction": group["direction"], "model_p": group["model_p"],
+                    "mid_price_at_entry": group["mid_price_at_entry"],
+                    "fee_net_edge": group["buggy_stored_edge"],  # deliberately wrong (GG-077)
+                    "outcome": "WIN", "game_date": "2026-07-01", "pnl": 5.0,
+                    "duplicate_of": None, "fee_contaminated": False,
+                })
+            for _ in range(group["n_loss"]):
+                positions.append({
+                    "direction": group["direction"], "model_p": group["model_p"],
+                    "mid_price_at_entry": group["mid_price_at_entry"],
+                    "fee_net_edge": group["buggy_stored_edge"],
+                    "outcome": "LOSS", "game_date": "2026-07-01", "pnl": -5.0,
+                    "duplicate_of": None, "fee_contaminated": False,
+                })
+        return positions
+
+    def test_direction_aware_loader_is_not_anti_predictive(self, tmp_path):
+        positions = self._portfolio_positions()
+        path = tmp_path / "gg100_portfolio.json"
+        path.write_text(json.dumps({"bankroll_usd": 1000.0, "closed_positions": positions}))
+        loaded = _load_portfolio(path)
+        assert len(loaded) == 40
+        assert all(p.edge_source == "recomputed" for p in loaded)
+        result = analyse(loaded, alpha=0.10)
+        assert result["verdict"] != VERDICT_ANTI
+        assert result["verdict"] == VERDICT_MONO
+
+    def test_stored_edge_alone_reproduces_the_false_anti_predictive_alarm(self):
+        # Simulates the pre-fix code path (raw `p.get("fee_net_edge")`, no
+        # recompute) directly from the same underlying win/loss data, to prove
+        # the fixed loader's divergence is exactly what closed GG-100.
+        pos: list[Position] = []
+        for group in (self.GROUP1, self.GROUP2, self.GROUP3):
+            for _ in range(group["n_win"]):
+                pos.append(Position(group["buggy_stored_edge"], 1, "2026-07-01",
+                                     group["direction"], 5.0, "stored_fallback"))
+            for _ in range(group["n_loss"]):
+                pos.append(Position(group["buggy_stored_edge"], 0, "2026-07-01",
+                                     group["direction"], -5.0, "stored_fallback"))
+        result = analyse(pos, alpha=0.10)
+        assert result["verdict"] == VERDICT_ANTI
+
+    def test_fallback_used_when_model_p_missing(self, tmp_path):
+        # A record lacking model_p/mid_price_at_entry (legacy schema) must
+        # still load via the stored-value fallback, not be silently dropped.
+        positions = [
+            {"direction": "NO", "fee_net_edge": 0.05, "outcome": "WIN",
+             "game_date": "2026-07-01", "pnl": 5.0, "duplicate_of": None,
+             "fee_contaminated": False},
+        ]
+        path = tmp_path / "legacy_portfolio.json"
+        path.write_text(json.dumps({"bankroll_usd": 1000.0, "closed_positions": positions}))
+        loaded = _load_portfolio(path)
+        assert len(loaded) == 1
+        assert loaded[0].edge_source == "stored_fallback"
+        assert loaded[0].fee_net_edge == pytest.approx(0.05)
+
+
 class TestMainCLI:
     def test_missing_portfolio_returns_error(self):
         rc = main(["--portfolio", "/tmp/nonexistent_t177_test_abc123.json"])

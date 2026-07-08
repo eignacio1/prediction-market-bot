@@ -24,6 +24,19 @@ resolves to the same VPS-synced cache path (`logs/.vps_portfolio_cache_<sport>.j
 the CLAUDE.md session-start governance hook uses, so this script and the hook can
 never disagree about which file is "the live book."
 
+GG-100 (2026-07-08): the T-256 fix repointed the portfolio path but not the edge
+math. This script read the *stored* `fee_net_edge` field, which (GG-077) is
+YES-framed and wrong-signed for NO-direction bets. The live MLB book is 157/169
+NO, so ~93% of positions were mis-cohorted and the Fisher test inverted — a
+false ANTI-PREDICTIVE verdict (p=0.0236), reproduced and diagnosed in
+`exp_output/GG-100-DIAGNOSIS/FINDINGS.md`. Fixed: edge is now recomputed
+direction-aware via `run_exp017_mlb.compute_fee_net_edge(direction, model_p, mip)`
+whenever a position carries `model_p`/`mid_price_at_entry` (true of all real
+production records). The stored `fee_net_edge` is used only as a fallback for
+legacy/synthetic records that lack those two fields, and every such fallback is
+counted and surfaced as a warning — never silently trusted. See GG-100 (RESOLVED,
+artifact) in GOVERNANCE_GAP_LOG.md.
+
 Band-awareness caveat (GG-099): `PaperTrader.open_position()` does not persist a
 `band` field on closed positions (T2/T3 MLB construct one internally but it is
 dropped before the record is written), and T4M-PROJ is tracked in a wholly separate
@@ -67,6 +80,9 @@ import sys
 from pathlib import Path
 from typing import NamedTuple, Optional
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_exp017_mlb as e17  # noqa: E402  compute_fee_net_edge — GG-077 direction-aware, do not reimplement
+
 # --- constants ---
 
 MIN_N = 20          # minimum resolved bets for any verdict (below this: INCONCLUSIVE)
@@ -102,11 +118,27 @@ class Position(NamedTuple):
     game_date: str
     direction: str
     pnl: float
+    # "recomputed" = direction-aware via compute_fee_net_edge (GG-077-safe, the
+    # normal path for all real production records). "stored_fallback" = the
+    # position lacked model_p/mid_price_at_entry, so the raw stored fee_net_edge
+    # was used as-is — NOT sign-safe for NO bets (GG-077). Default preserves the
+    # 5-positional-arg construction used throughout the existing test suite.
+    edge_source: str = "unknown"
 
 
 # ---------------------------------------------------------------------------
 # Loaders
 # ---------------------------------------------------------------------------
+
+def _recompute_edge(direction: str, model_p, mip) -> Optional[float]:
+    """GG-100/GG-077: direction-aware edge, never the raw stored fee_net_edge."""
+    if direction not in ("YES", "NO") or model_p is None or mip is None:
+        return None
+    try:
+        return e17.compute_fee_net_edge(direction, float(model_p), float(mip))
+    except (TypeError, ValueError):
+        return None
+
 
 def _load_portfolio(
     path: Path,
@@ -124,19 +156,28 @@ def _load_portfolio(
         outcome = p.get("outcome", "")
         if outcome not in ("WIN", "LOSS"):
             continue
-        edge = p.get("fee_net_edge")
+        direction = str(p.get("direction", ""))
+        edge = _recompute_edge(direction, p.get("model_p"), p.get("mid_price_at_entry"))
+        edge_source = "recomputed"
         if edge is None:
-            continue
-        try:
-            edge = float(edge)
-        except (TypeError, ValueError):
-            continue
+            # Legacy/synthetic record without model_p/mid_price_at_entry — fall
+            # back to the stored value. NOT sign-safe for NO bets (GG-077); every
+            # fallback is counted and surfaced as a warning by the caller.
+            edge = p.get("fee_net_edge")
+            edge_source = "stored_fallback"
+            if edge is None:
+                continue
+            try:
+                edge = float(edge)
+            except (TypeError, ValueError):
+                continue
         positions.append(Position(
             fee_net_edge=edge,
             win=1 if outcome == "WIN" else 0,
             game_date=str(p.get("game_date", "")),
-            direction=str(p.get("direction", "")),
+            direction=direction,
             pnl=float(p.get("pnl", 0.0) or 0.0),
+            edge_source=edge_source,
         ))
     return positions
 
@@ -158,16 +199,22 @@ def _load_csv(
             outcome = row.get("outcome", "").strip().upper()
             if outcome not in ("WIN", "LOSS"):
                 continue
-            try:
-                edge = float(row["fee_net_edge"])
-            except (KeyError, ValueError, TypeError):
-                continue
+            direction = str(row.get("direction", "")).strip()
+            edge = _recompute_edge(direction, row.get("model_p") or None, row.get("mid_price_at_entry") or None)
+            edge_source = "recomputed"
+            if edge is None:
+                edge_source = "stored_fallback"
+                try:
+                    edge = float(row["fee_net_edge"])
+                except (KeyError, ValueError, TypeError):
+                    continue
             positions.append(Position(
                 fee_net_edge=edge,
                 win=1 if outcome == "WIN" else 0,
                 game_date=str(row.get("game_date", "")),
-                direction=str(row.get("direction", "")),
+                direction=direction,
                 pnl=float(row.get("realized_pnl", 0.0) or 0.0),
+                edge_source=edge_source,
             ))
     return positions
 
@@ -446,6 +493,16 @@ def main(argv=None) -> int:
                                     exclude_fee_contaminated=exc_fee)
         sport_tag = "ACTIVE" if args.sport == "mlb" else "DARK/FROZEN — historical, not live risk"
         label = f"{args.sport.upper()} ({sport_tag}) — {path.name}"
+
+    n_fallback = sum(1 for p in positions if p.edge_source == "stored_fallback")
+    if n_fallback:
+        print(
+            f"  WARNING (GG-100/GG-077): {n_fallback}/{len(positions)} positions lacked "
+            "model_p/mid_price_at_entry and used the raw stored fee_net_edge as a "
+            "fallback — NOT sign-safe for NO-direction bets. Verify these records "
+            "predate the model_p/mip schema before trusting the verdict below.",
+            file=sys.stderr,
+        )
 
     result = analyse(positions, alpha=args.alpha, window=args.window, label=label)
     _print_report(result)
