@@ -1,0 +1,16 @@
+# ============================================================================
+# Merge strategy for the concurrent-session claim ledger (GG-082 / GG-101 / T-259)
+#
+# SESSION_CLAIMS.md is strictly APPEND-ONLY (one immutable row per session,
+# keyed by UTC timestamp). `merge=union` makes two sessions' simultaneous claim
+# appends auto-merge instead of colliding on push/rebase — both rows survive.
+#
+# NOTE: union merge is applied ONLY to this file precisely because it is the one
+# governance file that is never edited in place. The other shared logs
+# (DECISION_LOG.md, GOVERNANCE_GAP_LOG.md, TODO_NEXT.md, MEMORY_BANK.md) contain
+# in-place edits (status flips OPEN->RESOLVED, "Last reviewed" header rewrites),
+# where union merge would silently keep BOTH the stale and the new line. Those
+# stay on the default merge driver and are protected instead by worktree
+# isolation + path-scoped commits + the diff-against-HEAD rule (Hard Rule 10).
+# ============================================================================
+04_EXECUTION/SESSION_CLAIMS.md merge=union

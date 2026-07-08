@@ -157,13 +157,33 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 
 ---
 
-### Step 0 — Concurrent-session claim (GG-082)
+### Step 0 — Concurrent-session isolation + claim (GG-082, GG-101)
 
-**Why this exists:** on 2026-07-03, a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative — caught only by chance, same-session. GG-082 registered this as a standing process gap, not a one-off. This step is how it's caught before something is written down, not after.
+**Why this exists:** two failure modes, both real and both observed. **(a) Narrative conflation** — on 2026-07-03 a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative (GG-082). **(b) Working-tree collision** — on 2026-07-08, two sessions running in the *same physical working tree* meant one session's `git stash` swept the other's uncommitted edits; it recovered only because that session chose `stash` over a destructive op (GG-101). A `reset --hard` / `checkout --` / `clean -fd` would have caused permanent, unrecoverable loss. This step exists to make both modes structurally hard, not just visible.
 
-1. Append one line to `04_EXECUTION/SESSION_CLAIMS.md`: UTC timestamp, intended T-NNN/GG-NNN range if already known (else "TBD"), one-line session focus. Commit and push this line immediately, on its own — do not batch it with other work.
-2. Check that file for any other claim from roughly the last 24 hours. If one exists, another session may still be active or may have left local, unpushed work — do not assume you are the only session touching shared docs today.
-3. **Before writing to any shared navigation file** (`MEMORY_BANK.md`, `PLAN.md`, `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`, `04_EXECUTION/TODO_NEXT.md`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`) at any point in the session — not just at session start — diff the file against `HEAD` or re-read it fresh. Do not trust a narrative already sitting in context/memory as necessarily still current; another session may have changed the file since you last read it.
+**0a — Launch isolated (the real fix for GG-101).** If there is any chance another session is or will be active, do not `cd` into the shared `main` tree. Launch an isolated worktree:
+
+```bash
+scripts/new_session_worktree.sh "<short-focus-slug>"    # e.g. gg095-brier-ladder
+# then cd into the printed worktree path — you now have your own branch + checkout
+```
+
+Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree.
+
+**0b — Run the guard and claim atomically.** Inside your session (worktree or shared tree):
+
+```bash
+bash .claude/hooks/session_guard.sh                     # branch/worktree, HEAD-vs-origin drift, other claims, foreign uncommitted state
+scripts/claim_session.sh "<one-line focus>" "<T-/GG-/ADR- range or TBD>"
+```
+
+`claim_session.sh` appends your row to `04_EXECUTION/SESSION_CLAIMS.md`, commits it *alone*, and pushes with rebase-retry so two concurrent sessions cannot silently grab the same T-/GG-/ADR- number (the 2026-07-07 T-247 race). `SESSION_CLAIMS.md` is `merge=union`, so simultaneous claim rows auto-merge. `.claude/commands/session-start.md` wires 0b into one command.
+
+**0c — Check for other live sessions.** Read the last ~24h of `SESSION_CLAIMS.md`. If another claim exists, another session may be active or hold local unpushed/uncommitted work — reconcile ID ranges now, before writing anything.
+
+**0d — Commit early, path-scoped, never blanket (the residual shared-tree rule).** If you are in the shared `main` tree despite 0a: commit your own work in small path-scoped commits (`git commit <file1> <file2> …`). **Never `git add -A`, `git commit -a`, unscoped `git stash`, `git reset --hard`, `git checkout -- <foreign-file>`, or `git clean -fd`** — any of these can destroy a concurrent session's uncommitted work. Do not let uncommitted state accumulate; the longer it sits in a shared tree, the larger the collision surface.
+
+**0e — Re-read before you trust (Hard Rule 10).** Before writing to any shared navigation file (`MEMORY_BANK.md`, `PLAN.md`, `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`, `04_EXECUTION/TODO_NEXT.md`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`) at any point — not just at session start — diff it against `HEAD` or re-read it fresh. Do not trust a narrative already sitting in context/memory as necessarily current; another session may have changed the file since you last read it. These logs are deliberately *not* `merge=union` (they have in-place edits union merge would silently double), so isolation + path-scoped commits + this re-read are their only protection.
 
 ---
 
@@ -343,4 +363,4 @@ Then address what the user asked.
 7. Every strategic decision made in a session goes into DECISION_LOG.md immediately — not at session end.
 8. When context reaches ~80%: stop implementation, run /session-end, produce SESSION_HANDOFF, commit and push.
 9. **Design throughput is hundreds of evaluation rows per game-day (MLB T4: 924 rows/game-day on 2026-07-02, 464 on 2026-07-03 — 5.75 and 3.67 bets/game respectively, GG-080/T-235, 2026-07-04, n=2 game-days), capital-ceiling agnostic, dynamically routed by model computation — not a small, discrete, pre-scheduled batch of bets per game night.** The prior "~8,600 slots/game" figure was a theoretical ceiling, superseded 2026-07-04 (GG-080) once real per-game-day data showed it has no clean empirical referent (`cycle_id` is a global counter shared across all concurrently-live games, not per-game) and that measured throughput runs 9-19x below it. Re-derive as more game-days accumulate — this is not yet a stable long-run estimate. The architectural point survives the correction: bet sizing, kill switches, and decision routing must still be designed per-cycle/per-bet, continuously evaluated as new state arrives, not as a batch of pre-scheduled discrete events — any implementation that only makes sense for a small, fixed count of bets decided once per game is architecturally wrong, even though the real count is far lower than the old theoretical figure. The model's computation determines which band a bet routes to — bands are not pre-decided time-horizon thresholds. Kill switches operate per bucket, approaching per bet.
-10. **Before writing to a shared navigation file, diff it against `HEAD` or re-read it fresh — never trust a narrative already loaded in context as necessarily current (GG-082).** Claim your session's intended task range in `04_EXECUTION/SESSION_CLAIMS.md` at session start (see Step 0) so concurrent sessions are visible before they cause a conflation, not after.
+10. **Concurrent sessions must isolate, not just announce (GG-082 + GG-101).** For any work where another session may be active, launch an isolated `git worktree` via `scripts/new_session_worktree.sh` — a shared working tree lets one session's git op destroy another's uncommitted work, and SESSION_CLAIMS.md alone does not prevent that. Claim your task range atomically with `scripts/claim_session.sh` (Step 0). Before writing to any shared navigation file, diff it against `HEAD` or re-read it fresh — never trust a narrative already loaded in context as necessarily current. **In the shared `main` tree, commit only your own files path-scoped; never `git add -A` / `git commit -a` / unscoped `stash` / `reset --hard` / `checkout -- <foreign>` / `clean -fd`** — those can silently wipe a concurrent session's work.
