@@ -102,6 +102,18 @@ exp_output/MLB/
 # tracking it in git reproduces the exact paper_portfolio.json/T-171 problem.
 data/data_contracts_state.json
 
+# --- GG-102: live-regenerated experiment results, not one-time snapshots.
+# band_monitor_results.json is rewritten by the weekly VPS cron
+# (run_band_monitor.py --ci, Mondays); the two EXP-*-MLB-01 results files are
+# rewritten by ad-hoc reruns. Being git-tracked meant every VPS-side write
+# dirtied the tree and blocked deploy.yml's guard (same T-171/paper_portfolio
+# shape). Every other exp_output/**/*_results.json file is a one-time,
+# non-regenerated snapshot and stays tracked as an audit trail — do not widen
+# this pattern without confirming the target file is actually live-rewritten.
+exp_output/EXP-ARITH-MLB-01/EXP-ARITH-MLB-01_results.json
+exp_output/EXP-FLOW-MLB-01/EXP-FLOW-MLB-01_results.json
+exp_output/T255-BAND-MONITOR/band_monitor_results.json
+
 # --- Qualitative classification CSVs ARE committed (immutable registered snapshots) ---
 # Template and QS snapshots in qualitative_data/ are version-controlled.
 *.csv
