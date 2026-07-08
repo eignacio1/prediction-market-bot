@@ -26,6 +26,11 @@ tags every row `band=T4M-PROJ`, and writes a stable JSONL ledger that
 downstream per-band monitors (T-255) can consume the same way
 `run_exp017_mlb.py` already consumes the T1 book.
 
+2026-07-08 (T-255): added `size_usd` to the ledger row. It was present in the
+raw T4 portfolio source all along but not carried into the original ledger —
+T-255's per-band monitor needs it for the $/staked metric, same as the T1/T2/T3
+loader (`run_exp017b_decomp_mlb.load_records`) already exposes via `_size`.
+
 Run:
   python3 scripts/build_t4_resolved_ledger.py                    # use existing local cache
   python3 scripts/build_t4_resolved_ledger.py --pull             # ssh-refresh cache from VPS first
@@ -119,6 +124,7 @@ def build_ledger(portfolio_path: Path) -> tuple[list[dict], int]:
             "edge": edge,
             "outcome": outcome,
             "pnl": float(p.get("pnl", 0.0) or 0.0),
+            "size_usd": float(p.get("size_usd", 0.0) or 0.0),
             "actual_hits": p.get("actual_hits"),
         })
 

@@ -1,0 +1,148 @@
+{
+  "T1": {
+    "band": "T1",
+    "verdict": "ANALYZED",
+    "n": 167,
+    "edge_monotonicity": {
+      "verdict": "INCONCLUSIVE",
+      "n": 167,
+      "n_pos_edge": 164,
+      "n_neg_edge": 3,
+      "winrate_edge_pos": 0.49390243902439024,
+      "winrate_edge_neg": 0.0,
+      "fisher_odds_ratio": Infinity,
+      "fisher_pvalue": 0.24615828583796262,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 55,
+          "edge_min": -0.005882250000000061,
+          "edge_max": 0.03565974999999998,
+          "edge_mean": 0.01896573636363636,
+          "winrate": 0.6,
+          "pnl": 26.700399999999995
+        },
+        {
+          "tercile": 2,
+          "n": 56,
+          "edge_min": 0.03689275,
+          "edge_max": 0.06839875000000001,
+          "edge_mean": 0.053577214285714304,
+          "winrate": 0.39285714285714285,
+          "pnl": -126.97379999999994
+        },
+        {
+          "tercile": 3,
+          "n": 56,
+          "edge_min": 0.06902175000000002,
+          "edge_max": 0.18123000000000003,
+          "edge_mean": 0.10115159375,
+          "winrate": 0.4642857142857143,
+          "pnl": 84.88699999999999
+        }
+      ]
+    },
+    "calibration": {
+      "intercept_a": 0.19016085804144078,
+      "slope_b": 0.8418339949386,
+      "a_ci": [
+        -0.14499908675664844,
+        0.5363984185055908
+      ],
+      "b_ci": [
+        0.4828234560450069,
+        1.2730746770569932
+      ],
+      "b_excludes_1": false,
+      "interpretation": "overconfident"
+    },
+    "ece": 0.049204455089820354,
+    "ev_per_bet_usd": -0.09213413173652661,
+    "pnl_per_dollar": -0.00867042251235328,
+    "win_rate": 0.48502994011976047,
+    "total_pnl": -15.386399999999943,
+    "anti_predictive_alarm": false
+  },
+  "T2": {
+    "band": "T2",
+    "verdict": "UNDERPOWERED",
+    "n": 2,
+    "min_n": 30,
+    "reason": "n=2 < MIN_N=30 \u2014 GG-098 discipline: too few resolved bets to return a verdict, not just a low-confidence one.",
+    "anti_predictive_alarm": false
+  },
+  "T3": {
+    "band": "T3",
+    "verdict": "UNDERPOWERED",
+    "n": 0,
+    "min_n": 30,
+    "reason": "n=0 < MIN_N=30 \u2014 GG-098 discipline: too few resolved bets to return a verdict, not just a low-confidence one.",
+    "anti_predictive_alarm": false
+  },
+  "T4M-PROJ": {
+    "band": "T4M-PROJ",
+    "verdict": "ANALYZED",
+    "n": 273,
+    "edge_monotonicity": {
+      "verdict": "INCONCLUSIVE",
+      "n": 273,
+      "n_pos_edge": 270,
+      "n_neg_edge": 3,
+      "winrate_edge_pos": 0.5555555555555556,
+      "winrate_edge_neg": 1.0,
+      "fisher_odds_ratio": 0.0,
+      "fisher_pvalue": 0.2582417582417582,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 91,
+          "edge_min": -0.006723250000000073,
+          "edge_max": 0.080539,
+          "edge_mean": 0.04330995054945055,
+          "winrate": 0.6483516483516484,
+          "pnl": 3.1187
+        },
+        {
+          "tercile": 2,
+          "n": 91,
+          "edge_min": 0.08072774999999999,
+          "edge_max": 0.13375474999999998,
+          "edge_mean": 0.10653055494505491,
+          "winrate": 0.6373626373626373,
+          "pnl": 12.297200000000002
+        },
+        {
+          "tercile": 3,
+          "n": 91,
+          "edge_min": 0.134538,
+          "edge_max": 0.70895175,
+          "edge_mean": 0.209459510989011,
+          "winrate": 0.3956043956043956,
+          "pnl": 0.6273000000000014
+        }
+      ]
+    },
+    "calibration": {
+      "intercept_a": -0.05690115997827544,
+      "slope_b": 0.5602455696229637,
+      "a_ci": [
+        -0.3256299521418525,
+        0.20545957183658206
+      ],
+      "b_ci": [
+        0.3359894060182146,
+        0.8250594449898039
+      ],
+      "b_excludes_1": true,
+      "interpretation": "overconfident"
+    },
+    "ece": 0.06752597435897438,
+    "ev_per_bet_usd": 0.05876630036630043,
+    "pnl_per_dollar": 0.1250054542621164,
+    "win_rate": 0.5604395604395604,
+    "total_pnl": 16.043200000000017,
+    "anti_predictive_alarm": false
+  }
+}
