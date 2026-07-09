@@ -40,6 +40,16 @@
 
 ---
 
+## SESSION — WINDOW A: CONTEXT/TOKEN OPTIMIZATION INFRA (registered 2026-07-09, isolated worktree `session/20260709T000753Z-ctx-optimization`)
+
+Goal (per `ITERATION_PLAN_context_and_math.md`, operator doc, not itself task-registered): stop log/handoff text from living in the chat window — feed sessions deltas, not full files. No math files touched (that is Window B, disjoint stream, not part of this task). **ADR-0041 (Two-Tier Context Culling) is the gate: A2–A4 may not be built before it is accepted.** ADR-0041 accepted same session (operator directive) — see DECISION_LOG.md ADR Index and `03_DECISIONS/ADR-0041_two-tier-context-culling.md`.
+
+| Task | Depends on | Detail |
+|------|-----------|--------|
+| **T-300** | — | **A1 — DONE 2026-07-09.** Wrote and accepted ADR-0041 (Two-Tier Context Culling): Tier 1 (governance lineage — DECISION_LOG, GOVERNANCE_GAP_LOG, ADRs, SESSION_CLAIMS, TODO_NEXT, MEMORY_BANK, handoffs, C6 audit JSONL) is never culled/summarized-in-place on disk, Hard Rule 10 re-read-before-trust reaffirmed explicitly for delta-based retrieval; Tier 2 (cron traces, per-cycle audit detail beyond the recency window, experiment intermediates) may be summarized/excluded from a session's context, never deleted from disk without a separate retention ADR. Umbrella task for A2 (`append_audit_trail` disk-backed writer), A3 (`session_delta.sh`), A4 (cron aggregator → executive summary), A5 (verify token-cost delta + close out). Logged in DECISION_LOG.md same session per Hard Rule 7. |
+
+---
+
 ## SESSION — EDGE-STRATEGY DECOMPOSITION (2026-07-07; concurrent w/ SESSION 122–124, canonical # TBD)
 
 **EXP-017B/C/D COMPLETE.** Internal-validity decomposition of the n=151 MLB T1 Tier-1 book. Findings: edge is NO-only, non-monotonic, tail-concentrated, and aggregate-insignificant (EXP-017B); the model is well-calibrated and the shortfall is variance, not miscalibration (EXP-017C); YES-quarantine is the only holdout-defensible fix, while min-edge/tail filtering and recalibration fail holdout (EXP-017D). Registered **GG-098**; drafted **ADR-0042 (PROPOSED)**. Scripts: `scripts/run_exp017b_decomp_mlb.py`, `run_exp017c_calibration_mlb.py`, `ab_harness.py`, `run_ab_experiment.py`. Findings under `exp_output/EXP-017{B,C,D}-*`. Numbering renumbered up (ADR-0041→0042, GG-097→098, T-247→250) per SESSION_CLAIMS reconciliation — re-verify at push time.
