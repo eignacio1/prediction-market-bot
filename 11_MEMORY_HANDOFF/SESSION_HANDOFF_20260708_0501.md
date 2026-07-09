@@ -92,3 +92,19 @@ cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 # (build_t4_resolved_ledger.py --pull && run_band_monitor.py --ci, Mondays 14:20 UTC) —
 # it is committed to the repo but not yet in the live crontab. Confirm with `crontab -l`."
 ```
+
+---
+
+## CLOSEOUT ADDENDUM — 2026-07-08 (continuation, same overall task)
+
+The resume command above is now stale — do not follow it as written. The continuation session picked up exactly here and closed the residual:
+
+- Found the committed cron line used a local-dev `--pull`/cache convention that crashes `FileNotFoundError` when actually run on the VPS (where cron executes). Fixed `deploy/cron.conf` and the live crontab to use explicit `--portfolio logs/paper_portfolio_mlb_t4.json` / `--portfolio logs/paper_portfolio_mlb.json` flags.
+- Installed via diff-verified splice into the existing VPS crontab (preserved PIPE-08's dynamic lines, not a blanket overwrite).
+- Confirmed end-to-end with a manual dry run on the VPS: exit 0, `build_t4_resolved_ledger.py` → 331 resolved (win_rate 0.583, P&L +$22.33), `run_band_monitor.py --ci` → T1 n=167 INCONCLUSIVE, T4M-PROJ n=331 INCONCLUSIVE, no band ANTI-PREDICTIVE.
+- **GG-099's full T-253→T-258 chain is now code-complete, tested, and live in production. Closed, no residual action.**
+- Confirmed nothing broke from the operator's usage-credit cutoff that ended the prior turn: stub scan clean, `SemanticFloorViolation`=0, recency-windowed `CONTAMINATION_HALT`=0, `t4-mlb` systemd active, local/origin/VPS git in sync.
+- No new strategic decisions this continuation.
+- Committed `418c78c`/`a6068a3` (T-257 closeout) and, in a later pass on the same branch, `045f6d2` (GG-099 status consolidation, bundled alongside an unrelated concurrent session's GG-102/T-261 closeout). All pushed; `git rev-parse HEAD origin/main` confirmed identical — nothing left uncommitted from this work.
+- Real next open thread: **GG-004** (commercial sample-adequacy, Tier 2 n≥500 not yet met) — not this handoff's cron item, which is now closed.
+- Two untracked files sitting in the working tree belong to other concurrent/future sessions, not this one — left untouched per Hard Rule 10: `ITERATION_PLAN_context_and_math.md` (Earl's own proposed two-window iteration plan, not yet task-registered) and `SESSION_HANDOFF_20260709_0130.md` (the separate GG-102/T-261 session's own handoff).
