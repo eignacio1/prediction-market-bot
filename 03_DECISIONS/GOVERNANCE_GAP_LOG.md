@@ -1750,6 +1750,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-103 — `.last_session_checkpoint` is a single unprotected file, not concurrency-safe like `SESSION_CLAIMS.md`
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-103 |
+| Category | New infra introduced without the concurrency protection its sibling mechanisms already have (GG-101/GG-102 pattern: a new file/mechanism added under time pressure, protected against the single-session case, not audited against the concurrent-session case at introduction time). |
+| What was missed | T-300 (A3 residual, 2026-07-09) wired `04_EXECUTION/.last_session_checkpoint` — a single-line file holding one git SHA — into `session-start.md` (read) and `session-end.md` (overwrite) so `session_delta.sh` can diff since the last checkpoint instead of a full Tier 1 read. Unlike `SESSION_CLAIMS.md`, this file has no `.gitattributes` `merge=union` rule and is not append-only — it is a full overwrite on every session-end. If two sessions are concurrently active in separate worktrees (the GG-101-mandated pattern) and both reach session-end before either pushes, whichever pushes second silently overwrites the first session's checkpoint update with its own HEAD SHA — not a merge conflict, since git resolves single-line-file overwrites cleanly. This does not corrupt data (worst case: the "losing" session's checkpoint-to-HEAD span is simply skipped by the next session's delta, which then must rely on Hard Rule 10's fresh-diff/re-read discipline to still catch it) but it is a silent staleness gap the mechanism itself cannot detect. |
+| When it should have been caught | At A3-residual design time (this session) — the concurrent-session isolation work (GG-101, `scripts/claim_session.sh`, `.gitattributes` `merge=union` on `SESSION_CLAIMS.md`) was already-known precedent for exactly this class of file when `.last_session_checkpoint` was created a few hours earlier in this same session; the asymmetry wasn't noticed until this A5 close-out review. |
+| Phases it survived | N/A — new in this session (created 2026-07-09, wired into session-start/session-end same session); has not yet been exercised under real concurrent load. |
+| Why it survived | The file was designed to solve a single-session sequencing problem (A3's stated residual: "nothing invokes `session_delta.sh` automatically yet") and the concurrency angle wasn't part of that problem statement — it was found only by deliberately re-applying the adversarial "are we compromised" lens to newly-written infra before closing out the window, not by any test or review step that would have caught it otherwise. |
+| Impact | Zero capital risk, zero live-system risk — this is session-bootstrap tooling only, not part of C1-C8. Worst case is a slightly stale delta on the affected session's next start, fully recoverable via Hard Rule 10 (which already governs every write regardless of retrieval path) or a manual full read. Not a blocker to anything; logged so it isn't silently forgotten. |
+| Discovery | 2026-07-09, T-300/Window A A5 close-out review (this session), immediately after wiring the checkpoint file into session-start/session-end. |
+| Resolution | OPEN — no fix implemented yet. Candidate fix (not yet built): apply the same `merge=union` `.gitattributes` treatment used for `SESSION_CLAIMS.md`, reformatted as an append-only log (`checkpoint<TAB>timestamp<TAB>session-slug` rows) with session-start reading the last line rather than the whole-file content — mirrors `claim_session.sh`'s already-proven pattern instead of inventing a new one. Deferred rather than built now because it is zero-capital-risk and Hard Rule 10 already covers the failure mode; register a T-NNN if/when Window A resumes or another session picks this up. |
+| Status | OPEN. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
