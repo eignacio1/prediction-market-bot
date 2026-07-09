@@ -344,9 +344,11 @@ Present your top concerns. If you have none after a thorough read, state specifi
 
 ## After the protocol
 
-Read `11_MEMORY_HANDOFF/MEMORY_BANK.md` for full project state, current portfolio, and priority queue.
+**Delta-first retrieval (ADR-0041, T-300/Window A):** check `04_EXECUTION/.last_session_checkpoint`. If it exists, run `scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"` and read its output — a Tier 1 diff since that checkpoint against live `HEAD`, plus a dense state artifact (both ledgers' bankroll, open GGs, last 3 EXP-0xx deltas, GG-004 gate progress). This is the default retrieval path for a routine session start.
 
-Read `04_EXECUTION/TODO_NEXT.md` for the current task list.
+**Fallback:** if the checkpoint file is missing, empty, or `session_delta.sh` errors, fall back to full reads — `11_MEMORY_HANDOFF/MEMORY_BANK.md` for full project state/portfolio/priority queue, and `04_EXECUTION/TODO_NEXT.md` for the current task list. Do not skip these when the delta path isn't available; the delta is an optimization over the full read, never a replacement for it when it can't run.
+
+**Hard Rule 10 still applies regardless of retrieval path** — the checkpoint delta is read-only context for starting the session; it does not exempt you from re-reading/diffing a shared nav file fresh immediately before you write to it later in the session.
 
 Then address what the user asked.
 
