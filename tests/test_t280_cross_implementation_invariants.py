@@ -32,6 +32,15 @@ from pathlib import Path
 
 import pytest
 
+# GG-103/B4 (WINDOW B, 2026-07-09): explicit worktree-local src guard, matching
+# tests/test_c4_risk.py's established pattern. Without this, `prediction_market_bot`
+# binds via the shared Python env's static .pth file (main tree's src/) whenever
+# this file is collected/run before any test that inserts its own worktree src
+# first -- silently validating the wrong tree's code. See GG-103.
+_SRC = Path(__file__).parent.parent / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
+
 from prediction_market_bot.c3_forecasting.calibration import temperature_scale
 from prediction_market_bot.c7_monitoring.monitor import (
     ForecastOutcomeRecord,
