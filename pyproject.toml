@@ -51,6 +51,7 @@ disallow_any_generics = true
 no_implicit_reexport = true
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
