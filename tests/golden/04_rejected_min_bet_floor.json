@@ -1,0 +1,32 @@
+{
+  "scenario": "04_rejected_min_bet_floor",
+  "description": "Edge clears MIN_EDGE_TO_APPROVE and Kelly sizing produces a positive, non-zero size, but a small bankroll ($100) drives it below MIN_BET_USD (10.0) -- REJECTED at CHECK 7 (min_bet_floor), distinct from the CHECK 3 (insufficient_edge) and CHECK 5 (kelly_size_zero) rejection paths. No position should be opened.",
+  "flow": "reject_only",
+  "risk_engine": {
+    "bankroll": 100.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": null
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.0,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": false
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-04-REJECT-MINBET",
+    "p_estimate": 0.62,
+    "market_implied_prob": 0.50,
+    "gross_edge": 0.12,
+    "edge": 0.1025,
+    "recommended_direction": "YES"
+  },
+  "expected_approval": {
+    "approval_status": "REJECTED",
+    "rejection_reason": "min_bet_floor",
+    "approved_direction": null,
+    "approved_size": 0.0
+  }
+}
