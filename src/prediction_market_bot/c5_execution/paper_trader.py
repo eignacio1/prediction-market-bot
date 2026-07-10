@@ -60,6 +60,10 @@ except ImportError:  # pragma: no cover - non-POSIX fallback
 import pandas as pd
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.logic_epoch import (
+    CURRENT_APPROVAL_COMMIT,
+    CURRENT_LOGIC_EPOCH,
+)
 
 if TYPE_CHECKING:
     from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
@@ -460,6 +464,8 @@ class PaperTrader:
                 "risk_eval_id": risk_id,
                 "forecast_id": forecast_id,
                 "band": band,
+                "logic_epoch": CURRENT_LOGIC_EPOCH,  # T-320: write-path provenance
+                "approval_commit": CURRENT_APPROVAL_COMMIT,  # T-320: resolving commit SHA for logic_epoch
                 "status": "OPEN",
                 "pool_isolated": pool_isolated,  # ADR-0019: exit_position uses this to skip bankroll update
                 "kalshi_order_id": None,
