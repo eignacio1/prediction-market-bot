@@ -129,6 +129,8 @@ When the architecture is correct, adding NFL means: new C1 data module, new C2 f
 
 This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has run). It is a G6 blocker. Check `03_DECISIONS/GOVERNANCE_GAP_LOG.md` for current status and the live n-count.
 
+**Added 2026-07-10 (T-320/T-321) — the n-counts above (n=151, n=169) are raw counts and have not been re-run against `clean_n` (bets resolved entirely under `CURRENT_LOGIC_EPOCH`, i.e. excluding positions opened before the GG-077/GG-087 write-path fixes).** `src/prediction_market_bot/logic_epoch.py` and the governance hook now report both per band — live post-backfill read (2026-07-10): `MLB T1: raw_n=214 clean_n=65, MLB T2: raw_n=2 clean_n=0, MLB T4M-PROJ: raw_n=159 clean_n=159`. Both bands still clear the G6 30-bet floor on `clean_n` alone, but nobody has re-run EXP-017/Tier-1/Tier-2 adequacy specifically against the clean-only cohort — do not assume the DIRECTIONAL_POSITIVE verdict above transfers unchanged to a clean_n-only re-run; that re-run is future work, not yet done.
+
 ### Gate structure
 
 The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 requires 30 resolved paper bets with positive P&L, commercial validation (EXP-017), and DS sign-off (ADR-0005) before live capital is authorized. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
