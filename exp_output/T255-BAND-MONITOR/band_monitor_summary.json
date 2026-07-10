@@ -1,0 +1,26 @@
+{
+  "T1": {
+    "verdict": "INCONCLUSIVE",
+    "p": 1.0,
+    "brier": 0.22041354266136925,
+    "n": 65
+  },
+  "T2": {
+    "verdict": "UNDERPOWERED",
+    "p": null,
+    "brier": null,
+    "n": 0
+  },
+  "T3": {
+    "verdict": "UNDERPOWERED",
+    "p": null,
+    "brier": null,
+    "n": 0
+  },
+  "T4M-PROJ": {
+    "verdict": "ANTI-PREDICTIVE",
+    "p": 0.024006613177996752,
+    "brier": 0.19802970959021418,
+    "n": 271
+  }
+}
