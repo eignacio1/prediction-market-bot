@@ -1801,6 +1801,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-106 — `TestT1RegressionAnchor` pins a tight numeric tolerance to the live-mutating VPS portfolio cache, drifts stale as the book grows (found during T-322/T-323/T-324 post-merge verification)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-106 |
+| Category | Test-design gap — a "regression anchor" test (`tests/test_band_monitor.py::TestT1RegressionAnchor`, authored during the GG-100/T-255 investigation) asserts `fisher_pvalue == pytest.approx(0.24615828583796262, abs=0.02)` by loading `REAL_PORTFOLIO` — the live, VPS-synced `.vps_portfolio_cache_mlb.json` — rather than a frozen fixture. The magic number was correct when the anchor was written against a smaller T1 raw_n; it has no mechanism to stay correct as the live book accumulates more resolved bets. |
+| What was missed | Discovered running the full test suite after merging T-322/T-323/T-324 to `main` (post fast-forward, this session): `test_t1_band_reproduces_direction_aware_verdict` fails — `fisher_pvalue` obtained 0.3536 vs. expected 0.2462±0.02. Not a code regression: the test's own qualitative assertions (`verdict == E_INC`, `verdict != E_ANTI`, calibration CI includes 1, `not b_excludes_1`) all still pass — only the tight point-estimate tolerance on the Fisher p-value has drifted, consistent with T1's raw_n growing (169 at anchor-authoring time → 214 as of this session's own clean_n work, per CLAUDE.md's commercial-validation section). |
+| When it should have been caught | At the anchor's original authorship — any test that loads a live, cron-mutated production data file and asserts a tight numeric tolerance on a value derived from it will drift as that file grows; this needed either a frozen fixture snapshot or a qualitative-only assertion (verdict class, not exact p-value) from the start. |
+| Phases it survived | Present since the GG-100/T-255 session (2026-07-08); not exercised by CI in a way that surfaced the drift until this session's full-suite run. |
+| Why it survived | No CI job runs the full test suite against a scheduled cadence that would have caught the drift as the live book grew between writes; it was only caught incidentally during this session's post-merge verification. |
+| Impact | LOW — test-suite-only, no production/capital impact. Does affect trust in "test suite green" as a signal, since a future session could see this exact failure and either (a) correctly diagnose it as data drift (as done here) or (b) incorrectly assume a real regression and spend time chasing it, or worse, loosen the tolerance without understanding why it drifted. |
+| Discovery | 2026-07-10, this session, running `pytest tests/test_power_calc.py tests/test_band_monitor.py -q` as a sanity check after fast-forward-merging T-322/T-323/T-324 into `main`. |
+| Resolution | Not yet fixed. Correct fix (not applied this session — out of Workstream B's scope): either (a) freeze `REAL_PORTFOLIO`'s T1 slice into a static JSON fixture checked into the repo so the anchor is reproducible independent of live data growth, or (b) loosen the assertion to a qualitative check only (`verdict == E_INC` and `verdict != E_ANTI`, drop the exact `fisher_pvalue` `approx`) since that is what the test's own docstring says its job is ("prove direction-aware correctness stays correct on raw history"). Option (b) is the smaller, more honest fix — the test was never meant to pin an exact p-value, per its own docstring. |
+| Status | OPEN — registered, not yet fixed. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
