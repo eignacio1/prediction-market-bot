@@ -185,6 +185,32 @@ class TestOpenPosition:
         assert pos["band"] is None
 
     @pytest.mark.unit
+    @pytest.mark.parametrize("band", ["T1", "T2", "T4M-PROJ"])
+    def test_logic_epoch_populated_on_write_path_callers(self, tmp_path, band):
+        # T-320: logic_epoch/approval_commit must be stamped on every new
+        # position for every live write-path caller into open_position()
+        # (T1: run_mlb_paper_trade.py, T2: run_t2_mlb_sameday.py,
+        # T4M-PROJ: run_t4_mlb_live.py). T3 (run_t3_mlb_pretip.py) is
+        # read-only and never calls open_position() directly — its signal
+        # flows into T1's approval dict via t3_signal/t1_edge, so it is
+        # covered here through the T1 case rather than having its own.
+        from prediction_market_bot.logic_epoch import (
+            CURRENT_APPROVAL_COMMIT,
+            CURRENT_LOGIC_EPOCH,
+        )
+
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        ok, pos = trader.open_position(
+            approval=_make_approval(10.0, "YES", band=band),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+        )
+        assert ok
+        assert pos["logic_epoch"] == CURRENT_LOGIC_EPOCH
+        assert pos["approval_commit"] == CURRENT_APPROVAL_COMMIT
+
+    @pytest.mark.unit
     def test_rejects_zero_size(self, tmp_path):
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         ok, pos = trader.open_position(
