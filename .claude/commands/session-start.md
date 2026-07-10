@@ -17,7 +17,22 @@ bash .claude/hooks/session_guard.sh
 scripts/claim_session.sh "<one-line focus>" "<T-/GG-/ADR- range or TBD>"
 ```
 
-## Then
+## Then — Tier 1 state retrieval (ADR-0041)
+
+Before CLAUDE.md Step 1, load current project state via the delta-first path, not a blind full read:
+
+```bash
+if [ -s 04_EXECUTION/.last_session_checkpoint ]; then
+  scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"
+else
+  echo "No checkpoint on file — falling back to full reads."
+fi
+```
+
+- **If the checkpoint file exists and `session_delta.sh` runs clean:** read its output (Tier 1 diff since checkpoint + dense state artifact — both ledgers' bankroll, open GGs, last 3 EXP-0xx deltas, GG-004 gate progress). This replaces a full read of `MEMORY_BANK.md` / `TODO_NEXT.md` / `DECISION_LOG.md` for routine session starts.
+- **If the checkpoint is missing, stale (script errors), or this is the first session after a long gap:** fall back to full reads of `11_MEMORY_HANDOFF/MEMORY_BANK.md`, `04_EXECUTION/TODO_NEXT.md`, and `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` as before — the delta path is an optimization, not a replacement of ground truth when it can't run.
+- **Hard Rule 10 applies unconditionally regardless of which path you took**: before *writing* to any shared nav file, diff it against live `HEAD` or re-read it fresh — a delta computed at session-start is not a substitute for a pre-write re-read later in the session.
+
 Proceed to CLAUDE.md Step 1–4 and the ARE-WE-COMPROMISED checks.
 
 Reminders while working:

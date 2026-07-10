@@ -32,11 +32,11 @@ from pathlib import Path
 
 import pytest
 
-# GG-103/B4 (WINDOW B, 2026-07-09): explicit worktree-local src guard, matching
+# GG-104/B4 (WINDOW B, 2026-07-09): explicit worktree-local src guard, matching
 # tests/test_c4_risk.py's established pattern. Without this, `prediction_market_bot`
 # binds via the shared Python env's static .pth file (main tree's src/) whenever
 # this file is collected/run before any test that inserts its own worktree src
-# first -- silently validating the wrong tree's code. See GG-103.
+# first -- silently validating the wrong tree's code. See GG-104.
 _SRC = Path(__file__).parent.parent / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
