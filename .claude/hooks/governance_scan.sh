@@ -121,6 +121,76 @@ EOF
     echo ""
 done
 
+# --- Clean-logic provenance (T-320/T-321) ---
+# G6 progress language should reference clean_n (bets resolved entirely under
+# CURRENT_LOGIC_EPOCH), not raw_n, since raw_n includes bets contaminated by
+# GG-077/GG-087 write-path bugs closed 2026-07-05. See src/prediction_market_bot/
+# logic_epoch.py for the epoch-boundary table and why GG-100 is excluded.
+echo ""
+echo "CLEAN-LOGIC PROVENANCE (T-320/T-321 — raw_n vs clean_n per band):"
+CACHE_T4M="logs/.vps_portfolio_cache_mlb_t4.json"
+CACHE_MAX_AGE=600
+fetch_needed=1
+if [ -f "$CACHE_T4M" ]; then
+    age=$(( $(date +%s) - $(stat -f %m "$CACHE_T4M" 2>/dev/null || echo 0) ))
+    [ "$age" -lt "$CACHE_MAX_AGE" ] && fetch_needed=0
+fi
+if [ "$fetch_needed" -eq 1 ]; then
+    if ssh -o ConnectTimeout=3 -o BatchMode=yes prediction-market-vps \
+         "cat /opt/prediction-market-bot/logs/paper_portfolio_mlb_t4.json" > "$CACHE_T4M.tmp" 2>/dev/null \
+       && python3 -c "import json; json.load(open('$CACHE_T4M.tmp'))" 2>/dev/null; then
+        mv "$CACHE_T4M.tmp" "$CACHE_T4M"
+    else
+        rm -f "$CACHE_T4M.tmp"
+    fi
+fi
+python3 - "logs/.vps_portfolio_cache_mlb.json" "logs/paper_portfolio_mlb.json" "$CACHE_T4M" "logs/paper_portfolio_mlb_t4.json" <<'EOF'
+import json, os, sys
+
+mlb_cache, mlb_local, t4m_cache, t4m_local = sys.argv[1:5]
+
+sys.path.insert(0, "src")
+try:
+    from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
+except Exception:
+    CURRENT_LOGIC_EPOCH = None
+
+def _load(cache, local):
+    path = cache if os.path.exists(cache) else local
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+def _band_counts(portfolio, band):
+    closed = portfolio.get('closed_positions', []) if portfolio else []
+    rows = [p for p in closed if p.get('band') == band]
+    raw_n = len(rows)
+    clean_n = sum(1 for p in rows if p.get('logic_epoch') == CURRENT_LOGIC_EPOCH)
+    return raw_n, clean_n
+
+if CURRENT_LOGIC_EPOCH is None:
+    print('  Could not import logic_epoch — skipping clean_n breakdown')
+else:
+    mlb = _load(mlb_cache, mlb_local)
+    t4m = _load(t4m_cache, t4m_local)
+    parts = []
+    if mlb is not None:
+        for band in ('T1', 'T2'):
+            raw_n, clean_n = _band_counts(mlb, band)
+            parts.append(f'MLB {band}: raw_n={raw_n} clean_n={clean_n}')
+    else:
+        parts.append('MLB T1/T2: portfolio unavailable')
+    if t4m is not None:
+        raw_n, clean_n = _band_counts(t4m, 'T4M-PROJ')
+        parts.append(f'MLB T4M-PROJ: raw_n={raw_n} clean_n={clean_n}')
+    else:
+        parts.append('MLB T4M-PROJ: portfolio unavailable')
+    print('  ' + ', '.join(parts) + '.')
+    print('  (clean_n = resolved under CURRENT_LOGIC_EPOCH; G6 progress language should cite clean_n, not raw_n.)')
+EOF
+
 echo ""
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
