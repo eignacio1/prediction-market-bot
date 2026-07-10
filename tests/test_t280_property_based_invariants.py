@@ -7,11 +7,13 @@ function's domain, asserting mathematical invariants that must hold for
 *every* valid input, not just the fixed examples chosen by hand elsewhere in
 the suite.
 
-Determinism: `settings.register_profile(..., derandomize=True)` makes every
-Hypothesis example sequence a fixed function of the test itself (no entropy
-from wall-clock or `/dev/urandom`), so re-runs are byte-for-byte reproducible
-without hand-picking a seed per test. This satisfies the "fixed seed" brief
-requirement via Hypothesis's own idiomatic mechanism.
+Determinism: the `t280-deterministic` Hypothesis profile (`derandomize=True`)
+makes every Hypothesis example sequence a fixed function of the test itself
+(no entropy from wall-clock or `/dev/urandom`), so re-runs are byte-for-byte
+reproducible without hand-picking a seed per test. This satisfies the "fixed
+seed" brief requirement via Hypothesis's own idiomatic mechanism. As of B5,
+the profile is registered/loaded once, globally, in `tests/conftest.py` --
+this file no longer registers its own copy.
 
 Coverage:
   - Kelly sizing (_compute_kelly_size, c4_risk_engine/risk.py):
@@ -37,7 +39,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hypothesis import assume, given, settings
+from hypothesis import assume, given
 from hypothesis import strategies as st
 
 _SRC = Path(__file__).parent.parent / "src"
@@ -58,9 +60,6 @@ _runner = importlib.util.module_from_spec(_spec)
 sys.modules["run_t4_mlb_live"] = _runner
 _spec.loader.exec_module(_runner)
 _binomial_pmf = _runner._binomial_pmf
-
-settings.register_profile("t280-deterministic", derandomize=True, max_examples=100)
-settings.load_profile("t280-deterministic")
 
 _CAP = _HARD_LIMITS["max_single_event_exposure_usd"]
 
