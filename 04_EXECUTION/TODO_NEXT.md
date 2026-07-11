@@ -16,6 +16,15 @@
 **Next recommended:** Diagnostic (3) — re-run as clean_n grows past its immature-cadence window (<14 days) — is the last of the three originally-scoped diagnostics and remains unstarted, but is a passive re-check rather than a build. Higher-value next step: a targeted look at T4M-PROJ's `p_t4`/edge/fee-net-edge formula itself (or an upstream feature feeding it), since both game-state and sizing have now been ruled against as external confounds and the anti-predictive rank-ordering has to originate somewhere.
 **Depends on:** none.
 
+## T-333 — GG-105 diagnostic 3 + edge-formula audit follow-on — SCOPED, not started (2026-07-11)
+
+**Scoped:** Per explicit operator instruction ("scope diagnostic 3 and the edge-formula follow-on as a new task - apply full institutional depth"), registered `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T333_GG105_DIAG3_AND_EDGE_FORMULA_AUDIT_SCOPE.md`. Two independently-schedulable components under GG-105:
+- **Component A (diagnostic 3):** re-run the T-324 tercile/Fisher methodology once T4M-PROJ's clean epoch crosses ~14 days age or clean_n roughly doubles to ~540, whichever first (currently 5 days / n=271 — not yet triggered). Standing watch item, trivial effort when triggered (reuse existing audited helpers, no new code).
+- **Component B (edge-formula audit, the higher-value new work):** this session read the live formula directly and found two concrete anomalies anchoring the audit — `p_hits_gte_threshold()` (`src/prediction_market_bot/run_t4_mlb_live.py:584-608`) computes `p_t4` as a Binomial tail probability using `ba_l10` (noisy ~10-game rolling BA, default-filled to `0.25` when missing) as a fixed per-AB Bernoulli parameter; and `p_t1` (T1's calibrated LR+Platt estimate) is loaded into the same context dict (line 343) but never consumed by the T4 edge computation at all. Five testable hypotheses registered (H1 uncalibrated `ba_l10` variance at the tails; H2 discarded `p_t1` calibration; H3 default-fill masking; H4 `ab_remaining`/`batting_slot=0` fallback drift; H5 vig/fee sign re-derivation), with a proposed offline ledger-replay method against the existing clean_n=271 cohort.
+**Not authorized:** any change to the live `p_t4`/edge formula. Investigation only — a live-formula change requires a fresh DS sign-off and superseding ADR (Hard Rule 3), per CLAUDE.md's own ADR-0039 Tier B "scoping-only" convention.
+**Next recommended:** start Component B — fully scoped, concrete code targets identified, no blocking dependency on Component A's cadence.
+**Depends on:** none (Component A is date/volume-gated, not blocked).
+
 ## T-328 — Permanent deploy.yml fix for GG-104 (registered 2026-07-10)
 
 **Do:** Add a post-`git pull` step to `deploy.yml` that unconditionally restarts both persistent systemd services on every successful deploy: `systemctl restart t4-mlb pmbot-web-dashboard`. Extend the existing "Verify HEAD" step to also assert `systemctl show <service> --property=ActiveEnterTimestamp` is more recent than the pull, so a future silent-staleness case is caught by the deploy pipeline itself rather than by manual `curl`/`journalctl` inspection.
