@@ -34,3 +34,4 @@
 | 2026-07-10T19:21:00Z | T-322 | T-322 (B1): per-band anti-predictive + calibration monitor on clean_n only, extends T-255 line |
 | 2026-07-11T01:27:46Z | GG-105 | GG-105 DS-review escalation: select diagnostic from T324_T1_VS_T4_DIVERGENCE_MEMO |
 | 2026-07-11T01:30:49Z | T-329 | T-329: GG-105 diagnostic 1 — size-weighted tercile re-run on T4M-PROJ clean_n |
+| 2026-07-11T01:40:03Z | T-330, T-331 | Workstream D: ledger-driven MC forward projection + bootstrap CI (D1/D2) |
