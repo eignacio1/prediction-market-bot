@@ -1818,6 +1818,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-107 — Untracked, never-claimed iteration-plan proposals sitting in shared `main` for 3+ days; their own task-ID reservation collided with real work before anyone noticed
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-107 |
+| Category | Process gap — shared-tree hygiene / narrative-conflation precursor (GG-082/GG-101 family) |
+| What was missed | Two planning documents (`ITERATION_PLAN_calibration_hardening.md`, `ITERATION_PLAN_context_and_math.md`), both dated 2026-07-08 and both self-described as "PROPOSAL... not yet committed to SESSION_CLAIMS.md" / "not yet task-registered," were left untracked (`git status` `??`) in the shared `main` working tree with no committing session, no claim row, and no expiry mechanism. `ITERATION_PLAN_calibration_hardening.md` explicitly reserved task IDs **T-320–T-331** for its own (never-started) work. This session's real, separately-scoped Workstream E brief was assigned T-330/T-331 by the operator without cross-checking that file (which was never committed or claimed, so it did not show up in any of the normal claim/collision checks) — the collision was only caught because this session's own Step 0c/0e re-read surfaced it, not because any structural check would have caught it. |
+| When it should have been caught | At authorship (2026-07-08): per CLAUDE.md Step 0b, any task-ID reservation should be committed to `SESSION_CLAIMS.md` atomically at the moment it's made, specifically to prevent exactly this — a second session picking the same range days later with no visibility into the first reservation. |
+| Phases it survived | 3+ days (2026-07-08 → 2026-07-11) sitting untracked in shared `main`, surviving at least one intervening session's Step 0c "check for other live sessions" scan (which only reads `SESSION_CLAIMS.md`, not untracked working-tree files) without being claimed, committed, or flagged. |
+| Why it survived | `SESSION_CLAIMS.md`-based collision detection (Step 0c) only sees claims that were actually committed. A task-ID reservation that exists only as prose inside an untracked local file is invisible to every other session's Step 0 protocol, no matter how carefully that protocol is followed — the protocol has no mechanism to detect "a reservation exists but was never registered," only "two registered reservations collide." |
+| Impact | LOW-MEDIUM, realized this session as a same-day renumbering (T-330/T-331 → T-334/T-335, logged in DECISION_LOG.md 2026-07-11) rather than a real collision, because this session's re-read caught it before any commit. Had a second session started real implementation work under T-330/T-331 before this one, this would have been a genuine GG-082-class ID collision requiring after-the-fact reconciliation, not a clean pre-emptive renumber. Untracked files aging in shared `main` with no owner are also a standing risk under Hard Rule 10/0d — any future session's broad-scoped git operation (even a permitted, path-scoped commit that grows sloppy) is one `git add -A` away from silently absorbing or destroying them. |
+| Discovery | 2026-07-11, this session (Workstream E / T-334/T-335), while renumbering task IDs and investigating why T-330/T-331 felt pre-used; confirmed via direct read of both `ITERATION_PLAN_*.md` files' own headers, which explicitly self-report as uncommitted proposals. |
+| Resolution | Not remediated by this session — deliberately out of scope (these are not this session's files to delete or commit; per the git safety protocol, foreign uncommitted state in shared main should be investigated, not unilaterally altered). Recommended fix for the operator or the owning session: either (a) formally claim and commit the surviving still-relevant items from both files via `scripts/claim_session.sh` under fresh, non-colliding task IDs, or (b) explicitly abandon them and remove the untracked files. Either way, this gap argues for a lightweight structural fix beyond the specific files: Step 0c's collision check could be extended to also `git status --short` the working tree for untracked `ITERATION_PLAN_*.md`/similar proposal-doc patterns and surface their self-reported task-ID ranges (if any) alongside the `SESSION_CLAIMS.md` read, so an unregistered-but-real reservation is visible before a new session picks the same range — not built in this session, flagged for a future T-335-adjacent follow-on. |
+| Status | OPEN — registered, not yet fixed. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
