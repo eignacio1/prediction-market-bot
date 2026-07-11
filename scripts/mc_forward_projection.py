@@ -28,12 +28,27 @@ Exit codes: 0 = success
 """
 
 import argparse
+import statistics
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_band_monitor import (  # noqa: E402
+    BOOK_BANDS,
+    DEFAULT_PORTFOLIO,
+    DEFAULT_T4_LEDGER,
+    load_pool_by_band,
+    load_t4_ledger,
+    filter_clean,
+)
+from run_power_calc import (  # noqa: E402
+    observed_cadence_per_week,
+    MATURE_CADENCE_SPAN_DAYS,
+)
 
 # ---------------------------------------------------------------------------
 # GG-071 cited parameters — matched to real T1 MLB observed statistics
@@ -253,6 +268,248 @@ def sensitivity_report(n_sims: int = N_SIMS) -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------------------
+# T-330 — ledger-driven parameter derivation (--from-ledger)
+# T-331 — bootstrap confidence on the derived edge input (--bootstrap)
+# ---------------------------------------------------------------------------
+LEDGER_BANDS = tuple(BOOK_BANDS) + ("T4M-PROJ",)
+
+
+def load_clean_band_records(
+    band: str,
+    portfolio_path: Path = DEFAULT_PORTFOLIO,
+    t4_ledger_path: Path = DEFAULT_T4_LEDGER,
+) -> list:
+    """Load resolved records for `band`, filtered to clean_n (CURRENT_LOGIC_EPOCH
+    only, per logic_epoch.py / GG-077 / GG-087 — see run_band_monitor.filter_clean)."""
+    if band in BOOK_BANDS:
+        by_band = load_pool_by_band(portfolio_path)
+        recs = by_band.get(band, [])
+    elif band == "T4M-PROJ":
+        recs = load_t4_ledger(t4_ledger_path)
+    else:
+        raise ValueError(f"Unknown band {band!r}; expected one of {LEDGER_BANDS}")
+    return filter_clean(recs)
+
+
+@dataclass
+class LedgerStats:
+    band: str
+    clean_n: int
+    win_rate: float
+    win_mult: float
+    loss_mult: float
+    stake_frac: float
+    starting_bankroll: float
+    bets_per_day: int
+    cadence_bets_per_week: Optional[float]
+    cadence_span_days: Optional[float]
+    cadence_immature: bool
+
+
+def derive_ledger_stats(band: str, recs: list, starting_bankroll: float) -> LedgerStats:
+    """Derive win_rate/win_mult/loss_mult/stake_frac/cadence directly from a
+    clean_n record set (already filtered by load_clean_band_records / filter_clean).
+
+    win_mult/loss_mult are computed per-record as pnl/size_usd (WIN) and
+    abs(pnl)/size_usd (LOSS), then averaged — this mirrors the module's own
+    hardcoded WIN_MULT/LOSS_MULT constants but reads them from the live ledger
+    instead of a frozen GG-071-era snapshot.
+    """
+    n = len(recs)
+    if n == 0:
+        raise ValueError(f"Band {band!r} has clean_n=0 — no CURRENT_LOGIC_EPOCH records to derive MC parameters from.")
+
+    wins = [r for r in recs if r.get("_win") == 1 and float(r.get("_size", 0.0) or 0.0) > 0]
+    losses = [r for r in recs if r.get("_win") == 0 and float(r.get("_size", 0.0) or 0.0) > 0]
+    sized = [r for r in recs if float(r.get("_size", 0.0) or 0.0) > 0]
+    if not wins:
+        raise ValueError(f"Band {band!r} clean_n={n} has zero WIN records with size_usd>0 — cannot derive win_mult.")
+    if not losses:
+        raise ValueError(f"Band {band!r} clean_n={n} has zero LOSS records with size_usd>0 — cannot derive loss_mult.")
+
+    win_rate = len(wins) / n
+    win_mult = statistics.mean(float(r["_pnl"]) / float(r["_size"]) for r in wins)
+    loss_mult = statistics.mean(abs(float(r["_pnl"])) / float(r["_size"]) for r in losses)
+    stake_frac = statistics.mean(float(r["_size"]) for r in sized) / starting_bankroll
+
+    cadence_per_week, span_days = observed_cadence_per_week(recs)
+    cadence_immature = span_days is not None and span_days < MATURE_CADENCE_SPAN_DAYS
+    bets_per_day = max(1, round(cadence_per_week / 7.0)) if cadence_per_week else BETS_PER_DAY
+
+    return LedgerStats(
+        band=band,
+        clean_n=n,
+        win_rate=win_rate,
+        win_mult=win_mult,
+        loss_mult=loss_mult,
+        stake_frac=stake_frac,
+        starting_bankroll=starting_bankroll,
+        bets_per_day=bets_per_day,
+        cadence_bets_per_week=cadence_per_week,
+        cadence_span_days=span_days,
+        cadence_immature=cadence_immature,
+    )
+
+
+def build_ledger_scenarios(stats: LedgerStats, cap_usd: float = CAP_USD,
+                            kill_switch_dd: float = KILL_SWITCH_DD) -> dict:
+    """{floor, operational, ceiling} per T-330 spec:
+      floor       = zero-edge breakeven win_rate, with the REAL observed
+                    payout/stake/cadence mechanics from the clean_n ledger
+                    ("if the edge turned out to be illusory, what's the ruin
+                    risk under today's actual sizing behavior?").
+      operational = frozen ADR-0040/GG-071 module defaults — SimParams(),
+                    unchanged. This is the existing regression anchor and is
+                    NOT re-derived from the ledger (see
+                    TestGG071Reproduction in tests/test_mc_forward_projection.py).
+      ceiling     = fully observed win_rate/win_mult/loss_mult/stake_frac/
+                    cadence, all pulled from the clean_n ledger.
+    """
+    p0 = stats.loss_mult / (stats.win_mult + stats.loss_mult)  # zero-edge breakeven win rate
+    floor = SimParams(
+        win_rate=p0, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+        stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
+        kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
+    )
+    operational = SimParams()
+    ceiling = SimParams(
+        win_rate=stats.win_rate, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+        stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
+        kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
+    )
+    return {"floor": floor, "operational": operational, "ceiling": ceiling}
+
+
+def bootstrap_kill_ci(
+    band: str,
+    recs: list,
+    scenario_name: str,
+    starting_bankroll: float,
+    cap_usd: float,
+    kill_switch_dd: float,
+    horizons: list,
+    n_boot: int = 200,
+    boot_sims: int = 1000,
+    seed: int = SEED,
+) -> dict:
+    """Bootstrap-resample (with replacement) the clean_n record set n_boot times;
+    for each resample, re-derive win_rate/win_mult/loss_mult/stake_frac/cadence
+    and run a reduced-n_sims MC. Returns, per horizon, a percentile band
+    (5th/median/95th = ~90% CI) on P(kill switch) reflecting sample uncertainty
+    in the edge input (T-331). scenario_name in {"floor", "ceiling"} — for
+    "floor" the win_rate is recomputed as that resample's own zero-edge
+    breakeven point (not resampled directly), since floor asks "given this
+    resample's real payout structure, what if the edge were illusory."
+    """
+    if scenario_name not in ("floor", "ceiling"):
+        raise ValueError('scenario_name must be "floor" or "ceiling"')
+
+    rng = np.random.default_rng(seed)
+    n = len(recs)
+    per_horizon = {h: [] for h in horizons}
+    skipped = 0
+
+    for b in range(n_boot):
+        idx = rng.integers(0, n, size=n)
+        sample = [recs[i] for i in idx]
+        try:
+            s = derive_ledger_stats(band, sample, starting_bankroll)
+        except ValueError:
+            skipped += 1
+            continue
+
+        win_rate = (s.loss_mult / (s.win_mult + s.loss_mult)) if scenario_name == "floor" else s.win_rate
+        params = SimParams(
+            win_rate=win_rate, win_mult=s.win_mult, loss_mult=s.loss_mult,
+            stake_frac=s.stake_frac, cap_usd=cap_usd, bets_per_day=s.bets_per_day,
+            kill_switch_dd=kill_switch_dd, starting_bankroll=starting_bankroll,
+        )
+        probs, _ = kill_prob_at_horizons(params, horizons, n_sims=boot_sims, seed=seed + b + 1)
+        for h in horizons:
+            per_horizon[h].append(probs[h])
+
+    result = {}
+    for h in horizons:
+        vals = per_horizon[h]
+        if not vals:
+            result[h] = None
+            continue
+        arr = np.array(vals)
+        result[h] = {
+            "point": float(np.median(arr)),
+            "lo": float(np.percentile(arr, 5)),
+            "hi": float(np.percentile(arr, 95)),
+            "n_boot_valid": len(vals),
+            "n_boot_skipped": skipped,
+        }
+    return result
+
+
+def build_ledger_report(
+    band: str,
+    stats: LedgerStats,
+    scenarios: dict,
+    horizons: list,
+    n_sims: int,
+    boot_ci: Optional[dict] = None,
+) -> str:
+    sep = "=" * 78
+    lines = [
+        sep,
+        f"  T-330/T-331 Ledger-Driven Forward MC — band={band}",
+        sep,
+        "",
+        "DERIVED FROM CLEAN_N LEDGER (CURRENT_LOGIC_EPOCH only — GG-077/GG-087)",
+        f"  clean_n              : {stats.clean_n}",
+        f"  observed win_rate    : {stats.win_rate:.4f}",
+        f"  observed win_mult    : {stats.win_mult:.4f}",
+        f"  observed loss_mult   : {stats.loss_mult:.4f}",
+        f"  observed stake_frac  : {stats.stake_frac*100:.4f}% of ${stats.starting_bankroll:,.2f} bankroll",
+    ]
+    if stats.cadence_bets_per_week is not None:
+        lines.append(f"  observed cadence     : {stats.cadence_bets_per_week:.1f} bets/wk -> {stats.bets_per_day} bets/day")
+    else:
+        lines.append(f"  observed cadence     : unmeasurable (<2 timestamped bets) -> falling back to bets_per_day={stats.bets_per_day}")
+    if stats.cadence_immature:
+        lines.append(
+            f"  CAVEAT: cadence measured over only {stats.cadence_span_days:.1f} days "
+            f"(< {MATURE_CADENCE_SPAN_DAYS:.0f}-day maturity floor) — provisional, re-derive as more days accrue."
+        )
+    lines += ["", "KILL-SWITCH BREACH PROBABILITY BY SCENARIO", ""]
+
+    desc = {
+        "floor": "zero-edge breakeven win_rate; real observed payout/stake/cadence mechanics",
+        "operational": "frozen ADR-0040/GG-071 module defaults (regression anchor, unchanged)",
+        "ceiling": "fully observed win_rate/payout/stake/cadence from the clean_n ledger",
+    }
+    for name in ("floor", "operational", "ceiling"):
+        params = scenarios[name]
+        probs, _ = kill_prob_at_horizons(params, horizons, n_sims=n_sims)
+        lines.append(
+            f"  [{name.upper()}] win_rate={params.win_rate:.4f}  stake_frac={params.stake_frac*100:.3f}%  "
+            f"bets/day={params.bets_per_day}  bankroll=${params.starting_bankroll:,.2f}"
+        )
+        lines.append(f"    {desc[name]}")
+        for h in horizons:
+            label_h = {30: "1mo", 182: "6mo", 365: "1yr"}.get(h, f"{h}d")
+            row = f"    P(kill by day {h:>3} / {label_h:<4}) : {probs[h]:>6.2f}%"
+            if boot_ci and name in boot_ci and boot_ci[name] and boot_ci[name].get(h):
+                ci = boot_ci[name][h]
+                row += f"   [90% CI: {ci['lo']:.2f}% - {ci['hi']:.2f}%]  (n_boot={ci['n_boot_valid']})"
+            lines.append(row)
+        lines.append("")
+
+    lines.append(
+        "  NOTE: bootstrap CI (T-331), where shown, is computed only for FLOOR/CEILING —"
+    )
+    lines.append(
+        "  OPERATIONAL stays a frozen point estimate (it is the existing GG-071 regression anchor)."
+    )
+    lines.append(sep)
+    return "\n".join(lines)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="GG-071/T-223 Forward-Time Compounding Monte Carlo")
     parser.add_argument("--stake-frac", type=float, default=STAKE_FRAC, dest="stake_frac",
@@ -271,9 +528,49 @@ def main() -> None:
                          help="Run T-223 sensitivity analysis across remediation directions instead of a single report")
     parser.add_argument("--label", help="Label for comparison runs")
     parser.add_argument("--out", help="Save report to file (also prints to stdout)")
+    parser.add_argument("--from-ledger", dest="from_ledger", choices=list(LEDGER_BANDS), default=None,
+                         help="T-330: derive win_rate/win_mult/loss_mult/stake_frac/cadence from the "
+                              "clean_n (CURRENT_LOGIC_EPOCH) ledger for this band instead of hardcoded "
+                              "module constants; emits floor/operational/ceiling scenarios.")
+    parser.add_argument("--portfolio", type=Path, default=DEFAULT_PORTFOLIO,
+                         help="T1/T2/T3 band-tagged portfolio JSON (only used with --from-ledger)")
+    parser.add_argument("--t4-ledger", type=Path, default=DEFAULT_T4_LEDGER, dest="t4_ledger",
+                         help="T4M-PROJ resolved ledger JSONL (only used with --from-ledger)")
+    parser.add_argument("--bootstrap", action="store_true",
+                         help="T-331: bootstrap-resample the clean_n ledger to report P(kill) as a "
+                              "90%% CI band (floor/ceiling only), not a single point estimate. "
+                              "Only valid with --from-ledger.")
+    parser.add_argument("--n-boot", type=int, default=30, dest="n_boot",
+                         help="Number of bootstrap resamples (default 30 — kept low because per-sim "
+                              "cost is dominated by days*bets_per_day iterations, not n_sims; "
+                              "high-cadence bands like T4M-PROJ (~68 bets/day) cost ~1s/resample. "
+                              "Only used with --bootstrap.")
+    parser.add_argument("--boot-sims", type=int, default=500, dest="boot_sims",
+                         help="MC paths per bootstrap resample (default 500, only used with --bootstrap)")
     args = parser.parse_args()
 
-    if args.sensitivity:
+    if args.from_ledger:
+        try:
+            recs = load_clean_band_records(args.from_ledger, args.portfolio, args.t4_ledger)
+            stats = derive_ledger_stats(args.from_ledger, recs, starting_bankroll=args.bankroll)
+        except ValueError as e:
+            print(f"[--from-ledger error] {e}", file=sys.stderr)
+            raise SystemExit(1)
+        scenarios = build_ledger_scenarios(stats, cap_usd=args.cap)
+
+        boot_ci = None
+        if args.bootstrap:
+            boot_ci = {}
+            for name in ("floor", "ceiling"):
+                boot_ci[name] = bootstrap_kill_ci(
+                    args.from_ledger, recs, name,
+                    starting_bankroll=args.bankroll, cap_usd=args.cap,
+                    kill_switch_dd=KILL_SWITCH_DD, horizons=HORIZONS_DAYS,
+                    n_boot=args.n_boot, boot_sims=args.boot_sims,
+                )
+
+        report = build_ledger_report(args.from_ledger, stats, scenarios, HORIZONS_DAYS, args.n_sims, boot_ci=boot_ci)
+    elif args.sensitivity:
         report = sensitivity_report(n_sims=args.n_sims)
     else:
         params = SimParams(
