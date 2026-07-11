@@ -243,10 +243,12 @@ Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) befor
 **Root cause of GG-049:** The prior three steps check code and documents but never check whether active cron pipelines are actually producing bets. T1 MLB ran 0 bets for 2+ game days (June 27–28) without the protocol detecting it. This step is mandatory — it is the only place where a dark pipeline becomes immediately visible.
 
 ```bash
-ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]' /opt/prediction-market-bot/logs/paper_cron.log 2>/dev/null | tail -6"
+ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]|No .* markets available' /opt/prediction-market-bot/logs/paper_early_cron.log /opt/prediction-market-bot/logs/paper_late_cron.log 2>/dev/null | tail -6"
 ```
 
 **What to look for:** Any run that shows `0 players in live MLB markets` during MLB season (March–October) is a signal failure — treat it as a Q6 concern and do not proceed without diagnosing it. Expected healthy output: ≥1 player matched per run when games are scheduled that day.
+
+**GG-108 correction (2026-07-11):** the NBA command above previously targeted `logs/paper_cron.log`, a filename that no longer exists on the VPS — NBA's single-window cron was split into two windows at some point (`paper_early_cron.log` at 18:00 UTC, `paper_late_cron.log` at 01:30 UTC) and the reference here was never updated. A grep against a nonexistent file returns empty output, which is visually indistinguishable from "0 games today" — so this check had been a silent no-op for NBA specifically, catching nothing, for an unknown number of sessions. Corrected to grep both real files and to also match `No .* markets available` (the actual off-season log line) so a healthy dark day is visibly confirmed rather than merely absent of output. If this file ever grows a third window, update this command again — do not let it drift a second time.
 
 **Semantic oracle checks (added Session 101):** These two lines surface silent pipeline failures immediately. Zero is healthy for both on a normal game day.
 
