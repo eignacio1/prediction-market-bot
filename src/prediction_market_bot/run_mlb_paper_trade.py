@@ -58,6 +58,7 @@ import json
 import os
 import re
 import sys
+import time
 import uuid
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -138,6 +139,18 @@ EDGE_NO  = -0.02
 PAPER_YES_ONLY = os.environ.get("MLB_PAPER_YES_ONLY", "true").lower() == "true"
 RESERVE_MANDATE_PCT = float(os.environ.get("RESERVE_MANDATE_PCT", "0.40"))
 MIN_BET_PAPER = float(os.environ.get("MIN_BET_MLB_PAPER", "1.0"))
+
+# T-343/GG-110: bounded retry for the market-fetch step. PIPE-05 fires at a
+# fixed 11:00 UTC and takes a single snapshot of Kalshi KXMLBHIT markets; on
+# 2026-07-11 Kalshi had published only 55/44 markets at that instant versus
+# 383/317 confirmed live later the same afternoon, so a genuine game day
+# produced 0 matched players and a false-fire SemanticFloorViolation with 0
+# bets placed. If games are scheduled but 0 players match, wait and re-fetch
+# (linear backoff: attempt N waits N * PIPE05_FLOOR_RETRY_DELAY_SEC) before
+# falling through to the SemanticFloorGuard. Next scheduled MLB job (PIPE-05.5
+# T2, 19:30 UTC) is >8h away, so this bounded delay cannot collide with it.
+PIPE05_FLOOR_RETRY_ATTEMPTS = int(os.environ.get("PIPE05_FLOOR_RETRY_ATTEMPTS", "3"))
+PIPE05_FLOOR_RETRY_DELAY_SEC = int(os.environ.get("PIPE05_FLOOR_RETRY_DELAY_SEC", "300"))
 
 # T1 Kelly fraction from band registry (ADR-0010: 0.10)
 T1_KELLY = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
@@ -657,38 +670,89 @@ def main() -> None:
 
     # ------------------------------------------------------------------
     # 5. Fetch live KXMLBHIT markets via VenueRouter
+    #    (T-343/GG-110: bounded retry — see PIPE05_FLOOR_RETRY_* above.
+    #    A day with games scheduled but 0 players matched on the first
+    #    fetch may just mean Kalshi hasn't finished publishing yet; retry
+    #    before falling through to the SemanticFloorGuard below.)
     # ------------------------------------------------------------------
     print("[DS-02] Fetching live KXMLBHIT markets via VenueRouter (sport=MLB)...")
-    try:
-        router = VenueRouter.from_env()
-        connectivity = router.check_all_connectivity()
-        kalshi_ok, kalshi_stat = connectivity.get("kalshi", (False, {}))
-        if not kalshi_ok:
-            logger.error(
-                "PIPE-05", "ds02_failed",
-                payload=kalshi_stat, session_id=SESSION_ID,
-            )
-            print(f"ERROR: DS-02 (Kalshi) unavailable: {kalshi_stat}", file=sys.stderr)
+    router = None
+    snap = None
+    markets_by_player: dict[str, list[Any]] = defaultdict(list)
+    _floor_retry_attempt = 0
+    while True:
+        try:
+            router = VenueRouter.from_env()
+            connectivity = router.check_all_connectivity()
+            kalshi_ok, kalshi_stat = connectivity.get("kalshi", (False, {}))
+            if not kalshi_ok:
+                logger.error(
+                    "PIPE-05", "ds02_failed",
+                    payload=kalshi_stat, session_id=SESSION_ID,
+                )
+                print(f"ERROR: DS-02 (Kalshi) unavailable: {kalshi_stat}", file=sys.stderr)
+                sys.exit(1)
+
+            ok2, snap = router.fetch_all_markets(sport="MLB")
+            if not ok2 or not snap.markets:
+                print("  No KXMLBHIT markets available. No games today or pre-market.")
+                _write_report([], bankroll, trader)
+                sys.exit(0)
+
+            quoted = [m for m in snap.markets if m.has_live_quotes]
+            if quoted:
+                avg_vig = np.mean([m.vig for m in quoted])
+                print(f"  {len(snap.markets)} markets | {len(quoted)} quoted | "
+                      f"avg vig {avg_vig:.4f} | venues: {router.active_venues}")
+            else:
+                print(f"  {len(snap.markets)} markets — no live quotes yet. | "
+                      f"venues: {router.active_venues}")
+
+        except EnvironmentError as e:
+            print(f"ERROR: {e}", file=sys.stderr)
             sys.exit(1)
 
-        ok2, snap = router.fetch_all_markets(sport="MLB")
-        if not ok2 or not snap.markets:
-            print("  No KXMLBHIT markets available. No games today or pre-market.")
-            _write_report([], bankroll, trader)
-            sys.exit(0)
+        # Group active quoted markets by player name for the target game date.
+        markets_by_player = defaultdict(list)
+        for m in snap.markets:
+            if m.status == "active" and m.has_live_quotes:
+                # Only process markets whose ticker resolves to the target game date.
+                # Prevents evaluating today's in-progress markets alongside tomorrow's.
+                if _ticker_to_game_date(m.ticker) == GAME_DATE_ISO:
+                    markets_by_player[m.player_name].append(m)
 
-        quoted = [m for m in snap.markets if m.has_live_quotes]
-        if quoted:
-            avg_vig = np.mean([m.vig for m in quoted])
-            print(f"  {len(snap.markets)} markets | {len(quoted)} quoted | "
-                  f"avg vig {avg_vig:.4f} | venues: {router.active_venues}")
-        else:
-            print(f"  {len(snap.markets)} markets — no live quotes yet. | "
-                  f"venues: {router.active_venues}")
+        print(f"  {len(markets_by_player)} players in live MLB markets | "
+              f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
 
-    except EnvironmentError as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(1)
+        if len(markets_by_player) > 0 or _floor_retry_attempt >= PIPE05_FLOOR_RETRY_ATTEMPTS:
+            break
+
+        # 0 players matched — only worth retrying if games are actually
+        # scheduled today (a genuine 0-games day should not retry/delay).
+        _n_games_probe = _count_scheduled_mlb_games(GAME_DATE_ISO)
+        if _n_games_probe == 0:
+            break
+
+        _floor_retry_attempt += 1
+        _retry_delay = PIPE05_FLOOR_RETRY_DELAY_SEC * _floor_retry_attempt
+        print(
+            f"  [RETRY {_floor_retry_attempt}/{PIPE05_FLOOR_RETRY_ATTEMPTS}] "
+            f"0 players matched but {_n_games_probe} games scheduled — Kalshi "
+            f"may still be publishing same-day markets. Waiting {_retry_delay}s "
+            f"before re-fetch."
+        )
+        logger.info(
+            "PIPE-05", "semantic_floor_retry",
+            payload={
+                "attempt": _floor_retry_attempt,
+                "max_attempts": PIPE05_FLOOR_RETRY_ATTEMPTS,
+                "delay_sec": _retry_delay,
+                "scheduled_games": _n_games_probe,
+                "kalshi_markets_total": len(snap.markets),
+            },
+            session_id=SESSION_ID,
+        )
+        time.sleep(_retry_delay)
 
     # ------------------------------------------------------------------
     # 6. Abort if any MLB game is in progress
@@ -714,18 +778,6 @@ def main() -> None:
     # ------------------------------------------------------------------
     orders: list[dict[str, Any]] = []
     passes: list[dict[str, Any]] = []
-
-    # Group active quoted markets by player name
-    markets_by_player: dict[str, list[Any]] = defaultdict(list)
-    for m in snap.markets:
-        if m.status == "active" and m.has_live_quotes:
-            # Only process markets whose ticker resolves to the target game date.
-            # Prevents evaluating today's in-progress markets alongside tomorrow's.
-            if _ticker_to_game_date(m.ticker) == GAME_DATE_ISO:
-                markets_by_player[m.player_name].append(m)
-
-    print(f"  {len(markets_by_player)} players in live MLB markets | "
-          f"{sum(len(v) for v in markets_by_player.values())} market/threshold pairs")
 
     # Semantic Floor Guard (ADR-0034 Layer 3) — canonical oracle.
     # Only queries schedule API when players=0 to avoid unnecessary latency.
