@@ -886,3 +886,164 @@ class TestShadowModelTracking:
         monitor, logger = _make_monitor()
         monitor.check_portfolio_pnl(total_realized_pnl=-50.0, initial_bankroll=0.0)
         logger.log.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# report_band_monitor_verdicts (T-341, GG-099/GG-100/GG-098)
+# ---------------------------------------------------------------------------
+
+
+def _anti_predictive_band_result(band: str = "T1", clean_n: int = 81) -> dict:
+    """Synthetic run_band_monitor.py ANALYZED result with an ANTI_PREDICTIVE
+    edge_monotonicity verdict and a well-calibrated slope (no calibration
+    alarm) — isolates the anti-predictive alarm path."""
+    return {
+        "band": band,
+        "verdict": "ANALYZED",
+        "raw_n": clean_n,
+        "clean_n": clean_n,
+        "n": clean_n,
+        "edge_monotonicity": {
+            "verdict": "ANTI_PREDICTIVE",
+            "fisher_pvalue": 0.0236,
+            "n_pos_edge": 40,
+            "n_neg_edge": 41,
+            "winrate_edge_pos": 0.40,
+            "winrate_edge_neg": 0.60,
+        },
+        "calibration": {
+            "slope_b": 1.02,
+            "b_ci": [0.85, 1.19],
+            "interpretation": "calibrated",
+            "b_excludes_1": False,
+        },
+        "ece": 0.03,
+        "anti_predictive_alarm": True,
+    }
+
+
+def _calibration_alarm_band_result(band: str = "T2", clean_n: int = 45) -> dict:
+    """Synthetic ANALYZED result with a calibration slope CI excluding 1.0
+    and a non-anti-predictive edge verdict — isolates the calibration path."""
+    return {
+        "band": band,
+        "verdict": "ANALYZED",
+        "raw_n": clean_n,
+        "clean_n": clean_n,
+        "n": clean_n,
+        "edge_monotonicity": {
+            "verdict": "MONOTONIC",
+            "fisher_pvalue": 0.42,
+            "n_pos_edge": 25,
+            "n_neg_edge": 20,
+            "winrate_edge_pos": 0.55,
+            "winrate_edge_neg": 0.44,
+        },
+        "calibration": {
+            "slope_b": 1.65,
+            "b_ci": [1.10, 2.20],
+            "interpretation": "underconfident",
+            "b_excludes_1": True,
+        },
+        "ece": 0.07,
+        "anti_predictive_alarm": False,
+    }
+
+
+def _underpowered_band_result(band: str = "T3", clean_n: int = 12) -> dict:
+    return {
+        "band": band,
+        "verdict": "UNDERPOWERED",
+        "raw_n": clean_n,
+        "clean_n": clean_n,
+        "n": clean_n,
+        "min_n": 30,
+        "reason": "clean_n < MIN_N",
+        "anti_predictive_alarm": False,
+    }
+
+
+class TestReportBandMonitorVerdicts:
+    """T-341 exit criterion: a synthetic anti-predictive fixture trips the
+    C7 alarm in test. Mirrors the shadow_promotion_flag warn-only pattern —
+    WARNING severity, never trigger_kill_switch()."""
+
+    @pytest.mark.unit
+    def test_anti_predictive_band_emits_warning_event(self):
+        monitor, logger = _make_monitor()
+        results = {"T1": _anti_predictive_band_result()}
+        alarmed = monitor.report_band_monitor_verdicts(results, session_id="SES-T341-TEST")
+        assert alarmed == ["T1"]
+        calls = logger.log.call_args_list
+        assert len(calls) == 1
+        kwargs = calls[0][1]
+        assert kwargs["event_type"] == "band_monitor_anti_predictive_alarm"
+        assert kwargs["severity"] == "WARNING"
+        assert kwargs["payload"]["band"] == "T1"
+        assert kwargs["payload"]["fisher_pvalue"] == pytest.approx(0.0236)
+
+    @pytest.mark.unit
+    def test_anti_predictive_alarm_never_triggers_kill_switch(self):
+        """Warn-only per GG-098 — the real kill switch must never fire from
+        a band-monitor verdict alone."""
+        monitor, _ = _make_monitor()
+        results = {"T1": _anti_predictive_band_result()}
+        monitor.report_band_monitor_verdicts(results, session_id="SES-T341-TEST")
+        assert monitor.is_kill_switch_active is False
+
+    @pytest.mark.unit
+    def test_calibration_slope_breach_emits_warning_event(self):
+        monitor, logger = _make_monitor()
+        results = {"T2": _calibration_alarm_band_result()}
+        alarmed = monitor.report_band_monitor_verdicts(results, session_id="SES-T341-TEST")
+        assert alarmed == ["T2"]
+        kwargs = logger.log.call_args_list[0][1]
+        assert kwargs["event_type"] == "band_monitor_calibration_alarm"
+        assert kwargs["severity"] == "WARNING"
+        assert kwargs["payload"]["slope_b"] == pytest.approx(1.65)
+
+    @pytest.mark.unit
+    def test_band_with_both_breaches_emits_two_events(self):
+        band = _anti_predictive_band_result(band="T1")
+        band["calibration"] = {
+            "slope_b": 0.40, "b_ci": [0.20, 0.60],
+            "interpretation": "overconfident", "b_excludes_1": True,
+        }
+        monitor, logger = _make_monitor()
+        alarmed = monitor.report_band_monitor_verdicts({"T1": band}, session_id="SES-T341-TEST")
+        assert alarmed == ["T1"]
+        event_types = [c[1]["event_type"] for c in logger.log.call_args_list]
+        assert "band_monitor_anti_predictive_alarm" in event_types
+        assert "band_monitor_calibration_alarm" in event_types
+
+    @pytest.mark.unit
+    def test_healthy_band_emits_no_events(self):
+        monitor, logger = _make_monitor()
+        healthy = _calibration_alarm_band_result(band="T1")
+        healthy["calibration"]["b_excludes_1"] = False
+        healthy["calibration"]["interpretation"] = "calibrated"
+        alarmed = monitor.report_band_monitor_verdicts({"T1": healthy}, session_id="SES-T341-TEST")
+        assert alarmed == []
+        logger.log.assert_not_called()
+
+    @pytest.mark.unit
+    def test_underpowered_band_skipped_not_alarmed(self):
+        """GG-098 discipline: no verdict → no alarm, regardless of the stray
+        anti_predictive_alarm=False field on an UNDERPOWERED result."""
+        monitor, logger = _make_monitor()
+        results = {"T3": _underpowered_band_result()}
+        alarmed = monitor.report_band_monitor_verdicts(results, session_id="SES-T341-TEST")
+        assert alarmed == []
+        logger.log.assert_not_called()
+
+    @pytest.mark.unit
+    def test_multi_band_mixed_only_alarmed_bands_returned(self):
+        monitor, logger = _make_monitor()
+        results = {
+            "T1": _anti_predictive_band_result(band="T1"),
+            "T2": _underpowered_band_result(band="T2"),
+            "T4M-PROJ": _calibration_alarm_band_result(band="T4M-PROJ"),
+        }
+        alarmed = monitor.report_band_monitor_verdicts(results, session_id="SES-T341-TEST")
+        assert sorted(alarmed) == ["T1", "T4M-PROJ"]
+        assert logger.log.call_count == 2

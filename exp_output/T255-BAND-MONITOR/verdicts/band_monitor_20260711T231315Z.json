@@ -1,0 +1,173 @@
+{
+  "run_id": "20260711T231315Z",
+  "results": {
+    "T1": {
+      "band": "T1",
+      "verdict": "ANALYZED",
+      "raw_n": 230,
+      "clean_n": 81,
+      "n": 81,
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "n": 81,
+        "n_pos_edge": 80,
+        "n_neg_edge": 1,
+        "winrate_edge_pos": 0.525,
+        "winrate_edge_neg": 1.0,
+        "fisher_odds_ratio": 0.0,
+        "fisher_pvalue": 1.0,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 27,
+            "edge_min": -0.000581250000000014,
+            "edge_max": 0.051766000000000006,
+            "edge_mean": 0.03733760185185187,
+            "winrate": 0.48148148148148145,
+            "pnl": -16.732799999999997
+          },
+          {
+            "tercile": 2,
+            "n": 27,
+            "edge_min": 0.05193300000000003,
+            "edge_max": 0.07295500000000002,
+            "edge_mean": 0.06142728703703705,
+            "winrate": 0.5555555555555556,
+            "pnl": 29.6486
+          },
+          {
+            "tercile": 3,
+            "n": 27,
+            "edge_min": 0.07416075000000007,
+            "edge_max": 0.13099100000000005,
+            "edge_mean": 0.09223312962962964,
+            "winrate": 0.5555555555555556,
+            "pnl": 37.65540000000001
+          }
+        ]
+      },
+      "calibration": {
+        "intercept_a": 0.018406291038412133,
+        "slope_b": 1.0300503620855652,
+        "a_ci": [
+          -0.4905800741440906,
+          0.5184444225787308
+        ],
+        "b_ci": [
+          0.4797164396993275,
+          1.8276787578891533
+        ],
+        "b_excludes_1": false,
+        "interpretation": "underconfident"
+      },
+      "ece": 0.07597950617283947,
+      "brier_murphy": {
+        "brier_full": 0.2092903679148395,
+        "brier_binned": 0.20705861537193607,
+        "reliability": 0.006811793547014488,
+        "resolution": 0.04666675842199191,
+        "uncertainty": 0.24691358024691357,
+        "decomposition_(rel-res+unc)": 0.20705861537193615,
+        "binning_gap_(full-binned)": 0.00223175254290342,
+        "base_rate": 0.4444444444444444,
+        "recompose_ok": true
+      },
+      "reliability_curve": [
+        {
+          "bin": "[0.00,0.20)",
+          "n": 9,
+          "mean_forecast": 0.17300566666666667,
+          "empirical_rate": 0.1111111111111111,
+          "gap": 0.061894555555555564
+        },
+        {
+          "bin": "[0.20,0.40)",
+          "n": 23,
+          "mean_forecast": 0.23136508695652172,
+          "empirical_rate": 0.2608695652173913,
+          "gap": -0.029504478260869577
+        },
+        {
+          "bin": "[0.40,0.60)",
+          "n": 26,
+          "mean_forecast": 0.5539586538461538,
+          "empirical_rate": 0.46153846153846156,
+          "gap": 0.09242019230769227
+        },
+        {
+          "bin": "[0.60,0.80)",
+          "n": 23,
+          "mean_forecast": 0.6297495217391305,
+          "empirical_rate": 0.7391304347826086,
+          "gap": -0.10938091304347819
+        },
+        {
+          "bin": "[0.80,1.00)",
+          "n": 0
+        }
+      ],
+      "ev_per_bet_usd": 0.6243358024691363,
+      "pnl_per_dollar": 0.06673116621195023,
+      "win_rate": 0.5308641975308642,
+      "total_pnl": 50.57120000000005,
+      "anti_predictive_alarm": false
+    },
+    "T2": {
+      "band": "T2",
+      "verdict": "UNDERPOWERED",
+      "raw_n": 2,
+      "clean_n": 0,
+      "n": 0,
+      "min_n": 30,
+      "reason": "clean_n=0 < MIN_N=30 (raw_n=2) \u2014 GG-098 discipline: too few CURRENT_LOGIC_EPOCH resolved bets to return a verdict, not just a low-confidence one. Pre-fix-epoch bets are excluded, never blended in to reach the floor.",
+      "anti_predictive_alarm": false
+    },
+    "T3": {
+      "band": "T3",
+      "verdict": "UNDERPOWERED",
+      "raw_n": 0,
+      "clean_n": 0,
+      "n": 0,
+      "min_n": 30,
+      "reason": "clean_n=0 < MIN_N=30 (raw_n=0) \u2014 GG-098 discipline: too few CURRENT_LOGIC_EPOCH resolved bets to return a verdict, not just a low-confidence one. Pre-fix-epoch bets are excluded, never blended in to reach the floor.",
+      "anti_predictive_alarm": false
+    },
+    "T4M-PROJ": {
+      "band": "T4M-PROJ",
+      "verdict": "UNDERPOWERED",
+      "raw_n": 331,
+      "clean_n": 0,
+      "n": 0,
+      "min_n": 30,
+      "reason": "clean_n=0 < MIN_N=30 (raw_n=331) \u2014 GG-098 discipline: too few CURRENT_LOGIC_EPOCH resolved bets to return a verdict, not just a low-confidence one. Pre-fix-epoch bets are excluded, never blended in to reach the floor.",
+      "anti_predictive_alarm": false
+    }
+  },
+  "summary": {
+    "T1": {
+      "verdict": "INCONCLUSIVE",
+      "p": 1.0,
+      "brier": 0.2092903679148395,
+      "n": 81
+    },
+    "T2": {
+      "verdict": "UNDERPOWERED",
+      "p": null,
+      "brier": null,
+      "n": 0
+    },
+    "T3": {
+      "verdict": "UNDERPOWERED",
+      "p": null,
+      "brier": null,
+      "n": 0
+    },
+    "T4M-PROJ": {
+      "verdict": "UNDERPOWERED",
+      "p": null,
+      "brier": null,
+      "n": 0
+    }
+  }
+}
