@@ -39,3 +39,4 @@
 | 2026-07-11T02:14:38Z | T-324 | T-324 (B3): T1-vs-T4 divergence memo + audit/hygiene sweep |
 | 2026-07-11T02:15:53Z | T-333 | T-333: scope GG-105 diagnostic 3 (clean_n re-run cadence) + edge-formula audit follow-on |
 | 2026-07-11T06:34:25Z | T-328, T-333 | T-328 deploy.yml permanent fix (GG-104) + T-333 Component B edge-formula audit (GG-105) |
+| 2026-07-11T06:39:36Z | T-334, T-335 | Workstream E: MEMORY_BANK snapshot consolidation + narrative guard (T-334/E1); worktree-isolation-default + session-guard warning (T-335/E2). Renumbered from plan doc's stale T-330/T-331 (E1/E2) — those IDs already claimed+merged for Workstream D (ledger-driven MC forward projection, 81cfb20/563c31d). |
