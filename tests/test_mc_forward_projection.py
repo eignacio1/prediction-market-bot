@@ -8,12 +8,14 @@ probability; this is the property ADR-0040's recommendation relies on).
 """
 
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from mc_forward_projection import (  # noqa: E402
     SimParams,
@@ -21,7 +23,41 @@ from mc_forward_projection import (  # noqa: E402
     kill_prob_at_horizons,
     build_report,
     sensitivity_report,
+    LEDGER_BANDS,
+    derive_ledger_stats,
+    build_ledger_scenarios,
+    bootstrap_kill_ci,
+    build_ledger_report,
+    load_clean_band_records,
+    BETS_PER_DAY,
 )
+from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
+
+
+def _mk_recs(n_win, n_loss, win_mult=1.2, loss_mult=1.0, size=10.0,
+             span_days=20.0, epoch=None, with_timestamps=True):
+    """Synthetic clean_n-shaped records: the exact fields derive_ledger_stats /
+    bootstrap_kill_ci read (_win, _pnl, _size, logic_epoch, resolved_at) —
+    hermetic, no dependency on live VPS ledger files."""
+    if epoch is None:
+        epoch = CURRENT_LOGIC_EPOCH
+    total = n_win + n_loss
+    base = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    recs = []
+    for i in range(total):
+        is_win = i < n_win
+        rec = {
+            "_win": 1 if is_win else 0,
+            "_pnl": size * win_mult if is_win else -size * loss_mult,
+            "_size": size,
+            "logic_epoch": epoch,
+        }
+        if with_timestamps and total > 1:
+            frac = i / (total - 1)
+            ts = base + timedelta(days=frac * span_days)
+            rec["resolved_at"] = ts.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+        recs.append(rec)
+    return recs
 
 
 class TestSimulatePaths:
@@ -142,3 +178,178 @@ class TestReportGeneration:
         assert "(a) CADENCE-AWARE KELLY DE-RATING" in report
         assert "(b) FORMAL MAX-P(KILL-SWITCH) TARGET" in report
         assert "(c) LOWERING THE $500/BET HARD CAP" in report
+
+
+class TestDeriveLedgerStats:
+    """T-330: derive win_rate/win_mult/loss_mult/stake_frac/cadence from a
+    clean_n record set instead of hardcoded module constants."""
+
+    def test_basic_derivation(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        assert stats.clean_n == 100
+        assert stats.win_rate == pytest.approx(0.60)
+        assert stats.win_mult == pytest.approx(1.2)
+        assert stats.loss_mult == pytest.approx(1.0)
+        assert stats.stake_frac == pytest.approx(10.0 / 1000.0)
+
+    def test_zero_clean_n_raises(self):
+        with pytest.raises(ValueError, match="clean_n=0"):
+            derive_ledger_stats("T1", [], starting_bankroll=1000.0)
+
+    def test_no_wins_raises(self):
+        recs = _mk_recs(n_win=0, n_loss=40)
+        with pytest.raises(ValueError, match="win_mult"):
+            derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+
+    def test_no_losses_raises(self):
+        recs = _mk_recs(n_win=40, n_loss=0)
+        with pytest.raises(ValueError, match="loss_mult"):
+            derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+
+    def test_cadence_immature_flagged_for_short_span(self):
+        recs = _mk_recs(n_win=30, n_loss=20, span_days=3.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        assert stats.cadence_span_days == pytest.approx(3.0)
+        assert stats.cadence_immature is True
+
+    def test_cadence_mature_not_flagged(self):
+        recs = _mk_recs(n_win=30, n_loss=20, span_days=30.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        assert stats.cadence_span_days == pytest.approx(30.0)
+        assert stats.cadence_immature is False
+
+    def test_cadence_unmeasurable_falls_back_to_module_default(self):
+        recs = _mk_recs(n_win=30, n_loss=20, with_timestamps=False)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        assert stats.cadence_bets_per_week is None
+        assert stats.bets_per_day == BETS_PER_DAY
+
+
+class TestBuildLedgerScenarios:
+    def test_floor_is_zero_edge_breakeven(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        expected_p0 = stats.loss_mult / (stats.win_mult + stats.loss_mult)
+        assert scenarios["floor"].win_rate == pytest.approx(expected_p0)
+        assert scenarios["floor"].win_mult == pytest.approx(stats.win_mult)
+        assert scenarios["floor"].loss_mult == pytest.approx(stats.loss_mult)
+
+    def test_operational_is_frozen_default_unaffected_by_ledger(self):
+        recs = _mk_recs(n_win=95, n_loss=5, win_mult=3.0, loss_mult=1.0, size=999.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        default = SimParams()
+        op = scenarios["operational"]
+        assert op.win_rate == default.win_rate
+        assert op.win_mult == default.win_mult
+        assert op.loss_mult == default.loss_mult
+        assert op.stake_frac == default.stake_frac
+        assert op.bets_per_day == default.bets_per_day
+
+    def test_ceiling_uses_fully_observed_stats(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        assert scenarios["ceiling"].win_rate == pytest.approx(stats.win_rate)
+        assert scenarios["ceiling"].stake_frac == pytest.approx(stats.stake_frac)
+
+    def test_ceiling_less_risky_than_floor_when_real_edge_present(self):
+        """floor assumes the edge is illusory (breakeven win_rate); ceiling uses
+        the real observed (positive) edge — ceiling must show lower or equal
+        ruin risk at every horizon when the ledger reflects a genuine edge."""
+        recs = _mk_recs(n_win=65, n_loss=35, win_mult=1.15, loss_mult=1.0, size=10.0, span_days=30.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        p_floor, _ = kill_prob_at_horizons(scenarios["floor"], [365], n_sims=2000, seed=5)
+        p_ceiling, _ = kill_prob_at_horizons(scenarios["ceiling"], [365], n_sims=2000, seed=5)
+        assert p_ceiling[365] <= p_floor[365]
+
+
+class TestLoadCleanBandRecords:
+    def test_unknown_band_raises(self):
+        with pytest.raises(ValueError):
+            load_clean_band_records("NOT-A-BAND")
+
+    def test_ledger_bands_covers_book_bands_and_t4(self):
+        assert "T1" in LEDGER_BANDS
+        assert "T2" in LEDGER_BANDS
+        assert "T3" in LEDGER_BANDS
+        assert "T4M-PROJ" in LEDGER_BANDS
+
+
+class TestBootstrapKillCI:
+    def test_invalid_scenario_name_raises(self):
+        recs = _mk_recs(n_win=60, n_loss=40)
+        with pytest.raises(ValueError):
+            bootstrap_kill_ci("T1", recs, "operational", starting_bankroll=1000.0,
+                               cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                               n_boot=5, boot_sims=200)
+
+    def test_ci_ordering_lo_le_point_le_hi(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=30.0)
+        result = bootstrap_kill_ci("T1", recs, "ceiling", starting_bankroll=1000.0,
+                                    cap_usd=500.0, kill_switch_dd=0.20, horizons=[30, 365],
+                                    n_boot=15, boot_sims=300, seed=42)
+        for h in (30, 365):
+            entry = result[h]
+            assert entry is not None
+            assert entry["lo"] <= entry["point"] <= entry["hi"]
+            assert entry["n_boot_valid"] <= 15
+
+    def test_deterministic_with_fixed_seed(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=30.0)
+        r1 = bootstrap_kill_ci("T1", recs, "floor", starting_bankroll=1000.0,
+                                cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                                n_boot=10, boot_sims=200, seed=7)
+        r2 = bootstrap_kill_ci("T1", recs, "floor", starting_bankroll=1000.0,
+                                cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                                n_boot=10, boot_sims=200, seed=7)
+        assert r1[365] == r2[365]
+
+    def test_tractable_with_small_boot_params(self):
+        """Sanity check that a small n_boot/boot_sims configuration (as used for
+        quick CLI/test invocations) actually completes and returns a well-formed
+        result, without asserting a specific runtime."""
+        recs = _mk_recs(n_win=30, n_loss=20, span_days=10.0)
+        result = bootstrap_kill_ci("T1", recs, "ceiling", starting_bankroll=1000.0,
+                                    cap_usd=500.0, kill_switch_dd=0.20, horizons=[30],
+                                    n_boot=5, boot_sims=100, seed=1)
+        assert result[30] is not None
+        assert result[30]["n_boot_valid"] > 0
+
+
+class TestBuildLedgerReport:
+    def _stats_and_scenarios(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=20.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        return stats, scenarios
+
+    def test_contains_expected_sections(self):
+        stats, scenarios = self._stats_and_scenarios()
+        report = build_ledger_report("T1", stats, scenarios, [30, 182, 365], n_sims=500)
+        assert "FLOOR" in report
+        assert "OPERATIONAL" in report
+        assert "CEILING" in report
+        assert "clean_n" in report
+        assert "band=T1" in report
+
+    def test_contains_ci_band_when_boot_ci_provided(self):
+        stats, scenarios = self._stats_and_scenarios()
+        fake_ci = {
+            "floor": {30: {"point": 5.0, "lo": 0.2, "hi": 41.0, "n_boot_valid": 20, "n_boot_skipped": 0},
+                      182: None, 365: None},
+            "ceiling": {30: None, 182: None, 365: None},
+        }
+        report = build_ledger_report("T1", stats, scenarios, [30, 182, 365], n_sims=500, boot_ci=fake_ci)
+        assert "90% CI: 0.20% - 41.00%" in report
+
+    def test_cadence_immature_caveat_appears(self):
+        recs = _mk_recs(n_win=30, n_loss=20, span_days=3.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        report = build_ledger_report("T1", stats, scenarios, [30, 182, 365], n_sims=500)
+        assert "CAVEAT" in report
+        assert "maturity floor" in report
