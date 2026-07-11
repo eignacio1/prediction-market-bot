@@ -38,3 +38,4 @@
 | 2026-07-11T01:48:04Z | T-332 | T-332: GG-105 diagnostic 2 — game-state segmentation (inning/score-diff/ab_remaining) on T4M-PROJ clean_n |
 | 2026-07-11T02:14:38Z | T-324 | T-324 (B3): T1-vs-T4 divergence memo + audit/hygiene sweep |
 | 2026-07-11T02:15:53Z | T-333 | T-333: scope GG-105 diagnostic 3 (clean_n re-run cadence) + edge-formula audit follow-on |
+| 2026-07-11T06:34:25Z | T-328, T-333 | T-328 deploy.yml permanent fix (GG-104) + T-333 Component B edge-formula audit (GG-105) |
