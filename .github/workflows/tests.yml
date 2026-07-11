@@ -1,0 +1,48 @@
+name: Test Suite
+
+# T-337 (N-02): before this workflow, no CI job ran pytest at all — the
+# repo had deploy.yml, post_game_resolve.yml, and tss_daily_sync.yml, none
+# of which touch tests/. The full ~2,400-test suite (2,494 collected /
+# 2,465 passed + 29 skipped as of 2026-07-11, T-337 certification run,
+# 120.75s on real hardware) was ad-hoc-only: it ran only when a session
+# happened to invoke it manually, and the sandbox's ~45s wall time could
+# not even complete it. Since a full-suite run had never been gated on
+# push, a regression could land on main undetected until the next
+# session happened to run pytest by hand. This workflow closes that gap:
+# every push and PR against main now runs the complete suite (tests/,
+# which includes test_band_monitor.py and test_power_calc.py — the two
+# files T-337 named explicitly — with no separate include needed since
+# pytest's testpaths in pyproject.toml already covers the whole
+# directory).
+#
+# Uses the pinned lockfile (06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/
+# requirements-dev.txt), not floating pyproject.toml ranges, so CI installs
+# the exact versions this suite was certified green against.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
+          pip install -e .
+
+      - name: Run full test suite
+        run: pytest tests/ -q
