@@ -1852,6 +1852,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-109 — Fresh CRITICAL SemanticFloorViolation fired in production T1 MLB (report date 20260710), zero players matched despite 16 games fetched
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-109 |
+| Category | Runtime signal failure — T1 MLB pipeline (PIPE-05) |
+| What was missed | `paper_mlb_cron.log` on the VPS shows a `CRITICAL semantic_floor_violation` fired for the `[DONE] Report: logs/paper_mlb_20260710.json` run: `games_fetched=16 but matched_players=0`. This is the exact condition CLAUDE.md Step 4's semantic-oracle check exists to catch (GG-054's guard, RESOLVED 2026-07-06, confirmed the guard fires correctly end-to-end in tests — this is that guard firing for real in production for the first time observed). Log ordering places this event immediately after the 20260710 report and immediately before the `[PIPE-05] MLB Paper trading — 20260711` section header; file mtime is 2026-07-11 11:00 UTC, so this fired during today's cron execution while generating/reconciling yesterday's (20260710) report, not during a stale historical run. |
+| When it should have been caught | Immediately, by whichever session's Step 4 health check ran closest to the 11:00 UTC cron execution — a prior session claimed at 2026-07-11T07:35:47Z ("TBD — session-start protocol run") logged "zero SemanticFloorViolation" in TODO_NEXT.md, which was accurate at 07:35 but predates this 11:00 event. |
+| Phases it survived | Not yet triaged as of this session's Step 4 check (2026-07-11, ~18:00 UTC claim) — roughly 7 hours between firing and first documented notice. |
+| Why it survived | No alerting/paging on this counter — it is only visible to a session that happens to run Step 4's grep after the event and before the counter is reset or buried by subsequent log growth. No session ran Step 4 between 11:00 and this one. |
+| Impact | UNKNOWN/MEDIUM — one day's (20260710) T1 MLB report shows 0 matched players despite 16 games fetched, meaning T1 MLB placed zero bets off real market data for that report cycle even though games were live. Per CLAUDE.md's own guidance this is a signal failure requiring investigation (naming-convention mismatch, wrong ticker, markets settled before pipeline ran, or stale pregame context file) — likely causes are enumerated in the violation message itself but not yet diagnosed. Not yet known whether this is a one-off (e.g. a transient Kalshi/ESPN outage) or a recurring ticker/name-matching regression. Does not affect T4M-PROJ (separate evaluator, confirmed active via systemd) or capital safety (paper trading only, no live capital pending G6). |
+| Discovery | 2026-07-11, this session (T-336/T-337, isolated worktree), CLAUDE.md Step 4 operational health check — grepped `paper_mlb_cron.log` for `SemanticFloorViolation`, found count=1 where the immediately preceding session (07:35 claim) had found 0. |
+| Resolution | Not investigated this session — this session's assigned scope is T-336/T-337 (test-suite regression anchors), a narrow and unrelated fix. Flagging per Hard Rule 7/adversarial mandate rather than context-switching into a live-data diagnostic mid-task. Recommend a follow-up session pull `logs/paper_mlb_20260710.json` and the raw Kalshi/ESPN payloads for that date to determine root cause before assuming it is transient. |
+| Status | OPEN — registered, no task assigned yet. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
