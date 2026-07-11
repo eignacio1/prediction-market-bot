@@ -36,3 +36,4 @@
 | 2026-07-11T01:30:49Z | T-329 | T-329: GG-105 diagnostic 1 — size-weighted tercile re-run on T4M-PROJ clean_n |
 | 2026-07-11T01:40:03Z | T-330, T-331 | Workstream D: ledger-driven MC forward projection + bootstrap CI (D1/D2) |
 | 2026-07-11T01:48:04Z | T-332 | T-332: GG-105 diagnostic 2 — game-state segmentation (inning/score-diff/ab_remaining) on T4M-PROJ clean_n |
+| 2026-07-11T02:14:38Z | T-324 | T-324 (B3): T1-vs-T4 divergence memo + audit/hygiene sweep |
