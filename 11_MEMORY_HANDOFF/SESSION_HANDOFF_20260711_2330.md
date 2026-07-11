@@ -1,17 +1,17 @@
 # Session Handoff — 2026-07-11T23:30Z
 
-**Trigger:** Operator-initiated (`/session-end`), after GG-110 close-out completed
-**Last commit:** `8c0a373` (main) — pushed to GitHub; VPS deploy confirmed `success` (workflow run `29171559298`)
+**Trigger:** Operator-initiated wrap-up at ~95% context ("We probably won't be able to finish - ensure you wrap up your current task then /session-end. We'll continue in this actual terminal window when tokens come back.")
+**Last commit:** `66ff01a` (branch `session/20260711T225758Z-t341-t342-monitor-cron-flat-mc`) — pushed to GitHub, NOT yet merged to `main`, NOT yet deployed to VPS.
 
 ---
 
 ## Status
 
 - **Phase:** 6/7 ACTIVE
-- **Tests:** unchanged this session (diagnosis-only — no code changed; last known full-suite figure 2465 passed / 29 skipped / 0 failed, T-336/T-337)
+- **Tests:** 33/33 passing (`tests/test_mc_forward_projection.py` regression anchor re-run this session; full-suite count last certified 2,465 passed / 29 skipped / 0 failed as of T-336/T-337, unchanged by this session's work)
 - **Capital:** NO live capital — paper trading only
-- **VPS:** 157.230.91.33 — cron running (T1/T2/T3 MLB), `t4-mlb` systemd service active
-- **Paper bets:** MLB T1 clean_n=65 / T4M-PROJ clean_n=159 (last-verified figures, not re-pulled this session) — G6 gate (30-bet floor) cleared on both bands' clean_n
+- **VPS:** 157.230.91.33 — cron running; this branch not yet deployed (nothing VPS-side changes until merge)
+- **Paper bets:** MLB T1 clean_n=65, T4M-PROJ clean_n=159 (both clear the 30-bet G6 floor on `clean_n`) — G6 gate
 
 ---
 
@@ -19,9 +19,10 @@
 
 | Decision | Rationale | Canonical Reference | Owner |
 |----------|-----------|--------------------|----|
-| Root-caused GG-110 as a PIPE-05 fire-time/Kalshi-publish-timing race, not a code bug; deferred the actual fix (retry/backoff) to new task T-343 rather than implementing this session | Operator explicit cost-discipline instruction mid-session ("not willing to use usage credits anymore... proceed with finishing off the remainder of your tasks" efficiently) — diagnosis + documentation only, no code change | GOVERNANCE_GAP_LOG.md GG-110, TODO_NEXT.md T-343, DECISION_LOG.md 2026-07-11 | Claude (session continuation, isolated worktree) |
-| Renumbered task from T-338 to T-343 project-wide after discovering a real concurrent-session T-number collision (two other sessions had already claimed/merged T-338-T-342) | Prevents silent task-ID collision on `main`; consistent with this project's documented precedent for handling such collisions | DECISION_LOG.md 2026-07-11 (renumber entry), TODO_NEXT.md T-343 | Claude |
-| Resolved a rebase content-conflict in `MEMORY_BANK.md`'s shared "Last reviewed" header by sequencing this session's GG-110-resolving entry after the concurrent session's entry that had originally left GG-110 OPEN | Correct chronological ordering; that concurrent session (Window 1, T-336/T-337) was the one that registered GG-110 in the first place | MEMORY_BANK.md "Last reviewed" / "Last reviewed (prior)" headers | Claude |
+| Added `stake_mode={"proportional","flat"}` to `mc_forward_projection.py` rather than a separate script | T4M-PROJ's empirical dollar-stake clustering doesn't fit the existing proportional-Kelly MC framework; reusing the same module/CLI keeps one source of truth for both T1 and T4M-PROJ forward-ruin analysis | `scripts/mc_forward_projection.py`, DECISION_LOG.md 2026-07-11 (T-342 row) | Claude (T-341/T-342 worktree) |
+| Froze dated `T4M_PROJ_*` operational constants from clean_n=338, flagged provisional pending cadence maturity | `MATURE_CADENCE_SPAN_DAYS=14.0` floor not yet met (ledger spans ~5.0 days) — the point estimate is real but not yet a stable long-run figure | DECISION_LOG.md 2026-07-11 (T-342 row) | Claude (T-341/T-342 worktree) |
+| Deferred writing dedicated flat-mode pytest coverage to next session rather than rushing it under the 95%-context wrap-up directive | Operator explicitly instructed wrap-up-then-session-end; the 33/33 existing-suite regression pass is a sufficient interim safety anchor, and superficial test coverage written under context pressure is worse than none | DECISION_LOG.md 2026-07-11 (T-342 row), TODO_NEXT.md | Claude (T-341/T-342 worktree) |
+| Explicitly did NOT surface GG-105's anti-predictive-edge caveat inside the new flat-mode MC report text this session | Scope discipline under the wrap-up directive — flagged as a named follow-up rather than silently left implicit, since reading the flat-vs-proportional ruin-risk finding in isolation from GG-105 would be misleading | DECISION_LOG.md 2026-07-11 (T-342 row), TODO_NEXT.md | Claude (T-341/T-342 worktree) |
 
 ---
 
@@ -29,70 +30,57 @@
 
 | Item | Result |
 |------|--------|
-| GG-110 investigation | ✅ Root-caused: PIPE-05 fixed 11:00 UTC fire raced Kalshi KXMLBHIT market publishing on 2026-07-11 (55/44 published vs. 383/317 confirmed live that afternoon) — not a parsing/matching bug. `_ticker_to_game_date()` verified correct. |
-| GG-110 documentation trail | ✅ `GOVERNANCE_GAP_LOG.md` (RESOLVED/root-cause), `DECISION_LOG.md` (Notable Judgment Calls row), `TODO_NEXT.md` (T-343 registered), `MEMORY_BANK.md` (Last reviewed header + What Must Happen Next) all updated and consistent |
-| T-number collision (T-338 → T-343) | ✅ Detected via PR #8 mergeStateStatus DIRTY, confirmed via `SESSION_CLAIMS.md`, renumbered project-wide, verified via grep (0 residual T-338, all T-343) |
-| Rebase onto moved `origin/main` | ✅ Resolved one real content conflict in `MEMORY_BANK.md` (concurrent session had also edited the same header line); other 3 files auto-merged clean |
-| CI verification | ✅ GitHub Actions "Test Suite" workflow green before merge |
-| PR #8 merge | ✅ Squash-merged, `state: MERGED`, `mergedAt: 2026-07-11T23:04:54Z`, commit `8c0a373` |
-| Worktree/branch retirement | ✅ `scripts/end_session_worktree.sh` removed worktree cleanly (no uncommitted changes); local + remote branch `session/20260711T190308Z-gg110-semanticfloorviolation-investigati` deleted |
-| Main sync | ✅ Shared `main` tree fast-forwarded `86eb39c..8c0a373` |
-| VPS deploy verification | ✅ `deploy.yml` run `29171559298` — `conclusion: success` for SHA `8c0a373` |
+| T-341 (N-06) — schedule per-band monitor + wire drift into C7 | ✅ Fully complete. `SystemMonitor.report_band_monitor_verdicts()` wires warn-only WARNING alarms; `run_band_monitor.py` writes dated JSON verdict artifacts; existing VPS cron confirmed to already satisfy scheduling requirement; `test_c7_monitor.py` 80/80 passing |
+| T-342 (N-07) — forward MC for T4M-PROJ flat-sizing regime | 🟡 Core implementation complete, not fully closed. `stake_mode` field threaded through `SimParams`/`simulate_paths`/`derive_ledger_stats`/`build_ledger_scenarios`/`bootstrap_kill_ci`/`build_ledger_report`/`build_report` + new `--stake-mode` CLI flag; `KELLY_T4=0.10` code-inspection finding documented; frozen `T4M_PROJ_*` constants; 33/33 regression suite green; live end-to-end run confirms flat sizing carries materially lower forward ruin risk than T1's proportional regime (14.3% vs ~46% P(kill) at 1yr, floor scenario) |
+| Governance docs updated | ✅ DECISION_LOG.md (T-341/T-342 rows), TODO_NEXT.md, MEMORY_BANK.md, PLAN.md all current as of this session |
+| Commit + push | ✅ `66ff01a` pushed to `origin session/20260711T225758Z-t341-t342-monitor-cron-flat-mc` |
 
 ---
 
 ## ONE THING PENDING
 
-**T-343 (PIPE-05 retry/backoff for GG-110) is registered OPEN and NOT implemented.** No code has been written yet — this session was diagnosis-and-documentation only, per explicit operator cost-discipline instruction. Next session should: (1) read `TODO_NEXT.md`'s T-343 section for the full problem statement, (2) decide the fix shape (bounded retry/backoff on PIPE-05's market-fetch step vs. simply moving the fixed fire time later in the UTC day — tradeoffs not yet evaluated), (3) implement + test + deploy. Infrastructure/investigation is fully done; only the actual code fix remains.
+T-342 needs two closing items before merge-ready: (1) dedicated pytest coverage for the `stake_mode="flat"` code paths in `scripts/mc_forward_projection.py` — no new tests were written this session, only the pre-existing 33-test suite was re-run to confirm no regressions; (2) surface GG-105's anti-predictive-edge caveat directly in `build_ledger_report()`'s T4M-PROJ output text, since the flat-vs-proportional ruin-risk finding reads misleadingly in isolation from that caveat. Both are scoped, not started. After those two, open a PR and merge `session/20260711T225758Z-t341-t342-monitor-cron-flat-mc` to `main`, then deploy.
 
 ---
 
 ## Current Paper Portfolio
 
-- Bankroll: not re-pulled this session (diagnosis-only, no bets placed/resolved by this session's own action) — see `MEMORY_BANK.md` Current State Snapshot for last-verified figures
-- Closed/Resolved: MLB T1 clean_n=65, T4M-PROJ clean_n=159 (last-verified) | G6 gate: both clear the 30-bet floor on clean_n
-- **Direct impact of this session's finding:** T1 MLB placed 0 bets on 2026-07-11 due to the PIPE-05 timing race documented above — a real, unresolved-until-T-343 gap in daily bet volume
+- Bankroll: see MEMORY_BANK.md Current State Snapshot for live MLB/NBA figures (not re-pulled this session — no capital-affecting action taken)
+- Open: unchanged this session
+- Closed/Resolved: MLB T1 clean_n=65, T4M-PROJ clean_n=159 | G6 gate: both bands clear 30/30 on `clean_n`
 
 ---
 
 ## Active Cron on VPS (157.230.91.33)
 
-```
-PIPE-05 (T1 MLB)     — 11:00 UTC fixed fire (the race condition documented this session)
-T2 MLB               — cron-active (run_t2_mlb_sameday.py)
-T3 MLB               — cron-active
-t4-mlb (T4M-PROJ)    — systemd service, 45s poll loop, independent of PIPE-05's snapshot timing
-```
+Unchanged this session — see CLAUDE.md Step 4 operational health check for the live command set (T1 MLB, T4 MLB systemd, T1 NBA dual-window).
 
 ---
 
 ## Key Constraints to Remember
 
-1. No live capital until G6 (30 resolved paper bets + positive P&L, per sport/pool) — cleared on clean_n for both active MLB bands, per-band ADR/APR sign-off still required for capital authorization
-2. **Operator cost-discipline directive (this session, ongoing):** minimize tool-call/token expense — over $300 spent in 2 months against a $200/yr subscription. Prefer using evidence already gathered over re-deriving; avoid unnecessary subagent spawns and VPS SSH round-trips.
-3. Concurrent-session collisions are real and recurring in this project (T-number collisions, GG-ID collisions, shared-header merge conflicts) — always check `SESSION_CLAIMS.md` and re-read shared nav files fresh before writing (Hard Rule 10)
+1. Work wifi blocks Kalshi API — use any other network
+2. No live capital until G6 (**30 resolved paper bets** + positive P&L — APR-0016) — both MLB bands clear this on `clean_n`, but full EXP-017/Tier-1/Tier-2 adequacy has not been re-run against the clean-only cohort (per CLAUDE.md 2026-07-10 note)
+3. `KELLY_T4=0.10` in `run_t4_mlb_live.py` is T4M-PROJ's real, live sizing mechanism — the new `stake_mode="flat"` MC mode models an empirical regime property (tiny stable edge → tight dollar clustering), not an architectural guarantee. Do not conflate the two when reading T-342's output.
+4. GG-105 (T4M-PROJ's own computed edge is ANTI_PREDICTIVE against realized win rate, clean n=338, Fisher p=0.0563) still applies and is not yet referenced in the new flat-mode MC report text — read T-342's ruin-risk finding alongside GG-105, not in isolation
 
 ---
 
 ## ⚙️ DECISION AUDIT
 
-**Step 1:** `grep -rn "^\*\*Decisions logged:\*\* false" 02_ARCHITECTURE_DESIGN/ 08_MODEL_RISK_GOVERNANCE/ 01_SPEC/ 2>/dev/null` → no matches (clean)
-
-**Step 2:**
+**Step 1 result:** `grep -rn "^\*\*Decisions logged:\*\* false" 02_ARCHITECTURE_DESIGN/ 08_MODEL_RISK_GOVERNANCE/ 01_SPEC/` — clean, no matches (re-confirmed at session-start this session).
 
 | Document | Decisions logged field | DECISION_LOG entries written | Status |
 |----------|----------------------|------------------------------|--------|
-| GOVERNANCE_GAP_LOG.md (GG-110) | n/a (not a decisions_logged-tracked doc) | 2026-07-11 Notable Judgment Calls row | ✅ |
-| TODO_NEXT.md (T-343) | n/a | 2026-07-11 Notable Judgment Calls row | ✅ |
-| MEMORY_BANK.md | n/a | reflected in header + What Must Happen Next | ✅ |
+| `scripts/mc_forward_projection.py` (code, not a `decisions_logged`-tracked doc) | n/a | T-342 row, DECISION_LOG.md 2026-07-11 | ✅ |
 
-Sprint closed — no `decisions_logged: false` documents touched this session.
+Sprint is NOT closed — this is a mid-task handoff (T-342 core done, two closing items open), not a sprint/gate close.
 
 ---
 
 ## Resume Command
 
 ```bash
-cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
-# Tell Claude: "Read 11_MEMORY_HANDOFF/MEMORY_BANK.md and SESSION_HANDOFF_20260711_2330.md, then start T-343 (PIPE-05 retry/backoff)"
+cd "/Users/earlignacio/Documents/Claude/Projects/PM-worktrees/20260711T225758Z-t341-t342-monitor-cron-flat-mc"
+# Tell Claude: "Read 11_MEMORY_HANDOFF/MEMORY_BANK.md and SESSION_HANDOFF_20260711_2330.md, confirm 33/33 mc_forward_projection tests, then finish T-342: write flat-mode pytest coverage + surface GG-105 caveat in report text, then open a PR to main."
 ```
