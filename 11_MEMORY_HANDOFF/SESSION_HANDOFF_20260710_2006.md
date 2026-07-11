@@ -94,3 +94,9 @@ Sprint closed — no `false` rows outstanding, no T-NNN owed for documentation d
 cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 # Tell Claude: "Read 11_MEMORY_HANDOFF/MEMORY_BANK.md and SESSION_HANDOFF_20260710_2006.md, then start on GG-105's DS-review escalation (ADR-0004 monotonicity-guard failure on T4M-PROJ, ACTIVE capital-track band) — see T324_T1_VS_T4_DIVERGENCE_MEMO.md for the three proposed next diagnostics"
 ```
+
+---
+
+## Addendum — 2026-07-10, same-day short verification pass ("So is Workstream B all finished?")
+
+Operator asked for a direct check of Workstream B against its own original written exit criteria, not the DONE labels. Result: T-322 fully verified DONE. **T-323 and T-324 both fail their own stated "Feeds GG-004" exit criterion** — `GOVERNANCE_GAP_LOG.md`'s GG-004 entry is unchanged since 2026-07-08 and contains no mention of `clean_n`, the T-323 power-calc `n*` figures, or GG-105. Offered to fix GG-004 now vs. leave it for the session already claiming GG-105. **Operator: "Just leave it - /session-end."** Decision logged in `DECISION_LOG.md` 2026-07-10; short addendum added to MEMORY_BANK.md's "What Must Happen Next." No `src/` changes, no test re-run needed. GG-004 remains a known, deliberately-deferred gap for whichever session next touches GG-105.
