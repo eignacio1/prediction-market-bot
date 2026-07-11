@@ -21,7 +21,7 @@
 |----------|-----------|--------------------|----|
 | None new this segment | This segment (session-end write-up) only updated navigation artifacts (MEMORY_BANK.md, PLAN.md) to reflect T-280 B1-B6 completion already decided/logged earlier in the session | DECISION_LOG.md 2026-07-09/10 entries (B1-B6, merge reconciliation) already capture this session's real judgment calls | DS |
 
-*No new strategic decisions were made in this closing segment — see DECISION_LOG.md for the full set of decisions made earlier in this session (B1 corrected-scope call, GG-103→GG-104 renumbering, B3/B4 findings).*
+*No new strategic decisions were made in this closing segment — see DECISION_LOG.md for the full set of decisions made earlier in this session (B1 corrected-scope call, GG-103→GG-109 renumbering, B3/B4 findings).*
 
 ---
 
@@ -32,7 +32,7 @@
 | T-280 (B1) | ✅ Corrected-scope Kelly boundary clamp (`_MIP_EPSILON=1e-6`) + cross-check tests; premise (sequential multiplicative Bayesian chain) verified false against real code before building |
 | T-280 (B2) | ✅ Found real ECE bin-edge divergence between `monitor.py` and EXP-017C script — documented, deferred as T-281 |
 | T-280 (B3) | ✅ Hypothesis property tests; found real float64 sigmoid-saturation edge case in `temperature_scale` at T<1.0 (unreached in production — live `CALIBRATION_TEMPERATURE` values are all ≥1.0) |
-| T-280 (B4) | ✅ Lifted calibration diagnostics to shared module `calibration_diagnostics.py`; discovered GG-104 (worktree isolation doesn't cover Python import resolution); fixed via T-282 (`pythonpath=["src"]` in `pyproject.toml`) |
+| T-280 (B4) | ✅ Lifted calibration diagnostics to shared module `calibration_diagnostics.py`; discovered GG-109 (worktree isolation doesn't cover Python import resolution); fixed via T-282 (`pythonpath=["src"]` in `pyproject.toml`) |
 | T-280 (B5) | ✅ `tests/test_t280_golden_analytic_invariants.py` (17 hand-derived closed-form golden tests: Kelly, temperature scaling, monitor Brier/ECE, binomial PMF, `p_hits_gte_threshold`, full 9-field Murphy decomposition) + centralized `tests/conftest.py` (Hypothesis determinism profile + global `random` seed) |
 | T-280 (B6) | ✅ Full-suite re-run as final gate: 2580 passed / 30 skipped / 0 failed — identical to B5's own count, confirming zero drift |
 | T-283 | 🔲 Registered, deferred — stale GG-004/CLAUDE.md figures need a fresh refresh pass (not this session's scope) |

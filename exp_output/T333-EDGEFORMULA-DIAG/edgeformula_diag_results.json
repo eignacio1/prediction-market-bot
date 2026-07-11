@@ -1,0 +1,236 @@
+{
+  "clean_n": 338,
+  "n_joined": 338,
+  "n_join_misses": 0,
+  "h1": {
+    "n": 338,
+    "corr_extremity_vs_edge": 0.19527079745258621,
+    "corr_extremity_vs_win": 0.11543247824014259,
+    "corr_ba_l10_vs_edge": -0.1655317668622457,
+    "by_tercile": [
+      {
+        "tercile": 1,
+        "n": 113,
+        "ba_l10_mean": 0.2553203539823009,
+        "ba_l10_stdev": 0.06343539058321472,
+        "ba_l10_extremity_mean": 0.05029380530973453
+      },
+      {
+        "tercile": 2,
+        "n": 113,
+        "ba_l10_mean": 0.25758849557522123,
+        "ba_l10_stdev": 0.0805556969611403,
+        "ba_l10_extremity_mean": 0.0625761061946903
+      },
+      {
+        "tercile": 3,
+        "n": 112,
+        "ba_l10_mean": 0.22414017857142857,
+        "ba_l10_stdev": 0.08898213654094426,
+        "ba_l10_extremity_mean": 0.07599910714285714
+      }
+    ]
+  },
+  "h3": {
+    "n_total": 338,
+    "n_default_fill": 8,
+    "pct_default_fill_overall": 0.023668639053254437,
+    "by_tercile": [
+      {
+        "tercile": 1,
+        "n": 113,
+        "n_default_fill": 5,
+        "pct_default_fill": 0.04424778761061947,
+        "default_fill_win_rate": 0.2,
+        "non_default_win_rate": 0.7777777777777778
+      },
+      {
+        "tercile": 2,
+        "n": 113,
+        "n_default_fill": 2,
+        "pct_default_fill": 0.017699115044247787,
+        "default_fill_win_rate": 1.0,
+        "non_default_win_rate": 0.6216216216216216
+      },
+      {
+        "tercile": 3,
+        "n": 112,
+        "n_default_fill": 1,
+        "pct_default_fill": 0.008928571428571428,
+        "default_fill_win_rate": 1.0,
+        "non_default_win_rate": 0.5675675675675675
+      }
+    ]
+  },
+  "h4": {
+    "overall_pct_batting_slot_zero": 0.9792899408284024,
+    "by_tercile": [
+      {
+        "tercile": 1,
+        "n": 113,
+        "pct_batting_slot_zero": 0.9380530973451328,
+        "ab_remaining_mean": 2.1327433628318584,
+        "ab_remaining_distribution": {
+          "1": 22,
+          "2": 56,
+          "3": 33,
+          "4": 2
+        }
+      },
+      {
+        "tercile": 2,
+        "n": 113,
+        "pct_batting_slot_zero": 1.0,
+        "ab_remaining_mean": 2.256637168141593,
+        "ab_remaining_distribution": {
+          "1": 18,
+          "2": 48,
+          "3": 47
+        }
+      },
+      {
+        "tercile": 3,
+        "n": 112,
+        "pct_batting_slot_zero": 1.0,
+        "ab_remaining_mean": 2.232142857142857,
+        "ab_remaining_distribution": {
+          "1": 28,
+          "2": 30,
+          "3": 54
+        }
+      }
+    ]
+  },
+  "h5": {
+    "n_scored": 338,
+    "vig_stats": {
+      "mean": 0.062218934911242606,
+      "stdev": 0.05404789058973994,
+      "min": 0.01,
+      "max": 0.3,
+      "n_zero_or_missing": 0
+    },
+    "backtest_formula_terciles": [
+      {
+        "tercile": 1,
+        "n": 113,
+        "win_rate": 0.7522123893805309,
+        "edge_mean": 0.017552462389380533
+      },
+      {
+        "tercile": 2,
+        "n": 113,
+        "win_rate": 0.6283185840707964,
+        "edge_mean": 0.08888000442477874
+      },
+      {
+        "tercile": 3,
+        "n": 112,
+        "win_rate": 0.5714285714285714,
+        "edge_mean": 0.2113433482142857
+      }
+    ],
+    "live_parity_terciles": [
+      {
+        "tercile": 1,
+        "n": 113,
+        "win_rate": 0.6902654867256637,
+        "edge_mean": 0.05928752654867257
+      },
+      {
+        "tercile": 2,
+        "n": 113,
+        "win_rate": 0.6371681415929203,
+        "edge_mean": 0.1209705796460177
+      },
+      {
+        "tercile": 3,
+        "n": 112,
+        "win_rate": 0.625,
+        "edge_mean": 0.2733764084821428
+      }
+    ],
+    "n_reassigned_terciles": 119,
+    "pct_reassigned": 0.3520710059171598,
+    "backtest_formula_verdict": {
+      "verdict": "ANTI-PREDICTIVE",
+      "n": 338,
+      "n_pos_edge": 317,
+      "n_neg_edge": 21,
+      "winrate_edge_pos": 0.637223974763407,
+      "winrate_edge_neg": 0.8571428571428571,
+      "fisher_odds_ratio": 0.2927536231884058,
+      "fisher_pvalue": 0.05628324824711137,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "edge_min": -0.016831250000000016,
+          "edge_max": 0.04952774999999997,
+          "edge_mean": 0.01726079910714286,
+          "winrate": 0.75,
+          "pnl": 3.230200000000001
+        },
+        {
+          "tercile": 2,
+          "n": 113,
+          "edge_min": 0.05021875,
+          "edge_max": 0.12462174999999998,
+          "edge_mean": 0.0882209402654867,
+          "winrate": 0.6371681415929203,
+          "pnl": 4.589700000000001
+        },
+        {
+          "tercile": 3,
+          "n": 113,
+          "edge_min": 0.124693,
+          "edge_max": 0.70895175,
+          "edge_mean": 0.2105765309734513,
+          "winrate": 0.5663716814159292,
+          "pnl": 8.590900000000001
+        }
+      ]
+    },
+    "live_parity_verdict": {
+      "verdict": "INCONCLUSIVE",
+      "n": 338,
+      "n_pos_edge": 338,
+      "n_neg_edge": 0,
+      "winrate_edge_pos": 0.650887573964497,
+      "winrate_edge_neg": NaN,
+      "fisher_odds_ratio": 1.0,
+      "fisher_pvalue": 1.0,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "edge_min": 0.04082174999999998,
+          "edge_max": 0.08405000000000003,
+          "edge_mean": 0.05905695089285715,
+          "winrate": 0.6964285714285714,
+          "pnl": 10.564500000000006
+        },
+        {
+          "tercile": 2,
+          "n": 113,
+          "edge_min": 0.08511200000000002,
+          "edge_max": 0.16110300000000002,
+          "edge_mean": 0.12027049115044249,
+          "winrate": 0.6283185840707964,
+          "pnl": 0.8509
+        },
+        {
+          "tercile": 3,
+          "n": 113,
+          "edge_min": 0.16422200000000003,
+          "edge_max": 0.8117327499999999,
+          "edge_mean": 0.2724104402654866,
+          "winrate": 0.6283185840707964,
+          "pnl": 4.995400000000003
+        }
+      ]
+    }
+  }
+}

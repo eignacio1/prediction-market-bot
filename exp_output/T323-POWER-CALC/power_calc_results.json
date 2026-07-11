@@ -1,0 +1,54 @@
+{
+  "T1": {
+    "band": "T1",
+    "raw_n": 214,
+    "clean_n": 65,
+    "status": "COMPUTED",
+    "mean_pnl_per_bet": 1.053006153846154,
+    "stdev_pnl_per_bet": 9.286658331695477,
+    "alpha": 0.05,
+    "power": 0.95,
+    "z_alpha": 1.644853625133699,
+    "z_beta": 1.644853625133699,
+    "n_star": 842,
+    "gap_to_n_star": 777,
+    "cadence_bets_per_week": 151.59508185480794,
+    "cadence_span_days": 3.001416631944444,
+    "cadence_immature": true,
+    "eta_weeks": 5.1254960945512815,
+    "met": false
+  },
+  "T2": {
+    "band": "T2",
+    "raw_n": 2,
+    "clean_n": 0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
+  },
+  "T3": {
+    "band": "T3",
+    "raw_n": 0,
+    "clean_n": 0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
+  },
+  "T4M-PROJ": {
+    "band": "T4M-PROJ",
+    "raw_n": 515,
+    "clean_n": 271,
+    "status": "COMPUTED",
+    "mean_pnl_per_bet": 0.04664317343173432,
+    "stdev_pnl_per_bet": 0.4099138985692757,
+    "alpha": 0.05,
+    "power": 0.95,
+    "z_alpha": 1.644853625133699,
+    "z_beta": 1.644853625133699,
+    "n_star": 836,
+    "gap_to_n_star": 565,
+    "cadence_bets_per_week": 475.32392812331074,
+    "cadence_span_days": 3.99096255787037,
+    "cadence_immature": true,
+    "eta_weeks": 1.1886630707415704,
+    "met": false
+  }
+}

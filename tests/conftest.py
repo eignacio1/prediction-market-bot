@@ -1,7 +1,7 @@
 """Global pytest configuration — WINDOW B (B5), full-suite determinism.
 
 Two concerns, both about reproducibility of test *results* across reruns and
-across machines, not about import resolution (that's T-282/GG-104's
+across machines, not about import resolution (that's T-282/GG-109's
 `pythonpath = ["src"]` fix in `pyproject.toml`):
 
 1. Hypothesis profile — single source of truth. `test_t280_property_based_

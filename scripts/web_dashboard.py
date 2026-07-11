@@ -46,10 +46,19 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
+
+_src = Path(__file__).parent.parent / "src"
+if str(_src) not in sys.path:
+    sys.path.insert(0, str(_src))
+try:
+    from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # T-321
+except Exception:
+    CURRENT_LOGIC_EPOCH = None
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Configuration
@@ -134,6 +143,7 @@ def _load_all_data() -> dict:
         "pipe_log":     _load_tail(d / "paper_mlb_cron.log",  n=50),
         "pipe_mtimes":  _pipe_mtimes(d),
         "server_time":  datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "current_logic_epoch": CURRENT_LOGIC_EPOCH,  # T-321
     }
 
 
@@ -327,6 +337,14 @@ tr:hover td{background:#161b22}
   <div class="pbar-sep"></div>
   <div class="metric"><div class="metric-lbl"><span class="b1">T1</span> P&amp;L</div><div class="metric-val" id="m-t1pnl">—</div></div>
   <div class="metric"><div class="metric-lbl"><span class="b4">T4</span> P&amp;L</div><div class="metric-val" id="m-t4pnl">—</div></div>
+</div>
+
+<!-- Clean-logic provenance (T-320/T-321): raw_n vs clean_n per band -->
+<div class="band-row" id="clean-n-row" style="display:flex">
+  <span>CLEAN-LOGIC (epoch <span id="cn-epoch">—</span>):</span>
+  <span><span class="b1">T1</span> raw=<span id="cn-t1-raw">—</span> clean=<span id="cn-t1-clean">—</span></span>
+  <span>T2 raw=<span id="cn-t2-raw">—</span> clean=<span id="cn-t2-clean">—</span></span>
+  <span><span class="b4">T4M-PROJ</span> raw=<span id="cn-t4m-raw">—</span> clean=<span id="cn-t4m-clean">—</span></span>
 </div>
 
 <!-- Row 1: Live Positions + Today's Bets -->
@@ -543,6 +561,23 @@ function renderPortfolio(data){
   document.getElementById('m-resolved').textContent=total;
   document.getElementById('m-t1pnl').innerHTML=pnl(t1Pnl);
   document.getElementById('m-t4pnl').innerHTML=pnl(t4Pnl);
+
+  // T-320/T-321: clean-logic provenance — raw_n vs clean_n per band
+  const curEpoch=data.current_logic_epoch;
+  document.getElementById('cn-epoch').textContent=curEpoch??'?';
+  const cleanCount=(rows,band)=>{
+    const bandRows=rows.filter(p=>p.band===band);
+    return [bandRows.length, bandRows.filter(p=>p.logic_epoch===curEpoch).length];
+  };
+  const [t1Raw,t1Clean]=cleanCount(t1Closed,'T1');
+  const [t2Raw,t2Clean]=cleanCount(t1Closed,'T2');
+  const [t4mRaw,t4mClean]=cleanCount(t4Closed,'T4M-PROJ');
+  document.getElementById('cn-t1-raw').textContent=t1Raw;
+  document.getElementById('cn-t1-clean').textContent=t1Clean;
+  document.getElementById('cn-t2-raw').textContent=t2Raw;
+  document.getElementById('cn-t2-clean').textContent=t2Clean;
+  document.getElementById('cn-t4m-raw').textContent=t4mRaw;
+  document.getElementById('cn-t4m-clean').textContent=t4mClean;
 }
 
 function renderLivePositions(data){

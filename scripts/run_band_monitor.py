@@ -48,6 +48,21 @@ Run:
       --t4-ledger logs/t4_mlb_resolved_ledger.jsonl
   python3 scripts/run_band_monitor.py --ci    # exit 1 iff any band alarms; warn-only,
                                                # never a kill signal (T-257)
+
+T-322 EXTENSION (2026-07-10, Workstream B) — clean_n only
+-----------------------------------------------------------
+T-320/T-321 added `logic_epoch`/`approval_commit` write-path provenance so a
+resolved position can be identified as opened under CURRENT_LOGIC_EPOCH (i.e.
+after the GG-087/GG-077 write-path bugs were fixed) versus an earlier,
+contaminated epoch. This monitor's verdict now runs on clean_n only — records
+whose `logic_epoch` does not match CURRENT_LOGIC_EPOCH (including records with
+no `logic_epoch` at all, i.e. pre-T-320 history) are excluded from every
+statistic, never silently blended in. `raw_n` is still reported alongside
+`clean_n` per band for transparency, but raw_n never drives a verdict. Also
+adds `brier_murphy` (full Brier + Murphy REL/RES/UNC decomposition) and the
+underlying `reliability` curve rows to the per-band result, since T-322's exit
+criterion explicitly asks for "reliability curve + Brier score", which the
+pre-T-322 version only partially covered via `ece`/`calib_fit_ci`.
 """
 from __future__ import annotations
 
@@ -60,8 +75,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_exp017_mlb as e17                 # noqa: E402  MLBPosition, compute_fee_net_edge, edge_monotonicity
 import run_exp017b_decomp_mlb as d17b        # noqa: E402  band-tagged T1/T2/T3 loader
-import run_exp017c_calibration_mlb as c17c   # noqa: E402  calib_fit_ci, ece
+import run_exp017c_calibration_mlb as c17c   # noqa: E402  calib_fit_ci, ece, brier_murphy, reliability
 import ab_harness as abh                     # noqa: E402  metrics (EV/bet, $/staked)
+
+_SRC = Path(__file__).resolve().parent.parent / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
+from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
 
 MIN_N = 30  # ab_harness.py band-level floor (GG-098: no acting on ~11 bets)
 BOOK_BANDS = ("T1", "T2", "T3")
@@ -159,6 +179,17 @@ def to_mlb_positions(recs: list[dict]) -> list[e17.MLBPosition]:
     return positions
 
 
+# ── clean_n filtering (T-322) ────────────────────────────────────────────────────
+
+def filter_clean(recs: list[dict]) -> list[dict]:
+    """Keep only records whose write-path is CURRENT_LOGIC_EPOCH (T-320/T-321).
+
+    Records with no `logic_epoch` at all (pre-T-320 history) are excluded by
+    the same `!=` comparison — there is no separate null-handling branch,
+    matching the governance hook's `_band_counts()` behavior exactly."""
+    return [r for r in recs if r.get("logic_epoch") == CURRENT_LOGIC_EPOCH]
+
+
 # ── per-band analysis ────────────────────────────────────────────────────────────
 
 def analyze_band(
@@ -169,33 +200,45 @@ def analyze_band(
     seed: int = 17,
     alpha: float = 0.10,
 ) -> dict:
-    n = len(recs)
-    if n < MIN_N:
+    raw_n = len(recs)
+    clean_recs = filter_clean(recs)
+    clean_n = len(clean_recs)
+    if clean_n < MIN_N:
         return {
             "band": band,
             "verdict": "UNDERPOWERED",
-            "n": n,
+            "raw_n": raw_n,
+            "clean_n": clean_n,
+            "n": clean_n,
             "min_n": MIN_N,
-            "reason": f"n={n} < MIN_N={MIN_N} — GG-098 discipline: too few "
-                      f"resolved bets to return a verdict, not just a low-confidence one.",
+            "reason": f"clean_n={clean_n} < MIN_N={MIN_N} (raw_n={raw_n}) — GG-098 "
+                      f"discipline: too few CURRENT_LOGIC_EPOCH resolved bets to "
+                      f"return a verdict, not just a low-confidence one. Pre-fix-epoch "
+                      f"bets are excluded, never blended in to reach the floor.",
             "anti_predictive_alarm": False,
         }
 
-    positions = to_mlb_positions(recs)
+    positions = to_mlb_positions(clean_recs)
     mono = e17.edge_monotonicity(positions, alpha=alpha)
     rng = random.Random(seed)
-    fit = c17c.calib_fit_ci(recs, boot, rng)
-    ece_val = c17c.ece(recs, bins)
-    m = abh.metrics(recs)
+    fit = c17c.calib_fit_ci(clean_recs, boot, rng)
+    ece_val = c17c.ece(clean_recs, bins)
+    bm = c17c.brier_murphy(clean_recs, bins)
+    rel_curve = c17c.reliability(clean_recs, bins)
+    m = abh.metrics(clean_recs)
     anti_predictive_alarm = mono["verdict"] == e17.E_ANTI
 
     return {
         "band": band,
         "verdict": "ANALYZED",
-        "n": n,
+        "raw_n": raw_n,
+        "clean_n": clean_n,
+        "n": clean_n,
         "edge_monotonicity": mono,
         "calibration": fit,
         "ece": ece_val,
+        "brier_murphy": bm,
+        "reliability_curve": rel_curve,
         "ev_per_bet_usd": m["ev_per_bet_usd"],
         "pnl_per_dollar": m["pnl_per_dollar"],
         "win_rate": m["win_rate"],
@@ -236,22 +279,49 @@ def run_all_bands(
 
 # ── reporting ────────────────────────────────────────────────────────────────────
 
+def build_summary(results: dict[str, dict]) -> dict[str, dict]:
+    """T-322 exit criterion: one compact {band -> {verdict, p, brier, n}} emission
+    for the current epoch (clean_n only). UNDERPOWERED/NO_DATA bands still get an
+    entry — p/brier are null rather than the band being silently omitted, so a
+    thin band is visible, not invisible."""
+    summary: dict[str, dict] = {}
+    for band, r in results.items():
+        verdict = r.get("verdict")
+        if verdict == "ANALYZED":
+            summary[band] = {
+                "verdict": r["edge_monotonicity"]["verdict"],
+                "p": r["edge_monotonicity"].get("fisher_pvalue"),
+                "brier": r["brier_murphy"]["brier_full"],
+                "n": r["clean_n"],
+            }
+        else:
+            summary[band] = {
+                "verdict": verdict,
+                "p": None,
+                "brier": None,
+                "n": r.get("clean_n", r.get("n", 0)),
+            }
+    return summary
+
+
 def _print_report(results: dict[str, dict]) -> None:
     print("=" * 96)
-    print("T-255 PER-BAND ANTI-PREDICTIVE + CALIBRATION MONITOR  (GG-099)")
+    print("T-255/T-322 PER-BAND ANTI-PREDICTIVE + CALIBRATION MONITOR  (GG-099, clean_n only)")
     print("=" * 96)
     for band, r in results.items():
         verdict = r["verdict"]
         if verdict == "UNDERPOWERED":
-            print(f"\n[{band}] UNDERPOWERED  n={r['n']} (< MIN_N={r['min_n']}) — {r['reason']}")
+            print(f"\n[{band}] UNDERPOWERED  clean_n={r['clean_n']} raw_n={r['raw_n']} "
+                  f"(clean_n < MIN_N={r['min_n']}) — {r['reason']}")
             continue
         if verdict == "NO_DATA":
             print(f"\n[{band}] NO_DATA — {r['reason']}")
             continue
         mono = r["edge_monotonicity"]
         fit = r["calibration"]
+        bm = r["brier_murphy"]
         alarm = " *** ANTI_PREDICTIVE WARNING ***" if r["anti_predictive_alarm"] else ""
-        print(f"\n[{band}] n={r['n']}{alarm}")
+        print(f"\n[{band}] clean_n={r['clean_n']}  (raw_n={r['raw_n']}){alarm}")
         print(f"  edge_monotonicity: {mono['verdict']}  "
               f"(fisher_p={mono.get('fisher_pvalue', float('nan')):.4f}, "
               f"n_pos_edge={mono.get('n_pos_edge')}, n_neg_edge={mono.get('n_neg_edge')}, "
@@ -259,6 +329,9 @@ def _print_report(results: dict[str, dict]) -> None:
               f"winrate_neg={mono.get('winrate_edge_neg', float('nan')):.3f})")
         print(f"  calibration: slope_b={fit['slope_b']:.3f} b_ci={[round(x, 3) for x in fit['b_ci']]} "
               f"({fit['interpretation']}, excludes_1={fit['b_excludes_1']})  ECE={r['ece']:.4f}")
+        print(f"  brier: full={bm['brier_full']:.4f} binned={bm['brier_binned']:.4f} "
+              f"REL={bm['reliability']:.4f} RES={bm['resolution']:.4f} UNC={bm['uncertainty']:.4f} "
+              f"base_rate={bm['base_rate']:.3f}")
         print(f"  EV/bet=${r['ev_per_bet_usd']:+.4f}  $/staked={r['pnl_per_dollar']*100:+.2f}%  "
               f"win_rate={r['win_rate']:.3f}  total_pnl=${r['total_pnl']:+.2f}")
     print("\n" + "=" * 96)
@@ -270,13 +343,16 @@ def _print_report(results: dict[str, dict]) -> None:
     else:
         print("No band flagged ANTI-PREDICTIVE this run.")
     print("=" * 96)
+    summary = build_summary(results)
+    print("\nSUMMARY {band -> verdict, p, brier, n} (current epoch, clean_n only):")
+    print(json.dumps(summary, indent=2))
 
 
 # ── CLI ──────────────────────────────────────────────────────────────────────────
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description="T-255 per-band anti-predictive + calibration monitor (GG-099)",
+        description="T-255/T-322 per-band anti-predictive + calibration monitor (GG-099, clean_n only)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
@@ -303,9 +379,12 @@ def main(argv=None) -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     out_json = args.out / "band_monitor_results.json"
     out_json.write_text(json.dumps(results, indent=2))
+    summary_json = args.out / "band_monitor_summary.json"
+    summary_json.write_text(json.dumps(build_summary(results), indent=2))
 
     _print_report(results)
     print(f"\nWrote {out_json}")
+    print(f"Wrote {summary_json}")
 
     if args.ci:
         any_alarm = any(r.get("anti_predictive_alarm") for r in results.values())

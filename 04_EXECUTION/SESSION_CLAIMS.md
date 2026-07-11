@@ -28,3 +28,17 @@
 | 2026-07-09T00:07:58Z | T-300, ADR-0041 | Window A: context/token optimization infra — ADR-0041, T-300 two-tier context culling |
 | 2026-07-09T00:08:29Z | T-280 (new), TBD for B3-B6 | Window B: math rigor hardening — log-space Bayesian updates, Kelly/Brier stability, cross-impl invariants, property tests, calibration diagnostics |
 | 2026-07-09T01:00Z (closure note) | GG-102 / T-261 | **CLOSED — fully resolved end-to-end.** Continuing the 2026-07-08T00:42Z-equivalent claim above (that sandbox had no push credentials): committed and pushed the drafted guard fix (`41e46b2`), diagnosed a second live problem (3 tracked files live-rewritten on the VPS, same shape as T-171), got operator sign-off to untrack them, self-caught and corrected a `git commit <pathspec>` no-op (`b918f4b` → `9b06a31`), reconciled VPS content via backup/restore with `md5sum` verification, and confirmed green via a manual `gh workflow run deploy.yml` (run `28984294745`, `success`). GG-102 marked RESOLVED in `GOVERNANCE_GAP_LOG.md`; `DECISION_LOG.md` and `TODO_NEXT.md` (T-261 row) both updated 2026-07-09. No further action needed. |
+| 2026-07-10T15:11:24Z | T-320, T-321 | Workstream A: logic-epoch provenance (T-320 logic-epoch register, T-321 backfill + clean-n reporting) |
+| 2026-07-10T15:11:35Z | T-322,T-323,T-324 | Workstream B: edge-sign resolution (T-322/T-323/T-324) |
+| 2026-07-10T15:18:30Z | T-325,T-326,T-327 | Workstream C: shift-correctness-left (T-325 invariant tests, T-326 golden-replay, T-327 pre-deploy gate) -- switched from Workstream B, which is blocked on concurrent Workstream A |
+| 2026-07-10T19:21:00Z | T-322 | T-322 (B1): per-band anti-predictive + calibration monitor on clean_n only, extends T-255 line |
+| 2026-07-11T01:27:46Z | GG-105 | GG-105 DS-review escalation: select diagnostic from T324_T1_VS_T4_DIVERGENCE_MEMO |
+| 2026-07-11T01:30:49Z | T-329 | T-329: GG-105 diagnostic 1 — size-weighted tercile re-run on T4M-PROJ clean_n |
+| 2026-07-11T01:40:03Z | T-330, T-331 | Workstream D: ledger-driven MC forward projection + bootstrap CI (D1/D2) |
+| 2026-07-11T01:48:04Z | T-332 | T-332: GG-105 diagnostic 2 — game-state segmentation (inning/score-diff/ab_remaining) on T4M-PROJ clean_n |
+| 2026-07-11T02:14:38Z | T-324 | T-324 (B3): T1-vs-T4 divergence memo + audit/hygiene sweep |
+| 2026-07-11T02:15:53Z | T-333 | T-333: scope GG-105 diagnostic 3 (clean_n re-run cadence) + edge-formula audit follow-on |
+| 2026-07-11T06:34:25Z | T-328, T-333 | T-328 deploy.yml permanent fix (GG-104) + T-333 Component B edge-formula audit (GG-105) |
+| 2026-07-11T06:39:36Z | T-334, T-335 | Workstream E: MEMORY_BANK snapshot consolidation + narrative guard (T-334/E1); worktree-isolation-default + session-guard warning (T-335/E2). Renumbered from plan doc's stale T-330/T-331 (E1/E2) — those IDs already claimed+merged for Workstream D (ledger-driven MC forward projection, 81cfb20/563c31d). |
+| 2026-07-11T07:35:47Z | TBD | session-start protocol run / general audit, no task assigned yet |
+| 2026-07-11T18:00:10Z | T-336,T-337 | T-336/T-337: kill live-data regression anchors, full-suite regression cert |

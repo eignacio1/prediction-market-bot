@@ -129,6 +129,8 @@ When the architecture is correct, adding NFL means: new C1 data module, new C2 f
 
 This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has run). It is a G6 blocker. Check `03_DECISIONS/GOVERNANCE_GAP_LOG.md` for current status and the live n-count.
 
+**Added 2026-07-10 (T-320/T-321) — the n-counts above (n=151, n=169) are raw counts and have not been re-run against `clean_n` (bets resolved entirely under `CURRENT_LOGIC_EPOCH`, i.e. excluding positions opened before the GG-077/GG-087 write-path fixes).** `src/prediction_market_bot/logic_epoch.py` and the governance hook now report both per band — live post-backfill read (2026-07-10): `MLB T1: raw_n=214 clean_n=65, MLB T2: raw_n=2 clean_n=0, MLB T4M-PROJ: raw_n=159 clean_n=159`. Both bands still clear the G6 30-bet floor on `clean_n` alone, but nobody has re-run EXP-017/Tier-1/Tier-2 adequacy specifically against the clean-only cohort — do not assume the DIRECTIONAL_POSITIVE verdict above transfers unchanged to a clean_n-only re-run; that re-run is future work, not yet done.
+
 ### Gate structure
 
 The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 requires 30 resolved paper bets with positive P&L, commercial validation (EXP-017), and DS sign-off (ADR-0005) before live capital is authorized. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
@@ -161,14 +163,14 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 
 **Why this exists:** two failure modes, both real and both observed. **(a) Narrative conflation** — on 2026-07-03 a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative (GG-082). **(b) Working-tree collision** — on 2026-07-08, two sessions running in the *same physical working tree* meant one session's `git stash` swept the other's uncommitted edits; it recovered only because that session chose `stash` over a destructive op (GG-101). A `reset --hard` / `checkout --` / `clean -fd` would have caused permanent, unrecoverable loss. This step exists to make both modes structurally hard, not just visible.
 
-**0a — Launch isolated (the real fix for GG-101).** If there is any chance another session is or will be active, do not `cd` into the shared `main` tree. Launch an isolated worktree:
+**0a — Launch isolated (the real fix for GG-101; DEFAULT, not conditional — T-335/E2).** Every session launches into its own isolated worktree unless a specific, statable reason rules it out (e.g. a one-line doc fix the operator has explicitly asked to happen directly on `main`). "I don't think another session is active right now" is not such a reason — GG-101's near-miss happened precisely because that assumption was wrong in the moment. Do not `cd` into the shared `main` tree by default. Launch an isolated worktree:
 
 ```bash
 scripts/new_session_worktree.sh "<short-focus-slug>"    # e.g. gg095-brier-ladder
 # then cd into the printed worktree path — you now have your own branch + checkout
 ```
 
-Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree.
+Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree. If you are on `main`, `.claude/hooks/session_guard.sh` (0b below) will say so explicitly and, when it detects a live GG-101 near-miss condition (another session claimed work in the last 6h while you're on shared `main`), will warn accordingly — treat that warning as a prompt to switch to a worktree before doing anything further, not just informational text.
 
 **0b — Run the guard and claim atomically.** Inside your session (worktree or shared tree):
 
@@ -241,10 +243,12 @@ Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) befor
 **Root cause of GG-049:** The prior three steps check code and documents but never check whether active cron pipelines are actually producing bets. T1 MLB ran 0 bets for 2+ game days (June 27–28) without the protocol detecting it. This step is mandatory — it is the only place where a dark pipeline becomes immediately visible.
 
 ```bash
-ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]' /opt/prediction-market-bot/logs/paper_cron.log 2>/dev/null | tail -6"
+ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]|No .* markets available' /opt/prediction-market-bot/logs/paper_early_cron.log /opt/prediction-market-bot/logs/paper_late_cron.log 2>/dev/null | tail -6"
 ```
 
 **What to look for:** Any run that shows `0 players in live MLB markets` during MLB season (March–October) is a signal failure — treat it as a Q6 concern and do not proceed without diagnosing it. Expected healthy output: ≥1 player matched per run when games are scheduled that day.
+
+**GG-108 correction (2026-07-11):** the NBA command above previously targeted `logs/paper_cron.log`, a filename that no longer exists on the VPS — NBA's single-window cron was split into two windows at some point (`paper_early_cron.log` at 18:00 UTC, `paper_late_cron.log` at 01:30 UTC) and the reference here was never updated. A grep against a nonexistent file returns empty output, which is visually indistinguishable from "0 games today" — so this check had been a silent no-op for NBA specifically, catching nothing, for an unknown number of sessions. Corrected to grep both real files and to also match `No .* markets available` (the actual off-season log line) so a healthy dark day is visibly confirmed rather than merely absent of output. If this file ever grows a third window, update this command again — do not let it drift a second time.
 
 **Semantic oracle checks (added Session 101):** These two lines surface silent pipeline failures immediately. Zero is healthy for both on a normal game day.
 
