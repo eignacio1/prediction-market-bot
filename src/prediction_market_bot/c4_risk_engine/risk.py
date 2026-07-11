@@ -99,6 +99,14 @@ DEFAULT_KELLY_FRACTION: float = 0.25
 # Minimum edge required to enter a position (even after Kelly sizing)
 MIN_EDGE_TO_APPROVE: float = 0.04  # ADR-0020: raised 0.02→0.04; filters sub-threshold NO bets
 
+# Kelly boundary guard margin (T-280/B1). market_implied_prob exactly at 0.0/1.0 was
+# already excluded, but that leaves values arbitrarily close to the boundary (e.g.
+# 0.999999) able to produce a near-zero Kelly odds denominator `b` — mathematically
+# finite, but precision-fragile. Real Kalshi prices are cent-quantized (never within
+# this margin of 0/1), so this has no effect on production behavior; it only guards
+# against a future caller passing a higher-precision or interpolated probability.
+_MIP_EPSILON: float = 1e-6
+
 # Maximum daily loss as a fraction of initial bankroll (ADR-0012).
 # 15% fires before the 20% drawdown kill switch — restoring two independent kill switches.
 # Recalibrate at G6 when live bankroll is set.
@@ -174,7 +182,7 @@ def _compute_kelly_size(
 
     Returns 0.0 if Kelly fraction is negative (no edge on this side).
     """
-    if market_implied_prob <= 0.0 or market_implied_prob >= 1.0:
+    if market_implied_prob <= _MIP_EPSILON or market_implied_prob >= 1.0 - _MIP_EPSILON:
         return 0.0
 
     b = (1.0 - market_implied_prob) / market_implied_prob

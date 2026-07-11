@@ -1,5 +1,7 @@
 # Session Handoff — 2026-07-09T01:30Z
 
+**Note:** During the Window A/Window B merge reconciliation (2026-07-10), this filename was found to be an add/add collision — Window B had independently created a distinct handoff under the identical timestamp name in its isolated worktree. Window B's version was moved to `SESSION_HANDOFF_20260709_0130_WindowB.md` (content unchanged). This file retains the original GG-102/T-261 closeout handoff, unchanged, since it was already referenced from `main`.
+
 **Trigger:** Task complete — `/session-end` invoked to close out the GG-102/T-261 fix session.
 **Last commit:** `045f6d2` (main) — pushed to GitHub. **Not yet deployed to VPS this session** (no `src/` or runtime code touched — pure git-hygiene/CI fix + navigation docs, no VPS-side change required).
 

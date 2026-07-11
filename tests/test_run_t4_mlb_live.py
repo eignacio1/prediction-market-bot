@@ -81,6 +81,65 @@ class TestBinomialPmf:
 
 
 # ---------------------------------------------------------------------------
+# T-280/B1: _binomial_pmf log-space correctness — cross-checked against a
+# naive (non-log) reference, and stressed at edge cases the naive form
+# handles badly (small p, large n) to lock in why the log-space form
+# (math.lgamma + single exp() at the end, run_t4_mlb_live.py:572-581) is
+# the correct implementation, not just an untested one.
+# ---------------------------------------------------------------------------
+
+
+def _binomial_pmf_naive(n: int, k: int, p: float) -> float:
+    """Direct (non-log) reference: C(n,k) * p**k * (1-p)**(n-k)."""
+    if k < 0 or k > n:
+        return 0.0
+    if p <= 0.0:
+        return 1.0 if k == 0 else 0.0
+    if p >= 1.0:
+        return 1.0 if k == n else 0.0
+    return math.comb(n, k) * (p ** k) * ((1.0 - p) ** (n - k))
+
+
+class TestBinomialPmfLogSpaceStability:
+    @pytest.mark.parametrize("n", [1, 2, 4, 6, 8])
+    @pytest.mark.parametrize("p", [0.01, 0.15, 0.30, 0.50, 0.75, 0.99])
+    def test_log_space_agrees_with_naive_over_full_support(self, n, p):
+        """On the realistic domain for this function (ab_remaining is a
+        handful of at-bats in one MLB game), the log-space PMF must match
+        a direct pow-based reference at every k, not just spot values."""
+        for k in range(n + 1):
+            log_space = runner._binomial_pmf(n, k, p)
+            naive = _binomial_pmf_naive(n, k, p)
+            assert log_space == pytest.approx(naive, abs=1e-9)
+
+    def test_stable_at_large_n_small_p_where_naive_form_is_fragile(self):
+        """Beyond this function's real domain, but proves the log-space
+        implementation degrades gracefully (no NaN/negative/inf) exactly
+        where a naive pow-product form would start losing precision —
+        the property B1 originally set out to verify, now anchored to the
+        function that actually needs it."""
+        n, p = 200, 0.001
+        for k in (0, 1, 5, 50, 100, 200):
+            val = runner._binomial_pmf(n, k, p)
+            assert not math.isnan(val)
+            assert not math.isinf(val)
+            assert 0.0 <= val <= 1.0
+        total = sum(runner._binomial_pmf(n, k, p) for k in range(n + 1))
+        assert total == pytest.approx(1.0, abs=1e-6)
+
+    @pytest.mark.parametrize("p", [1e-9, 1e-6, 1.0 - 1e-6, 1.0 - 1e-9])
+    def test_near_boundary_p_no_domain_error(self, p):
+        """p arbitrarily close to (but not exactly) 0/1 must not hit
+        math.log(0) domain errors — the log-space form computes log(p)
+        and log(1-p) directly, unlike the p<=0.0/p>=1.0 special cases."""
+        n = 5
+        for k in range(n + 1):
+            val = runner._binomial_pmf(n, k, p)
+            assert not math.isnan(val)
+            assert 0.0 <= val <= 1.0 + 1e-9
+
+
+# ---------------------------------------------------------------------------
 # p_hits_gte_threshold — Binomial model
 # ---------------------------------------------------------------------------
 
