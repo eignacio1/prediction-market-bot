@@ -32,3 +32,4 @@
 | 2026-07-10T15:11:35Z | T-322,T-323,T-324 | Workstream B: edge-sign resolution (T-322/T-323/T-324) |
 | 2026-07-10T15:18:30Z | T-325,T-326,T-327 | Workstream C: shift-correctness-left (T-325 invariant tests, T-326 golden-replay, T-327 pre-deploy gate) -- switched from Workstream B, which is blocked on concurrent Workstream A |
 | 2026-07-10T19:21:00Z | T-322 | T-322 (B1): per-band anti-predictive + calibration monitor on clean_n only, extends T-255 line |
+| 2026-07-11T01:27:46Z | GG-105 | GG-105 DS-review escalation: select diagnostic from T324_T1_VS_T4_DIVERGENCE_MEMO |
