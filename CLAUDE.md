@@ -163,14 +163,14 @@ For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state
 
 **Why this exists:** two failure modes, both real and both observed. **(a) Narrative conflation** — on 2026-07-03 a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative (GG-082). **(b) Working-tree collision** — on 2026-07-08, two sessions running in the *same physical working tree* meant one session's `git stash` swept the other's uncommitted edits; it recovered only because that session chose `stash` over a destructive op (GG-101). A `reset --hard` / `checkout --` / `clean -fd` would have caused permanent, unrecoverable loss. This step exists to make both modes structurally hard, not just visible.
 
-**0a — Launch isolated (the real fix for GG-101).** If there is any chance another session is or will be active, do not `cd` into the shared `main` tree. Launch an isolated worktree:
+**0a — Launch isolated (the real fix for GG-101; DEFAULT, not conditional — T-335/E2).** Every session launches into its own isolated worktree unless a specific, statable reason rules it out (e.g. a one-line doc fix the operator has explicitly asked to happen directly on `main`). "I don't think another session is active right now" is not such a reason — GG-101's near-miss happened precisely because that assumption was wrong in the moment. Do not `cd` into the shared `main` tree by default. Launch an isolated worktree:
 
 ```bash
 scripts/new_session_worktree.sh "<short-focus-slug>"    # e.g. gg095-brier-ladder
 # then cd into the printed worktree path — you now have your own branch + checkout
 ```
 
-Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree.
+Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree. If you are on `main`, `.claude/hooks/session_guard.sh` (0b below) will say so explicitly and, when it detects a live GG-101 near-miss condition (another session claimed work in the last 6h while you're on shared `main`), will warn accordingly — treat that warning as a prompt to switch to a worktree before doing anything further, not just informational text.
 
 **0b — Run the guard and claim atomically.** Inside your session (worktree or shared tree):
 
