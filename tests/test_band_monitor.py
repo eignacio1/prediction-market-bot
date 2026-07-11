@@ -7,7 +7,8 @@ the MIN_N=30 UNDERPOWERED gate (GG-098) — now applied to clean_n, not raw_n
 a synthetic "NO-majority" fixture that would fool a naive YES-frame-only edge
 computation but must NOT fool this monitor (the GG-100 inversion, closed for
 this new guard per GG-054), clean_n/raw_n epoch-filtering behavior (T-322),
-and a T1 regression anchor against the real live book reproducing EXP-017's
+and a T1 regression anchor against a frozen SNAP-2026-07-11-001 book fixture
+reproducing EXP-017's
 direction-aware result on the raw pool (decoupled from analyze_band's clean_n
 filter, since the anchor's purpose is GG-100 direction-aware correctness, not
 epoch provenance).
@@ -44,7 +45,9 @@ from run_band_monitor import (
 )
 from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
 
-REAL_PORTFOLIO = Path(__file__).parent.parent / "logs" / ".vps_portfolio_cache_mlb.json"
+FROZEN_T1_ANCHOR = (
+    Path(__file__).parent / "fixtures" / "SNAP-2026-07-11-001_t1_regression_anchor_mlb_portfolio.json"
+)
 OLD_EPOCH = CURRENT_LOGIC_EPOCH - 1 if CURRENT_LOGIC_EPOCH > 1 else 99
 
 
@@ -389,32 +392,46 @@ class TestCiExitCode:
         assert rc == 1
 
 
-# ── T-258 regression anchor: real T1 book, direction-aware, matches EXP-017 ────
+# ── T-258 regression anchor: frozen T1 book, direction-aware, matches EXP-017 ──
 
-@pytest.mark.skipif(not REAL_PORTFOLIO.exists(), reason="live VPS cache not present in this checkout")
 class TestT1RegressionAnchor:
-    """Reproduces the exact GG-100 diagnosis on the real, live T1-only RAW book
-    (n=167): direction-aware Fisher p~=0.246 (NOT anti-predictive; the stored-
-    edge/GG-100 bug would have shown p=0.0236 and a false ANTI-PREDICTIVE
-    alarm), and a calibration slope CI that includes 1.
+    """Reproduces the GG-100 diagnosis on a FROZEN T1-only RAW book snapshot
+    (SNAP-2026-07-11-001, tests/fixtures/ — n=230, registered in
+    06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md): direction-aware
+    Fisher p is INCONCLUSIVE, not anti-predictive (the stored-edge/GG-100 bug
+    would instead have produced a false ANTI-PREDICTIVE alarm at a much lower
+    p), and a calibration slope CI that includes 1.
+
+    T-336/N-01: previously read the live, growing `.vps_portfolio_cache_mlb.json`
+    directly and asserted an exact Fisher p-value (0.246 at n=167). As the real
+    book accumulated volume the exact float drifted (0.359 at n=230) while the
+    verdict itself stayed stable — the anchor's dependency on a live file, not
+    the math, was the defect (Data-Snapshot Discipline violation). Fixed by
+    freezing the book into a registered fixture and asserting verdict + a
+    tolerance band around the frozen fixture's own computed p-value, not a
+    value that will silently go stale as production data grows further.
 
     T-322: deliberately bypasses analyze_band() and calls e17/c17c directly on
     the RAW pool, not the clean_n-filtered one. analyze_band() now always
     clean-filters (see TestCleanNFiltering below), so it would run on a
     different (smaller, epoch-restricted) cohort than the one this anchor's
-    magic numbers were derived against — that cohort has its own T-322 tests.
-    This anchor's job is only to prove direction-aware correctness (GG-100)
-    stays correct on raw history, independent of the epoch-provenance filter."""
+    fixture was frozen against — that cohort has its own T-322 tests. This
+    anchor's job is only to prove direction-aware correctness (GG-100) stays
+    correct on raw history, independent of the epoch-provenance filter."""
 
     def test_t1_band_reproduces_direction_aware_verdict(self):
-        by_band = load_pool_by_band(REAL_PORTFOLIO)
+        by_band = load_pool_by_band(FROZEN_T1_ANCHOR)
         t1 = by_band["T1"]
         assert len(t1) >= MIN_N
         positions = to_mlb_positions(t1)
         mono = e17.edge_monotonicity(positions, alpha=0.10)
         assert mono["verdict"] == E_INC
-        assert mono["fisher_pvalue"] == pytest.approx(0.24615828583796262, abs=0.02)
         assert mono["verdict"] != E_ANTI
+        # Frozen-fixture p-value is deterministic (0.359); assert a range, not
+        # an exact float, so a re-freeze of this fixture doesn't require
+        # hand-tuning a new magic number as long as the qualitative result
+        # (INCONCLUSIVE, comfortably above alpha=0.10) is unchanged.
+        assert 0.10 < mono["fisher_pvalue"] < 0.60
         import random as _random
         fit = c17c.calib_fit_ci(t1, 10000, _random.Random(17))
         assert fit["b_ci"][0] <= 1.0 <= fit["b_ci"][1]
