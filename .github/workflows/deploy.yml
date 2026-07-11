@@ -55,10 +55,35 @@ jobs:
                fi && \
                git pull --ff-only origin main 2>&1"
 
-      - name: Verify HEAD
+      - name: Restart persistent services (T-328/GG-104)
+        # GG-104: a successful `git pull` only proves code-on-disk updated —
+        # it says nothing about whether the long-running systemd services
+        # reading that code actually picked it up. This left t4-mlb running
+        # a stale paper_trader.py for ~2 days after the T-320/T-321 merge,
+        # caught only by manual inspection. Restart unconditionally on every
+        # deploy so staleness can no longer survive silently.
         run: |
           ssh -i ~/.ssh/id_ed25519_droplet \
               -o StrictHostKeyChecking=no \
               -o ConnectTimeout=15 \
               root@157.230.91.33 \
-              "cd /opt/prediction-market-bot && echo '--- VPS HEAD ---' && git log -1 --oneline"
+              "systemctl restart t4-mlb pmbot-web-dashboard"
+
+      - name: Verify HEAD and service freshness
+        run: |
+          ssh -i ~/.ssh/id_ed25519_droplet \
+              -o StrictHostKeyChecking=no \
+              -o ConnectTimeout=15 \
+              root@157.230.91.33 \
+              "cd /opt/prediction-market-bot && \
+               echo '--- VPS HEAD ---' && git log -1 --oneline && \
+               PULL_EPOCH=\$(date +%s) && \
+               for svc in t4-mlb pmbot-web-dashboard; do \
+                 ACTIVE_TS=\$(systemctl show \"\$svc\" --property=ActiveEnterTimestamp --value); \
+                 ACTIVE_EPOCH=\$(date -d \"\$ACTIVE_TS\" +%s 2>/dev/null || echo 0); \
+                 echo \"--- \$svc ActiveEnterTimestamp: \$ACTIVE_TS ---\"; \
+                 if [ \"\$ACTIVE_EPOCH\" -lt \"\$((PULL_EPOCH - 120))\" ]; then \
+                   echo \"ERROR: \$svc did not restart within the last 2 minutes — deploy did not take effect on the running process.\"; \
+                   exit 1; \
+                 fi; \
+               done"
