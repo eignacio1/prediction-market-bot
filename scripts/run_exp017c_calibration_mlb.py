@@ -47,7 +47,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import random
 import sys
 from pathlib import Path
@@ -56,153 +55,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_exp017_mlb as e17          # noqa: E402  fee/edge helpers
 import run_exp017b_decomp_mlb as d17b  # noqa: E402  loader + edge buckets
 
+# T-280/B4 (WINDOW B, 2026-07-09): link functions, IRLS fit, reliability,
+# Murphy decomposition, and ECE were lifted into a shared, dependency-free
+# module (src/prediction_market_bot/analytics/calibration_diagnostics.py) so
+# run_ab_experiment.py / run_band_monitor.py / ab_harness.py — none of which
+# are EXP-017C-specific — stop reaching into this script's module namespace
+# for generic calibration math. Imported (not just called) so every existing
+# `import run_exp017c_calibration_mlb as c17c; c17c.<name>(...)` call site,
+# and `tests/test_t280_cross_implementation_invariants.py`'s
+# `from run_exp017c_calibration_mlb import brier_murphy, ece`, keep working
+# unchanged — this file is now a thin re-export + EXP-017C-specific wrapper.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.analytics.calibration_diagnostics import (  # noqa: E402
+    EPS,
+    logit,
+    sigmoid,
+    irls_logistic,
+    reliability,
+    brier_murphy,
+    ece,
+    calib_fit_ci,
+)
+
 DEFAULT_PORTFOLIO = Path("logs/.vps_portfolio_cache_mlb.json")
 OUT_DIR = Path("exp_output/EXP-017C-CALIB")
-EPS = 1e-9
-
-
-# ── link functions ───────────────────────────────────────────────────────────────
-
-def logit(p: float) -> float:
-    p = min(1.0 - EPS, max(EPS, p))
-    return math.log(p / (1.0 - p))
-
-
-def sigmoid(z: float) -> float:
-    if z >= 0:
-        return 1.0 / (1.0 + math.exp(-z))
-    e = math.exp(z)
-    return e / (1.0 + e)
-
-
-# ── IRLS 2-param logistic:  event ~ a + b*logit(model_p) ─────────────────────────
-
-def irls_logistic(xs: list[float], ys: list[int], iters: int = 50) -> tuple[float, float]:
-    """Fit logit(P(y=1)) = a + b*x by iteratively reweighted least squares.
-    Returns (a, b). x is expected to be logit(model_p)."""
-    a, b = 0.0, 1.0
-    n = len(xs)
-    if n < 3:
-        return (0.0, 1.0)
-    for _ in range(iters):
-        # accumulate Fisher information (2x2) and score (2,)
-        s00 = s01 = s11 = 0.0
-        g0 = g1 = 0.0
-        for x, y in zip(xs, ys):
-            p = sigmoid(a + b * x)
-            w = max(p * (1.0 - p), EPS)
-            r = y - p
-            g0 += r
-            g1 += r * x
-            s00 += w
-            s01 += w * x
-            s11 += w * x * x
-        det = s00 * s11 - s01 * s01
-        if abs(det) < EPS:
-            break
-        # Newton step: delta = I^{-1} g
-        da = (s11 * g0 - s01 * g1) / det
-        db = (-s01 * g0 + s00 * g1) / det
-        a += da
-        b += db
-        if abs(da) < 1e-8 and abs(db) < 1e-8:
-            break
-    return (a, b)
-
-
-# ── reliability / scoring ─────────────────────────────────────────────────────────
-
-def reliability(recs: list[dict], bins: int) -> list[dict]:
-    """Equal-width model_p bins -> (n, mean_forecast, empirical_rate)."""
-    edges = [i / bins for i in range(bins + 1)]
-    rows = []
-    for i in range(bins):
-        lo, hi = edges[i], edges[i + 1]
-        grp = [r for r in recs if (lo <= r["_model_p"] < hi) or
-               (i == bins - 1 and r["_model_p"] == hi)]
-        if not grp:
-            rows.append({"bin": f"[{lo:.2f},{hi:.2f})", "n": 0})
-            continue
-        n = len(grp)
-        f = sum(r["_model_p"] for r in grp) / n
-        o = sum(r["_event"] for r in grp) / n
-        rows.append({"bin": f"[{lo:.2f},{hi:.2f})", "n": n,
-                     "mean_forecast": f, "empirical_rate": o,
-                     "gap": f - o})
-    return rows
-
-
-def brier_murphy(recs: list[dict], bins: int) -> dict:
-    """Brier score and its Murphy 3-component decomposition.
-
-    The identity REL - RES + UNC == *binned* Brier holds exactly (forecasts
-    replaced by their per-bin means). The full-resolution Brier exceeds the
-    binned Brier by the within-bin forecast variance (WBV >= 0), which is
-    reported separately rather than swept into a false residual.
-    """
-    n = len(recs)
-    o_bar = sum(r["_event"] for r in recs) / n
-    brier_full = sum((r["_model_p"] - r["_event"]) ** 2 for r in recs) / n
-    rows = reliability(recs, bins)
-    # bin membership for within-bin variance
-    def bin_of(p: float) -> int:
-        i = min(int(p * bins), bins - 1)
-        return i
-    fbar: dict[int, list[float]] = {i: [] for i in range(bins)}
-    for r in recs:
-        fbar[bin_of(r["_model_p"])].append(r["_model_p"])
-    means = {i: (sum(v) / len(v) if v else 0.0) for i, v in fbar.items()}
-    # Brier computed directly with per-bin mean forecasts (independent of the
-    # decomposition) -- REL - RES + UNC must equal THIS exactly (Murphy identity).
-    brier_binned_direct = sum(
-        (means[bin_of(r["_model_p"])] - r["_event"]) ** 2 for r in recs) / n
-    rel = res = 0.0
-    for row in rows:
-        if row["n"] == 0:
-            continue
-        nk = row["n"]
-        rel += nk * (row["mean_forecast"] - row["empirical_rate"]) ** 2
-        res += nk * (row["empirical_rate"] - o_bar) ** 2
-    rel /= n
-    res /= n
-    unc = o_bar * (1.0 - o_bar)
-    decomposition = rel - res + unc
-    return {"brier_full": brier_full, "brier_binned": brier_binned_direct,
-            "reliability": rel, "resolution": res, "uncertainty": unc,
-            "decomposition_(rel-res+unc)": decomposition,
-            "binning_gap_(full-binned)": brier_full - brier_binned_direct,
-            "base_rate": o_bar,
-            "recompose_ok": abs(decomposition - brier_binned_direct) < 1e-9}
-
-
-def ece(recs: list[dict], bins: int) -> float:
-    n = len(recs)
-    tot = 0.0
-    for row in reliability(recs, bins):
-        if row["n"] == 0:
-            continue
-        tot += (row["n"] / n) * abs(row["mean_forecast"] - row["empirical_rate"])
-    return tot
-
-
-def calib_fit_ci(recs: list[dict], boot: int, rng: random.Random) -> dict:
-    xs = [logit(r["_model_p"]) for r in recs]
-    ys = [r["_event"] for r in recs]
-    a, b = irls_logistic(xs, ys)
-    n = len(recs)
-    bs_a, bs_b = [], []
-    for _ in range(boot):
-        idx = [rng.randrange(n) for _ in range(n)]
-        aa, bb = irls_logistic([xs[i] for i in idx], [ys[i] for i in idx])
-        bs_a.append(aa); bs_b.append(bb)
-    bs_a.sort(); bs_b.sort()
-    def ci(v): return (v[int(0.025 * boot)], v[min(int(0.975 * boot), boot - 1)])
-    la, ha = ci(bs_a); lb, hb = ci(bs_b)
-    return {"intercept_a": a, "slope_b": b,
-            "a_ci": [la, ha], "b_ci": [lb, hb],
-            "b_excludes_1": not (lb <= 1.0 <= hb),
-            "interpretation": ("overconfident" if b < 1 else
-                               "underconfident" if b > 1 else "calibrated")}
 
 
 # ── edge realization: calibration-cause vs payoff-cause ──────────────────────────

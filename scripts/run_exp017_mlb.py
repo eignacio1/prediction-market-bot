@@ -52,9 +52,18 @@ import argparse
 import csv
 import json
 import math
+import random
 import sys
 from pathlib import Path
 from typing import NamedTuple, Optional
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.analytics.calibration_diagnostics import (  # noqa: E402
+    reliability,
+    brier_murphy,
+    ece,
+    calib_fit_ci,
+)
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -65,6 +74,10 @@ ADR_0024_TIER2_N_MULTI    = 150    # Tier 2 multi-sport floor (per sport, requir
 ADR_0024_P_THRESHOLD      = 0.05   # significance level for CONFIRMED_* verdicts
 KALSHI_FEE_RATE           = 0.07   # taker fee: 0.07 × mip × (1 - mip)
 MIN_N                     = 20     # minimum positions for any verdict
+CALIB_MIN_N               = 20     # minimum positions to attempt calibration diagnostics
+CALIB_BINS                = 5      # reliability/ECE bin count (matches EXP-017C default)
+CALIB_BOOT                = 2000   # bootstrap draws for IRLS (a,b) CI
+CALIB_SEED                = 17     # deterministic bootstrap seed (matches EXP-017C convention)
 SPORT                     = "mlb"
 DEFAULT_PORTFOLIO         = Path("logs/paper_portfolio_mlb.json")
 OUT_DIR                   = Path("exp_output/EXP-017-MLB")
@@ -301,6 +314,47 @@ def threshold_breakdown(positions: list[MLBPosition]) -> list[dict]:
     return rows
 
 
+# ── Calibration diagnostics (T-280/B4) ─────────────────────────────────────────
+
+def _calibration_records(positions: list[MLBPosition]) -> list[dict]:
+    """Build the dict-record shape calibration_diagnostics.py expects:
+    _model_p (forecast) and _event (0/1, reconstructed outcome). Convention
+    matches run_exp017c_calibration_mlb.py exactly (verified 0/151 mismatch
+    vs actual_hits there): event = 1 iff the bet direction and outcome agree
+    on the underlying "player reached threshold" fact.
+    """
+    return [
+        {"_model_p": p.model_p,
+         "_event": 1 if ((p.direction == "YES") == (p.outcome == "WIN")) else 0}
+        for p in positions
+    ]
+
+
+def calibration_report(
+    positions: list[MLBPosition],
+    bins: int = CALIB_BINS,
+    boot: int = CALIB_BOOT,
+    seed: int = CALIB_SEED,
+) -> Optional[dict]:
+    """Reliability/Murphy/ECE/logistic-fit diagnostics on the same deduped
+    EXP-017 universe. Returns None below CALIB_MIN_N (bootstrap CI and
+    per-bin reliability are not meaningful at very small n)."""
+    if len(positions) < CALIB_MIN_N:
+        return None
+    recs = _calibration_records(positions)
+    rng = random.Random(seed)
+    bm = brier_murphy(recs, bins)
+    return {
+        "n": len(recs),
+        "bins": bins,
+        "reliability": reliability(recs, bins),
+        "brier_murphy": bm,
+        "ece": ece(recs, bins),
+        "calibration_fit": calib_fit_ci(recs, boot, rng),
+        "recompose_ok": bm["recompose_ok"],
+    }
+
+
 # ── ADR-0024 tier check ────────────────────────────────────────────────────────
 
 def adr0024_tier(n_mlb: int, ev_per_bet: float, nba_n: int = 0) -> dict:
@@ -486,6 +540,7 @@ def analyse(
     ev_no  = ev_stats(by_direction["NO"])
 
     thr_rows = threshold_breakdown(unique)
+    calibration = calibration_report(unique)
 
     return {
         "label": label,
@@ -502,6 +557,7 @@ def analyse(
         "ev_no": ev_no,
         "threshold_breakdown": thr_rows,
         "edge_monotonicity": mono,
+        "calibration": calibration,
         "verdict": verdict,
         "adr": "ADR-0024",
         "gg": "GG-004",
@@ -571,6 +627,31 @@ def _print_report(result: dict) -> None:
                 print(f"    T{t['tercile']}: edge[{t['edge_min']:+.4f},{t['edge_max']:+.4f}]"
                       f"  n={t['n']:3d}  winrate={t['winrate']:.3f}  P&L=${t['pnl']:+.2f}")
         print(f"  Monotonicity: {mono['verdict']}")
+    print()
+    # Calibration diagnostics (T-280/B4)
+    calib = result.get("calibration")
+    print("── Calibration Diagnostics (reliability / Murphy / ECE) ────────")
+    if calib is None:
+        print(f"  Skipped — n={n_unique} < CALIB_MIN_N={CALIB_MIN_N}")
+    else:
+        bm = calib["brier_murphy"]
+        print(f"  n={calib['n']}  bins={calib['bins']}")
+        print(f"  Brier: full={bm['brier_full']:.4f}  binned={bm['brier_binned']:.4f}  "
+              f"(binning_gap={bm['binning_gap_(full-binned)']:+.4f})")
+        print(f"  Murphy: REL={bm['reliability']:.4f}  RES={bm['resolution']:.4f}  "
+              f"UNC={bm['uncertainty']:.4f}  "
+              f"REL-RES+UNC={bm['decomposition_(rel-res+unc)']:.4f}  "
+              f"recompose_ok={bm['recompose_ok']}")
+        print(f"  ECE: {calib['ece']:.4f}")
+        fit = calib["calibration_fit"]
+        print(f"  Logistic fit: a={fit['intercept_a']:+.3f}  b={fit['slope_b']:.3f}  "
+              f"b_CI={[round(x, 3) for x in fit['b_ci']]}  -> {fit['interpretation']} "
+              f"(b excludes 1: {fit['b_excludes_1']})")
+        for row in calib["reliability"]:
+            if row["n"] == 0:
+                continue
+            print(f"    {row['bin']:<14} n={row['n']:<3} forecast={row['mean_forecast']:.3f} "
+                  f"empirical={row['empirical_rate']:.3f}  gap={row['gap']:+.3f}")
     print()
     # Final verdict
     print("── Verdict ──────────────────────────────────────────────────")

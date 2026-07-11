@@ -39,6 +39,7 @@ from prediction_market_bot.c4_risk_engine.risk import (
     STATUS_APPROVED,
     STATUS_KILL_SWITCH,
     STATUS_REJECTED,
+    _MIP_EPSILON,
     RiskEngine,
     _compute_kelly_size,
     summarize_edge_run,
@@ -155,6 +156,68 @@ class TestComputeKellySize:
             bankroll=10_000.0,
         )
         assert size <= 500.0
+
+    # -- T-280/B1: boundary epsilon-clamp (near-0/1 market_implied_prob) ----
+
+    @pytest.mark.unit
+    def test_near_boundary_high_mip_returns_zero_no_exception(self):
+        """mip within epsilon of 1.0 (but not exactly 1.0) must not raise/NaN."""
+        size = _compute_kelly_size(
+            p_estimate=0.9999995,
+            market_implied_prob=1.0 - _MIP_EPSILON / 2,
+            kelly_fraction=0.25,
+            bankroll=10_000.0,
+        )
+        assert size == 0.0
+
+    @pytest.mark.unit
+    def test_near_boundary_low_mip_returns_zero_no_exception(self):
+        """mip within epsilon of 0.0 (but not exactly 0.0) must not raise/NaN."""
+        size = _compute_kelly_size(
+            p_estimate=0.5,
+            market_implied_prob=_MIP_EPSILON / 2,
+            kelly_fraction=0.25,
+            bankroll=10_000.0,
+        )
+        assert size == 0.0
+
+    @pytest.mark.unit
+    def test_just_outside_epsilon_computes_normally(self):
+        """The clamp must be tight enough not to affect any real (cent-quantized)
+        Kalshi price — the closest real price to a boundary is 0.01/0.99, far
+        outside _MIP_EPSILON (1e-6)."""
+        size = _compute_kelly_size(
+            p_estimate=0.99,
+            market_implied_prob=0.01,
+            kelly_fraction=0.25,
+            bankroll=10_000.0,
+        )
+        assert size > 0.0
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize(
+        "p_estimate,market_implied_prob",
+        [
+            (0.60, 0.50),
+            (0.55, 0.50),
+            (0.99, 0.01),
+            (0.02, 0.30),  # negative edge
+            (0.999, 0.5),
+            (0.5, 0.999),
+            (0.5, 0.001),
+        ],
+    )
+    def test_direct_formula_agrees_with_algebraic_simplification(
+        self, p_estimate, market_implied_prob
+    ):
+        """f* = (p*b - q)/b must agree with its algebraic simplification
+        f* = p - (1-p)*mip/(1-mip) within tight tolerance on stable inputs
+        (T-280 cross-implementation invariant, B1/B2)."""
+        b = (1.0 - market_implied_prob) / market_implied_prob
+        q = 1.0 - p_estimate
+        f_star_direct = (p_estimate * b - q) / b
+        f_star_simplified = p_estimate - q * market_implied_prob / (1.0 - market_implied_prob)
+        assert f_star_direct == pytest.approx(f_star_simplified, abs=1e-9)
 
 
 # ---------------------------------------------------------------------------
