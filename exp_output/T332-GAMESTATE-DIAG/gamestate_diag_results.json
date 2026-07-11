@@ -1,0 +1,406 @@
+{
+  "clean_n": 271,
+  "n_joined": 271,
+  "n_join_misses": 0,
+  "correlations": {
+    "inning": {
+      "n": 271,
+      "corr_with_edge": 0.03552399961917781,
+      "corr_with_win": 0.017875853975251058
+    },
+    "ab_remaining": {
+      "n": 271,
+      "corr_with_edge": 0.0004014337952351049,
+      "corr_with_win": -0.07433269628421955
+    },
+    "ab_so_far": {
+      "n": 271,
+      "corr_with_edge": -0.08381263181374327,
+      "corr_with_win": 0.09483060139021074
+    },
+    "h_so_far": {
+      "n": 271,
+      "corr_with_edge": -0.06118865683384196,
+      "corr_with_win": 0.12855296898250504
+    },
+    "batting_slot": {
+      "n": 271,
+      "corr_with_edge": NaN,
+      "corr_with_win": NaN
+    }
+  },
+  "inning_bucket": [
+    {
+      "bucket": "early_1-3",
+      "n": 136,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 46,
+          "edge_mean": 0.02390038043478261,
+          "win_rate": 0.7608695652173914,
+          "ev_per_bet_usd": 0.07567173913043476
+        },
+        {
+          "tercile": 2,
+          "n": 45,
+          "edge_mean": 0.09863337777777777,
+          "win_rate": 0.5333333333333333,
+          "ev_per_bet_usd": 0.009775555555555562
+        },
+        {
+          "tercile": 3,
+          "n": 45,
+          "edge_mean": 0.19132145000000003,
+          "win_rate": 0.6,
+          "ev_per_bet_usd": 0.0835466666666667
+        }
+      ],
+      "win_rate": 0.6323529411764706,
+      "ev_per_bet_usd": 0.056473529411764714,
+      "pnl_per_dollar": 0.10417633095964736,
+      "edge_monotonicity": {
+        "verdict": "ANTI-PREDICTIVE",
+        "n": 136,
+        "n_pos_edge": 124,
+        "n_neg_edge": 12,
+        "winrate_edge_pos": 0.6048387096774194,
+        "winrate_edge_neg": 0.9166666666666666,
+        "fisher_odds_ratio": 0.1391465677179963,
+        "fisher_pvalue": 0.05547301099395198,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 45,
+            "edge_min": -0.016831250000000016,
+            "edge_max": 0.06337174999999999,
+            "edge_mean": 0.023002038888888892,
+            "winrate": 0.7555555555555555,
+            "pnl": 3.463199999999999
+          },
+          {
+            "tercile": 2,
+            "n": 45,
+            "edge_min": 0.06432575000000001,
+            "edge_max": 0.12462174999999998,
+            "edge_mean": 0.09729188333333333,
+            "winrate": 0.5555555555555556,
+            "pnl": 0.5176000000000001
+          },
+          {
+            "tercile": 3,
+            "n": 46,
+            "edge_min": 0.124693,
+            "edge_max": 0.336383,
+            "edge_mean": 0.1898730054347826,
+            "winrate": 0.5869565217391305,
+            "pnl": 3.6996000000000016
+          }
+        ]
+      },
+      "verdict": "ANTI-PREDICTIVE"
+    },
+    {
+      "bucket": "mid_4-6",
+      "n": 133,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 45,
+          "edge_mean": 0.013554533333333334,
+          "win_rate": 0.7777777777777778,
+          "ev_per_bet_usd": 0.022226666666666672
+        },
+        {
+          "tercile": 2,
+          "n": 44,
+          "edge_mean": 0.0739576931818182,
+          "win_rate": 0.7272727272727273,
+          "ev_per_bet_usd": 0.03972272727272727
+        },
+        {
+          "tercile": 3,
+          "n": 44,
+          "edge_mean": 0.20362680681818182,
+          "win_rate": 0.5681818181818182,
+          "ev_per_bet_usd": 0.05186136363636363
+        }
+      ],
+      "win_rate": 0.6917293233082706,
+      "ev_per_bet_usd": 0.03781879699248123,
+      "pnl_per_dollar": 0.06142264012699968,
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "n": 133,
+        "n_pos_edge": 126,
+        "n_neg_edge": 7,
+        "winrate_edge_pos": 0.6825396825396826,
+        "winrate_edge_neg": 0.8571428571428571,
+        "fisher_odds_ratio": 0.35833333333333334,
+        "fisher_pvalue": 0.43639778881517594,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 44,
+            "edge_min": -0.010104999999999968,
+            "edge_max": 0.03788299999999997,
+            "edge_mean": 0.013000687499999998,
+            "winrate": 0.7954545454545454,
+            "pnl": 1.9252000000000002
+          },
+          {
+            "tercile": 2,
+            "n": 44,
+            "edge_min": 0.03792375,
+            "edge_max": 0.11246575000000002,
+            "edge_mean": 0.07215398295454546,
+            "winrate": 0.7045454545454546,
+            "pnl": 0.6252999999999992
+          },
+          {
+            "tercile": 3,
+            "n": 45,
+            "edge_min": 0.11728699999999999,
+            "edge_max": 0.69465175,
+            "edge_mean": 0.20170814444444446,
+            "winrate": 0.5777777777777777,
+            "pnl": 2.4793999999999996
+          }
+        ]
+      },
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "bucket": "late_7+",
+      "n": 2,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 1,
+          "edge_mean": 0.20854575,
+          "win_rate": 0.0,
+          "ev_per_bet_usd": -0.065
+        },
+        {
+          "tercile": 2,
+          "n": 1,
+          "edge_mean": 0.70895175,
+          "win_rate": 0.0,
+          "ev_per_bet_usd": -0.005
+        },
+        {
+          "tercile": 3,
+          "n": 0
+        }
+      ],
+      "win_rate": 0.0,
+      "ev_per_bet_usd": -0.035,
+      "pnl_per_dollar": -1.0,
+      "verdict": "UNDERPOWERED",
+      "reason": "n=2 < MIN_N=20 \u2014 descriptive only, no Fisher verdict (GG-098)"
+    },
+    {
+      "bucket": "unknown",
+      "n": 0,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 0
+        },
+        {
+          "tercile": 2,
+          "n": 0
+        },
+        {
+          "tercile": 3,
+          "n": 0
+        }
+      ],
+      "verdict": "EMPTY"
+    }
+  ],
+  "ab_remaining_bucket": [
+    {
+      "bucket": "0",
+      "n": 0,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 0
+        },
+        {
+          "tercile": 2,
+          "n": 0
+        },
+        {
+          "tercile": 3,
+          "n": 0
+        }
+      ],
+      "verdict": "EMPTY"
+    },
+    {
+      "bucket": "1",
+      "n": 58,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 20,
+          "edge_mean": 0.020441212499999993,
+          "win_rate": 0.6,
+          "ev_per_bet_usd": -0.09667999999999997
+        },
+        {
+          "tercile": 2,
+          "n": 19,
+          "edge_mean": 0.09888117105263158,
+          "win_rate": 0.8421052631578947,
+          "ev_per_bet_usd": 0.15819999999999998
+        },
+        {
+          "tercile": 3,
+          "n": 19,
+          "edge_mean": 0.2579632894736842,
+          "win_rate": 0.47368421052631576,
+          "ev_per_bet_usd": -0.06742105263157894
+        }
+      ],
+      "win_rate": 0.6379310344827587,
+      "ev_per_bet_usd": -0.003599999999999996,
+      "pnl_per_dollar": -0.005996553704767366,
+      "edge_monotonicity": {
+        "verdict": "INCONCLUSIVE",
+        "n": 58,
+        "n_pos_edge": 56,
+        "n_neg_edge": 2,
+        "winrate_edge_pos": 0.6428571428571429,
+        "winrate_edge_neg": 0.5,
+        "fisher_odds_ratio": 1.8,
+        "fisher_pvalue": 1.0,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 19,
+            "edge_min": -0.006734249999999985,
+            "edge_max": 0.043947999999999994,
+            "edge_mean": 0.018949921052631574,
+            "winrate": 0.631578947368421,
+            "pnl": -1.2985999999999995
+          },
+          {
+            "tercile": 2,
+            "n": 19,
+            "edge_min": 0.04877575,
+            "edge_max": 0.125083,
+            "edge_mean": 0.09439138157894737,
+            "winrate": 0.7894736842105263,
+            "pnl": 2.0625999999999993
+          },
+          {
+            "tercile": 3,
+            "n": 20,
+            "edge_min": 0.13408174999999997,
+            "edge_max": 0.70895175,
+            "edge_mean": 0.2517692125,
+            "winrate": 0.5,
+            "pnl": -0.9728000000000001
+          }
+        ]
+      },
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "bucket": "2+",
+      "n": 213,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 71,
+          "edge_mean": 0.01675828521126761,
+          "win_rate": 0.7887323943661971,
+          "ev_per_bet_usd": 0.06161830985915492
+        },
+        {
+          "tercile": 2,
+          "n": 71,
+          "edge_mean": 0.08514616197183096,
+          "win_rate": 0.6197183098591549,
+          "ev_per_bet_usd": 0.025011267605633804
+        },
+        {
+          "tercile": 3,
+          "n": 71,
+          "edge_mean": 0.18964041549295768,
+          "win_rate": 0.5774647887323944,
+          "ev_per_bet_usd": 0.09434366197183103
+        }
+      ],
+      "win_rate": 0.6619718309859155,
+      "ev_per_bet_usd": 0.06032441314553991,
+      "pnl_per_dollar": 0.10630951888470605,
+      "edge_monotonicity": {
+        "verdict": "ANTI-PREDICTIVE",
+        "n": 213,
+        "n_pos_edge": 196,
+        "n_neg_edge": 17,
+        "winrate_edge_pos": 0.6377551020408163,
+        "winrate_edge_neg": 0.9411764705882353,
+        "fisher_odds_ratio": 0.11003521126760564,
+        "fisher_pvalue": 0.013577200427877231,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 71,
+            "edge_min": -0.016831250000000016,
+            "edge_max": 0.05021875,
+            "edge_mean": 0.01675828521126761,
+            "winrate": 0.7887323943661971,
+            "pnl": 4.374899999999999
+          },
+          {
+            "tercile": 2,
+            "n": 71,
+            "edge_min": 0.05091775,
+            "edge_max": 0.11809175,
+            "edge_mean": 0.08514616197183096,
+            "winrate": 0.6197183098591549,
+            "pnl": 1.7758
+          },
+          {
+            "tercile": 3,
+            "n": 71,
+            "edge_min": 0.11821075000000006,
+            "edge_max": 0.5617327499999999,
+            "edge_mean": 0.18964041549295768,
+            "winrate": 0.5774647887323944,
+            "pnl": 6.698400000000003
+          }
+        ]
+      },
+      "verdict": "ANTI-PREDICTIVE"
+    },
+    {
+      "bucket": "unknown",
+      "n": 0,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 0
+        },
+        {
+          "tercile": 2,
+          "n": 0
+        },
+        {
+          "tercile": 3,
+          "n": 0
+        }
+      ],
+      "verdict": "EMPTY"
+    }
+  ]
+}
