@@ -1835,6 +1835,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-108 — CLAUDE.md Step 4's NBA operational health check grepped a log filename that no longer existed on the VPS, silently returning empty on every run
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-108 |
+| Category | Systemic blind spot — protocol/interface drift |
+| What was missed | CLAUDE.md's mandatory Step 4 command grepped `/opt/prediction-market-bot/logs/paper_cron.log` for NBA T1 health. That file does not exist on the VPS — NBA's single-window paper-trade cron was split into two windows at some unlogged point (`paper_early_cron.log` at 18:00 UTC, `paper_late_cron.log` at 01:30 UTC), and the Step 4 command was never updated to match. `grep ... nonexistent_file 2>/dev/null` returns empty with no error, which renders identically to "0 games scheduled, nothing to report" — the intended reading whenever NBA is off-season/dark. |
+| When it should have been caught | At the moment the early/late cron split shipped (filename rename), whichever session made that change should have grepped CLAUDE.md itself for the old filename and updated all references, per the same "fix stale claims in place" discipline the file's own header mandates. |
+| Phases it survived | Unknown number of sessions since the early/late split — the split predates this session and no DECISION_LOG entry cross-referenced updating Step 4's command. Every session that ran Step 4 in that window and saw empty NBA output plausibly read it as "confirmed dark" without it actually confirming anything. |
+| Why it survived | The check has no negative-space assertion — an empty result reads as a pass whether the file exists and truly has nothing, or the file doesn't exist at all. Nothing in the protocol distinguishes "grep found zero matching lines" from "grep found zero because the target was wrong." |
+| Impact | LOW today — independently confirmed via the correct files (`paper_early_cron.log`/`paper_late_cron.log`) that NBA is in fact correctly dark for 2026-07-11 (`No KXNBAPTS markets available. No games today or pre-market.`), and NBA is tabled/frozen per standing operator directive regardless, so no live capital or paper-trading decision was made on the faulty check's output. The risk was structural: had NBA's cron actually broken (not just gone quiet for the season), this check would have shown the same empty output and reported a false "healthy/dark" read, the same failure shape as GG-049 (which this Step 4 check was built specifically to prevent). |
+| Discovery | 2026-07-11, session-start protocol run (isolated worktree `session/20260711T073538Z-session-start-audit`). Step 4's NBA grep returned empty; cross-checked by `ssh`-ing directly to `ls logs/*cron*.log` and `crontab -l`, which showed the real filenames and confirmed the cron itself is alive and firing on schedule. |
+| Resolution | Fixed same session — CLAUDE.md Step 4's command now greps both `paper_early_cron.log` and `paper_late_cron.log`, and also matches the literal `No .* markets available` off-season line so a genuinely healthy dark day produces visible confirming output instead of silence. Logged in DECISION_LOG.md 2026-07-11 per Hard Rule 7. |
+| Status | RESOLVED 2026-07-11 |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
