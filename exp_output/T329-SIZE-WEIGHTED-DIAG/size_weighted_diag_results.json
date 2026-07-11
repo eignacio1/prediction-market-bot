@@ -1,0 +1,45 @@
+{
+  "n": 271,
+  "terciles": [
+    {
+      "tercile": 1,
+      "n": 91,
+      "edge_mean": 0.01756771978021978,
+      "win_rate": 0.7472527472527473,
+      "total_pnl_unweighted": 2.441300000000002,
+      "avg_stake_usd": 0.6854945054945056,
+      "total_staked_usd": 62.38000000000002,
+      "pnl_per_dollar_staked": 0.03913594100673295,
+      "ev_per_bet_usd": 0.026827472527472546
+    },
+    {
+      "tercile": 2,
+      "n": 90,
+      "edge_mean": 0.08778773888888886,
+      "win_rate": 0.6444444444444445,
+      "total_pnl_unweighted": 3.2539999999999987,
+      "avg_stake_usd": 0.5716666666666668,
+      "total_staked_usd": 51.45000000000001,
+      "pnl_per_dollar_staked": 0.06324586977648199,
+      "ev_per_bet_usd": 0.03615555555555554
+    },
+    {
+      "tercile": 3,
+      "n": 90,
+      "edge_mean": 0.20432216944444442,
+      "win_rate": 0.5777777777777777,
+      "total_pnl_unweighted": 6.945000000000005,
+      "avg_stake_usd": 0.46505555555555567,
+      "total_staked_usd": 41.85500000000001,
+      "pnl_per_dollar_staked": 0.16592999641619885,
+      "ev_per_bet_usd": 0.07716666666666672
+    }
+  ],
+  "overall_pnl_per_dollar_staked": 0.08119150849471694,
+  "overall_ev_per_bet_usd": 0.046643173431734346,
+  "overall_total_staked_usd": 155.685,
+  "overall_total_pnl_usd": 12.640300000000007,
+  "stake_rises_with_tercile": false,
+  "return_falls_with_tercile": false,
+  "sizing_amplifies_inversion": false
+}
