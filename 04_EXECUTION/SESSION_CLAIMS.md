@@ -41,3 +41,4 @@
 | 2026-07-11T06:34:25Z | T-328, T-333 | T-328 deploy.yml permanent fix (GG-104) + T-333 Component B edge-formula audit (GG-105) |
 | 2026-07-11T06:39:36Z | T-334, T-335 | Workstream E: MEMORY_BANK snapshot consolidation + narrative guard (T-334/E1); worktree-isolation-default + session-guard warning (T-335/E2). Renumbered from plan doc's stale T-330/T-331 (E1/E2) — those IDs already claimed+merged for Workstream D (ledger-driven MC forward projection, 81cfb20/563c31d). |
 | 2026-07-11T07:35:47Z | TBD | session-start protocol run / general audit, no task assigned yet |
+| 2026-07-11T18:00:10Z | T-336,T-337 | T-336/T-337: kill live-data regression anchors, full-suite regression cert |
