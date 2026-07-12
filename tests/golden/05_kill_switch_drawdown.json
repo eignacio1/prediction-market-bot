@@ -1,0 +1,32 @@
+{
+  "scenario": "05_kill_switch_drawdown",
+  "description": "current_drawdown_pct (0.20) is at the max_drawdown_pct hard limit (>=, not >) -- KILL_SWITCH at CHECK 2, before edge/direction/Kelly are ever evaluated. Forecast fields are a clear, otherwise-approvable YES bet to prove the kill switch pre-empts sizing rather than being masked by an unrelated rejection.",
+  "flow": "kill_switch_only",
+  "risk_engine": {
+    "bankroll": 1000.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": null
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.20,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": false
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-05-KILLSWITCH-DRAWDOWN",
+    "p_estimate": 0.60,
+    "market_implied_prob": 0.50,
+    "gross_edge": 0.10,
+    "edge": 0.0825,
+    "recommended_direction": "YES"
+  },
+  "expected_approval": {
+    "approval_status": "KILL_SWITCH",
+    "rejection_reason": "drawdown_limit_breached",
+    "approved_direction": null,
+    "approved_size": 0.0
+  }
+}

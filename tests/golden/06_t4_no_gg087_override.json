@@ -1,0 +1,54 @@
+{
+  "scenario": "06_t4_no_gg087_override",
+  "description": "GG-087 regression scenario: T4 live evaluation where p_t4 is well below (mip + vig), producing a negative gross_edge. The pre-fix bug pre-filtered gross_edge <= 0.0 as noise and hardcoded direction=YES, silently discarding this exact NO-side signal (measured at 41.6x the volume of the YES-side signal actually acted on). Post-fix, this resolves to an actionable NO bet. Also exercises the T4 paper-mode flow: RiskEngine.evaluate_forecast() approves a Kelly-derived size (pool_isolated=True, min_bet_usd override=1.0), which run_t4_mlb_live.py then REPLACES with a flat single-contract-at-market-price size (mip if YES else 1-mip) before calling open_position() -- this fixture pins both stages so a regression in either the Kelly-approval gate or the flat-size override formula fails the diff.",
+  "flow": "t4_override",
+  "risk_engine": {
+    "bankroll": 1000.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": 1.0
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.0,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": true
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-06-T4-NO-GG087",
+    "p_estimate": 0.20,
+    "market_implied_prob": 0.35,
+    "gross_edge": -0.16,
+    "edge": 0.144075,
+    "recommended_direction": "NO"
+  },
+  "expected_approval": {
+    "approval_status": "APPROVED",
+    "rejection_reason": null,
+    "approved_direction": "NO",
+    "approved_size": 107.142857
+  },
+  "t4_size_override": {
+    "market_implied_prob": 0.35,
+    "expected_override_size": 0.65
+  },
+  "paper_trader": {
+    "mid_price": 0.35,
+    "vig": 0.01,
+    "player_name": "Golden Player 06",
+    "player_id": 6,
+    "kalshi_ticker": "KXMLBHIT-GOLDEN06",
+    "kalshi_threshold": 1,
+    "game_date": "2026-05-30",
+    "pool_isolated": true
+  },
+  "expected_position": {
+    "direction": "NO",
+    "size_usd": 0.65,
+    "gross_edge": -0.16,
+    "fee_per_contract": 0.015925,
+    "fee_net_edge": 0.144075,
+    "fee_contaminated": false
+  }
+}

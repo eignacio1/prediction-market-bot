@@ -1,0 +1,49 @@
+{
+  "scenario": "02_t1_no_gg077_flip",
+  "description": "GG-077 regression scenario: gross_edge is negative (YES-frame, ADR-0016) because model_p is well below market -- resolves to a NO bet. The pre-fix bug subtracted the fee from the raw (unflipped) gross_edge and only flipped the sign on fee_contaminated, overstating true edge by 2x the fee. This fixture pins the correct direction-aware fee-net edge (0.132675) that a regression would silently corrupt.",
+  "flow": "t1_direct",
+  "risk_engine": {
+    "bankroll": 1000.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": null
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.0,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": false
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-02-T1-NO-GG077",
+    "p_estimate": 0.30,
+    "market_implied_prob": 0.45,
+    "gross_edge": -0.15,
+    "edge": 0.132675,
+    "recommended_direction": "NO"
+  },
+  "expected_approval": {
+    "approval_status": "APPROVED",
+    "rejection_reason": null,
+    "approved_direction": "NO",
+    "approved_size": 83.333333
+  },
+  "paper_trader": {
+    "mid_price": 0.45,
+    "vig": 0.0,
+    "player_name": "Golden Player 02",
+    "player_id": 2,
+    "kalshi_ticker": "KXMLBHIT-GOLDEN02",
+    "kalshi_threshold": 1,
+    "game_date": "2026-05-30"
+  },
+  "expected_position": {
+    "direction": "NO",
+    "size_usd": 83.333333,
+    "gross_edge": -0.15,
+    "fee_per_contract": 0.017325,
+    "fee_net_edge": 0.132675,
+    "fee_contaminated": false
+  }
+}

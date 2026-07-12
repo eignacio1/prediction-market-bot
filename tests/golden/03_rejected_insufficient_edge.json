@@ -1,0 +1,32 @@
+{
+  "scenario": "03_rejected_insufficient_edge",
+  "description": "Net-of-fee edge (0.0025) falls below MIN_EDGE_TO_APPROVE (0.04) despite a nominally positive gross_edge -- REJECTED at CHECK 3, before Kelly sizing ever runs. No position should be opened.",
+  "flow": "reject_only",
+  "risk_engine": {
+    "bankroll": 1000.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": null
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.0,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": false
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-03-REJECT-EDGE",
+    "p_estimate": 0.52,
+    "market_implied_prob": 0.50,
+    "gross_edge": 0.02,
+    "edge": 0.0025,
+    "recommended_direction": "YES"
+  },
+  "expected_approval": {
+    "approval_status": "REJECTED",
+    "rejection_reason": "insufficient_edge",
+    "approved_direction": null,
+    "approved_size": 0.0
+  }
+}
