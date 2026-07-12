@@ -1,0 +1,161 @@
+{
+  "run_id": "20260712T043826Z",
+  "results": {
+    "T1": {
+      "band": "T1",
+      "verdict": "ANALYZED",
+      "raw_n": 60,
+      "clean_n": 60,
+      "n": 60,
+      "edge_monotonicity": {
+        "verdict": "ANTI-PREDICTIVE",
+        "n": 60,
+        "n_pos_edge": 30,
+        "n_neg_edge": 30,
+        "winrate_edge_pos": 0.2,
+        "winrate_edge_neg": 0.8,
+        "fisher_odds_ratio": 0.0625,
+        "fisher_pvalue": 6.318788152259724e-06,
+        "alpha": 0.1,
+        "terciles": [
+          {
+            "tercile": 1,
+            "n": 20,
+            "edge_min": -0.16679999999999998,
+            "edge_max": -0.16679999999999998,
+            "edge_mean": -0.16679999999999995,
+            "winrate": 1.0,
+            "pnl": 20.0
+          },
+          {
+            "tercile": 2,
+            "n": 20,
+            "edge_min": -0.16679999999999998,
+            "edge_max": 0.1332,
+            "edge_mean": -0.016800000000000016,
+            "winrate": 0.5,
+            "pnl": 0.0
+          },
+          {
+            "tercile": 3,
+            "n": 20,
+            "edge_min": 0.1332,
+            "edge_max": 0.1332,
+            "edge_mean": 0.1332,
+            "winrate": 0.0,
+            "pnl": -20.0
+          }
+        ]
+      },
+      "calibration": {
+        "intercept_a": 6.512788426394691e-16,
+        "slope_b": -6.908304961654754,
+        "a_ci": [
+          -0.7211919138854666,
+          0.7211919138854682
+        ],
+        "b_ci": [
+          -11.239457500578723,
+          -4.13633301421922
+        ],
+        "b_excludes_1": true,
+        "interpretation": "overconfident"
+      },
+      "ece": 2.220446049250313e-16,
+      "brier_murphy": {
+        "brier_full": 0.28250000000000014,
+        "brier_binned": 0.25000000000000006,
+        "reliability": 4.930380657631324e-32,
+        "resolution": 0.0,
+        "uncertainty": 0.25,
+        "decomposition_(rel-res+unc)": 0.25,
+        "binning_gap_(full-binned)": 0.032500000000000084,
+        "base_rate": 0.5,
+        "recompose_ok": true
+      },
+      "reliability_curve": [
+        {
+          "bin": "[0.00,0.20)",
+          "n": 0
+        },
+        {
+          "bin": "[0.20,0.40)",
+          "n": 0
+        },
+        {
+          "bin": "[0.40,0.60)",
+          "n": 60,
+          "mean_forecast": 0.4999999999999998,
+          "empirical_rate": 0.5,
+          "gap": -2.220446049250313e-16
+        },
+        {
+          "bin": "[0.60,0.80)",
+          "n": 0
+        },
+        {
+          "bin": "[0.80,1.00)",
+          "n": 0
+        }
+      ],
+      "ev_per_bet_usd": 0.0,
+      "pnl_per_dollar": 0.0,
+      "win_rate": 0.5,
+      "total_pnl": 0.0,
+      "anti_predictive_alarm": true
+    },
+    "T2": {
+      "band": "T2",
+      "verdict": "UNDERPOWERED",
+      "raw_n": 0,
+      "clean_n": 0,
+      "n": 0,
+      "min_n": 30,
+      "reason": "clean_n=0 < MIN_N=30 (raw_n=0) \u2014 GG-098 discipline: too few CURRENT_LOGIC_EPOCH resolved bets to return a verdict, not just a low-confidence one. Pre-fix-epoch bets are excluded, never blended in to reach the floor.",
+      "anti_predictive_alarm": false
+    },
+    "T3": {
+      "band": "T3",
+      "verdict": "UNDERPOWERED",
+      "raw_n": 0,
+      "clean_n": 0,
+      "n": 0,
+      "min_n": 30,
+      "reason": "clean_n=0 < MIN_N=30 (raw_n=0) \u2014 GG-098 discipline: too few CURRENT_LOGIC_EPOCH resolved bets to return a verdict, not just a low-confidence one. Pre-fix-epoch bets are excluded, never blended in to reach the floor.",
+      "anti_predictive_alarm": false
+    },
+    "T4M-PROJ": {
+      "band": "T4M-PROJ",
+      "verdict": "NO_DATA",
+      "n": 0,
+      "reason": "ledger not found: /private/var/folders/8_/jjfrwvcj7qj57l7sm6g1lfq80000gn/T/pytest-of-earlignacio/pytest-378/test_anti_predictive_book_retu0/none.jsonl \u2014 run scripts/build_t4_resolved_ledger.py first",
+      "anti_predictive_alarm": false
+    }
+  },
+  "summary": {
+    "T1": {
+      "verdict": "ANTI-PREDICTIVE",
+      "p": 6.318788152259724e-06,
+      "brier": 0.28250000000000014,
+      "n": 60
+    },
+    "T2": {
+      "verdict": "UNDERPOWERED",
+      "p": null,
+      "brier": null,
+      "n": 0
+    },
+    "T3": {
+      "verdict": "UNDERPOWERED",
+      "p": null,
+      "brier": null,
+      "n": 0
+    },
+    "T4M-PROJ": {
+      "verdict": "NO_DATA",
+      "p": null,
+      "brier": null,
+      "n": 0
+    }
+  }
+}

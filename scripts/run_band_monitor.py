@@ -63,6 +63,24 @@ adds `brier_murphy` (full Brier + Murphy REL/RES/UNC decomposition) and the
 underlying `reliability` curve rows to the per-band result, since T-322's exit
 criterion explicitly asks for "reliability curve + Brier score", which the
 pre-T-322 version only partially covered via `ece`/`calib_fit_ci`.
+
+T-341 EXTENSION (2026-07-11, Window 3) — dated artifacts + C7 wiring
+-----------------------------------------------------------------------
+The T-255/T-257 cron job (Mondays 14:20 UTC — already live, confirmed via
+`crontab -l`) was writing only the two fixed-filename outputs below, so each
+run silently overwrote the prior week's verdict with no history retained.
+Every run now additionally writes a timestamped snapshot to
+`exp_output/T255-BAND-MONITOR/verdicts/band_monitor_<UTC-run-id>.json`
+(full `results`, not just the summary) so verdict history survives across
+runs. The two fixed-filename files remain as the "latest" pointer — nothing
+that reads them today needs to change.
+
+Each run also now wires ANTI_PREDICTIVE / calibration-slope-CI-excludes-1
+breaches into C7 (`SystemMonitor.report_band_monitor_verdicts()`) as WARNING-
+severity, warn-only audit events — mirroring the ADR-0009 shadow_promotion_flag
+pattern. This never halts a band; GG-098 established that automated action on
+a band-level signal is itself the failure mode. Disable with --no-c7 (e.g. for
+ad hoc local runs where a real audit log isn't wanted).
 """
 from __future__ import annotations
 
@@ -70,6 +88,8 @@ import argparse
 import json
 import random
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -82,6 +102,8 @@ _SRC = Path(__file__).resolve().parent.parent / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
+from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+from prediction_market_bot.c7_monitoring.monitor import SystemMonitor       # noqa: E402
 
 MIN_N = 30  # ab_harness.py band-level floor (GG-098: no acting on ~11 bets)
 BOOK_BANDS = ("T1", "T2", "T3")
@@ -89,6 +111,8 @@ BOOK_BANDS = ("T1", "T2", "T3")
 DEFAULT_PORTFOLIO = Path("logs/.vps_portfolio_cache_mlb.json")
 DEFAULT_T4_LEDGER = Path("logs/t4_mlb_resolved_ledger.jsonl")
 OUT_DIR = Path("exp_output/T255-BAND-MONITOR")
+VERDICTS_DIR = OUT_DIR / "verdicts"
+DEFAULT_SNAPSHOT_ID = "SNAP-T255-BAND-MONITOR"
 
 
 # ── record loading ──────────────────────────────────────────────────────────────
@@ -348,6 +372,39 @@ def _print_report(results: dict[str, dict]) -> None:
     print(json.dumps(summary, indent=2))
 
 
+# ── dated artifact + C7 wiring (T-341) ──────────────────────────────────────────
+
+def _run_id() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def write_dated_verdict(results: dict[str, dict], out_dir: Path, run_id: str) -> Path:
+    """Write a timestamped, never-overwritten snapshot of the full per-band
+    results alongside the fixed-filename 'latest' outputs (T-341)."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    dated_path = out_dir / f"band_monitor_{run_id}.json"
+    dated_path.write_text(json.dumps(
+        {"run_id": run_id, "results": results, "summary": build_summary(results)},
+        indent=2,
+    ))
+    return dated_path
+
+
+def wire_c7(
+    results: dict[str, dict],
+    audit_log_path: Path,
+    session_id: str,
+    snapshot_id: str = DEFAULT_SNAPSHOT_ID,
+) -> list[str]:
+    """Emit warn-only C7 alarms for any ANALYZED band that alarms
+    ANTI_PREDICTIVE or has a calibration slope CI excluding 1.0 (T-341,
+    GG-099/GG-100/GG-098). Never halts a band — see
+    SystemMonitor.report_band_monitor_verdicts() docstring."""
+    logger = AuditLogger(audit_log_path, min_severity="INFO")
+    monitor = SystemMonitor(logger=logger, snapshot_id=snapshot_id, session_id=session_id)
+    return monitor.report_band_monitor_verdicts(results, session_id=session_id)
+
+
 # ── CLI ──────────────────────────────────────────────────────────────────────────
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -368,6 +425,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--ci", action="store_true",
                    help="CI mode: exit 1 iff any band alarms ANTI-PREDICTIVE. "
                         "Warn-only signal — never a kill trigger (T-257).")
+    p.add_argument("--no-c7", action="store_true",
+                   help="Skip C7 audit wiring (T-341) — e.g. ad hoc local runs "
+                        "where writing to the real audit log isn't wanted.")
+    p.add_argument("--audit-log", type=Path,
+                   default=Path("logs/audit_mlb.jsonl"),
+                   help="C6 audit log path for C7 wiring (default: logs/audit_mlb.jsonl)")
+    p.add_argument("--session-id", type=str, default=None,
+                   help="Session ID to attach to C7 events (default: auto-generated "
+                        "SES-BAND-MONITOR-<run_id>)")
     return p
 
 
@@ -376,15 +442,28 @@ def main(argv=None) -> int:
     results = run_all_bands(args.portfolio, args.t4_ledger, args.bins, args.boot,
                              args.seed, args.alpha)
 
+    run_id = _run_id()
+
     args.out.mkdir(parents=True, exist_ok=True)
     out_json = args.out / "band_monitor_results.json"
     out_json.write_text(json.dumps(results, indent=2))
     summary_json = args.out / "band_monitor_summary.json"
     summary_json.write_text(json.dumps(build_summary(results), indent=2))
+    dated_path = write_dated_verdict(results, VERDICTS_DIR, run_id)
 
     _print_report(results)
     print(f"\nWrote {out_json}")
     print(f"Wrote {summary_json}")
+    print(f"Wrote {dated_path}  (dated verdict artifact, T-341)")
+
+    if not args.no_c7:
+        session_id = args.session_id or f"SES-BAND-MONITOR-{run_id}"
+        alarmed = wire_c7(results, args.audit_log, session_id)
+        if alarmed:
+            print(f"\n[C7] WARNING events emitted (warn-only, no auto-kill) for band(s): "
+                  f"{', '.join(alarmed)} — see {args.audit_log}")
+        else:
+            print(f"\n[C7] No band alarmed this run — no events emitted to {args.audit_log}")
 
     if args.ci:
         any_alarm = any(r.get("anti_predictive_alarm") for r in results.values())

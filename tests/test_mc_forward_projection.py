@@ -30,6 +30,12 @@ from mc_forward_projection import (  # noqa: E402
     build_ledger_report,
     load_clean_band_records,
     BETS_PER_DAY,
+    t4m_proj_operational_params,
+    T4M_PROJ_WIN_RATE,
+    T4M_PROJ_WIN_MULT,
+    T4M_PROJ_LOSS_MULT,
+    T4M_PROJ_STAKE_USD,
+    T4M_PROJ_BETS_PER_DAY,
 )
 from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
 
@@ -353,3 +359,175 @@ class TestBuildLedgerReport:
         report = build_ledger_report("T1", stats, scenarios, [30, 182, 365], n_sims=500)
         assert "CAVEAT" in report
         assert "maturity floor" in report
+
+
+class TestSimParamsStakeModeValidation:
+    """T-342: stake_mode is validated at construction and at every entry point
+    that accepts it explicitly, not just deep inside simulate_paths."""
+
+    def test_invalid_stake_mode_rejected_by_simparams(self):
+        with pytest.raises(ValueError, match="stake_mode"):
+            SimParams(stake_mode="bogus")
+
+    def test_invalid_stake_mode_rejected_by_build_ledger_scenarios(self):
+        recs = _mk_recs(n_win=60, n_loss=40, span_days=20.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        with pytest.raises(ValueError, match="stake_mode"):
+            build_ledger_scenarios(stats, stake_mode="bogus")
+
+    def test_invalid_stake_mode_rejected_by_bootstrap_kill_ci(self):
+        recs = _mk_recs(n_win=60, n_loss=40, span_days=20.0)
+        with pytest.raises(ValueError, match="stake_mode"):
+            bootstrap_kill_ci("T1", recs, "ceiling", starting_bankroll=1000.0,
+                               cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                               n_boot=5, boot_sims=200, stake_mode="bogus")
+
+
+class TestSimulatePathsFlatMode:
+    """T-342: flat stake_mode uses a fixed $ stake per bet that does not
+    compound with bankroll — the defining structural difference from
+    proportional/Kelly-style sizing."""
+
+    def test_flat_stake_grows_bankroll_linearly_not_exponentially(self):
+        """win_rate=1.0 makes every path deterministic regardless of seed —
+        exact linear growth (bankroll += bets_per_day * stake_usd * win_mult
+        per day) is the signature of a non-compounding fixed stake."""
+        params = SimParams(win_rate=1.0, win_mult=1.0, stake_mode="flat",
+                            stake_usd=5.0, cap_usd=500.0, bets_per_day=10,
+                            starting_bankroll=1000.0, kill_switch_dd=0.99)
+        result = simulate_paths(params, n_days=4, n_sims=3, seed=1)
+        expected = 1000.0 + 4 * 10 * 5.0 * 1.0
+        assert np.allclose(result["ending_bankroll"], expected)
+
+    def test_flat_stake_ignores_bankroll_level_unlike_proportional(self):
+        """Same win/loss mechanics, only stake_mode differs: proportional
+        stake must change as bankroll compounds away from its starting value;
+        flat stake must not."""
+        base_kwargs = dict(win_rate=1.0, win_mult=0.5, loss_mult=1.0,
+                            bets_per_day=5, cap_usd=100000.0, kill_switch_dd=0.99,
+                            starting_bankroll=1000.0)
+        flat = SimParams(stake_mode="flat", stake_usd=10.0, **base_kwargs)
+        prop = SimParams(stake_mode="proportional", stake_frac=0.01, **base_kwargs)
+        r_flat = simulate_paths(flat, n_days=10, n_sims=1, seed=2)
+        r_prop = simulate_paths(prop, n_days=10, n_sims=1, seed=2)
+        # flat: fixed $10/bet regardless of day -> exact linear closed form
+        assert np.allclose(r_flat["ending_bankroll"], 1000.0 + 10 * 5 * 10.0 * 0.5)
+        # proportional: stake grows with bankroll each day -> compounds strictly
+        # above the flat (linear) trajectory once bankroll has grown past start
+        assert r_prop["ending_bankroll"][0] > r_flat["ending_bankroll"][0]
+
+    def test_flat_stake_capped_at_cap_usd(self):
+        params = SimParams(win_rate=0.0, stake_mode="flat", stake_usd=1000.0,
+                            cap_usd=50.0, bets_per_day=1, starting_bankroll=10000.0,
+                            kill_switch_dd=0.99)
+        result = simulate_paths(params, n_days=1, n_sims=1, seed=3)
+        # one loss capped at $50, not the requested $1000 stake_usd
+        assert result["ending_bankroll"][0] == pytest.approx(10000.0 - 50.0)
+
+    def test_flat_and_proportional_both_report_valid_kill_probabilities(self):
+        """Sanity check both modes produce well-formed, bounded output —
+        not asserting a specific magnitude relationship (that is an empirical,
+        regime-specific finding documented in DECISION_LOG.md, not a general
+        mathematical property to pin in a unit test)."""
+        flat = SimParams(win_rate=0.5, stake_mode="flat", stake_usd=1.0,
+                          bets_per_day=20, starting_bankroll=1000.0)
+        prop = SimParams(win_rate=0.5, stake_mode="proportional", stake_frac=0.01,
+                          bets_per_day=20, starting_bankroll=1000.0)
+        for params in (flat, prop):
+            probs, _ = kill_prob_at_horizons(params, [30, 365], n_sims=1000, seed=9)
+            for h in (30, 365):
+                assert 0.0 <= probs[h] <= 100.0
+            assert probs[365] >= probs[30]
+
+
+class TestT4mProjOperationalParams:
+    """T-342: T4M-PROJ's frozen operational scenario — the flat-stake analogue
+    of SimParams() (T1's GG-071 defaults) for the new band."""
+
+    def test_uses_flat_stake_mode(self):
+        params = t4m_proj_operational_params()
+        assert params.stake_mode == "flat"
+
+    def test_matches_frozen_module_constants(self):
+        params = t4m_proj_operational_params()
+        assert params.win_rate == pytest.approx(T4M_PROJ_WIN_RATE)
+        assert params.win_mult == pytest.approx(T4M_PROJ_WIN_MULT)
+        assert params.loss_mult == pytest.approx(T4M_PROJ_LOSS_MULT)
+        assert params.stake_usd == pytest.approx(T4M_PROJ_STAKE_USD)
+        assert params.bets_per_day == T4M_PROJ_BETS_PER_DAY
+
+
+class TestBuildLedgerScenariosFlatMode:
+    def test_floor_and_ceiling_use_stake_usd_flat_not_stake_frac(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=20.0)
+        stats = derive_ledger_stats("T4M-PROJ", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats, stake_mode="flat")
+        assert scenarios["floor"].stake_mode == "flat"
+        assert scenarios["floor"].stake_usd == pytest.approx(stats.stake_usd_flat)
+        assert scenarios["ceiling"].stake_mode == "flat"
+        assert scenarios["ceiling"].stake_usd == pytest.approx(stats.stake_usd_flat)
+
+    def test_operational_override_used_when_supplied(self):
+        recs = _mk_recs(n_win=60, n_loss=40, span_days=20.0)
+        stats = derive_ledger_stats("T4M-PROJ", recs, starting_bankroll=1000.0)
+        override = t4m_proj_operational_params()
+        scenarios = build_ledger_scenarios(stats, stake_mode="flat", operational=override)
+        assert scenarios["operational"] is override
+        assert scenarios["operational"].stake_mode == "flat"
+
+    def test_ceiling_less_risky_than_floor_when_real_edge_present_flat_mode(self):
+        recs = _mk_recs(n_win=65, n_loss=35, win_mult=1.15, loss_mult=1.0, size=10.0, span_days=30.0)
+        stats = derive_ledger_stats("T4M-PROJ", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats, stake_mode="flat")
+        p_floor, _ = kill_prob_at_horizons(scenarios["floor"], [365], n_sims=2000, seed=5)
+        p_ceiling, _ = kill_prob_at_horizons(scenarios["ceiling"], [365], n_sims=2000, seed=5)
+        assert p_ceiling[365] <= p_floor[365]
+
+
+class TestBootstrapKillCIFlatMode:
+    def test_flat_mode_ci_well_formed(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=30.0)
+        result = bootstrap_kill_ci("T4M-PROJ", recs, "ceiling", starting_bankroll=1000.0,
+                                    cap_usd=500.0, kill_switch_dd=0.20, horizons=[30, 365],
+                                    n_boot=10, boot_sims=200, seed=11, stake_mode="flat")
+        for h in (30, 365):
+            entry = result[h]
+            assert entry is not None
+            assert entry["lo"] <= entry["point"] <= entry["hi"]
+
+    def test_flat_mode_deterministic_with_fixed_seed(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=30.0)
+        r1 = bootstrap_kill_ci("T4M-PROJ", recs, "floor", starting_bankroll=1000.0,
+                                cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                                n_boot=8, boot_sims=200, seed=13, stake_mode="flat")
+        r2 = bootstrap_kill_ci("T4M-PROJ", recs, "floor", starting_bankroll=1000.0,
+                                cap_usd=500.0, kill_switch_dd=0.20, horizons=[365],
+                                n_boot=8, boot_sims=200, seed=13, stake_mode="flat")
+        assert r1[365] == r2[365]
+
+
+class TestBuildLedgerReportFlatMode:
+    def _t4_stats_and_scenarios(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=0.55, span_days=20.0)
+        stats = derive_ledger_stats("T4M-PROJ", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats, stake_mode="flat", operational=t4m_proj_operational_params())
+        return stats, scenarios
+
+    def test_flat_stake_line_appears_not_stake_frac(self):
+        stats, scenarios = self._t4_stats_and_scenarios()
+        report = build_ledger_report("T4M-PROJ", stats, scenarios, [30, 182, 365], n_sims=500)
+        assert "flat" in report
+        assert "does not scale with bankroll" in report
+
+    def test_gg105_caveat_appears_for_t4m_proj_band(self):
+        stats, scenarios = self._t4_stats_and_scenarios()
+        report = build_ledger_report("T4M-PROJ", stats, scenarios, [30, 182, 365], n_sims=500)
+        assert "GG-105" in report
+        assert "ANTI_PREDICTIVE" in report
+
+    def test_gg105_caveat_absent_for_other_bands(self):
+        recs = _mk_recs(n_win=60, n_loss=40, win_mult=1.2, loss_mult=1.0, size=10.0, span_days=20.0)
+        stats = derive_ledger_stats("T1", recs, starting_bankroll=1000.0)
+        scenarios = build_ledger_scenarios(stats)
+        report = build_ledger_report("T1", stats, scenarios, [30, 182, 365], n_sims=500)
+        assert "GG-105" not in report

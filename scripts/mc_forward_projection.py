@@ -67,6 +67,35 @@ HORIZONS_DAYS = [30, 182, 365]   # 1mo / 6mo / 1yr, per GG-071
 N_SIMS = 10_000
 SEED = 42
 
+# ---------------------------------------------------------------------------
+# T-342 — T4M-PROJ frozen "operational" citation (flat-stake regime).
+#
+# T4M-PROJ's live decision path (run_t4_mlb_live.py KELLY_T4=0.10) is
+# formula-proportional, not architecturally flat — but its typical computed
+# edge is tiny and stable enough that, over the observed window, per-bet
+# dollar stakes cluster tightly rather than visibly compounding with
+# bankroll growth the way T1's do (T-342 task framing: "~$0.47 flat"). This
+# is an empirical regime property, not a code-level guarantee, and should be
+# re-examined if edge size or bankroll growth materially shift.
+#
+# Frozen 2026-07-11 (T-342), from clean_n=338 (CURRENT_LOGIC_EPOCH-only)
+# records in the freshly-rebuilt logs/t4_mlb_resolved_ledger.jsonl (see
+# DECISION_LOG.md 2026-07-11 T-341 entry for the rebuild). Mirrors how
+# WIN_RATE/WIN_MULT/etc. above were frozen from a point-in-time GG-071 read
+# of the T1 ledger (SESSION 113, 2026-07-02) — same convention, new band.
+#
+# CAVEAT: cadence measured over only ~5.0 days of resolved history, below
+# the 14-day maturity floor (run_power_calc.MATURE_CADENCE_SPAN_DAYS) — this
+# bets_per_day figure is provisional and should be re-derived (or re-run via
+# --from-ledger T4M-PROJ, which always uses the LIVE ledger for floor/ceiling)
+# once more days accrue.
+# ---------------------------------------------------------------------------
+T4M_PROJ_WIN_RATE = 0.650887573964497
+T4M_PROJ_WIN_MULT = 1.7010275566641562
+T4M_PROJ_LOSS_MULT = 1.0
+T4M_PROJ_STAKE_USD = 0.5662869822485207
+T4M_PROJ_BETS_PER_DAY = 68
+
 
 @dataclass
 class SimParams:
@@ -74,10 +103,28 @@ class SimParams:
     win_mult: float = WIN_MULT
     loss_mult: float = LOSS_MULT
     stake_frac: float = STAKE_FRAC
+    stake_usd: float = 0.0           # T-342: used only when stake_mode == "flat"
+    stake_mode: str = "proportional"  # T-342: "proportional" (stake_frac*bankroll) or "flat" (fixed stake_usd, does not compound)
     cap_usd: float = CAP_USD
     bets_per_day: int = BETS_PER_DAY
     kill_switch_dd: float = KILL_SWITCH_DD
     starting_bankroll: float = STARTING_BANKROLL
+
+    def __post_init__(self):
+        if self.stake_mode not in ("proportional", "flat"):
+            raise ValueError(f"stake_mode must be 'proportional' or 'flat', got {self.stake_mode!r}")
+
+
+def t4m_proj_operational_params(cap_usd: float = CAP_USD, kill_switch_dd: float = KILL_SWITCH_DD,
+                                 starting_bankroll: float = STARTING_BANKROLL) -> "SimParams":
+    """T-342: T4M-PROJ's frozen operational scenario (flat-stake regime) —
+    the analogue of SimParams() (T1's frozen GG-071 defaults) for the new band."""
+    return SimParams(
+        win_rate=T4M_PROJ_WIN_RATE, win_mult=T4M_PROJ_WIN_MULT, loss_mult=T4M_PROJ_LOSS_MULT,
+        stake_mode="flat", stake_usd=T4M_PROJ_STAKE_USD, cap_usd=cap_usd,
+        bets_per_day=T4M_PROJ_BETS_PER_DAY, kill_switch_dd=kill_switch_dd,
+        starting_bankroll=starting_bankroll,
+    )
 
 
 def simulate_paths(
@@ -106,7 +153,10 @@ def simulate_paths(
             active = ~killed
             if not active.any():
                 break
-            stake = np.minimum(params.stake_frac * bankroll, params.cap_usd)
+            if params.stake_mode == "flat":
+                stake = np.minimum(np.full(n_sims, params.stake_usd, dtype=np.float64), params.cap_usd)
+            else:
+                stake = np.minimum(params.stake_frac * bankroll, params.cap_usd)
             stake = np.where(active, stake, 0.0)
             wins = rng.random(n_sims) < params.win_rate
             delta = np.where(wins, stake * params.win_mult, -stake * params.loss_mult)
@@ -157,9 +207,14 @@ def build_report(params: SimParams, horizons: list, n_sims: int, label: Optional
         "",
         "PARAMETERS",
         f"  Starting bankroll   : ${params.starting_bankroll:,.2f}",
-        f"  Stake fraction      : {params.stake_frac*100:.3f}% of current bankroll",
+    ]
+    if params.stake_mode == "flat":
+        lines.append(f"  Stake               : ${params.stake_usd:,.4f}/bet flat (T-342 — does not scale with bankroll)")
+    else:
+        lines.append(f"  Stake fraction      : {params.stake_frac*100:.3f}% of current bankroll")
+        lines.append(f"  Cap-engagement pt   : ~${params.cap_usd/params.stake_frac:,.0f} bankroll" if params.stake_frac > 0 else "  Cap-engagement pt   : n/a (stake_frac=0)")
+    lines += [
         f"  Absolute cap        : ${params.cap_usd:,.2f}/bet",
-        f"  Cap-engagement pt   : ~${params.cap_usd/params.stake_frac:,.0f} bankroll",
         f"  Win multiple        : +{params.win_mult*100:.1f}% of stake (profit)",
         f"  Loss multiple       : -{params.loss_mult*100:.1f}% of stake",
         f"  Kill switch (perm.) : {params.kill_switch_dd*100:.0f}% realized drawdown from peak",
@@ -300,6 +355,7 @@ class LedgerStats:
     win_mult: float
     loss_mult: float
     stake_frac: float
+    stake_usd_flat: float  # T-342: mean $ stake, bankroll-independent (for stake_mode="flat")
     starting_bankroll: float
     bets_per_day: int
     cadence_bets_per_week: Optional[float]
@@ -331,7 +387,8 @@ def derive_ledger_stats(band: str, recs: list, starting_bankroll: float) -> Ledg
     win_rate = len(wins) / n
     win_mult = statistics.mean(float(r["_pnl"]) / float(r["_size"]) for r in wins)
     loss_mult = statistics.mean(abs(float(r["_pnl"])) / float(r["_size"]) for r in losses)
-    stake_frac = statistics.mean(float(r["_size"]) for r in sized) / starting_bankroll
+    stake_usd_flat = statistics.mean(float(r["_size"]) for r in sized)
+    stake_frac = stake_usd_flat / starting_bankroll
 
     cadence_per_week, span_days = observed_cadence_per_week(recs)
     cadence_immature = span_days is not None and span_days < MATURE_CADENCE_SPAN_DAYS
@@ -344,6 +401,7 @@ def derive_ledger_stats(band: str, recs: list, starting_bankroll: float) -> Ledg
         win_mult=win_mult,
         loss_mult=loss_mult,
         stake_frac=stake_frac,
+        stake_usd_flat=stake_usd_flat,
         starting_bankroll=starting_bankroll,
         bets_per_day=bets_per_day,
         cadence_bets_per_week=cadence_per_week,
@@ -353,32 +411,60 @@ def derive_ledger_stats(band: str, recs: list, starting_bankroll: float) -> Ledg
 
 
 def build_ledger_scenarios(stats: LedgerStats, cap_usd: float = CAP_USD,
-                            kill_switch_dd: float = KILL_SWITCH_DD) -> dict:
-    """{floor, operational, ceiling} per T-330 spec:
+                            kill_switch_dd: float = KILL_SWITCH_DD,
+                            stake_mode: str = "proportional",
+                            operational: Optional[SimParams] = None) -> dict:
+    """{floor, operational, ceiling} per T-330 spec (T-342 extends with stake_mode):
       floor       = zero-edge breakeven win_rate, with the REAL observed
                     payout/stake/cadence mechanics from the clean_n ledger
                     ("if the edge turned out to be illusory, what's the ruin
                     risk under today's actual sizing behavior?").
-      operational = frozen ADR-0040/GG-071 module defaults — SimParams(),
-                    unchanged. This is the existing regression anchor and is
-                    NOT re-derived from the ledger (see
-                    TestGG071Reproduction in tests/test_mc_forward_projection.py).
-      ceiling     = fully observed win_rate/win_mult/loss_mult/stake_frac/
-                    cadence, all pulled from the clean_n ledger.
+      operational = frozen module defaults, NOT re-derived from the ledger —
+                    the existing regression anchor. Defaults to SimParams()
+                    (T1/GG-071 proportional-compounding defaults, unchanged —
+                    see TestGG071Reproduction in
+                    tests/test_mc_forward_projection.py) unless a band-
+                    specific `operational` SimParams is supplied (T-342: see
+                    t4m_proj_operational_params() for T4M-PROJ's analogue).
+      ceiling     = fully observed win_rate/win_mult/loss_mult/stake
+                    (proportional stake_frac or flat stake_usd, per
+                    stake_mode)/cadence, all pulled from the clean_n ledger.
+
+    stake_mode: "proportional" (default, unchanged behavior — stake scales
+    with current bankroll, T1-style compounding) or "flat" (T-342 — fixed
+    dollar stake_usd per bet, does not scale with bankroll; models T4M-PROJ's
+    observed near-constant per-bet dollar sizing).
     """
+    if stake_mode not in ("proportional", "flat"):
+        raise ValueError(f"stake_mode must be 'proportional' or 'flat', got {stake_mode!r}")
+
     p0 = stats.loss_mult / (stats.win_mult + stats.loss_mult)  # zero-edge breakeven win rate
-    floor = SimParams(
-        win_rate=p0, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
-        stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
-        kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
-    )
-    operational = SimParams()
-    ceiling = SimParams(
-        win_rate=stats.win_rate, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
-        stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
-        kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
-    )
-    return {"floor": floor, "operational": operational, "ceiling": ceiling}
+    if stake_mode == "flat":
+        floor = SimParams(
+            win_rate=p0, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+            stake_mode="flat", stake_usd=stats.stake_usd_flat, cap_usd=cap_usd,
+            bets_per_day=stats.bets_per_day, kill_switch_dd=kill_switch_dd,
+            starting_bankroll=stats.starting_bankroll,
+        )
+        ceiling = SimParams(
+            win_rate=stats.win_rate, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+            stake_mode="flat", stake_usd=stats.stake_usd_flat, cap_usd=cap_usd,
+            bets_per_day=stats.bets_per_day, kill_switch_dd=kill_switch_dd,
+            starting_bankroll=stats.starting_bankroll,
+        )
+    else:
+        floor = SimParams(
+            win_rate=p0, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+            stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
+            kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
+        )
+        ceiling = SimParams(
+            win_rate=stats.win_rate, win_mult=stats.win_mult, loss_mult=stats.loss_mult,
+            stake_frac=stats.stake_frac, cap_usd=cap_usd, bets_per_day=stats.bets_per_day,
+            kill_switch_dd=kill_switch_dd, starting_bankroll=stats.starting_bankroll,
+        )
+    operational_params = operational if operational is not None else SimParams()
+    return {"floor": floor, "operational": operational_params, "ceiling": ceiling}
 
 
 def bootstrap_kill_ci(
@@ -392,6 +478,7 @@ def bootstrap_kill_ci(
     n_boot: int = 200,
     boot_sims: int = 1000,
     seed: int = SEED,
+    stake_mode: str = "proportional",
 ) -> dict:
     """Bootstrap-resample (with replacement) the clean_n record set n_boot times;
     for each resample, re-derive win_rate/win_mult/loss_mult/stake_frac/cadence
@@ -401,7 +488,12 @@ def bootstrap_kill_ci(
     "floor" the win_rate is recomputed as that resample's own zero-edge
     breakeven point (not resampled directly), since floor asks "given this
     resample's real payout structure, what if the edge were illusory."
+
+    stake_mode (T-342): "proportional" (default, unchanged) or "flat" — must
+    match the stake_mode used for the point-estimate scenario being CI'd.
     """
+    if stake_mode not in ("proportional", "flat"):
+        raise ValueError(f"stake_mode must be 'proportional' or 'flat', got {stake_mode!r}")
     if scenario_name not in ("floor", "ceiling"):
         raise ValueError('scenario_name must be "floor" or "ceiling"')
 
@@ -420,11 +512,19 @@ def bootstrap_kill_ci(
             continue
 
         win_rate = (s.loss_mult / (s.win_mult + s.loss_mult)) if scenario_name == "floor" else s.win_rate
-        params = SimParams(
-            win_rate=win_rate, win_mult=s.win_mult, loss_mult=s.loss_mult,
-            stake_frac=s.stake_frac, cap_usd=cap_usd, bets_per_day=s.bets_per_day,
-            kill_switch_dd=kill_switch_dd, starting_bankroll=starting_bankroll,
-        )
+        if stake_mode == "flat":
+            params = SimParams(
+                win_rate=win_rate, win_mult=s.win_mult, loss_mult=s.loss_mult,
+                stake_mode="flat", stake_usd=s.stake_usd_flat, cap_usd=cap_usd,
+                bets_per_day=s.bets_per_day, kill_switch_dd=kill_switch_dd,
+                starting_bankroll=starting_bankroll,
+            )
+        else:
+            params = SimParams(
+                win_rate=win_rate, win_mult=s.win_mult, loss_mult=s.loss_mult,
+                stake_frac=s.stake_frac, cap_usd=cap_usd, bets_per_day=s.bets_per_day,
+                kill_switch_dd=kill_switch_dd, starting_bankroll=starting_bankroll,
+            )
         probs, _ = kill_prob_at_horizons(params, horizons, n_sims=boot_sims, seed=seed + b + 1)
         for h in horizons:
             per_horizon[h].append(probs[h])
@@ -465,8 +565,12 @@ def build_ledger_report(
         f"  observed win_rate    : {stats.win_rate:.4f}",
         f"  observed win_mult    : {stats.win_mult:.4f}",
         f"  observed loss_mult   : {stats.loss_mult:.4f}",
-        f"  observed stake_frac  : {stats.stake_frac*100:.4f}% of ${stats.starting_bankroll:,.2f} bankroll",
     ]
+    stake_mode = scenarios["floor"].stake_mode
+    if stake_mode == "flat":
+        lines.append(f"  observed stake ($)   : ${stats.stake_usd_flat:,.4f}/bet flat (T-342 — does not scale with bankroll)")
+    else:
+        lines.append(f"  observed stake_frac  : {stats.stake_frac*100:.4f}% of ${stats.starting_bankroll:,.2f} bankroll")
     if stats.cadence_bets_per_week is not None:
         lines.append(f"  observed cadence     : {stats.cadence_bets_per_week:.1f} bets/wk -> {stats.bets_per_day} bets/day")
     else:
@@ -476,18 +580,37 @@ def build_ledger_report(
             f"  CAVEAT: cadence measured over only {stats.cadence_span_days:.1f} days "
             f"(< {MATURE_CADENCE_SPAN_DAYS:.0f}-day maturity floor) — provisional, re-derive as more days accrue."
         )
+    if band == "T4M-PROJ":
+        lines += [
+            "",
+            "  GG-105 CAVEAT (T-342): T4M-PROJ's own computed edge is ANTI_PREDICTIVE against",
+            "  realized win rate on clean data (clean_n=338, Fisher p=0.0563) — this is a live,",
+            "  unresolved finding, not historical. The ruin-risk figures below (including any",
+            "  flat-vs-proportional sizing comparison) describe the SIZING MECHANIC's structural",
+            "  behavior only. They do NOT certify that T4M-PROJ's edge is real. Read this report",
+            "  together with GG-105, never in isolation.",
+        ]
     lines += ["", "KILL-SWITCH BREACH PROBABILITY BY SCENARIO", ""]
 
+    op_desc = (
+        "frozen T-342 T4M-PROJ operational defaults, flat-stake regime (regression anchor, unchanged)"
+        if scenarios["operational"].stake_mode == "flat"
+        else "frozen ADR-0040/GG-071 module defaults (regression anchor, unchanged)"
+    )
     desc = {
         "floor": "zero-edge breakeven win_rate; real observed payout/stake/cadence mechanics",
-        "operational": "frozen ADR-0040/GG-071 module defaults (regression anchor, unchanged)",
+        "operational": op_desc,
         "ceiling": "fully observed win_rate/payout/stake/cadence from the clean_n ledger",
     }
     for name in ("floor", "operational", "ceiling"):
         params = scenarios[name]
         probs, _ = kill_prob_at_horizons(params, horizons, n_sims=n_sims)
+        stake_desc = (
+            f"stake=${params.stake_usd:,.4f}/bet flat" if params.stake_mode == "flat"
+            else f"stake_frac={params.stake_frac*100:.3f}%"
+        )
         lines.append(
-            f"  [{name.upper()}] win_rate={params.win_rate:.4f}  stake_frac={params.stake_frac*100:.3f}%  "
+            f"  [{name.upper()}] win_rate={params.win_rate:.4f}  {stake_desc}  "
             f"bets/day={params.bets_per_day}  bankroll=${params.starting_bankroll:,.2f}"
         )
         lines.append(f"    {desc[name]}")
@@ -547,6 +670,11 @@ def main() -> None:
                               "Only used with --bootstrap.")
     parser.add_argument("--boot-sims", type=int, default=500, dest="boot_sims",
                          help="MC paths per bootstrap resample (default 500, only used with --bootstrap)")
+    parser.add_argument("--stake-mode", dest="stake_mode", choices=["auto", "proportional", "flat"],
+                         default="auto",
+                         help="T-342: 'auto' (default) picks 'flat' for T4M-PROJ and 'proportional' for "
+                              "T1/T2/T3, matching each band's real sizing mechanic; override explicitly "
+                              "with 'proportional' or 'flat'. Only used with --from-ledger.")
     args = parser.parse_args()
 
     if args.from_ledger:
@@ -556,7 +684,18 @@ def main() -> None:
         except ValueError as e:
             print(f"[--from-ledger error] {e}", file=sys.stderr)
             raise SystemExit(1)
-        scenarios = build_ledger_scenarios(stats, cap_usd=args.cap)
+
+        if args.stake_mode == "auto":
+            stake_mode = "flat" if args.from_ledger == "T4M-PROJ" else "proportional"
+        else:
+            stake_mode = args.stake_mode
+
+        operational = (
+            t4m_proj_operational_params(cap_usd=args.cap, starting_bankroll=args.bankroll)
+            if (args.from_ledger == "T4M-PROJ" and stake_mode == "flat")
+            else None
+        )
+        scenarios = build_ledger_scenarios(stats, cap_usd=args.cap, stake_mode=stake_mode, operational=operational)
 
         boot_ci = None
         if args.bootstrap:
@@ -567,6 +706,7 @@ def main() -> None:
                     starting_bankroll=args.bankroll, cap_usd=args.cap,
                     kill_switch_dd=KILL_SWITCH_DD, horizons=HORIZONS_DAYS,
                     n_boot=args.n_boot, boot_sims=args.boot_sims,
+                    stake_mode=stake_mode,
                 )
 
         report = build_ledger_report(args.from_ledger, stats, scenarios, HORIZONS_DAYS, args.n_sims, boot_ci=boot_ci)
