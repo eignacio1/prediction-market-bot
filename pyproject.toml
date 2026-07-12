@@ -62,6 +62,8 @@ markers = [
     "integration: tests requiring real I/O",
     "temporal: temporal integrity validation tests",
     "calibration: model calibration tests",
+    "property: Hypothesis property-based tests on the bet-approval path (T-325)",
+    "golden: golden-replay fixture tests on the bet-approval path (T-326)",
 ]
 
 [tool.bandit]
