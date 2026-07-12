@@ -1,0 +1,113 @@
+{
+  "clean_n": 412,
+  "raw_n": 656,
+  "logic_epoch": 3,
+  "by_direction_unconditional": {
+    "YES": {
+      "n": 75,
+      "win_rate": 0.44
+    },
+    "NO": {
+      "n": 337,
+      "win_rate": 0.6677
+    }
+  },
+  "monotonicity_by_framing": {
+    "live_buggy": {
+      "label": "live_buggy",
+      "n_pos": 412,
+      "n_neg": 0,
+      "winrate_pos": 0.6262135922330098,
+      "winrate_neg": NaN,
+      "fisher_odds_ratio": null,
+      "fisher_pvalue": null
+    },
+    "analysis_no_vig": {
+      "label": "analysis_no_vig",
+      "n_pos": 389,
+      "n_neg": 23,
+      "winrate_pos": 0.6143958868894601,
+      "winrate_neg": 0.8260869565217391,
+      "fisher_odds_ratio": 0.3354385964912281,
+      "fisher_pvalue": 0.046388749198583254
+    },
+    "corrected_symmetric_vig": {
+      "label": "corrected_symmetric_vig",
+      "n_pos": 275,
+      "n_neg": 137,
+      "winrate_pos": 0.5818181818181818,
+      "winrate_neg": 0.7153284671532847,
+      "fisher_odds_ratio": 0.5536823425022183,
+      "fisher_pvalue": 0.009435736333834486
+    }
+  },
+  "terciles_all_corrected": [
+    {
+      "tercile": 1,
+      "n": 137,
+      "edge_min": -0.3097,
+      "edge_max": -0.0005,
+      "win_rate": 0.7153
+    },
+    {
+      "tercile": 2,
+      "n": 137,
+      "edge_min": 0.0001,
+      "edge_max": 0.078,
+      "win_rate": 0.5912
+    },
+    {
+      "tercile": 3,
+      "n": 138,
+      "edge_min": 0.0784,
+      "edge_max": 0.7026,
+      "win_rate": 0.5725
+    }
+  ],
+  "terciles_yes_only_corrected": [
+    {
+      "tercile": 1,
+      "n": 25,
+      "edge_min": 0.0408,
+      "edge_max": 0.0588,
+      "win_rate": 0.4
+    },
+    {
+      "tercile": 2,
+      "n": 25,
+      "edge_min": 0.0604,
+      "edge_max": 0.0966,
+      "win_rate": 0.48
+    },
+    {
+      "tercile": 3,
+      "n": 25,
+      "edge_min": 0.0975,
+      "edge_max": 0.2343,
+      "win_rate": 0.44
+    }
+  ],
+  "terciles_no_only_corrected": [
+    {
+      "tercile": 1,
+      "n": 112,
+      "edge_min": -0.3097,
+      "edge_max": -0.0186,
+      "win_rate": 0.7054
+    },
+    {
+      "tercile": 2,
+      "n": 112,
+      "edge_min": -0.0186,
+      "edge_max": 0.0668,
+      "win_rate": 0.6875
+    },
+    {
+      "tercile": 3,
+      "n": 113,
+      "edge_min": 0.0673,
+      "edge_max": 0.7026,
+      "win_rate": 0.6106
+    }
+  ]
+}
