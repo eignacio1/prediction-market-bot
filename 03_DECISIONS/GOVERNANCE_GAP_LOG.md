@@ -1890,6 +1890,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-111 — Local-vs-UTC date mismatch in T-343's own new test makes it fail depending on time-of-day the suite is run
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-111 |
+| Category | Test fragility — time-drift dependent test, silent pass/fail based on wall-clock timing |
+| What was missed | `tests/test_run_mlb_paper_trade.py::TestMainSemanticFloorViolationFiresLive::test_retry_recovers_when_later_fetch_matches_players` (introduced by T-343's own merge, `bd4a395`, GG-110's fix commit) computes `today_iso = date.today().isoformat()` (line 638) — the **local** wall-clock date — and feeds it into a mocked `_ticker_to_game_date` used to simulate a Kalshi market ticker that recovers on retry. Production code (`run_mlb_paper_trade.py:116-124,721`) deliberately computes `GAME_DATE_ISO` from `datetime.now(tz=timezone.utc)`, by explicit design (comment at :116-120: cron runs 11:00 UTC / 7am ET so UTC-basis keeps today's ET games in `Preview` state). When local and UTC calendar dates diverge — i.e., any time after roughly 5pm PDT / 8pm EDT through midnight local — the test's mocked "recovered" market's date never matches the production `GAME_DATE_ISO` it's compared against, the intended-to-match retry never matches, the test's 2-item `fetch_all_markets.side_effect` list is exhausted by an unplanned extra retry attempt, and `StopIteration` is raised instead of the intended assertions running. |
+| When it should have been caught | At T-343's own merge, by running the full suite at a UTC-vs-local boundary time (evening Pacific), or by code review noticing the test used `date.today()` while the code under test explicitly documents a UTC basis two lines away in its own module. |
+| Phases it survived | Landed in `main` via T-343 (`bd4a395`) same-day as GG-110's resolution; survived until this session's (T-341/T-342, `20260711T225758Z-...`) mandatory pre-merge full-suite regression check, run in the evening Pacific / next-day UTC window, which is exactly when it fails. |
+| Why it survived | T-343's own merge session evidently ran the suite (or wasn't caught by CI) at a time-of-day where local and UTC dates coincided, so the bug was latent and invisible until a session ran the suite during the local/UTC date-boundary window. No CI check runs the suite repeatedly across different times of day, so this class of fragility has no structural catch mechanism. |
+| Impact | LOW/test-only — the production `run_mlb_paper_trade.py` UTC-basis logic is correct and unaffected; only this one test's mocked date source is wrong. Confirmed via direct comparison against the clean `main` worktree at `967beec` (pre-dating this session's changes) that the identical failure reproduces there too — this is a pre-existing defect on `main`, not introduced by T-341/T-342's branch. No other of the file's 3 other `date.today()` call sites (lines 391, 508, 773) are affected — those populate a feature CSV `game_date` column for T-193 freshness-guard purposes only and are self-consistent regardless of local/UTC divergence. |
+| Discovery | 2026-07-11 (into 2026-07-12 UTC), this session (T-341/T-342), via CLAUDE.md/session convention's mandatory full-suite pre-merge health check after rebasing onto `origin/main` (which had independently advanced via T-343). System clock at time of discovery: local `Sat Jul 11 22:03:29 PDT 2026` vs UTC `Sun Jul 12 05:03:29 UTC 2026`. Root-caused via: reading the failing test's full source, confirming production's deliberate UTC basis via its own code comments, and reproducing the identical failure against the separate clean `main` worktree at `967beec` to rule out this session's own rebase as the cause. |
+| Resolution | Test-only fix: change line 638's `today_iso = date.today().isoformat()` to a UTC-based equivalent (e.g. `datetime.now(timezone.utc).date().isoformat()`) matching the production code's own basis, applied only to this one test. Fixed same-day in this session (T-341/T-342 branch) immediately following this registration. |
+| Status | RESOLVED [2026-07-11/12] — fixed same-day, in this session, immediately after registration. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
