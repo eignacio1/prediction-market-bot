@@ -1,0 +1,49 @@
+{
+  "scenario": "01_t1_yes_clear_edge",
+  "description": "T1 baseline: model_p clearly above market, positive gross_edge, YES direction. Vanilla path with no GG-077/GG-087 mechanics engaged -- the control case the other fixtures are differential against.",
+  "flow": "t1_direct",
+  "risk_engine": {
+    "bankroll": 1000.0,
+    "kelly_fraction": 0.25,
+    "initial_bankroll": null,
+    "min_bet_usd": null
+  },
+  "evaluate_forecast_kwargs": {
+    "current_daily_loss": 0.0,
+    "current_drawdown_pct": 0.0,
+    "current_open_exposure_usd": 0.0,
+    "portfolio_equity_usd": null,
+    "pool_isolated": false
+  },
+  "forecast_record": {
+    "forecast_id": "GOLDEN-01-T1-YES",
+    "p_estimate": 0.60,
+    "market_implied_prob": 0.50,
+    "gross_edge": 0.10,
+    "edge": 0.0825,
+    "recommended_direction": "YES"
+  },
+  "expected_approval": {
+    "approval_status": "APPROVED",
+    "rejection_reason": null,
+    "approved_direction": "YES",
+    "approved_size": 50.0
+  },
+  "paper_trader": {
+    "mid_price": 0.50,
+    "vig": 0.0,
+    "player_name": "Golden Player 01",
+    "player_id": 1,
+    "kalshi_ticker": "KXMLBHIT-GOLDEN01",
+    "kalshi_threshold": 1,
+    "game_date": "2026-05-30"
+  },
+  "expected_position": {
+    "direction": "YES",
+    "size_usd": 50.0,
+    "gross_edge": 0.10,
+    "fee_per_contract": 0.0175,
+    "fee_net_edge": 0.0825,
+    "fee_contaminated": false
+  }
+}
