@@ -191,6 +191,45 @@ else:
     print('  (clean_n = resolved under CURRENT_LOGIC_EPOCH; G6 progress language should cite clean_n, not raw_n.)')
 EOF
 
+# --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
+# n* is the variance-derived sample needed for 95% power to distinguish
+# edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500
+# heuristic. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T338_CLEAN_N_VS_N_STAR_MEMO.md.
+echo ""
+echo "SAMPLE ADEQUACY (T-338 — clean_n vs n* per band):"
+python3 scripts/build_t4_resolved_ledger.py --portfolio "$CACHE_T4M" \
+    --out logs/t4_mlb_resolved_ledger.jsonl >/dev/null 2>&1
+python3 - <<'EOF'
+import sys
+from pathlib import Path
+sys.path.insert(0, "scripts")
+try:
+    from run_power_calc import run_all_bands
+    results = run_all_bands(
+        Path("logs/.vps_portfolio_cache_mlb.json"),
+        Path("logs/t4_mlb_resolved_ledger.jsonl"),
+        0.05, 0.95,
+    )
+except Exception as e:
+    print(f'  Could not compute power calc: {e}')
+    results = None
+if results:
+    parts = []
+    for band, r in results.items():
+        if r["status"] in ("INSUFFICIENT_DATA", "NO_POSITIVE_EFFECT"):
+            parts.append(f"[{band}] clean_n={r['clean_n']} {r['status'].lower()}")
+            continue
+        eta = f"{r['eta_weeks']:.1f}wk" if r["eta_weeks"] is not None else "unknown"
+        flag = " IMMATURE" if r.get("cadence_immature") else ""
+        parts.append(
+            f"[{band}] clean_n={r['clean_n']}/n*={r['n_star']} "
+            f"(needs {r['gap_to_n_star']} more) ETA~{eta}{flag}"
+        )
+    print("  " + "  |  ".join(parts))
+    print("  (n* = 95%-power sample vs flat GG-004 heuristic; ETA provisional until cadence "
+          "span >= 14d. See T338_CLEAN_N_VS_N_STAR_MEMO.md.)")
+EOF
+
 echo ""
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"

@@ -387,8 +387,12 @@ class TestMainNoMarkets:
         feature_csv = tmp_path / "mlb_feature_matrix.csv"
         # Use today's date so the freshness guard (T-193) does not halt before
         # the "no markets" exit path is reached.
-        from datetime import date
-        today_iso = date.today().isoformat()
+        from datetime import datetime, timezone
+        # UTC, not local date.today() — GAME_DATE_ISO (run_mlb_paper_trade.py)
+        # is computed from datetime.now(tz=timezone.utc).date(). Near a UTC
+        # midnight rollover, a local-timezone date can lag a day behind that,
+        # breaking ticker/game-date equality checks against GAME_DATE_ISO.
+        today_iso = datetime.now(timezone.utc).date().isoformat()
         header = (
             "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
             "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
@@ -504,8 +508,12 @@ class TestMainSemanticFloorViolationFiresLive:
         sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
         import prediction_market_bot.run_mlb_paper_trade as runner
 
-        from datetime import date
-        today_iso = date.today().isoformat()
+        from datetime import datetime, timezone
+        # UTC, not local date.today() — GAME_DATE_ISO (run_mlb_paper_trade.py)
+        # is computed from datetime.now(tz=timezone.utc).date(). Near a UTC
+        # midnight rollover, a local-timezone date can lag a day behind that,
+        # breaking ticker/game-date equality checks against GAME_DATE_ISO.
+        today_iso = datetime.now(timezone.utc).date().isoformat()
 
         feature_csv = tmp_path / "mlb_feature_matrix.csv"
         header = (
@@ -634,8 +642,12 @@ class TestMainSemanticFloorViolationFiresLive:
         sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
         import prediction_market_bot.run_mlb_paper_trade as runner
 
-        from datetime import date
-        today_iso = date.today().isoformat()
+        from datetime import datetime, timezone
+        # UTC, not local date.today() — GAME_DATE_ISO (run_mlb_paper_trade.py)
+        # is computed from datetime.now(tz=timezone.utc).date(). Near a UTC
+        # midnight rollover, a local-timezone date can lag a day behind that,
+        # breaking ticker/game-date equality checks against GAME_DATE_ISO.
+        today_iso = datetime.now(timezone.utc).date().isoformat()
 
         feature_csv = tmp_path / "mlb_feature_matrix.csv"
         header = (
@@ -769,8 +781,12 @@ class TestMainSemanticFloorViolationFiresLive:
         sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
         import prediction_market_bot.run_mlb_paper_trade as runner
 
-        from datetime import date
-        today_iso = date.today().isoformat()
+        from datetime import datetime, timezone
+        # UTC, not local date.today() — GAME_DATE_ISO (run_mlb_paper_trade.py)
+        # is computed from datetime.now(tz=timezone.utc).date(). Near a UTC
+        # midnight rollover, a local-timezone date can lag a day behind that,
+        # breaking ticker/game-date equality checks against GAME_DATE_ISO.
+        today_iso = datetime.now(timezone.utc).date().isoformat()
 
         feature_csv = tmp_path / "mlb_feature_matrix.csv"
         header = (
