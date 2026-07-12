@@ -126,6 +126,19 @@ done
 # CURRENT_LOGIC_EPOCH), not raw_n, since raw_n includes bets contaminated by
 # GG-077/GG-087 write-path bugs closed 2026-07-05. See src/prediction_market_bot/
 # logic_epoch.py for the epoch-boundary table and why GG-100 is excluded.
+#
+# GG-112/T-344: this section previously computed T4M-PROJ's raw_n/clean_n with
+# a standalone `_band_counts()` filter requiring `p.get('band') == 'T4M-PROJ'`
+# on the raw portfolio. 356 legacy closed_positions rows in
+# paper_portfolio_mlb_t4.json predate the `band` field being written and were
+# silently excluded (undercounted clean_n by 112 vs SAMPLE ADEQUACY below,
+# 300 vs 412 observed 2026-07-12). The canonical build_t4_resolved_ledger.py ->
+# run_band_monitor.py pipeline correctly treats every row in this
+# T4M-dedicated file as T4M-PROJ regardless of an unpopulated band field.
+# Both sections now share one ledger build and one counting function
+# (run_band_monitor.load_t4_ledger + filter_clean) so they cannot diverge
+# again for T4M-PROJ. T1/T2 are unaffected (load_pool_by_band already used
+# the same band-field filter as _band_counts()) and keep their existing path.
 echo ""
 echo "CLEAN-LOGIC PROVENANCE (T-320/T-321 — raw_n vs clean_n per band):"
 CACHE_T4M="logs/.vps_portfolio_cache_mlb_t4.json"
@@ -144,16 +157,21 @@ if [ "$fetch_needed" -eq 1 ]; then
         rm -f "$CACHE_T4M.tmp"
     fi
 fi
-python3 - "logs/.vps_portfolio_cache_mlb.json" "logs/paper_portfolio_mlb.json" "$CACHE_T4M" "logs/paper_portfolio_mlb_t4.json" <<'EOF'
+python3 scripts/build_t4_resolved_ledger.py --portfolio "$CACHE_T4M" \
+    --out logs/t4_mlb_resolved_ledger.jsonl >/dev/null 2>&1
+python3 - "logs/.vps_portfolio_cache_mlb.json" "logs/paper_portfolio_mlb.json" "logs/t4_mlb_resolved_ledger.jsonl" <<'EOF'
 import json, os, sys
+from pathlib import Path
 
-mlb_cache, mlb_local, t4m_cache, t4m_local = sys.argv[1:5]
+mlb_cache, mlb_local, t4_ledger_path = sys.argv[1:4]
 
 sys.path.insert(0, "src")
+sys.path.insert(0, "scripts")
 try:
     from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
 except Exception:
     CURRENT_LOGIC_EPOCH = None
+from run_band_monitor import load_t4_ledger, filter_clean
 
 def _load(cache, local):
     path = cache if os.path.exists(cache) else local
@@ -174,7 +192,6 @@ if CURRENT_LOGIC_EPOCH is None:
     print('  Could not import logic_epoch — skipping clean_n breakdown')
 else:
     mlb = _load(mlb_cache, mlb_local)
-    t4m = _load(t4m_cache, t4m_local)
     parts = []
     if mlb is not None:
         for band in ('T1', 'T2'):
@@ -182,23 +199,22 @@ else:
             parts.append(f'MLB {band}: raw_n={raw_n} clean_n={clean_n}')
     else:
         parts.append('MLB T1/T2: portfolio unavailable')
-    if t4m is not None:
-        raw_n, clean_n = _band_counts(t4m, 'T4M-PROJ')
-        parts.append(f'MLB T4M-PROJ: raw_n={raw_n} clean_n={clean_n}')
-    else:
-        parts.append('MLB T4M-PROJ: portfolio unavailable')
+    t4_recs = load_t4_ledger(Path(t4_ledger_path))
+    t4_raw_n = len(t4_recs)
+    t4_clean_n = len(filter_clean(t4_recs))
+    parts.append(f'MLB T4M-PROJ: raw_n={t4_raw_n} clean_n={t4_clean_n}')
     print('  ' + ', '.join(parts) + '.')
     print('  (clean_n = resolved under CURRENT_LOGIC_EPOCH; G6 progress language should cite clean_n, not raw_n.)')
+    print('  (T4M-PROJ counted via the canonical build_t4_resolved_ledger.py/run_band_monitor.py path — GG-112/T-344.)')
 EOF
 
 # --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
 # n* is the variance-derived sample needed for 95% power to distinguish
 # edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500
 # heuristic. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T338_CLEAN_N_VS_N_STAR_MEMO.md.
+# Ledger already built above (shared with CLEAN-LOGIC PROVENANCE, GG-112/T-344).
 echo ""
 echo "SAMPLE ADEQUACY (T-338 — clean_n vs n* per band):"
-python3 scripts/build_t4_resolved_ledger.py --portfolio "$CACHE_T4M" \
-    --out logs/t4_mlb_resolved_ledger.jsonl >/dev/null 2>&1
 python3 - <<'EOF'
 import sys
 from pathlib import Path

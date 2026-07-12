@@ -51,3 +51,4 @@
 | 2026-07-12T09:50:32Z | T-346,T-347 | Window 3: T-346 GG-092 incident runbooks (FM-01/02/05/07) + T-347 GG-093 threat model re-expand (live Kalshi RSA) |
 | 2026-07-12T09:50:40Z | T-344,T-345 | T-344/T-345: GG-105 decomposition (T4M-PROJ anti-predictive edge) + GG-020 fee verification |
 | 2026-07-12T10:15:19Z | GG-112 | GG-112: recover crashed-window ADR-0024/GG-004 recommendation list; fix GG-111 claim collision |
+| 2026-07-12T09:47:24Z | T-344, GG-111 | T-344: fix GG-111 governance_scan.sh dual clean_n code paths |
