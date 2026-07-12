@@ -590,6 +590,23 @@ def build_ledger_report(
             "  behavior only. They do NOT certify that T4M-PROJ's edge is real. Read this report",
             "  together with GG-105, never in isolation.",
         ]
+    if band == "T4M-PROJ" and stake_mode == "flat":
+        lines += [
+            "",
+            "  GG-078 CAVEAT (T-350): T4M-PROJ's live code is Kelly-PROPORTIONAL (KELLY_T4=0.10),",
+            "  the same sizing family as T1 — not a hardcoded flat-dollar path. The flat-stake",
+            "  numbers below are an OBSERVED EMPIRICAL REGIME (tight, stable tiny edge -> stakes",
+            "  clustering near a near-constant dollar amount over a short window), not a code",
+            "  guarantee that will hold as bankroll moves. GG-078 already found that Kelly-",
+            "  proportional sizing at T4's real high cadence produces a FAST, front-loaded kill",
+            "  dynamic (~15-day decision horizon at breakeven, via the separate mc_t4_leg.py",
+            "  analysis) — structurally different from the gradual, full-year risk accumulation",
+            "  shown below. Do not read the 182d/365d figures in this flat-mode report as",
+            "  evidence that T4M-PROJ is safe out to a year under its real sizing mechanic; they",
+            "  describe only the flat-stake hypothetical. If observed stakes begin to visibly",
+            "  compound with bankroll, GG-078's fast-decision dynamic is the operative risk model,",
+            "  not this one.",
+        ]
     lines += ["", "KILL-SWITCH BREACH PROBABILITY BY SCENARIO", ""]
 
     op_desc = (
