@@ -74,7 +74,10 @@ def test_rows_and_games_per_day(tmp_path):
     line = [l for l in out.splitlines() if l.strip().startswith(D0 + ":")][0]
     assert "rows=3" in line
     assert "games=2" in line  # GAMEA, GAMEB distinct; OLD day excluded entirely
-    assert OLD not in out
+    # A plain substring check on OLD is unsafe: the script's footnote text cites
+    # historical GG-080 dates (e.g. 2026-07-02/03) that can coincidentally equal
+    # OLD depending on when the test runs. Check the per-day breakdown line only.
+    assert not any(l.strip().startswith(OLD + ":") for l in out.splitlines())
 
 
 def test_fire_rate_and_decision_counts(tmp_path):
@@ -180,4 +183,7 @@ def test_days_window_excludes_old_dates(tmp_path):
     rows = [{"game_date": OLD, "ticker": "KXMLBHIT-26JULGAMEA-PLAYERX-1"}]
     _write_jsonl(tmp_path / "t4_mlb_cycle_log.jsonl", rows)
     out = _run(tmp_path, days=3)
-    assert OLD not in out
+    # See test_rows_and_games_per_day for why this checks the per-day line
+    # rather than a blind substring — OLD can coincidentally match unrelated
+    # historical dates in the script's own footnote text.
+    assert not any(l.strip().startswith(OLD + ":") for l in out.splitlines())
