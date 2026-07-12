@@ -40,3 +40,36 @@ worktree — see `RESUME_HERE.md`), then push/merge/deploy.
 ```
 Read RESUME_HERE.md in the worktree root, then follow it exactly.
 ```
+
+---
+
+## CLOSEOUT ADDENDUM — 2026-07-12 (tokens reset, session resumed and finished)
+
+The pending rebase above completed cleanly on resume: all 5 commits
+reapplied onto `origin/main`'s advanced tip (`82306d4`), including the
+`04_EXECUTION/.last_session_checkpoint` conflict (resolved by pointing at
+`994d8d8`, the reapplied GG-111-fix commit). Full suite re-confirmed:
+**2672 passed, 29 skipped, 0 failed** — matches the pre-rebase baseline
+exactly, no regressions from either rebase wave.
+
+Force-pushed (`--force-with-lease`), then **PR #11 merged to `main`**
+(merge commit `25d2399`, `mergeStateStatus: CLEAN`, no CI checks configured
+so nothing blocked it). **Deployed to VPS** (`prediction-market-vps`,
+`/opt/prediction-market-bot`) — fast-forwarded `7fa0ff7..25d2399`,
+`t4-mlb` systemd service confirmed `active` post-deploy. Worktree
+`PM-worktrees/20260711T225758Z-t341-t342-monitor-cron-flat-mc` removed;
+local and remote copies of
+`session/20260711T225758Z-t341-t342-monitor-cron-flat-mc` deleted.
+`RESUME_HERE.md` deleted (scratch recovery artifact, no longer needed —
+its job is done).
+
+**T-341 and T-342 are both fully closed: code, tests, docs, merged to
+`main`, and live on the VPS.** No further action pending on either task.
+
+This session-end pass additionally refreshed `exp_output/T323-POWER-CALC/
+power_calc_results.json` via the routine governance-scan hook re-run
+(T4M-PROJ clean_n grew 338→412 against live ledger data since the last
+snapshot — routine artifact update, not a new finding) and advanced
+`04_EXECUTION/.last_session_checkpoint` to `25d2399` (this session's final
+`main` HEAD) so the next session's `session_delta.sh` diffs from the
+correct point.
