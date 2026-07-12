@@ -1,13 +1,13 @@
 # APR-0024 — Re-base G6/Commercial-Validation Sample-Adequacy on Per-Band Variance-Derived n*
 
-**Status:** PENDING — DS sign-off required
+**Status:** ACCEPTED
 **Amends:** CLAUDE.md § "The commercial validation gap" / § "Gate structure" (prose only, not an ADR by
 itself — see § Scope below for why ADR-0024 (stop-pivot-criterion) is flagged but not superseded here)
 **Drafted:** 2026-07-11, Window 2 (T-339/N-04), session `20260711T225312Z-window2-n03-n05-cleann-gate`
 **Analysis source:** T-338 (`scripts/run_power_calc.py`, live 2026-07-11 pull) —
 `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T338_CLEAN_N_VS_N_STAR_MEMO.md`
-**Approved by:** [pending — DS: Earl Ignacio]
-**Effective:** Upon DS sign-off; governs go-forward gate language only — does not retroactively invalidate
+**Approved by:** Earl Ignacio (DS)
+**Effective:** 2026-07-12 (signed off); governs go-forward gate language only — does not retroactively invalidate
 any evidence verdict already reached under the prior heuristic (see § Does NOT Change)
 
 ---
@@ -118,22 +118,23 @@ Activation Gate for the NBA-era per-bucket floors.
 
 ## Review Checklist
 
-- [ ] `n*` methodology (T-323, `scripts/run_power_calc.py`) reviewed and accepted as the sample-adequacy
+- [x] `n*` methodology (T-323, `scripts/run_power_calc.py`) reviewed and accepted as the sample-adequacy
       standard for G6/commercial-validation, replacing the flat 30/150/500 heuristic in gate *prose* —
       acceptable
-- [ ] Per-band live figures as of 2026-07-11 (T1 clean_n=81/n*=2,322; T4M-PROJ clean_n=338/n*=787; T2/T3
+- [x] Per-band live figures as of 2026-07-11 (T1 clean_n=81/n*=2,322; T4M-PROJ clean_n=338/n*=787; T2/T3
       insufficient data) reviewed — acceptable
-- [ ] Historical GG-004 Tier-1 DIRECTIONAL_POSITIVE verdict (n=151) explicitly NOT retracted by this APR,
+- [x] Historical GG-004 Tier-1 DIRECTIONAL_POSITIVE verdict (n=151) explicitly NOT retracted by this APR,
       go-forward language only — acceptable
-- [ ] ADR-0024 itself is NOT superseded by this APR (prose-only amendment to CLAUDE.md/MEMORY_BANK gate
-      language) — **DS decision required:** should a follow-on superseding ADR formally replace ADR-0024's
-      own Tier 1/Tier 2 σ-assumption-based thresholds with the `n*` methodology, or leave ADR-0024's halt-
-      trigger role as-is and treat `n*` as a separate, G6-promotion-specific standard? — pending DS choice
-- [ ] The CLAUDE.md/ADR-0024 "commercial validation" vs "G6 promotion" language conflation flagged in
-      § Scope is noted; DS may defer disentangling it to a future APR — acceptable to defer
-- [ ] Cadence-immaturity caveat (both bands' current ETAs are provisional, re-derive at ≥14-day epoch age,
-      ~2026-07-19/20) carried into the adopted gate language — acceptable
+- [x] ADR-0024 itself is NOT superseded by this APR (prose-only amendment to CLAUDE.md/MEMORY_BANK gate
+      language) — **DS decision:** DEFERRED. DS signed off on the APR as drafted without electing a
+      follow-on superseding ADR at this time; ADR-0024's halt-trigger role stands unamended and `n*`
+      is treated as a separate, G6-promotion-specific standard per the APR's own built-in option. Revisit
+      if/when DS chooses to formally unify the two.
+- [x] The CLAUDE.md/ADR-0024 "commercial validation" vs "G6 promotion" language conflation flagged in
+      § Scope is noted; DS deferred disentangling it to a future APR — deferred, not resolved
+- [x] Cadence-immaturity caveat (both bands' current ETAs are provisional, re-derive at ≥14-day epoch age,
+      ~2026-07-19/20) carried into the adopted gate language — acceptable, carried into CLAUDE.md verbatim
 
-**Sign-off:** [pending]
-**Date:** [pending]
+**Sign-off:** Earl Ignacio
+**Date:** 2026-07-12
 **Role:** DS — Earl Ignacio
