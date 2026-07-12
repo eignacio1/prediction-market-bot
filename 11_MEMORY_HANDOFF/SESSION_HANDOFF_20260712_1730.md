@@ -21,9 +21,9 @@
 |----------|-----------|--------------------|----|
 | Ran CLAUDE.md's full formal session-start protocol (Steps 1-4 + Q1-Q6) even though T-346/T-347 task work was already complete, merged-locally, tested, and PR'd | Explicit operator instruction ("you had a specific task list... proceed with completing the session start protocol") — matches CLAUDE.md's "not skippable under conversational pressure" language; running it post-hoc still caught value (see next row) | `DECISION_LOG.md` 2026-07-12 (Window 3 protocol-run row) | Claude |
 | One `SemanticFloorViolation` log hit surfaced by the scan was investigated (not assumed new) and traced to already-RESOLVED GG-110, not a fresh incident | Re-verifying rather than assuming avoids both false alarms and silently missing a real regression | `DECISION_LOG.md` 2026-07-12; GG-110 (GOVERNANCE_GAP_LOG.md, RESOLVED, unchanged) | Claude |
-| Q6 surfaced three items (T4M-PROJ `n*` instability, GG-113 open, GG-115 rotation pending) and they were deliberately logged as monitoring flags rather than new registered governance gaps | None currently blocks anything; over-registering unconfirmed observations as gaps manufactures governance overhead the project's established practice avoids | `MEMORY_BANK.md` "What Must Happen Next" (2026-07-12 entry); `DECISION_LOG.md` 2026-07-12 | Claude |
+| Q6 surfaced three items (T4M-PROJ `n*` instability, GG-113 open, GG-116 rotation pending) and they were deliberately logged as monitoring flags rather than new registered governance gaps | None currently blocks anything; over-registering unconfirmed observations as gaps manufactures governance overhead the project's established practice avoids | `MEMORY_BANK.md` "What Must Happen Next" (2026-07-12 entry); `DECISION_LOG.md` 2026-07-12 | Claude |
 
-*(T-346/GG-092 and T-347/GG-093's own substantive decisions — 4 incident runbooks, THREAT_MODEL.md TH-02/Out-of-Scope re-expansion, the GG-113→GG-115 renumbering collision, the leaked-credential finding — were already logged in `DECISION_LOG.md` earlier this session, rows dated 2026-07-12, T-346/T-347.)*
+*(T-346/GG-092 and T-347/GG-093's own substantive decisions — 4 incident runbooks, THREAT_MODEL.md TH-02/Out-of-Scope re-expansion, the GG-113→GG-116 renumbering collision, the leaked-credential finding — were already logged in `DECISION_LOG.md` earlier this session, rows dated 2026-07-12, T-346/T-347.)*
 
 ---
 
@@ -31,7 +31,7 @@
 
 | Item | Result |
 |------|--------|
-| T-346 / GG-092 | ✅ RESOLVED — 4 incident runbooks written; unplanned leaked-credential finding surfaced, redacted (`c7be13a`), registered as GG-115 after a renumbering collision with a concurrent session's GG-113 |
+| T-346 / GG-092 | ✅ RESOLVED — 4 incident runbooks written; unplanned leaked-credential finding surfaced, redacted (`c7be13a`), registered as GG-116 after a renumbering collision with a concurrent session's GG-113 |
 | T-347 / GG-093 | ✅ RESOLVED — `THREAT_MODEL.md` TH-02 + Threats Out of Scope substantively re-expanded for live Kalshi RSA-credential reality |
 | Full suite | ✅ 2672/29/0, post-rebase |
 | PR #14 | ✅ Opened (`eignacio1/prediction-market-bot#14`) — not yet merged |
@@ -45,7 +45,7 @@
 **Merge PR #14** (`https://github.com/eignacio1/prediction-market-bot/pull/14`) — full suite already green (2672/29/0) post-rebase, no blocking issue found by this session's review. Deploy to VPS after merge per standing convention (auto-deploy workflow, or manual `ssh prediction-market-vps` pull if the workflow doesn't trigger). Infrastructure is otherwise idle — no process is running, no cache exists to wait on, this is a pure operator/merge action.
 
 **Two operator-owned items still open after merge:**
-- GG-115 (leaked Kalshi API key ID): redacted from current file (`c7be13a`), but Kalshi-side rotation and a git-history scrub have not been done — live credential-exposure risk until both complete.
+- GG-116 (leaked Kalshi API key ID): redacted from current file (`c7be13a`), but Kalshi-side rotation and a git-history scrub have not been done — live credential-exposure risk until both complete.
 - GG-113 (T4M-PROJ vig-sign-flip bug): OPEN, unfixed, owned by a different/concurrent session — do not assume it's being worked without checking `GOVERNANCE_GAP_LOG.md` first.
 
 ---
@@ -69,7 +69,7 @@ MLB is the active pool (T1/T2/T3 cron-scheduled + `t4-mlb` systemd service, 45s 
 
 1. Work wifi blocks Kalshi API — use any other network
 2. No live capital until G6 (**30 resolved paper bets** + positive P&L, now further gated per-band by `clean_n ≥ n*` for go-forward commercial-validation language — APR-0024, 2026-07-12)
-3. GG-115 (leaked API key) rotation + history scrub is a real outstanding operator action, not yet done — do not let it silently age past this handoff
+3. GG-116 (leaked API key) rotation + history scrub is a real outstanding operator action, not yet done — do not let it silently age past this handoff
 4. T4M-PROJ's `n*` swung 787→3,059 in ~24h — do not cite a stable ETA for T4M-PROJ's `clean_n ≥ n*` crossing until this is re-checked
 
 ---
