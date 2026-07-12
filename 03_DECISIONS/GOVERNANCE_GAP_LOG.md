@@ -1907,6 +1907,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-112 — Governance-scan dashboard reports two different `clean_n` figures for T4M-PROJ within the same run
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-112 |
+| Category | Monitoring/dashboard self-consistency — `.claude/hooks/governance_scan.sh` |
+| What was missed | The session-start governance scan prints two separate lines that both claim to report T4M-PROJ's `clean_n` (bets resolved under `CURRENT_LOGIC_EPOCH`), and they disagree. In a single invocation (2026-07-12, ~09:30 UTC): `CLEAN-LOGIC PROVENANCE` line reported `MLB T4M-PROJ: raw_n=300 clean_n=300`; the `SAMPLE ADEQUACY` line two sections later, same script run, reported `[T4M-PROJ] clean_n=412/n*=3059`. `raw_n` itself differs (300 vs. a separately-observed 656 from a live `run_power_calc.py` pull moments later) — this is not just a clean/raw definitional gap, the two code paths see different total row counts for the same band. |
+| When it should have been caught | At T-338 (2026-07-11), when the `SAMPLE ADEQUACY` line was added to the same script that already had the `CLEAN-LOGIC PROVENANCE` line — a self-consistency check between the two new/existing lines was not run before merging. |
+| Phases it survived | Shipped and merged same-day as T-338/T-339/APR-0024 (2026-07-11/12) without anyone diffing the two lines against each other. |
+| Why it survived | The two lines look like independent, unrelated dashboard facts (one labeled "provenance," one labeled "sample adequacy") rather than two measurements of the same underlying quantity, so a reader has no visual cue to cross-check them against each other. |
+| Impact | MEDIUM — `CLEAN-LOGIC PROVENANCE`'s `_band_counts()` (governance_scan.sh) filters the T4M cache's `closed_positions` by `band=='T4M-PROJ'` directly and trusts each row's stored `logic_epoch` field, refetching the VPS cache only if >600s stale. `SAMPLE ADEQUACY` instead rebuilds via `scripts/build_t4_resolved_ledger.py --portfolio "$CACHE_T4M"` (also a `logic_epoch` passthrough, confirmed by direct code read — not a recompute) before handing off to `run_power_calc.py`. Root cause not yet diagnosed — candidates include cache-staleness skew between the two code paths' fetch timing, or a `closed_positions` vs. ledger-rebuild row-selection mismatch upstream of the `logic_epoch` filter — but whichever line is wrong, it has been feeding numbers into governance artifacts: **APR-0024's own published T4M-PROJ figures (clean_n=338, 2026-07-11 pull) came from the `run_power_calc.py`/ledger-rebuild path**, i.e. the same lineage as the higher `SAMPLE ADEQUACY` number, not the `CLEAN-LOGIC PROVENANCE` line's lower one — so APR-0024's numbers are probably self-consistent, but any future session that cites the `CLEAN-LOGIC PROVENANCE` line alone (the one explicitly labeled "G6 progress language should cite clean_n, not raw_n") gets a different, lower figure than APR-0024's own methodology would produce today. No capital risk (paper trading only), but a real risk of two sessions citing two different "clean_n" numbers for the same band in the same week without either being flagged as wrong. |
+| Discovery | 2026-07-12, session-start protocol + user-directed G6/GG-004 status review, isolated worktree `20260712T093443Z-g6-adequacy-status-review`. Found while reconciling live figures to answer a status-review request; not part of a scheduled audit. |
+| Resolution | Not yet resolved. Recommended next step: pick one code path as canonical (the `run_power_calc.py`/ledger-rebuild path, since it's already DS-referenced in APR-0024) and either delete the `CLEAN-LOGIC PROVENANCE` line or rewrite it to call the same function `SAMPLE ADEQUACY` uses, so the dashboard cannot show two different clean_n values for one band in one run. No task assigned yet. |
+| Status | OPEN — registered, T-344 assigned to implement the recommended fix. Zero capital risk; documentation/dashboard-trust issue only. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
