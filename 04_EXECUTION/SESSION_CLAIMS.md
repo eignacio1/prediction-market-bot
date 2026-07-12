@@ -44,3 +44,5 @@
 | 2026-07-11T18:00:10Z | T-336,T-337 | T-336/T-337: kill live-data regression anchors, full-suite regression cert |
 | 2026-07-11T19:03:26Z | GG-110 | GG-110: investigate root cause of T1 MLB SemanticFloorViolation (0/16 players matched, 20260710) |
 | 2026-07-11T22:53:26Z | T-338,T-339,T-340 | Window 2: T-338 clean_n vs n* publish, T-339 G6 re-base on n* (APR), T-340 GG-105 Component A close |
+| 2026-07-11T22:58:06Z | T-341, T-342 | Window 3: T-341 schedule per-band monitor + wire C7 alarm; T-342 flat-sizing MC for T4M-PROJ |
+| 2026-07-11T23:12:13Z | T-343 | T-343: PIPE-05 market-fetch retry/backoff for GG-110 |
