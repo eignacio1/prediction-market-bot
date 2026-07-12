@@ -572,7 +572,13 @@ EXP-017B/C/D decomposed the n=151 MLB T1 Tier-1 book (EXP-017/GG-004). **Key res
 
 ## What Must Happen Next
 
-**2026-07-11 (post-merge consolidation, Window 2 branch merging `origin/main`'s GG-110/T-343 close-out) CLOSE — NEXT SESSION MUST START HERE:**
+**2026-07-11/12 (Window 2 closure — PR #9 merged, CI green, VPS deployed) CLOSE — NEXT SESSION MUST START HERE:**
+1. **Window 2 (T-338/T-339/T-340) is fully closed as a code/CI/deploy matter.** PR #9 hit a merge conflict fast-forwarding against `origin/main` plus two pre-existing test flakes surfaced only under CI's real-clock conditions (`test_cron_log_aggregator.py`, `test_run_mlb_paper_trade.py` — UTC-vs-local date rollover, see DECISION_LOG.md 2026-07-11 flake-fix row). Both fixed, full suite verified green (2648/29/0), PR #9 merged to `main` at `53b9f8c`, post-merge `main` Test Suite and Deploy-to-VPS workflows both confirmed green, VPS confirmed live on `53b9f8c` with `t4-mlb` active.
+2. **T-339's APR-0024 remains PENDING Earl's own review — intentionally not session-closable.** Nothing further for a model to do here until Earl reviews `00_ADMIN/APR-0024_g6-sample-adequacy-n-star-rebase.md`.
+3. **T-340 re-check target unchanged: ~2026-07-19/20** (see item 3 below, still accurate).
+4. `.last_session_checkpoint` was advanced to this closure's final commit — a fresh `session_delta.sh` run from here reflects the fully-merged, CI-verified, deployed state.
+
+**2026-07-11 (post-merge consolidation, Window 2 branch merging `origin/main`'s GG-110/T-343 close-out) CLOSE:**
 1. **GG-110 is now fully RESOLVED — root cause AND code fix, both merged to `main` (`bd4a395`).** No further action needed on GG-110 itself. See the T-343-implemented entry in "Last reviewed (prior)" above for full detail (bounded retry/backoff on PIPE-05, 2 new tests, full suite 2648/29/0, VPS deploy confirmed green).
 2. **T-339 (APR-0024) is drafted and PENDING — needs Earl's review/sign-off.** Read `00_ADMIN/APR-0024_g6-sample-adequacy-n-star-rebase.md`; the Review Checklist's item 5 (whether to pursue a superseding ADR for ADR-0024 itself, vs. leaving `n*` as a separate G6-promotion-specific standard) is the one open DS decision point. Until sign-off, CLAUDE.md's gate prose is unchanged — do not treat `n*` language as adopted.
 3. **T-340 re-check target: ~2026-07-19/20** — when `CURRENT_LOGIC_EPOCH` crosses ~14 days age, re-run the GG-105 Component A tercile/Fisher diagnostic (T-324 methodology) and re-run `run_power_calc.py` for a non-provisional (cadence-mature) `n*`/ETA read on both T1 and T4M-PROJ. Not before that date — checking early just re-confirms `cadence_immature=true` with no new information.
