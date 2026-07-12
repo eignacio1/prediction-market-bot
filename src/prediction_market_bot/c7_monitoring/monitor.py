@@ -37,6 +37,10 @@ Audit events emitted:
   kill_switch_drill_result   (INFO)     — drill pass/fail record
   shadow_drift_computed      (INFO)     — shadow Brier rolling window (ADR-0009)
   shadow_promotion_flag      (WARNING)  — shadow beats prod by >= 0.005 over 30+ events (ADR-0009)
+  band_monitor_anti_predictive_alarm (WARNING) — per-band Fisher-test ANTI_PREDICTIVE
+                                        verdict from scripts/run_band_monitor.py (T-341/GG-099)
+  band_monitor_calibration_alarm     (WARNING) — per-band calibration slope CI excludes
+                                        1.0 from scripts/run_band_monitor.py (T-341)
 """
 
 from __future__ import annotations
@@ -599,6 +603,94 @@ class SystemMonitor:
                 session_id=sid,
                 snapshot_id=self._snapshot_id,
             )
+
+    # ------------------------------------------------------------------
+    # Band monitor verdict wiring (T-341, GG-099/GG-100/GG-098)
+    # ------------------------------------------------------------------
+
+    def report_band_monitor_verdicts(
+        self,
+        band_results: dict[str, dict[str, Any]],
+        session_id: str | None = None,
+    ) -> list[str]:
+        """
+        Wire scripts/run_band_monitor.py's per-band verdicts into C7.
+
+        Mirrors the shadow_promotion_flag pattern (ADR-0009): WARNING severity,
+        informational only, never calls trigger_kill_switch(). GG-098 established
+        that acting automatically on a band-level signal is itself a failure
+        mode — band-level halts remain a human (DS review) decision, always.
+
+        Parameters
+        ----------
+        band_results:
+            The `results` dict returned by run_band_monitor.run_all_bands():
+            {band_name: {"verdict": "ANALYZED"|"UNDERPOWERED"|"NO_DATA", ...,
+                         "anti_predictive_alarm": bool,
+                         "calibration": {"b_excludes_1": bool, ...}}}.
+            Bands not in ANALYZED verdict state (UNDERPOWERED/NO_DATA) are
+            skipped — GG-098 discipline: no alarm without a real verdict.
+        session_id:
+            Overrides the monitor's session_id for this emission.
+
+        Returns
+        -------
+        List of band names for which at least one alarm event was emitted.
+        """
+        sid = session_id or self._session_id
+        alarmed: list[str] = []
+        for band, r in band_results.items():
+            if r.get("verdict") != "ANALYZED":
+                continue
+            band_alarmed = False
+
+            if r.get("anti_predictive_alarm"):
+                mono = r.get("edge_monotonicity") or {}
+                self._logger.log(
+                    component=COMPONENT,
+                    event_type="band_monitor_anti_predictive_alarm",
+                    payload={
+                        "band": band,
+                        "clean_n": r.get("clean_n"),
+                        "fisher_pvalue": mono.get("fisher_pvalue"),
+                        "edge_monotonicity_verdict": mono.get("verdict"),
+                        "action_required": (
+                            "DS review required before any capital/allocation "
+                            "decision touches this band (GG-098) — warn-only, "
+                            "no auto-halt."
+                        ),
+                    },
+                    severity="WARNING",
+                    session_id=sid,
+                    snapshot_id=self._snapshot_id,
+                )
+                band_alarmed = True
+
+            fit = r.get("calibration") or {}
+            if fit.get("b_excludes_1"):
+                self._logger.log(
+                    component=COMPONENT,
+                    event_type="band_monitor_calibration_alarm",
+                    payload={
+                        "band": band,
+                        "clean_n": r.get("clean_n"),
+                        "slope_b": fit.get("slope_b"),
+                        "b_ci": fit.get("b_ci"),
+                        "interpretation": fit.get("interpretation"),
+                        "action_required": (
+                            "Calibration slope CI excludes 1.0 — DS review "
+                            "required (warn-only, no auto-halt)."
+                        ),
+                    },
+                    severity="WARNING",
+                    session_id=sid,
+                    snapshot_id=self._snapshot_id,
+                )
+                band_alarmed = True
+
+            if band_alarmed:
+                alarmed.append(band)
+        return alarmed
 
     # ------------------------------------------------------------------
     # Kill switch
