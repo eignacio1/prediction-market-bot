@@ -53,7 +53,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -e ".[dev]"
+          python -m pip install --upgrade pip
+          pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
+          pip install -e .
 
       - name: Run approval-path invariant + golden-replay suites
         run: |

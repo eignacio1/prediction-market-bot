@@ -1958,6 +1958,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-115 — The `approval-path-tests` fail-closed CI gate (T-327) failed on its own first live run: install step bypassed the project's locked-requirements convention and omitted `nba_api`
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-115 |
+| Category | CI configuration bug — the safety gate registered as GG-114's resolution was itself broken, on `main`, for the ~8 minutes between PR #15's merge and this fix |
+| What was missed | `.github/workflows/deploy.yml`'s `approval-path-tests` job installed dependencies via `pip install -e ".[dev]"` — resolving only `pyproject.toml`'s floating dependency list. `tests.yml` (the project's other, pre-existing CI workflow) instead installs via `pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt` (which chains to `requirements-base.txt`), the project's established locked-dependency convention (`tests.yml`'s own comment explains why: pinned versions, not floating `pyproject.toml` ranges). `nba_api` is pinned only in `requirements-base.txt`, never declared in `pyproject.toml` at all — so the new job's install step could never resolve it. Every test importing `run_mlb_paper_trade` (which imports `c1_signal_ingestion` → `ingestion.py` → `nba_api` at module load, unconditionally, even for MLB-only test paths) failed collection with `ModuleNotFoundError: No module named 'nba_api'`. |
+| When it should have been caught | At T-327's own authorship (2026-07-10): the job's install step should have mirrored `tests.yml`'s pattern, which sits ~20 lines away in the same `.github/workflows/` directory and is explicitly commented with the reason it exists. Also should have been caught by actually exercising a push-to-`main` before merge — but PR CI only runs `tests.yml` (a `pull_request`-triggered workflow); `approval-path-tests` is `push`-to-`main`-only by design (see GG-114/T-327 rationale — deliberately not path-filtered), so no PR-stage CI run ever could have caught this; the first real exercise is structurally always a live push to `main`. |
+| Phases it survived | Shipped 2026-07-10 on the orphaned branch; survived GG-114's own recovery rebase and merge (PR #15, `381ddac`, 2026-07-12 17:01 UTC) because the local full-suite verification run during that rebase used the *local* Python environment (`nba_api` already installed there from a prior session), not a clean CI-equivalent install — so the bug was invisible to every local check performed during GG-114's recovery. |
+| Why it survived | Two independent causes stacked: (1) the job's install step was never actually run in anger before this merge, since its trigger (`push: branches: [main]`) cannot fire during PR review; (2) local pre-merge verification (`python3 -m pytest -q`) ran against an already-populated local venv, which is a strictly weaker check than a clean-environment CI install for exactly this class of bug (missing dependency declaration). |
+| Impact | HIGH for the ~8-minute window it was live: every future push to `main` would have failed `approval-path-tests`, and since `deploy` job has `needs: approval-path-tests`, **every deploy to the VPS would have been blocked outright** until this was fixed — including deploys of genuinely unrelated, correct changes. No live capital or paper-trading impact (VPS `t4-mlb`/cron services continue running whatever was already deployed; a blocked deploy just means the next update can't ship), but it is a self-inflicted availability gap in the exact gate built to prevent silent regressions. |
+| Discovery | 2026-07-12, ~17:05 UTC, this session, while confirming the `approval-path-tests` job's first live run (triggered by PR #15's own merge) actually passed — `gh run view <run-id> --log-failed` surfaced the `ModuleNotFoundError` directly. |
+| Resolution | Fixed same-session: `approval-path-tests`'s "Install dependencies" step changed to `python -m pip install --upgrade pip && pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt && pip install -e .`, matching `tests.yml`'s pattern exactly. Verified locally: both gate suites pass (13 passed) and full suite re-confirmed zero regressions (2685 passed/29 skipped, unchanged from pre-fix baseline). PR opened to merge this fix; see DECISION_LOG.md 2026-07-12 for the merge record. |
+| Status | RESOLVED — fix merged same-session (see DECISION_LOG.md for commit/PR reference) |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
