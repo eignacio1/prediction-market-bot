@@ -559,11 +559,14 @@ class TestMainSemanticFloorViolationFiresLive:
             patch.object(runner, "REPORT_PATH", tmp_path / "report.json"),
             patch.object(runner, "_is_mlb_game_in_progress", return_value=False),
             patch.object(runner, "_count_scheduled_mlb_games", return_value=2),
+            patch.object(runner, "_build_live_sp_override", return_value={}),
             patch("prediction_market_bot.run_mlb_paper_trade.joblib") as mock_jl,
             patch("prediction_market_bot.run_mlb_paper_trade.KalshiMarketClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.MLBIngestionClient"),
             patch("prediction_market_bot.run_mlb_paper_trade.PaperTrader") as MockTrader,
             patch("prediction_market_bot.run_mlb_paper_trade.VenueRouter") as MockRouter,
             patch("prediction_market_bot.run_mlb_paper_trade.BAND_REGISTRY") as mock_reg,
+            patch("prediction_market_bot.run_mlb_paper_trade.time.sleep") as mock_sleep,
         ):
             mock_jl.load.return_value = self._make_artifact()
             state = self._make_state()
@@ -608,6 +611,258 @@ class TestMainSemanticFloorViolationFiresLive:
         assert event["payload"]["scheduled_preview_games"] == 2
         assert event["payload"]["kalshi_markets_total"] == 1
         assert event["component"] == "PIPE-05"
+
+        # 3. T-343/GG-110: the bounded retry loop exhausted its full attempt
+        #    budget (games are scheduled but never match) before falling
+        #    through to the guard — confirms retries ran, and confirms
+        #    real sleeps were never invoked (mocked out for test speed).
+        retry_events = [
+            e for e in lines
+            if e.get("event_type") == "semantic_floor_retry"
+        ]
+        assert len(retry_events) == runner.PIPE05_FLOOR_RETRY_ATTEMPTS
+        assert mock_sleep.call_count == runner.PIPE05_FLOOR_RETRY_ATTEMPTS
+
+    def test_retry_recovers_when_later_fetch_matches_players(self, monkeypatch, tmp_path):
+        """
+        T-343/GG-110: if the first fetch attempt returns 0 matched players
+        (games scheduled, Kalshi hasn't published same-day markets yet) but a
+        later retry attempt returns a market that DOES match, main() should
+        proceed normally — no SemanticFloorViolation, no sys.exit(2).
+        """
+        monkeypatch.setenv("BOT_ENV", "paper")
+        sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
+        import prediction_market_bot.run_mlb_paper_trade as runner
+
+        from datetime import date
+        today_iso = date.today().isoformat()
+
+        feature_csv = tmp_path / "mlb_feature_matrix.csv"
+        header = (
+            "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
+            "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
+            "doubles,triples,hr,rbi,bb,k,hbp,sf,snapshot_id,ingestion_run_id,"
+            "ingested_at,temporal_cutoff,ba_l10,slg_l10,obp_l10,ops_l10,"
+            "h_l10_mean,k_rate_l10,bb_rate_l10,hr_rate_l10,days_rest,b2b_flag,"
+            "opp_runs_allowed_l10,opp_sp_era_l5,opp_sp_k9_l5,opp_sp_bb9_l5,"
+            "opp_sp_is_known,park_factor_hits,feature_run_id,feature_version,"
+            "train_test_label,threshold"
+        )
+        row = (
+            f"660670,Juan Soto,147,NYY,717465,{today_iso},2024,Regular Season,"
+            "NYY vs BOS,1,BOS,4,1,0,0,0,1,1,1,0,0,SNAP,IRD-001,"
+            f"{today_iso}T12:00:00Z,{today_iso},0.280,0.450,0.380,0.830,"
+            "1.0,0.22,0.15,0.03,1,0,"
+            "4.5,4.0,8.0,3.0,"
+            "1,1.0,FRD-001,1.0.0,"
+            "train,1"
+        )
+        feature_csv.write_text(f"{header}\n{row}\n")
+        model_path = tmp_path / "model.joblib"
+        model_path.write_bytes(b"fake")
+
+        # Attempt 1: non-empty markets, but ticker date does NOT match today
+        # (0 players matched — the "Kalshi hasn't published yet" condition).
+        mock_market_stale = MagicMock()
+        mock_market_stale.status = "active"
+        mock_market_stale.has_live_quotes = True
+        mock_market_stale.vig = 0.05
+        mock_market_stale.player_name = "Juan Soto"
+        mock_market_stale.ticker = "KXMLBHIT-01JAN010000NYYBOS-BOSWABREU52-2"
+
+        mock_snap_attempt1 = MagicMock()
+        mock_snap_attempt1.markets = [mock_market_stale]
+
+        # Attempt 2: ticker date DOES match today — retry recovers. Ticker
+        # date parsing is exercised elsewhere (_ticker_to_game_date tests);
+        # here we patch _ticker_to_game_date directly to avoid re-deriving
+        # the real ticker format.
+        # threshold=99 is deliberately outside the model's trained threshold
+        # set ([1, 2] per _make_artifact) so the per-market loop hits the
+        # existing "threshold_out_of_model_range" SKIP and `continue`s
+        # immediately — this test's scope is the retry loop recovering a
+        # matched player, not the downstream forecast/order pipeline.
+        mock_market_live = MagicMock()
+        mock_market_live.status = "active"
+        mock_market_live.has_live_quotes = True
+        mock_market_live.vig = 0.05
+        mock_market_live.player_name = "Juan Soto"
+        mock_market_live.ticker = "KXMLBHIT-LIVE-TICKER"
+        mock_market_live.threshold = 99
+
+        mock_snap_attempt2 = MagicMock()
+        mock_snap_attempt2.markets = [mock_market_live]
+
+        mock_router = MagicMock()
+        mock_router.check_all_connectivity.return_value = {"kalshi": (True, {})}
+        mock_router.fetch_all_markets.side_effect = [
+            (True, mock_snap_attempt1),
+            (True, mock_snap_attempt2),
+        ]
+        mock_router.active_venues = ["kalshi"]
+
+        def _fake_ticker_to_date(ticker):
+            return today_iso if ticker == "KXMLBHIT-LIVE-TICKER" else "2001-01-01"
+
+        with (
+            patch.object(runner, "MODEL_PATH", model_path),
+            patch.object(runner, "FEATURE_CSV", feature_csv),
+            patch.object(runner, "LOG_DIR", tmp_path),
+            patch.object(runner, "PORTFOLIO_PATH", tmp_path / "portfolio.json"),
+            patch.object(runner, "REPORT_PATH", tmp_path / "report.json"),
+            patch.object(runner, "_is_mlb_game_in_progress", return_value=False),
+            patch.object(runner, "_count_scheduled_mlb_games", return_value=2),
+            patch.object(runner, "_ticker_to_game_date", side_effect=_fake_ticker_to_date),
+            patch.object(runner, "_build_live_sp_override", return_value={}),
+            patch("prediction_market_bot.run_mlb_paper_trade.joblib") as mock_jl,
+            patch("prediction_market_bot.run_mlb_paper_trade.KalshiMarketClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.MLBIngestionClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.PaperTrader") as MockTrader,
+            patch("prediction_market_bot.run_mlb_paper_trade.VenueRouter") as MockRouter,
+            patch("prediction_market_bot.run_mlb_paper_trade.BAND_REGISTRY") as mock_reg,
+            patch("prediction_market_bot.run_mlb_paper_trade.time.sleep") as mock_sleep,
+        ):
+            mock_jl.load.return_value = self._make_artifact()
+            state = self._make_state()
+            mock_trader_instance = MagicMock()
+            mock_trader_instance.get_state.return_value = state
+            mock_trader_instance.summary.return_value = {
+                **state,
+                "open_positions": 0,
+                "closed_positions": 0,
+                "win_rate": None,
+                "realized_drawdown_pct": 0.0,
+                "deployed_pct": 0.0,
+            }
+            MockTrader.return_value = mock_trader_instance
+            MockRouter.from_env.return_value = mock_router
+            mock_reg.validate.return_value = []
+
+            # main() should complete normally (falls off the end, no
+            # sys.exit call at all on the happy path) — not raise
+            # SemanticFloorViolation/exit(2).
+            runner.main()
+
+        assert mock_router.fetch_all_markets.call_count == 2
+        assert mock_sleep.call_count == 1  # exactly one retry before recovery
+
+        audit_log_path = tmp_path / "audit_mlb.jsonl"
+        lines = [
+            json.loads(line)
+            for line in audit_log_path.read_text().splitlines()
+            if line.strip()
+        ] if audit_log_path.exists() else []
+        violation_events = [
+            e for e in lines
+            if e.get("event_type") == "semantic_floor_violation"
+        ]
+        assert len(violation_events) == 0
+
+    def test_no_retry_on_genuine_zero_games_day(self, monkeypatch, tmp_path):
+        """
+        T-343/GG-110: if _count_scheduled_mlb_games returns 0 (a genuine
+        off-day, not a Kalshi-publishing race), the retry loop must not
+        burn attempts/delay — it should fall straight through to the
+        SemanticFloorGuard on the first pass.
+        """
+        monkeypatch.setenv("BOT_ENV", "paper")
+        sys.modules.pop("prediction_market_bot.run_mlb_paper_trade", None)
+        import prediction_market_bot.run_mlb_paper_trade as runner
+
+        from datetime import date
+        today_iso = date.today().isoformat()
+
+        feature_csv = tmp_path / "mlb_feature_matrix.csv"
+        header = (
+            "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
+            "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
+            "doubles,triples,hr,rbi,bb,k,hbp,sf,snapshot_id,ingestion_run_id,"
+            "ingested_at,temporal_cutoff,ba_l10,slg_l10,obp_l10,ops_l10,"
+            "h_l10_mean,k_rate_l10,bb_rate_l10,hr_rate_l10,days_rest,b2b_flag,"
+            "opp_runs_allowed_l10,opp_sp_era_l5,opp_sp_k9_l5,opp_sp_bb9_l5,"
+            "opp_sp_is_known,park_factor_hits,feature_run_id,feature_version,"
+            "train_test_label,threshold"
+        )
+        row = (
+            f"660670,Juan Soto,147,NYY,717465,{today_iso},2024,Regular Season,"
+            "NYY vs BOS,1,BOS,4,1,0,0,0,1,1,1,0,0,SNAP,IRD-001,"
+            f"{today_iso}T12:00:00Z,{today_iso},0.280,0.450,0.380,0.830,"
+            "1.0,0.22,0.15,0.03,1,0,"
+            "4.5,4.0,8.0,3.0,"
+            "1,1.0,FRD-001,1.0.0,"
+            "train,1"
+        )
+        feature_csv.write_text(f"{header}\n{row}\n")
+        model_path = tmp_path / "model.joblib"
+        model_path.write_bytes(b"fake")
+
+        mock_market = MagicMock()
+        mock_market.status = "active"
+        mock_market.has_live_quotes = True
+        mock_market.vig = 0.05
+        mock_market.player_name = "Juan Soto"
+        mock_market.ticker = "KXMLBHIT-01JAN010000NYYBOS-BOSWABREU52-2"  # never matches
+
+        mock_snap = MagicMock()
+        mock_snap.markets = [mock_market]
+
+        mock_router = MagicMock()
+        mock_router.check_all_connectivity.return_value = {"kalshi": (True, {})}
+        mock_router.fetch_all_markets.return_value = (True, mock_snap)
+        mock_router.active_venues = ["kalshi"]
+
+        with (
+            patch.object(runner, "MODEL_PATH", model_path),
+            patch.object(runner, "FEATURE_CSV", feature_csv),
+            patch.object(runner, "LOG_DIR", tmp_path),
+            patch.object(runner, "PORTFOLIO_PATH", tmp_path / "portfolio.json"),
+            patch.object(runner, "REPORT_PATH", tmp_path / "report.json"),
+            patch.object(runner, "_is_mlb_game_in_progress", return_value=False),
+            patch.object(runner, "_count_scheduled_mlb_games", return_value=0),
+            patch.object(runner, "_build_live_sp_override", return_value={}),
+            patch("prediction_market_bot.run_mlb_paper_trade.joblib") as mock_jl,
+            patch("prediction_market_bot.run_mlb_paper_trade.KalshiMarketClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.MLBIngestionClient"),
+            patch("prediction_market_bot.run_mlb_paper_trade.PaperTrader") as MockTrader,
+            patch("prediction_market_bot.run_mlb_paper_trade.VenueRouter") as MockRouter,
+            patch("prediction_market_bot.run_mlb_paper_trade.BAND_REGISTRY") as mock_reg,
+            patch("prediction_market_bot.run_mlb_paper_trade.time.sleep") as mock_sleep,
+        ):
+            mock_jl.load.return_value = self._make_artifact()
+            state = self._make_state()
+            mock_trader_instance = MagicMock()
+            mock_trader_instance.get_state.return_value = state
+            mock_trader_instance.summary.return_value = {
+                **state,
+                "open_positions": 0,
+                "closed_positions": 0,
+                "win_rate": None,
+                "realized_drawdown_pct": 0.0,
+                "deployed_pct": 0.0,
+            }
+            MockTrader.return_value = mock_trader_instance
+            MockRouter.from_env.return_value = mock_router
+            mock_reg.validate.return_value = []
+
+            # games_fetched=0 means SemanticFloorGuard.assert_floor does NOT
+            # raise (0 matched players is expected/consistent when 0 games
+            # are scheduled) — main() completes normally, no SystemExit.
+            runner.main()
+
+        assert mock_router.fetch_all_markets.call_count == 1  # no retry occurred
+        assert mock_sleep.call_count == 0
+
+        audit_log_path = tmp_path / "audit_mlb.jsonl"
+        lines = [
+            json.loads(line)
+            for line in audit_log_path.read_text().splitlines()
+            if line.strip()
+        ] if audit_log_path.exists() else []
+        violation_events = [
+            e for e in lines
+            if e.get("event_type") == "semantic_floor_violation"
+        ]
+        assert len(violation_events) == 0
 
 
 # ---------------------------------------------------------------------------
