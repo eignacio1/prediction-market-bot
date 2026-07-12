@@ -580,6 +580,16 @@ def build_ledger_report(
             f"  CAVEAT: cadence measured over only {stats.cadence_span_days:.1f} days "
             f"(< {MATURE_CADENCE_SPAN_DAYS:.0f}-day maturity floor) — provisional, re-derive as more days accrue."
         )
+    if band == "T4M-PROJ":
+        lines += [
+            "",
+            "  GG-105 CAVEAT (T-342): T4M-PROJ's own computed edge is ANTI_PREDICTIVE against",
+            "  realized win rate on clean data (clean_n=338, Fisher p=0.0563) — this is a live,",
+            "  unresolved finding, not historical. The ruin-risk figures below (including any",
+            "  flat-vs-proportional sizing comparison) describe the SIZING MECHANIC's structural",
+            "  behavior only. They do NOT certify that T4M-PROJ's edge is real. Read this report",
+            "  together with GG-105, never in isolation.",
+        ]
     lines += ["", "KILL-SWITCH BREACH PROBABILITY BY SCENARIO", ""]
 
     op_desc = (
