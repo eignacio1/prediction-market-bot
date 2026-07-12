@@ -1941,6 +1941,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-114 — A session can push a fully-completed branch to origin, self-declare "closed" in its own commit messages/handoff docs, and never open a PR — leaving the work invisible to `gh pr list` and unmerged for days
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-114 |
+| Category | Systemic blind spot — session-closure verification gap, distinct from GG-101/GG-082 (which are concurrent-session *collision* failures, not closure-verification failures) |
+| What was missed | `session/20260710T151127Z-workstream-b-edge-sign` (Workstream C, T-325/T-326/T-327) was worked correctly per Hard Rule 10 — isolated worktree, committed, pushed to `origin` on 2026-07-10 — and its own commit messages and `SESSION_HANDOFF_20260710_1600.md` explicitly described all three tasks, including T-327 (the fail-closed pre-deploy CI gate on approval-path files), as fully complete. No step in that session's close-out, nor any later session's start-up protocol, checked whether a PR had actually been opened for the branch. It had not. The branch — and the safety gate it built — sat on origin, unmerged and inert, for 2 days. |
+| When it should have been caught | Any session-end protocol step that verifies closure should confirm the work actually reached `main`, not just that it was committed and pushed. Any later session's Step 0c ("check for other live sessions" via `SESSION_CLAIMS.md`) reads recent claims but does not cross-check open branches against open PRs. |
+| Phases it survived | Two full days and at least 3 subsequent sessions' worth of session-start protocols (each of which reads `SESSION_CLAIMS.md`/`TODO_NEXT.md` but does not run `gh pr list --state all` against unmerged branches) before an unrelated worktree-hygiene pass in this session stumbled onto it. |
+| Why it survived | Git history alone (`git log`, commit messages, even a self-authored SESSION_HANDOFF file) is not evidence of integration — a branch can look 100% complete from its own history while being completely absent from `main`. No existing protocol step distinguishes "committed and pushed" from "merged." `SESSION_CLAIMS.md` records that work was *claimed*, not that it was *landed*. |
+| Impact | MEDIUM-HIGH for this instance specifically: the inert artifact was a fail-closed correctness gate (blocks deploy on a red approval-path test run) — its 2-day dormancy meant the live system had zero enforcement of that gate for 2 days despite the tests themselves existing and passing. Generalizes to any safety-relevant branch, not just this one. |
+| Discovery | 2026-07-12, this session, while investigating remaining `ITERATION_PLAN_v3.md` scope: found the branch listed in `git branch -r` but absent from `gh pr list --state all --search "head:<branch>"`; confirmed via `git branch --contains <sha> \| grep main` (empty) and a direct grep of live `main`'s `.github/workflows/deploy.yml` (no `approval-path-tests` job present) that the gate was genuinely not live. |
+| Resolution | This instance: rebased the branch onto current `main`, re-verified the full test suite (2685 passed/29 skipped/0 failed), opened PR #15, confirmed CI green, merged (`381ddac`). Systemic fix not yet implemented — recommended follow-on: add a session-start or session-end check that runs `gh pr list --state all` (or equivalent `git branch -r --merged main` diff) against any branch referenced in the last N `SESSION_CLAIMS.md` rows, flagging any claimed-and-pushed-but-unmerged branch older than some threshold (e.g. 24h). Not scoped or implemented this session — registering the gap per the standing invariant that registration is independent of remediation. |
+| Status | RESOLVED (this instance, PR #15/`381ddac`) — the underlying systemic gap (no automated stale-unmerged-branch detection) remains OPEN, unscoped |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
