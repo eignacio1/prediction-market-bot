@@ -35,7 +35,7 @@ price_paid = mip + half_vig            # YES: pay the ask, above mid
 price_paid = (1.0 - mip) + half_vig    # NO:  pay the NO ask, above (1-mip) — vig is STILL a cost
 ```
 
-Vig is a bid-ask spread: it is a cost of crossing the spread on *either* side, never a credit. `run_t4_mlb_live.py`'s sign flip is a genuine bug — distinct from GG-077 (the already-fixed `fee_net_edge` storage-layer sign bug in `paper_trader.py`) and distinct from T-333's H5 (a tooling-parity finding, not an economic-correctness one). It is being escalated as its own governance gap, **GG-112**, below.
+Vig is a bid-ask spread: it is a cost of crossing the spread on *either* side, never a credit. `run_t4_mlb_live.py`'s sign flip is a genuine bug — distinct from GG-077 (the already-fixed `fee_net_edge` storage-layer sign bug in `paper_trader.py`) and distinct from T-333's H5 (a tooling-parity finding, not an economic-correctness one). It is being escalated as its own governance gap, **GG-113**, below.
 
 **Scale of exposure:** 337/412 clean positions (81.8%) are NO-direction. Every one of them was gated on an edge inflated by `+2×vig` relative to the correct symmetric-cost treatment. Confirmed directly: recomputing edge with the live-buggy formula on the resolved ledger reproduces `n_neg=0` for all 412 rows (tautological — every resolved position cleared this exact gate by construction), while the corrected symmetric-vig formula produces `n_neg=137` (33.3% of clean_n) — real, previously-invisible negative-true-edge bets that the live gate is currently waving through.
 
@@ -47,7 +47,7 @@ Vig is a bid-ask spread: it is a cost of crossing the spread on *either* side, n
 | ANALYSIS (current tool, vig omitted) | 389 | 23 | 0.614 | 0.826 | 0.0464 |
 | **CORRECTED (vig symmetric cost)** | **275** | **137** | **0.582** | **0.715** | **0.0094** |
 
-Correcting the sign bug does not resolve the anti-predictive relationship — it makes it *more* significant (p: 0.046 → 0.0094) and reveals it spans a much larger share of the book (23 → 137 rows). **This rules out mechanism (b) as the cause of GG-105's win-rate inversion**, even though (b) is real and independently actionable (see GG-112).
+Correcting the sign bug does not resolve the anti-predictive relationship — it makes it *more* significant (p: 0.046 → 0.0094) and reveals it spans a much larger share of the book (23 → 137 rows). **This rules out mechanism (b) as the cause of GG-105's win-rate inversion**, even though (b) is real and independently actionable (see GG-113).
 
 ---
 
@@ -87,14 +87,14 @@ None of these mechanisms were re-tested from scratch this session (that is T-333
 | Mechanism | Verdict this session |
 |---|---|
 | (a) real signal-inversion | **Ruled out as primary driver.** Win rate stays >50% (net informative) at every tercile, including the highest-edge one — a decay pattern, not a sign flip. |
-| (b) fee/edge-frame artifact | **Real bug found (GG-112), but ruled out as GG-105's cause.** Correcting the identified vig-sign-flip bug *strengthens* the anti-predictive pattern (p: 0.046→0.0094) rather than resolving it. |
+| (b) fee/edge-frame artifact | **Real bug found (GG-113), but ruled out as GG-105's cause.** Correcting the identified vig-sign-flip bug *strengthens* the anti-predictive pattern (p: 0.046→0.0094) rather than resolving it. |
 | (c) flat-sizing artifact | **Ruled out** (T-329, reconfirmed orthogonally this session). |
 | (d) model miscalibration (overconfidence) | **Leading mechanism.** Consistent, convergent evidence: within-direction tercile decay (this session), calibration slope b=0.600 excluding 1.0 (this session's fresh `run_band_monitor.py` run), T1-estimate-discarded (T-333 H2), noisy small-window `ba_l10`/`ab_remaining` inputs (T-333 H1/H4, not yet interaction-tested). |
 
 **No recalibration ADR proposed this window, per scope.** Any live-formula change (vig-sign fix, T1/T4 blending, ba_l10 shrinkage) requires its own DS sign-off and superseding ADR per Hard Rule 3 / ADR-0039 Tier B precedent.
 
 **Recommended next steps (not this window):**
-1. Fix GG-112 (vig sign) as an independent, low-risk correctness fix — it changes *which* bets clear the gate (removing ~1/3 of currently-approved NO bets that carry negative true edge), which is a capital-relevant behavior change even though it doesn't explain GG-105, and therefore needs its own scoped task + sign-off, not a silent patch.
+1. Fix GG-113 (vig sign) as an independent, low-risk correctness fix — it changes *which* bets clear the gate (removing ~1/3 of currently-approved NO bets that carry negative true edge), which is a capital-relevant behavior change even though it doesn't explain GG-105, and therefore needs its own scoped task + sign-off, not a silent patch.
 2. A formal interaction model testing H1×H4 jointly (T-333 flagged this as not yet built).
 3. Re-run Component A (full tercile/Fisher re-derivation) once `CURRENT_LOGIC_EPOCH` clears its ~14-day maturity window (~2026-07-19/20 per T-340) — standing watch item, unchanged by this task.
 
