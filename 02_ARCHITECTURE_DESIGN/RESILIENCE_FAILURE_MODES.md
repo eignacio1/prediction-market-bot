@@ -26,7 +26,7 @@
 | Impact | Research: pipeline halts; no forecast for affected events. Live: data gap; forecasts not generated |
 | Severity | Research: LOW (recoverable) | Live: HIGH (no forecasts = no orders = missed market window) |
 | Mitigation | Schema validation at ingestion rejects bad records before poisoning feature store. Retry logic with exponential backoff. Alert on ingestion gap >threshold. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_ingestion-failure.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_ingestion-failure.md (created 2026-07-12, T-346/GG-092) |
 | Revisit trigger | Venue API change; schema version bump |
 
 ## FM-02 — Look-Ahead Bias / Data Contamination (C1/C2)
@@ -39,7 +39,7 @@
 | Impact | All backtesting results are invalid; model may have zero live edge; cannot detect without explicit check |
 | Severity | CRITICAL — silently destroys validity of all downstream validation |
 | Mitigation | (1) Temporal safety column mandatory in lineage register. (2) Automated temporal overlap check in backtesting framework. (3) Outcome data ingested separately, never in feature store. (4) All train/test splits are chronological. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_data-contamination.md (to be created at G3) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_data-contamination.md (created 2026-07-12, T-346/GG-092 — states plainly there is no production runtime detector, only offline pytest coverage) |
 | Revisit trigger | Any new feature added to lineage register; backtesting framework change |
 
 ## FM-03 — Model Performance Degradation (C3)
@@ -78,7 +78,7 @@
 | Impact | Position size exceeds approved limit; risk limit may be breached |
 | Severity | HIGH |
 | Mitigation | idempotency_key required on all orders per IF-C5-VENUE. Venue confirmation checked before retry. Deduplication log in C6. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_order-duplication.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_order-duplication.md (created 2026-07-12, T-346/GG-092) |
 | Revisit trigger | Venue API change; execution engine change |
 
 ## FM-06 — Kill Switch Failure (C7)
@@ -104,7 +104,7 @@
 | Impact | Loss of auditability; cannot reconstruct decision history; governance invariant violated |
 | Severity | HIGH |
 | Mitigation | Append-only log format. Write confirmation before acknowledging event. Periodic log integrity check. Backup rotation per DATA_RETENTION_DELETION.md. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_audit-log.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_audit-log.md (created 2026-07-12, T-346/GG-092 — documents that the kill-switch-on-write-failure contract is unenforced by any caller) |
 | Revisit trigger | Storage architecture change; log format change |
 
 ## FM-08 — Context Rot / Directory Drift (Governance)
