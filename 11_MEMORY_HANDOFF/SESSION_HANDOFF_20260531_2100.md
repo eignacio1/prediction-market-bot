@@ -45,9 +45,11 @@
 
 ## ONE THING PENDING
 
-**T-111 — Kalshi auth NOT_FOUND:** Infrastructure is built and committed. The bot signs requests correctly (private key loads, PSS padding, correct key ID `863c33ff-283d-4a11-a113-e3fea2c6d567`). The failure is on Kalshi's side — they cannot find/validate the key.
+**T-111 — Kalshi auth NOT_FOUND:** Infrastructure is built and committed. The bot signs requests correctly (private key loads, PSS padding, correct key ID `[REDACTED-2026-07-12-GG-116 — see below]`). The failure is on Kalshi's side — they cannot find/validate the key.
 
-**Current state:** `VENUE_API_KEY=863c33ff-283d-4a11-a113-e3fea2c6d567`, `VENUE_PRIVATE_KEY_PATH=/Users/earlignacio/.ssh/kalshi_bot.pem`. Both set. Key loads (`Signing key loaded: True`). Balance endpoint returns `{"code": "authentication_error", "details": "NOT_FOUND"}`.
+**Current state:** `VENUE_API_KEY=[REDACTED-2026-07-12-GG-116]`, `VENUE_PRIVATE_KEY_PATH=~/.ssh/kalshi_bot.pem`. Both set. Key loads (`Signing key loaded: True`). Balance endpoint returns `{"code": "authentication_error", "details": "NOT_FOUND"}`.
+
+> **Redaction note (2026-07-12, T-347/GG-116):** this document previously contained the real Kalshi API key ID and private-key filesystem path in plaintext — a direct NFR-05 violation ("Zero hardcoded secrets. Vault/env-var protocol only"). Redacted in place (non-destructive; git history still contains the original value at commit `dce071e` and after — history scrub and/or credential rotation are operator decisions, not made here). See `03_DECISIONS/GOVERNANCE_GAP_LOG.md` GG-116 and `02_ARCHITECTURE_DESIGN/THREAT_MODEL.md` TH-02 for full detail.
 
 **Next session must investigate:**
 1. **Try session-based auth**: `POST https://api.elections.kalshi.com/trade-api/v2/log_in` with `{"email": ..., "password": ...}` → get JWT → use `Authorization: Bearer <jwt>` for /portfolio/balance. If this works, the UUID key is a Bearer-token key, not an RSA key.
