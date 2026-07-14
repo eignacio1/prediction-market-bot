@@ -47,6 +47,7 @@ import argparse
 import json
 import os
 import sys
+from collections import deque
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -84,19 +85,28 @@ def _load_json(p: Path) -> dict:
 def _load_jsonl(p: Path, tail: int = 500) -> list[dict]:
     if not p.exists():
         return []
-    entries: list[dict] = []
+    # Keep only the last `tail` raw lines in memory (bounded deque), then
+    # parse just those. Audit logs grow unbounded (tens of MB after a few
+    # days of live MLB activity) — parsing every line into a dict before
+    # slicing to the tail held the entire file's worth of Python objects
+    # in memory at once, which is what was blowing past the service's
+    # 128M MemoryMax and OOM-killing the dashboard in a restart loop.
+    buf: deque[str] = deque(maxlen=tail)
     try:
         with open(p) as f:
             for line in f:
                 line = line.strip()
                 if line:
-                    try:
-                        entries.append(json.loads(line))
-                    except json.JSONDecodeError:
-                        pass
+                    buf.append(line)
     except Exception:
         pass
-    return entries[-tail:]
+    entries: list[dict] = []
+    for line in buf:
+        try:
+            entries.append(json.loads(line))
+        except json.JSONDecodeError:
+            pass
+    return entries
 
 
 def _load_tail(p: Path, n: int = 40) -> list[str]:
