@@ -12,7 +12,7 @@
 **Confidence:** 7/10 — Known failure modes catalogued; live-mode failure modes expand at G5
 **Decisions logged:** true — FM-01–FM-08 failure mode prioritization captured at G2 gate (APR-0004) and G5 kill switch drill (APR-0013)  
 
-**⚠️ Corrected 2026-07-06 (GG-074 remediation) — real gap found, not just staleness.** G5 is closed and the system has been running paper trading in production for weeks, but of the four runbooks marked "(to be created at G5)" below (FM-01 ingestion-failure, FM-02 data-contamination, FM-05 order-duplication, FM-07 audit-log), **none exist** — confirmed via directory listing of `10_INFRA_OPERATIONS/RUNBOOKS/`, which contains only `RUNBOOK_kill-switch.md`, `RUNBOOK_model-drift.md`, and `RUNBOOK_polymarket-activation.md` (matching FM-04/FM-06 and FM-03 respectively, both correctly un-flagged below). This is a genuine operational-readiness gap, not merely a stale citation: FM-02 (data contamination — rated CRITICAL, "silently destroys validity of all downstream validation") and FM-04's sibling FM-05 (order duplication — rated HIGH) have no runbook despite the system now placing real Kalshi demo orders (ADR-0008) and running live MLB paper trading. Recommend registering this as its own governance gap (candidate: missing G5-promised incident runbooks) rather than treating it as closed by this note.
+**⚠️ RESOLVED 2026-07-13 (GG-092, T-346) — the gap flagged 2026-07-06 is closed.** The four runbooks flagged missing on 2026-07-06 (FM-01 ingestion-failure, FM-02 data-contamination, FM-05 order-duplication, FM-07 audit-log) now exist under `10_INFRA_OPERATIONS/RUNBOOKS/`, each grounded in the real shipped code paths (not aspirational process) — see each FM's Runbook cell below for the direct link. Each runbook also surfaces its own genuine open questions where the investigation found real gaps rather than papering over them (e.g. FM-02's "no automated TI-01–TI-04 checker exists," FM-07's "write-failure → kill-switch enforcement is caller-dependent, not exhaustively audited") — those are noted in-runbook as Known Gaps, not silently resolved. See GG-092 in `GOVERNANCE_GAP_LOG.md` and `DECISION_LOG.md` (2026-07-13) for the full resolution record.
 
 ---
 
@@ -26,7 +26,7 @@
 | Impact | Research: pipeline halts; no forecast for affected events. Live: data gap; forecasts not generated |
 | Severity | Research: LOW (recoverable) | Live: HIGH (no forecasts = no orders = missed market window) |
 | Mitigation | Schema validation at ingestion rejects bad records before poisoning feature store. Retry logic with exponential backoff. Alert on ingestion gap >threshold. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_ingestion-failure.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_ingestion-failure.md (created 2026-07-13, GG-092/T-346) |
 | Revisit trigger | Venue API change; schema version bump |
 
 ## FM-02 — Look-Ahead Bias / Data Contamination (C1/C2)
@@ -39,7 +39,7 @@
 | Impact | All backtesting results are invalid; model may have zero live edge; cannot detect without explicit check |
 | Severity | CRITICAL — silently destroys validity of all downstream validation |
 | Mitigation | (1) Temporal safety column mandatory in lineage register. (2) Automated temporal overlap check in backtesting framework. (3) Outcome data ingested separately, never in feature store. (4) All train/test splits are chronological. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_data-contamination.md (to be created at G3) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_data-contamination.md (created 2026-07-13, GG-092/T-346) |
 | Revisit trigger | Any new feature added to lineage register; backtesting framework change |
 
 ## FM-03 — Model Performance Degradation (C3)
@@ -78,7 +78,7 @@
 | Impact | Position size exceeds approved limit; risk limit may be breached |
 | Severity | HIGH |
 | Mitigation | idempotency_key required on all orders per IF-C5-VENUE. Venue confirmation checked before retry. Deduplication log in C6. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_order-duplication.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_order-duplication.md (created 2026-07-13, GG-092/T-346) |
 | Revisit trigger | Venue API change; execution engine change |
 
 ## FM-06 — Kill Switch Failure (C7)
@@ -104,7 +104,7 @@
 | Impact | Loss of auditability; cannot reconstruct decision history; governance invariant violated |
 | Severity | HIGH |
 | Mitigation | Append-only log format. Write confirmation before acknowledging event. Periodic log integrity check. Backup rotation per DATA_RETENTION_DELETION.md. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_audit-log.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_audit-log.md (created 2026-07-13, GG-092/T-346) |
 | Revisit trigger | Storage architecture change; log format change |
 
 ## FM-08 — Context Rot / Directory Drift (Governance)

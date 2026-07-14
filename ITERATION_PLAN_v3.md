@@ -21,11 +21,13 @@
 - **Exit:** fee confirmed or corrected; statement on whether the anti-predictive signal survives a correct fee.
 - **Result:** fee rate itself unverifiable this pass (Kalshi fee docs still 429/302-blocked); clarified GG-105's driver is vig-*handling* (GG-113), not the fee *rate*. Fee-rate verification remains a separate open item. See `DECISION_LOG.md` 2026-07-12.
 
-## Window 3 — Readiness debt (independent, parallelizable) — NOT STARTED
-### T-346 — GG-092: write missing CRITICAL incident runbooks (FM-01/02/05/07)
-### T-347 — GG-093: re-expand threat model for live Kalshi RSA-credential reality
+## Window 3 — Readiness debt (independent, parallelizable) — ✅ ALL DONE 2026-07-13
+### T-346 — GG-092: write missing CRITICAL incident runbooks (FM-01/02/05/07) — ✅ DONE
+- 4 runbooks drafted in `10_INFRA_OPERATIONS/RUNBOOKS/` (data-contamination, ingestion-failure, order-duplication, audit-log); `RESILIENCE_FAILURE_MODES.md` updated; GG-092 RESOLVED.
+### T-347 — GG-093: re-expand threat model for live Kalshi RSA-credential reality — ✅ DONE
+- `THREAT_MODEL.md` TH-02 rewritten, new Live Credential Attack Surface section added (key compromise/rotation policy/blast radius), Threat Summary Matrix + Threats Out of Scope corrected, closing line updated to G6 trigger; GG-093 RESOLVED. New GG-116 registered separately for `SECRETS_HANDLING.md`'s own out-of-scope staleness.
 - **Exit each:** artifact exists, reviewed; gap flipped RESOLVED. Pre-G6 obligations regardless of edge outcome.
-- **Status:** not picked up by any session as of 2026-07-12 — no matching DECISION_LOG entries. Still open, still pre-G6 obligations.
+- **Status:** COMPLETE — isolated worktree `20260713T233416Z-iterplan-v3-window3-t346-t347`. See `DECISION_LOG.md` 2026-07-13 (T-346, T-347 rows).
 
 ## Window 4 — Housekeeping the protocol surfaced (low-context filler) — ✅ ALL DONE 2026-07-12
 ### T-348 — GG-107: commit/retire stale iteration-plan files in `main`; reconcile ID collision — ✅ DONE
