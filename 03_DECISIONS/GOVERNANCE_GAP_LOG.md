@@ -1976,6 +1976,22 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-117 — `band_monitor_summary.json` tracked-but-should-be-gitignored, recurring deploy-blocker (GG-102's sibling file, missed)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-117 |
+| What was missed | GG-102 (2026-07-xx) gitignored `exp_output/T255-BAND-MONITOR/band_monitor_results.json` because it is rewritten in place by the weekly VPS cron (`run_band_monitor.py --ci`, Mondays) and tracking it dirties the VPS tree, blocking `deploy.yml`'s fail-closed dirty-tree guard. `band_monitor_summary.json` — the same cron run's aggregate rollup output, sitting in the same directory, rewritten by the exact same job — was never added to the same `.gitignore` pattern. It stayed git-tracked and kept getting rewritten by every cron run. |
+| When it should have been caught | At GG-102's own authorship — the fix should have covered both sibling output files from the same job in one pass; a `git ls-files exp_output/T255-BAND-MONITOR/` at that time would have shown both. |
+| Phases it survived | From GG-102's fix (exact date not re-derived here) through 2026-07-13 — at least one full weekly cron cycle, confirmed to have actually fired and blocked a deploy. |
+| Why it survived | GG-102's fix was scoped to the file that was under investigation at the time, not audited against its sibling in the same directory/job. No test or CI check asserts that VPS-cron-regenerated `exp_output/` files are fully covered by `.gitignore`. |
+| Impact | MEDIUM — directly caused a live deploy failure: PR #18's "Deploy to VPS" GitHub Actions run (`29293727602`, 2026-07-13) failed because `git status --porcelain --untracked-files=no` on the VPS showed `M exp_output/T255-BAND-MONITOR/band_monitor_summary.json`, tripping `deploy.yml`'s designed safety guard (`git pull --ff-only` aborted rather than risk clobbering a dirty tracked file). No data loss or corruption — the diff was confirmed benign (regenerated monitor stats only: T1 n 81→110, T4M-PROJ n 412→666) — but it silently blocks every subsequent deploy until manually diagnosed and cleared, which is exactly the failure shape GG-102 was written to prevent. |
+| Discovery | 2026-07-13, this session, while investigating why PR #18's auto-triggered "Deploy to VPS" run failed ahead of PR #14's merge-triggered deploy run. `gh run view 29293727602 --log-failed` surfaced the guard trip; `git status --porcelain --untracked-files=no` + `.gitignore` grep on the VPS confirmed the sibling-file gap directly. |
+| Resolution | Same-session: discarded the benign dirty diff on the VPS (`git checkout -- exp_output/T255-BAND-MONITOR/band_monitor_summary.json`), unblocking PR #14's deploy run, which then completed successfully (VPS HEAD confirmed at `b2577dd`, matching `origin/main`). Root cause fixed in the repo: extended GG-102's `.gitignore` pattern to also cover `exp_output/T255-BAND-MONITOR/band_monitor_summary.json` and untracked the file (`git rm --cached`) so future cron runs no longer dirty the VPS tree. |
+| Status | RESOLVED — `.gitignore` fix + untrack committed this session; VPS confirmed unblocked and current. |
+
+---
+
 ### GG-115 — The `approval-path-tests` fail-closed CI gate (T-327) failed on its own first live run: install step bypassed the project's locked-requirements convention and omitted `nba_api`
 
 | Field | Detail |
