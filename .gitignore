@@ -28,6 +28,11 @@ eggs/
 .eggs/
 lib/
 lib64/
+# lib/ above is meant for venv artifacts at repo root; it unintentionally also
+# matches scripts/lib/ (a real, tracked source dir, T-355) since gitignore
+# patterns without a leading slash match at any depth. Un-ignore it explicitly.
+!scripts/lib/
+!scripts/lib/**
 parts/
 sdist/
 var/

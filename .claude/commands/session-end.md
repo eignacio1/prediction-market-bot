@@ -129,6 +129,19 @@ NEXT SESSION PRIMER:
 [2-3 sentences on exactly where to pick up, what file to read first, what the immediate next action is]
 ```
 
+## Step 8 — Push + Merge Before Close (GG-107 root-cause fix, T-355)
+
+**Never leave a branch unmerged overnight.** The GG-107/109/111 duplicate-claim churn (multiple sessions colliding on the same T-/GG-/ADR- ID across 2026-07-08 through 2026-07-13) was caused in part by session branches sitting unpushed or unmerged for hours-to-days, during which their ID reservations were invisible to `SESSION_CLAIMS.md`-based collision checks and to the next session's Step 0c scan. A branch that only exists locally, or that is pushed but not yet merged to `main`, is a live collision risk for as long as it survives.
+
+Before ending this session:
+1. Commit all path-scoped work (Steps 0-7 above).
+2. `git push -u origin <session-branch>` — the branch must exist on `origin`, not just locally.
+3. Merge (or open and merge a PR) into `main` **in this same session** — do not defer the merge to "next session" or leave it for the operator to do later unless the operator explicitly says so. An unmerged branch is unfinished work, not a stopping point.
+4. Retire the isolated worktree (`scripts/end_session_worktree.sh`) only after the merge lands.
+5. If a merge genuinely cannot happen this session (e.g. it is gated on DS sign-off or an operator decision), say so explicitly in the SESSION_HANDOFF and register a T-NNN task for the merge itself — do not let it silently sit as an ordinary open branch.
+
+**Exit check:** `git branch -a` should show no session branch that is both unpushed-or-unmerged AND unaccounted-for in the handoff.
+
 ---
 
 ## Quick Reference — File Paths to Update Every Session

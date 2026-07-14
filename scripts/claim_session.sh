@@ -35,6 +35,17 @@ fi
 git fetch --quiet origin main
 git pull --quiet --rebase origin main || true
 
+# Pre-claim collision check (GG-107 root-cause fix): refuse to claim any
+# T-/GG-/ADR- ID already registered in TODO_NEXT.md, SESSION_CLAIMS.md, or
+# DECISION_LOG.md. Runs against the just-fetched/rebased state so it checks
+# the true current registry, not a stale local view.
+source "$SCRIPT_DIR/lib/check_id_collision.sh"
+if ! check_id_collision "$RANGE" "$REPO_ROOT"; then
+  echo "❌ Refusing claim: one or more IDs in \"$RANGE\" are already registered/in use (see COLLISION lines above)." >&2
+  echo "   Pick IDs above the current highest-in-use (grep TODO_NEXT.md/SESSION_CLAIMS.md/DECISION_LOG.md) and retry." >&2
+  exit 1
+fi
+
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 printf '| %s | %s | %s |\n' "$STAMP" "$RANGE" "$FOCUS" >> "$CLAIMS"
 git add "$CLAIMS"
