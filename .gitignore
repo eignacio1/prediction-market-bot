@@ -115,6 +115,13 @@ exp_output/EXP-ARITH-MLB-01/EXP-ARITH-MLB-01_results.json
 exp_output/EXP-FLOW-MLB-01/EXP-FLOW-MLB-01_results.json
 exp_output/T255-BAND-MONITOR/band_monitor_results.json
 
+# --- GG-117: band_monitor_summary.json is band_monitor_results.json's sibling
+# aggregate rollup, rewritten in place by the same weekly cron run — it was
+# missed when GG-102 gitignored its sibling above, so every cron run dirtied
+# the VPS tree and silently blocked deploy.yml's guard (observed 2026-07-13,
+# PR #18's deploy run). Untracked here for the same reason as its sibling.
+exp_output/T255-BAND-MONITOR/band_monitor_summary.json
+
 # --- Qualitative classification CSVs ARE committed (immutable registered snapshots) ---
 # Template and QS snapshots in qualitative_data/ are version-controlled.
 *.csv
