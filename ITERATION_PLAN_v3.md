@@ -21,11 +21,11 @@
 - **Exit:** fee confirmed or corrected; statement on whether the anti-predictive signal survives a correct fee.
 - **Result:** fee rate itself unverifiable this pass (Kalshi fee docs still 429/302-blocked); clarified GG-105's driver is vig-*handling* (GG-113), not the fee *rate*. Fee-rate verification remains a separate open item. See `DECISION_LOG.md` 2026-07-12.
 
-## Window 3 — Readiness debt (independent, parallelizable) — NOT STARTED
-### T-346 — GG-092: write missing CRITICAL incident runbooks (FM-01/02/05/07)
-### T-347 — GG-093: re-expand threat model for live Kalshi RSA-credential reality
+## Window 3 — Readiness debt (independent, parallelizable) — ✅ DONE 2026-07-12, MERGED 2026-07-13 (PR #14, `b2577dd`)
+### T-346 — GG-092: write missing CRITICAL incident runbooks (FM-01/02/05/07) — ✅ DONE
+### T-347 — GG-093: re-expand threat model for live Kalshi RSA-credential reality — ✅ DONE
 - **Exit each:** artifact exists, reviewed; gap flipped RESOLVED. Pre-G6 obligations regardless of edge outcome.
-- **Status:** not picked up by any session as of 2026-07-12 — no matching DECISION_LOG entries. Still open, still pre-G6 obligations.
+- **Status:** completed 2026-07-12 on `session/20260712T095020Z-gg092-gg093-readiness-debt`; both GG-092 and GG-093 flipped RESOLVED. The branch was pushed but sat unmerged for a day (same anti-pattern as GG-114) and this file was never updated to reflect it, which caused a second session to file a duplicate claim on the identical T-346/T-347/GG-092/GG-093 range on 2026-07-13 before discovering the work already existed (see `04_EXECUTION/SESSION_CLAIMS.md`'s 2026-07-13T~23:50Z duplicate-claim flag row). Recovered and merged to `main` via PR #14 (`b2577dd`, 2026-07-13). See `DECISION_LOG.md` 2026-07-12, `GOVERNANCE_GAP_LOG.md` GG-092/GG-093 (RESOLVED)/GG-116.
 
 ## Window 4 — Housekeeping the protocol surfaced (low-context filler) — ✅ ALL DONE 2026-07-12
 ### T-348 — GG-107: commit/retire stale iteration-plan files in `main`; reconcile ID collision — ✅ DONE
