@@ -14,3 +14,12 @@
 # isolation + path-scoped commits + the diff-against-HEAD rule (Hard Rule 10).
 # ============================================================================
 04_EXECUTION/SESSION_CLAIMS.md merge=union
+
+# GG-103 (2026-07-15): .last_session_checkpoint reformatted from a single
+# overwritten SHA to an append-only log (checkpoint<TAB>timestamp<TAB>slug
+# rows), mirroring the SESSION_CLAIMS.md pattern above instead of inventing
+# a new one. session-start reads only the LAST line; session-end APPENDS
+# rather than overwrites. Same rationale as above: append-only + union merge
+# means two sessions closing concurrently both survive instead of one
+# clobbering the other's checkpoint pointer.
+04_EXECUTION/.last_session_checkpoint merge=union

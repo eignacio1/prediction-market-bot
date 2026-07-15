@@ -117,7 +117,13 @@ This file MUST include:
 - One-thing-pending (single most important next action)
 - Resume command for next session
 
-**Also write the checkpoint pointer (ADR-0041, T-300/Window A):** after the SESSION_HANDOFF commit lands, overwrite `04_EXECUTION/.last_session_checkpoint` with the new HEAD SHA (`git rev-parse --short HEAD > 04_EXECUTION/.last_session_checkpoint`) and commit it in the same path-scoped commit as the handoff. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read — skipping this step silently degrades the next session back to the full-read fallback.
+**Also write the checkpoint pointer (ADR-0041, T-300/Window A; format updated GG-103, 2026-07-15):** after the SESSION_HANDOFF commit lands, APPEND a new row to `04_EXECUTION/.last_session_checkpoint` — do NOT overwrite it (the file is an append-only log, `merge=union` in `.gitattributes`, mirroring `SESSION_CLAIMS.md`'s pattern so two sessions closing concurrently both survive instead of one clobbering the other's pointer):
+
+```bash
+printf '%s\t%s\t%s\n' "$(git rev-parse --short HEAD)" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "<short-session-slug>" >> 04_EXECUTION/.last_session_checkpoint
+```
+
+Commit it in the same path-scoped commit as the handoff. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read (it reads only the last line's checkpoint field, per GG-103) — skipping this step silently degrades the next session back to the full-read fallback.
 
 ## Step 7 — Next Session Primer
 

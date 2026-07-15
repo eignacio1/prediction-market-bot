@@ -771,8 +771,8 @@ def _scan_and_log_locks(
             payload={
                 "player_name":    opp.player_name,
                 "threshold":      opp.threshold,
-                "buy_yes_venue":  opp.buy_yes_venue,
-                "buy_no_venue":   opp.buy_no_venue,
+                "buy_yes_venue":  opp.yes_venue,
+                "buy_no_venue":   opp.no_venue,
                 "net_profit":     opp.net_profit,
                 "governance":     "detection_only_APR-0010_required",
             },
