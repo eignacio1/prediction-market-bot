@@ -39,17 +39,24 @@ elif gross_edge < 0.0:
     directional_gross_edge = (mip - p_t4) - vig
 ```
 
-`paper_trader.py::open_position()` (the paper-trade write path): correct the sign-flip to also re-subtract vig, since a plain `-gross_edge` flip both flips the signal term (correct) and flips vig's sign (incorrect, since `gross_edge` already has vig subtracted once with a fixed sign):
+`paper_trader.py::open_position()` (the paper-trade write path): correct the sign-flip to also re-subtract vig, since a plain `-gross_edge` flip both flips the signal term (correct) and flips vig's sign (incorrect, since `gross_edge` already has vig subtracted once with a fixed sign). **This function is shared by T1, T2, and T4M-PROJ** (each caller passes its own `gross_edge`/`band` into a common `open_position()`), so — consistent with D3's scope boundary below — the corrected formula is band-gated to `band == "T4M-PROJ"` only; every other band retains the pre-GG-113 formula until it clears its own sign-off:
 
 ```python
-_directional_gross = gross_edge if direction == "YES" else (-gross_edge - 2.0 * vig)
+if direction == "YES":
+    _directional_gross = gross_edge
+elif band == "T4M-PROJ":
+    _directional_gross = -gross_edge - 2.0 * vig
+else:
+    _directional_gross = -gross_edge  # pre-GG-113 formula, out of scope (D3)
 ```
 
-Both forms are algebraically equivalent — `-gross_edge - 2*vig = -(p-mip-vig) - 2*vig = (mip-p) - vig` — and match `run_exp017.py`'s established convention of vig as a cost applied identically regardless of direction.
+The `-gross_edge - 2*vig` branch is algebraically equivalent to `(mip-p) - vig` — `-gross_edge - 2*vig = -(p-mip-vig) - 2*vig = (mip-p) - vig` — and matches `run_exp017.py`'s established convention of vig as a cost applied identically regardless of direction.
+
+**Self-correction (same session, pre-merge):** an earlier draft of this fix applied the corrected formula unconditionally in `open_position()`, which would have silently changed T1's and T2's stored `fee_net_edge` ledger values too — contradicting D3's scope statement within this same ADR. Caught before merge/deploy via `tests/test_approval_path_invariants.py`'s fail-closed gate (`TestFeeSignInvariance`), which asserts `paper_trader.py` and `run_mlb_paper_trade.py::_directional_edge()` must agree and failed loudly once one was fixed and the other wasn't. Corrected to the band-gated form above before this ADR's code was committed; no unconditional version was ever merged to `main`.
 
 **D2 — Advance `CURRENT_LOGIC_EPOCH` and accept the resulting `clean_n` reset.** This fix changes which bets clear `MIN_EDGE_TO_APPROVE` gating for NO-direction bets, so pre-fix and post-fix bets are not comparable under the same epoch. Per the DS sign-off above, this is an accepted, deliberate cost — `logic_epoch.py` must report the reset cleanly (new epoch, `clean_n` starts over) rather than silently carrying stale pre-fix `clean_n` forward as if it were computed under the corrected formula.
 
-**D3 — T1 MLB's parallel instance of this bug (`run_mlb_paper_trade.py::_directional_edge()`) is explicitly OUT OF SCOPE for this ADR.** T1 is the active/primary G6 book and requires its own fresh, explicit DS sign-off before any live-formula change (Hard Rule 3 / ADR-0039 Tier B precedent) — this ADR's sign-off was scoped to T4M-PROJ only. Registered separately as GG-119 (OPEN, deferred, not fixed).
+**D3 — T1 MLB's parallel instance of this bug (`run_mlb_paper_trade.py::_directional_edge()`) is explicitly OUT OF SCOPE for this ADR.** T1 is the active/primary G6 book and requires its own fresh, explicit DS sign-off before any live-formula change (Hard Rule 3 / ADR-0039 Tier B precedent) — this ADR's sign-off was scoped to T4M-PROJ only. Registered separately as GG-119 (OPEN, deferred, not fixed). **T2 MLB (`run_t2_mlb_sameday.py`) is also out of scope**, for the same reason: it computes its own local `gross_edge`/`net_edge` and calls the same shared `open_position()` passing `band="T2"`, so it is covered by D1's band gate above (`open_position()` only applies the corrected formula when `band == "T4M-PROJ"`) and is unaffected by this fix. Whether T2's own local gating formula independently has the same NO-direction sign bug is unconfirmed and not investigated under this ADR — out of scope, a candidate follow-up for GG-119 or a sibling gap if warranted.
 
 ## Consequences
 
@@ -59,8 +66,8 @@ Both forms are algebraically equivalent — `-gross_edge - 2*vig = -(p-mip-vig) 
 
 ## Evidence / reproducibility
 
-- Fix commits: `run_t4_mlb_live.py` (session branch `gg113-rebase-clean`, cherry-picked from `3abab4e`, landed as `fb13166`); `paper_trader.py` (this session, committed alongside this ADR).
-- Regression tests: `tests/test_run_t4_mlb_live.py::TestRunCycle::test_no_direction_vig_is_symmetric_cost_not_credit` (pins the economically correct `fee_net_edge` value against a live `_run_cycle()` invocation, deriving expected `p_t4` via the same `_compute_ab_remaining`/`p_hits_gte_threshold` functions the code uses rather than hardcoding it); `tests/test_paper_trader.py::TestOpenPosition::test_fee_net_edge_is_direction_effective_for_no_bet` (updated — previously pinned the pre-fix/buggy value as "expected"; now pins `-gross_edge - 2*vig - fee`). Full suites: `tests/test_run_t4_mlb_live.py` (177 passed), `tests/test_paper_trader.py` (45 passed).
+- Fix commits: `run_t4_mlb_live.py` (session branch `gg113-rebase-clean`, cherry-picked from `3abab4e`, landed as `fb13166`); `paper_trader.py` (this session, committed alongside this ADR, band-gated to `band == "T4M-PROJ"` per the self-correction above).
+- Regression tests: `tests/test_run_t4_mlb_live.py::TestRunCycle::test_no_direction_vig_is_symmetric_cost_not_credit` (pins the economically correct `fee_net_edge` value against a live `_run_cycle()` invocation, deriving expected `p_t4` via the same `_compute_ab_remaining`/`p_hits_gte_threshold` functions the code uses rather than hardcoding it); `tests/test_paper_trader.py::TestOpenPosition::test_fee_net_edge_is_direction_effective_for_no_bet` (updated — previously pinned the pre-fix/buggy value as "expected"; now pins `-gross_edge - 2*vig - fee`, explicitly scoped with `band="T4M-PROJ"`); `tests/test_paper_trader.py::TestOpenPosition::test_gg113_fix_is_band_gated_to_t4m_proj_only` (new — parametrized over `band in {T1, T2, T3, None}`, asserts each retains the pre-GG-113 formula, locking in the D1/D3 scope boundary itself); `tests/test_approval_path_invariants.py` (the fail-closed gate that caught the original unconditional-fix draft — `_T4_DIRECTION_BLOCK_SOURCE`/`_t4_derive_direction` updated to match the live `(mip - p_t4) - vig` block). Full suites: `tests/test_run_t4_mlb_live.py` + `tests/test_paper_trader.py` (226 passed combined), `tests/test_approval_path_invariants.py` (6 passed).
 - Diagnostic: `scripts/run_t344_vig_sign_diag.py` (T-344, 2026-07-12) — the 81.8%/33.3% impact figures cited above.
 - Prior finding memo: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T344_GG105_DECOMPOSITION_MEMO.md`.
 

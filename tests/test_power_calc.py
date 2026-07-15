@@ -17,6 +17,9 @@ import pytest
 _SCRIPTS = Path(__file__).parent.parent / "scripts"
 if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
+_SRC = Path(__file__).parent.parent / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 from run_power_calc import (
     z_for,
@@ -25,10 +28,15 @@ from run_power_calc import (
     analyze_band_power,
     MATURE_CADENCE_SPAN_DAYS,
 )
+from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
 
 
-def _rec(pnl, resolved_at=None, entered_at=None, game_date=None, logic_epoch=3):
-    r = {"_pnl": pnl, "logic_epoch": logic_epoch}
+def _rec(pnl, resolved_at=None, entered_at=None, game_date=None, logic_epoch=None):
+    # GG-113 (ADR-0043) advanced CURRENT_LOGIC_EPOCH 3 -> 4; default to the
+    # live constant rather than a hardcoded value so "clean" fixtures here
+    # don't go stale on the next epoch bump (this is exactly what broke when
+    # the default was a bare literal `3` pre-fix).
+    r = {"_pnl": pnl, "logic_epoch": CURRENT_LOGIC_EPOCH if logic_epoch is None else logic_epoch}
     if resolved_at is not None:
         r["resolved_at"] = resolved_at
     if entered_at is not None:
@@ -153,8 +161,8 @@ class TestAnalyzeBandPower:
 
     def test_raw_n_and_clean_n_both_reported(self):
         # 3 clean, 2 not-clean (old epoch) -> clean_n should exclude the old ones.
-        clean = [_rec(1.0, logic_epoch=3) for _ in range(3)]
-        dirty = [_rec(1.0, logic_epoch=1) for _ in range(2)]
+        clean = [_rec(1.0, logic_epoch=CURRENT_LOGIC_EPOCH) for _ in range(3)]
+        dirty = [_rec(1.0, logic_epoch=CURRENT_LOGIC_EPOCH - 1) for _ in range(2)]
         all_recs = clean + dirty
         # analyze_band_power itself does not filter — filter_clean happens
         # inside it via import; verify raw_n reflects the full input list
