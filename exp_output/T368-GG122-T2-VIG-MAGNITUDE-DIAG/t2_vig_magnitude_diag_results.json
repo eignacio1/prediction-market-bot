@@ -1,0 +1,148 @@
+{
+  "resolved_ledger": {
+    "n_resolved": 2,
+    "note": "n too small to compute a dollar-denominated realized-P&L impact analogous to GG-119's T1 finding (n=259). Reported for the record only, not used to assert a quantified P&L impact.",
+    "rows": [
+      {
+        "position_id": "POS-83946C4309",
+        "player_name": "Mookie Betts",
+        "mid": 0.67,
+        "vig": 0.02,
+        "model_p": 0.749896,
+        "gross_edge": 0.059896,
+        "outcome": "LOSS",
+        "pnl": -21.2672,
+        "game_date": "2026-07-05",
+        "net_edge_buggy_reconstructed": 0.024419000000000003,
+        "net_edge_corrected_reconstructed": 0.034419,
+        "half_spread": 0.01
+      },
+      {
+        "position_id": "POS-A89B4E8868",
+        "player_name": "Freddie Freeman",
+        "mid": 0.275,
+        "vig": 0.01,
+        "model_p": 0.344099,
+        "gross_edge": 0.059099,
+        "outcome": "LOSS",
+        "pnl": -8.1086,
+        "game_date": "2026-07-05",
+        "net_edge_buggy_reconstructed": 0.03514274999999999,
+        "net_edge_corrected_reconstructed": 0.04014275,
+        "half_spread": 0.005
+      }
+    ]
+  },
+  "evaluated_candidates": {
+    "n_total": 39,
+    "already_yes_under_buggy_formula": {
+      "count": 3,
+      "rows": [
+        {
+          "source_file": "t2_mlb_20260704_1930.json",
+          "game_date": "20260704",
+          "player_name": "Junior Caminero",
+          "ticker": "KXMLBHIT-26JUL041910TBHOU-TBJCAMINERO13-2",
+          "threshold": 2,
+          "mid": 0.255,
+          "p_t2": 0.3078,
+          "vig_reconstructed": 0.010001750000000018,
+          "half_spread": 0.005000875000000009,
+          "net_edge_buggy": 0.0295,
+          "net_edge_corrected": 0.03450087500000001,
+          "direction_buggy": "YES",
+          "outcome_buggy": "REJECTED"
+        },
+        {
+          "source_file": "t2_mlb_20260705_1930.json",
+          "game_date": "20260705",
+          "player_name": "Mookie Betts",
+          "ticker": "KXMLBHIT-26JUL051920SDLAD-LADMBETTS50-1",
+          "threshold": 1,
+          "mid": 0.67,
+          "p_t2": 0.7499,
+          "vig_reconstructed": 0.020022999999999964,
+          "half_spread": 0.010011499999999982,
+          "net_edge_buggy": 0.0444,
+          "net_edge_corrected": 0.05441149999999999,
+          "direction_buggy": "YES",
+          "outcome_buggy": "APPROVED"
+        },
+        {
+          "source_file": "t2_mlb_20260705_1930.json",
+          "game_date": "20260705",
+          "player_name": "Freddie Freeman",
+          "ticker": "KXMLBHIT-26JUL051920SDLAD-LADFFREEMAN5-2",
+          "threshold": 2,
+          "mid": 0.275,
+          "p_t2": 0.3441,
+          "vig_reconstructed": 0.01004374999999999,
+          "half_spread": 0.005021874999999995,
+          "net_edge_buggy": 0.0451,
+          "net_edge_corrected": 0.050121874999999996,
+          "direction_buggy": "YES",
+          "outcome_buggy": "APPROVED"
+        }
+      ]
+    },
+    "would_flip_pass_to_yes_at_local_edge_yes_gate": {
+      "count": 1,
+      "rows": [
+        {
+          "source_file": "t2_mlb_20260712_1930.json",
+          "game_date": "20260712",
+          "player_name": "Ketel Marte",
+          "ticker": "KXMLBHIT-26JUL121610AZLAD-AZKMARTE4-1",
+          "threshold": 1,
+          "mid": 0.645,
+          "p_t2": 0.687,
+          "vig_reconstructed": 0.009971750000000036,
+          "half_spread": 0.004985875000000018,
+          "net_edge_buggy": 0.016,
+          "net_edge_corrected": 0.02098587500000002,
+          "direction_buggy": "PASS",
+          "outcome_buggy": "PASS_NO_EDGE"
+        }
+      ]
+    },
+    "of_those_would_also_clear_min_edge_to_approve": {
+      "count": 0,
+      "note": "MIN_EDGE_TO_APPROVE (risk.py CHECK 3, 0.04) is the binding gate that actually determines whether a bet is placed -- distinct from and stricter than T2's own local EDGE_YES=0.02 gate.",
+      "rows": []
+    },
+    "near_misses_within_0.01_of_min_edge_to_approve": {
+      "count": 1,
+      "rows": [
+        {
+          "source_file": "t2_mlb_20260704_1930.json",
+          "game_date": "20260704",
+          "player_name": "Junior Caminero",
+          "ticker": "KXMLBHIT-26JUL041910TBHOU-TBJCAMINERO13-2",
+          "threshold": 2,
+          "mid": 0.255,
+          "p_t2": 0.3078,
+          "vig_reconstructed": 0.010001750000000018,
+          "half_spread": 0.005000875000000009,
+          "net_edge_buggy": 0.0295,
+          "net_edge_corrected": 0.03450087500000001,
+          "direction_buggy": "YES",
+          "outcome_buggy": "REJECTED"
+        }
+      ]
+    },
+    "half_spread_distribution": {
+      "n": 39,
+      "mean": 0.00846,
+      "median": 0.009988,
+      "max": 0.015022,
+      "min": 0.004963
+    }
+  },
+  "verdict": {
+    "bug_confirmed": true,
+    "bug_class": "magnitude (full vig used as cost term instead of half_spread) -- NOT a sign-flip",
+    "direction_of_error": "conservative -- under-computes edge, costs profit by passing on bets that clear the gate under the correct formula",
+    "realized_bet_outcome_changes_in_observed_sample": 0,
+    "structural_risk": "0 realized bet-outcome changes in the observed 39-row sample, but 1 near-miss(es) within $0.01 of the binding gate and a real, nonzero half_spread magnitude on every evaluated row -- genuine exposure on any future day with a larger vig, even though currently unrealized."
+  }
+}
