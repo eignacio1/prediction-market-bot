@@ -25,15 +25,21 @@ from prediction_market_bot.logic_epoch import (  # noqa: E402
     approval_commit_for_epoch,
 )
 
-_PRE_HISTORY = "2026-06-01T00:00:00.000Z"          # before both boundaries -> epoch 1
-_POST_GG087_PRE_GG077 = "2026-07-05T12:00:00.000Z"  # between the two boundaries -> epoch 2
-_POST_GG077 = "2026-07-06T00:00:00.000Z"            # after both boundaries -> epoch 3 (current)
+_PRE_HISTORY = "2026-06-01T00:00:00.000Z"          # before any boundary -> epoch 1
+_POST_GG087_PRE_GG077 = "2026-07-05T12:00:00.000Z"  # between GG-087/GG-077 -> epoch 2
+_POST_GG077 = "2026-07-06T00:00:00.000Z"            # after GG-077, before GG-113 -> epoch 3
+# GG-113 (ADR-0043) added epoch 4 at commit 2026-07-15T01:56:45Z (91111b7,
+# the band-gated self-correction — not the earlier, never-deployed 2569c1f
+# unconditional draft); this must stay ahead of every LogicEpochBoundary in
+# logic_epoch.py, not just GG-077's, for "is_current_epoch" tests to mean
+# what they claim.
+_POST_GG113 = "2026-07-15T02:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:
     base = {
         "position_id": "POS-TEST001",
-        "entered_at": _POST_GG077,
+        "entered_at": _POST_GG113,
         "band": "T1",
     }
     base.update(overrides)
@@ -50,8 +56,12 @@ class TestDeriveLogicEpoch:
         assert derive_logic_epoch(_POST_GG087_PRE_GG077) == 2
 
     @pytest.mark.unit
-    def test_after_both_boundaries_is_current_epoch(self):
-        assert derive_logic_epoch(_POST_GG077) == CURRENT_LOGIC_EPOCH
+    def test_after_gg077_before_gg113_is_epoch_3(self):
+        assert derive_logic_epoch(_POST_GG077) == 3
+
+    @pytest.mark.unit
+    def test_after_all_boundaries_is_current_epoch(self):
+        assert derive_logic_epoch(_POST_GG113) == CURRENT_LOGIC_EPOCH
 
     @pytest.mark.unit
     def test_missing_entered_at_is_unresolvable(self):

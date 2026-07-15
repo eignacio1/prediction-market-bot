@@ -429,7 +429,29 @@ class PaperTrader:
             # was previously applied only to fee_contaminated, never to
             # fee_net_edge itself, so the stored field silently represented the
             # YES-side edge of the opposite bet for every NO position.
-            _directional_gross = gross_edge if direction == "YES" else -gross_edge
+            #
+            # GG-113: a plain sign flip (-gross_edge) also flips vig's sign,
+            # turning it from a cost into a credit for NO bets, since
+            # gross_edge = (p - mip) - vig already has vig baked in with a
+            # fixed sign. -gross_edge = -(p - mip) + vig. Correcting for NO
+            # requires -(p - mip) - vig, i.e. -gross_edge - 2*vig, so vig stays
+            # a symmetric cost regardless of direction (matches
+            # run_exp017.py's compute_pnl_unit() convention).
+            #
+            # ADR-0043's DS sign-off is scoped to T4M-PROJ only (D3): T1/T2/T3
+            # share this function but each has its own gating formula
+            # (e.g. run_mlb_paper_trade.py::_directional_edge()) that is left
+            # deliberately unfixed pending its own sign-off (GG-119). Applying
+            # the corrected formula unconditionally here would silently change
+            # T1/T2's stored ledger values without authorization, so the fix
+            # is band-gated: only T4M-PROJ gets the symmetric-vig correction;
+            # every other band keeps the pre-GG-113 formula.
+            if direction == "YES":
+                _directional_gross = gross_edge
+            elif band == "T4M-PROJ":
+                _directional_gross = -gross_edge - 2.0 * vig
+            else:
+                _directional_gross = -gross_edge
             fee_net_edge = round(_directional_gross - fee_per_contract, 6)
             probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)
 

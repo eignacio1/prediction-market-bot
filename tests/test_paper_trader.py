@@ -226,23 +226,67 @@ class TestOpenPosition:
     @pytest.mark.unit
     def test_fee_net_edge_is_direction_effective_for_no_bet(self, tmp_path):
         # GG-077: gross_edge is always stored YES-frame. A NO bet with
-        # gross_edge=-0.10 is a *good* bet (true directional edge +0.10 net
-        # of fee) — fee_net_edge must reflect that, not the YES-frame sign.
+        # gross_edge=-0.10 is a *good* bet (true directional edge net of
+        # fee and vig) — fee_net_edge must reflect that, not the YES-frame
+        # sign.
+        #
+        # GG-113: a plain -gross_edge flip also flips vig's sign, turning
+        # it from a cost into a credit for NO bets (gross_edge already has
+        # vig subtracted once; -gross_edge = -(p-mip)+vig). The correct
+        # direction-effective value re-subtracts vig a second time so it
+        # stays a symmetric cost: -gross_edge - 2*vig. This test previously
+        # pinned the pre-fix (buggy) value as "expected" — updated here to
+        # the economically correct one.
+        #
+        # ADR-0043 (D1/D3) scopes the corrected formula to band="T4M-PROJ"
+        # only — T1/T2/T3 keep the pre-fix formula pending their own sign-off
+        # (GG-119) — so this test must supply that band explicitly, or
+        # open_position() falls through to the unfixed branch and this
+        # assertion would fail.
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         mid = 0.45
+        vig = 0.02
         gross_edge = -0.10
         fee = round(0.07 * mid * (1.0 - mid), 6)
         ok, pos = trader.open_position(
-            approval=_make_approval(30.0, "NO", gross_edge=gross_edge, model_p=0.35),
+            approval=_make_approval(30.0, "NO", gross_edge=gross_edge, model_p=0.35, band="T4M-PROJ"),
             player_name="Test", player_id=1,
             kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
-            mid_price=mid, vig=0.02, game_date=_PAST_DATE,
+            mid_price=mid, vig=vig, game_date=_PAST_DATE,
         )
         assert ok
-        expected = round(-gross_edge - fee, 6)
+        expected = round(-gross_edge - 2.0 * vig - fee, 6)
         assert pos["fee_net_edge"] == expected
         assert expected > 0  # true edge is positive
         assert pos["fee_contaminated"] is False
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("band", ["T1", "T2", "T3", None])
+    def test_gg113_fix_is_band_gated_to_t4m_proj_only(self, tmp_path, band):
+        # ADR-0043 D3: the corrected symmetric-vig formula is scoped to
+        # T4M-PROJ only (open_position() is shared by T1/T2/T3 as well, and
+        # each of those requires its own DS sign-off — GG-119 — before its
+        # stored fee_net_edge changes). Any band other than "T4M-PROJ" must
+        # keep producing the pre-GG-113 value (a plain -gross_edge flip,
+        # vig not re-subtracted) so this scope boundary regresses loudly if
+        # it is ever accidentally widened.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        mid = 0.45
+        vig = 0.02
+        gross_edge = -0.10
+        fee = round(0.07 * mid * (1.0 - mid), 6)
+        extra = {"gross_edge": gross_edge, "model_p": 0.35}
+        if band is not None:
+            extra["band"] = band
+        ok, pos = trader.open_position(
+            approval=_make_approval(30.0, "NO", **extra),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=mid, vig=vig, game_date=_PAST_DATE,
+        )
+        assert ok
+        pre_gg113_expected = round(-gross_edge - fee, 6)
+        assert pos["fee_net_edge"] == pre_gg113_expected
 
     @pytest.mark.unit
     def test_fee_net_edge_matches_gross_edge_for_yes_bet(self, tmp_path):

@@ -103,7 +103,7 @@ _T4_DIRECTION_BLOCK_SOURCE = '''\
                 directional_gross_edge = gross_edge
             elif gross_edge < 0.0:
                 direction = "NO"
-                directional_gross_edge = -gross_edge
+                directional_gross_edge = (mip - p_t4) - vig
             else:
                 evaluated += 1
                 continue
@@ -112,16 +112,31 @@ _T4_DIRECTION_BLOCK_SOURCE = '''\
 '''
 
 
-def _t4_derive_direction(gross_edge: float, kalshi_fee: float):
+def _t4_derive_direction(gross_edge: float, kalshi_fee: float, vig: float = 0.0):
     """Pure transcription of _T4_DIRECTION_BLOCK_SOURCE. Returns
     (direction, directional_gross_edge, directional_net_edge) or None for
-    the zero-edge no-op branch."""
+    the zero-edge no-op branch.
+
+    GG-113: the live block recomputes the NO-direction edge from the signal
+    term (mip - p_t4) - vig directly, rather than algebraically re-deriving
+    it from the already vig-inclusive gross_edge (-gross_edge), so vig stays
+    a symmetric cost. Since gross_edge = p_t4 - mip - vig (ADR-0016 YES-frame),
+    mip/p_t4 are under-determined by gross_edge alone; this transcription
+    derives one consistent pair (mip=0.0, p_t4=gross_edge+vig) and evaluates
+    the literal (mip - p_t4) - vig expression against it, which is
+    algebraically identical for any other consistent choice. Callers that
+    only care about the GG-087 direction property (not GG-113's vig
+    magnitude) may omit vig; it defaults to 0.0, which preserves the old
+    direction-symmetry mirroring below unchanged.
+    """
     if gross_edge > 0.0:
         direction = "YES"
         directional_gross_edge = gross_edge
     elif gross_edge < 0.0:
         direction = "NO"
-        directional_gross_edge = -gross_edge
+        mip = 0.0
+        p_t4 = gross_edge + vig
+        directional_gross_edge = (mip - p_t4) - vig
     else:
         return None
     directional_net_edge = directional_gross_edge - kalshi_fee

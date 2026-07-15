@@ -1020,16 +1020,27 @@ def _run_cycle(
             # measured at 41.6x the volume of the YES-side signal it acted on.
             # `net_edge` above stays YES-frame for the diagnostic cycle log; the
             # direction-effective edge actually gated/traded on is recomputed
-            # here by flipping gross_edge's sign for NO before subtracting the
-            # fee — do not reuse an unflipped edge value for a NO-direction
-            # gate/position (see GG-077, the sign-convention bug this pattern
-            # is designed to avoid reintroducing).
+            # here for NO by flipping only the *signal* term (p_t4 - mip) and
+            # re-subtracting vig as a cost — do not reuse an unflipped edge
+            # value for a NO-direction gate/position (see GG-077, the sign-
+            # convention bug this pattern is designed to avoid reintroducing).
+            #
+            # GG-113: naively negating the whole gross_edge expression here
+            # (`-gross_edge`, i.e. `-(p_t4 - mip - vig)` = `(mip - p_t4) + vig`)
+            # turns vig from a subtracted cost into an added credit for every
+            # NO bet — vig is a bid-ask spread cost and must never flip sign
+            # with direction, matching run_exp017.py's compute_pnl_unit()
+            # convention (half_vig applied as a cost to price_paid on both
+            # YES and NO sides identically). Recompute the NO-direction edge
+            # from the signal term directly so vig stays a cost in both
+            # branches, instead of algebraically re-deriving it from the
+            # already vig-inclusive gross_edge.
             if gross_edge > 0.0:
                 direction = "YES"
                 directional_gross_edge = gross_edge
             elif gross_edge < 0.0:
                 direction = "NO"
-                directional_gross_edge = -gross_edge
+                directional_gross_edge = (mip - p_t4) - vig
             else:
                 evaluated += 1
                 continue

@@ -101,6 +101,35 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "run_mlb_paper_trade.py."
         ),
     ),
+    LogicEpochBoundary(
+        epoch=4,
+        resolving_gap="GG-113",
+        commit_sha="91111b7d64ff6f9c26f64ab9152a0e16637b76a2",
+        # 2026-07-14 18:56:45 -07:00
+        commit_utc=datetime(2026, 7, 15, 1, 56, 45, tzinfo=timezone.utc),
+        description=(
+            "T4M-PROJ NO-direction vig sign flip (ADR-0043): GG-087's fix "
+            "negated the whole gross_edge expression for NO bets, which "
+            "already had vig subtracted with a fixed sign, converting vig "
+            "from a cost into a credit for 81.8% of the resolved book. "
+            "Fixed to a direction-independent symmetric cost in "
+            "run_t4_mlb_live.py (fb13166) and paper_trader.py::"
+            "open_position(), matching run_exp017.py's established "
+            "convention. Boundary points to 91111b7, not the earlier "
+            "2569c1f: 2569c1f's paper_trader.py change applied the "
+            "corrected formula unconditionally (would have silently "
+            "changed T1/T2 ledger values, out of this sign-off's scope) "
+            "and was self-corrected pre-deploy, before ever running in "
+            "production, to band-gate the fix to band == \"T4M-PROJ\" "
+            "only (91111b7) — that band-gated commit is the first one "
+            "whose code, if checked out alone, reflects the actual "
+            "deployed-correct behavior. DS sign-off 2026-07-14 (operator) "
+            "explicitly accepted this epoch reset as a deliberate cost of "
+            "correcting a formula that was inflating edge on the majority "
+            "of T4M-PROJ's book, over continuing to accumulate on the "
+            "biased formula."
+        ),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
