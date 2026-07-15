@@ -154,3 +154,8 @@ audit_logs/
 
 # --- OS ---
 Thumbs.db
+
+# --- Claude Code local session config (never commit — machine/session-specific
+# permission grants, not project content; settings.json (project-shared) stays
+# tracked) ---
+.claude/settings.local.json
