@@ -117,7 +117,7 @@ This file MUST include:
 - One-thing-pending (single most important next action)
 - Resume command for next session
 
-**Also write the checkpoint pointer (ADR-0041, T-300/Window A):** after the SESSION_HANDOFF commit lands, overwrite `04_EXECUTION/.last_session_checkpoint` with the new HEAD SHA (`git rev-parse --short HEAD > 04_EXECUTION/.last_session_checkpoint`) and commit it in the same path-scoped commit as the handoff. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read — skipping this step silently degrades the next session back to the full-read fallback.
+**Also write the checkpoint pointer (ADR-0041, T-300/Window A; wrapper added T-369):** after the SESSION_HANDOFF commit lands, run `scripts/write_session_checkpoint.sh` (wraps the `04_EXECUTION/.last_session_checkpoint` write — do not inline the raw `git rev-parse` command here again) and commit the result in the same path-scoped commit as the handoff. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read — skipping this step silently degrades the next session back to the full-read fallback. `session_guard.sh` now warns (does not block) if the checkpoint is stale vs. current HEAD, so a skipped write is no longer silent.
 
 ## Step 7 — Next Session Primer
 

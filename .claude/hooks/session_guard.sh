@@ -64,6 +64,29 @@ else
   echo "(fetch failed — offline? treat shared-doc narratives as possibly stale)"
 fi
 
+echo "--- Checkpoint staleness (T-369) ---"
+CHECKPOINT_FILE="04_EXECUTION/.last_session_checkpoint"
+if [ -s "$CHECKPOINT_FILE" ]; then
+  CKPT_SHA="$(cat "$CHECKPOINT_FILE" | tr -d '[:space:]')"
+  if git cat-file -e "${CKPT_SHA}^{commit}" 2>/dev/null; then
+    CKPT_BEHIND="$(git rev-list --count "${CKPT_SHA}..HEAD" 2>/dev/null || echo "?")"
+    CKPT_AGE_SEC="$(( $(date +%s) - $(git show -s --format=%ct "$CKPT_SHA" 2>/dev/null || echo "$(date +%s)") ))"
+    CKPT_AGE_DAYS="$(( CKPT_AGE_SEC / 86400 ))"
+    if [ "$CKPT_BEHIND" != "?" ] && [ "$CKPT_BEHIND" -gt 20 ] 2>/dev/null || [ "$CKPT_AGE_DAYS" -gt 3 ] 2>/dev/null; then
+      echo "!!  STALE: checkpoint $CKPT_SHA is $CKPT_BEHIND commit(s) / ${CKPT_AGE_DAYS}d behind HEAD."
+      echo "    session_delta.sh's Tier 1 diff will be large or the fallback full-read"
+      echo "    path may be more reliable. A prior session likely skipped session-end.md"
+      echo "    Step 6 (scripts/write_session_checkpoint.sh). Warn-only — not blocking."
+    else
+      echo "OK  checkpoint $CKPT_SHA is $CKPT_BEHIND commit(s) / ${CKPT_AGE_DAYS}d behind HEAD."
+    fi
+  else
+    echo "!!  checkpoint SHA '$CKPT_SHA' not found in this tree's history (shallow clone or corrupt pointer)."
+  fi
+else
+  echo "!!  no checkpoint file at $CHECKPOINT_FILE — first session, or it was never written."
+fi
+
 echo "--- Other sessions' recent claims (tail SESSION_CLAIMS.md) ---"
 [ -f 04_EXECUTION/SESSION_CLAIMS.md ] && tail -6 04_EXECUTION/SESSION_CLAIMS.md
 
