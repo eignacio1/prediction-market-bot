@@ -35,10 +35,27 @@ else:
     print('  CLEAN — no stubs found')
 EOF
 
-# --- Open governance gaps ---
+# --- Open governance gaps + burn-down trend (T-368) ---
+# Root cause: prior sessions had no visibility into whether the OPEN backlog
+# was growing or shrinking — it was discovered ad hoc (efficiency review,
+# 2026-07-15) that it was growing faster than it closes. GOVERNANCE_GAP_LOG.md
+# entries carry no structured open/resolved *date* field (dates are free-text
+# prose inside "Status" cells, not parseable reliably) so burn-down is tracked
+# via a self-maintained snapshot history instead of mining the log's prose.
+# This section is READ-ONLY against GOVERNANCE_GAP_LOG.md itself (grep only) —
+# it never writes to that file. History snapshots live in logs/.governance_gap_history.jsonl
+# (gitignored, same pattern as the portfolio caches above).
 echo ""
 echo "OPEN GOVERNANCE GAPS:"
 OPEN=$(grep "| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
+OPEN_N=0
+if [ -n "$OPEN" ]; then
+    OPEN_N=$(echo "$OPEN" | wc -l | tr -d ' ')
+fi
+TOTAL_N=$(grep -c "^### GG-" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
+
+python3 "scripts/lib/governance_gap_burndown.py" "$OPEN_N" "$TOTAL_N" "logs/.governance_gap_history.jsonl"
+
 if [ -z "$OPEN" ]; then
     echo "  CLEAN — no open gaps"
 else
