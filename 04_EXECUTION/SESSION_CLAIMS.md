@@ -70,3 +70,4 @@
 | 2026-07-15T05:43:30Z | T-363,GG-120 | T-363/GG-120: fix run_band_monitor.py write_dated_verdict ignoring --out (test-fixture files leaking into tracked verdicts/ dir) |
 | 2026-07-15T06:05:30Z | T-365,T-366 | APR-0025 prep: AB_WINDOW=37->real ab_sum resweep (T-359 follow-on) + decision brief |
 | 2026-07-15T06:12:50Z | TBD (renumbering pending fresh TODO_NEXT.md read) | Commit prior session's 6 untracked efficiency-pack files; wire PENDING_WIREIN staging doc into TODO_NEXT/DECISION_LOG/MEMORY_BANK/PLAN; VPS Step 4 health check |
+| 2026-07-15T14:08:27Z | TBD | Window 3 session-end closeout (SESSION_HANDOFF for already-merged T-365/T-366/T-367 work, PR #23) |
