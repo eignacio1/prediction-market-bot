@@ -226,20 +226,30 @@ class TestOpenPosition:
     @pytest.mark.unit
     def test_fee_net_edge_is_direction_effective_for_no_bet(self, tmp_path):
         # GG-077: gross_edge is always stored YES-frame. A NO bet with
-        # gross_edge=-0.10 is a *good* bet (true directional edge +0.10 net
-        # of fee) — fee_net_edge must reflect that, not the YES-frame sign.
+        # gross_edge=-0.10 is a *good* bet (true directional edge net of
+        # fee and vig) — fee_net_edge must reflect that, not the YES-frame
+        # sign.
+        #
+        # GG-113: a plain -gross_edge flip also flips vig's sign, turning
+        # it from a cost into a credit for NO bets (gross_edge already has
+        # vig subtracted once; -gross_edge = -(p-mip)+vig). The correct
+        # direction-effective value re-subtracts vig a second time so it
+        # stays a symmetric cost: -gross_edge - 2*vig. This test previously
+        # pinned the pre-fix (buggy) value as "expected" — updated here to
+        # the economically correct one.
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         mid = 0.45
+        vig = 0.02
         gross_edge = -0.10
         fee = round(0.07 * mid * (1.0 - mid), 6)
         ok, pos = trader.open_position(
             approval=_make_approval(30.0, "NO", gross_edge=gross_edge, model_p=0.35),
             player_name="Test", player_id=1,
             kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
-            mid_price=mid, vig=0.02, game_date=_PAST_DATE,
+            mid_price=mid, vig=vig, game_date=_PAST_DATE,
         )
         assert ok
-        expected = round(-gross_edge - fee, 6)
+        expected = round(-gross_edge - 2.0 * vig - fee, 6)
         assert pos["fee_net_edge"] == expected
         assert expected > 0  # true edge is positive
         assert pos["fee_contaminated"] is False

@@ -858,6 +858,59 @@ class TestRunCycle:
         # NO contract price is (1 - mip) = 0.20, not mip.
         assert pos["size_usd"] == pytest.approx(0.20, abs=1e-6)
 
+    def test_no_direction_vig_is_symmetric_cost_not_credit(self, tmp_path):
+        # GG-113 regression: a naive -gross_edge flip for NO bets also flips
+        # vig's sign, turning a subtracted cost into an added credit. This
+        # test pins the *economically correct* value (vig subtracted in both
+        # directions, per run_exp017.py's compute_pnl_unit() convention),
+        # not merely internal self-consistency (T-333's H5 checked only the
+        # latter and missed this bug).
+        #
+        # Reuses the exact live_state/pregame inputs from
+        # test_fires_no_when_p_t4_clearly_below_mip (a known-firing NO
+        # scenario) rather than an ab_remaining==0 scenario: ab_remaining==0
+        # is intentionally intercepted upstream by ContaminationGuard's
+        # T4-ARITH coherence check (semantic_contracts.py ContaminationGuard
+        # ._check(), "ab_remaining_exhausted") before p_t4/gross_edge/vig are
+        # ever computed, since a mathematically-impossible bet is treated as
+        # contamination, not a valid signal to gate on. p_t4 is not exactly
+        # 0.0 here, so it is derived via the same functions _run_cycle uses
+        # (not hardcoded) to keep the assertion floating-point-exact.
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=2)]
+        mip, vig = 0.80, 0.04
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=mip, vig=vig)}
+        pregame = self._pregame(threshold=2, ba_l10=0.10)
+
+        ab_remaining = runner._compute_ab_remaining(2, 5, 0)
+        p_t4 = runner.p_hits_gte_threshold(
+            h_so_far=0, threshold=2, ba_l10=0.10, ab_remaining=ab_remaining,
+        )
+
+        _, fi, deployed = runner._run_cycle(
+            cycle_id="C-GG113-test", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-24",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+        )
+        assert fi == 1
+        assert deployed > 0.0
+        positions = trader.get_state().get("open_positions", [])
+        assert len(positions) == 1
+        pos = positions[0]
+        assert pos["direction"] == "NO"
+
+        fee_per_contract = round(0.07 * mip * (1.0 - mip), 6)
+        correct_fee_net_edge = round((mip - p_t4) - vig - fee_per_contract, 6)
+        # The bug this test guards against: -gross_edge = (mip - p_t4) + vig
+        # instead of - vig, inflating fee_net_edge by exactly 2*vig.
+        buggy_fee_net_edge = round(correct_fee_net_edge + 2.0 * vig, 6)
+
+        assert pos["fee_net_edge"] == pytest.approx(correct_fee_net_edge, abs=1e-6)
+        assert pos["fee_net_edge"] != pytest.approx(buggy_fee_net_edge, abs=1e-6)
+
     def test_fires_when_p_t4_clearly_above_mip(self, tmp_path):
         engine, trader, store, audit = _make_components(tmp_path)
         # h_so_far=0, threshold=1, ba=0.99 → p_t4 ≈ 1.0; mip=0.40 → edge clearly positive

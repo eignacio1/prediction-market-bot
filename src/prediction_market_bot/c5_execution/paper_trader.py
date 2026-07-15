@@ -429,7 +429,15 @@ class PaperTrader:
             # was previously applied only to fee_contaminated, never to
             # fee_net_edge itself, so the stored field silently represented the
             # YES-side edge of the opposite bet for every NO position.
-            _directional_gross = gross_edge if direction == "YES" else -gross_edge
+            #
+            # GG-113: a plain sign flip (-gross_edge) also flips vig's sign,
+            # turning it from a cost into a credit for NO bets, since
+            # gross_edge = (p - mip) - vig already has vig baked in with a
+            # fixed sign. -gross_edge = -(p - mip) + vig. Correcting for NO
+            # requires -(p - mip) - vig, i.e. -gross_edge - 2*vig, so vig stays
+            # a symmetric cost regardless of direction (matches
+            # run_exp017.py's compute_pnl_unit() convention).
+            _directional_gross = gross_edge if direction == "YES" else (-gross_edge - 2.0 * vig)
             fee_net_edge = round(_directional_gross - fee_per_contract, 6)
             probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)
 
