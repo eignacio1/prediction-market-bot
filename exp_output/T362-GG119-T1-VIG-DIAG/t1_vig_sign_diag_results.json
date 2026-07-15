@@ -1,0 +1,838 @@
+{
+  "band": "T1",
+  "n_resolved": 259,
+  "by_direction": {
+    "YES": {
+      "n": 11,
+      "win_rate": 0.1818,
+      "total_pnl": -95.3623
+    },
+    "NO": {
+      "n": 248,
+      "win_rate": 0.5161,
+      "total_pnl": 129.9255
+    }
+  },
+  "monotonicity_by_framing": {
+    "live_buggy": {
+      "label": "live_buggy",
+      "n_pos": 259,
+      "n_neg": 0,
+      "winrate_pos": 0.5019305019305019,
+      "winrate_neg": NaN,
+      "fisher_odds_ratio": null,
+      "fisher_pvalue": null
+    },
+    "corrected_symmetric_vig": {
+      "label": "corrected_symmetric_vig",
+      "n_pos": 234,
+      "n_neg": 25,
+      "winrate_pos": 0.5,
+      "winrate_neg": 0.52,
+      "fisher_odds_ratio": 0.9230769230769231,
+      "fisher_pvalue": 1.0
+    }
+  },
+  "terciles_no_only_live": [
+    {
+      "tercile": 1,
+      "n": 82,
+      "edge_min": 0.0091,
+      "edge_max": 0.0541,
+      "win_rate": 0.561
+    },
+    {
+      "tercile": 2,
+      "n": 83,
+      "edge_min": 0.0541,
+      "edge_max": 0.083,
+      "win_rate": 0.4578
+    },
+    {
+      "tercile": 3,
+      "n": 83,
+      "edge_min": 0.0837,
+      "edge_max": 0.2012,
+      "win_rate": 0.5301
+    }
+  ],
+  "terciles_no_only_corrected": [
+    {
+      "tercile": 1,
+      "n": 82,
+      "edge_min": -0.0456,
+      "edge_max": 0.0287,
+      "win_rate": 0.5366
+    },
+    {
+      "tercile": 2,
+      "n": 83,
+      "edge_min": 0.0287,
+      "edge_max": 0.0577,
+      "win_rate": 0.494
+    },
+    {
+      "tercile": 3,
+      "n": 83,
+      "edge_min": 0.0582,
+      "edge_max": 0.1612,
+      "win_rate": 0.5181
+    }
+  ],
+  "no_bet_inflation": {
+    "n_no_bets": 248,
+    "mean_delta": 0.028266,
+    "all_deltas_equal_2x_half_spread": true
+  },
+  "falsely_admitted_no_bets": {
+    "count": 74,
+    "pct_of_no_bets": 29.84,
+    "pct_of_all_resolved": 28.57,
+    "total_pnl": -48.2589,
+    "wins": 36,
+    "losses": 38,
+    "rows": [
+      {
+        "position_id": "POS-BBE3E9C318",
+        "kalshi_ticker": "KXMLBHIT-26JUL011310TEXCLE-CLESKWAN38-2",
+        "player_name": "Steven Kwan",
+        "live_edge": 0.0519,
+        "corrected_edge": 0.0219,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 5.6544
+      },
+      {
+        "position_id": "POS-B07A9AF23F",
+        "kalshi_ticker": "KXMLBHIT-26JUL011235CWSBAL-BALPALONSO25-1",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0757,
+        "corrected_edge": 0.0357,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 19.1419
+      },
+      {
+        "position_id": "POS-534745647F",
+        "kalshi_ticker": "KXMLBHIT-26JUL011235CWSBAL-BALGHENDERSON2-2",
+        "player_name": "Gunnar Henderson",
+        "live_edge": 0.0444,
+        "corrected_edge": 0.0244,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 5.9901
+      },
+      {
+        "position_id": "POS-7CB4FB2D47",
+        "kalshi_ticker": "KXMLBHIT-26JUL011235CWSBAL-BALGHENDERSON2-1",
+        "player_name": "Gunnar Henderson",
+        "live_edge": 0.0612,
+        "corrected_edge": 0.0312,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -8.2288
+      },
+      {
+        "position_id": "POS-A04D3C6A66",
+        "kalshi_ticker": "KXMLBHIT-26JUL012140LADATH-ATHNKURTZ16-2",
+        "player_name": "Nick Kurtz",
+        "live_edge": 0.0496,
+        "corrected_edge": 0.0396,
+        "half_spread": 0.005,
+        "outcome": "LOSS",
+        "pnl": -22.1725
+      },
+      {
+        "position_id": "POS-DE8AF55692",
+        "kalshi_ticker": "KXMLBHIT-26JUL012140SFAZ-AZKMARTE4-2",
+        "player_name": "Ketel Marte",
+        "live_edge": 0.0699,
+        "corrected_edge": 0.0399,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -16.8181
+      },
+      {
+        "position_id": "POS-FA0AD77D5B",
+        "kalshi_ticker": "KXMLBHIT-26JUL012140SFAZ-AZKMARTE4-1",
+        "player_name": "Ketel Marte",
+        "live_edge": 0.0605,
+        "corrected_edge": 0.0205,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -5.8172
+      },
+      {
+        "position_id": "POS-CDD863F6C6",
+        "kalshi_ticker": "KXMLBHIT-26JUL011507NYMTOR-NYMJSOTO22-1",
+        "player_name": "Juan Soto",
+        "live_edge": 0.0468,
+        "corrected_edge": 0.0068,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 8.2483
+      },
+      {
+        "position_id": "POS-B9052402FB",
+        "kalshi_ticker": "KXMLBHIT-26JUL011507NYMTOR-NYMFLINDOR12-2",
+        "player_name": "Francisco Lindor",
+        "live_edge": 0.0564,
+        "corrected_edge": 0.0264,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 4.734
+      },
+      {
+        "position_id": "POS-9D02FE9BA0",
+        "kalshi_ticker": "KXMLBHIT-26JUL012010CINMIL-CINEDELACRUZ44-1",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.057,
+        "corrected_edge": 0.037,
+        "half_spread": 0.01,
+        "outcome": "LOSS",
+        "pnl": -4.6497
+      },
+      {
+        "position_id": "POS-F3C5041CC6",
+        "kalshi_ticker": "KXMLBHIT-26JUL032210TORSEA-SEARAROZARENA56-1",
+        "player_name": "Randy Arozarena",
+        "live_edge": 0.0463,
+        "corrected_edge": 0.0063,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 8.2619
+      },
+      {
+        "position_id": "POS-CFA32E9166",
+        "kalshi_ticker": "KXMLBHIT-26JUL041105PITWSH-WSHCABRAMS5-1",
+        "player_name": "CJ Abrams",
+        "live_edge": 0.0654,
+        "corrected_edge": 0.0354,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 10.3218
+      },
+      {
+        "position_id": "POS-755974C174",
+        "kalshi_ticker": "KXMLBHIT-26JUL041910BALCIN-BALPALONSO25-2",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0507,
+        "corrected_edge": 0.0207,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -11.9315
+      },
+      {
+        "position_id": "POS-0C95108ACD",
+        "kalshi_ticker": "KXMLBHIT-26JUL031915NYMATL-ATLMOLSON28-1",
+        "player_name": "Matt Olson",
+        "live_edge": 0.0495,
+        "corrected_edge": 0.0295,
+        "half_spread": 0.01,
+        "outcome": "LOSS",
+        "pnl": -8.1238
+      },
+      {
+        "position_id": "POS-3D60D926FE",
+        "kalshi_ticker": "KXMLBHIT-26JUL042140MILAZ-AZCCARROLL7-2",
+        "player_name": "Corbin Carroll",
+        "live_edge": 0.0406,
+        "corrected_edge": 0.0306,
+        "half_spread": 0.005,
+        "outcome": "WIN",
+        "pnl": 4.9557
+      },
+      {
+        "position_id": "POS-A20E1B806C",
+        "kalshi_ticker": "KXMLBHIT-26JUL041910TBHOU-HOUYALVAREZ44-2",
+        "player_name": "Yordan Alvarez",
+        "live_edge": 0.0545,
+        "corrected_edge": 0.0345,
+        "half_spread": 0.01,
+        "outcome": "LOSS",
+        "pnl": -18.4358
+      },
+      {
+        "position_id": "POS-E5A835E96A",
+        "kalshi_ticker": "KXMLBHIT-26JUL042008NYMATL-ATLMOLSON28-1",
+        "player_name": "Matt Olson",
+        "live_edge": 0.0403,
+        "corrected_edge": 0.0303,
+        "half_spread": 0.005,
+        "outcome": "LOSS",
+        "pnl": -4.5069
+      },
+      {
+        "position_id": "POS-642FA91A0A",
+        "kalshi_ticker": "KXMLBHIT-26JUL041910CWSCLE-CLESKWAN38-1",
+        "player_name": "Steven Kwan",
+        "live_edge": 0.0584,
+        "corrected_edge": 0.0184,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -5.2713
+      },
+      {
+        "position_id": "POS-29D2CC0891",
+        "kalshi_ticker": "KXMLBHIT-26JUL042008STLCHC-CHCPCROWARMSTRONG4-2",
+        "player_name": "Pete Crow-Armstrong",
+        "live_edge": 0.0521,
+        "corrected_edge": 0.0221,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 3.6989
+      },
+      {
+        "position_id": "POS-8B7AE18192",
+        "kalshi_ticker": "KXMLBHIT-26JUL042008STLCHC-CHCABREGMAN3-2",
+        "player_name": "Alex Bregman",
+        "live_edge": 0.0492,
+        "corrected_edge": 0.0192,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 3.1649
+      },
+      {
+        "position_id": "POS-C82D52C938",
+        "kalshi_ticker": "KXMLBHIT-26JUL042010PHIKC-PHIKSCHWARBER12-1",
+        "player_name": "Kyle Schwarber",
+        "live_edge": 0.047,
+        "corrected_edge": 0.017,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -3.9951
+      },
+      {
+        "position_id": "POS-8A73927476",
+        "kalshi_ticker": "KXMLBHIT-26JUL051920SDLAD-SDJMERRILL3-1",
+        "player_name": "Jackson Merrill",
+        "live_edge": 0.0465,
+        "corrected_edge": -0.0035,
+        "half_spread": 0.025,
+        "outcome": "LOSS",
+        "pnl": -4.1311
+      },
+      {
+        "position_id": "POS-25CA0FAE2F",
+        "kalshi_ticker": "KXMLBHIT-26JUL051430STLCHC-CHCPCROWARMSTRONG4-2",
+        "player_name": "Pete Crow-Armstrong",
+        "live_edge": 0.0435,
+        "corrected_edge": 0.0135,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -10.2918
+      },
+      {
+        "position_id": "POS-5E2EDC6834",
+        "kalshi_ticker": "KXMLBHIT-26JUL051430STLCHC-CHCABREGMAN3-2",
+        "player_name": "Alex Bregman",
+        "live_edge": 0.0589,
+        "corrected_edge": 0.0389,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 4.8314
+      },
+      {
+        "position_id": "POS-160991432D",
+        "kalshi_ticker": "KXMLBHIT-26JUL051300PITWSH-WSHCABRAMS5-2",
+        "player_name": "CJ Abrams",
+        "live_edge": 0.0535,
+        "corrected_edge": 0.0335,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 3.8771
+      },
+      {
+        "position_id": "POS-85B9330D53",
+        "kalshi_ticker": "KXMLBHIT-26JUL051230NYMATL-NYMFLINDOR12-1",
+        "player_name": "Francisco Lindor",
+        "live_edge": 0.0677,
+        "corrected_edge": 0.0277,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -4.8317
+      },
+      {
+        "position_id": "POS-797F69139C",
+        "kalshi_ticker": "KXMLBHIT-26JUL051230NYMATL-ATLMOLSON28-1",
+        "player_name": "Matt Olson",
+        "live_edge": 0.0449,
+        "corrected_edge": 0.0349,
+        "half_spread": 0.005,
+        "outcome": "LOSS",
+        "pnl": -4.4595
+      },
+      {
+        "position_id": "POS-09F743A767",
+        "kalshi_ticker": "KXMLBHIT-26JUL051305BALCIN-CINEDELACRUZ44-2",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.045,
+        "corrected_edge": 0.035,
+        "half_spread": 0.005,
+        "outcome": "WIN",
+        "pnl": 3.497
+      },
+      {
+        "position_id": "POS-DD996785B3",
+        "kalshi_ticker": "KXMLBHIT-26JUL051305BALCIN-BALPALONSO25-2",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0406,
+        "corrected_edge": 0.0306,
+        "half_spread": 0.005,
+        "outcome": "WIN",
+        "pnl": 3.019
+      },
+      {
+        "position_id": "POS-6FD20DB2A1",
+        "kalshi_ticker": "KXMLBHIT-26JUL051335MINNYY-MINBBUXTON25-1",
+        "player_name": "Byron Buxton",
+        "live_edge": 0.0527,
+        "corrected_edge": 0.0227,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -3.5752
+      },
+      {
+        "position_id": "POS-6425A8DB4B",
+        "kalshi_ticker": "KXMLBHIT-26JUL051500PHIKC-PHITTURNER7-2",
+        "player_name": "Trea Turner",
+        "live_edge": 0.0587,
+        "corrected_edge": 0.0387,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 4.4779
+      },
+      {
+        "position_id": "POS-E14294568B",
+        "kalshi_ticker": "KXMLBHIT-26JUL051700TORSEA-TORVGUERRERO27-1",
+        "player_name": "Vladimir Guerrero Jr.",
+        "live_edge": 0.0599,
+        "corrected_edge": 0.0299,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -3.8215
+      },
+      {
+        "position_id": "POS-1D54230654",
+        "kalshi_ticker": "KXMLBHIT-26JUL051700TORSEA-SEARAROZARENA56-1",
+        "player_name": "Randy Arozarena",
+        "live_edge": 0.0441,
+        "corrected_edge": 0.0141,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -3.0761
+      },
+      {
+        "position_id": "POS-8AB8985A47",
+        "kalshi_ticker": "KXMLBHIT-26JUL062210COLLAD-LADSOHTANI17-1",
+        "player_name": "Shohei Ohtani",
+        "live_edge": 0.0721,
+        "corrected_edge": 0.0321,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -5.4783
+      },
+      {
+        "position_id": "POS-1CA8781F36",
+        "kalshi_ticker": "KXMLBHIT-26JUL062140AZSD-SDFTATIS23-1",
+        "player_name": "Fernando Tatis Jr.",
+        "live_edge": 0.0409,
+        "corrected_edge": 0.0109,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 7.5791
+      },
+      {
+        "position_id": "POS-CCF2C836A7",
+        "kalshi_ticker": "KXMLBHIT-26JUL061845HOUWSH-HOUCWALKER8-2",
+        "player_name": "Christian Walker",
+        "live_edge": 0.0674,
+        "corrected_edge": 0.0374,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -12.1259
+      },
+      {
+        "position_id": "POS-7FD676B5B1",
+        "kalshi_ticker": "KXMLBHIT-26JUL082210AZSD-SDJMERRILL3-2",
+        "player_name": "Jackson Merrill",
+        "live_edge": 0.0487,
+        "corrected_edge": 0.0287,
+        "half_spread": 0.01,
+        "outcome": "LOSS",
+        "pnl": -11.3749
+      },
+      {
+        "position_id": "POS-CD092F3FE1",
+        "kalshi_ticker": "KXMLBHIT-26JUL082210AZSD-AZCCARROLL7-1",
+        "player_name": "Corbin Carroll",
+        "live_edge": 0.0464,
+        "corrected_edge": 0.0164,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 6.5004
+      },
+      {
+        "position_id": "POS-D3516E6DC7",
+        "kalshi_ticker": "KXMLBHIT-26JUL082210COLLAD-LADSOHTANI17-2",
+        "player_name": "Shohei Ohtani",
+        "live_edge": 0.0493,
+        "corrected_edge": 0.0293,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 4.0648
+      },
+      {
+        "position_id": "POS-56414161E3",
+        "kalshi_ticker": "KXMLBHIT-26JUL082210COLLAD-LADSOHTANI17-1",
+        "player_name": "Shohei Ohtani",
+        "live_edge": 0.0691,
+        "corrected_edge": 0.0391,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 11.8566
+      },
+      {
+        "position_id": "POS-594C8608BB",
+        "kalshi_ticker": "KXMLBHIT-26JUL081840SEAMIA-SEARAROZARENA56-2",
+        "player_name": "Randy Arozarena",
+        "live_edge": 0.041,
+        "corrected_edge": 0.021,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 3.031
+      },
+      {
+        "position_id": "POS-24D4A22C83",
+        "kalshi_ticker": "KXMLBHIT-26JUL082005LAATEX-LAAJADELL7-1",
+        "player_name": "Jo Adell",
+        "live_edge": 0.0444,
+        "corrected_edge": 0.0044,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -3.6067
+      },
+      {
+        "position_id": "POS-4D62E75F7E",
+        "kalshi_ticker": "KXMLBHIT-26JUL081840NYYTB-NYYCBELLINGER35-1",
+        "player_name": "Cody Bellinger",
+        "live_edge": 0.0847,
+        "corrected_edge": 0.0347,
+        "half_spread": 0.025,
+        "outcome": "WIN",
+        "pnl": 9.1472
+      },
+      {
+        "position_id": "POS-5BB20A170A",
+        "kalshi_ticker": "KXMLBHIT-26JUL081835CHCBAL-BALPALONSO25-1",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0667,
+        "corrected_edge": 0.0267,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -4.5167
+      },
+      {
+        "position_id": "POS-4270707A95",
+        "kalshi_ticker": "KXMLBHIT-26JUL091335CHCBAL-CHCPCROWARMSTRONG4-1",
+        "player_name": "Pete Crow-Armstrong",
+        "live_edge": 0.0827,
+        "corrected_edge": -0.0073,
+        "half_spread": 0.045,
+        "outcome": "LOSS",
+        "pnl": -4.8591
+      },
+      {
+        "position_id": "POS-5A940223A0",
+        "kalshi_ticker": "KXMLBHIT-26JUL091835CHCBAL-CHCPCROWARMSTRONG4-1",
+        "player_name": "Pete Crow-Armstrong",
+        "live_edge": 0.0527,
+        "corrected_edge": 0.0227,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -4.8198
+      },
+      {
+        "position_id": "POS-D8DA54E539",
+        "kalshi_ticker": "KXMLBHIT-26JUL091835CHCBAL-BALPALONSO25-2",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0817,
+        "corrected_edge": 0.0217,
+        "half_spread": 0.03,
+        "outcome": "WIN",
+        "pnl": 4.4572
+      },
+      {
+        "position_id": "POS-ED86D2AC88",
+        "kalshi_ticker": "KXMLBHIT-26JUL091835CHCBAL-BALGHENDERSON2-1",
+        "player_name": "Gunnar Henderson",
+        "live_edge": 0.1192,
+        "corrected_edge": 0.0292,
+        "half_spread": 0.045,
+        "outcome": "WIN",
+        "pnl": 12.8367
+      },
+      {
+        "position_id": "POS-8AC02B73E0",
+        "kalshi_ticker": "KXMLBHIT-26JUL092140AZSD-SDJMERRILL3-1",
+        "player_name": "Jackson Merrill",
+        "live_edge": 0.0766,
+        "corrected_edge": -0.0034,
+        "half_spread": 0.04,
+        "outcome": "WIN",
+        "pnl": 7.6364
+      },
+      {
+        "position_id": "POS-E6F8C56321",
+        "kalshi_ticker": "KXMLBHIT-26JUL092140AZSD-SDFTATIS23-2",
+        "player_name": "Fernando Tatis Jr.",
+        "live_edge": 0.0756,
+        "corrected_edge": 0.0356,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 5.5402
+      },
+      {
+        "position_id": "POS-05C601EFD3",
+        "kalshi_ticker": "KXMLBHIT-26JUL091235ATLPIT-ATLMOLSON28-1",
+        "player_name": "Matt Olson",
+        "live_edge": 0.0414,
+        "corrected_edge": -0.0286,
+        "half_spread": 0.035,
+        "outcome": "LOSS",
+        "pnl": -1.631
+      },
+      {
+        "position_id": "POS-3AB8A175BF",
+        "kalshi_ticker": "KXMLBHIT-26JUL091840ATHDET-ATHJWILSON5-1",
+        "player_name": "Jacob Wilson",
+        "live_edge": 0.0687,
+        "corrected_edge": 0.0287,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -5.2109
+      },
+      {
+        "position_id": "POS-72F6A68333",
+        "kalshi_ticker": "KXMLBHIT-26JUL091910PHICIN-CINEDELACRUZ44-2",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.0829,
+        "corrected_edge": -0.0071,
+        "half_spread": 0.045,
+        "outcome": "WIN",
+        "pnl": 2.4821
+      },
+      {
+        "position_id": "POS-3F5FB1CBE1",
+        "kalshi_ticker": "KXMLBHIT-26JUL091840SEAMIA-SEARAROZARENA56-1",
+        "player_name": "Randy Arozarena",
+        "live_edge": 0.0616,
+        "corrected_edge": 0.0016,
+        "half_spread": 0.03,
+        "outcome": "LOSS",
+        "pnl": -3.4292
+      },
+      {
+        "position_id": "POS-17014BE50B",
+        "kalshi_ticker": "KXMLBHIT-26JUL091840SEAMIA-SEACRALEIGH29-2",
+        "player_name": "Cal Raleigh",
+        "live_edge": 0.0635,
+        "corrected_edge": 0.0235,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 3.0685
+      },
+      {
+        "position_id": "POS-730DCD7425",
+        "kalshi_ticker": "KXMLBHIT-26JUL102005HOUTEX-HOUYALVAREZ44-1",
+        "player_name": "Yordan Alvarez",
+        "live_edge": 0.0502,
+        "corrected_edge": 0.0202,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -4.5524
+      },
+      {
+        "position_id": "POS-1657DEAF96",
+        "kalshi_ticker": "KXMLBHIT-26JUL101910CHCCIN-CINEDELACRUZ44-1",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.0752,
+        "corrected_edge": 0.0352,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -6.6522
+      },
+      {
+        "position_id": "POS-05F364A938",
+        "kalshi_ticker": "KXMLBHIT-26JUL101905KCBAL-BALPALONSO25-2",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0594,
+        "corrected_edge": 0.0294,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 4.5578
+      },
+      {
+        "position_id": "POS-E2D322E0DC",
+        "kalshi_ticker": "KXMLBHIT-26JUL101905KCBAL-BALPALONSO25-1",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0777,
+        "corrected_edge": 0.0377,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -6.7367
+      },
+      {
+        "position_id": "POS-338CCEBE29",
+        "kalshi_ticker": "KXMLBHIT-26JUL101840PHIDET-PHIBHARPER3-2",
+        "player_name": "Bryce Harper",
+        "live_edge": 0.0469,
+        "corrected_edge": 0.0369,
+        "half_spread": 0.005,
+        "outcome": "WIN",
+        "pnl": 4.1139
+      },
+      {
+        "position_id": "POS-F4124CCFA0",
+        "kalshi_ticker": "KXMLBHIT-26JUL102140TORSD-SDJMERRILL3-1",
+        "player_name": "Jackson Merrill",
+        "live_edge": 0.0542,
+        "corrected_edge": 0.0242,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -4.7882
+      },
+      {
+        "position_id": "POS-C2CFC82F15",
+        "kalshi_ticker": "KXMLBHIT-26JUL102140TORSD-SDFTATIS23-2",
+        "player_name": "Fernando Tatis Jr.",
+        "live_edge": 0.0581,
+        "corrected_edge": 0.0281,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 4.5767
+      },
+      {
+        "position_id": "POS-CAA361BB32",
+        "kalshi_ticker": "KXMLBHIT-26JUL102140TORSD-SDFTATIS23-1",
+        "player_name": "Fernando Tatis Jr.",
+        "live_edge": 0.0445,
+        "corrected_edge": 0.0245,
+        "half_spread": 0.01,
+        "outcome": "LOSS",
+        "pnl": -3.9358
+      },
+      {
+        "position_id": "POS-C029727F5D",
+        "kalshi_ticker": "KXMLBHIT-26JUL102210AZLAD-AZCCARROLL7-1",
+        "player_name": "Corbin Carroll",
+        "live_edge": 0.0735,
+        "corrected_edge": 0.0335,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 8.998
+      },
+      {
+        "position_id": "POS-02B1F93E2F",
+        "kalshi_ticker": "KXMLBHIT-26JUL121340CHCCIN-CINEDELACRUZ44-2",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.0407,
+        "corrected_edge": 0.0107,
+        "half_spread": 0.015,
+        "outcome": "WIN",
+        "pnl": 3.0605
+      },
+      {
+        "position_id": "POS-C5CF466BB5",
+        "kalshi_ticker": "KXMLBHIT-26JUL121340CHCCIN-CINEDELACRUZ44-1",
+        "player_name": "Elly De La Cruz",
+        "live_edge": 0.0541,
+        "corrected_edge": 0.0041,
+        "half_spread": 0.025,
+        "outcome": "LOSS",
+        "pnl": -4.1197
+      },
+      {
+        "position_id": "POS-D5C25CBFA4",
+        "kalshi_ticker": "KXMLBHIT-26JUL121340CHCCIN-CHCABREGMAN3-2",
+        "player_name": "Alex Bregman",
+        "live_edge": 0.0405,
+        "corrected_edge": 0.0105,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -8.7547
+      },
+      {
+        "position_id": "POS-092F3AD3B9",
+        "kalshi_ticker": "KXMLBHIT-26JUL121340CHCCIN-CHCABREGMAN3-1",
+        "player_name": "Alex Bregman",
+        "live_edge": 0.0542,
+        "corrected_edge": 0.0142,
+        "half_spread": 0.02,
+        "outcome": "LOSS",
+        "pnl": -4.4871
+      },
+      {
+        "position_id": "POS-A515B4EF6B",
+        "kalshi_ticker": "KXMLBHIT-26JUL121435HOUTEX-HOUYALVAREZ44-2",
+        "player_name": "Yordan Alvarez",
+        "live_edge": 0.0627,
+        "corrected_edge": 0.0327,
+        "half_spread": 0.015,
+        "outcome": "LOSS",
+        "pnl": -12.7111
+      },
+      {
+        "position_id": "POS-57E6DC9725",
+        "kalshi_ticker": "KXMLBHIT-26JUL121435HOUTEX-HOUYALVAREZ44-1",
+        "player_name": "Yordan Alvarez",
+        "live_edge": 0.0837,
+        "corrected_edge": 0.0337,
+        "half_spread": 0.025,
+        "outcome": "LOSS",
+        "pnl": -6.4108
+      },
+      {
+        "position_id": "POS-1F73E12BD9",
+        "kalshi_ticker": "KXMLBHIT-26JUL121435HOUTEX-HOUCWALKER8-1",
+        "player_name": "Christian Walker",
+        "live_edge": 0.0526,
+        "corrected_edge": 0.0126,
+        "half_spread": 0.02,
+        "outcome": "WIN",
+        "pnl": 6.5798
+      },
+      {
+        "position_id": "POS-59E69BB2A7",
+        "kalshi_ticker": "KXMLBHIT-26JUL121335KCBAL-BALPALONSO25-2",
+        "player_name": "Pete Alonso",
+        "live_edge": 0.0545,
+        "corrected_edge": 0.0345,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 4.3692
+      },
+      {
+        "position_id": "POS-0F6FC9BCA1",
+        "kalshi_ticker": "KXMLBHIT-26JUL121610TORSD-SDJMERRILL3-1",
+        "player_name": "Jackson Merrill",
+        "live_edge": 0.0493,
+        "corrected_edge": -0.0007,
+        "half_spread": 0.025,
+        "outcome": "WIN",
+        "pnl": 5.2795
+      },
+      {
+        "position_id": "POS-E1D6685F13",
+        "kalshi_ticker": "KXMLBHIT-26JUL121610AZLAD-AZCCARROLL7-2",
+        "player_name": "Corbin Carroll",
+        "live_edge": 0.0422,
+        "corrected_edge": 0.0222,
+        "half_spread": 0.01,
+        "outcome": "WIN",
+        "pnl": 2.47
+      }
+    ]
+  },
+  "all_resolved_t1_total_pnl": 34.5632
+}
