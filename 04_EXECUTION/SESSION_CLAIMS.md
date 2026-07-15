@@ -68,3 +68,4 @@
 | 2026-07-15T05:23:28Z | T-361 | T-361 — draft APR-0025 ba_l10 shrinkage remediation proposal for GG-105 (Window 2 continuation) |
 | 2026-07-15T05:41:47Z | T-362 | GG-119 confirmation: diagnose T1 _directional_edge()/T2 local gating for same vig-sign pattern as GG-113, quantify against live ledger if confirmed, no fix (diagnosis only, active G6 book) |
 | 2026-07-15T05:43:30Z | T-363,GG-120 | T-363/GG-120: fix run_band_monitor.py write_dated_verdict ignoring --out (test-fixture files leaking into tracked verdicts/ dir) |
+| 2026-07-15T06:05:30Z | T-365,T-366 | APR-0025 prep: AB_WINDOW=37->real ab_sum resweep (T-359 follow-on) + decision brief |
