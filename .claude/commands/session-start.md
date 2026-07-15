@@ -23,7 +23,10 @@ Before CLAUDE.md Step 1, load current project state via the delta-first path, no
 
 ```bash
 if [ -s 04_EXECUTION/.last_session_checkpoint ]; then
-  scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"
+  # GG-103 (2026-07-15): file is now an append-only log (checkpoint<TAB>timestamp<TAB>slug
+  # rows, merge=union in .gitattributes) — read only the LAST row's first field, not the
+  # whole-file content, since concurrent sessions may each have appended their own row.
+  scripts/session_delta.sh "$(tail -n 1 04_EXECUTION/.last_session_checkpoint | cut -f1)"
 else
   echo "No checkpoint on file — falling back to full reads."
 fi

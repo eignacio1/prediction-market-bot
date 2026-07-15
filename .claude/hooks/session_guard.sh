@@ -64,10 +64,10 @@ else
   echo "(fetch failed — offline? treat shared-doc narratives as possibly stale)"
 fi
 
-echo "--- Checkpoint staleness (T-369) ---"
+echo "--- Checkpoint staleness (T-369; format GG-103, 2026-07-15 — append-only, read LAST line only) ---"
 CHECKPOINT_FILE="04_EXECUTION/.last_session_checkpoint"
 if [ -s "$CHECKPOINT_FILE" ]; then
-  CKPT_SHA="$(cat "$CHECKPOINT_FILE" | tr -d '[:space:]')"
+  CKPT_SHA="$(tail -n 1 "$CHECKPOINT_FILE" | cut -f1 | tr -d '[:space:]')"
   if git cat-file -e "${CKPT_SHA}^{commit}" 2>/dev/null; then
     CKPT_BEHIND="$(git rev-list --count "${CKPT_SHA}..HEAD" 2>/dev/null || echo "?")"
     CKPT_AGE_SEC="$(( $(date +%s) - $(git show -s --format=%ct "$CKPT_SHA" 2>/dev/null || echo "$(date +%s)") ))"
