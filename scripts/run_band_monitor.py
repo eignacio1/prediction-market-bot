@@ -111,7 +111,6 @@ BOOK_BANDS = ("T1", "T2", "T3")
 DEFAULT_PORTFOLIO = Path("logs/.vps_portfolio_cache_mlb.json")
 DEFAULT_T4_LEDGER = Path("logs/t4_mlb_resolved_ledger.jsonl")
 OUT_DIR = Path("exp_output/T255-BAND-MONITOR")
-VERDICTS_DIR = OUT_DIR / "verdicts"
 DEFAULT_SNAPSHOT_ID = "SNAP-T255-BAND-MONITOR"
 
 
@@ -449,7 +448,7 @@ def main(argv=None) -> int:
     out_json.write_text(json.dumps(results, indent=2))
     summary_json = args.out / "band_monitor_summary.json"
     summary_json.write_text(json.dumps(build_summary(results), indent=2))
-    dated_path = write_dated_verdict(results, VERDICTS_DIR, run_id)
+    dated_path = write_dated_verdict(results, args.out / "verdicts", run_id)
 
     _print_report(results)
     print(f"\nWrote {out_json}")
