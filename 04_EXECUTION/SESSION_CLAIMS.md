@@ -76,3 +76,4 @@
 | 2026-07-15T14:52:52Z | GG-odd-burndown | GG burn-down, ODD-numbered gaps only (parallel w/ even session) |
 | 2026-07-15T14:53:16Z | TBD | Implement already-registered gov-infra tasks (backlog burn-down visibility + checkpoint reliability); infra-only, not touching GOVERNANCE_GAP_LOG.md content |
 | 2026-07-15T14:55:07Z | GG-even-burndown | GG burn-down, EVEN-numbered gaps only (parallel w/ odd session) |
+| 2026-07-15T20:07:23Z | TBD | Audit T2 MLB sameday gating formula for full-vig vs half-spread cost term discrepancy vs run_exp017/T1 convention |
