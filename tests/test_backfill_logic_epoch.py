@@ -28,10 +28,12 @@ from prediction_market_bot.logic_epoch import (  # noqa: E402
 _PRE_HISTORY = "2026-06-01T00:00:00.000Z"          # before any boundary -> epoch 1
 _POST_GG087_PRE_GG077 = "2026-07-05T12:00:00.000Z"  # between GG-087/GG-077 -> epoch 2
 _POST_GG077 = "2026-07-06T00:00:00.000Z"            # after GG-077, before GG-113 -> epoch 3
-# GG-113 (ADR-0043) added epoch 4 at commit 2026-07-15T00:40:42Z; this must
-# stay ahead of every LogicEpochBoundary in logic_epoch.py, not just GG-077's,
-# for "is_current_epoch" tests to mean what they claim.
-_POST_GG113 = "2026-07-15T01:00:00.000Z"            # after all boundaries -> current epoch
+# GG-113 (ADR-0043) added epoch 4 at commit 2026-07-15T01:56:45Z (91111b7,
+# the band-gated self-correction — not the earlier, never-deployed 2569c1f
+# unconditional draft); this must stay ahead of every LogicEpochBoundary in
+# logic_epoch.py, not just GG-077's, for "is_current_epoch" tests to mean
+# what they claim.
+_POST_GG113 = "2026-07-15T02:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:
