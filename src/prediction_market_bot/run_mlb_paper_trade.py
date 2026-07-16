@@ -292,14 +292,28 @@ _SP_OVERRIDE_FIELDS = frozenset({
 })
 
 
-def _directional_edge(direction: str, gross_edge: float, kalshi_fee: float) -> float:
+def _directional_edge(
+    direction: str, gross_edge: float, kalshi_fee: float, half_spread: float = 0.0
+) -> float:
     """GG-077: gross_edge is always stored YES-frame. Direction assignment is
     decided off that raw YES-frame value, but once a direction is chosen the
     bet's true, fee-net edge must flip sign for NO before CHECK 3
     (abs(edge) >= MIN_EDGE_TO_APPROVE, risk.py) gates on it — otherwise NO
     bets are gated on the YES-side edge of the opposite bet.
+
+    GG-119/ADR-0045: a plain sign flip (-gross_edge) also flips half_spread's
+    sign, turning it from a cost into a credit for NO bets, since
+    gross_edge = (p - mid) - half_spread already has half_spread baked in
+    with a fixed sign. -gross_edge = -(p - mid) + half_spread. Correcting
+    for NO requires -(p - mid) - half_spread, i.e. -gross_edge -
+    2*half_spread, so half_spread stays a symmetric cost regardless of
+    direction (matches run_exp017.py's compute_pnl_unit() convention and
+    mirrors ADR-0043's identical T4M-PROJ fix).
     """
-    directional_gross = gross_edge if direction == "YES" else -gross_edge
+    if direction == "YES":
+        directional_gross = gross_edge
+    else:
+        directional_gross = -gross_edge - 2.0 * half_spread
     return directional_gross - kalshi_fee
 
 
@@ -902,7 +916,7 @@ def main() -> None:
             # actually placed. Direction assignment above intentionally
             # still uses the raw YES-frame edge.
             if direction != "PASS":
-                edge = _directional_edge(direction, gross_edge, kalshi_fee)
+                edge = _directional_edge(direction, gross_edge, kalshi_fee, half)
 
             # YES-only diagnostic gate
             if PAPER_YES_ONLY and direction == "NO":
