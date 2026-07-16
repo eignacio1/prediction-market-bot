@@ -39,3 +39,15 @@ Two things. First, the list of "known issues we haven't closed yet" has been gro
 **Does anything need your decision right now?** No — this one's done and closed. One separate, unrelated item is still sitting and waiting on you: a proposed fix for the baseball model getting overconfident in longer games (mentioned in the first update above) — still pending, not new.
 
 **Anything that worried the session, even if not urgent:** One thing worth knowing: the automated counting system that tracks "how many resolved bets do we have so far" resets to zero every time a bug fix like this one changes the underlying math — that's intentional and conservative (it's designed to never overcount), but it does mean progress toward the eventual "enough proof to risk real money" milestone restarts more often than a first glance would suggest. Nothing broken, just worth knowing so a zero doesn't look alarming out of context.
+
+---
+
+## Update — overnight into 2026-07-16 (GG-119/T-371 final close-out)
+
+**What changed:** This closes out the *other* baseball pricing bug mentioned above — the one in the main overnight strategy (T1), not the same-day one (T2). Same family of mistake as T2's, but a more serious version: the strategy was accidentally treating its own trading cost as a bonus instead of a cost on about a quarter of its bets, which let some bets through that shouldn't have qualified. Fixed, tested, and merged. Because the fix changes the math, the "resolved bets so far" counter for this strategy also reset to zero, same reason as T2's reset above.
+
+**What this means for your money:** No change — still zero real money at risk. This resets the proof-of-concept clock for the main overnight strategy, which was already the furthest along toward the eventual real-money milestone — worth knowing since the "bets resolved" number will look smaller than it did yesterday, and that's expected, not a step backward in what's been learned.
+
+**Does anything need your decision right now?** No — this one's done and closed.
+
+**Anything that worried the session, even if not urgent:** While closing this out, the session found another one of tonight's overlapping work sessions had left a real, unsaved update sitting in the shared project files — a normal and expected thing when multiple sessions work at once, but a reminder that the isolation safety net (each session working in its own copy) is what's supposed to prevent this from ever risking real loss. It was saved safely and nothing was lost, but flagging again (as an earlier update tonight also flagged) that this safety net deserves a fresh look with full tooling access.
