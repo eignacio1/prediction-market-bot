@@ -1,6 +1,6 @@
 # ADR-0045 — GG-119: T1 MLB NO-Direction Vig Sign Fix — Decision Request (PROPOSED)
 
-**Status:** PROPOSED — awaiting DS sign-off (operator, Earl Ignacio). Not yet authorized. No code has been changed under this ADR.
+**Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-07-15.
 **Date:** 2026-07-15
 **Session:** GG-odd-burndown (T-368), drafted per explicit standing instruction: GG-119 must be escalated via a formal ADR/APR decision request, not resolved unilaterally (Hard Rule 3 — this touches live gating math on the primary/active G6 book).
 **Operator:** Earl Ignacio
@@ -48,15 +48,15 @@ Note `paper_trader.py::open_position()`'s shared write path is **already band-ga
 
 **Proposed D3 (open question, explicitly not decided here) — whether to also open a separately-scoped look at T2's full-vig-vs-half-vig magnitude question**, noted as an adjacent-but-distinct, out-of-scope observation in GG-119's Impact field (T2 uses full `vig` as its cost term where T1/`run_exp017.py` use `half_spread`/half-vig — a magnitude question, not a sign-flip, and conservative-direction, i.e. it costs the book too much edge rather than too little). This ADR does not request authorization for that; it is flagged so it is not lost, matching how ADR-0043 flagged its own analogous open item.
 
-## Decision — awaiting Earl
+## Decision — Earl Ignacio, 2026-07-15
 
-**This section is intentionally blank pending DS review.** Per the standing instruction governing this burn-down session, GG-119 must not be resolved unilaterally. Earl needs to decide:
+Earl reviewed and approved GG-119/ADR-0045 in full:
 
-1. Authorize the T1-scoped fix (Proposed D1) — yes/no, and if yes, on what timeline (immediate vs. batched with other work)?
-2. Accept the `clean_n` reset cost (Proposed D2) given T1's much larger `n*` and correspondingly larger ETA-delay, relative to what ADR-0043 accepted for T4M-PROJ?
-3. Whether to open the separate T2 magnitude question (Proposed D3) now or defer it.
+1. **Authorized the T1-scoped fix (Proposed D1), immediate.** Implement exactly as specified — fix `run_mlb_paper_trade.py::_directional_edge()`'s NO branch, and extend `paper_trader.py::open_position()`'s band gate from `{"T4M-PROJ"}` to include `T1` so the ledger write path and the gating decision path move together, mirroring ADR-0043/GG-113's T4M-PROJ precedent.
+2. **Accepted the resulting T1 `clean_n` reset (Proposed D2)**, notwithstanding T1's much larger `n*` (~2,322 vs T4M-PROJ's ~787) making this a proportionally larger ETA cost than ADR-0043 accepted for T4M-PROJ. Correctness of the gating formula on the primary/active G6 gate-lever book takes priority over preserving accumulated `clean_n` on a formula now confirmed to admit a batch of marginal/negative-edge NO bets it should not have.
+3. **Separately authorized the T2 full-vig-vs-half-vig magnitude investigation (Proposed D3)**, to be handled by a parallel, independently-scoped session — not this one. This ADR's implementation touches T1 files only; T2 files are explicitly out of scope here.
 
-Once a decision is made, this ADR should be updated in place — status flipped to ACCEPTED or REJECTED, the "Decision" section filled with the verbatim ruling (per ADR-0043's own pattern of quoting the operator directly), and GG-119's `GOVERNANCE_GAP_LOG.md` entry updated to reflect the outcome. If accepted, implementation (code change, regression tests, epoch bump, VPS deploy/verification) is future work, not part of this document.
+Status flipped to ACCEPTED. Implementation (code change, regression tests, epoch bump, VPS deploy/verification) proceeds under T-371.
 
 ## Evidence / reproducibility
 
@@ -67,6 +67,6 @@ Once a decision is made, this ADR should be updated in place — status flipped 
 
 ## Open items
 
-- No code has been changed under this ADR. `run_mlb_paper_trade.py::_directional_edge()` remains in its pre-fix (buggy) state pending sign-off.
-- If accepted, `paper_trader.py::open_position()`'s band gate needs extending from `{"T4M-PROJ"}` to `{"T4M-PROJ", "T1"}` as part of implementation — flagged here so it isn't missed at build time.
-- T2's full-vig-vs-half-vig magnitude question (Proposed D3) remains unauthorized for investigation or change under this ADR.
+- Implemented 2026-07-15 (T-371, commit `53a9208`): `run_mlb_paper_trade.py::_directional_edge()` fixed, `paper_trader.py::open_position()`'s band gate extended to `{"T4M-PROJ", "T1"}` (T1 uses `-gross_edge - 1.0*vig`, distinct coefficient from T4M-PROJ's `-2.0*vig`, since T1's `gross_edge` embeds only `half_spread` while T4M-PROJ's embeds the full `vig`).
+- `CURRENT_LOGIC_EPOCH` advanced to 5 (`logic_epoch.py`), referencing commit `53a9208` directly — no self-correction needed since the write-path fix and the band-gate extension landed together in one commit.
+- T2's full-vig-vs-half-vig magnitude question (Proposed D3) remains a separate, parallel-session investigation — not part of this ADR's implementation.

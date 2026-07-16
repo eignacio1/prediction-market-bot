@@ -261,15 +261,17 @@ class TestOpenPosition:
         assert pos["fee_contaminated"] is False
 
     @pytest.mark.unit
-    @pytest.mark.parametrize("band", ["T1", "T2", "T3", None])
-    def test_gg113_fix_is_band_gated_to_t4m_proj_only(self, tmp_path, band):
-        # ADR-0043 D3: the corrected symmetric-vig formula is scoped to
-        # T4M-PROJ only (open_position() is shared by T1/T2/T3 as well, and
-        # each of those requires its own DS sign-off — GG-119 — before its
-        # stored fee_net_edge changes). Any band other than "T4M-PROJ" must
-        # keep producing the pre-GG-113 value (a plain -gross_edge flip,
-        # vig not re-subtracted) so this scope boundary regresses loudly if
-        # it is ever accidentally widened.
+    @pytest.mark.parametrize("band", ["T2", "T3", None])
+    def test_gg113_fix_is_band_gated_to_t4m_proj_and_t1_only(self, tmp_path, band):
+        # ADR-0043 D3 / ADR-0045 (GG-119): the corrected symmetric-vig
+        # formula is scoped to T4M-PROJ and T1 only (open_position() is
+        # shared by T2/T3 as well, and each of those requires its own DS
+        # sign-off before its stored fee_net_edge changes). Any band other
+        # than "T4M-PROJ"/"T1" must keep producing the pre-GG-113 value (a
+        # plain -gross_edge flip, vig not re-subtracted) so this scope
+        # boundary regresses loudly if it is ever accidentally widened.
+        # T1's own band-gated coefficient is covered separately by
+        # test_gg119_fix_applies_to_t1_with_half_vig_coefficient below.
         trader = PaperTrader(tmp_path / "p.json", _make_logger())
         mid = 0.45
         vig = 0.02
@@ -287,6 +289,30 @@ class TestOpenPosition:
         assert ok
         pre_gg113_expected = round(-gross_edge - fee, 6)
         assert pos["fee_net_edge"] == pre_gg113_expected
+
+    @pytest.mark.unit
+    def test_gg119_fix_applies_to_t1_with_half_vig_coefficient(self, tmp_path):
+        # ADR-0045 (GG-119): T1's gross_edge embeds only half_spread
+        # (vig / 2.0), unlike T4M-PROJ's which embeds the full vig, so
+        # T1's band-gated correction uses -gross_edge - 1.0*vig (not
+        # T4M-PROJ's -2.0*vig) — algebraically equal to -gross_edge -
+        # 2.0*half_spread. This locks that distinct coefficient in.
+        trader = PaperTrader(tmp_path / "p.json", _make_logger())
+        mid = 0.45
+        vig = 0.02
+        gross_edge = -0.10
+        fee = round(0.07 * mid * (1.0 - mid), 6)
+        ok, pos = trader.open_position(
+            approval=_make_approval(
+                30.0, "NO", gross_edge=gross_edge, model_p=0.35, band="T1"
+            ),
+            player_name="Test", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=mid, vig=vig, game_date=_PAST_DATE,
+        )
+        assert ok
+        expected = round(-gross_edge - 1.0 * vig - fee, 6)
+        assert pos["fee_net_edge"] == expected
 
     @pytest.mark.unit
     def test_fee_net_edge_matches_gross_edge_for_yes_bet(self, tmp_path):
