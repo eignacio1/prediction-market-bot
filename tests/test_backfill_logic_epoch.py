@@ -30,16 +30,20 @@ _POST_GG087_PRE_GG077 = "2026-07-05T12:00:00.000Z"  # between GG-087/GG-077 -> e
 _POST_GG077 = "2026-07-06T00:00:00.000Z"            # after GG-077, before GG-113 -> epoch 3
 # GG-113 (ADR-0043) added epoch 4 at commit 2026-07-15T01:56:45Z (91111b7,
 # the band-gated self-correction — not the earlier, never-deployed 2569c1f
-# unconditional draft); this must stay ahead of every LogicEpochBoundary in
-# logic_epoch.py, not just GG-077's, for "is_current_epoch" tests to mean
-# what they claim.
-_POST_GG113 = "2026-07-15T02:00:00.000Z"            # after all boundaries -> current epoch
+# unconditional draft).
+_POST_GG113 = "2026-07-15T02:00:00.000Z"            # after GG-113, before GG-119 -> epoch 4
+# GG-119 (ADR-0045) added epoch 5 at commit 2026-07-15T23:52:42Z (53a9208,
+# T1's NO-direction vig sign fix, band-gated + fixed in the same commit —
+# unlike GG-113 this needed no self-correction). This must stay ahead of
+# every LogicEpochBoundary in logic_epoch.py for "is_current_epoch" tests
+# to mean what they claim.
+_POST_GG119 = "2026-07-16T00:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:
     base = {
         "position_id": "POS-TEST001",
-        "entered_at": _POST_GG113,
+        "entered_at": _POST_GG119,
         "band": "T1",
     }
     base.update(overrides)
@@ -60,8 +64,12 @@ class TestDeriveLogicEpoch:
         assert derive_logic_epoch(_POST_GG077) == 3
 
     @pytest.mark.unit
+    def test_after_gg113_before_gg119_is_epoch_4(self):
+        assert derive_logic_epoch(_POST_GG113) == 4
+
+    @pytest.mark.unit
     def test_after_all_boundaries_is_current_epoch(self):
-        assert derive_logic_epoch(_POST_GG113) == CURRENT_LOGIC_EPOCH
+        assert derive_logic_epoch(_POST_GG119) == CURRENT_LOGIC_EPOCH
 
     @pytest.mark.unit
     def test_missing_entered_at_is_unresolvable(self):
