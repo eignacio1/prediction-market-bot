@@ -27,3 +27,15 @@ Two things. First, the list of "known issues we haven't closed yet" has been gro
 ---
 
 *Full technical detail: see `SESSION_HANDOFF` files and `DECISION_LOG.md` for 2026-07-15/16, plus `ADR-0044` (the new organizing rule) and `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG105_SPLIT_WORKED_EXAMPLE.md` (a demonstration of it, now superseded by the real applied version).*
+
+---
+
+## Update — overnight into 2026-07-16 (T-373/GG-123 close-out)
+
+**What changed:** Fixed a real bug in one of the baseball strategies (the "same-day" band, T2) — it was using the full buy-sell spread as its cost estimate instead of half of it, which is the correct convention every other strategy already uses. You reviewed this and gave the go-ahead to fix it. In practice this bug never actually changed a real bet's outcome in the data checked so far — it was quietly making the strategy slightly too conservative, not too aggressive, so no bad bets got through because of it. Also caught and fixed a numbering mix-up where two different work sessions happening at the same time had accidentally picked the same tracking numbers for unrelated work — sorted out cleanly with no lost information.
+
+**What this means for your money:** No change — still zero real money at risk. This was a same-day strategy with only 2 resolved bets so far, too small to have moved any real dollar figure. The fix makes future numbers on this strategy slightly more accurate, not different in kind.
+
+**Does anything need your decision right now?** No — this one's done and closed. One separate, unrelated item is still sitting and waiting on you: a proposed fix for the baseball model getting overconfident in longer games (mentioned in the first update above) — still pending, not new.
+
+**Anything that worried the session, even if not urgent:** One thing worth knowing: the automated counting system that tracks "how many resolved bets do we have so far" resets to zero every time a bug fix like this one changes the underlying math — that's intentional and conservative (it's designed to never overcount), but it does mean progress toward the eventual "enough proof to risk real money" milestone restarts more often than a first glance would suggest. Nothing broken, just worth knowing so a zero doesn't look alarming out of context.
