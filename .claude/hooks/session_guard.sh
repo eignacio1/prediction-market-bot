@@ -151,6 +151,13 @@ else
   echo "(scripts/check_memory_bank_snapshots.sh not found or not executable — skipped)"
 fi
 
+echo "--- Timestamp integrity (T-372) ---"
+if [ -x scripts/check_future_timestamps.sh ]; then
+  bash scripts/check_future_timestamps.sh || true
+else
+  echo "(scripts/check_future_timestamps.sh not found or not executable — skipped)"
+fi
+
 echo "=============================================="
 
 if [ "$MODE" = "--guard-destructive" ] && [ "$BR" = "main" ] && [ "$DIRTY" -eq 1 ]; then

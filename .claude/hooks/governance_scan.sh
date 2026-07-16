@@ -47,7 +47,7 @@ EOF
 # (gitignored, same pattern as the portfolio caches above).
 echo ""
 echo "OPEN GOVERNANCE GAPS:"
-OPEN=$(grep "| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
+OPEN=$(grep -E "^\| Status \|\s*\**OPEN\b" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
 OPEN_N=0
 if [ -n "$OPEN" ]; then
     OPEN_N=$(echo "$OPEN" | wc -l | tr -d ' ')

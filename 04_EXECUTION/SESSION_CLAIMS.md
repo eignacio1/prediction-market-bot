@@ -79,3 +79,4 @@
 | 2026-07-15T20:07:23Z | TBD | Audit T2 MLB sameday gating formula for full-vig vs half-spread cost term discrepancy vs run_exp017/T1 convention |
 | 2026-07-15T20:07:26Z | T-371 | Implement GG-119/ADR-0045 T1 vig-sign fix per Earl's approval (T2 magnitude handled by parallel session) |
 | 2026-07-15T23:51:58Z | TBD | Wire operator digest into session-end.md + timestamp-integrity checker into session_guard.sh |
+| 2026-07-16T00:40:00Z (resolution note) | T-372 (resolves 23:51:58Z TBD row) | Confirmed T-372 as next-free ID (T-371 was highest, taken by GG-119 fix session). Same worktree (`session/20260715T235138Z-digest-adoption-timestamp-check`) continued, not superseded — premise that it was orphaned checked and found false. Also fixed GG-122 (governance_scan.sh OPEN-count grep bug, 10→19 true count) in the same pass, additive to the original claim's scope. |
