@@ -1,6 +1,6 @@
-# APR-0028 — GG-122: T2 MLB Full-Vig-vs-Half-Spread Magnitude Fix — Decision Request (PROPOSED)
+# APR-0028 — GG-122: T2 MLB Full-Vig-vs-Half-Spread Magnitude Fix — Decision Request (ACCEPTED)
 
-**Status:** PROPOSED — awaiting DS sign-off (operator, Earl Ignacio). Not yet authorized. No code has been changed under this request.
+**Status:** ACCEPTED — 2026-07-15, verbal DS sign-off (operator, Earl Ignacio): "Okay - yes proceed with the fix now, you have my authority." Proposed D1 implemented same session (T-372). Proposed D2 (epoch bump) deliberately deferred — see Decision section below.
 **Date:** 2026-07-15
 **Session:** T-368, isolated worktree `session/20260715T200705Z-gg-t2-half-spread-audit`, drafted per explicit instruction: GG-122 must be escalated via a formal decision request, not resolved unilaterally (Hard Rule 3 — this touches live gating math on an active MLB band).
 **Operator:** Earl Ignacio
@@ -44,15 +44,15 @@ gross_edge = p_calibrated - mid - half_spread
 
 **Proposed D2 — Advance `CURRENT_LOGIC_EPOCH` and accept the resulting T2 `clean_n` reset.** Same rationale as ADR-0045 §D2: pre-fix and post-fix T2 evaluations are not directly comparable, since the fix changes which candidates clear gating. T2's `clean_n` is currently near-zero (n=2 resolved), so this reset is low-cost relative to T1's much larger `n*` — a materially smaller cost/benefit tradeoff than ADR-0045 faced for T1.
 
-## Decision — awaiting Earl
+## Decision — Earl, 2026-07-15
 
-**This section is intentionally blank pending DS review.** Earl needs to decide:
+**Verbatim ruling:** "Okay - yes proceed with the fix now, you have my authority."
 
-1. Authorize the T2-scoped fix (Proposed D1) — yes/no, and if yes, on what timeline?
-2. Accept the `clean_n` reset cost (Proposed D2), given T2's currently tiny resolved sample makes this a low-cost reset relative to T1's.
-3. Whether the currently-zero realized impact (0 of 39 observed rows changes bet placement) means this can wait for a batched fix alongside ADR-0045, or should be treated with its own urgency given the real, nonzero, structural exposure on every evaluated row.
+1. **Proposed D1 (T2-scoped cost-term fix): AUTHORIZED and IMPLEMENTED same session (T-372).** `run_t2_mlb_sameday.py` now computes `half_spread = current_mkt.half_spread; gross_edge = p_calibrated - mid - half_spread`, matching `run_exp017.py`/T1's convention. `vig=vig` retained, unchanged, as the recordkeeping parameter passed to `open_position()`. Scoped regression tests (`test_t191_mlb_t2.py`, `test_t195_mlb_silent_fallback.py`): 46/46 pass. Full-suite verification in progress at time of writing.
+2. **Proposed D2 (CURRENT_LOGIC_EPOCH bump): DEFERRED, not implemented as part of this authorization.** Between this request being drafted and being actioned, it emerged that `logic_epoch.py` is one of this session's explicitly restricted files (concurrent-session collision guard) and that the parallel T1/ADR-0045 session (`session/20260715T200655Z-gg119-t1-vig-sign-fix`) remains unmerged on `origin/main` as of the fix. `CURRENT_LOGIC_EPOCH` is confirmed (via direct code read) to be a **global, not per-band**, counter — bumping it now risks a genuine semantic collision with whatever epoch bump the still-open T1 branch may itself add, not merely a cosmetic numbering clash. D2 is deferred to a follow-up task, to be coordinated with (or combined into) the epoch bump once the T1/ADR-0045 branch merges, rather than raced against it. This is a scope narrowing from the original combined D1+D2 request — flagged explicitly here rather than silently applied.
+3. **Urgency:** given zero realized bet-outcome changes in the observed 39-row sample, D1 alone (without D2) carries no clean_n discontinuity risk and was safe to ship immediately; this matches the "low urgency, but no reason to wait" framing given to Earl verbally.
 
-Once a decision is made, this document should be updated in place — status flipped to ACCEPTED or REJECTED, the "Decision" section filled with the verbatim ruling, and GG-122's `GOVERNANCE_GAP_LOG.md` entry updated to reflect the outcome. If accepted, implementation (code change, regression tests, epoch bump, VPS deploy/verification) is future work, not part of this document.
+GG-122's `GOVERNANCE_GAP_LOG.md` entry updated to reflect this outcome (Status: RESOLVED (code), D2 tracked as follow-up).
 
 ## Evidence / reproducibility
 
