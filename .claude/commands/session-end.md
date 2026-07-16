@@ -119,6 +119,14 @@ This file MUST include:
 
 **Also write the checkpoint pointer (ADR-0041, T-300/Window A; wrapper added T-369; format updated GG-103, 2026-07-15):** after the SESSION_HANDOFF commit lands, run `scripts/write_session_checkpoint.sh <short-session-slug>` (wraps the `04_EXECUTION/.last_session_checkpoint` write — do not inline the raw `git rev-parse`/`printf` here again) and commit the result in the same path-scoped commit as the handoff. Per GG-103, the file is now an **append-only log** (`checkpoint<TAB>timestamp<TAB>slug` per row, `merge=union` in `.gitattributes`, mirroring `SESSION_CLAIMS.md`'s pattern) rather than a single overwritten SHA, so two sessions closing concurrently both survive instead of one clobbering the other's pointer — the wrapper appends, it does not overwrite. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read (it reads only the last line's checkpoint field) — skipping this step silently degrades the next session back to the full-read fallback. `session_guard.sh` now warns (does not block) if the last-line checkpoint is stale vs. current HEAD, so a skipped write is no longer silent.
 
+## Step 6B — Operator Digest (mandatory, T-372)
+
+Create `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from `00_ADMIN/TEMPLATES/TEMPLATE_OPERATOR_DIGEST.md`, filled in for this session, and commit it in the same path-scoped commit as the SESSION_HANDOFF. This is not optional and not conditional on session size — a session with nothing to report still writes the digest and says so plainly (e.g. "No change today — still zero real money at risk"). Use `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20260715.md` as the worked example of tone and length — plain English, no file paths/function names/p-values, 5-10 lines total.
+
+**Why this is its own step, not folded into Step 6:** `SESSION_HANDOFF_*.md` is the technical record for the next session/auditor. The digest is a *different document for a different reader* — Earl, who does not read code and should not have to open a technical log to know what happened. The one digest written so far (`OPERATOR_DIGEST_20260715.md`) was a one-off demonstration with nothing requiring a second one to exist; this step is what makes it a habit instead of a single artifact nobody was asked to repeat.
+
+Keep it to 5-10 lines per the template's own instruction — if it's running longer, the session did too much to summarize well, not a reason to write more.
+
 ## Step 7 — Next Session Primer
 
 In 2-3 sentences, what should the next session's opening prompt contain?
@@ -154,4 +162,5 @@ Before ending this session:
 04_EXECUTION/PLAN.md                           ← if milestones changed
 00_ADMIN/CHANGELOG.md                          ← for significant changes
 11_MEMORY_HANDOFF/SESSION_HANDOFF_[date].md    ← always (from template)
+11_MEMORY_HANDOFF/OPERATOR_DIGEST_[date].md    ← always (from template, Step 6B)
 ```

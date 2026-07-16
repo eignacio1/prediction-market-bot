@@ -2055,6 +2055,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-122 — `governance_scan.sh`'s OPEN-gap grep only matched literal `"| OPEN"`, undercounting bold-prefixed Status cells (10 vs. true 19)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-122 |
+| Category | Incremental architecture — a measurement tool drifted out of sync with the format of the data it measures |
+| What was missed | `.claude/hooks/governance_scan.sh`'s OPEN-gap counter (`OPEN=$(grep "| OPEN" ... )`) matched only the literal substring `"| OPEN"`. A number of this log's own Status cells are phrased `"| Status | **OPEN — ..."` (bold-markdown prefix on the word OPEN) — the literal grep does not match those, so every bold-prefixed OPEN entry was silently excluded from the count. |
+| When it should have been caught | Whenever a Status cell was first written with a `**OPEN` bold prefix instead of a plain `OPEN` prefix — the hook should have been re-verified against the log's actual current formatting at that point, or the grep should have been format-tolerant from the start. |
+| Phases it survived | Unknown number of sessions between the hook's introduction and this discovery (2026-07-15) — the hook runs on every `UserPromptSubmit` and nobody cross-checked its printed count against a manual count of the log in that window. |
+| Why it survived | The hook's own output ("N open / M total") reads as authoritative and was never spot-checked against the source file by hand; a burn-down trend computed from an undercounted numerator still looks internally consistent (it just tracks the wrong baseline), so nothing about the hook's own output would have flagged the discrepancy. |
+| Impact | MEDIUM, measurement-only. The undercounted total (10 instead of 19) fed the burn-down-trend calculation in `scripts/lib/governance_gap_burndown.py` and every session's printed "OPEN GOVERNANCE GAPS" summary — no capital, model, or gate decision relied on the raw count directly, but any session judging governance-debt trajectory from this hook's output for the affected period was working from a number roughly half the true value. No downstream gate (G6, Tier 1/2) reads this count directly. |
+| Discovery | 2026-07-15, this session (T-372, digest-adoption + timestamp-check session), per explicit operator instruction to reconcile a burn-down-review discrepancy. Verified via two independent greps against the live log: literal `"| OPEN"` (10 matches) vs. a Status-cell-aware regex `^\| Status \|\s*\**OPEN\b` (20 raw matches, 19 after excluding the log's own field-format legend row at the "Gap Registration Template" section, which is itself phrased `"OPEN / IN PROGRESS / RESOLVED [date]"` and already correctly excluded by the existing `grep -v "OPEN / IN PROGRESS"` filter). Cross-checked all 19 real matches against their owning `### GG-NNN` headers by line-range lookup: GG-007, 020, 027, 037, 038, 039, 040, 041, 044, 045, 046, 056, 066, 072, 078, 094, 098, 105, 119. |
+| Resolution | Fixed same session: `governance_scan.sh`'s grep changed from `grep "| OPEN"` to `grep -E "^\| Status \|\s*\**OPEN\b"`, anchored to the Status-cell line and tolerant of an optional bold-markdown prefix, while keeping the existing `grep -v "OPEN / IN PROGRESS"` / `grep -v "template"` exclusions. Re-ran the hook post-fix: now reports "19 open / 120 total (101 resolved, 15.8% open)". No GG entries were added or removed by this fix — it is a counting-tool correction only. |
+| Status | **RESOLVED 2026-07-15.** True OPEN count as of this reading: **19** (see Discovery list). Re-check trigger: any future change to how Status cells are phrased in this log (e.g. a new markdown-emphasis convention) should be spot-checked against `governance_scan.sh`'s regex before assuming the hook's count still matches ground truth. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

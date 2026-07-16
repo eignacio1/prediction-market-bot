@@ -1,3 +1,5 @@
+**SUPERSEDED 2026-07-15 (T-372):** the split this file only demonstrated has since actually been applied to the live GG-105 entry (T-368, same day). The real, current thing is `GG105_FULL_HISTORY.md` in this same directory, linked directly from `GOVERNANCE_GAP_LOG.md`'s GG-105 Status field. This file is kept only as the historical worked-example artifact ADR-0044 cites — read `GG105_FULL_HISTORY.md` for the actual investigative history, not this one.
+
 # GG-105 Split — Worked Example (ADR-0044 demonstration, not yet applied live)
 
 **Purpose:** ADR-0044 proposes splitting dense, multi-session governance-log entries into a short current-status line (kept live in `GOVERNANCE_GAP_LOG.md`) plus a linked, verbatim, permanent history file. This file demonstrates the split mechanically using GG-105 (T4M-PROJ anti-predictive/calibration-decay finding) as the worked example, because it is the single largest entry in the log (5 distinct session dates: T-333, T-341, T-344, T-359, T-361) and clears ADR-0044's split threshold by a wide margin.

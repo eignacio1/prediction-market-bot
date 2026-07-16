@@ -14,4 +14,16 @@ Two things. First, the list of "known issues we haven't closed yet" has been gro
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF` files and `DECISION_LOG.md` for 2026-07-15, plus `ADR-0044` (the new organizing rule) and `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG105_SPLIT_WORKED_EXAMPLE.md` (a demonstration of it).*
+## Update — later the same evening (T-372 close-out)
+
+**What changed:** The two habit-forming fixes mentioned above as still-pending got done: this plain-English summary is now a required step at the end of every session (not just a one-off demo), and a safety check that catches corrupted future-dated timestamps in the project's logs now runs automatically instead of needing someone to remember to run it by hand. Also found and fixed a small counting bug in one of the automated health checks — it was undercounting the number of open known-issues (showing 10 when the real number was 19), which is now fixed and double-checked.
+
+**What this means for your money:** No change — still zero real money at risk. Nothing here touched trading logic or risk limits.
+
+**Does anything need your decision right now?** No.
+
+**Anything that worried the session:** No new concerns. Also cleaned up three old, no-longer-needed branches of work (each individually checked to confirm nothing would be lost) and confirmed the two other people/sessions working on the project tonight (the baseball pricing-bug fixes) were left completely untouched, as instructed.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF` files and `DECISION_LOG.md` for 2026-07-15/16, plus `ADR-0044` (the new organizing rule) and `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG105_SPLIT_WORKED_EXAMPLE.md` (a demonstration of it, now superseded by the real applied version).*
