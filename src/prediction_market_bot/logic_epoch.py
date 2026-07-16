@@ -158,6 +158,43 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "(GOVERNANCE_GAP_LOG.md), DECISION_LOG.md 2026-07-15."
         ),
     ),
+    LogicEpochBoundary(
+        epoch=6,
+        resolving_gap="GG-122",
+        commit_sha="cc887e88385ec793d849859da543deee50c1940c",
+        # 2026-07-15 17:13:46 -07:00
+        commit_utc=datetime(2026, 7, 16, 0, 13, 46, tzinfo=timezone.utc),
+        description=(
+            "T2 same-day gating cost-term magnitude bug (APR-0028 "
+            "Proposed D1): run_t2_mlb_sameday.py subtracted the FULL "
+            "vig (bid-ask spread) as its cost term instead of "
+            "half_spread (vig / 2.0), the one-sided transaction cost "
+            "convention established by run_exp017.py and T1's own "
+            "formula. Unlike GG-113/GG-119, this is a magnitude-only "
+            "bug, not a sign flip, and is conservative-direction "
+            "(under-computes edge, causing missed bets rather than "
+            "false approvals) — confirmed via a 39-candidate diagnostic "
+            "sample (scripts/run_t368_gg122_t2_vig_magnitude_diag.py) "
+            "showing 1 PASS->YES flip at T2's own EDGE_YES gate and 0 "
+            "additional bets clearing the binding MIN_EDGE_TO_APPROVE "
+            "floor — zero realized bet-outcome changes in the observed "
+            "sample. Fixed in run_t2_mlb_sameday.py only; "
+            "paper_trader.py::open_position() needs no corresponding "
+            "band-gate change since T2 has no NO-direction branch "
+            "(PAPER_YES_ONLY defaults true) — the NO-branch sign-flip "
+            "bug GG-113/GG-119 fixed does not apply to T2's YES-only "
+            "gating path. DS sign-off: Earl Ignacio (operator), "
+            "verbatim: 'Okay - yes proceed with the fix now, you have "
+            "my authority.' D2 (this epoch bump) was initially deferred "
+            "pending confirmation that the concurrent GG-119/ADR-0045 "
+            "T1 branch's own epoch bump (epoch 5, above) did not "
+            "already cover T2 — confirmed it does not (T1-scoped only), "
+            "so this bump proceeds as its own boundary, per APR-0028's "
+            "explicit 'coordinate once that branch merges' instruction. "
+            "See APR-0028 (00_ADMIN/), GG-122 (GOVERNANCE_GAP_LOG.md), "
+            "DECISION_LOG.md 2026-07-15."
+        ),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
