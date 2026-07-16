@@ -35,8 +35,10 @@ _POST_GG113 = "2026-07-15T02:00:00.000Z"            # after GG-113, before GG-11
 # GG-119 (ADR-0045) added epoch 5 at commit 2026-07-15T23:52:42Z (53a9208,
 # T1's NO-direction vig sign fix, band-gated + fixed in the same commit —
 # unlike GG-113 this needed no self-correction).
-_POST_GG119 = "2026-07-16T00:00:00.000Z"            # after GG-119, before GG-122 -> epoch 5
-# GG-122 (APR-0028) added epoch 6 at commit 2026-07-15T17:13:46-07:00 /
+_POST_GG119 = "2026-07-16T00:00:00.000Z"            # after GG-119, before GG-123 -> epoch 5
+# GG-123 (APR-0028) added epoch 6 at commit 2026-07-15T17:13:46-07:00 /
+# (variable name below retains this task's original informal "GG122" numbering;
+#  comments updated to reference the corrected canonical GG-123 post-renumbering)
 # 2026-07-16T00:13:46Z (cc887e8, T2's full-vig-vs-half-spread magnitude
 # fix, D2 actioned once the concurrent GG-119 branch's merge confirmed
 # its epoch=5 boundary was T1-scoped only). This must stay ahead of every

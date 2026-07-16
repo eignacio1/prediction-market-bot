@@ -160,7 +160,7 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
     ),
     LogicEpochBoundary(
         epoch=6,
-        resolving_gap="GG-122",
+        resolving_gap="GG-123",
         commit_sha="cc887e88385ec793d849859da543deee50c1940c",
         # 2026-07-15 17:13:46 -07:00
         commit_utc=datetime(2026, 7, 16, 0, 13, 46, tzinfo=timezone.utc),
@@ -174,7 +174,8 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "bug, not a sign flip, and is conservative-direction "
             "(under-computes edge, causing missed bets rather than "
             "false approvals) — confirmed via a 39-candidate diagnostic "
-            "sample (scripts/run_t368_gg122_t2_vig_magnitude_diag.py) "
+            "sample (scripts/run_t368_gg122_t2_vig_magnitude_diag.py, "
+            "filename retains original informal numbering) "
             "showing 1 PASS->YES flip at T2's own EDGE_YES gate and 0 "
             "additional bets clearing the binding MIN_EDGE_TO_APPROVE "
             "floor — zero realized bet-outcome changes in the observed "
@@ -191,8 +192,12 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "already cover T2 — confirmed it does not (T1-scoped only), "
             "so this bump proceeds as its own boundary, per APR-0028's "
             "explicit 'coordinate once that branch merges' instruction. "
-            "See APR-0028 (00_ADMIN/), GG-122 (GOVERNANCE_GAP_LOG.md), "
-            "DECISION_LOG.md 2026-07-15."
+            "See APR-0028 (00_ADMIN/), GG-123 (GOVERNANCE_GAP_LOG.md), "
+            "DECISION_LOG.md 2026-07-15. Renumbered from this task's "
+            "original T-372/GG-122 self-assignment after a merge-time "
+            "collision with a different, unrelated, already-merged "
+            "concurrent session's own T-372/GG-122 claim; see "
+            "GOVERNANCE_GAP_LOG.md GG-123's numbering note."
         ),
     ),
 )
