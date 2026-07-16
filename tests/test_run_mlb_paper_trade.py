@@ -939,22 +939,39 @@ class TestDirectionalEdge:
     def test_yes_bet_edge_unchanged(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         # YES bet: gross_edge already direction-aligned, just subtract fee.
-        assert fn("YES", 0.10, 0.0173) == pytest.approx(0.0827)
+        # half_spread is irrelevant on the YES branch.
+        assert fn("YES", 0.10, 0.0173, 0.02) == pytest.approx(0.0827)
 
-    def test_no_bet_flips_sign_before_fee(self, monkeypatch):
+    def test_no_bet_flips_sign_and_keeps_half_spread_a_cost(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # NO bet with gross_edge=-0.10 (YES-frame) is a *good* NO bet: true
-        # directional edge is +0.10 net of fee, not -0.10 - fee.
+        # GG-119/ADR-0045: NO bet with gross_edge=-0.10 (YES-frame,
+        # half_spread=0.02 already subtracted once) must recompute the
+        # signal term directly: -gross_edge - 2*half_spread, not a naive
+        # -gross_edge (which would flip half_spread into a credit).
+        assert fn("NO", -0.10, 0.0173, 0.02) == pytest.approx(0.10 - 2 * 0.02 - 0.0173)
+
+    def test_no_bet_half_spread_zero_matches_pre_fix_value(self, monkeypatch):
+        # Sanity check: with half_spread=0.0 (default), the corrected
+        # formula degenerates to the pre-fix plain sign flip -- confirms the
+        # fix is additive (only the half_spread term changed), not a
+        # different formula shape entirely.
+        fn = self._get_fn(monkeypatch)
         assert fn("NO", -0.10, 0.0173) == pytest.approx(0.0827)
 
     def test_no_bet_matches_paper_trader_directional_gross(self, monkeypatch):
-        # Cross-check against paper_trader.py's independent flip so the two
-        # gating paths (CHECK 3 pre-fire, stored fee_net_edge post-fire)
-        # never disagree on the sign convention again.
+        # Cross-check against paper_trader.py's independent T1-band flip so
+        # the two gating paths (CHECK 3 pre-fire, stored fee_net_edge
+        # post-fire) never disagree on the sign convention again. T1's `vig`
+        # param there is the full spread (2*half_spread); paper_trader.py's
+        # T1 branch is -gross_edge - 1.0*vig, which equals this function's
+        # -gross_edge - 2.0*half_spread exactly.
         fn = self._get_fn(monkeypatch)
-        gross_edge, mid = -0.15, 0.40
+        gross_edge, mid, half_spread = -0.15, 0.40, 0.03
+        vig = 2.0 * half_spread
         fee = round(0.07 * mid * (1.0 - mid), 6)
-        assert fn("NO", gross_edge, fee) == pytest.approx(-gross_edge - fee)
+        assert fn("NO", gross_edge, fee, half_spread) == pytest.approx(
+            -gross_edge - 1.0 * vig - fee
+        )
 
 
 # ---------------------------------------------------------------------------

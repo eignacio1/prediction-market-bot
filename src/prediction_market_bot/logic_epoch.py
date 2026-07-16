@@ -130,6 +130,34 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "biased formula."
         ),
     ),
+    LogicEpochBoundary(
+        epoch=5,
+        resolving_gap="GG-119",
+        commit_sha="53a92089b8d424554e2074d848f6a6a639efe82e",
+        # 2026-07-15 16:52:42 -07:00
+        commit_utc=datetime(2026, 7, 15, 23, 52, 42, tzinfo=timezone.utc),
+        description=(
+            "T1 NO-direction vig sign flip (ADR-0045), the identical "
+            "GG-113/ADR-0043 pattern found in T1's own gating file: "
+            "run_mlb_paper_trade.py::_directional_edge()'s NO branch "
+            "negated the whole half_spread-inclusive gross_edge, "
+            "converting half_spread from a cost into a credit for all "
+            "248 NO-direction resolved bets in the pre-fix book (74 of "
+            "which only cleared MIN_EDGE_TO_APPROVE due to the "
+            "inflation). Fixed to a direction-independent symmetric cost "
+            "in run_mlb_paper_trade.py and paper_trader.py::"
+            "open_position() (band gate extended from {\"T4M-PROJ\"} to "
+            "include \"T1\", both landing in the same commit — unlike "
+            "GG-113, no self-correction needed here since the write path "
+            "and gating path were fixed together from the start). "
+            "DS sign-off: Earl Ignacio (operator), authorizing the "
+            "T1-scoped fix and explicitly accepting the resulting T1 "
+            "clean_n reset despite T1's much larger n* (~2,322 vs "
+            "T4M-PROJ's ~787) making this a proportionally larger ETA "
+            "cost than ADR-0043 accepted. See ADR-0045, GG-119 "
+            "(GOVERNANCE_GAP_LOG.md), DECISION_LOG.md 2026-07-15."
+        ),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;

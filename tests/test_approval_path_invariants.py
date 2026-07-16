@@ -224,11 +224,18 @@ class TestFeeSignInvariance:
     )
     @settings(max_examples=300, deadline=None)
     def test_paper_trader_matches_directional_edge_fn(self, gross_edge, mid, direction):
+        # GG-119/ADR-0045: T1's gross_edge convention embeds half_spread
+        # (vig/2), so band="T1" must be threaded through both independent
+        # paths with the same half_spread for them to agree post-fix.
+        vig = 0.02
+        half_spread = vig / 2.0
         fee = round(0.07 * mid * (1.0 - mid), 6)
-        expected = round(_directional_edge(direction, gross_edge, fee), 6)
+        expected = round(_directional_edge(direction, gross_edge, fee, half_spread), 6)
 
-        approval = _make_approval(10.0, direction, gross_edge=gross_edge, model_p=0.5)
-        pos = _open_position_isolated(approval, mid=mid)
+        approval = _make_approval(
+            10.0, direction, gross_edge=gross_edge, model_p=0.5, band="T1"
+        )
+        pos = _open_position_isolated(approval, mid=mid, vig=vig)
 
         assert pos["fee_net_edge"] == expected
 
