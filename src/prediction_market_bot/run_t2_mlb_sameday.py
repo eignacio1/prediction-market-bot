@@ -414,11 +414,17 @@ def main() -> None:
         # Re-compute edge with live Kalshi price
         mid = current_mkt.mid_price
         vig = current_mkt.vig
+        half_spread = current_mkt.half_spread
         if mid <= 0.0 or mid >= 1.0:
             continue
 
         p_calibrated = calibrate_probability(p_t2, sport="mlb")
-        gross_edge = p_calibrated - mid - vig
+        # GG-122/APR-0028: cost term is the one-sided transaction cost
+        # (half_spread = vig / 2.0), matching run_exp017.py's symmetric-cost
+        # convention and T1's own formula (run_mlb_paper_trade.py). `vig`
+        # itself is kept (unused in this computation) only because it is
+        # still passed to open_position() below for recordkeeping.
+        gross_edge = p_calibrated - mid - half_spread
         kalshi_fee = 0.07 * mid * (1.0 - mid)
         net_edge   = gross_edge - kalshi_fee
 
