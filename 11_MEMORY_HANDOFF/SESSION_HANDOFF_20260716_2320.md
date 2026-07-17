@@ -40,7 +40,7 @@
 
 ## ONE THING PENDING
 
-Nothing code-side is pending — all GG-060/GG-046 work is complete and verified. The only remaining action is mechanical: **push this branch to `origin` and merge to `main` (Step 8), then retire the isolated worktree.** That happens immediately after this handoff file and its checkpoint pointer are committed.
+**Resolved 2026-07-17.** Step 8 is complete: PR #36 (`T-375: GG-060 monitoring buildout + GG-046 T4 gate re-check`) merged into `main` via squash (`395c6ce`), after three additional `origin/main` re-sync rounds during close-out (the concurrent T-378 GG-105-investigation session advanced `origin/main` three separate times while this PR was open — each resync reconciled append-only nav-doc conflicts using the "keep both, except drop stale-ID duplicates under a corrected renumbering" rule; see DECISION_LOG.md for 2026-07-16/17). CI (`test` check) passed before merge. Worktree retired via `scripts/end_session_worktree.sh`; session branch deleted both locally and on `origin`. Nothing is pending from this session.
 
 ---
 
