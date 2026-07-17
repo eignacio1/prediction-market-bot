@@ -76,7 +76,11 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
 
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
-from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
+from prediction_market_bot.c7_monitoring.monitor import (
+    BRIER_BASELINE_MLB,
+    ECE_BASELINE_MLB,
+    SystemMonitor,
+)
 from typing import Any
 
 SESSION_ID        = f"RESOLVE-MLB-{uuid.uuid4().hex[:8].upper()}"
@@ -572,7 +576,8 @@ def main() -> None:
                       f"({summary_t4['closed_positions']} resolved bets)")
 
     SystemMonitor(
-        logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID
+        logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID,
+        brier_baseline=BRIER_BASELINE_MLB, ece_baseline=ECE_BASELINE_MLB,
     ).check_portfolio_pnl(
         total_realized_pnl=summary_main["total_realized_pnl"],
         initial_bankroll=summary_main["initial_bankroll_usd"],

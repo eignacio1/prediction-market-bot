@@ -1,11 +1,13 @@
 # APR-0026 — Derive MLB-Native C7 Drift Baselines and Enable the MLB calib_monitor Cron
 
-**Status:** PENDING — requires Earl Ignacio (DS) sign-off. Not self-approved (Hard Rule 3: this touches a
-monitoring threshold used to fire/suppress drift alarms — a decision only the DS can make).
+**Status:** ACCEPTED — Earl Ignacio, in-session directive, 2026-07-16 ("Adopt as proposed").
 **Addresses:** GG-044 (`03_DECISIONS/GOVERNANCE_GAP_LOG.md`)
 **Drafted:** 2026-07-15, Terminal 3 (GG-burndown-even session), branch
 `session/20260715T145447Z-gg-burndown-even`
-**Approved by:** — (pending)
+**Approved by:** Earl Ignacio, 2026-07-16, in-session directive
+**Implemented by:** ADR-0046 (`03_DECISIONS/ADR-0046_mlb-native-c7-drift-baselines.md`),
+  GG-easy-sweep session (T-374), 2026-07-16 — `BRIER_BASELINE_MLB=0.2190`,
+  `ECE_BASELINE_MLB=0.0680`, n=261.
 
 ---
 
@@ -73,4 +75,6 @@ asks for a decision, not a specific answer.
 | Date | Action | By |
 |---|---|---|
 | 2026-07-15 | Drafted, submitted PENDING | GG-burndown-even session (even-numbered gap sweep) |
-| — | Awaiting DS review | Earl Ignacio |
+| 2026-07-16 | ACCEPTED — "Adopt as proposed", in-session directive | Earl Ignacio |
+| 2026-07-16 | Implemented via ADR-0046: `BRIER_BASELINE_MLB=0.2190`/`ECE_BASELINE_MLB=0.0680` (n=261) derived and wired into `run_mlb_paper_trade.py`/`run_resolve_mlb.py`; calib_monitor cron enabled; GG-044 closed RESOLVED; GG-124 registered as a distinct follow-on gap (dead C7 alarm-ladder finding) | GG-easy-sweep session (T-374) |
+| 2026-07-17 | Renumbered at merge time: the in-session "GG-124" collided with an independent already-merged upstream session's own GG-124 — this session's gap is now **GG-125** (project renumbering precedent; unmerged side renumbers). See `DECISION_LOG.md` Numbering note. | GG-easy-sweep session (T-374) |

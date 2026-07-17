@@ -14,7 +14,8 @@ Policy refs:  MONITORING_DRIFT_PLAN.md, RUNBOOKS/RUNBOOK_kill-switch.md,
               SLA_SLO_SLI.md (ALT-001 through ALT-008), OBSERVABILITY.md
 
 Kill switch SLA: ≤60 seconds (NFR-03). Drilled before G5 (TC-007).
-Drift baselines: Brier=0.2416, ECE=0.0247 (G4 TEST set; ADR-0004).
+Drift baselines: NBA Brier=0.2416, ECE=0.0247 (G4 TEST set; ADR-0004).
+           MLB Brier=0.2190, ECE=0.0680 (n=261 resolved paper bets; ADR-0046/GG-044).
 No bypass path. No partial halt. No override without ADR + RCO approval.
 
 Shadow model tracking (ADR-0009):
@@ -69,6 +70,14 @@ COMPONENT = "C7"
 
 BRIER_BASELINE: float = 0.2416
 ECE_BASELINE: float = 0.0247
+
+# MLB-native baselines (ADR-0046, GG-044) — derived from n=261 resolved MLB paper
+# positions (t in {1,2}, GG-042 t=3 exclusion applied), NOT the NBA G4 TEST-set
+# values above. Pass explicitly at SystemMonitor construction for MLB pipelines
+# (run_mlb_paper_trade.py, run_resolve_mlb.py); NBA sites keep the defaults.
+BRIER_BASELINE_MLB: float = 0.2190
+ECE_BASELINE_MLB: float = 0.0680
+
 DRIFT_WINDOW_SIZE: int = 30
 
 # Drift thresholds (MONITORING_DRIFT_PLAN.md)
