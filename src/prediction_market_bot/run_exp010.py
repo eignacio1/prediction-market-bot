@@ -42,6 +42,7 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -142,7 +143,7 @@ def _ece(y: np.ndarray, p: np.ndarray) -> float:
 # ---------------------------------------------------------------------------
 
 def run_part_a(test_df: pd.DataFrame, feature_names: list[str],
-               model: Pipeline, live_vig: float) -> dict:
+               model: Pipeline, live_vig: float) -> dict[str, Any]:
     print(f"\n{'='*60}")
     print("PART A — 2025-26 TEST set vig simulation")
     print(f"{'='*60}")
@@ -205,7 +206,7 @@ def run_part_a(test_df: pd.DataFrame, feature_names: list[str],
 # ---------------------------------------------------------------------------
 
 def run_part_b(df: pd.DataFrame, feature_names: list[str],
-               model: Pipeline, snapshot: object) -> dict:
+               model: Pipeline, snapshot: object) -> dict[str, Any]:
     print(f"\n{'='*60}")
     print("PART B — Live market alignment (today's playoff games)")
     print(f"{'='*60}")
@@ -352,7 +353,7 @@ def main() -> None:
     # ------------------------------------------------------------------
     print("\n[DS-02] Connecting to Kalshi API...")
     ds02_online, snapshot, live_vig = False, None, MEASURED_VIG_20260528
-    quoted_markets: list = []
+    quoted_markets: list[Any] = []
 
     try:
         client = KalshiMarketClient.from_env()

@@ -31,6 +31,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from typing import Any
 
 _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
@@ -77,7 +78,7 @@ def simulate_vig_savings(
     win_rate: float,
     bets_yes: int,
     bets_no: int,
-) -> dict:
+) -> dict[str, Any]:
     """
     Compute EV improvement from routing a fraction of bets to a cheaper venue.
 
@@ -117,7 +118,7 @@ def estimate_lock_frequency(
     vig_polymarket: float,
     n_simulations: int = 50_000,
     seed: int = 42,
-) -> dict:
+) -> dict[str, Any]:
     """
     Monte Carlo estimate of complement-lock frequency given spread distributions.
 

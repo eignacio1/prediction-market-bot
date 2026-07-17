@@ -33,6 +33,7 @@ import pandas as pd
 import requests
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from typing import Any
 
 COMPONENT = "C1_MLB"
 MLB_BASE_URL = "https://statsapi.mlb.com"
@@ -211,7 +212,7 @@ class MLBIngestionClient:
             pass
         return dict(_FALLBACK_TEAM_ABBR)
 
-    def _get(self, url: str, params: dict | None = None) -> dict | None:
+    def _get(self, url: str, params: dict[str, Any] | None = None) -> dict[str, Any] | None:
         """HTTP GET with throttle and linear retry. Returns parsed JSON or None."""
         for attempt in range(MAX_RETRIES):
             self._throttle()
@@ -242,7 +243,7 @@ class MLBIngestionClient:
 
     def _normalize_batter_df(
         self,
-        splits: list[dict],
+        splits: list[dict[str, Any]],
         player_id: int,
         player_name: str,
         run_id: str,
@@ -298,7 +299,7 @@ class MLBIngestionClient:
 
     def _normalize_pitcher_df(
         self,
-        splits: list[dict],
+        splits: list[dict[str, Any]],
         player_id: int,
         player_name: str,
         run_id: str,
@@ -533,7 +534,7 @@ class MLBIngestionClient:
         self,
         game_date: str,
         session_id: str | None = None,
-    ) -> tuple[bool, dict[int, dict]]:
+    ) -> tuple[bool, dict[int, dict[str, Any]]]:
         """Return probable starting pitchers for all games on game_date.
 
         Returns (ok, {gamePk: {home_sp_id, home_sp_name, away_sp_id, away_sp_name,
@@ -570,7 +571,7 @@ class MLBIngestionClient:
             )
             return False, {}
 
-        result: dict[int, dict] = {}
+        result: dict[int, dict[str, Any]] = {}
         for date_block in data.get("dates", []):
             for game in date_block.get("games", []):
                 game_pk = game.get("gamePk")
@@ -617,7 +618,7 @@ class MLBIngestionClient:
         self,
         game_date: str,
         session_id: str | None = None,
-    ) -> tuple[bool, dict[int, dict]]:
+    ) -> tuple[bool, dict[int, dict[str, Any]]]:
         """Return confirmed batting lineups for all games on game_date.
 
         Returns (ok, {player_id: {"batting_slot": N, "game_pk": N, "team_id": N}}).
@@ -649,7 +650,7 @@ class MLBIngestionClient:
             )
             return False, {}
 
-        result: dict[int, dict] = {}
+        result: dict[int, dict[str, Any]] = {}
         for date_block in data.get("dates", []):
             for game in date_block.get("games", []):
                 game_pk = game.get("gamePk")

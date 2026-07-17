@@ -319,7 +319,7 @@ class T4GameStateBuilder:
         elapsed_min: float,
         home_score: int,
         away_score: int,
-        player_box_scores: dict[str, dict],  # player_id → {pts, reb, ast, min, fouls, is_active}
+        player_box_scores: dict[str, dict[str, Any]],  # player_id → {pts, reb, ast, min, fouls, is_active}
         last_event_player_id: Optional[str] = None,
     ) -> T4GameState:
         """
@@ -693,7 +693,7 @@ class T4LiveRunner:
     # Main event loop
     # ------------------------------------------------------------------
 
-    def start(self, game_state_iter) -> None:
+    def start(self, game_state_iter: Any) -> None:
         """
         Continuous evaluation loop: iterate T4GameState objects from a feed
         and call run_cycle() for each.
@@ -737,7 +737,7 @@ class T4LiveRunner:
     # Internal
     # ------------------------------------------------------------------
 
-    def _log_event(self, event_type: str, payload: dict) -> None:
+    def _log_event(self, event_type: str, payload: dict[str, Any]) -> None:
         """Log to C6 AuditLogger. Tolerates None audit (test mode)."""
         if self._audit is None:
             return

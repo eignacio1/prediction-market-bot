@@ -40,7 +40,7 @@ import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterator, Optional, Sequence
+from typing import Any, Iterator, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -165,7 +165,7 @@ class NBALiveFeed:
         self,
         game_id: str,
         cohort_ids: Sequence[int] = (),
-        p_t1_by_market: Optional[dict] = None,
+        p_t1_by_market: Optional[dict[str, Any]] = None,
         kill_switch_path: Path = KILL_SWITCH_PATH,
     ) -> None:
         self._game_id = game_id
