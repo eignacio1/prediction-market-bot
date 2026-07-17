@@ -237,6 +237,10 @@ def _write_report(
 def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     logger = AuditLogger(AUDIT_LOG_PATH, min_severity="INFO")
+    # T-213/GG-060 edge-decision classification sink (T2 parity with T1/T4) —
+    # see risk.summarize_edge_run(). Without this, a 0-bet T2 run is
+    # indistinguishable between "no edge today" and "pipeline silently died."
+    edge_logger = AuditLogger(LOG_DIR / "audit_mlb_t2_edge_decisions.jsonl", min_severity="INFO")
 
     print(f"\n[PIPE-05.5-MLB T2] MLB same-day lineup overlay — {GAME_DATE} {RUN_TIME}Z")
     print(f"Session: {SESSION_ID}")
@@ -345,6 +349,7 @@ def main() -> None:
         kelly_fraction=T2_KELLY,
         initial_bankroll=_initial_bankroll,
         min_bet_usd=MIN_BET_PAPER,
+        edge_logger=edge_logger,
     )
 
     # Open tickers for idempotency guard
@@ -553,6 +558,7 @@ def main() -> None:
                         kelly_fraction=T2_KELLY,
                         initial_bankroll=_initial_bankroll,
                         min_bet_usd=MIN_BET_PAPER,
+                        edge_logger=edge_logger,
                     )
 
         result_rec = {
