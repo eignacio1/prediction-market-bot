@@ -107,7 +107,10 @@ configured, until something calls `record_forecast_outcome()` per resolved bet a
 then `check_and_alert()`. This is a distinct problem from GG-044 (wrong baseline
 value) — GG-044 is about to be resolved as "the configured value is now right for
 MLB"; whether the alarm ever runs at all is a separate, newly-discovered gap.
-Registered separately as **GG-124** rather than folded into this ADR's scope, since
+Registered separately as **GG-125** (originally registered in-session as "GG-124",
+renumbered at merge time due to a collision with an independent already-merged
+upstream session's own GG-124 — see `DECISION_LOG.md` 2026-07-17 Numbering note)
+rather than folded into this ADR's scope, since
 wiring `record_forecast_outcome()`/`check_and_alert()` into a live per-resolution
 call path is materially larger work than this ADR's mandate (deriving/wiring a
 baseline value) and deserves its own sign-off.
@@ -117,7 +120,7 @@ baseline value) and deserves its own sign-off.
 - Does not touch NBA's baselines or NBA instantiation sites.
 - Does not change `_HARD_LIMITS` in `risk.py` or any Kelly/exposure constant.
 - Does not wire `record_forecast_outcome()`/`check_and_alert()` into any production
-  pipeline — see GG-124 above.
+  pipeline — see GG-125 above.
 - Does not change `run_mlb_calib_monitor.py`'s own `ECE_THRESHOLD=0.05` (ADR-0027
   policy value, already sport-agnostic) — that script is a separate temperature-
   derivation/ECE-diagnosis tool, not the C7 `SystemMonitor` this ADR concerns; only
@@ -125,7 +128,7 @@ baseline value) and deserves its own sign-off.
 
 ## Evidence / reproducibility
 
-- Governing gap: GG-044, GG-124 (new) — `03_DECISIONS/GOVERNANCE_GAP_LOG.md`.
+- Governing gap: GG-044, GG-125 (new, renumbered from GG-124 at merge time) — `03_DECISIONS/GOVERNANCE_GAP_LOG.md`.
 - Proposal: `00_ADMIN/APR-0026_mlb-native-monitoring-baselines.md`.
 - Source data: `logs/paper_portfolio_mlb.json` (VPS, pulled 2026-07-16), n=261
   resolved MLB positions, t∈{1,2}.

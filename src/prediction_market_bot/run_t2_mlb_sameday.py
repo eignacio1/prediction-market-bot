@@ -238,6 +238,25 @@ def _write_report(
 def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     logger = AuditLogger(AUDIT_LOG_PATH, min_severity="INFO")
+    # T-213/GG-060 edge-decision classification sink (T2 parity with T1/T4) —
+    # see risk.summarize_edge_run(). Without this, a 0-bet T2 run is
+    # indistinguishable between "no edge today" and "pipeline silently died."
+    #
+    # CAVEAT (found T-375, verified against real 2026-07-16 T2 production
+    # output where 4/4 forecasts were PASS): T2 applies its own EDGE_YES
+    # pre-filter (`direction = "YES" if net_edge > EDGE_YES else "PASS"`,
+    # below) BEFORE calling engine.evaluate_forecast() — only non-PASS
+    # forecasts reach C4 and get an edge_decision record. A legitimate day
+    # where every forecast is PASS at T2's own pre-filter will show
+    # total_evaluations=0 in summarize_edge_run(), which that function
+    # classifies as PIPELINE_BROKEN — a false positive for T2 specifically.
+    # T1 and T4 do not have this gap (they send every forecast to C4 and let
+    # C4's own edge_signal determine accept/reject). Do not treat T2's
+    # total_evaluations==0 as pipeline failure without first checking
+    # t2_evaluated in the run's own report JSON. Flagged, not fixed here —
+    # widening the sink to also cover T2's pre-filter PASS population is a
+    # scope decision for Earl, not made unilaterally in this pass.
+    edge_logger = AuditLogger(LOG_DIR / "audit_mlb_t2_edge_decisions.jsonl", min_severity="INFO")
 
     print(f"\n[PIPE-05.5-MLB T2] MLB same-day lineup overlay — {GAME_DATE} {RUN_TIME}Z")
     print(f"Session: {SESSION_ID}")
@@ -346,6 +365,7 @@ def main() -> None:
         kelly_fraction=T2_KELLY,
         initial_bankroll=_initial_bankroll,
         min_bet_usd=MIN_BET_PAPER,
+        edge_logger=edge_logger,
     )
 
     # Open tickers for idempotency guard
@@ -554,6 +574,7 @@ def main() -> None:
                         kelly_fraction=T2_KELLY,
                         initial_bankroll=_initial_bankroll,
                         min_bet_usd=MIN_BET_PAPER,
+                        edge_logger=edge_logger,
                     )
 
         result_rec = {

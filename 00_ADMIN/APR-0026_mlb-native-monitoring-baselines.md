@@ -77,3 +77,4 @@ asks for a decision, not a specific answer.
 | 2026-07-15 | Drafted, submitted PENDING | GG-burndown-even session (even-numbered gap sweep) |
 | 2026-07-16 | ACCEPTED — "Adopt as proposed", in-session directive | Earl Ignacio |
 | 2026-07-16 | Implemented via ADR-0046: `BRIER_BASELINE_MLB=0.2190`/`ECE_BASELINE_MLB=0.0680` (n=261) derived and wired into `run_mlb_paper_trade.py`/`run_resolve_mlb.py`; calib_monitor cron enabled; GG-044 closed RESOLVED; GG-124 registered as a distinct follow-on gap (dead C7 alarm-ladder finding) | GG-easy-sweep session (T-374) |
+| 2026-07-17 | Renumbered at merge time: the in-session "GG-124" collided with an independent already-merged upstream session's own GG-124 — this session's gap is now **GG-125** (project renumbering precedent; unmerged side renumbers). See `DECISION_LOG.md` Numbering note. | GG-easy-sweep session (T-374) |
