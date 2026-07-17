@@ -28,6 +28,7 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from prediction_market_bot.c8_dashboard.dashboard import (
+    compute_data_quality_stats,
     compute_t4_contamination_stats,
     compute_t4_funnel_stats,
     compute_t4_reentry_stats,
@@ -41,6 +42,7 @@ from prediction_market_bot.c8_dashboard.dashboard import (
     read_portfolio,
     render_alert_feed,
     render_dashboard,
+    render_data_quality_panel,
     render_drift_panel,
     render_portfolio_panel,
     render_system_health,
@@ -1133,3 +1135,229 @@ class TestRenderDashboardWithPanel6:
         result = render_dashboard(_make_health(), [])
         for i in range(1, 7):
             assert f"PANEL {i}" in result
+
+
+# ---------------------------------------------------------------------------
+# compute_data_quality_stats / render_data_quality_panel (Panel 7, GG-059 item 3)
+# ---------------------------------------------------------------------------
+
+
+def _make_dq_violation(
+    source_id: str = "MLB_FEATURE_CSV_CONTRACT",
+    check_type: str = "cardinality_floor",
+    severity: str = "HALT",
+    reason: str = "row count 0 is below contract minimum 50",
+    row_count: int = 0,
+    component: str = "PIPE-05",
+    timestamp: str = "2026-07-17T12:00:00.000Z",
+) -> dict:
+    return _make_entry(
+        component=component,
+        event_type="data_contract_violation",
+        severity="CRITICAL" if severity == "HALT" else "WARNING",
+        timestamp=timestamp,
+        payload={
+            "source_id": source_id,
+            "check_type": check_type,
+            "severity": severity,
+            "reason": reason,
+            "row_count": row_count,
+        },
+    )
+
+
+def _make_dq_ok(
+    source_id: str = "MLB_PITCHER_CONTRACT",
+    row_count: int = 88,
+    component: str = "T187A",
+    timestamp: str = "2026-07-17T09:00:00.000Z",
+) -> dict:
+    return _make_entry(
+        component=component,
+        event_type="data_contract_ok",
+        severity="DEBUG",
+        timestamp=timestamp,
+        payload={"source_id": source_id, "row_count": row_count},
+    )
+
+
+class TestComputeDataQualityStats:
+    @pytest.mark.unit
+    def test_empty_input(self):
+        stats = compute_data_quality_stats([])
+        assert stats["n_sources"] == 0
+        assert stats["n_halt"] == 0
+        assert stats["n_warn"] == 0
+        assert stats["recent_failures"] == []
+
+    @pytest.mark.unit
+    def test_ignores_unrelated_event_types(self):
+        entries = [_make_entry(event_type="forecast_emitted", payload={"p_estimate": 0.5})]
+        stats = compute_data_quality_stats(entries)
+        assert stats["n_sources"] == 0
+
+    @pytest.mark.unit
+    def test_clean_pass_recorded_as_ok(self):
+        stats = compute_data_quality_stats([_make_dq_ok()])
+        assert stats["n_sources"] == 1
+        rec = stats["per_source"]["MLB_PITCHER_CONTRACT"]
+        assert rec["n_ok"] == 1
+        assert rec["n_halt"] == 0
+        assert rec["last_row_count"] == 88
+        assert rec["pipeline_id"] == "T187A"
+
+    @pytest.mark.unit
+    def test_halt_and_warn_bucketed_separately(self):
+        entries = [
+            _make_dq_violation(source_id="A", severity="HALT"),
+            _make_dq_violation(source_id="B", severity="WARN", check_type="schema_unexpected_column"),
+        ]
+        stats = compute_data_quality_stats(entries)
+        assert stats["n_halt"] == 1
+        assert stats["n_warn"] == 1
+        assert stats["per_source"]["A"]["n_halt"] == 1
+        assert stats["per_source"]["B"]["n_warn"] == 1
+
+    @pytest.mark.unit
+    def test_worst_severity_wins_over_later_clean_sibling_event(self):
+        # Same source_id: a HALT failure and, moments later in the log, an
+        # unrelated OK pass for a *different* run should not erase the HALT
+        # from this window's per-source view — "worst seen" is the contract.
+        entries = [
+            _make_dq_violation(source_id="X", severity="HALT", timestamp="2026-07-17T10:00:00.000Z"),
+            _make_dq_ok(source_id="X", timestamp="2026-07-17T11:00:00.000Z"),
+        ]
+        stats = compute_data_quality_stats(entries)
+        rec = stats["per_source"]["X"]
+        assert rec["n_halt"] == 1
+        assert rec["n_ok"] == 1
+
+    @pytest.mark.unit
+    def test_date_filter_excludes_other_days(self):
+        entries = [_make_dq_violation(timestamp="2026-07-16T12:00:00.000Z")]
+        stats = compute_data_quality_stats(entries, game_date="2026-07-17")
+        assert stats["n_sources"] == 0
+        assert stats["n_halt"] == 0
+
+    @pytest.mark.unit
+    def test_recent_failures_capped_and_sorted(self):
+        entries = [
+            _make_dq_violation(source_id=f"S{i}", timestamp=f"2026-07-17T{i:02d}:00:00.000Z")
+            for i in range(12)
+        ]
+        stats = compute_data_quality_stats(entries)
+        assert len(stats["recent_failures"]) == 8
+        # Newest-timestamp failures retained, in ascending order.
+        assert stats["recent_failures"][0]["source_id"] == "S4"
+        assert stats["recent_failures"][-1]["source_id"] == "S11"
+
+    @pytest.mark.unit
+    def test_merged_sources_from_two_logs(self):
+        # Mirrors main()'s merge of the main audit log + generate_features.jsonl.
+        main_log = [_make_dq_violation(source_id="MLB_FEATURE_CSV_CONTRACT", severity="HALT")]
+        feature_gen_log = [_make_dq_ok(source_id="MLB_PITCHER_CONTRACT")]
+        stats = compute_data_quality_stats(main_log + feature_gen_log)
+        assert stats["n_sources"] == 2
+        assert "MLB_FEATURE_CSV_CONTRACT" in stats["per_source"]
+        assert "MLB_PITCHER_CONTRACT" in stats["per_source"]
+
+
+class TestRenderDataQualityPanel:
+    @pytest.mark.unit
+    def test_degrades_gracefully_on_empty_input(self):
+        # Must not raise — same "missing data degrades, never crashes" contract
+        # as every other panel in this module.
+        lines = render_data_quality_panel(entries=[], game_date="2026-07-17")
+        text = "\n".join(lines)
+        assert "PANEL 7" in text
+        assert "no data_contract_violation/data_contract_ok events" in text.lower()
+
+    @pytest.mark.unit
+    def test_halt_failure_shows_warning_marker(self):
+        lines = render_data_quality_panel(
+            entries=[_make_dq_violation(severity="HALT")],
+            game_date="2026-07-17",
+        )
+        text = "\n".join(lines)
+        assert "HALT FAILURES DETECTED" in text
+        assert "[HALT]" in text
+
+    @pytest.mark.unit
+    def test_all_ok_sources_show_ok_tag_no_alarm(self):
+        lines = render_data_quality_panel(
+            entries=[_make_dq_ok()],
+            game_date="2026-07-17",
+        )
+        text = "\n".join(lines)
+        assert "HALT FAILURES DETECTED" not in text
+        assert "[ OK ]" in text
+
+    @pytest.mark.unit
+    def test_recent_failures_section_lists_reason(self):
+        lines = render_data_quality_panel(
+            entries=[_make_dq_violation(reason="row count 0 is below contract minimum 50")],
+            game_date="2026-07-17",
+        )
+        text = "\n".join(lines)
+        assert "Recent failures:" in text
+        # Box width truncates long lines, so check a prefix that survives padding.
+        assert "cardinality" in text
+
+
+class TestRenderDashboardWithPanel7:
+    @pytest.mark.unit
+    def test_panel_7_appears_by_default(self):
+        result = render_dashboard(_make_health(), [])
+        assert "PANEL 7" in result
+
+    @pytest.mark.unit
+    def test_panel_7_omitted_when_disabled(self):
+        result = render_dashboard(_make_health(), [], show_data_quality=False)
+        assert "PANEL 7" not in result
+
+    @pytest.mark.unit
+    def test_all_seven_panels_present_by_default(self):
+        result = render_dashboard(_make_health(), [])
+        for i in range(1, 8):
+            assert f"PANEL {i}" in result
+
+    @pytest.mark.unit
+    def test_data_quality_entries_flow_through_to_panel(self):
+        result = render_dashboard(
+            _make_health(),
+            [],
+            game_date="2026-07-17",
+            data_quality_entries=[_make_dq_violation(severity="HALT")],
+        )
+        assert "HALT FAILURES DETECTED" in result
+
+
+class TestMainCliDataQuality:
+    @pytest.mark.unit
+    def test_main_merges_feature_gen_log_into_panel_7(self, tmp_path, capsys):
+        log = tmp_path / "audit.jsonl"
+        _write_jsonl(log, [_make_dq_violation(source_id="MLB_FEATURE_CSV_CONTRACT", severity="HALT")])
+        feature_gen = tmp_path / "generate_features.jsonl"
+        _write_jsonl(feature_gen, [_make_dq_ok(source_id="MLB_PITCHER_CONTRACT")])
+        main([
+            "--log-path", str(log),
+            "--log-dir", str(tmp_path),
+            "--feature-gen-log-path", str(feature_gen),
+            "--game-date", "2026-07-17",
+        ])
+        out = capsys.readouterr().out
+        assert "MLB_FEATURE_CSV_CONTRACT" in out
+        assert "MLB_PITCHER_CONTRACT" in out
+        assert "HALT FAILURES DETECTED" in out
+
+    @pytest.mark.unit
+    def test_main_no_data_quality_flag_omits_panel_7(self, tmp_path, capsys):
+        log = tmp_path / "audit.jsonl"
+        log.write_text("")
+        main([
+            "--log-path", str(log),
+            "--log-dir", str(tmp_path),
+            "--no-data-quality",
+        ])
+        out = capsys.readouterr().out
+        assert "PANEL 7" not in out
