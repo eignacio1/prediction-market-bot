@@ -1,7 +1,20 @@
 # Session Handoff — 2026-07-16T06:00Z
 
 **Trigger:** Operator-initiated ("Terminal 2 — GG-105 investigation") session, closing at natural task completion.
-**Last commit:** `a488815` (session branch `session/20260716T052614Z-gg105-investigation`) — not yet merged to `main`; nav-file updates in this handoff's own commit follow.
+**Last commit:** `c854900` (merged to `main` via PR #34 then PR #35 — see closure update below). Session branch `session/20260716T052614Z-gg105-investigation` deleted (local + origin); isolated worktree retired.
+
+---
+
+## Update — final Step 8 close-out (2026-07-16T~22:40 local)
+
+Step 8 required two merge-reconciliation passes, not one, because `origin/main` advanced twice during this session's own merge window:
+
+1. **PR #34** (core GG-105 findings, T-377-labeled at the time) hit a merge conflict against a freshly-landed T-376/GG-091 close-out commit (`b219d8c`). Resolved via 4-file conflict merge (`PLAN.md`, `TODO_NEXT.md`, `MEMORY_BANK.md`, `OPERATOR_DIGEST_20260716.md`), full suite re-verified green (2721 passed/29 skipped), merged as `47c82dc`.
+2. Immediately after that merge, a fresh fetch revealed a **second, independent T-ID collision**: a concurrent session ("GG-045-depth-analysis") had claimed the same "T-377" via commit `4e95b11`, which landed on `origin/main` 4 minutes *before* PR #34's own merge commit (confirmed via `git log --format=%cI` on both commits and via `47c82dc`'s merge-parent listing `4e95b11` directly). Per this repo's established first-to-land precedent, the earlier landing keeps the ID — so this session's own content was renumbered **T-377 → T-378** across all 8 touched nav/decision files, plus an append-only resolution note in `SESSION_CLAIMS.md` (no history rows edited, no filenames renamed). Landed via **PR #35**, merged as `c854900`.
+
+Net result: this single task went through three ID assignments (T-375 self-assigned → collided, renumbered T-377 → collided again, renumbered **T-378**, now canonical) across two separate concurrent-session collisions at the same Step 8 boundary — a byproduct of high concurrent-session density on this repo during this window, fully documented, not a process failure requiring follow-up beyond what's already logged.
+
+`main` confirmed fast-forwarded past both merges; local working directory synced clean; worktree removed via `scripts/end_session_worktree.sh`; branch deleted local + origin. No live code, model, or trading logic touched at any point in this closure pass.
 
 ---
 
