@@ -263,6 +263,52 @@ if results:
           "span >= 14d. See T338_CLEAN_N_VS_N_STAR_MEMO.md.)")
 EOF
 
+# --- GG-046: T4 commercial-gate threshold-crossing auto-flag (T-375) ---
+# Two independent thresholds bear on T4M-PROJ's commercial-gate status:
+#   (a) legacy ADR-0024 Tier 2 flat floor, n>=500 (raw_n, single-sport) — the
+#       pre-APR-0024 heuristic; not the current governing standard but still
+#       a milestone worth surfacing since GG-004's own history is written in
+#       these terms.
+#   (b) APR-0024 n* (variance-derived, clean_n-based) — the current governing
+#       standard; computed above and available as results["T4M-PROJ"].
+# Prior to this check, crossing either threshold depended on a human
+# remembering to re-pull clean_n by hand (GG-046, last done 2026-07-11,
+# already stale by the time GG-046 was re-examined 2026-07-16). This makes
+# both checks automatic and part of every session's mandatory scan output.
+python3 - <<'EOF'
+import sys
+from pathlib import Path
+sys.path.insert(0, "scripts")
+try:
+    from run_power_calc import run_all_bands
+    results = run_all_bands(
+        Path("logs/.vps_portfolio_cache_mlb.json"),
+        Path("logs/t4_mlb_resolved_ledger.jsonl"),
+        0.05, 0.95,
+    )
+    r = results.get("T4M-PROJ")
+except Exception as e:
+    r = None
+    print(f"  GG-046 threshold check: could not compute — {e}")
+if r:
+    raw_n = r["raw_n"]
+    tier2_crossed = raw_n >= 500
+    nstar_crossed = r["status"] == "COMPUTED" and r.get("met")
+    if tier2_crossed or nstar_crossed:
+        print("")
+        print("  *** GG-046 ALERT: T4M-PROJ has crossed a commercial-validation")
+        print("      sample threshold. DO NOT silently re-run EXP-T4-01 -- register")
+        print("      the decision first (see GOVERNANCE_GAP_LOG.md GG-046). ***")
+        if tier2_crossed:
+            print(f"      - legacy ADR-0024 Tier 2 floor (raw_n>=500): raw_n={raw_n} -- CROSSED")
+        if nstar_crossed:
+            print(f"      - APR-0024 n* (clean_n>=n*): clean_n={r['clean_n']} n*={r['n_star']} -- MET")
+    else:
+        nstar_txt = (f"n*={r['n_star']} (clean_n={r['clean_n']}, needs {r['gap_to_n_star']} more)"
+                     if r["status"] == "COMPUTED" else f"n* not computable ({r['status']})")
+        print(f"  GG-046: T4M-PROJ still short on both thresholds -- raw_n={raw_n}/500 (legacy Tier 2), {nstar_txt}.")
+EOF
+
 echo ""
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
