@@ -81,6 +81,7 @@ from prediction_market_bot.c7_monitoring.monitor import (
     ECE_BASELINE_MLB,
     SystemMonitor,
 )
+from typing import Any
 
 SESSION_ID        = f"RESOLVE-MLB-{uuid.uuid4().hex[:8].upper()}"
 GAME_DATE         = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
@@ -385,7 +386,7 @@ def _resolve_pool(
         return 0, n_open
 
     print(f"[{pool_label}] {len(pending)} position(s) eligible (game_date < {today})...")
-    resolved: list[dict] = []
+    resolved: list[dict[str, Any]] = []
 
     for pos in pending:
         player_id   = int(pos.get("player_id", 0))
@@ -534,7 +535,7 @@ def main() -> None:
 
     # ---- T4 pool (T-201) ----
     resolved_t4 = still_open_t4 = 0
-    summary_t4: dict = {}
+    summary_t4: dict[str, Any] = {}
     if T4_PORTFOLIO_PATH.exists():
         trader_t4 = PaperTrader(T4_PORTFOLIO_PATH, logger)
         resolved_t4, still_open_t4 = _resolve_pool(

@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import math
 import random
+from typing import Any
 
 EPS = 1e-9
 
@@ -99,7 +100,7 @@ def irls_logistic(xs: list[float], ys: list[int], iters: int = 50) -> tuple[floa
 
 # ── reliability / scoring ───────────────────────────────────────────────────────
 
-def reliability(recs: list[dict], bins: int) -> list[dict]:
+def reliability(recs: list[dict[str, Any]], bins: int) -> list[dict[str, Any]]:
     """Equal-width model_p bins -> (n, mean_forecast, empirical_rate)."""
     edges = [i / bins for i in range(bins + 1)]
     rows = []
@@ -119,7 +120,7 @@ def reliability(recs: list[dict], bins: int) -> list[dict]:
     return rows
 
 
-def brier_murphy(recs: list[dict], bins: int) -> dict:
+def brier_murphy(recs: list[dict[str, Any]], bins: int) -> dict[str, Any]:
     """Brier score and its Murphy 3-component decomposition.
 
     The identity REL - RES + UNC == *binned* Brier holds exactly (forecasts
@@ -162,7 +163,7 @@ def brier_murphy(recs: list[dict], bins: int) -> dict:
             "recompose_ok": abs(decomposition - brier_binned_direct) < 1e-9}
 
 
-def ece(recs: list[dict], bins: int) -> float:
+def ece(recs: list[dict[str, Any]], bins: int) -> float:
     n = len(recs)
     tot = 0.0
     for row in reliability(recs, bins):
@@ -172,7 +173,7 @@ def ece(recs: list[dict], bins: int) -> float:
     return tot
 
 
-def calib_fit_ci(recs: list[dict], boot: int, rng: random.Random) -> dict:
+def calib_fit_ci(recs: list[dict[str, Any]], boot: int, rng: random.Random) -> dict[str, Any]:
     xs = [logit(r["_model_p"]) for r in recs]
     ys = [r["_event"] for r in recs]
     a, b = irls_logistic(xs, ys)
@@ -183,7 +184,7 @@ def calib_fit_ci(recs: list[dict], boot: int, rng: random.Random) -> dict:
         aa, bb = irls_logistic([xs[i] for i in idx], [ys[i] for i in idx])
         bs_a.append(aa); bs_b.append(bb)
     bs_a.sort(); bs_b.sort()
-    def ci(v): return (v[int(0.025 * boot)], v[min(int(0.975 * boot), boot - 1)])
+    def ci(v: list[float]) -> tuple[float, float]: return (v[int(0.025 * boot)], v[min(int(0.975 * boot), boot - 1)])
     la, ha = ci(bs_a); lb, hb = ci(bs_b)
     return {"intercept_a": a, "slope_b": b,
             "a_ci": [la, ha], "b_ci": [lb, hb],

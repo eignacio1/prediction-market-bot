@@ -75,6 +75,7 @@ if str(_SRC_ROOT) not in sys.path:
 from prediction_market_bot.backtester import Backtester, BacktestWindowDef  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.ingestion import NBAIngestionClient  # noqa: E402
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Snapshot IDs
@@ -162,7 +163,7 @@ def run_backtest(
     raw_csv: Path | None,
     windows_to_run: list[str],
     dry_run: bool = False,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """
     Execute walk-forward backtesting across the specified windows.
 

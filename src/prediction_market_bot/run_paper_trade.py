@@ -39,6 +39,7 @@ import sys
 import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import requests
 
@@ -370,7 +371,7 @@ def main() -> None:
         cohort_lookup[norm] = row
 
     # Group active quoted markets by Kalshi player name
-    markets_by_player: dict[str, list] = defaultdict(list)
+    markets_by_player: dict[str, list[Any]] = defaultdict(list[Any])
     for m in snap.markets:
         if m.status == "active" and m.has_live_quotes:
             markets_by_player[m.player_name].append(m)
@@ -750,8 +751,8 @@ def main() -> None:
 
 
 def _scan_and_log_locks(
-    markets: list,
-    active_venues: list,
+    markets: list[Any],
+    active_venues: list[Any],
     logger: AuditLogger,
     session_id: str,
 ) -> None:
@@ -786,7 +787,7 @@ def _scan_and_log_locks(
     )
 
 
-def _write_report(orders: list, bankroll: float, trader: PaperTrader) -> None:
+def _write_report(orders: list[Any], bankroll: float, trader: PaperTrader) -> None:
     summary = trader.summary()
     report = {
         "session_id": SESSION_ID, "game_date": GAME_DATE, "run_at": _utc_now(),

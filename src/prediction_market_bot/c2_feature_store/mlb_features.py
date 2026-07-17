@@ -52,7 +52,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -235,7 +235,7 @@ def _compute_rolling_batter_features(player_df: pd.DataFrame, window: int, min_p
 # ---------------------------------------------------------------------------
 
 
-def _get_opp_sp_id(row: pd.Series, game_starters: dict[int, dict]) -> int | None:
+def _get_opp_sp_id(row: pd.Series, game_starters: dict[int, dict[str, Any]]) -> int | None:
     """Return the opposing starting pitcher's player_id for a batter row."""
     game_id = row.get("game_id")
     if game_id is None:
@@ -247,7 +247,7 @@ def _get_opp_sp_id(row: pd.Series, game_starters: dict[int, dict]) -> int | None
     return starter_info.get("away_sp_id") if is_home else starter_info.get("home_sp_id")
 
 
-def _get_venue_name(game_id: int | None, game_starters: dict[int, dict]) -> str | None:
+def _get_venue_name(game_id: int | None, game_starters: dict[int, dict[str, Any]]) -> str | None:
     """Return the venue name for a game_id from game_starters."""
     if game_id is None:
         return None
@@ -286,7 +286,7 @@ class MLBFeatureStore:
     def _log(
         self,
         event: str,
-        payload: dict,
+        payload: dict[str, Any],
         severity: str = "INFO",
         session_id: str | None = None,
         feature_run_id: str | None = None,
@@ -303,7 +303,7 @@ class MLBFeatureStore:
     def compute_features_bulk(
         self,
         batter_game_log_df: pd.DataFrame,
-        game_starters: dict[int, dict],
+        game_starters: dict[int, dict[str, Any]],
         pitcher_store: "MLBPitcherStatsStore",
         team_store: "MLBTeamStatsStore",
         session_id: str | None = None,

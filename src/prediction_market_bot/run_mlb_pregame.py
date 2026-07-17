@@ -73,6 +73,7 @@ from prediction_market_bot.c3_forecasting.calibration import calibrate_probabili
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -143,7 +144,7 @@ def _build_mlb_feature_vector(
     row: pd.Series,
     feature_names: list[str],
     col_medians: np.ndarray,
-    sp_override: dict | None = None,
+    sp_override: dict[str, Any] | None = None,
 ) -> np.ndarray:
     vals: list[float] = []
     for col in feature_names:
@@ -164,7 +165,7 @@ def _build_live_sp_override(
     client: MLBIngestionClient,
     logger: AuditLogger,
     session_id: str,
-) -> dict[int, dict]:
+) -> dict[int, dict[str, Any]]:
     ok, starters = client.fetch_game_starters(today_iso, session_id)
     if not ok or not starters:
         return {}
@@ -213,7 +214,7 @@ def _build_live_sp_override(
         session_id=session_id,
     )
 
-    result: dict[int, dict] = {}
+    result: dict[int, dict[str, Any]] = {}
     for pid, sp_id in player_sp_map.items():
         is_known = player_sp_known.get(pid, False)
         era = pitcher_store.get_era_l5(sp_id, today_iso) if sp_id is not None else None
@@ -327,7 +328,7 @@ def main() -> None:
     # 3. Build live SP overlay (T-187G pattern)
     # ------------------------------------------------------------------
     mlb_client = MLBIngestionClient(logger, SNAPSHOT_ID)
-    sp_override_by_player: dict[int, dict] = {}
+    sp_override_by_player: dict[int, dict[str, Any]] = {}
     try:
         sp_override_by_player = _build_live_sp_override(
             today_iso=GAME_DATE_ISO,
@@ -380,9 +381,9 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 5. Compute forecasts — market-first
     # ------------------------------------------------------------------
-    forecasts: list[dict] = []
+    forecasts: list[dict[str, Any]] = []
 
-    markets_by_player: dict[str, list] = defaultdict(list)
+    markets_by_player: dict[str, list[Any]] = defaultdict(list[Any])
     for m in live:
         if m.status == "active" and m.has_live_quotes:
             markets_by_player[m.player_name].append(m)

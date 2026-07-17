@@ -40,6 +40,7 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import joblib
 import numpy as np
@@ -247,7 +248,7 @@ def main() -> None:
         cohort_lookup[norm] = row
 
     # Group active quoted markets by Kalshi player name
-    markets_by_player: dict[str, list] = defaultdict(list)
+    markets_by_player: dict[str, list[Any]] = defaultdict(list[Any])
     for m in live:
         if m.status == "active" and m.has_live_quotes:
             markets_by_player[m.player_name].append(m)

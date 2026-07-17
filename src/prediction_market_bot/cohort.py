@@ -25,7 +25,7 @@ Cohort v2 (80 players):  Phase 7 expansion — added 2025-26 playoff coverage (T
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import Any, TypedDict
 
 
 class PlayerEntry(TypedDict):
@@ -204,7 +204,7 @@ def get_players_by_team(team_abbr: str) -> list[int]:
     return [pid for pid, e in COHORT.items() if e["team"] == team_abbr.upper()]
 
 
-def cohort_summary() -> dict:
+def cohort_summary() -> dict[str, Any]:
     """Return a summary dict for logging."""
     v1 = get_player_ids_v1()
     return {

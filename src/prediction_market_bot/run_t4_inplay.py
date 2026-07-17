@@ -51,7 +51,7 @@ import argparse
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 
 from prediction_market_bot.c3_forecasting.game_state_model import (
     KELLY_T4,
@@ -116,10 +116,10 @@ class T4RoutingResult:
     action: str            # "FIRE_STAGED" | "FIRE_BAYESIAN" | "FIRE_T5" | "NO_ACTION" | "KILL_SWITCH"
     reason: str
     signal: Optional[T4Signal | T5Signal]
-    staged_order: Optional[dict]
+    staged_order: Optional[dict[str, Any]]
     kelly_fraction: float
     timestamp_iso: str
-    pam_archetype: Optional[dict] = None  # GG-027: PAM register lookup; None if no snapshot or unclassified
+    pam_archetype: Optional[dict[str, Any]] = None  # GG-027: PAM register lookup; None if no snapshot or unclassified
 
 
 # ---------------------------------------------------------------------------
@@ -146,9 +146,9 @@ class T4EventLoop:
         game_state_model: GameStateModel,
         late_game_arithmetic: LateGameArithmetic,
         # Injected at Phase 8 activation — stubs for now:
-        risk_engine=None,    # C4 RiskEngine.evaluate_forecast()
-        venue_router=None,   # C5 VenueRouter.execute()
-        audit_logger=None,   # C6 AuditLogger.log_event()
+        risk_engine: Any = None,    # C4 RiskEngine.evaluate_forecast()
+        venue_router: Any = None,   # C5 VenueRouter.execute()
+        audit_logger: Any = None,   # C6 AuditLogger.log_event()
         archetype_register: QualitativeSignalStore | None = None,  # GG-027: PAM register
     ) -> None:
         self._store = staged_order_store
@@ -182,7 +182,7 @@ class T4EventLoop:
         )
 
     def _route_pre_staged(
-        self, event: GameStateEvent, staged_order: dict
+        self, event: GameStateEvent, staged_order: dict[str, Any]
     ) -> T4RoutingResult:
         """Strategy C/E path: fire pre-built order from StagedOrderStore."""
         logger.info(
@@ -256,7 +256,7 @@ class T4EventLoop:
         game_date = ts[:10]  # YYYY-MM-DD from ISO timestamp
 
         # PAM archetype register lookup (GG-027) — best-effort; never blocks routing
-        _pam: dict | None = None
+        _pam: dict[str, Any] | None = None
         if self._archetype_register is not None:
             try:
                 _pam = self._archetype_register.get_archetype(int(event.player_id), game_date)

@@ -48,7 +48,7 @@ import time
 import uuid
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import requests
 
@@ -147,7 +147,7 @@ def _parse_espn_clock(display_clock: str, period: int) -> float:
 
 def _espn_poll_once(
     espn_game_id: str,
-    name_to_pregame: dict[str, dict],  # {normalized_name: {player_id, ...}}
+    name_to_pregame: dict[str, dict[str, Any]],  # {normalized_name: {player_id, ...}}
 ) -> list[LivePlayerState]:
     """
     Fetch live boxscore from ESPN for one game.
@@ -316,7 +316,7 @@ _TRAJ_LOG_PATH   = _LOGS_DIR / "t4_position_trajectories.jsonl"  # EXP-019B empi
 # ---------------------------------------------------------------------------
 
 
-def _compute_t4_band_budget(portfolio: dict) -> float:
+def _compute_t4_band_budget(portfolio: dict[str, Any]) -> float:
     """
     T4 band budget = pool × T4_BAND_WEIGHT (ADR-0023).
     No RESERVE_MANDATE deduction — T4 pool is isolated capital, not the T1 bankroll.
@@ -337,7 +337,7 @@ def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
     return size_usd + min(0.0, exit_pnl)
 
 
-def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
+def _reconstruct_t4_ledger(portfolio: dict[str, Any], game_date: str) -> float:
     """
     Rebuild t4_deployed_game from portfolio state after a process restart
     (ADR-0022 restart safety — the G4 T4 process died mid-game; a fresh
@@ -368,7 +368,7 @@ def _reconstruct_t4_ledger(portfolio: dict, game_date: str) -> float:
 # Pregame context loader
 # ---------------------------------------------------------------------------
 
-def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dict[str, dict]]:
+def _load_pregame_context() -> tuple[dict[int, list[dict[str, Any]]], dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
     """
     Load the latest pregame JSON from logs/pregame_*.json.
 
@@ -391,9 +391,9 @@ def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dic
     raw = json.loads(path.read_text())
     forecasts = raw.get("forecasts", raw) if isinstance(raw, dict) else raw
 
-    by_player_id: dict[int, list[dict]] = {}
-    by_ticker: dict[str, dict] = {}
-    name_to_pregame: dict[str, dict] = {}
+    by_player_id: dict[int, list[dict[str, Any]]] = {}
+    by_ticker: dict[str, dict[str, Any]] = {}
+    name_to_pregame: dict[str, dict[str, Any]] = {}
 
     for fc in forecasts:
         pid = fc.get("player_id")
@@ -444,8 +444,8 @@ def _run_cycle(
     cycle_id: str,
     session_id: str,
     live_states: list[LivePlayerState],
-    live_prices: dict,              # {ticker: PlayerMarket}
-    pregame_by_player_id: dict,     # {player_id: [market_ctx, ...]}
+    live_prices: dict[str, Any],              # {ticker: PlayerMarket}
+    pregame_by_player_id: dict[str, Any],     # {player_id: [market_ctx, ...]}
     loop: T4EventLoop,
     engine_t4: RiskEngine,
     engine_t5: RiskEngine,

@@ -214,7 +214,7 @@ class KalshiOrder:
 # ---------------------------------------------------------------------------
 
 
-def _load_private_key(key_path: str):
+def _load_private_key(key_path: str) -> Any:
     """Load RSA private key from PEM file. Returns cryptography key object."""
     try:
         from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -232,7 +232,7 @@ def _load_private_key(key_path: str):
         )
 
 
-def _sign_request(private_key, timestamp_ms: str, method: str, path: str) -> str:
+def _sign_request(private_key: Any, timestamp_ms: str, method: str, path: str) -> str:
     """
     Produce base64-encoded RSA-PS256 signature for a Kalshi API request.
 
@@ -255,7 +255,7 @@ def _sign_request(private_key, timestamp_ms: str, method: str, path: str) -> str
     return base64.b64encode(signature).decode("utf-8")
 
 
-def _auth_headers(key_id: str, private_key, method: str, path: str) -> dict:
+def _auth_headers(key_id: str, private_key: Any, method: str, path: str) -> dict[str, Any]:
     """Build Kalshi authentication headers for a signed request."""
     timestamp_ms = str(int(time.time() * 1000))
     signature = _sign_request(private_key, timestamp_ms, method, path)
@@ -289,7 +289,7 @@ class KalshiMarketClient:
         ok, order = client.submit_order(ticker, side, size_usd, mid_price)
     """
 
-    def __init__(self, api_key_id: str, private_key=None) -> None:
+    def __init__(self, api_key_id: str, private_key: Any = None) -> None:
         if not api_key_id or len(api_key_id) < 10:
             raise ValueError("VENUE_API_KEY is missing or too short — check .env (NFR-05)")
         self._key_id = api_key_id
@@ -329,7 +329,7 @@ class KalshiMarketClient:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _get(self, path: str, params: dict | None = None, authenticated: bool = False) -> tuple[bool, Any]:
+    def _get(self, path: str, params: dict[str, Any] | None = None, authenticated: bool = False) -> tuple[bool, Any]:
         """GET with retry. Returns (ok, response_data).
 
         Unauthenticated (market data) → _price_discovery_url() always production.
@@ -371,7 +371,7 @@ class KalshiMarketClient:
                 return False, {"error": type(e).__name__, "detail": str(e)}
         return False, {"error": f"Max retries ({MAX_RETRIES}) exceeded"}
 
-    def _post(self, path: str, body: dict) -> tuple[bool, Any]:
+    def _post(self, path: str, body: dict[str, Any]) -> tuple[bool, Any]:
         """POST with RSA signing and exponential backoff on 429. Returns (ok, response_data)."""
         if not self._private_key:
             return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
@@ -396,7 +396,7 @@ class KalshiMarketClient:
         return False, {"error": f"transient error — max retries ({MAX_RETRIES}) exceeded"}
 
     @staticmethod
-    def _parse_market(raw: dict) -> PlayerMarket | None:
+    def _parse_market(raw: dict[str, Any]) -> PlayerMarket | None:
         try:
             ticker = raw.get("ticker", "")
             title = raw.get("title", "")
@@ -453,7 +453,7 @@ class KalshiMarketClient:
     # Public API — read-only (no RSA required)
     # ------------------------------------------------------------------
 
-    def check_connectivity(self) -> tuple[bool, dict]:
+    def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         """Verify connectivity. Does NOT require RSA key."""
         ok, data = self._get("/exchange/status")
         if not ok:
@@ -477,11 +477,11 @@ class KalshiMarketClient:
           SERIES_PLAYER_POINTS   (KXNBAPTS) — NBA points markets (default)
           SERIES_MLB_PLAYER_HITS (KXMLBHIT) — MLB hits markets
         """
-        all_raw: list[dict] = []
+        all_raw: list[dict[str, Any]] = []
         cursor: str | None = None
 
         while True:
-            params: dict = {
+            params: dict[str, Any] = {
                 "limit": page_size,
                 "status": status,
                 "series_ticker": series_ticker,
@@ -531,7 +531,7 @@ class KalshiMarketClient:
     # Public API — authenticated (RSA key required)
     # ------------------------------------------------------------------
 
-    def get_balance(self) -> tuple[bool, dict]:
+    def get_balance(self) -> tuple[bool, dict[str, Any]]:
         """
         Fetch portfolio balance from Kalshi. Requires RSA private key.
 
