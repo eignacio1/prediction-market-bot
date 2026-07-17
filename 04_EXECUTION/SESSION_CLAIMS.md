@@ -87,3 +87,4 @@
 | 2026-07-16T05:26:58Z | TBD | GG-105-investigation: T4M-PROJ anti-predictive confidence-vs-winrate pattern, diagnosis+proposal only, no live formula changes |
 | 2026-07-16T05:34:24Z | T-375 | GG-060 monitoring buildout (Phase 2/4 + T1/T4/T2 wiring) + GG-046 T4 commercial-gate re-check |
 | 2026-07-16T05:34:40Z | T-376 | GG-091 mypy remediation: categorize + fix lowest-risk category |
+| 2026-07-17T05:20:38Z | T-377 | GG-045-depth-analysis: Kalshi KXMLBHIT order book depth data collection + capital ceiling analysis (references pre-existing GG-045; prep/data-collection only, no C4 wiring) |
