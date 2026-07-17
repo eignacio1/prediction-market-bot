@@ -77,6 +77,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from typing import Any
 
 _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
@@ -194,7 +195,7 @@ def _load_kalshi_prices(csv_path: Path) -> pd.DataFrame | None:
 # Part A: Sensitivity sweep
 # ---------------------------------------------------------------------------
 
-def run_part_a(df: pd.DataFrame) -> dict:
+def run_part_a(df: pd.DataFrame) -> dict[str, Any]:
     """
     Sweep market_implied_prob from 0.40 to 0.60.
 
@@ -287,7 +288,7 @@ def run_part_a(df: pd.DataFrame) -> dict:
 # Part B: Historical Kalshi price validation
 # ---------------------------------------------------------------------------
 
-def run_part_b(df: pd.DataFrame, prices: pd.DataFrame) -> dict:
+def run_part_b(df: pd.DataFrame, prices: pd.DataFrame) -> dict[str, Any]:
     """
     For each TEST row with a matched Kalshi price, compute:
         edge_vs_market = p_estimate - kalshi_mid_price
@@ -337,7 +338,7 @@ def run_part_b(df: pd.DataFrame, prices: pd.DataFrame) -> dict:
     matched["injury_suspect"] = (matched["p_estimate"] - matched["kalshi_mid_price"]).abs() > 0.25
     n_injury = int(matched["injury_suspect"].sum())
 
-    def _analyze(subset: pd.DataFrame, label: str) -> dict:
+    def _analyze(subset: pd.DataFrame, label: str) -> dict[str, Any]:
         p_est = subset["p_estimate"].to_numpy(dtype=float)
         mip   = subset["kalshi_mid_price"].to_numpy(dtype=float)
         vig   = subset["kalshi_vig"].to_numpy(dtype=float)
@@ -473,7 +474,7 @@ def _load_portfolio_outcomes(portfolio_path: Path) -> pd.DataFrame:
     return df
 
 
-def run_part_b_live(pregame_dir: Path, portfolio_path: Path) -> dict:
+def run_part_b_live(pregame_dir: Path, portfolio_path: Path) -> dict[str, Any]:
     """
     Part B (Live): EV validation using pre-game JSON logs + resolved paper portfolio.
 
@@ -563,7 +564,7 @@ def run_part_b_live(pregame_dir: Path, portfolio_path: Path) -> dict:
     # -------------------------------------------------------------------
     # Aggregate analysis helper
     # -------------------------------------------------------------------
-    def _analyze_live(subset: pd.DataFrame, label: str) -> dict:
+    def _analyze_live(subset: pd.DataFrame, label: str) -> dict[str, Any]:
         p_est     = subset["p_estimate"].to_numpy(dtype=float)
         mip       = subset["mid_price_at_entry"].to_numpy(dtype=float)
         vig       = subset["vig_at_entry"].to_numpy(dtype=float)

@@ -58,6 +58,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import (
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
+from typing import Any
 
 EXP_ID     = "EXP-015"
 SESSION_ID = f"EXP-015-{uuid.uuid4().hex[:8].upper()}"
@@ -166,7 +167,7 @@ def load_test_bets(
     qs_csv: Path,
     qs_id: str,
     logger: AuditLogger,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """
     Refit LR on TRAIN, score TEST set, return actionable bets.
 
@@ -228,7 +229,7 @@ def load_test_bets(
 
 
 def simulate_t3_signal(
-    bet: dict,
+    bet: dict[str, Any],
     drift_std: float,
     rng: np.random.Generator,
 ) -> str:
@@ -252,7 +253,7 @@ def simulate_t3_signal(
     return "NEUTRAL"
 
 
-def compute_outcome_ev(bet: dict, signal: str) -> dict:
+def compute_outcome_ev(bet: dict[str, Any], signal: str) -> dict[str, Any]:
     """
     Apply P6 multi-band rules (from execution_bands_orchestrator._apply_t3_rules)
     to a single bet+signal.  Returns EV metrics relative to T1 baseline.
@@ -308,11 +309,11 @@ def compute_outcome_ev(bet: dict, signal: str) -> dict:
 
 
 def run_monte_carlo(
-    test_bets: list[dict],
+    test_bets: list[dict[str, Any]],
     drift_std: float,
     n_sims: int,
     rng: np.random.Generator,
-) -> dict:
+) -> dict[str, Any]:
     """
     Run N_SIMULATIONS of synthetic T3 signal draws and aggregate EV metrics.
 
@@ -377,7 +378,7 @@ def run_monte_carlo(
 
 
 def run_analytical_sensitivity(
-    test_bets: list[dict],
+    test_bets: list[dict[str, Any]],
     drift_std_values: list[float],
     n_sims: int,
     seed: int,

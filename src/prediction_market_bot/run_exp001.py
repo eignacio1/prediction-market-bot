@@ -46,6 +46,7 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -218,7 +219,7 @@ def compute_metrics(
     y_true: np.ndarray,
     y_prob: np.ndarray,
     set_name: str,
-) -> dict:
+) -> dict[str, Any]:
     """
     Compute Brier score, log loss, ECE, AUC-ROC for a prediction set.
 
@@ -287,7 +288,7 @@ def compute_metrics(
 # Null model
 # ---------------------------------------------------------------------------
 
-def compute_null_model_metrics(y_true: np.ndarray, set_name: str) -> dict:
+def compute_null_model_metrics(y_true: np.ndarray, set_name: str) -> dict[str, Any]:
     """
     Null model: constant prediction = market_implied_prob (0.50 in Phase 3).
     Brier score for the null model is the baseline to beat (ASM-002).
@@ -309,7 +310,7 @@ def run_experiment(
     dry_run: bool = False,
     ablation_v10: bool = False,
     source_csv: Path | None = None,
-) -> dict:
+) -> dict[str, Any]:
     """
     Execute the full EXP-001 pipeline and return a results summary dict.
 

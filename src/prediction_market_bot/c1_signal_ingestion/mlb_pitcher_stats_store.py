@@ -20,6 +20,7 @@ Population pattern
 from __future__ import annotations
 
 import pandas as pd
+from typing import Any
 
 DEFAULT_WINDOW = 5
 MIN_PERIODS = 2
@@ -141,7 +142,7 @@ class MLBPitcherStatsStore:
 
     def __contains__(self, pitcher_id: object) -> bool:
         try:
-            return int(pitcher_id) in self._store  # type: ignore[arg-type]
+            return int(pitcher_id) in self._store
         except (TypeError, ValueError):
             return False
 
@@ -153,8 +154,8 @@ class MLBPitcherStatsStore:
     # Cache serialization
     # ------------------------------------------------------------------
 
-    def to_cache_dict(self) -> dict[str, list[dict]]:
-        out: dict[str, list[dict]] = {}
+    def to_cache_dict(self) -> dict[str, list[dict[str, Any]]]:
+        out: dict[str, list[dict[str, Any]]] = {}
         for pid, df in self._store.items():
             records = df.copy()
             records["game_date"] = records["game_date"].astype(str)
@@ -162,7 +163,7 @@ class MLBPitcherStatsStore:
         return out
 
     @classmethod
-    def from_cache_dict(cls, cache: dict[str, list[dict]]) -> "MLBPitcherStatsStore":
+    def from_cache_dict(cls, cache: dict[str, list[dict[str, Any]]]) -> "MLBPitcherStatsStore":
         store = cls()
         for pid_str, records in cache.items():
             if not records:

@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from typing import Any
 
 
 # ---------------------------------------------------------------------------
@@ -204,7 +205,7 @@ def parse_ticker_opponent(ticker: str) -> str | None:
 def opp_adjusted_lambda(
     pts_mean: float,
     ticker: str,
-    team_store,  # TeamStatsStore | None — duck-typed to avoid package import cycle
+    team_store: Any,  # TeamStatsStore | None — duck-typed to avoid package import cycle
     game_date_iso: str,
 ) -> float:
     """

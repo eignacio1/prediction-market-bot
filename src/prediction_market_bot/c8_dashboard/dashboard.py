@@ -270,7 +270,7 @@ def _compute_portfolio_stats(portfolio: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _positions_for_date(positions: list[dict], date_str: str) -> list[dict]:
+def _positions_for_date(positions: list[dict[str, Any]], date_str: str) -> list[dict[str, Any]]:
     return [p for p in positions if p.get("game_date") == date_str]
 
 
@@ -392,7 +392,7 @@ def render_portfolio_panel(
 # ---------------------------------------------------------------------------
 
 
-def _player_breakdown(positions: list[dict], max_players: int = 5) -> str:
+def _player_breakdown(positions: list[dict[str, Any]], max_players: int = 5) -> str:
     counts: dict[str, int] = {}
     for p in positions:
         name = p.get("player_name") or "?"
@@ -612,7 +612,7 @@ def render_alert_feed(
     else:
         # Collapse consecutive runs of the same (component, event_type) pair.
         # Iterating newest-first so the displayed timestamp is the most recent.
-        deduped: list[tuple[dict, int]] = []
+        deduped: list[tuple[dict[str, Any], int]] = []
         for entry in reversed(alerts[-n:]):
             key = (entry.get("component"), entry.get("event_type"))
             if deduped and (
