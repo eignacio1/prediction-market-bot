@@ -17,7 +17,7 @@
 
 ## ⚠️ STRATEGIC DECISIONS THIS SESSION
 
-None — this was an explicitly diagnosis/proposal-only session per Hard Rule 3 and the operator's own session briefing. No live-formula change made, no threshold changed, no gate/milestone touched. The two substantive findings below are diagnostic conclusions, not decisions; both are logged in `DECISION_LOG.md` (2026-07-16, T-375 rows) per Hard Rule 7.
+None — this was an explicitly diagnosis/proposal-only session per Hard Rule 3 and the operator's own session briefing. No live-formula change made, no threshold changed, no gate/milestone touched. The two substantive findings below are diagnostic conclusions, not decisions; both are logged in `DECISION_LOG.md` (2026-07-16, T-377 rows) per Hard Rule 7.
 
 | Finding | Rationale | Canonical Reference | Owner |
 |---|---|---|---|
