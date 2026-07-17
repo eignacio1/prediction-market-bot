@@ -73,6 +73,7 @@ from prediction_market_bot.c2_feature_store.qualitative_amplifier import (
     QualitativeAmplifier, AMP_FEATURE_NAMES,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from typing import Any
 
 EXP_ID     = "EXP-011"
 SESSION_ID = f"EXP-011-{uuid.uuid4().hex[:8].upper()}"
@@ -168,7 +169,7 @@ def _fit_hgbc(X_df: pd.DataFrame, y: np.ndarray) -> CalibratedClassifierCV:
     cal.fit(X_df.to_numpy(dtype=float), y)
     return cal
 
-def _eval(model, X, y, name: str) -> dict:
+def _eval(model: Any, X: Any, y: Any, name: str) -> dict[str, Any]:
     t0 = time.monotonic()
     p = model.predict_proba(X)[:, 1]
     elapsed = time.monotonic() - t0

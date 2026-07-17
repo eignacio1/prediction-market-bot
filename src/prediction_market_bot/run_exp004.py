@@ -65,6 +65,7 @@ if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Config
@@ -164,7 +165,7 @@ def run_part_a(
     df: pd.DataFrame,
     feature_names: list[str],
     live_vig: float,
-) -> dict:
+) -> dict[str, Any]:
     """
     Train on TRAIN, predict on TEST, simulate trading at live vig.
 
@@ -284,7 +285,7 @@ def run_part_b(
     feature_names: list[str],
     snapshot: object,
     model: Pipeline,
-) -> dict:
+) -> dict[str, Any]:
     """
     For players in our cohort with active Kalshi markets today:
     - Get their most recent feature vector from test data
@@ -437,7 +438,7 @@ def main() -> None:
     snapshot = None
     live_vig = MEASURED_VIG_20260528
     avg_vig = MEASURED_VIG_20260528
-    quoted_markets: list = []
+    quoted_markets: list[Any] = []
 
     try:
         client = KalshiMarketClient.from_env()

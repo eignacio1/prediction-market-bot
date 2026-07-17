@@ -20,6 +20,7 @@ Populate via MLBIngestionClient.fetch_completed_games() output:
 from __future__ import annotations
 
 import pandas as pd
+from typing import Any
 
 DEFAULT_WINDOW = 10
 MIN_PERIODS = 3
@@ -74,7 +75,7 @@ class MLBTeamStatsStore:
         if games_df is None or games_df.empty:
             return store
 
-        team_logs: dict[str, list[dict]] = {}
+        team_logs: dict[str, list[dict[str, Any]]] = {}
         for _, row in games_df.iterrows():
             home_abbr = str(row.get("home_team_abbr", "")).upper()
             away_abbr = str(row.get("away_team_abbr", "")).upper()
@@ -174,8 +175,8 @@ class MLBTeamStatsStore:
     # Cache serialization (PIPE-02 → PIPE-03 caching pattern)
     # ------------------------------------------------------------------
 
-    def to_cache_dict(self) -> dict[str, list[dict]]:
-        out: dict[str, list[dict]] = {}
+    def to_cache_dict(self) -> dict[str, list[dict[str, Any]]]:
+        out: dict[str, list[dict[str, Any]]] = {}
         for team, df in self._store.items():
             records = df.copy()
             records["game_date"] = records["game_date"].astype(str)
@@ -183,7 +184,7 @@ class MLBTeamStatsStore:
         return out
 
     @classmethod
-    def from_cache_dict(cls, cache: dict[str, list[dict]]) -> "MLBTeamStatsStore":
+    def from_cache_dict(cls, cache: dict[str, list[dict[str, Any]]]) -> "MLBTeamStatsStore":
         store = cls()
         for team, records in cache.items():
             if not records:

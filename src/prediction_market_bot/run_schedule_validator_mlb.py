@@ -42,6 +42,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
+from typing import Any
 
 # ---------------------------------------------------------------------------
 PROJ_ROOT = Path(os.environ.get("PROJ", Path(__file__).resolve().parents[3]))
@@ -92,7 +93,7 @@ RESOLUTION_FIRE_M: int = 30
 # Schedule fetch
 # ---------------------------------------------------------------------------
 
-def fetch_schedule(game_date: date) -> list[dict]:
+def fetch_schedule(game_date: date) -> list[dict[str, Any]]:
     """Pull today's MLB schedule from official statsapi.mlb.com."""
     params = {
         "sportId": SPORT_ID_MLB,
@@ -102,7 +103,7 @@ def fetch_schedule(game_date: date) -> list[dict]:
     resp = requests.get(MLB_SCHEDULE_API, params=params, timeout=20)
     resp.raise_for_status()
     data = resp.json()
-    games: list[dict] = []
+    games: list[dict[str, Any]] = []
     for date_block in data.get("dates", []):
         games.extend(date_block.get("games", []))
     return games
@@ -112,19 +113,19 @@ def fetch_schedule(game_date: date) -> list[dict]:
 # Game classification helpers
 # ---------------------------------------------------------------------------
 
-def _team_name(game: dict, side: str) -> str:
+def _team_name(game: dict[str, Any], side: str) -> str:
     return game.get("teams", {}).get(side, {}).get("team", {}).get("name", "?")
 
 
-def _matchup(game: dict) -> str:
+def _matchup(game: dict[str, Any]) -> str:
     return f"{_team_name(game, 'away')} @ {_team_name(game, 'home')}"
 
 
-def _detailed_state(game: dict) -> str:
+def _detailed_state(game: dict[str, Any]) -> str:
     return game.get("status", {}).get("detailedState", "Unknown")
 
 
-def _parse_start_utc(game: dict) -> datetime | None:
+def _parse_start_utc(game: dict[str, Any]) -> datetime | None:
     raw = game.get("gameDate")
     if not raw:
         return None
@@ -134,7 +135,7 @@ def _parse_start_utc(game: dict) -> datetime | None:
         return None
 
 
-def classify_games(games: list[dict]) -> tuple[list[dict], list[dict]]:
+def classify_games(games: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """
     Split games into (active, postponed).
     Active = games that may still be played today.
@@ -150,7 +151,7 @@ def classify_games(games: list[dict]) -> tuple[list[dict], list[dict]]:
     return active, postponed
 
 
-def _game_summary(g: dict) -> dict:
+def _game_summary(g: dict[str, Any]) -> dict[str, Any]:
     start = _parse_start_utc(g)
     return {
         "game_pk": g.get("gamePk"),
@@ -165,7 +166,7 @@ def _game_summary(g: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 def compute_t4_window(
-    active_games: list[dict],
+    active_games: list[dict[str, Any]],
     now_utc: datetime,
 ) -> tuple[int, int, int, list[str]]:
     """
@@ -247,7 +248,7 @@ def compute_pregame_time(t4_hour: int, t4_min: int) -> tuple[int, int]:
 # Pipe assumption guards (T1, T2, resolution)
 # ---------------------------------------------------------------------------
 
-def check_t1_guard(active_games: list[dict]) -> list[str]:
+def check_t1_guard(active_games: list[dict[str, Any]]) -> list[str]:
     """
     T1 (PIPE-05) fires at 11:00 UTC and places bets on Preview-state markets.
     Warn if any game starts within T1_DANGER_LEAD_MIN minutes of T1 fire time —
@@ -281,7 +282,7 @@ def check_t1_guard(active_games: list[dict]) -> list[str]:
     return warnings
 
 
-def check_t2_guard(active_games: list[dict]) -> list[str]:
+def check_t2_guard(active_games: list[dict[str, Any]]) -> list[str]:
     """
     T2 (PIPE-05.5) fires at 19:30 UTC and requires lineups not yet posted.
     Warn if any game starts before T2 fires (T2 contamination guard will skip those,
@@ -318,7 +319,7 @@ def check_t2_guard(active_games: list[dict]) -> list[str]:
     return warnings
 
 
-def check_resolution_guard(active_games: list[dict]) -> list[str]:
+def check_resolution_guard(active_games: list[dict[str, Any]]) -> list[str]:
     """
     PIPE-05R fires at 06:30 UTC daily and resolves the previous night's games.
     Risk exists for late-night games (start 00:00–08:00 UTC = 8pm–4am ET) whose
@@ -350,7 +351,7 @@ def check_resolution_guard(active_games: list[dict]) -> list[str]:
     return warnings
 
 
-def check_risk_state_games(active_games: list[dict]) -> list[str]:
+def check_risk_state_games(active_games: list[dict[str, Any]]) -> list[str]:
     """Warn about games in weather/suspension risk states kept as active."""
     warnings: list[str] = []
     for g in active_games:
@@ -450,8 +451,8 @@ def update_live_crontab(
 
 def write_report(
     game_date: date,
-    active: list[dict],
-    postponed: list[dict],
+    active: list[dict[str, Any]],
+    postponed: list[dict[str, Any]],
     pregame_hour: int,
     pregame_min: int,
     t4_hour: int,

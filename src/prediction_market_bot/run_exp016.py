@@ -74,6 +74,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import (
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.cohort import get_player_ids_v2
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -232,7 +233,7 @@ def _evaluate_set(
     model: Pipeline,
     feature_names: list[str],
     df: pd.DataFrame,
-) -> dict:
+) -> dict[str, Any]:
     df = df.copy()
     df["y_target"] = _build_target(df)
     df = df.dropna(subset=["y_target"])
@@ -421,11 +422,11 @@ def main() -> None:
 
 
 def _write_results(
-    verdict: dict,
-    reg_result: dict,
-    playoff_result: dict,
-    metadata: dict,
-    by_season: list,
+    verdict: dict[str, Any],
+    reg_result: dict[str, Any],
+    playoff_result: dict[str, Any],
+    metadata: dict[str, Any],
+    by_season: list[Any],
     logger: AuditLogger,
 ) -> None:
     results = {

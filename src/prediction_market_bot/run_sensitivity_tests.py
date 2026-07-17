@@ -39,6 +39,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, roc_auc_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from typing import Any
 
 # Ensure src/ is on path when run directly
 _SRC_ROOT = Path(__file__).parent.parent.parent
@@ -217,7 +218,7 @@ def run_st001(
     train_df: pd.DataFrame,
     val_df: pd.DataFrame,
     feature_names: list[str],
-) -> dict:
+) -> dict[str, Any]:
     print("\n" + "=" * 60)
     print("ST-001: Imputation Strategy Sensitivity")
     print("=" * 60)
@@ -289,7 +290,7 @@ def run_st002(
     y_train: np.ndarray,
     X_val_raw: np.ndarray,
     y_val: np.ndarray,
-) -> dict:
+) -> dict[str, Any]:
     print("\n" + "=" * 60)
     print("ST-002: Training Window Size Sensitivity")
     print("=" * 60)
@@ -329,7 +330,7 @@ def run_st003(
     y_train: np.ndarray,
     X_val_raw: np.ndarray,
     y_val: np.ndarray,
-) -> dict:
+) -> dict[str, Any]:
     print("\n" + "=" * 60)
     print("ST-003: Regularization (C Parameter) Sensitivity")
     print("=" * 60)
@@ -378,7 +379,7 @@ def run_st004(
     y_val: np.ndarray,
     feature_names: list[str],
     n_repeats: int = 5,
-) -> dict:
+) -> dict[str, Any]:
     print("\n" + "=" * 60)
     print("ST-004: Permutation Feature Importance")
     print("=" * 60)

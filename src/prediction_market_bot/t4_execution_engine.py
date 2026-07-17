@@ -63,7 +63,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 from scipy.stats import poisson as _sp_poisson
 
@@ -231,7 +231,7 @@ class T4GameEvent:
     player_id: Optional[str]   # None for game-level events (QUARTER_END, TIMER)
     market_id: Optional[str]   # None if event is not market-specific
     ts: datetime
-    payload: dict = field(default_factory=dict)
+    payload: dict[str, Any] = field(default_factory=dict[str, Any])
 
 
 @dataclass(frozen=True)
@@ -356,7 +356,7 @@ class EvaluationSignal:
     vig_at_signal: float
     edge_at_signal: float           # model_p - mip_at_signal - vig_at_signal
     kelly_fraction: float
-    signal_snapshot: dict
+    signal_snapshot: dict[str, Any]
     ts: datetime
     is_exit: bool = False
     game_phase: GamePhase = GamePhase.EARLY
@@ -1345,7 +1345,7 @@ class T4ExitEvaluator(PortfolioOverlay):
 
     def generate_exit_signals(
         self,
-        open_positions: list,
+        open_positions: list[Any],
         game_state: T4GameState,
         price_cache: T4PriceCache,
     ) -> list[EvaluationSignal]:
@@ -1568,7 +1568,7 @@ class Layer1EvaluationEngine:
         self,
         game_state: T4GameState,
         price_cache: T4PriceCache,
-        open_positions: Optional[list[dict]] = None,
+        open_positions: Optional[list[dict[str, Any]]] = None,
     ) -> list[EvaluationSignal]:
         """
         Run one evaluation cycle triggered by game_state.trigger_event.
@@ -1607,7 +1607,7 @@ class Layer1EvaluationEngine:
 
         return signals
 
-    def run_continuous(self, game_event_feed) -> None:
+    def run_continuous(self, game_event_feed: Any) -> None:
         """
         Start the continuous evaluation loop (Phase 8 only).
 
@@ -1878,7 +1878,7 @@ class T4ExecutionEngine:
         self,
         game_state: T4GameState,
         price_cache: Optional[T4PriceCache] = None,
-        open_positions: Optional[list[dict]] = None,
+        open_positions: Optional[list[dict[str, Any]]] = None,
     ) -> list[EvaluationSignal]:
         """
         Dry-run one evaluation cycle without activating C4/C5 execution.
@@ -1897,7 +1897,7 @@ class T4ExecutionEngine:
     def on_game_event(
         self,
         game_state: T4GameState,
-        open_positions: Optional[list] = None,
+        open_positions: Optional[list[Any]] = None,
         price_cache: Optional[T4PriceCache] = None,
     ) -> tuple[list[EvaluationSignal], list[StaleDropRecord]]:
         """
@@ -1931,7 +1931,7 @@ class T4ExecutionEngine:
         approved, drops = self._layer2.process_queue_batch(_cache, self._min_edge)
         return approved, drops
 
-    def start(self, game_event_feed) -> None:
+    def start(self, game_event_feed: Any) -> None:
         """
         Start the continuous evaluation loop (Phase 8 only).
 
@@ -1969,5 +1969,5 @@ class T4ExecutionEngine:
         # Instance-level override: shadows the class-variable False for this engine only.
         # Python's MRO finds instance attr first, so self._PHASE8_ACTIVE returns True
         # without touching the class default (which guards all other instances).
-        engine._PHASE8_ACTIVE = True  # type: ignore[assignment]
+        engine._PHASE8_ACTIVE = True
         return engine

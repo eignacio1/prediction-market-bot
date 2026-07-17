@@ -76,6 +76,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import (
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.cohort import get_player_ids_v2, cohort_summary
+from typing import Any
 
 EXP_ID      = "EXP-012"
 SESSION_ID  = f"EXP-012-{uuid.uuid4().hex[:8].upper()}"
@@ -296,7 +297,7 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 5. Fit and evaluate both versions
     # ------------------------------------------------------------------
-    results: dict = {"exp_id": EXP_ID, "session_id": SESSION_ID, "run_at": _utc_now(),
+    results: dict[str, Any] = {"exp_id": EXP_ID, "session_id": SESSION_ID, "run_at": _utc_now(),
                      "feature_version": FEATURE_VERSION, "baseline_brier": BASELINE_BRIER}
 
     for label, fnames in [("v1.3.0", feature_names_v13), ("v1.2.0_subset", feature_names_v12)]:
