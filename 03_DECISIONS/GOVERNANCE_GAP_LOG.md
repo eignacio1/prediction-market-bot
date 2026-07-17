@@ -22,6 +22,140 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+## Gaps by Arm (added T-374, 2026-07-17 — classification method: manual content review of Discovery/Impact/Status text per gap, not a keyword match; see DECISION_LOG.md T-374 entry for methodology)
+
+**Totals:** NBA=23, MLB=57, Core=43 (123 gaps total). Core = venue-wide/process/tooling gaps that are sport-agnostic (C4/C6/C7/C8, deploy, session isolation, secrets, governance process itself) or that explicitly document the NBA/MLB conflation failure mode (e.g. GG-061) rather than belonging to one sport's code/data.
+
+**NBA** (23 total, 5 OPEN):
+- GG-002: T1–T5 execution tier architecture required multiple sessions to implement correctly
+- GG-007 — OPEN: T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) A
+- GG-008: All-threshold loop uses player-level p_model; `kalshi_threshold` absent from C3 featu
+- GG-011: T4_BAND_WEIGHT Fractional-Allocation Formula Incompatible with High-Throughput T4
+- GG-012: PIPE-02 Silently Failed Due to BOT_C4_ACTIVE Guard: ADR-0015 adj_λ Never Applied to L
+- GG-013: NBA Stats API Blocked from VPS: ADR-0015 adj_λ Has Never Applied to Any Live Run
+- GG-016: PIPE-06 BOT_C4_ACTIVE Guard: T3 Signal Scan Silently Dead Since Activation
+- GG-018: APR-0017 ≥66-Bet Floor Derived Under T1-Only Assumptions; T4 Integration Invalidates 
+- GG-024: PIPE-03 Late Cron Places T1 Bets on Games Already in Progress
+- GG-025: T4 delta_p Mixes Calibration Gap with Live Signal (Architectural)
+- GG-027 — OPEN: PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environme
+- GG-028: PIPE-03 No Idempotency Guard: Second Cron Execution Places Duplicate Positions for Sa
+- GG-032: T4 Portfolio Accounting Incoherence: bankroll +$869.68 vs total_realized_pnl −$21.59
+- GG-034: Realized-P&L Accumulator Desynced From Ledger: Drawdown Kill Switch Blind to True −25
+- GG-035: Over-Leverage Hidden by P&L Corruption: Deployed Capital Exceeded Equity
+- GG-036: G5 Resolution Blocked by Data Unavailability: 41 Positions + $1003.38 Locked
+- GG-037: Calibration Collapse + Inverted Edge Realization: the Model's Edge Signal Is Anti-Pre
+- GG-038 — OPEN: T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
+- GG-039 — OPEN: T4 Price Cache / Staleness Check Architecture
+- GG-040: T4 Real-Time Data Sources: Required Feeds Not in Current C1 Architecture
+- GG-041 — OPEN: KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis A
+- GG-056: NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume
+- GG-108: CLAUDE.md Step 4's NBA operational health check grepped a log filename that no longer
+
+**MLB** (57 total, 8 OPEN):
+- GG-004: EV Validation Benchmark Was Never the Commercial Question
+- GG-021: No Project-Level Stop Criterion: No Documented Evidence Standard for Concluding the E
+- GG-042: Active scope exclusion — threshold with inadequate Brier signal deferred pending feat
+- GG-043: MLB Kelly fraction inherited from NBA without MLB-specific calibration
+- GG-044: C7 drift baselines use NBA calibration values for MLB sport monitoring
+- GG-046 — OPEN: T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
+- GG-047: T1 MLB Ticker Date Off-By-One: Kalshi Markets Consistently Dated One Day Before Game
+- GG-048: MLB Stats API 406 Errors: Resolution Pipeline Cannot Score T4 Bets When API Rejects V
+- GG-049: Session-Start Protocol Has No Operational Heartbeat: Active Pipelines Not Verified at
+- GG-050: T4 MLB Re-Betting Bug: `fired_tickers` Per-Cycle Scope Allowed Same Market to Be Bet 
+- GG-051: No Layer 3 Governance: Pipeline Can Be Structurally Sound and Semantically Dark
+- GG-052: T4 MLB `cycle_start_at` Captured Before Data Fetches: Freshness Window Burned by Kals
+- GG-053: GG-052 Staleness Fix Deployed but Unverified Under Live Load
+- GG-054: SemanticFloorViolation Guard Has Never Fired in Production
+- GG-055: Ticker Date Parser Fixed Twice; No Month-Boundary Regression Test
+- GG-057: C8 Web Dashboard Built and Deployed to Production With Zero Governance Trail
+- GG-058: T4 MLB UTC-Midnight Rollover Drops All In-Progress Games Every Night
+- GG-059 — OPEN: No Formal Data Quality Contracts at C1 Ingestion: Contamination Reaches C3 Undetected
+- GG-060 — OPEN: Silent Success Indistinguishability: Zero Bets from "No Edge" Looks Identical to Zero
+- GG-062: Dual Concurrent `t4-mlb` Processes Recurred Undetected for ~1h48m (T-210 Fix Class Re
+- GG-063: 100% of All MLB Kalshi Demo Order Submissions Have Failed Since Inception (T1 and T4,
+- GG-064: Kalshi DEMO Market `open_time` Lags LIVE for Same Ticker (Discovered During GG-063 Ve
+- GG-066 — OPEN: MLB C1 Has No Real-Time/Sub-Poll-Interval Event Feed (Blocks Event-Driven T4 Sub-Band
+- GG-067: EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 Design Docs Cite Data Sources That Don't Exist In Pr
+- GG-068: `mlb_feature_csv` Contract Marked `days_rest`/`train_test_label` Non-Nullable Against
+- GG-071: Forward-Compounding Monte Carlo Shows Proportional-Stake Sizing Produces Materially E
+- GG-072: T1 MLB (PIPE-05) HALTed by the Same GG-068 Bug On the Same Day, But Was Never Cross-C
+- GG-073: GHA `deploy.yml` Auto-Deploy Has Failed 100% of Its Runs Since Inception (~30 Consecu
+- GG-074: Grounding/Gate Documents (01_SPEC, 02_ARCHITECTURE_DESIGN, 07_TEST_VALIDATION_EVIDENC
+- GG-076: T4 MLB One-Shot-Per-Ticker Dedup Structurally Conflicts With CLAUDE.md Hard Rule 9's 
+- GG-077: `fee_net_edge` Is Stored Always in the YES-Frame, Never Sign-Flipped for NO Bets (Cor
+- GG-078 — OPEN: T4 MLB's Real ~341-Bet/Day Cadence Means Kill-Switch Fate Is Decided Within ~15 Days 
+- GG-079: Failed Kalshi Orders (HTTP 410) Remain Counted in `open_positions`, Likely Inflating 
+- GG-080: Hard Rule 9's "~8,600 Slots/Game" Theoretical Ceiling Has No Clean Per-Game Empirical
+- GG-081: Two T4 MLB Tickers Re-Fired at an Identical `(h_so_far, ab_remaining)` State Within t
+- GG-083: T4 MLB Band Budget Ledger Silently Dropped Carried-Over Game Exposure at UTC Midnight
+- GG-084: MLB Stats API Returns Intermittent 406 on Both `gameType=R` and `gameType=P` `gameLog
+- GG-085: CLAUDE.md's Step 4 `staleness_halts` Alarm Heuristic Thresholded a Cumulative Per-Ses
+- GG-086: `_reconstruct_t4_ledger`'s Open-Exposure Sum Was Still Date-Filtered, Permanently Dro
+- GG-087: T4 MLB Live Engine Is Structurally YES-Only, Discarding 41.6x More Qualifying Edge Si
+- GG-088: ESPN Fallback (GG-084/T-241) Was Unreachable From Both Experiment Backtest Runners; P
+- GG-089: T-239 Circuit Breaker Never Trips Because `_consecutive_api_failures` Resets on Inter
+- GG-090: EXP-FLOW-MLB-01 Crashed on `BOT_C4_ACTIVE` After ~92min of Successful Resolution Work
+- GG-094 — OPEN: MLB Has No Qualitative/PRF-Analogue Feature Layer Despite Being the Sole ACTIVE Pool
+- GG-096: ST-006 Stress Test Was Run (GG-071/ADR-0040) But Never Logged Into `SENSITIVITY_STRES
+- GG-098 — OPEN: MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (S
+- GG-099: Anti-Predictive / Edge-Monotonicity Guards Are Not Wired Per-Band; the ACTIVE T4M-PRO
+- GG-100: T1 MLB book flips ANTI-PREDICTIVE for the first time once the edge monitor is pointed
+- GG-105: T4M-PROJ (ACTIVE, highest-volume band) shows a statistically significant, tercile-mon
+- GG-110: Fresh CRITICAL SemanticFloorViolation fired in production T1 MLB (RESOLVED: actually 
+- GG-112: Governance-scan dashboard reports two different `clean_n` figures for T4M-PROJ within
+- GG-113: `run_t4_mlb_live.py` flips vig's sign (cost→credit) for every NO-direction bet, contr
+- GG-119: T1/T2 MLB's own gating formulas carry the same NO-direction vig sign-flip pattern as 
+- GG-120: `run_band_monitor.py`'s dated-verdict writer ignored `--out`, letting synthetic pytes
+- GG-121: 2026-07-11 T1 MLB `SemanticFloorViolation` (games_fetched=16, matched_players=0) surf
+- GG-123: T2 MLB same-day gating formula uses full vig instead of half_spread as its cost term 
+- GG-124 — OPEN: C7 `SystemMonitor`'s Brier/ECE drift-alarm ladder is never invoked from any productio
+
+**Core** (43 total, 3 OPEN):
+- GG-001: max_concurrent_positions: 10 stub survived G4→G5→G7 undetected
+- GG-003: No automatic detection for "architecture outgrew its constraints"
+- GG-005: Gate criteria dimensional coherence was never audited by ARE WE COMPROMISED? (Q1–Q6)
+- GG-006: Kalshi TOS Automated Trading Review Incomplete: Position Accountability Limits Not Re
+- GG-009: Taker Fee Absent From Edge Formula: MIN_EDGE=0.02 Does Not Cover Kalshi Taker Cost
+- GG-010: T5 Band Budget Shares T4 Allocation: T4 Depletion Can Starve T5 Firing Window
+- GG-014: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
+- GG-015: GHA Cache Timing Gap: adj_λ Cache GAME_DATE Mismatch Between GHA Run and PIPE-02 Earl
+- GG-017: No Exit Path on Any Execution Band: System Holds All Positions to Expiry Regardless o
+- GG-019: T4 C4 Approval Gate Uses Gross Edge: Fee Not Subtracted Before MIN_EDGE Check; Aggreg
+- GG-020: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
+- GG-022: Paper-Fill Realism: All Paper P&L Used as G6 Evidence Assumes Fills Without Spread Cr
+- GG-023: T4 Entry Budget Is Monotonic: Exits Free Economic Capital but Never Replenish Entry C
+- GG-026: T4 Band Budget Architecture: PAPER_T4_FLAT_SIZING Bypasses Production Kelly Budget Pa
+- GG-029: MC Script Analyzes Pregame Forecasts, Not Committed Positions: Wrong Source and Wrong
+- GG-030: Portfolio MC Draws Positions as Independent Bernoullis: Within-Player Threshold-Ladde
+- GG-031: GG-028 Blast Radius Understated: 9 Duplicated Tickers ($402.49, 40% of G5 Deployment)
+- GG-033: Live Portfolio State Tracked in Git: Deploy Pipeline Silently Broken Since SESSION 55
+- GG-045 — OPEN: Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanal
+- GG-061: ADR Authorization Conflated the NBA T4 Engine with an MLB Paper-Trading Ruling
+- GG-065: `pyproject.toml` Declares `mypy strict = true` But mypy Has Never Been Run Against Th
+- GG-069: `fetch_actual_hits` Resolves Against MLB Stats API `gameLog` With No FINAL-Status Gat
+- GG-070: Session-Start Governance Hook Displayed NBA Ledger Unlabeled as Generic "Portfolio," 
+- GG-075: Formal Acceptance-Criteria Evidence Trail (`07_TEST_VALIDATION_EVIDENCE/EVIDENCE/`, `
+- GG-082: No Process Guards Against Multiple Concurrent Sessions Editing the Same Shared Naviga
+- GG-091 — OPEN: `mypy --strict` Full-Tree Baseline: 365 Pre-Existing Errors in 57 Files, Not Yet Reme
+- GG-092: G5-Promised Incident Runbooks (FM-01, FM-02 CRITICAL, FM-05, FM-07) Do Not Exist
+- GG-093: Threat Model Never Re-Expanded Post-G5 Despite Live Kalshi RSA Credentials Since ADR-
+- GG-095: DECISION_LOG T-094's Documented Brier Drift Ladder Does Not Match `monitor.py`'s Ship
+- GG-101: GG-082/SESSION_CLAIMS.md makes concurrent sessions visible but does not isolate their
+- GG-102: deploy.yml dirty-tree guard regressed to blocking on any untracked file (GG-073 whack
+- GG-103: `.last_session_checkpoint` is a single unprotected file, not concurrency-safe like `S
+- GG-104: `deploy.yml` never restarts persistent systemd services; code changes to `t4-mlb`/`pm
+- GG-106: `TestT1RegressionAnchor` pins a tight numeric tolerance to the live-mutating VPS port
+- GG-107: Untracked, never-claimed iteration-plan proposals sitting in shared `main` for 3+ day
+- GG-109: git worktree isolation (GG-101/T-259) covers git operations only; Python import resol
+- GG-111: Local-vs-UTC date mismatch in T-343's own new test makes it fail depending on time-of
+- GG-114: A session can push a fully-completed branch to origin, self-declare "closed" in its o
+- GG-115: The `approval-path-tests` fail-closed CI gate (T-327) failed on its own first live ru
+- GG-116: Leaked Kalshi API key ID + private-key filesystem path in a tracked session-handoff d
+- GG-117: `band_monitor_summary.json` tracked-but-should-be-gitignored, recurring deploy-blocke
+- GG-118: `pmbot-web-dashboard.service` OOM-kill restart loop left the C8 dashboard fully dark 
+- GG-122 — OPEN: `governance_scan.sh`'s OPEN-gap grep only matched literal `"| OPEN"`, undercounting b
+
+---
 ## Active Gaps
 
 ### GG-001 — max_concurrent_positions: 10 stub survived G4→G5→G7 undetected
@@ -29,6 +163,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-001 |
+| Arm | Core |
 | Category | Architectural placeholder survived gate review |
 | What was missed | `_HARD_LIMITS["max_concurrent_positions"] = 10.0` was set at G4 as a stub with explicit `# TBD at G4 review` comment. The G4 gate review confirmed the *existence* of the check but never validated whether 10 was architecturally correct. Three subsequent phases (G5, G6, G7) were cleared without the value being revisited. |
 | When it should have been caught | G4 Evidence Gate (2026-05-28) — when actual player cohort size, execution bands, and resolution lag were known |
@@ -47,6 +182,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-002 |
+| Arm | NBA |
 | Category | Incremental architecture without coherence checkpoints |
 | What was missed | The T1–T5 time-horizon execution band framework was conceptually adopted as a governing architectural principle but was implemented piecemeal across multiple sessions without a coherence checkpoint confirming the risk framework had been updated to match. ExecutionBands (T-084), multi-band orchestrator (T-084), band-specific Kelly fractions, and dual-window cron were all built — but the risk framework they operate within (C4) retained a G4-era stub that was designed for a single-band, 10-player system. |
 | When it should have been caught | At the end of any session that completed a major Phase 7 build (T-083, T-084) — when the scope of the execution architecture had clearly grown past the risk framework |
@@ -64,6 +200,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-003 |
+| Arm | Core |
 | Category | Systemic governance blind spot |
 | What was missed | The governance system — ADRs, DECISION_LOG, gate reviews, session handoffs — was designed to prevent re-litigating resolved decisions and ensure new decisions were logged. It was not designed to detect the case where a correctly-made early decision becomes *wrong* because the system architecture grew past the assumptions that underpinned it. This is a distinct failure class from context rot (undocumented decisions) or scope creep (unauthorized changes). It is architectural coherence drift. |
 | When it should have been caught | This is a structural gap — it predates any specific incident. The prior iteration failed to context rot; the mitigation (Compass OS) was thorough on decision documentation but created no mechanism to revisit early decisions when the architecture changed. |
@@ -81,6 +218,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-004 |
+| Arm | MLB |
 | Category | Systemic research blind spot |
 | Current status (2026-07-15) | Commercial question (does the model beat real Kalshi prices, not a `mip=0.50` coin-flip null?) remains formally OPEN. Latest MLB read (2026-07-08): n=169 unique resolved T1 positions, aggregate P&L **sign-flipped negative (−$44.76)** from the 2026-07-06 n=151 read (+$15.23, the first Tier-1-reached DIRECTIONAL_POSITIVE verdict). Edge-monotonicity guard: INCONCLUSIVE (Fisher p=0.2468), not anti-predictive. Under APR-0024's superseding `clean_n ≥ n*` standard (accepted 2026-07-12), neither T1 (clean_n=81/n*=2,322) nor T4M-PROJ (clean_n=338/n*=787) clears its own bar. GG-004 remains OPEN under either framework. |
 | Disposition (this pass, 2026-07-15) | **(c) Reaffirmed as an intentional long-lived watch item.** This is not a unilateral verdict change — the n=169 negative read and the APR-0024 non-clearance both already stand as logged. Re-check trigger: next `run_exp017_mlb.py`/`run_t177_edge_monitor.py` re-run once either band's `clean_n` materially closes on its `n*` floor (T1 ETA ~15.8 weeks, T4M-PROJ ETA ~0.9 weeks per CLAUDE.md's 2026-07-11 cadence pull) — re-derive both ETAs at that check, they were provisional and cadence-immature when logged. |
@@ -93,6 +231,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-005 |
+| Arm | Core |
 | Category | Systemic governance blind spot — wrong dimension, not wrong value |
 | What was missed | ARE WE COMPROMISED? Q1–Q6 audits code artifacts: hard limits in risk.py, stubs in src/, interface signatures, decision traceability. No question asked: "for each active gate criterion, what broken system could produce passing evidence?" APR-0016 ("30 resolved bets with positive P&L") survived from 2026-05-29 to 2026-05-31 without any protocol step asking whether count was the right primary metric. The 2026-05-31 corrective entry fixed the throughput math (4 bets/day → 17-40+ bets/night) but missed the structural issue: count is categorically the wrong dimension regardless of the throughput number. |
 | When it should have been caught | When APR-0016 was written (2026-05-29) — the same session that included a multi-band, 80-player execution architecture discussion. Or at the latest when ADR-0006 deleted the count gate from C4 (2026-06-01), making the dimensional incoherence explicit: if count is wrong in C4, count is wrong in G6. |
@@ -111,6 +250,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-006 |
+| Arm | Core |
 | Category | Venue risk / regulatory compliance |
 | What was missed | ADR-0003 reviewed Kalshi's regulatory status (CFTC-DCM regulated, all 50 states, NBA markets confirmed). It did not review Kalshi's operational terms for automated/algorithmic participants — specifically: (1) API Developer Agreement restrictions on automation, (2) rate limits and whether they permit hundreds of orders/game night, (3) CFTC/Kalshi Rulebook position accountability limits that may restrict per-event or per-market concentration. No governance artifact asked "does Kalshi permit a bot that places 100-300+ orders/night on NBA player prop markets?" before paper trading began. |
 | When it should have been caught | ADR-0003 (2026-05-23) — venue selection ADR. When Kalshi was selected as primary venue, the operational terms for automated participants should have been part of the acceptance criteria. |
@@ -132,6 +272,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-007 |
+| Arm | NBA |
 | Category | Architectural placeholder — Phase 8 pre-activation gate |
 | What was missed | `T4_MIN_DELTA_P = 0.08`, `T5_YES_CERTAINTY = 0.85`, `T5_NO_CERTAINTY = 0.15` were adopted as Phase 7 skeleton constants without empirical calibration against real in-play data. The SESSION 12 DECISION_LOG entry for T4_MIN_DELTA_P explicitly states: "must be calibrated against real in-play data before T4 ACTIVE designation — this value is a Phase 7 skeleton constant, not a validated production threshold." The governance gap is that no experiment is registered to perform this calibration, and no Phase 8 activation gate blocks on it. |
 | When it should have been caught | Phase 8 infrastructure ADR — the third of the three Phase 8 blocker ADRs must include threshold calibration as a pre-activation gate |
@@ -149,6 +290,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-008 |
+| Arm | NBA |
 | Category | Architectural misspecification — model feature gap |
 | What was missed | `run_paper_trade.py` (T-115 implementation) computes `p_est` once per player from 78 player-level features. `kalshi_threshold` is NOT in the feature vector. The same `p_est` is then compared against market implied probability for EVERY Kalshi threshold listed for that player. For extreme thresholds (far from player's pts_l10_mean), the market prices them correctly via Poisson(pts_l10_mean) — e.g., KAT YES 25 ≈ 16.8¢ — but the model returns p_est ≈ 0.47–0.57 regardless of threshold, creating apparent edges of 30–50¢ that don't exist. Only positions within ±~3pt of pts_l10_mean have calibrated edge (ADR-0004 ECE=0.034 applies). All other threshold positions have phantom edge. |
 | When it should have been caught | T-115 decision (2026-06-01) — when the all-threshold loop was designed. The loop was engineered for evidence volume throughput, but the feature alignment question ("does the model output a threshold-specific probability?") was not asked before enabling multi-threshold bet sizing. |
@@ -166,6 +308,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-009 |
+| Arm | Core |
 | Category | Architectural misspecification — fee not in edge gate |
 | What was missed | `MIN_EDGE_TO_APPROVE = 0.02` in `risk.py` does not include Kalshi taker fees. Kalshi taker fee formula: `0.07 × P × (1−P)` per contract. At P=0.50 (typical market): taker fee = $0.0175/contract. At a bet sized at 1 contract ($0.50 stake), fee = $0.0175 = 87% of the total edge approved by MIN_EDGE=0.02. The bot may be systematically approving and placing bets where the net-of-fee EV is negative even when gross edge is positive. This applies immediately to paper T4 flat 1-contract bets (SESSION 23) and to T1 bets at small Kelly sizes. |
 | When it should have been caught | EXP-017 Part A design (2026-06-01) — when edge formula was used to evaluate EV. Or any session that computed fee structure from Kalshi docs. |
@@ -183,6 +326,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-010 |
+| Arm | Core |
 | Category | Architectural note — shared in-play budget; resolved by design intent |
 | What was missed | `run_t4_live.py` passes the same `t4_band_budget` to both T4 and T5 RiskEngine calls. Concern was T4 depleting budget before T5's Q4 firing window. |
 | When it should have been caught | ADR-0013 design. |
@@ -200,6 +344,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-011 |
+| Arm | NBA |
 | Category | Architectural — T4 sizing model unfit for high-throughput operation |
 | What was missed | `T4_BAND_WEIGHT` assumes `t4_band_budget = bankroll × (1−RESERVE_MANDATE_PCT) × T4_BAND_WEIGHT`. At KELLY_T4=0.20 and ~1,434 evaluations/game with avg edge=0.305, uncapped Kelly deployment = $81,226 across one game — 87× any reasonable band budget. The budget exhausts after ~12 bets, leaving 1,400+ evaluations unfunded. The formula is valid only if T4 fires 10–20 bets/game (pre-ADR-0006 count-gate era), not at design-intent throughput. |
 | When it should have been caught | ADR-0013 design (2026-06-02 SESSION 20) when T4_BAND_WEIGHT was first introduced as a stub. |
@@ -217,6 +362,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-012 |
+| Arm | NBA |
 | Category | Pipeline integrity — silent failure, no alert, governance-invisible |
 | What was missed | `run_pregame.py` contained a guard: `if os.environ.get("BOT_C4_ACTIVE"): sys.exit(1)`. The `.env` file on VPS has `BOT_C4_ACTIVE=true` (set for PIPE-03 live execution). The cron for PIPE-02 sources `.env` via `export $(grep -v '^#' .env | xargs)` before running, loading `BOT_C4_ACTIVE=true`. Result: PIPE-02 exits immediately at startup with "FATAL: BOT_C4_ACTIVE is set" — writes nothing to disk. The guard was written as a manual safety check (don't run PIPE-02 in a live shell where orders might fire). It should never have applied to the automated cron, which uses a separate `.env` sourcing step. |
 | When it should have been caught | When ADR-0015 was deployed and `BOT_C4_ACTIVE=true` was already in `.env` — a sanity check of the cron environment should have caught this. Alternatively: when the G2 bet log shows `[TSS] Cache miss — building fresh team stats store... 0/30 teams loaded`, this should have triggered an alert. It did not because no PIPE-03 monitoring watches for TeamStatsStore size = 0. |
@@ -234,6 +380,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-013 |
+| Arm | NBA |
 | Category | Data source integrity — deployment environment incompatibility |
 | What was missed | The NBA Stats API (stats.nba.com) is protected by Akamai CDN, which identifies and blocks requests from DigitalOcean datacenter IPs. All `TeamGameLog` requests from VPS 157.230.91.33 return an empty HTTP response body. `nba_api` raises `JSONDecodeError: Expecting value: line 1 column 1 (char 0)` for every team. Result: `TeamStatsStore` loads 0/30 teams for every run. `opp_adjusted_lambda()` silently returns raw `pts_l10_mean` (line 202: `if opp_def is None: return pts_mean`). The fallback is correct behavior, but no alert fires and no audit event distinguishes "TSS empty because PIPE-02 failed" from "TSS empty because API is blocked." |
 | When it should have been caught | When ADR-0015 was drafted and the VPS IP class was not checked against stats.nba.com access patterns. Alternatively: first PIPE-02 deployment (Jun 4 22:00 UTC) — the `[TSS] Team stats store: 0/30 teams loaded` message should have triggered investigation before running PIPE-03. |
@@ -251,6 +398,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-014 |
+| Arm | Core |
 | Category | Execution integrity — rate limit characterization missing |
 | What was missed | Kalshi's order placement API rate limits were not characterized before PIPE-03 was activated for multi-market execution. With 25+ bets per game night executing within a ~2 second burst window, Kalshi's `/portfolio/orders` endpoint returns HTTP 429 (Too Many Requests) for roughly 50% of calls. Paper mode logs positions regardless (portfolio write is local; the Kalshi API call is best-effort for order confirmation), so paper P&L tracking is unaffected. No retry logic exists. At live capital, these would be real execution failures — the bot would have C4-approved edge and model signal but fail to deploy capital for ~50% of intended bets. |
 | When it should have been caught | Before PIPE-03 first activation; the Kalshi API rate limits should have been verified against the expected burst sizing (~25 orders in ~2s) before any live-mode execution ran. |
@@ -268,6 +416,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-015 |
+| Arm | Core |
 | Category | Architectural timing — deployment environment mismatch |
 | What was missed | `GAME_DATE` in `run_pregame.py` is computed as `datetime.now(utc).strftime("%Y%m%d")`. At PIPE-02 early cron time (21:55 UTC, day N), GAME_DATE=N. The GHA workflow was scheduled at 00:30 UTC (day N+1), which also computes GAME_DATE=N+1. The GHA cache is `team_stats_cache_{N+1}.json`; PIPE-02 looks for `team_stats_cache_{N}.json`. **They never matched.** adj_λ was structurally unreachable for the early cron on every game day, even after GG-013 was resolved. |
 | When it should have been caught | When the GHA workflow was initially scheduled (SESSION 32). The cron time was set to 00:30 UTC by convention without verifying GAME_DATE alignment with the VPS cron schedule. |
@@ -285,6 +434,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-016 |
+| Arm | NBA |
 | Category | Architectural guard copy-paste error — same root cause as GG-012 |
 | What was missed | `run_t3_pretip.py` contained a `BOT_C4_ACTIVE` guard (lines 253-256) that exited with `FATAL: BOT_C4_ACTIVE is set. PIPE-06 does not place orders.` The VPS `.env` has `BOT_C4_ACTIVE=true`. PIPE-06 exited fatally on every cron tick since SESSION 34 activation — T3 signals were never generated. PIPE-03 correctly fell back to T1-only via the non-contamination guarantee, so no incorrect bets were placed, but the T3 overlay was silently dead despite being marked "LIVE" in the session handoff. |
 | When it should have been caught | When SESSION 34 activated PIPE-06 cron. The cron was commented out with a gate note before SESSION 34 — the gate note was about Polymarket connectivity, not BOT_C4_ACTIVE. The guard was in the script from initial authoring and should have been removed before activation. |
@@ -302,6 +452,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-017 |
+| Arm | Core |
 | Category | Architectural gap — missing symmetric filter-out across all bands |
 | What was missed | Every execution band (T1–T5) has filter-IN logic (Poisson CDF entry signal, MIN_EDGE gate, Kelly sizing) but NO filter-OUT logic. When in-game Bayesian evidence reverses against an open position — e.g., `p_t4` drops sharply after a player injury or foul trouble — the system holds the position to market expiry with no mechanism to exit. Prediction markets are bilateral instruments: SELL YES and BUY NO are both valid exit mechanisms. A system that can only enter is not exploiting the full strategy space. The architectural principle is: each band's decision tree should be symmetric — filter-IN when edge is positive, filter-OUT when edge reverses. |
 | When it should have been caught | ADR-0014 (T-130, 2026-06-03 SESSION 23) — when per-band decision trees were formalized. Entry logic was specified for all bands; exit logic was not addressed. |
@@ -319,6 +470,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-018 |
+| Arm | NBA |
 | Discovered | 2026-06-09 SESSION 41 — Finals G3 resolution revealed T4 produced 1,115 resolved bets in a single game while APR-0017 was written for T1-only |
 | What was missed | APR-0017 states explicitly: "The 66-bet floor was derived assuming the Finals paper window (1 game/night, ~38 markets, T1-only)." The derivation is a T2-A calibration power formula (α=0.05, 80% power, ±15pp deviation detection) for the pregame Poisson model. T4 uses a structurally different model: live Bayesian GameStateModel + adj_λ, firing ~1,115 evaluations per game. The statistical evidence generated by T4 bets cannot be pooled with T1 bets toward the same calibration floor without a governance ruling: (1) T4 and T1 have different error distributions (T4 is live inference under partial information vs T1's static pregame Poisson); (2) the T2-A calibration formula's β/α parameters were derived for T1's specific ECE distribution; (3) pooling conflates evidence from two different prediction problems into a single floor that was designed for one. |
 | When it should have been caught | When T4 was activated as LIVE paper mode (PAPER_T4_VIRTUAL=false, SESSION 24 2026-06-03). APR-0017 was accepted 2026-06-01; T4 live activation was 2026-06-03. The 48-hour gap meant the evidence standard was finalized before T4 was understood to produce high-volume evidence of a different type. |
@@ -334,6 +486,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-019 |
+| Arm | Core |
 | Discovered | 2026-06-09 SESSION 42 — operator institutional hygiene sprint; spot-check of fee handling in logs and codebase |
 | Category | Architectural gap — fee subtraction asymmetry between T1 and T4; aggregate cost undocumented |
 | What was missed | **Part A — Code gap:** `run_t4_live.py` computes `edge = p_est - mip` (gross, no fee) and passes it to C4 via `fc_record["edge"]`. C4 gates on `MIN_EDGE_TO_APPROVE = 0.02` against this gross value. T1 (`run_paper_trade.py:461–463`) subtracts `kalshi_fee = 0.07 × mid × (1−mid)` BEFORE C4 (`edge = gross_edge - kalshi_fee`). Result: T4 approves bets with gross_edge in [0.02, 0.0375] at P=0.50 that T1's fee-adjusted gate would reject. At P=0.50 midpoint: fee = $0.0175; bets approved at gross_edge=0.02 have net-of-fee edge = $0.0025 — 87% of gross edge consumed by fees. C4 thinks it's approving at MIN_EDGE=0.02; actual net edge is 8× lower. Note: `paper_trader.py` DOES annotate `fee_per_contract` and `fee_net_edge` on T4 positions post-approval — so the data for post-hoc analysis is present in `paper_portfolio_t4.json`. The error is in the approval gate, not the annotation. **Part B — Architecture/governance gap:** Aggregate fee drag at designed T4 throughput (~1,115 bets/game, G3 data): 1,115 × $0.0175 ≈ $19.51/game in fees. `T4_EXPECTED_TOTAL_EDGE = 441.38` (calibrated G1) is gross — net-of-fee expected total edge is lower by ~$25 (1,446 evals × avg fee). This aggregate fee cost is in zero governance documents: not in ADR-0016 (which covers per-bet fee formula but not aggregate impact), not in CAPACITY_PLANNING.md, not in the APR-0017 EV analysis, not in RESOURCE_BUDGET.md, not in any capital plan draft. At live capital, ~$19/game in T4 fees + ~$2/game in T1 fees at Finals scale is a real cash outflow that changes break-even calculations for live trading. |
@@ -351,6 +504,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-020 |
+| Arm | Core |
 | Discovered | 2026-06-09 SESSION 42 — operator question on fee rate provenance during institutional hygiene sprint |
 | Category | Governance provenance gap — documentation-sourced constant, no empirical verification |
 | What was missed | `ADR-0016` establishes `fee(P) = 0.07 × P × (1−P)` as the Kalshi taker fee formula. `GG-009` discovery note states "Fee formula sourced from Kalshi API docs" — verbal assertion only. No URL is cited in ADR-0016 or GG-009. No documentation version is recorded. No verification against an actual Kalshi transaction receipt has been performed. Verification is structurally impossible in paper trading (no real orders are placed, no real fees charged). The 0.07 rate was taken from documentation at face value in SESSION 22 (2026-06-03) and embedded directly into ADR-0016, `run_paper_trade.py`, `run_pregame.py`, `run_t4_live.py`, `paper_trader.py`, and all fee-adjusted edge computations. |
@@ -368,6 +522,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-021 |
+| Arm | MLB |
 | Discovered | 2026-06-10 SESSION 45 — PDTP full-project self-assessment (operator-directed), blind-spot pass |
 | Category | Governance asymmetry — all gates govern *advancing*; nothing governs *stopping* |
 | What was missed | The governance system defines what evidence authorizes forward motion (G6: positive P&L, EXP-017 Part B CONFIRMED, ≥66 bets, ≥5 nights, DS sign-off) but defines nowhere what evidence would force the conclusion that the model has no commercial edge and the project should halt or pivot. Current paper record (cumulative P&L −$123.17 / 82 bets; EXP-018 overall CONFIRMED_NEGATIVE) is being correctly scoped as "underpowered, adverse window" — but without a pre-committed falsification standard, *any* negative result can be scoped away indefinitely. The default trajectory of a well-governed project with no stop criterion is to remain well-governed forever. |
@@ -384,6 +539,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-022 |
+| Arm | Core |
 | Discovered | 2026-06-10 SESSION 45 — PDTP self-assessment, contradiction scan |
 | Category | Evidence integrity — G6 Tier 1/2 inputs systematically biased in the favorable direction |
 | What was missed | Paper fills execute at observed market prices without modeling bid-ask spread crossing, queue position, or market impact. This biases ALL paper P&L upward — T1 and T4 — and that P&L is the core G6 Tier 2 evidence (P&L slope) and the G6 headline criterion (positive cumulative P&L). The contradiction that surfaced it: T4 pool grew $500→$1,539.42 (+108%) at a 51.4% win rate across 1,115 bets while EXP-018 ruled the same underlying λ model CONFIRMED_NEGATIVE on EV — paper-fill optimism is the most parsimonious reconciliation. T4 is worst-exposed (fires into thin in-play books where the fill assumption is least realistic), but T1 resting orders carry the same assumption in milder form. T-153 (spread model) exists but is scoped to ADR-0019 Tier 2 exit validation — not to G6 evidence integrity generally. |
@@ -400,6 +556,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-023 |
+| Arm | Core |
 | Discovered | 2026-06-11 SESSION 46 (UTC; 2026-06-10 PDT) — live observation during Finals G4, mid-Q2 |
 | Category | Incremental architecture — exit mechanics (ADR-0018/0019) bolted onto a budget design (ADR-0013) that predates them |
 | What was missed | `t4_deployed_usd` in `run_t4_live.py` accumulates monotonically (`+= approved_size` at fire, lines 672/709) and is never decremented by the exit pass. When a position exits, its stake is economically freed (PnL realized, position closed in the T4 portfolio) but the entry-budget counter still counts it as deployed. Observed live in G4: T4 fired 1,199 bets and hit $499.95/$500.00 (100%) **before halftime**; 29 exits then fired correctly and freed capital, but `budget_used` stayed pinned at $499.95 — every subsequent cycle logged `fired=0`. The entire second half, where live Bayesian updates carry the densest signal, had zero entry capacity. |
@@ -418,6 +575,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-024 |
+| Arm | NBA |
 | Discovered | 2026-06-11 SESSION 46 — audit log review, Phase A post-G4 resolve |
 | Category | Architectural gap — PIPE-03 has no in-progress game guard on bet placement |
 | What was missed | PIPE-03 (T1 pipeline) checks GAME_DATE but does not check whether the target game has already started before placing new positions. The late cron fires at 01:30 UTC; Finals G4 tipped at 00:30 UTC (~60 min into the game). Audit shows `paper_order_opened` × 2 at 01:31:22 and 01:31:27 UTC for Stephon Castle and Josh Hart — both placed mid-Q2 with live game in progress. These bets used pre-game model estimates (Poisson CDF on pre-game `pts_l10_mean`) against market prices that had already repriced to reflect 60 min of live play. The T1 model has no informational advantage at that point; the market's live price is more informative than the T1 forecast. |
@@ -436,6 +594,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-025 |
+| Arm | NBA |
 | Status | RESOLVED (2026-06-10, ADR-0021) |
 | Severity | MEDIUM |
 | Discovered | 2026-06-10 (SESSION 46) |
@@ -456,6 +615,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-026 |
+| Arm | Core |
 | Discovered | 2026-06-10 SESSION 46 CLOSE — DS review: "I don't want arbitrary capital restraint (ie $500) — no bandaid fixes" |
 | Category | Architectural shortcut outliving its original scope |
 | What was missed | `PAPER_T4_FLAT_SIZING=true` (default) hardcodes `t4_band_budget = PAPER_T4_POOL_USD` ($500 flat) and bypasses the production path `_compute_t4_band_budget(portfolio)` = `deployable × T4_BAND_WEIGHT`. The flat $500 was the correct pool size when first set (SESSION 24, G1 launch). By G4/G5, the T4 pool has grown to $1,869.68 through paper wins — the flat cap is now 26.7% of the actual pool and no longer represents a principled fraction of capital. Additionally, `T4_BAND_WEIGHT = 0.10` is explicitly marked "Phase 8 placeholder — inactive in PAPER_T4_FLAT_SIZING=true mode" — it was never calibrated. If the flag were removed today, the production path would give $186.97 band budget ($1,869.68 × 0.10) — less than the flat cap, not more. The transition from flat to proportional is undocumented, unplanned, and the calibration constant is a stub. |
@@ -472,6 +632,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-027 |
+| Arm | NBA |
 | Discovered | 2026-06-11 SESSION 50 — operator architectural direction: pressure-context categorization for decision tree filters |
 | Category | Architectural capability gap — registered feature not yet integrated across full band stack |
 | What was missed | The Player Archetype Matrix (PAM v4) is operationalized in C2 (`QualitativeSignalStore`) and the prod model uses 47 PAM features (prf_w01–15, mod_01–32). However: (1) T2/T3/T5 bands have no PAM wiring — `run_t2_sameday.py`, `run_t3_pretip.py`, and T5 LateGameArithmetic operate without archetype context; (2) T4 `T4EventLoop` received archetype register wiring in SESSION 50 but the archetype does not yet affect the routing math (passed through to audit log only); (3) the "pressure-context environment classifier" described by the operator — game-environment categorical modifiers (high-pressure Finals/elimination context, expanded-role context for role players, crowd/psychological context) — is entirely unbuilt as of SESSION 50; (4) QS snapshot age: classifications dated 2026-05-28 have not been updated for Finals-specific role changes (e.g. Alvarado Q4 expanded role in G4). |
@@ -487,6 +648,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-028 |
+| Arm | NBA |
 | Discovered | 2026-06-12 SESSION 52 — G5 portfolio audit: 41 open positions vs expected 29; two batch timestamps confirmed (22:00 UTC 29 bets, 01:00 UTC 12 bets) |
 | Category | Operational gap — pipeline has no guard against re-execution for an already-deployed game_date |
 | What was missed | PIPE-03 (`run_paper_trade.py`) has no check for existing open positions before running the bet-placement loop. If the script runs twice for the same game_date, it evaluates all markets afresh and places any new bets that pass the edge filter — including markets where positions already exist from the first run. G5 result: the 22:00 UTC batch placed 29 bets; a second run at 01:00 UTC placed 12 more bets, including duplicate Wemby NO ≥40 and NO ≥35 positions (the two that failed in the first batch — the pipeline saw no "resting" order and re-deployed them). Total T1 deployment: $1,003.38 from a $1,000 bankroll reset, pushing reserve to 13% (below RESERVE_MANDATE 15%). T-162's game-in-progress guard (added SESSION 46) guards against in-progress games only — it does not guard against same-game_date re-execution when the game has not yet started. |
@@ -504,6 +666,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-029 |
+| Arm | Core |
 | Discovered | 2026-06-12 SESSION 52 — MC script reported $106.21 staked; actual portfolio had $1,003.38 deployed; source confirmed as `pregame_20260612.json`, not `paper_portfolio.json` |
 | Category | Tooling gap — risk analysis tool not connected to actual system state |
 | What was missed | `scripts/run_monte_carlo.py` reads from `pregame_YYYYMMDD.json` (the model's forecast output) rather than `logs/paper_portfolio.json` (the actual committed positions). It then re-applies Kelly sizing with hardcoded parameters: `kelly=0.1, min_edge=0.02, max_exposure=500.0` — none of which match the actual risk engine (`DEFAULT_KELLY_FRACTION=0.25, MIN_EDGE_TO_APPROVE=0.04`). Result: every MC run throughout the Finals has simulated a hypothetical re-deploy of the residual bankroll, not the actual risk exposure of committed positions. G5 example: MC reported $106.21 staked from $130.62 bankroll (81% utilization) while the actual portfolio had $1,003.38 deployed. The kill switch risk and P/L distribution the MC reported were for a different portfolio than the one that will resolve. |
@@ -520,6 +683,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-030 |
+| Arm | Core |
 | Discovered | 2026-06-12 SESSION 55 — pre-Game-5 protocol review of `run_monte_carlo.py` portfolio mode (T-167 rewrite) |
 | Category | Tooling gap — risk model structurally understates correlated tail risk |
 | What was missed | Portfolio mode (`run_monte_carlo.py:144`) simulates each committed position as an **independent** Bernoulli draw (`rng.random(n_sims) < p_win` with a fresh draw per position). But the G5 book holds threshold *ladders* on single players — e.g., Brunson NO 25/30/35/40 (×2 each after GG-028 duplicates) and Wembanyama NO 35/40 (×2). In reality these rungs are perfectly correlated: one 40-point game loses every rung simultaneously. The script's own caveat text (line 297–298) acknowledges this, but the headline numbers reported to the operator (G5: P(profit)=99.8%, P(kill switch)=0.00%) come from the uncorrelated path. Notably, the legacy `--preview` mode does this *correctly* — it draws one Poisson score per player and compares it against all thresholds (line 424–438) — so the T-167 rewrite regressed correlation structure while fixing position sourcing. Compounding: the draws use the model's own `model_p` as ground truth, so the MC cannot see model miscalibration — the exact failure mode EXP-017B (DIRECTIONAL_NEGATIVE vs real prices) and the G3 MC miss (predicted +$138 @ 95.1%; actual -$199) point at. |
@@ -538,6 +702,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-031 |
+| Arm | Core |
 | Discovered | 2026-06-12 SESSION 55 — direct audit of VPS `paper_portfolio.json` open positions: `Counter((ticker, direction))` |
 | Category | Incident scoping gap — resolved-gap record documents partial blast radius |
 | What was missed | GG-028's record states the 01:30 UTC batch placed "duplicate Wemby NO ≥40 and NO ≥35 positions." The actual count: **all 9 tickers whose 22:00 UTC orders failed were re-bet at 01:30 UTC** — Wemby NO-40/-35, Brunson NO-40/-35/-30/-25, Hart YES-15/-10, KAT YES-10. Every duplicated pair shows one `failed: transient` position (22:0x UTC) and one `resting` position (01:30 UTC). Total stake in duplicated tickers: $402.49 of $1,003.38 deployed (40%). Also resolved as side-finding: the "unexplained" 01:00 UTC second run flagged in GG-028's resolution path is simply the scheduled 01:30 UTC late PIPE-03 window in `cron.conf` — `entered_at` timestamps match exactly. No mystery trigger exists; the investigation item can close. |
@@ -556,6 +721,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-032 |
+| Arm | NBA |
 | Discovered | 2026-06-12 SESSION 55 — VPS `paper_portfolio_t4.json` top-level field audit |
 | Category | Data integrity gap — headline T4 performance metric cannot be reconciled from the file that stores it |
 | What was missed | `paper_portfolio_t4.json` shows `bankroll_usd=1869.68`, `initial_bankroll_usd=1000.0`, `total_realized_pnl=-21.59`. These cannot all be true under bankroll = initial + realized P&L: the implied gap is ~$891. Probable contributors: the pool actually started at $500 (PAPER_T4_POOL_USD era) while `initial_bankroll_usd` recorded 1000; the SESSION 46 reset touched realized P&L epochs differently from bankroll; and/or pool-isolated open/close paths credit `bankroll_usd` asymmetrically from `total_realized_pnl`. Whatever the mix, the widely-cited "T4 pool +87% / +108% growth at 51.4% win rate" narrative and the file's own realized P&L (negative since reset) tell opposite stories. |
@@ -574,6 +740,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-033 |
+| Arm | Core |
 | Discovered | 2026-06-12 SESSION 56 — VPS `git pull --ff-only` aborted on dirty tree during EXP-018 filter deploy |
 | Category | Deploy integrity gap — live mutable state in VCS blocks deploys and risks state destruction |
 | What was missed | `logs/paper_portfolio.json` is git-tracked. Every cron write dirties the VPS working tree, so every `git pull` aborts. SESSION 55's deploy record ("git pull + scp confirmed") was inaccurate: the pull failed on this same conflict, and the scp of `run_monte_carlo.py` masked it. Result: VPS sat at `cea8a19` (SESSION 54 close) through SESSION 55–56 while MEMORY_BANK recorded it as current — the T-168 MC fix existed on the VPS only as an uncommitted working-tree file. Verified identical to the committed version this session (no drift), but nothing guaranteed that. |
@@ -592,6 +759,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-034 |
+| Arm | NBA |
 | Discovered | 2026-06-13 SESSION 62 — ARE WE COMPROMISED? Q6, reconciling session-start portfolio readout |
 | Category | Lying-monitor / ledger-reconciliation gap — self-reported health diverges from append-only ground truth (matches the standing audit thesis) |
 | What was missed | The live VPS book `logs/paper_portfolio.json` stores `total_realized_pnl = −$8.46`, but the sum of its own 117 closed-position `pnl` fields is **−$251.21**. The C6 append-only audit log (`audit.jsonl`, `paper_position_resolved` events) independently confirms **−$251.21** for exactly those 117 position_ids, with **zero double-resolutions** — so the ledger is correct and the scalar accumulator is the corrupted value. Gap = **$242.75**. True realized drawdown is **25.1%** of the $1,000 initial bankroll, which **exceeds the 20% `max_drawdown_pct` kill switch** (`risk.py:105`). The drawdown kill switch reads the corrupted scalar (`run_paper_trade.py:274` → `current_drawdown_pct` → `risk.py:418`), as do the C7 monitor (`monitor.py:537`), the C8 dashboard (`dashboard.py:181`), and the G6 positive-P&L gate. All four health surfaces read the lying number; none derive P&L from the ledger. **The same class of desync exists in the T4 book** (`paper_portfolio_t4.json`: stored −$21.59 vs Σ closed pnl −$47.25) — systemic, not a one-off. Per-game-date truth: 06-05 +$75.67 (35 bets, = the last consistent snapshot, matches the stale local `paper_portfolio_vps.json`), 06-08 −$198.84 (47), 06-10 −$128.04 (35). The −$8.46 scalar matches no clean subset → not a single reset; consistent with concurrent-writer clobbering. |
@@ -611,6 +779,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-035 |
+| Arm | NBA |
 | Discovered | 2026-06-15 SESSION 63 — surfaced the instant the live book was corrected under GG-034 (the corrected `bankroll_usd` came out negative) |
 | Category | Risk-control gap — exposure exceeded equity; the corruption that hid the drawdown also hid an over-leverage condition |
 | What was missed | After GG-034 correction, the ledger-derived `bankroll_usd` is **−$254.59**. Decomposition under the cash identity (`bankroll = initial + Σ closed non-isolated pnl − Σ open non-isolated stake`): $1000 initial − $251.21 realized − **$1003.38 locked in 41 open G5 stakes** = −$254.59. Equity (realized only) is +$748.79, but **free cash is negative** — the bot deployed $1003.38, which is **100.3% of the $1,000 initial bankroll and ~134% of current $748.79 equity**, into the single G5 game window. The corrupted scalar reported a healthy +$130.62 bankroll, so nothing stopped the bot from sizing past its own equity. The over-leverage is a *consequence* of the same lying scalar (GG-034): Kelly/exposure sizing read the false bankroll and the false near-breakeven drawdown, so per-event and aggregate exposure caps were computed against money that did not exist. |
@@ -628,6 +797,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-036 |
+| Arm | NBA |
 | Discovered | 2026-06-15 SESSION 63 — `run_resolve.py` returned "game results not available" for the 2026-06-13 G5 window during the dark-period close |
 | Category | Data-availability / quality-data gap — resolved track record cannot be completed because the stats source has no box scores for the final game |
 | What was missed | The 41 open positions from NBA Finals G5 (2026-06-13, NYK series close) **cannot be settled.** `run_resolve.py` (which fetches actual player points from nba_api and settles YES if `actual_pts ≥ threshold`) returns "No positions settled yet — game results not available." nba_api has no 2026-06-13 box scores in the source, while G2/G3/G4 resolved cleanly. Consequence: the canonical NBA dataset stands at **117 closed + 41 open** (not a complete 158-resolved record), $1003.38 of stake stays locked, and the G6 baseline (−$251.21) reflects only the 117 resolved bets. The 41 unresolved bets are NOT counted, and their outcomes were **NOT fabricated** (no-fabrication rule). |
@@ -645,6 +815,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-037 |
+| Arm | NBA |
 | Status | **OPEN (alpha half) — ADR-0044 split applied 2026-07-15 (T-368 odd-gap burn-down session).** Calibration half RESOLVED via ADR-0027 (temperature scaling, NBA T=2.05). Alpha half remains OPEN: post-calibration residual edge on the n=158 NBA Finals dataset is still anti-predictive (edge>0 wr 0.356 vs edge≤0 wr 0.747) — this is a real, not-yet-explained finding, not just overconfidence. Original deferral trigger was "EXP-017 at scale (MLB dark period + NBA regular season)." **Reaffirmed, not resolved, 2026-07-15:** EXP-017 MLB has since run and cleared ADR-0024 Tier 1 (n=151, DIRECTIONAL_POSITIVE per CLAUDE.md) — a materially relevant new data point in the *opposite* direction from GG-037's NBA finding, but MLB and NBA are separate pools/theses (CLAUDE.md's dual-ledger framing) and the NBA regular-season leg of the original deferral is still untested (NBA tabled). Whether EXP-017 MLB's positive result should be read as satisfying GG-037's deferral condition is a model-validity call this session is not authorized to make unilaterally (Hard Rule 3) — left for Earl. Not an escalation candidate today (no immediate decision is blocked); reaffirmed as a watch item. **Re-check trigger: NBA regular-season data becomes available (NBA reactivation), OR EXP-017 MLB clears Tier 2 (n≥500) — whichever comes first.** **Full investigative history (2026-06-16 SESSION 64 through 2026-06-22 SESSION 68): see `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG037_FULL_HISTORY.md`** (verbatim, lossless move verified 2026-07-15). Linked: ADR-0027, [[GG-004]], ADR-0024, ADR-0004/ADR-0015 (amended), GG-008. |
 
 ---
@@ -654,6 +825,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-038 |
+| Arm | NBA |
 | Category | Architectural gap — safety SLA insufficient for new execution regime |
 | What was missed | NFR-03 specifies kill switch ≤60 seconds. At Kalshi's 60 calls/min execution rate, 60 seconds = up to 60 additional bets submitted between kill trigger and halt. For monolithic T4 with a small pre-scheduled bet set, this was acceptable. For continuous T4 evaluation potentially approving multiple bets per second, 60 seconds of uncontrolled execution after a kill trigger represents unacceptable capital exposure. |
 | When it should have been caught | When ADR-0029 T4 sub-band architecture was first designed — the moment continuous evaluation was proposed, the kill switch SLA should have been immediately re-examined. |
@@ -671,6 +843,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-039 |
+| Arm | NBA |
 | Category | Architectural gap — missing component required for Layer 2 staleness arbitration |
 | What was missed | ADR-0029's Layer 2 execution queue requires current Kalshi market prices to run the staleness check on each dequeued bet. The existing venue constraint for T4 specifies `max_api_calls_per_decision = 0` — zero live API calls at execution time. These two requirements are in direct tension: the staleness check needs current prices but cannot call the API at execution time. |
 | When it should have been caught | When the staleness-arbitration execution queue was designed in T-179 (SESSION 66). This gap is intrinsic to the architecture — it cannot be discovered before the architecture is specified. |
@@ -688,6 +861,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-040 |
+| Arm | NBA |
 | Category | Architectural gap — data source prerequisite for T4 sub-band activation |
 | What was missed | T4 sub-bands require data feeds that do not exist in the current C1 implementation. Current C1 uses ESPN scoreboard API for box scores with multi-minute latency — insufficient for T4-EVENT (requires ≤2s event detection) and T4-LINEUP (requires ≤5s substitution detection). T4-MICRO requires real-time order book feed. T4-SENTIMENT requires Kalshi tick-level price history. None of these are built. |
 | When it should have been caught | During T4 Phase 8 planning. The gap exists because T4 is BLOCKED and no Phase 8 data source planning has been done. |
@@ -705,6 +879,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-041 |
+| Arm | NBA |
 | Discovered | SESSION 72 — 2026-06-22; T-127 execution attempt found no active KXNBAPTS markets |
 | Category | Data collection miss — evidence required for ADR-0005 hard limit not captured during the only available window |
 | What was missed | Live KXNBAPTS orderbook depth data was not captured during the 2026 NBA Finals window (Jun 3–22). T-127 required querying `GET /markets/{ticker}/orderbook` during an active Finals game day to set an empirical `max_order_pct_of_depth` limit for ADR-0005. The one logged run (`logs/orderbook_depth_20260602_151325.json`, 2026-06-02) queried before Finals markets opened — all 5 markets showed `combined_depth_usd: 0`. No subsequent script run was triggered during any Finals game day. VPS has zero orderbook depth logs. All KXNBAPTS markets finalized 2026-06-14 (after G5 on 2026-06-13). |
@@ -719,6 +894,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ---
 
 | Gap ID | GG-042 |
+| Arm | MLB |
 | Discovered | SESSION 81 — 2026-06-24; T-187B per-threshold model diagnostic |
 | Category | Active scope exclusion — threshold with inadequate Brier signal deferred pending feature injection |
 | What was missed | MLB KXMLBHIT threshold t=3 (3+ hits per game) excluded from `THRESHOLDS` in `train_mlb_model.py` and `_MODEL_THRESHOLDS` in `run_mlb_paper_trade.py`. Exclusion rationale: at t=3, base rate=3.9% and AUC=0.61 produce a Brier improvement of only +0.0002 (shadow gate requires ≥0.001). Even if Brier passed, t=3 bets would almost never fire — model predicts ~3.9% while Kalshi asks ~8¢, always negative edge. The t=3 market exists on Kalshi (threshold 4 in Kalshi ticker format: `KXMLBHIT-...-4`) but the bot will skip it with a C6 log entry on every run. |
@@ -737,6 +913,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-043 |
+| Arm | MLB |
 | Category | Architectural placeholder — calibration value ported cross-sport without derivation |
 | What was missed | `DEFAULT_KELLY_FRACTION = 0.25` (global) and T1 MLB band config `kelly_fraction = 0.10` are inherited from the NBA arm. The 0.10 fraction was calibrated for NBA (AUC, variance, and base-rate structure validated at G4). MLB is a structurally different sport: different hit-rate distributions, different market thinness, different base-rate variance across thresholds (t=1 base_rate≈27%, t=2≈6.5%). The fractional Kelly appropriate for MLB has not been derived. |
 | When it should have been caught | Before MLB T1 activation. Should have been a pre-MLB-G1 derivation task. |
@@ -754,6 +931,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-044 |
+| Arm | MLB |
 | Category | Architectural placeholder — monitoring baseline ported cross-sport without derivation |
 | What was missed | `BRIER_BASELINE = 0.2416` and `ECE_BASELINE = 0.0247` in `monitor.py` are NBA G4 TEST set values (fitted on 80-player NBA scoring outcomes). These constants are used by `SystemMonitor` to evaluate drift in the rolling forecast window. MLB hit prediction is a structurally different problem: binary classification (hits ≥ threshold) with lower base rates (t=1: 27%, t=2: 6.5%) vs. NBA points thresholds (base rates 30–50% depending on line). The correct MLB Brier baseline depends on the MLB model's calibration and hit-rate distribution — values that will only be known after the first resolved MLB paper bets. Using NBA baselines for MLB monitoring means the C7 drift alarm could fire incorrectly (NBA baseline too tight for MLB) or miss real drift (NBA baseline too loose). |
 | When it should have been caught | Before MLB monitoring was configured. Should have been a pre-MLB-G1 baseline derivation task. |
@@ -771,6 +949,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-045 |
+| Arm | Core |
 | Category | Systemic blind spot — scaling ceiling absent from governance documentation |
 | What was missed | Kelly criterion assumes infinite market depth. Kalshi KXMLBHIT player prop markets are thin (estimated $500–$2,000 per market). At $1K bankroll with 25% Kelly fraction, position sizes are $50–$250 — within market depth. At $10K+ bankroll, full Kelly sizing would start moving prices against the bot, degrading edge before the position fills. The maximum effective bankroll this strategy can deploy is constrained by Kalshi market depth, independent of bankroll math or Kelly fraction calibration. This ceiling has never been analyzed or documented. Current paper-trading bankroll ($1,000 reset) is well below any likely ceiling. The gap becomes binding during G8–G9 (multi-sport, large capital deployment). |
 | When it should have been caught | Before G6 go/no-go on live capital. Current $1K paper makes it non-urgent, but the live capital threshold (G6: 30 resolved bets, positive P&L) does not include market depth analysis as a gate condition. If live capital is authorized and then scaled, the ceiling could be hit without warning. |
@@ -788,6 +967,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-046 |
+| Arm | MLB |
 | Category | Systemic blind spot — T4 has a distinct alpha hypothesis with no validation experiment registered |
 | What was missed | T4's alpha hypothesis ("market is slow to update to live game state; bot can get there first") is structurally distinct from T1's hypothesis ("calibrated historical model beats pregame market pricing"). EXP-017 tests T1's commercial case. No experiment is registered to test T4's commercial case. The governance framework (GG-004, EXP-017 design, ADR-0024 validation gates) was designed entirely around T1-style hypothesis testing. If T4 wins on a different information edge (market microstructure / reaction speed), T1 failure does not imply T4 failure. Conversely, T1 success does not validate T4. |
 | When it should have been caught | Before T4 (MLB) was enabled for paper trading. ADR-0033 authorized T4 paper positions; T4's independent commercial validation was not a prerequisite. |
@@ -840,6 +1020,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-050 |
+| Arm | MLB |
 | Category | Implementation bug — per-cycle dedup guard instead of game-day dedup guard |
 | What was missed | `fired_tickers: set[str] = set()` was initialized INSIDE `_run_cycle()` and reset on every ~90-second evaluation cycle. The intent was to prevent a market from being bet more than once. The actual effect: markets could receive a new position on every cycle (1 new position per 90s × number of cycles per game ≈ up to 65 positions per market per game day). Observed data: 73 unique kalshi_tickers bet an average of 17.5 times each (range 1×–65×) during June 27–28 game nights. n=1274 total positions from only 73 independent markets. |
 | When it should have been caught | Before T4 MLB paper trading was enabled. The dedup logic was copied from the NBA T4 runner but not audited for scope correctness. |
@@ -857,6 +1038,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-047 |
+| Arm | MLB |
 | Discovered | 2026-06-28 SESSION 96 — PIPE-05 ran June 27 with 149 Kalshi markets, matched 0 players. Root cause: `_ticker_to_game_date` extracted June 26 from ticker `KXMLBHIT-26JUN271310NYYBOS-...` but `GAME_DATE_ISO=2026-06-27`. Kalshi uses the market creation date (day before game) in the ticker, not the game date. |
 | Category | Implementation bug — date parsing assumption wrong |
 | What was missed | `_ticker_to_game_date` was written assuming Kalshi's `{DD}` field equals the game date. Observed: Kalshi opens MLB hit markets the day before the game and uses that creation date in the ticker. T1 has been dark since MLB-G1 gate open (no matches, 0 bets placed). |
@@ -872,6 +1054,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-048 |
+| Arm | MLB |
 | Discovered | 2026-06-28 SESSION 96 — PIPE-05R June 27 morning run: ALL MLB Stats API calls returned `406 Not Acceptable` for player game logs. 80+ T4 bets placed during June 26-27 games were unresolvable. June 28 morning run succeeded (same API, same endpoints). |
 | Category | Operational fragility — external API returns client error; resolution pipeline silently skips all bets with no retry |
 | What was missed | MLB Stats API (`statsapi.mlb.com`) occasionally returns `406 Not Acceptable` for the game log endpoint used in PIPE-05R. The existing `_fetch_mlb_hits()` catch handles the error gracefully (skips with log), but there is no retry with delay, no fallback endpoint, and no alert if the entire resolution run scores 0 bets. |
@@ -887,6 +1070,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-049 |
+| Arm | MLB |
 | Discovered | 2026-06-29 SESSION 97 — Post-mortem on T1 MLB going dark June 27–28. GG-047 was resolved in S96 with wrong fix (`+timedelta(days=1)`). S97 ARE WE COMPROMISED check did not re-flag it because Step 3 showed GG-047 RESOLVED. No protocol step reads live VPS cron output. |
 | Category | Systemic blind spot — governance protocol checks code and documents but not live operational state |
 | What was missed | Three consecutive protocol runs (S95 Q6 → registered GG-047; S96 trusted resolved doc → did not re-check live logs; S97 → same omission) each passed without ever running `grep` on `paper_mlb_cron.log`. A single grep would have surfaced "0 players in live MLB markets" immediately. |
@@ -905,6 +1089,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-051 |
+| Arm | MLB |
 | Discovered | 2026-06-29 SESSION 100 — post-mortem synthesis on GG-049 (T1 MLB dark 2 days) and GG-050 (T4 re-betting 17.5×). Both failures were invisible to Layer 1 (architecture review) and Layer 2 (C7 Brier/ECE/P&L monitoring). GG-049 was "resolved" by adding an operational heartbeat to the session-start protocol — a human check, not a machine assertion. The structural absence: no runtime layer asks "is what is currently happening coherent with what this band is supposed to do?" |
 | Category | Systemic blind spot — governance framework has two of three required layers; Layer 3 was never designed |
 | What was missed | Layer 3 semantic contracts: explicit runtime assertions that each pipeline stage and each execution band is behaving consistently with its stated intent. Layer 1 verifies architecture at gate review. Layer 2 verifies model accuracy per monitoring cycle. Neither layer can detect: (a) a pipeline that runs without error but produces no evaluations (GG-049 pattern), (b) a T4 evaluation loop that fires on stale or ghost data (contamination pattern), (c) a band-level model property violation (e.g., T4-CORR increasing a position size, violating ADR-0029 Principle 6). These are not bugs (they pass all tests). They are behavioral coherence failures — the gap between what runs and what was meant. |
@@ -921,6 +1106,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-052 |
+| Arm | MLB |
 | Discovered | 2026-06-30 SESSION 103 — full root cause audit of T4 MLB firing 2 bets all day (vs. expected 50–100). Audit JSONL showed all 1632 staleness halts fired at exact same second per cycle — proving _run_cycle() is sub-second, not the slowness source. |
 | Category | Architectural placeholder — freshness window calibrated for a system where data fetches take <5s; actual Kalshi paginated fetch takes 60–130s |
 | What was missed | `cycle_start_at = datetime.now(timezone.utc)` was placed BEFORE the ESPN poll loop and Kalshi paginated fetch. Kalshi `fetch_player_points_markets()` paginates across 3+ pages of KXMLBHIT markets with rate-limit backoff (RETRY_DELAY_S × 2^attempt delays of 4, 8, 16, 32s). Total fetch time: 60–130 seconds per cycle. `_FRESHNESS_WINDOW_S = 2.0 × POLL_INTERVAL_S = 90s`. By the time `_run_cycle()` started, `cycle_start_at` was 90–130s old — all `game_state_fresh` checks failed immediately. |
@@ -939,6 +1125,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-053 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 104 — session-start protocol operational health check. |
 | Category | Verification gap — fix committed and deployed, but never exercised against real traffic. |
 | What was missed | The GG-052 fix (`cycle_start_at = snapshot_fetched_at` after Kalshi fetch, commit `bbaf86a`) was deployed and the `t4-mlb` service restarted at 2026-07-01 01:19:19 UTC. As of this check (05:01 UTC), every MLB game for the day was still `STATUS_SCHEDULED` — zero live batter states have flowed through the fixed code path. The `audit_mlb_t4.jsonl` tail (last entry 00:02:45 UTC) predates the restart and is the pre-fix incident already logged under GG-052, not new evidence the fix works. |
@@ -952,6 +1139,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-054 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 104 — session-start protocol, cross-checking `SemanticFloorViolation` count (0) against 4 consecutive T1 MLB 0-player days (June 26-29). |
 | Category | Verification gap — a safety mechanism built specifically to catch a known failure pattern (GG-049) has zero real-world activations. |
 | What was missed | The guard (ADR-0034, integrated commit `501c4ca8`, 2026-06-29 22:10:14 -0700 = 2026-06-30 05:10 UTC) was deployed *after* the last real 0-player incident it was designed to catch (June 26-29, root-caused as GG-047). The only T1 MLB cron run since deployment (June 30, 11:00 UTC) was healthy — 36 players matched. The guard's fire path (exit code 2, C6 CRITICAL log write) has never executed against genuine bad data end-to-end. |
@@ -965,6 +1153,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-055 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 104 — session-start protocol, reviewing GG-047 resolution history. |
 | Category | Latent risk — two sequential wrong fixes to the same date-parsing function, shipped under deadline pressure. |
 | What was missed | T-205 (SESSION 96, June 28) shipped `_ticker_to_game_date() + timedelta(days=1)`, an incorrect assumption that Kalshi always creates markets exactly one day before the game. It passed its own tests and was documented as resolving GG-047, but T1 stayed dark for June 28 and June 29 anyway. T-206a (SESSION 97, June 29, commit `d5289a0`) shipped the real fix — extracting `GAME_DD` directly from the `{CREATE_DD}{MON}{GAME_DD}{HHMM}` ticker format via regex, with no offset arithmetic. No test case exists for a market created in one calendar month for a game in the next (e.g., created 2026-06-30 for a 2026-07-01 game) — exactly the class of edge case that an offset-based (rather than direct-extraction) bug tends to hide in, and the class of bug this function has already produced twice. |
@@ -978,6 +1167,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-056 |
+| Arm | NBA |
 | Discovered | 2026-07-01 SESSION 104 — session-start protocol Q1/Q6 cross-check: `risk.py` `max_drawdown_pct = 0.20` (kill-switch trigger) vs. live NBA main-pool realized drawdown of 24.9% (bankroll $751.10 / $1,000 initial, realized P&L -$248.90, per GG-036 ratified baseline). |
 | Category | Systemic blind spot — same failure shape as GG-049 (a pipeline that produces nothing looks identical to "no games," not "kill switch engaged"). |
 | What was missed | The kill switch is working correctly: `current_drawdown_pct` is computed live per-pool in `run_paper_trade.py` and passed into `evaluate_forecast()`, which correctly halts at >= 0.20. NBA is currently off-season (0 games), so this hasn't manifested as an operational failure — no bets are being evaluated at all. But there is no decision on record for what happens when NBA resumes in October 2026 with the pool still 4.9 points above the kill-switch threshold: the very first live `evaluate_forecast()` call will trip `drawdown_limit_breached` and reject every subsequent bet indefinitely, with no reset mechanism currently defined. |
@@ -991,6 +1181,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-057 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 104 — institutional read comparing untracked files against governance logs. |
 | Category | Process failure — a new production component shipped outside every institutional control this project has (no DECISION_LOG entry, no GOVERNANCE_GAP_LOG mention, no MEMORY_BANK/TODO_NEXT reference, not committed to git). |
 | What was missed | `scripts/web_dashboard.py` (868-line stdlib HTTP server, replaces a curses TUI that crashed on SSH disconnect), `Open Dashboard.command` (Mac launcher), and `scripts/pmbot-web-dashboard.service` (systemd unit) were all built and deployed. The service is confirmed **live in production** on the VPS — `systemctl status pmbot-web-dashboard` shows `active (running) since 2026-07-01 00:54:58 UTC`, serving portfolio/audit data on `127.0.0.1:8050`. All three files are untracked in git (`git status` shows `??`). This is a genuine new C8 component change with zero paper trail — exactly the class of gap the session-start protocol's Step 1 (`decisions_logged: false` scan) and Step 3 (open GG scan) are designed to catch, except this gap predates any doc existing to scan. |
@@ -1004,6 +1195,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-058 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 104 — investigating why zero live evaluations occurred anywhere in `t4_mlb_live_cron.log` since the GG-052 fix restart (2026-07-01 01:19:19 UTC). |
 | Category | **Architectural bug, not a verification gap.** This is more severe than GG-053's framing ("fix hasn't been tested yet, wait and see") — the fix structurally cannot be tested against West-coast late games under current logic, and a real coverage hole exists independent of GG-052/GG-053. |
 | What was missed | `run_t4_mlb_live.py`'s date-rollover refresh (lines 1049-1077, "24/7 systemd service support") uses `date.today()` — the VPS's UTC calendar date — as the day boundary. At UTC midnight every night, it runs `game_ids[:] = _espn_mlb_game_ids_today()`, **replacing** the entire tracked game list with the new UTC day's ESPN slate. Confirmed from `t4_mlb_live_cron.log`: this fires nightly (`2026-06-28 00:00:13`, `2026-06-29 00:00:30`, `2026-06-30 00:00:51`, `2026-07-01 00:03:30` — each logged "rollover complete" with a *different, smaller* game/player count than the prior evening, e.g. June 29→30 dropped from 74 players to 31). The new day's ESPN game-ID list (verified: July 1's IDs `401815979-992` vs June 30's `401815964-978` — disjoint ranges) does **not** include the previous day's still-in-progress West-coast games (first pitch commonly 22:30 UTC-01:45 UTC, i.e. straddling the boundary — the schedule validator itself models this correctly, computing one continuous T4 window from 22:05 UTC through ~06:10 UTC the *next* day). The practical effect: every night, at UTC midnight, T4 MLB stops polling whatever games are still live (often mid-to-late innings — the highest-value evaluation window) and does not pick up the new day's games until they start hours later. Confirmed directly for tonight: the 01:19:19 UTC restart (deploying GG-052) initialized with July 1's 14-game list — the 5 June 30 West-coast games still in progress at that moment (first pitch 01:40 UTC, ~21 min before restart) were never touched again. Zero `cycle=` log lines (the marker for an actual live evaluation cycle) appear anywhere in the log after 01:19:19 UTC as of this check (05:20 UTC) — the process has been sleeping in "No live MLB batter states" for 4+ hours despite West-coast games that were in progress. |
@@ -1017,6 +1209,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-059 |
+| Arm | MLB |
 | Discovered | 2026-06-30 SESSION 104 — Opus strategic review identified absence of schema/cardinality/staleness validation framework at C1 ingestion boundary. |
 | Category | Architectural gap — missing validation layer between data sources and forecasting pipeline. |
 | What was missed | C1 ingestion has no formal schema contracts, no cardinality validators, and no staleness checks. Concrete failure modes already observed: (1) Feature CSV showed a 3× cardinality jump — not caught at ingestion time; discovered post-hoc during model diagnostics. (2) Player name matching silences (ticker/MLBAM ID pipeline breaks) pass validation-free through C1→C2 and reach C3 producing forecasts on an empty player set. (3) ESPN scoreboard data arriving stale during live T4 windows has no freshness SLA to reject against. The Semantic Floor Guard (ADR-0034, SESSION 101) partially addresses (2) by asserting `matched_players > 0` downstream, but this fires at C2 output, not at C1 ingestion, and does not cover (1) or (3). There is no schema manifest documenting what each source should return, no cardinality baseline to alert against, and no structured per-source validation pass/fail in the audit log. |
@@ -1033,6 +1226,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-060 |
+| Arm | MLB |
 | Discovered | 2026-06-30 SESSION 104 — Opus strategic review identified the inverse of GG-049: a run that evaluates markets and finds no edge is currently indistinguishable in the log from a run where the pipeline silently died. |
 | Category | Systemic blind spot — diagnostic oracle gap. Inverse of GG-049. |
 | What was missed | C4 risk.py logs bet approvals (positions opened, sizes, Kelly fractions). It does not log evaluations that were rejected due to insufficient edge (`model_p ≤ market_implied_p + vig`), rejected due to risk controls (drawdown limit, exposure cap, size floor), or evaluated and simply found to have no positive edge signal. The result: a cron run that produces zero bets could mean: (A) pipeline died at some layer (GG-049 pattern), (B) C4 correctly evaluated N markets and found 0 with positive edge signal, (C) C4 found positive edge signals but rejected them (drawdown limit breached, exposure cap hit, size too small). Currently, case (B) and case (C) are indistinguishable from each other and from case (A) without manually reading `paper_portfolio_mlb.json` or the audit log at a per-event level. There is no structured per-evaluation log record, no run-level edge opportunity summary, and no mechanism to detect when zero-edge nights cluster (which would indicate model drift or market regime shift). The Semantic Floor Guard (ADR-0034) partially mitigates case (A) for the C1→C2 layer but does not address cases (B) or (C), and provides no edge accounting at the C4 layer. |
@@ -1049,6 +1243,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-061 |
+| Arm | Core |
 | Category | Process gap — ADR drafting did not verify the target file/system matched the sport domain the ADR described. |
 | What was missed | ADR-0036 (SESSION 104, 2026-06-30) authorized setting `_PHASE8_ACTIVE = True` in `t4_execution_engine.py` and ruled GG-038/GG-039 exempt and GG-040 partially resolved, describing the data sources in MLB terms ("batter stats," "innings," "batting slot"). `t4_execution_engine.py` is the NBA T4 sub-band engine (ADR-0029, SESSION 66-67) — it operates on `quarter`/`pts_so_far`/`stat_type="pts"`, a 48-minute NBA game clock, and is consumed only by `t4_live_runner.py`/`t4_price_cache.py` (NBA-only per CLAUDE.md's own band description). `run_t4_mlb_live.py`, the actual live MLB T4 runner, does not import any of this code and has no sub-band architecture. No step in drafting or accepting ADR-0036 checked that the file being authorized for a change actually matched the sport its rationale described. |
 | When it should have been caught | During ADR-0036 drafting — a single grep for MLB-specific field names (`h_so_far`, `ab_so_far`, `batting_slot`) against `t4_execution_engine.py` would have shown zero matches and surfaced the conflation immediately. |
@@ -1066,6 +1261,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-062 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 106 — while investigating a "double-rollover, 28s apart" oddity flagged in the prior session's handoff, during GG-058 root-cause work on `t4_mlb_live_cron.log`. |
 | Category | Regression of a previously-fixed failure class. T-210 (commit `670b88b`, "eliminate dual concurrent T4 MLB sessions") was believed to have closed this bug permanently via `ExecStartPre=-/usr/bin/pkill -f run_t4_mlb_live.py` in `t4-mlb.service`. It did not. |
 | What was missed | Forensic log analysis proved two independent `run_t4_mlb_live.py` processes ran concurrently for roughly **1h48m, from ~23:31 UTC 2026-06-30 through 01:19:19 UTC 2026-07-01**. Evidence chain: (1) `cycle_n` is monotonic-only by construction — initialized to 0, incremented exactly once per completed cycle, no reset path anywhere in the file. (2) `t4_mlb_live_cron.log` showed non-monotonic cycle numbers interleaved (a `cycle=0029` summary line followed by a `cycle=0028` line). (3) Extracting the full window of `cycle=` summary lines resolved this into two clearly distinct, independently-progressing series: one with `cg_halts` climbing 878→1632 and session totals `eval=50`/`fired=2`; the other permanently flat at `cg_halts=0`, `eval=0`, `fired=0` (an orphaned process that never found live batter states, likely started against a stale/rolled-over game list). (4) `audit_mlb_t4.jsonl` showed only one `session_id` in the window — consistent with the orphan producing no audit-worthy events, not proof against it. (5) `systemctl status`/`pgrep -af run_t4_mlb_live` confirmed only one PID (781451, started 2026-07-01 05:52:38 UTC) alive at investigation time — the orphan is gone now, but was not caught while it ran. (6) `journalctl -u t4-mlb` showed systemd itself restarting the unit twice, 10 seconds apart, at `Jun 30 06:30:35` and `Jun 30 06:30:45` — the most probable origin: the second restart's `ExecStartPre=-pkill` fired before the first restart's new process had fully registered under `run_t4_mlb_live.py`'s process name, or the `sleep 2` grace window raced a slow-starting first instance. The orphan then survived undetected for ~19 hours until the next restart (01:19:19 UTC, deploying GG-052) finally cleared it. This is the same failure shape T-210 was built to eliminate; the `pkill -f` pattern-match approach is race-prone by construction (it depends on timing between process death and process rename/registration, not on an atomic lock), and this incident is direct proof it can still fail. |
@@ -1081,6 +1277,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-063 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 106 — while ruling out a duplicate-rebet bug as a contributor to the T1 MLB 50-bet anomaly, inspecting `paper_portfolio_mlb.json` for a sample record surfaced `"kalshi_order_status": "failed: HTTP 410"` on every position checked. Widened to the full portfolio history for confirmation. |
 | Category | Silent, 100%-reproducible execution failure, present since the feature's introduction — not a transient/rate-limit condition like the previously-known GG-014 (429/503) failure class. |
 | What was missed | Full-history census of every MLB paper position, both bands: **T1 MLB — 52/52 positions ever recorded, 100% `"failed: HTTP 410"`, zero successes** (`paper_portfolio_mlb.json`). **T4 MLB — 15/15 positions ever recorded, 100% `"failed: HTTP 410"`, zero successes** (T4 MLB portfolio). By contrast, **NBA T1 on the identical code path** (`kalshi_client.submit_order()`, shared across sports) shows `{'resting': 87, 'executed': 28, 'failed: HTTP 503': 18, 'failed: HTTP 429': 16, 'failed: transient...': 9}` out of 158 positions — a 73% real-confirmation rate. This proves the failure is not RSA signing, not credentials, not the shared `_post()`/retry path — it is specific to MLB (`KXMLBHIT` series) tickers. HTTP 410 ("Gone") is semantically distinct from 429/503: it indicates the referenced resource does not exist / is no longer available at the given path, not a transient server condition — retries do not apply and none of the existing GG-014 retry logic (`(429, 503)`) covers it. Root cause is NOT yet isolated: `mkt.ticker` used in `submit_order()` is the exact same string returned moments earlier by the live `GET /markets?series_ticker=KXMLBHIT&status=open` DS-02 fetch (`run_mlb_paper_trade.py:956`, `run_t4_mlb_live.py:889` both pass `mkt.ticker`/`ticker` straight through), so the market is confirmed open/listed at fetch time yet is rejected as Gone at order-submission time seconds to minutes later. The actual Kalshi response body is not captured anywhere in the current code — `kalshi_client.py` `_post()` truncates `r.text[:500]` into the `_post` return tuple, but `submit_order()` only forwards `str(data.get("error", data))`, which resolves to the bare `f"HTTP {r.status_code}"` string — the diagnostic body text is discarded before it ever reaches `paper_trader.py` or the audit log. This is why root cause cannot be conclusively determined from historical records alone. |
@@ -1096,6 +1293,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-064 |
+| Arm | MLB |
 | Discovered | 2026-07-01 SESSION 108 — while empirically verifying the GG-063/T-217 v1→v2 order-endpoint migration fix via a manual test order against Kalshi DEMO. |
 | Category | Unconfirmed — possible DEMO/LIVE environment desync, or simply a testing-window artifact (no live MLB games "today" to test against). Not yet distinguished. |
 | What was missed | Comparing `GET /markets/{ticker}` for the same live-sourced KXMLBHIT ticker against both DEMO and LIVE base URLs showed: DEMO `status=initialized`, `open_time=2026-07-02T05:12:39Z` (not yet reached); LIVE `status=active`, `open_time=2026-07-02T04:12:00Z` (already active) — a ~1hr `open_time` discrepancy for the identical ticker, with DEMO consistently lagging LIVE. All 60 currently-open KXMLBHIT markets at test time were for 2026-07-02 games (test was run 2026-07-01, no live in-progress MLB games existed to test against same-day). Every one of 15 test orders submitted against DEMO in this window returned `409 market_closed` — could not be distinguished between (a) a genuine DEMO/LIVE market-activation-timing lag that would also affect real T1/T4 MLB cron runs scheduled close to `open_time`, or (b) an artifact of testing against next-day markets outside any live game window, which is the more likely explanation given no MLB games were in progress at test time. |
@@ -1111,6 +1309,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-065 |
+| Arm | Core |
 | Discovered | 2026-07-02 SESSION 108 — while executing the T-213 close-out task "run full test suite + mypy strict" (from the SESSION 107 handoff's open-item list). `mypy` was not installed in `.venv311`; `pyproject.toml` `[tool.mypy]` has declared `strict = true` since at least G4 per `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` references. |
 | Category | Architectural placeholder — a governance control (strict static typing) was configured but never activated or enforced. |
 | What was missed | mypy was installed (`pip install "mypy>=1.9.0,<2.0"`) and run against `risk.py` and `run_mlb_paper_trade.py` with `--strict`. Result: 3 errors in `risk.py` (missing `pandas-stubs`, missing `py.typed` marker on the in-repo `c6_audit_logger` package, one pre-existing `no-any-return` in `RiskEngine._log`) and 26 errors in `run_mlb_paper_trade.py` (missing `py.typed` markers across effectively every C1–C7 in-repo package it imports, two `requests.get(params=...)` type mismatches, and 8 bare `dict`/`list` generic-type-argument omissions). None of these trace to T-213's new code (`edge_logger` param, `evaluate_forecast()` wrapper, `_emit_edge_decision()`, `summarize_edge_run()`, or the two `RiskEngine(...)` call-site edits at lines 618/962) — confirmed by cross-referencing error line numbers against the T-213 diff. All 29 errors are pre-existing baseline debt that predates this session. |
@@ -1129,6 +1328,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-066 |
+| Arm | MLB |
 | Category | Architectural placeholder / data-availability gap (same class as NBA's GG-040, discovered independently for MLB). |
 | What was missed | ADR-0039 (T-218, SESSION 108) scoped an MLB-native T4 sub-band taxonomy and, in doing so, confirmed by direct code read of `run_t4_mlb_live.py` that MLB's only live data source is a 45-second poll of the ESPN MLB summary endpoint (`_espn_poll_once_mlb`, `POLL_INTERVAL_S = 45`) that diffs `h_so_far`/`ab_so_far` between cycles. There is no play-by-play, no live event stream, and no sub-45s detection latency anywhere in current MLB C1. |
 | When it should have been caught | This was never claimed to be otherwise — it is a newly surfaced scoping finding, not a regression. Registered proactively as part of ADR-0039's design work rather than being discovered as a live failure. |
@@ -1146,6 +1346,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-067 |
+| Arm | MLB |
 | Category | Architectural placeholder / data-availability gap (same class as GG-066, discovered while operationalizing the two experiments GG-066 itself references). |
 | What was missed | Both design docs (T-219, SESSION 109) state "No new data sources are required — this experiment is a retrospective slice-and-recompute over data T4M-PROJ already ingests live." Direct code read of `run_t4_mlb_live.py::_run_cycle()` (SESSION 110) found this false on two independent counts: (1) the raw per-cycle context each experiment needs (`h_so_far`/`ab_so_far`/`ba_l10`/`inning`/`batting_slot`/`mip`/`vig`/`p_t4`) is computed in memory every cycle but is **only persisted to `_append_dryrun_record()`'s JSONL log when `dry_run=True`** — the normal/production execution path (the one actually running on the VPS) discards it after building the minimal `fc_record` passed to `engine.evaluate_forecast()`. (2) Both docs cite `t4_price_cache.py` (`CachedPrice`) as the source of "the existing T4M-PROJ price cache audit log," but `t4_price_cache.py` is Phase-8-blocked NBA-oriented infrastructure (`T4PriceCache._PHASE8_ACTIVE = False`; `start_polling()`/`stop_polling()` raise `T4Phase8BlockedError`) that MLB T4M-PROJ's live path never touches — live MLB prices flow through a separate `live_prices` dict (populated elsewhere in the poll loop) with its own `mid_price`/`vig`/`has_live_quotes` attributes, not `CachedPrice`. |
 | When it should have been caught | At T-219 doc-drafting time (SESSION 109) — the docs asserted data availability without a corresponding code read of the actual normal-path logging behavior or of `t4_price_cache.py`'s Phase 8 gate. |
@@ -1163,6 +1364,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-068 |
+| Arm | MLB |
 | Category | Contract-calibration defect (T-212's `data_contracts.py`, built SESSION 107, never exercised against real production edge cases before today). |
 | What was missed | `_MLB_FEATURE_CSV_NULLABLE` in `data_contracts.py` omitted `days_rest` and `train_test_label`, both marked non-nullable by default. But `mlb_features.py:225-228` explicitly sets `days_rest=NaN` for a player's first game in the dataset (no prior game to diff against — documented in the function's own docstring), and `mlb_features.py:315`/`features.py:802` explicitly set `train_test_label=None` for "retained" rows with no `temporal_cutoff` (TI-02, deliberately excluded from train/val/test splits). Both nulls are intentional, documented data-model behavior, not sparsity or corruption — the contract simply never accounted for either. |
 | When it should have been caught | At T-212 build time (SESSION 107) — the nullable set was derived by inference from "which columns look like rolling-window features," not by cross-checking every column against `mlb_features.py`'s actual null-producing logic. SESSION 108's regression-fix pass (rebuilding test fixtures to the 44-col schema) also missed it because every fixture row populated all columns — no fixture exercised a first-game-in-dataset or no-cutoff row. |
@@ -1180,6 +1382,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-069 |
+| Arm | Core |
 | Category | Correctness defect in a resolution primitive shared by production paper-trade resolution and both new backtest runners (GG-067's downstream consumers). |
 | What was missed | `fetch_actual_hits`/`_fetch_mlb_hits` (`src/prediction_market_bot/run_resolve_mlb.py:77-138`) queries the MLB Stats API `gameLog` endpoint and returns `float(split["stat"]["hits"])` for whatever split matches `game_date` — with no check of `abstractGameState`/`codedGameState`/`status` anywhere in the function. `gameLog` updates live during a game, so this can and does return partial (mid-game) hit totals for a game that has not finished. Discovered when EXP-ARITH-MLB-01's first real run against SNAP-2026-07-02-001 (frozen while PIT@PHI and CIN@MIL were both confirmed still IN PROGRESS via ESPN) unexpectedly resolved 7 bets instead of the expected 0 — those 7 were resolved against live, non-final partial box-score totals. |
 | When it should have been caught | At `run_resolve_mlb.py`'s original build (T-187E) or at GG-048's retry-logic fix (SESSION ~96) — either point should have paired "fetch hits" with "confirm game is Final," matching the pattern already used elsewhere in the codebase (`run_t4_mlb_live.py:165`, `scripts/reconstruct_mlb_score_diff.py:58`, `scripts/poll_and_resolve_g1.py:41` all gate on ESPN `status.type.name == STATUS_FINAL` before trusting game data). |
@@ -1197,6 +1400,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-070 |
+| Arm | Core |
 | Category | Tooling/session-start protocol defect — the hook itself, not the trading system. |
 | What was missed | `.claude/hooks/governance_scan.sh`'s portfolio section read only `paper_portfolio.json` (NBA) and printed it as unlabeled generic `PORTFOLIO (VPS LIVE BOOK)`. NBA and MLB paper trading use fully separate, isolated ledger files (`paper_portfolio.json` vs `paper_portfolio_mlb.json`, confirmed via `PORTFOLIO_PATH` constants in `run_paper_trade.py`/`run_mlb_paper_trade.py`) with independent `initial_bankroll_usd`/`total_realized_pnl`. The hook showed only the NBA figure (frozen, dark, -24.9% drawdown — the already-adjudicated GG-034/GG-037 baseline) with no indication it excluded the live, active MLB pool (currently +$100.00 P&L, 0.0% drawdown, 49/30 resolved). |
 | When it should have been caught | When the hook was written — should have accounted for multi-sport ledgers from the start, especially once MLB became the sole active priority (2026-07-01 operator directive). |
@@ -1214,6 +1418,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-071 |
+| Arm | MLB |
 | Category | Systemic risk-model finding — a property of the current proportional-stake sizing mechanic under compounding, not a code defect. |
 | What was missed | No prior session had run a genuine forward-time (calendar-day, compounding) Monte Carlo of either MLB band. All earlier MC work resolved only the currently-open position book plus real closed P&L — a terminal-outcome view, not a forward trajectory view. That masked a property of proportional/Kelly-style stake sizing at T1's real cadence (~26 bets/active-day): compounding a genuinely real, positive edge does not suppress ruin risk — it amplifies both tails simultaneously. |
 | When it should have been caught | Not clearly assignable to a single missed gate — this is a new class of analysis (forward simulation vs. terminal resolution) that the project had not yet built. Flagged here specifically so it is not lost as a one-off artifact finding. |
@@ -1231,6 +1436,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-072 |
+| Arm | MLB |
 | Category | Incident-response scope gap — a fix was correctly applied but not propagated to every consumer of the thing it fixed. |
 | What was missed | `MLB_FEATURE_CSV_CONTRACT` (`data_contracts.py`) is imported and enforced identically by two independent pipelines: `run_mlb_pregame.py` (PIPE-06pre) and `run_mlb_paper_trade.py` (PIPE-05/T1). GG-068's `days_rest`/`train_test_label` nullability bug HALTed **both** pipelines on 2026-07-02, since both validate the same feature CSV against the same contract. SESSION 111's GG-068 response discovered and fixed the bug via PIPE-06pre's failure (it HALTed first, at 15:20 UTC, and was the one actively being investigated for the `t4_mlb_cycle_log.jsonl` accumulation check), manually re-ran PIPE-06pre post-fix to recover same-day pregame context, and closed GG-068 as RESOLVED — without checking whether PIPE-05, gated by the identical contract, had also HALTed earlier that day (it had, at 11:00:11 UTC, 4+ hours before the fix). PIPE-05 was never re-run. |
 | When it should have been caught | At GG-068's resolution step (SESSION 111) — "this contract HALTed one consumer, does it gate any other pipeline?" is a direct corollary of the fix and was not asked. `grep -rn MLB_FEATURE_CSV_CONTRACT src/` at fix time would have surfaced both call sites in under a minute. |
@@ -1248,6 +1454,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-073 |
+| Arm | MLB |
 | Category | Systemic blind spot — an automated control (T-171's CI/CD deliverable) has never worked, and its total failure has been invisible because a manual compensating control (operator-directed ad hoc `ssh ... git pull` after every push) has silently done its job instead. |
 | What was missed | `.github/workflows/deploy.yml` SSHes into the VPS on every push to `main`, aborts with `exit 1` if `git status --porcelain` on the VPS is non-empty (the T-171 guard against clobbering cron-written tracked files), then runs `git pull`. `gh run list --workflow=deploy.yml` shows **every run back to at least 2026-07-01T01:27:35Z (30/30 checked) has `completed / failure`**, each failing in 8-25 seconds — consistent with the dirty-tree guard firing immediately, before `git pull` is ever attempted. Root cause, per `git status --porcelain` on the VPS: two stray untracked files present since **2026-06-03/04** (`scripts/live_terminal.py.pre-s28-backup`, `src/prediction_market_bot/c3_forecasting/team_stats_store.py` — a dead duplicate of the real, tracked `c1_signal_ingestion/team_stats_store.py`; nothing imports the `c3_forecasting` copy), an untracked `exp_output/MLB/` directory present since **2026-06-24**, and (as of 2026-07-02) the newly-tracked-but-cron-mutated `data/data_contracts_state.json` (see resolution below). Any one of these alone is sufficient to fail every run; together they mean **deploy.yml has never once successfully completed an automated deploy in its entire ~3-week existence** (workflow written 2026-06-12, SESSION 59, T-171). |
 | When it should have been caught | At any point after 2026-06-12 — no session ever checked `gh run list --workflow=deploy.yml` as part of session-start or session-end protocol. The workflow's own GitHub Actions status has shown a red X on every run for three weeks; nothing in this project's governance checks reads CI status. |
@@ -1263,6 +1470,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-074 |
+| Arm | MLB |
 | Category | Systemic blind spot — process gap, not a code defect. |
 | What was missed | The session-start protocol's Step 1 (`decisions_logged: false` scan) and Hard Rule 7 (log decisions immediately) keep the *rolling* logs (MEMORY_BANK.md Current State Snapshot, TODO_NEXT.md, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, SESSION_HANDOFF files) current every session — that discipline is working well and was not the failure. But nothing checks whether the *structured, point-in-time* grounding documents (01_SPEC/, 02_ARCHITECTURE_DESIGN/, 07_TEST_VALIDATION_EVIDENCE/, 08_MODEL_RISK_GOVERNANCE/) still describe the system's actual current shape. Concretely found stale/false as of 2026-07-02: CLAUDE.md stated "T4 (MLB): Does not exist" (T4M-PROJ has been ACTIVE under ADR-0023 for weeks); ROADMAP_MILESTONES.md showed Phases 5/6/7 as "Not Started" despite G5 CLOSED and Phase 6/7 running live for 5+ weeks; RISK_APPETITE_CONSTRAINTS.md's Hard Limits table said "TBD at G4 — Placeholder" for limits its own footer said were confirmed a month earlier; EXECUTION_ARCHITECTURE.md said C4/C5 were "gated and not yet implemented" while both had been running continuously in production; DATA_FLOWS_LINEAGE.md said `QualitativeSignalStore` was "a stub" and F-100+ features "PENDING" when both had been live and confirmed-positive-signal since EXP-007; MODEL_CARD.md/PERFORMANCE_METRICS.md described the superseded v1 model (`v1-9939a6a5`) with no mention that production had moved to v2 (`v2-065b9510`, ADR-0031, SESSION 73); MEMORY_BANK.md's own "Compass OS Health" summary table (a structured section within an otherwise-current file) said "23 accepted ADRs"/"852/852 tests" against an actual 36/38 accepted and 2,282 tests — stale even within a document whose narrative body was current. None of these were caught by the existing session-start protocol because none of them are `decisions_logged: false` flags or code stubs — they are narrative claims in prose/tables that silently stopped matching reality. |
 | When it should have been caught | Each document's own stated "Staleness triggers" (e.g., ROADMAP_MILESTONES.md: "Phase gate passed"; RISK_APPETITE_CONSTRAINTS.md: "live capital authorization"; EXECUTION_ARCHITECTURE.md: "paper→live promotion") did fire multiple times (G4 close, G5 close, ADR-0004 acceptance, MLB Phase 3 gate open, v2 model retrain) without triggering a review of the document that named the trigger. |
@@ -1280,6 +1488,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-075 |
+| Arm | Core |
 | Category | Incremental architecture — a designed evidence trail that was never actually built out, discovered while correcting an unrelated staleness issue. |
 | What was missed | `01_SPEC/ACCEPTANCE_CRITERIA.md` and `07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md` both specify, per-requirement, a formal evidence folder (e.g. `EVIDENCE/FR-05/` for the kill switch drill). Direct filesystem check confirms `07_TEST_VALIDATION_EVIDENCE/EVIDENCE/`, `TEST_CASES/`, and `UAT_SIGNOFFS/` are all empty directories — zero files — despite G4 and G5 both formally closing via other evidence artifacts (VALIDATION_REPORTS/G4_VALIDATION_REPORT.md, PERFORMANCE_METRICS.md, the kill-switch drill record KS-C8D7D90AF942 recorded only in MEMORY_BANK/DECISION_LOG). The underlying capabilities all demonstrably work — this is a paperwork/traceability gap, not a functional one. |
 | When it should have been caught | G4 and G5 gate closure (2026-05-28) — both ACCEPTANCE_CRITERIA.md and VALIDATION_PLAN.md name their own gate as the point their Status columns should be populated ("metric threshold finalized at G4, threshold values populated, not criteria unfrozen"). Neither gate closure triggered it. |
@@ -1299,6 +1508,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-076 |
+| Arm | MLB |
 | Category | Architecture-vs-documentation conflict — a real, load-bearing design contradiction between the governing spec and the shipped implementation, not a bug in either taken alone. |
 | What was missed | CLAUDE.md Hard Rule 9 states T4 design throughput as "~1,000 evaluations/game... at a 2-3% fire rate, that produces 50-100 actual bets per game," derived from "18 batters x 2 thresholds x ~480 cycles per 3-hour game." This arithmetic implicitly assumes each 45s evaluation cycle is an independent shot at firing. The actual implementation (`already_fired_game` set in `run_t4_mlb_live.py::_run_cycle`) retires a ticker the instant it fires a position — one bet per market per game-day, permanently, for the rest of the game. The two cannot both be true: under a one-shot-per-ticker policy, the true ceiling on fired bets is bounded by (count of distinct tracked tickers that ever cross the edge threshold), not by (evaluation count x fire rate). Direct analysis of real production data (`exp_output/MLB/snapshots/t4_mlb_cycle_log_SNAP-2026-07-02-002.jsonl`, 2,393 cycle-evaluations, 2026-07-02) confirms this: only 63 tickers were tracked all day (3 games), 28 of them (44%) ever crossed net_edge>0 at any point, which is already close to the observed ceiling of 10-20 fired bets/day after C4's MIN_EDGE_TO_APPROVE=0.04 gate and Kelly/budget filtering are applied on top. The system is not "too fresh" or malfunctioning — it is structurally incapable of reaching its own documented design target as currently built. |
 | When it should have been caught | Should have surfaced when ADR-0039 (T4 MLB sub-band architecture, SESSION 109) or the original T4M-PROJ build (`run_t4_mlb_live.py`, ADR-0023) were designed — both post-date CLAUDE.md's Hard Rule 9 throughput language, and neither was checked against it for consistency at build time. |
@@ -1318,6 +1528,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-077 |
+| Arm | MLB |
 | Category | Data-contract / sign-convention bug, discovered while running T-184's EXP-017 MLB script against real data for the first time — same failure class as [[GG-037]]/T-177 (the anti-predictive edge-monotonicity guard), because this bug directly feeds that guard's input. |
 | What was missed | `c5_execution/paper_trader.py::open_position()` computes `gross_edge` from the forecast record (always YES-frame per ADR-0016: `model_p - mid - vig/2`, never flipped for direction) and then `fee_net_edge = gross_edge - fee_per_contract` — also never flipped. The very next lines in the same function DO flip sign for direction when computing a sibling field, `fee_contaminated`, via `_directional_gross = gross_edge if direction == "YES" else -gross_edge` — proving the author was aware direction-flipping is required, but did not apply it to `fee_net_edge` itself. Net effect: the stored `fee_net_edge` field does not represent the actual, direction-effective edge of the bet placed for any NO-direction position — it represents the YES-side edge of the opposite bet. |
 | When it should have been caught | Should have been caught the first time real MLB portfolio data was analyzed (T-184's `scripts/run_exp017_mlb.py`, written SESSION 79 2026-06-23) — but the script was written and unit-tested against synthetic fixtures before any real positions existed, so the field's real-world sign behavior was never exercised until this session (2026-07-03), the first time the script ran against real data. |
@@ -1335,6 +1546,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-078 |
+| Arm | MLB |
 | Category | Modeling/simulation scope gap, discovered while extending [[GG-071]]'s forward-compounding Monte Carlo (T-233) to include the T4 leg per direct operator correction — the original T-233 pass modeled T1 only. |
 | What was missed | The T-233 Monte Carlo initially covered T1 (26 bets/active-day, verified real inputs) only, on the judgment call that T4's 13 resolved positions were too thin to calibrate a reliable win rate. Operator correctly flagged this as the wrong call to make unilaterally — T4 is real, live, cron-active, and per CLAUDE.md's own throughput design fires roughly 13x more often than T1 (~341 bets/day derived from ~50-55 bets/game × ~6-7/9 games/day, vs. T1's real observed 21-26/day). Omitting it left the simulation silent on the dominant-volume leg of the actual system. |
 | When it should have been caught | Should have been part of the original T-233 scope, not a follow-up correction — CLAUDE.md's own Hard Rule 9 explicitly states the T4 throughput design is a first-class architectural fact ("Design throughput is thousands of bet evaluations per game... any implementation that only makes sense at low throughput is architecturally wrong"), which should have prompted including T4's real cadence from the start rather than excluding it for data-thinness reasons. |
@@ -1353,6 +1565,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-079 |
+| Arm | MLB |
 | Category | Data-integrity gap in position lifecycle state, discovered incidentally while re-checking [[T-230]]'s status (2026-07-04 CONTINUATION, item 2 of this session's sequenced work — "backlog hygiene"). |
 | What was missed | While re-verifying T-230's `_reconstruct_fired_ticker_states` gap against the live `paper_portfolio_mlb_t4.json`, found that 3 of the 07-01 positions sitting in that same gap carry `kalshi_order_status: "failed: HTTP 410"` — meaning the order was never actually accepted/executed by Kalshi (the market had gone (HTTP 410 Gone) by the time the order was submitted) — yet all 3 remain present in the `open_positions` list rather than a rejected/failed bucket. Any downstream code that sums `open_positions` by `pool_isolated`/`game_date` (deployed-exposure math, kill-switch proximity checks, C8 dashboard funnel stats) would count these 3 non-executed orders as real open capital, when in fact no capital was ever actually placed with the venue for them. |
 | When it should have been caught | Should have been caught at the point `paper_trader.py::open_position()` (or its caller) receives a non-2xx order-placement response from Kalshi — a failed order should route to a distinct status/bucket at write time, not rely on a downstream reader to notice the `kalshi_order_status` string. |
@@ -1370,6 +1583,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-080 |
+| Arm | MLB |
 | Category | Documentation-arithmetic gap in CLAUDE.md Hard Rule 9 / T4 alpha thesis worked example, discovered while re-deriving [[T-229]]'s throughput math against a second full day of data (2026-07-04 CONTINUATION, item 4 of this session's sequenced work). |
 | What was missed | T-229 (RESOLVED 2026-07-03, commit `ce0979c`) corrected Hard Rule 9's internal arithmetic inconsistencies using exactly one day of real data (2026-07-02: 3,697 rows, 23 qualifying, 5 assumed games), producing "18 batters x 2 thresholds x ~240 cycles/game = ~8,600 slots/game... ~50-55 bets/game." Re-running the same methodology against 07-02 **and** the now-available 07-03 full day surfaced two things T-229 could not have caught with n=1: **(1)** `cycle_id` in `t4_mlb_cycle_log.jsonl` is a single shared counter for the whole `t4-mlb` service process across all concurrently-live games, not a per-game counter — direct query shows 07-02's 4 real games (not 5) shared 209 total cycles for the entire day, and 07-03's 3 games shared 246 total cycles for the entire day. The "~240 cycles per 3-hour game" term in the Hard Rule 9 formula therefore does not have a clean empirical referent as a *per-game* quantity in the actual running architecture. **(2)** Even setting (1) aside, empirical rows/game is far below the theoretical 8,600 ceiling: 07-02 = 924 rows/game (3,697/4 games, ~9.3x below); 07-03 = 464 rows/game (1,393/3 games, ~18.5x below). Real bets/game: 07-02 = 5.75 (23/4), 07-03 = 3.67 (11/3) — both ~9-14x below the documented "~50-55 bets/game." The observed fire-rate *percentage* (0.62%, 0.79%) is consistent with what T-229 found — the gap is entirely in the opportunity-volume terms (slots, rows), not the fire rate. |
 | When it should have been caught | At T-229's original resolution (2026-07-03), if a second day of data or a direct rows-per-game empirical check (rather than a theoretical batters x thresholds x cycles formula) had been available/run at the time. T-229 explicitly flagged itself as "n=1-day" at the time, so this is an expected, not a surprising, follow-on gap — not a defect in T-229's own methodology given the data it had. |
@@ -1387,6 +1601,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-081 |
+| Arm | MLB |
 | Category | Possible dedup-guard defect in T4 MLB re-entry logic (T-225, `run_t4_mlb_live.py::_run_cycle`), discovered while validating T-225's live re-entry effect for GG-080/T-235. |
 | What was missed | Querying `t4_mlb_cycle_log.jsonl` for tickers with more than one `net_edge >= 0.04` firing (post-T-225-deploy, 2026-07-02 through 2026-07-04 data) found 8 multi-fire tickers. 6 show the expected clean state-progression re-entry the T-225 redesign was built for (e.g. `ab_remaining` transitioning 3->2, or 3->2 with `h_so_far` 0->1) — this is the first live confirmation that T-225's fix works as designed. The other 2 (`KXMLBHIT-26JUL021940TBKC-TBJCAMINERO13-1` and `-2`, same game) fired twice at the **identical** `(h_so_far=0, ab_remaining=3)` state, ~18 minutes apart. Since the dedup guard is designed to block re-fire only when the current cycle's state exactly matches the last-fired state, two fires at a provably identical recorded state should have been blocked, not allowed — unless some other factor (timing/race, a distinct-but-colliding dedup key, or a display/logging rounding artifact hiding a real state difference) explains it. |
 | When it should have been caught | Immediately, by an automated per-ticker re-fire-state audit — no such audit currently exists; this was found only by manually diffing multi-fire tickers' logged states while doing unrelated throughput analysis. |
@@ -1404,6 +1619,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-082 |
+| Arm | Core |
 | Category | Systemic blind spot — governance process itself, not a code or data defect. |
 | What was missed | This project's shared navigation files (`MEMORY_BANK.md`, `PLAN.md`, `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`, `04_EXECUTION/TODO_NEXT.md`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`) are read, narrated from, and edited by whichever session happens to be running — there is no mechanism that tells one session another session is concurrently active, no file-level claim/lock convention, and no requirement to diff a file against `HEAD` before trusting its own or an inherited narrative about what it currently contains. Two (or more) sessions can independently pick similar-sounding work items on the same day, generate superficially similar artifacts, and one session can misattribute the other's work to its own task number in the shared docs — silently, since nothing flags the collision at write time. |
 | When it should have been caught | At the point two sessions were confirmed running concurrently on 2026-07-03 (T-233 task-number collision, caught only because both sessions happened to pick sequential numbers the same day) — that was the moment to register a standing process gap, not just fix the one instance. |
@@ -1421,6 +1637,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-083 |
+| Arm | MLB |
 | Category | Capital-risk-adjacent defect, sibling to GG-081's dedup-guard bug — same root mechanism, different downstream consumer. Found as a byproduct of the GG-081/T-236 root-cause investigation, not independently discovered. |
 | What was missed | `run_t4_mlb_live.py`'s `_reconstruct_t4_ledger(portfolio, game_date)` — which computes `t4_deployed_game`, the value the T4 band budget cap is checked against — has the identical single-day-string filter defect as GG-081's dedup guard, and is called from the *same* UTC-midnight-rollover block with the *same* just-reassigned `game_date`. At rollover, a still-live game's open exposure (positions dated the prior calendar day) drops out of the ledger sum entirely, understating `t4_deployed_game` for the remainder of that carried-over game. Unlike GG-081 (a duplicate-exposure nuisance bounded by other hard limits), this one understates the value a capital cap is checked against — a wider band-budget headroom than actually exists, for every carried-over game, until that game ends. |
 | When it should have been caught | At GG-076/T-225 review (2026-07-03), when `_reconstruct_fired_tickers` was redesigned into `_reconstruct_fired_ticker_states` — the sibling `_reconstruct_t4_ledger` function, built on the identical single-`game_date`-string pattern and called from the identical rollover call site, was not re-examined for the same class of defect at that time. |
@@ -1438,6 +1655,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-084 |
+| Arm | MLB |
 | Category | External-dependency reliability gap — not a code defect in this project, but this project's retry/fallback logic (`run_resolve_mlb.py::_fetch_mlb_hits`/`fetch_actual_hits`) is not designed to distinguish the failure modes involved, which has real cost. |
 | What was missed | Re-running EXP-ARITH-MLB-01 against the accumulated 6,590-row `t4_mlb_cycle_log.jsonl` (item 1 of this session's four no-sign-off tasks) surfaced that `statsapi.mlb.com`'s `people/{id}/stats?stats=gameLog` endpoint returns HTTP 406 "Not Acceptable" intermittently for **both** `gameType=R` (regular season — expected to succeed for all July 2026 dates) and `gameType=P` (postseason — expected to legitimately have no data yet). Initial mid-session diagnosis assumed a clean, deterministic split (R always succeeds, P always 406s because the 2026 postseason doesn't exist yet) based on a handful of manual curl/python spot checks that happened to all succeed. Continued observation of the actual backgrounded re-run contradicted that: `player_id=806198, game_date=2026-07-02` exhausted all 4 retries on `gameType=R` with 406 before falling through to `gameType=P`, which also 406'd. The true failure pattern is not yet characterized — it appears intermittent/bursty rather than parameter-deterministic, possibly a soft rate-limit or WAF response tied to request cadence during a resolution script's sequential run (only `_RATE_LIMIT_S=0.6s` between calls) — but this has not been confirmed. **Do not carry forward the earlier deterministic-split framing reported mid-session; it is superseded by this entry.** |
 | When it should have been caught | Ideally the first time `_fetch_mlb_hits`'s retry/backoff logic was written — a 4-attempt, 5s/10s/30s-backoff retry loop with no circuit breaker or cap on cumulative wasted time per resolution run assumes failures are rare and independent; it was never stress-tested against a resolution run large enough (6,590 raw cycles, many more unique player/date pairs than the prior 2,393-row single-day snapshot) to expose bursty/correlated failures. |
@@ -1455,6 +1673,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-085 |
+| Arm | MLB |
 | Category | Session-start protocol defect — the health-check heuristic itself, not the trading system. |
 | What was missed | CLAUDE.md's Step 4 documented alarm condition read: "grep for `staleness_halts` > 0 in the JSONL payload, which means ESPN or Kalshi data is arriving stale relative to the 45s poll cycle." Direct inspection of `audit_mlb_t4.jsonl` on the VPS (2026-07-04/05 session) found `payload.staleness_halts` is a **cumulative counter scoped to the current `session_id`** — it appears only on `CONTAMINATION_HALT` events where `failed_checks` includes `game_state_fresh`, paired with a `total_halts` field, and increments monotonically for the life of that `session_id`; it only resets to 0 when `t4-mlb` restarts and a new `session_id` begins. A `> 0` threshold check therefore alarms exactly once (correctly, on the first staleness event) and then alarms on every subsequent session-start check for the remainder of that session's uptime — potentially days — regardless of whether data freshness has long since recovered. Real data: 1,703 sampled records at `staleness_halts: 0`, but values climbing steadily into the 900s within one earlier `session_id` (`T4-MLB-B7193041`, 2026-06-30); the current session (`T4-MLB-83AFA288`) shows 0 — the heuristic happened to read healthy this session by chance, not because the check is sound. |
 | When it should have been caught | When the Session 101 semantic-oracle checks were added to CLAUDE.md — should have inspected the field's actual reset semantics (per-session vs. per-cycle) before writing a static threshold against it. |
@@ -1472,6 +1691,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-086 |
+| Arm | MLB |
 | Category | Incremental architecture — GG-081/GG-082/GG-083's own fix (`_game_date_window`, 2026-07-04) solved the one-rollover carryover case but did not anticipate a position remaining open across a *second* rollover. |
 | What was missed | While verifying GG-081/GG-083's rollover fix against the real 2026-07-05 00:00 UTC rollover (a genuine carried-over-game event, 11 not-yet-final games spanning midnight — exactly the scenario the fix targets), the T4 budget log showed `budget_used` drop from $20.86 (23:59:59, pre-rollover) to $15.86 (00:01:53, post-rollover) — a decrease, when a carryover fix should at minimum preserve exposure. Direct inspection of `paper_portfolio_mlb_t4.json` on the VPS found the cause: 22 pool_isolated open positions dated 2026-07-02 ($7.69) and 11 dated 2026-07-03 ($5.09) — together $12.78, roughly matching the observed drop — were still open, 2-3 days past their `game_date`. `_game_date_window()` only ever widens to `{game_date, prior_day}` (one day back), so once a *second* midnight passes without a position resolving, it permanently falls outside every future reconstruction window — not just at the boundary it crossed, but forever after. `_reconstruct_t4_ledger` was still filtering `open_positions` by `game_date in game_dates`, so this stale exposure silently vanished from the budget the ledger reported, even though it is real, currently-deployed capital until the position resolves. |
 | When it should have been caught | When GG-081/GG-082/GG-083 was designed and reviewed (2026-07-04) — the fix's own docstring only reasoned about a game "still live across midnight" (a same-day carryover), not a position stuck open for multiple days by an unrelated resolution failure. Should also have been caught by asking, at design time, "what is `game_dates` scoping meant to represent for *open* positions specifically, versus for realized losses" — the two have different correct semantics and were conflated under one filter. |
@@ -1489,6 +1709,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-087 |
+| Arm | MLB |
 | Category | Architectural incompleteness in the live, cron-active T4M-PROJ engine (`run_t4_mlb_live.py`) — not a threshold-calibration issue, not a market-coverage issue, not a sub-band gap. |
 | What was missed | Prompted by the operator's question of why T4 MLB produces ~5-44 bets/game-day instead of the designed ~1,000s of evaluations converting at meaningful volume, direct code inspection of `run_t4_mlb_live.py`'s "Normal execution path" (~lines 1000-1004) found a hard pre-filter `if gross_edge <= 0.0: continue` immediately followed by a hardcoded `direction = "YES"`, with **zero NO-direction branch anywhere in the live execution path**. Every row where the market overprices the YES side (a legitimate NO-direction edge) is silently discarded before it ever reaches the C4 risk engine — no audit event, no C6 log entry beyond the raw dry-run cycle log line. Quantified across 4 measured game-days (2026-07-02 through 2026-07-05, `t4_mlb_cycle_log.jsonl`, 10,062 total rows): rows with `net_edge >= 0.04` (YES-actionable) = 112 total; rows with `net_edge <= -0.04` (NO-side edge, discarded) = 4,660 total — a **41.61x** discarded-to-actionable ratio. The 112 YES-actionable total exactly matches the summed real approved-bet counts across those days (23+11+44+34=112), reconciling three independent sources (cycle log, C6 audit log `audit_mlb_t4.jsonl`, direct code read). ADR-0029 (T4 sub-band architecture draft, Session 66) already states bidirectional edge capture as design intent (`kelly(t) = base_kelly × certainty_weight(t) × edge_regime_multiplier(edge, sigma_posterior)`, covering both YES expansion and NO contraction) — confirming this is a genuine implementation gap relative to the architecture's own stated intent, not an intentional restriction. SESSION 102 (2026-06-30) already rescinded an equivalent YES-only gate for T1/T2 MLB specifically because it was shown (via NBA's GG-037 finding: edge>0 win rate 0.356 vs edge≤0 win rate 0.747) to inject harmful directional bias — that same reasoning was never applied to T4 MLB, which has no environment-variable YES-only flag at all; it is a hardcoded architectural constant, not a flag that can be flipped. |
 | When it should have been caught | When `run_t4_mlb_live.py` was first built (ADR-0023) or when T1/T2 MLB's YES-only gate was rescinded (Session 102, 2026-06-30) — the rescission rationale (NBA directional-bias finding) applied equally to T4 MLB's identical restriction but was never cross-checked against the T4 file. |
@@ -1506,6 +1727,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-088 |
+| Arm | MLB |
 | Category | Wiring gap in shared experiment-backtest code (`scripts/run_exp_arith_mlb_01.py::build_resolution_cache`) — a downstream consequence of GG-084/T-241, not a new independent root cause. |
 | What was missed | Operator selected "Run EXP-FLOW-MLB-01" as this session's task. The run stalled in a pure MLB Stats API 406 retry storm with zero `[ESPN-FALLBACK]` log lines, despite T-241's ESPN fallback having been built and deployed in a prior session specifically to route around GG-084's IP block. Traced to `build_resolution_cache()` (shared by both `run_exp_arith_mlb_01.py` and `run_exp_flow_mlb_01.py`) calling `resolver(player_id, game_date)` with only 2 positional args — `fetch_actual_hits()`'s `player_name` parameter silently defaulted to `None`, so the `if player_name:` guard gating the ESPN fallback was never satisfied. Both `ArithCycle` and `FlowCycle` already carried `player_name` from the cycle log — this was a pure call-site wiring gap, not a missing-data gap. |
 | When it should have been caught | When T-241's ESPN fallback was built and wired into `fetch_actual_hits()` — the change added an optional parameter to a function with an existing shared caller (`build_resolution_cache`) without checking whether that caller actually passed it through. |
@@ -1523,6 +1745,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-089 |
+| Arm | MLB |
 | Category | Design-assumption gap in `run_resolve_mlb.py::_fetch_mlb_hits`'s circuit breaker (GG-084/T-239) — assumed the MLB Stats API 406 block is a persistent, monolithic IP block; live evidence from the EXP-ARITH-MLB-01/EXP-FLOW-MLB-01 reruns (launched post-GG-088, 2026-07-05 ~23:00 UTC) shows it is not. |
 | What was missed | Live log inspection of both running experiments (`/tmp/exp_arith_rerun3_20260705.log`, `/tmp/exp_flow_run1_20260705.log`) shows `consecutive_failures` printed in "giving up" messages repeatedly resetting to 1-2 instead of climbing monotonically toward `_CIRCUIT_BREAKER_THRESHOLD` (5) — e.g. sequence 1,1,1,1,2,1,2,1,3,2,1,2,3,1,2,3,4,1,2,3,4 across ~20 consecutive giving-up events in the ARITH log. `grep -c "circuit breaker open"` returns 0 in both logs despite 45 (ARITH) and 39 (FLOW) full retry-exhaustion events each. Root cause: `_fetch_mlb_hits` resets the counter to 0 on ANY successful HTTP response (line `_consecutive_api_failures = 0` right after `resp.raise_for_status()` succeeds) — including calls that return 200 but find no matching split/game (a normal, frequent outcome, not recovery from the block). The 406 block is evidently intermittent/probabilistic, not a hard, sustained block, so the breaker's "5 consecutive hard failures ⇒ recovery is unlikely, skip retries" assumption never holds long enough to trip. |
 | When it should have been caught | When T-239's circuit breaker was designed/tested — its own tests likely exercised sustained-failure and sustained-recovery scenarios in isolation, not the interleaved partial-failure pattern the real API actually exhibits. |
@@ -1540,6 +1763,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-090 |
+| Arm | MLB |
 | Category | Module-level side-effect bug in `run_t4_mlb_live.py` combined with an incomplete env-setup line in `scripts/run_exp_flow_mlb_01.py`. |
 | What was missed | EXP-FLOW-MLB-01 (PID 925380) ran successfully for ~92+ minutes, resolving cycles across all 4 target game-dates (463 log lines), then terminated with `ERROR: BOT_C4_ACTIVE not set. T4 requires C4 active. / Set BOT_C4_ACTIVE=true in your environment before running.` — zero verdict produced despite the resolution phase completing in full. Root cause: `compute_flow_bets()` in `run_exp_flow_mlb_01.py` does a deferred (in-function) import — `from prediction_market_bot.run_t4_mlb_live import _compute_ab_remaining, p_hits_gte_threshold` — and `run_t4_mlb_live.py` has an **unconditional, module-level** guard (`run_t4_mlb_live.py:113-115`, not gated by `if __name__ == "__main__":`) that calls `sys.exit(1)` on import if `BOT_C4_ACTIVE` isn't set to `true/1/yes`. The script's own `os.environ.setdefault(...)` block (line 65, prior to fix) set `BOT_ENV=paper` but never set `BOT_C4_ACTIVE`, and the script's own documented `Run:` usage examples (docstring lines 46-48) likewise omit it — yet `tests/test_run_exp_flow_mlb_01.py:22` already had to add `os.environ.setdefault("BOT_C4_ACTIVE", "true")` before importing the module, meaning the test suite discovered and worked around this exact gap without that fix ever being carried back into the script itself or its documented launch command. **EXP-ARITH-MLB-01 did not hit this wall** because `run_exp_arith_mlb_01.py` reimplements the binomial math locally and never imports anything from `run_t4_mlb_live.py` — confirmed via `grep` (zero matches for `p_hits_gte_threshold`/`_compute_ab_remaining`/`run_t4_mlb_live` in that file), so the two sibling experiment runners are not symmetric in this respect despite mirroring the same T4M-PROJ math conceptually. |
 | When it should have been caught | When `tests/test_run_exp_flow_mlb_01.py` was written and needed the `BOT_C4_ACTIVE` workaround to import the module at all — that workaround should have been a signal to fix the script itself, not just the test file, and to update the script's own `Run:` docstring accordingly. |
@@ -1555,6 +1779,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-091 |
+| Arm | Core |
 | Discovered | 2026-07-06 SESSION 123, as a direct byproduct of closing GG-065. GG-065 had only ever been run against 2 files (`risk.py`, `run_mlb_paper_trade.py`); once `py.typed` markers existed repo-wide and `pandas-stubs` was installed, running `mypy --strict src` for the first time against the *entire* tree surfaced the true baseline. |
 | Category | Architectural placeholder — same underlying control (strict static typing) as GG-065, but the prior gap's scope never extended past 2 of 89 checked source files. |
 | What was missed | `mypy --strict src` (after GG-065's fixes) reports 365 errors in 57 files. Breakdown by rough category: (a) missing third-party stubs — `sklearn.*` (no py.typed upstream, affects `run_exp009.py`, `run_exp011.py`), `joblib` (affects `run_paper_trade.py`, `run_mlb_pregame.py` — same no-stub situation already `# type: ignore`'d in `run_mlb_paper_trade.py` this session); (b) bare `dict`/`list` generic-argument omissions, the same pattern fixed in `run_mlb_paper_trade.py`, recurring across `run_t4_live.py`, `run_exp009.py`, `run_exp011.py`, `run_backtest.py`, `run_mlb_pregame.py`, `run_paper_trade.py`, `t4_live_runner.py`; (c) `requests.get(params=...)` int/str mismatch in `run_t4_live.py:103` (identical root cause to the one fixed in `run_mlb_paper_trade.py` — same fix applies); (d) `pd.Series` `__setitem__` overload mismatches assigning `pd.NA` in `run_exp009.py`, `run_exp011.py`, `run_paper_trade.py` (real pandas-stubs-driven type-narrowing findings, not obviously safe to batch-fix); (e) **two errors of genuine interest in live/active-adjacent code**: `t4_mlb_execution_engine.py:198,295` — `EvaluationSignal(kelly_fraction=...)` is typed to accept `float` but is being passed a `float | None`, meaning either the type hint is wrong or a `None` can silently reach a Kelly-sizing field at runtime, worth a real look rather than a blind `# type: ignore`; (f) `run_t4_live.py:620-652` — several `T4Signal | T5Signal | None` union-attribute accesses assume a narrower type than declared (dark/frozen NBA code, lower urgency); (g) misc one-offs (`no-any-return`, `var-annotated`, `attr-defined` on `LockOpportunity.buy_yes_venue`/`buy_no_venue` vs. actual `yes_venue`/`no_venue` fields in `run_paper_trade.py:773-774` — this one in particular looks like a real latent bug in dark NBA code, not just a typing nit, and deserves its own look before being dismissed as dead-code debt). |
@@ -1575,6 +1800,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-092 |
+| Arm | Core |
 | Category | Architectural placeholder — a document promises an artifact that was never built. |
 | What was missed | **Corrected 2026-07-07 (T-244 triage session) — the original registration below was itself wrong about the directory, found via re-verification per this session's own discipline of not trusting a prior session's claim without re-checking.** `02_ARCHITECTURE_DESIGN/RESILIENCE_FAILURE_MODES.md` names seven failure modes with runbook pointers. The correct path (confirmed by the file's own line 10 "Downstream links" and its inline per-FM table, and by direct `ls`) is `10_INFRA_OPERATIONS/RUNBOOKS/`, not `02_ARCHITECTURE_DESIGN/RUNBOOKS/` — that directory *does* exist and is not empty. It contains exactly 3 files: `RUNBOOK_kill-switch.md`, `RUNBOOK_model-drift.md`, `RUNBOOK_polymarket-activation.md`, correctly covering FM-04/FM-06 and FM-03 respectively (both un-flagged, correctly, in RESILIENCE_FAILURE_MODES.md). The real, surviving gap is narrower than originally stated: **4 of 7 named runbooks are genuinely missing** — `RUNBOOK_ingestion-failure.md` (FM-01), `RUNBOOK_data-contamination.md` (FM-02, CRITICAL), `RUNBOOK_order-duplication.md` (FM-05), `RUNBOOK_audit-log.md` (FM-07) — not "the entire folder is absent" as originally logged. RESILIENCE_FAILURE_MODES.md's own line 15 already carried this correct, narrower framing (added same session as this gap's original registration) — the mismatch between that file's accurate self-correction and this gap-log entry's inaccurate one went uncaught until this triage pass re-verified rather than trusting the already-loaded narrative. |
 | When it should have been caught | G5 exit — RESILIENCE_FAILURE_MODES.md's own design implies these runbooks are operational-readiness artifacts expected by G5 (kill switch, NFR-03 territory). G5 formally closed without them existing. The directory-path error above should have been caught the same day it was registered (2026-07-06) by checking RESILIENCE_FAILURE_MODES.md's own corrected text instead of re-deriving the path independently. |
@@ -1592,6 +1818,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-093 |
+| Arm | Core |
 | Category | Systemic blind spot — a security-relevant document's own closing obligation was never executed. |
 | What was missed | `02_ARCHITECTURE_DESIGN/THREAT_MODEL.md`'s TH-02 entry and its "Threats Out of Scope" section both assert no live credentials exist in the system. This has been false since ADR-0008: real RSA-signed Kalshi API credentials have been live in production for the Phase 6/7 paper-trading period. The document's own closing line requires re-expansion once live credentials exist; that re-expansion never happened. |
 | When it should have been caught | ADR-0008's acceptance (Kalshi RSA credential integration) — the threat model names this exact trigger in its own text and the trigger fired without the corresponding update. |
@@ -1609,6 +1836,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-094 |
+| Arm | MLB |
 | Category | Incremental architecture — a methodology component CLAUDE.md itself names as a T1 alpha input does not exist for the only currently-active sport. |
 | What was missed | CLAUDE.md's own T1 alpha description names "PRF qualitative factors" (player quality, role-fit, form) as a model input alongside quantitative rolling stats. Direct grep confirms `src/prediction_market_bot/c2_feature_store/mlb_features.py` has zero references to `qualitative`, `PRF`, or `prf_w0*` (0 hits) — MLB's C2 feature layer is quantitative-only. `qualitative_store.py`/`qualitative_amplifier.py` (the modules that do carry PRF content) are NBA-only, consistent with GG-027/T-243's separate finding that the PAM v4 taxonomy is NBA-native end-to-end (player_id requires `nba_api` IDs). MLB's 151 resolved T1 positions and its DIRECTIONAL_POSITIVE EXP-017 result were produced entirely without this component. |
 | When it should have been caught | MLB's Phase 3 buildout (the point MLB became the active pool) — CLAUDE.md's T1 description was written with NBA's PRF-equipped architecture in mind and was never re-scoped when MLB became the sole active sport with a quantitative-only C2. |
@@ -1626,6 +1854,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-095 |
+| Arm | Core |
 | Category | Systemic blind spot — a decision's documented derivation and its shipped code silently diverged with no reconciliation step. |
 | What was missed | DECISION_LOG.md's T-094 entry (logged 2026-06-02) documents a 4-level **absolute** Brier drift ladder: baseline ~0.245, L1=0.255 (watch), L2=0.265 (warning), L3=0.275 (alert), L4=0.280 (kill switch). Direct inspection of `src/prediction_market_bot/c7_monitoring/monitor.py` (lines 66-79) shows the actually-shipped scheme is structurally different: `BRIER_BASELINE=0.2416` plus **relative deltas** (`BRIER_L1_DELTA=0.02`, `BRIER_L2_DELTA=0.05`, `BRIER_L3_DELTA=0.10`), only **3** levels (L1=watch, L2=alert→ALT-001, L3=pause+kill→ALT-002) — not 4. Neither the level count, the absolute/relative framing, nor most of the numeric values match what T-094 recorded as the derivation. |
 | When it should have been caught | Whenever `monitor.py` was implemented or last modified from the delta-based scheme — the implementation should have been checked against T-094's own documented derivation at that time, or T-094 should have been corrected to match the as-shipped design. |
@@ -1643,6 +1872,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-096 |
+| Arm | MLB |
 | Category | Incremental architecture — a real, completed test result was never written back to the document designed to track it. |
 | What was missed | `08_MODEL_RISK_GOVERNANCE/SENSITIVITY_STRESS_TESTS.md` lists ST-006 (Kelly-fraction drawdown stress test) as pending/BLOCKED. It has, in substance, already been run: GG-071's forward-time compounding Monte Carlo (`scripts/mc_forward_projection.py`), resolved via ADR-0040, is functionally ST-006 — it found a 17.05%/43.5%/46.45% (1mo/6mo/1yr) probability of tripping the 20% max-drawdown kill switch at T1 MLB's pre-remediation `kelly_fraction=0.10`, leading to ADR-0040's de-rating to 0.061. Similarly, ST-005's functional equivalent (EXP-017 vs. live market prices, not the 0.50 null) is also already satisfied by the 2026-07-06 EXP-017 result but was still marked BLOCKED in the same document. |
 | When it should have been caught | GG-071's resolution (ADR-0040 acceptance) — the fix flowed into `execution_bands.py`'s `kelly_fraction` and into GOVERNANCE_GAP_LOG.md/DECISION_LOG.md, but never back into SENSITIVITY_STRESS_TESTS.md, the document specifically designed to track this checklist item. |
@@ -1660,6 +1890,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-098 |
+| Arm | MLB |
 | Category | Systemic blind spot — a headline commercial-validation metric (EXP-017 Tier-1 +$0.1009/bet) that is not internally decomposed can mask a losing sub-strategy inside a "positive" aggregate. |
 | What was missed | EXP-017 reported a single aggregate EV/bet and a monotonicity guard, but never split the book by bet DIRECTION. Decomposition (EXP-017B) shows all positive edge is NO-side (n=140, +8.71%/staked, +$125.50) while the YES sub-book (n=11) is −62.11%/staked (−$110.27), erasing ~88% of NO profit. The aggregate +$0.1009/bet is bootstrap-insignificant (95% CI [−$1.86,+$2.13], P(EV>0)=53%). |
 | When it should have been caught | At the EXP-017 Tier-1 read (2026-07-06). A Tier verdict on an aggregate should have been paired with a direction/threshold/edge-bucket decomposition before being cited as evidence of edge. |
@@ -1677,6 +1908,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-099 |
+| Arm | MLB |
 | Category | Systemic blind spot — a load-bearing safety check (the GG-037/T-177 anti-predictive / edge-monotonicity guard) exists for one band but is absent from, or unmeasurable for, the others — most critically the active, highest-throughput one. |
 | What was missed | The anti-predictive guard (does the edge>0 cohort win MORE than edge≤0, or inversely?) lives only in offline scripts pointed at the T1 pregame book (`run_mlb_calib_monitor.py`, `run_exp017_mlb.py`, EXP-017B/C/D). It is NOT wired per-band. Verified by grep: `run_t4_mlb_live.py` (T4M-PROJ, ACTIVE) and `t4_mlb_execution_engine.py` (T4M-ARITH/FLOW) contain ZERO anti-predictive/monotonicity/fisher logic. `c7_monitoring/monitor.py` has none either (its only `monotonic` tokens are `time.monotonic()`). |
 | When it should have been caught | At T4M-PROJ activation (ADR-0023) — a band going live should not be exempt from the same predictive-integrity check its T1 sibling has. The GG-037 NBA finding (anti-predictive edge in an efficient market) is the precedent that makes this check mandatory for every live band. |
@@ -1693,6 +1925,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-100 |
+| Arm | MLB |
 | Category | Systemic blind spot — the correct monitor existed (`run_t177_edge_monitor.py`, T-177/GG-037 methodology) but had never been run against the live MLB book, because its default portfolio path was wrong (GG-099 item 3 / T-256). The finding below was invisible until that default was fixed. |
 | What was missed | Once `run_t177_edge_monitor.py --sport mlb` (T-256 fix) is run against `logs/.vps_portfolio_cache_mlb.json` (n=169 resolved, pool-level — T1 dominant, 2 T2-MLB positions mixed in per GG-099 item 2), the Fisher edge-monotonicity test returns **ANTI-PREDICTIVE**: p=0.0236 (< alpha=0.10), win rate for `fee_net_edge > 0` positions is LOWER than for `fee_net_edge <= 0`. Fisher OR=0.350. Tercile P&L is non-monotonic and inverted at the extremes: low-edge tercile +$177.38, mid −$58.31, high-edge tercile −$163.83. This is the same qualitative pattern that triggered GG-037 (NBA anti-predictive finding, ADR-0027) — now appearing in the ACTIVE MLB pool that G6 is being pursued against. |
 | When it should have been caught | The moment the MLB book crossed a sample size where the edge≤0 comparison group became non-trivial (per the 2026-07-06 SESSION 122 log, at n=151 the comparison group was still n=3/INCONCLUSIVE). By n=169 it resolved to a real, significant signal — but nothing was watching, because the only monitor capable of catching it (`run_t177_edge_monitor.py`) was pointed at the wrong book (GG-099 item 3) until T-256 fixed it today. |
@@ -1710,6 +1943,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-101 |
+| Arm | Core |
 | Category | Systemic blind spot — process gap in a process (GG-082) that was itself built to close a process gap. |
 | What was missed | GG-082's SESSION_CLAIMS.md protocol (Step 0 of the mandatory session-start sequence) makes concurrent sessions *visible* to each other and instructs re-diffing shared nav files against `HEAD` before writing — but it does not isolate concurrent sessions' working directories. Two sessions (this one, T-254; and a concurrent one, T-256) were confirmed operating in the **same physical git working directory** at the same time. Mid-session, the T-256 session ran `git stash push` scoped to files it did not own (my uncommitted edits to `TODO_NEXT.md`, `DECISION_LOG.md`, `GOVERNANCE_GAP_LOG.md`, plus its own T-253-adjacent WIP in `PLAN.md`/`MEMORY_BANK.md`/several `src/` files) in order to commit its own change cleanly — a considerate, non-destructive choice on that session's part (confirmed via `git stash list`/`git reflog`: no destructive `restore`/`reset`, content fully recoverable), but the *mechanism* that made this necessary — a shared, non-isolated working tree — is a real risk regardless of how carefully any one session behaves. A less careful concurrent operation (`git checkout -- <file>`, `git reset --hard`, `git clean -fd`, or even a differently-scoped `git stash` that got popped/dropped by mistake) would have caused genuine, permanent data loss with no recovery path. |
 | When it should have been caught | When GG-082 was originally designed (2026-07-06) — the fix addressed *narrative conflation* (one session's work attributed to another in shared docs) but implicitly assumed sequential, not concurrent-in-the-same-tree, sessions. The SESSION_CLAIMS.md file's own existence proves concurrent sessions were anticipated; working-tree isolation between them was not. |
@@ -1727,6 +1961,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-102 |
+| Arm | Core |
 | Category | Incremental architecture — a guard's implementation drifted from its stated invariant as the system it protects grew. |
 | What was missed | `deploy.yml`'s dirty-tree guard (built for T-171) ran `git status --porcelain` with no `--untracked-files` flag, so it aborted on **any** untracked file on the VPS, not just conflicting tracked ones. Every new pipeline component that writes a new `exp_output/<EXP-ID>/` dir, cache, or scratch file re-triggers the failure — GG-073 "fixed" this 2026-06-24 by gitignoring the specific offending paths, but that is whack-a-mole against an open-ended set of future output paths, not a fix to the guard's logic, and it regressed again by 2026-07-08 (email trigger: run `28908956151`, failed in 7s). Separately, once the guard was corrected to `--untracked-files=no`, it surfaced a second, real, independent bug: 3 files (`exp_output/EXP-ARITH-MLB-01/EXP-ARITH-MLB-01_results.json`, `exp_output/EXP-FLOW-MLB-01/EXP-FLOW-MLB-01_results.json`, `exp_output/T255-BAND-MONITOR/band_monitor_results.json`) were git-tracked despite being rewritten by live VPS processes (the weekly `run_band_monitor.py --ci` cron for the third; ad-hoc reruns for the first two) — the exact `paper_portfolio.json`/T-171 shape, just never caught for these specific paths. |
 | When it should have been caught | GG-073's 2026-06-24 fix should have addressed the guard's root logic (block on tracked-file drift only) instead of enumerating specific untracked paths to ignore; the untracked-files gap was structural and guaranteed to resurface with the next new pipeline component. The 3 mistracked results files should have been caught whenever they were first added to git — the same T-171 pattern (a file periodically rewritten by a running process should never be tracked) was already established precedent by the time these were committed. |
@@ -1744,6 +1979,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-103 |
+| Arm | Core |
 | Category | New infra introduced without the concurrency protection its sibling mechanisms already have (GG-101/GG-102 pattern: a new file/mechanism added under time pressure, protected against the single-session case, not audited against the concurrent-session case at introduction time). |
 | What was missed | T-300 (A3 residual, 2026-07-09) wired `04_EXECUTION/.last_session_checkpoint` — a single-line file holding one git SHA — into `session-start.md` (read) and `session-end.md` (overwrite) so `session_delta.sh` can diff since the last checkpoint instead of a full Tier 1 read. Unlike `SESSION_CLAIMS.md`, this file has no `.gitattributes` `merge=union` rule and is not append-only — it is a full overwrite on every session-end. If two sessions are concurrently active in separate worktrees (the GG-101-mandated pattern) and both reach session-end before either pushes, whichever pushes second silently overwrites the first session's checkpoint update with its own HEAD SHA — not a merge conflict, since git resolves single-line-file overwrites cleanly. This does not corrupt data (worst case: the "losing" session's checkpoint-to-HEAD span is simply skipped by the next session's delta, which then must rely on Hard Rule 10's fresh-diff/re-read discipline to still catch it) but it is a silent staleness gap the mechanism itself cannot detect. |
 | When it should have been caught | At A3-residual design time (this session) — the concurrent-session isolation work (GG-101, `scripts/claim_session.sh`, `.gitattributes` `merge=union` on `SESSION_CLAIMS.md`) was already-known precedent for exactly this class of file when `.last_session_checkpoint` was created a few hours earlier in this same session; the asymmetry wasn't noticed until this A5 close-out review. |
@@ -1763,6 +1999,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-109 |
+| Arm | Core |
 | Category | Systemic blind spot — a safety mechanism (worktree isolation) was assumed to cover import resolution because it covers everything else about a session's working state, but it operates at the git layer, not the interpreter layer. |
 | What was missed | All worktrees share one global Python 3.11 environment. `prediction_market_bot` is bound via a single static `.pth` file in that environment's site-packages (`/usr/local/opt/python@3.11/.../site-packages/*.pth`, literal contents: the **main tree's** absolute `src/` path). `scripts/new_session_worktree.sh` creates a git worktree + branch only — no worktree-local venv, no editable reinstall, no `PYTHONPATH` export. Once `prediction_market_bot` is bound in `sys.modules` (whichever tree's `src/` wins the race for the first import in a given process), every subsequent bare `from prediction_market_bot...` import in that process resolves against that binding's `__path__`, regardless of the importing file's own location. Some test files guard against this explicitly (`tests/test_c4_risk.py`: `sys.path.insert(0, str(Path(__file__).parent.parent / "src"))` before its `prediction_market_bot` import); others do not. `tests/test_t280_cross_implementation_invariants.py` (this session's own B2 output) was one of the latter — it happened to work in full-suite runs only because `test_c4_risk.py` collects alphabetically first and wins the binding race, not because the file was actually worktree-safe. |
 | When it should have been caught | At B2 (this session), when `test_t280_cross_implementation_invariants.py` was first written — it should have followed the `test_c4_risk.py` guard pattern from the start. More structurally, at GG-101's original resolution (2026-07-08): worktree isolation was verified for git operations (stash/reset/checkout/clean) but never verified for Python import resolution, which is a distinct isolation boundary. |
@@ -1780,6 +2017,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-104 |
+| Arm | Core |
 | Category | Deploy-pipeline gap — `deploy.yml` (T-171/GG-073/GG-102) only runs `git pull --ff-only`; it never restarts any systemd service. Cron-invoked scripts (T1/T2/T3/T4-NBA MLB pipelines — fresh process per cron fire, confirmed via `crontab -l` on the VPS) pick up new code automatically on next fire, but `t4-mlb.service` and `pmbot-web-dashboard.service` are long-running processes that import their modules once at startup and keep running the in-memory version indefinitely. |
 | What was missed | Discovered while closing out T-320/T-321 (this session, 2026-07-10): after merging and deploying the `logic_epoch` write-path fix (`paper_trader.py`), `pmbot-web-dashboard`'s `/api/data` endpoint still returned `current_logic_epoch: None` post-deploy — the running process had been up since 2026-07-08, well before the merge. Checked `t4-mlb.service` next (`systemctl show --property=ActiveEnterTimestamp` = 2026-07-08 06:01 UTC, vs. deploy at 2026-07-10 15:56 UTC) and found the same: the live T4M-PROJ evaluator was running stale `paper_trader.py`, meaning new T4M-PROJ positions opened between the merge and the discovery would NOT have had `logic_epoch`/`approval_commit` stamped — directly undermining the T-320 exit criterion ("every newly opened position carries logic_epoch") for the one band where it matters most (T4M-PROJ is the highest-volume band under CLAUDE.md Hard Rule 9). |
 | When it should have been caught | At `deploy.yml`'s original authorship (T-171) or at either service's `systemd` unit creation — any deploy pipeline serving a long-running process needs an explicit restart step; this is a well-known class of gap (the "deploy succeeded but old code is still running" bug), not specific to this project. |
@@ -1797,6 +2035,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-105 |
+| Arm | MLB |
 | Status | **OPEN — ADR-0044 split applied 2026-07-15 (T-368 odd-gap burn-down session); verdict unchanged, hygiene-only.** T4M-PROJ's computed edge is robustly anti-predictive (tercile win rate declines monotonically as edge magnitude rises) across every diagnostic run against it (game-state segmentation, sizing-artifact check, edge-formula/vig audit, and a formal H1×H4 interaction model) — game-state noise, sizing artifacts, and analysis-tooling vig omission have all been ruled out as the cause. Leading mechanism: model miscalibration/overconfidence, with H1 (unshrunk `ba_l10` as a noisy per-AB Bernoulli parameter) showing a clean, monotonic dose-response under empirical-Bayes shrinkage (T-359). A formal remediation proposal, `00_ADMIN/APR-0025_gg105-ba_l10-shrinkage-remediation.md` (Status PROPOSED), is drafted and awaiting Earl's own DS sign-off — **not touched or resolved this session, per explicit standing instruction (Hard Rule 3).** **Full investigative history (2026-07-10 through 2026-07-15: T-322/T-323/T-324, T-329, T-332, T-333, T-340, T-341, T-344, T-345, T-359, T-361): see `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG105_FULL_HISTORY.md`** (verbatim, lossless move verified 2026-07-15). Next action: awaiting DS review of APR-0025. |
 
 ---
@@ -1806,6 +2045,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-106 |
+| Arm | Core |
 | Category | Test-design gap — a "regression anchor" test (`tests/test_band_monitor.py::TestT1RegressionAnchor`, authored during the GG-100/T-255 investigation) asserts `fisher_pvalue == pytest.approx(0.24615828583796262, abs=0.02)` by loading `REAL_PORTFOLIO` — the live, VPS-synced `.vps_portfolio_cache_mlb.json` — rather than a frozen fixture. The magic number was correct when the anchor was written against a smaller T1 raw_n; it has no mechanism to stay correct as the live book accumulates more resolved bets. |
 | What was missed | Discovered running the full test suite after merging T-322/T-323/T-324 to `main` (post fast-forward, this session): `test_t1_band_reproduces_direction_aware_verdict` fails — `fisher_pvalue` obtained 0.3536 vs. expected 0.2462±0.02. Not a code regression: the test's own qualitative assertions (`verdict == E_INC`, `verdict != E_ANTI`, calibration CI includes 1, `not b_excludes_1`) all still pass — only the tight point-estimate tolerance on the Fisher p-value has drifted, consistent with T1's raw_n growing (169 at anchor-authoring time → 214 as of this session's own clean_n work, per CLAUDE.md's commercial-validation section). |
 | When it should have been caught | At the anchor's original authorship — any test that loads a live, cron-mutated production data file and asserts a tight numeric tolerance on a value derived from it will drift as that file grows; this needed either a frozen fixture snapshot or a qualitative-only assertion (verdict class, not exact p-value) from the start. |
@@ -1823,6 +2063,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-107 |
+| Arm | Core |
 | Category | Process gap — shared-tree hygiene / narrative-conflation precursor (GG-082/GG-101 family) |
 | What was missed | Two planning documents (`ITERATION_PLAN_calibration_hardening.md`, `ITERATION_PLAN_context_and_math.md`), both dated 2026-07-08 and both self-described as "PROPOSAL... not yet committed to SESSION_CLAIMS.md" / "not yet task-registered," were left untracked (`git status` `??`) in the shared `main` working tree with no committing session, no claim row, and no expiry mechanism. `ITERATION_PLAN_calibration_hardening.md` explicitly reserved task IDs **T-320–T-331** for its own (never-started) work. This session's real, separately-scoped Workstream E brief was assigned T-330/T-331 by the operator without cross-checking that file (which was never committed or claimed, so it did not show up in any of the normal claim/collision checks) — the collision was only caught because this session's own Step 0c/0e re-read surfaced it, not because any structural check would have caught it. |
 | When it should have been caught | At authorship (2026-07-08): per CLAUDE.md Step 0b, any task-ID reservation should be committed to `SESSION_CLAIMS.md` atomically at the moment it's made, specifically to prevent exactly this — a second session picking the same range days later with no visibility into the first reservation. |
@@ -1840,6 +2081,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-108 |
+| Arm | NBA |
 | Category | Systemic blind spot — protocol/interface drift |
 | What was missed | CLAUDE.md's mandatory Step 4 command grepped `/opt/prediction-market-bot/logs/paper_cron.log` for NBA T1 health. That file does not exist on the VPS — NBA's single-window paper-trade cron was split into two windows at some unlogged point (`paper_early_cron.log` at 18:00 UTC, `paper_late_cron.log` at 01:30 UTC), and the Step 4 command was never updated to match. `grep ... nonexistent_file 2>/dev/null` returns empty with no error, which renders identically to "0 games scheduled, nothing to report" — the intended reading whenever NBA is off-season/dark. |
 | When it should have been caught | At the moment the early/late cron split shipped (filename rename), whichever session made that change should have grepped CLAUDE.md itself for the old filename and updated all references, per the same "fix stale claims in place" discipline the file's own header mandates. |
@@ -1859,6 +2101,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-110 |
+| Arm | MLB |
 | Category | Runtime signal failure — T1 MLB pipeline (PIPE-05) |
 | What was missed | `paper_mlb_cron.log` on the VPS shows a `CRITICAL semantic_floor_violation` fired for the `[DONE] Report: logs/paper_mlb_20260710.json` run: `games_fetched=16 but matched_players=0`. This is the exact condition CLAUDE.md Step 4's semantic-oracle check exists to catch (GG-054's guard, RESOLVED 2026-07-06, confirmed the guard fires correctly end-to-end in tests — this is that guard firing for real in production for the first time observed). Log ordering places this event immediately after the 20260710 report and immediately before the `[PIPE-05] MLB Paper trading — 20260711` section header; file mtime is 2026-07-11 11:00 UTC, so this fired during today's cron execution while generating/reconciling yesterday's (20260710) report, not during a stale historical run. |
 | When it should have been caught | Immediately, by whichever session's Step 4 health check ran closest to the 11:00 UTC cron execution — a prior session claimed at 2026-07-11T07:35:47Z ("TBD — session-start protocol run") logged "zero SemanticFloorViolation" in TODO_NEXT.md, which was accurate at 07:35 but predates this 11:00 event. |
@@ -1876,6 +2119,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-111 |
+| Arm | Core |
 | Category | Test fragility — time-drift dependent test, silent pass/fail based on wall-clock timing |
 | What was missed | `tests/test_run_mlb_paper_trade.py::TestMainSemanticFloorViolationFiresLive::test_retry_recovers_when_later_fetch_matches_players` (introduced by T-343's own merge, `bd4a395`, GG-110's fix commit) computes `today_iso = date.today().isoformat()` (line 638) — the **local** wall-clock date — and feeds it into a mocked `_ticker_to_game_date` used to simulate a Kalshi market ticker that recovers on retry. Production code (`run_mlb_paper_trade.py:116-124,721`) deliberately computes `GAME_DATE_ISO` from `datetime.now(tz=timezone.utc)`, by explicit design (comment at :116-120: cron runs 11:00 UTC / 7am ET so UTC-basis keeps today's ET games in `Preview` state). When local and UTC calendar dates diverge — i.e., any time after roughly 5pm PDT / 8pm EDT through midnight local — the test's mocked "recovered" market's date never matches the production `GAME_DATE_ISO` it's compared against, the intended-to-match retry never matches, the test's 2-item `fetch_all_markets.side_effect` list is exhausted by an unplanned extra retry attempt, and `StopIteration` is raised instead of the intended assertions running. |
 | When it should have been caught | At T-343's own merge, by running the full suite at a UTC-vs-local boundary time (evening Pacific), or by code review noticing the test used `date.today()` while the code under test explicitly documents a UTC basis two lines away in its own module. |
@@ -1893,6 +2137,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-112 |
+| Arm | MLB |
 | Category | Monitoring/dashboard self-consistency — `.claude/hooks/governance_scan.sh` |
 | What was missed | The session-start governance scan prints two separate lines that both claim to report T4M-PROJ's `clean_n` (bets resolved under `CURRENT_LOGIC_EPOCH`), and they disagree. In a single invocation (2026-07-12, ~09:30 UTC): `CLEAN-LOGIC PROVENANCE` line reported `MLB T4M-PROJ: raw_n=300 clean_n=300`; the `SAMPLE ADEQUACY` line two sections later, same script run, reported `[T4M-PROJ] clean_n=412/n*=3059`. `raw_n` itself differs (300 vs. a separately-observed 656 from a live `run_power_calc.py` pull moments later) — this is not just a clean/raw definitional gap, the two code paths see different total row counts for the same band. |
 | When it should have been caught | At T-338 (2026-07-11), when the `SAMPLE ADEQUACY` line was added to the same script that already had the `CLEAN-LOGIC PROVENANCE` line — a self-consistency check between the two new/existing lines was not run before merging. |
@@ -1910,6 +2155,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-113 (renumbered from a session-local GG-112 — collided with a concurrent session's own GG-112, the dashboard `clean_n` self-consistency bug directly above, both discovered independently 2026-07-12) |
+| Arm | MLB |
 | Category | Fee/edge-frame correctness bug — live gating math, not a storage-layer or tooling-parity issue |
 | What was missed | `run_t4_mlb_live.py:952` computes `gross_edge = p_t4 - mip - vig` (vig baked in as a YES-frame cost). For NO-direction bets (`gross_edge < 0`), line 1032 sets `directional_gross_edge = -gross_edge`, negating the *entire* expression including the already-subtracted `vig` term. Algebraically this converts vig from a cost into a credit for NO bets: `-(p_t4 - mip - vig) = (mip - p_t4) + vig`. This contradicts the codebase's own pre-existing, documented vig convention (`run_exp017.py:41`, `"kalshi_vig: full spread (ask - bid)"`; its bet-simulation logic uses `half_vig = vig/2.0` and adds it as a cost to `price_paid` on *either* side — YES: `mip + half_vig`, NO: `(1-mip) + half_vig`). Vig is a bid-ask spread cost; it should never flip sign with direction. |
 | When it should have been caught | GG-087's fix (which this exact code block's comment cites — "designed to avoid reintroducing" GG-077's sign-convention bug) negated the whole `gross_edge` expression to flip direction correctly for the `(p_t4-mip)` term, but did not separately account for the fact that `vig` was already folded into that same expression with its own fixed sign — the fix solved the direction-flip problem for the signal term while accidentally re-introducing an analogous problem for the cost term. |
@@ -1927,6 +2173,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-114 |
+| Arm | Core |
 | Category | Systemic blind spot — session-closure verification gap, distinct from GG-101/GG-082 (which are concurrent-session *collision* failures, not closure-verification failures) |
 | What was missed | `session/20260710T151127Z-workstream-b-edge-sign` (Workstream C, T-325/T-326/T-327) was worked correctly per Hard Rule 10 — isolated worktree, committed, pushed to `origin` on 2026-07-10 — and its own commit messages and `SESSION_HANDOFF_20260710_1600.md` explicitly described all three tasks, including T-327 (the fail-closed pre-deploy CI gate on approval-path files), as fully complete. No step in that session's close-out, nor any later session's start-up protocol, checked whether a PR had actually been opened for the branch. It had not. The branch — and the safety gate it built — sat on origin, unmerged and inert, for 2 days. |
 | When it should have been caught | Any session-end protocol step that verifies closure should confirm the work actually reached `main`, not just that it was committed and pushed. Any later session's Step 0c ("check for other live sessions" via `SESSION_CLAIMS.md`) reads recent claims but does not cross-check open branches against open PRs. |
@@ -1944,6 +2191,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-116 |
+| Arm | Core |
 | What was missed | `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260531_2100.md`, a session-handoff artifact written 2026-05-31 during the original ADR-0008 (Kalshi demo order execution) debugging work, contained the real live Kalshi API key ID (`[REDACTED-2026-07-13-GG-116 — see T-351]`) in plaintext at line 48, and the private-key filesystem path (`/Users/earlignacio/.ssh/kalshi_bot.pem`) at line 50 — both inside prose describing the then-open T-111 auth blocker ("the bot signs requests correctly... correct key ID `[REDACTED-2026-07-13-GG-116]`"). This is a direct violation of Hard Rule 5 / NFR-05 ("Zero hardcoded secrets. Vault/env-var protocol only"), which the project otherwise enforces well: `AuditLogger` has a working automated `_REDACTED_KEYS` scrubber (`c6_audit_logger/audit_logger.py:65-77`) for structured log payloads, but that control only covers `AuditLogger.log()` payloads — it has no reach into narrative markdown files like session handoffs, which are written freehand and never scanned for secret-shaped strings before being committed. |
 | When it should have been caught | At authorship time, 2026-05-31 — any pre-commit secret-scanning hook (none exists in this repo as of this writing) or a human proofread specifically for NFR-05 compliance before committing a handoff document. Also should have been caught by any of the many subsequent CLAUDE.md session-start "ARE WE COMPROMISED?" Q1-Q6 passes since — none of the six watchdog questions specifically directs a scan of `11_MEMORY_HANDOFF/` prose for leaked secrets; the closest, Q1, scans `risk.py` hard limits, not handoff narrative. |
 | Phases it survived | Original commit `dce071e` (2026-05-31) through discovery on 2026-07-12 — roughly 6 weeks, spanning the G5 close, the start of Phase 6/7 live paper trading, and dozens of intervening sessions' worth of session-start protocol runs, none of which caught it. |
@@ -1961,6 +2209,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-117 |
+| Arm | Core |
 | What was missed | GG-102 (2026-07-xx) gitignored `exp_output/T255-BAND-MONITOR/band_monitor_results.json` because it is rewritten in place by the weekly VPS cron (`run_band_monitor.py --ci`, Mondays) and tracking it dirties the VPS tree, blocking `deploy.yml`'s fail-closed dirty-tree guard. `band_monitor_summary.json` — the same cron run's aggregate rollup output, sitting in the same directory, rewritten by the exact same job — was never added to the same `.gitignore` pattern. It stayed git-tracked and kept getting rewritten by every cron run. |
 | When it should have been caught | At GG-102's own authorship — the fix should have covered both sibling output files from the same job in one pass; a `git ls-files exp_output/T255-BAND-MONITOR/` at that time would have shown both. |
 | Phases it survived | From GG-102's fix (exact date not re-derived here) through 2026-07-13 — at least one full weekly cron cycle, confirmed to have actually fired and blocked a deploy. |
@@ -1977,6 +2226,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-115 |
+| Arm | Core |
 | Category | CI configuration bug — the safety gate registered as GG-114's resolution was itself broken, on `main`, for the ~8 minutes between PR #15's merge and this fix |
 | What was missed | `.github/workflows/deploy.yml`'s `approval-path-tests` job installed dependencies via `pip install -e ".[dev]"` — resolving only `pyproject.toml`'s floating dependency list. `tests.yml` (the project's other, pre-existing CI workflow) instead installs via `pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt` (which chains to `requirements-base.txt`), the project's established locked-dependency convention (`tests.yml`'s own comment explains why: pinned versions, not floating `pyproject.toml` ranges). `nba_api` is pinned only in `requirements-base.txt`, never declared in `pyproject.toml` at all — so the new job's install step could never resolve it. Every test importing `run_mlb_paper_trade` (which imports `c1_signal_ingestion` → `ingestion.py` → `nba_api` at module load, unconditionally, even for MLB-only test paths) failed collection with `ModuleNotFoundError: No module named 'nba_api'`. |
 | When it should have been caught | At T-327's own authorship (2026-07-10): the job's install step should have mirrored `tests.yml`'s pattern, which sits ~20 lines away in the same `.github/workflows/` directory and is explicitly commented with the reason it exists. Also should have been caught by actually exercising a push-to-`main` before merge — but PR CI only runs `tests.yml` (a `pull_request`-triggered workflow); `approval-path-tests` is `push`-to-`main`-only by design (see GG-114/T-327 rationale — deliberately not path-filtered), so no PR-stage CI run ever could have caught this; the first real exercise is structurally always a live push to `main`. |
@@ -1994,6 +2244,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-118 |
+| Arm | Core |
 | Category | Unbounded-memory bug in production C8 code + missing operational health check for that specific service |
 | What was missed | `scripts/web_dashboard.py`'s `_load_jsonl()` parsed every line of an audit file into a full Python dict, held the entire resulting list in memory, and only sliced to the last `tail` entries at the very end. `audit_mlb.jsonl` (14MB) and `audit_mlb_t4.jsonl` (30MB) grew large enough after continuous MLB T1/T4 activity that a single `/api/data` request's in-memory parse exceeded the systemd unit's `MemoryMax=128M` cgroup cap, triggering `oom-kill`. `Restart=always`/`RestartSec=5` meant the service just re-crashed every few seconds indefinitely (NRestarts hit 50+ in the journal) rather than surfacing as a clear failure. |
 | When it should have been caught | At initial sizing of `MemoryMax=128M` — the comment in the unit file ("stdlib HTTP + JSON parsing is tiny") assumed small log files and did not account for audit-log growth over a multi-day live run. Also should have been caught earlier operationally: the dashboard was down for ~2 days before the operator noticed via the browser error banner. |
@@ -2011,6 +2262,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-119 |
+| Arm | MLB |
 | Category | Fee/edge-frame correctness bug — live gating math, same pattern as GG-113, different band/file |
 | What was missed | GG-113's fix (ADR-0043, 2026-07-14) corrected T4M-PROJ's (`run_t4_mlb_live.py`, `paper_trader.py::open_position()`) NO-direction edge computation, which had been negating a vig-inclusive `gross_edge` expression wholesale and thereby flipping vig from a cost into a credit for NO bets. T1's own write path, `run_mlb_paper_trade.py::_directional_edge()`, was not inspected line-by-line during GG-113's initial fix — it is named here as a suspected parallel instance of the identical algebraic pattern (a plain sign-negation of an already-vig-inclusive edge expression), not yet confirmed by direct code read against `run_exp017.py`'s symmetric-cost convention. T2's own local gating formula (`run_t2_mlb_sameday.py` lines ~421-423, `gross_edge = p_calibrated - mid - vig`; `net_edge = gross_edge - kalshi_fee`) is similarly unconfirmed — not yet read closely enough to determine whether it independently exhibits the same NO-direction pattern. |
 | When it should have been caught | Ideally alongside GG-113 itself, since T1/T2 both compute directional edge from a YES-frame `gross_edge` term. Was not, because the DS sign-off obtained for GG-113 was explicitly scoped to T4M-PROJ only (Window 1 instruction), and T1 is the active/primary G6 book — extending scope to T1/T2 without their own fresh sign-off would violate Hard Rule 3 / ADR-0039 Tier B precedent regardless of whether the bug is confirmed present. |
@@ -2028,6 +2280,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-120 |
+| Arm | MLB |
 | Category | Test-isolation bug — CLI flag silently bypassed on one of two output paths |
 | What was missed | `scripts/run_band_monitor.py::main()` writes three artifacts per run: `band_monitor_results.json` and `band_monitor_summary.json` (both correctly written under `args.out`, which respects the `--out` CLI flag), and a third, timestamped `band_monitor_<run_id>.json` written via `write_dated_verdict(results, VERDICTS_DIR, run_id)` — a call that used the hardcoded module constant `VERDICTS_DIR = OUT_DIR / "verdicts"` (`OUT_DIR = Path("exp_output/T255-BAND-MONITOR")`) instead of `args.out / "verdicts"`. `tests/test_band_monitor.py::test_healthy_book_returns_0` and `::test_anti_predictive_book_returns_1` both call `main(["--portfolio", ..., "--t4-ledger", ..., "--ci", "--out", str(tmp_path / "out")])`, correctly intending to isolate all three output artifacts under `tmp_path`. Because the dated-verdict write bypassed `--out` entirely, every run of those two tests instead wrote a real, UTC-timestamped file directly into the git-tracked `exp_output/T255-BAND-MONITOR/verdicts/` directory — using synthetic fixture data (a "healthy book" and an "anti-predictive book" scenario, `raw_n=40`/`raw_n=60`, fabricated edge/winrate values) indistinguishable at a glance from real production monitoring runs. |
 | When it should have been caught | At the time `write_dated_verdict` was added (T-341, commit `7d339b6`, 2026-07-11) — the dated-artifact path should have been wired through the same `args.out` the two "latest" artifacts use, and the two new tests added alongside it should have asserted the dated file landed under `tmp_path`, not merely that `main()` returned the expected exit code. |
@@ -2045,6 +2298,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-121 |
+| Arm | MLB |
 | Category | Detection-worked-but-no-close-loop — the GG-049 heartbeat mechanism fired correctly and the finding was then never registered anywhere |
 | What was missed | CLAUDE.md Step 4's semantic-oracle check (`grep -c "SemanticFloorViolation" .../paper_mlb_cron.log`) is designed to surface exactly this failure mode (GG-049: pipeline runs, produces zero evaluations). It did its job: `paper_mlb_cron.log` line 1229 logs `[PIPE-05] CRITICAL semantic_floor_violation: SemanticFloorViolation: PIPE-05 MLB — games_fetched=16 but matched_players=0`, dated 2026-07-11 (`PT-MLB-2CD75D5F`). Nobody appears to have registered this specific incident in `GOVERNANCE_GAP_LOG.md` or `DECISION_LOG.md` at the time — this session (2026-07-15 Step 4 re-run) is the first to find it, 4 days after the fact. |
 | When it should have been caught | Whichever session ran CLAUDE.md Step 4 first after 2026-07-11's cron run (session-start protocol runs Step 4 every session — this should have surfaced same-day or next-day, not 4 days later). |
@@ -2062,6 +2316,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-122 |
+| Arm | Core |
 | Category | Incremental architecture — a measurement tool drifted out of sync with the format of the data it measures |
 | What was missed | `.claude/hooks/governance_scan.sh`'s OPEN-gap counter (`OPEN=$(grep "| OPEN" ... )`) matched only the literal substring `"| OPEN"`. A number of this log's own Status cells are phrased `"| Status | **OPEN — ..."` (bold-markdown prefix on the word OPEN) — the literal grep does not match those, so every bold-prefixed OPEN entry was silently excluded from the count. |
 | When it should have been caught | Whenever a Status cell was first written with a `**OPEN` bold prefix instead of a plain `OPEN` prefix — the hook should have been re-verified against the log's actual current formatting at that point, or the grep should have been format-tolerant from the start. |
@@ -2081,6 +2336,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-123 |
+| Arm | MLB |
 | Category | Fee/edge-frame magnitude bug — adjacent to but distinct from GG-113/GG-119's sign-flip pattern |
 | What was missed | `run_t2_mlb_sameday.py` (~lines 416-423) computes `vig = current_mkt.vig` (the full bid-ask spread) and then `gross_edge = p_calibrated - mid - vig`, `net_edge = gross_edge - kalshi_fee`. The established codebase convention — `run_exp017.py`'s symmetric-cost framing, and T1's `run_mlb_paper_trade.py` (`half = mkt.half_spread; gross_edge = p_calibrated - mid - half`) — subtracts only `half_spread` (`vig / 2.0`), the actual one-sided transaction cost, per `kalshi_client.py::PlayerMarket`'s own docstring ("vig is the full spread ...; half-spread is the cost to enter"). T2 double-charges the spread relative to this convention. |
 | When it should have been caught | When T2's local gating formula was first written, by checking it against `run_exp017.py`'s convention directly (as T1's formula apparently was). Flagged only as an adjacent, out-of-scope observation during GG-119's diagnosis (2026-07-14/15) rather than caught at implementation time. |
@@ -2100,6 +2356,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-124 |
+| Arm | MLB |
 | Category | Architectural placeholder — a monitoring mechanism was built, baseline-parameterized, and reasoned about across multiple prior gaps (GG-044) while nothing calls it |
 | What was missed | `c7_monitoring/monitor.py`'s `SystemMonitor.check_and_alert()` / `get_drift_snapshot()` — the methods that consume `brier_baseline`/`ece_baseline` and the rolling forecast window (`DRIFT_WINDOW_SIZE`) to decide whether to raise a drift alarm — are never called from any production pipeline script for either sport. `record_forecast_outcome()`, which feeds that rolling window per resolved bet, is referenced only inside `monitor.py`'s own usage docstring. Direct grep of every call site (`grep -rn "record_forecast_outcome\|check_and_alert" src/ scripts/`) confirms the only C7 `SystemMonitor` method actually invoked from `run_mlb_paper_trade.py`, `run_resolve_mlb.py`, `run_paper_trade.py`, or `run_resolve.py` is `check_portfolio_pnl()` — a separate PNL-threshold check, unrelated to Brier/ECE calibration drift. |
 | When it should have been caught | When `SystemMonitor`'s drift-alarm methods were first built and documented as part of C7 (pre-dates this project's governance-gap log; exact session not identified), or at latest when GG-044 was first registered (SESSION 90, 2026-06-27) and reasoned about "the C7 drift alarm could fire incorrectly" — that framing implicitly assumed the alarm fires at all, which was never verified at the time. |
