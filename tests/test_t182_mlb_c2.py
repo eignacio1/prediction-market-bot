@@ -30,6 +30,8 @@ from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import _ip_to_decim
 from prediction_market_bot.c1_signal_ingestion.mlb_pitcher_stats_store import MLBPitcherStatsStore
 from prediction_market_bot.c1_signal_ingestion.mlb_team_stats_store import MLBTeamStatsStore
 from prediction_market_bot.c2_feature_store.mlb_features import (
+    GG105_SHRINKAGE_K,
+    GG105_SHRINKAGE_PRIOR,
     MLB_FEATURE_VERSION,
     _PARK_FACTOR_HITS,
     MLBFeatureStore,
@@ -287,6 +289,52 @@ class TestComputeRollingBatterFeatures:
         df = _n_game_log(5, ab_per_game=0, h_per_game=0)
         result = _compute_rolling_batter_features(df, window=10, min_periods=3)
         assert result["ba_l10"].isna().all()
+
+    # -----------------------------------------------------------------
+    # GG-105/APR-0025/ADR-0047: ba_l10_shrunk (empirical-Bayes shrinkage)
+    # -----------------------------------------------------------------
+
+    def test_ba_l10_shrunk_nan_when_fewer_than_min_periods(self):
+        # Same NaN condition as ba_l10 itself: ab_sum is NaN below MIN_PERIODS.
+        df = _n_game_log(2)
+        result = _compute_rolling_batter_features(df, window=10, min_periods=3)
+        assert result["ba_l10_shrunk"].isna().all()
+
+    def test_ba_l10_shrunk_defined_when_ab_sum_is_zero(self):
+        # Unlike ba_l10 (NaN on zero-AB via _safe_div), ba_l10_shrunk must be a
+        # well-defined, fully-shrunk-to-PRIOR value: ab_sum==0 is a populated
+        # window with zero observed at-bats, not a missing-data condition.
+        df = _n_game_log(5, ab_per_game=0, h_per_game=0)
+        result = _compute_rolling_batter_features(df, window=10, min_periods=3)
+        assert result["ba_l10"].isna().all()
+        shrunk_non_nan = result["ba_l10_shrunk"].dropna()
+        assert len(shrunk_non_nan) >= 2
+        assert shrunk_non_nan.iloc[0] == pytest.approx(GG105_SHRINKAGE_PRIOR, rel=1e-6)
+
+    def test_ba_l10_shrunk_matches_formula(self):
+        # 4 AB, 2 H per game → after 3 prior games, ab_sum=12, h_sum=6, raw ba_l10=0.500.
+        df = _n_game_log(5, ab_per_game=4, h_per_game=2)
+        result = _compute_rolling_batter_features(df, window=10, min_periods=3)
+        row = result.dropna(subset=["ba_l10_shrunk"]).iloc[0]
+        ab_sum, h_sum = 12, 6
+        expected = (h_sum + GG105_SHRINKAGE_K * GG105_SHRINKAGE_PRIOR) / (
+            ab_sum + GG105_SHRINKAGE_K
+        )
+        assert row["ba_l10_shrunk"] == pytest.approx(expected, rel=1e-6)
+        # Shrunk value must sit strictly between the raw ratio and the prior
+        # for any finite ab_sum > 0 (the defining property of shrinkage).
+        assert min(row["ba_l10"], GG105_SHRINKAGE_PRIOR) < row["ba_l10_shrunk"] < max(
+            row["ba_l10"], GG105_SHRINKAGE_PRIOR
+        )
+
+    def test_ba_l10_shrunk_converges_toward_raw_ba_with_large_ab_sum(self):
+        # With many real at-bats (ab_sum >> K), shrinkage should pull only
+        # lightly toward the prior — the empirical-Bayes large-sample property.
+        df = _n_game_log(15, ab_per_game=4, h_per_game=1)  # raw BA = 0.250
+        result = _compute_rolling_batter_features(df, window=10, min_periods=3)
+        last_row = result.iloc[-1]
+        assert last_row["ba_l10"] == pytest.approx(0.250, rel=1e-3)
+        assert last_row["ba_l10_shrunk"] == pytest.approx(0.250, abs=0.05)
 
     def test_slg_with_extra_bases(self):
         # 4 AB, 1 H, 1 double, 1 triple, 1 HR = 1+1+2+3=7 total bases in 4 AB = 0.625 + base H

@@ -405,6 +405,12 @@ def main() -> None:
         player_id = int(row.get("player_id", 0))
         h_l10_mean = float(row.get("h_l10_mean", np.nan)) if "h_l10_mean" in row.index else float("nan")
         ba_l10 = float(row.get("ba_l10", np.nan)) if "ba_l10" in row.index else float("nan")
+        # GG-105/APR-0025/ADR-0047: audit-only surfacing. T1's forecasting model (X, below)
+        # is built from the frozen C3 feature set and does NOT consume ba_l10_shrunk — this
+        # is logged for backtest/audit comparison only, per ADR-0047's T1 scope exclusion.
+        ba_l10_shrunk = (
+            float(row.get("ba_l10_shrunk", np.nan)) if "ba_l10_shrunk" in row.index else float("nan")
+        )
 
         sp_override = sp_override_by_player.get(player_id)
         X = _build_mlb_feature_vector(
@@ -438,6 +444,7 @@ def main() -> None:
                 "player_id": player_id,
                 "h_l10_mean": round(h_l10_mean, 3) if not np.isnan(h_l10_mean) else None,
                 "ba_l10": round(ba_l10, 4) if not np.isnan(ba_l10) else None,
+                "ba_l10_shrunk": round(ba_l10_shrunk, 4) if not np.isnan(ba_l10_shrunk) else None,
                 "kalshi_ticker": mkt.ticker,
                 "kalshi_threshold": thr,
                 "mid_price": round(mid, 4),
