@@ -65,14 +65,45 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from exp_retrospective_core import (  # noqa: E402
+    ADR_0024_TIER1_N,
+    ADR_0024_TIER1_DIAG_EV,
+    ADR_0024_TIER2_N_SINGLE,
+    ADR_0024_TIER2_N_MULTI,
+    ADR_0024_P_THRESHOLD,
+    KALSHI_FEE_RATE,
     MIN_N,
+    V_CONF_POS,
+    V_DIR_POS,
     V_CONF_NEG,
+    V_DIR_NEG,
     V_DIAG,
-    analyse,
-    load_csv,
+    V_INC,
+    E_ANTI,
+    E_MONO,
+    E_INC,
+    kalshi_fee,
+    compute_fee_net_edge,
+    compute_pnl_unit,
+    MLBPosition,
     load_portfolio,
+    load_csv,
+    deduplicate,
+    ev_stats,
+    threshold_breakdown,
+    adr0024_tier,
+    ev_verdict,
+    _fisher_pvalue,
+    _tercile_table,
+    edge_monotonicity,
+    analyse,
     print_report,
 )
+
+# Pre-refactor (T-375, GG-060 Phase 4) callers/tests import these two loaders
+# under their original private names — keep the alias rather than churn every
+# call site, since the underlying behavior (not the name) is what moved.
+_load_portfolio = load_portfolio
+_load_csv = load_csv
 
 SPORT             = "mlb"
 DEFAULT_PORTFOLIO = Path("logs/paper_portfolio_mlb.json")
