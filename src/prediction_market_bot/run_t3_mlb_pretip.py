@@ -50,6 +50,7 @@ if str(_SRC_ROOT) not in sys.path:
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -75,7 +76,7 @@ def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
-def _load_pregame_context() -> tuple[list[dict], Path | None]:
+def _load_pregame_context() -> tuple[list[dict[str, Any]], Path | None]:
     """Load the most recent pregame_mlb_*.json from LOG_DIR."""
     jsons = sorted(LOG_DIR.glob("pregame_mlb_*.json"), reverse=True)
     if not jsons:
@@ -86,7 +87,7 @@ def _load_pregame_context() -> tuple[list[dict], Path | None]:
 
 
 def _write_empty_report(session_id: str, reason: str, t1_path: str = "") -> None:
-    report = {
+    report: dict[str, Any] = {
         "session_id":   session_id,
         "band":         BAND.value,
         "game_date":    GAME_DATE,
@@ -178,7 +179,7 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 3. Compute momentum signals
     # ------------------------------------------------------------------
-    t3_forecasts: list[dict] = []
+    t3_forecasts: list[dict[str, Any]] = []
 
     for fc in actionable:
         ticker     = fc.get("kalshi_ticker", "")

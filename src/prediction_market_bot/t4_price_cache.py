@@ -43,7 +43,7 @@ from __future__ import annotations
 import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 
 from prediction_market_bot.execution_bands import ExecutionBand, T4_SUBBANDS
 
@@ -245,7 +245,7 @@ class T4PriceCache:
 
     def start_polling(
         self,
-        kalshi_client,
+        kalshi_client: Any,
         market_ids: list[str],
         interval_s: float = POLLING_INTERVAL_S,
     ) -> None:

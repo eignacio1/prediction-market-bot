@@ -47,6 +47,7 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
@@ -235,7 +236,7 @@ def main() -> None:
 
 
 def _write_empty_report(session_id: str, reason: str) -> None:
-    report = {
+    report: dict[str, Any] = {
         "session_id":    session_id,
         "band":          BAND.value,
         "game_date":     GAME_DATE,

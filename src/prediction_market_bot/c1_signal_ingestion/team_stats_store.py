@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import pandas as pd
 import numpy as np
+from typing import Any
 
 # Default rolling window for opponent defensive rating (matches player window)
 DEFAULT_WINDOW: int = 10
@@ -177,16 +178,16 @@ class TeamStatsStore:
     def __contains__(self, team_abbr: str) -> bool:
         return team_abbr.upper() in self._logs
 
-    def to_cache_dict(self) -> dict[str, list[dict]]:
+    def to_cache_dict(self) -> dict[str, list[dict[str, Any]]]:
         """Serialize to a JSON-safe dict for file caching between PIPE-02 and PIPE-03."""
-        out: dict[str, list[dict]] = {}
+        out: dict[str, list[dict[str, Any]]] = {}
         for abbr, df in self._logs.items():
             keep = [c for c in ("game_date", "pts", "plus_minus", "pts_allowed") if c in df.columns]
             out[abbr] = df[keep].to_dict(orient="records")
         return out
 
     @classmethod
-    def from_cache_dict(cls, data: dict[str, list[dict]]) -> "TeamStatsStore":
+    def from_cache_dict(cls, data: dict[str, list[dict[str, Any]]]) -> "TeamStatsStore":
         """Deserialize from a cache dict written by to_cache_dict()."""
         store = cls()
         for abbr, records in data.items():

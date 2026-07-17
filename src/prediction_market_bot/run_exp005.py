@@ -66,6 +66,7 @@ from prediction_market_bot.c3_forecasting.forecaster import ModelForecaster
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.cohort import get_player_ids_v1
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Experiment configuration
@@ -124,8 +125,8 @@ def build_target(feature_df: pd.DataFrame) -> pd.Series:
     return target
 
 
-def compute_metrics(y_true: np.ndarray, y_prob: np.ndarray, set_name: str) -> dict:
-    metrics: dict = {"set": set_name, "n_samples": len(y_true)}
+def compute_metrics(y_true: np.ndarray, y_prob: np.ndarray, set_name: str) -> dict[str, Any]:
+    metrics: dict[str, Any] = {"set": set_name, "n_samples": len(y_true)}
     if len(y_true) == 0:
         return metrics
     y_clip = np.clip(y_prob, 1e-6, 1 - 1e-6)
@@ -155,7 +156,7 @@ def compute_metrics(y_true: np.ndarray, y_prob: np.ndarray, set_name: str) -> di
     return metrics
 
 
-def compute_null_metrics(y_true: np.ndarray, set_name: str) -> dict:
+def compute_null_metrics(y_true: np.ndarray, set_name: str) -> dict[str, Any]:
     y_null = np.full(len(y_true), PLACEHOLDER_MARKET_IMPLIED_PROB)
     m = compute_metrics(y_true, y_null, f"{set_name}_null")
     m["null_model"] = True
@@ -170,7 +171,7 @@ def run_experiment(
     output_dir: Path,
     skip_api: bool = False,
     dry_run: bool = False,
-) -> dict:
+) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     log_path = output_dir / "audit_exp005.jsonl"
     logger = AuditLogger(log_path=log_path, min_severity="DEBUG")

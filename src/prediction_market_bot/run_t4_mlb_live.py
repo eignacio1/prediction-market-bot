@@ -73,7 +73,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import requests
 
@@ -259,7 +259,7 @@ def acquire_singleton_lock(path: Path = SINGLETON_LOCK_PATH) -> bool:
 # ---------------------------------------------------------------------------
 
 
-def _append_dryrun_record(path: Path, record: dict) -> None:
+def _append_dryrun_record(path: Path, record: dict[str, Any]) -> None:
     """Append one evaluation record to the dry-run JSONL log (append-only)."""
     try:
         with path.open("a", encoding="utf-8") as fh:
@@ -311,7 +311,7 @@ def _compute_ab_remaining(
 # ---------------------------------------------------------------------------
 
 
-def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dict[str, dict]]:
+def _load_pregame_context() -> tuple[dict[int, list[dict[str, Any]]], dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
     """
     Load the most recent pregame_mlb_*.json from _LOGS_DIR.
 
@@ -327,9 +327,9 @@ def _load_pregame_context() -> tuple[dict[int, list[dict]], dict[str, dict], dic
     report = json.loads(jsons[0].read_text())
     forecasts = report.get("forecasts", [])
 
-    by_player_id: dict[int, list[dict]] = {}
-    by_ticker: dict[str, dict] = {}
-    name_to_pregame: dict[str, dict] = {}
+    by_player_id: dict[int, list[dict[str, Any]]] = {}
+    by_ticker: dict[str, dict[str, Any]] = {}
+    name_to_pregame: dict[str, dict[str, Any]] = {}
 
     for fc in forecasts:
         pid   = int(fc.get("player_id", 0))
@@ -450,7 +450,7 @@ def _espn_game_status(espn_game_id: str) -> str:
 def _rollover_game_ids(
     tracked_game_ids: list[str],
     newly_discovered: list[str],
-    status_fn=_espn_game_status,
+    status_fn: Callable[[str], str] = _espn_game_status,
 ) -> list[str]:
     """GG-058: merge-in rollover, never a destructive replace.
 
@@ -471,7 +471,7 @@ def _rollover_game_ids(
 
 def _espn_poll_once_mlb(
     espn_game_id: str,
-    name_to_pregame: dict[str, dict],
+    name_to_pregame: dict[str, dict[str, Any]],
 ) -> list[MLBLiveBatterState]:
     """
     Fetch live MLB boxscore from ESPN for one game.
@@ -613,7 +613,7 @@ def p_hits_gte_threshold(
 # ---------------------------------------------------------------------------
 
 
-def _compute_t4_band_budget(portfolio: dict) -> float:
+def _compute_t4_band_budget(portfolio: dict[str, Any]) -> float:
     return max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0)
 
 
@@ -621,7 +621,7 @@ def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
     return size_usd + min(0.0, exit_pnl)
 
 
-def _game_date_window(game_date: str) -> set:
+def _game_date_window(game_date: str) -> set[Any]:
     """GG-081/GG-082 (2026-07-04): expand a single game_date into {game_date, prior_day}.
 
     UTC date rollover reassigns `game_date` to the new calendar day while a game that
@@ -637,7 +637,7 @@ def _game_date_window(game_date: str) -> set:
     return {game_date, (d - timedelta(days=1)).isoformat()}
 
 
-def _reconstruct_t4_ledger(portfolio: dict, game_dates: Union[str, set]) -> float:
+def _reconstruct_t4_ledger(portfolio: dict[str, Any], game_dates: Union[str, set[Any]]) -> float:
     """GG-086/T-240 (2026-07-05): open exposure is never date-filtered.
 
     Confirmed in production the day this was found: 33 pool_isolated positions
@@ -671,7 +671,7 @@ def _reconstruct_t4_ledger(portfolio: dict, game_dates: Union[str, set]) -> floa
     return open_exposure + realized_losses
 
 
-def _reconstruct_fired_ticker_states(portfolio: dict, game_dates: Union[str, set]) -> dict[str, tuple[int, int]]:
+def _reconstruct_fired_ticker_states(portfolio: dict[str, Any], game_dates: Union[str, set[Any]]) -> dict[str, tuple[int, int]]:
     """T-209/T-225: rebuild the game-day re-entry dedup guard from the persisted portfolio.
 
     `already_fired_game` is otherwise a process-local in-memory dict that is
@@ -799,7 +799,7 @@ def _run_cycle(
     session_id: str,
     live_states: list[MLBLiveBatterState],
     live_prices: dict[str, object],
-    pregame_by_player_id: dict[int, list[dict]],
+    pregame_by_player_id: dict[int, list[dict[str, Any]]],
     engine: RiskEngine,
     trader: PaperTrader,
     store: StagedOrderStore,

@@ -71,6 +71,7 @@ from prediction_market_bot.c5_execution.market_mapper import normalize_player_na
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -119,7 +120,7 @@ def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
-def _load_pregame_context() -> tuple[list[dict], Path | None]:
+def _load_pregame_context() -> tuple[list[dict[str, Any]], Path | None]:
     """Load the most recent pregame_mlb_*.json produced by PIPE-06pre."""
     jsons = sorted(LOG_DIR.glob("pregame_mlb_*.json"), reverse=True)
     if not jsons:
@@ -201,8 +202,8 @@ def _fetch_live_game_pks(
 
 
 def _write_report(
-    forecasts: list[dict],
-    bets: list[dict],
+    forecasts: list[dict[str, Any]],
+    bets: list[dict[str, Any]],
     scratches: int,
     live_skips: int,
     players_not_in_lineup: int,
@@ -353,8 +354,8 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 6. T2 evaluation loop
     # ------------------------------------------------------------------
-    t2_results: list[dict] = []
-    bets: list[dict] = []
+    t2_results: list[dict[str, Any]] = []
+    bets: list[dict[str, Any]] = []
     scratches = 0
     live_skips = 0
     lineup_misses = 0

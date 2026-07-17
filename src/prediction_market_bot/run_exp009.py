@@ -53,6 +53,7 @@ from prediction_market_bot.c2_feature_store.qualitative_amplifier import (
     QualitativeAmplifier, AMP_FEATURE_NAMES,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from typing import Any
 
 EXP_ID     = "EXP-009"
 SESSION_ID = f"EXP-009-{uuid.uuid4().hex[:8].upper()}"
@@ -229,7 +230,7 @@ def main() -> None:
         "CTX-3 PRF×hot":  [c for c in amp_names if c.startswith("amp_prf_hot")],
         "CTX-4/5 mod×ctx": [c for c in amp_names if c.startswith("amp_m")],
     }
-    ctx_results: dict[str, dict] = {}
+    ctx_results: dict[str, dict[str, Any]] = {}
     for ctx_name, ctx_cols in context_groups.items():
         feats = l12_names + ctx_cols
         m_ctx = _fit(_impute(train[feats].to_numpy(dtype=float)), y_tr)

@@ -517,7 +517,7 @@ class QualitativeSignalStore:
         self,
         player_id: int,
         game_date: str,
-    ) -> dict | None:
+    ) -> dict[str, Any] | None:
         """
         Point-lookup: PAM classification for a single player on a given date.
 
@@ -558,7 +558,7 @@ class QualitativeSignalStore:
             if pd.notna(r[c]) and float(r[c]) == 1.0
         ]
 
-        result: dict = {
+        result: dict[str, Any] = {
             "prf_primary": prf_primary,
             "prf_primary_name": prf_name,
             "active_modifiers": active_mods,

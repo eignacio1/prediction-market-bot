@@ -55,6 +55,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import (
     QualitativeSignalStore,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from typing import Any
 
 EXP_ID     = "EXP-013"
 SESSION_ID = f"EXP-013-{uuid.uuid4().hex[:8].upper()}"
@@ -299,7 +300,7 @@ def main() -> None:
     # ------------------------------------------------------------------
     # 7. Save
     # ------------------------------------------------------------------
-    dist_summary: list[dict] = []
+    dist_summary: list[dict[str, Any]] = []
     for pid in nb_model.get_fitted_player_ids()[:20]:
         d = nb_model.get_distribution(pid)
         if d:

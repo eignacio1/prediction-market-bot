@@ -36,7 +36,7 @@ Security (NFR-05):
 from __future__ import annotations
 
 import os
-from typing import Optional, runtime_checkable, Protocol
+from typing import Any, Optional, runtime_checkable, Protocol
 
 from prediction_market_bot.c5_execution.kalshi_client import (
     DS02Snapshot,
@@ -81,7 +81,7 @@ class VenueAdapter(Protocol):
         """
         ...
 
-    def check_connectivity(self) -> tuple[bool, dict]:
+    def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         """Verify API key and connectivity. Call before any other method."""
         ...
 
@@ -132,7 +132,7 @@ class KalshiVenueAdapter:
         """Construct from VENUE_API_KEY environment variable (NFR-05)."""
         return cls(KalshiMarketClient.from_env())
 
-    def check_connectivity(self) -> tuple[bool, dict]:
+    def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         return self._client.check_connectivity()
 
     def fetch_player_points_markets(
@@ -215,7 +215,7 @@ class PolymarketVenueAdapter:
             raise EnvironmentError("POLYMARKET_API_KEY not set — check .env (NFR-05)")
         return cls(key)
 
-    def check_connectivity(self) -> tuple[bool, dict]:
+    def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         """
         Verify API key and connectivity to Polymarket US CLOB API.
 
@@ -298,7 +298,7 @@ class PolymarketVenueAdapter:
     # Internal: Polymarket raw market → PlayerMarket
     # ------------------------------------------------------------------
 
-    def _parse_market(self, raw: dict) -> Optional[PlayerMarket]:
+    def _parse_market(self, raw: dict[str, Any]) -> Optional[PlayerMarket]:
         """
         Convert a raw Polymarket market dict to PlayerMarket.
 
@@ -399,7 +399,7 @@ class DFSPickemVenueAdapter:
     venue_id: str = "dfs_pickem_base"
     implied_prob_method: str = "bookmaker"
 
-    def check_connectivity(self) -> tuple[bool, dict]:
+    def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         raise NotImplementedError("DFS pick'em adapter not yet implemented — new ADR required")
 
     def fetch_player_points_markets(

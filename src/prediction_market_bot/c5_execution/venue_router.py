@@ -31,7 +31,7 @@ Security (NFR-05):
 from __future__ import annotations
 
 import os
-from typing import Optional
+from typing import Any, Optional
 
 from prediction_market_bot.c5_execution.kalshi_client import DS02Snapshot, PlayerMarket, _utc_now
 from prediction_market_bot.c5_execution.market_mapper import market_key
@@ -117,7 +117,7 @@ class VenueRouter:
     # Primary interface (replaces KalshiMarketClient in pipelines)
     # ------------------------------------------------------------------
 
-    def check_all_connectivity(self) -> dict[str, tuple[bool, dict]]:
+    def check_all_connectivity(self) -> dict[str, tuple[bool, dict[str, Any]]]:
         """
         Check connectivity for all registered adapters.
         Returns {venue_id: (ok, status_dict)}.
