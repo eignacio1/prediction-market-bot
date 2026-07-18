@@ -200,6 +200,54 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "GOVERNANCE_GAP_LOG.md GG-123's numbering note."
         ),
     ),
+    LogicEpochBoundary(
+        epoch=7,
+        resolving_gap="GG-105",
+        commit_sha="f961fba63760f46b5b3878a8f89dac9d0a861afb",
+        # NOT this commit's timestamp (2026-07-18 00:33:41 UTC) — see below.
+        commit_utc=datetime(2026, 7, 18, 14, 0, 0, tzinfo=timezone.utc),
+        description=(
+            "T4M-PROJ ba_l10 empirical-Bayes shrinkage (ADR-0047, GG-105 "
+            "remediation): p_hits_gte_threshold() now consumes ba_l10_shrunk "
+            "= (h_sum + K*PRIOR)/(ab_sum + K), K=40, PRIOR=.2512, replacing "
+            "raw ba_l10 whose small-denominator extremes drove the tercile "
+            "anti-predictive pattern. Uniquely among tracked boundaries, "
+            "commit_utc here is NOT the resolving commit's timestamp: "
+            "run_t4_mlb_live.py falls back to raw ba_l10 whenever the "
+            "pregame JSON lacks ba_l10_shrunk, and the 2026-07-17 pregame "
+            "regeneration (22:15 UTC) predated the merge (00:33 UTC Jul 18) "
+            "— so the entire Jul-17 game night ran behaviorally pre-fix "
+            "(epoch 6) despite post-fix code being deployed and t4-mlb "
+            "restarted (01:17 UTC). Verified directly: zero ba_l10_shrunk "
+            "fields in pregame_mlb_20260717.json, and zero T4 evaluation "
+            "cycles ran in the fallback window (last audit eval 00:34 UTC, "
+            "pre-restart). The fix goes behaviorally live at the FIRST "
+            "post-deploy pregame regeneration: 2026-07-18, PIPE-08-set "
+            "PIPE-06pre time in [14:00, 22:15] UTC. commit_utc uses the "
+            "earliest bound (14:00 UTC) deliberately: T4M-PROJ — the only "
+            "band whose write path ADR-0047 changes — cannot open a bet "
+            "before that regeneration (PIPE-08 schedules PIPE-06pre at "
+            "max(14:00 UTC, T4_start-45min), so the regen always precedes "
+            "the day's first T4 cycle), and T1/T2/T3 write paths are "
+            "behaviorally unchanged by ADR-0047 (T1 surfacing is "
+            "audit-only), so their classification anywhere inside "
+            "[14:00, actual-regen] is immaterial. Same "
+            "documented-approximation posture as the GG-087/GG-077 "
+            "deploy-lag note above, with the ambiguity window analyzed to "
+            "zero behavioral misclassification. Contingency: if the "
+            "2026-07-18 regeneration verification (pregame_mlb_20260718 "
+            ".json contains ba_l10_shrunk; audit_mlb_t4.jsonl logs "
+            "distinct raw-vs-shrunk values) FAILS, this boundary is "
+            "mis-anchored and must be corrected before any epoch-7 bets "
+            "resolve. DS sign-off: Earl Ignacio (operator), 2026-07-18: "
+            "'you have my full sign off for the epoch-7 recommendation "
+            "ruling' — accepting the global clean_n reset (all four MLB "
+            "bands re-zero, T4M-PROJ's n*~787 race restarts) as the cost "
+            "of correcting the GG-105 anti-predictive input. See "
+            "ADR-0047, GG-105/GG-124 (GOVERNANCE_GAP_LOG.md), "
+            "DECISION_LOG.md 2026-07-18."
+        ),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
