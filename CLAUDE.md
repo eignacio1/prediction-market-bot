@@ -360,6 +360,18 @@ Then address what the user asked.
 
 ---
 
+## Incident response — shared-contract HALT recovery (GG-072 / T-224)
+
+**When any data contract or shared validation module is patched in response to a HALT, the incident is not RESOLVED until every consumer of that contract has been enumerated and re-verified — not just the pipeline whose failure prompted the investigation.** Concretely, before writing RESOLVED anywhere:
+
+1. `grep -rn <ContractName> src/` (or equivalent for the patched module) — enumerate **every** pipeline that imports or enforces it.
+2. Check each consumer against that day's run log (`audit_*.jsonl`, cron logs). Any consumer that also HALTed on the same signature must be re-run same-day if its window is still recoverable.
+3. Record each consumer's disposition (re-ran clean / no HALT / window lost) in the incident's GG entry.
+
+This rule exists because skipping it permanently lost a betting day: `MLB_FEATURE_CSV_CONTRACT` gates both PIPE-06pre and PIPE-05/T1; GG-068's fix recovered only PIPE-06pre (the pipeline being debugged), PIPE-05's same-day HALT went unnoticed, and 2026-07-02's T1 MLB slate resolved with zero bets — irrecoverable (GG-072). A one-minute grep at fix time would have caught it.
+
+---
+
 ## Hard rules (non-negotiable)
 
 1. `arb/` folder = REFERENCE ONLY. Do not incorporate until APR-0010.
