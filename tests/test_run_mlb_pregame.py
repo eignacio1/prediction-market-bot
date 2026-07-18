@@ -484,3 +484,102 @@ class TestMainHappyPath:
         assert required_keys.issubset(fc.keys()), (
             f"Missing keys: {required_keys - fc.keys()}"
         )
+
+    def test_ba_l10_shrunk_none_when_column_absent(self, tmp_path):
+        # GG-105/APR-0025/ADR-0047: the fixture CSV predates ba_l10_shrunk.
+        # This mirrors any pre-fix feature matrix still on disk post-deploy.
+        runner = _import_runner()
+        model_path = tmp_path / "model.joblib"
+        model_path.write_bytes(b"fake")
+        feature_csv = _make_feature_csv(tmp_path)
+        output_path = tmp_path / "pregame_mlb_20260624.json"
+
+        mkt = _make_mock_market(
+            "KXMLBHIT-26JUN241607NYYNYY-NYYAAJUDG7-1", "Juan Soto", threshold=1)
+        mock_snap = MagicMock()
+        mock_snap.markets = [mkt]
+
+        mock_client = MagicMock()
+        mock_client.check_connectivity.return_value = (True, {"exchange_active": True})
+        mock_client.fetch_player_points_markets.return_value = (True, mock_snap)
+
+        with (
+            patch.object(runner, "MODEL_PATH", model_path),
+            patch.object(runner, "FEATURE_CSV", feature_csv),
+            patch.object(runner, "LOG_DIR", tmp_path),
+            patch.object(runner, "OUTPUT_PATH", output_path),
+            patch("prediction_market_bot.run_mlb_pregame.joblib") as mock_jl,
+            patch("prediction_market_bot.run_mlb_pregame.KalshiMarketClient") as MockClient,
+            patch("prediction_market_bot.run_mlb_pregame.MLBIngestionClient"),
+            patch("prediction_market_bot.run_mlb_pregame._build_live_sp_override",
+                  return_value={}),
+        ):
+            mock_jl.load.return_value = _make_artifact()
+            MockClient.from_env.return_value = mock_client
+            runner.main()
+
+        fc = json.loads(output_path.read_text())["forecasts"][0]
+        assert "ba_l10_shrunk" in fc
+        assert fc["ba_l10_shrunk"] is None
+        assert fc["ba_l10"] == pytest.approx(0.280, rel=1e-3)
+
+    def test_ba_l10_shrunk_surfaced_when_column_present(self, tmp_path):
+        # GG-105/APR-0025/ADR-0047: once the feature matrix carries
+        # ba_l10_shrunk (post v1.1.0), it must surface into the forecast dict
+        # for audit/backtest comparison (T1 does not consume it for gating).
+        runner = _import_runner()
+        model_path = tmp_path / "model.joblib"
+        model_path.write_bytes(b"fake")
+
+        from datetime import date, timedelta
+        recent = (date.today() - timedelta(days=1)).isoformat()
+        feature_csv = tmp_path / "mlb_feature_matrix.csv"
+        header = (
+            "player_id,player_name,team_id,team_abbreviation,game_id,game_date,"
+            "season,season_type,matchup,is_home_game,opponent_team_abbr,ab,h,"
+            "doubles,triples,hr,rbi,bb,k,hbp,sf,snapshot_id,ingestion_run_id,"
+            "ingested_at,temporal_cutoff,ba_l10,ba_l10_shrunk,slg_l10,obp_l10,ops_l10,"
+            "h_l10_mean,k_rate_l10,bb_rate_l10,hr_rate_l10,days_rest,b2b_flag,"
+            "opp_runs_allowed_l10,opp_sp_era_l5,opp_sp_k9_l5,opp_sp_bb9_l5,"
+            "opp_sp_is_known,park_factor_hits,feature_run_id,feature_version,"
+            "train_test_label"
+        )
+        row = (
+            f"660670,Juan Soto,147,NYY,717465,{recent},2024,Regular Season,"
+            "NYY vs BOS,1,BOS,4,1,0,0,0,1,1,1,0,0,SNAP,IRD-001,"
+            f"{recent}T12:00:00Z,{recent},0.280,0.2650,0.450,0.380,0.830,"
+            "1.0,0.22,0.15,0.03,1,0,"
+            "4.5,4.0,8.0,3.0,"
+            "1,1.0,FRD-001,1.1.0,"
+            "train"
+        )
+        feature_csv.write_text(f"{header}\n{row}\n")
+        output_path = tmp_path / "pregame_mlb_20260624.json"
+
+        mkt = _make_mock_market(
+            "KXMLBHIT-26JUN241607NYYNYY-NYYAAJUDG7-1", "Juan Soto", threshold=1)
+        mock_snap = MagicMock()
+        mock_snap.markets = [mkt]
+
+        mock_client = MagicMock()
+        mock_client.check_connectivity.return_value = (True, {"exchange_active": True})
+        mock_client.fetch_player_points_markets.return_value = (True, mock_snap)
+
+        with (
+            patch.object(runner, "MODEL_PATH", model_path),
+            patch.object(runner, "FEATURE_CSV", feature_csv),
+            patch.object(runner, "LOG_DIR", tmp_path),
+            patch.object(runner, "OUTPUT_PATH", output_path),
+            patch("prediction_market_bot.run_mlb_pregame.joblib") as mock_jl,
+            patch("prediction_market_bot.run_mlb_pregame.KalshiMarketClient") as MockClient,
+            patch("prediction_market_bot.run_mlb_pregame.MLBIngestionClient"),
+            patch("prediction_market_bot.run_mlb_pregame._build_live_sp_override",
+                  return_value={}),
+        ):
+            mock_jl.load.return_value = _make_artifact()
+            MockClient.from_env.return_value = mock_client
+            runner.main()
+
+        fc = json.loads(output_path.read_text())["forecasts"][0]
+        assert fc["ba_l10_shrunk"] == pytest.approx(0.2650, rel=1e-3)
+        assert fc["ba_l10"] == pytest.approx(0.280, rel=1e-3)

@@ -43,9 +43,26 @@ v1.0.0 features (T-182 2026-06-23):
   Park factor:
     park_factor_hits  — venue-level hit park factor (1.0 = neutral, source: 2022-2024 avg)
 
+v1.1.0 addition (T-382/ADR-0047, GG-105/APR-0025 remediation):
+    ba_l10_shrunk — empirical-Bayes shrinkage of ba_l10 toward a cohort-derived league-average
+                    prior (PRIOR=0.2512, T-359), using the player's own real summed at-bats
+                    (ab_sum, already computed below) as the observed-sample-size term rather
+                    than a fixed population-average AB count:
+                        ba_l10_shrunk = (ab_sum * ba_l10 + K * PRIOR) / (ab_sum + K), K=40
+                    Added as a NEW column alongside the existing raw ba_l10 — ba_l10 itself is
+                    UNCHANGED, so any consumer reading ba_l10 directly is unaffected. Only
+                    run_t4_mlb_live.py's live hit-probability model (T4M-PROJ) is repointed to
+                    the new field; run_mlb_pregame.py (T1) surfaces it for audit/backtest but
+                    the T1 forecasting model itself is not changed by this ADR. See ADR-0047.
+
 Feature version policy:
   - MLB_FEATURE_VERSION is incremented whenever any feature definition changes.
-  - Model retrain required after any version change.
+  - Model retrain required after any version change. NOTE (ADR-0047): this v1.0.0→1.1.0 bump adds
+    a new derived column without altering any existing feature's values or the frozen C3 LR+Platt
+    model's inputs — the "model retrain required" policy line refers to C3's own frozen model
+    (Hard Rule 4), which does not consume ba_l10_shrunk and is therefore NOT retrained by this
+    change. ba_l10_shrunk is consumed only by T4M-PROJ's live Binomial calculation
+    (run_t4_mlb_live.py::p_hits_gte_threshold()), which is not a trained/frozen model artifact.
 """
 
 from __future__ import annotations
@@ -68,10 +85,17 @@ if TYPE_CHECKING:
     )
 
 COMPONENT = "C2_MLB"
-MLB_FEATURE_VERSION = "1.0.0"
+MLB_FEATURE_VERSION = "1.1.0"
 
 DEFAULT_WINDOW = 10
 MIN_PERIODS = 3
+
+# GG-105/APR-0025/ADR-0047 — empirical-Bayes shrinkage of ba_l10 (T4M-PROJ remediation).
+# K and PRIOR are DS-approved constants (2026-07-17), not tunable at call sites.
+# PRIOR is the epoch-3 cohort's own observed mean ba_l10 (T-359, n=666), an internal
+# data-derived value — not an external/unsourced figure.
+GG105_SHRINKAGE_K = 40
+GG105_SHRINKAGE_PRIOR = 0.2512
 
 LABEL_TRAIN = "TRAIN"
 LABEL_VALIDATION = "VALIDATION"
@@ -199,6 +223,17 @@ def _compute_rolling_batter_features(player_df: pd.DataFrame, window: int, min_p
 
     # Batting average: sum(H) / sum(AB)
     df["ba_l10"] = _safe_div(h_sum, ab_sum)
+
+    # ba_l10_shrunk (GG-105/APR-0025/ADR-0047): empirical-Bayes shrinkage toward
+    # GG105_SHRINKAGE_PRIOR using the player's own real summed AB (ab_sum) as the
+    # observed-sample-size term. Equivalent to
+    #   (ab_sum * ba_l10 + K * PRIOR) / (ab_sum + K)
+    # but computed from h_sum directly so it stays NaN (not a NaN-propagation surprise)
+    # exactly when ab_sum is NaN (below MIN_PERIODS) or 0, matching ba_l10's own NaN rule.
+    ba_l10_shrunk = (h_sum + GG105_SHRINKAGE_K * GG105_SHRINKAGE_PRIOR) / (
+        ab_sum + GG105_SHRINKAGE_K
+    )
+    df["ba_l10_shrunk"] = ba_l10_shrunk.where(ab_sum.notna())
 
     # Slugging: sum(total_bases) / sum(AB)
     tb_sum = h_sum + doubles_sum + 2 * triples_sum + 3 * hr_sum

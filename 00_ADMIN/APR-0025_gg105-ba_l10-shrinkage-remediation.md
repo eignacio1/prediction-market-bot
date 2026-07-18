@@ -1,6 +1,7 @@
 # APR-0025 — Empirical-Bayes Shrinkage of `ba_l10` in T4M-PROJ's Live Hit-Probability Model (GG-105 Remediation)
 
-**Status:** PROPOSED — awaiting DS sign-off
+**Status:** ACCEPTED — 2026-07-17 (DS sign-off received; see D1/D2/D3 decisions below and DECISION_LOG.md
+2026-07-17 T-382/ADR-0047 entry). Implementation authorized via superseding ADR-0047 (claimed under T-382).
 **Touches:** `src/prediction_market_bot/run_t4_mlb_live.py::p_hits_gte_threshold()` (also consumed
 identically by `t4_mlb_execution_engine.py:174`, currently registry-`BLOCKED`/dark). This is a **live
 forecasting-model change** to code governed by ADR-0039 (which explicitly names the current
@@ -107,7 +108,19 @@ form validated in T-359:
 ba_l10_shrunk = (AB_WINDOW * ba_l10 + K * PRIOR) / (AB_WINDOW + K)
 ```
 
-**Three open parameters this APR does NOT pre-decide — flagged for DS at sign-off:**
+**Three open parameters this APR does NOT pre-decide — flagged for DS at sign-off. RESOLVED 2026-07-17
+(see DECISION_LOG.md T-382/ADR-0047 entry):**
+
+- **D1 — `K` = 40** (DS-selected from the offered range; Recommended option — the smallest k that
+  reaches conventional significance in the attenuated direction, without flattening the signal as
+  aggressively as k=80/160).
+- **D2 — Use real per-player `ab_sum`**, not the flat `AB_WINDOW=37` constant, as the implementation's
+  observed-sample-size term (DS confirmed this project's own correctness-fix recommendation, item 2
+  below).
+- **D3 — Ship shrinkage alone now; defer H2 (blend `p_t1`) to its own follow-on task/session**, not
+  bundled into this change and not dropped.
+
+Original open-item framing (for record):
 
 1. **`K` (shrinkage strength).** T-359's sweep only establishes the shape of the dose-response, not an
    optimum — it was never designed as an optimization, and no k in {0,20,40,80,160} is being asserted as
@@ -173,20 +186,21 @@ the T4 consumption site, not a change to the feature-store's existing contract.
 
 ## Review Checklist
 
-- [ ] T-359's dose-response finding (Fisher p: <0.0001→0.1552, k=0→160; persistent residual gap at k=160)
+- [x] T-359's dose-response finding (Fisher p: <0.0001→0.1552, k=0→160; persistent residual gap at k=160)
       reviewed and accepted as sufficient evidence that H1 (unshrunk `ba_l10`) is a real contributing
       mechanism to GG-105
-- [ ] `K` value selected, OR a finer sweep directed before selection, OR shrinkage rejected as
-      insufficient given the persistent residual gap
-- [ ] `AB_WINDOW=37` fixed-constant approach rejected in favor of real per-player `ab_sum` in the
-      implementation (recommended above as a correctness fix, not a DS judgment call — confirm)
-- [ ] Decision on H2 (blend `p_t1`): test first (new task) vs. ship shrinkage alone now vs. defer H2
-      indefinitely
-- [ ] Confirmed: this APR does NOT itself authorize implementation — a superseding ADR (referencing
-      ADR-0039/ADR-0029 Tier B) is still required per Hard Rule 3 before `run_t4_mlb_live.py` changes
-- [ ] Confirmed: GG-105 stays OPEN through implementation; re-measurement against a fresh post-fix
+- [x] `K` value selected: **K=40** (Recommended option, DS-selected 2026-07-17)
+- [x] `AB_WINDOW=37` fixed-constant approach rejected in favor of real per-player `ab_sum` in the
+      implementation (recommended above as a correctness fix, not a DS judgment call — confirmed)
+- [x] Decision on H2 (blend `p_t1`): **ship shrinkage alone now; defer H2 to its own follow-on
+      task/session** (DS-selected 2026-07-17)
+- [x] Confirmed: this APR does NOT itself authorize implementation — a superseding ADR (referencing
+      ADR-0039/ADR-0029 Tier B) is still required per Hard Rule 3 before `run_t4_mlb_live.py` changes —
+      ADR-0047 (T-382) drafted to satisfy this
+- [x] Confirmed: GG-105 stays OPEN through implementation; re-measurement against a fresh post-fix
       cohort (not the frozen epoch-3 diagnostic cohort) is required before any closure claim
 
-**Sign-off:** _pending_
-**Date:** _pending_
+**Sign-off:** Earl Ignacio (DS) — "I sign off on both recommendations. Proceed with full institutional
+rigor." (GG-105 remediation + GG-124 wait-and-monitor disposition, same conversation)
+**Date:** 2026-07-17
 **Role:** DS — Earl Ignacio

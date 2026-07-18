@@ -335,13 +335,18 @@ def _load_pregame_context() -> tuple[dict[int, list[dict[str, Any]]], dict[str, 
         pid   = int(fc.get("player_id", 0))
         name  = fc.get("player_name", "")
         ticker = fc.get("kalshi_ticker", "")
+        raw_ba_l10 = float(fc.get("ba_l10") or 0.25)
+        # GG-105/APR-0025/ADR-0047: prefer the shrunk field; fall back to raw ba_l10 for
+        # pregame JSON produced before this fix landed (field absent → fc.get returns None).
+        _shrunk = fc.get("ba_l10_shrunk")
         ctx = {
             "player_id":   pid,
             "player_name": name,
             "ticker":      ticker,
             "threshold":   int(fc.get("kalshi_threshold", 1)),
             "p_t1":        float(fc.get("p_estimate", 0.5)),
-            "ba_l10":      float(fc.get("ba_l10") or 0.25),
+            "ba_l10":      raw_ba_l10,
+            "ba_l10_shrunk": float(_shrunk) if _shrunk is not None else raw_ba_l10,
             "h_l10_mean":  float(fc.get("h_l10_mean") or 1.0),
         }
         by_player_id.setdefault(pid, []).append(ctx)
@@ -848,6 +853,9 @@ def _run_cycle(
             continue   # player not in live boxscore this game
 
         ba_l10       = market_ctxs[0].get("ba_l10", 0.25)
+        # GG-105/APR-0025/ADR-0047: shrunk value drives the live Binomial calc below;
+        # raw ba_l10 is retained only for audit-log comparison (fallback to raw if absent).
+        ba_l10_shrunk = market_ctxs[0].get("ba_l10_shrunk", ba_l10)
         batting_slot = _slots.get(player_id, 0)
         ab_remaining = _compute_ab_remaining(ls.ab_so_far, ls.inning, batting_slot)
 
@@ -945,7 +953,9 @@ def _run_cycle(
             p_t4 = p_hits_gte_threshold(
                 h_so_far=ls.h_so_far,
                 threshold=threshold,
-                ba_l10=ba_l10,
+                # GG-105/APR-0025/ADR-0047: shrunk estimate feeds the live Binomial calc
+                # instead of the raw noisy ba_l10 ratio — this is the remediation itself.
+                ba_l10=ba_l10_shrunk,
                 ab_remaining=ab_remaining,
             )
 
@@ -972,6 +982,7 @@ def _run_cycle(
                     "gross_edge":   round(gross_edge, 6),
                     "net_edge":     round(net_edge, 6),
                     "ba_l10":       round(ba_l10, 6),
+                    "ba_l10_shrunk": round(ba_l10_shrunk, 6),
                     "h_so_far":     ls.h_so_far,
                     "ab_so_far":    ls.ab_so_far,
                     "ab_remaining": ab_remaining,
@@ -995,6 +1006,7 @@ def _run_cycle(
                         "gross_edge":   round(gross_edge, 6),
                         "net_edge":     round(net_edge, 6),
                         "ba_l10":       round(ba_l10, 6),
+                        "ba_l10_shrunk": round(ba_l10_shrunk, 6),
                         "h_so_far":     ls.h_so_far,
                         "ab_so_far":    ls.ab_so_far,
                         "ab_remaining": ab_remaining,
