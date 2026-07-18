@@ -23,6 +23,13 @@ Panels:
                            T4M-ARITH/T4M-FLOW BLOCKED). Added 2026-07-03
                            (post-T-225/226/227/228/229 confidence-gradient
                            follow-up) — see GG-076, TODO_NEXT.md T-231.
+  7. Data Quality         — C1/C2 structural data contract results (GG-059
+                           item 3, c1_signal_ingestion/validators.py's
+                           emit_validation_result()): per-source_id HALT/WARN
+                           status and recent failure detail, merged from the
+                           main audit log (PIPE-05/PIPE-06pre) and
+                           generate_mlb_features.py's own log (T187A). Added
+                           2026-07-17 (T-381).
 
 Data sources (in priority order):
   - logs/paper_portfolio.json              — T1 (NBA) portfolio state
@@ -32,7 +39,11 @@ Data sources (in priority order):
   - logs/t4_mlb_cycle_log.jsonl            — T4 MLB per-cycle raw context (GG-067) — Panel 6 funnel
   - logs/audit_mlb_t4_edge_decisions.jsonl — T4 MLB C4 edge-decision sink (T-213/GG-060) — Panel 6 funnel
   - logs/audit_mlb_t4.jsonl                — T4 MLB C6 audit log (CONTAMINATION_HALT) — Panel 6 health
-  - logs/audit.jsonl                       — kill switch state only
+  - logs/audit.jsonl                       — kill switch state only; also carries
+                                              PIPE-05/PIPE-06pre data_contract_*
+                                              events (Panel 7)
+  - exp_output/MLB/generate_features.jsonl — T187A's own data_contract_* events
+                                              (Panel 7)
   - logs/*.log (file mtimes)               — pipeline last-run timestamps
 
 Usage (CLI)::
@@ -45,13 +56,15 @@ Usage (CLI)::
         [--t4-mlb-cycle-log-path logs/t4_mlb_cycle_log.jsonl] \\
         [--t4-mlb-edge-log-path logs/audit_mlb_t4_edge_decisions.jsonl] \\
         [--t4-mlb-audit-log-path logs/audit_mlb_t4.jsonl] \\
+        [--feature-gen-log-path exp_output/MLB/generate_features.jsonl] \\
         [--log-dir logs/] \\
         [--game-date YYYY-MM-DD] \\
         [--n-alerts 20]
 
 The dashboard is stateless — each invocation reads current files and renders.
-Panel 6 (T4 MLB Detail) degrades gracefully: any missing file renders as
-"not found" for that section rather than failing the whole dashboard render.
+Every panel degrades gracefully: any missing file, or a source with zero
+matching events, renders as "not found" / "no data for this window" for
+that section rather than failing the whole dashboard render.
 """
 
 from __future__ import annotations
@@ -966,6 +979,145 @@ def render_t4_detail_panel(
 
 
 # ---------------------------------------------------------------------------
+# Panel 7 — Data Quality (C1/C2 Contracts, GG-059 item 3)
+# ---------------------------------------------------------------------------
+
+_DATA_QUALITY_EVENT_TYPES = {"data_contract_violation", "data_contract_ok"}
+
+
+def compute_data_quality_stats(
+    entries: list[dict[str, Any]],
+    game_date: str | None = None,
+) -> dict[str, Any]:
+    """
+    Summarize C1/C2 structural data contract results (GG-059/T-212,
+    c1_signal_ingestion/validators.py's emit_validation_result()) from any
+    C6-shaped audit log/JSONL source.
+
+    A source_id's status is the worst severity seen across this window
+    (HALT > WARN > OK), not just the single latest event — one validation
+    run emits one event per failure (assert_contract calls emit_validation_
+    result once per ContractFailure), so "the last event by timestamp" can
+    land on an arbitrary WARN sibling of a HALT from the same run. Counting
+    per-source across the window answers "should I be worried about this
+    source" directly. A source_id absent from this window has not run in
+    it — that is distinct from having passed, and is shown as such by simply
+    not appearing.
+    """
+    dq_events = [e for e in entries if e.get("event_type") in _DATA_QUALITY_EVENT_TYPES]
+    if game_date:
+        dq_events = [e for e in dq_events if (e.get("timestamp") or "").startswith(game_date)]
+
+    per_source: dict[str, dict[str, Any]] = {}
+    recent_failures: list[dict[str, Any]] = []
+
+    for e in dq_events:
+        payload = e.get("payload") or {}
+        source_id = payload.get("source_id") or "?"
+        ts = e.get("timestamp") or ""
+        rec = per_source.setdefault(source_id, {
+            "n_ok": 0, "n_halt": 0, "n_warn": 0,
+            "last_ts": "", "last_row_count": None, "pipeline_id": "?",
+        })
+        if ts >= rec["last_ts"]:
+            rec["last_ts"] = ts
+            rec["last_row_count"] = payload.get("row_count")
+            rec["pipeline_id"] = e.get("component") or "?"
+
+        if e.get("event_type") == "data_contract_ok":
+            rec["n_ok"] += 1
+        else:
+            sev = payload.get("severity")
+            if sev == "HALT":
+                rec["n_halt"] += 1
+            elif sev == "WARN":
+                rec["n_warn"] += 1
+            recent_failures.append({
+                "ts": ts,
+                "source_id": source_id,
+                "check_type": payload.get("check_type") or "?",
+                "severity": sev or "?",
+                "reason": payload.get("reason") or "",
+                "pipeline_id": e.get("component") or "?",
+            })
+
+    recent_failures.sort(key=lambda f: f["ts"])
+    n_halt = sum(r["n_halt"] for r in per_source.values())
+    n_warn = sum(r["n_warn"] for r in per_source.values())
+
+    return {
+        "per_source": per_source,
+        "n_sources": len(per_source),
+        "n_halt": n_halt,
+        "n_warn": n_warn,
+        "recent_failures": recent_failures[-8:],
+    }
+
+
+def render_data_quality_panel(
+    entries: list[dict[str, Any]],
+    game_date: str | None = None,
+) -> list[str]:
+    """
+    Panel 7: C1/C2 data contract validation status (GG-059 item 3).
+
+    Degrades the same way as every other panel: zero data_contract_* events
+    in the source logs renders "no data quality events for this window"
+    rather than an empty or crashing panel — that is the expected state on
+    a day no C1/C2 pipeline has called assert_contract() yet, not
+    necessarily a failure.
+    """
+    gd = game_date or _today_str()
+    lines: list[str] = []
+    lines.append("┌" + _HR + "┐")
+    lines.append(_SEP + _pad(f" PANEL 7 — DATA QUALITY (C1/C2 CONTRACTS)  ({gd})", _BOX_WIDTH) + _SEP)
+    lines.append("├" + _HR + "┤")
+
+    stats = compute_data_quality_stats(entries, game_date=gd)
+
+    if stats["n_sources"] == 0:
+        lines.append(_SEP + _pad(
+            "  No data_contract_violation/data_contract_ok events for this window.",
+            _BOX_WIDTH,
+        ) + _SEP)
+        lines.append("└" + _HR + "┘")
+        return lines
+
+    health_tag = "OK" if stats["n_halt"] == 0 else "*** HALT FAILURES DETECTED ***"
+    lines.append(_SEP + _pad(
+        f"  [{health_tag}] Sources: {stats['n_sources']}"
+        f"  │  HALT: {stats['n_halt']}  │  WARN: {stats['n_warn']}",
+        _BOX_WIDTH,
+    ) + _SEP)
+    lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+
+    for source_id, rec in sorted(stats["per_source"].items()):
+        if rec["n_halt"] > 0:
+            tag = "HALT"
+        elif rec["n_warn"] > 0:
+            tag = "WARN"
+        else:
+            tag = " OK "
+        lines.append(_SEP + _pad(
+            f"  [{tag}] {source_id:<28} pipeline={rec['pipeline_id']:<10}"
+            f" rows={rec['last_row_count']}  last={rec['last_ts'][:19] or 'n/a'}",
+            _BOX_WIDTH,
+        ) + _SEP)
+
+    if stats["recent_failures"]:
+        lines.append(_SEP + _pad("", _BOX_WIDTH) + _SEP)
+        lines.append(_SEP + _pad("  Recent failures:", _BOX_WIDTH) + _SEP)
+        for f in stats["recent_failures"]:
+            lines.append(_SEP + _pad(
+                f"    {f['ts'][:19]} [{f['severity']}] {f['source_id']}/{f['check_type']}: {f['reason']}",
+                _BOX_WIDTH,
+            ) + _SEP)
+
+    lines.append("└" + _HR + "┘")
+    return lines
+
+
+# ---------------------------------------------------------------------------
 # Main render
 # ---------------------------------------------------------------------------
 
@@ -983,6 +1135,8 @@ def render_dashboard(
     t4_mlb_audit_entries: list[dict[str, Any]] | None = None,
     t4_mlb_edge_log_path: str | Path | None = None,
     show_t4_mlb_detail: bool = True,
+    data_quality_entries: list[dict[str, Any]] | None = None,
+    show_data_quality: bool = True,
 ) -> str:
     """
     Render the full C8 dashboard.
@@ -1016,6 +1170,13 @@ def render_dashboard(
     show_t4_mlb_detail:
         If False, Panel 6 is omitted entirely (e.g. for a lighter-weight render).
         Default True — T4 MLB is the active pool.
+    data_quality_entries:
+        Combined rows from any C6-shaped audit logs carrying C1/C2
+        data_contract_violation / data_contract_ok events (GG-059 item 3) —
+        typically the main audit log plus scripts/generate_mlb_features.py's
+        own log. Feeds Panel 7. None/[] renders "no events for this window".
+    show_data_quality:
+        If False, Panel 7 is omitted entirely. Default True.
     """
     now = _utc_now_display()
     header = [
@@ -1052,6 +1213,13 @@ def render_dashboard(
             game_date=game_date,
         )
         all_lines = all_lines + panel6 + [""]
+
+    if show_data_quality:
+        panel7 = render_data_quality_panel(
+            entries=data_quality_entries or [],
+            game_date=game_date,
+        )
+        all_lines = all_lines + panel7 + [""]
 
     return "\n".join(all_lines)
 
@@ -1110,6 +1278,18 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Omit Panel 6 (T4 MLB Detail) from the render",
     )
     parser.add_argument(
+        "--feature-gen-log-path",
+        default="exp_output/MLB/generate_features.jsonl",
+        help="Path to scripts/generate_mlb_features.py's own C6 audit log "
+             "(pipeline_id=T187A), feeds Panel 7 alongside --log-path "
+             "(default: exp_output/MLB/generate_features.jsonl)",
+    )
+    parser.add_argument(
+        "--no-data-quality",
+        action="store_true",
+        help="Omit Panel 7 (Data Quality / C1-C2 Contracts) from the render",
+    )
+    parser.add_argument(
         "--log-dir",
         default="logs",
         help="Dir containing pipeline log files for activity timestamps (default: logs/)",
@@ -1142,6 +1322,13 @@ def main(argv: list[str] | None = None) -> None:
     t4_mlb_portfolio = read_portfolio(args.t4_mlb_portfolio_path)
     t4_mlb_cycle_entries = read_jsonl_generic(args.t4_mlb_cycle_log_path)
     t4_mlb_audit_entries = read_jsonl_generic(args.t4_mlb_audit_log_path)
+
+    # Panel 7 (Data Quality) data sources — C1/C2 assert_contract() results
+    # live in the main audit log (PIPE-05/PIPE-06pre, already read above as
+    # audit_entries) plus generate_mlb_features.py's own separate log
+    # (pipeline_id=T187A). Both are C6-shaped, so they merge directly.
+    feature_gen_entries = read_jsonl_generic(args.feature_gen_log_path)
+    data_quality_entries = audit_entries + feature_gen_entries
 
     # Infer kill switch state from audit log (scan newest-first)
     ks_active = False
@@ -1183,6 +1370,8 @@ def main(argv: list[str] | None = None) -> None:
         t4_mlb_audit_entries=t4_mlb_audit_entries,
         t4_mlb_edge_log_path=args.t4_mlb_edge_log_path,
         show_t4_mlb_detail=not args.no_t4_mlb_detail,
+        data_quality_entries=data_quality_entries,
+        show_data_quality=not args.no_data_quality,
     )
     print(output)
 

@@ -14,4 +14,16 @@ None new. The zero-depth reading looked alarming at first glance but was fully e
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260717_1445.md` and `DECISION_LOG.md` for 2026-07-17.*
+## Update — later the same day (T-381, GG-059 close-out)
+
+**What changed:** Added a new panel to the dashboard that watches for bad data quietly getting into the system's feature files — the kind of problem where nothing crashes, but a number is wrong or missing and nobody notices until it affects a bet. The panel shows, at a glance, whether any of the automatic data checks failed recently. Also confirmed a previously-open question: baseball and basketball's data files are kept properly separate on disk, so one sport's data can't accidentally leak into or overwrite the other's — verified, not just assumed. Both were open items from an earlier review (GG-059) and are now fully closed.
+
+**What this means for your money:** No change — still zero real money at risk. This is a monitoring improvement only; no trading logic, risk limits, or bet-sizing code was touched.
+
+**Does anything need your decision right now?** No — nothing needs you today. This work is on GitHub as a pull request (a "ready to merge" package) but has not yet been merged into the main codebase or deployed to the server — a routine confirmation step got blocked by a safety check on our end (not a problem with the work itself), so it's sitting one step short of done. It'll go out in the next session without needing anything from you.
+
+**Anything that worried the session, even if not urgent:** No new concerns today.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260717_2235.md` and `DECISION_LOG.md` for 2026-07-17.*
