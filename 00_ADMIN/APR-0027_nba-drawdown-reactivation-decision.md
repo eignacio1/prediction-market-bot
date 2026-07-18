@@ -1,12 +1,16 @@
 # APR-0027 — Decide NBA Main-Pool Kill-Switch Disposition Before 2026-27 Season Reactivation
 
-**Status:** PENDING — requires Earl Ignacio (DS) sign-off. Not self-approved (Hard Rule 3: this decides
-whether/how to reset a kill-switch baseline, and touches the standing G6 obligation to formally revise hard
-limits — a decision only the DS can make).
+**Status:** **DECIDED 2026-07-17 — Option B selected** (Earl Ignacio, DS sign-off). This document records the
+choice of disposition; it is not itself the implementing ADR. The actual formal reset of NBA's drawdown
+baseline/`initial_bankroll` still requires a dedicated ADR to be drafted and accepted before the reactivation
+window opens (~1 month before the 2026-27 season) — see T-383, registered this session (renumbered from an
+initial T-381 self-assignment — that ID was already claimed, concurrently, by an unrelated real session
+(GG-059 C8 dashboard follow-on) at commit `e7206c6`, discovered via a fresh ID check before this document
+was saved; T-383 is the verified next-free ID as of 2026-07-17 HEAD `f961fba`).
 **Addresses:** GG-056 (`03_DECISIONS/GOVERNANCE_GAP_LOG.md`)
 **Drafted:** 2026-07-15, Terminal 3 (GG-burndown-even session), branch
 `session/20260715T145447Z-gg-burndown-even`
-**Approved by:** — (pending)
+**Approved by:** Earl Ignacio (DS), 2026-07-17 — Option B
 
 ---
 
@@ -43,6 +47,8 @@ consistent with treating each season as a new evaluation window, while leaving t
 figure on record as historical fact (per [[audit_finding_pnl_desync]] and [[feedback_portfolio_ledger_delineation]]
 — the two ledgers must never be conflated, and a reset must not be read as erasing the adjudicated history).
 
+**→ SELECTED 2026-07-17 (Earl Ignacio, DS).**
+
 Either option requires an explicit ADR before the reactivation window opens; the point of this escalation is
 to get that decision on record now, while there is no time pressure, rather than discovering the collision
 live in October.
@@ -54,4 +60,4 @@ live in October.
 | Date | Action | By |
 |---|---|---|
 | 2026-07-15 | Drafted, submitted PENDING | GG-burndown-even session (even-numbered gap sweep) |
-| — | Awaiting DS review | Earl Ignacio |
+| 2026-07-17 | **Option B selected — formal reset via ADR.** Implementing ADR not yet drafted; registered as T-383 (renumbered from an initial T-381 self-assignment that collided with a concurrent real session's claim — see note above), due before the NBA reactivation window (~1 month before 2026-27 season). GG-056 stays OPEN until that ADR is drafted and accepted — this record closes the *disposition choice*, not the gap itself. | Earl Ignacio (DS) |

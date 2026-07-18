@@ -4,7 +4,9 @@
 
 > **CORRECTION (2026-07-07, operator review — supersedes the original D1).** The first draft of D1 proposed *adopting* a YES-direction quarantine. The operator rejected this as over-calibration on n≈11, and he is correct. D1 below is now **REJECT the quarantine — monitor instead.** The harness has been fixed accordingly (a `MIN_REMOVED_N`=30 guard; quarantine_YES now returns `UNDERPOWERED_REMOVAL`, not DEFENSIBLE). The rest of this ADR (D2, and the calibration/variance findings) is unchanged and stands. Principle applied: **realign components if the data demands it; do not destroy built capability on a tiny sample.**
 
-**Status:** PROPOSED — awaiting operator (and DS) sign-off on D2. (D1 is a decision to NOT change live selection — no capital action; nothing goes dark.) Two decisions: (D1) do **not** quarantine YES — monitor it and keep collecting; (D2) adopt the A/B edge-delta harness holdout-gate as the mandatory prerequisite for activating any future strategy enhancer (PAM, psychological gradients, multi-factor formulas).
+**Status:** **ACCEPTED (D2) — DS sign-off Earl Ignacio, 2026-07-17.** D2 (A/B edge-delta harness holdout-gate as the mandatory prerequisite for activating any future strategy enhancer — PAM, psychological gradients, multi-factor formulas) is now binding, not merely informal guidance (it was already being followed in practice per T-252, but had never formally cleared this ADR's own sign-off gate until now). D1 (do **not** quarantine YES — monitor it and keep collecting) remains, as originally scoped, a non-gated monitor decision — no capital action, nothing goes dark, no sign-off required.
+
+**Note on data currency (flagged at sign-off, 2026-07-17):** this ADR's own cited P&L figures (n=151 +$15.23 → n=169 −$44.76, dated 2026-07-07) are historical. The live T1 book has since moved through a vig-sign-flip fix and logic-epoch reset (GG-119/ADR-0045, `CURRENT_LOGIC_EPOCH` 4→5, `clean_n` reset to 0 as of 2026-07-15) — those specific dollar figures are no longer current and should not be cited as today's state. This does not change D2's substance (a process control on future enhancer activation, not dependent on the exact P&L snapshot) and does not reopen D1.
 **Date:** 2026-07-07
 **Session:** Edge-Strategy Decomposition (2026-07-07T04:30Z) — canonical session number to be assigned by operator (concurrent with SESSION 122–124).
 **Operator:** Earl Ignacio
@@ -45,6 +47,6 @@ Cross-experiment conclusion: **the model is calibrated and has genuine positive 
 
 ## Open items
 
-- D2 requires operator (and DS per ADR-0005) sign-off before it is binding. D1 is a monitor decision — no sign-off gate, no live change.
+- ~~D2 requires operator (and DS per ADR-0005) sign-off before it is binding.~~ **RESOLVED 2026-07-17 — D2 ACCEPTED, now binding.** D1 remains a monitor decision — no sign-off gate, no live change.
 - GG-004 remains OPEN (Tier 2 n≥500 not met). This ADR does not close it. Note the aggregate has already sign-flipped (n=151 +$15.23 → n=169 −$44.76), reinforcing that no directional verdict is stable yet.
 - **T-250 (reframed):** no quarantine to wire. Instead, monitor the YES sub-book and re-run EXP-017B/C/D as the book grows; investigate a mechanism only if YES stays negative with p<0.05 at n_YES ≥ 40.

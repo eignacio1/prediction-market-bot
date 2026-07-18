@@ -1,6 +1,6 @@
 # APR-0029 — GG-045: Kalshi Market-Depth Capital Ceiling — Decision Request (PROPOSED)
 
-**Status:** PROPOSED — awaiting DS sign-off Earl Ignacio. This is a mechanism proposal from prep/data-collection work, not a live code change (Hard Rule 3 — this touches C4 risk-engine position sizing).
+**Status:** **D2 ADOPTED, D1 APPROVED IN PRINCIPLE, D3 DEFERRED — DS sign-off Earl Ignacio, 2026-07-17.** See "Decision" section below for the exact scope of what is and is not authorized. This remains a mechanism proposal, not a live code change (Hard Rule 3 — this touches C4 risk-engine position sizing); no edit to `risk.py` is authorized by this sign-off.
 **Date:** 2026-07-17
 **Session:** T-377, isolated worktree `session/20260717T051845Z-gg045-depth-analysis`, drafted per explicit task instruction: derive a proposed depth-aware max-stake mechanism as a recommendation to Earl, not something to wire into C4 without his sign-off.
 **Operator:** Earl Ignacio
@@ -58,9 +58,13 @@ This does not replace the flat $500 cap — it adds a second, market-specific ce
 
 **Proposed D3 (explicitly deferred, not decided here):** whether `DEPTH_IMPACT_PCT` should be 5% (carried over from the NBA precedent) or a different value is itself an open question this request does not resolve — it requires either empirical calibration against real fill-price degradation data (not available) or a deliberate operator judgment call independent of any single data point. Flagged for future work, not decided by this memo.
 
-## Decision — [awaiting sign-off]
+## Decision — Earl Ignacio (DS), 2026-07-17
 
-*(unfilled — Status: PROPOSED)*
+- **D1 — APPROVED IN PRINCIPLE, not authorized for implementation.** The depth-aware `max_stake` formula (a third, market-specific ceiling alongside Kelly and the flat $500 cap) is the right shape. It is **not** to be wired into `risk.py` until (a) real live-window depth data exists and (b) a follow-up sign-off calibrates `DEPTH_IMPACT_PCT` against that data. No code change is authorized by this decision.
+- **D2 — ADOPTED, in effect now.** Any future GG-045 depth pull must target a confirmed-live game (ESPN `state == "in"`, not `"pre"`/`"post"`) — already documented in `query_orderbook_depth_mlb.py`'s docstring; this sign-off makes it the standing operational rule, not just a documented preference. A third pregame-zero dead-end (after GG-041 and this session's own MLB attempt) should not happen again.
+- **D3 — Explicitly deferred, unchanged.** `DEPTH_IMPACT_PCT` calibration (5% carried over from the NBA precedent vs. a derived value) stays open pending real fill-degradation data.
+
+No capital-affecting or code change results from this sign-off. Next concrete step remains: re-run `query_orderbook_depth_mlb.py --all` during a confirmed-live MLB window (per D2) — still blocked on that data-collection step, not on decision-making.
 
 ## Evidence / reproducibility
 
