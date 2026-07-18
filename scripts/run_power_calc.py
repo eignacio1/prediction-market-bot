@@ -155,6 +155,25 @@ def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) 
     cadence, span_days = observed_cadence_per_week(clean_recs)
     cadence_immature = span_days is not None and span_days < MATURE_CADENCE_SPAN_DAYS
 
+    if clean_n < MIN_N:
+        # GG-098 floor, same as run_band_monitor: under MIN_N no verdict is
+        # emitted in either direction — a clean_n=2 cohort with mu<0 must not
+        # read as "NO_POSITIVE_EFFECT" (a band-level verdict), and a clean_n=5
+        # cohort with mu>0 must not read as a computed n* target. Observed
+        # stats are reported informationally only.
+        return {
+            "band": band, "raw_n": raw_n, "clean_n": clean_n,
+            "status": "UNDERPOWERED",
+            "min_n": MIN_N,
+            "mean_pnl_per_bet": mu, "stdev_pnl_per_bet": sigma,
+            "cadence_bets_per_week": cadence,
+            "cadence_span_days": span_days, "cadence_immature": cadence_immature,
+            "reason": f"clean_n={clean_n} < MIN_N={MIN_N} (raw_n={raw_n}) — too few "
+                      f"clean bets to support any adequacy verdict; observed "
+                      f"mean/stdev are informational only, not an effect-size "
+                      f"estimate. Accrue clean bets and re-run.",
+        }
+
     if mu <= 0:
         return {
             "band": band, "raw_n": raw_n, "clean_n": clean_n,
@@ -208,6 +227,11 @@ def _fmt_band(r: dict) -> str:
     band = r["band"]
     if r["status"] == "INSUFFICIENT_DATA":
         return f"[{band}] clean_n={r['clean_n']} (raw_n={r['raw_n']}) — {r['reason']}"
+    if r["status"] == "UNDERPOWERED":
+        cad = f"{r['cadence_bets_per_week']:.1f}/wk" if r["cadence_bets_per_week"] else "unknown"
+        return (f"[{band}] clean_n={r['clean_n']} (raw_n={r['raw_n']}) — UNDERPOWERED, "
+                f"no verdict below MIN_N={r['min_n']}. Cadence={cad}.\n"
+                f"    {r['reason']}")
     if r["status"] == "NO_POSITIVE_EFFECT":
         cad = f"{r['cadence_bets_per_week']:.1f}/wk" if r["cadence_bets_per_week"] else "unknown"
         return (f"[{band}] clean_n={r['clean_n']} (raw_n={r['raw_n']})  "

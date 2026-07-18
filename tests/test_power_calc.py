@@ -1,8 +1,8 @@
 """Tests for scripts/run_power_calc.py — T-323, GG-004.
 
 Covers: the inverse-normal / z_for helper against known critical values,
-the analyze_band_power state machine (INSUFFICIENT_DATA / NO_POSITIVE_EFFECT /
-COMPUTED), the n* formula against a hand-computed example, observed cadence
+the analyze_band_power state machine (INSUFFICIENT_DATA / UNDERPOWERED /
+NO_POSITIVE_EFFECT / COMPUTED), the n* formula against a hand-computed example, observed cadence
 (and its "immature window" flag) against synthetic timestamped fixtures, and
 the gap/met bookkeeping.
 """
@@ -22,6 +22,7 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from run_power_calc import (
+    MIN_N,
     z_for,
     _parse_ts,
     observed_cadence_per_week,
@@ -129,14 +130,31 @@ class TestAnalyzeBandPower:
         assert r["status"] == "INSUFFICIENT_DATA"
         assert r["clean_n"] == 0
 
+    def test_underpowered_below_min_n_even_with_negative_mean(self):
+        # The GG-098 trap this branch exists for: a clean_n=2 cohort with
+        # mu<0 must NOT read as a band-level NO_POSITIVE_EFFECT verdict.
+        recs = [_rec(-1.0), _rec(-2.0)]
+        r = analyze_band_power("T2", recs, alpha=0.05, power=0.95)
+        assert r["status"] == "UNDERPOWERED"
+        assert r["clean_n"] == 2
+        assert r["min_n"] == MIN_N
+        assert r["mean_pnl_per_bet"] < 0  # observed stats still reported
+
+    def test_underpowered_below_min_n_even_with_positive_mean(self):
+        # Symmetric trap: a tiny-n mu>0 cohort must not emit a computed n*.
+        recs = [_rec(p) for p in [1.0, 2.0, 1.5, 0.5, 2.5]]
+        r = analyze_band_power("T3", recs, alpha=0.05, power=0.95)
+        assert r["status"] == "UNDERPOWERED"
+        assert "n_star" not in r
+
     def test_non_positive_mean_reports_no_positive_effect(self):
-        recs = [_rec(-1.0), _rec(1.0), _rec(-1.0), _rec(0.0)]  # mean = -0.25
+        recs = [_rec(-1.0), _rec(1.0), _rec(-1.0), _rec(0.0)] * 10  # n=40, mean = -0.25
         r = analyze_band_power("T1", recs, alpha=0.05, power=0.95)
         assert r["status"] == "NO_POSITIVE_EFFECT"
         assert r["mean_pnl_per_bet"] < 0
 
     def test_positive_mean_computes_n_star_matching_manual_formula(self):
-        pnl = [1.0, 2.0, -1.0, 3.0, 0.5, 1.5, 2.5, -0.5]
+        pnl = [1.0, 2.0, -1.0, 3.0, 0.5, 1.5, 2.5, -0.5] * 4  # n=32 >= MIN_N
         recs = [_rec(p) for p in pnl]
         r = analyze_band_power("T1", recs, alpha=0.05, power=0.95)
         assert r["status"] == "COMPUTED"
@@ -172,21 +190,21 @@ class TestAnalyzeBandPower:
         assert r["clean_n"] == 3
 
     def test_cadence_immature_flag_set_below_threshold(self):
-        pnl = [1.0, 2.0, 1.5, 0.5, 2.5]
+        pnl = [1.0, 2.0, 1.5, 0.5, 2.5] * 6  # n=30 >= MIN_N
         recs = [
-            _rec(p, resolved_at=f"2026-07-0{i+1}T00:00:00Z")
+            _rec(p, resolved_at=f"2026-07-{(i % 10) + 1:02d}T00:00:00Z")
             for i, p in enumerate(pnl)
-        ]  # 4-day span, well under MATURE_CADENCE_SPAN_DAYS
+        ]  # 9-day span, under MATURE_CADENCE_SPAN_DAYS
         r = analyze_band_power("T1", recs, alpha=0.05, power=0.95)
         assert r["status"] == "COMPUTED"
         assert r["cadence_immature"] is True
         assert r["cadence_span_days"] < MATURE_CADENCE_SPAN_DAYS
 
     def test_cadence_immature_flag_false_when_span_is_long(self):
-        pnl = [1.0, 2.0, 1.5, 0.5, 2.5]
+        pnl = [1.0, 2.0, 1.5, 0.5, 2.5] * 6  # n=30 >= MIN_N
         # spread evenly across 30 days -> mature span
         recs = [
-            _rec(p, resolved_at=f"2026-{7 if i * 6 < 24 else 8:02d}-{(i*6) % 28 + 1:02d}T00:00:00Z")
+            _rec(p, resolved_at=f"2026-07-{(i % 30) + 1:02d}T00:00:00Z")
             for i, p in enumerate(pnl)
         ]
         r = analyze_band_power("T1", recs, alpha=0.05, power=0.95)
@@ -196,7 +214,7 @@ class TestAnalyzeBandPower:
         assert r["cadence_immature"] is False
 
     def test_eta_weeks_is_none_when_cadence_unmeasurable(self):
-        recs = [_rec(1.0), _rec(2.0), _rec(1.5)]  # no timestamps at all
+        recs = [_rec(1.0), _rec(2.0), _rec(1.5)] * 10  # no timestamps at all
         r = analyze_band_power("T1", recs, alpha=0.05, power=0.95)
         assert r["status"] == "COMPUTED"
         assert r["cadence_bets_per_week"] is None
