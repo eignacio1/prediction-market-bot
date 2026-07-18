@@ -20,7 +20,7 @@ None new. The zero-depth reading looked alarming at first glance but was fully e
 
 **What this means for your money:** No change — still zero real money at risk. This is a monitoring improvement only; no trading logic, risk limits, or bet-sizing code was touched.
 
-**Does anything need your decision right now?** No — nothing needs you today. This work is on GitHub as a pull request (a "ready to merge" package) but has not yet been merged into the main codebase or deployed to the server — a routine confirmation step got blocked by a safety check on our end (not a problem with the work itself), so it's sitting one step short of done. It'll go out in the next session without needing anything from you.
+**Does anything need your decision right now?** No — nothing needs you today. [ADDENDUM 2026-07-18T01:00Z] This is now fully done, not just "sitting one step short": the earlier note about a safety-check block was written before the actual merge attempt — it turned out the real work still needed was reconciling this session's changes against another session's changes that landed on the main codebase at the same time (routine, no conflict in substance, just two sessions touching the same status-notes files). That's done, tests passed, and the dashboard update is live on the server.
 
 **Anything that worried the session, even if not urgent:** No new concerns today.
 

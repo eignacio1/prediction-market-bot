@@ -1,7 +1,7 @@
 # Session Handoff — 2026-07-17T22:35Z
 
 **Trigger:** Operator-initiated (`/session-end`), task (T-381 / GG-059 items 3-4) complete
-**Last commit:** `f569d8c` (branch `session/20260717T204148Z-gg059-c8-dashboard`, PR #41) — pushed to GitHub, **not yet merged to `main`**, not yet on VPS
+**Last commit:** `d7ab19e` (PR #41 merge commit) — **merged to `main`, pulled to VPS.** [ADDENDUM 2026-07-18T01:00Z] The line above and the "ONE THING PENDING" section below describe the state as of the original close-out attempt; both are now stale. `origin/main` advanced twice more after this handoff was first drafted (T-382/ADR-0047 session's PR #42 merge, then that same session's own session-end commit), producing two real content conflicts (not the classifier block anticipated below) in `DECISION_LOG.md`/`PLAN.md`/`TODO_NEXT.md`/`MEMORY_BANK.md`, resolved by keeping both sessions' entries with chronological "Last reviewed" ordering. CI then passed clean, `gh pr merge 41 --merge` succeeded with no classifier block, VPS pulled `d7ab19e` (fast-forward, no service restart needed — this PR touches only `c8_dashboard/dashboard.py`, not `t4-mlb` runtime code), and the worktree/branch were retired. GG-059 close-out is fully done, nothing pending from this task.
 
 ---
 
