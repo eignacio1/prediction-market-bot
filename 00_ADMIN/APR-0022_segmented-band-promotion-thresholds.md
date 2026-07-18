@@ -1,6 +1,6 @@
 # APR-0022 — Segmented Per-Band Promotion Thresholds (ADR-0028)
 
-**Status:** PENDING — DS sign-off required (rework complete 2026-06-22; initial draft declined)  
+**Status:** **ACCEPTED — DS sign-off Earl Ignacio, 2026-06-22 SESSION 72.** All 14 checklist items approved; GG-022 RESOLVED; T-148 DONE (see `03_DECISIONS/GOVERNANCE_GAP_LOG.md` GG-022, `04_EXECUTION/TODO_NEXT.md` T-148). **This document and `00_ADMIN/APPROVALS_REGISTER.md`'s APR-0022 row were never updated to reflect that sign-off — both still read PENDING a month later. Corrected 2026-07-17 (GG-126) as a doc-sync fix, not a new decision; no re-review was requested or performed today.**  
 **ADR Reference:** ADR-0028_segmented-band-promotion-thresholds.md  
 **Amends:** APR-0017 + APR-0019  
 **Drafted:** 2026-06-22 SESSION 65  
@@ -51,17 +51,17 @@ See ADR-0028 § Broken-System Tests. Core scenarios addressed:
 
 ## Review Checklist
 
-- [ ] Rework rationale accepted — T4 BLOCKED (Phase 8+); T4 Tier 2 + T-AGG moved to T4 Activation Gate; G6 is T1-only
-- [ ] Mod 5 (fill-realism, G6 + T4 gate scope) reviewed against ADR-0028 full text
-- [ ] Mod 6 (T4 Tier 2 thresholds, T4 Activation Gate) reviewed
-- [ ] Mod 7 (T4 game-night floor ≥5, T4 Activation Gate) reviewed
-- [ ] Mod 8 (T-AGG, T4 Activation Gate) reviewed
-- [ ] Mod 9 (YES-only gate / T1 Tier 2, G6 scope) reviewed
-- [ ] G6 closure condition (T1-only, 6 items) reviewed
-- [ ] T4 Activation Gate conditions (5 items) reviewed
-- [ ] GG-022 closure confirmed upon sign-off
-- [ ] T-148 G6 blocker resolved upon sign-off
+- [x] Rework rationale accepted — T4 BLOCKED (Phase 8+); T4 Tier 2 + T-AGG moved to T4 Activation Gate; G6 is T1-only
+- [x] Mod 5 (fill-realism, G6 + T4 gate scope) reviewed against ADR-0028 full text
+- [x] Mod 6 (T4 Tier 2 thresholds, T4 Activation Gate) reviewed
+- [x] Mod 7 (T4 game-night floor ≥5, T4 Activation Gate) reviewed
+- [x] Mod 8 (T-AGG, T4 Activation Gate) reviewed
+- [x] Mod 9 (YES-only gate / T1 Tier 2, G6 scope) reviewed
+- [x] G6 closure condition (T1-only, 6 items) reviewed
+- [x] T4 Activation Gate conditions (5 items) reviewed
+- [x] GG-022 closure confirmed upon sign-off
+- [x] T-148 G6 blocker resolved upon sign-off
 
-**Sign-off:** _______________  
-**Date:** _______________  
+**Sign-off:** Earl Ignacio  
+**Date:** 2026-06-22 (SESSION 72; this record corrected 2026-07-17 per GG-126 — sign-off itself is not new)  
 **Role:** DS — Earl Ignacio
