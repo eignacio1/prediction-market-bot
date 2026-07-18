@@ -310,6 +310,10 @@ if r:
 EOF
 
 echo ""
+echo "REGISTER PARITY (GG-126 — APR/ADR doc Status vs APPROVALS_REGISTER.md):"
+python3 "$PROJECT/scripts/check_register_parity.py" || true
+
+echo ""
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
 echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q6)"
