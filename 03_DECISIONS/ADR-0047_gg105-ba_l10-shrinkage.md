@@ -67,12 +67,16 @@ This is algebraically `(ab_sum * ba_l10 + K * PRIOR) / (ab_sum + K)`, computed d
 - Code: `c2_feature_store/mlb_features.py` (`GG105_SHRINKAGE_K`, `GG105_SHRINKAGE_PRIOR`, `ba_l10_shrunk` column, `MLB_FEATURE_VERSION` 1.0.0→1.1.0), `run_mlb_pregame.py` (`ba_l10_shrunk` surfaced in `fc` dict, audit-only), `run_t4_mlb_live.py` (`ba_l10_shrunk` read from pregame context with raw-value fallback; passed into `p_hits_gte_threshold()`; written to both audit-log record types).
 - APR-0025 (`00_ADMIN/APR-0025_gg105-ba_l10-shrinkage-remediation.md`, ACCEPTED 2026-07-17) — the governing DS sign-off document; all Review Checklist items closed.
 - DECISION_LOG.md 2026-07-17 entry (T-382) — D1/D2/D3 decisions and GG-124's separate sign-off logged immediately per Hard Rule 7.
-- Regression tests: see Open items — full suite run pending as of this ADR's drafting; results to be appended once run.
+- Regression tests: full suite run 2026-07-17 (T-382) — **2730 passed, 29 skipped, 0 failed** (touched-file subset: 271 passed in `tests/test_t182_mlb_c2.py`, `tests/test_run_mlb_pregame.py`, `tests/test_run_t4_mlb_live.py`, including a new `_run_cycle()`-level test — `test_ba_l10_shrunk_drives_p_t4_not_raw_ba_l10` — proving the shrunk value, not raw `ba_l10`, drives the logged `p_t4`). No regressions vs. prior baseline; the 9-test delta is the new coverage added under this ADR.
 
 ## Open items
 
 - Confirm whether this fix requires a `CURRENT_LOGIC_EPOCH` advance for T4M-PROJ (per ADR-0043 D2 precedent for logic changes to an active band's live formula) — not yet executed as part of this ADR; a deploy-time decision to confirm.
-- Full test suite run and any new/updated regression tests targeting `ba_l10_shrunk` — tracked as this session's Task #7, not yet complete as of this ADR's drafting.
 - Fresh post-fix re-measurement of GG-105's tercile-monotonicity check against a clean epoch cohort, once sufficient post-fix `clean_n` accumulates — required before GG-105 can be marked RESOLVED.
 - H2 (pregame `p_t1` blending) — register a follow-on task/ID when picked up; explicitly not part of this ADR's scope.
-- GOVERNANCE_GAP_LOG.md update for GG-105 (remediation-in-progress, stays OPEN) and GG-124 (wait-and-monitor sign-off logged) — tracked as this session's Task #8, not yet complete as of this ADR's drafting.
+- K=40 is a DS-selected conservative default, not a data-fit optimum — re-derivation against a larger post-fix sample is legitimate future work, not a defect in this ADR.
+
+**Completed:**
+
+- ~~Full test suite run~~ — DONE 2026-07-17: 2730 passed, 29 skipped, 0 failed.
+- ~~GOVERNANCE_GAP_LOG.md update for GG-105 and GG-124~~ — DONE 2026-07-17: GG-105 Status now reads "remediation in progress," stays OPEN pending clean-epoch re-measurement; GG-124 Status has the DS wait-and-monitor sign-off appended with a ~2026-07-24 re-check trigger.
