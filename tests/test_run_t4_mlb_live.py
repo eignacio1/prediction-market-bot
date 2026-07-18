@@ -563,6 +563,32 @@ class TestLoadPregameContext:
             by_pid, _, _ = runner._load_pregame_context()
         assert by_pid[123][0]["ba_l10"] == pytest.approx(0.25)
 
+    def test_ba_l10_shrunk_present_is_used(self, tmp_path):
+        # GG-105/APR-0025/ADR-0047: when the pregame JSON carries ba_l10_shrunk
+        # (post v1.1.0 feature matrix), it must be threaded into ctx as-is.
+        _write_pregame_mlb(tmp_path, "pregame_mlb_20260624.json", [
+            {"player_name": "Test Player", "player_id": 123,
+             "kalshi_ticker": "T-TEST", "kalshi_threshold": 1,
+             "p_estimate": 0.55, "ba_l10": 0.40, "ba_l10_shrunk": 0.27},
+        ])
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            by_pid, _, _ = runner._load_pregame_context()
+        assert by_pid[123][0]["ba_l10"] == pytest.approx(0.40)
+        assert by_pid[123][0]["ba_l10_shrunk"] == pytest.approx(0.27)
+
+    def test_ba_l10_shrunk_falls_back_to_raw_when_absent(self, tmp_path):
+        # Backward compatibility: pregame_mlb_*.json files written before this
+        # fix landed have no ba_l10_shrunk key. Must fall back to raw ba_l10
+        # rather than propagating None into the live Binomial calc.
+        _write_pregame_mlb(tmp_path, "pregame_mlb_20260624.json", [
+            {"player_name": "Test Player", "player_id": 123,
+             "kalshi_ticker": "T-TEST", "kalshi_threshold": 1,
+             "p_estimate": 0.55, "ba_l10": 0.31},  # no ba_l10_shrunk key
+        ])
+        with patch.object(runner, "_LOGS_DIR", tmp_path):
+            by_pid, _, _ = runner._load_pregame_context()
+        assert by_pid[123][0]["ba_l10_shrunk"] == pytest.approx(0.31)
+
 
 # ---------------------------------------------------------------------------
 # _espn_poll_once_mlb — unit test for stat extraction
@@ -1644,7 +1670,7 @@ class TestProductionCycleLog:
     _REQUIRED_FIELDS = {
         "ts", "cycle_id", "session_id", "game_date", "ticker", "player_name",
         "player_id", "threshold", "p_t4", "mip", "vig", "gross_edge", "net_edge",
-        "ba_l10", "h_so_far", "ab_so_far", "ab_remaining", "inning",
+        "ba_l10", "ba_l10_shrunk", "h_so_far", "ab_so_far", "ab_remaining", "inning",
         "batting_slot",
     }
 
@@ -1813,6 +1839,47 @@ class TestProductionCycleLog:
         """CYCLE_LOG_PATH module constant exists and points inside the logs dir."""
         assert runner.CYCLE_LOG_PATH.name == "t4_mlb_cycle_log.jsonl"
         assert runner.CYCLE_LOG_PATH.parent == runner._LOGS_DIR
+
+    def test_ba_l10_shrunk_drives_p_t4_not_raw_ba_l10(self, tmp_path):
+        """GG-105/APR-0025/ADR-0047: the live Binomial calc must use ba_l10_shrunk,
+        not the raw noisy ba_l10 ratio, when the two disagree.
+
+        Setup: raw ba_l10=0.99 (extreme, small-sample noise) but ba_l10_shrunk=0.25
+        (the shrinkage-corrected estimate). If the fix is wired correctly, p_t4
+        (and therefore the logged record) reflects the *shrunk* value's much
+        lower hit probability, not the raw value's near-certain one.
+        """
+        engine, trader, store, audit = _make_components(tmp_path)
+        live = [_make_live_state(h_so_far=0, ab_so_far=1, inning=3)]
+        live_prices = {TICKER_SOTO: _make_market(TICKER_SOTO, mid=0.20, vig=0.02)}
+        pregame = {660670: [{"player_id": 660670, "player_name": "Juan Soto",
+                              "ticker": TICKER_SOTO, "threshold": 1,
+                              "p_t1": 0.55, "ba_l10": 0.99,
+                              "ba_l10_shrunk": 0.25, "h_l10_mean": 1.2}]}
+        log_path = tmp_path / "t4_mlb_cycle_log_shrunk.jsonl"
+        runner._run_cycle(
+            cycle_id="CL-SHRUNK", session_id="TEST",
+            live_states=live, live_prices=live_prices,
+            pregame_by_player_id=pregame,
+            engine=engine, trader=trader, store=store, audit=audit,
+            game_date="2026-06-26",
+            t4_band_budget=270.0, t4_deployed_usd=0.0,
+            dry_run=False, cycle_log_path=log_path,
+        )
+        lines = log_path.read_text().strip().splitlines()
+        assert len(lines) >= 1
+        record = json.loads(lines[0])
+        assert record["ba_l10"] == pytest.approx(0.99)
+        assert record["ba_l10_shrunk"] == pytest.approx(0.25)
+        expected_p_t4 = runner.p_hits_gte_threshold(
+            h_so_far=0, threshold=1, ba_l10=0.25, ab_remaining=record["ab_remaining"],
+        )
+        assert record["p_t4"] == pytest.approx(expected_p_t4, rel=1e-6)
+        # Sanity: had the raw (unshrunk) value driven p_t4, it would be far higher.
+        raw_p_t4 = runner.p_hits_gte_threshold(
+            h_so_far=0, threshold=1, ba_l10=0.99, ab_remaining=record["ab_remaining"],
+        )
+        assert record["p_t4"] < raw_p_t4
 
 
 # ---------------------------------------------------------------------------
