@@ -150,7 +150,17 @@ def main() -> None:
             continue
         metrics = compute_depth_metrics(raw)
         print_market_report(ticker, status, close_time, metrics)
-        results.append({"ticker": ticker, "status": status, "close_time": close_time, "metrics": metrics, "error": False})
+        results.append({
+            "ticker": ticker,
+            "status": status,
+            "close_time": close_time,
+            "metrics": metrics,
+            # Raw levels preserved for top-of-book/side-split analysis —
+            # combined_depth_usd alone overstates fillable size for the
+            # GG-045 stake-cap question (both sides, all levels summed).
+            "raw_orderbook": raw.get("orderbook"),
+            "error": False,
+        })
 
     valid = [r for r in results if r.get("metrics")]
     nonzero = [r for r in valid if r["metrics"]["combined_depth_usd"] > 0]
