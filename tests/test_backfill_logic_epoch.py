@@ -41,10 +41,14 @@ _POST_GG119 = "2026-07-16T00:00:00.000Z"            # after GG-119, before GG-12
 #  comments updated to reference the corrected canonical GG-123 post-renumbering)
 # 2026-07-16T00:13:46Z (cc887e8, T2's full-vig-vs-half-spread magnitude
 # fix, D2 actioned once the concurrent GG-119 branch's merge confirmed
-# its epoch=5 boundary was T1-scoped only). This must stay ahead of every
+# its epoch=5 boundary was T1-scoped only).
+# GG-105 (ADR-0047) added epoch 7 at 2026-07-18T14:00:00Z (regen-anchored)
+# and epoch 8 at 2026-07-18T18:07:19Z (T-387 activation-accounting
+# correction after epoch 7's contingency fired — first cycle row with
+# ba_l10 != ba_l10_shrunk). This must stay ahead of every
 # LogicEpochBoundary in logic_epoch.py for "is_current_epoch" tests to
 # mean what they claim.
-_POST_GG122 = "2026-07-16T00:20:00.000Z"            # after all boundaries -> current epoch
+_POST_GG122 = "2026-07-19T00:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:
