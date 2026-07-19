@@ -1,23 +1,24 @@
 # Prediction Market Trading Bot — Project Directory
 
-**Purpose:** Navigation hub and canonical entry point for the Prediction Market Trading Bot project. Start here.  
-**Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-04  
-**Staleness triggers:** New module added; major scope change; phase gate passed; ownership transfer  
-**Upstream links:** None (root artifact)  
-**Downstream links:** All modules below  
-**Decision references:** ADR-0001  
-**Confidence:** 9/10 — Newly instantiated; content reflects Phase 0 baseline  
+**Purpose:** Navigation hub and canonical entry point for the Prediction Market Trading Bot project. Start here.
+**Owner (role):** Directory Steward (DS)
+**Last reviewed:** 2026-07-19 (revival pass, Cowork session — see Compass Health section below for why this was needed)
+**Last reviewed (prior):** 2026-05-21 (baseline instantiation) — this file went **~7 weeks (2026-05-21 to 2026-07-19) without a single update**, despite the project moving from Phase 0 (all gates Not Started) to Phase 6/7 ACTIVE with MLB paper trading live and G6 in progress. See Compass Health below.
+**Next review:** Weekly (Directory Integrity Review cadence, per Update Cadence table below) — this cadence is aspirational until it is actually enforced; a staleness check was added to `.claude/hooks/governance_scan.sh` on 2026-07-19 (GG-127) so this file cannot silently drift unnoticed again.
+**Staleness triggers:** New module added; major scope change; phase gate passed; ownership transfer
+**Upstream links:** None (root artifact)
+**Downstream links:** All modules below
+**Decision references:** ADR-0001
+**Confidence:** 7/10 — content is now current as of this revival, but the process that let it go stale for 7 weeks is only partially fixed (automated staleness detection exists; the weekly DIR cadence itself is not yet actually running)
 
 ---
 
 ## What This Project Is
 
-An automated prediction market trading bot, built from scratch with institutional governance, designed to progress from a research-only forecasting engine to a live-capital trading system. The bot ingests signals (starting with player/market attribute data), generates calibrated probabilistic forecasts, and — once promoted through formal gates — executes positions on prediction market venues. The previous iteration suffered severe context rot and data contamination; this directory is the primary countermeasure.
+An automated prediction market trading bot, built from scratch with institutional governance, designed to progress from a research-only forecasting engine to a live-capital trading system. The bot ingests signals, generates calibrated probabilistic forecasts, and — once promoted through formal gates — executes positions on prediction market venues. Full framing (vision, alpha taxonomy, market efficiency thesis) lives in `CLAUDE.md` — read that for *why*, this document for *where*.
 
-**Current phase:** Phase 0 — Directory Scaffolding + Governance Spine  
-**Capital status:** Research-only. No real capital authorized. Live capital requires G6 Release Gate passage.
+**Current phase:** Phase 6/7 ACTIVE — paper trading live on the VPS. MLB is the active G6 pool; NBA is dark/frozen (tabled per standing operator directive, not a live risk signal — see `CLAUDE.md` § "Who built this and why it matters").
+**Capital status:** Research/paper-only. No real capital authorized. Live capital requires G6 Release Gate passage (30 resolved paper bets with positive P&L, per-band `clean_n ≥ n*` sample adequacy per APR-0024, and DS sign-off per ADR-0005).
 
 ---
 
@@ -25,37 +26,44 @@ An automated prediction market trading bot, built from scratch with institutiona
 
 | Need | Go to |
 |------|-------|
-| What the system does and why | [01_SPEC/VISION_OUTCOMES.md](../01_SPEC/VISION_OUTCOMES.md) |
+| What the system does and why (vision, alpha taxonomy, hard rules) | [CLAUDE.md](../CLAUDE.md) |
+| What the system does and why (spec form) | [01_SPEC/VISION_OUTCOMES.md](../01_SPEC/VISION_OUTCOMES.md) |
 | What is in and out of scope | [01_SPEC/SCOPE_IN_OUT.md](../01_SPEC/SCOPE_IN_OUT.md) |
 | Hard risk limits and kill-switch conditions | [01_SPEC/RISK_APPETITE_CONSTRAINTS.md](../01_SPEC/RISK_APPETITE_CONSTRAINTS.md) |
 | Full requirements + acceptance criteria | [01_SPEC/REQUIREMENTS.md](../01_SPEC/REQUIREMENTS.md) |
 | System architecture and component map | [02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md](../02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md) |
+| **Current band status (which sub-bands are ACTIVE/BLOCKED/dark, per sport)** | [02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md § Live Registry](../02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md) |
 | Data flow and lineage | [02_ARCHITECTURE_DESIGN/DATA_FLOWS_LINEAGE.md](../02_ARCHITECTURE_DESIGN/DATA_FLOWS_LINEAGE.md) |
 | Interface contracts (schemas/APIs) | [02_ARCHITECTURE_DESIGN/INTERFACES_CONTRACTS.md](../02_ARCHITECTURE_DESIGN/INTERFACES_CONTRACTS.md) |
-| Why decisions were made | [03_DECISIONS/DECISION_LOG/](../03_DECISIONS/DECISION_LOG/) |
+| Why decisions were made (chronological) | [03_DECISIONS/DECISION_LOG/](../03_DECISIONS/DECISION_LOG/) |
+| Why decisions were made (formal ADRs) | [03_DECISIONS/](../03_DECISIONS/) (files named `ADR-NNNN_*.md`) |
+| **Mathematical / model overview** (model class, calibration methodology, feature classes) | [08_MODEL_RISK_GOVERNANCE/METHODOLOGY.md](../08_MODEL_RISK_GOVERNANCE/METHODOLOGY.md) |
+| Model card, limitations, monitoring/drift plan | [08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md](../08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md), [08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md](../08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md) |
+| G6 gate checklist and current status | [08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md](../08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md) |
+| **Commercial validation status (live n-counts, EV, tier progress)** | [03_DECISIONS/GOVERNANCE_GAP_LOG.md](../03_DECISIONS/GOVERNANCE_GAP_LOG.md) GG-004 + [05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG004_ev_validation_benchmark_history.md](../05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG004_ev_validation_benchmark_history.md) |
+| Open governance process gaps | [03_DECISIONS/GOVERNANCE_GAP_LOG.md](../03_DECISIONS/GOVERNANCE_GAP_LOG.md) |
 | What's being worked on right now | [04_EXECUTION/TODO_NEXT.md](../04_EXECUTION/TODO_NEXT.md) |
 | Active risks, issues, dependencies | [04_EXECUTION/RID_LOG.md](../04_EXECUTION/RID_LOG.md) |
+| **Latest strategic update / what happened most recently** | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) (top entry is always most recent) or the newest `11_MEMORY_HANDOFF/OPERATOR_DIGEST_*.md` |
 | Research questions and experiments | [05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md](../05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md) |
 | How to run the system | [06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md](../06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md) |
-| Test strategy and validation evidence | [07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md](../07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md) |
-| Model documentation and monitoring | [08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md](../08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md) |
+| **Continuous testing / validation results** | [07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md](../07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md) (strategy) + [07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/](../07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/) (results) + [07_TEST_VALIDATION_EVIDENCE/EVIDENCE/](../07_TEST_VALIDATION_EVIDENCE/EVIDENCE/) (raw evidence) |
 | Security, compliance, access controls | [09_SECURITY_PRIVACY_COMPLIANCE/POLICY_REQUIREMENTS.md](../09_SECURITY_PRIVACY_COMPLIANCE/POLICY_REQUIREMENTS.md) |
-| Runbooks and kill switch | [10_INFRA_OPERATIONS/RUNBOOKS/](../10_INFRA_OPERATIONS/RUNBOOKS/) |
-| **Canonical source-of-truth index** | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) |
-| Latest handoff pack | [11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-21_baseline-handoff.md](../11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-21_baseline-handoff.md) |
+| Runbooks, on-call, known issues | [10_INFRA_OPERATIONS/RUNBOOKS/](../10_INFRA_OPERATIONS/RUNBOOKS/), [10_INFRA_OPERATIONS/KNOWN_ISSUES.md](../10_INFRA_OPERATIONS/KNOWN_ISSUES.md) |
+| **Canonical source-of-truth index (live project state)** | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) |
+| Latest session handoff pack | Newest `11_MEMORY_HANDOFF/SESSION_HANDOFF_*.md` or `11_MEMORY_HANDOFF/CONTEXT_PACKS/` |
+| Glossary of project-specific terms | [00_ADMIN/GLOSSARY.md](GLOSSARY.md) |
+| Approvals register (ADR/APR sign-off status) | [00_ADMIN/APPROVALS_REGISTER.md](APPROVALS_REGISTER.md) |
 
 ---
 
-## Canonical Artifacts (Current Phase)
+## Compass Health (Directory Integrity Status)
 
-| Artifact | Status | Last Updated |
-|----------|--------|-------------|
-| PROJECT_CHARTER.md | CANONICAL | 2026-05-21 |
-| SCOPE_IN_OUT.md | CANONICAL | 2026-05-21 |
-| RISK_APPETITE_CONSTRAINTS.md | CANONICAL | 2026-05-21 |
-| ADR-0001_adopt-compass-os.md | CANONICAL | 2026-05-21 |
-| ADR-0002_strategy-class-selection.md | CANONICAL | 2026-05-21 |
-| MEMORY_BANK.md | CANONICAL | 2026-05-21 |
+This project adopted the Compass OS workflow (`00_ADMIN/Project Directory Compass OS Workflow.txt`, ADR-0001), which prescribes a **weekly Directory Integrity Review (DIR)** run by the Directory Steward specifically to catch documents that have silently drifted from reality. That review is not currently running on cadence — this file itself is the proof: it went unedited from 2026-05-21 to 2026-07-19 (~7 weeks) while the project moved through multiple phase transitions, and nobody's session-start protocol caught it because no automated check existed for *this specific file's* freshness (CLAUDE.md's own session-start protocol checks code stubs, governance gaps, and VPS pipeline health — not the nav hub's own staleness).
+
+**Fixed 2026-07-19 (GG-127):** `.claude/hooks/governance_scan.sh` now parses this file's `Last reviewed` date on every session start and prints an ALERT if it exceeds 14 days (double the nominal weekly DIR cadence). This makes the failure mode visible again; it does not by itself restore the weekly cadence — that requires someone actually running a DIR pass on schedule. See `GOVERNANCE_GAP_LOG.md` GG-127 for the full write-up and remediation options.
+
+**Known related gap:** `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` (Last reviewed 2026-05-31, revived 2026-07-19 alongside this file) had the same failure pattern — its own stale-content caveat told readers to check `CLAUDE.md` for live band status instead, which is how CLAUDE.md ended up carrying state it was never meant to hold. Both documents are current as of 2026-07-19; watch for recurrence.
 
 ---
 
@@ -63,13 +71,21 @@ An automated prediction market trading bot, built from scratch with institutiona
 
 | Gate | Name | Status |
 |------|------|--------|
-| G0 | Intent | 🟡 In Progress |
-| G1 | Spec | 🔴 Not Started |
-| G2 | Architecture | 🔴 Not Started |
-| G3 | Execution | 🔴 Not Started |
-| G4 | Evidence | 🔴 Not Started |
-| G5 | Operational | 🔴 Not Started |
-| G6 | Release / Live Capital | 🔴 Not Started |
+| G0 | Intent | 🟢 CLOSED |
+| G1 | Spec | 🟢 CLOSED |
+| G2 | Architecture | 🟢 CLOSED |
+| G3 | Execution | 🟢 CLOSED |
+| G4 | Evidence | 🟢 CLOSED |
+| G5 | Operational | 🟢 CLOSED |
+| G6 | Release / Live Capital | 🟡 IN PROGRESS — see `08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md` and `GOVERNANCE_GAP_LOG.md` GG-004 for live sample-adequacy status per band |
+
+For the live per-band `clean_n`/`n*` numbers behind G6's current status, do not rely on this table — run the governance scan or read GG-004 directly. Gate *status* (closed/open) is stable enough to track here; gate *evidence* (n-counts) is not.
+
+---
+
+## Canonical Artifacts
+
+**This section previously maintained a manually-curated table of canonical artifacts (last touched 2026-05-21, 6 entries).** It was dropped in the 2026-07-19 revival rather than refreshed, because a second hand-maintained index is exactly the kind of artifact that silently rots (see Compass Health above — this file's own staleness is the proof). `11_MEMORY_HANDOFF/MEMORY_BANK.md` already serves this function and is updated every session by convention (Hard Rule 7) — treat it as the single canonical-status index rather than duplicating it here.
 
 ---
 
@@ -82,7 +98,10 @@ An automated prediction market trading bot, built from scratch with institutiona
 | Weekly | Cross-Cutting Concerns Council (C4) | Architecture / Risk Owner |
 | Biweekly | Integration Review | Architecture Owner |
 | Monthly | Gate Readiness Review | Execution Lead + DS |
+| Monthly | Grounding-docs staleness review (GG-074, adopted 2026-07-06) | Directory Steward |
 | Quarterly | Retrieval Drill + Workflow Retrospective | Directory Steward |
+
+**As of 2026-07-19, only the Daily and Monthly (grounding-docs) items above have evidence of actually running on cadence** (via CLAUDE.md's session-start protocol and TODO_NEXT.md's Standing Items). The Weekly DIR, Weekly C4, Biweekly Integration Review, and Quarterly Retrieval Drill are documented intent, not confirmed practice — see Compass Health above.
 
 ---
 
