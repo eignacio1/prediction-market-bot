@@ -3,8 +3,9 @@
 **Purpose:** Define the five execution time-horizon bands (T1–T5) and their model complexity, execution quality, and Kelly sizing requirements. The authoritative design document for multi-band trading strategy implementation.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-05-31 (T-106: T2 activation gate corrected — FEATURE_VERSION 1.3.0 removed; gate now requires DS-04 operational + EXP validation. EXP-012 falsified injury signal at current N.)
-**Next review:** On any band activation; on Phase 8 real-time infrastructure scope
+**Last reviewed:** 2026-07-19 (CLAUDE.md lean-up pass — added the "Live Registry" section below as this document's own current band-status inventory, moved verbatim from CLAUDE.md § "Execution timing (T1–T5 bands)". Prior to this pass, that section told readers to go check CLAUDE.md for the live registry — CLAUDE.md had, over many sessions, become the de facto live registry by default, which is exactly why it had ballooned with decaying state. This document is the correct permanent home for band status; CLAUDE.md now points here instead of the reverse.)
+**Last reviewed (prior):** 2026-05-31 (T-106: T2 activation gate corrected — FEATURE_VERSION 1.3.0 removed; gate now requires DS-04 operational + EXP validation. EXP-012 falsified injury signal at current N.)
+**Next review:** On any band activation; on Phase 8 real-time infrastructure scope; monthly grounding-docs staleness review (TODO_NEXT.md Standing Items)
 **Staleness triggers:** New band activated; Kelly fraction adjusted by ADR; execution SLA changed; new pipeline deployed
 **Upstream links:** STRATEGY_OVERVIEW.md (strategy context); PIPELINES_JOBS.md (pipeline registry); METHODOLOGY.md (model classes)
 **Downstream links:** execution_bands.py (implementation); PIPELINES_JOBS.md (PIPE-02/05/06/07/08); cron.conf (schedules)
@@ -19,9 +20,39 @@
 This document is marked CANONICAL and its band definitions/design principle below are left unedited by this pass — they remain the reference for how the system *thinks about* time horizons. But two things the original document could not have anticipated have since happened, and a reader relying on the tables below without this note will draw wrong conclusions:
 
 1. **T4 was actually built as a cron/systemd polling loop (45–90s cycle), not the real-time/websocket architecture this document specifies as T4's infrastructure requirement.** The "Blocked by" row for T4 below (`Real-time C5 rebuild; live game data feed (DS-02 upgrade); kill switch SLA reduction 60s → <5s`) describes a more ambitious build than what shipped. What's actually live: **NBA T4** — `run_t4_live.py`/`t4_live_runner.py`, PIPE-07, deployed and cron-scheduled (dark now only because NBA work is tabled per operator directive, not because it's unbuilt). **MLB T4M-PROJ** — `run_t4_mlb_live.py`, ADR-0023, ACTIVE, systemd-managed (`t4-mlb`). Neither required the websocket upgrade, the sub-5s kill switch, or the "full C5 rebuild" this document lists as blockers — the 45-90s poll interval turned out to be an acceptable substitute for true real-time infrastructure, at least for the current edge thesis. This is worth a governance note (not added here) on whether the original T4 design principle's "sub-second execution IS the edge" framing still describes what was actually built, since a 45-90s poll is not sub-second.
-2. **MLB introduced an entirely new T4 sub-band layer this document has no knowledge of.** ADR-0029 (NBA T4 sub-bands, `t4_execution_engine.py`, 10 sub-bands, Phase 8-gated) and ADR-0039 (MLB-native T4 sub-bands — T4M-PROJ/ARITH/FLOW/BOUNDARY/EVENT/LINEUP/PITCHER/STAGED/CORR/EXIT, `t4_mlb_execution_engine.py`) both post-date this document and are not reconcilable with the single flat "T4 — In-Play Bayesian Update" band described below without reading those ADRs directly. Treat the T4 row in every table below as describing the *original design intent*, not the current registry of what's built, active, or blocked — check `GOVERNANCE_GAP_LOG.md` / `CLAUDE.md`'s band-structure section for the live registry.
+2. **MLB introduced an entirely new T4 sub-band layer this document has no knowledge of.** ADR-0029 (NBA T4 sub-bands, `t4_execution_engine.py`, 10 sub-bands, Phase 8-gated) and ADR-0039 (MLB-native T4 sub-bands — T4M-PROJ/ARITH/FLOW/BOUNDARY/EVENT/LINEUP/PITCHER/STAGED/CORR/EXIT, `t4_mlb_execution_engine.py`) both post-date this document and are not reconcilable with the single flat "T4 — In-Play Bayesian Update" band described below without reading those ADRs directly. Treat the T4 row in every table below as describing the *original design intent*, not the current registry of what's built, active, or blocked — see the **Live Registry** section immediately below for the current inventory.
 
 T1/T2/T3/T5 status below is still substantively accurate (T5 in particular remains genuinely unbuilt for both sports, as originally scoped).
+
+---
+
+## Live Registry — Current Band Status (moved from CLAUDE.md, 2026-07-19)
+
+**This is the authoritative, current inventory of which sub-bands are ACTIVE / BLOCKED / dark, per sport.** It supersedes the band-status table implications elsewhere in this document (those describe original design intent, per the note above). Update this section — not CLAUDE.md — when a band's status changes; CLAUDE.md carries only a one-line pointer here so this doesn't happen twice.
+
+**The bands are not pre-decided time-horizon thresholds. The model computation determines which decision-tree bucket a bet routes to** — see CLAUDE.md § "Execution timing (T1–T5 bands)" for the full architectural framing (this section is state only, not the design philosophy).
+
+NBA and MLB now have separate, non-interchangeable T4 implementations — do not assume one sport's band status describes the other's.
+
+**NBA bands (dark/frozen — tabled per operator directive, not actively worked):**
+- **T1:** Night-before baseline — the primary band while NBA was active. 158/30 resolved paper bets, frozen at a negative baseline (GG-034/GG-037-adjudicated).
+- **T2:** Same-day with injury overlay — skeleton; requires DS-04 qualitative source.
+- **T3:** Pre-tip momentum scan — skeleton.
+- **T4 (NBA, PIPE-07):** Built, deployed, cron-scheduled (23:00 UTC daily). Polls ESPN NBA scoreboard + NBA pregame context, ~1,000 bet evaluations per game via 45-second loop. Currently dark (NBA off-season — 0 active games, and tabled per operator directive independent of season). Code: `run_t4_live.py`, `t4_live_runner.py`, `t4_price_cache.py`.
+- **T4 sub-bands (ADR-0029 Tier A — NBA-native architecture):** Built (`t4_execution_engine.py`, 10 sub-bands) but Phase 8-gated; NBA work is tabled, so this stays dark regardless of gate status. Do not confuse this file with the MLB T4 engine below — they are architecturally separate modules (GG-061 — an earlier session conflated them and had to be corrected via ADR-0037).
+
+**MLB bands (ACTIVE — the live G6 pool):**
+- **T1:** Night-before baseline — ACTIVE, cron-scheduled, the primary source of MLB's resolved paper bets (see MEMORY_BANK.md Current State Snapshot for the live count).
+- **T2:** Same-day with injury overlay — cron-active (`run_t2_mlb_sameday.py`).
+- **T3:** Pre-game signal scan — cron-active.
+- **T4M-PROJ (`run_t4_mlb_live.py`, ADR-0023):** ACTIVE. The flat, single-evaluator MLB T4 engine — polls ESPN MLB scoreboard on a 45s loop, live and cron/systemd-managed on the VPS (`t4-mlb` service).
+- **T4M-ARITH / T4M-FLOW (ADR-0039, MLB-native T4 sub-band architecture):** Built and unit-tested (`t4_mlb_execution_engine.py`), registry status `BLOCKED` — each requires its own experiment (EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01) to confirm edge before activation. Code authorization (DS sign-off, Session 109) is not capital authorization — both stay dark until their EXP clears and a Phase 8 Activation Gate + APR is granted. T4M-FLOW additionally has a live-wiring gap (`score_diff` never populated from a live poll) that must be closed before it can evaluate real cycles at all.
+- **T4M-BOUNDARY / T4M-EVENT / T4M-LINEUP / T4M-PITCHER / T4M-STAGED / T4M-CORR / T4M-EXIT (ADR-0039 Tier B roster):** Scoping-only. Not authorized for implementation — do not build without a fresh, explicit DS sign-off scoped to the specific sub-band.
+- **T5:** Not built, either sport. Future; requires real-time infrastructure.
+
+Before touching any T4 code, confirm in `GOVERNANCE_GAP_LOG.md`/`TODO_NEXT.md` which sport and which specific sub-band you're in — NBA's `t4_execution_engine.py` and MLB's `t4_mlb_execution_engine.py` are separate files with separate registries, separate ADRs, and separate activation status. Conflating them is a recurring, logged failure mode (GG-061).
+
+**High per-game evaluation volume in T4 is a structural consequence of the latency-edge thesis, not a target.** Measured MLB T4 throughput (GG-080/T-235, 2026-07-04, n=2 game-days — re-derive as more days accumulate): 2026-07-02 = 924 rows/game-day, 5.75 bets/game (0.62% fire rate); 2026-07-03 = 464 rows/game-day, 3.67 bets/game (0.79% fire rate). This runs well below the old ~8,600 slots/game theoretical ceiling (superseded — see GG-080), but the architectural point survives: bet sizing, kill switches, and decision routing must be designed per-cycle/per-bet, continuously evaluated, not as a small pre-scheduled batch. See CLAUDE.md Hard Rule 9 and DECISION_LOG.md 2026-07-04.
 
 ---
 
