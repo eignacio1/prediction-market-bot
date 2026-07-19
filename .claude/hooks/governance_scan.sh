@@ -314,6 +314,46 @@ echo "REGISTER PARITY (GG-126 — APR/ADR doc Status vs APPROVALS_REGISTER.md):"
 python3 "$PROJECT/scripts/check_register_parity.py" || true
 
 echo ""
+
+# --- Nav-hub staleness check (GG-127, T-389 provisional) ---
+# 00_ADMIN/README.md is this project's designated nav hub (ADR-0001) but went
+# ~7 weeks (2026-05-21 to 2026-07-19) without a single edit while the project
+# moved through multiple phase transitions -- nothing in the prior session-start
+# protocol checked THIS file's own freshness, only code/gaps/pipeline health.
+# This mirrors the register-parity check above: read-only against the target
+# file, prints an ALERT rather than silently passing when stale. Threshold is
+# 14 days -- double the nominal weekly Directory Integrity Review cadence
+# (00_ADMIN/README.md's own Update Cadence table), so routine day-to-day
+# variance doesn't fire false alarms but two missed weekly cycles will.
+echo ""
+echo "NAV-HUB STALENESS (GG-127 -- 00_ADMIN/README.md Last Reviewed date):"
+python3 - <<'INNEREOF'
+import re
+from datetime import date
+
+path = "00_ADMIN/README.md"
+THRESHOLD_DAYS = 14
+try:
+    with open(path) as f:
+        text = f.read()
+    m = re.search(r"\*\*Last reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})", text)
+    if not m:
+        print(f"  Could not find a '**Last reviewed:**' date in {path}")
+    else:
+        last = date.fromisoformat(m.group(1))
+        age = (date.today() - last).days
+        if age > THRESHOLD_DAYS:
+            print(f"  *** GG-127 ALERT: {path} Last Reviewed {last} is {age} days old")
+            print(f"      (threshold {THRESHOLD_DAYS}d, ~2x the weekly DIR cadence it documents).")
+            print("      Nav hub may be describing a stale phase/gate/band state. ***")
+        else:
+            print(f"  OK -- {path} Last Reviewed {last} ({age}d ago, within {THRESHOLD_DAYS}d threshold)")
+except FileNotFoundError:
+    print(f"  {path} not found -- cannot check staleness")
+except Exception as e:
+    print(f"  Could not check nav-hub staleness: {e}")
+INNEREOF
+
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
 echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q6)"
