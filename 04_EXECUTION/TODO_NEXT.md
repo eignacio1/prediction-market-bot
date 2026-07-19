@@ -157,6 +157,22 @@ See DECISION_LOG.md 2026-07-19 (T-387), GOVERNANCE_GAP_LOG.md GG-105 + GG-124 ad
 
 GG-124's process gap now has **two** motivating cases (the GG-113/119/123 boundary-stacking blackout; T-387's data-dependency miss). Proposed shape: before any `CURRENT_LOGIC_EPOCH` bump is committed, a checklist/script answers (a) does the data artifact the new logic depends on actually exist in production (trace the full chain: feature CSV → pregame JSON → runner — deploy ≠ behavioral activation), and (b) has another boundary landed within the trailing window (stacking warning). Candidate home: a `scripts/check_epoch_activation.sh` invoked from the bump workflow, or a warn in `logic_epoch.py` itself. No code written — task registration only; scope/design is a future session's first decision.
 
+## T-389 (provisional, unclaimed) — CLAUDE.md lean-up: decaying state relocated, nav hub revived, GG-127 registered — ✅ DONE (content), ⚠️ push/deploy pending
+
+**Cowork session, no VPS/git-push access — see provenance caveat below before treating T-389 as a claimed/final ID.** Triggered by an operator question about CLAUDE.md bloat and whether a new user could discover things like the mathematical overview or continuous testing results. Investigated first: `00_ADMIN/README.md` already exists as the designated nav hub (ADR-0001) but `git log` showed it untouched since 2026-05-28, still describing Phase 0/G0 against a live Phase 6/7 ACTIVE system; `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` had the same pattern and was structurally *why* CLAUDE.md had absorbed live band-status state (its own stale caveat pointed readers back to CLAUDE.md instead of maintaining itself).
+
+**Done:**
+1. `EXECUTION_BANDS.md` — added a "Live Registry" section (band status moved verbatim from CLAUDE.md); header dates refreshed.
+2. `CLAUDE.md` — embedded NBA/MLB band-status list and the 3-paragraph commercial-validation-gap history replaced with pointers to EXECUTION_BANDS.md and GOVERNANCE_GAP_LOG.md GG-004. **Vision/hard-rules/session-start-protocol explicitly untouched** — operator confirmed mid-session this must stay "permanently stamped."
+3. The one fact that existed only in CLAUDE.md (2026-07-10 T-320/T-321 raw_n=214/clean_n=65 detail) migrated verbatim into `GG004_ev_validation_benchmark_history.md` before removal — no information destroyed, only relocated.
+4. `00_ADMIN/README.md` fully revived — current phase/gate table, expanded "Where to Find Things" (added the categories the operator asked about: mathematical overview, continuous testing results, latest strategic update, commercial-validation status), Canonical Artifacts table replaced with a MEMORY_BANK.md pointer (avoids a second hand-maintained index), new honest "Compass Health" section documenting the 7-week staleness finding.
+5. `.claude/hooks/governance_scan.sh` — new nav-hub staleness check (ALERT if README.md's Last Reviewed >14 days), mirrors the existing register-parity check; `bash -n` syntax-checked, logic unit-tested standalone.
+6. `GOVERNANCE_GAP_LOG.md` GG-127 registered (Core, IN PROGRESS) for the underlying process gap: the weekly DIR cadence this project's own Compass OS workflow prescribes has never actually been enforced.
+
+**Not done / open:** the weekly DIR cadence itself is still documented intent only — GG-127's Status field explicitly leaves this open. **Push/deploy pending:** all edits committed locally (path-scoped) but this session has no `git push` credentials — a future session or the operator must push to `origin`. **ID provenance:** GG-127 and T-389 were assigned as next-free against the last-known state of the governance logs but were not run through `scripts/claim_session.sh` (requires push) — verify both are still next-free before relying on them, per this project's own recorded ID-collision precedents.
+
+See DECISION_LOG.md 2026-07-19 (T-389 row), GOVERNANCE_GAP_LOG.md GG-127, `00_ADMIN/README.md`, `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md`.
+
 ## T-386 — "Terminal B": APPROVALS_REGISTER write-back + GG-126 structural fix (register-parity check) + T-224 close — ✅ DONE, 2026-07-18
 
 **Isolated worktree `session/20260718T052035Z-terminal-b-gov-writeback`.** Three-item operator scope, zero overlap with concurrent Terminals A/C:
