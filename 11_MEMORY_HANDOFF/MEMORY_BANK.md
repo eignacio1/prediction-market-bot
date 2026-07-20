@@ -639,6 +639,12 @@ EXP-017B/C/D decomposed the n=151 MLB T1 Tier-1 book (EXP-017/GG-004). **Key res
 
 ## What Must Happen Next
 
+**2026-07-20 (T-391/GG-128, session_delta.sh OPEN-gap undercount fix) DONE — nothing carried forward, one lower-priority follow-on verification item:**
+0. **The fix itself needs nothing further.** `scripts/session_delta.sh` Section 2b rewritten to line-anchor its OPEN-gap parsing (mirroring `governance_scan.sh`'s own approach); verified to produce exactly the correct 18-item OPEN list against the live `GOVERNANCE_GAP_LOG.md`. GG-128 registered RESOLVED same session, T-391 DONE.
+1. **Lower-priority follow-on:** per GG-128's own Status field, a future session touching this area should do a quick cross-session confirmation that the fix is present at `origin/main` HEAD (standard practice, not a provenance gap — this session has full local push access and commits its own work directly, unlike the GG-127/T-389 Cowork-handoff case).
+2. **Explicitly deferred, not pursued this session:** a separately-noticed possible staleness in `session_delta.sh`'s Section 2d ("Tier 1 (n>=150 single-sport): not yet reached" — worth checking against DECISION_LOG.md's 2026-07-06 entries for a possible contradiction). Out of scope for the GG-128 fix; flagged here for whoever picks it up next, not registered as its own gap yet.
+3. GG-046's watch item (below) is unaffected by this fix and remains the substantive open item from earlier in this session.
+
 **2026-07-20 (T-390, session-end) CLOSED — doc/governance-only, one carried-forward watch item:**
 0. **T-389/GG-127 fully closed out — nothing further needed.** Push/deploy and ID-provenance both confirmed live this session (see Last reviewed above). No follow-up action.
 1. **GG-046 watch item (new): re-check T4M-PROJ's epoch-8 clean cohort once `clean_n` grows materially past 30 and `cadence_span_days` is no longer flagged `cadence_immature`.** Current read (`clean_n=30`, mean P&L/bet −$0.1746, `NO_POSITIVE_EFFECT`) is a first-look point estimate on a ~5.6-minute-wide window — not yet a governance-grade signal, but also not to be ignored as it accrues. Re-run `scripts/run_power_calc.py`'s `run_all_bands()` (or just read the next `governance_scan.sh` SAMPLE ADEQUACY section) at next session start.

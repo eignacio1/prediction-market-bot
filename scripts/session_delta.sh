@@ -137,20 +137,34 @@ import re
 with open("03_DECISIONS/GOVERNANCE_GAP_LOG.md") as f:
     text = f.read()
 
-gap_ids = re.findall(r"\|\s*Gap ID\s*\|\s*(GG-\d+)\s*\|", text)
-statuses = re.findall(r"\|\s*Status\s*\|\s*(OPEN|RESOLVED|PARTIALLY RESOLVED|\*\*RESOLVED[^|]*)\s*\|", text)
-
-# Walk gap-id/status pairs in file order by re-scanning with positions.
+# GG-128: walk line-by-line (mirroring governance_scan.sh's `^\| Status \|` anchored
+# grep) rather than regex-searching the raw text blob. A blob search is fragile to
+# entries that quote a "| Status | ..." example inline as prose (e.g. GG-122's own
+# entry, which quotes bad Status text as part of describing this exact bug class) —
+# that quoted substring can match before the entry's real Status row is reached.
+# Anchoring to true line-start (as a table row must be) avoids that false match, and
+# also avoids bleeding into the next entry when an entry has no Status field at all
+# (older entries use a terminal "Resolution" field instead, e.g. GG-035/GG-036).
+current_gid = None
 entries = []
-for m in re.finditer(r"\|\s*Gap ID\s*\|\s*(GG-\d+)\s*\|", text):
-    gid = m.group(1)
-    rest = text[m.end():]
-    sm = re.search(r"\|\s*Status\s*\|\s*(.*?)\s*\|", rest)
-    if sm:
-        status_text = sm.group(1)
-        entries.append((gid, status_text))
+for line in text.splitlines():
+    m = re.match(r"###\s*(GG-\d+)", line)
+    if m:
+        current_gid = m.group(1)
+        continue
+    sm = re.match(r"^\|\s*Status\s*\|\s*(.*?)\s*\|", line)
+    if sm and current_gid is not None:
+        entries.append((current_gid, sm.group(1)))
 
-open_entries = [(gid, s) for gid, s in entries if s.strip().upper().startswith("OPEN")]
+# GG-128: bold-prefixed Status cells (e.g. "**OPEN — ...") were previously excluded
+# because .startswith("OPEN") doesn't match a leading "**" — same bug class GG-122
+# already fixed in governance_scan.sh's grep, ported here.
+open_entries = [
+    (gid, s) for gid, s in entries
+    if re.match(r"\*{0,2}OPEN\b", s.strip())
+    and "OPEN / IN PROGRESS" not in s
+    and "template" not in s.lower()
+]
 print(f"  {len(open_entries)} OPEN gap(s):")
 for gid, status_text in open_entries:
     snippet = status_text[:200].replace("\n", " ")
