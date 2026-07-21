@@ -142,7 +142,7 @@ class MLBPitcherStatsStore:
 
     def __contains__(self, pitcher_id: object) -> bool:
         try:
-            return int(pitcher_id) in self._store
+            return int(pitcher_id) in self._store  # type: ignore[call-overload]  # runtime-guarded by except below
         except (TypeError, ValueError):
             return False
 

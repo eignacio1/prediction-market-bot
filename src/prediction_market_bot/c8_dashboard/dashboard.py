@@ -205,7 +205,8 @@ def read_portfolio(path: str | Path | None) -> dict[str, Any]:
     if not p.exists():
         return {}
     try:
-        return json.loads(p.read_text())
+        loaded: dict[str, Any] = json.loads(p.read_text())
+        return loaded
     except (json.JSONDecodeError, OSError):
         return {}
 

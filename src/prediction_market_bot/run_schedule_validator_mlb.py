@@ -114,7 +114,7 @@ def fetch_schedule(game_date: date) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 def _team_name(game: dict[str, Any], side: str) -> str:
-    return game.get("teams", {}).get(side, {}).get("team", {}).get("name", "?")
+    return str(game.get("teams", {}).get(side, {}).get("team", {}).get("name", "?"))
 
 
 def _matchup(game: dict[str, Any]) -> str:
@@ -122,7 +122,7 @@ def _matchup(game: dict[str, Any]) -> str:
 
 
 def _detailed_state(game: dict[str, Any]) -> str:
-    return game.get("status", {}).get("detailedState", "Unknown")
+    return str(game.get("status", {}).get("detailedState", "Unknown"))
 
 
 def _parse_start_utc(game: dict[str, Any]) -> datetime | None:

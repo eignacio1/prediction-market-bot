@@ -575,7 +575,8 @@ class NBAIngestionClient:
         Return a list of all active NBA players as dicts with keys:
         id, full_name, first_name, last_name, is_active.
         """
-        return nba_players_static.get_active_players()
+        players: list[dict[str, Any]] = nba_players_static.get_active_players()
+        return players
 
     @staticmethod
     def get_player_id_by_name(full_name: str) -> int | None:
@@ -590,7 +591,7 @@ class NBAIngestionClient:
         # Return the most recently active player if multiple matches
         active = [p for p in matches if p.get("is_active")]
         target = active[0] if active else matches[0]
-        return target["id"]
+        return int(target["id"])
 
     @staticmethod
     def get_all_teams() -> list[dict[str, Any]]:
@@ -598,7 +599,8 @@ class NBAIngestionClient:
         Return a list of all NBA teams as dicts with keys:
         id, full_name, abbreviation, nickname, city, state, year_founded.
         """
-        return nba_teams_static.get_teams()
+        teams: list[dict[str, Any]] = nba_teams_static.get_teams()
+        return teams
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -610,12 +612,12 @@ class NBAIngestionClient:
             all_players = nba_players_static.get_active_players()
             for p in all_players:
                 if p["id"] == player_id:
-                    return p["full_name"]
+                    return str(p["full_name"])
             # Check inactive players too
             all_players_inc = nba_players_static.get_inactive_players()
             for p in all_players_inc:
                 if p["id"] == player_id:
-                    return p["full_name"]
+                    return str(p["full_name"])
         except Exception:
             pass
         return str(player_id)
@@ -626,7 +628,7 @@ class NBAIngestionClient:
             all_teams = nba_teams_static.get_teams()
             for t in all_teams:
                 if t["id"] == team_id:
-                    return t["full_name"]
+                    return str(t["full_name"])
         except Exception:
             pass
         return str(team_id)

@@ -121,7 +121,7 @@ def build_target(feature_df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(feature_df["pts"], errors="coerce")
     prior_mean = pd.to_numeric(feature_df[col_name], errors="coerce")
     target = (pts >= prior_mean).astype("Int8")
-    target[pts.isna() | prior_mean.isna()] = pd.NA
+    target[pts.isna() | prior_mean.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return target
 
 

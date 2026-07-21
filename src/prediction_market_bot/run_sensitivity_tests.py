@@ -105,7 +105,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     prior_mean = pd.to_numeric(df[col], errors="coerce")
     target = (pts >= prior_mean).astype("Int8")
-    target[pts.isna() | prior_mean.isna()] = pd.NA
+    target[pts.isna() | prior_mean.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return target
 
 
@@ -128,7 +128,7 @@ def _fit_predict(
         ("clf", CalibratedClassifierCV(base, method="sigmoid", cv=3)),
     ])
     pipeline.fit(X_train, y_train)
-    return pipeline.predict_proba(X_val)[:, 1]
+    return np.asarray(pipeline.predict_proba(X_val)[:, 1])
 
 
 def _impute_median(X: np.ndarray) -> np.ndarray:

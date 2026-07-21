@@ -284,8 +284,13 @@ class MultiBandOrchestrator:
         # Determine which base band governs edge and sizing when T3 is NEUTRAL
         base_is_t2 = t2 is not None and t2.is_actionable
         base_band  = ExecutionBand.T2_SAME_DAY if base_is_t2 else ExecutionBand.T1_MULTI_DAY
-        base_edge  = t2.edge if base_is_t2 else t1.edge
-        base_kelly = t2.kelly_fraction if base_is_t2 else t1.kelly_fraction
+        if base_is_t2:
+            assert t2 is not None
+            base_edge  = t2.edge
+            base_kelly = t2.kelly_fraction
+        else:
+            base_edge  = t1.edge
+            base_kelly = t1.kelly_fraction
 
         if signal == "CONFIRM":
             return BandDecision(

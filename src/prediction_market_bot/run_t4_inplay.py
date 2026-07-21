@@ -453,12 +453,12 @@ def _run_demo() -> None:
             result = loop.on_game_state_event(scenario["event"])
             print(f"  → ACTION: {result.action}")
             print(f"  → REASON: {result.reason}")
-            if result.signal and hasattr(result.signal, "p_t4"):
-                s = result.signal
-                print(f"  → p_t1={s.p_t1:.3f}  p_t4={s.p_t4:.3f}  delta={s.delta_p:.3f}")
-            if result.signal and hasattr(result.signal, "verdict"):
-                s = result.signal
-                print(f"  → T5 verdict={s.verdict}  p_hit={s.p_hit:.3f}")
+            if isinstance(result.signal, T4Signal):
+                s4 = result.signal
+                print(f"  → p_t1={s4.p_t1:.3f}  p_t4={s4.p_t4:.3f}  delta={s4.delta_p:.3f}")
+            if isinstance(result.signal, T5Signal):
+                s5 = result.signal
+                print(f"  → T5 verdict={s5.verdict}  p_hit={s5.p_hit:.3f}")
 
     print("\n" + "=" * 60)
     print("Demo complete. T4 event loop skeleton verified.")

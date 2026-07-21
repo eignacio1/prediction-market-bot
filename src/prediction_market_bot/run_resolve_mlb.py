@@ -159,7 +159,7 @@ def _is_game_final(game_pk: int) -> bool:
         resp.raise_for_status()
         data = resp.json()
         game = data["dates"][0]["games"][0]
-        return game.get("status", {}).get("abstractGameState") == "Final"
+        return bool(game.get("status", {}).get("abstractGameState") == "Final")
     except Exception:
         return False
 

@@ -449,7 +449,7 @@ def _espn_game_status(espn_game_id: str) -> str:
     comps = d.get("header", {}).get("competitions", [{}])
     if not comps:
         return ""
-    return comps[0].get("status", {}).get("type", {}).get("name", "")
+    return str(comps[0].get("status", {}).get("type", {}).get("name", ""))
 
 
 def _rollover_game_ids(
@@ -619,7 +619,7 @@ def p_hits_gte_threshold(
 
 
 def _compute_t4_band_budget(portfolio: dict[str, Any]) -> float:
-    return max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0)
+    return float(max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0))
 
 
 def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
@@ -673,7 +673,7 @@ def _reconstruct_t4_ledger(portfolio: dict[str, Any], game_dates: Union[str, set
         for p in portfolio.get("closed_positions", [])
         if p.get("pool_isolated") and p.get("game_date") in game_dates
     )
-    return open_exposure + realized_losses
+    return float(open_exposure + realized_losses)
 
 
 def _reconstruct_fired_ticker_states(portfolio: dict[str, Any], game_dates: Union[str, set[Any]]) -> dict[str, tuple[int, int]]:

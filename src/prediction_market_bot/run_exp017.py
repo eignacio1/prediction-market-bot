@@ -186,9 +186,13 @@ def _load_kalshi_prices(csv_path: Path) -> pd.DataFrame | None:
     df["game_date"]         = df["game_date"].astype(str)
     df["kalshi_threshold"]  = pd.to_numeric(df["kalshi_threshold"], errors="coerce")
     df["kalshi_mid_price"]  = pd.to_numeric(df["kalshi_mid_price"], errors="coerce")
-    df["kalshi_vig"]        = pd.to_numeric(df.get("kalshi_vig", MEASURED_VIG_20260528),
-                                             errors="coerce").fillna(MEASURED_VIG_20260528)
-    return df.dropna(subset=required)
+    if "kalshi_vig" in df.columns:
+        vig_col = pd.to_numeric(df["kalshi_vig"], errors="coerce")
+    else:
+        vig_col = pd.Series(MEASURED_VIG_20260528, index=df.index)
+    df["kalshi_vig"]        = vig_col.fillna(MEASURED_VIG_20260528)
+    result: pd.DataFrame = df.dropna(subset=list(required))
+    return result
 
 
 # ---------------------------------------------------------------------------

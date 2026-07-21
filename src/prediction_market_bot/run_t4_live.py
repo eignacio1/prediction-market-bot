@@ -62,6 +62,8 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
     LateGameArithmetic,
     KELLY_T4,
     KELLY_T5,
+    T4Signal,
+    T5Signal,
     p_exceeds_threshold,
 )
 from prediction_market_bot.execution_bands import (
@@ -321,7 +323,7 @@ def _compute_t4_band_budget(portfolio: dict[str, Any]) -> float:
     T4 band budget = pool × T4_BAND_WEIGHT (ADR-0023).
     No RESERVE_MANDATE deduction — T4 pool is isolated capital, not the T1 bankroll.
     """
-    return max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0)
+    return float(max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0))
 
 
 def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
@@ -361,7 +363,7 @@ def _reconstruct_t4_ledger(portfolio: dict[str, Any], game_date: str) -> float:
         and p.get("game_date") == game_date
         and p.get("status") == "EXITED"
     )
-    return open_exposure + realized_losses
+    return float(open_exposure + realized_losses)
 
 
 # ---------------------------------------------------------------------------
@@ -445,7 +447,7 @@ def _run_cycle(
     session_id: str,
     live_states: list[LivePlayerState],
     live_prices: dict[str, Any],              # {ticker: PlayerMarket}
-    pregame_by_player_id: dict[str, Any],     # {player_id: [market_ctx, ...]}
+    pregame_by_player_id: dict[int, list[dict[str, Any]]],     # {player_id: [market_ctx, ...]}
     loop: T4EventLoop,
     engine_t4: RiskEngine,
     engine_t5: RiskEngine,
@@ -612,7 +614,10 @@ def _run_cycle(
             evaluated += 1
 
             # EXP-019B empirical: log p_t4 per cycle for all evaluated tickers
-            if result.action in ("FIRE_BAYESIAN", "NO_ACTION") and result.signal is not None:
+            if (
+                result.action in ("FIRE_BAYESIAN", "NO_ACTION")
+                and isinstance(result.signal, T4Signal)
+            ):
                 _traj_buf.append(json.dumps({
                     "ticker": ticker,
                     "cycle_id": cycle_id,
@@ -634,6 +639,7 @@ def _run_cycle(
             signal = result.signal
 
             if result.action == "FIRE_T5":
+                assert isinstance(signal, T5Signal), "FIRE_T5 action must carry a T5Signal"
                 p_hit = float(signal.p_hit)
                 verdict = signal.verdict
                 if verdict == "NEAR_CERTAIN_YES":
@@ -649,6 +655,7 @@ def _run_cycle(
                 engine = engine_t5
             else:
                 # FIRE_BAYESIAN: fire condition guarantees p_t4 > mip + vig → always YES
+                assert isinstance(signal, T4Signal), "FIRE_BAYESIAN action must carry a T4Signal"
                 p_est = float(signal.p_t4)
                 direction = "YES"
                 edge = p_est - mip

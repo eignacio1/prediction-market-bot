@@ -195,7 +195,7 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     contam_closed = [r for r in closed if not r["is_clean"]]
 
     def _pnl(rs: list[dict[str, Any]]) -> float:
-        return round(sum(r["realized_pnl"] for r in rs), 4)
+        return float(round(sum(r["realized_pnl"] for r in rs), 4))
 
     # Per-Finals-game breakdown.
     by_game: dict[str, dict[str, Any]] = {}
