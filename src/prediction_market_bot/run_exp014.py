@@ -222,7 +222,7 @@ def main() -> None:
               f"{r['ev_per_bet_improved']:+.5f}   {r['ev_delta_per_bet']:+.6f}   "
               f"  {r['annual_dollar_improvement']:+8.4f}              {r['pct_improvement']:+.2f}%")
 
-    best = grid.loc[grid["ev_per_bet_improved"].idxmax()]
+    best: dict[str, Any] = grid.loc[grid["ev_per_bet_improved"].idxmax()].to_dict()
     print(f"\n  Best case: vig_savings={best['vig_savings']:.3f} + routing={best['routing_fraction']:.0%} → "
           f"EV {best['ev_per_bet_improved']:+.5f} (+{best['pct_improvement']:.1f}%)")
 

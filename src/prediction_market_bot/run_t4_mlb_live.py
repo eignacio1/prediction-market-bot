@@ -83,7 +83,11 @@ if str(_SRC_ROOT) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
+from prediction_market_bot.c5_execution.kalshi_client import (
+    KalshiMarketClient,
+    PlayerMarket,
+    SERIES_MLB_PLAYER_HITS,
+)
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c7_monitoring.semantic_contracts import (
@@ -804,7 +808,7 @@ def _run_cycle(
     cycle_id: str,
     session_id: str,
     live_states: list[MLBLiveBatterState],
-    live_prices: dict[str, object],
+    live_prices: dict[str, PlayerMarket],
     pregame_by_player_id: dict[int, list[dict[str, Any]]],
     engine: RiskEngine,
     trader: PaperTrader,
