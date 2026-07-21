@@ -159,7 +159,7 @@ class MLBPitcherStatsStore:
         for pid, df in self._store.items():
             records = df.copy()
             records["game_date"] = records["game_date"].astype(str)
-            out[str(pid)] = records.to_dict("records")
+            out[str(pid)] = [{str(k): v for k, v in rec.items()} for rec in records.to_dict("records")]
         return out
 
     @classmethod
