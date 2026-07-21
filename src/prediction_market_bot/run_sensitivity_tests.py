@@ -150,13 +150,15 @@ def _impute_zero(X: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------------------
 
 
-def load_feature_data(feature_csv: Path) -> tuple[np.ndarray, np.ndarray, list[str], pd.DataFrame]:
+def load_feature_data(
+    feature_csv: Path,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[str], pd.DataFrame, pd.DataFrame]:
     """
     Load feature matrix CSV and return train/val arrays plus feature names.
 
     Returns
     -------
-    X_train, y_train, X_val, y_val, feature_names, raw_df
+    X_train, y_train, X_val, y_val, feature_names, train_df, val_df
     """
     df = pd.read_csv(feature_csv)
 
