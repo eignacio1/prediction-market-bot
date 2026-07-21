@@ -247,7 +247,7 @@ def _evaluate_set(
                    for c in feature_names]
                   for _, row in df.iterrows()], dtype=float)
     X = _impute(X)
-    y = df["y_target"].astype(int).values
+    y = np.asarray(df["y_target"].astype(int).values)
     p = model.predict_proba(X)[:, 1]
 
     brier = float(brier_score_loss(y, p))
@@ -349,7 +349,7 @@ def main() -> None:
                        for c in feat_cols]
                       for _, row in train_df.iterrows()], dtype=float)
     X_tr = _impute(X_tr)
-    y_tr = train_df["y_target"].astype(int).values
+    y_tr = np.asarray(train_df["y_target"].astype(int).values)
 
     print(f"\n[MODEL] Training on regular season TRAIN ({len(train_df):,} rows, {len(feat_cols)} features)...")
     model = _fit_model(X_tr, y_tr)

@@ -1470,6 +1470,12 @@ def main() -> None:
                 continue
 
             # Fetch live KXMLBHIT prices from Kalshi
+            if kalshi is None:
+                logger.warning(
+                    "Kalshi client unavailable (init failed at startup) — sleeping %ds", POLL_INTERVAL_S
+                )
+                time.sleep(POLL_INTERVAL_S)
+                continue
             ok, snapshot = kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
             snapshot_fetched_at = datetime.now(timezone.utc)
             # cycle_start_at captured AFTER both fetches — Kalshi pagination with rate-limit

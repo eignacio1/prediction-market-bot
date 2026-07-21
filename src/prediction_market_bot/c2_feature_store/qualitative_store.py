@@ -266,7 +266,11 @@ class QualitativeSignalStore:
 
             # Coerce PRF columns to numeric
             df["prf_primary"] = pd.to_numeric(df["prf_primary"], errors="coerce")
-            df["prf_secondary"] = pd.to_numeric(df.get("prf_secondary", 0), errors="coerce").fillna(0)
+            if "prf_secondary" in df.columns:
+                prf_secondary_col = pd.to_numeric(df["prf_secondary"], errors="coerce")
+            else:
+                prf_secondary_col = pd.Series(0, index=df.index)
+            df["prf_secondary"] = prf_secondary_col.fillna(0)
             df["prf_hybrid_weight"] = pd.to_numeric(df.get("prf_hybrid_weight", float("nan")), errors="coerce")
 
             self._ds01_df = df
