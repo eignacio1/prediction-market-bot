@@ -179,6 +179,16 @@ GG-124's process gap now has **two** motivating cases (the GG-113/119/123 bounda
 
 See DECISION_LOG.md 2026-07-19 (T-389 row + verification row), GOVERNANCE_GAP_LOG.md GG-127, `00_ADMIN/README.md`, `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md`.
 
+## T-394 — GG-129: re-consolidate MEMORY_BANK.md's `**Last reviewed:**` narrative chain (52→1) — OPEN, registered 2026-07-21
+
+**Numbering note:** originally drafted in-session as "T-393"; renumbered to T-394 during post-crash rebase reconciliation after discovering an independent, already-merged session (GG-045 live-window depth-pull closeout, PR #44) had consumed T-393 first on `origin/main`.
+
+Flagged directly by the operator mid-Window-B-session: T-334's 2026-07-11 fix collapsed **two** separate stacked-entry chains in `11_MEMORY_HANDOFF/MEMORY_BANK.md` (the `## Current State Snapshot` header chain and a separate `**Last reviewed:**` free-text chain). The 2026-07-15 ADR-0044 re-application (commit `3996451`) only re-consolidated the Snapshot chain (confirmed clean at count=1) — the `**Last reviewed:**` chain was never touched in that pass and has regrown unchecked since, confirmed live this session at **52** stacked entries with same-day duplicates across 9 dates (2026-07-10 through 2026-07-20). `scripts/check_memory_bank_snapshots.sh` (built as part of T-334, wired into `.claude/hooks/session_guard.sh`) has been correctly flagging this every session start via a WARN-only (non-blocking) check — nothing acted on it because a non-strict WARN doesn't block the protocol.
+
+**Scope:** apply the same T-334 consolidation specifically to the `**Last reviewed:**` chain — collapse to one current, authoritative entry; move every `(prior)`/`(prior, prior)`/`(concurrent)`/`(same-day, earlier)` entry verbatim (lossless, diff-verified) into `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md`, consistent with how the Snapshot chain was already archived. Re-verify via `check_memory_bank_snapshots.sh` (expect count=1, no same-day-duplicate WARN). Deliberately not done inline as part of this session's Window B deliverables (T-379/T-352/T-353/T-383/T-367) to avoid an unrelated large diff colliding with that claimed scope — registered as its own dedicated task instead.
+
+See GOVERNANCE_GAP_LOG.md GG-129 (new, OPEN), DECISION_LOG.md 2026-07-21 (T-394 registration row).
+
 ## T-392 — Window 1: GG-046 negative-sign re-check threshold wired into code; GG-105 H2 drafted as APR-0030 (draft only) — ✅ DONE, 2026-07-20
 
 Per explicit operator instruction: don't leave GG-046's `NO_POSITIVE_EFFECT` flag on T4M-PROJ (T-390, clean_n=30, mean_pnl/bet=−$0.1746) as an open-ended "flagged, no action." Two deliverables:
