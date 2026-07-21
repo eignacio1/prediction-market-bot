@@ -675,7 +675,7 @@ def run_experiment(
     print("[C4] Routing first validation forecast through RiskEngine (phase gate check)...")
 
     if len(forecast_df) > 0:
-        sample_forecast = forecast_df.iloc[0].to_dict()
+        sample_forecast = {str(k): v for k, v in forecast_df.iloc[0].to_dict().items()}
         engine = RiskEngine(
             logger=logger,
             snapshot_id=SNAPSHOT_ID,

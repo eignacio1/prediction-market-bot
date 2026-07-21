@@ -597,7 +597,7 @@ class Backtester:
         c4_gate_result = "no_forecasts"
         c4_decision: dict[str, Any] = {}
         if len(forecast_df) > 0:
-            sample_forecast = forecast_df.iloc[0].to_dict()
+            sample_forecast = {str(k): v for k, v in forecast_df.iloc[0].to_dict().items()}
             engine = RiskEngine(
                 logger=self._logger,
                 snapshot_id=window_def.snapshot_id,
@@ -661,6 +661,7 @@ class Backtester:
         if not ok:
             return False, None
 
+        assert forecaster.model_version is not None  # fit_ok gate above guarantees this
         result = BacktestResult(
             exp_id=window_def.exp_id,
             session_id=session_id,

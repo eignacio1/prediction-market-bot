@@ -197,6 +197,7 @@ def main() -> None:
     if not ok:
         print("ERROR: Failed to load QS snapshot.", file=sys.stderr)
         sys.exit(1)
+    assert qs._ds01_df is not None  # load_ds01_snapshot succeeded above
     print(f"[QS] Loaded {QS_ID} — {len(qs._ds01_df)} player classifications")
 
     ok, df_enriched = qs.enrich_features(df, session_id=SESSION_ID)

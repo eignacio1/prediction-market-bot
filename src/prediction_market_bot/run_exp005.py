@@ -378,7 +378,7 @@ def run_experiment(
         # portfolio_equity_usd omitted (T-175): expects phase-gate rejection;
         # BOT_C4_ACTIVE is not set in ENV-01, so CHECK 8 is never reached.
         ok, c4_decision = engine.evaluate_forecast(
-            forecast_record=val_forecast_df.iloc[0].to_dict(),
+            forecast_record={str(k): v for k, v in val_forecast_df.iloc[0].to_dict().items()},
             session_id=SESSION_ID,
         )
         if not ok:
