@@ -67,9 +67,24 @@ def fetch_orderbook(client: KalshiMarketClient, ticker: str) -> dict[str, Any] |
 
 
 def compute_depth_metrics(orderbook: dict[str, Any]) -> dict[str, Any]:
-    ob = orderbook.get("orderbook", {})
-    yes_levels = ob.get("yes", []) or []
-    no_levels = ob.get("no", []) or []
+    # Kalshi now serves ONLY the fixed-point schema — {"orderbook_fp":
+    # {"yes_dollars": [["0.1200", "3.00"], ...], ...}} with dollar-string
+    # prices and (possibly fractional) contract counts. The legacy
+    # {"orderbook": {"yes": [[cents, qty], ...]}} key is gone entirely,
+    # which made every pre-2026-07-18 run of this script report $0.00
+    # unconditionally (T-377's pregame zeros are confounded by this).
+    # Parse both shapes; normalize to (price_cents, qty) tuples.
+    def normalize(levels: list) -> list[tuple[float, float]]:
+        return [(round(float(p) * 100, 2), float(q)) for p, q in levels]
+
+    ob = orderbook.get("orderbook")
+    if ob is not None:
+        yes_levels = [(float(p), float(q)) for p, q in (ob.get("yes") or [])]
+        no_levels = [(float(p), float(q)) for p, q in (ob.get("no") or [])]
+    else:
+        ob_fp = orderbook.get("orderbook_fp", {}) or {}
+        yes_levels = normalize(ob_fp.get("yes_dollars") or [])
+        no_levels = normalize(ob_fp.get("no_dollars") or [])
 
     def level_usd(levels: list) -> float:
         return sum((price / 100.0) * qty for price, qty in levels)
@@ -150,7 +165,17 @@ def main() -> None:
             continue
         metrics = compute_depth_metrics(raw)
         print_market_report(ticker, status, close_time, metrics)
-        results.append({"ticker": ticker, "status": status, "close_time": close_time, "metrics": metrics, "error": False})
+        results.append({
+            "ticker": ticker,
+            "status": status,
+            "close_time": close_time,
+            "metrics": metrics,
+            # Raw levels preserved for top-of-book/side-split analysis —
+            # combined_depth_usd alone overstates fillable size for the
+            # GG-045 stake-cap question (both sides, all levels summed).
+            "raw_orderbook": raw,  # full response — schema key varies (orderbook vs orderbook_fp)
+            "error": False,
+        })
 
     valid = [r for r in results if r.get("metrics")]
     nonzero = [r for r in valid if r["metrics"]["combined_depth_usd"] > 0]
