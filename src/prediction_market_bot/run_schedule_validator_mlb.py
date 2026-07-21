@@ -95,7 +95,7 @@ RESOLUTION_FIRE_M: int = 30
 
 def fetch_schedule(game_date: date) -> list[dict[str, Any]]:
     """Pull today's MLB schedule from official statsapi.mlb.com."""
-    params = {
+    params: dict[str, str | int] = {
         "sportId": SPORT_ID_MLB,
         "date": game_date.strftime("%m/%d/%Y"),
         "hydrate": "team",

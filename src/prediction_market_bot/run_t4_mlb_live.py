@@ -403,9 +403,10 @@ def _espn_mlb_game_ids_today() -> list[str]:
     """Return ESPN game IDs for today's MLB games (in-progress first)."""
     try:
         today_str = date.today().strftime("%Y%m%d")
+        espn_params: dict[str, str | int] = {"dates": today_str, "limit": 30}
         r = requests.get(
             _ESPN_MLB_SCOREBOARD,
-            params={"dates": today_str, "limit": 30},
+            params=espn_params,
             headers=_ESPN_HEADERS,
             timeout=10,
         )
@@ -1165,9 +1166,12 @@ def _earliest_first_pitch_utc(today: date) -> "Optional[datetime]":
     """
     date_str = today.strftime("%m/%d/%Y")
     try:
+        schedule_params: dict[str, str | int] = {
+            "sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team",
+        }
         r = requests.get(
             _MLB_SCHEDULE_API,
-            params={"sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team"},
+            params=schedule_params,
             timeout=10,
         )
         r.raise_for_status()

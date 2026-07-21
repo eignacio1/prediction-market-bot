@@ -257,9 +257,10 @@ def _espn_game_ids_for_date(game_date: str) -> list[str]:
     """
     try:
         date_str = datetime.strptime(game_date, "%Y-%m-%d").strftime("%Y%m%d")
+        espn_params: dict[str, str | int] = {"dates": date_str, "limit": 30}
         resp = requests.get(
             _ESPN_MLB_SCOREBOARD,
-            params={"dates": date_str, "limit": 30},
+            params=espn_params,
             headers=_ESPN_HEADERS,
             timeout=_REQUEST_TIMEOUT_S,
         )

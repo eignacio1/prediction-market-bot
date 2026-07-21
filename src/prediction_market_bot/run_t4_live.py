@@ -100,9 +100,10 @@ def _espn_game_ids_today() -> list[str]:
     """Return ESPN game IDs for today's NBA games (in-progress first)."""
     try:
         today_str = date.today().strftime("%Y%m%d")
+        espn_params: dict[str, str | int] = {"dates": today_str, "limit": 20}
         r = requests.get(
             _ESPN_SCOREBOARD,
-            params={"dates": today_str, "limit": 20},
+            params=espn_params,
             headers=_ESPN_HEADERS,
             timeout=10,
         )
