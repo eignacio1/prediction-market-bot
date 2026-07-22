@@ -41,5 +41,40 @@ StandardOutput=append:/opt/prediction-market-bot/logs/t4_mlb_live_cron.log
 StandardError=append:/opt/prediction-market-bot/logs/t4_mlb_live_cron.log
 SyslogIdentifier=t4-mlb
 
+# Security hardening (T-353, GG-093 residual item; partial parity with
+# scripts/pmbot-web-dashboard.service, deliberately not full parity).
+#
+# Adopted, verified safe:
+# - PrivateTmp/NoNewPrivileges: this process never touches /tmp (confirmed by
+#   grep of run_t4_mlb_live.py — its singleton lock lives under _LOGS_DIR, not
+#   /tmp: SINGLETON_LOCK_PATH = _LOGS_DIR / "t4_mlb_live.lock") and never
+#   needs setuid/setgid, so both are pure hardening with zero functional risk.
+# - MemoryMax=512M / CPUQuota=50%: sized from live VPS telemetry at deploy
+#   time (2026-07-21/22): steady-state RSS 95-109M peak over a 2-day run,
+#   average CPU ~2.5% of the box's single core. 512M/50% leaves ~5x memory
+#   headroom and ~20x CPU headroom over observed normal operation while still
+#   bounding a runaway loop from starving the whole (single-core, ~1GB RAM)
+#   VPS — the same rationale the dashboard unit already applies, re-derived
+#   against this service's own (higher, live-API-polling) baseline rather
+#   than copying the dashboard's 128M/10% figures verbatim.
+#
+# Deliberately NOT adopted (would break function, not evaluated as safe):
+# - ReadOnlyPaths: the dashboard's directive marks its own logs/ dir
+#   read-only because it only ever reads logs. This service WRITES to
+#   logs/ continuously (paper_portfolio_mlb_t4.json, audit_mlb_t4.jsonl,
+#   audit_mlb_t4_edge_decisions.jsonl, the singleton lock file) — applying
+#   the same directive here would halt live paper trading on first write.
+# - ProtectSystem=strict + ReadWritePaths exception: would give equivalent
+#   defense-in-depth without blocking logs/ writes, but is a materially
+#   larger change (whole-filesystem read-only sandboxing) than this task's
+#   scope, unverified against every path this process or its dependencies
+#   (venv, ESPN/MLB Stats API TLS cert lookups, etc.) may touch at runtime.
+#   Flagged as a candidate for a dedicated follow-up with its own staged
+#   test, not force-implemented against the only live trading pipeline.
+PrivateTmp=true
+NoNewPrivileges=true
+MemoryMax=512M
+CPUQuota=50%
+
 [Install]
 WantedBy=multi-user.target
