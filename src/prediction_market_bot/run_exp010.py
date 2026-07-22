@@ -59,7 +59,7 @@ if str(_SRC_ROOT) not in sys.path:
 from prediction_market_bot.c2_feature_store.qualitative_store import (
     QualitativeSignalStore, DS01_FEATURE_NAMES,
 )
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.kalshi_client import DS02Snapshot, KalshiMarketClient
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 EXP_ID     = "EXP-010"
@@ -110,7 +110,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     pm  = pd.to_numeric(df[col], errors="coerce")
     t   = (pts >= pm).astype("Int8")
-    t[pts.isna() | pm.isna()] = pd.NA
+    t[pts.isna() | pm.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return t
 
 def _impute(X: np.ndarray) -> np.ndarray:
@@ -206,7 +206,7 @@ def run_part_a(test_df: pd.DataFrame, feature_names: list[str],
 # ---------------------------------------------------------------------------
 
 def run_part_b(df: pd.DataFrame, feature_names: list[str],
-               model: Pipeline, snapshot: object) -> dict[str, Any]:
+               model: Pipeline, snapshot: DS02Snapshot) -> dict[str, Any]:
     print(f"\n{'='*60}")
     print("PART B — Live market alignment (today's playoff games)")
     print(f"{'='*60}")

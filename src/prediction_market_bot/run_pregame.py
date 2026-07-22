@@ -321,14 +321,14 @@ def main() -> None:
     for kalshi_player_name, player_mkts in markets_by_player.items():
         norm = normalize_player_name(kalshi_player_name)
 
-        row = cohort_lookup.get(norm)
-        if row is not None:
-            player_id = int(row.get("player_id", 0))
-            pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
-            X = np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float)
+        cohort_row = cohort_lookup.get(norm)
+        if cohort_row is not None:
+            player_id = int(cohort_row.get("player_id", 0))
+            pts_mean = float(cohort_row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+            X = np.array([[cohort_row[c] if c in cohort_row.index else np.nan for c in feature_names]], dtype=float)
             X = _impute(X, col_medians)
             p_est_lr: float | None = float(pipeline.predict_proba(X)[0, 1])
-            p_shadow = shadow.predict_shadow(row, session_id=SESSION_ID) if shadow.available else None
+            p_shadow = shadow.predict_shadow(cohort_row, session_id=SESSION_ID) if shadow.available else None
         else:
             if norm in _pts_cache:
                 pts_mean = _pts_cache[norm]

@@ -183,6 +183,7 @@ class T4MlbArithEvaluator(T4MlbSubBandEvaluator):
             return []
 
         kelly = T4_MLB_SUBBAND_REGISTRY[ExecutionBand.T4M_ARITH].provisional_kelly
+        assert kelly is not None  # T4M_ARITH registry entry always sets a provisional_kelly
         direction = "YES" if p_arith > 0.5 else "NO"
 
         return [EvaluationSignal(
@@ -280,6 +281,7 @@ class T4MlbFlowEvaluator(T4MlbSubBandEvaluator):
             return []
 
         kelly = T4_MLB_SUBBAND_REGISTRY[ExecutionBand.T4M_FLOW].provisional_kelly
+        assert kelly is not None  # T4M_FLOW registry entry always sets a provisional_kelly
         direction = "YES" if p_flow > 0.5 else "NO"
 
         return [EvaluationSignal(

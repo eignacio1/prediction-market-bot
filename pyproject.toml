@@ -50,6 +50,20 @@ disallow_untyped_defs = true
 disallow_any_generics = true
 no_implicit_reexport = true
 
+# GG-091 (T-window-a): these third-party libraries ship no py.typed marker / stub
+# package as of the pinned versions in [project.dependencies] — this is a property
+# of the library, not a gap in our code, so ignore_missing_imports is the correct
+# scope (module-level, not a blanket mypy override) rather than per-call-site
+# `# type: ignore` comments scattered across ~20 files.
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*",
+    "joblib",
+    "nba_api.*",
+    "scipy.stats",
+]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]

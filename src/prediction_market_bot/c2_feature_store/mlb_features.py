@@ -424,7 +424,7 @@ class MLBFeatureStore:
             # --- Game-level context: join on game_id (not per-player rolling) ---
 
             # Opponent runs allowed (TI-01: query as_of game_date)
-            feature_df["opp_runs_allowed_l10"] = feature_df.apply(
+            feature_df["opp_runs_allowed_l10"] = feature_df.apply(  # type: ignore[call-overload]  # pandas-stubs: row-wise apply overload doesn't resolve through duck-typed team_store
                 lambda row: team_store.get_opp_runs_allowed(
                     str(row.get("opponent_team_abbr", "")),
                     str(row.get("game_date", "")),

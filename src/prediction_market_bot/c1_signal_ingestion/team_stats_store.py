@@ -183,7 +183,7 @@ class TeamStatsStore:
         out: dict[str, list[dict[str, Any]]] = {}
         for abbr, df in self._logs.items():
             keep = [c for c in ("game_date", "pts", "plus_minus", "pts_allowed") if c in df.columns]
-            out[abbr] = df[keep].to_dict(orient="records")
+            out[abbr] = [{str(k): v for k, v in rec.items()} for rec in df[keep].to_dict(orient="records")]
         return out
 
     @classmethod

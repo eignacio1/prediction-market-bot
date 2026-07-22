@@ -87,6 +87,12 @@ if str(_SRC_ROOT) not in sys.path:
 # stdlib-only (safe); c4_risk_engine.risk pulls in pandas/jsonlines, which
 # are already dashboard-adjacent dependencies but are guarded anyway so a
 # broken venv on one component doesn't take down Panels 1-5.
+_ExecutionBand: Any = None
+_T4_MLB_SUBBAND_REGISTRY: Any = None
+_MIN_EDGE_TO_APPROVE: float = 0.04
+_summarize_edge_run: Any = None
+_PANEL6_IMPORTS_OK = False
+
 try:
     from prediction_market_bot.execution_bands import (
         ExecutionBand as _ExecutionBand,
@@ -98,11 +104,7 @@ try:
     )
     _PANEL6_IMPORTS_OK = True
 except Exception:  # pragma: no cover — defensive; see comment above
-    _ExecutionBand = None
-    _T4_MLB_SUBBAND_REGISTRY = None
-    _MIN_EDGE_TO_APPROVE = 0.04
-    _summarize_edge_run = None
-    _PANEL6_IMPORTS_OK = False
+    pass
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -205,7 +207,8 @@ def read_portfolio(path: str | Path | None) -> dict[str, Any]:
     if not p.exists():
         return {}
     try:
-        return json.loads(p.read_text())
+        loaded: dict[str, Any] = json.loads(p.read_text())
+        return loaded
     except (json.JSONDecodeError, OSError):
         return {}
 

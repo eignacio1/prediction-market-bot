@@ -83,7 +83,11 @@ if str(_SRC_ROOT) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, SERIES_MLB_PLAYER_HITS
+from prediction_market_bot.c5_execution.kalshi_client import (
+    KalshiMarketClient,
+    PlayerMarket,
+    SERIES_MLB_PLAYER_HITS,
+)
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c7_monitoring.semantic_contracts import (
@@ -403,9 +407,10 @@ def _espn_mlb_game_ids_today() -> list[str]:
     """Return ESPN game IDs for today's MLB games (in-progress first)."""
     try:
         today_str = date.today().strftime("%Y%m%d")
+        espn_params: dict[str, str | int] = {"dates": today_str, "limit": 30}
         r = requests.get(
             _ESPN_MLB_SCOREBOARD,
-            params={"dates": today_str, "limit": 30},
+            params=espn_params,
             headers=_ESPN_HEADERS,
             timeout=10,
         )
@@ -449,7 +454,7 @@ def _espn_game_status(espn_game_id: str) -> str:
     comps = d.get("header", {}).get("competitions", [{}])
     if not comps:
         return ""
-    return comps[0].get("status", {}).get("type", {}).get("name", "")
+    return str(comps[0].get("status", {}).get("type", {}).get("name", ""))
 
 
 def _rollover_game_ids(
@@ -619,7 +624,7 @@ def p_hits_gte_threshold(
 
 
 def _compute_t4_band_budget(portfolio: dict[str, Any]) -> float:
-    return max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0)
+    return float(max(portfolio["bankroll_usd"] * T4_BAND_WEIGHT, 0.0))
 
 
 def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
@@ -673,7 +678,7 @@ def _reconstruct_t4_ledger(portfolio: dict[str, Any], game_dates: Union[str, set
         for p in portfolio.get("closed_positions", [])
         if p.get("pool_isolated") and p.get("game_date") in game_dates
     )
-    return open_exposure + realized_losses
+    return float(open_exposure + realized_losses)
 
 
 def _reconstruct_fired_ticker_states(portfolio: dict[str, Any], game_dates: Union[str, set[Any]]) -> dict[str, tuple[int, int]]:
@@ -803,7 +808,7 @@ def _run_cycle(
     cycle_id: str,
     session_id: str,
     live_states: list[MLBLiveBatterState],
-    live_prices: dict[str, object],
+    live_prices: dict[str, PlayerMarket],
     pregame_by_player_id: dict[int, list[dict[str, Any]]],
     engine: RiskEngine,
     trader: PaperTrader,
@@ -1165,9 +1170,12 @@ def _earliest_first_pitch_utc(today: date) -> "Optional[datetime]":
     """
     date_str = today.strftime("%m/%d/%Y")
     try:
+        schedule_params: dict[str, str | int] = {
+            "sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team",
+        }
         r = requests.get(
             _MLB_SCHEDULE_API,
-            params={"sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team"},
+            params=schedule_params,
             timeout=10,
         )
         r.raise_for_status()
@@ -1470,6 +1478,12 @@ def main() -> None:
                 continue
 
             # Fetch live KXMLBHIT prices from Kalshi
+            if kalshi is None:
+                logger.warning(
+                    "Kalshi client unavailable (init failed at startup) — sleeping %ds", POLL_INTERVAL_S
+                )
+                time.sleep(POLL_INTERVAL_S)
+                continue
             ok, snapshot = kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)
             snapshot_fetched_at = datetime.now(timezone.utc)
             # cycle_start_at captured AFTER both fetches — Kalshi pagination with rate-limit

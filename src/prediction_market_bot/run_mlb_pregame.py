@@ -393,28 +393,28 @@ def main() -> None:
 
     for kalshi_player_name, player_mkts in markets_by_player.items():
         norm = normalize_player_name(kalshi_player_name)
-        row = cohort_lookup.get(norm)
+        cohort_row = cohort_lookup.get(norm)
 
-        if row is None:
+        if cohort_row is None:
             logger.info(COMPONENT, "player_not_in_feature_csv",
                         payload={"player": kalshi_player_name, "norm": norm},
                         session_id=SESSION_ID)
             print(f"  [SKIP] {kalshi_player_name} — not in feature CSV (no MLB fallback lookup)")
             continue
 
-        player_id = int(row.get("player_id", 0))
-        h_l10_mean = float(row.get("h_l10_mean", np.nan)) if "h_l10_mean" in row.index else float("nan")
-        ba_l10 = float(row.get("ba_l10", np.nan)) if "ba_l10" in row.index else float("nan")
+        player_id = int(cohort_row.get("player_id", 0))
+        h_l10_mean = float(cohort_row.get("h_l10_mean", np.nan)) if "h_l10_mean" in cohort_row.index else float("nan")
+        ba_l10 = float(cohort_row.get("ba_l10", np.nan)) if "ba_l10" in cohort_row.index else float("nan")
         # GG-105/APR-0025/ADR-0047: audit-only surfacing. T1's forecasting model (X, below)
         # is built from the frozen C3 feature set and does NOT consume ba_l10_shrunk — this
         # is logged for backtest/audit comparison only, per ADR-0047's T1 scope exclusion.
         ba_l10_shrunk = (
-            float(row.get("ba_l10_shrunk", np.nan)) if "ba_l10_shrunk" in row.index else float("nan")
+            float(cohort_row.get("ba_l10_shrunk", np.nan)) if "ba_l10_shrunk" in cohort_row.index else float("nan")
         )
 
         sp_override = sp_override_by_player.get(player_id)
         X = _build_mlb_feature_vector(
-            row=row,
+            row=cohort_row,
             feature_names=feature_names,
             col_medians=col_medians,
             sp_override=sp_override,

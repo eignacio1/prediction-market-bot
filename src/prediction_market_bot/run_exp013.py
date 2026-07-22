@@ -55,7 +55,7 @@ from prediction_market_bot.c2_feature_store.qualitative_store import (
     QualitativeSignalStore,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
-from typing import Any
+from typing import Any, cast
 
 EXP_ID     = "EXP-013"
 SESSION_ID = f"EXP-013-{uuid.uuid4().hex[:8].upper()}"
@@ -98,7 +98,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     pm  = pd.to_numeric(df.get(col, pd.Series(dtype=float)), errors="coerce")
     t   = (pts >= pm).astype("Int8")
-    t[pts.isna() | pm.isna()] = pd.NA
+    t[pts.isna() | pm.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return t
 
 
@@ -209,7 +209,7 @@ def main() -> None:
     for pid, grp in train_df.groupby("player_id"):
         pts_vals = pd.to_numeric(grp["pts"], errors="coerce").dropna().to_numpy()
         if len(pts_vals) > 0:
-            pts_by_player[int(pid)] = pts_vals
+            pts_by_player[int(cast(Any, pid))] = pts_vals
 
     nb_model = ScoringDistributionModel()
     nb_model.fit(pts_by_player)
