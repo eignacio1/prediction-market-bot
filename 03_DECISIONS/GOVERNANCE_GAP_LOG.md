@@ -2442,6 +2442,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-129 — Missing None-guard on `kalshi` client in T4 MLB live poll loop
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-129 |
+| Category | Defensive-coding gap surfaced incidentally by `mypy --strict` remediation (GG-091), not by any targeted review of `run_t4_mlb_live.py`'s failure paths. |
+| What was missed | `run_t4_mlb_live.py`'s `main()` sets `kalshi = None` on Kalshi client init failure and deliberately falls back to `"local_only"` order mode for that degraded case — but the live poll loop's per-cycle call to `kalshi.fetch_player_points_markets(series_ticker=SERIES_MLB_PLAYER_HITS)` had no guard against `kalshi` being `None`. Any T4 MLB session that started with a failed Kalshi client init (network blip, auth token expiry, etc.) would not degrade gracefully into local-only mode as the surrounding code's own fallback logic implies it should — it would instead throw an unguarded `AttributeError: 'NoneType' object has no attribute 'fetch_player_points_markets'` on the very first poll cycle and crash the live loop entirely. |
+| When it should have been caught | At the time the `kalshi = None` / local-only fallback path was originally written — any code path that assigns `None` to a variable used later without a null-check is a defect at the point of the later use, not something that should require a separate discovery pass. Should also have been caught by any test exercising Kalshi-init-failure behavior, but no such test existed. |
+| Phases it survived | Unknown — `run_t4_mlb_live.py` predates this session; the exact commit/session that introduced the `kalshi = None` fallback was not traced. Survived through Phase 6/7 ACTIVE (T4 MLB live paper trading) up to this session without being triggered in production, i.e. Kalshi init has not failed at startup during a live T4 MLB session to date — this is a latent defect, not one that has yet caused an observed VPS outage. |
+| Why it survived | `mypy` in non-strict / partially-typed mode does not flag `Optional[KalshiClient]`-typed attribute access as an error unless `--strict`'s `union-attr` checking is enabled and the module is in scope for it; `run_t4_mlb_live.py` was only brought into strict-mypy scope as part of this session's GG-091 remediation pass, which is what surfaced it. No runtime test exercised the Kalshi-init-failure branch. |
+| Impact | Would have been HIGH if triggered live: an unhandled crash of the entire T4 MLB live poll loop (not a graceful degrade to local-only mode as the surrounding fallback logic intends), silently ending live evaluation for the rest of that game-day with no automatic recovery — the kind of dark-pipeline failure CLAUDE.md's Step 4 operational health check exists to catch after the fact, but this would have caused the outage in the first place. No live impact occurred; found and fixed before any production trigger. |
+| Discovery | 2026-07-20, this session, during GG-091's `mypy --strict` union-attr remediation pass (commit `185cb16`) — flagged by mypy as a `union-attr` error on the `kalshi.fetch_player_points_markets(...)` call given `kalshi`'s `Optional[KalshiClient]` type, then confirmed as a genuine reachable-crash bug (not just a type-narrowing formality) by tracing the `kalshi = None` assignment on init failure. |
+| Resolution | Fixed same session, same commit (`185cb16`): added an explicit `if kalshi is None:` guard immediately before the poll-loop's Kalshi call, logging a warning and sleeping/continuing the loop rather than crashing — matching the graceful-degrade intent already implied by the existing `"local_only"` order-mode fallback elsewhere in `main()`. See `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-20 GG-091 close-out entry for the full commit-by-commit remediation context this fix landed within. |
+| Status | **RESOLVED 2026-07-20.** Fix applied and verified same session (full pytest suite: 2751 passed / 28 skipped / 0 failed, no regressions). Not yet independently re-verified by a follow-on session confirming the fix is present on `origin/main` post-merge — standard practice per this project's ID-provenance precedent (e.g. GG-127) is for the next session touching `run_t4_mlb_live.py` or T4 MLB live operations to confirm this guard is live in the deployed VPS code, not just in this session's branch. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
