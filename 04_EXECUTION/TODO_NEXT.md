@@ -155,9 +155,19 @@ See `DECISION_LOG.md` 2026-07-15 (premise-check + T-372/GG-122 rows), `GOVERNANC
 
 See DECISION_LOG.md 2026-07-19 (T-387), GOVERNANCE_GAP_LOG.md GG-105 + GG-124 addenda, `11_MEMORY_HANDOFF/CHECKPOINT_20260719_1350.md`.
 
-## T-388 — Bump-time behavioral-activation check for logic-epoch boundaries — OPEN, registered 2026-07-19 (T-387)
+## T-388 — Bump-time behavioral-activation check for logic-epoch boundaries — ✅ DONE, 2026-07-21
 
-GG-124's process gap now has **two** motivating cases (the GG-113/119/123 boundary-stacking blackout; T-387's data-dependency miss). Proposed shape: before any `CURRENT_LOGIC_EPOCH` bump is committed, a checklist/script answers (a) does the data artifact the new logic depends on actually exist in production (trace the full chain: feature CSV → pregame JSON → runner — deploy ≠ behavioral activation), and (b) has another boundary landed within the trailing window (stacking warning). Candidate home: a `scripts/check_epoch_activation.sh` invoked from the bump workflow, or a warn in `logic_epoch.py` itself. No code written — task registration only; scope/design is a future session's first decision.
+GG-124's process gap had **two** motivating cases (the GG-113/119/123 boundary-stacking blackout; T-387's data-dependency miss). Built the proposed check as `scripts/check_epoch_activation.py` (Python, not the originally-sketched `.sh` — reused the existing `cron_log_aggregator.py` SSH-embedded-script pattern for the remote half):
+
+1. **`check_stacking()`** — warns (never blocks) if more than one `logic_epoch.py` boundary landed within a trailing 7-day window (GG-124's own "one week" re-check horizon, reused as the threshold). Takes injectable `boundaries`/`now` so it's unit-testable without mutating real dated history.
+2. **`check_field_activation(field, artifact_glob)`** — SSHes to the VPS, finds the most recently modified file matching the glob, and confirms the named field is present/non-null in at least one record. Zero-present-with-nonzero-total is flagged as the exact GG-105/T-387 failure signature (deploy landed, artifact didn't carry the new field yet). Handles no-files-matched, unreachable host, nonzero remote exit, and malformed output as explicit ALERTs.
+3. `logic_epoch.py` gained a public `get_boundaries()` accessor (script reads it rather than reaching into the private `_BOUNDARIES` tuple) and a new docstring section pointing at the check.
+4. Exit code semantics: stacking is warn-only and never affects exit code (per the original "warn, not block" requirement); field-activation ALERTs return 1.
+5. `tests/test_check_epoch_activation.py` — 17 cases (stacking window edges, field present/entirely-null/partially-null/no-files/nonzero-exit/timeout/malformed-output, CLI exit-code paths) via injected boundaries and mocked `subprocess.run`. Full suite: 2751 passed, 28 skipped, 0 failed.
+
+Not wired into a pre-commit hook or the bump workflow itself — it's a standalone script to run manually (`scripts/check_epoch_activation.py [--field X --artifact-glob Y] [--skip-vps]`) before/after committing a boundary, matching the "checklist/script" framing this task was registered under. Automatic invocation from the bump workflow, if wanted, is a future task.
+
+See DECISION_LOG.md 2026-07-21 (T-388 row), `scripts/check_epoch_activation.py`, `src/prediction_market_bot/logic_epoch.py`.
 
 ## T-389 — CLAUDE.md lean-up: decaying state relocated, nav hub revived, GG-127 registered — ✅ DONE (content + push/deploy verified live, 2026-07-19)
 
