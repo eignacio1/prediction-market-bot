@@ -114,6 +114,17 @@ MATURE_CADENCE_SPAN_DAYS = 14.0  # below this, ETA is an extrapolation from an
 # (T-320/T-321) only started ~2026-07-06/07, so early clean_n cohorts are
 # necessarily short-span; flag rather than silently presenting as steady-state.
 
+NEG_SIGN_CONFIRM_N = 150  # GG-046/T-391: when mu<=0 (NO_POSITIVE_EFFECT), no
+# finite n* exists to derive a variance-based confirmation floor the way the
+# mu>0 branch does — the whole n* formula assumes you're sizing a sample to
+# *detect* a positive effect, which is undefined when the point estimate has
+# the wrong sign. Rather than invent a new bespoke number, this reuses the
+# project's own legacy ADR-0024 Tier 1 single-sport floor (150) as the
+# clean_n floor past which a persistent negative sign is treated as
+# governance-grade rather than a first-look artifact of a small/immature
+# cohort. Paired with MATURE_CADENCE_SPAN_DAYS (already defined above) for
+# the cadence half of the same gate — see neg_sign_governance_grade below.
+
 
 def observed_cadence_per_week(recs: list[dict]) -> tuple[float | None, float | None]:
     """Bets/week over the clean cohort's own observed span (resolved_at,
@@ -175,16 +186,44 @@ def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) 
         }
 
     if mu <= 0:
+        # GG-046/T-391: gate the negative sign itself on a confirmation floor
+        # (clean_n >= NEG_SIGN_CONFIRM_N AND cadence_span_days >=
+        # MATURE_CADENCE_SPAN_DAYS) so a small, time-bunched cohort's negative
+        # point estimate isn't treated as governance-grade before it's had a
+        # chance to be a real measurement. Both conditions require span_days
+        # to be an actual measured value, not None (too few timestamps).
+        neg_sign_governance_grade = (
+            clean_n >= NEG_SIGN_CONFIRM_N
+            and span_days is not None
+            and span_days >= MATURE_CADENCE_SPAN_DAYS
+        )
+        if neg_sign_governance_grade:
+            reason = (f"observed mean P&L/bet={mu:+.4f} <= 0 — no finite n* exists "
+                      f"to confirm a positive edge from this sample's own effect size. "
+                      f"clean_n={clean_n} >= NEG_SIGN_CONFIRM_N={NEG_SIGN_CONFIRM_N} and "
+                      f"cadence_span_days={span_days:.1f} >= MATURE_CADENCE_SPAN_DAYS="
+                      f"{MATURE_CADENCE_SPAN_DAYS:.0f} — this negative sign has cleared "
+                      f"both re-check thresholds and should be treated as governance-grade, "
+                      f"not a first-look artifact (see GOVERNANCE_GAP_LOG.md GG-046).")
+        else:
+            missing = []
+            if clean_n < NEG_SIGN_CONFIRM_N:
+                missing.append(f"clean_n={clean_n} < NEG_SIGN_CONFIRM_N={NEG_SIGN_CONFIRM_N}")
+            if span_days is None or span_days < MATURE_CADENCE_SPAN_DAYS:
+                span_txt = f"{span_days:.2f}" if span_days is not None else "unmeasurable"
+                missing.append(f"cadence_span_days={span_txt} < MATURE_CADENCE_SPAN_DAYS={MATURE_CADENCE_SPAN_DAYS:.0f}")
+            reason = (f"observed mean P&L/bet={mu:+.4f} <= 0 — no finite n* exists "
+                      f"to confirm a positive edge from this sample's own effect size. "
+                      f"Negative sign NOT YET governance-grade: {'; '.join(missing)}. "
+                      f"Re-check once both thresholds clear (see GOVERNANCE_GAP_LOG.md GG-046).")
         return {
             "band": band, "raw_n": raw_n, "clean_n": clean_n,
             "status": "NO_POSITIVE_EFFECT",
             "mean_pnl_per_bet": mu, "stdev_pnl_per_bet": sigma,
             "cadence_bets_per_week": cadence,
             "cadence_span_days": span_days, "cadence_immature": cadence_immature,
-            "reason": f"observed mean P&L/bet={mu:+.4f} <= 0 — no finite n* exists "
-                      f"to confirm a positive edge from this sample's own effect size. "
-                      f"The current point estimate does not support a target sample size; "
-                      f"it would need to turn positive first.",
+            "neg_sign_governance_grade": neg_sign_governance_grade,
+            "reason": reason,
         }
 
     z_a = z_for(alpha)
@@ -234,8 +273,9 @@ def _fmt_band(r: dict) -> str:
                 f"    {r['reason']}")
     if r["status"] == "NO_POSITIVE_EFFECT":
         cad = f"{r['cadence_bets_per_week']:.1f}/wk" if r["cadence_bets_per_week"] else "unknown"
+        grade = "GOVERNANCE-GRADE" if r.get("neg_sign_governance_grade") else "pre-confirmation"
         return (f"[{band}] clean_n={r['clean_n']} (raw_n={r['raw_n']})  "
-                f"mean_pnl/bet=${r['mean_pnl_per_bet']:+.4f}  cadence={cad}\n"
+                f"mean_pnl/bet=${r['mean_pnl_per_bet']:+.4f}  cadence={cad}  [{grade}]\n"
                 f"    {r['reason']}")
     eta = f"{r['eta_weeks']:.1f} weeks" if r["eta_weeks"] is not None else "cadence unknown"
     cad = f"{r['cadence_bets_per_week']:.1f}/wk" if r["cadence_bets_per_week"] else "unknown"

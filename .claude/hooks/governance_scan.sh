@@ -249,8 +249,12 @@ except Exception as e:
 if results:
     parts = []
     for band, r in results.items():
-        if r["status"] in ("INSUFFICIENT_DATA", "NO_POSITIVE_EFFECT"):
+        if r["status"] == "INSUFFICIENT_DATA":
             parts.append(f"[{band}] clean_n={r['clean_n']} {r['status'].lower()}")
+            continue
+        if r["status"] == "NO_POSITIVE_EFFECT":
+            grade = "GOV-GRADE" if r.get("neg_sign_governance_grade") else "pre-confirm"
+            parts.append(f"[{band}] clean_n={r['clean_n']} no_positive_effect ({grade})")
             continue
         eta = f"{r['eta_weeks']:.1f}wk" if r["eta_weeks"] is not None else "unknown"
         flag = " IMMATURE" if r.get("cadence_immature") else ""
@@ -263,18 +267,26 @@ if results:
           "span >= 14d. See T338_CLEAN_N_VS_N_STAR_MEMO.md.)")
 EOF
 
-# --- GG-046: T4 commercial-gate threshold-crossing auto-flag (T-375) ---
-# Two independent thresholds bear on T4M-PROJ's commercial-gate status:
+# --- GG-046: T4 commercial-gate threshold-crossing auto-flag (T-375, T-391) ---
+# Three independent thresholds bear on T4M-PROJ's commercial-gate status:
 #   (a) legacy ADR-0024 Tier 2 flat floor, n>=500 (raw_n, single-sport) — the
 #       pre-APR-0024 heuristic; not the current governing standard but still
 #       a milestone worth surfacing since GG-004's own history is written in
 #       these terms.
 #   (b) APR-0024 n* (variance-derived, clean_n-based) — the current governing
 #       standard; computed above and available as results["T4M-PROJ"].
+#   (c) T-391: the negative-sign re-check floor (run_power_calc.py's
+#       NEG_SIGN_CONFIRM_N=150 clean_n and MATURE_CADENCE_SPAN_DAYS=14) — when
+#       the observed mean flips to NO_POSITIVE_EFFECT (as it did 2026-07-20,
+#       clean_n=30, cadence_immature=True), (a) and (b) can't fire (mu<=0
+#       has no finite n*), so without this the negative sign would sit as an
+#       open-ended "flagged, no action" with nothing re-evaluating it. This
+#       closes that gap the same way (a)/(b) already close it for the
+#       positive-sign case.
 # Prior to this check, crossing either threshold depended on a human
 # remembering to re-pull clean_n by hand (GG-046, last done 2026-07-11,
 # already stale by the time GG-046 was re-examined 2026-07-16). This makes
-# both checks automatic and part of every session's mandatory scan output.
+# all three checks automatic and part of every session's mandatory scan output.
 python3 - <<'EOF'
 import sys
 from pathlib import Path
@@ -294,6 +306,7 @@ if r:
     raw_n = r["raw_n"]
     tier2_crossed = raw_n >= 500
     nstar_crossed = r["status"] == "COMPUTED" and r.get("met")
+    neg_sign_crossed = r["status"] == "NO_POSITIVE_EFFECT" and r.get("neg_sign_governance_grade")
     if tier2_crossed or nstar_crossed:
         print("")
         print("  *** GG-046 ALERT: T4M-PROJ has crossed a commercial-validation")
@@ -303,10 +316,21 @@ if r:
             print(f"      - legacy ADR-0024 Tier 2 floor (raw_n>=500): raw_n={raw_n} -- CROSSED")
         if nstar_crossed:
             print(f"      - APR-0024 n* (clean_n>=n*): clean_n={r['clean_n']} n*={r['n_star']} -- MET")
+    elif neg_sign_crossed:
+        print("")
+        print("  *** GG-046 NEGATIVE-SIGN ALERT: T4M-PROJ's NO_POSITIVE_EFFECT finding")
+        print("      has cleared its re-check thresholds (T-391) and should now be")
+        print("      treated as governance-grade, not a first-look artifact. Register")
+        print("      Earl's decision before taking any band action (GOVERNANCE_GAP_LOG.md GG-046). ***")
+        print(f"      - clean_n={r['clean_n']} >= NEG_SIGN_CONFIRM_N=150 -- CROSSED")
+        print(f"      - cadence_span_days={r['cadence_span_days']:.1f} >= MATURE_CADENCE_SPAN_DAYS=14 -- CROSSED")
+        print(f"      - mean_pnl_per_bet=${r['mean_pnl_per_bet']:+.4f}")
     else:
         nstar_txt = (f"n*={r['n_star']} (clean_n={r['clean_n']}, needs {r['gap_to_n_star']} more)"
                      if r["status"] == "COMPUTED" else f"n* not computable ({r['status']})")
         print(f"  GG-046: T4M-PROJ still short on both thresholds -- raw_n={raw_n}/500 (legacy Tier 2), {nstar_txt}.")
+        if r["status"] == "NO_POSITIVE_EFFECT":
+            print(f"  GG-046: negative-sign re-check thresholds not yet cleared -- {r['reason']}")
 EOF
 
 echo ""
