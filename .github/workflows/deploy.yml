@@ -74,21 +74,82 @@ jobs:
           ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
 
       - name: Deploy
+        # GG-130 (2026-07-22): dirty-tree guard, generalized fix for the
+        # GG-073/GG-102/GG-104/GG-117 incident class. Every one of those four
+        # prior incidents was the same shape: a cron/pipeline job on the VPS
+        # writes into a path that is (or later became) git-tracked, this guard
+        # sees a modified tracked file, and the deploy hard-fails. Each was
+        # patched one filename at a time via .gitignore -- whack-a-mole against
+        # the symptom, not a fix to the class of bug (see
+        # 03_DECISIONS/GOVERNANCE_GAP_LOG.md GG-130 for the full incident
+        # history this generalizes).
+        #
+        # Fix: any TRACKED file modified under a known regenerated-output root
+        # (exp_output/, data/, logs/, models/ — everything deploy/cron.conf's
+        # scheduled jobs write into) is auto-reset to the committed version
+        # before pulling. The VPS is never the source of truth for tracked
+        # content — a legitimate change to a tracked file should land via a
+        # commit through the normal dev workflow, not by mutating in place on
+        # the box. Anything modified OUTSIDE those roots still hard-fails,
+        # preserving the original T-171 protection against a real source/config
+        # file being hand-edited on the VPS.
+        #
+        # Piped via `bash -s` heredoc rather than embedded as a single quoted
+        # SSH argument (the prior style) so the guard logic is real, readable,
+        # testable bash instead of an escaped one-liner — and so it always runs
+        # the current version straight from this workflow file with no
+        # bootstrap dependency on the VPS already having pulled it.
+        #
+        # Full incident writeup + what to do if this step still fails:
+        # 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_deploy-dirty-tree.md
         run: |
           ssh -i ~/.ssh/id_ed25519_droplet \
               -o StrictHostKeyChecking=no \
               -o ConnectTimeout=15 \
-              root@157.230.91.33 \
-              "cd /opt/prediction-market-bot && \
-               DIRTY=\$(git status --porcelain --untracked-files=no 2>/dev/null); \
-               if [ -n \"\$DIRTY\" ]; then \
-                 echo 'WARNING: VPS has local modifications to TRACKED files — git pull aborted to avoid clobbering them.'; \
-                 echo 'This means a file already committed to the repo was edited in place on the VPS (not just new pipeline output).'; \
-                 echo 'Investigate and either commit/discard the change on the VPS, or move it to a gitignored path if it is runtime state.'; \
-                 echo \"Modified tracked files: \$DIRTY\"; \
-                 exit 1; \
-               fi && \
-               git pull --ff-only origin main 2>&1"
+              root@157.230.91.33 'bash -s' <<'REMOTE_DEPLOY'
+          set -euo pipefail
+          cd /opt/prediction-market-bot
+
+          REGEN_ROOTS=(exp_output/ data/ logs/ models/)
+
+          DIRTY="$(git status --porcelain --untracked-files=no 2>/dev/null || true)"
+
+          if [ -n "$DIRTY" ]; then
+            HEALED=()
+            UNEXPECTED=()
+            while IFS= read -r line; do
+              [ -z "$line" ] && continue
+              fpath="${line:3}"
+              matched=0
+              for root in "${REGEN_ROOTS[@]}"; do
+                case "$fpath" in
+                  "$root"*) matched=1 ;;
+                esac
+              done
+              if [ "$matched" -eq 1 ]; then
+                git checkout -- "$fpath"
+                HEALED+=("$fpath")
+              else
+                UNEXPECTED+=("$line")
+              fi
+            done <<< "$DIRTY"
+
+            if [ "${#HEALED[@]}" -gt 0 ]; then
+              echo "AUTO-HEALED (GG-130): tracked files under a known cron-output root were reset to the committed version before pulling:"
+              printf '  - %s\n' "${HEALED[@]}"
+            fi
+
+            if [ "${#UNEXPECTED[@]}" -gt 0 ]; then
+              echo "ERROR: VPS has local modifications to TRACKED files outside known cron-output roots (${REGEN_ROOTS[*]}) -- git pull aborted to avoid clobbering them."
+              echo "This means a file already committed to the repo (source, config, docs, or a deliberately-tracked snapshot) was edited in place on the VPS."
+              echo "Investigate and either commit/discard the change on the VPS, or move it to a gitignored path if it is genuinely regenerable runtime state."
+              printf '  %s\n' "${UNEXPECTED[@]}"
+              exit 1
+            fi
+          fi
+
+          git pull --ff-only origin main
+          REMOTE_DEPLOY
 
       - name: Restart persistent services (T-328/GG-104)
         # GG-104: a successful `git pull` only proves code-on-disk updated —
