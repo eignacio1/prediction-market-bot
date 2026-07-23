@@ -2,8 +2,8 @@
 
 **Purpose:** Canonical, version-controlled record of all model performance metrics across experiments. Distinct from MODEL_CARD.md narrative — this is the raw metric ledger.  
 **Owner (role):** Methodology Validator (MV) + Model Owner (MO)  
-**Last reviewed:** 2026-05-28 (EXP-004 Part A complete — HYP-003 SUPPORTED; EV section added)  
-**Next review:** After EXP-004 Part B; at G5 gate  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review, two findings. (1) The 2026-07-02 addendum's `v2-065b9510` claim was re-checked against `DECISION_LOG.md`/`MEMORY_BANK.md` in this same pass (see `MODEL_CARD.md`'s 2026-07-23 note) — still the latest-trained NBA model, no newer retrain since. Same deploy-vs-trained nuance applies here as in `MODEL_CARD.md`: `v2-065b9510` is trained, not yet deployed to the VPS (deploy deferred to Oct 2026); moot while NBA remains DARK/FROZEN. (2) **Real drift found and fixed:** the EXP-004 section below (and its "Next review" line) described Part B as pending DS-02 connectivity — that was true as of the 2026-05-28 write time, but DS-02-B-001 was RESOLVED later that same day (mobile hotspot; session `EXP-004-FE3E2169`; see `04_EXECUTION/RID_LOG.md`, `00_ADMIN/APPROVALS_REGISTER.md` APR-0007) and Part B actually ran and confirmed HYP-003. See the updated EXP-004 section for the corrected result. The G4-gate tables otherwise remain an accurate closed-gate historical record and are correctly left unedited per this project's ADR-immutability culture.  
+**Next review:** At G5 gate (EXP-004 Part B is complete — see below)  
 **Staleness triggers:** New experiment run; model version bumped; FEATURE_VERSION changed  
 **Upstream links:** 05_RESEARCH_EXPERIMENTS/EXPERIMENT_LOG/, 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/RESULTS_INDEX.md  
 **Downstream links:** MODEL_CARD.md, 07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/  
@@ -105,7 +105,7 @@ The "Current Model Version" table immediately below describes the G4-gate model 
 | AUC-ROC | 0.6062 |
 | Vig applied | 0.0100 |
 | Half spread | 0.0050 |
-| market_implied_prob | 0.50 (null; Part B will use live Kalshi mid-prices) |
+| market_implied_prob | 0.50 (null; Part B below uses live Kalshi mid-prices) |
 | YES bets (edge > 0.02+half_spread) | 1,380 |
 | NO bets (edge < −0.02−half_spread) | 1,101 |
 | Total bets | 2,481 of 3,254 (76.1%) |
@@ -114,7 +114,9 @@ The "Current Model Version" table immediately below describes the G4-gate model 
 | EV per bet | **+$0.0855** |
 | HYP-003 verdict | **SUPPORTED (Part A)** |
 
-**Caveat:** market_implied_prob=0.50 is a conservative null. Real Kalshi markets price each market at the true implied probability (e.g., 0.42, 0.65). EV against live prices will be quantified in Part B (requires DS-02 live connectivity — pending DS-02-B-001 resolution on home WiFi).
+**Part A caveat:** market_implied_prob=0.50 is a conservative null, used because Part A is a historical TEST-set backtest and does not have live venue prices to bet against.
+
+**Part B — Live Market Alignment (completed 2026-05-28, same day as Part A, on mobile hotspot after DS-02-B-001 IP-block resolution; session `EXP-004-FE3E2169`):** 37 active KXNBAPTS markets (OKC-SAS game). Computed live edge = model_p − kalshi_mid − half_spread for the 2 players in the 50-player cohort with active markets that day: **Fox edge +0.405 (YES)**, **SGA edge −0.116 (NO)** — both directions consistent with model signal. **HYP-003 verdict: CONFIRMED (Parts A+B)** — this is Part B's directional confirmation on live prices, not an independent P&L/EV backtest; Part A's +$0.0855/bet EV figure remains the only quantified EV number and was not re-derived against live mid-prices at full TEST-set scale. See `04_EXECUTION/RID_LOG.md` (DS-02-B-001, RESOLVED) and `00_ADMIN/APPROVALS_REGISTER.md` (APR-0007) for the resolution record.
 
 ---
 
