@@ -2514,6 +2514,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-133 — No standing archival cadence exists for `04_EXECUTION/TODO_NEXT.md`'s own `## T-NNN` task sections (same class as GG-127)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-133 |
+| Arm | Core |
+| Category | Documentation-hygiene — same class as GG-127 (a file whose own stated purpose implies bounded, current content had been allowed to accumulate unbounded historical content, with no automated check or enforced cadence catching the drift). |
+| What was missed | `TODO_NEXT.md`'s own header states: "**Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md." Despite this, by 2026-07-23 the file had grown to 2,422 lines carrying 40 `## T-NNN` sections, 34 of which were marked ✅ DONE/RESOLVED/COMPLETE — some dating back to 2026-07-10/11 (T-325 through T-332), i.e. roughly two weeks of completed-task history sitting in a file whose own purpose line commits to a 1-3 session horizon. Unlike `MEMORY_BANK.md`'s `## Current State Snapshot` chain (which T-334/ADR-0044 gave a standing consolidation pattern and an automated WARN check, `check_memory_bank_snapshots.sh`), `TODO_NEXT.md`'s `## T-NNN` section list had no equivalent: no script checks its length or DONE-section count, and no prior session had registered a recurring cadence for pruning it — the only precedent was a single passing reference inside T-334's own scope description, never generalized into a repeatable process for this file specifically. |
+| When it should have been caught | Any session running the mandatory CLAUDE.md session-start protocol, none of whose Steps 0-4 or Q1-Q6 checks inspect `TODO_NEXT.md`'s own line count, section count, or DONE-section ratio against its stated purpose. |
+| Phases it survived | At minimum every session from 2026-07-10/11 (oldest surviving DONE section, T-325/T-326/T-327) through 2026-07-23 (this session) — on the order of two weeks and dozens of sessions, spanning Phase 6/7 ACTIVE. |
+| Why it survived | No automated freshness/size check exists for this file, analogous to the nav-hub staleness check GG-127 added for `00_ADMIN/README.md` or the chain-length check T-334 added for `MEMORY_BANK.md`. Growth was gradual (one or two new DONE sections per session) and each individual addition looked locally reasonable — the drift was only visible in aggregate, and nothing forced an aggregate view. |
+| Impact | LOW-MEDIUM — no capital/gate/trading-logic impact; this is a documentation-scannability issue in a file read at the start of every session. Real cost: a file meant to give a fast "what's actionable right now" view instead required scanning past 34 completed sections (roughly 425 of the file's 2,422 lines) to find the 6 genuinely open items, directly undermining the file's own stated purpose and slowing every session's orientation pass. |
+| Discovery | 2026-07-23, this session (T-396, isolated worktree `session/20260723T003916Z-todo-next-archive`), operator-directed: Earl noted the file's line/section count and its own stale purpose line, and pointed to the T-334/`MEMORY_BANK_ARCHIVE.md` lossless-move pattern as an applicable precedent not yet extended to this file. |
+| Resolution | Same session: the 34 confirmed DONE/RESOLVED/COMPLETE `## T-NNN` sections (T-325 through T-395, excluding T-333/T-376/T-379/T-384/T-390/T-394 which each retain a genuinely open component or explicit OPEN/PARTIAL/pending status) moved verbatim — programmatically extracted and diff-verified byte-for-byte, not paraphrased — into a new `## TODO_NEXT Task Archive` section in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md`, with a one-line pointer left in `TODO_NEXT.md` in their place. This resolves the specific instance. **No structural/automated cadence was built this session** (unlike GG-127's nav-hub check or T-334's `check_memory_bank_snapshots.sh`) — this gap's root cause (no enforced pruning cadence for this file) remains open pending a future session deciding whether to extend `check_memory_bank_snapshots.sh` (or a new script) to also flag `TODO_NEXT.md` DONE-section accumulation past some threshold. |
+| Status | **IN PROGRESS.** The specific instance (34 stale DONE sections) is RESOLVED as of 2026-07-23. The structural gap — no automated check or enforced cadence exists to catch this file recurring to the same state — is NOT resolved. A future session should decide whether to extend `check_memory_bank_snapshots.sh`'s pattern to this file (e.g. WARN if `## T-NNN` sections marked DONE/RESOLVED/COMPLETE exceed some count or age threshold) or accept periodic manual sweeps as sufficient. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
