@@ -1,6 +1,6 @@
 # ADR-0035 — NBA Paper Portfolio Reset for 2026-27 Season
 
-**Status:** DRAFT — pending DS sign-off Earl Ignacio
+**Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-06-30 SESSION 102 (see Sign-off table below; independently confirmed in `DECISION_LOG.md:53`). **Status field corrected 2026-07-22 (T-383/GG-056 close-out):** this header had gone stale, still reading "DRAFT — pending DS sign-off" for three weeks after the Sign-off table below was already filled in and `DECISION_LOG.md` already recorded ACCEPTED. The discrepancy let GG-056/APR-0027 (2026-07-17) treat this ADR's decision as still needing to be drafted, when it had already been decided 2026-06-30. This is a factual correction matching the pre-existing record, not a substantive change to the decision — no supersession required.
 **Date:** 2026-06-30
 **Gate:** Pre-NBA 2026-27 season activation (October 2026)
 **Supersedes:** Nothing
