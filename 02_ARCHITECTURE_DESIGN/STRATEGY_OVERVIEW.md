@@ -3,7 +3,7 @@
 
 **Purpose:** Institutional reference document covering all quantitative strategies available to this system — mechanics, edge sources, risk profiles, Kalshi-specific constraints, implementation requirements, and activation gates. Includes Execution Band (T1–T5) time-horizon framework. Assessed via Princeton Deep Thinking Protocol (PDTP).
 **Owner (role):** Director/Sponsor (DS)
-**Last reviewed:** 2026-05-29 (Phase 6 idle build — Execution Bands + VenueRouter + multi-venue registry added; 329/329 tests)
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: found and corrected one genuine drift (C5 "read-only" claim, see Scope Note item 3 below); everything else re-checked against current registries with no further drift found (see Scope Note for full method and caveats). Prior: 2026-05-29 (Phase 6 idle build — Execution Bands + VenueRouter + multi-venue registry added; 329/329 tests)
 **Next review:** On any new strategy activation; post-G6 live capital authorization; quarterly
 **Staleness triggers:** New venue added; new strategy activated; ADR changes; market structure changes
 **Upstream links:** METHODOLOGY.md (Section 4 Strategy Architecture A–H); ADR-0002 (forecast-only); ADR-0003 (Kalshi primary); EXECUTION_ARCHITECTURE.md; EXECUTION_BANDS.md; VENUE_REGISTRY.md
@@ -20,8 +20,9 @@
 **Two specific, verifiable errors corrected below in this pass (not a full rewrite):**
 1. Strategy G's Hard Limits table listed `max_daily_loss_usd = $1,000` (superseded by `MAX_DAILY_LOSS_PCT = 0.15`, ADR-0012) and `max_concurrent_positions = 10` (deleted entirely, ADR-0006, 2026-06-01) — both stale, corrected in place.
 2. Strategy A's Activation Gate referenced "50+ paper bets" — revised to 30 by APR-0016 (2026-05-29) — corrected in place.
+3. **[Added 2026-07-23, GG-074 monthly review]** PDTP Problem Brief and P2 Kalshi Market Structure Constraints both stated C5 was flatly "read-only" (lines 68, 139) — stale since ADR-0008 (2026-05-31) made C5 write-capable to Kalshi DEMO (`PaperTrader.open_position()` submits real RSA-signed orders when a key is loaded), confirmed operational via GG-063 (2026-07-01). Corrected in place to distinguish DEMO write-capability (live since ADR-0008) from LIVE-capital write-capability (still gated on G6 + ADR-0005). This is the same class of drift SYSTEM_CONTEXT.md's EA-04 caught and fixed on 2026-07-06 — this document was missed in that pass.
 
-Everything else below (edge taxonomy, PDTP analysis, Strategy B–K designs, risk profiles) was reviewed for internal consistency but not independently re-verified against current code in this pass — treat as the NBA design intent, not a live status report, and cross-check against `GOVERNANCE_GAP_LOG.md`/`MEMORY_BANK.md` before relying on any specific status claim below.
+Everything else below (edge taxonomy, PDTP analysis, Strategy B–K designs, risk profiles) was reviewed for internal consistency but not independently re-verified against current code in this pass — treat as the NBA design intent, not a live status report, and cross-check against `GOVERNANCE_GAP_LOG.md`/`MEMORY_BANK.md` before relying on any specific status claim below. The 2026-07-23 GG-074 pass re-verified the Band Assignment Registry table (lines 34-46) against current `EXECUTION_BANDS.md`/`GOVERNANCE_GAP_LOG.md` state and found no further drift beyond the read-only correction above — Strategy statuses (A ACTIVE, B/E/I SKELETON, C/D/F/J/K BLOCKED) still match.
 
 ---
 
@@ -65,7 +66,7 @@ Full protocol: `02_ARCHITECTURE_DESIGN/BAND_ASSIGNMENT_FRAMEWORK.md`
 - Capital: NO LIVE CAPITAL until G6 (paper trading only)
 - Data: nba_api (public, 0.6s throttle) as current primary; no real-time price feed yet (DS-02 required)
 - Model: frozen LR+Platt (ADR-0004); automated retraining prohibited
-- Execution: C5 is read-only in ENV-02; no live orders until BOT_C4_ACTIVE set
+- Execution: **[Corrected 2026-07-23, GG-074]** C5 has been write-capable to Kalshi DEMO since ADR-0008 (2026-05-31) — `PaperTrader.open_position()` submits real orders to the Kalshi DEMO environment when an RSA key is loaded, confirmed operational via GG-063 (v1→v2 endpoint migration, resolved 2026-07-01). This is distinct from LIVE-capital order submission, which remains gated on G6 + ADR-0005 DS sign-off per VENUE_REGISTRY.md (ACC-0002 read-only key is for LIVE Kalshi; DEMO writes use the separate RSA-signed path ADR-0008 added). "No live orders until BOT_C4_ACTIVE set" still holds for real capital.
 
 ---
 
@@ -136,7 +137,7 @@ Key structural facts that constrain strategy selection:
 | Fees | ~3% of notional (vig 0.030 confirmed EXP-010) | Minimum edge threshold ≈ 0.03 before any profit |
 | Liquidity | Thin for individual player props | Large Kelly bets will move the market; max position size matters |
 | Settlement | Automated on official game outcome | No settlement risk for standard games |
-| API | REST; read-only key in ENV-02; rate limits apply | In-play scalping requires upgrade to write-capable key |
+| API | REST; write-capable to DEMO since ADR-0008 (RSA-signed order submission, GG-063 confirmed live 2026-07-01); LIVE-capital orders remain gated on G6 + ADR-0005; rate limits apply | In-play scalping is already unblocked on the API-capability axis for DEMO; the remaining gate is G6/DS sign-off, not a key upgrade |
 | Execution | Single-leg only per order | Complement lock arb requires two simultaneous fills; execution risk is real |
 | Market hours | Markets open pre-game; close at tip-off for most props | In-play markets are a different product class |
 
