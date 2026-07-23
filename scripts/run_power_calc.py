@@ -148,7 +148,7 @@ def observed_cadence_per_week(recs: list[dict]) -> tuple[float | None, float | N
 # ── per-band power calc ──────────────────────────────────────────────────────────
 
 def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) -> dict:
-    clean_recs = filter_clean(recs)
+    clean_recs = filter_clean(recs, band)
     raw_n = len(recs)
     clean_n = len(clean_recs)
 
