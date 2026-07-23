@@ -2,8 +2,8 @@
 
 **Purpose:** Enumerate all external and internal dependencies — software libraries, data sources, infrastructure, and tooling. Required for reproducibility and supply-chain risk assessment.  
 **Owner (role):** Architecture Owner (AO)  
-**Last reviewed:** 2026-05-22  
-**Next review:** G2 Architecture Gate; then on any dependency change  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified the 2026-07-06 correction note against the live lock files directly (`requirements-base.txt`, `requirements-dev.txt`); versions cited in the note still match exactly. No new drift found.  
+**Next review:** 2026-08-23, or on any dependency change  
 **Staleness triggers:** New library added; version pinned; data source confirmed; venue API selected; infrastructure provisioned  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/  
 **Downstream links:** 06_CODE_EXECUTION_REPRODUCIBILITY/ENVIRONMENTS.md, 06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md  

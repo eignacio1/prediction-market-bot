@@ -2,8 +2,8 @@
 
 **Purpose:** Define the north star vision and the concrete outcomes that constitute success. Upstream of all requirements.  
 **Owner (role):** Product/Problem Owner (PO)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-21 or at G1 Spec Gate  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. North star vision and outcome hierarchy still align with CLAUDE.md's Principal Vision framing (calibration engine, P&L as score); tier structure (research integrity / operational safety / live capital performance) unaffected by phase progression to date.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** Strategy class changes; venue confirmed; capital targets revised; major signal source added or removed  
 **Upstream links:** PROJECT_CHARTER.md  
 **Downstream links:** REQUIREMENTS.md, SCOPE_IN_OUT.md, ROADMAP_MILESTONES.md  
