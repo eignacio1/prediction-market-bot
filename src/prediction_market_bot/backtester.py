@@ -151,7 +151,7 @@ def _build_target(feature_df: pd.DataFrame, window: int = FEATURE_WINDOW) -> pd.
     pts = pd.to_numeric(feature_df["pts"], errors="coerce")
     pts_prior_mean = pd.to_numeric(feature_df[col_name], errors="coerce")
     target = (pts >= pts_prior_mean).astype("Int8")
-    target[pts.isna() | pts_prior_mean.isna()] = pd.NA
+    target[pts.isna() | pts_prior_mean.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return target
 
 
@@ -597,7 +597,7 @@ class Backtester:
         c4_gate_result = "no_forecasts"
         c4_decision: dict[str, Any] = {}
         if len(forecast_df) > 0:
-            sample_forecast = forecast_df.iloc[0].to_dict()
+            sample_forecast = {str(k): v for k, v in forecast_df.iloc[0].to_dict().items()}
             engine = RiskEngine(
                 logger=self._logger,
                 snapshot_id=window_def.snapshot_id,
@@ -661,6 +661,7 @@ class Backtester:
         if not ok:
             return False, None
 
+        assert forecaster.model_version is not None  # fit_ok gate above guarantees this
         result = BacktestResult(
             exp_id=window_def.exp_id,
             session_id=session_id,

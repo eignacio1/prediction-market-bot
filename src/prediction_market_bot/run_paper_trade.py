@@ -160,7 +160,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     pm  = pd.to_numeric(df[col], errors="coerce")
     t   = (pts >= pm).astype("Int8")
-    t[pts.isna() | pm.isna()] = pd.NA
+    t[pts.isna() | pm.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return t
 
 def _impute(X: np.ndarray, medians: np.ndarray) -> np.ndarray:
@@ -480,12 +480,12 @@ def main() -> None:
         norm = normalize_player_name(kalshi_player_name)
 
         # --- Resolve player stats ---
-        row = cohort_lookup.get(norm)
-        if row is not None:
-            player_id = int(row.get("player_id", 0))
-            pts_mean = float(row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
+        cohort_row = cohort_lookup.get(norm)
+        if cohort_row is not None:
+            player_id = int(cohort_row.get("player_id", 0))
+            pts_mean = float(cohort_row.get(f"pts_l{FEATURE_WINDOW}_mean", np.nan))
             X = _impute(
-                np.array([[row[c] if c in row.index else np.nan for c in feature_names]], dtype=float),
+                np.array([[cohort_row[c] if c in cohort_row.index else np.nan for c in feature_names]], dtype=float),
                 col_medians,
             )
             p_est_lr: float | None = float(pipeline.predict_proba(X)[0, 1])

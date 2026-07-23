@@ -180,7 +180,7 @@ class MLBTeamStatsStore:
         for team, df in self._store.items():
             records = df.copy()
             records["game_date"] = records["game_date"].astype(str)
-            out[team] = records.to_dict("records")
+            out[team] = [{str(k): v for k, v in rec.items()} for rec in records.to_dict("records")]
         return out
 
     @classmethod

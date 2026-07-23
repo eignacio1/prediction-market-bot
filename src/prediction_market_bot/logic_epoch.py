@@ -55,6 +55,17 @@ Deploy note:
   automatically each run. When a new commit changes the approval/sizing/
   execution write path, append a new LogicEpochBoundary here (epoch = prior
   epoch + 1) and log the change in DECISION_LOG.md per Hard Rule 7.
+
+Bump-time safety check (T-388, GG-124):
+  Before appending a new boundary, run `scripts/check_epoch_activation.py`
+  (optionally with `--field`/`--artifact-glob` naming the production data
+  field the new logic depends on, if any). It warns (does not block) when
+  another boundary has landed within the trailing 7 days (GG-124: five
+  boundaries landed in ~5 days, blacking out clean_n across all active MLB
+  bands simultaneously), and, when a field/artifact is given, alerts if that
+  field is not yet present/non-null in production (the exact epoch-7
+  activation-failure mode GG-105/T-387 found: deploy != behavioral
+  activation when a runner falls back silently on a missing field).
 """
 
 from __future__ import annotations
@@ -321,3 +332,8 @@ def approval_commit_for_epoch(epoch: int) -> str:
         if boundary.epoch == epoch:
             return boundary.commit_sha
     return ""
+
+
+def get_boundaries() -> tuple[LogicEpochBoundary, ...]:
+    """Public read accessor for `_BOUNDARIES` (T-388, scripts/check_epoch_activation.py)."""
+    return _BOUNDARIES

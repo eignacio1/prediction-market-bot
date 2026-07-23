@@ -123,7 +123,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     pm  = pd.to_numeric(df.get(col, pd.Series(dtype=float)), errors="coerce")
     t   = (pts >= pm).astype("Int8")
-    t[pts.isna() | pm.isna()] = pd.NA
+    t[pts.isna() | pm.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return t
 
 

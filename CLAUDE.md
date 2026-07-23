@@ -247,6 +247,14 @@ tail -500 /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null | grep 
 
 `SemanticFloorViolation` count > 0 = T1 pipeline silence (investigate immediately). `CONTAMINATION_HALT` count > 0 in the audit JSONL is expected at game-end (market_active=False normal).
 
+**Dashboard OOM-restart-loop probe (T-356/GG-118, added 2026-07-21):** GG-118 found `pmbot-web-dashboard.service` can OOM-crash-loop (`Restart=always`/`RestartSec=5`) while `systemctl is-active` reports `active` throughout, since the service re-enters the active state within ~5s of each restart — a plain `is-active` check would not have caught the ~2-day dark-dashboard incident that prompted GG-118's fix. This step had no probe at all for this service before now.
+
+```bash
+ssh prediction-market-vps "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,SubState && echo '--- oom-kills, last 24h ---' && journalctl -u pmbot-web-dashboard.service --since '-24 hour' | grep -c oom-kill"
+```
+
+**What to look for:** `NRestarts` > 0 or any `oom-kill` count > 0 means the service has crash-looped recently — treat it as a Q6 concern even if `ActiveState=active`/`SubState=running` looks healthy, since that pair is exactly what a mid-loop snapshot shows. Healthy baseline: `NRestarts=0`, 0 oom-kills.
+
 **Alarm condition (corrected 2026-07-05, GG-085 — the prior wording here was itself wrong and never caught anything):** do not grep for `payload.staleness_halts > 0`. That field is a **per-`session_id` cumulative counter** (confirmed via direct inspection of `audit_mlb_t4.jsonl`: it appears only on `CONTAMINATION_HALT` events where `failed_checks` includes `game_state_fresh`, alongside a matching `total_halts`, and only resets when the `t4-mlb` process restarts and a new `session_id` begins) — it is not a per-cycle boolean and does not reset when data freshness recovers. A long-running session that hit even one transient staleness event hours ago will show `staleness_halts > 0` in every subsequent record for the rest of that session's life, even while currently healthy — the documented heuristic would have alarmed permanently after the first true positive and never told you anything new. The real signal is whether a `game_state_fresh` failure occurred **recently** (last few poll cycles), which the `tail -500` command above checks directly by counting fresh occurrences of the failed-check string rather than reading the cumulative counter. Non-zero on that recency-windowed count = ESPN or Kalshi data is stale right now; investigate immediately. A positive `payload.staleness_halts` value alone, with zero recent `game_state_fresh` occurrences, means the session merely has staleness history, not a live problem.
 
 ---

@@ -51,7 +51,7 @@ import argparse
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from prediction_market_bot.c3_forecasting.game_state_model import (
     KELLY_T4,
@@ -370,7 +370,7 @@ def _run_demo() -> None:
         arithmetic = LateGameArithmetic()
         loop = T4EventLoop(store, model, arithmetic)
 
-        scenarios = [
+        scenarios: list[dict[str, str | GameStateEvent]] = [
             {
                 "label": "Midgame — player trending over (Bayesian fires)",
                 "event": GameStateEvent(
@@ -450,15 +450,15 @@ def _run_demo() -> None:
 
         for scenario in scenarios:
             print(f"\n  {scenario['label']}")
-            result = loop.on_game_state_event(scenario["event"])
+            result = loop.on_game_state_event(cast(GameStateEvent, scenario["event"]))
             print(f"  → ACTION: {result.action}")
             print(f"  → REASON: {result.reason}")
-            if result.signal and hasattr(result.signal, "p_t4"):
-                s = result.signal
-                print(f"  → p_t1={s.p_t1:.3f}  p_t4={s.p_t4:.3f}  delta={s.delta_p:.3f}")
-            if result.signal and hasattr(result.signal, "verdict"):
-                s = result.signal
-                print(f"  → T5 verdict={s.verdict}  p_hit={s.p_hit:.3f}")
+            if isinstance(result.signal, T4Signal):
+                s4 = result.signal
+                print(f"  → p_t1={s4.p_t1:.3f}  p_t4={s4.p_t4:.3f}  delta={s4.delta_p:.3f}")
+            if isinstance(result.signal, T5Signal):
+                s5 = result.signal
+                print(f"  → T5 verdict={s5.verdict}  p_hit={s5.p_hit:.3f}")
 
     print("\n" + "=" * 60)
     print("Demo complete. T4 event loop skeleton verified.")

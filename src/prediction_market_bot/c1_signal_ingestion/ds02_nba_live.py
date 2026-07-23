@@ -40,7 +40,7 @@ import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator, Optional, Sequence
+from typing import Any, Callable, Iterator, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -234,7 +234,7 @@ class NBALiveFeed:
 
     def run_loop(
         self,
-        on_states: object,
+        on_states: Callable[[list[LivePlayerState]], None],
         poll_interval_sec: float = DEFAULT_POLL_INTERVAL_SEC,
     ) -> None:
         """

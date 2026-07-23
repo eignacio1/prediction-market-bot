@@ -63,7 +63,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from scipy.stats import poisson as _sp_poisson
 
@@ -1380,12 +1380,12 @@ class T4ExitEvaluator(PortfolioOverlay):
                 entry_model_p = pos.entry_model_p
                 noise_buf = pos.noise_buffer
             elif isinstance(pos, dict):
-                market_id = pos.get("market_id")
-                player_id = pos.get("player_id")
-                direction = pos.get("direction")
-                threshold = pos.get("threshold")
-                entry_model_p = pos.get("entry_model_p")
-                noise_buf = pos.get("noise_buffer")
+                market_id = cast(str, pos.get("market_id"))
+                player_id = cast(str, pos.get("player_id"))
+                direction = cast(str, pos.get("direction"))
+                threshold = cast(float, pos.get("threshold"))
+                entry_model_p = cast(float, pos.get("entry_model_p"))
+                noise_buf = cast(Optional[float], pos.get("noise_buffer"))
                 # Skip dicts missing required keys; this preserves backward compatibility
                 # with test fixtures that pass minimal dicts (e.g. {"market_id": "MKT-001"}).
                 if not all([market_id, player_id, direction,

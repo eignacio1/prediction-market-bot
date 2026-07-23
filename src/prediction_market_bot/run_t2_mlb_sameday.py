@@ -176,9 +176,10 @@ def _fetch_live_game_pks(
     but logs a WARNING via C6 if logger is provided so failures are visible).
     """
     try:
+        schedule_params: dict[str, str | int] = {"sportId": 1, "date": game_date}
         resp = requests.get(
             _MLB_SCHEDULE_URL,
-            params={"sportId": 1, "date": game_date},
+            params=schedule_params,
             timeout=10,
         )
         resp.raise_for_status()

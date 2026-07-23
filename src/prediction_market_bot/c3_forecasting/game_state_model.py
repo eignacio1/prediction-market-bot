@@ -225,7 +225,7 @@ def opp_adjusted_lambda(
     if opp_def is None:
         return pts_mean
     factor = max(OPP_ADJ_MIN, min(OPP_ADJ_MAX, opp_def / LEAGUE_AVG_PTS_ALLOWED))
-    return pts_mean * factor
+    return float(pts_mean * factor)
 
 
 def null_delta_sigma(pace_pts_per_min: float, threshold: float, time_remaining_min: float) -> float:

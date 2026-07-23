@@ -64,7 +64,7 @@ _SRC_ROOT = Path(__file__).parent.parent.parent
 if str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+from prediction_market_bot.c5_execution.kalshi_client import DS02Snapshot, KalshiMarketClient
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ def _build_target(df: pd.DataFrame) -> pd.Series:
     pts = pd.to_numeric(df["pts"], errors="coerce")
     prior_mean = pd.to_numeric(df[col], errors="coerce")
     target = (pts >= prior_mean).astype("Int8")
-    target[pts.isna() | prior_mean.isna()] = pd.NA
+    target[pts.isna() | prior_mean.isna()] = pd.NA  # type: ignore[call-overload]  # pandas-stubs: no NAType overload for bool-mask key
     return target
 
 
@@ -283,7 +283,7 @@ def run_part_a(
 def run_part_b(
     df: pd.DataFrame,
     feature_names: list[str],
-    snapshot: object,
+    snapshot: DS02Snapshot,
     model: Pipeline,
 ) -> dict[str, Any]:
     """
