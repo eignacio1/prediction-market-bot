@@ -2514,6 +2514,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-133 — CHANGELOG.md has not been updated since 2026-05-30 despite ~2 months of major changes, violating its own staleness trigger
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-133 |
+| Arm | Core |
+| Category | Documentation-hygiene — grounding-doc staleness, discovered during GG-074's first-ever monthly review run. |
+| What was missed | `00_ADMIN/CHANGELOG.md`'s own header states it is "Updated continuously; reviewed weekly at DIR" with staleness trigger "Any major change without a corresponding entry." Its most recent entry is dated 2026-05-30. Since then, this project has shipped its dual-ledger MLB/NBA split (ADR-0035/ADR-0037), the T4 MLB build and multiple sub-band activations, EXP-017 and the APR-0024 variance-derived n* standard superseding the flat 30/150/500 heuristic, ADR-0026/APR-0020 (two-tier free-cash invariant), ADR-0040 (Kelly de-rating from ruin-risk MC study), the VPS web dashboard (GG-057), and dozens of other DECISION_LOG-logged changes — none of which produced a CHANGELOG.md entry. |
+| When it should have been caught | At any weekly DIR-equivalent review, or by this project's own GG-074 monthly grounding-docs staleness process — except GG-074 itself was adopted 2026-07-06 and never run until this session, so no process ever checked this. |
+| Phases it survived | 2026-05-30 through 2026-07-23 (~8 weeks), spanning the entirety of Phase 6/7 ACTIVE's major architecture growth. |
+| Why it survived | `DECISION_LOG.md` became the de facto operative record for Hard Rule 7 ("every strategic decision goes into DECISION_LOG.md immediately") and appears to have silently superseded CHANGELOG.md's role as the human-readable timeline view — but no decision was ever made to retire or supersede CHANGELOG.md, so it sits as a grounding doc making a false "updated continuously" claim. |
+| Impact | LOW — no capital/gate/trading-logic impact; this is a navigational/orientation doc, not a state-of-record. Risk is a new session or the operator trusting CHANGELOG.md's dated entries as a complete timeline when in fact two months of major architecture history are absent from it. |
+| Discovery | 2026-07-23, this session, while executing GG-074's monthly grounding-docs staleness review for the first time (operator-directed). |
+| Resolution | Not fixed this pass — backfilling ~8 weeks of major-change entries is a substantial dedicated task, out of scope for a header-staleness review. Header updated to record this finding rather than silently bumping the date (see file). Two viable paths for a future session: (a) backfill the missing entries from `DECISION_LOG.md`'s existing record, or (b) formally decide CHANGELOG.md is superseded by DECISION_LOG.md and either retire it or repurpose it as a lighter-weight index. Recommend registering a T-NNN to make that decision explicitly rather than letting the file drift further. |
+| Status | OPEN. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
