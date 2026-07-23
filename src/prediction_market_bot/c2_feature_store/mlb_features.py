@@ -63,10 +63,22 @@ Feature version policy:
     (Hard Rule 4), which does not consume ba_l10_shrunk and is therefore NOT retrained by this
     change. ba_l10_shrunk is consumed only by T4M-PROJ's live Binomial calculation
     (run_t4_mlb_live.py::p_hits_gte_threshold()), which is not a trained/frozen model artifact.
+
+A1 candidate addition (Window A, ITERATION_PLAN_MC_REMEDIATION_2026-07-22, task A1 — NOT an
+ADR, NOT DS-approved, NOT live):
+    ba_l10_shrunk_a1_candidate — same APR-0025 formula as ADR-0047's ba_l10_shrunk, but with a
+    holdout-tuned K (see scripts/tune_a1_shrinkage_k.py) instead of ADR-0047's fixed K=40.
+    Off by default; only computed when ENABLE_A1_SHRINKAGE_CANDIDATE is truthy (env var
+    A1_SHRINKAGE_CANDIDATE_ENABLED=1). Does not alter ba_l10, ba_l10_shrunk,
+    GG105_SHRINKAGE_K/PRIOR, MLB_FEATURE_VERSION, or CURRENT_LOGIC_EPOCH — those remain
+    ADR-0047's immutable, live values (Hard Rule 3). This column exists purely so Window D's
+    offline replay harness can score it against the resolved ledger before any A2 refit or
+    ADR decides whether it supersedes ADR-0047's K=40.
 """
 
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import Any, TYPE_CHECKING
@@ -96,6 +108,20 @@ MIN_PERIODS = 3
 # data-derived value — not an external/unsourced figure.
 GG105_SHRINKAGE_K = 40
 GG105_SHRINKAGE_PRIOR = 0.2512
+
+# --- A1 candidate (Window A, 2026-07-23) — NOT an ADR, NOT live, off by default ---
+# Holdout-tuned via scripts/tune_a1_shrinkage_k.py against exp_output/MLB/mlb_feature_matrix.csv
+# (n_holdout_rows=30184 TEST-labeled, n_atbats=95934): per-at-bat Brier score minimized at
+# K=400 (holdout Brier 0.184267), a materially flat plateau K~300-750, vs. K=40's 0.185085 and
+# raw ba_l10 (K=0)'s 0.189663. Re-run the tuning script if the underlying ledger materially
+# grows before this candidate is ever considered for an ADR. PRIOR is unchanged from ADR-0047
+# (GG105_SHRINKAGE_PRIOR) — only K is being re-examined per the A1 task scope.
+ENABLE_A1_SHRINKAGE_CANDIDATE = os.environ.get("A1_SHRINKAGE_CANDIDATE_ENABLED", "") in (
+    "1",
+    "true",
+    "True",
+)
+A1_CANDIDATE_SHRINKAGE_K = 400
 
 LABEL_TRAIN = "TRAIN"
 LABEL_VALIDATION = "VALIDATION"
@@ -234,6 +260,15 @@ def _compute_rolling_batter_features(player_df: pd.DataFrame, window: int, min_p
         ab_sum + GG105_SHRINKAGE_K
     )
     df["ba_l10_shrunk"] = ba_l10_shrunk.where(ab_sum.notna())
+
+    # ba_l10_shrunk_a1_candidate (Window A, A1 task, 2026-07-23) — same formula, holdout-tuned
+    # K, off by default. See module docstring + scripts/tune_a1_shrinkage_k.py. Never touches
+    # ba_l10_shrunk above; purely additive when the flag is enabled.
+    if ENABLE_A1_SHRINKAGE_CANDIDATE:
+        ba_l10_shrunk_a1 = (h_sum + A1_CANDIDATE_SHRINKAGE_K * GG105_SHRINKAGE_PRIOR) / (
+            ab_sum + A1_CANDIDATE_SHRINKAGE_K
+        )
+        df["ba_l10_shrunk_a1_candidate"] = ba_l10_shrunk_a1.where(ab_sum.notna())
 
     # Slugging: sum(total_bases) / sum(AB)
     tb_sum = h_sum + doubles_sum + 2 * triples_sum + 3 * hr_sum
