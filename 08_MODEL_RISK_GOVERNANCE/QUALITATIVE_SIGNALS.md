@@ -3,7 +3,7 @@
 **Purpose:** Define what qualitative signals are, how they enter the pipeline, how they are versioned, and what temporal integrity rules govern their use in model training and inference.  
 **Owner (role):** Research Lead (RL) + Architecture Owner (AO)  
 **Status:** CANONICAL — 2026-05-28 (updated after EXP-007 positive signal; three-layer amplification principle added)  
-**Last reviewed:** 2026-05-28  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no new drift found. Re-checked both points in the 2026-07-06 correction note below against live state: FEATURE_VERSION is still 1.4.0 (`c2_feature_store/features.py:120`); GG-094 (MLB has no qualitative/PRF-analogue layer) is still OPEN per `GOVERNANCE_GAP_LOG.md`. Also confirmed Section 7's Layer 3 status ("🔲 SKELETON") is still accurate — OQ-021 (L3 amplification needs non-linear model or more data) remains open per `MEMORY_BANK.md`'s M2 open-question table, no QualitativeAmplifier experiment has run since.  
 **Next review:** After EXP-008 (PRF one-hot); after QualitativeAmplifier first experiment  
 **Staleness triggers:** New qualitative source registered; operationalization of an existing source completed; temporal integrity protocol revised  
 **Upstream links:** DATA_FLOWS_LINEAGE.md, INTERFACES_CONTRACTS.md (IF-DS-Q-C2)  
