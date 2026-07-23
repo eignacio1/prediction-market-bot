@@ -2,7 +2,7 @@
 
 **Purpose:** Document the origin, transformation history, and custody chain for all data used in model training and evaluation. Required for audit and reproducibility.  
 **Owner (role):** Research Lead (RL)  
-**Last reviewed:** 2026-05-22  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified the 2026-07-06 correction notes on DS-02/DS-03 remain accurate (KXNBAPTS/KXMLBHIT feeds and ESPN/MLB Stats API outcome resolution both still live, cross-checked against VENUE_REGISTRY.md). DS-01 (PRF framework provenance) is a fixed historical artifact, not a status claim — unaffected by time. No new drift found.  
 **Next review:** G3 (DS-01 schema validation + snapshot registration); update when any data source changes  
 **Staleness triggers:** New data source confirmed; snapshot registered; schema validation completed  
 **Upstream links:** DATA_REQUIREMENTS.md, DATA_FLOWS_LINEAGE.md, DATA_SNAPSHOTS_INDEX.md  
