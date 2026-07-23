@@ -122,3 +122,4 @@
 | 2026-07-23T00:40:17Z | TBD | GG-074 monthly grounding-docs staleness review (first run, 27 files) |
 | 2026-07-23T23:39:20Z | GG-new | B1/B2: ruin gap + survivable-edge frontier |
 | 2026-07-23T23:39:24Z | APR-0025 | A1: ba_l10 shrinkage build |
+| 2026-07-23T23:39:47Z | TBD | C2/C3: epoch decouple + C7 monitor (Window C, GG-124 pre-existing ref) |
