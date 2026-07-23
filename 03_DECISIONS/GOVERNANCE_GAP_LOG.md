@@ -2532,6 +2532,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-134 — `mc_empirical_bootstrap.py`'s forward-risk projection has four unmodeled scope gaps not disclosed as limitations at commit time
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-134 |
+| Arm | Core |
+| Category | Incremental architecture — new forward-risk MC engine (`scripts/mc_empirical_bootstrap.py`, committed this session, `05_RESEARCH_EXPERIMENTS/MC_EMPIRICAL_BOOTSTRAP_2026-07-22.md`) models only book-level aggregates, not the band/pool structure CLAUDE.md's dual-ledger and multi-band architecture actually has. |
+| What was missed | Four coverage gaps in the engine's forward projection, none disclosed as a stated limitation in the report before this registration: (a) **kill switches are book-level only** — the 20% peak-drawdown and 15% daily breaker are applied to each book's aggregate bankroll, with no per-band budget or per-band kill modeled, even though CLAUDE.md Hard Rule 9 and `execution_bands.py` describe per-bucket/per-band routing and (per this project's stated design) band-level kill switches are meant to operate independently of the system-level one; (b) **MAIN pools T1/T2/T3 into one undifferentiated cohort** — the engine's `cohort_fracs()` filters by `logic_epoch` only, not by band, so T1's pregame-calibration edge and T2/T3's distinct decision trees are blended into a single mean/variance pair, which could mask a profitable band being dragged down by a losing one or vice versa; (c) **blocked sub-bands and the dark NBA book are entirely absent** — T4M-ARITH and T4M-FLOW (built but blocked) and NBA (DARK/FROZEN per operator directive) have no representation in the simulation, so the engine's book-level "MAIN" and "T4" figures describe only the currently-active pools, not the system's full pool inventory; (d) the **survivable-edge frontier** (minimum per-bet edge needed to hold 1yr P(kill) below a target, given real variance/cadence/Kelly fraction) that would turn the report's ruin-geometry finding into an actionable sizing/ADR change has not been built into this engine — this is explicitly Window B2's scope (`ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md` §Window B, claimed `SESSION_CLAIMS.md` 2026-07-23T23:39:20Z), not re-registered here as a new gap. |
+| When it should have been caught | At commit review, before the engine's report language ("Books modeled independently (dual-ledger)") could be read as a complete description of the system's pool structure by a future session trusting the report at face value. |
+| Phases it survived | N/A — caught same-session, at first commit, before any downstream session relied on the report's book-level figures as if they covered per-band or full-pool-inventory risk. |
+| Why it survived | The report is honest and clearly scoped to MAIN/T4 as the two *active* books, and its own Assumptions section discloses the CLT-in-log-space approximation — but it does not separately flag that "book" here means "everything active pooled," not "every band separately," nor that blocked/dark pools are out of scope entirely. A reader could reasonably infer full coverage from "dual-ledger" framing alone. |
+| Impact | LOW-MEDIUM — no capital/gate impact today (G6 gate not cleared, no live capital). Risk is forward-looking: if this engine becomes "the standard forward-risk gate" (per the iteration plan's D2 item) without these scope boundaries being explicit, a future sizing/ADR decision could be made on book-level aggregate risk while a specific band's or blocked sub-band's true risk profile diverges materially from its book's pooled average. |
+| Discovery | 2026-07-23, this session, during pre-commit review of `mc_empirical_bootstrap.py` ("confirm it's sound, not just present" per operator instruction). |
+| Resolution | Not fixed this pass — registered as known scope, not remediated. (a)/(b)/(c) are candidates for a future extension of this engine (per-band cohort splitting, per-band kill modeling, explicit pool-inventory table) if/when it is formally adopted as the standard gate (Window D2). (d) is explicitly out of this gap's scope — already claimed and in progress under Window B2; do not duplicate. |
+| Status | OPEN. |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
