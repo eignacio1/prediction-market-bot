@@ -2,7 +2,7 @@
 
 **Purpose:** Define what is tested, how it is tested, and what evidence is required for each gate. Testing is the mechanism by which assumptions become verified claims.  
 **Owner (role):** Evidence Owner (EO)  
-**Last reviewed:** 2026-05-22  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: found and fixed a genuine content error (not a staleness issue) — the Component table (line 51 header, now below) and TC-006/TC-008/TC-010 had C4/C5 swapped (labeled C4 "Execution Engine" / C5 "Risk Engine"), backwards from the canonical architecture (`src/prediction_market_bot/c4_risk_engine/`, `c5_execution/` — also CLAUDE.md's own pipeline definition). Corrected all four spots in place. The 2026-07-02 note below (gate-status-vs-current-status framing, 2,282-test snapshot) remains accurate as a historical snapshot; not re-verified to an exact current count this pass.  
 **Next review:** G4 Evidence Gate; update when test approach changes  
 **Staleness triggers:** New component added; acceptance criteria change; new failure mode identified  
 **Upstream links:** ACCEPTANCE_CRITERIA.md, REQUIREMENTS.md, RESILIENCE_FAILURE_MODES.md  
@@ -53,8 +53,8 @@ Manual test of the kill switch mechanism. **Required at G5 before any live infer
 | C1 Signal Ingestion | Phase 3 | Phase 3 | Phase 3 | N/A | Phase 3 |
 | C2 Feature Store | Phase 3 | Phase 3 | Phase 3 | N/A | Phase 3 |
 | C3 Forecasting Engine | Phase 3 | Phase 3 | Phase 3 | N/A | Phase 3 |
-| C4 Execution Engine | Phase 6 | Phase 6 | Phase 6 | Phase 6 | ADR-0004 |
-| C5 Risk Engine | Phase 6 | Phase 6 | Phase 6 | Phase 6 | ADR-0004 |
+| C4 Risk Engine | Phase 6 | Phase 6 | Phase 6 | Phase 6 | ADR-0004 |
+| C5 Execution Engine | Phase 6 | Phase 6 | Phase 6 | Phase 6 | ADR-0004 |
 | C6 Audit Logger | Phase 3 | Phase 3 | Phase 3 | Phase 5 | Phase 3 |
 | C7 Kill Switch | Phase 5 | Phase 5 | Phase 5 | G5 DRILL | G5 |
 
@@ -69,11 +69,11 @@ Manual test of the kill switch mechanism. **Required at G5 before any live infer
 | TC-003 | Snapshot ID required on all ingested records | C1 | Phase 3 |
 | TC-004 | Invalid schema record is rejected with ERROR log; pipeline does not ingest | C1 | Phase 3 |
 | TC-005 | Brier score correctly computed vs null model baseline | C3 | G4 |
-| TC-006 | Risk limit check rejects order when daily_loss > hard limit | C5 | ADR-0004 |
+| TC-006 | Risk limit check rejects order when daily_loss > hard limit | C4 | ADR-0004 |
 | TC-007 | Kill switch halts all active components within ≤60 seconds | C7 | G5 |
-| TC-008 | idempotency_key prevents duplicate order submission | C4 | ADR-0004 |
+| TC-008 | idempotency_key prevents duplicate order submission | C5 | ADR-0004 |
 | TC-009 | Audit log is append-only; write confirmation before acknowledgement | C6 | Phase 3 |
-| TC-010 | No real order submitted without ADR-0005 + G6 gate flag | C4 | G6 |
+| TC-010 | No real order submitted without ADR-0005 + G6 gate flag | C5 | G6 |
 
 ---
 
