@@ -8,4 +8,4 @@ Format: `<TASK> DONE commit=<sha> — <one-line summary>`
 
 ---
 
-A1 DONE commit=22dc374 — shrinkage flag=ENABLE_A1_SHRINKAGE_CANDIDATE (env A1_SHRINKAGE_CANDIDATE_ENABLED=1), column=ba_l10_shrunk_a1_candidate, K=400 (holdout-tuned, plateau K~300-750), PRIOR=0.2512 (unchanged from ADR-0047), files=src/prediction_market_bot/c2_feature_store/mlb_features.py, scripts/tune_a1_shrinkage_k.py
+A1 DONE commit=ef6b00e — shrinkage flag=ENABLE_A1_SHRINKAGE_CANDIDATE (env A1_SHRINKAGE_CANDIDATE_ENABLED=1), column=ba_l10_shrunk_a1_candidate, K=400 (holdout-tuned, plateau K~300-750), PRIOR=0.2512 (unchanged from ADR-0047), files=src/prediction_market_bot/c2_feature_store/mlb_features.py, scripts/tune_a1_shrinkage_k.py
