@@ -2,8 +2,8 @@
 
 **Purpose:** Define role ownership for every major artifact and workstream. No artifact is unowned. No owner lacks a review cadence.  
 **Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-21  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. Artifact-level RACI structure unaffected by phase/venue/ledger changes since 2026-05-21.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** New team member; ownership transfer; new major workstream added; phase gate passed  
 **Upstream links:** PROJECT_CHARTER.md  
 **Downstream links:** All artifacts (each references the relevant role from this RACI)  

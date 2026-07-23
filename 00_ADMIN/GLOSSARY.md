@@ -2,13 +2,13 @@
 
 **Purpose:** Define project-specific terminology, prediction market mechanics terms, and governance vocabulary. Prevents semantic drift across artifacts.  
 **Owner (role):** Directory Steward (DS) / Research Lead (RL)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-21  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: fixed genuine drift (venue-selection row said "not yet selected," but ADR-0003 was ACCEPTED 2026-05-23, Kalshi primary/Polymarket US secondary); all other terms verified current, no further drift found.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** New strategy class adopted; venue confirmed (venue may introduce its own terminology); new signal source added; term used inconsistently across two or more artifacts  
 **Upstream links:** PROJECT_CHARTER.md  
 **Downstream links:** All artifacts that use these terms  
-**Decision references:** ADR-0001, ADR-0002  
-**Confidence:** 7/10 — Venue-specific mechanics will add terms once confirmed  
+**Decision references:** ADR-0001, ADR-0002, ADR-0003  
+**Confidence:** 8/10 — Venue confirmed (ADR-0003); remaining gap is venue-specific mechanics terms not yet added  
 
 ---
 
@@ -16,7 +16,7 @@
 
 | Term | Project-Specific Meaning | Notes | Owner | Last Reviewed |
 |------|--------------------------|-------|-------|---------------|
-| Prediction market | A market where participants trade on the outcome of future events; prices represent implied probabilities | Venues include Kalshi, Polymarket, PredictIt — venue not yet selected (see ADR-0003 placeholder) | RL | 2026-05-21 |
+| Prediction market | A market where participants trade on the outcome of future events; prices represent implied probabilities | Venue selection is decided (ADR-0003, ACCEPTED 2026-05-23): Kalshi primary (CFTC-DCM), Polymarket US secondary (KYC-gated). PredictIt not selected. | RL | 2026-07-23 |
 | AMM (Automated Market Maker) | A liquidity mechanism using a mathematical pricing rule (e.g., LMSR) rather than an order book | Polymarket uses AMM; Kalshi uses CLOB | RL | 2026-05-21 |
 | CLOB (Central Limit Order Book) | A traditional order book where bids and asks are matched by price-time priority | Kalshi primarily uses CLOB | RL | 2026-05-21 |
 | LMSR (Logarithmic Market Scoring Rule) | A cost-function-based AMM that guarantees liquidity; prices shares in a binary outcome market | Common in academic prediction markets | RL | 2026-05-21 |

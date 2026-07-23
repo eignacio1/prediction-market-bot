@@ -2,8 +2,8 @@
 
 **Purpose:** Define cadences, channels, escalation paths, and severity definitions for all project communications.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-21  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. Cadence/escalation structure still matches practice; "Solo build" confidence note already covers the gap between the documented multi-role cadence and actual solo-operator execution.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** New stakeholder added; cadence changed; channel deprecated; escalation path revised  
 **Upstream links:** STAKEHOLDERS_RACI.md, PROJECT_CHARTER.md  
 **Downstream links:** 04_EXECUTION/PLAN.md, 10_INFRA_OPERATIONS/ONCALL.md  

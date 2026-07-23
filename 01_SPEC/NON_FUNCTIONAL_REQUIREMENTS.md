@@ -2,8 +2,8 @@
 
 **Purpose:** Define quality attributes the system must exhibit regardless of feature being exercised.  
 **Owner (role):** Architecture Owner (AO) / Product Owner (PO)  
-**Last reviewed:** 2026-05-21  
-**Next review:** G2 Architecture Gate; then on architecture changes  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. All NFR statements (kill switch ≤60s, secrets handling, structured logging, etc.) still match live system behavior. NFR-06's "monitoring tool TBD at G5" remains accurate as literally stated — no third-party monitoring tool (Grafana/Prometheus/etc.) was ever formally selected; the custom C8 web dashboard fills that role informally, but no ADR retired the TBD.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** New external integration; venue confirmed; scale threshold reached; compliance requirement confirmed  
 **Upstream links:** REQUIREMENTS.md, RISK_APPETITE_CONSTRAINTS.md, PROJECT_CHARTER.md  
 **Downstream links:** 02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md, 10_INFRA_OPERATIONS/SLA_SLO_SLI.md  

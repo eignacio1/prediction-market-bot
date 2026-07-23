@@ -2,8 +2,8 @@
 
 **Purpose:** Explicit boundary definition. Ambiguities in scope cause contamination; this artifact eliminates them.  
 **Owner (role):** Product/Problem Owner (PO)  
-**Last reviewed:** 2026-05-21  
-**Next review:** At G1 Spec Gate, or when any item moves between IN/OUT  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current. The 2026-07-06 inline correction notes (Phase 0-4/6 framing, ADR-0004 status) remain accurate — G0-G5 closed, Phase 6/7 ACTIVE, Phase 8/live-capital still correctly gated on G6. Hard-exclusions and boundary clarifications unchanged. No new drift found.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** New venue added; new strategy class approved (ADR); arb/ folder incorporated (future ADR); Phase 6+ entry  
 **Upstream links:** PROJECT_CHARTER.md, VISION_OUTCOMES.md  
 **Downstream links:** REQUIREMENTS.md, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md, 03_DECISIONS/ADR-0002  
