@@ -112,9 +112,8 @@
 
 ## T-397 — Merge PR #48 into `main` (T-396 TODO_NEXT.md archival) — OPEN, registered 2026-07-23
 
-<<<<<<< HEAD
 PR #48 (the T-396 archival: 34 completed `## T-NNN` sections moved to `MEMORY_BANK_ARCHIVE.md`, GG-133 registered) is CI-green and `mergeable: MERGEABLE` but not yet merged. A PR-mergeability false-conflict (GitHub's server-side check doesn't honor this repo's `.gitattributes` `merge=union` driver on `SESSION_CLAIMS.md`) was diagnosed and fixed via a local `git merge origin/main` + push — the branch is genuinely clean now, re-confirmed via `gh run watch --exit-status` on the post-merge CI run. The merge itself was then attempted (`gh pr merge 48`) and blocked by the Claude Code auto-mode permission classifier (shared-`main`-state action outside this session's granted scope) — not a code or policy objection, the same category of block T-380's T-374 precedent and T-393/PR-44 hit previously. **Next session (or operator, on go-ahead): `gh pr merge 48`, confirm `main` reflects the merge, then retire worktree `session/20260723T003916Z-todo-next-archive` via `scripts/end_session_worktree.sh`.** See DECISION_LOG.md 2026-07-23 (T-396 close-out row), SESSION_CLAIMS.md closure row.
-=======
+
 ## T-370 — Merge PR #26 (`session/20260715T145241Z-gg-oddburn-t368`, odd-GG-number burn-down) into `main`, reconciled with the parallel even-numbered parity session's branch — ✅ DONE, 2026-07-15
 
 **Done via a dedicated reconciliation session, isolated worktree `session/20260715T-ggreconcile-merge` (Hard Rule 10).** Both PR #25 (even) and PR #26 (odd) merged cleanly at the individual gap-row level as designed — zero collisions in `GOVERNANCE_GAP_LOG.md` gap bodies. `DECISION_LOG.md` had one pure-append collision (HEAD's T-368/T-369 close-out block vs. even branch's 17 rows), resolved by concatenating both in full. `.last_session_checkpoint`/`.gitattributes` conflicted (PR #26 introduced GG-103's append-only reformat) and were resolved preserving all three data points across the format transition.
@@ -220,7 +219,6 @@ See DECISION_LOG.md 2026-07-21 (T-388 row), `scripts/check_epoch_activation.py`,
 **Not done / open:** the weekly DIR cadence itself is still documented intent only — GG-127's Status field explicitly leaves this open (detection mechanism now exists via the nav-hub staleness check; the cadence itself still does not run on its own). **Push/deploy: confirmed live 2026-07-19** — a follow-on session with push access verified all 8 touched files present at `HEAD` (`45225ea`), `origin/main` in sync, `governance_scan.sh` run for real (NAV-HUB STALENESS section clean, README.md 0 days old). **ID provenance: resolved 2026-07-19** — GG-127 and T-389 confirmed next-free (no collision against any other session in `SESSION_CLAIMS.md`), retroactive claim row added since the original Cowork session couldn't run `claim_session.sh`. Both IDs are final as originally assigned.
 
 See DECISION_LOG.md 2026-07-19 (T-389 row + verification row), GOVERNANCE_GAP_LOG.md GG-127, `00_ADMIN/README.md`, `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md`.
->>>>>>> origin/main
 
 ## T-394 — GG-132: re-consolidate MEMORY_BANK.md's `**Last reviewed:**` narrative chain (52→1) — OPEN, registered 2026-07-21
 
