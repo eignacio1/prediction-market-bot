@@ -29,7 +29,10 @@ from run_power_calc import (
     analyze_band_power,
     MATURE_CADENCE_SPAN_DAYS,
 )
-from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
+from prediction_market_bot.logic_epoch import (
+    CURRENT_LOGIC_EPOCH,
+    clean_epoch_floor_for_band,
+)
 
 
 def _rec(pnl, resolved_at=None, entered_at=None, game_date=None, logic_epoch=None):
@@ -178,9 +181,13 @@ class TestAnalyzeBandPower:
         assert r["met"] == (r["gap_to_n_star"] == 0)
 
     def test_raw_n_and_clean_n_both_reported(self):
-        # 3 clean, 2 not-clean (old epoch) -> clean_n should exclude the old ones.
+        # 3 clean, 2 not-clean (below T1's own clean-epoch floor, GG-124
+        # per-band remediation -- NOT simply CURRENT_LOGIC_EPOCH - 1, since a
+        # global-counter bump that never touched T1's write path must not
+        # count as "old" for T1) -> clean_n should exclude the old ones.
+        t1_floor = clean_epoch_floor_for_band("T1")
         clean = [_rec(1.0, logic_epoch=CURRENT_LOGIC_EPOCH) for _ in range(3)]
-        dirty = [_rec(1.0, logic_epoch=CURRENT_LOGIC_EPOCH - 1) for _ in range(2)]
+        dirty = [_rec(1.0, logic_epoch=t1_floor - 1) for _ in range(2)]
         all_recs = clean + dirty
         # analyze_band_power itself does not filter — filter_clean happens
         # inside it via import; verify raw_n reflects the full input list
