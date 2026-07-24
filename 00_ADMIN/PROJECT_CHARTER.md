@@ -2,8 +2,8 @@
 
 **Purpose:** Define the project's intent, scope boundaries, success criteria, phase gates, and top risks. This is the authoritative statement of what we are building and why.  
 **Owner (role):** Product/Problem Owner (PO) | Directory Steward (DS)  
-**Last reviewed:** 2026-05-21  
-**Next review:** 2026-06-21 (monthly) or at any phase gate passage  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: fixed genuine drift (§4 Constraints "Venue: TBD" — ADR-0003 has been ACCEPTED since 2026-05-23, Kalshi primary/Polymarket US secondary); gate table, risks, and success-criteria sections verified current, no further drift found.  
+**Next review:** 2026-08-23 (monthly) or at any phase gate passage  
 **Staleness triggers:** Scope change; strategy class change; venue change; capital limit change; stakeholder change; gate passage  
 **Upstream links:** None (root governance artifact)  
 **Downstream links:** 01_SPEC/REQUIREMENTS.md, 01_SPEC/SCOPE_IN_OUT.md, 03_DECISIONS/DECISION_LOG/ADR-0001  
@@ -58,7 +58,7 @@
 | Constraint | Detail |
 |-----------|--------|
 | Capital | $0 authorized in Phases 0–5. Phase 6 (paper trading): simulated capital only. Real capital requires G6 sign-off. |
-| Venue | TBD — venue selection requires ADR-0003. Starting in simulation/research mode. |
+| Venue | Decided (ADR-0003, ACCEPTED 2026-05-23): Kalshi primary (CFTC-DCM, active), Polymarket US secondary (KYC-gated, built not activated). |
 | Data | Player/market attribute data (Player_Attribute_Matrix_v4.docx as initial research input). External data sources require Data Requirements sign-off. |
 | Compute | Development environment only in Phases 0–3. Production compute requirements defined at G5. |
 | Compliance | Any external venue connectivity, API credential use, or real capital triggers full instantiation of 09_SECURITY_PRIVACY_COMPLIANCE/. |

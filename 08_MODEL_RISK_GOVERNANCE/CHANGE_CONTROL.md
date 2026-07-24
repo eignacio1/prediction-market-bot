@@ -2,7 +2,7 @@
 
 **Purpose:** Define what changes require formal approval (ADR) versus lightweight documentation. Prevents silent changes to model, risk limits, or strategy from undermining governance.  
 **Owner (role):** Director/Sponsor (DS) + Risk and Compliance Owner (RCO)  
-**Last reviewed:** 2026-05-22  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. This is a process/policy document (change classification, band-assignment governance, conditional-language rules, decisions-logged requirement) rather than a system-state snapshot, so it doesn't decay the way status documents do. Cross-checked its Session-Start Enforcement grep command (lines 161-167) against CLAUDE.md's own Step 1 protocol — verbatim match, still wired in and enforced.  
 **Next review:** G2; update when new component or major change type identified  
 **Staleness triggers:** New change type encountered; ADR process revised  
 **Upstream links:** ADR-0001, RISK_APPETITE_CONSTRAINTS.md  

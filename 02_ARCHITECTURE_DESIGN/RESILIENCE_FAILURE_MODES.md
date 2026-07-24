@@ -3,7 +3,7 @@
 **Purpose:** Enumerate failure modes for every component, their detection signals, impact, mitigations, and runbook links. Required for G2 gate.  
 **Owner (role):** Architecture Owner (AO)  
 **Status:** **CANONICAL — G2 Architecture Gate 2026-05-22** — Changes require ADR or formal Change Class A/B record  
-**Last reviewed:** 2026-05-22 (G2 review; C4/C5 corrected; promoted DRAFT → CANONICAL)  
+**Last reviewed:** 2026-07-23 (G2 review; C4/C5 corrected; promoted DRAFT → CANONICAL; GG-074 pass fixed FM-03's stale runbook row)  
 **Next review:** On staleness trigger only; after each incident postmortem  
 **Staleness triggers:** New component added; incident reveals unmodeled failure mode; architecture change; runbook updated  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, INTERFACES_CONTRACTS.md  
@@ -12,7 +12,9 @@
 **Confidence:** 7/10 — Known failure modes catalogued; live-mode failure modes expand at G5
 **Decisions logged:** true — FM-01–FM-08 failure mode prioritization captured at G2 gate (APR-0004) and G5 kill switch drill (APR-0013)  
 
-**⚠️ Corrected 2026-07-06 (GG-074 remediation) — real gap found, not just staleness.** G5 is closed and the system has been running paper trading in production for weeks, but of the four runbooks marked "(to be created at G5)" below (FM-01 ingestion-failure, FM-02 data-contamination, FM-05 order-duplication, FM-07 audit-log), **none exist** — confirmed via directory listing of `10_INFRA_OPERATIONS/RUNBOOKS/`, which contains only `RUNBOOK_kill-switch.md`, `RUNBOOK_model-drift.md`, and `RUNBOOK_polymarket-activation.md` (matching FM-04/FM-06 and FM-03 respectively, both correctly un-flagged below). This is a genuine operational-readiness gap, not merely a stale citation: FM-02 (data contamination — rated CRITICAL, "silently destroys validity of all downstream validation") and FM-04's sibling FM-05 (order duplication — rated HIGH) have no runbook despite the system now placing real Kalshi demo orders (ADR-0008) and running live MLB paper trading. Recommend registering this as its own governance gap (candidate: missing G5-promised incident runbooks) rather than treating it as closed by this note.
+**⚠️ Corrected 2026-07-06 — real gap found, not just staleness; RESOLVED 2026-07-12 (T-346, GG-092).** The four runbooks originally missing (FM-01 ingestion-failure, FM-02 data-contamination, FM-05 order-duplication, FM-07 audit-log) were written and committed to `10_INFRA_OPERATIONS/RUNBOOKS/`; the per-FM rows below now point at the real files. This note is kept as history — GG-092 is the canonical record.
+
+**GG-074 monthly staleness review (2026-07-23):** re-verified all 7 runbooks exist on disk (`ls 10_INFRA_OPERATIONS/RUNBOOKS/`). Found and fixed one leftover error the 2026-07-12 fix missed: FM-03's row still read "(to be created at G5)" even though `RUNBOOK_model-drift.md` has existed since before G5 closed (it was one of the three original runbooks, never actually missing) — corrected in place. No other drift found.
 
 ---
 
@@ -52,7 +54,7 @@
 | Impact | Continued operation generates negative EV; drawdown likely to increase |
 | Severity | HIGH in live capital phase |
 | Mitigation | MONITORING_DRIFT_PLAN.md defines drift thresholds and response. Auto-alert at threshold. Manual review before re-enabling after drift alert. |
-| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_model-drift.md (to be created at G5) |
+| Runbook | 10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_model-drift.md |
 | Revisit trigger | G4 validation confirms drift thresholds; live deployment |
 
 ## FM-04 — Risk Limit Breach / Runaway Loss (C4/C5)

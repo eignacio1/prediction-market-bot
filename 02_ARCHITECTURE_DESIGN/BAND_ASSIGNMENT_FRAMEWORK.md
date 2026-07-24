@@ -3,8 +3,8 @@
 **Purpose:** Governance specification for how every quantitative strategy (A–K) is assigned to, validated in, and constrained by the T1–T5 execution band framework. This document makes band assignment a structural requirement — not a documentation convention — across strategy additions, modifications, and removals.
 **Owner (role):** Architecture Owner (AO) + Director/Sponsor (DS)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-05-29 (initial build — PDTP assessment)
-**Next review:** On any new strategy addition/removal; on Phase 8 real-time infrastructure scope; on any venue activation that changes VenueBandConstraint feasibility
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no new drift found. Cross-checked against EXECUTION_BANDS.md's Live Registry (NBA T2/T3 still SKELETON, matches this document's registry table), TODO_NEXT.md (T-077/Polymarket KYC still pending, so Strategy E stays SKELETON; APR-0010 still unsigned, so Strategy C stays BLOCKED), and DECISION_LOG.md (EXP-014's +7.8% max EV citation and APR-0013's kill-switch pass both still accurate). This document's own 2026-07-02 scope note already correctly confines it to NBA-only (Strategies A–K); MLB's separate T4M sub-band registry is out of scope by design, not by omission.
+**Next review:** 2026-08-23, or on any new strategy addition/removal, venue activation, or NBA reactivation ahead of the 2026-27 season
 **Staleness triggers:** Strategy added/removed; new venue activated; band parameter revised (Kelly, SLA, compute); evidence experiment invalidates a band placement
 **Upstream links:** EXECUTION_BANDS.md (band definitions); ARB_FRAMEWORK.md (arb decision trees); STRATEGY_OVERVIEW.md (strategy mechanics); VENUE_REGISTRY.md (venue params)
 **Downstream links:** execution_bands.py (StrategyBandSpec, BandRegistry, VenueBandConstraint); execution_bands_orchestrator.py (ArbBandSignal, routing); CHANGE_CONTROL.md (band assignment as governed change)

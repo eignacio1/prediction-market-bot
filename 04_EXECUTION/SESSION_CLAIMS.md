@@ -124,3 +124,5 @@
 | 2026-07-23T23:39:24Z | APR-0025 | A1: ba_l10 shrinkage build |
 | 2026-07-23T23:39:47Z | TBD | C2/C3: epoch decouple + C7 monitor (Window C, GG-124 pre-existing ref) |
 | 2026-07-23T23:40:08Z | anti-churn | D: what-if harness + MC gate |
+| 2026-07-23T23:44:18Z | GG-new (engine coverage gaps only; ruin-geometry finding itself already claimed by Window B1/B2) | commit MC empirical-bootstrap engine + artifacts; register engine coverage-gap arms (a-d) |
+| 2026-07-23T~24:52:00Z (closure) | GG-126 (recurrence, 6th instance) | Found `00_ADMIN/APPROVALS_REGISTER.md` modified-uncommitted at session start (no prior claim row) — Cowork session's ADR-0035 register-parity fix. Verified `check_register_parity.py` CLEAN post-change, no active claim conflict, committed path-scoped to `main` (`aaab492`), logged in DECISION_LOG.md. Session closed — nothing else pending. |

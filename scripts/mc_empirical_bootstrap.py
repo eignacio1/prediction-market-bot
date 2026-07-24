@@ -24,10 +24,19 @@ bankroll (not by stake) is deliberate -- it is exactly the quantity that
 compounds forward, and it is immune to the micro-stake artifact that blows
 up raw return-on-stake in the T4 ledger.
 
-Resampling realized outcomes preserves, for free and without assumption:
-  * the real win rate,
-  * the real payoff heterogeneity (full multiple distribution), and
-  * the real (anti-predictive) edge structure -- we replay what happened.
+The per-bet cohort stats (win rate, payoff heterogeneity, mean/std fractional
+impact) reported in `cohort_stats()` are computed directly off the real
+resolved-bet pool -- no distributional assumption there.
+
+The forward sim itself does NOT resample individual bets bet-by-bet. It
+reduces the cohort to two empirical moments -- mean and stdev of per-bet
+log-return, log1p(frac_i) -- and draws one Gaussian daily-aggregate log-return
+per path per day (CLT over the day's ~16-63 bets; see `simulate()`). This
+preserves the empirical mean/variance exactly and is a deliberate, documented
+approximation, not literal outcome replay: it does not preserve higher
+moments (skew/tails) of the per-bet distribution, and it does not resolve
+intraday bet order (the 15% breaker clips the day's aggregate return, it does
+not stop at the individual bet that first crossed -15%).
 
 Forward sim: 100k paths, day-by-day compounding at the book's real observed
 calendar-day cadence, with the REAL kill switches:
@@ -152,11 +161,15 @@ def cohort_stats(fracs, sel):
 def simulate(fracs, lambda_cal, n_sims, rng, horizons=HORIZONS):
     """Vectorized day-by-day compounding.
 
-    Each day: draw Poisson(lambda) bets per path, build an (n_sims x Dmax)
-    matrix of realized fractional multipliers (bootstrap w/ replacement),
-    mask bets beyond each path's daily count, cumprod within the day to get
-    the intraday bankroll path. The 15% daily-loss breaker is applied EXACTLY
-    (day ends at the value of the bet that first crossed -15%). The permanent
+    Each day: draw one Gaussian daily-aggregate log-return per path from
+    Normal(D*mu_g, sqrt(D)*sig_g), where mu_g/sig_g are the empirical
+    per-bet log-return mean/stdev of the real resolved cohort and D is the
+    book's mean bets/calendar-day (CLT over ~16-63 bets/day -- see module
+    docstring for what this approximation does and does not preserve). The
+    15% daily-loss breaker is applied by clipping the day's aggregate log-
+    return at log(1-0.15) -- i.e. the day is treated as if it stopped at
+    exactly -15%, an approximation of true intraday bet-by-bet stopping
+    (which this single-draw-per-day design does not model). The permanent
     20% peak-drawdown kill is evaluated at day-close (day-granular; can lag a
     true intraday breach by <=1 day -- a mild, conservative under-count of
     kills, documented in the report).
