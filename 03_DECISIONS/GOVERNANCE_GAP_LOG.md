@@ -2622,6 +2622,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-139 — `session_end_prep.sh`'s Step 6 claim-row match was structurally broken (grepped for a string never written to the row)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-139 |
+| Category | Incremental architecture — the tooling built to make `/session-end` cheaper (Fix 2, 2026-07-24) introduced its own unverified bug |
+| What was missed | `session_end_prep.sh` Section 6 ran `grep -F "$BRANCH" 04_EXECUTION/SESSION_CLAIMS.md` to find "this session's own claim row." But `claim_session.sh` writes rows as `\| timestamp \| range \| focus \|` — the branch name is never written into a row at all. On a real `session/<ts>-<slug>` branch this could only ever match by accident (if the slug text happened to appear in some row's free-text focus); on `main` specifically it degenerated into matching the literal substring "main," which appears throughout decades of unrelated historical rows ("merged to origin/main," "push to main," etc.) — dumping ~30KB of irrelevant history instead of "no match." |
+| When it should have been caught | Before Fix 2 was merged (2026-07-24, commit `6c38e28`) — a single test run against a real `SESSION_CLAIMS.md` row would have shown the mismatch immediately. |
+| Phases it survived | Zero sessions — caught on the very first live invocation of the just-merged `/session-end` tiering protocol, run directly on `main` at the user's explicit request to test-drive it. |
+| Why it survived | Fix 2 was verified by inspection and a dry run during its own build session, but that dry run happened inside a `session/<ts>-<slug>` worktree with (evidently) no coincidental substring collision — the bug only became visible once run on `main`, whose branch name happens to be a common English word embedded throughout the file's own prose. |
+| Impact | LOW — read-only precompute step, no data corruption risk; but the section was useless (or actively misleading, via the pasted wall of unrelated text) for every prior real use of `session_end_prep.sh` at Step 0, including the six close-outs it was used for earlier the same day. |
+| Discovery | 2026-07-24, live test of `/session-end` on `main` (user-requested: "let's test it out now. /session-end"). Section 6 printed a ~30KB dump beginning with an unrelated 2026-07-07 T-247/GG-095 reconciliation row; traced to the grep pattern by reading `claim_session.sh`'s actual row-write format, which confirmed the branch name is never present in a row. |
+| Resolution | **RESOLVED same-session.** Section 6 now extracts the session's own timestamp from the `session/<YYYYMMDDTHHMMSSZ>-<slug>` branch-naming convention, converts it to the row's ISO format, and greps on that instead (unique per session, matches the schema `claim_session.sh` actually writes). When the branch doesn't match that convention (e.g. `main`, or any non-session branch), falls back to `tail -2` of the file with an explicit caveat, rather than attempting a substring match that was never going to be meaningful. `scripts/session_end_prep.sh`. |
+| Status | **RESOLVED 2026-07-24.** |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

@@ -125,11 +125,24 @@ fi
 echo ""
 echo "--- 6. This session's own SESSION_CLAIMS.md row ---"
 if [ -f "04_EXECUTION/SESSION_CLAIMS.md" ]; then
-    CLAIM_ROW="$(grep -F "$BRANCH" 04_EXECUTION/SESSION_CLAIMS.md 2>/dev/null || true)"
-    if [ -n "$CLAIM_ROW" ]; then
-        echo "$CLAIM_ROW"
+    # claim_session.sh never writes the branch name into the row itself (rows are
+    # "| timestamp | range | focus |") — matching on $BRANCH directly either never
+    # hits (real session/<ts>-<slug> branches) or, on 'main', spuriously matches the
+    # substring "main" anywhere in decades of unrelated free-text rows (GG-139).
+    # Session branches follow session/<YYYYMMDDTHHMMSSZ>-<slug>; convert that
+    # timestamp to the row's ISO format and match on it instead — it's unique.
+    CLAIM_TS="$(echo "$BRANCH" | grep -oE '[0-9]{8}T[0-9]{6}Z' | sed -E 's/^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})Z$/\1-\2-\3T\4:\5:\6Z/' || true)"
+    if [ -n "$CLAIM_TS" ]; then
+        CLAIM_ROW="$(grep -F "$CLAIM_TS" 04_EXECUTION/SESSION_CLAIMS.md 2>/dev/null || true)"
+        if [ -n "$CLAIM_ROW" ]; then
+            echo "$CLAIM_ROW"
+        else
+            echo "(no SESSION_CLAIMS.md row found matching this session's timestamp '$CLAIM_TS' — confirm claim_session.sh was run at start.)"
+        fi
     else
-        echo "(no SESSION_CLAIMS.md row found matching branch '$BRANCH' — confirm claim_session.sh was run at start.)"
+        echo "(branch '$BRANCH' doesn't match session/<timestamp>-<slug> — no reliable per-session match possible."
+        echo " Showing last 2 SESSION_CLAIMS.md rows for reference instead:)"
+        tail -2 04_EXECUTION/SESSION_CLAIMS.md
     fi
 else
     echo "(SESSION_CLAIMS.md not found)"

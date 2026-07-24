@@ -2,9 +2,13 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-07-24 (session-end protocol tiering, 6-fix plan — see new section immediately below; prior entry: Window D — PR #54 merged, see DECISION_LOG.md 2026-07-23/2026-07-24).
+**Last reviewed:** 2026-07-24 (live test of the session-end tiering protocol found + fixed GG-139, `session_end_prep.sh` Section 6 bug — see section immediately below; prior entry: 6-fix tiering plan, see DECISION_LOG.md 2026-07-23/2026-07-24).
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## GG-139 — `session_end_prep.sh` Section 6 claim-row match fixed — ✅ DONE, 2026-07-24
+
+Found live-testing the just-merged `/session-end` protocol on `main`: Section 6 greps `$BRANCH` against `SESSION_CLAIMS.md`, but rows never contain the branch name (`claim_session.sh` writes `timestamp | range | focus` only) — on `main` this degenerated into matching the substring "main" throughout unrelated history, dumping ~30KB. Fixed to match on the session's own timestamp (derived from `session/<ts>-<slug>` branch naming), with a `tail -2` fallback for non-session branches. See GOVERNANCE_GAP_LOG.md GG-139 (RESOLVED) and DECISION_LOG.md 2026-07-24.
 
 ## Session-end protocol tiering (6-fix plan) — ✅ DONE, 2026-07-24
 
