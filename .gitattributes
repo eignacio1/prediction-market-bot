@@ -23,3 +23,11 @@
 # means two sessions closing concurrently both survive instead of one
 # clobbering the other's checkpoint pointer.
 04_EXECUTION/.last_session_checkpoint merge=union
+
+# ITERATION_MC_PROGRESS.md (2026-07-23): append-only completion log for the
+# ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md 4-window parallel workstream
+# (A/B/C/D). Same rationale as SESSION_CLAIMS.md: multiple windows append
+# "<TASK> DONE commit=<sha> — ..." lines concurrently; union merge means two
+# windows finishing at the same time both survive instead of one clobbering
+# the other's completion line.
+04_EXECUTION/ITERATION_MC_PROGRESS.md merge=union
