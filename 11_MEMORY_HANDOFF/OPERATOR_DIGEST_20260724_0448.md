@@ -14,4 +14,4 @@ This fix repopulates the bet-count data but doesn't stop the underlying habit of
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260724_0448.md` and `DECISION_LOG.md`/`GOVERNANCE_GAP_LOG.md` for 2026-07-23/24.*
+*Full technical detail: see `SESSION_HANDOFF_20260724_0449_windowc.md` and `DECISION_LOG.md`/`GOVERNANCE_GAP_LOG.md` for 2026-07-23/24.*

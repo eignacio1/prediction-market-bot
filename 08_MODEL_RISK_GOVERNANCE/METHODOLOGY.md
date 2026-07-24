@@ -2,7 +2,8 @@
 
 **Purpose:** Document the forecasting methodology, decision-making framework, and key modeling choices. Ensures the approach is transparent and defensible.  
 **Owner (role):** Research Lead (RL) + Methodology Validator (MV)  
-**Last reviewed:** 2026-05-27 (T-038 — updated to reflect actual implemented model, v1.1.0 features, full strategy architecture)  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: re-verified the 2026-07-06 correction note's claims directly against live code — `FEATURE_VERSION = "1.4.0"` (`features.py:120`) and `MIN_EDGE_TO_APPROVE = 0.04` (`risk.py:100`) both confirmed unchanged. Also resolved the one item that note left unverified: `model_version`'s `"v1-"` prefix (`forecaster.py:115-122`, `_model_version_hash()`) is still hardcoded `"v1-"`, derived from `model_class + sorted(feature_names)` hash only — it has no dependency on calibration method, so ADR-0027's temperature-scaling layer would not bump it regardless of whether calibration changed; not drift, just a prefix that was never coupled to calibration versioning in the first place. No new drift found beyond what the 2026-07-06 note already flagged.  
+**Prior:** 2026-05-27 (T-038 — updated to reflect actual implemented model, v1.1.0 features, full strategy architecture)  
 **Next review:** G4 (methodology confirmed by evidence); after any FEATURE_VERSION bump  
 **Staleness triggers:** Model class selected; feature set changed; calibration approach changed; new strategy class activated  
 **Upstream links:** RESEARCH_QUESTIONS.md, HYPOTHESES.md, ADR-0002  
@@ -18,7 +19,7 @@
 - **Section 1/5's `mid_price = 0.50` Phase 3 placeholder is resolved** — this is the EV-benchmark issue tracked as KI-017/GG-004, resolved for the current system since live Kalshi prices have been used in production for weeks (EXP-017 MLB run: n=151, DIRECTIONAL_POSITIVE, per CLAUDE.md).
 - **ADR-0004 (PENDING)** in the Decision references line — accepted 2026-05-28.
 - **Section 4's Strategy A status ("C4 gated") and Section 8's "GATED — inactive until BOT_C4_ACTIVE=true"** describe the code-level gate mechanism accurately (it is real and still present in `risk.py`), but underclaim current reality: `BOT_C4_ACTIVE=true` is in fact set in the live VPS production environment — C4 has been actively sizing and approving real MLB paper positions for weeks (151 resolved EXP-017 positions did not size themselves). Do not read "gated"/Section 8's framing as meaning C4 is currently inactive.
-- Not independently re-verified this pass: whether `model_version`'s `"v1-"` prefix in Section 2 has been superseded by a `"v2-"` scheme following the temperature-scaling calibration layer added per ADR-0027 (see `08_MODEL_RISK_GOVERNANCE/ASSUMPTIONS_LIMITATIONS.md`'s correction) — worth checking `c3_forecasting/forecaster.py`/`calibration.py` directly if this matters to a future session.
+- **Resolved 2026-07-23 (GG-074):** the `model_version` `"v1-"` prefix question above (previously unverified) is closed — `_model_version_hash()` (`forecaster.py:115-122`) still emits `"v1-"`, hashed from `model_class + sorted(feature_names)` only. The prefix was never coupled to calibration method, so ADR-0027's temperature-scaling layer does not require a `"v2-"` bump. Section 2 below is accurate as written.
 - This document remains NBA/Phase-3-scoped throughout (FEATURE_VERSION, feature list, strategy table) and has never been re-derived for MLB's own feature set or strategy sequencing — treat Sections 3–4 as historical/NBA-only, not a description of the currently active MLB pool's methodology.
 
 ---

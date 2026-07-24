@@ -2,8 +2,8 @@
 
 **Purpose:** Formal record of model validation sign-offs. Each gate that involves model validation requires an entry here. This is the audit anchor — it links to evidence and records who accepted what and when.  
 **Owner (role):** Methodology Validator (MV) + Evidence Owner (EO)  
-**Last reviewed:** 2026-05-28 (TC-007 kill switch drill PASSED — halt 0.340 ms; G5 kill switch blocker cleared)  
-**Next review:** G5 Operational Gate (remaining: ST-001–004 sensitivity + T-052 EXP-004 when DS-02 active)  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review. Real drift found and fixed: this document listed G5 as 🟡 IN PROGRESS pending ST-001–004 and T-052/EXP-004, but both completed the same day this file's prior entries were written (2026-05-28) — ST-001–004 ALL PASS (T-053) and EXP-004 Parts A+B (T-052, DS-02-B-001 resolved same day, HYP-003 CONFIRMED). `MEMORY_BANK.md` confirms **G5 ✅ CLOSED 2026-05-28**. Updated the G5 section below accordingly. The existing 2026-07-02 note's point (this file has no v2/MLB sign-off entries) re-verified still accurate — no v2 or MLB validation sign-off record found elsewhere in this pass either; still an open gap, not newly resolved.  
+**Next review:** G6 Release Gate, when NBA-specific G6 review resumes (currently paused — NBA is DARK/FROZEN; MLB is pursuing G6 under its own track, see `GOVERNANCE_GAP_LOG.md` GG-004, not recorded in this NBA-scoped file)  
 **Staleness triggers:** New validation gate passed; model retrained; evidence updated; new experiment completed  
 **Upstream links:** 07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md, 07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/  
 **Downstream links:** 00_ADMIN/APPROVALS_REGISTER.md, MODEL_CARD.md  
@@ -56,12 +56,12 @@ Each entry records: what was validated, what evidence was reviewed, who signed o
 
 ---
 
-## G5 Operational Gate — 🟡 IN PROGRESS
+## G5 Operational Gate — ✅ CLOSED 2026-05-28
 
 | Field | Detail |
 |-------|--------|
 | Validation scope | Operational readiness; kill switch drill; live inference without orders |
-| Status | 🟡 IN PROGRESS — TC-007 ✅ PASSED; remaining: ST-001–004 sensitivity tests; T-052 EXP-004 (blocked DS-02) |
+| Status | ✅ CLOSED 2026-05-28 — TC-007 ✅ PASSED; ST-001–004 ✅ ALL PASS (T-053, `exp_output/SENSITIVITY_TESTS/`); T-052 EXP-004 Parts A+B ✅ COMPLETE (DS-02-B-001 resolved same day, HYP-003 CONFIRMED). APR-0007 ACCEPTED 2026-05-28; Phase 6 ACTIVE. |
 
 ### TC-007 — Kill Switch Drill ✅ PASSED 2026-05-28
 
@@ -92,7 +92,7 @@ Each entry records: what was validated, what evidence was reviewed, who signed o
 | Field | Detail |
 |-------|--------|
 | Validation scope | Full system validation; paper trading results; live capital authorization |
-| Status | 🔲 NOT STARTED — Phase 7 |
+| Status | 🔲 NOT STARTED for NBA (DARK/FROZEN, no G6 review activity). **MLB's G6 pursuit is tracked separately and is NOT reflected in this file** — this document is scoped to the NBA v1-9939a6a5 model lineage throughout (see 2026-07-02 note above). For live MLB G6 status (clean_n vs n* per band under APR-0024), see `GOVERNANCE_GAP_LOG.md` GG-004. |
 
 ---
 

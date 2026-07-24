@@ -4,6 +4,7 @@
 **Owner (role):** Product/Problem Owner (PO)  
 **Status:** **FROZEN — G1 Spec Gate 2026-05-22** — Changes require a new ADR or formal Change Class A/B record in CHANGE_CONTROL.md  
 **Last reviewed:** 2026-05-22 (FROZEN at G1)  
+**GG-074 staleness check (2026-07-23):** confirmed still correctly FROZEN — no staleness trigger has fired (venue API confirmed at ADR-0003 predates the freeze; no model architecture, signal-source, or risk-appetite change since). Freeze date intentionally not bumped; this is a re-verification, not a re-review.  
 **Next review:** On staleness trigger only; any change unfreezes and requires re-gate  
 **Staleness triggers:** Strategy class change (ADR); venue API confirmed (ADR-0003); new signal source incorporated; model architecture change (ADR-0004); risk appetite revision (RCO review)  
 **Upstream links:** VISION_OUTCOMES.md, SCOPE_IN_OUT.md, PROJECT_CHARTER.md  

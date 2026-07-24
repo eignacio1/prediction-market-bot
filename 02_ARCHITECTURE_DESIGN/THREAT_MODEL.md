@@ -3,7 +3,8 @@
 **Purpose:** Identify threats to system integrity, data validity, capital safety, and governance. Maps threats to mitigations and residual risk. Required for G2 gate.  
 **Owner (role):** Architecture Owner (AO) + Risk and Compliance Owner (RCO)  
 **Status:** **CANONICAL — G2 Architecture Gate 2026-05-22** — Changes require ADR or formal Change Class A/B record  
-**Last reviewed:** 2026-05-22 (G2 review; C4/C5 corrected; promoted DRAFT → CANONICAL; RCO = AO as sole operator) — **TH-02 + Threats Out of Scope re-expanded 2026-07-12 (T-347/GG-093) for live-Kalshi-credential reality; rest of document unreviewed since G2**  
+**Last reviewed:** 2026-05-22 (G2 review; C4/C5 corrected; promoted DRAFT → CANONICAL; RCO = AO as sole operator) — **TH-02 + Threats Out of Scope re-expanded 2026-07-12 (T-347/GG-093) for live-Kalshi-credential reality**  
+**GG-074 monthly staleness review (2026-07-23):** read TH-01/TH-03–TH-09 in full (the entries GG-093 did not touch) against current system state. Found one real drift: TH-05's residual-risk line still carried conditional "if G5 drill passes / if skipped" language describing an unresolved state — both kill-switch drills resolved favorably weeks ago (NBA APR-0013, MLB APR-0023, both well within NFR-03's ≤60s per DECISION_LOG); corrected TH-05 and its Threat Summary Matrix row in place. TH-01, TH-03, TH-04, TH-06, TH-07, TH-08, TH-09 checked against current architecture (dual-ledger MLB/NBA split, T4 live, idempotency_key in execution, G4 evidence process) and remain accurate as written — no further drift found.  
 **Next review:** On staleness trigger only; full re-expansion at G6 (pre-live-capital)  
 **Staleness triggers:** New component added; new external integration; security incident; venue API confirmed; live capital authorized  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, SYSTEM_CONTEXT.md, RESILIENCE_FAILURE_MODES.md  
@@ -105,7 +106,7 @@ This model covers Phases 0–5 (research and operational readiness). Live capita
 | Likelihood | LOW (if tested) → HIGH (if not tested before live use) |
 | Impact | CRITICAL — Uncontrolled continued operation after halt signal |
 | Controls | (1) Kill signal broadcast to all components simultaneously. (2) Each component independently checks kill flag. (3) Kill switch drill mandatory at G5 before any live use. (4) C7 monitors independently of C4. |
-| Residual risk | LOW (if G5 drill passes) → CRITICAL (if G5 drill skipped) |
+| Residual risk | LOW — **drill confirmed passed, both books** (GG-074 pass, 2026-07-23): NBA APR-0013, halt_time_ms=0.340 (2026-05-28); MLB APR-0023, halt_time_ms=0.116 (2026-06-27 session, register write-back 2026-07-18 per DECISION_LOG T-386). Both well within NFR-03's ≤60s. The prior conditional phrasing ("if drill passes / if skipped") described a not-yet-resolved state; both drills resolved this favorably weeks ago. |
 | Related FM | FM-06 |
 | Revisit trigger | New component added; kill switch drill failure; architecture change |
 
@@ -187,7 +188,7 @@ This model covers Phases 0–5 (research and operational readiness). Live capita
 | TH-02 | Credential exposure | MED-HIGH (confirmed occurred once — GG-116) | HIGH | HIGH | Partially mitigated (real creds live since ADR-0008; open gaps: unrotated 6+ wks, prose-doc leak vector unguarded by NFR-05 scans, shared 3-workflow CI/CD secret, unsandboxed systemd unit — see TH-02 above) |
 | TH-03 | Shadow docs / context rot | HIGH | HIGH | HIGH | Mitigated (Compass OS cadences) |
 | TH-04 | Order duplication | MED | HIGH | MED | Mitigated (idempotency key) |
-| TH-05 | Kill switch failure | LOW (if tested) | CRITICAL | MED | Mitigated (G5 drill required) |
+| TH-05 | Kill switch failure | LOW (tested, both books) | CRITICAL | MED | Mitigated (G5 drills passed: NBA APR-0013, MLB APR-0023) |
 | TH-06 | Overfitting / false edge | HIGH | HIGH | HIGH | Partially mitigated (G4 evidence required) |
 | TH-07 | Premature live capital | LOW | CRITICAL | MED | Mitigated (hard gate controls) |
 | TH-08 | Stale model in production | MED | HIGH | MED | Mitigated (drift monitoring) |
