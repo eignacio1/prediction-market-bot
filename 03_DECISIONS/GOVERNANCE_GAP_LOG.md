@@ -2532,11 +2532,11 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-134 — A1's holdout-Brier-optimal K=400 shrinkage candidate gives only ~7% weight to actual player data; may trade calibration for discrimination
+### GG-136 — A1's holdout-Brier-optimal K=400 shrinkage candidate gives only ~7% weight to actual player data; may trade calibration for discrimination
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-134 |
+| Gap ID | GG-136 |
 | Arm | Window A |
 | Category | Modeling — metric/objective mismatch risk, discovered during the CLAUDE.md session-start protocol's Q6 adversarial pass, run retroactively after A1's implementation work. |
 | What was missed | A1 (`ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md`) tuned a new candidate shrinkage constant, `ba_l10_shrunk_a1_candidate`, by grid-searching K to minimize per-at-bat weighted Brier score on a TEST holdout, per APR-0025's formula `(h_sum + K*PRIOR)/(ab_sum + K)`. The selected value, K=400, was accepted and shipped (flagged off) without checking what it implies for the feature's cross-sectional discrimination. Direct computation against the same holdout (median rolling L10 `ab_sum` ≈ 33 at-bats) shows K=400 gives the actual player-specific data a median weight of only **7.6%** — 92.4% of the shrunk value is the population prior (`GG105_SHRINKAGE_PRIOR=0.2512`), versus the live ADR-0047 K=40's median weight of **45.2%**. Brier score alone cannot distinguish "well-calibrated and discriminating" from "well-calibrated because it predicts near the population mean for almost everyone" — with a ~30-at-bat sample and real per-player batting-average spread this small relative to per-at-bat variance, the latter is Brier-optimal but is close to a degenerate, nearly-constant feature. T1's entire alpha thesis (CLAUDE.md § Alpha taxonomy) is that a model differentiates players by recent form/rolling stats better than the market — a feature that has been shrunk to ~93% prior-weight has very little cross-sectional spread left to differentiate players with, which could reproduce or worsen the same "no demonstrated alpha" finding as GG-037/GG-004, just via a different mechanism (flattened features instead of miscalibration). |

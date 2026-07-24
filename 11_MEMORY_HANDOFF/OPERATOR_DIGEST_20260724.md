@@ -10,8 +10,8 @@ No change — still zero real money at risk, and nothing about today's work touc
 No — nothing needs you today. The next step is for a future session to build a proper backtest that checks whether this candidate actually helps or just games the scoring metric, before anyone considers turning it on.
 
 **Anything that worried the session, even if not urgent:**
-Yes — the 8%-vs-45% weighting gap above. It's the kind of thing that can look like an improvement by one measure (accuracy of predictions) while secretly making the model less sensitive to real differences between players. Flagged formally (GG-134) so nobody promotes this candidate without checking that specific concern first.
+Yes — the 8%-vs-45% weighting gap above. It's the kind of thing that can look like an improvement by one measure (accuracy of predictions) while secretly making the model less sensitive to real differences between players. Flagged formally (GG-136) so nobody promotes this candidate without checking that specific concern first.
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260724_0453.md`, `DECISION_LOG.md` for 2026-07-23 (A1 row), `GOVERNANCE_GAP_LOG.md` GG-134.*
+*Full technical detail: see `SESSION_HANDOFF_20260724_0453.md`, `DECISION_LOG.md` for 2026-07-23 (A1 row), `GOVERNANCE_GAP_LOG.md` GG-136.*
