@@ -35,6 +35,20 @@ windowing logic has drifted from production and the candidate column cannot
 be trusted -- the script aborts rather than silently producing a wrong
 candidate.
 
+KNOWN, BOUNDED EXCEPTION -- doubleheader same-date ordering (found + fully
+explained empirically 2026-07-24, logged to DECISION_LOG.md): production's
+_compute_rolling_batter_features sorts each player's game log by game_date
+ONLY (pandas stable sort), so when two games share a date (doubleheaders:
+151/17,624 player-dates in this CSV), their relative order is whatever order
+the raw ingestion happened to deliver them in -- an order this script cannot
+recover from the exported feature CSV alone. Direct empirical check: ALL 295
+rows (out of 17,305 checked) exceeding VALIDATION_TOLERANCE are exactly the
+rows whose own date is a same-date duplicate, or whose trailing 10-game
+window includes an earlier duplicate-date game (0 unexplained mismatches).
+This is excluded from the hard-fail check via `affected` masking below --
+the hard-fail still fires on ANY unexplained mismatch, which is what would
+indicate genuine windowing drift.
+
 TWO OUTPUT CSVs (both == full row set, only the feature columns differ)
 --------------------------------------------------------------------------
   control.csv    -- ba_l10_shrunk column DROPPED (it doesn't exist in the
@@ -71,6 +85,25 @@ GG105_SHRINKAGE_K = 40           # ADR-0047, live production (mlb_features.py)
 GG105_SHRINKAGE_PRIOR = 0.2512   # ADR-0047, live production
 A1_CANDIDATE_SHRINKAGE_K = 400   # A1, holdout-tuned (mlb_features.py)
 VALIDATION_TOLERANCE = 1e-6      # max allowed |reconstructed_k40 - csv ba_l10_shrunk|
+ROLLING_WINDOW = 10              # must match mlb_features.py / tune_a1_shrinkage_k.py
+MAX_AFFECTED_FRACTION = 0.15     # sanity ceiling on doubleheader-contaminated rows
+
+
+def _mark_doubleheader_affected(enriched: pd.DataFrame, window: int) -> pd.Series:
+    """Flag rows whose h_sum/ab_sum is order-ambiguous due to a same-date
+    doubleheader -- either the row's own date collides with another game for
+    the same player, or a colliding date falls within its trailing window.
+    See the doubleheader-exception note in the module docstring."""
+    e = enriched.sort_values(["player_id", "game_date"]).reset_index(drop=True)
+    is_dupe = e.duplicated(subset=["player_id", "game_date"], keep=False).astype(int)
+    e = e.assign(_is_dupe=is_dupe)
+    chunks = []
+    for _, g in e.groupby("player_id", sort=False):
+        g = g.sort_values("game_date").reset_index(drop=True)
+        own = g["_is_dupe"] > 0
+        downstream = g["_is_dupe"].shift(1).rolling(window, min_periods=1).max().fillna(0) > 0
+        chunks.append(g.assign(_affected=(own | downstream)))
+    return pd.concat(chunks, ignore_index=True)
 
 
 def build(input_csv: Path, out_dir: Path) -> None:
@@ -85,18 +118,24 @@ def build(input_csv: Path, out_dir: Path) -> None:
 
     print("[2/6] Reconstructing per-player rolling h_sum/ab_sum "
           "(A1's _reconstruct_rolling_sums, window=10, min_periods=3, shift(1)) ...")
-    raw_cols = ["player_id", "game_date", "ab", "h"]
+    # game_id (not just game_date) must ride along: two rows can share a
+    # (player_id, game_date) on a doubleheader day, and a date-only join key
+    # would multiply-match both original rows against both reconstructed rows
+    # (a many-to-many join), duplicating real game rows in the output CSVs.
+    # game_id is unique per row, so joining on (player_id, game_id) is 1:1.
+    raw_cols = ["player_id", "game_date", "ab", "h", "game_id"]
     enriched = _reconstruct_rolling_sums(df[raw_cols].copy())
-    # _reconstruct_rolling_sums sorts by (player_id, game_date) and resets the
-    # index -- merge back onto the original df's row order via the natural key.
-    enriched["game_date"] = enriched["game_date"].astype(str)
-    df["_game_date_str"] = pd.to_datetime(df["game_date"]).astype(str)
+    enriched = _mark_doubleheader_affected(enriched, ROLLING_WINDOW)
     merged = df.merge(
-        enriched[["player_id", "game_date", "h_sum", "ab_sum"]],
-        left_on=["player_id", "_game_date_str"],
-        right_on=["player_id", "game_date"],
+        enriched[["player_id", "game_id", "h_sum", "ab_sum", "_affected"]],
+        on=["player_id", "game_id"],
         how="left",
-        suffixes=("", "_recon"),
+        validate="one_to_one",
+    )
+    merged["_affected"] = merged["_affected"].fillna(False)
+    assert len(merged) == len(df), (
+        f"merge changed row count ({len(df):,} -> {len(merged):,}) -- join key "
+        f"is not 1:1, output CSVs would contain duplicated or dropped games"
     )
     print(f"      merged rows: {len(merged):,}  "
           f"(h_sum/ab_sum non-null: {merged['ab_sum'].notna().sum():,})")
@@ -107,23 +146,38 @@ def build(input_csv: Path, out_dir: Path) -> None:
         merged["ab_sum"] + GG105_SHRINKAGE_K
     )
     both_present = merged["ba_l10_shrunk"].notna() & recon_k40.notna()
-    diff = (recon_k40[both_present] - merged.loc[both_present, "ba_l10_shrunk"]).abs()
+    diff = (recon_k40 - merged["ba_l10_shrunk"]).abs()
     n_checked = int(both_present.sum())
-    max_diff = float(diff.max()) if n_checked else float("nan")
-    n_bad = int((diff > VALIDATION_TOLERANCE).sum()) if n_checked else 0
+    max_diff = float(diff[both_present].max()) if n_checked else float("nan")
+    exceeds = both_present & (diff > VALIDATION_TOLERANCE)
+    n_bad_total = int(exceeds.sum())
+    n_bad_affected = int((exceeds & merged["_affected"]).sum())
+    n_bad_unexplained = int((exceeds & ~merged["_affected"]).sum())
+    n_affected = int(merged["_affected"].sum())
+    affected_fraction = n_affected / len(merged) if len(merged) else 0.0
     print(f"      checked {n_checked:,} rows; max|diff|={max_diff:.2e}; "
-          f"rows exceeding tolerance ({VALIDATION_TOLERANCE:.0e}): {n_bad}")
+          f"rows exceeding tolerance ({VALIDATION_TOLERANCE:.0e}): {n_bad_total} "
+          f"({n_bad_affected} doubleheader-affected, {n_bad_unexplained} unexplained)")
+    print(f"      doubleheader-affected rows (own date or trailing-window collision): "
+          f"{n_affected:,}/{len(merged):,} ({affected_fraction:.1%})")
     if n_checked == 0:
         print("ERROR: 0 rows had both a reconstructed and production ba_l10_shrunk "
               "value -- validation could not run. Aborting.", file=sys.stderr)
         sys.exit(1)
-    if n_bad > 0:
-        print(f"ERROR: reconstruction diverges from production on {n_bad}/{n_checked} rows "
-              f"(max diff {max_diff:.2e} > tolerance {VALIDATION_TOLERANCE:.0e}). "
-              f"Windowing logic has drifted -- do NOT trust the K=400 candidate. Aborting.",
-              file=sys.stderr)
+    if affected_fraction > MAX_AFFECTED_FRACTION:
+        print(f"ERROR: doubleheader-affected fraction {affected_fraction:.1%} exceeds "
+              f"sanity ceiling {MAX_AFFECTED_FRACTION:.0%} -- this is far more than the "
+              f"151/17,624-pair baseline this exception was scoped for; the underlying "
+              f"data or windowing may have changed. Aborting.", file=sys.stderr)
         sys.exit(1)
-    print("      VALIDATION PASSED -- reconstruction matches production exactly.")
+    if n_bad_unexplained > 0:
+        print(f"ERROR: reconstruction diverges from production on {n_bad_unexplained} row(s) "
+              f"NOT explained by doubleheader same-date ordering (max diff {max_diff:.2e} > "
+              f"tolerance {VALIDATION_TOLERANCE:.0e}). Windowing logic has drifted -- do NOT "
+              f"trust the K=400 candidate. Aborting.", file=sys.stderr)
+        sys.exit(1)
+    print("      VALIDATION PASSED -- reconstruction matches production exactly outside "
+          "the known, bounded doubleheader-ordering exception (see module docstring).")
 
     print(f"[4/6] Computing ba_l10_shrunk_a1_candidate (K={A1_CANDIDATE_SHRINKAGE_K}) ...")
     candidate_vals = (merged["h_sum"] + A1_CANDIDATE_SHRINKAGE_K * GG105_SHRINKAGE_PRIOR) / (
@@ -135,14 +189,14 @@ def build(input_csv: Path, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print("[5/6] Writing control.csv (drop ba_l10_shrunk, ba_l10 untouched) ...")
-    control = merged.drop(columns=["h_sum", "ab_sum", "_game_date_str", "game_date_recon",
+    control = merged.drop(columns=["h_sum", "ab_sum", "_affected",
                                     "ba_l10_shrunk"], errors="ignore")
     control_path = out_dir / "control.csv"
     control.to_csv(control_path, index=False)
     print(f"      wrote {control_path} ({len(control):,} rows, {len(control.columns)} cols)")
 
     print("[6/6] Writing candidate.csv (ba_l10 <- ba_l10_shrunk_a1_candidate values) ...")
-    candidate = merged.drop(columns=["h_sum", "ab_sum", "_game_date_str", "game_date_recon",
+    candidate = merged.drop(columns=["h_sum", "ab_sum", "_affected",
                                       "ba_l10_shrunk"], errors="ignore").copy()
     n_before = candidate["ba_l10"].notna().sum()
     candidate["ba_l10"] = candidate_vals.values
