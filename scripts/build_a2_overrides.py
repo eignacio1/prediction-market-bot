@@ -41,14 +41,21 @@ PORTFOLIO_PATH = Path("logs/.vps_portfolio_cache_mlb.json")
 FEATURE_CSVS = {
     "control": Path("exp_output/MLB/a2_refit_full/control.csv"),
     "candidate": Path("exp_output/MLB/a2_refit_full/candidate.csv"),
+    # A3 (GG-105 A2-FAIL contingency): same feature CSV as A2's candidate
+    # (ba_l10_shrunk_a1_candidate) -- only the calibration method changed
+    # (sigmoid -> isotonic, run_a3_train_isotonic.py) -- so it reuses
+    # candidate.csv, not a fourth CSV variant.
+    "candidate_isotonic": Path("exp_output/MLB/a2_refit_full/candidate.csv"),
 }
 MODEL_PATHS = {
     "control": Path("models/a2_refit/control_model.joblib"),
     "candidate": Path("models/a2_refit/candidate_model.joblib"),
+    "candidate_isotonic": Path("models/a2_refit/candidate_isotonic_model.joblib"),
 }
 OUT_PATHS = {
     "control": Path("exp_output/MLB/a2_refit_full/control_overrides.json"),
     "candidate": Path("exp_output/MLB/a2_refit_full/candidate_overrides.json"),
+    "candidate_isotonic": Path("exp_output/MLB/a2_refit_full/candidate_isotonic_overrides.json"),
 }
 
 
@@ -136,7 +143,7 @@ def run() -> None:
     positions = deduplicate(positions)
     print(f"Loaded {len(positions)} resolved MAIN-book (t1t2t3) positions.")
 
-    for name in ("control", "candidate"):
+    for name in ("control", "candidate", "candidate_isotonic"):
         overrides = build_variant_overrides(name, positions)
         out_path = OUT_PATHS[name]
         out_path.parent.mkdir(parents=True, exist_ok=True)
