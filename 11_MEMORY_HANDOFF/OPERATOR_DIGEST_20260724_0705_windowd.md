@@ -6,4 +6,4 @@
 
 **Does anything need your decision right now?** No. One small bug was found and logged (a caching step that can silently fail on a freshly set-up machine) — it's flagged for a future session to fix, not urgent.
 
-**Anything that worried the session, even if not urgent:** Five people/sessions were working on this project's files at the same time tonight. Everything landed cleanly with nothing lost, but it took four separate rounds of carefully merging everyone's work together — worth knowing that this many people working simultaneously is pushing the coordination process hard, even though it held up.
+**Anything that worried the session, even if not urgent:** Five people/sessions were working on this project's files at the same time tonight. Everything landed cleanly with nothing lost, but it took five separate rounds of carefully merging everyone's work together — worth knowing that this many people working simultaneously is pushing the coordination process hard, even though it held up.
