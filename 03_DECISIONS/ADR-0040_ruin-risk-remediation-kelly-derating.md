@@ -87,3 +87,9 @@ The observed 1.153% average stake fraction is a *function* of `kelly_fraction` c
 3. Update `scripts/run_monte_carlo.py:43`'s `DEFAULT_T1_KELLY = 0.25  # DEFAULT_KELLY_FRACTION in risk.py` comment — it already carries the same wrong-constant assumption; correct it to reference `execution_bands.py`'s real value.
 4. Re-run `scripts/mc_forward_projection.py` against the new `kelly_fraction` once real T1 MLB bets have accumulated at the new sizing, to confirm the observed effective stake fraction lands near the targeted 0.70% (the relationship is linear in theory but real bet-level edge/odds distribution could shift the realized average).
 5. Close GG-071 and T-223 with a reference to this ADR's acceptance.
+
+---
+
+## Addendum (2026-07-23, Window D / D2 — tooling redirect, not a decision change)
+
+This ADR's Consequences section (line 78) named `mc_forward_projection.py` as the standing tool to re-run when T1's real win rate/cadence/`kelly_fraction` materially shift. Window D built `scripts/mc_empirical_bootstrap.py` (nonparametric resampling of the real resolved ledger) as the project's standard forward-risk gate going forward, retiring `mc_forward_projection.py` (parametric, fixed win-rate/fixed-payoff assumptions) from that standing-re-run role. **This does not alter this ADR's original decision, target value (0.061), or derivation** (Hard Rule 3) — it redirects future periodic re-runs (Open Item 4 above, and the Consequences-section recommendation) to the new tool. `mc_forward_projection.py` is not deleted and remains a valid citable precedent for this ADR's own sensitivity table.

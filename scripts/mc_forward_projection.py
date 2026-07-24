@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 """
+DEPRECATED as the standing forward-risk gate (Window D / D2, 2026-07-23) —
+scripts/mc_empirical_bootstrap.py (nonparametric resampling of the real
+resolved ledger) is now the standard tool for periodic forward-risk re-runs.
+This script's parametric fixed-win-rate/fixed-payoff assumptions remain valid
+as the historical basis for ADR-0040's sensitivity table (its results are not
+retracted), but new re-runs should use mc_empirical_bootstrap.py instead. See
+ADR-0040's 2026-07-23 addendum. This file is not deleted.
+
 Prediction Market Bot — Forward-Time Compounding Monte Carlo (GG-071 / T-223)
 
 Recreates the forward-time (calendar-day, compounding) ruin-risk simulation
