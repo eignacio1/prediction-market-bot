@@ -43,12 +43,21 @@ from run_band_monitor import (
     build_summary,
     main,
 )
-from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
+from prediction_market_bot.logic_epoch import (
+    CURRENT_LOGIC_EPOCH,
+    clean_epoch_floor_for_band,
+)
 
 FROZEN_T1_ANCHOR = (
     Path(__file__).parent / "fixtures" / "SNAP-2026-07-11-001_t1_regression_anchor_mlb_portfolio.json"
 )
-OLD_EPOCH = CURRENT_LOGIC_EPOCH - 1 if CURRENT_LOGIC_EPOCH > 1 else 99
+# Genuinely below T1's own clean-epoch floor (GG-124 per-band remediation) —
+# NOT simply CURRENT_LOGIC_EPOCH - 1, since a global-counter bump that never
+# touched T1's write path (e.g. epochs 7/8, T4M-PROJ-only) must NOT count as
+# "old" for T1. These fixtures build T1-shaped records by default, so this
+# must stay below clean_epoch_floor_for_band("T1") specifically.
+_T1_FLOOR = clean_epoch_floor_for_band("T1")
+OLD_EPOCH = _T1_FLOOR - 1 if _T1_FLOOR > 1 else 99
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────────
@@ -445,7 +454,7 @@ class TestCleanNFiltering:
         clean = _make_rec(ticker="C1", logic_epoch=CURRENT_LOGIC_EPOCH)
         old = _make_rec(ticker="O1", logic_epoch=OLD_EPOCH)
         missing = _make_rec(ticker="M1", logic_epoch=None)
-        recs = filter_clean([clean, old, missing])
+        recs = filter_clean([clean, old, missing], "T1")
         assert len(recs) == 1
         assert recs[0]["kalshi_ticker"] == "C1"
 

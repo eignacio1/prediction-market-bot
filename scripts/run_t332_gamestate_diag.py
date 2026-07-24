@@ -290,7 +290,7 @@ def _print_report(result: dict) -> None:
 
 
 def build_report(t4_ledger: Path, cycle_log: Path) -> dict:
-    recs = bm.filter_clean(bm.load_t4_ledger(t4_ledger))
+    recs = bm.filter_clean(bm.load_t4_ledger(t4_ledger), "T4M-PROJ")
     clean_n = len(recs)
     cycle_idx = load_cycle_index(cycle_log)
     joined, misses = join_gamestate(recs, cycle_idx)

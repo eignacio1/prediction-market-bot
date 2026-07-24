@@ -52,17 +52,31 @@ Run:
 T-322 EXTENSION (2026-07-10, Workstream B) — clean_n only
 -----------------------------------------------------------
 T-320/T-321 added `logic_epoch`/`approval_commit` write-path provenance so a
-resolved position can be identified as opened under CURRENT_LOGIC_EPOCH (i.e.
-after the GG-087/GG-077 write-path bugs were fixed) versus an earlier,
-contaminated epoch. This monitor's verdict now runs on clean_n only — records
-whose `logic_epoch` does not match CURRENT_LOGIC_EPOCH (including records with
-no `logic_epoch` at all, i.e. pre-T-320 history) are excluded from every
-statistic, never silently blended in. `raw_n` is still reported alongside
-`clean_n` per band for transparency, but raw_n never drives a verdict. Also
-adds `brier_murphy` (full Brier + Murphy REL/RES/UNC decomposition) and the
-underlying `reliability` curve rows to the per-band result, since T-322's exit
-criterion explicitly asks for "reliability curve + Brier score", which the
-pre-T-322 version only partially covered via `ece`/`calib_fit_ci`.
+resolved position can be identified as opened under clean write-path logic
+versus an earlier, contaminated epoch. This monitor's verdict runs on
+clean_n only — contaminated records (including records with no `logic_epoch`
+at all, i.e. pre-T-320 history) are excluded from every statistic, never
+silently blended in. `raw_n` is still reported alongside `clean_n` per band
+for transparency, but raw_n never drives a verdict. Also adds `brier_murphy`
+(full Brier + Murphy REL/RES/UNC decomposition) and the underlying
+`reliability` curve rows to the per-band result, since T-322's exit criterion
+explicitly asks for "reliability curve + Brier score", which the pre-T-322
+version only partially covered via `ece`/`calib_fit_ci`.
+
+GG-124 REMEDIATION (2026-07-23, Window C, C2) — per-band clean-epoch floors
+-----------------------------------------------------------------------------
+`filter_clean()` previously compared every band's records against a single
+global `CURRENT_LOGIC_EPOCH`, so any write-path fix zeroed every band's
+clean_n simultaneously regardless of which band it actually touched — five
+such resets landed in ~5 days (2026-07-05 through 2026-07-19), producing a
+monitoring-coverage blackout (GG-124). `filter_clean()` now takes `band` and
+delegates to `logic_epoch.is_clean_for_band()`, which checks a record's
+stamped `logic_epoch` against that specific band's own clean-epoch floor —
+derived from which tracked boundaries' resolving commits were verified (via
+direct `git show` diff inspection) to actually change that band's write
+path. UNTAGGED records keep the conservative global-floor comparison, since
+there is no reliable band identity to check them against. See
+GOVERNANCE_GAP_LOG.md GG-124, src/prediction_market_bot/logic_epoch.py.
 
 T-341 EXTENSION (2026-07-11, Window 3) — dated artifacts + C7 wiring
 -----------------------------------------------------------------------
@@ -101,7 +115,10 @@ import ab_harness as abh                     # noqa: E402  metrics (EV/bet, $/st
 _SRC = Path(__file__).resolve().parent.parent / "src"
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
-from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
+from prediction_market_bot.logic_epoch import (  # noqa: E402
+    CURRENT_LOGIC_EPOCH,
+    is_clean_for_band,
+)
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor       # noqa: E402
 
@@ -204,13 +221,27 @@ def to_mlb_positions(recs: list[dict]) -> list[e17.MLBPosition]:
 
 # ── clean_n filtering (T-322) ────────────────────────────────────────────────────
 
-def filter_clean(recs: list[dict]) -> list[dict]:
-    """Keep only records whose write-path is CURRENT_LOGIC_EPOCH (T-320/T-321).
+def filter_clean(recs: list[dict], band: str) -> list[dict]:
+    """Keep only records whose write-path is clean for `band` specifically
+    (T-320/T-321, per-band remediation GG-124/Window C 2026-07-23).
 
-    Records with no `logic_epoch` at all (pre-T-320 history) are excluded by
-    the same `!=` comparison — there is no separate null-handling branch,
-    matching the governance hook's `_band_counts()` behavior exactly."""
-    return [r for r in recs if r.get("logic_epoch") == CURRENT_LOGIC_EPOCH]
+    Previously this compared `logic_epoch` against the single global
+    CURRENT_LOGIC_EPOCH, so any write-path fix — even one verified to touch
+    only one band — zeroed every band's clean_n simultaneously (five such
+    resets landed in ~5 days, a monitoring-coverage blackout; GG-124). Now
+    each band is compared against its own clean-epoch floor
+    (`logic_epoch.clean_epoch_floor_for_band()`), which only advances when a
+    boundary's verified diff actually touched that band's write path — a fix
+    scoped to one band no longer discards another band's already-clean
+    cohort. UNTAGGED records (no reliable band identity) still use the
+    conservative global floor via `CURRENT_LOGIC_EPOCH`, since there is no
+    band-specific floor to check them against.
+
+    Records with no `logic_epoch` at all (pre-T-320 history) are still
+    excluded — `is_clean_for_band()` treats `None` as not clean."""
+    if band == "UNTAGGED":
+        return [r for r in recs if r.get("logic_epoch") == CURRENT_LOGIC_EPOCH]
+    return [r for r in recs if is_clean_for_band(r.get("logic_epoch"), band)]
 
 
 # ── per-band analysis ────────────────────────────────────────────────────────────
@@ -224,7 +255,7 @@ def analyze_band(
     alpha: float = 0.10,
 ) -> dict:
     raw_n = len(recs)
-    clean_recs = filter_clean(recs)
+    clean_recs = filter_clean(recs, band)
     clean_n = len(clean_recs)
     if clean_n < MIN_N:
         return {
@@ -235,8 +266,9 @@ def analyze_band(
             "n": clean_n,
             "min_n": MIN_N,
             "reason": f"clean_n={clean_n} < MIN_N={MIN_N} (raw_n={raw_n}) — GG-098 "
-                      f"discipline: too few CURRENT_LOGIC_EPOCH resolved bets to "
-                      f"return a verdict, not just a low-confidence one. Pre-fix-epoch "
+                      f"discipline: too few bets resolved under this band's own "
+                      f"clean-epoch floor to return a verdict, not just a "
+                      f"low-confidence one (GG-124 per-band floors). Pre-fix-epoch "
                       f"bets are excluded, never blended in to reach the floor.",
             "anti_predictive_alarm": False,
         }
