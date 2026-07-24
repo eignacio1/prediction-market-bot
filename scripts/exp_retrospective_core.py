@@ -97,6 +97,16 @@ class MLBPosition(NamedTuple):
     game_date:      str
     threshold:      int    # 1, 2, or 3
     player_name:    str
+    # Added 2026-07-24 (A2/D1, GG-105) -- needed for (a) logic_epoch cohort
+    # filtering on the t1t2t3 book (previously only wired for t4, see
+    # what_if_harness.py) and (b) the --overrides-file join key
+    # (player_id, game_date) for scoring an externally-computed candidate
+    # model_p against the real ledger. Defaulted so every existing keyword
+    # construction call site (run_band_monitor.py, run_t333_*.py) stays
+    # valid unchanged.
+    player_id:      int | None = None
+    position_id:    str | None = None
+    logic_epoch:    int | None = None
 
 
 # ── Fee and edge helpers ────────────────────────────────────────────────────
@@ -191,6 +201,9 @@ def load_portfolio(
             game_date=str(p.get("game_date", "")),
             threshold=threshold,
             player_name=str(p.get("player_name", "")),
+            player_id=p.get("player_id"),
+            position_id=p.get("position_id"),
+            logic_epoch=p.get("logic_epoch"),
         ))
     return positions
 
@@ -246,6 +259,9 @@ def load_csv(
                 game_date=str(row.get("game_date", "")),
                 threshold=threshold,
                 player_name=str(row.get("player_name", "")),
+                player_id=(int(row["player_id"]) if row.get("player_id") not in (None, "") else None),
+                position_id=(row.get("position_id") or None),
+                logic_epoch=(int(row["logic_epoch"]) if row.get("logic_epoch") not in (None, "") else None),
             ))
     return positions
 

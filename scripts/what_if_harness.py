@@ -132,6 +132,42 @@ FLAGS: dict[str, Transform] = {
 }
 
 
+# ── --overrides-file (2026-07-24, A2/GG-105) ────────────────────────────────
+# Built now per the module's own SCOPE LIMITATION note above: A2's refit
+# candidate (ba_l10 -> ba_l10_shrunk_a1_candidate) changes a RAW feature, not
+# a post-hoc transform of model_p, so it cannot be expressed as a --flag.
+# The candidate model_p is computed externally (offline refit + backtest join
+# against the feature CSV) and handed in here, keyed by (player_id,
+# game_date) -- the only join key MLBPosition now carries that also exists on
+# the feature matrix (kalshi_ticker/position_id do not appear there).
+
+def _override_key(p) -> str:
+    return f"{p.player_id}|{p.game_date}"
+
+
+def load_overrides(path: Path) -> dict[str, float]:
+    """File format: JSON object {"<player_id>|<game_date>": candidate_model_p, ...}."""
+    with open(path) as fh:
+        data = json.load(fh)
+    return {str(k): float(v) for k, v in data.items()}
+
+
+def apply_overrides(positions: list, overrides: dict[str, float]) -> tuple[list, list]:
+    """Returns (baseline_matched, candidate_scored) -- both restricted to the
+    SAME subset of positions that have an override match, so baseline vs.
+    candidate is a fair apples-to-apples comparison rather than baseline-on-
+    everything vs. candidate-on-a-subset. Unmatched positions are dropped
+    from both, not silently passed through unchanged (that would mix
+    genuinely-untested positions into the "candidate" cohort)."""
+    baseline_matched = [p for p in positions if _override_key(p) in overrides]
+    candidate_scored = []
+    for p in baseline_matched:
+        p_scaled = overrides[_override_key(p)]
+        fne = e17.compute_fee_net_edge(p.direction, p_scaled, p.mip)
+        candidate_scored.append(p._replace(model_p=p_scaled, fee_net_edge=fne))
+    return baseline_matched, candidate_scored
+
+
 def parse_params(pairs: list[str] | None) -> dict:
     out: dict = {}
     for pair in pairs or []:
@@ -150,16 +186,20 @@ def load_positions(
 ) -> list:
     """book='t1t2t3' -> live MLB book (T1/T2/T3, band-mixed pool, shared
     PaperTrader schema). book='t4' -> T4M-PROJ resolved ledger.
-    logic_epoch filtering is only wired for t4 (matches run_t373 precedent's
-    clean-cohort caveat); the t1t2t3 loader does not currently expose
-    logic_epoch through MLBPosition, so no filter is applied there -- noted
-    in the printed report, not silently assumed."""
+    logic_epoch filtering (2026-07-24, A2/GG-105): now wired for BOTH books.
+    MLBPosition carries logic_epoch (exp_retrospective_core.py, added
+    2026-07-24) sourced directly from paper_trader.py's T-320 write-path
+    stamp, same field t4's pre-filter already used -- so both paths now
+    filter post-load on p.logic_epoch, consistently."""
     if book == "t1t2t3":
         if not portfolio_path.exists():
             raise SystemExit(f"ERROR: {portfolio_path} not found. Pull the live MLB "
                               f"portfolio cache first (see governance_scan.sh's ssh-cache step).")
         positions = e17.load_portfolio(portfolio_path)
-        return e17.deduplicate(positions)
+        positions = e17.deduplicate(positions)
+        if logic_epoch is not None:
+            positions = [p for p in positions if p.logic_epoch == logic_epoch]
+        return positions
     elif book == "t4":
         if not t4_ledger_path.exists():
             raise SystemExit(f"ERROR: {t4_ledger_path} not found. Run "
@@ -243,7 +283,13 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--t4-ledger", metavar="PATH", default=str(DEFAULT_T4_LEDGER),
                     help=f"t4 resolved ledger JSONL path (default: {DEFAULT_T4_LEDGER}).")
     p.add_argument("--logic-epoch", type=int, default=None,
-                    help="t4 only: restrict to a single logic_epoch cohort (default: all resolved).")
+                    help="Restrict to a single logic_epoch cohort (default: all resolved). "
+                         "Wired for both t1t2t3 and t4 as of 2026-07-24 (A2/GG-105).")
+    p.add_argument("--overrides-file", metavar="PATH", default=None,
+                    help="JSON {'<player_id>|<game_date>': candidate_model_p}. When given, "
+                         "--flag/--param are ignored: scores baseline vs. this externally-"
+                         "computed candidate model_p, restricted to the matched subset "
+                         "(see module docstring SCOPE LIMITATION).")
     p.add_argument("--out", metavar="PATH", default=None,
                     help="Optional: write the scored report as JSON to PATH.")
     return p
@@ -252,7 +298,6 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = _build_parser().parse_args(argv)
     params = parse_params(args.param)
-    transform = FLAGS[args.flag]
 
     positions = load_positions(
         args.book, Path(args.portfolio), Path(args.t4_ledger), args.logic_epoch)
@@ -260,16 +305,34 @@ def main(argv=None) -> int:
         print("ERROR: 0 positions loaded -- nothing to score.", file=sys.stderr)
         return 1
 
-    baseline = score(f"book={args.book} flag=raw (baseline, n={len(positions)})", positions)
-    scored_positions = transform(positions, params)
-    label = f"book={args.book} flag={args.flag} params={params or '{}'}"
-    candidate = score(label, scored_positions)
+    if args.overrides_file:
+        overrides = load_overrides(Path(args.overrides_file))
+        baseline_positions, candidate_positions = apply_overrides(positions, overrides)
+        n_dropped = len(positions) - len(baseline_positions)
+        if n_dropped:
+            print(f"NOTE: --overrides-file matched {len(baseline_positions)}/{len(positions)} "
+                  f"positions by (player_id, game_date); {n_dropped} unmatched positions "
+                  f"dropped from BOTH baseline and candidate cohorts for a fair comparison.",
+                  file=sys.stderr)
+        baseline = score(f"book={args.book} flag=raw (baseline, matched to overrides, "
+                          f"n={len(baseline_positions)})", baseline_positions)
+        label = f"book={args.book} flag=overrides file={args.overrides_file} n={len(candidate_positions)}"
+        candidate = score(label, candidate_positions)
+        flag_used = "overrides"
+    else:
+        transform = FLAGS[args.flag]
+        baseline = score(f"book={args.book} flag=raw (baseline, n={len(positions)})", positions)
+        scored_positions = transform(positions, params)
+        label = f"book={args.book} flag={args.flag} params={params or '{}'}"
+        candidate = score(label, scored_positions)
+        flag_used = args.flag
 
     if args.out:
         out_path = Path(args.out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(json.dumps(
-            {"book": args.book, "flag": args.flag, "params": params,
+            {"book": args.book, "flag": flag_used, "params": params,
+             "overrides_file": args.overrides_file,
              "logic_epoch": args.logic_epoch, "baseline": baseline, "candidate": candidate},
             indent=2, default=str))
         print(f"Wrote report: {out_path}")

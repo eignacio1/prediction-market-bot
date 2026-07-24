@@ -215,6 +215,9 @@ def to_mlb_positions(recs: list[dict]) -> list[e17.MLBPosition]:
             game_date=str(r.get("game_date", "")),
             threshold=int(r.get("_thr", 0) or 0),
             player_name=str(r.get("player_name", "")),
+            player_id=r.get("player_id"),
+            position_id=r.get("position_id"),
+            logic_epoch=r.get("logic_epoch"),
         ))
     return positions
 
