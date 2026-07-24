@@ -41,14 +41,31 @@ Boundary selection (why GG-100 is NOT a boundary):
   paper-trading provenance; revisit if this register is ever used to gate
   live-capital decisions with tighter tolerance requirements.
 
-  Global counter, not per-band (per T-320 spec): GG-087 only ever affected
-  T4M-PROJ's write path and GG-077 only ever affected T1/T2/T3's, but a
-  single global epoch counter increments on either fix regardless of which
-  band it touched. This is deliberately conservative — it can undercount
-  clean_n for a band a given fix never actually touched, but it will never
-  overcount. A per-band register was judged unnecessary added complexity
-  for what T-320 asked for; revisit only if per-band precision becomes load-
-  bearing for a gate decision.
+  Global counter, per-band interpretation (GG-124, Window C, 2026-07-23):
+  the underlying stamp (`logic_epoch` on each position) is still a single
+  global monotonic counter — that part of T-320's design is unchanged, and
+  paper_trader.py::open_position() still stamps every new bet with
+  CURRENT_LOGIC_EPOCH regardless of which band it belongs to. What changed
+  is the *measurement-layer interpretation* of that stamp: GG-124 found
+  that gating clean_n on exact equality to CURRENT_LOGIC_EPOCH means any
+  fix — even one that demonstrably touched only one band's write path —
+  zeroes every band's clean_n simultaneously (five such resets landed in
+  ~5 days, 2026-07-05 through 2026-07-19, producing a monitoring-coverage
+  blackout). Each `LogicEpochBoundary` below now carries `bands_affected`,
+  derived by direct `git show`/`git show --stat` inspection of the
+  resolving commit's actual diff (not the prose description alone) —
+  `clean_epoch_floor_for_band()` and `is_clean_for_band()` use it to give
+  each band its own effective clean-epoch floor: the most recent boundary
+  that *actually changed that band's write path*, per the ALL_BANDS
+  sentinel for boundaries proven to touch every band (e.g. GG-077, which
+  patched the shared paper_trader.py::open_position() unconditionally
+  before any band-gate existed). A band whose write path a given fix never
+  touched keeps accruing clean_n straight through that fix's global
+  counter bump. This remains deliberately conservative in the same
+  direction as before — a boundary's `bands_affected` must be positively
+  verified from the diff, not assumed — it can still undercount but must
+  never overcount. See GOVERNANCE_GAP_LOG.md GG-124 and
+  ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md Window C (C2).
 
 Deploy note:
   This module is a static, hand-maintained register, not something derived
@@ -74,12 +91,24 @@ from datetime import datetime, timezone
 from typing import NamedTuple
 
 
+# Sentinel for LogicEpochBoundary.bands_affected: this boundary's resolving
+# commit touched shared write-path code unconditionally (no band-gate existed
+# yet), so it must be treated as having touched every band — known ones and
+# any added later. Verified per-boundary from the actual commit diff, not
+# assumed from the resolving gap's prose description (GG-124).
+ALL_BANDS = "*"
+
+
 class LogicEpochBoundary(NamedTuple):
     epoch: int
     resolving_gap: str
     commit_sha: str
     commit_utc: datetime
     description: str
+    # Bands whose write path this boundary's resolving commit actually
+    # changed, per direct git-diff verification — {ALL_BANDS} for a
+    # commit proven to touch shared/unconditional code (GG-124, Window C).
+    bands_affected: frozenset[str] = frozenset({ALL_BANDS})
 
 
 # Ordered chronologically (ascending commit_utc). epoch N is active for any
@@ -97,6 +126,8 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "NO-side edge signal); fixed to bidirectional direction/sizing "
             "in run_t4_mlb_live.py."
         ),
+        # git show --stat 47ada94a: run_t4_mlb_live.py only.
+        bands_affected=frozenset({"T4M-PROJ"}),
     ),
     LogicEpochBoundary(
         epoch=3,
@@ -111,6 +142,11 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "Fixed in paper_trader.py::open_position() and "
             "run_mlb_paper_trade.py."
         ),
+        # git show 0797c320: paper_trader.py::open_position() changed
+        # unconditionally — no band-gate existed yet, so this touches every
+        # band's write path (T1/T2/T3 via run_mlb_paper_trade.py, and
+        # T4M-PROJ via the shared open_position() change).
+        bands_affected=frozenset({ALL_BANDS}),
     ),
     LogicEpochBoundary(
         epoch=4,
@@ -140,6 +176,8 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "of T4M-PROJ's book, over continuing to accumulate on the "
             "biased formula."
         ),
+        # git show 91111b7d: explicit `band == "T4M-PROJ"` gate.
+        bands_affected=frozenset({"T4M-PROJ"}),
     ),
     LogicEpochBoundary(
         epoch=5,
@@ -168,6 +206,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "cost than ADR-0043 accepted. See ADR-0045, GG-119 "
             "(GOVERNANCE_GAP_LOG.md), DECISION_LOG.md 2026-07-15."
         ),
+        # git show 53a92089: new `elif band == "T1":` branch added;
+        # pre-existing `elif band == "T4M-PROJ":` branch unchanged.
+        bands_affected=frozenset({"T1"}),
     ),
     LogicEpochBoundary(
         epoch=6,
@@ -210,6 +251,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "concurrent session's own T-372/GG-122 claim; see "
             "GOVERNANCE_GAP_LOG.md GG-123's numbering note."
         ),
+        # git show cc887e88: run_t2_mlb_sameday.py only; no corresponding
+        # paper_trader.py band-gate change (T2 has no NO-direction branch).
+        bands_affected=frozenset({"T2"}),
     ),
     LogicEpochBoundary(
         epoch=7,
@@ -256,8 +300,18 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "bands re-zero, T4M-PROJ's n*~787 race restarts) as the cost "
             "of correcting the GG-105 anti-predictive input. See "
             "ADR-0047, GG-105/GG-124 (GOVERNANCE_GAP_LOG.md), "
-            "DECISION_LOG.md 2026-07-18."
+            "DECISION_LOG.md 2026-07-18. Note (GG-124 Window C, 2026-07-23): "
+            "the operator's sign-off above accepted a global 4-band reset "
+            "under the then-current global-only clean_n interpretation; "
+            "bands_affected below reflects the verified diff scope "
+            "(T4M-PROJ only, per ADR-0047's own description) and is used "
+            "retroactively by the measurement layer going forward — it "
+            "does not retract or reinterpret the sign-off itself."
         ),
+        # git show f961fba6: p_hits_gte_threshold() / run_t4_mlb_live.py —
+        # T4M-PROJ is the only band whose write path ADR-0047 changes
+        # (explicit in this boundary's own description above).
+        bands_affected=frozenset({"T4M-PROJ"}),
     ),
     LogicEpochBoundary(
         epoch=8,
@@ -303,6 +357,8 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "distinct raw-vs-shrunk. See GG-105/GG-124 addenda and "
             "DECISION_LOG.md 2026-07-19."
         ),
+        # Same resolving commit/gap as epoch 7 — T4M-PROJ only.
+        bands_affected=frozenset({"T4M-PROJ"}),
     ),
 )
 
@@ -337,3 +393,30 @@ def approval_commit_for_epoch(epoch: int) -> str:
 def get_boundaries() -> tuple[LogicEpochBoundary, ...]:
     """Public read accessor for `_BOUNDARIES` (T-388, scripts/check_epoch_activation.py)."""
     return _BOUNDARIES
+
+
+def clean_epoch_floor_for_band(band: str) -> int:
+    """Most recent tracked boundary whose resolving commit actually touched
+    `band`'s write path (GG-124, Window C, 2026-07-23) — the per-band
+    replacement for comparing a stamped `logic_epoch` against the single
+    global `CURRENT_LOGIC_EPOCH`. A boundary counts if `band` is in its
+    `bands_affected`, or if that set contains `ALL_BANDS` (a commit proven
+    to touch shared/unconditional write-path code). Falls back to 1
+    (pre-history floor) if no tracked boundary ever touched this band.
+    """
+    floor = 1
+    for boundary in _BOUNDARIES:
+        if ALL_BANDS in boundary.bands_affected or band in boundary.bands_affected:
+            floor = boundary.epoch
+    return floor
+
+
+def is_clean_for_band(stamped_epoch: int | None, band: str) -> bool:
+    """True iff a position's stamped `logic_epoch` reflects fully-correct,
+    currently-deployed write-path logic for `band` specifically — i.e. it
+    is at or past `band`'s own clean-epoch floor, not necessarily
+    `CURRENT_LOGIC_EPOCH` globally (GG-124 remediation).
+    """
+    if stamped_epoch is None:
+        return False
+    return stamped_epoch >= clean_epoch_floor_for_band(band)
