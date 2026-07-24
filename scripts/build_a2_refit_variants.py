@@ -35,6 +35,24 @@ windowing logic has drifted from production and the candidate column cannot
 be trusted -- the script aborts rather than silently producing a wrong
 candidate.
 
+SEASON-BOUNDARY RESET (found 2026-07-24, logged to DECISION_LOG.md): production's
+rolling window is NOT a continuous per-player window across a multi-season history,
+even though mlb_features.py::_compute_rolling_batter_features groups purely by
+player_id with no explicit season split in the code. The reset is a side effect of
+HOW the window is populated in production, not an explicit branch: batter_game_log_df
+is built incrementally per daily cron run, so early-season feature rows are computed
+when that season's game log is the only data available -- there is no retroactive
+recomputation once a new season's data starts arriving. A multi-season CSV export
+(this script's --input) does NOT carry that incremental-availability constraint, so
+naively grouping by player_id alone across 2024-2026 rows wrongly carries a player's
+final ~10 games of one season into the first ~10 games of the next, producing 7,309
+unexplained mismatches (checked empirically: confirmed via direct reconstruction of
+one sample player's window -- production's ba_l10 for the 4th game of a season equals
+h_sum/ab_sum over ONLY that season's first 3 prior games, not the prior season's tail).
+Fixed by reconstructing on a (player_id, season) composite key instead of player_id
+alone -- this drops unexplained mismatches from 7,309 to 0 (403 remaining are the
+already-documented, already-handled doubleheader exception below).
+
 KNOWN, BOUNDED EXCEPTION -- doubleheader same-date ordering (found + fully
 explained empirically 2026-07-24, logged to DECISION_LOG.md): production's
 _compute_rolling_batter_features sorts each player's game log by game_date
@@ -48,6 +66,25 @@ window includes an earlier duplicate-date game (0 unexplained mismatches).
 This is excluded from the hard-fail check via `affected` masking below --
 the hard-fail still fires on ANY unexplained mismatch, which is what would
 indicate genuine windowing drift.
+
+DUPLICATE game_id ROWS ARE NOT DROPPED (correction, 2026-07-24 -- an earlier
+version of this script wrongly dropped these): the full historical corpus has
+exactly one (player_id=643376, game_id=746942, game_date=2024-06-26) pair with
+two rows (ab=0,h=0 and ab=4,h=1). The first instinct -- treat the ab=0 row as
+an ingestion artifact and drop it -- was tested and empirically REFUTED: doing
+so left 9 unexplained mismatches, all downstream of this player's next ~10
+games. Reconstructing with BOTH rows included (in their original CSV order,
+unmodified) instead produces 0 unexplained mismatches for this player and the
+whole corpus -- i.e. production's real incremental ingestion legitimately saw
+both as separate log entries and both fed subsequent rolling windows, whatever
+their true nature (re-ingestion, correction, etc.) actually was. This script
+therefore never drops rows; instead the merge back onto the original CSV uses
+a synthetic per-row `_row_id` key (not (player_id, game_id), which is not
+guaranteed unique) so the rare true collision doesn't break the 1:1 merge
+invariant. A future occurrence of >1 colliding (player_id, game_id) group is
+NOT auto-handled the same way -- see MAX_DUPLICATE_GAME_ID_GROUPS below -- it
+only confirms this exact known pair still matches expectations before
+proceeding un-alarmed.
 
 TWO OUTPUT CSVs (both == full row set, only the feature columns differ)
 --------------------------------------------------------------------------
@@ -87,6 +124,33 @@ A1_CANDIDATE_SHRINKAGE_K = 400   # A1, holdout-tuned (mlb_features.py)
 VALIDATION_TOLERANCE = 1e-6      # max allowed |reconstructed_k40 - csv ba_l10_shrunk|
 ROLLING_WINDOW = 10              # must match mlb_features.py / tune_a1_shrinkage_k.py
 MAX_AFFECTED_FRACTION = 0.15     # sanity ceiling on doubleheader-contaminated rows
+MAX_DUPLICATE_GAME_ID_GROUPS = 5  # sanity ceiling on (player_id, game_id) collisions
+
+
+def _check_duplicate_game_id_rows(df: pd.DataFrame) -> None:
+    """Sanity-check (do NOT drop) rows sharing (player_id, game_id) -- see the
+    module docstring's "DUPLICATE game_id ROWS ARE NOT DROPPED" note. Both rows
+    of the one known true collision (player_id=643376, game_id=746942,
+    game_date=2024-06-26; ab=0,h=0 vs ab=4,h=1) are legitimate and are
+    retained -- the merge back onto df uses the synthetic _row_id key
+    precisely so this collision never has to be resolved by dropping data.
+    This function only guards against a *new*, unexpected proliferation of
+    collisions signaling the underlying data has changed in some way that
+    would invalidate the retain-both-rows decision validated 2026-07-24."""
+    dup_mask = df.duplicated(subset=["player_id", "game_id"], keep=False)
+    if not dup_mask.any():
+        print("      no (player_id, game_id) duplicates found")
+        return
+    n_groups = df[dup_mask].groupby(["player_id", "game_id"]).ngroups
+    print(f"      found {int(dup_mask.sum())} duplicate rows across {n_groups} "
+          f"(player_id, game_id) group(s) -- retaining all (see module docstring)")
+    if n_groups > MAX_DUPLICATE_GAME_ID_GROUPS:
+        print(f"ERROR: {n_groups} colliding (player_id, game_id) groups exceeds sanity "
+              f"ceiling {MAX_DUPLICATE_GAME_ID_GROUPS} -- this is far more than the "
+              f"single-pair baseline the retain-both-rows decision was validated against. "
+              f"Aborting rather than silently trusting an unvalidated pattern.",
+              file=sys.stderr)
+        sys.exit(1)
 
 
 def _mark_doubleheader_affected(enriched: pd.DataFrame, window: int) -> pd.Series:
@@ -110,25 +174,57 @@ def build(input_csv: Path, out_dir: Path) -> None:
     print(f"[1/6] Loading {input_csv} ...")
     df = pd.read_csv(input_csv, low_memory=False)
     print(f"      {len(df):,} rows, {len(df.columns)} columns")
+    # Synthetic per-row key, assigned BEFORE any dedup/merge logic runs, used
+    # as the join key back from the reconstruction instead of (player_id,
+    # game_id) -- see module docstring's "DUPLICATE game_id ROWS ARE NOT
+    # DROPPED" note. This is what lets the one true (player_id, game_id)
+    # collision be retained rather than resolved by dropping a row.
+    df = df.reset_index(drop=True)
+    df["_row_id"] = df.index
 
     if "ba_l10_shrunk" not in df.columns:
         print("ERROR: input CSV has no ba_l10_shrunk column -- cannot validate "
               "the reconstruction against production. Aborting.", file=sys.stderr)
         sys.exit(1)
 
+    print("      Checking for (player_id, game_id) duplicate rows (retained, not dropped) ...")
+    _check_duplicate_game_id_rows(df)
+
     print("[2/6] Reconstructing per-player rolling h_sum/ab_sum "
-          "(A1's _reconstruct_rolling_sums, window=10, min_periods=3, shift(1)) ...")
-    # game_id (not just game_date) must ride along: two rows can share a
-    # (player_id, game_date) on a doubleheader day, and a date-only join key
-    # would multiply-match both original rows against both reconstructed rows
-    # (a many-to-many join), duplicating real game rows in the output CSVs.
-    # game_id is unique per row, so joining on (player_id, game_id) is 1:1.
-    raw_cols = ["player_id", "game_date", "ab", "h", "game_id"]
-    enriched = _reconstruct_rolling_sums(df[raw_cols].copy())
+          "(A1's _reconstruct_rolling_sums, window=10, min_periods=3, shift(1), "
+          "season-scoped) ...")
+    if "season" not in df.columns:
+        print("ERROR: input CSV has no season column -- cannot season-scope the "
+              "rolling reconstruction (see module docstring: SEASON-BOUNDARY RESET). "
+              "Aborting.", file=sys.stderr)
+        sys.exit(1)
+    # _row_id rides along as the join key back onto df -- unlike (player_id,
+    # game_id), it is guaranteed unique per input row even across the one true
+    # duplicate collision, so the final merge below is always 1:1 regardless
+    # of duplicate/doubleheader structure.
+    #
+    # player_id is replaced with a (player_id, season) composite key before
+    # calling _reconstruct_rolling_sums -- see module docstring's SEASON-
+    # BOUNDARY RESET note. _reconstruct_rolling_sums groups purely by whatever
+    # is in its "player_id" column, so a composite key transparently scopes
+    # the rolling window to season without needing to touch A1's function.
+    raw_cols = ["_row_id", "player_id", "game_date", "ab", "h", "game_id", "season"]
+    recon_input = df[raw_cols].copy()
+    recon_input["real_player_id"] = recon_input["player_id"]
+    recon_input["player_id"] = (
+        recon_input["player_id"].astype(str) + "_" + recon_input["season"].astype(str)
+    )
+    # real_player_id and _row_id ride through _reconstruct_rolling_sums/
+    # _mark_doubleheader_affected as passthrough columns (both preserve extra
+    # columns; only "player_id" is used for grouping) -- NOT restored
+    # positionally afterward, since the function sorts by (player_id,
+    # game_date) internally and no longer matches recon_input's row order.
+    enriched = _reconstruct_rolling_sums(recon_input.drop(columns=["season"]))
     enriched = _mark_doubleheader_affected(enriched, ROLLING_WINDOW)
+    enriched = enriched.drop(columns=["player_id"]).rename(columns={"real_player_id": "player_id"})
     merged = df.merge(
-        enriched[["player_id", "game_id", "h_sum", "ab_sum", "_affected"]],
-        on=["player_id", "game_id"],
+        enriched[["_row_id", "h_sum", "ab_sum", "_affected"]],
+        on="_row_id",
         how="left",
         validate="one_to_one",
     )
@@ -189,14 +285,14 @@ def build(input_csv: Path, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print("[5/6] Writing control.csv (drop ba_l10_shrunk, ba_l10 untouched) ...")
-    control = merged.drop(columns=["h_sum", "ab_sum", "_affected",
+    control = merged.drop(columns=["_row_id", "h_sum", "ab_sum", "_affected",
                                     "ba_l10_shrunk"], errors="ignore")
     control_path = out_dir / "control.csv"
     control.to_csv(control_path, index=False)
     print(f"      wrote {control_path} ({len(control):,} rows, {len(control.columns)} cols)")
 
     print("[6/6] Writing candidate.csv (ba_l10 <- ba_l10_shrunk_a1_candidate values) ...")
-    candidate = merged.drop(columns=["h_sum", "ab_sum", "_affected",
+    candidate = merged.drop(columns=["_row_id", "h_sum", "ab_sum", "_affected",
                                       "ba_l10_shrunk"], errors="ignore").copy()
     n_before = candidate["ba_l10"].notna().sum()
     candidate["ba_l10"] = candidate_vals.values
