@@ -335,8 +335,8 @@ def load_clean_band_records(
     portfolio_path: Path = DEFAULT_PORTFOLIO,
     t4_ledger_path: Path = DEFAULT_T4_LEDGER,
 ) -> list:
-    """Load resolved records for `band`, filtered to clean_n (CURRENT_LOGIC_EPOCH
-    only, per logic_epoch.py / GG-077 / GG-087 — see run_band_monitor.filter_clean)."""
+    """Load resolved records for `band`, filtered to clean_n (per-band clean-epoch
+    floor, per logic_epoch.py / GG-124 — see run_band_monitor.filter_clean)."""
     if band in BOOK_BANDS:
         by_band = load_pool_by_band(portfolio_path)
         recs = by_band.get(band, [])
@@ -344,7 +344,7 @@ def load_clean_band_records(
         recs = load_t4_ledger(t4_ledger_path)
     else:
         raise ValueError(f"Unknown band {band!r}; expected one of {LEDGER_BANDS}")
-    return filter_clean(recs)
+    return filter_clean(recs, band)
 
 
 @dataclass

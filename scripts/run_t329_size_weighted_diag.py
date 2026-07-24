@@ -154,7 +154,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = _build_parser().parse_args(argv)
-    recs = bm.filter_clean(bm.load_t4_ledger(args.t4_ledger))
+    recs = bm.filter_clean(bm.load_t4_ledger(args.t4_ledger), "T4M-PROJ")
     if len(recs) < 3:
         print(f"Only {len(recs)} clean T4M-PROJ records found at {args.t4_ledger} "
               f"-- need at least 3 for a tercile split. Nothing to analyze.")
