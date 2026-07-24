@@ -1,0 +1,9 @@
+# Iteration Progress — MC Remediation (2026-07-22 plan, Window D)
+
+Tracks completion of `ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md`'s Window D tasks (D1/D2). See that file for the full task brief; see `DECISION_LOG.md` 2026-07-23 rows for full rationale/scope-decision detail on each.
+
+D1 DONE commit=112b64e — harness entrypoint=`python3 scripts/what_if_harness.py --book {t1t2t3|t4} [--flag {raw|temp_scale|logit_shift}] [--param KEY=VAL ...] [--portfolio PATH] [--t4-ledger PATH] [--logic-epoch N] [--out PATH]`, reads flag=`--flag` selects a named entry from the script's `FLAGS` registry (default `raw`/identity if omitted); `--param` supplies KEY=VAL transform parameters (repeatable, e.g. `--param T=2.05` for `temp_scale`, `--param a=... --param b=...` for `logit_shift`). No live write, no epoch bump. Scope limitation: replays post-hoc `model_p` transforms only — resolved-ledger schemas persist final `model_p`, not raw per-bet features, so feature-level candidates (e.g. APR-0025's shrinkage formula itself) cannot be replayed from ledger data alone.
+
+D2 DONE commit=94200ff — `scripts/mc_empirical_bootstrap.py` (nonparametric resampling of the real resolved ledger) wired in as the standard forward-risk gate, superseding `mc_forward_projection.py` (parametric, fixed win-rate/fixed-payoff) in that standing role. Retirement handled via addendum to ADR-0040 (Hard Rule 3 — no in-place rewrite), a redirect in `CLAUDE.md`'s Q1 ruin-risk-caveat paragraph, and a deprecation header on `mc_forward_projection.py` itself (not deleted). GG-133 registered (OPEN, unrelated finding from D1 validation: `build_t4_resolved_ledger.py`'s `pull_vps_cache()` fails silently on a fresh worktree, missing `mkdir`).
+
+**Deferred, not yet actioned (flagged in the D2 DECISION_LOG row):** `04_EXECUTION/PLAN.md` and `08_MODEL_RISK_GOVERNANCE/SENSITIVITY_STRESS_TESTS.md` were not checked for `mc_forward_projection.py` references that may also need redirecting.

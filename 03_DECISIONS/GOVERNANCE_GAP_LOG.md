@@ -2514,6 +2514,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-133 — `build_t4_resolved_ledger.py`'s `pull_vps_cache()` fails silently on a fresh worktree (missing `mkdir`)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-133 |
+| Category | Core — operational tooling reliability (VPS-cache pull path, `scripts/build_t4_resolved_ledger.py`) |
+| What was missed | `pull_vps_cache(cache_path)` runs the SSH pull subprocess correctly (confirmed independently: standalone repro of the identical `ssh`/`scp` call succeeds, `rc=0`, full payload received) but then calls `tmp.write_bytes(result.stdout)` / `tmp.replace(cache_path)` without first calling `cache_path.parent.mkdir(parents=True, exist_ok=True)`. On a fresh git worktree with no pre-existing `logs/` directory (gitignored, so never checked out), the write throws — caught by a bare `except Exception: return False`, which surfaces to the caller only as `WARNING: VPS pull failed; falling back to existing...` followed by `ERROR: portfolio not found`, with no traceback and no indication the actual cause was a missing local directory rather than a real network/auth/remote failure. |
+| When it should have been caught | Any prior session that ran this script from a freshly created isolated worktree (Hard Rule 10's default launch mode) — worktrees never inherit gitignored directories, so this is not a rare edge case but the expected state of every new worktree's first run of this script. |
+| Phases it survived | Present since `build_t4_resolved_ledger.py` (T-254) was written; not previously surfaced because prior sessions using this script apparently always had a pre-existing `logs/` dir (shared `main` tree carryover) or pulled via a different path. |
+| Why it survived | The bare `except Exception: return False` swallows the specific `FileNotFoundError` and reports it identically to an actual pull failure, so the misleading downstream message ("VPS pull failed... portfolio not found") reads as a connectivity/data problem, not a local-directory problem — nothing prompts a session to check `cache_path.parent.exists()` specifically. |
+| Impact | LOW-MEDIUM — not a data-correctness bug (no wrong data is ever written; the pull genuinely fails-safe), but it silently blocks the VPS-pull convenience path for any fresh worktree until a session manually diagnoses and works around it by pre-creating `logs/`, which costs debugging time and could be mistaken for a real connectivity/auth incident. |
+| Discovery | 2026-07-23, Window D (T-395 continuation / D1 harness validation) — diagnosed by reproducing `pull_vps_cache()`'s exact logic manually step-by-step after the standalone SSH call was confirmed to succeed on its own; root-caused to the missing `mkdir` before the write. Worked around by manually creating `logs/` in the worktree; the script itself was left unmodified as out of Window D's explicit scope. |
+| Resolution | Not yet fixed. Recommended: add `cache_path.parent.mkdir(parents=True, exist_ok=True)` immediately before the `tmp.write_bytes(...)` call in `pull_vps_cache()`, and consider narrowing the bare `except Exception` to log the actual exception type/message rather than a generic "pull failed" string, so a future occurrence of any cause is diagnosable without manual reproduction. Small, low-risk, single-function fix — no ADR needed. |
+| Status | **OPEN.** |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
