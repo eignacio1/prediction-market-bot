@@ -138,15 +138,20 @@ FLAGS: dict[str, Transform] = {
 # a post-hoc transform of model_p, so it cannot be expressed as a --flag.
 # The candidate model_p is computed externally (offline refit + backtest join
 # against the feature CSV) and handed in here, keyed by (player_id,
-# game_date) -- the only join key MLBPosition now carries that also exists on
-# the feature matrix (kalshi_ticker/position_id do not appear there).
+# game_date, threshold) -- the only join key MLBPosition now carries that
+# also exists on the feature matrix (kalshi_ticker/position_id do not appear
+# there). threshold is REQUIRED in the key: direct inspection of the real
+# MAIN ledger (2026-07-24) found 148 of 220 unique (player_id, game_date)
+# pairs carry >1 position (multiple thresholds, e.g. t=1 and t=2 on the same
+# player/game) -- keying on (player_id, game_date) alone would silently
+# collide two different bets onto one override value.
 
 def _override_key(p) -> str:
-    return f"{p.player_id}|{p.game_date}"
+    return f"{p.player_id}|{p.game_date}|{p.threshold}"
 
 
 def load_overrides(path: Path) -> dict[str, float]:
-    """File format: JSON object {"<player_id>|<game_date>": candidate_model_p, ...}."""
+    """File format: JSON object {"<player_id>|<game_date>|<threshold>": candidate_model_p, ...}."""
     with open(path) as fh:
         data = json.load(fh)
     return {str(k): float(v) for k, v in data.items()}
@@ -286,10 +291,10 @@ def _build_parser() -> argparse.ArgumentParser:
                     help="Restrict to a single logic_epoch cohort (default: all resolved). "
                          "Wired for both t1t2t3 and t4 as of 2026-07-24 (A2/GG-105).")
     p.add_argument("--overrides-file", metavar="PATH", default=None,
-                    help="JSON {'<player_id>|<game_date>': candidate_model_p}. When given, "
-                         "--flag/--param are ignored: scores baseline vs. this externally-"
-                         "computed candidate model_p, restricted to the matched subset "
-                         "(see module docstring SCOPE LIMITATION).")
+                    help="JSON {'<player_id>|<game_date>|<threshold>': candidate_model_p}. "
+                         "When given, --flag/--param are ignored: scores baseline vs. this "
+                         "externally-computed candidate model_p, restricted to the matched "
+                         "subset (see module docstring SCOPE LIMITATION).")
     p.add_argument("--out", metavar="PATH", default=None,
                     help="Optional: write the scored report as JSON to PATH.")
     return p
@@ -311,9 +316,9 @@ def main(argv=None) -> int:
         n_dropped = len(positions) - len(baseline_positions)
         if n_dropped:
             print(f"NOTE: --overrides-file matched {len(baseline_positions)}/{len(positions)} "
-                  f"positions by (player_id, game_date); {n_dropped} unmatched positions "
-                  f"dropped from BOTH baseline and candidate cohorts for a fair comparison.",
-                  file=sys.stderr)
+                  f"positions by (player_id, game_date, threshold); {n_dropped} unmatched "
+                  f"positions dropped from BOTH baseline and candidate cohorts for a fair "
+                  f"comparison.", file=sys.stderr)
         baseline = score(f"book={args.book} flag=raw (baseline, matched to overrides, "
                           f"n={len(baseline_positions)})", baseline_positions)
         label = f"book={args.book} flag=overrides file={args.overrides_file} n={len(candidate_positions)}"
