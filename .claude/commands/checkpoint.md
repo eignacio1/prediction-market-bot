@@ -30,6 +30,8 @@ Create `11_MEMORY_HANDOFF/CHECKPOINT_YYYYMMDD_HHMM.md` from `00_ADMIN/TEMPLATES/
 
 ## Step A — Write CHECKPOINT file
 
+**If you need to check current state in a large nav file (TODO_NEXT.md, MEMORY_BANK.md, PLAN.md) before writing this:** `grep -n` for the specific section first, then `Read` with `offset`/`limit` around it (Fix 3, session-end protocol tiering, 2026-07-24) — a checkpoint should never require a full read of a 700+ line file.
+
 Populate template with:
 - **Block completed:** 1-2 sentences — specific file names, task IDs, test counts, decision names
 - **Decisions made:** every threshold/sequencing/strategy judgment call from this block
