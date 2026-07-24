@@ -6,30 +6,6 @@
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed.)*
 
-## T-397 — Merge PR #48 into `main` (T-396 TODO_NEXT.md archival) — ✅ DONE, 2026-07-24
-
-PR #48 merged (`mergedAt: 2026-07-24T05:07:09Z`, confirmed via `gh pr view 48`) — not through `gh pr merge` (stayed classifier-blocked) but via a direct local merge/push in an isolated temp worktree (`merge-todo-archive`), per explicit operator instruction. Took 3 rounds of re-fetch → conflict → resolve against concurrently-landing sessions (Window B1/B2's PR #51, Window C's PR #52), all confined to `PLAN.md`/`TODO_NEXT.md`/`MEMORY_BANK.md`'s "Last reviewed" header chains. One self-caught incident: a `;`-chained (not `&&`) verification grep let a stray conflict-marker artifact reach `origin/main` briefly (`b4a54cb`); fixed same-session (`9dd0bf6`) and re-verified clean. GG-133 (archival-cadence gap) renumbered twice more on ID collisions with concurrent sessions — final ID **GG-136**, OPEN. Both worktrees (`merge-todo-archive`, `session/20260723T003916Z-todo-next-archive`) retired post-merge. See DECISION_LOG.md 2026-07-24 row, SESSION_CLAIMS.md closure row.
-
-## T-370 — Merge PR #26 (`session/20260715T145241Z-gg-oddburn-t368`, odd-GG-number burn-down) into `main`, reconciled with the parallel even-numbered parity session's branch — ✅ DONE, 2026-07-15
-
-**Done via a dedicated reconciliation session, isolated worktree `session/20260715T-ggreconcile-merge` (Hard Rule 10).** Both PR #25 (even) and PR #26 (odd) merged cleanly at the individual gap-row level as designed — zero collisions in `GOVERNANCE_GAP_LOG.md` gap bodies. `DECISION_LOG.md` had one pure-append collision (HEAD's T-368/T-369 close-out block vs. even branch's 17 rows), resolved by concatenating both in full. `.last_session_checkpoint`/`.gitattributes` conflicted (PR #26 introduced GG-103's append-only reformat) and were resolved preserving all three data points across the format transition.
-
-**Substantive finding the reconciliation caught that neither isolated branch could have found alone:** GG-103's fix (PR #26) reformatted `.last_session_checkpoint` to append-only, but `scripts/write_session_checkpoint.sh` and `.claude/hooks/session_guard.sh` — both living on `main` via the separately-merged T-368/T-369 work that predates both branches' fork points — still assumed the old single-overwrite format. Left unfixed, the next session-end would have silently destroyed the new append-only log, and every future session-start would have permanently misreported a corrupt checkpoint pointer. Fixed both scripts + rewrote `tests/test_write_session_checkpoint.py` for append semantics; corrected GG-103's own Resolution text (previously understated as 3 files touched, actually 5). A second pass also caught that the test-file rewrite had been verified-passing but never actually staged/committed in the first reconciliation commit — fixed in a follow-up commit (`7cdb4ee`) before merging, so this "committed but not really" loose end didn't survive into `main`.
-
-**Merged via PR #27** (https://github.com/eignacio1/prediction-market-bot/pull/27), CI green, then `gh pr merge 27 --merge`. PR #25 and #26 both auto-flipped to MERGED status once their commits landed on `main` via the `--no-ff` merges — no separate close needed. All three worktrees (reconciliation, odd, even) and their local + remote branches retired post-merge.
-
-**OPEN gap count, `governance_scan.sh`'s own `grep "| OPEN"` methodology, applied identically pre/post:** 15→10 (119→120 total gaps). Full suite: 2718 passed / 29 skipped / 0 failed, confirmed twice (pre-merge and via GitHub Actions CI on PR #27).
-
-**Caveat surfaced, not fixed:** that same grep only matches literal `"| OPEN"` and misses `Status` cells that bold-prefix the word (`**OPEN`) — undercounts the true OPEN backlog. Not registered as its own GG this pass to avoid scope creep on a reconciliation session; flag for a future session if picked up. See `DECISION_LOG.md` 2026-07-15 (reconciliation-merge row) for full detail.
-
-## T-371 — GG-119/ADR-0045: fix T1 MLB NO-direction vig sign flip in `run_mlb_paper_trade.py::_directional_edge()` — ✅ DONE, 2026-07-15/16
-
-**Isolated worktree `session/20260715T200655Z-gg119-t1-vig-sign-fix`.** Mirrored GG-113/ADR-0043's T4M-PROJ fix pattern onto T1's own gating file: the NO branch was negating the whole half_spread-inclusive `gross_edge`, converting `half_spread` from a cost into a credit for all 248 NO-direction resolved bets pre-fix (74 of which only cleared `MIN_EDGE_TO_APPROVE` due to the inflation). Implemented Proposed D1 exactly: NO branch changed from `-gross_edge` to `-gross_edge - 2.0*half_spread`; `paper_trader.py::open_position()`'s band gate extended from `{"T4M-PROJ"}` to `{"T4M-PROJ","T1"}`. Both the write-path fix and band-gate extension landed together in one commit (`53a9208`) — unlike GG-113, no self-correction/second commit was needed.
-
-`CURRENT_LOGIC_EPOCH` advanced 4→5 (later 5→6 via T-373/GG-123, T2-scoped, see that entry — non-overlapping boundary). Regression tests added/split across `test_run_mlb_paper_trade.py::TestDirectionalEdge`, `test_approval_path_invariants.py::TestFeeSignInvariance`, `test_paper_trader.py::TestOpenPosition`, `test_backfill_logic_epoch.py`. Full suite 2719/1-fail/29-skip → **2720 passed, 0 failed, 29 skipped**.
-
-PR #28 (`6f37629`, fix) + PR #29 (`f557446`, GOVERNANCE_GAP_LOG.md RESOLVED write-up + DECISION_LOG.md entry) both merged to `main`, VPS auto-deploy confirmed green both times. **Live post-reset T1 ledger pulled from VPS: `raw_n=259, clean_n=0`** — the go-live clock restarts from zero, as expected and explicitly accepted by Earl at sign-off. T2 files never touched (parallel session's scope, GG-123). GG-119 flipped RESOLVED. See ADR-0045 (ACCEPTED), `GOVERNANCE_GAP_LOG.md` GG-119, `DECISION_LOG.md` 2026-07-15 (T-371 row).
-
 ## T-372 — Digest adoption + timestamp-check wiring + governance_scan.sh OPEN-count fix (GG-122) — ✅ DONE, 2026-07-15
 
 **Isolated worktree `session/20260715T235138Z-digest-adoption-timestamp-check`.** Closed the exact caveat T-370 flagged above and two other small, mechanical gaps identified in an efficiency review: the operator digest existed only as a template + one worked example with nothing requiring a second one, and the timestamp-integrity checker only ran on manual invocation.
@@ -45,76 +21,6 @@ PR #28 (`6f37629`, fix) + PR #29 (`f557446`, GOVERNANCE_GAP_LOG.md RESOLVED writ
 **Explicitly out of scope, respected:** `run_mlb_paper_trade.py`, `paper_trader.py`, `run_t2_mlb_sameday.py`, `logic_epoch.py`, and `GOVERNANCE_GAP_LOG.md`'s GG-119 entry — untouched, per the concurrent GG-119 (T1 vig fix) and GG-122-adjacent T2 vig-magnitude sessions running live in parallel worktrees. Note: GG-122 was free at claim time in `GOVERNANCE_GAP_LOG.md`, so it was used for this governance-tooling finding; flag for the concurrent T2 vig-magnitude session in case it also intended that number.
 
 See `DECISION_LOG.md` 2026-07-15 (premise-check + T-372/GG-122 rows), `GOVERNANCE_GAP_LOG.md` GG-122 (RESOLVED).
-
-## T-396 — Window C: GG-124 measurement-layer fix (per-band clean-epoch floors) + C7 monitor verification — ✅ DONE, 2026-07-23/24
-
-**Isolated worktree `session/20260723T233920Z-c-measurement`.** Scope was strictly C2 + C3 of `ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md` Window C.
-
-**C2 — per-band clean-epoch floors (commit `abd92ae`):** `logic_epoch.py`'s `_BOUNDARIES` entries gained a `bands_affected` field (`ALL_BANDS` sentinel or an explicit list), verified from each resolving commit's actual diff rather than trusting prior prose. New `clean_epoch_floor_for_band(band)` computes the highest boundary whose `bands_affected` includes that band; `is_clean_for_band(logic_epoch, band)` wraps the comparison. All 6 call sites of the old single-arg `filter_clean(recs)` updated to `filter_clean(recs, band)`: `run_band_monitor.py`, `run_power_calc.py`, `mc_forward_projection.py`, `run_t329_size_weighted_diag.py`, `run_t332_gamestate_diag.py`, `run_t333_edgeformula_diag.py`. Verified floors: T1=5, T2=6, T3=3, T4M-PROJ=8 — previously every band was pinned to the global 8, meaning T1/T2/T3's `clean_n` was being zeroed by epoch bumps (7, 8) that never touched their write paths. This is retroactive over already-stamped data, so T1/T2/T3 should repopulate `clean_n` from historical epoch≥5/≥6/≥3 bets immediately, not just from new accrual.
-
-**C3 — C7 monitor verification (no new code):** confirmed `run_band_monitor.py::analyze_band()` + `monitor.py::report_band_monitor_verdicts()` (T-341, pre-existing) already implement per-band edge-tercile monotonicity + calibration-slope CI checks, both warn-only (never call `trigger_kill_switch`, per GG-098 discipline) — verified live on VPS cron via `crontab -l` (Mondays 14:20 UTC, last output 2026-07-20). GG-124's blackout, not a missing monitor, was why these alarms weren't firing.
-
-**GG-124 addendum written, gap NOT closed** — the fix repopulates `clean_n` but does not add the warn-at-bump-time mechanism GG-124's own Resolution field calls for; that half remains unowned. Re-check the 2026-07-26 trigger against the new per-band floors.
-
-Tests: 66/66 passing (`test_backfill_logic_epoch.py`, `test_power_calc.py`, `test_band_monitor.py`), fixtures updated to use `clean_epoch_floor_for_band()` instead of hardcoded epoch literals so they don't go stale on the next bump. Full diff vs. `origin/main`: 11 files, 182(+)/45(-).
-
-See `DECISION_LOG.md` 2026-07-23 (T-396 row), `GOVERNANCE_GAP_LOG.md` GG-124 addendum, `04_EXECUTION/ITERATION_MC_PROGRESS.md`.
-
-## T-395 — GG-130 live-verified RESOLVED; GG-131 (VPS stale-drift incident) found and fixed — ✅ DONE, 2026-07-23
-
-**Shared `main` tree, path-scoped commits (`94a2308`, `e4b4685`).** Continuation of a Cowork session (no VPS/push access) that drafted the deploy.yml dirty-tree auto-heal generalization fix and self-numbered it GG-129 against a stale local copy.
-
-1. **ID collision fixed:** confirmed against `origin/main` that GG-129 was already taken by an unrelated, already-merged entry; renumbered consistently to GG-130 across `.github/workflows/deploy.yml`, the runbook, and `GOVERNANCE_GAP_LOG.md`. Landed as `dc8013b`.
-2. **Every deploy run after landing kept hard-failing (6 consecutive)** — looked like the new guard might be broken. `gh run view --log-failed` showed it wasn't: the guard was correctly refusing to auto-heal genuine drift outside its regen-roots, not silently clobbering it.
-3. **Root cause, found live:** two files were hand-edited/created directly on the VPS on 2026-07-19 (`scripts/query_orderbook_depth_mlb.py` in-place edit, `scripts/vps_gg045_sample3.py` new untracked file) and never reconciled after equivalent fixes properly landed via PR #44 (`ffa88b8`) the next day. Both confirmed byte-identical to their already-committed `origin/main` versions before being discarded on the VPS (`git checkout --` / `rm`) — no work lost.
-4. **Registered as GG-131** (distinct from GG-130's own guard-logic scope) per the log's Invariant, then re-verified with a fresh `workflow_dispatch` run (`29968399803`) that passed clean end-to-end with zero drift — the actual live-pass proof the original fix needed.
-5. **Self-caught mid-session mistake:** a checkpoint-write step clobbered `04_EXECUTION/.last_session_checkpoint`'s append-only history (32 rows) down to a single line. Restored the full history and appended correctly (`e4b4685`).
-6. **Post-close reconciliation (`9219371`, `0351422`):** at exit-check, found an unmerged branch (`session/20260721T041304Z-window-b-governance-ops-hygiene`, not created by this session) held its own, distinct GG-131 entry — flagged the collision non-destructively (`9219371`) without touching that branch. The Window B session then merged (PR #47, `9e0229b`) and resolved the collision itself, renumbering its entry to **GG-132** and closing its own `SESSION_CLAIMS.md` row (`0351422`). Verified clean afterward: working tree matches `origin/main` exactly, no drift either direction. `session/20260720T235909Z-window-a-mypy-epoch-oom` remains open — confirmed with the operator to be actively worked by another concurrent session, left untouched per Hard Rule 10.
-
-**Follow-on left OPEN (not blocking):** GG-131 notes no process step currently checks whether VPS-side one-shot/manual work has been reconciled against `main` once the equivalent change lands through the normal workflow — a future session could add a lightweight `ssh ... git status --porcelain` VPS drift check to `governance_scan.sh` or session-start Step 4, similar in spirit to the GG-118 dashboard OOM-restart-loop probe.
-
-See DECISION_LOG.md 2026-07-23 row, GOVERNANCE_GAP_LOG.md GG-130 (RESOLVED)/GG-131 (RESOLVED, follow-on OPEN)/GG-132 (Window B's, OPEN).
-
-## T-387 — Epoch-7 verification contingency FIRED → same-day remediation → epoch 8 registered and live — ✅ DONE, 2026-07-19
-
-**Shared `main` tree, path-scoped commits (`b371e9f`, `eb0bea4`).** Follows T-385 (epoch-7 registration, same session). Full arc:
-
-1. **Verification FAILED as registered:** `pregame_mlb_20260718.json` (15:55 UTC run) carried `ba_l10_shrunk: null` for all 62 players. Root cause: `run_mlb_pregame.py` sources the field from `exp_output/MLB/mlb_feature_matrix.csv`, and the VPS copy was last regenerated by PIPE-05FX (22:30 UTC nightly) 2h **before** the ADR-0047 merge — the column didn't exist. `run_t4_mlb_live.py` fell back to raw `ba_l10` (line 349), so the Jul-18 afternoon slate ran behaviorally epoch-6 while stamping ~200 orders epoch 7. Note the audit-log false negative found along the way: `ba_l10_shrunk` payloads log to `t4_mlb_cycle_log.jsonl`, NOT `audit_mlb_t4.jsonl`.
-2. **Remediation (operator-selected "fix tonight + epoch 8"):** manual PIPE-05FX re-run (CSV regenerated with column, 18:04 UTC), manual PIPE-06pre re-run (JSON repopulated, exit 0), t4-mlb restart 18:06:52 UTC.
-3. **Epoch 8 registered:** boundary = 2026-07-18T18:07:19Z, the first `t4_mlb_cycle_log.jsonl` row with `ba_l10 != ba_l10_shrunk` (empirically verified on the VPS), same resolving commit `f961fba` — an activation-accounting correction, not a logic change. Stamped-7 bets wholly excluded from `clean_n` (stamps govern `filter_clean`; the cohort irreversibly mixes fallback and genuine-shrunk bets; the genuine subset is recoverable only via a DS-authorized re-stamp backfill, deliberately not done). Interim mis-stamped resolutions were accounting-only — no gate/adequacy decision consumed the contaminated clean_n during the token-interrupted gap.
-4. **Verified live end-to-end:** 3,004 shrunk-bearing cycle rows / 2,835 distinct through Jul-19; `pregame_mlb_20260719.json` (nightly cron, post-fix CSV) zero nulls — self-heals from Jul-19 onward; VPS at `b371e9f`, t4-mlb restarted 20:41 UTC; post-restart position (20:43 UTC) confirmed stamped `logic_epoch: 8`. Tests 100/100.
-
-See DECISION_LOG.md 2026-07-19 (T-387), GOVERNANCE_GAP_LOG.md GG-105 + GG-124 addenda, `11_MEMORY_HANDOFF/CHECKPOINT_20260719_1350.md`.
-
-## T-388 — Bump-time behavioral-activation check for logic-epoch boundaries — ✅ DONE, 2026-07-21
-
-GG-124's process gap had **two** motivating cases (the GG-113/119/123 boundary-stacking blackout; T-387's data-dependency miss). Built the proposed check as `scripts/check_epoch_activation.py` (Python, not the originally-sketched `.sh` — reused the existing `cron_log_aggregator.py` SSH-embedded-script pattern for the remote half):
-
-1. **`check_stacking()`** — warns (never blocks) if more than one `logic_epoch.py` boundary landed within a trailing 7-day window (GG-124's own "one week" re-check horizon, reused as the threshold). Takes injectable `boundaries`/`now` so it's unit-testable without mutating real dated history.
-2. **`check_field_activation(field, artifact_glob)`** — SSHes to the VPS, finds the most recently modified file matching the glob, and confirms the named field is present/non-null in at least one record. Zero-present-with-nonzero-total is flagged as the exact GG-105/T-387 failure signature (deploy landed, artifact didn't carry the new field yet). Handles no-files-matched, unreachable host, nonzero remote exit, and malformed output as explicit ALERTs.
-3. `logic_epoch.py` gained a public `get_boundaries()` accessor (script reads it rather than reaching into the private `_BOUNDARIES` tuple) and a new docstring section pointing at the check.
-4. Exit code semantics: stacking is warn-only and never affects exit code (per the original "warn, not block" requirement); field-activation ALERTs return 1.
-5. `tests/test_check_epoch_activation.py` — 17 cases (stacking window edges, field present/entirely-null/partially-null/no-files/nonzero-exit/timeout/malformed-output, CLI exit-code paths) via injected boundaries and mocked `subprocess.run`. Full suite: 2751 passed, 28 skipped, 0 failed.
-
-Not wired into a pre-commit hook or the bump workflow itself — it's a standalone script to run manually (`scripts/check_epoch_activation.py [--field X --artifact-glob Y] [--skip-vps]`) before/after committing a boundary, matching the "checklist/script" framing this task was registered under. Automatic invocation from the bump workflow, if wanted, is a future task.
-
-See DECISION_LOG.md 2026-07-21 (T-388 row), `scripts/check_epoch_activation.py`, `src/prediction_market_bot/logic_epoch.py`.
-
-## T-389 — CLAUDE.md lean-up: decaying state relocated, nav hub revived, GG-127 registered — ✅ DONE (content + push/deploy verified live, 2026-07-19)
-
-**Cowork session, no VPS/git-push access — see provenance caveat below before treating T-389 as a claimed/final ID.** Triggered by an operator question about CLAUDE.md bloat and whether a new user could discover things like the mathematical overview or continuous testing results. Investigated first: `00_ADMIN/README.md` already exists as the designated nav hub (ADR-0001) but `git log` showed it untouched since 2026-05-28, still describing Phase 0/G0 against a live Phase 6/7 ACTIVE system; `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` had the same pattern and was structurally *why* CLAUDE.md had absorbed live band-status state (its own stale caveat pointed readers back to CLAUDE.md instead of maintaining itself).
-
-**Done:**
-1. `EXECUTION_BANDS.md` — added a "Live Registry" section (band status moved verbatim from CLAUDE.md); header dates refreshed.
-2. `CLAUDE.md` — embedded NBA/MLB band-status list and the 3-paragraph commercial-validation-gap history replaced with pointers to EXECUTION_BANDS.md and GOVERNANCE_GAP_LOG.md GG-004. **Vision/hard-rules/session-start-protocol explicitly untouched** — operator confirmed mid-session this must stay "permanently stamped."
-3. The one fact that existed only in CLAUDE.md (2026-07-10 T-320/T-321 raw_n=214/clean_n=65 detail) migrated verbatim into `GG004_ev_validation_benchmark_history.md` before removal — no information destroyed, only relocated.
-4. `00_ADMIN/README.md` fully revived — current phase/gate table, expanded "Where to Find Things" (added the categories the operator asked about: mathematical overview, continuous testing results, latest strategic update, commercial-validation status), Canonical Artifacts table replaced with a MEMORY_BANK.md pointer (avoids a second hand-maintained index), new honest "Compass Health" section documenting the 7-week staleness finding.
-5. `.claude/hooks/governance_scan.sh` — new nav-hub staleness check (ALERT if README.md's Last Reviewed >14 days), mirrors the existing register-parity check; `bash -n` syntax-checked, logic unit-tested standalone.
-6. `GOVERNANCE_GAP_LOG.md` GG-127 registered (Core, IN PROGRESS) for the underlying process gap: the weekly DIR cadence this project's own Compass OS workflow prescribes has never actually been enforced.
-
-**Not done / open:** the weekly DIR cadence itself is still documented intent only — GG-127's Status field explicitly leaves this open (detection mechanism now exists via the nav-hub staleness check; the cadence itself still does not run on its own). **Push/deploy: confirmed live 2026-07-19** — a follow-on session with push access verified all 8 touched files present at `HEAD` (`45225ea`), `origin/main` in sync, `governance_scan.sh` run for real (NAV-HUB STALENESS section clean, README.md 0 days old). **ID provenance: resolved 2026-07-19** — GG-127 and T-389 confirmed next-free (no collision against any other session in `SESSION_CLAIMS.md`), retroactive claim row added since the original Cowork session couldn't run `claim_session.sh`. Both IDs are final as originally assigned.
-
-See DECISION_LOG.md 2026-07-19 (T-389 row + verification row), GOVERNANCE_GAP_LOG.md GG-127, `00_ADMIN/README.md`, `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md`.
 
 ## T-394 — GG-132: re-consolidate MEMORY_BANK.md's `**Last reviewed:**` narrative chain (52→1) — OPEN, registered 2026-07-21
 
@@ -248,32 +154,6 @@ Anti-predictive/edge-monotonicity guards (GG-037/T-177) are only wired to the T1
 
 ---
 
-## SESSION 119 — GG-087 RESOLVED, GG-077 STILL DEFERRED (2026-07-05)
-
-**Governing instruction:** operator was asked how to sequence GG-087 (T4 MLB YES-only bug, high-impact — 41.6x discarded NO-side signal) vs. GG-077 (T1 sign bug, smaller impact, already registered) and chose **"GG-087 first, alone"** — build the NO-direction branch before touching GG-077.
-
-1. ✅ **GG-087 RESOLVED — bidirectional (YES/NO) execution branch built in `run_t4_mlb_live.py`.** Replaced the hardcoded `direction = "YES"` / `if gross_edge <= 0.0: continue` pair with direction derived from `gross_edge`'s sign; `directional_net_edge = abs(gross_edge) - kalshi_fee` computed fresh rather than reusing GG-077's buggy unflipped-edge pattern. Second bug found+fixed in the same change: flat T4 sizing (`approved_size = mip`) is YES-price-only — NO contract price is `1 - mip`. Confirmed via code read (not assumed) that `risk.py::evaluate_forecast()` and `paper_trader.py::open_position()` already correctly flip direction internally, so neither needed changes. Docstring + FIRED log line updated to match.
-2. ✅ **Tests:** `tests/test_run_t4_mlb_live.py` — added `test_fires_no_when_p_t4_clearly_below_mip`; renamed/redesigned `test_no_fire_when_p_t4_below_mip` → `test_no_fire_when_edge_insufficient_either_direction`; redesigned `test_none_batting_slots_defaults_gracefully` and `test_cycle_log_written_on_normal_path_when_not_fired` (their old scenarios are now correct, large NO fires under the fix, not non-fires). Targeted suite 141/141 passing; full repo suite 2,364 passed / 7 skipped / 1 pre-existing unrelated failure (`test_feature_csv_freshness`, confirmed unrelated).
-3. ✅ **Governance:** GOVERNANCE_GAP_LOG.md GG-087 Status/Resolution updated OPEN → RESOLVED. DECISION_LOG.md new entry added 2026-07-05 (implementation, distinct from the earlier investigation-only entry).
-4. ✅ **Deploy:** committed `47ada94`, pushed to `origin/main`, VPS `git pull` fast-forwarded clean, `systemctl restart t4-mlb` confirmed active (no crash-loop, clean start in journalctl).
-5. 🟡 **Not started — next decision point:** GG-077 (T1 MLB `fee_net_edge` sign-convention bug, `paper_trader.py::open_position()` line 421) remains explicitly deferred per the operator's own sequencing choice. Flag to operator for a decision on whether to pick it up next.
-
----
-
-## SESSION 2026-07-03 — Item 1 (GG-004/EXP-017 MLB) COMPLETE; T-232 registered for Item 2's GG-077 production-side follow-up
-
-Standing operator instruction: "complete the first two [priority items — (1) EXP-017 MLB real-data run, (2) GG-071/T-223 ruin-risk review] with full institutional depth, then report back prior to starting 3-5."
-
-1. ✅ **T-184's `scripts/run_exp017_mlb.py` run against real MLB data (n=49) — COMPLETE [2026-07-03].** Verdict DIRECTIONAL_POSITIVE, EV=+$2.0408/bet, win=53.1%, below ADR-0024 tiers. Two loader bugs found and fixed (kalshi_threshold field mismatch; fee_net_edge sign convention). GG-004 updated, GG-077 registered. Full detail: DECISION_LOG.md 2026-07-03, GOVERNANCE_GAP_LOG.md GG-004/GG-077.
-
-2. ✅ **T-232 (GG-077 follow-up) — magnitude quantification CLOSED 2026-07-05, analysis-only; code fix decision still open.** `c5_execution/paper_trader.py::open_position()` stores `fee_net_edge` always YES-frame-signed, never flipped for NO-direction bets (confirmed: the same function DOES flip sign for the sibling `fee_contaminated` field via `_directional_gross`, three lines below, but not for `fee_net_edge` itself), and CHECK 3 (`risk.py`) gates on this buggy value directly. **Quantified 2026-07-05 against 2 independent real VPS datasets** (56 closed positions in `paper_portfolio_mlb.json`; 63 scored records in `audit_mlb_edge_decisions.jsonl`, which also captures rejections) — both agree exactly: 12 flips, 100% false-approvals, 0 false-rejections, a deterministic `2 x fee_per_contract` overstatement for every NO bet (proof: `abs(stored)=|gross_edge|+fee`, `abs(true)=|gross_edge|-fee`). 12/56 (21.4%) of closed positions were approved with true edge below the 0.04 policy floor ($82.50 stake, +$3.48 P&L vs. book-wide +$94.80/$664.69) — still net-positive, thinner than intended. Does not change settled P&L or invalidate EXP-017's verdict. **Remaining, unchanged:** operator/DS decision on whether/how to correct `paper_trader.py`'s stored-field semantics and `run_mlb_paper_trade.py`'s gating formula going forward — this is live, cron-active T1 MLB betting logic, not touched without sign-off per this project's capability-boundary language. See GG-077 in GOVERNANCE_GAP_LOG.md for full derivation and evidence; DECISION_LOG.md 2026-07-05.
-
-3. ✅ **T-241 (NEW, registered + RESOLVED 2026-07-05) — ESPN-boxscore fallback for MLB resolution, mitigating GG-084's IP block.** GG-084 (MLB Stats API `gameLog` endpoint blocked from the VPS's DigitalOcean IP, HTTP 406) reconfirmed still live via direct curl this session — T-239's circuit breaker only shortens wasted retry time, it doesn't restore resolution, so the unresolved-position backlog grows every day the block persists. Built `_espn_fetch_hits()`/extended `fetch_actual_hits()` in `run_resolve_mlb.py` to fall back to `site.api.espn.com` (separate host/CDN, already proven reachable by `run_t4_mlb_live.py`'s live-poll path) when both MLB Stats API attempts return `None` and a player name is available. Only trusts ESPN games confirmed `STATUS_FINAL`/`STATUS_POSTPONED` (mirrors GG-069). 12 new tests + 3 pre-existing mock-signature fixes; full targeted suite 63/63, full repo suite 2,363 passed/7 skipped/1 pre-existing unrelated failure. Committed, pushed, deployed to VPS (cron-invoked, no systemd restart needed — next 06:30 UTC `run_resolve_mlb.py` cron picks it up automatically). See DECISION_LOG.md 2026-07-05.
-
-**Outstanding judgment call, still not decided as of 2026-07-05:** whether to manually trigger `run_resolve_mlb.py` now (against the backlog of positions stuck open by GG-084, now that the ESPN fallback is deployed and can actually clear them) vs. waiting for the next scheduled 06:30 UTC cron run. Now more actionable than when first raised, since the fallback is live — flag to operator for a decision.
-
----
-
 ## NEXT SESSION — HIGH PRIORITY (set 2026-07-02 SESSION 111 CONTINUATION CLOSE)
 
 **GG-069 (OPEN, MEDIUM, no task number assigned yet) — `fetch_actual_hits`/`_fetch_mlb_hits` (`run_resolve_mlb.py`) has no FINAL-game-status gate.** It queries the MLB Stats API `gameLog` endpoint and returns whatever hit total is present for the matching `game_date`, with no check of `abstractGameState`/`codedGameState`. `gameLog` updates live mid-game, so in-progress games can and do resolve with partial hit totals. Production is only incidentally shielded by `_resolve_pool()`'s `game_date < today` calendar filter (not a true completion gate — doubleheaders, suspended/postponed games, and post-midnight-UTC finishes all evade it); the new backtest runners have no such filter at all and are directly exposed. Discovered when the real `EXP-ARITH-MLB-01` run against `SNAP-2026-07-02-001` (both source games still in progress at freeze time) unexpectedly resolved 7 bets — traced to this defect via a background Explore agent + direct code read. **Next session should register a task number and add a real completion gate** (ESPN `STATUS_FINAL` check, matching the pattern already used correctly in `run_t4_mlb_live.py`/`reconstruct_mlb_score_diff.py`/`poll_and_resolve_g1.py`) to both `_resolve_pool()` and any backtest resolution call site. Zero capital risk today (paper trading, and the corrupted resolutions were in a research backtest, not a real bet) but it is a live correctness bug in the shared production resolution primitive.
@@ -338,24 +218,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 110 (CONTINUATION #2) — EXP-ARITH-MLB-01 BACKTEST RUNNER BUILT + DEPLOYED; GG-067 DOC CORRECTIONS COMPLETE (2026-07-02)
-
-**Opening instruction (session start, before any compaction, never repeated):** "Session open - then immediately finish off the remaining T-4 sub-band components (most pressing issue is building the EXP-ARITH-MLB-01 backtest runner to start moving T4M-ARITH off blocked status). Any remaining tasks with the T-4 sub-bands needs to be addressed, pushed, committed, logged and completed in this session. Proceed with full institutional depth."
-
-**GG-067 registered and resolved (doc correction only, no code implication):** two false data-source claims discovered in the T4M-ARITH/T4M-FLOW experiment design docs — (1) both docs claimed a per-cycle raw context log already existed; it did not — only `dry_run=True` persisted anything, and that path is not the live production path. (2) `EXP-FLOW-MLB-01.md` additionally claimed `t4_price_cache.py` was the live MLB Kalshi price source; it is not — that module is Phase-8-BLOCKED NBA-oriented infra, never imported by `run_t4_mlb_live.py`'s live loop, which instead populates `live_prices: dict` directly from `pm.mid_price`/`pm.vig`. Both docs corrected to cite the real source, `logs/t4_mlb_cycle_log.jsonl`, once built (see next).
-
-**Production fix (T-219 continuation):** added unconditional per-cycle raw-context logging to `run_t4_mlb_live.py` — every live evaluation cycle now appends a JSONL record (including a `game_date` field, added mid-session after a schema-gap review) to `logs/t4_mlb_cycle_log.jsonl`. New tests added (`TestProductionCycleLog`, including `_REQUIRED_FIELDS` schema assertion). This is what makes the GG-067 doc corrections true rather than aspirational — the log now actually exists in the live code path.
-
-**Backtest runner built:** `scripts/run_exp_arith_mlb_01.py` (36 tests, 36/36 passing) grid-sweeps T4M-ARITH's `entry_window`/`confidence_gate` constants against `logs/t4_mlb_cycle_log.jsonl`, resolving real outcomes via `fetch_actual_hits` (MLB Stats API) through a dependency-injected resolver (`build_resolution_cache(cycles, resolver)`) so CI makes zero live network calls. Key design insight: because `T4MlbArithEvaluator` reuses the exact same frozen binomial `p_hits_gte_threshold(...)` function with the exact same inputs as the already-live T4M-PROJ evaluation, a cycle-log record's `p_t4` field is mathematically identical to `p_arith` for that record — no separate arithmetic re-derivation needed in the backtest. Applies ADR-0024 commercial validation tiers (Tier 1 n≥150, Tier 2 n≥500) and the T-177/GG-037 edge-monotonicity guard (Fisher's exact test → MONOTONIC/ANTI-PREDICTIVE/INCONCLUSIVE) to whatever data accumulates. Chronological (no-shuffle) splitting per project-wide temporal-integrity policy. Kalshi taker fee (`0.07 × mip × (1-mip)`) applied in P&L.
-
-**Result as of this session's close: BLOCKED, not run — by design, not by omission.** The cycle log had zero records at deploy time because the logging feature only went live with this session's own deploy, and no MLB game was in progress at the 16:34 UTC deploy moment. `T4M-ARITH` correctly remains `status="BLOCKED"` in the ADR-0039 sub-band table — infra/code authorization is not the same thing as data existence, which is not the same thing as capital authorization. The runner is tested and ready; it has nothing to backtest yet. Next real game day populates the log; then `scripts/run_exp_arith_mlb_01.py` produces the actual (likely still-INCONCLUSIVE-at-low-n, but real) result.
-
-**T4M-FLOW deliberately not advanced this session** beyond the GG-067 doc correction, per the explicit session-opening instruction prioritizing ARITH. Its backtest runner does not exist yet and cannot be built as a simple copy of ARITH's — F-FLOW-01 (score_diff/inning reconstruction) is still "NOT YET WIRED" (`T4MlbGameContext.score_diff` defaults to `0.0`, never populated from a live poll), which the FLOW runner needs to define its "sustained blowout" sample. This is real, unstarted work, tracked as item 0b above.
-
-**Deploy judgment call (logged in DECISION_LOG.md as `[SESSION 110 CONT. / DEPLOY]`):** unlike SESSION 109's docstring-only VPS sync, this session's change adds a live unconditional file write to the running process's execution path — required an explicit `systemctl restart t4-mlb` (not just `git pull`) to activate. Restart verified clean (`active (running)`, no errors), no open T4 MLB positions were in flight at restart time. Full suite: 2235 passed, 7 skipped, 1 pre-existing unrelated failure (`test_feature_csv_freshness`, stale local fixture, unchanged from prior sessions). Committed `b924f1d` (runner + doc corrections) and `e91734c` (deploy decision log entry), pushed to `origin/main`, VPS confirmed synced at `e91734c`.
-
----
-
 ## SESSION 109 — T-219 REGISTERED: ADR-0039 SCOPED DS SIGN-OFF RECEIVED (2026-07-02)
 
 **Session opened by independently re-verifying the prior session's parallel-thread claim that GG-053/GG-062/T-216/T-217 were "confirmed via commit & VPS-deployed and verified":** local `git log` HEAD and VPS `git log` HEAD both matched at `46dc42c`; `systemctl status t4-mlb` showed exactly one process (PID 808451, ~8h uptime). Claim independently confirmed true, not just asserted.
@@ -395,36 +257,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 108 — T-217/GG-063 RESOLVED (2026-07-01)
-
-**Operator instruction (verbatim intent): finish T-217 — thread the real Kalshi response body through `submit_order()`'s error path to diagnose the HTTP 410 failures, then verify with a manual test order; scope T-211 under a new task/ADR. Mid-session scope check via AskUserQuestion (root cause turned out to be a full v1→v2 order-API migration touching immutable ADR-0008) — operator selected "Migrate now, ADR after."**
-
-- Root cause isolated: Kalshi hard-deprecated `POST /portfolio/orders` (v1) platform-wide (`deprecated_v1_order_endpoint`). NBA's 73% historical success rate predates Kalshi's v1 enforcement (zero HTTP 410s in NBA's 158-bet history); MLB's 100% failure rate is a timing artifact, not a code-path divergence.
-- Fix: `kalshi_client.py submit_order()` migrated to `POST /portfolio/events/orders` (v2) with correct schema (`bid`/`ask` side, fixed-point decimal `count`/`price` strings, `time_in_force`, `self_trade_prevention_type`), plus the originally-scoped error-body threading (`_post()`'s `body`/`detail` now reaches the caller instead of being discarded behind a bare `f"HTTP {r.status_code}"`).
-- Verified empirically against DEMO with a real manual test order: error type changed 410→409 (`market_closed`, all 60 open KXMLBHIT markets were next-day at test time) — confirms the v1 deprecation wall is gone; full 200/201 confirmation deferred to the next live cron run against a genuinely active market. Ticker-mismatch hypothesis explicitly disproven (`GET /markets/{ticker}` returned HTTP 200 on both DEMO and LIVE).
-- New governance: GG-063 flipped to RESOLVED; **GG-064** registered (OPEN, LOW) for the unconfirmed DEMO `open_time` lag observed during verification — needs one real cron-run observation to close either way, zero capital risk.
-- Tests: 52/52 kalshi-specific pass; no regressions introduced (17 pre-existing failures are the parallel session's T-212 fixture work, untouched here).
-- Scope discipline: only `kalshi_client.py` touched in code; `data_contracts.py`/`validators.py`/the three T-212 pipeline files left untouched per operator instruction.
-- **T-211 not started this session** — remains next priority (see "NEXT SESSION — HIGH PRIORITY" above).
-- **Still pending at session pause:** ADR-0008 superseding addendum (governance deliverable owed per "migrate now, ADR after"), git commit of `kalshi_client.py` + this session's governance doc edits (must not touch the parallel session's `data_contracts.py`/`validators.py`/pipeline files/DECISION_LOG entry), VPS deploy.
-
----
-
-## SESSION 108 (PARALLEL THREAD B) — T-212 REGRESSION CLOSED, T-213 PHASE 1 CODE COMPLETE (2026-07-02)
-
-**Continuation of SESSION 107's paused work (below) in a fresh context window. Operator instruction (verbatim intent): apply the fully-diagnosed 17-test regression fix from `SESSION_HANDOFF_20260702_0045.md`, confirm `pytest tests/ -q` clean, then build T-213 Phase 1 (GG-060, C4 Edge Accounting). "Do not break or crack or damage any components... institutional sprint... permission to proceed."**
-
-- **T-212 regression CLOSED.** Class 1 (11 fixture-expansion fixes across `test_generate_mlb_features.py`, `test_run_mlb_paper_trade.py`, `test_run_mlb_pregame.py`): expanded minimal synthetic fixtures/inline DataFrames to the full required-column set per `_MLB_BATTER_COLUMNS`/`MLB_FEATURE_CSV_CONTRACT`, preserving every value downstream assertions depend on (no weakening of the contract — fixtures were fixed, not the contract). Class 2 (`test_t193_mlb_freshness_guard.py::TestFreshnessGuardInSourceCode`, 6 tests): retired as dead-code-assertion tests — they grepped source for T-193's ad hoc freshness constants (`_FRESHNESS_WARN_DAYS` etc.) which T-212's `assert_contract()` deliberately superseded and removed; behavioral coverage (halt on stale data, warn below threshold) is now owned by the T-212 validator path. `pytest tests/ -q` confirmed clean post-fix. Closure logged to DECISION_LOG.md (SESSION 108 entry, distinct from the SESSION 107 T-212 build entry).
-- **T-213 Phase 1 (GG-060, C4 Edge Accounting) built.** `RiskEngine.evaluate_forecast()` in `risk.py` renamed to `_evaluate_forecast_impl()`; new thin public `evaluate_forecast()` wraps it and calls `_emit_edge_decision()` after every invocation — for every outcome (approval, insufficient-edge rejection, phase-gate-closed, kill-switch), not just approvals. Opt-in `edge_logger: AuditLogger | None` constructor param (backward-compatible — `None` is a no-op, matching the `run_t4_mlb_live.py` caller-owned-sink precedent, keeping C4 sport-agnostic). Writes to `audit_mlb_edge_decisions.jsonl`, separate from the primary C6 audit trail to avoid volume inflation at ~1,000 evals/game (CLAUDE.md hard rule #9). New module function `summarize_edge_run(edge_log_path, session_id=None)` classifies a run: PIPELINE_BROKEN (0 evaluations) / NO_EDGE (evaluations ran, 0 edge_signal) / RISK_REJECTED (edge signals existed, 0 approved) / ACTIVE (≥1 approved) — directly resolves GG-060's core ambiguity (inverse of GG-049). Also returns `silent_success_flag` (True at ≥50 evaluations with 0 edge signals) and `rejection_reason_counts`. Edge-sink write failures are a WARNING on the primary logger, not a kill-switch-triggering False — this is a secondary analytics sink, NFR-03 governs the canonical C6 trail only, not this one.
-- Wired live into `run_mlb_paper_trade.py` (T1 MLB) — both `RiskEngine(...)` construction call sites pass `edge_logger`. **Not yet wired:** `run_t4_mlb_live.py`, `run_t2_mlb_sameday.py`, EXP harnesses (Phase 2+ scope, see NEXT SESSION item 5 above).
-- Known gap: vig field pass-through to the edge-decision record has a Phase 2 TODO, not fixed this session.
-- **Tests:** 16 new tests added to `tests/test_c4_risk.py` (50→66 passing) — covers edge-decision emission across all outcome paths (approval, insufficient-edge, phase-gate-closed, kill-switch, vig pass-through, write-failure isolation) and `summarize_edge_run()`'s full classification matrix (all 4 states, `silent_success_flag` boundary at exactly 50, session_id filtering, rejection-reason aggregation). All real JSONL round-trips via `tmp_path` + real `AuditLogger`, matching the file's existing convention of testing real behavior over mocks.
-- **Full suite + mypy strict (T-212/T-213 close-out task):** `pytest tests/ -q` → 2171 passed, 6 skipped, 1 pre-existing non-regression failure (`test_feature_csv_freshness`, already documented, unrelated). mypy was not installed in `.venv311` despite being a declared dev dependency — installed (`mypy>=1.9.0,<2.0`, matching `pyproject.toml`). Ran `mypy --strict` against `risk.py` and `run_mlb_paper_trade.py` for the first time ever against this codebase: zero new errors trace to T-213 code (cross-referenced every error line number against the T-213 diff — no overlap). ~29 pre-existing errors found (missing `py.typed` markers across effectively every in-repo package, missing `pandas-stubs`, untyped dict/list generics, 2 `requests.get(params=...)` type mismatches) — registered as **GG-065** (OPEN, LOW-MEDIUM, zero capital risk, no task number assigned yet) rather than either silently ignored or scope-crept into an out-of-scope remediation.
-- **Governance updates this session:** T-213 build decision logged to DECISION_LOG.md (hard rule #7). GG-065 registered in GOVERNANCE_GAP_LOG.md before any remediation discussion (per that file's own invariant). GG-060 status updated OPEN→IN PROGRESS (Phase 1 of its 5-item resolution path code-complete and tested; Phases 2/4/5 + T4/T2/EXP wiring remain open). MEMORY_BANK.md "Last reviewed" updated to SESSION 108, documenting both the T-212 closure and T-213 Phase 1 completion (superseding the SESSION 107 "PAUSED, T-213 NOT STARTED" placeholder). This file (TODO_NEXT.md) updated same pass.
-- **Nothing committed to git yet from this thread.** Pending a commit/VPS-deploy decision — see NEXT SESSION item 1 above for the two-parallel-thread reconciliation note.
-
----
-
 ## SESSION 107 — IN PROGRESS, PAUSED AT CONTEXT LIMIT (2026-07-01) — T-212 regression + T-213 Phase 1 closed out in SESSION 108 above
 
 **Operator instruction (this session, verbatim intent): "Build T-212 and T-213 — these are significant builds. Apply with appropriate hygiene protocol and alignment with the project's vision — read and extract appropriate components to match suitability. Proceed with institutional depth."** Session paused at ~100% context before T-213 was started. Resume directly with T-213 Phase 1 (or the T-212 test-fixture regression below) — no further scoping conversation needed.
@@ -446,50 +278,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 106 — ITEMS 1–3 COMPLETE, ITEM 4 DEFERRED (2026-07-01)
-
-**Operator instruction: work items sequentially, institutional depth — (1) GG-058, (2) T1 MLB 50-bet anomaly, (3) GG-057 dashboard governance trail, (4) T-211/MLB sub-bands deferred until after 1-3.**
-
-| Task | Status |
-|------|--------|
-| **GG-058 — T4 MLB UTC-midnight rollover fix** | ✅ COMPLETE. Merge-in fix (`_espn_game_status`, `_rollover_game_ids`) replaces destructive `game_ids[:] = _espn_mlb_game_ids_today()`. Also fixed related pregame-context `.clear()`-before-`.update()` silent-drop risk. 10 new tests. Suite: 2159 passed, 2 pre-existing unrelated failures. Commit `aaf1a9f`, pushed, VPS deployed (clean `git pull`, single-process restart verified, PID 795806). T-215 registered. |
-| **GG-062 — Dual concurrent `t4-mlb` sessions recurred (~1h48m, Jun 30–Jul 1)** | Registered and documented (GOVERNANCE_GAP_LOG.md + DECISION_LOG.md), committed in `aaf1a9f`. `pkill -f`-based singleton guard proven race-prone. T-216 registered for PID-file-lock replacement. **Not yet implemented** — OPEN, MEDIUM-HIGH priority. |
-| **T1 MLB 50-bet anomaly** | ✅ CLOSED — not a bug. The 2-bet (06-30) → 50-bet (07-01) jump is fully explained by the SESSION 102 YES-ONLY gate rescission (06-30's 11:00 UTC cron ran before that day's deploy landed; 07-01 is the first full day with the gate off). Checked for a duplicate/re-bet bug on top: 50/50 unique `(kalshi_ticker, kalshi_threshold, direction)` combinations, zero duplicates. DECISION_LOG entry written. No code change required. |
-| **GG-063 — 100% of all MLB Kalshi order submissions have failed since inception (NEW, byproduct finding)** | Surfaced while ruling out the duplicate-bet bug above. Full-history census: T1 MLB 52/52 and T4 MLB 15/15 positions all show `kalshi_order_status: "failed: HTTP 410"` — zero successes ever, vs. NBA T1's 73% success rate on the identical code path. MLB-series-specific; root cause not yet isolated (actual Kalshi error body is discarded before logging). Registered GOVERNANCE_GAP_LOG.md + DECISION_LOG.md. T-217 registered (thread real error body through first, then diagnose). **Not fixed this session** — diagnostic-only, zero capital risk (paper mode, local ledger remains G6-authoritative), but HIGH evidentiary priority: ADR-0008's "two-level confirmation" has never been achieved for MLB. |
-| **GG-057 dashboard governance trail** | ✅ RESOLVED. Dashboard files (`web_dashboard.py`, `pmbot-web-dashboard.service`, `Open Dashboard.command`) were already committed (`b247cf2`, SESSION 104) — that commit's message claimed to resolve GG-057 but the retroactive DECISION_LOG entry and MEMORY_BANK.md line (resolution-path steps 2–3) had never actually been done. Both completed this session: DECISION_LOG retroactive entry written; MEMORY_BANK.md "Last reviewed" line updated with SESSION 106 summary. GOVERNANCE_GAP_LOG.md Status → RESOLVED. |
-| **T-211 / MLB T4 sub-bands** | Items 1–3 now complete. Remains DEFERRED per operator instruction pending explicit go-ahead. Note: T-211 was already VACATED in SESSION 105 (ADR-0037) — any future MLB sub-band work needs its own new task number and ADR, not a resurrection of T-211. |
-
----
-
-## SESSION 104 — COMPLETE (2026-06-30)
-
-| Task | Status |
-|------|--------|
-| **NBA tabling directive** | ✅ COMPLETE — All NBA engineering tabled until ~1 month before 2026-27 season tip-off (operator directive Earl Ignacio 2026-07-01). MLB is sole active development priority. Standing directive logged in TODO_NEXT header and MEMORY_BANK. |
-| **ADR-0036 created** | ✅ COMPLETE — `03_DECISIONS/ADR-0036_phase8-partial-activation-paper-trading.md`. Phase 8 partial activation paper-trading exemption. ACCEPTED DS sign-off Earl Ignacio 2026-06-30. |
-| **DECISION_LOG updated** | ✅ COMPLETE — ADR index entries for ADR-0035 + ADR-0036 added. Header updated to SESSION 104. SESSION 104 Phase 8 judgment call entry added. |
-| **GOVERNANCE_GAP_LOG updated** | ✅ COMPLETE — GG-038 Status: paper-trading exemption noted (T4FastHalt already built SESSION 71). GG-039 Status: paper-trading exemption noted (45s polling sufficient for paper). GG-040 Status: partially resolved — data-sufficient sub-bands unblocked; data-deficient remain gated. |
-| **T-210 registered** | ✅ COMPLETE — Dual concurrent T4 sessions fix (supersedes T-209). See SESSION 104 OPEN ITEMS. |
-| **T-211 registered** | ✅ COMPLETE — Phase 8 partial activation code change. Blocked on T-210. See SESSION 104 OPEN ITEMS. **❌ VACATED SESSION 105 — see below: ADR-0036 conflated the NBA T4 engine with MLB.** |
-
----
-
-## SESSION 105 — COMPLETE (2026-07-01)
-
-**Governance-only session. No code changes.**
-
-| Task | Status |
-|------|--------|
-| **T-211 halted before implementation** | ✅ COMPLETE — Before writing the `_PHASE8_ACTIVE = True` code change, `t4_execution_engine.py` was read in full. It is the **NBA** T4 sub-band engine (ADR-0029, SESSION 66-67): `quarter: int` field, `pts_so_far`/`stat_type="pts"` (points props), `GamePhase` thresholds at 44/36/24 minutes (48-min NBA game), sole consumers `t4_live_runner.py`/`t4_price_cache.py` (both NBA-only per CLAUDE.md's own T4 band description). `run_t4_mlb_live.py` (the real, live MLB T4 runner) has zero imports of any of this — confirmed via exhaustive grep. No MLB equivalent of the ADR-0029 sub-band architecture exists anywhere in the codebase. This directly conflicts with this same session's (SESSION 104) standing NBA-tabling directive above, which explicitly lists `t4_live_runner.py`/`t4_price_cache.py` as off-limits. Flagged to DS via AskUserQuestion before any code was written. |
-| **DS decision** | ✅ COMPLETE — Earl Ignacio: **"Halt T-211, correct ADR-0036."** Rejected both activating the NBA engine anyway and building a new MLB sub-band system as unauthorized scope. |
-| **ADR-0037 created** | ✅ COMPLETE — `03_DECISIONS/ADR-0037_correction-adr0036-nba-mlb-conflation.md`. Supersedes ADR-0036's Implementation Prerequisite/Governance Impact/Tasks Registered sections (T-211 specifically); does not touch ADR-0029 (Tier A remains frozen). Vacates T-211. ACCEPTED, DS sign-off Earl Ignacio 2026-07-01. |
-| **GG-061 registered** | ✅ COMPLETE — Process gap: ADR drafting did not verify the target file/system matched the sport domain the ADR's rationale described, before authorizing a runtime flag change. |
-| **GG-038/GG-039/GG-040 reverted to OPEN** | ✅ COMPLETE — ADR-0036's paper-trading exemptions (GG-038, GG-039) and partial resolution (GG-040) retracted in `GOVERNANCE_GAP_LOG.md`. The underlying technical facts cited (T4FastHalt exists; 45s polling feeds `fetch_player_points_markets()`) are true but describe the NBA runner, not any MLB exemption. No MLB sub-band data-sufficiency check has actually been performed. |
-| **DECISION_LOG updated** | ✅ COMPLETE — ADR-0036 row annotated SUPERSEDED; new ADR-0037 row added to ADR index; header updated to SESSION 105. |
-| **T-211 status** | ❌ **VACATED, not reassigned.** If a real MLB sub-band system is later desired, it requires its own ADR scoped to code that actually exists — not authorized here. |
-
----
-
 ## SESSION 104 — OPEN ITEMS
 
 | Task | Priority | Description |
@@ -505,19 +293,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 103 — COMPLETE (2026-06-30)
-
-| Task | Status |
-|------|--------|
-| **GG-052 root cause diagnosis** | ✅ COMPLETE — Audit JSONL forensics confirmed: all halts fire at same second per cycle (sub-second `_run_cycle()` confirms window expired before entry, not during). Kalshi paginated fetch (3+ pages × 4+8+16+32s backoff) = 60–130s. `cycle_start_at` captured before fetch → window always expired. |
-| **GG-052 fix: `cycle_start_at = snapshot_fetched_at`** | ✅ COMPLETE — 2-line fix in `run_t4_mlb_live.py`. `cycle_start_at` now set after `snapshot_fetched_at = datetime.now(timezone.utc)`, after Kalshi fetch completes. Commit `bbaf86a`. |
-| **VPS deploy + t4-mlb restart** | ✅ COMPLETE — `bbaf86a` deployed, `systemctl restart t4-mlb` confirmed. |
-| **GG-052 registered in GOVERNANCE_GAP_LOG.md** | ✅ COMPLETE — Entry added STATUS=RESOLVED 2026-06-30 SESSION 103. |
-| **T-209 registered** | ✅ COMPLETE — Dual concurrent T4 sessions doubling Kalshi API rate-limit pressure. Superseded by T-210 (SESSION 104). |
-| **Tests** | ✅ 2109/2109 (unchanged — 2-line logic fix, no test file modifications) |
-
----
-
 ## SESSION 103 — OPEN ITEMS (carry forward to SESSION 104)
 
 | Task | Priority | Description |
@@ -527,31 +302,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 | **T-206 (EXP-T4-01 re-run)** | MEDIUM | Needs ≥500 clean unique T4 markets post-GG-050 fix. GG-046 OPEN. Multiple game weeks required. |
 | **NBA drawdown blocker** | MEDIUM | NBA paper book at 24.9% drawdown vs 20% kill switch threshold. Off-season now; ADR-0035 ACCEPTED (reset at 2026-27 season start, October 2026). |
 | **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run `scripts/run_exp017_mlb.py`. GG-004 OPEN. |
-
----
-
-## SESSION 102 — COMPLETE (2026-06-30)
-
-| Task | Status |
-|------|--------|
-| **T2 MLB crash fix** | ✅ COMPLETE — `TypeError: MLBIngestionClient.__init__() got an unexpected keyword argument 'session_id'` fixed. Stale kwarg removed from `run_t2_mlb_sameday.py:274-278`. T2 was dark June 26–30. Commit `4055e59`. 2109/2109 tests. |
-| **MLB YES-ONLY gate rescinded** | ✅ COMPLETE — DS sign-off Earl Ignacio. `MLB_PAPER_YES_ONLY=false` in T1 + T2 cron entries. Rationale: NBA anti-predictive finding proves YES-only gate injects calibration bias. |
-| **ADR-0035 ACCEPTED** | ✅ COMPLETE — NBA paper portfolio reset policy for 2026-27 season start (October 2026). DS+Operator sign-off Earl Ignacio 2026-06-30. |
-| **Governance artifacts committed** | ✅ COMPLETE — `5ae75a6` (ADR-0034, ADR-0035, YES-ONLY rescission, T2 MLB fix). |
-
----
-
-## SESSION 101 — COMPLETE (2026-06-29)
-
-| Task | Status |
-|------|--------|
-| **ADR-0034 Layer 3 Integration — 5 patches** | ✅ COMPLETE — All 5 patches applied in order: `__init__.py` exports (Patch 5), `monitor.py` SemanticContractMonitor wiring (Patch 3), `run_mlb_paper_trade.py` SemanticFloorGuard (Patch 1), `run_t4_mlb_live.py` canonical ContaminationGuard (Patch 2). |
-| **Naming collision resolution** | ✅ COMPLETE — Local `ContaminationGuard` renamed `LiveDataFreshnessGuard`. 8 test class references updated (`TestContaminationGuard` → `TestLiveDataFreshnessGuard`). Canonical imported as `SemanticContaminationGuard`. |
-| **Exception hierarchy correction** | ✅ COMPLETE — `test_violation_class_is_runtime_error` → `test_violation_class_is_exception`. Assertion: `issubclass(SFV, Exception)` (canonical hierarchy: `SemanticFloorViolation → SemanticContractError → Exception`). |
-| **assert_floor() optimization** | ✅ COMPLETE — MLB Stats API only called when `len(markets_by_player) == 0`. Zero latency overhead on clean runs. |
-| **25 new tests** | ✅ COMPLETE — `tests/test_semantic_contracts.py` (new file, 25 tests): 4 SemanticFloorGuard + 10 ContaminationGuard + 7 BandInvariantChecker + 4 SemanticContractMonitor. |
-| **Full suite** | ✅ 2151/2151 (7 skipped) — zero regressions. |
-| **VPS deploy** | ✅ `501c4ca` fast-forward deployed. DEPLOY OK. |
 
 ---
 
@@ -569,20 +319,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 100 — COMPLETE (2026-06-29)
-
-**Protocol-only session — no implementation work.**
-
-| Task | Status |
-|------|--------|
-| **Session-start protocol (Steps 1–4 + Q1–Q6)** | ✅ COMPLETE — All four steps run with paste output; ARE WE COMPROMISED Q1–Q6 run. |
-| **T1 MLB 0-player diagnostic** | ✅ DIAGNOSED (not new crisis) — `d5289a0` (T-206a fix) committed June 29 23:38 UTC, T1 cron runs 11:00 UTC → fix arrived 12.5h late. June 30 11:00 UTC cron is the first proof run. Fully explained by deployment timing, not a new bug. |
-| **T4 MLB portfolio verification** | ✅ — Post-GG-050 fix and portfolio reset confirmed clean: $1,000 / 0 open / 0 closed. |
-| **T3 MLB health** | ✅ — 26 CONFIRM / 17 FADE / 6 NEUTRAL for June 29 games. |
-| **Feature refresh warning noted** | ⚠️ LOW — `[WARN] No completed games for 2026` in PIPE-05FX log. TSS/PSS features may be zeroed. Does not prevent bets but may reduce model feature quality. |
-
----
-
 ## SESSION 100 — OPEN ITEMS (carry forward)
 
 *(same as SESSION 99 open items — no items resolved this session)*
@@ -594,19 +330,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 | **T-206 (EXP-T4-01 re-run)** | MEDIUM | Needs ≥500 clean unique T4 markets post-GG-050 fix. GG-046 OPEN. Multiple game weeks required. |
 | **NBA drawdown blocker** | MEDIUM | NBA paper book at 24.9% drawdown vs 20% kill switch threshold. Off-season now; needs resolution before NBA 26-27 season start (October 2026). |
 | **T1 MLB first commercial data** | LOW | After ≥30 T1 bets resolve, run `scripts/run_exp017_mlb.py`. GG-004 OPEN. |
-
----
-
-## SESSION 99 — COMPLETE (2026-06-29)
-
-| Task | Status |
-|------|--------|
-| **T-208 — Fix T4 MLB re-betting bug (GG-050)** | ✅ COMPLETE — `fired_tickers: set[str] = set()` was inside `_run_cycle()` (reset every cycle). Moved to game-day scope as `already_fired_game: Optional[set] = None`. Main loop passes shared set; clear at date rollover. 2113/2113 tests. `840025f` deployed to VPS. |
-| **EXP-T4-01 RETRACTED** | ✅ CORRECTED — SESSION 98 analysis wrong (n=1274 was 17.5× inflated by re-betting bug). True data: n=73 independent markets, EV=−$0.0025/market, INCONCLUSIVE. DECISION_LOG corrected. |
-| **GG-046 REOPENED** | ✅ — Wrong RESOLVED status corrected. GG-046 OPEN. Needs ≥500 clean unique markets post-fix. |
-| **GG-050 REGISTERED** | ✅ — Re-betting bug documented in GOVERNANCE_GAP_LOG. Code fix = T-208 complete. Portfolio reset required. |
-| **T4 portfolio reset** | ✅ — Contaminated `paper_portfolio_mlb_t4.json` backed up and reset to clean $1,000/0 positions on VPS. Clean accumulation begins tonight. |
-| **GG-048 RESOLVED** | ✅ — T-207 (S98): exponential retry in `run_resolve_mlb.py`. |
 
 ---
 
@@ -622,28 +345,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 98 — COMPLETE (2026-06-29)
-
-| Task | Status |
-|------|--------|
-| **T-207 — `run_resolve_mlb.py` exponential retry + alert** | ✅ COMPLETE — GG-048 RESOLVED. 2113/2113 tests. |
-| **T-206 — EXP-T4-01 initial analysis** | ⚠️ RETRACTED IN SESSION 99 — Initial analysis wrong (GG-050 bug inflated n). See SESSION 99. |
-
----
-
-## SESSION 97 — COMPLETE (2026-06-29)
-
-| Task | Status |
-|------|--------|
-| **T-206a — Real ticker fix (GAME_DD not CREATE_DD+1)** | ✅ COMPLETE — S96 fix was wrong. Real format `{CREATE_DD}{MON}{GAME_DD}{HHMM}`. New regex `r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}"` captures GAME_DD directly. `d5289a0` deployed. |
-| **GG-047 re-resolved** | ✅ — Updated governance log with real fix, noting S96 fix was wrong. |
-| **DECISION_LOG S97 entry** | ✅ — S96 wrong fix documented; real root cause (GAME_DD ≠ CREATE_DD+1) captured. |
-| **Tests** | ✅ 2113/2113 — 3 new test cases (multi-day early creation, ticker with 3-day gap). |
-| **VPS deploy** | ✅ `d5289a0` live. Contamination guard verified functional at 23:40 UTC manual run. |
-| **Pending verification** | 🔄 — June 30 11:00 UTC PIPE-05 cron is the real proof. Should show >0 players. |
-
----
-
 ## SESSION 97 — OPEN ITEMS (carry forward)
 
 | Task | Priority | Description |
@@ -651,19 +352,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 | **T-206** | **HIGH** | **Define and run EXP-T4-01 — condition MET (523+ resolved T4 bets).** T4 commercial validation. Win rate: 53.7% vs break-even ~21% (mip≈0.21). Compute: (1) win rate by mip bucket; (2) edge monotonicity (does higher ba_l10 → higher win rate?); (3) net EV per bet after 7% fee. If monotonic and positive: T4 microstructure alpha present. GG-046. |
 | **T-207** | LOW | **Add exponential retry to `_fetch_mlb_hits()` in `run_resolve_mlb.py`.** GG-048: June 27 morning PIPE-05R returned 406 for all players. No retry = all bets skip to 48h grace. Fix: 3× retry (5s/10s/30s) before returning empty. Alert if resolution run has ≥1 eligible position but 0 resolved. |
 | **Monitor June 30 PIPE-05** | HIGH | **First real T1 MLB bet window with correct ticker code: June 30 at 11:00 UTC.** Check `logs/paper_mlb_cron.log` — should show ">0 players in live MLB markets" and bets placed. If still 0, escalate immediately. |
-
----
-
-## SESSION 96 — COMPLETE (2026-06-28)
-
-| Task | Status |
-|------|--------|
-| **T-205 — T1 MLB ticker off-by-one (wrong fix)** | ✅ COMPLETE per S96, but wrong. S97 corrected to real fix (GAME_DD). |
-| **GG-047 + GG-048 registered** | ✅ COMPLETE — GG-047: ticker off-by-one (re-resolved S97). GG-048: MLB Stats API 406 retry (OPEN LOW, T-207). |
-| **DECISION_LOG entries** | ✅ COMPLETE — T-205 fix + Kalshi convention documented (S96). |
-| **ARE WE COMPROMISED? protocol** | ✅ COMPLETE — Q1–Q6 all run. Governance scan clean. GG-048 registered for Q6 concern. |
-| **Tests** | ✅ 2110/2110 — no regression |
-| **VPS deploy** | ✅ Commit `586c9ca` deployed. |
 
 ---
 
@@ -677,71 +365,12 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 
 ---
 
-## SESSION 95 — COMPLETE (2026-06-27)
-
-| Task | Status |
-|------|--------|
-| **ESPN stat group filter bug** | ✅ FIXED — `run_t4_mlb_live.py` filter corrected. T4 had 0 evaluations per cycle since launch. After fix: 1,154 evals + 50 fires in first 23 cycles. Commit `302ce84`. |
-| **T4 MLB startup self-heal** | ✅ COMPLETE — On startup, if current UTC time is past optimal PIPE-08 start, T4 immediately evaluates today's active games. Commit `982ef4f`. |
-| **PIPE-08 midnight-wrap bugfixes** | ✅ COMPLETE — T1 + T2 guards corrected for midnight-boundary date rollover. Commit `2d54029`. |
-| **T4 MLB → systemd (3-layer defense)** | ✅ DEPLOYED — `deploy/t4-mlb.service` + `deploy/t4-mlb.timer` + `deploy/install_systemd_t4_mlb.sh` created. `Restart=on-failure`, `WantedBy=multi-user.target`. cron.conf T4 line retired. VPS confirmed active. Commit `9f5b869`. |
-| **Date-rollover refresh** | ✅ COMPLETE — `run_t4_mlb_live.py` main loop: `_eval_date` tracking; at UTC midnight refresh game_ids, pregame dicts, batting_slots, band_budget. Part of `9f5b869`. |
-| **T4 MLB Kalshi demo wiring** | ✅ COMPLETE — `KalshiMarketClient.from_env()` init before PaperTrader; `kalshi_client=kalshi if _signing_ready else None`. ADR-0008 parity with T1. Commit `635d4af`. |
-| **T4 MC sim structural error corrected** | ✅ COMPLETE — 60× error found (per-cycle slots treated as session total). Corrected simulation: ~406 fires tonight, ~1,169 evals/game (matches CLAUDE.md spec). P_WIN sensitivity table produced. |
-| **ARE WE COMPROMISED? protocol** | ✅ RUN — All watchdog Q1–Q6 checks complete. T4 confirmed live and healthy. T1 "0 players matched" flagged as T-205. |
-| **Tests** | ✅ 2083 → 2110 (+27) — all passing |
-| **VPS deploy** | ✅ ALL 5 commits pushed + VPS deployed. T4 systemd active. 80 fires at session close. |
-
----
-
 ## SESSION 95 — OPEN ITEMS (closed out)
 
 | Task | Priority | Status |
 |------|----------|--------|
 | **T-205** | HIGH | ✅ COMPLETE SESSION 96 — `_ticker_to_game_date` +1 day fix. `586c9ca` deployed. |
 | **T-206** | LOW → HIGH | 🟡 CONDITION MET — 523 resolved T4 bets. Escalated to SESSION 96 open items. |
-
----
-
-## SESSION 94 — COMPLETE (2026-06-26)
-
-| Task | Status |
-|------|--------|
-| **T-203 — Edge calibration ADR (ADR-0033)** | ✅ COMPLETE — ADR-0033 ACCEPTED. MLB T4 uses `MIN_EDGE_TO_APPROVE = 0.04` (system default, C4, ADR-0020). No separate `MIN_EDGE_T4` variable. GG-007 NOT closed (unrelated). Provisional: calibrate empirically after ≥30 resolved T4 bets. |
-| **T-204 — Enable full MLB arm** | ✅ COMPLETE — `deploy/cron.conf` three changes: T4 MLB `T4_MLB_DRY_RUN=true` removed (T4 live), PIPE-05 (T1 MLB, 11:00 UTC) uncommented, PIPE-05.5 (T2 MLB, 19:30 UTC) uncommented. All 7 MLB crons active on VPS. First T1 bets fire June 27 at 11:00 UTC. T4 live as of 22:00 UTC June 26. |
-| **Gap 1 SESSION 93 error correction** | ✅ CORRECTED — SESSION 93 stated `_espn_poll_once_mlb()` returns current-batter only. Wrong — code reads all batting athletes from ESPN boxscore endpoint. ADR-0033 is authoritative correction. DECISION_LOG entry written. |
-| **ARE WE COMPROMISED? protocol** | ✅ RUN — All watchdog Q1–Q6 checks complete. T4 MLB arm confirmed live with all safety gates active (C4, kill switch, 27% band budget cap). No new critical gaps beyond already registered. |
-| **`scripts/run_session_report.py`** | ✅ COMPLETE — SSH-based session-start self-assessment script. 8 sections: VPS git HEAD, cron state, pregame freshness, portfolio state (4 pools), T4 throughput, recent bets, resolutions, cron error scan. Usage: `python3 scripts/run_session_report.py [--days N]`. |
-| **T4 sub-segment scoping** | ✅ DOCUMENTED — Phase 8 blocked (GG-038/039/040). Throughput already ~1,680 evals/game structural (3.5 players × 1.8 thresholds × 240 cycles). Strategy: watch tonight's T4 log; reduce POLL_INTERVAL_S 45s→15s only if materially below 1,000/game. |
-| **Strategic framing documentation** | ✅ COMPLETE — Four structural observations documented in DECISION_LOG SESSION 94 entry. GG-045 (market depth / capital ceiling) and GG-046 (T4 commercial validation separate from T1) registered in GOVERNANCE_GAP_LOG. |
-| **GG-045 + GG-046 registered** | ✅ COMPLETE — GG-045: Kalshi market depth capital ceiling unanalyzed (OPEN, LOW now). GG-046: T4 commercial validation untested independent alpha hypothesis (OPEN, LOW now). |
-| **DECISION_LOG entries** | ✅ COMPLETE — Two entries: (1) Strategic framing — four observations as ongoing factors, GG-045/GG-046 referenced. (2) ADR-0033 + T-204 cron changes. |
-| **Commit + deploy** | ✅ COMPLETE |
-
----
-
-## SESSION 93 — COMPLETE (2026-06-26)
-
-| Task | Status |
-|------|--------|
-| **Governance correction — PIPE-05 + PIPE-05.5 paused** | ✅ COMPLETE — SESSION 90 governance failure corrected. PIPE-05 (T1 MLB, 11:00 UTC) and PIPE-05.5 (T2 MLB, 19:30 UTC) commented out in `deploy/cron.conf`. Reason: MLB arm not complete until T4 live (T-204). T1/T2 must not fire before entire arm built — per Earl's SESSION 88 directive. Committed `7b0730b`, deployed to VPS, crontab verified. |
-| **T-202 — MLB T4 dry-run mode** | ✅ COMPLETE — `T4_MLB_DRY_RUN` env flag (`true/1/yes`) added to `run_t4_mlb_live.py`. When set: all evaluations computed, logged to `logs/t4_mlb_dryrun_YYYYMMDD.jsonl` (one record per evaluation with valid mip), `trader.open_position()` skipped. `_append_dryrun_record()` helper uses `O_WRONLY|O_CREAT|O_APPEND`. `kalshi_fee`/`net_edge` moved before dry-run branch (computed once, used by both paths). `would_fire = net_edge > 0` (no MIN_EDGE applied in dry-run — want unfiltered distribution). C4 not called. Budget cap not enforced. 13 new tests (TestDryRunMode). Suite 2070→2083. |
-| **T4 MLB cron enabled (dry-run)** | ✅ COMPLETE — `0 22 * * *` cron in `deploy/cron.conf` ENABLED with `T4_MLB_DRY_RUN=true`. PIPE-05 and PIPE-05.5 remain PAUSED. T4 dry-run fires tonight (22:00 UTC). |
-| **T4 throughput gap analysis** | ✅ DOCUMENTED — Three structural gaps identified and logged in DECISION_LOG: Gap 1 (ESPN current-batter-only state — needs box score query for all batters to hit ~1,000 evals/game design target); Gap 2 (flat decision tree — Phase 8 blocked); Gap 3 (`already_open` caps fires at ~95/game — correct risk behavior). |
-| **Monte Carlo (4 scenarios, T4 included)** | ✅ RUN — Real June 26 pregame data (96 forecasts, 53 players). Neutral/Edge/Positive/Worst cases. T4 simulation: 477 evals/day (simulation artifact = 1 eval/inning/player; real T4 will differ). T4 fired 36–44 bets/day per scenario. MC output at scratchpad. |
-| **DECISION_LOG entries** | ✅ COMPLETE — 3 entries: governance failure + corrective action, T-202 dry-run design, T4 throughput gap analysis. |
-| **Commit + deploy** | ✅ COMPLETE — Committed `863eccc` [T-202 COMPLETE], pushed to origin/main, VPS deployed (HEAD confirmed). |
-
----
-
-## SESSION 92 — COMPLETE (2026-06-26)
-
-| Task | Status |
-|------|--------|
-| **T-200 — Inning-aware `ab_remaining` formula** | ✅ COMPLETE — `_AB_BY_SLOT` constant (Slots 1-9: 4.2→3.1 ABs/game) added to `run_t4_mlb_live.py`. `_compute_ab_remaining(ab_so_far, inning, batting_slot)` uses min-of-two-signals: `ab_from_inning = expected_total × (innings_remaining / 9.0)` and `ab_from_total = max(0, expected_total − ab_so_far)`. Eliminates ±1 AB / ±14-25% Binomial probability error vs old flat 3.7 formula. `_load_t2_batting_slots()` loads batting slots from today's `t2_mlb_YYYYMMDD_HHMM.json`. Extra-innings known limitation: clamps to 0 (conservative; acceptable for paper trading). 22 new tests. Suite 2044→2051. |
-| **T-201 — Dual-pool resolution in PIPE-05R** | ✅ COMPLETE — `_resolve_pool(pool_label, trader, logger, session_id)` helper extracted from `run_resolve_mlb.py`. T4 pool (`paper_portfolio_mlb_t4.json`) now resolves alongside T1/T2 pool in single PIPE-05R cron run. T4 pool silently skipped if file doesn't exist (pre-T4 enable). `SystemMonitor` scoped to T1/T2 only (T4 budget-agnostic at resolution time). Audit log includes `resolved_t4`/`still_open_t4` fields. 5 new tests. Suite 2051→2070. |
-| **Decision log entries** | ✅ COMPLETE — T-200 formula architecture + T-201 dual-pool architecture both logged in DECISION_LOG.md. |
-| **Commit + deploy** | ✅ COMPLETE — Committed `69a6b61` [SESSION 92 CLOSE], pushed to origin/main, VPS deployed (HEAD confirmed). |
 
 ---
 
@@ -756,28 +385,6 @@ Standing operator instruction: "complete the first two [priority items — (1) E
 | **T-204** | Enable T4 MLB cron + re-enable T1/T2 | 🔲 S94+ | Remove `T4_MLB_DRY_RUN=true` from cron. Re-enable PIPE-05 (T1) + PIPE-05.5 (T2) — both currently PAUSED pending T4 live. T4 live is the gate. |
 
 **GG-007 (T4/T5 threshold constants uncalibrated):** LOW severity now (T4 paused), HIGH severity pre-Phase 8 activation. Formally closed once T-203 calibration ADR is written and accepted.
-
----
-
-## PHASE MLB-G1 — CLOSED (2026-06-27 SESSION 90)
-
-**MLB arm is LIVE. All 8 tasks complete. ADR-0032 ACCEPTED. 6 crons active on VPS.**
-
-| T-NNN | Task | Status | Notes |
-|-------|------|--------|-------|
-| **T-192** | Phase MLB-G1 integration test suite (`tests/integration/`) | ✅ COMPLETE S88 | conftest.py + test_mlb_api_connectivity.py + test_mlb_name_matching.py + test_mlb_pipeline_smoke.py. Run with `pytest tests/integration/ -v -m integration`. |
-| **T-193** | Feature CSV freshness guard in `run_mlb_paper_trade.py` + C7 alert | ✅ COMPLETE S89 | >3 days → WARNING + logger.warning; >7 days → sys.exit(1) + logger.error. Embedded in main() after feature CSV load, uses _now_utc.date() − df["game_date_dt"].max(). 23 tests (`tests/test_t193_mlb_freshness_guard.py`). |
-| **T-194** | Resolution age-out: positions open >48h that can't resolve → `aged_open` + C7 alert | ✅ COMPLETE S90 | `mark_aged_open()` in `paper_trader.py` — in-place tag, position stays in open_positions (bankroll invariant). 48h age-out detection in `run_resolve_mlb.py`. 15 tests (`tests/test_t194_mlb_age_out.py`). |
-| **T-195** | Silent fallback audit: MLB `except Exception: pass` in `_is_mlb_game_in_progress()` + `_fetch_live_game_pks()` → permissive-with-logging | ✅ COMPLETE S90 | Added optional `logger` + `session_id` params; emit C6 WARNING on failure; return behavior unchanged (False/empty set). 17 tests (`tests/test_t195_mlb_silent_fallback.py`). |
-| **T-196** | Fix T1 cron timing comment in `run_mlb_paper_trade.py` (says 03:00 UTC; must be 11:00 UTC) | ✅ COMPLETE S90 | Module docstring + inline comment block both corrected to "11:00 UTC (7am ET)". |
-| **T-197** | MLB kill switch drill + APR record | ✅ COMPLETE S90 | `scripts/run_mlb_kill_switch_drill.py`. halt_time_ms=0.116ms. SLA PASS (NFR-03 ≤60,000ms). APR-0023 written. |
-| **T-198** | Register MLB-G1 governance gaps: GG-043 (Kelly fraction) + GG-044 (C7 drift baselines) | ✅ COMPLETE S90 | GG-043: MLB Kelly 0.10 inherited from NBA (LOW, deferred pre-MLB-G6). GG-044: C7 Brier/ECE baselines are NBA G4 values (LOW, calib monitor not enabled). |
-| **T-199** | MLB-G1 gate close: all T-192–T-198 ✓ → 2044 tests ✓ → re-enable 6 MLB crons + VPS deploy + ADR-0032 | ✅ COMPLETE S90 | ADR-0032 ACCEPTED. VPS deployed + crontab verified. T4 MLB and calib monitor explicitly deferred (GG-007/GG-044). |
-
-**Next MLB milestones:**
-- First paper bets: PIPE-05 at 11:00 UTC daily
-- First resolutions: PIPE-05R at 06:30 UTC (typically 24–48h after bets)
-- GG-043/GG-044 resolution: pre-MLB-G6 (after ≥30 resolved paper bets)
 
 ---
 
@@ -813,72 +420,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 86 — COMPLETE (2026-06-24)
-
-| Task | Status |
-|------|--------|
-| **T-190 Step 3: `run_t4_mlb_live.py` (PIPE-07 MLB)** | ✅ COMPLETE — 420-line T4 in-play loop. Binomial model `P(hits >= threshold | h_so_far, ba_l10, ab_remaining)` via exact CDF. `AB_PER_GAME_DEFAULT=3.7`. Isolated portfolio `paper_portfolio_mlb_t4.json`, T4_BAND_WEIGHT=0.27, kill switch `logs/t4_mlb_kill_switch.flag`. Ghost protection via StagedOrderStore. 45s poll cycle. BOT_ENV=paper + BOT_C4_ACTIVE=true guards. ESPN MLB scoreboard + summary APIs wired. |
-| **`tests/test_run_t4_mlb_live.py`** | ✅ COMPLETE — 55 tests (TestBinomialPmf, TestPHitsGteThreshold, TestKillSwitch, TestComputeT4BandBudget, TestExitBudgetCredit, TestReconstructT4Ledger, TestLoadPregameContext, TestEspnPollOnceMlb, TestRunCycle, TestConstants). All passing. Suite 1819→**1918/1918**. |
-| **`deploy/cron.conf` PIPE-07 MLB block** | ✅ COMPLETE — 22:00 UTC `timeout 21600` cron line added (paused). Comment block matches PIPE-07 NBA pattern. PIPE-05 PAUSED comment updated to "MLB arm complete but awaiting post-deploy validation." |
-| **T-190 OVERALL** | ✅ COMPLETE — all 3 steps done (Step 1: `run_mlb_pregame.py` S85/86, Step 2: `run_t3_mlb_pretip.py` S85/86, Step 3: `run_t4_mlb_live.py` this session). MLB arm fully built. |
-| **DECISION_LOG SESSION 86** | ✅ COMPLETE — implementation-only session entry written. |
-
-**NEXT SESSION: Deploy to VPS + enable MLB accumulation.** (1) `scp src/prediction_market_bot/run_t4_mlb_live.py prediction-market-vps:/opt/prediction-market-bot/src/prediction_market_bot/`. (2) `scp tests/test_run_t4_mlb_live.py prediction-market-vps:/opt/prediction-market-bot/tests/`. (3) `scp deploy/cron.conf prediction-market-vps:/opt/prediction-market-bot/deploy/`. (4) Run 55 tests on VPS. (5) Uncomment all 5 MLB cron lines (PIPE-06pre + PIPE-05 + PIPE-05R + PIPE-05FX + PIPE-07). (6) `crontab /opt/prediction-market-bot/deploy/cron.conf`. MLB accumulation LIVE at $1,000 fresh bankroll (0 open, 0 closed).
-
----
-
-## SESSION 85 — COMPLETE (2026-06-24)
-
-| Task | Status |
-|------|--------|
-| **MLB arm audit — CLAUDE.md T4 corrected** | ✅ COMPLETE — `CLAUDE.md:53` replaced. Was: "T4/T5: In-play — future; post-G6" (factually wrong — caused every session to treat T4 as nonexistent). Now: 4-line accurate status: (1) NBA T4 = PIPE-07, deployed, cron-scheduled, dark (off-season); (2) MLB T4 = NOT built; (3) ADR-0029 Tier A `t4_execution_engine.py` = Phase 8 BLOCKED; (4) T5 = not built. |
-| **MLB cron PAUSED** | ✅ COMPLETE — All 4 MLB cron lines commented out in `deploy/cron.conf` with "PAUSED — S85: MLB arm incomplete" reason. Commit `aab7337`. VPS deployed; crontab reinstalled. MLB accumulation suspended. |
-| **T-190 REGISTERED** | ✅ REGISTERED — 3-step MLB arm completion sequence. Must be done in order (T3 and T4 both depend on pregame JSON): Step 1: `src/prediction_market_bot/run_mlb_pregame.py` → `logs/pregame_mlb_YYYYMMDD.json`. Step 2: `src/prediction_market_bot/run_t3_mlb_pretip.py` (PIPE-06 MLB, `*/15 20-23` + `*/15 0-3`). Step 3: `src/prediction_market_bot/run_t4_mlb_live.py` (PIPE-07 MLB, `0 23 * * * timeout 21600`). All 3 must pass tests on VPS before any MLB cron is re-enabled. |
-| **Monte Carlo simulation (June 26 slate)** | ✅ RUN — 15 games, ~1,231 quoted markets. Combined threshold 0.1186+0.04=0.1586 above mid → only 3.4 bets/night (T1 only). MC finding directly motivated MLB T4 audit: T4 (unbuilt for MLB) is what provides design-throughput target of ~1,000 evals/game. |
-| **MLB bankroll preserved at $1,000 fresh start** | ✅ CONFIRMED — 0 open, 0 closed. VPS `paper_portfolio_mlb.json` confirmed. Do NOT resume until T-190 complete. |
-| **DECISION_LOG SESSION 85** | ✅ COMPLETE — 4 entries appended: CLAUDE.md T4 correction, MLB cron pause, T-190 registration, accountability finding (missed T4 gap when asked "clean, green, on auto"). |
-
-**CRITICAL FOR NEXT SESSION:** T-190 Step 1 first — build `run_mlb_pregame.py`, then T3, then T4. Do not re-enable MLB cron until all 3 complete.
-
-| Priority | Task | Details |
-|----------|------|---------|
-| **✅ DONE (SESSION 85/86)** | **T-190 Step 1: `src/prediction_market_bot/run_mlb_pregame.py`** | Generates `logs/pregame_mlb_YYYYMMDD.json`. Maps MLB players→T1 forecasts→KXMLBHIT tickers. COMPLETE. |
-| **✅ DONE (SESSION 85/86)** | **T-190 Step 2: `src/prediction_market_bot/run_t3_mlb_pretip.py`** | PIPE-06 MLB. CONFIRM/FADE/NEUTRAL momentum scan. Writes `logs/t3_mlb_YYYYMMDD_HHMM.json`. COMPLETE. |
-| **✅ DONE (SESSION 86)** | **T-190 Step 3: `src/prediction_market_bot/run_t4_mlb_live.py`** | PIPE-07 MLB. 45-second evaluation loop. Binomial model. 55 tests. 1918/1918 passing. COMPLETE. |
-| **P0 — NEXT** | **VPS deploy + MLB cron activation** | (1) scp `run_t4_mlb_live.py` + test file + `cron.conf` to prediction-market-vps. (2) Run 55 T4 MLB tests on VPS. (3) Uncomment 5 MLB cron lines in `deploy/cron.conf` (PIPE-06pre 16:30, PIPE-05 23:30, PIPE-05R 06:30, PIPE-05FX 22:30, PIPE-07 MLB 22:00). (4) `ssh prediction-market-vps "crontab /opt/prediction-market-bot/deploy/cron.conf"`. MLB accumulation restarts at $1,000 fresh bankroll. |
-
----
-
-## SESSION 84 — COMPLETE (2026-06-25)
-
-| Task | Status |
-|------|--------|
-| **T-189 — PIPE-05 three-concern remediation** | ✅ COMPLETE — All three operational failures from PIPE-05 first run (23:31 UTC 2026-06-24) fully resolved. 29 new tests in `tests/test_t189_mlb_pipe05_fixes.py`. Suite 1790→**1819/1819**. |
-| **Concern 1: Contamination guard fires every night** | ✅ FIXED — `GAME_DATE = (datetime.now(tz=UTC) + timedelta(days=1)).date()` — T1 night-before baseline. Tomorrow's games always "Preview" at 23:30 UTC. Market date filter added: `if _ticker_to_game_date(m.ticker) == GAME_DATE_ISO:` — prevents in-progress today's Kalshi markets from leaking through. |
-| **Concern 2: `paper_portfolio_mlb.json` never created** | ✅ FIXED — `PaperTrader.ensure_persisted()` — no-op if file exists, calls `_save()` otherwise. Called in `run_mlb_paper_trade.py` immediately after PaperTrader construction. `_load_or_init()` reverted to NOT write disk (preserves `_reload_locked` invariant — 10 unit tests would have failed). |
-| **Concern 3: SP overlay / starters cache destroyed nightly** | ✅ FIXED — (a) hydrate fix: `probablePitcher,team` returns HTTP 200 on DO VPS; `venue` hydrate returns 406 from Fastly CDN — removed. (b) PIPE-05FX cron: removed `starters_2026.json` and `pitcher_logs_2026.parquet` from nightly bust; only `batter_logs_2026.parquet` and `completed_games_2026.parquet` busted. |
-| **MLB portfolio reset to $1,000** | ✅ DONE — Fresh start on VPS. 0 open, 0 closed, bankroll=$1,000.00. |
-| **Monte Carlo validation** | ✅ PASS — Feature matrix 21,716 rows/419 players (latest 2026-06-24). Model 18 features. 9/9 June 25 games SP data confirmed via live fetch. Contamination guard passes for 2026-06-25. ensure_persisted() present. hydrate no-venue. VERDICT: CLEAN, GREEN, ON AUTO. |
-| **Test suite: 3× T-3 passes** | ✅ 1819/1819 (0 failures, 1 skip) — three consecutive clean runs confirmed. |
-| **VPS deploy** | ✅ DEPLOYED — HEAD confirmed; crontab reinstalled; portfolio reset. |
-| **DECISION_LOG SESSION 84** | ✅ COMPLETE — T-189 entry appended (all 5 architectural decisions + `_reload_locked` invariant + hydrate Fastly finding + cache bust scope + portfolio reset rationale). |
-
----
-
-## SESSION 83 — COMPLETE (2026-06-24)
-
-| Task | Status |
-|------|--------|
-| **T-188 — MLB bloomberg-terminal curses TUI dashboard** | ✅ COMPLETE — `scripts/run_mlb_dashboard.py` rewritten as full curses TUI matching `live_terminal.py` architecture. Panels: portfolio (fixed), system (fixed, 4 PIPE timestamps + KS), live_pos, today_slate, resolved, alerts, pipe_log. Background SSH ControlMaster thread (`/tmp/pmbot-mlb-ssh-ctl`). GG-034 P&L helper preserved. Run: `python3 scripts/run_mlb_dashboard.py --remote root@157.230.91.33 --log-dir /opt/prediction-market-bot/logs/`. Commits: 42bce66. No new tests (UI). |
-| **MLB accumulation declared LIVE** | ✅ DECLARED — PIPE-05 first run tonight 23:30 UTC. Docs updated (MEMORY_BANK, TODO_NEXT, DARK_PERIOD_PLAN, DECISION_LOG). 5-6 weeks ahead of original August plan. |
-| **pyarrow VPS install** | ✅ DONE — 24.0.0 installed before 22:30Z PIPE-05FX cron. Required for parquet cache operations. |
-| **Monte Carlo 2026-06-25 slate** | ✅ RUN — Engine hygiene verified: C4 risk engine, calibration identity, YES-only gate, SP overlay fallback, GG-034 P&L all correct. GG-004 caveat applies to EV outputs. |
-| **Tests** | ✅ 1790/1790 (unchanged from S82). |
-| **VPS HEAD** | ✅ 42bce66 (deployed via osascript Terminal launch). |
-| **DECISION_LOG SESSION 83** | ✅ COMPLETE — T-188, MLB live declaration, Monte Carlo entries appended. |
-
----
-
 ## SESSION 82 — IN PROGRESS (2026-06-24)
 
 | Task | Status |
@@ -909,297 +450,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 80 — COMPLETE (2026-06-24)
-
-| Task | Status |
-|------|--------|
-| **T-117 — GG-006 RESOLVED: Kalshi Participant Agreement formal read** | ✅ COMPLETE — Three Kalshi legal documents formally read via pypdf. (1) Member Agreement v1.54: no automation restrictions; security obligation only. (2) Rule 5.13(s): source agency insider trading restriction only — inapplicable to Earl. (3) Rule 5.15 + Rulebook: behavioral market conduct rules only; single algorithm mention targets Kalshi's own affiliated market makers, NOT retail members. Position Limits: MOOT per DS ruling (MLB bankroll fresh $1,000; $500 max_bet_usd per position). ADR-0005 GG-006 pre-requisite satisfied; GG-006 CLOSED in GOVERNANCE_GAP_LOG.md. |
-| **DS book-reset decision logged** | ✅ LOGGED — MLB paper book = fresh $1,000 separate pool. NBA 26-27 book Options A/B/C remain open per SESSION 74. DECISION_LOG SESSION 80 entry written. |
-| **T-186 — F-042 fix: COMPLETE (valid negative finding)** | ✅ COMPLETE — Root cause: `nba_api.TeamGameLog` omits `PLUS_MINUS` for all season types → `pts_allowed` NaN everywhere → F-040 and F-042 both dead features (imputed 0.0). Fix: `pull_playoff_teamgamelog.py` now uses `_fill_pts_allowed_via_crossref()` to look up opponent PTS across team logs; 338/338 games populated (22 teams). Retrain: F-042 76/103 playoff training rows non-NaN (73.8%). v2b Brier improvement: **+0.000130 (required ≥0.001)**. Shadow gate: FAIL. **Outcome: F-042 provides insufficient signal at available sample size. Deploy v2-065b9510 in October as planned (ADR-0031).** 10 new cross-reference tests (TestPtsAllowedCrossRef). Suite 1640→**1650/1650** green. DECISION_LOG SESSION 80 T-186 entry written. |
-| **T-187 REGISTERED** | ✅ REGISTERED — `scripts/run_mlb_paper_trade.py` MLB paper trading runner needed before August 2026. Requires: KXMLBHIT market fetching, MLB C1/C2/C3 integration, fresh $1,000 `logs/paper_portfolio_mlb.json` book. No cron entries for MLB in `deploy/cron.conf` (expected; needed before August). |
-| **DECISION_LOG SESSION 80 entries** | ✅ COMPLETE — T-117/GG-006 entry + T-186 entry written. CLAUDE.md rule 7. |
-| **Tests** | ✅ 1650/1650 (+41 this session: 31 T-186 + 10 cross-ref). |
-| **VPS deploy** | ✅ COMPLETE — Commit 89d795c pushed + VPS deployed (HEAD confirmed). |
-
----
-
-## SESSION 79 — COMPLETE (2026-06-23)
-
-| Task | Status |
-|------|--------|
-| **T-184 — EXP-017 MLB commercial validation script** | ✅ COMPLETE — `scripts/run_exp017_mlb.py` (new, standalone). `tests/test_t184_exp017_mlb.py` (new, 99 tests). Three analysis layers: (1) EV analysis: EV/bet, win rate, YES/NO split. (2) ADR-0024 tier checks: Tier 1 (n≥150, EV<-$0.03→DIAGNOSTIC_SPRINT), Tier 2 single (n≥500), Tier 2 multi (--nba-n≥150 AND n≥150). EV verdict: CONFIRMED_POSITIVE/DIRECTIONAL_POSITIVE/CONFIRMED_NEGATIVE/DIRECTIONAL_NEGATIVE/DIAGNOSTIC_SPRINT/INCONCLUSIVE. (3) Edge monotonicity: Fisher's exact / chi-squared fallback, ANTI-PREDICTIVE/MONOTONIC/INCONCLUSIVE. MLB threshold breakdown: EV and win rate by k=1/2/3. `compute_fee_net_edge`: YES=model_p−mip−0.07×mip×(1−mip), NO symmetric. CI mode exit codes: 0/2/3/4. Reads `logs/paper_portfolio_mlb.json` by default; `--csv` for batch backtest. MLB position schema contract: requires `model_p`, `threshold`, `outcome`, `pnl`; `fee_net_edge` optional (computed if absent). Portfolio currently empty (August paper trading start); returns INCONCLUSIVE. |
-| **tests/test_t184_exp017_mlb.py** | ✅ 99 new tests, all passing. 12 classes: TestKalshiFee (7), TestComputeFeeNetEdge (6), TestComputePnlUnit (6), TestLoadPortfolio (8), TestLoadCsv (5), TestDeduplicate (6), TestEvStats (4), TestThresholdBreakdown (8), TestAdr0024TierCheck (11), TestEvVerdict (7), TestEdgeMonotonicity (8), TestTercileTable (4), TestFisherPvalue (3), TestEndToEnd (11), TestConstantsAndSportLabel (5). Suite 1510 → **1609/1609**. |
-| **VPS deploy** | ✅ COMPLETE — git pull + venv install (commit 94882f8, T-183 artifacts; T-184 follows next push). |
-| **DECISION_LOG SESSION 79 entry** | ✅ COMPLETE — CLAUDE.md rule 7. |
-
----
-
-## SESSION 78 — COMPLETE (2026-06-23)
-
-| Task | Status |
-|------|--------|
-| **T-183 — MLB C3 model training infrastructure** | ✅ COMPLETE — `scripts/train_mlb_model.py` (new). `tests/test_t183_mlb_c3.py` (new, 77 tests). `HOLDOUT_CUTOFF = "2026-01-01"` fixed before training; anti-gaming holdout split. Shadow gate: null baseline (`brier_null = p*(1-p)`, gate `brier_delta >= 0.001 AND ece <= 0.05`). `_build_mlb_target`: each game row → 3 rows (one per threshold k ∈ {1,2,3}); `threshold` as float feature; `y_target = (h >= k)` as Int8/NA. `_NON_FEATURE_MLB` frozenset: excludes raw `h` (leakage), `ab`, other box-score outcomes, metadata, C1 audit cols, training artifacts. Pipeline matches `forecaster.py:354-358` exactly (`StandardScaler → CalibratedClassifierCV(LR, method="sigmoid", cv=3)`). Artifact schema: `{pipeline, feature_names, col_medians, model_version, thresholds: [1,2,3], sport: "mlb"}` — matches NBA loader contract. `_mlb_model_version()`: "mlb-v1-" + sha1[:8] deterministic hash. `calibration.py` confirmed: `CALIBRATION_TEMPERATURE["mlb"] = 1.0` (identity; T-176 deferred). BOT_C4_ACTIVE test contamination: `run_paper_trade.py:59` sets env var at import time; `test_t3_integration.py` triggers import; all `TestEndToEndDryRun` tests fail in full suite. Fix: autouse monkeypatch fixture clears `BOT_C4_ACTIVE` per-test in that class. |
-| **tests/test_t183_mlb_c3.py** | ✅ 77 new tests, all passing. 11 classes: TestBuildMlbTarget (13), TestComputeEce (5), TestImpute (4), TestMlbModelVersion (5), TestExtractFeatureMatrix (8), TestNonFeatureSet (10), TestNullBaseline (3), TestShadowGateLogic (6), TestModelArtifact (4), TestEndToEndDryRun (14), TestMultipleThresholds (5). Suite 1433 → **1510/1510**. |
-| **DECISION_LOG SESSION 78 entry** | ✅ COMPLETE — CLAUDE.md rule 7. |
-| **VPS** | Deploy follows commit+push (governance artifacts + train_mlb_model.py + test file). |
-
----
-
-## SESSION 77 — COMPLETE (2026-06-23)
-
-| Task | Status |
-|------|--------|
-| **T-182 — MLB C2 baseball feature set** | ✅ COMPLETE — `src/prediction_market_bot/c2_feature_store/mlb_features.py` (new). `MLB_FEATURE_VERSION = "1.0.0"`. TI-01: `.shift(1).rolling(min_periods=3)`. Rolling L10 batter features via sum-then-divide (ba/slg/obp/ops/h_mean/k_rate/bb_rate/hr_rate). Context: days_rest, b2b_flag, temporal_cutoff. SP overlay MANDATORY: opp_sp_era_l5/k9_l5/bb9_l5/is_known from MLBPitcherStatsStore (L5 starts, min_periods=2, TI-01; K9/BB9 via total ÷ total IP). Park factors: 30-venue static dict (Coors=1.120, Oracle=0.970, unknown→1.000). Opponent: opp_runs_allowed_l10 from MLBTeamStatsStore. Metadata: feature_run_id (prefix "C2MLB-"), feature_version, train_test_label. C6: 5 audit events (derivation_start/complete/error, temporal_integrity_warning, train_test_split_applied). assign_train_test_labels: NaT rows → None (TI-02 excluded); others → TRAIN/VALIDATION/TEST. `_ip_to_decimal()` IP notation fix confirmed in C1 ("5.2" = 5+2/3 = 5.667). |
-| **tests/test_t182_mlb_c2.py** | ✅ 60 new tests, all passing. Suite 1373 → **1433/1433**. 5 test classes: TestIpToDecimal (11), TestParkFactorTable (4), TestComputeRollingBatterFeatures (16), TestComputeFeaturesBulk (23), TestAssignTrainTestLabels (5). Key lesson: `np.allclose(series.values, value)` required for float comparisons with pandas (pytest.approx + .all() fails silently). |
-| **DECISION_LOG SESSION 77 entry** | ✅ COMPLETE — CLAUDE.md rule 7. |
-| **VPS** | Deploy follows this session (governance artifacts + mlb_features.py + test file). |
-
----
-
-## SESSION 69 — COMPLETE (2026-06-22)
-
-| Task | Status |
-|------|--------|
-| **DS decision: Option C — feature-set diagnosis sprint** | ✅ LOGGED — DECISION_LOG S69 entry written. Diagnosis conducted on n=103 clean NBA Finals bets. Root cause identified: missing playoff-context λ multiplier. Three feature fixes scoped into T-072. If EXP-017 still ANTI-PREDICTIVE after fix, escalation = Option A. |
-| **Feature-set diagnosis (run_t177 Option C sprint)** | ✅ COMPLETE — Key findings: (1) YES bets 38.9% win rate vs NO bets 68.7%. (2) Model error on YES: +0.315 (vs market +0.150); market error on NO: +0.006 — Kalshi is essentially perfectly calibrated on NO bets. (3) Implied λ compression: model assumes λ=14.0/16.1/19.6 at thr=10/15/20; actual scoring implies λ=12.8/12.8/13.8 → compression factors 0.911/0.792/0.703. (4) Within-series compression worsens: G2 avg_pts=17.3 → G5 avg_pts=7.7 as game plans adapt. Root cause: opp_adj_lambda uses regular-season defensive ratings; Finals defensive intensity suppresses scoring 9-30% beyond what the model accounts for. (5) This is a feature engineering gap, NOT a model class failure. Poisson architecture is valid; the λ input is wrong. |
-
----
-
-## SESSION 68 — COMPLETE (2026-06-22)
-
-| Task | Status |
-|------|--------|
-| **T-180 Phase 2 — T4 execution engine scaffold** | ✅ COMPLETE — `t4_price_cache.py`: `T4Phase8BlockedError`, `STALENESS_WINDOW_S` (T4-EVENT=2s, T4-LINEUP=5s, all others=30s), `CachedPrice` frozen dataclass, `T4PriceCache` with test-injectable `update()`/`get_raw()`/`is_fresh()`/`get_price()`/`purge()`/`market_count()` + blocked `start_polling()`/`stop_polling()`. `t4_execution_engine.py`: `GamePhase` enum (EARLY/MID/LATE/NEAR_CERTAIN via elapsed_min), `T4PlayerState`/`T4GameEvent`/`T4GameState` frozen dataclasses, `EvaluationSignal`, `QueueEntry` (EXIT=0.0 priority, higher-edge first), `StaleDropRecord`, 8 `SubBandEvaluator` stubs (all BLOCKED, all return `[]`), `T4CorrAdjuster._assert_downward_only()` Principle-6 invariant, `T4ExitEvaluator`, `Layer1EvaluationEngine` event-type dispatch routing (6 event maps), `Layer2ExecutionQueue` heapq with 3-drop-condition staleness arbitration (price_stale / edge_below_min / direction_reversed), `T4ExecutionEngine._PHASE8_ACTIVE=False` class-level gate. `simulate_cycle()` test-usable at Phase 6/7; `on_game_event()`/`start()` raise `T4Phase8BlockedError`. `DECISION_LOG.md` T-180 Phase 2 entry appended (rule 7). |
-| **tests/test_t4_engine.py** | ✅ 109 new tests, all passing. Suite 999 → **1108/1108**. Covers: phase classification boundaries, staleness enforcement per sub-band, priority ordering, all 3 drop conditions, downward-only invariant, Phase 8 blocking on all live paths, simulate_cycle→Layer2 end-to-end integration. |
-| **T-177 Part (a) — edge inversion monitor** | ✅ COMPLETE — `scripts/run_t177_edge_monitor.py` (415 lines) + `tests/test_t177_edge_monitor.py` (29 tests). Suite 1108 → **1137/1137**. Reads `logs/paper_portfolio.json` or `--csv` path; Fisher's exact test; ANTI-PREDICTIVE/MONOTONIC/INCONCLUSIVE verdict; `--ci` exit codes for pipeline integration. Live VPS result (n=144 clean): p=0.0505 → ANTI-PREDICTIVE. DS decision (A/B/C escalation path) OPEN. |
-| **Governance cleanup** | ✅ — T-167 stale priority-queue entry removed (task was done in prior session; DONE section confirms). T-175 confirmed DONE (`run_t4_live.py:682` already patched). Phase 2 dark period tasks (T-072/T-073/T-077/ADR-0005) surfaced as ACTIVE (NBA Finals ended 2026-06-22; Phase 2 starts July 1). DECISION_LOG S68 cont. entry added. |
-
----
-
-## SESSION 67 — COMPLETE (2026-06-22)
-
-| Task | Status |
-|------|--------|
-| **T-179 SCOPED — ADR-0029 pre-sign-off alignment review + four corrections** | ✅ COMPLETE — operator-requested adversarial review of S65/66 T4 work, then scoped-down per authorization. **(1) T4-MICRO carved out → ADR-0030 (placeholder created):** no `model_p`, distinct execution-quality strategy class; taxonomy 11→**10 sub-bands**. **(2) Two-tier acceptance:** Tier A (architecture/principles/mechanisms/gate structure) frozen on sign-off; Tier B (sub-band roster + all numerics + alpha hypotheses) provisional, revisable via DECISION_LOG until per-sub-band Activation Gate. Resolves ADR-immutability vs unvalidated-specifics tension. **(3) T4-PROJ NEAR-CERTAIN Kelly anomaly:** inverse-variance formula diverges at low σ_λ (k=0.526 @ 46min); 0.25 is a hard ceiling not a derived value; NEAR-CERTAIN held ≤0.167 pending EXP-PROJ-01 tail calibration; same applied to T4-ARITH 0.22. **(4) DS quote attribution** corrected to paraphrase (handoff l.23) pending DS confirm. Standing rationale recorded: T4 architecture is strategy-agnostic scaffolding ("beat the situation, not the market"); edge math is a separate workstream (T-177). DECISION_LOG + ADR Index updated (rule 7). **ADR-0029 ACCEPTED — DS sign-off Earl Ignacio, 2026-06-22 SESSION 67. Tier A frozen; Tier B provisional.** No code changes. |
-| **ADR-0030 — T4-MICRO carve-out placeholder** | ✅ REGISTERED (PLACEHOLDER, not drafted). `03_DECISIONS/ADR-0030_t4-micro-execution-quality-strategy.md`. Documents why T4-MICRO is a distinct no-model strategy class + the 7 items a future drafting session must resolve before it can be considered. Dormant until DS elects to take it up. |
-| **Tests** | ✅ 988/988 (no code changes this session — design/governance only) |
-
-## SESSION 66 — COMPLETE (2026-06-22)
-
-| Task | Status |
-|------|--------|
-| **T-179 (SESSION 66) — ADR-0029 DRAFTED: T4 sub-band architecture** | ✅ DRAFT COMPLETE — ACCEPTED SESSION 67 (DS sign-off Earl Ignacio, 2026-06-22). Full 804-line architecture document written: 11 sub-bands (T4-MICRO, T4-STAGED, T4-EVENT, T4-LINEUP, T4-FLOW, T4-SENTIMENT, T4-PROJ, T4-ARITH, T4-BOUNDARY, T4-CORR, T4-EXIT), three-layer execution architecture, immediate execution principle, dynamic game-phase Kelly schedule for T4-PROJ (supersedes ADR-0010 monolithic T4=0.20), FLOW-BLOWOUT as blowout-consequences architecture, T4-CORR convergence signal formalization, budget partitioning (shared pool within T4_BAND_WEIGHT=0.27). Three amendments: ADR-0010 T4 superseded, ADR-0014 T4 section superseded, ADR-0018/ADR-0019 T4 noise buffer superseded. ADR-0028 T4 Activation Gate PLACEHOLDER completed. Three new governance gaps: GG-038 (T4 kill switch ≤5s, Phase 8 prereq), GG-039 (T4 price cache, Phase 8 prereq), GG-040 (T4 real-time data sources, Phase 8 prereq). DECISION_LOG entry written (CLAUDE.md rule 7). **Code changes in execution_bands.py, t4_execution_engine.py, t4_price_cache.py, c7 kill switch: BLOCKED pending DS sign-off on ADR-0029.** |
-| **GG-038/039/040 REGISTERED** | ✅ COMPLETE — GOVERNANCE_GAP_LOG.md updated with three new Phase 8 prerequisite gaps. |
-| **Tests** | ✅ 988/988 (no code changes this session — design-only) |
-| **VPS** | ✅ HEAD `97e66ae` unchanged (no code deploy — governance artifacts only) |
-
----
-
-## SESSION 65 — COMPLETE (2026-06-22)
-
-| Task | Status |
-|------|--------|
-| **T-173 (SESSION 65) — healthcheck.sh false alarms fixed** | ✅ COMPLETE — Added `PYTHON="$PROJ/venv/bin/python"` to healthcheck.sh preamble; replaced all 5 `/usr/local/bin/python3.11` occurrences. Checks 1/2/3/7 now use real VPS venv. No functional trading impact. |
-| **T-154 (SESSION 65) — CHANGE_CONTROL.md decisions extracted** | ✅ COMPLETE — Four framework decisions extracted to DECISION_LOG.md Notable Judgment Calls: three-tier classification scheme; SKELETON→ACTIVE Class A requirement; no emergency risk-limit override; conditional-language escalation rule. `decisions_logged: true` set in CHANGE_CONTROL.md header. |
-| **T-178 (SESSION 65) — market_mapper.py MLB pre-flight audit** | ✅ COMPLETE — Architecture claim VERIFIED: C4/C6/C7/C8 are sport-agnostic; C5 NBA defaults are caller-supplied (expected); `KXNBAPTS` series ticker is C5-layer, not a C4–C8 violation. Pre-documented constraints C-1 (threshold int type) and C-2 (sport-partitioned runs) stand. |
-| **T-148 (SESSION 65) — ADR-0028 rework** | ✅ REWORK COMPLETE — ACCEPTED SESSION 72 (DS sign-off Earl Ignacio, 2026-06-22). Root cause: T4 strategies BLOCKED in BAND_REGISTRY (Phase 8+); G6 is T1 gate; requiring T4 evidence was architecturally wrong. Rework: G6 closure reduced to T1-only (6 items); Mods 6/7/8 (T4 Tier 2 + T-AGG) moved to new T4 Activation Gate (Phase 8 pre-requisite). Mods 5+9 at G6 scope. G6_GATE_CHECKLIST I-4 corrected. APR-0022 updated. **T-148 DONE; GG-022 RESOLVED.** |
-| **T-179 (SESSION 65) — T4 sub-band segmentation registered** | ✅ REGISTERED — DS directive: "In-game trading can't be clumped as one aggregate bucket." T4 spans sub-ms execution (pure order-book speed, no model) through multi-minute model-driven holds. T-179 is the next-session design task: taxonomy, `execution_bands.py` split, ADR-0029, ADR-0028 T4 Activation Gate rewrite. DECISION_LOG updated with DS verbatim. ADR-0028 T4 Activation Gate section blocked. |
-| **Tests** | ✅ 988/988 (no code changes this session) |
-| **VPS** | ✅ HEAD `97e66ae` (governance-only; no code deploy needed) |
-
----
-
-## SESSION 64 — COMPLETE (2026-06-16)
-
-| Task | Status |
-|------|--------|
-| **GG-036 RESOLVED — G5 41 positions resolvable** | ✅ COMPLETE — re-froze the 158-bet NBA Finals dataset (`data/nba_finals_clean_dataset.csv`); G5 outcomes sourced (NOT fabricated); capital unlocked. Full-DB assessment ran on this set. |
-| **GG-035 RESOLVED (structural) — ADR-0026 / APR-0020** | ✅ COMPLETE — C4 two-tier portfolio free-cash invariant: CHECK 8a solvency KILL (`Σopen+size > equity`), 8b policy REJECT (`> 0.60×equity`; 60% = `1−RESERVE_MANDATE_PCT`). Base = equity (stricter underwater). C4 stays pure via `PaperTrader.exposure_snapshot()`; fail-safe skip when equity=None. Forensic: G5 $1003.38 unreachable (cap $449.27). `risk.py`, `paper_trader.py`, `tests/test_c4_risk.py`. **Coverage gap: only callers passing the snapshot are guarded — run_t4_live / EXP harnesses unguarded → T-175.** |
-| **GG-037 RESOLVED (calibration half) — ADR-0027 / APR-0021** | ✅ COMPLETE — C3 temperature scaling `p_cal=σ(logit(p)/T)` on the **production Poisson prob** (root cause: overdispersion, var>mean; Platt is NOT the production prob → re-fit would have been a no-op). `calibration.py` per-sport registry, fail-safe identity T=1.0 (MLB cannot inherit NBA shrink). NBA T=2.05 (OOS-validated, fit G2–G4/test G5; in-sample optimum 3.10 — conservative chosen). Wired at single prob site in `run_paper_trade.py`; `p_estimate_raw` retained for audit. `scripts/derive_calibration.py` re-derives + monitors. 14 new tests. |
-| **GG-037 alpha half — DISPROVED miscalibration; STAYS OPEN** | 🔴 OPEN — recalibration corrected overconfidence but edge is **anti-predictive post-calibration**: edge>0 winrate 0.356 vs edge≤0 0.747; highest-edge tercile 0.346 vs lowest 0.792. Edge inversion survives calibration → no demonstrated alpha vs the Kalshi price. GG-004 unrelieved. Deferred to EXP-017 at scale (MLB dark period + NBA regular season). → T-177. |
-| **G6 gate checklist updated** | ✅ — T2-A (T1) 🔴 MEASURED-FAILED (19.8pp > 15pp raw; ADR-0027 reduces to ~6pp but historical book traded uncalibrated). T2-C (T1) 🟡 MEASURED (Brier 0.2308 ≤0.265 PASS but masks the calibration failure — do not read as health). |
-| **Deploy** | ✅ Committed `897ff4d`, pushed origin/main, VPS HEAD `897ff4d`; calibration verified live (NBA 0.97→0.845, MLB identity). No live behavior change — book halted at drawdown kill switch (25.12% > 20%); CHECK 2 fires before CHECK 8/calibration matters. |
-| **Tests** | ✅ 988/988. |
-
-**New tasks registered this session (added to priority queue):**
-- **T-175 — ✅ DONE (confirmed S68 cont.):** `run_t4_live.py:682` already passes `portfolio_equity_usd=t4_band_budget if not PAPER_T4_VIRTUAL else None, pool_isolated=True` to `evaluate_forecast()` (T-175 comment on line 671). EXP harnesses are pure analysis — no `evaluate_forecast()` calls. Coverage gap closed.
-- **T-176 — HIGH (dark period Phase 3, before MLB launch):** MLB calibration temperature derivation. Run `scripts/derive_calibration.py` on the dark-period MLB resolved dataset once it exists; write the derived T into `CALIBRATION_TEMPERATURE["mlb"]` via an ADR-0027 amendment (currently identity 1.0). **Blocked on MLB data — will unblock in Phase 3 (Aug-Sep).**
-- **T-177 — ✅ COMPLETE (SESSION 73, 2026-06-23):** Monitor built (1137 tests, S69). v2 backtest INCONCLUSIVE (p=0.1639 all / p=0.3131 clean, n=114). Phase 3 gate OPEN. Original ANTI-PREDICTIVE finding (p=0.0505, n=144 clean CSV) used full dataset including G5 (June 13); these positions absent from live portfolio JSON — full n=144 replication pending future data pull. GG-037 alpha half + GG-004 still OPEN (require EXP-017 at ADR-0024 adequate sample). Script: `scripts/run_t177_v2_backtest.py`.
-- **PHASE 2 NOW ACTIVE (NBA Finals ended 2026-06-22 — July 1 start):**
-  - **T-072 — ✅ COMPLETE (SESSION 73, 2026-06-23):** All three parts done. Part A: FEATURE_VERSION 1.4.0 + F-041/F-042/F-043 in C2 (1293 tests). Part B: retrain v2-065b9510 (Brier Δ=+0.001507, ECE=0.0426, shadow gate PASSED). Part C: T-177 INCONCLUSIVE (p=0.1639). ADR-0031 ACCEPTED. **ONE ITEM DEFERRED:** deploy v2 model to VPS + kill switch reset — action at 2026-27 season start (dark period; operator action required). See ADR-0031 acceptance checklist.
-  - **T-073 — P1:** DS-04 injury source. KI-011: T2 is injury-blind; without DS-04, T2 activation generates fake alpha. Required before T2 active. Evaluate: Rotoworld / FantasyLabs / ESPN API injury reports.
-  - **T-077 — P1 (operator action):** Polymarket KYC. VenueAdapter already built; execution gated on operator KYC completion. Second venue adds line-shopping (+7.8% EV per EXP-014).
-  - **ADR-0005 — P2 (draft now, finalize at G6):** Live capital framework parameters. Draft can begin (bankroll size, per-bet limits, reserve fraction, kill-switch thresholds at live scale). Cannot finalize until EXP-017 positive + T-153 haircut complete.
-
-- **PHASE 3 — MLB COMMERCIAL VALIDATION (August–September 2026) — GATE OPEN (T-072 ✅ + T-177 INCONCLUSIVE ✅):**
-  - **T-181 — ✅ COMPLETE (SESSION 75, 2026-06-23):** MLB C1 data ingestion module. **DS data source decision:** MLB Stats API (statsapi.mlb.com) via raw HTTP requests; `requests` now explicit in `pyproject.toml`. Three new C1 source files: `mlb_ingestion.py` (`MLBIngestionClient` — `fetch_batter_game_log`, `fetch_pitcher_game_log`, bulk variants, `fetch_game_starters`, `fetch_completed_games`; all `(bool, DataFrame|dict)`; C6 audit trail; 0.6s throttle; `_team_abbr_map` injection for test isolation), `mlb_team_stats_store.py` (`MLBTeamStatsStore` — `get_opp_runs_allowed`/`get_opp_runs_scored`, `build_from_games()`, TI-01, cache), `mlb_pitcher_stats_store.py` (`MLBPitcherStatsStore` — `get_era_l5`/`get_k_per_9_l5`/`get_bb_per_9_l5` via total ER÷IP, relief exclusion, TI-01, cache). IF-C1-C2 contract: batter 24-col schema, pitcher 22-col schema, game starters gamePk dict. `kalshi_client.py`: `SERIES_MLB_PLAYER_HITS = "KXMLBHITS"` placeholder (**UNCONFIRMED** — verify via `GET /series` before MLB paper trading; wrong ticker → empty markets silently, same failure mode as KI-019). 80 new tests (`tests/test_t181_mlb_c1.py`, 0 live HTTP). 1373/1373 total green. DECISION_LOG SESSION 75 entry written.
-  - **T-182 — ✅ COMPLETE (SESSION 77, 2026-06-23):** MLB C2 baseball feature set. `src/prediction_market_bot/c2_feature_store/mlb_features.py` (new): `MLBFeatureStore`, `_compute_rolling_batter_features`, `assign_train_test_labels`. `MLB_FEATURE_VERSION = "1.0.0"`. TI-01: `.shift(1).rolling(min_periods=3)`. Rolling (L10): `ba_l10`, `slg_l10`, `obp_l10`, `ops_l10`, `h_l10_mean`, `k_rate_l10`, `bb_rate_l10`, `hr_rate_l10` (sum-then-divide pattern). Context: `days_rest`, `b2b_flag`, `temporal_cutoff`. SP overlay (MANDATORY): `opp_sp_era_l5`, `opp_sp_k9_l5`, `opp_sp_bb9_l5`, `opp_sp_is_known`. Park: `park_factor_hits` (30-venue dict; Coors=1.120; unknown→1.000). Team: `opp_runs_allowed_l10`. Metadata: `feature_run_id` (prefix "C2MLB-"), `feature_version`, `train_test_label`. C6: 5 audit events. `_ip_to_decimal()` IP notation fix confirmed in C1. `tests/test_t182_mlb_c2.py` (60 tests, 5 classes). 1433/1433 total green. DECISION_LOG S77 entry written.
-  - **T-183 — P0 (next):** MLB C3 model training. LR + Platt on MLB player props data (HR/hits/strikeouts O/U thresholds on Kalshi). New model version per ADR-0004 feature-version policy. Separate sport registry entry in `calibration.py` (`CALIBRATION_TEMPERATURE["mlb"]` — currently identity; derive via T-176 once resolved data exists). Chronological holdout split (TI-02 per ADR-0031 precedent). Shadow gate (ADR-0009): Brier improvement over null + ECE ≤ 0.05 on holdout.
-  - **T-183 — P0:** MLB C3 model training. LR + Platt on MLB player props data (HR/hits/strikeouts O/U thresholds on Kalshi). New model version per ADR-0004 feature-version policy. Separate sport registry entry in `calibration.py` (`CALIBRATION_TEMPERATURE["mlb"]` — currently identity; derive via T-176 once resolved data exists). Chronological holdout split (TI-02 per ADR-0031 precedent). Shadow gate (ADR-0009): Brier improvement over null + ECE ≤ 0.05 on holdout.
-  - **T-184 — P0 (commercial validation gate):** EXP-017 MLB run. Backtest MLB model edge vs actual Kalshi MLB market prices — this is the ADR-0024 commercial validation experiment. ADR-0024 Tier 1 check fires at n≥150 unique MLB markets; if EV/bet < −$0.03 at Tier 1: diagnostic sprint per ADR-0024. Tier 2 floor: n≥500, ≥15 opponents. GG-004 remains OPEN until CONFIRMED_POSITIVE at adequate sample.
-  - **T-186 — ✅ COMPLETE (SESSION 80) — Valid negative finding:** F-042 fix implemented and retrained. Root cause confirmed: `nba_api.TeamGameLog` returns no `PLUS_MINUS` → `pts_allowed` NaN for all rows → F-040 and F-042 both imputed to 0.0 in all prior training. Fix: cross-reference pts_allowed from opponent PTS (implemented in `pull_playoff_teamgamelog.py`). v2b retrain: F-042 73.8% populated; Brier delta +0.000130 < required 0.001. **Shadow gate FAIL — valid negative.** Deploy v2-065b9510 in October (ADR-0031). 41 new tests (test_t186_v2b_retrain.py); 1650/1650 green. DECISION_LOG SESSION 80 T-186 entry written.
-  - **T-176 — HIGH (companion to T-183):** MLB calibration temperature derivation. Run `scripts/derive_calibration.py` on MLB resolved dataset; write derived T into `CALIBRATION_TEMPERATURE["mlb"]` via ADR-0027 amendment. **BLOCKED until MLB data exists and positions begin resolving.**
-
-- **PHASE 4 — PRE-SEASON PREP (October 2026):**
-  - **T-185 — P0 (DS decision required before execution):** v2 model deploy + paper trading restart + kill switch reset. **Three prerequisite DS decisions:** (1) NBA 26-27 paper book reset decision: Option A (fresh $1,000), B (continue $751.10), or C (fresh $1,000 with archive) — DECISION_LOG SESSION 74 entry documents the options. (2) Model to deploy: if T-186 completes before October, deploy v2b (F-042 populated) instead of v2-065b9510 (F-042 NaN). (3) Starting pitcher overlay scope: confirm T-182 starting pitcher features are wired before MLB paper trading activates. **Alpha framing (non-negotiable before deploy):** v2 shadow gate PASSED means Brier improved and ECE ≤ 0.05 — model calibration improved. It does NOT mean alpha vs Kalshi prices is confirmed. EXP-017 at adequate sample (ADR-0024) is the alpha gate; GG-004 and GG-037 remain OPEN. Deploying v2 in October is an evidence-collection decision, not a confirmed-alpha deployment. **Runbook (execute in this order):** Step 1 — confirm zero open positions on NBA T1 book; Step 2 — execute DS book-reset decision (A/B/C above); Step 3 — `scp models/v2_model.joblib models/v2_model_meta.json prediction-market-vps:/opt/prediction-market-bot/models/`; Step 4 — `ssh prediction-market-vps "cd /opt/prediction-market-bot && venv/bin/python3 -c 'import joblib; m=joblib.load(\"models/v2_model.joblib\"); print(\"loaded\")'"`; Step 5 — run `deploy/healthcheck.sh` on VPS — all checks green; Step 6 — manual PIPE-03 batch run on Day 1 regular season game; Step 7 — confirm bets placed (not rejected by kill switch or model load error); Step 8 — mark ADR-0031 final checklist `[ ]` item complete. **DS must witness Step 7 before the system is considered restarted.**
-  - **T-116 — HIGH (before 2026-27 tip-off, Oct 20):** Pre-season multi-game night pipeline stress test. Regular season has 10+ simultaneous games (400+ markets/night) vs Finals single-game context. PIPE-02 and PIPE-03 untested at this scale. Simulate a 10-game night locally before season start. Verify: (1) `run_pregame.py` captures pregame logs for all cohort players across simultaneous games without silent failures; (2) PIPE-03 processes all players without timing collisions; (3) EXP-017 join succeeds on simulated multi-game pregame directory. See backlog T-116 entry for full test plan.
-  - **T-127 — Day 1 action:** Orderbook depth query. Run `scripts/query_orderbook_depth.py` on 2026-27 regular season Day 1 to capture live depth for 3–5 active KXNBAPTS contracts. Input to ADR-0005 `max_order_pct_of_depth` hard limit. GG-041.
-
-- **T-178 — ✅ DONE (SESSION 65):** `market_mapper.py` / C1–C2 MLB pre-flight audit — architecture claim VERIFIED: C4/C6/C7/C8 sport-agnostic; C5 NBA defaults are caller-supplied (expected); `KXNBAPTS` series ticker (C-3) is C5-layer, not a C4–C8 violation. Pre-documented constraints C-1 (threshold int type) and C-2 (sport-partitioned runs) stand.
-- **T-179 — ✅ DONE (SESSION 67) — ADR-0029 ACCEPTED (DS sign-off Earl Ignacio, 2026-06-22):** Tier A frozen (immutable — hard rule #3): three-layer execution architecture, six design principles, immediate-execution/staleness-arbitration model, per-sub-band budget mechanism, T4 Activation Gate structure, kill-switch ≤5s requirement (GG-038). Tier B provisional (DECISION_LOG-revisable until each sub-band's Phase 8 Activation Gate): 10-sub-band roster, all Kelly fractions/noise buffers/exposure caps/numerics, alpha hypotheses. T4-MICRO carved to ADR-0030 (placeholder). T4 runtime stays BLOCKED/dark until GG-038/039/040 + Phase 8 activation ADR cleared. See DECISION_LOG S67 acceptance entry.
-- **T-180 — HIGH (Phase 8 code implementation, post ADR-0029 Tier A sign-off) — PHASE 2 DONE (engine built S68); evaluator math + infra remain:**
-  - ✅ **DONE (S67) — taxonomy:** `execution_bands.py` split — `T4_IN_PLAY` retained as aggregate parent; 10 sub-band `ExecutionBand` values (T4-MICRO excluded — ADR-0030) with per-sub-band `BandConfig`. `T4_SUBBANDS` tuple + `is_t4_subband()`/`t4_parent()`. Per-sub-band `NOISE_BUFFER` (`None`-fallback where EXP-required; `NOISE_BUFFER_BAND_T4=0.19` aggregate default). `T4SubBandSpec` + `T4_SUBBAND_REGISTRY` (all BLOCKED) + `validate_t4_subbands()`. PROJ/ARITH Kelly ≤0.167. Strategy K not redefined. Tests +11 → 999.
-  - ✅ **DONE (S68) — the engine (substance of Tier A):** `t4_price_cache.py` (GG-039 architecture; `T4PriceCache` RLock, `STALENESS_WINDOW_S`, `T4Phase8BlockedError`; polling `start_polling` deferred to Phase 8). `t4_execution_engine.py` (`GamePhase`/`classify_game_phase`; `Layer1EvaluationEngine` event-dispatch; `Layer2ExecutionQueue` heapq EXIT-priority + 3 drop conditions [price_stale/edge_below_min/direction_reversed]; 8 BLOCKED sub-band evaluator stubs each guarded by `_assert_sub_band_blocked()`; `T4ProjEvaluator.get_lambda_posterior()` cross-evaluator hook; `T4CorrAdjuster._assert_downward_only` Principle-6; `T4ExecutionEngine._PHASE8_ACTIVE=False`, `simulate_cycle()` test-usable, `start()`/`on_game_event()` raise blocked). `tests/test_t4_engine.py` +109. **Tests → 1108 passing; all execution paths verified blocked.**
-  - ✅ **DONE (S70) — sub-band evaluator math:** `T4ProjEvaluator`: Gamma-Poisson conjugate Bayesian update (`_gamma_prior_params`, `_gamma_poisson_update`, `_poisson_survival_p`), phase-conditional Kelly schedule (EARLY=0.010/MID linear 0.032-0.078/LATE linear 0.078-0.167/NEAR_CERTAIN cap 0.167). `T4ArithEvaluator`: arithmetic threshold-window logic. `T4EventEvaluator`: event-triggered scoring. `T4FlowEvaluator`: sustained score-gap detection (blowout). `T4ExitEvaluator`: EXIT-TIME-FLOOR/EXIT-REVERSAL/EXIT-BUFFER-BREACH. Layer1 ordering fix: T4-PROJ prepended to `ordered_ids` (frozenset unordered). 185 tests in `test_t4_engine.py`. **WARNING (λ prior bias): `lambda_t1_prior` = `opp_adj_lambda` calibrated on regular-season data; same Finals scoring-suppression documented in S69 diagnosis still affects T4-PROJ. T-072 must fix before T4-PROJ activation.**
-  - ✅ **DONE (S71) — live execution path design:** `t4_live_runner.py` (new): `T4FastHalt` (GG-038 ≤5s, threading.Event), `T4PositionRegistry` (thread-safe, pool drawdown accounting), `T4PriceCacheUpdater` (GG-039 bootstrap REST 2s poll), `T4GameStateBuilder` (GG-040 bootstrap ESPN→T4GameState), `build_forecast_record()` (EvaluationSignal→C4 dict with `kelly_fraction`), `T4LiveRunner` (C4/C5/C6/C7 wiring, pool-kill at 20% drawdown). `on_game_event()` implemented (Layer1+Layer2 returns tuple). `create_phase8()` factory (instance-level `_PHASE8_ACTIVE`). C4 `risk.py`: `kelly_frac = fc.get("kelly_fraction", self._kelly_fraction)` — backward-compat. 67 tests in `test_t4_live_runner.py`. **1280 total tests.**
-  - ⬜ **REMAINING (Phase 8 ADRs — code is complete, ADRs needed to activate):** (1) GG-038 resolution ADR — T4FastHalt meets ≤5s design; ADR must sign off design + confirm SLA via test harness before `_PHASE8_ACTIVE=True`. (2) GG-039 resolution ADR — `T4PriceCacheUpdater` REST bootstrap design done; WebSocket production path requires sub-ADR. (3) GG-040 resolution ADR — `T4GameStateBuilder` ESPN bootstrap done; NBA Stats live play-by-play replacement requires sub-ADR. (4) Phase 8 activation ADR — calls `T4ExecutionEngine.create_phase8()`; wires `T4LiveRunner`; sets `_PHASE8_ACTIVE=True`. Until then: BLOCKED/dark.
-  - **Per-sub-band roster + numerics are Tier B (provisional) — implement against the architecture (Tier A), not against frozen sub-band values.** Tier A signed off by DS (Earl Ignacio) 2026-06-22 S67. T4 runtime stays BLOCKED/dark until GG-038/039/040 + Phase 8 activation ADR cleared.
-
----
-
-## SESSION 56 — COMPLETE (2026-06-12)
-
-| Task | Status |
-|------|--------|
-| **T-169 (GG-031 RESOLVED): Option A twin annotations** | ✅ COMPLETE — 9 VPS positions annotated `duplicate_of`; EXP-018 dedupe filter deployed; close paths verified to preserve annotation. |
-| **GG-033 registered + deploy recovery** | ✅ COMPLETE — VPS silently stuck at `cea8a19` since S55; recovered via backup-first dance; T-171 queued (untrack + GHA auto-deploy as one unit, post-G5). |
-| **YES-only gate (S47/S56 DS ruling)** | ✅ LIVE — `PAPER_YES_ONLY` default-true in run_paper_trade.py + explicit in cron.conf; NO signals → C6 `yes_only_gate_filtered` counterfactuals; VPS crontab reinstalled. Continuous diagnostic leg; deactivation requires DS ruling. |
-| **T-148 DS ruling** | ✅ LOGGED — Still G6 blocker; NOT absorbed by ADR-0024. Segmented per-band promotion thresholds + aggregate P&L/capital goal via APR-0017-superseding ADR. Priority queue item 14. |
-| **GG-007 EXP ID collision** | ✅ FIXED — calibration experiments renumbered EXP-020/EXP-021. |
-| **GG-004 scan visibility** | ✅ FIXED — status line reformatted; session-start grep now catches it. |
-| **T-172 registered** | ✅ — G6 gate checklist doc (criterion/evidence/status), dark period Phase 1. |
-| **T-152 census** | ✅ — 244 unique exited positions on VPS (≥50 floor comfortably met); empirical validation of 0.19 buffer runnable in Phase 1 regardless of Finals outcome. |
-| **T-160 hygiene sweep** | ✅ COMPLETE — root folder cleaned; dead PAPER_T4_FLAT_SIZING scrubbed; budget sim formula fixed to ADR-0023. |
-| **Tests** | ✅ 852/852. |
-
----
-
-## SESSION 55 — COMPLETE (2026-06-12)
-
-| Task | Status |
-|------|--------|
-| **T-168 (GG-030 RESOLVED): MC correlated simulation** | ✅ COMPLETE — `simulate_portfolio()` draws one Poisson score per player. `_infer_lambda()` fits lambda via least-squares on (threshold, model_p) pairs. Direction-invariant (NO bets use raw model_p). G5 MC deployed to VPS. |
-| **GG-031 registered** | ✅ REGISTERED — 9 duplicated tickers ($402 doubled exposure), not 2. T-169 queued for DS ruling. |
-| **GG-032 registered** | ✅ REGISTERED — T4 bankroll irreconcilable; ADR-0022 root cause identified. |
-| **T-170 (GG-032): T4 ledger correction** | ✅ COMPLETE — `paper_portfolio_t4.json` on VPS: bankroll_usd→478.41, initial_bankroll_usd→500.0. Backup preserved. |
-| **DECISION_LOG SESSION 55 entry** | ✅ COMPLETE |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE |
-| **Tests** | ✅ 851/852 (1 pre-existing timing flake in `test_compute_budget`; unrelated) |
-| **VPS deploy** | ✅ COMPLETE — Commit `530e1c3` pushed and VPS `git pull` + scp confirmed. |
-
----
-
-## SESSION 54 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **Pre-Game-5 hygiene audit** | ✅ COMPLETE — All three Session 53 changes verified clean. No bugs found. |
-| **T-166 idempotency verification** | ✅ VERIFIED — `open_positions` schema confirmed OPEN-only (paper_trader removes on close/exit). No status filter needed. `_open_tickers` rebuild per-market-iteration picks up intra-run placements correctly. |
-| **T-164 cron timing verification** | ✅ VERIFIED — T3 staleness guard returns `{}` at 18:00 UTC (no T3 reports exist until 20:00 UTC). Primary cron correctly runs as pure T1. Late 01:30 UTC window receives T3 overlays from running games. Architecturally correct. |
-| **T-167 MC formula verification** | ✅ VERIFIED — NO bet `win_odds = mid/(1-mid)` confirmed correct: Kalshi NO costs `(1-mid)`, collects $1, net `mid/(1-mid)` per dollar. `p_win = 1 - model_p` confirmed correct: model_p is P(≥threshold), NO wins when score < threshold. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-
----
-
-## SESSION 53 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **T-166 (GG-028 RESOLVED): PIPE-03 idempotency fix** | ✅ COMPLETE — `run_paper_trade.py`: removed `if not str(p.get("kalshi_order_status", "")).startswith("failed:")` from `_open_tickers` set construction. All open positions block re-entry regardless of Kalshi order status. Root cause of G5 duplicate bets patched. |
-| **T-164: Primary cron window shift 22:00→18:00 UTC** | ✅ COMPLETE — `deploy/cron.conf`: health check, T-140, PIPE-02 primary, PIPE-03 primary all shifted to 17:00/17:25/17:55/18:00 UTC. `PAPER_T4_FLAT_SIZING=true` synced to T4 entry. VPS crontab confirmed updated. |
-| **T-167 (GG-029 RESOLVED): MC script rewrite** | ✅ COMPLETE — `scripts/run_monte_carlo.py`: portfolio mode default (reads `paper_portfolio.json`, kelly=0.25, min_edge=0.04); `--preview` flag preserves old behavior; `--exclude-failed`, `--yes-only`, `--no-only`, `--haircut` scenario flags; Bernoulli simulation using committed `model_p`. |
-| **GG-028 RESOLVED in GOVERNANCE_GAP_LOG** | ✅ COMPLETE |
-| **GG-029 RESOLVED in GOVERNANCE_GAP_LOG** | ✅ COMPLETE |
-| **DECISION_LOG SESSION 53 entry** | ✅ COMPLETE |
-| **VPS deploy** | ✅ COMPLETE — Commit `d6283b1`. 5 files, 419 insertions, 169 deletions. Crontab confirmed. |
-| **Tests** | ✅ 852/852 pass |
-
----
-
-## SESSION 52 — COMPLETE (2026-06-12)
-
-| Task | Status |
-|------|--------|
-| **G5 portfolio MC** | ✅ COMPLETE — Direct MC on 41 committed positions: EV +$246.67 (24.6% ROI), P(profit)=99.8%, P(kill switch)=0.00%, p50 end bankroll=$382.40. MC script gap documented (GG-029). |
-| **Second cron confirmed — GG-028 registered** | ✅ COMPLETE — 22:00 UTC batch (29 bets, expected) + 01:00 UTC batch (12 bets, unexpected, 0% failures). Duplicate Wemby NO 40/35 positions placed. T-166 registered. |
-| **GG-014 final snapshot** | ✅ COMPLETE — 22:00 batch: 31% failure (unchanged from pre-T-164). 01:00 batch: 0% failure. T-164 fixes off-peak congestion; primary window still congestion-limited. GOVERNANCE_GAP_LOG updated. |
-| **GG-029 registered** | ✅ COMPLETE — MC script analyzes pregame forecasts (kelly=0.1, min_edge=0.02) not committed positions. T-167 registered. |
-| **DECISION_LOG SESSION 52** | ✅ COMPLETE |
-| **Tests** | ✅ 852/852 pass (no code changes) |
-
----
-
-## SESSION 51 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **ADR-0024: Stop/Pivot Criterion (T-157)** | ✅ COMPLETE — `03_DECISIONS/ADR-0024_stop-pivot-criterion.md`. Tier 1 (n≥150): EV/bet < -$0.03 → diagnostic sprint. Tier 2 (structurally adequate sample): CONFIRMED_NEGATIVE → halt + ADR-0004 supersession. Passability drift watch: standing. GG-021 RESOLVED. |
-| **DARK_PERIOD_PLAN.md ratified (T-158)** | ✅ COMPLETE — `04_EXECUTION/DARK_PERIOD_PLAN.md`. Four phases. Phase 3 (Aug-Sep): MLB C1/C2/C3 + EXP-017 MLB commercial validation. Phase 4 (Oct): GG-014 confirmation, G6 review, ADR-0005. |
-| **EXP-017 scope transition — DS ruling** | ✅ COMPLETE — NBA Finals sample structurally insufficient. EXP-017 transitions to MLB 2026 + NBA 26-27 regular season. ADR-0024 defines structurally adequate sample standard. GG-004 status updated. |
-| **GG-014 dark-period gap documented** | ✅ COMPLETE — T-164 deployed but G5 placed before fix. No additional PIPE-03 runs possible before dark period. GG-014 G6 gate confirmation deferred to 2026-27 Season Day 1. GOVERNANCE_GAP_LOG + DARK_PERIOD_PLAN Phase 4 updated. |
-| **DECISION_LOG SESSION 51 entry** | ✅ COMPLETE |
-| **Tests** | ✅ 852/852 pass (no code changes) |
-
----
-
-## SESSION 50 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **PAM archetype register — `get_archetype()` added to QualitativeSignalStore** | ✅ COMPLETE — `qualitative_store.py`: point-lookup method with QTI-01 temporal guard. Returns `{prf_primary, prf_primary_name, active_modifiers, prf_secondary/name/weight if hybrid}`. None if no snapshot or outside window. |
-| **T1 archetype logging (`run_paper_trade.py`)** | ✅ COMPLETE — `_pam = qs.get_archetype(player_id, GAME_DATE_ISO)` per cohort player; `pam_archetype` field in `forecast_rec`; `[PRF-X]` tag in BET print output. Non-cohort players return None (no QS classification). |
-| **T4 archetype register wiring (`run_t4_inplay.py`)** | ✅ COMPLETE — `QualitativeSignalStore` imported; `archetype_register` param added to `T4EventLoop.__init__`; `pam_archetype: dict | None = None` field added to `T4RoutingResult`; archetype looked up at event entry and propagated through all routing paths (FIRE_STAGED, FIRE_BAYESIAN, FIRE_T5, NO_ACTION). KILL_SWITCH path receives no archetype (intentional — routing halted before player context matters). |
-| **GG-027 registered** | ✅ COMPLETE — Full T2/T3/T5 PAM integration + EnvironmentClassifier not built. LOW now (bands SKELETON/BLOCKED); HIGH pre-MLB activation. |
-| **T-165 registered** | ✅ COMPLETE — Full band integration + env classifier ADR — MLB gate. |
-| **DECISION_LOG SESSION 50 entry** | ✅ COMPLETE |
-| **Tests** | ✅ 852/852 pass |
-
----
-
-## SESSION 49 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **ADR-0019-A01: NOISE_BUFFER_BAND_T4 0.139→0.19** | ✅ COMPLETE — EXP-019B/C empirical (G4, n=1199): observed mean=0.182, p50=0.187; EXP-019C p90 spread=0.170. T-152 update gate triggered (>20% deviation from analytic). Value set to 0.19: above p90 (0.170) and mean (0.182); within MEMORY_BANK recommendation ≥0.18–0.20. `execution_bands.py` updated. `test_t146_t147_exit_mechanics.py` updated (3 locations). DECISION_LOG ADR-0019-A01 entry added. |
-| **T-164 Part 1: Kalshi retry parameters** | ✅ COMPLETE — MAX_RETRIES 3→4; RETRY_DELAY_S 1.0→2.0; delay schedule 4/8/16/32s=60s. Root cause: T-138's 14s total window insufficient for Kalshi rate-limit reset. `kalshi_client.py` updated. `test_kalshi_client.py` updated (backoff assertion [2.0,4.0]→[4.0,8.0]). |
-| **T-164 Part 2: Inter-order sleep raised** | ✅ COMPLETE — sleep 0.5→2.0s in `paper_trader.open_position()`. 29 orders × 2.0s ≈ 58s batch time (acceptable for pre-game cron). |
-| **PIPE-03 reserve mandate hygiene** | ✅ COMPLETE — Pre-run health check: deployed %, reserve floor $, bankroll, WARN >80%. Batch order integrity report: submitted/ok/failed/rate, WARN >5% (G6 gate). `run_paper_trade.py` updated. |
-| **New test file: test_t164_order_throttle.py** | ✅ COMPLETE — 9 tests: TestRetryConstants (4: max_retries=4, retry_delay=2.0, post delay schedule 4/8/16/32s, get delay schedule, 60s window); TestInterOrderSleep (4: sleep 2.0s when client present, no sleep without client, no sleep without key, exactly 2.0s value). 852/852 total tests pass. |
-| **DECISION_LOG SESSION 49 entry** | ✅ COMPLETE — ADR-0019-A01 + T-164 (both parts) + reserve hygiene. All four changes documented with derivation methodology. |
-| **GOVERNANCE_GAP_LOG updated** | ✅ COMPLETE — GG-014 status: PARTIALLY RESOLVED. GG-017 T-152 update gate noted. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-| **VPS deploy** | ✅ COMPLETE — Commit d68d5c2 deployed. `git pull` on VPS: 11 files, fast-forward, DEPLOY OK. |
-
----
-
-## SESSION 48 — COMPLETE (2026-06-12)
-
-| Task | Status |
-|------|--------|
-| **G4 positions resolved** | ✅ COMPLETE — run_resolve_local.py: Brunson NO-40 WIN (+$8.57), Vassell NO-25 WIN (+$1.16), OG Anunoby NO-25 LOSS (-$18.20). Net -$8.46. VPS bankroll: $285.27. Portfolio synced. |
-| **VPS portfolio discrepancy investigation** | ✅ COMPLETE — VPS has 32 open (3 G4 + 29 G5); local `logs/paper_portfolio.json` was stale pre-G5. G5 bets placed by T1 early cron Jun 11 for game_date=2026-06-13. VPS is authoritative. |
-| **G5 YES-only gate** | ❌ NOT IMPLEMENTED PRE-G5 — G5 fired WITHOUT YES-only filter. 20 NO + 9 YES bets placed. G5 data analyzable post-hoc with YES/NO breakdown but not a clean YES-only test. **→ IMPLEMENTED SESSION 56 (2026-06-12): `PAPER_YES_ONLY` gate live in run_paper_trade.py (default true) + cron.conf; DS reaffirmed as continuous leg for all future batches.** |
-| **Monte Carlo with ADR-0023 components** | ✅ COMPLETE — G5 MC: 29 bets, $848.73 deployed, EV +$209.70 (+24.71% ROI), P(profit)=97.5%, kill switch risk 0.10%. Reserve mandate exceeded (84.9% > 60%) but batch enforcement deferred. All bets match ADR-0023 parameters. |
-| **T4 budget sim (ADR-0023 verification)** | ✅ RUN — Shows $302.89 budget (stale formula: uses RESERVE_MANDATE deduction). Correct ADR-0023 budget = $504.81 ($1,869.68 × 0.27). run_t4_budget_sim.py is stale (simulation tooling only; production run_t4_live.py is correct). |
-| **GG-014 G5 update** | ✅ LOGGED — 9/29 = 31% failure rate. T-138 INEFFECTIVE at 29-order burst. T-164 registered. GG-014 status updated: G6 gate BREACHED. |
-| **DECISION_LOG SESSION 48 entry** | ✅ COMPLETE — All 4 findings logged. ADR-0023 added to ADR Index. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-
----
-
-## SESSION 47 — COMPLETE (2026-06-11)
-
-| Task | Status |
-|------|--------|
-| **T-163: ADR-0023 — Remove PAPER_T4_FLAT_SIZING; calibrate T4_BAND_WEIGHT (GG-026)** | ✅ COMPLETE — T4_BAND_WEIGHT=0.27 (G4 empirical: $499.95/$1,869.68). PAPER_T4_FLAT_SIZING + PAPER_T4_POOL_USD removed entirely. _compute_t4_band_budget single budget path (no RESERVE_MANDATE — T4 pool is isolated capital). pool_isolated=True hardcoded. Flat sizing (1 contract at mip) retained as hardcoded T4 paper policy. G5 budget: ~$504.81. ADR-0023 ACCEPTED. GG-026 RESOLVED. 4 test patches removed (test_t146_t147 × 4, test_t149 × 2 → removed 4 of those patches). 843/843 tests. Commit 72ba619, VPS deployed. |
-| **EXP-018 Hypothesis C DS ruling** | ✅ RULED (SESSION 47) — DS: calibration gap. n=98, both all-bets and injury-filtered CONFIRMED_NEGATIVE. NOT T1 Tier 2B FAILS. Multi-sport scale (MLB/NFL) addresses sample size. G5 diagnostic: YES-only mode to isolate YES vs NO edge. |
-| **EXP-019B empirical validation** | ✅ COMPLETE — TP rate = 0.281 (analytic predicted 0.799). DIVERGED. Root cause: market-lag assumption fails; Kalshi semi-efficient; mip and p_t4 move together. ADR-0019 Tier 2 OPEN. Script: `scripts/run_exp019b_empirical.py`. Results: `exp_output/EXP-019/EXP-019B_empirical_results.json`. |
-| **EXP-019C spread model** | ✅ COMPLETE — p90 spread=0.170 > NOISE_BUFFER_BAND_T4=0.139. Buffer needs raising to ≥0.18–0.20. Results: `exp_output/EXP-019/EXP-019C_results.json`. |
-| **DECISION_LOG SESSION 47 entry** | ✅ COMPLETE — ADR-0023 decision entry with full derivation methodology, all code changes, 843/843 test count, GG-026 RESOLVED. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-
----
-
 ## SESSION 45 — G4 PRE-TIP SPRINT (2026-06-10)
 
 | Task | Status |
@@ -1213,39 +463,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | **DECISION_LOG SESSION 45 entries** | ✅ COMPLETE — both entries written. |
 
 ---
-
-## SESSION 44 — COMPLETE
-
-| Task | Status |
-|------|--------|
-| **T4 daily-loss stale-date kill switch bug** | ✅ FIXED — `run_t4_live.py:438`: `current_daily_loss=$157.89` from G3 would have fired kill switch on every G4 bet. Added date-check reset: when `portfolio_data.get("daily_loss_date") != today_str`, resets `current_daily_loss=0.0` before entering game loop. Commit `a300a51`, deployed to VPS. |
-| **GHA post-game resolve workflow** | ✅ LIVE — `.github/workflows/post_game_resolve.yml` created. Root cause: nba_api 403-blocked on VPS (Akamai WAF) + Mac cron Mac-dependent. Fix: GHA runners (not blocked) run T1+T4 resolve at 05:30 UTC daily via `VPS_SSH_KEY` secret. SSH key written to `~/.ssh/id_ed25519_droplet` (matches hardcoded path in both resolve scripts). `continue-on-error: true` on each step. Both scripts idempotent (0 open positions → clean exit). Verified workflow_dispatch run 27253281067 (35s, all green). Commit `aa263fb`, deployed VPS. Mac `post_game_g4_resolve.sh` cron `0 23 10 6 *` remains as secondary fallback + experiment runner (EXP-017/018). **G4 fully automatic — no operator action required.** |
-| **DECISION_LOG entries** | ✅ COMPLETE — Both SESSION 44 decisions logged: T4 stale daily-loss fix + GHA auto-resolve architecture. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — This session. |
-
----
-
-## SESSION 43 — COMPLETED (prior session)
-
-| Task | Status |
-|------|--------|
-| **APR-0019 ACCEPTED** | ✅ DS: Earl — EXIT_MECHANICS_ACTIVE=True gate added to `run_t4_live.py`. |
-| **GG-018 RESOLVED** | ✅ APR-0017 floor derivation amended; T-155 registered. |
-| **Kalshi fee 0.07 partial verification** | ✅ GG-020: ≥2 sources support 0.07; T-151 open for receipt confirmation post-G6. |
-| **EXIT_MECHANICS_ACTIVE=True deployed** | ✅ Committed + deployed VPS. |
-| **MC adj_λ upgrade deployed** | ✅ run_monte_carlo.py updated with TSS adj_λ support. |
-
----
-
-## SESSION 2026-06-08 SESSION 40 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **T-141: PIPE-03 false kill switch root cause + fix (CRITICAL)** | ✅ COMPLETE — `run_paper_trade.py:558`: `daily_loss += approved_size if edge < 0 else 0` removed. NO bets always have `edge < 0` by convention; line was silently accumulating all NO stake sizes as daily losses. Root sequence: G2 realized losses ($130.08 from portfolio) + $43.03 NO stakes → $173.11 ≥ $150 threshold → kill switch. Fix: removed the spurious accumulation; `daily_loss` is loaded from `portfolio.current_daily_loss` only (set correctly by `close_position()`). 783/783 tests pass. |
-| **T-142: live_terminal.py T4 log path fix** | ✅ COMPLETE — Both `_data_from_local()` and `_REMOTE_SCRIPT` updated from `t4_live.log` → `t4_live_cron.log`. Active T4 cron (PIPE-07, 23:00 UTC) writes to `t4_live_cron.log`; `t4_live.log` was stale from pre-cron manual run (last line 19:58 UTC). Dashboard now reads live T4 activity. |
-| **T-143: run_t4_live.py crash guard** | ✅ COMPLETE — Main `while True` loop body wrapped in `try/except Exception`. ConnectionError/HTTPError no longer kills T4 process. Kill switch check remains OUTSIDE the guard (unbreakable). |
-| **T-144: post_game_g3_resolve.sh — automated post-game deploy** | ✅ COMPLETE — `scripts/post_game_g3_resolve.sh` created. 5 steps: (1) T1 resolve, (2) T4 resolve, (3) SCP portfolio to local, (4) VPS git pull (idempotency fix), (5) EXP-017 Part B rerun. Scheduled via Mac crontab `0 23 8 6 *` (11 PM PDT Jun 8 → 06:00 UTC Jun 9). |
-| **DECISION_LOG SESSION 40 entry** | ✅ COMPLETE — Entry written: (1) PIPE-03 false kill switch root cause and fix, (2) live_terminal log path, (3) T4 crash guard. |
 
 ## SESSION 42 — CURRENT
 
@@ -1277,61 +494,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 40 (cont.) — COMPLETED
-
-| Task | Owner | Priority | Notes |
-|------|-------|----------|-------|
-| **T-145: ADR-0018 — Band Exit Mechanics** | DS | ✅ COMPLETE — ADR-0018 ACCEPTED (APR-0018, 2026-06-09) | Framework: exit signal `mip_current > p_current + cost`; time-weighted Poisson; noise buffer via 2σ_p derivation; Kelly-inverse sizing; per-band spread cost model. All numeric parameters deferred to EXP-019A/B/C. |
-| **EXP-019A (analytic)** | DS | ✅ COMPLETE 2026-06-09 | Candidate NOISE_BUFFER_BAND values: T1=0.22053, T2=0.22053, T3=0.22053, T4=0.13905, T5=0.13328. All statistical-binding (2σ_p >> taker fee). Script: `scripts/run_exp019a_analytic.py`. DECISION_LOG logged. T1/T2/T3 σ_λ requires empirical validation. |
-
----
-
-### Post-G3 (COMPLETE via post_game_g3_resolve.sh — 05:08Z Jun 9 UTC):
-- ✅ T1 resolve: 47 positions, bankroll $876.83, P&L $-123.17 cumulative
-- ✅ T4 resolve: 215 positions, +$39.44, pool $1,539.42
-- ✅ SCP paper_portfolio.json local
-- ✅ VPS git pull (idempotency fix deployed)
-- ✅ EXP-017 Part B: DIRECTIONAL_POSITIVE (n=66, at APR-0017 floor)
-
----
-
-## SESSION 2026-06-08 SESSION 39 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **`live_terminal.py` crash fix: blocking SSH → background thread** | ✅ COMPLETE — `_FetchState` dataclass + `_fetch_worker()` daemon thread. Main curses loop no longer blocks on SSH. Panel content rebuilds on each `last_ok` timestamp change. `stop_event.set()` on quit for clean shutdown. Commit `fd4cea5`. |
-| **`live_terminal.py` scroll latency fix** | ✅ COMPLETE — Input drain loop (all queued keys per frame) + draw moved *after* input + `time.sleep` 50ms → 16ms. Scroll latency ~26ms max (was ~110ms). Held arrow key tracks OS repeat rate directly. Commit `07210a0`. |
-| **`live_terminal.py` T4 portfolio fetch + t4_tail** | ✅ COMPLETE — `paper_portfolio_t4.json` added to `_REMOTE_SCRIPT` and `_data_from_local()`. `t4_tail` increased 10 → 25 lines. No visual change. |
-| **`live_terminal.py` drawdown fix** | ✅ COMPLETE — `(initial-bankroll)/initial` → `max(0, -realized_pnl/initial)`. Was showing 4.1% (deployed stakes miscounted as loss); now 0.0% correct. |
-| **DECISION_LOG SESSION 39 entry** | ✅ COMPLETE — All four fixes with root-cause derivation. |
-| **VPS deployed + terminal reopened** | ✅ COMPLETE — Commits `fd4cea5` + `07210a0` pulled to VPS. New window launched. |
-
----
-
-## SESSION 2026-06-08 SESSION 38 FINAL — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **G3 readiness assessment + MC run** | ✅ COMPLETE — 34 markets → 29 bets, EV=+$138.47, P(profit)=95.1%, kill switch risk 0.19%. Based on stale 9-player 01:25 UTC pregame (adj_λ not applied); tonight's 21:55 PIPE-02 will have ~20-25 players + adj_λ. |
-| **T-140 automated** | ✅ COMPLETE — `scripts/run_t140_check.py` cron at 21:25 UTC. Checks TSS cache ≥ 1000 bytes; rebuilds from ESPN if stale. VPS deploy confirmed; dry run: TSS cache OK (18,854 bytes). Manual T-140 check retired. |
-| **CLAUDE.md kill switch correction** | ✅ COMPLETE — Corrected 20%/~$192 → 15%/~$144. `MAX_DAILY_LOSS_PCT=0.15` in `risk.py:90` and `run_monte_carlo.py:48`. |
-| **PAM/LR primary model architecture confirmed** | ✅ DOCUMENTED — `p_estimate` = Poisson CDF (primary). `p_estimate_lr` = LR+Platt 78-feature (shadow, not in decision path). Wembanyama >35: Poisson=0.0485 vs LR=0.4629 (10x gap). Decision logged. |
-| **DECISION_LOG entry** | ✅ COMPLETE — SESSION 38 PART 2 entry written covering T-140 automation, kill switch correction, PAM/LR shadow model finding. |
-
----
-
-## SESSION 2026-06-08 SESSION 38 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **Stub scan perma-fixes (5 stubs)** | ✅ COMPLETE — `run_exp001.py:681`, `run_t2_sameday.py:112/130`, `venue_adapter.py:158/251` all cleaned. Keywords removed; governance traceability (T-075, KI-019, T-077) preserved. Scan returns CLEAN. |
-| **VPS deploy: SESSION 37 + SESSION 38 commits** | ✅ COMPLETE — VPS HEAD: `0720fc8`. PIPE-07 cron at 23:00 UTC active. PIPE-06 T3 scan active (see fix below). |
-| **PIPE-06 cron.conf sync gap** | ✅ FIXED — `deploy/cron.conf` had PIPE-06 lines commented out (stale since SESSION 34 manual activation). SESSION 38 deploy silently deactivated T3 scan. Uncommented PIPE-06 lines, removed stale T-077 gate comment, redeployed. VPS crontab confirmed active. Commit `0720fc8`. Decision: `cron.conf` is canonical — manual VPS edits must be reflected immediately. |
-| **Idempotency guard fix + 6 tests** | ✅ IMPLEMENTED — `run_paper_trade.py`: failed positions (`kalshi_order_status.startswith("failed:")`) no longer block retry. `TestIdempotencyFilter` (6 tests). 745/745 pass. Commit `341ab97`. **NOT deployed to VPS yet — see open item.** |
-| **DECISION_LOG entry** | ✅ COMPLETE — SESSION 38 entry written covering all three actions. |
-
----
-
 ## SESSION 2026-06-08 SESSION 38 — OPEN ITEMS (tonight + post-G3)
 
 | Task | Owner | Priority | Notes |
@@ -1345,18 +507,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-08 SESSION 37 (continued) — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **PIPE-07 T4 portfolio isolation fix** | ✅ COMPLETE — `run_t4_live.py`: `_PORTFOLIO_PATH` → `paper_portfolio_t4.json`, `_STAGED_DB_PATH` → `staged_orders_t4.db`. Prevents T4/T1 position interleaving. Docstring PAPER_T4_VIRTUAL default corrected ("enabled" → "disabled — non-virtual paper positions"). |
-| **PIPE-07R-LOCAL: run_t4_resolve_local.py** | ✅ COMPLETE — T4-specific resolution script created. SCP pull `paper_portfolio_t4.json` from VPS → local nba_api resolution → SCP push back. Appends to `audit_t4.jsonl`. Run: `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` |
-| **deploy/cron.conf PIPE-07 entry** | ✅ COMPLETE — Added at 23:00 UTC daily with 6h timeout (`timeout 21600`). `BOT_ENV=paper BOT_C4_ACTIVE=true PAPER_T4_FLAT_SIZING=true`. Covers full NBA window (7pm–11pm ET = 23:00–03:00 UTC). |
-| **DECISION_LOG T4 activation entry** | ✅ COMPLETE — SESSION 37 entry logged: PAPER_T4_VIRTUAL=false rationale, pool_isolated=True design, portfolio isolation fix, Phase 8 ADR requirement. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — Both updated with T4 activation state. |
-
----
-
 ## SESSION 2026-06-08 SESSION 37 (continued) — OPEN ITEMS
 
 | Task | Owner | Priority | Notes |
@@ -1365,33 +515,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | **Manual start command for G3 tonight (if cron not yet active)** | DS | **TONIGHT ~00:30 UTC** | `ssh root@157.230.91.33 "cd /opt/prediction-market-bot && source venv/bin/activate && export $(grep -v '^#' .env \| xargs) && BOT_ENV=paper BOT_C4_ACTIVE=true PAPER_T4_FLAT_SIZING=true PYTHONPATH=src nohup python src/prediction_market_bot/run_t4_live.py >> logs/t4_live_g3.log 2>&1 &"` |
 | **Run PIPE-07R-LOCAL after G3 resolves** | DS | HIGH — after G3 resolves (~06:00 UTC Jun 9) | `BOT_ENV=paper PYTHONPATH=src python3 src/prediction_market_bot/run_t4_resolve_local.py` — resolves ~1,000 T4 positions into `paper_portfolio_t4.json`. Feeds EXP-017 Part B n-count. |
 | **Re-run EXP-017 Part B after T4 + G3 resolve** | DS | MEDIUM | T4 positions are pool_isolated — verify EXP-017 handles them correctly (per-bet EV calculation). Target n should grow significantly (~1,000 T4 + ~20 T1 G3). |
-
----
-
-## SESSION 2026-06-08 SESSION 37 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **GG-014 completeness: `_get()` exponential backoff** | ✅ COMPLETE — `_get()` was using linear backoff (1s/2s/3s) while `_post()` used exponential (2s/4s/8s). Both now match: `RETRY_DELAY_S * (2 ** (attempt+1))`. New test `test_get_uses_exponential_backoff_on_503` asserts sleep values [2.0, 4.0]. 739/739 tests. |
-| **T-134/T-140: TSS empty-cache WARNING** | ✅ COMPLETE — `run_pregame.py` now emits `logger.warning("team_stats_cache_empty")` + console `[TSS] WARNING: cache present but empty` when cache file exists but contains `{}`. Visible in `pregame_cron.log` — removes silent degradation to raw λ. |
-| **CLAUDE.md bankroll correction** | ✅ COMPLETE — Updated $683.41→$958.99, kill threshold $137→$192, removed stale `max_daily_loss_usd` reference (deleted by ADR-0012). |
-| **TODO_NEXT G3 idempotency note corrected** | ✅ COMPLETE — Note incorrectly said "no new bets expected" for G3. G2 is fully resolved; G3 game_date=2026-06-08 is fresh. New bets ARE expected at 22:00 UTC. |
-| **MEMORY_BANK + TODO_NEXT updated** | ✅ COMPLETE — Test count 738→739, session header updated to SESSION 37. |
-| **Commit + VPS deploy** | ✅ COMPLETE — All changes committed and deployed. |
-
----
-
-## SESSION 2026-06-08 SESSION 36 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **G2 resolution: run_resolve_local.py** | ✅ COMPLETE — 35 positions resolved, 28W/7L, +$75.67, bankroll $50.96→$958.99, 80% win rate. G6 milestone: 35 > 30-bet threshold CROSSED. Paper portfolio pulled from VPS post-resolution. |
-| **GG-014 503 fix (T-138 extension)** | ✅ COMPLETE — G3 portfolio showed 18/20 orders as HTTP 503 (not 429). 503 was not in retry condition. Extended `_post()` and `_get()` retry from `(429,)` to `(429, 503)`. Same exponential backoff: 2s/4s/8s on attempts 0/1/2. Added 4 new tests in `TestTransientRetry`. 738/738 tests. Commit 4dd2c3d deployed to VPS. First true post-fix test: G4. T-139 registered (monitor G4 order status distribution). |
-| **adj_λ cache pre-upload for G3** | ✅ COMPLETE — GHA wrote team_stats_cache_20260607.json (Jun 7 date). PIPE-02 for Jun 8 expects 20260608. Late cron wrote `{}`. Built locally (30 teams, 236 records, 18,854 bytes), SCPed as team_stats_cache_20260608.json to VPS. T-140 registered: verify TSS cache size > 1000 bytes before each PIPE-02. |
-| **EXP-017 Part B (live vs actual Kalshi prices)** | ✅ COMPLETE — First run with `--from-pregame logs/ --portfolio logs/paper_portfolio_vps.json`. n=33 unique markets (2 of 35 portfolio tickers had no pregame match). EV=+0.1042/bet, 81.8% win rate, mean edge vs market +0.0375. Key insight: mean edge vs null = −0.0486 (prior mip=0.50 EV figures were misleading; model beats real Kalshi prices despite negative null baseline). GG-004 remains OPEN — n=33 < APR-0017 floor of 66. DIRECTIONAL_POSITIVE verdict logged. |
-| **GOVERNANCE_GAP_LOG.md updated** | ✅ COMPLETE — GG-004: DIRECTIONAL_POSITIVE, n=33, EV=+0.1042/bet. GG-014: T-138 503 extension noted, commit 4dd2c3d, effectiveness pending G4. |
-| **DECISION_LOG.md updated** | ✅ COMPLETE — 4 SESSION 36 entries: 503 retry gap, EXP-017 Part B result, adj_λ cache manual upload, G2 resolution + G6 30-bet milestone. |
-| **MEMORY_BANK.md updated** | ✅ COMPLETE — Header, last major milestone, current state snapshot (738 tests, bankroll $958.99, VPS HEAD 4dd2c3d, GG-004 DIRECTIONAL_POSITIVE). |
 
 ---
 
@@ -1417,28 +540,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | **EXP-018 — Finals G2 result analysis** | DS | ⬜ PARTIAL → resolved in SESSION 36 | G2 P&L analyzed: +$75.67, 80% win rate. GG-014 503 root cause found (18/20 orders HTTP 503). T3 signals all NEUTRAL for G2 (GG-016 bug — PIPE-06 was down). T3 isolation data starts G3. |
 | **Verify adj_λ activation on Finals G3** | DS | ⏳ TONIGHT | Cache pre-uploaded (team_stats_cache_20260608.json, 18,854 bytes). Awaiting PIPE-02 at 21:55 UTC. |
 | **EXP-017 Part B re-run on G2 data** | DS | ✅ DONE → DIRECTIONAL_POSITIVE | n=33, EV=+0.1042/bet, 81.8% win rate. Re-run after G3 resolves (target n≈53). |
-
----
-
-## SESSION 2026-06-05 SESSION 34 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| **T3 momentum overlay — PIPE-03 integration** | **`t3_signal_loader.py` (new), `run_paper_trade.py` (6 edits), `tests/test_t3_integration.py` (19 tests, new)** | ✅ COMPLETE 2026-06-05 SESSION 34 — Non-contamination guarantee: absent/stale/malformed T3 report → `{}` → every `.get(ticker, "NEUTRAL")` → pure T1 path. CONFIRM×1.15, FADE×0.75. Staleness guard = 900s (matches PIPE-06 cron interval). `t1_edge` preserved in `forecast_rec` for EXP-018 isolation. DECISION_LOG entry written (SESSION 34 row). 715→734 tests. Commit d91b30b. |
-| **PIPE-06 cron activated on VPS** | **Both `*/15 20-23` and `*/15 0-3` lines uncommented in VPS crontab** | ✅ COMPLETE 2026-06-05 SESSION 34 — Previously commented out with gate note "verify Polymarket connectivity (T-077)." Activated since Kalshi is primary venue and T3 signals only require VenueRouter (Kalshi). PIPE-06 first fires at 20:00 UTC — signals available 2+ hours before PIPE-03 at 22:00 UTC. |
-| **G2 Monte Carlo (with T3 integration)** | **EV=+$36.90, P(profit)=95.2%, P50=+$39.52 | $256.34 bankroll** | ✅ COMPLETE 2026-06-05 SESSION 34 — N=10,000 sims, seed=42, bankroll=$256.34. T3 non-contamination confirmed: MC path identical to T1-only unless T3 signals present. |
-| **T4 MC analysis** | **Determined not feasible until GG-011 ADR written** | ✅ ASSESSED 2026-06-05 SESSION 34 — T4_BAND_WEIGHT=0.10 is STUB (GG-011 OPEN). run_monte_carlo.py is T1-band scoped. T4 MC requires game-state simulation + Bayesian updates. Action: pull T4 virtual logs from VPS after G2 resolves → write T4_BAND_WEIGHT ADR → flip PAPER_T4_VIRTUAL=false for Finals G3 (Jun 8). |
-| **RESERVE_MANDATE_PCT confirmed** | **VPS has RESERVE_MANDATE_PCT=0.05 → floor=$50 → no BATCH HALT** | ✅ CONFIRMED 2026-06-05 SESSION 34 — $256.34 bankroll >> $50 floor. Previously feared 0.40 default would halt all bets. |
-
----
-
-## SESSION 2026-06-05 SESSION 35 — COMPLETED
-
-| Task | Status |
-|------|--------|
-| **Verify PIPE-06 ran for G2** | ✅ COMPLETE → CRITICAL BUG (GG-016): BOT_C4_ACTIVE guard blocked PIPE-06 since SESSION 34 activation. Fixed (commit 6cf87d8). PIPE-06 confirmed running: 21:58, 22:00, 22:15 UTC — 32 NEUTRAL signals each. T3 data available from G3+. |
-| **GG-011 / T4 MC ADR** | ✅ COMPLETE → ADR-0017 written and deployed. PAPER_T4_VIRTUAL already false (default). KELLY_T4=0.20 endorsed. GG-011 RESOLVED for Phase 6/7. ADR-0018 gated on Phase 8. |
-| **EXP-018 + GG-014 effectiveness verification** | ⏳ PARTIAL — Cannot fully complete until Finals G2 resolves (~06:00 UTC Jun 6). Pre-G2 work done: (1) GG-014 re-assessed: T-136 sleep(0.5) ineffective (50% 429 rate unchanged). T-138 deployed: exponential backoff retry in `_post()`. (2) EXP-018 prereq: `t3_signal` + `t1_edge` fields now stored per paper position. (3) GG-014 reopened. First game with t3_signal data: Finals G3 (Jun 8). |
 
 ---
 
@@ -1475,15 +576,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-05 SESSION 32–33 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| T-135 — Fix TSS NBA API block (GG-013) | ESPN scoreboard API replaces nba_api; GHA cron delivers cache to VPS | ✅ RESOLVED — SESSION 33. ESPN scoreboard API (site.api.espn.com) unblocked from all environments. GHA run 27021048445: 30 teams/279 records, confirmed on VPS. Abbreviation normalization (GS→GSW, NY→NYK, SA→SAS, NO→NOP, UTAH→UTA, WSH→WAS). GG-013 RESOLVED. |
-| T-137 — GHA cron timing fix (GG-015) | Move GHA from 00:30 UTC to 20:30 UTC to align GAME_DATE | ✅ RESOLVED — SESSION 33. At 00:30 UTC, GAME_DATE=N+1; PIPE-02 at 21:55 UTC has GAME_DATE=N — cache always missed. At 20:30 UTC, GAME_DATE=N matches PIPE-02. GG-015 registered and resolved. DECISION_LOG entry written. |
-| T-136 — Kalshi 429 rate limit fix (GG-014) | Add time.sleep(0.5) between Kalshi order placements | ✅ DEPLOYED — SESSION 33. `time.sleep(0.5)` added in `paper_trader.py` inside Kalshi submission block. Reduces burst from ~12 req/s to ~2 req/s. Effectiveness verified after Finals G2 cron (00:30 UTC Jun 6). GG-014 status → PARTIAL. |
-| T-134 — PIPE-03 TeamStatsStore size=0 alert | Add logger.error() + print warning when TSS resolves to 0 teams | ✅ DEPLOYED — SESSION 33. `logger.error("PIPE-03", "team_stats_store_empty", ...)` + `print("[TSS] WARNING: 0 teams loaded")` added in `run_paper_trade.py`. Fires when `team_store is None or len(team_store) == 0`. C7 can now catch TSS failures. |
-
 ## SESSION 2026-06-05 SESSION 33 — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
@@ -1503,42 +595,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-04 SESSION 30 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| T-072 opponent-adjusted Poisson λ | **ADR-0015: `adj_λ = pts_l10_mean × clip(opp_def_l10/113.0, 0.70, 1.30)`** | ✅ COMPLETE 2026-06-04 SESSION 30 — Architecture finding: LR model logged-only; Poisson CDF drives all T1 bets. `parse_ticker_opponent()` + `opp_adjusted_lambda()` in `game_state_model.py`. `TeamStatsStore.to_cache_dict/from_cache_dict` for PIPE-02→PIPE-03 handoff. PIPE-02 builds + caches 30-team store (~18s); PIPE-03 loads from cache. Fallback chain: cache → fresh build → raw λ. ADR-0015 ACCEPTED. EXP-018 registered. 715/715 tests. VPS smoke test PASS. |
-| T-131 fee-adjusted edge ADR | **ADR-0016: `net_edge = gross_edge - 0.07×mid×(1-mid)`. GG-009 RESOLVED** | ✅ COMPLETE 2026-06-04 SESSION 30 — Option B selected: per-market fee subtraction. `gross_edge` and `kalshi_fee` logged to `forecast_rec` and `paper_portfolio.json`. `paper_trader.py` updated: prefers explicit `gross_edge` key, falls back to `edge` for backward compat. ADR-0016 ACCEPTED. GG-009 RESOLVED in GOVERNANCE_GAP_LOG. |
-| Portfolio reset | **Reset paper_portfolio.json from $1,404.80 to $1,000.00 clean slate** | ✅ COMPLETE 2026-06-04 SESSION 30 — G1 archive at `paper_portfolio_g1_archive.json` on VPS. New portfolio: bankroll=$1,000, initial=$1,000, P&L=0, daily_loss=0, daily_loss_date=2026-06-04, open/closed=empty. T4 pool auto-resets from PAPER_T4_POOL_USD=$500 on process restart. |
-| DECISION_LOG + governance | **5 DECISION_LOG entries, GG-009 RESOLVED, ADR index updated (ADR-0015/ADR-0016)** | ✅ COMPLETE 2026-06-04 SESSION 30 — All governance artifacts current. Commit 7596956. |
-| VPS deployment | **All changed source files deployed to VPS; smoke test PASS** | ✅ COMPLETE 2026-06-04 SESSION 30 — game_state_model.py, team_stats_store.py, run_pregame.py, run_paper_trade.py, paper_trader.py all deployed. Import + function smoke test passed on VPS. |
-| G2 MC verify wakeup | **Wakeup scheduled to pull pregame_20260605.json + run MC after PIPE-02** | ✅ SCHEDULED 2026-06-04 SESSION 30 — ScheduleWakeup set; will chain-reschedule until after 22:00 UTC Jun 5 PIPE-02 fires. |
-
----
-
-## SESSION 2026-06-04 SESSION 29 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| PDTP Finals G1 document | **Formal Princeton Deep Thinking Protocol analysis of Finals Game 1** | ✅ COMPLETE 2026-06-04 SESSION 29 — `05_RESEARCH_EXPERIMENTS/EXPERIMENT_LOG/PDTP_FINALS_G1_20260604.md` written and committed (3abae30, pushed). Covers: architecture PASS (T1/T4 separation, pool_isolated, kill switch, audit logs all worked); commercial FAIL (EXP-017 DIRECTIONAL_NEGATIVE); root cause (missing opponent features F-040); T4 IDEMPOTENCY interference pattern (T4 pre-empts late T1 cron, collapses ~33 MC bets to ~3 actual); path to G6 (T-072 first, then EXP-017 v2, then evidence accumulation on FIXED model). |
-| T1 vs T4 bet count explanation | **Answered operator question: "33 bets is the total? What happened to the ~1000s of bets?"** | ✅ COMPLETE 2026-06-04 SESSION 29 — 33 = MC prediction for full T1 capacity. Actual G1 T1 = ~3–6 Kelly-sized bets (large Kelly sizes exhaust bankroll fast; T4 IDEMPOTENCY locks remaining tickers). 1,414 = T4 flat-contract in-game bets from $500 pool_isolated pool. Architecture separation worked as designed. Incorporated into PDTP document. |
-| VPS deploy (SESSION 28 fixes) | **Push paper_trader.py same-day fix + run_t4_live.py T4_EXPECTED_TOTAL_EDGE=441.38** | ✅ COMPLETE 2026-06-04 SESSION 29 — f32efa9 deployed to VPS via git pull. T4 old process (PID 154947) killed; new T4 (PID 205448) started with SESSION 28 code. 695/695 tests confirmed. |
-| DECISION_LOG SESSION 29 entry | **T4 IDEMPOTENCY interference pattern logged** | ✅ COMPLETE 2026-06-04 SESSION 29 — Notable Judgment Calls entry added: T4 pre-empts T1 late cron via ticker namespace overlap; architectural note for T4 ACTIVE ADR. |
-
----
-
-## SESSION 2026-06-04 SESSION 28 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Finals G1 resolution | **1417 paper positions resolved via `run_resolve_local.py`** | ✅ COMPLETE 2026-06-04 SESSION 28 — Runtime ~37 min (Playoffs season-type fallback: 2 API calls × 0.6s/position). Results: 1417 settled, 0 open, bankroll $1,404.80, P&L −$95.20 (−6.3%), win rate 30.1%, drawdown 9.5%. Portfolio synced to VPS. Same-day resolution bug fixed: `paper_trader.py:resolve_pending()` `<` → `<=`. Root cause: local PDT date = game date = 2026-06-03; strict `<` excluded all same-day games. |
-| EXP-017 Part B G1 | **First real commercial validation run with Finals G1 Kalshi prices** | ✅ COMPLETE 2026-06-04 SESSION 28 — n=32 unique markets, win_rate=21.9%, EV=−$0.162/bet, mean_edge_vs_market=+0.1366. DIRECTIONAL_NEGATIVE. Model beats null (Part A +$0.054) but loses to actual Kalshi prices. Root cause: no opponent quality/defensive intensity features. GG-004 remains OPEN. |
-| T4_EXPECTED_TOTAL_EDGE calibration | **Calibrated from Finals G1 T4 audit log** | ✅ COMPLETE 2026-06-04 SESSION 28 — 1446 risk_eval_start records, sum(edge)=441.38. Updated `run_t4_live.py` 5.0 → 441.38. T4_BAND_WEIGHT blocked (GG-011 registered). |
-| DECISION_LOG SESSION 28 | **G1 resolution, EXP-017 Part B, G6 floor revision flag** | ✅ COMPLETE 2026-06-04 SESSION 28 — 3 new entries added. |
-| MEMORY_BANK/TODO update | **State updated to reflect G1 resolution results** | ✅ COMPLETE 2026-06-04 SESSION 28 |
-
----
-
 ## SESSION 2026-06-04 SESSION 28 — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
@@ -1549,39 +605,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | **GG-004 next step / T-072** | **COMPLETE — ADR-0015 adj_λ deployed. EXP-018 registered** | DS | ~~HIGH~~ DONE | SESSION 30. adj_λ = pts_l10_mean × clip(opp_def_l10/113.0, 0.70, 1.30) targets the exact mechanism that caused DIRECTIONAL_NEGATIVE. EXP-018 will validate. No retrain required. |
 | **T-131 — Fee-adjusted edge ADR** | **COMPLETE — ADR-0016 ACCEPTED. GG-009 RESOLVED** | DS | ~~HIGH~~ DONE | SESSION 30. net_edge = gross_edge - 0.07×mid×(1-mid). ADR-0016 artifact exists. GG-009 closed in GOVERNANCE_GAP_LOG. |
 | **GG-011 — T4_BAND_WEIGHT ADR** | **New ADR required before T4 ACTIVE for per-evaluation sizing** | DS | LOW now / HIGH before T4 ACTIVE | See GG-011 in GOVERNANCE_GAP_LOG. |
-
----
-
-## SESSION 2026-06-03 SESSION 27 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Bloomberg terminal rewrite | **`scripts/live_terminal.py` — multi-panel curses layout replacing global-scroll single-pad approach** | ✅ COMPLETE 2026-06-03 SESSION 27 — Full rewrite: 8 independent panels (PORTFOLIO, LIVE POSITIONS, MARKET SNAPSHOT, TODAY'S BETS, ALERTS, RECENTLY RESOLVED, SYSTEM STATUS, T4 LOG TAIL), each with its own curses pad and `scroll_y`. 2-column layout (56%/44%). Tab/Shift+Tab cycles panel focus (focused title turns cyan bold + `↕NN%` scroll indicator). Arrow keys / PgUp/PgDn / Home/End scroll within focused panel. Footer shows control hints. Layout adapts to terminal size via `_compute_layout()`. Atomic curses update via `doupdate()` — zero flicker. |
-| Curses ordering bug fix | **Fixed blank-panel rendering: stdscr erased content areas; pad writes were invisible** | ✅ COMPLETE 2026-06-03 SESSION 27 — Root cause: `draw_panel()` called `ps.pad.noutrefresh()` inside each panel draw, then `stdscr.noutrefresh()` ran last → stdscr's blank content areas overwrote pad content in curses' virtual screen buffer → `doupdate()` rendered blank panels despite data present. Fix: moved all pad `noutrefresh` calls to a separate `refresh_pad()` pass that runs AFTER `stdscr.noutrefresh()`. stdscr wins on borders; pads win on content. Data confirmed flowing: 1416 T4 positions, $499.95 deployed, 3 T1 bets. |
-
----
-
-## SESSION 2026-06-03 SESSION 26 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| T-109 automation | **`scripts/poll_and_resolve_g1.py` — auto-trigger T-109 when Finals Game 1 reaches STATUS_FINAL** | ✅ COMPLETE 2026-06-03 SESSION 26 — New file `scripts/poll_and_resolve_g1.py`. Polls ESPN scoreboard every 60s (SCHEDULED) / 90s (IN_PROGRESS). Fallback: triggers T-109 at next 07:30 UTC regardless of ESPN status. Fixed initial fallback bug: same-day time-of-day check → `_compute_fallback_dt()` always computes next future occurrence. Restarted with `caffeinate -s` (PID 5865) to prevent Mac sleep. Currently polling `401859963: STATUS_SCHEDULED`, fallback 2026-06-04T07:30Z. |
-| tmpfs diagnosis | **Explained recurring "Step 1 still failing on tmpfs" error** | ✅ DIAGNOSED 2026-06-03 SESSION 26 — Root cause: Claude Code internal task output pipe at `/private/tmp/claude-501/...UUID.../tasks/` reports ENOSPC despite 82GB free disk. Workaround: `find ... \| xargs grep -l ...` instead of `grep -rn`. Permanent fix: `export CLAUDE_CODE_TMPDIR="/Users/earlignacio/.claude/tmp"` in `~/.zshrc` — operator action still pending. |
-| Pre-game hygiene | **Confirmed all systems green for Finals Game 1** | ✅ CONFIRMED 2026-06-03 SESSION 26 — VPS T4 PID 154947 STATUS_SCHEDULED; VPS cron PIPE-02 21:55 UTC / PIPE-03 22:00 UTC; portfolio $1,000.00 / 0 open positions; fee annotation + pool_isolated both live. |
-| T-132 registered | **Register governance debt: CHANGE_CONTROL.md has decisions_logged: false** | ✅ REGISTERED 2026-06-03 SESSION 26 — See T-132 in SESSION 22/23 OPEN ITEMS below. |
-
----
-
-## SESSION 2026-06-03 SESSION 25 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Fee annotation fields added | **6 fields added to every paper position: `model_p`, `gross_edge`, `fee_per_contract`, `fee_net_edge`, `fee_contaminated`, `probable_injury_signal`** | ✅ COMPLETE 2026-06-03 SESSION 25 — `paper_trader.py:open_position()` computes and records all six fields. `run_paper_trade.py` and `run_t4_live.py` enrich approval dict with `model_p`/`edge` before calling `open_position()`. Backward-compatible: defaults to 0.0 when fields absent. G6 evidence ledger is now self-annotating — fee-clean and injury-clean subgroup filters run directly from `paper_portfolio.json`. DECISION_LOG entry added. 695/695 tests pass. Commit `8321900`. |
-| KI-027 registered | **Kalshi HTTP 503/429 in second PIPE-03 window formally registered** | ✅ COMPLETE 2026-06-03 SESSION 25 — KI-027 entry added to `10_INFRA_OPERATIONS/KNOWN_ISSUES.md`. 4 positions with failed-HTTP status (Wembanyama NO 40/35/30, Castle NO 30). Paper resolution unaffected. Root cause investigation deferred. |
-| SESSION 20 OPEN ITEMS closed | **"VPS deploy ADR-0013" and "T4 monitor Finals Game 1" marked COMPLETE in TODO_NEXT.md** | ✅ COMPLETE 2026-06-03 SESSION 25 — Both rows updated with SESSION 24 completion context (nohup PID 153790, pool_isolated=True). |
-| MEMORY_BANK portfolio update | **Post-SESSION 24 portfolio state reflected in MEMORY_BANK.md** | ✅ COMPLETE 2026-06-03 SESSION 25 — $1,000 reset, 0 open positions, T4 PID state updated. |
-| T4 restart with annotation code | **VPS T4 process killed (PID 153790) and restarted (PID 154947) to pick up new annotation code** | ✅ COMPLETE 2026-06-03 SESSION 25 — Startup log confirmed: `PAPER_T4_FLAT_SIZING=true`, `PAPER_T4_VIRTUAL=false`, `Pool=$500.00`, watching `STATUS_SCHEDULED`. New annotated `open_position()` now active for Finals Game 1. |
-| DECISION_LOG SESSION 25 entry | **Fee annotation + injury signal architecture decision logged** | ✅ COMPLETE 2026-06-03 SESSION 25 — Notable Judgment Calls entry added: annotate every paper position with 6 fields to make G6 evidence self-annotating without retroactive join. |
 
 ---
 
@@ -1602,24 +625,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-03 SESSION 22/23 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Kalshi operational constraints research | **Sourced Kalshi taker/maker fee formula, confirmed $0.01 actual contract minimum, rate limits (10k/day API), TOS automated trading policy** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — Taker fee: `0.07 × P × (1−P)`. At P=0.50: $0.0175/contract. Maker fee: `0.0175 × P × (1−P)`. Actual Kalshi minimum: $0.01/contract (1 contract at minimum price). Rate limit: 10,000 requests/day standard tier. Automated trading: permitted per TOS. GG-009 registered. |
-| MIN_BET_T4_PAPER correction | **Changed from $10.0 (invented heuristic) to $0.01 (actual Kalshi minimum)** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — `run_t4_live.py` line 251. Prior value was $10.0 set in SESSION 18 as "Kalshi practical minimums" — never sourced. Actual Kalshi minimum is 1 contract at market price ($0.01–$0.99). Decision logged. Memory feedback written. |
-| PAPER_T4_VIRTUAL default → false | **Default changed from `true` to `false` — actual paper positions now fire** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — `run_t4_live.py` line 252. `PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "false").lower() in ...`. Previous: virtual-only calibration mode. Now: `trader.open_position()` called, positions recorded in `paper_portfolio.json`. Purpose: validate execution layer throughput at actual bet scale. |
-| PAPER_T4_FLAT_SIZING added | **New env var: flat 1-contract sizing (at MIP) overrides Kelly for paper T4 validation** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — `run_t4_live.py` lines 253, ~300–310. `PAPER_T4_FLAT_SIZING = os.environ.get("PAPER_T4_FLAT_SIZING", "true").lower() in ...`. When true: `approved_size = mip; approval = {**approval, "approved_size": approved_size}`. Both local variable AND approval dict updated (trader.open_position uses dict). Purpose: decouple bet COUNT from Kelly sizing — Kelly at t4_band_budget=$60 caps to ~60 bets before exhaustion; flat sizing allows ~1,050 bets at design throughput. |
-| PAPER_T4_POOL_USD=500.0 added | **When flat sizing active, band budget override to $500 (bypasses ADR-0013 Kelly computation)** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — `run_t4_live.py` main(). `PAPER_T4_POOL_USD = float(os.environ.get("PAPER_T4_POOL_USD", "500.0"))`. When `PAPER_T4_FLAT_SIZING=true`: `t4_band_budget = PAPER_T4_POOL_USD` (not `_compute_t4_band_budget()`). Rationale: ~1,050 bets × avg $0.50/contract = $525 ≈ $500 pool. ADR-0013 Kelly budget is not superseded — it applies when flat sizing is off. |
-| MIN_BET_T1_PAPER added | **`run_paper_trade.py` + `scripts/run_monte_carlo.py` now use configurable floor** | ✅ COMPLETE 2026-06-03 SESSION 22 — `MIN_BET_T1_PAPER = float(os.environ.get("MIN_BET_T1_PAPER", "1.0"))`. Both RiskEngine instantiations in `run_paper_trade.py` receive `min_bet_usd=MIN_BET_T1_PAPER`. VPS `.env` updated with `MIN_BET_T1_PAPER=1.0`. |
-| GG-009 registered | **Taker fee absent from edge formula — governance gap formally registered** | ✅ COMPLETE 2026-06-03 SESSION 23 — `03_DECISIONS/GOVERNANCE_GAP_LOG.md` GG-009 added. At P=0.50, taker fee = $0.0175 = 87% of MIN_EDGE=0.02. T-131 ADR required for resolution before G6. |
-| VPS old T4 screen killed | **`149029.t4_live` (running PAPER_T4_VIRTUAL=true old code) killed** | ✅ COMPLETE 2026-06-03 SESSION 22/23 — `screen -X -S 149029.t4_live quit` confirmed. VPS `git pull` to commit `00d0525`. |
-| VPS new T4 process started | **T4 running on VPS — confirmed 2026-06-03 SESSION 23** | ✅ COMPLETE — PID 152702. Root cause of earlier failures: nohup command didn't source `.env` → VENUE_API_KEY not set → crash at kalshi_client init. Fix: `set -a; source .env; set +a` before activate. Startup confirmed: T4 band budget $500.00 (flat sizing mode), PAPER_T4_FLAT_SIZING=true, PAPER_T4_VIRTUAL=false, ESPN game 401859963 STATUS_SCHEDULED → sleeping 60s. Will auto-activate at tip-off 00:30 UTC Jun 4. |
-| DECISION_LOG SESSION 23 entry | **T4 flat sizing architecture decision logged** | ✅ COMPLETE 2026-06-03 SESSION 23 — Notable Judgment Calls entry added: T4 flat 1-contract sizing for paper throughput validation; PAPER_T4_VIRTUAL=false default; MIN_BET_T4_PAPER→0.01. |
-| 695 tests | **Test count unchanged — all passing** | ✅ CONFIRMED 2026-06-03 SESSION 23 — 695/695 tests pass locally. |
-
----
-
 ## SESSION 2026-06-02 SESSION 20 (PDT) — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
@@ -1635,40 +640,7 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-02 SESSION 20 (PDT) — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| KI-026 ADR-0013 architecture | **T4 band budget architecture: Kelly scoped to `t4_band_budget`, not full portfolio bankroll** | ✅ COMPLETE 2026-06-02 SESSION 20 — `run_t4_live.py` updated (import RESERVE_MANDATE_PCT, T4_BAND_WEIGHT=0.10 stub, T4_EXPECTED_TOTAL_EDGE=5.0 stub, `_compute_t4_band_budget()`, `_make_engines(t4_band_budget)`, `_run_cycle()` returns updated `t4_deployed_usd`, main loop accumulates `t4_deployed_game`). ADR-0013 written at `03_DECISIONS/ADR-0013_t4-throughput-capital-budget.md`. Syntax OK. |
-| run_t4_budget_sim.py | **Write and verify T4 budget Monte Carlo simulation script** | ✅ COMPLETE 2026-06-02 SESSION 20 — `scripts/run_t4_budget_sim.py` written. Parametric mode (pre-G1) and empirical mode (`--from-log`, post-G1 calibration). Verified at $618.03 bankroll: budget=$37.08, avg 37 bets, exhausts at cycle 125/200 (63% into game), all bets floor to $1 paper minimum. Sensitivity: band_weight=0.15 → 73% exhaustion rate; band_weight=0.20 → 6.6% exhaustion rate. |
-| T1 Monte Carlo verification | **Confirm T1 Monte Carlo unaffected by T4 architecture changes** | ✅ COMPLETE 2026-06-02 SESSION 20 — `scripts/run_monte_carlo.py --label pre-G1-ADR-0013` ran clean. Same T1 logic, same bet structure. T4 changes isolated to `run_t4_live.py`. |
-| DECISION_LOG ADR-0013 entry | **Log ADR-0013 in DECISION_LOG per CLAUDE.md Rule 7** | ✅ COMPLETE 2026-06-02 SESSION 20 — ADR-0013 added to ADR Index table + Notable Judgment Calls with full derivation rationale. |
-
----
-
 ## SESSION 2026-06-02 SESSION 19 (PDT) — OPEN ITEMS (carried forward above)
-
----
-
-## SESSION 2026-06-02 SESSION 19 (PDT) — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Bug H drawdown fix (T4) | **Fix drawdown calculation in `run_t4_live.py` — deployed T1 capital counted as realized loss** | ✅ COMPLETE 2026-06-02 SESSION 19 — `_realized_loss = max(0.0, -portfolio.get("total_realized_pnl", 0.0))`. Old formula: `(initial - current) / initial` counted deployed T1 capital (~$540) as loss → 54% false drawdown → C4 kill switch rejected ALL T4 bets pre-game. Fix matches PIPE-03 reference pattern. Commit `706264b`. |
-| PAPER_T4_VIRTUAL mode | **Add virtual mode: C4 evaluates + stages bets without bankroll deduction** | ✅ COMPLETE 2026-06-02 SESSION 19 — `PAPER_T4_VIRTUAL = os.environ.get("PAPER_T4_VIRTUAL", "true").lower() in ("true", "1", "yes")`. Virtual path: `store.mark_fired()` + logger `"T4 VIRTUAL"` line, no `trader.open_position()`. Proves architecture fires at ~1000s/game without depleting T1 capital pool. Commit `706264b`. |
-| VPS screen restart | **Kill old screen `139678.t4_live`; restart with Bug H fix** | ✅ COMPLETE 2026-06-02 SESSION 19 — Old screen ran stale code with drawdown bug. `git pull` → commit `706264b`. New screen `140907.t4_live` confirmed running, watching Finals G1 (STATUS_SCHEDULED → will auto-activate at tip-off Jun 3 PDT 8:30 PM EDT). |
-| G1/G2 label correction | **Correct game label errors: SESSION 18 mislabeled Finals G1 as G2 and used internal ESPN game IDs as primary labels** | ✅ COMPLETE 2026-06-02 SESSION 19 — SESSION 18 used ESPN game ID as primary label in all docs — replaced with Finals G1/G2/G3. ESPN IDs kept only in technical monitoring commands. Finals schedule pinned: G1=Jun 3 PDT, G2=Jun 5 PDT, G3=Jun 8 PDT. |
-
----
-
-## SESSION 2026-06-03 SESSION 18 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| PIPE-07 T4 live | **`run_t4_live.py` — full PIPE-07 wiring T4EventLoop → staged_order_store → C4 → PaperTrader** | ✅ COMPLETE 2026-06-03 SESSION 18 — `src/prediction_market_bot/run_t4_live.py` built from scratch. 45s poll cycle, ESPN live boxscore, per-cycle `fired_tickers` deduplication, ghost-protection ordering (stage BEFORE open), `MIN_BET_T4_PAPER=1.0` paper override. ESPN API replaces blocked NBA CDN (`cdn.nba.com` / `stats.nba.com` return 403 from DO VPS via Akamai WAF). `KalshiMarketClient.from_env()` fix committed. `BOT_C4_ACTIVE=true` added to VPS `.env`. Commits: `451abf2` (from_env fix), `47e9a2b` (PIPE-07 build), `2446a02` (ESPN main loop). VPS screen watching Finals G1 (NYK vs SAS), sleeping until tip-off Jun 3 PDT 8:30 PM EDT. 695/695 tests on VPS. |
-| ESPN API source | **Replace NBALiveFeed with ESPN API for T4 live data** | ✅ COMPLETE 2026-06-03 SESSION 18 — `_espn_game_ids_today()`, `_parse_espn_clock()`, `_espn_poll_once()` implemented in `run_t4_live.py`. Player matching via `name_to_pregame` dict (normalized lowercase). `_load_pregame_context()` updated to return 3-tuple (by_player_id, by_ticker, name_to_pregame). Main loop: `for gid in game_ids: all_states.extend(_espn_poll_once(gid, name_to_pregame))`. Decision logged. |
-| risk.py MIN_BET_USD | **Add `min_bet_usd` init param to RiskEngine for paper T4 override** | ✅ COMPLETE 2026-06-03 SESSION 18 — `min_bet_usd: float | None = None` param on `RiskEngine.__init__()`. CHECK 7 uses `self._min_bet_usd` instead of `MIN_BET_USD`. Live path unchanged. Paper T4 uses `$1.0` floor. No ADR required (paper-only). Decision logged. |
-| Session documentation | **DECISION_LOG entries (4 decisions), TODO_NEXT, MEMORY_BANK, SESSION_HANDOFF** | ✅ COMPLETE 2026-06-03 SESSION 18 — All governance artifacts updated. |
 
 ---
 
@@ -1682,63 +654,12 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-06-02 SESSION 17 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| ~~KI-025~~ | ~~PIPE-02 cron retimed 21:30 → 21:55 UTC + second PIPE-02 at 01:25 UTC~~ | ✅ COMPLETE 2026-06-02 SESSION 17 — Root cause: 30-minute price drift gap between PIPE-02 capture and PIPE-03 execution caused MC to predict 23 bets but only 7 placed on G1. Fix: `deploy/cron.conf` PIPE-02 moved to 55 21 UTC; second PIPE-02 at 25 1 UTC for late window (which previously had 4h-stale prices). KI-025 RESOLVED. |
-| Market-first loop | **Cohort-first → market-first in PIPE-02 + PIPE-03** | ✅ COMPLETE 2026-06-02 SESSION 17 — `run_paper_trade.py` + `run_pregame.py`: iterate over all active Kalshi markets, resolve players via cohort lookup or dynamic nba_api fallback. Non-cohort players: `NBAIngestionClient.fetch_player_game_log(season="2025-26")` → `pts_l10_mean` → Poisson-only (`p_est_lr = None`). `_pts_cache` prevents duplicate API calls. Covers 100% of KXNBAPTS-listed players, not just 55-player EXP-005 cohort. |
-| Cursor pagination | **`fetch_player_points_markets` now paginates all Kalshi pages** | ✅ COMPLETE 2026-06-02 SESSION 17 — `kalshi_client.py`: while-loop with `cursor` field; break when `cursor` is None or `len(page) < page_size`. Was silently truncating at 200 markets on regular-season nights with 800+ KXNBAPTS markets. |
-| Batch reserve gate | **PIPE-03 batch-level reserve floor enforcement** | ✅ COMPLETE 2026-06-02 SESSION 17 — `run_paper_trade.py`: before every `open_position()`, check `bankroll - approved_size < RESERVE_MANDATE_PCT (0.40) * _initial_bankroll`. If true: log warning, set `_reserve_halted = True`, break both loops. Prevents repeat of Jun 1 incident (91.2% bankroll deployed in one run). |
-| DECISION_LOG | **Session 17 decisions logged (5 entries)** | ✅ COMPLETE 2026-06-02 SESSION 17 — Market-first loop, dynamic nba_api fallback, batch reserve gate, cron retiming, cursor pagination all logged. |
-
----
-
 ## SESSION 2026-06-02 SESSION 17 — OPEN ITEMS
 
 | # | Task | Owner | Priority | Notes |
 |---|------|-------|----------|-------|
 | MC verify | **Verify next Finals game bet count with new architecture** | DS | **HIGH — G2 (Jun 5 PDT / Jun 6 00:30 UTC)** | All four fixes are live on VPS. G2 is the first real test of the market-first loop + cursor pagination + cron retiming: expect 40–50 bets (vs 7 in G1 with old architecture). If bet count is still low, check: (1) how many active KXNBAPTS markets Kalshi has for the game; (2) whether non-cohort players resolve via dynamic nba_api path; (3) whether `_reserve_halted` fires prematurely. Run MC after PIPE-02 fires (21:55 UTC) to compare prediction vs actual. Finals schedule: G1=Jun 3 PDT, G2=Jun 5 PDT, G3=Jun 8 PDT, G4=Jun 10 PDT, G5=Jun 13 PDT. |
 | EXP-017 | **Re-run EXP-017 after each game to accumulate n toward G6 floor (≥66)** | DS | HIGH | n=2 unique resolved markets as of session end. Every Finals game adds ~7–50 markets. Run T-109 procedure after each game (local resolution, then fetch pregame files from VPS). |
-
----
-
-## SESSION 2026-06-02 SESSION 16 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Monte Carlo protocol | **`scripts/run_monte_carlo.py` + `03_DECISIONS/MONTE_CARLO_PROTOCOL.md`** | ✅ COMPLETE 2026-06-02 SESSION 16 — CLI-parameterized general assessment tool; mirrors PIPE-03 Path B + Kelly exactly; 10k sims; BOT STATISTICS (bets placed/YES/NO split, bets exp. to WIN/LOSE, MC averages, total staked, reserve, per-player breakdown, bet-level detail, rejected list with reasons) + EV + P/L distribution + governance footer. `--label` + `--out` flags enable before/after comparison. `MONTE_CARLO_PROTOCOL.md` defines 8 trigger conditions, run procedures, output interpretation, known limitations. Decision logged in DECISION_LOG Session 16. Commit d8ec72d; VPS current. |
-| G1 T1 cron observation | **7 bets placed / $381.97 deployed (MC predicted 23 / $796)** | ✅ OBSERVED — G1 T1 cron fired 22:00 UTC Jun 2. Bankroll: $1,000 → $618.03. 7 open positions, 0 resolved. MC vs actual discrepancy root-caused and fixed in SESSION 17: (1) 30-min price drift KI-025 → cron retiming; (2) 55-player cohort ceiling → market-first loop; (3) 200-market API cap → cursor pagination. |
-| ~~KI-025~~ | ~~**Investigate MC vs actual bet-count discrepancy (23 predicted → 7 placed in G1)**~~ | ✅ RESOLVED 2026-06-02 SESSION 17 — Three root causes identified and fixed. See SESSION 17 COMPLETED above. |
-
----
-
-## SESSION 2026-06-02 SESSION 15 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| ~~KI-018~~ | ~~Fix zombie daily loss limit (max_daily_loss_usd=1000.0 inactive at $1,000 bankroll)~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — `MAX_DAILY_LOSS_PCT=0.15` replaces `max_daily_loss_usd` in `risk.py`. `initial_bankroll` parameter added to `RiskEngine.__init__()`. Daily loss threshold = 15% of initial_bankroll = $150 (fires before 20% drawdown = $200). Two independent kill switches restored. ADR-0012 ACCEPTED. |
-| ~~RESERVE_MANDATE_PCT wire~~ | ~~Advisory warning in evaluate_forecast() for single bet exceeding 60% of bankroll~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — `risk_reserve_mandate_warning` log emitted (severity=WARNING) when `approved_size > bankroll * (1 - RESERVE_MANDATE_PCT=0.40)`. Warning-only at paper scale; blocking enforcement deferred to PIPE-03 batch-level check (dark period). |
-| ~~T-093~~ | ~~Extract decisions from EXECUTION_ARCHITECTURE.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-094~~ | ~~Extract decisions from MONITORING_DRIFT_PLAN.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-095~~ | ~~Extract decisions from METHODOLOGY.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-096~~ | ~~Extract decisions from VENUE_REGISTRY.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-097~~ | ~~Extract decisions from RISK_APPETITE_CONSTRAINTS.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-098~~ | ~~Extract decisions from QUALITATIVE_SIGNALS.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-| ~~T-099~~ | ~~Extract decisions from ROADMAP_MILESTONES.md → DECISION_LOG.md; set decisions_logged: true~~ | ✅ COMPLETE 2026-06-02 SESSION 15 — DECISION_LOG entry logged; header flipped true. |
-
----
-
-## SESSION 2026-06-02 SESSION 13/14 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| ~~T-129~~ | ~~Fix all-threshold loop: replace LR p_est with Poisson CDF per threshold (GG-008)~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `run_paper_trade.py`: `p_threshold = 1.0 - _poisson_cdf(thresh_int - 1, pts_mean)` per threshold. LR `p_est` retained as `p_estimate_lr` in C6 log. GG-008 RESOLVED. |
-| ~~ADR-0010~~ | ~~Band Kelly hierarchy revision — variance-scaling derivation~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `ADR-0010_band-kelly-hierarchy-revision.md` ACCEPTED. Kelly hierarchy: T3=0.07 < T1=0.10 < T2=0.13 < T4=0.20 < T5=0.25. `execution_bands.py`, `game_state_model.py` updated. 3 test invariants updated. |
-| ~~ADR-0011~~ | ~~Phase 8 paper-scope T4/T5 activation ADR~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `ADR-0011_phase8-paper-scope-t4t5-activation.md` ACCEPTED. Explicit scope: NBA Stats API CDN polling, file kill switch, paper only. Production blockers deferred. EXP-018/019 gates before ACTIVE. |
-| ~~DS-02 adapter~~ | ~~Build ds02_nba_live.py + wire kill switch in run_t4_inplay.py~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `c1_signal_ingestion/ds02_nba_live.py`: `NBALiveFeed`, `LivePlayerState`, `kill_switch_armed()`, `_parse_game_clock()`. `run_t4_inplay.py`: `_kill_switch_armed()` stub replaced with live `kill_switch_armed(KILL_SWITCH_PATH)` call. |
-| ~~Portfolio reset~~ | ~~reset_paper_portfolio.py + VPS reset + deploy~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `reset_paper_portfolio.py` built; VPS reset confirmed ($1,000 / 0 positions); both commits (d8340ba + 1d10b7e) pushed and pulled on VPS. 692/692 tests on VPS. |
-| ~~RESERVE_MANDATE_PCT~~ | ~~Add 40% reserve mandate to risk.py~~ | ✅ COMPLETE 2026-06-02 SESSION 14 — `RESERVE_MANDATE_PCT = 0.40` added to `risk.py`. Warning-only at paper scale; blocking at live capital. |
 
 ---
 
@@ -1749,40 +670,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | T-128 | **DS-02 ADR: require live rolling pace as mandatory feed field** | DS | **HIGH — Phase 8 pre-activation** | KI-024: `pace_pts_per_min` is set at T1 from C2 feature store and never refreshed during a game. λ = pace × time_remaining drives both T4 and T5 Poisson CDF — a stale pace propagates linearly into every in-game probability estimate. At T5 (≤3 min remaining), λ is small and pace error translates directly to P(hit threshold) error. The Phase 8 DS-02 ADR must explicitly require live rolling pace as a required feed field, not optional enrichment. Without this constraint, a DS-02 source that provides only score + clock (no pace) would silently degrade T4/T5 inference. Resolution: operator reviews DS-02 ADR draft and adds live pace as a required field before signing. |
 | EXP-018 | **T4_MIN_DELTA_P calibration experiment** | DS | **MEDIUM — Phase 8 pre-activation** | GG-007 (item 1): T4_MIN_DELTA_P=0.08 retained for paper prototype to generate calibration data. Requires replay of historical NBA game-state snapshots. Gate: must complete before Phase 8 T4 activation ADR is signed. |
 | EXP-019 | **T5 certainty threshold calibration experiment** | DS | **MEDIUM — Phase 8 pre-activation** | GG-007 (item 2): T5_YES_CERTAINTY=0.85 / T5_NO_CERTAINTY=0.15 grounded by Poisson arithmetic (SESSION 14). Requires calibration against historical Q4 ≤3 min game-state data. Gate: must complete before Phase 8 T5 activation ADR is signed. |
-
----
-
-## SESSION 2026-06-01 SESSION 10 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| ~~ADR-0009~~ | ~~Shadow model policy accepted~~ | ✅ COMPLETE 2026-06-01 — `03_DECISIONS/ADR-0009_shadow-model-policy.md` accepted before code per Compass OS invariant. Isolation guarantee: shadow never routes to C4. Promotion gate: shadow_brier_30 ≤ prod_brier - 0.005 over ≥30 events → WARNING; ADR-0010 required for promotion. Frozen model extension: shadow version-pinned at deployment. |
-| ~~T-119~~ | ~~Model version hash guard~~ | ✅ COMPLETE 2026-06-01 — `run_pregame.py`: after loading prod_model.joblib, checks `artifact["model_version"]` vs `prod_model_meta.json`. Mismatch → CRITICAL log + exit(1). Absent meta file → guard skips (backward compatible). |
-| ~~T-120~~ | ~~ShadowForecaster C3 + PIPE-02 integration~~ | ✅ COMPLETE 2026-06-01 — `c3_forecasting/shadow_forecaster.py`: optional parallel inference; C6-only; non-fatal (_load() + predict_shadow() both catch all exceptions). C7 monitor: `_shadow_window` deque + `record_shadow_outcome()` + shadow Brier computed independently of production window + `shadow_promotion_flag` in DriftSnapshot. PIPE-02 wired: `shadow_p_estimate` + `shadow_model_version` in all forecast records. 15 new C3 shadow tests + 11 new C7 shadow tests. 612/612 pass. |
-
----
-
-## SESSION 2026-06-01 SESSION 12 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| T4/T5 Iteration Plan | **Dark-period T4/T5 roadmap designed** | ✅ COMPLETE 2026-06-01 — Jane Street pre-computation principle applied: detection band ≠ execution band. Phase 7/8/9 sequencing adopted. Three Phase 8 blockers identified (DS-02 ADR, kill switch redesign ADR, Phase 8 infra ADR) — all require operator decision. |
-| `game_state_model.py` | **T4 Bayesian engine + T5 late-game arithmetic** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/c3_forecasting/game_state_model.py`. Poisson CDF pure Python stdlib. `GameState`, `GameStateModel.update()` → `T4Signal`, `LateGameArithmetic.evaluate()` → `T5Signal`. Constants: T4_MIN_DELTA_P=0.08, T5_TIME_THRESHOLD_MIN=3.0, T5_YES_CERTAINTY=0.85, T5_NO_CERTAINTY=0.15, KELLY_T4=0.05, KELLY_T5=0.15. 33 tests (test_c3_game_state_model.py). Phase: SKELETON. |
-| `staged_order_store.py` | **SQLite pre-staging handoff layer** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/c4_risk_engine/staged_order_store.py`. Append-only, WAL mode. Statuses: STAGED/FIRED/EXPIRED/CANCELLED. `stage_order()`, `get_staged()`, `mark_fired()`, `mark_cancelled()`, `expire_stale()`, `summary()`. Default db_path: `logs/staged_orders.db`. 31 tests (test_c4_staged_order_store.py). |
-| `run_t4_inplay.py` | **PIPE-07 skeleton + unified T4 decision tree** | ✅ COMPLETE 2026-06-01 — `src/prediction_market_bot/run_t4_inplay.py`. `T4EventLoop.on_game_state_event()` → `T4RoutingResult`: kill switch (<5ms) → expire_stale → pre-staged lookup → Bayesian (T4) → T5 → NO_ACTION. `--demo` flag runs synthetic scenarios. 16 tests (test_run_t4_inplay.py). BLOCKED: kill switch armed check placeholder; C4 approve + C5 execute placeholders. Phase 8+. |
-| `scripts/resolve_procedure.sh` | **T-109 automation script** | ✅ COMPLETE 2026-06-01 — `scripts/resolve_procedure.sh` (chmod +x). Automates full resolve + EXP-017 update procedure after each Finals game. Logs to `logs/resolve_auto.log`. Step 3 reports G6 evidence count. Must run locally (VPS 403 blocks stats.nba.com). |
-| `scripts/query_orderbook_depth.py` | **T-127 automation script (KI-023)** | ✅ COMPLETE 2026-06-01 — `scripts/query_orderbook_depth.py`. Queries Kalshi orderbook for 3–5 active KXNBAPTS contracts. Reports total depth, tight depth (±10¢), paper/live cap as % of visible depth. Flags if cap exceeds DEPTH_IMPACT_THRESHOLD_PCT=0.05. Audit log: `logs/orderbook_depth_YYYYMMDD_HHMMSS.json`. |
-| scipy/sklearn upgrade | **numpy 2.x compatibility fix** | ✅ COMPLETE 2026-06-01 — scipy 1.12→1.17.1, sklearn 1.4.2→1.8.0. Pre-existing import error (`_ARRAY_API not found`) caused by numpy 2.4.6 in local .venv311. VPS was already working (612 tests). 692/692 tests pass locally after upgrade. |
-| Tests | **+80 new tests** | ✅ COMPLETE 2026-06-01 — 612 → 692 total. test_c3_game_state_model.py (+33), test_c4_staged_order_store.py (+31), test_run_t4_inplay.py (+16). |
-
----
-
-## SESSION 2026-06-01 SESSION 11 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| VPS deploy | **Deploy SESSION 8-10 code to VPS** | ✅ COMPLETE 2026-06-01 — git push origin main (SESSION 10 commit 1b325e0); VPS git pull at /opt/prediction-market-bot. VPS now at HEAD 1b325e0. 612/612 tests pass on VPS. T-119 (model hash guard) + T-120 (ShadowForecaster + C7 shadow Brier) now live. Ready for Finals G1 Jun 3 cron window. |
-| ~~T-122~~ | ~~EXP-017 exact-ticker join~~ | ✅ CLOSED — already satisfied in run_part_b_live; no code change required (see task detail below). |
 
 ---
 
@@ -1838,16 +725,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 
 ---
 
-## SESSION 2026-05-31 — COMPLETED
-
-| # | Task | Status |
-|---|------|--------|
-| Bug I | **Fix `pd.to_datetime` format in `resolve_pending`** | ✅ COMPLETE 2026-05-31 — Same T-089 pattern: nba_api returns "Apr 28, 2026" format; `format="mixed"` added to both Regular Season and Playoffs lookups in paper_trader.py. This was the root cause of ALL resolution failures (date parse threw ValueError → swallowed → `actual_pts=None`). |
-| Bug J | **Fix misleading `drawdown_pct` in `summary()`** | ✅ COMPLETE 2026-05-31 — `drawdown_pct` removed; replaced by `realized_drawdown_pct` (closed losses / initial) and `deployed_pct` (open stakes / initial). C4 kill switch was already correct; this fixes the report. run_paper_trade.py + run_resolve.py + tests updated. |
-| KI-020 | **VPS 403 blocks nba_api resolution** | ✅ DOCUMENTED 2026-05-31 — stats.nba.com hard-blocks DigitalOcean IPs. resolve_pending now logs errors instead of silently discarding. run_resolve_local.py created as the canonical resolution path. VPS run_resolve.py is kept but won't resolve without IP change. |
-
----
-
 ## ⚠️ SESSION 2026-06-01 — OPEN ITEM (operator action required)
 
 | # | Task | Priority | Notes |
@@ -1861,178 +738,6 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
 | ~~T-115~~ | ~~**Expand run_paper_trade.py to evaluate ALL thresholds per player (not just closest)**~~ | ~~HIGH — before 2026-27~~ | ✅ COMPLETE 2026-06-01 — `closest = min(player_mkts, ...)` replaced with `for mkt in player_mkts:` loop. `X` and `p_est` computed once per player; each threshold evaluated independently through idempotency check + C4 + PaperTrader. Restores design throughput: ~25–40 bets/game regular season T1 (vs ~3–10 single-threshold). Finals: 175–280 bets across 7 games vs ~70 borderline. KI-022 RESOLVED. 438/438 tests pass. Decision logged. |
-
----
-
-## ✅ SESSION 2026-06-01 — COMPLETED
-
-| # | Task | Priority | Status |
-|---|------|----------|--------|
-| T-102 | **Fix max_concurrent_positions stub — count gate deleted (ADR-0006)** | ~~BLOCKER~~ | ✅ COMPLETE 2026-06-01 — `max_concurrent_positions` removed from `_HARD_LIMITS`, `evaluate_forecast()` signature, CHECK 3 block, `run_paper_trade.py`, 2 tests, `RISK_APPETITE_CONSTRAINTS.md`, `EXECUTION_ARCHITECTURE.md`. KI-016 RESOLVED. |
-| T-103 | **Add stub/placeholder scan to session-start governance protocol** | ~~HIGH~~ | ✅ COMPLETE 2026-06-01 — 3-step session-start scan + ARE WE COMPROMISED? added to MEMORY_BANK.md per ADR-0007. GOVERNANCE_GAP_LOG.md created. LL-010/011/012 added. |  
-**Next review:** Start of every work session; end of every session (update status)  
-**Staleness triggers:** Any completed task; any new blocker; session end  
-**Upstream links:** PLAN.md, RID_LOG.md  
-**Downstream links:** STATUS_REPORTS/  
-**Decision references:** ADR-0001  
-**Confidence:** 9/10 — Immediate tasks are clear; ordering may shift based on blockers
-
----
-
-## Session: 2026-05-22 — G3 CLOSED; Phase 3 (Research Build) Initiated
-
-**G0 Status:** ✅ COMPLETE — APR-0002 signed 2026-05-22. All 74 artifacts built.  
-**G1 Status:** ✅ COMPLETE — APR-0003 signed 2026-05-22. All 5 G1 exit criteria met.  
-**G2 Status:** ✅ COMPLETE — APR-0004 signed 2026-05-22. All 4 architecture artifacts CANONICAL; C4/C5 naming corrected.  
-**G3 Status:** ✅ COMPLETE — APR-0005 signed 2026-05-22. RUN_INSTRUCTIONS + ENVIRONMENTS + RID_LOG CANONICAL; OQ-006 excepted.  
-**OQ-001:** ✅ RESOLVED — DS-01 provenance documented (Earl Ignacio / 2026-05-21 / NBA / PRF framework; SNAP-001 registered)  
-**OQ-003:** ✅ RESOLVED — NBA basketball, dynamically agnostic event types, Kalshi primary venue  
-**T-010:** ✅ COMPLETE 2026-05-22 — REQUIREMENTS.md FROZEN at G1  
-**T-011:** ✅ COMPLETE 2026-05-22 — ACCEPTANCE_CRITERIA.md FROZEN at G1  
-**T-015:** ✅ Scaffolding verified (ENV-01 artifacts correct); run locally: `python3.11 -m venv .venv && source .venv/bin/activate && pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt && pre-commit install`  
-**T-016:** ✅ requirements-dev.txt and requirements-base.txt confirmed; lock post-install with `pip freeze > 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-locked.txt`  
-**T-017:** ✅ .pre-commit-config.yaml verified; `pre-commit install` after T-015  
-**T-019:** ✅ COMPLETE 2026-05-22 — G1 exit checklist passed; APR-0003 signed; PLAN.md updated  
-**T-020:** ✅ COMPLETE 2026-05-22 — LITERATURE_REVIEW.md Section 4 expanded (NBA-specific Sections 4.1–4.6); OQ-015 registered  
-**T-021:** ✅ COMPLETE 2026-05-22 — ADR-0003_venue-selection.md created; PENDING formal acceptance (OQ-006 exception)  
-**T-022:** ✅ COMPLETE 2026-05-22 — ARCHITECTURE_OVERVIEW.md promoted to CANONICAL; C4/C5 corrected; tech stack confirmed  
-**T-023:** ✅ COMPLETE 2026-05-22 — INTERFACES_CONTRACTS.md promoted to CANONICAL; IF IDs corrected (IF-C3-C4, IF-C4-C5, IF-C5-VENUE)  
-**T-024:** ✅ COMPLETE 2026-05-22 — RESILIENCE_FAILURE_MODES.md promoted to CANONICAL; FM-04/FM-05 corrected  
-**T-025:** ✅ COMPLETE 2026-05-22 — THREAT_MODEL.md promoted to CANONICAL; TH-02/TH-04/TH-05/TH-07 corrected; RCO signed  
-**T-026:** ✅ COMPLETE 2026-05-22 — RUN_INSTRUCTIONS.md + ENVIRONMENTS.md promoted to CANONICAL (G3); Python 3.11 confirmed; health checks documented  
-**T-027:** ✅ COMPLETE 2026-05-22 — RID_LOG.md baselined CANONICAL (G3); RID-D002/D003 archived; RID-D001/RID-003 updated  
-**T-028:** ✅ COMPLETE 2026-05-23 — ADR-0003 formally accepted; OQ-006 RESOLVED (Kalshi: CFTC-DCM, all 50 states, NBA markets confirmed primary; Polymarket US: Phase 6+ secondary, CFTC-regulated Dec 2025 relaunch); APR-0011 signed  
-**T-029:** ✅ COMPLETE 2026-05-22 — APR-0004 signed; PLAN.md / MEMORY_BANK.md / CHANGELOG.md updated  
-**T-030:** ✅ COMPLETE 2026-05-22 — APR-0005 signed; G3 CLOSED
-
-### Priority Queue (Phase 3 — Research Build)
-
-*Phase target: 2026-07-26*
-
-| # | Task | Owner | Due | Status |
-|---|------|-------|-----|--------|
-| T-031 | ADR-0003 formal acceptance | AO | 2026-05-23 | ✅ COMPLETE 2026-05-23 — APR-0011 signed; OQ-006 resolved |
-| T-032 | C1 (Ingestion) implementation | EL | 2026-07-05 | ✅ COMPLETE 2026-05-26 — NBAIngestionClient; nba_api; OQ-015 resolved (nba_api proxy) |
-| T-033 | C2 (Feature Derivation) implementation | EL | 2026-07-08 | ✅ COMPLETE 2026-05-26 — FeatureStore; 29-col IF-C1-C2 → IF-C2-C3; TI-01–TI-04 enforced |
-| T-034 | C3 (Forecasting) + C4 (Risk) implementation | EL | 2026-07-12 | ✅ COMPLETE 2026-05-26 — ModelForecaster (LR+Platt, ECE<0.05 target); RiskEngine (quarter-Kelly, phase gate, kill switch) |
-| T-035 | EXP-001 — First experiment run and logged | RL | **2026-06-10** | ✅ COMPLETE 2026-05-28 — Pipeline ran; val Brier 0.2454 (+0.0046 vs null 0.2500); ECE 0.0596; AUC-ROC 0.5906; C4 phase gate REJECTED (expected); C6 bug fixed (numpy int key); outputs: exp_output/ |
-| T-036 | Backtesting framework operational | RL | **2026-06-21** | ✅ COMPLETE 2026-05-28 — EXP-002: Brier −0.0082, ECE 0.0941, AUC 0.5488; EXP-003: Brier −0.0068, ECE 0.0793, AUC 0.4364; G4 NOT MET (1/3 experiments beat null; need 2/3); outputs: exp_output/BACKTEST/ |
-| T-037 | C2 Feature Enhancement v1.1.0 | EL | 2026-05-27 | ✅ COMPLETE 2026-05-27 — FEATURE_VERSION 1.1.0; 7 new features (season_type_is_playoffs, days_since_last_game, b2b_flag, load_games_l7d, eri_prev_hot, eri_prev_cold, eri_consec_cold_games); 27 new tests; 89/89 total; ASM-008/009 + HYP-005 + OQ-016/017 filed |
-| T-038 | C4 risk engine tests + METHODOLOGY.md + DATA_FLOWS_LINEAGE.md | EL | 2026-05-27 | ✅ COMPLETE 2026-05-27 — test_c4_risk.py (32 tests; phase gate, hard limits, Kelly, approval, C6 failure); METHODOLOGY.md 4/10→8/10 (model spec, feature table, strategy architecture A–H, validation checklist); DATA_FLOWS_LINEAGE.md F-001–F-038 populated; C4/C5 naming corrected; 121/121 tests |
-| T-039 | C6 AuditLogger tests | EL | 2026-05-28 | ✅ COMPLETE 2026-05-28 — test_c6_audit_logger.py (38 tests; init, write, write failure, severity filtering, payload redaction, traceability chain, convenience wrappers, from_env, thread safety); 159/159 tests |
-| T-039b | C3 ModelForecaster tests | EL | 2026-05-28 | ✅ COMPLETE 2026-05-28 — test_c3_forecaster.py (35 tests; _model_version_hash, _compute_ci Wilson CI, fit() insufficient/TI-02/happy path/C6 failure, predict() not-fitted/schema/edge/direction/CI/series/C6 failure); 194/194 tests |
-| T-041 | MODEL_CARD.md Phase 3 population | EL | 2026-05-28 | ✅ COMPLETE 2026-05-28 — MODEL_CARD.md 2/10→7/10; training procedure (pipeline, NaN imputation, edge formula, Wilson CI), feature version 1.1.0, known limitations (8 entries), null model documented; performance metrics pending EXP-001/002/003 |
-| T-042 | RUN_INSTRUCTIONS.md Phase 3 commands | EL | 2026-05-28 | ✅ COMPLETE 2026-05-28 — All TBD Phase 3 commands replaced; EXP-001 (run_exp001.py), EXP-002/003 (run_backtest.py), test suite command, audit log verification, reproducibility checklist updated; confidence 6/10→8/10 |
-
-### Phase 4 — Next Tasks (G4 Evidence Gap Remediation)
-
-**Trigger:** G4 evidence requirement NOT met (1/3 experiments beat null; need 2/3). Phase 4 focus: expand training data and validate HYP-005.
-
-| # | Task | Owner | Due | Status |
-|---|------|-------|-----|--------|
-| T-043 | Expand player set 10→50 players (OQ-018) | EL | 2026-07-15 | ✅ COMPLETE 2026-05-28 — 50 players (SNAP-2026-05-28-001); EXP-001 Brier +0.0056/ECE 0.0345/AUC 0.5785; EXP-002 +0.0049/0.0289/0.5866; EXP-003 +0.0026/0.0369/0.5673; G4 evidence MET (3/3 beat null; ECE<0.05 all) |
-| T-044 | HYP-005 feature ablation (OQ-019) | EL | 2026-07-22 | ✅ COMPLETE 2026-05-28 — v1.0.0 ablation: Brier +0.0054/ECE 0.0314 vs v1.1.0 +0.0056/0.0345; Δ Brier=+0.0002 (threshold 0.005); HYP-005 FALSIFIED; --ablation-v10 + --source-csv flags added to run_exp001.py |
-| T-045 | MODEL_CARD.md 7/10→10/10 | EL | 2026-05-28 | 🔲 NEXT — Populate performance metrics table with 50-player results; update known limitations (HYP-005 falsified; training data requirement); note G4 readiness |
-| T-046 | FEATURE_VERSION 1.2.0 — prune ERI/schedule features | EL | Phase 4 | ✅ COMPLETE 2026-05-28 — F-032–F-038 removed from features.py; FEATURE_VERSION "1.2.0"; 31 features; DATA_FLOWS_LINEAGE.md + MODEL_CARD.md updated; 179/179 tests |
-| T-047 | ADR-0004 — model class confirmation | AO | Phase 4/G4 | ✅ COMPLETE 2026-05-28 — ADR-0004 ACCEPTED (APR-0012); TEST Brier +0.0084/ECE 0.0247/AUC 0.6062; G4 gate CLOSED |
-| T-048 | G4 formal gate — TEST set evaluation + sign-offs | MV/AO/DS | 2026-05-28 | ✅ COMPLETE 2026-05-28 — TEST set evaluated (3,254 rows, 2023-24 season); PERFORMANCE_METRICS.md + G4_VALIDATION_REPORT.md + VALIDATION_SIGNOFF.md + APPROVALS_REGISTER.md all updated; APR-0006 + APR-0012 accepted |
-
-### Phase 5 — Operational Readiness (G5 gate target)
-
-**Phase 5 unblocked 2026-05-28 by G4 gate closure.**
-
-| # | Task | Owner | Priority | Status |
-|---|------|-------|----------|--------|
-| T-049 | C7 Monitoring + Kill Switch implementation | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c7_monitoring/monitor.py` (SystemMonitor, DriftSnapshot, KillSwitchResult); 55 tests; rolling Brier/ECE/edge; L1–L4 drift ladder; thread-safe kill switch; drill method |
-| T-050 | C8 Visual Dashboard — Phase 5 panels | EL | HIGH | ✅ COMPLETE 2026-05-28 — `c8_dashboard/dashboard.py`; 3 panels (system health, drift metrics, alert feed); reads C6 JSONL; CLI entrypoint; 33 tests; 267/267 total |
-| T-051 | Kill switch drill (TC-007, NFR-03) | EL/DS | HIGH | ✅ COMPLETE 2026-05-28 — halt 0.340ms (SLA 60,000ms); KS-C8D7D90AF942; VALIDATION_SIGNOFF.md TC-007 row signed; APR-0013 recorded; G5 kill switch blocker CLEARED |
-| T-052 | EXP-004 — HYP-003: edge vs Kalshi vig | RL | HIGH | ✅ COMPLETE 2026-05-28 — Parts A+B: EV +$0.0855/bet (2,481 TEST bets, 59% win rate); Part B live (37 KXNBAPTS markets, session EXP-004-FE3E2169); HYP-003 🟢 CONFIRMED; DS-02-B-001 RESOLVED |
-| T-053 | SENSITIVITY_STRESS_TESTS.md — run ST-001 through ST-004 | MV | MEDIUM | ✅ COMPLETE 2026-05-28 — ST-001–004 ALL PASS; results in exp_output/SENSITIVITY_TESTS/; script: run_sensitivity_tests.py |
-| T-054 | MODEL_CARD.md 7/10 → 10/10 update | EL | LOW | ✅ COMPLETE 2026-05-28 |
-| T-055 | CAPACITY_PLANNING.md — create | EL | LOW | ✅ COMPLETE 2026-05-28 |
-| T-056 | Context Pack CP-2026-05-28_G5-readiness | DS | LOW | ✅ COMPLETE 2026-05-28 — `11_MEMORY_HANDOFF/CONTEXT_PACKS/CP-2026-05-28_G5-readiness.md` |
-
-### Phase 6 — Paper Trading (ACTIVE 2026-05-29)
-
-**G5 CLOSED 2026-05-28. Phase 6 ACTIVE. Paper trading running on VPS.**
-
-| # | Task | Owner | Priority | Status |
-|---|------|-------|----------|--------|
-| T-058 | Model data refresh — 5 seasons 2021-26 | EL | HIGH | ✅ COMPLETE 2026-05-28 — EXP-005; 11,931 TRAIN; Brier +0.0024; model v1-9939a6a5 |
-| T-059 | VPS provisioning | IO | HIGH | ✅ COMPLETE 2026-05-29 — DigitalOcean NYC3, 157.230.91.33, Ubuntu 24.04, Python 3.12; health check 8/8 pass; cron installed |
-| T-060 | Paper trading pipeline (PIPE-03) | EL | HIGH | ✅ COMPLETE 2026-05-29 — PaperTrader + run_paper_trade.py; $1,000 bankroll; C4 active; nba_api resolution; cron 01:30 UTC |
-| T-061 | ADR-0005 — Live capital authorization (G6) | AO/DS | LOW | 🔲 — After 30 resolved paper positions with positive P&L (APR-0016); 0/30 as of 2026-05-29; not yet |
-| T-062 | Context Pack for Phase 6 | DS | LOW | 🔲 — Create CP-2026-05-29_phase6-active.md |
-| T-063 | OQ-021 Amplification study (EXP-009 done; GBM tried) | RL | MED | ✅ COMPLETE 2026-05-29 — EXP-009 L3 Δ=-0.0004 (LR); EXP-011 GBM Δ=-0.0008; L3 needs more data or context-stratified approach |
-| T-064 | PRF coefficient analysis (EXP-008 one-hot) | RL | MED | ✅ COMPLETE 2026-05-29 — prf_w features implemented; encoded as weighted continuous |
-| T-065 | Gradient boosting model experiment | EL | MED | ✅ COMPLETE 2026-05-29 — EXP-011 HGBC vs LR; LR RETAINED; ADR-0004 unchanged |
-| T-069 | EV re-estimation with refreshed model | RL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-010: EV +$0.0958/bet; win 61.1%; live vig 0.030; 871/2,692 bets |
-
-### Phase 6 — Next Tasks
-
-| # | Task | Owner | Priority | Notes |
-|---|------|-------|----------|-------|
-| T-070 | Accumulate paper trading evidence (30+ bets) | DS | HIGH | Monitor logs/paper_portfolio.json daily; target **30 resolved positions** (APR-0016: revised from 50 per seasonal constraint); 0/30 as of 2026-05-29; dual-window cron firing; NBA dark period ~2026-06-22 if not reached |
-| T-071 | Model cohort expansion (more players for 2025-26) | EL | MED | ✅ COMPLETE 2026-05-29 — `cohort.py` canonical registry; v1=50 players; v2=~80 players; lookup_player_id.py utility added |
-| T-072 | Playoff generalization ablation (EXP-016 / HYP-009) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-016-B8BA8CAC; Δ Brier = -0.0010 (gate < 0.012); HYP-009 CONFIRMED; KI-008 RESOLVED; playoff paper bets valid G6 evidence at full confidence |
-| T-073 | DS-04 qualitative source registration | RL | LOW — August 2026 | First new qualitative source beyond PAM (coaching fit, matchup context, etc.). Decision required before T2 execution band can become ACTIVE. Timeline: August 2026 before dark period model retrain (T-092) so DS-04 features can be included in T-092 retrained model. |
-| T-074 | Session handoffs CP-2026-05-29 | DS | LOW | ✅ COMPLETE 2026-05-29 — SESSION_HANDOFF_20260529_1651.md + SESSION_HANDOFF_20260529_2030.md |
-| T-085 | PIPE-03R resolution-only pipeline | EL | HIGH | ✅ COMPLETE 2026-05-29 — `run_resolve.py`; 06:00 UTC cron; resolves late-game positions after nba_api updates; 9 tests |
-| T-086 | C4 MIN_BET_USD floor ($10) | EL | MED | ✅ COMPLETE 2026-05-29 — CHECK 7 in risk.py; sub-floor bets → `min_bet_floor` REJECTED; 5 tests |
-| T-087 | Dual-window PIPE-03 cron | IO | HIGH | ✅ COMPLETE 2026-05-29 — 22:00 UTC early + 01:30 UTC late; VPS crontab replaced; cron.conf inline Python extracted to check_model_freshness.py |
-| T-088 | Governance registers KI-008/009/ASM-010/011/HYP-009 | DS | HIGH | ✅ COMPLETE 2026-05-29 — KI-008 playoff validity (HIGH G6 blocker); KI-009 50-bet calendar gap; ASM-010 strategy concentration; ASM-011 playoff generalization; HYP-009 registered; ROADMAP G6 calendar note + APR-0016 path |
-| T-089 | ingestion.py date parse fix | EL | LOW | ✅ COMPLETE 2026-05-29 — `format="mixed"` on both player + team log paths; eliminates ~150 warnings per EXP run |
-| T-090 | git author identity + VPS connectivity note | IO | LOW | ✅ COMPLETE 2026-05-29 — `earlignacio1@gmail.com`; "hotspot required" language removed from all forward-looking registers |
-
-### Phase 7 — Planned Tasks (unblocked after G6)
-
-**Prerequisite:** G6 gate cleared (ADR-0005 signed; T-061). Priority order reflects strategy research recommendation — B and I before E+C.
-
-| # | Task | Owner | Priority | Notes |
-|---|------|-------|----------|-------|
-| T-075 | Strategy B — Opponent def rating + home/away (EXP-012) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-012-54AEB56C; HYP-006 FALSIFIED; v1.3.0 TEST Brier 0.2480 vs v1.2.0 TEST Brier 0.2480; delta_vs_v12 = -7e-06 (negligible); opp_def_rating + home/away carry no additive signal; FEATURE_VERSION stays 1.2.0; Strategy B remains SKELETON |
-| T-076 | Strategy I — Poisson/NB scoring distribution model (EXP-013) | EL | HIGH | ✅ COMPLETE 2026-05-29 — EXP-013-436E29C1; HYP-007 FALSIFIED; NB Brier 0.2671 vs LR Brier 0.2461; Δ = -0.0211 (gate ≤ 0.010); NB not competitive for calibration; ScoringDistributionModel retained for multi-line pricing use case only; Strategy I remains SKELETON |
-| T-077 | Strategy E — Line Shopping: Polymarket US API access | IO | HIGH | 🟡 INFRASTRUCTURE COMPLETE 2026-05-29 — PolymarketVenueAdapter fully implemented (REST+CLOB, Bearer auth, `_parse_market()` regex, graceful failure); ACC-0003 registered PENDING in ACCESS_REQUESTS.md; RUNBOOK_polymarket-activation.md written; **OPERATOR ACTION REQUIRED: provision API key at polymarket.com → set POLYMARKET_API_KEY in .env → run activation runbook** |
-| T-078 | Strategy E — C5 VenueRouter abstraction layer | EL | HIGH | 🟡 SKELETON COMPLETE 2026-05-29 — VenueAdapter Protocol + KalshiVenueAdapter + VenueRouter built; PIPE-05/06 deployed; Polymarket adapter stub ready; activate at T-077 API provisioning |
-| T-079 | Strategy E — EXP-014: EV re-estimation with line shopping active | RL | MED | Quantify $/bet improvement from best-price routing vs. Kalshi-only baseline |
-| T-080 | Strategy C — Complement lock scanner (cross-venue) | EL | MED | ✅ COMPLETE 2026-05-29 — `c5_execution/complement_lock_scanner.py`; `LockOpportunity` + `ComplementLockScanner`; scan_snapshot() + scan_single(); 22 tests; detection-only (APR-0010 required for execution) |
-| T-081 | Strategy C — APR-0010 sign-off | DS | MED | DS governance sign-off to activate arb/ module; unblocks after T-078 VenueRouter is live; replaces "Indefinite" blocker in blocked items |
-| T-082 | Phase 7 context pack | DS | LOW | CP-2026-Phase7 handoff |
-| T-083 | Cross-venue market mapper (normalization rules) | EL | MED | ✅ COMPLETE 2026-05-29 — `c5_execution/market_mapper.py`; `normalize_player_name()` + `PlayerMarketKey` + `group_by_key()`; accent/apostrophe/period normalization; 26 tests; VenueRouter deduplication upgraded to use normalized keys |
-| T-084 | Multi-band execution orchestrator (P6 rules) | EL | HIGH | ✅ COMPLETE 2026-05-29 — `execution_bands_orchestrator.py`; `BandSignal` + `BandDecision` + `MultiBandOrchestrator`; T3>T2>T1 priority; CONFIRM/FADE/NEUTRAL rules; batch_decide(); 46 tests; T3 cron schedule extended to 20-23,0-3 UTC for late games |
-
-### Phase 6 — Newly Registered Tasks (2026-05-29 handoff audit)
-
-| # | Task | Owner | Priority | Notes |
-|---|------|-------|----------|-------|
-| ~~T-091~~ | ~~C7 paper P&L monitoring alert~~ | ~~EL~~ | ~~MED~~ | ✅ COMPLETE 2026-06-01 — `check_portfolio_pnl()` added to SystemMonitor. L1 (5% loss) → INFO `pnl_alert_l1_watch`; L2 (10% loss) → WARNING `pnl_alert_l2_loss`. Wired into PIPE-03 and PIPE-03R. 8 new tests. 589/589 VPS tests pass. KI-012 RESOLVED. DS sign-off: Earl Ignacio 2026-06-01. |
-| T-092 | Elevate T-072 to required pre-2026-27 | DS | MED | Model staleness KI-013 — T-072 must retrain before paper trading resumes in Oct 2026; not optional; needs new ADR |
-| T-116 | Pre-season multi-game night pipeline stress test (KI-023) | IO/EL | HIGH — before 2026-27 | PIPE-02 + PIPE-03 have only been tested in single-game Finals context (1 game/night). Regular season (10+ simultaneous games, 400+ markets/night) is structurally different: concurrent nba_api pulls, parallel pregame log writes, overlapping PIPE-03 execution windows. If PIPE-02 fails silently for any player on a multi-game night, EXP-017 cannot join on that game's prices — G6 evidence is silently contaminated. Test plan: simulate a 10-game night locally before 2026-27 season tip-off. Verify: (1) run_pregame.py captures pregame logs for all 75 cohort players across simultaneous games without silent failures; (2) PIPE-03 processes all players without timing collisions; (3) EXP-017 join succeeds on a simulated multi-game pregame directory. Resolve before October 2026 season start. |
-| T-117 | **Formal Kalshi TOS + contract Terms review (GG-006 final close)** | DS | **HIGH — Week 1 dark period (by 2026-06-30)** | Two documents to read formally before G6 ADR-0005 can be drafted: **(1) Kalshi Participant Agreement** — the account-level legal document Earl agreed to at account creation. GG-006 partial resolution confirmed automated trading permitted via web search; formal document reading not yet done. Look for: algorithmic trading restrictions, prohibited strategies, account termination triggers. **(2) KXNBAPTS contract-specific Terms and Conditions** — DCM Rulebook v1.26 does NOT contain numerical Position Accountability Levels or Position Limits; those are in each contract's Terms tab on Kalshi's website. Navigate to any active KXNBAPTS contract → Terms and Conditions tab → record: (a) stated Position Accountability Level (soft threshold for disclosure); (b) stated Position Limit (hard cap). If both above $500 (our bet cap), no changes to risk.py required. If either below $500, add `max_position_usd_per_market` to `_HARD_LIMITS` via ADR. Stakes: prevents live capital on disallowed activity — must complete before G6. LOW risk at current paper bankroll ($683, $10–80/bet). |
-| T-100 | Fix Bug H — drawdown includes open stakes (KI-015) | EL | HIGH | ✅ COMPLETE 2026-05-30 — `run_paper_trade.py` lines 215+334: `current_drawdown_pct = realized_loss / initial_bankroll`; DS sign-off granted by operator same session; deployed VPS; live check: 0.00% realized drawdown |
-| T-101 | Fix Bug G — idempotency check failure (KI-014) | EL | HIGH | ✅ COMPLETE 2026-05-30 — Root cause: `LOG_DIR` was relative path; cron ran from different CWD → fresh portfolio each run → 3× positions. Fix: `_SRC_ROOT / "logs"` absolute default in `run_paper_trade.py` + `run_resolve.py`. Idempotency logging added. Deployed VPS. |
-
-### Governance Debt — decisions_logged: false (registered 2026-05-29)
-
-*These documents contain unlogged strategic decisions. Each must be resolved before the document can be marked CANONICAL. Low priority unless the document is being actively modified — resolve before any session that touches the document.*
-
-| # | Task | Owner | Priority | Notes |
-|---|------|-------|----------|-------|
-| ~~T-093~~ | ~~Extract decisions from EXECUTION_ARCHITECTURE.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-094~~ | ~~Extract decisions from MONITORING_DRIFT_PLAN.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-095~~ | ~~Extract decisions from METHODOLOGY.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-096~~ | ~~Extract decisions from VENUE_REGISTRY.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-097~~ | ~~Extract decisions from RISK_APPETITE_CONSTRAINTS.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-098~~ | ~~Extract decisions from QUALITATIVE_SIGNALS.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-| ~~T-099~~ | ~~Extract decisions from ROADMAP_MILESTONES.md~~ | ~~DS~~ | ~~LOW~~ | ✅ COMPLETE 2026-06-02 SESSION 15 |
-
----
-
-### Operator Actions Remaining
-
-| # | Action | Why It Matters |
-|---|--------|---------------|
-| T-015 | Run `python3.11 -m venv .venv && source .venv/bin/activate && pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt && pre-commit install` from project root | Sets up local development environment (Python 3.11+ required; all artifacts verified correct) |
 
 ---
 
