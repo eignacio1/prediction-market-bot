@@ -2,13 +2,13 @@
 
 **Purpose:** Record all significant project-level changes in reverse-chronological order. NOT a git commit log — this tracks architectural, governance, and scope changes.  
 **Owner (role):** Directory Steward (DS)  
-**Last reviewed:** 2026-05-29 (EXP-016 complete; HYP-009 CONFIRMED; KI-008 RESOLVED; all 9 hypotheses resolved)  
-**Next review:** Updated continuously; reviewed weekly at DIR  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: found genuine drift — no entries since 2026-05-29 despite ~8 weeks of major changes (dual-ledger split, T4 MLB build, EXP-017/APR-0024, ADR-0026/ADR-0040, VPS maturation). Full backfill out of scope for this pass; registered as **GG-133** (OPEN) rather than silently bumping this date. See GG-133 for remediation options.  
+**Next review:** 2026-08-23, or sooner if GG-133 is resolved  
 **Staleness triggers:** Any major change without a corresponding entry  
 **Upstream links:** 03_DECISIONS/DECISION_LOG/ (ADRs are the decision record; this is the timeline view)  
 **Downstream links:** 11_MEMORY_HANDOFF/MEMORY_BANK.md  
 **Decision references:** ADR-0001  
-**Confidence:** 10/10 — Clean slate  
+**Confidence:** 5/10 — Structurally sound but content is ~8 weeks stale (GG-133)  
 
 ---
 

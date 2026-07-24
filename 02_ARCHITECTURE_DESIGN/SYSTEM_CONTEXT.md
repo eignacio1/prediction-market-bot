@@ -2,8 +2,8 @@
 
 **Purpose:** Define the external boundary of the system — what it touches, what touches it, and what it deliberately does not integrate with.  
 **Owner (role):** Architecture Owner (AO)  
-**Last reviewed:** 2026-05-22  
-**Next review:** G2 Architecture Gate; then on any new external dependency  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified the 2026-07-06 correction note remains accurate (boundary shape unchanged; only phase/gate labels had moved, and that's still true). No new drift found.  
+**Next review:** 2026-08-23, or on any new external dependency  
 **Staleness triggers:** New external system integrated; venue confirmed; data source changed; compliance scope change  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, 01_SPEC/SCOPE_IN_OUT.md  
 **Downstream links:** INTERFACES_CONTRACTS.md, EXECUTION_ARCHITECTURE.md, 09_SECURITY_PRIVACY_COMPLIANCE/  

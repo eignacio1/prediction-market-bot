@@ -3,8 +3,8 @@
 **Purpose:** Centralized design reference for all arbitrage strategies (C: Complement Lock, D: Statistical Arb, E: Line Shopping). Defines the venue-agnostic data model, band-specific decision trees, and opportunity lifecycle. All arb strategy implementations derive from this framework.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-05-29 (initial build — Phase 6 idle period)
-**Next review:** On any new venue activation; on Phase 7 arb activation; on T4/T5 infrastructure scope
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no new drift found. The 2026-07-06 correction note on §3.1's flat `0.030` Kalshi fee_rate constant (vs. ADR-0016's real `0.07 × mid × (1-mid)` formula) remains accurate and still unaddressed — correctly so, since Phase 7 arb strategies (the only consumers of this table) have not been built. Polymarket (T-077) remains KYC-gated per CLAUDE.md, so §8's Phase 7 activation gates for Strategy E are still correctly blocked. G6 has not cleared, so nothing in this document's Phase 7/8/9 roadmap should have progressed, and it hasn't.
+**Next review:** 2026-08-23, or on any new venue activation / Phase 7 arb activation / T4/T5 infrastructure scope
 **Staleness triggers:** New venue added to VENUE_REGISTRY.md; arb strategy activated; execution SLA changed; Kelly fraction revised
 **Upstream links:** EXECUTION_BANDS.md (band definitions); STRATEGY_OVERVIEW.md (C/D/E mechanics); VENUE_REGISTRY.md (VenueParams source)
 **Downstream links:** venue_router.py; arb_scanner.py (to be built); arb_opportunity_log.py (to be built); PIPELINES_JOBS.md

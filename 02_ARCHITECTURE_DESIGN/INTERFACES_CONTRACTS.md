@@ -3,8 +3,8 @@
 **Purpose:** Define all interfaces between components. Downstream components must acknowledge changes. Decouples build parallelism from coordination failure.  
 **Owner (role):** Architecture Owner (AO)  
 **Status:** **CANONICAL — G2 Architecture Gate 2026-05-22** — Changes require ADR or formal Change Class A/B record  
-**Last reviewed:** 2026-05-28 (IF-C6-C8 and IF-C7-C8 added; C8 Visual Dashboard registered)  
-**Next review:** On staleness trigger only  
+**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: found and fixed genuine drift beyond the existing 2026-07-06 correction notes. (1) IF-C5-VENUE's correction note cited GG-063 as an open, unresolved MLB order-submission defect; GG-063 was RESOLVED 2026-07-01 (T-217, Kalshi v1→v2 endpoint migration) — updated in place. (2) IF-C6-C8 and IF-C7-C8 both still carried "STUB — design only; implemented at Phase 5" despite `pmbot-web-dashboard.service` being live production infrastructure since Phase 5 closed (GG-118 presupposes this) — both corrected to reflect live status. IF-C1-C2 through IF-ALL-C6, IF-DS-Q-C2, IF-VENUE-ADAPTER, IF-ROUTER checked against current architecture; no further drift found beyond what 2026-07-06's notes already cover.  
+**Next review:** 2026-08-23  
 **Staleness triggers:** Schema version bump; new field added to any interface; component added/removed; venue API change  
 **Upstream links:** ARCHITECTURE_OVERVIEW.md, DATA_FLOWS_LINEAGE.md  
 **Downstream links:** All components that implement these interfaces; 06_CODE_EXECUTION_REPRODUCIBILITY/PIPELINES_JOBS.md  
@@ -105,7 +105,9 @@
 
 ## IF-C5-VENUE — Execution Engine → Venue API *(Phase 8 only)*
 
-**⚠️ Corrected 2026-07-06 (GG-074 remediation) — this section's "Phase 8 only" / "TBD at ADR-0003" / "GATED: active only after ADR-0005 + G6" framing is stale.** ADR-0003 confirmed the venue (Kalshi) on 2026-05-23, and ADR-0008 (2026-05-31) made this interface real and active during Phase 6 paper trading: `PaperTrader.open_position()` submits live orders to the real Kalshi demo API when an RSA key is loaded (`c5_execution`/`kalshi_client.py`), well before ADR-0005/G6. Local ledger remains authoritative per ADR-0008 (Kalshi confirmation is supplementary, not gating), and MLB order submission has a known, separately-tracked defect (100% `HTTP 410` failures, GG-063/T-217) — but the interface itself is live code, not a Phase-8-gated design placeholder.
+**⚠️ Corrected 2026-07-06 (GG-074 remediation) — this section's "Phase 8 only" / "TBD at ADR-0003" / "GATED: active only after ADR-0005 + G6" framing is stale.** ADR-0003 confirmed the venue (Kalshi) on 2026-05-23, and ADR-0008 (2026-05-31) made this interface real and active during Phase 6 paper trading: `PaperTrader.open_position()` submits live orders to the real Kalshi demo API when an RSA key is loaded (`c5_execution`/`kalshi_client.py`), well before ADR-0005/G6. Local ledger remains authoritative per ADR-0008 (Kalshi confirmation is supplementary, not gating). MLB order submission had a known, separately-tracked defect (100% `HTTP 410` failures, GG-063/T-217) — **GG-63 RESOLVED 2026-07-01 (T-217): root cause was Kalshi's platform-wide deprecation of the v1 order endpoint, not a code-path or ticker-eligibility bug; `submit_order()` migrated to the v2 endpoint (`POST /portfolio/events/orders`), confirmed via live DEMO test order (error changed from `410 deprecated_v1_order_endpoint` to `409 market_closed`, proving Kalshi now parses the v2 request).** The interface itself is live code, not a Phase-8-gated design placeholder.
+
+**GG-074 monthly staleness review (2026-07-23):** verified GG-063's RESOLVED status directly against GOVERNANCE_GAP_LOG.md; no new drift found in this section.
 
 **Version:** 1.0 (DRAFT)  
 **Producer:** C5 Execution Engine  
@@ -188,10 +190,12 @@ Non-matching rows produce NaN for all qualitative feature columns. This is corre
 
 ## IF-C6-C8 — Audit Logger → Visual Dashboard *(Phase 5+; read-only)*
 
-**Version:** 1.0 (STUB — design only; implemented at Phase 5)  
+**⚠️ Corrected 2026-07-23 (GG-074 monthly staleness review) — "STUB — design only; implemented at Phase 5" is stale.** Phase 5/G5 closed 2026-05-22 and `pmbot-web-dashboard.service` runs live on the VPS today (see GG-118's OOM-restart-loop finding, which presupposes the service is live production infrastructure, not a design stub). This interface is implemented and active, not pending.
+
+**Version:** 1.0 (implemented, live on VPS since Phase 5 close)  
 **Producer:** C6 Audit Logger  
 **Consumer:** C8 Visual Dashboard  
-**Downstream acknowledgement:** AO — **GATED: active only at Phase 5+**  
+**Downstream acknowledgement:** AO — active since Phase 5+  
 
 *C8 reads from C6's append-only log files to surface forecast history, calibration trends, and decision audit trail. C8 is a pure consumer — it never writes to or modifies C6 state.*
 
@@ -253,10 +257,12 @@ VenueRouter is transparent to C3, C4 — consumers call it exactly as they calle
 
 ## IF-C7-C8 — Monitoring + Kill Switch → Visual Dashboard *(Phase 5+; read-only)*
 
-**Version:** 1.0 (STUB — design only; implemented at Phase 5)  
+**⚠️ Corrected 2026-07-23 (GG-074 monthly staleness review) — same stale "STUB" status as IF-C6-C8 above; same correction applies.** `pmbot-web-dashboard.service` is live production infrastructure, not a design placeholder.
+
+**Version:** 1.0 (implemented, live on VPS since Phase 5 close)  
 **Producer:** C7 Monitoring + Kill Switch  
 **Consumer:** C8 Visual Dashboard  
-**Downstream acknowledgement:** AO — **GATED: active only at Phase 5+**  
+**Downstream acknowledgement:** AO — active since Phase 5+  
 
 *C7 emits structured metric events that C8 renders as system health indicators and alert badges. C8 receives but never acknowledges or responds to kill-switch signals — those are handled by C7 directly.*
 

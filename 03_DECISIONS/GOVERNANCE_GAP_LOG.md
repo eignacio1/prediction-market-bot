@@ -2514,11 +2514,47 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-133 — No standing archival cadence exists for `04_EXECUTION/TODO_NEXT.md`'s own `## T-NNN` task sections (same class as GG-127)
+### GG-133 — CHANGELOG.md has not been updated since 2026-05-30 despite ~2 months of major changes, violating its own staleness trigger
 
 | Field | Detail |
 |---|---|
 | Gap ID | GG-133 |
+| Arm | Core |
+| Category | Documentation-hygiene — grounding-doc staleness, discovered during GG-074's first-ever monthly review run. |
+| What was missed | `00_ADMIN/CHANGELOG.md`'s own header states it is "Updated continuously; reviewed weekly at DIR" with staleness trigger "Any major change without a corresponding entry." Its most recent entry is dated 2026-05-30. Since then, this project has shipped its dual-ledger MLB/NBA split (ADR-0035/ADR-0037), the T4 MLB build and multiple sub-band activations, EXP-017 and the APR-0024 variance-derived n* standard superseding the flat 30/150/500 heuristic, ADR-0026/APR-0020 (two-tier free-cash invariant), ADR-0040 (Kelly de-rating from ruin-risk MC study), the VPS web dashboard (GG-057), and dozens of other DECISION_LOG-logged changes — none of which produced a CHANGELOG.md entry. |
+| When it should have been caught | At any weekly DIR-equivalent review, or by this project's own GG-074 monthly grounding-docs staleness process — except GG-074 itself was adopted 2026-07-06 and never run until this session, so no process ever checked this. |
+| Phases it survived | 2026-05-30 through 2026-07-23 (~8 weeks), spanning the entirety of Phase 6/7 ACTIVE's major architecture growth. |
+| Why it survived | `DECISION_LOG.md` became the de facto operative record for Hard Rule 7 ("every strategic decision goes into DECISION_LOG.md immediately") and appears to have silently superseded CHANGELOG.md's role as the human-readable timeline view — but no decision was ever made to retire or supersede CHANGELOG.md, so it sits as a grounding doc making a false "updated continuously" claim. |
+| Impact | LOW — no capital/gate/trading-logic impact; this is a navigational/orientation doc, not a state-of-record. Risk is a new session or the operator trusting CHANGELOG.md's dated entries as a complete timeline when in fact two months of major architecture history are absent from it. |
+| Discovery | 2026-07-23, this session, while executing GG-074's monthly grounding-docs staleness review for the first time (operator-directed). |
+| Resolution | Not fixed this pass — backfilling ~8 weeks of major-change entries is a substantial dedicated task, out of scope for a header-staleness review. Header updated to record this finding rather than silently bumping the date (see file). Two viable paths for a future session: (a) backfill the missing entries from `DECISION_LOG.md`'s existing record, or (b) formally decide CHANGELOG.md is superseded by DECISION_LOG.md and either retire it or repurpose it as a lighter-weight index. Recommend registering a T-NNN to make that decision explicitly rather than letting the file drift further. |
+| Status | OPEN. |
+
+---
+
+### GG-134 — `mc_empirical_bootstrap.py`'s forward-risk projection has four unmodeled scope gaps not disclosed as limitations at commit time
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-134 |
+| Arm | Core |
+| Category | Incremental architecture — new forward-risk MC engine (`scripts/mc_empirical_bootstrap.py`, committed this session, `05_RESEARCH_EXPERIMENTS/MC_EMPIRICAL_BOOTSTRAP_2026-07-22.md`) models only book-level aggregates, not the band/pool structure CLAUDE.md's dual-ledger and multi-band architecture actually has. |
+| What was missed | Four coverage gaps in the engine's forward projection, none disclosed as a stated limitation in the report before this registration: (a) **kill switches are book-level only** — the 20% peak-drawdown and 15% daily breaker are applied to each book's aggregate bankroll, with no per-band budget or per-band kill modeled, even though CLAUDE.md Hard Rule 9 and `execution_bands.py` describe per-bucket/per-band routing and (per this project's stated design) band-level kill switches are meant to operate independently of the system-level one; (b) **MAIN pools T1/T2/T3 into one undifferentiated cohort** — the engine's `cohort_fracs()` filters by `logic_epoch` only, not by band, so T1's pregame-calibration edge and T2/T3's distinct decision trees are blended into a single mean/variance pair, which could mask a profitable band being dragged down by a losing one or vice versa; (c) **blocked sub-bands and the dark NBA book are entirely absent** — T4M-ARITH and T4M-FLOW (built but blocked) and NBA (DARK/FROZEN per operator directive) have no representation in the simulation, so the engine's book-level "MAIN" and "T4" figures describe only the currently-active pools, not the system's full pool inventory; (d) the **survivable-edge frontier** (minimum per-bet edge needed to hold 1yr P(kill) below a target, given real variance/cadence/Kelly fraction) that would turn the report's ruin-geometry finding into an actionable sizing/ADR change has not been built into this engine — this is explicitly Window B2's scope (`ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md` §Window B, claimed `SESSION_CLAIMS.md` 2026-07-23T23:39:20Z), not re-registered here as a new gap. |
+| When it should have been caught | At commit review, before the engine's report language ("Books modeled independently (dual-ledger)") could be read as a complete description of the system's pool structure by a future session trusting the report at face value. |
+| Phases it survived | N/A — caught same-session, at first commit, before any downstream session relied on the report's book-level figures as if they covered per-band or full-pool-inventory risk. |
+| Why it survived | The report is honest and clearly scoped to MAIN/T4 as the two *active* books, and its own Assumptions section discloses the CLT-in-log-space approximation — but it does not separately flag that "book" here means "everything active pooled," not "every band separately," nor that blocked/dark pools are out of scope entirely. A reader could reasonably infer full coverage from "dual-ledger" framing alone. |
+| Impact | LOW-MEDIUM — no capital/gate impact today (G6 gate not cleared, no live capital). Risk is forward-looking: if this engine becomes "the standard forward-risk gate" (per the iteration plan's D2 item) without these scope boundaries being explicit, a future sizing/ADR decision could be made on book-level aggregate risk while a specific band's or blocked sub-band's true risk profile diverges materially from its book's pooled average. |
+| Discovery | 2026-07-23, this session, during pre-commit review of `mc_empirical_bootstrap.py` ("confirm it's sound, not just present" per operator instruction). |
+| Resolution | Not fixed this pass — registered as known scope, not remediated. (a)/(b)/(c) are candidates for a future extension of this engine (per-band cohort splitting, per-band kill modeling, explicit pool-inventory table) if/when it is formally adopted as the standard gate (Window D2). (d) is explicitly out of this gap's scope — already claimed and in progress under Window B2; do not duplicate. |
+| Status | OPEN. |
+
+---
+
+### GG-135 — No standing archival cadence exists for `04_EXECUTION/TODO_NEXT.md`'s own `## T-NNN` task sections (same class as GG-127)
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-135 |
 | Arm | Core |
 | Category | Documentation-hygiene — same class as GG-127 (a file whose own stated purpose implies bounded, current content had been allowed to accumulate unbounded historical content, with no automated check or enforced cadence catching the drift). |
 | What was missed | `TODO_NEXT.md`'s own header states: "**Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md." Despite this, by 2026-07-23 the file had grown to 2,422 lines carrying 40 `## T-NNN` sections, 34 of which were marked ✅ DONE/RESOLVED/COMPLETE — some dating back to 2026-07-10/11 (T-325 through T-332), i.e. roughly two weeks of completed-task history sitting in a file whose own purpose line commits to a 1-3 session horizon. Unlike `MEMORY_BANK.md`'s `## Current State Snapshot` chain (which T-334/ADR-0044 gave a standing consolidation pattern and an automated WARN check, `check_memory_bank_snapshots.sh`), `TODO_NEXT.md`'s `## T-NNN` section list had no equivalent: no script checks its length or DONE-section count, and no prior session had registered a recurring cadence for pruning it — the only precedent was a single passing reference inside T-334's own scope description, never generalized into a repeatable process for this file specifically. |
@@ -2529,6 +2565,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | 2026-07-23, this session (T-396, isolated worktree `session/20260723T003916Z-todo-next-archive`), operator-directed: Earl noted the file's line/section count and its own stale purpose line, and pointed to the T-334/`MEMORY_BANK_ARCHIVE.md` lossless-move pattern as an applicable precedent not yet extended to this file. |
 | Resolution | Same session: the 34 confirmed DONE/RESOLVED/COMPLETE `## T-NNN` sections (T-325 through T-395, excluding T-333/T-376/T-379/T-384/T-390/T-394 which each retain a genuinely open component or explicit OPEN/PARTIAL/pending status) moved verbatim — programmatically extracted and diff-verified byte-for-byte, not paraphrased — into a new `## TODO_NEXT Task Archive` section in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md`, with a one-line pointer left in `TODO_NEXT.md` in their place. This resolves the specific instance. **No structural/automated cadence was built this session** (unlike GG-127's nav-hub check or T-334's `check_memory_bank_snapshots.sh`) — this gap's root cause (no enforced pruning cadence for this file) remains open pending a future session deciding whether to extend `check_memory_bank_snapshots.sh` (or a new script) to also flag `TODO_NEXT.md` DONE-section accumulation past some threshold. |
 | Status | **IN PROGRESS.** The specific instance (34 stale DONE sections) is RESOLVED as of 2026-07-23. The structural gap — no automated check or enforced cadence exists to catch this file recurring to the same state — is NOT resolved. A future session should decide whether to extend `check_memory_bank_snapshots.sh`'s pattern to this file (e.g. WARN if `## T-NNN` sections marked DONE/RESOLVED/COMPLETE exceed some count or age threshold) or accept periodic manual sweeps as sufficient. |
+| Numbering note | Originally registered in-session (isolated worktree `session/20260723T003916Z-todo-next-archive`) as GG-133. On merge into `main`, GG-133 was found already taken by an independent, concurrently-merged session's CHANGELOG-staleness finding, and GG-134 also already taken (`mc_empirical_bootstrap.py` scope-gaps finding) — renumbered once, to the true next-free ID verified fresh against `origin/main` post-merge, **GG-135**. |
 
 ---
 
