@@ -145,3 +145,4 @@
 | 2026-07-29T23:46:01Z | TBD | G1: session-start protocol repair (GG-144/T-404 + GG-138) |
 | 2026-07-29T23:46:19Z | TBD | G2: T4 cold-start blindness fix (remediates GG one-forty-three / T-four-oh-three, registered prior session) |
 | 2026-07-29T23:46:50Z | T-405 | G3: opp_sp backfill + D1 rerun (resolves GG-141) |
+| 2026-07-29T23:49:08Z (manual claim — claim_session.sh false-positived on pre-existing T-379/GG-125, per T-357/GG-113 workaround) | T-379, GG-125 (pre-existing/registered OPEN ID in TODO_NEXT.md; no new T-/GG- ID claimed) | G4: wire Brier/ECE calibration ladder (GG-125/APR-0031) into nightly cron, warn-only; add stale-open-position + failed-order-rate ops alarms, warn-only. |
