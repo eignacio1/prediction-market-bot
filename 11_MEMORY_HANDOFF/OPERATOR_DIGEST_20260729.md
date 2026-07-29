@@ -20,3 +20,17 @@ A follow-up session double-checked all of last week's modeling work (the A/B/C/D
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260729_0029.md`, `SESSION_HANDOFF_20260729_0058.md`, and `DECISION_LOG.md` for 2026-07-28/29, plus `ADR-0048`.*
+
+---
+
+**Addendum — later same-day session (T9/T-400, GG-105 feature-level rework):**
+
+We went back to the baseball model's actual data — not the calibration math, the underlying stats it's fed — to see if there's some feature we haven't tried yet that could fix the "confidence ranking comes out backwards" problem mentioned above. We tested seven different raw stats and one combination of two stats, checked each one against the real betting history so far. None of them worked — the combination candidate actually made things measurably worse, not better. This means the overnight/multi-day baseball strategy (the main one) has now run out of straightforward things to try with the data it currently has. We're recommending the next session shift search effort to the in-game live-betting strategy instead, since it has a much smaller and more forgiving risk profile even without a proven edge yet. Separately, while digging through the data, we found a chunk of it (stats about the opposing pitcher) has been completely empty for every single game ever recorded — nobody had noticed. That's now logged as its own thing to investigate, unrelated to today's main finding.
+
+**What this means for your money:** No change — still zero real money at risk. Nothing today touched live trading logic or risk limits; this was research only.
+
+**Does anything need your decision right now?** No — nothing needs you today. The recommendation to shift focus toward the live in-game strategy is a suggestion for the next session to pick up, not something needing your sign-off now. The "not yet turned on in the actual running system" item from earlier today is unchanged and still the one open item that matters.
+
+**Anything that worried the session, even if not urgent:** The opposing-pitcher data gap mentioned above — one whole category of information the model was supposed to be using has never actually been there, for the entire history of the project. Not urgent (today's testing found no fix in that category anyway), but worth someone eventually tracking down.
+
+*Full technical detail: see `SESSION_HANDOFF_20260729_0530.md`, `DECISION_LOG.md` 2026-07-29 (T9 row), and `05_RESEARCH_EXPERIMENTS/T9_GG105_FEATURE_LEVEL_REWORK_2026-07-28.md`.*
