@@ -9,16 +9,25 @@ name: Post-Game Resolve
 #
 # Schedule: 05:30 UTC daily (after typical NBA game end ~03:00–04:00 UTC)
 # If the Mac cron already resolved positions, both scripts exit cleanly (0 open positions).
+#
+# T-399 (2026-07-29): schedule trigger PAUSED (commented out below), workflow_dispatch
+# kept live. This workflow resolves NBA T1/T4 paper positions, and NBA is DARK/FROZEN
+# per standing operator directive (04_EXECUTION/TODO_NEXT.md) until ~1 month before the
+# 2026-27 season — it has been firing daily against a book taking no new positions.
+# Cheap in isolation (~40-60s/run) but zero-value while NBA is dark. RE-ENABLE by
+# uncommenting the `schedule:` block below when NBA reactivates (same trigger condition
+# as the dark-pool directive itself) — do not delete this workflow, the resolve logic
+# is still correct and needed the moment NBA positions resume.
 
 on:
-  schedule:
-    # 05:30 UTC = 10:30 PM PDT — ~2-3h after most NBA games end
-    # Fires before Mac post_game_gX_resolve.sh at 06:00 UTC, serving as primary auto-resolve.
-    # KNOWN DRIFT (observed S56, 2026-06-12): GitHub Actions scheduled runs fire
-    # ~3.5–4h late in practice (~09:00–09:50 UTC, not 05:30). Treat ~10:00 UTC as
-    # the earliest reliable resolution time; run EXP reruns after that, or trigger
-    # manually via workflow_dispatch / run_resolve_local.py if needed sooner.
-    - cron: '30 5 * * *'
+  # schedule:
+  #   # 05:30 UTC = 10:30 PM PDT — ~2-3h after most NBA games end
+  #   # Fires before Mac post_game_gX_resolve.sh at 06:00 UTC, serving as primary auto-resolve.
+  #   # KNOWN DRIFT (observed S56, 2026-06-12): GitHub Actions scheduled runs fire
+  #   # ~3.5–4h late in practice (~09:00–09:50 UTC, not 05:30). Treat ~10:00 UTC as
+  #   # the earliest reliable resolution time; run EXP reruns after that, or trigger
+  #   # manually via workflow_dispatch / run_resolve_local.py if needed sooner.
+  #   - cron: '30 5 * * *'
   workflow_dispatch:
 
 jobs:

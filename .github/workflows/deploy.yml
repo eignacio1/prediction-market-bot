@@ -33,10 +33,38 @@ name: Deploy to VPS
 # ~8s combined, so always-on has no meaningful cost and removes an entire class
 # of "the filter didn't fire" failure mode for the one gate this workstream
 # exists to add.
+#
+# T-399 (2026-07-29): the paths-ignore below is a DIFFERENT shape of filter
+# from the one T-327 rejected above, not a contradiction of it. T-327 ruled
+# out an allowlist keyed to specific risk-critical code paths (paper_trader.py,
+# risk.py, etc.) because an under-match there silently skips the one gate that
+# exists to catch a bad risk-path change — the failure mode is invisible and
+# dangerous. This is a denylist of verified-non-code governance directories
+# (03_DECISIONS/, 04_EXECUTION/, 11_MEMORY_HANDOFF/, etc. — see tests.yml's
+# T-399 comment for the verification: no src/ runtime read, no test outside
+# an isolated tmp_path fixture depends on their real content). Any file
+# outside this list, including every code path and CLAUDE.md/.claude/,
+# still triggers the full gate + deploy unconditionally — the failure mode
+# of an under-broad denylist is "ran CI/deploy when it wasn't strictly
+# needed" (cost), never "skipped the gate on a risk-relevant change".
+# Driver: 693 commits landed on main in July 2026, 474 (68%) touching none
+# of src/tests/scripts/pyproject.toml — pure SESSION_CLAIMS.md/DECISION_LOG.md
+# nav-file traffic from the Hard Rule 7/10 commit-early-and-often protocol,
+# each one still running a full deploy+service-restart cycle for zero reason.
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '03_DECISIONS/**'
+      - '04_EXECUTION/**'
+      - '11_MEMORY_HANDOFF/**'
+      - '00_ADMIN/**'
+      - '02_ARCHITECTURE_DESIGN/**'
+      - '05_RESEARCH_EXPERIMENTS/**'
+      - '07_TEST_VALIDATION_EVIDENCE/**'
+      - '08_MODEL_RISK_GOVERNANCE/**'
+      - '01_SPEC/**'
   workflow_dispatch:
 
 jobs:
