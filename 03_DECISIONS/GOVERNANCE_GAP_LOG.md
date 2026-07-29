@@ -2657,6 +2657,24 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-141 — Opponent-starting-pitcher matchup columns are dead (100% blank) across the entire historical C2 feature matrix; the single strongest theoretical rank-ordering candidate for GG-105 has never actually been computed
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-141 |
+| Arm | MLB |
+| Category | Systemic blind spot — a feature category assumed to exist in C2 because it is scaffolded into the schema was never actually populated by ingestion, and nothing downstream checked for that until a feature-level audit went looking directly |
+| What was missed | T9's A1 feature-discrimination check (`scripts/t9_gg105_feature_discrimination.py`, this session) attempted to test the matchup/opponent-quality candidate category (requested explicitly by the T9 task spec, since it is the most theoretically load-bearing candidate for a GG-105/GG-140 rank-ordering fix not yet tried). Direct inspection of `exp_output/T9_GG105_REWORK/mlb_feature_matrix.csv` found `opp_sp_era_l5`, `opp_sp_k9_l5`, `opp_sp_bb9_l5`, and `opp_runs_allowed_l10` are blank in **100% of all 17,145 rows** in the full historical matrix — not just the 313-row ledger-joined subset — and `opp_sp_is_known` is a hardcoded constant `0.0` in every row. These columns exist in the C2 schema (feature names are defined and written to the CSV header) but the ingestion step that should populate them from opponent starting-pitcher data was never implemented, or was implemented and silently broken from day one. Separately, `batting_slot`/order-slot (also requested by A1) has no pregame C2 column at all — it exists only as a T4 live in-game field, so it isn't a schema gap, just a category that was never designed for pregame use. |
+| When it should have been caught | At C2 feature-matrix build time, or by any prior calibration/discrimination audit (GG-105's own multi-session history, T-322 through T-392) that touched the feature matrix — none of those sessions checked column-level fill rates before treating the schema's declared feature set as the available candidate pool. |
+| Phases it survived | Every GG-105 remediation session from 2026-07-10 (T-322) through this one (2026-07-28, T9) — all of them worked with `ba_l10`/`ba_l10_shrunk`-family features and never audited whether the matchup-quality columns the schema also defines were actually populated. |
+| Why it survived | No column-level data-quality check exists between C1/C2 ingestion and feature consumption; a blank CSV column is syntactically valid (empty string, parses to NaN/None) and produces no error, warning, or stub-scan hit (CLAUDE.md's Step 2 stub scan only greps source comments, not data column fill rates) — it fails silently all the way through to a modeling session actually trying to use the column. |
+| Impact | MEDIUM — no capital or live-model impact (the columns were never wired into any live model or bet decision; T9's A1 simply couldn't score this candidate category and excluded it, same as it would have if the columns didn't exist at all). Forward-looking impact: this is the one category A1 flagged as the most theoretically credible remaining lever for GG-105 (opponent starting-pitcher quality is a standard, well-motivated sports-forecasting signal), and it has been silently unavailable for the entire GG-105 remediation history to date — every session that treated "the current feature set" as exhausted did so without this category ever actually being in play. |
+| Discovery | 2026-07-28, T9 session (`session/20260729T050047Z-t9-rework`), via `scripts/t9_gg105_feature_discrimination.py`'s A1 join — direct `Counter`-based inspection of all 17,145 rows of `mlb_feature_matrix.csv`, not just the ledger-joined subset, confirmed the blank/constant pattern is matrix-wide, not an artifact of the join. |
+| Resolution | Not fixed by this session (data-engineering task, out of scope for a modeling/D1-harness session). Needs a dedicated C1/C2 task to (a) identify why the opponent-starting-pitcher ingestion step never populated these columns, (b) backfill or begin populating them going forward, and (c) re-run T9's A1-equivalent feature-discrimination test against a populated matchup column before concluding whether it carries genuine rank-ordering signal for GG-105. |
+| Status | OPEN — registered this session, no remediation task yet assigned an ID. Should be picked up as its own T-NNN when C2 feature-engineering capacity is available; not a blocker for T9's own Part A conclusion (A1/A2/A3 already exhausted the scoreable candidate space without this category). |
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

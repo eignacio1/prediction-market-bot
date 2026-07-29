@@ -122,3 +122,42 @@ Sizing does not go live on the strength of the lookup table alone; the table set
 ## 7. Relationship to ADR-0040
 
 ADR-0040's sensitivity-analysis methodology (cadence de-rating, formal P(kill)-target search, cap-lowering comparison) and its finding that cap-lowering alone has zero effect at the 30-day horizon are **not invalidated** — they remain valid analysis of the positive-edge case. What is superseded is the *application* of that analysis as the operative sizing rule for MAIN going forward, since its premise (a real 53.06% edge) is not currently validated. ADR-0040's 0.061 figure survives in this ADR's lookup table (§3, MAIN row at +0.169%/bet) as the sizing value to use *if and when* an edge near that magnitude is validated — it is repositioned from "the current rule" to "one row in a lookup table gated on validation," not deleted.
+
+---
+
+## 8. Addendum (2026-07-28, T9/`session/20260729T050047Z-t9-rework`) — completing the aux-computation cascade
+
+**Status of this addendum: PROVISIONAL & NON-OPERATIONAL, same as the rest of this document.** No live parameter changes here either. Appended rather than filed as a new ADR because §3-§5 above already establish the governing structure (edge-conditional lookup + gate) that this addendum extends, not replaces; appended rather than edited in place per this project's standing practice of not silently rewriting a document another session (and the operator, per the three inline confirmations above) has already reviewed.
+
+**Why this addendum exists:** T9's task scope (GG-105 rework + sizing-bucket foundation) required the auxiliary-computation cascade to name five co-dependent mechanisms explicitly: Kelly fraction, per-bet exposure cap, drawdown kill-switch width, daily-loss breaker, and the ADR-0026 portfolio free-cash/deployment invariant. §3's table above already covers Kelly-fraction multiplier and DD-kill width. It is silent on the other three. This addendum fills that gap — it does not change §2's operating point (all bands still `kelly_fraction=0`; T9's own A1-A3 work below confirms GG-105 is still OPEN for MAIN, so nothing here unlocks anything).
+
+**T9 context feeding this addendum:** T9's Part A (`exp_output/T9_GG105_REWORK/`, DECISION_LOG.md 2026-07-28) ran a feature-level discrimination check one level below A2/A3's calibration-transform tests — joining MAIN's real resolved ledger to the historical C2 feature matrix by `(player_id, game_date)`, n=313. Finding: no individual raw pregame feature clears the monotonicity bar (alpha=0.10), and a market-relative proxy mirroring the live model's own edge logic (`ba_l10_shrunk - mip`) is *strongly* anti-predictive (Fisher p<0.0001) — confirming GG-105's defect lives in the feature/model layer, not just surviving through calibration, one level deeper than A2/A3 had shown. A scoreable non-monotonic candidate (CV-fit logistic interaction on `bb_rate_l10`) was proposed and scored via this same D1 harness and **also FAILED** (ANTI-PREDICTIVE, Fisher p<0.0001, worse Brier than baseline). GG-105 remains OPEN; §2's zero-size default remains the correct operating point. See T9 DONE entry, DECISION_LOG.md, for the full result.
+
+### 8.1 Per-bet exposure cap — a market-depth ceiling, not a variance-derived one
+
+`max_single_event_exposure_usd=500.0` (`risk.py` `_HARD_LIMITS`) is not on the same derivation axis as Kelly fraction: it is a **market-depth backstop** (CLAUDE.md's Kalshi KXMLBHIT depth note: $500-$2,000/market, implying $50-$250/bet stays within depth), not a variance-survivability figure. It does not need its own row in §3's edge lookup. But it is not independent of that lookup either — it is the **other operand of a `min()`**:
+
+```
+per_bet_stake(band, X) = min(
+    kelly_stake(band, lookup(§3 table, X)),   # variance-survivability leg
+    max_single_event_exposure_usd,             # market-depth leg (unchanged by X)
+)
+```
+
+At every row in §3's current tables, `kelly_stake` is small enough that the depth cap does not bind (verify at reactivation time, §5). **The cascade dependency to watch:** at MAIN's top table row (+0.20%/bet, 1.00× Kelly multiplier) or T4's grid-ceiling rows (3.0× multiplier), re-derive `kelly_stake` against the then-current bankroll before assuming the depth cap still doesn't bind — a materially larger bankroll than at ADR-0040's 2026-07-04 baseline could push `kelly_stake` above $500 well before Kelly fraction itself looks large, silently making the depth cap (not the Kelly math) the actual sizing constraint. This should be an explicit check inside the §5 D2 gate re-run, not an assumption carried forward from this table.
+
+### 8.2 Daily-loss breaker — must be re-validated at higher Kelly multipliers, not held fixed
+
+`MAX_DAILY_LOSS_PCT=0.15` (`risk.py`) is denominated in % of session-start bankroll and was calibrated against MAIN's *current* per-bet σ/cadence at the *current* (already-zeroed, or historically 0.10 baseline pre-ADR-0040) Kelly fraction. It is not automatically correct at every row of §3's lookup: **daily P&L variance scales with the Kelly multiplier applied to each bet, and cadence multiplier compounds it** (both levers §3 explicitly varies as validated edge `X` rises). A 15% daily breaker calibrated for baseline sizing can either (a) become too tight at higher Kelly multipliers — false-tripping on ordinary variance from a book that is legitimately sized up because edge was validated — or (b) in the unlikely case a future edge reading is very large, too loose relative to the same-day loss a fat-tailed session could produce.
+
+**Cascade rule:** any table row in §3 with Kelly-fraction multiplier above the "0.10× (unchanged)" default rows requires the §5 D2 re-run to *also* report the simulated daily P&L distribution at that row's Kelly/cadence multipliers and confirm 0.15 still sits at a sane percentile of that distribution (not just confirm 1yr P(kill) ≤ 10%, which is a different statistic). If the simulated daily distribution says otherwise, `MAX_DAILY_LOSS_PCT` must be re-derived alongside the Kelly-fraction reactivation, not left at 0.15 by default. This is a genuine open dependency, not yet computed for any row above the default — flagged here so a future reactivation session doesn't skip it.
+
+### 8.3 ADR-0026 portfolio deployment invariant — a cross-band aggregate, checked when cadence rises
+
+ADR-0026's two-tier free-cash/deployment invariant (`max_portfolio_deployment_pct` in `_HARD_LIMITS`) caps *aggregate* capital-in-flight across all simultaneously-open positions, not any single band's per-bet math — so it cannot be a row in §3's per-band table. It is nonetheless part of the cascade because §3's **cadence multiplier** (up to 10× for MAIN, 3.0× for T4) directly increases average capital-in-flight at a fixed per-bet stake, and combines multiplicatively with any Kelly-fraction increase: more bets open simultaneously, each larger, is exactly what the deployment invariant exists to cap.
+
+**Cascade rule:** any table row with a cadence multiplier greater than 1.0× must have the §5 D2 gate re-run include a portfolio-level capital-in-flight simulation (not just the existing per-bet/per-day P&L simulation) checked against `max_portfolio_deployment_pct`, for both MAIN (up to 10× cadence) and T4 (up to 3.0× cadence). If the deployment invariant would bind before the row's nominal Kelly/cadence combination is reached, the invariant — not the table row — is the actual sizing ceiling at that edge level, and the effective cadence multiplier used at reactivation must be capped accordingly. This has not been computed for any row above 1.0× cadence in either table; it is a required step at reactivation time, not a settled fact.
+
+### 8.4 Net effect on §4/§5's activation gate
+
+None of §8.1-§8.3 changes §4's gate logic (`kelly_fraction(band) = 0 unless GG-105 passes`) or §5's requirement that a fresh D2 run confirm survivability before any nonzero size goes live. They extend what "a fresh D2 run" must check: **exposure-cap bindingness (8.1), daily-breaker sanity at the row's Kelly/cadence multipliers (8.2), and portfolio-deployment bindingness at the row's cadence multiplier (8.3)** are now explicit required outputs of any future §5 D2 re-run, alongside the existing 1yr-P(kill)-≤-10% check. A reactivation that only re-confirms the 1yr P(kill) figure without checking 8.1-8.3 has not fully satisfied §5.
