@@ -18,12 +18,54 @@ name: Test Suite
 # Uses the pinned lockfile (06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/
 # requirements-dev.txt), not floating pyproject.toml ranges, so CI installs
 # the exact versions this suite was certified green against.
+#
+# T-399 (2026-07-29): paths-ignore added below. 693 commits landed on main
+# in July 2026; 474 of them (68%) touched none of src/, tests/, scripts/,
+# or pyproject.toml — pure 03_DECISIONS/, 04_EXECUTION/, 11_MEMORY_HANDOFF/
+# governance-nav-file traffic (SESSION_CLAIMS.md rows, DECISION_LOG.md
+# entries, checkpoint pointers — exactly what Hard Rule 7/10's
+# commit-early-and-often protocol is supposed to produce). Every one of
+# those was still running the full ~4min suite. Verified before adding this
+# list: (1) grep across src/ confirms every reference to these directories
+# is a "See X.md" comment/docstring pointer, never a runtime file read: (2)
+# grep across tests/ confirms the only hits (test_write_session_checkpoint.py,
+# test_session_guard_checkpoint_staleness.py, test_claim_session_collision.py)
+# use "04_EXECUTION" only as a directory name inside an isolated pytest
+# tmp_path fixture, exercising the scripts/ + .claude/hooks/ logic, not the
+# real repo's file content — so a doc-only edit to the real SESSION_CLAIMS.md
+# does not change what these tests exercise. paths-ignore is a denylist, not
+# an allowlist: any commit touching a path outside this list (including
+# .claude/, CLAUDE.md, and every code root) still runs the full suite
+# unconditionally. Deliberately NOT included: CLAUDE.md and .claude/**
+# (session_guard.sh/claim_session.sh logic lives there and IS exercised by
+# the tests above) — kept always-triggering out of caution even though no
+# runtime dependency was found.
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '03_DECISIONS/**'
+      - '04_EXECUTION/**'
+      - '11_MEMORY_HANDOFF/**'
+      - '00_ADMIN/**'
+      - '02_ARCHITECTURE_DESIGN/**'
+      - '05_RESEARCH_EXPERIMENTS/**'
+      - '07_TEST_VALIDATION_EVIDENCE/**'
+      - '08_MODEL_RISK_GOVERNANCE/**'
+      - '01_SPEC/**'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '03_DECISIONS/**'
+      - '04_EXECUTION/**'
+      - '11_MEMORY_HANDOFF/**'
+      - '00_ADMIN/**'
+      - '02_ARCHITECTURE_DESIGN/**'
+      - '05_RESEARCH_EXPERIMENTS/**'
+      - '07_TEST_VALIDATION_EVIDENCE/**'
+      - '08_MODEL_RISK_GOVERNANCE/**'
+      - '01_SPEC/**'
   workflow_dispatch:
 
 jobs:
