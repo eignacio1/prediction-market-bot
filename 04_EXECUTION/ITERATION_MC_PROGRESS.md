@@ -41,4 +41,4 @@ C1 BLOCKED — precondition A2=PASS not met (A2/A3 gate=FAIL, GG-105 unresolved,
 
 **OPEN ITEMS FOR T9:** (a) GG-105/GG-140 — the real next work: monotonic-transform class is exhausted, next candidate must be H2 feature blend or a non-monotonic model class (not another recalibration variant); C1's freeze remains BLOCKED until a candidate clears the A2 gate. (b) `MEMORY_BANK.md` has 2 `**Last reviewed:**` headers — archive the 2026-07-24 `(prior)` entry to `MEMORY_BANK_ARCHIVE.md` per T-334 before it grows a 3rd. (c) T-399 (GHA CI cost paths-ignore) is a live concurrent session as of this sweep, unmerged — no action needed, just noted so it isn't mistaken for orphaned.
 
-T8 DONE commit=<pending>
+T8 DONE commit=3d05582
