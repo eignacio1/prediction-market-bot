@@ -14,4 +14,9 @@ Just the gap noted above — the safer sizing rule is approved on paper but not 
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260729_0029.md` and `DECISION_LOG.md` for 2026-07-28/29, plus `ADR-0048`.*
+**Addendum — later same-day cleanup session (T8 hygiene sweep):**
+A follow-up session double-checked all of last week's modeling work (the A/B/C/D window sweep) for loose ends — uncommitted work, orphaned branches, mismatched logs. Everything checked out clean. No change to money or decisions above. One harmless paperwork item found (a duplicate status-file entry) and flagged for next session to tidy up.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260729_0029.md`, `SESSION_HANDOFF_20260729_0058.md`, and `DECISION_LOG.md` for 2026-07-28/29, plus `ADR-0048`.*
