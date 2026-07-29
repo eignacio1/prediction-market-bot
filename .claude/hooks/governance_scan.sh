@@ -47,12 +47,24 @@ EOF
 # (gitignored, same pattern as the portfolio caches above).
 echo ""
 echo "OPEN GOVERNANCE GAPS:"
-OPEN=$(grep -E "^\| Status \|\s*\**OPEN\b" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
+# GG-144: pattern standardized to match CLAUDE.md's Step 3 (^\| Status \| \*{0,2}OPEN) so the
+# two copies cannot drift apart again the way this exact bug did once already (GG-122, 2026-07-16
+# fixed it here but CLAUDE.md's Step 3 kept the old unanchored "| OPEN" substring match for 13
+# more days). Reconciliation assertion below catches a future re-drift instead of silently
+# under-reporting again.
+OPEN=$(grep -E "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
 OPEN_N=0
 if [ -n "$OPEN" ]; then
     OPEN_N=$(echo "$OPEN" | wc -l | tr -d ' ')
 fi
 TOTAL_N=$(grep -c "^### GG-" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
+PLAIN_N=$(grep -cE "^\| Status \| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
+BOLD_N=$(grep -cE "^\| Status \| \*{1,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
+RAW_N=$(grep -cE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
+if [ "$((PLAIN_N + BOLD_N))" -ne "$RAW_N" ]; then
+    echo "  *** GG-144 RECONCILIATION FAILURE: plain($PLAIN_N) + bold($BOLD_N) != raw-anchored($RAW_N) ***"
+    echo "  *** The OPEN-gap regex has drifted again — do not trust OPEN_N below until fixed. ***"
+fi
 
 python3 "scripts/lib/governance_gap_burndown.py" "$OPEN_N" "$TOTAL_N" "logs/.governance_gap_history.jsonl"
 
@@ -83,6 +95,7 @@ grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" "src/prediction_market_bot
 # MLB is the current ACTIVE G6 pool. Both are printed below, explicitly labeled, so
 # no session ever again has to spend tokens re-deriving which figure is which
 # (this cost ~20k tokens once already — do not repeat that investigation).
+mkdir -p logs  # GG-138: logs/ is gitignored, absent on a fresh worktree; cache writes below need it to exist
 echo ""
 for SPORT_PAIR in "mlb:paper_portfolio_mlb.json:MLB (ACTIVE)" "nba:paper_portfolio.json:NBA (DARK/FROZEN — historical, not live risk)"; do
     SPORT_KEY="${SPORT_PAIR%%:*}"

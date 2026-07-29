@@ -64,6 +64,7 @@ DEFAULT_OUT = Path("logs/t4_mlb_resolved_ledger.jsonl")
 
 def pull_vps_cache(cache_path: Path) -> bool:
     """Mirrors governance_scan.sh's ssh-cache pattern (ConnectTimeout=3, BatchMode)."""
+    cache_path.parent.mkdir(parents=True, exist_ok=True)  # GG-138: logs/ is gitignored, absent on a fresh worktree
     tmp = cache_path.with_suffix(cache_path.suffix + ".tmp")
     try:
         result = subprocess.run(
@@ -72,12 +73,15 @@ def pull_vps_cache(cache_path: Path) -> bool:
             capture_output=True, timeout=15,
         )
         if result.returncode != 0 or not result.stdout:
+            print(f"pull_vps_cache: ssh/cat failed (rc={result.returncode}): "
+                  f"{result.stderr.decode(errors='replace').strip()}", file=sys.stderr)
             return False
         json.loads(result.stdout)  # validate before committing
         tmp.write_bytes(result.stdout)
         tmp.replace(cache_path)
         return True
-    except Exception:
+    except Exception as exc:
+        print(f"pull_vps_cache: {type(exc).__name__}: {exc}", file=sys.stderr)
         tmp.unlink(missing_ok=True)
         return False
 
