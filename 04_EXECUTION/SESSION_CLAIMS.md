@@ -143,3 +143,4 @@
 | 2026-07-29T05:48:02Z | analysis-only | Fable: end-to-end strategic analysis (MLB) |
 | 2026-07-29T06:26:05Z | analysis-only (closure — resolves 2026-07-29T05:48:02Z row above) | Fable strategic analysis DONE, merged to main at `71f974c`. Verdict: T1 NEGATIVE (near governance-grade ~2026-08-01), T4 UNANSWERED-because-contaminated (GG-142). Registered GG-142/143/144, tasks T-402/403/404. No code, sizing, epoch, or live change. Claim released. |
 | 2026-07-29T23:46:01Z | TBD | G1: session-start protocol repair (GG-144/T-404 + GG-138) |
+| 2026-07-29T23:46:19Z | TBD | G2: T4 cold-start blindness fix (remediates GG one-forty-three / T-four-oh-three, registered prior session) |
