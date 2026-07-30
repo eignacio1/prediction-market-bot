@@ -437,9 +437,12 @@ class TestApprovalPath:
     @pytest.mark.unit
     def test_full_no_approval_flips_probabilities(self):
         """NO direction: evaluation uses (1-p_estimate) vs (1-market_implied_prob)."""
-        fc = _make_forecast(p_estimate=0.35, market_implied_prob=0.50, edge=-0.15, direction="NO")
-        # Negative edge raw, but NO direction means we flip: p_eff=0.65, mip_eff=0.50
-        # The edge check uses abs(edge), so |-0.15| = 0.15 passes
+        # GG-142: `edge` on the forecast record is already direction-resolved
+        # by the caller — for a genuine, correctly-signed NO bet this is
+        # POSITIVE (the fee-net edge of the NO side), not the raw negative
+        # YES-frame value. A caller-side helper (e.g. run_mlb_paper_trade.py's
+        # _directional_edge()) performs that flip before risk.py ever sees it.
+        fc = _make_forecast(p_estimate=0.35, market_implied_prob=0.50, edge=0.15, direction="NO")
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine(bankroll=10_000.0)
             ok, result = engine.evaluate_forecast(fc)
@@ -447,6 +450,45 @@ class TestApprovalPath:
         assert result["approval_status"] == STATUS_APPROVED
         assert result["approved_direction"] == "NO"
         assert result["approved_size"] > 0.0
+
+    @pytest.mark.unit
+    def test_negative_directional_edge_rejected(self):
+        """GG-142: a negative direction-resolved edge (confidently-wrong bet,
+        vig/fee cost exceeding the signal in the recommended direction) must
+        be REJECTED regardless of magnitude — abs() previously rescued these
+        into approval (46.1% of T4 epoch-8 evaluations)."""
+        fc = _make_forecast(p_estimate=0.35, market_implied_prob=0.50, edge=-0.15, direction="NO")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            ok, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "insufficient_edge"
+
+    @pytest.mark.unit
+    def test_direction_edge_sign_inconsistency_rejected(self):
+        """GG-142 CHECK 4b: recommended_direction="NO" with a positive
+        (YES-frame) gross_edge is an internally-inconsistent forecast record
+        — a producer-side bug class distinct from the abs() gate defect —
+        and must be rejected even though the direction-resolved `edge` field
+        itself looks fine."""
+        fc = _make_forecast(p_estimate=0.35, market_implied_prob=0.50, edge=0.15, direction="NO")
+        fc["gross_edge"] = 0.15  # positive/YES-frame, inconsistent with NO
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            ok, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "direction_edge_sign_inconsistent"
+
+    @pytest.mark.unit
+    def test_direction_edge_sign_consistent_no_still_approved(self):
+        """Sanity check for CHECK 4b: a correctly-signed NO record (negative
+        gross_edge, positive direction-resolved edge) must still pass."""
+        fc = _make_forecast(p_estimate=0.35, market_implied_prob=0.50, edge=0.15, direction="NO")
+        fc["gross_edge"] = -0.15  # negative/YES-frame, consistent with NO
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0)
+            ok, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_APPROVED
 
     @pytest.mark.unit
     def test_approved_size_capped_at_single_event_limit(self):
