@@ -67,4 +67,4 @@ Full reports: `exp_output/T9_GG105_REWORK/g3_d1_report_{main,t4}.json`.
 
 ---
 
-**G3 DONE commit=<sha> — opp_sp backfilled n=608, D1 result MAIN=FAIL T4=FAIL, GG-105 lever verdict=opp_sp matchup quality REFUTED as a GG-105 fix (backfilled, tested standalone and multivariate on both books, worsens rather than repairs the anti-predictive inversion).**
+**G3 DONE commit=59f3b4c — opp_sp backfilled n=608, D1 result MAIN=FAIL T4=FAIL, GG-105 lever verdict=opp_sp matchup quality REFUTED as a GG-105 fix (backfilled, tested standalone and multivariate on both books, worsens rather than repairs the anti-predictive inversion).**
