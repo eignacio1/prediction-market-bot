@@ -1,0 +1,604 @@
+{
+  "n_positions": 455,
+  "n_feature_keys": 20573,
+  "n_ambiguous_dropped": 185,
+  "n_joined": 336,
+  "n_unmatched": 119,
+  "results": [
+    {
+      "feature": "ba_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.8983666061705989,
+      "fisher_pvalue": 0.7893334665408982,
+      "event_rate_top_tercile": 0.48214285714285715,
+      "event_rate_bottom_tercile": 0.5089285714285714,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.0571428571428571,
+          "feature_max": 0.2162162162162162,
+          "feature_mean": 0.16070113148843576,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.2162162162162162,
+          "feature_max": 0.282051282051282,
+          "feature_mean": 0.24777100822020579,
+          "event_rate": 0.5
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.282051282051282,
+          "feature_max": 0.4722222222222222,
+          "feature_mean": 0.34026359032241427,
+          "event_rate": 0.48214285714285715
+        }
+      ]
+    },
+    {
+      "feature": "ba_l10_shrunk",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.8983666061705989,
+      "fisher_pvalue": 0.7893334665408982,
+      "event_rate_top_tercile": 0.48214285714285715,
+      "event_rate_bottom_tercile": 0.5089285714285714,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.1606399999999999,
+          "feature_max": 0.2343896103896103,
+          "feature_mean": 0.20798833534062658,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.2343896103896103,
+          "feature_max": 0.2664303797468354,
+          "feature_mean": 0.24958201822492312,
+          "event_rate": 0.5
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.2664303797468354,
+          "feature_max": 0.3620240963855421,
+          "feature_mean": 0.2947932509537187,
+          "event_rate": 0.48214285714285715
+        }
+      ]
+    },
+    {
+      "feature": "slg_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.8363530099357102,
+      "fisher_pvalue": 0.5930682145584318,
+      "event_rate_top_tercile": 0.48214285714285715,
+      "event_rate_bottom_tercile": 0.5267857142857143,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.0857142857142857,
+          "feature_max": 0.3428571428571428,
+          "feature_mean": 0.2603048852560742,
+          "event_rate": 0.5267857142857143
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.3513513513513513,
+          "feature_max": 0.5128205128205128,
+          "feature_mean": 0.4386059234196023,
+          "event_rate": 0.48214285714285715
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.5135135135135135,
+          "feature_max": 1.0731707317073171,
+          "feature_mean": 0.661486024952002,
+          "event_rate": 0.48214285714285715
+        }
+      ]
+    },
+    {
+      "feature": "obp_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.8666666666666667,
+      "fisher_pvalue": 0.6884076534838518,
+      "event_rate_top_tercile": 0.5,
+      "event_rate_bottom_tercile": 0.5357142857142857,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.1666666666666666,
+          "feature_max": 0.3023255813953488,
+          "feature_mean": 0.2581613469844613,
+          "event_rate": 0.5357142857142857
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.3023255813953488,
+          "feature_max": 0.3695652173913043,
+          "feature_mean": 0.33477697423404196,
+          "event_rate": 0.45535714285714285
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.3695652173913043,
+          "feature_max": 0.5714285714285714,
+          "feature_mean": 0.4316983125830421,
+          "event_rate": 0.5
+        }
+      ]
+    },
+    {
+      "feature": "ops_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.8067299396031061,
+      "fisher_pvalue": 0.5038571937889771,
+      "event_rate_top_tercile": 0.45535714285714285,
+      "event_rate_bottom_tercile": 0.5089285714285714,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.2808362369337979,
+          "feature_max": 0.6594202898550725,
+          "feature_mean": 0.5297740183461367,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.6594202898550725,
+          "feature_max": 0.8829787234042553,
+          "feature_mean": 0.7737139239560508,
+          "event_rate": 0.5267857142857143
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.8829787234042553,
+          "feature_max": 1.6,
+          "feature_mean": 1.0815455251270378,
+          "event_rate": 0.45535714285714285
+        }
+      ]
+    },
+    {
+      "feature": "h_l10_mean",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.77815506508206,
+      "fisher_pvalue": 0.4222829772389657,
+      "event_rate_top_tercile": 0.44642857142857145,
+      "event_rate_bottom_tercile": 0.5089285714285714,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.2,
+          "feature_max": 0.8,
+          "feature_mean": 0.5883928571428579,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.8,
+          "feature_max": 1.1,
+          "feature_mean": 0.930357142857142,
+          "event_rate": 0.5357142857142857
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 1.1,
+          "feature_max": 2.0,
+          "feature_mean": 1.314285714285715,
+          "event_rate": 0.44642857142857145
+        }
+      ]
+    },
+    {
+      "feature": "k_rate_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.9646910466582598,
+      "fisher_pvalue": 1.0,
+      "event_rate_top_tercile": 0.45535714285714285,
+      "event_rate_bottom_tercile": 0.4642857142857143,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.0555555555555555,
+          "feature_max": 0.2368421052631578,
+          "feature_mean": 0.17293099342534696,
+          "event_rate": 0.4642857142857143
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.2368421052631578,
+          "feature_max": 0.3142857142857143,
+          "feature_mean": 0.2747302905063561,
+          "event_rate": 0.5714285714285714
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.3142857142857143,
+          "feature_max": 0.5555555555555556,
+          "feature_mean": 0.3888831229400637,
+          "event_rate": 0.45535714285714285
+        }
+      ]
+    },
+    {
+      "feature": "bb_rate_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.7244395844723893,
+      "fisher_pvalue": 0.28485653488224544,
+      "event_rate_top_tercile": 0.44642857142857145,
+      "event_rate_bottom_tercile": 0.5267857142857143,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.0,
+          "feature_max": 0.0967741935483871,
+          "feature_mean": 0.06206204343363447,
+          "event_rate": 0.5267857142857143
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.0967741935483871,
+          "feature_max": 0.1578947368421052,
+          "feature_mean": 0.12132141164536346,
+          "event_rate": 0.5178571428571429
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.1578947368421052,
+          "feature_max": 0.4,
+          "feature_mean": 0.21938896384935105,
+          "event_rate": 0.44642857142857145
+        }
+      ]
+    },
+    {
+      "feature": "hr_rate_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 1.0742705570291777,
+      "fisher_pvalue": 0.8935831332531048,
+      "event_rate_top_tercile": 0.48214285714285715,
+      "event_rate_bottom_tercile": 0.4642857142857143,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 0.0,
+          "feature_max": 0.027027027027027,
+          "feature_mean": 0.010503035169789694,
+          "event_rate": 0.4642857142857143
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 0.027027027027027,
+          "feature_max": 0.0555555555555555,
+          "feature_mean": 0.040425802739362256,
+          "event_rate": 0.5446428571428571
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 0.0555555555555555,
+          "feature_max": 0.2105263157894736,
+          "feature_mean": 0.09465031291125188,
+          "event_rate": 0.48214285714285715
+        }
+      ]
+    },
+    {
+      "feature": "days_rest",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 1.03638726445744,
+      "fisher_pvalue": 1.0,
+      "event_rate_top_tercile": 0.5178571428571429,
+      "event_rate_bottom_tercile": 0.5089285714285714,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 1.0,
+          "feature_mean": 1.0,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 1.0,
+          "feature_mean": 1.0,
+          "event_rate": 0.4642857142857143
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 5.0,
+          "feature_mean": 1.5178571428571428,
+          "event_rate": 0.5178571428571429
+        }
+      ]
+    },
+    {
+      "feature": "opp_runs_allowed_l10",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.6989247311827957,
+      "fisher_pvalue": 0.22895559629407358,
+      "event_rate_top_tercile": 0.44642857142857145,
+      "event_rate_bottom_tercile": 0.5357142857142857,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 1.5,
+          "feature_max": 4.2,
+          "feature_mean": 3.5497519841269822,
+          "event_rate": 0.5357142857142857
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 4.2,
+          "feature_max": 5.2,
+          "feature_mean": 4.709027777777777,
+          "event_rate": 0.5089285714285714
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 5.2,
+          "feature_max": 9.1,
+          "feature_mean": 6.192361111111112,
+          "event_rate": 0.44642857142857145
+        }
+      ]
+    },
+    {
+      "feature": "opp_sp_era_l5",
+      "n": 314,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.9090909090909091,
+      "fisher_pvalue": 0.7825702760686399,
+      "event_rate_top_tercile": 0.47619047619047616,
+      "event_rate_bottom_tercile": 0.5,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 104,
+          "feature_min": 0.0,
+          "feature_max": 3.4225352112676055,
+          "feature_mean": 2.2637065313037636,
+          "event_rate": 0.5
+        },
+        {
+          "tercile": 2,
+          "n": 105,
+          "feature_min": 3.4225352112676055,
+          "feature_max": 5.538461538461538,
+          "feature_mean": 4.292414329146557,
+          "event_rate": 0.5047619047619047
+        },
+        {
+          "tercile": 3,
+          "n": 105,
+          "feature_min": 5.5479452054794525,
+          "feature_max": 13.5,
+          "feature_mean": 7.006808222100276,
+          "event_rate": 0.47619047619047616
+        }
+      ]
+    },
+    {
+      "feature": "opp_sp_k9_l5",
+      "n": 314,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 1.188,
+      "fisher_pvalue": 0.5810220939154511,
+      "event_rate_top_tercile": 0.5238095238095238,
+      "event_rate_bottom_tercile": 0.4807692307692308,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 104,
+          "feature_min": 3.333333333333333,
+          "feature_max": 7.333333333333333,
+          "feature_mean": 6.034930457836363,
+          "event_rate": 0.4807692307692308
+        },
+        {
+          "tercile": 2,
+          "n": 105,
+          "feature_min": 7.333333333333333,
+          "feature_max": 9.742268041237114,
+          "feature_mean": 8.612974061823866,
+          "event_rate": 0.47619047619047616
+        },
+        {
+          "tercile": 3,
+          "n": 105,
+          "feature_min": 9.94736842105263,
+          "feature_max": 15.230769230769228,
+          "feature_mean": 11.286036581255079,
+          "event_rate": 0.5238095238095238
+        }
+      ]
+    },
+    {
+      "feature": "opp_sp_bb9_l5",
+      "n": 314,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.7218045112781954,
+      "fisher_pvalue": 0.2695125210609333,
+      "event_rate_top_tercile": 0.45714285714285713,
+      "event_rate_bottom_tercile": 0.5384615384615384,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 104,
+          "feature_min": 0.6136363636363638,
+          "feature_max": 2.4868421052631575,
+          "feature_mean": 1.7744426004030607,
+          "event_rate": 0.5384615384615384
+        },
+        {
+          "tercile": 2,
+          "n": 105,
+          "feature_min": 2.4868421052631575,
+          "feature_max": 3.5409836065573774,
+          "feature_mean": 3.0128201192043624,
+          "event_rate": 0.4857142857142857
+        },
+        {
+          "tercile": 3,
+          "n": 105,
+          "feature_min": 3.5409836065573774,
+          "feature_max": 8.59090909090909,
+          "feature_mean": 4.836414993033161,
+          "event_rate": 0.45714285714285713
+        }
+      ]
+    },
+    {
+      "feature": "park_factor_hits",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 1.1536878216123498,
+      "fisher_pvalue": 0.6885486074147666,
+      "event_rate_top_tercile": 0.5267857142857143,
+      "event_rate_bottom_tercile": 0.49107142857142855,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 1.0,
+          "feature_mean": 1.0,
+          "event_rate": 0.49107142857142855
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 1.0,
+          "feature_mean": 1.0,
+          "event_rate": 0.4732142857142857
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": 1.0,
+          "feature_max": 1.0,
+          "feature_mean": 1.0,
+          "event_rate": 0.5267857142857143
+        }
+      ]
+    },
+    {
+      "feature": "is_home_game",
+      "n": 336,
+      "verdict": "ANTI-PREDICTIVE",
+      "fisher_odds_ratio": 0.6652631578947369,
+      "fisher_pvalue": 0.0647523817176277,
+      "event_rate_1": 0.4444444444444444,
+      "event_rate_0": 0.5459770114942529,
+      "n_1": 162,
+      "n_0": 174
+    },
+    {
+      "feature": "b2b_flag",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.6142963514519731,
+      "fisher_pvalue": 0.24214032966904447,
+      "event_rate_1": 0.487012987012987,
+      "event_rate_0": 0.6071428571428571,
+      "n_1": 308,
+      "n_0": 28
+    },
+    {
+      "feature": "opp_sp_is_known",
+      "n": 336,
+      "verdict": "INCONCLUSIVE",
+      "fisher_odds_ratio": 0.0,
+      "fisher_pvalue": 0.24628642501776826,
+      "event_rate_1": 0.4940119760479042,
+      "event_rate_0": 1.0,
+      "n_1": 334,
+      "n_0": 2
+    },
+    {
+      "feature": "ba_l10_shrunk_minus_mip",
+      "n": 336,
+      "verdict": "ANTI-PREDICTIVE",
+      "fisher_odds_ratio": 0.17329910141206675,
+      "fisher_pvalue": 1.0145208975760469e-09,
+      "event_rate_top_tercile": 0.26785714285714285,
+      "event_rate_bottom_tercile": 0.6785714285714286,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 112,
+          "feature_min": -0.5343684210526317,
+          "feature_max": -0.4195128205128206,
+          "feature_mean": -0.4533565961527121,
+          "event_rate": 0.6785714285714286
+        },
+        {
+          "tercile": 2,
+          "n": 112,
+          "feature_min": -0.41831707317073175,
+          "feature_max": -0.07686075949367094,
+          "feature_mean": -0.2878943810614883,
+          "event_rate": 0.5446428571428571
+        },
+        {
+          "tercile": 3,
+          "n": 112,
+          "feature_min": -0.0757948717948719,
+          "feature_max": 0.12627272727272718,
+          "feature_mean": -0.007724703980816897,
+          "event_rate": 0.26785714285714285
+        }
+      ]
+    }
+  ],
+  "data_gap_note": "order-slot (batting lineup position) requested by A1 has NO pregame MAIN-book column in mlb_feature_matrix.csv -- 'batting_slot' exists only as a T4 live in-game field (see CLAUDE.md T4 thesis description), not a C2 pregame feature. Cannot be tested from this data source; would require either adding it to C2's pregame feature set (if a pre-game projected batting order is obtainable from the data source) or restricting this specific candidate to a T4-ledger-based test.",
+  "data_gap_note_dead_columns": "opp_sp_era_l5, opp_sp_k9_l5, opp_sp_bb9_l5, opp_runs_allowed_l10 are 100% blank across all 17,145 rows of the full historical feature matrix (not just the 313 joined to MAIN's ledger) -- these columns were scaffolded into the C2 schema but never populated by ingestion. opp_sp_is_known is present but is a hardcoded constant 0.0 in every row, i.e. it always reads 'no confirmed starter', never 1. The 'matchup/opponent' candidate category A1 asked to test has NO live signal anywhere in this data source -- this is a C2 ingestion gap, not a modeling finding, and should be registered as its own governance item before any matchup-based rank-ordering candidate can be evaluated."
+}
