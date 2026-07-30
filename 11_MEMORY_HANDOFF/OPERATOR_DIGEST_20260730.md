@@ -11,3 +11,17 @@ No. This was a coverage fix, reviewed and merged the same session.
 
 **Anything that worried the session, even if not urgent:**
 No new concerns. Full test suite passed (2771 tests, 0 failures) before and after merge.
+
+---
+
+## Addendum — separate session, same day (05:42Z)
+
+**What changed:** Personal-tooling fix, unrelated to trading logic. You'd built a custom shortcut command (`/bro`, plain-English translator) but it was saved in a folder Claude Code doesn't read. Fixed the location, confirmed it now works both in a plain terminal and inside this project.
+
+**What this means for your money:** No change — didn't touch the bot's code, models, or risk settings.
+
+**Does anything need your decision right now?** No.
+
+**Worth knowing (not a risk):** the desktop app runs its own sandboxed copy of things and doesn't see files sitting in your general home-folder settings — anything personal you want available there needs to live inside the project folder itself, not just your account-wide settings.
+
+*Full technical detail: see `SESSION_HANDOFF_20260730_0542.md`.*
