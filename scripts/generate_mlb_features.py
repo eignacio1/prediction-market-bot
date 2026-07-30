@@ -92,6 +92,9 @@ from prediction_market_bot.c1_signal_ingestion.validators import (
 from prediction_market_bot.c2_feature_store.mlb_features import MLBFeatureStore
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
+sys.path.insert(0, str(Path(__file__).parent))
+from check_feature_column_health import print_report, scan_columns  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
@@ -455,6 +458,27 @@ def main(
         combined["temporal_cutoff"] = combined["temporal_cutoff"].astype(str)
 
     print(f"\n[COMBINED] {len(combined)} total rows | {combined['player_id'].nunique()} players")
+
+    # GG-141 preventive check (T-405): a blank or hardcoded-constant feature
+    # column is syntactically valid data and produces no exception -- this is
+    # the only point in the pipeline where it's caught same-day instead of
+    # weeks later. Non-fatal: a real, sparse-but-legitimate column (e.g.
+    # early-season small-n) should not block the day's feature generation,
+    # but it must be loud in the cron log so Step 4 (or a human) can see it.
+    column_health_findings = scan_columns(combined)
+    print_report(column_health_findings, str(OUTPUT_CSV))
+    if column_health_findings:
+        logger.log(
+            "T187A",
+            "column_health_findings",
+            payload={
+                "session_id": session_id,
+                "findings": column_health_findings,
+            },
+            session_id=session_id,
+            snapshot_id=SNAPSHOT_ID,
+            severity="WARNING",
+        )
 
     if not dry_run:
         combined.to_csv(OUTPUT_CSV, index=False)
