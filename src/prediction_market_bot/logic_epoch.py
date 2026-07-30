@@ -396,6 +396,35 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # (KELLY_T4 constant) — all four named bands' write paths changed.
         bands_affected=frozenset({"T1", "T2", "T3", "T4M-PROJ"}),
     ),
+    LogicEpochBoundary(
+        epoch=10,
+        resolving_gap="GG-142",
+        commit_sha="1b0a8f83d2d4b6294913b4f0864d04f41209d4bb",
+        # author date 2026-07-29 22:43:12 -07:00 (git show -s --format=%aI)
+        commit_utc=datetime(2026, 7, 30, 5, 43, 12, tzinfo=timezone.utc),
+        description=(
+            "C4 CHECK 3 edge-gate sign defect (ADR-0049): risk.py gated on "
+            "abs(edge) < MIN_EDGE_TO_APPROVE, but edge is already "
+            "direction-resolved by every producer — a negative value means "
+            "a confidently-wrong bet (vig/fee cost exceeds signal in the "
+            "recommended direction), not a smaller-but-valid one. abs() "
+            "rescued 239/239 (46.1%) of T4 epoch-8 evaluations with "
+            "vig > |model_p - mid| into approval. Fixed to a signed check "
+            "(edge < MIN_EDGE_TO_APPROVE), plus a new CHECK 4b validating "
+            "recommended_direction against gross_edge's sign when present "
+            "on the record. risk.py::evaluate_forecast() is shared, "
+            "unconditional code called identically by every band (no "
+            "band-gate around CHECK 3/4b), matching the ALL_BANDS "
+            "precedent set by GG-077's boundary. Correctness fix only — "
+            "ADR-0048's kelly_fraction=0 for T1/T2/T3/T4M-PROJ is "
+            "unchanged; no sizing goes live at this boundary. DS sign-off: "
+            "operator, 2026-07-29 (Strategic Analysis §A/§E/§H). See "
+            "ADR-0049, GG-142, DECISION_LOG.md 2026-07-29."
+        ),
+        # git show 1b0a8f83: risk.py::evaluate_forecast() CHECK 3/CHECK 4b —
+        # shared, unconditional across every band; no band-gate exists.
+        bands_affected=frozenset({ALL_BANDS}),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
