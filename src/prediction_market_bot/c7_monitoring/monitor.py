@@ -42,6 +42,12 @@ Audit events emitted:
                                         verdict from scripts/run_band_monitor.py (T-341/GG-099)
   band_monitor_calibration_alarm     (WARNING) — per-band calibration slope CI excludes
                                         1.0 from scripts/run_band_monitor.py (T-341)
+  stale_open_position_alarm  (WARNING)  — open position older than staleness threshold,
+                                        unresolved (GG-125/T-379, ops failure mode #4,
+                                        STRATEGIC_ANALYSIS_2026-07-29.md §F)
+  failed_order_rate_alarm    (WARNING)  — pool's failed-Kalshi-order fraction exceeds
+                                        threshold (GG-125/T-379, ops failure mode #5,
+                                        STRATEGIC_ANALYSIS_2026-07-29.md §F)
 """
 
 from __future__ import annotations
@@ -107,6 +113,14 @@ PNL_L2_LOSS_PCT: float = 0.10   # 10% of initial bankroll → L2 alert (WARNING)
 # Shadow model promotion thresholds (ADR-0009)
 SHADOW_PROMOTION_DELTA: float = 0.005  # shadow Brier must beat prod by this margin
 SHADOW_MIN_WINDOW: int = 30            # minimum resolved outcomes for promotion comparison
+
+# Ops-alarm thresholds (GG-125/T-379, warn-only, GG-098 discipline). Chosen to
+# sit well above normal resolution latency (positions typically settle within
+# the existing 48h aged_open grace period — c5_execution/paper_trader.py) and
+# well above T4's observed healthy failed-order baseline (~0.5%,
+# STRATEGIC_ANALYSIS_2026-07-29.md §F), so routine noise does not fire these.
+STALE_OPEN_DAYS_THRESHOLD: int = 7        # open position older than this, still unresolved
+FAILED_ORDER_RATE_THRESHOLD: float = 0.05  # 5% — MAIN's observed 10.9% is well above this
 
 # NFR-03 kill switch SLA in milliseconds
 KILL_SWITCH_SLA_MS: int = 60_000
@@ -700,6 +714,121 @@ class SystemMonitor:
             if band_alarmed:
                 alarmed.append(band)
         return alarmed
+
+    # ------------------------------------------------------------------
+    # Ops alarms — stale opens + failed-order rate (GG-125/T-379)
+    # ------------------------------------------------------------------
+
+    def check_stale_open_positions(
+        self,
+        open_positions: list[dict[str, Any]],
+        pool_label: str,
+        stale_days_threshold: int = STALE_OPEN_DAYS_THRESHOLD,
+        session_id: str | None = None,
+    ) -> int:
+        """
+        Warn-only alarm: count open positions whose game_date is more than
+        stale_days_threshold days in the past and still unresolved.
+
+        Surfaces resolution-pipeline stalls (STRATEGIC_ANALYSIS_2026-07-29.md §F:
+        429 T4 / 39 MAIN positions unresolved for weeks) that previously had no
+        live alarm — the existing 48h aged_open tagging (paper_trader.py) records
+        the condition per-position but nothing rolls it up into a fleet-level
+        signal. Log-only, no auto-halt (GG-098).
+        """
+        now = datetime.now(timezone.utc)
+        stale: list[dict[str, Any]] = []
+        for pos in open_positions:
+            game_date = pos.get("game_date")
+            if not game_date:
+                continue
+            try:
+                gd = datetime.strptime(game_date, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            except ValueError:
+                continue
+            age_days = (now - gd).total_seconds() / 86400.0
+            if age_days > stale_days_threshold:
+                stale.append({
+                    "position_id": pos.get("position_id"),
+                    "player_name": pos.get("player_name"),
+                    "game_date": game_date,
+                    "age_days": round(age_days, 1),
+                    "aged_open": bool(pos.get("aged_open", False)),
+                })
+
+        if not stale:
+            return 0
+
+        sid = session_id or self._session_id
+        self._logger.log(
+            component=COMPONENT,
+            event_type="stale_open_position_alarm",
+            payload={
+                "pool": pool_label,
+                "stale_count": len(stale),
+                "total_open": len(open_positions),
+                "stale_days_threshold": stale_days_threshold,
+                "oldest_age_days": max(s["age_days"] for s in stale),
+                "examples": stale[:5],
+                "action_required": (
+                    "Resolution-pipeline stall signal — warn-only, no auto-halt (GG-125)."
+                ),
+            },
+            severity="WARNING",
+            session_id=sid,
+            snapshot_id=self._snapshot_id,
+        )
+        return len(stale)
+
+    def check_failed_order_rate(
+        self,
+        all_positions: list[dict[str, Any]],
+        pool_label: str,
+        rate_threshold: float = FAILED_ORDER_RATE_THRESHOLD,
+        session_id: str | None = None,
+    ) -> float:
+        """
+        Warn-only alarm: fraction of positions with a failed Kalshi order status.
+
+        `all_positions` should span open + closed + rejected positions for the
+        pool, since a "failed: ..." kalshi_order_status can appear in any of the
+        three lists depending on when the position was recorded relative to the
+        GG-079/T-234 routing fix (which sends new failures to rejected_positions
+        rather than open_positions). Surfaces STRATEGIC_ANALYSIS_2026-07-29.md
+        §F's 10.9% MAIN failed-order rate, which had no live threshold before
+        this wiring. Log-only, no auto-halt (GG-098).
+        """
+        total = len(all_positions)
+        if total == 0:
+            return 0.0
+
+        failed = [
+            p for p in all_positions
+            if str(p.get("kalshi_order_status", "")).startswith("failed:")
+        ]
+        rate = len(failed) / total
+        if rate < rate_threshold:
+            return rate
+
+        sid = session_id or self._session_id
+        self._logger.log(
+            component=COMPONENT,
+            event_type="failed_order_rate_alarm",
+            payload={
+                "pool": pool_label,
+                "failed_count": len(failed),
+                "total_count": total,
+                "failed_rate": round(rate, 4),
+                "rate_threshold": rate_threshold,
+                "action_required": (
+                    "Elevated Kalshi order failure rate — warn-only, no auto-halt (GG-125)."
+                ),
+            },
+            severity="WARNING",
+            session_id=sid,
+            snapshot_id=self._snapshot_id,
+        )
+        return rate
 
     # ------------------------------------------------------------------
     # Kill switch

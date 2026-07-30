@@ -358,16 +358,55 @@ def fetch_actual_hits(
 # Resolution helper — shared by T1/T2 pool and T4 pool (T-201)
 # ---------------------------------------------------------------------------
 
+def _run_pool_alarms(
+    pool_label: str,
+    trader: PaperTrader,
+    monitor: SystemMonitor,
+    session_id: str,
+) -> None:
+    """GG-125/T-379: drift check + the two ops alarms, run once per pool per
+    resolve invocation regardless of how many positions were resolved this run
+    (a pool with zero eligible resolutions this run can still be carrying a
+    stale-open or failed-order-rate signal from prior runs). Warn-only.
+    """
+    monitor.check_and_alert(session_id=session_id)
+    state = trader.get_state()
+    monitor.check_stale_open_positions(
+        open_positions=state.get("open_positions", []),
+        pool_label=pool_label,
+        session_id=session_id,
+    )
+    all_positions = (
+        state.get("open_positions", [])
+        + state.get("closed_positions", [])
+        + state.get("rejected_positions", [])
+    )
+    monitor.check_failed_order_rate(
+        all_positions=all_positions,
+        pool_label=pool_label,
+        session_id=session_id,
+    )
+
+
 def _resolve_pool(
     pool_label: str,
     trader: PaperTrader,
     logger: AuditLogger,
     session_id: str,
+    monitor: SystemMonitor,
 ) -> tuple[int, int]:
     """Resolve all eligible positions in one portfolio pool.
 
     Returns (resolved_count, still_open_count).
     Eligible = open positions whose game_date is strictly before today.
+
+    GG-125/T-379 (APR-0031): feeds `monitor`'s Brier/ECE drift window from
+    each resolved bet's model_p/mid_price_at_entry, then runs check_and_alert()
+    plus the two ops alarms (stale opens, failed-order rate) once at the end —
+    one SystemMonitor instance per pool (T1/T2 and T4 kept separate; T1 pregame
+    calibration and T4 live-latency edge are independent theses per CLAUDE.md's
+    alpha taxonomy, so their drift windows should not be blended). Warn-only,
+    log-to-C6-only — no auto-halt path is touched by this wiring (GG-098).
     """
     portfolio      = trader.get_state()
     open_positions = portfolio.get("open_positions", [])
@@ -377,6 +416,7 @@ def _resolve_pool(
 
     if n_open == 0:
         print(f"[{pool_label}] No open positions — nothing to do.")
+        _run_pool_alarms(pool_label, trader, monitor, session_id)
         return 0, 0
 
     today   = date.today().isoformat()
@@ -384,6 +424,7 @@ def _resolve_pool(
 
     if not pending:
         print(f"[{pool_label}] {n_open} open position(s) — all game dates today or future.")
+        _run_pool_alarms(pool_label, trader, monitor, session_id)
         return 0, n_open
 
     print(f"[{pool_label}] {len(pending)} position(s) eligible (game_date < {today})...")
@@ -454,6 +495,18 @@ def _resolve_pool(
                   f"dir={direction}  P&L={sign}{pnl:.2f}")
             resolved.append(closed_pos)
 
+            # GG-125/T-379 (APR-0031): feed the drift window from this resolved
+            # bet's entry-time model_p / mid_price_at_entry — both already
+            # captured by open_position(), previously unused after settlement.
+            model_p = closed_pos.get("model_p")
+            mip_at_entry = closed_pos.get("mid_price_at_entry")
+            if model_p is not None and mip_at_entry is not None:
+                monitor.record_forecast_outcome(
+                    p_estimate=float(model_p),
+                    outcome=1 if outcome == "WIN" else 0,
+                    market_implied_prob=float(mip_at_entry),
+                )
+
         if not ok:
             logger.warning(
                 "PIPE-05R", "settle_position_partial_failure",
@@ -506,6 +559,7 @@ def _resolve_pool(
             file=sys.stderr,
         )
 
+    _run_pool_alarms(pool_label, trader, monitor, session_id)
     return len(resolved), still_open
 
 
@@ -524,13 +578,29 @@ def main() -> None:
                 payload={"session_id": SESSION_ID, "game_date": GAME_DATE},
                 session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
 
+    # GG-125/T-379 (APR-0031): one SystemMonitor per pool — T1/T2 pregame
+    # calibration and T4 live-latency edge are independent theses (CLAUDE.md
+    # alpha taxonomy), so their Brier/ECE drift windows are kept separate
+    # rather than blended into one number (APR-0031 Open Question #2).
+    # Persistence model: accept the per-run-reset window (APR-0031 design
+    # option 3a) — simplest, strictly more coverage than today's zero, and
+    # explicitly named as an acceptable starting point in the draft APR.
+    # Earl authorized this implementation directly (2026-07-29 session,
+    # T-379/GG-125), satisfying Hard Rule 3 for this monitoring-only,
+    # warn-only wiring — see DECISION_LOG.md.
+
     # ---- T1/T2 pool ----
     trader_main = PaperTrader(PORTFOLIO_PATH, logger)
+    monitor_main = SystemMonitor(
+        logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID,
+        brier_baseline=BRIER_BASELINE_MLB, ece_baseline=ECE_BASELINE_MLB,
+    )
     resolved_main, still_open_main = _resolve_pool(
         pool_label="T1/T2",
         trader=trader_main,
         logger=logger,
         session_id=SESSION_ID,
+        monitor=monitor_main,
     )
     summary_main = trader_main.summary()
 
@@ -539,11 +609,16 @@ def main() -> None:
     summary_t4: dict[str, Any] = {}
     if T4_PORTFOLIO_PATH.exists():
         trader_t4 = PaperTrader(T4_PORTFOLIO_PATH, logger)
+        monitor_t4 = SystemMonitor(
+            logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID,
+            brier_baseline=BRIER_BASELINE_MLB, ece_baseline=ECE_BASELINE_MLB,
+        )
         resolved_t4, still_open_t4 = _resolve_pool(
             pool_label="T4",
             trader=trader_t4,
             logger=logger,
             session_id=SESSION_ID,
+            monitor=monitor_t4,
         )
         summary_t4 = trader_t4.summary()
     else:
@@ -576,10 +651,7 @@ def main() -> None:
                 print(f"  Win rate:           {summary_t4['win_rate']:.1%}  "
                       f"({summary_t4['closed_positions']} resolved bets)")
 
-    SystemMonitor(
-        logger=logger, snapshot_id=SNAPSHOT_ID, session_id=SESSION_ID,
-        brier_baseline=BRIER_BASELINE_MLB, ece_baseline=ECE_BASELINE_MLB,
-    ).check_portfolio_pnl(
+    monitor_main.check_portfolio_pnl(
         total_realized_pnl=summary_main["total_realized_pnl"],
         initial_bankroll=summary_main["initial_bankroll_usd"],
         session_id=SESSION_ID,
