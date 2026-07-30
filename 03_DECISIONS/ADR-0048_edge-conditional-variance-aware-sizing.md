@@ -1,6 +1,6 @@
 # ADR-0048: Edge-Conditional, Variance-Aware Sizing (Supersedes ADR-0040)
 
-**Status:** PROPOSED — awaiting operator/DS sign-off. No live parameter in `execution_bands.py` or `risk.py` is changed by this document. Per Hard Rule 3, ADR-0040 is not edited in place; this document supersedes it.
+**Status:** ACCEPTED (2026-07-29, DS sign-off = operator, applied live — R1/T-398, commit `6be807f`, `logic_epoch.py` 8→9). `execution_bands.py`'s `kelly_fraction` and `run_t4_mlb_live.py`'s `KELLY_T4` are both set to `0.0` for all four bands named in §2.1, matching this document. Per Hard Rule 3, ADR-0040 is not edited in place; this document supersedes it. Reactivation of any band still requires all three §2.1 conditions (GG-105 monotonicity PASS, B2 frontier lookup, fresh D2 bootstrap) — none has occurred as of acceptance.
 **Date:** 2026-07-28
 **Author:** Session `session/20260728T234000Z-b3-sizing` (Window B3, `ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md`)
 **Supersedes:** ADR-0040 (`03_DECISIONS/ADR-0040_ruin-risk-remediation-kelly-derating.md`, ACCEPTED 2026-07-04)
