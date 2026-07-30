@@ -403,10 +403,16 @@ def _load_t2_batting_slots() -> dict[int, int]:
 # ---------------------------------------------------------------------------
 
 
-def _espn_mlb_game_ids_today() -> list[str]:
-    """Return ESPN game IDs for today's MLB games (in-progress first)."""
+def _espn_mlb_game_ids_today(for_date: date | None = None) -> list[str]:
+    """Return ESPN game IDs for the given UTC date's MLB games (in-progress first).
+
+    Defaults to today (UTC) when `for_date` is omitted. GG-143: cold start also
+    calls this with yesterday's date to discover still-live games missed by the
+    empty in-memory tracked set on a fresh process.
+    """
     try:
-        today_str = date.today().strftime("%Y%m%d")
+        query_date = for_date or date.today()
+        today_str = query_date.strftime("%Y%m%d")
         espn_params: dict[str, str | int] = {"dates": today_str, "limit": 30}
         r = requests.get(
             _ESPN_MLB_SCOREBOARD,
@@ -1355,8 +1361,49 @@ def main() -> None:
 
     # ---- Game ID discovery ----
     _eval_date = date.today()   # tracks which UTC date game_ids/pregame are loaded for
-    game_ids: list[str] = _espn_mlb_game_ids_today()
+    # GG-143: a cold start (fresh process, empty in-memory tracked set) that lands
+    # after 00:00 UTC otherwise only ever discovers the new day's STATUS_SCHEDULED
+    # games — every game still in progress from the prior evening goes unpolled for
+    # the rest of the night. Mirror the in-loop rollover (_rollover_game_ids, GG-058)
+    # by seeding the merge with a prior-day query instead of trusting only "today".
+    prior_day_game_ids = _espn_mlb_game_ids_today(for_date=_eval_date - timedelta(days=1))
+    today_game_ids = _espn_mlb_game_ids_today()
+    game_ids: list[str] = _rollover_game_ids(prior_day_game_ids, today_game_ids)
+    _carried_over_coldstart = [gid for gid in game_ids if gid not in today_game_ids]
+    if _carried_over_coldstart:
+        logger.info(
+            "T4-MLB cold-start carried over %d still-live game(s) from %s: %s",
+            len(_carried_over_coldstart), _eval_date - timedelta(days=1), _carried_over_coldstart,
+        )
     logger.info("Initial MLB game IDs: %s", game_ids or "(none yet)")
+
+    # GG-143 restart alarm: an overnight cold start that ends up tracking zero games
+    # is only safe if ESPN genuinely shows no live game. Re-verify independently of
+    # the merge above so a future regression there still gets caught rather than
+    # failing silently (systemctl is-active stays green, no HALT fires).
+    _restart_utc = datetime.now(timezone.utc)
+    if not game_ids and 0 <= _restart_utc.hour < 6:
+        _still_live = [
+            gid for gid in (prior_day_game_ids + today_game_ids)
+            if _espn_game_status(gid) == _ESPN_STATUS_IN_PROGRESS
+        ]
+        if _still_live:
+            logger.error(
+                "T4-MLB COLD_START_BLIND: restart at %s UTC tracked 0 games but ESPN "
+                "shows %d in-progress game(s): %s (GG-143)",
+                _restart_utc.isoformat(), len(_still_live), _still_live,
+            )
+            audit.log(
+                component=COMPONENT,
+                event_type="t4_cold_start_blind",
+                payload={
+                    "restart_utc": _restart_utc.isoformat(),
+                    "espn_in_progress_game_ids": _still_live,
+                },
+                severity="CRITICAL",
+                session_id=session_id,
+                snapshot_id=SNAPSHOT_ID,
+            )
 
     # ---- Contamination guard (session-scoped) ----
     contamination_guard = LiveDataFreshnessGuard(audit=audit, session_id=session_id)
