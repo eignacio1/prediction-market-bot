@@ -139,7 +139,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="full_lr_platt",         # LR+Platt, 78 features, qualitative enrichment
         max_compute_ms=30_000,               # 30s — full pipeline; batched; irrelevant to edge
         execution_sla_s=3600,                # 1 hour — execution timing immaterial at this horizon
-        kelly_fraction=0.061,                # ADR-0040 (2026-07-04): de-rated from 0.10 (ADR-0010) per GG-071 ruin-risk finding; targets 1yr kill-switch P<=5%
+        kelly_fraction=0.0,                   # ADR-0048 (2026-07-29, supersedes ADR-0040's 0.061): GG-135 found MAIN's real variance alone (independent of edge sign) produces ~100%/yr kill-switch trip probability at any positive Kelly; zeroed pending edge-conditional reactivation (ADR-0048 lookup table). DS sign-off: operator 2026-07-29. Evaluations continue to log for research; only sizing is zero.
         pipeline_id="PIPE-02",
         cron_schedule="30 21 * * *",         # 21:30 UTC daily (pre-game)
         requires_realtime=False,
@@ -150,7 +150,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="injury_overlay",        # T1 output + injury/lineup adjustment (T-075)
         max_compute_ms=5_000,                # 5s — fast overlay on cached T1 output
         execution_sla_s=1800,                # 30 min — still relaxed; 4-8h before tip
-        kelly_fraction=0.13,                 # ADR-0010: tentative; injury overlay uncertainty; 2× premium over derived 0.061
+        kelly_fraction=0.0,                  # ADR-0048 (2026-07-29, supersedes ADR-0010's 0.13): GG-135 ruin geometry applies to any positive Kelly on this book; zeroed pending edge-conditional reactivation. DS sign-off: operator 2026-07-29. Evaluations continue to log for research; only sizing is zero.
         pipeline_id="PIPE-05",
         cron_schedule="0 17 * * *",          # 17:00 UTC (12pm ET — afternoon of game day)
         requires_realtime=False,
@@ -161,7 +161,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="momentum_signal",       # Price drift vs T1 forecast; no historical data
         max_compute_ms=500,                  # 500ms — reads cached T1 + live price only
         execution_sla_s=300,                 # 5 min — window closes at tip-off
-        kelly_fraction=0.07,                 # ADR-0010: tentative; momentum confirmation only; 2× premium over derived 0.032
+        kelly_fraction=0.0,                  # ADR-0048 (2026-07-29, supersedes ADR-0010's 0.07): GG-135 ruin geometry applies to any positive Kelly on this book; zeroed pending edge-conditional reactivation. DS sign-off: operator 2026-07-29. Evaluations continue to log for research; only sizing is zero.
         pipeline_id="PIPE-06",
         # Extended to 03:00 UTC to cover late 10pm ET tip-offs (02:00 UTC).
         # Two entries needed because cron hour ranges cannot wrap midnight in one expr.
@@ -329,7 +329,7 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         model_class="binomial_flat",         # p_hits_gte_threshold — run_t4_mlb_live.py
         max_compute_ms=50,
         execution_sla_s=45,                  # matches the existing 45s poll cycle (POLL_INTERVAL_S)
-        kelly_fraction=0.10,                 # KELLY_T4 in run_t4_mlb_live.py — already ADR-0023 approved
+        kelly_fraction=0.0,                  # ADR-0048 (2026-07-29, supersedes ADR-0023's KELLY_T4=0.10): zeroed pending GG-105 anti-predictive-edge remediation and GG-142 abs()-gate fix; ADR-0048 lookup table gates reactivation on validated per-bet edge. DS sign-off: operator 2026-07-29. Evaluations continue to log for research; only sizing is zero.
         pipeline_id="PIPE-07-MLB",
         cron_schedule=None,                  # Event-driven within the 45s poll loop
         requires_realtime=False,             # Already running on cron/poll infra, not real-time infra

@@ -46,20 +46,25 @@ class TestBandConfigs:
         assert isinstance(cfg, BandConfig)
 
     def test_t1_kelly_fraction(self):
-        # ADR-0040 (2026-07-04): T1 de-rated to 0.061 from ADR-0010's 0.10, per GG-071
-        # ruin-risk finding (targets 1yr kill-switch probability <= 5%).
-        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.061
+        # ADR-0048 (2026-07-29, supersedes ADR-0040's 0.061): zeroed per GG-135
+        # ruin-risk finding (MAIN's real variance alone produces ~100%/yr
+        # kill-switch trip probability at any positive Kelly).
+        assert get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction == 0.0
 
-    def test_t2_kelly_greater_than_t1(self):
-        # ADR-0010: T2 > T1 signal layer ordering holds after ADR-0040's T1 de-rate (0.13 > 0.061)
+    def test_t2_kelly_zeroed_same_as_t1(self):
+        # ADR-0048 (2026-07-29): the old T2 > T1 signal-layer ordering no longer
+        # applies — GG-135's ruin geometry zeroed both bands identically,
+        # pending edge-conditional reactivation.
         t1 = get_band_config(ExecutionBand.T1_MULTI_DAY).kelly_fraction
         t2 = get_band_config(ExecutionBand.T2_SAME_DAY).kelly_fraction
-        assert t2 > t1
+        assert t1 == t2 == 0.0
 
-    def test_t3_kelly_less_than_t2(self):
+    def test_t3_kelly_zeroed_same_as_t2(self):
+        # ADR-0048 (2026-07-29): the old T3 < T2 ordering no longer applies —
+        # both zeroed identically pending edge-conditional reactivation.
         t2 = get_band_config(ExecutionBand.T2_SAME_DAY).kelly_fraction
         t3 = get_band_config(ExecutionBand.T3_PRE_TIP).kelly_fraction
-        assert t3 < t2
+        assert t2 == t3 == 0.0
 
     def test_t4_kelly_greater_than_t3(self):
         # ADR-0010: T4 > T3 — threshold-specific Poisson; Q4 σ_λ ≈ 0.5 (0.20 > 0.07)

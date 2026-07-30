@@ -45,10 +45,12 @@ _POST_GG119 = "2026-07-16T00:00:00.000Z"            # after GG-119, before GG-12
 # GG-105 (ADR-0047) added epoch 7 at 2026-07-18T14:00:00Z (regen-anchored)
 # and epoch 8 at 2026-07-18T18:07:19Z (T-387 activation-accounting
 # correction after epoch 7's contingency fired — first cycle row with
-# ba_l10 != ba_l10_shrunk). This must stay ahead of every
+# ba_l10 != ba_l10_shrunk).
+# GG-135 (ADR-0048) added epoch 9 at 2026-07-30T00:04:04Z (T1/T2/T3/T4M-PROJ
+# kelly_fraction zeroed, commit 3cb04ca). This must stay ahead of every
 # LogicEpochBoundary in logic_epoch.py for "is_current_epoch" tests to
 # mean what they claim.
-_POST_GG122 = "2026-07-19T00:00:00.000Z"            # after all boundaries -> current epoch
+_POST_GG122 = "2026-07-30T01:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:

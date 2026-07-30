@@ -101,9 +101,14 @@ class TestComputeOutcomeEv:
         r = compute_outcome_ev(_bet(edge=edge), "CONFIRM")
         assert r["edge_applied"] == pytest.approx(edge * CONFIRM_MULTIPLIER, abs=1e-6)
 
-    def test_confirm_position_size_ratio_is_046(self):
+    def test_confirm_position_size_ratio_vs_t1_baseline(self):
         r = compute_outcome_ev(_bet(), "CONFIRM")
-        expected = round((T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY, 4)
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; ratio-to-baseline is undefined
+        # (0.0) rather than the historical 0.46 while T1 sizing is zero.
+        expected = (
+            0.0 if T1_KELLY == 0.0
+            else round((T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY, 4)
+        )
         assert r["position_size_ratio"] == pytest.approx(expected, abs=1e-4)
 
     def test_fade_kelly_and_size_ratio_are_zero(self):

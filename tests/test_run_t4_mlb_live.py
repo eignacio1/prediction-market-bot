@@ -704,6 +704,63 @@ class TestEspnGameStatus:
 
 
 # ---------------------------------------------------------------------------
+# _espn_mlb_game_ids_today — GG-143: cold-start seeding needs a for_date param
+# so it can query the prior UTC day, not just "today"
+# ---------------------------------------------------------------------------
+
+
+class TestEspnMlbGameIdsToday:
+    def test_defaults_to_today_when_for_date_omitted(self):
+        from datetime import date
+
+        captured_params: dict = {}
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            captured_params.update(params)
+            resp = MagicMock()
+            resp.raise_for_status = lambda: None
+            resp.json.return_value = {"events": []}
+            return resp
+
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get", side_effect=fake_get):
+            runner._espn_mlb_game_ids_today()
+        assert captured_params["dates"] == date.today().strftime("%Y%m%d")
+
+    def test_explicit_for_date_is_used_in_query(self):
+        from datetime import date, timedelta
+
+        yesterday = date.today() - timedelta(days=1)
+        captured_params: dict = {}
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            captured_params.update(params)
+            resp = MagicMock()
+            resp.raise_for_status = lambda: None
+            resp.json.return_value = {"events": []}
+            return resp
+
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get", side_effect=fake_get):
+            runner._espn_mlb_game_ids_today(for_date=yesterday)
+        assert captured_params["dates"] == yesterday.strftime("%Y%m%d")
+
+    def test_in_progress_ordered_before_scheduled(self):
+        events = [
+            {"id": "SCHED1", "status": {"type": {"name": "STATUS_SCHEDULED"}}},
+            {"id": "LIVE1", "status": {"type": {"name": "STATUS_IN_PROGRESS"}}},
+        ]
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = {"events": events}
+            result = runner._espn_mlb_game_ids_today()
+        assert result == ["LIVE1", "SCHED1"]
+
+    def test_fetch_failure_returns_empty_list(self):
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.side_effect = ConnectionError("timeout")
+            assert runner._espn_mlb_game_ids_today() == []
+
+
+# ---------------------------------------------------------------------------
 # _rollover_game_ids — GG-058: UTC-midnight rollover must merge, not replace
 # ---------------------------------------------------------------------------
 

@@ -214,8 +214,16 @@ GG-001 had `# 10 concurrent open (stub)` in production source. It survived four 
 
 ### Step 3 — Open governance gaps
 
+**GG-144 (2026-07-29):** the prior form of this command, `grep -n "| OPEN"`, is an unanchored substring match — it surfaced only 17 genuine `| Status | OPEN …` cells (plus 9 lines of unrelated narrative prose elsewhere in the log that happen to contain the same substring) and matched **zero** of the emphatic form, `| Status | **OPEN — …`, which the log uses for its most severe entries — the formatting that signals importance is exactly what removed the entry from the scan. True OPEN count (anchored, both forms, template placeholder row excluded): **28** — 17 plain + 12 bold (one line is a header-row template and does not count). Hidden set included GG-038, GG-046, GG-105, GG-140. The identical defect was found and fixed in `.claude/hooks/governance_scan.sh` on 2026-07-16 (GG-122) and flagged again 2026-07-15 (T-370) without ever propagating to this authoritative copy — do not let that recur: if this command is ever edited again, re-run the reconciliation assertion below in the same sitting.
+
 ```bash
-grep -n "| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+grep -nE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" | grep -v "OPEN / IN PROGRESS" | grep -v "template"
+# Reconciliation assertion — plain-OPEN count + bold-OPEN count must equal the anchored total above.
+# If it doesn't, the regex has drifted again; do not proceed until it does.
+PLAIN=$(grep -cE "^\| Status \| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+BOLD=$(grep -cE "^\| Status \| \*{1,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+TOTAL=$(grep -cE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+echo "plain=$PLAIN bold=$BOLD total=$TOTAL (plain+bold should == total)"
 ```
 
 Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) before implementation work.
@@ -271,7 +279,10 @@ ssh prediction-market-vps "systemctl show pmbot-web-dashboard.service -p NRestar
 
 ```bash
 grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
+grep -n "kelly_fraction=" src/prediction_market_bot/execution_bands.py
 ```
+
+**Path correction (GG-144 remediation pass, 2026-07-29):** the second command's target, `execution_bands.py`, is at `src/prediction_market_bot/execution_bands.py` — the top-level `prediction_market_bot` package, not under any `c5_execution/` subpath. A stray reference to `c5_execution/execution_bands.py` had been circulating this session (`STRATEGIC_ANALYSIS_2026-07-29.md`); that path does not exist in this repo and never has. This file is the one that actually governs live per-band Kelly sizing (see the ruin-risk caveat below) — `risk.py`'s `DEFAULT_KELLY_FRACTION` is a separate, largely inert constant — so Q1's command now greps both files rather than only the one that doesn't hold the load-bearing values.
 
 For each limit: was it calibrated to the current system (MLB ACTIVE with T1–T4M-PROJ live, T4M-ARITH/T4M-FLOW built-but-blocked, NBA dark)? If any limit was set for a smaller or differently-shaped system, register in GOVERNANCE_GAP_LOG.md.
 
@@ -305,8 +316,10 @@ Ask for each hard limit: what is the underlying assumption, and does the current
 
 **Q4 — Interface evolution (paste output):**
 
+**Path correction (GG-144 remediation pass, 2026-07-29):** `def approve` and `def execute` do not exist anywhere in `src/` and never have in this repo's history — that half of the original grep was a structural no-op, silently matching nothing every session. The real interfaces this check is meant to catch drift in are the C4 risk-gate entrypoint (`evaluate_forecast`, `risk.py`) and the C5 execution entrypoints (`open_position`/`exit_position`, `paper_trader.py`; `submit_order`, `kalshi_client.py`, for live-venue routing).
+
 ```bash
-grep -rn "def evaluate_forecast\|def approve\|def execute" src/
+grep -rn "def evaluate_forecast\|def open_position\|def exit_position\|def submit_order" src/
 ```
 
 If any interface has evolved — more markets per run, new signal types, new execution paths — downstream risk controls may have been calibrated to the old interface.

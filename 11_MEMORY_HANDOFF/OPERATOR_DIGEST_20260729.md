@@ -11,3 +11,9 @@
 **Two other things found.** The live bot goes quietly blind after any restart past 8pm Eastern — it keeps reporting itself healthy while watching nothing. One night we lost about 9,700 measurements that way. And the session-start checklist that is supposed to list open problems has been missing 12 of 26 of them, including the most important ones — the more emphatically a problem was written up, the more likely the checklist skipped it.
 
 **Nothing needs a decision from you tonight.** The fixes are written up and queued in order.
+
+---
+
+## Addendum (G1 session, later same day)
+
+Fixed the checklist bug mentioned above — the one that was silently skipping problems written in bold text. The real count of open problems is 26 (two got fixed today, which is why the number moved). Also patched a small bug that could cause an error when starting a brand-new work session on a fresh checkout of the code. Nothing here touches bankroll, bets, or risk limits.
