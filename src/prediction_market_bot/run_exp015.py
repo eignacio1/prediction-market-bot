@@ -278,8 +278,13 @@ def compute_outcome_ev(bet: dict[str, Any], signal: str) -> dict[str, Any]:
     if signal == "CONFIRM":
         kelly_applied       = T3_KELLY
         edge_applied        = abs_edge * CONFIRM_MULTIPLIER
-        # EV ratio vs T1: (T3_KELLY × CONFIRM_MULTIPLIER) / T1_KELLY = 0.46
-        position_size_ratio = round((T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY, 4)
+        # EV ratio vs T1: (T3_KELLY × CONFIRM_MULTIPLIER) / T1_KELLY = 0.46 historically.
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; ratio to a zero baseline is undefined,
+        # not 0.46 — report 0.0 rather than divide by zero.
+        position_size_ratio = (
+            0.0 if T1_KELLY == 0.0
+            else round((T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY, 4)
+        )
     elif signal == "FADE":
         kelly_applied       = 0.0
         edge_applied        = 0.0
