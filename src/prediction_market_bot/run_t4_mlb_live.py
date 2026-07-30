@@ -150,7 +150,14 @@ MIN_BET_T4_PAPER    = 0.01          # paper min: 1 contract at lowest price
 SNAPSHOT_ID         = "T4-MLB-LIVE"
 SESSION_ID_PREFIX   = "T4-MLB"
 AB_PER_GAME_DEFAULT = 3.7           # typical MLB batter ABs per game (slot-5 / population baseline)
-KELLY_T4            = 0.10          # conservative Kelly for T4 paper (ADR-0023)
+KELLY_T4            = 0.0           # ADR-0048 (2026-07-29, supersedes ADR-0023's 0.10): this module-level
+                                     # constant, not execution_bands.py's BAND_CONFIGS[T4M_PROJ].kelly_fraction,
+                                     # is what this live pipeline actually stakes with (no import of
+                                     # execution_bands.py exists in this file) — zeroed here directly so T4M-PROJ
+                                     # sizing is genuinely halted, not just relabeled. Pending GG-105
+                                     # anti-predictive-edge remediation and GG-142 abs()-gate fix; reactivation
+                                     # gated on ADR-0048's lookup table. DS sign-off: operator 2026-07-29.
+                                     # Evaluations continue to log for research; only sizing is zero.
 # T-228: skip the Binomial/C4 evaluation cost on markets priced too wide to plausibly
 # clear MIN_EDGE_TO_APPROVE. Ceiling set from real 2026-07-02 production data, not a
 # guess: of 4,971 evaluated cycles that day, the widest vig on any net_edge>=0.04
