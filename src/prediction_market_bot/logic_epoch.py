@@ -360,6 +360,40 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # Same resolving commit/gap as epoch 7 — T4M-PROJ only.
         bands_affected=frozenset({"T4M-PROJ"}),
     ),
+    LogicEpochBoundary(
+        epoch=9,
+        resolving_gap="GG-135",
+        commit_sha="3cb04ca8c96b6836546904301c6ee26fe32cc261",
+        # 2026-07-29 17:04:04 -07:00
+        commit_utc=datetime(2026, 7, 30, 0, 4, 4, tzinfo=timezone.utc),
+        description=(
+            "ADR-0048 (edge-conditional, variance-aware sizing) applied: "
+            "kelly_fraction zeroed for T1_MULTI_DAY, T2_SAME_DAY, "
+            "T3_PRE_TIP, and T4M_PROJ. GG-135's MC bootstrap found MAIN's "
+            "real variance alone (independent of edge sign) produces "
+            "~100%/yr probability of tripping the 20% max-drawdown kill "
+            "switch at any positive Kelly; this halts that self-"
+            "termination for T1/T2/T3. T4M-PROJ is additionally zeroed "
+            "pending GG-105 anti-predictive-edge remediation and GG-142's "
+            "abs()-gate defect fix, gated on ADR-0048's reactivation "
+            "lookup table. Two write paths required correction in the "
+            "same commit: execution_bands.py's BAND_CONFIGS entries "
+            "(consumed live by T1/T2/T3 via get_band_config(...)."
+            "kelly_fraction) and run_t4_mlb_live.py's separate module-"
+            "level KELLY_T4 constant (T4M-PROJ stakes from this directly "
+            "— that file never imports execution_bands.py, so editing "
+            "only the BAND_CONFIGS entry would have left T4M-PROJ's real "
+            "sizing unchanged at 0.10). Evaluations continue to log for "
+            "research (risk.py's kelly_size_zero rejection path preserves "
+            "full forecast context); only sizing goes to zero. DS "
+            "sign-off: operator, 2026-07-29. See ADR-0048, GG-135, T-398, "
+            "DECISION_LOG.md 2026-07-29."
+        ),
+        # git show 3cb04ca: execution_bands.py (T1_MULTI_DAY, T2_SAME_DAY,
+        # T3_PRE_TIP, T4M_PROJ kelly_fraction fields) + run_t4_mlb_live.py
+        # (KELLY_T4 constant) — all four named bands' write paths changed.
+        bands_affected=frozenset({"T1", "T2", "T3", "T4M-PROJ"}),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
