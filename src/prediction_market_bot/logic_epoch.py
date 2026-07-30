@@ -363,10 +363,10 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
     LogicEpochBoundary(
         epoch=9,
         resolving_gap="GG-135",
-        commit_sha="c0156a92e8b34fe3ff3ce77d9e8185d1fc4026c1",
-        # author date 2026-07-29 17:04:04 -07:00 (unchanged by the rebase onto
-        # origin/main's concurrent G1/G2 sessions; only the SHA/committer date
-        # changed — 3cb04ca was this commit's pre-rebase SHA)
+        commit_sha="6be807f650c3157d9a0f76ede2aa30943e58ea40",
+        # author date 2026-07-29 17:04:04 -07:00 (unchanged across two rebases
+        # onto origin/main's concurrent G1/G2/G4 sessions; only the SHA/
+        # committer date changed each time — 3cb04ca -> c0156a9 -> 6be807f)
         commit_utc=datetime(2026, 7, 30, 0, 4, 4, tzinfo=timezone.utc),
         description=(
             "ADR-0048 (edge-conditional, variance-aware sizing) applied: "
@@ -391,7 +391,7 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "sign-off: operator, 2026-07-29. See ADR-0048, GG-135, T-398, "
             "DECISION_LOG.md 2026-07-29."
         ),
-        # git show c0156a9: execution_bands.py (T1_MULTI_DAY, T2_SAME_DAY,
+        # git show 6be807f: execution_bands.py (T1_MULTI_DAY, T2_SAME_DAY,
         # T3_PRE_TIP, T4M_PROJ kelly_fraction fields) + run_t4_mlb_live.py
         # (KELLY_T4 constant) — all four named bands' write paths changed.
         bands_affected=frozenset({"T1", "T2", "T3", "T4M-PROJ"}),
