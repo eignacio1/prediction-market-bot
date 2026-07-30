@@ -1,0 +1,147 @@
+{
+  "book": "t1t2t3",
+  "flag": "overrides",
+  "params": {},
+  "overrides_file": "exp_output/T9_GG105_REWORK/g3_a2_candidate_overrides_main.json",
+  "logic_epoch": null,
+  "baseline": {
+    "label": "book=t1t2t3 flag=raw (baseline, matched to overrides, n=314)",
+    "n": 314,
+    "edge_monotonicity": {
+      "verdict": "INCONCLUSIVE",
+      "n": 314,
+      "n_pos_edge": 311,
+      "n_neg_edge": 3,
+      "winrate_edge_pos": 0.4662379421221865,
+      "winrate_edge_neg": 0.3333333333333333,
+      "fisher_odds_ratio": 1.7469879518072289,
+      "fisher_pvalue": 1.0,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 104,
+          "edge_min": -0.005374250000000014,
+          "edge_max": 0.05514274999999996,
+          "edge_mean": 0.03258832211538462,
+          "winrate": 0.5,
+          "pnl": -97.17649999999998
+        },
+        {
+          "tercile": 2,
+          "n": 105,
+          "edge_min": 0.05516500000000004,
+          "edge_max": 0.07665975000000005,
+          "edge_mean": 0.0656909047619048,
+          "winrate": 0.4666666666666667,
+          "pnl": -4.7945999999999565
+        },
+        {
+          "tercile": 3,
+          "n": 105,
+          "edge_min": 0.07696375,
+          "edge_max": 0.18123000000000003,
+          "edge_mean": 0.10579102142857144,
+          "winrate": 0.42857142857142855,
+          "pnl": -21.835800000000027
+        }
+      ]
+    },
+    "calibration_fit": {
+      "intercept_a": 0.3042032743274038,
+      "slope_b": 0.9636650750439053,
+      "a_ci": [
+        0.04655362869098352,
+        0.5681904233288403
+      ],
+      "b_ci": [
+        0.6747403320072276,
+        1.2940214652619562
+      ],
+      "b_excludes_1": false,
+      "interpretation": "overconfident"
+    },
+    "brier_murphy": {
+      "brier_full": 0.21691917226297439,
+      "brier_binned": 0.2129156651839381,
+      "reliability": 0.008038528820918826,
+      "resolution": 0.04508229403983705,
+      "uncertainty": 0.2499594304028561,
+      "decomposition_(rel-res+unc)": 0.21291566518393787,
+      "binning_gap_(full-binned)": 0.004003507079036295,
+      "base_rate": 0.49363057324840764,
+      "recompose_ok": true
+    },
+    "ece": 0.08319499363057337
+  },
+  "candidate": {
+    "label": "book=t1t2t3 flag=overrides file=exp_output/T9_GG105_REWORK/g3_a2_candidate_overrides_main.json n=314",
+    "n": 314,
+    "edge_monotonicity": {
+      "verdict": "ANTI-PREDICTIVE",
+      "n": 314,
+      "n_pos_edge": 170,
+      "n_neg_edge": 144,
+      "winrate_edge_pos": 0.3,
+      "winrate_edge_neg": 0.6597222222222222,
+      "fisher_odds_ratio": 0.22105263157894736,
+      "fisher_pvalue": 1.6436556327662008e-10,
+      "alpha": 0.1,
+      "terciles": [
+        {
+          "tercile": 1,
+          "n": 104,
+          "edge_min": -0.4528922358869381,
+          "edge_max": -0.15044544836808843,
+          "edge_mean": -0.25101119297948643,
+          "winrate": 0.7211538461538461,
+          "pnl": 32.30809999999999
+        },
+        {
+          "tercile": 2,
+          "n": 105,
+          "edge_min": -0.1456059608931215,
+          "edge_max": 0.1309228509741604,
+          "edge_mean": 0.014905978216503768,
+          "winrate": 0.3904761904761905,
+          "pnl": -105.85430000000001
+        },
+        {
+          "tercile": 3,
+          "n": 105,
+          "edge_min": 0.13203384150177658,
+          "edge_max": 0.43909556817624906,
+          "edge_mean": 0.22915242216426537,
+          "winrate": 0.2857142857142857,
+          "pnl": -50.260699999999986
+        }
+      ]
+    },
+    "calibration_fit": {
+      "intercept_a": -0.02258728709723004,
+      "slope_b": 0.17298513531187562,
+      "a_ci": [
+        -0.2419717063582479,
+        0.20412907079337136
+      ],
+      "b_ci": [
+        -0.508955392079188,
+        0.8595288418509206
+      ],
+      "b_excludes_1": true,
+      "interpretation": "overconfident"
+    },
+    "brier_murphy": {
+      "brier_full": 0.25406022879867723,
+      "brier_binned": 0.25065366740177614,
+      "reliability": 0.0019409203791680716,
+      "resolution": 0.0012466833802474808,
+      "uncertainty": 0.2499594304028561,
+      "decomposition_(rel-res+unc)": 0.2506536674017767,
+      "binning_gap_(full-binned)": 0.0034065613969010977,
+      "base_rate": 0.49363057324840764,
+      "recompose_ok": true
+    },
+    "ece": 0.025342806786429563
+  }
+}
