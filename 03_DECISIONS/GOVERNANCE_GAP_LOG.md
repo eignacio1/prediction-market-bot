@@ -2832,6 +2832,21 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Resolution | Unstaffed. Requires a decision on whether/how to build real cross-process coordination (new ADR, since it touches ADR-0023's pool-isolation design) before any blocking behavior is implemented. |
 | Status | OPEN — unstaffed, no T-NNN assigned. |
 
+### GG-151 — `merge=union` does not guarantee dedup: identical content reaching both merge sides via different commit paths can be duplicated, not deduplicated
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-151 |
+| Category | Systemic blind spot — a documented safety mechanism (GG-082/GG-101/GG-103's `merge=union` protection for append-only logs) has a failure mode CLAUDE.md never states. |
+| What was missed | While completing the merge of PR #62 (`session/20260731T020022Z-t4-reactivate` into `main`), two files configured with `merge=union` in `.gitattributes` — `04_EXECUTION/SESSION_CLAIMS.md` and `04_EXECUTION/ITERATION_MC_PROGRESS.md` — both ended up with a literal duplicate row (the R3/T4-reactivation closure entry) after the merge, rather than the clean union-append the driver is documented to guarantee. Root cause: the same real event (R3/T4M-PROJ reactivation) had been logged via two different commit-history paths that both survived into the merge (one from an earlier rebase state, one from the branch's current tip); `merge=union` unions line-ranges, and when both ranges independently contain the byte-identical text, it inserts both rather than recognizing them as the same content. |
+| When it should have been caught | At GG-103 (2026-07-15), when `merge=union` was adopted for these files specifically to solve concurrent-append collisions — that fix assumed union-of-appends is always safe; it was never tested against the case of the *same* append surviving on both sides via divergent history. |
+| Phases it survived | N/A — first occurrence found the same session it was introduced into the merge (2026-07-31). |
+| Why it survived | `merge=union` is a line-level text union, not a semantic dedup — nothing in the mechanism or in CLAUDE.md's description of it checks for content-identity across the unioned ranges. |
+| Impact | LOW this instance (caught by manual repo-wide duplicate grep during merge verification, fixed via 2 targeted Edits, no data lost — the duplicate was a closure-row narrative, not a numeric ledger figure). MEDIUM in general: any append-only log relying on `merge=union` as its collision-safety mechanism (SESSION_CLAIMS.md, .last_session_checkpoint, ITERATION_MC_PROGRESS.md) can silently accumulate duplicate rows on any merge where the same event was logged via two commit paths — a session that doesn't specifically grep for duplicates post-merge would ship them. |
+| Discovery | 2026-07-31, session `session/20260731T020022Z-t4-reactivate`'s merge-completion pass, via targeted `grep -c`/`grep -n` duplicate-content checks run as part of merge verification (not part of any existing automated check). |
+| Resolution | RESOLVED for this instance — both duplicate rows manually removed, re-verified via repo-wide grep post-fix. **Not resolved as a mechanism** — no automated post-merge duplicate-row check exists yet for `merge=union`-configured files. Candidate fix: add a lightweight check (e.g. to `session_guard.sh` or a merge-completion step) that greps each `merge=union` file for exact-duplicate paragraphs/rows after any merge into `main`. Unstaffed — no T-NNN assigned. |
+| Status | OPEN — mechanism-level gap unstaffed; this instance's data-level defect is resolved. |
+
 ---
 
 
