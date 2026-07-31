@@ -154,10 +154,22 @@ KELLY_T4            = 0.0           # ADR-0048 (2026-07-29, supersedes ADR-0023'
                                      # constant, not execution_bands.py's BAND_CONFIGS[T4M_PROJ].kelly_fraction,
                                      # is what this live pipeline actually stakes with (no import of
                                      # execution_bands.py exists in this file) — zeroed here directly so T4M-PROJ
-                                     # sizing is genuinely halted, not just relabeled. Pending GG-105
-                                     # anti-predictive-edge remediation and GG-142 abs()-gate fix; reactivation
-                                     # gated on ADR-0048's lookup table. DS sign-off: operator 2026-07-29.
-                                     # Evaluations continue to log for research; only sizing is zero.
+                                     # sizing is genuinely halted, not just relabeled. GG-142 abs()-gate fix
+                                     # landed (R2, ADR-0049, epoch=10). ADR-0050 (2026-07-30) reactivates T4M-PROJ
+                                     # at a FLAT measurement stake (T4_MEASUREMENT_STAKE_USD, below) while
+                                     # deliberately leaving KELLY_T4 at 0.0 — the proportional Kelly path stays
+                                     # off pending GG-105 anti-predictive-edge remediation; a flat stake and a
+                                     # Kelly fraction are mutually exclusive by design. DS sign-off: operator
+                                     # 2026-07-30.
+T4_MEASUREMENT_STAKE_USD = 1.00     # ADR-0050 (2026-07-30): flat per-bet stake for the T4M-PROJ measurement
+                                     # cohort, used in place of Kelly sizing (KELLY_T4 stays 0.0 above) on every
+                                     # gate-valid (signed edge >= MIN_EDGE_TO_APPROVE, direction-consistent)
+                                     # evaluation. Far inside GG-045 orderbook depth ($500-$2k est., later
+                                     # refined to median $66-$195 per T-393). Passed to RiskEngine.evaluate_forecast
+                                     # as fixed_stake_usd= — see risk.py for the bypass mechanics. EXIT: once
+                                     # volume accrues, sizing is regression-analyzed and moved to the B2
+                                     # survivable-edge frontier (operator directive, 2026-07-30); reverts to 0 if
+                                     # edge fails to validate by the power-calc n* for this cohort.
 # T-228: skip the Binomial/C4 evaluation cost on markets priced too wide to plausibly
 # clear MIN_EDGE_TO_APPROVE. Ceiling set from real 2026-07-02 production data, not a
 # guess: of 4,971 evaluated cycles that day, the widest vig on any net_edge>=0.04
@@ -1094,6 +1106,7 @@ def _run_cycle(
                 current_open_exposure_usd=t4_deployed_usd,
                 portfolio_equity_usd=t4_band_budget,
                 pool_isolated=True,
+                fixed_stake_usd=T4_MEASUREMENT_STAKE_USD,  # ADR-0050
             )
             evaluated += 1
 
@@ -1104,12 +1117,14 @@ def _run_cycle(
             if approval.get("approval_status") != "APPROVED":
                 continue
 
-            # T4 paper policy: 1 contract at market price (mirrors NBA T4 ADR-0023).
-            # GG-087: a NO contract's market price is (1 - mip), not mip.
-            approved_size = mip if direction == "YES" else (1.0 - mip)
-            approval = {**approval, "approved_size": approved_size,
-                        "model_p": p_t4, "edge": directional_net_edge, "gross_edge": gross_edge,
-                        "band": "T4M-PROJ"}  # T-253
+            # ADR-0050 (2026-07-30): flat $1.00 measurement stake — replaces the
+            # prior "1 contract at market price" policy. RiskEngine already set
+            # approved_size to T4_MEASUREMENT_STAKE_USD via fixed_stake_usd=
+            # above (KELLY_T4 stays 0.0; sizing_mode="fixed_measurement" on the
+            # approval record confirms the bypass took the intended path).
+            approved_size = approval["approved_size"]
+            approval = {**approval, "model_p": p_t4, "edge": directional_net_edge,
+                        "gross_edge": gross_edge, "band": "T4M-PROJ"}  # T-253
 
             if t4_deployed_usd + approved_size > t4_band_budget:
                 logger.info(

@@ -358,6 +358,7 @@ class RiskEngine:
         current_open_exposure_usd: float = 0.0,
         portfolio_equity_usd: float | None = None,
         pool_isolated: bool = False,
+        fixed_stake_usd: float | None = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Evaluate a forecast record and return a risk approval decision.
@@ -367,6 +368,16 @@ class RiskEngine:
         EVERY call — approved, rejected, or kill-switched alike. See the
         module docstring's "T-213 (GG-060)" section for why this must cover
         the full evaluation population, not just approvals.
+
+        fixed_stake_usd:
+            ADR-0050 (2026-07-30): when supplied, bypasses Kelly sizing
+            (CHECK 5) entirely and uses this flat dollar amount as
+            approved_size instead — the caller's kelly_fraction is not
+            consulted and does not need to be nonzero. All other checks
+            (edge threshold, direction consistency, single-event cap,
+            min-bet floor, kill switches, aggregate deployment) are
+            unaffected and still gate approval normally. None (default)
+            preserves the existing Kelly-derived sizing path exactly.
         """
         ok, approval = self._evaluate_forecast_impl(
             forecast_record,
@@ -376,6 +387,7 @@ class RiskEngine:
             current_open_exposure_usd=current_open_exposure_usd,
             portfolio_equity_usd=portfolio_equity_usd,
             pool_isolated=pool_isolated,
+            fixed_stake_usd=fixed_stake_usd,
         )
         self._emit_edge_decision(forecast_record, approval, session_id)
         return ok, approval
@@ -441,6 +453,7 @@ class RiskEngine:
         current_open_exposure_usd: float = 0.0,
         portfolio_equity_usd: float | None = None,
         pool_isolated: bool = False,
+        fixed_stake_usd: float | None = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Evaluate a forecast record and return a risk approval decision.
@@ -686,7 +699,7 @@ class RiskEngine:
             checks_passed.append("direction_edge_consistency")
 
             # ------------------------------------------------------------------
-            # Kelly sizing
+            # Sizing — Kelly (default) or fixed measurement stake (ADR-0050)
             # ------------------------------------------------------------------
             p_estimate = float(fc.get("p_estimate", 0.5) or 0.5)
             market_implied_prob = float(fc.get("market_implied_prob", 0.5) or 0.5)
@@ -699,13 +712,25 @@ class RiskEngine:
                 p_effective = p_estimate
                 mip_effective = market_implied_prob
 
-            kelly_frac = float(fc.get("kelly_fraction", self._kelly_fraction))
-            approved_size = _compute_kelly_size(
-                p_estimate=p_effective,
-                market_implied_prob=mip_effective,
-                kelly_fraction=kelly_frac,
-                bankroll=self._bankroll,
-            )
+            if fixed_stake_usd is not None:
+                # ADR-0050 (2026-07-30): T4M-PROJ measurement reactivation.
+                # Edge is unvalidated (GG-105 open) — kelly_fraction stays
+                # 0.0 upstream so the proportional path never engages; this
+                # bypasses _compute_kelly_size entirely rather than deriving
+                # a size from it. The gate checks above (edge threshold,
+                # direction consistency) already ran and must have passed —
+                # only sizing is fixed here.
+                approved_size = float(fixed_stake_usd)
+                sizing_mode = "fixed_measurement"
+            else:
+                kelly_frac = float(fc.get("kelly_fraction", self._kelly_fraction))
+                approved_size = _compute_kelly_size(
+                    p_estimate=p_effective,
+                    market_implied_prob=mip_effective,
+                    kelly_fraction=kelly_frac,
+                    bankroll=self._bankroll,
+                )
+                sizing_mode = "kelly"
 
             # CHECK 6 — Single-event exposure limit
             if approved_size > _HARD_LIMITS["max_single_event_exposure_usd"]:
@@ -720,6 +745,7 @@ class RiskEngine:
                         "reason": "kelly_size_zero",
                         "p_estimate": p_effective,
                         "market_implied_prob": mip_effective,
+                        "sizing_mode": sizing_mode,
                     },
                     severity="INFO",
                     session_id=session_id,
@@ -731,7 +757,9 @@ class RiskEngine:
                 return all_ok, self._build_rejection(
                     eval_id, "kelly_size_zero", checks_passed, forecast_id
                 )
-            checks_passed.append("kelly_size_positive")
+            checks_passed.append(
+                "kelly_size_positive" if sizing_mode == "kelly" else "fixed_stake_positive"
+            )
 
             # CHECK 7 — Minimum bet floor (uses instance override for paper T4)
             if approved_size < self._min_bet_usd:
@@ -863,6 +891,7 @@ class RiskEngine:
                 "checks_passed": checks_passed,
                 "forecast_id": forecast_id,
                 "kelly_fraction": self._kelly_fraction,
+                "sizing_mode": sizing_mode,
                 "bankroll": self._bankroll,
                 # ADR-0026 / T-175 portfolio telemetry (None when caller did not supply state)
                 "portfolio_equity_usd": (
@@ -882,6 +911,7 @@ class RiskEngine:
                     "approved_direction": direction,
                     "checks_passed": checks_passed,
                     "kelly_fraction": self._kelly_fraction,
+                    "sizing_mode": sizing_mode,
                 },
                 session_id=session_id,
                 risk_eval_id=eval_id,
