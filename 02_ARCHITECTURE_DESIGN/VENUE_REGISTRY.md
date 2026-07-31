@@ -44,6 +44,7 @@ California has no legal retail sports betting (Prop 26/27 both failed). The elig
 | Adapter | `KalshiVenueAdapter` (`c5_execution/venue_adapter.py`) |
 | implied_prob_method | `market` |
 | Connectivity | Datacenter IP required (CloudFront WAF blocks home/work ISP) |
+| Rate limit tier (DEMO account, unverified for production) | `usage_tier=basic` — read bucket 400 cap / 200-per-sec refill, write bucket 100 cap / 100-per-sec refill. Source: `GET /account/limits`, captured 2026-07-31 (Phase 0-A, `exp_output/PHASE0_SURVEY/account_limits.json`). **This call ran under `BOT_ENV=ENV-01`, which routes authenticated endpoints to the demo sandbox (`kalshi_client.py:98-101`) — it is the demo account's tier, not production's.** The production account's tier is unknown and unmeasured; do not treat this figure as the live limit until re-captured under `BOT_ENV=ENV-03`/live routing (see GG-152). Unauthenticated market-data reads (`/series`, `/markets`) are unaffected by this caveat — they route to production unconditionally via `_price_discovery_url()` regardless of `BOT_ENV`. |
 
 ---
 
