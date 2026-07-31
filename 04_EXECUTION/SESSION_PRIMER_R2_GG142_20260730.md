@@ -5,7 +5,17 @@ substantive work is DONE, COMMITTED, and PUSHED — nothing is at risk of loss. 
 file exists only so a follow-on session can resume the small amount of bookkeeping
 left (PR creation) without re-deriving context.
 
-## Status: work complete, not yet merged
+## Status: PR OPEN (#60), not yet merged
+
+**Update 2026-07-30 (tokens reset, session continued):** PR opened —
+https://github.com/eignacio1/prediction-market-bot/pull/60. GG-126 register
+parity also fixed same session: ADR-0048 and ADR-0049 were both missing from
+`00_ADMIN/APPROVALS_REGISTER.md` (flagged by `governance_scan.sh`'s parity
+check); written back directly to `main` in commit `f9c9605` (doc-only,
+path-scoped, no HEAD drift at write time). Remaining step is merge — left
+for the operator or a follow-on session, not done unilaterally here.
+
+## (historical) Status: work complete, not yet merged
 
 - Branch: `session/20260730T052831Z-r2-gate-fix`
 - Worktree: `/Users/earlignacio/Documents/Claude/Projects/PM-worktrees/20260730T052831Z-r2-gate-fix/`
