@@ -402,6 +402,82 @@ class TestReconstructFiredTickerStates:
 
 
 # ---------------------------------------------------------------------------
+# GG-149: intra-book + cross-book offsetting-position suppression
+# ---------------------------------------------------------------------------
+
+
+class TestFindOpenPositionOppositeDirection:
+    def test_opposite_direction_open_position_found(self):
+        open_positions = [
+            {"kalshi_ticker": "T1", "status": "OPEN", "direction": "YES", "fee_net_edge": 0.05},
+        ]
+        result = runner._find_open_position_opposite_direction(open_positions, "T1", "NO")
+        assert result is not None
+        assert result["direction"] == "YES"
+
+    def test_same_direction_repeat_not_flagged(self):
+        # A same-direction re-entry is governed by the pre-existing
+        # already_fired_game state-dedup guard, not this control — this
+        # function must return None so the caller does not suppress it.
+        open_positions = [
+            {"kalshi_ticker": "T1", "status": "OPEN", "direction": "YES", "fee_net_edge": 0.05},
+        ]
+        result = runner._find_open_position_opposite_direction(open_positions, "T1", "YES")
+        assert result is None
+
+    def test_closed_opposite_position_not_flagged(self):
+        open_positions = [
+            {"kalshi_ticker": "T1", "status": "CLOSED", "direction": "YES", "fee_net_edge": 0.05},
+        ]
+        result = runner._find_open_position_opposite_direction(open_positions, "T1", "NO")
+        assert result is None
+
+    def test_different_ticker_not_flagged(self):
+        open_positions = [
+            {"kalshi_ticker": "T2", "status": "OPEN", "direction": "YES", "fee_net_edge": 0.05},
+        ]
+        result = runner._find_open_position_opposite_direction(open_positions, "T1", "NO")
+        assert result is None
+
+
+class TestT1OpenPositionOppositeDirection:
+    def test_missing_t1_portfolio_file_returns_none(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(runner, "_T1_PORTFOLIO_PATH", tmp_path / "does_not_exist.json")
+        result = runner._t1_open_position_opposite_direction("T1", "YES")
+        assert result is None
+
+    def test_malformed_t1_portfolio_file_does_not_raise(self, tmp_path, monkeypatch):
+        bad_path = tmp_path / "paper_portfolio_mlb.json"
+        bad_path.write_text("{not valid json")
+        monkeypatch.setattr(runner, "_T1_PORTFOLIO_PATH", bad_path)
+        result = runner._t1_open_position_opposite_direction("T1", "YES")
+        assert result is None
+
+    def test_opposite_direction_open_t1_position_found(self, tmp_path, monkeypatch):
+        t1_path = tmp_path / "paper_portfolio_mlb.json"
+        t1_path.write_text(json.dumps({
+            "open_positions": [
+                {"kalshi_ticker": "T1", "status": "OPEN", "direction": "NO", "fee_net_edge": 0.03},
+            ],
+        }))
+        monkeypatch.setattr(runner, "_T1_PORTFOLIO_PATH", t1_path)
+        result = runner._t1_open_position_opposite_direction("T1", "YES")
+        assert result is not None
+        assert result["direction"] == "NO"
+
+    def test_same_direction_t1_position_not_flagged(self, tmp_path, monkeypatch):
+        t1_path = tmp_path / "paper_portfolio_mlb.json"
+        t1_path.write_text(json.dumps({
+            "open_positions": [
+                {"kalshi_ticker": "T1", "status": "OPEN", "direction": "YES", "fee_net_edge": 0.03},
+            ],
+        }))
+        monkeypatch.setattr(runner, "_T1_PORTFOLIO_PATH", t1_path)
+        result = runner._t1_open_position_opposite_direction("T1", "YES")
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
 # _game_date_window — GG-081/GG-082 (2026-07-04) UTC-midnight-rollover fix
 # ---------------------------------------------------------------------------
 
