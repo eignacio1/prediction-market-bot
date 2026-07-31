@@ -428,8 +428,8 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
     LogicEpochBoundary(
         epoch=11,
         resolving_gap="GG-046",
-        commit_sha="b7ff2812d5471a33460b3853b53ed63c9bc5ce07",
-        commit_utc=datetime(2026, 7, 31, 2, 18, 11, tzinfo=timezone.utc),
+        commit_sha="cafcf742ad2a5fd41c666a80c9d32b489b514b97",
+        commit_utc=datetime(2026, 7, 31, 6, 36, 44, tzinfo=timezone.utc),
         description=(
             "ADR-0050: T4M-PROJ reactivated at a flat $1.00 measurement "
             "stake, replacing the GG-087 '1 contract at market price' "
@@ -448,14 +448,26 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "is to accrue a clean, gate-fixed T4M-PROJ cohort at a size "
             "far inside GG-045 orderbook depth. MAIN (T1/T2/T3) sizing "
             "is unchanged. DS sign-off: operator, 2026-07-30. See "
-            "ADR-0050, GG-046, DECISION_LOG.md 2026-07-30."
+            "ADR-0050, GG-046, DECISION_LOG.md 2026-07-30. "
+            "GG-148 (2026-07-31): commit_sha corrected from the original "
+            "R3 commit (b7ff281) to cafcf74 — b7ff281's own "
+            "StagedOrderStore.stage_order() unconditionally rejected "
+            "every kelly_fraction=0.0 call (GG-147), so zero T4M-PROJ "
+            "positions could ever have been recorded under that commit; "
+            "cafcf74 is the first commit under which epoch 11 can "
+            "actually produce data, and is also where the addendum's "
+            "contract cap (§B) first exists, itself a sizing-path change "
+            "this epoch's own convention would otherwise require a new "
+            "boundary for — folded into epoch 11 in place rather than "
+            "bumped to 12 specifically because the prior commit_sha "
+            "produced no real rows to protect from contamination."
         ),
-        # git show b7ff281: risk.py (fixed_stake_usd param, band-gated by
-        # caller — None everywhere except T4M-PROJ's own call site) +
-        # run_t4_mlb_live.py (T4_MEASUREMENT_STAKE_USD wiring). Only
-        # T4M-PROJ's write path actually changes behavior; T1/T2/T3 never
-        # pass fixed_stake_usd, so their evaluate_forecast() code path is
-        # bit-for-bit unchanged.
+        # git show cafcf74: staged_order_store.py (0.0 <= kelly_fraction
+        # bound fix, GG-147) + run_t4_mlb_live.py (contract cap via
+        # measurement_stake_and_stratum(), entry_price_paid/price_stratum
+        # stamping) + paper_trader.py (field passthrough). Supersedes the
+        # b7ff281 commit_sha this boundary originally recorded — see the
+        # GG-148 note in the description above.
         bands_affected=frozenset({"T4M-PROJ"}),
     ),
 )
