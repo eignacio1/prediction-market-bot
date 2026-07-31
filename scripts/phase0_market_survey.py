@@ -62,11 +62,23 @@ MAX_RETRIES = 5
 # UNCLASSIFIED and is reported rather than silently dropped -- an unmatched
 # series is a finding, not noise.
 FAMILY_PATTERNS: list[tuple[str, str]] = [
-    ("PLAYER_PROP", r"(HIT|PTS|STRIKEOUT|HR|TOTALBASE|RBI|ASSIST|REBOUND|PASSYD|RUSHYD)"),
+    # MLBKS (strikeouts prop) and MLBF3/F5/F7 (partial-game winners) were found
+    # missing entirely from this classifier (both landed UNCLASSIFIED) during
+    # the 2026-07-31 Phase 0-B session's hand review of the "220 MLB-looking
+    # series" search space -- matched on the MLB-prefixed ticker token rather
+    # than a bare "KS"/"F3" pattern, since those short tokens collide with
+    # unrelated tickers (e.g. NHL "KNICKS"-style substrings, generic "F3"
+    # noise) that have nothing to do with strikeouts or partial-game winners.
+    ("PLAYER_PROP", r"(HIT|PTS|STRIKEOUT|MLBKS|HR|TOTALBASE|RBI|ASSIST|REBOUND|PASSYD|RUSHYD)"),
     ("SEASON_WIN_TOTAL", r"(SEASONWIN|WINTOTAL|WINS)"),
     ("TEAM_TOTAL", r"(TEAMTOTAL|TEAMRUN|TEAMSCORE)"),
     ("GAME_TOTAL", r"(TOTAL|OVERUNDER|RUNS|POINTS)"),
     ("RUN_LINE", r"(RUNLINE|SPREAD|HANDICAP|LINE)"),
+    # Must sit after GAME_TOTAL/RUN_LINE: KXMLBF5TOTAL and KXMLBF5SPREAD are
+    # partial-game TOTAL/RUN_LINE variants, not partial-game winner markets,
+    # and need to be caught by those patterns first. Only a bare KXMLBF3/F5/F7
+    # (no TOTAL/SPREAD suffix) is a genuine partial-game winner market.
+    ("PARTIAL_GAME_WINNER", r"MLBF[357]"),
     ("GAME_WINNER", r"(GAME|WINNER|WIN|MATCH)"),
 ]
 
