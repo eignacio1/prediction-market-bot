@@ -2800,6 +2800,38 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Resolution | **RESOLVED, same session.** Epoch 11's `commit_sha` corrected to `cafcf742ad2a5fd41c666a80c9d32b489b514b97` (`cafcf74`, full 40-char SHA), `commit_utc` updated to that commit's actual timestamp, and its description extended with a dated note explaining the correction and why it was folded into epoch 11 in place rather than bumped to a new epoch 12 (no real epoch-11 rows exist to protect from contamination under either SHA, since `b7ff281` produced none). `tests/test_backfill_logic_epoch.py` + `tests/test_check_epoch_activation.py` re-run clean (31/31); `scripts/check_epoch_activation.py --skip-vps` re-run: same pre-existing non-blocking stacking warning as R3's own run (epochs 9/10/11 all within the trailing 7-day window), no new warning introduced by this fix. |
 | Status | RESOLVED 2026-07-31 (commit pending — see DECISION_LOG.md 2026-07-31). |
 
+### GG-149 — 161 T4M-PROJ tickers held simultaneous open YES and NO positions (wash trades), and the existing per-ticker re-entry guard does not and cannot prevent this
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-149 |
+| Arm | MLB (T4M-PROJ) |
+| Category | Systemic blind spot — a live-state re-evaluation strategy (T4's 45-90s cycle) can flip its own recommended direction on the same market between cycles, and nothing in the staging/execution path checked for an existing opposite-direction position before this fix. |
+| What was missed | On the live T4M-PROJ ledger, 161 tickers were found holding both an open YES and an open NO position simultaneously (zero sequential — both open at once), a wash trade under Kalshi's CFTC-DCM rulebook (no manipulative intent — the model re-evaluated live state and took the other side without closing the first). 141 closed locked pairs / 374 legs, combined -$0.13 on $178.76 stake. Separately, 35 tickers carry opposite directions across the T1 and T4 books (a distinct, cross-process instance of the same underlying issue). Two problems: (1) measurement — 374 of 2,015 legs (18.6%) are deterministic wash pairs with zero edge information, contaminating any headline ROI/edge figure; (2) conduct — a hard control plus written policy is required before G6. |
+| When it should have been caught | At T4's original re-entry-guard design (T-208/GG-050, T-225/GG-076) — those fixes addressed *duplicate identical-state* re-entry, not *opposite-direction* re-entry, and no test at that time asserted direction-awareness. |
+| Phases it survived | T4M-PROJ's entire live paper-trading history through epoch 11 (ADR-0050 flat-stake reactivation) — the ledger accumulated 161 locked-pair tickers before this session's audit surfaced them. |
+| Why it survived | Diagnosed this session: the existing `already_fired_game` guard (`run_t4_mlb_live.py`) is keyed on ticker as a bare string, but its blocking condition is `(h_so_far, ab_remaining)` state-equality — a live-state tuple with no direction field anywhere — and its source (`_reconstruct_fired_ticker_states`) merges open+closed positions, last-write-wins. An opposite-direction bet at a *changed* live state sails through by design (T-225's explicit intent was to allow re-entry once state moves), so the guard was never capable of catching this case regardless of how long it ran. |
+| Impact | MEDIUM-HIGH: measurement (18.6% of legs are zero-information wash pairs, directly biasing any GG-046/EXP-T4-01 edge estimate computed over the raw ledger) and regulatory-conduct (wash trades are prohibited under Kalshi's CFTC-DCM rulebook regardless of intent) both require remediation before G6. |
+| Discovery | 2026-07-31, session `session/20260731T020022Z-t4-reactivate`, via a timestamp-overlap query across the live T4M-PROJ ledger (per-ticker, opposite-direction, overlapping open intervals). |
+| Resolution | **RESOLVED, same session.** Intra-book (T4 vs T4): before staging any order, check T4's own open positions for the same `kalshi_ticker` with the opposite direction; if found, SKIP (never close-and-reverse — out of scope, requires a separate ADR-0018-governed decision) and log `t4_offsetting_suppressed` with both edges. `logic_epoch.py` bumped 11→12, `bands_affected={"T4M-PROJ"}` only. ADR-0050 §9(h)/(i) pre-registers locked-pair cohort exclusion (both legs, retroactive+prospective) and suppression-count as a reported metric. 161 historical tickers (425 legs, open+closed) tagged via `scripts/tag_locked_pairs_t4_mlb.py` — filter-based exclusion only, no P&L altered. 8 new unit tests + full 203/203 T4 suite passing. See ADR-0050 §9, `logic_epoch.py` epoch 12, DECISION_LOG.md 2026-07-31. |
+| Status | RESOLVED 2026-07-31 (commit pending — see DECISION_LOG.md 2026-07-31). |
+
+### GG-150 — Cross-book (T1 vs T4) opposite-direction conflicts are alarmed, not blocked; a blocking control is an unstaffed gap
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-150 |
+| Arm | MLB (T1 + T4M-PROJ, cross-book) |
+| Category | Architectural placeholder — a deliberate scope boundary, not a defect, registered so it is not silently forgotten. |
+| What was missed | GG-149's audit found 35 tickers carrying opposite directions across the T1 and T4 books (T1 holding YES while T4 holds NO on the same ticker, or vice versa). ADR-0023 pool-isolates T1 and T4 as separate processes with separate portfolio files and no shared coordination mechanism, so this session implemented a read-only, best-effort, alarm-only check (`t4_t1_cross_book_direction_conflict`, WARNING severity) rather than a blocking one — building real cross-process blocking would require a coordination mechanism (lock, shared ledger, or merged execution path) that does not exist today and was explicitly out of scope for this task. |
+| When it should have been caught | N/A — this is a forward-registered scope boundary from the same session that fixed GG-149, not a missed catch. |
+| Phases it survived | N/A. |
+| Why it survived | N/A — deliberately deferred, not a governance failure. |
+| Impact | LOW today (alarm-only is sufficient to make the condition visible; T1 and T4 are separate bankroll pools per ADR-0023/GG-070, so a cross-book wash is not a same-account wash trade in the same regulatory sense as GG-149's intra-book case) but will need revisiting if T1 and T4 are ever unified into one execution path or one venue account. |
+| Discovery | 2026-07-31, session `session/20260731T020022Z-t4-reactivate`, alongside GG-149. |
+| Resolution | Unstaffed. Requires a decision on whether/how to build real cross-process coordination (new ADR, since it touches ADR-0023's pool-isolation design) before any blocking behavior is implemented. |
+| Status | OPEN — unstaffed, no T-NNN assigned. |
+
 ---
 
 

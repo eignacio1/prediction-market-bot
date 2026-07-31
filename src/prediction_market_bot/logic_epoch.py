@@ -470,6 +470,52 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # GG-148 note in the description above.
         bands_affected=frozenset({"T4M-PROJ"}),
     ),
+    LogicEpochBoundary(
+        epoch=12,
+        resolving_gap="GG-149",
+        commit_sha="01aaadeec38339c641f5dd33e0ba94896ee3ffb9",
+        commit_utc=datetime(2026, 7, 31, 8, 0, 0, tzinfo=timezone.utc),
+        description=(
+            "GG-149: T4 offsetting-position suppression. 161 T4M-PROJ "
+            "tickers were found holding simultaneous open YES and NO "
+            "positions (a wash trade under Kalshi's CFTC-DCM rulebook, no "
+            "manipulative intent — the model re-evaluated and took the "
+            "other side without closing the first); 141 closed locked "
+            "pairs / 374 legs, combined -$0.13 on $178.76 stake, plus 35 "
+            "tickers with opposite directions across the T1/T4 books. "
+            "Diagnosed the existing per-ticker re-entry guard "
+            "(already_fired_game, T-208/T-225) as NOT applicable: it is "
+            "keyed on ticker but blocks on (h_so_far, ab_remaining) "
+            "state-equality with no direction field, and merges "
+            "open+closed positions — an opposite-direction bet at a "
+            "changed live state sails through by design. This is a "
+            "genuinely new control, not a repair. Implemented: (1) "
+            "intra-book (T4 vs T4) — before staging any order, check for "
+            "an OPEN position on the same kalshi_ticker with the opposite "
+            "direction; if found, SKIP (never close-and-reverse, which is "
+            "a separate ADR-0018-governed decision, out of scope). Logs "
+            "t4_offsetting_suppressed with both edges. (2) cross-book (T1 "
+            "vs T4) — read-only, best-effort check of T1's portfolio file; "
+            "ADR-0023 pool isolation means this is alarm-only "
+            "(t4_t1_cross_book_direction_conflict, WARNING), never "
+            "blocking — no cross-process coordination mechanism exists or "
+            "should be improvised here. ADR-0050 pre-registration amended "
+            "(append, Hard Rule 3): locked pairs (same-ticker, "
+            "opposite-direction, overlapping open intervals) are EXCLUDED "
+            "from the measurement cohort, both legs, retroactive + "
+            "prospective; suppression-event count is itself a reported "
+            "metric. 161 historical locked-pair tickers (425 legs) tagged "
+            "via scripts/tag_locked_pairs_t4_mlb.py — filter-based "
+            "exclusion only, no P&L altered. Bands affected: T4M-PROJ "
+            "only (MAIN untouched). DS sign-off: operator, 2026-07-31. "
+            "See GG-149, GG-150 (cross-book blocking variant, registered "
+            "unstaffed), DECISION_LOG.md 2026-07-31."
+        ),
+        # git show 01aaade: run_t4_mlb_live.py (_find_open_position_
+        # opposite_direction, _t1_open_position_opposite_direction, two new
+        # checks in _run_cycle) + 8 new unit tests + retroactive tagger.
+        bands_affected=frozenset({"T4M-PROJ"}),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
