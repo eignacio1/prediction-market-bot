@@ -3,7 +3,7 @@
 **Purpose:** Register all target venues for this system — mechanics, regulatory basis, CA eligibility, pricing structure, edge formula, and activation status.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-07-02 (documentation-remediation pass — added the MLB KXMLBHIT series and fee-rate caveat this document was silent on; also note the Kalshi order endpoint migrated v1→v2, `/portfolio/events/orders`, per ADR-0038 SESSION 108 after Kalshi deprecated v1 platform-wide). Prior substantive review: 2026-05-29 (initial build — Phase 6 idle period)
+**Last reviewed:** 2026-07-31 (Phase 0-B depth survey — added measured orderbook depth per market family (first-ever traced measurement, `depth_sample.json`), the $25,000/contract position limit (Rulebook 5.14(a)), and corrected the prior "$500-$2,000 depth" claim for KXMLBHIT-class markets, which was never sourced and is contradicted by the measured data: real median depth for that family is $0.90, see GG-155). Prior review: 2026-07-02 (documentation-remediation pass — added the MLB KXMLBHIT series and fee-rate caveat this document was silent on; also note the Kalshi order endpoint migrated v1→v2, `/portfolio/events/orders`, per ADR-0038 SESSION 108 after Kalshi deprecated v1 platform-wide). Prior substantive review: 2026-05-29 (initial build — Phase 6 idle period)
 **Next review:** On any new venue activated; on API change; on regulatory status change
 **Staleness triggers:** Venue added or removed; regulatory change; API version change; ADR update
 **Upstream links:** STRATEGY_OVERVIEW.md; ADR-0003 (venue selection); INTERFACES_CONTRACTS.md
@@ -45,6 +45,22 @@ California has no legal retail sports betting (Prop 26/27 both failed). The elig
 | implied_prob_method | `market` |
 | Connectivity | Datacenter IP required (CloudFront WAF blocks home/work ISP) |
 | Rate limit tier (DEMO account, unverified for production) | `usage_tier=basic` — read bucket 400 cap / 200-per-sec refill, write bucket 100 cap / 100-per-sec refill. Source: `GET /account/limits`, captured 2026-07-31 (Phase 0-A, `exp_output/PHASE0_SURVEY/account_limits.json`). **This call ran under `BOT_ENV=ENV-01`, which routes authenticated endpoints to the demo sandbox (`kalshi_client.py:98-101`) — it is the demo account's tier, not production's.** The production account's tier is unknown and unmeasured; do not treat this figure as the live limit until re-captured under `BOT_ENV=ENV-03`/live routing (see GG-152). Unauthenticated market-data reads (`/series`, `/markets`) are unaffected by this caveat — they route to production unconditionally via `_price_discovery_url()` regardless of `BOT_ENV`. |
+| Position limit | **$25,000 per contract** (Kalshi Rulebook 5.14(a), sourced in `02_ARCHITECTURE_DESIGN/MARKET_UNIVERSE_SURVEY_SPEC.md`). Does not bind today — `_HARD_LIMITS["max_single_event_exposure_usd"]=500.0` (`risk.py`) is 50x inside it — but it is the true external ceiling, distinct from the measured orderbook-depth ceiling below. |
+| Measured orderbook depth — basic, DEMO-SOURCED (Phase 0-B, 2026-07-31) | See table below. Sampled live via `GET /markets/{ticker}/orderbook`, 20 markets/family, `exp_output/PHASE0_SURVEY/depth_sample.json`. **This corrects CLAUDE.md's prior unsourced "$500-$2,000 depth" claim for KXMLBHIT-class markets** — that figure was never traced to a measurement and this survey is the first one. The real number is far below it: `PLAYER_PROP` (the family KXMLBHIT/KXMLBHR/KXMLBRBI/KXMLBKS classify into) measured a **median of $0.90 and a minimum of $0.00** notional absorbable within 5c of mid, across 3 usable books out of 20 sampled (17/20 had no two-sided book at all). This fails even the survey's own $10 depth-gate floor (10x the $1.00 ADR-0050 measurement stake), let alone the $500-$2,000 range CLAUDE.md asserted. See GG-155. |
+
+**Measured depth by family (Phase 0-B, sampled 2026-07-31T20:13:03Z, `depth_sample.json`):**
+
+| Family | Sampled | Usable | Median within-5c depth (USD) | Min depth (USD) | Gate ($10 floor) |
+|---|---:|---:|---:|---:|---|
+| GAME_TOTAL | 20 | 20 | 0.0 | 0.0 | **FAIL** |
+| GAME_WINNER | 20 | 20 | 1,646.50 | 0.0 | PASS |
+| PARTIAL_GAME_WINNER (KXMLBF3/F5/F7) | 20 | 17 | 410.99 | 156.96 | PASS |
+| **PLAYER_PROP (KXMLBHIT/KXMLBHR/KXMLBRBI/KXMLBKS)** | 20 | 3 | **0.90** | **0.00** | **FAIL** |
+| RUN_LINE | 20 | 20 | 0.0 | 0.0 | **FAIL** |
+| SEASON_WIN_TOTAL | 20 | 10 | 5.96 | 0.42 | **FAIL** |
+| TEAM_TOTAL | 20 | 20 | 2,043.53 | 882.70 | PASS |
+
+Scope caveat: sampled from Phase 0-A's 220-series "MLB-looking" search space (89.5% literal `*MLB*` tickers, remainder mostly adjacent baseball leagues); does not change any verdict above. Full detail: `exp_output/PHASE0_SURVEY/SURVEY_TABLES.md`.
 
 ---
 
