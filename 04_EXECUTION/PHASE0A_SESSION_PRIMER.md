@@ -3,7 +3,7 @@
 **Branch:** `session/20260731T152256Z-phase0a-raw-capture` (pushed to origin)
 **Worktree:** `PM-worktrees/20260731T152256Z-phase0a-raw-capture`
 
-## Status: DELIVERABLE COMPLETE, pushed. Report-out to user still pending.
+## Status: ALL TASKS COMPLETE (Task 1, Task 2, GG-152 follow-up, Q1-Q6 review), pushed. Only outstanding item is the same-day Task 1 re-check once tonight's slate resolves (not yet actionable — see bottom).
 
 ### Task 1 (epoch-12 verification) — DONE
 - Deployed VPS SHA confirmed = source-of-truth epoch-12 boundary (commit `66bb0d3c`, GG-149), verified as ancestor of live HEAD `2084449`, not trusted via git log alone.
@@ -19,10 +19,24 @@ Commit `6afc297` on this branch. Files in `exp_output/PHASE0_SURVEY/`:
 
 Capture script used (not committed, lived in scratchpad): calls `KalshiMarketClient.from_env()._get(...)` directly — no hand-rolled RSA signing, per task constraint. `.env` was read from the **main tree** (`Prediction Markets/.env`), not copied into the worktree (worktrees don't inherit gitignored files) — reproduce via `PHASE0A_ENV_FILE=".../Prediction Markets/.env"` env var if re-running.
 
-### Still pending
-1. Task #2 (Q1-Q6 "ARE WE COMPROMISED" adversarial review) — not run this session. Scope was read-only capture/verification; judgment call was to prioritize the blocking deliverable given context pressure. Should still be done, at least abbreviated, before calling the session fully closed.
-2. Final chat report to user: tier+budgets, series count, MLB-related count, Task 1 result, closing with Assumptions/Key Risks/Validation Checks/Confidence. Explicitly do NOT classify/tabulate the market data — that's the Cowork window's job.
-3. Consider a same-day re-check of Task 1 after tonight's MLB slate resolves (epoch-12 rows should exist by tomorrow morning).
+### Follow-up items (2026-07-31, later same session)
+- User supplied two small follow-ups after Task 1/2 closed: register a GG for the `BOT_ENV` vocabulary mismatch (`_kalshi_base_url()` never matches documented `ENV-03`, silently misroutes live-intent order submission to demo), and correct `VENUE_REGISTRY.md` to record `usage_tier=basic` as demo-scoped, not the live tier. Both done, commit `6dc6a3d`: **GG-152 registered** (OPEN, G6 precondition, no code fix shipped per explicit instruction pending operator sign-off), `VENUE_REGISTRY.md` V-001 corrected, `.env.example:22` discrepancy flagged unresolved, `PHASE0A_PARKING_NOTES.md` created (environment question resolved: `/series`,`/markets` are production-unconditional regardless of `BOT_ENV`; only `/account/limits` followed BOT_ENV to demo).
+- Q1-Q6 "ARE WE COMPROMISED" adversarial review — **run this session** (commit follows). See summary below.
+
+### Q1-Q6 review summary (2026-07-31)
+- **Q1 (hard limits):** `risk.py` `_HARD_LIMITS` unchanged (`max_single_event_exposure_usd=500`, `max_drawdown_pct=0.20`, `max_portfolio_deployment_pct` via ADR-0026); `execution_bands.py` kelly_fractions match known state — MAIN/T1/T4M-PROJ zeroed per ADR-0048 (2026-07-29, GG-135 ruin-geometry remediation), T4-PROJ/T5-ARITH (NBA) inert since NBA is dark. Nothing new.
+- **Q2 (stub scan):** CLEAN (governance hook, this session) — no `# stub|# placeholder|# TBD|# todo` hits in `src/`.
+- **Q3 (architecture coherence):** No change to the three largest post-G4 builds this session; this session touched only docs (VENUE_REGISTRY, GOVERNANCE_GAP_LOG, DECISION_LOG) plus a raw-capture script that was never committed to `src/`.
+- **Q4 (interface evolution):** `evaluate_forecast` (risk.py:352), `open_position`/`exit_position` (paper_trader.py:380/596), `submit_order` (kalshi_client.py:553) all present, signatures not touched this session.
+- **Q5 (decision traceability):** `DEFAULT_KELLY_FRACTION=0.25`, `MIN_EDGE_TO_APPROVE=0.04` (ADR-0020), and all three `_HARD_LIMITS` trace to the 2026-05-29 RETROACTIVE DECISION_LOG block. No orphaned constants found.
+- **Q6 (what am I worried about):**
+  1. **GG-152 itself** — the standout finding this session. Unstaffed, no T-NNN, explicitly a G6 precondition. Flagging again here so it isn't lost in the doc shuffle: this must be resolved (with operator sign-off) before `BOT_ENV=ENV-03` is ever set for real.
+  2. **Governance gap burn-down is trending the wrong way** — live scan this session: 27 open / 150 total, +9 over the last 14 days (+0.64/day), trend GROWING. Not a new gap in itself and not actioned here (out of this session's scope), but worth surfacing to Earl directly rather than letting it sit silently in scan output.
+  3. Nothing else rose to the level of a new concern — Q1/Q4/Q5 constants and interfaces all check out unchanged against their last-known-good state.
+- No new GG registered from Q1-Q5 (nothing new found); Q6 concerns are either already covered by GG-152 or are an operator-visibility note, not a new gap.
+
+### Re-check still due (not actionable yet)
+Same-day re-check of Task 1 (epoch-12 sizing / `t4_offsetting_suppressed` counts) after tonight's MLB slate resolves. As of 2026-07-31T19:05Z the slate is live (first pitch 18:20Z) — not yet resolved. Re-verify in a fresh session once games are final (expect epoch-12 rows to exist by tomorrow morning).
 
 ### Scope discipline maintained
 No writes to `src/`, `execution_bands.py`, `risk.py`, `paper_trader.py`. No orders placed. No classification/tabulation performed on captured data.
