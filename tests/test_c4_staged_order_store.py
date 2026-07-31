@@ -110,8 +110,26 @@ class TestStageOrder:
             store.stage_order(**_valid_order(sized_amount_usd=-5.0))
 
     def test_invalid_kelly_fraction_raises(self, store):
+        # ADR-0050 addendum §A (2026-07-30): 0.0 was wrongly rejected here
+        # pre-fix — every T4M-PROJ call passes kelly_fraction=KELLY_T4==0.0,
+        # so this bound previously made every T4M-PROJ stage_order() call
+        # raise, silently swallowed by run_t4_mlb_live.py's try/except, and
+        # no T4M-PROJ paper position was ever actually recorded. 0.0 is a
+        # valid kelly_fraction (fixed-stake measurement mode); only values
+        # outside [0, 1] are invalid.
         with pytest.raises(ValueError, match="kelly_fraction"):
-            store.stage_order(**_valid_order(kelly_fraction=0.0))
+            store.stage_order(**_valid_order(kelly_fraction=-0.1))
+        with pytest.raises(ValueError, match="kelly_fraction"):
+            store.stage_order(**_valid_order(kelly_fraction=1.5))
+
+    def test_zero_kelly_fraction_accepted(self, store):
+        # ADR-0050 (2026-07-30): T4M-PROJ's flat-measurement-stake reactivation
+        # depends on kelly_fraction=0.0 being staged successfully — this is the
+        # exact call shape run_t4_mlb_live.py makes for every T4M-PROJ bet.
+        oid = store.stage_order(**_valid_order(kelly_fraction=0.0, sized_amount_usd=1.0))
+        rec = store.get_by_order_id(oid)
+        assert rec["status"] == "STAGED"
+        assert rec["kelly_fraction"] == 0.0
 
     def test_multiple_orders_different_ids(self, store):
         oid1 = store.stage_order(**_valid_order(market_id="MKT-001"))

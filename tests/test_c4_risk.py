@@ -441,13 +441,18 @@ class TestFixedStakeMeasurement:
     @pytest.mark.unit
     def test_kelly_zero_without_fixed_stake_still_rejects(self):
         """Confirms the bypass is opt-in: kelly_fraction=0.0 with no
-        fixed_stake_usd must still reject exactly as before ADR-0050."""
+        fixed_stake_usd must still reject exactly as before ADR-0050.
+
+        ADR-0050 addendum Part D.2 (2026-07-30): explicitly assert
+        approved_size == 0.0 on the path where KELLY_T4 alone would apply
+        (fixed_stake_usd not passed) — not just the rejection_reason string."""
         fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
         with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
             engine = _make_engine(kelly_fraction=0.0)
             _, result = engine.evaluate_forecast(fc)
         assert result["approval_status"] == STATUS_REJECTED
         assert result["rejection_reason"] == "kelly_size_zero"
+        assert result["approved_size"] == 0.0
 
     @pytest.mark.unit
     def test_fixed_stake_still_gated_by_insufficient_edge(self):
@@ -471,6 +476,75 @@ class TestFixedStakeMeasurement:
         assert result["approval_status"] == STATUS_APPROVED
         assert result["sizing_mode"] == "kelly"
         assert result["approved_size"] != 1.00
+
+
+# ---------------------------------------------------------------------------
+# ADR-0050 addendum Part D.1 (2026-07-30): end-to-end evaluate_forecast() ->
+# approval -> StagedOrderStore.stage_order() path.
+#
+# TestFixedStakeMeasurement above asserts only that RiskEngine.evaluate_forecast()
+# returns approved_size == fixed_stake_usd. That is NOT sufficient: it was
+# passing the whole time a second, independent bug sat in
+# StagedOrderStore.stage_order()'s validation (`0.0 < kelly_fraction <= 1.0`,
+# rejecting kelly_fraction=0.0 — exactly KELLY_T4's value). Every T4M-PROJ
+# call from run_t4_mlb_live.py raised ValueError there, silently caught by a
+# try/except that logged a warning and continued the loop — so
+# trader.open_position() was never reached and no T4M-PROJ paper position was
+# ever actually recorded, regardless of what RiskEngine approved. Only a test
+# that walks the full C4 -> C4-staging path, as this class does, would have
+# caught it. (Now fixed: staged_order_store.py's bound is 0.0 <= kf <= 1.0.)
+# ---------------------------------------------------------------------------
+
+
+class TestFixedStakeReachesStagedOrder:
+    @pytest.mark.unit
+    def test_gate_valid_bet_reaches_staged_order_at_approved_size(self, tmp_path):
+        from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(kelly_fraction=0.0, min_bet_usd=0.01)
+            ok, approval = engine.evaluate_forecast(fc, fixed_stake_usd=1.00)
+
+        assert ok
+        assert approval["approval_status"] == STATUS_APPROVED
+        assert approval["approved_size"] == 1.00
+
+        store = StagedOrderStore(str(tmp_path / "e2e_staged.db"))
+        # This is the exact call shape run_t4_mlb_live.py makes: kelly_fraction
+        # is KELLY_T4 (0.0, always), sized_amount_usd is C4's approved_size.
+        order_id = store.stage_order(
+            market_id="KXMLBHIT-TEST-YES",
+            player_id="TestBatter",
+            threshold=0.5,
+            direction="YES",
+            strategy="A",
+            p_t1=fc["p_estimate"],
+            p_entry=fc["market_implied_prob"],
+            kelly_fraction=0.0,
+            sized_amount_usd=approval["approved_size"],
+            valid_until_iso="2099-01-01T00:00:00+00:00",
+        )
+        staged = store.get_by_order_id(order_id)
+        assert staged["status"] == "STAGED"
+        assert staged["sized_amount_usd"] == 1.00
+        assert staged["kelly_fraction"] == 0.0
+
+    @pytest.mark.unit
+    def test_kelly_only_rejection_never_reaches_staged_order(self, tmp_path):
+        """Sanity inverse: when C4 rejects (no fixed_stake_usd, KELLY_T4=0.0),
+        there is no approved_size to stage — confirms the two code paths
+        (C4 rejection vs. C4-approval-then-staging) are properly sequenced
+        in the real caller, not merely both individually correct in isolation."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(kelly_fraction=0.0)
+            ok, approval = engine.evaluate_forecast(fc)
+        assert approval["approval_status"] == STATUS_REJECTED
+        assert approval["approved_size"] == 0.0
+        # A correct caller (run_t4_mlb_live.py) branches on approval_status
+        # and never calls stage_order() here — nothing further to assert
+        # against the store; the guarantee is upstream of this test's scope.
 
 
 # ---------------------------------------------------------------------------

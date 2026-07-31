@@ -938,8 +938,15 @@ class TestRunCycle:
         assert len(positions) == 1
         pos = positions[0]
         assert pos["direction"] == "NO"
-        # NO contract price is (1 - mip) = 0.20, not mip.
-        assert pos["size_usd"] == pytest.approx(0.20, abs=1e-6)
+        # ADR-0050 (2026-07-30): this assertion pinned the pre-ADR-0050
+        # "1 contract at market price" policy (GG-087) — $0.20, the NO
+        # contract price (1 - mip). That policy is superseded by the flat
+        # $1.00 measurement stake (contract-capped per addendum §B): NO
+        # entry_price here is 1 - 0.80 = 0.20, which is >= the $0.10 cap
+        # threshold, so stake saturates at exactly $1.00, not $0.20.
+        assert pos["size_usd"] == pytest.approx(1.00, abs=1e-6)
+        assert pos["entry_price_paid"] == pytest.approx(0.20, abs=1e-6)
+        assert pos["price_stratum"] == "MID"
 
     def test_no_direction_vig_is_symmetric_cost_not_credit(self, tmp_path):
         # GG-113 regression: a naive -gross_edge flip for NO bets also flips
@@ -1276,6 +1283,83 @@ class TestConstants:
         # T-228: derived from real 2026-07-02 production data — the widest vig
         # on any qualifying (net_edge>=0.04) signal that day was 0.24.
         assert runner.VIG_CEILING == pytest.approx(0.30)
+
+    def test_measurement_stake_1_00(self):
+        assert runner.T4_MEASUREMENT_STAKE_USD == pytest.approx(1.00)
+
+    def test_measurement_max_contracts_10(self):
+        assert runner.T4_MEASUREMENT_MAX_CONTRACTS == 10
+
+    def test_price_stratum_boundaries(self):
+        assert runner.T4_PRICE_STRATUM_LOW_MAX == pytest.approx(0.10)
+        assert runner.T4_PRICE_STRATUM_MID_MAX == pytest.approx(0.70)
+
+
+# ---------------------------------------------------------------------------
+# measurement_stake_and_stratum — ADR-0050 addendum §B/§C (2026-07-30)
+#
+# Part D.3: "Assert the contract cap binds: a bet at entry_price 0.005 stakes
+# $0.05 / 10 contracts, NOT $1.00 / 200 contracts." This is the addendum's own
+# worked example, reproduced exactly below. Extracted as a standalone function
+# (rather than left inline in the polling loop) specifically so this could be
+# tested without invoking the whole live-polling loop.
+# ---------------------------------------------------------------------------
+
+
+class TestMeasurementStakeAndStratum:
+    def test_addendum_worked_example_sub_penny_entry(self):
+        # ADR-0050 addendum §B worked example verbatim: entry_price=0.005 ->
+        # $0.05 stake (NOT an uncapped $1.00 / 200 contracts).
+        stake, contracts, stratum = runner.measurement_stake_and_stratum(0.005)
+        assert stake == pytest.approx(0.05)
+        assert contracts == pytest.approx(10.0)
+        assert stratum == "LOW"
+
+    def test_cap_binds_below_ten_cents(self):
+        stake, contracts, stratum = runner.measurement_stake_and_stratum(0.05)
+        assert stake == pytest.approx(0.50)  # 10 contracts * $0.05, not $1.00
+        assert contracts == pytest.approx(10.0)
+        assert stratum == "LOW"
+
+    def test_flat_stake_at_exactly_ten_cents(self):
+        # 1.00 / 10 == 0.10 exactly: the cap boundary where min() first
+        # saturates at the flat stake.
+        stake, contracts, stratum = runner.measurement_stake_and_stratum(0.10)
+        assert stake == pytest.approx(1.00)
+        assert contracts == pytest.approx(10.0)
+        assert stratum == "MID"  # boundary is inclusive on the MID side
+
+    def test_flat_stake_at_non_round_median_price(self):
+        # Regression guard for the floor()-based formula this replaced: at a
+        # realistic non-round price like the epoch-8 cohort median ($0.395),
+        # floor(1.00/0.395)=2 contracts -> $0.79, NOT the addendum's claimed
+        # "exactly $1.00" effect. The min()-based formula must still land on
+        # exactly $1.00 here since there is no integer-contract constraint on
+        # a paper position.
+        stake, contracts, stratum = runner.measurement_stake_and_stratum(0.395)
+        assert stake == pytest.approx(1.00)
+        assert stratum == "MID"
+
+    def test_flat_stake_at_high_price(self):
+        stake, contracts, stratum = runner.measurement_stake_and_stratum(0.85)
+        assert stake == pytest.approx(1.00)
+        assert stratum == "HIGH"
+
+    def test_stratum_boundary_mid_high(self):
+        _, _, stratum_at_070 = runner.measurement_stake_and_stratum(0.70)
+        _, _, stratum_above_070 = runner.measurement_stake_and_stratum(0.7001)
+        assert stratum_at_070 == "MID"
+        assert stratum_above_070 == "HIGH"
+
+    def test_stake_never_exceeds_flat_stake(self):
+        for price in (0.01, 0.10, 0.395, 0.70, 0.99):
+            stake, _, _ = runner.measurement_stake_and_stratum(price)
+            assert stake <= runner.T4_MEASUREMENT_STAKE_USD + 1e-9
+
+    def test_stake_never_exceeds_max_contracts_times_price(self):
+        for price in (0.01, 0.05, 0.10, 0.50):
+            stake, _, _ = runner.measurement_stake_and_stratum(price)
+            assert stake <= runner.T4_MEASUREMENT_MAX_CONTRACTS * price + 1e-9
 
 
 # ---------------------------------------------------------------------------

@@ -186,8 +186,8 @@ class StagedOrderStore:
             raise ValueError(f"strategy must be one of {_VALID_STRATEGIES}")
         if sized_amount_usd <= 0:
             raise ValueError("sized_amount_usd must be positive")
-        if not (0.0 < kelly_fraction <= 1.0):
-            raise ValueError("kelly_fraction must be in (0, 1]")
+        if not (0.0 <= kelly_fraction <= 1.0):
+            raise ValueError("kelly_fraction must be in [0, 1]")
 
         order_id = str(uuid.uuid4())
         with self._connect() as conn:
