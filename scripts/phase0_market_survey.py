@@ -120,6 +120,41 @@ def _records(blob: Any, *keys: str) -> list[dict[str, Any]]:
     return []
 
 
+def _flatten_markets_by_series(blob: Any) -> list[dict[str, Any]] | None:
+    """Unwrap Phase 0-A's markets_sample.json shape, confirmed 2026-07-31:
+    {"markets_by_series": {series_ticker: {"ok":.., "count":.., "markets": [...]}}}
+    -- a dict of dicts, not the flat list or single-nested list _records()
+    handles. Individual market dicts carry no series_ticker field of their
+    own (confirmed by direct inspection), so it is injected here from the
+    outer key. Returns None (not []) when the shape doesn't match, so
+    callers can fall back to _records() instead of treating "wrong shape"
+    the same as "right shape, zero markets".
+    """
+    if not isinstance(blob, dict):
+        return None
+    mbs = blob.get("markets_by_series")
+    if not isinstance(mbs, dict):
+        return None
+    flat: list[dict[str, Any]] = []
+    for series_ticker, entry in mbs.items():
+        if not isinstance(entry, dict):
+            continue
+        for m in entry.get("markets") or []:
+            if isinstance(m, dict):
+                m = dict(m)
+                m.setdefault("series_ticker", series_ticker)
+                flat.append(m)
+    return flat
+
+
+def _load_markets(path: Path) -> list[dict[str, Any]]:
+    blob = _load(path)
+    flat = _flatten_markets_by_series(blob)
+    if flat is not None:
+        return flat
+    return _records(blob, "markets", "data")
+
+
 # ---------------------------------------------------------------------------
 # depth
 # ---------------------------------------------------------------------------
@@ -168,7 +203,7 @@ def cmd_depth(args: argparse.Namespace) -> int:
         KalshiMarketClient,
     )
 
-    markets = _records(_load(Path(args.inp)), "markets", "data")
+    markets = _load_markets(Path(args.inp))
     if not markets:
         raise SystemExit("no markets found in input dump")
 
@@ -232,7 +267,7 @@ def cmd_depth(args: argparse.Namespace) -> int:
 
 def cmd_classify(args: argparse.Namespace) -> int:
     series = _records(_load(Path(args.series)), "series", "data")
-    markets = _records(_load(Path(args.markets)), "markets", "data") if args.markets else []
+    markets = _load_markets(Path(args.markets)) if args.markets else []
     depth = _load(Path(args.depth)) if args.depth and Path(args.depth).exists() else None
     gate_floor = args.stake * DEPTH_GATE_MULTIPLE
 
