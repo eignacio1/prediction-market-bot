@@ -45,6 +45,31 @@
 
 ---
 
+## Phase 0-C — Unattended depth accumulation (weekend cron)
+
+**Context:** GG-155's 0.9 sample (`2026-07-31T20:13:03Z`) was taken pre-slate, not during T4M-PROJ's live in-play window (~23:00-04:00Z) — a timing confound, not a dead-venue finding. This phase resolves that with a mid-slate-weighted cron. **Reprioritized mid-session 2026-07-31: T4's live cohort accrual (the only band placing bets, first out-of-sample GG-142 test) outranks the survey this weekend — confirming the cron/sampler cannot degrade T4 came first, ahead of building the cron itself.**
+
+- [x] **0C.1** Precondition: `session/20260731T194108Z-phase0b-depth` merged to main (fast-forward, `b080e57`→`6fe40ed`) — both schema fixes (markets_by_series nesting, orderbook_fp decimal-dollar shape) on `main` before any cron references the script
+- [x] **0C.2** Sampler paced to ≤4 req/s — `REQUEST_PAUSE_S` 0.12→0.30 (~8.3→~3.3 req/s), half of 0-B's rate per the safety directive
+- [x] **0C.3** Confirmed sampler cannot touch T4 portfolio/ledger/logic_epoch files — `cmd_depth()`'s only I/O is its `--in`/`--out` CLI args under `exp_output/PHASE0_SURVEY/`; `kalshi_client.py`'s unauthenticated market-data path (`_get(..., authenticated=False)`, the sampler's default) sends no auth headers and its only filesystem access anywhere in the file is a *read* of the RSA PEM on the authenticated path, which the sampler never exercises
+- [x] **0C.4** One manual `depth` run against live Kalshi from the VPS (`2026-07-31T20:59:31Z`) — non-empty, schema-valid output (8/8 families, 55.8KB); T4 showed 0 rate-limit hits, 0 staleness failures, 0 restarts, no journal errors during/after — confirms the fixed pacing doesn't degrade T4 in practice, not just on paper. Still pre-slate (21:00Z start); does **not** resolve the GG-155 timing confound by itself.
+- [ ] **0C.5** `--refresh-markets` flag (or equivalent) — `markets_sample.json` is a frozen 2026-07-31 ticker list; over a weekend, markets resolve and re-sampling a stale list silently degrades. **Monday work.**
+- [ ] **0C.6** Timestamped output accumulation (`depth/depth_<UTC>.json`, never overwrite) + running one-line-per-run index. **Monday work.**
+- [ ] **0C.7** Crontab installed at mid-slate-weighted schedule (suggested 21:00/23:30/01:30/03:30 UTC), bounded (run cap or end time), verified via `crontab -l` + a confirmed first-fire. **Monday work — do not leave unbounded past Monday.**
+- [ ] **0C.8** Mid-slate sample (23:00–04:00Z) obtained and GG-155 updated/resolved against real in-play depth, not the pre-slate confound. **Monday work; a single manual run suffices if the cron never fires — "you'd lose the multi-day distribution, not the finding."**
+
+**Do not** (standing for this phase): do not start Phase 1/Phase 2; do not edit CLAUDE.md's $500–$2,000 depth figure until mid-slate data exists (0C.8); do not touch `execution_bands.py`, `risk.py`, `paper_trader.py`, or any sizing.
+
+**Review follow-ups from 0-B (deprioritized to Monday, no decay):**
+- [ ] **0C.9** Register new gap: `paper_trader.py` has zero orderbook/depth/liquidity references — fills assumed at mid, never validated against the book. Applies to the live T4 flat-$1 cohort now accruing. G6 precondition: no live-capital authorization while fill assumptions are unvalidated against production depth. Larger than GG-155 — GG-155 is a symptom of it.
+- [ ] **0C.10** Split `SURVEY_TABLES.md`/`VENUE_REGISTRY.md`'s FAIL column: FAIL-WIDE (book exists, spread wider than a nickel — e.g. GAME_TOTAL, 20/20 usable at $0.00 median) vs FAIL-NOBOOK (book largely absent — e.g. PLAYER_PROP, 3/20 usable). Different diseases, different fixes.
+- [ ] **0C.11** Drop UNCLASSIFIED from the depth-gate verdict table — heterogeneous bucket (NCAA basketball, esports leakage); reporting it as PASS is noise.
+- [ ] **0C.12** Note in the gate table itself (not just the spec) that the $10.00 floor derives from the $1.00 ADR-0050 measurement stake and is not the live-capital floor — every verdict recomputes when sizing changes.
+
+**Flagged for operator, Monday, analysis only — no action taken:** the families passing the depth gate (`GAME_WINNER` at $1,646 median) are exactly the ones the efficiency-gradient doctrine warns against, while the family the bot actually trades (`PLAYER_PROP`) fails a $10 bar. If mid-slate data (0C.8) confirms this shape, it may be the most consequential result Phase 0 has produced and needs an operator decision before Phase 1 commits to a build order.
+
+---
+
 ## Phase 1 — Abstraction repair (no new markets)
 
 - [ ] **1.1** Market-type registry built (`market_mapper.py` currently has no such thing)
