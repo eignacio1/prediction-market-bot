@@ -473,7 +473,7 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
     LogicEpochBoundary(
         epoch=12,
         resolving_gap="GG-149",
-        commit_sha="01aaadeec38339c641f5dd33e0ba94896ee3ffb9",
+        commit_sha="66bb0d3c6fff57b2dd75ffc2241ece102fac78f5",
         commit_utc=datetime(2026, 7, 31, 8, 0, 0, tzinfo=timezone.utc),
         description=(
             "GG-149: T4 offsetting-position suppression. 161 T4M-PROJ "
@@ -509,9 +509,15 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "exclusion only, no P&L altered. Bands affected: T4M-PROJ "
             "only (MAIN untouched). DS sign-off: operator, 2026-07-31. "
             "See GG-149, GG-150 (cross-book blocking variant, registered "
-            "unstaffed), DECISION_LOG.md 2026-07-31."
+            "unstaffed), DECISION_LOG.md 2026-07-31. commit_sha corrected "
+            "post-rebase from the original 01aaade (a pre-rebase SHA that "
+            "no longer resolves to any object after this branch was "
+            "rebased onto origin/main to resolve a non-fast-forward push) "
+            "to 66bb0d3, the functional implementation commit — same "
+            "defect class GG-148 fixed for epoch 11, caught here before "
+            "merge rather than after."
         ),
-        # git show 01aaade: run_t4_mlb_live.py (_find_open_position_
+        # git show 66bb0d3: run_t4_mlb_live.py (_find_open_position_
         # opposite_direction, _t1_open_position_opposite_direction, two new
         # checks in _run_cycle) + 8 new unit tests + retroactive tagger.
         bands_affected=frozenset({"T4M-PROJ"}),
