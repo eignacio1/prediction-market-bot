@@ -159,6 +159,28 @@ def _load_markets(path: Path) -> list[dict[str, Any]]:
 # depth
 # ---------------------------------------------------------------------------
 
+def _normalize_book(raw: dict[str, Any]) -> dict[str, Any]:
+    """Unwrap the live /markets/{ticker}/orderbook response.
+
+    Confirmed by direct API probe 2026-07-31 (this session): the live
+    response is keyed "orderbook_fp" with "yes_dollars"/"no_dollars" sides,
+    prices as decimal-dollar strings (e.g. "0.0100" == 1 cent) and sizes as
+    decimal-string contract counts -- not the legacy integer-cents
+    {"orderbook": {"yes": [[price_cents, size]]}} shape this script
+    originally assumed (which silently produced usable=False for every
+    single sample, since book.get("yes")/book.get("no") were always empty).
+    """
+    ob = raw.get("orderbook_fp") or raw.get("orderbook") or raw
+    if not isinstance(ob, dict):
+        return {"yes": [], "no": []}
+    if "yes_dollars" in ob or "no_dollars" in ob:
+        def conv(side: str) -> list[list[Any]]:
+            return [[round(float(p) * 100), int(float(s))]
+                    for p, s in (ob.get(side) or []) if s]
+        return {"yes": conv("yes_dollars"), "no": conv("no_dollars")}
+    return {"yes": ob.get("yes") or [], "no": ob.get("no") or []}
+
+
 def _book_metrics(book: dict[str, Any]) -> dict[str, Any]:
     """Top-of-book size, cumulative size within 5c of mid, observed half-spread.
 
@@ -226,7 +248,7 @@ def cmd_depth(args: argparse.Namespace) -> int:
             for attempt in range(MAX_RETRIES):
                 ok, data = client._get(f"/markets/{ticker}/orderbook")
                 if ok:
-                    book = (data or {}).get("orderbook") or data
+                    book = _normalize_book(data or {})
                     break
                 time.sleep(REQUEST_PAUSE_S * (2 ** attempt))
             time.sleep(REQUEST_PAUSE_S)
