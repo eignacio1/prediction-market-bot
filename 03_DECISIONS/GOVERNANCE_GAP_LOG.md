@@ -2864,6 +2864,38 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-153 — T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10 ALL_BANDS reset; cannot self-heal under the current regime
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-153 |
+| Category | Architectural placeholder — a governance-grade sample-adequacy mechanism (`run_power_calc.py`'s `clean_n`/`n*`/`cadence_span_days` gate, APR-0024) assumes clean data keeps accruing; nothing in the design accounts for a band whose sizing has been set to zero. |
+| What was missed | ADR-0048 (2026-07-29, R1) set `T1_MULTI_DAY.kelly_fraction = 0.0`, so every T1 evaluation that clears CHECK 3/4b is rejected downstream with `kelly_size_zero` — no new resolved bets. Separately, epoch 10 (GG-142 gate fix, `bands_affected={ALL_BANDS}`, landed 2026-07-29/30 per `logic_epoch.py`) reset every band's `clean_epoch_floor`, including T1's (previously floor=5 since GG-119/ADR-0045, 2026-07-15). Because T1 cannot place any new bet post-zeroing, `clean_n` at floor=10 is stuck at 0 and structurally cannot increase — verified live via this session's `governance_scan.sh` SAMPLE ADEQUACY pull (2026-07-31): `[T1] clean_n=0 insufficient_data`. This corrects a framing that circulated this session ("T1's clean cadence span is frozen at 13 days... adjudicate against the frozen n=202 cohort") — that figure was a transient reading taken between epoch-9's zeroing and epoch-10's reset, and no longer describes the live state. The verified current state is worse than "13 days short of mature": it is `clean_n=0`, permanently, not slowly accruing. |
+| When it should have been caught | At R1 (ADR-0048, 2026-07-29) or R2 (epoch-10/GG-142, 2026-07-29/30) — both landed in the same 24-48h window and neither checked whether the combination would leave any zeroed band's `clean_n` permanently unrecoverable. |
+| Phases it survived | Introduced 2026-07-29/30 (R1 + R2 combined effect); not surfaced until this session's Q1-Q6 pass, 2026-07-31. |
+| Why it survived | `run_power_calc.py`/`governance_scan.sh` correctly report `clean_n=0 insufficient_data`, but that output is visually identical whether a band is slowly accruing toward `n*` or structurally blocked from ever accruing again — nothing distinguishes "still counting" from "can never count." |
+| Impact | MEDIUM. T1 (MAIN's primary pregame-calibration band, the T1 alpha thesis CLAUDE.md's alpha taxonomy treats as independent from T4) can never reach APR-0024's `n*`/`MATURE_CADENCE_SPAN_DAYS` governance-grade thresholds while ADR-0048 stands — meaning ADR-0048's own implicit exit path for T1 (clear power-calc, as ADR-0050 did for T4M-PROJ) is circular: clearing power-calc requires new clean bets, which requires nonzero Kelly, which is exactly what ADR-0048 zeroed. No capital-at-risk impact today (T1 already at kelly=0), but the band cannot earn its way back to reactivation under the current regime, and nothing had flagged that circularity until now. |
+| Discovery | 2026-07-31, Phase 0-B session, Q1-Q6 pass, S.4 verification — task brief cited a "13 days / n=202" figure; a live governance-scan pull during this session's adversarial review found `clean_n=0` instead, prompting the trace through `logic_epoch.py`/`execution_bands.py`/DECISION_LOG that produced this entry. |
+| Resolution | Not yet implemented — needs an explicit operator decision, not a wait. Candidate options: (a) adjudicate against the last clean cohort read before the epoch-10 reset, if recoverable, rather than waiting on a clock that cannot advance; (b) extend ADR-0050's fixed-stake bypass mechanism (`fixed_stake_usd`) to T1 as well, sized depth-/ruin-risk-safe, to resume clean accrual without reversing ADR-0048's ruin-risk zeroing — same shape as the live T4M-PROJ precedent; (c) explicitly document T1 as permanently unmeasurable under the current regime rather than leaving it as an open TODO implying eventual self-resolution. Unstaffed, no T-NNN assigned. |
+| Status | OPEN — unstaffed, no T-NNN assigned. Not a G6 blocker today (T1 already zeroed, no capital at risk); blocks any future T1 reactivation decision. |
+
+### GG-154 — Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently no-ops without SSH access
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-154 |
+| Category | Systemic blind spot — third instance of the same failure class: GG-144's dead Q4 grep (`def approve`/`def execute`, matched nothing, ever), the `market_mapper` registry CLAUDE.md once described that was never built, and now this. |
+| What was missed | Two related gaps. (1) The mandatory session-start protocol's Step 1/2/3/Q1/Q4/Q5 greps are hardcoded snapshots of specific line numbers, function names, and file paths; nothing automatically re-verifies they still return non-trivial matches against current source, so drift is silent until a session happens to notice (GG-144's precedent). (2) Step 4 (VPS operational health check) requires live SSH access to `prediction-market-vps` and has no documented fallback or explicit skip-acknowledgment when SSH is unavailable (sandboxed/offline session) — a session lacking SSH produces zero operational-health signal, with no visible marker distinguishing "Step 4 ran clean" from "Step 4 never ran." |
+| When it should have been caught | At each protocol step's original authorship, or at GG-144's 2026-07-29 remediation, which fixed the specific dead greps found at the time but added no structural check against the next one. |
+| Phases it survived | Present since the session-start protocol's original authorship; GG-144 fixed one instance without addressing the underlying class. |
+| Why it survived | CLAUDE.md's protocol is documentation, not code — nothing enforces its embedded commands stay live against a moving source tree, and nothing flags a silently-skipped step as distinct from a step that ran and passed. |
+| Impact | MEDIUM. Every future protocol/source drift (a renamed function, a moved file, a config that no longer matches a hardcoded assumption) depends on human/model attention during a live session to catch, same as GG-144, rather than structural enforcement; any session without SSH access produces a transcript that reads as complete while missing a mandated check, with no visible flag. |
+| Discovery | 2026-07-31, Phase 0-B session, mandatory Q1-Q6 pass — named directly in this session's task brief as S.5/S.6. |
+| Resolution | Not yet implemented. Candidate shape: (a) a lightweight check (script or CI step) that runs each of CLAUDE.md's Step 1-3/Q1/Q4/Q5 grep commands against current source and fails/warns on zero matches, catching the GG-144 class structurally rather than per-instance; (b) Step 4 should explicitly print "SSH UNAVAILABLE — Step 4 SKIPPED, no VPS health signal this session" on failure rather than producing silent empty output, so the gap is visible in every transcript. Unstaffed, no T-NNN assigned. |
+| Status | OPEN — unstaffed, no T-NNN assigned. |
+
+---
+
 
 ## Gap Registration Template
 
