@@ -1,0 +1,18 @@
+{
+  "captured_at_utc": "2026-07-31T15:32:34.261510+00:00",
+  "ok": true,
+  "bot_env": "ENV-01",
+  "note": "authenticated endpoint follows BOT_ENV routing (kalshi_client._kalshi_base_url); if BOT_ENV != 'live' this hit the DEMO sandbox account, not the production account.",
+  "data": {
+    "grants": [],
+    "read": {
+      "bucket_capacity": 400,
+      "refill_rate": 200
+    },
+    "usage_tier": "basic",
+    "write": {
+      "bucket_capacity": 100,
+      "refill_rate": 100
+    }
+  }
+}
