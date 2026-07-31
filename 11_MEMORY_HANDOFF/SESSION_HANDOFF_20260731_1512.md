@@ -36,6 +36,7 @@
 | MEMORY_BANK.md (Last reviewed / Current State Snapshot / Compass OS Health / What Must Happen Next) | ✅ All 4 sections updated, additive-stacking convention followed |
 | TODO_NEXT.md | ✅ Last-reviewed paragraph updated; new `## T-407` (GG-149/150 complete) and `## T-408` (GG-151 open) task sections added |
 | PLAN.md | ✅ Last-reviewed paragraph updated (no deliverables-table row — risk-guard fix to existing T4M-PROJ band, not a new milestone, same category as the prior R2/GG-142 entry) |
+| Stale session-branch cleanup (Step 8 exit check) | ✅ Deleted 3 leftover branches confirmed already merged: `session/20260720T235909Z-window-a-mypy-epoch-oom` (PR #58/G4/T-379), `session/20260729T234812Z-g4-monitoring` (PR #45/T-394), `session/20260723T003916Z-todo-next-archive` (prior confirmed merge-base ancestor). Local + remote refs removed; `git branch -a` now shows only `main`. |
 
 ---
 
