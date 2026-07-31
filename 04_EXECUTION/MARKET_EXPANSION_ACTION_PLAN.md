@@ -16,10 +16,10 @@
 - [x] **0.6** Environment routing resolved — market data is production-routed regardless of `BOT_ENV`; only `/account/limits` is demo-scoped
 - [x] **0.7** Classifier run — Tables 1, 2, 4 generated (`exp_output/PHASE0_SURVEY/SURVEY_TABLES.md`)
 - [x] **0.8** Hand review of the 103 unclassified MLB series (see § Findings below)
-- [ ] **0.9** Depth sample per family (`phase0_market_survey.py depth`) — **VPS, needs auth**
-- [ ] **0.10** §2.7 gate verdict per family, at $1,000 floor (10 × $1.00 stake)
-- [ ] **0.11** `VENUE_REGISTRY.md` updated — tier (marked demo-sourced), $25,000/contract position limit, measured depth
-- [ ] **0.12** Phase 0-A branch `session/20260731T152256Z-phase0a-raw-capture` merged to main
+- [x] **0.9** Depth sample per family (`phase0_market_survey.py depth`) — 8 families × 20 markets sampled live via VPS (`exp_output/PHASE0_SURVEY/depth_sample.json`, `2026-07-31T20:13:03Z`)
+- [x] **0.10** §2.7 gate verdict per family, at **$10.00 floor (10 × $1.00 stake)** — corrected: this checkbox previously read "$1,000 floor," which is arithmetically wrong (10 × $1.00 = $10.00, not $1,000) and never matched the implemented gate (`DEPTH_GATE_MULTIPLE=10.0 × DEFAULT_INTENDED_STAKE_USD=1.00`) or the reported results. Verdict per family in `exp_output/PHASE0_SURVEY/SURVEY_TABLES.md` Table 3: PASS — `GAME_WINNER`, `PARTIAL_GAME_WINNER`, `TEAM_TOTAL`, `UNCLASSIFIED`; **FAIL** — `GAME_TOTAL`, `PLAYER_PROP` (incl. KXMLBHIT/HR/RBI/KS — see GG-155), `RUN_LINE`, `SEASON_WIN_TOTAL`
+- [x] **0.11** `VENUE_REGISTRY.md` updated — tier (marked demo-sourced), $25,000/contract position limit, measured depth by family; corrects CLAUDE.md's unsourced "$500-$2,000" KXMLBHIT depth claim (GG-155, OPEN — CLAUDE.md itself not yet corrected, pending operator review)
+- [x] **0.12** Phase 0-A branch `session/20260731T152256Z-phase0a-raw-capture` merged to main
 - [ ] **0.13** Q1–Q6 "ARE WE COMPROMISED" adversarial review (owed from the Phase 0-A session)
 
 ### Findings from 0.8 — hand review
@@ -106,9 +106,9 @@
 ## Standing items (not phase-bound)
 
 - [ ] **S.1** Epoch-12 live verification — `size_usd == $1.00` for entry price ≥ $0.10, `10 × entry_price` below; `t4_offsetting_suppressed` counts. **Clock-bound: needs a resolved slate.**
-- [ ] **S.2** Register `_kalshi_base_url()` misrouting bug — `BOT_ENV=ENV-03` silently routes to demo. **G6 precondition.**
-- [ ] **S.3** Resolve `.env.example` inconsistency — venue keys documented as "ENV-02/ENV-03 only", capture ran under ENV-01 with keys set
-- [ ] **S.4** Register the frozen-span trap — T1's 13-day cadence span can never reach `MATURE_CADENCE_SPAN_DAYS=14` at zero sizing
-- [ ] **S.5** Register the Cowork Step-4 blind spot — no SSH route, protocol step silently skipped
-- [ ] **S.6** Register the protocol's inability to verify CLAUDE.md's architectural claims against source (3rd instance of the class)
+- [x] **S.2** Register `_kalshi_base_url()` misrouting bug — `BOT_ENV=ENV-03` silently routes to demo. **G6 precondition.** Registered as GG-152 (OPEN, unstaffed — fix requires operator sign-off, touches live-capital path).
+- [ ] **S.3** Resolve `.env.example` inconsistency — venue keys documented as "ENV-02/ENV-03 only", capture ran under ENV-01 with keys set. Noted inside GG-152's entry as an unresolved sub-finding; **not itself resolved**, only documented.
+- [x] **S.4** Register the frozen-span trap — T1's cohort is not "13 days from maturity," it is `clean_n=0` and structurally cannot self-heal under ADR-0048's zeroing + epoch-10 reset. Registered as GG-153 (OPEN, unstaffed).
+- [x] **S.5** Register the Cowork Step-4 blind spot — no SSH route, protocol step silently skipped. Registered as GG-154 (OPEN, unstaffed).
+- [x] **S.6** Register the protocol's inability to verify CLAUDE.md's architectural claims against source (3rd instance of the class). Registered as GG-154 (same entry as S.5 — the two are one combined finding).
 - [ ] **S.7** Commit pending: `SEGMENTED_POOL_ARCHITECTURE.md` (modified), `scripts/phase0_market_survey.py`, `SURVEY_TABLES.md`, this file
