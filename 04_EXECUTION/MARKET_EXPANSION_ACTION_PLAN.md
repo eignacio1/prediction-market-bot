@@ -20,7 +20,7 @@
 - [x] **0.10** §2.7 gate verdict per family, at **$10.00 floor (10 × $1.00 stake)** — corrected: this checkbox previously read "$1,000 floor," which is arithmetically wrong (10 × $1.00 = $10.00, not $1,000) and never matched the implemented gate (`DEPTH_GATE_MULTIPLE=10.0 × DEFAULT_INTENDED_STAKE_USD=1.00`) or the reported results. Verdict per family in `exp_output/PHASE0_SURVEY/SURVEY_TABLES.md` Table 3: PASS — `GAME_WINNER`, `PARTIAL_GAME_WINNER`, `TEAM_TOTAL`, `UNCLASSIFIED`; **FAIL** — `GAME_TOTAL`, `PLAYER_PROP` (incl. KXMLBHIT/HR/RBI/KS — see GG-155), `RUN_LINE`, `SEASON_WIN_TOTAL`
 - [x] **0.11** `VENUE_REGISTRY.md` updated — tier (marked demo-sourced), $25,000/contract position limit, measured depth by family; corrects CLAUDE.md's unsourced "$500-$2,000" KXMLBHIT depth claim (GG-155, OPEN — CLAUDE.md itself not yet corrected, pending operator review)
 - [x] **0.12** Phase 0-A branch `session/20260731T152256Z-phase0a-raw-capture` merged to main
-- [ ] **0.13** Q1–Q6 "ARE WE COMPROMISED" adversarial review (owed from the Phase 0-A session)
+- [x] **0.13** Q1–Q6 "ARE WE COMPROMISED" adversarial review (owed from the Phase 0-A session) — completed 2026-07-31; Q1/Q4/Q5 confirmed limits and interfaces trace cleanly to current source (GG-144's fixes hold); Q2 stub scan CLEAN; top Q6 concerns registered as GG-152/153/154/155 (see `GOVERNANCE_GAP_LOG.md`)
 
 ### Findings from 0.8 — hand review
 
