@@ -47,10 +47,16 @@ _POST_GG119 = "2026-07-16T00:00:00.000Z"            # after GG-119, before GG-12
 # correction after epoch 7's contingency fired — first cycle row with
 # ba_l10 != ba_l10_shrunk).
 # GG-135 (ADR-0048) added epoch 9 at 2026-07-30T00:04:04Z (T1/T2/T3/T4M-PROJ
-# kelly_fraction zeroed, commit 3cb04ca). This must stay ahead of every
-# LogicEpochBoundary in logic_epoch.py for "is_current_epoch" tests to
-# mean what they claim.
-_POST_GG122 = "2026-07-30T01:00:00.000Z"            # after all boundaries -> current epoch
+# kelly_fraction zeroed, commit 3cb04ca).
+# GG-142 (ADR-0049) added epoch 10 at 2026-07-30T05:43:12Z (signed edge gate
+# + CHECK 4b, commit 1b0a8f8). This is exactly the failure this fixture's
+# prior comment warned about: a hardcoded "after all boundaries" timestamp
+# (2026-07-30T01:00:00Z) fell *between* epoch 9 and epoch 10 once epoch 10
+# was added, silently flipping this test from "current epoch" to "epoch 9"
+# without anyone touching this file. Fixed for good by using a fixed
+# far-future timestamp instead of chasing each new boundary — any
+# LogicEpochBoundary added in the future will still be < this by construction.
+_POST_GG122 = "2099-01-01T00:00:00.000Z"            # after all boundaries -> current epoch
 
 
 def _pos(**overrides) -> dict:

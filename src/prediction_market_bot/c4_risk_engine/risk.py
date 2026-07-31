@@ -409,7 +409,7 @@ class RiskEngine:
                 "market_implied_p": fc.get("market_implied_prob"),
                 "vig": fc.get("vig"),
                 "edge": edge,
-                "edge_signal": abs(edge) >= MIN_EDGE_TO_APPROVE,
+                "edge_signal": edge >= MIN_EDGE_TO_APPROVE,  # GG-142: signed, not abs()
                 "recommended_direction": fc.get("recommended_direction"),
                 "approval_status": status,
                 "rejection_reason": reason,
@@ -590,8 +590,19 @@ class RiskEngine:
             checks_passed.append("drawdown_limit")
 
             # CHECK 3 — Edge threshold (minimum edge to trade)
+            # GG-142: `edge` on the forecast record is already direction-resolved
+            # by the caller (run_t4_mlb_live.py, run_mlb_paper_trade.py,
+            # run_t2_mlb_sameday.py all recompute it post-direction-assignment
+            # via a directional-edge helper, per GG-077/GG-113) — a positive
+            # value means "this recommended direction has a real, fee-net edge
+            # of this magnitude." abs() here treated a confidently-*wrong* bet
+            # (edge very negative — vig/fee cost exceeds the signal in the
+            # recommended direction) as if it were a confidently-right one,
+            # rescuing 46.1% of T4 epoch-8 evaluations (239/239 with
+            # vig > |model_p - mid|). The gate must be signed: only a
+            # sufficiently positive directional edge clears it.
             edge = float(fc.get("edge", 0.0) or 0.0)
-            if abs(edge) < MIN_EDGE_TO_APPROVE:
+            if edge < MIN_EDGE_TO_APPROVE:
                 ok = self._log(
                     "risk_eval_rejected",
                     {
@@ -633,6 +644,46 @@ class RiskEngine:
                     eval_id, "direction_pass", checks_passed, forecast_id
                 )
             checks_passed.append("direction_actionable")
+
+            # CHECK 4b — Direction/edge-sign consistency (GG-142).
+            # `recommended_direction` is carried on every forecast record
+            # (written at the three edge_decision/log sites in this module)
+            # but, before this fix, was never cross-checked against anything
+            # — a producer bug that assigns "NO" while still sending the raw
+            # YES-frame gross_edge (instead of the direction-flipped value)
+            # would sail through CHECK 3 undetected, since a positive
+            # gross_edge also satisfies a positive-edge threshold. Only
+            # enforced when the raw `gross_edge` is present on the record —
+            # it is optional on the shared forecast contract (not every
+            # producer sets it), so its absence is not itself a violation.
+            gross_edge_raw = fc.get("gross_edge")
+            if gross_edge_raw is not None:
+                gross_edge_val = float(gross_edge_raw)
+                sign_ok = (
+                    (direction == "YES" and gross_edge_val > 0.0)
+                    or (direction == "NO" and gross_edge_val < 0.0)
+                )
+                if not sign_ok:
+                    ok = self._log(
+                        "risk_eval_rejected",
+                        {
+                            "risk_eval_id": eval_id,
+                            "reason": "direction_edge_sign_inconsistent",
+                            "recommended_direction": direction,
+                            "gross_edge": gross_edge_val,
+                            "edge": edge,
+                        },
+                        severity="WARNING",
+                        session_id=session_id,
+                        risk_eval_id=eval_id,
+                        forecast_id=forecast_id,
+                    )
+                    if not ok:
+                        all_ok = False
+                    return all_ok, self._build_rejection(
+                        eval_id, "direction_edge_sign_inconsistent", checks_passed, forecast_id
+                    )
+            checks_passed.append("direction_edge_consistency")
 
             # ------------------------------------------------------------------
             # Kelly sizing
