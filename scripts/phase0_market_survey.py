@@ -54,7 +54,9 @@ from typing import Any
 
 DEPTH_GATE_MULTIPLE = 10.0
 DEFAULT_INTENDED_STAKE_USD = 1.00
-REQUEST_PAUSE_S = 0.12          # ~8 req/s: inside Basic tier (~20 req/s) with margin
+REQUEST_PAUSE_S = 0.30          # ~3.3 req/s: T4M-PROJ shares this read budget live during
+                                 # its in-play window (Phase 0-C safety directive, 2026-07-31
+                                 # — half of the prior 0.12/~8 req/s rate, ceiling is 4 req/s)
 MAX_RETRIES = 5
 
 # Family classification is applied to the series ticker. Ordered: first match
