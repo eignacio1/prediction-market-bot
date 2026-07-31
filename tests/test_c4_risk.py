@@ -80,6 +80,7 @@ def _make_engine(
     kelly_fraction: float = DEFAULT_KELLY_FRACTION,
     initial_bankroll: float | None = None,
     edge_logger=None,
+    min_bet_usd: float | None = None,
 ) -> RiskEngine:
     if logger is None:
         logger = _make_mock_logger()
@@ -90,6 +91,7 @@ def _make_engine(
         kelly_fraction=kelly_fraction,
         initial_bankroll=initial_bankroll,
         edge_logger=edge_logger,
+        min_bet_usd=min_bet_usd,
     )
 
 
@@ -415,6 +417,60 @@ class TestEdgeAndDirectionChecks:
             _, result = engine.evaluate_forecast(fc)
         # With p_estimate == market_implied_prob, Kelly size = 0
         assert result["rejection_reason"] == "kelly_size_zero"
+
+
+# ---------------------------------------------------------------------------
+# ADR-0050: fixed_stake_usd measurement-mode sizing bypass
+# ---------------------------------------------------------------------------
+
+
+class TestFixedStakeMeasurement:
+    @pytest.mark.unit
+    def test_fixed_stake_used_verbatim_with_kelly_zeroed(self):
+        """kelly_fraction=0.0 (T4M-PROJ's live config) would normally reject
+        with kelly_size_zero before ever reaching APPROVED. fixed_stake_usd
+        must bypass that and approve at exactly the flat amount."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(kelly_fraction=0.0, min_bet_usd=0.01)
+            _, result = engine.evaluate_forecast(fc, fixed_stake_usd=1.00)
+        assert result["approval_status"] == STATUS_APPROVED
+        assert result["approved_size"] == 1.00
+        assert result["sizing_mode"] == "fixed_measurement"
+
+    @pytest.mark.unit
+    def test_kelly_zero_without_fixed_stake_still_rejects(self):
+        """Confirms the bypass is opt-in: kelly_fraction=0.0 with no
+        fixed_stake_usd must still reject exactly as before ADR-0050."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(kelly_fraction=0.0)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "kelly_size_zero"
+
+    @pytest.mark.unit
+    def test_fixed_stake_still_gated_by_insufficient_edge(self):
+        """fixed_stake_usd bypasses sizing only — the edge-threshold gate
+        (CHECK 3) must still reject a sub-threshold edge normally."""
+        fc = _make_forecast(edge=0.01, p_estimate=0.51, market_implied_prob=0.50)
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(kelly_fraction=0.0, min_bet_usd=0.01)
+            _, result = engine.evaluate_forecast(fc, fixed_stake_usd=1.00)
+        assert result["approval_status"] == STATUS_REJECTED
+        assert result["rejection_reason"] == "insufficient_edge"
+
+    @pytest.mark.unit
+    def test_fixed_stake_none_preserves_kelly_path(self):
+        """fixed_stake_usd=None (the default) must leave Kelly-derived
+        sizing bit-for-bit unchanged for non-T4 callers."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0, kelly_fraction=DEFAULT_KELLY_FRACTION)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] == STATUS_APPROVED
+        assert result["sizing_mode"] == "kelly"
+        assert result["approved_size"] != 1.00
 
 
 # ---------------------------------------------------------------------------

@@ -425,6 +425,39 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # shared, unconditional across every band; no band-gate exists.
         bands_affected=frozenset({ALL_BANDS}),
     ),
+    LogicEpochBoundary(
+        epoch=11,
+        resolving_gap="GG-046",
+        commit_sha="b7ff2812d5471a33460b3853b53ed63c9bc5ce07",
+        commit_utc=datetime(2026, 7, 31, 2, 18, 11, tzinfo=timezone.utc),
+        description=(
+            "ADR-0050: T4M-PROJ reactivated at a flat $1.00 measurement "
+            "stake, replacing the GG-087 '1 contract at market price' "
+            "policy. risk.py::evaluate_forecast() gains an optional "
+            "fixed_stake_usd param that bypasses Kelly sizing (and its "
+            "kelly_size_zero rejection, which previously made "
+            "KELLY_T4=0.0 unconditionally reject every T4 bet before "
+            "reaching APPROVED) with a flat dollar amount; all other "
+            "gate checks (signed edge threshold, direction consistency, "
+            "kill switches, single-event cap, min-bet floor, aggregate "
+            "deployment) still apply unchanged. run_t4_mlb_live.py passes "
+            "T4_MEASUREMENT_STAKE_USD=1.00 as fixed_stake_usd on its "
+            "evaluate_forecast() call; KELLY_T4 stays 0.0, so the "
+            "Kelly-proportional path is untouched and never engages. "
+            "Edge is unvalidated (GG-105 open) — this stake's only job "
+            "is to accrue a clean, gate-fixed T4M-PROJ cohort at a size "
+            "far inside GG-045 orderbook depth. MAIN (T1/T2/T3) sizing "
+            "is unchanged. DS sign-off: operator, 2026-07-30. See "
+            "ADR-0050, GG-046, DECISION_LOG.md 2026-07-30."
+        ),
+        # git show b7ff281: risk.py (fixed_stake_usd param, band-gated by
+        # caller — None everywhere except T4M-PROJ's own call site) +
+        # run_t4_mlb_live.py (T4_MEASUREMENT_STAKE_USD wiring). Only
+        # T4M-PROJ's write path actually changes behavior; T1/T2/T3 never
+        # pass fixed_stake_usd, so their evaluate_forecast() code path is
+        # bit-for-bit unchanged.
+        bands_affected=frozenset({"T4M-PROJ"}),
+    ),
 )
 
 # epoch 1 = everything before the earliest tracked boundary (pre-history;
