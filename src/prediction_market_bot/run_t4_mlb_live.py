@@ -238,6 +238,13 @@ _AUDIT_LOG_PATH  = _LOGS_DIR / "audit_mlb_t4.jsonl"
 KILL_SWITCH_PATH = _LOGS_DIR / "t4_mlb_kill_switch.flag"
 SINGLETON_LOCK_PATH = _LOGS_DIR / "t4_mlb_live.lock"
 
+# GG-149: T1 MLB's portfolio file, read-only, for the cross-book (T1 vs T4)
+# alarm-only conflict check. ADR-0023 pool isolation means T1 and T4 are
+# separate processes with separate portfolio files and no shared coordination
+# mechanism — this is a best-effort file read, never a live handle into T1's
+# process, and must tolerate the file being absent or stale.
+_T1_PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio_mlb.json"
+
 # GG-067 (SESSION 110): raw per-cycle context, independent of T4_MLB_DRY_RUN.
 # Written for every cycle that reaches the p_t4/gross_edge computation (fired
 # or not) so EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01 have a real data source —
@@ -786,6 +793,63 @@ def _reconstruct_fired_ticker_states(portfolio: dict[str, Any], game_dates: Unio
     return states
 
 
+def _find_open_position_opposite_direction(
+    open_positions: list[dict[str, Any]], ticker: str, direction: str
+) -> Optional[dict[str, Any]]:
+    """GG-149: return the OPEN position on `ticker` whose direction is the
+    opposite of `direction`, if one exists in `open_positions`.
+
+    This is a genuinely new control, not a repair of the existing
+    `already_fired_game` state-dedup guard (T-225, above): that guard is
+    keyed on ticker but its blocking condition is exact (h_so_far,
+    ab_remaining) state-equality, has no direction field anywhere in its key
+    or value, and its source (`_reconstruct_fired_ticker_states`) merges
+    OPEN and CLOSED positions together — it cannot represent "is there
+    currently an open opposite-direction position" without a redesign of
+    its data model, which would be a rewrite, not a fix.
+    """
+    for p in open_positions:
+        if (
+            p.get("kalshi_ticker") == ticker
+            and p.get("status") == "OPEN"
+            and p.get("direction") in ("YES", "NO")
+            and p.get("direction") != direction
+        ):
+            return p
+    return None
+
+
+def _t1_open_position_opposite_direction(
+    ticker: str, t4_direction: str
+) -> Optional[dict[str, Any]]:
+    """GG-149: read-only, best-effort check of the T1 MLB portfolio file for
+    an OPEN position on `ticker` with a direction opposite to `t4_direction`.
+
+    Cross-book (T1 vs T4) is alarm-only, never blocking — ADR-0023 pool
+    isolation means T1 and T4 are separate processes with separate portfolio
+    files and no shared coordination mechanism; blocking would require
+    cross-process locking that doesn't exist and shouldn't be improvised
+    here. Must tolerate the file being absent, stale, or malformed and must
+    never raise into a live T4 cycle.
+    """
+    try:
+        if not _T1_PORTFOLIO_PATH.exists():
+            return None
+        with open(_T1_PORTFOLIO_PATH) as f:
+            t1_state = json.load(f)
+        for p in t1_state.get("open_positions", []):
+            if (
+                p.get("kalshi_ticker") == ticker
+                and p.get("status") == "OPEN"
+                and p.get("direction") in ("YES", "NO")
+                and p.get("direction") != t4_direction
+            ):
+                return p
+    except Exception as exc:
+        logger.debug("T1 cross-book check skipped for %s: %s", ticker, exc)
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Contamination guard
 # ---------------------------------------------------------------------------
@@ -1135,6 +1199,48 @@ def _run_cycle(
                 continue
 
             directional_net_edge = directional_gross_edge - kalshi_fee
+
+            # GG-149: intra-book (T4 vs T4) offsetting-position suppression.
+            # Simultaneous YES+NO on one contract from one account is
+            # economically a wash trade — Kalshi (CFTC-regulated DCM)
+            # prohibits wash trades/self-matching regardless of intent. Skip
+            # (never close-and-reverse — that's a separate strategy decision
+            # requiring its own ADR under ADR-0018, out of scope here).
+            _opposing_t4 = _find_open_position_opposite_direction(
+                trader.get_state().get("open_positions", []), ticker, direction
+            )
+            if _opposing_t4 is not None:
+                audit.warning(
+                    COMPONENT, "t4_offsetting_suppressed",
+                    payload={
+                        "ticker": ticker,
+                        "existing_direction": _opposing_t4.get("direction"),
+                        "blocked_direction": direction,
+                        "existing_edge": _opposing_t4.get("fee_net_edge"),
+                        "blocked_edge": round(directional_net_edge, 6),
+                    },
+                    session_id=session_id,
+                )
+                evaluated += 1
+                continue
+
+            # GG-149: cross-book (T1 vs T4) alarm-only. T1/T4 are pool-isolated
+            # (ADR-0023) with separate processes/portfolio files — no blocking
+            # coordination mechanism exists or should be improvised here.
+            _opposing_t1 = _t1_open_position_opposite_direction(ticker, direction)
+            if _opposing_t1 is not None:
+                audit.warning(
+                    COMPONENT, "t4_t1_cross_book_direction_conflict",
+                    payload={
+                        "ticker": ticker,
+                        "t1_direction": _opposing_t1.get("direction"),
+                        "t4_direction": direction,
+                        "t1_edge": _opposing_t1.get("fee_net_edge"),
+                        "t4_edge": round(directional_net_edge, 6),
+                    },
+                    session_id=session_id,
+                )
+                # Alarm-only — do not suppress or continue.
 
             # ADR-0050 addendum §B (2026-07-30): flat DOLLARS != flat exposure. entry_price
             # is the true price paid for THIS bet's direction (YES pays mip, NO pays
