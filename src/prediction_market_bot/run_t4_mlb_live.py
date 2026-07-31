@@ -166,10 +166,30 @@ T4_MEASUREMENT_STAKE_USD = 1.00     # ADR-0050 (2026-07-30): flat per-bet stake 
                                      # gate-valid (signed edge >= MIN_EDGE_TO_APPROVE, direction-consistent)
                                      # evaluation. Far inside GG-045 orderbook depth ($500-$2k est., later
                                      # refined to median $66-$195 per T-393). Passed to RiskEngine.evaluate_forecast
-                                     # as fixed_stake_usd= — see risk.py for the bypass mechanics. EXIT: once
-                                     # volume accrues, sizing is regression-analyzed and moved to the B2
-                                     # survivable-edge frontier (operator directive, 2026-07-30); reverts to 0 if
-                                     # edge fails to validate by the power-calc n* for this cohort.
+                                     # as fixed_stake_usd= (after the contract-cap adjustment below) — see risk.py
+                                     # for the bypass mechanics. EXIT: once volume accrues, sizing is
+                                     # regression-analyzed and moved to the B2 survivable-edge frontier (operator
+                                     # directive, 2026-07-30); reverts to 0 if edge fails to validate by the
+                                     # power-calc n* for this cohort. That regression must NOT treat the prior
+                                     # in-sample GG-142 gate-valid ROI readings (+10.99%/+27.58%) as a validated
+                                     # prior — this cohort is the first out-of-sample test of that filter
+                                     # (ADR-0050 addendum item g, 2026-07-30).
+T4_MEASUREMENT_MAX_CONTRACTS = 10   # ADR-0050 addendum (2026-07-30, operator): flat DOLLARS != flat exposure —
+                                     # at an uncapped $1.00 stake, a sub-$0.10 entry price becomes a 100+:1
+                                     # payout position. Measured on the epoch-8 gate-valid cohort (n=234):
+                                     # 23% of bets (54/234) price below $0.10; uncapped flat-$1 has ~15x the
+                                     # per-bet variance of a 10-contract-capped form on the same bets/signs,
+                                     # and n* scales with variance, so uncapped defeats the point of accruing a
+                                     # measurement cohort efficiently. stake = min(flat_stake, this * entry_price)
+                                     # — every bet at entry_price >= $0.10 (77% of the cohort) still stakes
+                                     # exactly $1.00 (the min() saturates at flat_stake); only the sub-10c tail
+                                     # is capped, bounded at a uniform $10 max payout instead of unbounded.
+                                     # Operator-overridable — do not change unilaterally.
+T4_PRICE_STRATUM_LOW_MAX  = 0.10    # ADR-0050 addendum §C pre-registration (2026-07-30): LOW < 0.10
+T4_PRICE_STRATUM_MID_MAX  = 0.70    # MID in [0.10, 0.70]; HIGH > 0.70. Fixed BEFORE this cohort accrues data —
+                                     # see ADR-0050 §8 for the committed analysis rule (headline verdict on
+                                     # MID+HIGH, LOW reported separately as a named secondary stratum, neither
+                                     # pooled nor discarded). Do not change post hoc.
 # T-228: skip the Binomial/C4 evaluation cost on markets priced too wide to plausibly
 # clear MIN_EDGE_TO_APPROVE. Ceiling set from real 2026-07-02 production data, not a
 # guess: of 4,971 evaluated cycles that day, the widest vig on any net_edge>=0.04
@@ -183,6 +203,33 @@ _AB_BY_SLOT: dict[int, float] = {
     1: 4.2, 2: 4.1, 3: 4.0, 4: 3.9, 5: 3.7,
     6: 3.6, 7: 3.4, 8: 3.2, 9: 3.1,
 }
+
+
+def measurement_stake_and_stratum(entry_price: float) -> tuple[float, float, str]:
+    """ADR-0050 addendum §B/§C (2026-07-30): contract-capped flat measurement
+    stake + pre-registered price stratum for a single T4M-PROJ bet.
+
+    Extracted from the main evaluation loop (rather than left inline) so the
+    addendum's Part D.3 requirement — "assert the contract cap binds" — can be
+    tested directly against this function instead of the whole live-polling
+    loop. See T4_MEASUREMENT_MAX_CONTRACTS's definition above for why this
+    uses min(flat_stake, max_contracts * entry_price) rather than a
+    floor()-based integer-contract count.
+
+    Returns (measurement_stake_usd, contracts, price_stratum). Caller must
+    guard entry_price > 0.0 — this function does not.
+    """
+    stake = round(
+        min(T4_MEASUREMENT_STAKE_USD, T4_MEASUREMENT_MAX_CONTRACTS * entry_price), 4
+    )
+    contracts = round(stake / entry_price, 4)
+    if entry_price < T4_PRICE_STRATUM_LOW_MAX:
+        stratum = "LOW"
+    elif entry_price <= T4_PRICE_STRATUM_MID_MAX:
+        stratum = "MID"
+    else:
+        stratum = "HIGH"
+    return stake, contracts, stratum
 
 _LOGS_DIR        = Path(__file__).resolve().parents[2] / "logs"
 _PORTFOLIO_PATH  = _LOGS_DIR / "paper_portfolio_mlb_t4.json"
@@ -1089,6 +1136,29 @@ def _run_cycle(
 
             directional_net_edge = directional_gross_edge - kalshi_fee
 
+            # ADR-0050 addendum §B (2026-07-30): flat DOLLARS != flat exposure. entry_price
+            # is the true price paid for THIS bet's direction (YES pays mip, NO pays
+            # 1-mip) — distinct from the p_entry=mip convention used elsewhere in this
+            # pipeline as a YES-frame diagnostic/ledger field. T4M-PROJ trades are paper
+            # positions (store.stage_order()/paper_trader.py), not literal Kalshi orders
+            # pre-G6, so "contracts" is a notional cap on payout, not an integer-order
+            # constraint: stake = min(flat_stake, max_contracts * entry_price). This
+            # lands every bet at entry_price >= flat_stake/max_contracts ($0.10 here) at
+            # exactly the flat $1.00 stake (min() saturates at flat_stake), while a
+            # sub-10c entry is capped at a uniform $10 max payout (max_contracts * $1/
+            # contract) instead of an unbounded one. A floor()-based integer-contract
+            # count would under-stake most non-$0.10-aligned prices even above the cap
+            # threshold (e.g. $0.395 -> 2 contracts -> $0.79, not $1.00) — rejected for
+            # exactly that reason; verified against the addendum's own worked example
+            # ($0.005 entry -> $0.05 stake / effectively 10 contracts).
+            entry_price = mip if direction == "YES" else (1.0 - mip)
+            if entry_price <= 0.0:
+                evaluated += 1
+                continue
+            measurement_stake_usd, contracts, price_stratum = measurement_stake_and_stratum(
+                entry_price
+            )
+
             fc_record = {
                 "forecast_id":         f"T4-MLB-{cycle_id}-{ticker[-12:]}",
                 "p_estimate":          p_t4,
@@ -1096,6 +1166,9 @@ def _run_cycle(
                 "edge":                directional_net_edge,
                 "gross_edge":          gross_edge,
                 "recommended_direction": direction,
+                "entry_price_paid":    round(entry_price, 4),  # ADR-0050 addendum §C
+                "price_stratum":       price_stratum,          # ADR-0050 addendum §C
+                "contracts":           contracts,              # ADR-0050 addendum §B
             }
 
             ok, approval = engine.evaluate_forecast(
@@ -1106,7 +1179,7 @@ def _run_cycle(
                 current_open_exposure_usd=t4_deployed_usd,
                 portfolio_equity_usd=t4_band_budget,
                 pool_isolated=True,
-                fixed_stake_usd=T4_MEASUREMENT_STAKE_USD,  # ADR-0050
+                fixed_stake_usd=measurement_stake_usd,  # ADR-0050 + addendum §B cap
             )
             evaluated += 1
 
@@ -1117,14 +1190,17 @@ def _run_cycle(
             if approval.get("approval_status") != "APPROVED":
                 continue
 
-            # ADR-0050 (2026-07-30): flat $1.00 measurement stake — replaces the
-            # prior "1 contract at market price" policy. RiskEngine already set
-            # approved_size to T4_MEASUREMENT_STAKE_USD via fixed_stake_usd=
-            # above (KELLY_T4 stays 0.0; sizing_mode="fixed_measurement" on the
-            # approval record confirms the bypass took the intended path).
+            # ADR-0050 (2026-07-30): flat $1.00 measurement stake (contract-capped per
+            # addendum §B) — replaces the prior "1 contract at market price" policy.
+            # RiskEngine already set approved_size to measurement_stake_usd via
+            # fixed_stake_usd= above (KELLY_T4 stays 0.0; sizing_mode="fixed_measurement"
+            # on the approval record confirms the bypass took the intended path).
             approved_size = approval["approved_size"]
             approval = {**approval, "model_p": p_t4, "edge": directional_net_edge,
-                        "gross_edge": gross_edge, "band": "T4M-PROJ"}  # T-253
+                        "gross_edge": gross_edge, "band": "T4M-PROJ",  # T-253
+                        "entry_price_paid": round(entry_price, 4),  # ADR-0050 addendum §C
+                        "price_stratum": price_stratum,             # ADR-0050 addendum §C
+                        "contracts": contracts}                     # ADR-0050 addendum §B
 
             if t4_deployed_usd + approved_size > t4_band_budget:
                 logger.info(

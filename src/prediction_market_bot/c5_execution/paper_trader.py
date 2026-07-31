@@ -519,6 +519,15 @@ class PaperTrader:
                 # since this ticker's last fire. None for non-T4 callers.
                 "h_so_far_at_entry": h_so_far_at_entry,
                 "ab_remaining_at_entry": ab_remaining_at_entry,
+                # ADR-0050 addendum §C (2026-07-30): pre-registered price-stratum
+                # stamp, written at entry time — not derivable post hoc from
+                # mid_price_at_entry alone, since that field is YES-frame regardless
+                # of direction while entry_price_paid is direction-adjusted (NO pays
+                # 1-mid_price_at_entry). None for non-T4M-PROJ callers (field is
+                # opt-in via approval dict; absence is not an error).
+                "entry_price_paid": approval.get("entry_price_paid"),
+                "price_stratum": approval.get("price_stratum"),
+                "contracts": approval.get("contracts"),
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)
