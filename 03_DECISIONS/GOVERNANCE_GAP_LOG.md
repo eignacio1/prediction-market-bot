@@ -2911,6 +2911,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-156 — No forward price archive existed for any MLB market family before 2026-08-01; Phase 2's market-comparison gate had no input source and the same absence limits GG-142 counterfactual analysis
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-156 |
+| Category | Missing data infrastructure — a downstream gate (`MARKET_EXPANSION_ACTION_PLAN.md` 2.7/2.8) depended on an input source that was never built, and the gap was invisible because nothing failed loudly — the gate simply could not have been attempted. |
+| What was missed | As of 2026-08-01, no component in this system persisted forward Kalshi price history for any market family. `t4_price_cache.py` is in-memory only (dies with the process); `fetch_kalshi_prices.py` is an scp-pull utility, not an archiver. The only price history anywhere was `mid_price_at_entry`/`vig_at_entry` embedded in ledger rows — prices at the instant the bot bet — which is selection-biased to bets actually placed on a single family (`KXMLBHIT`). Phase 2's action-plan gate (2.7/2.8, "score the team-level model offline against historical Kalshi prices") requires exactly the data that never existed for `KXMLBGAME`/`KXMLBSPREAD`/`KXMLBTOTAL`, and — separately — the same selection-bias absence means GG-142's gate-valid-filter result cannot be evaluated against bets the filter would have rejected but the bot did not place; there is no price record for markets not bet on. |
+| When it should have been caught | When Phase 2's action-plan gate (2.7/2.8) was first written — the gate names "historical Kalshi prices" as an input without any script or process producing that input existing at the time, an unstated dependency that should have been flagged when the gate was drafted, not discovered when someone went to run it. |
+| Phases it survived | Present since Phase 2's gate language was authored; survived Phase 0-A/0-B/0-C session work (2026-07-30 through 2026-08-01) because none of that work touched price persistence — it was market-listing and depth-orderbook sampling, a different data need. |
+| Why it survived | No component in C1-C8 is responsible for price archival as a distinct concern — C6 (Audit Logger) logs bot actions/decisions, not passive market state for markets never acted on. The gap sat between explicit ownership boundaries. |
+| Impact | MEDIUM-HIGH and partially irreversible. MLB's regular season ends in early October (~9 weeks from 2026-08-01); any day this does not run is a day of forward price data permanently lost for Phase 2's gate and for GG-142 counterfactual work — it cannot be backfilled after the fact for a market that has already resolved/closed. Not a G6 blocker (G6 does not depend on Phase 2), but every day of delay narrows the eventual n for both downstream uses. |
+| Discovery | 2026-08-01, Phase 0-E session (T-410), while investigating what Phase 2's action-plan gate would actually run against. |
+| Resolution | `scripts/archive_market_prices.py` deployed this session — read-only, append-only, one JSONL/UTC day, capturing top-of-book snapshots (`yes_bid`/`yes_ask`/`no_bid`/`no_ask`/`last_price`/volume/open_interest/liquidity + derived `yes_mid`/`half_spread`) for all 10 MLB families (`KXMLBGAME`, `KXMLBSPREAD`, `KXMLBTOTAL`, `KXMLBTEAMTOTAL`, `KXMLBF3`, `KXMLBF5`, `KXMLBF7`, `KXMLBF5SPREAD`, `KXMLBF5TOTAL`, `KXMLBHIT` as control). Cron installed on the VPS (`*/20 22-23,0-5 * * *`, matching T4M-PROJ's live window) via `deploy/cron.conf` + live crontab, first scheduled fire confirmed. Note: the first manual verification run (2026-08-01T22:55Z) shipped with a field-name bug (`SNAPSHOT_FIELDS` used plain names; the live `/markets` response uses `*_dollars`/`*_fp` keys) that silently dropped every quote field — caught by inspecting `yes_mid` population (0/2162) before trusting the run, fixed same-session (commit `6b687bf`), re-verified 100% `yes_mid` population with non-degenerate values across all 2170 rows on the corrected run. The broken first-run file was preserved as `prices_2026-08-01.jsonl.BROKEN_FIRSTRUN` rather than deleted. This does not retroactively resolve the pre-2026-08-01 data gap — history before this date remains permanently unrecoverable for all families except the selection-biased `KXMLBHIT` ledger rows. |
+| Status | OPEN — archiver live and producing correct data going forward; the historical gap for dates before 2026-08-01 is permanently unresolvable and is the residual open concern this entry tracks. No T-NNN beyond T-410 (this session). |
+
+---
+
 
 ## Gap Registration Template
 

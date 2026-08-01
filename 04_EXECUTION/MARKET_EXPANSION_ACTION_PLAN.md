@@ -70,6 +70,33 @@
 
 ---
 
+## Phase 0-D — Mid-slate depth run (T-410, GG-155 timing confound)
+
+**Context:** resolves 0C.5/0C.6/0C.8 above — same objective (mid-slate depth to distinguish TIMING ARTIFACT from STRUCTURAL FINDING for GG-155), executed 2026-08-01 rather than left for "Monday."
+
+- [x] **0D.1** `scripts/phase0_refresh_markets.py` built + validated — `markets_sample.json` (2026-07-31 frozen capture) confirmed stale (125 KXMLBHIT open in the frozen file vs 606 refetched live 2026-08-01T22:38Z); re-fetches current `status=open` markets for all 220 known MLB-family series, full cursor pagination, same 0.30s pacing floor as the survey script. Committed `98834e4`.
+- [ ] **0D.2** Fresh refresh + `phase0_market_survey.py depth --per-family 20` run inside the 00:00-02:00Z sweet spot — **pending**, parked behind a scheduled continuation.
+- [ ] **0D.3** Comparison table (0-B 20:13Z pre-slate vs mid-slate vs delta) + explicit TIMING ARTIFACT vs STRUCTURAL FINDING verdict for `PLAYER_PROP` — **pending on 0D.2**.
+- [ ] **0D.4** FAIL-NOBOOK vs FAIL-WIDE breakdown applied to the mid-slate result (see 0C.10) — **pending on 0D.2**.
+
+---
+
+## Phase 0-E — Forward price archiver deployed (T-410, GG-156)
+
+**Context:** no forward price archive existed for any MLB market family before this session (see GG-156). Phase 2's 2.7/2.8 gate needs historical Kalshi prices for `KXMLBGAME`/`KXMLBSPREAD`/`KXMLBTOTAL` that were never captured; MLB's regular season ends in early October, so any day this is not running is permanently lost input. Treated as the one irreversible-cost item on the board this session — deployed ahead of/alongside 0-D rather than deferred to Monday.
+
+- [x] **0E.1** `scripts/archive_market_prices.py` read before deployment (was found untracked in the shared `main` tree, not the worktree, contradicting the initiating prompt's claim — verified directly per project's "verify external claims" rule before acting). Read-only, append-only, one JSONL/UTC day, hard 0.30s pacing floor enforced in-code (`SystemExit` if violated), zero-result GG-049 guard (exit 2 + stderr warning if all series return 0 markets).
+- [x] **0E.2** Field-name bug found and fixed before trusting the archive: first manual run (2026-08-01T22:55Z, 2162 snapshots) had `yes_mid` populated in **0/2162** rows. Root cause: `SNAPSHOT_FIELDS` used plain names (`yes_bid`, `yes_ask`, ...); the live `/markets` response uses `*_dollars`/`*_fp` keys (confirmed via direct API read against KXMLBHIT) — the `if field in market` guard silently dropped every quote field. Fixed same-session (commit `6b687bf`), re-verified: 2170/2170 rows with `yes_mid` populated (100%), spot-checked non-degenerate (real bid/ask spreads, not 0.00/1.00 placeholders). Broken first-run file preserved as `prices_2026-08-01.jsonl.BROKEN_FIRSTRUN`, not deleted.
+- [x] **0E.3** Deployed to `main` (`ada06eb`, `6b687bf`, `93efca2`) and pulled onto the VPS (`/opt/prediction-market-bot`).
+- [x] **0E.4** Cron installed: `*/20 22-23,0-5 * * *` (two blocks, midnight-wrap), all 10 MLB families (`KXMLBGAME`, `KXMLBSPREAD`, `KXMLBTOTAL`, `KXMLBTEAMTOTAL`, `KXMLBF3`, `KXMLBF5`, `KXMLBF7`, `KXMLBF5SPREAD`, `KXMLBF5TOTAL`, `KXMLBHIT` as control). Registered in git-tracked `deploy/cron.conf` (commit `93efca2`) and installed to the live crontab (confirmed via `crontab -l`). First scheduled fire: 2026-08-01T23:20Z.
+- [ ] **0E.5** First scheduled cron fire confirmed to have produced output (not just the manual run) — pending the 23:20Z fire.
+- [x] **0E.6** T4 safety checked before deploy (active, `NRestarts=0`, 0 recent staleness, 0 anchored 429s) — pending a second check after the first scheduled cron fire (0E.5).
+- [x] **0E.7** Governance gap registered — GG-156 (no forward price archive existed for any family as of 2026-08-01; Phase 2 gate input source never existed and cannot be backfilled; same absence limits GG-142 counterfactual analysis on bets not taken).
+
+**Do not** (standing for this phase, per operator instruction): do not start Phase 1 or Phase 2; do not edit CLAUDE.md's depth figure; do not touch `execution_bands.py`, `risk.py`, `paper_trader.py`, or any sizing.
+
+---
+
 ## Phase 1 — Abstraction repair (no new markets)
 
 - [ ] **1.1** Market-type registry built (`market_mapper.py` currently has no such thing)
