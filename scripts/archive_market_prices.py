@@ -56,10 +56,28 @@ MAX_PAGES_PER_SERIES = 40       # bound: refuse to paginate forever on a bad cur
 # Fields worth persisting. Kept explicit rather than dumping the whole record so
 # the archive stays compact over a full season, and so a schema change upstream
 # surfaces as a missing key rather than silently bloating every row.
+#
+# Kalshi's /markets response uses the "*_dollars" (decimal-string) / "*_fp"
+# convention confirmed live 2026-08-01 (KXMLBHIT sample) -- there is no plain
+# "yes_bid" key on the raw record. Archive under stable plain names anyway;
+# (source_key, archived_key) pairs make the rename explicit at the one place
+# it happens rather than requiring readers to know both conventions.
 SNAPSHOT_FIELDS = (
-    "ticker", "event_ticker", "status", "yes_bid", "yes_ask", "no_bid", "no_ask",
-    "last_price", "previous_price", "volume", "volume_24h", "open_interest",
-    "liquidity", "close_time", "expiration_time",
+    ("ticker", "ticker"),
+    ("event_ticker", "event_ticker"),
+    ("status", "status"),
+    ("yes_bid_dollars", "yes_bid"),
+    ("yes_ask_dollars", "yes_ask"),
+    ("no_bid_dollars", "no_bid"),
+    ("no_ask_dollars", "no_ask"),
+    ("last_price_dollars", "last_price"),
+    ("previous_price_dollars", "previous_price"),
+    ("volume_fp", "volume"),
+    ("volume_24h_fp", "volume_24h"),
+    ("open_interest_fp", "open_interest"),
+    ("liquidity_dollars", "liquidity"),
+    ("close_time", "close_time"),
+    ("expiration_time", "expiration_time"),
 )
 
 
@@ -67,15 +85,24 @@ def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _to_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _snapshot(market: dict[str, Any], series: str, run_ts: str) -> dict[str, Any]:
     row: dict[str, Any] = {"run_ts": run_ts, "series_ticker": series}
-    for field in SNAPSHOT_FIELDS:
-        if field in market:
-            row[field] = market[field]
+    for src_field, out_field in SNAPSHOT_FIELDS:
+        if src_field in market:
+            row[out_field] = market[src_field]
     # Derived mid, when both sides are quoted. Stored rather than recomputed so a
     # later change to this convention cannot silently rewrite historical meaning.
-    yb, ya = market.get("yes_bid"), market.get("yes_ask")
-    if isinstance(yb, (int, float)) and isinstance(ya, (int, float)) and ya > yb:
+    yb, ya = _to_float(market.get("yes_bid_dollars")), _to_float(market.get("yes_ask_dollars"))
+    if yb is not None and ya is not None and ya > yb:
         row["yes_mid"] = round((yb + ya) / 2.0, 4)
         row["half_spread"] = round((ya - yb) / 2.0, 4)
     return row
