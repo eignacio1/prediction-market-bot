@@ -14,4 +14,15 @@ Worth flagging: my first read on the practice/real-money bug was actually backwa
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260802_0016.md` and `DECISION_LOG.md` for this date.*
+## Update — later session, 04:37Z
+
+Quick check: is the price-history recorder (the one thing we can't ever get back if it
+goes dark — MLB season ends early October) actually running? Yes. Confirmed on the
+server — it's writing fresh price data every 20 minutes, over 28,000 price snapshots
+logged across the last two days, and the live-betting engine is up and healthy
+alongside it. Nothing was broken, so nothing was changed. No money at risk today
+beyond the existing paper-trading setup.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260802_0016.md`, `SESSION_HANDOFF_20260802_0437.md`, and `DECISION_LOG.md` for this date.*
