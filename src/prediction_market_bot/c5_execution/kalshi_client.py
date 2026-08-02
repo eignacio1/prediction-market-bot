@@ -96,9 +96,29 @@ _KALSHI_LIVE_BASE_URL = "https://external-api.kalshi.com/trade-api/v2"
 
 
 def _kalshi_base_url() -> str:
-    """Authenticated endpoints (portfolio balance, order submission) — follow BOT_ENV."""
-    env = os.environ.get("BOT_ENV", "paper").lower()
-    return _KALSHI_LIVE_BASE_URL if env == "live" else _KALSHI_DEMO_BASE_URL
+    """Authenticated endpoints (portfolio balance, order submission) — follow BOT_ENV.
+
+    GG-152: BOT_ENV's only two literal accepted values are "paper" and "live"
+    (case-insensitive) — "ENV-01"/"ENV-02"/"ENV-03" are documentation labels for
+    those states (see .env.example), never values this function should receive.
+    An explicitly-set, unrecognized value fails loud rather than silently
+    routing order submission to the demo sandbox — silent fallback here would
+    let a live-capital activation believe it was hitting production when it
+    was not. Unset (not set at all) still defaults safely to demo, unchanged.
+    """
+    raw = os.environ.get("BOT_ENV")
+    if raw is None:
+        return _KALSHI_DEMO_BASE_URL
+    env = raw.lower()
+    if env == "live":
+        return _KALSHI_LIVE_BASE_URL
+    if env == "paper":
+        return _KALSHI_DEMO_BASE_URL
+    raise ValueError(
+        f"BOT_ENV={raw!r} is not a recognized value — must be 'paper' or 'live' "
+        "(case-insensitive). Refusing to silently route order submission to the "
+        "demo sandbox (GG-152)."
+    )
 
 
 def _price_discovery_url() -> str:

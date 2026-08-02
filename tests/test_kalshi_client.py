@@ -71,9 +71,17 @@ class TestKalshiBaseUrl:
         monkeypatch.delenv("BOT_ENV", raising=False)
         assert _kalshi_base_url() == _KALSHI_DEMO_BASE_URL
 
-    def test_unknown_env_defaults_to_demo(self, monkeypatch):
+    def test_unknown_env_raises(self, monkeypatch):
+        """GG-152: an unrecognized explicit BOT_ENV must fail loud, not silently demo."""
         monkeypatch.setenv("BOT_ENV", "staging")
-        assert _kalshi_base_url() == _KALSHI_DEMO_BASE_URL
+        with pytest.raises(ValueError, match="BOT_ENV"):
+            _kalshi_base_url()
+
+    def test_env03_label_raises(self, monkeypatch):
+        """GG-152: the documentation label 'ENV-03' is not a valid literal value."""
+        monkeypatch.setenv("BOT_ENV", "ENV-03")
+        with pytest.raises(ValueError, match="BOT_ENV"):
+            _kalshi_base_url()
 
 
 class TestGetUrlRouting:
