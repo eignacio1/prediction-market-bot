@@ -1,0 +1,307 @@
+{
+  "sampled_at_utc": "2026-08-03T23:50:50Z",
+  "series": "KXMLBHIT",
+  "n_available": 325,
+  "samples": [
+    {
+      "usable": true,
+      "mid_cents": 4.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 7642,
+        "no": 3751
+      },
+      "within_5c_contracts": {
+        "yes": 11377,
+        "no": 21081
+      },
+      "within_5c_usd_min_side": 511.96,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXWLANGFORD36-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 25.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 295,
+        "no": 3597
+      },
+      "within_5c_contracts": {
+        "yes": 1502,
+        "no": 26579
+      },
+      "within_5c_usd_min_side": 383.01,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXWLANGFORD36-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 64.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 554,
+        "no": 1501
+      },
+      "within_5c_contracts": {
+        "yes": 21800,
+        "no": 21026
+      },
+      "within_5c_usd_min_side": 7464.23,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXWLANGFORD36-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 6931,
+        "no": 300
+      },
+      "within_5c_contracts": {
+        "yes": 14271,
+        "no": 18976
+      },
+      "within_5c_usd_min_side": 499.49,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFWADAMES2-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 4.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3273,
+        "no": 4202
+      },
+      "within_5c_contracts": {
+        "yes": 9220,
+        "no": 24496
+      },
+      "within_5c_usd_min_side": 414.9,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUYDIAZ21-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 21.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 3100,
+        "no": 200
+      },
+      "within_5c_contracts": {
+        "yes": 29256,
+        "no": 12650
+      },
+      "within_5c_usd_min_side": 6143.76,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFWADAMES2-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 24.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 428,
+        "no": 2390
+      },
+      "within_5c_contracts": {
+        "yes": 4562,
+        "no": 23924
+      },
+      "within_5c_usd_min_side": 1117.69,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUYDIAZ21-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 60.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 10025,
+        "no": 50
+      },
+      "within_5c_contracts": {
+        "yes": 49169,
+        "no": 11179
+      },
+      "within_5c_usd_min_side": 4415.7,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFWADAMES2-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 65.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3727,
+        "no": 1401
+      },
+      "within_5c_contracts": {
+        "yes": 23925,
+        "no": 19899
+      },
+      "within_5c_usd_min_side": 6865.15,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUYDIAZ21-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 1335,
+        "no": 2538
+      },
+      "within_5c_contracts": {
+        "yes": 3900,
+        "no": 23988
+      },
+      "within_5c_usd_min_side": 136.5,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFOBASABE39-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 1.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 7210,
+        "no": 375
+      },
+      "within_5c_contracts": {
+        "yes": 7210,
+        "no": 22499
+      },
+      "within_5c_usd_min_side": 108.15,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUTTRAMMELL26-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 19.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 1323,
+        "no": 1525
+      },
+      "within_5c_contracts": {
+        "yes": 43930,
+        "no": 10379
+      },
+      "within_5c_usd_min_side": 8346.7,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFOBASABE39-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 13.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 133,
+        "no": 1497
+      },
+      "within_5c_contracts": {
+        "yes": 31198,
+        "no": 18549
+      },
+      "within_5c_usd_min_side": 4211.73,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUTTRAMMELL26-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 59.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 1654,
+        "no": 1990
+      },
+      "within_5c_contracts": {
+        "yes": 32521,
+        "no": 21677
+      },
+      "within_5c_usd_min_side": 8887.57,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-SFOBASABE39-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 51.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 50,
+        "no": 4766
+      },
+      "within_5c_contracts": {
+        "yes": 19677,
+        "no": 24605
+      },
+      "within_5c_usd_min_side": 10133.66,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-HOUTTRAMMELL26-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 2.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3099,
+        "no": 2748
+      },
+      "within_5c_contracts": {
+        "yes": 3679,
+        "no": 21875
+      },
+      "within_5c_usd_min_side": 91.97,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXNLOPE33-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 1.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 40,
+        "no": 10333
+      },
+      "within_5c_contracts": {
+        "yes": 40,
+        "no": 25869
+      },
+      "within_5c_usd_min_side": 0.6,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-TORNLUKES38-4"
+    },
+    {
+      "usable": true,
+      "mid_cents": 15.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 2826,
+        "no": 1000
+      },
+      "within_5c_contracts": {
+        "yes": 36700,
+        "no": 6167
+      },
+      "within_5c_usd_min_side": 5211.11,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXNLOPE33-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 5.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 2291,
+        "no": 150
+      },
+      "within_5c_contracts": {
+        "yes": 112496,
+        "no": 22387
+      },
+      "within_5c_usd_min_side": 6187.28,
+      "ticker": "KXMLBHIT-26AUG032010TORHOU-TORNLUKES38-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 56.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 1035,
+        "no": 2053
+      },
+      "within_5c_contracts": {
+        "yes": 16673,
+        "no": 16817
+      },
+      "within_5c_usd_min_side": 7315.4,
+      "ticker": "KXMLBHIT-26AUG032005SFTEX-TEXNLOPE33-1"
+    }
+  ]
+}
