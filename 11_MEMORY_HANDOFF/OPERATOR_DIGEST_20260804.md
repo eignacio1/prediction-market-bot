@@ -27,4 +27,20 @@ No — nothing urgent. Still zero real money at risk.
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
+## Update — later same day (PRICE_ARCHIVE sync/backup cleanup)
+
+**What changed:**
+Earlier sessions today said the tool that continuously records market prices "was working" on the server. But nobody had actually checked whether a copy of that data existed anywhere except that one server's disk — and this season's price data can't be regenerated once it's gone. This session double-checked directly: yes, it's genuinely running and collecting data. But there was no backup, and the folder wasn't even protected from being accidentally deleted from our records by a routine save. Fixed both — added the protection, and set up an automatic copy that pulls the data down to a second location every time anyone works on this project going forward.
+
+**What this means for your money:**
+No change — still zero real money at risk. This was a data-safety fix, not a trading change.
+
+**Does anything need your decision right now?**
+No — nothing urgent. One thing on record for later, not now: a proper cloud backup (beyond the second-copy fix made today) would be worth doing before the season gets much further along, but that's a bigger task than today's fix and doesn't need a decision this moment.
+
+**Anything that worried the session, even if not urgent:**
+Three separate check-ins over the past couple weeks all said this data collection was "verified" or "deployed" without anyone actually confirming a backup existed. That's now flagged as a pattern to watch for — a check that says "it's working" isn't the same as a check that tests the thing that actually matters (in this case, "is the only copy safe").
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
