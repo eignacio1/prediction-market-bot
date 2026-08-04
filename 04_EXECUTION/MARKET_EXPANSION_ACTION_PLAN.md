@@ -122,7 +122,7 @@
 - [ ] **1.4** `paper_trader.open_position()` signature generalized off `player_name`/`player_id`/`kalshi_threshold`
 - [ ] **1.5** Per-band vig cascade (L460/462/464) extracted to per-market-type config
 - [ ] **1.6** **GATE: bit-identical replay** — existing ledger replayed through refactored path produces byte-identical positions
-- [ ] **1.7** Full suite green (baseline 2,757 passed / 17 known-failed / 28 skipped)
+- [ ] **1.7** Full suite green (baseline 2,799 passed / 8 known-failed / 29 skipped, re-derived by running the suite 2026-08-04, T-415; the prior 2,757/17/28 figure was from `PROJECT_ASSESSMENT_2026-07-30.md:120` and predates the GG-146 partial fix that cut known-failures from 17→8 — re-run `pytest -q` before comparing against this baseline, do not copy the number)
 - [ ] **1.8** CLAUDE.md corrected — the market-type-registry claim and the efficiency-gradient departure
 
 ---

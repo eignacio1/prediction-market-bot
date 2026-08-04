@@ -43,8 +43,6 @@ Three separate check-ins over the past couple weeks all said this data collectio
 
 ---
 
----
-
 ## Update — later same day (T-413/VC6 close-out)
 
 **What changed:**
@@ -78,3 +76,21 @@ Just the stuck-bets item above. Separately, we checked in on the market-depth da
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260804_0525.md`, `SESSION_HANDOFF_20260804_2335.md`, `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, `DECISION_LOG.md`, and `10_INFRA_OPERATIONS/OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md` for 2026-08-03/2026-08-04.*
+
+---
+
+## Update — later same day (T-415 citation repair)
+
+**What changed:**
+Housekeeping only. Some of the project's internal planning documents had drifted — they pointed to specific file locations and counts that were true when written but had since moved or changed, the kind of thing that quietly misleads whoever reads them next. Found and fixed four of these stale references, double-checking each one against the real, current file rather than trusting the old note. Also logged this as a general failure pattern worth watching for again, and proposed (but didn't yet build) an automated check that would catch this kind of drift on its own going forward.
+
+**What this means for your money:**
+No change — still zero real money at risk. Nothing today touched trading logic, risk limits, or the go-live gate.
+
+**Does anything need your decision right now?**
+No — nothing needs you today.
+
+**Anything that worried the session, even if not urgent:**
+No new concerns. One thing corrected along the way: one of the documents claimed a piece of NBA-related code had "no test coverage" — checked it directly and that wasn't quite right (it does have basic tests; what it actually lacks is real-world exercise, since NBA trading is still paused). Fixed the document to say the accurate thing instead of repeating the imprecise claim.
+
+*Full technical detail: see `SESSION_HANDOFF_20260804_0520.md`, `SESSION_HANDOFF_20260804_2335.md`, `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*

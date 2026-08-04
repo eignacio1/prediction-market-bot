@@ -25,14 +25,14 @@ Two things are true and they pull against each other. Operator directive 2026-07
 | C4 `risk.py` | **No market-shape change required** | `evaluate_forecast()` reads eight record fields — `forecast_id`, `p_estimate`, `edge`, `gross_edge`, `recommended_direction`, `market_implied_prob`, `vig`, `kelly_fraction`. **Correction (2026-07-31 audit): the first draft of this row listed only five and stated "no change required." Both were wrong** — the field list was incomplete, and ADR-0050 subsequently added a `fixed_stake_usd` parameter (`risk.py:361/456/715`). The *conclusion* survives: every one of the eight is market-type-neutral, no player fields, so no market-shape change is required. **But it is the contamination seam — see § 3.** |
 | C5 `paper_trader.py` | **Hard seam** | `open_position()` (L380) requires `player_name: str`, `player_id: int`, `kalshi_threshold: int`, and carries the per-band vig cascade (branches at L460/462/464, verified 2026-07-31 — the first draft cited L462-468) already flagged as a cross-band contamination risk. |
 | C5 `venue_adapter.py` | **Repair first** | The protocol's own abstract method is `fetch_player_points_markets()`. The layer designed for extensibility hardcodes one market type. |
-| C5 `kalshi_client.py` | **Repair** | One series constant (`SERIES_MLB_PLAYER_HITS`), one player-shaped fetch, `_parse_market()` → `PlayerMarket`. |
+| C5 `kalshi_client.py` | **Repair** | **Two** series constants, not one — `SERIES_PLAYER_POINTS = "KXNBAPTS"` (L133) and `SERIES_MLB_PLAYER_HITS = "KXMLBHIT"` (L135) — the registry Phase 1.3 builds has to absorb both. One player-shaped fetch, `_parse_market()` → `PlayerMarket`. **NBA constant is the dark-band risk in this refactor:** `test_kalshi_client.py` has unit-level regression coverage for `SERIES_PLAYER_POINTS`, but NBA T1/T2 is DARK/FROZEN (standing operator directive, tabled until ~1 month before the 2026-27 season) — no live market currently exercises this path end-to-end, so a registry refactor could silently break it with nothing catching the break until reactivation. `SERIES_MLB_PLAYER_HITS` doesn't carry that risk; it's exercised by the daily-active T1 MLB cron. |
 | C5 `market_mapper.py` | **Build** | Contains `normalize_player_name`, `market_key`, `group_by_key` — a name matcher. The market-type registry CLAUDE.md claims lives here does not exist. |
 | C5 `portfolio_schema.py` | **No change** | `REQUIRED_TOP_LEVEL_FIELDS` is market-agnostic. A new pool file needs no schema change. |
 | C6 audit | Trivial | 1 player-shaped reference. |
 | C7 monitoring | Small | `monitor.py` 1 ref; `semantic_contracts.py` 13 — oracles are prop-shaped, need family analogues. |
 | C8 dashboard | Small | 2 refs. |
 | Registries | **Extend** | `run_band_monitor.py` hardcodes `BOOK_BANDS = ("T1","T2","T3")` with T4M-PROJ special-cased; `run_power_calc.py` mirrors it; `execution_bands.BAND_CONFIGS` and `logic_epoch.bands_affected` need entries. |
-| Tests | **53 of 83 files** reference player/threshold shape | Not all require change; that is the surface. |
+| Tests | **Player/threshold-shaped test files — re-run at read time, do not cite a pinned count:** `grep -rlE "player_id\|player_name\|kalshi_threshold" --include="*.py" tests/ \| wc -l` against `find tests -name "*.py" \| wc -l` for the denominator (55 of 89 at HEAD=6e5fbd0, 2026-08-04, T-415) | Not all require change; that is the surface. |
 
 ---
 
@@ -80,7 +80,7 @@ The team-level families make this materially harder, not easier: moneyline, run 
 
 ## 6. Assumptions | Risks | Validation | Confidence
 
-**Assumptions.** `scoring_distribution.py` works as documented — EXP-013's actual result has not been read and may have found it worse-calibrated than LR+Platt. `MLBTeamStatsStore`'s runs-scored/allowed series are populated in practice (GG-141 is the precedent for a store that exists, is correct, and is silently not joined). The 53/83 test-file figure is a grep on `player_id|player_name|kalshi_threshold`, an upper bound on true blast radius.
+**Assumptions.** `scoring_distribution.py` works as documented — EXP-013's actual result has not been read and may have found it worse-calibrated than LR+Platt. `MLBTeamStatsStore`'s runs-scored/allowed series are populated in practice (GG-141 is the precedent for a store that exists, is correct, and is silently not joined). The test-file figure in § 2 is a grep on `player_id|player_name|kalshi_threshold`, an upper bound on true blast radius — re-run it at read time rather than trusting any number cited here, including this document's own.
 
 **Key risks.** Phase 1's refactor touches `open_position()` — the single shared write path for every band — and a defect there is the highest-severity outcome in this plan; the bit-identical replay gate exists specifically for that. Correlated-exposure control (§ 4.1) is genuinely harder than same-ticker suppression and could become its own project. Operator attention, not compute, is the scarce resource; running Phases 1–2 alongside the props accrual is the main thing that could compromise the verdict this plan is designed to protect.
 
