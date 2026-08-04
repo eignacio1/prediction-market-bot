@@ -176,3 +176,4 @@
 | 2026-08-04T04:58:53Z | T-413 | VC6 vig-cascade verification: close last § 8 open check on the positive result |
 | 2026-08-04T04:59:04Z | T-414 | Step 4 ops health verification + depth time-series status/expiry (T-414, GG-154) |
 | 2026-08-04T04:59:15Z | T-415 | Citation repair: fix 4 stale file:line refs in Phase 0/1 docs |
+| 2026-08-04T23:58:26Z | T-417 | Fix merge=union for OPERATOR_DIGEST_*.md (GG-107-class collision seen 3x same-day, T-414/415/413 close-outs) — MICRO session |

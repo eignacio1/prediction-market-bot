@@ -31,3 +31,12 @@
 # windows finishing at the same time both survive instead of one clobbering
 # the other's completion line.
 04_EXECUTION/ITERATION_MC_PROGRESS.md merge=union
+
+# OPERATOR_DIGEST_YYYYMMDD.md (2026-08-04, T-417): each session appends a new
+# "## Update — later same day" section and never edits a prior one in place —
+# genuinely append-only, unlike DECISION_LOG.md/TODO_NEXT.md above. Three
+# concurrent same-day session-closes (T-413/VC6, T-415, T-414) each hit real
+# conflicts on this file's default merge driver, forcing repeated manual
+# resolution for content that was never actually in conflict. Union merge
+# fixes that class of collision without the in-place-edit risk noted above.
+11_MEMORY_HANDOFF/OPERATOR_DIGEST_*.md merge=union
