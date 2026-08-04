@@ -1,0 +1,317 @@
+{
+  "sampled_at_utc": "2026-08-04T00:04:50Z",
+  "series": "KXMLBHIT",
+  "source": "exp_output/PHASE0_SURVEY/markets_open_20260804T000153Z.json",
+  "n_open_available": 422,
+  "n_sampled": 20,
+  "n_usable": 20,
+  "n_failnobook": 0,
+  "n_failwide": 0,
+  "n_tight": 20,
+  "median_half_spread_cents": 0.5,
+  "median_within_5c_usd": 304.685,
+  "min_within_5c_usd": 0.6,
+  "max_within_5c_usd": 4507.4,
+  "results": [
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 6,
+        "no": 125
+      },
+      "within_5c_contracts": {
+        "yes": 7501,
+        "no": 11817
+      },
+      "within_5c_usd_min_side": 262.54,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBYDIAZ2-4"
+    },
+    {
+      "usable": true,
+      "mid_cents": 16.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 521,
+        "no": 913
+      },
+      "within_5c_contracts": {
+        "yes": 3498,
+        "no": 9074
+      },
+      "within_5c_usd_min_side": 559.68,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBYDIAZ2-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 44.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3190,
+        "no": 13
+      },
+      "within_5c_contracts": {
+        "yes": 10129,
+        "no": 8872
+      },
+      "within_5c_usd_min_side": 4507.4,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBYDIAZ2-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 78.0,
+      "half_spread_cents": 2.0,
+      "top_of_book_contracts": {
+        "yes": 1546,
+        "no": 149
+      },
+      "within_5c_contracts": {
+        "yes": 2894,
+        "no": 8991
+      },
+      "within_5c_usd_min_side": 1978.02,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBYDIAZ2-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 4885,
+        "no": 300
+      },
+      "within_5c_contracts": {
+        "yes": 7980,
+        "no": 9955
+      },
+      "within_5c_usd_min_side": 279.3,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLWCASTRO3-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 22.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 679,
+        "no": 75
+      },
+      "within_5c_contracts": {
+        "yes": 1467,
+        "no": 10364
+      },
+      "within_5c_usd_min_side": 330.07,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLWCASTRO3-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 63.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 1546,
+        "no": 1528
+      },
+      "within_5c_contracts": {
+        "yes": 3700,
+        "no": 12696
+      },
+      "within_5c_usd_min_side": 2349.5,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLWCASTRO3-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 2.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 20,
+        "no": 1500
+      },
+      "within_5c_contracts": {
+        "yes": 64,
+        "no": 5908
+      },
+      "within_5c_usd_min_side": 1.6,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBVMESA25-4"
+    },
+    {
+      "usable": true,
+      "mid_cents": 9.0,
+      "half_spread_cents": 2.0,
+      "top_of_book_contracts": {
+        "yes": 539,
+        "no": 1415
+      },
+      "within_5c_contracts": {
+        "yes": 1854,
+        "no": 8339
+      },
+      "within_5c_usd_min_side": 166.86,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBVMESA25-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 31.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3866,
+        "no": 18
+      },
+      "within_5c_contracts": {
+        "yes": 5492,
+        "no": 3431
+      },
+      "within_5c_usd_min_side": 1729.98,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBVMESA25-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 71.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 1,
+        "no": 100
+      },
+      "within_5c_contracts": {
+        "yes": 313,
+        "no": 3969
+      },
+      "within_5c_usd_min_side": 222.23,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBVMESA25-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 7565,
+        "no": 300
+      },
+      "within_5c_contracts": {
+        "yes": 12048,
+        "no": 9418
+      },
+      "within_5c_usd_min_side": 421.68,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTFREEMAN2-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 23.0,
+      "half_spread_cents": 1.0,
+      "top_of_book_contracts": {
+        "yes": 229,
+        "no": 884
+      },
+      "within_5c_contracts": {
+        "yes": 2953,
+        "no": 7293
+      },
+      "within_5c_usd_min_side": 679.19,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTFREEMAN2-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 63.5,
+      "half_spread_cents": 1.5,
+      "top_of_book_contracts": {
+        "yes": 337,
+        "no": 1650
+      },
+      "within_5c_contracts": {
+        "yes": 2440,
+        "no": 4593
+      },
+      "within_5c_usd_min_side": 1549.4,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTFREEMAN2-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 3.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 3159,
+        "no": 325
+      },
+      "within_5c_contracts": {
+        "yes": 7883,
+        "no": 14193
+      },
+      "within_5c_usd_min_side": 275.9,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTJOHNSTON20-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 21.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 228,
+        "no": 150
+      },
+      "within_5c_contracts": {
+        "yes": 1117,
+        "no": 7299
+      },
+      "within_5c_usd_min_side": 240.16,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTJOHNSTON20-2"
+    },
+    {
+      "usable": true,
+      "mid_cents": 62.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 25,
+        "no": 1439
+      },
+      "within_5c_contracts": {
+        "yes": 2377,
+        "no": 11340
+      },
+      "within_5c_usd_min_side": 1485.62,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-COLTJOHNSTON20-1"
+    },
+    {
+      "usable": true,
+      "mid_cents": 1.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 40,
+        "no": 600
+      },
+      "within_5c_contracts": {
+        "yes": 40,
+        "no": 8943
+      },
+      "within_5c_usd_min_side": 0.6,
+      "ticker": "KXMLBHIT-26AUG032005LADCHC-LADTEDMAN25-4"
+    },
+    {
+      "usable": true,
+      "mid_cents": 4.5,
+      "half_spread_cents": 0.5,
+      "top_of_book_contracts": {
+        "yes": 449,
+        "no": 2102
+      },
+      "within_5c_contracts": {
+        "yes": 2413,
+        "no": 15331
+      },
+      "within_5c_usd_min_side": 108.58,
+      "ticker": "KXMLBHIT-26AUG032040TBCOL-TBTWALLS6-3"
+    },
+    {
+      "usable": true,
+      "mid_cents": 5.0,
+      "half_spread_cents": 2.0,
+      "top_of_book_contracts": {
+        "yes": 756,
+        "no": 608
+      },
+      "within_5c_contracts": {
+        "yes": 3167,
+        "no": 5192
+      },
+      "within_5c_usd_min_side": 158.35,
+      "ticker": "KXMLBHIT-26AUG032005LADCHC-LADTEDMAN25-3"
+    }
+  ]
+}

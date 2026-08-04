@@ -1,0 +1,2156 @@
+{
+  "sampled_at_utc": "2026-08-04T00:03:56Z",
+  "per_family_target": 20,
+  "families": {
+    "GAME_TOTAL": {
+      "n_available": 442,
+      "n_sampled": 20,
+      "n_usable": 20,
+      "median_half_spread_cents": 22.5,
+      "median_within_5c_usd": 0.0,
+      "min_within_5c_usd": 0.0,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 68.0,
+          "half_spread_cents": 26.0,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530NCDDOO-8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 78.0,
+          "half_spread_cents": 16.0,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530NCDDOO-6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 52.5,
+          "half_spread_cents": 17.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530NCDDOO-12"
+        },
+        {
+          "usable": true,
+          "mid_cents": 60.0,
+          "half_spread_cents": 34.0,
+          "top_of_book_contracts": {
+            "yes": 3,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530NCDDOO-10"
+        },
+        {
+          "usable": true,
+          "mid_cents": 72.5,
+          "half_spread_cents": 21.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530LGSSG-8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 81.5,
+          "half_spread_cents": 12.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530LGSSG-6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 63.5,
+          "half_spread_cents": 23.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530LGSSG-12"
+        },
+        {
+          "usable": true,
+          "mid_cents": 60.0,
+          "half_spread_cents": 34.0,
+          "top_of_book_contracts": {
+            "yes": 3,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530LGSSG-10"
+        },
+        {
+          "usable": true,
+          "mid_cents": 70.5,
+          "half_spread_cents": 23.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KTWKIA-8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 80.0,
+          "half_spread_cents": 14.0,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KTWKIA-6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 56.0,
+          "half_spread_cents": 30.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KTWKIA-12"
+        },
+        {
+          "usable": true,
+          "mid_cents": 60.0,
+          "half_spread_cents": 34.0,
+          "top_of_book_contracts": {
+            "yes": 3,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KTWKIA-10"
+        },
+        {
+          "usable": true,
+          "mid_cents": 70.5,
+          "half_spread_cents": 23.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KIWLOT-8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 80.0,
+          "half_spread_cents": 14.0,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KIWLOT-6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 54.5,
+          "half_spread_cents": 17.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 3
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KIWLOT-12"
+        },
+        {
+          "usable": true,
+          "mid_cents": 60.0,
+          "half_spread_cents": 34.0,
+          "top_of_book_contracts": {
+            "yes": 3,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530KIWLOT-10"
+        },
+        {
+          "usable": true,
+          "mid_cents": 72.5,
+          "half_spread_cents": 21.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530HANSAM-8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 81.5,
+          "half_spread_cents": 12.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530HANSAM-6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 59.5,
+          "half_spread_cents": 21.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530HANSAM-12"
+        },
+        {
+          "usable": true,
+          "mid_cents": 60.0,
+          "half_spread_cents": 34.0,
+          "top_of_book_contracts": {
+            "yes": 3,
+            "no": 16
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOTOTAL-26AUG060530HANSAM-10"
+        }
+      ]
+    },
+    "GAME_WINNER": {
+      "n_available": 220,
+      "n_sampled": 20,
+      "n_usable": 20,
+      "median_half_spread_cents": 3.25,
+      "median_within_5c_usd": 2.13,
+      "min_within_5c_usd": 0.0,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 11.0,
+          "top_of_book_contracts": {
+            "yes": 102,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530KTWKIA-KTW"
+        },
+        {
+          "usable": true,
+          "mid_cents": 47.5,
+          "half_spread_cents": 9.5,
+          "top_of_book_contracts": {
+            "yes": 102,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530KTWKIA-KIA"
+        },
+        {
+          "usable": true,
+          "mid_cents": 49.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530HANSAM-SAM"
+        },
+        {
+          "usable": true,
+          "mid_cents": 51.0,
+          "half_spread_cents": 6.0,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530HANSAM-HAN"
+        },
+        {
+          "usable": true,
+          "mid_cents": 50.0,
+          "half_spread_cents": 10.0,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 4
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530KIWLOT-LOT"
+        },
+        {
+          "usable": true,
+          "mid_cents": 50.5,
+          "half_spread_cents": 3.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 6,
+            "no": 11
+          },
+          "within_5c_usd_min_side": 3.03,
+          "ticker": "KXKBOGAME-26AUG060530KIWLOT-KIW"
+        },
+        {
+          "usable": true,
+          "mid_cents": 40.5,
+          "half_spread_cents": 13.5,
+          "top_of_book_contracts": {
+            "yes": 100,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530LGSSG-SSG"
+        },
+        {
+          "usable": true,
+          "mid_cents": 52.0,
+          "half_spread_cents": 3.0,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 9,
+            "no": 4
+          },
+          "within_5c_usd_min_side": 1.92,
+          "ticker": "KXKBOGAME-26AUG060530LGSSG-LG"
+        },
+        {
+          "usable": true,
+          "mid_cents": 49.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530NCDDOO-NCD"
+        },
+        {
+          "usable": true,
+          "mid_cents": 50.0,
+          "half_spread_cents": 7.0,
+          "top_of_book_contracts": {
+            "yes": 2,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOGAME-26AUG060530NCDDOO-DOO"
+        },
+        {
+          "usable": true,
+          "mid_cents": 56.5,
+          "half_spread_cents": 1.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 246
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 251
+          },
+          "within_5c_usd_min_side": 2.83,
+          "ticker": "KXKBOGAME-26AUG050530KTWKIA-KTW"
+        },
+        {
+          "usable": true,
+          "mid_cents": 39.5,
+          "half_spread_cents": 1.5,
+          "top_of_book_contracts": {
+            "yes": 200,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 210,
+            "no": 5
+          },
+          "within_5c_usd_min_side": 3.02,
+          "ticker": "KXKBOGAME-26AUG050530KTWKIA-KIA"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 4.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 2
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 2
+          },
+          "within_5c_usd_min_side": 1.08,
+          "ticker": "KXKBOGAME-26AUG050530HANSAM-SAM"
+        },
+        {
+          "usable": true,
+          "mid_cents": 55.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 6,
+            "no": 249
+          },
+          "within_5c_usd_min_side": 3.3,
+          "ticker": "KXKBOGAME-26AUG050530HANSAM-HAN"
+        },
+        {
+          "usable": true,
+          "mid_cents": 50.0,
+          "half_spread_cents": 1.0,
+          "top_of_book_contracts": {
+            "yes": 15,
+            "no": 1
+          },
+          "within_5c_contracts": {
+            "yes": 20,
+            "no": 6
+          },
+          "within_5c_usd_min_side": 3.0,
+          "ticker": "KXKBOGAME-26AUG050530KIWLOT-LOT"
+        },
+        {
+          "usable": true,
+          "mid_cents": 47.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_usd_min_side": 2.35,
+          "ticker": "KXKBOGAME-26AUG050530KIWLOT-KIW"
+        },
+        {
+          "usable": true,
+          "mid_cents": 38.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 12,
+            "no": 5
+          },
+          "within_5c_usd_min_side": 3.1,
+          "ticker": "KXKBOGAME-26AUG050530LGSSG-SSG"
+        },
+        {
+          "usable": true,
+          "mid_cents": 59.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 18,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 20,
+            "no": 35
+          },
+          "within_5c_usd_min_side": 11.8,
+          "ticker": "KXKBOGAME-26AUG050530LGSSG-LG"
+        },
+        {
+          "usable": true,
+          "mid_cents": 49.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_usd_min_side": 2.45,
+          "ticker": "KXKBOGAME-26AUG050530NCDDOO-NCD"
+        },
+        {
+          "usable": true,
+          "mid_cents": 50.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 5
+          },
+          "within_5c_usd_min_side": 2.5,
+          "ticker": "KXKBOGAME-26AUG050530NCDDOO-DOO"
+        }
+      ]
+    },
+    "PARTIAL_GAME_WINNER": {
+      "n_available": 123,
+      "n_sampled": 20,
+      "n_usable": 20,
+      "median_half_spread_cents": 10.75,
+      "median_within_5c_usd": 0.0,
+      "min_within_5c_usd": 0.0,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 43.5,
+          "half_spread_cents": 25.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 8
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG042010TORHOU-TOR"
+        },
+        {
+          "usable": true,
+          "mid_cents": 43.5,
+          "half_spread_cents": 25.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 8
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG042010TORHOU-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 43.5,
+          "half_spread_cents": 25.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 8
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG042010TORHOU-HOU"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940MINKC-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 29.5,
+          "half_spread_cents": 11.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940MINKC-MIN"
+        },
+        {
+          "usable": true,
+          "mid_cents": 34.0,
+          "half_spread_cents": 16.0,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940MINKC-KC"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940PITMIL-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 27.5,
+          "half_spread_cents": 9.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940PITMIL-PIT"
+        },
+        {
+          "usable": true,
+          "mid_cents": 36.0,
+          "half_spread_cents": 18.0,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041940PITMIL-MIL"
+        },
+        {
+          "usable": true,
+          "mid_cents": 28.5,
+          "half_spread_cents": 10.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840WSHPHI-WSH"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840WSHPHI-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 35.0,
+          "half_spread_cents": 17.0,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840WSHPHI-PHI"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840NYMCLE-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 28.0,
+          "half_spread_cents": 10.0,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840NYMCLE-NYM"
+        },
+        {
+          "usable": true,
+          "mid_cents": 35.5,
+          "half_spread_cents": 17.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840NYMCLE-CLE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.5,
+          "half_spread_cents": 7.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840ATHCIN-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 34.5,
+          "half_spread_cents": 16.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840ATHCIN-CIN"
+        },
+        {
+          "usable": true,
+          "mid_cents": 29.0,
+          "half_spread_cents": 11.0,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 7
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXMLBF3-26AUG041840ATHCIN-ATH"
+        },
+        {
+          "usable": true,
+          "mid_cents": 24.0,
+          "half_spread_cents": 1.0,
+          "top_of_book_contracts": {
+            "yes": 574,
+            "no": 42
+          },
+          "within_5c_contracts": {
+            "yes": 1966,
+            "no": 2683
+          },
+          "within_5c_usd_min_side": 471.84,
+          "ticker": "KXMLBF3-26AUG032005SFTEX-TIE"
+        },
+        {
+          "usable": true,
+          "mid_cents": 36.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 12,
+            "no": 87
+          },
+          "within_5c_contracts": {
+            "yes": 971,
+            "no": 1851
+          },
+          "within_5c_usd_min_side": 354.42,
+          "ticker": "KXMLBF3-26AUG032005SFTEX-TEX"
+        }
+      ]
+    },
+    "PLAYER_PROP": {
+      "n_available": 2112,
+      "n_sampled": 20,
+      "n_usable": 3,
+      "median_half_spread_cents": 1.0,
+      "median_within_5c_usd": 255.9,
+      "min_within_5c_usd": 0.94,
+      "samples": [
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-WABR"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-TWAR"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-CSIM"
+        },
+        {
+          "usable": true,
+          "mid_cents": 2.0,
+          "half_spread_cents": 1.0,
+          "top_of_book_contracts": {
+            "yes": 47,
+            "no": 50
+          },
+          "within_5c_contracts": {
+            "yes": 47,
+            "no": 799
+          },
+          "within_5c_usd_min_side": 0.94,
+          "ticker": "KXLEADERMLBHITS-26-APAG"
+        },
+        {
+          "usable": true,
+          "mid_cents": 34.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 548,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 1658,
+            "no": 586
+          },
+          "within_5c_usd_min_side": 386.76,
+          "ticker": "KXLEADERMLBHITS-26-OLOP"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-SLAN"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-KMCG"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-ECLE"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-OALB"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-DBAL"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-YDIA"
+        },
+        {
+          "usable": true,
+          "mid_cents": 7.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 780,
+            "no": 199
+          },
+          "within_5c_contracts": {
+            "yes": 3412,
+            "no": 700
+          },
+          "within_5c_usd_min_side": 255.9,
+          "ticker": "KXLEADERMLBHITS-26-YALV"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-XEDW"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-WCON"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-VPAS"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-VGUE"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-TTUR"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-THER"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-SPER"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBHITS-26-SOHT"
+        }
+      ]
+    },
+    "RUN_LINE": {
+      "n_available": 272,
+      "n_sampled": 20,
+      "n_usable": 20,
+      "median_half_spread_cents": 35.0,
+      "median_within_5c_usd": 0.0,
+      "min_within_5c_usd": 0.0,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 46.5,
+          "half_spread_cents": 34.5,
+          "top_of_book_contracts": {
+            "yes": 8,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530NCDDOO-NCD3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530NCDDOO-NCD2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530NCDDOO-DOO3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530NCDDOO-DOO2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 51.5,
+          "half_spread_cents": 29.5,
+          "top_of_book_contracts": {
+            "yes": 4,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530LGSSG-SSG3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530LGSSG-SSG2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530LGSSG-LG3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530LGSSG-LG2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KTWKIA-KTW3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KTWKIA-KTW2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KTWKIA-KIA3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KTWKIA-KIA2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 45.5,
+          "half_spread_cents": 34.5,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KIWLOT-LOT3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 45.5,
+          "half_spread_cents": 34.5,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KIWLOT-LOT2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 45.5,
+          "half_spread_cents": 34.5,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KIWLOT-KIW3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 45.5,
+          "half_spread_cents": 34.5,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530KIWLOT-KIW2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530HANSAM-SAM3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530HANSAM-SAM2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530HANSAM-HAN3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.0,
+          "half_spread_cents": 35.0,
+          "top_of_book_contracts": {
+            "yes": 9,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 0,
+            "no": 0
+          },
+          "within_5c_usd_min_side": 0.0,
+          "ticker": "KXKBOSPREAD-26AUG060530HANSAM-HAN2"
+        }
+      ]
+    },
+    "SEASON_WIN_TOTAL": {
+      "n_available": 270,
+      "n_sampled": 20,
+      "n_usable": 9,
+      "median_half_spread_cents": 0.5,
+      "median_within_5c_usd": 23.49,
+      "min_within_5c_usd": 0.17,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 7.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 84,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 584,
+            "no": 190
+          },
+          "within_5c_usd_min_side": 43.8,
+          "ticker": "KXLEADERMLBWINS-26-JWRO"
+        },
+        {
+          "usable": true,
+          "mid_cents": 4.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 102,
+            "no": 50
+          },
+          "within_5c_contracts": {
+            "yes": 652,
+            "no": 50
+          },
+          "within_5c_usd_min_side": 29.34,
+          "ticker": "KXLEADERMLBWINS-26-GWIL"
+        },
+        {
+          "usable": true,
+          "mid_cents": 1.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 11,
+            "no": 1
+          },
+          "within_5c_contracts": {
+            "yes": 11,
+            "no": 6
+          },
+          "within_5c_usd_min_side": 0.17,
+          "ticker": "KXLEADERMLBWINS-26-MSOR"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SMAT"
+        },
+        {
+          "usable": true,
+          "mid_cents": 1.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 11,
+            "no": 55
+          },
+          "within_5c_contracts": {
+            "yes": 11,
+            "no": 178
+          },
+          "within_5c_usd_min_side": 0.17,
+          "ticker": "KXLEADERMLBWINS-26-JSOR"
+        },
+        {
+          "usable": true,
+          "mid_cents": 1.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 11,
+            "no": 53
+          },
+          "within_5c_contracts": {
+            "yes": 11,
+            "no": 59
+          },
+          "within_5c_usd_min_side": 0.17,
+          "ticker": "KXLEADERMLBWINS-26-LROU"
+        },
+        {
+          "usable": true,
+          "mid_cents": 12.0,
+          "half_spread_cents": 3.0,
+          "top_of_book_contracts": {
+            "yes": 231,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 731,
+            "no": 23
+          },
+          "within_5c_usd_min_side": 20.24,
+          "ticker": "KXLEADERMLBWINS-26-AASH"
+        },
+        {
+          "usable": true,
+          "mid_cents": 6.0,
+          "half_spread_cents": 3.0,
+          "top_of_book_contracts": {
+            "yes": 116,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 616,
+            "no": 138
+          },
+          "within_5c_usd_min_side": 36.96,
+          "ticker": "KXLEADERMLBWINS-26-ZWHE"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-ZGAL"
+        },
+        {
+          "usable": true,
+          "mid_cents": 11.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 1,
+            "no": 190
+          },
+          "within_5c_contracts": {
+            "yes": 501,
+            "no": 190
+          },
+          "within_5c_usd_min_side": 57.62,
+          "ticker": "KXLEADERMLBWINS-26-YYAM"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-TSKU"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-TROD"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-TGLA"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-TBIB"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SSTR"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SSCH"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SOHT"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SIMA"
+        },
+        {
+          "usable": true,
+          "mid_cents": 13.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 15,
+            "no": 5
+          },
+          "within_5c_contracts": {
+            "yes": 174,
+            "no": 95
+          },
+          "within_5c_usd_min_side": 23.49,
+          "ticker": "KXLEADERMLBWINS-26-SGRA"
+        },
+        {
+          "usable": false,
+          "ticker": "KXLEADERMLBWINS-26-SALC"
+        }
+      ]
+    },
+    "TEAM_TOTAL": {
+      "n_available": 196,
+      "n_sampled": 20,
+      "n_usable": 20,
+      "median_half_spread_cents": 2.0,
+      "median_within_5c_usd": 30.6,
+      "min_within_5c_usd": 30.15,
+      "samples": [
+        {
+          "usable": true,
+          "mid_cents": 15.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 334,
+            "no": 36
+          },
+          "within_5c_contracts": {
+            "yes": 388,
+            "no": 36
+          },
+          "within_5c_usd_min_side": 30.42,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 22.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 43,
+            "no": 39
+          },
+          "within_5c_contracts": {
+            "yes": 306,
+            "no": 39
+          },
+          "within_5c_usd_min_side": 30.42,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR7"
+        },
+        {
+          "usable": true,
+          "mid_cents": 31.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 40,
+            "no": 44
+          },
+          "within_5c_contracts": {
+            "yes": 210,
+            "no": 44
+          },
+          "within_5c_usd_min_side": 30.36,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 42.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 43,
+            "no": 52
+          },
+          "within_5c_contracts": {
+            "yes": 146,
+            "no": 52
+          },
+          "within_5c_usd_min_side": 30.16,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR5"
+        },
+        {
+          "usable": true,
+          "mid_cents": 53.5,
+          "half_spread_cents": 1.5,
+          "top_of_book_contracts": {
+            "yes": 157,
+            "no": 111
+          },
+          "within_5c_contracts": {
+            "yes": 157,
+            "no": 420
+          },
+          "within_5c_usd_min_side": 84.0,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 68.0,
+          "half_spread_cents": 1.0,
+          "top_of_book_contracts": {
+            "yes": 43,
+            "no": 1
+          },
+          "within_5c_contracts": {
+            "yes": 88,
+            "no": 147
+          },
+          "within_5c_usd_min_side": 47.04,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 82.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 37,
+            "no": 78
+          },
+          "within_5c_contracts": {
+            "yes": 37,
+            "no": 358
+          },
+          "within_5c_usd_min_side": 30.34,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-TOR2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 16.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 45,
+            "no": 36
+          },
+          "within_5c_contracts": {
+            "yes": 347,
+            "no": 36
+          },
+          "within_5c_usd_min_side": 30.24,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 23.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 152,
+            "no": 40
+          },
+          "within_5c_contracts": {
+            "yes": 255,
+            "no": 40
+          },
+          "within_5c_usd_min_side": 30.6,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU7"
+        },
+        {
+          "usable": true,
+          "mid_cents": 32.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 111,
+            "no": 45
+          },
+          "within_5c_contracts": {
+            "yes": 162,
+            "no": 45
+          },
+          "within_5c_usd_min_side": 30.38,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 44.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 180,
+            "no": 296
+          },
+          "within_5c_contracts": {
+            "yes": 234,
+            "no": 296
+          },
+          "within_5c_usd_min_side": 104.13,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU5"
+        },
+        {
+          "usable": true,
+          "mid_cents": 58.5,
+          "half_spread_cents": 1.5,
+          "top_of_book_contracts": {
+            "yes": 52,
+            "no": 193
+          },
+          "within_5c_contracts": {
+            "yes": 52,
+            "no": 314
+          },
+          "within_5c_usd_min_side": 30.42,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 73.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 42,
+            "no": 243
+          },
+          "within_5c_contracts": {
+            "yes": 42,
+            "no": 577
+          },
+          "within_5c_usd_min_side": 30.66,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 85.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 36,
+            "no": 42
+          },
+          "within_5c_contracts": {
+            "yes": 36,
+            "no": 461
+          },
+          "within_5c_usd_min_side": 30.6,
+          "ticker": "KXMLBTEAMTOTAL-26AUG042010TORHOU-HOU2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 25.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 43,
+            "no": 41
+          },
+          "within_5c_contracts": {
+            "yes": 179,
+            "no": 41
+          },
+          "within_5c_usd_min_side": 30.75,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN8"
+        },
+        {
+          "usable": true,
+          "mid_cents": 33.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 42,
+            "no": 45
+          },
+          "within_5c_contracts": {
+            "yes": 213,
+            "no": 45
+          },
+          "within_5c_usd_min_side": 30.15,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN7"
+        },
+        {
+          "usable": true,
+          "mid_cents": 43.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 44,
+            "no": 53
+          },
+          "within_5c_contracts": {
+            "yes": 356,
+            "no": 254
+          },
+          "within_5c_usd_min_side": 144.78,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN6"
+        },
+        {
+          "usable": true,
+          "mid_cents": 55.0,
+          "half_spread_cents": 2.0,
+          "top_of_book_contracts": {
+            "yes": 42,
+            "no": 319
+          },
+          "within_5c_contracts": {
+            "yes": 434,
+            "no": 556
+          },
+          "within_5c_usd_min_side": 238.7,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN5"
+        },
+        {
+          "usable": true,
+          "mid_cents": 66.5,
+          "half_spread_cents": 1.5,
+          "top_of_book_contracts": {
+            "yes": 43,
+            "no": 1
+          },
+          "within_5c_contracts": {
+            "yes": 259,
+            "no": 523
+          },
+          "within_5c_usd_min_side": 172.24,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 78.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 39,
+            "no": 182
+          },
+          "within_5c_contracts": {
+            "yes": 39,
+            "no": 236
+          },
+          "within_5c_usd_min_side": 30.61,
+          "ticker": "KXMLBTEAMTOTAL-26AUG041940MINKC-MIN3"
+        }
+      ]
+    },
+    "UNCLASSIFIED": {
+      "n_available": 3441,
+      "n_sampled": 20,
+      "n_usable": 18,
+      "median_half_spread_cents": 4.25,
+      "median_within_5c_usd": 63.78,
+      "min_within_5c_usd": 0.57,
+      "samples": [
+        {
+          "usable": false,
+          "ticker": "KXCITYCHAMPS-OH30JUL01CBBGRB-4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 6.0,
+          "half_spread_cents": 3.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 1255,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 75.3,
+          "ticker": "KXCITYCHAMPS-OH30JUL01CBBGRB-3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 18.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 0.93,
+          "ticker": "KXCITYCHAMPS-OH30JUL01CBBGRB-2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 52.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 13,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 263,
+            "no": 261
+          },
+          "within_5c_usd_min_side": 123.97,
+          "ticker": "KXCITYCHAMPS-OH30JUL01CBBGRB-1"
+        },
+        {
+          "usable": true,
+          "mid_cents": 4.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 11020,
+            "no": 6096
+          },
+          "within_5c_contracts": {
+            "yes": 12994,
+            "no": 6496
+          },
+          "within_5c_usd_min_side": 584.73,
+          "ticker": "KXCITYCHAMPS-PHI30JUL017EPF-4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 8.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 8224,
+            "no": 5549
+          },
+          "within_5c_contracts": {
+            "yes": 8224,
+            "no": 5799
+          },
+          "within_5c_usd_min_side": 699.04,
+          "ticker": "KXCITYCHAMPS-PHI30JUL017EPF-3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 23.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 3325,
+            "no": 3774
+          },
+          "within_5c_contracts": {
+            "yes": 3325,
+            "no": 4424
+          },
+          "within_5c_usd_min_side": 781.38,
+          "ticker": "KXCITYCHAMPS-PHI30JUL017EPF-2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 59.5,
+          "half_spread_cents": 0.5,
+          "top_of_book_contracts": {
+            "yes": 2268,
+            "no": 4886
+          },
+          "within_5c_contracts": {
+            "yes": 2268,
+            "no": 5236
+          },
+          "within_5c_usd_min_side": 1349.46,
+          "ticker": "KXCITYCHAMPS-PHI30JUL017EPF-1"
+        },
+        {
+          "usable": true,
+          "mid_cents": 11.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 0.57,
+          "ticker": "KXCITYCHAMPS-TEX30JUL01SDRCTRAS-4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 27.0,
+          "half_spread_cents": 5.0,
+          "top_of_book_contracts": {
+            "yes": 250,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 250,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 67.5,
+          "ticker": "KXCITYCHAMPS-TEX30JUL01SDRCTRAS-3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 46.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 250,
+            "no": 4
+          },
+          "within_5c_contracts": {
+            "yes": 250,
+            "no": 4
+          },
+          "within_5c_usd_min_side": 2.14,
+          "ticker": "KXCITYCHAMPS-TEX30JUL01SDRCTRAS-2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 65.0,
+          "half_spread_cents": 5.0,
+          "top_of_book_contracts": {
+            "yes": 15,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 15,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 9.75,
+          "ticker": "KXCITYCHAMPS-TEX30JUL01SDRCTRAS-1"
+        },
+        {
+          "usable": true,
+          "mid_cents": 11.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 0.57,
+          "ticker": "KXCITYCHAMPS-LA30JUL01LCRCDAKD-4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 29.0,
+          "half_spread_cents": 5.0,
+          "top_of_book_contracts": {
+            "yes": 250,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 250,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 72.5,
+          "ticker": "KXCITYCHAMPS-LA30JUL01LCRCDAKD-3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 54.5,
+          "half_spread_cents": 3.5,
+          "top_of_book_contracts": {
+            "yes": 10,
+            "no": 47
+          },
+          "within_5c_contracts": {
+            "yes": 260,
+            "no": 297
+          },
+          "within_5c_usd_min_side": 135.13,
+          "ticker": "KXCITYCHAMPS-LA30JUL01LCRCDAKD-2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 78.0,
+          "half_spread_cents": 4.0,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 23
+          },
+          "within_5c_contracts": {
+            "yes": 255,
+            "no": 273
+          },
+          "within_5c_usd_min_side": 60.06,
+          "ticker": "KXCITYCHAMPS-LA30JUL01LCRCDAKD-1"
+        },
+        {
+          "usable": false,
+          "ticker": "KXCITYCHAMPS-MIA30JUL01HDMP-4"
+        },
+        {
+          "usable": true,
+          "mid_cents": 4.5,
+          "half_spread_cents": 2.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 1005,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 45.23,
+          "ticker": "KXCITYCHAMPS-MIA30JUL01HDMP-3"
+        },
+        {
+          "usable": true,
+          "mid_cents": 11.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_contracts": {
+            "yes": 5,
+            "no": 250
+          },
+          "within_5c_usd_min_side": 0.57,
+          "ticker": "KXCITYCHAMPS-MIA30JUL01HDMP-2"
+        },
+        {
+          "usable": true,
+          "mid_cents": 43.5,
+          "half_spread_cents": 4.5,
+          "top_of_book_contracts": {
+            "yes": 250,
+            "no": 4
+          },
+          "within_5c_contracts": {
+            "yes": 250,
+            "no": 4
+          },
+          "within_5c_usd_min_side": 2.26,
+          "ticker": "KXCITYCHAMPS-MIA30JUL01HDMP-1"
+        }
+      ]
+    }
+  }
+}

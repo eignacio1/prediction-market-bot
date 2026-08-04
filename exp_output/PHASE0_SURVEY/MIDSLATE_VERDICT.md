@@ -36,9 +36,34 @@ Every one of the 20 sampled KXMLBHIT markets had a usable, tight (0.5-1.0c half-
 
 **PLAYER_PROP's pre-slate 3/20-usable / $0.90-median result is a STRUCTURAL finding about `KXLEADERMLBHITS` specifically (unchanged at 3/20 usable mid-slate, both runs sampling the identical thin series), not about `KXMLBHIT` — which a direct targeted sample shows is 20/20 usable at a $4,313.72 median depth (431x the gate floor) and should not have been excluded from Phase 1 scope on the strength of the family-bucket figure.**
 
+## Third sample point (00:04Z, ~26 min after mid-slate) — requested same session, taken immediately rather than after a 90-min wait
+
+**Family-level sample #3:** fresh market refresh (`markets_open_20260804T000153Z.json`, 220 series / 7,076 open markets, up from 6,564 at 23:38Z), t4-mlb confirmed active before and after, 0 anchored 429s in `audit_mlb_t4.jsonl` for the run window.
+
+| Family | 20:13Z pre-slate | mid-slate (23:38Z) | sample 3 (00:04Z) | 3-point read |
+|---|---|---|---|---|
+| GAME_TOTAL | FAIL, $0.00 (0 NOBOOK/20 WIDE) | FAIL, $0.00 (0/20) | FAIL, $0.00 (0/20) | **Stable FAIL, 3/3.** Persistent spread-only failure. |
+| GAME_WINNER | PASS, $1,646.50 (0/8) | FAIL, $2.67 (0/11) | FAIL, $2.13 (0/11) | **FAIL confirmed 2/3, most recent two agree.** Pre-slate PASS looks like the outlier. |
+| PARTIAL_GAME_WINNER | PASS, $410.99 (3 NOBOOK/0) | FAIL, $0.00 (0/18) | FAIL, $0.00 (0/18) | **FAIL confirmed 2/3, most recent two agree and are numerically identical.** |
+| PLAYER_PROP (bucket — still `KXLEADERMLBHITS`, not `KXMLBHIT`) | FAIL, $0.90 (17 NOBOOK/1) | PASS, $255.90 (17/0) | PASS, $255.90 (17/0) | **PASS confirmed 2/3.** Mid-slate and sample-3 medians are identical to the cent — same 3 usable tickers, unchanged book, 26 min apart: this series is stale/thin, not actively trading, not a real liquidity signal either way. |
+| RUN_LINE | FAIL, $0.00 (0/20) | FAIL, $0.00 (0/20) | FAIL, $0.00 (0/20) | **Stable FAIL, 3/3.** |
+| SEASON_WIN_TOTAL | FAIL, $5.96 (10 NOBOOK/4) | PASS, $15.75 (11/4) | PASS, $23.49 (11/2) | **PASS confirmed 2/3, trending up.** Still <50% book coverage (9/20 usable) both recent runs. |
+| TEAM_TOTAL | PASS, $2,043.53 (0/0) | FAIL, $0.00 (0/12) | PASS, $30.60 (0/0) | **No majority — 2 PASS, 1 FAIL, and the two PASS magnitudes disagree by ~67x ($2,043.53 vs $30.60).** Genuinely unsettled; do not treat as resolved. |
+
+**KXMLBHIT targeted resample #2** (00:04:50Z, same 20 tickers drawn fresh from the 00:01Z open-market list, 422 open markets available for the series, up from 325 at mid-slate):
+
+| Run | Usable | FAIL-NOBOOK | FAIL-WIDE | Median half-spread | Median depth within 5c | Gate |
+|---|---:|---:|---:|---:|---:|---|
+| Targeted #1 (23:50:50Z) | 20/20 | 0 | 0 | 0.5c | $4,313.72 | PASS — 431x |
+| Targeted #2 (00:04:50Z) | 20/20 | 0 | 0 | 0.5c | $304.685 | PASS — 30x |
+
+**KXMLBHIT status is now confirmed PASS on two independent runs, ~14 minutes apart, with zero FAIL-NOBOOK and zero FAIL-WIDE both times — but the depth magnitude swung ~14x ($4,313.72 → $304.685) between them.** This is the same volatility pattern seen family-wide (TEAM_TOTAL swung ~67x between its two PASS points). **Per the task's own stability rule, this is decisive-PASS-but-not-stable-magnitude: CLAUDE.md's "$500–$2,000" text is still not corrected** — a fixed dollar range implies a stability neither run supports, even though both runs clear the $10 gate by 1-2 orders of magnitude. GG-155 updated accordingly below.
+
 ## Implications for Phase 1 build order (reporting only — no Phase 1 work started per scope boundary)
 
-- `KXMLBHIT` clears the depth gate decisively and should be back in scope for whatever family/build-order decision Phase 1 was waiting on this data for.
-- `KXLEADERMLBHITS` (season leaderboard props) independently fails on its own thin-book merits — that verdict stands, it just isn't a KXMLBHIT verdict.
-- GAME_WINNER, PARTIAL_GAME_WINNER, TEAM_TOTAL cannot be called PASS or FAIL from one pre-slate + one mid-slate point each — they flipped between the two runs. A third sample point (the task's optional ~90-minutes-later run) would be needed before treating any of these three as settled either direction.
+- `KXMLBHIT` clears the depth gate decisively on two independent samples and should be back in scope for whatever family/build-order decision Phase 1 was waiting on this data for. Its *magnitude* is volatile intraday (~14x swing in 14 minutes) — build-order sizing decisions should treat this as "liquid, order-of-magnitude uncertain," not a fixed number.
+- `KXLEADERMLBHITS` (season leaderboard props) independently fails on its own thin-book merits — that verdict stands, it just isn't a KXMLBHIT verdict. Its own 2/3 samples are numerically identical, consistent with a market that simply isn't trading, not one that's liquid-but-noisy.
+- GAME_WINNER and PARTIAL_GAME_WINNER now have 2/3 points agreeing on FAIL (the two most recent, most temporally adjacent runs) — treat the pre-slate PASS as the likely outlier, not the settled state, but this is still only 3 points.
+- TEAM_TOTAL remains genuinely unsettled — 2 PASS/1 FAIL with the two PASS magnitudes disagreeing by ~67x. A 4th point would be needed before calling this either direction.
 - The `phase0_market_survey.py` `cmd_depth()` per-family sampling gap (no per-series balancing within a family bucket) should be registered/fixed before this tool is trusted again for any family with more than ~20 constituent-series markets — `PLAYER_PROP` is not the only family with multiple series (see Table 1 in `SURVEY_TABLES_MIDSLATE.md`: `GAME_WINNER` alone spans MLB+NBA+NFL+NHL+OTHER).
+- Separately: the first targeted-KXMLBHIT script (this session) had a bug — `client._get()` returns `tuple[bool, Any]`, and the first version treated it as the raw response dict, crashing with `AttributeError: 'tuple' object has no attribute 'get'` on the first call. Fixed by unpacking `ok, data = client._get(...)` before the second run. Worth noting since this is a one-off script, not the production `phase0_market_survey.py` (which handles this correctly) — do not copy the buggy unpacking pattern if this script is ever promoted to a reusable tool.
