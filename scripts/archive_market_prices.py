@@ -37,6 +37,23 @@ deliberately conservative because T4M-PROJ shares the same production read
 budget during exactly that window (Phase 0-C safety directive) -- the live
 trading cohort outranks this archive. Raise --pause, never lower it, if T4
 shows any degradation.
+
+Depth capture (Phase 0-H / T-412)
+----------------------------------
+GG-155 was a measurement artifact from hand-sampling depth as a one-off point
+estimate (`phase0_market_survey.py depth`, run three times by hand). T-411
+found depth swings 14x in 14 minutes on a single series and 67x between two
+TEAM_TOTAL reads -- a point estimate cannot distinguish "structurally thin"
+from "sampled at a bad moment." `--depth-sample-per-family N` folds a small,
+balanced (round-robin across series, reusing phase0_market_survey.py's
+`_balanced_sample` so a single series can never dominate a family's sample --
+the GG-155 root cause) orderbook sample into every cron run instead, so depth
+becomes a genuine time series: N samples/family/run x runs/day accumulates
+toward the 200+ observations/family target within about a week without any
+further hand-sampling. Depth rows are additive requests on top of the
+--series price fetch and share the same --pause floor and T4M-PROJ read-budget
+priority -- keep N small (2-3) rather than raising request volume to hit the
+target faster.
 """
 
 from __future__ import annotations
@@ -47,6 +64,11 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from phase0_market_survey import (  # noqa: E402
+    FAMILY_PATTERNS, _balanced_sample, _book_metrics, _classify, _normalize_book,
+)
 from typing import Any
 
 DEFAULT_PAUSE_S = 0.30          # ~3.3 req/s — matches phase0_market_survey.py
@@ -134,6 +156,56 @@ def _fetch_series_markets(client: Any, series: str, pause: float) -> list[dict[s
     return out
 
 
+def _sample_depth(
+    client: Any,
+    markets_by_series: dict[str, list[dict[str, Any]]],
+    per_family: int,
+    pause: float,
+    run_ts: str,
+) -> list[dict[str, Any]]:
+    """Balanced (round-robin across series) orderbook sample, tagged by family.
+
+    Reuses phase0_market_survey.py's classifier and sampler so the family
+    taxonomy and the GG-155 fix (no single series may dominate a family's
+    sample) have exactly one implementation, not two that can drift apart.
+    """
+    by_family: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for series, markets in markets_by_series.items():
+        family = _classify(series, FAMILY_PATTERNS, "UNCLASSIFIED")
+        by_family.setdefault(family, {})[series] = markets
+
+    rows: list[dict[str, Any]] = []
+    for family, series_groups in sorted(by_family.items()):
+        selection = _balanced_sample(series_groups, per_family)
+        n_usable = 0
+        for series_ticker, m in selection:
+            ticker = m.get("ticker")
+            if not ticker:
+                continue
+            book = None
+            for attempt in range(MAX_RETRIES):
+                ok, data = client._get(f"/markets/{ticker}/orderbook")
+                if ok:
+                    book = _normalize_book(data or {})
+                    break
+                time.sleep(pause * (2 ** attempt))
+            time.sleep(pause)
+            row: dict[str, Any] = {
+                "run_ts": run_ts, "family": family, "series_ticker": series_ticker,
+                "ticker": ticker,
+            }
+            if book is None:
+                row.update({"usable": False, "reason": "fetch_failed"})
+            else:
+                row.update(_book_metrics(book))
+                if row.get("usable"):
+                    n_usable += 1
+            rows.append(row)
+        print(f"  depth {family:>18}: sampled {len(selection)} across "
+              f"{len(series_groups)} series, usable {n_usable}")
+    return rows
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -142,6 +214,10 @@ def main() -> int:
     ap.add_argument("--out", default="exp_output/PRICE_ARCHIVE")
     ap.add_argument("--pause", type=float, default=DEFAULT_PAUSE_S,
                     help="seconds between requests; raise, never lower (T4 shares this budget)")
+    ap.add_argument("--depth-sample-per-family", type=int, default=0,
+                    help="opt-in: balanced orderbook sample size per family per run "
+                         "(0 = disabled). Additive request volume -- keep small (2-3); "
+                         "see 'Depth capture' in this file's module docstring.")
     args = ap.parse_args()
 
     if args.pause < DEFAULT_PAUSE_S:
@@ -163,16 +239,28 @@ def main() -> int:
 
     total = 0
     per_series: dict[str, int] = {}
+    markets_by_series: dict[str, list[dict[str, Any]]] = {}
     with out_path.open("a") as handle:
         for series in args.series:
             markets = _fetch_series_markets(client, series, args.pause)
             for m in markets:
                 handle.write(json.dumps(_snapshot(m, series, run_ts)) + "\n")
             per_series[series] = len(markets)
+            markets_by_series[series] = markets
             total += len(markets)
             print(f"  {series:20s} {len(markets):5d} markets")
 
     print(f"{run_ts}  wrote {total} snapshots -> {out_path}")
+
+    if args.depth_sample_per_family > 0:
+        depth_rows = _sample_depth(
+            client, markets_by_series, args.depth_sample_per_family, args.pause, run_ts
+        )
+        depth_path = out_dir / f"depth_{run_ts[:10]}.jsonl"
+        with depth_path.open("a") as handle:
+            for row in depth_rows:
+                handle.write(json.dumps(row) + "\n")
+        print(f"{run_ts}  wrote {len(depth_rows)} depth samples -> {depth_path}")
 
     # A run that finds zero open markets across every series is indistinguishable
     # from a broken auth/route/schema path unless it is called out. Off-slate that

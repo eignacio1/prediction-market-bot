@@ -64,6 +64,24 @@ MAX_RETRIES = 5
 # UNCLASSIFIED and is reported rather than silently dropped -- an unmatched
 # series is a finding, not noise.
 FAMILY_PATTERNS: list[tuple[str, str]] = [
+    # GG-155/T-411: KXLEADERMLBHITS (a season leaderboard nobody trades, not a
+    # per-game prop) was matched by PLAYER_PROP's bare "HIT" substring and
+    # sampled/reported as a player-prop depth reading for an entire Phase 0
+    # survey pass before the mislabel was caught. Season leaderboards resolve
+    # over a full season, not a single game -- they fail the short-feedback-
+    # loop doctrine this project is built on (see CLAUDE.md Principal Vision)
+    # and must never reach PLAYER_PROP or any other per-game family. Must sit
+    # first: "LEADER" is a global 6-char token verified (2026-08-04, T-412)
+    # against the full 12,355-series universe with zero false-positive
+    # collisions, covering all 75 KXLEADER*/*LEADER series across every sport
+    # (10 of which were previously silently absorbed into PLAYER_PROP, 1 into
+    # SEASON_WIN_TOTAL, 1 into GAME_TOTAL; the remaining 63 were at least
+    # UNCLASSIFIED rather than mislabeled). Deliberately narrow -- MVP/CY/ROY
+    # style award tokens were evaluated and rejected: "CY" alone collides with
+    # dozens of unrelated tickers (KXEMERGENCY*, KXCYCLING*, KXBANKRUPTCY,
+    # KXPRIVACYUPDATENYT, ...); those award series still land UNCLASSIFIED,
+    # which is a correct (reported, not silent) outcome, not a regression.
+    ("SEASON_AWARD", r"LEADER"),
     # MLBKS (strikeouts prop) and MLBF3/F5/F7 (partial-game winners) were found
     # missing entirely from this classifier (both landed UNCLASSIFIED) during
     # the 2026-07-31 Phase 0-B session's hand review of the "220 MLB-looking
@@ -221,6 +239,31 @@ def _book_metrics(book: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _balanced_sample(
+    series_groups: dict[str, list[dict[str, Any]]], limit: int
+) -> list[tuple[str, dict[str, Any]]]:
+    """Round-robin across series within a family instead of slicing the head
+    of a single concatenated list (GG-155/T-411: the prior `group[:per_family]`
+    slice had no per-series balancing, so whichever series happened to sort
+    first in the raw dump could consume the entire per-family budget while
+    other series in the same family were never sampled at all).
+    """
+    queues = [(ticker, list(markets)) for ticker, markets in sorted(series_groups.items())]
+    picked: list[tuple[str, dict[str, Any]]] = []
+    while len(picked) < limit and queues:
+        next_queues = []
+        for ticker, remaining in queues:
+            if len(picked) >= limit:
+                next_queues.append((ticker, remaining))
+                continue
+            if remaining:
+                picked.append((ticker, remaining.pop(0)))
+            if remaining:
+                next_queues.append((ticker, remaining))
+        queues = next_queues
+    return picked
+
+
 def cmd_depth(args: argparse.Namespace) -> int:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
     from prediction_market_bot.c5_execution.kalshi_client import (  # noqa: E402
@@ -231,21 +274,25 @@ def cmd_depth(args: argparse.Namespace) -> int:
     if not markets:
         raise SystemExit("no markets found in input dump")
 
-    by_family: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_family: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
     for m in markets:
         series = m.get("series_ticker") or m.get("event_ticker") or m.get("ticker", "")
-        by_family[_classify(series, FAMILY_PATTERNS, "UNCLASSIFIED")].append(m)
+        family = _classify(series, FAMILY_PATTERNS, "UNCLASSIFIED")
+        by_family[family][series].append(m)
 
     client = KalshiMarketClient.from_env()
     out: dict[str, Any] = {"sampled_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                            "per_family_target": args.per_family, "families": {}}
 
-    for family, group in sorted(by_family.items()):
+    for family, series_groups in sorted(by_family.items()):
+        selection = _balanced_sample(series_groups, args.per_family)
         sampled: list[dict[str, Any]] = []
-        for m in group[: args.per_family]:
+        per_series_sampled: dict[str, int] = defaultdict(int)
+        for series_ticker, m in selection:
             ticker = m.get("ticker")
             if not ticker:
                 continue
+            per_series_sampled[series_ticker] += 1
             book = None
             for attempt in range(MAX_RETRIES):
                 ok, data = client._get(f"/markets/{ticker}/orderbook")
@@ -255,15 +302,22 @@ def cmd_depth(args: argparse.Namespace) -> int:
                 time.sleep(REQUEST_PAUSE_S * (2 ** attempt))
             time.sleep(REQUEST_PAUSE_S)
             if book is None:
-                sampled.append({"ticker": ticker, "usable": False, "reason": "fetch_failed"})
+                sampled.append({"ticker": ticker, "series_ticker": series_ticker,
+                                 "usable": False, "reason": "fetch_failed"})
                 continue
             metrics = _book_metrics(book)
             metrics["ticker"] = ticker
+            metrics["series_ticker"] = series_ticker
             sampled.append(metrics)
 
         usable = [s for s in sampled if s.get("usable")]
         out["families"][family] = {
-            "n_available": len(group),
+            "n_available": sum(len(v) for v in series_groups.values()),
+            "n_series": len(series_groups),
+            # Per-series breakdown of what was actually sampled -- the
+            # absence of this breakdown is why GG-155's single-series
+            # domination went undetected across three sessions.
+            "per_series_sampled": dict(sorted(per_series_sampled.items())),
             "n_sampled": len(sampled),
             "n_usable": len(usable),
             "median_half_spread_cents": round(
@@ -277,7 +331,8 @@ def cmd_depth(args: argparse.Namespace) -> int:
             ),
             "samples": sampled,
         }
-        print(f"{family:>18}: sampled {len(sampled)}, usable {len(usable)}")
+        print(f"{family:>18}: sampled {len(sampled)} across {len(series_groups)} series, "
+              f"usable {len(usable)}")
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, indent=2))
