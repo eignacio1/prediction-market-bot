@@ -3,7 +3,7 @@
 **Status:** DRAFT — spec only, no code, no live change.
 **Date:** 2026-07-30
 **Purpose:** Phase 0 precondition for the team-level market expansion (ML / run line / totals). Nothing in Phases 1–4 starts until § 2's survey artifact exists.
-**Why this exists:** the market universe has never been enumerated. `kalshi_client.py:115` records `SERIES_MLB_PLAYER_HITS = "KXMLBHIT"  # Confirmed 2026-06-23 via GET /series` — a single call made to confirm a ticker already assumed, not to ask what the venue lists. This document closes that gap and validates venue compliance at the same time.
+**Why this exists:** the market universe has never been enumerated. `kalshi_client.py:135` records `SERIES_MLB_PLAYER_HITS = "KXMLBHIT"  # Confirmed 2026-06-23 via GET /series` — a single call made to confirm a ticker already assumed, not to ask what the venue lists. This document closes that gap and validates venue compliance at the same time.
 
 ---
 
