@@ -44,3 +44,23 @@ Three separate check-ins over the past couple weeks all said this data collectio
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
+
+---
+
+## Update — later same day (T-414: baseball book "frozen" follow-up)
+
+**What changed:**
+You asked us to check on the baseball book — it looked frozen for four days — and figure out why. Mostly good news: it's frozen because the bot's main overnight strategy has its bet-sizing turned down to zero right now, on purpose, from a decision you already made about avoiding ruinous losing streaks (this is the same policy the update above discusses). It's still watching every game and doing the math, it's just not putting any money down while that's off. But we also found something new: 22 old paper bets from earlier this month are stuck open and can't be marked won or lost, because the source we use to look up final scores isn't returning results for those specific games even though they finished days ago. That's a separate problem from the sizing-being-off issue, and it's why the book's "last updated" timestamp hasn't moved.
+
+**What this means for your money:**
+No change to what's at risk today — still zero real money, paper trading only. But those 22 stuck paper bets are holding paper capital that can't be freed up or counted toward the finish line (the "resolved bets" count needed before real money is ever allowed) under how the system currently works. Not losing money, just stuck.
+
+**Does anything need your decision right now?**
+Yes, one thing, not urgent: should we treat the 22 stuck bets as a real problem worth logging and building a fix for (e.g., giving old unresolvable bets a way to close out instead of hanging forever), or is this fine to leave as-is? We didn't make that call ourselves since it's a judgment about severity — flagging it for you instead of guessing.
+
+**Anything that worried the session, even if not urgent:**
+Just the stuck-bets item above. Separately, we checked in on the market-depth data collection mentioned in the updates above — it's healthy and on track, evenly collecting data across all bet types now — and set a specific date (August 9th) to check back once enough data has accumulated, so it doesn't quietly sit half-finished.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260804_0525.md`, `DECISION_LOG.md`, and `10_INFRA_OPERATIONS/OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md` for this update.*
