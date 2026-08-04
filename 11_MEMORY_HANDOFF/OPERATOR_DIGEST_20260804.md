@@ -43,4 +43,22 @@ Three separate check-ins over the past couple weeks all said this data collectio
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
+---
+
+## Update — later same day (T-413/VC6 close-out)
+
+**What changed:**
+A recent report (from July 30) had claimed the baseball live-market strategy was making about 11% return on the bets it approved. We went back and checked that number against exactly how the bot actually charges its trading fees, and found the report's math didn't quite match the real code — it was charging fees the wrong way for some bets. The real, verified number is a bit lower: about 9.6-9.7% return, not 11%. Still clearly positive, still a good result — the "this strategy works" conclusion holds — but the exact number was overstated by about 1.3 percentage points, and roughly 44 bets that shouldn't have counted were included.
+
+**What this means for your money:**
+No change — still zero real money at risk. This didn't touch any live code, any bet sizing, or anything the bot actually does. It's a correction to a written report's headline number, not a change to how the bot trades.
+
+**Does anything need your decision right now?**
+No — nothing needs you today. One follow-up is logged and waiting (not urgent): the original July 30 report itself should eventually get its headline number corrected to match what we verified today, but nobody's assigned to do that yet.
+
+**Anything that worried the session, even if not urgent:**
+No new concerns. This was exactly the kind of double-check this project's process is designed to catch — a number looked right, got questioned anyway, and turned out to need a small correction before anyone made a decision based on the wrong one.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260804_2335.md`, `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
