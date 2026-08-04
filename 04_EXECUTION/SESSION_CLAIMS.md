@@ -177,3 +177,4 @@
 | 2026-08-04T04:59:04Z | T-414 | Step 4 ops health verification + depth time-series status/expiry (T-414, GG-154) |
 | 2026-08-04T04:59:15Z | T-415 | Citation repair: fix 4 stale file:line refs in Phase 0/1 docs |
 | 2026-08-04T23:58:26Z | T-417 | Fix merge=union for OPERATOR_DIGEST_*.md (GG-107-class collision seen 3x same-day, T-414/415/413 close-outs) — MICRO session |
+| 2026-08-04T23:59:19Z (closure — resolves T-417 claim) | T-417 | **CLOSED — MICRO-tier session-end done.** `.gitattributes` fix (merge=union for OPERATOR_DIGEST_*.md) landed at `3412826`. `SESSION_HANDOFF_20260804_1705.md` + digest update + checkpoint pointer `gitattributes-union-fix-close`. No worktree used (trivial config-only change, no `src/` touched). Claim released — session closed. |

@@ -94,3 +94,18 @@ No — nothing needs you today.
 No new concerns. One thing corrected along the way: one of the documents claimed a piece of NBA-related code had "no test coverage" — checked it directly and that wasn't quite right (it does have basic tests; what it actually lacks is real-world exercise, since NBA trading is still paused). Fixed the document to say the accurate thing instead of repeating the imprecise claim.
 
 *Full technical detail: see `SESSION_HANDOFF_20260804_0520.md`, `SESSION_HANDOFF_20260804_2335.md`, `SESSION_HANDOFF_20260804_0456.md`, `SESSION_HANDOFF_20260804_0050.md`, `SESSION_HANDOFF_20260804_0016.md`, and `DECISION_LOG.md` for 2026-08-03/2026-08-04.*
+
+---
+
+## Update — later same day (T-417: fix the thing that just wasted your time)
+
+**What changed:**
+You were right to be annoyed — closing out the last session took way longer than it should have, because three different work sessions today all finished around the same time and kept tripping over each other on the same few housekeeping files. Fixed the specific cause: one of those files (this daily digest) is supposed to just have new sections added to it, never edited in place, so it's now safe for two sessions to update at once without a manual do-over. The other two files that caused delay were deliberately left alone — they have a different rule (this same fix applied there could quietly hide a status change), so a different fix is needed for those if it happens again.
+
+**What this means for your money:**
+No change — still zero real money at risk. Pure tooling fix, nothing touched the bot itself.
+
+**Does anything need your decision right now?**
+No — nothing urgent.
+
+*Full technical detail: see `SESSION_HANDOFF_20260804_1705.md`.*
