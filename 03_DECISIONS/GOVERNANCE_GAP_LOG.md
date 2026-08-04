@@ -2966,11 +2966,11 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-159 — Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no mechanism exists that resolves a doc's code citations against current source
+### GG-160 — Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no mechanism exists that resolves a doc's code citations against current source
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-159 |
+| Gap ID | GG-160 |
 | Category | Doc citing source that moved underneath it — same shape of failure as GG-144 (unanchored regex silently missing entries) and GG-155 (a tool's own output silently wrong): the check that would catch drift was never built, so the drift accumulated invisibly across normal edits to the cited source files. |
 | What was missed | A verification pass (2026-08-03) checked ten `file:line` claims across Phase 0/1 docs against source; four were wrong. (1) `MARKET_EXPANSION_ACTION_PLAN.md:125` cited a test-suite baseline (2,757 passed/17 known-failed/28 skipped) that predated GG-146's partial fix — true baseline at time of check was 2,799/8/29. (2) `MARKET_UNIVERSE_SURVEY_SPEC.md:6` cited `kalshi_client.py:115` for `SERIES_MLB_PLAYER_HITS`; the constant is at line 135. (3) `SEGMENTED_POOL_ARCHITECTURE.md:35` cited "53 of 83 files" for player/threshold-shaped tests; current measurement is 55 of 89. (4) `SEGMENTED_POOL_ARCHITECTURE.md:28` said `kalshi_client.py` has "one series constant"; it has two (`SERIES_PLAYER_POINTS` L133, `SERIES_MLB_PLAYER_HITS` L135) and the doc's own Phase 1 registry plan has to absorb both. All four were fixed this session (T-415); see `MARKET_EXPANSION_ACTION_PLAN.md`, `MARKET_UNIVERSE_SURVEY_SPEC.md`, `SEGMENTED_POOL_ARCHITECTURE.md` diffs. |
 | When it should have been caught | At whatever commit first moved the cited line, added the second constant, or advanced the baseline — each of these was an ordinary, correct edit to the underlying source; the failure is that nothing re-checked the docs that had cited the old state. |
