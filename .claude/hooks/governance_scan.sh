@@ -238,6 +238,36 @@ else:
     print('  (T4M-PROJ counted via the canonical build_t4_resolved_ledger.py/run_band_monitor.py path — GG-112/T-344.)')
 EOF
 
+# --- GG-158: price archive local backup (rsync pull-back, age-gated like the
+# portfolio caches above). exp_output/PRICE_ARCHIVE/ on the VPS is the only
+# copy of unbackfillable season price/depth data -- three prior sessions
+# reported the archiver "verified"/"deployed" without ever confirming a
+# second copy existed anywhere off that one disk. This does not commit the
+# files to git (see .gitignore) -- it is a local-disk backup only, same
+# treatment as logs/.vps_portfolio_cache_*.json.
+echo ""
+echo "PRICE ARCHIVE SYNC (GG-158 — local backup of VPS exp_output/PRICE_ARCHIVE/):"
+mkdir -p exp_output/PRICE_ARCHIVE
+PA_STAMP="exp_output/PRICE_ARCHIVE/.last_sync"
+PA_MAX_AGE=900
+pa_fetch_needed=1
+if [ -f "$PA_STAMP" ]; then
+    pa_age=$(( $(date +%s) - $(stat -f %m "$PA_STAMP" 2>/dev/null || echo 0) ))
+    [ "$pa_age" -lt "$PA_MAX_AGE" ] && pa_fetch_needed=0
+fi
+if [ "$pa_fetch_needed" -eq 1 ]; then
+    if rsync -az -e "ssh -o ConnectTimeout=5 -o BatchMode=yes" \
+         prediction-market-vps:/opt/prediction-market-bot/exp_output/PRICE_ARCHIVE/ \
+         exp_output/PRICE_ARCHIVE/ 2>/dev/null; then
+        touch "$PA_STAMP"
+        echo "  synced ($(ls exp_output/PRICE_ARCHIVE/*.jsonl 2>/dev/null | wc -l | tr -d ' ') files, $(du -sh exp_output/PRICE_ARCHIVE 2>/dev/null | cut -f1) local)"
+    else
+        echo "  SYNC FAILED — rsync/ssh unreachable; local backup may be stale (see $PA_STAMP mtime)"
+    fi
+else
+    echo "  skipped (last sync $(( pa_age / 60 ))min ago, under ${PA_MAX_AGE}s TTL)"
+fi
+
 # --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
 # n* is the variance-derived sample needed for 95% power to distinguish
 # edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500

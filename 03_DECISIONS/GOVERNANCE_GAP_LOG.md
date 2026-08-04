@@ -2949,6 +2949,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-158 — Price archive had zero off-VPS copies for 3+ sessions despite repeated "verified"/"deployed" reports; same failure class as GG-144's unanchored grep
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-158 |
+| Category | Check that reports success without testing the thing it claims to test — same class as GG-144 (unanchored OPEN-gap grep) and the original GG-155 sampler bug. |
+| What was missed | `exp_output/PRICE_ARCHIVE/` was empty in the local/git tree while GG-156 (2026-08-01), the T-411 session (2026-08-03), and T-412 (2026-08-04) each reported the archiver "verified"/"deployed to the live VPS"/"confirmed running." Every report was true about VPS-side behavior (confirmed again this session via fresh SSH: `prices_2026-08-01.jsonl` through `prices_2026-08-04.jsonl`, 72,737 lines total, growing) but none of the three checked or established a second copy anywhere off that single VPS disk. Unlike `logs/` (a runtime cache, regenerable), `exp_output/PRICE_ARCHIVE/`'s season-long price/depth series is **not backfillable** once a game date passes — a VPS disk failure between 2026-08-01 and this session would have been a permanent, silent loss of the one artifact this project's entire Phase 0-E/0-G/0-H effort was built to produce. |
+| When it should have been caught | The moment any session described the archiver as "verified" or "deployed" — "producing correctly on the VPS" and "backed up off the VPS" are different claims, and the log entries (GG-156, T-411/T-412 SESSION_CLAIMS rows) used language that reads as the latter while only ever having checked the former. |
+| Phases it survived | Present since the archiver's original deploy (T-410, 2026-08-01); survived GG-156's own resolution write-up, the T-411 mid-slate depth session, and T-412's Phase 0-H close-out (which explicitly re-confirmed VPS-side growth via fresh SSH but still did not add a sync step) — three consecutive sessions touching this exact file. |
+| Why it survived | No component in this project's session-start protocol or governance scan checked for a local/backed-up copy of `exp_output/PRICE_ARCHIVE/` — Step 4's operational health check greps cron logs and systemd state, not artifact redundancy, so an artifact can be "healthy" (cron firing, file growing) and simultaneously have zero backup with nothing in the mandatory scan surfacing that gap. |
+| Impact | Was HIGH and time-sensitive (MLB season data, unbackfillable) until this session; now MEDIUM (a local rsync backup exists but is laptop-resident, not itself redundant, and only refreshes when a session runs `governance_scan.sh`). |
+| Discovery | 2026-08-04, this session, operator-directed cleanup task explicitly framed against the GG-144 pattern. |
+| Resolution | `.claude/hooks/governance_scan.sh` gained an age-gated (900s TTL) `rsync` pull-back of `exp_output/PRICE_ARCHIVE/` from the VPS to the local tree, mirroring the existing `logs/.vps_portfolio_cache_*.json` pattern — fires automatically every session via the existing UserPromptSubmit hook, no new manual step. `.gitignore` gained `exp_output/PRICE_ARCHIVE/` (the directory was previously untracked only by omission, not by rule — a `git add -A` in a shared-tree session could have committed tens of MB/day of price data into repo history). Verified end-to-end this session: local line counts (72,737 price rows + 156 depth rows) match the VPS byte-for-byte post-rsync, confirmed via `wc -l` on both sides. |
+| Status | OPEN — the sync mechanism is real and verified, but it is still a single laptop's local disk, refreshed only when a session runs; a true off-VPS *and* off-laptop backup (e.g. cloud/object storage) is not in scope for this MICRO fix and remains a follow-on if the operator wants stronger redundancy than "runs every session." |
+
+---
+
 
 ## Gap Registration Template
 

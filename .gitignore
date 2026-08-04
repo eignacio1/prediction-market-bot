@@ -103,6 +103,11 @@ exp_output/**/*.csv
 # tree and failing every deploy.yml run since 2026-06-24.
 exp_output/MLB/
 
+# --- GG-158: forward price archive local backup (rsync'd from VPS by
+# governance_scan.sh, same local-disk-only treatment as logs/'s VPS cache
+# files). Grows tens of MB/day per family across a season -- never commit.
+exp_output/PRICE_ARCHIVE/
+
 # --- GG-073: pipeline-generated data contract state (row-count baselines for
 # cardinality drift detection). Rewritten by every PIPE-05/PIPE-06pre run --
 # tracking it in git reproduces the exact paper_portfolio.json/T-171 problem.
