@@ -2999,6 +2999,23 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-161 — 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" claim is contradicted by direct evidence; retries genuinely happen daily but a cron-window-correlated 406 failure mode was never surfaced
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-161 |
+| Category | Confidently wrong causal claim in a prior finding, propagated without SSH-verified re-testing — same shape as GG-159/GG-160: a document asserted a mechanism ("not an API-outage signal"; idempotency blocks retries) that reads as settled but was never tested against the live cron's actual execution window. |
+| What was missed | `10_INFRA_OPERATIONS/OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md` § Task 1 states the 22 stuck positions' resolution failure "is not an API-outage signal; it is a standing data-resolution failure," and separately implies `mark_aged_open()`'s idempotent early-return is why `last_updated` never advances. Direct testing this session (T-418) found both claims incomplete. (1) `run_resolve_mlb.py`'s `pending` list (`run_resolve_mlb.py:411-433`) is filtered only by `game_date < today`, not by `aged_open` status — `fetch_actual_hits()` genuinely is re-attempted for every stuck position, every day; the idempotency only suppresses re-tagging on the failure branch, not the retry itself. (2) `resolve_mlb_cron.log` shows a ~68% fetch failure rate (8,345 "giving up" 406s vs. 3,921 successes) concentrated in the cron's 06:30 UTC execution window; the same query (same player_id, date, venv, requests version) returns clean 200s when run interactively outside that window. For Julio Rodríguez specifically, 3 of his 4 stuck dates have valid gameLog data available right now via direct query, yet have never resolved across 5+ weeks of daily cron attempts — evidence the block is window-correlated API unreliability, not absent data, for that subset. |
+| When it should have been caught | The moment `OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md`'s Task 1 was written (2026-08-04) — its own causal claims were assertable but not tested against `run_resolve_mlb.py`'s actual source or against a direct off-cron-window API probe; SSH access existed for that session for other tasks but was not used to verify this specific mechanism. |
+| Phases it survived | One session (the 2026-08-04 ops-health pass itself) before this session's independent re-derivation, per direct operator instruction to confirm the diagnosis independently rather than accept it as given. |
+| Why it survived | No component of the standard session-start protocol probes a specific dead-position resolution failure at this granularity — Step 4's operational health check looks for zero-bet days and staleness halts, not per-position fetch-failure patterns correlated with time-of-day. The ops-health document's claim was plausible on its face (idempotency + "standing failure") and nothing forced a re-test against the live code path or a direct off-window API call. |
+| Impact | MEDIUM. Does not change the bottom line that all 22 positions are stuck and $194.24 remains locked — but it changes the fix path. Treating this purely as "permanent data absence needing a terminal state" (the prior framing) would miss that ~3 of the 22 (Julio Rodríguez's non-4th-date positions) may be resolvable today simply by re-running resolution outside the 06:30 UTC window, without needing any terminal-state mechanism at all. Conflating the two mechanisms risks writing off recoverable positions as permanently unresolvable. |
+| Discovery | 2026-08-05, T-418 session, direct instruction to independently confirm the ops-health doc's Task 1 diagnosis rather than restate it. Full analysis: `05_RESEARCH_EXPERIMENTS/T416_STUCK_POSITIONS_DIAGNOSIS.md`. |
+| Resolution | Registration and causal-correction only, per this session's scope fence (memos only, no `src/` change). `T416_STUCK_POSITIONS_DIAGNOSIS.md` recommends (a) attempting resolution for Julio Rodríguez's 3 recoverable dates outside the cron's execution window before writing them off, and (b) a genuinely terminal state (not indefinite `aged_open` limbo) for positions that fail all three resolution sources past some age ceiling (14-30 days suggested) — neither implemented this session. |
+| Status | OPEN — unstaffed beyond this registration; no T-NNN assigned for the fix itself. Re-check trigger: next session that touches `run_resolve_mlb.py` or the aged_open/terminal-state design. |
+
+---
+
 
 ## Gap Registration Template
 
