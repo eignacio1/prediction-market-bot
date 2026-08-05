@@ -11,3 +11,15 @@ Same two items as before, neither urgent: (1) the baseball morning-strategy ques
 
 **Anything that worried the session, even if not urgent:**
 The timing-quirk finding (same request fails in the morning, succeeds later) raises a question we haven't checked yet: is this only affecting these 22 old bets, or could it also be quietly slowing down resolution of *current*, everyday bets too? Flagged for a future session, not confirmed as a live problem.
+
+---
+
+## Update — later the same day (Session 3, governance-log cleanup)
+
+**What changed:** This was housekeeping on our own internal "known issues" tracking file, not on the trading system itself — it had grown to the point where important entries could get visually lost, the same way a July finding once did (an entry written in bold got skipped by an automated scan because the scan wasn't looking for bold text). Fixed that permanently: closed-out issues now live in a separate archive file instead of mixing with open ones, and every open issue now carries one consistent status line instead of a handful of different writing styles. Also built a short daily "what actually needs your attention" summary that gets generated automatically alongside the full list — sorted by what's blocking a decision from you, not by how severe it sounds. Before trusting any of this, we double-checked the count of open issues came out exactly the same under the new format as the old one (it did, plus it correctly caught one issue the old format had always missed). Along the way, found that two different work sessions today had independently picked the same tracking number for two unrelated new issues — not dangerous, it sorted itself out on its own, but logged as a minor gap in how we hand out those numbers so it doesn't happen again unnoticed.
+
+**What this means for your money:** No change — still zero real money at risk. Nothing here touched trading logic, sizing, or the risk limits.
+
+**Does anything need your decision right now?** No — this was internal organization only.
+
+**Anything that worried the session, even if not urgent:** No new concerns. Deliberately did not build a fix for the duplicate-tracking-number issue mentioned above — flagged it for the record but left it unstaffed since it already resolved itself and wasn't worth building extra machinery for on a guess.
