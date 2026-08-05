@@ -114,6 +114,18 @@
 
 ---
 
+## Phase 0-I — Post-fix depth re-check (Window B, T-419)
+
+**Context:** 0H.1/0H.2/0H.8 fixed the sampler root cause (`_balanced_sample()`) and folded balanced depth capture into the always-on archiver cron (`--depth-sample-per-family 2`, deployed to the live VPS crontab 2026-08-04). **Premise correction (Window B):** there is no pre-fix depth data to compare the accumulating series against — `--depth-sample-per-family` and `_balanced_sample()` shipped in the same commit (`c5668a4`, T-412), so every depth observation prior to that commit was taken by the old head-slice sampler this phase replaced (the one that mis-measured `PLAYER_PROP` as `KXLEADERMLBHITS`, GG-155). The post-fix series accumulating now is the *first* balanced-sampler depth data of any kind, not a resample of a prior baseline — treat any framing that implies a before/after comparison against pre-fix depth as wrong; the correct framing is "first clean measurement, still accumulating."
+
+- [ ] **0I.1** Re-run the §2.7 depth-gate verdict table (`SURVEY_TABLES.md` Table 3 / `MIDSLATE_VERDICT.md`-style per-family PASS/FAIL) once **≥200 post-fix depth observations per family** have accumulated via the deployed cron. Projected crossing: **2026-08-08**, based on the deployed cadence (`--depth-sample-per-family 2` per archiver fire, `deploy/cron.conf`'s two-block schedule). **Explicit re-check date: 2026-08-09.**
+- **The projection is not the clearance.** 2026-08-08 is when the observation count is projected to cross 200 given the current cron cadence holding steady (no missed fires, no cadence change) — it is not itself a gate pass. The table gets re-run and read fresh on 2026-08-09; do not treat the 2026-08-08 projection as a verdict, and do not skip the re-run because the projection looks favorable.
+- If the 2026-08-09 check finds fewer than 200 observations/family (missed cron fires, VPS downtime, etc.), push the re-check date forward rather than running the verdict table on an under-powered sample — this threshold exists to avoid re-litigating GG-155's original mistake (a verdict drawn from too few, too concentrated observations).
+
+**Do not** (standing for this phase): do not start Phase 1 or Phase 2 off this re-check alone; a per-family PASS/FAIL here informs Phase 1 build order (per 0H.6's `GAME_WINNER` note) but does not itself authorize new market activation.
+
+---
+
 ## Phase 1 — Abstraction repair (no new markets)
 
 - [ ] **1.1** Market-type registry built (`market_mapper.py` currently has no such thing)

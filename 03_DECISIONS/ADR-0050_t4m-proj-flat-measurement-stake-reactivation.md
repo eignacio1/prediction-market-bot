@@ -66,6 +66,8 @@ This section follows the established precedent of ADR-0040's dated addendum (Har
 
 **(g) This cohort is the FIRST out-of-sample test of the GG-142 gate-valid filter result.** The prior +10.99%/+27.58% ROI readings cited elsewhere in this project's history for the post-GG-142 gate are **in-sample** — the signed-edge threshold was chosen with knowledge of the data it was measured against — and must not be cited as validated edge in GG-046's exit-criteria regression (ADR-0050 §6, "regression to the B2-frontier sizing rule"). The operator's own exit criterion is "regression-analyzed and moved to the B2 frontier"; if that regression treats the in-sample ROI figures as a validated prior rather than treating this flat-stake cohort as the first clean out-of-sample read, the purpose of accruing it is defeated. Any future session running that regression must partition on this boundary explicitly.
 
+**(g) figure correction, 2026-08-05, GG-159:** the "+10.99%" half of this pairing was itself later found code-unverified — `PROJECT_ASSESSMENT_2026-07-30.md`'s §2 headline used a symmetric-vig reconstruction that does not match production's asymmetric cascade (`paper_trader.py::open_position()` L460-466). The code-verified in-sample figure is **+9.65%/n=388** (as-of-2026-07-30 cohort; +9.71%/n=404 current), not +10.99%/n=344. This does not weaken (g)'s caveat — the in-sample/out-of-sample partition still binds regardless of the exact magnitude — it only corrects which number is being partitioned away from. See GG-159, `05_RESEARCH_EXPERIMENTS/VC6_VIG_CASCADE_VERIFICATION_2026-08-04.md`.
+
 ## 9. Addendum (2026-07-31 — GG-149, offsetting-position cohort exclusion)
 
 Following the same append-only precedent as §8 (Hard Rule 3: §§1-8 above are unchanged by this section). 161 T4M-PROJ tickers were found holding simultaneous open YES and NO positions — a wash trade under Kalshi's CFTC-DCM rulebook, no manipulative intent (the model re-evaluated live state and took the other side without closing the first position); 141 closed locked pairs / 374 legs, combined -$0.13 on $178.76 stake. This is a measurement-integrity gap this ADR's cohort-purity purpose (§6, §7's E2E verification, §8(g)'s out-of-sample framing) did not anticipate: 374 of 2,015 legs (18.6%) are deterministic wash pairs carrying zero edge information, and would silently contaminate any headline ROI/edge figure computed over the raw ledger.
@@ -75,3 +77,35 @@ Following the same append-only precedent as §8 (Hard Rule 3: §§1-8 above are 
 **(i) Suppression-event count is itself a reported metric.** The count of `t4_offsetting_suppressed` (intra-book, SKIP) and `t4_t1_cross_book_direction_conflict` (cross-book, alarm-only) audit events is not merely operational logging — it is reported alongside GG-046/EXP-T4-01's headline figures as a measure of how often the model's live-state re-evaluation would have produced a wash trade absent this guard. A rising suppression rate over time is itself a signal about model stability at short re-evaluation intervals, independent of the edge question §6/§7 exist to answer.
 
 **Scope:** `bands_affected={"T4M-PROJ"}` only, matching every boundary since epoch 9 — MAIN (T1/T2/T3) is untouched by this addendum. DS sign-off: operator, 2026-07-31. See GG-149 (intra-book, resolved this branch), GG-150 (cross-book blocking variant, registered unstaffed — closing a locked pair by force rather than merely alarming requires a separate ADR-0018-governed decision, out of scope here), `logic_epoch.py` epoch 12, DECISION_LOG.md 2026-07-31.
+
+## 10. Addendum (2026-08-05 — T-419, epoch-12 citation rule, GG-159 remediation)
+
+Following the same append-only precedent as §§8-9 (Hard Rule 3: §§1-9 above are unchanged by this section). This addendum exists because GG-159 found a headline figure (`PROJECT_ASSESSMENT_2026-07-30.md`'s T4M-PROJ ROI) had been hand-reconstructed rather than computed from the real cascade, and that error survived one full documentation cycle uncaught. The epoch-12 measurement cohort this ADR created is exactly the kind of number future sessions will want to cite casually — this section makes that structurally hard to get wrong.
+
+**(j) Citation rule — binding, not advisory.** Any session citing epoch-12 T4M-PROJ headline figures (n, P&L, stake, ROI, win rate, top-N concentration, LOW-stratum breakdown, direction-conflict count, sizing conformance) MUST regenerate them at cite time, not copy a number from a prior doc — including this one. The one exception is a citation explicitly scoped "as of `<timestamp>`" for historical/audit purposes (e.g. GG-159's own as-of-2026-07-30 figures), which may be quoted as a frozen point-in-time fact.
+
+To regenerate:
+```
+python3 scripts/build_t4_resolved_ledger.py --pull    # refresh logs/.vps_portfolio_cache_mlb_t4.json from the VPS
+python3 scripts/vc6_vig_cascade_verification.py        # section_epoch12_reproduction() prints the full table
+```
+Source of truth: `logs/.vps_portfolio_cache_mlb_t4.json`'s `closed_positions`, filtered to `logic_epoch == 12 and band == "T4M-PROJ"` (`section_epoch12_reproduction()`, `scripts/vc6_vig_cascade_verification.py:239-289`). That file is gitignored and mutates as the live cohort resolves — a number copied from a prior session's terminal output is already stale by the time it's read.
+
+**(k) Live reproduction at this addendum's authoring time (2026-08-05T01:xx, cache `last_updated=2026-08-04T06:49:23.560Z`, pulled fresh this session):**
+
+| Metric | 2026-08-04T03:28Z snapshot (operator-supplied, GG-159 reference) | This session's live pull |
+|---|---|---|
+| n closed | 141 | **148** |
+| P&L | +$48.52 | +$51.37 |
+| Stake | $122.25 | $129.25 |
+| ROI | +39.69% | +39.74% |
+| Win rate | 42.6% | 43.9% |
+| Top-5-by-P&L share | 71.18% | 67.23% |
+| Excl. top 10 by P&L | n=131, −$10.01/$115.70, **−8.65%** | n=138, −$7.16/$122.70, **−5.84%** |
+| LOW stratum (<$0.10) | n=30, +167.78% ROI, 16.7% win | n=30, +167.78% ROI, 16.7% win (unchanged — no LOW-stratum bets resolved between snapshots) |
+| Both-direction tickers | 0 of 83 | 0 of 87 |
+| ADR-0050 sizing conformance | 141/141 | 148/148 |
+
+The excl-top-10 figure moved 2.8pp in roughly 24 hours purely from cohort growth (n=141→148) — this is the concrete demonstration of why (j) requires live regeneration rather than citation of a fixed number: a 7-bet difference materially changed a headline figure. **The −8.84% figure that circulated in the 2026-08-03 strategic review (predating this cohort's growth and using a different denominator approximation) is superseded by both the −8.65% as-of-2026-07-30 figure and this session's −5.84% current figure — do not cite −8.84% going forward.**
+
+Scope: documentation/citation-rule only. No `src/` change, no sizing change, no epoch bump — this section does not supersede §§1-9, it constrains how future sessions report the numbers those sections already govern.

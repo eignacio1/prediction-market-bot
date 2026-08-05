@@ -66,38 +66,42 @@ Substantively, the answer on T1 is not in doubt. GG-105 → GG-140 → T9/A1-A3 
 
 ### T4M-PROJ — the single genuine positive result in the project, and it strengthened
 
+> **SUPERSEDED, 2026-08-05 — GG-159.** This section's Assumption 1 (§8) was verified false by `05_RESEARCH_EXPERIMENTS/VC6_VIG_CASCADE_VERIFICATION_2026-08-04.md` (T-413): the `−2.0·vig` reconstruction below does **not** match `paper_trader.py::open_position()`'s real cascade (L460-468), which is direction-asymmetric — YES carries no vig term at all; NO nets against `gross_edge` with only 1x vig pre-baked in, not the uniform symmetric `2.0·vig` this section applied to both directions. Row-level reproduction (778/778 and 799/799 exact matches, max_abs_diff=0.000000) found the code-true output is **n=388, ROI +9.65%** (as-of-2026-07-30 cohort; n=404, ROI +9.71% on the current cohort) — bit-for-bit identical to this section's own `raw − 1.0·vig` and `fee_net_edge (stored field)` rows below, not its headlined `raw − 2.0·vig` row (n=344, ROI +10.99%). The qualitative verdict (T4M-PROJ gate-valid is genuinely positive; the `abs()` defect, not the model, made it look negative) **survives and is not weakened**. Two things below do not survive: **(1)** the headlined `−2.0·vig` row is not merely an unvalidated assumption, it is the disproven one — every code-verified row shows the middle tercile dipping; tercile monotonicity does not hold under the real formula, full stop, not "under 4 of 5 alternate definitions." **(2)** the "five independent edge definitions" framing below is wrong: `fee_net_edge (stored field)` **is** the cascade's actual output, so it and `raw − 1.0·vig` are the same measurement expressed two ways, not independent corroboration — the table collapses to one verified number (`raw − 1.0·vig` / `fee_net_edge`, n=388/+9.65%) plus one genuinely independent row (`gross_edge`, n=161/+27.58%, pre-vig, still unverified against the real cascade). The original text below is left as-authored per this project's archive-in-place convention; read it through this correction, not as current fact.
+
 Fable's GG-142 finding was that `risk.py`'s `abs(edge)` gate systematically rescued the bets the model was most confident were wrong. I reconstructed the direction-effective edge independently from the ledger (`model_p`, `mid_price_at_entry`, `vig_at_entry`, `direction`, applying the T4M-PROJ `−2.0·vig` coefficient) on the now-larger epoch-8 cohort — **n=778, up from Fable's 518.** The finding replicates and gets cleaner:
 
-| Cohort | n | total P&L | P&L/bet | stake | ROI |
-|---|---|---|---|---|---|
-| Full epoch-8 book | 778 | **−$28.81** | −0.0370 | — | — |
-| `abs()`-rescued (edge < 0) | 434 | **−$44.27** | −0.1020 | — | — |
-| Gate-valid (edge ≥ 0) | 344 | **+$15.46** | +0.0449 | $140.66 | **+10.99%** |
-| Gate-valid (edge ≥ 0.04, the real `MIN_EDGE`) | 234 | **+$11.10** | +0.0474 | $87.47 | **+12.69%** |
+| Cohort | n | total P&L | P&L/bet | stake | ROI | Correction note |
+|---|---|---|---|---|---|---|
+| Full epoch-8 book | 778 | **−$28.81** | −0.0370 | — | — | — |
+| `abs()`-rescued (edge < 0) | 434 | **−$44.27** | −0.1020 | — | — | — |
+| Gate-valid (edge ≥ 0) | 344 | **+$15.46** | +0.0449 | $140.66 | **+10.99%** | †SUPERSEDED — GG-159: real cascade gives n=388, +9.65% |
+| Gate-valid (edge ≥ 0.04, the real `MIN_EDGE`) | 234 | **+$11.10** | +0.0474 | $87.47 | **+12.69%** | not re-verified against real cascade — same reconstruction bug likely applies, treat as unverified pending re-check |
 
 Bootstrap (10k resamples) on the gate-valid cohort: **P(profit) = 0.967**, 95% CI [−0.0034, +0.0917].
 
-**Robustness test across five independent edge definitions** (this is Validation Check #4, run rather than deferred — the direction-effective edge has to be reconstructed, and the reconstruction's vig coefficient is an assumption worth attacking):
+**Robustness test across five ~~independent~~ edge definitions** (this is Validation Check #4, run rather than deferred — the direction-effective edge has to be reconstructed, and the reconstruction's vig coefficient is an assumption worth attacking):
+
+> **SUPERSEDED, 2026-08-05 — GG-159.** These five rows are not five independent tests. `fee_net_edge` (row 5) **is** `paper_trader.py::open_position()`'s real cascade output, verified by row-level reproduction (799/799 exact match, max_abs_diff=0.000000, `VC6_VIG_CASCADE_VERIFICATION_2026-08-04.md`). `raw − 1.0·vig` (row 2) is a hand reconstruction of that same cascade and lands on matching aggregate n/ROI — it is the same measurement approximated two ways, not corroboration from an independent source. `raw − 2.0·vig` (row 1, the row marked `monotonic? yes`) is not a competing-but-unvalidated definition — it is disproven; production code does not apply a symmetric 2.0x vig term to both directions (see the §2 banner above). What remains as genuinely distinct: **one verified number** (`raw − 1.0·vig` / `fee_net_edge`, n=388, +9.65%, per-row tercile figures below still only approximate the code cascade — treat the tercile shape as directionally informative, not exact) and **one genuinely independent row** (`gross_edge`, pre-vig stored field, n=161, +27.58% — never itself re-verified against the real cascade, still an open item). The `raw` row (no vig) is a degenerate control, not a sixth data point.
 
 | Edge definition | gate-valid n | total P&L | ROI | P(profit) | terciles (ROI) | monotonic? |
 |---|---|---|---|---|---|---|
-| `raw − 2.0·vig` (T4M-PROJ ledger coeff) | 344 | +$15.46 | **+10.99%** | 0.972 | +5.59 → +8.35 → +24.29 | **yes** |
-| `raw − 1.0·vig` | 388 | +$15.02 | **+9.65%** | 0.954 | +11.60 → −0.87 → +23.14 | no |
-| `raw` (no vig adjustment) | 778 | −$28.81 | −6.89% | 0.012 | −12.27 → −11.13 → +10.29 | *(= full book)* |
-| `gross_edge` (stored field) | 161 | +$14.22 | **+27.58%** | **0.996** | +29.74 → +20.28 → +34.19 | no |
-| `fee_net_edge` (stored field) | 388 | +$15.02 | **+9.65%** | 0.960 | +8.00 → +1.39 → +25.21 | no |
+| `raw − 2.0·vig` (T4M-PROJ ledger coeff) — **DISPROVEN, does not match production, see banner** | 344 | +$15.46 | ~~+10.99%~~ | 0.972 | +5.59 → +8.35 → +24.29 | ~~yes~~ **not code-verified** |
+| `raw − 1.0·vig` — same measurement as row 5, not independent | 388 | +$15.02 | **+9.65%** | 0.954 | +11.60 → −0.87 → +23.14 | no |
+| `raw` (no vig adjustment) — degenerate control | 778 | −$28.81 | −6.89% | 0.012 | −12.27 → −11.13 → +10.29 | *(= full book)* |
+| `gross_edge` (stored field) — the one genuinely independent row | 161 | +$14.22 | **+27.58%** | **0.996** | +29.74 → +20.28 → +34.19 | no |
+| `fee_net_edge` (stored field) — **this IS the production cascade output (GG-159)** | 388 | +$15.02 | **+9.65%** | 0.960 | +8.00 → +1.39 → +25.21 | no |
 
-**Two findings, and they deserve different confidence.**
+**Two findings, and they deserve different confidence.** *(Original text below; read against the banner above — the magnitude changed, the shape of both conclusions did not soften.)*
 
-**(a) The filter is robust — this is the real result.** Under every definition that applies *any* vig adjustment, the gate-valid subset is positive: ROI +9.65% to +27.58%, bootstrap P(profit) 0.954 to 0.996, on n between 161 and 388. The `raw` row is the control and confirms the mechanism — with no vig adjustment there is no filtering, and you get the full book's −6.89%. **The `abs()` defect, not the model, is what made T4 look negative.** That conclusion does not depend on my coefficient choice.
+**(a) The filter is robust — this is the real result.** ~~Under every definition that applies *any* vig adjustment, the gate-valid subset is positive: ROI +9.65% to +27.58%, bootstrap P(profit) 0.954 to 0.996, on n between 161 and 388.~~ **Corrected:** the code-verified figure is one number, not a range — ROI +9.65%, P(profit) 0.954–0.960, n=388 — plus the still-unverified `gross_edge` row at +27.58%/n=161. The `raw` row is the control and confirms the mechanism — with no vig adjustment there is no filtering, and you get the full book's −6.89%. **The `abs()` defect, not the model, is what made T4 look negative.** That conclusion does not depend on my coefficient choice, and does not depend on the disproven `−2.0·vig` row either — it holds on the code-verified `fee_net_edge` figure alone.
 
-**(b) The scaler is NOT robust — I overstated this in my first pass and am correcting it.** Tercile monotonicity holds under exactly one of five definitions (`−2.0·vig`), which happens to be the one I picked first. Under the other four it breaks, always the same way: a soft or negative middle tercile. Fable's characterisation — *"a working filter with a non-working scaler"* — **survives the larger sample. I was wrong to upgrade it.**
+**(b) The scaler is NOT robust — and this is now on firmer ground than my original retraction, not weaker.** I originally wrote that monotonicity "holds under exactly one of five definitions (`−2.0·vig`), which happens to be the one I picked first" — framed as if that row were a legitimate alternative that simply lost a coefficient-choice contest. It wasn't: GG-159 found `−2.0·vig` doesn't match production code at all. So the correct statement is stronger than my original one — **monotonicity holds under zero code-verified definitions.** The middle tercile dips under every row that actually corresponds to a real or hand-approximated production formula. Fable's characterisation — *"a working filter with a non-working scaler"* — doesn't just survive, it's the only characterization consistent with the verified data.
 
-What *is* consistent across all five: **the top tercile is the best under every single definition** (+23.14% to +34.19%). So the edge signal reliably identifies its strongest third but does not cleanly rank-order across the full range. That is a weaker claim than monotonicity — and still a meaningful one, because it is the *opposite shape* to GG-105's anti-predictive finding on the same band. Whatever GG-105 diagnosed, the gate-valid subset does not exhibit it.
+What *is* consistent across the code-verified rows: **the top tercile is the best** (+23.14–25.21% on `raw−1.0vig`/`fee_net_edge`; +34.19% on the still-unverified `gross_edge`). So the edge signal reliably identifies its strongest third but does not cleanly rank-order across the full range. That is a weaker claim than monotonicity — and still a meaningful one, because it is the *opposite shape* to GG-105's anti-predictive finding on the same band. Whatever GG-105 diagnosed, the gate-valid subset does not exhibit it.
 
-**Worth a separate look:** the stored `gross_edge ≥ 0` subset (n=161) is the strongest cohort in the project — **+27.58% ROI, P(profit)=0.996** — at roughly half the volume. If that survives out-of-sample, a tighter gate may beat a wider one. Not actionable on in-sample data; flagged as the first thing to test on epoch-10.
+**Worth a separate look:** the stored `gross_edge ≥ 0` subset (n=161) is the strongest cohort in the project — **+27.58% ROI, P(profit)=0.996** — at roughly half the volume, and remains the one row GG-159 did not re-verify against the real cascade (it's a pre-vig stored field, not a vig reconstruction, so the asymmetric-cascade defect doesn't directly implicate it — but it hasn't been positively checked either). If that survives out-of-sample, a tighter gate may beat a wider one. Not actionable on in-sample data; flagged as the first thing to test on epoch-10.
 
-**How much weight overall: moderate on the filter, low on the scaler.** The threshold was chosen knowing this data, so both splits are partly in-sample. This is a **hypothesis for epoch-10 data to confirm out-of-sample** — not a validated edge. But the filter result is the strongest signal this project has produced, it survived a 50%-larger sample and a five-way robustness sweep, and it is exactly what R2's fix was designed to expose.
+**How much weight overall: moderate on the filter, essentially none on the scaler.** The threshold was chosen knowing this data, so both splits are partly in-sample. This is a **hypothesis for epoch-10 data to confirm out-of-sample** — not a validated edge. The filter result, corrected, is still the strongest signal this project has produced (+9.65% ROI, n=388, code-verified) — it survived a 50%-larger sample and reproduction against the actual production cascade, which is a stronger check than the five-way sweep this section originally claimed. The scaler claim is fully retracted, not merely downgraded.
 
 **T4's status is UNANSWERED-and-promising, not negative.** That distinction is the whole reason to keep the lights on.
 
@@ -220,7 +224,7 @@ Step #1 is days, not weeks. Steps #4–#6 are one short session. Accrual then ru
 
 **Assumptions**
 - VPS caches (06:35/06:46Z today) reflect live VPS state; no bets between then and now that would change the figures materially.
-- My direction-effective edge reconstruction (`raw − 2.0·vig`) matches `paper_trader.py`'s T4M-PROJ formula. It reproduces Fable's independently-derived split direction and sign, which is corroborating but not proof.
+- ~~My direction-effective edge reconstruction (`raw − 2.0·vig`) matches `paper_trader.py`'s T4M-PROJ formula. It reproduces Fable's independently-derived split direction and sign, which is corroborating but not proof.~~ **FALSIFIED, 2026-08-05 — GG-159.** It does not match; the real cascade is direction-asymmetric (1x vig on NO, 0x on YES), not the uniform `2.0·vig` this assumption asserted. See § 2 banner. The assumption that *does* hold, code-verified: `raw − 1.0·vig` / `fee_net_edge` matches production exactly (799/799 rows, max_abs_diff=0.000000).
 - `run_power_calc.py` run locally against the cached portfolios gives the same `clean_n` the VPS-side governance scan would.
 - R2's merge (`34735a4`, 18:27 PDT today) has deployed; not verifiable from here.
 
@@ -237,13 +241,13 @@ Step #1 is days, not weeks. Steps #4–#6 are one short session. Accrual then ru
 3. `grep -n "kelly_fraction=0.0" src/prediction_market_bot/execution_bands.py` + `grep -n "KELLY_T4" src/prediction_market_bot/run_t4_mlb_live.py` → four bands + module constant at zero.
 4. T4 edge reconstruction under five definitions — **done, § 2.** Filter result robust; scaler/monotonicity claim refuted and retracted.
 5. On the VPS: confirm the deploy timestamp for `6be807f` against the 35 rows entered 00:01–04:09Z on 2026-07-30.
-6. Re-run the § 2 robustness table against `paper_trader.py::open_position()`'s actual four-branch vig cascade (L462-468) rather than my reconstruction, to close the last assumption. **Not done — needs the live function, small.**
+6. Re-run the § 2 robustness table against `paper_trader.py::open_position()`'s actual four-branch vig cascade (L462-468) rather than my reconstruction, to close the last assumption. ~~Not done — needs the live function, small.~~ **DONE, 2026-08-04 (T-413/VC6), GG-159.** Result: reconstruction was wrong (`−2.0·vig` does not match; `−1.0·vig`/`fee_net_edge` does, 799/799 exact match). See `VC6_VIG_CASCADE_VERIFICATION_2026-08-04.md` and the § 2 banner above.
 
 **Confidence**
 - `clean_n=0` deadlock — **High.** Directly measured, mechanically explained.
 - T1 negative — **High.** Consistent across four independent candidate classes, 202 bets, worsening.
-- T4 gate-valid positive, filter working — **Medium-High.** Replicated on a 50%-larger sample and robust across five independent edge definitions (P(profit) 0.954–0.996). Remaining discount is entirely for in-sample threshold selection.
-- T4 edge signal as a scaler (tercile monotonicity) — **Low. Claim retracted this session.** Holds under 1 of 5 definitions. Only the top-tercile-is-best pattern is definition-invariant.
+- T4 gate-valid positive, filter working — **Medium-High.** Corrected 2026-08-05 (GG-159): the five-definition sweep was not independent (`fee_net_edge` IS the cascade output) — code-verified figure is ROI +9.65%, P(profit) 0.954–0.960, n=388, plus the still-unverified `gross_edge` row at +27.58%/n=161. Replicated on a 50%-larger sample and confirmed against the actual production cascade (row-level exact match), which is a stronger check than the originally-claimed five-way sweep. Remaining discount is entirely for in-sample threshold selection.
+- T4 edge signal as a scaler (tercile monotonicity) — **None. Claim fully retracted, 2026-08-05 (GG-159), on firmer ground than the original retraction.** The one row that showed monotonicity (`−2.0·vig`) is not a legitimate alternative definition that lost a coefficient contest — it does not match production code. Zero code-verified definitions show monotonicity. Only the top-tercile-is-best pattern survives.
 - Engineering is not over-built — **Medium-High.** Clean stub scan, clean test suite, defect-driven change history.
 - Governance layer is over-invested — **Medium.** Qualitative, but GG-132/GG-133 are the system's own admission.
 
