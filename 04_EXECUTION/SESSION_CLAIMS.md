@@ -186,3 +186,4 @@
 | 2026-08-05T01:14:39Z | T-419 | GG-159 propagation + ADR-0050 epoch-12 citation rule + Phase 0-D redate — PARKED before start, token scarcity |
 | 2026-08-05T04:54:59Z | T-420 | T-420: OPERATOR_CONSOLE.md build — gap log split (OPEN/archive), structured status headers, generated console, hook wiring |
 | 2026-08-05T05:50:05Z | T-421 | T-421: decoupled outcome-join measurement store for T4 MLB cycle log |
+| 2026-08-05T05:50:20Z | T-422 | T-422: resolution-layer repair — 406 diagnosis, out-of-band repair of 22 stuck positions, terminal-state ADR draft, T1/MAIN reconciliation |
