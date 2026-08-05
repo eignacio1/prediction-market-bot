@@ -1391,6 +1391,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-163 — T4 MLB has been fully blind since 2026-08-04 23:41 UTC: ESPN game-ID discovery 403s on every poll (723/723), `systemctl is-active` shows healthy throughout, zero new cycle-log rows for 24h+ during live game nights
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-163 |
+| Category | Systemic blind spot — silent-dark-pipeline class, same family as GG-049/GG-108/GG-118, in a sub-case none of those fixes cover. |
+| What was missed | Step 4's mandatory ops-health check greps `t4-mlb`'s systemd `is-active` state and MLB-season player-match counts on the T1 (not T4) cron log — it has no check on T4's own cycle-log write recency. The live `t4_mlb_cycle_log.jsonl` last wrote a row at `2026-08-04T04:13:57Z`; as of this check (`2026-08-05T23:35Z`, ~43.5h later, spanning a full game night with T1 confirming 21-35 players matched in live MLB markets that same day) it has not written a single new row, while `systemctl status t4-mlb` reports `active (running)` throughout and the service has restarted 5 times in that window (04:52, 23:41, 23:56, 23:59 Aug 4; 05:37 Aug 5) without ever recovering. |
+| When it should have been caught | Within minutes of the first failure (2026-08-04 23:41:26 UTC) — `t4_mlb_live_cron.log` logs `WARNING ESPN MLB game ID discovery failed: 403 Client Error: Forbidden` on every ~60s poll cycle, visible immediately to a targeted grep, but nothing polls that log or alerts on it. |
+| Phases it survived | Untouched through GG-049 (T1 dark-pipeline detection), GG-108 (NBA log-path fix), GG-118 (dashboard OOM-loop probe) — all three added a detector for a *different* silent-failure shape (zero bets, wrong log path, crash-loop-under-is-active) but none check T4's own write-recency against wall-clock time. |
+| Why it survived | Root cause: `site.api.espn.com`'s MLB scoreboard endpoint began returning `403 Forbidden` to the bot's game-ID discovery request at 2026-08-04 23:41:26 UTC and has not recovered — 723/723 discovery attempts failed, 0 successes since. Confirmed **not** an IP ban: a bare `curl` (no explicit UA) to the identical URL from the same VPS returns `200`, while `curl -A 'Mozilla/5.0' ...` to the same URL returns `403` — the block appears to key off request headers/UA fingerprint, not source IP, meaning the bot's HTTP client's current UA/header set is specifically what's being rejected. Because discovery never succeeds, the process never reaches any game-evaluation code path, so it writes nothing to `t4_mlb_cycle_log.jsonl`, `audit_mlb_t4.jsonl` (last write also 2026-08-04T04:15, i.e. before the 403s even started), or `audit_mlb_t4_edge_decisions.jsonl` — it just loops discovery failures forever, which systemd correctly reports as "active" since the process itself never crashes. |
+| Impact | T4M-PROJ (the only live-measurement T4 band, currently `clean_n=157/n*=267` per Step 4's sample-adequacy scan) has accrued zero new evaluations for 24h+ of live MLB games, directly slowing its already-tracked path to commercial-validation sample adequacy (GG-046). Also directly relevant to **T-421** (this session): the cycle log this session is building a decoupled outcome-join store against is frozen at 64,396 rows as of this incident and will not grow via the daily re-run path until this is fixed — a fact this session's own deliverable's daily-backfill design must account for, not silently assume away. |
+| Discovery | This session (T-421, decoupled-outcome-store), 2026-08-05, while re-verifying a "last write 25.5h ago" observation flagged but left unresolved when the prior session-instance parked mid-task (`05_RESEARCH_EXPERIMENTS/T421_HANDOFF_PARKED_2026-08-05.md`) — re-checked after a full game night had passed and found the gap had grown to 43.5h with zero recovery, confirmed via direct SSH log/journal inspection and a live `curl` reproduction, not assumed from a stale note. |
+| Resolution | Not built this session — out of T-421's hard scope fence (no changes to `run_t4_mlb_live.py`). Candidate fix direction (not verified, not implemented): the ESPN HTTP client's request headers (likely in a shared C1/ingestion HTTP helper, not yet located) may need a UA/header adjustment to match what a bare `curl` sends: the working case had no `-A` flag at all, i.e. curl's own default UA (`curl/<version>`) succeeded, while a browser-spoofing UA failed — this is the opposite of the usual "spoof a browser to get past a bot-block" fix and should be verified against the bot's actual current UA string before any change is made. Left for the operator to prioritize and staff. |
+| Status | OPEN — new, unstaffed, MEDIUM (degrades an active measurement track, not a capital-safety issue; `kelly_fraction=0.0` on all T4 bands per ADR-0048 means no live sizing is affected). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
