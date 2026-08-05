@@ -1,7 +1,7 @@
 # Session Handoff — 2026-08-05T00:45Z
 
 **Trigger:** Operator-initiated (full task scope given at session start)
-**Last commit:** `446468a` (branch `session/20260805T000103Z-t1-adjudication-stuck-positions`) — pending push + merge to `main`
+**Last commit:** `e898106` (branch `session/20260805T000103Z-t1-adjudication-stuck-positions`) — pending push + merge to `main`; supersedes the `446468a` reference this file originally carried (Steps 2-4 nav updates + Operator Digest landed after this file was first written)
 
 ---
 
@@ -72,7 +72,7 @@ Unchanged this session. `run_resolve_mlb.py` confirmed still running daily at `3
 ## Report back to operator
 
 **Branch:** `session/20260805T000103Z-t1-adjudication-stuck-positions`
-**Commit range:** includes the SESSION_CLAIMS transcription commits from before this turn, through `bffece0` (memos + GG-161), `4748af4` (DECISION_LOG), `446468a` (SESSION_CLAIMS closure), plus this handoff file's commit.
+**Commit range:** includes the SESSION_CLAIMS transcription commits from before this turn, through `bffece0` (memos + GG-161), `4748af4` (DECISION_LOG), `446468a` (SESSION_CLAIMS closure), `e898106` (Steps 2-4 nav updates), plus this handoff file's own commit and the Operator Digest commit that follows it.
 
 **Is the pre-reset T1 cohort recoverable?** Yes — n=202 is physically intact and computable — but unfavorably: its mean P&L/bet is negative (-$0.6289/bet, 45.54% win rate), so no finite n* exists and recoverable does not mean usable for a positive adjudication.
 

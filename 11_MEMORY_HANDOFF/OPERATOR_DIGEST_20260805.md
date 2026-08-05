@@ -1,0 +1,13 @@
+# Operator Digest — 2026-08-05
+
+**What changed today, in one paragraph:**
+This was a follow-up to yesterday's "22 stuck paper bets" finding. Two things got done. First, we dug into why those 22 old bets can't get marked won or lost — turns out it's not one problem, it's two: about 9 of them are stuck because the official baseball stats source genuinely has no record for those specific game dates (a permanent gap, not something retrying will fix), but a handful tied to one player (Julio Rodríguez) look like they're failing because of a timing quirk — the same request that fails every morning during our automated check succeeds fine if we run it by hand later in the day. That second part is new and worth knowing about since it means a few of those "stuck forever" bets might actually be recoverable. Second, we finished the decision homework on the baseball morning strategy's frozen stats question from a couple weeks back — computed exactly what your options are, with real numbers attached to each, so you can make the call quickly.
+
+**What this means for your money:**
+No change — still zero real money at risk, paper trading only. The ~$194 of paper capital tied up in those 22 stuck bets is still tied up; nothing was moved or fixed today, just diagnosed.
+
+**Does anything need your decision right now?**
+Two things sitting there, neither urgent: (1) the baseball morning-strategy question — a short memo now lays out three options with the actual math behind each, should take you under 10 minutes to read and decide; (2) whether it's worth building a "give up and close out" state for paper bets that never get an answer after some number of weeks, instead of letting them sit open forever like the 22 are now.
+
+**Anything that worried the session, even if not urgent:**
+The timing-quirk finding (same request fails in the morning, succeeds later) raises a question we haven't checked yet: is this only affecting these 22 old bets, or could it also be quietly slowing down resolution of *current*, everyday bets too? Flagged for a future session, not confirmed as a live problem.
