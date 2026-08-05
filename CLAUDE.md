@@ -216,17 +216,23 @@ GG-001 had `# 10 concurrent open (stub)` in production source. It survived four 
 
 **GG-144 (2026-07-29):** the prior form of this command, `grep -n "| OPEN"`, is an unanchored substring match — it surfaced only 17 genuine `| Status | OPEN …` cells (plus 9 lines of unrelated narrative prose elsewhere in the log that happen to contain the same substring) and matched **zero** of the emphatic form, `| Status | **OPEN — …`, which the log uses for its most severe entries — the formatting that signals importance is exactly what removed the entry from the scan. True OPEN count (anchored, both forms, template placeholder row excluded): **28** — 17 plain + 12 bold (one line is a header-row template and does not count). Hidden set included GG-038, GG-046, GG-105, GG-140. The identical defect was found and fixed in `.claude/hooks/governance_scan.sh` on 2026-07-16 (GG-122) and flagged again 2026-07-15 (T-370) without ever propagating to this authoritative copy — do not let that recur: if this command is ever edited again, re-run the reconciliation assertion below in the same sitting.
 
+**2026-08-05 restructure (T-420):** the bold-vs-plain distinction above is now structurally impossible, not just fixed. `GOVERNANCE_GAP_LOG.md` was split by status — RESOLVED and CLOSED-AS-ARTIFACT entries moved **verbatim** to `GOVERNANCE_GAP_LOG_ARCHIVE.md` and no longer live here at all, so this file can no longer contain a RESOLVED entry masquerading as open. Every remaining entry now carries exactly one machine-uniform structured line immediately under its `### GG-NNN` header — `**Status:** TOKEN · **Severity:** LEVEL` — with the full original record preserved verbatim below it inside a `<details>` fold. There is no longer a bold/plain variant to reconcile: the render is single-source, produced by one script (`split_ggl.py` at restructure time; hand-added entries going forward must match the same `**Status:** ... · **Severity:** ...` line exactly). The plain/bold reconciliation assertion below is retired for that reason and replaced with a structural one — every gap header must have exactly one Status line, full stop. (Only the literal token `OPEN` counts as open for this count; other stay-tokens — `IN PROGRESS`, `PARTIALLY RESOLVED`, `PARTIAL RESOLVE`, `LIKELY RESOLVED`, `PLAN ACCEPTED`, `ACCEPTED UNCERTAINTY`, `WATCH ITEM` — are deliberately excluded, matching the old command's behavior exactly.) Pre/post-restructure reconciliation: old-semantics count reproduced exactly at **35** against the preserved original file; the new format additionally and correctly captures **GG-004** (which had no canonical `| Status |` row at all — a separately pre-documented scan blind spot, not a new defect), bringing the new full-coverage count to **36**. See `DECISION_LOG.md` 2026-08-05 for the full reconciliation.
+
 ```bash
-grep -nE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" | grep -v "OPEN / IN PROGRESS" | grep -v "template"
-# Reconciliation assertion — plain-OPEN count + bold-OPEN count must equal the anchored total above.
-# If it doesn't, the regex has drifted again; do not proceed until it does.
-PLAIN=$(grep -cE "^\| Status \| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
-BOLD=$(grep -cE "^\| Status \| \*{1,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
-TOTAL=$(grep -cE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
-echo "plain=$PLAIN bold=$BOLD total=$TOTAL (plain+bold should == total)"
+grep -nE "^\*\*Status:\*\* OPEN\b" "03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+# Structural assertion — every real gap header in this file must carry exactly one
+# structured Status line. [0-9] anchor excludes the "### GG-NNN — [Short title]"
+# line inside the Gap Registration Template's example fence at the bottom of the
+# file (a real header-pattern match but not a real gap). If these two counts
+# differ, the render has drifted (a hand-added entry skipped the format, or a
+# header/status line got separated) — do not trust the OPEN count above until
+# they match.
+HEADERS=$(grep -cE "^### GG-[0-9]" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+STATUS_LINES=$(grep -cE "^\*\*Status:\*\*" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+echo "gap headers=$HEADERS status lines=$STATUS_LINES (should be equal)"
 ```
 
-Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) before implementation work.
+Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) before implementation work. RESOLVED/CLOSED-AS-ARTIFACT history now lives in `03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md` — never hand-patch that file for content; entries only arrive there verbatim, from the live log, and never move back.
 
 ---
 

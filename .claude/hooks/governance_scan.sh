@@ -47,26 +47,53 @@ EOF
 # (gitignored, same pattern as the portfolio caches above).
 echo ""
 echo "OPEN GOVERNANCE GAPS:"
-# GG-144: pattern standardized to match CLAUDE.md's Step 3 (^\| Status \| \*{0,2}OPEN) so the
-# two copies cannot drift apart again the way this exact bug did once already (GG-122, 2026-07-16
-# fixed it here but CLAUDE.md's Step 3 kept the old unanchored "| OPEN" substring match for 13
-# more days). Reconciliation assertion below catches a future re-drift instead of silently
-# under-reporting again.
-OPEN=$(grep -E "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null | grep -v "OPEN / IN PROGRESS" | grep -v "template")
+# GG-144 / 2026-08-05 restructure (T-420): the old table-cell format (`| Status | OPEN...`)
+# let bold-vs-plain formatting hide entries from an unanchored scan (fixed here 2026-07-16
+# GG-122, but CLAUDE.md's Step 3 kept the unanchored form 13 more days). The restructure
+# replaced that format entirely -- RESOLVED/CLOSED-AS-ARTIFACT entries moved verbatim to
+# GOVERNANCE_GAP_LOG_ARCHIVE.md (never OPEN by construction) and every remaining entry in
+# GOVERNANCE_GAP_LOG.md carries one machine-uniform line, `**Status:** TOKEN · **Severity:**
+# LEVEL`, immediately under its header. There is no bold/plain variant left to reconcile --
+# the structural assertion below (one Status line per header) replaces the old
+# plain+bold==raw check.
+OPEN=$(grep -E "^\*\*Status:\*\* OPEN\b" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null)
 OPEN_N=0
 if [ -n "$OPEN" ]; then
     OPEN_N=$(echo "$OPEN" | wc -l | tr -d ' ')
 fi
-TOTAL_N=$(grep -c "^### GG-" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
-PLAIN_N=$(grep -cE "^\| Status \| OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
-BOLD_N=$(grep -cE "^\| Status \| \*{1,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
-RAW_N=$(grep -cE "^\| Status \| \*{0,2}OPEN" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null || echo 0)
-if [ "$((PLAIN_N + BOLD_N))" -ne "$RAW_N" ]; then
-    echo "  *** GG-144 RECONCILIATION FAILURE: plain($PLAIN_N) + bold($BOLD_N) != raw-anchored($RAW_N) ***"
-    echo "  *** The OPEN-gap regex has drifted again — do not trust OPEN_N below until fixed. ***"
+# TOTAL_N feeds governance_gap_burndown.py's resolved_n = total_n - open_n, so it must be
+# ALL gaps ever logged, not just the entries currently living in the live file -- the split
+# moved every RESOLVED/CLOSED-AS-ARTIFACT entry out to the archive, so it has to be summed
+# back in here or burn-down would silently read ~100% open the moment the archive existed.
+# [0-9] anchor excludes the "### GG-NNN — [Short title]" line inside the Gap Registration
+# Template's example fence at the bottom of GOVERNANCE_GAP_LOG.md -- a real header pattern
+# match but not a real gap; pre-existing in the old TOTAL_N grep too, just newly visible now
+# that this count is asserted against STATUS_LINE_N below instead of only ever added to OPEN_N.
+# Note: deliberately NOT "grep -c ... || echo 0" -- grep -c prints "0" to stdout
+# AND exits nonzero when a file exists but has zero matches, so that idiom double-
+# prints ("0\n0") on a legitimate zero-match file and breaks the -ne test below.
+# ${VAR:-0} only fires when grep produced no stdout at all (file missing).
+LIVE_N=$(grep -cE "^### GG-[0-9]" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null)
+LIVE_N=${LIVE_N:-0}
+ARCHIVE_N=$(grep -cE "^### GG-[0-9]" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md" 2>/dev/null)
+ARCHIVE_N=${ARCHIVE_N:-0}
+TOTAL_N=$((LIVE_N + ARCHIVE_N))
+STATUS_LINE_N=$(grep -cE "^\*\*Status:\*\*" "03_DECISIONS/GOVERNANCE_GAP_LOG.md" 2>/dev/null)
+STATUS_LINE_N=${STATUS_LINE_N:-0}
+if [ "$STATUS_LINE_N" -ne "$LIVE_N" ]; then
+    echo "  *** STRUCTURE FAILURE: $LIVE_N gap headers but $STATUS_LINE_N structured Status lines in GOVERNANCE_GAP_LOG.md ***"
+    echo "  *** Every entry in this file must carry exactly one '**Status:**' line -- do not trust OPEN_N below until fixed. ***"
 fi
 
 python3 "scripts/lib/governance_gap_burndown.py" "$OPEN_N" "$TOTAL_N" "logs/.governance_gap_history.jsonl"
+
+# --- Operator console (T-420, 2026-08-05 restructure) ---
+# Regenerate on every scan from GOVERNANCE_GAP_LOG.md's live entries -- read-only
+# against the log, three sections ranked by "blocks operator" not severity.
+# Generated file; never hand-patch 03_DECISIONS/OPERATOR_CONSOLE.md directly.
+echo ""
+echo "OPERATOR CONSOLE:"
+python3 "scripts/generate_operator_console.py" 2>&1 | sed 's/^/  /'
 
 if [ -z "$OPEN" ]; then
     echo "  CLEAN — no open gaps"
