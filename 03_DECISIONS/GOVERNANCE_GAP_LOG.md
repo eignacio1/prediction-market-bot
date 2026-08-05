@@ -1415,6 +1415,29 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-164 — T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock "today" at write time, not the game's actual date; `(player_id, game_date, threshold)` is not a valid join key without correction, and doubleheaders break it further
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-164 |
+| Category | Data-quality / write-path field-labeling bug, distinct root cause from the already-RESOLVED GG-058 (UTC-midnight rollover dropping in-progress games) but in the same general area of the code — same class of "UTC calendar-day boundary interacting badly with an Eastern-evening game schedule," different mechanism (field mislabeling, not row-dropping). |
+| What was missed | T-421's join-key verification step (task explicitly required checking `(player_id, game_date, threshold)` uniqueness before relying on it, rather than assuming it) found 194/2,132 distinct keys (9.1%) collide when using the row's raw `game_date` field. Root-caused by comparing against the date embedded in each row's own `ticker` (Kalshi's `KXMLBHIT-{YYMONDD}{HHMM}{teams}-{player}{jersey}-{threshold}` format, which reliably encodes the true game date): 45,119 rows have `game_date` exactly one day *ahead* of the ticker's date, plus 98 rows two days ahead — 45,217/64,396 rows total (70.2%) are mislabeled. Sampled rows show the pattern is not a narrow midnight edge case: e.g. `ts=2026-07-03T00:01:16Z`, `ticker=KXMLBHIT-26JUL021940TBKC-...` (game=Jul 2), `game_date field=2026-07-03` — the field reflects the UTC calendar date *at evaluation-cycle write time*, not the game's actual date. Since most MLB games start 18:00-20:00 ET (22:00-01:00 UTC) and run ~3h, the majority of any given game's ~60-90s evaluation cycles land after 00:00 UTC, so `game_date` is off-by-one for most rows of most games by construction — not an occasional artifact. Recomputing the join key with the ticker-derived date instead cuts collisions to 4/2,017 (0.2%), and those 4 are a second, independent, correctly-flagged-by-the-task cause: genuine doubleheaders (`...TBBOSG1...` / `...TBBOSG2...` in the ticker, TB@BOS 2026-07-17) sharing player/date/threshold across two real games — the task brief's own stated concern, confirmed real. |
+| When it should have been caught | Whenever `game_date` was first stamped onto a cycle-log row from wall-clock UTC rather than parsed from the game's own scheduling data — not determinable from this session's read-only access without finding the write-site in `run_t4_mlb_live.py` (out of scope to locate/fix here). |
+| Phases it survived | Untouched through T4 MLB's entire live-measurement history (2026-07-02 onward) — nothing in the T1-focused rollover fix (GG-058/T-215) or any later T4 session checked this field's correctness against the ticker it's stored alongside on every row. |
+| Why it survived | The field is plausible-looking (a valid ISO date, usually close to correct) and nothing consumes it in a way that would surface a one-day skew as visibly wrong — it isn't used as a resolution join key anywhere in the existing pipeline (T4 does not currently join cycle-log rows back to outcomes at all, which is precisely the gap T-421 exists to fill). |
+| Impact | Any future code — this session's or otherwise — that joins/groups T4 MLB cycle-log rows by the literal `game_date` field will silently merge cycles from two different games (pre-midnight tail of one game, most of the next day's game) for the same player/threshold, corrupting per-game outcome resolution and any calibration/Brier analysis built on it. T-421's outcome-join store works around this by deriving the game date from the ticker instead of trusting the row field, and documents the workaround in its design doc rather than silently using the broken field. |
+| Discovery | This session (T-421, decoupled-outcome-store), 2026-08-05, during the task-mandated join-key uniqueness verification step (explicitly required: "Verify this is actually unique before relying on it... State what you find; do not assume") — found by cross-checking the row's `game_date` field against its own `ticker`'s embedded date rather than trusting the field at face value. |
+| Resolution | Not built this session — out of T-421's hard scope fence (no changes to `run_t4_mlb_live.py`'s write path). Workaround (not a fix) applied in the new read-only outcome-join store: derive game date from `ticker` via regex, never from the raw `game_date` field. A real fix would locate and correct whatever produces the `game_date` field at write time (likely a `datetime.utcnow().date()` call that should instead parse the game's own start time/date) — left for the operator to prioritize and staff. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
