@@ -318,7 +318,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-038 — T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -438,7 +439,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-045 — Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanalyzed
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -464,7 +466,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-046 — T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -551,7 +554,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-060 — Silent Success Indistinguishability: Zero Bets from "No Edge" Looks Identical to Zero Bets from Pipeline Failure
 
-**Status:** IN PROGRESS · **Severity:** UNSPECIFIED
+**Status:** IN PROGRESS · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -679,7 +683,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-091 — `mypy --strict` Full-Tree Baseline: 365 Pre-Existing Errors in 57 Files, Not Yet Remediated
 
-**Status:** PARTIAL RESOLVE · **Severity:** UNSPECIFIED
+**Status:** PARTIAL RESOLVE · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -830,7 +835,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-125 — C7 `SystemMonitor`'s Brier/ECE drift-alarm ladder is never invoked from any production pipeline, for either sport
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1040,7 +1046,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-143 — T4 MLB live engine goes silently blind to all in-progress games after any process restart that lands after 00:00 UTC; GG-058 fixed the in-loop rollover but left the cold-start path unprotected
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1170,6 +1177,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-153 — T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10 ALL_BANDS reset; cannot self-heal under the current regime
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1195,6 +1203,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-154 — Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently no-ops without SSH access
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1345,6 +1354,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-161 — 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" claim is contradicted by direct evidence; retries genuinely happen daily but a cron-window-correlated 406 failure mode was never surfaced
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1385,6 +1395,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | LOW, confirmed self-healing so far. On 2026-08-04, session T-413 (VC6 vig-cascade) and session T-415 (citation repair) independently registered `GG-159` for two unrelated findings. T-415 caught the collision on merge and manually renumbered its own entry to `GG-160` (see `04_EXECUTION/TODO_NEXT.md` T-415 entry: "renumbered from a since-resolved GG-159 collision with the concurrent VC6 session"; `04_EXECUTION/SESSION_CLAIMS.md` T-413/T-415 closure rows). No content was lost or overwritten — the union-merge semantics on `SESSION_CLAIMS.md`/append-only entry structure meant both entries survived and only the *number* needed correcting. Would become MEDIUM+ if a future collision silently overwrote content instead of being caught as a visible duplicate header. |
 | Discovery | Operator, scoping T-420 (2026-08-05): "Wave 1 hit two ID collisions in three windows (GG-159 claimed twice; T-415 registered twice)." Investigated as T-420 Task #5. The T-415/T-419 half of that report was separately traced to `check_id_collision.sh` correctly refusing this session's (T-420's) attempt to claim an already-claimed `T-419` at session start — that is the collision guard working as designed, not a defect, and is not part of this gap. Only the GG-159 double-registration is a genuine gap. |
 | Resolution | Not built this session — explicit operator instruction: "do not build a locking mechanism speculatively." If pursued, the natural fix mirrors the existing `claim_session.sh` pattern: a small helper that reserves a `GG-NNN` number by committing and pushing a one-line placeholder through `origin` (with the same rebase-and-retry loop `claim_session.sh` already uses) at the moment a gap is discovered, before its full write-up begins — applying the proven T-/ADR- mechanism to the mid-session case it doesn't currently cover. Left for the operator to prioritize; no T-NNN assigned. |
+| Status | OPEN — registration only, unstaffed. |
+
+</details>
+
+---
+
+### GG-163 — 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-423's XS scope
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-163 |
+| Category | Systemic blind spot — same family as the classifier defect this session's T-423 fixed (GG-144-style: the signal that should route attention lives one layer up, in narrative, not in a structured field a generator can read). |
+| What was missed | `**Severity:**` has been a structured field on every entry since the T-420 restructure, but populating it was never made a requirement of registering a gap — of 46 live entries, 38 (83%) carry `UNSPECIFIED`, 6 `MEDIUM`, 2 `LOW`, 0 `HIGH`/`CRITICAL` before this session. `scripts/generate_operator_console.py` sorts every bucket by severity then ID; with 83% of entries unranked, that sort order was close to meaningless outside the handful of entries someone had bothered to set. |
+| When it should have been caught | At the T-420 restructure (2026-08-05) when the `**Status:** ... · **Severity:** ...` line was introduced — the migration script (`split_ggl.py`) defaulted every entry to `UNSPECIFIED` rather than requiring a value, and no follow-up backfill task was registered at that time. |
+| Phases it survived | The T-420 restructure itself, plus every governance scan since (the scan prints severity counts in its `OPERATOR CONSOLE` block but never flagged the 83%-empty rate as a debt in its own right until this session). |
+| Why it survived | No check compares populated-vs-UNSPECIFIED count against a threshold; the raw count was visible in scan output but never surfaced as an actionable line, so it read as background noise rather than a gap. |
+| Impact | LOW directly (severity is a sort/attention aid, not a gating value — nothing in C4-C8 or the gate criteria reads it). MEDIUM indirectly: `OPERATOR_CONSOLE.md`'s within-bucket severity ordering is unreliable for any entry not explicitly set, which is most of them; an operator scanning top-to-bottom for "worst first" gets a partially arbitrary order. |
+| Discovery | T-423 (2026-08-06), while fixing the console's blocked/broken classifier (regex-over-prose → explicit fields). Operator explicitly scoped severity work to sections 1/2 only for this session ("Do NOT backfill all 46 by hand this session — that is a multi-hour judgment exercise") and asked this gap be registered for the remaining 36. |
+| Resolution | Not built this session, by explicit instruction. `generate_operator_console.py` now prints a `SEVERITY DEBT` line to stderr and a `> **Severity debt:**` callout at the top of `OPERATOR_CONSOLE.md` whenever `unspecified_n > 0`, so the debt stays visible on every scan rather than being silently absorbed. The remaining backfill (36 of 46, all outside sections 1/2 as of this session) is future work — no T-NNN assigned. |
 | Status | OPEN — registration only, unstaffed. |
 
 </details>

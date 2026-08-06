@@ -848,6 +848,7 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 - [ ] Update TODO_NEXT.md before ending session
 - [ ] Log any new open questions to OPEN_QUESTIONS.md
 - [ ] Log any new RIDs to RID_LOG.md
+- [ ] Confirm this session's own claim row in `SESSION_CLAIMS.md` has (or will have) a matching closure row before ending — session-end currently produces SESSION_HANDOFF + Operator Digest + checkpoint pointer but nothing asserts the closure row itself was appended, so a session can complete every other session-end step and still leave its claim looking permanently open (T-419 did exactly this: `767cfc6`→`1392a5f`, ran full session-end, no closure row — fixed retroactively by T-423, 2026-08-06). Not yet built as an automated assertion in `/session-end`; this line is the manual stopgap until it is.
 
 ## Standing Items (Monthly — GG-074 process fix, adopted 2026-07-06)
 
