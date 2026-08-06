@@ -187,3 +187,4 @@
 | 2026-08-05T04:54:59Z | T-420 | T-420: OPERATOR_CONSOLE.md build — gap log split (OPEN/archive), structured status headers, generated console, hook wiring |
 | 2026-08-05T05:50:05Z | T-421 | T-421: decoupled outcome-join measurement store for T4 MLB cycle log |
 | 2026-08-05T05:50:20Z | T-422 | T-422: resolution-layer repair — 406 diagnosis, out-of-band repair of 22 stuck positions, terminal-state ADR draft, T1/MAIN reconciliation |
+| 2026-08-06T00:36:38Z | T-423 | T-423: OPERATOR_CONSOLE.md classifier fixes — blocked-on-operator field, severity backfill for sections 1/2, T-419 claim closure, CLAUDE.md count fix |
