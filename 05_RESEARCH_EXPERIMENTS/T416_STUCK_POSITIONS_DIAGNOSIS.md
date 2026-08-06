@@ -107,3 +107,58 @@ credited back at $0 P&L or excluded from `bankroll_usd`'s open-cost sum entirely
 remaining in `open_positions` forever. This would not have changed Julio's 3 recoverable
 positions (still worth attempting resolution outside the cron's window before declaring them
 terminal) but would resolve the ~9-player Mechanism-1 majority, which is not going to self-heal.
+
+## T-422 update (2026-08-05/06): Mechanism 2 corrected and superseded; out-of-band repair executed; 5/22 resolved live
+
+This session (T-422) set out to finish this diagnosis and build an out-of-band repair. Direct
+testing found T-418's Mechanism 2 framing above — "cron-window-correlated API unreliability" —
+was itself an incomplete diagnosis. The real mechanism, established through three rounds of
+direct A/B testing against the live MLB Stats API from both the VPS and an unblocked network:
+
+**2a. `_is_game_final()`'s query shape, not the primary stats call, was the actual blocker for
+Julio Rodríguez's 3 recoverable dates.** `run_resolve_mlb.py:143-164` confirms game finality via
+`GET /api/v1/schedule?gamePk={game_pk}`. This exact query shape 406s deterministically (5/5) from
+the VPS's datacenter IP. The equivalent query `GET /api/v1/schedule?sportId=1&date={date}` (same
+endpoint, different param shape) returns 200 and correctly reports `"Final"` for the same game —
+confirmed against both the VPS and a local (non-VPS) network. `_is_game_final()` catches all
+exceptions and returns `False` on any failure, so this 406 was silently indistinguishable from
+"game not final yet" — the exact mechanism masking the bug. The primary `gameLog` stats call
+itself (the thing T-418 flagged as failing ~68% of the time in a window-correlated pattern) was
+in fact succeeding for Julio's dates when tested in isolation; it was the finality sub-call that
+was actually blocking settlement.
+
+**2b. Not time-of-day-correlated — request-volume-correlated, and this is GG-084, not a new
+mechanism.** Running a full batch of 22 sequential resolution attempts from the VPS (even after
+fixing 2a's query shape) degraded the *primary* `gameLog` call itself to 100% 406 partway through
+the run — reproducing GG-084's already-documented "escalating Fastly-CDN block that worsens over
+the course of a run" verbatim. This is the real explanation for T-418's ~68% cron-window failure
+rate: the cron always runs as one batch of ~20+ sequential requests from the same datacenter IP,
+so it always trips the same escalating block partway through, which *looks* time-of-day-correlated
+(it only ever runs at 06:30 UTC) but is actually volume/session-correlated to any batch run from
+that IP, regardless of when it runs. T-418's "run interactively outside the cron window" successes
+were not evidence of a time-window effect — they were single, isolated requests, which never
+accumulate enough volume in one session to trip GG-084's escalation.
+
+**2c. Repair architecture: separate fetch (network-bound) from apply (pure local I/O).** Built
+`scripts/repair_stuck_mlb_positions.py` (single-machine tool, valid if ever run from a network
+not subject to GG-084, per its docstring) and a two-phase split actually used to produce the
+result below: a fetch step run from an unblocked, non-VPS network (scratchpad-only
+`fetch_hits_local.py`, not checked into the repo — see the caveat this creates in
+`03_DECISIONS/GOVERNANCE_GAP_LOG.md` GG-161's amendment), producing a results JSON; and
+`scripts/apply_resolved_hits.py`, run ON the VPS, which makes zero outbound HTTP calls and applies
+results purely via `PaperTrader.settle_position()`.
+
+**Result: 5 of 22 resolved and settled live** (all 4 Julio Rodríguez dates + 1 José Ramírez date,
+`2026-07-29`, which also had a real split once the finality-check bug was routed around). Net P&L
+booked: **+$15.84**. Portfolio backed up to
+`paper_portfolio_mlb.pre_repair_20260806T000501Z.json` before the write. Post-repair state:
+`bankroll_usd` $683.91 → $733.7471; `open_positions` 22 → 17 aged_open; `closed_positions` 463 →
+468; `total_realized_pnl` -$121.85 → -$106.0099; `daily_net_pnl` +$15.84 (matches the 5
+settlements exactly).
+
+**The remaining 17 are now confirmed, not just presumed, permanently unresolvable (Mechanism 1)**
+— re-fetched from the unblocked network specifically to rule out GG-084 as a confound for the
+other 9 players' dates too, and all 17 returned `reason=no_split_for_date` across MLB-R, MLB-P,
+and ESPN. T-418's original Mechanism 1 majority (~9 of 10 players) holds exactly as diagnosed;
+this session adds the confirmation that it was tested clean of the IP-block confound. See ADR-0051
+(DRAFT) for a proposed terminal state for this remaining set.
