@@ -1,7 +1,7 @@
 {
   "T1": {
     "band": "T1",
-    "raw_n": 307,
+    "raw_n": 466,
     "clean_n": 0,
     "status": "INSUFFICIENT_DATA",
     "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
@@ -22,15 +22,21 @@
   },
   "T4M-PROJ": {
     "band": "T4M-PROJ",
-    "raw_n": 1267,
-    "clean_n": 30,
-    "status": "NO_POSITIVE_EFFECT",
-    "mean_pnl_per_bet": -0.17457,
-    "stdev_pnl_per_bet": 0.3825808619958887,
-    "cadence_bets_per_week": null,
-    "cadence_span_days": 0.0038660300925925923,
+    "raw_n": 2193,
+    "clean_n": 157,
+    "status": "COMPUTED",
+    "mean_pnl_per_bet": 0.37928789808917196,
+    "stdev_pnl_per_bet": 1.8820762337536432,
+    "alpha": 0.05,
+    "power": 0.95,
+    "z_alpha": 1.644853625133699,
+    "z_beta": 1.644853625133699,
+    "n_star": 267,
+    "gap_to_n_star": 110,
+    "cadence_bets_per_week": 275.15186822049475,
+    "cadence_span_days": 3.9941578703703704,
     "cadence_immature": true,
-    "neg_sign_governance_grade": false,
-    "reason": "observed mean P&L/bet=-0.1746 <= 0 \u2014 no finite n* exists to confirm a positive edge from this sample's own effect size. Negative sign NOT YET governance-grade: clean_n=30 < NEG_SIGN_CONFIRM_N=150; cadence_span_days=0.00 < MATURE_CADENCE_SPAN_DAYS=14. Re-check once both thresholds clear (see GOVERNANCE_GAP_LOG.md GG-046)."
+    "eta_weeks": 0.3997792226940316,
+    "met": false
   }
 }
