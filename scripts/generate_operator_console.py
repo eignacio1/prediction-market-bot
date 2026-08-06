@@ -107,7 +107,7 @@ def main():
         lines.append(
             f"> **Severity debt:** {unspecified_n}/{len(entries)} live entries have no "
             "explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever "
-            "it relies on severity for entries not in this backfill's scope. See GG-163."
+            "it relies on severity for entries not in this backfill's scope. See GG-165."
         )
         lines.append("")
     lines.append("---")
@@ -174,7 +174,7 @@ def main():
           f"accruing={len(buckets['accruing'])} total={len(entries)}", file=sys.stderr)
     if unspecified_n:
         print(f"SEVERITY DEBT: {unspecified_n}/{len(entries)} live entries UNSPECIFIED "
-              f"(see GG-163)", file=sys.stderr)
+              f"(see GG-165)", file=sys.stderr)
     return 0
 
 

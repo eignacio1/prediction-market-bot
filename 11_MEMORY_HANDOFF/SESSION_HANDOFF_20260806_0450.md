@@ -17,7 +17,7 @@
 
 | Decision | Rationale | Canonical Reference | Owner |
 |----------|-----------|--------------------|----|
-| Replaced OPERATOR_CONSOLE.md's prose-regex classifier (`BLOCKED_RE`/`BROKEN_RE`) with explicit `**Blocked-On-Operator:** YES`/`**Actively-Broken:** YES` fields on gap entries; backfilled severity for Section 1/2 only, not all 46 | Regex over narrative was misclassifying entries (GG-040, GG-159, GG-162); a full 46-entry severity backfill was explicitly out of scope for this window | `scripts/generate_operator_console.py`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`, GG-163 (new, tracks remaining backfill) | Claude, T-423 |
+| Replaced OPERATOR_CONSOLE.md's prose-regex classifier (`BLOCKED_RE`/`BROKEN_RE`) with explicit `**Blocked-On-Operator:** YES`/`**Actively-Broken:** YES` fields on gap entries; backfilled severity for Section 1/2 only, not all 46 | Regex over narrative was misclassifying entries (GG-040, GG-159, GG-162); a full 46-entry severity backfill was explicitly out of scope for this window | `scripts/generate_operator_console.py`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`, GG-165 (new, tracks remaining backfill; registered locally as GG-163, renumbered on merge — origin/main's concurrent T-421 session had independently claimed GG-163/GG-164) | Claude, T-423 |
 | Added retroactive T-419 `SESSION_CLAIMS.md` closure row; softened CLAUDE.md's Step 3 stale "36" count into an explicitly-dated snapshot | Both were named "loose ends" outside this session's core scope but small enough to close same-window | `04_EXECUTION/SESSION_CLAIMS.md`, `CLAUDE.md` § Step 3 | Claude, T-423 |
 
 ---
@@ -27,7 +27,7 @@
 | Item | Result |
 |------|--------|
 | Fix 1 — blocked-on-operator field | ✅ Section 1 went 11 → 4 genuine entries |
-| Fix 2 — severity backfill (Section 1/2 scope) | ✅ done; GG-163 registered for the remaining 31 UNSPECIFIED |
+| Fix 2 — severity backfill (Section 1/2 scope) | ✅ done; GG-165 registered for the remaining 31 UNSPECIFIED (renumbered from local GG-163 on merge — collided with origin/main's real GG-163/GG-164) |
 | T-419 closure row | ✅ added retroactively, evidence-backed |
 | CLAUDE.md stale count | ✅ reworded to dated snapshot + live-command pointer |
 

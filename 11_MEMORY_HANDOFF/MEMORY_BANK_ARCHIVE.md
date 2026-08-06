@@ -2187,6 +2187,10 @@ All three chains are archived verbatim, newest-first within each chain, matching
 
 **Context:** `MEMORY_BANK.md`'s "Compass OS Health" section accumulated an inline `*(Previous, as of DATE...)*` chain the same way "Current State Snapshot" did (same 2026-07-15 regression point — see that section's archive note above). Cut over here in the same session, restoring the archive-header-per-entry discipline going forward.
 
+## Compass OS Health (as of 2026-07-30, R2 — T-402/GG-142 signed-edge gate fix, ADR-0049, epoch 9→10 (`bands_affected={ALL_BANDS}`), PR #60 merged, GG-126 register-parity fix)
+
+as of 2026-07-30, R2 — T-402/GG-142 signed-edge gate fix, ADR-0049, epoch 9→10 (`bands_affected={ALL_BANDS}`), PR #60 merged, GG-126 register-parity fix — MEMORY_BANK ✅ that session (Current State Snapshot, What Must Happen Next, this Compass OS Health row updated for R2) | TODO_NEXT ✅ that session (T-402 marked COMPLETE, Last reviewed updated) | DECISION_LOG ✅ that session (R2 entry added) | GOVERNANCE_GAP_LOG ✅ that session (GG-142 → RESOLVED, GG-126 → RESOLVED) | *(Full historical chain archived — see `MEMORY_BANK_ARCHIVE.md` § Compass OS Health archive.)*
+
 ## Compass OS Health (as of 2026-07-24, A2/A3 — GG-105 refit + isotonic-recalibration contingency, isolated worktree `session/20260724T144459Z-a2-refit`; both candidates scored FAIL against the D1 what-if harness's edge-tercile-monotonicity criterion, no live model/epoch/capital change, no `src/` change) — MEMORY_BANK ✅ this session (Current State Snapshot, this Compass OS Health row updated for A2/A3) | TODO_NEXT ✅ this session (A2/A3 marked complete, Last reviewed updated) | DECISION_LOG ✅ this session (A2/A3 FAIL-verdict rows already added prior in-session) | GOVERNANCE_GAP_LOG ✅ this session (GG-105 Addendum 2026-07-24 appended, stays OPEN) | SESSION_HANDOFF pending write this turn | *(Full historical chain archived — see `MEMORY_BANK_ARCHIVE.md` § Compass OS Health archive.)*
 
 ## Compass OS Health (as of 2026-07-24, Window D — offline what-if replay harness (`scripts/what_if_harness.py`) built, `mc_empirical_bootstrap.py` wired in as the standard forward-risk gate)

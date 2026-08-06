@@ -23,3 +23,15 @@ The timing-quirk finding (same request fails in the morning, succeeds later) rai
 **Does anything need your decision right now?** No — this was internal organization only.
 
 **Anything that worried the session, even if not urgent:** No new concerns. Deliberately did not build a fix for the duplicate-tracking-number issue mentioned above — flagged it for the record but left it unstaffed since it already resolved itself and wasn't worth building extra machinery for on a guess.
+
+---
+
+## Update — later the same day (Session 4, outcome-checking tool)
+
+**What changed:** We built a new checking tool that goes back through every live in-game bet the bot has made and verifies whether it actually resolved the way our records say it did. Ran it against the full history: it confirms 96% of bets cleanly. Along the way it turned up two small, separate technical glitches — one is a backup data source that's currently blocked and unavailable (an access error), the same one Session 1 above ran into from a different angle; the other is a logging bug that occasionally records the wrong date on an entry. Both are logged for a future fix; neither one touched the bot's live betting logic today.
+
+**What this means for your money:** No change — still zero real money at risk, same as every day until the gate clears.
+
+**Does anything need your decision right now?** No — nothing needs you today.
+
+**Anything that worried the session, even if not urgent:** The blocked backup data source is also used by the bot's own live game-tracking during play, not just by this new checking tool — it's been silently degraded since yesterday. It hasn't caused a visible problem yet because the bot's main data source still works, but it's worth knowing this backup path is currently down, not just theoretically at risk.
