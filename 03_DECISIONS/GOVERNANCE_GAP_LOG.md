@@ -1475,6 +1475,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-166 — `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4M-PROJ positions against the wrong day's box score for ~44% of the epoch-12 clean cohort — corrupting live paper-trading WIN/LOSS/pnl, not just a future-risk join key
+
+**Status:** OPEN · **Severity:** CRITICAL
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-166 |
+| Category | Data-integrity bug with a direct P&L consequence — escalation of GG-164, not a duplicate. GG-164 characterized `game_date` as a mislabeled field with no active consumer ("it isn't used as a resolution join key anywhere in the existing pipeline"); this entry shows that claim is false for the ledger's own `game_date` field on position records, which IS consumed as a resolution join key, with a measured, non-hypothetical P&L impact. |
+| What was missed | T-426 (this session), building a decoupled outcome-measurement store independent of the paper-trading ledger, ran an agreement check between the store's ticker-derived `actual_hits` and the ledger's own recorded `actual_hits` for the T4M-PROJ epoch-12 clean cohort (156 matched, store-resolved positions). Found 69/156 (44.2%) hit-value disagreements and 47/156 (30.1%) outcome (WIN/LOSS) disagreements — far above noise. Root-caused by checking each disagreement's ledger `game_date` field against the true game date embedded in that position's own `kalshi_ticker` (Kalshi's `KXMLBHIT-{YYMONDD}...` format): **100% of the 69 hit-disagreements coincide exactly with a mismatched `game_date` (69/69); 0% of date-matched positions disagree (0/87).** Mechanism confirmed in code: `run_t4_mlb_live.py:1519` stamps `game_date = date.today().isoformat()` (UTC wall-clock at write time — the exact GG-164 bug pattern) onto the position record at bet-entry, and `run_resolve_mlb.py`'s `_fetch_mlb_hits()` (lines ~436-441, 214-221) later queries the MLB Stats API using that position-level `game_date` field as an exact-match key against `split.get("date")` in the player's season gameLog. When the (wrong) recorded date happens to also be a game day for that player's team — common, since MLB teams play near-daily — the API silently returns a valid split from a **different game**, producing wrong `actual_hits`, wrong `outcome`, and wrong `pnl` with no error, no warning, and no visible signal that resolution used the wrong day. |
+| When it should have been caught | At GG-164's own discovery (2026-08-05, T-421) — that entry's "Why it survived" field asserted the field had no consuming join, which was not verified against `run_resolve_mlb.py` before being written. A one-file grep (`grep -n game_date src/prediction_market_bot/run_resolve_mlb.py`) at that time would have found the same consumption path this session found. |
+| Phases it survived | Every T4M-PROJ resolution run since `run_t4_mlb_live.py`'s position-open write path began stamping `game_date` this way — i.e., plausibly the entire T4 MLB paper-trading history, not just epoch-12. This session only checked the epoch-12 clean cohort (156 positions); the raw (non-clean-filtered) resolved-position count is 2,193 per the same `run_power_calc.py` baseline this session used, so the affected population may be much larger than 69. |
+| Why it survived | Same root cause as GG-164: the field is plausible-looking (a valid ISO date, close to correct) and a wrong-game resolution produces a normal-looking WIN/LOSS/pnl record with no error signal — nothing in the pipeline cross-checks a resolved position's outcome against an independent source. This session's decoupled outcome store is the first artifact in the project with an independent enough data path to surface the mismatch at all. |
+| Impact | **Directly affects G6 gate evidence.** T4M-PROJ's current governance baseline (`exp_output/T323-POWER-CALC/power_calc_results.json`, re-run this session): `clean_n=157, mean_pnl/bet=$+0.3793, stdev_pnl/bet=$1.8821`. If ~44% of that clean_n's underlying positions have wrong outcome/pnl (consistent with the measured 44.2% rate in the 156-position matched subset), the mean/stdev feeding `n*` and the go/no-go P&L sign are both unreliable as currently computed. This is squarely inside GG-004/APR-0024's commercial-validation gate — a governance-grade verdict must not be drawn from the current ledger until this is fixed and the affected positions are re-resolved. Per T-426's explicit scope fence, none of this session's numbers (shadow `mu`/`sigma`, Task 2/3 figures) are being reported as governance-grade for the same reason — this gap is the reason, not merely correlated with it. |
+| Discovery | T-426 (2026-08-06), Task 1 (agreement check) of the decoupled-outcome-store shadow power-calc, immediately upon finding a 44%/30% disagreement rate against a value (`hits_agree`/`hits_disagree`) the task brief expected to be a near-total-agreement sanity check. |
+| Resolution | Not built this session — out of T-426's hard scope fence (read-only, no `src/` changes). The correct fix has two parts, both left for the operator to staff: (1) fix `run_t4_mlb_live.py`'s write-time `game_date` stamp to parse the game's actual scheduled date rather than `date.today()` (this also fixes GG-164 at the source, since both appear to derive from the same variable); (2) re-resolve every already-resolved T4M-PROJ position (and check other bands using the same `run_resolve_mlb.py` path) against the corrected date or the ticker-derived date directly, and recompute `clean_n`/mean/stdev/`n*` from the corrected ledger before treating the current power-calc baseline as valid. Until (2) is done, GG-004's live n-count/clean_n status should be read as unverified, not merely pending-more-data. |
+| Status | OPEN — new, unstaffed, CRITICAL. Recommend treating as a G6 blocker alongside GG-004 until resolved. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
