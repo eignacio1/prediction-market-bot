@@ -10,21 +10,27 @@ Ranking is "blocks operator" not severity (17 open gaps is not the problem;
 not knowing which 3 need Earl specifically is). Every live entry lands in
 exactly one of three sections, by mechanical priority:
 
-  1. DECISIONS BLOCKED ON EARL -- body text matches BLOCKED_RE (explicit
-     operator/Earl/DS-sign-off/awaiting-direction language already present
-     in the entry's own prose -- nothing invented, nothing inferred from
-     severity or status token alone).
-  2. WHAT IS ACTUALLY BROKEN -- not blocked-on-operator, and either
-     severity is HIGH/CRITICAL or body text matches BROKEN_RE (HALT, silent
-     failure, blind spot, undetected, regression, contradiction language).
+  1. DECISIONS BLOCKED ON EARL -- entry carries an explicit
+     `**Blocked-On-Operator:** YES` field.
+  2. WHAT IS ACTUALLY BROKEN -- not blocked-on-operator, and entry carries
+     an explicit `**Actively-Broken:** YES` field.
   3. WHAT IS ACCRUING AND ITS CLOCK -- everything else that is still open.
      Default bucket, not a weaker signal -- it means no explicit
-     blocked/broken language was found, not that nothing matters.
+     blocked/broken field was set, not that nothing matters.
 
-Both regexes are grounded in vocabulary actually observed in the log's own
-prose (verified via direct grep before this script was written), not
-invented categories. If a bucket looks wrong, the fix is to correct the
-regex here and regenerate -- never to hand-edit the console output.
+T-423 (2026-08-06): classification was originally two regexes matching
+prose vocabulary (BLOCKED_RE/BROKEN_RE below, removed this pass). That
+approach put severity one layer up from where it belonged -- an entry's
+narrative saying "operator" or "HALT" anywhere in its Discovery/Impact/
+Resolution text was enough to misclassify it (e.g. GG-040 matched on
+"DS sign-off" appearing in a historical/future-tense sentence, not a live
+pending decision; GG-159/GG-162 matched BROKEN_RE despite neither being
+"silently wrong right now"). The fix is a field, not a better regex:
+`**Blocked-On-Operator:** YES` / `**Actively-Broken:** YES` are hand-set
+per entry by whoever registers or triages the gap, defaulting to absent
+(-> accruing) so most entries need no touch. If a bucket looks wrong, the
+fix is to correct the field on the entry in GOVERNANCE_GAP_LOG.md -- never
+to hand-edit the console output, and never to reintroduce a prose regex.
 """
 import re
 import sys
@@ -35,20 +41,8 @@ OUT = Path("03_DECISIONS/OPERATOR_CONSOLE.md")
 
 HEADER_RE = re.compile(r"^### (GG-\d+) — (.+)$", re.M)
 STATUS_RE = re.compile(r"^\*\*Status:\*\* (.+?) · \*\*Severity:\*\* (.+)$", re.M)
-
-BLOCKED_RE = re.compile(
-    r"operator (decision|direction|sign-?off|approval)|Earl'?s decision|"
-    r"DS sign-?off|awaiting (operator|Earl)|requires (operator|Earl)|"
-    r"register (the )?(operator|Earl)|pending operator|not yet directed|"
-    r"operator must|operator has not|awaiting direction",
-    re.I,
-)
-BROKEN_RE = re.compile(
-    r"\bHALT\b|silently (wrong|failing|fail)|silent failure|blind spot|"
-    r"undetected|contradict|never (existed|caught)|regression|incorrect|"
-    r"does not match|failure mode",
-    re.I,
-)
+BLOCKED_FIELD_RE = re.compile(r"^\*\*Blocked-On-Operator:\*\* YES\s*$", re.M)
+BROKEN_FIELD_RE = re.compile(r"^\*\*Actively-Broken:\*\* YES\s*$", re.M)
 
 SEV_ORDER = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3, "UNSPECIFIED": 4}
 
@@ -69,9 +63,9 @@ def parse_entries(text):
 
 
 def classify(entry):
-    if BLOCKED_RE.search(entry["block"]):
+    if BLOCKED_FIELD_RE.search(entry["block"]):
         return "blocked"
-    if entry["severity"] in ("HIGH", "CRITICAL") or BROKEN_RE.search(entry["block"]):
+    if BROKEN_FIELD_RE.search(entry["block"]):
         return "broken"
     return "accruing"
 
@@ -86,6 +80,7 @@ def main():
         return 1
     text = GGL.read_text()
     entries = parse_entries(text)
+    unspecified_n = sum(1 for e in entries if e["severity"] == "UNSPECIFIED")
 
     buckets = {"blocked": [], "broken": [], "accruing": []}
     for e in entries:
@@ -108,6 +103,13 @@ def main():
         .replace("{count}", str(len(entries)))
     )
     lines.append("")
+    if unspecified_n:
+        lines.append(
+            f"> **Severity debt:** {unspecified_n}/{len(entries)} live entries have no "
+            "explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever "
+            "it relies on severity for entries not in this backfill's scope. See GG-165."
+        )
+        lines.append("")
     lines.append("---")
     lines.append("")
 
@@ -170,6 +172,9 @@ def main():
     OUT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {OUT}: blocked={len(buckets['blocked'])} broken={len(buckets['broken'])} "
           f"accruing={len(buckets['accruing'])} total={len(entries)}", file=sys.stderr)
+    if unspecified_n:
+        print(f"SEVERITY DEBT: {unspecified_n}/{len(entries)} live entries UNSPECIFIED "
+              f"(see GG-165)", file=sys.stderr)
     return 0
 
 

@@ -318,7 +318,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-038 — T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -438,7 +439,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-045 — Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanalyzed
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -464,7 +466,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-046 — T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -551,7 +554,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-060 — Silent Success Indistinguishability: Zero Bets from "No Edge" Looks Identical to Zero Bets from Pipeline Failure
 
-**Status:** IN PROGRESS · **Severity:** UNSPECIFIED
+**Status:** IN PROGRESS · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -679,7 +683,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-091 — `mypy --strict` Full-Tree Baseline: 365 Pre-Existing Errors in 57 Files, Not Yet Remediated
 
-**Status:** PARTIAL RESOLVE · **Severity:** UNSPECIFIED
+**Status:** PARTIAL RESOLVE · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -830,7 +835,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-125 — C7 `SystemMonitor`'s Brier/ECE drift-alarm ladder is never invoked from any production pipeline, for either sport
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1040,7 +1046,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-143 — T4 MLB live engine goes silently blind to all in-progress games after any process restart that lands after 00:00 UTC; GG-058 fixed the in-loop rollover but left the cold-start path unprotected
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1170,6 +1177,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-153 — T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10 ALL_BANDS reset; cannot self-heal under the current regime
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Blocked-On-Operator:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1195,6 +1203,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-154 — Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently no-ops without SSH access
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1345,6 +1354,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-161 — 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" claim is contradicted by direct evidence; retries genuinely happen daily but a cron-window-correlated 406 failure mode was never surfaced
 
 **Status:** OPEN · **Severity:** MEDIUM
+**Actively-Broken:** YES
 
 <details>
 <summary>Full record ▸</summary>
@@ -1434,6 +1444,32 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | Any future code — this session's or otherwise — that joins/groups T4 MLB cycle-log rows by the literal `game_date` field will silently merge cycles from two different games (pre-midnight tail of one game, most of the next day's game) for the same player/threshold, corrupting per-game outcome resolution and any calibration/Brier analysis built on it. T-421's outcome-join store works around this by deriving the game date from the ticker instead of trusting the row field, and documents the workaround in its design doc rather than silently using the broken field. |
 | Discovery | This session (T-421, decoupled-outcome-store), 2026-08-05, during the task-mandated join-key uniqueness verification step (explicitly required: "Verify this is actually unique before relying on it... State what you find; do not assume") — found by cross-checking the row's `game_date` field against its own `ticker`'s embedded date rather than trusting the field at face value. |
 | Resolution | Not built this session — out of T-421's hard scope fence (no changes to `run_t4_mlb_live.py`'s write path). Workaround (not a fix) applied in the new read-only outcome-join store: derive game date from `ticker` via regex, never from the raw `game_date` field. A real fix would locate and correct whatever produces the `game_date` field at write time (likely a `datetime.utcnow().date()` call that should instead parse the game's own start time/date) — left for the operator to prioritize and staff. |
+| Status | OPEN — new, unstaffed, MEDIUM. |
+
+</details>
+
+---
+
+### GG-165 — 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-423's XS scope
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-165 |
+| Category | Systemic blind spot — same family as the classifier defect this session's T-423 fixed (GG-144-style: the signal that should route attention lives one layer up, in narrative, not in a structured field a generator can read). |
+| What was missed | `**Severity:**` has been a structured field on every entry since the T-420 restructure, but populating it was never made a requirement of registering a gap — of 46 live entries, 38 (83%) carry `UNSPECIFIED`, 6 `MEDIUM`, 2 `LOW`, 0 `HIGH`/`CRITICAL` before this session. `scripts/generate_operator_console.py` sorts every bucket by severity then ID; with 83% of entries unranked, that sort order was close to meaningless outside the handful of entries someone had bothered to set. |
+| When it should have been caught | At the T-420 restructure (2026-08-05) when the `**Status:** ... · **Severity:** ...` line was introduced — the migration script (`split_ggl.py`) defaulted every entry to `UNSPECIFIED` rather than requiring a value, and no follow-up backfill task was registered at that time. |
+| Phases it survived | The T-420 restructure itself, plus every governance scan since (the scan prints severity counts in its `OPERATOR CONSOLE` block but never flagged the 83%-empty rate as a debt in its own right until this session). |
+| Why it survived | No check compares populated-vs-UNSPECIFIED count against a threshold; the raw count was visible in scan output but never surfaced as an actionable line, so it read as background noise rather than a gap. |
+| Impact | LOW directly (severity is a sort/attention aid, not a gating value — nothing in C4-C8 or the gate criteria reads it). MEDIUM indirectly: `OPERATOR_CONSOLE.md`'s within-bucket severity ordering is unreliable for any entry not explicitly set, which is most of them; an operator scanning top-to-bottom for "worst first" gets a partially arbitrary order. |
+| Discovery | T-423 (2026-08-06), while fixing the console's blocked/broken classifier (regex-over-prose → explicit fields). Operator explicitly scoped severity work to sections 1/2 only for this session ("Do NOT backfill all 46 by hand this session — that is a multi-hour judgment exercise") and asked this gap be registered for the remaining 36. |
+| Resolution | Not built this session, by explicit instruction. `generate_operator_console.py` now prints a `SEVERITY DEBT` line to stderr and a `> **Severity debt:**` callout at the top of `OPERATOR_CONSOLE.md` whenever `unspecified_n > 0`, so the debt stays visible on every scan rather than being silently absorbed. The remaining backfill (36 of 46, all outside sections 1/2 as of this session) is future work — no T-NNN assigned. |
+| Status | OPEN — registration only, unstaffed. |
+| Note | Originally registered as GG-163 in this session's own local history; renumbered to GG-165 on merge with `origin/main` after discovering `origin/main`'s concurrent T-421/T-422 sessions had independently claimed GG-163 (ESPN 403 blindness) and GG-164 (`game_date` field bug) for unrelated findings — same collision class as GG-159/GG-162, resolved the same way T-415 resolved its own GG-159 collision (renumber the newcomer, per `04_EXECUTION/SESSION_CLAIMS.md`/`TODO_NEXT.md` precedent). |
 
 </details>
 
