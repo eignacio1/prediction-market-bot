@@ -14,4 +14,8 @@ No new concerns. The underlying reasons these bets got stuck in the first place 
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260806_0044.md` and `DECISION_LOG.md` for 2026-08-05/06.*
+**Addendum — later same day:** the measurement tool from yesterday's digest (the one that checks whether our in-game betting predictions were actually right, separate from the money-tracking ledger) is now folded into the main codebase — a routine cleanup step, no behavior change, nothing for you to review. One loose end from that tool: baseball's stats site is currently blocking one of its lookup methods, so ~4% of the games it checked came back "couldn't confirm" rather than a real answer — not a bug, just a temporary external block, already on the list to retry once it clears.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260806_0044.md`, `SESSION_HANDOFF_20260806_0501.md`, and `DECISION_LOG.md` for 2026-08-05/06.*
