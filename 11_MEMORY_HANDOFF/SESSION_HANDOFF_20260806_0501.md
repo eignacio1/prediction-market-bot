@@ -1,7 +1,7 @@
 # Session Handoff — 2026-08-06T05:01Z
 
 **Trigger:** operator-initiated (`/session-end`, second invocation this session — closing segment after T-421's substantive build/merge work)
-**Last commit:** `706364a` (main) — T-421 merged; this handoff's own doc commit follows immediately after
+**Last commit:** `6a69c13` (main) — T-421 merged (`706364a`), then this handoff's own doc commit (`3baef17`) collided with a concurrent T-423 session-end that landed on `origin/main` in between (PR #65, `3bfb308`); resolved a second merge (`OPERATOR_CONSOLE.md` — auto-generated, regenerated fresh from the merged state rather than hand-merged; `TODO_NEXT.md` — same chain-preserving "Last reviewed" pattern, T-421-closing now above T-423 by timestamp) and pushed clean
 **Tier:** MICRO (0 commits ahead of the merge, no `src/` change, no new GG/ADR opened by this segment)
 
 ---
