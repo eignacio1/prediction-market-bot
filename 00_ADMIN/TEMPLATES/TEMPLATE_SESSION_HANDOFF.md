@@ -1,5 +1,18 @@
 # Session Handoff — YYYY-MM-DDTHH:MMZ
 
+<!-- session-meta
+task_id: [T-NNN — the primary task ID this session closes out]
+tier: [MICRO | STANDARD — must match the tier this session actually routed to]
+timestamp: [YYYY-MM-DDTHH:MM:SSZ — UTC, matches this file's header timestamp]
+commit: [short-SHA of the commit this handoff is written against — the one Step 8 is about to push]
+one_line_summary: [<=120 chars, no line breaks — this becomes the ONE line every other nav file's "Last reviewed" entry and, for MICRO, the Operator Digest entry. Make it stand alone: task + outcome, not "continued work on X".]
+gg_touched: [comma-separated GG-NNN opened/resolved this session, or "none"]
+adr_touched: [comma-separated ADR-NNNN drafted/accepted this session, or "none"]
+plan_deliverable_moved: [yes | no — did a PLAN.md deliverable change status/owner/date this session?]
+-->
+
+**Fill in the block above FIRST, by hand, as part of writing this handoff — it is the single source of truth `scripts/generate_session_artifacts.py` reads to mechanically generate the TODO_NEXT.md/MEMORY_BANK.md/PLAN.md "Last reviewed" lines, the SESSION_CLAIMS.md closure row, the checkpoint pointer, and (MICRO only) the Operator Digest one-liner. Get `one_line_summary` right — it is reused verbatim in every generated artifact. Everything else in this file below is still hand-authored narrative for a human reader; the meta block is machine-read and separate from it.**
+
 **Trigger:** [Context window near limit / clean cutover / operator-initiated]
 **Last commit:** `[hash]` (main) — pushed to GitHub + VPS
 
