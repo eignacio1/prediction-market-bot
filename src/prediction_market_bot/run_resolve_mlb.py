@@ -58,6 +58,7 @@ Season type handling:
 from __future__ import annotations
 
 import os
+import re
 import sys
 import time
 import uuid
@@ -115,6 +116,34 @@ _ESPN_HEADERS: dict[str, str] = {}
 _ESPN_STATUS_FINAL     = "STATUS_FINAL"
 _ESPN_STATUS_POSTPONED = "STATUS_POSTPONED"
 _ESPN_TERMINAL_STATUSES = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
+
+# GG-166/T-429 (2026-08-07): a position's stored `game_date` was, until B1's fix
+# in run_t4_mlb_live.py, stamped from the write-time UTC wall clock rather than
+# the game's actual date — up to ~44% of one measured cohort resolved against
+# the wrong day's box score using `_fetch_mlb_hits`'s exact-match `game_date`
+# join key. Positions written after the B1 fix should already carry a
+# ticker-derived, correct `game_date`; this parses the ticker independently at
+# read time so the resolution loop can detect and refuse a stale/corrupted
+# value instead of silently resolving against it. Same anchored-regex format
+# as scripts/build_t4_outcome_store.py::ticker_game_date (validated 100%
+# reliable across 2,021 tickers, T-421).
+_TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
+_TICKER_DATE_MONTHS = {
+    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
+    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
+}
+
+
+def _ticker_to_game_date(ticker: str) -> str | None:
+    """Derive the true game date from a ticker's embedded date token, or None."""
+    m = _TICKER_DATE_RE.match(ticker)
+    if not m:
+        return None
+    yy, mon, dd, _hhmm = m.groups()
+    month = _TICKER_DATE_MONTHS.get(mon)
+    if month is None:
+        return None
+    return f"20{yy}-{month}-{dd}"
 
 # GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
 # a sustained condition, not per-request flakiness), every further retry-loop
@@ -441,6 +470,36 @@ def _resolve_pool(
         threshold   = int(pos.get("kalshi_threshold", 0))
         direction   = pos.get("direction", "YES")
         position_id = pos.get("position_id", "")
+
+        # GG-166/T-429: cross-check the stored game_date against the date embedded
+        # in the position's own Kalshi ticker before trusting it as a resolution
+        # join key. A pre-B1-fix position may still carry a wall-clock-stamped
+        # game_date that disagrees with its ticker's true date — resolving that
+        # position would silently join against the wrong day's box score, which
+        # is the exact corruption GG-166 found. Refuse rather than guess.
+        ticker      = pos.get("kalshi_ticker", "")
+        ticker_date = _ticker_to_game_date(ticker) if ticker else None
+        if ticker_date is not None and ticker_date != game_date:
+            logger.warning(
+                "PIPE-05R", "game_date_ticker_mismatch",
+                payload={
+                    "pool": pool_label,
+                    "player_id": player_id,
+                    "player_name": player_name,
+                    "position_id": position_id,
+                    "kalshi_ticker": ticker,
+                    "stored_game_date": game_date,
+                    "ticker_derived_game_date": ticker_date,
+                    "note": "GG-166: refusing to resolve — stored game_date disagrees with ticker-derived date",
+                },
+                session_id=session_id,
+            )
+            print(
+                f"[REFUSE] [{pool_label}] position {position_id} ({player_name}): "
+                f"stored game_date={game_date!r} != ticker-derived {ticker_date!r} "
+                f"(ticker={ticker!r}) — GG-166 mismatch, skipping resolution."
+            )
+            continue
 
         actual_hits = fetch_actual_hits(player_id, game_date, player_name=player_name)
 

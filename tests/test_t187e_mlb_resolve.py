@@ -31,6 +31,24 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 PAST_DATE   = (date.today() - timedelta(days=1)).isoformat()
 FUTURE_DATE = (date.today() + timedelta(days=1)).isoformat()
 
+_MONTH_ABBR = {
+    1: "JAN", 2: "FEB", 3: "MAR", 4: "APR", 5: "MAY", 6: "JUN",
+    7: "JUL", 8: "AUG", 9: "SEP", 10: "OCT", 11: "NOV", 12: "DEC",
+}
+
+
+def _ticker_date(iso_date: str) -> str:
+    """YYYY-MM-DD -> ticker-embedded date fragment (e.g. '26JUL01').
+
+    GG-166/T-429: run_resolve_mlb.py now refuses to resolve any position
+    whose stored game_date disagrees with its ticker-derived date (B2
+    guard). Fixtures must keep the two in agreement, so every
+    kalshi_ticker built for a test position embeds the same date it
+    claims via game_date rather than a stale hardcoded one.
+    """
+    y, m, d = iso_date.split("-")
+    return f"{y[2:]}{_MONTH_ABBR[int(m)]}{d}"
+
 
 # ---------------------------------------------------------------------------
 # Shared helpers
@@ -71,7 +89,7 @@ def _open_mlb_pos(
         approval=_make_approval(size, direction),
         player_name=player_name,
         player_id=player_id,
-        kalshi_ticker=f"KXMLBHIT-26JUL010800NYY-{player_id}-{threshold}",
+        kalshi_ticker=f"KXMLBHIT-{_ticker_date(game_date)}0800NYY-{player_id}-{threshold}",
         kalshi_threshold=threshold,
         mid_price=mid,
         vig=vig,

@@ -295,6 +295,63 @@ else
     echo "  skipped (last sync $(( pa_age / 60 ))min ago, under ${PA_MAX_AGE}s TTL)"
 fi
 
+# --- GG-163: T4 MLB cycle-log write-recency probe ---
+# Every VPS-facing check above this point reads systemd state or a portfolio
+# JSON snapshot -- none of them ever checked whether t4_mlb_cycle_log.jsonl
+# itself is still being written. GG-163 (2026-08-04 23:41 UTC, found 2026-08-05,
+# fixed T-429 2026-08-07) was a 43.5h+ ESPN-403 discovery outage that ran the
+# entire time with `systemctl is-active t4-mlb` reporting "active" -- the
+# process never crashed, it just looped a failing discovery request before
+# ever reaching the code path that writes a cycle-log row. This makes that
+# specific blind spot a structural, every-scan check instead of something a
+# session has to notice by hand. Age-gated cache, same pattern/TTL as the
+# portfolio caches above -- fails silently (prints UNREACHABLE) if the VPS
+# is unreachable rather than blocking the scan.
+echo ""
+echo "T4 MLB CYCLE-LOG WRITE-RECENCY (GG-163/T-429):"
+CACHE_T4CYCLE="logs/.vps_t4_cycle_log_last_row.txt"
+CACHE_MAX_AGE=600
+fetch_needed=1
+if [ -f "$CACHE_T4CYCLE" ]; then
+    age=$(( $(date +%s) - $(stat -f %m "$CACHE_T4CYCLE" 2>/dev/null || echo 0) ))
+    [ "$age" -lt "$CACHE_MAX_AGE" ] && fetch_needed=0
+fi
+if [ "$fetch_needed" -eq 1 ]; then
+    if ssh -o ConnectTimeout=3 -o BatchMode=yes prediction-market-vps \
+         "tail -1 /opt/prediction-market-bot/logs/t4_mlb_cycle_log.jsonl" > "$CACHE_T4CYCLE.tmp" 2>/dev/null; then
+        mv "$CACHE_T4CYCLE.tmp" "$CACHE_T4CYCLE"
+    else
+        rm -f "$CACHE_T4CYCLE.tmp"
+    fi
+fi
+if [ -s "$CACHE_T4CYCLE" ]; then
+    python3 - "$CACHE_T4CYCLE" <<'EOF'
+import json, sys
+from datetime import datetime, timezone
+
+path = sys.argv[1]
+try:
+    with open(path) as f:
+        row = json.loads(f.read().strip())
+    ts = row.get("ts", "")
+    dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    age_h = (datetime.now(timezone.utc) - dt).total_seconds() / 3600
+    in_season = datetime.now(timezone.utc).month in range(3, 11)
+    print(f"  last_row={ts} age_hours={age_h:.1f}")
+    if in_season and age_h > 8:
+        print(f"  *** GG-163-CLASS ALERT: T4 MLB cycle log is {age_h:.1f}h stale during MLB season.")
+        print("      systemctl is-active can show 'active' throughout a discovery-level outage")
+        print("      like GG-163 -- do not treat that alone as evidence T4 is healthy. Cross-check")
+        print("      T1's same-day player-match count (CLAUDE.md Step 4) before ruling this out. ***")
+    elif not in_season:
+        print("  (off-season by month -- staleness alone is not a signal here)")
+except Exception as e:
+    print(f"  Could not parse cached last row: {e}")
+EOF
+else
+    echo "  UNREACHABLE or no rows -- VPS unreachable, or t4_mlb_cycle_log.jsonl missing/empty"
+fi
+
 # --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
 # n* is the variance-derived sample needed for 95% power to distinguish
 # edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500
