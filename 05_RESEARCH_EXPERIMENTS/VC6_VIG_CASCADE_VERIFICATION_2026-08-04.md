@@ -117,6 +117,8 @@ Reference: epoch-12's mix is 92 YES / 49 NO (65.2% YES) — independently reprod
 
 **Corrected headline for future citation:** T4M-PROJ epoch-8 gate-valid, net-of-vig edge ≥ 0, production cascade: **n=388, +$15.02 P&L, ROI +9.65%**, P(profit)=0.961 (as-of-2026-07-30 snapshot). On the current n=799 snapshot: **n=404, +$15.75 P&L, ROI +9.71%**, P(profit)=0.963.
 
+**UNVERIFIED-PENDING-GG-166 (added 2026-08-06/07, T-426):** the correction above fixes the vig-cascade *formula* but does not touch the underlying *outcome data* those P&L/ROI figures are computed from. T-426's shadow agreement check found `run_t4_mlb_live.py:1519` stamps a UTC-wall-clock `game_date` at bet-entry that `run_resolve_mlb.py::_fetch_mlb_hits()` then uses as an exact-match resolution join key — silently misresolving positions against the wrong game's box score (44.2% `actual_hits` disagreement on the epoch-12 clean cohort; epoch-8 not separately re-checked by T-426 but not exempt from the same write-path bug). Registered **GG-166 (CRITICAL, OPEN)**, fix tracked as **T-429** (unstaffed). Do not treat this section's "corrected headline" as governance-grade for GG-004/G6 purposes until T-429 lands and the epoch-8 cohort is re-verified — the formula fix and the outcome-data fix are independent corrections, and only the first has landed. See `03_DECISIONS/ADR-0050_t4m-proj-flat-measurement-stake-reactivation.md` §11, `11_MEMORY_HANDOFF/MEMORY_BANK.md` 2026-08-06/07 entry.
+
 ---
 
 ## 5. Independent reproduction of epoch-12 figures (operator-supplied reference)
