@@ -107,7 +107,11 @@ _RETRY_DELAYS_S: tuple[int, ...] = (5, 10, 30)  # T-207: exponential backoff for
 # either).
 _ESPN_MLB_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 _ESPN_MLB_SUMMARY    = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/summary"
-_ESPN_HEADERS        = {"User-Agent": "Mozilla/5.0"}
+# GG-163: ESPN blocks on the literal "Mozilla/5.0" browser-spoofed UA (403,
+# verified 723/723 since 2026-08-04T23:41Z), not on source IP. Sending no
+# User-Agent at all lets `requests` use its own default UA, which is not
+# blocked (verified 200 live). Do not reintroduce a browser-style UA here.
+_ESPN_HEADERS: dict[str, str] = {}
 _ESPN_STATUS_FINAL     = "STATUS_FINAL"
 _ESPN_STATUS_POSTPONED = "STATUS_POSTPONED"
 _ESPN_TERMINAL_STATUSES = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
