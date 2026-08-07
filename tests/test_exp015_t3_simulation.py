@@ -126,11 +126,20 @@ class TestComputeOutcomeEv:
     def test_yes_win_pnl_is_positive(self):
         # YES bet wins when y_target == 1
         r = compute_outcome_ev(_bet(direction="YES", y_target=1), "NEUTRAL")
-        assert r["outcome_pnl"] > 0.0
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; NEUTRAL sizes at T1_KELLY, so
+        # outcome_pnl is structurally 0.0 (no stake) rather than positive while
+        # T1 sizing is zero.
+        if T1_KELLY == 0.0:
+            assert r["outcome_pnl"] == 0.0
+        else:
+            assert r["outcome_pnl"] > 0.0
 
     def test_yes_loss_pnl_is_negative(self):
         r = compute_outcome_ev(_bet(direction="YES", y_target=0), "NEUTRAL")
-        assert r["outcome_pnl"] < 0.0
+        if T1_KELLY == 0.0:
+            assert r["outcome_pnl"] == 0.0
+        else:
+            assert r["outcome_pnl"] < 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -188,12 +197,23 @@ class TestEvFormula:
         rng  = np.random.default_rng(42)
         r    = run_monte_carlo(bets, drift_std=1e-9, n_sims=100, rng=rng)
         assert r["neutral_rate"] == pytest.approx(1.0, abs=0.01)
-        assert r["ev_ratio"] == pytest.approx(1.0, abs=0.05)
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; the T1 baseline EV is then 0,
+        # so run_monte_carlo's zero-baseline guard reports ev_ratio 0.0 rather
+        # than the historical ~1.0 while T1 sizing is zero.
+        if T1_KELLY == 0.0:
+            assert r["ev_ratio"] == pytest.approx(0.0, abs=1e-6)
+        else:
+            assert r["ev_ratio"] == pytest.approx(1.0, abs=0.05)
 
     def test_confirm_size_ratio_matches_formula(self):
         # position_size_ratio for CONFIRM = (T3_KELLY × CONFIRM_MULTIPLIER) / T1_KELLY
         r = compute_outcome_ev(_bet(direction="YES", edge=0.10), "CONFIRM")
-        expected = (T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; ratio-to-baseline is undefined
+        # (0.0) rather than the historical formula value while T1 sizing is zero.
+        expected = (
+            0.0 if T1_KELLY == 0.0
+            else (T3_KELLY * CONFIRM_MULTIPLIER) / T1_KELLY
+        )
         assert r["position_size_ratio"] == pytest.approx(expected, abs=1e-4)
 
     def test_ev_ratio_gate_constant_is_90_percent(self):

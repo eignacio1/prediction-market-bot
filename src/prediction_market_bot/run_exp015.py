@@ -376,7 +376,12 @@ def run_monte_carlo(
         "neutral_rate":      float(neutral_mat.mean()),
         "ev_per_bet_mean":   float(t3_ev_per_sim.mean()),
         "ev_ratio":          float(ev_ratio_per_sim.mean()),
-        "size_efficiency":   round(T3_KELLY * CONFIRM_MULTIPLIER / T1_KELLY, 4),  # 0.46
+        # ADR-0048 (2026-07-29) zeroed T1_KELLY; ratio to a zero baseline is undefined,
+        # not 0.46 — report 0.0 rather than divide by zero (mirrors compute_outcome_ev above).
+        "size_efficiency":   (
+            0.0 if T1_KELLY == 0.0
+            else round(T3_KELLY * CONFIRM_MULTIPLIER / T1_KELLY, 4)
+        ),
         "faded_miss_rate":   float(faded_miss_rate),
         "confirm_win_rate":  float(confirm_win_rate),
     }
