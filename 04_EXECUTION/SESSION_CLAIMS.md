@@ -199,3 +199,4 @@
 | 2026-08-06T23:38:51Z | T-427 | Phase1 exit-gate: replay-harness determinism audit + byte-identical replay build |
 | 2026-08-06T23:39:28Z | T-428 | T-428 (T-427 collided w/ concurrent session): GG-157 fill-feasibility — depth/paper-position overlap check + sampling requirement, analysis-only |
 | 2026-08-07T04:52:54Z | T-429 | T-429: GG-163 T4 ESPN UA restore (dark since 2026-08-04) + GG-166 game_date write/read fix + re-resolve corrupted T4M-PROJ positions, isolated worktree session/20260807T045158Z-t4-restore-and-correct |
+| 2026-08-07T04:54:49Z | T-430 | T-430: session-end protocol cost reduction (write-once, generate-rest) |
