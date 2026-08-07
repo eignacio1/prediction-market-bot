@@ -110,3 +110,8 @@ cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 # (hits_disagree=36.9%/outcome_disagree=25.1%) and re-derive outcomes for the
 # ~1,220 game_date_corrected_but_outcome_stale positions."
 ```
+
+---
+
+**NEXT SESSION PRIMER:**
+Read `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260807_0610.md` (this file) and confirm the full suite still shows 2827 passed/28 skipped/0 failed. Start **T-431**: root-cause the second B5 disagreement source (hits_disagree=36.9%, outcome_disagree=25.1% between the corrected ledger and T-421's independent outcome store) — the untested lead is a source-drift/backfill-timing gap between original resolution time and outcome-store re-fetch time, not a join-key defect (both single-bad-date and doubleheader-collision hypotheses are already ruled out). Once root-caused, re-derive `outcome`/`pnl` for the ~1,220 affected positions via GG-084's two-phase off-VPS-fetch/on-VPS-apply pattern.
