@@ -15,3 +15,4 @@ No new concerns from today's work itself. Two pre-existing, unrelated housekeepi
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260807_0016.md` and `DECISION_LOG.md` for 2026-08-06, plus `05_RESEARCH_EXPERIMENTS/T427_REPLAY_DETERMINISM_AUDIT.md`.*
+- T-430 (auto): Session-end write-once/generate-rest: SESSION_HANDOFF meta block + generate_session_artifacts.py collapse Last-reviewed chains, claims row, digest, checkpoint

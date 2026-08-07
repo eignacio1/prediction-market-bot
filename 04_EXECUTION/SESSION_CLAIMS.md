@@ -200,3 +200,4 @@
 | 2026-08-06T23:39:28Z | T-428 | T-428 (T-427 collided w/ concurrent session): GG-157 fill-feasibility — depth/paper-position overlap check + sampling requirement, analysis-only |
 | 2026-08-07T04:52:54Z | T-429 | T-429: GG-163 T4 ESPN UA restore (dark since 2026-08-04) + GG-166 game_date write/read fix + re-resolve corrupted T4M-PROJ positions, isolated worktree session/20260807T045158Z-t4-restore-and-correct |
 | 2026-08-07T04:54:49Z | T-430 | T-430: session-end protocol cost reduction (write-once, generate-rest) |
+| 2026-08-07T05:22:44Z | T-430 | CLOSED — Session-end write-once/generate-rest: SESSION_HANDOFF meta block + generate_session_artifacts.py collapse Last-reviewed chains, claims row, digest, checkpoint (commit `3825a85`) |
