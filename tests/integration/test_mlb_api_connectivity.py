@@ -24,7 +24,13 @@ pytestmark = pytest.mark.integration
 _MLB_BASE = "https://statsapi.mlb.com"
 _ESPN_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 _ESPN_SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/summary"
-_ESPN_HEADERS = {"User-Agent": "Mozilla/5.0"}
+# GG-163/T-429 (2026-08-07): a browser-spoofed UA ("Mozilla/5.0") triggers a
+# hard 403 from ESPN's edge (confirmed live against this exact endpoint).
+# Fixed in run_t4_mlb_live.py/run_resolve_mlb.py by dropping the header
+# entirely; this test file had its own independent copy of the same
+# constant that wasn't caught by that fix (GG-072 enumerate-every-consumer
+# rule) and was failing this whole class with real 403s, not a network gap.
+_ESPN_HEADERS = {}
 
 _LATENCY_SLA_S = 5.0   # any API must respond within 5 seconds
 _ESPN_T4_SLA_S = 10.0  # T4 polling — must complete in 10s (45s loop, 10s budget per call)
