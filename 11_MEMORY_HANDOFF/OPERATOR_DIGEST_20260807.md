@@ -31,3 +31,9 @@ Yes — the size of the wrong-date problem was much bigger than first suspected 
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260807_0016.md` and `DECISION_LOG.md` for 2026-08-06 (T-427), plus `SESSION_HANDOFF_20260807_0610.md` and `DECISION_LOG.md` for 2026-08-07 (T-429), plus `05_RESEARCH_EXPERIMENTS/T427_REPLAY_DETERMINISM_AUDIT.md`.*
+
+---
+
+## Later the same day (T-430, auto)
+
+Session-end write-once/generate-rest: SESSION_HANDOFF meta block + generate_session_artifacts.py collapse Last-reviewed chains, claims row, digest, checkpoint.

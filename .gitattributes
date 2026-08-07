@@ -40,3 +40,23 @@
 # resolution for content that was never actually in conflict. Union merge
 # fixes that class of collision without the in-place-edit risk noted above.
 11_MEMORY_HANDOFF/OPERATOR_DIGEST_*.md merge=union
+
+# *_ARCHIVE.md — Last Reviewed Chain Archive (2026-08-07, T-430)
+#
+# scripts/lib_chain_archive.py (called by scripts/generate_session_artifacts.py
+# at every session-end) collapses TODO_NEXT.md/MEMORY_BANK.md/PLAN.md's
+# stacked "**Last reviewed**" narrative chains to one current-status line
+# per ADR-0044, archiving the full removed chain verbatim into the matching
+# *_ARCHIVE.md file. Each collapse prepends a new batch immediately under the
+# "## Last Reviewed Chain Archive" heading and never edits a previously
+# archived batch in place — genuinely append-only, same shape as
+# OPERATOR_DIGEST_*.md above. Two sessions closing concurrently would
+# otherwise conflict at the same insertion point for content that was never
+# actually in conflict; union merge lets both batches survive.
+# MEMORY_BANK_ARCHIVE.md predates this generator and also holds an older,
+# unrelated hand-maintained archive section (Current State Snapshot history,
+# T-334) — union merge is safe for it too since that section is likewise
+# never edited in place, only appended to.
+11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md merge=union
+04_EXECUTION/TODO_NEXT_ARCHIVE.md merge=union
+04_EXECUTION/PLAN_ARCHIVE.md merge=union

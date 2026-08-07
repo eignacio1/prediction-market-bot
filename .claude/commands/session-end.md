@@ -73,6 +73,8 @@ Otherwise route to **MICRO** — the session was pure documentation/navigation/a
 
 Each step below marks its **[MICRO]** condensed alternative inline. STANDARD sessions run the full (un-bracketed) version of every step.
 
+**T-430 (2026-08-07) — write-once, generate-the-rest:** session-end used to re-author the same session narrative by hand in six or seven places (TODO_NEXT/MEMORY_BANK/PLAN "Last reviewed" chains, SESSION_CLAIMS closure row, checkpoint pointer, Operator Digest), each a separate model-authored write and tool round-trip. That compounds on long sessions — exactly when context is scarcest — and was observed pushing a single close-out past 20 minutes into a repeated compaction loop. The fix, matching this repo's existing `OPERATOR_CONSOLE.md` precedent (generated, never hand-patched): you author the session narrative **once**, in the `<!-- session-meta -->` block at the top of the SESSION_HANDOFF file (Step 6), and `scripts/generate_session_artifacts.py` mechanically derives the "Last reviewed" chain collapse (all three nav files, both tiers), the SESSION_CLAIMS closure row (both tiers — this row previously had no dedicated step at all and was being skipped), and the checkpoint pointer (both tiers) from it. **Target model-authored writes: MICRO ≤3** — the DECISION_LOG row (Step 1A, only if a real decision was made), the SESSION_HANDOFF file itself, and the commit. Everything else on a MICRO session is either generated or explicitly skipped. STANDARD still hand-authors substantive nav-file content (task completions, milestone shifts, prose digest, primer) — only the repetitive narrative-chain/closure-row/checkpoint layer is generated for it too.
+
 ---
 
 ## Step 1B — Summarize What Was Done
@@ -94,9 +96,10 @@ In `04_EXECUTION/TODO_NEXT.md`:
 - Mark all completed tasks ✅ COMPLETE [DATE] — [brief description]
 - Mark in-progress tasks 🟡 IN PROGRESS — [current state]
 - Add any newly discovered tasks with next T-number
-- Update `Last reviewed` date in header
 
-**[MICRO: same actions, but keep each entry to one line — no multi-paragraph rationale. If nothing in this file actually needs to change (no tasks completed/added), say so and skip the edit entirely rather than touching it just to bump a date.]**
+**Do not hand-edit the `**Last reviewed** chain here (either tier).** That line is now collapsed and regenerated automatically by Step 6's `scripts/generate_session_artifacts.py` call, from the SESSION_HANDOFF's `session-meta` block — it archives the full prior chain verbatim to `TODO_NEXT_ARCHIVE.md` (ADR-0044) and writes one current-status line. This step is only for substantive task-list content.
+
+**[MICRO: same actions, but keep each entry to one line — no multi-paragraph rationale. If nothing in this file actually needs to change (no tasks completed/added), skip this step entirely — the chain bump still happens via Step 6 regardless.]**
 
 **Archival reminder (Fix 4):** if `wc -l 04_EXECUTION/TODO_NEXT.md` is pushing past ~1500 lines, run `scripts/archive_todo_next.sh` (dry-run first) before or after this step — it mechanically moves completed `## ` sections into `MEMORY_BANK_ARCHIVE.md`. Not required every session; check when the file feels heavy.
 
@@ -105,7 +108,6 @@ In `04_EXECUTION/TODO_NEXT.md`:
 **Before editing:** `grep -n "^## Current State Snapshot\|^## Compass OS Health\|^\*\*Last reviewed"` first, then `Read` with `offset`/`limit` around the matched lines (Fix 3) — this file has a strict one-authoritative-block-per-chain rule (T-334) enforced by `scripts/check_memory_bank_snapshots.sh`; a full-file read is rarely necessary just to update these fields.
 
 In `11_MEMORY_HANDOFF/MEMORY_BANK.md`:
-- Update `Last reviewed` date and description
 - Update `Last major milestone` in Project Identity table
 - Update Current State Snapshot section:
   - Phase and gate status
@@ -116,20 +118,23 @@ In `11_MEMORY_HANDOFF/MEMORY_BANK.md`:
 - Update Compass OS Health table (M1–M8)
 - Update "What Must Happen Next" section
 
+**Do not hand-edit the `**Last reviewed** chain here (either tier)** — same generated mechanism as Step 2, archiving to `MEMORY_BANK_ARCHIVE.md`. This is a *different* chain from the Current State Snapshot / Compass OS Health blocks below, which are not touched by the generator and still follow the T-334 rule as-is:
+
 **If replacing the Current State Snapshot or Compass OS Health block:** move the prior block verbatim into `MEMORY_BANK_ARCHIVE.md` — never leave it in place marked "(superseded)"/"(prior)" (that pattern is exactly how both chains grew unreconciled twice; see T-334, `check_memory_bank_snapshots.sh`'s own header comment).
 
-**[MICRO: only touch this file if something in the bulleted list above actually changed (test count, gate status, phase, a new milestone). A pure archival/tooling/doc session usually changes none of these — if so, skip Step 3 entirely and say so, rather than bumping `Last reviewed` for its own sake.]**
+**[MICRO: only touch this file if something in the bulleted list above actually changed (test count, gate status, phase, a new milestone). A pure archival/tooling/doc session usually changes none of these — if so, skip Step 3 entirely and say so; the chain bump still happens via Step 6 regardless.]**
 
 ## Step 4 — Update PLAN.md
 
 **Before editing:** `grep -n` for the relevant milestone/phase heading first, then targeted `Read` (Fix 3) — same rationale as Steps 2/3.
 
 In `04_EXECUTION/PLAN.md`:
-- Update `Last reviewed` date
 - Update Phase 6 deliverables table with current status
 - If any task moved from pending → complete, mark it
 
-**[MICRO: skip entirely unless a deliverable's status actually moved this session.]**
+**Do not hand-edit the `**Last reviewed** chain here (either tier)** — same generated mechanism as Steps 2/3, archiving to `PLAN_ARCHIVE.md`.
+
+**[MICRO: skip entirely unless a deliverable's status actually moved this session — set `plan_deliverable_moved: yes` in the SESSION_HANDOFF meta block if so. The chain bump still happens via Step 6 regardless.]**
 
 ## Step 5 — Commit Message Draft
 
@@ -143,31 +148,51 @@ Provide a concise git commit message in this format:
 - Gate: [unchanged / CLOSED / OPENED]
 ```
 
-## Step 6 — Create SESSION_HANDOFF File
+## Step 6 — Create SESSION_HANDOFF File, Then Generate Everything Else From It
 
 Create `11_MEMORY_HANDOFF/SESSION_HANDOFF_YYYYMMDD_HHMM.md` from `00_ADMIN/TEMPLATES/TEMPLATE_SESSION_HANDOFF.md`.
 
-This file MUST include:
+**Fill in the `<!-- session-meta -->` block at the top first.** This is the single source of truth the generator (below) reads — get `one_line_summary` right, since it is reused verbatim in every generated artifact. `commit:` is a reference point, not a cryptographic pointer — use the current `git rev-parse --short HEAD` at authoring time (the last real commit already on this branch); it does not need to be the exact final SHA that will include this handoff file itself.
+
+The rest of the file MUST include:
 - **Strategic Decisions This Session** table (from Step 1A) — mandatory even if empty
 - Current paper bet count vs G6 gate (**30 bets** — APR-0016; NOT 50)
 - One-thing-pending (single most important next action)
 - Resume command for next session
 
-**[MICRO: still write the file (a resume pointer is not optional — GG-101/GG-082 need it, and the checkpoint pointer below depends on it existing), but condense it to: the Strategic Decisions table (still mandatory even if "None"), 2-4 lines of what changed (from Step 1B), one-thing-pending, and the resume command. Skip the bet-count line and any section the template has that doesn't apply to a doc-only session.]**
+**[MICRO: still write the file (a resume pointer is not optional — GG-101/GG-082 need it, and the checkpoint pointer depends on it existing), but condense it to: the `session-meta` block, the Strategic Decisions table (still mandatory even if "None"), 2-4 lines of what changed (from Step 1B), one-thing-pending, and the resume command. Skip the bet-count line and any section the template has that doesn't apply to a doc-only session.]**
 
-**Also write the checkpoint pointer (ADR-0041, T-300/Window A; wrapper added T-369; format updated GG-103, 2026-07-15):** after the SESSION_HANDOFF commit lands, run `scripts/write_session_checkpoint.sh <short-session-slug>` (wraps the `04_EXECUTION/.last_session_checkpoint` write — do not inline the raw `git rev-parse`/`printf` here again) and commit the result in the same path-scoped commit as the handoff. Per GG-103, the file is now an **append-only log** (`checkpoint<TAB>timestamp<TAB>slug` per row, `merge=union` in `.gitattributes`, mirroring `SESSION_CLAIMS.md`'s pattern) rather than a single overwritten SHA, so two sessions closing concurrently both survive instead of one clobbering the other's pointer — the wrapper appends, it does not overwrite. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read (it reads only the last line's checkpoint field) — skipping this step silently degrades the next session back to the full-read fallback. `session_guard.sh` now warns (does not block) if the last-line checkpoint is stale vs. current HEAD, so a skipped write is no longer silent.
+### Step 6-gen — Run the generator (both tiers, mandatory)
+
+Once every substantive edit from Steps 1A–4 is done and the SESSION_HANDOFF's `session-meta` block is filled in, run:
+
+```bash
+python3 scripts/generate_session_artifacts.py 11_MEMORY_HANDOFF/SESSION_HANDOFF_YYYYMMDD_HHMM.md
+```
+
+Run this **after** Steps 2–4's substantive content edits (it reads TODO_NEXT/MEMORY_BANK/PLAN fresh — Hard Rule 10) and **before** the commit in Step 8. In one call it:
+1. Collapses the `**Last reviewed** chain in all three of TODO_NEXT.md / MEMORY_BANK.md / PLAN.md to one current-status line, archiving the full prior chain verbatim to the matching `*_ARCHIVE.md` (ADR-0044) — both tiers.
+2. Appends the SESSION_CLAIMS.md closure row — both tiers (previously had no dedicated step and was routinely skipped).
+3. Appends a one-line Operator Digest entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` — **MICRO only**. STANDARD sessions get nothing here from the generator; write the prose digest by hand in Step 6B as before.
+4. Writes the checkpoint pointer via `scripts/write_session_checkpoint.sh` (ADR-0041; format per GG-103, append-only `checkpoint<TAB>timestamp<TAB>slug` row) — both tiers, replacing the old separate manual call. This is what lets the *next* session's `/session-start` use `scripts/session_delta.sh` instead of a full read — skipping this step silently degrades the next session to the full-read fallback.
+
+The script writes files but does not commit — review its diff (`git status` / `git diff`) before Step 8's commit, same as any other generated content. If it errors (e.g. missing `session-meta` block), fix the block and re-run — do not fall back to hand-authoring the collapse/closure/checkpoint just to route around an error.
 
 ## Step 6B — Operator Digest (mandatory, T-372)
 
-Create `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from `00_ADMIN/TEMPLATES/TEMPLATE_OPERATOR_DIGEST.md`, filled in for this session, and commit it in the same path-scoped commit as the SESSION_HANDOFF. This is not optional and not conditional on session size — a session with nothing to report still writes the digest and says so plainly (e.g. "No change today — still zero real money at risk"). Use `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20260715.md` as the worked example of tone and length — plain English, no file paths/function names/p-values, 5-10 lines total.
+**[MICRO: already done — Step 6-gen appended a one-line entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from the `session-meta` block's `one_line_summary`. Do not also hand-author a prose digest on top of it; the one-liner is the MICRO-tier digest.]**
 
-**Why this is its own step, not folded into Step 6:** `SESSION_HANDOFF_*.md` is the technical record for the next session/auditor. The digest is a *different document for a different reader* — Earl, who does not read code and should not have to open a technical log to know what happened. The one digest written so far (`OPERATOR_DIGEST_20260715.md`) was a one-off demonstration with nothing requiring a second one to exist; this step is what makes it a habit instead of a single artifact nobody was asked to repeat.
+STANDARD: Create/append `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from `00_ADMIN/TEMPLATES/TEMPLATE_OPERATOR_DIGEST.md`, filled in for this session, and commit it in the same path-scoped commit as the SESSION_HANDOFF. This is not optional and not conditional on session size — a session with nothing to report still writes the digest and says so plainly (e.g. "No change today — still zero real money at risk"). Use `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20260715.md` as the worked example of tone and length — plain English, no file paths/function names/p-values, 5-10 lines total.
+
+**Why this is its own step, not folded into Step 6:** `SESSION_HANDOFF_*.md` is the technical record for the next session/auditor. The digest is a *different document for a different reader* — Earl, who does not read code and should not have to open a technical log to know what happened. A STANDARD session (real `src/` change, a strategic decision, or a GG/ADR event) still earns a hand-authored paragraph explaining it in plain English; a MICRO session's generated one-liner is sufficient because there's nothing behind it that needs explaining to a non-engineer.
 
 Keep it to 5-10 lines per the template's own instruction — if it's running longer, the session did too much to summarize well, not a reason to write more.
 
 ## Step 7 — Next Session Primer
 
-In 2-3 sentences, what should the next session's opening prompt contain?
+**[MICRO: skip — the `session-meta` block's `one_line_summary`, plus the condensed SESSION_HANDOFF's one-thing-pending and resume command (Step 6), already say where to pick up. A separate primer paragraph would just restate them.]**
+
+STANDARD: In 2-3 sentences, what should the next session's opening prompt contain?
 
 Format:
 ```
@@ -206,12 +231,17 @@ NEXT SESSION PRIMER:
 ## Quick Reference — File Paths to Update Every Session
 
 ```
-11_MEMORY_HANDOFF/MEMORY_BANK.md              ← STANDARD always; MICRO only if snapshot fields changed
-04_EXECUTION/TODO_NEXT.md                      ← STANDARD always; MICRO only if tasks completed/added
-03_DECISIONS/DECISION_LOG/DECISION_LOG.md      ← if any strategic decision was made (untiered — Step 1A)
-00_ADMIN/APPROVALS_REGISTER.md                 ← if any threshold/gate/governance change (untiered)
-04_EXECUTION/PLAN.md                           ← STANDARD if milestones changed; MICRO usually skipped
-00_ADMIN/CHANGELOG.md                          ← for significant changes
-11_MEMORY_HANDOFF/SESSION_HANDOFF_[date].md    ← always, both tiers (condensed for MICRO — Step 6)
-11_MEMORY_HANDOFF/OPERATOR_DIGEST_[date].md    ← always, both tiers (from template, Step 6B)
+                                                HAND-AUTHORED (both tiers unless noted)          GENERATED (Step 6-gen, both tiers)
+11_MEMORY_HANDOFF/SESSION_HANDOFF_[date].md    always — the single source of truth (session-meta) —
+11_MEMORY_HANDOFF/MEMORY_BANK.md               STANDARD: snapshot/health fields, if changed        "Last reviewed" chain -> MEMORY_BANK_ARCHIVE.md
+04_EXECUTION/TODO_NEXT.md                      STANDARD: task completions/additions, if any        "Last reviewed" chain -> TODO_NEXT_ARCHIVE.md
+04_EXECUTION/PLAN.md                           STANDARD: deliverable status, if moved              "Last reviewed" chain -> PLAN_ARCHIVE.md
+03_DECISIONS/DECISION_LOG/DECISION_LOG.md      if any strategic decision was made (Step 1A)         —
+00_ADMIN/APPROVALS_REGISTER.md                 if any threshold/gate/governance change              —
+00_ADMIN/CHANGELOG.md                          for significant changes                              —
+04_EXECUTION/SESSION_CLAIMS.md (closure row)   —                                                     always
+04_EXECUTION/.last_session_checkpoint          —                                                     always
+11_MEMORY_HANDOFF/OPERATOR_DIGEST_[date].md    STANDARD: prose digest, Step 6B                       MICRO only: one-liner
 ```
+
+MICRO tier's total model-authored write count: DECISION_LOG row (only if Step 1A found a real decision), the SESSION_HANDOFF file, and the commit — **≤3**. Everything in the GENERATED column runs regardless of tier via one Step 6-gen call.
