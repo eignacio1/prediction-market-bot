@@ -46,7 +46,9 @@ import re
 import subprocess
 import sys
 import tempfile
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 os.environ.setdefault("BOT_ENV", "paper")  # import-time gate in run_resolve_mlb; read-only import, no writes
@@ -215,7 +217,7 @@ def attempt_resolution(rec: dict) -> None:
         rec["resolved"] = False
 
 
-def run_backfill(cycle_log_path: Path, store_path: Path, limit: int | None) -> dict:
+def run_backfill(cycle_log_path: Path, store_path: Path, limit: int | None, workers: int = 1) -> dict:
     rows = load_cycle_log(cycle_log_path)
     grouped = group_by_ticker(rows)
     store = load_store(store_path)
@@ -226,8 +228,10 @@ def run_backfill(cycle_log_path: Path, store_path: Path, limit: int | None) -> d
 
     attempted_this_run = 0
     resolved_this_run = 0
+    checkpoint_lock = threading.Lock()
 
-    for i, ticker in enumerate(tickers, 1):
+    pending = []
+    for ticker in tickers:
         meta = grouped[ticker]
         rec = store.get(ticker)
         if rec is None:
@@ -237,22 +241,46 @@ def run_backfill(cycle_log_path: Path, store_path: Path, limit: int | None) -> d
             # keep store's own attempt history; refresh cheap metadata from the log
             rec["n_cycle_rows"] = meta["n_cycle_rows"]
             rec["has_forecast"] = meta["has_forecast"] or rec.get("has_forecast", False)
+        if not rec.get("resolved"):
+            pending.append(rec)
 
-        if rec.get("resolved"):
-            continue
+    total_pending = len(pending)
 
-        attempt_resolution(rec)
-        attempted_this_run += 1
-        if rec.get("resolved"):
-            resolved_this_run += 1
-
-        if attempted_this_run % _CHECKPOINT_EVERY == 0:
-            write_store(store_path, store)
-            print(
-                f"  ...checkpoint {i}/{len(tickers)} tickers scanned, "
-                f"{attempted_this_run} attempted this run, {resolved_this_run} newly resolved",
-                file=sys.stderr,
-            )
+    if workers <= 1:
+        for i, rec in enumerate(pending, 1):
+            attempt_resolution(rec)
+            attempted_this_run += 1
+            if rec.get("resolved"):
+                resolved_this_run += 1
+            if attempted_this_run % _CHECKPOINT_EVERY == 0:
+                write_store(store_path, store)
+                print(
+                    f"  ...checkpoint {i}/{total_pending} pending scanned, "
+                    f"{attempted_this_run} attempted this run, {resolved_this_run} newly resolved",
+                    file=sys.stderr,
+                )
+    else:
+        # I/O-bound (HTTP fetches) — threads, not processes. Each `rec` dict is
+        # only ever touched by the one thread resolving it; the store dict's
+        # keys were all inserted single-threaded above, so concurrent writes to
+        # *different* rec objects need no lock. Only checkpoint writes (which
+        # serialize the whole store) are locked.
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(attempt_resolution, rec): rec for rec in pending}
+            for i, fut in enumerate(as_completed(futures), 1):
+                fut.result()  # re-raise if attempt_resolution somehow raised
+                rec = futures[fut]
+                attempted_this_run += 1
+                if rec.get("resolved"):
+                    resolved_this_run += 1
+                if attempted_this_run % _CHECKPOINT_EVERY == 0:
+                    with checkpoint_lock:
+                        write_store(store_path, store)
+                    print(
+                        f"  ...checkpoint {i}/{total_pending} pending scanned, "
+                        f"{attempted_this_run} attempted this run, {resolved_this_run} newly resolved",
+                        file=sys.stderr,
+                    )
 
     write_store(store_path, store)
 
@@ -276,13 +304,14 @@ def main() -> None:
     ap.add_argument("--store", type=Path, default=_DEFAULT_STORE)
     ap.add_argument("--pull", action="store_true", help="scp a fresh cycle log from the VPS first")
     ap.add_argument("--limit", type=int, default=None, help="only process the first N tickers (testing)")
+    ap.add_argument("--workers", type=int, default=1, help="concurrent resolution threads (I/O-bound HTTP fetches)")
     args = ap.parse_args()
 
     if args.pull:
         print(f"Pulling {_VPS_CYCLE_LOG_PATH} from {_VPS_ALIAS} -> {args.cycle_log}", file=sys.stderr)
         pull_vps_cycle_log(args.cycle_log)
 
-    summary = run_backfill(args.cycle_log, args.store, args.limit)
+    summary = run_backfill(args.cycle_log, args.store, args.limit, args.workers)
 
     print(json.dumps(summary, indent=2))
 
