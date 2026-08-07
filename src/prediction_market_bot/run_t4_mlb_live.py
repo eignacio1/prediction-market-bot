@@ -67,6 +67,7 @@ import json
 import logging
 import math
 import os
+import re
 import sys
 import time
 import uuid
@@ -714,6 +715,46 @@ def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
     return size_usd + min(0.0, exit_pnl)
 
 
+# GG-166/T-429 (2026-08-07): ticker-derived game date, reusing the anchored-regex
+# format from scripts/build_t4_outcome_store.py::ticker_game_date (validated 100%
+# reliable parse across 2,021 tickers under T-421). The wall-clock `game_date`
+# session variable (assigned at startup and again on UTC-midnight rollover) is
+# what GG-166 found silently mis-stamping ~44% of positions when a game is still
+# live after UTC midnight — this function derives the true per-position date from
+# the ticker itself instead, at the exact write sites that persist it.
+_TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
+_TICKER_DATE_MONTHS = {
+    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
+    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
+}
+
+
+def _ticker_to_game_date(ticker: str, fallback: str) -> str:
+    """Derive the true game date from a ticker's embedded date token.
+
+    Returns `fallback` (the wall-clock session `game_date`) only if the ticker
+    doesn't match the expected KXMLBHIT format — logged loudly since that should
+    not happen for any real Kalshi MLB ticker and would mean this is silently
+    reverting to the exact bug this function exists to fix.
+    """
+    m = _TICKER_DATE_RE.match(ticker)
+    if not m:
+        logger.warning(
+            "GG-166: ticker %s did not match expected date format — "
+            "falling back to session game_date=%s", ticker, fallback,
+        )
+        return fallback
+    yy, mon, dd, _hhmm = m.groups()
+    month = _TICKER_DATE_MONTHS.get(mon)
+    if month is None:
+        logger.warning(
+            "GG-166: ticker %s has unrecognized month token %r — "
+            "falling back to session game_date=%s", ticker, mon, fallback,
+        )
+        return fallback
+    return f"20{yy}-{month}-{dd}"
+
+
 def _game_date_window(game_date: str) -> set[Any]:
     """GG-081/GG-082 (2026-07-04): expand a single game_date into {game_date, prior_day}.
 
@@ -1050,7 +1091,7 @@ def _run_cycle(
                         "ts":           datetime.now(timezone.utc).isoformat(),
                         "cycle_id":     cycle_id,
                         "session_id":   session_id,
-                        "game_date":    game_date,
+                        "game_date":    _ticker_to_game_date(ticker, game_date),  # GG-166
                         "ticker":       ticker,
                         "player_name":  ctx["player_name"],
                         "player_id":    player_id,
@@ -1116,7 +1157,7 @@ def _run_cycle(
                     "ts":           datetime.now(timezone.utc).isoformat(),
                     "cycle_id":     cycle_id,
                     "session_id":   session_id,
-                    "game_date":    game_date,
+                    "game_date":    _ticker_to_game_date(ticker, game_date),  # GG-166
                     "ticker":       ticker,
                     "player_name":  ctx["player_name"],
                     "player_id":    player_id,
@@ -1346,7 +1387,7 @@ def _run_cycle(
                 kalshi_threshold=int(threshold),
                 mid_price=mip,
                 vig=vig,
-                game_date=game_date,
+                game_date=_ticker_to_game_date(ticker, game_date),  # GG-166: per-position, not session wall-clock
                 session_id=session_id,
                 pool_isolated=True,
                 h_so_far_at_entry=ls.h_so_far,
