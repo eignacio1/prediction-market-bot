@@ -14,8 +14,14 @@ scripts/new_session_worktree.sh "<short-focus-slug>"
 
 # 0b — guard + atomic claim (run from your session's tree):
 bash .claude/hooks/session_guard.sh
-scripts/claim_session.sh "<one-line focus>" "<T-/GG-/ADR- range or TBD>"
+scripts/claim_session.sh "<TIER: MICRO|STANDARD> — <the ONE deliverable> — <one-line focus>" "<T-/GG-/ADR- range or TBD>"
 ```
+**Declare the tier and the single deliverable in the claim string itself (Hard Rule 11, T-434).**
+One session = one deliverable = one merge. If you find a defect outside that deliverable's
+scope, register a GG-/T-NNN and STOP — do not fix it in-session. If the task as written reads
+as more than one session, say so now and propose the split before doing any work.
+Hand off at ~60% context (Hard Rule 8), not 80% — session-end is itself expensive and starting
+it late produces a compaction loop.
 
 ## Then — Tier 1 state retrieval (ADR-0041)
 

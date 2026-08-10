@@ -1,10 +1,10 @@
 # /session-end — End-of-Session Handoff Protocol
 
-## ⚠️ TRIGGER THIS IMMEDIATELY WHEN CONTEXT WINDOW REACHES ~80%
+## ⚠️ TRIGGER THIS IMMEDIATELY WHEN CONTEXT WINDOW REACHES ~60%
 
-Do not wait until "a good stopping point." At 80% context: stop all implementation work, run this protocol in full, commit, and push. The cost of losing a session's decisions permanently exceeds the cost of any implementation delay. When in doubt, trigger early.
+Do not wait until "a good stopping point." At 60% context: stop all implementation work, run this protocol in full, commit, and push. The cost of losing a session's decisions permanently exceeds the cost of any implementation delay. When in doubt, trigger early. The trigger was 80% until 2026-08-10 (T-434). It was moved to 60% because this protocol is itself context-expensive: starting it at 80% means compacting *during* close-out, which is how a single session-end ran past an hour on T-429.
 
-**Signs you are near 80%:** responses are slower, the conversation has been running for many tool calls, or the user references that the window is getting full.
+**Signs you are near 60%:** responses are slower, the conversation has been running for many tool calls, or the user references that the window is getting full.
 
 ---
 
@@ -12,7 +12,7 @@ Do not wait until "a good stopping point." At 80% context: stop all implementati
 
 **`/checkpoint`** — Run between task blocks (every 30 tool calls or at every block boundary). Writes a ~20-line `CHECKPOINT_YYYYMMDD_HHMM.md`. Does NOT update PLAN.md, MEMORY_BANK.md, or produce a commit message. Fast (<2 min). See `.claude/commands/checkpoint.md`.
 
-**`/session-end`** (this file) — Run at true session end OR at 80% context. Full update of all navigation artifacts + commit message + SESSION_HANDOFF file. The heavyweight version.
+**`/session-end`** (this file) — Run at true session end OR at 60% context. Full update of all navigation artifacts + commit message + SESSION_HANDOFF file. The heavyweight version.
 
 **If /session-end is being run but /checkpoint was NEVER run this session:** Before running Steps 0–7 below, check whether the session included multiple task blocks. If yes, write a CHECKPOINT for each prior block as part of Step 1B (Tasks Completed). The SESSION_HANDOFF supersedes them but the checkpoints serve as the detailed record.
 
@@ -70,6 +70,8 @@ Route to **STANDARD** if ANY of the following is true — check in this order, u
 Otherwise route to **MICRO** — the session was pure documentation/navigation/archival housekeeping (e.g. this fix's own worktree: doc/script edits under `scripts/`, `.claude/`, `03_DECISIONS/`, `04_EXECUTION/`, `11_MEMORY_HANDOFF/`, no `src/` change, no new GG/ADR).
 
 **If unsure, default to STANDARD.** This routing only ever cuts documentation weight, never the untiered floor (Steps 0/1A, worktree/claim/guard mechanics) — guessing MICRO wrong costs a few extra lines of doc; guessing STANDARD when MICRO would do just costs a little time, never safety. State which tier you routed to and why (one line) before continuing.
+
+**Tier is declared at CLAIM time, not computed here (T-434, 2026-08-10).** The routing rules above stay as the check — if what you actually did contradicts the tier you declared at claim time, say so in one line and route on what you did. But declaring up front is what keeps a session sized; re-deriving tier only at close-out is how a MICRO task becomes a STANDARD one without anyone deciding to.
 
 Each step below marks its **[MICRO]** condensed alternative inline. STANDARD sessions run the full (un-bracketed) version of every step.
 
