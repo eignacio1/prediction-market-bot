@@ -1570,6 +1570,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-168 — Step 4's T4 cycle-log write-recency probe (GG-163/T-429) has no exemption for "daily T4 budget exhausted" — a legitimate zero-new-rows state indistinguishable from a real outage by the probe's own logic
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-168 |
+| Category | Systemic blind spot — same probe family as GG-163, but a false-positive-shaped gap in the fix rather than a recurrence of the original outage. |
+| What was missed | Running the Step 4 T4 cycle-log write-recency probe this session (T-434, 2026-08-10) found `t4_mlb_cycle_log.jsonl`'s last row 21.0h stale (`2026-08-10T02:33:03Z` vs. now `2026-08-10T23:34:44Z`) while T1 MLB confirmed live-market player matches — on its face, exactly the alarm condition CLAUDE.md's probe describes ("age_hours in the high single digits or more while games were live ... is a signal failure — investigate immediately"). Direct SSH inspection showed this is **not** a GG-163 recurrence: `t4_mlb_live_cron.log` shows zero 403/forbidden lines in the last 200 entries, ESPN discovery succeeding, and the process actively polling two genuinely live games with real batter state (`game=401816469 inning=2`, `game=401816470 inning=1`, 14 batters each). The per-cycle stat line reads `eval=0 fired=0` with `T4_budget: $270.00/$270.00 (100%)` — the daily T4 budget cap is fully deployed, and evaluation appears to short-circuit before a cycle-log row is written once the cap is hit, even with live, evaluable batter state present. The probe's documented exemption list ("off-day, off-season, or a pregame stretch with no live batter state") does not include this case, so a session following the protocol literally would flag a false alarm — or, in the opposite direction, a genuine future silent-discovery failure occurring on a day when budget also happens to be exhausted would be wrongly written off as "just the budget-cap case" without verification. |
+| When it should have been caught | At GG-163/T-429's original fix (2026-08-07) — the write-recency probe was designed and verified against the ESPN-403 failure mode specifically; the budget-exhaustion code path (whatever gates cycle-log writes on `T4_budget` state) was not considered as a second legitimate source of a stale-looking log when that probe was written. |
+| Phases it survived | Unexercised until this session — T-429's fix session ended before any live game day drove the T4 budget to 100%, so this interaction was never hit. |
+| Why it survived | The probe checks wall-clock age and cross-references only T1's player-match count and season/off-day status; it has no visibility into T4's own per-cycle `eval`/`fired` counters or `T4_budget` state, which live only in `t4_mlb_live_cron.log`'s cycle-summary lines, not in any file Step 4 currently reads. |
+| Impact | MEDIUM, procedural: as observed this session, the underlying behavior may be entirely correct (daily budget cap doing its job at end-of-day) — but the protocol as written cannot currently distinguish that from a silent failure without an operator manually tailing `t4_mlb_live_cron.log` and reading the cycle-summary line, which Step 4 does not currently instruct anyone to do. Whether budget-exhausted cycles *should* still write an (non-firing) evaluation row to `t4_mlb_cycle_log.jsonl` — i.e., whether `eval=0` while live batter state exists is itself correct behavior or a separate bug in the evaluation gate ordering — was not determined this session; that question is unstaffed. |
+| Discovery | T-434 (2026-08-10), MICRO-scoped protocol-sizing session, while running CLAUDE.md Step 4 verbatim as part of the mandatory session-start protocol — register-and-stop per Hard Rule 11, this task's deliverable is unrelated (three protocol files, session-scope trigger thresholds). |
+| Resolution | Not built this session — out of scope. Two independent follow-ups for a future staffed session: (1) confirm whether `eval=0`/no cycle-log row on budget-exhausted cycles is intended design or a gap-ordering bug in the evaluation code path itself; (2) extend Step 4's write-recency probe to also read the latest `T4_budget` cycle-summary line from `t4_mlb_live_cron.log` so "budget exhausted, correctly idle" is a third recognized exemption alongside off-day/off-season/pregame, rather than an unhandled case that looks identical to a real outage. |
+| Status | OPEN — new, unstaffed, MEDIUM. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
