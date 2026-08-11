@@ -205,3 +205,4 @@
 | 2026-08-10T23:33:46Z | T-434 | TIER: MICRO — three protocol files edited (CLAUDE.md Rule 8/11, session-end.md, session-start.md) — protocol session-sizing patch |
 | 2026-08-10T23:49:32Z | T-434 | CLOSED — T-434: Hard Rule 8 60% trigger + new Hard Rule 11 (one deliverable, register-and-stop) merged; GG-168 opened, tracked as T-435 (commit `40f6385`) |
 | 2026-08-11T00:22:47Z | T-431 | T-431: TIER STANDARD — root-cause B5 ledger-vs-store disagreement (hits 36.9%/outcome 25.1%) or ruled-out hypotheses; isolated worktree session/20260811T002151Z-t431-b5-disagreement |
+| 2026-08-11T01:03:14Z | T-431 | CLOSED — Root-caused GG-166's B5 disagreement as GG-170 (MLB Stats API gameLog date-label instability); merged to main; tracked T-432/T-433/T-436 in TODO_NEXT.md (commit `ce65fbb`) |
