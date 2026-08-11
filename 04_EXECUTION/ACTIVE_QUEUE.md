@@ -350,7 +350,10 @@ in play — the inverse of props). Standing operator instruction: do NOT declare
 PARTIAL_GAME_WINNER dead.
 
 SCOPE FENCE: read-only measurement + the action-plan checkbox. No src/, no sizing, no cron
-change. Do NOT start Phase 1 even if depth clears — Phase 1 is separately blocked on T-431.
+change. [STALE per GG-171 — see below: T-436 delivered and the operator ruled Phase 1 unblocked
+same-session; this line's "do NOT start Phase 1" instruction no longer applies. Left in place
+verbatim rather than deleted so the T-436 task-template record stays honest about what was
+actually instructed at claim time.]
 
 REPORT BACK: branch + commit range; the per-family table; the go/no-go verdict.
 ```
@@ -359,12 +362,14 @@ REPORT BACK: branch + commit range; the per-family table; the go/no-go verdict.
 
 ## Phase 1 entry criteria — the forward-motion trigger
 
-Phase 1 starts when **both** are true, and nothing else gates it:
+**UNBLOCKED as of 2026-08-10 (operator adjudication, "Good to unblock," GG-171 RESOLVED).**
 
-1. **T-431 lands** — outcomes re-derived or the disagreement explained. Its exit gate is bit-identical ledger replay; replaying a ledger with ~1,220 stale outcomes proves only that the staleness reproduces.
-2. **T-436 clears** — the ≥200 obs/family half is **already satisfied** (332/family, all six, verified 2026-08-11); what remains is the per-family median-depth verdict against the $10.00 gate floor.
+Both conditions below are now met:
 
-Then Phase 1's eight boxes run, with the replay harness T-427 already built (`T427_REPLAY_DETERMINISM_AUDIT.md`, incl. its Class D formula-drift finding) and the corrected suite baseline (2,799 passed / 8 known-failed / 29 skipped — re-run, do not copy).
+1. ~~**T-431 lands**~~ — **does not gate box 1.6.** T-431's remaining scope (re-deriving ~1,220 stale outcome/pnl values) touches resolution fields that T-427's replay-determinism audit (`T427_REPLAY_DETERMINISM_AUDIT.md`) explicitly excludes from box 1.6's gate (Class A exclusion set: entry-time fields only, e.g. the vig-cascade/fee formula — not outcome/pnl). This file previously stated T-431 as a hard co-blocker; that was wrong, per GG-171. T-431 remains open and important in its own right (GG-170, root-caused, VPS-coordinated re-derivation still pending) — it just isn't a Phase 1 precondition.
+2. **T-436 cleared** — depth verdict delivered 2026-08-10: 4/6 families PASS the $10.00 gate (GAME_TOTAL $179.55, GAME_WINNER $11.33, RUN_LINE $141.36, TEAM_TOTAL $57.96); PARTIAL_GAME_WINNER ($1.28) and PLAYER_PROP ($8.03) FAIL but are not declared dead per standing operator instruction. Full table in `MARKET_EXPANSION_ACTION_PLAN.md` 0I.1/0C.12.
+
+Phase 1's eight boxes can now run, with the replay harness T-427 already built (`T427_REPLAY_DETERMINISM_AUDIT.md`, incl. its Class D formula-drift finding and the box-1.6 gate correction above) and the corrected suite baseline (2,799 passed / 8 known-failed / 29 skipped — re-run, do not copy).
 
 **Phase 1 is where the bot's capability actually moves.** Everything above it is the cost of being able to trust what it reports.
 
