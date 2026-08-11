@@ -23,6 +23,12 @@
 
 Two distinct pieces of work, both left for the operator to prioritize: (1) B5 found a disagreement rate between the ledger's own resolution and T-421's independently-sourced outcome store that persists at similar magnitude even after the `game_date` fix is confirmed fully working (0% date mismatch in the current clean cohort) — the mechanism is unidentified; a structural hypothesis (5-day gap between the ledger's original ~2026-08-02 resolution and the store's 2026-08-07 re-fetch — possible box-score revision between queries) was noted but not investigated. (2) The larger, separately-scoped ~1,220-position outcome re-derivation for positions whose `game_date` was corrected but whose `actual_hits`/`outcome`/`pnl` were computed against the wrong game — requires the two-phase fetch-off-VPS/apply-on-VPS write-back pattern T-422 used for the 5-position T1/MAIN repair, since GG-084 blocks sequential MLB Stats API/ESPN fetches from the VPS's own datacenter IP. Until both are resolved, the T4M-PROJ power-calc baseline feeding GG-004/APR-0024 remains unverified. See `GOVERNANCE_GAP_LOG.md` GG-166 B5 section for full detail.
 
+## T-432 — invariant suite, alarm-only (OPEN, unstaffed) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 2 for full detail
+
+## T-433 — ADR-0007 amendment: no gap RESOLVED without an executable assertion (OPEN) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 3 for full detail
+
+## T-436 — Phase 1 depth re-check, count gate met, verdicts remain (OPEN) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 4 for full detail
+
 ## T-421 — decoupled T4 MLB outcome-measurement store (GG-163/GG-164) — ✅ COMPLETE 2026-08-05, MERGED TO main 2026-08-06 (`706364a`; isolated worktree `session/20260805T054940Z-decoupled-outcome-store`, commits `51b447d..fc6413c`)
 
 `scripts/build_t4_outcome_store.py` — additive, read-only, ticker-keyed outcome join for T4 MLB's cycle log. 96.1% first-pass resolution coverage (1,943/2,021 tickers), 78 unresolved with full attempt provenance (no silent drops). See Last-reviewed entry above for full detail.

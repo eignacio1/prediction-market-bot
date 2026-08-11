@@ -1449,6 +1449,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Resolution | Not built this session — out of T-421's hard scope fence (no changes to `run_t4_mlb_live.py`'s write path). Workaround (not a fix) applied in the new read-only outcome-join store: derive game date from `ticker` via regex, never from the raw `game_date` field. A real fix would locate and correct whatever produces the `game_date` field at write time (likely a `datetime.utcnow().date()` call that should instead parse the game's own start time/date) — left for the operator to prioritize and staff. |
 | Status | OPEN — new, unstaffed, MEDIUM. |
 
+**T-431 addendum note (2026-08-11):** per `04_EXECUTION/ACTIVE_QUEUE.md` (T-431 prompt block), this gap's write-site was fixed by T-429, but that alone does not close it. GG-164 stays OPEN pending BOTH (1) the historical backfill of the 45,217 already-mislabeled cycle-log rows, and (2) T-433's executable-assertion requirement (ADR-0007 amendment: no gap may be marked RESOLVED without a checked assertion, not a prose claim) — this is the same class of failure T-433 exists to prevent: GG-164's own record does not yet have such an assertion. Do not close this on the write-site fix alone.
+
 </details>
 
 ---
