@@ -1594,6 +1594,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-169 — `claim_session.sh`'s collision check cannot distinguish "actively claimed" from "pre-reserved backlog ID awaiting staffing," blocking the exact workflow the project uses to hand off follow-on work
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-169 |
+| Category | Incremental architecture — the collision check (GG-107's fix) was designed for one failure mode and silently also blocks a legitimate, common pattern it never considered. |
+| What was missed | T-429's session closed by minting T-431 in `TODO_NEXT.md`/`SESSION_CLAIMS.md` as a named, unstaffed follow-on task — the project's normal pattern for handing off known future work. When this session (T-431) tried to formally claim that exact pre-reserved ID via `scripts/claim_session.sh "..." "T-431"`, it refused with `COLLISION: T-431 already appears in 04_EXECUTION/TODO_NEXT.md` / `SESSION_CLAIMS.md` — because `check_id_collision.sh` (`scripts/lib/check_id_collision.sh`) treats *any* prior appearance of an ID as a collision, with no way to tell "already actively claimed by a live/competing session" (the real GG-107 failure mode) apart from "previously reserved by a closed session specifically so a later session could staff it" (this case). |
+| When it should have been caught | At GG-107's original fix — the script's design should have anticipated that this project routinely mints forward-referencing IDs (`T-431` inside T-429's own closure text) as part of normal handoff, since `04_EXECUTION/TODO_NEXT.md` and `SESSION_CLAIMS.md` closure rows do this constantly. |
+| Phases it survived | Unexercised since GG-107's fix — likely because most claims to date used freshly-minted IDs rather than staffing a pre-reserved backlog ID from a prior session's closure note. |
+| Why it survived | `check_id_collision.sh` does a flat substring/word-boundary grep for the ID across all three registries and returns collision on any hit; it has no notion of claim state (open/staffed vs. closed/reserved-for-later) to distinguish the two cases. |
+| Impact | LOW, procedural: this session worked around it by hand-appending the claim row and pushing directly to `origin/main` (with operator confirmation, since the harness's own permission classifier treats a direct push to `main` as requiring explicit approval) rather than via the script. No data risk — but the script's collision guarantee (GG-107's actual purpose) was bypassed for this claim, and every future session that staffs a pre-reserved backlog ID will hit the same false positive and need the same manual workaround unless fixed. |
+| Discovery | T-431 (2026-08-10/11), session-start Step 0, while claiming the exact ID T-429 had reserved for it — register-and-stop per Hard Rule 11, this task's deliverable is the B5 disagreement root cause, not claim tooling. |
+| Resolution | Not built this session — out of scope. A future fix should let the collision check distinguish a *closed* reservation (e.g., a `TODO_NEXT.md` backlog line with no matching "claimed" `SESSION_CLAIMS.md` row, or a row explicitly marked `OPEN, unstaffed`) from an active claim, and only refuse the latter. |
+| Status | OPEN — new, unstaffed, LOW. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
