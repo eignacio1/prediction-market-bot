@@ -27,7 +27,9 @@ Two distinct pieces of work, both left for the operator to prioritize: (1) B5 fo
 
 ## T-433 — ADR-0007 amendment: no gap RESOLVED without an executable assertion (OPEN) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 3 for full detail
 
-## T-436 — Phase 1 depth re-check, count gate met, verdicts remain (OPEN) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 4 for full detail
+## T-436 — Phase 1 depth re-check — ✅ COMPLETE 2026-08-10/11 (isolated worktree `session/20260811T042738Z-t436-phase1-depth-verdict`); Phase 1 UNBLOCKED
+
+**Done this task:** Per-family depth verdict against the $10.00 gate (360 obs/family): PASS — GAME_TOTAL ($179.55), GAME_WINNER ($11.33), RUN_LINE ($141.36), TEAM_TOTAL ($57.96); FAIL — PARTIAL_GAME_WINNER ($1.28), PLAYER_PROP ($8.03), neither declared dead per standing operator instruction. Closed `MARKET_EXPANSION_ACTION_PLAN.md` 0I.1/0C.12. Found and registered **GG-171**: `ACTIVE_QUEUE.md`'s own task template said Phase 1 stays blocked on T-431 regardless of depth, contradicting the task's own brief ("if depth clears, Phase 1 is UNBLOCKED") — registered rather than resolved unilaterally, per Hard Rule 11. Operator adjudicated directly in-session ("Good to unblock"): GG-171 → RESOLVED, `ACTIVE_QUEUE.md`'s Phase 1 entry criteria corrected (T-431 dropped as a co-blocker — its remaining scope is outcome/pnl re-derivation, which T-427's replay audit already excludes from box 1.6's gate). **Phase 1 (abstraction repair, no new markets) is now unblocked** — see `04_EXECUTION/ACTIVE_QUEUE.md` § "Phase 1 entry criteria." Commits `7e26f7d`, `a80739e`, merged to `main`.
 
 ## T-421 — decoupled T4 MLB outcome-measurement store (GG-163/GG-164) — ✅ COMPLETE 2026-08-05, MERGED TO main 2026-08-06 (`706364a`; isolated worktree `session/20260805T054940Z-decoupled-outcome-store`, commits `51b447d..fc6413c`)
 
