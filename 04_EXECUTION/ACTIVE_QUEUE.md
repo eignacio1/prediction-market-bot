@@ -53,7 +53,7 @@ Eleven gaps registered in seven days (GG-158→GG-167), zero forward capability.
 |---|---|---|---|---|
 | **1** | **T-431** | B5 disagreement root-cause + outcome re-derivation | Critical path | **Yes** |
 | 2 | T-432 | Invariant suite, alarm-only | Parallel with T-431 | No |
-| 3 | T-433 | ADR-0007 amendment + G6 precondition | Parallel with T-431 | No |
+| 3 | T-433 | ADR-0007 amendment + G6 precondition | ✅ COMPLETE 2026-08-11 (`c64008e`) | No |
 | **4** | **T-436** | Depth re-check — count gate already met, verdicts remain | Any time | **Yes** |
 
 T-434's rules are live as of this queue: Hard Rule 8 is 60%, Hard Rule 11 is one-deliverable/register-and-stop, tier is declared in the `claim_session.sh` string. **The size cap is protocol now** — the `TIER:` lines in the prompts below are just the claim-string format, not something to paste.
@@ -237,7 +237,7 @@ rate; and the written --strict promotion criterion.
 
 ---
 
-# 3 — T-433 · ADR-0007 amendment, retrofit, G6 precondition
+# 3 — T-433 · ADR-0007 amendment, retrofit, G6 precondition — ✅ COMPLETE 2026-08-11 (ADR-0052, commit `c64008e`, merged to `main`)
 
 ```
 Run the CLAUDE.md session-start protocol in full. rm -f .git/index.lock if present, then

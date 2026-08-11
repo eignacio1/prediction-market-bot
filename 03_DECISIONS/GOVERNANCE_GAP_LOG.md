@@ -1073,7 +1073,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-145 — `park_factor_hits` is hardcoded 1.0 across all 20,943 rows of the historical C2 feature matrix; second, independent instance of GG-141's failure shape, found live by GG-141's own preventive fix
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** UNSPECIFIED · **Assertion:** LANDED(scripts/check_feature_column_health.py) — detection assertion exists and is exactly how this gap was found; the underlying `park_factor_hits` bug itself remains unfixed (ADR-0052/T-433)
 
 <details>
 <summary>Full record ▸</summary>
@@ -1431,7 +1431,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-164 — T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock "today" at write time, not the game's actual date; `(player_id, game_date, threshold)` is not a valid join key without correction, and doubleheaders break it further
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** OPEN · **Severity:** MEDIUM · **Assertion:** PENDING(T-432, assertion A) — RESOLVED is not eligible until this lands (ADR-0052); this entry's original "Why it survived" field asserted an unverified negative ("isn't used as a resolution join key anywhere") that GG-166 directly contradicted — the motivating case for ADR-0052
 
 <details>
 <summary>Full record ▸</summary>
@@ -1482,7 +1482,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-166 — `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4M-PROJ positions against the wrong day's box score for ~44% of the epoch-12 clean cohort — corrupting live paper-trading WIN/LOSS/pnl, not just a future-risk join key
 
-**Status:** OPEN — code fixed, ledger `game_date` corrected, outcome/pnl re-derivation still outstanding · **Severity:** CRITICAL
+**Status:** OPEN — code fixed, ledger `game_date` corrected, outcome/pnl re-derivation still outstanding · **Severity:** CRITICAL · **Assertion:** PENDING(T-432, assertion A) — shared with GG-164 (same defect, write-site vs. read-site); B2's per-resolution `game_date_ticker_mismatch` refusal is a point check at resolution time, not a standing suite-level invariant, so this remains PENDING not LANDED (ADR-0052); also the concrete G6 precondition example (ADR-0052 §2.3) — Kelly sizing and the drawdown kill switch both read this same ledger
 
 **T-429 (2026-08-07) update — full blast radius measured, code hardened both sides, `game_date` field corrected in place; `actual_hits`/`outcome`/`pnl` re-derivation for closed positions explicitly NOT done this session:**
 

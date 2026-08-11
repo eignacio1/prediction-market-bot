@@ -25,7 +25,9 @@ Two distinct pieces of work, both left for the operator to prioritize: (1) B5 fo
 
 ## T-432 — invariant suite, alarm-only (OPEN, unstaffed) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 2 for full detail
 
-## T-433 — ADR-0007 amendment: no gap RESOLVED without an executable assertion (OPEN) — see `04_EXECUTION/ACTIVE_QUEUE.md` § 3 for full detail
+## T-433 — ADR-0007 amendment: no gap RESOLVED without an executable assertion — ✅ COMPLETE 2026-08-11 (isolated worktree `session/20260811T043030Z-invariant-policy`, commit `c64008e`, merged to `main`)
+
+**Done this task:** ADR-0052 drafted (PROPOSED, awaiting DS sign-off) — supersedes ADR-0007's RESOLVED-marking silence with a named `**Assertion:**` field (`LANDED(...)` / `PENDING(T-NNN[, letter])` / `EXEMPT: <reason>`; `PENDING` is not RESOLVED-eligible); amends ADR-0028's G6 closure condition with a 7th item (ledger invariant integrity — invariant suite clean at `--strict` for a stated observation period + standing cross-path outcome agreement), with the Kelly-sizing/kill-switch-reads-the-same-corrupted-ledger reasoning written directly into the ADR. Retrofitted exactly six gaps per the task's explicit no-blanket-migration instruction: GG-164/GG-166 (`PENDING(T-432, assertion A)`, edited in place in `GOVERNANCE_GAP_LOG.md`) and GG-149/GG-142/GG-141 (already archived — recorded in new `03_DECISIONS/GG_ASSERTION_RETROFIT_LEDGER.md` rather than hand-patching the archive) plus GG-145 (`LANDED` on the same detection script that found it). MEMORY_BANK.md M6 row and `DECISION_LOG.md` updated (Hard Rule 7). No `src/` changed — governance documents only, per scope fence. See `03_DECISIONS/ADR-0052_executable-assertion-requirement-for-gap-resolution.md` and DECISION_LOG.md 2026-08-11 (T-433 row) for full detail.
 
 ## T-436 — Phase 1 depth re-check — ✅ COMPLETE 2026-08-10/11 (isolated worktree `session/20260811T042738Z-t436-phase1-depth-verdict`); Phase 1 UNBLOCKED
 
