@@ -1646,6 +1646,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-171 — `ACTIVE_QUEUE.md`'s own T-436 task template says "Do NOT start Phase 1 even if depth clears — Phase 1 is separately blocked on T-431," but T-427's audit already scoped T-431's remaining work (outcome/pnl re-derivation) outside box 1.6's actual replay gate — the file's blocker framing appears stale against its own project's prior finding
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-171 |
+| Category | Cross-document staleness — a planning file's stated gate condition was not updated after a different session's audit narrowed the scope of that same gate. |
+| What was missed | `ACTIVE_QUEUE.md` §4 (T-436 task template, line 353) and its "Phase 1 entry criteria" section (lines 360-369) both state Phase 1 requires **both** T-431 (outcome/pnl re-derivation for ~1,220 stale-outcome positions) and T-436 (this depth re-check) to clear, with T-431 framed as a hard blocker on Phase 1's replay-determinism exit gate (box 1.6). But `05_RESEARCH_EXPERIMENTS/T427_REPLAY_DETERMINISM_AUDIT.md` (T-427, 2026-08-06) already restated box 1.6's actual gate as scoped to fields `open_position()` writes at entry time (the vig-cascade/fee formula) — explicitly excluding resolution/outcome/pnl fields via its Class A/B exclusion set. T-431's unresolved work is entirely on the outcome/pnl side, which box 1.6 was already found not to touch. `ACTIVE_QUEUE.md` was never updated to reflect this narrowing; its blocker list still names T-431 as a hard Phase 1 gate five days after the audit that arguably removes it. |
+| When it should have been caught | At T-427 close-out (2026-08-06), when the audit's own finding (box 1.6 excludes outcome/pnl) should have been cross-checked against `ACTIVE_QUEUE.md`'s existing Phase 1 entry-criteria language — it wasn't, and the two documents have stated contradictory blocker conditions since. |
+| Phases it survived | At least T-431 (2026-08-10/11) and this session, T-436 (2026-08-11) — both sessions worked from `ACTIVE_QUEUE.md`'s framing without the contradiction being resolved in the file itself. This session's own operator prompt asserted the corrected framing directly ("If depth clears, Phase 1 is UNBLOCKED... T-427 already scoped outcome/pnl out of box 1.6's replay gate") rather than the file's text, which is how the discrepancy surfaced. |
+| Why it survived | No process step re-checks a planning file's stated gate conditions against a later audit's findings unless someone happens to read both in the same session and notice the conflict. `ACTIVE_QUEUE.md`'s "Free IDs"/blocker-count framing is maintained by hand, narratively, not derived from the audit docs it references. |
+| Impact | If the operator's framing is correct (box 1.6 doesn't need T-431), `ACTIVE_QUEUE.md` is currently overstating Phase 1's blocker count by one and could cause a future session to sit idle waiting on T-431 unnecessarily. If `ACTIVE_QUEUE.md`'s framing is correct instead (T-431 blocks Phase 1 for some reason not captured in the box 1.6 audit — e.g. a different Phase 1 box implicitly depends on trustworthy outcomes even though box 1.6 itself doesn't), then a future session could start Phase 1 prematurely on the strength of this session's report. Either direction is a real planning-integrity risk, not just a cosmetic doc mismatch. |
+| Discovery | T-436 (2026-08-11), this session — the operator's own prompt asserted a Phase 1-unblocked framing that directly contradicted `ACTIVE_QUEUE.md`'s explicit "Do NOT start Phase 1 even if depth clears" instruction in the same file's own T-436 task template; investigated by reading `T427_REPLAY_DETERMINISM_AUDIT.md` directly rather than trusting either source, per the project's verify-external-claims discipline. |
+| Resolution | Not resolved this session — out of T-436's MICRO-tier, read-only-plus-checkbox scope fence (no authority to rewrite `ACTIVE_QUEUE.md`'s Phase 1 entry-criteria section or unilaterally declare Phase 1 unblocked). Registered per Hard Rule 11 (register and stop on discovery) for the operator to adjudicate: either correct `ACTIVE_QUEUE.md`'s blocker language to match the box 1.6 audit finding, or state explicitly why T-431 still gates Phase 1 despite box 1.6's narrower scope. |
+| Status | OPEN — new, unstaffed, MEDIUM (planning-integrity risk, not a code or data defect). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
