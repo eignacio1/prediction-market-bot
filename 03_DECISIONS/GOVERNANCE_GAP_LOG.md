@@ -1073,7 +1073,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-145 — `park_factor_hits` is hardcoded 1.0 across all 20,943 rows of the historical C2 feature matrix; second, independent instance of GG-141's failure shape, found live by GG-141's own preventive fix
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** UNSPECIFIED · **Assertion:** LANDED(scripts/check_feature_column_health.py) — detection assertion exists and is exactly how this gap was found; the underlying `park_factor_hits` bug itself remains unfixed (ADR-0052/T-433)
 
 <details>
 <summary>Full record ▸</summary>
@@ -1431,7 +1431,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-164 — T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock "today" at write time, not the game's actual date; `(player_id, game_date, threshold)` is not a valid join key without correction, and doubleheaders break it further
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** OPEN · **Severity:** MEDIUM · **Assertion:** PENDING(T-432, assertion A) — RESOLVED is not eligible until this lands (ADR-0052); this entry's original "Why it survived" field asserted an unverified negative ("isn't used as a resolution join key anywhere") that GG-166 directly contradicted — the motivating case for ADR-0052
 
 <details>
 <summary>Full record ▸</summary>
@@ -1482,7 +1482,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-166 — `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4M-PROJ positions against the wrong day's box score for ~44% of the epoch-12 clean cohort — corrupting live paper-trading WIN/LOSS/pnl, not just a future-risk join key
 
-**Status:** OPEN — code fixed, ledger `game_date` corrected, outcome/pnl re-derivation still outstanding · **Severity:** CRITICAL
+**Status:** OPEN — code fixed, ledger `game_date` corrected, outcome/pnl re-derivation still outstanding · **Severity:** CRITICAL · **Assertion:** PENDING(T-432, assertion A) — shared with GG-164 (same defect, write-site vs. read-site); B2's per-resolution `game_date_ticker_mismatch` refusal is a point check at resolution time, not a standing suite-level invariant, so this remains PENDING not LANDED (ADR-0052); also the concrete G6 precondition example (ADR-0052 §2.3) — Kelly sizing and the drawdown kill switch both read this same ledger
 
 **T-429 (2026-08-07) update — full blast radius measured, code hardened both sides, `game_date` field corrected in place; `actual_hits`/`outcome`/`pnl` re-derivation for closed positions explicitly NOT done this session:**
 
@@ -1641,6 +1641,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | T-431 (2026-08-10/11), Task 1 of this session's charter (root-cause the B5 disagreement GG-166 left unexplained), via direct live MLB Stats API ground-truth queries against three players' disagreeing positions, cross-referenced against the pre-existing 44/44-vs-0/44 earliest/latest deterministic pattern. |
 | Resolution | Not built this session — out of T-431's scope fence (`scripts/` and the ledger only, with backup; no changes to `run_resolve_mlb.py` or any production pipeline file). A real fix requires a staffed follow-on to design and implement a mitigation in `run_resolve_mlb.py`'s resolution timing/gating logic (candidates: enforce a minimum delay after `abstractGameState=="Final"` before accepting a resolution as terminal; or add a second, differently-timed confirmatory fetch before writing `actual_hits`/`outcome`/`pnl`) — left for the operator to prioritize and staff. Separately, and NOT attempted this session per the HARD STOP condition governing Task 2/3: re-deriving outcomes for the ~1,220 `game_date_corrected_but_outcome_stale`-flagged positions (GG-166's own follow-on) targets a different, VPS-only file (`paper_portfolio_mlb_t4.json`, not present in this worktree) and is very likely dominated by GG-166's already-understood, already-fixed mechanism rather than this session's newly-found API-timing mechanism — the two should not be conflated when that re-derivation work is eventually staffed. |
 | Status | OPEN — new, unstaffed, CRITICAL. Recommend treating as a G6/GG-004 blocker alongside GG-166 until a mitigation is designed. |
+
+</details>
+
+---
+
+### GG-171 — `ACTIVE_QUEUE.md`'s own T-436 task template says "Do NOT start Phase 1 even if depth clears — Phase 1 is separately blocked on T-431," but T-427's audit already scoped T-431's remaining work (outcome/pnl re-derivation) outside box 1.6's actual replay gate — the file's blocker framing appears stale against its own project's prior finding
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-171 |
+| Category | Cross-document staleness — a planning file's stated gate condition was not updated after a different session's audit narrowed the scope of that same gate. |
+| What was missed | `ACTIVE_QUEUE.md` §4 (T-436 task template, line 353) and its "Phase 1 entry criteria" section (lines 360-369) both state Phase 1 requires **both** T-431 (outcome/pnl re-derivation for ~1,220 stale-outcome positions) and T-436 (this depth re-check) to clear, with T-431 framed as a hard blocker on Phase 1's replay-determinism exit gate (box 1.6). But `05_RESEARCH_EXPERIMENTS/T427_REPLAY_DETERMINISM_AUDIT.md` (T-427, 2026-08-06) already restated box 1.6's actual gate as scoped to fields `open_position()` writes at entry time (the vig-cascade/fee formula) — explicitly excluding resolution/outcome/pnl fields via its Class A/B exclusion set. T-431's unresolved work is entirely on the outcome/pnl side, which box 1.6 was already found not to touch. `ACTIVE_QUEUE.md` was never updated to reflect this narrowing; its blocker list still names T-431 as a hard Phase 1 gate five days after the audit that arguably removes it. |
+| When it should have been caught | At T-427 close-out (2026-08-06), when the audit's own finding (box 1.6 excludes outcome/pnl) should have been cross-checked against `ACTIVE_QUEUE.md`'s existing Phase 1 entry-criteria language — it wasn't, and the two documents have stated contradictory blocker conditions since. |
+| Phases it survived | At least T-431 (2026-08-10/11) and this session, T-436 (2026-08-11) — both sessions worked from `ACTIVE_QUEUE.md`'s framing without the contradiction being resolved in the file itself. This session's own operator prompt asserted the corrected framing directly ("If depth clears, Phase 1 is UNBLOCKED... T-427 already scoped outcome/pnl out of box 1.6's replay gate") rather than the file's text, which is how the discrepancy surfaced. |
+| Why it survived | No process step re-checks a planning file's stated gate conditions against a later audit's findings unless someone happens to read both in the same session and notice the conflict. `ACTIVE_QUEUE.md`'s "Free IDs"/blocker-count framing is maintained by hand, narratively, not derived from the audit docs it references. |
+| Impact | If the operator's framing is correct (box 1.6 doesn't need T-431), `ACTIVE_QUEUE.md` is currently overstating Phase 1's blocker count by one and could cause a future session to sit idle waiting on T-431 unnecessarily. If `ACTIVE_QUEUE.md`'s framing is correct instead (T-431 blocks Phase 1 for some reason not captured in the box 1.6 audit — e.g. a different Phase 1 box implicitly depends on trustworthy outcomes even though box 1.6 itself doesn't), then a future session could start Phase 1 prematurely on the strength of this session's report. Either direction is a real planning-integrity risk, not just a cosmetic doc mismatch. |
+| Discovery | T-436 (2026-08-11), this session — the operator's own prompt asserted a Phase 1-unblocked framing that directly contradicted `ACTIVE_QUEUE.md`'s explicit "Do NOT start Phase 1 even if depth clears" instruction in the same file's own T-436 task template; investigated by reading `T427_REPLAY_DETERMINISM_AUDIT.md` directly rather than trusting either source, per the project's verify-external-claims discipline. |
+| Resolution | Operator adjudicated directly (2026-08-10T21:4x PT, this session, verbatim: "Good to unblock") — confirms the operator's own framing over `ACTIVE_QUEUE.md`'s stale text: box 1.6's audit-narrowed scope means T-431's outcome/pnl work does not gate Phase 1, so **Phase 1 is unblocked now that T-436 has reported.** `ACTIVE_QUEUE.md`'s "Phase 1 entry criteria" section corrected same-session to reflect this (both criteria now marked met, T-431 no longer listed as a live blocker). Logged in `DECISION_LOG.md` per Hard Rule 7. Note this ruling unblocks Phase 1 *itself* (abstraction repair, no new markets) — it does not retroactively pass PARTIAL_GAME_WINNER/PLAYER_PROP's depth FAILs from T-436; those remain live build-order inputs for whichever Phase 1 sequences new-market work later. |
+| Status | RESOLVED — operator adjudication, 2026-08-10, this session. |
 
 </details>
 
