@@ -361,6 +361,20 @@ Present your top concerns. If you have none after a thorough read, state specifi
 
 ---
 
+**Q7 — Field integrity: does the data mean what the label says? (T-432/BLOCK B, added 2026-08-11)**
+
+Q1-Q6 check code, thresholds, and pipeline liveness. None of them check whether a VALUE already written to the ledger is correct — only that a step ran. GG-166 corrupted ~44% of the epoch-12 clean cohort's outcomes/P&L, was baked into four analysis sessions, and was only caught when an independent decoupled-store data path disagreed with the ledger. This is what Q7 exists to catch structurally instead of by luck.
+
+```bash
+python3 scripts/assert_ledger_invariants.py
+```
+
+This is ALARM-ONLY (operator directive) — it exits 0 regardless of what it finds; violations go to stderr and a JSONL report, never to the exit code, unless `--strict` is passed explicitly (reserved, off by default, wired to nothing — see the script's own docstring for the promotion criterion). `.claude/hooks/governance_scan.sh` already runs this every session without `--strict` and discards its exit code (`|| true`) — reading its printed summary satisfies Q7 for a routine session; only re-run it directly if you need the full per-band output or the machine-readable report.
+
+**What to look for:** any assertion whose violations concentrate in the *current* logic epoch (not spread across old ones) is a live regression, not legacy residue — check `first_seen_epoch`/`last_seen_epoch` in the JSONL report. As of 2026-08-11, assertion A (ticker-embedded date vs. stored `game_date`) shows 69.9% violations within epoch 12 specifically — this is GG-170 (OPEN), not a new finding; do not re-register it. The cross-path agreement check (ledger `actual_hits`/`outcome` vs. T-421's decoupled outcome store) is expected to show real disagreement, not zero, until T-437 lands — do not treat a non-zero disagreement rate there as a new alarm on its own; check whether the rate has moved materially from the last recorded baseline before registering anything.
+
+---
+
 **Any unresolved concern → register in GOVERNANCE_GAP_LOG.md before proceeding.**
 
 ---

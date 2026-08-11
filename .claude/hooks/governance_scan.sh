@@ -505,8 +505,24 @@ except Exception as e:
     print(f"  Could not check nav-hub staleness: {e}")
 INNEREOF
 
+# --- Ledger field-integrity invariants (T-432/BLOCK B, GG-166 follow-on) ---
+# GG-166 corrupted ~44% of the epoch-12 clean cohort's outcomes/P&L and was
+# baked into four analysis sessions before an independent decoupled data
+# path happened to disagree with the ledger. Nothing above this line checks
+# a VALUE in the ledger is correct -- only that a step ran. This is
+# ALARM-ONLY by design (operator directive): it runs without --strict, so
+# its own exit code is always 0, and that exit code is discarded here
+# (`|| true`) on top of that -- a defect in the checker itself must never
+# gate this hook. Full assertion definitions, baselines, and the
+# (currently unwired) --strict promotion path live in
+# scripts/assert_ledger_invariants.py's docstring.
+echo ""
+echo "LEDGER FIELD INTEGRITY (T-432 -- alarm-only, does not affect this hook's exit code):"
+python3 "$PROJECT/scripts/assert_ledger_invariants.py" 2>&1 | tail -20 || true
+
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
-echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q6)"
+echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q7)"
 echo "  Q6 is non-negotiable: what are you actually worried about?"
+echo "  Q7: field integrity -- does the data mean what the label says?"
 echo "============================================================"
