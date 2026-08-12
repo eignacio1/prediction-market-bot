@@ -1,0 +1,42 @@
+{
+  "T1": {
+    "band": "T1",
+    "raw_n": 466,
+    "clean_n": 0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
+  },
+  "T2": {
+    "band": "T2",
+    "raw_n": 2,
+    "clean_n": 0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
+  },
+  "T3": {
+    "band": "T3",
+    "raw_n": 0,
+    "clean_n": 0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance."
+  },
+  "T4M-PROJ": {
+    "band": "T4M-PROJ",
+    "raw_n": 2682,
+    "clean_n": 453,
+    "status": "COMPUTED",
+    "mean_pnl_per_bet": 0.17717593818984548,
+    "stdev_pnl_per_bet": 1.5592806833131028,
+    "alpha": 0.05,
+    "power": 0.95,
+    "z_alpha": 1.644853625133699,
+    "z_beta": 1.644853625133699,
+    "n_star": 839,
+    "gap_to_n_star": 386,
+    "cadence_bets_per_week": 317.37602567633104,
+    "cadence_span_days": 9.991302881944444,
+    "cadence_immature": true,
+    "eta_weeks": 1.2162229304416763,
+    "met": false
+  }
+}
