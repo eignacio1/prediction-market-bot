@@ -214,3 +214,4 @@
 | 2026-08-11T04:58:51Z | T-433 | CLOSED — T-433: ADR-0052 (executable-assertion requirement for GG RESOLVED) + 6-gap retrofit + G6 item 7, merged to main (commit `c64008e`) |
 | 2026-08-11T23:32:45Z | T-436 | CLOSED — T-436 depth verdict delivered (4/6 PASS); GG-171 found+RESOLVED via operator adjudication; Phase 1 (abstraction repair) now UNBLOCKED (commit `e580d65`) |
 | 2026-08-12T00:01:46Z | T-432 | CLOSED — T-432 alarm-only ledger invariant suite merged (PR #69) — GG-166-class corruption now surfaced every session, non-gating (commit `1433891`) |
+| 2026-08-11T23:56:20Z | T-437 | TIER: STANDARD — outcome-authority verdict (T-437): ledger vs decoupled store, GG-166 vs GG-170 separation |
