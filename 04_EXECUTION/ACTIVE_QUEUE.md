@@ -39,11 +39,11 @@ Eleven gaps registered in seven days (GG-158→GG-167), zero forward capability.
 
 **Cause:** the measurement layer was never trustworthy, so every analysis built on it was provisional, and each fix exposed the next defect. GG-164 → GG-166 → the B5 residual is one causal chain, not three unrelated bugs. A cascade like that runs until something can tell you the data is right.
 
-**Terminator:** T-432 and T-433. The invariant suite plus cross-path agreement are what convert "we think the ledger is right" into "the ledger asserts itself every run." **Those are not more fixes — they are the exit from the fix loop.** After them, a defect of GG-166's class surfaces in one run instead of four analysis sessions.
+**Terminator:** T-432 and T-433, both now ✅ COMPLETE (2026-08-11). The invariant suite plus cross-path agreement convert "we think the ledger is right" into "the ledger asserts itself every run." **Those were not more fixes — they were the exit from the fix loop.** After them, a defect of GG-166's class surfaces in one run instead of four analysis sessions. Note the exit is alarm-only, not gating: T-432 built the suite and wired it into every session's governance scan (`.claude/hooks/governance_scan.sh`), but it does not block anything by itself — `--strict` promotion (criteria in `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`) is a separate, not-yet-authorized step.
 
 **What actually moves the bot forward** is Phase 1 (abstraction repair) → Phase 2 (team model gate) → new market families. Phase 1 has two blockers, both in this queue: **T-431** (~1,220 positions carry stale outcomes, so bit-identical replay would only prove the wrongness reproduces) and **T-436** (the depth verdicts). Nothing else blocks it.
 
-**Shortest path to Phase 1: T-431 → T-436.** T-432/T-433 run in parallel and do not gate it. **T-436's count threshold is already met** (332 obs/family, all six, verified 2026-08-11), so its remaining work is the median-depth verdicts — meaning **Phase 1's real remaining blocker is essentially T-431 alone.**
+**Shortest path to Phase 1: T-431 → T-436.** T-432/T-433 ran in parallel and did not gate it. **T-436's count threshold is already met** (332 obs/family, all six, verified 2026-08-11), so its remaining work is the median-depth verdicts — meaning **Phase 1's real remaining blocker is essentially T-431 alone.**
 
 ---
 
@@ -52,7 +52,7 @@ Eleven gaps registered in seven days (GG-158→GG-167), zero forward capability.
 | # | ID | Task | Mode | Gates Phase 1? |
 |---|---|---|---|---|
 | **1** | **T-431** | B5 disagreement root-cause + outcome re-derivation | Critical path | **Yes** |
-| 2 | T-432 | Invariant suite, alarm-only | Parallel with T-431 | No |
+| 2 | T-432 | Invariant suite, alarm-only | ✅ COMPLETE 2026-08-11 (PR #69) | No |
 | 3 | T-433 | ADR-0007 amendment + G6 precondition | ✅ COMPLETE 2026-08-11 (`c64008e`) | No |
 | **4** | **T-436** | Depth re-check — count gate already met, verdicts remain | Any time | **Yes** |
 
