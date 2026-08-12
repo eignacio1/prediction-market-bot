@@ -1705,6 +1705,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-172 — `MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 are written entirely in market-type terms and contain zero boxes addressing band activation, even though the operator's coverage directive is explicitly "all five bands" and three of five bands have essentially no trading history
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-172 |
+| Category | Systemic blind spot — an entire dimension of the operator's own stated directive is absent from the plan meant to execute it, and nothing in the plan's structure would surface the omission to a session working it box by box. |
+| What was missed | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` states the operator's directive plainly: cover moneyline, spread/run line, totals, and team totals **across all five execution bands**. `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 (verified directly this session, lines 152-207) build exactly one axis of that: market-type registry generalization (Phase 1), a team-level forecasting model gated on NB/Poisson EXP-013/2.x falsification tests (Phase 2), per-family segmented pools/ledgers/kill switches/oracles (Phase 3), and per-family shadow-mode activation (Phase 4). **No box in any of the four phases proposes activating T2, T3, or T5, or reactivating T1.** Verified directly against `src/prediction_market_bot/execution_bands.py` (`BAND_CONFIGS`) and `exp_output/T323-POWER-CALC-AFTER/power_calc_results.json` rather than trusting a pasted figure: T1 `kelly_fraction=0.0` (ADR-0048), `clean_n=0`, `raw_n=466` — zeroed on ruin-geometry grounds (GG-135), reactivation is an unstaffed operator decision (GG-153); T2 `kelly_fraction=0.0`, `raw_n=2` — effectively never traded; T3 `kelly_fraction=0.0`, `raw_n=0` — never traded at all; T5 `phase_active="Phase 8"`, never built or traded for either sport, gated on EXP-018 which is `Status: PENDING` (registered 2026-06-04, no paper data yet). Even a fully executed Phases 1-4 therefore delivers, at best, coverage of 4-5 market types × **one** band (T4) — not the five-band directive the coverage matrix states. |
+| When it should have been caught | When `COVERAGE_TARGET_MATRIX.md` was written and cross-read against the existing phase plan — the matrix's own "How the phases map to the matrix" section already states this in its own text ("The band dimension is currently unowned... That is a gap in the phase plan itself and should be registered") but nothing had formally registered it in `GOVERNANCE_GAP_LOG.md` until this session. |
+| Phases it survived | Phase 0 (market survey/ticker confirmation/depth measurement, ✅ per the matrix) through the current pre-Phase-1 state. Multiple sessions worked Phase 1 boxes in this window (T-427 replay-determinism audit, T-436 depth re-check, T-439 market-type registry, T-440 replay-harness rerun) without the band-dimension gap being registered, because none of those tasks' scope required reading the plan against the coverage matrix as a whole — each worked one box in isolation. |
+| Why it survived | The phase plan's own structure is organized entirely around the market-type axis (registry → model → segmented pools → activation); there is no "band" heading or box anywhere in Phases 1-4 that would prompt a reader tracking box-by-box completion to ask "which band does this activate." A plan can be 100% internally consistent and fully executable while silently covering only one axis of a two-axis directive — nothing about reading the plan in isolation reveals the missing axis; it only becomes visible by holding the plan next to the matrix, which is exactly what this session's required-reading order (matrix before plan) was designed to force. |
+| Impact | If Phases 1-4 execute to full completion exactly as scoped today, the deliverable is 4 (or 5, including the existing player-prop cell) market types × T4 only. The operator's "all five bands" directive remains unaddressed: T1 needs an explicit operator decision to reactivate (GG-153, currently unstaffed) or stays permanently dead per this session's instruction; T2/T3 have no plan box proposing how to generate the volume they currently lack (raw_n=2 and raw_n=0 respectively); T5 has no build at all and its gating experiment (EXP-018) has not run. A team executing this plan faithfully to Phase 4 completion would reasonably believe "coverage" had been delivered while 4 of 5 bands remain untouched — a strategic-scope miss, not a data or code defect, which is why Severity is set HIGH rather than CRITICAL: nothing here risks live capital or corrupts data, but it is a real gap between the operator's stated goal and what the funded plan actually produces. |
+| Discovery | T-441 (2026-08-12), tasked explicitly with reading `COVERAGE_TARGET_MATRIX.md` against `MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 and registering any band-dimension gap found; all cited figures (T1/T2/T3/T5 `kelly_fraction`/`raw_n`/`clean_n`/`phase_active`) verified directly against `execution_bands.py`, `power_calc_results.json`, and the EXP-018 experiment log rather than accepted from the task brief as given. |
+| Resolution | Not resolved by this entry — registration only, per this session's explicit scope (no edits to the phase plan itself, no ADR acceptance). `03_DECISIONS/ADR-0053_market-type-band-composition.md` (this session, PROPOSED, not ACCEPTED) designs the (market_type, band) composition model a future band-activation phase would need, but does not itself add band-activation boxes to `MARKET_EXPANSION_ACTION_PLAN.md` — that remains an open operator decision, tracked in the coverage matrix's own "Open questions for the operator" §2 (band activation order: reactivate T1 vs. build new families only in structurally sound bands). |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
