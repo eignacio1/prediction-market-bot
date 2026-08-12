@@ -217,3 +217,4 @@
 | 2026-08-11T23:56:20Z | T-437 | TIER: STANDARD — outcome-authority verdict (T-437): ledger vs decoupled store, GG-166 vs GG-170 separation |
 | 2026-08-12T00:48:25Z | T-437 | CLOSED — T-437: T-421 store confirmed authoritative (n=69), GG-166/GG-170 separated, 757 outcomes re-derived, T4M-PROJ gate flips TARGET MET -> NOT MET (commit `b748f67`) |
 | 2026-08-12T04:58:08Z | T-440 | T-440: Phase 1 boxes 1.6+1.7 - replay-harness pre-refactor baseline re-run post-T-437, corrected gate wording |
+| 2026-08-12T04:58:09Z | T-441 | T-441: GG-172 registration (band dimension unowned) + ADR-0053 design (market-type x band composition) |
