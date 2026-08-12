@@ -29,3 +29,19 @@ No — the one decision that needed you (whether the next phase should wait on t
 The two thin-depth market types (partial-game winner, player props) are worth revisiting once there's fresh depth data — a FAIL today doesn't mean permanently unusable, but it also isn't something to forget about.
 
 ---
+
+## T-437 (overnight into 2026-08-12) — outcome-authority verdict, one baseball strategy's track record gets corrected
+
+**What changed today, in one paragraph:**
+Two nights ago (T-429), a session found and fixed a bug where the live baseball in-play strategy (T4M-PROJ) was sometimes recording the wrong game's result against a bet — a wall-clock date bug — but a second, unexplained batch of disagreements between two different record-keeping systems was left open. Tonight's session tracked that second batch down: it re-checked a full sample of 69 disputed bets by pulling fresh data from the official source days after the games finished, and every single one agreed with the independent "shadow" record-keeper we built earlier, not with the bot's own ledger. That confirms a second, separate bug: the official stats source sometimes mislabels which game a stat belongs to for a day or two right after the game, then corrects itself. With that settled, the session went through all 1,220 flagged bets and fixed the 757 where the wrong-date bug had actually changed the recorded result — correcting wins to losses and vice versa where the evidence showed the original was wrong. 370 more were flagged but turned out to already have the right result by coincidence, and 93 still need more evidence before they can be corrected (that's now a separate to-do item).
+
+**What this means for your money:**
+No change to real money — still zero real money at risk. But this correction meaningfully changes what we can currently claim about this strategy's track record: after fixing the 757 bad records, the strategy's proven-clean track record shrank and got choppier (net -$110 across the corrected bets), which means the "is this strategy good enough to trust with real money" math now says **not yet** — it had briefly looked like it had crossed that bar, but the corrected numbers show it needs roughly 386 more clean, resolved bets before that claim would be accurate. This is the system doing exactly what it should: a bad number that briefly looked good just got fixed, and the bar didn't move, the data under it moved.
+
+**Does anything need your decision right now?**
+No — nothing needs you today. A follow-up item (finishing the correction for those last 93 bets) is scoped and ready for a future session to just pick up.
+
+**Anything that worried the session, even if not urgent:**
+The underlying question of exactly how long to wait before trusting a freshly-resolved bet's result (since the official source can be wrong for a day or two) is still an open design question, not yet decided — the evidence says "wrong at ~2 days, right by 7-11 days," but nobody has picked a specific rule yet (e.g., "always wait a week"). That's a small decision worth having on the list, not urgent.
+
+---
