@@ -219,3 +219,4 @@
 | 2026-08-12T04:58:08Z | T-440 | T-440: Phase 1 boxes 1.6+1.7 - replay-harness pre-refactor baseline re-run post-T-437, corrected gate wording |
 | 2026-08-12T04:58:09Z | T-441 | T-441: GG-172 registration (band dimension unowned) + ADR-0053 design (market-type x band composition) |
 | 2026-08-12T04:58:09Z | T-439 | T-439: Phase 1 boxes 1.1+1.3 -- market-type registry (keyed market_type x band) + kalshi_client.py series constants registry-driven. TIER: STANDARD. Note: GG-169 pre-reserved-ID collision workaround per T-357/GG-113 applied manually. |
+| 2026-08-12T23:49:48Z | T-439 | CLOSED — T-439 (Block A): market-type registry (market_type x band) built, kalshi_client series constants made registry-driven, 15 new tests. (commit `b636408`) |
