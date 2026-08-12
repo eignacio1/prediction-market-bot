@@ -567,6 +567,12 @@ EXP-017B/C/D decomposed the n=151 MLB T1 Tier-1 book (EXP-017/GG-004). **Key res
 
 ## What Must Happen Next
 
+**2026-08-12 (T-441, isolated worktree `session/20260812T045755Z-phase1-band-dimension`) — GG-172 + ADR-0053 delivered as design-only; implementation explicitly deferred to a future strategic-review session:**
+0. **Nothing forward-looking is blocked or unblocked by this task.** T-441 registered **GG-172** (OPEN — band dimension unowned: the coverage grid's market-type axis is being built by Phase 1-4, but no `(market_type, band)` cell object exists anywhere) and drafted **ADR-0053** (`PROPOSED` — a `MarketBandCell` composition design: per-cell `clean_n`/`n*`, per-cell kill-switch isolation, `RULED_OUT` guard, named game-key correlated-exposure mechanism). No `src/` change; no `kelly_fraction` proposed.
+1. **ADR-0053 is not accepted and must not be treated as authoritative design.** When asked to implement it in full this same session, the operator explicitly redirected to `/session-end` three times rather than authorizing the build — see `DECISION_LOG.md` 2026-08-12 (T-441 row) for the exact exchange. The operator's own words: implementation is left "for the strategic chat window to review and add as an operative task for the upcoming windows." Do not build against `MarketBandCell` until that review happens and produces a staffed T-NNN.
+2. **Real, named overlap risk with T-439** (open/unmerged claim, "market_type x band" registry) is unreconciled — ADR-0053 §5 Judgment Call 1 flags this directly; whoever picks up either task next should check the other before treating either's design as settled.
+3. **No `src/` change, no epoch bump, no gate/sizing change** — pure governance-doc session (GG registration + ADR draft only).
+
 **2026-08-12 (T-440, isolated worktree `session/20260812T045752Z-phase1-replay-baseline`) — Phase 1 boxes 1.6+1.7 complete; boxes 1.1-1.5 are the next real work:**
 0. **T-440 is complete.** Box 1.7's contested test-count baseline resolved (2847 passed/28 skipped/0 failed, fresh measurement). Box 1.6's corrected replay gate wording landed verbatim; post-T-437 re-run confirmed the falsifiable prediction (FAIL counts unchanged: T1 254, T4M-PROJ 666) that outcome re-derivation doesn't move replay results.
 1. **Flagged, not fixed (Hard Rule 11): the replay gate's current-epoch(12) subset has zero T1/MAIN coverage** — 747/747 is T4M-PROJ. Whoever runs box 1.6 after boxes 1.1-1.5 land should read this before trusting the gate to catch a T1-path regression; it currently can't.
