@@ -43,5 +43,18 @@ No — nothing needs you today. A follow-up item (finishing the correction for t
 
 **Anything that worried the session, even if not urgent:**
 The underlying question of exactly how long to wait before trusting a freshly-resolved bet's result (since the official source can be wrong for a day or two) is still an open design question, not yet decided — the evidence says "wrong at ~2 days, right by 7-11 days," but nobody has picked a specific rule yet (e.g., "always wait a week"). That's a small decision worth having on the list, not urgent.
+## T-432 — Ledger invariant suite (data "smoke alarm")
+
+**What changed today, in one paragraph:**
+This is the direct fix for the incident where a bad date field silently corrupted about 44% of a batch of resolved bets, and nobody caught it for four separate work sessions because nothing actually checked whether the numbers in the ledger were *correct* — only that the process that writes them had run. Today's session built that missing check: a script that reads the ledger and independently verifies about a dozen things that should always be true (prices between 0 and 1, profit/loss sign matching win/loss, no position open in both directions on the same bet, etc.), and cross-checks resolved bets against a second, independently-built record of what actually happened in each game. Two of the checks you originally specified turned out to be slightly wrong as written — they would have falsely flagged good data as bad — so those two were corrected before being built, with the reasoning written down.
+
+**What this means for your money:**
+No change today — still zero real money at risk. This is a smoke alarm, not a fix: it's explicitly built to only warn, never to stop or block anything, per your instruction. It ran once and confirmed the earlier corruption issue is still only partially resolved (a related, already-known data problem is still live and being worked separately) — that's not a new problem, just confirmation the old one isn't fully closed yet.
+
+**Does anything need your decision right now?**
+No — nothing needs you today. The smoke alarm runs quietly in the background from now on. There's a written proposal for a future stricter mode, where it could actually block something instead of just warning — but that's not built, and it's explicitly your call whenever you want to consider it, not urgent.
+
+**Anything that worried the session, even if not urgent:**
+One small, isolated oddity turned up: one bet's ticker ID appears to be missing a letter, so it doesn't cleanly match the player's name. It's a single occurrence, doesn't look like it caused any actual harm, and has been noted for whoever next works on how those IDs get generated.
 
 ---

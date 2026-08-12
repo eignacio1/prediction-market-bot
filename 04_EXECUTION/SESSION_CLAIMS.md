@@ -213,5 +213,6 @@
 | 2026-08-11T05:12:00Z | T-436 | CLOSED — 0I.1/0C.12 closed in MARKET_EXPANSION_ACTION_PLAN.md: 360 obs/family, verdict 4/6 PASS (GAME_TOTAL/GAME_WINNER/RUN_LINE/TEAM_TOTAL), 2/6 FAIL (PARTIAL_GAME_WINNER/PLAYER_PROP), neither declared dead; registered GG-171 (ACTIVE_QUEUE.md's T-431-blocks-Phase-1 framing looks stale against T-427's box-1.6 scope finding, left for operator adjudication); merged to main (commit `7e26f7d`) |
 | 2026-08-11T04:58:51Z | T-433 | CLOSED — T-433: ADR-0052 (executable-assertion requirement for GG RESOLVED) + 6-gap retrofit + G6 item 7, merged to main (commit `c64008e`) |
 | 2026-08-11T23:32:45Z | T-436 | CLOSED — T-436 depth verdict delivered (4/6 PASS); GG-171 found+RESOLVED via operator adjudication; Phase 1 (abstraction repair) now UNBLOCKED (commit `e580d65`) |
+| 2026-08-12T00:01:46Z | T-432 | CLOSED — T-432 alarm-only ledger invariant suite merged (PR #69) — GG-166-class corruption now surfaced every session, non-gating (commit `1433891`) |
 | 2026-08-11T23:56:20Z | T-437 | TIER: STANDARD — outcome-authority verdict (T-437): ledger vs decoupled store, GG-166 vs GG-170 separation |
 | 2026-08-12T00:48:25Z | T-437 | CLOSED — T-437: T-421 store confirmed authoritative (n=69), GG-166/GG-170 separated, 757 outcomes re-derived, T4M-PROJ gate flips TARGET MET -> NOT MET (commit `b748f67`) |
