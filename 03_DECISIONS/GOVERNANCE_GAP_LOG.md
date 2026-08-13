@@ -1753,6 +1753,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-174 — `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against Polymarket's real tag taxonomy, and silently returns an empty market set for any other value
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-174 |
+| Category | Architectural placeholder — an unverified literal sitting on a dormant, not-yet-activated code path. |
+| What was missed | `src/prediction_market_bot/c5_execution/venue_adapter.py:257`, inside `PolymarketVenueAdapter`'s CLOB query params: `"tag": "nba",  # KI-019 — Polymarket NBA tag unconfirmed until T-077`. The value has never been confirmed against Polymarket's actual tag taxonomy. If it is wrong, the query returns an empty market set with no error — `ok=True`, zero markets — which is indistinguishable from "no NBA markets currently open" at every calling layer above it. |
+| When it should have been caught | Before Polymarket activation (T-077, gated on operator KYC) — this is pre-existing, known (KI-019), and was already dormant/flagged before this session; re-surfaced here per T-442's explicit instruction to register rather than fix any out-of-scope finding touched during Box 1.2 (VenueAdapter generalization). |
+| Phases it survived | Dormant since Polymarket's `VenueAdapter` implementation was first written — Polymarket is Secondary/KYC-gated per CLAUDE.md's venue map and has never been live-activated, so this literal has never been exercised against real traffic. |
+| Why it survived | No test exercises `PolymarketVenueAdapter` against a live or recorded Polymarket response; the class exists as infrastructure-built-ahead-of-activation. A silent empty-result failure mode has no signal to trip until the venue is actually turned on. |
+| Impact | None today (T4M-PROJ/Kalshi is the only live venue; Polymarket is inert). At T-077 activation, if the tag is wrong, `PolymarketVenueAdapter.fetch_player_points_markets()` / the new general `fetch_markets()` (T-442, Box 1.2) will silently report zero available markets rather than erroring — a silent-empty-result footgun, not a crash, so it could pass casual smoke-testing at activation time undetected. |
+| Discovery | T-442 (2026-08-13), Box 1.2 (VenueAdapter generalization) — found while reading `venue_adapter.py` in full to generalize `fetch_player_points_markets()` off "player points" onto the market-type registry. Out of T-442's declared scope (abstraction repair only); registered and not touched, per Hard Rule 11 and the task's explicit instruction. |
+| Resolution | Not resolved by this entry — registration only. Fix belongs to T-077 (Polymarket KYC/activation): confirm the real tag value against Polymarket's live CLOB API before or at activation, replacing the hardcoded literal. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
