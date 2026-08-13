@@ -207,7 +207,18 @@ Run against the **current, unrefactored** code path this must pass trivially
 starts changing `open_position()`. See run output appended below / in the
 session report.
 
-## Task 3 — vig-cascade branch coverage (box 1.5 target, `paper_trader.py:460-467`)
+## Task 3 — vig-cascade branch coverage (box 1.5 target, `paper_trader.py:460-467` pre-refactor)
+
+**Post-refactor note (T-442, 2026-08-13):** this citation was accurate against
+`paper_trader.py:460-467` at the time it was written (confirmed by direct grep
+at task start — no off-by-one was actually present, despite the task
+assignment's warning that it might be). Box 1.5 has since extracted this
+branch into a standalone `_directional_edge()` function plus a
+`_NO_DIRECTION_VIG_COEFFICIENT` per-`(market_type, band)` table, now at
+`paper_trader.py:93-114`, called from `open_position()` at lines 512-514. The
+branch below is preserved verbatim as the pre-refactor baseline the harness
+validated against — it is history, not current code; do not edit the sample
+itself.
 
 ```python
 if direction == "YES":
