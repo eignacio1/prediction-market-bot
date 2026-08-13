@@ -1,8 +1,19 @@
 # Market Expansion — Action Plan (checkbox-tracked)
 
-**Owner:** Operator (Earl) | **Started:** 2026-07-30 | **Last updated:** 2026-08-04
+**Owner:** Operator (Earl) | **Started:** 2026-07-30 | **Last updated:** 2026-08-12
 **Specs:** `02_ARCHITECTURE_DESIGN/MARKET_UNIVERSE_SURVEY_SPEC.md` · `02_ARCHITECTURE_DESIGN/SEGMENTED_POOL_ARCHITECTURE.md`
 **Rule:** a box is checked only when the artifact exists and is committed. "Done in a session" is not done.
+
+> ### ▶ READ THE TARGET FIRST — `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md`
+>
+> **This plan is not a checklist. It is the path from 1 cell to ~25.** Operator directive, 2026-08-12: cover the standard betting mechanisms — moneyline, spread/run line, totals (O/U), team totals — **across all five execution bands**. Today: one cell (player hits, `KXMLBHIT`, band T4M-PROJ).
+>
+> **Phase 1 builds the ROWS** (market types) · **Phase 3 builds the COLUMNS** (bands, safely segmented) · **Phase 2 tests whether the rows are worth having.**
+>
+> Three things this plan does *not* say, which the matrix does — hold them while reading every phase below:
+> 1. **The band dimension is unowned.** Phases 1–4 are written almost entirely in market-type terms. T2 `raw_n=2`, T3 `raw_n=0`, T5 never traded, T1 zeroed on ruin geometry (ADR-0048/GG-135). "All five bands" means activating three bands that have essentially never traded — scope that appears nowhere below. **ID reserved as GG-172; registration is Block C / T-441 in `04_EXECUTION/ACTIVE_QUEUE.md` and has not happened yet as of 2026-08-12.**
+> 2. **The matrix is not uniformly meaningful.** `GAME_WINNER` measures thick pre-slate and thin mid-slate — the inverse of props (0H.6, 0I.1). Moneyline is plausibly **T1/T2/T3-shaped, not T4-shaped**. A cell ruled out on measured depth is a **completed** cell, not a gap.
+> 3. **Generality and edge may point in opposite directions.** The only positive result is on player props — thin, low-attention, exactly the efficiency gradient CLAUDE.md targets. Expansion is toward the most-attended markets on the board. Expanding tests *generality* and should be **expected** to yield thinner edge. Predict it in advance or the result is unfalsifiable. Open operator decision.
 
 ---
 
