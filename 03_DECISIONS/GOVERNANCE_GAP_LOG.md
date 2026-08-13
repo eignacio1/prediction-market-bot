@@ -1753,6 +1753,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-176 — `scripts/lib_chain_archive.py`'s `archive_chain()` silently no-ops whenever a nav file's `**Last reviewed` chain has exactly 1 entry, so the pointer never advances and every session sees a stale "Last reviewed" line
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-176 |
+| Category | Tooling defect — a generator step silently no-ops instead of doing the one thing its caller (the `/session-end` skill) documents it as doing. |
+| What was missed | `scripts/lib_chain_archive.py`'s `archive_chain()` (lines ~83-84): `if n_entries <= 1: return None`, with the inline rationale "avoids archiving a single-entry 'chain' every session when there's nothing to compress yet." The intent (don't archive a trivial 1-line chain) is reasonable, but the implementation conflates "nothing to archive" with "nothing to update" — it also skips writing the *current* session's status line into that single entry, so the pointer itself never advances. As of this session, `TODO_NEXT.md`, `MEMORY_BANK.md`, and `PLAN.md` all sit at exactly 1 `**Last reviewed` entry each (dated 2026-08-10T23:49:00Z, T-434) and `scripts/generate_session_artifacts.py` printed `"nothing to collapse (0 or 1 chain entries)"` for all three on this session's real run — meaning every session since T-434 that ran `/session-end` has had its chain-advance step silently no-op, and the skill's own text ("that line is now collapsed and regenerated automatically by Step 6's `scripts/generate_session_artifacts.py` call") is not true under this condition. |
+| When it should have been caught | At T-430 (2026-08-07), when `generate_session_artifacts.py` and `lib_chain_archive.py` were built — the single-entry boundary case was evidently considered (the inline comment shows deliberate intent) but the consequence (permanent staleness once a file drops to 1 entry) was not traced through. |
+| Phases it survived | At least 3 sessions post-T-434 (2026-08-10) that ran `/session-end` against these three files, including T-443/this session, all silently affected. |
+| Why it survived | The generator's console output ("nothing to collapse") reads as a benign no-op rather than a failure, and no prior session's close-out cross-checked the "Last reviewed" line's actual timestamp against the session's own date after running the generator. |
+| Impact | Cosmetic/navigational only — the three nav files' "Last reviewed" pointer understates recency (currently showing T-434/2026-08-10 despite multiple sessions of real edits since), which could mislead a future session into under-trusting how current a file's content is, or over-relying on `session_delta.sh`'s checkpoint diff (which is unaffected — checkpoint pointer writes are a separate mechanism, confirmed still working correctly this session) instead of the chain line. No data loss, no incorrect archival. |
+| Discovery | T-443 (2026-08-13), during `/session-end` Step 6-gen — the real (non-dry-run) `generate_session_artifacts.py` run printed the no-op message for all three files; source inspection of `lib_chain_archive.py` confirmed the `n_entries <= 1` short-circuit as the cause. Out of T-443's declared scope (merge/checkbox task); registered and not fixed, per Hard Rule 11. |
+| Resolution | Not resolved by this entry — registration only. Fix requires `archive_chain()` to distinguish "archive the old entries" (skip when n_entries<=1, correct as-is) from "write/update the current entry" (should still happen even at n_entries==1) — likely a small logic split rather than a rewrite. A T-NNN should be registered against this GG before anyone touches `lib_chain_archive.py`. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ### GG-175 — Assertion N (`ticker_player_token_consistent`) has 1 live violation in epoch 12: ticker token `NLOPE` vs. name "Nicky Lopez" — a short-token collision the matcher doesn't handle
 
 **Status:** OPEN · **Severity:** LOW
