@@ -46,6 +46,10 @@ from prediction_market_bot.c5_execution.kalshi_client import (
     SERIES_PLAYER_POINTS,
     _utc_now,
 )
+from prediction_market_bot.c5_execution.market_type_registry import (
+    MarketType,
+    series_ticker_for,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -85,13 +89,24 @@ class VenueAdapter(Protocol):
         """Verify API key and connectivity. Call before any other method."""
         ...
 
+    def fetch_markets(
+        self,
+        market_type: MarketType,
+        status: str = "open",
+    ) -> tuple[bool, DS02Snapshot]:
+        """
+        Fetch all open markets for the given market family (box 1.2, T-442).
+        Returns (ok, snapshot) where each PlayerMarket has venue field set.
+        """
+        ...
+
     def fetch_player_points_markets(
         self,
         sport: str = "NBA",
         status: str = "open",
     ) -> tuple[bool, DS02Snapshot]:
         """
-        Fetch all open player-points markets for the given sport.
+        Legacy sport-string interface — thin shim over fetch_markets() (box 1.2).
         Returns (ok, snapshot) where each PlayerMarket has venue field set.
         """
         ...
@@ -135,21 +150,31 @@ class KalshiVenueAdapter:
     def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         return self._client.check_connectivity()
 
-    def fetch_player_points_markets(
+    def fetch_markets(
         self,
-        sport: str = "NBA",
+        market_type: MarketType,
         status: str = "open",
     ) -> tuple[bool, DS02Snapshot]:
-        _SPORT_SERIES: dict[str, str] = {
-            "nba": SERIES_PLAYER_POINTS,
-            "mlb": SERIES_MLB_PLAYER_HITS,
-        }
-        series = _SPORT_SERIES.get(sport.lower(), SERIES_PLAYER_POINTS)
+        series = series_ticker_for(market_type)
         ok, snapshot = self._client.fetch_player_points_markets(status=status, series_ticker=series)
         if not ok:
             return False, snapshot
         tagged = [_tag_market(m, self.venue_id) for m in snapshot.markets]
         return True, DS02Snapshot(fetched_at=snapshot.fetched_at, markets=tagged)
+
+    # Legacy sport-string interface (box 1.2, T-442) — thin shim over fetch_markets().
+    _SPORT_TO_MARKET_TYPE: dict[str, MarketType] = {
+        "nba": MarketType.NBA_PLAYER_POINTS,
+        "mlb": MarketType.MLB_PLAYER_PROP_HITS,
+    }
+
+    def fetch_player_points_markets(
+        self,
+        sport: str = "NBA",
+        status: str = "open",
+    ) -> tuple[bool, DS02Snapshot]:
+        market_type = self._SPORT_TO_MARKET_TYPE.get(sport.lower(), MarketType.NBA_PLAYER_POINTS)
+        return self.fetch_markets(market_type, status=status)
 
     def fetch_market_detail(
         self, ticker: str
@@ -237,18 +262,23 @@ class PolymarketVenueAdapter:
         except Exception as exc:
             return False, {"error": str(exc), "venue": "polymarket", "reachable": False}
 
-    def fetch_player_points_markets(
-        self, sport: str = "NBA", status: str = "open"
+    def fetch_markets(
+        self, market_type: MarketType, status: str = "open"
     ) -> tuple[bool, DS02Snapshot]:
         """
-        Fetch open NBA player-points markets from Polymarket US CLOB.
+        Fetch open markets from Polymarket US CLOB (box 1.2, T-442).
 
-        Normalises Polymarket's market format to PlayerMarket dataclass.
+        Only MarketType.NBA_PLAYER_POINTS is implemented today — Polymarket's
+        _parse_market() regex and tag param are NBA-player-points-shaped.
+        Any other market_type returns an empty, ok=False snapshot rather than
+        silently mis-parsing a different market shape as NBA player points.
 
         NOTE: Endpoint paths and response schema need verification against
         live API docs when ACC-0003 is provisioned. The structure below
         reflects Polymarket's known CLOB architecture.
         """
+        if market_type is not MarketType.NBA_PLAYER_POINTS:
+            return False, DS02Snapshot(fetched_at=_utc_now(), markets=[])
         try:
             import requests
             params = {
@@ -277,6 +307,12 @@ class PolymarketVenueAdapter:
 
         except Exception as exc:
             return False, DS02Snapshot(fetched_at=_utc_now(), markets=[])
+
+    def fetch_player_points_markets(
+        self, sport: str = "NBA", status: str = "open"
+    ) -> tuple[bool, DS02Snapshot]:
+        """Legacy sport-string interface — thin shim over fetch_markets() (box 1.2)."""
+        return self.fetch_markets(MarketType.NBA_PLAYER_POINTS, status=status)
 
     def fetch_market_detail(self, ticker: str) -> tuple[bool, Optional[PlayerMarket]]:
         """Fetch a single market by condition_id (Polymarket's ticker equivalent)."""
@@ -402,10 +438,16 @@ class DFSPickemVenueAdapter:
     def check_connectivity(self) -> tuple[bool, dict[str, Any]]:
         raise NotImplementedError("DFS pick'em adapter not yet implemented — new ADR required")
 
+    def fetch_markets(
+        self, market_type: MarketType, status: str = "open"
+    ) -> tuple[bool, DS02Snapshot]:
+        raise NotImplementedError("DFS pick'em adapter not yet implemented — new ADR required")
+
     def fetch_player_points_markets(
         self, sport: str = "NBA", status: str = "open"
     ) -> tuple[bool, DS02Snapshot]:
-        raise NotImplementedError("DFS pick'em adapter not yet implemented — new ADR required")
+        """Legacy sport-string interface — thin shim over fetch_markets() (box 1.2)."""
+        return self.fetch_markets(MarketType.NBA_PLAYER_POINTS, status=status)
 
     def fetch_market_detail(self, ticker: str) -> tuple[bool, Optional[PlayerMarket]]:
         raise NotImplementedError("DFS pick'em adapter not yet implemented — new ADR required")
