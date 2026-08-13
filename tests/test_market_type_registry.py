@@ -1,0 +1,160 @@
+"""
+Tests for market_type_registry.py (T-439, Market Expansion Phase 1 box 1.1/1.3).
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from prediction_market_bot.execution_bands import ExecutionBand
+from prediction_market_bot.c5_execution.market_type_registry import (
+    MARKET_TYPE_REGISTRY,
+    CellStatus,
+    MarketType,
+    MarketTypeCell,
+    cells_by_status,
+    cells_for_market_type,
+    get_cell,
+    series_ticker_for,
+)
+
+
+# ---------------------------------------------------------------------------
+# Legacy-constant regression guard (box 1.3's explicit requirement)
+# ---------------------------------------------------------------------------
+
+
+class TestLegacyAliasRegression:
+    """The two pre-existing kalshi_client.py constants must keep resolving to
+    their historical literal values through the registry — a value drift here
+    would silently misroute every NBA/MLB market-data fetch."""
+
+    def test_series_player_points_alias_unchanged(self):
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_PLAYER_POINTS
+        assert SERIES_PLAYER_POINTS == "KXNBAPTS"
+
+    def test_series_mlb_player_hits_alias_unchanged(self):
+        from prediction_market_bot.c5_execution.kalshi_client import SERIES_MLB_PLAYER_HITS
+        assert SERIES_MLB_PLAYER_HITS == "KXMLBHIT"
+
+    def test_aliases_match_registry_lookup(self):
+        from prediction_market_bot.c5_execution.kalshi_client import (
+            SERIES_MLB_PLAYER_HITS,
+            SERIES_PLAYER_POINTS,
+        )
+        assert SERIES_PLAYER_POINTS == series_ticker_for(MarketType.NBA_PLAYER_POINTS)
+        assert SERIES_MLB_PLAYER_HITS == series_ticker_for(MarketType.MLB_PLAYER_PROP_HITS)
+
+
+# ---------------------------------------------------------------------------
+# Registry shape / starting-state honesty
+# ---------------------------------------------------------------------------
+
+
+class TestRegistryStartingState:
+    def test_exactly_one_active_cell(self):
+        active = cells_by_status(CellStatus.ACTIVE)
+        assert len(active) == 1
+        cell = active[0]
+        assert cell.market_type is MarketType.MLB_PLAYER_PROP_HITS
+        assert cell.band is ExecutionBand.T4M_PROJ
+
+    def test_no_cells_ruled_out_yet(self):
+        """Phase 0-I's depth signal exists but the operator has not promoted
+        either family to a kill decision ('neither declared dead') — the
+        registry must not invent a verdict that isn't the operator's."""
+        assert cells_by_status(CellStatus.RULED_OUT) == []
+
+    def test_blocked_cells_are_the_mlb_native_t4_subbands(self):
+        blocked = {cell.band for cell in cells_by_status(CellStatus.BLOCKED)}
+        assert blocked == {ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW}
+
+    def test_every_other_cell_is_not_implemented_or_dark(self):
+        allowed = {CellStatus.NOT_IMPLEMENTED, CellStatus.DARK}
+        for cell in MARKET_TYPE_REGISTRY.values():
+            if cell.status in (CellStatus.ACTIVE, CellStatus.BLOCKED):
+                continue
+            assert cell.status in allowed, cell
+
+    def test_mlb_families_other_than_player_prop_have_no_active_or_blocked_cells(self):
+        other_families = [
+            MarketType.MLB_MONEYLINE,
+            MarketType.MLB_RUN_LINE,
+            MarketType.MLB_GAME_TOTAL,
+            MarketType.MLB_TEAM_TOTAL,
+            MarketType.MLB_PARTIAL_GAME,
+        ]
+        for market_type in other_families:
+            for cell in cells_for_market_type(market_type):
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+
+
+# ---------------------------------------------------------------------------
+# Key shape — pair, not market_type alone
+# ---------------------------------------------------------------------------
+
+
+class TestRegistryKeyedOnPair:
+    def test_get_cell_requires_both_market_type_and_band(self):
+        active_cell = get_cell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T4M_PROJ)
+        assert active_cell.status is CellStatus.ACTIVE
+
+        # Same market type, different band -> different status. Proves the
+        # band is part of the key, not an incidental attribute.
+        pregame_cell = get_cell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T1_MULTI_DAY)
+        assert pregame_cell.status is CellStatus.NOT_IMPLEMENTED
+
+    def test_unseeded_pair_raises_keyerror(self):
+        with pytest.raises(KeyError):
+            get_cell(MarketType.MLB_MONEYLINE, ExecutionBand.T4M_PROJ)
+
+    def test_series_ticker_constant_across_bands_for_same_family(self):
+        tickers = {
+            cell.series_ticker
+            for cell in cells_for_market_type(MarketType.MLB_PLAYER_PROP_HITS)
+        }
+        assert tickers == {"KXMLBHIT"}
+
+
+# ---------------------------------------------------------------------------
+# RULED_OUT is a first-class state — schema enforces its evidence fields
+# ---------------------------------------------------------------------------
+
+
+class TestRuledOutRequiresEvidence:
+    def test_ruled_out_without_reason_raises(self):
+        import datetime
+        with pytest.raises(ValueError):
+            MarketTypeCell(
+                MarketType.MLB_GAME_TOTAL,
+                ExecutionBand.T1_MULTI_DAY,
+                CellStatus.RULED_OUT,
+                measured_date=datetime.date(2026, 8, 11),
+            )
+
+    def test_ruled_out_without_measured_date_raises(self):
+        with pytest.raises(ValueError):
+            MarketTypeCell(
+                MarketType.MLB_GAME_TOTAL,
+                ExecutionBand.T1_MULTI_DAY,
+                CellStatus.RULED_OUT,
+                reason="depth gate failed 3/3 pre-slate",
+            )
+
+    def test_ruled_out_with_both_fields_succeeds(self):
+        import datetime
+        cell = MarketTypeCell(
+            MarketType.MLB_GAME_TOTAL,
+            ExecutionBand.T1_MULTI_DAY,
+            CellStatus.RULED_OUT,
+            reason="depth gate failed 3/3 pre-slate",
+            measured_date=datetime.date(2026, 8, 11),
+        )
+        assert cell.status is CellStatus.RULED_OUT
+
+    def test_active_cell_does_not_require_reason_or_date(self):
+        cell = MarketTypeCell(
+            MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T4M_PROJ, CellStatus.ACTIVE,
+        )
+        assert cell.reason is None
+        assert cell.measured_date is None

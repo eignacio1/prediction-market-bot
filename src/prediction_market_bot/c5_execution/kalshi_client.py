@@ -82,6 +82,11 @@ from typing import Any
 
 import requests
 
+from prediction_market_bot.c5_execution.market_type_registry import (
+    MarketType,
+    series_ticker_for,
+)
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -130,9 +135,12 @@ def _price_discovery_url() -> str:
     return _KALSHI_LIVE_BASE_URL
 
 
-SERIES_PLAYER_POINTS = "KXNBAPTS"
+# Box 1.3 (Market Expansion Phase 1): these resolve through market_type_registry.py
+# rather than hardcoding series tickers here. Names kept as aliases so no downstream
+# caller (venue_adapter.py, run_t2/t3/t4_mlb_*.py, tests) needs to change.
+SERIES_PLAYER_POINTS: str = series_ticker_for(MarketType.NBA_PLAYER_POINTS)
 
-SERIES_MLB_PLAYER_HITS: str = "KXMLBHIT"  # Confirmed 2026-06-23 via GET /series (live Kalshi API)
+SERIES_MLB_PLAYER_HITS: str = series_ticker_for(MarketType.MLB_PLAYER_PROP_HITS)
 
 # Request timeouts and retry config
 REQUEST_TIMEOUT_S = 15

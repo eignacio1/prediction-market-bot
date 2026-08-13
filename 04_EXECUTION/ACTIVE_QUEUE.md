@@ -5,6 +5,8 @@
 **Gap log at write time: 57 entries / 46 OPEN** on `origin/main`; **58 / 47** on D's unmerged branch. Do not quote either — re-run `grep -cE "^### GG-[0-9]"` and `grep -cE "^\*\*Status:\*\* OPEN\b"`.
 **Free IDs:** T-443+ · GG-175+ · ADR-0054+. (Taken: T-442, GG-174, ADR-0053.)
 
+**T-443 merge note (this window):** `origin/main`'s prior copy of this file carried the full T-431/T-432/T-433/T-436 task queue verbatim — all four now closed windows (T-432 → PR #69; T-433 → ADR-0052 `c64008e`; T-436's depth verdicts are folded into `COVERAGE_TARGET_MATRIX.md`; T-431's disagreement finding feeds GG-170/T-437). Per this file's own rule ("delete a block from this file when its window closes"), that content was dropped on merge rather than concatenated — full text remains in git history (`git log --oneline -- 04_EXECUTION/ACTIVE_QUEUE.md`, commits `72b414c`/`a80739e`/`7d28818`/`0499d0b`) and in `DECISION_LOG.md`.
+
 ---
 
 ## STATUS — verified against commits, not summaries
