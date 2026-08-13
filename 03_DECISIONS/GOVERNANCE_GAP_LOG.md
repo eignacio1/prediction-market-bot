@@ -1753,6 +1753,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-175 — Assertion N (`ticker_player_token_consistent`) has 1 live violation in epoch 12: ticker token `NLOPE` vs. name "Nicky Lopez" — a short-token collision the matcher doesn't handle
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-175 |
+| Category | Systemic blind spot — a matching heuristic with an unhandled edge case, surfaced by the invariant suite rather than by design review. |
+| What was missed | `scripts/assert_ledger_invariants.py` assertion N (`ticker_player_token_consistent`), band T4M-PROJ: `n_applicable=2644, n_violations=1 (0.04%)`, `first_seen_epoch=12=last_seen_epoch=12`. Example: `player_block=TEXNLOPE tok1=NLOPEZ tok2=NLOPEZ name=Nicky Lopez`. The ticker embeds a short player token (`NLOPE`) that the assertion's tokenizer doesn't reconcile cleanly against the stored full name for this specific player, despite the position's ticker/name pairing itself being correct. |
+| When it should have been caught | Not applicable as a process-gate miss — assertion N is itself the catch mechanism (Q7, ALARM-ONLY per CLAUDE.md). This entry exists because the violation is live and unregistered, not because a gate failed to run. |
+| Phases it survived | Present since at least epoch 12 (current logic epoch); single row, isolated. |
+| Why it survived | Extremely low rate (1/2644 in this band) on a short, ambiguous token (`NLOPE` collides with multiple plausible name-abbreviation schemes); no prior session's pytest/invariant run flagged it as a stop condition because assertion N was added in a later retrofit (post-T-432's original A-H baseline) with no documented "was this ever clean" checkpoint to compare against. |
+| Impact | None observed — the underlying position's ticker-to-player mapping is correct per the example (`Nicky Lopez` ↔ `NLOPE`); this is the assertion's tokenizer failing to confirm a true match, not a mismatched position. No P&L or sizing impact identified. |
+| Discovery | T-443 (2026-08-13), STEP 2 (post-merge invariant-suite verification after merging T-442/PR #73). Out of T-443's declared scope (merge + checkbox verification only); registered and not touched, per Hard Rule 11 and the task's explicit instruction that a new-violating assertion is a stop-and-register condition rather than a fix-in-session condition. |
+| Resolution | Not resolved by this entry — registration only. Needs: (1) confirm whether assertion N has ever run clean on this band in a prior committed report (no baseline found in this session's search of the gap log/archive); (2) if the underlying ticker/name pairing is confirmed correct on manual review (as the single example suggests), the fix is loosening assertion N's tokenizer for short-token names, not the ledger data itself. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ### GG-174 — `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against Polymarket's real tag taxonomy, and silently returns an empty market set for any other value
 
 **Status:** OPEN · **Severity:** MEDIUM
