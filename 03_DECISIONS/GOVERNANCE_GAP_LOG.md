@@ -1729,6 +1729,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-173 — `test_t187e_mlb_resolve.py::TestFetchMlbHits::test_multiple_splits_matches_correct_date` computes its two mocked dates from the live clock at two different times (module-import time vs. test-execution time), so a CI run whose collection-to-execution window straddles UTC midnight can make both dates collide and the test fail
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-173 |
+| Category | Test-infrastructure flakiness — a test asserting on two independently-computed `date.today()`-derived values with no fixed/frozen clock. |
+| What was missed | `tests/test_t187e_mlb_resolve.py` line 31 sets a module-level constant `PAST_DATE = (date.today() - timedelta(days=1)).isoformat()`, evaluated once at test-collection/import time. `test_multiple_splits_matches_correct_date` (~line 405) separately computes `two_days_ago = (date.today() - timedelta(days=2)).isoformat()` inside the test body, evaluated at test-execution time. The test mocks an API response with one split at each date and asserts `_fetch_mlb_hits` returns the split matching `PAST_DATE`. If real wall-clock UTC midnight passes between module import and this test's execution — as it did during PR #72's CI run (job `31652742167`; test executed at `2026-08-13T00:00:45Z` per the failure log, well after suite collection at `~2026-08-12T23:58Z`) — `PAST_DATE` (frozen at Aug-12 minus 1 day = Aug-11) and `two_days_ago` (computed fresh at Aug-13 minus 2 days = Aug-11) both resolve to the same date string. The two mocked splits collide on date, the function under test legitimately cannot disambiguate them, and the assertion fails (`assert 0.0 == 3.0`) — not because of a production-code defect. |
+| When it should have been caught | Test authoring/review — any test asserting date-comparison logic should freeze or fix its clock references (e.g. `freezegun`, or compute both dates from a single `date.today()` call) rather than deriving two dates from two independent live-clock reads. |
+| Phases it survived | Present since this test file's introduction (GG-069/T-221 era); never triggered before because it requires the rare coincidence of a CI run's test-collection-to-this-test's-execution window straddling a UTC midnight boundary. |
+| Why it survived | Passes deterministically in every run that doesn't straddle midnight — which is the overwhelming majority of runs, local and CI alike. Local full-suite runs during this session (both pre- and post-merge) and an isolated re-run of just this test all passed, since none of them crossed midnight during execution. No CI/local timing-skew check exists to catch this class of test. |
+| Impact | Blocked PR #72's merge (STANDARD-tier `/session-end` Step 8) via a required CI check failure unrelated to that PR's actual content (`market_type_registry.py`, T-439) — a false-negative gate. Re-running the same CI job outside the midnight window (`gh run rerun 31652742167 --failed`) is expected to pass, confirming this diagnosis; no production code was touched to work around it. Low severity: no live-trading or data-integrity impact, purely a test-fragility/CI-friction issue, and the failure window is astronomically narrow (~seconds per day, only when a CI run's timing happens to straddle it). |
+| Discovery | T-439 close-out (2026-08-12/13), while investigating a CI-only failure that did not reproduce locally in full-suite or isolated runs. Root cause identified by comparing the failing test's CI execution timestamp against its two date-construction call sites, not by reproducing the failure directly. |
+| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (defect discovered outside T-439's declared Block A scope: `market_type_registry.py` + `kalshi_client.py` aliases; this test file and `run_resolve_mlb.py` belong to the unrelated GG-166/T-421/T-429 resolution-layer work). Fix (when picked up): compute both `PAST_DATE`-equivalent and `two_days_ago` from one shared `date.today()` call, or freeze the clock for the test module. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
