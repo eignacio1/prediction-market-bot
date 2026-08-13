@@ -60,6 +60,7 @@ except ImportError:  # pragma: no cover - non-POSIX fallback
 import pandas as pd
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c5_execution.market_type_registry import MarketType
 from prediction_market_bot.logic_epoch import (
     CURRENT_APPROVAL_COMMIT,
     CURRENT_LOGIC_EPOCH,
@@ -71,6 +72,46 @@ if TYPE_CHECKING:
 COMPONENT = "C5-PAPER"
 
 INITIAL_BANKROLL_USD: float = 1000.00
+
+# Box 1.5 (T-442): NO-direction vig coefficient per (market_type, band) cell,
+# extracted from the inline if/elif/band cascade that used to live directly
+# in open_position(). YES-direction bets never consult this table — they use
+# gross_edge directly regardless of band (see _directional_edge() below).
+# A (market_type, band) pair with no entry here falls through to coefficient
+# 0.0, which reproduces the pre-extraction "else: -gross_edge" branch exactly.
+#
+# Coefficients are pinned by prior DS sign-off, per band, and must not change
+# without a new sign-off (ADR-0043 §D3 scopes sign-off per-band, not
+# globally):
+#   T4M-PROJ = 2.0 — ADR-0043 (GG-113's vig-sign derivation).
+#   T1       = 1.0 — GG-119/ADR-0045 (T1's gross_edge already embeds
+#              half_spread, so 1.0*vig == 2.0*half_spread exactly).
+# All cells below are MLB_PLAYER_PROP_HITS because that is the only
+# market_type with live band traffic today — this table is what lets a
+# future market type (e.g. MLB_MONEYLINE) register its own per-band
+# coefficients without touching open_position()'s logic again.
+_NO_DIRECTION_VIG_COEFFICIENT: dict[tuple[MarketType, str], float] = {
+    (MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ"): 2.0,
+    (MarketType.MLB_PLAYER_PROP_HITS, "T1"): 1.0,
+}
+
+
+def _directional_edge(
+    direction: str,
+    band: str | None,
+    market_type: MarketType,
+    gross_edge: float,
+    vig: float,
+) -> float:
+    """
+    Pure extraction of the vig cascade formerly inlined in open_position()
+    (box 1.5, T-442). See _NO_DIRECTION_VIG_COEFFICIENT above for the
+    per-cell coefficients and their DS-sign-off provenance.
+    """
+    if direction == "YES":
+        return gross_edge
+    coeff = _NO_DIRECTION_VIG_COEFFICIENT.get((market_type, band), 0.0)
+    return -gross_edge - coeff * vig
 
 # GG-034: a closed position carries `pnl` (resolved/CLOSED) XOR `exit_pnl`
 # (early-exit/EXITED). The two keys are mutually exclusive per position, so
@@ -380,13 +421,14 @@ class PaperTrader:
     def open_position(
         self,
         approval: dict[str, Any],
-        player_name: str,
-        player_id: int,
         kalshi_ticker: str,
-        kalshi_threshold: int,
         mid_price: float,
         vig: float,
         game_date: str,
+        player_name: str | None = None,
+        player_id: int | None = None,
+        kalshi_threshold: int | None = None,
+        market_type: MarketType | None = None,
         session_id: str | None = None,
         pool_isolated: bool = False,
         h_so_far_at_entry: int | None = None,
@@ -400,6 +442,16 @@ class PaperTrader:
         Used for T4 paper mode, where T4 tracks its own isolated pool (ADR-0023:
         pool_isolated=True hardcoded) so T1 and T4 do not compete for the same
         bankroll. Logs to C6. Returns (ok, position_record).
+
+        player_name/player_id/kalshi_threshold (box 1.4, T-442) are optional —
+        meaningful only for player-prop markets (e.g. KXMLBHIT); a moneyline,
+        run-line, or totals bet leaves them None. kalshi_ticker/mid_price/vig/
+        game_date are universal to every market type and remain required.
+
+        market_type (box 1.5, T-442) selects the vig-cascade cell in
+        _NO_DIRECTION_VIG_COEFFICIENT. Every existing caller omits it, so it
+        defaults to MLB_PLAYER_PROP_HITS — the only market_type with live
+        band traffic today — reproducing pre-extraction behavior exactly.
         """
         with self._lock, self._file_lock():
             # GG-034: re-read the latest committed state so a concurrent runner's
@@ -457,14 +509,10 @@ class PaperTrader:
             # cancel/correct it per ADR-0043's derivation), while T1 needs
             # only -1.0*vig, since 1.0*vig == 2.0*half_spread exactly. Mirrors
             # run_mlb_paper_trade.py::_directional_edge()'s NO branch.
-            if direction == "YES":
-                _directional_gross = gross_edge
-            elif band == "T4M-PROJ":
-                _directional_gross = -gross_edge - 2.0 * vig
-            elif band == "T1":
-                _directional_gross = -gross_edge - 1.0 * vig
-            else:
-                _directional_gross = -gross_edge
+            _resolved_market_type = market_type or MarketType.MLB_PLAYER_PROP_HITS
+            _directional_gross = _directional_edge(
+                direction, band, _resolved_market_type, gross_edge, vig
+            )
             fee_net_edge = round(_directional_gross - fee_per_contract, 6)
             probable_injury_signal = bool(model_p > 0.0 and abs(model_p - mid_price) > 0.25)
 
