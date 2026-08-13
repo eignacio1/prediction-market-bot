@@ -225,3 +225,4 @@
 | 2026-08-12T05:24:58Z | T-441 | CLOSED — T-441 closed design-only — GG-172 registered, ADR-0053 (MarketBandCell) drafted PROPOSED; operator declined "proceed in full" and redirected to /session-end, deferring build to a future strategic-review session. (commit `999030b`) |
 | 2026-08-13T00:12:37Z | T-442 | T-442: Phase 1 boxes 1.2+1.4+1.5 - VenueAdapter/open_position/vig cascade generalization |
 | 2026-08-13T00:46:07Z | T-442 | CLOSED — T-442: Phase 1 boxes 1.2+1.4+1.5 - VenueAdapter/open_position/vig-cascade generalized; GG-174 registered; GG-166 regression-pinned (commit `4be5b59`) |
+| 2026-08-13T01:20:37Z | T-443 | T-443: merge D (T-442) to main; check Phase 1 boxes 1.1-1.7; correct stale box text in MARKET_EXPANSION_ACTION_PLAN.md. TIER: STANDARD. |
