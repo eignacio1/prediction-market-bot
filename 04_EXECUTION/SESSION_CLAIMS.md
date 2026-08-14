@@ -230,3 +230,4 @@
 | 2026-08-13T01:38:22Z | T-443 | CLOSED — /session-end close-out: SESSION_HANDOFF_20260813_0137.md written, TODO_NEXT/MEMORY_BANK updated, checkpoint pointer advanced to e88d4a1 (commit `e88d4a1`) |
 | 2026-08-14T13:54:05Z | T-445 | T-445: Phase 1 box 1.8 — CLAUDE.md market-type-registry claim + efficiency-gradient departure correction. TIER: MICRO. |
 | 2026-08-14T13:54:16Z | T-444 | T-444: Phase 1 exit gate - replay harness re-run against refactored write path, box 1.6 verdict. TIER: STANDARD. |
+| 2026-08-14T14:28:24Z | T-444 | CLOSED — T-444: independent replay-harness re-run confirms T-442's write-path refactor is behavior-preserving; Phase 1 box 1.6 checked PASS. (commit `ac5414a`) |
