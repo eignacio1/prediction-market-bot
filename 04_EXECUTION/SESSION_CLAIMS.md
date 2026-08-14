@@ -233,3 +233,4 @@
 | 2026-08-14T13:54:16Z | T-444 | T-444: Phase 1 exit gate - replay harness re-run against refactored write path, box 1.6 verdict. TIER: STANDARD. |
 | 2026-08-14T14:28:24Z | T-444 | CLOSED — T-444: independent replay-harness re-run confirms T-442's write-path refactor is behavior-preserving; Phase 1 box 1.6 checked PASS. (commit `ac5414a`) |
 | 2026-08-14T14:45:49Z | T-449 | T-449 (continues T-446): make suite baseline environment-independent; unblock Phase 1 box 1.7; register CI silent-skip gap. TIER: STANDARD. |
+| 2026-08-14T14:45:50Z | T-448 | T-448: ADR-0053 amended to defer to T-439's shipped MarketTypeCell, delta specified, then marked ACCEPTED with operator sign-off recorded. TIER: STANDARD. |
