@@ -13,6 +13,7 @@ MLB crons re-enable.
 
 Run: pytest tests/integration/test_mlb_pipeline_smoke.py -v -m integration
 """
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -72,17 +73,37 @@ class TestFeatureCSVIntegrity:
 
         A stale feature CSV produces silent model errors: the model runs but
         uses historical stats that no longer reflect current player form.
+
+        Environment-aware (GG-179, T-449): the feature_df fixture already
+        skips this test wherever the CSV artifact is absent (every CI run
+        today — CI never generates/restores it). That leaves a second case
+        unhandled: a CSV that IS present but is just whatever a contributor
+        happens to have lying around locally, not the live/VPS-synced
+        artifact this gate is meant to police. Hard-failing on that copy's
+        age conflates "my laptop's scratch CSV is old" with "the pipeline's
+        real feature matrix is stale" — the latter is the actual MLB-G1
+        concern. The hard FAIL therefore only fires when
+        MLB_G1_STRICT_FRESHNESS=1 is set — set it in whichever environment is
+        expected to hold the live-synced artifact. Everywhere else, staleness
+        is reported via an explicit skip (not a silent pass) so it stays
+        visible without blocking unrelated local work.
         """
-        import pandas as pd
         today = datetime.now(tz=timezone.utc).date()
         max_date = feature_df["game_date_dt"].max().date()
         days_stale = (today - max_date).days
         print(f"\n[INFO] Feature CSV latest game_date: {max_date} ({days_stale} days ago)")
 
         if days_stale > 7:
-            pytest.fail(
+            msg = (
                 f"Feature CSV is {days_stale} days stale (max game_date: {max_date}). "
                 f"MLB-G1 gate: must be ≤7 days. Run scripts/generate_mlb_features.py."
+            )
+            if os.environ.get("MLB_G1_STRICT_FRESHNESS") == "1":
+                pytest.fail(msg)
+            pytest.skip(
+                f"{msg} Not enforced in this environment — set "
+                f"MLB_G1_STRICT_FRESHNESS=1 to enforce against the "
+                f"live/VPS-synced artifact (GG-179)."
             )
         if days_stale > 3:
             print(
