@@ -1849,6 +1849,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-178 — T4 MLB cycle-log 14.6h stale during live MLB game day, `systemctl is-active`/`ActiveState=active`/`NRestarts=0` healthy throughout — same GG-163-class blind spot recurring after GG-163 itself was marked RESOLVED
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-178 |
+| Category | Operational health blind spot — recurrence of a previously-RESOLVED gap class (GG-163), surfaced by the very probe GG-163's own remediation (T-429) built. |
+| What was missed | `.claude/hooks/governance_scan.sh`'s T4 MLB cycle-log write-recency probe fired a `GG-163-CLASS ALERT` this session: `t4_mlb_cycle_log.jsonl`'s last row is `2026-08-14T04:49:39Z`, 14.6h old at scan time. Per CLAUDE.md's Step 4 guidance, cross-checked against T1's same-day player-match count rather than trusting the alert alone: T1's last 3 cron runs this same day show `35`, `19`, `32` players matched in live MLB markets — real games are/were live today, so this is a genuine T4 write-path outage, not an idle off-day. `systemctl is-active t4-mlb` = `active`, `NRestarts=0`, `ActiveState=active`/`SubState=running` throughout — the exact healthy-looking/blind pairing GG-163's own text warned would recur. |
+| When it should have been caught | Same-day, by whatever monitoring (if any) watches the GG-163-class probe's alert output outside of a session happening to run the governance scan — this was caught only because `/session-end`'s Step 0 governance scan ran incidentally, not by a dedicated alert path. |
+| Phases it survived | GG-163 (2026-08-04→07) was fixed and RESOLVED; this is a fresh recurrence discovered 2026-08-14, one week later — the underlying discovery-call failure mode (or a related one) was not permanently eliminated by GG-163's fix, only that specific instance was. |
+| Why it survived | The probe added by GG-163/T-429 is diagnostic-only — it prints an alert when run, but nothing appears to page or block on it between sessions; a 14.6h-stale write path can persist silently through any gap between sessions that happen to invoke the governance scan. |
+| Impact | T4 MLB (live-market-latency band) has been producing zero cycle-log rows — and therefore, most likely, zero evaluations/bets — for at least 14.6h spanning a day T1 confirms had live MLB markets. Financial impact bounded by T4's existing `kelly_fraction`/sizing (unchanged, not investigated this session), but the band is functionally dark for that window. |
+| Discovery | T-450 (2026-08-14), incidental — surfaced by `.claude/hooks/governance_scan.sh`'s auto-run during `/session-end` Step 0, not sought out; verified via a read-only SSH check (T1 cron log grep + `systemctl show`) before registering, per Hard Rule 11 ("register and stop," not "assume and stop"). |
+| Resolution | Not investigated or fixed this session — out of scope for T-450 (harness/fixtures only) per Hard Rule 11 and the session's explicit scope fence. Root cause (ESPN discovery 403 recurrence? a different failure mode entirely?) unknown; needs a fresh diagnostic session, staffed to a new T-NNN, that treats this as a live incident rather than a repeat of GG-163's already-fixed cause. |
+| Status | OPEN — flagged prominently in this session's Operator Digest per Q6 discipline (a live, potentially-dark trading pipeline is exactly what that check exists to surface). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
