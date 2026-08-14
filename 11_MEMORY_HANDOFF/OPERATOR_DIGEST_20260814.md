@@ -15,3 +15,4 @@ No new concerns. One item from yesterday is still open and waiting on someone to
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260814_1427.md` and `DECISION_LOG.md` for 2026-08-14.*
+- T-445 (auto): T-445: corrected CLAUDE.md market-type-registry claim + added open efficiency-gradient departure note (Phase 1 box 1.8, checked)
