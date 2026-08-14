@@ -74,7 +74,7 @@ class TestFeatureCSVIntegrity:
         A stale feature CSV produces silent model errors: the model runs but
         uses historical stats that no longer reflect current player form.
 
-        Environment-aware (GG-177, T-449): the feature_df fixture already
+        Environment-aware (GG-179, T-449): the feature_df fixture already
         skips this test wherever the CSV artifact is absent (every CI run
         today — CI never generates/restores it). That leaves a second case
         unhandled: a CSV that IS present but is just whatever a contributor
@@ -103,7 +103,7 @@ class TestFeatureCSVIntegrity:
             pytest.skip(
                 f"{msg} Not enforced in this environment — set "
                 f"MLB_G1_STRICT_FRESHNESS=1 to enforce against the "
-                f"live/VPS-synced artifact (GG-177)."
+                f"live/VPS-synced artifact (GG-179)."
             )
         if days_stale > 3:
             print(
