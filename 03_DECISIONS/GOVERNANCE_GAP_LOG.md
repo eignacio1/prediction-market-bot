@@ -1825,6 +1825,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-177 — T-427 replay gate only ever exercised T4M-PROJ and T1 (via real ledger data); T2, T3, and the band=None fallthrough had zero replay coverage, and T2/T3 can never get real coverage since their kelly_fraction=0.0 means they never reach `open_position()`'s write path
+
+**Status:** RESOLVED (partial) — synthetic fixture coverage added for T1/T2/T3/None at current epoch; the real-ledger T1 gap (zero T1 positions at current logic_epoch 12) remains, mitigated but not eliminated, by the synthetic fixture · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-177 |
+| Category | Test/gate coverage gap — a determinism/replay gate whose branch coverage silently tracked only the bands that happened to have real trading history, with no mechanism to detect or flag the bands it never touched. |
+| What was missed | `scripts/replay_harness_t427.py`'s `branch_for()` classified every non-YES, non-T4M-PROJ, non-T1 position into a single `ELSE-fallthrough` bucket. Direct measurement this session: across both MLB portfolio files (485 + 2994 = 3479 positions, all epochs), band counts were `T1=483, T2=2, T4M-PROJ=2629, None=365`, and **T3=0 — zero T3 positions have ever existed in either ledger.** T2 has exactly 2 historical positions, both at `logic_epoch=2` (2026-07-05), predating ADR-0048's `kelly_fraction=0.0` zeroing (GG-135) — T2 has had genuinely zero positions at any epoch since. At the **current** logic_epoch (12), band counts across both files are `{T4M-PROJ: 765}` — zero T1, T2, T3, or None-band positions exist at the live epoch, meaning the replay gate's real-ledger data provided **zero current-epoch coverage for every band except T4M-PROJ**, even though box 1.6's PASSED verdict (commit `ac5414a`, T-444) was read as validating "the replay gate" generally. T2 and T3 additionally can never be closed by waiting for more real data: `kelly_fraction=0.0` (ADR-0048/GG-135) means every T2/T3 forecast sizes to $0 and never reaches `open_position()`'s dict-literal write — synthetic fixtures are not a stopgap for these two bands, they are the only mechanism real coverage will ever have. |
+| When it should have been caught | At T-427 (harness authorship) or T-444 (box 1.6 verdict) — either point where "the replay gate passed" was read as validating cross-band determinism rather than the specific bands the available ledger data happened to contain. |
+| Phases it survived | From T-427's original authorship through box 1.6's PASSED verdict (T-444) to this session (T-450) — at least two prior sessions treated the gate's pass as full-band evidence without checking which bands the input data actually exercised. |
+| Why it survived | `ELSE-fallthrough` reads as a residual catch-all, not as "every band except two has zero test coverage" — the label gave no visibility into which real bands it was hiding, and no prior session cross-tabulated `band` against `logic_epoch` on the source ledgers to check current-epoch coverage per band. |
+| Impact | Analytical/gate-integrity only, not a live trading defect — T2/T3 are already sized to zero (ADR-0048) so no capital was ever at risk from the coverage gap itself. The impact is that a future regression in `open_position()`'s handling of T1/T2/T3/None-band positions (e.g. a change to `_directional_edge()`'s vig-coefficient lookup, or the `_NO_DIRECTION_VIG_COEFFICIENT` dict) could pass the T-427 gate undetected for any of those four branches, since real ledger data alone could never exercise them at the current epoch. |
+| Discovery | T-450 (2026-08-14), this session — explicit task: extend the T-427 harness with synthetic current-epoch fixtures for T1/T2/T3/None, discovered and quantified this gap as the task's own stated premise, then independently re-verified the underlying counts (485+2994 positions, per-band, per-epoch) directly against the source ledger JSON rather than trusting the figure as given. |
+| Resolution | `scripts/replay_harness_t427.py` extended (this session): `branch_for()` now labels T2/T3/None-band positions distinctly (`T2-NO`/`T3-NO`/`NONE-NO`) instead of collapsing them into `ELSE-fallthrough`, making the gap visible in the harness's own printed output rather than hidden inside an aggregate bucket. Four synthetic current-epoch fixtures were added (`build_synthetic_fixtures()`) — one each for T1, T2, T3, and band=None — with every fixture's `fee_per_contract`/`fee_net_edge` hand-derived from the closed-form vig-cascade formula and independently re-verified via a standalone, non-importing arithmetic check at fixture-construction time (per the session brief's "correctness trap" constraint: a fixture whose expected value comes from calling the code under test proves nothing). All four fixtures were then run through the *real* `replay_one()` → `open_position()` → `compare()` path (not a parallel/duplicate mechanism) and **all four PASS** (`synthetic_fixtures (T-450, current epoch)`: PASS=4 FAIL=0 ERROR=0; per-branch `T1-NO n=1 pass=1`, `T2-NO n=1 pass=1`, `T3-NO n=1 pass=1`, `NONE-NO n=1 pass=1`). This closes the *coverage-existence* gap (every band now has at least one current-epoch, independently-verified assertion) but does not, and cannot, close the *real-data* gap for T1 at the current epoch (still 0 real T1 positions at epoch 12) or for T2/T3 at any epoch (structurally zero going forward under ADR-0048) — hence RESOLVED (partial) rather than RESOLVED. The pre-existing real-ledger FAILs surfaced by this same run (T1-NO: 254 mismatches across older epochs; T4M-PROJ-NO: 470 mismatches; NONE-NO: 196/196 failing) are GG-170-class historical/epoch-provenance drift, out of this session's scope per Hard Rule 11 — not touched, not re-registered here. |
+| Status | RESOLVED (partial) — see Resolution. Full resolution is not achievable for T2/T3 by design (ADR-0048) and for T1 depends on a future current-epoch T1 bet actually being placed. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

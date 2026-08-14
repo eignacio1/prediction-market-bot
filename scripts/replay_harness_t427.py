@@ -148,14 +148,24 @@ def branch_for(pos: dict) -> str:
         return "T4M-PROJ-NO"
     if band == "T1":
         return "T1-NO"
+    # T-450 / GG-135: T2 and T3 always size to 0.0 (kelly_fraction=0.0,
+    # ADR-0048) so they never reach open_position()'s dict-literal write via
+    # real trading — they can only ever appear here via synthetic fixtures.
+    # Giving them (and the band=None fallthrough) their own labels instead of
+    # lumping everything non-T1/non-T4M-PROJ into ELSE-fallthrough is what
+    # makes that absence — and the fixtures' coverage of it — visible in the
+    # branch-coverage table, rather than hiding inside an aggregate bucket.
+    if band == "T2":
+        return "T2-NO"
+    if band == "T3":
+        return "T3-NO"
+    if band is None:
+        return "NONE-NO"
     return "ELSE-fallthrough"
 
 
-def run_ledger(ledger_path: Path, tmpdir: Path) -> dict:
-    data = json.loads(ledger_path.read_text())
-    positions = data.get("open_positions", []) + data.get("closed_positions", [])
-
-    portfolio_path = tmpdir / f"replay_{ledger_path.stem}.json"
+def build_trader(name: str, tmpdir: Path) -> "pt_module.PaperTrader":
+    portfolio_path = tmpdir / f"replay_{name}.json"
     portfolio_path.write_text(json.dumps({
         "bankroll_usd": 1_000_000_000.0,
         "initial_bankroll_usd": 1_000_000_000.0,
@@ -168,9 +178,15 @@ def run_ledger(ledger_path: Path, tmpdir: Path) -> dict:
         "created_at": "1970-01-01T00:00:00.000Z",
         "last_updated": "1970-01-01T00:00:00.000Z",
     }))
-    logger = AuditLogger(log_path=tmpdir / f"audit_{ledger_path.stem}.jsonl", min_severity="ERROR")
-    trader = pt_module.PaperTrader(portfolio_path=portfolio_path, logger=logger, kalshi_client=None)
+    logger = AuditLogger(log_path=tmpdir / f"audit_{name}.jsonl", min_severity="ERROR")
+    return pt_module.PaperTrader(portfolio_path=portfolio_path, logger=logger, kalshi_client=None)
 
+
+def evaluate_positions(label: str, positions: list[dict], trader) -> dict:
+    """Shared replay/compare/branch-count loop. Used identically for real
+    ledger positions and for synthetic fixtures — the fixtures exercise the
+    exact same replay_one() -> open_position() -> compare() path as real
+    data, they just start from a hand-built dict instead of a ledger file."""
     branch_counts = Counter()
     branch_pass = Counter()
     mismatch_examples: dict[str, list[str]] = {}
@@ -200,7 +216,7 @@ def run_ledger(ledger_path: Path, tmpdir: Path) -> dict:
             branch_pass[branch] += 1
 
     return {
-        "ledger": ledger_path.name,
+        "ledger": label,
         "n_total": len(positions),
         "n_evaluated": n_pass + n_fail,
         "n_pass": n_pass,
@@ -213,6 +229,121 @@ def run_ledger(ledger_path: Path, tmpdir: Path) -> dict:
     }
 
 
+def run_ledger(ledger_path: Path, tmpdir: Path) -> dict:
+    data = json.loads(ledger_path.read_text())
+    positions = data.get("open_positions", []) + data.get("closed_positions", [])
+    trader = build_trader(ledger_path.stem, tmpdir)
+    return evaluate_positions(ledger_path.name, positions, trader)
+
+
+# ---------------------------------------------------------------------------
+# T-450: synthetic current-epoch fixtures for bands the real ledgers can
+# never cover (T2/T3 — kelly_fraction=0.0 per ADR-0048/GG-135, they always
+# size to 0 and never reach open_position()'s dict-literal write) or don't
+# currently cover (T1 at the live logic_epoch; band=None fallthrough).
+#
+# THE CORRECTNESS TRAP (T-450 brief): a fixture whose expected value is
+# produced by calling _directional_edge()/open_position() proves nothing —
+# it is a tautology, not a test. Every expected fee_net_edge below was
+# hand-derived from the closed-form formula transcribed in the brief and
+# independently verified against source (paper_trader.py's
+# _NO_DIRECTION_VIG_COEFFICIENT dict and _directional_edge()) BEFORE this
+# file was written, then cross-checked with a standalone arithmetic snippet
+# that does not import paper_trader at all. The _EXPECTED assertions below
+# are literals, not a call to the code under test — build_synthetic_fixtures()
+# asserts the fixture's stored fee_net_edge equals the literal before it is
+# ever handed to the replay harness, so a typo here fails loudly at
+# construction time rather than silently passing a tautological replay.
+#
+#   YES:                                fee_net_edge = gross_edge - fee
+#   NO, (MLB_PLAYER_PROP_HITS, T4M-PROJ): -gross_edge - 2.0*vig - fee
+#   NO, (MLB_PLAYER_PROP_HITS, T1):       -gross_edge - 1.0*vig - fee
+#   NO, unlisted (T2, T3, None, ...):     -gross_edge - 0.0*vig - fee
+#   fee = round(0.07 * mid_price * (1 - mid_price), 6)
+# ---------------------------------------------------------------------------
+
+_FIXTURE_SPECS = [
+    # (band, mid_price, vig, gross_edge, expected_fee_per_contract, expected_fee_net_edge)
+    ("T1",   0.42, 0.03, 0.05, 0.017052, -0.097052),
+    ("T2",   0.35, 0.04, 0.06, 0.015925, -0.075925),
+    ("T3",   0.55, 0.02, 0.04, 0.017325, -0.057325),
+    (None,   0.60, 0.05, 0.03, 0.016800, -0.046800),
+]
+
+
+def build_synthetic_fixtures() -> list[dict]:
+    current_epoch = pt_module.CURRENT_LOGIC_EPOCH
+    current_commit = pt_module.CURRENT_APPROVAL_COMMIT
+    now = pt_module._utc_now()
+
+    fixtures = []
+    for band, mid, vig, gross, expected_fee, expected_fne in _FIXTURE_SPECS:
+        # Independent re-derivation (no import of, or call into, paper_trader's
+        # formula) — catches a transcription error in the literals above.
+        fee_check = round(0.07 * mid * (1.0 - mid), 6)
+        fne_check = round(-gross - 0.0 * vig - fee_check, 6)  # every fixture band here is unlisted or T1; T1 handled below
+        if band == "T1":
+            fne_check = round(-gross - 1.0 * vig - fee_check, 6)
+        assert fee_check == expected_fee, (
+            f"[{band}] fee_per_contract mismatch: hand-literal={expected_fee} "
+            f"independent-recompute={fee_check} — fix the literal in _FIXTURE_SPECS"
+        )
+        assert fne_check == expected_fne, (
+            f"[{band}] fee_net_edge mismatch: hand-literal={expected_fne} "
+            f"independent-recompute={fne_check} — fix the literal in _FIXTURE_SPECS"
+        )
+
+        band_tag = band if band is not None else "NONE"
+        suffix = f"SYNTH{band_tag}FX1"[:10].upper().ljust(10, "0")
+        fixtures.append({
+            "position_id": f"POS-{suffix}",
+            "player_name": f"SYNTHETIC-FIXTURE-{band_tag}",
+            "player_id": -1000,
+            "kalshi_ticker": f"SYNTH-FIXTURE-{band_tag}",
+            "kalshi_threshold": 1,
+            "direction": "NO",
+            "mid_price_at_entry": mid,
+            "vig_at_entry": vig,
+            "size_usd": 25.0,  # T-450 NOTE: injected directly, not routed through
+                                # Kelly sizing — T2/T3 have kelly_fraction=0.0
+                                # (ADR-0048/GG-135) and would size to 0 otherwise.
+                                # Fixture-construction detail only; sizing itself
+                                # is untouched.
+            "game_date": "2026-08-14",
+            "entered_at": now,
+            "risk_eval_id": f"SYNTH-FIXTURE-{band_tag}-RISK",
+            "forecast_id": f"SYNTH-FIXTURE-{band_tag}-FORECAST",
+            "band": band,
+            "logic_epoch": current_epoch,
+            "approval_commit": current_commit,
+            "status": "OPEN",
+            "pool_isolated": False,
+            "kalshi_order_id": None,
+            "kalshi_order_status": "local_only",
+            "kalshi_contracts": None,
+            "model_p": round(mid + 0.01, 6),
+            "gross_edge": gross,
+            "fee_per_contract": expected_fee,
+            "fee_net_edge": expected_fne,
+            "fee_contaminated": bool(expected_fne < 0.0),
+            "probable_injury_signal": False,
+            "t3_signal": "NEUTRAL",
+            "t1_edge": gross,
+            "h_so_far_at_entry": None,
+            "ab_remaining_at_entry": None,
+            "entry_price_paid": None,
+            "price_stratum": None,
+            "contracts": None,
+        })
+    return fixtures
+
+
+def run_synthetic_fixtures(tmpdir: Path) -> dict:
+    fixtures = build_synthetic_fixtures()
+    trader = build_trader("synthetic_fixtures", tmpdir)
+    return evaluate_positions("synthetic_fixtures (T-450, current epoch)", fixtures, trader)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--ledger", action="append", dest="ledgers", default=None)
@@ -221,6 +352,7 @@ def main() -> int:
     ledgers = [Path(p) for p in args.ledgers] if args.ledgers else DEFAULT_LEDGERS
     overall_ok = True
 
+    all_results = []
     with tempfile.TemporaryDirectory(prefix="t427_replay_") as tmp:
         tmpdir = Path(tmp)
         for ledger_path in ledgers:
@@ -228,6 +360,7 @@ def main() -> int:
                 print(f"SKIP {ledger_path} (not found — pull via ssh first)")
                 continue
             result = run_ledger(ledger_path, tmpdir)
+            all_results.append(result)
             print(f"\n=== {result['ledger']} ===")
             print(f"total positions in file:  {result['n_total']}")
             print(f"evaluated (size>0, YES/NO): {result['n_evaluated']}")
@@ -248,6 +381,49 @@ def main() -> int:
                         print(f"    {m}")
             if result["n_fail"] or result["n_error"]:
                 overall_ok = False
+
+        # T-450: synthetic current-epoch fixtures for bands real ledger data
+        # cannot (T2/T3 — kelly_fraction=0.0, ADR-0048/GG-135) or does not yet
+        # (T1 at the live logic_epoch; band=None fallthrough) cover. Run
+        # through the identical replay/compare/branch_for path as real data —
+        # not a separate assertion mechanism.
+        fx_result = run_synthetic_fixtures(tmpdir)
+        all_results.append(fx_result)
+        print(f"\n=== {fx_result['ledger']} ===")
+        print(f"total positions:  {fx_result['n_total']}")
+        print(f"evaluated (size>0, YES/NO): {fx_result['n_evaluated']}")
+        print(f"PASS: {fx_result['n_pass']}  FAIL: {fx_result['n_fail']}  ERROR: {fx_result['n_error']}")
+        print("branch coverage (synthetic fixtures, expected values hand-derived from closed form):")
+        for branch, count in sorted(fx_result["branch_counts"].items()):
+            passed = fx_result["branch_pass"].get(branch, 0)
+            print(f"  {branch:18s} n={count:5d}  pass={passed:5d}")
+        if fx_result["first_errors"]:
+            print("first errors:")
+            for e in fx_result["first_errors"]:
+                print(f"  {e}")
+        if fx_result["mismatch_examples"]:
+            print("mismatch examples by branch:")
+            for branch, ex in fx_result["mismatch_examples"].items():
+                print(f"  [{branch}]")
+                for m in ex:
+                    print(f"    {m}")
+        if fx_result["n_fail"] or fx_result["n_error"]:
+            overall_ok = False
+
+        # Combined per-band coverage table (real ledger data + synthetic
+        # fixtures) — the thing box 1.6's PASS verdict doesn't show on its own.
+        combined_counts: Counter = Counter()
+        combined_pass: Counter = Counter()
+        for r in all_results:
+            for branch, count in r["branch_counts"].items():
+                combined_counts[branch] += count
+            for branch, count in r["branch_pass"].items():
+                combined_pass[branch] += count
+        print("\n=== combined branch coverage (all sources) ===")
+        for branch in sorted(combined_counts):
+            n = combined_counts[branch]
+            p = combined_pass.get(branch, 0)
+            print(f"  {branch:18s} n={n:5d}  pass={p:5d}")
 
     print("\n" + ("ALL REPLAYS MATCHED (modulo frozen exclusion set)" if overall_ok else "MISMATCHES FOUND — see above"))
     return 0 if overall_ok else 1
