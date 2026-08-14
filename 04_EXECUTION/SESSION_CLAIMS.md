@@ -234,3 +234,4 @@
 | 2026-08-14T14:28:24Z | T-444 | CLOSED — T-444: independent replay-harness re-run confirms T-442's write-path refactor is behavior-preserving; Phase 1 box 1.6 checked PASS. (commit `ac5414a`) |
 | 2026-08-14T14:45:49Z | T-449 | T-449 (continues T-446): make suite baseline environment-independent; unblock Phase 1 box 1.7; register CI silent-skip gap. TIER: STANDARD. |
 | 2026-08-14T14:45:50Z | T-448 | T-448: ADR-0053 amended to defer to T-439's shipped MarketTypeCell, delta specified, then marked ACCEPTED with operator sign-off recorded. TIER: STANDARD. |
+| 2026-08-14T14:45:53Z | T-450 | T-450: Synthetic current-epoch fixtures for replay gate's uncovered bands (T1/T2/T3), per T-427's named remedy. TIER: STANDARD. |
