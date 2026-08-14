@@ -1849,7 +1849,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-178 — T4 MLB cycle-log 14.6h stale during live MLB game day, `systemctl is-active`/`ActiveState=active`/`NRestarts=0` healthy throughout — same GG-163-class blind spot recurring after GG-163 itself was marked RESOLVED
+### GG-179 — T4 MLB cycle-log 14.6h stale during live MLB game day, `systemctl is-active`/`ActiveState=active`/`NRestarts=0` healthy throughout — same GG-163-class blind spot recurring after GG-163 itself was marked RESOLVED
 
 **Status:** OPEN · **Severity:** MEDIUM
 
@@ -1858,7 +1858,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-178 |
+| Gap ID | GG-179 |
 | Category | Operational health blind spot — recurrence of a previously-RESOLVED gap class (GG-163), surfaced by the very probe GG-163's own remediation (T-429) built. |
 | What was missed | `.claude/hooks/governance_scan.sh`'s T4 MLB cycle-log write-recency probe fired a `GG-163-CLASS ALERT` this session: `t4_mlb_cycle_log.jsonl`'s last row is `2026-08-14T04:49:39Z`, 14.6h old at scan time. Per CLAUDE.md's Step 4 guidance, cross-checked against T1's same-day player-match count rather than trusting the alert alone: T1's last 3 cron runs this same day show `35`, `19`, `32` players matched in live MLB markets — real games are/were live today, so this is a genuine T4 write-path outage, not an idle off-day. `systemctl is-active t4-mlb` = `active`, `NRestarts=0`, `ActiveState=active`/`SubState=running` throughout — the exact healthy-looking/blind pairing GG-163's own text warned would recur. |
 | When it should have been caught | Same-day, by whatever monitoring (if any) watches the GG-163-class probe's alert output outside of a session happening to run the governance scan — this was caught only because `/session-end`'s Step 0 governance scan ran incidentally, not by a dedicated alert path. |
