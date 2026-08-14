@@ -1825,6 +1825,54 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-177 — `session_end_prep.sh`'s Step 0 SESSION_CLAIMS.md lookup matches on the worktree branch's timestamp, but `claim_session.sh` stamps its row at actual claim-command time — the two are seconds-to-minutes apart, so the exact-string match fails on effectively every session even when the claim genuinely exists
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-177 |
+| Category | Tooling false-negative — a session-health check whose match key is structurally guaranteed to miss real data. |
+| What was missed | `scripts/session_end_prep.sh` (Step 0, section 6) derives its match key by extracting the `<timestamp>` component from the current branch name (`session/<timestamp>-<slug>`, set once at worktree creation by `new_session_worktree.sh`) and does an exact `grep -F` for that ISO string against `SESSION_CLAIMS.md`. But `claim_session.sh` runs as a separate, later command and stamps its own row with the wall-clock time *at claim-command execution*, not the branch-creation time — confirmed directly on T-448: branch timestamp `20260814T144527Z` vs. the actual claim row's timestamp `2026-08-14T14:45:50Z`, a 23-second gap. Any real gap between worktree creation and running `claim_session.sh` (the normal case — session-start protocol runs the guard and other Step 0 checks in between) makes the exact match fail, even though the claim row genuinely exists and is correctly attributed to this session by every other means (branch name, T-/GG- range, focus text). |
+| When it should have been caught | Whenever `session_end_prep.sh` and `claim_session.sh` were both authored/changed and their timestamp-sourcing conventions diverged — no test or cross-check verifies the two scripts agree on what "this session's timestamp" means. |
+| Phases it survived | Unknown how many sessions this has silently produced a false "not found" on since `session_end_prep.sh`'s Step 0 section 6 was introduced — this session (T-448) is the first one observed to have chased it down rather than reading the printed caveat and moving on. |
+| Why it survived | The script's own output already hedges ("confirm claim_session.sh was run at start" — advisory phrasing, not an alarm), so a false negative reads as a mild reminder rather than a bug, and nothing forces a session to verify the claim row exists by other means (e.g. `git log` for the claim commit) before accepting the script's "not found." |
+| Impact | Low — purely a false-negative in a health-check message, not a data-loss or concurrency risk (the actual GG-101/GG-082 protections — atomic append, worktree isolation, `check_id_collision.sh` — are unaffected). Could cause a future session to wrongly conclude `claim_session.sh` was skipped and re-run it, producing a harmless duplicate claim row for the same session rather than any destructive action. |
+| Discovery | T-448 close-out (`/session-end`, 2026-08-14), while working through Step 0's mandatory pending-task list — the summary carried into this window flagged the mismatch as unresolved; directly reading `scripts/session_end_prep.sh` lines 126-148 confirmed the mechanism (branch-name timestamp vs. claim-command timestamp) rather than assuming the claim was actually missing. Confirmed via `grep` that the T-448 claim row exists in `SESSION_CLAIMS.md` (line 236) with the correct T-448/STANDARD content, ruling out an actually-skipped claim. |
+| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (T-448's declared deliverable is ADR-0053 amendment/acceptance plus session-end close-out; fixing a separate script's matching logic is a distinct deliverable). Fix (when picked up): either have `claim_session.sh` accept and echo back the branch's own timestamp component so the two scripts share one source of truth, or loosen `session_end_prep.sh`'s match to a same-session-window heuristic (e.g. match on branch slug text, or any claim row within N minutes of branch creation) instead of exact string equality. |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-178 — `scripts/check_register_parity.py`'s `RESOLVED_PAT` regex is a bare substring search with no negation awareness, so it false-flags any ADR whose Status prose contains the literal text "NOT ACCEPTED"/"not yet ACCEPTED" as resolved
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-178 |
+| Category | Tooling false-positive — a governance-parity check whose match pattern matches the negation of the condition it's meant to detect. |
+| What was missed | `scripts/check_register_parity.py`'s `RESOLVED_PAT = re.compile(r"ACCEPTED\|ADOPTED\|COMPLETE\|selected")` is applied via `RESOLVED_PAT.search(status)` against the full raw Status line text, with no word-boundary or negation handling. ADR-0051's Status line reads `**Status:** DRAFT — NOT ACCEPTED. Proposal only, per T-422's hard scope fence...` and ADR-0052's reads `**Status:** PROPOSED — drafted this session (T-433) under explicit task instruction; awaiting DS sign-off (Earl Ignacio). Not yet ACCEPTED. Treat as governing intent, not a closed decision, until sign-off is recorded here.` — both contain the substring "ACCEPTED" inside an explicit negation, so both are misclassified `resolved=True` and flagged as missing an APPROVALS_REGISTER.md row, even though both docs are correctly DRAFT/PROPOSED and correctly absent from the register. |
+| When it should have been caught | At the time `RESOLVED_PAT` was authored (GG-126 remediation) — no test case exercised a Status line containing an explicit negated-ACCEPTED phrase, which is itself a defensive pattern other ADR authors have reasonably used to make non-acceptance unambiguous to a human reader. |
+| Phases it survived | Live and firing on every `governance_scan.sh`/`check_register_parity.py` run since ADR-0051 (2026-08-05/06) and ADR-0052 (2026-08-11) were drafted — at least several sessions' worth of session-start/session-end scans, all silently absorbing this as an expected "2 PARITY MISMATCH(ES)" noise floor rather than investigating it. |
+| Why it survived | The check's exit-1/finding-list format looks identical for a true positive and this false positive, and past sessions had a *third*, genuine mismatch (ADR-0053 pre-T-448) mixed into the same output, which gave the two spurious findings cover as "probably more of the same category." T-448 only noticed because it re-ran the parity check specifically to confirm ADR-0053 cleared, and the remaining 2 findings were the ones left over. |
+| Impact | Low — no real register desync exists for ADR-0051/0052 today; the check merely cries wolf on every run, which (per GG-126's own history — 4 prior recurrences of a *real* register-parity defect) is the exact kind of alarm-fatigue condition that let real desyncs go unnoticed before. Not data-loss or capital risk. |
+| Discovery | T-448 close-out (`/session-end`, 2026-08-14), re-running `python3 scripts/check_register_parity.py` directly (not just reading the earlier full `governance_scan.sh` output) to confirm ADR-0053's parity fix landed clean. Confirmed ADR-0053 no longer flagged; the remaining 2 findings (ADR-0051, ADR-0052) were traced to this substring-match defect by reading both docs' Status lines directly. |
+| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (T-448's declared deliverable is ADR-0053 amendment/acceptance plus session-end close-out; fixing a separate script's regex is a distinct deliverable). Fix (when picked up): anchor `RESOLVED_PAT` against negation context (e.g. reject a match preceded by `NOT\s+` or `not yet\s+` within a small window) or restructure the check to require a positive-form status token (e.g. `^\s*\*\*Status:\*\*\s*ACCEPTED\b` at line start) rather than a bare substring search anywhere in the line. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
