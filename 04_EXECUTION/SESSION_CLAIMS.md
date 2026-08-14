@@ -236,3 +236,4 @@
 | 2026-08-14T14:45:50Z | T-448 | T-448: ADR-0053 amended to defer to T-439's shipped MarketTypeCell, delta specified, then marked ACCEPTED with operator sign-off recorded. TIER: STANDARD. |
 | 2026-08-14T14:45:53Z | T-450 | T-450: Synthetic current-epoch fixtures for replay gate's uncovered bands (T1/T2/T3), per T-427's named remedy. TIER: STANDARD. |
 | 2026-08-14T19:34:06Z | T-450 | CLOSED — T-450 extended replay gate with T1/T2/T3/None fixtures (GG-177 RESOLVED-partial); GG-178/T-451 registered for a live T4 MLB 14.6h cycle-log outage found via governance scan. (commit `e6a3ac5`) |
+| 2026-08-14T19:26:15Z | T-448 | CLOSED — T-448: ADR-0053 amended to match T-439's shipped registry, marked ACCEPTED w/ sign-off; GG-177+GG-178 tooling bugs registered (commit `254fc37`) |

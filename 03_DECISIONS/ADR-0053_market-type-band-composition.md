@@ -1,11 +1,11 @@
 # ADR-0053 — Market-Type × Band Composition Model (Design Only)
 
-**Status:** PROPOSED — drafted this session (T-441) under explicit task instruction: design only, no `src/` change, not to be marked ACCEPTED by this session. Awaiting operator sign-off (Earl Ignacio). Treat as a proposed design, not a closed decision, until sign-off is recorded here.
-**Date:** 2026-08-12
-**Author:** Session `20260812T045755Z-phase1-band-dimension` (T-441)
-**Registers:** GG-172 (`03_DECISIONS/GOVERNANCE_GAP_LOG.md`) — this ADR is the composition-design response to that gap, not its closure; see GG-172's Resolution field.
-**Depends on / potential overlap:** T-439 (`04_EXECUTION/SESSION_CLAIMS.md`, claimed, open at drafting time) — "Phase 1 boxes 1.1+1.3 -- market-type registry (keyed market_type x band) + kalshi_client.py series constants registry-driven." T-439's own claim description names a market_type×band keying scheme and is **unmerged and unread by this session** (no registry files existed in `src/` at drafting time). This is a real, named overlap risk — see §5 Judgment Call 1.
-**Scope:** Architecture design only. No code, no `src/` change, no kelly_fraction values, no reopening of T1/GG-037/GG-105, no unparking of `SCALING_MANDATE_PARKED.md`. Governs how a (market_type, band) cell should be represented once Phase 3 needs to build it — does not implement anything.
+**Status:** ACCEPTED (as amended by T-448) — see §6 for the amendment and §7 for sign-off.
+**Date:** 2026-08-12 (drafted); amended and accepted 2026-08-14 (T-448)
+**Author:** Session `20260812T045755Z-phase1-band-dimension` (T-441); amended by session `20260814T144527Z-adr0053-accept` (T-448)
+**Registers:** GG-172 (`03_DECISIONS/GOVERNANCE_GAP_LOG.md`) — this ADR is the composition-design response to that gap, not its closure; GG-172 remains OPEN — see GG-172's Resolution field for why.
+**Depends on / potential overlap:** T-439 (`04_EXECUTION/SESSION_CLAIMS.md`) — "Phase 1 boxes 1.1+1.3 -- market-type registry (keyed market_type x band) + kalshi_client.py series constants registry-driven." T-439 has since shipped `src/prediction_market_bot/c5_execution/market_type_registry.py`. **This overlap is now reconciled — see §6.** §5 Judgment Call 1 (below, preserved verbatim as originally drafted) is resolved, not still open; do not re-litigate it without reading §6 first.
+**Scope:** Architecture design only, amended (§6) to defer to already-shipped code where it exists. No code, no `src/` change in this session, no kelly_fraction values, no reopening of T1/GG-037/GG-105, no unparking of `SCALING_MANDATE_PARKED.md`. Governs how a (market_type, band) cell should be represented and what Phase 3 must build on top of `market_type_registry.py` — does not itself implement Phase 3.
 
 ---
 
@@ -74,6 +74,56 @@ The problem, restated precisely: moneyline, run line, and game total on a single
 
 **3. Default status for an unscoped cell.** Should a cell default to `RULED_OUT` until someone actively promotes it to `SCOPING` (safer default, but risks quietly burying a genuinely viable cell if nobody revisits it), or default to some active-scoping state until someone actively rules it out (risks a cell being treated as live/available when no one has actually evaluated it)? This is a real fork with real safety and coverage-completeness consequences on both sides. Not decided here — flagged for operator judgment.
 
-## 6. Operator Sign-off
+## 6. Amendment (T-448, 2026-08-14) — reconciliation against T-439's shipped code, and accepted delta
 
-Pending. Recorded here (not fabricated) — this ADR is `PROPOSED` until Earl Ignacio signs off in a future session or turn.
+§5 Judgment Call 1 required this ADR's design to be checked against whatever T-439 actually shipped before either was treated as settled. Both T-441 (this ADR) and T-439 have since shipped. This section runs that reconciliation, resolves all three §5 judgment calls on the record, and specifies the accepted delta between what T-439 shipped and what §2 of this ADR requires. §1–§5 above are preserved verbatim as originally drafted and are historical context for how this ADR arrived at its decision, not the operative design — §6 is.
+
+### 7.1 — Two-direction delta
+
+Compared `git show origin/main:03_DECISIONS/ADR-0053_market-type-band-composition.md` (pre-amendment, i.e. §1–§5 above) against `git show origin/main:src/prediction_market_bot/c5_execution/market_type_registry.py`, field-by-field and enum-member-by-enum-member.
+
+**What the ADR (§2) has that the shipped code lacks — i.e., the real accepted delta, specified in §6.3:**
+
+| ADR §2 item | Shipped in `market_type_registry.py`? |
+|---|---|
+| §2.2 per-cell `clean_n` / `n_star` fields | No — `MarketTypeCell` has no such fields |
+| §2.2 `market_type` on the resolved-bet ledger | No — confirmed by direct read of `paper_trader.py::open_position()`: `market_type` is an accepted parameter (used transiently for vig-sign correction via `_directional_edge()`), but the `pos` dict written to the ledger has no `market_type` key (verified: `awk` over the dict literal, zero matches) |
+| §2.3 per-cell kill-switch state (halt status/reason/timestamp) | No — no kill-switch fields anywhere on `MarketTypeCell` or in the registry module |
+| §2.4 `SHADOW` cell status | No — shipped `CellStatus` has no `SHADOW` member (recommended addition — see §6.2's SCOPING vs. SHADOW discussion below) |
+| §2.4 `RULED_OUT` citing-decision reference + promotion guard | Partially — `MarketTypeCell.__post_init__` requires `reason` and `measured_date` when `status is RULED_OUT`, but there is no citing-decision-reference field (a `DECISION_LOG`/`GG`/`ADR` pointer, distinct from a free-text reason) and no guard anywhere preventing a `RULED_OUT` cell from being silently reseeded to `SHADOW`/`ACTIVE` in `MARKET_TYPE_REGISTRY` |
+| §2.5 game-key correlation group | No — out of accepted scope regardless (§6.3 item 6); not evaluated further here |
+
+**What the shipped code has that the ADR never considered — the ADR was wrong here, not merely incomplete:**
+
+| Shipped in `market_type_registry.py` | ADR §2.4 anticipated? |
+|---|---|
+| `CellStatus.NOT_IMPLEMENTED` — a third default state distinct from both `RULED_OUT` (evaluated, rejected) and an active-scoping state (being evaluated now) | No. §5 Judgment Call 3 posed the default-status question as a binary fork (RULED_OUT-default vs. active-scoping-default) and did not consider a third "never evaluated" state. `NOT_IMPLEMENTED` answers JC3 outright — see §6.2. |
+| `CellStatus.DARK` — used for NBA_PLAYER_POINTS (a cell that exists, was live, and is now deliberately paused, distinct from `RULED_OUT`/`NOT_IMPLEMENTED`) | No. Not named or anticipated anywhere in §2. Matches this project's existing NBA-dark framing (`[[project_nba_deferred]]`) rather than inventing new vocabulary — correct to keep. |
+| `MarketTypeCell` is `@dataclass(frozen=True)`, keyed by `CellKey = tuple[MarketType, ExecutionBand]` in a module-level `MARKET_TYPE_REGISTRY: dict[CellKey, MarketTypeCell]`, with `get_cell()`/`cells_by_status()`/`cells_for_market_type()` accessors | §2.2 named "the cell object" abstractly; the ADR did not specify frozen-dataclass-plus-dict-registry as the concrete shape. No conflict — the shipped shape satisfies §2's requirement; nothing to reconcile. |
+| `MarketTypeCell.series_ticker` property, delegating to `series_ticker_for()` | Not anticipated; a market-type-axis concern (ticker pattern), not a composition-layer one per §2.1's own reasoning. No conflict. |
+| Already three real consumers: `paper_trader.py`, `kalshi_client.py`, `venue_adapter.py` (confirmed via `grep -rln`) import from `market_type_registry.py` today | The ADR was drafted before T-439 merged and could not have known this. Directly relevant to §6.2 JC1/JC2 below — this object is already load-bearing, not merely proposed. |
+
+### 7.2 — Judgment call resolutions
+
+**JC1 (overlap, was §5 item 1):** **Resolved as the operator's proposed reading — T-439's shipped `MarketTypeCell`/`MARKET_TYPE_REGISTRY` IS the cell object this ADR calls for. One object, one file, one enum.** Evidence: it is already wired into three real consumers (`paper_trader.py`, `kalshi_client.py`, `venue_adapter.py`); it already satisfies §2's core requirement (a first-class (market_type, band)-keyed object, composed by reference rather than duplicating either axis's config); and its only material gap against §2 is the field list in §6.1, not a structural redesign. Drafting a second, competing cell object would fork state that already has three real readers. No disagreement with the operator's framing found.
+
+**JC2 (location, was §5 item 2):** **Resolved as the operator's proposed reading — `src/prediction_market_bot/c5_execution/market_type_registry.py`, not a new `execution_bands_cells.py`.** This is answered by shipped code, not a fresh file-organization judgment call: the object already lives there, already has consumers importing from that path, and §2.1's band-invariant/cell-composition separation argument is satisfied by the module boundary that already exists (`market_type_registry.py` is not `execution_bands.py` — the two are already separate files). No disagreement found.
+
+**JC3 (default status, was §5 item 3):** **Resolved — `NOT_IMPLEMENTED`, a third option neither §5 alternative considered, is better than either horn of the original fork.** §5 posed RULED_OUT-default (safe but risks quietly burying a viable cell) against active-scoping-default (risks treating an unevaluated cell as live). `NOT_IMPLEMENTED` is neither: it does not claim a cell was evaluated and rejected (that is what `RULED_OUT` is for, and `RULED_OUT` requires a citing reason per §2.4/the dataclass guard), and it does not claim a cell is live or being actively scoped. It matches `COVERAGE_TARGET_MATRIX.md`'s own distinction between "never evaluated" and "evaluated and rejected." Confirmed as the shipped default for every seeded MLB cell outside the one live (market_type, band) pair and the two blocked T4M sub-bands. No disagreement with the operator's framing found — this is the one JC where the operator's proposed reading is stronger than either option the original ADR draft offered itself.
+
+**SCOPING vs. SHADOW, per the operator's explicit instruction to assess whether SCOPING is still needed given `NOT_IMPLEMENTED` exists:** Recommend dropping `SCOPING` from the target `CellStatus` set and keeping it at `{NOT_IMPLEMENTED, SHADOW, ACTIVE, BLOCKED, RULED_OUT, DARK}` (six members, `DARK` retained per §6.1's second table). Reasoning: §2.4's original `SCOPING` and the shipped `NOT_IMPLEMENTED` are answering the same question — "this cell has not been evaluated yet" — and `NOT_IMPLEMENTED` is already shipped, already seeded across every unscoped MLB cell, and already has real consumers reading it. Adding `SCOPING` back as a second, near-synonymous "not yet" state would reintroduce exactly the two-structures-for-one-concept duplication §2.1 argues against, just one level down (cell-status enum instead of cell object). `SHADOW`, by contrast, is not redundant with anything shipped: Phase 4 box 4.1 is explicitly "shadow mode per family," and shadow mode (paper-evaluate without betting) is a genuinely distinct state from `NOT_IMPLEMENTED` (never evaluated), `ACTIVE` (live betting), and `BLOCKED` (implemented but currently halted) — none of the five shipped members can represent it. `SHADOW` must be added; `SCOPING` should not be.
+
+### 7.3 — Sequenced accepted delta
+
+Six items, in dependency order. Item 2 gates items 1 and 3 in practice — without it, per-cell `clean_n` (item 1) has no ledger data to group by, and per-cell kill-switch resolution (item 3) has no field to resolve which cell a live position belongs to.
+
+1. **Reverse ticker→market_type lookup (new sub-dependency, not named in the original ADR draft).** `market_type_registry.py` currently only maps `market_type → series_ticker` (`series_ticker_for()`); nothing maps a resolved position's ticker back to a `MarketType`. Item 2 needs this to backfill/derive `market_type` for ledger rows written before the field existed. Depends on: nothing (buildable against shipped code as-is). Feeds: item 2.
+2. **`market_type` on the resolved-bet ledger (§2.2) — THE LOAD-BEARING DEPENDENCY.** `paper_trader.py::open_position()` already accepts `market_type: MarketType | None` as a parameter; it is used transiently (`_directional_edge()`) and then discarded — never written to the `pos` dict. Add it as a persisted ledger field. Required by Phase 3.3/3.4 (`run_power_calc.py` scoped to `(market_type, band)` instead of band alone). Depends on: item 1 (for backfilling pre-existing rows) if historical cells are to be grouped correctly; not required to start writing it forward on new positions. Gates: items 1 and 3 below.
+3. **Per-cell `clean_n` / `n_star` fields on `MarketTypeCell` (§2.2).** Computed by `scripts/run_power_calc.py` scoped to `(market_type, band)`. Depends on: item 2 (cannot group ledger rows by cell without the field to group on).
+4. **Per-cell kill-switch state (§2.3, Phase 3 box 3.5) — halt status, reason, timestamp.** C4/C7 must resolve which cell a bet belongs to before checking halt state. Depends on: item 2 (C4/C7 cannot resolve "which cell" for a position that doesn't record its market_type).
+5. **`SHADOW` added to `CellStatus`; `RULED_OUT` promotion guard (§2.4).** Two sub-items: (a) add `SHADOW` per §6.2's recommendation — no ledger dependency, buildable independently; (b) add a citing-decision-reference field to `RULED_OUT` cells (distinct from the existing free-text `reason`) plus a first-ever registry mutation/promotion API — `MARKET_TYPE_REGISTRY` today is a static module-level dict with no write path at all, so "guard against RULED_OUT → SHADOW/ACTIVE without a superseding reference" requires building the mutation path itself before the guard has anything to guard. New sub-dependency not named in the original ADR draft. Depends on: nothing blocking (independent of items 1–4); sequenced last among the buildable items because it's the most-scoped, least-load-bearing piece of the delta.
+6. **Game-key correlation group (§2.5, Phase 3 box 3.7) — NAMED ONLY, explicitly OUT of accepted implementation scope.** This delta authorizes items 1–5. It does not authorize building the correlation-group mechanism. That needs its own ADR (a threshold/cap decision, per §2.5's own text) — accepting this ADR does not authorize it. Anyone reading this acceptance as covering item 6 is reading it wrong.
+
+## 7. Operator Sign-off
+
+**The operator (Earl Ignacio) has approved ADR-0053 with expanded scope as of 2026-08-14.** Accepted **as amended by this session (T-448)** — i.e., as reconciled against T-439's shipped `market_type_registry.py` in §6 — not as originally drafted in §1–§5. §6's sequenced six-item delta (§6.3) is the accepted implementation scope; item 6 (game-key correlation group) is explicitly named out of that scope and requires its own ADR. No `kelly_fraction` value is authorized by this acceptance for any cell.

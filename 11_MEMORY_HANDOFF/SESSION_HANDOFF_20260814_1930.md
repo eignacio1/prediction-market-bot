@@ -5,8 +5,8 @@ task_id: T-450
 tier: STANDARD
 timestamp: 2026-08-14T19:30:00Z
 commit: e6a3ac5
-one_line_summary: T-450 extended replay gate with T1/T2/T3/None fixtures (GG-177 RESOLVED-partial); GG-179/T-451 registered for a live T4 MLB 14.6h cycle-log outage found via governance scan.
-gg_touched: GG-177, GG-179
+one_line_summary: T-450 extended replay gate with T1/T2/T3/None fixtures (GG-180 RESOLVED-partial); GG-179/T-451 registered for a live T4 MLB 14.6h cycle-log outage found via governance scan.
+gg_touched: GG-180, GG-179
 adr_touched: none
 plan_deliverable_moved: no
 -->
