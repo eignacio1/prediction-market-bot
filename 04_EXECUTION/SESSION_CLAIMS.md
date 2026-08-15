@@ -245,3 +245,4 @@
 | 2026-08-15T19:54:39Z | T-451 | CLOSED — T-451/GG-181 RESOLVED: fixed T4 MLB pregame-context staleness bug, live-verified fresh cycle-log rows post-fix (commit `9b21136`) |
 | 2026-08-15T19:49:53Z | T-455 | T-455: session-end wall-clock/word-count instrument, lands GG-182's PENDING assertion (no new GG) |
 | 2026-08-15T19:50:59Z | T-453 | CLOSED — T-453: MarketTypeCell extended per ADR-0053 items 1/3/4/5 (reverse lookup, clean_n/n_star + kill-switch seams, SHADOW, RULED_OUT guard); GG-183+T-454 registered (commit `92c772a`) |
+| 2026-08-15T19:57:40Z | T-455 | CLOSED — T-455 lands GG-182 assertion — session_end_timer.sh (wall-clock+wordcheck), wired into session-end.md (commit `7bd79a2`) |
