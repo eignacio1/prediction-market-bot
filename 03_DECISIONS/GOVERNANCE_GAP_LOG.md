@@ -1945,6 +1945,31 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-182 — Session-end token/time cost is unaddressed by Hard Rule 8's 60% trigger — second remediation attempt (T-434 fixed WHEN close-out starts, not WHAT IT COSTS); 2026-08-14 session-end consumed 53% context / ran 52m41s
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-182 |
+| Category | Systemic blind spot — recurring incident; a policy-text fix (T-434) addressed a different axis of the same underlying problem and the cost axis went unaddressed. |
+| What was missed | `session-end.md` had a start trigger (Hard Rule 8's 60% context threshold) but no budget on the protocol's own cost — nothing capped tokens or wall time once close-out began, and nothing stopped it from unboundedly hand-rewriting large blocks (e.g. `DECISION_LOG.md`) via exact-match `Edit`, retrying a failed `Edit`, or re-deriving numbers already visible in scrollback. |
+| When it should have been caught | At T-434 (2026-08-10), when Hard Rule 8's trigger was lowered 80%→60% specifically because "session-end is itself context-expensive" — the causal mechanism was visible at the time, but the fix addressed only the trigger point, not the protocol's cost curve. |
+| Phases it survived | T-434's fix itself, and every `/session-end` run 2026-08-10 through 2026-08-14. |
+| Why it survived | No executable check measures session-end's own cost (context delta or wall time) against any threshold — the only signal was human judgment ("responses are slower") and a post-hoc self-report inside the SESSION_HANDOFF it was busy writing. Nothing forces a stop mid-close-out. |
+| Impact | 2026-08-14 session-end (T-448 close-out) consumed 53% of context (40%→93% used) and ran 52m41s; survived only because the operator manually intervened at ~10% headroom remaining. Second occurrence of the same cost pattern the operator has raised across many sessions, within days of T-434's fix. |
+| Discovery | Operator-reported incident, 2026-08-14. The executing window's own diagnosis: it kept re-deriving and re-writing giant verbatim `DECISION_LOG.md` paragraphs by hand — including one failed `Edit` that burned a full round-trip on an exact-match diff of a multi-KB block — instead of a minimal append from the start. |
+| Resolution | T-452 (2026-08-15): `.claude/commands/session-end.md` now states a hard budget (≤10% context, ≤10 minutes) at the top of the file; a method ban on `Edit`-ing multi-KB blocks or `DECISION_LOG.md` at all (heredoc-append only); a stop-not-retry rule on any failed exact-match `Edit`; mandatory (not suggested) use of `scripts/generate_session_artifacts.py`; hard word caps (DECISION_LOG ≤150w, TODO_NEXT ≤120w, SESSION_HANDOFF ≤300w, digest ≤150w); a no-re-derivation-at-close-out rule; and a truncation path for hitting budget mid-close-out. Hard Rule 8 in `CLAUDE.md` cross-references this budget. `generate_session_artifacts.py` was read (not expanded, per this session's explicit scope) — confirmed it already covers the "Last reviewed" chains, SESSION_CLAIMS closure row, checkpoint pointer, and MICRO digest, but explicitly and by design excludes `DECISION_LOG.md` (Hard Rule 7 — real judgment stays model-authored); that exclusion is exactly the uncovered path the 2026-08-14 incident fell into, and is called out by name in the new budget section rather than left implicit. |
+| Status | OPEN — protocol-text fix landed this session; not yet enforced by anything executable. What would make a *third* remediation attempt unnecessary: an executable check, not another protocol-text fix — two attempts (T-434's 60% trigger; T-452's budget section) have now both relied entirely on the executing session voluntarily complying, with nothing observing whether either was followed. |
+| Assertion | PENDING — not built this session (explicit instruction: "do not build it unless it is nearly free," and it is not). Named per ADR-0052: a wall-clock/context-delta probe wrapping `/session-end` itself — timestamp + context-usage snapshot at Step 0 entry, compared against the same at Step 8 exit, failing loud (visible output, not silently swallowed) if wall time > 10 min or context delta > 10%. This is the specific check that would detect a recurrence instead of relying on the operator to notice again. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

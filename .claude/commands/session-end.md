@@ -1,5 +1,31 @@
 # /session-end — End-of-Session Handoff Protocol
 
+## HARD BUDGET: ≤10% context, ≤10 minutes wall time — read this before Step 0 (GG-182/T-452)
+
+**Session-end is a checklist, not a composition exercise.** Hard Rule 8's 60% trigger (below) governs WHEN close-out starts; it does not govern what it costs — that is what this section fixes. A 2026-08-14 session-end consumed 53% of context (40%→93%) and ran 52m41s, entirely by hand-rewriting multi-KB `DECISION_LOG.md` blocks with exact-match `Edit` calls (including one failed `Edit` that burned a full round-trip on a multi-KB block) instead of a minimal append. If you cannot fit inside this budget, use the Truncation Path below — do not push through by working faster.
+
+**Method rules — these are why past close-outs blew the budget, not a style preference:**
+
+- **Never `Edit` a multi-KB block. Never `Edit` `DECISION_LOG.md` at all, regardless of size.** Append only, via heredoc:
+  ```bash
+  cat >> "03_DECISIONS/DECISION_LOG/DECISION_LOG.md" <<'EOF'
+
+  | YYYY-MM-DD | T-NNN | One-sentence decision, ≤150 words total for the entry. |
+  EOF
+  ```
+- **A failed exact-match `Edit` is a stop, not a retry.** One failed multi-KB `Edit` round-trip is itself a material fraction of the 10-minute budget. The instant an `Edit` fails on a large or verbatim-sensitive block, switch to the heredoc-append form above — do not re-attempt the same `Edit` with adjusted context, and do not try to make the match exact.
+- **`scripts/generate_session_artifacts.py` is mandatory, not a suggestion.** It is the write-once mechanism (T-430) for the "Last reviewed" chain collapse, the SESSION_CLAIMS.md closure row, the checkpoint pointer, and the MICRO-tier operator digest one-liner — do not hand-author anything it produces. **It does not cover `DECISION_LOG.md`** — that file is explicitly excluded by design (Hard Rule 7: real judgment stays model-authored) — so `DECISION_LOG.md` entries remain hand-authored, but MUST use the heredoc-append rule above, never `Edit`. This is the one gap in write-once coverage; know it going in.
+- **Hard word caps, enforced, not aspirational:** `DECISION_LOG.md` entry ≤150 words · `TODO_NEXT.md` update ≤120 words · `SESSION_HANDOFF` ≤300 words · Operator Digest ≤150 words. Terse-and-complete beats exhaustive — anything longer belongs in the commit range, which is already there and doesn't need to be re-narrated.
+- **No re-derivation at close-out.** Every number written into a close-out artifact must already be visible in this session's own scrollback. If writing the close-out requires re-running a command just to get a number, you are over budget — omit the number and say so (e.g. "bet count not re-checked this close-out — see live governance scan") rather than spend budget re-deriving it.
+
+**Truncation path — if you hit the budget mid-close-out:**
+1. Commit whatever is already staged/complete, path-scoped.
+2. Write a 3-line stub handoff in place of the full SESSION_HANDOFF: task id, one-line summary, "TRUNCATED AT BUDGET — see commit range for detail."
+3. Report to the operator: "session-end truncated at budget — [context %]/[minutes] used."
+4. Stop. Do not attempt to finish the remaining steps in the same turn.
+
+---
+
 ## ⚠️ TRIGGER THIS IMMEDIATELY WHEN CONTEXT WINDOW REACHES ~60%
 
 Do not wait until "a good stopping point." At 60% context: stop all implementation work, run this protocol in full, commit, and push. The cost of losing a session's decisions permanently exceeds the cost of any implementation delay. When in doubt, trigger early. The trigger was 80% until 2026-08-10 (T-434). It was moved to 60% because this protocol is itself context-expensive: starting it at 80% means compacting *during* close-out, which is how a single session-end ran past an hour on T-429.
