@@ -443,6 +443,12 @@ def _load_pregame_context() -> tuple[dict[int, list[dict[str, Any]]], dict[str, 
     return by_player_id, by_ticker, name_to_pregame
 
 
+def _latest_pregame_file() -> Optional[Path]:
+    """Cheap (glob+sort, no parse) lookup of the file _load_pregame_context() would load."""
+    jsons = sorted(_LOGS_DIR.glob("pregame_mlb_*.json"), reverse=True)
+    return jsons[0] if jsons else None
+
+
 def _load_t2_batting_slots() -> dict[int, int]:
     """Load batting slots from today's T2 MLB output, if available (T-200).
 
@@ -1552,6 +1558,7 @@ def main() -> None:
 
     # ---- Load pregame context ----
     by_player_id, _by_ticker, name_to_pregame = _load_pregame_context()
+    _loaded_pregame_file = _latest_pregame_file()
     if not by_player_id:
         logger.warning(
             "No MLB pregame context found in %s — run PIPE-06pre first. "
@@ -1719,6 +1726,7 @@ def main() -> None:
                 by_player_id_r, _, name_to_pregame_r = _load_pregame_context()
                 by_player_id.update(by_player_id_r)
                 name_to_pregame.update(name_to_pregame_r)
+                _loaded_pregame_file = _latest_pregame_file()
                 batting_slots = _load_t2_batting_slots()
                 # Reconstruct band budget for the new date
                 t4_state = trader.get_state()
@@ -1749,13 +1757,25 @@ def main() -> None:
                     time.sleep(60)
                     continue
 
-            # Reload pregame context if empty (in case PIPE-06pre ran after T4 started)
-            if not by_player_id:
+            # Reload pregame context if empty, or if a newer pregame_mlb_*.json has
+            # been written since our last load (GG-181: PIPE-06pre commonly runs
+            # mid-day UTC, well after this process's own UTC-midnight date rollover
+            # already merged in whatever file was "most recent" at that moment —
+            # often the prior day's, if today's hadn't been written yet. The old
+            # `if not by_player_id` guard only ever fired on a cold/empty start, so
+            # once any file had been merged in, a same-day-later PIPE-06pre write
+            # was never picked up for the rest of the day.)
+            _latest_file = _latest_pregame_file()
+            if not by_player_id or _latest_file != _loaded_pregame_file:
                 by_player_id_new, _bt, name_to_pregame_new = _load_pregame_context()
                 if by_player_id_new:
                     by_player_id.update(by_player_id_new)
                     name_to_pregame.update(name_to_pregame_new)
-                    logger.info("Pregame context loaded on retry: %d players", len(by_player_id))
+                    logger.info(
+                        "Pregame context reloaded: %d players (file=%s)",
+                        len(by_player_id), _latest_file.name if _latest_file else None,
+                    )
+                _loaded_pregame_file = _latest_file
 
             # Poll all tracked games via ESPN — kill switch checked per game (NFR-03 ≤60s halt)
             all_states: list[MLBLiveBatterState] = []
