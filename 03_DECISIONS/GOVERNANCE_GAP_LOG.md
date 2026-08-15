@@ -1970,6 +1970,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-183 — Per-cell kill-switch state (ADR-0053 §2.3/§6.3 item 4) has a store and a resolution helper but is not wired into C4/C7's live kill-switch check
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-183 |
+| Category | Incremental architecture — a deliberate seam, not a defect, but must be tracked so it is not mistaken for a finished control. |
+| What was missed | Nothing was missed; this is a scoped deferral. T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to `market_type_registry.py` per ADR-0053 §2.3, but explicitly did not rewire `risk.py`/C4/C7's live drawdown-based kill-switch check to resolve per-cell state before halting. Today one cell (T4M-PROJ) places live bets, so the gap has zero live consequence; it becomes load-bearing the moment a second cell goes ACTIVE, since C4's current check is implicitly band-scoped and would halt/not-halt across cells indiscriminately. |
+| When it should have been caught | N/A — named as out of scope at task-assignment time (T-453's DO-NOT list: "DO NOT REWIRE C4/C7'S LIVE KILL-SWITCH PATH... Leave a seam, register the wiring as its own task"). |
+| Phases it survived | N/A. |
+| Why it survived | Explicit scope fence, not a governance failure. |
+| Impact | None while only one cell is ACTIVE. Becomes real risk-control gap the moment a second `(MarketType, ExecutionBand)` cell is promoted to ACTIVE without this wiring landing first. |
+| Discovery | Self-identified during T-453 (2026-08-15) per the task's own instruction to register the wiring as its own task. |
+| Resolution | Not started. Future task: make C4/C7 resolve `(market_type, band)` for an incoming bet via `resolve_kill_switch_state()` before checking halt state, and call `halt_cell()` from whatever path currently trips the drawdown kill switch. |
+| Status | OPEN |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
