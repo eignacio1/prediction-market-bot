@@ -20,3 +20,4 @@ No money at risk during the gap — paper trading only. Nothing else changed: no
 **Does anything need your decision right now?** No — nothing needs you today.
 
 **Anything that worried the session, even if not urgent:** One thing to flag: the new "shut off a cell for safety" tracking isn't actually wired into the bot's real kill switch yet — it's built but not connected. That's fine while we only trade one cell, but it needs to get connected before we ever turn on a second one. Logged as a tracked follow-up (GG-183/T-454), not forgotten. Separately, the automated health check flagged that the live-game data feed for in-game baseball bets looked stale again during this session's close-out — that's a known, already-being-worked issue from a prior session, not new.
+- T-455 (auto): T-455 lands GG-182 assertion — session_end_timer.sh (wall-clock+wordcheck), wired into session-end.md

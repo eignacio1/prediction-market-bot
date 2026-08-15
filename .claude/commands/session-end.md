@@ -4,11 +4,18 @@
 
 **Session-end is a checklist, not a composition exercise.** Hard Rule 8's 60% trigger (below) governs WHEN close-out starts; it does not govern what it costs — that is what this section fixes. A 2026-08-14 session-end consumed 53% of context (40%→93%) and ran 52m41s, entirely by hand-rewriting multi-KB `DECISION_LOG.md` blocks with exact-match `Edit` calls (including one failed `Edit` that burned a full round-trip on a multi-KB block) instead of a minimal append. If you cannot fit inside this budget, use the Truncation Path below — do not push through by working faster.
 
+**This budget is now instrumented, not self-assessed (GG-182's assertion, landed T-455).** A model cannot observe its own context/usage capacity in-band — there is no counter to read for the quantity that actually ran out on 2026-08-14. Wall clock and word counts ARE observable, so that is what `scripts/session_end_timer.sh` measures. Run this the moment you start session-end, before Step 0:
+```bash
+scripts/session_end_timer.sh start
+```
+Then run `scripts/session_end_timer.sh check` at the two points below where cost actually accumulates — not just at the very end, where the verdict arrives too late to act on. It prints an explicit verdict string (`WITHIN BUDGET` or `BUDGET EXCEEDED, TRUNCATE NOW`) and exits nonzero on breach — read the verdict, don't compute your own.
+
 **Method rules — these are why past close-outs blew the budget, not a style preference:**
 
-- **Never `Edit` a multi-KB block. Never `Edit` `DECISION_LOG.md` at all, regardless of size.** Append only, via heredoc:
+- **Never `Edit` a multi-KB block. Never `Edit` `DECISION_LOG.md` at all, regardless of size.** Append only, via heredoc, and check the word count mechanically rather than eyeballing it — `wordcheck` reads the same text on stdin via `tee`:
   ```bash
-  cat >> "03_DECISIONS/DECISION_LOG/DECISION_LOG.md" <<'EOF'
+  scripts/session_end_timer.sh check   # before writing — are you still inside the 10-min budget?
+  cat <<'EOF' | tee -a "03_DECISIONS/DECISION_LOG/DECISION_LOG.md" | scripts/session_end_timer.sh wordcheck DECISION_LOG 150
 
   | YYYY-MM-DD | T-NNN | One-sentence decision, ≤150 words total for the entry. |
   EOF
@@ -178,7 +185,11 @@ Provide a concise git commit message in this format:
 
 ## Step 6 — Create SESSION_HANDOFF File, Then Generate Everything Else From It
 
-Create `11_MEMORY_HANDOFF/SESSION_HANDOFF_YYYYMMDD_HHMM.md` from `00_ADMIN/TEMPLATES/TEMPLATE_SESSION_HANDOFF.md`.
+```bash
+scripts/session_end_timer.sh check   # before writing SESSION_HANDOFF — the other expensive artifact
+```
+
+Create `11_MEMORY_HANDOFF/SESSION_HANDOFF_YYYYMMDD_HHMM.md` from `00_ADMIN/TEMPLATES/TEMPLATE_SESSION_HANDOFF.md`. Word-check it the same way as the DECISION_LOG entry above once written: `scripts/session_end_timer.sh wordcheck SESSION_HANDOFF 300 < <path>`.
 
 **Fill in the `<!-- session-meta -->` block at the top first.** This is the single source of truth the generator (below) reads — get `one_line_summary` right, since it is reused verbatim in every generated artifact. `commit:` is a reference point, not a cryptographic pointer — use the current `git rev-parse --short HEAD` at authoring time (the last real commit already on this branch); it does not need to be the exact final SHA that will include this handoff file itself.
 
