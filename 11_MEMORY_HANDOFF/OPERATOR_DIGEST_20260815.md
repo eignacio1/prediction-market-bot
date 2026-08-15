@@ -4,6 +4,13 @@
 
 ---
 
+## T-451/GG-181 — T4 MLB was silently dead for ~15 hours; it's fixed and confirmed live.
+
+The bot's actively-trading system (T4, the one that watches live games and bets in real time) stopped evaluating games sometime after midnight UTC, but the health checks all said "running fine" — a variant of a blind spot we'd hit once before (GG-163) and had already built alarms for. This time the failure was subtler: the process itself never crashed, it just quietly stopped picking up the day's game data after a routine midnight file-rollover, so nothing paged.
+
+Root cause: a one-time "load today's games" check that only ever fired once per process lifetime, instead of re-checking whenever a newer file showed up. Fixed, tested (2864 tests still pass), deployed, and I pulled a live row straight off the server afterward showing it correctly evaluating an actual STL@CHC game in progress — not just "service is up," but "it is doing its job right now."
+
+No money at risk during the gap — paper trading only. Nothing else changed: no bet sizing, no risk limits touched.
 **T-453 (STANDARD):**
 
 **What changed today, in one paragraph:** The bot's internal map of "which sport bets we could ever place, in which time window" — one cell today, currently in use (baseball hit props) — got extended so it can track, per cell, whether we have enough sample data to trust it yet, and whether that cell has been shut off for safety reasons. Right now this is just plumbing sitting unused — nothing changed about how the bot actually decides to bet or stop betting today.
