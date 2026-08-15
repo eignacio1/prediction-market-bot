@@ -9,13 +9,21 @@ import pytest
 from prediction_market_bot.execution_bands import ExecutionBand
 from prediction_market_bot.c5_execution.market_type_registry import (
     MARKET_TYPE_REGISTRY,
+    CellKillSwitchStatus,
+    CellMeasurement,
     CellStatus,
     MarketType,
     MarketTypeCell,
     cells_by_status,
     cells_for_market_type,
     get_cell,
+    get_measurement,
+    halt_cell,
+    market_type_for_series_ticker,
+    promote_cell_status,
+    resolve_kill_switch_state,
     series_ticker_for,
+    set_measurement,
 )
 
 
@@ -158,3 +166,157 @@ class TestRuledOutRequiresEvidence:
         )
         assert cell.reason is None
         assert cell.measured_date is None
+
+
+# ---------------------------------------------------------------------------
+# ADR-0053 §6.3 item 1 — reverse ticker -> market_type lookup
+# ---------------------------------------------------------------------------
+
+
+class TestReverseTickerLookup:
+    def test_round_trips_for_every_market_type(self):
+        for market_type in MarketType:
+            ticker = series_ticker_for(market_type)
+            assert market_type_for_series_ticker(ticker) is market_type
+
+    def test_unknown_ticker_raises_keyerror(self):
+        with pytest.raises(KeyError):
+            market_type_for_series_ticker("KXNOTAREALSERIES")
+
+
+# ---------------------------------------------------------------------------
+# ADR-0053 §6.3 item 5 — SHADOW status + citing_decision + promotion guard
+# ---------------------------------------------------------------------------
+
+
+class TestShadowStatus:
+    def test_shadow_cell_constructs_without_reason_or_date(self):
+        cell = MarketTypeCell(
+            MarketType.MLB_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW,
+        )
+        assert cell.status is CellStatus.SHADOW
+
+
+class TestCitingDecisionField:
+    def test_citing_decision_optional_and_settable(self):
+        import datetime
+        cell = MarketTypeCell(
+            MarketType.MLB_GAME_TOTAL,
+            ExecutionBand.T1_MULTI_DAY,
+            CellStatus.RULED_OUT,
+            reason="depth gate failed 3/3 pre-slate",
+            measured_date=datetime.date(2026, 8, 11),
+        )
+        assert cell.citing_decision is None
+
+        cited = MarketTypeCell(
+            MarketType.MLB_GAME_TOTAL,
+            ExecutionBand.T1_MULTI_DAY,
+            CellStatus.RULED_OUT,
+            reason="depth gate failed 3/3 pre-slate",
+            measured_date=datetime.date(2026, 8, 11),
+            citing_decision="GG-999",
+        )
+        assert cited.citing_decision == "GG-999"
+
+
+class TestPromoteCellStatus:
+    def _seed_ruled_out(self):
+        import datetime
+        key = (MarketType.MLB_TEAM_TOTAL, ExecutionBand.T3_PRE_TIP)
+        MARKET_TYPE_REGISTRY[key] = MarketTypeCell(
+            MarketType.MLB_TEAM_TOTAL,
+            ExecutionBand.T3_PRE_TIP,
+            CellStatus.RULED_OUT,
+            reason="test fixture",
+            measured_date=datetime.date(2026, 8, 11),
+        )
+        return key
+
+    def test_promotion_without_guard_condition_succeeds(self):
+        key = (MarketType.MLB_PARTIAL_GAME, ExecutionBand.T5_LATE_GAME)
+        original = MARKET_TYPE_REGISTRY[key]
+        try:
+            promoted = promote_cell_status(
+                MarketType.MLB_PARTIAL_GAME, ExecutionBand.T5_LATE_GAME, CellStatus.SHADOW,
+            )
+            assert promoted.status is CellStatus.SHADOW
+            assert MARKET_TYPE_REGISTRY[key].status is CellStatus.SHADOW
+        finally:
+            MARKET_TYPE_REGISTRY[key] = original
+
+    def test_ruled_out_to_active_without_superseding_reference_raises(self):
+        key = self._seed_ruled_out()
+        try:
+            with pytest.raises(ValueError):
+                promote_cell_status(
+                    MarketType.MLB_TEAM_TOTAL, ExecutionBand.T3_PRE_TIP, CellStatus.ACTIVE,
+                )
+        finally:
+            del MARKET_TYPE_REGISTRY[key]
+
+    def test_ruled_out_to_shadow_with_superseding_reference_succeeds(self):
+        key = self._seed_ruled_out()
+        try:
+            promoted = promote_cell_status(
+                MarketType.MLB_TEAM_TOTAL,
+                ExecutionBand.T3_PRE_TIP,
+                CellStatus.SHADOW,
+                superseding_reference="GG-999",
+            )
+            assert promoted.status is CellStatus.SHADOW
+            assert promoted.citing_decision == "GG-999"
+        finally:
+            del MARKET_TYPE_REGISTRY[key]
+
+    def test_unseeded_pair_raises_keyerror(self):
+        with pytest.raises(KeyError):
+            promote_cell_status(
+                MarketType.MLB_MONEYLINE, ExecutionBand.T4M_PROJ, CellStatus.SHADOW,
+            )
+
+
+# ---------------------------------------------------------------------------
+# ADR-0053 §6.3 item 3 — per-cell measurement state
+# ---------------------------------------------------------------------------
+
+
+class TestCellMeasurement:
+    def test_unmeasured_cell_returns_safe_default(self):
+        m = get_measurement(MarketType.MLB_MONEYLINE, ExecutionBand.T4M_PROJ)
+        assert m.clean_n == 0
+        assert m.n_star is None
+
+    def test_set_then_get_round_trips(self):
+        key_args = (MarketType.MLB_RUN_LINE, ExecutionBand.T1_MULTI_DAY)
+        try:
+            set_measurement(*key_args, CellMeasurement(clean_n=42, n_star=100))
+            m = get_measurement(*key_args)
+            assert m.clean_n == 42
+            assert m.n_star == 100
+        finally:
+            from prediction_market_bot.c5_execution import market_type_registry as _m
+            _m._CELL_MEASUREMENTS.pop(key_args, None)
+
+
+# ---------------------------------------------------------------------------
+# ADR-0053 §6.3 item 4 — per-cell kill-switch state (seam only, not wired)
+# ---------------------------------------------------------------------------
+
+
+class TestCellKillSwitchState:
+    def test_unhalted_cell_defaults_to_active(self):
+        state = resolve_kill_switch_state(MarketType.MLB_MONEYLINE, ExecutionBand.T4M_PROJ)
+        assert state.status is CellKillSwitchStatus.ACTIVE
+
+    def test_halt_then_resolve_round_trips(self):
+        key_args = (MarketType.MLB_GAME_TOTAL, ExecutionBand.T4M_ARITH)
+        try:
+            halt_cell(*key_args, "test halt")
+            state = resolve_kill_switch_state(*key_args)
+            assert state.status is CellKillSwitchStatus.HALTED
+            assert state.reason == "test halt"
+            assert state.halted_at is not None
+        finally:
+            from prediction_market_bot.c5_execution import market_type_registry as _m
+            _m._CELL_KILL_SWITCH_STATE.pop(key_args, None)

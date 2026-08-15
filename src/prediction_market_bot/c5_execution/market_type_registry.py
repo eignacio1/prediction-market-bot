@@ -41,8 +41,9 @@ infrastructure), not this box.
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from enum import Enum
 from typing import Optional
 
@@ -94,6 +95,23 @@ def series_ticker_for(market_type: MarketType) -> str:
     return _SERIES_TICKER_BY_MARKET_TYPE[market_type]
 
 
+# ADR-0053 §6.3 item 1: reverse ticker->market_type lookup. Named as a
+# sub-dependency of item 2 (market_type on the resolved-bet ledger, out of
+# scope for T-453 -- see Block J), needed there to backfill/derive
+# market_type for ledger rows written before that field existed. Buildable
+# independently of item 2, so it ships now. Every series ticker above is
+# distinct, so this reverse map is bijective and needs no collision handling.
+_MARKET_TYPE_BY_SERIES_TICKER: dict[str, MarketType] = {
+    ticker: market_type for market_type, ticker in _SERIES_TICKER_BY_MARKET_TYPE.items()
+}
+
+
+def market_type_for_series_ticker(ticker: str) -> MarketType:
+    """Reverse of series_ticker_for(). Raises KeyError on an unknown ticker,
+    matching get_cell()'s loud-failure convention for an unseeded key."""
+    return _MARKET_TYPE_BY_SERIES_TICKER[ticker]
+
+
 # ---------------------------------------------------------------------------
 # Cell status enum
 # ---------------------------------------------------------------------------
@@ -118,12 +136,19 @@ class CellStatus(Enum):
     DARK:
         Built and previously or potentially active, currently paused for a
         reason unrelated to measurement (sport tabled, off-season, etc.).
+    SHADOW:
+        Paper-evaluate this cell without betting (Phase 4 box 4.1, "shadow
+        mode per family"). Distinct from NOT_IMPLEMENTED (never evaluated),
+        ACTIVE (live betting), and BLOCKED (implemented but gated) — added
+        per ADR-0053 §6.2, which also considered and rejected adding a
+        SCOPING member as redundant with the already-shipped NOT_IMPLEMENTED.
     """
     ACTIVE = "active"
     BLOCKED = "blocked"
     NOT_IMPLEMENTED = "not_implemented"
     RULED_OUT = "ruled_out"
     DARK = "dark"
+    SHADOW = "shadow"
 
 
 # ---------------------------------------------------------------------------
@@ -140,6 +165,20 @@ class MarketTypeCell:
     (enforced in `__post_init__`) — a RULED_OUT cell without a reason and a
     date is indistinguishable from an unmeasured NOT_IMPLEMENTED cell, which
     defeats the entire point of the status.
+
+    `citing_decision` (ADR-0053 §6.3 item 5) is a pointer to the DECISION_LOG
+    / GG / ADR entry that ruled the cell out — distinct from the free-text
+    `reason` above. It is NOT enforced at construction time (unlike `reason`/
+    `measured_date`): the registry today seeds zero RULED_OUT cells (no
+    family has been promoted to a kill decision yet — "neither declared
+    dead"), so there is no seeded case to validate against, and requiring it
+    here would break the existing `test_ruled_out_with_both_fields_succeeds`
+    regression test for no corresponding safety gain. The real teeth live in
+    `promote_cell_status()` below: a RULED_OUT cell cannot be promoted to
+    SHADOW/ACTIVE without supplying a superseding reference at promotion
+    time, which is where ADR-0053 §2.4 actually places the guard ("refuse to
+    move a RULED_OUT cell... without an explicit superseding decision
+    reference").
     """
     market_type: MarketType
     band: ExecutionBand
@@ -147,6 +186,7 @@ class MarketTypeCell:
     reason: Optional[str] = None
     measured_date: Optional[date] = None
     notes: Optional[str] = None
+    citing_decision: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.status is CellStatus.RULED_OUT:
@@ -259,6 +299,151 @@ def cells_by_status(status: CellStatus) -> list[MarketTypeCell]:
 def cells_for_market_type(market_type: MarketType) -> list[MarketTypeCell]:
     """Return every registered cell for a market family, across all seeded bands."""
     return [cell for cell in MARKET_TYPE_REGISTRY.values() if cell.market_type is market_type]
+
+
+def promote_cell_status(
+    market_type: MarketType,
+    band: ExecutionBand,
+    new_status: CellStatus,
+    *,
+    superseding_reference: Optional[str] = None,
+) -> MarketTypeCell:
+    """
+    Mutate MARKET_TYPE_REGISTRY in place, replacing the cell at (market_type,
+    band) with a copy carrying new_status (ADR-0053 §6.3 item 5b — the first
+    write path this registry has ever had; it was a static literal dict
+    before this).
+
+    Guard (ADR-0053 §2.4): a RULED_OUT cell may not be silently promoted to
+    SHADOW or ACTIVE. That transition requires an explicit
+    superseding_reference (a DECISION_LOG/GG/ADR pointer) — the same
+    immutability discipline Hard Rule 3 gives ADRs, applied here at the
+    cell-status level so a future session cannot silently re-open a cell
+    someone already investigated and closed. Raises KeyError for an
+    unseeded (market_type, band) pair, matching get_cell()'s convention.
+    """
+    key = (market_type, band)
+    current = MARKET_TYPE_REGISTRY[key]
+
+    if current.status is CellStatus.RULED_OUT and new_status in (
+        CellStatus.SHADOW,
+        CellStatus.ACTIVE,
+    ):
+        if not superseding_reference:
+            raise ValueError(
+                f"cannot promote RULED_OUT cell {key} to {new_status} without an "
+                f"explicit superseding_reference (ADR-0053 §2.4 guard)"
+            )
+
+    new_cell = dataclasses.replace(
+        current,
+        status=new_status,
+        citing_decision=superseding_reference or current.citing_decision,
+    )
+    MARKET_TYPE_REGISTRY[key] = new_cell
+    return new_cell
+
+
+# ---------------------------------------------------------------------------
+# Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
+# ---------------------------------------------------------------------------
+#
+# Deliberately NOT fields on MarketTypeCell. MarketTypeCell is a frozen,
+# hand-reviewed literal describing what a cell IS (family, band, coverage
+# status) — the 33 seeded cells above are edited by a human and reviewed in
+# a diff. clean_n/n_star are runtime-computed numbers that change every time
+# scripts/run_power_calc.py re-derives them against the resolved-bet ledger
+# (see the SAMPLE ADEQUACY section of .claude/hooks/governance_scan.sh,
+# which already computes these live rather than reading a stored constant —
+# this project's own remediation-pass history is full of doc-embedded
+# numbers going stale between edits; baking a live number into a frozen
+# literal reintroduces exactly that failure mode). A separate CellKey-keyed
+# mutable store keeps the registry a stable, reviewable artifact while
+# giving measurement state the same lookup key.
+#
+# Not populated by this session. §6.3 item 2 (market_type on the
+# resolved-bet ledger) is the load-bearing dependency this needs to group
+# real ledger rows by cell instead of by band alone — item 2 is explicitly
+# out of scope here (Block J). This is the container Phase 3.3/3.4 tooling
+# writes into once item 2 lands; get_measurement() returns an honest
+# unmeasured default for every cell today.
+
+
+@dataclass
+class CellMeasurement:
+    """Mutable per-cell sample-adequacy measurement. See module-level comment above."""
+    clean_n: int = 0
+    n_star: Optional[int] = None
+    computed_at: Optional[date] = None
+
+
+_CELL_MEASUREMENTS: dict[CellKey, CellMeasurement] = {}
+
+
+def get_measurement(market_type: MarketType, band: ExecutionBand) -> CellMeasurement:
+    """Return the cell's measurement state, or an unmeasured default. Never
+    raises — an un-populated cell is honestly "not yet measured," not an error."""
+    return _CELL_MEASUREMENTS.get((market_type, band), CellMeasurement())
+
+
+def set_measurement(
+    market_type: MarketType, band: ExecutionBand, measurement: CellMeasurement
+) -> None:
+    """Write path for future Phase 3.3/3.4 tooling (scripts/run_power_calc.py
+    scoped per-cell). Unused by any shipped caller today — named seam, not wired."""
+    _CELL_MEASUREMENTS[(market_type, band)] = measurement
+
+
+# ---------------------------------------------------------------------------
+# Per-cell kill-switch state (ADR-0053 §2.3 / §6.3 item 4, Phase 3 box 3.5)
+# ---------------------------------------------------------------------------
+#
+# Same mutable-store-keyed-by-CellKey shape as CellMeasurement above, for the
+# same reason, plus one specific to kill-switch state: C4's live kill-switch
+# check (risk.py) is today implicitly band-scoped because only one cell
+# exists system-wide. Making C4/C7 resolve which cell an incoming bet
+# belongs to *before* checking halt state — so halting (run_line, T4M-PROJ)
+# does not touch (hits, T4M-PROJ) — is a real change to a live risk-control
+# path and is explicitly OUT of scope for this session (T-453). This section
+# ships the state and a resolution helper only; nothing here is called from
+# risk.py, paper_trader.py, or execution_bands.py. The live wiring is
+# registered as its own follow-on task — see the session report.
+
+
+class CellKillSwitchStatus(Enum):
+    ACTIVE = "active"
+    HALTED = "halted"
+
+
+@dataclass
+class CellKillSwitchState:
+    """Per-cell kill-switch state. See module-level comment above."""
+    status: CellKillSwitchStatus = CellKillSwitchStatus.ACTIVE
+    reason: Optional[str] = None
+    halted_at: Optional[datetime] = None
+
+
+_CELL_KILL_SWITCH_STATE: dict[CellKey, CellKillSwitchState] = {}
+
+
+def resolve_kill_switch_state(
+    market_type: MarketType, band: ExecutionBand
+) -> CellKillSwitchState:
+    """Cell-resolution helper (ADR-0053 §2.3). Returns an ACTIVE default for
+    any cell with no recorded halt — never raises. NOT called by C4/C7
+    today; wiring the live kill-switch path to resolve per-cell state before
+    checking halt status is future work (see the session report)."""
+    return _CELL_KILL_SWITCH_STATE.get((market_type, band), CellKillSwitchState())
+
+
+def halt_cell(market_type: MarketType, band: ExecutionBand, reason: str) -> CellKillSwitchState:
+    """Write path for a future C4/C7 wiring session. Unused by any shipped
+    caller today — named seam, not wired."""
+    state = CellKillSwitchState(
+        status=CellKillSwitchStatus.HALTED, reason=reason, halted_at=datetime.utcnow()
+    )
+    _CELL_KILL_SWITCH_STATE[(market_type, band)] = state
+    return state
 
 
 # ---------------------------------------------------------------------------
