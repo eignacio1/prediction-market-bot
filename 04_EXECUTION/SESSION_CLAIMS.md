@@ -238,3 +238,4 @@
 | 2026-08-14T19:34:06Z | T-450 | CLOSED — T-450 extended replay gate with T1/T2/T3/None fixtures (GG-177 RESOLVED-partial); GG-178/T-451 registered for a live T4 MLB 14.6h cycle-log outage found via governance scan. (commit `e6a3ac5`) |
 | 2026-08-14T19:26:15Z | T-448 | CLOSED — T-448: ADR-0053 amended to match T-439's shipped registry, marked ACCEPTED w/ sign-off; GG-177+GG-178 tooling bugs registered (commit `254fc37`) |
 | 2026-08-15T19:30:28Z | T-452,GG-182 | T-452: enforce session-end token/time budget in protocol (session-end.md + Hard Rule 8); GG-182 registration. TIER: MICRO. |
+| 2026-08-15T19:31:14Z | T-453 | T-453: extend shipped MarketTypeCell per ADR-0053 (T-448 accepted delta) - clean_n/n_star attachment, per-cell kill-switch state seam, SHADOW status, RULED_OUT supersession guard. TIER: STANDARD. |
