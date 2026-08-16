@@ -145,8 +145,16 @@ class TestMarkAgedOpen:
 
         trader.mark_aged_open(pid, reason="api_no_result_48h", session_id="SID-X")
 
-        mock_log.warning.assert_called_once()
-        call_args = mock_log.warning.call_args
+        # GG-184: _open_mlb_pos() above does not pass market_type explicitly,
+        # so open_position() also emits a "market_type_defaulted" warning.
+        # That is intended, in-scope behavior (T-456) -- isolate the
+        # aged-open warning specifically rather than asserting total count.
+        aged_calls = [
+            c for c in mock_log.warning.call_args_list
+            if c[0][1] == "paper_position_aged_open"
+        ]
+        assert len(aged_calls) == 1
+        call_args = aged_calls[0]
         assert call_args[0][0] == "C5-PAPER"
         assert call_args[0][1] == "paper_position_aged_open"
         assert "position_id" in call_args[1]["payload"]

@@ -57,6 +57,17 @@ from run_band_monitor import (   # noqa: E402
     filter_clean,
 )
 
+_SRC = Path(__file__).resolve().parent.parent / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
+from prediction_market_bot.execution_bands import ExecutionBand  # noqa: E402
+from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E402
+    MarketType,
+    CellMeasurement,
+    market_type_for_ticker,
+    set_measurement,
+)
+
 OUT_DIR = Path("exp_output/T323-POWER-CALC")
 
 
@@ -260,6 +271,76 @@ def run_all_bands(portfolio_path: Path, t4_ledger_path: Path,
     return results
 
 
+# ── ADR-0053 §6.3 item 2: cell-scoped (market_type, band) power calc ──────────────
+
+def _market_type_for_record(rec: dict) -> MarketType | None:
+    """Read-time derivation only (GG-077 pattern) — never mutates the record.
+    None for a ticker whose series prefix isn't in the registry yet."""
+    ticker = str(rec.get("kalshi_ticker", ""))
+    try:
+        return market_type_for_ticker(ticker)
+    except KeyError:
+        return None
+
+
+def _regroup_by_cell(band: str, recs: list[dict]) -> dict[MarketType, list[dict]]:
+    by_cell: dict[MarketType, list[dict]] = {}
+    for r in recs:
+        mt = _market_type_for_record(r)
+        if mt is None:
+            continue
+        by_cell.setdefault(mt, []).append(r)
+    return by_cell
+
+
+def run_all_cells(portfolio_path: Path, t4_ledger_path: Path,
+                   alpha: float, power: float) -> dict[str, dict]:
+    """Same records as run_all_bands(), regrouped by the (market_type, band)
+    cell key instead of by band alone. analyze_band_power() is called
+    unmodified, still keyed on the real band string (filter_clean()'s
+    epoch-floor lookup requires it) — market_type is attached to the result
+    afterward as a label, not fed into the clean-epoch logic. Every cell
+    whose band has an ExecutionBand counterpart also gets its measurement
+    persisted via set_measurement() (the seam T-453 left unwired). Does not
+    modify run_all_bands() or run_band_monitor.py."""
+    results: dict[str, dict] = {}
+
+    by_band = load_pool_by_band(portfolio_path)
+    for band in BOOK_BANDS:
+        for mt, recs in _regroup_by_cell(band, by_band.get(band, [])).items():
+            res = analyze_band_power(band, recs, alpha, power)
+            res["market_type"] = mt.value
+            key = f"{mt.value}:{band}"
+            results[key] = res
+            _persist_cell_measurement(mt, band, res)
+
+    t4_recs = load_t4_ledger(t4_ledger_path)
+    for mt, recs in _regroup_by_cell("T4M-PROJ", t4_recs).items():
+        res = analyze_band_power("T4M-PROJ", recs, alpha, power)
+        res["market_type"] = mt.value
+        key = f"{mt.value}:T4M-PROJ"
+        results[key] = res
+        _persist_cell_measurement(mt, "T4M-PROJ", res)
+
+    return results
+
+
+def _persist_cell_measurement(market_type: MarketType, band: str, res: dict) -> None:
+    try:
+        execution_band = ExecutionBand(band)
+    except ValueError:
+        return  # e.g. "UNTAGGED" has no ExecutionBand counterpart — nothing to persist
+    computed_at = datetime.now(timezone.utc).date()
+    set_measurement(
+        market_type, execution_band,
+        CellMeasurement(
+            clean_n=res.get("clean_n", 0),
+            n_star=res.get("n_star"),
+            computed_at=computed_at,
+        ),
+    )
+
+
 # ── reporting ────────────────────────────────────────────────────────────────────
 
 def _fmt_band(r: dict) -> str:
@@ -303,6 +384,26 @@ def _print_report(results: dict[str, dict], alpha: float, power: float) -> None:
     print("\n" + "=" * 96)
 
 
+def _fmt_cell(key: str, r: dict) -> str:
+    """Same rendering as _fmt_band(), with the [band] label swapped for the
+    [market_type:band] cell key. band appears mid-sentence in the COMPUTED
+    branch too ("{band} needs ~n*=...") — left as-is; only the leading
+    bracketed label identifies the cell."""
+    band = r["band"]
+    return _fmt_band(r).replace(f"[{band}]", f"[{key}]", 1)
+
+
+def _print_cell_report(results: dict[str, dict], alpha: float, power: float) -> None:
+    print("=" * 96)
+    print(f"ADR-0053 §6.3 ITEM 2 — CELL-SCOPED (market_type, band) POWER CALCULATION "
+          f"(alpha={alpha}, power={power})")
+    print("=" * 96)
+    for key, r in results.items():
+        print()
+        print(_fmt_cell(key, r))
+    print("\n" + "=" * 96)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description="T-323 sample-adequacy / power calculation (GG-004)",
@@ -322,13 +423,18 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = _build_parser().parse_args(argv)
     results = run_all_bands(args.portfolio, args.t4_ledger, args.alpha, args.power)
+    cell_results = run_all_cells(args.portfolio, args.t4_ledger, args.alpha, args.power)
 
     args.out.mkdir(parents=True, exist_ok=True)
     out_json = args.out / "power_calc_results.json"
     out_json.write_text(json.dumps(results, indent=2))
+    out_cell_json = args.out / "power_calc_cell_results.json"
+    out_cell_json.write_text(json.dumps(cell_results, indent=2))
 
     _print_report(results, args.alpha, args.power)
+    _print_cell_report(cell_results, args.alpha, args.power)
     print(f"\nWrote {out_json}")
+    print(f"Wrote {out_cell_json}")
     return 0
 
 
