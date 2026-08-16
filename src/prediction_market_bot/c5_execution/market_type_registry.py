@@ -112,6 +112,14 @@ def market_type_for_series_ticker(ticker: str) -> MarketType:
     return _MARKET_TYPE_BY_SERIES_TICKER[ticker]
 
 
+def market_type_for_ticker(kalshi_ticker: str) -> MarketType:
+    """ADR-0053 §6.3 item 2: derive market_type from a full Kalshi ticker
+    (e.g. 'KXMLBHIT-26JUN241607BALLAA-...') by extracting its series prefix.
+    Read-time derivation only -- never mutates stored ledger data (GG-077
+    defense-in-depth pattern). Raises KeyError on an unknown series prefix."""
+    return market_type_for_series_ticker(kalshi_ticker.split("-")[0])
+
+
 # ---------------------------------------------------------------------------
 # Cell status enum
 # ---------------------------------------------------------------------------

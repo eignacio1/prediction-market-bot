@@ -510,6 +510,20 @@ class PaperTrader:
             # only -1.0*vig, since 1.0*vig == 2.0*half_spread exactly. Mirrors
             # run_mlb_paper_trade.py::_directional_edge()'s NO branch.
             _resolved_market_type = market_type or MarketType.MLB_PLAYER_PROP_HITS
+            if market_type is None:
+                # GG-184: every current call site relies on this default rather
+                # than passing market_type explicitly. Non-fatal — just make the
+                # defaulting visible in the audit trail so it isn't silent the
+                # day a second market type goes live and a call site is missed.
+                self._logger.warning(
+                    COMPONENT, "market_type_defaulted",
+                    payload={
+                        "resolved_market_type": _resolved_market_type.value,
+                        "kalshi_ticker": kalshi_ticker,
+                        "band": band,
+                    },
+                    session_id=session_id,
+                )
             _directional_gross = _directional_edge(
                 direction, band, _resolved_market_type, gross_edge, vig
             )
@@ -576,6 +590,9 @@ class PaperTrader:
                 "entry_price_paid": approval.get("entry_price_paid"),
                 "price_stratum": approval.get("price_stratum"),
                 "contracts": approval.get("contracts"),
+                # ADR-0053 §6.3 item 2: persist the cell key's market_type axis
+                # on the position record itself, not just derivable via band.
+                "market_type": _resolved_market_type.value,
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)

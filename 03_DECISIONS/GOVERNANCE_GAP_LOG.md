@@ -1994,6 +1994,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-184 — `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rather than passing it explicitly
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-184 |
+| Category | Incremental architecture — a deliberate deferral, not a defect found in-session. |
+| What was missed | Nothing was missed at write time; this is a scoped deferral. T-456 (ADR-0053 delta item 2) grepped every call site of `open_position(` in `src/` and `scripts/` and found zero of the 7 production call sites (`run_mlb_paper_trade.py`, `run_t4_mlb_live.py`, `run_t2_mlb_sameday.py`, `run_t4_live.py`, `run_paper_trade.py`, `t4_live_runner.py`, `scripts/replay_harness_t427.py`) pass `market_type=` explicitly — all rely on `paper_trader.py`'s `market_type or MarketType.MLB_PLAYER_PROP_HITS` silent default. Today this is harmless because the entire live ledger is single-market-type (T-456's empirical cross-validation: 100% `KXMLBHIT` across every band and pool), but the default becomes a silent mislabeling risk the moment a second market type goes live and any call site is missed when adding its explicit tag. |
+| When it should have been caught | N/A — named out of scope at T-456 task-assignment time; making the parameter required touches 6+ call-site files, bigger than T-456's single-deliverable scope (Hard Rule 11). |
+| Phases it survived | N/A. |
+| Why it survived | Explicit scope fence, not a governance failure — T-456 implemented the non-fatal in-scope mitigation instead (a `market_type_defaulted` warning log fires whenever a caller passes `market_type=None`, so any future defaulting is visible in the audit trail without changing call-site behavior). |
+| Impact | None today (single-market-type ledger). Becomes a real mislabeling risk once a second `MarketType` goes ACTIVE and any of the 7 call sites is not updated to pass it explicitly — the position would silently record the wrong cell. |
+| Discovery | Self-identified during T-456 (2026-08-16) via exhaustive call-site grep. |
+| Resolution | Not started. Future task: make `market_type` a required (non-defaulted) parameter on `open_position()`, update all 7 call sites to pass it explicitly, remove the default and its warning log. |
+| Status | OPEN |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
