@@ -249,3 +249,4 @@
 | 2026-08-16T01:03:25Z | T-456 | T-456: ADR-0053 delta item 2 — market_type persisted on ledger + run_power_calc.py grouped by (market_type, band) cell. TIER: STANDARD. |
 | 2026-08-16T01:45:33Z | T-456 | CLOSED — T-456: market_type persisted on ledger + power calc regrouped by (market_type, band) cell; T1/T4M-PROJ acceptance test exact match; GG-184 registered (commit `6173f3f`) |
 | 2026-08-17T23:02:19Z | T-459 | T-459: box 1.7 re-verify pytest -q clean on main post T-446/PR#74 |
+| 2026-08-17T23:02:46Z | T-458 | T-458: GG-170 date-binding guard + retry/settle policy + loud assertion |
