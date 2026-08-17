@@ -9,3 +9,5 @@
 **Does anything need your decision right now?** No.
 
 **Anything that worried the session, even if not urgent:** One loose end: the session-start health check flagged that a status file (`Compass OS Health`) has grown an unusually long single line (~5,000 characters) — not fixed or formally logged this session, just noted so it doesn't get lost. Also, PR #82 (this session's four fixes) is open and will be merged as part of closing out.
+- T-459 (auto): T-459: box 1.7 re-verified on main (2,875/29/0, exit 0) — Phase 1 8/8 closed; GG-179 unchanged/OPEN
+- T-461 (auto): T-461: landed HYP-010 Phase 2 pre-registration (gate 2.3 metric swap, EXP-022 assigned) into governed docs, no src/

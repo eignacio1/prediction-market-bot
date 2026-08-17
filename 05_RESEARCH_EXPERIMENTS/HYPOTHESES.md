@@ -168,6 +168,29 @@ Each hypothesis follows the structure:
 
 ---
 
+## HYP-010 — Team run-total forecasts transfer to a materially more efficient market
+
+| Field | Detail |
+|-------|--------|
+| Research Question | Phase 2 / coverage-target generality: does the methodology transfer off the single traded cell (`KXMLBHIT`, T4M-PROJ)? |
+| Framing | **Option A (operator, 2026-08-16): this buys GENERALITY, not edge.** Thinner edge than props is the expectation, not the disappointment. |
+| H0 (Null) | A team run-total model fit on `MLBTeamStatsStore`'s existing `get_opp_runs_scored` / `get_opp_runs_allowed` series produces **P&L per bet ≤ 0** over the selected subset where \|model_p − mkt_p\| > 0.010, on archived `KXMLBTOTAL` prices. |
+| H1 (Alternative) | P&L per bet > 0 on that subset, with `clean_n ≥ n*` where `n*` is derived live from the realized mean/sd via `scripts/run_power_calc.py` (APR-0024). |
+| Test method | Fit NB/Poisson to team runs using the **existing** store — no new C2 matrix, no new ingestion (LL-009). Score against `exp_output/PRICE_ARCHIVE/prices_2026-08-*.jsonl` `KXMLBTOTAL` rows. Bet-selection filter: \|model_p − yes_mid\| > 0.010. |
+| **Primary gate (2.3, revised)** | **P&L/bet > 0 AND `clean_n ≥ n*`, one-sided α=.05.** If `clean_n < n*` the verdict is **INCONCLUSIVE — extend archive**, explicitly *not* FALSIFIED. |
+| **Pre-registered expectation** | **P&L/bet in the range +0.005 to +0.025, i.e. materially below `KXMLBHIT`'s realized figure.** Rationale: totals' median half-spread is 3× tighter (0.0050 vs 0.0150) and mean 6× tighter, so the same forecasting skill converts to proportionally less edge. A result above +0.03 should be treated as **suspect and audited for leakage before being believed**, not celebrated. |
+| Falsification condition | P&L/bet ≤ 0 at `clean_n ≥ n*`. |
+| Secondary (descriptive, **not** a gate) | Paired per-game ΔBrier vs market-implied, reported with its CI and its measured power. Pre-registered expectation: **indistinguishable from zero** — the power table above says a perfect model would also be indistinguishable at this n. Reporting it as a gate would be a false-negative machine. |
+| Consequence if confirmed | Methodology transfers off the single traded cell. Phase 2 proceeds to 2.4 (team-game C2 matrix). First evidence for the coverage-target thesis. |
+| Consequence if falsified | **Phase 2 does not terminate** (plan's own note). Reroute to **moneyline-first**: `KXMLBGAME`, 30,302 observations already archived, a binary target where the production LR class (ADR-0004) applies with no distribution fit. |
+| Consequence if INCONCLUSIVE | Continue archiving; re-run at `n*`. ~14 games/day ⇒ ~296–365 additional games ≈ **3–4 weeks** at market noise 0.05. Do not build C2 in the interim. |
+| Status | ⚪ PRE-REGISTERED (2026-08-17, T-461) — not yet run |
+| Experiment(s) | EXP-022 (unassigned pre-registration; team run-total transfer test; HYP-010) |
+
+**Pre-registration source:** `05_RESEARCH_EXPERIMENTS/HYP010_PHASE2_PREREGISTRATION_2026-08-15.md` (power analysis reproducible via `python3 05_RESEARCH_EXPERIMENTS/hyp010_power_analysis.py`, stdlib only, seeded, deterministic). That document also records why gate 2.3 as originally written (Brier-vs-market) could not fail honestly — underpowered 6.6–11× at the 214-game archive — and is not repeated here.
+
+---
+
 ## Hypothesis Status Summary
 
 | ID | Hypothesis | Status | Experiment | Target |
@@ -181,6 +204,7 @@ Each hypothesis follows the structure:
 | HYP-007 | NB model competitive with LR for calibration | 🔴 FALSIFIED | EXP-013 | NB Brier 0.2671 vs LR 0.2461; Δ=0.0210; multi-line use retained |
 | HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | 🔴 FALSIFIED | EXP-015 | EV ratio 0.84 at drift_std=0.020; T3 useful as FADE gate only |
 | HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | 🟢 CONFIRMED | EXP-016 | Δ = -0.0010; G6 paper evidence valid for playoffs at full confidence |
+| HYP-010 | Team run-total forecasts transfer to a materially more efficient market (P&L/bet > 0 on selected subset) | ⚪ PRE-REGISTERED | EXP-022 | Not yet run; pre-registered expectation +0.005 to +0.025 P&L/bet, >+0.03 is suspect |
 
 ---
 
