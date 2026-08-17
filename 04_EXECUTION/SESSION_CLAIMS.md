@@ -255,4 +255,6 @@
 | 2026-08-17T23:20:00Z | T-461 | CLOSED — T-461: HYP-010 Phase 2 pre-registration landed (HYPOTHESES.md, gate 2.3 revision, DECISION_LOG entry, EXP-022 assigned); commit `724719c` |
 | 2026-08-17T23:24:31Z | T-461 | CLOSED — T-461: landed HYP-010 Phase 2 pre-registration (gate 2.3 metric swap, EXP-022 assigned) into governed docs, no src/ (commit `ef42cd5`) |
 | 2026-08-17T23:15:00Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main, 2,875/29/0 exit 0, Phase 1 8/8 closed; GG-179 unchanged/OPEN (commits 4ba6055, 3c4ed2a, PR #80) |
+| 2026-08-17T23:30:11Z | T-460 | CLOSED — housekeeping batch, GG-169/173/175/176 all RESOLVED (commit range `d066bb5..5a70392`, PR #82) |
+| 2026-08-17T23:44:28Z | T-460 | CLOSED — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82 (commit `ec9e320`) |
 | 2026-08-17T23:29:49Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main (2,875/29/0, exit 0) — Phase 1 8/8 closed; GG-179 unchanged/OPEN (commit `11f6441`) |

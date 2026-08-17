@@ -180,12 +180,15 @@ def main() -> None:
         outcome = archive_chain(
             target["nav"], target["archive"], target["heading"], current_line, pointer_line
         )
-        if outcome:
+        if outcome and outcome["entries_archived"] > 0:
             print(f"  collapsed {outcome['entries_archived']} entries: "
                   f"{nav_relpath} -> {archive_relpath}")
             results.append(outcome)
+        elif outcome:
+            print(f"  {nav_relpath}: current line updated (single entry, nothing to archive)")
+            results.append(outcome)
         else:
-            print(f"  {nav_relpath}: nothing to collapse (0 or 1 chain entries)")
+            print(f"  {nav_relpath}: no chain found (nothing to update)")
 
     row = generate_claims_closure_row(meta, args.dry_run)
     print(f"SESSION_CLAIMS.md closure row {'(dry-run) ' if args.dry_run else ''}"
