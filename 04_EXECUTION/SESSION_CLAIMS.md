@@ -253,3 +253,4 @@
 | 2026-08-17T23:03:02Z | T-460 | T-460: housekeeping batch GG-169/173/175/176 (Block C) |
 | 2026-08-17T23:03:08Z | T-461 | T-461: land HYP-010 Phase 2 pre-registration into governed docs (TIER: MICRO) |
 | 2026-08-17T23:20:00Z | T-461 | CLOSED — T-461: HYP-010 Phase 2 pre-registration landed (HYPOTHESES.md, gate 2.3 revision, DECISION_LOG entry, EXP-022 assigned); commit `724719c` |
+| 2026-08-17T23:24:31Z | T-461 | CLOSED — T-461: landed HYP-010 Phase 2 pre-registration (gate 2.3 metric swap, EXP-022 assigned) into governed docs, no src/ (commit `ef42cd5`) |
