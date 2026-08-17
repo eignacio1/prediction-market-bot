@@ -253,3 +253,4 @@
 | 2026-08-17T23:03:02Z | T-460 | T-460: housekeeping batch GG-169/173/175/176 (Block C) |
 | 2026-08-17T23:03:08Z | T-461 | T-461: land HYP-010 Phase 2 pre-registration into governed docs (TIER: MICRO) |
 | 2026-08-17T23:15:00Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main, 2,875/29/0 exit 0, Phase 1 8/8 closed; GG-179 unchanged/OPEN (commits 4ba6055, 3c4ed2a, PR #80) |
+| 2026-08-17T23:30:11Z | T-460 | CLOSED — housekeeping batch, GG-169/173/175/176 all RESOLVED (commit range `d066bb5..5a70392`, PR #82) |
