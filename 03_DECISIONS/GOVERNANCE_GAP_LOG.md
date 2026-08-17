@@ -1679,6 +1679,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 </details>
 
+**2026-08-17 update (T-458):** Mitigation built. (1) A new `_verify_official_date()` cross-check in `run_resolve_mlb.py`'s `_fetch_mlb_hits()` queries the MLB Stats API's `/api/v1/schedule?gamePk=` endpoint for the split's `gamePk`'s authoritative `officialDate` and refuses the resolution (returns `None`, fail-closed on both a confirmed mismatch and an inconclusive lookup) unless it exactly confirms the requested `game_date` — a second, independent signal beyond the `gameLog` split's own `date` label this gap found untrustworthy near real-time. (2) No new settle-window code was needed: a refusal here falls through the existing Postseason→ESPN fallback chain and, failing those, the pre-existing 48h aged-open retry window — reusing infrastructure that already never silently drops or guesses a value. (3) Backfill of already-corrupted epoch-12 rows was scoped, not executed (out of session scope): 532 closed T4M-PROJ epoch-12 positions carry the mismatch; 0 of 532 are currently re-derivable from the T-421 outcome store, not from a matching-key defect (ruled out) but because the store's own data coverage ends 2026-08-03, before the affected range (2026-08-07 onward) begins — all 532 are theoretically re-derivable via a direct re-query using the ticker's true date, reusing `fetch_actual_hits()` (now guarded by this fix), but building that backfill is a follow-on. (4) `assert_ledger_invariants.py` now prints a loud `[GG-170 RECURRENCE]` stderr banner and appends a `recurrence_alarm` JSONL report line whenever assertion A's violations include the *current* max `logic_epoch` for a band — confirmed firing against real data (`654 NEW ticker/game_date mismatches` for T4M-PROJ epoch 12), exit code unchanged (still 0, `--strict` not promoted). Independently re-verified the operator's cited epoch-12 figure while doing this: the correct closed-only violation rate is **532/719 = 74.0%**, not the cited 654/719 = 91.0% (654 is an all-status-combined count — 532 closed + 46 open + 76 rejected — not closed-only); 74.0% is still up from CLAUDE.md Q7's 69.9% (2026-08-11), supporting the "still accruing" direction of the claim even though the specific figure needed correction. Full detail: `DECISION_LOG.md` 2026-08-17, T-458. **A separate, unexplained anomaly surfaced during this verification — all 532 corrupted closed rows resolved strictly after the sibling GG-166 guard's confirmed deployment, which should have refused them — registered as [[GG-185]] rather than chased in this session (Hard Rule 11).**
+
 ---
 
 ### GG-171 — `ACTIVE_QUEUE.md`'s own T-436 task template says "Do NOT start Phase 1 even if depth clears — Phase 1 is separately blocked on T-431," but T-427's audit already scoped T-431's remaining work (outcome/pnl re-derivation) outside box 1.6's actual replay gate — the file's blocker framing appears stale against its own project's prior finding
@@ -2013,6 +2015,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | Self-identified during T-456 (2026-08-16) via exhaustive call-site grep. |
 | Resolution | Not started. Future task: make `market_type` a required (non-defaulted) parameter on `open_position()`, update all 7 call sites to pass it explicitly, remove the default and its warning log. |
 | Status | OPEN |
+
+</details>
+
+---
+
+### GG-185 — 532 closed T4M-PROJ epoch-12 positions carry a ticker-vs-`game_date` mismatch despite the GG-166 guard, which should have refused every one of them, being confirmed deployed and unconditional at their `resolved_at` time
+
+**Status:** OPEN · **Severity:** CRITICAL
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-185 |
+| Category | Guard-bypass anomaly of unknown mechanism — sibling to GG-166/GG-170 (same T4M-PROJ epoch-12 ledger-trust surface) but distinct from both: GG-166 is the write-time `game_date` bug (fixed); GG-170 is the MLB Stats API's `gameLog` date-label instability (mitigated this session, T-458). This gap is neither — it is that the pre-existing, confirmed-deployed GG-166 read-time guard (`run_resolve_mlb.py` lines 474-502, `58b2eb6`, 2026-08-06) is not preventing the exact condition it checks for, in positions resolved strictly after its own deployment. |
+| What was missed | T-458 (this session), while independently verifying the user's cited "654/719 = 91.0%" epoch-12 figure ahead of building GG-170's mitigation, found the correct closed-only rate is 532/719 = 74.0% (654 is an all-status-combined count: 532 closed + 46 open + 76 rejected). All 532 closed T4M-PROJ epoch-12 positions with a ticker-vs-`game_date` mismatch have `resolved_at` timestamps strictly after the GG-166 guard's confirmed VPS deployment (`git log` on the VPS shows `run_resolve_mlb.py` unchanged since `58b2eb6`, 2026-08-06 22:37:38 -0700) — meaning the guard was live and should have refused every one of these 532 resolutions, and did not. |
+| When it should have been caught | Should have been caught by GG-166's own post-deployment monitoring, if any existed — it did not. Found only incidentally, as a side effect of T-458's independent figure-verification step for an unrelated task (GG-170 mitigation), not by any structural check. |
+| Phases it survived | All resolutions since `58b2eb6` (2026-08-06) through at least 2026-08-17 (session date) — an unknown but non-trivial window, not yet bounded. |
+| Why it survived | No monitoring or assertion currently checks whether the GG-166 guard's refusal condition is actually firing when its precondition is met; `assert_ledger_invariants.py`'s assertion A measures the mismatch's existence, not whether a guard that should prevent it is working. T-458 ruled out three candidate explanations (deploy lag; a second, unguarded path to `settle_position()` — confirmed `settle_position()` has a single caller; a ticker-regex parse failure on a spot-checked example, `KXMLBHIT-26AUG071940MINMIL-MINRLEWIS23-2`, which parses correctly to `2026-08-07`) without reaching a definitive root cause, and stopped further investigation per Hard Rule 11 (one session = one deliverable; T-458's deliverable was GG-170's mitigation, not this anomaly) and the session's explicit scope fence. |
+| Impact | Directly bears on T4M-PROJ epoch-12 `clean_n` trustworthiness (GG-004/APR-0024) — the same governance surface as GG-166 and GG-170. Also means GG-166's guard cannot currently be trusted to be doing what its own governance-log entry claims it does for resolutions after its deployment date; that claim needs re-verification once this gap's root cause is found. Does not touch sizing, `kelly_fraction`, or the drawdown kill switch (out of T-458's scope; not evaluated for downstream effect here). |
+| Discovery | T-458 (2026-08-17), incidental to independently verifying the operator's cited epoch-12 violation-rate figure before building GG-170's mitigation. |
+| Resolution | Not started. Candidate next steps for a staffed follow-on: (1) instrument or trace `_resolve_pool()`'s GG-166 guard block directly against a handful of the 532 known-bad tickers to see whether the guard is being reached, evaluated, and behaving as its code reads, or whether some upstream state (e.g. the position's stored `game_date` already matching a *different*, also-wrong value by the time the guard runs) makes the guard's own check pass incorrectly; (2) check whether the ~1,220 `game_date_corrected_but_outcome_stale`-flagged positions from GG-166's own unstaffed follow-on migration interact with or explain this set — T-458 could not reconcile this cleanly with the guard's unconditional check logic in the time available and did not pursue it further. |
+| Status | OPEN — new, unstaffed, CRITICAL. Recommend evaluating as a G6/GG-004 blocker alongside GG-166 and GG-170 until root-caused. |
 
 </details>
 
