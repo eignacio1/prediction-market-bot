@@ -250,3 +250,4 @@
 | 2026-08-16T01:45:33Z | T-456 | CLOSED — T-456: market_type persisted on ledger + power calc regrouped by (market_type, band) cell; T1/T4M-PROJ acceptance test exact match; GG-184 registered (commit `6173f3f`) |
 | 2026-08-17T23:02:19Z | T-459 | T-459: box 1.7 re-verify pytest -q clean on main post T-446/PR#74 |
 | 2026-08-17T23:02:46Z | T-458 | T-458: GG-170 date-binding guard + retry/settle policy + loud assertion |
+| 2026-08-17T23:03:02Z | T-460 | T-460: housekeeping batch GG-169/173/175/176 (Block C) |
