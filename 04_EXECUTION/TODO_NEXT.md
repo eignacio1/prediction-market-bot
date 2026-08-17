@@ -943,3 +943,13 @@ G5 status: game_date=2026-06-13, **41 bets placed** ($1,003.38 deployed, 29 prim
 ## T-454 — Wire per-cell kill-switch state into C4/C7's live check (GG-183) — 🔲 NOT STARTED (registered 2026-08-15, T-453)
 
 T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to `market_type_registry.py` (ADR-0053 §2.3) as a named seam only — `risk.py`/C4/C7's live drawdown-based kill-switch check does not resolve per-cell state before halting. Zero live consequence today (only T4M-PROJ is ACTIVE), but becomes a real risk-control gap the moment a second `(MarketType, ExecutionBand)` cell is promoted to ACTIVE without this wiring landing first — C4's current check is implicitly band-scoped and would halt/not-halt across cells indiscriminately. See GG-183 for full detail.
+
+## T-458 — Build GG-170 mitigation (officialDate guard + recurrence assertion) — ✅ COMPLETE 2026-08-17 (isolated worktree `PM-worktrees/20260817T230208Z-gg170-date-binding`)
+
+**Done this task:** `run_resolve_mlb.py` — new `_verify_official_date()` fail-closed cross-check wired into `_fetch_mlb_hits()` against MLB Stats API `/api/v1/schedule`'s authoritative `officialDate`. `assert_ledger_invariants.py` — recurrence check: assertion A violations at a band's current max `logic_epoch` now print a `[GG-170 RECURRENCE]` banner + `recurrence_alarm` JSONL line (exit code unchanged, `--strict` not promoted). Independently corrected the cited epoch-12 figure: 532/719=74.0% closed-only (not 654/719=91.0%, which mixed an all-status numerator with a closed-only denominator). Backfill scoped (532 rows, 0 currently re-derivable — outcome store coverage gap), not executed. Full detail: `GOVERNANCE_GAP_LOG.md` GG-170 update + new GG-185, `DECISION_LOG.md` 2026-08-17.
+
+**Follow-ons registered, not started:**
+- **T-460** — Backfill/re-derive the 532 corrupted closed T4M-PROJ epoch-12 rows once a direct MLB Stats API re-query script is built (reusing `fetch_actual_hits()`, now guarded) or the T-421 outcome store's coverage catches up past 2026-08-07.
+- **T-461** — Investigate GG-185: why the confirmed-deployed, unconditional GG-166 guard did not refuse any of the 532 mismatched resolutions, all of which occurred after its deployment (`58b2eb6`, 2026-08-06).
+
+**Note (T-458):** the T-459 number was initially used here in error and corrected — `SESSION_CLAIMS.md:251` already claims T-459 for an unrelated task (box 1.7 re-verify). Follow-ons above are T-460/T-461, not T-459.

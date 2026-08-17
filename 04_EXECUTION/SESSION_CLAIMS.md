@@ -250,6 +250,8 @@
 | 2026-08-16T01:45:33Z | T-456 | CLOSED — T-456: market_type persisted on ledger + power calc regrouped by (market_type, band) cell; T1/T4M-PROJ acceptance test exact match; GG-184 registered (commit `6173f3f`) |
 | 2026-08-17T23:02:19Z | T-459 | T-459: box 1.7 re-verify pytest -q clean on main post T-446/PR#74 |
 | 2026-08-17T23:02:46Z | T-458 | T-458: GG-170 date-binding guard + retry/settle policy + loud assertion |
+| 2026-08-17T23:45:00Z | T-458 | CLOSED — T-458: GG-170 mitigation built (officialDate cross-check guard in run_resolve_mlb.py + recurrence-alarm in assert_ledger_invariants.py); independently corrected cited epoch-12 figure to 532/719=74.0% closed-only; backfill scoped not executed (532 rows, 0 re-derivable, store coverage gap); GG-185 registered (guard-bypass anomaly, not chased, Hard Rule 11); T-460/T-461 follow-ons registered. 71+8 new tests pass, 690/690 unit suite green. |
+| 2026-08-17T23:47:07Z | T-458 | CLOSED — T-458: GG-170 officialDate guard + recurrence assertion built; corrected epoch-12 rate to 74.0%; GG-185 registered (commit `7e06bf4`) |
 | 2026-08-17T23:03:02Z | T-460 | T-460: housekeeping batch GG-169/173/175/176 (Block C) |
 | 2026-08-17T23:03:08Z | T-461 | T-461: land HYP-010 Phase 2 pre-registration into governed docs (TIER: MICRO) |
 | 2026-08-17T23:20:00Z | T-461 | CLOSED — T-461: HYP-010 Phase 2 pre-registration landed (HYPOTHESES.md, gate 2.3 revision, DECISION_LOG entry, EXP-022 assigned); commit `724719c` |

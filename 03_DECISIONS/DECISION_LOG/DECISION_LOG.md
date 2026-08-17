@@ -756,6 +756,26 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 
 **Pytest regression found and fixed in-scope.** The first full-suite AFTER run (`bqebltlwd`) surfaced 1 failure not present in BEFORE: `tests/test_t194_mlb_age_out.py::TestMarkAgedOpen::test_emits_c6_warning` asserted `mock_log.warning.assert_called_once()`, which broke because the test's `_open_mlb_pos()` helper doesn't pass `market_type=` explicitly, so `open_position()` now also emits the new `market_type_defaulted` warning (STEP 2, GG-184) in addition to the pre-existing `paper_position_aged_open` warning under test. This is a regression directly caused by this task's own in-scope STEP 2 edit (not an out-of-scope discovery — Hard Rule 11's register-and-stop does not apply), so it was fixed rather than registered: the test now isolates the `paper_position_aged_open` call specifically instead of asserting total call count, with a comment explaining why two warnings are now expected. Re-ran full suite after the fix: 2876 passed, 28 skipped, exit 0 — identical to the BEFORE baseline. `assert_ledger_invariants.py` AFTER run (captured before this test fix, code paths untouched by it) showed zero drift from BEFORE (677 total violations, identical per-assertion breakdown).
 
+## 2026-08-17 | T-458
+
+**Decision:** Built GG-170's mitigation (fix + assertion, not a diagnosis). `run_resolve_mlb.py`: new `_verify_official_date()` cross-checks a matched `gameLog` split's `gamePk` against the MLB Stats API's `/api/v1/schedule` authoritative `officialDate`, wired fail-closed into `_fetch_mlb_hits()` — refuses (returns `None`) unless the schedule endpoint exactly confirms the requested date, on both a confirmed mismatch and an inconclusive lookup. No new settle-window code: a refusal falls through the existing Postseason→ESPN fallback and 48h aged-open retry window, reused rather than reinvented. `assert_ledger_invariants.py`: added a recurrence check — assertion A's violations at a band's *current* max `logic_epoch` now print a loud `[GG-170 RECURRENCE]` stderr banner and append a `recurrence_alarm` JSONL line; exit code untouched (`--strict` NOT promoted, per instruction). Confirmed firing against real data: 654 current-epoch violations for T4M-PROJ epoch 12.
+
+**Verification (explicit instruction: confirm before building, do not trust cited figures):** operator cited 654/719=91.0%. Found: 719 is genuinely closed-only, but 654 is all-status-combined (532 closed + 46 open + 76 rejected), not closed-only. Correct closed-only rate: **532/719 = 74.0%** — still up from CLAUDE.md Q7's 69.9% (2026-08-11), confirming the "still accruing, not legacy residue" direction, but the cited percentage was wrong.
+
+**Backfill scoped, not executed (explicit instruction):** 532 closed T4M-PROJ epoch-12 rows corrupted; 0/532 re-derivable from the T-421 outcome store — not a matching-key bug (ruled out) but a coverage gap (store ends 2026-08-03, corruption starts 2026-08-07). All 532 are theoretically re-derivable via direct re-query with the new guard; building that backfill is a follow-on (register T-NNN).
+
+**Out-of-scope discovery, registered not chased (Hard Rule 11):** all 532 corrupted rows resolved strictly after the sibling GG-166 guard's confirmed deployment (`58b2eb6`), which should have refused them and did not. Ruled out deploy lag, bypass path (single caller confirmed), regex parse failure on spot-check. Root cause unknown — registered as GG-185, not fixed.
+
+**Scope discipline:** no sizing/kelly_fraction/kill-switch changes. GG-183, GG-184, box 1.7 untouched. Worktree-isolated throughout (`PM-worktrees/20260817T230208Z-gg170-date-binding`).
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## 2026-08-17 | T-458 (session-end)
+
+**Full suite re-run at close-out:** 2883 passed, 28 skipped, 0 failed (143s). Confirms the 8 new GG-170 guard tests plus prior session's 690-baseline suite are regression-free before merge.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## 2026-08-17 | T-459
 
 **Box 1.7 checked — Phase 1 closed (8/8).** T-446's freshness-gate fix (merged PR #74) re-verified in a fresh isolated worktree off `origin/main`: `pytest -q` → 2,875 passed / 29 skipped / 0 failed in 126.42s, exit 0. Reconciles with the 2026-08-14 baselines (2,864/28/0 pure; 2,873/19/0 confirmatory) — higher pass/skip counts consistent with T-453/T-455/T-456 landing new tests since, 0 failed matches every prior figure. Merged via PR #80 (`4ba6055`). **This does not mean full test coverage runs in CI**: GG-179 (OPEN, unchanged by this task) — 21 of 22 data-dependent tests, including the MLB-G1 name-match regression gate (`test_known_players_always_match`), still silently SKIP in `.github/workflows/tests.yml` because it provisions no artifacts/secrets. "Full suite green" today means the 2,875-class local baseline minus those 21 tests, not full coverage — GG-179 tracks the remainder as separate, unresolved scope.

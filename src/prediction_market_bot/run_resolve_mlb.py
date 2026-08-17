@@ -250,6 +250,21 @@ def _fetch_mlb_hits(
                     game_pk = split.get("game", {}).get("gamePk")
                     if game_pk is None or not _is_game_final(game_pk):
                         return None  # GG-069: not confirmed FINAL — do not resolve
+                    if _verify_official_date(game_pk, game_date) is not True:
+                        # GG-170: split's own date label matched, but its
+                        # gamePk's authoritative officialDate did not confirm
+                        # (mismatch or lookup failure) — the label cannot be
+                        # trusted on its own. Refuse; falls through to the
+                        # Postseason/ESPN fallback chain and, failing those,
+                        # the existing 48h aged-open retry window.
+                        print(
+                            f"  [MLB-API] GG-170: player_id={player_id} "
+                            f"game_pk={game_pk} requested_date={game_date}: "
+                            f"officialDate did not confirm — refusing split "
+                            f"(gameLog date label untrustworthy near real-time)",
+                            file=sys.stderr,
+                        )
+                        return None
                     return float(split.get("stat", {}).get("hits", 0))
             return None  # date not found in splits — not a transient error
         except Exception as exc:
@@ -273,6 +288,43 @@ def _fetch_mlb_hits(
                 )
                 time.sleep(delay)
     return None
+
+
+def _verify_official_date(game_pk: int, expected_date: str) -> bool | None:
+    """GG-170: cross-check gamePk's MLB-authoritative officialDate.
+
+    gameLog splits are keyed by a date label (`split["date"]`) that has been
+    observed to be transiently unstable near real-time — the split can carry
+    a date label that matches what we asked for while its underlying stat
+    line actually belongs to a different day's game. `officialDate` on the
+    schedule-by-gamePk endpoint is MLB's own authoritative "baseball date"
+    for stat attribution and is a separate field from the gameLog date label,
+    so it is not subject to the same instability. This is the second,
+    independent check GG-170 requires beyond the ticker-vs-game_date guard
+    already in _resolve_pool() (GG-166) — that guard only confirms the
+    position's own stored fields agree with each other; this confirms the
+    fetched stat line itself belongs to the day it claims to.
+
+    Returns True only on a confirmed match. Returns False on a confirmed
+    mismatch, and None if the schedule lookup could not be completed at all
+    (network/parse failure) — callers must treat both False and None as
+    "cannot confirm" and refuse the resolution rather than guess.
+    """
+    try:
+        resp = requests.get(
+            f"{_MLB_BASE_URL}/api/v1/schedule",
+            params={"gamePk": game_pk},
+            timeout=_REQUEST_TIMEOUT_S,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        for date_block in data.get("dates", []):
+            for game in date_block.get("games", []):
+                if game.get("gamePk") == game_pk:
+                    return game.get("officialDate") == expected_date
+        return None  # gamePk not found in schedule response — cannot confirm
+    except Exception:
+        return None
 
 
 def _reset_circuit_breaker() -> None:

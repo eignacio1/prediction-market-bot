@@ -1,5 +1,12 @@
 # Operator Digest — 2026-08-17
 
+## T-458 (23:43Z)
+
+We closed the loop on a data-quality bug flagged earlier (GG-170): the bot was accepting game results before the league's official record was final, causing it to lock in the wrong outcome roughly 26% of the time in one batch. We built a guard that refuses results until they're confirmed final, plus an automatic check that catches recurrence without manual review.
+
+We also corrected an earlier-cited number: not 91% of that batch was affected, but 74%, once pending results are excluded — still serious, now accurate.
+
+We did not fix the ~530 already-wrong results this session; that's tracked as separate follow-up work so it gets proper attention. Nothing about bet sizing or risk limits changed. Full test suite ran clean (2,883 passing).
 **T-460 (STANDARD):**
 
 **What changed today, in one paragraph:** Four small housekeeping bugs got fixed — not just written down for later. One was a false alarm in the tool that stops two sessions from grabbing the same task number (it was flagging safe, already-reserved numbers as if they were active conflicts). One was a flaky test that could randomly fail right at midnight UTC. One was a text-processing bug that could silently truncate data. The last was a leftover edge case in the tool that archives old session notes, where a file with exactly one entry never got its "last updated" pointer moved forward.

@@ -338,7 +338,15 @@ class TestFetchMlbHits:
         return {"date": game_date, "stat": {"hits": hits}, "game": {"gamePk": game_pk}}
 
     def _final_patch(self):
-        return patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True)
+        """Bypass both the FINAL-status gate and the GG-170 officialDate
+        cross-check — these tests only care about gameLog split parsing, and
+        the mocked requests.get return value has no `dates`/`officialDate`
+        shape for _verify_official_date to read."""
+        return patch.multiple(
+            "prediction_market_bot.run_resolve_mlb",
+            _is_game_final=MagicMock(return_value=True),
+            _verify_official_date=MagicMock(return_value=True),
+        )
 
     @pytest.mark.unit
     def test_happy_path_returns_hits(self):
@@ -456,7 +464,8 @@ class TestGameFinalGate:
         resp = self._make_response([self._split(PAST_DATE, 2)])
         with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp), \
              patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
-             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True):
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True), \
+             patch("prediction_market_bot.run_resolve_mlb._verify_official_date", return_value=True):
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result == 2.0
 
@@ -470,6 +479,107 @@ class TestGameFinalGate:
             result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
         assert result is None
 
+class TestGG170OfficialDateGuard:
+    """GG-170/T-458: a gameLog split's own date label can be transiently
+    unstable near real-time — it can match the requested game_date while its
+    underlying stat line actually belongs to a different day's game. This
+    guard cross-checks the split's gamePk against the schedule endpoint's
+    authoritative `officialDate` field and refuses when they disagree, or
+    when the schedule lookup cannot confirm one way or the other."""
+
+    def _schedule_response(self, game_pk: int, official_date: str | None) -> MagicMock:
+        m = MagicMock()
+        m.raise_for_status.return_value = None
+        if official_date is None:
+            m.json.return_value = {"dates": []}
+        else:
+            m.json.return_value = {
+                "dates": [{"games": [{"gamePk": game_pk, "officialDate": official_date}]}]
+            }
+        return m
+
+    @pytest.mark.unit
+    def test_verify_official_date_true_on_match(self):
+        from prediction_market_bot.run_resolve_mlb import _verify_official_date
+        resp = self._schedule_response(999, "2026-08-07")
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _verify_official_date(999, "2026-08-07") is True
+
+    @pytest.mark.unit
+    def test_verify_official_date_false_on_mismatch(self):
+        """Synthetic bad row: schedule says the game's real day is 08-07,
+        but we're asking about 08-08 — the exact GG-170 shape (split date
+        label agrees with the request, underlying game does not)."""
+        from prediction_market_bot.run_resolve_mlb import _verify_official_date
+        resp = self._schedule_response(999, "2026-08-07")
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _verify_official_date(999, "2026-08-08") is False
+
+    @pytest.mark.unit
+    def test_verify_official_date_none_when_gamepk_not_found(self):
+        from prediction_market_bot.run_resolve_mlb import _verify_official_date
+        resp = self._schedule_response(999, None)
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=resp):
+            assert _verify_official_date(999, "2026-08-07") is None
+
+    @pytest.mark.unit
+    def test_verify_official_date_none_on_request_exception(self):
+        from prediction_market_bot.run_resolve_mlb import _verify_official_date
+        import requests as _req
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get",
+                   side_effect=_req.exceptions.ConnectionError("timeout")):
+            assert _verify_official_date(999, "2026-08-07") is None
+
+    def _gamelog_response(self, splits: list) -> MagicMock:
+        m = MagicMock()
+        m.raise_for_status.return_value = None
+        m.json.return_value = {"stats": [{"splits": splits}]}
+        return m
+
+    @pytest.mark.unit
+    def test_fetch_mlb_hits_refuses_on_officialdate_mismatch(self):
+        """End-to-end synthetic bad row: gameLog split's date label matches
+        the requested game_date and the game is FINAL, but the schedule
+        endpoint's officialDate disagrees — must return None, not the hits
+        value, even though every other check passed."""
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        split = {"date": PAST_DATE, "stat": {"hits": 2}, "game": {"gamePk": 999}}
+        gamelog_resp = self._gamelog_response([split])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=gamelog_resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True), \
+             patch("prediction_market_bot.run_resolve_mlb._verify_official_date", return_value=False):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result is None
+
+    @pytest.mark.unit
+    def test_fetch_mlb_hits_refuses_when_officialdate_unconfirmable(self):
+        """Schedule lookup fails outright (None, not False) — must still
+        refuse. Fail-closed: only an explicit True proceeds."""
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        split = {"date": PAST_DATE, "stat": {"hits": 2}, "game": {"gamePk": 999}}
+        gamelog_resp = self._gamelog_response([split])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=gamelog_resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True), \
+             patch("prediction_market_bot.run_resolve_mlb._verify_official_date", return_value=None):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result is None
+
+    @pytest.mark.unit
+    def test_fetch_mlb_hits_returns_when_officialdate_confirmed(self):
+        from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
+        split = {"date": PAST_DATE, "stat": {"hits": 2}, "game": {"gamePk": 999}}
+        gamelog_resp = self._gamelog_response([split])
+        with patch("prediction_market_bot.run_resolve_mlb.requests.get", return_value=gamelog_resp), \
+             patch("prediction_market_bot.run_resolve_mlb.time.sleep"), \
+             patch("prediction_market_bot.run_resolve_mlb._is_game_final", return_value=True), \
+             patch("prediction_market_bot.run_resolve_mlb._verify_official_date", return_value=True):
+            result = _fetch_mlb_hits(12345, PAST_DATE, game_type="R")
+        assert result == 2.0
+
+
+class TestIsGameFinal:
     @pytest.mark.unit
     def test_is_game_final_true_on_final_status(self):
         from prediction_market_bot.run_resolve_mlb import _is_game_final
