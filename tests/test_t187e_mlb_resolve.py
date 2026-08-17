@@ -407,7 +407,12 @@ class TestFetchMlbHits:
     def test_multiple_splits_matches_correct_date(self):
         """With multiple game-log entries, the right date's hits are returned."""
         from prediction_market_bot.run_resolve_mlb import _fetch_mlb_hits
-        two_days_ago = (date.today() - timedelta(days=2)).isoformat()
+        # GG-173: derive the second date from PAST_DATE (already fixed at
+        # module import) rather than a fresh date.today() call here — two
+        # independent live-clock reads can straddle UTC midnight and land on
+        # inconsistent days (see test_backfill_logic_epoch.py's identical
+        # fixed-anchor fix for the same class of failure).
+        two_days_ago = (date.fromisoformat(PAST_DATE) - timedelta(days=1)).isoformat()
         resp = self._make_response([
             self._split(two_days_ago, 0),
             self._split(PAST_DATE, 3),
