@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-10T23:49:00Z (T-434 — T-434: Hard Rule 8 60% trigger + new Hard Rule 11 (one deliverable, register-and-stop) merged; GG-168 opened, tracked as T-435) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260810_2349.md` for full session detail.
+**Last reviewed:** 2026-08-17T23:38:00Z (T-460 — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260817_2338.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*

@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-10T23:49:00Z (T-434 — T-434: Hard Rule 8 60% trigger + new Hard Rule 11 (one deliverable, register-and-stop) merged; GG-168 opened, tracked as T-435) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260810_2349.md` for full session detail.
+**Last reviewed:** 2026-08-17T23:38:00Z (T-460 — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260817_2338.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
