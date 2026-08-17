@@ -769,3 +769,9 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 **Scope discipline:** no sizing/kelly_fraction/kill-switch changes. GG-183, GG-184, box 1.7 untouched. Worktree-isolated throughout (`PM-worktrees/20260817T230208Z-gg170-date-binding`).
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## 2026-08-17 | T-458 (session-end)
+
+**Full suite re-run at close-out:** 2883 passed, 28 skipped, 0 failed (143s). Confirms the 8 new GG-170 guard tests plus prior session's 690-baseline suite are regression-free before merge.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
