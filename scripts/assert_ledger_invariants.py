@@ -623,6 +623,10 @@ def run(
 
     for band, recs in sorted(by_band.items()):
         print(f"\n--- band={band} (n={len(recs)}) ---", file=sys.stderr)
+        current_epoch = max(
+            (rec.get("logic_epoch") for rec in recs if rec.get("logic_epoch") is not None),
+            default=None,
+        )
         for fn in CORE_ASSERTIONS + EXTEND_ASSERTIONS:
             result = fn(recs, band)
             if result.no_formula:
@@ -637,7 +641,50 @@ def run(
                 f"absent={result.n_absent} violations={result.n_violations} ({flag})",
                 file=sys.stderr,
             )
-            lines.append(result.to_jsonl_line())
+            line = result.to_jsonl_line()
+            lines.append(line)
+
+            # GG-170/T-458: assertion A (ticker_date_matches_game_date) is the
+            # date-binding check GG-170 exists to catch. A violation count
+            # concentrated in old epochs is legacy residue; a violation AT the
+            # current epoch means it is still happening on resolutions written
+            # under today's logic, not just old data. ALARM-ONLY mode already
+            # prints every violation, but that print is identical in weight to
+            # every other assertion's routine ALARM line and is easy to miss
+            # in a long run — this makes new-epoch recurrence structurally
+            # louder and separately flagged in the report, without promoting
+            # the script to --strict (exit code is untouched).
+            if result.aid == "A" and current_epoch is not None:
+                epoch_dist = line["violation_epoch_distribution"]
+                # NOTE: keys here are still ints (this dict is the in-memory
+                # Python object from to_jsonl_line(), not yet json.dumps'd —
+                # serialization to string keys happens only when written to
+                # the report file below). Do not str()-coerce current_epoch.
+                n_current_epoch_violations = epoch_dist.get(current_epoch, 0)
+                if n_current_epoch_violations > 0:
+                    print(
+                        "  " + "!" * 74,
+                        file=sys.stderr,
+                    )
+                    print(
+                        f"  [GG-170 RECURRENCE] band={band} epoch={current_epoch}: "
+                        f"{n_current_epoch_violations} NEW ticker/game_date mismatches "
+                        f"at the CURRENT epoch — this is not legacy residue, it is "
+                        f"still happening. See GOVERNANCE_GAP_LOG.md GG-170.",
+                        file=sys.stderr,
+                    )
+                    print(
+                        "  " + "!" * 74,
+                        file=sys.stderr,
+                    )
+                    lines.append({
+                        "type": "recurrence_alarm",
+                        "gg": "GG-170",
+                        "assertion_id": "A",
+                        "band": band,
+                        "current_epoch": current_epoch,
+                        "n_current_epoch_violations": n_current_epoch_violations,
+                    })
 
         if store is not None and band in ("T1", "T4M-PROJ"):
             agreement = cross_path_agreement(recs, band, store)
