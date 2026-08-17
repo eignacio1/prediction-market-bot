@@ -66,8 +66,17 @@ def archive_chain(
     archiving the full prior chain verbatim into archive_path under
     `## {archive_heading}` (newest-first, prepended).
 
-    Returns a dict describing what happened, or None if there was no
-    chain to collapse (nothing written in that case).
+    Returns a dict describing what happened, or None if there was no chain
+    at all to update (nothing written in that case).
+
+    GG-176: a chain of exactly one entry has nothing worth *archiving* (a
+    single line isn't the unbounded-growth problem this module exists to
+    fix), but it still gets *rewritten* to new_current_line — the pointer
+    must always advance to reflect the session that just ran, even when
+    there's no prior history to move out of the nav file. The original
+    code returned None (no write at all) in this case, which meant the
+    current-status line silently froze the first time a nav file reached
+    exactly one chain entry — see GG-176 / TODO_NEXT.md T-447.
     """
     nav_lines = nav_path.read_text().splitlines(keepends=True)
     span = _find_chain_span(nav_lines)
@@ -77,46 +86,45 @@ def archive_chain(
     chain_text = "".join(nav_lines[start : end + 1])
     n_entries = sum(1 for l in nav_lines[start : end + 1] if CHAIN_RE.match(l))
 
-    # If the collapse would be a no-op (single existing entry, identical
-    # text already), skip — avoids archiving a single-entry "chain" every
-    # session when there's nothing to compress yet.
-    if n_entries <= 1:
-        return None
+    archived = False
+    if n_entries > 1:
+        # --- archive the full chain verbatim, newest-first ---
+        heading_marker = f"## {archive_heading}"
+        if archive_path.exists():
+            archive_text = archive_path.read_text()
+        else:
+            archive_text = f"# Archive\n\n{heading_marker}\n\n"
 
-    # --- archive the full chain verbatim, newest-first ---
-    heading_marker = f"## {archive_heading}"
-    if archive_path.exists():
-        archive_text = archive_path.read_text()
-    else:
-        archive_text = f"# Archive\n\n{heading_marker}\n\n"
+        if heading_marker in archive_text:
+            head, rest = archive_text.split(heading_marker, 1)
+            # insert right after the heading line, before any prior archived batch
+            rest_lines = rest.splitlines(keepends=True)
+            insert_at = 0
+            # skip the newline(s) immediately after the heading
+            while insert_at < len(rest_lines) and rest_lines[insert_at].strip() == "":
+                insert_at += 1
+            new_rest = (
+                "".join(rest_lines[:insert_at])
+                + f"\n<!-- archived from {nav_path.name}, {n_entries} entries -->\n"
+                + chain_text
+                + "\n"
+                + "".join(rest_lines[insert_at:])
+            )
+            new_archive_text = head + heading_marker + new_rest
+        else:
+            new_archive_text = (
+                archive_text.rstrip("\n")
+                + f"\n\n{heading_marker}\n\n"
+                + f"<!-- archived from {nav_path.name}, {n_entries} entries -->\n"
+                + chain_text
+                + "\n"
+            )
+        archive_path.write_text(new_archive_text)
+        archived = True
 
-    if heading_marker in archive_text:
-        head, rest = archive_text.split(heading_marker, 1)
-        # insert right after the heading line, before any prior archived batch
-        rest_lines = rest.splitlines(keepends=True)
-        insert_at = 0
-        # skip the newline(s) immediately after the heading
-        while insert_at < len(rest_lines) and rest_lines[insert_at].strip() == "":
-            insert_at += 1
-        new_rest = (
-            "".join(rest_lines[:insert_at])
-            + f"\n<!-- archived from {nav_path.name}, {n_entries} entries -->\n"
-            + chain_text
-            + "\n"
-            + "".join(rest_lines[insert_at:])
-        )
-        new_archive_text = head + heading_marker + new_rest
-    else:
-        new_archive_text = (
-            archive_text.rstrip("\n")
-            + f"\n\n{heading_marker}\n\n"
-            + f"<!-- archived from {nav_path.name}, {n_entries} entries -->\n"
-            + chain_text
-            + "\n"
-        )
-    archive_path.write_text(new_archive_text)
-
-    # --- collapse the nav file span to the new single line ---
+    # --- collapse the nav file span to the new single line — always, even
+    # when there was only one entry to begin with (nothing archived above,
+    # but the pointer still must advance to this session's current line).
     replacement = [new_current_line.rstrip("\n") + "\n"]
     next_line = nav_lines[end + 1] if end + 1 < len(nav_lines) else ""
     if not next_line.strip().startswith("**Earlier history"):
@@ -127,6 +135,6 @@ def archive_chain(
 
     return {
         "nav_file": str(nav_path),
-        "archive_file": str(archive_path),
-        "entries_archived": n_entries,
+        "archive_file": str(archive_path) if archived else None,
+        "entries_archived": n_entries if archived else 0,
     }
