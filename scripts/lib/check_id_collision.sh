@@ -1,12 +1,45 @@
 #!/usr/bin/env bash
 # ============================================================================
-# check_id_collision.sh — pre-claim ID collision check (GG-107 root-cause fix)
+# check_id_collision.sh — pre-claim ID collision check (GG-107 root-cause fix,
+# GG-169 revision)
 #
 # GG-107's recurring failure mode: a session claims a T-/GG-/ADR- ID that is
-# already registered/in use elsewhere (TODO_NEXT.md, a prior SESSION_CLAIMS.md
-# row, or DECISION_LOG.md), because nothing checked before the claim was
-# committed. Recurred repeatedly (GG-109->GG-110, GG-111->GG-112, and this
-# session's own T-352/T-353 collision with UNWIND_PLAN.md's Window B).
+# already registered/in use elsewhere, because nothing checked before the
+# claim was committed. GG-107's original fix (below, pre-GG-169) treated any
+# textual mention of an ID anywhere in TODO_NEXT.md, SESSION_CLAIMS.md, or
+# DECISION_LOG.md as a collision. That over-blocked: a TODO_NEXT.md backlog
+# line or a DECISION_LOG.md narrative mention is a REFERENCE, not a CLAIM —
+# but the broad grep couldn't tell the two apart, so citing an already
+# pre-reserved or already-registered ID collided every time (GG-169: 8+
+# collisions, twice in one run, including this file's own governing gap
+# numbers).
+#
+# GG-169 fix, two rules:
+#
+#   Rule A — a GG-/ADR- id that already has a CANONICAL entry (a
+#   "### GG-NNN" header in GOVERNANCE_GAP_LOG.md or its archive, or an
+#   ADR-NNNN_*.md file) is never a collision, no matter how many places
+#   mention it. Citing/working an already-registered gap or decision is
+#   normal and expected — SESSION_CLAIMS.md history shows the same GG
+#   number reappearing across dozens of rows as different sessions touch
+#   it (GG-105: 21 rows, GG-045: 16, GG-113: 14). This is not the failure
+#   GG-107 exists to catch.
+#
+#   Rule B — for everything else (T- ids always; GG-/ADR- ids with no
+#   canonical entry yet, i.e. genuinely about to be freshly minted), the
+#   only real collision signal is an ACTIVE claim: the id appearing in the
+#   id/range column (2nd pipe field) of a SESSION_CLAIMS.md row. TODO_NEXT.md
+#   and DECISION_LOG.md are narrative/reference documents, not claim
+#   registries, and a bare mention there (including a pre-reserved,
+#   unstaffed backlog line — exactly the case GG-169 was filed over) must
+#   not block a session from claiming that id.
+#
+# This does not reopen the T-247 concurrent-grab race: that race is closed
+# by claim_session.sh's fetch/rebase -> check -> push-with-retry sequence,
+# not by this function's breadth of matching. Rule B still catches a
+# genuinely concurrent claim the moment the first claimant's row lands in
+# SESSION_CLAIMS.md's id column, which is the only place an active claim is
+# actually recorded.
 #
 # Pure/offline: no git network calls, so it can be sourced and unit-tested
 # without a live remote. claim_session.sh sources this and calls the function
@@ -23,22 +56,37 @@ check_id_collision() {
   ids="$(grep -oE '(T|GG|ADR)-[0-9]+' <<< "$range" | sort -u || true)"
   [ -z "$ids" ] && return 0
 
-  local registries=(
-    "$repo_root/04_EXECUTION/TODO_NEXT.md"
-    "$repo_root/04_EXECUTION/SESSION_CLAIMS.md"
-    "$repo_root/03_DECISIONS/DECISION_LOG/DECISION_LOG.md"
-  )
+  local claims_file="$repo_root/04_EXECUTION/SESSION_CLAIMS.md"
+  local gap_log="$repo_root/03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+  local gap_archive="$repo_root/03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"
 
-  local hit=0 id f
+  local hit=0 id
   while IFS= read -r id; do
     [ -z "$id" ] && continue
-    for f in "${registries[@]}"; do
-      [ -f "$f" ] || continue
-      if grep -qE "(^|[^0-9A-Za-z])${id}([^0-9]|\$)" "$f"; then
-        echo "COLLISION: ${id} already appears in ${f#"$repo_root"/}" >&2
-        hit=1
-      fi
-    done
+
+    # Rule A: already-canonical GG-/ADR- ids are references, never collisions.
+    case "$id" in
+      GG-*)
+        if { [ -f "$gap_log" ] && grep -qE "^### ${id}([^0-9]|\$)" "$gap_log"; } || \
+           { [ -f "$gap_archive" ] && grep -qE "^### ${id}([^0-9]|\$)" "$gap_archive"; }; then
+          continue
+        fi
+        ;;
+      ADR-*)
+        if compgen -G "$repo_root/03_DECISIONS/${id}_*.md" > /dev/null 2>&1; then
+          continue
+        fi
+        ;;
+    esac
+
+    # Rule B: real collision = an active claim in SESSION_CLAIMS.md's own
+    # id/range column (field 3 of a "| ts | ids | focus |" row), not a
+    # mention anywhere else.
+    if [ -f "$claims_file" ] && \
+       awk -F'|' 'NF>=3{print $3}' "$claims_file" | grep -qE "(^|[^0-9A-Za-z])${id}([^0-9]|\$)"; then
+      echo "COLLISION: ${id} already appears in ${claims_file#"$repo_root"/} (active claim)" >&2
+      hit=1
+    fi
   done <<< "$ids"
   return "$hit"
 }

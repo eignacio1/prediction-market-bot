@@ -1635,7 +1635,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-169 — `claim_session.sh`'s collision check cannot distinguish "actively claimed" from "pre-reserved backlog ID awaiting staffing," blocking the exact workflow the project uses to hand off follow-on work
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -1650,8 +1650,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | `check_id_collision.sh` does a flat substring/word-boundary grep for the ID across all three registries and returns collision on any hit; it has no notion of claim state (open/staffed vs. closed/reserved-for-later) to distinguish the two cases. |
 | Impact | LOW, procedural: this session worked around it by hand-appending the claim row and pushing directly to `origin/main` (with operator confirmation, since the harness's own permission classifier treats a direct push to `main` as requiring explicit approval) rather than via the script. No data risk — but the script's collision guarantee (GG-107's actual purpose) was bypassed for this claim, and every future session that staffs a pre-reserved backlog ID will hit the same false positive and need the same manual workaround unless fixed. |
 | Discovery | T-431 (2026-08-10/11), session-start Step 0, while claiming the exact ID T-429 had reserved for it — register-and-stop per Hard Rule 11, this task's deliverable is the B5 disagreement root cause, not claim tooling. |
-| Resolution | Not built this session — out of scope. A future fix should let the collision check distinguish a *closed* reservation (e.g., a `TODO_NEXT.md` backlog line with no matching "claimed" `SESSION_CLAIMS.md` row, or a row explicitly marked `OPEN, unstaffed`) from an active claim, and only refuse the latter. |
-| Status | OPEN — new, unstaffed, LOW. |
+| Resolution | Fixed by T-460 (2026-08-17, commit `d066bb5`, branch `session/20260817T230233Z-housekeeping-batch`). `scripts/lib/check_id_collision.sh` now distinguishes a canonical registry reference (GG-/ADR- entries, or a `TODO_NEXT.md`/backlog line with no matching active claim row) from an actual active claim: only a live, unclosed `SESSION_CLAIMS.md` id-column row counts as a collision. The T-247 race protection is preserved structurally — `claim_session.sh`'s fetch/rebase→check→push-retry sequence still serializes concurrent claims on the active-row check, so two sessions still cannot silently grab the same live ID; a closed/reserved-but-unstaffed ID is simply no longer treated as occupied. Covered by `tests/test_claim_session_collision.py`. |
+| Status | RESOLVED — T-460, 2026-08-17. |
 
 </details>
 
@@ -1733,7 +1733,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-173 — `test_t187e_mlb_resolve.py::TestFetchMlbHits::test_multiple_splits_matches_correct_date` computes its two mocked dates from the live clock at two different times (module-import time vs. test-execution time), so a CI run whose collection-to-execution window straddles UTC midnight can make both dates collide and the test fail
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -1748,8 +1748,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | Passes deterministically in every run that doesn't straddle midnight — which is the overwhelming majority of runs, local and CI alike. Local full-suite runs during this session (both pre- and post-merge) and an isolated re-run of just this test all passed, since none of them crossed midnight during execution. No CI/local timing-skew check exists to catch this class of test. |
 | Impact | Blocked PR #72's merge (STANDARD-tier `/session-end` Step 8) via a required CI check failure unrelated to that PR's actual content (`market_type_registry.py`, T-439) — a false-negative gate. Re-running the same CI job outside the midnight window (`gh run rerun 31652742167 --failed`) is expected to pass, confirming this diagnosis; no production code was touched to work around it. Low severity: no live-trading or data-integrity impact, purely a test-fragility/CI-friction issue, and the failure window is astronomically narrow (~seconds per day, only when a CI run's timing happens to straddle it). |
 | Discovery | T-439 close-out (2026-08-12/13), while investigating a CI-only failure that did not reproduce locally in full-suite or isolated runs. Root cause identified by comparing the failing test's CI execution timestamp against its two date-construction call sites, not by reproducing the failure directly. |
-| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (defect discovered outside T-439's declared Block A scope: `market_type_registry.py` + `kalshi_client.py` aliases; this test file and `run_resolve_mlb.py` belong to the unrelated GG-166/T-421/T-429 resolution-layer work). Fix (when picked up): compute both `PAST_DATE`-equivalent and `two_days_ago` from one shared `date.today()` call, or freeze the clock for the test module. |
-| Status | OPEN. |
+| Resolution | Fixed by T-460 (2026-08-17, commit `d066bb5`, branch `session/20260817T230233Z-housekeeping-batch`). Matched the existing fix pattern already established in `test_backfill_logic_epoch.py` rather than inventing a second approach — both mocked dates now derive from a single shared `date.today()` call, eliminating the module-import-time vs. test-execution-time split that could straddle UTC midnight. |
+| Status | RESOLVED — T-460, 2026-08-17. |
 
 </details>
 
@@ -1757,7 +1757,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-176 — `scripts/lib_chain_archive.py`'s `archive_chain()` silently no-ops whenever a nav file's `**Last reviewed` chain has exactly 1 entry, so the pointer never advances and every session sees a stale "Last reviewed" line
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -1772,8 +1772,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | The generator's console output ("nothing to collapse") reads as a benign no-op rather than a failure, and no prior session's close-out cross-checked the "Last reviewed" line's actual timestamp against the session's own date after running the generator. |
 | Impact | Cosmetic/navigational only — the three nav files' "Last reviewed" pointer understates recency (currently showing T-434/2026-08-10 despite multiple sessions of real edits since), which could mislead a future session into under-trusting how current a file's content is, or over-relying on `session_delta.sh`'s checkpoint diff (which is unaffected — checkpoint pointer writes are a separate mechanism, confirmed still working correctly this session) instead of the chain line. No data loss, no incorrect archival. |
 | Discovery | T-443 (2026-08-13), during `/session-end` Step 6-gen — the real (non-dry-run) `generate_session_artifacts.py` run printed the no-op message for all three files; source inspection of `lib_chain_archive.py` confirmed the `n_entries <= 1` short-circuit as the cause. Out of T-443's declared scope (merge/checkbox task); registered and not fixed, per Hard Rule 11. |
-| Resolution | Not resolved by this entry — registration only. Fix requires `archive_chain()` to distinguish "archive the old entries" (skip when n_entries<=1, correct as-is) from "write/update the current entry" (should still happen even at n_entries==1) — likely a small logic split rather than a rewrite. A T-NNN should be registered against this GG before anyone touches `lib_chain_archive.py`. |
-| Status | OPEN. |
+| Resolution | Fixed by T-460 (2026-08-17, commit `d066bb5`, branch `session/20260817T230233Z-housekeeping-batch`), closing T-447. `archive_chain()`'s single short-circuit was split into two independent behaviors: archiving old entries into `archive_path` still skips at `n_entries<=1` (correct as-is, nothing worth archiving), but the nav-file rewrite to `new_current_line` now always happens whenever a chain span exists at all — the pointer advances every session regardless of chain length. `scripts/generate_session_artifacts.py`'s caller message updated to match (no longer claims "nothing to collapse" when the current line was in fact just updated). Covered by 4 new tests in `tests/test_lib_chain_archive.py` (no-chain, single-entry, multi-entry regression, repeated-call idempotency). |
+| Status | RESOLVED — T-460, 2026-08-17. |
 
 </details>
 
@@ -1781,7 +1781,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-175 — Assertion N (`ticker_player_token_consistent`) has 1 live violation in epoch 12: ticker token `NLOPE` vs. name "Nicky Lopez" — a short-token collision the matcher doesn't handle
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -1796,8 +1796,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Why it survived | Extremely low rate (1/2644 in this band) on a short, ambiguous token (`NLOPE` collides with multiple plausible name-abbreviation schemes); no prior session's pytest/invariant run flagged it as a stop condition because assertion N was added in a later retrofit (post-T-432's original A-H baseline) with no documented "was this ever clean" checkpoint to compare against. |
 | Impact | None observed — the underlying position's ticker-to-player mapping is correct per the example (`Nicky Lopez` ↔ `NLOPE`); this is the assertion's tokenizer failing to confirm a true match, not a mismatched position. No P&L or sizing impact identified. |
 | Discovery | T-443 (2026-08-13), STEP 2 (post-merge invariant-suite verification after merging T-442/PR #73). Out of T-443's declared scope (merge + checkbox verification only); registered and not touched, per Hard Rule 11 and the task's explicit instruction that a new-violating assertion is a stop-and-register condition rather than a fix-in-session condition. |
-| Resolution | Not resolved by this entry — registration only. Needs: (1) confirm whether assertion N has ever run clean on this band in a prior committed report (no baseline found in this session's search of the gap log/archive); (2) if the underlying ticker/name pairing is confirmed correct on manual review (as the single example suggests), the fix is loosening assertion N's tokenizer for short-token names, not the ledger data itself. |
-| Status | OPEN. |
+| Resolution | Fixed by T-460 (2026-08-17, commit `773c20d`, branch `session/20260817T230233Z-housekeeping-batch`). Root cause: Kalshi's own ticker generation truncates some player tokens to fit the field (`NLOPEZ`→`NLOPE` for Nicky Lopez) — the ticker-embedded token can be a shortened *prefix* of the full computed token, not just possibly preceded by extra characters (a team code), which the pre-existing `endswith` check already handled. Added `_token_matches()`: tries progressively shorter suffixes of the computed token down to `MIN_TRUNCATED_TOKEN_LEN=5` (first initial + 4 surname letters) before giving up — a general truncation-tolerance rule per the task's instruction to fix the matcher, not special-case the name. Strict superset of the old exact match, so no existing pass can regress; added a floor test confirming over-short truncations still flag. Covered by new tests in `tests/test_assert_ledger_invariants.py`. |
+| Status | RESOLVED — T-460, 2026-08-17. |
 
 </details>
 

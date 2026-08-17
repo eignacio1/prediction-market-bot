@@ -483,6 +483,26 @@ def _name_tokens(name: str) -> tuple[str, str] | tuple[None, None]:
     return lastword_tok, fullconcat_tok
 
 
+# GG-175: Kalshi's own ticker generation truncates some player tokens to fit
+# the field (e.g. "N"+"LOPEZ" -> "NLOPE" for Nicky Lopez) — the token
+# embedded in the ticker can be a shortened PREFIX of the full computed
+# token, not just possibly preceded by extra characters (a team code) as the
+# pre-existing endswith check already handled. MIN_TRUNCATED_TOKEN_LEN is the
+# floor for how short that prefix is allowed to get before a match is no
+# longer considered meaningful (first initial + at least 4 surname letters).
+MIN_TRUNCATED_TOKEN_LEN = 5
+
+
+def _token_matches(player_block: str, tok: str) -> bool:
+    """True if player_block ends with tok, or with a truncated prefix of tok
+    (down to MIN_TRUNCATED_TOKEN_LEN chars) — see GG-175."""
+    floor = min(MIN_TRUNCATED_TOKEN_LEN, len(tok))
+    for k in range(len(tok), floor - 1, -1):
+        if player_block.endswith(tok[:k]):
+            return True
+    return False
+
+
 def assert_N_player_token_consistency(recs: list[dict], band: str) -> AssertionResult:
     r = AssertionResult(
         "N", "ticker_player_token_consistent", band, ["kalshi_ticker", "player_name"],
@@ -490,7 +510,9 @@ def assert_N_player_token_consistency(recs: list[dict], band: str) -> AssertionR
         "last-name-only or first-initial+full-concat-surname convention "
         "(both real conventions in the data — e.g. 'Witt Jr.' needs "
         "last-word, 'De La Cruz' needs full-concat, 'Jung Hoo Lee' needs "
-        "last-word again — no single deterministic rule captures all three).",
+        "last-word again — no single deterministic rule captures all three), "
+        "allowing for Kalshi-side truncation of the computed token down to "
+        f"{MIN_TRUNCATED_TOKEN_LEN} chars (GG-175, e.g. 'NLOPE' for Nicky Lopez).",
     )
     for rec in recs:
         tk, name = rec.get("kalshi_ticker"), rec.get("player_name")
@@ -503,7 +525,7 @@ def assert_N_player_token_consistency(recs: list[dict], band: str) -> AssertionR
         if tok1 is None:
             r.n_absent += 1
             continue
-        ok = player_block.endswith(tok1) or player_block.endswith(tok2)
+        ok = _token_matches(player_block, tok1) or _token_matches(player_block, tok2)
         r.record(ok, rec, f"player_block={player_block} tok1={tok1} tok2={tok2} name={name}")
     return r
 

@@ -165,6 +165,22 @@ def test_N_flags_real_mismatch():
     assert r.n_violations == 1
 
 
+def test_N_matches_kalshi_truncated_token():
+    # GG-175: Kalshi truncated "N"+"LOPEZ" (NLOPEZ) to "NLOPE" in the real
+    # ticker for Nicky Lopez — a genuine truncation, not a bad position.
+    recs = [_rec(kalshi_ticker="KXMLBHIT-26AUG081230ABCDEF-TEXNLOPE9-1", player_name="Nicky Lopez")]
+    r = assert_N_player_token_consistency(recs, "T4M-PROJ")
+    assert r.n_violations == 0
+
+
+def test_N_still_flags_overly_short_truncation():
+    # A token truncated below MIN_TRUNCATED_TOKEN_LEN must still be flagged
+    # — the leniency has a floor, not an open-ended prefix match.
+    recs = [_rec(kalshi_ticker="KXMLBHIT-26AUG081230ABCDEF-TEXNLO9-1", player_name="Nicky Lopez")]
+    r = assert_N_player_token_consistency(recs, "T4M-PROJ")
+    assert r.n_violations == 1
+
+
 # ── cross-path agreement ────────────────────────────────────────────────
 
 def test_cross_path_agreement_reports_measured_disagreement_not_zero():

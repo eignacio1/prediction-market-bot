@@ -252,3 +252,11 @@
 | 2026-08-17T23:02:46Z | T-458 | T-458: GG-170 date-binding guard + retry/settle policy + loud assertion |
 | 2026-08-17T23:45:00Z | T-458 | CLOSED — T-458: GG-170 mitigation built (officialDate cross-check guard in run_resolve_mlb.py + recurrence-alarm in assert_ledger_invariants.py); independently corrected cited epoch-12 figure to 532/719=74.0% closed-only; backfill scoped not executed (532 rows, 0 re-derivable, store coverage gap); GG-185 registered (guard-bypass anomaly, not chased, Hard Rule 11); T-460/T-461 follow-ons registered. 71+8 new tests pass, 690/690 unit suite green. |
 | 2026-08-17T23:47:07Z | T-458 | CLOSED — T-458: GG-170 officialDate guard + recurrence assertion built; corrected epoch-12 rate to 74.0%; GG-185 registered (commit `7e06bf4`) |
+| 2026-08-17T23:03:02Z | T-460 | T-460: housekeeping batch GG-169/173/175/176 (Block C) |
+| 2026-08-17T23:03:08Z | T-461 | T-461: land HYP-010 Phase 2 pre-registration into governed docs (TIER: MICRO) |
+| 2026-08-17T23:20:00Z | T-461 | CLOSED — T-461: HYP-010 Phase 2 pre-registration landed (HYPOTHESES.md, gate 2.3 revision, DECISION_LOG entry, EXP-022 assigned); commit `724719c` |
+| 2026-08-17T23:24:31Z | T-461 | CLOSED — T-461: landed HYP-010 Phase 2 pre-registration (gate 2.3 metric swap, EXP-022 assigned) into governed docs, no src/ (commit `ef42cd5`) |
+| 2026-08-17T23:15:00Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main, 2,875/29/0 exit 0, Phase 1 8/8 closed; GG-179 unchanged/OPEN (commits 4ba6055, 3c4ed2a, PR #80) |
+| 2026-08-17T23:30:11Z | T-460 | CLOSED — housekeeping batch, GG-169/173/175/176 all RESOLVED (commit range `d066bb5..5a70392`, PR #82) |
+| 2026-08-17T23:44:28Z | T-460 | CLOSED — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82 (commit `ec9e320`) |
+| 2026-08-17T23:29:49Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main (2,875/29/0, exit 0) — Phase 1 8/8 closed; GG-179 unchanged/OPEN (commit `11f6441`) |
