@@ -264,3 +264,4 @@
 | 2026-08-18T04:30:13Z | T-462 | MERGED: NO — branch `session/20260818T041138Z-t462-merge-landing-verify` awaiting merge — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check) (commit `8da4e3e`) |
 | 2026-08-18T04:21:40Z | T-464 | T-464: make CI actually execute skipped tests (artifact-driven fixtures, secrets-gated disposition, loud-skip guard) |
 | 2026-08-18T04:35:37Z | T-462 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES, PR #84 merged as b48cd7e) |
+| 2026-08-18T04:46:53Z | T-463 | T-463: team runs-scored outcome store for archived KXMLBTOTAL game-events (ingestion only, Phase 2 unblock) + market Brier by-product |
