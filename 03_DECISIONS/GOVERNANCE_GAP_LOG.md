@@ -2044,6 +2044,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-186 — SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, with no check that either branch had actually reached `origin/main` — 4th occurrence of the same pattern (T-456 x2, T-458, T-460)
+
+**Status:** RESOLVED · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-186 |
+| Category | Systemic blind spot — session-end's closure-row generator had no dependency on merge-landing at all; it read purely from the session's own `session-meta` block (local task_id/commit/summary), which is true regardless of whether that commit ever reached `origin/main`. |
+| What was missed | `scripts/generate_session_artifacts.py`'s `generate_claims_closure_row()` wrote `CLOSED — ... (commit \`<local-sha>\`)` unconditionally, and — structurally worse — it runs at session-end Step 6-gen, which executes *before* Step 8 (push + merge). So even a fully correct session following the documented step order writes a "CLOSED" row before the merge that closure claims has happened. A window that then skipped, deferred, or failed Step 8 left a permanently-false "CLOSED" row with nothing to ever contradict it. |
+| When it should have been caught | Should have been caught by Step 0c of the next session's session-start protocol (reading recent `SESSION_CLAIMS.md` rows) — but a false "CLOSED" row is indistinguishable from a true one by inspection; the check that would catch it (does this commit exist in `origin/main`'s history?) was never run by anything. |
+| Phases it survived | Every session-end since T-430 (2026-08-07) introduced the generated closure row — at minimum T-456 (twice), T-458, T-460 (2026-08-17), confirmed via this session's (T-462) direct verification: `git fetch` + `gh pr list` showed both T-458 (PR #83) and T-460 (PR #82) were in fact merged by session end (23:50:37Z and 23:46:51Z respectively), so this specific pair turned out to be a false alarm raised by a strategic review that ran before the merges landed — but the false alarm was only resolvable by manually re-deriving PR/merge-base state by hand, which is exactly the check that should have been automatic and wasn't. T-456's two prior occurrences (referenced in this session's task brief, not independently re-verified here per Hard Rule 11 scope) are the confirmed genuine cases. |
+| Why it survived | The closure-row mechanism (T-430/GG-101/GG-082's write-once fix) solved the "closure row gets skipped by hand" problem but never asked "is the thing this row claims actually true." No executable assertion connected "wrote CLOSED" to "reached origin/main" — the two facts could drift apart freely, and did, repeatedly, because nothing made drift visible. |
+| Impact | Every prior "CLOSED" row in `SESSION_CLAIMS.md` was self-reported with no verification backing it, which is exactly the failure mode Hard Rule 10/GG-101/GG-082 were built to prevent for git-state collisions generally — this is the same failure mode applied to status reporting instead of file writes. Downstream: the next session's Step 0c ("check for other live sessions") and any audit trusting `SESSION_CLAIMS.md` as ground truth for "is this task's work safe to build on" could act on a false premise. This session (T-462) burned real verification effort (SSH-free git/gh reconciliation) specifically because the row-vs-reality gap is not machine-checkable today. |
+| Discovery | T-462 (2026-08-18), tasked directly with confirming or refuting a strategic review's claim that T-458/T-460 were unmerged; found the specific claim false (both were merged) but the *general* mechanism gap real and unaddressed — this GG registers the mechanism, not the specific (already-resolved-by-the-time-of-review) false alarm. |
+| Resolution | Landed same session (T-462, this branch): (1) `scripts/session_end_timer.sh merge-check` — new subcommand, the named executable assertion (ADR-0052) running `git fetch origin main` + `git merge-base --is-ancestor HEAD origin/main`, printing `MERGE_CHECK: YES/NO`. (2) `generate_session_artifacts.py`'s `generate_claims_closure_row()` now calls the same check live and writes `CLOSED` only when it passes; otherwise writes `MERGED: NO — branch \`<name>\` awaiting merge — ...` — so a false "CLOSED" row can no longer be produced by the generator at all, only a true one or an honest "not yet." (3) `.claude/commands/session-end.md` Step 8 gained a mandatory "Step 8-confirm" sub-step: after the merge lands, re-run `merge-check` and append a second, confirming `CLOSED` row (append-only, matching `SESSION_CLAIMS.md`'s `merge=union` convention) — a window that skips this leaves the honest "MERGED: NO" row as its last word, which is visible to the next session's Step 0c scan instead of a silent false positive. **What makes a 5th occurrence structurally impossible, not merely less likely:** the string "CLOSED" can now only be written by code that just ran a live git check and got a passing result — there is no code path left that writes "CLOSED" from session-local state alone. A session would have to bypass the generator entirely (hand-author the row) to reproduce this gap, which is itself a violation of the write-once discipline (T-430) that predates and is independent of this fix. |
+| Status | RESOLVED 2026-08-18 (T-462) — `session_end_timer.sh merge-check` + `generate_session_artifacts.py` truth-check + `session-end.md` Step 8-confirm, this branch. Not yet exercised by a real subsequent session-end (this session is doc/script-only, MICRO fast-path per Step 8) — first live use will be the next STANDARD session-end that runs Step 8-confirm for real; if it surfaces friction, amend in place rather than re-opening a duplicate gap. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

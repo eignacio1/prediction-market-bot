@@ -217,6 +217,8 @@ Run this **after** Steps 2–4's substantive content edits (it reads TODO_NEXT/M
 
 The script writes files but does not commit — review its diff (`git status` / `git diff`) before Step 8's commit, same as any other generated content. If it errors (e.g. missing `session-meta` block), fix the block and re-run — do not fall back to hand-authoring the collapse/closure/checkpoint just to route around an error.
 
+**GG-186/T-462 — the closure row this writes is truth-checked, not assumed.** Item 2's SESSION_CLAIMS.md row asserts live whether `HEAD` is currently an ancestor of `origin/main` (`git merge-base --is-ancestor`) and writes "CLOSED" only if so — otherwise it writes "MERGED: NO — branch `<name>` awaiting merge". Since Step 6-gen runs *before* Step 8's push+merge, on the STANDARD path this row will correctly read "MERGED: NO" at this point — that is expected, not an error. Step 8 below is what turns it into a true "CLOSED".
+
 ## Step 6B — Operator Digest (mandatory, T-372)
 
 **[MICRO: already done — Step 6-gen appended a one-line entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from the `session-meta` block's `one_line_summary`. Do not also hand-author a prose digest on top of it; the one-liner is the MICRO-tier digest.]**
@@ -263,7 +265,25 @@ NEXT SESSION PRIMER:
 4. Retire the isolated worktree (`scripts/end_session_worktree.sh`) only after the merge lands.
 5. If a merge genuinely cannot happen this session (e.g. it is gated on DS sign-off or an operator decision), say so explicitly in the SESSION_HANDOFF and register a T-NNN task for the merge itself — do not let it silently sit as an ordinary open branch.
 
-**Exit check:** `git branch -a` should show no session branch that is both unpushed-or-unmerged AND unaccounted-for in the handoff.
+**Step 8-confirm (mandatory, GG-186/T-462) — after the merge lands, close the gap Step 6-gen's row left open.** Step 6-gen ran *before* this merge, so the closure row it wrote reads "MERGED: NO — branch `<name>` awaiting merge" (see the Step 6-gen note above) — that row is now stale-in-the-good-direction, not wrong, but it is not yet "CLOSED" either. Once the merge above is confirmed landed, run the same assertion again and append the confirming row:
+
+```bash
+scripts/session_end_timer.sh merge-check
+```
+
+If it prints `MERGE_CHECK: YES`, append the real closure row (`SESSION_CLAIMS.md` is append-only/`merge=union` — never edit the earlier row):
+
+```bash
+cat <<EOF >> 04_EXECUTION/SESSION_CLAIMS.md
+| $(date -u +%Y-%m-%dT%H:%M:%SZ) | <TASK_ID> | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
+EOF
+```
+
+If it still prints `MERGE_CHECK: NO`, the merge did not actually land (a fast-forward that silently failed, a PR that didn't merge, wrong branch checked out) — do **not** append a CLOSED row. Go back to Step 8.1–3, fix it, or fall back to Step 8.5 (register the merge as its own T-NNN and leave the "MERGED: NO" row as the honest current state).
+
+This is what makes "closed" and "on origin/main" the same fact instead of two facts that can silently drift apart — the failure mode observed four times (T-456 x2, T-458, T-460, see GG-186): a window writes a closure row from local `HEAD` state and ends the session without ever checking that `HEAD` reached `origin/main`. With this step, a window physically cannot produce a "CLOSED" row without the live assertion backing it, and a window that skips this step leaves a "MERGED: NO" row instead — visible to the next session's Step 0c scan and to any audit, rather than a false "CLOSED".
+
+**Exit check:** `git branch -a` should show no session branch that is both unpushed-or-unmerged AND unaccounted-for in the handoff. Additionally: the *last* SESSION_CLAIMS.md row for this session's task ID must read "CLOSED" with a passing `merge-check`, never "MERGED: NO" left as the final word without an accompanying T-NNN follow-up per Step 8.5.
 
 ---
 

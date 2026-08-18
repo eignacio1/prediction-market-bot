@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-17T23:38:00Z (T-460 — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260817_2338.md` for full session detail.
+**Last reviewed:** 2026-08-18T04:26:00Z (T-462 — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260818_0426.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
@@ -953,3 +953,9 @@ T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to
 - **T-461** — Investigate GG-185: why the confirmed-deployed, unconditional GG-166 guard did not refuse any of the 532 mismatched resolutions, all of which occurred after its deployment (`58b2eb6`, 2026-08-06).
 
 **Note (T-458):** the T-459 number was initially used here in error and corrected — `SESSION_CLAIMS.md:251` already claims T-459 for an unrelated task (box 1.7 re-verify). Follow-ons above are T-460/T-461, not T-459.
+
+## T-462 — Verify T-458/T-460 merge-landing, close session-end's "closed ≠ on main" gap — ✅ COMPLETE 2026-08-18 (isolated worktree `PM-worktrees/20260818T041138Z-t462-merge-landing-verify`)
+
+**Done this task:** confirmed via `gh pr list`/`git merge-base --is-ancestor` T-458 (PR #83) and T-460 (PR #82) were already merged — a strategic review's "unmerged" claim was time-stale; no re-work done. Registered [[GG-186]] (RESOLVED same session): closure rows asserted CLOSED from local state alone, no merge-landing check. Fixed: `session_end_timer.sh merge-check` (new), `generate_session_artifacts.py` now truth-checks before writing CLOSED, `session-end.md` Step 8 gained a mandatory post-merge confirm sub-step.
+
+**Note:** T-458's doc above names follow-ons "T-460"/"T-461" — both IDs were independently claimed same-wave by unrelated tasks. Flagged, not resolved — T-458's intended backfill/GG-185 work is unclaimed under any ID.
