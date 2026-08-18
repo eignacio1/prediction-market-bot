@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-18T04:26:00Z (T-462 — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260818_0426.md` for full session detail.
+**Last reviewed:** 2026-08-18T04:52:00Z (T-464 — T-464: CI now executes 10 previously-silent-skip tests via synthetic fixture; skip ceiling (18) enforced loud in CI (GG-179 partial)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260818_0452.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

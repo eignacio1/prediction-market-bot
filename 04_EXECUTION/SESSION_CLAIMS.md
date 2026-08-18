@@ -265,3 +265,4 @@
 | 2026-08-18T04:21:40Z | T-464 | T-464: make CI actually execute skipped tests (artifact-driven fixtures, secrets-gated disposition, loud-skip guard) |
 | 2026-08-18T04:35:37Z | T-462 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES, PR #84 merged as b48cd7e) |
 | 2026-08-18T04:46:53Z | T-463 | T-463: team runs-scored outcome store for archived KXMLBTOTAL game-events (ingestion only, Phase 2 unblock) + market Brier by-product |
+| 2026-08-18T04:55:29Z | T-464 | CLOSED — T-464: CI now executes 10 previously-silent-skip tests via synthetic fixture; skip ceiling (18) enforced loud in CI (GG-179 partial) (commit `9bb9999`) |
