@@ -28,7 +28,11 @@ file and, from it alone, generates/updates:
        chain to one current-status line (ADR-0044), archiving the rest
        verbatim to the matching *_ARCHIVE.md file.
     2. SESSION_CLAIMS.md — append the closure row (previously 100%
-       hand-authored and skipped by at least three prior sessions).
+       hand-authored and skipped by at least three prior sessions). GG-186/
+       T-462: the row only reads "CLOSED" if HEAD is currently an ancestor
+       of origin/main (asserted live, not assumed) — otherwise it reads
+       "MERGED: NO — branch <name> awaiting merge", so a session that skips
+       or fails Step 8 cannot leave a row claiming closure it never earned.
     3. 11_MEMORY_HANDOFF/OPERATOR_DIGEST_<date>.md — append a one-line entry
        (only for MICRO-tier sessions; STANDARD still writes its own prose
        digest by hand, since a real digest needs more than one line).
@@ -123,10 +127,39 @@ def build_pointer_line(archive_relpath: str, heading: str) -> str:
     )
 
 
+def head_is_ancestor_of_origin_main() -> bool:
+    """GG-186/T-462: the executable assertion behind the closure-row gate.
+
+    Runs the same check as `scripts/session_end_timer.sh merge-check` (kept
+    duplicated rather than shelled-out to, so this stays correct even if
+    invoked outside a normal session-end flow). A branch that is not yet an
+    ancestor of origin/main has not landed, regardless of what its own local
+    commit history claims.
+    """
+    subprocess.run(["git", "fetch", "--quiet", "origin", "main"],
+                    cwd=REPO_ROOT, capture_output=True)
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", "HEAD", "origin/main"],
+        cwd=REPO_ROOT, capture_output=True,
+    )
+    return result.returncode == 0
+
+
 def generate_claims_closure_row(meta: dict, dry_run: bool) -> str:
     claims_path = REPO_ROOT / "04_EXECUTION/SESSION_CLAIMS.md"
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    row = f"| {ts} | {meta['task_id']} | CLOSED — {meta['one_line_summary']} (commit `{meta['commit']}`) |\n"
+    if head_is_ancestor_of_origin_main():
+        status = f"CLOSED — {meta['one_line_summary']} (commit `{meta['commit']}`)"
+    else:
+        branch = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT, capture_output=True, text=True,
+        ).stdout.strip()
+        status = (
+            f"MERGED: NO — branch `{branch}` awaiting merge — "
+            f"{meta['one_line_summary']} (commit `{meta['commit']}`)"
+        )
+    row = f"| {ts} | {meta['task_id']} | {status} |\n"
     if not dry_run:
         with claims_path.open("a") as fh:
             fh.write(row)

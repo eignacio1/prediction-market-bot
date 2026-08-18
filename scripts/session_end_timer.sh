@@ -17,6 +17,7 @@
 #   scripts/session_end_timer.sh start
 #   scripts/session_end_timer.sh check
 #   scripts/session_end_timer.sh wordcheck <label> <cap>   # text on stdin
+#   scripts/session_end_timer.sh merge-check   # GG-186/T-462: HEAD ancestor of origin/main?
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
@@ -59,8 +60,23 @@ case "$cmd" in
       echo "session_end_timer: ${label} = ${words} words — PASS (cap ${cap})"
     fi
     ;;
+  merge-check)
+    # GG-186/T-462: the executable assertion behind session-end.md Step 8's
+    # closure-row gate. "CLOSED" may only be written once this prints YES —
+    # this is what makes "closed" and "on origin/main" the same fact instead
+    # of two facts that can silently drift apart (T-456 x2, T-458, T-460).
+    git fetch --quiet origin main 2>/dev/null || true
+    branch="$(git rev-parse --abbrev-ref HEAD)"
+    head_short="$(git rev-parse --short HEAD)"
+    if git merge-base --is-ancestor HEAD origin/main 2>/dev/null; then
+      echo "MERGE_CHECK: YES — HEAD (${head_short}) is an ancestor of origin/main"
+    else
+      echo "MERGE_CHECK: NO — branch ${branch} (HEAD ${head_short}) is NOT yet an ancestor of origin/main"
+      exit 1
+    fi
+    ;;
   *)
-    echo "usage: session_end_timer.sh {start|check|wordcheck <label> <cap>}" >&2
+    echo "usage: session_end_timer.sh {start|check|wordcheck <label> <cap>|merge-check}" >&2
     exit 2
     ;;
 esac

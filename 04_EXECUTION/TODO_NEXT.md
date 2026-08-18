@@ -953,3 +953,9 @@ T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to
 - **T-461** — Investigate GG-185: why the confirmed-deployed, unconditional GG-166 guard did not refuse any of the 532 mismatched resolutions, all of which occurred after its deployment (`58b2eb6`, 2026-08-06).
 
 **Note (T-458):** the T-459 number was initially used here in error and corrected — `SESSION_CLAIMS.md:251` already claims T-459 for an unrelated task (box 1.7 re-verify). Follow-ons above are T-460/T-461, not T-459.
+
+## T-462 — Verify T-458/T-460 merge-landing, close session-end's "closed ≠ on main" gap — ✅ COMPLETE 2026-08-18 (isolated worktree `PM-worktrees/20260818T041138Z-t462-merge-landing-verify`)
+
+**Done this task:** confirmed via `gh pr list`/`git merge-base --is-ancestor` T-458 (PR #83) and T-460 (PR #82) were already merged — a strategic review's "unmerged" claim was time-stale; no re-work done. Registered [[GG-186]] (RESOLVED same session): closure rows asserted CLOSED from local state alone, no merge-landing check. Fixed: `session_end_timer.sh merge-check` (new), `generate_session_artifacts.py` now truth-checks before writing CLOSED, `session-end.md` Step 8 gained a mandatory post-merge confirm sub-step.
+
+**Note:** T-458's doc above names follow-ons "T-460"/"T-461" — both IDs were independently claimed same-wave by unrelated tasks. Flagged, not resolved — T-458's intended backfill/GG-185 work is unclaimed under any ID.
