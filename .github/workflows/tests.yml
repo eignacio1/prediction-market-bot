@@ -87,4 +87,21 @@ jobs:
           pip install -e .
 
       - name: Run full test suite
-        run: pytest tests/ -q
+        env:
+          # GG-179/T-464: lets the 10 CSV-only tests in tests/integration/
+          # (no Kalshi credentials needed) run against a synthesized
+          # feature CSV instead of silently skipping — see
+          # tests/integration/conftest.py's feature_csv_path fixture.
+          MLB_CI_SYNTHETIC_FIXTURE: "1"
+        run: pytest tests/ -q -rs --junit-xml=pytest-results.xml
+
+      # GG-179/T-464: bare pytest's summary line reports a skip count but
+      # nothing gates on it, so a test silently skipping in CI forever is
+      # indistinguishable from a passing test. This fails the build if the
+      # skip count exceeds the known baseline (see check_skip_ceiling.py's
+      # docstring and GG-179 for the current baseline's derivation) and
+      # prints every skip's name+reason either way so a new one is visible
+      # in the CI log, not just in a collapsed summary line.
+      - name: Enforce skip ceiling (GG-179)
+        if: always()
+        run: python3 scripts/testing/check_skip_ceiling.py pytest-results.xml --ceiling 18
