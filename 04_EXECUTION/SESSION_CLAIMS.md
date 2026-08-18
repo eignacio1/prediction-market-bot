@@ -261,3 +261,4 @@
 | 2026-08-17T23:44:28Z | T-460 | CLOSED — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82 (commit `ec9e320`) |
 | 2026-08-17T23:29:49Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main (2,875/29/0, exit 0) — Phase 1 8/8 closed; GG-179 unchanged/OPEN (commit `11f6441`) |
 | 2026-08-18T04:11:58Z | T-462 / GG-186 | T-462: verify+land T-458/T-460 merge status, close session-end merge-landing hole, register GG |
+| 2026-08-18T04:30:13Z | T-462 | MERGED: NO — branch `session/20260818T041138Z-t462-merge-landing-verify` awaiting merge — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check) (commit `8da4e3e`) |

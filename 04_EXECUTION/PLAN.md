@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-17T23:38:00Z (T-460 — T-460 housekeeping batch — GG-169/173/175/176 all fixed (not just registered), PR #82) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260817_2338.md` for full session detail.
+**Last reviewed:** 2026-08-18T04:26:00Z (T-462 — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260818_0426.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
