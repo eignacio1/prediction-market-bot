@@ -262,3 +262,4 @@
 | 2026-08-17T23:29:49Z | T-459 | CLOSED — T-459: box 1.7 re-verified on main (2,875/29/0, exit 0) — Phase 1 8/8 closed; GG-179 unchanged/OPEN (commit `11f6441`) |
 | 2026-08-18T04:11:58Z | T-462 / GG-186 | T-462: verify+land T-458/T-460 merge status, close session-end merge-landing hole, register GG |
 | 2026-08-18T04:30:13Z | T-462 | MERGED: NO — branch `session/20260818T041138Z-t462-merge-landing-verify` awaiting merge — T-462: confirmed T-458/T-460 were already merged (strategic review's "unmerged" claim was time-stale); registered+fixed GG-186 (closure rows asserted CLOSED with no merge-landing check) (commit `8da4e3e`) |
+| 2026-08-18T04:21:40Z | T-464 | T-464: make CI actually execute skipped tests (artifact-driven fixtures, secrets-gated disposition, loud-skip guard) |
