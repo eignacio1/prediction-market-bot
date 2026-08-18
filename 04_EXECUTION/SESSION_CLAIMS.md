@@ -266,3 +266,4 @@
 | 2026-08-18T04:35:37Z | T-462 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES, PR #84 merged as b48cd7e) |
 | 2026-08-18T04:46:53Z | T-463 | T-463: team runs-scored outcome store for archived KXMLBTOTAL game-events (ingestion only, Phase 2 unblock) + market Brier by-product |
 | 2026-08-18T04:55:29Z | T-464 | CLOSED — T-464: CI now executes 10 previously-silent-skip tests via synthetic fixture; skip ceiling (18) enforced loud in CI (GG-179 partial) (commit `9bb9999`) |
+| 2026-08-18T23:38:45Z | T-465, GG-185, GG-170 | GG-185/GG-170: why did GG-166 guard not fire on 532 rows; fix bypass |
