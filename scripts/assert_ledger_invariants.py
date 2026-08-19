@@ -616,6 +616,8 @@ def run(
     lines: list[dict] = []
     total_violations = 0
     total_assertions_run = 0
+    total_no_formula = 0
+    bands_with_incomplete_formula_coverage: list[str] = []
 
     t1_pf = load_json(t1_portfolio_path)
     t4_pf = load_json(t4_portfolio_path)
@@ -649,11 +651,14 @@ def run(
             (rec.get("logic_epoch") for rec in recs if rec.get("logic_epoch") is not None),
             default=None,
         )
+        band_no_formula_ids: list[str] = []
         for fn in CORE_ASSERTIONS + EXTEND_ASSERTIONS:
             result = fn(recs, band)
             if result.no_formula:
                 print(f"  [{result.aid}] {result.name}: NO_FORMULA for this band — not evaluated", file=sys.stderr)
                 lines.append(result.to_jsonl_line())
+                band_no_formula_ids.append(result.aid)
+                total_no_formula += 1
                 continue
             total_assertions_run += 1
             total_violations += result.n_violations
@@ -708,6 +713,40 @@ def run(
                         "n_current_epoch_violations": n_current_epoch_violations,
                     })
 
+        # T-466: NO_FORMULA is a silent pass (the assertion reports nothing
+        # rather than "clean" or "violation" because it never ran) — a reader
+        # scanning per-assertion ALARM/clean lines above can mistake a run of
+        # NO_FORMULA lines for a healthy band. This makes coverage itself a
+        # first-class, loud line per band, and a machine-readable record in
+        # the report, so "not evaluated" and "evaluated and clean" can never
+        # be confused for one another.
+        n_formula_assertions_total = len(CORE_ASSERTIONS) + len(EXTEND_ASSERTIONS)
+        n_no_formula = len(band_no_formula_ids)
+        n_evaluated = n_formula_assertions_total - n_no_formula
+        lines.append({
+            "type": "band_formula_coverage",
+            "band": band,
+            "n_assertions_total": n_formula_assertions_total,
+            "n_evaluated": n_evaluated,
+            "n_no_formula": n_no_formula,
+            "no_formula_ids": band_no_formula_ids,
+        })
+        if n_no_formula:
+            bands_with_incomplete_formula_coverage.append(band)
+            print(
+                f"  COVERAGE band={band}: {n_evaluated}/{n_formula_assertions_total} "
+                f"assertions evaluated — {n_no_formula} NOT EVALUATED (NO_FORMULA: "
+                f"{','.join(band_no_formula_ids)}). Do not read these as clean — "
+                f"they were never checked. (T-466)",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"  COVERAGE band={band}: {n_evaluated}/{n_formula_assertions_total} "
+                f"assertions evaluated — full formula coverage.",
+                file=sys.stderr,
+            )
+
         if store is not None and band in ("T1", "T4M-PROJ"):
             agreement = cross_path_agreement(recs, band, store)
             for row in agreement:
@@ -726,6 +765,8 @@ def run(
         "total_bands": len(by_band),
         "total_assertions_run": total_assertions_run,
         "total_violations": total_violations,
+        "total_no_formula": total_no_formula,
+        "bands_with_incomplete_formula_coverage": bands_with_incomplete_formula_coverage,
     }
     lines.append(summary)
 
@@ -735,6 +776,14 @@ def run(
         f"band-scoped assertion runs. ALARM-ONLY: this does not fail the build.",
         file=sys.stderr,
     )
+    if total_no_formula:
+        print(
+            f"COVERAGE: {total_no_formula} (band, assertion) pairs were NOT EVALUATED "
+            f"(NO_FORMULA) — these are NOT counted as clean above. Incomplete bands: "
+            f"{', '.join(bands_with_incomplete_formula_coverage)}. See per-band COVERAGE "
+            f"lines above. (T-466)",
+            file=sys.stderr,
+        )
     print("=" * 78, file=sys.stderr)
 
     report_path.parent.mkdir(parents=True, exist_ok=True)
