@@ -169,6 +169,37 @@ class TestRuledOutRequiresEvidence:
 
 
 # ---------------------------------------------------------------------------
+# T-466 — ACTIVE cells require formula-assertion coverage
+# ---------------------------------------------------------------------------
+
+
+class TestActiveRequiresFormulaCoverage:
+    def test_active_cell_without_formula_coverage_raises(self):
+        with pytest.raises(ValueError):
+            MarketTypeCell(
+                MarketType.MLB_MONEYLINE, ExecutionBand.T2_SAME_DAY, CellStatus.ACTIVE,
+            )
+
+    def test_active_cell_with_formula_coverage_succeeds(self):
+        cell = MarketTypeCell(
+            MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T1_MULTI_DAY, CellStatus.ACTIVE,
+        )
+        assert cell.status is CellStatus.ACTIVE
+
+    def test_shadow_cell_without_formula_coverage_still_succeeds(self):
+        cell = MarketTypeCell(
+            MarketType.MLB_GAME_TOTAL, ExecutionBand.T5_LATE_GAME, CellStatus.SHADOW,
+        )
+        assert cell.status is CellStatus.SHADOW
+
+    def test_promote_to_active_on_uncovered_band_raises(self):
+        with pytest.raises(ValueError):
+            promote_cell_status(
+                MarketType.MLB_TEAM_TOTAL, ExecutionBand.T3_PRE_TIP, CellStatus.ACTIVE,
+            )
+
+
+# ---------------------------------------------------------------------------
 # ADR-0053 §6.3 item 1 — reverse ticker -> market_type lookup
 # ---------------------------------------------------------------------------
 

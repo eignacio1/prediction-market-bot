@@ -164,6 +164,35 @@ class CellStatus(Enum):
 # ---------------------------------------------------------------------------
 
 
+# T-466: bands whose formula assertions (`assert_ledger_invariants.py`
+# assertions [G] gross_edge_matches_band_formula, [I] adr0050_flat_stake_formula,
+# [J] adr0050_contracts_cap) are actually evaluated rather than NO_FORMULA.
+# NO_FORMULA is a silent pass — the assertion reports nothing, not "clean,"
+# because it never ran — so a cell whose band is NOT in this set has zero
+# formula-level protection against GG-166-style silent ledger corruption
+# even if every other assertion in the suite reports clean.
+#
+# `ExecutionBand.value` is byte-identical to the band-label strings that
+# script keys `GROSS_EDGE_VIG_MULTIPLIER` / `ADR_0050_BAND` against (verified
+# T-466: T1_MULTI_DAY.value == "T1", T4M_PROJ.value == "T4M-PROJ", etc.), so
+# this set can be expressed directly in ExecutionBand terms without importing
+# the script into the package. There is no automated derivation — this set
+# and the script's constants must be kept in lockstep BY HAND. If you add a
+# band to either side, add it to the other in the same change.
+#
+# Current coverage (confirmed live 2026-08-18, T-466):
+#   T1 (T1_MULTI_DAY):    [G] evaluated; [I]/[J] correctly N/A (ADR-0050 flat
+#                          stake / contracts cap is T4M-PROJ-specific, not a
+#                          T1 gap) -- included here on the strength of [G] alone.
+#   T4M-PROJ (T4M_PROJ):  [G], [I], [J] all evaluated -- full coverage.
+#   T2 (T2_SAME_DAY):     NO_FORMULA on all three -- NOT included. See GG-187.
+#   All other bands:      no formula assertions written -- NOT included.
+BANDS_WITH_FORMULA_ASSERTIONS: frozenset[ExecutionBand] = frozenset({
+    ExecutionBand.T1_MULTI_DAY,
+    ExecutionBand.T4M_PROJ,
+})
+
+
 @dataclass(frozen=True)
 class MarketTypeCell:
     """
@@ -205,6 +234,30 @@ class MarketTypeCell:
             if self.measured_date is None:
                 raise ValueError(
                     f"RULED_OUT cell ({self.market_type}, {self.band}) requires a measured_date"
+                )
+        if self.status is CellStatus.ACTIVE:
+            # T-466: a cell may not hold live-trading (ACTIVE) status unless
+            # its band has formula-assertion coverage in
+            # scripts/assert_ledger_invariants.py. Without this, GG-166-style
+            # silent ledger corruption on a newly-activated band would have
+            # zero formula-level detection, and the ledger script's own
+            # NO_FORMULA output is easy to misread as "clean" (that misread
+            # is the whole reason this gate exists).
+            #
+            # SHADOW is deliberately NOT gated here: it is the pre-formula,
+            # no-capital-at-risk measurement-building phase (see CellStatus
+            # docstring), and two existing regression tests
+            # (test_promotion_without_guard_condition_succeeds,
+            # test_ruled_out_to_shadow_with_superseding_reference_succeeds)
+            # already promote uncovered bands to SHADOW and are expected to
+            # keep succeeding. ACTIVE is where real capital risk is realized;
+            # that is the line this gate draws.
+            if self.band not in BANDS_WITH_FORMULA_ASSERTIONS:
+                raise ValueError(
+                    f"ACTIVE cell ({self.market_type}, {self.band}) requires formula-assertion "
+                    f"coverage in scripts/assert_ledger_invariants.py before it may hold a "
+                    f"live-trading status (T-466) — band {self.band} is NO_FORMULA. See "
+                    f"BANDS_WITH_FORMULA_ASSERTIONS in this module."
                 )
 
     @property
