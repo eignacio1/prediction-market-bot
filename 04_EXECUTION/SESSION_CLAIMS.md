@@ -272,3 +272,4 @@
 | 2026-08-19T00:11:28Z | T-466 | CLOSED — T-466: gated CellStatus.ACTIVE on formula-assertion coverage, surfaced NO_FORMULA, registered GG-187 (T2 formula epoch-conditional) (commit `f892a68`) |
 | 2026-08-19T00:17:56Z | T-466 | CLOSED — session-end complete, merge-check YES, HEAD=b550f94 on origin/main |
 | 2026-08-19T00:28:43Z | T-467 / ADR-0054 | T-467: ADR-0054 segmented-pool isolation decision (design+verification only) |
+| 2026-08-19T04:35:00Z | T-467 | CLOSED — ADR-0054 (PROPOSED) written, PR #87 merged (95524ab), merge-check YES |
