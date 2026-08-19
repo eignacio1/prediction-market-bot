@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-18T04:52:00Z (T-464 — T-464: CI now executes 10 previously-silent-skip tests via synthetic fixture; skip ceiling (18) enforced loud in CI (GG-179 partial)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260818_0452.md` for full session detail.
+**Last reviewed:** 2026-08-19T00:14:00Z (T-465 — GG-185 root cause = 8.5-day VPS deploy gap (not a guard bypass); GG-187 registered; PR #86 open, unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_0014.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

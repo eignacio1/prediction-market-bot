@@ -27,3 +27,19 @@ No.
 
 **Anything that worried the session:**
 None new. Code push verified landed; no one has watched a live cloud test run finish end-to-end with this change yet — quick glance next session.
+
+---
+
+## T-465 — 2026-08-19T00:17Z
+
+**What changed today, in one paragraph:**
+Found why the "532 corrupted baseball rows" guard didn't catch it: not a logic bug — the server never picked up the fix for 8+ days after we shipped it, running an old copy the whole window. Added a check that watches whether shipped code actually reached the server.
+
+**What this means for your money:**
+No change — zero real money at risk. Data-quality tracking, not bet sizing or risk limits.
+
+**Does anything need your decision right now?**
+No. Flagged for later, low priority: 46 currently-open bets share the same mislabeled date as the 532 closed ones — no payout impact, just cleanup.
+
+**Anything that worried the session, even if not urgent:**
+This session's fix isn't merged yet — the merge step needs your go-ahead (guardrail working as designed). Run `gh pr merge 86 --merge --delete-branch=false` when you get a chance.
