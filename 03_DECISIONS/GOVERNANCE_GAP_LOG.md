@@ -2143,6 +2143,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-195 — 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-195 |
+| Category | Working-tree hygiene — nothing enforces that files landing in the shared main tree get tracked, deleted, or explicitly parked within a bounded time; they simply accumulate as `??` in `git status` until some session's scope happens to cover them. |
+| What was missed | `git status --porcelain` on the shared main tree (T-469, 2026-08-19) found 14 untracked files with no corresponding instruction in this session's scope: `04_EXECUTION/TERMINAL_PROMPTS_GG163_HOTFIX.md`, `04_EXECUTION/TERMINAL_PROMPTS_WAVE2_REVISED.md` through `WAVE9.md` (6 files), `05_RESEARCH_EXPERIMENTS/STRATEGIC_REVIEW_2026-08-03_HANDOFF.md`, `11_MEMORY_HANDOFF/NEW_WINDOW_PASTE_IN.md`, `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-08-12.md`/`-08-16.md`/`-08-18.md`, and `scripts/lib/__pycache__/` (a cache dir — likely belongs in `.gitignore`, not tracked). None have been inspected for content in this session. |
+| When it should have been caught | Whichever session first created each file should have tracked, gitignored, or explicitly parked it before ending; absent that, the next session touching this tree's `git status` output should have triaged it rather than working around it. |
+| Phases it survived | Unknown per-file age — at least back through the 2026-08-03 strategic-review window (the WAVE2-9 and STRATEGIC_REVIEW files) and the more recent 2026-08-12/16/18 carry-forward files, i.e. spanning at least this entire ~2.5-week window without triage. |
+| Why it survived | No session-start or session-end step asserts the shared main tree is free of untracked files; `session_guard.sh` checks branch/claim state, not working-tree file hygiene. Each individual session's scope (Hard Rule 11) correctly bounded itself to its own deliverable, which structurally means an unscoped untracked file never gets picked up unless a session happens to be explicitly tasked with tree cleanup, as this one was for a narrower list. |
+| Impact | Low — no code or capital path reads these files; they are dead nav/handoff prose. The risk is purely navigational (a future session mistaking stale untracked content for current state) and repo hygiene (working tree drift from what `git status` should show as clean). |
+| Discovery | T-469 (2026-08-19), `git status --porcelain` during Step 3 of its mandated task, cross-checked against the explicit file list given in scope — these 14 fell outside it. |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-469's one-deliverable scope). Candidate follow-on: a session tasked with triaging each file (track-for-recoverability-then-delete, vs. delete outright if superseded, vs. `.gitignore` for `__pycache__`) — same judgment pattern T-469 applied to `TERMINAL_PROMPTS_2026-08-03.md` in this session, just not yet applied to this list. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
