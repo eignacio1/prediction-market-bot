@@ -822,3 +822,9 @@ The 11 secrets/combined-gated tests (`VENUE_API_KEY`) were left unprovisioned �
 **Scope:** No existing assertion logic changed, sizing/kelly_fraction/kill switch/GG-170/GG-185 untouched, `--strict` unwired. PR #85, commits `1fd42ab..74076a0`.
 
 **Files:** `scripts/assert_ledger_invariants.py`, `src/prediction_market_bot/c5_execution/market_type_registry.py`, `tests/test_market_type_registry.py`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-187).
+
+## 2026-08-18 — T-467: ADR-0054 (segmented-pool isolation) written, PROPOSED
+
+ADR-0054 resolves Phase 3 box 3.1 and all four required items: (a) per-family ledger = single file + `family` column, not one-file-per-family (invariant suite/`run_power_calc.py`/`run_band_monitor.py`/replay harness all need a groupby key, not a new file-discovery loop); (b) `logic_epoch` becomes per-`(market_type,band)` cell, mirroring epochs 11/12's existing `bands_affected` precedent — load-bearing, without it one family's fix resets all ~25 cells' `clean_n`; (c) correlated exposure — operator-signed 2026-08-17: aggregate exposure cap per game-key (ticker's stable middle segment), breaching leg sized down not rejected, initial $ value provisional/not derived; (d) per-cell kill switches wire into GG-183's existing-but-unwired `resolve_kill_switch_state()`/`halt_cell()` store. Left PROPOSED for operator sign-off; 3.2–3.8 not implemented.
+
+**T-463 verification finding:** commit `8541840` (build_t4_totals_outcome_store.py, 224/239 resolved, explicitly "no model fit, no scoring") exists only on unmerged branch `session/20260818T044631Z-phase2-team-outcomes` — NOT on `origin/main`. T-463 did not land; Phase 2 stays blocked. This check should have run and been reported before ADR-0054 was drafted (task's STEP 1 ordering) — it was completed after, self-caught, not user-flagged.
