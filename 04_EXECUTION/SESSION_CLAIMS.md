@@ -273,3 +273,4 @@
 | 2026-08-19T00:17:56Z | T-466 | CLOSED — session-end complete, merge-check YES, HEAD=b550f94 on origin/main |
 | 2026-08-19T00:28:43Z | T-467 / ADR-0054 | T-467: ADR-0054 segmented-pool isolation decision (design+verification only) |
 | 2026-08-19T04:35:00Z | T-467 | CLOSED — ADR-0054 (PROPOSED) written, PR #87 merged (95524ab), merge-check YES |
+| 2026-08-19T04:35:14Z | T-467 | CLOSED — T-467: ADR-0054 (PROPOSED) segmented-pool isolation decision — items (a)-(d) resolved, PR #87 merged, T-463 found not landed (commit `57deaf2`) |

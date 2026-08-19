@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-19T00:10:00Z (T-466 — T-466: gated CellStatus.ACTIVE on formula-assertion coverage, surfaced NO_FORMULA, registered GG-187 (T2 formula epoch-conditional)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_0010.md` for full session detail.
+**Last reviewed:** 2026-08-19T04:35:00Z (T-467 — T-467: ADR-0054 (PROPOSED) segmented-pool isolation decision — items (a)-(d) resolved, PR #87 merged, T-463 found not landed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_0435.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
