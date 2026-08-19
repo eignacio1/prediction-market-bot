@@ -2091,6 +2091,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-188 — T-463 (team runs-scored outcome store for archived `KXMLBTOTAL` game-events, Phase 2 unblock) was claimed and never implemented, closed, or explained; Phase 2 remains blocked exactly where HYP010's Finding 5 left it
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-188 |
+| Category | Systemic blind spot — `SESSION_CLAIMS.md` has no mechanism that flags a claim row with no matching CLOSED row; a claim can be silently abandoned mid-session with zero signal. |
+| What was missed | `SESSION_CLAIMS.md` (2026-08-18T04:46:53Z) records a claim: "T-463: team runs-scored outcome store for archived KXMLBTOTAL game-events (ingestion only, Phase 2 unblock) + market Brier by-product." The very next commit (`9bb9999`) and claim row belong to T-464, an unrelated CI task. No commit, file, test, or DECISION_LOG/GOVERNANCE_GAP_LOG entry for T-463 exists anywhere in `origin/main` history. T-467 (this session) verified directly: `grep -rn "T-463"` against `DECISION_LOG.md` and `GOVERNANCE_GAP_LOG.md` returns zero hits; no file matching `*outcome_store*`/`*runs_scored*`/`*KXMLBTOTAL*` postdating the claim timestamp exists; `mlb_team_stats_store.py` (the only `runs_scored`-adjacent file in the repo) predates T-463 by three sessions (T-181, `87ffa2a`). |
+| When it should have been caught | At the next session-start after 2026-08-18T04:46:53Z — `session_guard.sh`'s "other sessions' recent claims" check surfaces open claim rows but does not distinguish an open claim with in-progress work from one that was silently dropped; nothing in Step 0 flags a claim with no CLOSED row after a full session-claim-cycle has elapsed. |
+| Phases it survived | From claim time (2026-08-18T04:46:53Z) through T-464, T-465, and T-466's full sessions (2026-08-18 through 2026-08-19T00:17Z) — three subsequent sessions' worth of `session_guard.sh` runs, none of which flagged it. |
+| Why it survived | `session_guard.sh`'s claim-tail check is a visibility aid (prints recent rows for human/model judgment), not an assertion — there is no automated check that every claim row is eventually followed by a CLOSED row for the same T-number within some bound. The gap was only found because T-467 was explicitly tasked (04_EXECUTION/ACTIVE_QUEUE.md Block J) with verifying T-463's landing before proceeding, per the operator's own note that "a strategic window could not confirm it." |
+| Impact | Phase 2 (`04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md` § Phase 2, gate 2.3) remains exactly as blocked as HYP010's Finding 5 (`05_RESEARCH_EXPERIMENTS/HYP010_PHASE2_PREREGISTRATION_2026-08-15.md`, 2026-08-15) found it: no team run-total outcome source exists, all 64,969 archived `KXMLBTOTAL` price-archive rows remain `status: "active"` with no settlement captured, and the 214 archived game-events cannot be scored. No live-capital or sizing impact — Phase 2 is offline-only and has not reached any C4 sizing path. This session (T-467) does not build the fix; per its own scope fence (ADR-0054 is Phase 3, independent of Phase 2) it registers this and stops. |
+| Discovery | T-467 (2026-08-19), Step 1 of its mandated task: verify T-463's landing before starting Phase 3's ADR-0054, per `04_EXECUTION/ACTIVE_QUEUE.md` Block J instruction to "say so plainly and STOP" if unlanded. |
+| Resolution | Not started. Re-stage the T-463 deliverable (team runs-scored outcome store, MLB StatsAPI final scores, for the 214 archived game-events; measured market Brier as a by-product) as its own claimed session — HYP010 Finding 5 already specifies the shape of the fix in full. Separately, consider whether `session_guard.sh` should warn on claim rows with no CLOSED row after N hours/sessions — not built here, out of this session's one-deliverable scope (Hard Rule 11). |
+| Status | OPEN — new, unstaffed, MEDIUM. Blocks Phase 2 gate 2.3; does not block Phase 3 (ADR-0054 is scoped independently — see `04_EXECUTION/ACTIVE_QUEUE.md` Block J: "Phase 2 blocked... regardless of Phase 3"). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
