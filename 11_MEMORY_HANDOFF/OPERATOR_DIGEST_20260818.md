@@ -27,3 +27,19 @@ No.
 
 **Anything that worried the session:**
 None new. Code push verified landed; no one has watched a live cloud test run finish end-to-end with this change yet — quick glance next session.
+
+---
+
+## T-466 — 2026-08-19T00:15Z
+
+**What changed today, in one paragraph:**
+The bot now has a structural safety check that used to be optional: before any bet category can be marked "live and trusted," the system checks that the math behind its edge calculation is actually verified. Previously, a category could quietly slip through this check with no formula backing it and nobody would notice. Now it's blocked automatically.
+
+**What this means for your money:**
+No change — still zero real capital at risk, paper trading only. This is a guardrail, not a trading change.
+
+**Does anything need your decision right now?**
+No. One thing flagged for later: one bet category (T2) has a known formula, but it changed partway through and the safety check can't yet handle formulas that changed mid-stream — so that category stays flagged rather than falsely cleared. No urgency; it doesn't touch anything currently trading live.
+
+**Anything that worried the session, even if not urgent:**
+A note almost got saved to the wrong shared file (the main working copy instead of this session's isolated one) — caught immediately, nothing lost, no other session was affected.

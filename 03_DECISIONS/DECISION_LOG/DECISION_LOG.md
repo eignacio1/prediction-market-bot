@@ -812,3 +812,13 @@ The 11 secrets/combined-gated tests (`VENUE_API_KEY`) were left unprovisioned �
 **Scope discipline (Hard Rule 11):** No test assertions changed — only fixture data-sourcing. No `src/`, sizing, `kelly_fraction`, kill switch, or band code touched. GG-170 and housekeeping gaps untouched (Block F's scope). Model-artifact and secrets provisioning explicitly not attempted — registered as remaining open work in GG-179's Resolution field, not built here.
 
 **Files:** `tests/integration/conftest.py`, `.github/workflows/tests.yml`, `scripts/testing/check_skip_ceiling.py` (new), `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-179 status → RESOLVED (partial)).
+
+## 2026-08-18 — T-466: gate ACTIVE cells on formula-assertion coverage; GG-187
+
+**Decision:** Extended `MarketTypeCell.__post_init__` (already gating RULED_OUT) to also block `CellStatus.ACTIVE` unless the cell's band is in new `BANDS_WITH_FORMULA_ASSERTIONS` — one mechanism, not two, per task instruction. SHADOW deliberately left ungated: pre-formula/no-capital measurement phase, and two pre-existing tests already promote uncovered bands to SHADOW. `assert_ledger_invariants.py`'s NO_FORMULA (previously silent) now reports loudly per-band and in the run summary. T2's gross-edge formula is known (APR-0028: full-vig pre-epoch-6, half-vig post) but not backfilled — its only 2 resolved records are pre-fix and the multiplier mechanism is flat/epoch-independent, so a naive backfill would false-alarm on the first post-epoch-6 record. Registered GG-187 instead of guessing.
+
+**Why:** Only 1 of 4 live bands (T4M-PROJ) had full formula coverage; NO_FORMULA is a silent pass, same shape as GG-179/GG-185.
+
+**Scope:** No existing assertion logic changed, sizing/kelly_fraction/kill switch/GG-170/GG-185 untouched, `--strict` unwired. PR #85, commits `1fd42ab..74076a0`.
+
+**Files:** `scripts/assert_ledger_invariants.py`, `src/prediction_market_bot/c5_execution/market_type_registry.py`, `tests/test_market_type_registry.py`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-187).
