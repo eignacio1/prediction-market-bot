@@ -2068,6 +2068,29 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-187 — T2's gross-edge formula is known but epoch-conditional; unsafe to backfill into assert_ledger_invariants.py's flat multiplier
+
+**Status:** OPEN · **Severity:** LOW
+
+<details><summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-187 |
+| Category | Incremental architecture — a mechanism (`GROSS_EDGE_VIG_MULTIPLIER`) built flat/epoch-independent for T1 and T4M-PROJ does not extend safely to a band whose formula actually changed mid-ledger. |
+| What was missed | `scripts/assert_ledger_invariants.py`'s assertion G (`assert_G_gross_edge_formula`) reports `NO_FORMULA` for band T2 — T2 has no entry in `GROSS_EDGE_VIG_MULTIPLIER`, so its gross-edge values are never checked against any formula. Unlike T1 and UNTAGGED (no known formula at all) or T4M-PROJ (stable formula, full coverage), T2's formula IS known and documented: APR-0028 (ACCEPTED, DS sign-off, T-373/GG-123) specifies full-vig pre-fix (`gross_edge = p_calibrated - mid - vig`) through `CURRENT_LOGIC_EPOCH` < 6, and half-vig post-fix (`gross_edge = p_calibrated - mid - vig*0.5`, matching T1's convention) from epoch 6 forward (commit `cc887e8`). |
+| When it should have been caught | At the time APR-0028's fix landed (epoch bumped to 6, T-373/GG-123) — the epoch-conditional nature of the formula should have been carried into the ledger-assertion suite in the same change that fixed the underlying bug, not left as a downstream gap for a later coverage audit to find. |
+| Phases it survived | Written pre-G6 (paper trading), survived APR-0028's own fix commit, survived the 2026-08-11 Q7/GG-166 ledger-integrity remediation pass (T-432/BLOCK B) that built assertion G itself, and survived until T-466's coverage audit (2026-08-18) made NO_FORMULA counts visible per-band for the first time. |
+| Why it survived | `GROSS_EDGE_VIG_MULTIPLIER` is a flat `{band: float}` dict with no epoch dimension — the pattern that exists elsewhere in the same script for epoch-scoping (e.g. `ADR_0050_FLOOR`, `FEE_NET_EDGE_CLEAN_FLOOR`, both used as `logic_epoch >= floor` gates) was never applied to assertion G. T2's only 2 resolved ledger records (`POS-83946C4309`, `POS-A89B4E8868`, both `logic_epoch: 2`, entered 2026-07-05) are both pre-fix, so any naive flat backfill (`GROSS_EDGE_VIG_MULTIPLIER["T2"] = 1.0`) would score as clean against currently-existing data while being silently wrong — and would start firing false alarms — the moment T2 accrues its first post-epoch-6 resolved record, since that record would legitimately use the half-vig formula the flat entry doesn't know about. NO_FORMULA's own silent-pass framing (see this GG's sibling finding under T-466) meant the absence produced no signal either way until coverage was made structurally visible. |
+| Impact | T2 currently has zero formula-level protection on gross_edge, same as before this finding — this GG does not change that; it registers why a naive fix was rejected rather than applied. A wrong (flat) assertion would have been strictly worse than the current honest gap: it would pass today, then generate false-positive alarms against genuinely-correct post-epoch-6 T2 records, training the reader to distrust or silence real alarms from this assertion. T2's current live registry status does not include any ACTIVE cell (confirm at time of any future T2 promotion), so this gap does not currently block the new ACTIVE-status formula-coverage gate landed this session (T-466) — but it will block a T2 promotion to ACTIVE the moment one is attempted, by design. |
+| Discovery | T-466 (2026-08-18), tasked with making NO_FORMULA visible and gating ACTIVE status on formula coverage; investigated T1/T2 backfill feasibility per the task's explicit instruction to register rather than guess a formula, read APR-0028 in full, and directly verified both of T2's resolved records against the pre-fix formula by exact arithmetic. |
+| Resolution | Not yet resolved. Two viable paths, neither built this session (explicitly out of scope — the task's DO NOT list bars changing any existing assertion's logic): (1) wait for T2 to accrue resolved records at `logic_epoch >= 6`, then backfill `GROSS_EDGE_VIG_MULTIPLIER["T2"] = 0.5` once there is real post-fix data to validate against (the pre-fix epoch-2 records would then need either exclusion or a floor, matching the `ADR_0050_FLOOR` pattern); or (2) build proper epoch-conditional support into assertion G generally (a `{band: [(epoch_floor, multiplier), ...]}` structure or similar), which is a shared-logic change affecting T1 and T4M-PROJ's code path too and should be scoped and reviewed as its own change, not folded into a coverage-visibility task. |
+| Status | OPEN 2026-08-18 (T-466) — registered, not resolved. Blocks any future promotion of a T2 cell to `CellStatus.ACTIVE` under the gate landed this session (`market_type_registry.py::__post_init__`), by design — T2 is not in `BANDS_WITH_FORMULA_ASSERTIONS`. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
