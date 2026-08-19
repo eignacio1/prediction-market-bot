@@ -812,3 +812,13 @@ The 11 secrets/combined-gated tests (`VENUE_API_KEY`) were left unprovisioned �
 **Scope discipline (Hard Rule 11):** No test assertions changed — only fixture data-sourcing. No `src/`, sizing, `kelly_fraction`, kill switch, or band code touched. GG-170 and housekeeping gaps untouched (Block F's scope). Model-artifact and secrets provisioning explicitly not attempted — registered as remaining open work in GG-179's Resolution field, not built here.
 
 **Files:** `tests/integration/conftest.py`, `.github/workflows/tests.yml`, `scripts/testing/check_skip_ceiling.py` (new), `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-179 status → RESOLVED (partial)).
+
+## 2026-08-18 — T-465: GG-185 root cause found (8.5-day VPS deploy gap), not a guard logic bug
+
+**Decision:** GG-185's 532 corrupted rows are explained entirely by an 8.5-day VPS deploy gap (2026-08-07T05:26:27Z–2026-08-15T19:44:27Z, confirmed via VPS `git reflog`) — the GG-166 guard was pushed to `origin/main` but never pulled to production during that window, so it structurally could not fire (confirmed absent from deployed source via `git show`). Not a logic bypass. GG-185 subsumed into GG-170 (same mechanism). Fix: `.claude/hooks/governance_scan.sh` gained a VPS-deploy-drift probe (alarms if any commit >24h old is undeployed). Assertion A already alarms loudly for new-epoch violations (no change needed).
+
+**Why:** Kelly sizing and the kill switch read this ledger (ADR-0052 sec 2.3) — deploy-lag was an unchecked invariant.
+
+**Scope discipline (Hard Rule 11):** No sizing/kelly_fraction/kill-switch/ADR touched. `--strict` not promoted. New findings (46 stuck-open, 76 rejected, outcome-store coverage gap) registered as GG-187, not fixed.
+
+**Files:** `.claude/hooks/governance_scan.sh`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-185 → RESOLVED (root cause), GG-187 registered).
