@@ -275,3 +275,5 @@
 | 2026-08-19T04:35:00Z | T-467 | CLOSED — ADR-0054 (PROPOSED) written, PR #87 merged (95524ab), merge-check YES |
 | 2026-08-19T04:35:14Z | T-467 | CLOSED — T-467: ADR-0054 (PROPOSED) segmented-pool isolation decision — items (a)-(d) resolved, PR #87 merged, T-463 found not landed (commit `57deaf2`) |
 | 2026-08-19T05:15:12Z | T-468 / GG-189 | T-468: land PR #86, resolve GG-187 ID collision, downgrade GG-185 to PARTIALLY RESOLVED |
+| 2026-08-18T[session-end] | T-465 | MERGED: NO — branch `session/20260818T233821Z-gg185-guard-failure` awaiting merge — root cause found (VPS deploy gap), fix landed, PR #86 open, commit `9a89d7c`, merge-check ran NO |
+| 2026-08-19T00:17:13Z | T-465 | MERGED: NO — branch `session/20260818T233821Z-gg185-guard-failure` awaiting merge — GG-185 root cause = 8.5-day VPS deploy gap (not a guard bypass); GG-187 registered; PR #86 open, unmerged (commit `a5da40f`) |
