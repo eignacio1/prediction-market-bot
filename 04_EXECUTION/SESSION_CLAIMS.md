@@ -268,3 +268,4 @@
 | 2026-08-18T04:55:29Z | T-464 | CLOSED — T-464: CI now executes 10 previously-silent-skip tests via synthetic fixture; skip ceiling (18) enforced loud in CI (GG-179 partial) (commit `9bb9999`) |
 | 2026-08-18T23:38:45Z | T-465, GG-185, GG-170 | GG-185/GG-170: why did GG-166 guard not fire on 532 rows; fix bypass |
 | 2026-08-18T23:38:57Z | T-466 | T-466: gate live-trading cell status on formula-assertion coverage (NO_FORMULA visibility + enforcement) |
+| 2026-08-19T00:05:47Z | T-466 | CLOSED — T-466: made NO_FORMULA coverage visible (per-band + summary), gated CellStatus.ACTIVE on formula-assertion coverage via existing __post_init__ mechanism (SHADOW deliberately ungated), registered GG-187 (T2 formula known/APR-0028 but epoch-conditional, unsafe flat backfill); merge-check YES, PR #85 merged as f58a6cc (commits 1fd42ab..74076a0)
