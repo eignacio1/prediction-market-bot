@@ -823,6 +823,16 @@ The 11 secrets/combined-gated tests (`VENUE_API_KEY`) were left unprovisioned �
 
 **Files:** `scripts/assert_ledger_invariants.py`, `src/prediction_market_bot/c5_execution/market_type_registry.py`, `tests/test_market_type_registry.py`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-187).
 
+## 2026-08-18 — T-465: GG-185 root cause found (8.5-day VPS deploy gap), not a guard logic bug
+
+**Decision:** GG-185's 532 corrupted rows are explained entirely by an 8.5-day VPS deploy gap (2026-08-07T05:26:27Z–2026-08-15T19:44:27Z, confirmed via VPS `git reflog`) — the GG-166 guard was pushed to `origin/main` but never pulled to production during that window, so it structurally could not fire (confirmed absent from deployed source via `git show`). Not a logic bypass. GG-185 subsumed into GG-170 (same mechanism). Fix: `.claude/hooks/governance_scan.sh` gained a VPS-deploy-drift probe (alarms if any commit >24h old is undeployed). Assertion A already alarms loudly for new-epoch violations (no change needed).
+
+**Why:** Kelly sizing and the kill switch read this ledger (ADR-0052 sec 2.3) — deploy-lag was an unchecked invariant.
+
+**Scope discipline (Hard Rule 11):** No sizing/kelly_fraction/kill-switch/ADR touched. `--strict` not promoted. New findings (46 stuck-open, 76 rejected, outcome-store coverage gap) registered as GG-189 (T-465 originally minted these as GG-187; renumbered 2026-08-19/T-468 to resolve a concurrent-claim ID collision with T-466's GG-187 above — see GG-189 in GOVERNANCE_GAP_LOG.md for the renumbering note), not fixed.
+
+**Files:** `.claude/hooks/governance_scan.sh`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-185 → RESOLVED (root cause) at the time; see T-468's 2026-08-19 entry below — downgraded to PARTIALLY RESOLVED same day on a strategic-review contradiction; GG-189 registered).
+
 ## 2026-08-18 — T-467: ADR-0054 (segmented-pool isolation) written, PROPOSED
 
 ADR-0054 resolves Phase 3 box 3.1 and all four required items: (a) per-family ledger = single file + `family` column, not one-file-per-family (invariant suite/`run_power_calc.py`/`run_band_monitor.py`/replay harness all need a groupby key, not a new file-discovery loop); (b) `logic_epoch` becomes per-`(market_type,band)` cell, mirroring epochs 11/12's existing `bands_affected` precedent — load-bearing, without it one family's fix resets all ~25 cells' `clean_n`; (c) correlated exposure — operator-signed 2026-08-17: aggregate exposure cap per game-key (ticker's stable middle segment), breaching leg sized down not rejected, initial $ value provisional/not derived; (d) per-cell kill switches wire into GG-183's existing-but-unwired `resolve_kill_switch_state()`/`halt_cell()` store. Left PROPOSED for operator sign-off; 3.2–3.8 not implemented.

@@ -352,6 +352,53 @@ else
     echo "  UNREACHABLE or no rows -- VPS unreachable, or t4_mlb_cycle_log.jsonl missing/empty"
 fi
 
+# --- VPS deploy drift (GG-185/T-465) ---
+# GG-185 root cause: the GG-166 guard (commit 58b2eb6, pushed 2026-08-07T05:37:38Z)
+# sat on origin/main for 8.5 days -- 2026-08-07T05:26:27Z to 2026-08-15T19:44:27Z --
+# before anyone `git pull`ed it onto the VPS (confirmed via VPS `git reflog`: a gap
+# between consecutive pulls spanning that exact window). During the gap, BOTH the
+# persistent t4-mlb live-eval service and every fresh run_resolve_mlb.py cron
+# invocation executed the pre-fix checkout on disk -- the write-side ticker-date
+# fix and the read-side game_date_ticker_mismatch guard were both structurally
+# ABSENT from the deployed source (confirmed: 0 occurrences of either string in
+# VPS commit 687bf9e), not merely unreached by a live logic bug. This is why an
+# "unconditional, deployed" guard produced zero warnings for the 532 GG-185 rows:
+# it did not yet exist in the code actually running. No amount of auditing the
+# guard's own logic would have caught this -- only checking deploy currency does.
+# This probe makes that currency check structural instead of incidental.
+echo ""
+echo "VPS DEPLOY DRIFT (GG-185/T-465):"
+VPS_HEAD=$(ssh -o ConnectTimeout=3 -o BatchMode=yes prediction-market-vps \
+    "cd /opt/prediction-market-bot && git rev-parse HEAD" 2>/dev/null)
+if [ -z "$VPS_HEAD" ]; then
+    echo "  UNREACHABLE -- could not read VPS deployed HEAD"
+else
+    LOCAL_MAIN=$(git rev-parse origin/main 2>/dev/null)
+    if [ "$VPS_HEAD" = "$LOCAL_MAIN" ]; then
+        echo "  deployed HEAD matches origin/main ($VPS_HEAD) -- up to date"
+    else
+        OLDEST_LINE=$(git log --format='%H %cI' "${VPS_HEAD}..origin/main" 2>/dev/null | tail -1)
+        if [ -z "$OLDEST_LINE" ]; then
+            echo "  deployed HEAD ($VPS_HEAD) not found in local origin/main history --"
+            echo "  diverged, or this worktree's origin/main ref is stale (try a fetch)"
+        else
+            OLDEST_TS=$(echo "$OLDEST_LINE" | awk '{print $2}')
+            N_BEHIND=$(git rev-list --count "${VPS_HEAD}..origin/main" 2>/dev/null)
+            AGE_H=$(python3 -c "
+from datetime import datetime, timezone
+dt = datetime.fromisoformat('$OLDEST_TS')
+print(f'{(datetime.now(timezone.utc) - dt).total_seconds()/3600:.1f}')" 2>/dev/null)
+            echo "  deployed HEAD=$VPS_HEAD is $N_BEHIND commit(s) behind origin/main;"
+            echo "  oldest undeployed commit is ${AGE_H}h old (committed $OLDEST_TS)"
+            if [ -n "$AGE_H" ] && python3 -c "import sys; sys.exit(0 if float('$AGE_H') > 24 else 1)" 2>/dev/null; then
+                echo "  *** GG-185-CLASS ALERT: VPS has not deployed a commit that is >24h old."
+                echo "      Any guard/fix merged to main since then is NOT running in production --"
+                echo "      resolve/live cron are silently executing pre-fix code. Deploy now. ***"
+            fi
+        fi
+    fi
+fi
+
 # --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
 # n* is the variance-derived sample needed for 95% power to distinguish
 # edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500
