@@ -858,3 +858,21 @@ ADR-0054 resolves Phase 3 box 3.1 and all four required items: (a) per-family le
 **Scope discipline (Hard Rule 11):** No sizing/kelly_fraction/kill-switch/ADR touched. 14 untracked nav-adjacent files found in the shared main tree outside this session's explicit Step 3 file list (`TERMINAL_PROMPTS_GG163_HOTFIX.md`, `WAVE2-9.md`, `STRATEGIC_REVIEW_2026-08-03_HANDOFF.md`, `NEW_WINDOW_PASTE_IN.md`, `STRATEGIC_WINDOW_CARRY_FORWARD_08-12/16/18.md`, `scripts/lib/__pycache__/`) — registered as GG-195, not inspected or acted on.
 
 **Files:** `03_DECISIONS/OPERATOR_CONSOLE.md` (governance_scan.sh refresh, `fbea31a`), `04_EXECUTION/SCALING_MANDATE_PARKED.md` (newly tracked, `12114d9`), `04_EXECUTION/TERMINAL_PROMPTS_2026-08-03.md` (newly tracked for recoverability, closed window, `12114d9`), `04_EXECUTION/ACTIVE_QUEUE.md` (full rebuild, `0254296`), `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-188 amended via PR #92 `85c22f8`; GG-195 registered, `3922c33`), `scripts/build_t4_totals_outcome_store.py` (landed via PR #91, `1b1b76a`, authored by T-463's session — not written by T-469).
+
+## 2026-08-20 — T-470/GG-193: outcome-store coverage extended, all 532 corrupted epoch-12 positions re-derivable
+
+**Task:** extend `logs/t4_mlb_outcome_store.jsonl` coverage to the 2026-08-07..08-15 window and report how many of the 532 corrupted epoch-12 positions in `t4_mlb_resolved_ledger.jsonl` (ticker-embedded date vs. stored `game_date` mismatch, GG-170/GG-185) become re-derivable.
+
+**Premise verification:** independently recomputed the 532/719 corrupted-epoch-12 figure directly from the ledger (same ticker-date method as CLAUDE.md Q7) — matched the task's stated figures exactly, no discrepancy to report.
+
+**Method:** ran the existing T-421 backfill tool (`scripts/build_t4_outcome_store.py --workers 1`, sequential to respect `run_resolve_mlb.py`'s `_RATE_LIMIT_S=0.6`/`_CIRCUIT_BREAKER_THRESHOLD=5` pacing) against a fresh pull of the VPS T4 cycle log (full coverage through 2026-08-19). `game_date` is derived from the ticker-embedded date token only (`ticker_game_date()`), never wall-clock — the corruption mechanism being guarded against. Wrote **only** to the outcome store; `t4_mlb_resolved_ledger.jsonl` was not touched, no `game_date` was corrected, nothing was re-resolved.
+
+**Result: all 532/532 corrupted epoch-12 positions are now re-derivable.** Join by `kalshi_ticker` between the 532-row corrupted population and the extended store: 532 found with `resolved=true`, 0 not-in-store, 0 unresolved. Verification script: `scripts/t470_rederivable_check.py` (new, committed this session).
+
+Store growth: 2021 → 3199 rows (main-tree `logs/t4_mlb_outcome_store.jsonl` updated from the worktree's extended copy). Backfill run totals: 3099/3199 tickers resolved store-wide (100 unresolved — none of the 100 fall in the corrupted-532 set).
+
+**Note for record (not a new GG — empirically moot this run):** `build_t4_outcome_store.py`'s `group_by_ticker()` soft-falls-back to the raw (possibly wrong) `game_date` when ticker-date parsing fails, rather than hard-refusing the row as this session's task instructions specified. This run had 0/3199 tickers fail to parse, so the discrepancy did not affect any output here — but the script's fallback behavior itself was not changed (out of scope; flagging for whoever next touches that function).
+
+**Implication:** the epoch-12 reset blocked on this question can proceed on a **repair** path (n=719, full corrupted cohort recoverable) rather than a discard path (n=187) — that decision itself is not made in this session, per the task's explicit scope fence (no corrected P&L/clean_n/comparison performed here).
+
+**GG-193 (reserved gap number, this task):** no new gap registered — the coverage question the gap number was reserved for is now answered (532/532 re-derivable); closing the reservation as answered-not-a-gap.
