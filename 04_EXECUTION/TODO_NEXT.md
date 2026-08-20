@@ -967,3 +967,5 @@ T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to
 **Follow-ons registered, not started:** correct the 46 stuck-open positions' `game_date` in place (GG-189a, low-risk/high-value); extend `t4_mlb_outcome_store.jsonl` coverage into 2026-08-07–08-15 (GG-189b, backfill prerequisite); correct 76 rejected-position mismatches (GG-189c, low priority).
 
 **Note:** PR merge to `main` was blocked by the session's own permission classifier (shared-state action) — `MERGE_CHECK: NO` as of session-end. PR #86 needs a human/next-session merge before this closes per GG-186.
+
+- 🟡 T-478: Resolve PR #94 merge conflict (T-477 session-end artifacts vs. concurrent T-471/GG-190 push to main — both touched generated nav-chain files). Branch `session/20260820T005659Z-epoch12-repair-preregistration` is pushed but MERGED: NO. Rebase/resolve, re-run `session_end_timer.sh merge-check`, then append the true CLOSED row to SESSION_CLAIMS.md.
