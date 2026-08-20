@@ -120,3 +120,29 @@ Not answered here. The repair makes the cohort *trustworthy*; it does not by its
 ## 9. Sign-off
 
 **Status: PROPOSED — not ACCEPTED.** D1–D4 (§7) are open operator decisions. Nothing in this document authorizes a write to production ledger state.
+
+---
+
+## Addendum A — STEP 3 dry-run results (2026-08-20, computed after pre-registration commit `c51e7e4`)
+
+Produced by `scripts/t477_dryrun_epoch12_repair.py` (committed `4745582`). All five STEP-2 assertions passed exactly as specified — 532 changed / 2416 unchanged, every changed row's `game_date` equals its ticker-derived date, zero changes outside `logic_epoch` 12, zero remaining ticker/`game_date` mismatches across every epoch in the repaired file, `size_usd` total invariant at $1,843.0750. Classification breakdown on the 532: 367 GG166-class (outcome/pnl actually changed), 165 NEITHER-class (only `game_date` changed). Source ledger untouched — output lives at `logs/t4_mlb_resolved_ledger.REPAIRED_DRYRUN.jsonl` (gitignored, local).
+
+**Reported exactly per §3/§4's pre-registered plan — n, mean P&L/bet, sd, win rate, n\*, SE alongside every mean, split by regime boundary and pooled:**
+
+| Cohort | n | mean P&L/bet | SE | sd | win rate | n* |
+|---|---|---|---|---|---|---|
+| Pooled, all epoch-12 (repaired) | 719 | +0.0652 | 0.0552 | 1.4800 | 41.3% (297/719) | 5,580 |
+| Pre-outage (`game_date` ≤ 2026-08-03) | 187 | +0.0163 | 0.0995 | 1.3606 | 41.2% (77/187) | 75,734 |
+| Outage/transition (2026-08-04..08-07) | 144 | **+0.3037** | 0.1382 | 1.6585 | 50.7% (73/144) | 323 |
+| Post-outage (`game_date` ≥ 2026-08-08) | 388 | +0.0002 | 0.0741 | 1.4599 | 37.9% (147/388) | 477,198,245 |
+
+Repaired `game_date` range confirmed: 2026-07-31 to 2026-08-13.
+
+**Where the repaired mean lands:** the pooled figure (+0.0652) sits well below the pre-repair corrupted-population artifact (+0.3085) and above but on the same order as the clean-cohort anchor (+0.0163) — closer to clean than to the artifact, roughly 4x the clean baseline. Note the pre-outage bucket here (n=187, mean +0.0163) is numerically identical to the task's "clean" reference in §3 by construction — it is the same 187 date-consistent rows, unchanged by repair since they were never mismatched.
+
+**Pre-registered suspicion check (§5, threshold +0.15/bet):** the **pooled** figure (+0.0652) does **not** cross the threshold — no leakage-audit trigger at the headline level. The **outage/transition bucket does cross it** — +0.3037, landing almost exactly on the pre-repair corrupted-population artifact figure (+0.3085), with an elevated win rate (50.7% vs. 41.3% pooled / 41.2% clean) that also stands out. Per §5's pre-registered commitment, this is flagged for a leakage/bias audit rather than accepted at face value — not performed in this session (Hard Rule 11: register and stop). **Registered as GG-196**: the 08-04..08-07 outage-window sub-bucket of the repaired epoch-12 cohort (n=144) shows anomalous mean P&L and win rate nearly matching the known pre-repair artifact; candidate causes per ADR-0055 §5(i)-(iii) — most plausibly the outcome store's own coverage/accuracy specifically for games played during the GG-163 ESPN-403 outage window, since that is exactly the window T-470 most recently backfilled — not yet investigated.
+
+**n\* / gate-adequacy finding:** the live governance hook (`governance_scan.sh`'s "SAMPLE ADEQUACY" section, as of this session) currently reports `T4M-PROJ clean_n=719/n*=608 — MET`, triggering a GG-046 alert. That n\*=608 is computed from the **pre-repair, uncorrected** epoch-12 ledger (mean +0.2325, sd 1.7412 — exactly the "all-719" reference row in §3). Using the **repaired** pooled figures instead (mean +0.0652, sd 1.4800), n\* = 5,580 — clean_n=719 is **not met**, by a wide margin (4,861 short). **The gate is not cleared post-repair.** This is itself the central finding of this dry-run: the currently-displayed "MET" status is an artifact of the same corruption this ADR proposes to fix, not a real crossing. This does not, on its own, resolve whether epoch 12 has edge (§6) — it says the sample is not yet large enough to responsibly ask.
+
+**Measurement-integrity framing preserved:** none of the above is an edge verdict. It is a statement about what the corrected numbers say and what they do not yet support.
+

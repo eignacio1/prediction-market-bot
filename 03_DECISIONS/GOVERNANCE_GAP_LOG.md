@@ -2167,6 +2167,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-196 — Outage-window (08-04..08-07) sub-bucket of the repaired epoch-12 cohort shows anomalous P&L nearly matching the pre-repair corruption artifact
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-196 |
+| Category | Measurement integrity — a sub-population inside a just-repaired dataset still looks anomalous even after the known corruption (GG-166-class date/outcome mismatch) is corrected. |
+| What was missed | `ADR-0055` (T-477, 2026-08-20) pre-registered a dry-run repair of the 532 corrupted `logic_epoch`-12 closed positions and, per its own §5 pre-registered suspicion threshold (+0.15/bet), found that while the **pooled** repaired cohort (n=719, mean +0.0652/bet) does not cross it, the **outage/transition sub-bucket** (`game_date` 2026-08-04..08-07, n=144) does: mean +0.3037/bet, SE 0.1382, win rate 50.7% — nearly identical to the pre-repair corrupted-population artifact figure (+0.3085/bet) that this whole repair exists to correct away from, and well above both the pre-outage clean anchor (+0.0163) and the post-outage bucket (+0.0002). |
+| When it should have been caught | This session (T-477), which is why it is being registered now rather than left for a later session to rediscover. |
+| Phases it survived | N/A — newly surfaced by this session's dry-run; not a previously-known gap. |
+| Why it survived | The repair rule (ADR-0055 §2) corrects `game_date` and re-derives `outcome`/`pnl` from the T-421 decoupled outcome store, but assumes the outcome store itself is uniformly reliable across all dates. The 08-04..08-07 window is exactly the GG-163 ESPN-403 outage window, and its outcome-store coverage was the most recently and narrowly backfilled part of T-470's 2026-08-20 extension — plausible that the store's own resolution accuracy is not uniform across that specific window, which the repair's assertions (STEP 2, all passed) do not test for. |
+| Impact | Medium — does not affect live capital or sizing directly (this repair is a dry run only, nothing has been written to the production ledger), but if the in-place repair (D1) is authorized before this is investigated, a real bias could be baked into the corrected ledger under the appearance of a clean fix. Also directly affects how much weight epoch 12's edge question (separate from this repair, per ADR-0055 §6) should give to games played during that window. |
+| Discovery | T-477 (2026-08-20), `scripts/t477_dryrun_epoch12_repair.py` STEP-3 regime-boundary split, computed per ADR-0055 §4's pre-registered (not post-hoc) date-boundary definition. |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-477's one-deliverable scope, which was pre-registration + dry-run, not investigation of an anomaly the dry-run surfaces). Candidate follow-on: audit the outcome store's `t4_mlb_outcome_store.jsonl` records specifically for `game_date` 2026-08-04 through 08-07 against a fresh independent source, before D1 (ADR-0055 §7) is decided. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
