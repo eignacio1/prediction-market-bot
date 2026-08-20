@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-19T05:30:00Z (T-468 — T-468: landed PR #86 as PR #88 via --no-ff merge, resolved GG-187 ID collision (T-465's entry renumbered to GG-189), downgraded GG-185 to PARTIALLY RESOLVED on strategic-review step-function contradiction) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_0530.md` for full session detail.
+**Last reviewed:** 2026-08-19T23:59:29Z (T-469 — T-469: landed T-463 (PR #91), amended GG-188 to PARTIALLY RESOLVED, rebuilt ACTIVE_QUEUE.md, registered GG-195) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_2359.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

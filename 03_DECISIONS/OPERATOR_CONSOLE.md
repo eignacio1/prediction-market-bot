@@ -1,8 +1,8 @@
 # Operator Console
 
-> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 72 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
+> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 74 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
 
-> **Severity debt:** 30/72 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
+> **Severity debt:** 30/74 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
 
 ---
 
@@ -30,15 +30,16 @@ Something is silently wrong right now — a HALT, an undetected blind spot, a co
 
 ---
 
-## 3. What is accruing and its clock (62)
+## 3. What is accruing and its clock (64)
 
 Open, tracked, not currently blocking Earl and not flagged as actively broken — but still open, and the clock (epoch resets, n* thresholds, re-check triggers) keeps running. Default bucket: absence of blocked/broken signal, not absence of importance.
 
 - **[GG-170]** MLB Stats API `gameLog` date-label is transiently unstable in near-real-time; a delayed/retried resolution query can bind to `game_date+1`'s true hit total instead of `game_date`'s, root-causing the second B5 disagreement source GG-166 left unexplained — `OPEN` · severity `CRITICAL`
-- **[GG-185]** 532 closed T4M-PROJ epoch-12 positions carry a ticker-vs-`game_date` mismatch despite the GG-166 guard, which should have refused every one of them, being confirmed deployed and unconditional at their `resolved_at` time — `OPEN` · severity `CRITICAL`
+- **[GG-185]** 532 closed T4M-PROJ epoch-12 positions carry a ticker-vs-`game_date` mismatch despite the GG-166 guard, which should have refused every one of them, being confirmed deployed and unconditional at their `resolved_at` time — `PARTIALLY RESOLVED` · severity `CRITICAL`
 - **[GG-172]** `MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 are written entirely in market-type terms and contain zero boxes addressing band activation, even though the operator's coverage directive is explicitly "all five bands" and three of five bands have essentially no trading history — `OPEN` · severity `HIGH`
 - **[GG-179]** 22 data-dependent tests silently SKIP whenever their generated artifacts/secrets are absent, and CI (`.github/workflows/tests.yml`) has never once provided them — "full suite green" has been environment-dependent since T-337 with no executable check on the skip count — `RESOLVED (partial) — the 10 CSV-only tests now execute in CI via a synthetic fixture, including the MLB-G1 name-match regression gate; an executable skip-count ceiling (ADR-0052) is now enforced; the 11 secrets/combined-gated tests and 6 pre-existing model-pkl-gated tests remain unprovisioned in CI by design/scope` · severity `HIGH`
 - **[GG-186]** SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, with no check that either branch had actually reached `origin/main` — 4th occurrence of the same pattern (T-456 x2, T-458, T-460) — `RESOLVED` · severity `HIGH`
+- **[GG-189]** T-465 register-and-stop: 46 stuck-open T4M-PROJ epoch-12 positions, 76 rejected-position mismatches, and outcome-store coverage gap block any GG-185/GG-170 backfill — `OPEN` · severity `HIGH`
 - **[GG-056]** NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume — `PLAN ACCEPTED` · severity `MEDIUM`
 - **[GG-098]** MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (Small-n Subset Structure Masked; Aggregate Sign-Flipped n=151→169) — `OPEN` · severity `MEDIUM`
 - **[GG-159]** PROJECT_ASSESSMENT_2026-07-30's T4M-PROJ headline reconstruction didn't match the code it claimed to match — verified figure is n=388/+9.65%, not n=344/+10.99% — `OPEN` · severity `MEDIUM`
@@ -49,7 +50,7 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-180]** T-427 replay gate only ever exercised T4M-PROJ and T1 (via real ledger data); T2, T3, and the band=None fallthrough had zero replay coverage, and T2/T3 can never get real coverage since their kelly_fraction=0.0 means they never reach `open_position()`'s write path — `RESOLVED (partial) — synthetic fixture coverage added for T1/T2/T3/None at current epoch; the real-ledger T1 gap (zero T1 positions at current logic_epoch 12) remains, mitigated but not eliminated, by the synthetic fixture` · severity `MEDIUM`
 - **[GG-181]** T4 MLB cycle-log 14.6h stale during live MLB game day, `systemctl is-active`/`ActiveState=active`/`NRestarts=0` healthy throughout — same GG-163-class blind spot recurring after GG-163 itself was marked RESOLVED — `RESOLVED` · severity `MEDIUM`
 - **[GG-182]** Session-end token/time cost is unaddressed by Hard Rule 8's 60% trigger — second remediation attempt (T-434 fixed WHEN close-out starts, not WHAT IT COSTS); 2026-08-14 session-end consumed 53% context / ran 52m41s — `OPEN` · severity `MEDIUM`
-- **[GG-188]** T-463 (team runs-scored outcome store for archived `KXMLBTOTAL` game-events, Phase 2 unblock) was claimed and never implemented, closed, or explained; Phase 2 remains blocked exactly where HYP010's Finding 5 left it — `OPEN` · severity `MEDIUM`
+- **[GG-188]** T-463 (team runs-scored outcome store for archived `KXMLBTOTAL` game-events, Phase 2 unblock) was claimed and never implemented, closed, or explained; Phase 2 remains blocked exactly where HYP010's Finding 5 left it — `PARTIALLY RESOLVED` · severity `MEDIUM`
 - **[GG-007]** T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton Values — `OPEN` · severity `LOW`
 - **[GG-162]** GG-NNN numbers picked mid-session have no atomic reservation, unlike T-/ADR- ranges claimed at session start; two concurrent sessions independently registered GG-159 on 2026-08-04 — `OPEN` · severity `LOW`
 - **[GG-165]** 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-423's XS scope — `OPEN` · severity `LOW`
@@ -63,6 +64,7 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-183]** Per-cell kill-switch state (ADR-0053 §2.3/§6.3 item 4) has a store and a resolution helper but is not wired into C4/C7's live kill-switch check — `OPEN` · severity `LOW`
 - **[GG-184]** `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rather than passing it explicitly — `OPEN` · severity `LOW`
 - **[GG-187]** T2's gross-edge formula is known but epoch-conditional; unsafe to backfill into assert_ledger_invariants.py's flat multiplier — `OPEN` · severity `LOW`
+- **[GG-195]** 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope — `OPEN` · severity `LOW`
 - **[GG-004]** EV Validation Benchmark Was Never the Commercial Question — `OPEN` · severity `UNSPECIFIED`
 - **[GG-014]** Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode — `PARTIALLY RESOLVED` · severity `UNSPECIFIED`
 - **[GG-020]** Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts — `ACCEPTED UNCERTAINTY` · severity `UNSPECIFIED`
