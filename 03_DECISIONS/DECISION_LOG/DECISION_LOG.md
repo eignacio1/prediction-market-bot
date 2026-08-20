@@ -876,3 +876,21 @@ Store growth: 2021 → 3199 rows (main-tree `logs/t4_mlb_outcome_store.jsonl` up
 **Implication:** the epoch-12 reset blocked on this question can proceed on a **repair** path (n=719, full corrupted cohort recoverable) rather than a discard path (n=187) — that decision itself is not made in this session, per the task's explicit scope fence (no corrected P&L/clean_n/comparison performed here).
 
 **GG-193 (reserved gap number, this task):** no new gap registered — the coverage question the gap number was reserved for is now answered (532/532 re-derivable); closing the reservation as answered-not-a-gap.
+
+## 2026-08-20 — T-477/ADR-0055: epoch-12 ledger repair pre-registered and dry-run simulated, NOT applied
+
+**Task:** pre-register a repair method for the 532 corrupted epoch-12 closed positions (GG-166/GG-170/GG-185, ticker-date vs stored `game_date` mismatch), then dry-run it. Hard scope fence: no write to `t4_mlb_resolved_ledger.jsonl`, no `game_date` correction, no re-resolution, no sizing/epoch/status change. ADR-0055 stays PROPOSED.
+
+**Ordering enforced:** the pre-registration (repair rule, reporting plan, regime-boundary definition, suspicion threshold of +0.15/bet, measurement-not-edge-test framing) was committed (`c51e7e4`) and pushed to origin *before* any repaired number was computed — verified via commit order (`c51e7e4` predates the dry-run script commit `4745582` and results-addendum `7653c58`).
+
+**Dry-run result:** `scripts/t477_dryrun_epoch12_repair.py` reused `ticker_to_game_date()` (verbatim, `correct_t4_game_dates.py`) and the `recompute()` P&L formula (verbatim, `t437_task3_rederive_outcomes.py`). All 5 pre-registered assertions passed: 532 changed / 2,416 unchanged; every changed row's `game_date` matches its ticker; zero changes outside `logic_epoch` 12; zero remaining ticker-vs-`game_date` mismatches in the repaired file across every epoch; `size_usd` total invariant (1843.0750). Output written only to `logs/t4_mlb_resolved_ledger.REPAIRED_DRYRUN.jsonl` + `.diff.jsonl` (gitignored); source ledger untouched.
+
+**Reported figures (per ADR-0055 §3, SE alongside every mean):** repaired pooled epoch-12 cohort n=719, mean +0.0652/bet (SE 0.0552, sd 1.4800), win rate 41.3%, n*=5,580 — lands nearer the clean anchor (+0.0163/bet, 187 rows) than the pre-repair corrupted-cohort artifact (+0.2325/bet, 719 rows). Regime split: pre-outage n=187 unchanged by definition; outage-window (08-04..08-07) n=144, mean +0.3037/bet (SE 0.1382); post-outage n=388, mean +0.0002/bet (SE 0.0741).
+
+**Significant finding:** the governance hook's live `SAMPLE ADEQUACY` display currently reports T4M-PROJ `clean_n=719/n*=608 — MET` (GG-046 alert firing) computed off the *uncorrected* ledger. Using repaired figures, n*=5,580 — clean_n=719 does **not** clear the gate post-repair. Flagged in ADR-0055 addendum and in `ACTIVE_QUEUE.md`'s standing findings.
+
+**GG-196 registered (OPEN, MEDIUM):** the outage-window sub-bucket (n=144) crosses ADR-0055's own pre-registered +0.15/bet suspicion threshold (mean +0.3037) and nearly matches the pre-repair corruption artifact's magnitude — candidate cause is outcome-store coverage/accuracy specifically for 08-04..08-07 (the most recently/narrowly backfilled window, T-470). Register-and-stop per Hard Rule 11; not investigated this session. Recommend auditing before D1 is decided.
+
+**Decision request (ADR-0055 §7, none decided, status PROPOSED):** D1 — authorize in-place repair of the 532 closed positions? D2 — same/different repair rule for the 46 stuck-open T4M-PROJ epoch-12 positions (live paper capital, ADR-0052 §2.3 urgency); is `correct_t4_game_dates.py` reusable as-is? D3 — are the 76 rejected-position mismatches (hygiene only) in scope or deferred? D4 — does epoch 12 continue post-repair or does the reset still bump the epoch (interacts with unsigned ADR-0054 item (b))?
+
+**Files:** `03_DECISIONS/ADR-0055_epoch12-ledger-repair-preregistration.md` (new, PROPOSED), `scripts/t477_dryrun_epoch12_repair.py` (new), `03_DECISIONS/GOVERNANCE_GAP_LOG.md` (GG-196 registered), `04_EXECUTION/ACTIVE_QUEUE.md` (standing findings narrowed, caution retained not deleted). No write to `logs/t4_mlb_resolved_ledger.jsonl` at any point.
