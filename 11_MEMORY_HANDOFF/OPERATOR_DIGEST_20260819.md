@@ -14,4 +14,20 @@ The runs-scored data store from last week never made it into the main codebase �
 
 ---
 
-*Full technical detail: see `SESSION_HANDOFF_20260819_0435.md` and `DECISION_LOG.md` for this date.*
+# Update — later same day (T-469)
+
+**What changed today, in one paragraph:**
+Good news on the item flagged above: the runs-scored data store that "never made it into the main codebase" — it's now landed. We reviewed it, found it sound, and merged it in. We also fixed the paperwork that had wrongly said it was never built at all, and cleaned up the task queue so the next session knows exactly what's open instead of picking up a six-day-old list.
+
+**What this means for your money:**
+No change — still zero real money at risk, same as every day until the gate clears.
+
+**Does anything need your decision right now?**
+No — nothing needs you today.
+
+**Anything that worried the session, even if not urgent:**
+Found 14 stray working files sitting untracked in the project folder — logged them so nobody loses them, but didn't touch them; that's a future session's cleanup, not urgent.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260819_2359.md` and `DECISION_LOG.md` for this date.*
