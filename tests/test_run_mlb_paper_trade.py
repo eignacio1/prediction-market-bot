@@ -83,74 +83,72 @@ class TestBotEnvGuard:
 
 
 class TestTickerToGameDate:
+    """T-472/GG-191 correction: the pre-fix implementation's docstring and
+    these tests both encoded a mistaken model of the ticker grammar --
+    that the ticker's leading 2-digit token is a "CREATE_DD" (market
+    creation day-of-month) with the year reconstructed from the wall clock.
+    The shared grammar (market_type_registry.py, validated against
+    2948/2948 real production tickers) established that leading token is
+    actually YY -- the game's own two-digit year -- and the wall-clock-year
+    reconstruction was itself the GG-166/GG-170/GG-185 defect class, just
+    never observed here because every fixture below happened to use a
+    leading token ("26") matching the year the tests were written in. These
+    fixtures are corrected to use the real grammar; wall-clock dependence is
+    removed since the year is now always taken from the ticker itself."""
+
     def _get_fn(self, monkeypatch):
         return _import_runner(monkeypatch)._ticker_to_game_date
 
     def test_standard_format(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # CREATE_DD=26, MON=JUN, GAME_DD=27 → June 27 game
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
+        # YY=26, MON=JUN, DD=27 → 2026-06-27
         result = fn("KXMLBHIT-26JUN271310NYYBOS-BOSWABREU52-2")
-        assert result == f"{year}-06-27"
+        assert result == "2026-06-27"
 
     def test_multi_day_early_creation(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # Kalshi created June 26 for a June 29 game (3 days early): GAME_DD=29
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
         result = fn("KXMLBHIT-26JUN291840PITPHI-PITTCALLIHAN37-3")
-        assert result == f"{year}-06-29"
+        assert result == "2026-06-29"
 
     def test_different_month(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # CREATE_DD=15, MON=APR, GAME_DD=16 → April 16 game
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-15APR161900NYYBOS-NYYAAJUDG7-2")
-        assert result == f"{year}-04-16"
+        # YY=26, MON=APR, DD=16 → 2026-04-16
+        result = fn("KXMLBHIT-26APR161900NYYBOS-NYYAAJUDG7-2")
+        assert result == "2026-04-16"
 
-    def test_invalid_ticker_returns_game_date_iso(self, monkeypatch):
+    def test_invalid_ticker_returns_none(self, monkeypatch):
+        """GG-191: refusal, never a GAME_DATE_ISO/wall-clock fallback."""
         mod = _import_runner(monkeypatch)
         fn = mod._ticker_to_game_date
         result = fn("KXMLBHIT-INVALID-TICKER")
-        # Fallback is GAME_DATE_ISO. An unparseable ticker resolves to the target date.
-        assert result == mod.GAME_DATE_ISO
+        assert result is None
 
     def test_january(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
-        # CREATE_DD=01, MON=JAN, GAME_DD=02 → January 2 game
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-01JAN021200NYYBOS-NYYAAJUDG7-1")
-        assert result == f"{year}-01-02"
+        # YY=26, MON=JAN, DD=02 → 2026-01-02
+        result = fn("KXMLBHIT-26JAN021200NYYBOS-NYYAAJUDG7-1")
+        assert result == "2026-01-02"
 
     def test_month_boundary_created_in_prior_month(self, monkeypatch):
-        """GG-055: market created 30-Jun for a 1-Jul game.
-
-        This is the exact class of bug that has bitten this function twice:
-        T-205 assumed a fixed CREATE_DD→GAME_DD offset (broke on non-1-day
-        creation lead times); T-206a switched to extracting GAME_DD/MON
-        directly from the ticker instead of doing offset arithmetic — but no
-        test previously exercised a ticker where CREATE_DD's implied month
-        (Jun) differs from MON (Jul), which is exactly where an offset-based
-        approach would silently produce the wrong month while a direct
-        extraction approach (the current implementation) is unaffected.
-        CREATE_DD=30 (June, implied — not itself parsed), MON=JUL, GAME_DD=01.
-        """
+        """GG-055 origin: exercises MON/DD extraction across a month
+        boundary (Jun→Jul) so a fixed-offset implementation can't silently
+        produce the wrong month. YY=26, MON=JUL, DD=01."""
         fn = self._get_fn(monkeypatch)
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-30JUL011200NYYBOS-NYYAAJUDG7-1")
-        assert result == f"{year}-07-01"
+        result = fn("KXMLBHIT-26JUL011200NYYBOS-NYYAAJUDG7-1")
+        assert result == "2026-07-01"
 
     def test_month_boundary_short_month_to_long_month(self, monkeypatch):
-        """GG-055: market created 31-Jul (month-end) for a 1-Aug game."""
+        """GG-055 origin: month-end boundary (Jul→Aug). YY=26, MON=AUG, DD=01."""
         fn = self._get_fn(monkeypatch)
-        from datetime import datetime, timezone
-        year = datetime.now(tz=timezone.utc).year
-        result = fn("KXMLBHIT-31AUG011200NYYBOS-NYYAAJUDG7-1")
-        assert result == f"{year}-08-01"
+        result = fn("KXMLBHIT-26AUG011200NYYBOS-NYYAAJUDG7-1")
+        assert result == "2026-08-01"
+
+    def test_unregistered_series_returns_none(self, monkeypatch):
+        """GG-191: a ticker whose series prefix isn't registered refuses too
+        -- not just a grammar mismatch on a known series."""
+        fn = self._get_fn(monkeypatch)
+        result = fn("KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5")
+        assert result is None
 
 
 # ---------------------------------------------------------------------------

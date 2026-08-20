@@ -2167,6 +2167,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-191 — Ticker-date derivation was hardcoded to KXMLBHIT's literal shape and silently fell back to wall-clock date on any non-match, duplicated across five call sites
+
+**Status:** RESOLVED 2026-08-20 · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-191 |
+| Category | Systemic blind spot — a single-series-shaped regex, copy-pasted rather than shared, standing in for a series-agnostic contract. |
+| What was missed | `_TICKER_DATE_RE` (or an equivalent inline regex) hardcoded to KXMLBHIT's literal prefix and shape (`^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})`) existed independently in `run_t4_mlb_live.py` (3 sites), `run_resolve_mlb.py`, `run_mlb_paper_trade.py`, `run_paper_trade.py` (NBA — a differently-shaped grammar, no HHMM token), and `scripts/build_t4_outcome_store.py::group_by_ticker()` — six sites total, five files. On any non-match (unregistered series, malformed tail, or a genuinely different series like KXMLBF5/F7) every one of these silently substituted the session's wall-clock `game_date` instead of refusing the write. This is the exact mechanism behind GG-166 (44% of epoch-12 clean cohort corrupted), GG-170 (69.9% assertion-A violations concentrated in epoch 12), and GG-185 (46 stuck-open positions). |
+| When it should have been caught | At GG-166's original remediation (2026-07-xx) — that fix corrected the *symptom* (wrong dates already written) but left the *fallback mechanism* itself in place and uncorrected in four of the five other call sites, and left the grammar unregistered as a shared contract. |
+| Phases it survived | Ships pre-166, survives 166's fix, survives 170's discovery, survives 185's discovery — three separate incidents traced back to the same root cause before the mechanism itself was addressed rather than its outputs. |
+| Why it survived | No single shared, series-agnostic ticker grammar existed for any call site to depend on; each file grew its own regex independently, so fixing one never touched the others. Nothing enforced "refuse on parse failure" as a contract — silent wall-clock substitution was the path of least resistance at each site's original authorship. |
+| Impact | Wrong `game_date` values written to paper-trading ledgers and cycle logs feed directly into C4 Kelly sizing, drawdown kill-switch state, and commercial-validation clean_n counts (GG-004/APR-0024) — a corrupted date can silently misroute a record's cell, epoch, or resolution window. KXMLBF5/F7 (MLB_PARTIAL_GAME) tickers were previously unregistered entirely, meaning any live activation of those series would have hit the fallback on every single record with zero warning. |
+| Discovery | T-472 (2026-08-20), tasked explicitly with making date derivation series-agnostic and refusal-only. |
+| Resolution | RESOLVED this session. (1) Registered a shared `TickerGrammar` per `MarketType` in `market_type_registry.py` (`parse_ticker_date()`, `derive_game_date()`), covering MLB (`has_hhmm=True`) and NBA (`has_hhmm=False`) shapes, with KXMLBF5/F7 aliased to `MLB_PARTIAL_GAME`. (2) All six call sites across five files rewritten to delegate to the shared grammar and refuse (return `None` / raise, caller skips the write) instead of falling back to wall-clock — verified against real production data with zero refusals on any currently-live ticker (2948/2948 in `run_t4_mlb_live.py`'s ledger, 1764/1764 in `run_mlb_paper_trade.py`, 133/133 in `run_paper_trade.py`). (3) `scripts/run_power_calc.py` now counts and surfaces unregistered-series drops (`_UNREGISTERED_SERIES_COUNTS`) instead of silently excluding them with no visibility. (4) Regression tests added: `test_market_type_registry.py` (grammar itself, 9 tests), `test_power_calc.py` (drop-surfacing, 4 tests), `test_run_mlb_paper_trade.py` (rewrote a pre-existing test class that had encoded the OLD wrong model — leading ticker token treated as an irrelevant "creation day" with the year reconstructed from wall clock, rather than the leading token being the actual embedded year; the bug was masked because every fixture happened to use "26" matching both roles), `test_run_t4_mlb_live.py` (3 new tests; also had to correct a pre-existing fixture ticker, `TICKER_SOTO`, that was itself malformed and never matched the grammar even before this fix — same masking pattern), `test_run_resolve_mlb.py` and `test_run_paper_trade.py` (new files, 3 tests each, wrapper-contract smoke coverage). Full touched-file test run: green. |
+| Status | RESOLVED 2026-08-20 (T-472). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

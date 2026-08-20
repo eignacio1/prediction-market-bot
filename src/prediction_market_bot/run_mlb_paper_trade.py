@@ -56,7 +56,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import sys
 import time
 import uuid
@@ -98,6 +97,10 @@ from prediction_market_bot.c3_forecasting.calibration import calibrate_probabili
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
+from prediction_market_bot.c5_execution.market_type_registry import (
+    TickerDateParseError,
+    derive_game_date,
+)
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c5_execution.venue_router import VenueRouter
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -197,27 +200,28 @@ def _impute(X: np.ndarray, medians: np.ndarray) -> np.ndarray:
     return X
 
 
-def _ticker_to_game_date(ticker: str) -> str:
-    """Parse KXMLBHIT game date.
-
-    Format: KXMLBHIT-{CREATE_DD}{MON}{GAME_DD}{HHMM}{AWAYTEAM}{HOMETEAM}-...
-    Example: KXMLBHIT-26JUN291840PITPHI-... → 2026-06-29
-
-    {GAME_DD} is the actual game day-of-month. {CREATE_DD} is the market
-    creation date (Kalshi may create markets 1–3 days early). Year is inferred
-    from current UTC year — MLB runs March–October, no cross-year issues.
-    """
-    m = re.search(r"-[0-9]{2}([A-Z]{3})([0-9]{2})[0-9]{4}", ticker)
-    if m:
-        try:
-            year = datetime.now(tz=timezone.utc).year
-            game_date = datetime.strptime(
-                f"{m.group(2)}{m.group(1)}{year}", "%d%b%Y"
-            ).date()
-            return game_date.strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    return GAME_DATE_ISO
+def _ticker_to_game_date(ticker: str) -> str | None:
+    """Derive the true game date from a ticker's embedded date token via the
+    shared series-agnostic grammar. Returns None -- refusal, never a
+    fallback -- if the ticker's series isn't registered or its tail doesn't
+    match that series' grammar; prints loudly in either case, since neither
+    should happen for any real, currently-traded Kalshi ticker (GG-191)."""
+    try:
+        return derive_game_date(ticker)
+    except KeyError as exc:
+        print(
+            f"GG-191: ticker {ticker!r} has unregistered series {exc} — "
+            f"refusing to derive game_date; caller must skip this market",
+            file=sys.stderr,
+        )
+        return None
+    except TickerDateParseError as exc:
+        print(
+            f"GG-191: ticker {ticker!r} did not match its series' date grammar "
+            f"({exc}) — refusing to derive game_date; caller must skip this market",
+            file=sys.stderr,
+        )
+        return None
 
 
 def _is_mlb_game_in_progress(
@@ -1013,6 +1017,15 @@ def main() -> None:
                     _reserve_halted = True
                     break
 
+                position_game_date = _ticker_to_game_date(mkt.ticker)
+                if position_game_date is None:
+                    print(
+                        f"  [GG-191 SKIP] {kalshi_player_name} — {mkt.ticker} "
+                        f"unparseable game_date; refusing to place this bet",
+                        file=sys.stderr,
+                    )
+                    continue
+
                 approval = {
                     **approval,
                     "model_p": float(forecast_rec["p_estimate"]),
@@ -1028,7 +1041,7 @@ def main() -> None:
                     kalshi_threshold=int(mkt.threshold),
                     mid_price=mid,
                     vig=mkt.vig,
-                    game_date=_ticker_to_game_date(mkt.ticker),
+                    game_date=position_game_date,
                     session_id=SESSION_ID,
                 )
                 print(

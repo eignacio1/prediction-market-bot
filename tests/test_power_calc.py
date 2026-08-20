@@ -28,6 +28,9 @@ from run_power_calc import (
     observed_cadence_per_week,
     analyze_band_power,
     MATURE_CADENCE_SPAN_DAYS,
+    _market_type_for_record,
+    _regroup_by_cell,
+    _UNREGISTERED_SERIES_COUNTS,
 )
 from prediction_market_bot.logic_epoch import (
     CURRENT_LOGIC_EPOCH,
@@ -226,3 +229,48 @@ class TestAnalyzeBandPower:
         assert r["status"] == "COMPUTED"
         assert r["cadence_bets_per_week"] is None
         assert r["eta_weeks"] is None
+
+
+# ── GG-191: unregistered-series records must be counted, not silently dropped ──
+
+def _ticker_rec(pnl, kalshi_ticker):
+    r = _rec(pnl)
+    r["kalshi_ticker"] = kalshi_ticker
+    return r
+
+
+class TestUnregisteredSeriesCounter:
+    def setup_method(self):
+        # run_all_cells() clears this at the start of a real run; tests must
+        # not leak counts into each other or into that assumption.
+        _UNREGISTERED_SERIES_COUNTS.clear()
+
+    def test_registered_series_does_not_increment_counter(self):
+        rec = _ticker_rec(1.0, "KXMLBHIT-26JUN241607BALLAA-T1.5")
+        mt = _market_type_for_record(rec)
+        assert mt is not None
+        assert sum(_UNREGISTERED_SERIES_COUNTS.values()) == 0
+
+    def test_unregistered_series_increments_counter_under_series_key(self):
+        rec = _ticker_rec(1.0, "KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5")
+        mt = _market_type_for_record(rec)
+        assert mt is None
+        assert _UNREGISTERED_SERIES_COUNTS["KXMLBUNKNOWNSERIES"] == 1
+
+    def test_regroup_by_cell_drops_unregistered_but_counts_it(self):
+        recs = [
+            _ticker_rec(1.0, "KXMLBHIT-26JUN241607BALLAA-T1.5"),
+            _ticker_rec(2.0, "KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5"),
+        ]
+        by_cell = _regroup_by_cell("T4M-PROJ", recs)
+        total_grouped = sum(len(v) for v in by_cell.values())
+        assert total_grouped == 1  # only the registered-series record survives
+        assert _UNREGISTERED_SERIES_COUNTS["KXMLBUNKNOWNSERIES"] == 1
+
+    def test_counter_does_not_leak_across_regroup_calls_after_clear(self):
+        _regroup_by_cell("T4M-PROJ", [
+            _ticker_rec(1.0, "KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5"),
+        ])
+        assert sum(_UNREGISTERED_SERIES_COUNTS.values()) == 1
+        _UNREGISTERED_SERIES_COUNTS.clear()  # what run_all_cells() does per-run
+        assert sum(_UNREGISTERED_SERIES_COUNTS.values()) == 0

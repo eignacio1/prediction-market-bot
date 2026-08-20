@@ -14,12 +14,16 @@ from prediction_market_bot.c5_execution.market_type_registry import (
     CellStatus,
     MarketType,
     MarketTypeCell,
+    TickerDateParseError,
     cells_by_status,
     cells_for_market_type,
+    derive_game_date,
     get_cell,
     get_measurement,
     halt_cell,
     market_type_for_series_ticker,
+    market_type_for_ticker,
+    parse_ticker_date,
     promote_cell_status,
     resolve_kill_switch_state,
     series_ticker_for,
@@ -351,3 +355,56 @@ class TestCellKillSwitchState:
         finally:
             from prediction_market_bot.c5_execution import market_type_registry as _m
             _m._CELL_KILL_SWITCH_STATE.pop(key_args, None)
+
+
+# ---------------------------------------------------------------------------
+# T-472/GG-191 — series-agnostic ticker date grammar, refusal-only contract
+# ---------------------------------------------------------------------------
+
+
+class TestTickerDateGrammar:
+    def test_mlb_ticker_parses_date_and_teams(self):
+        parsed = parse_ticker_date("KXMLBHIT-26AUG011610MIANYM-T1.5")
+        assert parsed.game_date == "2026-08-01"
+        assert parsed.teams_raw == "MIANYM"
+
+    def test_nba_ticker_parses_date_without_hhmm(self):
+        parsed = parse_ticker_date("KXNBAPTS-26JUN05NYKSAS-T25.5")
+        assert parsed.game_date == "2026-06-05"
+        assert parsed.teams_raw == "NYKSAS"
+
+    def test_mlb_doubleheader_suffix_does_not_break_parse(self):
+        # 21/2948 real tickers failed here before the team-code class was
+        # widened from [A-Z]+ to [A-Z0-9]+ (see module docstring).
+        parsed = parse_ticker_date("KXMLBHIT-26JUL041900TBBOSG1-T1.5")
+        assert parsed.game_date == "2026-07-04"
+        assert parsed.teams_raw == "TBBOSG1"
+
+    def test_derive_game_date_matches_parse_ticker_date(self):
+        assert derive_game_date("KXMLBHIT-26AUG011610MIANYM-T1.5") == "2026-08-01"
+
+    def test_f5_and_f7_aliases_resolve_to_mlb_partial_game_grammar(self):
+        for series in ("KXMLBF5", "KXMLBF7"):
+            ticker = f"{series}-26AUG011610MIANYM-T1.5"
+            assert market_type_for_ticker(ticker) is MarketType.MLB_PARTIAL_GAME
+            parsed = parse_ticker_date(ticker)
+            assert parsed.game_date == "2026-08-01"
+
+    def test_unregistered_series_raises_keyerror_not_fallback(self):
+        with pytest.raises(KeyError):
+            parse_ticker_date("KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T1.5")
+
+    def test_malformed_tail_raises_ticker_date_parse_error_not_fallback(self):
+        with pytest.raises(TickerDateParseError):
+            parse_ticker_date("KXMLBHIT-NOT-A-VALID-TAIL")
+
+    def test_unrecognized_month_token_raises(self):
+        with pytest.raises(TickerDateParseError):
+            parse_ticker_date("KXMLBHIT-26XXX011610MIANYM-T1.5")
+
+    def test_ticker_with_no_series_separator_raises(self):
+        # Registered series prefix (so market_type_for_ticker succeeds) but no
+        # '-' anywhere in the ticker -- TickerGrammar.parse's own separator
+        # check must fire, not a KeyError from the series lookup.
+        with pytest.raises(TickerDateParseError):
+            parse_ticker_date("KXMLBHIT")

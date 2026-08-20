@@ -43,6 +43,7 @@ import json
 import math
 import statistics
 import sys
+from collections import Counter
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -273,13 +274,25 @@ def run_all_bands(portfolio_path: Path, t4_ledger_path: Path,
 
 # ── ADR-0053 §6.3 item 2: cell-scoped (market_type, band) power calc ──────────────
 
+# GG-191: records whose ticker's series prefix isn't registered were being
+# silently dropped from every cell-scoped power calc with no count or
+# warning -- this counter, and the report printed from it in main(), make
+# that drop loud instead. Reset at the start of each run_all_cells() call so
+# repeated calls (e.g. across tests) don't accumulate stale counts.
+_UNREGISTERED_SERIES_COUNTS: "Counter[str]" = Counter()
+
+
 def _market_type_for_record(rec: dict) -> MarketType | None:
     """Read-time derivation only (GG-077 pattern) — never mutates the record.
-    None for a ticker whose series prefix isn't in the registry yet."""
+    None for a ticker whose series prefix isn't in the registry yet; that
+    drop is counted in _UNREGISTERED_SERIES_COUNTS (GG-191) rather than
+    happening silently."""
     ticker = str(rec.get("kalshi_ticker", ""))
     try:
         return market_type_for_ticker(ticker)
     except KeyError:
+        series = ticker.split("-")[0] or "<empty>"
+        _UNREGISTERED_SERIES_COUNTS[series] += 1
         return None
 
 
@@ -304,6 +317,7 @@ def run_all_cells(portfolio_path: Path, t4_ledger_path: Path,
     persisted via set_measurement() (the seam T-453 left unwired). Does not
     modify run_all_bands() or run_band_monitor.py."""
     results: dict[str, dict] = {}
+    _UNREGISTERED_SERIES_COUNTS.clear()
 
     by_band = load_pool_by_band(portfolio_path)
     for band in BOOK_BANDS:
@@ -404,6 +418,22 @@ def _print_cell_report(results: dict[str, dict], alpha: float, power: float) -> 
     print("\n" + "=" * 96)
 
 
+def _print_unregistered_series_warning() -> None:
+    """GG-191: loud surfacing of the cell-scoped-calc drops _regroup_by_cell()
+    otherwise makes silently. Any non-empty output here means clean_n/n* for
+    the affected band(s) is undercounted relative to the true ledger."""
+    if not _UNREGISTERED_SERIES_COUNTS:
+        return
+    total = sum(_UNREGISTERED_SERIES_COUNTS.values())
+    print("\n" + "!" * 96)
+    print(f"GG-191: {total} record(s) DROPPED from cell-scoped power calc — "
+          f"unregistered series (register in market_type_registry.py before "
+          f"trusting clean_n/n* for any affected band/cell):")
+    for series, count in sorted(_UNREGISTERED_SERIES_COUNTS.items(), key=lambda kv: -kv[1]):
+        print(f"  {series}: {count} record(s)")
+    print("!" * 96)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description="T-323 sample-adequacy / power calculation (GG-004)",
@@ -433,6 +463,7 @@ def main(argv=None) -> int:
 
     _print_report(results, args.alpha, args.power)
     _print_cell_report(cell_results, args.alpha, args.power)
+    _print_unregistered_series_warning()
     print(f"\nWrote {out_json}")
     print(f"Wrote {out_cell_json}")
     return 0

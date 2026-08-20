@@ -42,7 +42,6 @@ import contextlib
 import io
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -56,6 +55,10 @@ os.environ.setdefault("BOT_ENV", "paper")  # import-time gate in run_resolve_mlb
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "src"))
 
+from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E402
+    TickerDateParseError,
+    derive_game_date,
+)
 from prediction_market_bot.run_resolve_mlb import (  # noqa: E402
     _espn_fetch_hits,
     _fetch_mlb_hits,
@@ -68,24 +71,16 @@ _VPS_CYCLE_LOG_PATH = "/opt/prediction-market-bot/logs/t4_mlb_cycle_log.jsonl"
 
 _CHECKPOINT_EVERY = 25  # tickers attempted, not just resolved
 
-# KXMLBHIT-{YY}{MON}{DD}{HHMM}{AWAYTEAM}{HOMETEAM}[G{n}]-{TEAM}{PLAYERCODE}-{THRESHOLD}
-_MONTHS = {
-    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
-    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
-}
-_TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
-
 
 def ticker_game_date(ticker: str) -> str | None:
-    """Derive the true game date from a ticker's embedded date token (GG-164 fix)."""
-    m = _TICKER_DATE_RE.match(ticker)
-    if not m:
+    """Derive the true game date from a ticker's embedded date token via the
+    shared series-agnostic grammar. Returns None -- refusal, never a
+    fallback -- if the ticker's series isn't registered or its tail doesn't
+    match that series' grammar (GG-164/GG-191)."""
+    try:
+        return derive_game_date(ticker)
+    except (KeyError, TickerDateParseError):
         return None
-    yy, mon, dd, _hhmm = m.groups()
-    month = _MONTHS.get(mon)
-    if month is None:
-        return None
-    return f"20{yy}-{month}-{dd}"
 
 
 def pull_vps_cycle_log(dest: Path) -> None:
@@ -110,7 +105,12 @@ def load_cycle_log(path: Path) -> list[dict]:
 
 
 def group_by_ticker(rows: list[dict]) -> dict[str, dict]:
-    """One record per unique ticker; many cycle-log rows fold into one ticker."""
+    """One record per unique ticker; many cycle-log rows fold into one ticker.
+
+    Tickers whose game_date can't be derived from their own series grammar are
+    refused (excluded from the returned mapping entirely) rather than falling
+    back to the cycle log's stored `game_date` field -- that field is exactly
+    what GG-164 found to be wrong 194/2,132 times (GG-191)."""
     grouped: dict[str, dict] = {}
     for row in rows:
         ticker = row.get("ticker")
@@ -119,13 +119,20 @@ def group_by_ticker(rows: list[dict]) -> dict[str, dict]:
         g = grouped.get(ticker)
         if g is None:
             derived_date = ticker_game_date(ticker)
+            if derived_date is None:
+                print(
+                    f"GG-191: ticker {ticker!r} unparseable game_date -- "
+                    f"refusing to include in outcome store",
+                    file=sys.stderr,
+                )
+                continue
             g = {
                 "ticker": ticker,
                 "player_id": row.get("player_id"),
                 "player_name": row.get("player_name"),
                 "threshold": row.get("threshold"),
-                "game_date": derived_date if derived_date else row.get("game_date"),
-                "date_source": "ticker" if derived_date else "raw_fallback",
+                "game_date": derived_date,
+                "date_source": "ticker",
                 "n_cycle_rows": 0,
                 "has_forecast": False,
             }
