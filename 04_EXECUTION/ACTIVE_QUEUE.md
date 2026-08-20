@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | **C** | Extend `t4_mlb_outcome_store.jsonl` coverage to 2026-08-07→08-15; report how many of GG-185's 532 rows become re-derivable | now | STANDARD | GG-193 |
 | ~~**D**~~ | ~~Root-cause the 2026-08-08 post-outage restart: what bound `game_date` differently?~~ DONE (T-471, 2026-08-20) — root cause NOT found; bounded negative result, GG-190 (OPEN). | — | STANDARD | GG-190 |
-| **E** | Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7` | now | STANDARD | GG-191 |
+| ~~**E**~~ | ~~Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7`~~ DONE (T-472, 2026-08-20) — `_TICKER_DATE_RE` replaced with per-series registry, refusal-only on no-match (no wall-clock fallback), regression tests added. See PR #95, GG-191 (RESOLVED). | — | STANDARD | GG-191 |
 | **F** | APR-0032 decision request: `sport` as a first-class attribute, NFL band naming, NFL epoch inheritance | now | MICRO | — |
 | **H** | Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap | now | MICRO | GG-192 |
 | **I** | Claim-without-CLOSED-row assertion + GG-NNN ID-uniqueness assertion | now | MICRO | — |
