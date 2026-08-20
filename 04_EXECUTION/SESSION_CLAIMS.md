@@ -283,3 +283,4 @@
 | 2026-08-20T00:04:18Z | T-470 / GG-193 | T-470: extend t4_mlb_outcome_store.jsonl coverage to the 2026-08-07..08-15 corruption window |
 | 2026-08-20T00:44:07Z | T-470 | MERGED: NO — branch `session/20260820T000400Z-outcome-store-coverage` awaiting merge — T-470: outcome-store extended to 08-07..08-15, all 532/532 corrupted epoch-12 positions now re-derivable (repair path, not discard) (commit `e2b5f9e`) |
 | 2026-08-20T00:04:09Z | T-469 | CLOSED — T-469: landed T-463 (PR #91), amended GG-188 to PARTIALLY RESOLVED, rebuilt ACTIVE_QUEUE.md, registered GG-195 (commit `22f7b98`) |
+| 2026-08-20T00:58:00Z | T-470 | CLOSED — MERGED: YES via PR #93, HEAD `971658a` on `origin/main` (GG-186 ancestor assertion passed) — 532/532 corrupted epoch-12 positions re-derivable, repair path viable |
