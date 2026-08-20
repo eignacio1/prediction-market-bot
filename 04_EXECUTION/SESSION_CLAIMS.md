@@ -287,3 +287,4 @@
 | 2026-08-20T00:56:52Z | T-471 / GG-190 | T-471: root-cause the 2026-08-08 post-outage restart that began the epoch-12 game_date corruption |
 | 2026-08-20T00:57:00Z | T-472 / GG-191 | T-472: make date derivation series-agnostic and refusal-only; surface unregistered-series drops |
 | 2026-08-20T00:57:40Z | T-477 / ADR-0055 / GG-196 | T-477: pre-register and dry-run the epoch-12 ledger repair; ADR-0055 decision request |
+| 2026-08-20T05:01:25Z | T-477 | MERGED: NO — branch `session/20260820T005659Z-epoch12-repair-preregistration` awaiting merge — T-477: ADR-0055 epoch-12 repair pre-registered + dry-run simulated (not applied); GG-196 registered; n* gate finding flagged (commit `5d94e64`) |
