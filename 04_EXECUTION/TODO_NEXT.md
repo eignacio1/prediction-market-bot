@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-20T04:57:30Z (T-471 — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result) — See `04_EXECUTION/SESSION_HANDOFF_20260820_0457_T471.md` for full session detail.
+**Last reviewed:** 2026-08-20T05:15:00Z (T-472 — T-472/GG-191 — ticker-date derivation made series-agnostic + refusal-only, ends GG-166/170/185 fallback class) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260820_0515.md` for full session detail. (Prior same-day review: T-471, 04:57:30Z — GG-190 registered, GG-185 step-function trigger not found — see `04_EXECUTION/SESSION_HANDOFF_20260820_0457_T471.md`.)
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*

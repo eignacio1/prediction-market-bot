@@ -76,6 +76,10 @@ from prediction_market_bot.c3_forecasting.game_state_model import (
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c5_execution.complement_lock_scanner import ComplementLockScanner
 from prediction_market_bot.c5_execution.market_mapper import normalize_player_name
+from prediction_market_bot.c5_execution.market_type_registry import (
+    TickerDateParseError,
+    derive_game_date,
+)
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
@@ -140,17 +144,28 @@ def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
-def _ticker_to_game_date(ticker: str) -> str:
-    """Parse game date from Kalshi ticker. KXNBAPTS-26MAY30SASOKC-... -> 2026-05-30."""
-    import re
-    m = re.search(r"-([0-9]{2})([A-Z]{3})([0-9]{2})", ticker)
-    if m:
-        try:
-            from datetime import datetime as _dt
-            return _dt.strptime(f"20{m.group(1)}{m.group(2)}{m.group(3)}", "%Y%b%d").strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+def _ticker_to_game_date(ticker: str) -> str | None:
+    """Derive the true game date from a ticker's embedded date token via the
+    shared series-agnostic grammar. Returns None -- refusal, never a
+    fallback -- if the ticker's series isn't registered or its tail doesn't
+    match that series' grammar; prints loudly in either case, since neither
+    should happen for any real, currently-traded Kalshi ticker (GG-191)."""
+    try:
+        return derive_game_date(ticker)
+    except KeyError as exc:
+        print(
+            f"GG-191: ticker {ticker!r} has unregistered series {exc} — "
+            f"refusing to derive game_date; caller must skip this market",
+            file=sys.stderr,
+        )
+        return None
+    except TickerDateParseError as exc:
+        print(
+            f"GG-191: ticker {ticker!r} did not match its series' date grammar "
+            f"({exc}) — refusing to derive game_date; caller must skip this market",
+            file=sys.stderr,
+        )
+        return None
 
 
 def _build_target(df: pd.DataFrame) -> pd.Series:
@@ -656,6 +671,15 @@ def main() -> None:
                     _reserve_halted = True
                     break
 
+                position_game_date = _ticker_to_game_date(mkt.ticker)
+                if position_game_date is None:
+                    print(
+                        f"  [GG-191 SKIP] {kalshi_player_name} — {mkt.ticker} "
+                        f"unparseable game_date; refusing to place this bet",
+                        file=sys.stderr,
+                    )
+                    continue
+
                 approval = {
                     **approval,
                     "model_p": float(forecast_rec["p_estimate"]),
@@ -673,7 +697,7 @@ def main() -> None:
                     kalshi_threshold=mkt.threshold,
                     mid_price=mid,
                     vig=mkt.vig,
-                    game_date=_ticker_to_game_date(mkt.ticker),
+                    game_date=position_game_date,
                     session_id=SESSION_ID,
                 )
                 dyn_tag = "  [dyn]" if p_est_lr is None else ""

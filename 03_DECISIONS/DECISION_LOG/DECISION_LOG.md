@@ -879,6 +879,31 @@ Store growth: 2021 → 3199 rows (main-tree `logs/t4_mlb_outcome_store.jsonl` up
 
 ---
 
+## 2026-08-20 — T-472/GG-191: ticker-date derivation made series-agnostic and refusal-only
+
+**Decision:** replaced the KXMLBHIT-hardcoded, wall-clock-fallback ticker-date regex (duplicated across six call sites in five files) with one shared, series-agnostic `TickerGrammar` contract in `market_type_registry.py` (`parse_ticker_date()` / `derive_game_date()`, keyed per `MarketType`, MLB `has_hhmm=True` vs NBA `has_hhmm=False`). Every call site now delegates to it and REFUSES (returns `None` / raises, caller skips the write) on any parse failure — unregistered series or non-matching grammar — instead of silently substituting the session wall-clock date. This is the mechanism GG-166/GG-170/GG-185 all trace back to; GG-191 registers and resolves the mechanism itself, not another instance of its output.
+
+**Scope of the fix:**
+- `run_t4_mlb_live.py` (3 sites), `run_resolve_mlb.py`, `run_mlb_paper_trade.py`, `run_paper_trade.py` (NBA), `scripts/build_t4_outcome_store.py::group_by_ticker()` — all six sites converted to delegate + refuse.
+- KXMLBF3/F5/F7 registered as `MLB_PARTIAL_GAME` aliases (previously unregistered — any live activation would have silently hit the fallback on every record).
+- `scripts/run_power_calc.py` now counts and prints unregistered-series drops (`_UNREGISTERED_SERIES_COUNTS`) instead of silently excluding them from cell regrouping with zero visibility.
+
+**Verification against real data (behaviour-change safety gate, satisfied for every touched file):** zero refusals on any currently-live ticker — 2948/2948 rows in `run_t4_mlb_live.py`'s resolved ledger, 1764/1764 in `run_mlb_paper_trade.py`, 133/133 in `run_paper_trade.py` (NBA). No currently-live ticker newly refuses.
+
+**Discovery during test-fixing (in-scope, not a new gap):** two pre-existing test fixtures across the suite encoded the OLD, incorrect mental model of the ticker grammar — `test_run_mlb_paper_trade.py`'s `TestTickerToGameDate` class treated the ticker's leading 2-digit token as an irrelevant "creation day" with the year reconstructed from the wall clock, and `test_run_t4_mlb_live.py`'s module-level `TICKER_SOTO` fixture was itself malformed (missing HHMM digits) and never actually matched the ticker grammar even under the old pre-fix regex. Both were masked because their fixtures happened to use leading/date tokens ("26") that coincidentally matched the 2026 wall-clock year the tests were authored in. Both were corrected in-scope (same function/file the task named), not registered as separate gaps, per the established pattern of treating stale-test correction as squarely within the mandated fix's scope.
+
+**Regression tests added:** `test_market_type_registry.py` (+9, grammar itself — MLB/NBA parse, doubleheader suffix, F5/F7 aliasing, unregistered-series/malformed-tail/bad-month/no-separator refusal), `test_power_calc.py` (+4, unregistered-series drop counting/surfacing), `test_run_mlb_paper_trade.py` (rewrote 5/7 stale tests in `TestTickerToGameDate`, +1 new), `test_run_t4_mlb_live.py` (+3, plus the `TICKER_SOTO` fixture fix), `test_run_resolve_mlb.py` and `test_run_paper_trade.py` (new files, +3 each — neither wrapper had any prior test coverage). All touched files green; full-suite run in progress at time of this entry.
+
+**GG-191:** registered and RESOLVED in the same session — see `GOVERNANCE_GAP_LOG.md` for the full record (category: systemic blind spot, severity HIGH).
+
+**Scope discipline (Hard Rule 11):** no other defect was fixed in-session outside this deliverable. `scripts/build_t4_totals_outcome_store.py` was inspected and confirmed to already refuse via `None` — it does not exhibit the GG-191 defect class, left untouched, no gap registered.
+
+**Addendum (full-suite verification pass):** the first full `pytest tests/` run surfaced two more stale source-pinning tests — `tests/test_t442_box14_gg166_regression.py` literally asserted the OLD two-arg `_ticker_to_game_date(ticker, game_date)` call text at each write site. Same in-scope pattern as the other stale-test fixes above (same defect class, same file's own regression guard): rewrote both assertions to follow the new indirection (write sites now assign to a local — `_gg191_game_date` / `position_game_date` — a few lines above the write) while preserving the original invariant (every game_date write site must trace to a `_ticker_to_game_date(ticker)` call, never the bare session `game_date`). Both tests pass against the new implementation. Full-suite re-run in progress.
+
+## 2026-08-20 — T-472/GG-191: full-suite verification, close-out
+
+Full `pytest tests/` after all fixes: 2920 passed, 28 skipped, 2 warnings, 0 failed (up from a pre-fix baseline where two stale regression guards — `TICKER_SOTO` fixture in `test_run_t4_mlb_live.py`, source-pin assertions in `test_t442_box14_gg166_regression.py` — masked the old fallback behavior). Branch `session/20260820T005641Z-series-agnostic-date-binding` pushed to origin at `994b4d3`, not yet merged to `main`. Session-end proceeding via Step 8 STANDARD path (src/ changed) — PR/merge to follow this entry.
+
 ## 2026-08-20 — T-471: GG-190 registered — GG-185's step-function trigger root-caused as "not found," bounded negative result
 
 **Decision:** Register GG-190 (OPEN, HIGH) recording a bounded negative result for T-471's mandate (root-cause the 2026-08-19 strategic-review contradiction in GG-185: mismatch rate is a step function — 0/77 under `cbd09ae`, 532/532 under `687bf9e` — while the 8.5-day VPS deploy gap that explains guard-absence is constant across both cohorts and cannot itself produce a step). Root cause was NOT found within session budget. GG-185's status is unchanged (PARTIALLY RESOLVED) — it is explicitly not upgraded to RESOLVED, per this task's own instruction that resolution requires the actual trigger, not further narrowing.

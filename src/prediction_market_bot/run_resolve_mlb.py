@@ -58,7 +58,6 @@ Season type handling:
 from __future__ import annotations
 
 import os
-import re
 import sys
 import time
 import uuid
@@ -75,6 +74,10 @@ if os.environ.get("BOT_ENV", "").lower() != "paper":
     print("FATAL: PIPE-05R requires BOT_ENV=paper.", file=sys.stderr)
     sys.exit(1)
 
+from prediction_market_bot.c5_execution.market_type_registry import (
+    TickerDateParseError,
+    derive_game_date,
+)
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c7_monitoring.monitor import (
@@ -124,26 +127,27 @@ _ESPN_TERMINAL_STATUSES = (_ESPN_STATUS_FINAL, _ESPN_STATUS_POSTPONED)
 # join key. Positions written after the B1 fix should already carry a
 # ticker-derived, correct `game_date`; this parses the ticker independently at
 # read time so the resolution loop can detect and refuse a stale/corrupted
-# value instead of silently resolving against it. Same anchored-regex format
-# as scripts/build_t4_outcome_store.py::ticker_game_date (validated 100%
-# reliable across 2,021 tickers, T-421).
-_TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
-_TICKER_DATE_MONTHS = {
-    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
-    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
-}
-
-
+# value instead of silently resolving against it.
+#
+# T-472/GG-191 (2026-08-20): this used to carry its own KXMLBHIT-only regex
+# (identical to the one in run_t4_mlb_live.py, since fixed there too). That
+# meant the mismatch check below silently could not validate any other
+# series' tickers — a non-KXMLBHIT ticker always parsed to None here, and
+# `ticker_date is not None and ticker_date != game_date` is vacuously False
+# whenever ticker_date is None, so the safety check this function exists for
+# never ran for other series. Delegates to the shared, series-agnostic
+# market_type_registry.derive_game_date() instead. Contract is unchanged for
+# callers: returns None on any parse failure (unregistered series or
+# non-matching grammar) rather than raising — this function's only caller
+# already treats None as "couldn't determine, skip the mismatch check", not
+# as license to substitute a fallback value.
 def _ticker_to_game_date(ticker: str) -> str | None:
-    """Derive the true game date from a ticker's embedded date token, or None."""
-    m = _TICKER_DATE_RE.match(ticker)
-    if not m:
+    """Derive the true game date from a ticker's embedded date token via the
+    shared series-agnostic grammar, or None if it can't be determined."""
+    try:
+        return derive_game_date(ticker)
+    except (KeyError, TickerDateParseError):
         return None
-    yy, mon, dd, _hhmm = m.groups()
-    month = _TICKER_DATE_MONTHS.get(mon)
-    if month is None:
-        return None
-    return f"20{yy}-{month}-{dd}"
 
 # GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
 # a sustained condition, not per-request flakiness), every further retry-loop

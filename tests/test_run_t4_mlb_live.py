@@ -490,6 +490,26 @@ class TestGameDateWindow:
         assert runner._game_date_window("2026-07-01") == {"2026-07-01", "2026-06-30"}
 
 
+# ---------------------------------------------------------------------------
+# _ticker_to_game_date — T-472/GG-191: refusal-only, never wall-clock fallback
+# ---------------------------------------------------------------------------
+
+
+class TestTickerToGameDate:
+    def test_valid_ticker_derives_date(self):
+        assert runner._ticker_to_game_date(
+            "KXMLBHIT-26AUG011610MIANYM-T1.5"
+        ) == "2026-08-01"
+
+    def test_malformed_tail_refuses(self):
+        assert runner._ticker_to_game_date("KXMLBHIT-INVALID-TICKER") is None
+
+    def test_unregistered_series_refuses(self):
+        assert runner._ticker_to_game_date(
+            "KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5"
+        ) is None
+
+
 class TestReconstructT4LedgerCrossMidnight:
     def test_carried_over_game_still_counted_after_rollover(self):
         # Game started 2026-07-02 (pre-midnight game_date on the position), process
@@ -952,7 +972,7 @@ def _make_components(tmp_path: Path):
     return engine, trader, store, audit
 
 
-TICKER_SOTO = "KXMLBHIT-26JUN2418NYY-NYYAAJSOT-1"
+TICKER_SOTO = "KXMLBHIT-26JUN241840NYY-NYYAAJSOT-1"  # T-472/GG-191: was malformed (missing HHMM digits), never matched the real grammar even pre-fix
 
 
 class TestRunCycle:
