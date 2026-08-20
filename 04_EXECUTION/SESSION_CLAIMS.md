@@ -289,3 +289,4 @@
 | 2026-08-20T05:21:02Z | T-472 | MERGED: NO — branch `session/20260820T005641Z-series-agnostic-date-binding` awaiting merge — T-472/GG-191 — ticker-date derivation made series-agnostic + refusal-only, ends GG-166/170/185 fallback class (commit `994b4d3`) |
 | 2026-08-20T00:57:40Z | T-477 / ADR-0055 / GG-196 | T-477: pre-register and dry-run the epoch-12 ledger repair; ADR-0055 decision request |
 | 2026-08-20T04:59:44Z | T-471 | CLOSED — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result (commit `64ff6a3`) |
+| 2026-08-20T05:25:12Z | T-472 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
