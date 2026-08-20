@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-19T05:30:00Z (T-468 — T-468: landed PR #86 as PR #88 via --no-ff merge, resolved GG-187 ID collision (T-465's entry renumbered to GG-189), downgraded GG-185 to PARTIALLY RESOLVED on strategic-review step-function contradiction) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260819_0530.md` for full session detail.
+**Last reviewed:** 2026-08-20T00:43:19Z (T-470 — T-470: outcome-store extended to 08-07..08-15, all 532/532 corrupted epoch-12 positions now re-derivable (repair path, not discard)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260820_0043.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
