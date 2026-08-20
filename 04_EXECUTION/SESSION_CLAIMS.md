@@ -286,3 +286,4 @@
 | 2026-08-20T00:58:00Z | T-470 | CLOSED — MERGED: YES via PR #93, HEAD `971658a` on `origin/main` (GG-186 ancestor assertion passed) — 532/532 corrupted epoch-12 positions re-derivable, repair path viable |
 | 2026-08-20T00:56:52Z | T-471 / GG-190 | T-471: root-cause the 2026-08-08 post-outage restart that began the epoch-12 game_date corruption |
 | 2026-08-20T00:57:00Z | T-472 / GG-191 | T-472: make date derivation series-agnostic and refusal-only; surface unregistered-series drops |
+| 2026-08-20T05:21:02Z | T-472 | MERGED: NO — branch `session/20260820T005641Z-series-agnostic-date-binding` awaiting merge — T-472/GG-191 — ticker-date derivation made series-agnostic + refusal-only, ends GG-166/170/185 fallback class (commit `994b4d3`) |
