@@ -300,3 +300,4 @@
 | 2026-08-21T01:59:54Z | T-473 | MERGED: NO — branch `session/20260821T014959Z-apr0032-sport-axis` awaiting merge — T-473: drafted APR-0032 (sport-axis decision request), registered GG-197 (commit `0074934`) |
 | 2026-08-21T01:50:33Z | T-475 / GG-192 | T-475: amend ADR-0054 §5.2 correlation key for non-MLB tickers; register exposure-granularity gap |
 | 2026-08-21T01:50:38Z | T-479 / GG-197 | T-479: SAMPLE ADEQUACY must not report MET off a ledger with known-corrupted rows |
+| 2026-08-21T02:02:34Z | T-475 | CLOSED — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192 (commit `9253d9a`) |
