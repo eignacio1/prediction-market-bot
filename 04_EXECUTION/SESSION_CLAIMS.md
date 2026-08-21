@@ -288,3 +288,4 @@
 | 2026-08-20T00:57:00Z | T-472 / GG-191 | T-472: make date derivation series-agnostic and refusal-only; surface unregistered-series drops |
 | 2026-08-20T00:57:40Z | T-477 / ADR-0055 / GG-196 | T-477: pre-register and dry-run the epoch-12 ledger repair; ADR-0055 decision request |
 | 2026-08-20T04:59:44Z | T-471 | CLOSED — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result (commit `64ff6a3`) |
+| 2026-08-21T02:08:00Z | T-473 | CLOSED — T-473: drafted APR-0032 (sport-axis decision request: D1 sport as first-class MarketType attribute, D2 NFL band-naming convention, D3 NFL logic-epoch inheritance), registered GG-198 (renumbered from locally-picked GG-197 after discovering concurrent T-479 claim on that number) — merged via PR #99, mergeCommit `e55a863`, confirmed ancestor of origin/main per GG-186 |
