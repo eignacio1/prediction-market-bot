@@ -2361,6 +2361,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-202 — T4's 45s poll cadence was tuned against MLB/NBA's near-continuous state progression; NFL's drive-level, dead-period-clustered structure breaks that assumption, and NFL game markets sit at the efficient end of the venue's own gradient
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-202 |
+| Category | Architecture / unverified cross-sport assumption — a hardcoded constant carries an implicit design premise that does not hold for the new sport. |
+| What was missed | `POLL_INTERVAL_S = 45` is hardcoded identically in `src/prediction_market_bot/run_t4_mlb_live.py:151` and `src/prediction_market_bot/run_t4_live.py:259` (NBA), with `_FRESHNESS_WINDOW_S = 2.0 * POLL_INTERVAL_S` (90s) as the staleness-detection window in the MLB runner. Both were tuned against a game structure where the live state advances in a roughly continuous stream (MLB: pitch-by-pitch/at-bat progression within each half-inning; NBA: possession-by-possession scoring). NFL's structure is fundamentally bursty instead: plays cluster in ~25-40s snap-to-whistle windows separated by long dead periods (the play clock, two-minute warnings, timeouts, ~12+ minute halftime, quarter breaks) — a live NFL broadcast averages on the order of ~11 minutes of actual ball-in-play time across a ~3-hour game. A fixed 45s poll against this structure has two compounding failure modes: (1) most cycles land inside a dead period and evaluate against unchanged state — wasted evaluations, not a correctness bug but a throughput/architecture mismatch; (2) a state-changing play (a big gain, a turnover, a score) resolves in seconds, so the market has a multi-second-to-tens-of-seconds window to reprice before the next poll even lands, and 45s does not obviously beat that. Separately, and compounding rather than duplicating this: `CLAUDE.md`'s own "Market efficiency gradient" section states the T4 latency thesis is designed to exploit *inefficient* markets (thin MLB mid-week books), and explicitly names NFL/NBA-Finals-caliber markets as the *maximally* efficient, most-attended end of that same gradient — professional in-game win-probability feeds and sportsbooks are known to reprice within seconds of a scoring play in exactly this market class. Both concerns point the same direction: the 45s constant is not just unvalidated for NFL, it is unvalidated in the specific direction that would matter if the thesis is wrong for NFL. |
+| When it should have been caught | Before any NFL T4 sub-band work is proposed or budgeted — this is a precondition on T4 activation for NFL, not a post-hoc tuning question. |
+| Phases it survived | N/A — first NFL-facing session (T-474); the constant itself has never been sport-parameterized or revisited since its MLB/NBA introduction. |
+| Why it survived | `POLL_INTERVAL_S` was set once per sport's live runner at build time from whatever cadence "felt right" for that sport's live-state granularity (not derived from a measured distributional analysis of state-change inter-arrival times in either case, as far as this session found); no cross-sport review process exists that would re-examine a sport-specific tuning constant when a new sport is added, because until this session no second sport had ever been added to T4 post-MLB. |
+| Impact | Medium as currently scoped: no NFL T4 sub-band registry exists yet (ADR-0056 D2 names the future `T4NFL-` prefix but this session does not build it — Hard Rule 11), no NFL cell is above `NOT_IMPLEMENTED`, and `kelly_fraction` is 0.0 throughout, so nothing trades on this today. The impact is entirely forward-looking: if NFL T4 work is picked up later without addressing this, the sub-band would launch on an unvalidated and plausibly-wrong cadence assumption, in the one market class where CLAUDE.md's own efficiency-gradient section already predicts the weakest edge. |
+| Discovery | T-474 (2026-08-21 session, NFL skeleton spike), Step 3 — explicit task instruction to probe the T4 cadence assumption against NFL's structure and register a gap if warranted; probe-only per Hard Rule 11 (no C1/C2/C3, no sub-band registry, no constant changed in this session). |
+| Resolution | Not resolved. Two independent things would need to happen before NFL T4 is a reasonable proposal: (1) a measured (not assumed) distribution of NFL live-state-change inter-arrival times, analogous to what T-235/GG-080 did for MLB's per-game-day cycle throughput, to determine whether a fixed poll interval is even the right primitive for a bursty sport (an event-driven trigger on play-end, if obtainable from the data source, may fit better than any fixed interval); (2) an explicit operator read on whether NFL game markets' pricing speed leaves any latency window for a 45s-or-faster poller to exploit at all, given CLAUDE.md's own efficiency-gradient framing already predicts this is hostile territory. Until both are addressed, NFL T4 activation should be treated as blocked on this gap, not merely unbuilt. |
+| Status | OPEN 2026-08-21 (T-474). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
