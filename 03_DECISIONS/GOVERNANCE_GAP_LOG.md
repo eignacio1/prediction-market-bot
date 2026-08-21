@@ -2143,6 +2143,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-192 — C4 tracks exposure at exactly two granularities (single bet-evaluation, whole portfolio) with nothing in between; a per-game correlation-group cap is a new grouping dimension, not a reuse of existing plumbing
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-192 |
+| Category | Risk-engine architecture — a governance-surface gap. The substance was already found and stated in `ADR-0054` §5.1 (T-467, 2026-08-19) but existed only inside a PROPOSED document; this entry gives it a standing governance-log presence independent of that ADR's eventual status. |
+| What was missed | Confirmed by direct grep of `src/prediction_market_bot/c4_risk_engine/risk.py`: `max_single_event_exposure_usd` (`_HARD_LIMITS`, line 135) resolves per call / per bet-evaluation — effectively per-ticker (CHECK 6, lines 736-737). Zero `game_key`/`correlat`/`per_game` hits anywhere in `risk.py` — no game-level or family-level grouping exists in `_compute_kelly_size()` or any CHECK. The only other exposure figure C4 consumes, `current_open_exposure_usd`, is supplied by `paper_trader.py::exposure_snapshot()` (~line 250) as a portfolio-wide sum across *all* open non-isolated positions, regardless of game or family. So exposure is tracked at exactly two granularities — single-event ($500) and whole-portfolio (ADR-0026 cap) — with nothing in between. Three correlated families on one game (e.g. `KXMLBTOTAL`/`KXMLBTEAMTOTAL`/`KXMLBHIT` on the same matchup) can each independently clear the edge gate and each independently clear the $500 single-event cap, producing ~$1,500 of exposure to one game outcome against a stated $500 per-event cap — the cap's intent is defeated by construction, not by a bug in its enforcement. |
+| When it should have been caught | Design time for the per-event exposure cap (`_HARD_LIMITS`, dated 2026-05-29 per Q5/CLAUDE.md) — the cap was sized and named for a single-cell system and never revisited as a second grouping axis (family/game correlation) became a live architectural concern. |
+| Phases it survived | Present since `_HARD_LIMITS`'s introduction; only surfaced as a named concern 2026-08-17 when the operator signed off ADR-0054 item (c) (correlated-exposure cap, GG-135 solvency framing). |
+| Why it survived | `max_single_event_exposure_usd`'s name reads as if it already covers "one event," and at one ACTIVE cell (T4M-PROJ × MLB_PLAYER_PROP_HITS) there has never been a second correlated family live simultaneously to expose the gap empirically — no observed loss or near-miss triggered a review. The finding lived only inside `ADR-0054` §5.1, a PROPOSED document; nothing in the routine governance-scan surface (this log, `risk.py` itself) stated it independently, so if that ADR were superseded or narrowed before acceptance, the finding would leave no trace. |
+| Impact | No live consequence today — one ACTIVE cell means no correlated grouping can currently occur. Becomes unsound the moment a second cell (a second market_type on an already-live band, e.g. MLB moneyline/totals) is promoted ACTIVE: correlated legs on the same game would silently stack past the intended per-event ceiling. Directly relevant to solvency (GG-135 framing), not edge. |
+| Discovery | T-475 (2026-08-21), verifying `ADR-0054` §5.1's claim directly via `grep -n max_single_event_exposure_usd risk.py`, `grep -nic "game_key\|correlat\|per_event" risk.py` (zero hits), and `paper_trader.py::exposure_snapshot()` (portfolio-wide sum, confirmed). |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-475's one-deliverable scope, which was the ADR-0054 §5.2 amendment). `ADR-0054` §5.3-§5.4 already specifies the control shape (aggregate cap per game key, sized down not rejected, $1,000 provisional) as PROPOSED design; wiring it into `risk.py`/CHECK 6 is a Phase 3 box 3.7 follow-on, not performed here. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ### GG-195 — 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope
 
 **Status:** OPEN · **Severity:** LOW
