@@ -311,3 +311,4 @@
 | 2026-08-21T15:16:56Z | T-481 / ADR-0056 / GG-201 | T-481: ADR-0056 -- fold signed APR-0032 D1/D2/D3 into an implementable decision record |
 | 2026-08-21T15:26:49Z | T-481 | MERGED: NO — branch `session/20260821T151637Z-adr0056-sport-axis` awaiting merge — T-481: recorded signed APR-0032 D1/D2/D3 sign-off verbatim; drafted ADR-0056 (PROPOSED) to authorize implementation. (commit `70d2b07`) |
 | 2026-08-21T15:29:00Z (closure note) | T-481 | **CLOSED — merge confirmed via `gh pr view 104` (state MERGED, mergeCommit `70d2b07`), matching `origin/main` HEAD (GG-186 satisfied; squash merge, `--is-ancestor` does not apply). GG-201 was reserved only — no in-scope defect found, NOT registered, returns to pool.** |
+| 2026-08-21T19:04:13Z | T-474 / GG-202 | T-474: NFL skeleton spike -- cells, ticker grammar, one C1 stub; zero sizing, no C3 |
