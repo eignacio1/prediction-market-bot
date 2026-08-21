@@ -302,3 +302,4 @@
 | 2026-08-21T01:50:33Z | T-475 / GG-192 | T-475: amend ADR-0054 §5.2 correlation key for non-MLB tickers; register exposure-granularity gap |
 | 2026-08-21T01:50:38Z | T-479 / GG-197 | T-479: SAMPLE ADEQUACY must not report MET off a ledger with known-corrupted rows |
 | 2026-08-21T02:02:34Z | T-475 | CLOSED — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192 (commit `9253d9a`) |
+| 2026-08-21T02:16:59Z | T-479 | CLOSED — MERGED: YES via PR #100, merge commit `11cafb9` confirmed ancestor of origin/main (GG-186 check passed) — governance_scan.sh's GG-046 alert no longer emits MET off a 74.0%-corrupted cohort; VERDICT WITHHELD with live mismatch count instead; GG-197 registered RESOLVED (detection fix only, data corruption still open pending ADR-0055 D1) |
