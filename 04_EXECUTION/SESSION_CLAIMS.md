@@ -307,3 +307,4 @@
 | 2026-08-21T14:19:03Z | T-476 / GG-199 | **CLOSED — claim/CLOSED lifecycle check + GG-NNN uniqueness check landed and wired into governance_scan.sh + CLAUDE.md Step 3, worktree fetch-scope fix landed, GG-199 registered RESOLVED. PR #102 MERGED into main (8079ee0). MERGED: YES.** |
 | 2026-08-21T14:40:40Z | T-480 / GG-200 | T-480: amend APR-0032 D2 for the four-sport roster; note four-sport impact on D1/D3 |
 | 2026-08-21T14:55:21Z | T-480 | MERGED: NO — branch `session/20260821T144017Z-apr0032-four-sport-amendment` awaiting merge — T-480: amended APR-0032 D2 for four-sport (MLB/NBA/NFL/NHL) roster; D1/D3 noted; GG-200 registered (commit `3bf3928`) |
+| 2026-08-21T14:55:56Z | T-480 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
