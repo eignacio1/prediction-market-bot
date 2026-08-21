@@ -1,9 +1,10 @@
 # ADR-0056 — Sport as a First-Class Attribute, Sport Band-Naming Convention, Per-Sport Epoch Inheritance (GG-198)
 
-**Status:** PROPOSED. This ADR folds the operator's signed APR-0032 D1/D2/D3 decisions (Earl Ignacio,
-2026-08-21) into an implementable record, per Hard Rule 3 — signing APR-0032's decisions is not the same as
-accepting this document. This ADR itself still requires operator sign-off before `market_type_registry.py`,
-`execution_bands.py`, or `logic_epoch.py` may be changed.
+**Status:** ACCEPTED (Earl Ignacio, 2026-08-21, T-474 session, prior to the `nfl-skeleton-spike` worktree
+claim). This ADR folds the operator's signed APR-0032 D1/D2/D3 decisions (Earl Ignacio, 2026-08-21) into an
+implementable record, per Hard Rule 3 — signing APR-0032's decisions was a distinct act from accepting this
+document; both have now occurred. `market_type_registry.py`, `execution_bands.py`, and `logic_epoch.py`
+edits per §§2–4 are authorized as of this acceptance.
 **Date:** 2026-08-21
 **Author:** Session T-481 (`adr0056-sport-axis` worktree)
 **Registers/depends on:** `APR-0032` (decision-request document; D1/D2/D3 signed 2026-08-21 — see its
@@ -181,6 +182,8 @@ point, referencing this ADR and the landing commit, not at ADR-acceptance time.
 
 ## 8. Sign-off
 
-**Status: PROPOSED.** The operator signed APR-0032's D1/D2/D3 decisions (2026-08-21) but has not yet signed
-this ADR itself — per this document's own §1 framing and Hard Rule 3, those are distinct acts. This ADR
-requires its own explicit operator acceptance before the `src/` changes named in §§2–4 may ship.
+**Status: ACCEPTED.** The operator signed APR-0032's D1/D2/D3 decisions (2026-08-21) and, separately, per
+this document's own §1 framing and Hard Rule 3, has now explicitly accepted this ADR itself (Earl Ignacio,
+2026-08-21, via AskUserQuestion in the T-474 session, ahead of the `nfl-skeleton-spike` worktree claim — the
+session had stopped and asked precisely because §8 previously read PROPOSED). The `src/` changes named in
+§§2–4 are authorized to ship as of this acceptance.
