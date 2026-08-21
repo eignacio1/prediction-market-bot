@@ -2265,6 +2265,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-198 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-198 |
+| Category | Architectural placeholder — a decision Phase 3's cell-key work will make implicitly, by whatever is convenient, unless made explicitly first. |
+| What was missed | Three related sport-axis decisions have no recorded answer: (1) whether `sport` becomes a first-class attribute on `MarketType` (confirmed by direct read, `market_type_registry.py`: `MarketType` members are named `MLB_*`/`NBA_*`; the word "sport" appears only in docstrings/comments, lines 61-62/154/291; no `sport` attribute or `sport_for()` function exists anywhere in `src/`, confirmed by grep); (2) what naming convention a future NFL T4 sub-band uses (confirmed by direct read, `execution_bands.py` lines 42-93: MLB already uses a `T4M-` prefix convention under a separate `T4_MLB_SUBBAND_REGISTRY`, NBA uses bare `T4-` under `T4_SUBBAND_REGISTRY` — the two sports are already asymmetric, and nothing picks the pattern a third sport follows); (3) whether NFL cells inherit MLB's 12 existing `logic_epoch.py` boundaries or start at a fresh epoch 1 (confirmed: `grep -c "LogicEpochBoundary("` = 12, all keyed on bare band-string `bands_affected` sets, e.g. `{"T4M-PROJ"}`, `{"T1"}` — zero sport-awareness in the epoch machinery itself). |
+| When it should have been caught | Should be decided before Phase 3 (segmented-pool build, ADR-0054) writes its first `bands_affected` frozenset touching a non-MLB/non-NBA cell — i.e. before NFL (or any third sport) is added to `market_type_registry.py`. |
+| Phases it survived | N/A — this is a forward-looking gap, not a survived defect. Surfaced now because ADR-0054 §4 (2026-08-19) decided the *cell key* is `(MarketType, band)`, which is correct for distinguishing cells but was never checked against whether it is sufficient for *grouping* by sport, the separate operation Phase 3 will need ("bump one epoch, every MLB cell resets same day" / "NFL's cells graduate independently of MLB's"). |
+| Why it survived | `ADR-0054` (PROPOSED, 2026-08-19) resolved the cell-key question in isolation; its own §8 follow-on list (item 5) already names "re-audit all 12 existing boundaries against their actual diffs for true per-cell blast radius" as unstaffed, but that item addresses `(MarketType, band)` granularity, not the sport-grouping, band-naming, or epoch-inheritance questions this entry raises — those are a distinct axis ADR-0054 did not consider because it was scoped to Phase 3 boxes 3.1/3.2/3.7/3.8, not to sport-expansion readiness. |
+| Impact | If Phase 3 proceeds without a decision, each of the three questions gets answered implicitly by whatever the first NFL-touching commit happens to do — e.g. a hand-rolled `T4N-PROJ` string chosen ad hoc, or a first NFL epoch boundary's `bands_affected` silently including or excluding MLB bands by accident. Retrofitting a correct answer afterward means the same 12-boundary re-audit ADR-0054 §8 already flags, done twice — once for the `(MarketType, band)` re-key, once again for whatever the accidental sport-axis answer needs to be undone. |
+| Discovery | T-473 (2026-08-20/21 session), tasked directly with drafting a decision-request APR for these three questions ahead of Phase 3. |
+| Resolution | Not started — this entry is the registration; `00_ADMIN/APR-0032` is the decision-request document itself, presenting options/evidence/recommendation for D1 (sport as first-class attribute), D2 (NFL band-naming convention), D3 (NFL epoch inheritance) to the operator. No `src/` change made or proposed in this session. |
+| Status | OPEN — awaiting operator decision on APR-0032. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

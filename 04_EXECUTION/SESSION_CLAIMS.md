@@ -297,6 +297,7 @@
 | 2026-08-21T01:49:25Z | T-478 | CLOSED — T-478: landed stranded Block K (T-477/ADR-0055/GG-196) onto main via fresh PR #97+#98, no repair applied (commit `e4173cf`) |
 | 2026-08-21T01:50:08Z | T-478 | CLOSED — merge confirmed, HEAD (`d422219`) is ancestor of origin/main (merge-check YES) — session-end artifacts (SESSION_HANDOFF, nav chain collapse, operator digest) pushed direct to main via MICRO fast path |
 | 2026-08-21T01:50:18Z | T-473 / APR-0032 | T-473: APR-0032 decision request -- sport as a first-class attribute, NFL band naming, NFL epoch inheritance |
+| 2026-08-21T01:59:54Z | T-473 | MERGED: NO — branch `session/20260821T014959Z-apr0032-sport-axis` awaiting merge — T-473: drafted APR-0032 (sport-axis decision request), registered GG-197 (commit `0074934`) |
 | 2026-08-21T01:50:33Z | T-475 / GG-192 | T-475: amend ADR-0054 §5.2 correlation key for non-MLB tickers; register exposure-granularity gap |
 | 2026-08-21T01:50:38Z | T-479 / GG-197 | T-479: SAMPLE ADEQUACY must not report MET off a ledger with known-corrupted rows |
 | 2026-08-21T02:02:34Z | T-475 | CLOSED — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192 (commit `9253d9a`) |
