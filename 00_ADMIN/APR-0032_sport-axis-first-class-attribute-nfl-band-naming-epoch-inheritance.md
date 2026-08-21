@@ -1,10 +1,10 @@
 # APR-0032 — Sport as a First-Class Attribute, NFL Band-Naming Convention, NFL Epoch Inheritance (GG-198)
 
-**Status:** DRAFT — decision request. This document presents three related sport-axis questions with
-options, evidence, and a recommendation each. It does not decide any of them and does not authorize any
-`src/` change. Per Hard Rule 3, if the operator accepts a recommendation below, a superseding ADR (most
-likely folded into or following `ADR-0054`) would still be required before any `market_type_registry.py` /
-`execution_bands.py` / `logic_epoch.py` change ships.
+**Status:** **D1 ADOPTED (option a), D2 ADOPTED (the 2026-08-21 Amendment recommendation, T-480/GG-200 —
+NOT the original option a), D3 ADOPTED (option a) — operator sign-off Earl Ignacio, 2026-08-21.** See the
+"OPERATOR SIGN-OFF" section below for the verbatim record. Per Hard Rule 3, this sign-off authorizes the
+*decisions*, not the code — implementation still requires a superseding ADR (`ADR-0056`) before any
+`market_type_registry.py` / `execution_bands.py` / `logic_epoch.py` change ships.
 **Touches (if accepted):** `src/prediction_market_bot/c5_execution/market_type_registry.py` (`MarketType`
 enum, D1); `src/prediction_market_bot/execution_bands.py` (`ExecutionBand` enum / sub-band registries, D2);
 `src/prediction_market_bot/logic_epoch.py` (`LogicEpochBoundary.bands_affected`, D3). No file is modified by
@@ -237,6 +237,24 @@ code" problem D3 already rejects for the two-sport case, once per additional spo
 
 ---
 
+## OPERATOR SIGN-OFF — APR-0032 D1/D2/D3
+
+> OPERATOR SIGN-OFF -- APR-0032 D1/D2/D3. Earl Ignacio, 2026-08-21.
+> D1 -- ADOPTED, option (a). Add `sport` as a first-class attribute on `MarketType` (enum property or a
+> `_SPORT_BY_MARKET_TYPE` map alongside `_SERIES_TICKER_BY_MARKET_TYPE`). The `(MarketType, band)` cell key
+> is NOT changed; ADR-0054 section 4 stands as decided.
+> D2 -- ADOPTED, the 2026-08-21 Amendment recommendation (T-480/GG-200), NOT the original option (a).
+> Explicit four-sport codes `T4MLB-`, `T4NBA-`, `T4NFL-`, `T4NHL-`. Existing `T4M-*` (MLB) and bare `T4-*`
+> (NBA) band names are GRANDFATHERED, not renamed. The superseded `T4N-` proposal is not adopted.
+> D3 -- ADOPTED, option (a). Fresh epoch 1 per sport. NFL does not inherit MLB's 12 existing logic-epoch
+> boundaries; each sport's epoch counter is independent.
+> SCOPE -- governs all four core sports: MLB, NBA, NFL, NHL. A sport added later is an application of these
+> decisions, not a new decision.
+> IMPLEMENTATION -- still gated on ADR-0056 per this document's own terms. This sign-off authorizes the
+> decisions, not the code.
+
+---
+
 ## What This Does NOT Claim
 
 - **Does not authorize any code change.** This is a decision-request document; `src/` is untouched.
@@ -277,6 +295,6 @@ code" problem D3 already rejects for the two-sport case, once per additional spo
 - [ ] Acknowledged: this draft does not authorize implementation; a superseding ADR is required per Hard
       Rule 3 before any `market_type_registry.py` / `execution_bands.py` / `logic_epoch.py` change ships
 
-**Sign-off:** _not yet submitted for operator review_
-**Date:** _n/a_
-**Role:** _n/a_
+**Sign-off:** D1/D2/D3 ADOPTED as recorded in "OPERATOR SIGN-OFF — APR-0032 D1/D2/D3" above.
+**Date:** 2026-08-21
+**Role:** Operator (Earl Ignacio)
