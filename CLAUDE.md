@@ -236,6 +236,13 @@ STATUS_LINES=$(grep -cE "^\*\*Status:\*\*" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
 echo "gap headers=$HEADERS status lines=$STATUS_LINES (should be equal)"
 ```
 
+**GG-199 (2026-08-21):** the parity check above CANNOT see a *duplicate* id — both counters increment together for a duplicate `### GG-NNN` row, so two gaps sharing one number pass this check cleanly. Three separate concurrent-claim collisions have hit exactly this defect and none were caught by the check above: GG-187 claimed by both T-465 and T-466 twelve seconds apart (2026-08-18), and GG-197 claimed concurrently by T-473 and T-479 (2026-08-21, commit `05ed07e`) — the latter inside a batch explicitly trying to pre-allocate numbers. This is GG-162 (no atomic reservation for GG-numbers, unlike T-numbers, which `scripts/claim_session.sh` does protect); the fix here is detection only — the uniqueness check below, mirrored into `.claude/hooks/governance_scan.sh`'s auto-injected scan (`scripts/lib/gg_id_uniqueness_check.py`) so it runs every session without being asked. Atomic GG-number reservation at claim time remains a separate, larger, unstaffed task.
+
+```bash
+python3 "scripts/lib/gg_id_uniqueness_check.py" \
+    "03_DECISIONS/GOVERNANCE_GAP_LOG.md" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"
+```
+
 Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) before implementation work. RESOLVED/CLOSED-AS-ARTIFACT history now lives in `03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md` — never hand-patch that file for content; entries only arrive there verbatim, from the live log, and never move back.
 
 ---

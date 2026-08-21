@@ -4,7 +4,7 @@
 **Free IDs — verify before taking:** T-470+ · GG-190+ · ADR-0055+ · APR-0032+ · EXP-023+
 **State:** Phase 0 complete. Phase 1 CLOSED 8/8. Phase 2 1/8 (T-463 landed; gate 2.3 unrun). Phase 3 0/8 (ADR-0054 PROPOSED). Phase 4 0/3. Cell registry: 1 ACTIVE, 2 BLOCKED, 1 DARK, 29 NOT_IMPLEMENTED, 0 SHADOW.
 
-**GG numbers are pre-allocated per block.** GG-162 (no atomic GG-NNN reservation) produced a live GG-187 collision on 2026-08-18. Until Block I ships the uniqueness assertion, take the number your block names and no other.
+**GG numbers are pre-allocated per block.** GG-162 (no atomic GG-NNN reservation) produced a live GG-187 collision on 2026-08-18 and a GG-197 collision on 2026-08-21. Block I (T-476, DONE) shipped a *detection* assertion (`gg_id_uniqueness_check.py`, wired into `governance_scan.sh` and CLAUDE.md Step 3) — it will now alert loudly on a collision, but atomic reservation at claim time (GG-162's actual fix) is still unbuilt. Take the number your block names and no other.
 
 ---
 
@@ -23,7 +23,7 @@
 | ~~**E**~~ | ~~Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7`~~ DONE (T-472, 2026-08-20) — `_TICKER_DATE_RE` replaced with per-series registry, refusal-only on no-match (no wall-clock fallback), regression tests added. See PR #95, GG-191 (RESOLVED). | — | STANDARD | GG-191 |
 | **F** | APR-0032 decision request: `sport` as a first-class attribute, NFL band naming, NFL epoch inheritance | now | MICRO | — |
 | ~~**H**~~ | ~~Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap~~ DONE (T-475, 2026-08-21) — §5.2 amended to reuse T-472's `TickerGrammar` registry, keyed on `(game_date, teams_raw)`, refusal-only. GG-192 (OPEN, MEDIUM) — C4 exposure tracked at two granularities only (per-bet, whole-portfolio), no correlation grouping; no live consequence at one ACTIVE cell. | — | MICRO | GG-192 |
-| **I** | Claim-without-CLOSED-row assertion + GG-NNN ID-uniqueness assertion | now | MICRO | — |
+| ~~**I**~~ | ~~Claim-without-CLOSED-row assertion + GG-NNN ID-uniqueness assertion~~ DONE (T-476, 2026-08-21) — both wired into `governance_scan.sh`; uniqueness check also mirrored into CLAUDE.md Step 3. Also fixed worktree launcher's fetch scope (sibling-branch visibility) and registered GG-199. | — | MICRO | GG-199 |
 | **G** | NFL skeleton spike — cells + ticker grammar + one C1 stub, `kelly_fraction=0.0`, no C3 | after E and F | STANDARD | GG-194 |
 
 **Do not run E and G at the same time** — both touch `src/`.
