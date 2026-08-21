@@ -2191,6 +2191,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-196 — Outage-window (08-04..08-07) sub-bucket of the repaired epoch-12 cohort shows anomalous P&L nearly matching the pre-repair corruption artifact
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-196 |
+| Category | Measurement integrity — a sub-population inside a just-repaired dataset still looks anomalous even after the known corruption (GG-166-class date/outcome mismatch) is corrected. |
+| What was missed | `ADR-0055` (T-477, 2026-08-20) pre-registered a dry-run repair of the 532 corrupted `logic_epoch`-12 closed positions and, per its own §5 pre-registered suspicion threshold (+0.15/bet), found that while the **pooled** repaired cohort (n=719, mean +0.0652/bet) does not cross it, the **outage/transition sub-bucket** (`game_date` 2026-08-04..08-07, n=144) does: mean +0.3037/bet, SE 0.1382, win rate 50.7% — nearly identical to the pre-repair corrupted-population artifact figure (+0.3085/bet) that this whole repair exists to correct away from, and well above both the pre-outage clean anchor (+0.0163) and the post-outage bucket (+0.0002). |
+| When it should have been caught | This session (T-477), which is why it is being registered now rather than left for a later session to rediscover. |
+| Phases it survived | N/A — newly surfaced by this session's dry-run; not a previously-known gap. |
+| Why it survived | The repair rule (ADR-0055 §2) corrects `game_date` and re-derives `outcome`/`pnl` from the T-421 decoupled outcome store, but assumes the outcome store itself is uniformly reliable across all dates. The 08-04..08-07 window is exactly the GG-163 ESPN-403 outage window, and its outcome-store coverage was the most recently and narrowly backfilled part of T-470's 2026-08-20 extension — plausible that the store's own resolution accuracy is not uniform across that specific window, which the repair's assertions (STEP 2, all passed) do not test for. |
+| Impact | Medium — does not affect live capital or sizing directly (this repair is a dry run only, nothing has been written to the production ledger), but if the in-place repair (D1) is authorized before this is investigated, a real bias could be baked into the corrected ledger under the appearance of a clean fix. Also directly affects how much weight epoch 12's edge question (separate from this repair, per ADR-0055 §6) should give to games played during that window. |
+| Discovery | T-477 (2026-08-20), `scripts/t477_dryrun_epoch12_repair.py` STEP-3 regime-boundary split, computed per ADR-0055 §4's pre-registered (not post-hoc) date-boundary definition. |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-477's one-deliverable scope, which was pre-registration + dry-run, not investigation of an anomaly the dry-run surfaces). Candidate follow-on: audit the outcome store's `t4_mlb_outcome_store.jsonl` records specifically for `game_date` 2026-08-04 through 08-07 against a fresh independent source, before D1 (ADR-0055 §7) is decided. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ### GG-190 — T-471: the step-function onset of GG-185's game_date corruption (0/77 mismatched under commit `cbd09ae`, 532/532 under `687bf9e`) is not explained by any source-code, deploy, or environment difference found between the two commits — root cause NOT found, evidence bounded and next steps specified
 
 **Status:** OPEN · **Severity:** HIGH
@@ -2210,6 +2234,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | T-471 (2026-08-19/2026-08-20 session), tasked directly with root-causing GG-185's step-function trigger. Investigation ruled out, with direct evidence: (1) VPS system timezone/clock (`timedatectl` confirms `Etc/UTC`, matches `date.today()`); (2) a `t4-mlb.service` systemd restart at the corruption onset (`journalctl` shows zero restart events between the `687bf9e` deploy, 2026-08-07T05:26:30Z, and at least 2026-08-10 — the process ran continuously through the entire 08-08 onset); (3) `paper_trader.py` source differences (`git diff --stat cbd09ae 687bf9e -- src/` shows the file untouched — only `run_t4_mlb_live.py` [ESPN UA header, 5 insertions/1 deletion, `_run_cycle`'s body included since it is confirmed to live in this same file with no other diff] and `run_resolve_mlb.py` changed between the two commits); (4) `run_resolve_mlb.py`'s ESPN User-Agent fix as a contributor (confirmed the resolve path only reads and carries forward the already-stored open-time `game_date` value — `pos.get("game_date", "")` — and does not independently derive or overwrite it; the GG-166 mismatch-refusal guard did not exist in either commit). None of these four explains the observed 0%-vs-100% step. The two untested leads, not pursued due to STANDARD-tier/one-deliverable session budget: (a) diffing `paper_portfolio_mlb_t4.pre_gg166_correction_20260807T052850Z.json` (a portfolio-state backup on the VPS, timestamped ~2 minutes after the `687bf9e` deploy — its filename suggests an anticipated game_date correction was already in view at that moment) against contemporaneous live portfolio state, to check for a persisted-runtime-state trigger rather than a source-code one; (b) directly instrumenting (in a future, code-permitted session) the live value of `game_date` immediately before `trader.open_position()` for one corrupted `687bf9e`-era write and one correct `cbd09ae`-era write, to catch the discriminating state directly rather than by source inference. |
 | Resolution | Not started — root cause not found. This is an explicit, bounded negative result per this task's own stated allowance. Candidate next steps for a staffed follow-on, in priority order: (1) diff the `pre_gg166_correction_20260807T052850Z.json` portfolio backup against live state at that timestamp; (2) instrument `game_date`'s value at the `trader.open_position()` call site for a live comparison pair (requires a code change — out of scope for a read-only investigation session); (3) if neither surfaces a mechanism, escalate to treating this as accepted residual risk on the guard (`58b2eb6`, deployed and confirmed unconditional since 2026-08-16) rather than a fully explained incident. |
 | Status | OPEN — unstaffed. Does NOT resolve GG-185; GG-185 remains PARTIALLY RESOLVED (T-465's deploy-gap finding stands as a necessary-but-insufficient explanation, per that entry's own 2026-08-19 strategic-review note) since this session did not find the actual trigger, only bounded what it is not. |
+
+</details>
 
 </details>
 
