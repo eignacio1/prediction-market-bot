@@ -489,7 +489,27 @@ if r:
         if tier2_crossed:
             print(f"      - legacy ADR-0024 Tier 2 floor (raw_n>=500): raw_n={raw_n} -- CROSSED")
         if nstar_crossed:
-            print(f"      - APR-0024 n* (clean_n>=n*): clean_n={r['clean_n']} n*={r['n_star']} -- MET")
+            # GG-197: a MET verdict is only trustworthy if the clean cohort
+            # it was computed from is itself trustworthy. mismatch_n is
+            # live-computed (run_power_calc.analyze_band_power ->
+            # _ticker_date_mismatch_n) over whatever the CURRENT clean
+            # cohort is -- never hardcoded to 532/epoch-12 -- so this check
+            # self-clears once the underlying corruption (GG-166/GG-170/
+            # GG-185) is actually repaired and self-fires again if the same
+            # defect recurs in a future epoch or cell. The "5,580" figure
+            # below is ADR-0055 Addendum A's own dry-run citation, not a
+            # live recomputation -- the repair is unauthorized (ADR-0055 is
+            # PROPOSED, D1 unsigned) so this hook must not compute or act on
+            # repaired figures itself.
+            mismatch_n = r.get("ticker_date_mismatch_n", 0)
+            if mismatch_n > 0:
+                mismatch_pct = r.get("ticker_date_mismatch_pct", 0.0)
+                print(f"      - APR-0024 n* (clean_n>=n*): clean_n={r['clean_n']} / n*={r['n_star']} -- "
+                      f"VERDICT WITHHELD: {mismatch_n}/{r['clean_n']} rows ({mismatch_pct:.1f}%) carry a "
+                      f"ticker-vs-game_date mismatch (GG-170/GG-185). n* recomputed on ADR-0055's repaired "
+                      f"figures = 5,580 (NOT met). See ADR-0055.")
+            else:
+                print(f"      - APR-0024 n* (clean_n>=n*): clean_n={r['clean_n']} n*={r['n_star']} -- MET")
     elif neg_sign_crossed:
         print("")
         print("  *** GG-046 NEGATIVE-SIGN ALERT: T4M-PROJ's NO_POSITIVE_EFFECT finding")

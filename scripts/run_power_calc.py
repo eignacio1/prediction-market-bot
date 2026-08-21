@@ -67,6 +67,8 @@ from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E
     CellMeasurement,
     market_type_for_ticker,
     set_measurement,
+    derive_game_date,
+    TickerDateParseError,
 )
 
 OUT_DIR = Path("exp_output/T323-POWER-CALC")
@@ -157,16 +159,46 @@ def observed_cadence_per_week(recs: list[dict]) -> tuple[float | None, float | N
     return len(recs) / (span_days / 7.0), span_days
 
 
+# ── ticker-vs-game_date cohort-integrity check (GG-166/GG-170/GG-185/GG-197) ──────
+
+def _ticker_date_mismatch_n(clean_recs: list[dict]) -> int:
+    """Count of clean_recs whose kalshi_ticker parses (via the shared
+    series-agnostic grammar, market_type_registry.derive_game_date) to a
+    game_date that disagrees with the record's own stored game_date field.
+    Live-computed over whatever cohort is passed in -- not hardcoded to any
+    band, epoch, or count -- so it self-clears once a cohort's ticker dates
+    agree with their stored dates and self-fires again if the same
+    corruption recurs in a future epoch or cell. A row whose ticker can't be
+    parsed (unregistered series / non-matching grammar) is not counted as a
+    mismatch -- derive_game_date is refusal-only, so "can't determine" must
+    not read as "disagrees"."""
+    n = 0
+    for r in clean_recs:
+        ticker = r.get("kalshi_ticker")
+        if not ticker:
+            continue
+        try:
+            ticker_date = derive_game_date(ticker)
+        except (KeyError, TickerDateParseError):
+            continue
+        if ticker_date != r.get("game_date"):
+            n += 1
+    return n
+
+
 # ── per-band power calc ──────────────────────────────────────────────────────────
 
 def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) -> dict:
     clean_recs = filter_clean(recs, band)
     raw_n = len(recs)
     clean_n = len(clean_recs)
+    mismatch_n = _ticker_date_mismatch_n(clean_recs)
+    mismatch_pct = (mismatch_n / clean_n * 100.0) if clean_n else 0.0
 
     if clean_n < 2:
         return {
             "band": band, "raw_n": raw_n, "clean_n": clean_n,
+            "ticker_date_mismatch_n": mismatch_n, "ticker_date_mismatch_pct": mismatch_pct,
             "status": "INSUFFICIENT_DATA",
             "reason": f"clean_n={clean_n} < 2 — cannot estimate a sample variance.",
         }
@@ -186,6 +218,7 @@ def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) 
         # stats are reported informationally only.
         return {
             "band": band, "raw_n": raw_n, "clean_n": clean_n,
+            "ticker_date_mismatch_n": mismatch_n, "ticker_date_mismatch_pct": mismatch_pct,
             "status": "UNDERPOWERED",
             "min_n": MIN_N,
             "mean_pnl_per_bet": mu, "stdev_pnl_per_bet": sigma,
@@ -230,6 +263,7 @@ def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) 
                       f"Re-check once both thresholds clear (see GOVERNANCE_GAP_LOG.md GG-046).")
         return {
             "band": band, "raw_n": raw_n, "clean_n": clean_n,
+            "ticker_date_mismatch_n": mismatch_n, "ticker_date_mismatch_pct": mismatch_pct,
             "status": "NO_POSITIVE_EFFECT",
             "mean_pnl_per_bet": mu, "stdev_pnl_per_bet": sigma,
             "cadence_bets_per_week": cadence,
@@ -247,6 +281,7 @@ def analyze_band_power(band: str, recs: list[dict], alpha: float, power: float) 
 
     return {
         "band": band, "raw_n": raw_n, "clean_n": clean_n,
+        "ticker_date_mismatch_n": mismatch_n, "ticker_date_mismatch_pct": mismatch_pct,
         "status": "COMPUTED",
         "mean_pnl_per_bet": mu, "stdev_pnl_per_bet": sigma,
         "alpha": alpha, "power": power,
