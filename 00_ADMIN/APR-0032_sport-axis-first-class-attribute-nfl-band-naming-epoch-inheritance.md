@@ -1,4 +1,4 @@
-# APR-0032 — Sport as a First-Class Attribute, NFL Band-Naming Convention, NFL Epoch Inheritance (GG-197)
+# APR-0032 — Sport as a First-Class Attribute, NFL Band-Naming Convention, NFL Epoch Inheritance (GG-198)
 
 **Status:** DRAFT — decision request. This document presents three related sport-axis questions with
 options, evidence, and a recommendation each. It does not decide any of them and does not authorize any
@@ -16,7 +16,7 @@ whether `(MarketType, band)` is *sufficient*, on its own, for the sport-*groupin
 need once a second sport (NFL, per `COVERAGE_TARGET_MATRIX.md`) is added. `ADR-0054` §8 item 5 already names
 a 12-boundary re-audit as unstaffed, for the `(MarketType, band)` re-key specifically — this document is
 about a different, adjacent axis that re-audit does not cover. Motivating gap: `GOVERNANCE_GAP_LOG.md`
-GG-197.
+GG-198.
 
 ---
 
@@ -183,7 +183,7 @@ and keeps NFL's `clean_n`/`n*` provenance auditable from NFL's first bet forward
   Phase 3 reaches a point where it would otherwise decide them by accident.
 - **Does not resolve `ADR-0054` §8 item 5** (the 12-boundary re-audit for the `(MarketType, band)` re-key).
   That is a separate, already-named, already-unstaffed follow-on this document does not restate or absorb.
-- **Does not change GG-197's OPEN status** until the operator decides D1–D3 and, if any recommendation
+- **Does not change GG-198's OPEN status** until the operator decides D1–D3 and, if any recommendation
   above is accepted, a superseding ADR is drafted and implementation lands.
 
 ---

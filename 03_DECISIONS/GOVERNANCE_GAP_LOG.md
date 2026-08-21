@@ -2241,7 +2241,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
-### GG-197 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
+### GG-198 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
 
 **Status:** OPEN · **Severity:** MEDIUM
 
@@ -2250,7 +2250,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-197 |
+| Gap ID | GG-198 |
 | Category | Architectural placeholder — a decision Phase 3's cell-key work will make implicitly, by whatever is convenient, unless made explicitly first. |
 | What was missed | Three related sport-axis decisions have no recorded answer: (1) whether `sport` becomes a first-class attribute on `MarketType` (confirmed by direct read, `market_type_registry.py`: `MarketType` members are named `MLB_*`/`NBA_*`; the word "sport" appears only in docstrings/comments, lines 61-62/154/291; no `sport` attribute or `sport_for()` function exists anywhere in `src/`, confirmed by grep); (2) what naming convention a future NFL T4 sub-band uses (confirmed by direct read, `execution_bands.py` lines 42-93: MLB already uses a `T4M-` prefix convention under a separate `T4_MLB_SUBBAND_REGISTRY`, NBA uses bare `T4-` under `T4_SUBBAND_REGISTRY` — the two sports are already asymmetric, and nothing picks the pattern a third sport follows); (3) whether NFL cells inherit MLB's 12 existing `logic_epoch.py` boundaries or start at a fresh epoch 1 (confirmed: `grep -c "LogicEpochBoundary("` = 12, all keyed on bare band-string `bands_affected` sets, e.g. `{"T4M-PROJ"}`, `{"T1"}` — zero sport-awareness in the epoch machinery itself). |
 | When it should have been caught | Should be decided before Phase 3 (segmented-pool build, ADR-0054) writes its first `bands_affected` frozenset touching a non-MLB/non-NBA cell — i.e. before NFL (or any third sport) is added to `market_type_registry.py`. |
