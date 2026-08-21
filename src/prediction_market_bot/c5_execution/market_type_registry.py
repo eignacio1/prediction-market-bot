@@ -77,6 +77,18 @@ class MarketType(Enum):
     MLB_PARTIAL_GAME = "mlb_partial_game"  # F3/F5/F7 derivatives (Phase 0 ticker-confirmed)
     NBA_PLAYER_POINTS = "nba_player_points"  # legacy; dark/frozen, not an MLB coverage-target row
 
+    # T-474 (NFL skeleton spike, ADR-0056 §2/D1, GG-198): the four standard
+    # game-level mechanisms. Series tickers confirmed live against Kalshi's
+    # /series and /events endpoints 2026-08-21 -- NOT guessed from the MLB
+    # pattern (explicit task instruction). All four are scope="Game"/full-game
+    # markets (KXNFL*GAME/SPREAD/TOTAL/TEAMTOTAL), distinct from the ~100
+    # quarter/half-scoped NFL series (KXNFL1QSPREAD etc.) which are out of
+    # scope for this spike.
+    NFL_MONEYLINE = "nfl_moneyline"
+    NFL_SPREAD = "nfl_spread"
+    NFL_GAME_TOTAL = "nfl_game_total"
+    NFL_TEAM_TOTAL = "nfl_team_total"
+
 
 # Series ticker is a property of the market family, not of (family, band) — the
 # same series is evaluated by whichever band's decision tree fires on it.
@@ -88,12 +100,63 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.MLB_TEAM_TOTAL: "KXMLBTEAMTOTAL",
     MarketType.MLB_PARTIAL_GAME: "KXMLBF3",  # F3 as the representative partial-game ticker
     MarketType.NBA_PLAYER_POINTS: "KXNBAPTS",
+    # T-474: confirmed live 2026-08-21 via curl against
+    # https://external-api.kalshi.com/trade-api/v2/series?category=Sports and
+    # per-series /events lookups -- each returned open/scheduled NFL preseason
+    # events (e.g. KXNFLGAME-26AUG21NYJPIT) at the time of confirmation.
+    MarketType.NFL_MONEYLINE: "KXNFLGAME",
+    MarketType.NFL_SPREAD: "KXNFLSPREAD",
+    MarketType.NFL_GAME_TOTAL: "KXNFLTOTAL",
+    MarketType.NFL_TEAM_TOTAL: "KXNFLTEAMTOTAL",
 }
 
 
 def series_ticker_for(market_type: MarketType) -> str:
     """Return the Kalshi series ticker for a market family."""
     return _SERIES_TICKER_BY_MARKET_TYPE[market_type]
+
+
+# ---------------------------------------------------------------------------
+# Sport attribute (ADR-0056 §2/D1, GG-198) — map form, per the operator's
+# signed decision (either an enum property or this map satisfies D1; APR-0032
+# frames the map as the direct mechanical parallel to
+# _SERIES_TICKER_BY_MARKET_TYPE above, so an implementing session defaults to
+# it absent a concrete reason otherwise).
+# ---------------------------------------------------------------------------
+
+_SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
+    MarketType.MLB_PLAYER_PROP_HITS: "mlb",
+    MarketType.MLB_MONEYLINE: "mlb",
+    MarketType.MLB_RUN_LINE: "mlb",
+    MarketType.MLB_GAME_TOTAL: "mlb",
+    MarketType.MLB_TEAM_TOTAL: "mlb",
+    MarketType.MLB_PARTIAL_GAME: "mlb",
+    MarketType.NBA_PLAYER_POINTS: "nba",
+    MarketType.NFL_MONEYLINE: "nfl",
+    MarketType.NFL_SPREAD: "nfl",
+    MarketType.NFL_GAME_TOTAL: "nfl",
+    MarketType.NFL_TEAM_TOTAL: "nfl",
+}
+
+# Fail-closed enforcement (ADR-0056 §2's enforcement clause): a MarketType
+# member missing from this map is a construction-time failure, not a silent
+# gap, mirroring MarketTypeCell.__post_init__'s existing RULED_OUT-requires-
+# reason precedent. Runs once at import time -- catches a future member added
+# to the enum without a matching sport entry before any cell can be seeded
+# against it.
+_missing_sport_mappings = [mt for mt in MarketType if mt not in _SPORT_BY_MARKET_TYPE]
+if _missing_sport_mappings:
+    raise RuntimeError(
+        f"MarketType member(s) missing from _SPORT_BY_MARKET_TYPE (ADR-0056 §2, D1): "
+        f"{_missing_sport_mappings!r} -- every MarketType member requires a sport entry, "
+        f"fail-closed by design."
+    )
+del _missing_sport_mappings
+
+
+def sport_for(market_type: MarketType) -> str:
+    """Return the sport code for a market family (ADR-0056 §2/D1)."""
+    return _SPORT_BY_MARKET_TYPE[market_type]
 
 
 # ADR-0053 §6.3 item 1: reverse ticker->market_type lookup. Named as a
@@ -235,6 +298,18 @@ _NBA_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})([A-Z0-9]+)(?:-|$)")
 _MLB_GRAMMAR = TickerGrammar(_MLB_TAIL, has_hhmm=True)
 _NBA_GRAMMAR = TickerGrammar(_NBA_TAIL, has_hhmm=False)
 
+# T-474 (NFL skeleton spike): measured, not assumed, per the task's explicit
+# instruction ("This is unknown and must be MEASURED"). Confirmed live
+# 2026-08-21 against real Kalshi event tickers under KXNFLGAME/KXNFLSPREAD/
+# KXNFLTOTAL (e.g. KXNFLGAME-26AUG21NYJPIT, KXNFLTEAMTOTAL-26JAN25LASEA):
+# NFL's shape is <YY><MON><DD><TEAMS...> -- NO HHMM segment. This matches
+# NBA's grammar shape, not MLB's. A separate _NFL_TAIL/_NFL_GRAMMAR pair is
+# registered rather than reusing _NBA_GRAMMAR directly, even though the
+# pattern is textually identical today, so NFL's grammar can diverge later
+# (e.g. a doubleheader-style suffix) without silently changing NBA's.
+_NFL_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})([A-Z0-9]+)(?:-|$)")
+_NFL_GRAMMAR = TickerGrammar(_NFL_TAIL, has_hhmm=False)
+
 _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.MLB_PLAYER_PROP_HITS: _MLB_GRAMMAR,
     MarketType.MLB_MONEYLINE: _MLB_GRAMMAR,
@@ -243,6 +318,10 @@ _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.MLB_TEAM_TOTAL: _MLB_GRAMMAR,
     MarketType.MLB_PARTIAL_GAME: _MLB_GRAMMAR,
     MarketType.NBA_PLAYER_POINTS: _NBA_GRAMMAR,
+    MarketType.NFL_MONEYLINE: _NFL_GRAMMAR,
+    MarketType.NFL_SPREAD: _NFL_GRAMMAR,
+    MarketType.NFL_GAME_TOTAL: _NFL_GRAMMAR,
+    MarketType.NFL_TEAM_TOTAL: _NFL_GRAMMAR,
 }
 
 
@@ -476,6 +555,29 @@ _cells: list[MarketTypeCell] = [
 ]
 
 for _market_type in _OTHER_MLB_FAMILIES:
+    for _band in _MLB_COARSE_BANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- NFL (T-474 skeleton spike, ADR-0056 §5): seeded NOT_IMPLEMENTED only ---
+# No NFL cell may be promoted above NOT_IMPLEMENTED by this session (explicit
+# DO NOT list item) -- SHADOW is not authorized here (ADR-0056 §6 explicitly
+# leaves CellStatus/kelly_fraction/activation untouched). No T4 sub-band
+# decomposition is built for NFL in this spike (ADR-0056 D2 names the future
+# T4NFL- prefix but does not require building the registry now), so every
+# NFL family's T4 column is the coarse ExecutionBand.T4_IN_PLAY aggregate --
+# same pattern as every non-decomposed MLB family above. Reusing
+# _MLB_COARSE_BANDS here despite its MLB-scoped name: it is actually just
+# "the five coarse ExecutionBand values," sport-agnostic in content though
+# not in name. Renaming it is a naming-only change outside this session's
+# single-deliverable scope -- see the breakage-list artifact.
+_NFL_FAMILIES: tuple[MarketType, ...] = (
+    MarketType.NFL_MONEYLINE,
+    MarketType.NFL_SPREAD,
+    MarketType.NFL_GAME_TOTAL,
+    MarketType.NFL_TEAM_TOTAL,
+)
+
+for _market_type in _NFL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
