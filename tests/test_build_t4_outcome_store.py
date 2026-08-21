@@ -117,15 +117,27 @@ class TestGroupByTicker:
         assert grouped[ticker]["n_cycle_rows"] == 2
 
     @pytest.mark.unit
-    def test_malformed_ticker_falls_back_to_raw_game_date(self):
+    def test_malformed_ticker_is_refused_not_included(self):
+        """GG-191: a ticker whose date can't be derived is excluded from the
+        outcome store entirely -- never falls back to the (possibly wrong,
+        GG-164) raw stored game_date field."""
         rows = [
             {"ticker": "GARBAGE-TICKER", "player_id": 1, "player_name": "X",
              "threshold": 1, "game_date": "2026-07-02", "p_t4": 0.1},
         ]
         grouped = outcome_store.group_by_ticker(rows)
-        g = grouped["GARBAGE-TICKER"]
-        assert g["date_source"] == "raw_fallback"
-        assert g["game_date"] == "2026-07-02"
+        assert "GARBAGE-TICKER" not in grouped
+        assert grouped == {}
+
+    @pytest.mark.unit
+    def test_unregistered_series_ticker_is_refused_not_included(self):
+        rows = [
+            {"ticker": "KXMLBUNKNOWNSERIES-26AUG011610MIANYM-T8.5",
+             "player_id": 1, "player_name": "X",
+             "threshold": 1, "game_date": "2026-08-01", "p_t4": 0.1},
+        ]
+        grouped = outcome_store.group_by_ticker(rows)
+        assert grouped == {}
 
 
 # ---------------------------------------------------------------------------

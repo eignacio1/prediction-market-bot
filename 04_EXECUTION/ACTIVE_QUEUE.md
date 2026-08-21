@@ -20,9 +20,9 @@
 |---|---|---|---|---|
 | **C** | Extend `t4_mlb_outcome_store.jsonl` coverage to 2026-08-07→08-15; report how many of GG-185's 532 rows become re-derivable | now | STANDARD | GG-193 |
 | ~~**D**~~ | ~~Root-cause the 2026-08-08 post-outage restart: what bound `game_date` differently?~~ DONE (T-471, 2026-08-20) — root cause NOT found; bounded negative result, GG-190 (OPEN). | — | STANDARD | GG-190 |
-| **E** | Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7` | now | STANDARD | GG-191 |
+| ~~**E**~~ | ~~Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7`~~ DONE (T-472, 2026-08-20) — `_TICKER_DATE_RE` replaced with per-series registry, refusal-only on no-match (no wall-clock fallback), regression tests added. See PR #95, GG-191 (RESOLVED). | — | STANDARD | GG-191 |
 | **F** | APR-0032 decision request: `sport` as a first-class attribute, NFL band naming, NFL epoch inheritance | now | MICRO | — |
-| **H** | Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap | now | MICRO | GG-192 |
+| ~~**H**~~ | ~~Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap~~ DONE (T-475, 2026-08-21) — §5.2 amended to reuse T-472's `TickerGrammar` registry, keyed on `(game_date, teams_raw)`, refusal-only. GG-192 (OPEN, MEDIUM) — C4 exposure tracked at two granularities only (per-bet, whole-portfolio), no correlation grouping; no live consequence at one ACTIVE cell. | — | MICRO | GG-192 |
 | **I** | Claim-without-CLOSED-row assertion + GG-NNN ID-uniqueness assertion | now | MICRO | — |
 | **G** | NFL skeleton spike — cells + ticker grammar + one C1 stub, `kelly_fraction=0.0`, no C3 | after E and F | STANDARD | GG-194 |
 
@@ -32,8 +32,9 @@
 
 - **GG-185's root cause is incomplete, and Block D (T-471) did NOT resolve it.** Mismatch rate is 0/77 correct under `cbd09ae` vs. 0/532 correct under `687bf9e` (deploy-timestamp-boxed, not calendar-boxed), byte-identical write-path code in both. Ruled out: VPS timezone, systemd restart at onset, `paper_trader.py`/`run_resolve_mlb.py` source diffs. Untested: diff `paper_portfolio_mlb_t4.pre_gg166_correction_20260807T052850Z.json` against live state at that timestamp; live-instrument `game_date` at the `open_position()` call site. See GG-190 (OPEN) for full record — do not re-derive the ruled-out list from scratch.
 - **The date-derivation regex is `^KXMLBHIT-` only** (`run_t4_mlb_live.py:731`, `run_resolve_mlb.py:130`) and on no-match the live engine returns the session wall-clock date at three ledger-write call sites (1100, 1166, 1396). It does not match `KXMLBTOTAL`. Phase 2 activating a second cell before Block E lands reproduces GG-166 on that cell from row one.
-- **`n*` is not gate-grade for epoch 12.** Recomputed 2026-08-19: all 719 rows → mean +0.2325/bet, n*≈608; the 187 date-consistent rows → mean +0.0163/bet, n*≈75,734. μ is not distinguishable from zero (SE≈0.099) and n* is quadratic in 1/μ. Do not report progress against n* for this epoch until Block C settles which rows are trustworthy.
-- **Do not quote any epoch-12 P&L or edge figure**, contaminated or clean, until Block C lands.
+- **Outcome-store coverage gap CLOSED (T-470, 2026-08-20).** `t4_mlb_outcome_store.jsonl` extended to 2026-07-02..08-19; all 532/532 corrupted epoch-12 closed positions are now re-derivable (verified independently, T-477).
+- **Repair method pre-registered and dry-run simulated, NOT applied (T-477/ADR-0055, 2026-08-20).** All 5 pre-registered assertions passed (532 changed/2416 unchanged, dates match ticker, zero cross-epoch bleed, zero remaining mismatches, `size_usd` invariant). Repaired pooled epoch-12 figures: n=719, mean +0.0652/bet (SE 0.0552), n*=5,580 — **clean_n=719 does NOT clear n\* post-repair**, contradicting the governance hook's current `MET` status (that figure is computed off the *uncorrected* ledger, mean +0.2325/n*=608). GG-196 (OPEN): the 2026-08-04..08-07 outage-window sub-bucket (n=144) shows mean +0.3037/bet, crossing ADR-0055's own pre-registered suspicion threshold and nearly matching the pre-repair artifact — unresolved, not investigated this session.
+- **Do not quote any epoch-12 P&L or edge figure as production-authoritative until D1 (ADR-0055 §7) is decided by the operator and the repair is actually applied** — the ADR-0055 dry-run numbers above are evidence for that decision, not a cleared gate. The governance hook's `MET`/GG-046 alert should be read with this caveat until then.
 
 ## Do not
 

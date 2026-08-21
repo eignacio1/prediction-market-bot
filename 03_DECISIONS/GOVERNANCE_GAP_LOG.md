@@ -2143,6 +2143,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-192 — C4 tracks exposure at exactly two granularities (single bet-evaluation, whole portfolio) with nothing in between; a per-game correlation-group cap is a new grouping dimension, not a reuse of existing plumbing
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-192 |
+| Category | Risk-engine architecture — a governance-surface gap. The substance was already found and stated in `ADR-0054` §5.1 (T-467, 2026-08-19) but existed only inside a PROPOSED document; this entry gives it a standing governance-log presence independent of that ADR's eventual status. |
+| What was missed | Confirmed by direct grep of `src/prediction_market_bot/c4_risk_engine/risk.py`: `max_single_event_exposure_usd` (`_HARD_LIMITS`, line 135) resolves per call / per bet-evaluation — effectively per-ticker (CHECK 6, lines 736-737). Zero `game_key`/`correlat`/`per_game` hits anywhere in `risk.py` — no game-level or family-level grouping exists in `_compute_kelly_size()` or any CHECK. The only other exposure figure C4 consumes, `current_open_exposure_usd`, is supplied by `paper_trader.py::exposure_snapshot()` (~line 250) as a portfolio-wide sum across *all* open non-isolated positions, regardless of game or family. So exposure is tracked at exactly two granularities — single-event ($500) and whole-portfolio (ADR-0026 cap) — with nothing in between. Three correlated families on one game (e.g. `KXMLBTOTAL`/`KXMLBTEAMTOTAL`/`KXMLBHIT` on the same matchup) can each independently clear the edge gate and each independently clear the $500 single-event cap, producing ~$1,500 of exposure to one game outcome against a stated $500 per-event cap — the cap's intent is defeated by construction, not by a bug in its enforcement. |
+| When it should have been caught | Design time for the per-event exposure cap (`_HARD_LIMITS`, dated 2026-05-29 per Q5/CLAUDE.md) — the cap was sized and named for a single-cell system and never revisited as a second grouping axis (family/game correlation) became a live architectural concern. |
+| Phases it survived | Present since `_HARD_LIMITS`'s introduction; only surfaced as a named concern 2026-08-17 when the operator signed off ADR-0054 item (c) (correlated-exposure cap, GG-135 solvency framing). |
+| Why it survived | `max_single_event_exposure_usd`'s name reads as if it already covers "one event," and at one ACTIVE cell (T4M-PROJ × MLB_PLAYER_PROP_HITS) there has never been a second correlated family live simultaneously to expose the gap empirically — no observed loss or near-miss triggered a review. The finding lived only inside `ADR-0054` §5.1, a PROPOSED document; nothing in the routine governance-scan surface (this log, `risk.py` itself) stated it independently, so if that ADR were superseded or narrowed before acceptance, the finding would leave no trace. |
+| Impact | No live consequence today — one ACTIVE cell means no correlated grouping can currently occur. Becomes unsound the moment a second cell (a second market_type on an already-live band, e.g. MLB moneyline/totals) is promoted ACTIVE: correlated legs on the same game would silently stack past the intended per-event ceiling. Directly relevant to solvency (GG-135 framing), not edge. |
+| Discovery | T-475 (2026-08-21), verifying `ADR-0054` §5.1's claim directly via `grep -n max_single_event_exposure_usd risk.py`, `grep -nic "game_key\|correlat\|per_event" risk.py` (zero hits), and `paper_trader.py::exposure_snapshot()` (portfolio-wide sum, confirmed). |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-475's one-deliverable scope, which was the ADR-0054 §5.2 amendment). `ADR-0054` §5.3-§5.4 already specifies the control shape (aggregate cap per game key, sized down not rejected, $1,000 provisional) as PROPOSED design; wiring it into `risk.py`/CHECK 6 is a Phase 3 box 3.7 follow-on, not performed here. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ### GG-195 — 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope
 
 **Status:** OPEN · **Severity:** LOW
@@ -2161,6 +2185,54 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Impact | Low — no code or capital path reads these files; they are dead nav/handoff prose. The risk is purely navigational (a future session mistaking stale untracked content for current state) and repo hygiene (working tree drift from what `git status` should show as clean). |
 | Discovery | T-469 (2026-08-19), `git status --porcelain` during Step 3 of its mandated task, cross-checked against the explicit file list given in scope — these 14 fell outside it. |
 | Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-469's one-deliverable scope). Candidate follow-on: a session tasked with triaging each file (track-for-recoverability-then-delete, vs. delete outright if superseded, vs. `.gitignore` for `__pycache__`) — same judgment pattern T-469 applied to `TERMINAL_PROMPTS_2026-08-03.md` in this session, just not yet applied to this list. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
+### GG-191 — Ticker-date derivation was hardcoded to KXMLBHIT's literal shape and silently fell back to wall-clock date on any non-match, duplicated across five call sites
+
+**Status:** RESOLVED 2026-08-20 · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-191 |
+| Category | Systemic blind spot — a single-series-shaped regex, copy-pasted rather than shared, standing in for a series-agnostic contract. |
+| What was missed | `_TICKER_DATE_RE` (or an equivalent inline regex) hardcoded to KXMLBHIT's literal prefix and shape (`^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})`) existed independently in `run_t4_mlb_live.py` (3 sites), `run_resolve_mlb.py`, `run_mlb_paper_trade.py`, `run_paper_trade.py` (NBA — a differently-shaped grammar, no HHMM token), and `scripts/build_t4_outcome_store.py::group_by_ticker()` — six sites total, five files. On any non-match (unregistered series, malformed tail, or a genuinely different series like KXMLBF5/F7) every one of these silently substituted the session's wall-clock `game_date` instead of refusing the write. This is the exact mechanism behind GG-166 (44% of epoch-12 clean cohort corrupted), GG-170 (69.9% assertion-A violations concentrated in epoch 12), and GG-185 (46 stuck-open positions). |
+| When it should have been caught | At GG-166's original remediation (2026-07-xx) — that fix corrected the *symptom* (wrong dates already written) but left the *fallback mechanism* itself in place and uncorrected in four of the five other call sites, and left the grammar unregistered as a shared contract. |
+| Phases it survived | Ships pre-166, survives 166's fix, survives 170's discovery, survives 185's discovery — three separate incidents traced back to the same root cause before the mechanism itself was addressed rather than its outputs. |
+| Why it survived | No single shared, series-agnostic ticker grammar existed for any call site to depend on; each file grew its own regex independently, so fixing one never touched the others. Nothing enforced "refuse on parse failure" as a contract — silent wall-clock substitution was the path of least resistance at each site's original authorship. |
+| Impact | Wrong `game_date` values written to paper-trading ledgers and cycle logs feed directly into C4 Kelly sizing, drawdown kill-switch state, and commercial-validation clean_n counts (GG-004/APR-0024) — a corrupted date can silently misroute a record's cell, epoch, or resolution window. KXMLBF5/F7 (MLB_PARTIAL_GAME) tickers were previously unregistered entirely, meaning any live activation of those series would have hit the fallback on every single record with zero warning. |
+| Discovery | T-472 (2026-08-20), tasked explicitly with making date derivation series-agnostic and refusal-only. |
+| Resolution | RESOLVED this session. (1) Registered a shared `TickerGrammar` per `MarketType` in `market_type_registry.py` (`parse_ticker_date()`, `derive_game_date()`), covering MLB (`has_hhmm=True`) and NBA (`has_hhmm=False`) shapes, with KXMLBF5/F7 aliased to `MLB_PARTIAL_GAME`. (2) All six call sites across five files rewritten to delegate to the shared grammar and refuse (return `None` / raise, caller skips the write) instead of falling back to wall-clock — verified against real production data with zero refusals on any currently-live ticker (2948/2948 in `run_t4_mlb_live.py`'s ledger, 1764/1764 in `run_mlb_paper_trade.py`, 133/133 in `run_paper_trade.py`). (3) `scripts/run_power_calc.py` now counts and surfaces unregistered-series drops (`_UNREGISTERED_SERIES_COUNTS`) instead of silently excluding them with no visibility. (4) Regression tests added: `test_market_type_registry.py` (grammar itself, 9 tests), `test_power_calc.py` (drop-surfacing, 4 tests), `test_run_mlb_paper_trade.py` (rewrote a pre-existing test class that had encoded the OLD wrong model — leading ticker token treated as an irrelevant "creation day" with the year reconstructed from wall clock, rather than the leading token being the actual embedded year; the bug was masked because every fixture happened to use "26" matching both roles), `test_run_t4_mlb_live.py` (3 new tests; also had to correct a pre-existing fixture ticker, `TICKER_SOTO`, that was itself malformed and never matched the grammar even before this fix — same masking pattern), `test_run_resolve_mlb.py` and `test_run_paper_trade.py` (new files, 3 tests each, wrapper-contract smoke coverage). Full touched-file test run: green. |
+| Status | RESOLVED 2026-08-20 (T-472). |
+
+</details>
+
+---
+
+### GG-196 — Outage-window (08-04..08-07) sub-bucket of the repaired epoch-12 cohort shows anomalous P&L nearly matching the pre-repair corruption artifact
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-196 |
+| Category | Measurement integrity — a sub-population inside a just-repaired dataset still looks anomalous even after the known corruption (GG-166-class date/outcome mismatch) is corrected. |
+| What was missed | `ADR-0055` (T-477, 2026-08-20) pre-registered a dry-run repair of the 532 corrupted `logic_epoch`-12 closed positions and, per its own §5 pre-registered suspicion threshold (+0.15/bet), found that while the **pooled** repaired cohort (n=719, mean +0.0652/bet) does not cross it, the **outage/transition sub-bucket** (`game_date` 2026-08-04..08-07, n=144) does: mean +0.3037/bet, SE 0.1382, win rate 50.7% — nearly identical to the pre-repair corrupted-population artifact figure (+0.3085/bet) that this whole repair exists to correct away from, and well above both the pre-outage clean anchor (+0.0163) and the post-outage bucket (+0.0002). |
+| When it should have been caught | This session (T-477), which is why it is being registered now rather than left for a later session to rediscover. |
+| Phases it survived | N/A — newly surfaced by this session's dry-run; not a previously-known gap. |
+| Why it survived | The repair rule (ADR-0055 §2) corrects `game_date` and re-derives `outcome`/`pnl` from the T-421 decoupled outcome store, but assumes the outcome store itself is uniformly reliable across all dates. The 08-04..08-07 window is exactly the GG-163 ESPN-403 outage window, and its outcome-store coverage was the most recently and narrowly backfilled part of T-470's 2026-08-20 extension — plausible that the store's own resolution accuracy is not uniform across that specific window, which the repair's assertions (STEP 2, all passed) do not test for. |
+| Impact | Medium — does not affect live capital or sizing directly (this repair is a dry run only, nothing has been written to the production ledger), but if the in-place repair (D1) is authorized before this is investigated, a real bias could be baked into the corrected ledger under the appearance of a clean fix. Also directly affects how much weight epoch 12's edge question (separate from this repair, per ADR-0055 §6) should give to games played during that window. |
+| Discovery | T-477 (2026-08-20), `scripts/t477_dryrun_epoch12_repair.py` STEP-3 regime-boundary split, computed per ADR-0055 §4's pre-registered (not post-hoc) date-boundary definition. |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-477's one-deliverable scope, which was pre-registration + dry-run, not investigation of an anomaly the dry-run surfaces). Candidate follow-on: audit the outcome store's `t4_mlb_outcome_store.jsonl` records specifically for `game_date` 2026-08-04 through 08-07 against a fresh independent source, before D1 (ADR-0055 §7) is decided. |
 | Status | OPEN — unstaffed. |
 
 </details>
@@ -2186,6 +2258,32 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | T-471 (2026-08-19/2026-08-20 session), tasked directly with root-causing GG-185's step-function trigger. Investigation ruled out, with direct evidence: (1) VPS system timezone/clock (`timedatectl` confirms `Etc/UTC`, matches `date.today()`); (2) a `t4-mlb.service` systemd restart at the corruption onset (`journalctl` shows zero restart events between the `687bf9e` deploy, 2026-08-07T05:26:30Z, and at least 2026-08-10 — the process ran continuously through the entire 08-08 onset); (3) `paper_trader.py` source differences (`git diff --stat cbd09ae 687bf9e -- src/` shows the file untouched — only `run_t4_mlb_live.py` [ESPN UA header, 5 insertions/1 deletion, `_run_cycle`'s body included since it is confirmed to live in this same file with no other diff] and `run_resolve_mlb.py` changed between the two commits); (4) `run_resolve_mlb.py`'s ESPN User-Agent fix as a contributor (confirmed the resolve path only reads and carries forward the already-stored open-time `game_date` value — `pos.get("game_date", "")` — and does not independently derive or overwrite it; the GG-166 mismatch-refusal guard did not exist in either commit). None of these four explains the observed 0%-vs-100% step. The two untested leads, not pursued due to STANDARD-tier/one-deliverable session budget: (a) diffing `paper_portfolio_mlb_t4.pre_gg166_correction_20260807T052850Z.json` (a portfolio-state backup on the VPS, timestamped ~2 minutes after the `687bf9e` deploy — its filename suggests an anticipated game_date correction was already in view at that moment) against contemporaneous live portfolio state, to check for a persisted-runtime-state trigger rather than a source-code one; (b) directly instrumenting (in a future, code-permitted session) the live value of `game_date` immediately before `trader.open_position()` for one corrupted `687bf9e`-era write and one correct `cbd09ae`-era write, to catch the discriminating state directly rather than by source inference. |
 | Resolution | Not started — root cause not found. This is an explicit, bounded negative result per this task's own stated allowance. Candidate next steps for a staffed follow-on, in priority order: (1) diff the `pre_gg166_correction_20260807T052850Z.json` portfolio backup against live state at that timestamp; (2) instrument `game_date`'s value at the `trader.open_position()` call site for a live comparison pair (requires a code change — out of scope for a read-only investigation session); (3) if neither surfaces a mechanism, escalate to treating this as accepted residual risk on the guard (`58b2eb6`, deployed and confirmed unconditional since 2026-08-16) rather than a fully explained incident. |
 | Status | OPEN — unstaffed. Does NOT resolve GG-185; GG-185 remains PARTIALLY RESOLVED (T-465's deploy-gap finding stands as a necessary-but-insufficient explanation, per that entry's own 2026-08-19 strategic-review note) since this session did not find the actual trigger, only bounded what it is not. |
+
+</details>
+
+</details>
+
+---
+
+### GG-198 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-198 |
+| Category | Architectural placeholder — a decision Phase 3's cell-key work will make implicitly, by whatever is convenient, unless made explicitly first. |
+| What was missed | Three related sport-axis decisions have no recorded answer: (1) whether `sport` becomes a first-class attribute on `MarketType` (confirmed by direct read, `market_type_registry.py`: `MarketType` members are named `MLB_*`/`NBA_*`; the word "sport" appears only in docstrings/comments, lines 61-62/154/291; no `sport` attribute or `sport_for()` function exists anywhere in `src/`, confirmed by grep); (2) what naming convention a future NFL T4 sub-band uses (confirmed by direct read, `execution_bands.py` lines 42-93: MLB already uses a `T4M-` prefix convention under a separate `T4_MLB_SUBBAND_REGISTRY`, NBA uses bare `T4-` under `T4_SUBBAND_REGISTRY` — the two sports are already asymmetric, and nothing picks the pattern a third sport follows); (3) whether NFL cells inherit MLB's 12 existing `logic_epoch.py` boundaries or start at a fresh epoch 1 (confirmed: `grep -c "LogicEpochBoundary("` = 12, all keyed on bare band-string `bands_affected` sets, e.g. `{"T4M-PROJ"}`, `{"T1"}` — zero sport-awareness in the epoch machinery itself). |
+| When it should have been caught | Should be decided before Phase 3 (segmented-pool build, ADR-0054) writes its first `bands_affected` frozenset touching a non-MLB/non-NBA cell — i.e. before NFL (or any third sport) is added to `market_type_registry.py`. |
+| Phases it survived | N/A — this is a forward-looking gap, not a survived defect. Surfaced now because ADR-0054 §4 (2026-08-19) decided the *cell key* is `(MarketType, band)`, which is correct for distinguishing cells but was never checked against whether it is sufficient for *grouping* by sport, the separate operation Phase 3 will need ("bump one epoch, every MLB cell resets same day" / "NFL's cells graduate independently of MLB's"). |
+| Why it survived | `ADR-0054` (PROPOSED, 2026-08-19) resolved the cell-key question in isolation; its own §8 follow-on list (item 5) already names "re-audit all 12 existing boundaries against their actual diffs for true per-cell blast radius" as unstaffed, but that item addresses `(MarketType, band)` granularity, not the sport-grouping, band-naming, or epoch-inheritance questions this entry raises — those are a distinct axis ADR-0054 did not consider because it was scoped to Phase 3 boxes 3.1/3.2/3.7/3.8, not to sport-expansion readiness. |
+| Impact | If Phase 3 proceeds without a decision, each of the three questions gets answered implicitly by whatever the first NFL-touching commit happens to do — e.g. a hand-rolled `T4N-PROJ` string chosen ad hoc, or a first NFL epoch boundary's `bands_affected` silently including or excluding MLB bands by accident. Retrofitting a correct answer afterward means the same 12-boundary re-audit ADR-0054 §8 already flags, done twice — once for the `(MarketType, band)` re-key, once again for whatever the accidental sport-axis answer needs to be undone. |
+| Discovery | T-473 (2026-08-20/21 session), tasked directly with drafting a decision-request APR for these three questions ahead of Phase 3. |
+| Resolution | Not started — this entry is the registration; `00_ADMIN/APR-0032` is the decision-request document itself, presenting options/evidence/recommendation for D1 (sport as first-class attribute), D2 (NFL band-naming convention), D3 (NFL epoch inheritance) to the operator. No `src/` change made or proposed in this session. |
+| Status | OPEN — awaiting operator decision on APR-0032. |
 
 </details>
 

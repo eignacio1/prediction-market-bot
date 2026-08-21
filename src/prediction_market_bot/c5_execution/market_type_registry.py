@@ -42,6 +42,7 @@ infrastructure), not this box.
 from __future__ import annotations
 
 import dataclasses
+import re
 from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
@@ -99,10 +100,27 @@ def series_ticker_for(market_type: MarketType) -> str:
 # sub-dependency of item 2 (market_type on the resolved-bet ledger, out of
 # scope for T-453 -- see Block J), needed there to backfill/derive
 # market_type for ledger rows written before that field existed. Buildable
-# independently of item 2, so it ships now. Every series ticker above is
-# distinct, so this reverse map is bijective and needs no collision handling.
+# independently of item 2, so it ships now.
+#
+# T-472/GG-191 (2026-08-20): MLB_PARTIAL_GAME's forward entry above points at
+# KXMLBF3 as "the representative partial-game ticker" -- fine as a forward
+# label (series_ticker_for() must return one value), but KXMLBF5 and KXMLBF7
+# are real, separately-registered tickers for the same MarketType
+# (COVERAGE_TARGET_MATRIX.md line 41 lists the row as KXMLBF3/F5/F7) that a
+# pure inversion of the forward map can never produce -- market_type_for_ticker
+# raised KeyError on both, verified against the live registry. _ALIASES below
+# adds the missing reverse-only entries without touching series_ticker_for()'s
+# single-value forward contract. The map is no longer a pure bijection of
+# _SERIES_TICKER_BY_MARKET_TYPE once these are merged in -- it is deliberately
+# many-to-one for MLB_PARTIAL_GAME.
+_MARKET_TYPE_BY_SERIES_TICKER_ALIASES: dict[str, MarketType] = {
+    "KXMLBF5": MarketType.MLB_PARTIAL_GAME,
+    "KXMLBF7": MarketType.MLB_PARTIAL_GAME,
+}
+
 _MARKET_TYPE_BY_SERIES_TICKER: dict[str, MarketType] = {
-    ticker: market_type for market_type, ticker in _SERIES_TICKER_BY_MARKET_TYPE.items()
+    **{ticker: market_type for market_type, ticker in _SERIES_TICKER_BY_MARKET_TYPE.items()},
+    **_MARKET_TYPE_BY_SERIES_TICKER_ALIASES,
 }
 
 
@@ -118,6 +136,133 @@ def market_type_for_ticker(kalshi_ticker: str) -> MarketType:
     Read-time derivation only -- never mutates stored ledger data (GG-077
     defense-in-depth pattern). Raises KeyError on an unknown series prefix."""
     return market_type_for_series_ticker(kalshi_ticker.split("-")[0])
+
+
+# ---------------------------------------------------------------------------
+# Ticker date/team-code grammar (T-472/GG-191, 2026-08-20)
+# ---------------------------------------------------------------------------
+#
+# GG-166/GG-170/GG-185 were all instances of the same defect: a MLB-only,
+# KXMLBHIT-only regex (duplicated verbatim in run_t4_mlb_live.py and
+# run_resolve_mlb.py) that silently fell back to the session wall-clock date
+# whenever it failed to match -- which is every non-KXMLBHIT ticker, since
+# the pattern is hardcoded to that one series' literal prefix. That defect's
+# blast radius was 0% while only KXMLBHIT traded (confirmed empirically:
+# 2948/2948 rows in logs/t4_mlb_resolved_ledger.jsonl are KXMLBHIT) but
+# becomes 100% of any newly-activated cell the moment Phase 2 turns on
+# KXMLBTOTAL or another series -- this is a precondition on Phase 2, not on
+# any new sport.
+#
+# The fix is two-part: (1) register a grammar per series here, alongside the
+# series registry itself, instead of a parallel ad hoc regex per call site;
+# (2) refuse (raise) rather than fall back on a non-match -- see
+# TickerDateParseError. Callers must not catch this exception and substitute
+# a fallback value; they must skip/refuse the write.
+#
+# Two known shapes, empirically validated against every ticker in production
+# logs (2948/2948 MLB tickers across logs/t4_mlb_resolved_ledger.jsonl +
+# other logs/*.jsonl; 158/158 NBA tickers across
+# logs/.vps_portfolio_cache_nba.json) -- do not assume a third series
+# introduces a third shape without re-validating against real data first:
+#
+#   MLB:  <YY><MON><DD><HHMM><TEAMS...>   e.g. 26AUG011610MIANYM   (has HHMM)
+#   NBA:  <YY><MON><DD><TEAMS...>          e.g. 26JUN05NYKSAS       (no HHMM)
+#
+# TEAMS is left as a raw, unsplit blob (`teams_raw`) -- splitting it into
+# (away, home) requires a team-abbreviation table, which is Block H's job
+# (ADR-0054 §5.2 correlation key), not this module's. The team-code
+# character class is `[A-Z0-9]+`, not `[A-Z]+`: doubleheader tickers append
+# a digit-bearing G1/G2 suffix to the team blob (e.g. ...TBBOSG1-...), which
+# an letters-only class silently fails to match -- found empirically as
+# 21/2948 real-ticker failures during grammar validation, fixed by widening
+# the class, re-validated at 0/2948 failures.
+
+
+class TickerDateParseError(ValueError):
+    """Raised when a ticker's embedded date/team-code tail does not match its
+    series' registered grammar. Callers MUST refuse the write on this error
+    -- never substitute a fallback/wall-clock date (GG-166/GG-191)."""
+
+
+@dataclass(frozen=True)
+class ParsedTicker:
+    """Result of parsing a ticker's embedded date and raw team-code blob."""
+
+    game_date: str
+    teams_raw: str
+
+
+_TICKER_DATE_MONTHS = {
+    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
+    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
+}
+
+
+@dataclass(frozen=True)
+class TickerGrammar:
+    """A series family's ticker tail grammar -- everything after the first
+    '-' separator. Prefix-agnostic by design: MLB_PARTIAL_GAME's three
+    series (KXMLBF3/F5/F7) share one date shape, so the grammar must not be
+    keyed to a single literal prefix."""
+
+    tail_pattern: "re.Pattern[str]"
+    has_hhmm: bool
+
+    def parse(self, ticker: str) -> ParsedTicker:
+        _prefix, sep, tail = ticker.partition("-")
+        if not sep:
+            raise TickerDateParseError(f"ticker {ticker!r} has no series separator")
+        m = self.tail_pattern.match(tail)
+        if not m:
+            raise TickerDateParseError(
+                f"ticker {ticker!r} does not match its series' date grammar"
+            )
+        if self.has_hhmm:
+            yy, mon, dd, _hhmm, teams = m.groups()
+        else:
+            yy, mon, dd, teams = m.groups()
+        month = _TICKER_DATE_MONTHS.get(mon)
+        if month is None:
+            raise TickerDateParseError(
+                f"ticker {ticker!r} has unrecognized month token {mon!r}"
+            )
+        return ParsedTicker(game_date=f"20{yy}-{month}-{dd}", teams_raw=teams)
+
+
+_MLB_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})(\d{4})([A-Z0-9]+)(?:-|$)")
+_NBA_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})([A-Z0-9]+)(?:-|$)")
+
+_MLB_GRAMMAR = TickerGrammar(_MLB_TAIL, has_hhmm=True)
+_NBA_GRAMMAR = TickerGrammar(_NBA_TAIL, has_hhmm=False)
+
+_TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
+    MarketType.MLB_PLAYER_PROP_HITS: _MLB_GRAMMAR,
+    MarketType.MLB_MONEYLINE: _MLB_GRAMMAR,
+    MarketType.MLB_RUN_LINE: _MLB_GRAMMAR,
+    MarketType.MLB_GAME_TOTAL: _MLB_GRAMMAR,
+    MarketType.MLB_TEAM_TOTAL: _MLB_GRAMMAR,
+    MarketType.MLB_PARTIAL_GAME: _MLB_GRAMMAR,
+    MarketType.NBA_PLAYER_POINTS: _NBA_GRAMMAR,
+}
+
+
+def parse_ticker_date(kalshi_ticker: str) -> ParsedTicker:
+    """Series-agnostic date/team-blob parse. Raises KeyError if the ticker's
+    series isn't registered (via market_type_for_ticker), or
+    TickerDateParseError if it's registered but its tail doesn't match that
+    series' grammar. Never returns a fallback value -- refusal-only by
+    design (T-472/GG-191, superseding the fallback-to-wall-clock pattern
+    that caused GG-166/GG-170/GG-185)."""
+    market_type = market_type_for_ticker(kalshi_ticker)
+    grammar = _TICKER_GRAMMAR_BY_MARKET_TYPE[market_type]
+    return grammar.parse(kalshi_ticker)
+
+
+def derive_game_date(kalshi_ticker: str) -> str:
+    """Convenience wrapper for the common case -- most callers only need the
+    embedded game date, not the raw team-code blob. Same refusal-only
+    contract as parse_ticker_date(): raises, never falls back."""
+    return parse_ticker_date(kalshi_ticker).game_date
 
 
 # ---------------------------------------------------------------------------

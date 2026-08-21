@@ -67,7 +67,6 @@ import json
 import logging
 import math
 import os
-import re
 import sys
 import time
 import uuid
@@ -88,6 +87,10 @@ from prediction_market_bot.c5_execution.kalshi_client import (
     KalshiMarketClient,
     PlayerMarket,
     SERIES_MLB_PLAYER_HITS,
+)
+from prediction_market_bot.c5_execution.market_type_registry import (
+    TickerDateParseError,
+    derive_game_date,
 )
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -721,44 +724,44 @@ def _exit_budget_credit(size_usd: float, exit_pnl: float) -> float:
     return size_usd + min(0.0, exit_pnl)
 
 
-# GG-166/T-429 (2026-08-07): ticker-derived game date, reusing the anchored-regex
-# format from scripts/build_t4_outcome_store.py::ticker_game_date (validated 100%
-# reliable parse across 2,021 tickers under T-421). The wall-clock `game_date`
-# session variable (assigned at startup and again on UTC-midnight rollover) is
-# what GG-166 found silently mis-stamping ~44% of positions when a game is still
-# live after UTC midnight — this function derives the true per-position date from
-# the ticker itself instead, at the exact write sites that persist it.
-_TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
-_TICKER_DATE_MONTHS = {
-    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
-    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
-}
-
-
-def _ticker_to_game_date(ticker: str, fallback: str) -> str:
-    """Derive the true game date from a ticker's embedded date token.
-
-    Returns `fallback` (the wall-clock session `game_date`) only if the ticker
-    doesn't match the expected KXMLBHIT format — logged loudly since that should
-    not happen for any real Kalshi MLB ticker and would mean this is silently
-    reverting to the exact bug this function exists to fix.
-    """
-    m = _TICKER_DATE_RE.match(ticker)
-    if not m:
-        logger.warning(
-            "GG-166: ticker %s did not match expected date format — "
-            "falling back to session game_date=%s", ticker, fallback,
+# GG-166/T-429 (2026-08-07): ticker-derived game date. The wall-clock
+# `game_date` session variable (assigned at startup and again on UTC-midnight
+# rollover) is what GG-166 found silently mis-stamping ~44% of positions when
+# a game is still live after UTC midnight.
+#
+# T-472/GG-191 (2026-08-20): the fallback-to-wall-clock behaviour this
+# function used to have (return `fallback` on a non-matching ticker) was
+# itself the same defect in miniature -- fine while every live ticker was
+# KXMLBHIT (verified: 2948/2948 real rows in
+# logs/t4_mlb_resolved_ledger.jsonl), but silently wrong the moment any
+# other series activates, since the old regex was hardcoded to KXMLBHIT's
+# literal prefix and shape. This wrapper now REFUSES instead: it returns
+# None on any parse failure (unregistered series or non-matching grammar,
+# both delegated to the shared, series-agnostic
+# market_type_registry.derive_game_date()) and never substitutes a
+# fallback value. Callers must treat None as "skip/refuse this write", not
+# paper over it with the session wall-clock date.
+def _ticker_to_game_date(ticker: str) -> Optional[str]:
+    """Derive the true game date from a ticker's embedded date token via the
+    shared series-agnostic grammar. Returns None -- refusal, never a
+    fallback -- if the ticker's series isn't registered or its tail doesn't
+    match that series' grammar; logs loudly in either case, since neither
+    should happen for any real, currently-traded Kalshi ticker."""
+    try:
+        return derive_game_date(ticker)
+    except KeyError as exc:
+        logger.error(
+            "GG-191: ticker %s has unregistered series %s — refusing to "
+            "derive game_date; caller must skip this write", ticker, exc,
         )
-        return fallback
-    yy, mon, dd, _hhmm = m.groups()
-    month = _TICKER_DATE_MONTHS.get(mon)
-    if month is None:
-        logger.warning(
-            "GG-166: ticker %s has unrecognized month token %r — "
-            "falling back to session game_date=%s", ticker, mon, fallback,
+        return None
+    except TickerDateParseError as exc:
+        logger.error(
+            "GG-191: ticker %s did not match its series' date grammar (%s) — "
+            "refusing to derive game_date; caller must skip this write",
+            ticker, exc,
         )
-        return fallback
-    return f"20{yy}-{month}-{dd}"
+        return None
 
 
 def _game_date_window(game_date: str) -> set[Any]:
@@ -1093,24 +1096,31 @@ def _run_cycle(
             # visibility into how much volume this filter removes (GG-067).
             if vig > VIG_CEILING:
                 if cycle_log_path is not None:
-                    _append_dryrun_record(cycle_log_path, {
-                        "ts":           datetime.now(timezone.utc).isoformat(),
-                        "cycle_id":     cycle_id,
-                        "session_id":   session_id,
-                        "game_date":    _ticker_to_game_date(ticker, game_date),  # GG-166
-                        "ticker":       ticker,
-                        "player_name":  ctx["player_name"],
-                        "player_id":    player_id,
-                        "threshold":    threshold,
-                        "mip":          round(mip, 6),
-                        "vig":          round(vig, 6),
-                        "vig_skip":     True,
-                        "h_so_far":     ls.h_so_far,
-                        "ab_so_far":    ls.ab_so_far,
-                        "ab_remaining": ab_remaining,
-                        "inning":       ls.inning,
-                        "batting_slot": batting_slot,
-                    })
+                    _gg191_game_date = _ticker_to_game_date(ticker)
+                    if _gg191_game_date is None:
+                        logger.warning(
+                            "GG-191: skipping vig-skip cycle-log record for %s "
+                            "— unparseable ticker date", ticker,
+                        )
+                    else:
+                        _append_dryrun_record(cycle_log_path, {
+                            "ts":           datetime.now(timezone.utc).isoformat(),
+                            "cycle_id":     cycle_id,
+                            "session_id":   session_id,
+                            "game_date":    _gg191_game_date,
+                            "ticker":       ticker,
+                            "player_name":  ctx["player_name"],
+                            "player_id":    player_id,
+                            "threshold":    threshold,
+                            "mip":          round(mip, 6),
+                            "vig":          round(vig, 6),
+                            "vig_skip":     True,
+                            "h_so_far":     ls.h_so_far,
+                            "ab_so_far":    ls.ab_so_far,
+                            "ab_remaining": ab_remaining,
+                            "inning":       ls.inning,
+                            "batting_slot": batting_slot,
+                        })
                 continue
 
             # Layer 3 semantic contract check (ADR-0034): business-logic coherence
@@ -1159,28 +1169,35 @@ def _run_cycle(
             # status, so EXP-ARITH-MLB-01 / EXP-FLOW-MLB-01 have real data to backtest
             # against — previously only the dry_run branch below persisted this context.
             if cycle_log_path is not None:
-                _append_dryrun_record(cycle_log_path, {
-                    "ts":           datetime.now(timezone.utc).isoformat(),
-                    "cycle_id":     cycle_id,
-                    "session_id":   session_id,
-                    "game_date":    _ticker_to_game_date(ticker, game_date),  # GG-166
-                    "ticker":       ticker,
-                    "player_name":  ctx["player_name"],
-                    "player_id":    player_id,
-                    "threshold":    threshold,
-                    "p_t4":         round(p_t4, 6),
-                    "mip":          round(mip, 6),
-                    "vig":          round(vig, 6),
-                    "gross_edge":   round(gross_edge, 6),
-                    "net_edge":     round(net_edge, 6),
-                    "ba_l10":       round(ba_l10, 6),
-                    "ba_l10_shrunk": round(ba_l10_shrunk, 6),
-                    "h_so_far":     ls.h_so_far,
-                    "ab_so_far":    ls.ab_so_far,
-                    "ab_remaining": ab_remaining,
-                    "inning":       ls.inning,
-                    "batting_slot": batting_slot,
-                })
+                _gg191_game_date = _ticker_to_game_date(ticker)
+                if _gg191_game_date is None:
+                    logger.warning(
+                        "GG-191: skipping GG-067 cycle-log record for %s "
+                        "— unparseable ticker date", ticker,
+                    )
+                else:
+                    _append_dryrun_record(cycle_log_path, {
+                        "ts":           datetime.now(timezone.utc).isoformat(),
+                        "cycle_id":     cycle_id,
+                        "session_id":   session_id,
+                        "game_date":    _gg191_game_date,
+                        "ticker":       ticker,
+                        "player_name":  ctx["player_name"],
+                        "player_id":    player_id,
+                        "threshold":    threshold,
+                        "p_t4":         round(p_t4, 6),
+                        "mip":          round(mip, 6),
+                        "vig":          round(vig, 6),
+                        "gross_edge":   round(gross_edge, 6),
+                        "net_edge":     round(net_edge, 6),
+                        "ba_l10":       round(ba_l10, 6),
+                        "ba_l10_shrunk": round(ba_l10_shrunk, 6),
+                        "h_so_far":     ls.h_so_far,
+                        "ab_so_far":    ls.ab_so_far,
+                        "ab_remaining": ab_remaining,
+                        "inning":       ls.inning,
+                        "batting_slot": batting_slot,
+                    })
 
             if dry_run:
                 if dryrun_log_path is not None:
@@ -1366,6 +1383,20 @@ def _run_cycle(
                 )
                 continue
 
+            # T-472/GG-191 (2026-08-20): refuse BEFORE staging the order — if we
+            # staged first and refused after, we'd leave an orphaned staged order
+            # with no matching position. Same skip-and-continue convention as the
+            # stage_order failure below: a bad ticker date is a per-ticker data
+            # problem, not a systemic C4/C6/PaperTrader failure, so it costs this
+            # one evaluation, not the whole cycle.
+            position_game_date = _ticker_to_game_date(ticker)
+            if position_game_date is None:
+                logger.error(
+                    "GG-191: refusing to place bet for %s — unparseable ticker "
+                    "date; skipping this ticker this cycle", ticker,
+                )
+                continue
+
             valid_until = (datetime.now(timezone.utc) + timedelta(hours=4)).isoformat()
             try:
                 order_id = store.stage_order(
@@ -1393,7 +1424,7 @@ def _run_cycle(
                 kalshi_threshold=int(threshold),
                 mid_price=mip,
                 vig=vig,
-                game_date=_ticker_to_game_date(ticker, game_date),  # GG-166: per-position, not session wall-clock
+                game_date=position_game_date,  # GG-166/GG-191: per-position, refusal-only, never wall-clock
                 session_id=session_id,
                 pool_isolated=True,
                 h_so_far_at_entry=ls.h_so_far,

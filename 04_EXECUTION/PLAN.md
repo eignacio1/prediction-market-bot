@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-20T04:57:30Z (T-471 — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result) — See `04_EXECUTION/SESSION_HANDOFF_20260820_0457_T471.md` for full session detail.
+**Last reviewed:** 2026-08-21T02:05:00Z (T-475 — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192) — See `04_EXECUTION/SESSION_HANDOFF_T475.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

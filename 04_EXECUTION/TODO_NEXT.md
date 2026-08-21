@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-20T04:57:30Z (T-471 — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result) — See `04_EXECUTION/SESSION_HANDOFF_20260820_0457_T471.md` for full session detail.
+**Last reviewed:** 2026-08-21T02:05:00Z (T-475 — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192) — See `04_EXECUTION/SESSION_HANDOFF_T475.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
@@ -967,3 +967,5 @@ T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to
 **Follow-ons registered, not started:** correct the 46 stuck-open positions' `game_date` in place (GG-189a, low-risk/high-value); extend `t4_mlb_outcome_store.jsonl` coverage into 2026-08-07–08-15 (GG-189b, backfill prerequisite); correct 76 rejected-position mismatches (GG-189c, low priority).
 
 **Note:** PR merge to `main` was blocked by the session's own permission classifier (shared-state action) — `MERGE_CHECK: NO` as of session-end. PR #86 needs a human/next-session merge before this closes per GG-186.
+
+- 🟡 T-478: Resolve PR #94 merge conflict (T-477 session-end artifacts vs. concurrent T-471/GG-190 push to main — both touched generated nav-chain files). Branch `session/20260820T005659Z-epoch12-repair-preregistration` is pushed but MERGED: NO. Rebase/resolve, re-run `session_end_timer.sh merge-check`, then append the true CLOSED row to SESSION_CLAIMS.md.
