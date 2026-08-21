@@ -85,6 +85,15 @@ if [ "$STATUS_LINE_N" -ne "$LIVE_N" ]; then
     echo "  *** Every entry in this file must carry exactly one '**Status:**' line -- do not trust OPEN_N below until fixed. ***"
 fi
 
+# GG-199 (T-476): the header==status-line parity check above CANNOT see a
+# DUPLICATE id -- both counters increment together per duplicate row. Three
+# real concurrent-claim collisions have hit exactly this (GG-187 x2, GG-197
+# x1, 2026-08-18/2026-08-21) with none caught by the check above. Checks the
+# live log AND the archive combined (a number could be reused against an
+# already-resolved/archived id too).
+python3 "scripts/lib/gg_id_uniqueness_check.py" \
+    "03_DECISIONS/GOVERNANCE_GAP_LOG.md" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"
+
 python3 "scripts/lib/governance_gap_burndown.py" "$OPEN_N" "$TOTAL_N" "logs/.governance_gap_history.jsonl"
 
 # --- Operator console (T-420, 2026-08-05 restructure) ---
@@ -100,6 +109,21 @@ if [ -z "$OPEN" ]; then
 else
     echo "$OPEN" | while read -r line; do echo "  $line"; done
 fi
+
+# --- Claim lifecycle: claims with no CLOSED row (GG-199/T-476, GG-188 class) ---
+# GG-188 found this blind spot twice (T-463, T-465: claimed, work landed, but
+# no CLOSED row ever written under their own T-number) and named the fix
+# "Block I" -- this is that assertion. Matches by extracted T-NNN token and
+# row order, never by timestamp equality (GG-177: branch-creation time and
+# claim-command time differ by seconds-to-minutes, which guarantees false
+# negatives on an exact-match join). Scoped to claims on/after 2026-08-07,
+# when the "CLOSED — ..." body convention was first adopted (T-430) -- a
+# dry run against the full unscoped file history flagged 108/149 T-numbers,
+# almost all of them legacy rows that predate the convention and are not a
+# live problem.
+echo ""
+echo "CLAIM LIFECYCLE (claims without a CLOSED row):"
+python3 "scripts/lib/claim_closure_check.py" "04_EXECUTION/SESSION_CLAIMS.md" | sed 's/^/  /'
 
 # --- Hard limits snapshot ---
 echo ""

@@ -2313,6 +2313,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-199 — `scripts/new_session_worktree.sh`'s single-branch fetch left new worktrees blind to sibling `session/*` branches pushed by concurrent sessions
+
+**Status:** RESOLVED 2026-08-21 · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-199 |
+| Category | Concurrent-session isolation defect (GG-101 class) — the launcher that exists specifically to make concurrent sessions safe had an unrelated blind spot in what it made *visible*, not just what it made *safe*. |
+| What was missed | Line 34 ran `git fetch --quiet origin main` — a single-branch refspec. This fetches `origin/main` correctly (satisfying the isolation requirement: `git worktree add` still branches from a fresh `origin/main`, confirmed unchanged at line 40) but does nothing to update `refs/remotes/origin/*` for any other branch. A concurrent session's pushed `session/*` branch is therefore invisible to a newly-launched worktree until someone manually runs a wider fetch — the launcher never does this itself. |
+| When it should have been caught | At GG-101's original fix (worktree isolation, T-259) — that work verified sessions could no longer destructively collide via shared working-tree git ops, but never checked whether one session's worktree could still *see* another's branch once isolation was in place. Visibility and destructive-collision-prevention are different properties; only the second was tested. |
+| Phases it survived | Every worktree launched via this script since GG-101's fix — an unknown number of sessions, since sibling-branch visibility was never a scanned invariant and a missing branch produces no error, only a silent `fatal: ... not found`-style failure at the point someone tries to check it out by name. |
+| Why it survived | No governance check inspects the worktree launcher's fetch scope, and the failure mode is silent by construction — a narrow fetch doesn't fail, it just fetches less than a session going looking for a sibling branch will assume it fetched. Nothing in Steps 0-4 or Q1-Q7 exercises multi-worktree branch visibility. |
+| Impact | T-478 (2026-08-2x) spent a full session unable to find T-477's already-pushed branch, and had to manually run a wide fetch to recover it before it could proceed — a session-length cost paid to work around a one-line refspec. **This is causally upstream of Assertion 1 (claim/CLOSED lifecycle checks, `scripts/lib/claim_closure_check.py`, this same session/T-476): that check can only DETECT a claim that never produced a visible CLOSED row or mergeable branch — it cannot PREVENT the underlying cause when the cause is that the branch was never visible to the session that needed it.** A narrow fetch scope is exactly the kind of defect that manifests downstream as an apparently-abandoned claim. |
+| Discovery | T-476 (2026-08-21 session), tasked directly with widening this refspec as one of three landing-integrity assertions (T-476/claim-and-id-assertions). |
+| Resolution | RESOLVED same-session. Line 34 widened to `git fetch --quiet origin main '+refs/heads/*:refs/remotes/origin/*'`, updating every remote-tracking ref for every `origin` branch (all `session/*` branches included) on every worktree launch, while leaving `git worktree add -b "$BRANCH" "$WT_PATH" origin/main` (line 40) untouched — isolation still starts from a fresh `origin/main` base; this change widens visibility only, it does not change what a new session branches from. |
+| Status | RESOLVED 2026-08-21 (T-476). Atomic GG-number reservation at claim time (GG-162, the sibling defect Assertion 2 detects rather than prevents) remains a separate, unstaffed task. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

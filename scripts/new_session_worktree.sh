@@ -30,8 +30,12 @@ BRANCH="session/${STAMP}-${SLUG}"
 WT_PARENT="$(dirname "$REPO_ROOT")/PM-worktrees"
 WT_PATH="${WT_PARENT}/${STAMP}-${SLUG}"
 
-echo "==> Fetching origin/main (isolation always starts from a fresh base) ..."
-git fetch --quiet origin main
+echo "==> Fetching origin/main + sibling session branches (isolation always starts from a fresh base) ..."
+# GG-199: a single-branch `fetch origin main` left this worktree's ref namespace
+# blind to sibling session/* branches pushed by concurrent sessions (T-478 lost a
+# full session to this — see DECISION_LOG.md). Widen to all heads so a new
+# worktree can resolve a sibling branch without a manual wide fetch.
+git fetch --quiet origin main '+refs/heads/*:refs/remotes/origin/*'
 
 mkdir -p "$WT_PARENT"
 echo "==> Creating isolated worktree"
