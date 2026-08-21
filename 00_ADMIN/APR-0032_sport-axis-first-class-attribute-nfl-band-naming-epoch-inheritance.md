@@ -124,6 +124,15 @@ group operations, not distinguish operations:
 implementation risk, and directly serves the two group-operations named above without reopening any
 already-decided question.
 
+**Four-sport note (2026-08-21, T-480/GG-200 — strengthens, does not change, the recommendation above.)**
+Operator doctrine as of 2026-08-21: all four core sports (MLB, NBA, NFL, NHL) are being built. That raises
+"group by sport" from a convenience to a hard requirement — Phase 3's coverage target is heading toward
+~100 cells (5 bands × ~5 market types × 4 sports) across four independent epoch counters (see D3's own
+four-sport note below), not the two-sport MLB/NFL case this section was originally scoped against. The
+existing hand-maintained "Gaps by Arm" split in `GOVERNANCE_GAP_LOG.md` (NBA=23/MLB=57/Core=46, T-374)
+becomes a four-way split under this roster, done by hand at four times the surface area — option (a)'s query
+becomes correspondingly more valuable, not less. Recommendation unchanged: (a).
+
 ---
 
 ## D2 — NFL Band-Naming Convention
@@ -148,6 +157,52 @@ decision that only needs to cover the next sport actually named in `COVERAGE_TAR
 Flagging (b) as the option to revisit if/when a third *live* sport (beyond MLB/NFL) makes the ad-hoc pattern
 start to strain — not now.
 
+*(The recommendation above and everything preceding it in D2 is the original 2026-08-20 record. It stands as
+written — this section amends it in place rather than replacing it, per the amendment below.)*
+
+### Amendment (2026-08-21, T-480/GG-200)
+
+**(i) Doctrine change.** Operator, 2026-08-21: all four core sports — MLB, NBA, NFL, **NHL** — are being
+built. Which cells calibrate edge is discovered per-cell (that is still open, per-band, per APR-0024); whether
+a sport gets built is not open. D2's original recommendation was drafted 2026-08-20, one day before this was
+stated, against a roster of MLB/NBA/NFL only.
+
+**(ii) Why this inverts (a)'s cost argument.** The original text rated the "letter-collision" risk — `N` for
+NFL colliding with a hypothetical NHL, both starting with N — as "speculative and out of scope... not now,"
+explicitly reserving it for revisit "if/when a third *live* sport (beyond MLB/NFL)" appears. Under the
+four-sport roster, NHL is not hypothetical and not a future revisit trigger — it is the next sport in the
+same roster this document is scoping *right now*. The collision is scheduled, not speculative, and the
+premise that justified deferring it no longer holds.
+
+This also inverts the asymmetry the original text used to prefer (a) over (b): (b) was rejected because
+renaming NBA's bare `T4-*` names is "churn on code nobody is actively running" (NBA is DARK/FROZEN). That
+asymmetry doesn't transfer to an `N`→NHL collision — by the time NHL's sub-bands need naming, NFL's `T4N-*`
+bands are exactly the kind of code D2 protected NBA from having to rename: potentially ACTIVE, trading,
+appearing in `bands_affected` frozensets, the resolved ledger, and the price archive, the same way MLB's
+`T4M-PROJ` string does today. Extending (a) as originally scoped defers the same live-code rename risk it was
+chosen to avoid — one sport later.
+
+**(iii) Revised recommendation (presented as recommendation, not decision — D2 remains unsigned).** Adopt an
+explicit sport-code convention up front, covering all four sports: `T4MLB-`, `T4NBA-`, `T4NFL-`, `T4NHL-`.
+Existing `T4M-*` (MLB) and bare `T4-*` (NBA) names are **grandfathered, not renamed** — MLB's `T4M-PROJ` is
+the only ACTIVE cell today and its string appears throughout `logic_epoch.py` `bands_affected`, the resolved
+ledger, and the price archive; renaming it is exactly the live-code churn this document exists to avoid, for
+MLB now instead of NFL later. New sub-band registries (NFL's, NHL's, when each is built) adopt the longer
+four-letter form from their first cell.
+
+**Tradeoff, stated honestly:** this leaves two naming generations coexisting indefinitely — NBA bare, MLB
+`M`-prefixed, NFL/NHL/future sports four-lettered. That is uglier than a single uniform scheme. It is still
+strictly cheaper than any rename, because a rename touches live code (grandfathering never does) and because
+a third naming generation later (if a fifth sport ever collides) costs the same regardless of how many
+generations already exist — the ugliness doesn't compound, the rename risk would.
+
+**Alternative, for the operator to weigh rather than this document deciding it:** accept `T4N-PROJ` now per
+the original (a), and rename at NHL-build time instead of pre-empting it. Cost: whenever NHL is actually
+built, NFL's `T4N-*` bands must be renamed if NFL is by then ACTIVE — the same class of live-code churn (band
+strings in `bands_affected`, resolved ledger, price archive) that the original D2 text used as its reason to
+reject retrofitting NBA. This alternative trades a smaller cost now (one four-letter convention decision) for
+a deferred, larger, and by-then-live-code cost later, on a collision this document can already see coming.
+
 ---
 
 ## D3 — NFL Epoch Inheritance
@@ -170,6 +225,15 @@ discipline (every `bands_affected` entry "verified from diff, never assumed") �
 diff-verifiable relationship to code that doesn't exist yet, so inheriting them would mean asserting an
 unverifiable claim about every one of them. A fresh counter costs nothing MLB's counter doesn't already cost,
 and keeps NFL's `clean_n`/`n*` provenance auditable from NFL's first bet forward.
+
+**Four-sport note (2026-08-21, T-480/GG-200 — strengthens, does not change, the recommendation above.)**
+Under the four-sport roster (MLB, NBA, NFL, NHL all being built), this decision recurs three more times, not
+once — NHL needs the same fresh-epoch-1 call NFL does, and NBA (dark today, not epoch-1-virgin) is a fourth
+independent counter already in existence. Four independent epoch counters is the only arrangement that keeps
+each sport's `clean_n` provenance auditable against that sport's own code history — inheriting any other
+sport's boundary numbering multiplies the "unverifiable claim about a boundary that predates this sport's
+code" problem D3 already rejects for the two-sport case, once per additional sport. Recommendation unchanged:
+(a), independently, for every sport.
 
 ---
 
