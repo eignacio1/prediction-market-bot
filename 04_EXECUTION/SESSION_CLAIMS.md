@@ -298,3 +298,4 @@
 | 2026-08-21T01:50:08Z | T-478 | CLOSED — merge confirmed, HEAD (`d422219`) is ancestor of origin/main (merge-check YES) — session-end artifacts (SESSION_HANDOFF, nav chain collapse, operator digest) pushed direct to main via MICRO fast path |
 | 2026-08-21T01:50:18Z | T-473 / APR-0032 | T-473: APR-0032 decision request -- sport as a first-class attribute, NFL band naming, NFL epoch inheritance |
 | 2026-08-21T01:50:33Z | T-475 / GG-192 | T-475: amend ADR-0054 §5.2 correlation key for non-MLB tickers; register exposure-granularity gap |
+| 2026-08-21T01:50:38Z | T-479 / GG-197 | T-479: SAMPLE ADEQUACY must not report MET off a ledger with known-corrupted rows |
