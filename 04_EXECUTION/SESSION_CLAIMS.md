@@ -305,3 +305,4 @@
 | 2026-08-21T02:16:59Z | T-479 | CLOSED — MERGED: YES via PR #100, merge commit `11cafb9` confirmed ancestor of origin/main (GG-186 check passed) — governance_scan.sh's GG-046 alert no longer emits MET off a 74.0%-corrupted cohort; VERDICT WITHHELD with live mismatch count instead; GG-197 registered RESOLVED (detection fix only, data corruption still open pending ADR-0055 D1) |
 | 2026-08-21T13:58:33Z | T-476 / GG-199 | T-476: assert claims reach CLOSED, GG-NNN IDs are unique, and worktrees can see sibling branches |
 | 2026-08-21T14:19:03Z | T-476 / GG-199 | **CLOSED — claim/CLOSED lifecycle check + GG-NNN uniqueness check landed and wired into governance_scan.sh + CLAUDE.md Step 3, worktree fetch-scope fix landed, GG-199 registered RESOLVED. PR #102 MERGED into main (8079ee0). MERGED: YES.** |
+| 2026-08-21T14:40:40Z | T-480 / GG-200 | T-480: amend APR-0032 D2 for the four-sport roster; note four-sport impact on D1/D3 |
