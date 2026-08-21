@@ -289,6 +289,7 @@
 | 2026-08-20T05:21:02Z | T-472 | MERGED: NO — branch `session/20260820T005641Z-series-agnostic-date-binding` awaiting merge — T-472/GG-191 — ticker-date derivation made series-agnostic + refusal-only, ends GG-166/170/185 fallback class (commit `994b4d3`) |
 | 2026-08-20T00:57:40Z | T-477 / ADR-0055 / GG-196 | T-477: pre-register and dry-run the epoch-12 ledger repair; ADR-0055 decision request |
 | 2026-08-20T04:59:44Z | T-471 | CLOSED — T-471: GG-190 registered — GG-185 step-function trigger not found, bounded negative result (commit `64ff6a3`) |
+| 2026-08-21T02:08:00Z | T-473 | CLOSED — T-473: drafted APR-0032 (sport-axis decision request: D1 sport as first-class MarketType attribute, D2 NFL band-naming convention, D3 NFL logic-epoch inheritance), registered GG-198 (renumbered from locally-picked GG-197 after discovering concurrent T-479 claim on that number) — merged via PR #99, mergeCommit `e55a863`, confirmed ancestor of origin/main per GG-186 |
 | 2026-08-20T05:25:12Z | T-472 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
 | 2026-08-20T05:35:13Z | T-478 | T-478: land Block K (T-477/GG-196 epoch-12 repair pre-registration) onto main |
 | 2026-08-20T05:01:25Z | T-477 | MERGED: NO — branch `session/20260820T005659Z-epoch12-repair-preregistration` awaiting merge — T-477: ADR-0055 epoch-12 repair pre-registered + dry-run simulated (not applied); GG-196 registered; n* gate finding flagged (commit `5d94e64`) |
@@ -297,5 +298,7 @@
 | 2026-08-21T01:49:25Z | T-478 | CLOSED — T-478: landed stranded Block K (T-477/ADR-0055/GG-196) onto main via fresh PR #97+#98, no repair applied (commit `e4173cf`) |
 | 2026-08-21T01:50:08Z | T-478 | CLOSED — merge confirmed, HEAD (`d422219`) is ancestor of origin/main (merge-check YES) — session-end artifacts (SESSION_HANDOFF, nav chain collapse, operator digest) pushed direct to main via MICRO fast path |
 | 2026-08-21T01:50:18Z | T-473 / APR-0032 | T-473: APR-0032 decision request -- sport as a first-class attribute, NFL band naming, NFL epoch inheritance |
+| 2026-08-21T01:59:54Z | T-473 | MERGED: NO — branch `session/20260821T014959Z-apr0032-sport-axis` awaiting merge — T-473: drafted APR-0032 (sport-axis decision request), registered GG-197 (commit `0074934`) |
 | 2026-08-21T01:50:33Z | T-475 / GG-192 | T-475: amend ADR-0054 §5.2 correlation key for non-MLB tickers; register exposure-granularity gap |
 | 2026-08-21T01:50:38Z | T-479 / GG-197 | T-479: SAMPLE ADEQUACY must not report MET off a ledger with known-corrupted rows |
+| 2026-08-21T02:02:34Z | T-475 | CLOSED — T-475: amended ADR-0054 §5.2 correlation key for non-MLB tickers (reuse T-472 TickerGrammar), registered GG-192 (commit `9253d9a`) |

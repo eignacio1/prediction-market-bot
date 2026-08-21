@@ -22,7 +22,7 @@
 | ~~**D**~~ | ~~Root-cause the 2026-08-08 post-outage restart: what bound `game_date` differently?~~ DONE (T-471, 2026-08-20) — root cause NOT found; bounded negative result, GG-190 (OPEN). | — | STANDARD | GG-190 |
 | ~~**E**~~ | ~~Date derivation series-agnostic and refusal-only; `UNREGISTERED_SERIES` counter; register `KXMLBF5`/`KXMLBF7`~~ DONE (T-472, 2026-08-20) — `_TICKER_DATE_RE` replaced with per-series registry, refusal-only on no-match (no wall-clock fallback), regression tests added. See PR #95, GG-191 (RESOLVED). | — | STANDARD | GG-191 |
 | **F** | APR-0032 decision request: `sport` as a first-class attribute, NFL band naming, NFL epoch inheritance | now | MICRO | — |
-| **H** | Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap | now | MICRO | GG-192 |
+| ~~**H**~~ | ~~Amend ADR-0054 §5.2 (per-sport ticker grammar, refuse-don't-fallback); register the exposure-granularity gap~~ DONE (T-475, 2026-08-21) — §5.2 amended to reuse T-472's `TickerGrammar` registry, keyed on `(game_date, teams_raw)`, refusal-only. GG-192 (OPEN, MEDIUM) — C4 exposure tracked at two granularities only (per-bet, whole-portfolio), no correlation grouping; no live consequence at one ACTIVE cell. | — | MICRO | GG-192 |
 | **I** | Claim-without-CLOSED-row assertion + GG-NNN ID-uniqueness assertion | now | MICRO | — |
 | **G** | NFL skeleton spike — cells + ticker grammar + one C1 stub, `kelly_fraction=0.0`, no C3 | after E and F | STANDARD | GG-194 |
 

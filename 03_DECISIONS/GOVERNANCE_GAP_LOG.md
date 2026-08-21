@@ -2143,6 +2143,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-192 — C4 tracks exposure at exactly two granularities (single bet-evaluation, whole portfolio) with nothing in between; a per-game correlation-group cap is a new grouping dimension, not a reuse of existing plumbing
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-192 |
+| Category | Risk-engine architecture — a governance-surface gap. The substance was already found and stated in `ADR-0054` §5.1 (T-467, 2026-08-19) but existed only inside a PROPOSED document; this entry gives it a standing governance-log presence independent of that ADR's eventual status. |
+| What was missed | Confirmed by direct grep of `src/prediction_market_bot/c4_risk_engine/risk.py`: `max_single_event_exposure_usd` (`_HARD_LIMITS`, line 135) resolves per call / per bet-evaluation — effectively per-ticker (CHECK 6, lines 736-737). Zero `game_key`/`correlat`/`per_game` hits anywhere in `risk.py` — no game-level or family-level grouping exists in `_compute_kelly_size()` or any CHECK. The only other exposure figure C4 consumes, `current_open_exposure_usd`, is supplied by `paper_trader.py::exposure_snapshot()` (~line 250) as a portfolio-wide sum across *all* open non-isolated positions, regardless of game or family. So exposure is tracked at exactly two granularities — single-event ($500) and whole-portfolio (ADR-0026 cap) — with nothing in between. Three correlated families on one game (e.g. `KXMLBTOTAL`/`KXMLBTEAMTOTAL`/`KXMLBHIT` on the same matchup) can each independently clear the edge gate and each independently clear the $500 single-event cap, producing ~$1,500 of exposure to one game outcome against a stated $500 per-event cap — the cap's intent is defeated by construction, not by a bug in its enforcement. |
+| When it should have been caught | Design time for the per-event exposure cap (`_HARD_LIMITS`, dated 2026-05-29 per Q5/CLAUDE.md) — the cap was sized and named for a single-cell system and never revisited as a second grouping axis (family/game correlation) became a live architectural concern. |
+| Phases it survived | Present since `_HARD_LIMITS`'s introduction; only surfaced as a named concern 2026-08-17 when the operator signed off ADR-0054 item (c) (correlated-exposure cap, GG-135 solvency framing). |
+| Why it survived | `max_single_event_exposure_usd`'s name reads as if it already covers "one event," and at one ACTIVE cell (T4M-PROJ × MLB_PLAYER_PROP_HITS) there has never been a second correlated family live simultaneously to expose the gap empirically — no observed loss or near-miss triggered a review. The finding lived only inside `ADR-0054` §5.1, a PROPOSED document; nothing in the routine governance-scan surface (this log, `risk.py` itself) stated it independently, so if that ADR were superseded or narrowed before acceptance, the finding would leave no trace. |
+| Impact | No live consequence today — one ACTIVE cell means no correlated grouping can currently occur. Becomes unsound the moment a second cell (a second market_type on an already-live band, e.g. MLB moneyline/totals) is promoted ACTIVE: correlated legs on the same game would silently stack past the intended per-event ceiling. Directly relevant to solvency (GG-135 framing), not edge. |
+| Discovery | T-475 (2026-08-21), verifying `ADR-0054` §5.1's claim directly via `grep -n max_single_event_exposure_usd risk.py`, `grep -nic "game_key\|correlat\|per_event" risk.py` (zero hits), and `paper_trader.py::exposure_snapshot()` (portfolio-wide sum, confirmed). |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-475's one-deliverable scope, which was the ADR-0054 §5.2 amendment). `ADR-0054` §5.3-§5.4 already specifies the control shape (aggregate cap per game key, sized down not rejected, $1,000 provisional) as PROPOSED design; wiring it into `risk.py`/CHECK 6 is a Phase 3 box 3.7 follow-on, not performed here. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
 ### GG-195 — 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope
 
 **Status:** OPEN · **Severity:** LOW
@@ -2260,6 +2284,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | T-479 (2026-08-20 session), tasked directly with fixing this exact defect (pre-diagnosed and pre-verified figures supplied at task assignment; independently reproduced in full via direct ledger read — 532/719=74.0%, uncorrected n*=608 — with zero discrepancy from the supplied figures). |
 | Resolution | RESOLVED same-session. `scripts/run_power_calc.py`'s `analyze_band_power()` now computes a live `ticker_date_mismatch_n`/`ticker_date_mismatch_pct` per band/cohort via a new `_ticker_date_mismatch_n()` helper, reusing (not reimplementing) the canonical series-agnostic parser `market_type_registry.derive_game_date()` (T-472/GG-191's refusal-only replacement for the old KXMLBHIT-only regex) — computed over whatever `clean_recs` the caller passes in, not hardcoded to T4M-PROJ, epoch 12, or the count 532, so it self-clears once a cohort's ticker dates agree with stored dates and self-fires again if the same corruption recurs in a future epoch or cell. `governance_scan.sh`'s GG-046 block now checks this count when `nstar_crossed` is true: if `mismatch_n > 0` it prints `VERDICT WITHHELD` with the live count/percentage and a static citation to ADR-0055 Addendum A's repaired-figure n*=5,580, instead of `MET`; if `mismatch_n == 0` it prints `MET` exactly as before. Verified directly against the live ledger (bypassing the hook's hardcoded `PROJECT` path, which always tests the shared main-tree checkout rather than a worktree): produces `T4M-PROJ clean_n=719 / n*=608 -- VERDICT WITHHELD: 532/719 rows (74.0%) carry a ticker-vs-game_date mismatch (GG-170/GG-185). n* recomputed on ADR-0055's repaired figures = 5,580 (NOT met). See ADR-0055.` — exact match to the target message shape. Self-clear/self-fire behavior confirmed with synthetic clean and corrupted cohorts, and confirmed the refusal-only contract (unparseable ticker => not counted as mismatch) holds. Per this task's explicit scope: does NOT apply the ADR-0055 repair, does NOT touch `kelly_fraction`/sizing/`logic_epoch`/cell status/the ledger, and does NOT mark ADR-0055 ACCEPTED — ADR-0055 remains PROPOSED with D1-D4 unsigned. |
 | Status | RESOLVED 2026-08-20 (T-479). Re-verify once ADR-0055's D1 is decided and any repair is applied to origin's live ledger — the withholding should self-clear at that point without further code changes. |
+
+</details>
+
+---
+
+### GG-198 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-198 |
+| Category | Architectural placeholder — a decision Phase 3's cell-key work will make implicitly, by whatever is convenient, unless made explicitly first. |
+| What was missed | Three related sport-axis decisions have no recorded answer: (1) whether `sport` becomes a first-class attribute on `MarketType` (confirmed by direct read, `market_type_registry.py`: `MarketType` members are named `MLB_*`/`NBA_*`; the word "sport" appears only in docstrings/comments, lines 61-62/154/291; no `sport` attribute or `sport_for()` function exists anywhere in `src/`, confirmed by grep); (2) what naming convention a future NFL T4 sub-band uses (confirmed by direct read, `execution_bands.py` lines 42-93: MLB already uses a `T4M-` prefix convention under a separate `T4_MLB_SUBBAND_REGISTRY`, NBA uses bare `T4-` under `T4_SUBBAND_REGISTRY` — the two sports are already asymmetric, and nothing picks the pattern a third sport follows); (3) whether NFL cells inherit MLB's 12 existing `logic_epoch.py` boundaries or start at a fresh epoch 1 (confirmed: `grep -c "LogicEpochBoundary("` = 12, all keyed on bare band-string `bands_affected` sets, e.g. `{"T4M-PROJ"}`, `{"T1"}` — zero sport-awareness in the epoch machinery itself). |
+| When it should have been caught | Should be decided before Phase 3 (segmented-pool build, ADR-0054) writes its first `bands_affected` frozenset touching a non-MLB/non-NBA cell — i.e. before NFL (or any third sport) is added to `market_type_registry.py`. |
+| Phases it survived | N/A — this is a forward-looking gap, not a survived defect. Surfaced now because ADR-0054 §4 (2026-08-19) decided the *cell key* is `(MarketType, band)`, which is correct for distinguishing cells but was never checked against whether it is sufficient for *grouping* by sport, the separate operation Phase 3 will need ("bump one epoch, every MLB cell resets same day" / "NFL's cells graduate independently of MLB's"). |
+| Why it survived | `ADR-0054` (PROPOSED, 2026-08-19) resolved the cell-key question in isolation; its own §8 follow-on list (item 5) already names "re-audit all 12 existing boundaries against their actual diffs for true per-cell blast radius" as unstaffed, but that item addresses `(MarketType, band)` granularity, not the sport-grouping, band-naming, or epoch-inheritance questions this entry raises — those are a distinct axis ADR-0054 did not consider because it was scoped to Phase 3 boxes 3.1/3.2/3.7/3.8, not to sport-expansion readiness. |
+| Impact | If Phase 3 proceeds without a decision, each of the three questions gets answered implicitly by whatever the first NFL-touching commit happens to do — e.g. a hand-rolled `T4N-PROJ` string chosen ad hoc, or a first NFL epoch boundary's `bands_affected` silently including or excluding MLB bands by accident. Retrofitting a correct answer afterward means the same 12-boundary re-audit ADR-0054 §8 already flags, done twice — once for the `(MarketType, band)` re-key, once again for whatever the accidental sport-axis answer needs to be undone. |
+| Discovery | T-473 (2026-08-20/21 session), tasked directly with drafting a decision-request APR for these three questions ahead of Phase 3. |
+| Resolution | Not started — this entry is the registration; `00_ADMIN/APR-0032` is the decision-request document itself, presenting options/evidence/recommendation for D1 (sport as first-class attribute), D2 (NFL band-naming convention), D3 (NFL epoch inheritance) to the operator. No `src/` change made or proposed in this session. |
+| Status | OPEN — awaiting operator decision on APR-0032. |
 
 </details>
 
