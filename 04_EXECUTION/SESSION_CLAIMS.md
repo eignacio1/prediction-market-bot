@@ -314,3 +314,4 @@
 | 2026-08-21T19:04:13Z | T-474 / GG-202 | T-474: NFL skeleton spike -- cells, ticker grammar, one C1 stub; zero sizing, no C3 |
 | 2026-08-21T19:39:00Z (closure note) | T-474 / GG-202 | **CLOSED — merge confirmed via `git merge-base --is-ancestor` (commit `89ffaca` is an ancestor of `origin/main` at `c41da36`, PR #106 MERGED). NFL skeleton spike delivered: 4 MarketType cells, ticker grammar, breakage list (`02_ARCHITECTURE_DESIGN/NFL_SKELETON_SPIKE_BREAKAGE_LIST.md`), GG-202 registered OPEN. Zero cells above NOT_IMPLEMENTED, kelly_fraction=0.0 throughout. Full suite: 2930 passed / 28 skipped / 0 failed.**
 | 2026-08-24T23:27:37Z | T-482 | T-482: session-start Step 4 + T4 liveness verification |
+| 2026-08-24T23:35:37Z | T-483 / GG-211 | T-483: install rebuilt ACTIVE_QUEUE + nav housekeeping |
