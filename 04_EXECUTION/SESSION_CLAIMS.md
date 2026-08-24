@@ -316,3 +316,5 @@
 | 2026-08-24T23:27:37Z | T-482 | T-482: session-start Step 4 + T4 liveness verification |
 | 2026-08-24T23:35:37Z | T-483 / GG-211 | T-483: install rebuilt ACTIVE_QUEUE + nav housekeeping |
 | 2026-08-24T23:40:00Z (closure note, backfilled by T-483) | T-463 | **CLOSED — T-463 was claimed 2026-08-18T04:46:53Z and never received a CLOSED row; its deliverable (team runs-scored outcome store for archived KXMLBTOTAL game-events, market Brier by-product) landed under T-469 (PR #91, commit `22f7b98`) on 2026-08-20. Backfilled to stop the live false positive on T-476's claim-lifecycle assertion.**
+| 2026-08-24T23:36:27Z | T-484 / GG-206 | T-484: commit + extend the KXMLBTOTAL outcome store |
+| 2026-08-24T23:36:28Z | T-485 / GG-204 | T-485: ADR-0057 decision request -- re-scope G6 off T1 |
