@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-25T04:22:11Z (T-485 — T-485: confirmed T1 clean_n=0 blocks ADR-0028's G6 closure; drafted ADR-0057 (PROPOSED), GG-204 opened.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0422.md` for full session detail.
+**Last reviewed:** 2026-08-25T23:50:00Z (T-493 — T-493: drafted ADR-0058 (PROPOSED) -- T1 game-market cells reopen via ADR-0050's flat-stake pattern, load-bearing on unsigned ADR-0054(b)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_2350.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
