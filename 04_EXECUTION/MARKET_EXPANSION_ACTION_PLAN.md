@@ -216,7 +216,7 @@
 ## Standing items (not phase-bound)
 
 - [ ] **S.1** Epoch-12 live verification — `size_usd == $1.00` for entry price ≥ $0.10, `10 × entry_price` below; `t4_offsetting_suppressed` counts. **Clock-bound: needs a resolved slate.**
-- [x] **S.2** Register `_kalshi_base_url()` misrouting bug — `BOT_ENV=ENV-03` silently routes to demo. **G6 precondition.** Registered as GG-152 (OPEN, unstaffed — fix requires operator sign-off, touches live-capital path).
+- [x] **S.2** Register `_kalshi_base_url()` misrouting bug — `BOT_ENV=ENV-03` silently routes to demo. **G6 precondition.** Registered as GG-152 — **RESOLVED 2026-08-01** (fix shipped and verified; see `GOVERNANCE_GAP_LOG_ARCHIVE.md`), no longer OPEN when live capital is authorized.
 - [ ] **S.3** Resolve `.env.example` inconsistency — venue keys documented as "ENV-02/ENV-03 only", capture ran under ENV-01 with keys set. Noted inside GG-152's entry as an unresolved sub-finding; **not itself resolved**, only documented.
 - [x] **S.4** Register the frozen-span trap — T1's cohort is not "13 days from maturity," it is `clean_n=0` and structurally cannot self-heal under ADR-0048's zeroing + epoch-10 reset. Registered as GG-153 (OPEN, unstaffed).
 - [x] **S.5** Register the Cowork Step-4 blind spot — no SSH route, protocol step silently skipped. Registered as GG-154 (OPEN, unstaffed).
