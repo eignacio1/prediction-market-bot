@@ -136,22 +136,19 @@ specific gate-to-cell mapping asserted in the task claim is not something this s
 
 ---
 
-## 7. Item 6 — ADR-0057 / T-485 / T-486 status (flagged, not resolved)
+## 7. Item 6 — ADR-0057 / T-485 / T-486 status (flagged, not resolved; landed after this session's initial check)
 
-The task claim's premise — "ADR-0057 (PROPOSED, T-485) argues G6 should be re-scoped off T1 partly because T1
-is dead; T-486 is adding a premise-amendment note" — does not match the repository's current state, verified
-this session:
-
-- `03_DECISIONS/ADR-0057*.md` **does not exist as a file.**
-- `04_EXECUTION/ACTIVE_QUEUE.md` line 4 lists `ADR-0057+` under "Free IDs — verify before taking," confirming
-  the number was never claimed as a document.
-- `04_EXECUTION/SESSION_CLAIMS.md` shows exactly one row for T-485 (`2026-08-24T23:36:28Z | T-485 / GG-204 |
-  T-485: ADR-0057 decision request -- re-scope G6 off T1`), with **no CLOSED row**.
-- **T-486 does not appear anywhere in `SESSION_CLAIMS.md`.**
-- **GG-204** (T-485's claimed gap number) **does not appear anywhere in `GOVERNANCE_GAP_LOG.md`.**
-
-This is reported here per the task's own instruction ("confirm it landed; if it did not, say so... rather
-than editing ADR-0057 yourself") and is not acted on further. `ADR-0057` remains untouched.
+At the time this session's worktree branched (2026-08-25T04:34:05Z), `03_DECISIONS/ADR-0057*.md` did not
+exist, T-485's `SESSION_CLAIMS.md` row carried no CLOSED entry, T-486 did not appear in `SESSION_CLAIMS.md`
+at all, and GG-204 did not appear in `GOVERNANCE_GAP_LOG.md` — the task's premise did not match repo state at
+that point. **A subsequent re-fetch of `origin/main`, done before this session's close-out per Hard Rule 10,
+shows this has since changed:** T-485 closed (05:00:00Z CLOSED row, GG-204 registered HIGH, `ADR-0057`
+drafted PROPOSED), and T-486 (claimed 04:34:23Z, "install rebuilt ACTIVE_QUEUE + land T-485's ADR-0057
+branch") landed it via PR #113 (merge commit `9f3b78b`) — `03_DECISIONS/ADR-0057_g6-cell-scoped-rescope-decision-request.md`
+now exists on `origin/main`, Status PROPOSED, not ACCEPTED, addressing G6's closure condition against T1's
+frozen `clean_n=0` (the same GG-153 fact this ADR's §4 builds on, from the complementary G6-rescoping angle
+rather than the reopening angle). **This ADR does not edit `ADR-0057`** — it is noted here as now-current,
+directly relevant context, not resolved or acted on further.
 
 ---
 
