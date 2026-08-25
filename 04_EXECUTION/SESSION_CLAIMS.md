@@ -321,3 +321,4 @@
 | 2026-08-24T23:36:27Z | T-484 / GG-206 | T-484: commit + extend the KXMLBTOTAL outcome store |
 | 2026-08-24T23:36:28Z | T-485 / GG-204 | T-485: ADR-0057 decision request -- re-scope G6 off T1 |
 | 2026-08-25T04:02:56Z | T-482 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES, PR #110, merge commit 4b51f30) |
+| 2026-08-25T04:08:00Z | T-483 / GG-211 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES, PR #107 + follow-up PR #108). All 5 deliverables done (ACTIVE_QUEUE install, T-463 CLOSED backfill, worktree prune clean, GG-152 box S.2 correction, CLAUDE.md ADR-0048 correction). GG-211 reserved, unused — no out-of-scope defect found, returns to pool. Waited for T-482's CLOSED row (line above) per task's explicit ordering instruction before writing this row.
