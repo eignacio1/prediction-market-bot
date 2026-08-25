@@ -2385,6 +2385,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-206 — `t4_mlb_totals_outcome_store.jsonl` (and its sibling `t4_mlb_outcome_store.jsonl`) are gitignored under a rule documented for CAT-04 audit logs, but the files are CAT-03 resolution data with no backup/sync path — single-laptop-copy risk for an irreplaceable, StatsAPI-cost dataset
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-206 |
+| Category | Systemic blind spot / data-classification mismatch — a directory-level `.gitignore` rule was written and documented for one data category (CAT-04 audit logs) but also silently catches a different category (CAT-03 outcome/resolution data) that `DATA_RETENTION_DELETION.md` does not authorize excluding from durable storage, and no other backup mechanism exists for it. |
+| What was missed | `.gitignore:149` excludes `logs/` with the comment "never commit audit logs — retained per DATA_RETENTION_DELETION.md". `t4_mlb_totals_outcome_store.jsonl` (built T-463, 2026-08-17) and its sibling `t4_mlb_outcome_store.jsonl` (built T-421, extended T-470) are not audit logs — `DATA_RETENTION_DELETION.md` classifies "Event resolution data from venue" as CAT-03, a distinct category whose own rule ("MUST be stored separately from feature store at all times", TI-03) says nothing about excluding it from version control or backup. Both files are effectively irreplaceable (each row costs a live MLB StatsAPI call); T-463's own commit message states "Output store is gitignored (logs/), not committed here" as a fact, without examining durability. Unlike `.vps_portfolio_cache_*.json` / `exp_output/PRICE_ARCHIVE/`, which `.claude/hooks/governance_scan.sh` actively rsync-pulls from the VPS every session, these two outcome stores are generated locally and, until this session, existed as a single copy on a single laptop with no sync mechanism in either direction. |
+| When it should have been caught | At T-463's own build time (2026-08-17), or at T-421 when the sibling store was first built — either commit stated the gitignore fact without checking whether the stated audit-log rationale actually covered this data category. |
+| Phases it survived | T-421 (hit store built) → T-463 (totals store built) → T-469/T-470 (both landed/extended without addressing durability) → T-484 (this session), four sessions across roughly two weeks. |
+| Why it survived | `.gitignore`'s comment is a plausible-sounding blanket rationale that reads as covering everything under `logs/`, so nothing prompted a closer read of `DATA_RETENTION_DELETION.md`'s actual category boundaries. Compounding: `scripts/assert_ledger_invariants.py` (Q7) silently degrades to `SOURCE_UNAVAILABLE` skip-with-zero-violations when its source files (this store included) are absent — confirmed directly this session: run from a freshly isolated worktree (Hard Rule 10's default launch mode), Q7 reported "0 total violations across 0 band-scoped assertion runs" because none of its three source files exist in a fresh worktree at all. Q7 is alarm-only by design (exits 0 regardless of findings), so this silent skip means the mandatory session-start protocol can report a clean Q7 pass while checking nothing, on every worktree-isolated session — an unexamined side effect of the GG-101 isolation fix on this specific check. |
+| Impact | Medium. Had the laptop disk failed or the file been accidentally deleted before this session, 307 resolved rows (each backed by a real StatsAPI call) would have been unrecoverable without re-querying the API from scratch, and any work depending on Q7's cross-path check would have been silently unvalidated in the meantime. Now mitigated for this one file via a VPS copy (see Resolution); the sibling `t4_mlb_outcome_store.jsonl` and any future outcome store built the same way remain exposed, and Q7's worktree blind spot is unaddressed. |
+| Discovery | T-484 (2026-08-24), tasked with closing the "single uncommitted copy of an irreplaceable dataset" failure mode for this one file. Checking whether a documented reason for leaving it untracked actually applied surfaced the CAT-03/CAT-04 mismatch; running the mandatory Q7 step from an isolated worktree (this session's own protocol run) directly demonstrated the silent-skip consequence. |
+| Resolution | Not resolved. This session copied the current file (329 rows, sha256 `679da3a1116e8aff7db38b2edc9bc31a0f54af15ca93cf61ad3db26b69e1e4a5`, verified byte-identical both directions) to the VPS at `/opt/prediction-market-bot/logs/t4_mlb_totals_outcome_store.jsonl` — closes the immediate single-point-of-failure risk for this one file only. Two things remain open: (1) decide whether CAT-03 outcome-store files should get an explicit `.gitignore` carve-out / force-add exception, or a standing rsync pull/push pattern like `PRICE_ARCHIVE`'s, rather than ad hoc one-off copies — the same decision applies to the sibling `t4_mlb_outcome_store.jsonl`, which remains laptop-only; (2) Q7's silent `SOURCE_UNAVAILABLE` skip in isolated worktrees — either give Q7 the same VPS pull-back `governance_scan.sh` already does for the portfolio caches, or make the skip visibly loud rather than folding into "0 violations" in the summary line. |
+| Status | OPEN 2026-08-24 (T-484). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
