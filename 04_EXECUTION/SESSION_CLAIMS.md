@@ -327,3 +327,4 @@
 | 2026-08-25T04:19:00Z | T-484 (session-end) | CLOSED — merge confirmed via PR #114 (squash, mergeCommit `5b33d9e`); content verified present on origin/main (SESSION_HANDOFF_20260825_0416.md, SESSION_CLAIMS row above). GG-186 note: squash merge, `--is-ancestor` does not apply (same as PR #109/#112 earlier this session) — content check used instead. Session-end protocol (MICRO tier) complete: Step 1A none-new, nav-chain collapse generated, checkpoint pointer updated, operator digest written. Worktree retiring next.
 | 2026-08-25T04:34:05Z | T-493 / GG-213 | T-493: ADR-0058 -- reopen T1 on the game-market axis, measurement only |
 | 2026-08-25T04:34:11Z | T-492 / GG-205 | T-492: GG-203 -- diagnose and fix 100% Kalshi order-submission failure |
+| 2026-08-25T04:34:23Z | T-486 / GG-215 | T-486: install rebuilt ACTIVE_QUEUE + land T-485's ADR-0057 branch |
