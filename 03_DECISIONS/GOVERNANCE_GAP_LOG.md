@@ -2050,7 +2050,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-186 — SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, with no check that either branch had actually reached `origin/main` — 4th occurrence of the same pattern (T-456 x2, T-458, T-460)
 
-**Status:** RESOLVED · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -2058,6 +2058,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-186 |
+| 2026-08-25 recurrence (T-486) | The "structurally impossible" claim in Resolution below is falsified: T-485 (2026-08-24/25) wrote a `SESSION_CLAIMS.md` CLOSED row for `session/20260824T233621Z-t485-adr0057-g6-rescope` (tip `ba09980`/`64b8956`) asserting merge-landing, but `git merge-base --is-ancestor` from T-486's session confirmed the branch was NOT an ancestor of `origin/main` at that time — the branch and its PR #113 sat unmerged until T-486 resolved conflicts and landed it (merge commit `9f3b78ba1653a21744733e4deb678b5347470a45`). This is a 5th occurrence of the underlying pattern, not a new gap — the mechanism described in Resolution (generator-side merge-check gating the literal string "CLOSED") evidently was not exercised, bypassed, or hand-authored around in T-485's session; root cause not re-investigated here per Hard Rule 11 (out of T-486's declared scope). Re-open investigation is warranted before this can be called RESOLVED again — logged here per explicit task instruction rather than as a new GG number. |
 | Category | Systemic blind spot — session-end's closure-row generator had no dependency on merge-landing at all; it read purely from the session's own `session-meta` block (local task_id/commit/summary), which is true regardless of whether that commit ever reached `origin/main`. |
 | What was missed | `scripts/generate_session_artifacts.py`'s `generate_claims_closure_row()` wrote `CLOSED — ... (commit \`<local-sha>\`)` unconditionally, and — structurally worse — it runs at session-end Step 6-gen, which executes *before* Step 8 (push + merge). So even a fully correct session following the documented step order writes a "CLOSED" row before the merge that closure claims has happened. A window that then skipped, deferred, or failed Step 8 left a permanently-false "CLOSED" row with nothing to ever contradict it. |
 | When it should have been caught | Should have been caught by Step 0c of the next session's session-start protocol (reading recent `SESSION_CLAIMS.md` rows) — but a false "CLOSED" row is indistinguishable from a true one by inspection; the check that would catch it (does this commit exist in `origin/main`'s history?) was never run by anything. |

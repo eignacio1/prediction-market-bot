@@ -7,6 +7,8 @@
 **Author:** Session `session/20260824T233621Z-t485-adr0057-g6-rescope` (T-485)
 **Scope:** Decision request only. No code change, no `execution_bands.py`/`risk.py`/`kelly_fraction` edit, no T1 reactivation, no `GOVERNANCE_GAP_LOG.md` edit beyond registering GG-204 itself.
 
+**PREMISE AMENDMENT (2026-08-25, T-486):** this document's finding leans in part on T1 being permanently dead (GG-153: `clean_n=0`, cannot self-heal under the current regime). Operator directive 2026-08-25 reopens T1 on the game-market axis (moneyline/spread/run-line/totals — see T-493/ADR-0058, GG-213): those markets carry materially different variance characteristics than the `KXMLBHIT` player-prop cohort GG-153's ruin geometry was measured on, and re-measurement (T-494) is now in flight rather than assumed closed. **The premise that T1 is permanently dead is therefore no longer true as stated.** The §2 recommendation is unaffected by this amendment — a band-scoped gate still cannot express a 53-cell portfolio regardless of whether T1 specifically revives — but this ADR must not be signed on the "T1 is permanently dead" framing in §1/§4 without reading this note first. Status remains PROPOSED; §4's operator decision is not resolved by this amendment.
+
 ---
 
 ## 1. Finding (verified this session, not assumed)
