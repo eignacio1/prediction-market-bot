@@ -17,3 +17,4 @@ Yes — one thing, whenever convenient: review and approve or reject ADR-0058. N
 
 **Anything that worried the session, even if not urgent:**
 No new concerns. One earlier draft (from a different, overlapping session) that had assumed T1 was permanently dead was found and corrected mid-session to reflect your new directive — a good example of the "double-check before writing" safety habit catching a stale assumption before it caused confusion.
+- T-492 (auto): T-492: GG-203 root cause = external Kalshi demo-account order-write fault, no in-repo fix; amended OPEN->PARTIALLY RESOLVED

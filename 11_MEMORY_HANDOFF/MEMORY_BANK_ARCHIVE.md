@@ -2295,3 +2295,5 @@ as of 2026-07-31, GG-149/GG-150 T4 offsetting-position suppression close-out (ep
 
 **Earlier history** (Window A/T-300 merge-to-main, GG-102/T-261, the GG-099 chain T-253 through T-258, GG-100, GG-101, and SESSION 121 through SESSION 127) is consolidated into `MEMORY_BANK_ARCHIVE.md`'s "Last reviewed (prior)" entry (T-334/E1, 2026-07-11) — see that file for the full verbatim chain; nothing summarized away, only moved. Window B's own local copy of that same shared history (superseded duplicate entries) was dropped here at 2026-07-11 merge time rather than re-archived a second time.
 
+
+**Last reviewed (prior):** 2026-08-25T23:49:00Z (T-492 — T-492: GG-203 root cause = external Kalshi demo-account order-write fault, no in-repo fix; amended OPEN->PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_2349.md` for full session detail.
