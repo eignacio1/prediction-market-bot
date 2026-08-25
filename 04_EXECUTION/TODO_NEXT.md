@@ -2,10 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-21T15:26:29Z (T-481 — T-481: recorded signed APR-0032 D1/D2/D3 sign-off verbatim; drafted ADR-0056 (PROPOSED) to authorize implementation.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260821_1526.md` for full session detail.
+**Last reviewed:** 2026-08-24T23:41:00Z (T-482 — T-482: ran Step 4 for real, found T4M-PROJ alive but 100% Kalshi order-submission failure since 2026-08-15 (GG-203)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260824_2341.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-483 — GG-203 follow-up: diagnose + fix T4M-PROJ's 100% Kalshi order-submission failure (`kalshi_order_failed` 1:1 with every `risk_eval_approved` since 2026-08-15T00:06:20Z) — OPEN, unstaffed, found 2026-08-24 (T-482)
+
+**Not started.** T-482 confirmed the process is alive/evaluating (cycle log + audit log writing in real time, systemd healthy) but zero bets have entered since 2026-08-14 because every approved position's Kalshi order submission fails — 5222+ approved-then-failed positions across 08-15→08-24, two distinct HTTP 404 causes seen (`market_not_found` at onset 2026-08-15T00:06:20.592Z, `user_not_found` as of 2026-08-24T23:28:11.199Z — root cause may have shifted mid-incident, not diagnosed). Registered as GG-203 (HIGH), not fixed per Hard Rule 11 (one deliverable, register-and-stop). Also worth checking: T1 MLB's `paper_mlb_cron.log` shows "Bets placed today: 0" across its last 6 logged runs — may or may not share this root cause, not investigated. Start by reading the two failing order-submission payloads in full from `logs/audit_mlb_t4.jsonl` (`kalshi_order_failed` events) to determine whether the 404 is ticker-format drift, an expired/rotated Kalshi credential, or a market that genuinely closed before submission landed.
 
 ## T-448 — Amend ADR-0053 to reconcile with T-439's shipped MarketTypeCell, then mark ACCEPTED with operator sign-off — ✅ COMPLETE 2026-08-14 (isolated worktree `session/20260814T144527Z-adr0053-accept`, commit `254fc37`)
 
