@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-25T04:16:08Z (T-484 — T-484 closed: KXMLBTOTAL outcome store 239->329 rows (307 resolved), VPS+git dual-path resolved, GG-206 registered OPEN) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0416.md` for full session detail.
+**Last reviewed:** 2026-08-25T04:22:11Z (T-485 — T-485: confirmed T1 clean_n=0 blocks ADR-0028's G6 closure; drafted ADR-0057 (PROPOSED), GG-204 opened.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

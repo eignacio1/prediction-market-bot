@@ -2050,7 +2050,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-186 — SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, with no check that either branch had actually reached `origin/main` — 4th occurrence of the same pattern (T-456 x2, T-458, T-460)
 
-**Status:** RESOLVED · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -2058,6 +2058,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Field | Detail |
 |---|---|
 | Gap ID | GG-186 |
+| 2026-08-25 recurrence (T-486) | The "structurally impossible" claim in Resolution below is falsified: T-485 (2026-08-24/25) wrote a `SESSION_CLAIMS.md` CLOSED row for `session/20260824T233621Z-t485-adr0057-g6-rescope` (tip `ba09980`/`64b8956`) asserting merge-landing, but `git merge-base --is-ancestor` from T-486's session confirmed the branch was NOT an ancestor of `origin/main` at that time — the branch and its PR #113 sat unmerged until T-486 resolved conflicts and landed it (merge commit `9f3b78ba1653a21744733e4deb678b5347470a45`). This is a 5th occurrence of the underlying pattern, not a new gap — the mechanism described in Resolution (generator-side merge-check gating the literal string "CLOSED") evidently was not exercised, bypassed, or hand-authored around in T-485's session; root cause not re-investigated here per Hard Rule 11 (out of T-486's declared scope). Re-open investigation is warranted before this can be called RESOLVED again — logged here per explicit task instruction rather than as a new GG number. |
 | Category | Systemic blind spot — session-end's closure-row generator had no dependency on merge-landing at all; it read purely from the session's own `session-meta` block (local task_id/commit/summary), which is true regardless of whether that commit ever reached `origin/main`. |
 | What was missed | `scripts/generate_session_artifacts.py`'s `generate_claims_closure_row()` wrote `CLOSED — ... (commit \`<local-sha>\`)` unconditionally, and — structurally worse — it runs at session-end Step 6-gen, which executes *before* Step 8 (push + merge). So even a fully correct session following the documented step order writes a "CLOSED" row before the merge that closure claims has happened. A window that then skipped, deferred, or failed Step 8 left a permanently-false "CLOSED" row with nothing to ever contradict it. |
 | When it should have been caught | Should have been caught by Step 0c of the next session's session-start protocol (reading recent `SESSION_CLAIMS.md` rows) — but a false "CLOSED" row is indistinguishable from a true one by inspection; the check that would catch it (does this commit exist in `origin/main`'s history?) was never run by anything. |
@@ -2428,6 +2429,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 | Discovery | T-484 (2026-08-24), tasked with closing the "single uncommitted copy of an irreplaceable dataset" failure mode for this one file. Checking whether a documented reason for leaving it untracked actually applied surfaced the CAT-03/CAT-04 mismatch; running the mandatory Q7 step from an isolated worktree (this session's own protocol run) directly demonstrated the silent-skip consequence. |
 | Resolution | Partially resolved, by two independent concurrent paths. This session (T-484) copied the file (329 rows) to the VPS at `/opt/prediction-market-bot/logs/t4_mlb_totals_outcome_store.jsonl`, sha256-verified both directions. Concurrently and independently, T-482 (same day, commit `83a6c48`, merged into `origin/main` ahead of this session's PR) force-added this same file to git tracking despite `.gitignore:149` still excluding `logs/` — confirmed via `git check-ignore` returning empty for the file post-merge while the sibling `t4_mlb_outcome_store.jsonl` still shows as ignored. Post-merge content is identical (sha256 `7e577e33e3e4cb21f8c0653ffcc85bc8af17de362edc5fe4a42850a470ee4a09` in both the git blob and the working-tree file), so the two resolution paths did not conflict, only overlap. Net effect: for this one file, both the "commit it" and "copy it to the VPS" halves of the original task's own disjunction ended up satisfied, by two different sessions, neither aware of the other's choice at authoring time. Two things remain open: (1) the underlying `.gitignore:149` rule itself is untouched — this file is tracked only via an ad hoc force-add with no `!` exception recorded, so a future `git add -A`-style operation gives no signal either way, and the sibling `t4_mlb_outcome_store.jsonl` remains laptop-only with neither a VPS copy nor a git commit; a standing rule (explicit gitignore carve-out, or a rsync pull/push pattern like `PRICE_ARCHIVE`'s) is still undecided; (2) Q7's silent `SOURCE_UNAVAILABLE` skip in isolated worktrees — either give Q7 the same VPS pull-back `governance_scan.sh` already does for the portfolio caches, or make the skip visibly loud rather than folding into "0 violations" in the summary line. |
 | Status | OPEN 2026-08-24 (T-484; partial-resolution note added post-merge with T-482/GG-203, same session). |
+
+</details>
+
+---
+
+### GG-204 — ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0`
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-204 |
+| Category | Architectural placeholder / stale gate condition — an ACCEPTED, immutable ADR encodes a closure condition against a band that a later, also-ACCEPTED ADR (ADR-0048) structurally zeroed out, and no session flagged the resulting contradiction until this one. |
+| What was missed | ADR-0028 §"Updated G6 Closure Condition" scopes G6 items 2, 3, and 4 to T1 bets (item 4 specifically to YES-direction eligible T1 bets). ADR-0048 (`kelly_fraction=0.0` for T1_MULTI_DAY, per GG-105/GG-135) and epoch-10's ALL_BANDS reset (clearing T1's clean-epoch floor) jointly mean T1 cannot place a bet and cannot accrue `clean_n` under the current logic epoch — confirmed live via `scripts/run_power_calc.py`: `[T1] clean_n=0 (raw_n=466)`. ADR-0028 also names T4 out-of-scope/BLOCKED for G6, but T4M-PROJ is the only ACTIVE cell currently accruing evidence (`clean_n=719` vs. `n*=608` — nominally TARGET MET, though GG-046/GG-170's live ticker/game_date corruption, reconfirmed recurring at the *current* epoch by this session's own Q7 run, means the repaired figure per ADR-0055 is `n*=5,580`, not met). Since ADRs are immutable (Hard Rule 3), no session could simply edit ADR-0028 to fix this — the contradiction could only be surfaced and a superseding decision requested. |
+| When it should have been caught | At ADR-0048's own acceptance (T1_MULTI_DAY zeroed) or at epoch-10's ALL_BANDS reset — either event should have prompted a check of whether any ACCEPTED ADR's closure condition still had a live path to satisfaction. Neither did. |
+| Phases it survived | ADR-0028 (accepted) → ADR-0048 (accepted, zeroed T1 Kelly) → epoch-10 reset (cleared T1 clean-epoch floor) → multiple subsequent sessions treating G6 progress as a live, trackable quantity — all without anyone checking whether the gate's own text still had a satisfiable path. |
+| Why it survived | Each of ADR-0028, ADR-0048, and the epoch-10 reset was independently correct and independently reviewed in isolation; the contradiction only exists in the conjunction of the three, and no protocol step cross-checks an ACCEPTED ADR's closure condition against a *different* ACCEPTED ADR's downstream effect on the same band. Q1/Q5 grep for hard-limit values and their DECISION_LOG derivation, not for gate-condition satisfiability. |
+| Impact | High. G6 (the gate to live capital) has had no satisfiable closure path since epoch-10 at the latest, and nothing in the routine session-start protocol would have surfaced this on its own — it required a session explicitly tasked with checking ADR-0028 against ADR-0048/GG-153/`execution_bands.py`/`logic_epoch.py` together. Any session reasoning about "G6 progress" using T1 figures during this window was reasoning about a gate that could not close. |
+| Discovery | T-485 (2026-08-24), tasked by the operator with verifying this exact finding before drafting a decision request. Confirmed via direct read of ADR-0028/ADR-0048/GG-153, `execution_bands.py`'s `kelly_fraction=0.0` for `T1_MULTI_DAY`, `logic_epoch.py`'s `ALL_BANDS` reset semantics, and a live `scripts/run_power_calc.py` run showing `T1 clean_n=0`. |
+| Resolution | ADR-0057 (drafted this session, Status PROPOSED — not yet ACCEPTED) requests re-expressing G6 against ADR-0053's per-`(market_type, band)` cell registry (`clean_n ≥ n*` per cell, under APR-0024) instead of per-band T1, while explicitly not resolving T1's fate (retire / revive via ADR gated on GG-105 / leave dark and exclude from gate — presented as an open operator decision with no recommendation) and not touching `execution_bands.py`, `risk.py`, or any `kelly_fraction`. GG-204 stays OPEN until ADR-0057 (or a successor) is ACCEPTED and T1's fate is operator-decided. |
+| Status | OPEN 2026-08-24 (T-485). Blocked-On-Operator: YES — ADR-0057's acceptance and T1's fate (§4 of that ADR) are both operator decisions this session explicitly does not make. |
 
 </details>
 
