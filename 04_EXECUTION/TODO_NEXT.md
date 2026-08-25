@@ -2,10 +2,12 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-21T15:26:29Z (T-481 — T-481: recorded signed APR-0032 D1/D2/D3 sign-off verbatim; drafted ADR-0056 (PROPOSED) to authorize implementation.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260821_1526.md` for full session detail.
+**Last reviewed:** 2026-08-25T04:22:11Z (T-485 — T-485: confirmed T1 clean_n=0 blocks ADR-0028's G6 closure; drafted ADR-0057 (PROPOSED), GG-204 opened.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-485 — Verify ADR-0028's G6 closure condition against T1's permanent clean_n=0 (GG-153); if confirmed, draft ADR-0057 (decision request) — ✅ COMPLETE 2026-08-25 (isolated worktree `session/20260824T233621Z-t485-adr0057-g6-rescope`, PR #113). Finding confirmed (not refuted). Registered GG-204 (HIGH). ADR-0057 drafted, Status PROPOSED — re-expresses G6 per-cell (ADR-0053 registry) and presents T1's fate (retire / revive via ADR / leave dark) as an explicit unresolved operator decision, ADR-0057 §4 — no recommendation given, not tracked as a further task. Does not amend ADR-0028 (supersedes closure-condition section only). No `src/`/`execution_bands.py`/`kelly_fraction` changes.
 
 ## T-448 — Amend ADR-0053 to reconcile with T-439's shipped MarketTypeCell, then mark ACCEPTED with operator sign-off — ✅ COMPLETE 2026-08-14 (isolated worktree `session/20260814T144527Z-adr0053-accept`, commit `254fc37`)
 

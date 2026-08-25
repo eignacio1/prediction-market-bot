@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-21T15:26:29Z (T-481 — T-481: recorded signed APR-0032 D1/D2/D3 sign-off verbatim; drafted ADR-0056 (PROPOSED) to authorize implementation.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260821_1526.md` for full session detail.
+**Last reviewed:** 2026-08-25T04:22:11Z (T-485 — T-485: confirmed T1 clean_n=0 blocks ADR-0028's G6 closure; drafted ADR-0057 (PROPOSED), GG-204 opened.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
