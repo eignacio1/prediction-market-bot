@@ -2433,6 +2433,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-204 — ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0`
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-204 |
+| Category | Architectural placeholder / stale gate condition — an ACCEPTED, immutable ADR encodes a closure condition against a band that a later, also-ACCEPTED ADR (ADR-0048) structurally zeroed out, and no session flagged the resulting contradiction until this one. |
+| What was missed | ADR-0028 §"Updated G6 Closure Condition" scopes G6 items 2, 3, and 4 to T1 bets (item 4 specifically to YES-direction eligible T1 bets). ADR-0048 (`kelly_fraction=0.0` for T1_MULTI_DAY, per GG-105/GG-135) and epoch-10's ALL_BANDS reset (clearing T1's clean-epoch floor) jointly mean T1 cannot place a bet and cannot accrue `clean_n` under the current logic epoch — confirmed live via `scripts/run_power_calc.py`: `[T1] clean_n=0 (raw_n=466)`. ADR-0028 also names T4 out-of-scope/BLOCKED for G6, but T4M-PROJ is the only ACTIVE cell currently accruing evidence (`clean_n=719` vs. `n*=608` — nominally TARGET MET, though GG-046/GG-170's live ticker/game_date corruption, reconfirmed recurring at the *current* epoch by this session's own Q7 run, means the repaired figure per ADR-0055 is `n*=5,580`, not met). Since ADRs are immutable (Hard Rule 3), no session could simply edit ADR-0028 to fix this — the contradiction could only be surfaced and a superseding decision requested. |
+| When it should have been caught | At ADR-0048's own acceptance (T1_MULTI_DAY zeroed) or at epoch-10's ALL_BANDS reset — either event should have prompted a check of whether any ACCEPTED ADR's closure condition still had a live path to satisfaction. Neither did. |
+| Phases it survived | ADR-0028 (accepted) → ADR-0048 (accepted, zeroed T1 Kelly) → epoch-10 reset (cleared T1 clean-epoch floor) → multiple subsequent sessions treating G6 progress as a live, trackable quantity — all without anyone checking whether the gate's own text still had a satisfiable path. |
+| Why it survived | Each of ADR-0028, ADR-0048, and the epoch-10 reset was independently correct and independently reviewed in isolation; the contradiction only exists in the conjunction of the three, and no protocol step cross-checks an ACCEPTED ADR's closure condition against a *different* ACCEPTED ADR's downstream effect on the same band. Q1/Q5 grep for hard-limit values and their DECISION_LOG derivation, not for gate-condition satisfiability. |
+| Impact | High. G6 (the gate to live capital) has had no satisfiable closure path since epoch-10 at the latest, and nothing in the routine session-start protocol would have surfaced this on its own — it required a session explicitly tasked with checking ADR-0028 against ADR-0048/GG-153/`execution_bands.py`/`logic_epoch.py` together. Any session reasoning about "G6 progress" using T1 figures during this window was reasoning about a gate that could not close. |
+| Discovery | T-485 (2026-08-24), tasked by the operator with verifying this exact finding before drafting a decision request. Confirmed via direct read of ADR-0028/ADR-0048/GG-153, `execution_bands.py`'s `kelly_fraction=0.0` for `T1_MULTI_DAY`, `logic_epoch.py`'s `ALL_BANDS` reset semantics, and a live `scripts/run_power_calc.py` run showing `T1 clean_n=0`. |
+| Resolution | ADR-0057 (drafted this session, Status PROPOSED — not yet ACCEPTED) requests re-expressing G6 against ADR-0053's per-`(market_type, band)` cell registry (`clean_n ≥ n*` per cell, under APR-0024) instead of per-band T1, while explicitly not resolving T1's fate (retire / revive via ADR gated on GG-105 / leave dark and exclude from gate — presented as an open operator decision with no recommendation) and not touching `execution_bands.py`, `risk.py`, or any `kelly_fraction`. GG-204 stays OPEN until ADR-0057 (or a successor) is ACCEPTED and T1's fate is operator-decided. |
+| Status | OPEN 2026-08-24 (T-485). Blocked-On-Operator: YES — ADR-0057's acceptance and T1's fate (§4 of that ADR) are both operator decisions this session explicitly does not make. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
