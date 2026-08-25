@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-24T23:41:00Z (T-482 — T-482: ran Step 4 for real, found T4M-PROJ alive but 100% Kalshi order-submission failure since 2026-08-15 (GG-203)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260824_2341.md` for full session detail.
+**Last reviewed:** 2026-08-25T04:16:08Z (T-484 — T-484 closed: KXMLBTOTAL outcome store 239->329 rows (307 resolved), VPS+git dual-path resolved, GG-206 registered OPEN) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_0416.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
