@@ -342,3 +342,4 @@
 | 2026-08-25T23:58:00Z | T-493 | CLOSED — merge-check verified: commit `876d90b` (merge of `t493-closeout-push` resolving concurrent T-486/T-492 session-end divergences) confirmed ancestor of `origin/main` via `scripts/session_end_timer.sh merge-check` (MERGE_CHECK: YES). ADR-0058 (PROPOSED) live on main since PR #116. |
 | 2026-08-26T00:05:27Z | T-496 / GG-216 | T-496: venue compliance -- 403 geo rejection + VPS egress jurisdiction |
 | 2026-08-26T00:05:28Z | T-495 / EXP-024 | T-495: NHL skeleton spike -- cells + ticker grammar, no sizing, no C3 |
+| 2026-08-26T00:05:33Z | T-487 / GG-207 | T-487: EXP-022 -- Phase 2 boxes 2.2+2.3, team run-total model + gate |
