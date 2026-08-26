@@ -349,3 +349,4 @@
 | 2026-08-26T00:26:00Z (closure note) | T-496 session-end | CLOSED — /session-end handoff (SESSION_HANDOFF_20260826_0022.md, commit `70bb13f`, merged `1f12406`) verified via `git merge-base --is-ancestor HEAD origin/main` = TRUE (GG-186 satisfied). MICRO tier, 4m elapsed, within budget. |
 | 2026-08-26T00:27:16Z | T-495 | CLOSED — T-495: NHL skeleton spike merged (15 cells NOT_IMPLEMENTED, GG-217 registered); closure row confirmed on main (commit `eb6c6cf`) |
 | 2026-08-26T00:27:53Z | T-495-session-end | CLOSED — merge confirmed, HEAD (881e687) is ancestor of origin/main (merge-check YES). Session-end close-out artifacts (handoff, checkpoint, digest, TODO_NEXT/MEMORY_BANK/PLAN chain bump) landed via direct fast-forward push, MICRO fast path (no src/ change). |
+| 2026-08-26T04:33:13Z | T-490 / GG-210 | T-490: box 3.4 -- sport axis through run_power_calc/run_band_monitor |
