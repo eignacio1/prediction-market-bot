@@ -343,3 +343,4 @@
 | 2026-08-26T00:05:27Z | T-496 / GG-216 | T-496: venue compliance -- 403 geo rejection + VPS egress jurisdiction |
 | 2026-08-26T00:05:28Z | T-495 / EXP-024 | T-495: NHL skeleton spike -- cells + ticker grammar, no sizing, no C3 |
 | 2026-08-26T00:05:33Z | T-487 / GG-207 | T-487: EXP-022 -- Phase 2 boxes 2.2+2.3, team run-total model + gate |
+| 2026-08-26T01:10:00Z | T-487 / GG-207 | MERGED: NO — branch `session/20260826T000515Z-t487-phase2-team-totals` awaiting merge — T-487: EXP-022 boxes 2.2+2.3 run, verdict INCONCLUSIVE-EXTEND ARCHIVE, clean_n=207 vs n*=94,260, mean P&L/bet=-0.0026; pregame filter dropped 14,006/106,915 (13.1%); 5/5 spot-check match vs MLB Stats API; GG-207 returned unused (commit `045f4c3`, PR #121). Merge blocked this session by the auto-mode permission classifier on `gh pr merge`/`session_end_timer.sh merge-check` — PR left open for operator or a later session to land; per GG-186 this row states MERGED: NO rather than a false CLOSED. |
