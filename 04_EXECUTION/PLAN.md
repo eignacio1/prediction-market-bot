@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-26T00:26:00Z (T-495 — T-495: NHL skeleton spike merged (15 cells NOT_IMPLEMENTED, GG-217 registered); closure row confirmed on main) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260826_0026.md` for full session detail.
+**Last reviewed:** 2026-08-26T04:54:00Z (T-488 — T-488/GG-157 measured fill haircut (props+synthetic game mkts); n* flips cohort from MEETS to short-by-1) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260826_0454.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
