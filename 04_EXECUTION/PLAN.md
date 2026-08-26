@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-26T00:22:23Z (T-496 — T-496: geo evidence supports (a) transient Kalshi 403 glitch, not (b) VPS jurisdiction flip; GG-216 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260826_0022.md` for full session detail.
+**Last reviewed:** 2026-08-26T00:26:00Z (T-495 — T-495: NHL skeleton spike merged (15 cells NOT_IMPLEMENTED, GG-217 registered); closure row confirmed on main) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260826_0026.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
