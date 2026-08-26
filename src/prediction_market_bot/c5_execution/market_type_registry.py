@@ -89,6 +89,23 @@ class MarketType(Enum):
     NFL_GAME_TOTAL = "nfl_game_total"
     NFL_TEAM_TOTAL = "nfl_team_total"
 
+    # T-495 (NHL skeleton spike, ADR-0056 §2/D1, EXP-024): mirrors T-474's NFL
+    # pattern exactly. Series tickers confirmed live against Kalshi's /series
+    # and /events endpoints 2026-08-25 -- measured, not guessed from NFL/MLB's
+    # shape (same discipline the task instructed). Only THREE families are
+    # seeded here, not the full four-family target list: no live NHL
+    # team-total series was found on Kalshi as of the confirmation date (full
+    # 3512-series Sports-category listing checked; KXNHLTOTAL is game-scoped
+    # "Point Total", KXNHLPTS is player-scoped "Player Points" -- neither is a
+    # team-total market, and no other NHL+team-total series exists). Adding an
+    # NHL_TEAM_TOTAL member without a real backing ticker would fabricate a
+    # value in _SERIES_TICKER_BY_MARKET_TYPE and break
+    # test_round_trips_for_every_market_type. Registered as GG-217 (OPEN)
+    # rather than silently omitted or guessed.
+    NHL_MONEYLINE = "nhl_moneyline"
+    NHL_PUCK_LINE = "nhl_puck_line"
+    NHL_GAME_TOTAL = "nhl_game_total"
+
 
 # Series ticker is a property of the market family, not of (family, band) — the
 # same series is evaluated by whichever band's decision tree fires on it.
@@ -108,6 +125,14 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NFL_SPREAD: "KXNFLSPREAD",
     MarketType.NFL_GAME_TOTAL: "KXNFLTOTAL",
     MarketType.NFL_TEAM_TOTAL: "KXNFLTEAMTOTAL",
+    # T-495: confirmed live 2026-08-25 via curl against
+    # https://api.elections.kalshi.com/trade-api/v2/series?category=Sports and
+    # per-series /events lookups -- each returned real 2026 Stanley Cup Finals
+    # events (e.g. KXNHLGAME-26JUN14CARVGK). No KXNHLTEAMTOTAL entry -- see
+    # GG-217; NHL_TEAM_TOTAL is intentionally not a MarketType member.
+    MarketType.NHL_MONEYLINE: "KXNHLGAME",
+    MarketType.NHL_PUCK_LINE: "KXNHLSPREAD",
+    MarketType.NHL_GAME_TOTAL: "KXNHLTOTAL",
 }
 
 
@@ -136,6 +161,9 @@ _SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NFL_SPREAD: "nfl",
     MarketType.NFL_GAME_TOTAL: "nfl",
     MarketType.NFL_TEAM_TOTAL: "nfl",
+    MarketType.NHL_MONEYLINE: "nhl",
+    MarketType.NHL_PUCK_LINE: "nhl",
+    MarketType.NHL_GAME_TOTAL: "nhl",
 }
 
 # Fail-closed enforcement (ADR-0056 §2's enforcement clause): a MarketType
@@ -310,6 +338,17 @@ _NBA_GRAMMAR = TickerGrammar(_NBA_TAIL, has_hhmm=False)
 _NFL_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})([A-Z0-9]+)(?:-|$)")
 _NFL_GRAMMAR = TickerGrammar(_NFL_TAIL, has_hhmm=False)
 
+# T-495 (NHL skeleton spike): measured, not assumed. Confirmed live
+# 2026-08-25 against real Kalshi event tickers under KXNHLGAME/KXNHLSPREAD/
+# KXNHLTOTAL (e.g. KXNHLGAME-26JUN14CARVGK, KXNHLSPREAD-26JUN11VGKCAR):
+# NHL's shape is <YY><MON><DD><TEAMS...> -- NO HHMM segment, matching NBA/
+# NFL's grammar shape, not MLB's. A separate _NHL_TAIL/_NHL_GRAMMAR pair is
+# registered rather than reusing _NFL_GRAMMAR directly, for the same reason
+# _NFL_GRAMMAR wasn't folded into _NBA_GRAMMAR: identical shape today does
+# not imply coupled evolution later.
+_NHL_TAIL = re.compile(r"^(\d{2})([A-Z]{3})(\d{2})([A-Z0-9]+)(?:-|$)")
+_NHL_GRAMMAR = TickerGrammar(_NHL_TAIL, has_hhmm=False)
+
 _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.MLB_PLAYER_PROP_HITS: _MLB_GRAMMAR,
     MarketType.MLB_MONEYLINE: _MLB_GRAMMAR,
@@ -322,6 +361,9 @@ _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.NFL_SPREAD: _NFL_GRAMMAR,
     MarketType.NFL_GAME_TOTAL: _NFL_GRAMMAR,
     MarketType.NFL_TEAM_TOTAL: _NFL_GRAMMAR,
+    MarketType.NHL_MONEYLINE: _NHL_GRAMMAR,
+    MarketType.NHL_PUCK_LINE: _NHL_GRAMMAR,
+    MarketType.NHL_GAME_TOTAL: _NHL_GRAMMAR,
 }
 
 
@@ -578,6 +620,24 @@ _NFL_FAMILIES: tuple[MarketType, ...] = (
 )
 
 for _market_type in _NFL_FAMILIES:
+    for _band in _MLB_COARSE_BANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- NHL (T-495 skeleton spike, ADR-0056 §5, EXP-024): seeded NOT_IMPLEMENTED
+# only, mirroring T-474's NFL pattern exactly. No NHL cell may be promoted
+# above NOT_IMPLEMENTED by this session -- kelly_fraction=0.0 throughout,
+# unchanged. Only three families seeded (moneyline/puck-line/game-total) --
+# NHL_TEAM_TOTAL is not a MarketType member at all (no live Kalshi series;
+# GG-217). No T4 sub-band decomposition is built (ADR-0056 D2 names the
+# future T4NHL- prefix but does not require building the registry now); every
+# NHL family's T4 column is the coarse ExecutionBand.T4_IN_PLAY aggregate.
+_NHL_FAMILIES: tuple[MarketType, ...] = (
+    MarketType.NHL_MONEYLINE,
+    MarketType.NHL_PUCK_LINE,
+    MarketType.NHL_GAME_TOTAL,
+)
+
+for _market_type in _NHL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
