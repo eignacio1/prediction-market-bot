@@ -3,14 +3,14 @@
 **Purpose:** Register all target venues for this system — mechanics, regulatory basis, CA eligibility, pricing structure, edge formula, and activation status.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-07-31 (Phase 0-B depth survey — added measured orderbook depth per market family (first-ever traced measurement, `depth_sample.json`), the $25,000/contract position limit (Rulebook 5.14(a)), and corrected the prior "$500-$2,000 depth" claim for KXMLBHIT-class markets, which was never sourced and is contradicted by the measured data: real median depth for that family is $0.90, see GG-155). Prior review: 2026-07-02 (documentation-remediation pass — added the MLB KXMLBHIT series and fee-rate caveat this document was silent on; also note the Kalshi order endpoint migrated v1→v2, `/portfolio/events/orders`, per ADR-0038 SESSION 108 after Kalshi deprecated v1 platform-wide). Prior substantive review: 2026-05-29 (initial build — Phase 6 idle period)
+**Last reviewed:** 2026-08-26 (T-496 — added "Jurisdiction / Account Geo-Compliance Tracking" section below; this constraint had never been tracked in this file before, see GG-216). Prior review: 2026-07-31 (Phase 0-B depth survey — added measured orderbook depth per market family (first-ever traced measurement, `depth_sample.json`), the $25,000/contract position limit (Rulebook 5.14(a)), and corrected the prior "$500-$2,000 depth" claim for KXMLBHIT-class markets, which was never sourced and is contradicted by the measured data: real median depth for that family is $0.90, see GG-155). Prior review: 2026-07-02 (documentation-remediation pass — added the MLB KXMLBHIT series and fee-rate caveat this document was silent on; also note the Kalshi order endpoint migrated v1→v2, `/portfolio/events/orders`, per ADR-0038 SESSION 108 after Kalshi deprecated v1 platform-wide). Prior substantive review: 2026-05-29 (initial build — Phase 6 idle period)
 **Next review:** On any new venue activated; on API change; on regulatory status change
 **Staleness triggers:** Venue added or removed; regulatory change; API version change; ADR update
 **Upstream links:** STRATEGY_OVERVIEW.md; ADR-0003 (venue selection); INTERFACES_CONTRACTS.md
 **Downstream links:** venue_adapter.py (implementation); venue_router.py (routing); ENVIRONMENTS.md (API keys)
 **Decision references:** ADR-0002 (forecast-only); ADR-0003 (Kalshi primary; Polymarket secondary)
 **Confidence:** 8/10
-**Decisions logged:** true — T-096 logged 2026-06-02: V-001–V-005 priority order and rationale, activation gates, edge formula per venue type (CFTC vs. DFS). See DECISION_LOG.md 2026-06-02.
+**Decisions logged:** true — T-096 logged 2026-06-02: V-001–V-005 priority order and rationale, activation gates, edge formula per venue type (CFTC vs. DFS). See DECISION_LOG.md 2026-06-02. T-496 logged 2026-08-26: jurisdiction/geo-compliance finding (GG-216). See DECISION_LOG.md 2026-08-26.
 
 ---
 
@@ -20,6 +20,32 @@ California has no legal retail sports betting (Prop 26/27 both failed). The elig
 - **CFTC-regulated prediction markets** — federally regulated; available all 50 states
 - **DFS pick'em platforms** — legal under CA's professional sports fantasy game carve-out
 - **Traditional sportsbooks (DraftKings, Caesars, FanDuel)** — NOT CA-eligible; excluded from scope
+
+---
+
+## Jurisdiction / Account Geo-Compliance Tracking (T-496, 2026-08-26)
+
+**This section did not exist before today. Prior to this session, jurisdiction was tracked in this file only as "CA eligible" (see § CA Eligibility Context above) — the operator's California residency. Nothing in this file, or in ADR-0003, tracked the separate and distinct risk that Kalshi's own account-level geo/residency classification of the *deployment's egress IP* could restrict the account from a market class the bot trades. That gap is what this section closes.**
+
+**Trigger:** GG-203 (T-492, T4M-PROJ order-write failure investigation) logged, among three rotating non-diagnostic Kalshi order-rejection error codes across 2026-08-15 through 2026-08-24, an HTTP 403 `Nevada_residents_are_not_currently_allowed_to_open_positions_in_Sports,_Elections_and_Entertainment` response — 244 occurrences on 2026-08-17, 331 on 2026-08-18, then absent. T-492 correctly scoped this out of its 404 root-cause investigation as a transient Kalshi-side geo/compliance flag. T-496 was tasked with checking whether that call holds up, since two readings differ enormously in consequence: (a) a 48h Kalshi-side geo-service glitch (no action), vs. (b) the VPS's egress IP sits in a block Kalshi classifies as Nevada and the classification flips (a live-capital blocker that would surface at go-live, on a venue already restricted from exactly the market class this bot trades).
+
+**Evidence gathered 2026-08-26:**
+
+| Check | Result |
+|---|---|
+| VPS egress IP | `157.230.91.33` (confirmed live via `ifconfig.me` / `ipinfo.io` and DigitalOcean droplet metadata `ipv4`) |
+| Geolocation — ipinfo.io | New Jersey, US (North Bergen), org: DigitalOcean, ASN AS14061 |
+| Geolocation — ip-api.com | New Jersey, US (North Bergen), ISP: DigitalOcean, ASN AS14061 |
+| Geolocation — ipwho.is | New Jersey, US (North Bergen), connection org: DigitalOcean, ASN AS14061 |
+| Geolocation — ipapi.co | Unavailable (rate-limited at query time) — not disagreement, no data |
+| Provider agreement | Unanimous among all providers that returned data: New Jersey. **No provider returned Nevada, and no provider disagreed with any other provider that responded.** |
+| Droplet identity/stability | DigitalOcean metadata: `region=nyc1`, `id=573852799`, `ipv4=157.230.91.33`. `uptime -s` / `last -x reboot`: continuously up since 2026-05-29, no reboot. No host migration, IP reassignment, or provider-side infrastructure change around 2026-08-17/18. |
+| Deployment-side change, 08-16 through 08-19 | `git log` over that window shows nothing deploy-, geo-, or credential-related. |
+| GG-203 context (T-492's full record) | The Nevada-403 was one of three rotating, non-diagnostic error codes within a single already-diagnosed, account-wide, ticker-independent Kalshi demo-sandbox order-write malfunction (`market_not_found` → `HTTP403-Nevada-residents` → `user_not_found`, GG-203 PARTIALLY RESOLVED). It did not recur as a stable, isolated signal — it was sandwiched between two *other* unrelated error classes on the same broken code path. |
+
+**Verdict: (a) is better supported than (b).** The egress IP geolocates unanimously to New Jersey across every provider that returned data, with no disagreement anywhere to point to a disputed/border classification. Nothing changed on the deployment side around 08-17/18 that could explain a two-day window — the droplet, region, and IP have been stable since 2026-05-29. And the Nevada-403 itself was not a standalone, recurring signal — it was one of three rotating, non-diagnostic error codes inside a single already-diagnosed Kalshi-side demo-account order-service fault (GG-203) that also independently produced unrelated `market_not_found` and `user_not_found` errors on the same account over the same window. The evidence does not support a stable, IP-based Nevada misclassification that would recur at go-live; it supports a transient Kalshi-side fault, consistent with GG-203's existing diagnosis. **This is not proof the classification can never recur** — Kalshi's geo-service internals are opaque from this side, and this finding closes the specific 08-17/08-18 window, not the general risk. See GG-216 for the residual monitoring gap this leaves open.
+
+**What is now different going forward:** before this session, a future stable Nevada (or other restricted-state) classification would have surfaced only by chance — there was no venue-constraint field for it and no check that would flag it structurally. That structural gap (not the 08-17/18 incident itself, which this section resolves) is registered as GG-216, OPEN.
 
 ---
 

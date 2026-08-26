@@ -2458,6 +2458,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-216 — Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account classification flip is a live-capital blocker with no structural check
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-216 |
+| Category | Systemic blind spot — a real, distinct compliance vector (Kalshi's own account-level geo/residency classification of the deployment's egress IP) had no field, check, or document anywhere in the governance system, despite the venue registry's stated purpose being to track exactly this class of constraint. |
+| What was missed | `02_ARCHITECTURE_DESIGN/VENUE_REGISTRY.md` tracks "CA eligible" per venue (the operator's California residency vs. state betting law) and ADR-0003 frames "jurisdiction" the same way — both exclusively about the operator's home state. Neither tracks, nor has ever tracked, the separate risk that Kalshi's own geo-IP/account-compliance service can classify the *deployment's* egress IP under a different state's restrictions (observed: a "Nevada residents are not currently allowed to open positions in Sports, Elections and Entertainment" 403, GG-203) — a classification that, if it became stable rather than transient, would silently block the exact market class (Sports/Elections/Entertainment) this bot trades, and would most likely surface at go-live rather than in paper testing. ADR-0005 (the reserved slot for "Live Capital Authorization") does not exist as a written document, so there is also no future gate positioned to catch this before live capital is authorized. |
+| When it should have been caught | When GG-203's Nevada-403 was first logged (2026-08-17/18) — the error message itself names a jurisdiction-classification mechanism distinct from CA-residency eligibility, and nothing prompted a check of whether that mechanism was tracked anywhere. More structurally, at VENUE_REGISTRY.md's original authoring (2026-05-29) or any of its three subsequent reviews (2026-07-02, 2026-07-31) — the document's own stated purpose ("regulatory basis, CA eligibility... activation status") never explicitly scoped in or out account-level geo classification as a tracked constraint. |
+| Phases it survived | Initial venue registry build (2026-05-29) → two subsequent reviews (2026-07-02, 2026-07-31) → GG-203's discovery and diagnosis (T-492, 2026-08-24) — each treated the Nevada-403 purely as one of three rotating order-failure error codes to root-cause, correctly out of scope for that investigation, without a separate session ever asking whether the underlying constraint class was tracked anywhere. |
+| Why it survived | The CA-eligibility framing in both VENUE_REGISTRY.md and ADR-0003 is intuitive and was never wrong on its own terms — it correctly answers "can Earl legally use this venue." It simply never had a counterpart answering "can this specific deployment's network egress point legally transact on this venue," and no session-start check (Q1–Q7) is scoped to catch an absent document field, only present-but-stale ones. |
+| Impact | Medium as assessed today — this session's evidence (unanimous New Jersey geolocation across 3 independent providers, stable droplet identity since 2026-05-29, GG-203's rotating-error-code context) supports the 08-17/18 Nevada-403 as a transient Kalshi-side fault, not a live IP-based misclassification. But the underlying monitoring gap is real and forward-looking: nothing today would catch a *future* stable jurisdiction misclassification before it surfaces at go-live, on a venue where the account would already be restricted from exactly the market class this bot trades. |
+| Discovery | T-496 (2026-08-26), tasked by the operator with distinguishing "Kalshi geo-service glitched for 48h" from "the VPS's egress IP sits in a Kalshi-classified-Nevada block and the classification flips" following GG-203's Nevada-403 finding. |
+| Resolution | Not resolved by this session (analysis/documentation-tier task, no code or infrastructure change authorized). `02_ARCHITECTURE_DESIGN/VENUE_REGISTRY.md` § "Jurisdiction / Account Geo-Compliance Tracking" (added T-496, 2026-08-26) now documents the finding, evidence, and this residual gap explicitly, so a future session has somewhere to check rather than rediscovering the absence. No monitoring mechanism (e.g., a periodic geo-classification re-check against the live egress IP, or an ADR-0005 gate condition) has been built — that remains open, unstaffed work, and is explicitly an operator decision on priority, not a session's call. |
+| Status | OPEN 2026-08-26 (T-496). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
