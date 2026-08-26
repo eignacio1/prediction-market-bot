@@ -2482,6 +2482,30 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ---
 
+### GG-217 — No Kalshi series exists for an NHL team-total market; the four-family coverage target cannot be fully seeded for NHL as it was for NFL
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-217 |
+| Category | Data-availability gap — a venue instrument the coverage target assumes exists does not currently exist for this sport. |
+| What was missed | Nothing was missed by prior work; this is a fresh measurement. The task instruction (mirroring `COVERAGE_TARGET_MATRIX.md`'s four-family shape: moneyline, spread/puck-line, game total, team total) asked for NHL cells across all four families. Live measurement against Kalshi's `/series?category=Sports` endpoint (2026-08-25, full 3512-series listing) found only three real NHL series: `KXNHLGAME` (moneyline), `KXNHLSPREAD` (puck line), `KXNHLTOTAL` (game total, scope "Point Total"). No NHL team-total series exists; `KXNHLPTS` ("Player Points") was checked and ruled out as a false match (player-scoped, not team-scoped). NFL, seeded in the immediately preceding skeleton spike (T-474), had all four families confirmed live including `KXNFLTEAMTOTAL` — so this is not a pattern that generalized cleanly from NFL to NHL. |
+| When it should have been caught | Now — this is the first session to seed NHL cells at all, so there was no earlier opportunity. |
+| Phases it survived | N/A — first measurement. |
+| Why it survived | N/A — not a survived defect, a newly-measured fact about the venue's current NHL offering. |
+| Impact | Low. No `MarketType` member was fabricated to fill the gap (`NHL_TEAM_TOTAL` does not exist in `market_type_registry.py`'s enum) — doing so would have required inventing a ticker, which would break `test_round_trips_for_every_market_type` and violate the project's measured-not-guessed discipline. The coverage target's ~25-cell count is therefore understated by up to 5 cells (1 family × 5 bands) for NHL specifically, pending either Kalshi listing the series in the future or an operator decision on how to represent an unavailable family in the target matrix. |
+| Discovery | T-495 (2026-08-25/26), NHL skeleton spike mirroring T-474's NFL pattern. |
+| Resolution | Not resolved — no venue instrument exists to seed against. Re-check Kalshi's NHL series listing before the 2026-27 NHL season if NHL cell promotion is ever considered; re-verify rather than trusting this record as still current, per this project's own standing discipline on venue-measured facts. |
+| Status | OPEN 2026-08-26 (T-495). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
