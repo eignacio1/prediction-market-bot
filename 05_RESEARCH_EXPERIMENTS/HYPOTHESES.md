@@ -184,8 +184,8 @@ Each hypothesis follows the structure:
 | Consequence if confirmed | Methodology transfers off the single traded cell. Phase 2 proceeds to 2.4 (team-game C2 matrix). First evidence for the coverage-target thesis. |
 | Consequence if falsified | **Phase 2 does not terminate** (plan's own note). Reroute to **moneyline-first**: `KXMLBGAME`, 30,302 observations already archived, a binary target where the production LR class (ADR-0004) applies with no distribution fit. |
 | Consequence if INCONCLUSIVE | Continue archiving; re-run at `n*`. ~14 games/day ⇒ ~296–365 additional games ≈ **3–4 weeks** at market noise 0.05. Do not build C2 in the interim. |
-| Status | ⚪ PRE-REGISTERED (2026-08-17, T-461) — not yet run |
-| Experiment(s) | EXP-022 (unassigned pre-registration; team run-total transfer test; HYP-010) |
+| Status | 🟡 INCONCLUSIVE — EXTEND ARCHIVE (2026-08-26, T-487/GG-207) — `clean_n=207` games vs `n*=94,260` (own mean/sd, not `run_power_calc.py`); mean P&L/bet (game-level) = −0.0026 (below pre-registered band, per revised prior); not FALSIFIED. Full result: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T487_EXP022_GATE23_RESULT.md`. Operator note in that file: `n*` is not practically reachable at ~14 games/day — treat as a soft-FALSIFIED for planning purposes rather than literal extend-and-rerun. |
+| Experiment(s) | EXP-022 (`scripts/exp022_totals_backtest.py`; team run-total transfer test; HYP-010) |
 
 **Pre-registration source:** `05_RESEARCH_EXPERIMENTS/HYP010_PHASE2_PREREGISTRATION_2026-08-15.md` (power analysis reproducible via `python3 05_RESEARCH_EXPERIMENTS/hyp010_power_analysis.py`, stdlib only, seeded, deterministic). That document also records why gate 2.3 as originally written (Brier-vs-market) could not fail honestly — underpowered 6.6–11× at the 214-game archive — and is not repeated here.
 
@@ -204,7 +204,7 @@ Each hypothesis follows the structure:
 | HYP-007 | NB model competitive with LR for calibration | 🔴 FALSIFIED | EXP-013 | NB Brier 0.2671 vs LR 0.2461; Δ=0.0210; multi-line use retained |
 | HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | 🔴 FALSIFIED | EXP-015 | EV ratio 0.84 at drift_std=0.020; T3 useful as FADE gate only |
 | HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | 🟢 CONFIRMED | EXP-016 | Δ = -0.0010; G6 paper evidence valid for playoffs at full confidence |
-| HYP-010 | Team run-total forecasts transfer to a materially more efficient market (P&L/bet > 0 on selected subset) | ⚪ PRE-REGISTERED | EXP-022 | Not yet run; pre-registered expectation +0.005 to +0.025 P&L/bet, >+0.03 is suspect |
+| HYP-010 | Team run-total forecasts transfer to a materially more efficient market (P&L/bet > 0 on selected subset) | 🟡 INCONCLUSIVE-EXTEND | EXP-022 | clean_n=207 vs n*=94,260; mean P&L/bet=−0.0026; not FALSIFIED, not practically extendable |
 
 ---
 
