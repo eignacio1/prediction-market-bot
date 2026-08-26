@@ -1,0 +1,56 @@
+{
+  "props": {
+    "traded_epoch12_t4m_proj": 765,
+    "depth_covered": 605,
+    "pre_depth_window_excluded": 160,
+    "haircut_per_contract_usd": {
+      "n": 605,
+      "mean": 0.010069846354212653,
+      "median": 0.01,
+      "p10": 0.005,
+      "p90": 0.02,
+      "min": 0.005,
+      "max": 0.06,
+      "depth_exhausted_n": 0
+    },
+    "resolved_cohort": {
+      "n": 559,
+      "mean_pnl_before": 0.28640536672629696,
+      "mean_pnl_after": 0.25183094570811815,
+      "sample_stdev_before": 1.8184744087590698,
+      "sample_stdev_after": 1.8112174440520745,
+      "n_star_before": 437,
+      "n_star_after": 560
+    }
+  },
+  "game_markets_synthetic": {
+    "GAME_WINNER": {
+      "n": 2160,
+      "mean": 0.03403409309198988,
+      "median": 0.035,
+      "p10": 0.01,
+      "p90": 0.055,
+      "min": 0.005,
+      "max": 0.075
+    },
+    "GAME_TOTAL": {
+      "n": 1034,
+      "mean": 0.030691459059448825,
+      "median": 0.01,
+      "p10": 0.005,
+      "p90": 0.08,
+      "min": 0.005,
+      "max": 0.42
+    },
+    "RUN_LINE": {
+      "n": 1000,
+      "mean": 0.051486058527668695,
+      "median": 0.015,
+      "p10": 0.005,
+      "p90": 0.15,
+      "min": 0.005,
+      "max": 0.405
+    }
+  },
+  "d1_status": "NOT APPLIED -- ADR-0055 Status: PROPOSED, not accepted; figures scoped to uncorrected ledger"
+}

@@ -1,0 +1,39 @@
+==============================================================================
+TASK 1/2 -- T4M-PROJ epoch-12 props fill haircut
+==============================================================================
+traded epoch-12 T4M-PROJ positions: 765 (depth-covered=605, pre-depth-window excluded=160)
+PLAYER_PROP (KXMLBHIT) usable depth observations available: 994
+Per-contract haircut ($/contract, PLAYER_PROP): n=605 mean=0.0101 median=0.0100 p10=0.0050 p90=0.0200 min=0.0050 max=0.0600
+depth-exhausted (floor-estimate, size > 5c-wall depth): 0/605 (0.0%)
+
+-- resolved-only cohort (CLOSED, WIN/LOSS, depth-covered) --
+n resolved = 559
+NOTE: this is 'traded, depth-covered, resolved' -- NOT necessarily identical to run_power_calc.py's official filter_clean() clean_n cohort (which applies its own epoch-floor/legitimacy filters). Same formula (n* = ((z_a+z_b)*sigma/mu)^2, sample stdev ddof=1, alpha=0.05, power=0.95) is reused via run_power_calc.z_for for an apples-to-apples before/after comparison on THIS cohort, not a substitute for the official gate figure.
+mean P&L/bet BEFORE haircut: $0.2864
+mean P&L/bet AFTER  haircut: $0.2518
+sample stdev P&L/bet BEFORE (ddof=1): $1.8185
+sample stdev P&L/bet AFTER  (ddof=1): $1.8112
+positions with pnl>0 BEFORE: 245/559  AFTER: 245/559
+n* BEFORE haircut (alpha=0.05, power=0.95): 437  (current n=559 MEETS this)
+n* AFTER  haircut (alpha=0.05, power=0.95): 560  (current n=559 does not meet this)
+
+==============================================================================
+TASK 4 -- synthetic $1.00 ADR-0050 flat-stake haircut, GAME MARKETS
+==============================================================================
+-- GAME_WINNER (['KXMLBGAME']) --
+  YES-side haircut ($/contract): n=1080 mean=0.0338 median=0.0350 p10=0.0100 p90=0.0550 min=0.0050 max=0.0750
+  NO-side haircut ($/contract): n=1080 mean=0.0343 median=0.0350 p10=0.0100 p90=0.0550 min=0.0050 max=0.0750
+  combined haircut ($/contract): n=2160 mean=0.0340 median=0.0350 p10=0.0100 p90=0.0550 min=0.0050 max=0.0750
+
+-- GAME_TOTAL (['KXMLBTOTAL']) --
+  YES-side haircut ($/contract): n=517 mean=0.0293 median=0.0100 p10=0.0050 p90=0.0620 min=0.0050 max=0.4200
+  NO-side haircut ($/contract): n=517 mean=0.0321 median=0.0100 p10=0.0050 p90=0.0970 min=0.0050 max=0.4200
+  combined haircut ($/contract): n=1034 mean=0.0307 median=0.0100 p10=0.0050 p90=0.0800 min=0.0050 max=0.4200
+
+-- RUN_LINE (['KXMLBSPREAD']) --
+  YES-side haircut ($/contract): n=500 mean=0.0494 median=0.0150 p10=0.0050 p90=0.1450 min=0.0050 max=0.4050
+  NO-side haircut ($/contract): n=500 mean=0.0536 median=0.0150 p10=0.0050 p90=0.1555 min=0.0050 max=0.4050
+  combined haircut ($/contract): n=1000 mean=0.0515 median=0.0150 p10=0.0050 p90=0.1500 min=0.0050 max=0.4050
+
+
+Wrote exp_output/T488_GG157_FILL_HAIRCUT/results.json
