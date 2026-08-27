@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-27T00:07:57Z (T-489 — T-489 closed: measured MLB kill-switch halt latency (band+system), real VPS data fails NFR-03 from p50 up; GG-209 registered for T1's missing force-close path) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260827_0007.md` for full session detail.
+**Last reviewed:** 2026-08-27T00:33:00Z (T-498 — T-498: drafted ADR-0060 (PROPOSED) — three remedies for NFR-03 band-level kill-switch latency failure, decides none) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260827_0033.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

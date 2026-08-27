@@ -1,3 +1,5 @@
 # Operator Digest — 2026-08-27
 
 - T-489 (auto): T-489 closed: measured MLB kill-switch halt latency (band+system), real VPS data fails NFR-03 from p50 up; GG-209 registered for T1's missing force-close path
+
+- T-498: Following up on T-489's finding that the emergency stop for the fast-trading MLB bot is slower in real life than the 60-second rule requires, this session wrote up the decision the bot needs from you. There are three ways to fix it: make the bot check in faster (cheap, but eats into how often it's allowed to ask the data provider for updates), officially accept a slower stop time for this one part of the system (needs your sign-off, since it's relaxing a safety rule), or build a separate, faster "off switch" that doesn't wait for the bot's normal cycle (biggest build, but the most solid fix, and it also plugs a related gap where one part of the bot has no emergency stop at all). Nothing was decided or built — this is purely laying out the choice for you. No money is at risk from this gap right now, since that part of the bot is already turned down to zero bet size for an unrelated reason.
