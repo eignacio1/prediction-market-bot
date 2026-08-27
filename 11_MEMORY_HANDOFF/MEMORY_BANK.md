@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-27T00:33:00Z (T-498 — T-498: drafted ADR-0060 (PROPOSED) — three remedies for NFR-03 band-level kill-switch latency failure, decides none) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260827_0033.md` for full session detail.
+**Last reviewed:** 2026-08-27T01:22:00Z (T-494 — T-494: GG-135 ruin geometry re-derived on game-market variance -- edge-independence does NOT transfer; amended GG-135 in place) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260827_0122.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
