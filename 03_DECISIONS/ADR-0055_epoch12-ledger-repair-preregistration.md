@@ -1,6 +1,6 @@
 # ADR-0055 — Epoch-12 Ledger Repair: Pre-Registered Method + Decision Request
 
-**Status:** PROPOSED. Not accepted. No production write authorized by this document.
+**Status:** ACCEPTED (2026-08-26). D1, D2, D3, D4 all operator-signed — see §9 for the full sign-off record and conditions. **This document's acceptance authorizes the repair in principle; it does not itself constitute execution** — the actual write to `logs/t4_mlb_resolved_ledger.jsonl` is a separate, not-yet-performed follow-on task, gated on the conditions in §9 (pre-write backup, post-write assertion re-run on the real file).
 **Date:** 2026-08-20
 **Author:** Session T-477 (`epoch12-repair-preregistration` worktree)
 **Registers/depends on:** `GG-166` (the original corruption), `GG-170` (authority settled — ticker date is ground truth), `GG-185`/`T-465` (root cause: 8.5-day VPS deploy gap, not a logic bypass), `GG-189` (register-and-stop split: item (a) 46 stuck-open positions, item (2) 76 rejected-position mismatches, outcome-store coverage gap), `GG-193`/`T-470` (closed the outcome-store coverage gap this repair depends on), `ADR-0052` §2.3 (G6 precondition: Kelly sizing and the drawdown kill switch both read `t4_mlb_resolved_ledger.jsonl` — a corrupted ledger corrupts both downstream, not just the reported P&L).
@@ -119,7 +119,18 @@ Not answered here. The repair makes the cohort *trustworthy*; it does not by its
 
 ## 9. Sign-off
 
-**Status: PROPOSED — not ACCEPTED.** D1–D4 (§7) are open operator decisions. Nothing in this document authorizes a write to production ledger state.
+**Status: ACCEPTED (2026-08-26).** D1–D4 (§7), all signed:
+
+- **D1 — authorized**, conditional on: (i) a backup of `logs/t4_mlb_resolved_ledger.jsonl` written and verified *before* any write; (ii) the five pre-registered STEP-2 assertions (§Addendum A) re-run against the real post-write file, not only the dry-run output — a passing simulation is not itself a passing repair.
+- **D2 — authorized**, and may execute first/independently of D1/D3 — `correct_t4_game_dates.py`'s OPEN-position branch is safe and complete on its own (no re-resolution needed), and this population carries live paper capital feeding Kelly sizing / the drawdown kill switch today in its currently-wrong state, per ADR-0052 §2.3's exact concern.
+- **D3 — authorized**, bundled with D1 (one backup/write/verification cycle) per §7's own recommendation — no live capital, lowest urgency, no reason for a second write cycle.
+- **D4 — CONTINUE epoch 12; do not bump.** The repair corrects data to what it always should have been — no forecasting or execution logic changed — so bumping would destroy the 719-row cohort for no logic-related reason. (Note: §7's own D4 discussion recommends holding the question open until ADR-0054 §4/item (b) is signed rather than answering it by default; ADR-0054 item (b) is signed as of this same close-out (see that ADR's §9), so this is a resolved decision, not an override of the ADR's own text.)
+
+**Required mitigation, attached to D1/D3's execution (not yet performed):** the repair must stamp per-row provenance (`repaired_at` timestamp, `repair_ref` pointing to this ADR/the executing task) on every row it touches, so a future audit can distinguish originally-correct rows from repaired ones.
+
+**Consequence for existing analysis, recorded not re-derived here:** every epoch-12 P&L/n*/win-rate figure computed before this repair executes is provisional and will move once D1 executes. `T-488`/`GG-157`'s fill-haircut figures were computed against the uncorrected ledger and must be re-run post-repair — named here as a required follow-on, not performed in this session.
+
+Nothing in this sign-off itself writes to production ledger state — the write is a separate, gated follow-on task per the note under Status above.
 
 ---
 

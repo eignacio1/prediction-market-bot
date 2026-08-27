@@ -1,6 +1,6 @@
 # ADR-0054 — Segmented-Pool Isolation (Phase 3 Box 3.1)
 
-**Status:** PROPOSED. Item (c) only is operator-signed (2026-08-17, verbatim instruction reproduced in §5). The document as a whole is not accepted — items (a), (b), (d) are resolved here on their merits and await operator sign-off.
+**Status:** ACCEPTED (2026-08-26). Items (a), (b), (d) operator-signed 2026-08-26; item (c) operator-signed 2026-08-17 (§5). See §9 for full sign-off record including conditions attached to (a)/(b)/(d).
 **Date:** 2026-08-19
 **Author:** Session T-467 (`phase3-isolation-adr` worktree)
 **Registers/depends on:** `ADR-0053` (ACCEPTED, 2026-08-14) §2.5/§6.3 item 6 explicitly deferred the correlation-group decision to "its own ADR" and stated "This delta authorizes items 1–5. It does not authorize building the correlation-group mechanism... Anyone reading this acceptance as covering item 6 is reading it wrong." **This is that ADR.** Builds on T-456 (CLOSED 2026-08-16, commit `6173f3f`), which shipped ADR-0053 §6.3 items 1–3 (ticker→market_type lookup, `market_type` persisted on the ledger, per-cell `clean_n`/`n_star` via `run_power_calc.py::run_all_cells()`) ahead of this document. References `GG-183` (OPEN/LOW — per-cell kill-switch store, unwired), `GG-184` (OPEN/LOW — `open_position()`'s `market_type` silent default).
@@ -122,4 +122,12 @@ The foundation already exists and was deliberately left unwired: `CellKillSwitch
 
 ## 9. Sign-off
 
-Item (c): operator-signed 2026-08-17 (§5). Items (a), (b), (d): resolved on their merits in this document; PROPOSED, awaiting operator sign-off. **Document status overall: PROPOSED — not ACCEPTED.**
+Item (c): operator-signed 2026-08-17 (§5), recorded verbatim there.
+
+**Items (a), (b), (d): operator-signed 2026-08-26 (T-499/GG-220 close-out), each with an attached condition — recorded in full in `00_ADMIN/APPROVALS_REGISTER.md`:**
+
+- **(a):** signed. The three named follow-ons in §8 (items 1, 2, 4) are elevated from named-not-staffed to **required STAFFED follow-ons**, not optional cleanup. Of the three, **item 4 (`replay_harness_t427.py` passing `market_type=` explicitly) is PRIORITY** — its current silent `market_type` default (GG-184) produces confidently wrong output rather than a visible error, which is a materially worse failure mode than `assert_ledger_invariants.py`'s or `run_band_monitor.py`'s simple non-coverage.
+- **(b):** signed. Re-typing `bands_affected` to cell keys is accepted as designed. The §8 item 5 re-audit of all 12 existing `_BOUNDARIES` entries is accepted under an explicit asymmetric-risk rule: where a boundary's true per-cell blast radius is uncertain, **scope wider, not narrower** — a too-wide boundary only costs sample size, a too-narrow one risks contaminating a cohort that is then reported as clean. Each of the 12 boundaries must carry its own recorded scope and justification in the implementing task, not merely a blanket re-key.
+- **(d):** signed, but **implementation is deferred until ADR-0060 is decided.** `T-489` found the band-level kill-switch halt fails NFR-03 at the median (p50=66.955s vs. the 60s SLA); ADR-0060 (PROPOSED, drafted by T-498) presents three remedies, and its option (c) — decoupling the halt from the evaluation cycle — would change what item (d)'s wiring (`resolve_kill_switch_state()`/`halt_cell()` into the live drawdown halt path) actually wires into. Wiring (d) ahead of ADR-0060's resolution risks building against a primitive ADR-0060(c) would replace.
+
+**Document status overall: ACCEPTED (2026-08-26).** All four items (a)-(d) are now signed; (d)'s implementation is gated on ADR-0060 as stated above, and (a)/(b) carry the follow-on conditions stated above — signing the ADR does not itself satisfy those conditions.

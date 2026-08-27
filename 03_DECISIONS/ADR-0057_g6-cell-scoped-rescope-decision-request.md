@@ -1,6 +1,6 @@
 # ADR-0057 — G6 Closure Condition: Cell-Scoped Re-Expression (Decision Request)
 
-**Status:** PROPOSED — drafted 2026-08-24 (T-485/GG-204) under explicit task instruction. Not yet ACCEPTED. This document does not close G6, does not reactivate T1, does not change any `kelly_fraction`, and does not resolve the operator decision it presents in §4. Awaiting operator/DS sign-off.
+**Status:** ACCEPTED (2026-08-26, T-499/GG-220 close-out). §1/§2's cell-scoped re-expression of G6's closure condition is accepted as written. §3's four open preconditions (GG-157, GG-038, GG-125, the 2026-05-29 `_HARD_LIMITS` ADR-revision obligation) are acknowledged as still gating closure, unresolved by this acceptance. §4 (T1's fate — retire/revive/leave-dark) is explicitly DEFERRED, not decided — per this ADR's own Sign-off item 3, a selection there was never required for §1/§2 acceptance. Acceptance does not close G6, does not reactivate T1, and does not change any `kelly_fraction`. See Sign-off below for the full record and the new question this acceptance surfaces.
 **Supersedes (in part):** ADR-0028 (`03_DECISIONS/ADR-0028_segmented-band-promotion-thresholds.md`), § "Updated G6 Closure Condition" only. Per Hard Rule 3 (ADRs are immutable), ADR-0028 is not edited in place — it stands as written, and this document supersedes the one section named above if and only if accepted. All other ADR-0028 content (Modifications 5–9, the T4 Activation Gate structure, GG-022 resolution) is unaffected and remains in force.
 **Registers:** GG-204 (`03_DECISIONS/GOVERNANCE_GAP_LOG.md`) — this ADR is the decision-request response to that gap.
 **Depends on / builds on:** APR-0024 (variance-derived `n*` sample-adequacy standard), ADR-0053 (market-type × band cell model, ACCEPTED as amended), ADR-0048 (T1/T2/T3/T4M-PROJ `kelly_fraction=0.0`), GG-153 (T1 permanently frozen at `clean_n=0`, OPEN, Blocked-On-Operator: YES).
@@ -110,11 +110,13 @@ This document takes no position on which option is correct and does not recommen
 
 ## Sign-off
 
-**Awaiting operator/DS decision on:**
-1. Accept or reject the cell-scoped re-expression of G6's statistical/calibration conditions (§2).
-2. Acknowledge the four open preconditions (§3) as still gating closure regardless of §2.
-3. Select an option (or defer) on T1's status (§4) — not required for §1/§2 acceptance, but flagged as the standing open question this ADR was drafted to surface.
+**Resolved 2026-08-26 (T-499/GG-220 close-out):**
+1. **Accepted.** The cell-scoped re-expression of G6's statistical/calibration conditions (§2) is ACCEPTED as written.
+2. **Acknowledged.** The four open preconditions (§3 — GG-157, GG-038, GG-125, the 2026-05-29 `_HARD_LIMITS` revision obligation) still gate closure regardless of §2's acceptance; none is resolved by this sign-off.
+3. **Deferred.** §4's T1-status options (A retire / B revive / C leave-dark-excluded) are not selected here — per this ADR's own text, a selection was never required for §1/§2 acceptance. GG-153 remains OPEN, Blocked-On-Operator.
 
-**Sign-off:** _(pending)_
-**Date:** _(pending)_
+**New question this acceptance creates, recorded as a decision owed (not a gap) in `00_ADMIN/APPROVALS_REGISTER.md`:** with G6 now scoped to "at least one ACTIVE cell clears," rather than to T1 specifically, the registry currently holds many more than one cell — **how many of those cells must clear before live capital is authorized** is a threshold this ADR's acceptance creates and does not itself answer. Not resolved here; tracked as a standing decision request.
+
+**Sign-off:** Earl Ignacio (operator/DS)
+**Date:** 2026-08-26
 **Role:** DS — Earl Ignacio

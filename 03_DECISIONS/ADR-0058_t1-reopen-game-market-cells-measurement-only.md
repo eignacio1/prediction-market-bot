@@ -1,8 +1,13 @@
 # ADR-0058 — Reopen T1 on the Game-Market Axis, Measurement Only (GG-213)
 
-**Status:** PROPOSED. Not signed. This ADR authorizes zero `kelly_fraction` change, zero cell-status
+**Status:** ACCEPTED (2026-08-26, T-499/GG-220 close-out). This ADR authorizes zero `kelly_fraction` change, zero cell-status
 promotion, and zero `src/` edit by itself — it is a decision record only, per the task's explicit scope
-fence. `execution_bands.py`, the cell registry, and `ADR-0048` are unmodified by this document.
+fence. `execution_bands.py`, the cell registry, and `ADR-0048` are unmodified by this document. Two
+expectation-setters recorded at acceptance (see §9): (i) the flat measurement stake this ADR authorizes is
+capped by the wrapper's own $0.10/contract bound against measured $0.42/contract tail fills (T-488) —
+`MeasurementStakeRefused` will fire often, and slow accrual under that condition is the wrapper working
+as designed, not a defect; (ii) nothing accrues under this ADR until GG-203 (Kalshi demo-account
+order-write fault, open since 2026-08-15) resolves — acceptance does not itself start any accrual clock.
 **Date:** 2026-08-25
 **Author:** Session T-493 (`t493-adr0058-t1-reopen` worktree)
 **Registers/depends on:** `ADR-0048` (2026-07-29, ACCEPTED — zeroed T1_MULTI_DAY's `kelly_fraction` to 0.0 on
@@ -166,6 +171,19 @@ directly relevant context, not resolved or acted on further.
 
 ## 9. Sign-off
 
-**Status:** PROPOSED — awaiting operator review. Not signed. No mechanism described above is authorized to
-ship until this ADR is ACCEPTED, and even upon acceptance, Section 5's three items remain independently
-required before any T1 cell may carry a nonzero `kelly_fraction`.
+**Status:** ACCEPTED (2026-08-26, T-499/GG-220 close-out). Section 5's three items (T-494's variance
+re-derivation, ADR-0048's edge-conditional reactivation table, a fresh operator signature) remain
+independently required before any T1 cell may carry a nonzero `kelly_fraction` — acceptance of this ADR
+does not satisfy any of them.
+
+**Two expectation-setters recorded at acceptance, not defects to fix:**
+
+1. **Slow accrual is the wrapper working, not failing.** A T1-equivalent wrapper (§3, not yet designed)
+   would inherit the same contract-cap discipline as `ADR-0050`'s T4 wrapper. That wrapper's flat stake is
+   bound at $0.10/contract; `T-488` measured real tail fills running as high as $0.42/contract. Under that
+   gap, `MeasurementStakeRefused` will fire often once a T1 wrapper exists and is live — this is the safety
+   mechanism refusing an oversized fill, not a sign the mechanism is broken or under-accruing.
+2. **Nothing accrues while GG-203 is open.** GG-203 (Kalshi demo-account order-write fault, open since
+   2026-08-15) blocks every order write on the paper account this measurement would use. Signing this ADR
+   does not start an accrual clock — no T1 game-market cell can log a single measurement bet until GG-203
+   resolves, independent of anything else in this document.
