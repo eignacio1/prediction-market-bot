@@ -355,3 +355,5 @@
 | 2026-08-26T04:54:31Z | T-488 | CLOSED — T-488/GG-157 measured fill haircut (props+synthetic game mkts); n* flips cohort from MEETS to short-by-1 (commit `fcd4370`) |
 | 2026-08-26T04:54:58Z | T-488 | CLOSED — session-end merge confirmed, HEAD (cf119c2) is ancestor of origin/main (merge-check YES) |
 | 2026-08-26T04:59:06Z | T-489 / GG-209 | T-489: GG-038 -- measure real halt latency, band and system tier, T4 and T1 |
+| 2026-08-26T04:59:37Z | T-497 / GG-218 | T-497: T1 equivalent of ADR-0050's flat-stake safety wrapper |
+| 2026-08-26T05:00:12Z | T-491 / GG-212 | T-491: GG-172 -- band-axis boxes for the expansion plan, T1 as live case |
