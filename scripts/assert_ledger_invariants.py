@@ -61,6 +61,11 @@ from prediction_market_bot.logic_epoch import (  # noqa: E402
     clean_epoch_floor_for_band,
     is_clean_for_band,
 )
+from prediction_market_bot.c5_execution.measurement_stake import (  # noqa: E402
+    T1_GAME_MARKET_TYPES,
+    T1_MEASUREMENT_MAX_CONTRACTS,
+    T1_MEASUREMENT_STAKE_USD,
+)
 
 DEFAULT_T1_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb.json"
 DEFAULT_T4_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb_t4.json"
@@ -398,6 +403,63 @@ def assert_J_contracts_cap(recs: list[dict], band: str) -> AssertionResult:
     return r
 
 
+def assert_I2_t1_measurement_stake(recs: list[dict], band: str) -> AssertionResult:
+    """T-497/ADR-0059 T1 equivalent of assert_I_adr0050_stake.
+
+    T1's flat measurement-stake mechanism (c5_execution/measurement_stake.py)
+    has no floor epoch the way T4M-PROJ's ADR_0050_FLOOR does — it has not
+    yet been wired into any live pipeline, so there is no historical epoch
+    boundary to anchor to. Scope is instead by field presence: only records
+    that actually carry entry_price_paid (opt-in, per paper_trader.py) AND
+    whose market_type is one of the nine ADR-0058 game-market cells are
+    evaluated. A prop bet (KXMLBHIT) never carries this formula regardless
+    of epoch — T1 props are Kelly-sized (kelly_fraction=0.0 today, ADR-0048)
+    and untouched by this mechanism.
+    """
+    r = AssertionResult(
+        "I2", "adr0059_t1_measurement_stake_formula", band,
+        ["entry_price_paid", "size_usd", "market_type"],
+        f"size_usd == round(min({T1_MEASUREMENT_STAKE_USD}, "
+        f"{T1_MEASUREMENT_MAX_CONTRACTS}*entry_price_paid), 4) — T1 game-market "
+        "cells only (ADR-0058/ADR-0059), scoped by market_type membership, not epoch.",
+    )
+    if band != "T1":
+        r.no_formula = True
+        return r
+    for rec in recs:
+        if rec.get("market_type") not in T1_GAME_MARKET_TYPES:
+            continue
+        epp, su = rec.get("entry_price_paid"), rec.get("size_usd")
+        if epp is None or su is None:
+            r.n_absent += 1
+            continue
+        expected = round(min(T1_MEASUREMENT_STAKE_USD, T1_MEASUREMENT_MAX_CONTRACTS * epp), 4)
+        r.record(abs(su - expected) <= 1e-3, rec, f"size_usd={su} expected={expected}")
+    return r
+
+
+def assert_J2_t1_contracts_cap(recs: list[dict], band: str) -> AssertionResult:
+    """T-497/ADR-0059 T1 equivalent of assert_J_contracts_cap. See assert_I2's
+    docstring for the field-presence-not-epoch scoping rationale."""
+    r = AssertionResult(
+        "J2", "adr0059_t1_contracts_cap", band, ["contracts", "market_type"],
+        f"contracts <= {float(T1_MEASUREMENT_MAX_CONTRACTS)} — T1 game-market "
+        "cells only (ADR-0058/ADR-0059), scoped by market_type membership, not epoch.",
+    )
+    if band != "T1":
+        r.no_formula = True
+        return r
+    for rec in recs:
+        if rec.get("market_type") not in T1_GAME_MARKET_TYPES:
+            continue
+        cts = rec.get("contracts")
+        if cts is None:
+            r.n_absent += 1
+            continue
+        r.record(cts <= float(T1_MEASUREMENT_MAX_CONTRACTS) + 1e-9, rec, f"contracts={cts}")
+    return r
+
+
 def _fee_net_edge_current(direction: str, band: str, gross_edge: float, vig: float, fee_per_contract: float) -> float:
     if direction == "YES":
         dg = gross_edge
@@ -536,7 +598,9 @@ CORE_ASSERTIONS = [
     assert_F_resolved_after_entered, assert_G_gross_edge_formula, assert_H_no_dual_direction_open,
 ]
 EXTEND_ASSERTIONS = [
-    assert_I_adr0050_stake, assert_J_contracts_cap, assert_K_fee_net_edge,
+    assert_I_adr0050_stake, assert_J_contracts_cap,
+    assert_I2_t1_measurement_stake, assert_J2_t1_contracts_cap,
+    assert_K_fee_net_edge,
     assert_L_enums, assert_M_logic_epoch_present, assert_N_player_token_consistency,
 ]
 
