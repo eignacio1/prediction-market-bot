@@ -1,0 +1,866 @@
+{
+  "meta": {
+    "seed": 20260722,
+    "target_pkill_1yr": 0.1,
+    "start_bankroll": 1000.0,
+    "real_kill_dd": 0.2,
+    "real_daily_breaker": 0.15,
+    "n_outcome_store_rows": 329,
+    "n_resolved_games_joinable": 307,
+    "haircut_usd_per_contract": {
+      "MONEYLINE": 0.03403409309198988,
+      "RUN_LINE": 0.051486058527668695,
+      "TOTALS": 0.030691459059448825
+    },
+    "stake_frac_of_bankroll_kelly_mult_1x": 0.001,
+    "resolution_convention": ">= strike for threshold ladders (TOTALS, RUN_LINE); moneyline resolves on raw run comparison, no ties possible",
+    "edge_scenarios": [
+      0.0,
+      0.0002,
+      0.0005,
+      0.001,
+      0.002
+    ],
+    "grid_kelly_mult": [
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      2.0,
+      3.0
+    ]
+  },
+  "families": {
+    "MONEYLINE": {
+      "diag": {
+        "n_tickers_seen": 772,
+        "n_no_game_match": 158,
+        "n_bad_resolve": 0,
+        "n_bad_price": 0,
+        "n_used": 614,
+        "n_files_scanned": 27,
+        "n_distinct_dates": 23,
+        "n_distinct_games": 307
+      },
+      "n_used": 614,
+      "cadence_per_day_all_contracts": 26.695652173913043,
+      "cadence_per_day_one_bet_per_game": 13.347826086956522,
+      "mean_frac_gross_pct": 0.0013796817414142887,
+      "mean_frac_net_pct": -0.005342732901794938,
+      "sig_g_gross_pct": 0.10455520134940724,
+      "sig_g_net_pct": 0.09722655648436428,
+      "part_a_min_edge_pct_per_bet_net": -0.000576782226562499,
+      "part_a_pkill_at_min_edge": 0.1056,
+      "part_a_min_edge_pct_per_bet_net_one_bet_per_game_cadence": -0.002484893798828124,
+      "kelly_frontier_by_edge_scenario": {
+        "-0.0001": {
+          "target_edge_pct_per_bet": -0.0053,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.81775
+            ],
+            [
+              0.75,
+              0.994375
+            ],
+            [
+              1.0,
+              0.999875
+            ],
+            [
+              1.25,
+              0.999875
+            ],
+            [
+              1.5,
+              0.999875
+            ],
+            [
+              2.0,
+              1.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 0.25
+        },
+        "0.0000": {
+          "target_edge_pct_per_bet": 0.0,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.003625
+            ],
+            [
+              1.0,
+              0.03725
+            ],
+            [
+              1.25,
+              0.116875
+            ],
+            [
+              1.5,
+              0.217625
+            ],
+            [
+              2.0,
+              0.453125
+            ],
+            [
+              3.0,
+              0.7895
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 1.0
+        },
+        "0.0002": {
+          "target_edge_pct_per_bet": 0.02,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0005": {
+          "target_edge_pct_per_bet": 0.05,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0010": {
+          "target_edge_pct_per_bet": 0.1,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0020": {
+          "target_edge_pct_per_bet": 0.2,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        }
+      }
+    },
+    "RUN_LINE": {
+      "diag": {
+        "n_tickers_seen": 2755,
+        "n_no_game_match": 349,
+        "n_bad_resolve": 0,
+        "n_bad_price": 0,
+        "n_used": 2406,
+        "n_files_scanned": 27,
+        "n_distinct_dates": 23,
+        "n_distinct_games": 307
+      },
+      "n_used": 2406,
+      "cadence_per_day_all_contracts": 104.6086956521739,
+      "cadence_per_day_one_bet_per_game": 13.347826086956522,
+      "mean_frac_gross_pct": -0.004671997047228413,
+      "mean_frac_net_pct": -0.020735373259923893,
+      "sig_g_gross_pct": 0.1722417670210806,
+      "sig_g_net_pct": 0.13778619560242417,
+      "part_a_min_edge_pct_per_bet_net": null,
+      "part_a_pkill_at_min_edge": 1.0,
+      "part_a_min_edge_pct_per_bet_net_one_bet_per_game_cadence": -0.001233673095703124,
+      "kelly_frontier_by_edge_scenario": {
+        "-0.0002": {
+          "target_edge_pct_per_bet": -0.0207,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              1.0
+            ],
+            [
+              0.25,
+              1.0
+            ],
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.75,
+              1.0
+            ],
+            [
+              1.0,
+              1.0
+            ],
+            [
+              1.25,
+              1.0
+            ],
+            [
+              1.5,
+              1.0
+            ],
+            [
+              2.0,
+              1.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": null
+        },
+        "0.0000": {
+          "target_edge_pct_per_bet": 0.0,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.00125
+            ],
+            [
+              0.5,
+              0.17075
+            ],
+            [
+              0.75,
+              0.48175
+            ],
+            [
+              1.0,
+              0.72725
+            ],
+            [
+              1.25,
+              0.875625
+            ],
+            [
+              1.5,
+              0.955
+            ],
+            [
+              2.0,
+              0.994875
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 0.25
+        },
+        "0.0002": {
+          "target_edge_pct_per_bet": 0.02,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0005": {
+          "target_edge_pct_per_bet": 0.05,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0010": {
+          "target_edge_pct_per_bet": 0.1,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0020": {
+          "target_edge_pct_per_bet": 0.2,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        }
+      }
+    },
+    "TOTALS": {
+      "diag": {
+        "n_tickers_seen": 4154,
+        "n_no_game_match": 539,
+        "n_bad_resolve": 0,
+        "n_bad_price": 0,
+        "n_used": 3615,
+        "n_files_scanned": 27,
+        "n_distinct_dates": 23,
+        "n_distinct_games": 307
+      },
+      "n_used": 3615,
+      "cadence_per_day_all_contracts": 157.17391304347825,
+      "cadence_per_day_one_bet_per_game": 13.347826086956522,
+      "mean_frac_gross_pct": -0.0045809383209540365,
+      "mean_frac_net_pct": -0.010806093541409524,
+      "sig_g_gross_pct": 0.11455349150438784,
+      "sig_g_net_pct": 0.10328273978422021,
+      "part_a_min_edge_pct_per_bet_net": null,
+      "part_a_pkill_at_min_edge": 1.0,
+      "part_a_min_edge_pct_per_bet_net_one_bet_per_game_cadence": -0.002328491210937499,
+      "kelly_frontier_by_edge_scenario": {
+        "-0.0001": {
+          "target_edge_pct_per_bet": -0.010799999999999999,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              1.0
+            ],
+            [
+              0.25,
+              1.0
+            ],
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.75,
+              1.0
+            ],
+            [
+              1.0,
+              1.0
+            ],
+            [
+              1.25,
+              1.0
+            ],
+            [
+              1.5,
+              1.0
+            ],
+            [
+              2.0,
+              1.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": null
+        },
+        "0.0000": {
+          "target_edge_pct_per_bet": 0.0,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.00025
+            ],
+            [
+              0.5,
+              0.124125
+            ],
+            [
+              0.75,
+              0.41325
+            ],
+            [
+              1.0,
+              0.657875
+            ],
+            [
+              1.25,
+              0.830375
+            ],
+            [
+              1.5,
+              0.9225
+            ],
+            [
+              2.0,
+              0.990625
+            ],
+            [
+              3.0,
+              0.999875
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 0.25
+        },
+        "0.0002": {
+          "target_edge_pct_per_bet": 0.02,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0005": {
+          "target_edge_pct_per_bet": 0.05,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0010": {
+          "target_edge_pct_per_bet": 0.1,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        },
+        "0.0020": {
+          "target_edge_pct_per_bet": 0.2,
+          "kelly_mult_sweep": [
+            [
+              0.1,
+              0.0
+            ],
+            [
+              0.25,
+              0.0
+            ],
+            [
+              0.5,
+              0.0
+            ],
+            [
+              0.75,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.25,
+              0.0
+            ],
+            [
+              1.5,
+              0.0
+            ],
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ]
+          ],
+          "max_kelly_mult_surviving_pkill10": 3.0
+        }
+      }
+    }
+  }
+}
