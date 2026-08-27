@@ -2521,6 +2521,30 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-218 — T1 has no automated alarm for a position stuck OPEN past a plausible resolution window (postponed/rescheduled game, no `apply_resolved_hits.py` match)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-218 |
+| Category | Systemic blind spot — an operational monitoring gap adjacent to, but not caused by, this session's deliverable. |
+| What was missed | No automated check fires if a T1 position stays `OPEN` well past a plausible resolution window — e.g. a postponed/rescheduled game that `apply_resolved_hits.py`'s `game_date`-keyed batch settlement never finds a matching outcome for. The position keeps consuming ledger-derived exposure/bankroll (correctly, per this session's HARD STOP analysis in ADR-0059 §3) but nothing surfaces that it is stuck rather than merely pending. |
+| When it should have been caught | Session-start Step 4 (operational health check) or Q7 (ledger invariants) — neither currently probes position age against expected resolution timing. |
+| Phases it survived | G0→G6, current (Phase 6/7 ACTIVE). Applies identically to T1's existing live Kelly-sized `KXMLBHIT` prop positions today — not introduced or worsened by ADR-0059's flat-stake wrapper. |
+| Why it survived | T1's monitoring has focused on whether the nightly cron ran and matched players (Step 4's `SemanticFloorViolation`/players-matched checks), not on whether individual positions eventually resolve. No prior task had reason to look at position-age-vs-resolution until this session's HARD STOP evaluation required checking T1's cross-day exposure/idempotency behavior directly. |
+| Impact | Low as assessed today — no evidence of a currently-stuck position; T1's `_open_tickers` idempotency guard and ledger-derived bankroll accounting (verified this session) mean a stuck position doesn't corrupt exposure accounting, it just goes undetected as anomalous. Forward-looking risk grows as T1's game-market cells (ADR-0058) potentially activate, since postponement/rescheduling is a more routine occurrence for game-level markets than for prop markets tied to a single confirmed plate appearance. |
+| Discovery | T-497 (2026-08-26), while evaluating ADR-0059's HARD STOP condition (cross-day exposure cap / stale-position sweep / exit path) for the T1 measurement-stake safety wrapper. Registered per Hard Rule 11 rather than fixed in-session — orthogonal to this session's one deliverable. |
+| Resolution | Not resolved. A future session could add a Step-4-style probe (position `opened_at` age vs. a per-market-type expected-resolution window) or extend `assert_ledger_invariants.py` with an age-based staleness assertion. Neither is authorized or attempted here. |
+| Status | OPEN 2026-08-26 (T-497). |
+
+</details>
+
+---
+
 ### GG-209 — MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only stop new bets, not exit existing exposure early
 
 **Status:** OPEN · **Severity:** MEDIUM
