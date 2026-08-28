@@ -383,3 +383,4 @@
 | 2026-08-28T00:21:44Z | T-501 / GG-222 | T-501: land T-490+T-491, close the 3 register-parity mismatches |
 | 2026-08-28T00:21:48Z | T-500 / GG-221 | T-500: land T-487, pre-register + run the NB half of HYP-010, route box 2.4 |
 | 2026-08-27T00:09:53Z | T-491 | MERGED: NO — branch `session/20260826T045905Z-t491-gg172-band-axis` awaiting merge — GG-172 band-axis activation proposal authored; PR #123 open, merge blocked by classifier, deferred to operator. (commit `63fcd7e`) |
+| 2026-08-28T00:22:34Z | T-502 / GG-223 | T-502: ADR-0055 D2 -- repair the 46 stuck-open positions |
