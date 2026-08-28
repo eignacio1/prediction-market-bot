@@ -123,6 +123,53 @@ This also means the archived-game count is the ceiling, not the floor: outcomes 
 
 ---
 
+## Amendment — 2026-08-26 (T-487/GG-207), pre-fit
+
+Five gaps in the pre-registration above, closed **before** box 2.2/2.3 were run, per this session's explicit instruction that deciding these after seeing a result is a forking-path risk. All five answers were fixed by the task brief itself, not chosen after inspecting output.
+
+**(a) Benchmark timepoint.** The pre-registration never named which pregame price the model competes against. **Named: the closing pregame snapshot** — the last archived quote strictly before the 72h-prior game-start cutoff in (b), per (event_ticker, threshold) ticker. Justification: it is the sharpest, hardest-to-beat pregame price (most information has already been priced in by the time it's taken), so a PASS against it is the least-deniable result; a PASS against an early snapshot would be a weaker claim dressed as a strong one.
+
+**(b) Pregame filter, asserted in the harness.** `game_start = close_time − 72h`. Implemented in `scripts/exp022_totals_backtest.py::load_totals_rows()`: any row with `run_ts >= game_start` is dropped before the closing snapshot is selected. **Measured on the full run (27 daily archive files, `prices_2026-08-01.jsonl` .. `prices_2026-08-27.jsonl`, all `KXMLBTOTAL` rows, not restricted to resolved events):** 106,915 total rows, **14,006 dropped (13.1%)**, 58,011 kept pregame, collapsing to 2,527 distinct (event, threshold) closing snapshots. This is a wider and more current window than Finding 1's original count (16 files, 08-01→08-16) and is restricted to `KXMLBTOTAL` only, not all-series-combined — the two figures are not directly comparable; this is the number that actually governs the box 2.3 run in this document.
+
+**(c) Independent unit is the game.** Finding 3 stated this for the Brier gate; it applies identically to the EV gate and was not previously stated for it — up to 12 lines settle off one realized total, so scoring bets as independent rows inflates `clean_n` ~12×. **Implemented:** all qualifying bets within an `event_ticker` are averaged to one signed P&L observation before `n*`/`clean_n` are computed (`per_game_pnls` in `exp022_totals_backtest.py`). The row-level qualifying-bet count is reported separately and is not the gate input.
+
+**(d) Revised prior.** Measured pregame market Brier decomposition on `KXMLBTOTAL` (Reliability 0.0001, Resolution 0.0658, Uncertainty 0.2457) shows a market already calibrated to measurement precision — no exploitable miscalibration signal for a recalibration-style edge. **Predicted here, before running:** P&L/bet lands at the bottom of the pre-registered +0.005..+0.025 band or below zero. Under Option A, a result at or below zero is a **finding about generality under an efficiently-priced market**, not a failure of the harness — but only because it was predicted here first.
+
+**(e) Name the band.** This model is pregame, multi-day-horizon (median snapshot-to-first-pitch lead time 20 min pre-filter, but the *decision* uses only data available well before that, per (a)/(b)), game-level — it is a **T1 signal**, not T4M-PROJ. Per `ADR-0058` (PROPOSED, T-493, 2026-08-25), the cell `(mlb_game_total, T1_MULTI_DAY)` already exists in the registry at `NOT_IMPLEMENTED`. A PASS on gate 2.3 below is evidence for that specific cell — **it is not evidence for, and does not touch, any `T4M-*` cell, and does not activate anything.** Activation of `(mlb_game_total, T1_MULTI_DAY)` requires its own ADR per ADR-0058's process; this experiment does not initiate that. This closes part of GG-172 (the plan silently assuming T4 with no band axis) for this one cell — GG-172 itself remains open for the rest of the coverage matrix.
+
+---
+
+## Amendment — 2026-08-26, box 2.2/2.3 results
+
+**Model (box 2.2):** Poisson, not NB. `mu_team = mean(get_opp_runs_scored(team, as_of), get_opp_runs_allowed(opponent, as_of))` (10-game window, min 3, TI-01-safe via the store's existing `as_of_date` filtering), `mu_total = mu_home + mu_away`, `model_p(YES) = P(total_runs >= floor_strike + 0.5)` under `Poisson(mu_total)`. Verified `get_opp_runs_scored`/`get_opp_runs_allowed` against real 2026 data before use (`verify_store()`, 4/4 sample team/date checks returned non-null series — see run log).
+
+**Documented limitation, not corrected in this run (STANDARD tier, register-and-stop):** measured var/mean ratio on real 2026 team-game runs (n=3,954, both teams' games) is **2.33**, i.e. real team-game run totals are meaningfully overdispersed relative to Poisson. A Poisson fit is overconfident in the tails, which likely pulls `model_p` away from 0.5 more aggressively than a correctly-dispersed NB would at extreme thresholds — this plausibly explains part of the selected-subset's negative point estimate below rather than (or in addition to) a lack of real skill, mirroring the "selection artifact" caveat already on Finding 4's row 1. An NB refit (method-of-moments dispersion from this same 2.33 ratio) is the natural next step if this experiment is extended into 2.4; not done here.
+
+**Box 2.3, executed exactly as revised in the pre-registration table above (no parameters changed after seeing output):**
+
+| Quantity | Value |
+|---|---:|
+| Scored (event, threshold) rows | 2,275 |
+| Skipped (no resolved outcome) | 252 |
+| Skipped (insufficient team history) | 0 |
+| Qualifying bets, row-level (\|model_p − yes_mid\| > 0.010) | 2,151 |
+| Qualifying **games** (independent unit) | 207 |
+| Mean P&L/bet, game-level | **−0.0026** |
+| sd, game-level | 0.2425 |
+| `n*` (one-sided α=.05, power=.95) | **94,260** |
+| `clean_n` | 207 |
+| **Verdict** | **INCONCLUSIVE — EXTEND ARCHIVE** (not FALSIFIED: `clean_n` ≪ `n*`) |
+
+The point estimate is negative and at/below the pre-registered band's floor — consistent with the (d) prediction made before running. Because `clean_n < n*` by ~450×, the gate rule (INCONCLUSIVE below `n*`, regardless of sign) applies and this is explicitly not a falsification. At the measured effect size, reaching `n*` via archive growth alone (~14 games/day per the original Finding 5 cadence) is not a near-term timeline — this is a materially harder bar than Finding 4's projected 605–769 games and should be read as informative about how weak this particular effect size is, not as a target to keep extending toward.
+
+**Secondary (descriptive, not a gate) — paired per-game ΔBrier**, closest-to-money line per game, n=207: mean **−0.0045**, 95% CI (−0.0229, 0.0139), measured power **0.017** at α=.05. Indistinguishable from zero, as pre-registered.
+
+**Spot-check of externally-added rows (T-484 gap note).** T-484 reported the 08-18..08-22 outcome-store gap was closed by an untraced external process before its own session started. Sampled 5 resolved `t4_mlb_totals_outcome_store.jsonl` records with `game_date` in 2026-08-18..2026-08-22 and cross-checked `home_runs`/`away_runs`/`total_runs` against the MLB Stats API `gamePk` linescore for each: all 5 matched exactly (see run notes below). No corruption detected in the sampled rows; this is n=5, not a full audit of the gap.
+
+Reproduce: `python3 scripts/exp022_totals_backtest.py` (deterministic given fixed input files; reads `PRICE_ARCHIVE`/`logs/t4_mlb_totals_outcome_store.jsonl`/`exp_output/MLB/cache/` from the main tree, writes only under this worktree).
+
+---
+
 ## What I did NOT check
 
 - ~~Whether the archived `KXMLBTOTAL` games have resolved outcomes attached.~~ **CHECKED — and it is a confirmed blocker. See Finding 5.**
