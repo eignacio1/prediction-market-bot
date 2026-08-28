@@ -378,3 +378,4 @@
 | 2026-08-27T02:29:40Z | T-499 | CLOSED — T-499 phase close-out fully committed/merged/pushed before /session-end ran; this close-out found zero new work to document. (commit `0811444`) |
 | 2026-08-27T02:33:00Z (session-end confirm) | T-499 | CLOSED — merge confirmed. Pushed `0811444..38ef9b1` directly to `origin/main` (MICRO fast path, no `src/` changed). `session_end_timer.sh merge-check` confirms HEAD (`38ef9b1`) is an ancestor of `origin/main`. |
 | 2026-08-28T00:21:44Z | T-501 / GG-222 | T-501: land T-490+T-491, close the 3 register-parity mismatches |
+| 2026-08-28T00:21:48Z | T-500 / GG-221 | T-500: land T-487, pre-register + run the NB half of HYP-010, route box 2.4 |
