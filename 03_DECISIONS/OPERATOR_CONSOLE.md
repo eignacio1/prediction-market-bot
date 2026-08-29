@@ -1,8 +1,8 @@
 # Operator Console
 
-> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 78 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
+> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 82 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
 
-> **Severity debt:** 30/78 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
+> **Severity debt:** 30/82 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
 
 ---
 
@@ -30,7 +30,7 @@ Something is silently wrong right now — a HALT, an undetected blind spot, a co
 
 ---
 
-## 3. What is accruing and its clock (68)
+## 3. What is accruing and its clock (72)
 
 Open, tracked, not currently blocking Earl and not flagged as actively broken — but still open, and the clock (epoch resets, n* thresholds, re-check triggers) keeps running. Default bucket: absence of blocked/broken signal, not absence of importance.
 
@@ -56,6 +56,8 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-206]** `t4_mlb_totals_outcome_store.jsonl` (and its sibling `t4_mlb_outcome_store.jsonl`) are gitignored under a rule documented for CAT-04 audit logs, but the files are CAT-03 resolution data with no backup/sync path — single-laptop-copy risk for an irreplaceable, StatsAPI-cost dataset — `OPEN` · severity `MEDIUM`
 - **[GG-209]** MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only stop new bets, not exit existing exposure early — `OPEN` · severity `MEDIUM`
 - **[GG-216]** Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account classification flip is a live-capital blocker with no structural check — `OPEN` · severity `MEDIUM`
+- **[GG-223]** T4M-PROJ epoch-12: 46 open positions stuck with `game_date` mismatched to ticker-embedded date (GG-166/GG-170 lineage) — repaired under ADR-0055 D2 — `RESOLVED 2026-08-28 (T-502)` · severity `MEDIUM`
+- **[GG-224]** Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their next flush cycle — `OPEN` · severity `MEDIUM`
 - **[GG-007]** T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton Values — `OPEN` · severity `LOW`
 - **[GG-162]** GG-NNN numbers picked mid-session have no atomic reservation, unlike T-/ADR- ranges claimed at session start; two concurrent sessions independently registered GG-159 on 2026-08-04 — `OPEN` · severity `LOW`
 - **[GG-165]** 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-423's XS scope — `OPEN` · severity `LOW`
@@ -69,6 +71,8 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-200]** `ACTIVE_QUEUE.md` Block G cites `GG-194` as its tracking gap; no `GG-194` exists in the log or its archive — `OPEN` · severity `LOW`
 - **[GG-217]** No Kalshi series exists for an NHL team-total market; the four-family coverage target cannot be fully seeded for NHL as it was for NFL — `OPEN` · severity `LOW`
 - **[GG-218]** T1 has no automated alarm for a position stuck OPEN past a plausible resolution window (postponed/rescheduled game, no `apply_resolved_hits.py` match) — `OPEN` · severity `LOW`
+- **[GG-221]** HYP-010 Phase 2 plan defines a reroute for FALSIFIED and none for INCONCLUSIVE; two independent model fits have now both landed there — `OPEN` · severity `LOW`
+- **[GG-222]** GG-126-class recurrence: APR-0032/ADR-0056 write-back-missed for a week, plus `check_register_parity.py`'s `RESOLVED_PAT` has a false-positive bug on "NOT ACCEPTED" Status lines — `OPEN` · severity `LOW`
 - **[GG-004]** EV Validation Benchmark Was Never the Commercial Question — `OPEN` · severity `UNSPECIFIED`
 - **[GG-014]** Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode — `PARTIALLY RESOLVED` · severity `UNSPECIFIED`
 - **[GG-020]** Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts — `ACCEPTED UNCERTAINTY` · severity `UNSPECIFIED`
