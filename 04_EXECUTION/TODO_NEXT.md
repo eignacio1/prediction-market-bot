@@ -99,9 +99,9 @@ Two distinct pieces of work, both left for the operator to prioritize: (1) B5 fo
 
 GG-163's ESPN scoreboard 403 (User-Agent-keyed, not IP-specific) blocked 78/78 ESPN-fallback attempts in T-421's backfill. Once GG-163 is fixed, `python scripts/build_t4_outcome_store.py --pull` is idempotent and safe to re-run — it will only retry tickers still `resolved: false`. This is the only way to learn T4 MLB's true genuinely-unresolvable rate (currently unmeasurable, conflated with the ESPN outage). Not urgent — no G6/sizing dependency — but should not be forgotten once GG-163 closes.
 
-## T-425 — GG-126-class: `ADR-0051` missing from `APPROVALS_REGISTER.md` — OPEN, unstaffed, found 2026-08-06 (T-421 closing segment)
+## T-425 — GG-126-class: `ADR-0051` missing from `APPROVALS_REGISTER.md` — ✅ RESOLVED-AS-FALSE-POSITIVE 2026-08-27/28 (T-501)
 
-This session's own governance scan flagged the same recurring failure mode logged 6+ times before (`GOVERNANCE_GAP_LOG_ARCHIVE.md` GG-126: an APR/ADR's Status field isn't written back to the register): `grep -n "ADR-0051" 00_ADMIN/APPROVALS_REGISTER.md` returns zero rows. `ADR-0051` (DRAFT/NOT ACCEPTED, T-422's stuck-position terminal-state proposal — see T-416 above) is not this session's document and its sign-off intent belongs to T-422, so it was not hand-edited here. Whoever picks this up should add the register row reflecting its current DRAFT status now, and its final status again once the operator rules on the four open questions T-422 left pending.
+T-501 re-ran `check_register_parity.py` and confirmed this is not a real register gap: ADR-0051's Status line reads `**Status:** DRAFT — NOT ACCEPTED`, and the checker's `RESOLVED_PAT` regex (`ACCEPTED|ADOPTED|COMPLETE|selected`) is an unguarded substring match that fires on the literal "ACCEPTED" inside "NOT ACCEPTED" — a checker bug, not a missed write-back. No register row added (correctly — the document has never been accepted). The checker-regex fix itself was left out of T-501's scope fence (no `scripts/` edits beyond running it) and is now tracked as a finding inside **GG-222** (OPEN, LOW) rather than here. See `DECISION_LOG.md` 2026-08-27/28 (T-501 row).
 
 ## T-404 — GG-144: repair the mandatory Step 3 open-gap scan (it misses 12 of 26 OPEN gaps) — ✅ COMPLETE 2026-07-29 (G1 session, commit 343ce86)
 

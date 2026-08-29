@@ -2297,3 +2297,4 @@ as of 2026-07-31, GG-149/GG-150 T4 offsetting-position suppression close-out (ep
 
 
 **Last reviewed (prior):** 2026-08-25T23:49:00Z (T-492 — T-492: GG-203 root cause = external Kalshi demo-account order-write fault, no in-repo fix; amended OPEN->PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_2349.md` for full session detail.
+**Last reviewed:** 2026-08-29T18:24:00Z (T-501 — T-501/GG-222 landed T-490+T-491, fixed 2 register-parity mismatches, confirmed ADR-0051 a checker false-positive) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260828_0459.md` for full session detail. *(superseded by T-500 same-day, merge-conflict archival)*

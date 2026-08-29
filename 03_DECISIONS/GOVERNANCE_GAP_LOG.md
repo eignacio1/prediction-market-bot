@@ -2330,6 +2330,54 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-223 — T4M-PROJ epoch-12: 46 open positions stuck with `game_date` mismatched to ticker-embedded date (GG-166/GG-170 lineage) — repaired under ADR-0055 D2
+
+**Status:** RESOLVED 2026-08-28 (T-502) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-223 |
+| Category | Incremental architecture (data-repair execution against a live, concurrently-writing service) |
+| What was missed | 46 T4M-PROJ `open_positions` at `logic_epoch=12` carried a `game_date` that disagreed with the date embedded in their own `kalshi_ticker` — the same GG-166/GG-170-lineage defect class, recurring at the current epoch rather than fully remediated by the prior `correct_t4_game_dates.py` (GG-166/T-429) pass, which only ever ran against a since-superseded epoch's positions. Left uncorrected, any resolution attempt against these 46 rows would join against the wrong day's box score. |
+| When it should have been caught | At epoch-12 activation, if a recurrence check against `correct_t4_game_dates.py`'s original fix had been re-run per-epoch rather than treated as a one-shot historical repair. |
+| Phases it survived | Unknown exact onset within epoch 12; discovered and pre-registered for repair via ADR-0055 D2 (operator sign-off, 2026-08-2x), executed this session (T-502, 2026-08-28). |
+| Why it survived | No standing per-epoch recurrence check for this assertion existed prior to `assert_ledger_invariants.py`'s assertion [A] (`ticker_date_matches_game_date`), which is ALARM-ONLY and therefore surfaces but does not block on a fresh recurrence. |
+| Impact | MEDIUM pre-repair (46 positions could not resolve correctly against the right day's outcome data); LOW post-repair for this specific cohort. The broader T4M-PROJ/UNTAGGED population still shows assertion [A] violations outside this cohort's scope (630 remaining post-write, see Resolution) — that is GG-170 (OPEN, pre-existing), explicitly NOT re-registered or closed by this entry; it is D1/D3/Wave-11 territory, out of this session's scope fence. |
+| Discovery | Pre-registered in ADR-0055 (§2, D2 condition) ahead of this session; T-502 (2026-08-28) executed the authorized repair. |
+| Resolution | `scripts/t502_repair_d2_stuck_open.py` (new, repo-scoped repair helper) repaired all 46/46 targeted rows on the VPS production ledger `logs/paper_portfolio_mlb_t4.json`. Precondition satisfied: the legacy regex parser (`correct_t4_game_dates.ticker_to_game_date`) and the canonical series-agnostic parser (`market_type_registry.derive_game_date`) were cross-checked and AGREED on all 46 tickers, 0 disagreements, per ADR-0055 §2 item 1's explicit "do not assume parser equivalence" precondition. A byte-verified backup was written and re-read before the live write (sha256 `0e122f235bafbe17addabe3241153f460b8f22678a992dffe289dfd30b89a8ff`, 421072 lines, byte-for-byte match confirmed both sides) to `logs/paper_portfolio_mlb_t4.pre_adr0055_d2_20260828T004224Z.json`. Optimistic-concurrency check passed cleanly (live file unchanged between snapshot and write); write was atomic (`os.replace`). Each repaired row was stamped with `repaired_at` (ISO8601 UTC) and `repair_ref = "ADR-0055 D2 / T-502"`, plus informational `game_date_corrected_from`. `logic_epoch` was NOT bumped (per ADR-0055 D4) — confirmed `{12}` as the sole value across all open positions at every checkpoint (immediately post-write, and after two independent subsequent service-flush cycles). `assert_ledger_invariants.py` (ALARM-ONLY, not run `--strict`, per task constraint) moved from 676 to 630 total violations across 54 band-scoped runs — an exact −46 delta matching the repair count; the 14 (band, assertion) NO_FORMULA/unevaluated pairs (bands T1, T2, T4M-PROJ, UNTAGGED, per the coverage line) were identical and unevaluated in both runs, and were NOT counted as clean. See GG-224 for the live-service in-memory-flush hazard discovered and worked around during this repair's execution. |
+| Status | RESOLVED 2026-08-28 (T-502). Scope was explicitly D2-only (open positions, epoch 12); D1 (532 closed-position repair) and D3 (76 rejected-position repair) remain separately tracked, bundled for "Wave 11." |
+
+</details>
+
+---
+
+### GG-224 — Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their next flush cycle
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-224 |
+| Category | Architectural placeholder (no external-repair-safety contract exists for any service-owned ledger file) |
+| What was missed | `t4-mlb.service` (`run_t4_mlb_live.py`) holds its entire portfolio object in memory and periodically flushes that in-memory copy back to `logs/paper_portfolio_mlb_t4.json` via a read-modify-write pattern against its OWN in-memory state — it does not re-read the file from disk before each flush. An external repair script (T-502's `t502_repair_d2_stuck_open.py`) that writes directly to that file, using a fully correct verified-backup + optimistic-concurrency + atomic-write pattern, is still silently overwritten by the service's next scheduled flush, because the danger window is AFTER the external write completes, not before it — no purely external, read-before-write safeguard can detect or prevent this class of clobber. Observed flush cadence this session: ~22s and ~72s after a fresh service restart. |
+| When it should have been caught | At initial design of any long-running service that owns a shared, externally-repairable ledger file — the read-modify-write-against-memory pattern should have either re-read from disk before each flush, or the file should have carried a service-generation/version marker that an external writer could use to detect an in-flight staleness race. Neither existed. |
+| Phases it survived | Unknown — this is the pattern's first direct empirical demonstration; no prior repair script (including `correct_t4_game_dates.py`/GG-166/T-429) is known to have run this repair-under-load scenario against a concurrently-flushing service and observed the revert. |
+| Why it survived | No prior repair session combined (a) targeting a file owned by a currently-running, in-memory-caching service, and (b) verifying repair durability across multiple post-write intervals long enough to observe a flush cycle. T-502 is the first to do both, because its own repair-verification discipline (re-checking `repair_ref` presence after the write, not just trusting the write's own exit code) surfaced the revert. |
+| Impact | MEDIUM. Any future external repair to `paper_portfolio_mlb_t4.json` (or any other file with an analogous owning service) that does not coordinate a service restart/reload immediately post-write will appear to succeed (correct backup, correct write, correct exit code) and then silently revert within roughly one flush interval — a false-positive "repair complete" that a session could report without ever detecting the revert, had it not specifically re-verified persistence across multiple post-write intervals as this session did. |
+| Discovery | 2026-08-28, T-502, during execution of the ADR-0055 D2 repair — the first repair attempt (dry-run-equivalent full `--apply` run) appeared to succeed but was found reverted to zero `repair_ref`-carrying rows on a subsequent check. |
+| Resolution | Worked around this session via explicit operator authorization (`AskUserQuestion`, operator selected "Restart t4-mlb.service after write (Recommended)"): re-ran the repair script, then immediately ran `systemctl restart t4-mlb.service` so the freshly started process loads the corrected file from disk on startup rather than flushing stale in-memory state over it. Verified durable through two independent subsequent flush cycles post-restart (`last_updated` advancing at 00:43:05Z and 00:44:17Z, both preserving all 46 `repair_ref` stamps, `logic_epoch={12}` throughout, service `NRestarts=0` — a clean single restart, not a crash-loop). This is a session-scoped workaround, not a systemic fix. **Open follow-on, unstaffed, out of this session's scope fence:** modify `run_t4_mlb_live.py` (or the owning service pattern generally) to re-read ledger state from disk immediately before each flush, or to detect an external mtime/hash change since its last read and merge/abort accordingly, so future external repairs do not require a coordinated restart. Minor related doc-debt noted but NOT fixed (out of scope): `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s documented cache-refresh command (`scp` against a VPS-side dotfile path) does not match the actually-working fetch pattern (`ssh ... cat ... > local.tmp` then atomic move, as used in `.claude/hooks/governance_scan.sh` and by this session) — the documented command targets a path that does not exist on the VPS. |
+| Status | OPEN. Workaround applied and verified for this session's specific repair; the general hazard (any future external write to a service-owned ledger file) remains unaddressed pending a code change to the owning service(s). |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
