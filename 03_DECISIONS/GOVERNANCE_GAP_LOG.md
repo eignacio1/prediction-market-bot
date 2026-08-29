@@ -2306,6 +2306,30 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-221 — HYP-010 Phase 2 plan defines a reroute for FALSIFIED and none for INCONCLUSIVE; two independent model fits have now both landed there
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-221 |
+| Category | Architectural placeholder — `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`'s "Note on model class" defines what happens next for exactly one of the plan's own three defined verdict states (FALSIFIED reroutes to moneyline-first), leaving the other two (PASS, INCONCLUSIVE) partially or fully unhandled at the box-2.4 decision point. |
+| What was missed | The plan's three verdict states (PASS / FALSIFIED / INCONCLUSIVE-EXTEND ARCHIVE, defined in `HYP010_PHASE2_PREREGISTRATION_2026-08-15.md`) were written assuming INCONCLUSIVE would resolve itself by archive growth on a timescale the plan implicitly treated as short (weeks). No fallback routing was written for INCONCLUSIVE reached repeatedly with a negative point estimate, nor for two independent distributional fits against the same fixed archive both landing INCONCLUSIVE. |
+| When it should have been caught | At the 2026-08-15 pre-registration session, when the three verdict states were first defined — the FALSIFIED-only reroute should have prompted the symmetric question ("and if it's inconclusive twice?") at definition time, not after two real fits produced exactly that outcome. |
+| Phases it survived | T-487/GG-207 (2026-08-2x, Poisson fit, EXP-022) landed INCONCLUSIVE-EXTEND ARCHIVE without this gap being registered — box 2.4 was simply marked N/A with no routing-gap writeup. T-500/GG-221 (this entry, 2026-08-28/29, NB refit, EXP-025) is the second fit to land in the same state, which is what surfaces the gap as structural rather than a one-off outcome. |
+| Why it survived | The plan's own three-state definition made INCONCLUSIVE look "handled" (it has a defined meaning and a defined path — extend the archive) even though it has no defined *routing* action the way FALSIFIED does. A verdict state having a definition is not the same as the plan having a next-action for it; nothing in the session-start protocol or the plan's own structure checks for that distinction. |
+| Impact | LOW. No capital, gating, or code impact — box 2.4 stays correctly marked N/A either way, and no downstream cell registry or execution-band change depends on this being resolved immediately. The cost is purely one of ambiguity: without an explicit operator decision, a future session could reasonably (and differently) choose to keep archiving indefinitely, treat the negative point estimate as informal evidence and reroute anyway, or hold Phase 2 open — three genuinely different paths with no written tiebreaker. |
+| Discovery | 2026-08-28/29, T-500/GG-221, while executing this session's own pre-registered Deliverable 2 (NB refit of HYP-010 box 2.3) — the NB fit's own INCONCLUSIVE-EXTEND ARCHIVE verdict, arriving as a second confirmation of the Poisson fit's identical verdict state, is what made the missing INCONCLUSIVE-routing case visible as a pattern rather than a single result. |
+| Resolution | Not resolved in-session, by explicit task instruction (present options, do not select one). `00_ADMIN/APR-0033_hyp010-inconclusive-routing-decision-request.md` (drafted and committed this session) presents three options to the operator — (1) treat two-for-two INCONCLUSIVE/negative-point-estimate as a de facto soft-FALSIFIED and fire the existing moneyline-first reroute, (2) hold 2.4 at N/A and keep archiving despite the multi-year timeline the re-derived n*-vs-effect-size table makes explicit, (3) reroute to moneyline-first now while formally leaving HYP-010 open at INCONCLUSIVE rather than relabeling the verdict — without selecting one. `MARKET_EXPANSION_ACTION_PLAN.md` box 2.4 records the gap and points to APR-0033. |
+| Status | OPEN 2026-08-28/29 (T-500). Awaiting operator decision via APR-0033; not self-closing. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
