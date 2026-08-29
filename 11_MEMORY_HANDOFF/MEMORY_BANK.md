@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-27T02:29:00Z (T-499 — T-499 phase close-out fully committed/merged/pushed before /session-end ran; this close-out found zero new work to document.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260827_0229.md` for full session detail.
+**Last reviewed:** 2026-08-29T18:24:00Z (T-501 — T-501/GG-222 landed T-490+T-491, fixed 2 register-parity mismatches, confirmed ADR-0051 a checker false-positive) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260828_0459.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
