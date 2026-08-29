@@ -397,3 +397,4 @@
 | 2026-08-29T18:44:00Z | T-500 | CLOSED — merge confirmed: HEAD 92a172b is ancestor of origin/main (MERGE_CHECK: YES). Session-end handoff artifacts pushed as fast-forward f3bb994..92a172b. |
 | 2026-08-29T19:02:49Z | T-503 / GG-225 | T-503: ADR-0055 D1+D3 -- repair 532 closed + 76 rejected under the GG-224 protocol |
 | 2026-08-29T19:02:52Z | T-504 / GG-226 | T-504: integrate T-4 sub-buckets across the twelve game-market families |
+| 2026-08-29T19:03:21Z | T-505 / GG-227 | T-505: install queue, regenerate console, fix RESOLVED_PAT, draft ADR-0061 |
