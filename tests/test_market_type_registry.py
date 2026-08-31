@@ -488,6 +488,6 @@ class TestGameMarketT4SubbandIntegration:
     # registry by one key for the rest of the pytest session once those tests
     # run first (order-dependent leak, pre-existing, unrelated to this
     # change). A total-count test in this file would be order-fragile against
-    # that leak. See GG-227 (registered, not fixed here per Hard Rule 11 --
+    # that leak. See GG-228 (registered, not fixed here per Hard Rule 11 --
     # discovered outside T-504's scope). The live-imported before/after
     # counts in the session report are the authoritative count check.
