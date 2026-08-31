@@ -408,3 +408,86 @@ class TestTickerDateGrammar:
         # check must fire, not a KeyError from the series lookup.
         with pytest.raises(TickerDateParseError):
             parse_ticker_date("KXMLBHIT")
+
+
+# ---------------------------------------------------------------------------
+# T-504/GG-226 — T4 sub-bucket integration across the twelve game-market
+# families. Pure additive registry scaffolding: T4M_ARITH/T4M_FLOW extended
+# to MLB's five non-prop families (namespace-valid reuse within MLB, ADR-0056
+# D2); T4M_PROJ deliberately left declined for those families (player-scoped,
+# no game-level analogue); NFL/NHL sub-band decomposition deliberately left
+# unbuilt (no namespace-valid ExecutionBand member exists for those sports
+# yet -- building one is outside this scope-fenced session, see GG-226).
+# ---------------------------------------------------------------------------
+
+
+class TestGameMarketT4SubbandIntegration:
+    _NON_PROP_MLB_FAMILIES = [
+        MarketType.MLB_MONEYLINE,
+        MarketType.MLB_RUN_LINE,
+        MarketType.MLB_GAME_TOTAL,
+        MarketType.MLB_TEAM_TOTAL,
+        MarketType.MLB_PARTIAL_GAME,
+    ]
+
+    _NFL_FAMILIES = [
+        MarketType.NFL_MONEYLINE,
+        MarketType.NFL_SPREAD,
+        MarketType.NFL_GAME_TOTAL,
+        MarketType.NFL_TEAM_TOTAL,
+    ]
+
+    _NHL_FAMILIES = [
+        MarketType.NHL_MONEYLINE,
+        MarketType.NHL_PUCK_LINE,
+        MarketType.NHL_GAME_TOTAL,
+    ]
+
+    def test_t4m_arith_and_flow_seeded_not_implemented_for_every_non_prop_mlb_family(self):
+        for market_type in self._NON_PROP_MLB_FAMILIES:
+            for band in (ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW):
+                cell = get_cell(market_type, band)
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+
+    def test_t4m_proj_still_declined_for_every_non_prop_mlb_family(self):
+        # Player-at-bat projection has no game-level analogue -- must remain
+        # unseeded (KeyError), not silently promoted alongside ARITH/FLOW.
+        for market_type in self._NON_PROP_MLB_FAMILIES:
+            with pytest.raises(KeyError):
+                get_cell(market_type, ExecutionBand.T4M_PROJ)
+
+    def test_no_nfl_family_has_any_t4_subband_cell(self):
+        subbands = {
+            ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
+            ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
+            ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
+            ExecutionBand.T4_ARITH, ExecutionBand.T4_BOUNDARY, ExecutionBand.T4_CORR,
+            ExecutionBand.T4_EXIT,
+        }
+        for market_type in self._NFL_FAMILIES:
+            seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
+            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+
+    def test_no_nhl_family_has_any_t4_subband_cell(self):
+        subbands = {
+            ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
+            ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
+            ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
+            ExecutionBand.T4_ARITH, ExecutionBand.T4_BOUNDARY, ExecutionBand.T4_CORR,
+            ExecutionBand.T4_EXIT,
+        }
+        for market_type in self._NHL_FAMILIES:
+            seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
+            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+
+    # NOTE (T-504): an absolute `len(MARKET_TYPE_REGISTRY) == 78` assertion was
+    # deliberately NOT added here. TestPromoteCellStatus's two RULED_OUT
+    # fixtures (`_seed_ruled_out`, above) `del` the (MLB_TEAM_TOTAL,
+    # T3_PRE_TIP) key in their `finally` blocks instead of restoring its
+    # original NOT_IMPLEMENTED cell, permanently shrinking the in-process
+    # registry by one key for the rest of the pytest session once those tests
+    # run first (order-dependent leak, pre-existing, unrelated to this
+    # change). A total-count test in this file would be order-fragile against
+    # that leak. See GG-227 (registered, not fixed here per Hard Rule 11 --
+    # discovered outside T-504's scope). The live-imported before/after
+    # counts in the session report are the authoritative count check.

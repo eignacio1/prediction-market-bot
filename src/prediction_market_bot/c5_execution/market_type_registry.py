@@ -600,6 +600,84 @@ for _market_type in _OTHER_MLB_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
+# --- T4 sub-bucket integration across the twelve game-market families
+# (T-504/GG-226, 2026-08-29) ---
+#
+# Gap (verified live at session start): ExecutionBand carries 13 T4 sub-band
+# members beyond the five coarse bands -- ten bare NBA-flavored ones
+# (T4_STAGED, T4_EVENT, T4_LINEUP, T4_FLOW, T4_SENTIMENT, T4_PROJ, T4_ARITH,
+# T4_BOUNDARY, T4_CORR, T4_EXIT) and three MLB-flavored ones (T4M_PROJ,
+# T4M_ARITH, T4M_FLOW). Before this change, only MLB_PLAYER_PROP_HITS
+# decomposed T4 at all; every other family (the five non-prop MLB families
+# plus all NFL/NHL families) carried only the coarse T4_IN_PLAY aggregate.
+#
+# Decision rule applied per (family, sub-band) candidate pair -- structural,
+# not strategic (per the operator directive governing this task: a family or
+# sub-band is never declined on the strength of a finding about whether it
+# would calibrate edge; declines here are about naming-namespace validity,
+# not about hopelessness):
+#
+#   1. A sub-band cell may only be created against an ExecutionBand member
+#      whose namespace matches the family's sport. ADR-0056 D2 grandfathers
+#      MLB's T4M- prefix and NBA's bare T4_ prefix to their own sports
+#      EXACTLY AS-IS and reserves the T4MLB-/T4NBA-/T4NFL-/T4NHL- prefixed
+#      convention for every sub-band built from here forward -- for ANY
+#      sport, not NFL/NHL alone. Reusing NBA's bare T4_* names (or MLB's
+#      T4M_* names) for a different sport's family would misrepresent the
+#      registry's own already-established one-roster-per-sport discipline,
+#      the exact drift D2 exists to prevent.
+#   2. Of the 13 sub-band members, only T4M_PROJ/T4M_ARITH/T4M_FLOW are
+#      namespace-valid for MLB families; none of the 13 are namespace-valid
+#      for NFL or NHL families (no T4NFL-/T4NHL- member exists -- T-474 and
+#      T-495 explicitly left this unbuilt: "does not require building the
+#      registry now"). Building the needed T4NFL-/T4NHL- members (and MLB's
+#      own still-conceptual T4M-BOUNDARY/EVENT/LINEUP/PITCHER/STAGED/CORR/
+#      EXIT Tier B roster) is an ExecutionBand edit in execution_bands.py --
+#      outside this session's SCOPE FENCE (market_type_registry.py and its
+#      tests only). This is the session's HARD STOP finding; see GG-226 in
+#      GOVERNANCE_GAP_LOG.md rather than re-deriving it here.
+#   3. Within the namespace-valid MLB set, each of the three sub-bands is
+#      judged individually against the five non-prop MLB families:
+#        - T4M_PROJ ("flat Binomial model" projecting a player's remaining
+#          at-bats toward a hit threshold): player-scoped by construction --
+#          no game-level analogue for who-wins/spread/total/team-total/
+#          partial-game. DECLINED for all five.
+#        - T4M_ARITH ("near-certain band between p_t4's 0.0/1.0 hard
+#          boundaries"): the underlying concept -- late-state arithmetic
+#          near-certainty -- is generic to any live score-state market (a
+#          large, late run differential drives a moneyline or run line
+#          toward 0/1 the same way an at-bat count drives a hit prop).
+#          CREATED for all five, including MLB_PARTIAL_GAME (a partial-game
+#          market resolves on the same live score state, just truncated to
+#          fewer innings -- the near-certainty window arrives sooner, not
+#          never).
+#        - T4M_FLOW ("accumulated game-state/context pattern, incl.
+#          FLOW-BLOWOUT tree"): blowout/momentum detection is directly a
+#          function of score margin and pace -- the same signal a moneyline,
+#          run line, or team-total decision tree would consume. CREATED for
+#          all five, MLB_PARTIAL_GAME included for the same reasoning as
+#          T4M_ARITH above.
+#
+# No new Kalshi series lookup was required for these cells: series_ticker_for
+# is keyed on MarketType alone (see the module comment above --
+# "the same series is evaluated by whichever band's decision tree fires on
+# it"), and each family's ticker was already live-verified at T-439/T-474/
+# T-495. A T4 sub-band cell routes a different decision tree against the
+# SAME already-verified series, exactly like T4M_ARITH/T4M_FLOW already do
+# for MLB_PLAYER_PROP_HITS/KXMLBHIT.
+#
+# All ten new cells below are NOT_IMPLEMENTED, no kelly_fraction touched
+# (cells carry no kelly_fraction field -- that axis lives in
+# execution_bands.py's BandConfig, untouched by this session), nothing wired.
+_MLB_GAME_MARKET_T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4M_ARITH,
+    ExecutionBand.T4M_FLOW,
+)
+
+for _market_type in _OTHER_MLB_FAMILIES:
+    for _band in _MLB_GAME_MARKET_T4_SUBBANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
 # --- NFL (T-474 skeleton spike, ADR-0056 §5): seeded NOT_IMPLEMENTED only ---
 # No NFL cell may be promoted above NOT_IMPLEMENTED by this session (explicit
 # DO NOT list item) -- SHADOW is not authorized here (ADR-0056 §6 explicitly
