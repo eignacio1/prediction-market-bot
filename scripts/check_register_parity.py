@@ -34,11 +34,25 @@ ROOT = Path(__file__).resolve().parent.parent
 REGISTER = ROOT / "00_ADMIN" / "APPROVALS_REGISTER.md"
 EXEMPTIONS = ROOT / "00_ADMIN" / "REGISTER_PARITY_EXEMPTIONS.txt"
 
-RESOLVED_PAT = re.compile(r"ACCEPTED|ADOPTED|COMPLETE|selected")
+RESOLVED_PAT = re.compile(r"\b(?:ACCEPTED|ADOPTED|COMPLETE|selected)\b")
+# A resolved keyword preceded by an explicit negation (e.g. "DRAFT -- NOT
+# ACCEPTED", "PROPOSED ... Not yet ACCEPTED") is not a resolved status -- it's
+# an author's defensive phrasing to make non-acceptance unambiguous (GG-178).
+# Case-insensitive since "NOT" and "Not yet" both occur in the wild.
+NEGATED_PREFIX_PAT = re.compile(r"\bNOT\s+(?:YET\s+)?$", re.IGNORECASE)
 UNRESOLVED_PAT = re.compile(r"DRAFT|PROPOSED|PENDING|PLACEHOLDER")
 # No trailing \b: filenames like APR-0025_gg105-....md put a word char (_)
 # right after the digits, which a word boundary would reject.
 ID_PAT = re.compile(r"\b((?:APR|ADR)-\d{4})")
+
+
+def is_resolved(text: str) -> bool:
+    """True if `text` contains a resolved-status keyword not preceded by a
+    "NOT "/"NOT YET " negation immediately before it."""
+    for m in RESOLVED_PAT.finditer(text):
+        if not NEGATED_PREFIX_PAT.search(text[: m.start()]):
+            return True
+    return False
 
 
 def doc_status(path: Path) -> str | None:
@@ -91,7 +105,7 @@ def main() -> int:
         if status is None:
             continue  # no parseable Status header — nothing to compare
         checked += 1
-        resolved = bool(RESOLVED_PAT.search(status))
+        resolved = is_resolved(status)
         rows = register_rows.get(doc_id, [])
 
         if doc_id.startswith("APR") and not rows and doc_id not in exempt:
@@ -117,7 +131,7 @@ def main() -> int:
             # row is stale only if its date cell has no resolved keyword at all.
             cells = [c.strip() for c in row.split("|")]
             date_cell = cells[4] if len(cells) > 4 else row
-            if resolved and "PENDING" in date_cell and not RESOLVED_PAT.search(date_cell):
+            if resolved and "PENDING" in date_cell and not is_resolved(date_cell):
                 findings.append(
                     f"{doc_id}: doc says resolved but register row still reads "
                     f"PENDING (the original GG-126 failure)"
@@ -125,7 +139,7 @@ def main() -> int:
             if (
                 not resolved
                 and UNRESOLVED_PAT.search(status)
-                and RESOLVED_PAT.search(date_cell)
+                and is_resolved(date_cell)
             ):
                 findings.append(
                     f"{doc_id}: register row records a resolved status but doc "
