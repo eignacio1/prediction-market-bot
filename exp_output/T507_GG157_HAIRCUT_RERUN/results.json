@@ -1,0 +1,56 @@
+{
+  "props": {
+    "traded_epoch12_t4m_proj": 765,
+    "depth_covered": 605,
+    "pre_depth_window_excluded": 160,
+    "haircut_per_contract_usd": {
+      "n": 605,
+      "mean": 0.010069846354212653,
+      "median": 0.01,
+      "p10": 0.005,
+      "p90": 0.02,
+      "min": 0.005,
+      "max": 0.06,
+      "depth_exhausted_n": 0
+    },
+    "resolved_cohort": {
+      "n": 605,
+      "mean_pnl_before": 0.053997520661157025,
+      "mean_pnl_after": 0.019080796385616387,
+      "sample_stdev_before": 1.4729495475562497,
+      "sample_stdev_after": 1.4736416845701519,
+      "n_star_before": 8053,
+      "n_star_after": 64552
+    }
+  },
+  "game_markets_synthetic": {
+    "GAME_WINNER": {
+      "n": 2688,
+      "mean": 0.03337644611904909,
+      "median": 0.03,
+      "p10": 0.01,
+      "p90": 0.055,
+      "min": 0.005,
+      "max": 0.1
+    },
+    "GAME_TOTAL": {
+      "n": 1292,
+      "mean": 0.02851003892136847,
+      "median": 0.01,
+      "p10": 0.005,
+      "p90": 0.075,
+      "min": 0.005,
+      "max": 0.42
+    },
+    "RUN_LINE": {
+      "n": 1250,
+      "mean": 0.04826106147920888,
+      "median": 0.015,
+      "p10": 0.005,
+      "p90": 0.145,
+      "min": 0.005,
+      "max": 0.405
+    }
+  },
+  "d1_status": "APPLIED -- ADR-0055 Status: ACCEPTED, D1+D3 repair executed by T-503 (2026-08-31) and durability-verified (Addendum B); figures below are scoped to the POST-REPAIR epoch-12 ledger. This is T-507, the named re-run of T-488/GG-157 against corrected data."
+}
