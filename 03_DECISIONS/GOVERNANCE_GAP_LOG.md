@@ -2426,32 +2426,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-228 — `TestPromoteCellStatus` RULED_OUT fixtures leak global registry state via `del` instead of restore
->>>>>>> 2f4fcfc (T-504: register GG-226 (NFL/NHL T4 sub-band scope-fence blocker) and GG-228 (pre-existing test-fixture leak); DECISION_LOG entry)
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-228 |
-<<<<<<< HEAD
-| Category | Architectural placeholder (no external-repair-safety contract exists for a scheduled-regeneration-owned derived file, as distinct from GG-224/ADR-0061's live-service-owned file class) |
-| What was missed | `logs/t4_mlb_resolved_ledger.jsonl` is not a source of record — it is wholesale-rebuilt every Monday 14:20 UTC by `deploy/cron.conf` line 314 (`scripts/build_t4_resolved_ledger.py --portfolio logs/paper_portfolio_mlb_t4.json ...`), which reads `paper_portfolio_mlb_t4.json`'s `closed_positions` and regenerates the resolved ledger from scratch via `run_exp017_mlb.compute_fee_net_edge`. T-503 (this session), executing ADR-0055 D1's 532-row repair, discovered mid-session that a repair written only to `t4_mlb_resolved_ledger.jsonl` directly would have been silently discarded by the next Monday cron run, because the cron treats `closed_positions` as authoritative and the resolved ledger as fully disposable/derived. This is architecturally distinct from GG-224: GG-224's hazard is a long-running service's stale in-memory state clobbering a file on its next flush (sub-minute cadence, no source/derived relationship — the service IS the source of record for its own file); this hazard is a short-lived, weekly, cron-invoked batch job wholesale-regenerating a derived file from a separate, correctly-repairable source file (weekly cadence, explicit source/derived relationship). ADR-0061 (T-505, PROPOSED, drafted 2026-08-29/30 in response to GG-224) explicitly enumerates only long-running `PaperTrader`-backed processes in its §2 hazard inventory and does not include `build_t4_resolved_ledger.py` (a short-lived cron invocation, not a persistent service) or any source/derived-artifact regeneration hazard — this class was out of ADR-0061's scope by construction, not overlooked within it. |
-| When it should have been caught | At the time `build_t4_resolved_ledger.py` / the Monday cron line was introduced, if any external-repair-safety review of derived/regenerable artifacts existed at that time — none did. More immediately, ADR-0055's own pre-registration (2026-08-26) targeted `t4_mlb_resolved_ledger.jsonl` as if it were an independently repairable file, without noting its derived/rebuildable relationship to `closed_positions`. |
-| Phases it survived | Unknown — first identified this session (T-503); no prior repair session (T-429/GG-166, T-477 dry-run, T-502/GG-224) targeted a file with this specific source/derived regeneration relationship, so the hazard had no prior opportunity to manifest. |
-| Why it survived | ADR-0055's repair plan named the resolved ledger as a repair target without first tracing whether it was a source of record or a derived artifact; no step in the ADR-0055 or GG-224 protocols requires that trace before committing to a repair target. |
-| Impact | LOW as realized (caught and correctly routed before any repair was misapplied), but would have been a full silent revert of the 532-row D1 repair specifically in the resolved ledger (not the portfolio file) on the next Monday cron run (2026-09-07 14:20 UTC) had the repair been applied to the derived file directly rather than to `closed_positions`. |
-| Discovery | 2026-08-31, T-503, mid-repair — traced `t4_mlb_resolved_ledger.jsonl`'s provenance via `build_t4_resolved_ledger.py` and `deploy/cron.conf` line 314 before deciding a repair target, per this session's own "STOP and ask if any needed action falls outside stated scope" instruction; escalated via `AskUserQuestion`, operator selected "Also repair closed_positions (Recommended)." |
-| Resolution | Worked around this session by applying the ADR-0055 D1 repair to `closed_positions` in `paper_portfolio_mlb_t4.json` directly (the source of record), then proactively regenerating `t4_mlb_resolved_ledger.jsonl` via the same `build_t4_resolved_ledger.py` invocation the weekly cron uses, so the derived file is now consistent with its corrected source and the next Monday cron run is idempotent rather than a silent revert. This is a session-scoped correct repair target choice, not a systemic fix. **Open follow-on, unstaffed, out of this session's scope fence:** no general rule or checklist item yet requires a repair author to trace a target file's source-of-record-vs-derived status before choosing where to write a fix; this class of mistake (repairing a derived artifact instead of, or in addition to, its source) could recur for any other regenerated file in the repo. Whether this belongs as an amendment to ADR-0061's scope (a fifth "derived-artifact" hazard class, alongside its four live-service options) or as a wholly separate ADR is an open question for whoever picks up the follow-on — not decided here. |
-| Status | OPEN. |
-
-</details>
-
----
-
 ### GG-226 — NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports
 
 **Status:** OPEN · **Severity:** MEDIUM

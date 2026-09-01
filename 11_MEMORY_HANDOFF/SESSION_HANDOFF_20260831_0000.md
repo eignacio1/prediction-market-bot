@@ -5,8 +5,8 @@ task_id: T-504
 tier: STANDARD
 timestamp: 2026-08-31T00:00:00Z
 commit: 36f1471
-one_line_summary: T-504: T4 sub-band registry scaffolding for 5 MLB game-market families (68->78 cells); GG-226/GG-228 registered; PR #125 open, merge blocked by classifier
-gg_touched: GG-226, GG-228
+one_line_summary: T-504: T4 sub-band registry scaffolding for 5 MLB game-market families (68->78 cells); GG-226/GG-229 registered (GG-229 renumbered from GG-228 by T-506); PR #125 open, merge blocked by classifier
+gg_touched: GG-226, GG-229
 adr_touched: none
 plan_deliverable_moved: no
 -->
@@ -30,14 +30,14 @@ plan_deliverable_moved: no
 |----------|-----------|-----|
 | Decline T4M_PROJ for 5 non-prop MLB families | Player-scoped, no game-level analogue | registry |
 | Register (not build) NFL/NHL T4 sub-bands | ADR-0056 D2 needs new `ExecutionBand` members — out of scope; HARD STOP | GG-226 |
-| Register (not fix) `TestPromoteCellStatus` fixture leak | Hard Rule 11 — out-of-scope find | GG-228 |
+| Register (not fix) `TestPromoteCellStatus` fixture leak | Hard Rule 11 — out-of-scope find | GG-229 (renumbered from GG-228 by T-506 — collided with T-503's GG-228) |
 
 ---
 
 ## Tasks Completed This Session
 
 - T-504: 10 new NOT_IMPLEMENTED cells, registry 68→78, no behavior change
-- GG-226/GG-228 registered (parity + uniqueness OK); DECISION_LOG/SESSION_CLAIMS appended
+- GG-226/GG-229 registered (renumbered from GG-228 by T-506 — parity + uniqueness OK); DECISION_LOG/SESSION_CLAIMS appended
 - PR #125 open, unmerged
 
 ---
