@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-01T04:50:37Z (T-507 — T-507: post-repair haircut re-run shows directional edge survives but G6 sample-adequacy gap widened by ~1000x; GG-229 registered, T-508 follow-up) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260901_0450.md` for full session detail.
+**Last reviewed:** 2026-09-01T04:50:37Z (T-507 — T-507: post-repair haircut re-run shows directional edge survives but G6 sample-adequacy gap widened by ~1000x; GG-230 registered, T-508 follow-up) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260901_0450.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

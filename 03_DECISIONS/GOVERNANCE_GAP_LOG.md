@@ -2475,7 +2475,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-229 — `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-blob threshold, flagged and never registered
+### GG-230 — `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-blob threshold, flagged and never registered
 
 **Status:** OPEN · **Severity:** LOW
 
@@ -2484,7 +2484,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-229 |
+| Gap ID | GG-230 |
 | Category | Process gap — a finding surfaced by an existing automated check was never converted into a governance gap entry, so it sat unactioned outside any tracked backlog |
 | What was missed | `scripts/check_memory_bank_snapshots.sh`'s Check 4 (`check_line_length`, `LENGTH_THRESHOLD=3000`, added under T-334 specifically to catch "the count stays 1 but the line itself becomes the blob" regression) currently reports the `## Compass OS Health` line in `11_MEMORY_HANDOFF/MEMORY_BANK.md` (line 1100) at **5159 chars** — confirmed live this session by direct execution: `bash scripts/check_memory_bank_snapshots.sh` → `Compass OS Health line length: 5159 chars (line 1100)` → `VIOLATION=1`, 72% over the script's own 3000-char threshold. This is exactly the pre-T-334 inline-blob failure mode the check exists to catch (header count stays at 1 while the single line silently regrows) — the check is working correctly and reporting a live violation, but the violation itself was never registered anywhere actionable. |
 | When it should have been caught | `SESSION_HANDOFF_20260817_2338.md` (T-460, 2026-08-17) already names this exact finding verbatim: "Also unregistered: the `Compass OS Health` 5159-char line-length concern `session_guard.sh` flagged at session start — needs a GG next session." That session-end note was itself the point this should have been registered; it was not, and no session in the 14 days since (2026-08-17 → 2026-08-31) picked it up. |
