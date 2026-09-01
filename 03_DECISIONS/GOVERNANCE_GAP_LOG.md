@@ -2475,6 +2475,30 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-234 — Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-closed sessions by the time the assigned session actually started
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-234 |
+| Category | Process gap — task-assignment ID staleness, distinct from GG-162 (no atomic GG-number reservation at claim time) and GG-199 (duplicate-ID detection blind spot). This is neither a race nor a duplicate — it is a prompt authored against a snapshot of `SESSION_CLAIMS.md` that had already gone stale by the time the assigned session launched. |
+| What was found | This session's task prompt explicitly assigned `T-508 / GG-231` and instructed "Take GG-231 and push it first." At session start (`scripts/claim_session.sh "T-508: ..." "T-508 / GG-231"`), both IDs collided: GG-231 was already claimed and CLOSED by T-507 (2026-09-01T05:07:10Z closure row, same log), and T-508 was already reserved in `04_EXECUTION/TODO_NEXT.md` line 22 for a wholly unrelated task ("Fix GG-230: MEMORY_BANK.md Compass OS Health line length"). A first retry at `T-510 / GG-233` also collided seconds later against a genuinely concurrent session claiming those same IDs for a third, different task (NFL/NHL T4 ADR). Landed on `T-511 / GG-234` on the second retry. |
+| When it should have been caught | Before the task prompt was handed to this session — whoever drafted the `T-508 / GG-231` assignment was working from a `SESSION_CLAIMS.md`/`TODO_NEXT.md` snapshot that predated T-507's and T-508's actual registration as different work. |
+| Phases it survived | N/A — this is a single-session, single-instance finding, not a multi-phase survival. |
+| Why it survived | Task prompts naming specific `T-`/`GG-` numbers are authored outside the session that will execute them (by the operator or a prior planning pass) and are not re-validated against live `SESSION_CLAIMS.md`/`TODO_NEXT.md` state at hand-off time. `claim_session.sh`'s collision check does catch this at claim time (as it did here, working exactly as designed) — the gap is that the *assignment itself* embeds numbers that can go stale between drafting and execution, forcing an in-session renumber rather than the assignment being correct on arrival. |
+| Impact | LOW as realized — `claim_session.sh` caught both collisions cleanly, no number was double-registered, and this session renumbered to `T-511 / GG-234` before any deliverable work began, per this same task's own instruction ("a number is claimed when it is pushed, not when it is read"). Would be higher-impact if a session did not re-verify collisions live and instead wrote directly into `GOVERNANCE_GAP_LOG.md`/`DECISION_LOG.md` under the assigned-but-stale number, silently colliding with T-507's or T-508's real content. |
+| Discovery | 2026-09-01, T-511 (this session), at the mandatory Step 0 claim step, before any deliverable work — `claim_session.sh` refused the assigned IDs twice in direct succession. |
+| Resolution | Not a code fix — this entry documents the finding per Hard Rule 11 (register on discovery) and per this session's own explicit instruction to push a gap-log entry first. No process change proposed here; `claim_session.sh`'s live collision check is the correct mitigation and worked as intended both times. A future task-assignment workflow could re-run a fresh `claim_session.sh` dry-check immediately before drafting a prompt's ID line, but that is a planning-side process change outside this session's scope fence (`GOVERNANCE_GAP_LOG.md`/`DECISION_LOG.md`/T-506 landing/`APPROVALS_REGISTER.md`/`check_register_parity.py`/`11_MEMORY_HANDOFF/`). |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ### GG-230 — `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-blob threshold, flagged and never registered
 
 **Status:** OPEN · **Severity:** LOW
