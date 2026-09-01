@@ -157,3 +157,42 @@ Repaired `game_date` range confirmed: 2026-07-31 to 2026-08-13.
 
 **Measurement-integrity framing preserved:** none of the above is an edge verdict. It is a statement about what the corrected numbers say and what they do not yet support.
 
+---
+
+## Addendum B — T-503 execution record (D1+D3 applied, 2026-08-31, under the GG-224 protocol)
+
+**This addendum is an execution record only. It does not amend §1–§9's decision content or reopen D1–D4.**
+
+**File → owning-service map, derived from source before any write (GG-224 protocol step 1):** `logs/paper_portfolio_mlb_t4.json` (the D1/D3 write target — `closed_positions`/`rejected_positions`) is held in memory and periodically flushed by the live `t4-mlb.service` (`run_t4_mlb_live.py`) — the exact GG-224 hazard class. `logs/t4_mlb_resolved_ledger.jsonl` was initially assumed to be the D1 target per ADR-0055 §2's literal text, but mid-session tracing (`build_t4_resolved_ledger.py`, `deploy/cron.conf` line 314) found it is not a source of record: it is wholesale-rebuilt every Monday 14:20 UTC from `paper_portfolio_mlb_t4.json`'s `closed_positions`, by a short-lived cron invocation, not a persistent service. A repair written only to the resolved ledger would have been silently discarded by the next Monday rebuild. Escalated via `AskUserQuestion` per this task's own "STOP and ask if out of scope" instruction; operator selected repairing `closed_positions` directly. This class of hazard — a scheduled batch regeneration overwriting a derived artifact, distinct from GG-224's live-service in-memory-flush class — is registered separately as **GG-228** (new this session; not covered by `ADR-0061`'s §2 hazard inventory, which enumerates only long-running `PaperTrader`-backed processes).
+
+**Backup verification, both files, written and re-read before any write (condition i):**
+- `paper_portfolio_mlb_t4.json`: verified-backup pattern per `t503_repair_d1_d3_epoch12.py` (snapshot → write backup → re-read → hash/line-count/byte compare) — backup confirmed byte-identical to the pre-write snapshot before the write proceeded.
+- `t4_mlb_resolved_ledger.jsonl` (regenerated proactively post-repair, same tool the weekly cron uses): backup `logs/t4_mlb_resolved_ledger.pre_adr0055_d1d3_regen_20260831T235335Z.jsonl`, SHA256 `f54c594c3fdb3945be586469c62bdadab6952ae0a096f29788ecb8aa528eb1b2`, 2994 lines, 1770668 bytes — confirmed identical to the live file at snapshot time via `cp -p` + re-hash.
+
+**Rows repaired vs. expected:** `closed_positions` 532/532 (D1), `rejected_positions` 76/76 (D3), both stamped `repair_ref = "ADR-0055 D1+D3 / T-503"` per §9's required mitigation. Re-verified post-restart, post-flush: `closed_repaired=532 rejected_repaired=76 closed_total=2994 rejected_total=12126`.
+
+**Service restart + durability (GG-224 protocol steps 3–4):** `t4-mlb.service` restarted under the operator's 2026-08-29 scoped pre-authorization so the corrected file loads from disk on startup rather than being flushed over by stale in-memory state. Durability confirmed across two independently separated re-reads spanning a real flush cycle: file mtime progressed `23:44:30Z → 23:45:51Z → 23:52:56Z` on `paper_portfolio_mlb_t4.json` (file size 20,504,951 bytes at the final read), with a fresh `t4_mlb_cycle_log.jsonl` row appended at `23:52:56Z` confirming the live service continued operating normally post-restart, and both `repair_ref`-stamped counts held unchanged (532/76) across all reads. One read attempt mid-sequence hit a torn read (`JSONDecodeError` on a file caught mid-write) — diagnosed as a non-atomic read timing artifact, not a revert (no evidence any value had changed), and resolved by re-reading with a retry loop rather than treated as a GG-224 stop condition.
+
+**Post-write assertions (condition ii), re-run against the real regenerated resolved ledger, not simulated (`scripts/t503_verify_post_write.py`):** all five ADR-0055 STEP-2 assertions PASSED — exactly 532 rows changed / 2,994 unchanged-set-minus-changed held consistent with the D1 population, every changed row's `game_date` equals its ticker-derived date, zero changes outside `logic_epoch` 12, zero remaining ticker/`game_date` mismatches across the regenerated file (all epochs), `size_usd` total invariant at $1,882.3750 before and after. Resolved ledger post-regen: 2,994 rows (row count unchanged), win=1,536/loss=1,458 (win rate 51.3%), Total P&L +$1.9763, SHA256 `8f79097027e7e869198122754311fcc234eb0276e3133ab1d15b40985e723e49`, 1,770,705 bytes.
+
+**Invariant-check delta, pre vs. post (`scripts/assert_ledger_invariants.py`, condition v — NO_FORMULA pairs reported separately, never folded into "clean"):**
+
+| Metric | PRE (`ledger_invariant_report.PRE_T503.jsonl`) | POST (`ledger_invariant_report.POST_T503.jsonl`) | Delta |
+|---|---|---|---|
+| T4M-PROJ `[A] ticker_date_matches_game_date` violations | 629 | 21 | −608 |
+| `[GG-170 RECURRENCE]` alert, band=T4M-PROJ epoch=12 | present — 608 NEW mismatches at current epoch | **absent** | resolved |
+| Cross-path agreement, epoch=12 (ledger vs. T-421 decoupled outcome store) | `hits_agree=52.0% outcome_agree=68.4%` | `matched=765/765 hits_agree=100.0% outcome_agree=100.0%` | fully converged |
+| Overall SUMMARY, total violations across 54 band-scoped assertion runs | 630 | 22 | **−608** (exactly 532+76) |
+| UNTAGGED band, epoch=3 `[A]` violation (unrelated, pre-existing) | 1 | 1 | unchanged — confirmed out of scope, not touched by this repair |
+| NO_FORMULA coverage gap: 14 `(band, assertion)` pairs NOT EVALUATED, incomplete bands T1/T2/T4M-PROJ/UNTAGGED | present | present, identical | **unchanged — reported separately per condition v, not counted as clean either side** |
+
+The delta (−608) matches the repair scope exactly (532 D1 + 76 D3), all out-of-scope bands/epochs/violations are confirmed unchanged, and the residual 21 T4M-PROJ mismatches + 1 UNTAGGED mismatch are pre-existing, out-of-scope items (other epochs / other bands), not new.
+
+**`logic_epoch` not bumped (condition iv):** confirmed — maximum `logic_epoch` present across `open_positions`, `closed_positions`, and `rejected_positions` in the live portfolio is `12`, unchanged, per D4's signed decision (§9) to continue epoch 12 rather than bump.
+
+**Explicitly out of this session's scope, named not performed:** `T-488`/`GG-157`'s fill-haircut figures (Wave 12.3) must be re-run against the now-corrected ledger — not run this session. The 2026-08-31 14:20 UTC `band_monitor_cron.log` C7 WARNING output, computed pre-repair, is now stale and superseded by this repair; it will be naturally corrected by the next scheduled `band_monitor_cron` run, no manual action taken here.
+
+**One unscripted judgment call made this session, flagged for transparency per this project's "surface concerns, let the operator decide" norm:** during outcome-store cross-referencing, a new VPS-local file path (`t4_mlb_outcome_store.T503_local_copy.jsonl`) was used for a local pull of the outcome store rather than overwriting the pre-existing stale local copy — this avoided clobbering a file this session did not own, but was not itself pre-specified in ADR-0055 or the task assignment.
+
+**Resolution status:** D1 and D3 execution is COMPLETE and durability-verified per the GG-224 protocol. This does not reopen or amend D1–D4's decision record (§9) — the decisions stand as signed; this addendum records only that the signed, conditional D1/D3 execution has now occurred and its conditions (i, ii, iii, iv, v) were met.
+
