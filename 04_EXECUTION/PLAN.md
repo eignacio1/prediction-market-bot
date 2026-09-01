@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-08-29T18:33:19Z (T-500 — T-500: landed T-487, pre-registered+ran NB half of HYP-010 (INCONCLUSIVE again), registered GG-221, drafted APR-0033) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260829_1833.md` for full session detail.
+**Last reviewed:** 2026-08-31T23:55:00Z (T-505 — T-505: installed queue, regenerated OPERATOR_CONSOLE, fixed RESOLVED_PAT negation bug, drafted ADR-0061 (GG-224 options, PROPOSED)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260831_2355.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

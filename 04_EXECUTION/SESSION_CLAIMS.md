@@ -398,3 +398,4 @@
 | 2026-08-29T19:02:49Z | T-503 / GG-225 | T-503: ADR-0055 D1+D3 -- repair 532 closed + 76 rejected under the GG-224 protocol |
 | 2026-08-29T19:02:52Z | T-504 / GG-226 | T-504: integrate T-4 sub-buckets across the twelve game-market families |
 | 2026-08-29T19:03:21Z | T-505 / GG-227 | T-505: install queue, regenerate console, fix RESOLVED_PAT, draft ADR-0061 |
+| 2026-08-31T23:56:00Z | T-505 | CLOSED — T-505: installed queue, regenerated OPERATOR_CONSOLE, fixed RESOLVED_PAT negation bug, drafted ADR-0061 (GG-224 options, PROPOSED) (commit `858acd2`) |

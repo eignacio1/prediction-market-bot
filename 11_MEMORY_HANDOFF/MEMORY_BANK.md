@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-08-29T18:33:19Z (T-500 — T-500: landed T-487, pre-registered+ran NB half of HYP-010 (INCONCLUSIVE again), registered GG-221, drafted APR-0033) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260829_1833.md` for full session detail.
+**Last reviewed:** 2026-08-31T23:55:00Z (T-505 — T-505: installed queue, regenerated OPERATOR_CONSOLE, fixed RESOLVED_PAT negation bug, drafted ADR-0061 (GG-224 options, PROPOSED)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260831_2355.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
