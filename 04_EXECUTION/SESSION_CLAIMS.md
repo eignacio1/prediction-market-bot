@@ -399,3 +399,4 @@
 | 2026-08-29T19:02:52Z | T-504 / GG-226 | T-504: integrate T-4 sub-buckets across the twelve game-market families |
 | 2026-08-29T19:03:21Z | T-505 / GG-227 | T-505: install queue, regenerate console, fix RESOLVED_PAT, draft ADR-0061 |
 | 2026-08-31T23:56:00Z | T-505 | CLOSED — T-505: installed queue, regenerated OPERATOR_CONSOLE, fixed RESOLVED_PAT negation bug, drafted ADR-0061 (GG-224 options, PROPOSED) (commit `858acd2`) |
+| 2026-08-31T23:58:00Z | T-505 | CLOSED — merge confirmed: HEAD c7ca8c7 is ancestor of origin/main (MERGE_CHECK: YES). Session-end handoff artifacts pushed as fast-forward 858acd2..c7ca8c7. |
