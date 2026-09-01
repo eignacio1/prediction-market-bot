@@ -61,3 +61,27 @@ class TestIsResolvedNegation:
     def test_word_boundary_no_false_match_on_substring(self) -> None:
         # "COMPLETE" must not match inside an unrelated longer word.
         assert is_resolved("this text is INCOMPLETE") is False
+
+    def test_bare_not_accepted_is_unresolved(self) -> None:
+        assert is_resolved("**Status:** NOT ACCEPTED") is False
+
+    def test_bare_not_yet_accepted_is_unresolved(self) -> None:
+        assert is_resolved("**Status:** NOT YET ACCEPTED") is False
+
+    def test_lowercase_not_accepted_is_unresolved(self) -> None:
+        assert is_resolved("**status:** not accepted") is False
+
+    def test_never_accepted_is_unresolved(self) -> None:
+        assert is_resolved("**Status:** NEVER ACCEPTED — proposal withdrawn") is False
+
+    def test_lowercase_never_accepted_is_unresolved(self) -> None:
+        assert is_resolved("this was never accepted by the operator") is False
+
+    def test_accepted_with_date_is_resolved(self) -> None:
+        # Positive control -- the fix must not blind a true positive that
+        # carries a trailing date, the register's own common phrasing.
+        assert is_resolved("**Status:** ACCEPTED 2026-08-21") is True
+
+    def test_adopted_is_resolved(self) -> None:
+        # Positive control -- ADOPTED is one of the four resolved keywords.
+        assert is_resolved("**Status:** ADOPTED") is True
