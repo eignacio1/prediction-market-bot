@@ -2381,7 +2381,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-227 — `APR-0033` has no `APPROVALS_REGISTER.md` row at all (GG-126 class, distinct from GG-222/GG-178's regex bug)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -2396,8 +2396,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Why it survived | The false-positive noise from GG-178/GG-222's regex bug (2 mismatches reported pre-fix, one genuine and one not) gave this genuine miss cover as "probably more of the same known noise" — the same alarm-fatigue mechanism GG-178 itself names as the reason it went undetected for weeks. |
 | Impact | LOW. Paper-trail gap only — `APR-0033` is a decision-request document (HYP-010 INCONCLUSIVE routing), not adjudicated in-session, so no sign-off is being mis-tracked; the register simply doesn't reflect its existence yet. |
 | Discovery | 2026-08-29/30, T-505, Deliverable 2 (fix `RESOLVED_PAT`) — re-running `check_register_parity.py` post-fix surfaced this as the sole remaining mismatch, confirming the task's own contingency instruction ("if anything else changes, that is a finding — report it, do not absorb it"). |
-| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (T-505's declared deliverables are the queue install, console regen, `RESOLVED_PAT` fix, and the ADR-0061 draft; adding a register row for a document from an unrelated prior session is a distinct, out-of-scope deliverable). Fix (when picked up): add an `APR-0033` row to `APPROVALS_REGISTER.md` following the APR-0030/APR-0031 pattern for an un-adjudicated DECISION REQUEST doc. |
-| Status | OPEN. |
+| Resolution | 2026-09-01, T-506, Deliverable 2. Added an `APR-0033` row to `APPROVALS_REGISTER.md` (after the ADR-0059 row) recording it as **PENDING** — "drafted 2026-08-28, T-500/GG-221 — not yet submitted for sign-off; row added 2026-09-01, T-506, GG-227 register-parity gap — not adjudicated by this row." This entry records only that the row now exists; it does not adjudicate APR-0033 itself (that remains a live operator decision — see APR-0033's own document and the "Decisions Owed" section). Re-ran `python3 scripts/check_register_parity.py` from the merged post-PR-#125 tree: **CLEAN — 71 APR/ADR docs checked against the register (27 legacy-exempt)**, zero mismatches, confirming the sole remaining gap this entry describes is closed. |
+| Status | RESOLVED. |
 
 </details>
 
