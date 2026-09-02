@@ -29,6 +29,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from prediction_market_bot.c5_execution import paper_trader as pt_module  # noqa: E402
+from prediction_market_bot.c5_execution.market_type_registry import MarketType  # noqa: E402
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
 
 DEFAULT_LEDGERS = [
@@ -50,7 +51,7 @@ OPEN_POSITION_FIELDS = [
     "model_p", "gross_edge", "fee_per_contract", "fee_net_edge",
     "fee_contaminated", "probable_injury_signal", "t3_signal", "t1_edge",
     "h_so_far_at_entry", "ab_remaining_at_entry", "entry_price_paid",
-    "price_stratum", "contracts",
+    "price_stratum", "contracts", "market_type",
 ]
 
 # Genuinely irreproducible: real Kalshi demo-venue state assigned at the
@@ -96,9 +97,48 @@ def _fake_uuid4(target_hex10: str):
     return mock.Mock(hex=padded)
 
 
+def resolve_market_type(pos: dict) -> MarketType:
+    """GG-184/T-509 (ADR-0054(a) §8 item 4, PRIORITY): open_position() defaults
+    a missing market_type to MLB_PLAYER_PROP_HITS, and until this fix
+    replay_one() never passed market_type= at all -- every replayed position
+    was silently attributed to MLB_PLAYER_PROP_HITS regardless of the stored
+    record's real value, which "produces confidently wrong output rather
+    than a visible error" (ADR-0054 §9). paper_trader.py persists the
+    resolved market_type onto every position it writes, so a stored record
+    missing the field entirely is not a market_type=None case to shrug at --
+    it predates the field's existence in the schema, or something wrote the
+    record outside open_position(). Either way this is not this harness's
+    call to make silently. The scope fence (SCOPE FENCE: replay_harness_t427.py,
+    assert_ledger_invariants.py, run_band_monitor.py, and their tests --
+    nothing else under src/) rules out making open_position()'s own
+    market_type parameter required, since 6 of its 7 call sites live under
+    src/ and touching the shared signature there is out of scope. This is
+    the harness-local equivalent within scope: refuse to guess, raise
+    instead, and let evaluate_positions()'s existing n_error/first_errors
+    reporting surface it loudly per-position rather than passing a silent
+    default through the comparison.
+    """
+    raw = pos.get("market_type")
+    if raw is None:
+        raise ValueError(
+            f"{pos.get('position_id')}: stored record has no market_type field "
+            "-- refusing to silently default to MLB_PLAYER_PROP_HITS "
+            "(GG-184/T-509). A pre-existing-field legacy record must be an "
+            "explicit, reviewed decision, not an implicit fallback here."
+        )
+    try:
+        return MarketType(raw)
+    except ValueError as exc:
+        raise ValueError(
+            f"{pos.get('position_id')}: stored market_type {raw!r} is not a "
+            f"recognized MarketType value: {exc}"
+        ) from exc
+
+
 def replay_one(trader, pos: dict) -> dict:
     approval = reconstruct_approval(pos)
     target_hex10 = pos["position_id"].removeprefix("POS-")
+    resolved_market_type = resolve_market_type(pos)
     with mock.patch.object(pt_module, "_utc_now", return_value=pos["entered_at"]), \
          mock.patch.object(pt_module, "CURRENT_LOGIC_EPOCH", pos.get("logic_epoch")), \
          mock.patch.object(pt_module, "CURRENT_APPROVAL_COMMIT", pos.get("approval_commit")), \
@@ -112,6 +152,7 @@ def replay_one(trader, pos: dict) -> dict:
             mid_price=pos.get("mid_price_at_entry", 0.0),
             vig=pos.get("vig_at_entry", 0.0),
             game_date=pos.get("game_date"),
+            market_type=resolved_market_type,
             session_id="replay-t427",
             pool_isolated=pos.get("pool_isolated", False),
             h_so_far_at_entry=pos.get("h_so_far_at_entry"),
@@ -334,6 +375,12 @@ def build_synthetic_fixtures() -> list[dict]:
             "entry_price_paid": None,
             "price_stratum": None,
             "contracts": None,
+            # T-509/GG-184: every _FIXTURE_SPECS formula above is hand-derived
+            # against (MLB_PLAYER_PROP_HITS, band) coefficients specifically
+            # (see the module comment block) -- this field must be explicit
+            # now that replay_one() requires and verifies market_type, or
+            # resolve_market_type() would raise on every fixture.
+            "market_type": MarketType.MLB_PLAYER_PROP_HITS.value,
         })
     return fixtures
 
