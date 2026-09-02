@@ -2576,3 +2576,27 @@ When a new governance process failure is discovered:
 ## Invariant
 
 **Every governance gap must be registered here before remediation work begins.** The act of registering a gap is itself load-bearing — it ensures that the process failure is documented independently of the fix, so that future sessions can distinguish "we fixed the bug" from "we fixed the system that allowed the bug."
+
+---
+
+### GG-232 — ADR-0054(a) staffing gap: three named-not-staffed follow-ons (replay-harness `market_type=`, cell-unaware ledger/monitor tooling) sat unstaffed from sign-off to this entry
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-232 |
+| Category | Process gap — an ADR sign-off elevated three §8 follow-ons from "named" to "required STAFFED," and no session picked them up between sign-off and this one |
+| What was missed | `ADR-0054` §8 named eight follow-on tasks as "not staffed here." §9's 2026-08-26 sign-off on item (a) elevated three of them (§8 items 1, 2, 4) to required STAFFED follow-ons, with item 4 (`replay_harness_t427.py`'s silent `market_type` default, GG-184) flagged PRIORITY because it "produces confidently wrong output rather than a visible error." No task claimed any of the three between the 2026-08-26 sign-off and this entry (2026-09-01, T-509) — five days where the priority item's silent-default failure mode remained live and undetected-by-design in the replay harness. |
+| When it should have been caught | Immediately at ADR-0054(a) sign-off (2026-08-26) — a signed condition that elevates named tasks to required-staffed should itself produce the staffing (a claim row / GG entry), not merely a sentence in the ADR. |
+| Phases it survived | 2026-08-26 (sign-off) → 2026-09-01 (this entry): 5 days, at least one intervening session's worth of ADR-0054-adjacent work (item (c) and other §8 items were not separately gap-logged either) without a GG entry making the staffing gap itself visible in the tracked backlog. |
+| Why it survived | Sign-off conditions recorded inside an ADR's own prose are not cross-referenced against `GOVERNANCE_GAP_LOG.md` by any automated check — the same class of gap as GG-230 (a flagged finding sitting in a document nothing re-surfaces). Nothing forces a signed "must be staffed" condition to immediately spawn its own tracked entry. |
+| Impact | MEDIUM. Item 4's silent `market_type` default (GG-184) is confirmed live in `scripts/replay_harness_t427.py::replay_one()` as of this session's investigation — every replayed position was silently attributed to `MLB_PLAYER_PROP_HITS` regardless of its true market type, producing passing-looking replay diffs that never actually verified the field. Items 1/2 (band-scoped, not cell-scoped tooling) under-report coverage against the current 78-cell `(MarketType, ExecutionBand)` registry without raising any alarm, since both tools were built before the registry moved past a single-market-type shape. |
+| Discovery | 2026-09-01, T-509 (this session), assigned directly to staff all three items per the operator's task brief; the absence of any prior GG/T claim for these three items across the 2026-08-26→2026-09-01 window was confirmed by grep against `SESSION_CLAIMS.md` and this log before starting implementation. |
+| Resolution | This session (T-509) stages the fix directly — see `DECISION_LOG.md` 2026-09-01 for the three items' before/after detail. Registering this entry first (per the operator's explicit "write and push as first commit" instruction) so the staffing gap is documented independently of the fix, matching this log's own stated invariant. |
+| Status | OPEN — will be updated to reflect resolution once T-509's implementation and full test suite pass are confirmed in this same session. |
+
+</details>
