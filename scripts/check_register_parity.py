@@ -36,10 +36,11 @@ EXEMPTIONS = ROOT / "00_ADMIN" / "REGISTER_PARITY_EXEMPTIONS.txt"
 
 RESOLVED_PAT = re.compile(r"\b(?:ACCEPTED|ADOPTED|COMPLETE|selected)\b")
 # A resolved keyword preceded by an explicit negation (e.g. "DRAFT -- NOT
-# ACCEPTED", "PROPOSED ... Not yet ACCEPTED") is not a resolved status -- it's
-# an author's defensive phrasing to make non-acceptance unambiguous (GG-178).
-# Case-insensitive since "NOT" and "Not yet" both occur in the wild.
-NEGATED_PREFIX_PAT = re.compile(r"\bNOT\s+(?:YET\s+)?$", re.IGNORECASE)
+# ACCEPTED", "PROPOSED ... Not yet ACCEPTED", "NEVER ACCEPTED") is not a
+# resolved status -- it's an author's defensive phrasing to make
+# non-acceptance unambiguous (GG-178, GG-222). Case-insensitive since "NOT",
+# "Not yet", and "never" all occur in the wild.
+NEGATED_PREFIX_PAT = re.compile(r"\b(?:NOT\s+(?:YET\s+)?|NEVER\s+)$", re.IGNORECASE)
 UNRESOLVED_PAT = re.compile(r"DRAFT|PROPOSED|PENDING|PLACEHOLDER")
 # No trailing \b: filenames like APR-0025_gg105-....md put a word char (_)
 # right after the digits, which a word boundary would reject.

@@ -410,3 +410,4 @@
 | 2026-09-01T05:24:10Z | T-509 / GG-232 | T-509: ADR-0054(a) follow-ons -- replay harness market_type, cell-aware tooling |
 | 2026-09-01T05:24:29Z | T-510 / GG-233 | T-510: draft the ADR unblocking NFL/NHL T4 sub-band decomposition (GG-226) |
 | 2026-09-01T05:25:16Z | T-511 / GG-234 | T-511: land T-506 D2+D3, close NEVER residual, correct the GG-222 record |
+| 2026-09-01T04:50:00Z | T-504 (confirmed by T-506) | CLOSED — branch `session/20260829T190245Z-t504-t4-subbuckets-game-markets` merged via PR #125, merge commit `7116c0d0b276e54ba346cd47bc40fa7b053f47dc`. Step 8-confirm: `git merge-base --is-ancestor <t504-tip> origin/main` → exit 0 (correct direction — work-is-inside-main, per GG-186). Block diagnosed: GitHub mergeability (true positive, origin/main had advanced) + Claude Code force-push classifier (true positive, operator-authorized). See GG-186 2026-09-01 entry. |
