@@ -8,3 +8,14 @@ Re-ran last week's trading-cost estimate against the fixed ledger from the recen
 **Decision needed?** None urgent. This is informational — the commercial-validation bar for the player-props strategy is farther away than last week's number suggested.
 
 **Worry flag:** The prior week's "almost there" reading was based on a smaller, cleaner-looking sample than the corrected data actually supports. Worth keeping in mind before treating any near-term confirmation as solid.
+
+---
+
+**What changed (T-510):**
+Drafted a proposal (ADR-0062, not yet accepted) for what to name the sub-strategies inside NFL and NHL's live-betting band, since that naming was blocking any work on those two sports. The draft follows the four-letter naming style already used for MLB and NBA rather than an older two-letter style a task note had incorrectly pointed to — that citation error is now logged separately (GG-233) so it doesn't mislead a future session. The draft proposes three sub-strategies outright and flags a fourth as "named but not yet authorized" pending a data-feed question that hasn't been verified. It deliberately does not copy every sub-strategy MLB has — several were judged not to fit NFL/NHL's market shape and were left out with reasoning recorded in the ADR.
+
+**Money impact:** None. No code changed, no bands added, no sizing touched.
+
+**Decision needed?** Yes, when convenient: review ADR-0062 and accept, reject, or amend it. Nothing NFL/NHL-related can proceed on the live-betting band until that happens.
+
+**Worry flag:** None new — this was a scoped naming/design proposal, not new operational risk.

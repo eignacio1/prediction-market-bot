@@ -2,10 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-01T04:50:37Z (T-507 — T-507: post-repair haircut re-run shows directional edge survives but G6 sample-adequacy gap widened by ~1000x; GG-230 registered, T-508 follow-up) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260901_0450.md` for full session detail.
+**Last reviewed:** 2026-09-02T01:21:31Z (T-510 — T-510: drafted ADR-0062 (PROPOSED) resolving GG-226 NFL/NHL T4 sub-band naming block; GG-233 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260902_0121.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-510 — Draft ADR-0062 unblocking GG-226 (NFL/NHL T4 sub-band decomposition) — ✅ COMPLETE 2026-09-01 (worktree `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr`, T-510)
+
+ADR-0062 (Status: PROPOSED, not implemented) proposes four-letter `T4NFL-`/`T4NHL-` sub-band names (ARITH/FLOW/BOUNDARY proposed; EVENT named, authorization deferred) and declines PROJ/PITCHER/LINEUP/STAGED/CORR/EXIT per-sport, reasoned independently rather than copied from MLB. Registered **GG-233** (OPEN, LOW) — the task brief's citation of ADR-0056 D2 as `T4N-` was wrong; the accepted convention is the four-letter form. Live Kalshi measurement (2026-09-01) recorded, not used to decline either sport. **GG-226 remains OPEN** — pending operator review/acceptance of ADR-0062 before any `ExecutionBand` member is added. No `src/`, `market_type_registry.py`, or `kelly_fraction` change. See `DECISION_LOG.md` 2026-09-01 (T-510) for full detail.
 
 ## T-506 — Merge PR #125 (T-504 branch `session/20260829T190245Z-t504-t4-subbuckets-game-markets`) into main; run `session_end_timer.sh merge-check` and append the confirming CLOSED row to SESSION_CLAIMS.md per GG-186 — 🟡 IN PROGRESS
 
