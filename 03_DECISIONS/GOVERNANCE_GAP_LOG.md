@@ -2526,6 +2526,30 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-233 — Task briefing restated ADR-0056 D2 as adopting the superseded `T4N-` convention, not the actually-signed `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` form
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-233 |
+| Category | Documentation drift — a downstream task briefing restated a settled ADR's adopted decision incorrectly, citing a superseded intermediate option as if it were the signed one. |
+| What was found | T-510's task brief (operator-relayed, 2026-08-31/09-01) states: "ADR-0056 ... settled APR-0032's D2 as the `T4N-` naming convention for NFL." Direct reading of `03_DECISIONS/ADR-0056_sport-axis-first-class-attribute-nfl-band-naming-epoch-inheritance.md` §3 shows this is incorrect: the single-letter `T4N-PROJ`-style option (mirroring MLB's `T4M-`) was the *original* 2026-08-20 recommendation, superseded before sign-off by Amendment (iii) ("Revised recommendation", 2026-08-21, T-480/GG-200). The ADR's own text is explicit: "if any draft or prior session used `T4N-` naming, it is not authorized and must be corrected to `T4NFL-` before that code ships." The actually-accepted D2 convention (Earl Ignacio, 2026-08-21) is the four-letter sport-coded form — `T4MLB-`, `T4NBA-`, `T4NFL-`, `T4NHL-` — with MLB/NBA grandfathered on their existing pre-ADR-0056 names and NFL/NHL adopting the four-letter form from their first cell forward. |
+| When it should have been caught | At the point the T-510 briefing text was composed/relayed, by re-reading ADR-0056 §3 in full (not just its D2 summary line) before citing its adopted convention in a downstream task instruction — the same "verify before citing an ADR's settled decision" discipline Hard Rule 10 and this project's external-claims-verification standard already require for shared nav files. |
+| Phases it survived | Unknown how many sessions/briefings between ADR-0056's 2026-08-21 acceptance and this 2026-08-31/09-01 T-510 claim carried the same incorrect `T4N-` citation forward — not traced in this session (out of scope; would require grepping session handoffs and prior task briefs for `T4N-` citations, which is a reasonable follow-on, not done here). |
+| Why it survived | ADR-0056's own structure invites this exact error: §3 presents the original recommendation, the amendment, and the final adopted form in sequence within one section, and a skim (or a summary written from an earlier draft of the ADR, before Amendment (iii) landed) can pick up the superseded option instead of the final one. There is no automated check that diffs a task briefing's ADR citations against the ADR's own current text. |
+| Impact | LOW as caught — no code was written under the wrong convention; T-510 verified against source before drafting ADR-0062 and used the correct `T4NFL-`/`T4NHL-` form throughout. Impact would have been MEDIUM-HIGH had `T4N-*` `ExecutionBand` members shipped to `execution_bands.py` under this mistaken citation — ADR-0056 §3 explicitly authorizes correcting such a slip only *before* the code ships; after shipping it would require a superseding ADR per Hard Rule 3. |
+| Discovery | 2026-08-31/09-01, T-510, while reading ADR-0056 in full to establish the correct naming convention for ADR-0062's NFL/NHL band-member proposals, per the task's own instruction to flag explicitly if the settled convention did not extend cleanly. |
+| Resolution | Not resolved by this entry — registration only. ADR-0062 (this session's deliverable) uses the verified `T4NFL-`/`T4NHL-` form and states this correction explicit in its own text. Follow-on (unstaffed): grep prior session handoffs / carry-forward docs for a `T4N-` citation to determine how far the incorrect restatement propagated before this catch. |
+| Status | OPEN. |
+
+</details>
+
+---
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
