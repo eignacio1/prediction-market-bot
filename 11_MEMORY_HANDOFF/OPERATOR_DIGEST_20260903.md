@@ -8,3 +8,18 @@ Finished a previously-approved cleanup: the system now tracks "which historical 
 **Decision needed?** None — this implemented a decision you already signed off on (ADR-0054, item b).
 
 **Worry flag:** None new. Two of eleven rules stayed broadly-scoped by design — narrowing wasn't supportable, and policy is scope-wide over risking missed contamination.
+**What changed today, in one paragraph:**
+This session recorded the four sign-offs you gave on 2026-09-03: three architecture decisions (ADR-0060, 0061, 0062) and one experiment-routing decision (APR-0033, rerouting the stalled hit-total experiment to moneyline markets instead) were all written into the permanent record, exactly as you approved them. Two smaller decisions you made (keeping the current sample-size standard, and requiring per-market approval before any market goes live) were also logged.
+
+**What this means for your money:**
+No change — still zero real money at risk, same as every day until the gate clears. Nothing sized or executed; this was paperwork recording decisions you already made out loud.
+
+**Does anything need your decision right now?**
+Yes — one thing: the paperwork itself (a GitHub "pull request," #126) is written and double-checked, but a safety guardrail in the tool is blocking it from being merged into the main record automatically. You'll need to click merge on it yourself (github.com/eignacio1/prediction-market-bot/pull/126) or tell a future session to do it.
+
+**Anything that worried the session, even if not urgent:**
+One of your four sign-offs (ADR-0062) has a genuine disagreement between two sections of its own document about how it should be sequenced. Per your instruction, that disagreement was written down as unresolved rather than quietly picked one way — it's flagged for you to adjudicate later, not urgent today.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260903_1424.md` and `DECISION_LOG.md` for this date.*
