@@ -66,6 +66,9 @@ from prediction_market_bot.c5_execution.measurement_stake import (  # noqa: E402
     T1_MEASUREMENT_MAX_CONTRACTS,
     T1_MEASUREMENT_STAKE_USD,
 )
+from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E402
+    MarketType,
+)
 
 DEFAULT_T1_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb.json"
 DEFAULT_T4_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb_t4.json"
@@ -105,6 +108,33 @@ KNOWN_STATUSES = {"OPEN", "CLOSED", "REJECTED"}
 # evaluated for G — reported as NO_FORMULA, never guessed.
 GROSS_EDGE_VIG_MULTIPLIER = {"T1": 0.5, "T4M-PROJ": 1.0}
 
+# T-509/ADR-0054(a) SS8 item 1: this suite predates the (MarketType, band)
+# cell registry (78 cells today) and was band-scoped only — a record whose
+# market_type is a game market (moneyline/run-line/totals, ADR-0058/ADR-0059)
+# but whose band happens to have a verified G/K formula for PROP bets would
+# have been silently evaluated under that props-only formula, producing a
+# false violation (or worse, a false clean) rather than an honest NO_FORMULA.
+# VIG_FORMULA_VERIFIED_MARKET_TYPE names the one market type G/K's formulas
+# were actually derived against (GG-119/ADR-0045, T-432's fee_net_edge
+# empirical derivation) — both stay gated to it until a game-market formula
+# is independently verified and this constant grows into a set.
+VIG_FORMULA_VERIFIED_MARKET_TYPE = MarketType.MLB_PLAYER_PROP_HITS.value
+
+# A record whose market_type field is absent (pre-ADR-0058 write path) or
+# holds a value outside the registered MarketType enum is grouped here —
+# never silently folded into VIG_FORMULA_VERIFIED_MARKET_TYPE and never
+# dropped. See positions_by_cell() and _UNKNOWN_MARKET_TYPE_COUNTS.
+UNKNOWN_MARKET_TYPE = "UNKNOWN_MARKET_TYPE"
+
+_KNOWN_MARKET_TYPE_VALUES = {m.value for m in MarketType}
+
+# GG-191-pattern counter (mirrors run_band_monitor.py's
+# _UNREGISTERED_SERIES_COUNTS, T-509 item 2): keyed by (raw_market_type_or_
+# None, band), incremented every time positions_by_cell() cannot place a
+# record's market_type in the registered enum. Reported loudly in run(),
+# never silently absorbed.
+_UNKNOWN_MARKET_TYPE_COUNTS: "Counter[tuple[Any, str]]" = Counter()
+
 
 # ── loading ──────────────────────────────────────────────────────────────
 
@@ -140,15 +170,60 @@ def positions_by_band(portfolio: dict) -> dict[str, list[dict]]:
     return by_band
 
 
+def positions_by_cell(portfolio: dict) -> dict[tuple[str, str], list[dict]]:
+    """T-509/ADR-0054(a) item 1: groups positions by (market_type, band) --
+    the same key the live registry (MARKET_TYPE_REGISTRY, 78 cells) uses.
+
+    A record whose market_type is absent (pre-ADR-0058 write path) or holds
+    a value outside the registered MarketType enum is grouped under
+    UNKNOWN_MARKET_TYPE rather than being dropped or folded into
+    VIG_FORMULA_VERIFIED_MARKET_TYPE -- and is separately counted via
+    _UNKNOWN_MARKET_TYPE_COUNTS (GG-191 pattern) so the run() summary can
+    report it loudly instead of it silently vanishing into a bucket whose
+    label implies something it isn't.
+    """
+    all_recs = (
+        portfolio.get("open_positions", [])
+        + portfolio.get("closed_positions", [])
+        + portfolio.get("rejected_positions", [])
+    )
+    by_cell: dict[tuple[str, str], list[dict]] = {}
+    for r in all_recs:
+        b = r.get("band") or "UNTAGGED"
+        raw_mt = r.get("market_type")
+        if raw_mt in _KNOWN_MARKET_TYPE_VALUES:
+            mt = raw_mt
+        else:
+            mt = UNKNOWN_MARKET_TYPE
+            _UNKNOWN_MARKET_TYPE_COUNTS[(raw_mt, b)] += 1
+        by_cell.setdefault((mt, b), []).append(r)
+    return by_cell
+
+
 # ── assertion result plumbing ───────────────────────────────────────────
 
 class AssertionResult:
-    def __init__(self, aid: str, name: str, band: str, fields_required: list[str], description: str):
+    def __init__(
+        self,
+        aid: str,
+        name: str,
+        band: str,
+        fields_required: list[str],
+        description: str,
+        market_type: str = "ALL",
+    ):
         self.aid = aid
         self.name = name
         self.band = band
         self.fields_required = fields_required
         self.description = description
+        # "ALL" means this assertion is market-type-agnostic (band-scoped
+        # only, unaffected by the T-509 cell-awareness change) -- a real
+        # cell identity is only ever set by the CELL_ASSERTIONS (G, K, I2,
+        # J2), the four whose correct formula actually depends on
+        # market_type. Do not read "ALL" as "evaluated across every cell";
+        # it means the market_type axis was never consulted at all.
+        self.market_type = market_type
         self.n_applicable = 0
         self.n_absent = 0
         self.n_violations = 0
@@ -180,6 +255,7 @@ class AssertionResult:
             "id": self.aid,
             "name": self.name,
             "band_scope": self.band,
+            "market_type": self.market_type,
             "fields_required": self.fields_required,
             "description": self.description,
             "no_formula": self.no_formula,
@@ -309,16 +385,23 @@ def assert_F_resolved_after_entered(recs: list[dict], band: str) -> AssertionRes
     return r
 
 
-def assert_G_gross_edge_formula(recs: list[dict], band: str) -> AssertionResult:
+def assert_G_gross_edge_formula(
+    recs: list[dict], band: str, market_type: str = VIG_FORMULA_VERIFIED_MARKET_TYPE
+) -> AssertionResult:
     r = AssertionResult(
         "G", "gross_edge_matches_band_formula", band,
         ["gross_edge", "model_p", "mid_price_at_entry", "vig_at_entry"],
         "gross_edge == model_p - mid - (vig * band_multiplier); band-scoped "
         "per ADR-0045/GG-119 — T1 bakes half-vig, T4M-PROJ bakes full-vig. "
-        "Bands with no verified formula are not evaluated (NO_FORMULA).",
+        "Bands with no verified formula are not evaluated (NO_FORMULA). "
+        "Cell-scoped as of T-509/ADR-0054(a): only cells whose market_type "
+        f"is {VIG_FORMULA_VERIFIED_MARKET_TYPE} have a verified formula -- "
+        "game-market cells (moneyline/run-line/totals, ADR-0058/ADR-0059) "
+        "are also NOT EVALUATED until their own formula is verified.",
+        market_type=market_type,
     )
     mult = GROSS_EDGE_VIG_MULTIPLIER.get(band)
-    if mult is None:
+    if mult is None or market_type != VIG_FORMULA_VERIFIED_MARKET_TYPE:
         r.no_formula = True
         return r
     for rec in recs:
@@ -403,18 +486,28 @@ def assert_J_contracts_cap(recs: list[dict], band: str) -> AssertionResult:
     return r
 
 
-def assert_I2_t1_measurement_stake(recs: list[dict], band: str) -> AssertionResult:
+def assert_I2_t1_measurement_stake(
+    recs: list[dict], band: str, market_type: str = UNKNOWN_MARKET_TYPE
+) -> AssertionResult:
     """T-497/ADR-0059 T1 equivalent of assert_I_adr0050_stake.
 
     T1's flat measurement-stake mechanism (c5_execution/measurement_stake.py)
     has no floor epoch the way T4M-PROJ's ADR_0050_FLOOR does — it has not
     yet been wired into any live pipeline, so there is no historical epoch
-    boundary to anchor to. Scope is instead by field presence: only records
-    that actually carry entry_price_paid (opt-in, per paper_trader.py) AND
-    whose market_type is one of the nine ADR-0058 game-market cells are
-    evaluated. A prop bet (KXMLBHIT) never carries this formula regardless
-    of epoch — T1 props are Kelly-sized (kelly_fraction=0.0 today, ADR-0048)
-    and untouched by this mechanism.
+    boundary to anchor to. Scope is instead by cell membership: only the T1
+    cells whose market_type is one of the nine ADR-0058 game-market types
+    are evaluated. A prop bet (KXMLBHIT) never carries this formula
+    regardless of epoch — T1 props are Kelly-sized (kelly_fraction=0.0
+    today, ADR-0048) and untouched by this mechanism.
+
+    T-509/ADR-0054(a) item 1: this used to gate on band alone and then
+    silently `continue` past any non-game-market record inside the loop --
+    neither counted as applicable, absent, nor NO_FORMULA. Called
+    cell-aware (recs pre-partitioned to a single market_type by
+    positions_by_cell()), the gate now returns a proper cell-level
+    NO_FORMULA for every T1 cell whose market_type isn't a game market,
+    instead of a silent no-op that looked identical to "0 applicable,
+    clean".
     """
     r = AssertionResult(
         "I2", "adr0059_t1_measurement_stake_formula", band,
@@ -422,13 +515,12 @@ def assert_I2_t1_measurement_stake(recs: list[dict], band: str) -> AssertionResu
         f"size_usd == round(min({T1_MEASUREMENT_STAKE_USD}, "
         f"{T1_MEASUREMENT_MAX_CONTRACTS}*entry_price_paid), 4) — T1 game-market "
         "cells only (ADR-0058/ADR-0059), scoped by market_type membership, not epoch.",
+        market_type=market_type,
     )
-    if band != "T1":
+    if band != "T1" or market_type not in T1_GAME_MARKET_TYPES:
         r.no_formula = True
         return r
     for rec in recs:
-        if rec.get("market_type") not in T1_GAME_MARKET_TYPES:
-            continue
         epp, su = rec.get("entry_price_paid"), rec.get("size_usd")
         if epp is None or su is None:
             r.n_absent += 1
@@ -438,20 +530,21 @@ def assert_I2_t1_measurement_stake(recs: list[dict], band: str) -> AssertionResu
     return r
 
 
-def assert_J2_t1_contracts_cap(recs: list[dict], band: str) -> AssertionResult:
+def assert_J2_t1_contracts_cap(
+    recs: list[dict], band: str, market_type: str = UNKNOWN_MARKET_TYPE
+) -> AssertionResult:
     """T-497/ADR-0059 T1 equivalent of assert_J_contracts_cap. See assert_I2's
-    docstring for the field-presence-not-epoch scoping rationale."""
+    docstring for the cell-scoping rationale and the T-509 gating change."""
     r = AssertionResult(
         "J2", "adr0059_t1_contracts_cap", band, ["contracts", "market_type"],
         f"contracts <= {float(T1_MEASUREMENT_MAX_CONTRACTS)} — T1 game-market "
         "cells only (ADR-0058/ADR-0059), scoped by market_type membership, not epoch.",
+        market_type=market_type,
     )
-    if band != "T1":
+    if band != "T1" or market_type not in T1_GAME_MARKET_TYPES:
         r.no_formula = True
         return r
     for rec in recs:
-        if rec.get("market_type") not in T1_GAME_MARKET_TYPES:
-            continue
         cts = rec.get("contracts")
         if cts is None:
             r.n_absent += 1
@@ -472,15 +565,25 @@ def _fee_net_edge_current(direction: str, band: str, gross_edge: float, vig: flo
     return round(dg - fee_per_contract, 6)
 
 
-def assert_K_fee_net_edge(recs: list[dict], band: str) -> AssertionResult:
+def assert_K_fee_net_edge(
+    recs: list[dict], band: str, market_type: str = VIG_FORMULA_VERIFIED_MARKET_TYPE
+) -> AssertionResult:
     r = AssertionResult(
         "K", "fee_net_edge_matches_vig_cascade", band,
         ["fee_net_edge", "gross_edge", "vig_at_entry", "fee_per_contract", "direction"],
         f"fee_net_edge matches paper_trader.py's post-GG-113 direction-conditional "
         f"vig cascade — logic_epoch>={FEE_NET_EDGE_CLEAN_FLOOR} only. Epoch 3 used the "
         "pre-GG-113 plain-sign-flip formula; epoch 1-2 used the pre-GG-077 "
-        "no-direction-flip formula. Both are legacy residue, not evaluated here.",
+        "no-direction-flip formula. Both are legacy residue, not evaluated here. "
+        "Cell-scoped as of T-509/ADR-0054(a): the vig cascade in "
+        "_fee_net_edge_current() was derived (T-432) only against "
+        f"{VIG_FORMULA_VERIFIED_MARKET_TYPE} data — game-market cells are "
+        "NOT EVALUATED (NO_FORMULA) until independently verified.",
+        market_type=market_type,
     )
+    if market_type != VIG_FORMULA_VERIFIED_MARKET_TYPE:
+        r.no_formula = True
+        return r
     for rec in recs:
         if (rec.get("logic_epoch") or 0) < FEE_NET_EDGE_CLEAN_FLOOR:
             continue
@@ -592,16 +695,28 @@ def assert_N_player_token_consistency(recs: list[dict], band: str) -> AssertionR
     return r
 
 
+# T-509/ADR-0054(a) item 1: G, K, I2, J2 are the only four assertions whose
+# CORRECT formula depends on market_type, not just band (ADR-0045/GG-119's
+# vig cascade and T-432's fee_net_edge derivation were both verified only
+# against MLB_PLAYER_PROP_HITS data; I2/J2 are the inverse case, verified
+# only against the ADR-0058 game-market types). They are run per (market_type,
+# band) CELL in run() below, via positions_by_cell(), not per band — pulling
+# them out of CORE/EXTEND keeps the other 13 assertions band-scoped exactly
+# as before (they are market-type-agnostic; cell-partitioning them would
+# only fragment their denominators with no behavioral difference — a pure
+# "denominator-unit-change" with zero real-finding content, worth avoiding).
 CORE_ASSERTIONS = [
     assert_A_ticker_date, assert_B_ticker_threshold, assert_C_entry_price_bounds,
     assert_C2_mid_price_bounds, assert_D_contracts_consistency, assert_E_pnl_sign,
-    assert_F_resolved_after_entered, assert_G_gross_edge_formula, assert_H_no_dual_direction_open,
+    assert_F_resolved_after_entered, assert_H_no_dual_direction_open,
 ]
 EXTEND_ASSERTIONS = [
     assert_I_adr0050_stake, assert_J_contracts_cap,
-    assert_I2_t1_measurement_stake, assert_J2_t1_contracts_cap,
-    assert_K_fee_net_edge,
     assert_L_enums, assert_M_logic_epoch_present, assert_N_player_token_consistency,
+]
+CELL_ASSERTIONS = [
+    assert_G_gross_edge_formula, assert_K_fee_net_edge,
+    assert_I2_t1_measurement_stake, assert_J2_t1_contracts_cap,
 ]
 
 
@@ -708,6 +823,16 @@ def run(
     if t4_pf is not None:
         for b, recs in positions_by_band(t4_pf).items():
             by_band.setdefault(b, []).extend(recs)
+
+    # T-509/ADR-0054(a) item 1: cell-level (market_type, band) grouping,
+    # used only by CELL_ASSERTIONS below (see the comment above that list
+    # for why the other 13 assertions stay band-scoped via by_band).
+    by_cell: dict[tuple[str, str], list[dict]] = {}
+    if t1_pf is not None:
+        by_cell.update(positions_by_cell(t1_pf))
+    if t4_pf is not None:
+        for c, recs in positions_by_cell(t4_pf).items():
+            by_cell.setdefault(c, []).extend(recs)
 
     for band, recs in sorted(by_band.items()):
         print(f"\n--- band={band} (n={len(recs)}) ---", file=sys.stderr)
@@ -822,30 +947,118 @@ def run(
                     file=sys.stderr,
                 )
 
+    # ── T-509/ADR-0054(a) item 1: cell-scoped assertions (G, K, I2, J2) ────
+    # Run once per (market_type, band) cell rather than once per band. This
+    # is the actual cell-awareness fix: before it, a game-market record
+    # sharing a band with props (e.g. a future T1 moneyline cell) would have
+    # been silently evaluated under the props-verified G/K formula inside
+    # the band loop above, or (for I2/J2) silently `continue`d past without
+    # being counted at all. Now every cell gets its own honest NO_FORMULA
+    # determination, reported separately and never folded into a clean count.
+    cells_with_incomplete_formula_coverage: list[str] = []
+    for (market_type, band), recs in sorted(by_cell.items()):
+        cell_label = f"{market_type}|{band}"
+        print(f"\n--- cell=({market_type}, {band}) (n={len(recs)}) ---", file=sys.stderr)
+        cell_no_formula_ids: list[str] = []
+        for fn in CELL_ASSERTIONS:
+            result = fn(recs, band, market_type)
+            if result.no_formula:
+                print(f"  [{result.aid}] {result.name}: NO_FORMULA for this cell — not evaluated", file=sys.stderr)
+                lines.append(result.to_jsonl_line())
+                cell_no_formula_ids.append(result.aid)
+                total_no_formula += 1
+                continue
+            total_assertions_run += 1
+            total_violations += result.n_violations
+            flag = "ALARM" if result.n_violations else "clean"
+            print(
+                f"  [{result.aid}] {result.name}: n={result.n_applicable} "
+                f"absent={result.n_absent} violations={result.n_violations} ({flag})",
+                file=sys.stderr,
+            )
+            lines.append(result.to_jsonl_line())
+
+        n_cell_assertions_total = len(CELL_ASSERTIONS)
+        n_no_formula = len(cell_no_formula_ids)
+        n_evaluated = n_cell_assertions_total - n_no_formula
+        lines.append({
+            "type": "cell_formula_coverage",
+            "market_type": market_type,
+            "band": band,
+            "n_assertions_total": n_cell_assertions_total,
+            "n_evaluated": n_evaluated,
+            "n_no_formula": n_no_formula,
+            "no_formula_ids": cell_no_formula_ids,
+        })
+        if n_no_formula:
+            cells_with_incomplete_formula_coverage.append(cell_label)
+            print(
+                f"  COVERAGE cell=({market_type}, {band}): {n_evaluated}/{n_cell_assertions_total} "
+                f"assertions evaluated — {n_no_formula} NOT EVALUATED (NO_FORMULA: "
+                f"{','.join(cell_no_formula_ids)}). Do not read these as clean — "
+                f"they were never checked. (T-509)",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"  COVERAGE cell=({market_type}, {band}): {n_evaluated}/{n_cell_assertions_total} "
+                f"assertions evaluated — full formula coverage.",
+                file=sys.stderr,
+            )
+
+    # GG-191-pattern loud reporting: a record whose market_type could not be
+    # placed in the registered enum is never silently dropped or folded into
+    # a known cell (see positions_by_cell()). Surface it here, once, with
+    # full (raw_value, band) provenance.
+    if _UNKNOWN_MARKET_TYPE_COUNTS:
+        total_unknown = sum(_UNKNOWN_MARKET_TYPE_COUNTS.values())
+        print(
+            f"\n[UNKNOWN_MARKET_TYPE] {total_unknown} record(s) across "
+            f"{len(_UNKNOWN_MARKET_TYPE_COUNTS)} (raw_market_type, band) group(s) had a "
+            "missing or unregistered market_type field and were grouped under "
+            "UNKNOWN_MARKET_TYPE rather than a real cell — CELL_ASSERTIONS report "
+            "NO_FORMULA for these, not clean:",
+            file=sys.stderr,
+        )
+        for (raw_mt, b), n in sorted(_UNKNOWN_MARKET_TYPE_COUNTS.items(), key=lambda kv: -kv[1]):
+            print(f"    raw_market_type={raw_mt!r} band={b}: {n} record(s)", file=sys.stderr)
+        lines.append({
+            "type": "unknown_market_type_summary",
+            "total_records": total_unknown,
+            "groups": [
+                {"raw_market_type": raw_mt, "band": b, "n": n}
+                for (raw_mt, b), n in sorted(_UNKNOWN_MARKET_TYPE_COUNTS.items(), key=lambda kv: -kv[1])
+            ],
+        })
+
     summary = {
         "type": "run_summary",
         "mode": "alarm-only",
         "strict": strict,
         "total_bands": len(by_band),
+        "total_cells": len(by_cell),
         "total_assertions_run": total_assertions_run,
         "total_violations": total_violations,
         "total_no_formula": total_no_formula,
         "bands_with_incomplete_formula_coverage": bands_with_incomplete_formula_coverage,
+        "cells_with_incomplete_formula_coverage": cells_with_incomplete_formula_coverage,
+        "total_unknown_market_type_records": sum(_UNKNOWN_MARKET_TYPE_COUNTS.values()),
     }
     lines.append(summary)
 
     print("\n" + "=" * 78, file=sys.stderr)
     print(
         f"SUMMARY: {total_violations} total violations across {total_assertions_run} "
-        f"band-scoped assertion runs. ALARM-ONLY: this does not fail the build.",
+        f"band-scoped + cell-scoped assertion runs. ALARM-ONLY: this does not fail the build.",
         file=sys.stderr,
     )
     if total_no_formula:
         print(
-            f"COVERAGE: {total_no_formula} (band, assertion) pairs were NOT EVALUATED "
-            f"(NO_FORMULA) — these are NOT counted as clean above. Incomplete bands: "
-            f"{', '.join(bands_with_incomplete_formula_coverage)}. See per-band COVERAGE "
-            f"lines above. (T-466)",
+            f"COVERAGE: {total_no_formula} (band, assertion) + (cell, assertion) pairs were "
+            f"NOT EVALUATED (NO_FORMULA) — these are NOT counted as clean above. Incomplete "
+            f"bands: {', '.join(bands_with_incomplete_formula_coverage) or 'none'}. Incomplete "
+            f"cells: {', '.join(cells_with_incomplete_formula_coverage) or 'none'}. See "
+            f"per-band/per-cell COVERAGE lines above. (T-466/T-509)",
             file=sys.stderr,
         )
     print("=" * 78, file=sys.stderr)

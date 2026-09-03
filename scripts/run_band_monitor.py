@@ -103,6 +103,7 @@ import json
 import random
 import sys
 import uuid
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -118,6 +119,10 @@ if str(_SRC) not in sys.path:
 from prediction_market_bot.logic_epoch import (  # noqa: E402
     CURRENT_LOGIC_EPOCH,
     is_clean_for_band,
+)
+from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E402
+    MarketType,
+    market_type_for_ticker,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
 from prediction_market_bot.c7_monitoring.monitor import SystemMonitor       # noqa: E402
@@ -335,6 +340,129 @@ def run_all_bands(
     return results
 
 
+# ── cell-aware analysis (T-509/ADR-0054(a) SS8 item 2) ──────────────────────────
+#
+# Mirrors run_power_calc.py::run_all_cells()'s regrouping/reporting/drop-counting
+# mechanics exactly (GG-191 pattern: an unregistered ticker series must be counted
+# and reported, never silently dropped). Deliberately does NOT mirror that file's
+# _persist_cell_measurement()/set_measurement() step: that persistence writes
+# CellMeasurement.n_star, a sample-adequacy field analyze_band()'s result dicts
+# have never produced (they carry clean_n/raw_n but no n_star — that metric
+# belongs to run_power_calc.py's variance-derived-n* domain, not this band's
+# anti-predictive/calibration monitor). Forcing a fake or None n_star here would
+# be a hollow mirror, not a substantive one.
+
+_UNREGISTERED_SERIES_COUNTS: "Counter[str]" = Counter()
+
+
+def _market_type_for_record(rec: dict) -> MarketType | None:
+    """Resolve a record's MarketType from its kalshi_ticker. Records whose
+    ticker's series prefix isn't registered are counted in
+    _UNREGISTERED_SERIES_COUNTS and returned as None — never silently
+    dropped with no trace (GG-191)."""
+    ticker = str(rec.get("kalshi_ticker", ""))
+    try:
+        return market_type_for_ticker(ticker)
+    except KeyError:
+        series = ticker.split("-")[0] or "<empty>"
+        _UNREGISTERED_SERIES_COUNTS[series] += 1
+        return None
+
+
+def _regroup_by_cell(band: str, recs: list[dict]) -> dict[MarketType, list[dict]]:
+    """Split a band's records by resolved MarketType. Records with an
+    unresolvable series prefix are excluded (and already counted by
+    _market_type_for_record) rather than folded into any cell."""
+    by_cell: dict[MarketType, list[dict]] = {}
+    for r in recs:
+        mt = _market_type_for_record(r)
+        if mt is None:
+            continue
+        by_cell.setdefault(mt, []).append(r)
+    return by_cell
+
+
+def run_all_cells(
+    portfolio_path: Path,
+    t4_ledger_path: Path,
+    bins: int = 5,
+    boot: int = 10000,
+    seed: int = 17,
+    alpha: float = 0.10,
+) -> dict[str, dict]:
+    """Cell-aware ((MarketType, ExecutionBand)-keyed) companion to
+    run_all_bands(). analyze_band() itself is unchanged — this only
+    regroups each band's records into cells before calling it, exactly as
+    run_power_calc.py::run_all_cells() does for sample-adequacy power
+    calcs. Result keys are f"{market_type}:{band}"."""
+    _UNREGISTERED_SERIES_COUNTS.clear()
+    results: dict[str, dict] = {}
+
+    by_band = load_pool_by_band(portfolio_path)
+    for band in BOOK_BANDS:
+        by_cell = _regroup_by_cell(band, by_band.get(band, []))
+        for mt, recs in by_cell.items():
+            res = analyze_band(band, recs, bins, boot, seed, alpha)
+            res["market_type"] = mt.value
+            results[f"{mt.value}:{band}"] = res
+    if "UNTAGGED" in by_band:
+        by_cell = _regroup_by_cell("UNTAGGED", by_band["UNTAGGED"])
+        for mt, recs in by_cell.items():
+            res = analyze_band("UNTAGGED", recs, bins, boot, seed, alpha)
+            res["market_type"] = mt.value
+            results[f"{mt.value}:UNTAGGED"] = res
+
+    t4_recs = load_t4_ledger(t4_ledger_path)
+    by_cell = _regroup_by_cell("T4M-PROJ", t4_recs)
+    for mt, recs in by_cell.items():
+        res = analyze_band("T4M-PROJ", recs, bins, boot, seed, alpha)
+        res["market_type"] = mt.value
+        results[f"{mt.value}:T4M-PROJ"] = res
+
+    return results
+
+
+def _print_unregistered_series_warning() -> None:
+    if not _UNREGISTERED_SERIES_COUNTS:
+        return
+    print("\n" + "!" * 96)
+    print("WARNING: records dropped from cell-aware analysis — unregistered ticker series "
+          "(GG-191). These records ARE included in run_all_bands()'s band-level results "
+          "above; they are excluded ONLY from run_all_cells()'s cell-level breakdown "
+          "because their kalshi_ticker's series prefix has no MarketType registration.")
+    for series, count in sorted(_UNREGISTERED_SERIES_COUNTS.items(), key=lambda kv: -kv[1]):
+        print(f"  {series}: {count} record(s)")
+    print("!" * 96)
+
+
+def _print_cell_report(results: dict[str, dict]) -> None:
+    print("\n" + "=" * 96)
+    print("T-509/ADR-0054(a) PER-CELL ((MarketType, ExecutionBand)) ANTI-PREDICTIVE + "
+          "CALIBRATION MONITOR")
+    print("=" * 96)
+    if not results:
+        print("\n(no cells produced any records — either no data, or every record's "
+              "ticker series is unregistered; see warning below if applicable)")
+    for key, r in results.items():
+        verdict = r["verdict"]
+        if verdict == "UNDERPOWERED":
+            print(f"\n[{key}] UNDERPOWERED  clean_n={r['clean_n']} raw_n={r['raw_n']} "
+                  f"(clean_n < MIN_N={r['min_n']}) — {r['reason']}")
+            continue
+        if verdict == "NO_DATA":
+            print(f"\n[{key}] NO_DATA — {r['reason']}")
+            continue
+        alarm = " *** ANTI_PREDICTIVE WARNING ***" if r["anti_predictive_alarm"] else ""
+        mono = r["edge_monotonicity"]
+        print(f"\n[{key}] clean_n={r['clean_n']}  (raw_n={r['raw_n']}){alarm}")
+        print(f"  edge_monotonicity: {mono['verdict']}  "
+              f"(fisher_p={mono.get('fisher_pvalue', float('nan')):.4f})")
+        print(f"  EV/bet=${r['ev_per_bet_usd']:+.4f}  win_rate={r['win_rate']:.3f}  "
+              f"total_pnl=${r['total_pnl']:+.2f}")
+    print("\n" + "=" * 96)
+    _print_unregistered_series_warning()
+
+
 # ── reporting ────────────────────────────────────────────────────────────────────
 
 def build_summary(results: dict[str, dict]) -> dict[str, dict]:
@@ -485,10 +613,18 @@ def main(argv=None) -> int:
     summary_json.write_text(json.dumps(build_summary(results), indent=2))
     dated_path = write_dated_verdict(results, args.out / "verdicts", run_id)
 
+    cell_results = run_all_cells(args.portfolio, args.t4_ledger, args.bins, args.boot,
+                                  args.seed, args.alpha)
+    cell_json = args.out / "band_monitor_cell_results.json"
+    cell_json.write_text(json.dumps(cell_results, indent=2))
+
     _print_report(results)
     print(f"\nWrote {out_json}")
     print(f"Wrote {summary_json}")
     print(f"Wrote {dated_path}  (dated verdict artifact, T-341)")
+
+    _print_cell_report(cell_results)
+    print(f"Wrote {cell_json}  (cell-aware breakdown, T-509/ADR-0054(a) SS8 item 2)")
 
     if not args.no_c7:
         session_id = args.session_id or f"SES-BAND-MONITOR-{run_id}"

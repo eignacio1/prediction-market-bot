@@ -42,11 +42,16 @@ from run_band_monitor import (
     run_all_bands,
     build_summary,
     main,
+    _market_type_for_record,
+    _regroup_by_cell,
+    _UNREGISTERED_SERIES_COUNTS,
+    run_all_cells,
 )
 from prediction_market_bot.logic_epoch import (
     CURRENT_LOGIC_EPOCH,
     clean_epoch_floor_for_band,
 )
+from prediction_market_bot.c5_execution.market_type_registry import MarketType
 
 FROZEN_T1_ANCHOR = (
     Path(__file__).parent / "fixtures" / "SNAP-2026-07-11-001_t1_regression_anchor_mlb_portfolio.json"
@@ -548,3 +553,107 @@ class TestBuildSummary:
         summary = build_summary(results)
         assert "T4M-PROJ" in summary
         assert summary["T4M-PROJ"]["verdict"] == "NO_DATA"
+
+
+# ── cell-aware analysis (T-509/ADR-0054(a) SS8 item 2) ──────────────────────────
+#
+# All fixtures above use synthetic, non-KXMLBHIT-prefixed tickers (f"T{i}",
+# f"A{i}", "X1", ...) that do NOT resolve via market_type_for_ticker() — they
+# are naturally useful here as the unregistered-series "drop" control case.
+# _make_rec's own default ticker ("KXMLBHIT-A-1") is the one fixture with a
+# real registered series prefix, so new positive-case fixtures below build
+# KXMLBHIT-prefixed tickers explicitly.
+
+class TestMarketTypeForRecord:
+    def test_resolves_registered_series(self):
+        rec = _make_rec(ticker="KXMLBHIT-A-1")
+        assert _market_type_for_record(rec) == MarketType.MLB_PLAYER_PROP_HITS
+
+    def test_unregistered_series_returns_none_and_is_counted(self):
+        _UNREGISTERED_SERIES_COUNTS.clear()
+        rec = _make_rec(ticker="T0")  # matches _make_n_recs's synthetic shape
+        assert _market_type_for_record(rec) is None
+        assert _UNREGISTERED_SERIES_COUNTS["T0"] == 1
+
+    def test_empty_ticker_series_counted_as_placeholder(self):
+        _UNREGISTERED_SERIES_COUNTS.clear()
+        rec = _make_rec(ticker="")
+        assert _market_type_for_record(rec) is None
+        assert _UNREGISTERED_SERIES_COUNTS["<empty>"] == 1
+
+
+class TestRegroupByCell:
+    def test_splits_registered_records_by_market_type(self):
+        recs = [_make_rec(ticker=f"KXMLBHIT-A-{i}") for i in range(3)]
+        by_cell = _regroup_by_cell("T1", recs)
+        assert list(by_cell.keys()) == [MarketType.MLB_PLAYER_PROP_HITS]
+        assert len(by_cell[MarketType.MLB_PLAYER_PROP_HITS]) == 3
+
+    def test_unregistered_records_excluded_not_folded_in(self):
+        _UNREGISTERED_SERIES_COUNTS.clear()
+        recs = [_make_rec(ticker=f"KXMLBHIT-A-{i}") for i in range(2)] + \
+               [_make_rec(ticker=f"BOGUS-{i}") for i in range(2)]
+        by_cell = _regroup_by_cell("T1", recs)
+        total_in_cells = sum(len(v) for v in by_cell.values())
+        assert total_in_cells == 2  # the 2 BOGUS records are excluded, not counted here
+        assert _UNREGISTERED_SERIES_COUNTS["BOGUS"] == 2
+
+
+class TestRunAllCells:
+    def test_positive_case_populates_expected_cell(self, tmp_path):
+        recs = [_make_rec(ticker=f"KXMLBHIT-A-{i}", direction="YES", mip=0.40,
+                           model_p=0.55, outcome="WIN" if i < 20 else "LOSS",
+                           pnl=1.0 if i < 20 else -1.0, band="T1")
+                for i in range(MIN_N)]
+        pos = [{**_pos_as_dict(r["kalshi_ticker"], direction=r["_dir"],
+                                mip=r["_mip"], model_p=r["_model_p"],
+                                outcome="WIN" if r["_win"] else "LOSS",
+                                pnl=r["_pnl"], band="T1")}
+               for r in recs]
+        p = tmp_path / "portfolio.json"
+        _write_portfolio(p, pos)
+        t4 = tmp_path / "t4_ledger.jsonl"  # missing -- no T4 rows expected
+        results = run_all_cells(p, t4)
+        key = f"{MarketType.MLB_PLAYER_PROP_HITS.value}:T1"
+        assert key in results
+        assert results[key]["verdict"] == "ANALYZED"
+        assert results[key]["market_type"] == MarketType.MLB_PLAYER_PROP_HITS.value
+        assert results[key]["clean_n"] == MIN_N
+
+    def test_unregistered_series_dropped_from_cells_but_counted(self, tmp_path):
+        # _make_n_recs builds non-KXMLBHIT tickers (f"T{i}") -- these must be
+        # excluded from run_all_cells()'s output entirely, and counted in
+        # _UNREGISTERED_SERIES_COUNTS, rather than appearing under some
+        # fallback/default cell key (the exact GG-191 failure mode).
+        pos = [_pos_as_dict(f"T{i}", band="T1") for i in range(MIN_N)]
+        p = tmp_path / "portfolio.json"
+        _write_portfolio(p, pos)
+        t4 = tmp_path / "t4_ledger.jsonl"
+        results = run_all_cells(p, t4)
+        assert results == {}
+        assert sum(_UNREGISTERED_SERIES_COUNTS.values()) == MIN_N
+
+    def test_run_all_bands_unaffected_by_run_all_cells_counter_state(self, tmp_path):
+        # run_all_cells() clears/mutates a module-level counter -- confirm it
+        # has no effect on run_all_bands()'s own (counter-free) behavior.
+        pos = [_pos_as_dict(f"A{i}", band="T1") for i in range(MIN_N)]
+        p = tmp_path / "portfolio.json"
+        _write_portfolio(p, pos)
+        t4 = tmp_path / "t4_ledger.jsonl"
+        run_all_cells(p, t4)  # populates _UNREGISTERED_SERIES_COUNTS as a side effect
+        results = run_all_bands(p, t4)
+        assert results["T1"]["verdict"] == "ANALYZED"
+
+    def test_t4_ledger_cell_population(self, tmp_path):
+        rows = [_t4_ledger_row(f"KXMLBHIT-B-{i}", direction="YES", mip=0.5,
+                                model_p=0.6, outcome="WIN" if i < 20 else "LOSS",
+                                pnl=1.0 if i < 20 else -1.0)
+                for i in range(MIN_N)]
+        p = tmp_path / "portfolio.json"
+        _write_portfolio(p, [])
+        t4 = tmp_path / "t4_ledger.jsonl"
+        _write_t4_ledger(t4, rows)
+        results = run_all_cells(p, t4)
+        key = f"{MarketType.MLB_PLAYER_PROP_HITS.value}:T4M-PROJ"
+        assert key in results
+        assert results[key]["clean_n"] == MIN_N
