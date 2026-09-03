@@ -71,6 +71,39 @@ check_id_collision() {
            { [ -f "$gap_archive" ] && grep -qE "^### ${id}([^0-9]|\$)" "$gap_archive"; }; then
           continue
         fi
+        # GG-236: the two greps above only see the gap log as checked out on
+        # THIS branch (origin/main as of claim_session.sh's last fetch/pull).
+        # A GG number already given a canonical header on a pushed-but-
+        # unlanded session branch is invisible to them — this exact blind
+        # spot predicted, and then still failed to prevent, T-513's GG-237
+        # near-collision (see GOVERNANCE_GAP_LOG.md GG-162/GG-236/GG-237).
+        # Close it by also checking every branch tip (local heads + fetched
+        # remote-tracking refs) for the same header — a live snapshot of
+        # each branch's current gap log, not a commit-history walk, so a
+        # since-renumbered/removed id on some stale branch doesn't false-
+        # positive forever. Guarded on being a real git repo so this stays
+        # offline-testable per this file's own docstring: the existing
+        # fixture-dir tests pass a bare tmp_path with no .git, and must
+        # continue to no-op here exactly as before.
+        if git -C "$repo_root" rev-parse --git-dir > /dev/null 2>&1; then
+          local branch_refs match_ref
+          branch_refs="$(git -C "$repo_root" for-each-ref --format='%(refname)' refs/heads refs/remotes 2>/dev/null)"
+          if [ -n "$branch_refs" ]; then
+            # shellcheck disable=SC2086  # word-splitting refs into args is intended
+            # `|| true` matters under `set -euo pipefail`: git grep exits 1
+            # (no match) on the common no-collision path, and pipefail would
+            # otherwise propagate that through `| head -1` into this bare
+            # assignment and abort the caller before the empty-match check
+            # below ever runs.
+            match_ref="$(git -C "$repo_root" grep -lE "^### ${id}([^0-9]|\$)" $branch_refs -- \
+              03_DECISIONS/GOVERNANCE_GAP_LOG.md 03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md 2>/dev/null | head -1 || true)"
+            if [ -n "$match_ref" ]; then
+              echo "COLLISION: ${id} already has a canonical header on unlanded branch '${match_ref%%:*}' (not yet on this checkout's gap log — GG-236)" >&2
+              hit=1
+              continue
+            fi
+          fi
+        fi
         ;;
       ADR-*)
         if compgen -G "$repo_root/03_DECISIONS/${id}_*.md" > /dev/null 2>&1; then
