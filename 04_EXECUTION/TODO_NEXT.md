@@ -4,6 +4,7 @@
 **Owner (role):** Execution Lead (EL)  
 **Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
 **Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
+**Last reviewed:** 2026-09-03T23:52Z (T-517 — APR-0033 accepted (Option 3), Phase 2 re-scoped to moneyline-first LR, HYP-011/EXP-026 pre-registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_2352.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
@@ -11,6 +12,10 @@
 ## T-516 — Mandatory pre-build GATE check for ADR-0062 NFL/NHL T4 sub-band scaffolding — ✅ COMPLETE (gate FAILED, no build) 2026-09-03 (worktree `session/20260903T184220Z-adr0062-nfl-nhl-subband-build`, T-516)
 
 Deliverable 0 (`ACTIVE_QUEUE.md` install) landed first per task instruction. GATE read directly from `origin/main`: ADR-0062 Status = `PROPOSED`; `APPROVALS_REGISTER.md` has zero ADR-0062 rows; T-512's sign-off (PR #126, commit `464a283`) confirmed not an ancestor of `origin/main`. Per explicit STOP instruction, no merge attempted, no build work started. Registered **GG-240** (OPEN, MEDIUM) — the stranded sign-off is a live build blocker, distinct from the resolved PR #125/T-506 case. **The NFL/NHL T4 sub-band registry/band scaffolding build itself remains unstarted** — resume once ADR-0062 reads ACCEPTED on `origin/main` (either PR #126 merges or the acceptance is re-recorded directly). See `DECISION_LOG.md` 2026-09-03 (T-516) for full detail.
+
+## T-518 — Execute EXP-026 (HYP-011 moneyline-first LR track) per `HYP011_moneyline_lr_preregistration_2026-09-03.md` — OPEN, unstaffed, registered 2026-09-03 (T-517)
+
+Not started — T-517 pre-registered HYP-011 only (LL-009: pre-registration first, alone), no model fit/scored/backtested. Before running: re-count the current `KXMLBGAME` archive (30,302 obs was a 2026-08-15 snapshot, HYP-010's Finding 1, not re-verified this session — this worktree's local `exp_output/PRICE_ARCHIVE/` was empty and needs re-sync from the VPS); consider a real half-spread pull against `KXMLBGAME` to check the pre-registration's reasoned (not measured) +0.003/+0.015 effect band. Must score P&L/bet NET of fill cost via the T-507/GG-157 haircut method (`scripts/gg157_fill_haircut_analysis.py` / `scripts/t507_gg157_haircut_rerun.py`) — a gross-only result is not a valid PASS/FALSIFIED verdict under this pre-registration.
 
 ## T-513 — Implement ADR-0054(b): re-key `LogicEpochBoundary.bands_affected` from band to `(MarketType, band)` cell keys — ✅ COMPLETE 2026-09-03 (worktree `session/20260903T002928Z-adr0054b-boundary-rekey`, T-513/GG-237)
 

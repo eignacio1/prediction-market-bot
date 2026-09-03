@@ -46,3 +46,10 @@ Fixed two bugs in the safety-net scripts that guard against two different sessio
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260903_1912.md` and `DECISION_LOG.md` for this date.*
+**What changed (T-517):** You approved rerouting the stalled player-total betting research toward moneyline (team-win) betting instead. This session made that approval official in the tracking system, rewrote the project plan to describe the new moneyline-first plan, and pre-registered the exact rules for the next experiment before any code touches it — what model to use, what counts as a valid signal, and critically, that results must be measured after subtracting real trading costs (a past check found trading costs eat about 65% of the apparent profit on a related bet type). The old research's "inconclusive" result was left untouched, not relabeled.
+
+**Money impact:** None — no model was built or run this session.
+
+**Decision needed?** None — this executed your sign-off.
+
+**Worry flag:** None new. Next session must re-sync price data from the server before running the new experiment.
