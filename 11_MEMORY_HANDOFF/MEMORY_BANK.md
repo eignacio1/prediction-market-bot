@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-02T01:21:31Z (T-510 — T-510: drafted ADR-0062 (PROPOSED) resolving GG-226 NFL/NHL T4 sub-band naming block; GG-233 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260902_0121.md` for full session detail.
+**Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

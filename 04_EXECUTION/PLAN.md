@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-02T01:21:31Z (T-510 — T-510: drafted ADR-0062 (PROPOSED) resolving GG-226 NFL/NHL T4 sub-band naming block; GG-233 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260902_0121.md` for full session detail.
+**Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
