@@ -2264,6 +2264,12 @@ as of 2026-07-31, GG-149/GG-150 T4 offsetting-position suppression close-out (ep
 ## Last Reviewed Chain Archive
 
 
+
+<!-- archived from MEMORY_BANK.md, 2 entries -->
+**Last reviewed:** 2026-09-03T14:20:51Z (T-514 — T-514 landing-and-hygiene: landed T-509, installed ACTIVE_QUEUE.md, fixed GG-235, finished T-511 close-out) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1420.md` for full session detail.
+**Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
+
 <!-- archived from MEMORY_BANK.md, 2 entries -->
 **Last reviewed:** 2026-08-07 (T-429 — GG-163 ESPN 403 fix + GG-166 game_date write/read remediation, isolated worktree `session/20260807T045158Z-t4-restore-and-correct`) — full detail in this session's Current State Snapshot paragraph above ("Remediation + cross-check (2026-08-07, T-429, isolated worktree ...)"). Summary: GG-163 restored (deployed, verified); GG-166 B1/B2 fixed at write+read sites, B3 measured blast radius (55.63%/1,220 of 2,193 closed positions), ledger corrected (1,443 positions), B4 power-calc numerically unchanged (`clean_n=157, mean=+$0.3793, n*=267`), B5 cross-check confirms the original mechanism fully fixed (0/187 date mismatches post-fix) but surfaced a second, distinct, unexplained disagreement source — registered **T-431** (unstaffed) to root-cause it and re-derive outcomes for the ~1,220 affected positions. No epoch bump (logged in DECISION_LOG.md). Full suite confirmed clean this session: **2827 passed, 28 skipped, 0 failed**. Tier Routing: STANDARD (`src/` changed: `run_t4_mlb_live.py`, `run_resolve_mlb.py`, `run_exp015.py`; GG-166 opened/partially remediated). See DECISION_LOG.md 2026-08-07 (T-429 entries), GOVERNANCE_GAP_LOG.md GG-163 (RESOLVED-with-proof)/GG-166 (OPEN, partially remediated).
 **Last reviewed:** 2026-08-07T05:22:07Z (T-430 — Session-end write-once/generate-rest: SESSION_HANDOFF meta block + generate_session_artifacts.py collapse Last-reviewed chains, claims row, digest, checkpoint) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260807_0522.md` for full session detail.

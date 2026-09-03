@@ -23,3 +23,14 @@ Finished a previously-approved cleanup: the system now tracks "which historical 
 **Decision needed?** None — this implemented a decision you already signed off on (ADR-0054, item b).
 
 **Worry flag:** None new. Two of eleven rules stayed broadly-scoped by design — narrowing wasn't supportable, and policy is scope-wide over risking missed contamination.
+
+---
+
+**What changed (T-516):**
+This session's job was to build the football and hockey scaffolding approved earlier this week — but first, a mandatory safety check required confirming that approval had actually landed on the shared main copy of the project, not just on a branch waiting to be merged. It hadn't: the approval document still reads as proposed, not accepted, on the shared copy, and the prior sign-off never made it in. So no building happened, correctly.
+
+**Money impact:** None. No code changed.
+
+**Decision needed?** Yes, eventually: someone needs to either merge the pending approval branch or re-record the acceptance directly, before this build can start.
+
+**Worry flag:** One open item logged (GG-240) — a real, signed-off approval that never made it into the shared record. Not urgent, but it's the reason a spec'd, ready-to-build task is sitting blocked.
