@@ -2673,3 +2673,27 @@ When a new governance process failure is discovered:
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-237 — T-513's GG-235 claim collided with T-509's already-landed GG-235, exactly as GG-236 predicted; renumbered before any content was written
+
+**Status:** RESOLVED · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-237 |
+| Category | Concurrent-claim collision (GG-162/GG-199 family) — realization of the exact case GG-236 predicted, not a new failure mode. |
+| What was found | T-513 (this session, ADR-0054(b) `logic_epoch.py` boundary re-key) claimed `04_EXECUTION/SESSION_CLAIMS.md` row "T-513 / GG-235" at 2026-09-03T00:30:04Z, three minutes before T-514 claimed T-514/GG-236 and landed T-509 onto `origin/main` — which made T-509's own already-registered `### GG-235` (LEDGER_INVARIANT_SUITE.md filename drift) a real, canonical header in `GOVERNANCE_GAP_LOG.md` for the first time from this session's vantage point. `claim_session.sh`'s collision check only sees `origin/main` at claim time, so it could not have caught this at 00:30:04Z — T-509's branch was unlanded then. GG-236 (registered by T-514, 2026-09-03) predicted this exact collision and its exact fix in advance. |
+| When it should have been caught | Structurally uncatchable at claim time for the reason GG-236 already documents (unlanded-branch content is invisible to the collision check); the earliest this session could catch it was on re-reading `origin/main` fresh after a `git fetch`, which is what happened here (Hard Rule 10 — re-read before you trust). |
+| Phases it survived | None — caught and fixed within the same session that would otherwise have produced the duplicate, before any `### GG-235` content was ever written under T-513's branch. |
+| Why it survived | N/A — did not survive; this entry documents the catch, not a miss. |
+| Impact | LOW, and fully preempted. Had this gone uncaught, T-513's eventual close-out would have written a second `### GG-235` header, which `scripts/lib/gg_id_uniqueness_check.py` (GG-199) would have flagged at the next session's Step 3 — but catching it now means no duplicate header, no renumbering-across-files cleanup (contrast GG-229→GG-230, which needed a 7-file fix because content had already landed), and no stale `SESSION_CLAIMS.md` row left pointing at the wrong number. |
+| Discovery | 2026-09-03, T-513 (this session), during DELIVERABLE 0 (checking whether T-509 is an ancestor of `origin/main` before proceeding with the `logic_epoch.py` re-key). A fresh `git fetch origin` mid-session — required anyway to answer the ancestor-check — surfaced that `origin/main` had advanced substantially since this worktree was created, including T-514's landing of T-509 and T-514's own GG-236 entry naming this exact collision. Cross-checked directly: `git show origin/main:03_DECISIONS/GOVERNANCE_GAP_LOG.md \| grep GG-235` returned T-509's real entry, confirming the collision was live, not hypothetical. |
+| Resolution | Re-claimed via `scripts/claim_session.sh` with range `GG-237` (commit `03d6ca6`), correcting this session's gap-log slot from the collided GG-235 to the next free number. No `SESSION_CLAIMS.md` row ever claimed GG-237 before this session, and no `### GG-235` header exists under T-513's branch to clean up — the correction landed before the collision could materialize. This entry (GG-237 itself) is written under the corrected number, closing the loop GG-236 opened. GG-236 itself is unaffected by this entry and remains OPEN as a statement of the general unlanded-branch blind spot; only its predicted specific instance is resolved here. |
+| Status | RESOLVED. |
+
+</details>

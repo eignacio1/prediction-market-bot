@@ -3,9 +3,14 @@
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
 **Last reviewed:** 2026-09-03T14:20:51Z (T-514 — T-514 landing-and-hygiene: landed T-509, installed ACTIVE_QUEUE.md, fixed GG-235, finished T-511 close-out) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1420.md` for full session detail.
+**Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-513 — Implement ADR-0054(b): re-key `LogicEpochBoundary.bands_affected` from band to `(MarketType, band)` cell keys — ✅ COMPLETE 2026-09-03 (worktree `session/20260903T002928Z-adr0054b-boundary-rekey`, T-513/GG-237)
+
+All eleven explicit boundaries in `src/prediction_market_bot/logic_epoch.py` individually re-keyed and justified (nine `MLB_PLAYER_PROP_HITS`-scoped, two `ALL_CELLS` where the resolving commit touched shared unconditional code — matching the signed ADR-0054(b) asymmetric-risk condition, scope wide when uncertain). "Extend, don't rename": added `clean_epoch_floor_for_cell`/`is_clean_for_cell`, preserved old `_for_band` signatures for 5 out-of-fence `scripts/` callers, reimplemented as conservative/widest-floor wrappers. Verified byte-identical `run_band_monitor.py`/`assert_ledger_invariants.py` output before/after — no finding, no bug. Full suite green both sides: 3001 passed / 28 skipped / 0 failed. Did not implement ADR-0054(a)/(d), did not touch `kelly_fraction`/cell status/`ExecutionBand`, did not promote `assert_ledger_invariants.py` to `--strict`. See `DECISION_LOG.md` 2026-09-03 (T-513) for full boundary→cell→justification table.
 
 ## T-510 — Draft ADR-0062 unblocking GG-226 (NFL/NHL T4 sub-band decomposition) — ✅ COMPLETE 2026-09-01 (worktree `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr`, T-510)
 
