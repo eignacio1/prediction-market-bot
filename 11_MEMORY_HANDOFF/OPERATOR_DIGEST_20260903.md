@@ -23,3 +23,18 @@ Finished a previously-approved cleanup: the system now tracks "which historical 
 **Decision needed?** None — this implemented a decision you already signed off on (ADR-0054, item b).
 
 **Worry flag:** None new. Two of eleven rules stayed broadly-scoped by design — narrowing wasn't supportable, and policy is scope-wide over risking missed contamination.
+
+---
+
+**What changed (GG-236/GG-238):**
+Fixed two bugs in the safety-net scripts that guard against two different sessions accidentally colliding on the same task number, and against a data-integrity checker pointing at the wrong files. Both are now verified working and merged in. Along the way, found the second bug's root cause (stale file paths) repeats in about 23 other places across the codebase — registered as GG-242 for a future session to clean up rather than fixing everything in one sitting.
+
+**Money impact:** None. No ledger row touched, no sizing or bet logic changed.
+
+**Decision needed?** No — nothing needs you today.
+
+**Worry flag:** The 23-file sprawl (GG-242) is worth knowing about even though it's not urgent — it means other scripts may be quietly checking the wrong files the same way GG-238 was, until each one gets triaged.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260903_1912.md` and `DECISION_LOG.md` for this date.*
