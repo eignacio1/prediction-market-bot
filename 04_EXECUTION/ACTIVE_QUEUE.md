@@ -1,377 +1,341 @@
 # Active queue — the only prompt file to read
 
-**Verified against `origin/main` = `d58c8dd`, 2026-08-29** (re-derived by the strategic window from the ref, not from the working tree — see the divergence warning below). Cell registry, imported live: **68 cells — 1 ACTIVE, 2 BLOCKED, 1 DARK, 64 NOT_IMPLEMENTED** across 14 market types; **18 `ExecutionBand` values are defined but only 6 carry any cell.** Gap log: **68 OPEN**, 82 entries, parity **82 = 82**, GG-ID uniqueness **CLEAN**. `git pull` before trusting a working tree. **Re-derive before citing any of it.**
-**Free IDs:** T-503+ · GG-225+ · ADR-0061+ · APR-0034+ · EXP-026+
-**Reserved per block — Wave 11 ONLY:** T-503/GG-225 · T-504/GG-226 · T-505/GG-227.
-**Waves 12-13 carry NO pre-reserved GG numbers.** Assign at wave fire (GG-162, six instances).
-**Spent in Wave 10:** GG-221 (T-500, OPEN) · GG-222 (T-501, OPEN) · GG-223 (T-502, RESOLVED) · GG-224 (T-502, OPEN — registered mid-repair, see below) · APR-0033 (drafted) · EXP-025 (used).
+**Verified against `origin/main` = `db739af`, 2026-09-03.** Cell registry: **78 cells — 1 ACTIVE, 2 BLOCKED, 1 DARK, 74 NOT_IMPLEMENTED**. Gap log: **72 OPEN**, 89 entries, parity **89 = 89**, uniqueness CLEAN. `logic_epoch.py` carries **12 boundaries**. Register parity clean.
+**Free IDs (a hint, not an assignment):** T-512+ · GG-236+ · ADR-0063+ · APR-0034+ · EXP-026+
 
-> **⚠ BRANCH DIVERGENCE, 2026-08-29.** The shared `main` checkout is **27 commits behind `origin/main`** (`d4c0ebf` vs `d58c8dd`) and carries this file uncommitted. **This file has never reached `origin/main`** — a worktree cut from the ref will not contain it, and `origin/main`'s copy still shows Wave 9.3 as "RUN NOW" and T-487 as merged. That is the tenth instance of GG-186's shape and it belongs to the strategic window, not to a terminal. **Installing this file is Deliverable 0 of block 11.3.** Until it lands, treat the pasted prompt as authoritative and this file as the draft of record.
+> **⚠ THE QUEUE NO LONGER RESERVES IDs.** GG-234: a block was assigned `T-508 / GG-231` and **both IDs had already been consumed** between the queue being written and the block firing. **Blocks are named by wave coordinate only. Claim your own IDs at run time; write your gap-log entry as your first commit and push it immediately.** A number is claimed when it is pushed, not when it is read.
 
 ---
 
 ## Read this first
 
-**Prompt blocks below are the paste-in. Nothing else in this file is a task.** Block headings are wave coordinates — `# 11.1` is wave 11, slot 1 — so the sequencing track and the prompts share one numbering. Everything after "Needs your decision" is reference: read it to understand why the order is what it is, not to act on it.
+**Prompt blocks below are the paste-in. Nothing else in this file is a task.**
 
-**When a window closes, delete its prompt block and move its row up into the closed-wave table with a status marker and a one-line outcome.** The prompt text goes; the row stays.
+**DELIVERABLE 0 IN EVERY BLOCK: land any un-landed predecessor before starting your own work.** Three consecutive waves ended with a block whose work was complete, correct, and not on `origin/main`.
 
-**GG numbers are pre-allocated per block only for the wave that is about to fire.** Take the number your block names and no other. **A reservation is not an entry:** if your block registers nothing, say so in your CLOSED row and return the number.
+**PUSH AFTER EACH DELIVERABLE, NOT AT CLOSE-OUT.** T-504, T-506 and T-511 all burned their remaining budget at close-out; T-501 and T-511 wrote truncated stubs. A pushed commit survives budget exhaustion.
 
-**Deliverables parallelize; close-outs do not.** Each prompt carries a self-serialising close-out rule — do not remove it. Three-wide is the ceiling, not the target. **T-501 hit budget mid-close-out in Wave 10 and wrote a truncated stub before resuming** — budget the close-out, not just the work.
+**Ancestor check direction:** `git merge-base --is-ancestor <your-branch-tip> origin/main`. Paste the exit code. The reversed form passes for any branch merely ahead of main.
 
-**Never write a merge status you did not confirm with `git merge-base --is-ancestor <branch> origin/main`.** Wave 10's three blocks all did this correctly and all three are confirmed ancestors. Keep it.
+**When verifying a code fix, import and call the real function.** Never re-implement its logic in a harness — the strategic window filed a false finding that way on 2026-09-01 and a deliverable was spent re-closing something already closed.
 
-**New in Wave 10 — never repair a file that a running service owns without coordinating the service.** See GG-224. This is now a standing precondition, not a per-block detail. A **scoped** restart pre-authorization exists for 11.1 only (granted 2026-08-29, terms in the block) — it does not generalise to any other block or service action.
+**Never repair a file a running service owns, or one another process regenerates, without coordinating both** (GG-224, GG-228). Establish provenance before choosing a repair target.
+
+**If an ADR's own text contradicts what a prompt says it says, STOP and report. Do not reconcile it yourself.**
+
+---
+
+## OPERATOR SIGN-OFF — 2026-09-03
+
+**Earl accepted four recommendations in-session on 2026-09-03**, same pre-granted pattern as ADR-0050 and ADR-0059. 14.1 records these formally; **no other block may act on them until 14.1 has landed.** Recorded here verbatim so a block can check its own authority:
+
+- **ADR-0062 — ACCEPTED as written.** D1 naming (`T4NFL-*`/`T4NHL-*`, four-letter convention per ADR-0056 Amendment (iii)), D2 roster, D3 fresh epoch-1 per sport, D4 projection. Authorizes the scaffolding build. **EVENT remains deferred pending ingestion verification. See the BOUNDARY conflict in 15.1 before building anything.**
+- **ADR-0060 — option (c) ACCEPTED as the TARGET ARCHITECTURE, implementation DEFERRED.** This is the ADR's own §5 recommendation, not a mandate to build. **Trigger: (c) is scoped and authorized when T4M-PROJ's `kelly_fraction` is next considered for edge-conditional reactivation under ADR-0048.** Current exposure is zero, so there is no operational urgency. **No NFR-03 build is authorized now.** (a) and (b) are not adopted.
+- **ADR-0061 — ACCEPTED per its §7:** option **(c)** (stop-repair-start runbook) adopted **now**; option **(b)** (repair scripts must take the existing `fcntl` lock) adopted as a complementary contract; option **(a)**'s **diagnostic half** staffed as a follow-on; option **(d)** **not adopted at this time**. **GG-224 stays OPEN** — a runbook is not a structural guarantee, per §5.
+- **APR-0033 — ACCEPTED: fire the moneyline-first reroute.** Both the Poisson fit (T-487) and the NB refit built to correct its misspecification (T-500) returned negative point estimates below HYP-010's pre-registered +0.005…+0.025 band. **Box 2.3's INCONCLUSIVE verdict stays exactly as recorded and is NOT relabelled** — what changes is the routing, per the plan's own "Note on model class".
+
+- **The `n*` standard — ACCEPTED: keep APR-0024 exactly as it is, no revision.** Rationale to record: revising a power standard after it returns an unwelcome number is indistinguishable from weakening a control to make a red measurement green. And it would not help — loosening power .95 → .80 cuts `n*` by ~43% to ≈10,300, still ~18× the 559 held. **The standard is correctly reporting that this band's post-cost edge is too small to validate.** Record the derived finding alongside it: the fill haircut consumed **65% of the gross edge** (0.0540 → 0.0191), so execution cost — not model quality — is what drives `n*` to 18,058.
+- **Cells before live capital — ACCEPTED: keep "at least one," add two conditions.** (1) The candidate cell must be **pre-registered as a capital candidate before its cohort completes**, so it cannot be selected after the winner is visible. (2) Its significance threshold must be **corrected for the number of cells in contention** (Bonferroni over the pre-registered candidate set, which is why that set must stay small). Record the acknowledged cost: Bonferroni over five candidates moves α to .01 and **raises `n*` by a further ~46%**. This amends ADR-0057's closure condition and therefore **requires a superseding ADR before it binds** — recording the decision does not itself change the gate. That draft is 16.2.
+
+**None of these six move capital or sizing.** Every `kelly_fraction` stays at 0.0; no cell is promoted; no live pipeline is wired. That is why they were safe to accept as a set.
 
 ---
 
 ## Where the build actually is
 
-**Nothing has accrued for 14 days and no terminal can change that.** Last resolved bet remains `game_date` 2026-08-14 / `resolved_at` 2026-08-15. GG-203 — Kalshi's demo-account order-write path rejecting every schema-valid, auth-valid order account-wide — is diagnosed, external, and **has no in-repo fix**. **Operator support ticket or demo-key regeneration. Still the single highest-value item on the board and still not code.** Compute the elapsed days at cite time; do not copy the 14.
+**Nothing has accrued for 19 days.** Last resolved bet remains `game_date` 2026-08-14. **GG-203 is still the only thing standing between this project and any evidence at all**, and it is not code. Compute elapsed days at cite time.
 
-**Wave 10 closed all three blocks and produced two findings that outrank the work they came from.**
+### What ADR-0060 actually recommends — I had been summarizing this wrong
 
-**Finding 1 — GG-224: a live service silently reverted a completed, verified repair.** T-502 executed ADR-0055 D2 against `logs/paper_portfolio_mlb_t4.json`: correct backup, correct write, correct post-write assertions — and on a later check the repaired rows were **gone**, reverted to zero `repair_ref`-carrying rows. Cause: `t4-mlb.service` (`run_t4_mlb_live.py`) holds the entire portfolio object in memory and periodically flushes that in-memory copy back over the file, read-modify-write against its own state rather than re-reading from disk. The repair was redone and made durable only by restarting the service immediately post-write, under explicit operator authorization. **46/46 rows repaired, GG-223 RESOLVED.** But the general hazard is untouched: **GG-224 is OPEN, MEDIUM, and applies to every future external write to any service-owned ledger file.** This is the sixth instance of the Phase's own pattern — the instrument (a passing post-write assertion) was more wrong than the thing it measured, because it measured at the wrong moment. **Wave 11.1 writes 532 + 76 rows to the same file class. It does not proceed without the GG-224 protocol.**
+I told you (c) "looks right" while disclaiming that I hadn't read T-498's cost analysis. I have now read ADR-0060 in full. **Its recommendation is (c) as the target architecture and explicitly NOT as the immediate action** — because with `kelly_fraction=0.0` under ADR-0048, every evaluation inside the measured latency gap carries zero live capital. The ADR sequences (c) to the moment sizing is reconsidered. My earlier framing would have staffed a build the ADR itself says not to start. It is recorded above as a deferral with a named trigger, which is what it is.
 
-**Finding 2 — Phase 2's NB refit landed in the same place, slightly worse.** T-500 pre-registered EXP-025 (committed `228a273`) **before** any NB code ran (`06639f2`) — order verified in git, which is the whole point of the pre-registration condition. NB1 with `phi=2.33` fixed by method-of-moments from T-487's own disclosed measurement, identical `mu_total`, identical `|model_p−mkt_p| > 0.010` rule, identical 214-game archive, selection re-derived from NB's own `model_p` rather than forced onto Poisson's game IDs. Result: **mean P&L/bet −0.0048 (vs Poisson's −0.0026), sd 0.3069 (vs 0.2425), `n*` = 44,220.** Verdict **INCONCLUSIVE — EXTEND ARCHIVE**, same state. Dispersion reconciled roughly: observed var/mean on the scored join (n=2,275) = 2.18 against the fixed 2.33.
+**ADR-0060 §6 also names three things none of the three options solve.** The sharpest: **`run_t4_mlb_live.py` treats a `KILL_SWITCH` approval status identically to an ordinary `REJECTED`, while T1 branches on it and self-halts** (GG-038 TASK 3). A kill switch that does not actually halt T4 bet submission is a different and arguably worse defect than the latency it was measured for, and no remedy option touches it. Also: `is_kill_switch_active` is read by **zero** MLB pipelines — the fast system-level switch is inert. **Neither is staffed. See decision (iii) below.**
 
-> **What that means, stated plainly.** Correcting the distributional misspecification did not rescue the result — it moved the point estimate further negative and widened the spread. Two independent fits, one of them explicitly built to handle the defect blamed for the first, have now both produced a negative point estimate below HYP-010's entire pre-registered band of +0.005 to +0.025. **By the gate's letter this is INCONCLUSIVE and it stays INCONCLUSIVE — nobody relabels a pre-registered verdict after seeing it.** By its substance, the misspecification hypothesis is spent, and the case for spending another two MLB seasons of archiving on this family is now weak. **That is exactly the question APR-0033 puts to the operator, and it is the strongest reason the plan's existing FALSIFIED reroute — moneyline-first, LR, binary target, no distribution fit — deserves to fire.** No third model class was tried, per instruction; the block reported and stopped, which was correct.
+### What ADR-0061 found that changes the shape of the problem
 
-**Register parity is closed and the checker had a bug of its own.** T-501 fixed both genuine GG-126-class misses — `APPROVALS_REGISTER.md`'s `APR-0032` row corrected to the 2026-08-21 D1/D2/D3 sign-off (the register was the stale side; document and superseding ADR-0056 were both right) and a new `ADR-0056` row added. The third reported mismatch was **a false positive in the checker itself**: `RESOLVED_PAT = re.compile(r"ACCEPTED|ADOPTED|COMPLETE|selected")` is an unguarded substring match, so ADR-0051's literal Status line `DRAFT — NOT ACCEPTED` matches "ACCEPTED". Latent since the checker's authorship 2026-07-17, ~6 weeks, surfaced only when a DRAFT happened to phrase itself that way. **GG-222 OPEN, LOW — the regex is not yet fixed.** Noisy, not silent: it produces false alarms, it does not hide real misses.
+§2 traced the source and found that `PaperTrader`'s five mutation methods **already** wrap every mutation in `fcntl` file lock + fresh disk reload immediately before save — added under GG-034 for a different problem. **The GG-224 clobber happened anyway, on a path that already had the protection.** So GG-224's own conclusion ("no external safeguard can prevent this") is not the whole story: something more specific than "no reload exists" produced the revert, and **until that is diagnosed, the same lock/reload pattern cannot be trusted anywhere else it is used — including for GG-034's original bankroll-drift problem.** That is why the accepted decision staffs (a)'s diagnostic even though (c) is the operational answer.
 
-**`OPERATOR_CONSOLE.md` is stale.** It is generated, and on `origin/main` it still reports 4 blocked / 6 broken / 68 accruing = **78 total** against a gap log that now carries **82 entries, 68 OPEN**. Wave 10's three new entries are not in it. Regeneration is folded into 11.3 — **do not hand-patch a generated file.**
+### Wave 13 outcomes
 
-**Operator directive, 2026-08-27 — integrate every bucket and all T-4 sub-buckets across the new market lines. Work forward; do not decide in advance what calibrates.** The registry still cannot express this. `ExecutionBand` defines 18 values; cells exist for 6. `MLB_PLAYER_PROP_HITS` carries `T4M_PROJ`/`T4M_ARITH`/`T4M_FLOW`; each of the twelve game-market families carries a single generic `T4_IN_PLAY`. **`T4_STAGED`, `T4_EVENT`, `T4_LINEUP`, `T4_FLOW`, `T4_SENTIMENT`, `T4_PROJ`, `T4_ARITH`, `T4_BOUNDARY`, `T4_CORR` and `T4_EXIT` have zero cells anywhere.** That is 11.2, and T-491's now-landed `BAND_AXIS_ACTIVATION_PROPOSAL_GG172.md` is its design input.
+**T-510** landed ADR-0062 and caught my briefing citing the superseded `T4N-` convention (GG-233) — the second briefing error I have shipped in three waves, both caught by terminals rather than by me. **T-511** landed the T-506 remainder and closed the `NEVER` residual; register parity is clean; then hit budget and wrote a truncated close-out stub (`db739af`). **T-509** completed all three ADR-0054(a) items — 925 insertions across 3 scripts and 4 test files, plus GG-232, GG-184 → PARTIALLY RESOLVED, GG-235 — and was still in session-end at the time of writing. Not failed; unfinished.
 
-**Distance to live capital:** 1 of 68 cells ACTIVE · every live band at `kelly_fraction=0.0` · zero accrual since 08-15 · epoch-12 figures still unrepaired for the 532 closed + 76 rejected rows · GG-157 fills-vs-book a G6 precondition whose figures were computed on the uncorrected ledger · NFR-03 measured failing at p50 66.955s against a 60s hard rule · C7's drift-alarm ladder never invoked from any production path (GG-125).
+### A correction to my own Wave 13 sequencing
 
----
+I moved ADR-0054 **(b)** out of Wave 13 arguing the cell set was still moving. **Wrong.** (b) re-keys the twelve *historical* boundaries, all of which predate NFL/NHL having any cell — ADR-0062's cells cannot appear in a boundary set from before they existed. It was runnable last wave. It is 14.3 now.
 
-## Sequencing track — every block, run and unrun
-
-**Status legend:** ✅ merged to `origin/main` · ⚠️ complete but NOT merged · ❌ assigned, never ran · ⏳ in flight · ⬜ not started
-**Concurrency rule: fire one wave at a time, never mix waves.**
-
-### ✅ PRIOR PHASE — Waves 4-9 CLOSED 2026-08-26 (T-482 → T-499, nineteen blocks, zero cells graduated)
-
-Full detail: `11_MEMORY_HANDOFF/T499_PHASE_CLOSEOUT_CARRY_FORWARD_2026-08-26.md`, `SESSION_CLAIMS.md`, `DECISION_LOG.md`.
-
-| Wave | Closed | Blocks | Outcome |
-|---|---|---|---|
-| 4 | 08-24 | T-482 · T-483 · T-484 · T-485 · T-486 | **GG-203 found** — engine alive, 100% order-submission failure since 08-15 |
-| 5 | 08-25 | T-492 · T-486 · T-493 | GG-203 **root cause external**, 8 hypotheses ruled out. ADR-0058 PROPOSED — nine `(MarketType, T1)` game cells confirmed scaffolded |
-| 6 | 08-26 | T-487 · T-495 · T-496 | Phase 2 gate scored. NHL **15 cells seeded**, only 3 real Kalshi series exist (GG-217). Venue 403 transient, not a jurisdiction flip |
-| 7 | 08-26 | T-488 · T-490 | **First nonzero fill haircut.** Props $0.0101/contract; P&L/bet +0.2864 → **+0.2518**, edge survives. Game markets 3-5×, tail ~$0.42/contract. On the **uncorrected** ledger |
-| 8 | 08-26 | T-489 · T-491 · T-497 | **NFR-03 FAILS on real data** — p50 **66.955s** vs a 60s hard rule; the session discarded its own passing harness. GG-209 registered. T1 stake wrapper built |
-| 9 | 08-26 | T-494 · T-498 · T-499 | **Game-market ruin geometry** — σ MONEYLINE 0.097% / RUN_LINE 0.138% / TOTALS 0.103%, but **fill cost alone drives all three net-negative before model edge.** ADR-0060 drafted. Four ADRs signed |
-
-### ✅ WAVE 10 — CLOSED 2026-08-29 · ran 3-wide · **all three confirmed ancestors of `origin/main` `d58c8dd`**
-
-| # | ID | Task | Status | Outcome |
-|---|---|---|---|---|
-| 10.1 | T-500 / GG-221 | Land T-487 · pre-register + run the **NB** half of HYP-010 · route box 2.4 | ✅ **merged** (`92a172b`) | T-487 landed (`0ef39ab`, ancestor-check exit 0) after a real 6-file conflict resolution. **EXP-025 pre-registration committed `228a273` BEFORE the NB run `06639f2` — order verified in git.** NB1(phi=2.33): mean **−0.0048**, sd **0.3069**, `n*` **44,220** → **INCONCLUSIVE again**, worse than Poisson. Box 2.4 routed N/A with both verdicts recorded. **GG-221 OPEN · APR-0033 drafted.** No third model class fit — reported and stopped, correctly |
-| 10.2 | T-501 / GG-222 | Land T-490 + T-491 · close the 3 register-parity mismatches | ✅ **merged** (`f3bb994`) | T-490 (`075c4ce`) and T-491 (`554b67b`) landed sequentially `--no-ff` — **GG-186 instances #6 and #7 closed.** Two genuine GG-126 misses fixed (APR-0032 row corrected, ADR-0056 row added; register was the stale side). **Third "mismatch" was a checker bug** — `RESOLVED_PAT` substring-matches "ACCEPTED" inside "NOT ACCEPTED", latent ~6 weeks. **GG-222 OPEN, regex not yet fixed.** Hit budget mid-close-out, wrote a stub, resumed |
-| 10.3 | T-502 / GG-223 | ADR-0055 **D2** — the 46 stuck-open positions | ✅ **merged** (`3d483c9`) | **46/46 repaired, GG-223 RESOLVED.** Epoch 12 continued, not bumped. Provenance stamps applied. **But the first apply silently reverted** — `t4-mlb.service` flushed its in-memory portfolio copy back over the file. Made durable only by restarting the service post-write under explicit operator authorization. **GG-224 registered OPEN/MEDIUM — the general hazard is unaddressed** |
-
-**The Wave-10 lesson worth carrying: a post-write assertion that passes can still be measuring the wrong moment.** T-502's verification was correct and the repair was still gone minutes later. Durability is a separate property from correctness, and nothing in this repo checked it until now.
-
-### ⬜ WAVE 11 — LEDGER TRUTH UNDER LOAD + THE INTEGRATION BUILD · fire 3-wide
-
-| # | ID | Task | Status | Outcome |
-|---|---|---|---|---|
-| 11.1 | **T-503 / GG-225** | ADR-0055 **D1 + D3** bundled — 532 closed + 76 rejected — **under the GG-224 protocol** | ⬜ | — |
-| 11.2 | **T-504 / GG-226** | **Operator directive:** T-4 sub-buckets across the twelve game-market families. Registry scaffold only | ⬜ | — |
-| 11.3 | **T-505 / GG-227** | Install this queue · regenerate `OPERATOR_CONSOLE.md` · fix the `RESOLVED_PAT` regex · draft **ADR-0061**, the external-repair-safety contract for GG-224 | ⬜ | — |
-
-### ⬜ WAVE 12 — CELL-AWARENESS + POST-REPAIR RE-DERIVATION · fire 3-wide · **GG assigned at fire**
-
-| # | ID | Task | Gate | Status |
-|---|---|---|---|---|
-| 12.1 | **T-506** | ADR-0054 **(a)** follow-ons — replay-harness `market_type=` (PRIORITY: silent wrong output, not an error), `assert_ledger_invariants.py` + `run_band_monitor.py` cell-awareness | 11.1 closed (12.1 edits the assertion script 11.1 must run) | ⬜ |
-| 12.2 | **T-507** | ADR-0054 **(b)** — re-key `LogicEpochBoundary.bands_affected` to `(MarketType, band)`; twelve-boundary re-audit, **scope wider when uncertain**, per-boundary scope + justification recorded for all twelve | 11.2 closed | ⬜ |
-| 12.3 | **T-508** | Re-run T-488/GG-157's fill-haircut figures against the **repaired** ledger. Named follow-on of ADR-0055 | **11.1 closed and durable** | ⬜ |
-
-### ⬜ WAVE 13 — GATED, DO NOT FIRE YET · **GG assigned at fire**
-
-| # | ID | Task | Gate | Status |
-|---|---|---|---|---|
-| 13.1 | **T-509** | Wire the nine ADR-0058 T1 game-market measurement cells into the live paper pipeline behind `measurement_stake.py`. **Pre-register the expectation of negative net edge** (T-494) or the result is unfalsifiable after the fact | **GG-203 RESOLVED** | ⬜ |
-| 13.2 | **T-510** | Implement whichever NFR-03 remedy ADR-0060 selects; then unblock ADR-0054 **(d)** | **ADR-0060 SIGNED** | ⬜ |
-| 13.3 | **T-511** | Implement ADR-0061's external-repair-safety contract in the owning services | **ADR-0061 SIGNED** | ⬜ |
-
-### Value column — which of these actually shorten the distance to live capital
-
-**Yes:** 11.1 (every epoch-12 figure is wrong until it lands) · 12.3 (G6 precondition currently computed on bad data) · 13.1 (the accrual path itself).
-**Structural — necessary, not distance-closing:** 11.2 · 11.3 · 12.1 · 12.2 · 13.3.
-**Not a block at all — operator only:** GG-203, and now APR-0033. Both outrank everything above.
+**Distance to live capital:** 1 of 78 cells ACTIVE · every live band at `kelly_fraction=0.0` · zero accrual since 08-15 · epoch-12 repaired and durable · **T4M-PROJ post-haircut clean_n 559 against n\* 18,058** · NFR-03 failing at p50 66.955s, remedy deferred by design · the kill switch not actually wired to halt T4 submission.
 
 ---
 
-# 11.1 — T-503 / GG-225 · ADR-0055 D1 + D3 UNDER THE GG-224 PROTOCOL
+## Sequencing track
 
-**Start when:** Wave 11 fires. Safe 3-wide. **Owns:** `logs/` ledger + backups, `scripts/t503_*`, `03_DECISIONS/ADR-0055*` (execution record only).
+**Legend:** ✅ merged · ⚠️ complete but NOT merged · ⏳ in flight · ⬜ not started
 
-```
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "t503-adr0055-d1-d3-repair"
-scripts/claim_session.sh "T-503: ADR-0055 D1+D3 -- repair 532 closed + 76 rejected under the GG-224 protocol" "T-503 / GG-225"
+| Wave | Closed | Outcome |
+|---|---|---|
+| 4–9 | 08-26 | Nineteen blocks, zero cells graduated. GG-203 found; fill haircuts measured; NFR-03 measured failing; ruin geometry; four ADRs signed |
+| 10 | 08-29 | NB refit **−0.0048 / n\* 44,220**, INCONCLUSIVE again. GG-186 #6/#7 closed. 46/46 stuck-open repaired; **GG-224 found** |
+| 11 | 09-01 | **532+76 repaired, durability proven**, invariants **630 → 22**, cross-path **52.0%/68.4% → 100%/100%**; **GG-228 found**. T-504 blocked at merge |
+| 12 | 09-02 | Registry **68 → 78**. **T-507: n\* 560 → 18,058, P&L/bet +0.2518 → +0.0191** |
+| 13 | 09-03 | ADR-0062 drafted; T-506 remainder landed; `NEVER` residual closed. **T-509's work complete, merge pending** |
 
-TIER: STANDARD, budget generously and BUDGET THE CLOSE-OUT SEPARATELY -- T-501 ran out mid-close-out
-in Wave 10 and had to write a stub. ONE deliverable.
+### ⬜ WAVE 14 — RECORD THE SIGN-OFFS, LAND THE BACKLOG, RE-KEY THE BOUNDARIES · fire 3-wide
 
-READ FIRST, in full, and do not work from this prompt's summary of any of them:
-  03_DECISIONS/ADR-0055_epoch12-ledger-repair-preregistration.md
-  APPROVALS_REGISTER.md's ADR-0055 row (the signed conditions)
-  GOVERNANCE_GAP_LOG.md's GG-224 entry (the hazard that nearly voided Wave 10's repair)
-  GOVERNANCE_GAP_LOG.md's GG-223 entry (what T-502 actually did, including the workaround)
-  scripts/t502_repair_d2_stuck_open.py (T-502's helper -- reuse its shape, do not re-invent it)
+| # | Task | Surface |
+|---|---|---|
+| 14.1 | Record the four 2026-09-03 operator sign-offs | `00_ADMIN/`, ADR status lines |
+| 14.2 | Land T-509 · install this queue · GG-235 · finish T-511's close-out | `04_EXECUTION/`, the T-509 merge, `11_MEMORY_HANDOFF/` |
+| 14.3 | ADR-0054 **(b)** — twelve-boundary re-key | `src/.../logic_epoch.py` |
 
-SCOPE: **D1 (532 closed positions) + D3 (76 rejected-position mismatches), BUNDLED.** ADR-0055's signed
-condition is explicit: one backup, one write, one verification pass -- not three. D2 is DONE (T-502,
-46/46). Do not re-touch D2's rows; if you find yourself editing an open position, you have left scope.
+### 🔒 WAVE 15 — UNBLOCKED BY 14.1 · do not fire until 14.1 has landed · 3-wide
 
-*** THE GG-224 PROTOCOL -- THIS IS THE PART WAVE 10 LEARNED THE HARD WAY ***
-T-502's first apply had a correct backup, a correct write, and correct post-write assertions -- and the
-rows were GONE on a later check, because t4-mlb.service holds the whole portfolio in memory and flushes
-that copy back over the file. **A passing post-write assertion proves correctness, not durability.**
-  1. FIRST, identify every file your repair will write and, for each, the service that owns it.
-     `systemctl` + the source. D2's file was logs/paper_portfolio_mlb_t4.json (t4-mlb.service). D1/D3
-     may target that file, logs/t4_mlb_resolved_ledger.jsonl, or both -- DETERMINE THIS FROM ADR-0055
-     AND THE DATA, do not assume, and state your finding before writing anything.
-  2. For each owning service, plan the coordination BEFORE the write and state it: stop-write-start, or
-     write-then-restart as T-502 did.
-     *** OPERATOR PRE-AUTHORIZATION, GRANTED 2026-08-29, EARL IGNACIO -- read the scope exactly. ***
-     You ARE authorized to restart `t4-mlb.service`, and any other service you identify as owning a
-     file this block repairs, WITHOUT stopping to ask. The authorization is scoped to:
-       - services you have identified, in writing, as owning a file THIS BLOCK writes;
-       - the sole purpose of making THIS repair durable against the GG-224 flush hazard;
-       - one restart per service, plus one retry if the first restart does not bring it back healthy.
-     It does NOT authorize: restarting anything else; disabling, masking or reconfiguring a service;
-     editing any service source or unit file; a stop that is not immediately followed by a start; or
-     repeated restart attempts to force a repair through. **State the authorization you are acting
-     under in your report, name every service you restarted, and if the scope above does not clearly
-     cover an action you believe is needed, STOP and ask rather than reading it broadly.**
-  2b. POST-RESTART HEALTH CHECK -- mandatory, this is a live trading service. After each restart
-     confirm and paste: `systemctl is-active` and `NRestarts` for the service; that the cycle log has
-     written a NEW row after the restart timestamp (the engine resumed evaluating, not merely that the
-     unit is up); zero anchored staleness/`game_state_fresh` failures in a `tail -500`; and no new
-     journal errors. **If the service does not come back healthy, STOP immediately, restore the backup,
-     and report -- do not proceed to the durability check on a degraded service.**
-  3. After the write AND the restart, verify durability ACROSS AT LEAST ONE FULL FLUSH CYCLE of each
-     owning service -- not once, immediately. Re-read from disk at two separated intervals, the second
-     of them provably after at least one flush has occurred, and confirm the `repair_ref`-carrying row
-     count is unchanged at both. Report both timestamps, both counts, and your evidence that a flush
-     actually happened in between. **A restart makes the revert less likely; it does not remove the
-     need to prove durability. T-502's repair looked correct at the moment it was verified too.**
-  4. If a revert is observed, STOP. Do not re-apply in a loop. Report it and hand back.
+| # | Task |
+|---|---|
+| 15.1 | ADR-0062 build — `T4NFL-*`/`T4NHL-*` members + cells. **Resolve the §4-vs-§6 BOUNDARY conflict first** |
+| 15.2 | ADR-0061 — write the (c) runbook, state the (b) lock contract, run the (a) diagnostic |
+| 15.3 | APR-0033 — fire the Phase 2 moneyline-first reroute |
 
-SIGNED CONDITIONS -- non-negotiable, from the operator's ADR-0055 sign-off:
-  (i)   Backup written AND VERIFIED before any write. Verified means re-read the backup and confirm
-        line count AND a content hash against the original. A backup you wrote but did not read back is
-        not a verified backup.
-  (ii)  The five pre-registered STEP-2 assertions re-run POST-WRITE AGAINST THE REAL FILE, not only in
-        simulation. Simulation passing is not the same as the write having succeeded. Paste pre-write
-        and post-write output.
-  (iii) Per-row provenance: stamp `repaired_at` and `repair_ref` on every repaired row (D4's required
-        mitigation), so repaired rows stay distinguishable from originals without an epoch bump.
-  (iv)  **D4: CONTINUE epoch 12. Do NOT bump.** The repair corrects data to what it always should have
-        been; no write-path logic changed. Bumping resets every band's clean_epoch_floor and zeroes
-        clean_n, destroying the 719-row cohort the repair exists to rescue. If ADR-0055's own D4
-        discussion argues for a bump, STOP and report the conflict -- do not silently override it.
-  (v)   `python3 scripts/assert_ledger_invariants.py` before and after. Report the delta.
-        **The NO_FORMULA (band, assertion) pairs are NOT clean -- they were never checked. Report them
-        separately and never fold them into a clean count.**
+### 🔒 WAVE 16 — THE HALT ARCHITECTURE · fire after Wave 15 · 2-wide · prompts written when 15 closes
 
-CONSEQUENCE TO RECORD, not to act on: every epoch-12 figure moves once this lands. T-488/GG-157's
-fill-haircut numbers were computed on the uncorrected ledger and must be re-run -- that is Wave 12.3,
-already staffed. Name it in your close-out so it is not forgotten; do NOT run it here.
+| # | Task | Why it is its own wave |
+|---|---|---|
+| 16.1 | **Draft the halt-hierarchy ADR** — align halt granularity to sizing granularity across all five tiers. Absorbs GG-038 TASK 2/3. Extends ADR-0060 rather than superseding it. Unblocks ADR-0054 **(d)** | The single largest unaddressed architectural gap on the board. Scope below |
+| 16.2 | **Draft the G6 standard amendment ADR** — encodes the accepted pre-registration + multiplicity-correction conditions into ADR-0057's closure condition | The decision is accepted; the gate does not change until this ships |
 
-DO NOT: promote assert_ledger_invariants.py to --strict (alarm-only is a standing operator decision).
-DO NOT: bump logic_epoch. DO NOT: touch any kelly_fraction. DO NOT: run any clean-vs-corrupted
-comparison -- that needs its own pre-registration. DO NOT: quote any epoch-12 P&L or edge figure as
-production-authoritative until this block has landed AND its durability check has passed.
-DO NOT: edit run_t4_mlb_live.py or any service source -- the GG-224 structural fix is 11.3's ADR and
-Wave 13.3's build, not this block's.
+### 🔒 WAVE 17 — GATED ON GG-203
 
-SCOPE FENCE: logs/ (ledger + backup), scripts/t503_* (new file, not an edit to an existing production
-script), 03_DECISIONS/ADR-0055* (execution record only, not the body).
-Self-serialising close-out: rebase onto origin/main immediately before writing GOVERNANCE_GAP_LOG.md
-and DECISION_LOG.md. GG-186 ancestor-check before you write any CLOSED row.
+| # | Task | Gate |
+|---|---|---|
+| 17.1 | Wire the nine ADR-0058 T1 cells live behind `measurement_stake.py`. **Pre-register the expectation of negative net edge** (T-494) | **GG-203 RESOLVED** |
+| 17.2 | Build ADR-0060 (c) and ADR-0054 (d) under whatever hierarchy 16.1 establishes | **ADR-0048 kelly reactivation is considered** |
 
-REPORT BACK: the file->owning-service map you determined and how; every service you restarted under
-the 2026-08-29 pre-authorization and its post-restart health-check output; backup path + line count and hash on both sides; rows repaired vs
-532 and 76 expected; the five assertions' post-write output against the real file; the TWO separated
-durability re-reads with timestamps and counts; the invariant-violation delta with NO_FORMULA pairs
-stated separately; confirmation that logic_epoch was NOT bumped.
-```
+#### 16.1 scope — recorded now so the framing is not lost
 
-# 11.2 — T-504 / GG-226 · T-4 SUB-BUCKETS ACROSS THE TWELVE GAME-MARKET FAMILIES
+**Operator directive, 2026-09-03: a kill switch is meaningless unless it is tied to the Kelly alignment of the thing it halts.** Sizing in this system is decided at five distinct granularities, and every one of them is real and in code — verified against `origin/main` 2026-09-03:
 
-**Start when:** Wave 11 fires. Safe 3-wide. **Owns:** `src/prediction_market_bot/c5_execution/market_type_registry.py`, its tests.
+| Tier | Control | Where |
+|---|---|---|
+| Full book | `MAX_PORTFOLIO_DEPLOYMENT_PCT = 0.60` (`1 − RESERVE_MANDATE_PCT`), two-tier CHECK 8: solvency KILL / policy REJECT | `c4_risk_engine/risk.py:122-130`, ADR-0026 |
+| Band (5 buckets) | `kelly_fraction` per band — T1/T2/T3 at 0.0, `T4_IN_PLAY` 0.20, `T5_LATE_GAME` 0.25 | `execution_bands.py` |
+| T4 sub-segment (11) | Independent `kelly_fraction` per segment — **eight distinct regimes** across 0.0 / 0.05 / 0.07 / 0.08 / 0.10 / 0.167, each with its own decision tree | `execution_bands.py`, ADR-0029 |
+| Cell (78) | `resolve_kill_switch_state()` / `halt_cell()` — **built and not wired.** This is ADR-0054 (d) | `market_type_registry.py:875,885` |
+| Individual bet | `T1_MEASUREMENT_STAKE_USD=1.00`, `MAX_CONTRACTS=10`, `MAX_HAIRCUT_PER_CONTRACT_USD=0.10` | `measurement_stake.py:54,55,70`, ADR-0050/0059 |
+
+**ADR-0060 addresses the halt at exactly one of those five tiers** — band-level T4M-PROJ — **against a single 60s bar that GG-038 already records as a batch-era number applied unmodified to a continuous-evaluation architecture.** A halt latency requirement is only meaningful relative to how fast the thing being halted commits capital, and eight different Kelly regimes across the T4 tree commit it at eight different rates. One bar cannot be correct for all of them.
+
+**What 16.1 must therefore do, and must not do.** It must derive a per-tier halt requirement from each tier's own exposure rate — the same discipline APR-0024 demanded for sample adequacy and ADR-0060 §3 demanded for any NFR-03 revision: a number derived from what a kill-trigger event can actually cost at that tier's sizing, never from what the current loop happens to measure. It must absorb GG-038 TASK 2/3 (T4 treats a `KILL_SWITCH` approval identically to an ordinary `REJECTED`; `is_kill_switch_active` is read by zero MLB pipelines) because those are defects in the same subsystem and two ADRs written separately about it will contradict each other. **It must NOT re-open ADR-0060's accepted option (c) or its deferral** — (c) remains the target architecture for the band tier, and this ADR establishes the hierarchy (c) gets built into. **Draft only. No code, no `kelly_fraction`, no ACCEPTED.**
+
+---
+
+# 14.1 — RECORD THE FOUR OPERATOR SIGN-OFFS
 
 ```
 Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "t504-t4-subbuckets-game-markets"
-scripts/claim_session.sh "T-504: integrate T-4 sub-buckets across the twelve game-market families" "T-504 / GG-226"
+scripts/new_session_worktree.sh "record-signoffs-20260903"
+Claim your own T- and GG- numbers at run time (GG-234). Gap-log entry as your FIRST pushed commit
+if you register anything; if you register nothing, say so in your CLOSED row.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
 
-TIER: STANDARD. ONE deliverable: registry scaffolding. **NO behaviour change of any kind.**
+TIER: SHORT-STANDARD. ONE deliverable, four rows. Precision matters more than speed here -- these
+are formal governance records and three of them are ADR status flips.
 
-OPERATOR DIRECTIVE, 2026-08-27, this block's whole reason for existing: integrate every bucket -- and
-all T-4 sub-buckets -- with the new market lines. **Work forward. Do not decide in advance which cells
-will calibrate edge.** A family or band is never dropped from the build on the strength of one finding;
-the engine discovers per-cell what works. This directive reaffirms and widens the 2026-08-21 per-sport
-doctrine. If your analysis suggests a family or sub-band is hopeless, REGISTER THE FINDING AND KEEP THE
-CELL.
+Earl signed off in-session 2026-09-03, same pre-granted pattern as ADR-0050 and ADR-0059. Record
+each in APPROVALS_REGISTER.md with the date, then flip each document's Status field.
+**HARD RULE 3: you may edit a Status field and add a sign-off line. You may NOT edit any ADR's body
+or reasoning. If a document's own text contradicts what is written below, STOP and report the
+conflict rather than reconciling it.**
 
-THE GAP, verified live 2026-08-29 -- re-derive it yourself before acting:
-  `ExecutionBand` defines 18 values. Cells exist for only 6.
-  MLB_PLAYER_PROP_HITS carries T1/T2/T3/T5 + T4M_PROJ, T4M_ARITH, T4M_FLOW  (7 cells)
-  NBA_PLAYER_POINTS carries T4_IN_PLAY only                                  (1 cell)
-  Each of the TWELVE game-market families carries T1/T2/T3/T4_IN_PLAY/T5     (5 cells each = 60)
-  Total 68. **T4_STAGED, T4_EVENT, T4_LINEUP, T4_FLOW, T4_SENTIMENT, T4_PROJ, T4_ARITH, T4_BOUNDARY,
-  T4_CORR and T4_EXIT have ZERO cells anywhere in the registry.**
-  The twelve families: MLB_MONEYLINE, MLB_RUN_LINE, MLB_GAME_TOTAL, MLB_TEAM_TOTAL, MLB_PARTIAL_GAME,
-  NFL_MONEYLINE, NFL_SPREAD, NFL_GAME_TOTAL, NFL_TEAM_TOTAL, NHL_MONEYLINE, NHL_PUCK_LINE,
-  NHL_GAME_TOTAL.
+ADR-0062 -- ACCEPTED as written. Status PROPOSED -> ACCEPTED.
+  D1 naming, D2 roster, D3 fresh epoch-1 per sport, D4 projection all accepted.
+  Record two conditions travelling with the signature:
+   (i) EVENT stays DEFERRED for both sports pending verification of each sport's C1 ingestion
+       mechanism (push vs poll). ADR-0062 section 4 declines to assert live-or-blocked status
+       without it; the signature does not override that.
+   (ii) ADR-0062 sections 4 and 6 disagree about BOUNDARY -- section 4 calls it "propose, scoped
+       only, not authorized to build," section 6's 21-cell projection counts it. **Record the
+       conflict in the sign-off line as unresolved-at-signature and route it to 15.1. Do NOT pick a
+       reading here.**
+  Authorizes the scaffolding build (15.1). Authorizes NO kelly_fraction and NO cell promotion.
 
-DESIGN INPUT, now landed on origin/main -- READ IT BEFORE DESIGNING ANYTHING:
-  05_RESEARCH_EXPERIMENTS/ or 04_EXECUTION/ BAND_AXIS_ACTIVATION_PROPOSAL_GG172.md  (T-491, GG-172)
-  T-490's --sport axis work through the power calc (box 3.4)
-  03_DECISIONS/ADR-0053 section 6.3 -- the accepted delta, and note it says implementation is "a future
-  Phase 3 build, not authorized by this acceptance alone."
-  03_DECISIONS/ADR-0056 -- sport as a first-class attribute, ACCEPTED 2026-08-21.
+ADR-0060 -- option (c) ACCEPTED as TARGET ARCHITECTURE, implementation DEFERRED.
+  Status PROPOSED -> ACCEPTED. This is ADR-0060's own section 5 recommendation and the acceptance
+  must not read as broader than it.
+  Record verbatim in substance: (c) decoupled out-of-band halt is the chosen target architecture.
+  **It is NOT authorized to build now.** Trigger: (c) is scoped and authorized when T4M-PROJ's
+  kelly_fraction is next considered for edge-conditional reactivation under ADR-0048. Rationale to
+  record: current exposure is zero (kelly_fraction=0.0), so there is no operational urgency, and
+  reactivating live sizing on a band with a known uninterruptible kill-switch gap is the point at
+  which this stops being a research finding and becomes live-capital risk.
+  Options (a) and (b) are NOT adopted. ADR-0054 item (d) remains blocked until (c) is built.
+  Record as a DECISION OWED, do not solve: ADR-0060 section 6 names two defects no remedy option
+  touches -- run_t4_mlb_live.py treats a KILL_SWITCH approval status identically to an ordinary
+  REJECTED (T1 branches and self-halts; T4 does not), and `is_kill_switch_active` is read by zero
+  MLB pipelines. Both are GG-038 TASK 2/3 and both are unstaffed.
 
-**HARD STOP CONDITION, evaluate it explicitly and report your evaluation either way:** if adding these
-cells requires anything beyond registry scaffolding -- a ledger schema change, a kill-switch change, a
-`risk.py` change, a new correlation group, or any ADR-0053 section 6.3 delta item -- **STOP and report
-rather than building it.** ADR-0053's acceptance does not authorize the delta. T-495's NHL seeding is
-the precedent for what IS in scope: cells added, `NOT_IMPLEMENTED`, `kelly_fraction=0.0`, nothing wired.
+ADR-0061 -- ACCEPTED per its section 7. Status PROPOSED -> ACCEPTED.
+  Option (c) stop-repair-start runbook: ADOPTED NOW.
+  Option (b) repair scripts must take the existing fcntl lock: ADOPTED as a complementary contract.
+  Option (a) diagnostic half (why did the existing reload-before-save not hold?): STAFFED as a
+    follow-on. The implementation half of (a) is NOT adopted.
+  Option (d) service-owned repair endpoints: NOT ADOPTED at this time.
+  **GG-224 stays OPEN.** Per section 5, a runbook is not a structural guarantee and the operator's
+  2026-08-29 restart pre-authorization is proof the procedure works when followed, not proof it will
+  be followed. Do not close GG-224 on this signature.
 
-WHAT TO DECIDE AND RECORD PER FAMILY -- this is judgment, not mechanical expansion:
-  Which T-4 sub-buckets are STRUCTURALLY MEANINGFUL for a game-level market, and which are
-  prop-specific artifacts? T4M_PROJ projects a player's remaining at-bats; there is no obvious
-  game-level analogue. T4_LINEUP is lineup risk -- which is precisely the risk game markets do not
-  carry. T4_FLOW, T4_EVENT, T4_BOUNDARY, T4_EXIT plausibly do transfer. **Do not guess and do not
-  expand blindly to 18 x 12.** For every (family, sub-band) pair you create AND every one you decline,
-  record a one-line justification. A cell you decline is a decision that must survive review; a cell
-  you create costs nothing but must be defensible.
-  If Kalshi does not list a real series supporting a family's in-play decomposition, say so from
-  measured evidence -- T-495 checked /series and /events live and deviated from spec rather than
-  fabricate a ticker, which was the correct call. Follow that precedent.
+APR-0033 -- ACCEPTED: fire the moneyline-first reroute. Register row PENDING -> ACCEPTED 2026-09-03.
+  Basis: both the Poisson fit (T-487) and the NB refit built specifically to correct its
+  misspecification (T-500/EXP-025) returned negative point estimates below HYP-010's pre-registered
+  +0.005 to +0.025 band.
+  **Box 2.3's INCONCLUSIVE verdict stays exactly as recorded and is NOT relabelled.** What changes
+  is the routing, per MARKET_EXPANSION_ACTION_PLAN.md's own "Note on model class": moneyline-first,
+  LR (ADR-0004 production class), binary target, no distribution fit. Phase 2 is not terminated.
 
-MANDATORY: report the before/after cell count and the full status breakdown, imported live, not read
-from any document. Every new cell is NOT_IMPLEMENTED with kelly_fraction=0.0. Full test suite green
-before close-out -- paste the pass/fail/skip line.
+TWO OPERATOR DECISIONS -- record as decision records, NOT as gaps, NOT as ADR flips.
+  n* STANDARD -- APR-0024 stands unrevised. Record the rationale (post-hoc revision of a power
+    standard is indistinguishable from weakening a control; and loosening power .95->.80 leaves
+    n*~10,300 against n=559, so it would not help anyway) and the derived finding: the fill haircut
+    consumed 65% of gross edge (0.0540 -> 0.0191), making execution cost the binding constraint on
+    n*, not model quality. **This closes the open question. It authorizes no code change.**
+  CELLS BEFORE LIVE CAPITAL -- "at least one" stands, plus (1) the candidate cell must be
+    pre-registered as a capital candidate BEFORE its cohort completes, and (2) its threshold must
+    carry a multiplicity correction over the pre-registered candidate set. Record the acknowledged
+    cost: Bonferroni over five candidates raises n* a further ~46%.
+    **This amends ADR-0057's closure condition, so it does NOT bind until a superseding ADR ships
+    (16.2). Record it as an accepted decision awaiting that ADR -- do not treat the gate as changed.**
 
-DO NOT: touch any kelly_fraction. DO NOT: promote any cell's status. DO NOT: wire anything into a live
-pipeline. DO NOT: edit logic_epoch.py -- the (MarketType, band) re-key is 12.2 under ADR-0054(b).
-DO NOT: recommend against a family or a sport on the strength of a finding.
+VERIFY: re-run `python3 scripts/check_register_parity.py` from the merged tree and paste it -- adding
+four rows must not introduce a mismatch. Confirm each ADR's Status line reads ACCEPTED with its date.
 
-SCOPE FENCE: src/prediction_market_bot/c5_execution/market_type_registry.py and its tests. Nothing else
-under src/.
+DO NOT: implement anything any of these authorize -- that is Wave 15, and it does not fire until this
+block has landed. DO NOT: touch any kelly_fraction, cell status, ExecutionBand member, or ledger row.
+DO NOT: close GG-224. DO NOT: edit any ADR body. DO NOT: resolve the BOUNDARY conflict.
+
+SCOPE FENCE: 00_ADMIN/APPROVALS_REGISTER.md, the Status lines + sign-off lines of ADR-0060/0061/0062,
+APR-0033's register row, DECISION_LOG.md.
 Self-serialising close-out: rebase onto origin/main immediately before writing GOVERNANCE_GAP_LOG.md
-and DECISION_LOG.md. GG-186 ancestor-check before you write any CLOSED row.
+and DECISION_LOG.md.
 
-REPORT BACK: before/after cell counts and status breakdown imported live; the per-family create/decline
-table with a justification on every row; your explicit evaluation of the HARD STOP condition; any
-family where measured Kalshi series data changed your decision; the test-suite line.
+REPORT BACK: the four register rows as written; each Status line before and after; the parity output;
+the DECISION OWED you recorded for GG-038 TASK 2/3; and any place a document's text contradicted this
+prompt (there should be none except the BOUNDARY conflict, which is expected and must be recorded).
 ```
 
-# 11.3 — T-505 / GG-227 · INSTALL THE QUEUE, FIX THE INSTRUMENTS, DRAFT ADR-0061
-
-**Start when:** Wave 11 fires. Safe 3-wide. **Owns:** `04_EXECUTION/ACTIVE_QUEUE.md`, `03_DECISIONS/OPERATOR_CONSOLE.md`, `scripts/check_register_parity.py`, `03_DECISIONS/ADR-0061*`.
+# 14.2 — LANDING AND HYGIENE
 
 ```
 Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "t505-queue-install-instruments-adr0061"
-scripts/claim_session.sh "T-505: install queue, regenerate console, fix RESOLVED_PAT, draft ADR-0061" "T-505 / GG-227"
+scripts/new_session_worktree.sh "landing-and-hygiene"
+Claim your own T- and GG- numbers at run time (GG-234).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
 
-TIER: STANDARD. FOUR deliverables, smallest first. This is the instrument-maintenance block -- the
-Phase's own standing lesson is "before building a new check, verify the checks you already have
-actually fire," and three of these are exactly that.
+TIER: SHORT-STANDARD. Four deliverables. This block exists because the landing step has failed three
+waves running -- treat landing as the product, not as cleanup.
 
-DELIVERABLE 0 -- INSTALL THE QUEUE. Do this FIRST; everything else in this Phase depends on the file
-being real. `04_EXECUTION/ACTIVE_QUEUE.md` currently exists ONLY as an uncommitted modification in the
-shared `main` checkout (which is ~27 commits behind origin/main). origin/main's copy is the superseded
-T-499 version and still shows Wave 9.3 as "RUN NOW" and T-487 as merged -- both false.
-  Copy the file from the shared main checkout into your worktree, commit, push.
-  Then CONFIRM: exactly one ACTIVE_QUEUE.md exists in the tree (`find . -name "ACTIVE_QUEUE*.md"
-  -not -path "./.git/*"`), it is at 04_EXECUTION/, its header reads origin/main = d58c8dd, and its
-  Wave 10 table shows all three blocks merged. **Never leave a second copy anywhere** -- stale
-  duplicates in 11_MEMORY_HANDOFF/ had the operator reading the wrong file for four exchanges in a
-  prior Phase.
+DELIVERABLE 0 -- LAND T-509 IF IT HAS NOT LANDED. Check first:
+  git merge-base --is-ancestor session/20260901T052401Z-t509-adr0054a-cell-awareness origin/main
+  Exit 0: it landed on its own. Say so, skip to Deliverable 1, do NOT re-land it.
+  Exit 1: land it. Complete on branch -- all three ADR-0054(a) items (replay_harness_t427.py no longer
+  silently defaults market_type; assert_ledger_invariants.py and run_band_monitor.py cell-aware), 925
+  insertions across 3 scripts and 4 test files, plus GG-232, GG-184 -> PARTIALLY RESOLVED, GG-235.
+  **Run the full suite on the branch first and paste the pass/fail/skip line. If it is not green, STOP
+  and report -- do not land red work to clear a backlog.**
+  If a check or classifier blocks the merge (as it did for PR #125), diagnose it, report what it was
+  blocking, and say whether it was a true positive. **If it is a real policy violation, STOP.**
+  Confirm with the ancestor check in the documented direction; paste the exit code. Amend GG-186.
+  NOTE: 14.3 is running concurrently and owns logic_epoch.py. T-509's work reads the epoch boundaries
+  but does not write logic_epoch.py -- if you find it does, STOP and coordinate.
 
-DELIVERABLE 1 -- REGENERATE OPERATOR_CONSOLE.md. It is a GENERATED FILE. Run
-`scripts/generate_operator_console.py`. **Do not hand-patch it.** On origin/main it reports 4 blocked /
-6 broken / 68 accruing = 78 total against a gap log that now carries 82 entries and 68 OPEN -- Wave
-10's GG-221/222/224 are missing from it. Report before/after section counts.
-  If the regenerated output still disagrees with a directly re-derived gap-log count, that is a
-  classification-regex defect in the generator, not a file to patch -- register it and report.
+DELIVERABLE 1 -- INSTALL THIS QUEUE. origin/main's copy is still the Wave 11 version. Copy the current
+file from the shared main checkout at 04_EXECUTION/ACTIVE_QUEUE.md into your worktree, commit, push.
+Confirm exactly one queue file: `find . -name "ACTIVE_QUEUE*.md" -not -path "./.git/*"`. Never leave a
+second copy anywhere.
 
-DELIVERABLE 2 -- FIX check_register_parity.py's RESOLVED_PAT. GG-222, OPEN, LOW, found by T-501.
-  Current: RESOLVED_PAT = re.compile(r"ACCEPTED|ADOPTED|COMPLETE|selected")
-  Unguarded substring match. ADR-0051's literal Status line `**Status:** DRAFT — NOT ACCEPTED.` matches
-  "ACCEPTED" and is reported as a parity mismatch. Latent since 2026-07-17, ~6 weeks.
-  Fix with a negative lookbehind for a preceding "NOT " (and consider "NOT YET"), plus word boundaries.
-  **Add a regression test for the exact ADR-0051 Status string** -- a fix with no test that pins the
-  false-positive case is how this comes back.
-  Re-run the checker and paste before/after. Expect ADR-0051 to drop out and the count to go to zero;
-  if anything else changes, that is a finding -- report it, do not absorb it.
-  Amend GG-222 with the resolution. This closes the checker-bug half only.
+DELIVERABLE 2 -- GG-235. LEDGER_INVARIANT_SUITE.md's documented VPS-fetch commands reference filenames
+that no longer exist. The entry rides in with Deliverable 0 -- read it from the merged tree, not from
+this prompt. Fix the commands against the real current filenames. **Verify each against the actual VPS
+or the actual repo. Do not infer a rename.** If you cannot verify one, leave it flagged and say so.
 
-DELIVERABLE 3 -- DRAFT ADR-0061: external-repair-safety contract for service-owned files. **DRAFT ONLY.
-Status PROPOSED. Do NOT implement, do NOT mark ACCEPTED, do NOT edit any service source.**
-  The hazard, from GG-224 (OPEN, MEDIUM, discovered by T-502 mid-repair): t4-mlb.service holds the
-  entire portfolio object in memory and periodically flushes that in-memory copy back over
-  logs/paper_portfolio_mlb_t4.json, read-modify-write against its own state rather than re-reading from
-  disk. An external repair with a correct backup, a correct write and correct post-write assertions was
-  silently reverted on the next flush. It was made durable only by restarting the service post-write
-  under explicit operator authorization.
-  ENUMERATE FIRST, from source, not from assumption: every long-running service in this repo that owns
-  a shared, externally-repairable file. t4-mlb.service is one. There may be others -- find them.
-  PRESENT OPTIONS, DO NOT SELECT ONE. At minimum: (a) re-read from disk before each flush; (b) an
-  advisory lock or lockfile the repair path must acquire; (c) a documented stop-repair-start operational
-  runbook with no code change; (d) service-owned repair endpoints so external writes never happen.
-  For each: blast radius, what it costs, what it does NOT solve, and whether it retires GG-224 fully or
-  partially. Give a RECOMMENDATION with reasoning, clearly marked as a recommendation.
-  EVIDENCE FOR OPTION (c) YOU MUST WEIGH: the operator granted a scoped restart pre-authorization on
-  2026-08-29 for block 11.1, which is a runbook-shaped control working in practice. Assess honestly
-  whether that generalises -- a per-repair human authorization does not scale to routine operation, and
-  a runbook that depends on the operator being available is a different risk profile from a code fix.
-  Do not treat the pre-authorization as evidence that (c) is sufficient.
-  Hard Rule 3: a superseding ADR is required before any service change ships. This draft creates the
-  decision, it does not make it.
+DELIVERABLE 3 -- FINISH T-511's CLOSE-OUT. db739af is a truncated stub written at budget exhaustion.
+Confirm T-511's SESSION_CLAIMS row states the true merge status, its DECISION_LOG entry exists, and its
+handoff artifacts exist. **Read its commits and report only what they show -- do not invent a
+retrospective account.** If something is genuinely absent and cannot be reconstructed, record it absent.
 
-DO NOT: touch any kelly_fraction, any ledger row, or any service source. DO NOT: hand-patch a generated
-file. DO NOT: mark ADR-0061 ACCEPTED. DO NOT: close GG-224 -- Deliverable 3 is a draft, not a fix.
-DO NOT: close GG-222 outright -- the register-parity half is already fixed, this closes the regex half.
+DO NOT: touch any kelly_fraction, cell status, ledger row, or ExecutionBand member.
+DO NOT: implement ADR-0054(b) -- 14.3 owns logic_epoch.py. DO NOT: act on any Wave 15 authorization.
 
-SCOPE FENCE: 04_EXECUTION/ACTIVE_QUEUE.md, 03_DECISIONS/OPERATOR_CONSOLE.md (regenerate only),
-scripts/check_register_parity.py + its test, 03_DECISIONS/ADR-0061* (new).
-Self-serialising close-out: rebase onto origin/main immediately before writing GOVERNANCE_GAP_LOG.md
-and DECISION_LOG.md. GG-186 ancestor-check before you write any CLOSED row.
+SCOPE FENCE: the T-509 merge, 04_EXECUTION/ACTIVE_QUEUE.md, 04_EXECUTION/LEDGER_INVARIANT_SUITE.md,
+11_MEMORY_HANDOFF/, gap-log + DECISION_LOG entries.
+Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
 
-REPORT BACK: the find output proving exactly one queue file and its committed SHA; console section
-counts before/after; the checker output before/after plus the regression test name; ADR-0061's path and
-its option table; the full list of services you found that own externally-repairable files.
+REPORT BACK: the Deliverable 0 exit code and whether T-509 had already landed; the suite line if you
+landed it; what any blocking check was actually blocking; the find output proving one queue file; which
+GG-235 filenames you verified and which you could not; what T-511 left absent.
+```
+
+# 14.3 — ADR-0054 (b) · THE TWELVE-BOUNDARY RE-KEY
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
+scripts/new_session_worktree.sh "adr0054b-boundary-rekey"
+Claim your own T- and GG- numbers at run time (GG-234). Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+
+DELIVERABLE 0 -- 14.2 owns the T-509 landing. Check whether T-509 is an ancestor of origin/main. If it
+is NOT and 14.2 has not landed it yet, you may still proceed: T-509 touches
+assert_ledger_invariants.py and run_band_monitor.py, which READ the epoch boundaries but do not write
+logic_epoch.py. Rebase onto origin/main before your close-out so the two land cleanly. If you discover
+T-509 does modify logic_epoch.py, STOP and coordinate.
+
+TIER: STANDARD, budget generously -- twelve boundaries each need their own judgment call.
+
+READ FIRST, in full: ADR-0054 item (b) and its section 9 sign-off, plus the APPROVALS_REGISTER
+ADR-0054 row. Item (b) is SIGNED -- you are implementing an accepted decision, not proposing one.
+
+THE WORK: re-key `LogicEpochBoundary.bands_affected` from band to `(MarketType, band)` cell keys.
+logic_epoch.py carries TWELVE boundaries (verified on origin/main 2026-09-03).
+
+*** THE SIGNED CONDITION, AND THE WHOLE POINT OF THE BLOCK: THE FAILURE MODE IS ASYMMETRIC. *** A
+boundary scoped too WIDE only costs sample. A boundary scoped too NARROW silently leaves dirty rows
+inside a cohort that reports itself clean. **Scope wider when uncertain.** This is not a blanket
+re-key: **every one of the twelve carries its own recorded cell scope AND its own written
+justification.** Twelve entries, twelve justifications, no "same as above". A boundary you cannot
+justify narrowly gets scoped wide and you say so.
+
+Scoping note: all twelve boundaries predate NFL and NHL having any cell, and predate ADR-0062
+entirely. A historical boundary cannot be scoped to a cell that did not exist when it was set -- do
+not invent forward-looking scope. MLB and NBA are the live question.
+
+VERIFY, both sides: clean_n per band/cell before and after. A re-key that silently changes a cohort
+size is either a real finding or a bug -- say which, with evidence. Run assert_ledger_invariants.py
+before and after; report the delta with NO_FORMULA (band, assertion) pairs stated SEPARATELY and never
+folded into a clean count. Full suite green; paste the pass/fail/skip line.
+
+DO NOT: bump logic_epoch or add a boundary. DO NOT: touch any kelly_fraction or cell status.
+DO NOT: implement ADR-0054 (a) -- T-509 built it. DO NOT: implement (d) -- blocked on ADR-0060's
+build, which is itself deferred to the ADR-0048 reactivation trigger.
+DO NOT: add any ExecutionBand member -- that is 15.1 and it does not fire until 14.1 lands.
+DO NOT: promote assert_ledger_invariants.py to --strict.
+
+SCOPE FENCE: src/prediction_market_bot/logic_epoch.py and its tests. Nothing else under src/.
+Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
+
+REPORT BACK: the twelve-row boundary -> cell scope -> justification table; every boundary scoped wider
+than strictly necessary and why; clean_n before/after per cell with any change explained as
+finding-or-bug; invariant delta with NO_FORMULA pairs separate; the suite line; the ancestor-check code.
 ```
 
 ---
 
-## Needs your decision — no terminal can move these
+## Needs your decision — three open, and I am giving you a recommendation on each
 
 | # | Decision | Status |
 |---|---|---|
-| (i) | **GG-203 — the Kalshi demo-account order-write fault.** Support ticket or demo-key regeneration. 14 days elapsed at 2026-08-29; every cell accruing zero; ADR-0058's accrual clock has not started; Wave 13.1 is gated on it. **Highest-value item on the board and it is not code.** | **OPEN — nothing competes with it** |
-| (ii) | **APR-0033 — HYP-010's INCONCLUSIVE routing.** `00_ADMIN/APR-0033_hyp010-inconclusive-routing-decision-request.md`, drafted by T-500. **New evidence since you last saw this:** the NB refit, pre-registered before it ran and built specifically to handle the overdispersion blamed for Poisson's result, came back **−0.0048 / sd 0.3069 / n\* 44,220** — further negative, wider, same verdict. Two independent fits, both below the pre-registered +0.005…+0.025 band. The plan's own reroute (moneyline-first, LR, binary target, no distribution fit) exists and fires only on FALSIFIED. **My read: the misspecification hypothesis is spent and the reroute should fire. That is a recommendation, not a relabelling — the verdict stays INCONCLUSIVE in the record.** | **DRAFTED, awaiting you** |
-| (iii) | **ADR-0060 — which NFR-03 remedy.** (a) shorten the T4 cycle: cheapest, costs API headroom, retires neither GG-038 nor GG-209 — and clears 60s while GG-038 says 60s is itself 12× too slow, i.e. buys compliance without safety. (b) revise NFR-03's bar per band: needs superseding-ADR authority and capital-exposure-derived justification. (c) out-of-band interrupt: cleanest, largest, **the only option creating the primitive GG-209 would reuse.** Your pre-position is **(c)**, overridable by T-498's own cost analysis. **Not urgent in risk terms** — every live band is at `kelly_fraction=0.0` and GG-203 blocks all order writes, so real exposure is zero. G6 precondition, not a live hazard. Gates 13.2 and ADR-0054(d). | **PROPOSED, unsigned** |
-| (iv) | **How many of the 68 cells must clear `clean_n ≥ n*` + Tier 1/2 before live capital?** Created by ADR-0057, unanswered by design. With 1 of 68 ACTIVE and G6 now per-cell, "at least one" is a floor a single lucky cell could clear. **11.2 will raise the denominator** — worth setting the bar before it moves. | **OPEN** |
-| (v) | **Service restart for the 11.1 repair.** — **GRANTED 2026-08-29.** Scoped in the block text: services identified in writing as owning a file 11.1 writes, solely to make the repair durable against GG-224, one restart per service plus one retry, with a mandatory post-restart health check and a stop-and-restore if the service does not come back clean. Not a standing authorization for service actions generally. | **CLOSED — pre-authorized** |
-| (vi) | **T1 game-market measurement given T-494.** — **DECIDED 2026-08-27: proceed and measure.** Condition carried into 13.1: pre-register the expectation of negative net edge. | **CLOSED** |
+| (i) | **GG-203 — the Kalshi order-write fault.** 19 days. Support ticket or demo-key regeneration. Nothing accrues until it clears; gates 16.1. **Still the highest-value item on the board and still not code.** No recommendation to give — it is an action only you can take. | **OPEN** |
+| (ii) | **Is the `n*` standard still right?** See the plain-English write-up below. **Recommendation: keep APR-0024 exactly as it is. Do not revise it.** | **OPEN** |
+| (iii) | **How many cells before live capital — and the kill-switch wiring defects.** See below. **Recommendation: keep "at least one," add pre-registration + a multiplicity correction. Separately: staff GG-038 TASK 2/3 as its own ADR draft.** | **OPEN** |
 
-## DO NOT — standing, carried forward
+## DO NOT — standing
 
-Don't unpark `SCALING_MANDATE_PARKED.md`. Don't promote `assert_ledger_invariants.py` to `--strict` (alarm-only, operator decision). **Don't touch sizing or any `kelly_fraction` without an ADR — including T1: ADR-0058 authorizes measurement stake at 0.0 and no sizing change.** A nonzero T1 Kelly needs ADR-0048's edge-conditional lookup table and a fresh signature, and T-494's result argues against it. Don't mark ADR-0060 or ADR-0061 ACCEPTED. Don't apply any epoch-12 repair without ADR-0055's conditions AND the GG-224 protocol. Don't quote any epoch-12 P&L or edge figure as production-authoritative until 11.1 lands and its durability check passes. Don't run any clean-vs-corrupted comparison without pre-registering it. Don't re-investigate GG-203 in-repo — the ruled-out list is exhaustive. Don't kill the price-archive cron (`deploy/cron.conf:347-348`) — it feeds T-488 and T-494, not just Phase 2. Don't relabel a pre-registered verdict after seeing it. **Don't recommend against a sport or a family on the strength of a finding — operator doctrine 2026-08-21, reaffirmed 2026-08-27: MLB, NBA, NFL and NHL are all being built; which cells calibrate edge is discovered per-cell by the engine, working forward, never decided in advance.**
+Don't unpark `SCALING_MANDATE_PARKED.md`. Don't promote `assert_ledger_invariants.py` to `--strict`. **Don't touch sizing or any `kelly_fraction` without an ADR** — a nonzero T1 Kelly needs ADR-0048's edge-conditional lookup table and a fresh signature, and T-494 argues against it. Don't build ADR-0060's option (c) — accepted as target, deferred by design. Don't close GG-224 on ADR-0061's acceptance. Don't relabel box 2.3's INCONCLUSIVE verdict. Don't adjudicate a decision request. Don't run a clean-vs-corrupted comparison without pre-registering it. Don't re-investigate GG-203 in-repo. Don't kill the price-archive cron (`deploy/cron.conf:347-348`). Don't repair a derived file: establish provenance first (GG-228). Don't work from the shared `main` checkout. Don't land red work to clear a backlog. **Don't recommend against a sport or a family on the strength of a finding — operator doctrine 2026-08-21, reaffirmed 2026-08-27.**
 
-**Retired instruction:** "Don't reopen T1." Superseded 2026-08-25. Kept here so a future window does not re-kill it from an old handoff.
+**Retired:** "Don't reopen T1." Superseded 2026-08-25.
