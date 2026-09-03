@@ -2,6 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
+**Last reviewed:** 2026-09-03T14:20:51Z (T-514 — T-514 landing-and-hygiene: landed T-509, installed ACTIVE_QUEUE.md, fixed GG-235, finished T-511 close-out) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1420.md` for full session detail.
 **Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
 **Last reviewed:** 2026-09-03T14:24:00Z (T-512 — T-512: recorded ADR-0060/0061/0062 + APR-0033 sign-offs and two decision records; PR #126 open, merge blocked by permission classifier) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1424.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
