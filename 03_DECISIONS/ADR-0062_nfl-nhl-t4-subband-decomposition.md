@@ -1,6 +1,6 @@
 # ADR-0062: NFL/NHL T4 Sub-Band Decomposition — Names, Roster, Epoch Inheritance
 
-**Status:** PROPOSED — draft only. Not authorized to implement. Adding, renaming, or removing any `ExecutionBand` member, touching `market_type_registry.py`, or setting any `kelly_fraction` requires a separate task under a future ADR-0062 ACCEPTED (Hard Rule 3, Hard Rule 11).
+**Status:** ACCEPTED — 2026-09-03 (operator, in-session sign-off; T-512, worktree `session/20260903T002904Z-record-signoffs-20260903`; same pre-granted pattern as ADR-0050 and ADR-0059). D1 naming, D2 roster, D3 fresh-epoch-per-sport, and D4 projection are all accepted as written. This signature authorizes the scaffolding build (15.1) only — it authorizes NO `kelly_fraction` and NO cell promotion. Two conditions travel with the signature and an unresolved internal conflict is recorded, not picked: see § 9.
 
 **Date:** 2026-09-01
 **Author:** Claude (worktree `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr`, T-510)
@@ -110,4 +110,31 @@ This does not itself answer the open operator question of how many cells must cl
 
 ## 8. Sign-off
 
-Status: **PROPOSED**. Awaiting operator review. Not authorized for implementation.
+Status: **ACCEPTED**, 2026-09-03. See § 9 for the accepted scope, the conditions attached, and
+the recorded-not-resolved BOUNDARY conflict.
+
+---
+
+## 9. Sign-off detail (2026-09-03, T-512)
+
+**ACCEPTED as written.** D1 naming, D2 roster, D3 fresh-epoch-1-per-sport, and D4 projection are
+all accepted.
+
+**Two conditions travel with the signature:**
+
+(i) **EVENT stays DEFERRED for both sports** pending verification of each sport's C1 ingestion
+mechanism (push vs. poll). § 4 declines to assert live-or-blocked status without that
+verification. This signature does not override that — EVENT is not authorized by this
+acceptance.
+
+(ii) **§ 4 and § 6 disagree about BOUNDARY, and this signature does not resolve it.** § 4 calls
+BOUNDARY "scoped only... [n]either is being authorized to build here" — the same not-yet-
+authorized posture as MLB's own `T4M-BOUNDARY`. § 6's 21-cell projection nonetheless counts
+BOUNDARY among the "authorization-eligible sub-bands" contributing to the 12 (NFL) + 9 (NHL) = 21
+subtotal. **This conflict is recorded here as unresolved-at-signature and routed to 15.1 — no
+reading is picked in this sign-off.** The implementing session must resolve which reading governs
+before treating BOUNDARY as either buildable or merely name-reservable.
+
+**This signature authorizes the scaffolding build (15.1) only.** It authorizes NO
+`kelly_fraction` value and NO `CellStatus` promotion for any cell this ADR's roster would create
+— every cell, once built, starts `NOT_IMPLEMENTED`, exactly as § 6 already states.
