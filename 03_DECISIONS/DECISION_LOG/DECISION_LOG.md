@@ -1216,3 +1216,9 @@ logic_epoch.py edits named in ADR-0056 §§2-4. T-474 proceeds on that basis.
 8. Did not touch any `kelly_fraction`, cell status, ledger row, or `ExecutionBand` member; did not implement ADR-0054(b); did not act on any Wave 15 authorization.
 
 | 2026-09-03 | **T-514: finished T-511's close-out — T-511's SESSION_CLAIMS.md row had no closure entry (only the original open claim); appended one, verified against T-511's actual single commit `a036f67` (`git merge-base --is-ancestor a036f67 origin/main` → exit 0). Confirmed T-511's DECISION_LOG entry exists and matches `a036f67` exactly, and its handoff artifact (`SESSION_HANDOFF_20260902_2357.md`) is an honest, non-fabricated truncation record. The session-end Step 1A judgment-calls row remains genuinely absent and was not reconstructed, per instruction not to invent a retrospective account.** No `kelly_fraction`/cell status/ledger row/`ExecutionBand` touched; ADR-0054(b) not implemented; no Wave 15 action taken. | T-511, GG-234, GG-222 | Claude (worktree `session/20260903T003035Z-landing-and-hygiene`, T-514) |
+
+## 2026-09-03 — T-514: installed current ACTIVE_QUEUE.md (Deliverable 1)
+
+**Task:** T-514/GG-236 — Deliverable 1: `origin/main`'s tracked `04_EXECUTION/ACTIVE_QUEUE.md` was stale (Wave 11); the shared main checkout held a newer uncommitted working copy.
+
+| 2026-09-03 | **T-514: installed the shared main checkout's uncommitted `ACTIVE_QUEUE.md` working copy over `origin/main`'s stale Wave-11 tracked copy (commit `124c37f`). Confirmed exactly one queue file exists post-install (`find . -iname '*ACTIVE_QUEUE*'` → single match, `./04_EXECUTION/ACTIVE_QUEUE.md`).** No `kelly_fraction`/cell status/ledger row/`ExecutionBand` touched. | T-509 | Claude (worktree `session/20260903T003035Z-landing-and-hygiene`, T-514) |
