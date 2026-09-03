@@ -414,3 +414,4 @@
 | 2026-09-02T01:24:34Z | T-510 | MERGED: NO — branch `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr` awaiting merge — T-510: drafted ADR-0062 (PROPOSED) resolving GG-226 NFL/NHL T4 sub-band naming block; GG-233 registered (commit `38b66d0`) |
 | 2026-09-02T01:30:00Z | T-510 | CLOSED — branch `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr` merged to `main` via fast-forward push (no `src/` changed this session; MICRO fast-path applied despite STANDARD tier label). HEAD `b05ae38` confirmed ancestor of `origin/main` via `session_end_timer.sh merge-check`. |
 | 2026-09-03T00:29:28Z | T-512 / TBD | T-512: record 4 sign-offs (ADR-0060/0061/0062 status flips, APR-0033 accept) |
+| 2026-09-03T00:30:04Z | T-513 / GG-235 | T-513: ADR-0054(b) re-key LogicEpochBoundary.bands_affected to (MarketType, band) cells |
