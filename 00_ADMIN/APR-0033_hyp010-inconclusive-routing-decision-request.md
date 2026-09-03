@@ -1,6 +1,6 @@
 # APR-0033 — HYP-010 Phase 2 box 2.4: routing when the gate returns INCONCLUSIVE twice (GG-221)
 
-**Status:** DECISION REQUEST — not adjudicated in-session. Presents options; does not select one.
+**Status:** DECISION REQUEST — not adjudicated at drafting time; presented options, did not select one. **See Addendum (2026-09-03, T-517): ACCEPTED, Option 3 selected.**
 **Touches (if accepted):** `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md` box 2.4 and the "Note on model
 class" that follows it. No file is modified by this document itself beyond this proposal.
 **Drafted:** 2026-08-28, T-500/GG-221
@@ -99,3 +99,20 @@ This document does not choose among the three options above, does not amend `HYP
 verdicts, and does not touch `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`'s "Note on model class" text.
 Box 2.4 remains marked N/A pending this decision. Per Hard Rule 11, resolving this is out of scope for
 T-500/GG-221 — registered and stopped here for the operator.
+
+---
+
+## Addendum (2026-09-03, T-517) — decision recorded
+
+**Operator selected Option 3.** Sign-off given verbally in-session ("Yes - you have my operator sign off.
+Proceed.") and formally recorded in `00_ADMIN/APPROVALS_REGISTER.md`'s APR-0033 row (ACCEPTED — Option 3,
+2026-09-03) before any downstream work proceeded, consistent with this project's register-is-source-of-truth
+convention for the GG-126 desync failure class.
+
+Effective immediately: Phase 2 reroutes to moneyline-first (`KXMLBGAME`, LR per ADR-0004, no distribution
+fit) via the same infrastructure the FALSIFIED branch would have used. HYP-010 itself is **not** amended —
+both its box 2.3 verdicts (Poisson `T-487/EXP-022`, NB `T-500/EXP-025`) remain recorded as INCONCLUSIVE —
+EXTEND ARCHIVE in `05_RESEARCH_EXPERIMENTS/HYPOTHESES.md`, unchanged by this addendum, per Option 3's own
+premise of decoupling the routing decision from the verdict label. This addendum does not reopen Options 1
+or 2, and does not itself edit `MARKET_EXPANSION_ACTION_PLAN.md` — that re-scope is a separate tracked step
+(T-517 Deliverable 1).
