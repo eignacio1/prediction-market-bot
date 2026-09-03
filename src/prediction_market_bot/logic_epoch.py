@@ -56,7 +56,7 @@ Boundary selection (why GG-100 is NOT a boundary):
   resolving commit's actual diff (not the prose description alone) —
   `clean_epoch_floor_for_band()` and `is_clean_for_band()` use it to give
   each band its own effective clean-epoch floor: the most recent boundary
-  that *actually changed that band's write path*, per the ALL_BANDS
+  that *actually changed that band's write path*, per the ALL_CELLS
   sentinel for boundaries proven to touch every band (e.g. GG-077, which
   patched the shared paper_trader.py::open_position() unconditionally
   before any band-gate existed). A band whose write path a given fix never
@@ -66,6 +66,21 @@ Boundary selection (why GG-100 is NOT a boundary):
   verified from the diff, not assumed — it can still undercount but must
   never overcount. See GOVERNANCE_GAP_LOG.md GG-124 and
   ITERATION_PLAN_MC_REMEDIATION_2026-07-22.md Window C (C2).
+
+  Cell re-key (ADR-0054(b), 2026-09-03): `bands_affected` elements are now
+  `(MarketType, band)` cell keys (or the `ALL_CELLS` sentinel), not bare
+  band strings — T-509/ADR-0054(a) made MAIN's cell-aware measurement live
+  in assert_ledger_invariants.py/run_band_monitor.py, and a boundary scoped
+  only to a band string cannot express "this fix touched MLB's T1 cell but
+  not some other market type's T1 cell" once more than one market type can
+  share a band. `clean_epoch_floor_for_cell()`/`is_clean_for_cell()` are
+  the new cell-aware entrypoints. `clean_epoch_floor_for_band()`/
+  `is_clean_for_band()` are preserved with their original signatures for
+  their five existing external callers (band-only, no market-type
+  argument) — each now returns the most conservative (latest) floor across
+  every cell that matches the given band string, so a caller with no cell
+  information gets the safest available answer rather than an arbitrary
+  one, consistent with this register's asymmetric-risk posture.
 
 Deploy note:
   This module is a static, hand-maintained register, not something derived
@@ -90,13 +105,31 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import NamedTuple
 
+from prediction_market_bot.c5_execution.market_type_registry import MarketType
+
+# ADR-0054(b): bands_affected re-keyed from bare band strings to
+# (MarketType, band) cell keys. All twelve tracked boundaries below predate
+# both NFL (T-474, 2026-08-21) and NHL (T-495, 2026-08-25) having any
+# registered cell, and predate ADR-0062 entirely — no boundary here is
+# scoped to a cell that did not exist at the time it was set. MLB and NBA
+# are the only families in scope for any of these twelve. NBA_PLAYER_POINTS'
+# sole-ever-registered cell (T4_IN_PLAY, bare band "T4") never overlaps any
+# of the four band strings these boundaries actually gate on ("T1", "T2",
+# "T3", "T4M-PROJ") at any point in the registry's history, and no other MLB
+# family besides MLB_PLAYER_PROP_HITS was an implemented cell until T-504/
+# GG-226 (2026-08-29) — long after every boundary below. So every
+# band-specific (non-ALL_CELLS) boundary is narrowly and defensibly scoped
+# to MLB_PLAYER_PROP_HITS alone; see each boundary's own comment for the
+# per-entry justification. See DECISION_LOG.md for this session's entry.
+CellKey = tuple[MarketType, str]
 
 # Sentinel for LogicEpochBoundary.bands_affected: this boundary's resolving
-# commit touched shared write-path code unconditionally (no band-gate existed
-# yet), so it must be treated as having touched every band — known ones and
-# any added later. Verified per-boundary from the actual commit diff, not
-# assumed from the resolving gap's prose description (GG-124).
-ALL_BANDS = "*"
+# commit touched shared write-path code unconditionally (no band-gate/no
+# cell-gate existed yet), so it must be treated as having touched every
+# cell — known ones and any added later, in any market type. Verified
+# per-boundary from the actual commit diff, not assumed from the resolving
+# gap's prose description (GG-124; generalized band->cell per ADR-0054(b)).
+ALL_CELLS = "*"
 
 
 class LogicEpochBoundary(NamedTuple):
@@ -105,10 +138,17 @@ class LogicEpochBoundary(NamedTuple):
     commit_sha: str
     commit_utc: datetime
     description: str
-    # Bands whose write path this boundary's resolving commit actually
-    # changed, per direct git-diff verification — {ALL_BANDS} for a
-    # commit proven to touch shared/unconditional code (GG-124, Window C).
-    bands_affected: frozenset[str] = frozenset({ALL_BANDS})
+    # Cells whose write path this boundary's resolving commit actually
+    # changed, per direct git-diff verification — {ALL_CELLS} for a
+    # commit proven to touch shared/unconditional code (GG-124, Window C;
+    # ADR-0054(b)). Elements are either (MarketType, band) cell keys or the
+    # ALL_CELLS sentinel. A historical boundary is never scoped to a cell
+    # that did not exist when it was set (see module-level note above) —
+    # scope wider (toward ALL_CELLS) when a narrower cell scope cannot be
+    # positively justified from the diff; the failure mode is asymmetric
+    # (ADR-0054(b) sign-off): too-wide only costs sample. too-narrow
+    # silently leaves dirty rows inside a cohort that reports itself clean.
+    bands_affected: frozenset[CellKey | str] = frozenset({ALL_CELLS})
 
 
 # Ordered chronologically (ascending commit_utc). epoch N is active for any
@@ -126,8 +166,12 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "NO-side edge signal); fixed to bidirectional direction/sizing "
             "in run_t4_mlb_live.py."
         ),
-        # git show --stat 47ada94a: run_t4_mlb_live.py only.
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # git show --stat 47ada94a: run_t4_mlb_live.py only. run_t4_mlb_live.py
+        # is MLB T4's only live engine; no other MLB family was an
+        # implemented cell until T-504/GG-226 (2026-08-29), and NBA never
+        # traded T4M-PROJ (NBA_PLAYER_POINTS' sole cell is bare-band "T4",
+        # T4_IN_PLAY) — ADR-0054(b) scope: narrow to MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
     LogicEpochBoundary(
         epoch=3,
@@ -145,8 +189,12 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # git show 0797c320: paper_trader.py::open_position() changed
         # unconditionally — no band-gate existed yet, so this touches every
         # band's write path (T1/T2/T3 via run_mlb_paper_trade.py, and
-        # T4M-PROJ via the shared open_position() change).
-        bands_affected=frozenset({ALL_BANDS}),
+        # T4M-PROJ via the shared open_position() change). ADR-0054(b) named
+        # this boundary explicitly as needing the all-cells marking: the
+        # commit touched shared, unconditional open_position() code before
+        # any cell-gate existed — every cell in every market type, known or
+        # future, is in scope. No narrower justification is possible.
+        bands_affected=frozenset({ALL_CELLS}),
     ),
     LogicEpochBoundary(
         epoch=4,
@@ -176,8 +224,11 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "of T4M-PROJ's book, over continuing to accumulate on the "
             "biased formula."
         ),
-        # git show 91111b7d: explicit `band == "T4M-PROJ"` gate.
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # git show 91111b7d: explicit `band == "T4M-PROJ"` gate — MLB T4's
+        # only live engine (run_t4_mlb_live.py); ADR-0054(b) scope: narrow
+        # to MLB_PLAYER_PROP_HITS (see epoch-2 boundary's comment above for
+        # the full NBA/other-MLB-family exclusion reasoning, unchanged here).
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
     LogicEpochBoundary(
         epoch=5,
@@ -207,8 +258,10 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "(GOVERNANCE_GAP_LOG.md), DECISION_LOG.md 2026-07-15."
         ),
         # git show 53a92089: new `elif band == "T1":` branch added;
-        # pre-existing `elif band == "T4M-PROJ":` branch unchanged.
-        bands_affected=frozenset({"T1"}),
+        # pre-existing `elif band == "T4M-PROJ":` branch unchanged. T1 was
+        # only ever an MLB band at this date (no other family implemented);
+        # ADR-0054(b) scope: narrow to MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T1")}),
     ),
     LogicEpochBoundary(
         epoch=6,
@@ -253,7 +306,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         ),
         # git show cc887e88: run_t2_mlb_sameday.py only; no corresponding
         # paper_trader.py band-gate change (T2 has no NO-direction branch).
-        bands_affected=frozenset({"T2"}),
+        # run_t2_mlb_sameday.py is MLB-only; ADR-0054(b) scope: narrow to
+        # MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T2")}),
     ),
     LogicEpochBoundary(
         epoch=7,
@@ -310,8 +365,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         ),
         # git show f961fba6: p_hits_gte_threshold() / run_t4_mlb_live.py —
         # T4M-PROJ is the only band whose write path ADR-0047 changes
-        # (explicit in this boundary's own description above).
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # (explicit in this boundary's own description above). MLB T4's
+        # only live engine; ADR-0054(b) scope: narrow to MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
     LogicEpochBoundary(
         epoch=8,
@@ -357,8 +413,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "distinct raw-vs-shrunk. See GG-105/GG-124 addenda and "
             "DECISION_LOG.md 2026-07-19."
         ),
-        # Same resolving commit/gap as epoch 7 — T4M-PROJ only.
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # Same resolving commit/gap as epoch 7 — T4M-PROJ only; ADR-0054(b)
+        # scope: narrow to MLB_PLAYER_PROP_HITS (same reasoning as epoch 7).
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
     LogicEpochBoundary(
         epoch=9,
@@ -393,8 +450,16 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         ),
         # git show 6be807f: execution_bands.py (T1_MULTI_DAY, T2_SAME_DAY,
         # T3_PRE_TIP, T4M_PROJ kelly_fraction fields) + run_t4_mlb_live.py
-        # (KELLY_T4 constant) — all four named bands' write paths changed.
-        bands_affected=frozenset({"T1", "T2", "T3", "T4M-PROJ"}),
+        # (KELLY_T4 constant) — all four named bands' write paths changed,
+        # all four MLB-only at this date; ADR-0054(b) scope: narrow each to
+        # MLB_PLAYER_PROP_HITS (four cells, not ALL_CELLS — execution_bands.py
+        # is keyed per band, not unconditional shared code).
+        bands_affected=frozenset({
+            (MarketType.MLB_PLAYER_PROP_HITS, "T1"),
+            (MarketType.MLB_PLAYER_PROP_HITS, "T2"),
+            (MarketType.MLB_PLAYER_PROP_HITS, "T3"),
+            (MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ"),
+        }),
     ),
     LogicEpochBoundary(
         epoch=10,
@@ -414,7 +479,7 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
             "recommended_direction against gross_edge's sign when present "
             "on the record. risk.py::evaluate_forecast() is shared, "
             "unconditional code called identically by every band (no "
-            "band-gate around CHECK 3/4b), matching the ALL_BANDS "
+            "band-gate around CHECK 3/4b), matching the ALL_CELLS "
             "precedent set by GG-077's boundary. Correctness fix only — "
             "ADR-0048's kelly_fraction=0 for T1/T2/T3/T4M-PROJ is "
             "unchanged; no sizing goes live at this boundary. DS sign-off: "
@@ -423,7 +488,10 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         ),
         # git show 1b0a8f83: risk.py::evaluate_forecast() CHECK 3/CHECK 4b —
         # shared, unconditional across every band; no band-gate exists.
-        bands_affected=frozenset({ALL_BANDS}),
+        # ADR-0054(b): matches the GG-077/epoch-3 all-cells precedent —
+        # shared, unconditional code with no cell-gate is in scope for
+        # every cell in every market type, known or future.
+        bands_affected=frozenset({ALL_CELLS}),
     ),
     LogicEpochBoundary(
         epoch=11,
@@ -467,8 +535,9 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # measurement_stake_and_stratum(), entry_price_paid/price_stratum
         # stamping) + paper_trader.py (field passthrough). Supersedes the
         # b7ff281 commit_sha this boundary originally recorded — see the
-        # GG-148 note in the description above.
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # GG-148 note in the description above. MLB T4's only live engine;
+        # ADR-0054(b) scope: narrow to MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
     LogicEpochBoundary(
         epoch=12,
@@ -520,7 +589,10 @@ _BOUNDARIES: tuple[LogicEpochBoundary, ...] = (
         # git show 66bb0d3: run_t4_mlb_live.py (_find_open_position_
         # opposite_direction, _t1_open_position_opposite_direction, two new
         # checks in _run_cycle) + 8 new unit tests + retroactive tagger.
-        bands_affected=frozenset({"T4M-PROJ"}),
+        # MLB T4's only live engine, and the description above states
+        # "Bands affected: T4M-PROJ only (MAIN untouched)" explicitly;
+        # ADR-0054(b) scope: narrow to MLB_PLAYER_PROP_HITS.
+        bands_affected=frozenset({(MarketType.MLB_PLAYER_PROP_HITS, "T4M-PROJ")}),
     ),
 )
 
@@ -557,27 +629,67 @@ def get_boundaries() -> tuple[LogicEpochBoundary, ...]:
     return _BOUNDARIES
 
 
-def clean_epoch_floor_for_band(band: str) -> int:
+def clean_epoch_floor_for_cell(market_type: MarketType, band: str) -> int:
     """Most recent tracked boundary whose resolving commit actually touched
-    `band`'s write path (GG-124, Window C, 2026-07-23) — the per-band
-    replacement for comparing a stamped `logic_epoch` against the single
-    global `CURRENT_LOGIC_EPOCH`. A boundary counts if `band` is in its
-    `bands_affected`, or if that set contains `ALL_BANDS` (a commit proven
-    to touch shared/unconditional write-path code). Falls back to 1
-    (pre-history floor) if no tracked boundary ever touched this band.
+    the `(market_type, band)` cell's write path (ADR-0054(b), 2026-09-03,
+    generalizing GG-124's per-band floor to per-cell). A boundary counts if
+    `(market_type, band)` is in its `bands_affected`, or if that set
+    contains `ALL_CELLS` (a commit proven to touch shared/unconditional
+    write-path code). Falls back to 1 (pre-history floor) if no tracked
+    boundary ever touched this cell.
     """
     floor = 1
     for boundary in _BOUNDARIES:
-        if ALL_BANDS in boundary.bands_affected or band in boundary.bands_affected:
+        if ALL_CELLS in boundary.bands_affected or (market_type, band) in boundary.bands_affected:
+            floor = boundary.epoch
+    return floor
+
+
+def is_clean_for_cell(stamped_epoch: int | None, market_type: MarketType, band: str) -> bool:
+    """True iff a position's stamped `logic_epoch` reflects fully-correct,
+    currently-deployed write-path logic for the `(market_type, band)` cell
+    specifically — i.e. it is at or past that cell's own clean-epoch floor,
+    not necessarily `CURRENT_LOGIC_EPOCH` globally (ADR-0054(b)).
+    """
+    if stamped_epoch is None:
+        return False
+    return stamped_epoch >= clean_epoch_floor_for_cell(market_type, band)
+
+
+def clean_epoch_floor_for_band(band: str) -> int:
+    """Most recent tracked boundary whose resolving commit actually touched
+    `band`'s write path in ANY market type (GG-124, Window C, 2026-07-23;
+    re-scoped conservatively for cell-keyed `bands_affected` by ADR-0054(b),
+    2026-09-03). Preserved for this function's five existing external
+    callers, all of which have no market-type information to give — a
+    boundary counts if `band` matches the band half of any `(MarketType,
+    band)` cell key in its `bands_affected`, or if that set contains
+    `ALL_CELLS` (a commit proven to touch shared/unconditional write-path
+    code). This is deliberately the WIDEST floor across every cell sharing
+    `band`, never the narrowest: a caller with no cell context must get the
+    conservative answer, per this register's asymmetric-risk posture (a
+    too-wide floor only costs sample; a too-narrow one risks passing a
+    dirty row as clean). For a cell-aware caller, prefer
+    `clean_epoch_floor_for_cell()` instead. Falls back to 1 (pre-history
+    floor) if no tracked boundary ever touched this band in any cell.
+    """
+    floor = 1
+    for boundary in _BOUNDARIES:
+        touches_band = ALL_CELLS in boundary.bands_affected or any(
+            isinstance(key, tuple) and key[1] == band for key in boundary.bands_affected
+        )
+        if touches_band:
             floor = boundary.epoch
     return floor
 
 
 def is_clean_for_band(stamped_epoch: int | None, band: str) -> bool:
     """True iff a position's stamped `logic_epoch` reflects fully-correct,
-    currently-deployed write-path logic for `band` specifically — i.e. it
-    is at or past `band`'s own clean-epoch floor, not necessarily
-    `CURRENT_LOGIC_EPOCH` globally (GG-124 remediation).
+    currently-deployed write-path logic for `band` specifically, in ANY
+    market type — i.e. it is at or past `band`'s own (conservative,
+    cell-agnostic) clean-epoch floor, not necessarily `CURRENT_LOGIC_EPOCH`
+    globally (GG-124 remediation; re-scoped by ADR-0054(b)). For a
+    cell-aware caller, prefer `is_clean_for_cell()` instead.
     """
     if stamped_epoch is None:
         return False
