@@ -2,7 +2,8 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
+**Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
+**Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

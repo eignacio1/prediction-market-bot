@@ -32,13 +32,20 @@ if [ -n "$(git diff --cached --name-only)" ]; then
   exit 1
 fi
 
-git fetch --quiet origin main
+# Fetch ALL origin branches, not just main, so check_id_collision (GG-236)
+# can see a GG-/ADR- header registered only on a pushed-but-unlanded session
+# branch — the blind spot that predicted, and then still failed to prevent,
+# T-513's GG-237 near-collision. main is still the only branch we rebase
+# onto below; the extra remote-tracking refs are read-only collision-scan
+# input, nothing merges from them.
+git fetch --quiet origin '+refs/heads/*:refs/remotes/origin/*' || git fetch --quiet origin main
 git pull --quiet --rebase origin main || true
 
 # Pre-claim collision check (GG-107 root-cause fix): refuse to claim any
-# T-/GG-/ADR- ID already registered in TODO_NEXT.md, SESSION_CLAIMS.md, or
-# DECISION_LOG.md. Runs against the just-fetched/rebased state so it checks
-# the true current registry, not a stale local view.
+# T-/GG-/ADR- ID already registered in TODO_NEXT.md, SESSION_CLAIMS.md,
+# DECISION_LOG.md, or (GG-236) canonically headered on an unlanded branch.
+# Runs against the just-fetched/rebased state so it checks the true current
+# registry, not a stale local view.
 source "$SCRIPT_DIR/lib/check_id_collision.sh"
 if ! check_id_collision "$RANGE" "$REPO_ROOT"; then
   echo "❌ Refusing claim: one or more IDs in \"$RANGE\" are already registered/in use (see COLLISION lines above)." >&2

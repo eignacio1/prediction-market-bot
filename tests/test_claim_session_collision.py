@@ -7,6 +7,7 @@ tmp dir, so the collision check is exercised without touching a live remote.
 """
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -148,6 +149,91 @@ def test_no_ids_in_range_is_a_noop_pass(tmp_path):
     result = _run_check(tmp_path, "TBD")
 
     assert result.returncode == 0
+
+
+def _run_git(repo: Path, *args: str) -> None:
+    env = {
+        **os.environ,
+        "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t",
+        "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t",
+    }
+    subprocess.run(
+        ["git", "-C", str(repo), *args],
+        check=True, capture_output=True, text=True, env=env,
+    )
+
+
+def test_detects_gg_id_registered_only_on_unlanded_branch(tmp_path):
+    # GG-236: claim_session.sh's collision check only ever grepped the gap
+    # log AS CHECKED OUT ON THE CURRENT BRANCH — it could not see a "### GG-NNN"
+    # header that another session had already committed and pushed to a
+    # session branch that simply hasn't landed on main yet. This is the exact
+    # mechanism behind every GG-162 collision this phase, and it predicted
+    # T-513's GG-237 near-collision in advance yet T-513 still hit it, because
+    # detection stopped at the working tree.
+    #
+    # This test pins that failure: GG-9002 is given a canonical header on a
+    # branch ("session/other") that is never checked out or merged into the
+    # tree we run the check against (main, sitting at a commit with NO such
+    # header). Old behavior: no collision (bug). Fixed behavior: collision.
+    _run_git(tmp_path, "init", "--quiet", "--initial-branch=main")
+
+    decisions = tmp_path / "03_DECISIONS"
+    decisions.mkdir(parents=True, exist_ok=True)
+    (decisions / "GOVERNANCE_GAP_LOG.md").write_text("### GG-9000 — unrelated existing gap\n**Status:** OPEN · **Severity:** LOW\n")
+    _make_registries(tmp_path)
+    _run_git(tmp_path, "add", "-A")
+    _run_git(tmp_path, "commit", "--quiet", "-m", "main: baseline gap log, no GG-9002")
+
+    _run_git(tmp_path, "checkout", "--quiet", "-b", "session/other")
+    (decisions / "GOVERNANCE_GAP_LOG.md").write_text(
+        "### GG-9000 — unrelated existing gap\n**Status:** OPEN · **Severity:** LOW\n"
+        "### GG-9002 — registered by a concurrent, unlanded session\n**Status:** OPEN · **Severity:** LOW\n"
+    )
+    _run_git(tmp_path, "add", "-A")
+    _run_git(tmp_path, "commit", "--quiet", "-m", "session/other: register GG-9002 (not yet merged to main)")
+
+    # Back on main, whose working tree and HEAD both lack GG-9002 entirely —
+    # this reproduces "another session's branch is pushed but unlanded" from
+    # the checking session's point of view.
+    _run_git(tmp_path, "checkout", "--quiet", "main")
+
+    result = _run_check(tmp_path, "GG-9002")
+
+    assert result.returncode != 0, (
+        "GG-236 regression: GG-9002 exists only on branch 'session/other' and "
+        "must be reported as taken, but check_id_collision returned success. "
+        f"stdout={result.stdout!r} stderr={result.stderr!r}"
+    )
+    assert "COLLISION: GG-9002" in result.stderr
+    assert "session/other" in result.stderr
+
+
+def test_allows_gg_id_with_no_header_anywhere_including_branches(tmp_path):
+    # Sanity complement to the regression test above: a genuinely fresh GG-
+    # number, absent from every branch tip, must still be allowed — the
+    # branch scan must not over-block.
+    _run_git(tmp_path, "init", "--quiet", "--initial-branch=main")
+    decisions = tmp_path / "03_DECISIONS"
+    decisions.mkdir(parents=True, exist_ok=True)
+    (decisions / "GOVERNANCE_GAP_LOG.md").write_text("### GG-9000 — unrelated existing gap\n**Status:** OPEN · **Severity:** LOW\n")
+    _make_registries(tmp_path)
+    _run_git(tmp_path, "add", "-A")
+    _run_git(tmp_path, "commit", "--quiet", "-m", "main: baseline gap log")
+
+    _run_git(tmp_path, "checkout", "--quiet", "-b", "session/unrelated")
+    (decisions / "GOVERNANCE_GAP_LOG.md").write_text(
+        "### GG-9000 — unrelated existing gap\n**Status:** OPEN · **Severity:** LOW\n"
+        "### GG-9003 — a different fresh gap, not the one under test\n**Status:** OPEN · **Severity:** LOW\n"
+    )
+    _run_git(tmp_path, "add", "-A")
+    _run_git(tmp_path, "commit", "--quiet", "-m", "session/unrelated: register GG-9003")
+    _run_git(tmp_path, "checkout", "--quiet", "main")
+
+    result = _run_check(tmp_path, "GG-9004")
+
+    assert result.returncode == 0
+    assert result.stderr == ""
 
 
 def test_partial_id_does_not_false_positive(tmp_path):
