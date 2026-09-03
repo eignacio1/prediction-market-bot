@@ -1,10 +1,10 @@
 # ADR-0060 — NFR-03 Band-Level Kill-Switch Latency Failure: Three Remedies (Decision Request)
 
-**Status:** PROPOSED — drafted 2026-08-27 (T-498/session `t498-adr0059-nfr03-latency`) under
-explicit task instruction. Not yet ACCEPTED. This document does not change a cadence, a
-threshold, a sleep interval, or any kill-switch code. It does not revise NFR-03's text in the
-spec. It presents three remedies, states their costs and blast radii, and recommends one for
-operator decision — it does not decide.
+**Status:** ACCEPTED — 2026-09-03 (operator, in-session sign-off; T-512, worktree
+`session/20260903T002904Z-record-signoffs-20260903`; same pre-granted pattern as ADR-0050 and
+ADR-0059). Originally drafted PROPOSED 2026-08-27 (T-498/session
+`t498-adr0059-nfr03-latency`). See § 8 for the accepted scope, the trigger condition, and what
+this signature does NOT authorize.
 **Depends on / builds on:** `GG-038` (T4 kill-switch SLA gap, OPEN, HIGH — carries the full
 measured data this ADR reasons from, including the 2026-08-26 T-489 addendum). `GG-209` (OPEN,
 MEDIUM — T1 has no force-close/flatten path; a separate, adjacent gap this ADR does not attempt
@@ -240,3 +240,30 @@ harness alone — even a well-constructed one, and even one with a large trial c
 Trial count does not compensate for measuring the wrong thing. This is not a new process
 requirement this ADR is proposing; it is a description of what T-489 already had to do by hand to
 find this gap, offered here as a pattern worth repeating deliberately rather than by luck.
+
+---
+
+## 8. Sign-off (2026-09-03, T-512)
+
+**Accepted: option (c), decoupled out-of-band halt, as TARGET ARCHITECTURE. Implementation is
+DEFERRED — this signature does not authorize building it now.** This is § 5's own recommendation;
+this signature does not read broader than it.
+
+Recorded verbatim in substance: (c) is the chosen target architecture. It is NOT authorized to
+build now. **Trigger:** (c) is scoped and authorized when T4M-PROJ's `kelly_fraction` is next
+considered for edge-conditional reactivation under ADR-0048. **Rationale:** current exposure is
+zero (`kelly_fraction=0.0`, confirmed live in `execution_bands.py`), so there is no operational
+urgency; reactivating live sizing on a band with a known, measured, uninterruptible kill-switch
+gap is the point at which this stops being a research finding and becomes live-capital risk.
+
+Options (a) and (b) are NOT adopted. ADR-0054 item (d)'s implementation remains blocked until
+(c) is built.
+
+**Decision owed, recorded but not solved by this signature:** § 6 names two defects no remedy
+option here touches — `run_t4_mlb_live.py` treats a `KILL_SWITCH` approval status identically to
+an ordinary `REJECTED` (T1 branches and self-halts on it; T4 does not), and
+`is_kill_switch_active` is read by zero MLB pipelines. Both are GG-038 TASK 2/3 and both remain
+unstaffed.
+
+GG-209 (T1 force-close/flatten path) is unresolved by this signature — (c), when built, makes it
+easier but does not itself build it.
