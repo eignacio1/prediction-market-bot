@@ -38,3 +38,26 @@ One of your four sign-offs (ADR-0062) has a genuine disagreement between two sec
 ---
 
 *Full technical detail: see `SESSION_HANDOFF_20260903_1424.md` and `DECISION_LOG.md` for this date.*
+
+---
+
+**What changed (T-516):**
+This session's job was to build the football and hockey scaffolding approved earlier this week — but first, a mandatory safety check required confirming that approval had actually landed on the shared main copy of the project, not just on a branch waiting to be merged. It hadn't: the approval document still reads as proposed, not accepted, on the shared copy, and the prior sign-off never made it in. So no building happened, correctly.
+
+**Money impact:** None. No code changed.
+
+**Decision needed?** Yes, eventually: someone needs to either merge the pending approval branch or re-record the acceptance directly, before this build can start.
+
+**Worry flag:** One open item logged (GG-240) — a real, signed-off approval that never made it into the shared record. Not urgent, but it's the reason a spec'd, ready-to-build task is sitting blocked.
+**What changed (GG-236/GG-238):**
+Fixed two bugs in the safety-net scripts that guard against two different sessions accidentally colliding on the same task number, and against a data-integrity checker pointing at the wrong files. Both are now verified working and merged in. Along the way, found the second bug's root cause (stale file paths) repeats in about 23 other places across the codebase — registered as GG-242 for a future session to clean up rather than fixing everything in one sitting.
+
+**Money impact:** None. No ledger row touched, no sizing or bet logic changed.
+
+**Decision needed?** No — nothing needs you today.
+
+**Worry flag:** The 23-file sprawl (GG-242) is worth knowing about even though it's not urgent — it means other scripts may be quietly checking the wrong files the same way GG-238 was, until each one gets triaged.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260903_1912.md` and `DECISION_LOG.md` for this date.*

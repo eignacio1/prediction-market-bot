@@ -4,6 +4,12 @@
 
 
 
+
+<!-- archived from PLAN.md, 2 entries -->
+**Last reviewed:** 2026-09-03T14:20:51Z (T-514 — T-514 landing-and-hygiene: landed T-509, installed ACTIVE_QUEUE.md, fixed GG-235, finished T-511 close-out) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1420.md` for full session detail.
+**Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
+
 <!-- archived from PLAN.md, 2 entries -->
 **Last reviewed:** 2026-08-07 (T-429 — GG-163 ESPN 403 fix + GG-166 game_date write/read remediation, isolated worktree `session/20260807T045158Z-t4-restore-and-correct`, no deliverables-table impact — bugfix/data-integrity remediation of an existing pipeline, not a new Phase 6 deliverable line item). GG-163 restored ESPN access (deployed, verified). GG-166: fixed the write-site (`run_t4_mlb_live.py`) and read-site (`run_resolve_mlb.py`) `game_date` bug, measured a 55.63% (1,220/2,193 closed positions) blast radius, corrected 1,443 ledger positions, recomputed the power-calc baseline (numerically unchanged as expected), and cross-checked against T-421's decoupled outcome store — confirmed the original mechanism fully fixed but found a second, distinct disagreement source, registered as **T-431** (unstaffed). No epoch bump. Full suite: 2827 passed/28 skipped/0 failed. See DECISION_LOG.md 2026-08-07 (T-429 entries), GOVERNANCE_GAP_LOG.md GG-163/GG-166, SESSION_HANDOFF_20260807_0610.md.
 **Last reviewed (prior):** 2026-08-07T05:22:07Z (T-430 — Session-end write-once/generate-rest: SESSION_HANDOFF meta block + generate_session_artifacts.py collapse Last-reviewed chains, claims row, digest, checkpoint) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260807_0522.md` for full session detail.
