@@ -191,6 +191,29 @@ Each hypothesis follows the structure:
 
 ---
 
+## HYP-011 — Moneyline LR forecasts beat market on a selected subset, net of fill cost
+
+| Field | Detail |
+|-------|--------|
+| Research Question | Phase 2 reroute (APR-0033, Option 3): does the production LR class (ADR-0004) generate net-of-fill-cost edge on `KXMLBGAME` (moneyline), the binary-target track HYP-010's own "Note on model class" defines as the reroute destination? |
+| Framing | Decoupled from HYP-010's verdict (APR-0033, Option 3, 2026-09-03): HYP-010 remains INCONCLUSIVE — EXTEND ARCHIVE, unchanged; this hypothesis is pre-registered independently, on its own evidence, not as a consequence of HYP-010 having falsified. |
+| H0 (Null) | An LR model fit on `MLBTeamStatsStore`'s existing rolling series (no new C2 build) produces **P&L per bet ≤ 0, net of fill cost,** over the selected subset where \|model_p − mkt_p\| > 0.010, scored against archived `KXMLBGAME` closing pregame prices. |
+| H1 (Alternative) | P&L per bet > 0 on that subset, net of fill cost, with `clean_n ≥ n*` where `n*` is derived live from the realized mean/sd via `scripts/run_power_calc.py` (APR-0024). |
+| Test method | Fit LR (ADR-0004 production class; no distribution fit — moneyline is a binary target) on `MLBTeamStatsStore`'s existing rolling series — no new C2 matrix, no new ingestion (LL-009). Score against archived `KXMLBGAME` closing pregame prices, TI-01-safe `as_of_date` cutoff (existing production mechanism, not a new one). Bet-selection filter: \|model_p − mkt_p\| > 0.010. Independent unit = the game (moneyline carries exactly one market per game-event, no per-game averaging step needed, unlike the totals track). |
+| **Primary gate** | **P&L/bet > 0 AND `clean_n ≥ n*`, one-sided α=.05, computed NET of fill cost (T-507).** If `clean_n < n*` the verdict is **INCONCLUSIVE — EXTEND ARCHIVE**, explicitly *not* FALSIFIED. A result reported gross-of-fill only is not scored under any of this hypothesis's three verdict states. |
+| **Pre-registered expectation** | **P&L/bet (net of fill cost) in the range +0.003 to +0.015** — set tighter than HYP-010's totals-track band (+0.005 to +0.025), on the reasoning that moneyline sits at the *most*-attended, most efficiently-priced end of the board (CLAUDE.md § "Market efficiency gradient"), so should be expected to produce thinner edge than totals, not equal edge. Not independently measured this session (no `KXMLBGAME` half-spread pull run) — a reasoned prior, correctable against a real half-spread measurement before execution. A result above **+0.020 (net)** should be treated as **suspect and audited for leakage before being believed**, not celebrated. |
+| Falsification condition | P&L/bet ≤ 0, net of fill cost, at `clean_n ≥ n*`. |
+| Secondary (descriptive, **not** a gate) | Paired per-game Brier vs market-implied probability, reported with CI and measured power; never a gate — Brier is underpowered by roughly an order of magnitude relative to P&L/bet at realistic archive sizes (same reasoning as HYP-010's Finding 3). |
+| Consequence if confirmed (PASS) | Phase 2 box 2.6 (`MARKET_EXPANSION_ACTION_PLAN.md`) clears; box 2.7 additional feature/build work authorized, scoped by this run's own results. Evidence for cell `(mlb_moneyline, T1_MULTI_DAY)` specifically — not for any `T4M-*` cell; cell activation still requires its own ADR (ADR-0058). |
+| Consequence if falsified | The moneyline-first track itself is falsified — a different event from HYP-010's own (unchanged) INCONCLUSIVE verdict. Leaves Phase 2 without a currently-defined next reroute target; a new operator decision, not resolved in advance here. |
+| Consequence if INCONCLUSIVE | Continue archiving `KXMLBGAME`; re-run at `n*`. Cadence/time-to-`n*` not yet projected for this market this session — belongs to whoever executes EXP-026, using this archive's actual measured effect size and variance. |
+| Status | ⚪ PRE-REGISTERED (2026-09-03, T-517) — **no model fit, no scoring, no backtest code run this session (LL-009: the pre-registration comes first and it comes alone).** Data source verified live: `KXMLBGAME` captured by the production price-archiver, `deploy/cron.conf:347-348` (confirmed directly this session); volume 30,302 observations as of 2026-08-15 (sourced from HYP-010's own Finding 1 / pre-registration doc, not independently re-counted this session — local archive is empty in this worktree, re-count required before EXP-026 executes). |
+| Experiment(s) | EXP-026 reserved, not yet run (verified free against `04_EXECUTION/ACTIVE_QUEUE.md`'s "Free IDs" hint and repo-wide grep — highest assigned ID in-repo is EXP-025) |
+
+**Pre-registration source:** `05_RESEARCH_EXPERIMENTS/HYP011_moneyline_lr_preregistration_2026-09-03.md`.
+
+---
+
 ## Hypothesis Status Summary
 
 | ID | Hypothesis | Status | Experiment | Target |
@@ -205,6 +228,7 @@ Each hypothesis follows the structure:
 | HYP-008 | T3 CONFIRM filter preserves ≥90% of T1 EV | 🔴 FALSIFIED | EXP-015 | EV ratio 0.84 at drift_std=0.020; T3 useful as FADE gate only |
 | HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | 🟢 CONFIRMED | EXP-016 | Δ = -0.0010; G6 paper evidence valid for playoffs at full confidence |
 | HYP-010 | Team run-total forecasts transfer to a materially more efficient market (P&L/bet > 0 on selected subset) | 🟡 INCONCLUSIVE-EXTEND | EXP-022 (Poisson), EXP-025 (NB1) | Poisson: clean_n=207 vs n*=94,260, mean=−0.0026. NB: clean_n=207 vs n*=44,220, mean=−0.0048. Both not FALSIFIED, not practically extendable |
+| HYP-011 | Moneyline LR forecasts beat market on selected subset, net of fill cost (Phase 2 reroute, APR-0033 Option 3) | ⚪ PRE-REGISTERED | EXP-026 (reserved, not yet run) | Not run — no model fit this session (LL-009); gate must be scored net of fill cost per T-507 or not scored at all |
 
 ---
 
