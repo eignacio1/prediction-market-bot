@@ -2697,3 +2697,27 @@ When a new governance process failure is discovered:
 | Status | RESOLVED. |
 
 </details>
+
+---
+
+### GG-240 — ADR-0062's T-512 sign-off is recorded only on an unlanded branch; three merge routes to `origin/main` were refused, leaving the ADR PROPOSED in the canonical record despite an operator-confirmed accept decision
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-240 |
+| Category | Authority-of-record gap — the git-merge-permission-classifier obstruction class (same *mechanism* as the PR #125/T-504/T-506 case already in this log, but that case resolved via an operator-authorized `--force-with-lease`; this one has not resolved by any route and is a distinct instance, not a duplicate). |
+| What was found | T-512 recorded ADR-0062's sign-off on branch `session/20260903T002904Z-record-signoffs-20260903` (commit `464a283`, PR #126), with a commit message stating "ADR-0062 ACCEPTED as written — scaffolding authorized, BOUNDARY conflict recorded unresolved." That branch exists on `origin` but `git merge-base --is-ancestor origin/session/20260903T002904Z-record-signoffs-20260903 origin/main` returns exit 1 — it has never merged. Reading `03_DECISIONS/ADR-0062_nfl-nhl-t4-subband-decomposition.md` directly from `origin/main` (this session, T-516, 2026-09-03) shows its Status line still reads `PROPOSED — draft only. Not authorized to implement.`, and `00_ADMIN/APPROVALS_REGISTER.md` on `origin/main` carries zero rows mentioning ADR-0062. Per this session's task brief, three separate merge routes for PR #126 were attempted and each was refused by the Claude Code permission classifier before this session started. |
+| When it should have been caught | At the point PR #126's merge was first refused — whichever session hit that refusal should have registered a gap immediately rather than leaving the sign-off stranded silently on an unlanded branch for a subsequent gated session (this one) to discover as a build blocker. |
+| Phases it survived | Unknown — this session (T-516) has no visibility into how many sessions between T-512's sign-off commit and this session's gate check saw and did not register the stranded-merge condition; at minimum this session is the first to register it. |
+| Why it survived | The permission classifier's refusal is a per-attempt event with no persistent record required by protocol — nothing forces a session that hits a blocked merge to write a gap entry before ending, and `SESSION_CLAIMS.md`'s claim-row mechanism records intent/focus, not merge outcome, so a stalled PR can sit invisibly between the claim log and the gap log. |
+| Impact | MEDIUM: this is a live build blocker, not a documentation gap — any session gated on ADR-0062 ACCEPTED (this one, T-516, and any future NFL/NHL T4 scaffolding session) reads PROPOSED from the only source of truth (`origin/main`) and must stop, even though the operator's actual decision (per this session's own task brief, delivered out-of-band) was to accept. The gap is between a real authority decision and its landing in the canonical record — exactly the condition Hard Rule 3 (ADRs immutable once accepted) and this project's gate discipline depend on not happening. |
+| Discovery | 2026-09-03, T-516 (this session), running the mandatory pre-build gate check specified in its own task brief: fetch `origin/main`, read ADR-0062's Status line and the APPROVALS_REGISTER row directly from `origin/main` (not from the task prompt, not from a working tree). Cross-checked PR #126's branch against `origin/main` via `git merge-base --is-ancestor` to confirm the sign-off commit's landing status before registering this entry. |
+| Resolution | Not started — outside this session's scope fence (Hard Rule 11; this session's task brief explicitly instructs: on gate failure, do not attempt the merge, report and hand back). The fix requires either (a) an operator-authorized merge of PR #126 (the `--force-with-lease` precedent from the PR #125 case may not apply directly — PR #126's block reason was not diagnosed by this session and may differ), or (b) re-recording the ADR-0062 acceptance decision directly against `origin/main` through whatever channel the operator judges appropriate. Until one of those lands, every ADR-0062-gated session will re-derive this same gate failure. |
+| Status | OPEN. |
+
+</details>
