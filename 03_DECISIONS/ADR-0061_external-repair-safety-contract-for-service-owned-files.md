@@ -1,14 +1,11 @@
 # ADR-0061 — External-Repair-Safety Contract for Service-Owned Files (Decision Request)
 
-**Status:** PROPOSED — drafted 2026-08-29/30 (T-505/session
-`20260829T190312Z-t505-queue-install-instruments-adr0061`) under explicit task instruction. Not
-yet ACCEPTED. **This document does not implement anything.** It does not change
-`run_t4_mlb_live.py`, `paper_trader.py`, or any other service source. It does not restart any
-service. It enumerates the affected services from source, presents four remedies with blast
-radius and cost for each, and recommends one for operator decision — it does not decide. Hard
-Rule 3 (ADRs are immutable once accepted; a superseding ADR is required before any service
-change ships) applies in the other direction here too: **no service change may ship citing this
-ADR until this ADR itself is ACCEPTED** by the operator.
+**Status:** ACCEPTED — 2026-09-03 (operator, in-session sign-off; T-512, worktree
+`session/20260903T002904Z-record-signoffs-20260903`; same pre-granted pattern as ADR-0050 and
+ADR-0059). Originally drafted PROPOSED 2026-08-29/30 (T-505/session
+`20260829T190312Z-t505-queue-install-instruments-adr0061`). See § 9 for the accepted combination
+and what stays open. Hard Rule 3 still applies going forward: no service change may ship except
+under the combination accepted in § 9.
 **Depends on / builds on:** `GG-224` (OPEN, MEDIUM — the finding this ADR responds to, discovered
 2026-08-28/T-502 during the ADR-0055 D2 repair). `ADR-0055` (epoch-12 ledger repair
 preregistration — the repair whose silent revert produced GG-224's evidence).
@@ -268,3 +265,21 @@ structurally. And none of them retroactively verify that the 2026-08-28 repair's
 beyond the `repair_ref` stamps T-502 specifically re-checked — survived the eventual restart
 intact; that verification, if not already done, is a distinct and smaller follow-on this ADR
 does not attempt.
+
+---
+
+## 9. Sign-off (2026-09-03, T-512)
+
+**Accepted per § 7's recommendation:**
+
+- **Option (c) — stop-repair-start runbook: ADOPTED NOW.** No code change; operational
+  discipline only.
+- **Option (b) — repair scripts must take the existing `PaperTrader._file_lock()`: ADOPTED as a
+  complementary contract.**
+- **Option (a) — diagnostic half (why did the existing reload-before-save not hold?): STAFFED as
+  a follow-on.** The implementation half of (a) is NOT adopted.
+- **Option (d) — service-owned repair endpoints: NOT ADOPTED at this time.**
+
+**GG-224 stays OPEN.** Per § 5, a runbook is not a structural guarantee, and the operator's
+2026-08-29 restart pre-authorization is proof the procedure works when followed, not proof it
+will be followed. This signature does NOT close GG-224.
