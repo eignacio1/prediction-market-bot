@@ -1796,7 +1796,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-184 — `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rather than passing it explicitly
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** PARTIALLY RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -1811,7 +1811,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Why it survived | Explicit scope fence, not a governance failure — T-456 implemented the non-fatal in-scope mitigation instead (a `market_type_defaulted` warning log fires whenever a caller passes `market_type=None`, so any future defaulting is visible in the audit trail without changing call-site behavior). |
 | Impact | None today (single-market-type ledger). Becomes a real mislabeling risk once a second `MarketType` goes ACTIVE and any of the 7 call sites is not updated to pass it explicitly — the position would silently record the wrong cell. |
 | Discovery | Self-identified during T-456 (2026-08-16) via exhaustive call-site grep. |
-| Resolution | Not started. Future task: make `market_type` a required (non-defaulted) parameter on `open_position()`, update all 7 call sites to pass it explicitly, remove the default and its warning log. |
+| Resolution | **2026-09-01 (T-509, ADR-0054(a) §8 item 4):** 1 of 7 call sites fixed — `scripts/replay_harness_t427.py`'s `replay_one()` now passes `market_type=` explicitly instead of relying on the silent default, with a regression test that fails against the old behavior. The fix stopped at this one call site per T-509's explicit scope fence (operator instruction: "STOP and report if [going further] would require changing a shared signature"); `open_position()`'s parameter itself is still optional/defaulted, so the other 6 call sites (`run_mlb_paper_trade.py`, `run_t4_mlb_live.py`, `run_t2_mlb_sameday.py`, `run_t4_live.py`, `run_paper_trade.py`, `t4_live_runner.py`) are unchanged and this gap is not closed. Remaining future task, unchanged: make `market_type` a required (non-defaulted) parameter on `open_position()`, update the other 6 call sites to pass it explicitly, remove the default and its warning log. |
 | Status | OPEN |
 
 </details>
@@ -2581,7 +2581,7 @@ When a new governance process failure is discovered:
 
 ### GG-232 — ADR-0054(a) staffing gap: three named-not-staffed follow-ons (replay-harness `market_type=`, cell-unaware ledger/monitor tooling) sat unstaffed from sign-off to this entry
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** IN PROGRESS · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -2596,7 +2596,31 @@ When a new governance process failure is discovered:
 | Why it survived | Sign-off conditions recorded inside an ADR's own prose are not cross-referenced against `GOVERNANCE_GAP_LOG.md` by any automated check — the same class of gap as GG-230 (a flagged finding sitting in a document nothing re-surfaces). Nothing forces a signed "must be staffed" condition to immediately spawn its own tracked entry. |
 | Impact | MEDIUM. Item 4's silent `market_type` default (GG-184) is confirmed live in `scripts/replay_harness_t427.py::replay_one()` as of this session's investigation — every replayed position was silently attributed to `MLB_PLAYER_PROP_HITS` regardless of its true market type, producing passing-looking replay diffs that never actually verified the field. Items 1/2 (band-scoped, not cell-scoped tooling) under-report coverage against the current 78-cell `(MarketType, ExecutionBand)` registry without raising any alarm, since both tools were built before the registry moved past a single-market-type shape. |
 | Discovery | 2026-09-01, T-509 (this session), assigned directly to staff all three items per the operator's task brief; the absence of any prior GG/T claim for these three items across the 2026-08-26→2026-09-01 window was confirmed by grep against `SESSION_CLAIMS.md` and this log before starting implementation. |
-| Resolution | This session (T-509) stages the fix directly — see `DECISION_LOG.md` 2026-09-01 for the three items' before/after detail. Registering this entry first (per the operator's explicit "write and push as first commit" instruction) so the staffing gap is documented independently of the fix, matching this log's own stated invariant. |
-| Status | OPEN — will be updated to reflect resolution once T-509's implementation and full test suite pass are confirmed in this same session. |
+| Resolution | This session (T-509) stages the fix directly — see `DECISION_LOG.md` 2026-09-01 for the three items' before/after detail. Registering this entry first (per the operator's explicit "write and push as first commit" instruction) so the staffing gap is documented independently of the fix, matching this log's own stated invariant. **2026-09-01 update:** all three §8 items now implemented, tested, and committed on `session/20260901T052401Z-t509-adr0054a-cell-awareness`: item 4 (`8e3182d`) makes `replay_harness_t427.py` pass `market_type=` explicitly to `open_position()`, with a test that fails on the old silent-default behavior; item 2 (`386c6a0`) makes `run_band_monitor.py` cell-aware; item 1 (`066bc8b`) makes `assert_ledger_invariants.py` cell-aware (see `DECISION_LOG.md` 2026-09-01 for the full before/after violation-count comparison against real pulled VPS data). Full suite green: 3001 passed / 28 skipped / 0 failed post-rebase onto `origin/main`. Branch pushed. Awaiting merge to `main`. |
+| Status | IN PROGRESS — implementation complete and pushed to the session branch; will move to RESOLVED once merged to `main` by a subsequent session (this session's scope did not include merging). |
+
+</details>
+
+---
+
+### GG-235 — `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s documented VPS-fetch commands reference filenames that no longer exist on the VPS
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-235 |
+| Category | Documentation drift — a runbook's copy-pasteable commands silently stopped working |
+| What was found | `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s documented VPS-fetch commands reference filenames such as `.vps_portfolio_cache_mlb.json` that do not exist on the VPS. The real, current filenames (confirmed via this session's own read-only VPS pulls for Item 1's before/after real-data comparison) are `logs/paper_portfolio_mlb.json`, `logs/paper_portfolio_mlb_t4.json`, and `logs/t4_mlb_outcome_store.jsonl`. A session following the doc's fetch commands as written would pull nothing (or a stale/absent file) with no obvious signal that the command itself is wrong. |
+| When it should have been caught | Whenever the live ledger filenames on the VPS last changed — the doc was not updated in step with that rename. |
+| Phases it survived | Unknown — this is a single-session discovery; no prior session's use of this doc's fetch commands is on record as having flagged the mismatch. |
+| Why it survived | The doc's fetch commands are not exercised by any automated check (they are operator/session copy-paste instructions, not code), so a filename rename on the VPS side has no mechanism to propagate back into the doc. |
+| Impact | LOW. The commands fail silently/uselessly rather than producing wrong data — a session running them would notice an empty or missing fetch result rather than being misled by wrong content. Cost is time lost re-deriving the correct filenames by hand, which is exactly what this session did. |
+| Discovery | 2026-09-01, T-509 (this session), while pulling `logs/paper_portfolio_mlb.json`, `logs/paper_portfolio_mlb_t4.json`, and `logs/t4_mlb_outcome_store.jsonl` from the VPS for Item 1's before/after real-data comparison — `04_EXECUTION/LEDGER_INVARIANT_SUITE.md` was consulted for the documented fetch procedure and found to reference different, nonexistent filenames. This is an out-of-scope discovery relative to T-509's scope fence (`replay_harness_t427.py`, `scripts/assert_ledger_invariants.py`, `scripts/run_band_monitor.py`, and their tests) — registered per Hard Rule 11 ("register and stop on discovery"), not fixed in this session. |
+| Resolution | Not started. Future task: update `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s fetch commands to the current real filenames (`logs/paper_portfolio_mlb.json`, `logs/paper_portfolio_mlb_t4.json`, `logs/t4_mlb_outcome_store.jsonl`), and confirm no other doc in the repo still cites the old `.vps_portfolio_cache_*` naming. |
+| Status | OPEN. |
 
 </details>
