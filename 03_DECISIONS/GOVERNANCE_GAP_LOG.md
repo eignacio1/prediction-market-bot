@@ -2649,3 +2649,27 @@ When a new governance process failure is discovered:
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-238 — `scripts/assert_ledger_invariants.py`'s own default CLI argument paths are stale in the same way GG-235's doc was, so the doc fix alone does not make the plain (no-flag) invocation work
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-238 |
+| Category | Same root cause as GG-235 (VPS log filename rename from `.vps_portfolio_cache_mlb*.json` to `paper_portfolio_mlb*.json` was never propagated everywhere it's referenced), but in a second, more consequential location: the script's own code, not just its runbook doc. |
+| What was found | Fixing GG-235 (this session, T-514) corrected `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s `scp` fetch commands and its plain `python3 scripts/assert_ledger_invariants.py` example to the real current filenames and added explicit `--t1-portfolio`/`--t4-portfolio` flags. But `scripts/assert_ledger_invariants.py` itself hardcodes `DEFAULT_T1_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb.json"` and `DEFAULT_T4_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb_t4.json"` (both stale — verified against a live VPS listing of `/opt/prediction-market-bot/logs/`, neither file exists there; the real files are `paper_portfolio_mlb.json` and `paper_portfolio_mlb_t4.json`). `DEFAULT_OUTCOME_STORE` (`t4_mlb_outcome_store.jsonl`) is already correct and unaffected. argparse wires `--t1-portfolio`/`--t4-portfolio` defaults directly to these stale constants. `CLAUDE.md`'s own Q7 section also invokes this script with no flags (`python3 scripts/assert_ledger_invariants.py`), so that documented step is subject to the same defect. |
+| When it should have been caught | When the VPS-side files were renamed (date not established by this session — the rename predates this session's investigation) — whoever renamed the files on the VPS should have grepped the repo for the old names and found both this script's defaults and the doc's `scp` commands (GG-235) in the same pass. |
+| Phases it survived | `git log --oneline -3 -- scripts/assert_ledger_invariants.py` shows three commits touching this file since (`1fd42ab` T-466, `184c8d0` T-497, `066bc8b` T-509/ADR-0054(a), the last landed onto `origin/main` by this same session, T-514) — none corrected the stale defaults, because none of those tasks' scope fences included this specific concern. |
+| Why it survived | The script is ALARM-ONLY and degrades gracefully (`SOURCE_UNAVAILABLE`, exit 0) when a source file is absent — per `CLAUDE.md`'s own Q7 description, this is by design and never crashes into a visible gate failure. That graceful degradation means a session running the plain no-flag invocation with the stale defaults sees a quiet `SOURCE_UNAVAILABLE` report for the T1/T4 portfolio assertions, indistinguishable in the output from a genuinely-missing fetch, rather than an error pointing at the wrong path. |
+| Impact | LOW-MEDIUM: not a false-positive risk (SOURCE_UNAVAILABLE ≠ a wrong value, and Q7's stated reading is "any assertion whose violations concentrate in the current epoch," not "check for SOURCE_UNAVAILABLE"), but a silent under-coverage risk — a session running Q7's exact documented command with a freshly-scp'd, correctly-named file would still get zero T1/T4 portfolio assertion coverage from the default invocation, and nothing surfaces that as a problem. |
+| Discovery | 2026-09-03, T-514 (this session), while fixing GG-235: before editing `LEDGER_INVARIANT_SUITE.md`, cross-checked how `scripts/assert_ledger_invariants.py` actually resolves its portfolio-file paths, to confirm the doc fix would make the documented workflow functional end-to-end. `scripts/assert_ledger_invariants.py` is not in this session's declared scope fence (only `LEDGER_INVARIANT_SUITE.md` is) — registered per Hard Rule 11, not fixed in this session. |
+| Resolution | Not started. Future task: update `DEFAULT_T1_PORTFOLIO`/`DEFAULT_T4_PORTFOLIO` in `scripts/assert_ledger_invariants.py` to `paper_portfolio_mlb.json`/`paper_portfolio_mlb_t4.json`; confirm `CLAUDE.md` Q7's bare invocation then works without requiring explicit flags; grep the repo for any other reference to `.vps_portfolio_cache_mlb` to confirm GG-235+GG-238 together are exhaustive. |
+| Status | OPEN. |
+
+</details>

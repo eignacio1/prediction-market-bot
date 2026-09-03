@@ -8,14 +8,16 @@
 
 ## Running it
 
-Data sources (`logs/.vps_portfolio_cache_mlb.json`, `logs/.vps_portfolio_cache_mlb_t4.json`, `logs/t4_mlb_outcome_store.jsonl`) are gitignored, VPS-fetched, local-only artifacts — a fresh checkout will not have them. Fetch (read-only) before running:
+Data sources (`logs/paper_portfolio_mlb.json`, `logs/paper_portfolio_mlb_t4.json`, `logs/t4_mlb_outcome_store.jsonl`) are gitignored, VPS-fetched, local-only artifacts — a fresh checkout will not have them. Fetch (read-only) before running:
 
 ```bash
-scp prediction-market-vps:/opt/prediction-market-bot/logs/.vps_portfolio_cache_mlb.json logs/
-scp prediction-market-vps:/opt/prediction-market-bot/logs/.vps_portfolio_cache_mlb_t4.json logs/
+scp prediction-market-vps:/opt/prediction-market-bot/logs/paper_portfolio_mlb.json logs/
+scp prediction-market-vps:/opt/prediction-market-bot/logs/paper_portfolio_mlb_t4.json logs/
 scp prediction-market-vps:/opt/prediction-market-bot/logs/t4_mlb_outcome_store.jsonl logs/
-python3 scripts/assert_ledger_invariants.py
+python3 scripts/assert_ledger_invariants.py --t1-portfolio logs/paper_portfolio_mlb.json --t4-portfolio logs/paper_portfolio_mlb_t4.json
 ```
+
+**GG-238 (2026-09-03):** the filenames above were GG-235's original defect (the old `.vps_portfolio_cache_mlb*.json` names no longer exist on the VPS — confirmed by direct `ls` there). Fixing the `scp` commands alone is not sufficient to make the plain `python3 scripts/assert_ledger_invariants.py` invocation (no flags) work end-to-end: the script's own `DEFAULT_T1_PORTFOLIO`/`DEFAULT_T4_PORTFOLIO` constants are hardcoded to the same stale `.vps_portfolio_cache_mlb*.json` names and were not corrected when the VPS-side files were renamed. Until that script is patched (out of scope for this doc fix — see GG-238), invoke it with the explicit `--t1-portfolio`/`--t4-portfolio` flags shown above rather than relying on its defaults.
 
 If a source is absent, the script reports `SOURCE_UNAVAILABLE` for the affected assertions/bands and still exits 0 — it never crashes into a gate failure and never treats a missing file as a violation.
 
