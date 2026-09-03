@@ -415,3 +415,4 @@
 | 2026-09-02T01:30:00Z | T-510 | CLOSED — branch `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr` merged to `main` via fast-forward push (no `src/` changed this session; MICRO fast-path applied despite STANDARD tier label). HEAD `b05ae38` confirmed ancestor of `origin/main` via `session_end_timer.sh merge-check`. |
 | 2026-09-03T00:29:28Z | T-512 / TBD | T-512: record 4 sign-offs (ADR-0060/0061/0062 status flips, APR-0033 accept) |
 | 2026-09-03T00:30:04Z | T-513 / GG-235 | T-513: ADR-0054(b) re-key LogicEpochBoundary.bands_affected to (MarketType, band) cells |
+| 2026-09-03T00:33:19Z | T-514 / GG-236 | T-514: land T-509 (ADR-0054(a) cell-awareness), install ACTIVE_QUEUE.md, fix GG-235 LEDGER_INVARIANT_SUITE.md filenames, finish T-511 close-out audit |
