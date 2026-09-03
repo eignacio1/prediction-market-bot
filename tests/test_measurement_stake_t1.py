@@ -122,12 +122,16 @@ def test_dry_run_synthetic_record_passes_I2_and_J2():
     rec = _synthetic_t1_game_market_record(entry_price=0.55, haircut=0.04)
     recs = [rec]
 
-    result_i2 = assert_I2_t1_measurement_stake(recs, "T1")
+    # T-509/ADR-0054(a): I2/J2 are now cell-scoped -- market_type is passed
+    # once per call (as a real caller via positions_by_cell() would), not
+    # re-derived per-record inside the loop. rec's own "market_type" field
+    # still documents what the synthetic record represents.
+    result_i2 = assert_I2_t1_measurement_stake(recs, "T1", market_type=rec["market_type"])
     assert result_i2.no_formula is False
     assert result_i2.n_applicable == 1
     assert result_i2.n_violations == 0
 
-    result_j2 = assert_J2_t1_contracts_cap(recs, "T1")
+    result_j2 = assert_J2_t1_contracts_cap(recs, "T1", market_type=rec["market_type"])
     assert result_j2.no_formula is False
     assert result_j2.n_applicable == 1
     assert result_j2.n_violations == 0

@@ -11,6 +11,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 _SCRIPTS = Path(__file__).parent.parent / "scripts"
 _SRC = Path(__file__).parent.parent / "src"
 if str(_SCRIPTS) not in sys.path:
@@ -19,15 +21,34 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from assert_ledger_invariants import (  # noqa: E402
+    UNKNOWN_MARKET_TYPE,
+    VIG_FORMULA_VERIFIED_MARKET_TYPE,
     assert_A_ticker_date,
     assert_C_entry_price_bounds,
     assert_G_gross_edge_formula,
     assert_H_no_dual_direction_open,
+    assert_I2_t1_measurement_stake,
+    assert_J2_t1_contracts_cap,
+    assert_K_fee_net_edge,
     assert_N_player_token_consistency,
     cross_path_agreement,
+    positions_by_cell,
     run,
 )
+import assert_ledger_invariants as ali_module  # noqa: E402
+from prediction_market_bot.c5_execution.market_type_registry import MarketType  # noqa: E402
 from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _reset_unknown_market_type_counter():
+    # ali_module._UNKNOWN_MARKET_TYPE_COUNTS is a module-level Counter mutated
+    # by positions_by_cell() on every call (T-509) -- without resetting it,
+    # counts leak across tests in the same process and a test asserting an
+    # exact count could pass or fail depending on test execution order.
+    ali_module._UNKNOWN_MARKET_TYPE_COUNTS.clear()
+    yield
+    ali_module._UNKNOWN_MARKET_TYPE_COUNTS.clear()
 
 
 def _rec(**kw) -> dict:
@@ -262,3 +283,134 @@ def test_run_strict_with_no_violations_still_exits_zero(tmp_path):
     store.write_text("")
     code = run(t1, t4, store, report, strict=True)
     assert code == 0
+
+
+# ── T-509/ADR-0054(a) item 1: cell-awareness (positions_by_cell, G/K/I2/J2) ─
+
+def test_positions_by_cell_groups_by_market_type_and_band():
+    portfolio = {
+        "open_positions": [],
+        "closed_positions": [
+            _rec(position_id="p1", band="T1", market_type=MarketType.MLB_PLAYER_PROP_HITS.value),
+            _rec(position_id="p2", band="T1", market_type=MarketType.MLB_MONEYLINE.value),
+            _rec(position_id="p3", band="T4M-PROJ", market_type=MarketType.MLB_PLAYER_PROP_HITS.value),
+        ],
+        "rejected_positions": [],
+    }
+    by_cell = positions_by_cell(portfolio)
+    assert set(by_cell.keys()) == {
+        (MarketType.MLB_PLAYER_PROP_HITS.value, "T1"),
+        (MarketType.MLB_MONEYLINE.value, "T1"),
+        (MarketType.MLB_PLAYER_PROP_HITS.value, "T4M-PROJ"),
+    }
+    assert len(by_cell[(MarketType.MLB_PLAYER_PROP_HITS.value, "T1")]) == 1
+    assert ali_module._UNKNOWN_MARKET_TYPE_COUNTS == {}
+
+
+def test_positions_by_cell_missing_market_type_grouped_as_unknown_and_counted():
+    portfolio = {
+        "open_positions": [],
+        "closed_positions": [_rec(position_id="p1", band="T1")],  # no market_type key at all
+        "rejected_positions": [],
+    }
+    by_cell = positions_by_cell(portfolio)
+    assert (UNKNOWN_MARKET_TYPE, "T1") in by_cell
+    assert len(by_cell[(UNKNOWN_MARKET_TYPE, "T1")]) == 1
+    assert ali_module._UNKNOWN_MARKET_TYPE_COUNTS[(None, "T1")] == 1
+
+
+def test_positions_by_cell_unrecognized_market_type_value_grouped_as_unknown_and_counted():
+    portfolio = {
+        "open_positions": [],
+        "closed_positions": [_rec(position_id="p1", band="T4M-PROJ", market_type="not_a_real_market_type")],
+        "rejected_positions": [],
+    }
+    by_cell = positions_by_cell(portfolio)
+    assert (UNKNOWN_MARKET_TYPE, "T4M-PROJ") in by_cell
+    assert ali_module._UNKNOWN_MARKET_TYPE_COUNTS[("not_a_real_market_type", "T4M-PROJ")] == 1
+
+
+def test_G_non_verified_market_type_reports_no_formula_even_with_matching_band():
+    # Same T1-formula-correct record as test_G_band_scope_t1_uses_half_vig,
+    # but tagged with a game-market type instead of the verified props type --
+    # G's formula was only verified against props data (ADR-0045/GG-119), so
+    # this must be NO_FORMULA, not a silent clean evaluation under a formula
+    # that was never checked against game-market data.
+    recs = [_rec(gross_edge=0.10 - 0.40 - 0.02 / 2, model_p=0.10, mid_price_at_entry=0.40, vig_at_entry=0.02)]
+    r = assert_G_gross_edge_formula(recs, "T1", market_type=MarketType.MLB_MONEYLINE.value)
+    assert r.no_formula is True
+    assert r.n_applicable == 0
+    assert r.n_violations == 0
+
+
+def test_G_verified_market_type_explicit_still_evaluates():
+    recs = [_rec(gross_edge=0.10 - 0.40 - 0.02 / 2, model_p=0.10, mid_price_at_entry=0.40, vig_at_entry=0.02)]
+    r = assert_G_gross_edge_formula(recs, "T1", market_type=VIG_FORMULA_VERIFIED_MARKET_TYPE)
+    assert r.no_formula is False
+    assert r.n_violations == 0
+
+
+def test_K_non_verified_market_type_reports_no_formula():
+    recs = [_rec(band="T4M-PROJ", logic_epoch=12)]
+    r = assert_K_fee_net_edge(recs, "T4M-PROJ", market_type=MarketType.MLB_RUN_LINE.value)
+    assert r.no_formula is True
+
+
+def test_I2_non_game_market_type_reports_no_formula():
+    # Old behaviour (pre-T-509) silently `continue`d past non-game-market
+    # records inside the per-record loop, without ever setting no_formula --
+    # a T1 cell entirely composed of props would have reported "0 applicable,
+    # clean" rather than "not evaluated". The cell-level gate fixes this.
+    recs = [_rec(band="T1", entry_price_paid=0.40, size_usd=25.0)]
+    r = assert_I2_t1_measurement_stake(recs, "T1", market_type=MarketType.MLB_PLAYER_PROP_HITS.value)
+    assert r.no_formula is True
+    assert r.n_applicable == 0
+
+
+def test_I2_game_market_type_evaluates():
+    from prediction_market_bot.c5_execution.measurement_stake import (
+        T1_MEASUREMENT_MAX_CONTRACTS,
+        T1_MEASUREMENT_STAKE_USD,
+    )
+    epp = 0.40
+    expected = round(min(T1_MEASUREMENT_STAKE_USD, T1_MEASUREMENT_MAX_CONTRACTS * epp), 4)
+    recs = [_rec(band="T1", entry_price_paid=epp, size_usd=expected)]
+    r = assert_I2_t1_measurement_stake(recs, "T1", market_type=MarketType.MLB_MONEYLINE.value)
+    assert r.no_formula is False
+    assert r.n_violations == 0
+
+
+def test_J2_non_game_market_type_reports_no_formula():
+    recs = [_rec(band="T1", contracts=1.0)]
+    r = assert_J2_t1_contracts_cap(recs, "T1", market_type=MarketType.MLB_PLAYER_PROP_HITS.value)
+    assert r.no_formula is True
+
+
+def test_run_reports_cell_formula_coverage_and_unknown_market_type_summary(tmp_path):
+    t1 = tmp_path / "t1.json"
+    t4 = tmp_path / "t4.json"
+    store = tmp_path / "store.jsonl"
+    report = tmp_path / "report.jsonl"
+    known = _rec(
+        position_id="p1", band="T1", kalshi_ticker="KXMLBHIT-26AUG081230ABCDEF-JSMITH25-1",
+        game_date="2026-08-08", market_type=MarketType.MLB_PLAYER_PROP_HITS.value,
+    )
+    unknown = _rec(
+        position_id="p2", band="T1", kalshi_ticker="KXMLBHIT-26AUG081230ABCDEF-JSMITH25-1",
+        game_date="2026-08-08",
+    )  # no market_type field
+    t1.write_text(json.dumps({"open_positions": [], "closed_positions": [known, unknown], "rejected_positions": []}))
+    t4.write_text(json.dumps({"open_positions": [], "closed_positions": [], "rejected_positions": []}))
+    store.write_text("")
+    code = run(t1, t4, store, report, strict=False)
+    assert code == 0
+    lines = [json.loads(l) for l in report.read_text().splitlines()]
+    kinds = {l["type"] for l in lines}
+    assert "cell_formula_coverage" in kinds
+    assert "unknown_market_type_summary" in kinds
+    summary = next(l for l in lines if l["type"] == "run_summary")
+    assert summary["total_cells"] >= 2
+    assert summary["total_unknown_market_type_records"] == 1
+    unknown_summary = next(l for l in lines if l["type"] == "unknown_market_type_summary")
+    assert unknown_summary["total_records"] == 1
+    assert unknown_summary["groups"][0]["band"] == "T1"
