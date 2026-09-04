@@ -2745,3 +2745,25 @@ When a new governance process failure is discovered:
 | Status | OPEN. |
 
 </details>
+
+### GG-243 — T-number collision: "T-518" independently claimed by two unrelated tasks (TODO_NEXT.md's EXP-026 entry vs. this session's ADR-0060/0061/0062 re-recording)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-243 |
+| Category | `claim_session.sh` T-number collision — the exact failure mode Hard Rule 10/GG-082's atomic-claim mechanism exists to prevent, observed anyway. |
+| What was found | `04_EXECUTION/TODO_NEXT.md` line 16 has a `## T-518 — Execute EXP-026 (HYP-011 moneyline-first LR track)` entry, registered 2026-09-03 by T-517, OPEN/unstaffed. This session (worktree `session/20260904T000244Z-rerecord-adr-signoffs`) independently claimed T-518 for a wholly unrelated deliverable — re-recording ADR-0060/0061/0062 operator sign-offs after T-512/PR #126 was stranded (GG-240) — and closed it under that same number (`04_EXECUTION/SESSION_CLAIMS.md` row, 2026-09-03T21:45:00Z). Both claims are real, both reference genuine work; the number was simply assigned to two different tasks. |
+| When it should have been caught | At claim time, by `scripts/claim_session.sh`'s atomic reservation — the same mechanism that prevented the 2026-07-07 T-247 race this script was built to fix. |
+| Phases it survived | Not caught by this session's own Step 0c (read last ~24h of SESSION_CLAIMS.md) — the EXP-026 T-518 registration was a TODO_NEXT.md entry, not a same-day SESSION_CLAIMS row, so a claims-log-only reconciliation check would not surface it; only cross-referencing TODO_NEXT.md's own task headers against the claimed number catches it, which is not currently part of the claim-time check. |
+| Why it survived | `claim_session.sh` appends to `SESSION_CLAIMS.md` with rebase-retry, which protects against two *concurrent* sessions racing the same number, but does not check `TODO_NEXT.md` for a task header already using that number registered by a *prior*, already-closed session (T-517 registered the T-518 EXP-026 entry as a forward-looking unstaffed task, not a live claim row at registration time). |
+| Impact | LOW — no work was lost or conflated; both tasks' content is fully intact and independently correct. Risk is purely narrative confusion for a future session trying to resolve "T-518" from context (e.g., TODO_NEXT.md vs. SESSION_CLAIMS.md vs. DECISION_LOG.md would each point to a different task under the same number). |
+| Discovery | 2026-09-04, this session, during `/session-end` Step 2 (about to update TODO_NEXT.md for T-518) — found the existing T-518 header referred to EXP-026, not the ADR re-recording this session performed. Registered per Hard Rule 11 (register and stop on discovery) — renumbering either task is out of scope for this session's declared deliverable. |
+| Resolution | Not started. Future task: renumber one of the two T-518s (likely the EXP-026 entry, since it is still OPEN/unstaffed and has no commits/closure rows yet, vs. this session's T-518 which is already CLOSED with full commit history under that number) to the next free T-number, and update its TODO_NEXT.md header accordingly. Consider whether `claim_session.sh` should also grep `TODO_NEXT.md` task headers for the candidate number before assigning it, to close this specific gap in the atomic-claim mechanism. |
+| Status | OPEN. |
+
+</details>
