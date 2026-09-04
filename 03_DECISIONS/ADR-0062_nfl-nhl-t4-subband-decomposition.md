@@ -1,6 +1,6 @@
 # ADR-0062: NFL/NHL T4 Sub-Band Decomposition — Names, Roster, Epoch Inheritance
 
-**Status:** PROPOSED — draft only. Not authorized to implement. Adding, renaming, or removing any `ExecutionBand` member, touching `market_type_registry.py`, or setting any `kelly_fraction` requires a separate task under a future ADR-0062 ACCEPTED (Hard Rule 3, Hard Rule 11).
+**Status:** ACCEPTED — 2026-09-03, operator sign-off (session `session/20260904T000244Z-rerecord-adr-signoffs`, T-518, re-recorded after T-512/PR #126 was stranded by a permission-classifier merge obstruction, GG-240), same pre-granted-sign-off pattern as ADR-0050/ADR-0059/APR-0033. D1 (naming), D2 (roster), D3 (fresh epoch-1 per sport), D4 (cell-count projection) ACCEPTED as written; authorizes the scaffolding build (17.1). Two conditions travel with this signature: (i) `EVENT` stays DEFERRED for both sports pending C1 ingestion-mechanism verification (push vs. poll) — this signature does not override §4's refusal to assert live-or-blocked status without it; (ii) §4 and §6 disagree on BOUNDARY's authorization posture (§4: scoped-but-not-yet-authorized, same deferred posture as MLB's own T4M-BOUNDARY; §6: groups BOUNDARY with ARITH/FLOW as "authorization-eligible," excluding only EVENT from the cell-count). **That conflict is recorded here as unresolved-at-signature and routed to 17.1 — this signature does not pick a reading.** Authorizes NO `kelly_fraction` value and NO `CellStatus` promotion; adding, renaming, or removing any `ExecutionBand` member, or touching `market_type_registry.py`, remains 17.1's job, not done by this acceptance itself.
 
 **Date:** 2026-09-01
 **Author:** Claude (worktree `session/20260901T052405Z-t510-gg226-nfl-nhl-band-adr`, T-510)
@@ -110,4 +110,4 @@ This does not itself answer the open operator question of how many cells must cl
 
 ## 8. Sign-off
 
-Status: **PROPOSED**. Awaiting operator review. Not authorized for implementation.
+Status: **ACCEPTED** — 2026-09-03, operator sign-off (in-session, same pre-granted pattern as ADR-0050/ADR-0059/APR-0033), re-recorded via `session/20260904T000244Z-rerecord-adr-signoffs` (T-518) after T-512/PR #126 was stranded by a permission-classifier merge obstruction (GG-240). Authorizes 17.1 scaffolding. §4/§6 BOUNDARY disagreement recorded unresolved-at-signature, routed to 17.1, not resolved here. EVENT stays DEFERRED both sports. No `kelly_fraction`, no cell promotion authorized.

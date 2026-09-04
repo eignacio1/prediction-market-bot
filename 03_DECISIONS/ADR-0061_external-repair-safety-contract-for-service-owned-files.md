@@ -1,14 +1,22 @@
 # ADR-0061 — External-Repair-Safety Contract for Service-Owned Files (Decision Request)
 
-**Status:** PROPOSED — drafted 2026-08-29/30 (T-505/session
-`20260829T190312Z-t505-queue-install-instruments-adr0061`) under explicit task instruction. Not
-yet ACCEPTED. **This document does not implement anything.** It does not change
+**Status:** ACCEPTED — 2026-09-03, operator sign-off (session
+`session/20260904T000244Z-rerecord-adr-signoffs`, T-518, re-recorded after T-512/PR #126 was
+stranded by a permission-classifier merge obstruction, GG-240), same pre-granted-sign-off pattern
+as ADR-0050/ADR-0059/APR-0033. Per §7: option (c), stop-repair-start runbook, ADOPTED NOW; option
+(b), repair scripts must take the existing `fcntl` lock, ADOPTED as complement; option (a)'s
+DIAGNOSTIC half STAFFED as a follow-on — its implementation half is NOT adopted; option (d),
+service-owned repair endpoints, NOT ADOPTED at this time. **GG-224 stays OPEN** — per §5, a
+runbook is not a structural guarantee, and the operator's 2026-08-29 restart pre-authorization is
+proof the procedure works when followed, not proof it will be followed; this signature does not
+close GG-224. **This document does not implement anything.** It does not change
 `run_t4_mlb_live.py`, `paper_trader.py`, or any other service source. It does not restart any
 service. It enumerates the affected services from source, presents four remedies with blast
-radius and cost for each, and recommends one for operator decision — it does not decide. Hard
-Rule 3 (ADRs are immutable once accepted; a superseding ADR is required before any service
-change ships) applies in the other direction here too: **no service change may ship citing this
-ADR until this ADR itself is ACCEPTED** by the operator.
+radius and cost for each, and recommended one for operator decision — the decision is recorded
+here, not implemented here. Hard Rule 3 (ADRs are immutable once accepted; a superseding ADR is
+required before any service change ships) applies in the other direction here too: **no service
+change may ship citing this ADR until this ADR itself is ACCEPTED** by the operator — it now is,
+for the combination stated above only.
 **Depends on / builds on:** `GG-224` (OPEN, MEDIUM — the finding this ADR responds to, discovered
 2026-08-28/T-502 during the ADR-0055 D2 repair). `ADR-0055` (epoch-12 ledger repair
 preregistration — the repair whose silent revert produced GG-224's evidence).
@@ -268,3 +276,14 @@ structurally. And none of them retroactively verify that the 2026-08-28 repair's
 beyond the `repair_ref` stamps T-502 specifically re-checked — survived the eventual restart
 intact; that verification, if not already done, is a distinct and smaller follow-on this ADR
 does not attempt.
+
+---
+
+## 9. Sign-off
+
+Status: **ACCEPTED** — 2026-09-03, operator sign-off (in-session, same pre-granted pattern as
+ADR-0050/ADR-0059/APR-0033), re-recorded via `session/20260904T000244Z-rerecord-adr-signoffs`
+(T-518) after T-512/PR #126 was stranded by a permission-classifier merge obstruction (GG-240).
+Per §7: (c) adopted now, (b) adopted as complement, (a) diagnostic half staffed as follow-on
+(implementation not adopted), (d) not adopted. GG-224 stays OPEN — a runbook is not a structural
+guarantee (§5); this signature does not close it.
