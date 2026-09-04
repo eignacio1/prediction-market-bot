@@ -5,6 +5,13 @@
 
 
 
+
+<!-- archived from TODO_NEXT.md, 3 entries -->
+**Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
+**Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
+**Last reviewed:** 2026-09-03T23:52Z (T-517 — APR-0033 accepted (Option 3), Phase 2 re-scoped to moneyline-first LR, HYP-011/EXP-026 pre-registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_2352.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
+
 <!-- archived from TODO_NEXT.md, 2 entries -->
 **Last reviewed:** 2026-09-03T14:20:51Z (T-514 — T-514 landing-and-hygiene: landed T-509, installed ACTIVE_QUEUE.md, fixed GG-235, finished T-511 close-out) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1420.md` for full session detail.
 **Last reviewed:** 2026-09-03T14:22:00Z (T-513 — T-513: implemented ADR-0054(b) -- re-keyed LogicEpochBoundary.bands_affected to (MarketType, band) cell keys, 11 boundaries individually justified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1422.md` for full session detail.

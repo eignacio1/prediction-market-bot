@@ -2,9 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
-**Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
-**Last reviewed:** 2026-09-03T23:52Z (T-517 — APR-0033 accepted (Option 3), Phase 2 re-scoped to moneyline-first LR, HYP-011/EXP-026 pre-registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_2352.md` for full session detail.
+**Last reviewed:** 2026-09-04T04:54:27Z (GG-242 — GG-242 sweep: all 23 files verified correct as-is; reverted GG-238's regression in assert_ledger_invariants.py; GG-242 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260904_0454.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
