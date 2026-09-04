@@ -436,3 +436,4 @@
 | 2026-09-03T23:56:20Z | T-517 | CLOSED — APR-0033 accepted (Option 3), Phase 2 re-scoped to moneyline-first LR, HYP-011/EXP-026 pre-registered (commit `adf68b3`) |
 | 2026-09-04T00:03:12Z | TBD | re-record ADR-0060/0061/0062 sign-offs via fresh branch (T-512/GG-240 stranding) |
 | 2026-09-04T00:03:12Z | GG-242, TBD T-number | GG-242 filename sweep: fix stale .vps_portfolio_cache_mlb* references in 23 files |
+| 2026-09-04T04:55:31Z | GG-242 | MERGED: NO — branch `session/20260904T000252Z-gg242-filename-sweep` awaiting merge — GG-242 sweep: all 23 files verified correct as-is; reverted GG-238's regression in assert_ledger_invariants.py; GG-242 RESOLVED (commit `873d893`) |
