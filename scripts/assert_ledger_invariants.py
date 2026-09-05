@@ -70,8 +70,8 @@ from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E
     MarketType,
 )
 
-DEFAULT_T1_PORTFOLIO = _REPO_ROOT / "logs" / "paper_portfolio_mlb.json"
-DEFAULT_T4_PORTFOLIO = _REPO_ROOT / "logs" / "paper_portfolio_mlb_t4.json"
+DEFAULT_T1_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb.json"
+DEFAULT_T4_PORTFOLIO = _REPO_ROOT / "logs" / ".vps_portfolio_cache_mlb_t4.json"
 DEFAULT_OUTCOME_STORE = _REPO_ROOT / "logs" / "t4_mlb_outcome_store.jsonl"
 DEFAULT_REPORT_PATH = _REPO_ROOT / "logs" / "ledger_invariant_report.jsonl"
 

@@ -6,6 +6,16 @@
 
 
 
+
+<!-- archived from TODO_NEXT.md, 1 entry -->
+**Last reviewed:** 2026-09-05T17:11:51Z (T-519 — T-519: landed T-518 + GG-242 branches to origin/main (dad15a9), fixed two silent rebase corruptions, all verifications passed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1711.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
+
+<!-- archived from TODO_NEXT.md, 2 entries -->
+**Last reviewed:** 2026-09-04T04:54:27Z (GG-242 — GG-242 sweep: all 23 files verified correct as-is; reverted GG-238's regression in assert_ledger_invariants.py; GG-242 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260904_0454.md` for full session detail.
+**Last reviewed:** 2026-09-04T04:54:31Z (T-518 — T-518: re-recorded ADR-0060/0061/0062 ACCEPTED on fresh branch after GG-240 stranded PR #126; GG-243 (T-518 number collision) and GG-240 amendment (hazard confirmed general) also registered; merge to main still pending.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260904_0454_T518.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
+
 <!-- archived from TODO_NEXT.md, 3 entries -->
 **Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
 **Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.

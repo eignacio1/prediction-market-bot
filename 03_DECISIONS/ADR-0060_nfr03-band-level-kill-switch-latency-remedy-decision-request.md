@@ -1,10 +1,22 @@
 # ADR-0060 — NFR-03 Band-Level Kill-Switch Latency Failure: Three Remedies (Decision Request)
 
-**Status:** PROPOSED — drafted 2026-08-27 (T-498/session `t498-adr0059-nfr03-latency`) under
-explicit task instruction. Not yet ACCEPTED. This document does not change a cadence, a
-threshold, a sleep interval, or any kill-switch code. It does not revise NFR-03's text in the
-spec. It presents three remedies, states their costs and blast radii, and recommends one for
-operator decision — it does not decide.
+**Status:** ACCEPTED — 2026-09-03, operator sign-off (session `session/20260904T000244Z-rerecord-adr-signoffs`,
+T-518, re-recorded after T-512/PR #126 was stranded by a permission-classifier merge obstruction,
+GG-240), same pre-granted-sign-off pattern as ADR-0050/ADR-0059/APR-0033. Per §5's own
+recommendation: option (c), decoupled out-of-band halt, is ACCEPTED as **target architecture
+only** — this acceptance does not read broader than §5. **Not authorized to build now.** Trigger:
+(c) is scoped and authorized when T4M-PROJ's `kelly_fraction` is next considered for
+edge-conditional reactivation under ADR-0048; current exposure is zero
+(`kelly_fraction=0.0`), so there is no operational urgency, and reactivating live sizing on a band
+with a known uninterruptible kill-switch gap is the point this becomes live-capital risk. Options
+(a) and (b) are NOT adopted. ADR-0054 item (d) stays blocked until (c) is built. §6's two named
+defects (risk-engine asymmetry: `run_t4_mlb_live.py` treats a `KILL_SWITCH` approval identically
+to an ordinary `REJECTED` — T1 branches and self-halts, T4 does not; and `is_kill_switch_active`
+read by zero MLB pipelines — GG-038 TASK 2/3) are recorded as a **DECISION OWED, not solved by
+this signature**, both unstaffed, both routed to 17.3. This document still does not change a
+cadence, a threshold, a sleep interval, or any kill-switch code. It does not revise NFR-03's text
+in the spec. It presented three remedies, stated their costs and blast radii, and recommended one
+for operator decision — the decision is recorded here, not implemented here.
 **Depends on / builds on:** `GG-038` (T4 kill-switch SLA gap, OPEN, HIGH — carries the full
 measured data this ADR reasons from, including the 2026-08-26 T-489 addendum). `GG-209` (OPEN,
 MEDIUM — T1 has no force-close/flatten path; a separate, adjacent gap this ADR does not attempt
@@ -240,3 +252,14 @@ harness alone — even a well-constructed one, and even one with a large trial c
 Trial count does not compensate for measuring the wrong thing. This is not a new process
 requirement this ADR is proposing; it is a description of what T-489 already had to do by hand to
 find this gap, offered here as a pattern worth repeating deliberately rather than by luck.
+
+---
+
+## 8. Sign-off
+
+Status: **ACCEPTED** — 2026-09-03, operator sign-off (in-session, same pre-granted pattern as
+ADR-0050/ADR-0059/APR-0033), re-recorded via `session/20260904T000244Z-rerecord-adr-signoffs`
+(T-518) after T-512/PR #126 was stranded by a permission-classifier merge obstruction (GG-240).
+Per §5, option (c) accepted as target architecture only, NOT authorized to build now — trigger is
+T4M-PROJ `kelly_fraction` reactivation under ADR-0048. Options (a)/(b) not adopted. §6's two
+defects (GG-038 TASK 2/3) recorded as a DECISION OWED, unstaffed, routed to 17.3.
