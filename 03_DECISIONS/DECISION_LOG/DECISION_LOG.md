@@ -1283,3 +1283,52 @@ logic_epoch.py edits named in ADR-0056 §§2-4. T-474 proceeds on that basis.
 5. Did not relabel box 2.3's verdict anywhere. Did not touch `kelly_fraction` or any `CellStatus`. Did not touch the price-archive cron (`deploy/cron.conf` was read, not edited). Did not run any experiment, fit any model, or write any backtest/scoring code — all out of scope per the task's explicit DO-NOTs.
 
 | 2026-09-03 | **T-517: operator sign-off formally recorded in `APPROVALS_REGISTER.md` (APR-0033 → ACCEPTED, Option 3) before proceeding, per GG-126 discipline. Deliverable 1: re-scoped Phase 2 boxes 2.4–2.8 of `MARKET_EXPANSION_ACTION_PLAN.md` to the moneyline-first LR track; box 2.3's INCONCLUSIVE — EXTEND ARCHIVE verdict (Poisson + NB) unchanged. Deliverable 2: pre-registered HYP-011 (moneyline LR, `KXMLBGAME`) — model class, data source, selected-subset rule, primary metric/n*, verdict states, effect band, and a hard NET-of-fill-cost scoring requirement (citing T-507's ~65% haircut finding) all fixed in advance; EXP-026 reserved but not run.** No model fit, no scoring, no backtest code this session (LL-009). Commits: `a9e70a7` (register), `01643be` (Deliverable 1), `3d19b44` (Deliverable 2). | APR-0033, HYP-010, HYP-011, LL-009, GG-126, T-507 | Claude (worktree `session/20260903T184908Z-apr0033-accept-and-reroute`, T-517) |
+
+## 2026-09-05 — T-520: ADR-0063 drafted — five-tier kill-switch/Kelly-alignment hierarchy (1 deliverable)
+
+**Task:** Operator directive, 2026-09-03 ("a kill switch is meaningless unless it is tied to the
+Kelly alignment of the thing it halts"): draft a PROPOSED ADR establishing that sizing is decided
+at five distinct granularities (full book, band, T4 segment, cell, individual bet), each requiring
+its own kill-switch/halt-latency derivation rather than a single bar (NFR-03's 60s) applied
+uniformly. Re-verify all five tiers' figures against source before drafting; fold in GG-038 TASK
+2/3 (the inert system-level kill switch and the risk-engine `KILL_SWITCH`-handling asymmetry
+between T1 and T4); do not reopen ADR-0060's option (c) or its deferral; do not implement
+ADR-0054(d); do not touch any `kelly_fraction`/cell status/`ExecutionBand` member/service
+source/ledger row; do not mark ACCEPTED. Tier: STANDARD.
+
+**Decisions:**
+1. Re-verified all five tiers against source before drafting, per explicit instruction, rather
+   than trusting the task brief's stated figures. Confirmed tiers 1 (`risk.py` L122/130/787-871,
+   ADR-0026), 4 (`market_type_registry.py` L875/885, zero callers, ADR-0054(d)), and 5
+   (`measurement_stake.py` L54/55/70, plus a parallel T4-specific pair in `run_t4_mlb_live.py`
+   L168/181/227 not in the original brief) exactly as stated. Found tier 2 carries its own
+   `execution_sla_s` field per band (`execution_bands.py`) — T4_IN_PLAY=5s (matching ADR-0029
+   Tier A's frozen ≤5s requirement, 2026-06-22), T5_LATE_GAME=1s — not previously surfaced.
+2. **Found and disclosed (not silently corrected) two discrepancies against the operator's
+   brief**, registered/documented rather than fixed in-session (Hard Rule 11): (a) tier 3 (T4
+   segment) is 13 segments / 6 distinct `kelly_fraction` values (`{0.0, 0.05, 0.07, 0.08, 0.10,
+   0.167}`), not the brief's stated 11 segments / eight regimes — registered as **GG-244** (OPEN,
+   LOW); (b) GG-240's own registered gap-log text names only ADR-0062's stranding, not ADR-0060's,
+   even though the underlying substantive claim (ADR-0060 accepted via commit `03ca889`/T-512,
+   2026-09-03, on a branch unmerged to `origin/main`) is confirmed true via direct git-log
+   cross-reference — a narrow documentation-precision gap, disclosed in ADR-0063 §7, not fixed
+   (widening GG-240's scope text is a separate gap-log edit outside this session's scope fence).
+3. Drafted `03_DECISIONS/ADR-0063_five-tier-kill-switch-kelly-alignment-hierarchy.md`, Status
+   PROPOSED. States: the five-tier hierarchy with re-verified figures; a per-tier derivation
+   method (`required_halt_latency ∝ equity_buffer / (kelly_fraction × cadence × avg_stake)`,
+   APR-0024/ADR-0060 §3 discipline) that is explicitly moot-today-but-must-rederive-at-
+   reactivation for every zero-`kelly_fraction` tier/segment; absorption of GG-038 TASK 2 (tier-1
+   `SystemMonitor` mechanism inert for MLB) and TASK 3(c) (T4's blanket-`continue` on
+   `KILL_SWITCH`, contrasted with T1's `sys.exit(1)` self-halt at `run_mlb_paper_trade.py`
+   L985-991); a four-mechanism map (band-level file-flag, system monitor, risk-engine field,
+   unwired cell stub) against the five tiers; explicit non-reopening of ADR-0060 option (c) and
+   an accurate note on ADR-0060's own operator-granted-but-unmerged acceptance status; and a
+   "what this does not solve" section modeled on ADR-0060 §6/ADR-0061 §8.
+4. Registered **GG-244** (documentation-accuracy: T4-segment/regime count) in
+   `GOVERNANCE_GAP_LOG.md`, header/status-line parity re-verified (97/97) after append.
+5. Did not touch any `kelly_fraction`, cell status, `ExecutionBand` member, service source, or
+   ledger row. Did not implement ADR-0054(d). Did not mark ADR-0063 ACCEPTED. Did not reopen
+   ADR-0060's option (c)/(a)/(b) evaluation or its deferral. Did not edit GG-240's own text (scope
+   widening left to operator/next session per the disclosure in ADR-0063 §7).
+
+| 2026-09-05 | **T-520: drafted ADR-0063 (PROPOSED) — five-tier kill-switch/Kelly-alignment hierarchy (full book / band / T4 segment / cell / individual bet), each tier's halt-latency requirement derived from that tier's own capital velocity rather than NFR-03's single 60s bar. Absorbed GG-038 TASK 2 (inert tier-1 `SystemMonitor`) and TASK 3(c) (T4's `KILL_SWITCH`≈`REJECTED` handling vs. T1's self-halt). Does not reopen ADR-0060 option (c), does not implement ADR-0054(d), not ACCEPTED. Disclosed two source-verification discrepancies against the task brief: T4-segment count (13/6, not 11/eight — registered GG-244) and GG-240's text naming only ADR-0062 despite the ADR-0060 stranding claim being substantively true (commit `03ca889`).** No `kelly_fraction`/cell status/`ExecutionBand`/ledger row touched. | ADR-0063, GG-038, GG-244, GG-240, ADR-0060, ADR-0029, ADR-0048, ADR-0054 | Claude (worktree `session/20260905T162339Z-adr-kill-switch-kelly-tiers`, T-520) |

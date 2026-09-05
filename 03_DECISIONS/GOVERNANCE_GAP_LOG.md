@@ -2745,3 +2745,27 @@ When a new governance process failure is discovered:
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-244 — Operator task brief's T4-segment count (11 segments / eight `kelly_fraction` regimes) does not match source (13 segments / six distinct values)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-244 |
+| Category | Documentation-accuracy gap — a factual figure asserted in a task brief did not survive re-verification against source, discovered only because the brief itself demanded re-verification rather than trust. |
+| What was found | The 2026-09-03 operator directive underlying ADR-0063 (`03_DECISIONS/ADR-0063_five-tier-kill-switch-kelly-alignment-hierarchy.md`) states the T4-segment tier as "11 segments" with "EIGHT distinct regimes." Direct re-read of `src/prediction_market_bot/execution_bands.py`'s `T4SubBandSpec` entries this session (T-520) finds **13** segments (10 NBA: T4_STAGED/T4_EVENT/T4_LINEUP/T4_FLOW/T4_SENTIMENT/T4_PROJ/T4_ARITH/T4_BOUNDARY/T4_CORR/T4_EXIT; 3 MLB: T4M_PROJ/T4M_ARITH/T4M_FLOW) and **6** distinct `kelly_fraction` values (`{0.0, 0.05, 0.07, 0.08, 0.10, 0.167}`), not 11/8. |
+| When it should have been caught | At whatever point the 11/eight figure was first composed for the task brief — a direct grep against `execution_bands.py` at that time would have caught it before it propagated into a session task instruction. |
+| Phases it survived | Unknown — this is the first session to re-verify the figure against source; it may have been repeated in prior narrative context without a source check. |
+| Why it survived | The figure is plausible on its face (T4 does have roughly a dozen segments across two sports) and nothing in prior session output forced a recount before this session's explicit re-verification instruction. |
+| Impact | LOW. The corrected count does not change ADR-0063's argument (segment-level kill-switch latency must be derived independently per segment regardless of how many segments exist or how many distinct `kelly_fraction` values they take), and no code, sizing, or ledger decision was made against the wrong count. Impact is confined to accurate documentation of the tier-3 inventory. |
+| Discovery | 2026-09-05, T-520 (this session), re-verifying all five kill-switch tiers against source per explicit operator instruction ("verify every one against source before you write a word") ahead of drafting ADR-0063. `grep -n "kelly_fraction=" src/prediction_market_bot/execution_bands.py` returned 13 hits inside `T4SubBandSpec` blocks, not 11, and manual distinct-value count from those 13 lines gave 6, not 8. |
+| Resolution | Not started — out of this session's scope fence (ADR-0063 draft + gap-log/decision-log entries only, per Hard Rule 11). Disclosed in ADR-0063 §7 rather than silently corrected in the operator's original brief (which this session cannot edit) or smoothed over in the ADR's own figures (which now cite the corrected 13/6, sourced, in ADR-0063 §2 Tier 3). No further action needed unless a future session finds the 11/eight figure recurring in other project documents, in which case those should be corrected the same way. |
+| Status | OPEN. |
+
+</details>
