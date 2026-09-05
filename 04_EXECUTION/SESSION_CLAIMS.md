@@ -440,3 +440,4 @@
 | 2026-09-05T16:24:35Z | T-519 | SHORT — land T-518 (ADR sign-offs) and GG-242 sweep branch onto origin/main, no new work |
 | 2026-09-05T16:25:33Z | T-520, GG-244, ADR-0063 | T-520: draft ADR-0063 (cross-tier kill-switch/Kelly-alignment latency hierarchy), STANDARD tier, draft-only, no code/no kelly_fraction/no ExecutionBand/no ACCEPTED |
 | 2026-09-04T04:55:31Z | GG-242 | MERGED: NO — branch `session/20260904T000252Z-gg242-filename-sweep` awaiting merge — GG-242 sweep: all 23 files verified correct as-is; reverted GG-238's regression in assert_ledger_invariants.py; GG-242 RESOLVED (commit `873d893`) |
+| 2026-09-05T16:32:36Z | T-518 | CORRECTION: prior row's T-TBD is T-518 (pre-existing, OPEN, unstaffed, registered 2026-09-03 by T-517, TODO_NEXT.md) -- reconciling per Hard Rule 11 claim-time ID discipline; GG-TBD unused, no new gap this session; EXP-026 confirmed reserved |
