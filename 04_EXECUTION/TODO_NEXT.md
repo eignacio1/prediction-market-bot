@@ -2,8 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-04T04:54:27Z (GG-242 — GG-242 sweep: all 23 files verified correct as-is; reverted GG-238's regression in assert_ledger_invariants.py; GG-242 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260904_0454.md` for full session detail.
-**Last reviewed:** 2026-09-04T04:54:31Z (T-518 — T-518: re-recorded ADR-0060/0061/0062 ACCEPTED on fresh branch after GG-240 stranded PR #126; GG-243 (T-518 number collision) and GG-240 amendment (hazard confirmed general) also registered; merge to main still pending.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260904_0454_T518.md` for full session detail.
+**Last reviewed:** 2026-09-05T17:11:51Z (T-519 — T-519: landed T-518 + GG-242 branches to origin/main (dad15a9), fixed two silent rebase corruptions, all verifications passed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1711.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
