@@ -2,12 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-03T19:12:00Z (T-516 — T-516: ADR-0062 GATE FAILED (Status=PROPOSED on origin/main); Deliverable 0 landed; GG-240 registered (stranded sign-off); no build attempted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912_T516.md` for full session detail.
-**Last reviewed:** 2026-09-03T19:12:25Z (GG-236/GG-238 — GG-236 collision-check fix + GG-238 stale-path fix landed; GG-242 registered for broader unfixed sprawl.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_1912.md` for full session detail.
-**Last reviewed:** 2026-09-03T23:52Z (T-517 — APR-0033 accepted (Option 3), Phase 2 re-scoped to moneyline-first LR, HYP-011/EXP-026 pre-registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260903_2352.md` for full session detail.
+**Last reviewed:** 2026-09-05T17:14:04Z (T-520 — T-520: drafted ADR-0063 (PROPOSED, five-tier kill-switch/Kelly hierarchy), absorbed GG-038 TASK 2/3, registered GG-244) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1714.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-520 — Draft ADR-0063 (five-tier kill-switch/Kelly-alignment hierarchy), absorbing GG-038 TASK 2/3 — ✅ COMPLETE (draft only, PROPOSED) 2026-09-05 (worktree `session/20260905T162339Z-adr-kill-switch-kelly-tiers`, commit `7f55898`)
+
+Re-verified all five sizing/kill-switch tiers against source (full book `risk.py`, band `execution_bands.py`, T4 segment `execution_bands.py`, cell `market_type_registry.py`, individual bet `c5_execution/measurement_stake.py` + `run_t4_mlb_live.py`). Found and disclosed two discrepancies rather than silently correcting them: T4 segment count is 13/6 distinct kelly values, not the operator brief's 11/eight (registered **GG-244**, OPEN, LOW); GG-240's own gap-log text names only ADR-0062's stranding, not ADR-0060's, though the substantive ADR-0060-stranding claim independently checks out (commit `03ca889`). ADR-0063 status is PROPOSED — no kelly_fraction/cell/ExecutionBand/service-source/ledger touched, ADR-0060's options not reopened, ADR-0054(d) not implemented. **Follow-up OPEN, unstaffed** (registered by T-520): operator accept/reject decision on ADR-0063 itself — until then it has no authority to change anything, same posture as ADR-0060/ADR-0062's own stranded-acceptance pattern.
 
 ## T-516 — Mandatory pre-build GATE check for ADR-0062 NFL/NHL T4 sub-band scaffolding — ✅ COMPLETE (gate FAILED, no build) 2026-09-03 (worktree `session/20260903T184220Z-adr0062-nfl-nhl-subband-build`, T-516)
 
