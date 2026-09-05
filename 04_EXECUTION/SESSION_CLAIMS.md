@@ -446,3 +446,4 @@
 | 2026-09-04T04:58:30Z | T-518 | MERGED: NO — branch `session/20260904T000244Z-rerecord-adr-signoffs` awaiting merge — T-518: re-recorded ADR-0060/0061/0062 ACCEPTED on fresh branch after GG-240 stranded PR #126; GG-243 (T-518 number collision) and GG-240 amendment (hazard confirmed general) also registered; merge to main still pending. (commit `0fb0938`) |
 | 2026-09-05T17:12:40Z | T-519 | MERGED: NO — branch `land-a` awaiting merge — T-519: landed T-518 + GG-242 branches to origin/main (dad15a9), fixed two silent rebase corruptions, all verifications passed (commit `eb7034c`) |
 | 2026-09-05T17:16:00Z | T-519 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
+| 2026-09-05T17:39:27Z | T-520 | CLOSED — merge confirmed, HEAD (60f16e6) is ancestor of origin/main (merge-check YES); pushed to main |
