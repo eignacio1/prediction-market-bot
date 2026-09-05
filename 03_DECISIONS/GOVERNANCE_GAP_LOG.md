@@ -2801,3 +2801,26 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-245 — Forward price archiver (`deploy/cron.conf`) captured zero KXNFL rows; NFL season opens 2026-09-09 with no capture in place
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-245 |
+| Category | Un-backfillable data-capture gap — same class as the original archiver gap (GG-15x, T-410, 2026-08-01), this time for a second sport whose season start is imminent. |
+| What was found | Both `archive_market_prices.py` cron invocations in `deploy/cron.conf` (`*/20 22-23 * * *` and `*/20 0-5 * * *`) listed MLB series only (KXMLBGAME/SPREAD/TOTAL/TEAMTOTAL/F3/F5/F7/F5SPREAD/F5TOTAL/HIT). Zero KXNFL rows exist in any `exp_output/PRICE_ARCHIVE/` file through 2026-09-05, verified by direct inspection. Neither existing MLB cron window overlaps NFL's actual game hours (NFL: Sun ~17:00-00:00Z, SNF/MNF/TNF spillover 00:00-04:00Z Mon/Tue/Fri; MLB windows are 22-23Z and 0-5Z daily — a partial overlap exists on the late-Sunday/SNF edge, but the bulk of NFL's Sunday early/afternoon slate, 17:00-22:00Z, was entirely uncaptured). |
+| When it should have been caught | At NFL season-schedule-announcement time, or whenever the archiver's series list was last reviewed for sport coverage — this is a coverage gap that existed since the archiver's original build (T-410, 2026-08-01) and was never sport-scoped beyond MLB, the only pool ACTIVE at build time. |
+| Why it survived | The archiver was built during MLB's active season with NFL months away; nothing forced a revisit of its series list as NFL's opener approached. No pipeline or scan checks cron.conf's series coverage against which sports have upcoming seasons. |
+| Impact | MEDIUM (time-boxed to HIGH if unaddressed past 2026-09-09). Per this gap's own class precedent (GG-15x): price data not captured on a given day cannot be recovered later. Missing the NFL opener window would permanently lose the first data points available to score any future NFL team-level model against historical Kalshi prices (the same Phase 2 gate rationale — MARKET_EXPANSION_ACTION_PLAN.md 2.7/2.8 — that justified the original MLB archiver). |
+| Discovery | 2026-09-05, T-521 (this session), assigned deliverable: add NFL series + an NFL-appropriate capture window to `deploy/cron.conf`, strictly additive to the existing MLB lines. |
+| Resolution | Addressed same-session (T-521): added KXNFLGAME, KXNFLSPREAD, KXNFLTOTAL, KXNFLTEAMTOTAL (all four live-verified open/tradeable against the public Kalshi markets endpoint on 2026-09-05 — notably KXNFLTEAMTOTAL, which ADR-0062 found "currently unlisted for this season" on 2026-09-01, is listing now; that ADR-0062 snapshot is stale and should be read as superseded by this live re-check, not corrected in place per ADR immutability) via four new day-of-week-scoped cron lines (Sun 17-23Z, Mon/Tue/Fri 0-3Z) minute-offset from the MLB lines to avoid concurrent archiver processes on the days the two schedules overlap. Existing MLB lines confirmed byte-identical via `git diff`. See `DECISION_LOG.md` 2026-09-05 for the full rate-limit/call-volume reasoning (ADR-0005 does not exist as a rate-limit document; estimate derived from the archiver's own `--pause` floor instead). |
+| Status | OPEN — leaving open rather than marking RESOLVED in this pass pending the VERIFY step of this same session's deliverable (VPS deploy, a real observed scheduled fire, confirmed KXNFL rows landing in `exp_output/PRICE_ARCHIVE/`, and the T4 safety check). Will be closed same-session once that verification completes, or left OPEN with findings noted if it does not. |
+
+</details>
