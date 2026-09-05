@@ -448,3 +448,4 @@
 | 2026-09-05T17:16:00Z | T-519 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
 | 2026-09-05T17:39:27Z | T-520 | CLOSED — merge confirmed, HEAD (60f16e6) is ancestor of origin/main (merge-check YES); pushed to main |
 | 2026-09-05T22:18:10Z | TBD | STANDARD — written NFL pregame-moneyline readiness audit (no build) — trace one NFL bet end-to-end, gap-log each missing component, answer 09-09 feasibility |
+| 2026-09-05T22:18:12Z | T-521, GG-245 | MICRO — add NFL price-archive series+cron windows to deploy/cron.conf, verify live capture — T-521 NFL capture gap |
