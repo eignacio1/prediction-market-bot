@@ -438,3 +438,4 @@
 | 2026-09-04T00:03:12Z | GG-242, TBD T-number | GG-242 filename sweep: fix stale .vps_portfolio_cache_mlb* references in 23 files |
 | 2026-09-05T16:24:26Z | T-TBD, GG-TBD, EXP-026 | STANDARD -- HYP-011/EXP-026 moneyline-first LR pre-registered run per APR-0033 Option 3; report clean_n/n*/net-of-haircut verdict, no param changes after results seen -- Phase 2 box 2.4-2.8 first forward step |
 | 2026-09-05T16:24:35Z | T-519 | SHORT — land T-518 (ADR sign-offs) and GG-242 sweep branch onto origin/main, no new work |
+| 2026-09-05T16:25:33Z | T-520, GG-244, ADR-0063 | T-520: draft ADR-0063 (cross-tier kill-switch/Kelly-alignment latency hierarchy), STANDARD tier, draft-only, no code/no kelly_fraction/no ExecutionBand/no ACCEPTED |
