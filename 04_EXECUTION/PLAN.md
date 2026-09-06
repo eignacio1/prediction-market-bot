@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-05T17:14:04Z (T-520 — T-520: drafted ADR-0063 (PROPOSED, five-tier kill-switch/Kelly hierarchy), absorbed GG-038 TASK 2/3, registered GG-244) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1714.md` for full session detail.
+**Last reviewed:** 2026-09-05T23:27:00Z (T-523 — T-523 NFL pregame-moneyline readiness audit — NOT feasible by 2026-09-09, 3-6wk build floor, GG-247/248/249/250 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_2327.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
