@@ -2829,7 +2829,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ### GG-246 — ADR-0062 §4 (BOUNDARY "propose, scoped only") contradicts §6's cell-count projection (BOUNDARY counted as authorization-eligible); ADR's own Status line flags this unresolved-at-signature and routes it to 17.1
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>
@@ -2845,6 +2845,6 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Impact | LOW as resolved. Determines whether the 17.1 scaffolding build creates 14 cells (78→92, ARITH+FLOW only) or 21 cells (78→99, ARITH+FLOW+BOUNDARY) — a scope/count question only, no capital or kill-switch impact (`kelly_fraction=0.0` throughout either way, nothing wired, nothing promoted). |
 | Discovery | 2026-09-05, T-522 (this session), while reading ADR-0062 in full per the READ FIRST requirement before starting the 17.1 scaffolding build (follow-on to GG-226, whose Resolution field named this exact work). |
 | Resolution | Resolved this session via the conservative reading, per explicit task-brief instruction to default conservative unless evidence says otherwise: build ARITH and FLOW only; decline BOUNDARY, matching MLB's own never-built `T4M-BOUNDARY` precedent exactly (§4's stated rationale for BOUNDARY's disposition already names that precedent — the code-level fact confirms it). Same conservative test applied to the `T4NFL-FLOW-BLOWOUT` open question from §7: MLB's `T4M_FLOW` has no separate enum member for its own "FLOW-BLOWOUT tree" (it is a mode within `T4M_FLOW`, per that member's own code comment) — so no separate `T4NFL_FLOW_BLOWOUT`/NHL-equivalent member was created either; the blowout concept is noted in the new `T4NFL_FLOW`/`T4NHL_FLOW` `T4SubBandSpec.notes` fields instead, mirroring MLB's pattern. Net result: 4 new `ExecutionBand` members (`T4NFL_ARITH`, `T4NFL_FLOW`, `T4NHL_ARITH`, `T4NHL_FLOW`), 14 new `MarketTypeCell` entries (2 sub-bands × 4 NFL families + 2 sub-bands × 3 NHL families), registry growing 78 → 92, not 78 → 99. EVENT remains excluded for both sports per §4/§7 (deferred pending C1 ingestion verification, a separate audit) — no `T4NFL_EVENT`/`T4NHL_EVENT` created. |
-| Status | OPEN — left open rather than RESOLVED in this same pass, consistent with this log's convention of closing out via the VERIFY step at session end rather than asserting resolution before the live import/test-suite check has run. Will read as ready to close once this session's REPORT BACK confirms the 92-cell count and a green test suite. |
+| Status | RESOLVED — VERIFY step complete: live import confirms `MARKET_TYPE_REGISTRY` grew 78 → 92 (exactly the ARITH+FLOW-only projection, not 78 → 99), `len(list(ExecutionBand)) == 22`, all four `validate_t4_*_subbands()` functions (NBA/MLB/NFL/NHL) return `[]`, and the full test suite passed 3017 passed, 28 skipped, 0 failed (2026-09-05, T-522). |
 
 </details>
