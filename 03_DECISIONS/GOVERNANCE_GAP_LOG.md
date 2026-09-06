@@ -2433,7 +2433,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-226 — NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -2448,8 +2448,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Why it survived | N/A. |
 | Impact | MEDIUM. Full T-4 sub-bucket integration for NFL (4 families) and NHL (3 families) — 7 of the task's 12 target families — cannot proceed until `execution_bands.py` grows sport-prefixed T4 sub-band members for those sports. MLB's own five non-prop families (the remaining namespace-valid subset) were integrated in this same session; see the T-504 commit for the create/decline table. |
 | Discovery | 2026-08-29/31, T-504, while designing the per-family create/decline judgment mandated by the task brief. |
-| Resolution | Not resolved by this entry — registration only, per the task's explicit instruction and Hard Rule 11. Follow-on (unstaffed): an `execution_bands.py` change adding `T4NFL-*`/`T4NHL-*` `ExecutionBand` members per ADR-0056 D2's convention, followed by a registry-scaffolding pass mirroring this session's MLB work, seeding NOT_IMPLEMENTED cells for the structurally-meaningful subset (by analogy to this session's MLB judgment: player-projection-flavored sub-bands likely decline, score-state/flow-flavored sub-bands likely transfer — re-derive per sport rather than assuming MLB's verdict carries over). |
-| Status | OPEN. |
+| Resolution | RESOLVED 2026-09-05, T-522 (this session's own named follow-on to this entry, ADR-0062 §3/§4/§6, per GG-246's conservative BOUNDARY reading). Built exactly the follow-on this entry specified: 4 new `ExecutionBand` members (`T4NFL_ARITH`, `T4NFL_FLOW`, `T4NHL_ARITH`, `T4NHL_FLOW`) per the four-letter `T4NFL-`/`T4NHL-` convention (ADR-0062 §0, superseding this entry's ADR-0056 D2 citation — the naming authority moved between registration and resolution), plus a registry-scaffolding pass seeding 14 new `MarketTypeCell` entries (`NFL_MONEYLINE`/`NFL_SPREAD`/`NFL_GAME_TOTAL`/`NFL_TEAM_TOTAL` × ARITH+FLOW; `NHL_MONEYLINE`/`NHL_PUCK_LINE`/`NHL_GAME_TOTAL` × ARITH+FLOW), all `NOT_IMPLEMENTED`, all `kelly_fraction=0.0`, nothing wired or promoted. The "structurally-meaningful subset" judgment this entry anticipated resolved to ARITH+FLOW only (not BOUNDARY/EVENT) — see GG-246 for that determination's own evidence and reasoning. Live-verified: `MARKET_TYPE_REGISTRY` 78 → 92, `ExecutionBand` member count 22, all four `validate_t4_*_subbands()` (NBA/MLB/NFL/NHL) return `[]`, full suite 3017 passed / 28 skipped / 0 failed. |
+| Status | RESOLVED — see GG-246 for the BOUNDARY-reading evidence and VERIFY-step detail this closure depends on. |
 
 </details>
 
@@ -2846,5 +2846,29 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Discovery | 2026-09-05, T-522 (this session), while reading ADR-0062 in full per the READ FIRST requirement before starting the 17.1 scaffolding build (follow-on to GG-226, whose Resolution field named this exact work). |
 | Resolution | Resolved this session via the conservative reading, per explicit task-brief instruction to default conservative unless evidence says otherwise: build ARITH and FLOW only; decline BOUNDARY, matching MLB's own never-built `T4M-BOUNDARY` precedent exactly (§4's stated rationale for BOUNDARY's disposition already names that precedent — the code-level fact confirms it). Same conservative test applied to the `T4NFL-FLOW-BLOWOUT` open question from §7: MLB's `T4M_FLOW` has no separate enum member for its own "FLOW-BLOWOUT tree" (it is a mode within `T4M_FLOW`, per that member's own code comment) — so no separate `T4NFL_FLOW_BLOWOUT`/NHL-equivalent member was created either; the blowout concept is noted in the new `T4NFL_FLOW`/`T4NHL_FLOW` `T4SubBandSpec.notes` fields instead, mirroring MLB's pattern. Net result: 4 new `ExecutionBand` members (`T4NFL_ARITH`, `T4NFL_FLOW`, `T4NHL_ARITH`, `T4NHL_FLOW`), 14 new `MarketTypeCell` entries (2 sub-bands × 4 NFL families + 2 sub-bands × 3 NHL families), registry growing 78 → 92, not 78 → 99. EVENT remains excluded for both sports per §4/§7 (deferred pending C1 ingestion verification, a separate audit) — no `T4NFL_EVENT`/`T4NHL_EVENT` created. |
 | Status | RESOLVED — VERIFY step complete: live import confirms `MARKET_TYPE_REGISTRY` grew 78 → 92 (exactly the ARITH+FLOW-only projection, not 78 → 99), `len(list(ExecutionBand)) == 22`, all four `validate_t4_*_subbands()` functions (NBA/MLB/NFL/NHL) return `[]`, and the full test suite passed 3017 passed, 28 skipped, 0 failed (2026-09-05, T-522). |
+
+</details>
+
+---
+
+### GG-247 — GG-228's header/body are mismatched: its table is a verbatim duplicate of GG-226's body (including GG-226's own "Gap ID" field), not GG-228's own stated topic
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-247 |
+| Category | Data integrity — governance-log corruption, not a code/architecture defect. Registered per Hard Rule 11 ("register and stop on discovery" for an out-of-scope defect found mid-task) rather than fixed in this session. |
+| What was found | The entry at `### GG-228 — Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to the derived artifact, not its source of record (distinct from GG-224/ADR-0061's live-service in-memory-flush hazard)` has a `<details>` table whose entire content — every field, verbatim, including a `Gap ID | GG-226` row — is an exact duplicate of the real GG-226 entry's body (found immediately below it in the file, under GG-226's own correctly-titled header). GG-228's header describes a distinct topic (scheduled batch ledger regeneration overwriting an external repair) that its body never actually discusses. This was found while closing GG-226 per this session's (T-522) own resolution work — a `replace_all=false` string-uniqueness collision on GG-226's Resolution/Status text surfaced the duplicate. |
+| When it should have been caught | Not caught by the existing `gg_id_uniqueness_check.py` (Step 3 / GG-199) because that check only counts duplicate `### GG-NNN` *headers* — GG-226 and GG-228 are both unique header numbers, so the check passes cleanly even though one entry's body silently belongs to the other's number. This is a distinct failure mode from GG-199/GG-162 (header-number collision) and from GG-144 (status-line render drift) — a header/body mismatch within two otherwise-well-formed, uniquely-numbered entries. |
+| Phases it survived | Unknown — GG-228's real topic and original body content (if ever written) are not recoverable from this file alone; git history on `03_DECISIONS/GOVERNANCE_GAP_LOG.md` around GG-228's registration would need to be checked to find whether a correct body ever existed and was overwritten, or whether GG-228 was mis-created from a GG-226 copy-paste from the start. |
+| Why it survived | No existing scan step diffs a gap's header title against its own body content for topical consistency — only structural checks (one Status line per header, no duplicate header numbers) exist today. |
+| Impact | LOW. Does not affect T-522's own scope or the GG-226/GG-246 closures this session made (those were applied to the correctly-headed GG-226 entry, confirmed via the uniqueness collision itself). Impact is confined to whatever GG-228's real topic was intended to track: a scheduled-batch-ledger-regeneration-vs-external-repair hazard that currently has no real written-up gap entry, only a header with someone else's content under it. |
+| Discovery | 2026-09-05, T-522 (this session), incidentally while closing GG-226 — not the task this session was scoped to. |
+| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 and the out-of-scope discovery rule. Follow-on (unstaffed): (1) check git blame/history on the GG-228 header block to determine whether it ever had its own correct body; (2) if recoverable, restore GG-228's real body; if not, re-open GG-228's actual topic (scheduled batch regeneration overwriting an external ledger repair) as a fresh write-up; (3) consider extending `gg_id_uniqueness_check.py` (or a new script) to flag a body table whose own `Gap ID` field disagrees with its header's `GG-NNN` number — that check would have caught this instantly. |
+| Status | OPEN. |
 
 </details>
