@@ -2824,3 +2824,27 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — leaving open rather than marking RESOLVED in this pass pending the VERIFY step of this same session's deliverable (VPS deploy, a real observed scheduled fire, confirmed KXNFL rows landing in `exp_output/PRICE_ARCHIVE/`, and the T4 safety check). Will be closed same-session once that verification completes, or left OPEN with findings noted if it does not. |
 
 </details>
+
+---
+
+### GG-246 — ADR-0062 §4 (BOUNDARY "propose, scoped only") contradicts §6's cell-count projection (BOUNDARY counted as authorization-eligible); ADR's own Status line flags this unresolved-at-signature and routes it to 17.1
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-246 |
+| Category | ADR internal inconsistency, disclosed at signature — not a silent defect. The ADR's own Status line names the contradiction and explicitly defers its resolution to the implementing session (this one, T-522/GG-226's follow-on, "17.1"), rather than picking a reading at sign-off time. |
+| What was found | `ADR-0062_nfl-nhl-t4-subband-decomposition.md` §4 (Propose/Decline table) gives NFL-BOUNDARY and NHL-BOUNDARY the disposition "Propose, scoped only — same not-yet-authorized posture MLB's own `T4M-BOUNDARY` carries" / "same posture" — i.e. BOUNDARY is named but explicitly NOT authorized to build, mirroring MLB's own `T4M-BOUNDARY`, which has never been given an `ExecutionBand` member (confirmed live: MLB's enum block has exactly `T4M_PROJ`/`T4M_ARITH`/`T4M_FLOW`, and the module's own comment states BOUNDARY and the rest of ADR-0039's Tier B roster are "scoped but NOT built"). §6's cell-count arithmetic, however, counts BOUNDARY as authorization-eligible anyway: "NFL: 3 sub-bands × 4 families = 12... NHL: 3 sub-bands × 3 families = 9... Subtotal: 21 new NOT_IMPLEMENTED cells, 78 → 99" — 3 sub-bands per sport only works if ARITH+FLOW+BOUNDARY are all counted, contradicting §4's own decline-to-build posture for BOUNDARY. §7's open-questions list additionally leaves open whether `T4NFL-FLOW-BLOWOUT` (named in §3 for NFL only) warrants a separate `ExecutionBand` member. |
+| When it should have been caught | At ADR drafting/sign-off — §4 and §6 were authored to different conclusions about the same sub-band within the same document. The ADR's own Status line discloses this rather than presenting a false consensus, which is the correct handling of an unresolved internal conflict, but the conflict itself should not have reached signature unreconciled. |
+| Phases it survived | N/A — disclosed at signature, not a survived defect. The Status line states explicitly: "the §4/§6 BOUNDARY disagreement recorded here as unresolved-at-signature and routed to 17.1 — this signature does not pick a reading." |
+| Why it survived | §4 (roster disposition) and §6 (cell-count projection) were evidently derived independently — §6's arithmetic assumed the full named roster (ARITH/FLOW/BOUNDARY) without re-checking §4's per-concept Propose/Decline verdict for BOUNDARY specifically. ADR immutability (Hard Rule 3) means the conflict cannot be corrected in place; it can only be resolved by the implementing session choosing a reading, which is what this entry documents. |
+| Impact | LOW as resolved. Determines whether the 17.1 scaffolding build creates 14 cells (78→92, ARITH+FLOW only) or 21 cells (78→99, ARITH+FLOW+BOUNDARY) — a scope/count question only, no capital or kill-switch impact (`kelly_fraction=0.0` throughout either way, nothing wired, nothing promoted). |
+| Discovery | 2026-09-05, T-522 (this session), while reading ADR-0062 in full per the READ FIRST requirement before starting the 17.1 scaffolding build (follow-on to GG-226, whose Resolution field named this exact work). |
+| Resolution | Resolved this session via the conservative reading, per explicit task-brief instruction to default conservative unless evidence says otherwise: build ARITH and FLOW only; decline BOUNDARY, matching MLB's own never-built `T4M-BOUNDARY` precedent exactly (§4's stated rationale for BOUNDARY's disposition already names that precedent — the code-level fact confirms it). Same conservative test applied to the `T4NFL-FLOW-BLOWOUT` open question from §7: MLB's `T4M_FLOW` has no separate enum member for its own "FLOW-BLOWOUT tree" (it is a mode within `T4M_FLOW`, per that member's own code comment) — so no separate `T4NFL_FLOW_BLOWOUT`/NHL-equivalent member was created either; the blowout concept is noted in the new `T4NFL_FLOW`/`T4NHL_FLOW` `T4SubBandSpec.notes` fields instead, mirroring MLB's pattern. Net result: 4 new `ExecutionBand` members (`T4NFL_ARITH`, `T4NFL_FLOW`, `T4NHL_ARITH`, `T4NHL_FLOW`), 14 new `MarketTypeCell` entries (2 sub-bands × 4 NFL families + 2 sub-bands × 3 NHL families), registry growing 78 → 92, not 78 → 99. EVENT remains excluded for both sports per §4/§7 (deferred pending C1 ingestion verification, a separate audit) — no `T4NFL_EVENT`/`T4NHL_EVENT` created. |
+| Status | OPEN — left open rather than RESOLVED in this same pass, consistent with this log's convention of closing out via the VERIFY step at session end rather than asserting resolution before the live import/test-suite check has run. Will read as ready to close once this session's REPORT BACK confirms the 92-cell count and a green test suite. |
+
+</details>
