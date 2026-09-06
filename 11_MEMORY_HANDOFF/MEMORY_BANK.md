@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-05T17:14:04Z (T-520 — T-520: drafted ADR-0063 (PROPOSED, five-tier kill-switch/Kelly hierarchy), absorbed GG-038 TASK 2/3, registered GG-244) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1714.md` for full session detail.
+**Last reviewed:** 2026-09-05T22:46:00Z (T-521 — T-521 NFL cron deployed+installed on VPS; live verification blocked by VPS outage, GG-245 still OPEN) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_2246.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

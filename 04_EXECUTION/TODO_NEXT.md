@@ -2,10 +2,12 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-05T17:14:04Z (T-520 — T-520: drafted ADR-0063 (PROPOSED, five-tier kill-switch/Kelly hierarchy), absorbed GG-038 TASK 2/3, registered GG-244) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1714.md` for full session detail.
+**Last reviewed:** 2026-09-05T22:46:00Z (T-521 — T-521 NFL cron deployed+installed on VPS; live verification blocked by VPS outage, GG-245 still OPEN) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_2246.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-521 — Complete NFL price-capture verification blocked by VPS outage: manual smoke-test run, first-scheduled-fire KXNFL row count/sample ticker, T4 safety check (`t4-mlb` active/NRestarts=0/no staleness/no 429s) — 🟡 IN PROGRESS, blocked (worktree `session/20260905T221723Z-t500-nfl-price-capture`, GG-245). Code (052ab3a) merged to `origin/main` and redeployed; 5-window crontab confirmed installed on VPS via `crontab -l` before outage. VPS (157.230.91.33) became unreachable mid-verification (SSH+ICMP timeout, local internet confirmed fine) — also diagnose the manual-run `Permission denied` (interactive ssh shell missing `$PYTHON`/`$PROJ` exports that cron sources itself) once VPS is back. GG-245 stays OPEN until this closes.
 
 ## T-520 — Draft ADR-0063 (five-tier kill-switch/Kelly-alignment hierarchy), absorbing GG-038 TASK 2/3 — ✅ COMPLETE (draft only, PROPOSED) 2026-09-05 (worktree `session/20260905T162339Z-adr-kill-switch-kelly-tiers`, commit `7f55898`)
 
