@@ -2824,3 +2824,97 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — leaving open rather than marking RESOLVED in this pass pending the VERIFY step of this same session's deliverable (VPS redeploy of the corrected 5-window cron.conf, a real observed scheduled fire, confirmed KXNFL rows landing in `exp_output/PRICE_ARCHIVE/`, and the T4 safety check). Will be closed same-session once that verification completes, or left OPEN with findings noted if it does not. |
 
 </details>
+
+---
+
+### GG-247 — No NFL C1 ingestion module exists; generic `team_stats_store.py` is basketball-schema-shaped, not directly reusable
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-247 |
+| Category | Missing sport-specific C1 layer — no data source, no populating script, no schema fit for NFL team/game stats. |
+| What was found | `c1_signal_ingestion/` contains `mlb_ingestion.py`, `mlb_team_stats_store.py`, `mlb_pitcher_stats_store.py`, `ds02_nba_live.py` — a generic `team_stats_store.py` (`TeamStatsStore` class, built Phase 7/T-075 for NBA) also exists but its schema derives `pts_allowed = pts_scored - plus_minus`, a basketball-margin-derived quantity. NFL box scores report points-allowed directly (no derivation via plus/minus), so the generic store's schema does not fit NFL data as-is without adaptation. There is no ingestion script anywhere that would populate any store — generic or NFL-specific — with NFL team/game data (rolling scoring stats, rest days, home/away, injury status). Zero NFL rows exist in any C1 store today. |
+| When it should have been caught | At NFL-expansion planning time (ADR-0056, 2026-08-21 skeleton spike) — that ADR seeded the `MarketType`/registry/ticker-grammar skeleton but explicitly did not build C1/C2 for NFL, per its own scope fence. |
+| Phases it survived | N/A — this is a known-unbuilt layer, not a regression; it has never existed. |
+| Why it survived | NFL expansion work to date (ADR-0056, ADR-0062) has been confined to registry/governance scaffolding; no session has yet been scoped to build C1 ingestion. |
+| Impact | HIGH — this is a hard blocker for Step 2 (model input) of the NFL pregame-moneyline path. No LR forecast (or any model) can be computed for NFL without team-level rolling stats, and none exist. Required for T1 pregame; also required for any T4 in-play NFL work later (live game-state ingestion is a separate, additional build on top of this). |
+| Discovery | 2026-09-05, this session (NFL pregame-moneyline readiness audit), tracing Step 2 of the seven-step path end-to-end per task instruction ("read the generic team_stats_store.py and say what NFL would need"). |
+| Resolution | Not started. Scope estimate: a new `nfl_ingestion.py` (source TBD — likely ESPN's public API, already used elsewhere in this codebase as MLB's documented fallback, or an official NFL stats provider) plus either an NFL-adapted `TeamStatsStore` schema or a new `nfl_team_stats_store.py` mirroring `mlb_team_stats_store.py`'s pattern. Rough size: MEDIUM-LARGE (new C1 module + schema decisions + historical backfill for a meaningful rolling-stat window before any model can be fit). |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-248 — `kalshi_client.py`'s parsed-market wrapper is player-prop-shaped; NFL (and other non-prop) market types are silently dropped despite registry resolving correctly
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-248 |
+| Category | Silent data-loss gap in a shared C1/market-discovery layer — the registry-driven ticker resolution (T-439) works correctly, but the higher-level parsed-market convenience wrapper built on top of it assumes a player-prop shape and drops anything that doesn't match, with no error, warning, or log line marking the drop. |
+| What was found | `kalshi_client`'s `series_ticker_for()` (registry-driven since T-439) correctly resolves NFL series tickers (KXNFLGAME/KXNFLSPREAD/KXNFLTOTAL/KXNFLTEAMTOTAL) — confirmed live against the raw Kalshi API this session, which lists all four as open/tradeable. However, the parsed-market wrapper that live pipelines (`run_mlb_paper_trade.py` and analogues) actually consume expects a player-prop-shaped payload (player name, stat threshold) and has no branch for a team-vs-team moneyline/spread/total shape — an NFL (or MLB game-market) response passed through this wrapper is silently dropped rather than raising or logging, so a caller sees an empty market list with no signal that the cause is a parsing-shape mismatch rather than "no markets today." |
+| When it should have been caught | At the time any game-market cell (MLB's own 5 ADR-0058 T1 cells, not just NFL's 4) was first scoped for measurement — ADR-0058/ADR-0059 built the risk-gate and stake-sizing layers for these cells but did not touch market discovery, leaving this gap latent for MLB's own game markets as well as NFL's. |
+| Why it survived | The bot's only live-traded market family to date is `KXMLBHIT` (player props), so this parsing assumption has never been exercised against a non-prop shape in production; nothing has forced a test against a game-market response until this audit. |
+| Impact | HIGH — this blocks Step 1 (market discovery) for any game-market cell, MLB's own included, not NFL-specific. Even with NFL C1/C2/C3 fully built, a live pipeline could not discover NFL markets to bet on without this wrapper being extended. Required for T1 pregame; also blocks T4 in-play market discovery for game markets. |
+| Discovery | 2026-09-05, this session, tracing Step 1 ("Test it, do not read it") — live-tested `series_ticker_for()` against the registry (resolves correctly) and separately live-tested the raw Kalshi API (NFL markets open/tradeable), then traced the parsed-market wrapper's shape assumptions and found no game-market branch. |
+| Resolution | Not started. Scope estimate: MEDIUM — extend the parsed-market wrapper with a game-market branch (team names + moneyline/spread/total structure) keyed off `MarketType`, distinct from the existing player-prop branch. This is a shared fix benefiting MLB's own 5 game-market cells as well as NFL's 4. |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-249 — No moneyline/game-winner resolution logic exists anywhere in `src/`, for any sport including MLB
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-249 |
+| Category | Missing resolution-layer logic — deeper than an NFL-specific gap; this blocks moneyline settlement for every sport the bot has ever traded or scoped, MLB included. |
+| What was found | `run_resolve_mlb.py` (PIPE-05R, cron 06:30 UTC, 793 lines) resolves ONLY player-prop hit counts — its sole fetch/resolve function is `fetch_actual_hits()` (line 423); a full-file grep for `moneyline\|def fetch_actual\|def settle_position\|game_winner\|final_score\|def resolve` returns no additional function. `paper_trader.py::settle_position()` implements a generic **threshold-crossing** settlement pattern (`yes_won = actual_stat >= threshold`) appropriate for props/totals but with no binary team-win/loss branch. A broader `src/`-wide grep for `moneyline\|game_winner\|winning_team\|home_score.*away_score\|final_score` finds hits only in enum names/comments (`market_type_registry.py`, `measurement_stake.py`, `t4_execution_engine.py`, `t4_live_runner.py`) — zero actual resolution logic for a moneyline outcome exists anywhere, for any sport. |
+| When it should have been caught | At the time ADR-0058 reopened the nine T1 game-market cells (2026-08-26) for measurement — that ADR scoped the risk-gate and stake-sizing wrapper (`measurement_stake.py`, delivered under ADR-0059) but not the resolution side, leaving a bet that could theoretically be placed and staked with no way to ever be settled. |
+| Why it survived | MLB's own moneyline cell (`mlb_moneyline`, T1_MULTI_DAY) is itself `NOT_IMPLEMENTED` and has never been traded, so the absence of its resolution path has never been exercised or noticed in production. |
+| Impact | HIGH, and cross-sport — this is the single largest component-level gap found in this audit. Even a fully-built NFL forecast+execution path could not settle a placed bet without this. Required for T1 pregame (a placed-but-unsettled bet is not a completed trial); also required for any T4 in-play moneyline work. |
+| Discovery | 2026-09-05, this session, tracing Step 6 (resolution) of the seven-step path — reading `run_resolve_mlb.py` in full and `paper_trader.py::settle_position()`, then grepping `src/` broadly to confirm no moneyline-shaped resolution exists anywhere, not only for NFL. |
+| Resolution | Not started. Scope estimate: MEDIUM — requires (a) a live final-score data source per sport (ESPN's public API is already used as MLB's documented fallback and plausibly covers both sports), (b) a new fetch-final-outcome function per sport (mirroring `fetch_actual_hits()`'s pattern), (c) glue code into `settle_position()` (or a new settle path) encoding a binary win/loss outcome rather than a threshold crossing. MLB's version should be built first — it is the sport with the rest of its pipeline already active — and NFL's would follow the same pattern as a second, parallel build. |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-250 — No NFL T1 paper-trade run script, resolution run script, or cron entries exist (distinct from GG-245's price-archiver-only fix)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-250 |
+| Category | Missing orchestration layer — no run script or scheduling exists to drive an NFL bet through C1-C6 end to end, even setting aside the component gaps (GG-247/GG-248/GG-249) each individual step still needs. |
+| What was found | `deploy/cron.conf`'s MLB pipeline has ten distinct scheduled stages (PIPE-06 T3, PIPE-06pre, PIPE-05 bet placement, PIPE-05.5 T2, PIPE-07 T4 [now systemd], PIPE-05R resolution, PIPE-08 schedule validator, PIPE-05FX feature refresh, PIPE-05C weekly calibration, plus the price archiver). As of this audit's live re-check against `origin/main`, only the price archiver has an NFL analogue (GG-245/T-521, landed concurrently with this audit). No `run_nfl_paper_trade.py` (or equivalent PIPE-05 analogue), no `run_resolve_nfl.py` (PIPE-05R analogue), and no corresponding cron entries exist for NFL at any pipeline stage other than price archiving. |
+| When it should have been caught | At NFL-expansion planning time (ADR-0056) — out of that spike's explicit scope fence (registry/governance skeleton only). |
+| Phases it survived | N/A — never built. |
+| Why it survived | No session has yet been scoped to build NFL's run-script/orchestration layer; it depends on GG-247/GG-248/GG-249 being resolved first (a run script has nothing to call without C1 data, working market discovery, and a resolution path). |
+| Impact | HIGH — this is the final assembly gap: even with every component above built, nothing invokes them end-to-end on a schedule without this. Required for T1 pregame. A T4 in-play NFL script would be a further, separate, larger build on top of this (live game-state polling, sub-minute cadence) — explicitly out of this audit's minimum-viable-T1 scope. |
+| Discovery | 2026-09-05, this session, tracing Step 7 (scheduling) — enumerating MLB's full cron structure as the analogy baseline and confirming NFL's coverage against it, then re-verifying against `origin/main` post-rebase to account for GG-245/T-521 landing concurrently during this audit. |
+| Resolution | Not started. Scope estimate: LARGE — a new `run_nfl_paper_trade.py` (T1 pregame moneyline bet-placement script, analogous to whatever MLB's PIPE-05 script is) and `run_resolve_nfl.py` (analogous to `run_resolve_mlb.py`), each with their own cron entries, cannot be meaningfully built until GG-247 (C1 data), GG-248 (market discovery), and GG-249 (resolution logic) are resolved — this gap is downstream of all three, not independent of them. |
+| Status | OPEN. |
+
+</details>
