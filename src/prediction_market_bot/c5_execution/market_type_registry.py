@@ -701,6 +701,23 @@ for _market_type in _NFL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
+# --- NFL T4 sub-band decomposition (ADR-0062, T-522): 17.1 registry+band
+# scaffolding only, no behavior change. Adds ARITH and FLOW cells for each NFL
+# family, mirroring _MLB_GAME_MARKET_T4_SUBBANDS's exact pattern above. BOUNDARY
+# and EVENT are deliberately excluded (GG-246 conservative reading of ADR-0062
+# §4/§6's disagreement; EVENT additionally excluded pending C1 ingestion
+# verification, ADR-0062 §7). All eight new cells below are NOT_IMPLEMENTED,
+# no kelly_fraction touched (that axis lives in execution_bands.py's
+# BandConfig, all zeroed there), nothing wired, nothing promoted.
+_NFL_GAME_MARKET_T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NFL_ARITH,
+    ExecutionBand.T4NFL_FLOW,
+)
+
+for _market_type in _NFL_FAMILIES:
+    for _band in _NFL_GAME_MARKET_T4_SUBBANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
 # --- NHL (T-495 skeleton spike, ADR-0056 §5, EXP-024): seeded NOT_IMPLEMENTED
 # only, mirroring T-474's NFL pattern exactly. No NHL cell may be promoted
 # above NOT_IMPLEMENTED by this session -- kelly_fraction=0.0 throughout,
@@ -717,6 +734,19 @@ _NHL_FAMILIES: tuple[MarketType, ...] = (
 
 for _market_type in _NHL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- NHL T4 sub-band decomposition (ADR-0062, T-522): 17.1 registry+band
+# scaffolding only, no behavior change. Mirrors the NFL block immediately
+# above -- ARITH and FLOW only (GG-246), no BOUNDARY, no EVENT. All six new
+# cells below are NOT_IMPLEMENTED, no kelly_fraction touched, nothing wired.
+_NHL_GAME_MARKET_T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NHL_ARITH,
+    ExecutionBand.T4NHL_FLOW,
+)
+
+for _market_type in _NHL_FAMILIES:
+    for _band in _NHL_GAME_MARKET_T4_SUBBANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 del _market_type, _band
