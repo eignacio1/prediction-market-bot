@@ -28,8 +28,10 @@ class TestExecutionBandEnum:
         # T4-MICRO is intentionally absent (no model_p; ADR-0030 carve-out).
         assert "T4-MICRO" not in {b.value for b in ExecutionBand}
         # 5 aggregate bands + 10 NBA T4 sub-bands + 3 MLB-native T4 sub-bands
-        # (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
-        assert len(list(ExecutionBand)) == 18
+        # (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) + 4 NFL/NHL-native T4
+        # sub-bands (T4NFL-ARITH/T4NFL-FLOW/T4NHL-ARITH/T4NHL-FLOW,
+        # ADR-0062/T-522) = 22.
+        assert len(list(ExecutionBand)) == 22
 
     def test_band_string_values(self):
         assert ExecutionBand.T1_MULTI_DAY.value == "T1"
@@ -138,9 +140,10 @@ class TestGetActiveBands:
 
     def test_include_realtime_returns_all_bands(self):
         # 5 aggregate (T1–T5) + 10 NBA T4 sub-bands (ADR-0029) + 3 MLB-native T4
-        # sub-bands (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
+        # sub-bands (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) + 4 NFL/NHL-native
+        # T4 sub-bands (ADR-0062/T-522) = 22.
         all_bands = get_active_bands(include_realtime=True)
-        assert len(all_bands) == 18
+        assert len(all_bands) == 22
 
 
 class TestT4SubBandRegistry:
@@ -195,3 +198,86 @@ class TestT4SubBandRegistry:
         assert arith.provisional_kelly <= 0.167  # 0.22 placeholder held non-operational
         assert proj.provisional_kelly < 0.25
         assert proj.exp_gate == ("EXP-PROJ-01",)
+
+
+class TestT4NFLSubBandRegistry:
+    """ADR-0062 (T-522) Tier B governance invariants for NFL's T4 sub-bands."""
+
+    def test_validate_clean(self):
+        from prediction_market_bot.execution_bands import validate_t4_nfl_subbands
+        assert validate_t4_nfl_subbands() == []
+
+    def test_registry_matches_roster(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NFL_SUBBANDS, T4_NFL_SUBBAND_REGISTRY,
+        )
+        assert set(T4_NFL_SUBBAND_REGISTRY) == set(T4_NFL_SUBBANDS)
+
+    def test_all_subbands_blocked(self):
+        # Unlike MLB, NFL has no ACTIVE exception -- every entry must be BLOCKED.
+        from prediction_market_bot.execution_bands import T4_NFL_SUBBAND_REGISTRY
+        for band, spec in T4_NFL_SUBBAND_REGISTRY.items():
+            assert spec.status == "BLOCKED", f"{band.value} must be BLOCKED"
+
+    def test_all_subbands_kelly_zero(self):
+        # T-522 scaffolding: no NFL model exists yet, kelly must be held at 0.0.
+        from prediction_market_bot.execution_bands import T4_NFL_SUBBAND_REGISTRY
+        for band, spec in T4_NFL_SUBBAND_REGISTRY.items():
+            assert spec.provisional_kelly == 0.0, f"{band.value} kelly must be 0.0"
+
+    def test_all_subbands_phase8_realtime(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NFL_SUBBANDS, get_band_config,
+        )
+        for sub in T4_NFL_SUBBANDS:
+            cfg = get_band_config(sub)
+            assert cfg.requires_realtime is True
+            assert cfg.phase_active == "Phase 8"
+            assert cfg.kelly_fraction == 0.0
+
+    def test_boundary_and_event_not_built(self):
+        # GG-246 conservative reading: only ARITH and FLOW exist for NFL.
+        values = {b.value for b in ExecutionBand}
+        assert "T4NFL-BOUNDARY" not in values
+        assert "T4NFL-EVENT" not in values
+        assert "T4N-ARITH" not in values  # superseded prefix, GG-233
+
+
+class TestT4NHLSubBandRegistry:
+    """ADR-0062 (T-522) Tier B governance invariants for NHL's T4 sub-bands."""
+
+    def test_validate_clean(self):
+        from prediction_market_bot.execution_bands import validate_t4_nhl_subbands
+        assert validate_t4_nhl_subbands() == []
+
+    def test_registry_matches_roster(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NHL_SUBBANDS, T4_NHL_SUBBAND_REGISTRY,
+        )
+        assert set(T4_NHL_SUBBAND_REGISTRY) == set(T4_NHL_SUBBANDS)
+
+    def test_all_subbands_blocked(self):
+        from prediction_market_bot.execution_bands import T4_NHL_SUBBAND_REGISTRY
+        for band, spec in T4_NHL_SUBBAND_REGISTRY.items():
+            assert spec.status == "BLOCKED", f"{band.value} must be BLOCKED"
+
+    def test_all_subbands_kelly_zero(self):
+        from prediction_market_bot.execution_bands import T4_NHL_SUBBAND_REGISTRY
+        for band, spec in T4_NHL_SUBBAND_REGISTRY.items():
+            assert spec.provisional_kelly == 0.0, f"{band.value} kelly must be 0.0"
+
+    def test_all_subbands_phase8_realtime(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NHL_SUBBANDS, get_band_config,
+        )
+        for sub in T4_NHL_SUBBANDS:
+            cfg = get_band_config(sub)
+            assert cfg.requires_realtime is True
+            assert cfg.phase_active == "Phase 8"
+            assert cfg.kelly_fraction == 0.0
+
+    def test_boundary_and_event_not_built(self):
+        values = {b.value for b in ExecutionBand}
+        assert "T4NHL-BOUNDARY" not in values
+        assert "T4NHL-EVENT" not in values
+        assert "T4N-ARITH" not in values  # superseded prefix, GG-233

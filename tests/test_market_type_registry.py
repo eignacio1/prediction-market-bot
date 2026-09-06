@@ -456,29 +456,59 @@ class TestGameMarketT4SubbandIntegration:
             with pytest.raises(KeyError):
                 get_cell(market_type, ExecutionBand.T4M_PROJ)
 
-    def test_no_nfl_family_has_any_t4_subband_cell(self):
-        subbands = {
-            ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
-            ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
-            ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
-            ExecutionBand.T4_ARITH, ExecutionBand.T4_BOUNDARY, ExecutionBand.T4_CORR,
-            ExecutionBand.T4_EXIT,
+    # ADR-0062/T-522 forbidden set: NBA's 10 bare T4_* + MLB's 3 T4M_* sub-bands.
+    # Neither sport's game markets may ever carry another sport's T4 decomposition.
+    _CROSS_SPORT_FORBIDDEN_SUBBANDS = {
+        ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
+        ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
+        ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
+        ExecutionBand.T4_ARITH, ExecutionBand.T4_BOUNDARY, ExecutionBand.T4_CORR,
+        ExecutionBand.T4_EXIT,
+    }
+
+    def test_no_nfl_family_has_any_cross_sport_t4_subband_cell(self):
+        # Renamed from test_no_nfl_family_has_any_t4_subband_cell (T-522): NFL
+        # families now DO carry their own sport's T4NFL_ARITH/T4NFL_FLOW cells
+        # (ADR-0062) -- this test asserts they remain disjoint from every OTHER
+        # sport's T4 decomposition (NBA bare T4_*, MLB-native T4M_*, and NHL's
+        # own T4NHL_*), not from all T4 sub-bands whatsoever.
+        forbidden = self._CROSS_SPORT_FORBIDDEN_SUBBANDS | {
+            ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW,
         }
         for market_type in self._NFL_FAMILIES:
             seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
-            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+            assert seeded_bands.isdisjoint(forbidden), (market_type, seeded_bands)
 
-    def test_no_nhl_family_has_any_t4_subband_cell(self):
-        subbands = {
-            ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
-            ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
-            ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
-            ExecutionBand.T4_ARITH, ExecutionBand.T4_BOUNDARY, ExecutionBand.T4_CORR,
-            ExecutionBand.T4_EXIT,
+    def test_nfl_family_has_own_arith_and_flow_cells_only(self):
+        # Positive assertion (T-522, ADR-0062): every NFL family carries exactly
+        # T4NFL_ARITH and T4NFL_FLOW as its T4 sub-band decomposition -- no
+        # BOUNDARY, no EVENT (GG-246 conservative reading).
+        for market_type in self._NFL_FAMILIES:
+            for band in (ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW):
+                cell = get_cell(market_type, band)
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+
+    def test_no_nhl_family_has_any_cross_sport_t4_subband_cell(self):
+        # Renamed from test_no_nhl_family_has_any_t4_subband_cell (T-522): NHL
+        # families now DO carry their own sport's T4NHL_ARITH/T4NHL_FLOW cells
+        # (ADR-0062) -- this test asserts they remain disjoint from every OTHER
+        # sport's T4 decomposition (NBA bare T4_*, MLB-native T4M_*, and NFL's
+        # own T4NFL_*), not from all T4 sub-bands whatsoever.
+        forbidden = self._CROSS_SPORT_FORBIDDEN_SUBBANDS | {
+            ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW,
         }
         for market_type in self._NHL_FAMILIES:
             seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
-            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+            assert seeded_bands.isdisjoint(forbidden), (market_type, seeded_bands)
+
+    def test_nhl_family_has_own_arith_and_flow_cells_only(self):
+        # Positive assertion (T-522, ADR-0062): every NHL family carries exactly
+        # T4NHL_ARITH and T4NHL_FLOW as its T4 sub-band decomposition -- no
+        # BOUNDARY, no EVENT (GG-246 conservative reading).
+        for market_type in self._NHL_FAMILIES:
+            for band in (ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW):
+                cell = get_cell(market_type, band)
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
 
     # NOTE (T-504): an absolute `len(MARKET_TYPE_REGISTRY) == 78` assertion was
     # deliberately NOT added here. TestPromoteCellStatus's two RULED_OUT
