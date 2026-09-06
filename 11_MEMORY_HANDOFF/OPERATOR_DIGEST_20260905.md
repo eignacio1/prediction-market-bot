@@ -16,3 +16,4 @@ One honesty note: a minor mismatch turned up between an earlier brief's descript
 
 *Full detail: `SESSION_HANDOFF_20260905_1714.md`, `DECISION_LOG.md` 2026-09-05, `ADR-0063` (proposal, not yet accepted).*
 - T-519 (auto): T-519: landed T-518 + GG-242 branches to origin/main (dad15a9), fixed two silent rebase corruptions, all verifications passed
+- T-521 (auto): T-521 NFL cron deployed+installed on VPS; live verification blocked by VPS outage, GG-245 still OPEN
