@@ -415,9 +415,12 @@ class TestTickerDateGrammar:
 # families. Pure additive registry scaffolding: T4M_ARITH/T4M_FLOW extended
 # to MLB's five non-prop families (namespace-valid reuse within MLB, ADR-0056
 # D2); T4M_PROJ deliberately left declined for those families (player-scoped,
-# no game-level analogue); NFL/NHL sub-band decomposition deliberately left
-# unbuilt (no namespace-valid ExecutionBand member exists for those sports
-# yet -- building one is outside this scope-fenced session, see GG-226).
+# no game-level analogue); NFL/NHL sub-band decomposition was left unbuilt at
+# T-504 time (no namespace-valid ExecutionBand member existed yet for those
+# sports -- see GG-226) and has since been built by T-524/GG-251 (ADR-0062):
+# T4NFL_ARITH/T4NFL_FLOW and T4NHL_ARITH/T4NHL_FLOW only (BOUNDARY and EVENT
+# remain scoped but not built -- see the tests below and DECISION_LOG.md's
+# T-524 entry for the conservative reading that produced this roster).
 # ---------------------------------------------------------------------------
 
 
@@ -456,8 +459,10 @@ class TestGameMarketT4SubbandIntegration:
             with pytest.raises(KeyError):
                 get_cell(market_type, ExecutionBand.T4M_PROJ)
 
-    def test_no_nfl_family_has_any_t4_subband_cell(self):
-        subbands = {
+    def test_no_nfl_family_has_any_nba_or_mlb_native_subband_cell(self):
+        # Cross-namespace guard: NFL families must never pick up an NBA- or
+        # MLB-native T4 sub-band (namespace bleed), only their own T4NFL-*.
+        foreign_subbands = {
             ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
             ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
             ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
@@ -466,10 +471,12 @@ class TestGameMarketT4SubbandIntegration:
         }
         for market_type in self._NFL_FAMILIES:
             seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
-            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+            assert seeded_bands.isdisjoint(foreign_subbands), (market_type, seeded_bands)
 
-    def test_no_nhl_family_has_any_t4_subband_cell(self):
-        subbands = {
+    def test_no_nhl_family_has_any_nba_or_mlb_native_subband_cell(self):
+        # Cross-namespace guard: NHL families must never pick up an NBA- or
+        # MLB-native T4 sub-band (namespace bleed), only their own T4NHL-*.
+        foreign_subbands = {
             ExecutionBand.T4M_PROJ, ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW,
             ExecutionBand.T4_STAGED, ExecutionBand.T4_EVENT, ExecutionBand.T4_LINEUP,
             ExecutionBand.T4_FLOW, ExecutionBand.T4_SENTIMENT, ExecutionBand.T4_PROJ,
@@ -478,7 +485,43 @@ class TestGameMarketT4SubbandIntegration:
         }
         for market_type in self._NHL_FAMILIES:
             seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
-            assert seeded_bands.isdisjoint(subbands), (market_type, seeded_bands)
+            assert seeded_bands.isdisjoint(foreign_subbands), (market_type, seeded_bands)
+
+    def test_t4nfl_arith_and_flow_seeded_not_implemented_for_every_nfl_family(self):
+        # T-524/GG-251 (ADR-0062): every NFL family gets both sub-bands built
+        # this session -- ARITH and FLOW only, both NOT_IMPLEMENTED.
+        for market_type in self._NFL_FAMILIES:
+            for band in (ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW):
+                cell = get_cell(market_type, band)
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+
+    def test_t4nhl_arith_and_flow_seeded_not_implemented_for_every_nhl_family(self):
+        # T-524/GG-251 (ADR-0062): every NHL family gets both sub-bands built
+        # this session -- ARITH and FLOW only, both NOT_IMPLEMENTED.
+        for market_type in self._NHL_FAMILIES:
+            for band in (ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW):
+                cell = get_cell(market_type, band)
+                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+
+    def test_no_nfl_family_has_boundary_or_event_cell(self):
+        # ADR-0062 §4's conservative reading: BOUNDARY and EVENT are scoped
+        # but not built. There is no ExecutionBand.T4NFL_BOUNDARY/EVENT member
+        # to seed a cell with -- this test guards against one being added to
+        # this registry without a corresponding, deliberate enum addition.
+        for market_type in self._NFL_FAMILIES:
+            seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
+            seeded_values = {b.value for b in seeded_bands}
+            assert "T4NFL-BOUNDARY" not in seeded_values
+            assert "T4NFL-EVENT" not in seeded_values
+
+    def test_no_nhl_family_has_boundary_or_event_cell(self):
+        # ADR-0062 §4's conservative reading: BOUNDARY and EVENT are scoped
+        # but not built. Same guard as the NFL test above, NHL side.
+        for market_type in self._NHL_FAMILIES:
+            seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
+            seeded_values = {b.value for b in seeded_bands}
+            assert "T4NHL-BOUNDARY" not in seeded_values
+            assert "T4NHL-EVENT" not in seeded_values
 
     # NOTE (T-504): an absolute `len(MARKET_TYPE_REGISTRY) == 78` assertion was
     # deliberately NOT added here. TestPromoteCellStatus's two RULED_OUT
