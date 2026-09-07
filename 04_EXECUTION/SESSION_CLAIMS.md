@@ -459,3 +459,4 @@
 | 2026-09-07T02:09:32Z | GG-245 | CLOSED — GG-245 CLOSED — NFL price capture verified via direct evidence (21 fires, 18,194 KXNFL rows, 32/32 schedule match, MLB unaffected) (commit `23dd711`) |
 | 2026-09-07T02:03:36Z | T-525, GG-TBD (register per-gap, count TBD) | STANDARD -- NFL pregame-moneyline readiness audit (narrower re-scope of unlanded T-523), no build |
 | 2026-09-07T02:12:00Z | GG-245 | CLOSED — merge confirmed, HEAD (d1f37cd) is ancestor of origin/main (merge-check YES); session-end complete, session ending |
+| 2026-09-07T02:XX:XXZ | T-525, GG-252, GG-253, GG-254, GG-255 | CLOSED — merge confirmed, HEAD (0edb6e6) is ancestor of origin/main (merge-check YES); pushed to main. Deliverable: 04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md |
