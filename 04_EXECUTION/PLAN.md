@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-07T23:27:00Z (T-524 — T-524/GG-251: landed NFL/NHL T4 ARITH+FLOW ExecutionBand+registry scaffolding (78->92 cells), confirmed merged to origin/main) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260907_2327.md` for full session detail.
+**Last reviewed:** 2026-09-07T23:26:59Z (T-525 — T-525 NFL pregame-moneyline audit — answer NO by 09-09, earliest 09-23; GG-252/253/254/255 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260907_2326.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

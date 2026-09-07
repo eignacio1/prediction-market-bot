@@ -461,3 +461,4 @@
 | 2026-09-07T02:12:00Z | GG-245 | CLOSED — merge confirmed, HEAD (d1f37cd) is ancestor of origin/main (merge-check YES); session-end complete, session ending |
 | 2026-09-07T23:18:07Z | T-525, GG-252, GG-253, GG-254, GG-255 | CLOSED — merge confirmed, HEAD (0edb6e6) is ancestor of origin/main (merge-check YES); pushed to main. Deliverable: 04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md |
 | 2026-09-07T23:28:08Z | T-524 | CLOSED — T-524/GG-251: landed NFL/NHL T4 ARITH+FLOW ExecutionBand+registry scaffolding (78->92 cells), confirmed merged to origin/main (commit `c953f15`) |
+| 2026-09-07T23:27:25Z | T-525 | CLOSED — T-525 NFL pregame-moneyline audit — answer NO by 09-09, earliest 09-23; GG-252/253/254/255 registered (commit `c953f15`) |
