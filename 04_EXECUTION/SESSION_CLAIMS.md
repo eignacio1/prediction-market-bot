@@ -463,3 +463,4 @@
 | 2026-09-07T23:28:08Z | T-524 | CLOSED — T-524/GG-251: landed NFL/NHL T4 ARITH+FLOW ExecutionBand+registry scaffolding (78->92 cells), confirmed merged to origin/main (commit `c953f15`) |
 | 2026-09-07T23:27:25Z | T-525 | CLOSED — T-525 NFL pregame-moneyline audit — answer NO by 09-09, earliest 09-23; GG-252/253/254/255 registered (commit `c953f15`) |
 | 2026-09-07T23:31:39Z | T-525 (session-end close-out) | CLOSED — merge confirmed, HEAD (80cd9c6) is ancestor of origin/main (merge-check YES); pushed to main via fast-forward. Session-end artifacts complete: SESSION_HANDOFF_20260907_2326.md, Operator Digest, checkpoint pointer. |
+| 2026-09-07T23:46:36Z | T-526, GG-252 | STANDARD: fix GG-252 - add game-market representation + NFL ticker parsing to kalshi_client.py, no silent drops |
