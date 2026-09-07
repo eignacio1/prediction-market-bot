@@ -452,3 +452,4 @@
 | 2026-09-05T22:18:59Z | T-522 / GG-246(new) | T-522: ADR-0062 17.1 scaffolding — NFL/NHL T4 ExecutionBand+registry cells, no behavior change |
 | 2026-09-06T00:28:58Z | T-521 | CLOSED — T-521 NFL cron deployed+installed on VPS; live verification blocked by VPS outage, GG-245 still OPEN (commit `052ab3a`) |
 | 2026-09-06T00:30:00Z | T-521 | CLOSED — merge confirmed, HEAD (c01782b) is ancestor of origin/main (merge-check YES); pushed to main |
+| 2026-09-07T01:51:23Z | GG-245 | MICRO: verify NFL price capture ran on Sunday 09-06 cron window, GG-245 disposition |
