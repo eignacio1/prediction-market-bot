@@ -454,3 +454,4 @@
 | 2026-09-06T00:30:00Z | T-521 | CLOSED — merge confirmed, HEAD (c01782b) is ancestor of origin/main (merge-check YES); pushed to main |
 | 2026-09-07T01:51:23Z | GG-245 | MICRO: verify NFL price capture ran on Sunday 09-06 cron window, GG-245 disposition |
 | 2026-09-07T01:58:43Z | T-524, GG-251 | SHORT: ADR-0062 17.1 retry — land NFL/NHL T4 ExecutionBand+registry scaffolding (T-522/GG-246 verified correct but never landed; re-verifying and landing under new IDs) |
+| 2026-09-07T02:02:27Z | GG-245 | GG-245 CLOSED — NFL price capture verified: 21 scheduled fires, 18,194 KXNFL rows, 32/32 Week1+ events inside windows, MLB unaffected (commit b4fa59a) |
