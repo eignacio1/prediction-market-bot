@@ -28,8 +28,10 @@ class TestExecutionBandEnum:
         # T4-MICRO is intentionally absent (no model_p; ADR-0030 carve-out).
         assert "T4-MICRO" not in {b.value for b in ExecutionBand}
         # 5 aggregate bands + 10 NBA T4 sub-bands + 3 MLB-native T4 sub-bands
-        # (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
-        assert len(list(ExecutionBand)) == 18
+        # (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) + 4 NFL/NHL-native T4
+        # sub-bands (T4NFL-ARITH/T4NFL-FLOW/T4NHL-ARITH/T4NHL-FLOW, ADR-0062,
+        # T-524/GG-251 — BOUNDARY/EVENT deliberately excluded) = 22.
+        assert len(list(ExecutionBand)) == 22
 
     def test_band_string_values(self):
         assert ExecutionBand.T1_MULTI_DAY.value == "T1"
@@ -138,9 +140,10 @@ class TestGetActiveBands:
 
     def test_include_realtime_returns_all_bands(self):
         # 5 aggregate (T1–T5) + 10 NBA T4 sub-bands (ADR-0029) + 3 MLB-native T4
-        # sub-bands (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) = 18.
+        # sub-bands (T4M-PROJ/T4M-ARITH/T4M-FLOW, ADR-0039/T-219) + 4 NFL/NHL-native
+        # T4 sub-bands (ADR-0062, T-524/GG-251) = 22.
         all_bands = get_active_bands(include_realtime=True)
-        assert len(all_bands) == 18
+        assert len(all_bands) == 22
 
 
 class TestT4SubBandRegistry:
@@ -195,3 +198,77 @@ class TestT4SubBandRegistry:
         assert arith.provisional_kelly <= 0.167  # 0.22 placeholder held non-operational
         assert proj.provisional_kelly < 0.25
         assert proj.exp_gate == ("EXP-PROJ-01",)
+
+
+class TestT4NflNhlSubBandRegistry:
+    """ADR-0062 Tier B governance invariants for the NFL/NHL-native T4 sub-band
+    registries (T-524/GG-251, registry+scaffolding only). Mirrors the MLB
+    registry's own invariants (see test_t4_mlb_engine.py) minus anything tied
+    to a wired execution engine — no t4_nfl/t4_nhl execution engine exists,
+    and building one is explicitly out of scope here.
+    """
+
+    def test_validate_nfl_clean(self):
+        from prediction_market_bot.execution_bands import validate_t4_nfl_subbands
+        assert validate_t4_nfl_subbands() == []
+
+    def test_validate_nhl_clean(self):
+        from prediction_market_bot.execution_bands import validate_t4_nhl_subbands
+        assert validate_t4_nhl_subbands() == []
+
+    def test_nfl_registry_matches_roster(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NFL_SUBBANDS, T4_NFL_SUBBAND_REGISTRY,
+        )
+        assert set(T4_NFL_SUBBAND_REGISTRY) == set(T4_NFL_SUBBANDS)
+        assert set(T4_NFL_SUBBANDS) == {
+            ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW,
+        }
+
+    def test_nhl_registry_matches_roster(self):
+        from prediction_market_bot.execution_bands import (
+            T4_NHL_SUBBANDS, T4_NHL_SUBBAND_REGISTRY,
+        )
+        assert set(T4_NHL_SUBBAND_REGISTRY) == set(T4_NHL_SUBBANDS)
+        assert set(T4_NHL_SUBBANDS) == {
+            ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW,
+        }
+
+    def test_all_nfl_nhl_subbands_blocked(self):
+        # Unlike MLB (which has one documented ACTIVE exception, T4M-PROJ),
+        # neither NFL nor NHL has an existing live model to relabel — every
+        # entry in both registries must be BLOCKED (ADR-0062 §4/§6).
+        from prediction_market_bot.execution_bands import (
+            T4_NFL_SUBBAND_REGISTRY, T4_NHL_SUBBAND_REGISTRY,
+        )
+        for band, spec in {**T4_NFL_SUBBAND_REGISTRY, **T4_NHL_SUBBAND_REGISTRY}.items():
+            assert spec.status == "BLOCKED", f"{band.value} must be BLOCKED"
+
+    def test_no_boundary_or_event_members(self):
+        # ADR-0062 §4 authorizes ARITH/FLOW only per sport — BOUNDARY and EVENT
+        # are scoped but not built (see DECISION_LOG.md T-524 entry).
+        values = {b.value for b in ExecutionBand}
+        for prefix in ("T4NFL", "T4NHL"):
+            assert f"{prefix}-BOUNDARY" not in values
+            assert f"{prefix}-EVENT" not in values
+            assert f"{prefix}-FLOW-BLOWOUT" not in values
+
+    def test_nfl_nhl_kelly_fraction_zeroed(self):
+        # Explicit scope instruction: no kelly_fraction other than 0.0 on any
+        # new member (nothing wired, nothing promoted).
+        from prediction_market_bot.execution_bands import get_band_config
+        for band in (
+            ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW,
+            ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW,
+        ):
+            assert get_band_config(band).kelly_fraction == 0.0
+
+    def test_nfl_nhl_subbands_phase8_realtime(self):
+        for band in (
+            ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW,
+            ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW,
+        ):
+            from prediction_market_bot.execution_bands import get_band_config
+            cfg = get_band_config(band)
+            assert cfg.requires_realtime is True
+            assert cfg.phase_active == "Phase 8"

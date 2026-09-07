@@ -503,6 +503,30 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-251 — ADR-0062 §4/§6 BOUNDARY authorization-posture conflict resolved conservatively; T-522's prior scaffolding build re-verified and landed under this number (GG-246 never registered)
+
+**Status:** RESOLVED (2026-09-07) · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-251 |
+| Category | ADR internal inconsistency, left unresolved-at-signature and explicitly routed to the implementing session — plus a separate, unrelated claimed-but-unlanded-work gap from the session this one supersedes. |
+| What was found | ADR-0062's own Status line records that §4 (roster decision) and §6 (cell-count projection) disagree on `BOUNDARY`'s authorization posture: §4 treats `BOUNDARY` as "propose, scoped only, not authorized to build" — the same not-yet-authorized posture MLB's own `T4M-BOUNDARY` carries (confirmed directly against `execution_bands.py`: MLB has no `T4M_BOUNDARY` member) — while §6's 21-cell projection counts `BOUNDARY` as authorization-eligible alongside `ARITH`/`FLOW`, excluding only `EVENT`. T-518's sign-off recorded this conflict as unresolved rather than picking a reading, and routed resolution to the 17.1 implementing session. Separately: T-522 previously claimed `GG-246` for this same deliverable and, per this session's own task brief, "did not land it — its work is gone." Direct check against `origin/main` (both `GOVERNANCE_GAP_LOG.md` and `GOVERNANCE_GAP_LOG_ARCHIVE.md`) confirmed `GG-246` is registered nowhere — no collision, but also nothing to resume; this entry is the first registration of this gap under any number. |
+| When it should have been caught | The §4/§6 disagreement should have been reconciled before ADR-0062 was signed, or the ADR's own arithmetic in §6 should have been derived from §4's roster rather than independently. It was caught, correctly, at signature time (T-518) — the gap here is that resolution was deferred, not that it went undetected. |
+| Phases it survived | ADR drafting, review, and operator sign-off all passed with the conflict explicitly flagged rather than silently missed — this is a case of correct escalation, not a missed check. |
+| Why it survived | A cell-count projection (§6) was authored referencing the full Tier B roster pattern (MLB's own ADR-0039 precedent groups `PROJ`/`ARITH`/`FLOW`/`BOUNDARY` together informally) without re-deriving the count from §4's actual per-member authorization decision once that decision came out more conservative than the informal grouping assumed. |
+| Impact | LOW as resolved. Conservative reading was available and explicitly instructed (build `ARITH`/`FLOW` only, decline `BOUNDARY` pending its own future ADR) — no live code, sizing, or promotion depended on the wrong reading; the only cost was T-518's signature having to travel with an open conflict for one more session rather than a resolved one. |
+| Discovery | 2026-09-03 (T-518, ADR-0062 sign-off) flagged the conflict and declined to resolve it. 2026-09-07 (T-524/GG-251, this session) resolved it: **built `ARITH` and `FLOW` only, for both NFL and NHL — `BOUNDARY` and `EVENT` remain scoped but not built.** Reading: §4 is the roster decision (per-member authorization), §6 is downstream arithmetic derived from that roster; a projection cannot retroactively authorize what the roster itself declined to authorize, and this ADR has no independent grounds to treat NFL/NHL `BOUNDARY` more permissively than MLB's own `T4M-BOUNDARY` precedent (also scoped-but-not-built). Same conservative test applied to `T4NFL-FLOW-BLOWOUT` (§3): MLB's `T4M_FLOW` has no separate blowout member — blowout handling lives only in its `notes` field — so no `T4NFL-FLOW-BLOWOUT` member was created either. |
+| Resolution | Built 4 new `ExecutionBand` members (`T4NFL_ARITH`, `T4NFL_FLOW`, `T4NHL_ARITH`, `T4NHL_FLOW`; string values `T4NFL-ARITH`/`T4NFL-FLOW`/`T4NHL-ARITH`/`T4NHL-FLOW`) in `execution_bands.py`, following MLB's exact `T4M_*` declaration pattern (`BandConfig` entries, per-sport `T4_NFL_SUBBAND_REGISTRY`/`T4_NHL_SUBBAND_REGISTRY`, `validate_t4_nfl_subbands()`/`validate_t4_nhl_subbands()`). Seeded cells in `market_type_registry.py`: 2 sub-bands × 4 NFL families (MONEYLINE/SPREAD/GAME_TOTAL/TEAM_TOTAL) + 2 sub-bands × 3 NHL families (MONEYLINE/PUCK_LINE/GAME_TOTAL) = **14 new cells**, registry total 78 → 92. Every new cell `NOT_IMPLEMENTED`, every new member `kelly_fraction=0.0` — nothing wired, nothing promoted. `EVENT` excluded both sports per the ADR's own deferred-pending-C1-ingestion-verification condition. Live-import verified: before=78/after=92, status breakdown ACTIVE:1 BLOCKED:2 DARK:1 NOT_IMPLEMENTED:88. Full suite green post-build and post-merge-from-origin/main: 3015 passed, 28 skipped, 0 failed. See `DECISION_LOG.md` 2026-09-07 (T-524) for the full BOUNDARY-reading rationale, and ADR-0062 itself (unchanged — ADRs are immutable; this entry is the resolution record, not a superseding ADR). |
+| Status | RESOLVED. `BOUNDARY`/`EVENT` remain open future work (their own ADR/session, not this one) — not a residual defect of this entry. |
+
+</details>
+
+---
+
 ## Resolved Gaps
 
 | Gap ID | Resolution Date | Resolution Summary |

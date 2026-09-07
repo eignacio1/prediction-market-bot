@@ -84,6 +84,20 @@ class ExecutionBand(Enum):
     T4M_ARITH = "T4M-ARITH"   # BLOCKED — near-certain band between p_t4's 0.0/1.0 hard boundaries
     T4M_FLOW  = "T4M-FLOW"    # BLOCKED — accumulated game-state pattern, incl. FLOW-BLOWOUT tree
 
+    # --- NFL/NHL-native T4 sub-bands (ADR-0062, T-524/GG-251, registry+scaffolding only) ---
+    # Prefix per ADR-0056 D2: four-letter sport code T4NFL-/T4NHL- (NOT T4N- — superseded, GG-233).
+    # ADR-0062 §4 authorizes ONLY ARITH and FLOW per sport — its own conservative reading, chosen
+    # over §6's cell-count arithmetic (which counts BOUNDARY among "authorization-eligible" but
+    # cannot itself authorize a roster member a decision section declined; see DECISION_LOG.md
+    # T-524 entry). BOUNDARY and EVENT are scoped but NOT built here, mirroring MLB's own
+    # T4M-BOUNDARY precedent above (scoped in ADR-0039, never built). There is no separate
+    # FLOW-BLOWOUT member for either sport, same test applied as MLB's T4M-FLOW (blowout handling
+    # is a mode within FLOW, carried in its `notes`, not its own enum member).
+    T4NFL_ARITH = "T4NFL-ARITH"  # BLOCKED — near-certain band, NFL game-state markets (net-new)
+    T4NFL_FLOW  = "T4NFL-FLOW"   # BLOCKED — accumulated game-state/context pattern, NFL (net-new)
+    T4NHL_ARITH = "T4NHL-ARITH"  # BLOCKED — near-certain band, NHL game-state markets (net-new)
+    T4NHL_FLOW  = "T4NHL-FLOW"   # BLOCKED — accumulated game-state/context pattern, NHL (net-new)
+
 
 # ---------------------------------------------------------------------------
 # Band configuration
@@ -357,6 +371,57 @@ BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
         pipeline_id="PIPE-07-MLB",
         cron_schedule=None,
         requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0039)
+        phase_active="Phase 8",
+    ),
+
+    # -----------------------------------------------------------------------
+    # NFL/NHL-native T4 sub-band configs (ADR-0062, T-524/GG-251). See
+    # T4_NFL_SUBBAND_REGISTRY / T4_NHL_SUBBAND_REGISTRY below for Tier B
+    # governance metadata. kelly_fraction=0.0 on all four (explicit scope
+    # instruction — do NOT set any other value; nothing is wired or promoted).
+    # -----------------------------------------------------------------------
+    ExecutionBand.T4NFL_ARITH: BandConfig(
+        band=ExecutionBand.T4NFL_ARITH,
+        model_class="arithmetic_near_certain_nfl",  # near-certain band, NFL game-state markets
+        max_compute_ms=10,
+        execution_sla_s=5,
+        kelly_fraction=0.0,
+        pipeline_id="PIPE-07-NFL",
+        cron_schedule=None,
+        requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0062)
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4NFL_FLOW: BandConfig(
+        band=ExecutionBand.T4NFL_FLOW,
+        model_class="context_multiplier_nfl",  # accumulated game-state/context pattern, NFL
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.0,
+        pipeline_id="PIPE-07-NFL",
+        cron_schedule=None,
+        requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0062)
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4NHL_ARITH: BandConfig(
+        band=ExecutionBand.T4NHL_ARITH,
+        model_class="arithmetic_near_certain_nhl",  # near-certain band, NHL game-state markets
+        max_compute_ms=10,
+        execution_sla_s=5,
+        kelly_fraction=0.0,
+        pipeline_id="PIPE-07-NHL",
+        cron_schedule=None,
+        requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0062)
+        phase_active="Phase 8",
+    ),
+    ExecutionBand.T4NHL_FLOW: BandConfig(
+        band=ExecutionBand.T4NHL_FLOW,
+        model_class="context_multiplier_nhl",  # accumulated game-state/context pattern, NHL
+        max_compute_ms=50,
+        execution_sla_s=5,
+        kelly_fraction=0.0,
+        pipeline_id="PIPE-07-NHL",
+        cron_schedule=None,
+        requires_realtime=True,                # BLOCKED: Phase 8 (net-new sub-band, ADR-0062)
         phase_active="Phase 8",
     ),
 }
@@ -823,6 +888,214 @@ def validate_t4_mlb_subbands() -> list[str]:
         cfg = BAND_CONFIGS.get(band)
         if cfg is None:
             violations.append(f"{band.value}: missing BandConfig entry.")
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# NFL-native T4 sub-band registry (ADR-0062, T-524/GG-251) — registry + band
+# scaffolding only. Mirrors ADR-0039's structural choice of one sub-band
+# registry per sport (T4_MLB_SUBBAND_REGISTRY above), not a shared one.
+# ---------------------------------------------------------------------------
+#
+# GOVERNANCE: Deliberately SEPARATE from T4_SUBBAND_REGISTRY (NBA) and
+# T4_MLB_SUBBAND_REGISTRY. Unlike MLB, NEITHER NFL sub-band has an existing
+# live model to relabel — there is no NFL analogue to T4M-PROJ. Both entries
+# are net-new and both are BLOCKED, following the standard NBA pattern
+# exactly (validate_t4_subbands()'s always-BLOCKED invariant, not MLB's
+# ACTIVE-exception variant).
+#
+# Only T4NFL-ARITH and T4NFL-FLOW exist here (ADR-0062 §4, conservative
+# reading — see the ExecutionBand enum comment above and DECISION_LOG.md
+# T-524 entry). T4NFL-BOUNDARY and T4NFL-EVENT are scoped in the ADR but
+# explicitly NOT authorized for code — do not add entries for them without
+# a new sign-off.
+# ---------------------------------------------------------------------------
+
+T4_NFL_SUBBAND_REGISTRY: dict[ExecutionBand, T4SubBandSpec] = {
+    ExecutionBand.T4NFL_ARITH: T4SubBandSpec(
+        band=ExecutionBand.T4NFL_ARITH,
+        information_class="Threshold-approaching arithmetic near-certainty on live NFL game-state markets",
+        provisional_kelly=None,
+        kelly_basis=(
+            "NOT SET. Net-new, no NFL precedent to inherit from. Registry + band scaffolding "
+            "only (ADR-0062, T-524/GG-251) — no EXP has run, no Kelly value is authorized."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,
+        exp_gate=("EXP-ARITH-NFL-01",),
+        alpha_hypothesis=(
+            "When an NFL game-state metric (score margin, time/possessions remaining) approaches "
+            "a market's resolution threshold, survival probability is near-certain and the market "
+            "is slow to reprice — same structural claim as T4-ARITH (NBA) / T4M-ARITH (MLB)."
+        ),
+        status="BLOCKED",
+        notes="Scaffolding only — nothing wired, no evaluator exists yet. See ADR-0062 §4/§6.",
+    ),
+    ExecutionBand.T4NFL_FLOW: T4SubBandSpec(
+        band=ExecutionBand.T4NFL_FLOW,
+        information_class="Accumulated game-state / context pattern (incl. blowout) on NFL markets",
+        provisional_kelly=None,
+        kelly_basis=(
+            "NOT SET. Net-new, no NFL precedent to inherit from. Registry + band scaffolding "
+            "only (ADR-0062, T-524/GG-251) — no EXP has run, no Kelly value is authorized."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,
+        exp_gate=("EXP-FLOW-NFL-01",),
+        alpha_hypothesis=(
+            "Sustained context shifts (e.g. blowout, momentum) move NFL game-market true "
+            "probability before the market reprices — same structural claim as T4-FLOW (NBA) / "
+            "T4M-FLOW (MLB). No separate blowout member: blowout is a mode within FLOW, same test "
+            "as T4M-FLOW's FLOW-BLOWOUT tree (carried in notes, not a distinct enum member)."
+        ),
+        status="BLOCKED",
+        notes="Scaffolding only — nothing wired, no evaluator exists yet. See ADR-0062 §4/§6.",
+    ),
+}
+
+
+T4_NFL_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NFL_ARITH,
+    ExecutionBand.T4NFL_FLOW,
+)
+
+
+def get_t4_nfl_subband_spec(band: ExecutionBand) -> T4SubBandSpec:
+    """Return the Tier B governance spec for an NFL T4 sub-band. Raises KeyError otherwise."""
+    return T4_NFL_SUBBAND_REGISTRY[band]
+
+
+def validate_t4_nfl_subbands() -> list[str]:
+    """
+    Structural validation of the NFL T4 sub-band registry. Returns violation messages.
+
+    Unlike validate_t4_mlb_subbands(), every entry here must be BLOCKED — neither NFL
+    sub-band has an ACTIVE-exception precedent (no existing live model to relabel).
+    Empty list = clean.
+    """
+    violations: list[str] = []
+    if set(T4_NFL_SUBBAND_REGISTRY) != set(T4_NFL_SUBBANDS):
+        violations.append(
+            "T4_NFL_SUBBAND_REGISTRY roster does not match T4_NFL_SUBBANDS tuple "
+            f"(registry-only={set(T4_NFL_SUBBAND_REGISTRY) - set(T4_NFL_SUBBANDS)}, "
+            f"tuple-only={set(T4_NFL_SUBBANDS) - set(T4_NFL_SUBBAND_REGISTRY)})."
+        )
+    for band, spec in T4_NFL_SUBBAND_REGISTRY.items():
+        if spec.status != "BLOCKED":
+            violations.append(
+                f"{band.value}: status={spec.status!r}, expected 'BLOCKED'. Neither NFL T4 "
+                f"sub-band has an ACTIVE exception — both must stay BLOCKED until their own "
+                f"Phase 8 Activation Gate clears."
+            )
+        cfg = BAND_CONFIGS.get(band)
+        if cfg is None:
+            violations.append(f"{band.value}: missing BandConfig entry.")
+        elif cfg.kelly_fraction != 0.0:
+            violations.append(
+                f"{band.value}: BandConfig.kelly_fraction={cfg.kelly_fraction!r}, expected 0.0 "
+                f"(ADR-0062 registry+scaffolding scope authorizes no other value)."
+            )
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# NHL-native T4 sub-band registry (ADR-0062, T-524/GG-251) — registry + band
+# scaffolding only. Mirrors ADR-0039's structural choice of one sub-band
+# registry per sport (T4_MLB_SUBBAND_REGISTRY above), not a shared one.
+# ---------------------------------------------------------------------------
+#
+# GOVERNANCE: Same rationale as T4_NFL_SUBBAND_REGISTRY above — no existing
+# live model for either NHL sub-band to relabel, both net-new, both BLOCKED.
+#
+# Only T4NHL-ARITH and T4NHL-FLOW exist here (ADR-0062 §4, conservative
+# reading). T4NHL-BOUNDARY and T4NHL-EVENT are scoped but NOT authorized for
+# code — do not add entries for them without a new sign-off.
+# ---------------------------------------------------------------------------
+
+T4_NHL_SUBBAND_REGISTRY: dict[ExecutionBand, T4SubBandSpec] = {
+    ExecutionBand.T4NHL_ARITH: T4SubBandSpec(
+        band=ExecutionBand.T4NHL_ARITH,
+        information_class="Threshold-approaching arithmetic near-certainty on live NHL game-state markets",
+        provisional_kelly=None,
+        kelly_basis=(
+            "NOT SET. Net-new, no NHL precedent to inherit from. Registry + band scaffolding "
+            "only (ADR-0062, T-524/GG-251) — no EXP has run, no Kelly value is authorized."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,
+        exp_gate=("EXP-ARITH-NHL-01",),
+        alpha_hypothesis=(
+            "When an NHL game-state metric (goal margin, time remaining) approaches a market's "
+            "resolution threshold, survival probability is near-certain and the market is slow "
+            "to reprice — same structural claim as T4-ARITH (NBA) / T4M-ARITH (MLB)."
+        ),
+        status="BLOCKED",
+        notes="Scaffolding only — nothing wired, no evaluator exists yet. See ADR-0062 §4/§6.",
+    ),
+    ExecutionBand.T4NHL_FLOW: T4SubBandSpec(
+        band=ExecutionBand.T4NHL_FLOW,
+        information_class="Accumulated game-state / context pattern (incl. blowout) on NHL markets",
+        provisional_kelly=None,
+        kelly_basis=(
+            "NOT SET. Net-new, no NHL precedent to inherit from. Registry + band scaffolding "
+            "only (ADR-0062, T-524/GG-251) — no EXP has run, no Kelly value is authorized."
+        ),
+        noise_buffer=None,
+        max_concurrent_exposure_pct_t4=None,
+        exp_gate=("EXP-FLOW-NHL-01",),
+        alpha_hypothesis=(
+            "Sustained context shifts (e.g. blowout, empty-net state) move NHL game-market true "
+            "probability before the market reprices — same structural claim as T4-FLOW (NBA) / "
+            "T4M-FLOW (MLB). No separate blowout member: blowout is a mode within FLOW, same test "
+            "as T4M-FLOW's FLOW-BLOWOUT tree (carried in notes, not a distinct enum member)."
+        ),
+        status="BLOCKED",
+        notes="Scaffolding only — nothing wired, no evaluator exists yet. See ADR-0062 §4/§6.",
+    ),
+}
+
+
+T4_NHL_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NHL_ARITH,
+    ExecutionBand.T4NHL_FLOW,
+)
+
+
+def get_t4_nhl_subband_spec(band: ExecutionBand) -> T4SubBandSpec:
+    """Return the Tier B governance spec for an NHL T4 sub-band. Raises KeyError otherwise."""
+    return T4_NHL_SUBBAND_REGISTRY[band]
+
+
+def validate_t4_nhl_subbands() -> list[str]:
+    """
+    Structural validation of the NHL T4 sub-band registry. Returns violation messages.
+
+    Unlike validate_t4_mlb_subbands(), every entry here must be BLOCKED — neither NHL
+    sub-band has an ACTIVE-exception precedent (no existing live model to relabel).
+    Empty list = clean.
+    """
+    violations: list[str] = []
+    if set(T4_NHL_SUBBAND_REGISTRY) != set(T4_NHL_SUBBANDS):
+        violations.append(
+            "T4_NHL_SUBBAND_REGISTRY roster does not match T4_NHL_SUBBANDS tuple "
+            f"(registry-only={set(T4_NHL_SUBBAND_REGISTRY) - set(T4_NHL_SUBBANDS)}, "
+            f"tuple-only={set(T4_NHL_SUBBANDS) - set(T4_NHL_SUBBAND_REGISTRY)})."
+        )
+    for band, spec in T4_NHL_SUBBAND_REGISTRY.items():
+        if spec.status != "BLOCKED":
+            violations.append(
+                f"{band.value}: status={spec.status!r}, expected 'BLOCKED'. Neither NHL T4 "
+                f"sub-band has an ACTIVE exception — both must stay BLOCKED until their own "
+                f"Phase 8 Activation Gate clears."
+            )
+        cfg = BAND_CONFIGS.get(band)
+        if cfg is None:
+            violations.append(f"{band.value}: missing BandConfig entry.")
+        elif cfg.kelly_fraction != 0.0:
+            violations.append(
+                f"{band.value}: BandConfig.kelly_fraction={cfg.kelly_fraction!r}, expected 0.0 "
+                f"(ADR-0062 registry+scaffolding scope authorizes no other value)."
+            )
     return violations
 
 

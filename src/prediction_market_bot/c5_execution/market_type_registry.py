@@ -701,6 +701,22 @@ for _market_type in _NFL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
+# --- NFL T4 sub-band cells (ADR-0062, T-524/GG-251, registry+scaffolding only) ---
+# T4NFL-ARITH/T4NFL-FLOW now exist in execution_bands.py (conservative reading of
+# ADR-0062 §4/§6's BOUNDARY conflict — see DECISION_LOG.md T-524 entry; BOUNDARY and
+# EVENT are NOT built). Every NFL family gets both sub-bands, mirroring the MLB
+# game-market pattern above (_MLB_GAME_MARKET_T4_SUBBANDS): all NOT_IMPLEMENTED, no
+# kelly_fraction touched here (that axis lives in execution_bands.py's BandConfig,
+# already 0.0 for both new members), nothing wired, nothing promoted.
+_NFL_GAME_MARKET_T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NFL_ARITH,
+    ExecutionBand.T4NFL_FLOW,
+)
+
+for _market_type in _NFL_FAMILIES:
+    for _band in _NFL_GAME_MARKET_T4_SUBBANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
 # --- NHL (T-495 skeleton spike, ADR-0056 §5, EXP-024): seeded NOT_IMPLEMENTED
 # only, mirroring T-474's NFL pattern exactly. No NHL cell may be promoted
 # above NOT_IMPLEMENTED by this session -- kelly_fraction=0.0 throughout,
@@ -717,6 +733,18 @@ _NHL_FAMILIES: tuple[MarketType, ...] = (
 
 for _market_type in _NHL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- NHL T4 sub-band cells (ADR-0062, T-524/GG-251, registry+scaffolding only) ---
+# Same rationale as the NFL block above: T4NHL-ARITH/T4NHL-FLOW only, both
+# NOT_IMPLEMENTED, no kelly_fraction touched here, nothing wired, nothing promoted.
+_NHL_GAME_MARKET_T4_SUBBANDS: tuple[ExecutionBand, ...] = (
+    ExecutionBand.T4NHL_ARITH,
+    ExecutionBand.T4NHL_FLOW,
+)
+
+for _market_type in _NHL_FAMILIES:
+    for _band in _NHL_GAME_MARKET_T4_SUBBANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 del _market_type, _band
