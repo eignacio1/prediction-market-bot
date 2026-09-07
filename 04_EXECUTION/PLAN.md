@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-07T02:09:00Z (GG-245 — GG-245 CLOSED — NFL price capture verified via direct evidence (21 fires, 18,194 KXNFL rows, 32/32 schedule match, MLB unaffected)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260907_0209.md` for full session detail.
+**Last reviewed:** 2026-09-07T23:26:59Z (T-525 — T-525 NFL pregame-moneyline audit — answer NO by 09-09, earliest 09-23; GG-252/253/254/255 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260907_2326.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
