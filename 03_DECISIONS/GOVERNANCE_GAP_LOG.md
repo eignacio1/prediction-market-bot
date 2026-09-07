@@ -2826,3 +2826,97 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Resolution (final) | **CLOSED.** All four DO-THIS items independently verified with direct evidence (not config-inspection alone): installed crontab confirmed, a real completed scheduled fire confirmed with rows landed and zero errors, live schedule re-derived from source and found gap-free, MLB capture confirmed unaffected. This satisfies the GG-224/GG-228/T-489-class bar ("a config that looks right is not a capture") — the closure basis here is an *observed completed capture*, not a promise or a clean-looking cron file. |
 
 </details>
+
+### GG-252 — `kalshi_client.py`'s `PlayerMarket` dataclass and `_parse_market()` are player-prop-shaped and cannot represent a moneyline/spread market; the bot parses 0 NFL game markets today despite 264+ being live on Kalshi
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-252 |
+| Category | Schema mismatch in the venue client's return type, not a parsing bug — the dataclass the parser returns has no field capable of representing a categorical game-winner or line-cover outcome. |
+| What was found | Live-verified against real Kalshi data (2026-09-07): a raw unparsed `_get('/markets', ...)` call finds 64 open `KXNFLGAME` markets and 200+ open `KXNFLSPREAD` markets. The bot's own `kalshi_client.py::_parse_market()` (line 427) returns **zero** parsed markets for either series when called through the bot's normal path. Root cause: `threshold = int(parts[-1])` inside a bare `except Exception: return None` assumes the last ticker segment is a numeric threshold — true by coincidence for `KXNFLTOTAL` tickers (e.g. `...-64`), false for moneyline tickers ending in a team code (`...-NYG`) and spread tickers ending in a signed-number+team compound (`...-KC8`), both of which raise and are silently dropped. Deeper than the parser: `PlayerMarket` (kalshi_client.py:~159, docstring "Represents the market for 'player scores >= threshold points in game'") has fields `player_name`, `team_abbr`, `threshold: int` — there is no field or dataclass variant anywhere in the client capable of representing "team A beats team B" or "team A covers N points." `series_ticker_for()` (registry-driven since T-439) correctly resolves the series ticker for all three NFL series; the failure is entirely downstream, in parsing/representation, not in market discovery. |
+| When it should have been caught | At the point NFL market types were first seeded into `market_type_registry.py` (`MarketType.NFL_MONEYLINE`/`NFL_SPREAD`/etc.) — registering a `MarketType` does not imply the client that fetches it can represent its outcome shape, and nothing checked that at registration time. |
+| Phases it survived | Unknown number of sessions since NFL market types were registered in `market_type_registry.py`; the registry entries alone gave the appearance of NFL-market support without a live parse-path test ever having been run against them until this audit. |
+| Why it survived | Every prior touch of NFL support in this codebase (registry entries, grammar table, ExecutionBand scaffolding per ADR-0062) operated at the `MarketType`/band level, never exercising `kalshi_client`'s actual parse path against live NFL tickers. A registry entry existing reads as "supported" without a live fetch-and-parse test to falsify that impression. |
+| Impact | HIGH — this is the first of the six pregame-moneyline trace steps (Market fetch) and a hard blocker on its own: no NFL moneyline or spread bet can be evaluated, sized, or placed while the client returns zero parsed markets for those series, regardless of how complete every downstream step (model, risk, execution, resolution) is. |
+| Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 1 of the six-step trace — live-tested against real Kalshi data per explicit task instruction ("Test it against live Kalshi; do not read the code and infer"), then root-caused by reading `_parse_market()` and the `PlayerMarket` dataclass definition directly. Register-and-stop per Hard Rule 11 — this session is scoped to audit-only, no build. |
+| Resolution | Not started. Fixing this requires a schema addition — a new market dataclass (or a generalized outcome-representation field set covering moneyline/spread/total) — plus corresponding parser branches for `KXNFLGAME`/`KXNFLSPREAD` ticker formats, tested against live tickers for all three NFL series. Estimated 10-14 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 1). |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-253 — No NFL C1 ingestion module exists; the only generic `team_stats_store.py` is NBA-shaped (`plus_minus`-derived) and not usable as an NFL feature source
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-253 |
+| Category | Missing sport-specific C1 layer — per CLAUDE.md's own architecture description, C1/C2 are the only layers a new sport is supposed to require; NFL has neither. |
+| What was found | `c1_signal_ingestion/` contains `mlb_ingestion.py`, `mlb_team_stats_store.py`, `mlb_pitcher_stats_store.py`, `ds02_nba_live.py` — no NFL module of any kind. The one plausibly-reusable generic file, `c1_signal_ingestion/team_stats_store.py`, is NBA-shaped throughout on direct read: its docstring states "Phase 7 (Strategy B — opponent defensive rating feature, T-075)", it is built from `NBAIngestionClient.fetch_team_game_log()`, and its core computation (`pts_allowed = pts - plus_minus`) is an NBA box-score derivation with no NFL analogue (`plus_minus` is not a standard NFL per-game stat). An LR moneyline forecast for NFL needs, at minimum: team offensive/defensive efficiency (rolling, recency-weighted), rest days, home/away, and ideally strength-of-schedule. Public sources cover this (`nflverse`/`nflfastR`-derived play-by-play and schedule data, or ESPN's public NFL endpoints — the same class of public source `ds02_nba_live.py` already demonstrates this codebase knows how to consume, for a different sport) — the data exists publicly; the ingestion module to pull and shape it into C2-ready features does not. |
+| When it should have been caught | At any point NFL was discussed as a coverage-expansion target (COVERAGE_TARGET_MATRIX.md, ADR-0062) without a corresponding C1 module existing or being scoped. |
+| Phases it survived | All NFL-related work to date (market-type registry seeding, ADR-0062 ExecutionBand scaffolding, GG-245's price-archiver addition) has operated at the market/execution-band layer; none of it required or built a C1 feature-ingestion layer. |
+| Why it survived | NFL coverage work so far has been schedulable independent of C1 (registry entries, price archiving, T4 band scaffolding) — none of those tasks required team-level statistics, so the absence never blocked anything until a pregame *forecast* was actually attempted, which this audit is the first to trace end-to-end. |
+| Impact | HIGH — this is Step 2 of the six-step trace (Model input) and a hard blocker: no NFL LR forecast can be trained or run without team-level input features, and none exist today in any usable form. |
+| Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 2 of the six-step trace — confirmed via direct listing of `c1_signal_ingestion/` and full read of `team_stats_store.py`. Register-and-stop per Hard Rule 11. |
+| Resolution | Not started. Requires a new NFL C1 ingestion module (team offensive/defensive efficiency, rest, home/away, schedule strength) sourced from a public NFL data feed, plus corresponding C2 feature-derivation wiring, modeled on the MLB precedent (`mlb_ingestion.py`/`mlb_team_stats_store.py`). Estimated 16-24 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 2). |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-254 — No moneyline/categorical-outcome settlement logic exists anywhere in `src/`, for any sport; `paper_trader.py::settle_position()`'s threshold-crossing model cannot express a game-winner outcome
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-254 |
+| Category | Missing outcome-representation concept in the shared settlement path — sport-agnostic in the sense that it blocks every sport's game-market cells identically, not an NFL-specific absence. |
+| What was found | MLB settlement uses the MLB Stats API; there is no NFL equivalent, but the deeper gap is upstream of any data source. `paper_trader.py::settle_position()` (line 915, read in full) implements `yes_won = actual_stat >= threshold` — a numeric threshold-crossing pattern designed for stat-threshold markets (NBA points, MLB hits). This is structurally incompatible with a moneyline/game-winner categorical outcome ("did team X win," not "did a stat cross a number") for **any** sport, not merely NFL — MLB's own ADR-0058 T1 game-market cells (moneyline/spread/total/team-total, defined in `measurement_stake.py`'s `T1_GAME_MARKET_TYPES`) are equally blocked by this same absence and have never resolved a single bet through it. A concrete NFL data source is not the hard part: ESPN's public NFL scoreboard/summary endpoints or `nflverse` schedule+result data both return final score/winner directly. The missing piece is entirely the settlement code path — a generalized categorical-outcome resolver (covering moneyline, spread-with-line, and total-with-line) that plugs into the existing ledger/audit-log machinery the way `settle_position()` does today for threshold markets. |
+| When it should have been caught | At the point ADR-0058 defined the nine T1 game-market cells (MLB's five, NFL's four) without a corresponding settlement path being built or scoped alongside them — the cells were specified in the risk/execution registry layer without confirming the settlement layer could resolve them. |
+| Phases it survived | All sessions since ADR-0058's cell definitions were written; `measurement_stake.py`'s frozenset has existed with these market types listed the entire time, unexercised by any live pipeline (see GG-255), which is part of why this absence never surfaced as a live failure. |
+| Why it survived | The only settlement function that exists (`settle_position()`) has worked correctly for every market this bot has actually traded to date (NBA points props, MLB hit props) — both are stat-threshold shaped, so the function's assumption was never falsified until a genuinely categorical-outcome market (moneyline) was traced end-to-end against it, which this audit is the first to do. |
+| Impact | HIGH — this is Step 6 of the six-step trace (Resolution) and, per this audit's own analysis, the single largest-leverage gap found: building a fix here unblocks NFL's entire pregame moneyline/spread/total path AND simultaneously activates MLB's own currently-dormant ADR-0058 T1 game-market cells, which today sit fully defined in `measurement_stake.py` but never resolve because of this exact same absence. No other gap in this trace has that dual leverage. |
+| Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 6 of the six-step trace — confirmed via full read of `paper_trader.py::settle_position()`. Register-and-stop per Hard Rule 11. |
+| Resolution | Not started. Requires designing and building a generalized categorical-outcome settlement path (moneyline/spread/total), wiring a public NFL result source into it, and testing against real completed games. Estimated 12-18 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 6). |
+| Status | OPEN. |
+
+</details>
+
+---
+
+### GG-255 — `measurement_stake.py` defines all nine ADR-0058 T1 game-market cells but has exactly one real importer codebase-wide (an audit tool); no run script or cron entry exists for any T1 game-market cell, NFL or MLB
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-255 |
+| Category | Defined-but-unwired execution path — the cells exist in code and in the risk/execution registry but nothing in any live pipeline ever calls the module that would act on them. |
+| What was found | `c5_execution/measurement_stake.py`'s `T1_GAME_MARKET_TYPES` frozenset (line 80-83) includes all four NFL market types (`nfl_moneyline`, `nfl_spread`, `nfl_game_total`, `nfl_team_total`) alongside MLB's five — the full ADR-0058 nine-cell T1 set is present in code. A precise import-statement grep (`^from.*measurement_stake import\|^import.*measurement_stake\|c5_execution\.measurement_stake`) — corrected from an initial false-positive grep that matched an unrelated locally-defined function name (`measurement_stake_and_stratum()` in `run_t4_mlb_live.py`, not an import of this module) — confirms the module's **only real importer anywhere in `src/`/`scripts/` is `scripts/assert_ledger_invariants.py`**, an audit tool, not a live trading pipeline. This confirms and extends the already-known ADR-0059 finding ("nothing wired") to all nine cells, not NFL's four specifically. There is also no NFL-specific run script (no analogue to `run_t1_mlb.py`) and no NFL entry in `deploy/cron.conf`'s scheduled pipeline invocations (distinct from GG-245, which covers only the price-archiver's capture cron, not a bet-execution pipeline). |
+| When it should have been caught | At the point ADR-0059 first found "nothing wired" for measurement_stake's cells — that finding should have prompted either wiring the module into a live path or explicitly flagging every one of the nine defined cells (not just noting the general absence) as individually blocked pending that work. |
+| Phases it survived | All sessions since ADR-0058/ADR-0059; the frozenset's cell definitions have existed unexercised the entire time this gap has been latent, re-confirmed but not previously itemized per-cell in this audit's terms. |
+| Why it survived | `measurement_stake.py` having comprehensive cell definitions gives the appearance of readiness at the data-structure level; nothing forced a check of whether any live code path actually calls into it until this audit's explicit Step 5 instruction to check "is anything wired to call it." |
+| Impact | HIGH — this is Step 5 of the six-step trace (Execution) and a hard blocker independent of Steps 1/2/3/6: even a fully-parsed NFL market, a complete NFL forecast, and a working settlement path would still have no live pipeline to route a resulting bet through, absent a run script and cron entry that actually calls `measurement_stake`. |
+| Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 5 of the six-step trace — confirmed via corrected import-statement grep (the initial grep's false positive is itself noted here so a future session does not repeat it). Register-and-stop per Hard Rule 11. |
+| Resolution | Not started. Requires wiring `measurement_stake` into a live pipeline path, writing an NFL run script modeled on the MLB T1 pattern, adding a cron entry, and an end-to-end smoke test. Estimated 8-12 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 5). |
+| Status | OPEN. |
+
+</details>
