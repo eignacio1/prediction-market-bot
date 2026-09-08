@@ -2966,3 +2966,27 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-257 — `settle_position()`'s boolean win/loss model cannot express Kalshi's $0.50/$0.50 split payout for an NFL moneyline exact tie
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-257 |
+| Category | Settlement-primitive expressiveness gap — narrow and sport-agnostic in principle (would apply identically to a hypothetical MLB extra-innings-suspended tie), found while building the T-527 game-market settlement adapter. |
+| What was found | `paper_trader.py::settle_position()` (line ~915/954) computes `yes_won = actual_stat >= threshold` — a strict boolean win/loss payout. Kalshi's KXNFLGAME contract terms (`NFLGAME.pdf`, "Tie" provision — see below) state that a tied NFL game settles the moneyline market as a $0.50/$0.50 split payout on each side, not a single winner. A boolean `>=` model has no way to express a split payout: under `>=`, an exact tie (point margin == 0) would settle moneyline YES, which is wrong per Kalshi's actual rule. This is a genuine, narrow expressiveness gap in the settlement primitive itself, not something T-527 needed to fix to deliver its scope (a derivation module + NFL result fetcher + resolver script, all of which stop short of calling `settle_position()` on an ambiguous case). |
+| When it should have been caught | At the point `settle_position()`'s boolean model was first extended toward any categorical/game-winner market type (ADR-0058's T1 game-market cell definitions) rather than remaining scoped to stat-threshold markets (NBA points, MLB hits), where a tie is not a possible outcome and this gap cannot surface. |
+| Phases it survived | ADR-0058's nine T1 game-market cell definitions (`measurement_stake.py`) have existed unexercised the entire time (see GG-255) — this gap was latent and never triggered because nothing has ever called `settle_position()` for a moneyline-shaped market until this build's tests. |
+| Why it survived | `settle_position()` has worked correctly for every market type actually settled to date (NBA points props, MLB hit props) — both are stat-threshold shaped with no tie/push concept, so the boolean assumption was never falsified until a categorical moneyline settlement path was built and traced against a real tied game (DAL 40 - GB 40, 2025 season) during T-527. |
+| Impact | LOW — the gap is fully contained and does not silently mis-settle anything: `c5_execution/game_market_settlement.py::check_settlement_ambiguity()` (lines 206-215) detects the exact-tie case (`actual_stat == 0` for NFL_MONEYLINE) and raises `SettlementAmbiguityError` rather than allowing the resolver script to call `settle_position()` on it — see `scripts/apply_resolved_nfl_game_markets.py`'s REFUSED path, tested in `tests/test_apply_resolved_nfl_game_markets.py::test_main_moneyline_tie_refused_even_under_apply`. Impact would rise to HIGH only if a future caller invoked `settle_position()` directly on a tied moneyline position without going through this ambiguity check. |
+| Discovery | 2026-09-07, T-527 (this session), NFL game-market settlement build — confirmed via direct read of `paper_trader.py::settle_position()` (line ~915/954) and Kalshi's official `NFLGAME.pdf` contract-terms PDF, "Tie" provision (split $0.50/$0.50 payout on a tied game). Register-and-stop per Hard Rule 11 — T-527's scope explicitly excludes modifying `settle_position()` itself absent a genuine defect requiring a STOP-and-report; this is registered rather than fixed in-session for that reason. |
+| Resolution | Not started. Would require extending `settle_position()` (or adding a sibling primitive) to accept a non-boolean, split-payout outcome — a change to the ledger-mutation code under the GG-034 file-lock invariant, requiring its own scoped review rather than an incidental fix inside T-527. Until then, the correct behavior is exactly what T-527 built: detect and refuse (`check_settlement_ambiguity()`), never guess a side. An NFL regular-season tie is rare but real (~1/season), so this is a live, if infrequent, real-money-shaped gap once a live NFL portfolio exists (T-527 explicitly does not settle any real position; wiring to live data is task 21.1). |
+| Status | OPEN. |
+
+</details>
