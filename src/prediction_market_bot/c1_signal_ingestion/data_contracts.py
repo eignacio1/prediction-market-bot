@@ -71,6 +71,10 @@ from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import (
     _MLB_BATTER_COLUMNS,
     _MLB_PITCHER_COLUMNS,
 )
+from prediction_market_bot.c1_signal_ingestion.nfl_ingestion import (
+    _NFL_SCHEDULE_COLUMNS,
+    _NFL_TEAM_STATS_COLUMNS,
+)
 
 
 @dataclass(frozen=True)
@@ -223,4 +227,60 @@ MLB_FEATURE_CSV_CONTRACT = SourceContract(
     freshness_column="game_date",
     freshness_warn_days=3,
     freshness_halt_days=7,
+)
+
+
+# ---------------------------------------------------------------------------
+# NFL contracts (GG-253, T-526) — mirrors the MLB contract construction
+# pattern above; column lists imported from nfl_ingestion.py (not
+# hand-duplicated) so schema drift at the C1 source is caught automatically.
+# ---------------------------------------------------------------------------
+
+_NFL_SCHEDULE_ID_COLUMNS = {"game_id"}
+_NFL_SCHEDULE_INT_COLUMNS = {"season", "week", "home_rest", "away_rest"}
+# home_score/away_score are null for unplayed games by design (schedule
+# includes future/unscheduled-result games) — nullable, not a data defect.
+_NFL_SCHEDULE_NULLABLE_FLOAT_COLUMNS = {"home_score", "away_score"}
+
+
+def _field_for_schedule_column(col: str) -> FieldContract:
+    if col in _NFL_SCHEDULE_INT_COLUMNS:
+        return FieldContract(name=col, dtype="int", nullable=False, min_value=0.0)
+    if col in _NFL_SCHEDULE_NULLABLE_FLOAT_COLUMNS:
+        return FieldContract(name=col, dtype="float", nullable=True, min_value=0.0)
+    return FieldContract(name=col, dtype="str", nullable=False)
+
+
+# IF-C1-C2 NFL schedule contract — mirrors _NFL_SCHEDULE_COLUMNS exactly.
+NFL_SCHEDULE_CONTRACT = SourceContract(
+    source_id="nfl_schedule",
+    fields=tuple(_field_for_schedule_column(c) for c in _NFL_SCHEDULE_COLUMNS),
+    min_rows=1,
+    max_row_growth_ratio=3.0,
+)
+
+_NFL_TEAM_STATS_INT_COLUMNS = {"season", "week"}
+# off_epa can be negative (EPA is signed) — no min_value floor, unlike MLB's
+# non-negative counting stats.
+_NFL_TEAM_STATS_FLOAT_COLUMNS = {"off_epa"}
+
+
+def _field_for_team_stats_column(col: str) -> FieldContract:
+    if col in _NFL_TEAM_STATS_INT_COLUMNS:
+        return FieldContract(name=col, dtype="int", nullable=False, min_value=0.0)
+    if col in _NFL_TEAM_STATS_FLOAT_COLUMNS:
+        return FieldContract(name=col, dtype="float", nullable=False)
+    return FieldContract(name=col, dtype="str", nullable=False)
+
+
+# IF-C1-C2 NFL team-game stats contract — mirrors _NFL_TEAM_STATS_COLUMNS
+# exactly. min_rows=0: an in-progress/not-yet-started season's team-stats
+# file is a documented, expected cold-start case (NFLIngestionClient.
+# fetch_team_stats() 404 handling) that legitimately produces zero rows —
+# unlike MLB's contracts, where min_rows=1 assumes the season is underway.
+NFL_TEAM_STATS_CONTRACT = SourceContract(
+    source_id="nfl_team_stats",
+    fields=tuple(_field_for_team_stats_column(c) for c in _NFL_TEAM_STATS_COLUMNS),
+    min_rows=0,
+    max_row_growth_ratio=3.0,
 )
