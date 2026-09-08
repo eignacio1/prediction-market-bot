@@ -470,3 +470,4 @@
 | 2026-09-08T04:29:06Z | T-526 | CLOSED — T-526 fixed GG-252 (NFL game-market parsing in kalshi_client.py, 18 new tests); GG-256 registered (commit `91de730`) |
 | 2026-09-08T23:56:06Z | T-528, GG-TBD | T-528: NFL Week 1 capture-fidelity audit (deadline 2026-09-09 kickoff) — parser-independence, series coverage, window coverage, depth sampling |
 | 2026-09-08T23:56:28Z | T-529 | MICRO: land T-526 (NFL C1 ingestion) + T-527 (NFL settlement) branches into main; re-dispose GG-254 |
+| 2026-09-08T23:58:45Z | TBD | 21.2/GG-255 T1 game-market run script — BLOCKED, gate failed: Wave 21.0 (game_market_settlement.py, nfl_ingestion.py) not on origin/main, concurrent T-529 landing it now |
