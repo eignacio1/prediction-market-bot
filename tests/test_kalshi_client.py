@@ -21,6 +21,8 @@ from prediction_market_bot.c5_execution.kalshi_client import (
     _kalshi_base_url,
     _price_discovery_url,
     DS02Snapshot,
+    GameMarket,
+    GameMarketSnapshot,
     KalshiMarketClient,
     KalshiOrder,
     PlayerMarket,
@@ -585,3 +587,337 @@ class TestKalshiVenueAdapterSportRouting:
         mock_client.fetch_player_points_markets.assert_called_once_with(
             status="open", series_ticker=SERIES_PLAYER_POINTS
         )
+
+
+# ---------------------------------------------------------------------------
+# GG-252: NFL game markets (moneyline/spread/total/team_total) must not be
+# silently dropped by _parse_market. Raw dicts below are modeled on live
+# payloads pulled directly from the Kalshi /markets endpoint (see the
+# _NFL_GAME_SERIES comment block in kalshi_client.py for the full grammar).
+# ---------------------------------------------------------------------------
+
+
+class TestParseNflGameMarket:
+    def _raw_moneyline(self, **overrides) -> dict:
+        base = {
+            "ticker": "KXNFLGAME-26SEP21NYGLAR-NYG",
+            "title": "NYG @ LAR Winner",
+            "event_ticker": "KXNFLGAME-26SEP21NYGLAR",
+            "strike_type": "structured",
+            "yes_sub_title": "NYG wins",
+            "no_sub_title": "NYG does not win",
+            "custom_strike": None,
+            "floor_strike": None,
+            "yes_ask": 0.45,
+            "yes_bid": 0.40,
+            "no_ask": 0.60,
+            "no_bid": 0.55,
+            "volume_fp": 800.0,
+            "status": "open",
+        }
+        base.update(overrides)
+        return base
+
+    def _raw_spread(self, **overrides) -> dict:
+        base = {
+            "ticker": "KXNFLSPREAD-26SEP14DENKC-KC8",
+            "title": "DEN @ KC Spread",
+            "event_ticker": "KXNFLSPREAD-26SEP14DENKC",
+            "strike_type": "greater",
+            "yes_sub_title": "KC wins by more than 7.5",
+            "no_sub_title": "KC does not win by more than 7.5",
+            "custom_strike": {"football_team": "11111111-1111-1111-1111-111111111111"},
+            "floor_strike": 7.5,
+            "yes_ask": 0.52,
+            "yes_bid": 0.48,
+            "no_ask": 0.52,
+            "no_bid": 0.48,
+            "volume_fp": 300.0,
+            "status": "open",
+        }
+        base.update(overrides)
+        return base
+
+    def _raw_total(self, **overrides) -> dict:
+        base = {
+            "ticker": "KXNFLTOTAL-26SEP14DENKC-64",
+            "title": "DEN @ KC Total",
+            "event_ticker": "KXNFLTOTAL-26SEP14DENKC",
+            "strike_type": "greater",
+            "yes_sub_title": "Total points greater than 63.5",
+            "no_sub_title": "Total points not greater than 63.5",
+            "custom_strike": None,
+            "floor_strike": 63.5,
+            "yes_ask": 0.50,
+            "yes_bid": 0.46,
+            "no_ask": 0.54,
+            "no_bid": 0.50,
+            "volume_fp": 150.0,
+            "status": "open",
+        }
+        base.update(overrides)
+        return base
+
+    def _raw_team_total(self, **overrides) -> dict:
+        base = {
+            "ticker": "KXNFLTEAMTOTAL-26SEP10SFLAR-SF8",
+            "title": "SF @ LAR SF Team Total",
+            "event_ticker": "KXNFLTEAMTOTAL-26SEP10SFLAR",
+            "strike_type": "greater",
+            "yes_sub_title": "SF scores more than 7.5",
+            "no_sub_title": "SF does not score more than 7.5",
+            "custom_strike": {"football_team": "22222222-2222-2222-2222-222222222222"},
+            "floor_strike": 7.5,
+            "yes_ask": 0.55,
+            "yes_bid": 0.50,
+            "no_ask": 0.50,
+            "no_bid": 0.45,
+            "volume_fp": 90.0,
+            "status": "open",
+        }
+        base.update(overrides)
+        return base
+
+    def test_moneyline_parses_as_game_market(self):
+        m = KalshiMarketClient._parse_market(self._raw_moneyline())
+        assert isinstance(m, GameMarket)
+        assert m.market_type == "moneyline"
+        assert m.threshold is None
+        assert m.team_abbr == "NYG"
+        assert m.outcome_desc == "NYG wins"
+        assert m.game_date == "2026-09-21"
+
+    def test_spread_parses_floor_strike_as_threshold(self):
+        m = KalshiMarketClient._parse_market(self._raw_spread())
+        assert isinstance(m, GameMarket)
+        assert m.market_type == "spread"
+        assert m.threshold == pytest.approx(7.5)
+        assert m.team_abbr == "KC"
+
+    def test_total_parses_as_game_level_no_team(self):
+        m = KalshiMarketClient._parse_market(self._raw_total())
+        assert isinstance(m, GameMarket)
+        assert m.market_type == "total"
+        assert m.threshold == pytest.approx(63.5)
+        assert m.team_abbr == ""
+
+    def test_team_total_parses_floor_strike_and_team(self):
+        m = KalshiMarketClient._parse_market(self._raw_team_total())
+        assert isinstance(m, GameMarket)
+        assert m.market_type == "team_total"
+        assert m.threshold == pytest.approx(7.5)
+        assert m.team_abbr == "SF"
+
+    def test_variable_length_team_codes_all_parse(self):
+        """Team codes are 2-3 chars (KC, SF, NYG, LAR) — none may break parsing."""
+        for code in ("KC", "SF", "NYG", "LAR", "IND", "WAS", "DAL"):
+            raw = self._raw_moneyline(
+                ticker=f"KXNFLGAME-26SEP21XXXYYY-{code}",
+                yes_sub_title=f"{code} wins",
+            )
+            m = KalshiMarketClient._parse_market(raw)
+            assert m is not None, f"failed to parse moneyline ticker for team {code}"
+            assert m.team_abbr == code
+
+    def test_missing_floor_strike_on_spread_is_logged_not_raised(self, caplog):
+        raw = self._raw_spread()
+        raw["floor_strike"] = None
+        with caplog.at_level("WARNING"):
+            m = KalshiMarketClient._parse_market(raw)
+        assert m is None
+        assert any("GG-252" in rec.message for rec in caplog.records)
+
+    def test_mid_price_and_vig_computed_for_game_market(self):
+        m = KalshiMarketClient._parse_market(
+            self._raw_spread(yes_ask=0.60, yes_bid=0.50)
+        )
+        assert m.mid_price == pytest.approx(0.55)
+        assert m.vig == pytest.approx(0.10)
+
+
+class TestParseMarketDispatch:
+    """_parse_market must route by ticker series prefix without disturbing
+    existing NBA/MLB player-prop parsing (GG-252 regression guard)."""
+
+    def test_nba_ticker_still_returns_player_market(self):
+        raw = {
+            "ticker": "KXNBAPTS-26JUN03OKCSAS-OKCSGILGEOUSALEXANDER2-25",
+            "title": "Shai Gilgeous-Alexander: 25+ Points",
+            "event_ticker": "KXNBAPTS-26JUN03OKCSAS",
+            "yes_ask": 0.55,
+            "yes_bid": 0.50,
+            "no_ask": 0.50,
+            "no_bid": 0.45,
+            "volume_fp": 1500.0,
+            "status": "open",
+        }
+        m = KalshiMarketClient._parse_market(raw)
+        assert isinstance(m, PlayerMarket)
+
+    def test_mlb_ticker_still_returns_player_market(self):
+        raw = {
+            "ticker": "KXMLBHIT-26SEP081840HOUPHI-PHITTURNER7-3",
+            "title": "Trea Turner: 3+ Hits",
+            "event_ticker": "KXMLBHIT-26SEP081840HOUPHI",
+            "yes_ask": 0.20,
+            "yes_bid": 0.15,
+            "no_ask": 0.85,
+            "no_bid": 0.80,
+            "volume_fp": 40.0,
+            "status": "open",
+        }
+        m = KalshiMarketClient._parse_market(raw)
+        assert isinstance(m, PlayerMarket)
+
+    def test_nfl_game_ticker_returns_game_market(self):
+        raw = {
+            "ticker": "KXNFLGAME-26SEP21NYGLAR-NYG",
+            "title": "NYG @ LAR Winner",
+            "event_ticker": "KXNFLGAME-26SEP21NYGLAR",
+            "strike_type": "structured",
+            "yes_sub_title": "NYG wins",
+            "custom_strike": None,
+            "floor_strike": None,
+            "yes_ask": 0.45,
+            "yes_bid": 0.40,
+            "no_ask": 0.60,
+            "no_bid": 0.55,
+            "volume_fp": 800.0,
+            "status": "open",
+        }
+        m = KalshiMarketClient._parse_market(raw)
+        assert isinstance(m, GameMarket)
+
+    def test_nonnumeric_nba_threshold_still_returns_none(self):
+        """Unchanged pre-GG-252 behavior: malformed NBA ticker -> None."""
+        raw = {
+            "ticker": "KXNBAPTS-26JUN03OKCSAS-OKCSGA-NOTANUMBER",
+            "title": "Shai Gilgeous-Alexander: X+ Points",
+            "event_ticker": "KXNBAPTS-26JUN03OKCSAS",
+            "yes_ask": 0.55,
+            "yes_bid": 0.50,
+            "no_ask": 0.50,
+            "no_bid": 0.45,
+            "volume_fp": 1500.0,
+            "status": "open",
+        }
+        m = KalshiMarketClient._parse_market(raw)
+        assert m is None
+
+
+# ---------------------------------------------------------------------------
+# GG-252: unparsed markets must be counted and logged, never silently dropped.
+# ---------------------------------------------------------------------------
+
+
+class TestUnparsedCountTracking:
+    def _make_client(self, monkeypatch):
+        monkeypatch.setenv("BOT_ENV", "paper")
+        return KalshiMarketClient(api_key_id="x" * 20)
+
+    def test_fetch_player_points_markets_counts_unparsed(self, monkeypatch, caplog):
+        client = self._make_client(monkeypatch)
+        good = {
+            "ticker": "KXNBAPTS-26JUN03OKCSAS-OKCSGILGEOUSALEXANDER2-25",
+            "title": "Shai Gilgeous-Alexander: 25+ Points",
+            "event_ticker": "KXNBAPTS-26JUN03OKCSAS",
+            "yes_ask": 0.55, "yes_bid": 0.50, "no_ask": 0.50, "no_bid": 0.45,
+            "volume_fp": 1500.0, "status": "open",
+        }
+        bad = {**good, "ticker": "KXNBAPTS-26JUN03OKCSAS-OKCSGA-NOTANUMBER"}
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = 200
+            if url.endswith("/markets"):
+                resp.json.return_value = {"markets": [good, bad], "cursor": None}
+            else:
+                resp.json.return_value = {"market": good if "OKCSGILGEOUSALEXANDER2" in url else bad}
+            return resp
+
+        client._session.get = fake_get
+        with caplog.at_level("WARNING"):
+            ok, snapshot = client.fetch_player_points_markets()
+
+        assert ok is True
+        assert len(snapshot.markets) == 1
+        assert snapshot.unparsed_count == 1
+        assert any("GG-252" in rec.message for rec in caplog.records)
+
+    def test_fetch_game_markets_counts_unparsed(self, monkeypatch, caplog):
+        client = self._make_client(monkeypatch)
+        good = {
+            "ticker": "KXNFLSPREAD-26SEP14DENKC-KC8",
+            "title": "DEN @ KC Spread",
+            "event_ticker": "KXNFLSPREAD-26SEP14DENKC",
+            "strike_type": "greater",
+            "yes_sub_title": "KC wins by more than 7.5",
+            "custom_strike": {"football_team": "1"},
+            "floor_strike": 7.5,
+            "yes_ask": 0.52, "yes_bid": 0.48, "no_ask": 0.52, "no_bid": 0.48,
+            "volume_fp": 300.0, "status": "open",
+        }
+        bad = {**good, "ticker": "KXNFLSPREAD-26SEP14DENKC-KC9", "floor_strike": None}
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            resp = MagicMock()
+            resp.status_code = 200
+            if url.endswith("/markets"):
+                resp.json.return_value = {"markets": [good, bad], "cursor": None}
+            else:
+                resp.json.return_value = {"market": good if url.endswith("KC8") else bad}
+            return resp
+
+        client._session.get = fake_get
+        with caplog.at_level("WARNING"):
+            ok, snapshot = client.fetch_game_markets(series_ticker="KXNFLSPREAD")
+
+        assert ok is True
+        assert isinstance(snapshot, GameMarketSnapshot)
+        assert len(snapshot.markets) == 1
+        assert snapshot.unparsed_count == 1
+        assert any("GG-252" in rec.message for rec in caplog.records)
+
+
+class TestFetchGameMarkets:
+    def _make_client(self, monkeypatch):
+        monkeypatch.setenv("BOT_ENV", "paper")
+        return KalshiMarketClient(api_key_id="x" * 20)
+
+    def test_series_ticker_forwarded(self, monkeypatch):
+        client = self._make_client(monkeypatch)
+        captured_params = []
+
+        def fake_get(url, params=None, headers=None, timeout=None):
+            if params:
+                captured_params.append(dict(params))
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.json.return_value = {"markets": [], "cursor": None}
+            return resp
+
+        client._session.get = fake_get
+        ok, snapshot = client.fetch_game_markets(series_ticker="KXNFLGAME")
+
+        assert ok is True
+        assert isinstance(snapshot, GameMarketSnapshot)
+        assert captured_params[0].get("series_ticker") == "KXNFLGAME"
+
+    def test_for_event_filters_by_event_ticker(self):
+        m1 = GameMarket(
+            ticker="KXNFLGAME-26SEP21NYGLAR-NYG", title="t", market_type="moneyline",
+            team_abbr="NYG", threshold=None, outcome_desc="NYG wins",
+            game_date="2026-09-21", event_ticker="KXNFLGAME-26SEP21NYGLAR",
+            yes_ask=0.45, yes_bid=0.40, no_ask=0.60, no_bid=0.55, mid_price=0.425,
+            vig=0.05, volume=800.0, status="open", fetched_at="2026-09-07T00:00:00.000Z",
+        )
+        m2 = GameMarket(
+            ticker="KXNFLGAME-26SEP20INDKC-KC", title="t", market_type="moneyline",
+            team_abbr="KC", threshold=None, outcome_desc="KC wins",
+            game_date="2026-09-20", event_ticker="KXNFLGAME-26SEP20INDKC",
+            yes_ask=0.60, yes_bid=0.55, no_ask=0.45, no_bid=0.40, mid_price=0.575,
+            vig=0.05, volume=800.0, status="open", fetched_at="2026-09-07T00:00:00.000Z",
+        )
+        snapshot = GameMarketSnapshot(fetched_at="2026-09-07T00:00:00.000Z", markets=[m1, m2])
+        result = snapshot.for_event("KXNFLGAME-26SEP21NYGLAR")
+        assert result == [m1]

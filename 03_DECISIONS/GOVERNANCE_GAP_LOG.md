@@ -2853,7 +2853,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ### GG-252 — `kalshi_client.py`'s `PlayerMarket` dataclass and `_parse_market()` are player-prop-shaped and cannot represent a moneyline/spread market; the bot parses 0 NFL game markets today despite 264+ being live on Kalshi
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -2868,8 +2868,8 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Why it survived | Every prior touch of NFL support in this codebase (registry entries, grammar table, ExecutionBand scaffolding per ADR-0062) operated at the `MarketType`/band level, never exercising `kalshi_client`'s actual parse path against live NFL tickers. A registry entry existing reads as "supported" without a live fetch-and-parse test to falsify that impression. |
 | Impact | HIGH — this is the first of the six pregame-moneyline trace steps (Market fetch) and a hard blocker on its own: no NFL moneyline or spread bet can be evaluated, sized, or placed while the client returns zero parsed markets for those series, regardless of how complete every downstream step (model, risk, execution, resolution) is. |
 | Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 1 of the six-step trace — live-tested against real Kalshi data per explicit task instruction ("Test it against live Kalshi; do not read the code and infer"), then root-caused by reading `_parse_market()` and the `PlayerMarket` dataclass definition directly. Register-and-stop per Hard Rule 11 — this session is scoped to audit-only, no build. |
-| Resolution | Not started. Fixing this requires a schema addition — a new market dataclass (or a generalized outcome-representation field set covering moneyline/spread/total) — plus corresponding parser branches for `KXNFLGAME`/`KXNFLSPREAD` ticker formats, tested against live tickers for all three NFL series. Estimated 10-14 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 1). |
-| Status | OPEN. |
+| Resolution | RESOLVED, 2026-09-07, T-526. Added a new frozen dataclass `GameMarket` (sibling to `PlayerMarket`, not a bent reuse of it) plus `GameMarketSnapshot`, and split `_parse_market()` into a dispatcher: tickers whose series prefix is in a new `_NFL_GAME_SERIES` set (`KXNFLGAME`/`KXNFLSPREAD`/`KXNFLTOTAL`/`KXNFLTEAMTOTAL`) route to new `_parse_nfl_game_market()`; every other ticker (NBA/MLB, unchanged) routes to the renamed, byte-identical `_parse_player_market()`. Grammar was derived from a live dump of all four series (not fabricated from a spec): `strike_type` distinguishes `"structured"` (moneyline, no numeric line) from `"greater"` (numeric-line markets); the authoritative threshold is read directly from the payload's `floor_strike` field (always `X.5`), never reconstructed from the ticker's digit suffix, because team codes in the ticker tail are variable-length (`KC`, `SF`, `NYG`, `LAR`, 2-3 chars) and made the old approach unreliable; `custom_strike.football_team` (present/null) distinguishes team-scoped `KXNFLSPREAD`/`KXNFLTEAMTOTAL` from game-level `KXNFLTOTAL`. Unparsed markets are now logged (`logger.warning`, message prefixed `GG-252:`) and counted via a new `unparsed_count` field on both `DS02Snapshot` and `GameMarketSnapshot` — never silently returned as `None` into a void. New public method `fetch_game_markets()` mirrors `fetch_player_points_markets()`'s pagination pattern for the four NFL series. Verified against live Kalshi data post-fix: `KXNFLGAME` 64/64 parsed (was 0/64), `KXNFLSPREAD` 404/404 (was 0/404+), `KXNFLTOTAL` 304/304 (unchanged — survived by coincidence pre-fix), `KXNFLTEAMTOTAL` 55/55 (was 0/55) — and critically, `KXMLBHIT` (the only band that currently trades) held at 286/286 both before and after, confirming zero regression to prop parsing. 59/59 tests pass in `tests/test_kalshi_client.py` (18 new tests added covering all four NFL market types, dispatcher routing, unparsed-count/logging, and `fetch_game_markets()`); full project suite run separately, see `DECISION_LOG.md` for the pass/fail/skip line. Scope fence held: only `kalshi_client.py` and its tests were touched — no C3/C4/C5 wiring, no live routing, no ledger/kelly_fraction/archiver changes. This closes the Step-1 (Market fetch) blocker from the six-step NFL pregame-moneyline trace; Steps 2-6 (C1 ingestion, C2 features, C3 model, C4 risk sizing, resolution) remain unbuilt — see GG-253/254/255. |
+| Status | RESOLVED. |
 
 </details>
 
@@ -2941,6 +2941,28 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Impact | HIGH — this is Step 5 of the six-step trace (Execution) and a hard blocker independent of Steps 1/2/3/6: even a fully-parsed NFL market, a complete NFL forecast, and a working settlement path would still have no live pipeline to route a resulting bet through, absent a run script and cron entry that actually calls `measurement_stake`. |
 | Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 5 of the six-step trace — confirmed via corrected import-statement grep (the initial grep's false positive is itself noted here so a future session does not repeat it). Register-and-stop per Hard Rule 11. |
 | Resolution | Not started. Requires wiring `measurement_stake` into a live pipeline path, writing an NFL run script modeled on the MLB T1 pattern, adding a cron entry, and an end-to-end smoke test. Estimated 8-12 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 5). |
+| Status | OPEN. |
+
+</details>
+
+### GG-256 — `scripts/claim_session.sh`'s rebase-retry did not prevent a duplicate T-number claim; two concurrent sessions both claimed T-526 one second apart
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-256 |
+| Category | Concurrent-session claim-atomicity gap (T-number analogue of GG-162, which covers the equivalent GG-number gap). |
+| What was found | `04_EXECUTION/SESSION_CLAIMS.md` on `origin/main` shows `2026-09-07T23:46:36Z \| T-526, GG-252 \| ...fix GG-252...` immediately followed by `2026-09-07T23:46:37Z \| T-526, GG-253 (resolving) \| ...NFL C1 ingestion module...` — two different concurrent sessions both claimed the literal number T-526 for two unrelated deliverables, one second apart. Per this file's own documentation, `claim_session.sh` is supposed to append-commit-push with rebase-retry specifically to prevent this (the 2026-07-07 T-247 race this mechanism was built to close). It did not prevent it here — most likely both sessions read the last-used number before either had pushed its own claim commit, so the retry only protects the commit landing, not the number-selection read. No data was lost (`SESSION_CLAIMS.md` is `merge=union`, both rows persist) and no file collision resulted (the two sessions' actual work — `kalshi_client.py` vs. a new C1 ingestion module — does not overlap), so this is a labeling/traceability defect, not a destructive one. |
+| When it should have been caught | At claim time, by the rebase-retry logic itself, before either session began substantive work under the ambiguous number. |
+| Phases it survived | N/A — first observed instance of this specific race for T-numbers; the analogous GG-number race (GG-162/GG-199) was already known and documented, but this file did not previously record a T-number instance. |
+| Why it survived | The rebase-retry protects the push of the claim row, not the read of "what is the next free number" — two sessions starting within the same ~1s window can both compute the same next number before either's push lands, identically to the root cause already described for GG-162. |
+| Impact | LOW — no work was lost or overwritten; this session (T-526/GG-252) and the concurrent one (T-526/GG-253) touch disjoint files. Purely a traceability/audit-log ambiguity: `SESSION_CLAIMS.md` and any future `git log`/`grep T-526` search will show two unrelated deliverables under one number. |
+| Discovery | 2026-09-07, this session (T-526/GG-252, worktree `session/20260907T234550Z-gg252-nfl-parser`), noticed while fetching `origin/main` before push and diffing `SESSION_CLAIMS.md`. Register-and-stop per Hard Rule 11 — not fixed in this session, out of this session's scope fence (`kalshi_client.py` and its tests only). |
+| Resolution | Not started. Same class of fix as GG-162's stated remaining work: atomic T-number reservation (e.g. a lock file or server-side counter) rather than read-then-append-then-push, would need to close both the GG- and T- number races together since they share the same root cause. |
 | Status | OPEN. |
 
 </details>

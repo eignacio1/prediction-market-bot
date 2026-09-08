@@ -466,3 +466,4 @@
 | 2026-09-07T23:46:36Z | T-526, GG-252 | STANDARD: fix GG-252 - add game-market representation + NFL ticker parsing to kalshi_client.py, no silent drops |
 | 2026-09-07T23:46:37Z | T-526, GG-253 (resolving) | T-526: NFL C1 ingestion module (GG-253) — team efficiency, rest, home/away features for moneyline LR |
 | 2026-09-07T23:47:17Z | T-527, GG-TBD | T-527: NFL game-market settlement derivation module (moneyline/spread/total/team-total via settle_position stat-agnostic primitive) + NFL final-score result fetcher + game-market resolver script; STANDARD tier, build+test only, no live wiring, no ledger writes |
+| 2026-09-07T23:59:00Z | T-526, GG-252, GG-256 | CLOSED — GG-252 fixed (kalshi_client.py NFL game-market parsing, 18 new tests, full suite 3030 passed/28 skipped/0 failed); GG-256 registered (T-526 claim-number collision, register-and-stop); merge confirmed, HEAD (bca81c4) is ancestor of origin/main (merge-check YES); pushed to main |
