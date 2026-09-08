@@ -70,6 +70,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import logging
 import math
 import os
 import re
@@ -86,6 +87,8 @@ from prediction_market_bot.c5_execution.market_type_registry import (
     MarketType,
     series_ticker_for,
 )
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -150,6 +153,26 @@ RETRY_DELAY_S = 2.0  # T-164/GG-014: raised 1.0→2.0; delays = RETRY_DELAY_S ×
 # Vig threshold — markets with vig > this are too wide to trade (per risk policy)
 MAX_ACCEPTABLE_VIG = 0.05
 
+# GG-252: NFL game-market series (moneyline/spread/totals/team-totals). These are
+# team-vs-team shaped, not player-prop shaped — _parse_market() dispatches tickers
+# from these series to _parse_nfl_game_market() / GameMarket instead of
+# _parse_player_market() / PlayerMarket. Grammar derived from live tickers fetched
+# 2026-09-07 (see GG-252 resolution note), not from a spec:
+#   KXNFLGAME-{event}-{TEAM}            e.g. KXNFLGAME-26SEP21NYGLAR-NYG
+#     strike_type="structured", floor_strike=null, custom_strike.football_team=<uuid>
+#   KXNFLSPREAD-{event}-{TEAM}{N}       e.g. KXNFLSPREAD-26SEP14DENKC-KC8 (floor_strike=7.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.football_team=<uuid>
+#   KXNFLTOTAL-{event}-{N}              e.g. KXNFLTOTAL-26SEP14DENKC-64 (floor_strike=63.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike=null (not team-scoped)
+#   KXNFLTEAMTOTAL-{event}-{TEAM}{N}    e.g. KXNFLTEAMTOTAL-26SEP10SFLAR-SF43 (floor_strike=42.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.football_team=<uuid>
+# Team codes are variable-length (2-3 chars: KC, SF, NYG, LAR) — the ticker-tail
+# digit suffix (N = ceil(floor_strike)) is NOT parsed for the threshold; floor_strike
+# is read directly from the raw payload, which is why team-code length doesn't matter.
+_NFL_GAME_SERIES = frozenset({
+    "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL",
+})
+
 
 # ---------------------------------------------------------------------------
 # Data classes (DS-02 output schema — IF-C5-C3/C4)
@@ -192,6 +215,50 @@ class PlayerMarket:
         return self.yes_ask > 0 and self.yes_bid > 0
 
 
+@dataclass(frozen=True)
+class GameMarket:
+    """
+    Single Kalshi team-vs-team game market (GG-252).
+
+    Sibling to PlayerMarket, not a variant of it — game markets have no player
+    and no guaranteed numeric threshold (moneyline markets are a bare "team A
+    wins" proposition with strike_type="structured" and no floor_strike at all).
+    market_type distinguishes the four NFL series this represents:
+      "moneyline"  — KXNFLGAME (threshold is always None)
+      "spread"     — KXNFLSPREAD (threshold = floor_strike, team-scoped)
+      "total"      — KXNFLTOTAL (threshold = floor_strike, game-level, no team)
+      "team_total" — KXNFLTEAMTOTAL (threshold = floor_strike, team-scoped)
+    team_abbr is "" for game-level totals (not team-scoped). outcome_desc is
+    Kalshi's own pre-rendered human-readable description (yes_sub_title).
+    """
+    ticker: str
+    title: str
+    market_type: str         # "moneyline" | "spread" | "total" | "team_total"
+    team_abbr: str           # "" when not team-scoped (e.g. game-level total)
+    threshold: float | None  # floor_strike; None for moneyline (structured)
+    outcome_desc: str        # yes_sub_title — clean human-readable outcome text
+    game_date: str            # YYYY-MM-DD
+    event_ticker: str
+    yes_ask: float           # USD (0.00-1.00)
+    yes_bid: float
+    no_ask: float
+    no_bid: float
+    mid_price: float         # (yes_ask + yes_bid) / 2
+    vig: float               # yes_ask - yes_bid (full spread)
+    volume: float            # total volume in dollars
+    status: str              # "active", "closed", etc.
+    fetched_at: str          # UTC ISO timestamp
+    venue: str = "kalshi"    # venue identifier
+
+    @property
+    def half_spread(self) -> float:
+        return self.vig / 2.0
+
+    @property
+    def has_live_quotes(self) -> bool:
+        return self.yes_ask > 0 and self.yes_bid > 0
+
+
 @dataclass
 class DS02Snapshot:
     """
@@ -200,6 +267,7 @@ class DS02Snapshot:
     """
     fetched_at: str
     markets: list[PlayerMarket] = field(default_factory=list)
+    unparsed_count: int = 0  # GG-252: raw markets fetched but dropped by the parser
 
     def for_player(self, player_name_fragment: str) -> list[PlayerMarket]:
         frag = player_name_fragment.upper()
@@ -214,6 +282,17 @@ class DS02Snapshot:
         if not candidates:
             return None
         return min(candidates, key=lambda m: abs(m.threshold - target_threshold))
+
+
+@dataclass
+class GameMarketSnapshot:
+    """Collection of GameMarket records for one or more NFL games (GG-252)."""
+    fetched_at: str
+    markets: list[GameMarket] = field(default_factory=list)
+    unparsed_count: int = 0  # raw markets fetched but dropped by the parser
+
+    def for_event(self, event_ticker: str) -> list[GameMarket]:
+        return [m for m in self.markets if m.event_ticker == event_ticker]
 
 
 @dataclass
@@ -424,28 +503,53 @@ class KalshiMarketClient:
         return False, {"error": f"transient error — max retries ({MAX_RETRIES}) exceeded"}
 
     @staticmethod
-    def _parse_market(raw: dict[str, Any]) -> PlayerMarket | None:
+    def _parse_market(raw: dict[str, Any]) -> PlayerMarket | GameMarket | None:
+        """Dispatch to the player-prop or NFL-game parser based on series (GG-252).
+
+        _NFL_GAME_SERIES tickers (KXNFLGAME/KXNFLSPREAD/KXNFLTOTAL/KXNFLTEAMTOTAL)
+        are team-vs-team shaped and cannot be represented by PlayerMarket's
+        player_name/team_abbr/threshold:int fields — they route to
+        _parse_nfl_game_market()/GameMarket instead. Everything else (KXNBAPTS,
+        KXMLBHIT, future player-prop series) is unchanged from before GG-252.
+        """
+        ticker = raw.get("ticker", "")
+        series = ticker.split("-")[0] if ticker else ""
+        if series in _NFL_GAME_SERIES:
+            return KalshiMarketClient._parse_nfl_game_market(raw)
+        return KalshiMarketClient._parse_player_market(raw)
+
+    @staticmethod
+    def _game_date_from_event_ticker(event_ticker: str) -> str:
+        game_date = ""
+        date_match = re.search(r"(\d{2})([A-Z]{3})(\d{2})", event_ticker)
+        if date_match:
+            yr, mon_str, day = date_match.groups()
+            months = {
+                "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04",
+                "MAY": "05", "JUN": "06", "JUL": "07", "AUG": "08",
+                "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
+            }
+            game_date = f"20{yr}-{months.get(mon_str, '00')}-{day}"
+        return game_date
+
+    @staticmethod
+    def _parse_player_market(raw: dict[str, Any]) -> PlayerMarket | None:
+        ticker = raw.get("ticker", "")
         try:
-            ticker = raw.get("ticker", "")
             title = raw.get("title", "")
 
             parts = ticker.split("-")
             try:
                 threshold = int(parts[-1])
             except (ValueError, IndexError):
+                logger.warning(
+                    "GG-252: unparseable player-prop market — non-numeric ticker "
+                    "tail (expected trailing threshold int): ticker=%s", ticker,
+                )
                 return None
 
             event_ticker = raw.get("event_ticker", "")
-            game_date = ""
-            date_match = re.search(r"(\d{2})([A-Z]{3})(\d{2})", event_ticker)
-            if date_match:
-                yr, mon_str, day = date_match.groups()
-                months = {
-                    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04",
-                    "MAY": "05", "JUN": "06", "JUL": "07", "AUG": "08",
-                    "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12",
-                }
-                game_date = f"20{yr}-{months.get(mon_str, '00')}-{day}"
+            game_date = KalshiMarketClient._game_date_from_event_ticker(event_ticker)
 
             player_name = title.split(":")[0].strip() if ":" in title else title
             team_abbr = ""
@@ -474,7 +578,96 @@ class KalshiMarketClient:
                 volume=volume, status=status,
                 fetched_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
             )
-        except Exception:
+        except Exception as e:
+            logger.warning(
+                "GG-252: unparseable player-prop market — ticker=%s error=%s: %s",
+                ticker, type(e).__name__, e,
+            )
+            return None
+
+    @staticmethod
+    def _parse_nfl_game_market(raw: dict[str, Any]) -> GameMarket | None:
+        """Parse an NFL game-market (moneyline/spread/total/team_total) — GG-252.
+
+        Reads strike_type/floor_strike/custom_strike directly from the raw
+        payload rather than parsing a threshold out of the ticker tail — Kalshi
+        already exposes the authoritative numeric line (floor_strike) and the
+        team scope (custom_strike.football_team), and team codes in these
+        tickers are variable-length (2-3 chars: KC, SF, NYG, LAR), which makes
+        fixed-width ticker-suffix parsing unreliable for recovering them.
+        """
+        ticker = raw.get("ticker", "")
+        try:
+            title = raw.get("title", "")
+            event_ticker = raw.get("event_ticker", "")
+            series = ticker.split("-")[0] if ticker else ""
+            parts = ticker.split("-")
+            game_date = KalshiMarketClient._game_date_from_event_ticker(event_ticker)
+            outcome_desc = raw.get("yes_sub_title", "") or title
+            floor_strike = raw.get("floor_strike")
+            has_team = bool((raw.get("custom_strike") or {}).get("football_team"))
+
+            if series == "KXNFLGAME":
+                market_type = "moneyline"
+                threshold = None
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})$", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+            elif series == "KXNFLTOTAL":
+                market_type = "total"
+                team_abbr = ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-252: unparseable KXNFLTOTAL market — missing "
+                        "floor_strike: ticker=%s", ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series in ("KXNFLSPREAD", "KXNFLTEAMTOTAL"):
+                market_type = "spread" if series == "KXNFLSPREAD" else "team_total"
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-252: unparseable %s market — missing floor_strike: "
+                        "ticker=%s", series, ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            else:
+                # Should be unreachable — _parse_market only dispatches here for
+                # tickers whose series is in _NFL_GAME_SERIES.
+                logger.warning(
+                    "GG-252: _parse_nfl_game_market called for unrecognized "
+                    "series: ticker=%s series=%s", ticker, series,
+                )
+                return None
+
+            yes_ask = float(raw.get("yes_ask_dollars") or raw.get("yes_ask") or 0)
+            yes_bid = float(raw.get("yes_bid_dollars") or raw.get("yes_bid") or 0)
+            no_ask = float(raw.get("no_ask_dollars") or raw.get("no_ask") or 0)
+            no_bid = float(raw.get("no_bid_dollars") or raw.get("no_bid") or 0)
+
+            mid_price = (yes_ask + yes_bid) / 2.0 if (yes_ask + yes_bid) > 0 else 0.0
+            vig = max(0.0, yes_ask - yes_bid)
+
+            volume = float(raw.get("volume_fp") or raw.get("volume_24h_fp") or 0)
+            status = raw.get("status", "unknown")
+
+            return GameMarket(
+                ticker=ticker, title=title, market_type=market_type,
+                team_abbr=team_abbr, threshold=threshold, outcome_desc=outcome_desc,
+                game_date=game_date, event_ticker=event_ticker,
+                yes_ask=yes_ask, yes_bid=yes_bid, no_ask=no_ask, no_bid=no_bid,
+                mid_price=mid_price, vig=vig, volume=volume, status=status,
+                fetched_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+            )
+        except Exception as e:
+            logger.warning(
+                "GG-252: unparseable NFL game market — ticker=%s error=%s: %s",
+                ticker, type(e).__name__, e,
+            )
             return None
 
     # ------------------------------------------------------------------
@@ -532,6 +725,7 @@ class KalshiMarketClient:
 
         fetched_at = _utc_now()
         markets: list[PlayerMarket] = []
+        unparsed_count = 0
 
         for raw in all_raw:
             ticker = raw.get("ticker", "")
@@ -543,8 +737,82 @@ class KalshiMarketClient:
                 parsed = self._parse_market(raw)
             if parsed is not None:
                 markets.append(parsed)
+            else:
+                unparsed_count += 1
 
-        return True, DS02Snapshot(fetched_at=fetched_at, markets=markets)
+        if unparsed_count:
+            logger.warning(
+                "GG-252: %d of %d raw %s markets failed to parse and were dropped",
+                unparsed_count, len(all_raw), series_ticker,
+            )
+
+        return True, DS02Snapshot(
+            fetched_at=fetched_at, markets=markets, unparsed_count=unparsed_count,
+        )
+
+    def fetch_game_markets(
+        self,
+        series_ticker: str,
+        status: str = "open",
+        page_size: int = 200,
+    ) -> tuple[bool, GameMarketSnapshot]:
+        """Fetch ALL open NFL game markets for one series (GG-252).
+
+        series_ticker must be one of _NFL_GAME_SERIES (KXNFLGAME, KXNFLSPREAD,
+        KXNFLTOTAL, KXNFLTEAMTOTAL). Mirrors fetch_player_points_markets'
+        pagination/detail-fetch pattern but returns GameMarket records.
+        """
+        all_raw: list[dict[str, Any]] = []
+        cursor: str | None = None
+
+        while True:
+            params: dict[str, Any] = {
+                "limit": page_size,
+                "status": status,
+                "series_ticker": series_ticker,
+            }
+            if cursor:
+                params["cursor"] = cursor
+
+            ok, data = self._get("/markets", params=params)
+            if not ok:
+                if not all_raw:
+                    return False, GameMarketSnapshot(fetched_at=_utc_now(), markets=[])
+                break
+
+            page = data.get("markets", [])
+            all_raw.extend(page)
+
+            cursor = data.get("cursor")
+            if not cursor or len(page) < page_size:
+                break
+
+        fetched_at = _utc_now()
+        markets: list[GameMarket] = []
+        unparsed_count = 0
+
+        for raw in all_raw:
+            ticker = raw.get("ticker", "")
+            ok_detail, detail = self._get(f"/markets/{ticker}")
+            if ok_detail:
+                market_data = detail.get("market", detail)
+                parsed = self._parse_market(market_data)
+            else:
+                parsed = self._parse_market(raw)
+            if parsed is not None:
+                markets.append(parsed)
+            else:
+                unparsed_count += 1
+
+        if unparsed_count:
+            logger.warning(
+                "GG-252: %d of %d raw %s markets failed to parse and were dropped",
+                unparsed_count, len(all_raw), series_ticker,
+            )
+
+        return True, GameMarketSnapshot(
+            fetched_at=fetched_at, markets=markets, unparsed_count=unparsed_count,
+        )
 
     def fetch_market_detail(self, ticker: str) -> tuple[bool, PlayerMarket | None]:
         """Fetch a single market by ticker."""
