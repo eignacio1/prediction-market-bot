@@ -469,3 +469,4 @@
 | 2026-09-07T23:59:00Z | T-526, GG-252, GG-256 | CLOSED — GG-252 fixed (kalshi_client.py NFL game-market parsing, 18 new tests, full suite 3030 passed/28 skipped/0 failed); GG-256 registered (T-526 claim-number collision, register-and-stop); merge confirmed, HEAD (bca81c4) is ancestor of origin/main (merge-check YES); pushed to main |
 | 2026-09-08T04:29:06Z | T-526 | CLOSED — T-526 fixed GG-252 (NFL game-market parsing in kalshi_client.py, 18 new tests); GG-256 registered (commit `91de730`) |
 | 2026-09-08T23:56:06Z | T-528, GG-TBD | T-528: NFL Week 1 capture-fidelity audit (deadline 2026-09-09 kickoff) — parser-independence, series coverage, window coverage, depth sampling |
+| 2026-09-08T23:56:28Z | T-529 | MICRO: land T-526 (NFL C1 ingestion) + T-527 (NFL settlement) branches into main; re-dispose GG-254 |
