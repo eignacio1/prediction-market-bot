@@ -3106,7 +3106,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ### GG-265 — NFL depth-capture cron path (T-533's day-3 line + `--depth-sample-per-family 1`) had never actually fired; config inspection alone is not proof it will (GG-245 precedent)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -3114,10 +3114,11 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Field | Detail |
 |---|---|
 | Gap ID | GG-265 |
-| Category | Preflight verification gap — not yet a confirmed defect. T-533 added a day-3 NFL price-archive cron line and `--depth-sample-per-family 1` to all six NFL lines and verified the change via `crontab -l` (config presence) and one direct hand-run of `archive_market_prices.py` (GG-259's resolution). Neither the day-3 line nor the depth flag has executed via the actual installed crontab entry as of registration. First scheduled fire: 2026-09-09T17:05Z. Kickoff: 2026-09-10T00:20Z. |
+| Category | Preflight verification gap — closed with direct evidence, no defect found. T-533 added a day-3 NFL price-archive cron line and `--depth-sample-per-family 1` to all six NFL lines and verified the change via `crontab -l` (config presence) and one direct hand-run of `archive_market_prices.py` (GG-259's resolution). Neither the day-3 line nor the depth flag had executed via the actual installed crontab entry as of registration. First scheduled fire: 2026-09-09T17:05Z. |
 | Why it matters | GG-186/GG-245's precedent is explicit: a cron line's presence in a config file, or even a manual run of the underlying script, is not proof the *actual scheduled entry* will fire correctly end-to-end (env loading, credential export, interpreter/PYTHONPATH resolution, daemon liveness, timezone). A silent failure at 17:05Z would not be caught until well after the fact, and the depth/price history for the day is unrecoverable once missed (same un-backfillable-data shape as GG-245/GG-259/GG-261). |
 | Discovery | 2026-09-09, T-537 (this session), preflight task assigned specifically to close this gap between "config inspection" and "proof" before the first live fire, with ~1.5h of margin. |
-| Resolution | In progress this session — see `04_EXECUTION/` preflight deliverables and this session's DECISION_LOG entries for the hand-executed archiver run, the verbatim-cron-command dry run, and the live VPS crontab/daemon/timezone check. Will be updated to RESOLVED or left OPEN with a named defect and fix once all deliverables complete. |
-| Status | OPEN — verification in progress. |
+| Resolution | Two independent lines of evidence, both clean: (1) preflight — hand-ran `archive_market_prices.py` against the four NFL series with `--depth-sample-per-family 1` (exit 0, correct price/depth row counts, valid sample depth row) and separately dry-ran the day-3 cron line's command verbatim in a non-interactive `env -i` shell simulating cron's stripped environment, confirming all 5 links ($PROJ resolution, `.env` credential export — non-empty, value never printed, PYTHON interpreter, PYTHONPATH import, log-path writability) resolve correctly; VPS `crontab -l` confirmed the six live NFL lines byte-identical to `deploy/cron.conf`, cron daemon active 1w4d, UTC day-of-week=3 (Wednesday) matching the day-3 field, daemon timezone Etc/UTC. (2) Direct observation, overtaking the preflight — by the time Deliverable 4 ran (19:32Z), the real day-3 line had already fired for real **8 times** (17:05Z, 17:25Z, 17:45Z, 18:05Z, 18:25Z, 18:45Z, 19:05Z, 19:25Z), each logging `wrote 4 depth samples` and writing exactly 4 NFL depth rows/family to production `exp_output/PRICE_ARCHIVE/depth_2026-09-09.jsonl` (32 total), with a valid sample row inspected directly (KXNFLTOTAL, usable, populated top-of-book/within-5c depth fields). Zero error/backoff/rate-limit/exception lines in `logs/price_archive_cron.log` today. No defect found; `deploy/cron.conf` was not touched. See `04_EXECUTION/MLB_BASELINE_PRE_NFL_DEPTH_2026-09-09.md` for the MLB-side baseline captured in the same session. |
+| Cross-references | GG-245, GG-259, GG-261 (un-backfillable-observation-window precedent this task exists to close); GG-262 (unrelated MLB pregame-schedule drift, noted but out of scope). |
+| Status | RESOLVED — 17:05Z first fire, and 7 subsequent fires through 19:25Z, directly confirmed successful via production log + archive file inspection. No fix required. |
 
 </details>
