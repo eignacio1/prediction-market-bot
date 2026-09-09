@@ -3101,3 +3101,23 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — needs a future session to determine which value (VPS live or repo) is correct and reconcile. |
 
 </details>
+
+---
+
+### GG-265 — NFL depth-capture cron path (T-533's day-3 line + `--depth-sample-per-family 1`) had never actually fired; config inspection alone is not proof it will (GG-245 precedent)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-265 |
+| Category | Preflight verification gap — not yet a confirmed defect. T-533 added a day-3 NFL price-archive cron line and `--depth-sample-per-family 1` to all six NFL lines and verified the change via `crontab -l` (config presence) and one direct hand-run of `archive_market_prices.py` (GG-259's resolution). Neither the day-3 line nor the depth flag has executed via the actual installed crontab entry as of registration. First scheduled fire: 2026-09-09T17:05Z. Kickoff: 2026-09-10T00:20Z. |
+| Why it matters | GG-186/GG-245's precedent is explicit: a cron line's presence in a config file, or even a manual run of the underlying script, is not proof the *actual scheduled entry* will fire correctly end-to-end (env loading, credential export, interpreter/PYTHONPATH resolution, daemon liveness, timezone). A silent failure at 17:05Z would not be caught until well after the fact, and the depth/price history for the day is unrecoverable once missed (same un-backfillable-data shape as GG-245/GG-259/GG-261). |
+| Discovery | 2026-09-09, T-537 (this session), preflight task assigned specifically to close this gap between "config inspection" and "proof" before the first live fire, with ~1.5h of margin. |
+| Resolution | In progress this session — see `04_EXECUTION/` preflight deliverables and this session's DECISION_LOG entries for the hand-executed archiver run, the verbatim-cron-command dry run, and the live VPS crontab/daemon/timezone check. Will be updated to RESOLVED or left OPEN with a named defect and fix once all deliverables complete. |
+| Status | OPEN — verification in progress. |
+
+</details>
