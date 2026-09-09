@@ -3014,3 +3014,25 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-259 — NFL price-archive cron lines carry zero `--depth-sample-per-family` sampling; Week 1 orderbook-depth history is being permanently lost while this stays disabled
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-259 |
+| Category | Capture gap — depth (not price) history, un-backfillable once the observation window passes. Same root shape as GG-245 (price capture), one layer deeper: MLB's `--depth-sample-per-family 2` has been building a depth time series since 2026-08-01; NFL's equivalent 5 cron lines (added under GG-245/T-521, `deploy/cron.conf:419-423`) carry no such flag at all. |
+| What was found | Direct re-read of `deploy/cron.conf:419-423` (T-528, this session) confirms none of the 5 NFL price-archive cron lines pass `--depth-sample-per-family`; `archive_market_prices.py:217-220` defaults this to `0` (disabled) when absent, and `main()` (`archive_market_prices.py:255`) only calls `_sample_depth()` when the value is `> 0`. This is documented as a **deliberate** T-521 scope decision in the cron.conf comment block (`deploy/cron.conf:405-407`: "no depth sampling (kept out deliberately to minimize added volume)"), not an oversight — it was a conscious tradeoff to minimize the NFL addition's added request volume against the shared T4M-PROJ read budget, not a defect in the original GG-245 fix. |
+| Why it matters | Depth cannot be reconstructed retroactively — `_sample_depth()` requires a live `/markets/{ticker}/orderbook` fetch at capture time. GG-155/T-411 already established NFL-adjacent depth data (measured on MLB, but under the same venue/mechanism) swings 10-100x intraday (14x in 14 minutes on one series, 67x between consecutive TEAM_TOTAL reads) — a single retroactive measurement after Week 1 cannot substitute for a Week 1 time series, and CLAUDE.md's own standing instruction is that any sizing decision must consult a *live, current* depth measurement, which presupposes the history exists to measure against. Every day this stays at 0 is a day of NFL depth observations across all four families (KXNFLGAME 64 / KXNFLSPREAD 404 / KXNFLTOTAL 304 / KXNFLTEAMTOTAL 55 open markets, live-verified 2026-09-08) that cannot be recovered later, delaying by the same margin the point at which NFL's depth sample reaches the ~200+ observations/family target the module's own docstring describes as the goal (`archive_market_prices.py:41-56`). |
+| Impact today | LOW-to-MEDIUM in the immediate term — NFL live trading is not yet active (T4 ARITH/FLOW scaffolding just landed per T-524; T1 game-market run script is still gated on GG-255), so no current sizing decision is blocked on missing NFL depth data. The severity is in the accumulating, permanent deficit to the depth time series, not an active operational block. |
+| Discovery | 2026-09-08, T-528 (NFL Week 1 capture-fidelity audit), Deliverable 5 — direct read of the live NFL cron lines while assessing depth-sample adequacy per task instruction; task framing assumed the MLB precedent value of 2 applied to NFL already, which direct read disproved. |
+| Resolution | Not started. Recommended value: `--depth-sample-per-family 2`, mirroring the MLB precedent exactly — the balanced round-robin sampler (`_balanced_sample`, shared code path with MLB, the GG-155 fix) is already wired and requires no new code; enabling this is a flag change on the 5 existing NFL cron lines (`deploy/cron.conf:419-423`), not a build. Explicitly not enacted by T-528 — that task's edit authorization was scoped to closing coverage holes demonstrated under its Deliverables 3/4 only, and depth-sample changes were explicitly out of scope for it. |
+| Status | OPEN. |
+
+</details>
