@@ -3143,3 +3143,24 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — needs a future session (or the operator, out-of-band) to provision a working local Python/TLS stack (or document that `integration`-marked tests are VPS/CI-only in this environment) if local `integration` runs are expected to pass on this machine. |
 
 </details>
+
+---
+
+### GG-263 — NFL infrastructure built across Waves 20-21 (T1 game-market run script, EXP-027 LR model, T4 NFL/NHL sub-bands, capture cron) has no operator-visible output — no live shadow run against real markets, no dashboard panel
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-263 |
+| Category | Operator-visibility gap — build-vs-verification asymmetry. Several NFL sessions (T-521 through T-533, "Waves 20-21") built real infrastructure — `run_t1_nfl_game_market.py` (T1 game-market paper trader with an injectable `NFLForecastModel` protocol), `scripts/exp027_hyp012_nfl_moneyline_backtest.py` (trained + Platt-calibrated LR, T-531, verdict UNDERPOWERED pending 2026 season data), T4 NFL/NHL sub-band registry scaffolding (ADR-0062, ExecutionBand.T4NFL_ARITH/FLOW, T4NHL_ARITH/FLOW — all `kelly_fraction=0.0`, BLOCKED), and NFL price-archive cron capture (GG-259/GG-261) — none of which the operator can currently see running or producing output anywhere. |
+| What was found | (1) `run_t1_nfl_game_market.py`'s `main()` has only ever been exercised with its default `StubNFLForecastModel` in tests, never against live Kalshi NFL markets with the real EXP-027 LR injected. (2) `scripts/web_dashboard.py`'s `_load_all_data()` reads four hardcoded MLB paths only — there is no NFL section in the dashboard the operator reads daily, so even a successful shadow run would produce a JSON file nobody looks at. The operator explicitly flagged being "blind to every NFL component built in Waves 20-21" as the reason this session was assigned. |
+| Why it matters | A dashboard/ledger the operator never sees is functionally equivalent to unbuilt work from a decision-making standpoint — Waves 20-21's real engineering effort (a calibrated model, a paper-trading harness, a capture pipeline) has produced zero operator-consumable evidence to date. This is also a governance-adjacent risk in the other direction: without visibility, there's no structural check against a stub-driven or synthetic result ever being mistaken for a live signal (the project's own recurring failure class, e.g. GG-001). |
+| Discovery | 2026-09-09, T-534 (this session), registered at claim time per operator instruction, before any implementation — the gap is the explicit reason this session exists, not a side-finding. |
+| Resolution | This session's two deliverables close it: (1) a thin `NFLForecastModel`-protocol adapter wrapping the EXP-027 LR, injected into `run_t1_nfl_game_market.py::main()` and run once (paper-only, `kalshi_client=None`) against tonight's live KXNFL opener markets; (2) an additive NFL section in `scripts/web_dashboard.py` rendering that run's portfolio/audit output, labeled by model provenance (EXP-027 LR vs. stub) and PAPER status, with existing MLB panels left untouched. See this session's own commits and `DECISION_LOG.md` (2026-09-09) for the executed detail. |
+| Status | OPEN — will be closed at this session's close-out once both deliverables are verified complete (Hard Rule 11: this entry documents the gap this session was assigned to close; it is not marked RESOLVED until that verification is done and recorded). |
+
+</details>
