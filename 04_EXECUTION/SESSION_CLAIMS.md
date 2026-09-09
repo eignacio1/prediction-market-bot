@@ -483,3 +483,5 @@
 | 2026-09-09T05:20:28Z | T-531 (session-end close-out) | CLOSED — EXP-027/HYP-012 (rerouted from EXP-026/HYP-011 via GG-258) Deliverables 1-5 complete and pushed: pre-registration (74266d4), feature build + 4 leakage checks (2eca755), DECISION_LOG close-out (503dc53). Verdict: UNDERPOWERED (clean_n=0 vs live-derived n*=inf, 2026 season not yet started) — matches pre-registration's stated expectation, not forced. Scope fence held: no src/ edit, no kelly_fraction touched, no live/paper wiring, no position placed. No new GG registered (check1's calendar-boundary artifact is explained, not a gap). |
 | 2026-09-09T05:27:08Z | T-531 | CLOSED — T-531 EXP-027/HYP-012 NFL moneyline LR: Deliverables 1-5 complete, verdict UNDERPOWERED (clean_n=0, 2026 season not started yet) (commit `9f4703a`) |
 | 2026-09-09T14:31:33Z | T-531 | CLOSED — merge confirmed: 8937575 is ancestor of origin/main (session-end close-out) |
+
+| 2026-09-09T14:41:00Z | T-530 | CLOSED — merge confirmed: PR #127 merged (7a43110), branch HEAD 66df024 is ancestor of origin/main. Tests 3128/28/0 post-merge. |
