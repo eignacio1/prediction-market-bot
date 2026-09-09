@@ -3037,3 +3037,26 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-260 — Shared `main` working tree carries uncommitted `ACTIVE_QUEUE.md` drift invisible to worktree-isolated sessions; recurrence of the condition T-505 fixed in Wave 10
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-260 |
+| Category | Process/tooling gap — session-start data freshness, not a code defect. Recurrence of a condition previously fixed once already (T-505, Wave 10) and never structurally closed. |
+| What was found | This session (T-533, worktree `session/20260909T143314Z-nfl-week1-capture-windows-and-depth`) found `04_EXECUTION/ACTIVE_QUEUE.md` in the shared `main` working tree carrying a substantial uncommitted local modification (360 insertions / 263 deletions against the then-current `origin/main`) that was never committed or pushed by whatever prior session produced it. `origin/main`'s committed copy — the only version a fresh worktree clone can see — was stale, still headed "Verified against `origin/main = e66c5cd` (2026-09-07)" and describing a 78-cell/74-OPEN-gap state, while the shared tree's uncommitted copy reflected the live post-T-528/T-530/T-531 state (92 cells, GG-252 CLOSED, GG-254/255/256/257/259 OPEN or partial). A worktree-isolated session — the architecture GG-101/T-335 mandates as the *default* launch mode — has no visibility into the shared tree's working-directory state at all; it only ever sees what is committed to `origin/main`. |
+| Why it matters | `ACTIVE_QUEUE.md` is documented in its own header as "the only prompt file to read" — every session's first substantive read after the session-start protocol. If the authoritative queue state only ever exists as an uncommitted diff in one shared tree, every isolated-worktree session (the now-default launch mode) starts from stale task framing, stale ID hints, and a stale gap/cell census until a session happens to notice and manually port the diff across, as this session did by hand (`cp` from the shared tree's live file into the worktree, verified via `git diff --stat`). This is not self-correcting — worktree isolation, the fix for GG-101, is structurally the same mechanism that hides this drift from every session except one physically `cd`'d into the shared tree. |
+| Impact today | MEDIUM — no data was lost (the shared tree's modification was intact and recoverable, not overwritten), but every isolated-worktree session launched between whenever that modification was written and this session's manual port was working from a queue file understating current state by two full waves of landed work (T-528 through T-531). Recurring, not a one-off: T-505 (Wave 10) already found and fixed this exact condition once; it recurred with no structural change in between. |
+| Discovery | 2026-09-09, T-533 (this session), Deliverable 0 — task brief explicitly anticipated this condition ("origin/main's committed copy is stale") and instructed installing the shared tree's live copy as an unconditional first deliverable; confirmed by direct `git status --porcelain` read of the shared tree showing ` M 04_EXECUTION/ACTIVE_QUEUE.md` before this session began its own worktree work. |
+| Resolution | Not started as a systemic fix. This session's local resolution is the manual port + commit described above (see this session's Deliverable 0 commit). No structural fix exists yet for the underlying cause — the shared `main` tree is where `ACTIVE_QUEUE.md` edits are apparently drafted/reviewed before commit, but nothing currently prompts or forces that commit to land before a new worktree session forks from `origin/main`. A `session_guard.sh`/`new_session_worktree.sh` check that diffs the shared tree's `ACTIVE_QUEUE.md` against `origin/main` at worktree-creation time and warns on drift would close this structurally; not built here (out of this session's scope fence — `deploy/cron.conf`, `ACTIVE_QUEUE.md` content, and the T-530 merge only). |
+| Prior occurrence | T-505 (Wave 10, see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`) found and fixed the same condition once before; no gap was registered at that time, which is why this had no open ticket to update on recurrence and required a fresh registration instead. |
+| Status | OPEN. |
+
+</details>
