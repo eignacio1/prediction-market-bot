@@ -173,6 +173,37 @@ _NFL_GAME_SERIES = frozenset({
     "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL",
 })
 
+# GG-255 Deliverable 2: MLB game-market series (moneyline/run-line/totals/
+# team-totals/partial-game), added additively alongside _NFL_GAME_SERIES —
+# _parse_market() dispatches tickers from these series to
+# _parse_mlb_game_market() / GameMarket. Grammar measured live against real
+# Kalshi tickers fetched 2026-09-09 (GG-255/T-536 verification run, VPS
+# `venv/bin/python3` against production, `_get("/markets", ...)`), not
+# assumed from the NFL grammar above:
+#   KXMLBGAME-{event}-{TEAM}             e.g. KXMLBGAME-26SEP121507BALTOR-TOR
+#     strike_type="structured", floor_strike=null, custom_strike.baseball_team=<uuid>
+#   KXMLBSPREAD-{event}-{TEAM}{N}        e.g. KXMLBSPREAD-26SEP091310MINDET-DET5 (floor_strike=4.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.baseball_team=<uuid>
+#   KXMLBTOTAL-{event}-{N}               e.g. KXMLBTOTAL-26SEP101905COLNYY-9 (floor_strike=8.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike=null (not team-scoped)
+#   KXMLBTEAMTOTAL-{event}-{TEAM}{N}     e.g. KXMLBTEAMTOTAL-26SEP101905COLNYY-NYY8 (floor_strike=7.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.baseball_team=<uuid>
+#   KXMLBF3/F5/F7-{event}-{TEAM|TIE}     e.g. KXMLBF3-26SEP101905COLNYY-NYY, KXMLBF3-...-TIE
+#     strike_type="structured", floor_strike=null, custom_strike.baseball_team=<uuid>
+# custom_strike.baseball_team/football_team are opaque UUIDs in both sports,
+# not human-readable codes — as with NFL, team_abbr is recovered from the
+# ticker tail via regex, not from custom_strike (see _parse_nfl_game_market's
+# docstring; the same reasoning applies unchanged to MLB). Unlike NFL, the
+# partial-game families (F3/F5/F7) are three-outcome (home win/away win/tie —
+# baseball games can be tied through N innings; NFL has no partial-game
+# analog at all), so the ticker tail can be "TIE" as well as a team code;
+# _parse_mlb_game_market() captures it verbatim into team_abbr as a sentinel
+# (outcome_desc/yes_sub_title carries the human-readable "Tie" text).
+_MLB_GAME_SERIES = frozenset({
+    "KXMLBGAME", "KXMLBSPREAD", "KXMLBTOTAL", "KXMLBTEAMTOTAL",
+    "KXMLBF3", "KXMLBF5", "KXMLBF7",
+})
+
 
 # ---------------------------------------------------------------------------
 # Data classes (DS-02 output schema — IF-C5-C3/C4)
@@ -504,18 +535,23 @@ class KalshiMarketClient:
 
     @staticmethod
     def _parse_market(raw: dict[str, Any]) -> PlayerMarket | GameMarket | None:
-        """Dispatch to the player-prop or NFL-game parser based on series (GG-252).
+        """Dispatch to the player-prop or game-market parser based on series
+        (GG-252 for NFL, GG-255 for MLB).
 
         _NFL_GAME_SERIES tickers (KXNFLGAME/KXNFLSPREAD/KXNFLTOTAL/KXNFLTEAMTOTAL)
-        are team-vs-team shaped and cannot be represented by PlayerMarket's
-        player_name/team_abbr/threshold:int fields — they route to
-        _parse_nfl_game_market()/GameMarket instead. Everything else (KXNBAPTS,
-        KXMLBHIT, future player-prop series) is unchanged from before GG-252.
+        and _MLB_GAME_SERIES tickers (KXMLBGAME/KXMLBSPREAD/KXMLBTOTAL/
+        KXMLBTEAMTOTAL/KXMLBF3/F5/F7) are team-vs-team shaped and cannot be
+        represented by PlayerMarket's player_name/team_abbr/threshold:int
+        fields — they route to _parse_nfl_game_market()/_parse_mlb_game_market()
+        (GameMarket) instead. Everything else (KXNBAPTS, KXMLBHIT, future
+        player-prop series) is unchanged from before GG-252.
         """
         ticker = raw.get("ticker", "")
         series = ticker.split("-")[0] if ticker else ""
         if series in _NFL_GAME_SERIES:
             return KalshiMarketClient._parse_nfl_game_market(raw)
+        if series in _MLB_GAME_SERIES:
+            return KalshiMarketClient._parse_mlb_game_market(raw)
         return KalshiMarketClient._parse_player_market(raw)
 
     @staticmethod
@@ -670,6 +706,101 @@ class KalshiMarketClient:
             )
             return None
 
+    @staticmethod
+    def _parse_mlb_game_market(raw: dict[str, Any]) -> GameMarket | None:
+        """Parse an MLB game-market (moneyline/run_line/total/team_total/
+        partial_game) — GG-255 Deliverable 2.
+
+        Mirrors _parse_nfl_game_market()'s structure exactly (same field
+        sources: floor_strike/team-tail-regex, same reasoning for why
+        custom_strike.baseball_team — an opaque UUID, like NFL's
+        custom_strike.football_team — is not used for team_abbr). The one
+        MLB-specific case is KXMLBF3/F5/F7 (partial_game): a three-outcome
+        family (home win / away win / tie) with no NFL analog, whose ticker
+        tail can be "TIE" as well as a team code — captured verbatim into
+        team_abbr as a sentinel, not resolved further.
+        """
+        ticker = raw.get("ticker", "")
+        try:
+            title = raw.get("title", "")
+            event_ticker = raw.get("event_ticker", "")
+            series = ticker.split("-")[0] if ticker else ""
+            parts = ticker.split("-")
+            game_date = KalshiMarketClient._game_date_from_event_ticker(event_ticker)
+            outcome_desc = raw.get("yes_sub_title", "") or title
+            floor_strike = raw.get("floor_strike")
+
+            if series == "KXMLBGAME":
+                market_type = "moneyline"
+                threshold = None
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})$", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+            elif series == "KXMLBTOTAL":
+                market_type = "total"
+                team_abbr = ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-255: unparseable KXMLBTOTAL market — missing "
+                        "floor_strike: ticker=%s", ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series in ("KXMLBSPREAD", "KXMLBTEAMTOTAL"):
+                market_type = "run_line" if series == "KXMLBSPREAD" else "team_total"
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-255: unparseable %s market — missing floor_strike: "
+                        "ticker=%s", series, ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series in ("KXMLBF3", "KXMLBF5", "KXMLBF7"):
+                market_type = "partial_game"
+                threshold = None
+                tail = parts[-1] if parts else ""
+                # "TIE" or a 2-3 char team code — both match this pattern;
+                # captured verbatim, see docstring.
+                team_match = re.match(r"^([A-Z]{2,3})$", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+            else:
+                # Should be unreachable — _parse_market only dispatches here for
+                # tickers whose series is in _MLB_GAME_SERIES.
+                logger.warning(
+                    "GG-255: _parse_mlb_game_market called for unrecognized "
+                    "series: ticker=%s series=%s", ticker, series,
+                )
+                return None
+
+            yes_ask = float(raw.get("yes_ask_dollars") or raw.get("yes_ask") or 0)
+            yes_bid = float(raw.get("yes_bid_dollars") or raw.get("yes_bid") or 0)
+            no_ask = float(raw.get("no_ask_dollars") or raw.get("no_ask") or 0)
+            no_bid = float(raw.get("no_bid_dollars") or raw.get("no_bid") or 0)
+
+            mid_price = (yes_ask + yes_bid) / 2.0 if (yes_ask + yes_bid) > 0 else 0.0
+            vig = max(0.0, yes_ask - yes_bid)
+
+            volume = float(raw.get("volume_fp") or raw.get("volume_24h_fp") or 0)
+            status = raw.get("status", "unknown")
+
+            return GameMarket(
+                ticker=ticker, title=title, market_type=market_type,
+                team_abbr=team_abbr, threshold=threshold, outcome_desc=outcome_desc,
+                game_date=game_date, event_ticker=event_ticker,
+                yes_ask=yes_ask, yes_bid=yes_bid, no_ask=no_ask, no_bid=no_bid,
+                mid_price=mid_price, vig=vig, volume=volume, status=status,
+                fetched_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+            )
+        except Exception as e:
+            logger.warning(
+                "GG-255: unparseable MLB game market — ticker=%s error=%s: %s",
+                ticker, type(e).__name__, e,
+            )
+            return None
+
     # ------------------------------------------------------------------
     # Public API — read-only (no RSA required)
     # ------------------------------------------------------------------
@@ -756,11 +887,15 @@ class KalshiMarketClient:
         status: str = "open",
         page_size: int = 200,
     ) -> tuple[bool, GameMarketSnapshot]:
-        """Fetch ALL open NFL game markets for one series (GG-252).
+        """Fetch ALL open game markets for one series (GG-252 for NFL, GG-255
+        for MLB — this method itself is series-agnostic; it paginates and
+        delegates parsing to _parse_market(), which dispatches by series).
 
         series_ticker must be one of _NFL_GAME_SERIES (KXNFLGAME, KXNFLSPREAD,
-        KXNFLTOTAL, KXNFLTEAMTOTAL). Mirrors fetch_player_points_markets'
-        pagination/detail-fetch pattern but returns GameMarket records.
+        KXNFLTOTAL, KXNFLTEAMTOTAL) or _MLB_GAME_SERIES (KXMLBGAME,
+        KXMLBSPREAD, KXMLBTOTAL, KXMLBTEAMTOTAL, KXMLBF3, KXMLBF5, KXMLBF7).
+        Mirrors fetch_player_points_markets' pagination/detail-fetch pattern
+        but returns GameMarket records.
         """
         all_raw: list[dict[str, Any]] = []
         cursor: str | None = None
