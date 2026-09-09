@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-09T00:21:00Z (T-529 — T-529: landed T-526 (NFL C1 ingestion) + T-527 (NFL settlement) to main; GG-254 re-disposed PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0021.md` for full session detail.
+**Last reviewed:** 2026-09-09T04:47:03Z (T-530 — T-530: built run_t1_nfl_game_market.py, PAPER ONLY — 4 NFL T1 cells wired end-to-end (GG-255 OPEN->PARTIALLY RESOLVED)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0447.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

@@ -2,10 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-09T00:21:00Z (T-529 — T-529: landed T-526 (NFL C1 ingestion) + T-527 (NFL settlement) to main; GG-254 re-disposed PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0021.md` for full session detail.
+**Last reviewed:** 2026-09-09T04:47:03Z (T-530 — T-530: built run_t1_nfl_game_market.py, PAPER ONLY — 4 NFL T1 cells wired end-to-end (GG-255 OPEN->PARTIALLY RESOLVED)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0447.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-530 — Build T1 NFL game-market run script, PAPER ONLY (GG-255) — ✅ COMPLETE 2026-09-08 (worktree `session/20260909T002748Z-gg255-t1-game-market-run-script`, commits `49a35df`/`d774456`/`a4ed648`)
+
+Built `src/prediction_market_bot/run_t1_nfl_game_market.py` covering all four NFL T1 game-market cells (`nfl_moneyline`/`nfl_spread`/`nfl_game_total`/`nfl_team_total`), wired end to end through `measurement_stake.py`'s ADR-0058 formula to `PaperTrader.open_position()` with `kalshi_client=None` as the structural no-live-order guard. Four refusal-path tests added (`tests/test_run_t1_nfl_game_market.py`), full suite 3117 passed/28 skipped/0 failed. GG-255 updated OPEN → PARTIALLY RESOLVED. **Still open:** no cron entry, MLB half of the nine cells has no run script, model wired is a stub not a trained forecaster. See `DECISION_LOG.md` 2026-09-08 (T-530).
 
 ## T-521 — Complete NFL price-capture verification blocked by VPS outage: manual smoke-test run, first-scheduled-fire KXNFL row count/sample ticker, T4 safety check (`t4-mlb` active/NRestarts=0/no staleness/no 429s) — ✅ COMPLETE (GG-245 RESOLVED 2026-09-07; independently re-verified 2026-09-08 by T-528, see below).
 

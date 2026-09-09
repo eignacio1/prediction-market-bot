@@ -1,3 +1,4 @@
 # Operator Digest — 2026-09-09
 
 - T-529 (auto): T-529: landed T-526 (NFL C1 ingestion) + T-527 (NFL settlement) to main; GG-254 re-disposed PARTIALLY RESOLVED
+- T-530: Built the T1 NFL game-market run script (paper only) — wires all four NFL cells (moneyline, spread, game total, team total) through the ADR-0058 stake formula into the paper trader, with the live-order path structurally disabled (`kalshi_client=None`). Added four refusal-path tests (kill switch, no model, unparsed markets, ambiguous tie settlement); full suite 3117 passed / 28 skipped / 0 failed. GG-255 moved OPEN → PARTIALLY RESOLVED. Still open: no cron entry yet, MLB half of the nine ADR-0058 cells has no run script, and the forecast model wired in is a stub, not a trained model — none of that is a blocker for this task, just unclaimed follow-on work. Branch is pushed but not yet merged to `main`.
