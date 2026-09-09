@@ -2925,7 +2925,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ### GG-255 — `measurement_stake.py` defines all nine ADR-0058 T1 game-market cells but has exactly one real importer codebase-wide (an audit tool); no run script or cron entry exists for any T1 game-market cell, NFL or MLB
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -2942,6 +2942,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Discovery | 2026-09-07, T-525 (this session), NFL pregame-moneyline readiness audit, Step 5 of the six-step trace — confirmed via corrected import-statement grep (the initial grep's false positive is itself noted here so a future session does not repeat it). Register-and-stop per Hard Rule 11. |
 | Resolution | Not started. Requires wiring `measurement_stake` into a live pipeline path, writing an NFL run script modeled on the MLB T1 pattern, adding a cron entry, and an end-to-end smoke test. Estimated 8-12 hours (see `04_EXECUTION/NFL_PREGAME_MONEYLINE_READINESS_AUDIT_2026-09-07.md`, Step 5). |
 | Status | OPEN. |
+| Update 2026-09-08 (T-530) | Built and paper-tested the NFL half of this gap: `src/prediction_market_bot/run_t1_nfl_game_market.py`, a new run script covering all four NFL T1 game-market cells (`nfl_moneyline`/`nfl_spread`/`nfl_game_total`/`nfl_team_total`). Pipeline wired end to end: `KalshiMarketClient.fetch_game_markets()` → an INJECTABLE model interface (default `StubNFLForecastModel` — explicitly NOT a trained model; no NFL C2/C3 layer exists) → `RiskEngine.evaluate_forecast()` (ADR-0050 `fixed_stake_usd` bypass, `kelly_fraction` untouched) → `t1_measurement_stake_and_stratum()` (live-measured haircut via `GameMarket.half_spread`, not a hardcoded figure) → `PaperTrader.open_position()`, with `PaperTrader` constructed `kalshi_client=None` unconditionally as the sole mechanical guard against a live-order path. `market_type_registry.resolve_kill_switch_state()` wired as a READ-side check ahead of every per-market evaluation; `halt_cell()` remains uncalled by any shipped path — the write side of the cell-tier kill switch is still unwired, unchanged from before this session. Four refusal-path tests added (`tests/test_run_t1_nfl_game_market.py`): kill switch active, no model available, GG-252 unparsed-market snapshot, GG-257 exact-tie NFL moneyline settlement ambiguity. Full suite: 3117 passed, 28 skipped, 0 failed. **What remains open, explicitly out of this session's scope fence:** no cron entry was added (`deploy/cron.conf` untouched — this script is manually invoked only); the MLB half of the nine-cell set (`mlb_moneyline`/`mlb_run_line`/`mlb_game_total`/`mlb_team_total`/`mlb_partial_game`) still has no run script; no cell was promoted out of `NOT_IMPLEMENTED`; the model wired by default is a stub, not a trained forecaster, so no real forecast has ever flowed through this path. See DECISION_LOG.md 2026-09-08 for the session's full DO-NOT constraint list. |
 
 </details>
 
