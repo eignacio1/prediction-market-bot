@@ -1,13 +1,27 @@
 """
-Tests for game_market_settlement.py (T-527).
+Tests for game_market_settlement.py (T-527, T-535).
 
 Covers every NFL game-market type (moneyline, spread, game total, team
 total) with: a favourite losing outright, a YES/NO on each side, a
-moneyline exact tie, and a push on an integer spread/total. Real ticker
-shapes and real completed-game scores are used where practical (see
-docs/verification notes in DECISION_LOG / SESSION_CLAIMS for the three
-real-game ESPN verification, done separately in
-tests/test_nfl_espn_results.py against live network data).
+moneyline exact tie, and a push on an integer spread/total.
+
+Two tiers of fixture data are used, deliberately:
+
+- The BAL/KC "26SEP07" fixture (27-17) below is entirely synthetic/invented
+  -- it does not correspond to a real game. It exists because the push-
+  refusal tests need a contrived actual_stat that lands exactly on an
+  integer threshold, which live half-point-line NFL data cannot produce
+  (see game_market_settlement.py's module docstring: every real Kalshi
+  spread/total/team-total strike currently observed is a half-point line).
+- The "Real 2025-10-05 games" block further down uses three genuine
+  completed 2025-season games, live-fetched via direct `curl` against
+  ESPN's real scoreboard endpoint during T-535 (not memory, not an existing
+  fixture) and cross-checked against real box scores, including one game
+  decided by <=3 points (CAR 27 - MIA 24, margin=3) as required by this
+  block's Deliverable 3. These cover derive_actual_stat() for all four
+  market types against real, not invented, final scores. The moneyline
+  tie test above (DAL 40 - GB 40, 2025-09-28) was independently
+  re-verified live against ESPN during T-535 as well and found accurate.
 """
 from __future__ import annotations
 
@@ -229,6 +243,192 @@ def test_team_total_push_on_integer_line_is_refused():
     )
     with pytest.raises(SettlementAmbiguityError, match="push"):
         check_settlement_ambiguity(MarketType.NFL_TEAM_TOTAL, actual_stat, threshold=27)
+
+
+# ---------------------------------------------------------------------------
+# Real 2025-10-05 games (T-535) -- live-verified via direct curl against
+# ESPN's real scoreboard endpoint during this session, not memory or an
+# existing fixture. All four market types, across three real games,
+# including one decided by <=3 points (CAR/MIA, margin=3) per Deliverable 3.
+# ---------------------------------------------------------------------------
+
+# Game A: CAR (home) 27 - MIA (away) 24 -- margin=3, the required <=3-point
+# game. Combined total = 51.
+
+def test_real_game_moneyline_car_beats_mia_by_3():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_MONEYLINE,
+        "KXNFLGAME-25OCT05CARMIA-CAR",
+        home_team_code="CAR",
+        away_team_code="MIA",
+        home_score=27,
+        away_score=24,
+    )
+    assert actual_stat == 3
+    assert label == "point_margin_for_CAR"
+    check_settlement_ambiguity(MarketType.NFL_MONEYLINE, actual_stat, threshold=0)
+
+
+def test_real_game_spread_car_covers_2_5():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_SPREAD,
+        "KXNFLSPREAD-25OCT05CARMIA-CAR25",
+        home_team_code="CAR",
+        away_team_code="MIA",
+        home_score=27,
+        away_score=24,
+    )
+    assert actual_stat == 3
+    assert label == "point_margin_for_CAR"
+    assert actual_stat >= 2.5  # covers
+    check_settlement_ambiguity(MarketType.NFL_SPREAD, actual_stat, threshold=2.5)
+
+
+def test_real_game_total_car_mia_over_50_5():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_GAME_TOTAL,
+        "KXNFLTOTAL-25OCT05CARMIA-50",
+        home_team_code="CAR",
+        away_team_code="MIA",
+        home_score=27,
+        away_score=24,
+    )
+    assert actual_stat == 51
+    assert label == "combined_final_score"
+    assert actual_stat >= 50.5  # over
+    check_settlement_ambiguity(MarketType.NFL_GAME_TOTAL, actual_stat, threshold=50.5)
+
+
+def test_real_game_team_total_car_over_24_5():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_TEAM_TOTAL,
+        "KXNFLTEAMTOTAL-25OCT05CARMIA-CAR24",
+        home_team_code="CAR",
+        away_team_code="MIA",
+        home_score=27,
+        away_score=24,
+    )
+    assert actual_stat == 27
+    assert label == "team_final_score_CAR"
+    assert actual_stat >= 24.5  # over
+    check_settlement_ambiguity(MarketType.NFL_TEAM_TOTAL, actual_stat, threshold=24.5)
+
+
+# Game B: BAL (home) 10 - HOU (away) 44 -- blowout, margin=34. Combined
+# total = 54.
+
+def test_real_game_moneyline_hou_beats_bal_by_34():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_MONEYLINE,
+        "KXNFLGAME-25OCT05BALHOU-HOU",
+        home_team_code="BAL",
+        away_team_code="HOU",
+        home_score=10,
+        away_score=44,
+    )
+    assert actual_stat == 34
+    assert label == "point_margin_for_HOU"
+
+
+def test_real_game_spread_hou_covers_20_5():
+    actual_stat, _label = derive_actual_stat(
+        MarketType.NFL_SPREAD,
+        "KXNFLSPREAD-25OCT05BALHOU-HOU20",
+        home_team_code="BAL",
+        away_team_code="HOU",
+        home_score=10,
+        away_score=44,
+    )
+    assert actual_stat == 34
+    assert actual_stat >= 20.5  # covers
+    check_settlement_ambiguity(MarketType.NFL_SPREAD, actual_stat, threshold=20.5)
+
+
+def test_real_game_total_bal_hou_over_47_5():
+    actual_stat, _label = derive_actual_stat(
+        MarketType.NFL_GAME_TOTAL,
+        "KXNFLTOTAL-25OCT05BALHOU-47",
+        home_team_code="BAL",
+        away_team_code="HOU",
+        home_score=10,
+        away_score=44,
+    )
+    assert actual_stat == 54
+    assert actual_stat >= 47.5  # over
+    check_settlement_ambiguity(MarketType.NFL_GAME_TOTAL, actual_stat, threshold=47.5)
+
+
+def test_real_game_team_total_bal_under_20_5():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_TEAM_TOTAL,
+        "KXNFLTEAMTOTAL-25OCT05BALHOU-BAL20",
+        home_team_code="BAL",
+        away_team_code="HOU",
+        home_score=10,
+        away_score=44,
+    )
+    assert actual_stat == 10
+    assert label == "team_final_score_BAL"
+    assert actual_stat < 20.5  # under
+    check_settlement_ambiguity(MarketType.NFL_TEAM_TOTAL, actual_stat, threshold=20.5)
+
+
+# Game C: NYJ (home) 22 - DAL (away) 37 -- margin=15. Combined total = 59.
+
+def test_real_game_moneyline_dal_beats_nyj_by_15():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_MONEYLINE,
+        "KXNFLGAME-25OCT05NYJDAL-DAL",
+        home_team_code="NYJ",
+        away_team_code="DAL",
+        home_score=22,
+        away_score=37,
+    )
+    assert actual_stat == 15
+    assert label == "point_margin_for_DAL"
+
+
+def test_real_game_spread_dal_covers_6_5():
+    actual_stat, _label = derive_actual_stat(
+        MarketType.NFL_SPREAD,
+        "KXNFLSPREAD-25OCT05NYJDAL-DAL6",
+        home_team_code="NYJ",
+        away_team_code="DAL",
+        home_score=22,
+        away_score=37,
+    )
+    assert actual_stat == 15
+    assert actual_stat >= 6.5  # covers
+    check_settlement_ambiguity(MarketType.NFL_SPREAD, actual_stat, threshold=6.5)
+
+
+def test_real_game_total_nyj_dal_over_55_5():
+    actual_stat, _label = derive_actual_stat(
+        MarketType.NFL_GAME_TOTAL,
+        "KXNFLTOTAL-25OCT05NYJDAL-55",
+        home_team_code="NYJ",
+        away_team_code="DAL",
+        home_score=22,
+        away_score=37,
+    )
+    assert actual_stat == 59
+    assert actual_stat >= 55.5  # over
+    check_settlement_ambiguity(MarketType.NFL_GAME_TOTAL, actual_stat, threshold=55.5)
+
+
+def test_real_game_team_total_nyj_under_24_5():
+    actual_stat, label = derive_actual_stat(
+        MarketType.NFL_TEAM_TOTAL,
+        "KXNFLTEAMTOTAL-25OCT05NYJDAL-NYJ24",
+        home_team_code="NYJ",
+        away_team_code="DAL",
+        home_score=22,
+        away_score=37,
+    )
+    assert actual_stat == 22
+    assert label == "team_final_score_NYJ"
+    assert actual_stat < 24.5  # under
+    check_settlement_ambiguity(MarketType.NFL_TEAM_TOTAL, actual_stat, threshold=24.5)
 
 
 # ---------------------------------------------------------------------------

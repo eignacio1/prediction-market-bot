@@ -1,11 +1,18 @@
 """
-Tests for scripts/apply_resolved_nfl_game_markets.py (T-527).
+Tests for scripts/apply_resolved_nfl_game_markets.py (T-527, T-535).
 
 No real PaperTrader, AuditLogger, or network call is ever exercised here --
 PaperTrader/AuditLogger are mocked at the module level and
 fetch_nfl_final_score is monkeypatched, so this file never touches a real
-portfolio file or ESPN. This matches the task's explicit constraint: "Do not
-settle a single real position in this block."
+(production) portfolio file or ESPN. This matches the task's explicit
+constraint: "Do not settle a single real position in this block." The one
+exception is the idempotency block at the bottom (T-535/Deliverable 2): it
+uses a REAL PaperTrader/AuditLogger, because double-settlement can only be
+disproven against the real ledger-mutation path in settle_position(), not a
+MagicMock that returns the same canned tuple regardless of ledger state --
+but it still writes only to a pytest tmp_path, never to a real portfolio
+file, and fetch_nfl_final_score is still monkeypatched there too (no network
+call anywhere in this file).
 
 Coverage:
   - parse_event_teams(): both team-code orderings seen in real tickers this
@@ -18,10 +25,14 @@ Coverage:
     exact tie is refused (SettlementAmbiguityError) and never settled even
     under --apply; a missing portfolio file returns early without ever
     constructing a PaperTrader.
+  - Idempotency (T-535): running the resolver twice --apply over the same
+    real (tmp_path) portfolio file cannot double-settle -- the ledger's
+    bytes are identical before and after the second pass.
 """
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -181,3 +192,117 @@ def test_main_missing_portfolio_file_returns_early(tmp_path):
         tmp_path, [], [_moneyline_position()], game_result=None, portfolio_exists=False
     )
     mock_trader_cls.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# Idempotency (T-535/Deliverable 2) -- REAL PaperTrader + AuditLogger, not
+# mocks. "Idempotency is mandatory whatever else you build. Prove it with a
+# test that runs the resolver twice over the same input and asserts the
+# ledger is byte-identical after the second pass." Only fetch_nfl_final_score
+# is monkeypatched (no network call); the portfolio file lives entirely under
+# pytest's tmp_path -- never a real/production ledger.
+# ---------------------------------------------------------------------------
+
+from prediction_market_bot.c5_execution.paper_trader import PaperTrader  # noqa: E402
+from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+
+
+def _seed_real_portfolio(portfolio_path: Path, open_positions: list[dict]) -> None:
+    """Write a portfolio file matching PaperTrader._load_or_init()'s shape,
+    seeded with real (non-mocked) open positions."""
+    state = {
+        "bankroll_usd": 1000.0,
+        "initial_bankroll_usd": 1000.0,
+        "total_realized_pnl": 0.0,
+        "current_daily_loss": 0.0,
+        "daily_loss_date": "2025-09-28",
+        "open_positions": open_positions,
+        "closed_positions": [],
+        "rejected_positions": [],
+        "created_at": "2025-09-28T00:00:00+00:00",
+        "last_updated": "2025-09-28T00:00:00+00:00",
+    }
+    portfolio_path.write_text(json.dumps(state, indent=2))
+
+
+def _real_moneyline_position(position_id="REAL-P1"):
+    # Real completed 2025-09-28 game: HOU (home) 26 - TEN (away) 0 (live-
+    # verified via ESPN this session). settle_position() requires these
+    # exact fields on the position record (paper_trader.py settle_position()).
+    return {
+        "position_id": position_id,
+        "kalshi_ticker": "KXNFLGAME-25SEP28HOUTEN-HOU",
+        "market_type": "nfl_moneyline",
+        "game_date": "2025-09-28",
+        "kalshi_threshold": 0,
+        "status": "OPEN",
+        "direction": "YES",
+        "size_usd": 25.0,
+        "mid_price_at_entry": 0.70,
+        "vig_at_entry": 0.03,
+        "player_name": "HOU_vs_TEN_moneyline",
+    }
+
+
+def test_main_apply_twice_is_idempotent_byte_identical_ledger(tmp_path):
+    portfolio_path = tmp_path / "paper_portfolio_nfl_idempotency.json"
+    _seed_real_portfolio(portfolio_path, [_real_moneyline_position()])
+
+    log_dir = tmp_path / "logs"
+    log_dir.mkdir()
+    game_result = NFLGameResult("HOU", "TEN", 26.0, 0.0, "STATUS_FINAL")
+
+    with patch.object(resolver, "PORTFOLIO_PATH", portfolio_path), \
+         patch.object(resolver, "LOG_DIR", log_dir), \
+         patch.object(resolver, "fetch_nfl_final_score", return_value=game_result), \
+         patch.object(sys, "argv", ["apply_resolved_nfl_game_markets.py", "--apply"]):
+        resolver.main()
+
+    bytes_after_first_run = portfolio_path.read_bytes()
+    state_after_first_run = json.loads(bytes_after_first_run)
+    assert state_after_first_run["open_positions"] == []
+    assert len(state_after_first_run["closed_positions"]) == 1
+    assert state_after_first_run["closed_positions"][0]["outcome"] == "WIN"
+
+    with patch.object(resolver, "PORTFOLIO_PATH", portfolio_path), \
+         patch.object(resolver, "LOG_DIR", log_dir), \
+         patch.object(resolver, "fetch_nfl_final_score", return_value=game_result), \
+         patch.object(sys, "argv", ["apply_resolved_nfl_game_markets.py", "--apply"]):
+        resolver.main()
+
+    bytes_after_second_run = portfolio_path.read_bytes()
+    assert bytes_after_second_run == bytes_after_first_run, (
+        "second --apply pass over an already-settled portfolio must not "
+        "touch the ledger file at all: no OPEN game-market positions remain "
+        "for it to find, so settle_position() (and therefore _save()) is "
+        "never called a second time"
+    )
+
+
+def test_settle_position_is_itself_idempotent_real_trader(tmp_path):
+    """Lower-level companion to the byte-identical main() test above: calling
+    settle_position() a second time directly for an already-settled
+    position_id is a documented no-op ("idempotent -- already settled is a
+    no-op" per its own docstring) that returns before _save() is ever
+    reached -- so it performs zero file writes, not merely a same-content
+    rewrite."""
+    portfolio_path = tmp_path / "paper_portfolio_nfl_settle_twice.json"
+    _seed_real_portfolio(portfolio_path, [_real_moneyline_position(position_id="REAL-P2")])
+    logger = AuditLogger(tmp_path / "logs" / "audit_nfl.jsonl", min_severity="INFO")
+    trader = PaperTrader(portfolio_path, logger)
+
+    ok1, closed1 = trader.settle_position(
+        position_id="REAL-P2", actual_stat=26.0, stat_label="point_margin_for_HOU"
+    )
+    assert ok1 is True
+    assert closed1["outcome"] == "WIN"
+    bytes_after_first_settle = portfolio_path.read_bytes()
+
+    ok2, closed2 = trader.settle_position(
+        position_id="REAL-P2", actual_stat=26.0, stat_label="point_margin_for_HOU"
+    )
+    assert ok2 is True
+    assert closed2 == {}  # documented no-op return for an already-settled id
+    bytes_after_second_settle = portfolio_path.read_bytes()
+
+    assert bytes_after_second_settle == bytes_after_first_settle
