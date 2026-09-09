@@ -214,6 +214,29 @@ Each hypothesis follows the structure:
 
 ---
 
+## HYP-012 — NFL moneyline LR forecasts beat market on a selected subset, net of fill cost
+
+| Field | Detail |
+|-------|--------|
+| Research Question | Coverage-target generality: does the production LR class (ADR-0004) generate net-of-fill-cost edge on `KXNFLGAME` (moneyline) — the first NFL cell, per per-cell discovery doctrine? |
+| Framing | Rerouted from task-assigned EXP-026/HYP-011 (both already canonically bound to the MLB moneyline experiment above) to **EXP-027/HYP-012**, per GG-258 (OPEN, LOW) and `DECISION_LOG.md` 2026-09-09 (T-531) — a session-boundary ID collision, not a substantive redesign. This result is evidence about the cell `(nfl_moneyline, T1_MULTI_DAY)` only — never a verdict on NFL as a sport or on any other market family. |
+| H0 (Null) | An LR model fit on `NFLTeamStatsStore`'s existing recency-weighted rolling series (no new C2 build) produces **P&L per bet ≤ 0, net of fill cost,** over the selected subset where \|model_p − mkt_p\| > 0.010, scored against archived `KXNFLGAME` closing pregame prices. |
+| H1 (Alternative) | P&L per bet > 0 on that subset, net of fill cost, with `clean_n ≥ n*` where `n*` is derived live from the realized mean/sd via `scripts/run_power_calc.py` (APR-0024). |
+| Test method | Fit LR (ADR-0004 production class; no distribution fit — moneyline is a binary target) on `NFLTeamStatsStore.get_off_epa()`/`get_def_epa_allowed()` (window=8, min_periods=3, decay=0.85, already-production recency-weighted EPA — no new C1/C2 build, per LL-009) plus `home_rest`/`away_rest`/home-away split from `fetch_schedule()`. Train on seasons 2015–2024; held-out backtest on 2025 (fully completed, no market baseline available — `KXNFLGAME` archiving began 2026-09-05); prospective out-of-sample test on the live 2026 season, scored against archived `KXNFLGAME` closing prices as games resolve. Bet-selection filter: \|model_p − mkt_p\| > 0.010. Independent unit = the game. |
+| **Primary gate** | **P&L/bet > 0 AND `clean_n ≥ n*`, one-sided α=.05, computed NET of fill cost (independently-defined pay-the-ask convention, grounded in measured `KXNFLGAME` half-spread — not T-507's MLB-prop-specific empirical haircut, which does not transfer without its own re-fit study).** If `clean_n < n*` the verdict is **UNDERPOWERED**, explicitly *not* a directional PASS/FALSIFIED. |
+| **Pre-registered expectation** | **P&L/bet (net of fill cost) in the range +0.003 to +0.015** — reused from HYP-011's band, additionally grounded here by NFL's own measured `KXNFLGAME` half-spread (median 0.005, mean ≈0.00743). A result above **+0.020 (net)** should be treated as **suspect and audited for leakage before being believed**, not celebrated. |
+| Falsification condition | P&L/bet ≤ 0, net of fill cost, at `clean_n ≥ n*`. |
+| Secondary (descriptive, **not** a gate) | Calibration curve + Brier score, reported for both the 2025 held-out backtest (vs. actual outcomes only) and the 2026 prospective window (vs. actual outcomes and vs. archived closing-line implied probability); never a gate, same reasoning as HYP-010/HYP-011. |
+| Consequence if confirmed (PASS) | Evidence for cell `(nfl_moneyline, T1_MULTI_DAY)` specifically — not for NFL as a sport, not for any other market family or band. Cell activation still requires its own ADR. |
+| Consequence if falsified | The `(nfl_moneyline, T1_MULTI_DAY)` cell specifically is falsified. Per per-cell discovery doctrine, this must never be cited as a reason to deprioritize NFL, any other NFL market family, or any other sport. |
+| Consequence if UNDERPOWERED | Expected outcome given `KXNFLGAME` archiving only began 2026-09-05 and the 2026 season has zero played games as of pre-registration. Continue archiving through the 2026 season; re-run at `n*`. No directional verdict claimed. |
+| Status | ⚪ PRE-REGISTERED (2026-09-09, T-531) — **no model fit, no scoring, no backtest code run this session before this document was pushed (LL-009 / this task's hard rule: fitting before pushing voids the experiment).** Data source verified live this session: `fetch_schedule()` 7,548 rows (1999–2026), 2025 fully completed (285/285 final), 2026 fully scheduled/zero played; `NFLTeamStatsStore` confirmed production-complete with exact defaults cited above; `KXNFLGAME` archive confirmed beginning exactly 2026-09-05 (0 rows 09-01 through 09-04). |
+| Experiment(s) | EXP-027 (verified free this session; see GG-258 / `DECISION_LOG.md` 2026-09-09) |
+
+**Pre-registration source:** `05_RESEARCH_EXPERIMENTS/HYP012_nfl_moneyline_lr_preregistration_2026-09-09.md`.
+
+---
+
 ## Hypothesis Status Summary
 
 | ID | Hypothesis | Status | Experiment | Target |
@@ -229,6 +252,7 @@ Each hypothesis follows the structure:
 | HYP-009 | Regular-season model generalizes to playoff games (Δ Brier < 0.012) | 🟢 CONFIRMED | EXP-016 | Δ = -0.0010; G6 paper evidence valid for playoffs at full confidence |
 | HYP-010 | Team run-total forecasts transfer to a materially more efficient market (P&L/bet > 0 on selected subset) | 🟡 INCONCLUSIVE-EXTEND | EXP-022 (Poisson), EXP-025 (NB1) | Poisson: clean_n=207 vs n*=94,260, mean=−0.0026. NB: clean_n=207 vs n*=44,220, mean=−0.0048. Both not FALSIFIED, not practically extendable |
 | HYP-011 | Moneyline LR forecasts beat market on selected subset, net of fill cost (Phase 2 reroute, APR-0033 Option 3) | ⚪ PRE-REGISTERED | EXP-026 (reserved, not yet run) | Not run — no model fit this session (LL-009); gate must be scored net of fill cost per T-507 or not scored at all |
+| HYP-012 | NFL moneyline LR forecasts beat market on selected subset, net of fill cost (first NFL cell, per-cell discovery) | ⚪ PRE-REGISTERED | EXP-027 (rerouted from EXP-026/HYP-011 collision, GG-258) | Not run — no model fit this session (LL-009); `KXNFLGAME` archive began 2026-09-05, 2026 season not yet played; UNDERPOWERED verdict pre-registered as the expected outcome |
 
 ---
 
