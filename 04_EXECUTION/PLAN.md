@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-08T00:00:00Z (T-526 — T-526 fixed GG-252 (NFL game-market parsing in kalshi_client.py, 18 new tests); GG-256 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260908_0000.md` for full session detail.
+**Last reviewed:** 2026-09-09T00:21:00Z (T-529 — T-529: landed T-526 (NFL C1 ingestion) + T-527 (NFL settlement) to main; GG-254 re-disposed PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0021.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
