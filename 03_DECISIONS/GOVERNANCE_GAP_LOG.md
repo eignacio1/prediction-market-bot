@@ -2990,3 +2990,27 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN. |
 
 </details>
+
+---
+
+### GG-258 — Task brief pre-assigned `EXP-026`/`HYP-011` to a new NFL moneyline-LR experiment, but those IDs are already canonically registered to a different, pre-existing MLB moneyline experiment
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-258 |
+| Category | Hypothesis/experiment-ID collision — same root shape as GG-256 (T-number) and GG-162/GG-199 (GG-number): a number gets used twice for two unrelated things because the assigner didn't check the live registry first. This instance is a step upstream of those — it wasn't a race between two live sessions, it was a task brief (handed to this session) that specified `EXP-026`/`HYP-011` for "an NFL moneyline logistic regression" without checking `05_RESEARCH_EXPERIMENTS/HYPOTHESES.md` first. |
+| What was found | `HYPOTHESES.md` line 194-231 already registers `HYP-011` as "Moneyline LR forecasts beat market on a selected subset, net of fill cost" — an **MLB** experiment (`KXMLBGAME`, `MLBTeamStatsStore`, cell `(mlb_moneyline, T1_MULTI_DAY)`), pre-registered 2026-09-03 under APR-0033/T-517, with `EXP-026` explicitly reserved for it ("EXP-026 (reserved, not yet run)", `HYPOTHESES.md` line 231; full pre-registration in `05_RESEARCH_EXPERIMENTS/HYP011_moneyline_lr_preregistration_2026-09-03.md`). This session's task brief independently assigned the same two IDs, `EXP-026` and `HYP-011`, to a different, NFL-specific moneyline LR experiment using `nfl_ingestion.py`/`nfl_team_stats_store.py` (unblocked by T-526, landed 2026-09-08/09). These are not the same experiment — different sport, different data source, different market family — and writing an NFL pre-registration under the already-occupied `EXP-026`/`HYP-011` labels would either silently overwrite/conflate the two in `HYPOTHESES.md`'s registry table or produce two entries claiming the same ID, exactly the ambiguity GG-199's uniqueness check exists to catch for GG-numbers (no equivalent automated check exists for EXP-/HYP-numbers). `04_EXECUTION/ACTIVE_QUEUE.md`'s "Free IDs" hint line (`EXP-026+`) is itself stale — it was written before (or not updated after) the 2026-09-03 MLB HYP-011 reservation consumed EXP-026, so a reader trusting that hint line alone would repeat this exact collision. |
+| When it should have been caught | Before the task brief was written / before this session began substantive pre-registration work — a single grep of `HYPOTHESES.md` for `HYP-011` or `EXP-026` (which this session ran at Deliverable-1 setup time, per Hard Rule 11's register-and-stop discipline) would have surfaced the existing MLB pre-registration immediately. |
+| Phases it survived | N/A — caught before any write occurred under the colliding IDs. This session's own `SESSION_CLAIMS.md` row (`2026-09-09T00:29:49Z \| T-531 \| T-531/EXP-026/HYP-011: NFL moneyline LR...`) already carries the wrong EXP/HYP labels in its free-text description (the claimed task ID itself, `T-531`, is fine and does not collide with anything) — that row is not edited retroactively (SESSION_CLAIMS.md rows are append-only history) but this entry and the corrected pre-registration filed under the real next-free IDs (`HYP-012`/`EXP-027`, verified free against `origin/main` at discovery time) supersede its EXP/HYP text. |
+| Why it survived | `ACTIVE_QUEUE.md`'s "Free IDs (a hint, not an assignment)" line is explicitly documented as a hint, not a live-checked assignment, and nothing forces a reader (including whoever drafted this session's task brief) to cross-check it against `HYPOTHESES.md`'s actual registry table before pre-committing specific ID numbers into task instructions. |
+| Impact | LOW — caught at pre-registration time, before any model was fit or any file written under the colliding IDs; no data corrupted, no work lost. Would have risen to MEDIUM (a corrupted/ambiguous hypothesis registry, two unrelated pre-registrations both claiming `HYP-011`/`EXP-026`) had this session proceeded to write and push Deliverable 1 under the assigned-but-already-taken labels. |
+| Discovery | 2026-09-09, this session (T-531, worktree `session/20260909T002833Z-exp026-hyp011-nfl-moneyline-lr`), while reading `05_RESEARCH_EXPERIMENTS/` for the experiment-file naming convention ahead of writing Deliverable 1 — found `HYP011_moneyline_lr_preregistration_2026-09-03.md` already present and read it in full, confirmed against `HYPOTHESES.md`'s registry table and a repo-wide grep for `EXP-026`. Register-and-stop per Hard Rule 11: this session's NFL moneyline LR pre-registration proceeds under the corrected, verified-free `HYP-012`/`EXP-027` instead of the collision-prone `HYP-011`/`EXP-026` given in the brief. |
+| Resolution | Not started as a systemic fix. This session's local resolution is to use `HYP-012`/`EXP-027` for its own NFL pre-registration (see this session's Deliverable 1 commit). The systemic gap — no atomic reservation or live-registry cross-check exists for EXP-/HYP-numbers, unlike `claim_session.sh`'s (imperfect, per GG-256) protection for T-numbers — remains open; a `check_id_collision.sh`-style check extended to `HYPOTHESES.md`/`EXP-` prefixes would close it. |
+| Status | OPEN. |
+
+</details>
