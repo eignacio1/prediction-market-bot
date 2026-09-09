@@ -491,3 +491,4 @@
 | 2026-09-09T15:39:27Z | TBD (claim GG-/T- at run time) | T-535: NFL game-market settlement resolver — build/test only, no settlement |
 | 2026-09-09T15:40:14Z | T-536, GG-264 | GG-255 MLB half: T1 game-market run script (mlb_moneyline/run_line/game_total/team_total/partial_game) mirroring NFL precedent |
 | 2026-09-09T15:41:43Z | GG-265, T-537 (claiming now per GG-236) | T-537: NFL depth-capture preflight — hand-execute archiver+cron path before 17:05Z first fire |
+| 2026-09-09T19:48:40Z | T-537 | MERGED: NO — branch `session/20260909T154106Z-prove-nfl-depth-capture-preflight` awaiting merge — T-537/GG-265: NFL depth-capture cron preflight proven end-to-end, no defect, 8 real fires observed live. (commit `277ae8f`) |

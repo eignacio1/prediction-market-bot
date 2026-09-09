@@ -26,3 +26,15 @@ Fixed a real gap before Week 1 kickoff: the NFL price-capture cron was missing a
 **Decision needed now?** No. **Any worry?** One: found (but did not touch) an unrelated MLB cron time that doesn't match what's in the repo — flagged for a future session (GG-262).
 
 *Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1519.md`.*
+
+---
+
+## Update — T-537 close-out (NFL depth-capture cron, proof it actually works)
+
+Last session (T-533) added a fix so the NFL price-and-depth capture would run correctly this week. This session's job was to prove that fix actually works, not just that it looks right on paper — hand-tested the exact commands, checked the server's schedule and clock, and then watched the real capture fire live during the session: it ran 8 times on schedule between 5:05pm and 7:25pm UTC today, each time capturing exactly what it should, with zero errors. Also took a snapshot of baseball's capture numbers today for comparison, since football and baseball share this same system.
+
+**Money:** No change, zero at risk — this is capture/verification only, no trading logic touched.
+
+**Decision needed now?** No. **Any worry?** No — found no defect, so nothing was changed in the schedule; the earlier fix already works.
+
+*Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1947.md`.*
