@@ -486,3 +486,4 @@
 | 2026-09-09T14:34:05Z | T-533, GG-260+ | NFL Week1 capture windows (Wed cron gap) + GG-259 depth capture + T-530 merge |
 
 | 2026-09-09T14:41:00Z | T-530 | CLOSED — merge confirmed: PR #127 merged (7a43110), branch HEAD 66df024 is ancestor of origin/main. Tests 3128/28/0 post-merge. |
+| 2026-09-09T15:20:17Z | T-533 | CLOSED — T-533: NFL cron day-3+depth fix landed, deployed to VPS, GG-259 closed, T-530 merge verified (commit `7d470c5`) |

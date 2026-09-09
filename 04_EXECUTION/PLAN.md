@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-09T05:26:22Z (T-531 — T-531 EXP-027/HYP-012 NFL moneyline LR: Deliverables 1-5 complete, verdict UNDERPOWERED (clean_n=0, 2026 season not started yet)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0526.md` for full session detail.
+**Last reviewed:** 2026-09-09T15:19:00Z (T-533 — T-533: NFL cron day-3+depth fix landed, deployed to VPS, GG-259 closed, T-530 merge verified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_1519.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

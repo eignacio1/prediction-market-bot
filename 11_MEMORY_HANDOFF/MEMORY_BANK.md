@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-09T05:26:22Z (T-531 — T-531 EXP-027/HYP-012 NFL moneyline LR: Deliverables 1-5 complete, verdict UNDERPOWERED (clean_n=0, 2026 season not started yet)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0526.md` for full session detail.
+**Last reviewed:** 2026-09-09T15:19:00Z (T-533 — T-533: NFL cron day-3+depth fix landed, deployed to VPS, GG-259 closed, T-530 merge verified) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_1519.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

@@ -14,3 +14,15 @@ Ran the first test of a simple NFL game-winner model, football's version of the 
 **Decision needed now?** No. **Any worry?** No — the calendar quirk was fully explained.
 
 *Full technical detail: `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` (2026-09-09) and `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_0526.md`.*
+
+---
+
+## Update — T-533 close-out (NFL cron fix + VPS deploy)
+
+Fixed a real gap before Week 1 kickoff: the NFL price-capture cron was missing a day (Wednesday UTC), so roughly 2.5 hours of pregame price history for the opener would have been silently lost forever — this kind of data can't be recovered after the fact. Added the missing cron line and turned on orderbook-depth capture for NFL (was already on for MLB). Deployed both fixes to the live VPS with a surgical edit that touched only the NFL lines — verified nothing else on the server's schedule changed. Also closed out a leftover branch from an earlier NFL trading-script task (its work had already landed; this just tidied the record).
+
+**Money:** No change, zero at risk — this is capture/scheduling only, no trading logic touched.
+
+**Decision needed now?** No. **Any worry?** One: found (but did not touch) an unrelated MLB cron time that doesn't match what's in the repo — flagged for a future session (GG-262).
+
+*Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1519.md`.*
