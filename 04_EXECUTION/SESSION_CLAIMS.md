@@ -475,3 +475,4 @@
 | 2026-09-09T00:23:01Z | T-529 | CLOSED — T-529: landed T-526 (NFL C1 ingestion) + T-527 (NFL settlement) to main; GG-254 re-disposed PARTIALLY RESOLVED (commit `eded852`) |
 | 2026-09-09T00:23:36Z | T-529 (session-end close-out) | CLOSED — merge confirmed, HEAD (9193559) is ancestor of origin/main (merge-check YES) |
 | 2026-09-09T00:28:17Z | T-530 | T-530: T1 game-market run script (NFL) — paper-only, cell-tier kill-switch read wiring, refusal-path tests (GG-255) |
+| 2026-09-09T00:28:59Z | TBD | EXP-026/HYP-011: NFL moneyline LR pre-registration + train/test, C1 unblocked by T-526 |
