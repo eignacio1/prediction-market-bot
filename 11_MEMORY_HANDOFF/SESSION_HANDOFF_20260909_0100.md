@@ -1,0 +1,3 @@
+T-528 (NFL Week 1 capture-fidelity audit): COMPLETE, verdict GO, no new capture holes; GG-259 registered (NFL depth-sample gap, OPEN, MEDIUM); T-532 registered as the follow-up. deploy/cron.conf unchanged.
+TRUNCATED AT BUDGET — session-end timer reported ELAPSED 216m at the check gate; only Step 2 (TODO_NEXT.md) ran before truncation. See commit range 0465533..ec61156 on main for full detail (audit doc, DECISION_LOG entry, two SESSION_CLAIMS closure rows).
+Resume: read 04_EXECUTION/NFL_WEEK1_CAPTURE_FIDELITY_2026-09-08.md and DECISION_LOG.md's T-528 entry for full context; next task is T-532 (NFL depth-sample flag) or whatever TODO_NEXT.md's top items indicate.
