@@ -490,3 +490,4 @@
 | 2026-09-09T15:36:15Z | T-534, GG-263 | TIER: SHORT — D1: NFL shadow paper run with EXP-027 LR adapter (not stub) against tonight's opener; D2: additive NFL panel in web_dashboard.py — NFL build visibility for operator |
 | 2026-09-09T15:39:27Z | TBD (claim GG-/T- at run time) | T-535: NFL game-market settlement resolver — build/test only, no settlement |
 | 2026-09-09T15:40:14Z | T-536, GG-264 | GG-255 MLB half: T1 game-market run script (mlb_moneyline/run_line/game_total/team_total/partial_game) mirroring NFL precedent |
+| 2026-09-09T15:41:43Z | GG-265, T-537 (claiming now per GG-236) | T-537: NFL depth-capture preflight — hand-execute archiver+cron path before 17:05Z first fire |
