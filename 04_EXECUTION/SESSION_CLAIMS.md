@@ -477,3 +477,4 @@
 | 2026-09-09T00:28:17Z | T-530 | T-530: T1 game-market run script (NFL) — paper-only, cell-tier kill-switch read wiring, refusal-path tests (GG-255) |
 | 2026-09-09T00:28:59Z | TBD | EXP-026/HYP-011: NFL moneyline LR pre-registration + train/test, C1 unblocked by T-526 |
 | 2026-09-09T00:29:49Z | T-531 | T-531/EXP-026/HYP-011: NFL moneyline LR pre-registration + train/test (C1 unblocked by T-526) |
+| 2026-09-09T00:43:44Z | T-528 (session-end close-out) | CLOSED — merge confirmed, HEAD (8927b90) is ancestor of origin/main (merge-check YES); pushed to main via fast-forward. Verdict: GO, no new capture holes. Deliverables 1-5 complete; GG-259 registered (OPEN, MEDIUM, depth-sample gap, not enacted, out of scope). deploy/cron.conf NOT modified. Deliverable: 04_EXECUTION/NFL_WEEK1_CAPTURE_FIDELITY_2026-09-08.md. |
