@@ -484,3 +484,5 @@
 | 2026-09-09T05:27:08Z | T-531 | CLOSED — T-531 EXP-027/HYP-012 NFL moneyline LR: Deliverables 1-5 complete, verdict UNDERPOWERED (clean_n=0, 2026 season not started yet) (commit `9f4703a`) |
 | 2026-09-09T14:31:33Z | T-531 | CLOSED — merge confirmed: 8937575 is ancestor of origin/main (session-end close-out) |
 | 2026-09-09T14:34:05Z | T-533, GG-260+ | NFL Week1 capture windows (Wed cron gap) + GG-259 depth capture + T-530 merge |
+
+| 2026-09-09T14:41:00Z | T-530 | CLOSED — merge confirmed: PR #127 merged (7a43110), branch HEAD 66df024 is ancestor of origin/main. Tests 3128/28/0 post-merge. |
