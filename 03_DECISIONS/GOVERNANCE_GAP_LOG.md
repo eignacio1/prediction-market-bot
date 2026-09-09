@@ -3082,3 +3082,22 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — the day-3 line lands with this session's Deliverable 1 commit; OPEN reflects that the audit-methodology gap (narrow "coverage" definition) itself is not structurally fixed — a future capture-fidelity audit could repeat the same narrow framing on a different sport/window without a definitional correction to what "coverage" must mean for a pregame-history capture task. |
 
 </details>
+
+### GG-262 — Live VPS crontab's `run_mlb_pregame.py` schedule (`20 21 * * *`) diverges from repo `deploy/cron.conf`'s value (`30 16 * * *`); origin/cause not determined
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-262 |
+| Category | Deploy-drift — live infra vs. repo source of truth. |
+| What was found | While deploying T-533's NFL price-archive cron changes to the VPS, a full `crontab -l` vs. `deploy/cron.conf` diff surfaced one unrelated divergence: `run_mlb_pregame.py` is scheduled `20 21 * * *` on the live VPS crontab but `30 16 * * *` in the repo's `deploy/cron.conf`. Origin (stale VPS, stale repo, or an intentional un-synced hand-edit) not investigated. |
+| Why it matters | MLB pregame cron timing affects T1 MLB signal freshness; an unexplained live/repo mismatch on an ACTIVE-pool cron line warrants a look even though this session's scope explicitly excluded MLB changes. |
+| Discovery | 2026-09-09, T-533 (this session), VPS deploy step — full crontab diff during targeted NFL line replacement. |
+| Resolution | Not investigated or touched — explicitly out of this session's "no MLB line changes" scope fence. Register-and-stop per Hard Rule 11. |
+| Status | OPEN — needs a future session to determine which value (VPS live or repo) is correct and reconcile. |
+
+</details>
