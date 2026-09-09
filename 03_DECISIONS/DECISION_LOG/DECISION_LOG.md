@@ -1387,3 +1387,11 @@ source/ledger row; do not mark ACCEPTED. Tier: STANDARD.
 ## 2026-09-08 — T-529: land T-526 (NFL C1 ingestion) into main
 
 Merged `session/20260907T234557Z-nfl-c1-ingestion` (T-526/GG-253, 4 commits, ~1229 lines) into `main` via `--no-ff` merge, no conflicts. Pushed (`eb326c7`). Full suite after merge: **3072 passed, 28 skipped, 0 failed** (167.33s).
+
+## 2026-09-08 — T-529: land T-527 (NFL game-market settlement) into main; re-dispose GG-254
+
+Merged `session/20260907T234611Z-nfl-game-market-settlement` (T-527, 6 commits, ~1265 lines) into `main` via `--no-ff` merge (`c272dec`). Auto-merged `GOVERNANCE_GAP_LOG.md` (both sessions added distinct entries below GG-253) — verified no conflict markers, header/status-line parity (106=106), and no duplicate GG-ids post-merge before pushing. Full suite after merge: **3113 passed, 28 skipped, 0 failed** (129.41s).
+
+Re-disposed GG-254 from OPEN to **PARTIALLY RESOLVED**: `game_market_settlement.py` + `apply_resolved_nfl_game_markets.py` now exist, are tested (41 passing tests), and adapt the four NFL game-market types onto the existing unmodified `settle_position()` primitive. Not closed: confirmed via `deploy/cron.conf` grep that nothing wires this into a live/scheduled pipeline — that is GG-255's subject and GG-255 remains OPEN. A genuine moneyline-tie settlement-primitive gap was surfaced (refused rather than mis-settled) and is tracked separately as GG-257 (pre-existing, OPEN, not touched by this session).
+
+Both branches confirmed landed: `git log --oneline -5 origin/main` after fresh fetch shows `c272dec` (this merge) at the tip, ancestor-of check pending final push of this entry.
