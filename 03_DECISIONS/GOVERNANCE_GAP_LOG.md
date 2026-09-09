@@ -3101,3 +3101,22 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — needs a future session to determine which value (VPS live or repo) is correct and reconcile. |
 
 </details>
+
+### GG-266 — Local dev machine's system Python (3.9.6/LibreSSL 2.8.3) cannot TLS-handshake with ESPN's scoreboard endpoint; affects every existing `integration`-marked live-network test, not just this session's new one
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-266 |
+| Category | Local dev-environment limitation, not a code defect. |
+| What was found | T-535 (this session) added a new `@pytest.mark.integration` test (`tests/test_nfl_espn_results.py::test_fetch_final_score_live_real_game_2025_10_05`) making a genuine, unmocked network call against ESPN's real scoreboard endpoint. It fails on this machine with `SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol'))` after the full 5s/10s/30s retry+give-up schedule. Root cause confirmed: `/usr/bin/python3` on this machine is Python 3.9.6 linked against **LibreSSL 2.8.3** (`python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"`), which cannot complete a TLS handshake with ESPN's current server-side TLS configuration; `curl` against the identical URL succeeds because it uses a different/newer TLS stack. No project `.venv`/`venv` exists in this worktree to route around the system interpreter. This is not new or specific to the new test: re-running the 5 pre-existing `integration`-marked live-network tests already in this repo (`tests/integration/test_mlb_api_connectivity.py`'s 14 network-touching cases, both MLB Stats API and ESPN) shows the identical `SSLEOFError` on every one of them (14 failed / 7 skipped in that file alone). |
+| Why it matters | `pyproject.toml`'s `addopts` has no `-m "not integration"` exclusion, so a bare `pytest` invocation on this machine already silently fails ~14+ pre-existing integration tests before this session touched anything — a standing, previously-undocumented condition. Anyone running the full suite locally (not on the VPS/CI) will see these failures and could mistake them for a real regression if the cause isn't on record. |
+| Discovery | 2026-09-09, T-535 (this session), Deliverable 3 — discovered while verifying the new live-network test; confirmed cross-cutting (not novel to this session's code) by running `tests/integration/test_mlb_api_connectivity.py` directly and observing the identical failure signature. |
+| Resolution | Not attempted — out of this session's scope fence (game_market_settlement.py / nfl_espn_results.py / apply_resolved_nfl_game_markets.py / their tests only). Fixing this machine's Python/LibreSSL linkage (e.g. installing a `.venv` against a Homebrew Python built against OpenSSL 1.1.1+/3.x) is a local-environment task, not a repo code change. Register-and-stop per Hard Rule 11. |
+| Status | OPEN — needs a future session (or the operator, out-of-band) to provision a working local Python/TLS stack (or document that `integration`-marked tests are VPS/CI-only in this environment) if local `integration` runs are expected to pass on this machine. |
+
+</details>
