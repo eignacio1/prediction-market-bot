@@ -487,3 +487,4 @@
 
 | 2026-09-09T14:41:00Z | T-530 | CLOSED — merge confirmed: PR #127 merged (7a43110), branch HEAD 66df024 is ancestor of origin/main. Tests 3128/28/0 post-merge. |
 | 2026-09-09T15:20:17Z | T-533 | CLOSED — T-533: NFL cron day-3+depth fix landed, deployed to VPS, GG-259 closed, T-530 merge verified (commit `7d470c5`) |
+| 2026-09-09T15:36:15Z | T-534, GG-263 | TIER: SHORT — D1: NFL shadow paper run with EXP-027 LR adapter (not stub) against tonight's opener; D2: additive NFL panel in web_dashboard.py — NFL build visibility for operator |
