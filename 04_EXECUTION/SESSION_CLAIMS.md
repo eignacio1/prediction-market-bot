@@ -497,3 +497,4 @@
 | 2026-09-10T00:48:21Z | T-535 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
 | 2026-09-10T01:05:27Z | T-534, GG-263, GG-267 | CLOSED — merge confirmed (`ffabaa2`), HEAD (`5940298`) is ancestor of origin/main (merge-check YES) |
 | 2026-09-10T01:12:47Z | T-534 | CLOSED — NFL shadow paper run (real EXP-027 LR adapter, not stub) against tonight's opener markets + additive NFL dashboard panel; zero positions opened (no edge found), GG-267 registered for per-row provenance gap (commit `f3b6965`) |
+| 2026-09-10T01:24:12Z | TBD | fix dashboard /api/data endpoint failure post-T-534 NFL panel add |
