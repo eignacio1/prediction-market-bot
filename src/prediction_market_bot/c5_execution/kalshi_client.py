@@ -906,11 +906,17 @@ class KalshiMarketClient:
         status: str = "open",
         page_size: int = 200,
     ) -> tuple[bool, GameMarketSnapshot]:
-        """Fetch ALL open NFL game markets for one series (GG-252).
+        """Fetch ALL open game markets for one series (GG-252/GG-255).
 
         series_ticker must be one of _NFL_GAME_SERIES (KXNFLGAME, KXNFLSPREAD,
-        KXNFLTOTAL, KXNFLTEAMTOTAL). Mirrors fetch_player_points_markets'
-        pagination/detail-fetch pattern but returns GameMarket records.
+        KXNFLTOTAL, KXNFLTEAMTOTAL) or _MLB_GAME_SERIES (KXMLBGAME,
+        KXMLBSPREAD, KXMLBTOTAL, KXMLBTEAMTOTAL, KXMLBF3, KXMLBF5, KXMLBF7).
+        This method itself was never NFL-hardcoded — it delegates parsing to
+        _parse_market(), whose series dispatch is what determines NFL vs.
+        MLB vs. player-prop handling (confirmed by direct read, GG-255
+        Deliverable 2: zero changes needed here for MLB support). Mirrors
+        fetch_player_points_markets' pagination/detail-fetch pattern but
+        returns GameMarket records.
         """
         all_raw: list[dict[str, Any]] = []
         cursor: str | None = None
