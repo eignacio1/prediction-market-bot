@@ -495,3 +495,4 @@
 | 2026-09-09T19:50:25Z | T-537 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
 | 2026-09-09T19:53:05Z | T-535 | MERGED: NO — branch `session/20260909T153916Z-nfl-game-market-resolution-wiring` awaiting merge — NFL game-market settlement resolver: idempotency + real-2025-game test coverage + dry-run, GG-266 registered (commit `4d934fb`) |
 | 2026-09-10T00:48:21Z | T-535 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
+| 2026-09-10T01:05:27Z | T-534, GG-263, GG-267 | CLOSED — merge confirmed (`ffabaa2`), HEAD (`5940298`) is ancestor of origin/main (merge-check YES) |
