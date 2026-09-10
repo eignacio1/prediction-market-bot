@@ -173,6 +173,31 @@ _NFL_GAME_SERIES = frozenset({
     "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL",
 })
 
+# GG-255/T-538: MLB game-market series (moneyline/run_line/game_total/team_total/
+# partial_game). Same team-vs-team shape as _NFL_GAME_SERIES above — dispatched
+# to _parse_mlb_game_market() / GameMarket, additive to the NFL dispatch, not a
+# replacement. Grammar derived from live tickers fetched 2026-09-10 (not a spec):
+#   KXMLBGAME-{event}-{TEAM}            e.g. KXMLBGAME-26SEP122010TEXAZ-TEX
+#     strike_type="structured", floor_strike=null, custom_strike.baseball_team=<uuid>
+#   KXMLBSPREAD-{event}-{TEAM}{N}       e.g. KXMLBSPREAD-26SEP091940AZKC-KC5 (floor_strike=4.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.baseball_team=<uuid>
+#   KXMLBTOTAL-{event}-{N}              e.g. KXMLBTOTAL-26SEP091840NYMMIA-25 (floor_strike=24.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike=null (not team-scoped)
+#   KXMLBTEAMTOTAL-{event}-{TEAM}{N}    e.g. KXMLBTEAMTOTAL-26SEP101940PITCWS-PIT8 (floor_strike=7.5)
+#     strike_type="greater", floor_strike=<float>, custom_strike.baseball_team=<uuid>
+#   KXMLBF3/F5/F7-{event}-{TEAM|TIE}    e.g. KXMLBF3-26SEP101940PITCWS-PIT, ...-TIE
+#     strike_type="structured", floor_strike=null, custom_strike.baseball_team=<uuid>
+#     (F3/F5/F7 = first-3/5/7-innings partial-game winner; MLB, unlike NFL, has
+#     a real three-way outcome here — a "TIE" ticker tail exists alongside team
+#     tails. TIE is NOT a team code; it is passed through as team_abbr="TIE" so
+#     it round-trips visibly rather than being silently misparsed as one.)
+# Key difference from NFL's custom_strike key ("football_team" vs "baseball_team")
+# is why this cannot share _parse_nfl_game_market() unmodified.
+_MLB_GAME_SERIES = frozenset({
+    "KXMLBGAME", "KXMLBSPREAD", "KXMLBTOTAL", "KXMLBTEAMTOTAL",
+    "KXMLBF3", "KXMLBF5", "KXMLBF7",
+})
+
 
 # ---------------------------------------------------------------------------
 # Data classes (DS-02 output schema — IF-C5-C3/C4)
@@ -223,17 +248,21 @@ class GameMarket:
     Sibling to PlayerMarket, not a variant of it — game markets have no player
     and no guaranteed numeric threshold (moneyline markets are a bare "team A
     wins" proposition with strike_type="structured" and no floor_strike at all).
-    market_type distinguishes the four NFL series this represents:
-      "moneyline"  — KXNFLGAME (threshold is always None)
-      "spread"     — KXNFLSPREAD (threshold = floor_strike, team-scoped)
-      "total"      — KXNFLTOTAL (threshold = floor_strike, game-level, no team)
-      "team_total" — KXNFLTEAMTOTAL (threshold = floor_strike, team-scoped)
+    market_type distinguishes the NFL and MLB series this represents:
+      "moneyline"    — KXNFLGAME / KXMLBGAME (threshold is always None)
+      "spread"       — KXNFLSPREAD (threshold = floor_strike, team-scoped)
+      "run_line"     — KXMLBSPREAD, MLB's spread equivalent (threshold = floor_strike, team-scoped)
+      "total"        — KXNFLTOTAL / KXMLBTOTAL (threshold = floor_strike, game-level, no team)
+      "team_total"   — KXNFLTEAMTOTAL / KXMLBTEAMTOTAL (threshold = floor_strike, team-scoped)
+      "partial_game" — KXMLBF3/F5/F7, MLB-only, no NFL analogue (threshold is
+                        always None; team_abbr may be "TIE" — see _MLB_GAME_SERIES
+                        comment above for why that is not a real team code)
     team_abbr is "" for game-level totals (not team-scoped). outcome_desc is
     Kalshi's own pre-rendered human-readable description (yes_sub_title).
     """
     ticker: str
     title: str
-    market_type: str         # "moneyline" | "spread" | "total" | "team_total"
+    market_type: str         # "moneyline" | "spread" | "run_line" | "total" | "team_total" | "partial_game"
     team_abbr: str           # "" when not team-scoped (e.g. game-level total)
     threshold: float | None  # floor_strike; None for moneyline (structured)
     outcome_desc: str        # yes_sub_title — clean human-readable outcome text
@@ -507,15 +536,21 @@ class KalshiMarketClient:
         """Dispatch to the player-prop or NFL-game parser based on series (GG-252).
 
         _NFL_GAME_SERIES tickers (KXNFLGAME/KXNFLSPREAD/KXNFLTOTAL/KXNFLTEAMTOTAL)
-        are team-vs-team shaped and cannot be represented by PlayerMarket's
-        player_name/team_abbr/threshold:int fields — they route to
-        _parse_nfl_game_market()/GameMarket instead. Everything else (KXNBAPTS,
-        KXMLBHIT, future player-prop series) is unchanged from before GG-252.
+        and _MLB_GAME_SERIES tickers (KXMLBGAME/KXMLBSPREAD/KXMLBTOTAL/
+        KXMLBTEAMTOTAL/KXMLBF3/F5/F7 — GG-255/T-538) are team-vs-team shaped and
+        cannot be represented by PlayerMarket's player_name/team_abbr/
+        threshold:int fields — they route to _parse_nfl_game_market()/
+        _parse_mlb_game_market()/GameMarket instead. Everything else (KXNBAPTS,
+        KXMLBHIT, future player-prop series) is unchanged from before GG-252 —
+        this dispatcher only ever ADDS a new routing branch, never alters the
+        fallback path player-prop series already take.
         """
         ticker = raw.get("ticker", "")
         series = ticker.split("-")[0] if ticker else ""
         if series in _NFL_GAME_SERIES:
             return KalshiMarketClient._parse_nfl_game_market(raw)
+        if series in _MLB_GAME_SERIES:
+            return KalshiMarketClient._parse_mlb_game_market(raw)
         return KalshiMarketClient._parse_player_market(raw)
 
     @staticmethod
@@ -666,6 +701,121 @@ class KalshiMarketClient:
         except Exception as e:
             logger.warning(
                 "GG-252: unparseable NFL game market — ticker=%s error=%s: %s",
+                ticker, type(e).__name__, e,
+            )
+            return None
+
+    @staticmethod
+    def _parse_mlb_game_market(raw: dict[str, Any]) -> GameMarket | None:
+        """Parse an MLB game-market (moneyline/run_line/total/team_total/
+        partial_game) — GG-255/T-538. Modeled on _parse_nfl_game_market();
+        the one structural difference is Kalshi's custom_strike key for MLB
+        is "baseball_team", not "football_team" (confirmed live 2026-09-10).
+
+        Reads strike_type/floor_strike/custom_strike directly from the raw
+        payload rather than parsing a threshold out of the ticker tail, for
+        the same reason as the NFL parser: floor_strike is the authoritative
+        numeric line and team codes are variable-length (2-3 chars).
+
+        KXMLBF3/F5/F7 (partial_game) have a genuine three-way outcome MLB
+        alone among the sports covered here — a "TIE" ticker tail exists
+        alongside team tails (first-N-innings can end tied). "TIE" is passed
+        through as team_abbr verbatim rather than matched against the team
+        regex and silently treated as a team code.
+        """
+        ticker = raw.get("ticker", "")
+        try:
+            title = raw.get("title", "")
+            event_ticker = raw.get("event_ticker", "")
+            series = ticker.split("-")[0] if ticker else ""
+            parts = ticker.split("-")
+            game_date = KalshiMarketClient._game_date_from_event_ticker(event_ticker)
+            outcome_desc = raw.get("yes_sub_title", "") or title
+            floor_strike = raw.get("floor_strike")
+
+            if series == "KXMLBGAME":
+                market_type = "moneyline"
+                threshold = None
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})$", tail)
+                team_abbr = team_match.group(1) if team_match else tail
+            elif series == "KXMLBTOTAL":
+                market_type = "total"
+                team_abbr = ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-255: unparseable KXMLBTOTAL market — missing "
+                        "floor_strike: ticker=%s", ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series == "KXMLBSPREAD":
+                market_type = "run_line"
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-255: unparseable KXMLBSPREAD market — missing "
+                        "floor_strike: ticker=%s", ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series == "KXMLBTEAMTOTAL":
+                market_type = "team_total"
+                tail = parts[-1] if parts else ""
+                team_match = re.match(r"^([A-Z]{2,3})", tail)
+                team_abbr = team_match.group(1) if team_match else ""
+                if floor_strike is None:
+                    logger.warning(
+                        "GG-255: unparseable KXMLBTEAMTOTAL market — missing "
+                        "floor_strike: ticker=%s", ticker,
+                    )
+                    return None
+                threshold = float(floor_strike)
+            elif series in ("KXMLBF3", "KXMLBF5", "KXMLBF7"):
+                market_type = "partial_game"
+                threshold = None
+                tail = parts[-1] if parts else ""
+                # "TIE" deliberately not matched by the team regex — passed
+                # through verbatim so a tie outcome is visible, not silently
+                # mistaken for a team code (see class-level docstring/GG-255).
+                if tail == "TIE":
+                    team_abbr = "TIE"
+                else:
+                    team_match = re.match(r"^([A-Z]{2,3})$", tail)
+                    team_abbr = team_match.group(1) if team_match else tail
+            else:
+                # Should be unreachable — _parse_market only dispatches here
+                # for tickers whose series is in _MLB_GAME_SERIES.
+                logger.warning(
+                    "GG-255: _parse_mlb_game_market called for unrecognized "
+                    "series: ticker=%s series=%s", ticker, series,
+                )
+                return None
+
+            yes_ask = float(raw.get("yes_ask_dollars") or raw.get("yes_ask") or 0)
+            yes_bid = float(raw.get("yes_bid_dollars") or raw.get("yes_bid") or 0)
+            no_ask = float(raw.get("no_ask_dollars") or raw.get("no_ask") or 0)
+            no_bid = float(raw.get("no_bid_dollars") or raw.get("no_bid") or 0)
+
+            mid_price = (yes_ask + yes_bid) / 2.0 if (yes_ask + yes_bid) > 0 else 0.0
+            vig = max(0.0, yes_ask - yes_bid)
+
+            volume = float(raw.get("volume_fp") or raw.get("volume_24h_fp") or 0)
+            status = raw.get("status", "unknown")
+
+            return GameMarket(
+                ticker=ticker, title=title, market_type=market_type,
+                team_abbr=team_abbr, threshold=threshold, outcome_desc=outcome_desc,
+                game_date=game_date, event_ticker=event_ticker,
+                yes_ask=yes_ask, yes_bid=yes_bid, no_ask=no_ask, no_bid=no_bid,
+                mid_price=mid_price, vig=vig, volume=volume, status=status,
+                fetched_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+            )
+        except Exception as e:
+            logger.warning(
+                "GG-255: unparseable MLB game market — ticker=%s error=%s: %s",
                 ticker, type(e).__name__, e,
             )
             return None
