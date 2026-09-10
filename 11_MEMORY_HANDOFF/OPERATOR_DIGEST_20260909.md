@@ -47,3 +47,17 @@ Built and tested the piece that decides who wins an NFL bet once a real game end
 **Decision needed now?** No. **Any worry?** One, non-blocking: this laptop's local network setup can't reach ESPN's servers reliably (an old encryption library), so one live test couldn't run here — logged for the record (GG-266), doesn't affect the VPS where the bot actually runs.
 
 *Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1951.md`.*
+
+---
+
+## Update — T-534 close-out (NFL shadow run + dashboard visibility)
+
+Ran the real trained NFL model (not a placeholder) against tonight's actual opener markets on Kalshi, paper only, no real money ever at risk. Also added a new NFL section to the dashboard so you can see this build without digging through logs.
+
+**Result:** zero bets placed. The model looked at all 64 real game-winner markets and either had no prediction to offer or found no edge worth betting on every single one — that's a valid, reported result, nothing was tuned to force a bet.
+
+**Money:** No change, zero at risk.
+
+**Decision needed now?** No. **Any worry?** One, non-blocking: the dashboard's "which model made this bet" label is accurate for today (only one model running) but isn't stored per-bet in the data yet — logged for a future session (GG-267).
+
+*Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260910_0111.md`.*

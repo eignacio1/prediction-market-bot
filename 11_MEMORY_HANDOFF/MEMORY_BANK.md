@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-09T19:51:00Z (T-535 — NFL game-market settlement resolver: idempotency + real-2025-game test coverage + dry-run, GG-266 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_1951.md` for full session detail.
+**Last reviewed:** 2026-09-10T01:11:00Z (T-534 — NFL shadow paper run (real EXP-027 LR adapter, not stub) against tonight's opener markets + additive NFL dashboard panel; zero positions opened (no edge found), GG-267 registered for per-row provenance gap) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260910_0111.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
