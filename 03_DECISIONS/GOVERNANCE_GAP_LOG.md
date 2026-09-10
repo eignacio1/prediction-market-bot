@@ -3146,6 +3146,31 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ---
 
+### GG-269 — `pmbot-web-dashboard.service` is in an active OOM crash-loop under its 128MB cgroup memory cap; `systemctl is-active`-style checks do not reliably show it
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-269 |
+| Category | Systemic blind spot — matches the GG-118 pattern (`Restart=always`/`RestartSec=5` re-enters the active state within seconds of each crash, so a point-in-time liveness check can land mid-loop and read healthy). |
+| What was missed | `pmbot-web-dashboard.service` is being OOM-killed repeatedly under its 128MB `MemoryMax` cgroup cap. Live-checked 2026-09-10 during this session's T-538/GG-255 work: `NRestarts=16`, `ActiveState=activating`, `SubState=auto-restart` (i.e. mid-crash-loop at the moment of the check, not settled/healthy), and `journalctl -u pmbot-web-dashboard.service --since '-24 hour' | grep -c oom-kill` = 30 oom-kills in the trailing 24h. `MemoryMax=134217728` (128MB) confirmed unchanged since GG-118. |
+| When it should have been caught | GG-118 (2026-07-21) added a Step 4 probe (`NRestarts`/`ActiveState`/`SubState` + `journalctl … grep -c oom-kill`) specifically to catch this failure mode structurally instead of by luck. This entry is that probe firing as designed — the gap is that the underlying crash-loop it was built to detect is still live, 51 days later, not that the probe itself failed. |
+| Phases it survived | Phase 6/7 ACTIVE — has been crash-looping (evidenced by the still-present GG-118 probe catching it again) across at least this session and the one immediately prior (prior-session snapshot, uncommitted: 13 oom-kills in ~13 min at that check; this session's independent re-check ~hours later: 30 oom-kills/24h, `NRestarts=16` — consistent with a sustained, not transient, condition). |
+| Why it survived | No session between GG-118's fix (which only added *detection*, not remediation) and now has picked up the underlying fix. `web_dashboard.py` has also been under an explicit concurrency fence in the two most recent sessions to touch adjacent code (T-534/GG-263's NFL panel work, and this session's MLB work) — Hard Rule 11 requires registering and stopping on out-of-scope discovery, so the fence itself is part of why the fix hasn't landed, not a bug. |
+| Impact | The operator-facing dashboard (C8) has been repeatedly unavailable/restarting during this window, on both the NFL and MLB paper-trading pools' active development. Not itself a trading-safety issue (dashboard is read-only observability, not in the execution path) but is an operational-visibility gap during two concurrent build efforts. |
+| Discovery | 2026-09-10, T-538/GG-255 session (this session), while running CLAUDE.md Step 4's mandatory operational health check ahead of MLB game-market run-script work; re-verified live via direct SSH probe rather than trusting the prior session's carried-over note. |
+| Resolution | Not fixed — registered and stopped per Hard Rule 11 and this session's explicit concurrency fence ("another session owns `scripts/web_dashboard.py`. DO NOT TOUCH IT."). Candidate fixes for whichever session next owns that file: raise `MemoryMax` (if VPS headroom allows), profile the dashboard process for the actual leak/allocation spike, or split it into a lighter-weight read path. Whoever picks this up should re-check `NRestarts`/oom-kill count fresh rather than trusting this entry's snapshot. |
+| Cross-references | GG-118 (added the detection probe this entry's discovery relied on). |
+| Status | OPEN — actively crash-looping as of this entry's live re-check; unowned, `web_dashboard.py` fenced against concurrent sessions in this window. |
+
+</details>
+
+---
+
 ### GG-267 — No per-row model-identity field in the NFL position/audit data model; dashboard provenance label is section-wide/run-wide, not per-row-verified
 
 **Status:** OPEN · **Severity:** LOW
