@@ -3185,3 +3185,26 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | RESOLVED (2026-09-09) — both deliverables verified complete; see GG-267 for one known residual limitation carried forward (per-row model-identity is not persisted in the data model, so the dashboard's provenance label is section-wide/run-wide, not per-row-verified — out of this session's scope fence to fix). |
 
 </details>
+
+---
+
+### GG-268 — pmbot-web-dashboard.service actively OOM-crash-looping in production (live incident, discovered mid-session-start-protocol)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-268 |
+| Category | Live operational incident — discovered via CLAUDE.md session-start Step 4 (dashboard OOM-restart-loop probe, GG-118's own detection method), not via a report. |
+| What was found | `systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,SubState` read `ActiveState=active`/`SubState=running` exactly as GG-118 predicted a mid-loop snapshot would, but `journalctl -u pmbot-web-dashboard.service --since '-24 hour' \| grep -c oom-kill` returned 14, with five kills observed within a single 5-minute window during this check (01:19:29-01:23:53 UTC) and the process still climbing toward its cap seconds after a fresh restart (`MemoryCurrent` at 22-26M of a 128M `MemoryMax` moments after each respawn). `systemctl status` confirmed `restart counter is at 1` and climbing, `Consumed ... 128.0M memory peak` on the just-killed instance. This is a live, currently-active crash loop, not historical residue. |
+| Why it matters | The dashboard is the operator's primary human-readable view of system health and P&L (C8) and is the exact panel the operator was about to start trusting per this session's own task framing ("the operator is about to start reading this panel to make decisions"). A crash-looping dashboard serving stale/partial state on every restart is the precise instrument-drifts-from-the-thing-it-measures failure this project treats as its signature risk. |
+| Discovery | 2026-09-10, this session (GG-267 worker), Step 4 of the mandatory session-start protocol, before any implementation work began. |
+| Timing/suspected trigger | Git history on the VPS deploy dir shows the most recent change to `scripts/web_dashboard.py` is commit `0861784` ("T-534/GG-263 Deliverable 2: wire NFL panel into web_dashboard.py (additive)"), preceded by an earlier, already-landed fix `7306cd9` ("Fix dashboard OOM-kill loop: bound `_load_jsonl` memory to tail lines"). The NFL panel addition is the most recent change to the service and is the leading suspect for reintroducing unbounded memory growth (e.g. an NFL JSONL load path not going through the same tail-bounded reader as the MLB paths), but this session did not investigate `web_dashboard.py` itself to confirm — that file is fenced off this wave (owned by another session per this session's explicit instructions) and Hard Rule 11 requires register-and-stop on out-of-scope discovery regardless. |
+| Resolution | Not attempted — `scripts/web_dashboard.py` is explicitly out of scope for this session (concurrency fence: "another session owns scripts/web_dashboard.py THIS WAVE. DO NOT TOUCH IT."). Registering per Hard Rule 11 so the next session touching that file treats this as the first priority, not a side note. |
+| Cross-references | GG-118 (original OOM-crash-loop finding and the `_load_jsonl` tail-bound fix that resolved it; this appears to be a regression against that fix, scoped to the new NFL load path), GG-263/GG-267 (the session that added the NFL panel). |
+| Status | OPEN — live, active incident at time of registration (2026-09-10T01:2x UTC). Needs immediate investigation of `web_dashboard.py`'s NFL data-loading path (likely `_load_all_data()`'s new `nfl_portfolio`/`nfl_audit` keys) for unbounded reads, by whichever session next has that file in scope. |
+
+</details>
