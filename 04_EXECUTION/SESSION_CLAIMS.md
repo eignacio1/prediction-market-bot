@@ -493,3 +493,4 @@
 | 2026-09-09T15:41:43Z | GG-265, T-537 (claiming now per GG-236) | T-537: NFL depth-capture preflight — hand-execute archiver+cron path before 17:05Z first fire |
 | 2026-09-09T19:48:40Z | T-537 | MERGED: NO — branch `session/20260909T154106Z-prove-nfl-depth-capture-preflight` awaiting merge — T-537/GG-265: NFL depth-capture cron preflight proven end-to-end, no defect, 8 real fires observed live. (commit `277ae8f`) |
 | 2026-09-09T19:50:25Z | T-537 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
+| 2026-09-09T19:53:05Z | T-535 | MERGED: NO — branch `session/20260909T153916Z-nfl-game-market-resolution-wiring` awaiting merge — NFL game-market settlement resolver: idempotency + real-2025-game test coverage + dry-run, GG-266 registered (commit `4d934fb`) |

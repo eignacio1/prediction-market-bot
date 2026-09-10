@@ -38,3 +38,12 @@ Last session (T-533) added a fix so the NFL price-and-depth capture would run co
 **Decision needed now?** No. **Any worry?** No — found no defect, so nothing was changed in the schedule; the earlier fix already works.
 
 *Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1947.md`.*
+## Update — T-535 close-out (NFL settlement resolver — build/test)
+
+Built and tested the piece that decides who wins an NFL bet once a real game ends — moneyline, spread, game total, and team total, all four bet types. Checked the code was safe to run twice on the same game without double-paying anyone (idempotency), then tested it against three real games from last season using the actual final scores, and did a dry run with no money moved to confirm it behaves correctly end to end.
+
+**Money:** No change, zero at risk — build/test only, nothing was settled for real.
+
+**Decision needed now?** No. **Any worry?** One, non-blocking: this laptop's local network setup can't reach ESPN's servers reliably (an old encryption library), so one live test couldn't run here — logged for the record (GG-266), doesn't affect the VPS where the bot actually runs.
+
+*Full detail: `DECISION_LOG.md` (2026-09-09), `SESSION_HANDOFF_20260909_1951.md`.*

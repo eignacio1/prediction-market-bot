@@ -1404,3 +1404,80 @@ Both branches confirmed landed: `git log --oneline -5 origin/main` after fresh f
 | 2026-09-09 | **T-533 Deliverable 3: verified and closed out T-530/GG-255's branch merge (`session/20260909T002748Z-gg255-t1-game-market-run-script`).** Task brief assumed this branch still needed merging; direct verification found the actual deliverable content (`run_t1_nfl_game_market.py`, introduced by commit `49a35df`) was already on `origin/main` via `PR #127` (merge commit `7a43110`, confirmed `git merge-base --is-ancestor 7a43110 origin/main` = true) — landed by a concurrent session before this deliverable was reached, not by this session. Did not trust that conclusion from a prior (pre-compaction) segment's unverified summary claim without re-deriving it: traced the file's introducing commit back through its ancestry to `7a43110` and confirmed independently. The named branch's tip carried exactly one commit not yet on `main` — `b366119` ("T-530: session-end merge-confirmed closure row"), a 2-line `SESSION_CLAIMS.md` append made by a separate prior session recording its own independent confirmation of the same PR #127 merge plus a post-merge suite result of 3128/28/0 — confirmed via `git log --oneline origin/main..b366119` returning only that one commit. Merged the branch into `main` (`--no-ff`, clean auto-merge on `SESSION_CLAIMS.md`'s `merge=union` driver, no conflicts) to preserve that closure record rather than duplicate it; pushed (`aa0c59e`, `c225cff..aa0c59e`, no concurrent divergence). Ran the full suite fresh, independently, in this session rather than citing the prior session's figure: **3128 passed, 28 skipped, 0 failed** (148.75s) — matches the prior session's post-merge count exactly. No `src/` edit made by this deliverable; `deploy/cron.conf` untouched by this step (Deliverables 1-2 of this same session did touch it, in separate prior commits); no `kelly_fraction` touched; no live order; no position placed.** | GG-255, T-530, T-533 | Claude (worktree `session/20260909T143314Z-nfl-week1-capture-windows-and-depth`, T-533) |
 | 2026-09-09 | **T-533 close-out: VPS deploy of NFL cron changes + branch/worktree closure.** Deployed Deliverables 1-2's 6 NFL price-archive cron lines (day-3 addition + `--depth-sample-per-family 1`) to the live VPS via a targeted line-swap (not a blanket `cron.conf` replace) — preserved an unrelated, pre-existing, out-of-scope VPS/repo divergence on `run_mlb_pregame.py`'s schedule (registered **GG-262**, not fixed, per Hard Rule 11). Verified post-deploy via live `crontab -l` (6/6 NFL lines correct) and synced VPS repo to `origin/main` (`8df2f61`). Confirmed session branch fully merged (`merge-base --is-ancestor` = true) before `git worktree remove` + `git branch -d`. Shared-tree `ACTIVE_QUEUE.md`/`OPERATOR_CONSOLE.md` uncommitted diffs (found blocking `git pull --ff-only`) were inspected before disposition, not discarded blind: `ACTIVE_QUEUE.md` matched already-committed Deliverable 0 content exactly (no-op); `OPERATOR_CONSOLE.md` was stale auto-generated hook output, discarded (regenerates every scan).** | GG-262, T-533 | Claude (main, T-533) |
 | 2026-09-09 | **T-537/GG-265: NFL depth-capture cron preflight — closed with direct evidence, no defect, no fix.** Hand-ran `archive_market_prices.py` against the four NFL series with `--depth-sample-per-family 1` (exit 0, correct row counts, valid sample depth row) and separately dry-ran the day-3 cron line's command verbatim in a non-interactive `env -i` shell simulating cron's stripped runtime; all 5 links ($PROJ, `.env` credential export, PYTHON interpreter, PYTHONPATH, log-path writability) resolved clean. VPS `crontab -l` confirmed byte-identical to `deploy/cron.conf`, daemon active 1w4d, UTC day-of-week=3 matching the day-3 field, timezone Etc/UTC. Then, ahead of the preflight's own conclusions, direct observation overtook it: by 19:32Z the real day-3 line had already fired 8 times for real (17:05Z-19:25Z), each writing exactly 4 NFL depth rows/family to production `exp_output/PRICE_ARCHIVE/depth_2026-09-09.jsonl` (32 total), zero errors/backoff/rate-limit lines in `logs/price_archive_cron.log` today. Captured MLB's own baseline in the same session (`04_EXECUTION/MLB_BASELINE_PRE_NFL_DEPTH_2026-09-09.md`) — 27,402 price rows / 216 depth rows across 10 series, last fire 05:40:02Z consistent with the MLB archive cron's scheduled idle gap (not staleness). `deploy/cron.conf` was not modified — Deliverable 5's fix-only-a-proven-defect condition was never triggered. GG-265 closed RESOLVED. | GG-265, GG-245, GG-259, GG-261, T-533 | Claude (worktree `session/20260909T154106Z-prove-nfl-depth-capture-preflight`, T-537) |
+
+## 2026-09-09 — T-535: NFL game-market settlement resolver — idempotency test + real-game/box-score coverage closure (2 deliverables)
+
+**Task:** GATE required confirming three files already existed on `origin/main` before any code was
+written: `game_market_settlement.py` (228 lines), `nfl_espn_results.py` (151 lines),
+`apply_resolved_nfl_game_markets.py` (256 lines) — confirmed present, gate passed. Deliverable 1:
+read all three plus `paper_trader.py::settle_position()` and report what the existing resolver
+already covers vs. genuinely missing, before writing any code. Deliverable 2: close only the
+genuinely-found gaps; idempotency test mandatory regardless of what else was found — prove the
+resolver run twice over the same input leaves a byte-identical ledger. Deliverable 3: dry-run
+against three real completed 2025 NFL games (incl. one decided by ≤3 points) across all four
+market types, verified against real box scores, plus explicit confirmation that a real tied game
+raises `SettlementAmbiguityError` and the resolver refuses to settle (GG-257) rather than guessing.
+Zero writes to any production ledger; do not touch T-534's three concurrently-owned files
+(model-adapter module, `web_dashboard.py`, `paper_portfolio_t1_nfl_game_market.json`/
+`audit_t1_nfl_game_market.jsonl`); do not modify `settle_position()` itself (GG-257 registered,
+not assigned here); do not settle any real position. Tier: STANDARD.
+
+**Deliverable 1 finding (read-before-build):** the existing resolver script already fully covers
+resolution logic (`derive_actual_stat`/`check_settlement_ambiguity` call sequence), retry/backoff
+against ESPN (5s/10s/30s), and the not-yet-final guard (skips non-`STATUS_FINAL` games without
+erroring). Genuine gaps: (a) no idempotency test anywhere in the repo for this resolver path; (b)
+real-game/box-score verification existed only for `NFL_MONEYLINE` (2 of 4 market types covered by
+any live-verified test), with no `NFL_SPREAD`/`NFL_GAME_TOTAL`/`NFL_TEAM_TOTAL` real-game coverage
+and no game decided by ≤3 points anywhere in the test suite; (c) a stale docstring in
+`test_nfl_espn_results.py` claiming "network-marked tests" verify real games — no `network` pytest
+marker exists in this repo (`pyproject.toml` markers: unit/integration/temporal/calibration/
+property/golden only), so the claim was never true. Existing script did **not** need to be
+modified — only test coverage was genuinely missing.
+
+**What was built (Deliverable 2):**
+1. `tests/test_apply_resolved_nfl_game_markets.py` — two new tests using a real (non-mocked)
+   `PaperTrader`+`AuditLogger` against `tmp_path` (network call still stubbed via
+   `fetch_nfl_final_score` monkeypatch, per the file's existing "everything mocked except I/O"
+   convention, documented as the one explicit exception in the updated module docstring):
+   `test_main_apply_twice_is_idempotent_byte_identical_ledger` runs the resolver's `main()` twice
+   over the same seeded portfolio and asserts `portfolio_path.read_bytes()` is byte-identical after
+   the second `--apply` pass; `test_settle_position_is_itself_idempotent_real_trader` is a lower-level
+   companion calling `settle_position()` directly twice on the same `position_id`, confirming the
+   documented no-op-on-already-settled behavior `(True, {})` and byte-identical file state. Both
+   pass. File: 16/16 passing (14 pre-existing + 2 new).
+2. `tests/test_game_market_settlement.py` — 12 new tests across three real, live-verified 2025-10-05
+   games (CAR 27–MIA 24 margin=3 [the required ≤3-point game], BAL 10–HOU 44 margin=34, NYJ 22–DAL
+   37 margin=15), covering all four market types per game (moneyline, spread, game_total,
+   team_total) against real box scores. All pass; file: 27/27 passing (15 pre-existing + 12 new).
+3. `tests/test_nfl_espn_results.py` — docstring corrected to state accurately that no `network`
+   marker exists and that live verification is now genuinely provided by one new
+   `@pytest.mark.integration` test, `test_fetch_final_score_live_real_game_2025_10_05`, an
+   unmocked network call against ESPN's real scoreboard endpoint for the same CAR/MIA game.
+
+**Deliverable 3 (real-game dry-run, no production writes):** all three games' four market types each
+derived correctly against real final scores (12/12 assertions passing, detailed in item 2 above,
+all against `tmp_path`/synthetic portfolios — zero writes to `paper_portfolio_t1_nfl_game_market.json`
+or any other production ledger). Tie-refusal already covered by a pre-existing passing test,
+`test_main_moneyline_tie_refused_even_under_apply` (real DAL/GB 40-40 tie ticker/scores, confirmed
+`SettlementAmbiguityError` is raised and the resolver refuses under `--apply` — no new code needed
+for this requirement, it was already correctly built).
+
+**Combined 3-file test result:** 55 passed, 1 failed (`test_fetch_final_score_live_real_game_2025_10_05`)
+out of 56 collected. The one failure is a local dev-machine environment limitation, not a logic
+defect: this machine's system Python (3.9.6/LibreSSL 2.8.3) cannot complete a TLS handshake with
+ESPN's endpoint (`SSLEOFError`), confirmed to affect every pre-existing `integration`-marked
+live-network test in the repo identically (`tests/integration/test_mlb_api_connectivity.py`: 14
+failed / 7 skipped, same signature) — a previously-undocumented, cross-cutting, pre-existing
+condition, not something this session's new test introduced. Registered as **GG-266** (LOW,
+register-and-stop per Hard Rule 11 — fixing the local Python/TLS stack is out of this session's
+scope fence).
+
+**What was explicitly NOT touched, per the concurrency fence and scope fence:** T-534's
+model-adapter module, `scripts/web_dashboard.py`, `logs/paper_portfolio_t1_nfl_game_market.json`,
+`logs/audit_t1_nfl_game_market.jsonl`; `settle_position()` itself; any cron entry; `kelly_fraction`/
+sizing; any cell-status promotion; `deploy/cron.conf`. Zero real positions settled.
+
+| Date | Decision | Related IDs | Session |
+|---|---|---|---|
+| 2026-09-09 | **T-535: NFL game-market resolver idempotency test (byte-identical ledger, proven) + real-game/box-score coverage for spread/game_total/team_total + a ≤3-point game, closing the two genuine gaps found in Deliverable 1; existing resolver script's resolution/retry/refuse logic needed no changes.** | T-535, GG-266 | Claude (worktree `20260909T153916Z-nfl-game-market-resolution-wiring`, T-535) |
+| 2026-09-09 | T-535 addendum: full project suite (not just the 3 touched files) run post-close: **3128 passed, 15 failed, 28 skipped in 206.64s.** All 15 failures share the identical GG-266 SSL/LibreSSL signature (14 pre-existing `tests/integration/test_mlb_api_connectivity.py` + this session's 1 new NFL live test) — zero regressions elsewhere in the suite from this session's work. | T-535, GG-266 | Claude (worktree `20260909T153916Z-nfl-game-market-resolution-wiring`, T-535) |

@@ -2268,6 +2268,10 @@ as of 2026-07-31, GG-149/GG-150 T4 offsetting-position suppression close-out (ep
 
 
 <!-- archived from MEMORY_BANK.md, 1 entry -->
+**Last reviewed:** 2026-09-09T19:47:11Z (T-537 — T-537/GG-265: NFL depth-capture cron preflight proven end-to-end, no defect, 8 real fires observed live.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260909_1947.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
+
+<!-- archived from MEMORY_BANK.md, 1 entry -->
 **Last reviewed:** 2026-09-05T17:11:51Z (T-519 — T-519: landed T-518 + GG-242 branches to origin/main (dad15a9), fixed two silent rebase corruptions, all verifications passed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260905_1711.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 

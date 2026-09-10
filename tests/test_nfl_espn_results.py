@@ -1,15 +1,25 @@
 """
-Tests for nfl_espn_results.py (T-527).
+Tests for nfl_espn_results.py (T-527, T-535).
 
 Mocks requests.get against ESPN's real scoreboard JSON shape (confirmed live
 during T-527 via direct `curl` against
 https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard).
-Network-marked tests separately verify the fetcher against three real
-completed 2025-season games.
+
+T-535 correction: this repo has no `network` pytest marker (see
+pyproject.toml's `markers` list -- only unit/integration/temporal/
+calibration/property/golden exist), so the previous claim here of
+"network-marked tests" separately verifying real games was inaccurate --
+no such tests existed anywhere in this file or test_game_market_settlement.py
+prior to T-535. The `@pytest.mark.integration`-marked test below (using the
+marker that already exists, whose stated purpose is "tests requiring real
+I/O") makes a live call against the real ESPN endpoint for a real completed
+2025-season game, verified against the real box score in the assertions.
 """
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from prediction_market_bot.c1_signal_ingestion.nfl_espn_results import (
     NFLGameResult,
@@ -145,3 +155,18 @@ def test_fetch_final_score_api_failure_retries_then_returns_none(mock_sleep, moc
     # 3 retry delays (5, 10, 30) + 1 final attempt = 4 calls.
     assert mock_get.call_count == 4
     assert mock_sleep.call_count == 3
+
+
+@pytest.mark.integration
+def test_fetch_final_score_live_real_game_2025_10_05():
+    """Genuine live network call, no mocking -- real I/O against the real
+    ESPN endpoint (pytest.ini's `integration` marker: "tests requiring real
+    I/O"). Verified during T-535 via direct curl against the same endpoint:
+    CAR (home) 27 - MIA (away) 24 on 2025-10-05, STATUS_FINAL."""
+    result = fetch_nfl_final_score("2025-10-05", "CAR", "MIA")
+    assert result is not None
+    assert result.status == "STATUS_FINAL"
+    assert result.home_team_code == "CAR"
+    assert result.away_team_code == "MIA"
+    assert result.home_score == 27.0
+    assert result.away_score == 24.0
