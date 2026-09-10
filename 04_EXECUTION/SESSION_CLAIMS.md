@@ -499,3 +499,4 @@
 | 2026-09-10T01:12:47Z | T-534 | CLOSED — NFL shadow paper run (real EXP-027 LR adapter, not stub) against tonight's opener markets + additive NFL dashboard panel; zero positions opened (no edge found), GG-267 registered for per-row provenance gap (commit `f3b6965`) |
 | 2026-09-10T01:24:12Z | TBD | fix dashboard /api/data endpoint failure post-T-534 NFL panel add |
 | 2026-09-10T01:24:16Z | TBD | GG-267: per-row NFL model-identity/provenance field (writer side only, no dashboard) |
+| 2026-09-10T01:24:19Z | T-538, GG-268, GG-255 | GG-255 MLB half: T1 MLB game-market run script (moneyline/run_line/game_total/team_total/partial_game) |
