@@ -11,6 +11,7 @@ refusal, not a fill.
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 from pathlib import Path
@@ -35,9 +36,13 @@ from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E
 from prediction_market_bot.execution_bands import ExecutionBand  # noqa: E402
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
 from prediction_market_bot.run_t1_nfl_game_market import (  # noqa: E402
+    UNKNOWN_MODEL_IDENTITY,
     StubNFLForecastModel,
+    _resolve_model_identity,
     evaluate_and_maybe_trade,
+    model_identity_of_position,
 )
+from prediction_market_bot.c5_execution.paper_trader import PaperTrader  # noqa: E402
 
 
 def _make_market(**overrides) -> GameMarket:
@@ -128,3 +133,122 @@ def test_refuses_when_snapshot_has_unparsed_markets(audit):
 def test_check_settlement_ambiguity_raises_on_exact_tie_moneyline():
     with pytest.raises(SettlementAmbiguityError):
         check_settlement_ambiguity(MarketType.NFL_MONEYLINE, actual_stat=0, threshold=0)
+
+
+# ── GG-267: per-row model-identity field ───────────────────────────────────
+#
+# Deliverable 3's three required proofs:
+#   (a) a stub-produced row and an LR-produced row are distinguishable on disk
+#   (b) a legacy row with no field loads and reads UNKNOWN
+#   (c) no code path can write a row with the field absent or empty
+
+
+class _NoIdentityModel:
+    """A model with no PROVENANCE attribute at all -- must resolve UNKNOWN."""
+
+    def predict_proba(self, market, features):
+        return 0.5
+
+
+class _BlankIdentityModel:
+    """A model whose PROVENANCE is present but empty -- must resolve UNKNOWN,
+    not the empty string (an empty PROVENANCE is not a valid identity)."""
+
+    PROVENANCE = ""
+
+    def predict_proba(self, market, features):
+        return 0.5
+
+
+def test_resolve_model_identity_stub_is_explicit_and_not_unknown():
+    identity = _resolve_model_identity(StubNFLForecastModel(fixed_p=0.6))
+    assert identity == StubNFLForecastModel.PROVENANCE
+    assert identity != UNKNOWN_MODEL_IDENTITY
+    assert "STUB" in identity
+
+
+def test_resolve_model_identity_never_returns_none_or_empty():
+    # (c) -- every model, including pathological ones, resolves to a
+    # non-empty string. This is the structural guarantee that no code path
+    # downstream (audit payload, forecast_id, position row) can end up with
+    # an absent or blank model_identity.
+    for model in (_NoIdentityModel(), _BlankIdentityModel()):
+        identity = _resolve_model_identity(model)
+        assert identity == UNKNOWN_MODEL_IDENTITY
+        assert identity  # never "", never None
+
+
+def test_model_identity_of_position_backward_compatible():
+    # (b) -- a legacy row written before GG-267 has no key at all.
+    legacy_row = {"position_id": "POS-LEGACY01", "status": "OPEN"}
+    assert model_identity_of_position(legacy_row) == UNKNOWN_MODEL_IDENTITY
+
+    # A row with the key present but explicitly blank must also read UNKNOWN
+    # -- .get(key) or UNKNOWN, not .get(key, UNKNOWN), is required for this.
+    blank_row = {"model_identity": "", "status": "OPEN"}
+    assert model_identity_of_position(blank_row) == UNKNOWN_MODEL_IDENTITY
+
+    real_row = {"model_identity": "EXP-027 LR (T-531, HYP-012, verdict UNDERPOWERED)"}
+    assert model_identity_of_position(real_row) == real_row["model_identity"]
+
+
+def test_stub_and_lr_rows_distinguishable_on_disk(tmp_path):
+    # (a) -- exercise the real, on-disk PaperTrader position row (not a
+    # mock), proving the field written by paper_trader.py's open_position()
+    # actually differs between a stub-sourced approval and an
+    # LR-identity-sourced approval, and that a caller supplying neither
+    # lands on the same explicit UNKNOWN a legacy row would read.
+    audit = AuditLogger(tmp_path / "audit.jsonl")
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "portfolio.json", logger=audit, kalshi_client=None,
+    )
+
+    base_approval = {
+        "approved_size": 10.0,
+        "approved_direction": "YES",
+        "risk_eval_id": "RISK-1",
+        "forecast_id": "FC-1",
+        "band": "T1_MULTI_DAY",
+        "model_p": 0.6,
+        "gross_edge": 0.04,
+    }
+
+    ok_stub, pos_stub = trader.open_position(
+        approval={**base_approval, "model_identity": StubNFLForecastModel.PROVENANCE},
+        kalshi_ticker="KXNFLGAME-26SEP08DEN-DEN",
+        mid_price=0.56, vig=0.04, game_date="2026-09-08",
+        pool_isolated=True,
+    )
+    assert ok_stub
+    assert pos_stub["model_identity"] == StubNFLForecastModel.PROVENANCE
+
+    lr_identity = "EXP-027 LR (T-531, HYP-012, verdict UNDERPOWERED)"
+    ok_lr, pos_lr = trader.open_position(
+        approval={**base_approval, "forecast_id": "FC-2", "model_identity": lr_identity},
+        kalshi_ticker="KXNFLGAME-26SEP08DEN-DEN",
+        mid_price=0.56, vig=0.04, game_date="2026-09-08",
+        pool_isolated=True,
+    )
+    assert ok_lr
+    assert pos_lr["model_identity"] == lr_identity
+    assert pos_lr["model_identity"] != pos_stub["model_identity"]
+
+    # A caller that never resolves/sets model_identity at all (every
+    # pre-existing MLB/NBA call site) must not silently inherit either
+    # model's label -- it reads the explicit UNKNOWN marker.
+    ok_bare, pos_bare = trader.open_position(
+        approval={**base_approval, "forecast_id": "FC-3"},
+        kalshi_ticker="KXNFLGAME-26SEP08DEN-DEN",
+        mid_price=0.56, vig=0.04, game_date="2026-09-08",
+        pool_isolated=True,
+    )
+    assert ok_bare
+    assert pos_bare["model_identity"] == UNKNOWN_MODEL_IDENTITY
+
+    # Re-read straight off disk (not the in-memory return value) -- proves
+    # the field is actually persisted, not just present on the returned dict.
+    on_disk = json.loads((tmp_path / "portfolio.json").read_text())
+    disk_identities = {p["forecast_id"]: p["model_identity"] for p in on_disk["open_positions"]}
+    assert disk_identities["FC-1"] == StubNFLForecastModel.PROVENANCE
+    assert disk_identities["FC-2"] == lr_identity
+    assert disk_identities["FC-3"] == UNKNOWN_MODEL_IDENTITY

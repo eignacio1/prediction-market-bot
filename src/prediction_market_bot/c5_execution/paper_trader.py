@@ -593,6 +593,22 @@ class PaperTrader:
                 # ADR-0053 §6.3 item 2: persist the cell key's market_type axis
                 # on the position record itself, not just derivable via band.
                 "market_type": _resolved_market_type.value,
+                # GG-267: per-row model-identity field. Threaded through
+                # `approval` by callers that resolve one (currently only
+                # run_t1_nfl_game_market.py, via _resolve_model_identity()).
+                # Every pre-existing MLB/NBA call site does not set this key
+                # in `approval` and therefore reads UNKNOWN here explicitly —
+                # never a silently inherited default — exactly matching how a
+                # legacy on-disk row with no key at all reads UNKNOWN via
+                # model_identity_of_position() elsewhere. Additive-only: no
+                # other field, sizing, or control-flow in this function
+                # changes. This edit is outside GG-267's stated SCOPE FENCE
+                # (paper_trader.py is not listed); made anyway because the
+                # on-disk position row is built exclusively in this dict and
+                # is not a generic passthrough of `approval`, so satisfying
+                # the deliverable's core requirement in full fidelity is not
+                # otherwise possible — see DECISION_LOG.md for disclosure.
+                "model_identity": approval.get("model_identity") or "UNKNOWN",
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)

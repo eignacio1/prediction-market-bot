@@ -40,6 +40,7 @@ How to run:
 from __future__ import annotations
 
 import os
+import re
 import sys
 import uuid
 from pathlib import Path
@@ -145,6 +146,11 @@ class StubNFLForecastModel:
     only. Any report of this script's output MUST state it ran against this
     stub, not a real model, whenever this class is in use."""
 
+    # GG-267: explicit stub marker, mirroring EXP027NFLForecastModel.PROVENANCE
+    # (nfl_exp027_adapter.py) so both models expose identity the same way —
+    # a plain class attribute readable via getattr() without instantiation.
+    PROVENANCE = "STUB — fixed-probability placeholder, NOT a trained model (GG-255)"
+
     def __init__(self, fixed_p: float | None = 0.55) -> None:
         self._fixed_p = fixed_p
 
@@ -152,6 +158,64 @@ class StubNFLForecastModel:
         self, market: GameMarket, features: dict[str, Any]
     ) -> float | None:
         return self._fixed_p
+
+
+# ---------------------------------------------------------------------------
+# Per-row model identity (GG-267). The dashboard's provenance label today is
+# section/run-wide, so a StubNFLForecastModel row and an EXP-027 LR row are
+# currently indistinguishable once written. This resolves a model's identity
+# ONCE per evaluation and threads it explicitly into every audit payload and
+# the position row itself, rather than adding the key ad hoc at each of the
+# ~10 call sites below — a call site that forgets to add the key gets a
+# NameError, not a silently-missing field.
+# ---------------------------------------------------------------------------
+
+UNKNOWN_MODEL_IDENTITY = "UNKNOWN"
+
+_TAG_RE = re.compile(r"[^A-Z0-9]+")
+
+
+def _resolve_model_identity(model: "NFLForecastModel") -> str:
+    """Return `model`'s declared identity, or the explicit UNKNOWN marker.
+
+    Never returns None or "" — every caller of this function gets a
+    non-empty string, so no downstream field can end up absent or blank.
+    Reads a plain class/instance attribute only; never instantiates or
+    calls into `model` (EXP027NFLForecastModel's docstring warns its
+    __init__ re-fits the LR in-memory — identity must be readable without
+    triggering that).
+    """
+    identity = getattr(model, "PROVENANCE", None)
+    if isinstance(identity, str) and identity.strip():
+        return identity
+    return UNKNOWN_MODEL_IDENTITY
+
+
+def _model_identity_tag(identity: str) -> str:
+    """Short forecast_id-safe slug derived from a model identity string.
+
+    Collapses runs of non-alphanumeric characters to a single hyphen and
+    truncates for readability — this is a distinguishing tag embedded in
+    forecast_id, not the identity of record (the full string is carried
+    separately in every payload/row via `model_identity`).
+    """
+    if not identity:
+        return UNKNOWN_MODEL_IDENTITY
+    tag = _TAG_RE.sub("-", identity.upper()).strip("-")
+    return tag[:24] if tag else UNKNOWN_MODEL_IDENTITY
+
+
+def model_identity_of_position(pos: dict[str, Any]) -> str:
+    """Read a position row's model identity, backward-compatible.
+
+    A row written before GG-267 has no `model_identity` key at all; a row
+    written by a caller that didn't resolve one would have it as None/"".
+    Both cases — missing key, and present-but-empty value — must read as
+    the explicit UNKNOWN marker, never silently inherit or infer a value.
+    `.get(...) or UNKNOWN` (not `.get(..., UNKNOWN)`) is required for this:
+    the latter would not catch an explicitly empty-string value.
+    """
+    return pos.get("model_identity") or UNKNOWN_MODEL_IDENTITY
 
 
 # ---------------------------------------------------------------------------
@@ -177,13 +241,21 @@ def evaluate_and_maybe_trade(
       REFUSED_NO_EDGE | REFUSED_STAKE | REJECTED | KILL_SWITCH_HALT |
       C6_WRITE_FAILURE | OPENED
     """
+    # GG-267: resolve once per evaluation, thread explicitly into every
+    # audit payload and the position row below — never re-derived, never
+    # defaulted separately at each call site.
+    model_identity = _resolve_model_identity(model)
+
     # GG-252: refuse to trade out of a batch known to have dropped markets —
     # a snapshot with unparsed_count > 0 signals parser/data-quality
     # uncertainty for the whole fetch, not just the dropped tickers.
     if snapshot_unparsed_count > 0:
         audit.warning(
             COMPONENT, "gg252_unparsed_markets_present",
-            payload={"ticker": mkt.ticker, "unparsed_count": snapshot_unparsed_count},
+            payload={
+                "ticker": mkt.ticker, "unparsed_count": snapshot_unparsed_count,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_UNPARSED"
@@ -192,7 +264,10 @@ def evaluate_and_maybe_trade(
     if market_type is None or not is_t1_game_market(market_type.value):
         audit.warning(
             COMPONENT, "unmapped_market_type",
-            payload={"ticker": mkt.ticker, "market_type": mkt.market_type},
+            payload={
+                "ticker": mkt.ticker, "market_type": mkt.market_type,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_UNPARSED"
@@ -208,6 +283,7 @@ def evaluate_and_maybe_trade(
                 "market_type": market_type.value,
                 "band": BAND.value,
                 "reason": kss.reason,
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -216,7 +292,8 @@ def evaluate_and_maybe_trade(
     if not mkt.has_live_quotes:
         audit.warning(
             COMPONENT, "no_live_quotes",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "REFUSED_NO_MODEL"  # no tradable price -> cannot evaluate
 
@@ -227,7 +304,8 @@ def evaluate_and_maybe_trade(
     if p_estimate is None:
         audit.warning(
             COMPONENT, "no_model_prediction",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "REFUSED_NO_MODEL"
 
@@ -246,6 +324,7 @@ def evaluate_and_maybe_trade(
             payload={
                 "ticker": mkt.ticker, "p_estimate": p_estimate,
                 "market_implied_prob": market_implied_prob,
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -260,13 +339,18 @@ def evaluate_and_maybe_trade(
     except MeasurementStakeRefused as exc:
         audit.warning(
             COMPONENT, "measurement_stake_refused",
-            payload={"ticker": mkt.ticker, "reason": str(exc)},
+            payload={
+                "ticker": mkt.ticker, "reason": str(exc),
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_STAKE"
 
     forecast_record = {
-        "forecast_id": f"T1-NFLGM-{session_id}-{mkt.ticker[-12:]}",
+        "forecast_id": (
+            f"T1-NFLGM-{_model_identity_tag(model_identity)}-{session_id}-{mkt.ticker[-12:]}"
+        ),
         "p_estimate": p_estimate,
         "market_implied_prob": market_implied_prob,
         "edge": edge,
@@ -274,6 +358,7 @@ def evaluate_and_maybe_trade(
         "entry_price_paid": round(entry_price, 4),  # ADR-0050 addendum §C
         "price_stratum": price_stratum,              # ADR-0050 addendum §C
         "contracts": contracts,                       # ADR-0050 addendum §B
+        "model_identity": model_identity,             # GG-267
     }
 
     ok, approval = engine.evaluate_forecast(
@@ -285,7 +370,8 @@ def evaluate_and_maybe_trade(
     if not ok:
         audit.error(
             COMPONENT, "c6_write_failure",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "C6_WRITE_FAILURE"
 
@@ -301,7 +387,10 @@ def evaluate_and_maybe_trade(
     if approval_status == "KILL_SWITCH":
         audit.error(
             COMPONENT, "kill_switch_halt",
-            payload={"ticker": mkt.ticker, "approval": approval},
+            payload={
+                "ticker": mkt.ticker, "approval": approval,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "KILL_SWITCH_HALT"
@@ -313,6 +402,7 @@ def evaluate_and_maybe_trade(
                 "ticker": mkt.ticker,
                 "approval_status": approval_status,
                 "rejection_reason": approval.get("rejection_reason"),
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -323,6 +413,7 @@ def evaluate_and_maybe_trade(
         "entry_price_paid": round(entry_price, 4),  # ADR-0050 addendum §C
         "price_stratum": price_stratum,              # ADR-0050 addendum §C
         "contracts": contracts,                       # ADR-0050 addendum §B
+        "model_identity": model_identity,             # GG-267
     }
 
     trader.open_position(
@@ -352,6 +443,8 @@ def main(model: NFLForecastModel | None = None) -> dict[str, int]:
             file=sys.stderr,
         )
 
+    model_identity = _resolve_model_identity(model)
+
     audit = AuditLogger(AUDIT_LOG_PATH)
     kalshi = KalshiMarketClient.from_env()
     engine = RiskEngine(
@@ -367,7 +460,8 @@ def main(model: NFLForecastModel | None = None) -> dict[str, int]:
         if not ok:
             audit.error(
                 COMPONENT, "fetch_game_markets_failed",
-                payload={"series": series}, session_id=SESSION_ID,
+                payload={"series": series, "model_identity": model_identity},
+                session_id=SESSION_ID,
             )
             outcome_counts["FETCH_FAILED"] = outcome_counts.get("FETCH_FAILED", 0) + 1
             continue
