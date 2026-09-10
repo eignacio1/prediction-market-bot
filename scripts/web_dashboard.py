@@ -854,7 +854,7 @@ function renderPipeLog(lines){
 //
 // Provenance caveat: PaperTrader's stored position schema and this run's
 // audit events do not record a per-row model identity (stub vs EXP-027 LR)
-// — see GG-264 (registered T-534). The badge below is therefore a
+// — see GG-266 (registered T-534). The badge below is therefore a
 // section-wide label sourced live from the run's model class, not a
 // per-row-verified attribution. It is accurate for this run (one model is
 // injected for the whole invocation) but would not distinguish rows if a

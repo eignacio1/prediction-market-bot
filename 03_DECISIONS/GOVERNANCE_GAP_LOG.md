@@ -3146,9 +3146,30 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ---
 
+### GG-267 — No per-row model-identity field in the NFL position/audit data model; dashboard provenance label is section-wide/run-wide, not per-row-verified
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-267 |
+| Category | Data-model gap — discovered during T-534/GG-263 Deliverable 2 (NFL dashboard panel), registered and stopped per Hard Rule 11 rather than fixed in-session (out of that deliverable's additive-only scope fence). |
+| Why it matters | Neither `PaperTrader.open_position()`'s stored position dict (checked field-by-field: `position_id`, `model_p`, `forecast_id`, etc. — no model/provenance field) nor any audit event emitted by `run_t1_nfl_game_market.py` records which model produced a given prediction. The new NFL dashboard panel (`scripts/web_dashboard.py`, `renderNFL()`) labels every row with a single section-wide provenance badge read live from `EXP027NFLForecastModel.PROVENANCE`, which is accurate for any run where exactly one model is injected for the whole invocation (true today) but would silently mislabel or fail to distinguish rows if a future run ever mixed models mid-run (e.g. stub fallback on partial failure, or an A/B of two model versions in one invocation). |
+| Discovery | 2026-09-09, T-534 (this session), while implementing the NFL dashboard panel's provenance badge — the absence of a per-row field was noticed when designing what the badge should actually read per-row vs. per-section. |
+| Resolution | Not fixed — registered and stopped per Hard Rule 11 (one session = one deliverable; `run_t1_nfl_game_market.py` and `paper_trader.py` are outside this session's stated additive-only scope fence: adapter module + dashboard NFL section only). A future task would add a `model_provenance` (or similarly named) field to the stored position dict in `PaperTrader.open_position()` and to the relevant audit event schema in `run_t1_nfl_game_market.py`, then update `renderNFL()` to read it per-row instead of from the section-wide class-attribute badge. |
+| Cross-references | GG-263 (T-534/GG-263, the deliverable during which this was found; see that entry's Resolution for what was actually shipped). |
+| Status | OPEN — no fix attempted this session; section-wide badge is accurate for the single-model-per-run case that holds today, but is a known limitation, not a defect masked as resolved. |
+
+</details>
+
+---
+
 ### GG-263 — NFL infrastructure built across Waves 20-21 (T1 game-market run script, EXP-027 LR model, T4 NFL/NHL sub-bands, capture cron) has no operator-visible output — no live shadow run against real markets, no dashboard panel
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (2026-09-09) · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -3160,7 +3181,7 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | What was found | (1) `run_t1_nfl_game_market.py`'s `main()` has only ever been exercised with its default `StubNFLForecastModel` in tests, never against live Kalshi NFL markets with the real EXP-027 LR injected. (2) `scripts/web_dashboard.py`'s `_load_all_data()` reads four hardcoded MLB paths only — there is no NFL section in the dashboard the operator reads daily, so even a successful shadow run would produce a JSON file nobody looks at. The operator explicitly flagged being "blind to every NFL component built in Waves 20-21" as the reason this session was assigned. |
 | Why it matters | A dashboard/ledger the operator never sees is functionally equivalent to unbuilt work from a decision-making standpoint — Waves 20-21's real engineering effort (a calibrated model, a paper-trading harness, a capture pipeline) has produced zero operator-consumable evidence to date. This is also a governance-adjacent risk in the other direction: without visibility, there's no structural check against a stub-driven or synthetic result ever being mistaken for a live signal (the project's own recurring failure class, e.g. GG-001). |
 | Discovery | 2026-09-09, T-534 (this session), registered at claim time per operator instruction, before any implementation — the gap is the explicit reason this session exists, not a side-finding. |
-| Resolution | This session's two deliverables close it: (1) a thin `NFLForecastModel`-protocol adapter wrapping the EXP-027 LR, injected into `run_t1_nfl_game_market.py::main()` and run once (paper-only, `kalshi_client=None`) against tonight's live KXNFL opener markets; (2) an additive NFL section in `scripts/web_dashboard.py` rendering that run's portfolio/audit output, labeled by model provenance (EXP-027 LR vs. stub) and PAPER status, with existing MLB panels left untouched. See this session's own commits and `DECISION_LOG.md` (2026-09-09) for the executed detail. |
-| Status | OPEN — will be closed at this session's close-out once both deliverables are verified complete (Hard Rule 11: this entry documents the gap this session was assigned to close; it is not marked RESOLVED until that verification is done and recorded). |
+| Resolution | This session's two deliverables closed it: (1) `src/prediction_market_bot/nfl_exp027_adapter.py` — a thin `NFLForecastModel`-protocol adapter wrapping the EXP-027 LR (reproduced in-memory, never persisted), injected into `run_t1_nfl_game_market.py::main()` and run once (paper-only, `kalshi_client=None` unconditional at `run_t1_nfl_game_market.py:362`) against live KXNFL opener markets on 2026-09-09 19:41-19:42 UTC — 827 markets fetched, 771 REFUSED_NO_MODEL, zero positions opened (real result, reported as-is, nothing tuned); (2) an additive NFL section in `scripts/web_dashboard.py` (`_load_all_data()` extended with `nfl_portfolio`/`nfl_audit`/`nfl_model_provenance` keys, new `c-nfl` panel, new `renderNFL()` JS) rendering that run's portfolio/audit output, labeled with a live model-provenance badge (read from `EXP027NFLForecastModel.PROVENANCE`, a class attribute, without instantiating the model) and a hardcoded PAPER badge on every row; existing MLB panels/paths/keys verified unchanged. Dashboard verified by starting the server against this worktree's real `logs/` and curling both `/` and `/api/data` — NFL section renders (provenance badge + "no positions yet" empty state + 933-event audit tally), all pre-existing MLB keys/panel anchors present unchanged. See this session's commits and `DECISION_LOG.md` (2026-09-09) for full detail. |
+| Status | RESOLVED (2026-09-09) — both deliverables verified complete; see GG-267 for one known residual limitation carried forward (per-row model-identity is not persisted in the data model, so the dashboard's provenance label is section-wide/run-wide, not per-row-verified — out of this session's scope fence to fix). |
 
 </details>
