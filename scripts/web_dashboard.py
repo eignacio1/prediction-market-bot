@@ -39,6 +39,14 @@ DATA SOURCES
   logs/audit_mlb.jsonl                 T1 audit (all events incl. bets)
   logs/audit_mlb_t4.jsonl             T4 audit (all events incl. bets)
   logs/paper_mlb_cron.log             PIPE-05 log tail
+
+  NFL (T-534/GG-263, added on top of MLB — additive only, MLB paths above
+  are unchanged):
+  logs/paper_portfolio_t1_nfl_game_market.json   T1 NFL game-market positions (PAPER, SHADOW)
+  logs/audit_t1_nfl_game_market.jsonl            T1 NFL game-market audit log
+  NFL is a separate, manually-invoked, pool-isolated shadow run — NOT on
+  cron, NOT live capital. See the NFL panel's own header for model
+  provenance (EXP-027 LR vs stub) on every render.
 """
 
 from __future__ import annotations
@@ -60,6 +68,17 @@ try:
     from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # T-321
 except Exception:
     CURRENT_LOGIC_EPOCH = None
+
+# NFL model provenance label (T-534/GG-263) — read as a class attribute only,
+# never instantiated here: instantiating EXP027NFLForecastModel re-fits the
+# LR in-memory (expensive) and requires the import-order dance documented in
+# nfl_exp027_adapter.py's own docstring. The dashboard only needs the label
+# string, so it reads PROVENANCE off the class itself.
+try:
+    from prediction_market_bot.nfl_exp027_adapter import EXP027NFLForecastModel
+    _NFL_MODEL_PROVENANCE = EXP027NFLForecastModel.PROVENANCE
+except Exception:
+    _NFL_MODEL_PROVENANCE = "UNAVAILABLE (adapter import failed — see dashboard logs)"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Configuration
@@ -154,6 +173,10 @@ def _load_all_data() -> dict:
         "pipe_mtimes":  _pipe_mtimes(d),
         "server_time":  datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "current_logic_epoch": CURRENT_LOGIC_EPOCH,  # T-321
+        # NFL (T-534/GG-263) — additive only, above MLB keys unchanged.
+        "nfl_portfolio": _load_json(d / "paper_portfolio_t1_nfl_game_market.json"),
+        "nfl_audit":     _load_jsonl(d / "audit_t1_nfl_game_market.jsonl", tail=1000),
+        "nfl_model_provenance": _NFL_MODEL_PROVENANCE,
     }
 
 
@@ -400,6 +423,16 @@ tr:hover td{background:#161b22}
 <div class="panel">
   <div class="panel-hdr">PIPE-05 Log Tail</div>
   <div class="panel-body" style="max-height:220px" id="c-pipe-log"><div class="empty">Loading…</div></div>
+</div>
+
+<!-- NFL (T-534/GG-263) — SHADOW / PAPER ONLY, manually-invoked, additive only.
+     Not on cron, not live capital, separate pool from MLB above. -->
+<div class="panel" style="margin-bottom:10px">
+  <div class="panel-hdr">
+    NFL Game Markets &nbsp;·&nbsp; <span style="color:#e55;font-weight:700">SHADOW — PAPER ONLY</span>
+    <span class="panel-hdr-badge" id="hdr-nfl-provenance"></span>
+  </div>
+  <div class="panel-body" id="c-nfl"><div class="empty">Loading…</div></div>
 </div>
 
 <div class="footer">
@@ -814,6 +847,70 @@ function renderPipeLog(lines){
 }
 
 // ═══════════════════════════════════════════════════════
+// NFL (T-534/GG-263) — SHADOW / PAPER ONLY, separate pool from MLB.
+// Reuses the MLB position-rendering helpers above (dir/f2/f4/ts/outcome/
+// toArr) since NFL positions are written by the same PaperTrader class and
+// share its exact field schema.
+//
+// Provenance caveat: PaperTrader's stored position schema and this run's
+// audit events do not record a per-row model identity (stub vs EXP-027 LR)
+// — see GG-267 (registered T-534). The badge below is therefore a
+// section-wide label sourced live from the run's model class, not a
+// per-row-verified attribution. It is accurate for this run (one model is
+// injected for the whole invocation) but would not distinguish rows if a
+// future run ever mixed models mid-run.
+// ═══════════════════════════════════════════════════════
+function renderNFL(data){
+  const el=document.getElementById('c-nfl');
+  const badgeEl=document.getElementById('hdr-nfl-provenance');
+  const provenance=data.nfl_model_provenance||'UNKNOWN';
+  badgeEl.textContent='model: '+provenance;
+
+  const portfolio=data.nfl_portfolio||{};
+  const open=toArr(portfolio.open_positions);
+  const closed=toArr(portfolio.closed_positions);
+  const audit=data.nfl_audit||[];
+
+  let tally={};
+  for(const e of audit){
+    const et=e.event_type||'unknown';
+    tally[et]=(tally[et]||0)+1;
+  }
+  const tallyRows=Object.entries(tally)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([et,n])=>`<tr><td>${esc(et)}</td><td style="text-align:right">${n}</td></tr>`)
+    .join('');
+  const tallyHtml=audit.length
+    ?`<div style="margin-top:10px">
+        <div class="dim" style="font-size:11px;margin-bottom:4px">Audit event tally (last ${audit.length} events, ${SESSION_LABEL_NFL}):</div>
+        <table class="sys-tbl"><tbody>${tallyRows}</tbody></table>
+      </div>`
+    :'';
+
+  if(!open.length && !closed.length){
+    el.innerHTML=`<div class="empty">No NFL positions yet (this run opened zero paper positions — see audit tally below for why).</div>${tallyHtml}`;
+    return;
+  }
+
+  const rows=(arr,isOpen)=>arr.map(p=>`<tr>
+    <td>${esc(p.kalshi_ticker||'—')}</td>
+    <td>${dir(p.direction)}</td>
+    <td>$${f2(p.size_usd)}</td>
+    <td>${f4(p.model_p)}</td>
+    <td>${isOpen?'<span class="y">OPEN</span>':outcome(p.status)}</td>
+    <td>${ts(p.entered_at)}</td>
+    <td><span class="badge" style="background:#553;color:#fd5">PAPER</span></td>
+  </tr>`).join('');
+
+  el.innerHTML=`
+    <table class="sys-tbl">
+      <thead><tr><th>Ticker</th><th>Side</th><th>Stake</th><th>Model P</th><th>Status</th><th>Entered</th><th></th></tr></thead>
+      <tbody>${rows(open,true)}${rows(closed,false)}</tbody>
+    </table>${tallyHtml}`;
+}
+const SESSION_LABEL_NFL='PAPER/SHADOW, T-534/GG-263';
+
+// ═══════════════════════════════════════════════════════
 // Refresh loop
 // ═══════════════════════════════════════════════════════
 const REFRESH_S=30;
@@ -848,6 +945,7 @@ async function refresh(){
     renderAlerts(data.audit, data.t4_audit);
     renderSystem(data);
     renderPipeLog(data.pipe_log);
+    renderNFL(data);
 
     setStatus(true,'Live');
     scheduleNext();
