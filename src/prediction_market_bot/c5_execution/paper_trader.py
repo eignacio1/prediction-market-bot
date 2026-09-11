@@ -73,6 +73,18 @@ COMPONENT = "C5-PAPER"
 
 INITIAL_BANKROLL_USD: float = 1000.00
 
+# GG-271: rejected_positions is a live ring buffer, not an event log — every
+# Kalshi order rejection is already durably captured in the C6 audit log at
+# write time (open_position()'s "kalshi_order_failed" warning, logged before
+# the append below), so bounding here does not lose the only copy. The bound
+# is sized against this field's one live functional reader,
+# monitor.py::check_failed_order_rate (invoked once per pool per day via
+# run_resolve_mlb.py's 06:30 UTC cron) — 2,000 comfortably spans that daily
+# cadence with multi-day margin even at the accelerated ~1,000-1,200/day
+# rejection rate observed 2026-09-11, while keeping this field's steady-state
+# footprint in the low single-digit MB range regardless of process uptime.
+MAX_REJECTED_POSITIONS: int = 2000
+
 # Box 1.5 (T-442): NO-direction vig coefficient per (market_type, band) cell,
 # extracted from the inline if/elif/band cascade that used to live directly
 # in open_position(). YES-direction bets never consult this table — they use
@@ -322,6 +334,14 @@ class PaperTrader:
             self._state["total_realized_pnl"] = self._ledger_realized_pnl()
             self._state["bankroll_usd"] = self._ledger_bankroll()
             self._state["last_updated"] = _utc_now()
+            # GG-271: enforce the rejected_positions ring buffer on every save,
+            # regardless of which caller appended — this is the single choke
+            # point every mutation already passes through, so bounding here
+            # (rather than at each append site) cannot be bypassed by a future
+            # writer. Drop-oldest: keeps the most recent MAX_REJECTED_POSITIONS.
+            rejected = self._state.get("rejected_positions")
+            if isinstance(rejected, list) and len(rejected) > MAX_REJECTED_POSITIONS:
+                self._state["rejected_positions"] = rejected[-MAX_REJECTED_POSITIONS:]
             self._path.write_text(json.dumps(self._state, indent=2))
             return True
         except OSError:
