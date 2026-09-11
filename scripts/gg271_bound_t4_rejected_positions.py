@@ -79,91 +79,109 @@ def main() -> int:
     logs_dir = portfolio_path.parent
     stamp = _utc_stamp()
 
-    # ---- Step 1: back up the live file, read-only up to this point. ----
-    backup_path = logs_dir / f"{portfolio_path.stem}.pre_gg271_migration.{stamp}.json.bak"
-    shutil.copy2(portfolio_path, backup_path)
-    print(f"Backup written: {backup_path} ({backup_path.stat().st_size} bytes)")
-
-    # ---- Step 2: verify the backup loads and open_positions match exactly. ----
-    live_raw = portfolio_path.read_text()
-    try:
-        live_state = json.loads(live_raw)
-    except json.JSONDecodeError as e:
-        print(f"ABORT: live file failed to parse as JSON: {e}")
-        return 1
-
-    try:
-        backup_state = json.loads(backup_path.read_text())
-    except json.JSONDecodeError as e:
-        print(f"ABORT: backup file failed to parse as JSON: {e}")
-        return 1
-
-    live_open = live_state.get("open_positions", [])
-    backup_open = backup_state.get("open_positions", [])
-    if live_open != backup_open:
-        print(
-            "ABORT: backup open_positions does not match live open_positions "
-            f"exactly (live n={len(live_open)}, backup n={len(backup_open)}). "
-            "No changes made to the live file. Restore is not needed -- the "
-            "live file was never touched."
-        )
-        return 1
-    print(f"Backup verification OK: open_positions match exactly (n={len(live_open)}).")
-
-    pre_rejected = live_state.get("rejected_positions", [])
-    pre_size = portfolio_path.stat().st_size
-    print(
-        f"Pre-migration: file={pre_size} bytes, "
-        f"open_positions={len(live_open)}, "
-        f"closed_positions={len(live_state.get('closed_positions', []))}, "
-        f"rejected_positions={len(pre_rejected)}"
-    )
-
-    if args.dry_run:
-        print("--dry-run: stopping before sidecar write / migration.")
-        return 0
-
-    # ---- Step 3: durably preserve the FULL pre-migration rejected_positions
-    # list before anything is truncated. Never overwritten (timestamped). ----
-    sidecar_path = logs_dir / f"{portfolio_path.stem}.rejected_positions_history.{stamp}.json"
-    sidecar_path.write_text(json.dumps(
-        {
-            "source_file": str(portfolio_path),
-            "migrated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
-            "gap": "GG-271",
-            "reason": (
-                "Full rejected_positions history preserved before the live "
-                "portfolio file's copy was bounded to MAX_REJECTED_POSITIONS "
-                "most-recent entries. Every entry here was already logged "
-                "individually to the C6 audit log (kalshi_order_failed) at "
-                "write time, but this sidecar preserves the FULL position "
-                "record (model_p, gross_edge, band, market_type, etc.), "
-                "which the audit log entry does not carry."
-            ),
-            "entry_count": len(pre_rejected),
-            "rejected_positions": pre_rejected,
-        },
-        indent=2,
-    ))
-    print(f"Sidecar written: {sidecar_path} (n={len(pre_rejected)} entries preserved)")
-
-    # ---- Step 4: migrate through PaperTrader's own lock/save discipline. ----
+    # GG-271 (live-tested finding): the live T4 writer's _save() uses
+    # `Path.write_text()`, which truncates-then-writes -- NOT an atomic
+    # temp-file-plus-rename. A plain, lock-free read of this file (as an
+    # earlier version of this script did for its backup/verify step) can
+    # therefore observe a torn/empty file mid-write. This was directly
+    # observed during dry-run testing against the live file: a `.stat()`
+    # call immediately following a successful `.read_text()` parse reported
+    # 0 bytes. Every read this script performs against the live file is
+    # therefore done while holding the SAME `_file_lock()` the live writer
+    # (`run_t4_mlb_live.py`, via `open_position()`/`_save()`) uses -- backup,
+    # verification, sidecar preservation, and migration all happen inside
+    # one lock acquisition, so no writer can interleave a torn state between
+    # any of these steps.
     audit_log_path = logs_dir / "audit_mlb_t4.jsonl"
     logger = AuditLogger(log_path=audit_log_path, min_severity="INFO")
     trader = PaperTrader(portfolio_path=portfolio_path, logger=logger)
+
+    backup_path = logs_dir / f"{portfolio_path.stem}.pre_gg271_migration.{stamp}.json.bak"
+    sidecar_path = logs_dir / f"{portfolio_path.stem}.rejected_positions_history.{stamp}.json"
+
     with trader._lock, trader._file_lock():
+        # ---- Step 1: reload the latest committed state under the lock,
+        # then back it up. shutil.copy2 is now safe: no writer can be
+        # mid-write while we hold this exclusive flock. ----
         trader._reload_locked()
+        pre_size = portfolio_path.stat().st_size
+        shutil.copy2(portfolio_path, backup_path)
+        print(f"Backup written: {backup_path} ({backup_path.stat().st_size} bytes)")
+
+        live_state = trader._state
+        live_open = live_state.get("open_positions", [])
+
+        # ---- Step 2: verify the backup loads and open_positions match
+        # exactly. Both reads happened under the same lock hold, so this
+        # is a same-instant comparison, not a race against a live writer. ----
+        try:
+            backup_state = json.loads(backup_path.read_text())
+        except json.JSONDecodeError as e:
+            print(f"ABORT: backup file failed to parse as JSON: {e}")
+            return 1
+
+        backup_open = backup_state.get("open_positions", [])
+        if live_open != backup_open:
+            print(
+                "ABORT: backup open_positions does not match live open_positions "
+                f"exactly (live n={len(live_open)}, backup n={len(backup_open)}). "
+                "No changes made to the live file. Restore is not needed -- the "
+                "live file was never touched."
+            )
+            return 1
+        print(f"Backup verification OK: open_positions match exactly (n={len(live_open)}).")
+
+        pre_rejected = live_state.get("rejected_positions", [])
+        print(
+            f"Pre-migration: file={pre_size} bytes, "
+            f"open_positions={len(live_open)}, "
+            f"closed_positions={len(live_state.get('closed_positions', []))}, "
+            f"rejected_positions={len(pre_rejected)}"
+        )
+
+        if args.dry_run:
+            print("--dry-run: stopping before sidecar write / migration.")
+            return 0
+
+        # ---- Step 3: durably preserve the FULL pre-migration
+        # rejected_positions list before anything is truncated. Never
+        # overwritten (timestamped). ----
+        sidecar_path.write_text(json.dumps(
+            {
+                "source_file": str(portfolio_path),
+                "migrated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
+                "gap": "GG-271",
+                "reason": (
+                    "Full rejected_positions history preserved before the live "
+                    "portfolio file's copy was bounded to MAX_REJECTED_POSITIONS "
+                    "most-recent entries. Every entry here was already logged "
+                    "individually to the C6 audit log (kalshi_order_failed) at "
+                    "write time, but this sidecar preserves the FULL position "
+                    "record (model_p, gross_edge, band, market_type, etc.), "
+                    "which the audit log entry does not carry."
+                ),
+                "entry_count": len(pre_rejected),
+                "rejected_positions": pre_rejected,
+            },
+            indent=2,
+        ))
+        print(f"Sidecar written: {sidecar_path} (n={len(pre_rejected)} entries preserved)")
+
+        # ---- Step 4: migrate through PaperTrader's own lock/save
+        # discipline -- still inside the same lock hold as the backup. ----
         n_before_bound = len(trader._state.get("rejected_positions", []))
         ok = trader._save()
-    if not ok:
-        print("ABORT: PaperTrader._save() returned False -- disk write failed. Investigate before retrying.")
-        return 1
+        if not ok:
+            print("ABORT: PaperTrader._save() returned False -- disk write failed. Investigate before retrying.")
+            return 1
 
-    # ---- Step 5: re-verify open_positions unchanged, report before/after. ----
-    post_raw = json.loads(portfolio_path.read_text())
-    post_open = post_raw.get("open_positions", [])
-    post_rejected = post_raw.get("rejected_positions", [])
-    post_size = portfolio_path.stat().st_size
+        # ---- Step 5: re-verify open_positions unchanged, report
+        # before/after -- still under the lock, so this read cannot race
+        # a subsequent writer either. ----
+        post_raw = json.loads(portfolio_path.read_text())
+        post_open = post_raw.get("open_positions", [])
+        post_rejected = post_raw.get("rejected_positions", [])
+        post_size = portfolio_path.stat().st_size
 
     if post_open != live_open:
         print(
