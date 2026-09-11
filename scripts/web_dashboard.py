@@ -54,8 +54,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
-from collections import deque
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -101,14 +101,59 @@ def _load_json(p: Path) -> dict:
         return {}
 
 
+_STRING_OR_BRACKET_RE = re.compile(r'"(?:\\.|[^"\\])*"|[\[\]]')
+
+
+def _strip_json_array_key_scan(text: str, key: str, start: int) -> str:
+    """General fallback: bracket-depth scan from `start` (index of the
+    array's opening `[`) to find its matching `]`, string/escape aware via
+    re.finditer so it works regardless of nested brackets/strings inside the
+    array. No-ops (returns `text` unchanged) if no match is found.
+
+    This is the correctness-preserving path for any key/position — including
+    the fast path's own validation fallback below — but it's O(array size):
+    a hand-rolled char-by-char version of this scan took 14.15s against the
+    VPS's real 39MB t4 file, and this regex-token version (walking whole
+    string tokens in one C-level step instead of one Python loop iteration
+    per character) still takes ~4.6s (GG-272/T-540, measured directly). Both
+    numbers are why `_strip_json_array_key` below tries an O(1) shortcut
+    first and only falls back to this scan when that shortcut doesn't apply.
+    """
+    depth = 0
+    for m in _STRING_OR_BRACKET_RE.finditer(text, start):
+        tok = m.group()
+        if tok == "[":
+            depth += 1
+        elif tok == "]":
+            depth -= 1
+            if depth == 0:
+                return text[:start] + "[]" + text[m.end():]
+        # else: a whole string token, matched (and skipped) in one step
+    return text
+
+
 def _strip_json_array_key(text: str, key: str) -> str:
     """Replace `"<key>": [...]` with `"<key>": []` in a raw JSON text blob.
 
-    Bracket-depth scan, string/escape aware, so it works regardless of key
-    order or nested brackets/strings inside the array. No-ops (returns text
-    unchanged) if `key` isn't found or its value isn't an array — callers
-    still json.load the result either way, so a no-op just means no memory
-    was saved, never a parse failure.
+    No-ops (returns text unchanged) if `key` isn't found or its value isn't
+    an array — callers still json.load the result either way, so a no-op
+    just means no memory was saved, never a parse failure.
+
+    GG-272/T-540: the general scan (`_strip_json_array_key_scan`) is
+    correct for any key/position but costs several seconds against the
+    VPS's real 39MB t4 file — too slow for "comfortably under 2s" even after
+    a regex-based speedup (see that function's docstring for the numbers).
+    `rejected_positions` is confirmed (2026-09-11, GG-272) to be that file's
+    *last* top-level key, so its closing `]` is necessarily the last `]` in
+    the whole text, immediately followed (mod whitespace) by the object's
+    final `}` — a fact checkable with a couple of C-level `rfind`/`strip`
+    calls in ~O(1) time regardless of file size, instead of scanning the
+    ~35MB array itself. That shortcut is verified before use by parsing the
+    resulting (now-small) candidate text with `json.loads` — cheap once the
+    huge array is gone (~0.1s on the real file) — and this function falls
+    back to the general scan whenever the shortcut doesn't apply (wrong key,
+    reordered fields, malformed candidate), so correctness never depends on
+    this key staying last.
     """
     needle = f'"{key}"'
     i = text.find(needle)
@@ -123,30 +168,20 @@ def _strip_json_array_key(text: str, key: str) -> str:
     if j >= len(text) or text[j] != "[":
         return text
     start = j
-    depth = 0
-    in_str = False
-    escape = False
-    k = start
-    while k < len(text):
-        c = text[k]
-        if in_str:
-            if escape:
-                escape = False
-            elif c == "\\":
-                escape = True
-            elif c == '"':
-                in_str = False
-        else:
-            if c == '"':
-                in_str = True
-            elif c == "[":
-                depth += 1
-            elif c == "]":
-                depth -= 1
-                if depth == 0:
-                    return text[:start] + "[]" + text[k + 1:]
-        k += 1
-    return text
+
+    last_brace = text.rfind("}")
+    if last_brace > start and not text[last_brace + 1:].strip():
+        last_close = text.rfind("]", start, last_brace)
+        if last_close != -1 and not text[last_close + 1:last_brace].strip():
+            candidate = text[:start] + "[]" + text[last_close + 1:]
+            try:
+                json.loads(candidate)
+            except ValueError:
+                pass
+            else:
+                return candidate
+
+    return _strip_json_array_key_scan(text, key, start)
 
 
 def _load_json_dropping_key(p: Path, key: str) -> dict:
@@ -175,26 +210,47 @@ def _load_json_dropping_key(p: Path, key: str) -> dict:
         return {}
 
 
+def _read_tail_lines(p: Path, n: int, chunk_size: int = 1 << 16) -> list[str]:
+    """Return the last `n` non-empty lines of a file, seeking backward from
+    EOF in chunks (like `tail -n`) instead of reading/iterating the whole
+    file (GG-272/T-540).
+
+    `audit_mlb_t4.jsonl` (433MB) and `audit_mlb.jsonl` (101MB) on the VPS
+    made the previous approach — a bounded-memory deque fed by `for line in
+    f` over the entire file — bounded in memory but not in *time*: it still
+    read and split every byte of both files on every /api/data request,
+    ~2s by itself even after the rejected_positions fix below brought that
+    key's own cost to ~0.1s. Reading backward in fixed-size chunks until
+    enough newlines are seen touches only the tail actually needed,
+    regardless of how large the rest of the file grows.
+    """
+    with open(p, "rb") as f:
+        f.seek(0, os.SEEK_END)
+        pos = f.tell()
+        blocks: list[bytes] = []
+        newlines = 0
+        while pos > 0 and newlines <= n:
+            read_size = min(chunk_size, pos)
+            pos -= read_size
+            f.seek(pos)
+            block = f.read(read_size)
+            blocks.append(block)
+            newlines += block.count(b"\n")
+        data = b"".join(reversed(blocks))
+    text = data.decode("utf-8", errors="replace")
+    lines = [ln for ln in text.splitlines() if ln.strip()]
+    return lines[-n:] if n else lines
+
+
 def _load_jsonl(p: Path, tail: int = 500) -> list[dict]:
     if not p.exists():
         return []
-    # Keep only the last `tail` raw lines in memory (bounded deque), then
-    # parse just those. Audit logs grow unbounded (tens of MB after a few
-    # days of live MLB activity) — parsing every line into a dict before
-    # slicing to the tail held the entire file's worth of Python objects
-    # in memory at once, which is what was blowing past the service's
-    # 128M MemoryMax and OOM-killing the dashboard in a restart loop.
-    buf: deque[str] = deque(maxlen=tail)
     try:
-        with open(p) as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    buf.append(line)
+        lines = _read_tail_lines(p, tail)
     except Exception:
-        pass
+        lines = []
     entries: list[dict] = []
-    for line in buf:
+    for line in lines:
         try:
             entries.append(json.loads(line))
         except json.JSONDecodeError:
@@ -206,9 +262,7 @@ def _load_tail(p: Path, n: int = 40) -> list[str]:
     if not p.exists():
         return []
     try:
-        with open(p) as f:
-            lines = f.readlines()
-        return [ln.rstrip() for ln in lines[-n:]]
+        return _read_tail_lines(p, n)
     except Exception:
         return []
 
