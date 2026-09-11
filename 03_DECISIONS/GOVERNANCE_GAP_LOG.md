@@ -3185,3 +3185,47 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | RESOLVED (2026-09-09) — both deliverables verified complete; see GG-267 for one known residual limitation carried forward (per-row model-identity is not persisted in the data model, so the dashboard's provenance label is section-wide/run-wide, not per-row-verified — out of this session's scope fence to fix). |
 
 </details>
+
+---
+
+### GG-270 — `scripts/web_dashboard.py`'s `/api/data` unbounded-`json.load()` of `paper_portfolio_mlb_t4.json` OOM-killed the dashboard service in a restart loop, blanking every panel (MLB and NFL alike) behind a false "SSH tunnel" error
+
+**Status:** RESOLVED (2026-09-09/10) · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-270 |
+| Category | Production incident — resource-exhaustion defect in `scripts/web_dashboard.py`, discovered live by the operator. |
+| What was found | The operator reported the dashboard at localhost:8050 loading its shell (confirming post-T-534 NFL code was deployed) but every panel — MLB (BANKROLL, CUM P&L, DRAWDOWN, LIVE POSITIONS, TRADE LOG, SYSTEM STATUS, PIPE-05 LOG TAIL) and NFL alike — stuck on "Loading..." behind a red banner: "Cannot fetch data: Load failed. Check SSH tunnel is open." Deliverable 1 (`systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,SubState` + `journalctl -u pmbot-web-dashboard.service --since '-24 hour' \| grep -c oom-kill`) found the service in an active OOM-kill/`Restart=always` crash loop — `NRestarts` climbing and repeated `oom-kill` lines in the journal, `ActiveState=active` throughout (the exact GG-118 blind spot: an `is-active` check alone would have reported healthy mid-loop). This does not cleanly fit the standard localization bucket taxonomy (a: non-200/exception: no — the process never returns any response, it is SIGKILLed mid-request; b: slow-200/browser-timeout: no — there is no slow response, just none; c: fast-200-healthy: no) — it is a fourth, distinct failure mode: a hard cgroup `MemoryMax=128M` kill, uncatchable by any in-process try/except, recurring on the ~30s poll cadence the frontend uses to call `/api/data`. |
+| Why it matters | Deliverable 2 root-caused it to `scripts/web_dashboard.py`'s `_load_json()` performing a full unbounded `json.load()` of `paper_portfolio_mlb_t4.json` on every `/api/data` request. Direct VPS inspection found the file at 37,799,957 bytes, of which the `rejected_positions` array — confirmed via full-file grep of the frontend JS to be read nowhere in the UI — spans ~33.4MB (~88%) as the file's last top-level key. Timing `_load_all_data()` in isolation showed this call alone costing ~4.3s and ~96MB of peak Python-object memory per request, comfortably exceeding the service's 128M `MemoryMax` cgroup cap on every poll. `_load_jsonl()` already uses a bounded `deque(maxlen=tail)` from a prior fix; `_load_json()` had no equivalent bound — this asymmetry was the crux. The failure mode is structurally severe because it is total and silent-to-the-operator: a misleading "check SSH tunnel" banner masked a server-side resource exhaustion, and — before this fix — a single oversized/malformed MLB input file could take down the NFL panel too, violating the isolation invariant that "a blank MLB dashboard is never an acceptable consequence of an NFL problem" (and the converse). |
+| Discovery | 2026-09-09/10, T-539 (this session), operator-reported ("The MLB panels are dead too. This is NOT an NFL rendering bug.") — explicit correction against an initial hypothesis. |
+| Resolution | Two changes to `scripts/web_dashboard.py`, both additive and stdlib-only (no third-party JSON streaming library — the file's own docstring commits to stdlib-only): (1) new `_strip_json_array_key()` — a bracket-depth, string/escape-aware raw-text scanner that removes a named key's array value (replacing it with `[]`) *before* `json.loads()` is called, so the ~24,231 `rejected_positions` objects are never constructed at all (not parsed-then-discarded, which would still pay the CPU/memory cost) — and `_load_json_dropping_key()`, which applies it specifically to `paper_portfolio_mlb_t4.json`'s `rejected_positions` field; every other field, including `closed_positions` (which the frontend's `renderPortfolio()` reduces over for bankroll/P&L/drawdown/win-rate) stays byte-identical to a plain `_load_json()` call. (2) `_load_all_data()` rewritten so every returned key is wrapped in a `safe(fn, default)` closure — a second layer of per-key isolation on top of each loader's own existing try/except, so no single key's loader, however it fails, can take down the rest of the `/api/data` payload. Regression coverage added in `tests/test_web_dashboard_api.py` (11 tests): `_strip_json_array_key` correctness (basic replace, no-op on missing/non-array key, nested brackets/escaped quotes inside the array, key-as-last-field); `_load_json_dropping_key` (drops target key, tolerates missing/malformed file); and three live-server `/api/data` end-to-end tests — 200 with a complete MLB payload when both NFL files are absent (T-534's NFL block is additive-only, must not be able to take MLB down, and vice versa), 200 with a 20,000-entry `rejected_positions` array present, and 200 (with `t4_portfolio` degrading to `{}`) when the T4 portfolio file is outright corrupt JSON. No MLB panel, path, key, or query was changed; `deploy/cron.conf`/the archiver/`kelly_fraction`/`run_t1_nfl_game_market.py` were not touched. Deployed and verified live on the VPS (see `DECISION_LOG.md` 2026-09-09/10 entry for the post-fix `systemctl`/`curl` verification transcript). |
+| Cross-references | GG-118 (prior OOM-restart-loop precedent on this same service; this incident recurred through a different code path — `_load_json()`'s unbounded parse rather than the mechanism GG-118 fixed); GG-271 (the upstream defect this fix works around — the T4 MLB writer process's unbounded growth of `rejected_positions` — registered and explicitly not fixed in this session, per Hard Rule 11). |
+| Status | RESOLVED (2026-09-09/10) — fix deployed and verified live; regression tests passing (11/11). |
+
+</details>
+
+---
+
+### GG-271 — T4 MLB writer process appends an unbounded `rejected_positions` array to `paper_portfolio_mlb_t4.json` (24k+ entries / ~33MB observed 2026-09-10); register-and-stop, out of scope for this session
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-271 |
+| Category | Upstream data-growth defect, discovered while root-causing GG-270 (dashboard OOM-kill) but living in a different process/file entirely. |
+| What was found | `paper_portfolio_mlb_t4.json`'s `rejected_positions` array grew to 24,231+ entries (~33.4MB of the file's 37,799,957 total bytes, ~88%, confirmed via direct byte-offset inspection on the VPS) with no apparent cap, rotation, or archival — whatever T4 MLB writer process appends to this list (not `scripts/web_dashboard.py`, which only reads it) has no bound on its growth. `closed_positions` in the same file was also noted, as a related but not-yet-urgent watch item, to be on a growth trajectory worth re-checking as more game-days accumulate — it is not yet large enough to be a problem and was not measured precisely in this session. |
+| Why it matters | GG-270's dashboard-side fix (dropping the key before parse, in the *reader*) works around the symptom but does not address the cause: the file will keep growing unbounded regardless, eventually threatening other future readers/writers of this file (backups, any future tooling that does need `rejected_positions`, disk usage on the VPS) even though the dashboard itself is now immune. A rejected-position record that is genuinely never needed downstream is better capped, rotated, or dropped at write time than grown forever and worked around at every read site. |
+| Discovery | 2026-09-09/10, T-539 (this session), while root-causing GG-270 — the writer process and its file are outside `scripts/web_dashboard.py`, the scope fence for this session's dashboard-fix task. |
+| Resolution | Not attempted — register-and-stop per Hard Rule 11 ("one session = one deliverable... a defect found outside the current task's scope gets a GG-NNN/T-NNN and nothing else"). A future task should identify the specific T4 MLB writer code path that appends to `rejected_positions`, decide whether it needs to be retained at all (dashboard confirms it's never read by the UI), and if so cap/rotate/archive it rather than growing it unbounded in the live portfolio file. Also worth checking at that time: `closed_positions`' growth trajectory in the same file, noted here only as a watch item, not yet measured or urgent. |
+| Cross-references | GG-270 (the dashboard-side symptom this defect caused; this entry is the upstream cause GG-270's fix works around rather than resolves). |
+| Status | OPEN — no fix attempted this session; needs a future task scoped to the T4 MLB writer process. |
+
+</details>
