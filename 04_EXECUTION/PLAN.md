@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-10T01:11:00Z (T-534 — NFL shadow paper run (real EXP-027 LR adapter, not stub) against tonight's opener markets + additive NFL dashboard panel; zero positions opened (no edge found), GG-267 registered for per-row provenance gap) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260910_0111.md` for full session detail.
+**Last reviewed:** 2026-09-11T14:36:00Z (T-538 — T-538/GG-255 MLB T1 game-market run script built, ported from NFL precedent, GG-255 -> LIKELY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1436.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
