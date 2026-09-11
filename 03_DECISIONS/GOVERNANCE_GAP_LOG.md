@@ -3300,3 +3300,26 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | RESOLVED (2026-09-11) — unit file changed `CPUQuota=10%` → `50%`, committed/pushed (`43877e3`), and deployed to the VPS. Deploy required an out-of-band manual step beyond the standard `git pull` pattern (see Resolution: `/etc/systemd/system/pmbot-web-dashboard.service` was a stale, separately-installed copy not kept in sync by `git pull` — a genuine, previously-unknown deploy-process gap worth flagging for any future systemd unit-file change in this repo). Live-verified: 5x curl HTTP 200 @ 0.733-0.879s, `cpu.stat` diff showing throttling reduced from ~3.38s/request to ~0.40s/request, non-null MLB payload confirmed, `deploy/cron.conf`/archiver untouched. |
 
 </details>
+
+### GG-274 — NFL T1 settlement path (market → forecast → size → position → settlement) has never been exercised end-to-end against a real resolved game
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-274 |
+| Category | Systemic blind spot — untested integration path |
+| What was missed | T-534 ran a paper shadow against the Week 1 NFL opener with the EXP-027 LR; T-535 built and "hardened" the resolver (`settle_position()`, idempotency guard, not-yet-final guard, `check_settlement_ambiguity()` per GG-257). Neither session ran the resolver against a real shadow-run position resolved against a real final score — all prior validation was unit-test/fixture-level. The entire chain market → forecast → size → position → settlement has zero live end-to-end evidence prior to this entry. |
+| When it should have been caught | At T-535's close-out — a "hardened" claim about idempotency and refusal-path behavior should have been backed by at least one live dry run against a T-534-produced position, not only synthetic fixtures. |
+| Phases it survived | T-534 (shadow run) → T-535 (resolver build + harden) → both sessions' close-outs, with no integration checkpoint between them (Hard Rule 11 single-deliverable scoping meant "settle a real position end-to-end" was never any single session's stated deliverable until now). |
+| Why it survived | STANDARD-tier task scoping kept T-534 and T-535 each to their own isolated deliverable (shadow-run vs. resolver-build); no session before this one owned the integration step. |
+| Impact | Unknown, until this session, whether the resolver's per-market-type derivation (moneyline/spread/totals actual_stat vs. threshold), the not-yet-final guard, and the idempotency guarantee actually hold against a real portfolio JSON file and a real final score — as opposed to holding only against unit-test fixtures. |
+| Discovery | Operator-directed task (T-543, 2026-09-11): "Nothing has ever been settled through this path. This block closes the first full loop end-to-end." |
+| Resolution | This session (T-543): gate-check for real T-534 shadow positions; independent-sourced, FINAL-confirmed score; line-by-line hand-verified dry run against a COPY of the portfolio; then (only if the dry run is clean) a real settlement run against the live file with a pre-verified backup and a proven byte-identical idempotent second pass. Outcome and final status recorded at session close-out. |
+| Cross-references | T-534 (shadow run), T-535 (resolver build/harden), GG-257 (tie-refusal via `check_settlement_ambiguity()`, registered not assigned here). |
+| Status | OPEN — will be updated at this session's close-out to reflect the actual outcome (settled cleanly / gated-and-stopped at zero positions / defect found). |
+
+</details>
