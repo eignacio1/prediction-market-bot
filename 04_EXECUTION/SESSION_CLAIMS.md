@@ -507,3 +507,4 @@
 | 2026-09-11T14:43:40Z | T-538 | CLOSED — merged to origin/main via PR #128 (merge commit `38b42ee`), MERGE_CHECK: YES, HEAD (`7c1f1de`) confirmed ancestor of origin/main — T-538/GG-255 MLB T1 game-market run script |
 | 2026-09-11T15:02:56Z | T-541 | CLOSED — Dashboard "Cannot fetch data" blind-panel incident (OOM-kill + latency + CPU throttle) fully root-caused, fixed, deployed, and live-verified — GG-270/GG-272/GG-273 all RESOLVED (commit `982bb25`) |
 | 2026-09-11T15:06:48Z | T-541 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
+| 2026-09-11T15:24:59Z | T-542, GG-271 | STANDARD — bound rejected_positions growth in paper_portfolio_mlb_t4.json (GG-271: measure, decide fix, implement under lock, prove bounded) |
