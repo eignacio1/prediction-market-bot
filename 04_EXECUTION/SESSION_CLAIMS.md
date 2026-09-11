@@ -505,3 +505,4 @@
 | 2026-09-11T14:05:31Z | GG-272, T-540 | GG-272/T-540: fix /api/data latency regression (slow strip scan + full-file jsonl tail read) introduced by T-539's own OOM fix, before Deliverable 4 could verify it live |
 | 2026-09-11T14:40:25Z | T-538 | MERGED: NO — branch `session/20260910T012345Z-gg255-mlb-t1-game-market-run-script` awaiting merge — T-538/GG-255 MLB T1 game-market run script built, ported from NFL precedent, GG-255 -> LIKELY RESOLVED (commit `123f44b`) |
 | 2026-09-11T14:43:40Z | T-538 | CLOSED — merged to origin/main via PR #128 (merge commit `38b42ee`), MERGE_CHECK: YES, HEAD (`7c1f1de`) confirmed ancestor of origin/main — T-538/GG-255 MLB T1 game-market run script |
+| 2026-09-11T15:02:56Z | T-541 | CLOSED — Dashboard "Cannot fetch data" blind-panel incident (OOM-kill + latency + CPU throttle) fully root-caused, fixed, deployed, and live-verified — GG-270/GG-272/GG-273 all RESOLVED (commit `982bb25`) |
