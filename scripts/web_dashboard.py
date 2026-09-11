@@ -59,7 +59,7 @@ from collections import deque
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 _src = Path(__file__).parent.parent / "src"
 if str(_src) not in sys.path:
@@ -97,6 +97,80 @@ def _load_json(p: Path) -> dict:
     try:
         with open(p) as f:
             return json.load(f)
+    except Exception:
+        return {}
+
+
+def _strip_json_array_key(text: str, key: str) -> str:
+    """Replace `"<key>": [...]` with `"<key>": []` in a raw JSON text blob.
+
+    Bracket-depth scan, string/escape aware, so it works regardless of key
+    order or nested brackets/strings inside the array. No-ops (returns text
+    unchanged) if `key` isn't found or its value isn't an array — callers
+    still json.load the result either way, so a no-op just means no memory
+    was saved, never a parse failure.
+    """
+    needle = f'"{key}"'
+    i = text.find(needle)
+    if i == -1:
+        return text
+    j = text.find(":", i + len(needle))
+    if j == -1:
+        return text
+    j += 1
+    while j < len(text) and text[j] in " \t\r\n":
+        j += 1
+    if j >= len(text) or text[j] != "[":
+        return text
+    start = j
+    depth = 0
+    in_str = False
+    escape = False
+    k = start
+    while k < len(text):
+        c = text[k]
+        if in_str:
+            if escape:
+                escape = False
+            elif c == "\\":
+                escape = True
+            elif c == '"':
+                in_str = False
+        else:
+            if c == '"':
+                in_str = True
+            elif c == "[":
+                depth += 1
+            elif c == "]":
+                depth -= 1
+                if depth == 0:
+                    return text[:start] + "[]" + text[k + 1:]
+        k += 1
+    return text
+
+
+def _load_json_dropping_key(p: Path, key: str) -> dict:
+    """Like _load_json, but strips `key`'s array value out of the raw text
+    before parsing, instead of letting json.load() materialize it.
+
+    paper_portfolio_mlb_t4.json's `rejected_positions` list grows unbounded
+    (24k+ entries, ~33MB of the file's ~38MB observed 2026-09-10) and is
+    never read by the dashboard frontend (grep confirms only open_positions/
+    closed_positions are consumed) — parsing it into Python objects on every
+    /api/data request cost ~4.3s and ~96MB of peak memory per call, blowing
+    past the service's 128M MemoryMax and OOM-killing the process in a
+    restart loop (GG-270/T-539). This drops it before parse time so those
+    objects are never constructed, while every other field stays
+    byte-identical to a plain _load_json call.
+    """
+    try:
+        with open(p) as f:
+            text = f.read()
+    except Exception:
+        return {}
+    text = _strip_json_array_key(text, key)
+    try:
+        return json.loads(text)
     except Exception:
         return {}
 
@@ -163,19 +237,33 @@ def _pipe_mtimes(d: Path) -> dict[str, str]:
 
 def _load_all_data() -> dict:
     d = _log_dir
+
+    # Per-key isolation (GG-270/T-539): each loader already swallows its own
+    # I/O/parse exceptions and returns an empty default, but this wraps the
+    # call itself too, so no single key's loader — however it fails — can
+    # take down the rest of the /api/data payload.
+    def safe(fn: Callable[[], Any], default: Any) -> Any:
+        try:
+            return fn()
+        except Exception:
+            return default
+
     return {
-        "portfolio":    _load_json(d / "paper_portfolio_mlb.json"),
-        "t4_portfolio": _load_json(d / "paper_portfolio_mlb_t4.json"),
+        "portfolio":    safe(lambda: _load_json(d / "paper_portfolio_mlb.json"), {}),
+        # rejected_positions grows unbounded and isn't read by the frontend —
+        # dropped before parse time, not after. See _load_json_dropping_key.
+        "t4_portfolio": safe(lambda: _load_json_dropping_key(
+            d / "paper_portfolio_mlb_t4.json", "rejected_positions"), {}),
         # Pull more audit history so the trade log is comprehensive
-        "audit":        _load_jsonl(d / "audit_mlb.jsonl",    tail=1000),
-        "t4_audit":     _load_jsonl(d / "audit_mlb_t4.jsonl", tail=500),
-        "pipe_log":     _load_tail(d / "paper_mlb_cron.log",  n=50),
-        "pipe_mtimes":  _pipe_mtimes(d),
+        "audit":        safe(lambda: _load_jsonl(d / "audit_mlb.jsonl",    tail=1000), []),
+        "t4_audit":     safe(lambda: _load_jsonl(d / "audit_mlb_t4.jsonl", tail=500), []),
+        "pipe_log":     safe(lambda: _load_tail(d / "paper_mlb_cron.log",  n=50), []),
+        "pipe_mtimes":  safe(lambda: _pipe_mtimes(d), {}),
         "server_time":  datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "current_logic_epoch": CURRENT_LOGIC_EPOCH,  # T-321
         # NFL (T-534/GG-263) — additive only, above MLB keys unchanged.
-        "nfl_portfolio": _load_json(d / "paper_portfolio_t1_nfl_game_market.json"),
-        "nfl_audit":     _load_jsonl(d / "audit_t1_nfl_game_market.jsonl", tail=1000),
+        "nfl_portfolio": safe(lambda: _load_json(d / "paper_portfolio_t1_nfl_game_market.json"), {}),
+        "nfl_audit":     safe(lambda: _load_jsonl(d / "audit_t1_nfl_game_market.jsonl", tail=1000), []),
         "nfl_model_provenance": _NFL_MODEL_PROVENANCE,
     }
 
