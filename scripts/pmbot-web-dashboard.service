@@ -39,7 +39,11 @@ ReadOnlyPaths=/opt/prediction-market-bot/logs/
 # Resource limits — dashboard is lightweight; cap it from consuming runaway memory
 # (stdlib HTTP + JSON parsing is tiny)
 MemoryMax=128M
-CPUQuota=10%
+# GG-273/T-541 (2026-09-11): 10% throttled a healthy ~0.39s-CPU /api/data
+# request into ~3.8s wall time (cgroup cpu.stat showed nr_throttled/
+# throttled_usec accounting for nearly the entire delay). 50% gives ~5x
+# headroom over current real usage while still capping runaway CPU.
+CPUQuota=50%
 
 # Stdout/stderr go to journald — view with:
 #   journalctl -u pmbot-web-dashboard -f
