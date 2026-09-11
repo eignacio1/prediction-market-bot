@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-11T15:00:00Z (T-541 — Dashboard "Cannot fetch data" blind-panel incident (OOM-kill + latency + CPU throttle) fully root-caused, fixed, deployed, and live-verified — GG-270/GG-272/GG-273 all RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1500.md` for full session detail.
+**Last reviewed:** 2026-09-11T19:47:00Z (T-542 — T-542/GG-271 RESOLVED — bounded rejected_positions ring buffer (N=2000), live VPS migration verified, /api/data <2s) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1947.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
