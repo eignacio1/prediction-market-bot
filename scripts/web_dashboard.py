@@ -994,13 +994,17 @@ function renderPipeLog(lines){
 // toArr) since NFL positions are written by the same PaperTrader class and
 // share its exact field schema.
 //
-// Provenance caveat: PaperTrader's stored position schema and this run's
-// audit events do not record a per-row model identity (stub vs EXP-027 LR)
-// — see GG-267 (registered T-534). The badge below is therefore a
-// section-wide label sourced live from the run's model class, not a
-// per-row-verified attribution. It is accurate for this run (one model is
-// injected for the whole invocation) but would not distinguish rows if a
-// future run ever mixed models mid-run.
+// Provenance (GG-267, resolved T-544): the header badge below remains a
+// section-wide label sourced live from EXP027NFLForecastModel.PROVENANCE
+// (still accurate for any single-model-per-run invocation), but each row
+// now additionally carries its own `model_identity` field — written by
+// PaperTrader.open_position() from the approval dict at entry time
+// (run_t1_nfl_game_market.py's per-market model-identity resolution) and
+// propagated to closed/exited rows automatically (exit_position/
+// settle_position spread the open record). A legacy row from before this
+// field existed has no `model_identity` key at all and renders 'UNKNOWN'
+// via the `||` fallback below — never blank, never misattributed to
+// whichever model is live today.
 // ═══════════════════════════════════════════════════════
 function renderNFL(data){
   const el=document.getElementById('c-nfl');
@@ -1041,12 +1045,13 @@ function renderNFL(data){
     <td>${f4(p.model_p)}</td>
     <td>${isOpen?'<span class="y">OPEN</span>':outcome(p.status)}</td>
     <td>${ts(p.entered_at)}</td>
+    <td class="dim" style="font-size:11px">${esc(p.model_identity||'UNKNOWN')}</td>
     <td><span class="badge" style="background:#553;color:#fd5">PAPER</span></td>
   </tr>`).join('');
 
   el.innerHTML=`
     <table class="sys-tbl">
-      <thead><tr><th>Ticker</th><th>Side</th><th>Stake</th><th>Model P</th><th>Status</th><th>Entered</th><th></th></tr></thead>
+      <thead><tr><th>Ticker</th><th>Side</th><th>Stake</th><th>Model P</th><th>Status</th><th>Entered</th><th>Model</th><th></th></tr></thead>
       <tbody>${rows(open,true)}${rows(closed,false)}</tbody>
     </table>${tallyHtml}`;
 }
