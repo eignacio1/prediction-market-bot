@@ -510,3 +510,4 @@
 | 2026-09-11T15:24:59Z | T-542, GG-271 | STANDARD — bound rejected_positions growth in paper_portfolio_mlb_t4.json (GG-271: measure, decide fix, implement under lock, prove bounded) |
 | 2026-09-11T18:49:24Z | T-543, GG-274 | STANDARD — settle Week 1 NFL opener: fetch final score, dry-run resolver, settle real portfolio, idempotency proof |
 | 2026-09-11T18:50:18Z | T-544, GG-267 | T-544, GG-267 -- per-row NFL model-identity/provenance field (writer side + dashboard render), reusing verified-but-unmerged T-538 writer-side work |
+| 2026-09-11T19:16:57Z | T-543 | MERGED: NO — branch `session/20260911T184838Z-settle-week1-opener-first-real-close` awaiting merge — T-543/GG-274: GATE-checked NFL settlement task, found 0 T-534 positions two independent ways, stopped per operator instruction (commit `57fc6c8`) |

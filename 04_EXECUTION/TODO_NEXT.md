@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-11T15:00:00Z (T-541 — Dashboard "Cannot fetch data" blind-panel incident (OOM-kill + latency + CPU throttle) fully root-caused, fixed, deployed, and live-verified — GG-270/GG-272/GG-273 all RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1500.md` for full session detail.
+**Last reviewed:** 2026-09-11T19:15:00Z (T-543 — T-543/GG-274: GATE-checked NFL settlement task, found 0 T-534 positions two independent ways, stopped per operator instruction) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1915.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*

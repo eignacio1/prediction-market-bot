@@ -16,3 +16,11 @@ The dashboard showed a red "cannot fetch data" error on every panel, with all ba
 Three stacked problems. First, the backend was crash-looping because reading one data file used far more memory than needed — most of it was data the dashboard never displays. Second, once fixed, requests got slow from an inefficient file-scanning method. Third, even after both fixes, a separate server setting was still capping how much processing power the dashboard was allowed to use. All three are fixed and deployed.
 
 Confirmed with five real live requests: all succeeded in under a second with real baseball data. No other system (betting crons, data archiver) was touched.
+
+## T-543/GG-274 — NFL Week 1 settlement gate check (2026-09-11)
+
+Task was to settle the NFL opener shadow run end-to-end — but only after checking whether that shadow run actually opened any positions to settle. It hadn't been checked.
+
+Checked two independent ways: the file that would hold those positions doesn't exist on the server, and a fresh read of that run's own log confirms it evaluated 827 markets and opened zero. Both checks agree with each other and with what was already on record.
+
+Per your instruction, zero positions is a complete answer, not a problem to work around — stopped here. No score fetched, nothing settled, nothing touched on either live ledger. Whether the settlement path actually works against a real position stays open until a future shadow run opens one that survives to a finished game.
