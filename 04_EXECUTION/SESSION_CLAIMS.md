@@ -502,3 +502,4 @@
 | 2026-09-10T01:24:19Z | T-538, GG-268, GG-255 | GG-255 MLB half: T1 MLB game-market run script (moneyline/run_line/game_total/team_total/partial_game) |
 | 2026-09-10T01:44:36Z | T-539, GG-270 | T-539/GG-270: fix dashboard /api/data OOM-kill (rejected_positions unbounded parse) — MLB panels blind, NFL panel unaffected |
 | 2026-09-10T01:46:48Z | GG-271 | GG-271: T4 MLB writer's paper_portfolio_mlb_t4.json rejected_positions field grows unbounded (upstream, out of scope) — register-and-stop per Hard Rule 11 |
+| 2026-09-11T14:05:31Z | GG-272, T-540 | GG-272/T-540: fix /api/data latency regression (slow strip scan + full-file jsonl tail read) introduced by T-539's own OOM fix, before Deliverable 4 could verify it live |
