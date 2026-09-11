@@ -508,3 +508,4 @@
 | 2026-09-11T15:02:56Z | T-541 | CLOSED — Dashboard "Cannot fetch data" blind-panel incident (OOM-kill + latency + CPU throttle) fully root-caused, fixed, deployed, and live-verified — GG-270/GG-272/GG-273 all RESOLVED (commit `982bb25`) |
 | 2026-09-11T15:06:48Z | T-541 | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
 | 2026-09-11T15:24:59Z | T-542, GG-271 | STANDARD — bound rejected_positions growth in paper_portfolio_mlb_t4.json (GG-271: measure, decide fix, implement under lock, prove bounded) |
+| 2026-09-11T18:49:24Z | T-543, GG-274 | STANDARD — settle Week 1 NFL opener: fetch final score, dry-run resolver, settle real portfolio, idempotency proof |
