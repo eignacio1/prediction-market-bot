@@ -24,3 +24,10 @@ Until now, a bet placed by the real trained model and a bet placed by the tempor
 Verified with a full new test set (8/8 passing) plus the entire existing test suite (88/88, zero regressions). One known gap: the dashboard's visual rendering wasn't checked in an actual browser this session, only through its underlying data — disclosed rather than hidden, and judged not to need a separate write-up.
 
 Branch is pushed; opening a merge request into the main line is the next decision, not yet made.
+## T-543/GG-274 — NFL Week 1 settlement gate check (2026-09-11)
+
+Task was to settle the NFL opener shadow run end-to-end — but only after checking whether that shadow run actually opened any positions to settle. It hadn't been checked.
+
+Checked two independent ways: the file that would hold those positions doesn't exist on the server, and a fresh read of that run's own log confirms it evaluated 827 markets and opened zero. Both checks agree with each other and with what was already on record.
+
+Per your instruction, zero positions is a complete answer, not a problem to work around — stopped here. No score fetched, nothing settled, nothing touched on either live ledger. Whether the settlement path actually works against a real position stays open until a future shadow run opens one that survives to a finished game.

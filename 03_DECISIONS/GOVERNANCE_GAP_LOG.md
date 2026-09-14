@@ -3300,3 +3300,49 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | RESOLVED (2026-09-11) — unit file changed `CPUQuota=10%` → `50%`, committed/pushed (`43877e3`), and deployed to the VPS. Deploy required an out-of-band manual step beyond the standard `git pull` pattern (see Resolution: `/etc/systemd/system/pmbot-web-dashboard.service` was a stale, separately-installed copy not kept in sync by `git pull` — a genuine, previously-unknown deploy-process gap worth flagging for any future systemd unit-file change in this repo). Live-verified: 5x curl HTTP 200 @ 0.733-0.879s, `cpu.stat` diff showing throttling reduced from ~3.38s/request to ~0.40s/request, non-null MLB payload confirmed, `deploy/cron.conf`/archiver untouched. |
 
 </details>
+
+### GG-274 — NFL T1 settlement path (market → forecast → size → position → settlement) has never been exercised end-to-end against a real resolved game
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-274 |
+| Category | Systemic blind spot — untested integration path |
+| What was missed | T-534 ran a paper shadow against the Week 1 NFL opener with the EXP-027 LR; T-535 built and "hardened" the resolver (`settle_position()`, idempotency guard, not-yet-final guard, `check_settlement_ambiguity()` per GG-257). Neither session ran the resolver against a real shadow-run position resolved against a real final score — all prior validation was unit-test/fixture-level. The entire chain market → forecast → size → position → settlement has zero live end-to-end evidence prior to this entry. |
+| When it should have been caught | At T-535's close-out — a "hardened" claim about idempotency and refusal-path behavior should have been backed by at least one live dry run against a T-534-produced position, not only synthetic fixtures. |
+| Phases it survived | T-534 (shadow run) → T-535 (resolver build + harden) → both sessions' close-outs, with no integration checkpoint between them (Hard Rule 11 single-deliverable scoping meant "settle a real position end-to-end" was never any single session's stated deliverable until now). |
+| Why it survived | STANDARD-tier task scoping kept T-534 and T-535 each to their own isolated deliverable (shadow-run vs. resolver-build); no session before this one owned the integration step. |
+| Impact | Unknown, until this session, whether the resolver's per-market-type derivation (moneyline/spread/totals actual_stat vs. threshold), the not-yet-final guard, and the idempotency guarantee actually hold against a real portfolio JSON file and a real final score — as opposed to holding only against unit-test fixtures. |
+| Discovery | Operator-directed task (T-543, 2026-09-11): "Nothing has ever been settled through this path. This block closes the first full loop end-to-end." |
+| Resolution | This session (T-543) ran the mandatory GATE before any settlement work: checked the VPS for `logs/paper_portfolio_t1_nfl_game_market.json` (does not exist — `find` across the whole VPS tree for any NFL-portfolio artifact returned nothing) and independently re-parsed T-534's original raw audit log (`audit_t1_nfl_game_market.jsonl`, still present in its source worktree) event-by-event rather than trusting DECISION_LOG's prose alone. Result: 827 markets evaluated, 0 `OPENED` — 771 `REFUSED_NO_MODEL` (non-moneyline, out of EXP-027's scope by design), 53 reached C4 and were all `REJECTED` (46 `min_bet_floor`, 7 `insufficient_edge`), 3 `REFUSED_NO_EDGE`. This exactly matches DECISION_LOG's self-reported T-534 figures. Per operator instruction, zero positions is a complete and valid gate answer — the session STOPPED here per explicit direction: no score fetch, no dry run, no settlement, no manufactured position, no re-run against the finished game. **The underlying gap (the settlement path has never been exercised against a real resolved position) is therefore NOT closed by this session** — there was nothing to settle, so the integration step T-535's "hardened" claims rest on remains genuinely unexercised end-to-end. It stays open until a future T1 NFL shadow run actually opens a position that survives through to a real game's final score. |
+| Cross-references | T-534 (shadow run, 0 positions opened), T-535 (resolver build/harden, untested against a live position), T-543 (this session — gate check confirming 0 positions, no further work attempted), GG-257 (tie-refusal via `check_settlement_ambiguity()`, registered not assigned here). |
+| Status | OPEN — gate-checked 2026-09-11 (T-543): confirmed 0 positions exist from T-534's shadow run (VPS portfolio file absent; independently re-verified against the raw audit log). Settlement-path integration remains untested against any real position. Re-open this task the next time a T1 NFL shadow run actually opens a position that reaches a finished game. |
+
+</details>
+
+### GG-275 — `lib_chain_archive.py` silently discards the prior "Last reviewed" line on every single-entry chain collapse (regression in the GG-176 fix)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-275 |
+| Category | Tooling defect — silent data loss in a shared nav-file mechanism |
+| What was missed | `scripts/lib_chain_archive.py`'s `archive_chain()` (called by `scripts/generate_session_artifacts.py` at every `/session-end` Step 6-gen, for all three of `MEMORY_BANK.md`/`TODO_NEXT.md`/`PLAN.md`) only writes the displaced "Last reviewed" line(s) to the matching `*_ARCHIVE.md` file when `n_entries > 1`. Every real nav file reaches exactly `n_entries == 1` after its first collapse — the normal, expected steady state — so this branch is the one that runs almost every session-end, not an edge case. When it runs, `archived` stays `False` (no archive write) but the nav file's single line is still unconditionally overwritten with the new current line: the old line is discarded, not archived, violating ADR-0044's "nothing is deleted" / "lossless and verifiable" guarantee. |
+| When it should have been caught | At the GG-176 fix's own review/close-out — a fix that changes an unconditional-overwrite's data-loss profile should have been checked against the archive file immediately after landing, not left to a later session to discover empirically. |
+| Phases it survived | GG-176 fix landed and was marked RESOLVED (Severity LOW) → an unknown number of subsequent real session-ends (confirmed: at least T-538 and T-541 on `PLAN.md`, both pre-dating this merge) each hit the `n_entries==1` path and silently dropped the prior line → surfaced only now (T-544/GG-267 merge-conflict resolution, 2026-09-11) while manually verifying PLAN_ARCHIVE.md against PLAN.md's own git history. |
+| Why it survived | GG-176's own "Impact" field states "No data loss, no incorrect archival" — true of GG-176's *original* bug (a pure no-op that only caused staleness) but never re-verified against the *fixed* code's actual behavior, which now actively discards data instead of merely going stale. No test or scan checks archive-file completeness against nav-file git history. |
+| Impact | Confirmed via `git log -p --follow -- 04_EXECUTION/PLAN.md` cross-checked against `git show HEAD:04_EXECUTION/PLAN_ARCHIVE.md` (this branch's own committed state, pre-merge — the loss is independent of this merge): T-538's and T-541's "Last reviewed" narrative lines are completely absent from `PLAN_ARCHIVE.md`. Same pattern independently confirmed for `TODO_NEXT_ARCHIVE.md` (missing T-538/T-541/T-543, last real entry is T-537) and `MEMORY_BANK_ARCHIVE.md` (same check, same result) during this session's merge-conflict resolution. Not permanently unrecoverable — each nav file's own git history still holds every line via `git log -p` — but the intended archive location (the file ADR-0044 designates as the durable record) is missing them, and every future session-end will keep silently dropping the next one until the code is fixed. |
+| Discovery | 2026-09-11, T-544/GG-267 merge-conflict resolution (this session), while manually verifying whether T-541's/T-543's "Last reviewed" entries already existed in `PLAN_ARCHIVE.md` before resolving a real merge conflict between T-543's and T-544's competing "Last reviewed" lines on `main`. |
+| Resolution | Not fixed in this session — out of scope per Hard Rule 11 (register and stop; this session's deliverable is merge-conflict resolution, not tooling repair). This session's own merge-conflict resolution works around the defect manually: T-543's displaced line is being hand-appended (not via the generator) into `PLAN_ARCHIVE.md`/`TODO_NEXT_ARCHIVE.md`/`MEMORY_BANK_ARCHIVE.md` as part of resolving this merge, specifically to avoid repeating this exact loss on the very entry that exposed it. The underlying code defect in `lib_chain_archive.py` remains unfixed and will recur on every future single-entry collapse until a follow-up task changes `archive_chain()` to archive on `n_entries >= 1` (not `> 1`) while leaving the "no archive-file write needed" console messaging judgment to that fix, not this entry. |
+| Cross-references | GG-176 (RESOLVED, Severity LOW — the original staleness bug whose fix introduced this regression); ADR-0044 (Governance-Entry Splitting — the "nothing is deleted" / "lossless and verifiable" invariant this defect violates); T-538, T-541, T-543 (PLAN.md/TODO_NEXT.md/MEMORY_BANK.md "Last reviewed" entries confirmed missing from their respective archive files). |
+| Status | OPEN — registered 2026-09-11 (T-544 merge-conflict resolution session). Needs a follow-up T-NNN to fix `lib_chain_archive.py`'s `n_entries > 1` condition and to backfill the confirmed-missing T-538/T-541/T-543 lines (and any others found) into all three archive files from git history, verified complete against each nav file's full commit log. |
+
+</details>
