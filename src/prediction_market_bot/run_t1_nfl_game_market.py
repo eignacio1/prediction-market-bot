@@ -127,7 +127,19 @@ _NFL_GAME_SERIES = ("KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL")
 class NFLForecastModel(Protocol):
     """Swappable forecasting interface. No NFL C2/C3 layer exists yet — this
     Protocol is the seam a future trained model slots into without changing
-    this script's pipeline code."""
+    this script's pipeline code.
+
+    PROVENANCE (GG-267): every implementation MUST declare this class
+    attribute — a short human-readable model-identity string written to
+    every position row and audit event this model produces. It must be
+    readable off the class or an already-constructed instance WITHOUT
+    triggering any re-fit/re-instantiation side effect (see
+    nfl_exp027_adapter.py's docstring for why that distinction matters for
+    EXP-027 specifically). There is no valid model with no PROVENANCE —
+    _model_identity() below falls back to the literal string "UNKNOWN" for
+    any object missing it, never to silence or another model's label."""
+
+    PROVENANCE: str
 
     def predict_proba(
         self, market: GameMarket, features: dict[str, Any]
@@ -143,7 +155,14 @@ class StubNFLForecastModel:
     or C3 model artifact exists. Returns a fixed placeholder probability (or
     None, to exercise the no-model refusal path) for pipeline-shape testing
     only. Any report of this script's output MUST state it ran against this
-    stub, not a real model, whenever this class is in use."""
+    stub, not a real model, whenever this class is in use.
+
+    PROVENANCE (GG-267): explicit stub marker written to every row/audit
+    event this instance produces, so a stub-produced row is distinguishable
+    on disk from a trained-model-produced row without cross-referencing
+    which script/session ran it."""
+
+    PROVENANCE = "STUB (StubNFLForecastModel — NOT a trained model, GG-255)"
 
     def __init__(self, fixed_p: float | None = 0.55) -> None:
         self._fixed_p = fixed_p
@@ -152,6 +171,23 @@ class StubNFLForecastModel:
         self, market: GameMarket, features: dict[str, Any]
     ) -> float | None:
         return self._fixed_p
+
+
+def _model_identity(model: NFLForecastModel) -> str:
+    """Resolve a model's provenance label for row/audit-event labeling
+    (GG-267). Reads the PROVENANCE class/instance attribute off the model
+    object the caller already constructed — never instantiates or
+    re-instantiates a model to obtain this (see nfl_exp027_adapter.py
+    docstring: constructing EXP027NFLForecastModel re-fits it in-memory,
+    forbidden as a side effect of a label lookup).
+
+    Falls back to the explicit string "UNKNOWN" for any model missing a
+    non-empty PROVENANCE — never blank, never another model's label, never
+    silently absent — so a row can never be mislabeled by omission."""
+    provenance = getattr(model, "PROVENANCE", None)
+    if isinstance(provenance, str) and provenance:
+        return provenance
+    return "UNKNOWN"
 
 
 # ---------------------------------------------------------------------------
@@ -177,13 +213,23 @@ def evaluate_and_maybe_trade(
       REFUSED_NO_EDGE | REFUSED_STAKE | REJECTED | KILL_SWITCH_HALT |
       C6_WRITE_FAILURE | OPENED
     """
+    # GG-267: resolved once per market evaluation, off the model object the
+    # caller already constructed (never re-instantiated) — see
+    # _model_identity()'s docstring. Stamped into every audit payload below
+    # and into the approval dict before open_position(), so every row this
+    # run produces is labeled, not just the section-wide dashboard badge.
+    model_identity = _model_identity(model)
+
     # GG-252: refuse to trade out of a batch known to have dropped markets —
     # a snapshot with unparsed_count > 0 signals parser/data-quality
     # uncertainty for the whole fetch, not just the dropped tickers.
     if snapshot_unparsed_count > 0:
         audit.warning(
             COMPONENT, "gg252_unparsed_markets_present",
-            payload={"ticker": mkt.ticker, "unparsed_count": snapshot_unparsed_count},
+            payload={
+                "ticker": mkt.ticker, "unparsed_count": snapshot_unparsed_count,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_UNPARSED"
@@ -192,7 +238,10 @@ def evaluate_and_maybe_trade(
     if market_type is None or not is_t1_game_market(market_type.value):
         audit.warning(
             COMPONENT, "unmapped_market_type",
-            payload={"ticker": mkt.ticker, "market_type": mkt.market_type},
+            payload={
+                "ticker": mkt.ticker, "market_type": mkt.market_type,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_UNPARSED"
@@ -208,6 +257,7 @@ def evaluate_and_maybe_trade(
                 "market_type": market_type.value,
                 "band": BAND.value,
                 "reason": kss.reason,
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -216,7 +266,8 @@ def evaluate_and_maybe_trade(
     if not mkt.has_live_quotes:
         audit.warning(
             COMPONENT, "no_live_quotes",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "REFUSED_NO_MODEL"  # no tradable price -> cannot evaluate
 
@@ -227,7 +278,8 @@ def evaluate_and_maybe_trade(
     if p_estimate is None:
         audit.warning(
             COMPONENT, "no_model_prediction",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "REFUSED_NO_MODEL"
 
@@ -246,6 +298,7 @@ def evaluate_and_maybe_trade(
             payload={
                 "ticker": mkt.ticker, "p_estimate": p_estimate,
                 "market_implied_prob": market_implied_prob,
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -260,7 +313,10 @@ def evaluate_and_maybe_trade(
     except MeasurementStakeRefused as exc:
         audit.warning(
             COMPONENT, "measurement_stake_refused",
-            payload={"ticker": mkt.ticker, "reason": str(exc)},
+            payload={
+                "ticker": mkt.ticker, "reason": str(exc),
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "REFUSED_STAKE"
@@ -285,7 +341,8 @@ def evaluate_and_maybe_trade(
     if not ok:
         audit.error(
             COMPONENT, "c6_write_failure",
-            payload={"ticker": mkt.ticker}, session_id=session_id,
+            payload={"ticker": mkt.ticker, "model_identity": model_identity},
+            session_id=session_id,
         )
         return "C6_WRITE_FAILURE"
 
@@ -301,7 +358,10 @@ def evaluate_and_maybe_trade(
     if approval_status == "KILL_SWITCH":
         audit.error(
             COMPONENT, "kill_switch_halt",
-            payload={"ticker": mkt.ticker, "approval": approval},
+            payload={
+                "ticker": mkt.ticker, "approval": approval,
+                "model_identity": model_identity,
+            },
             session_id=session_id,
         )
         return "KILL_SWITCH_HALT"
@@ -313,6 +373,7 @@ def evaluate_and_maybe_trade(
                 "ticker": mkt.ticker,
                 "approval_status": approval_status,
                 "rejection_reason": approval.get("rejection_reason"),
+                "model_identity": model_identity,
             },
             session_id=session_id,
         )
@@ -323,6 +384,7 @@ def evaluate_and_maybe_trade(
         "entry_price_paid": round(entry_price, 4),  # ADR-0050 addendum §C
         "price_stratum": price_stratum,              # ADR-0050 addendum §C
         "contracts": contracts,                       # ADR-0050 addendum §B
+        "model_identity": model_identity,             # GG-267
     }
 
     trader.open_position(

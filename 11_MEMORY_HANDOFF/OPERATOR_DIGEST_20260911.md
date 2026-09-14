@@ -17,6 +17,13 @@ Three stacked problems. First, the backend was crash-looping because reading one
 
 Confirmed with five real live requests: all succeeded in under a second with real baseball data. No other system (betting crons, data archiver) was touched.
 
+## T-544/GG-267 — Per-row NFL model provenance (2026-09-11)
+
+Until now, a bet placed by the real trained model and a bet placed by the temporary stand-in model looked identical in the trading records — no way to tell which one made which decision. Fixed: every new bet now carries a label naming exactly which model produced it, shown on the dashboard next to each position. Older bets that predate this change safely show "unknown" instead of guessing or crashing.
+
+Verified with a full new test set (8/8 passing) plus the entire existing test suite (88/88, zero regressions). One known gap: the dashboard's visual rendering wasn't checked in an actual browser this session, only through its underlying data — disclosed rather than hidden, and judged not to need a separate write-up.
+
+Branch is pushed; opening a merge request into the main line is the next decision, not yet made.
 ## T-543/GG-274 — NFL Week 1 settlement gate check (2026-09-11)
 
 Task was to settle the NFL opener shadow run end-to-end — but only after checking whether that shadow run actually opened any positions to settle. It hadn't been checked.

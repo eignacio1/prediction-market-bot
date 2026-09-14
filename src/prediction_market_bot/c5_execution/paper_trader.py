@@ -593,6 +593,15 @@ class PaperTrader:
                 # ADR-0053 §6.3 item 2: persist the cell key's market_type axis
                 # on the position record itself, not just derivable via band.
                 "market_type": _resolved_market_type.value,
+                # GG-267: per-row model-identity provenance. Opt-in via the
+                # approval dict (only run_t1_nfl_game_market.py populates it
+                # today) — never absent/empty/None: any caller that doesn't
+                # supply it (every MLB/NBA path) gets the explicit literal
+                # "UNKNOWN" written, never a default that could be mistaken
+                # for a real model label. A legacy row predating this field
+                # entirely (no key at all) reads the same "UNKNOWN" on load
+                # via .get() at render time — see web_dashboard.py.
+                "model_identity": approval.get("model_identity") or "UNKNOWN",
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)
