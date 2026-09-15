@@ -2,10 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-14T23:58:00Z (T-544 — T-544/GG-267 merge tail: completed conflict-resolved merge, re-merged PR #130, closure row, VPS deploy) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260914_2358.md` for full session detail. (T-542/GG-271 RESOLVED 2026-09-11T19:47:00Z — bounded rejected_positions ring buffer, live VPS migration verified — see `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1947.md`.)
+**Last reviewed:** 2026-09-15T05:09:56Z (T-545/GG-276 — T-545/GG-276 NFL Saturday capture gap: shape/cause/detector/fix landed, PR #133 open pending operator merge) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260915_0510.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-545/GG-276 — NFL price-archive capture gap: 2026-09-12 (Saturday) zero-KXNFL-row day — ✅ COMPLETE 2026-09-14 (worktree `session/20260915T003401Z-nfl-capture-gap-0912`, commits `f350fb2`/`2542b4f`/`5e4c648`/`ceaea6f`)
+
+Shape/cause/detector/fix all landed: cause is missing dow=6 crontab entry (`deploy/cron.conf`, `5,25,45 17-23 * * 6 ...` mirroring Sunday); detector `scripts/lib/nfl_capture_gap_check.py` verified quiet/ALARM/quiet on 09-11/09-12/09-13; fix committed but **PR #133 intentionally left open, not self-merged** (5-for-5 operator-merge-history judgment call, see `DECISION_LOG.md` 2026-09-14). **Follow-up, unstaffed:** PR #133 needs operator merge + VPS crontab deploy + post-deploy byte-identity confirmation before GG-276 downgrades OPEN→RESOLVED. Also noted, out of scope, not registered: 09-07/09-08 identical KXNFL row counts, unexplained.
 
 ## T-530 — Build T1 NFL game-market run script, PAPER ONLY (GG-255) — ✅ COMPLETE 2026-09-08 (worktree `session/20260909T002748Z-gg255-t1-game-market-run-script`, commits `49a35df`/`d774456`/`a4ed648`)
 
