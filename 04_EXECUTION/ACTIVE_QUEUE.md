@@ -1,7 +1,9 @@
 # Active queue — the only prompt file to read
 
-**Verified against:** `origin/main = a1c5ed9` (2026-09-11) — *may be stale; `git fetch origin` before trusting any "not landed" call here.*
-**Live state:** 92 cells · 18 execution bands · 5 sizing tiers · Week 1 NFL capture live and verified · dashboard restored
+**Verified against:** `origin/main = 80984e8` (2026-09-16, Cowork strategic window) — *may be stale; the window cannot `git fetch`. Run `git fetch origin` first. A LANDED call is safe from a stale ref; a "not landed" call is not.*
+**Live state, derived by import not grep (2026-09-16):** 92 cells · **22 execution bands** · **1 cell ACTIVE** (MLB player-prop hits × T4M-PROJ) · 88 NOT_IMPLEMENTED · 2 BLOCKED · 1 DARK · 128 gap-log entries, **89 OPEN**, next free **GG-285**.
+**Unlanded:** `session/20260915T235119Z-why-no-bet-can-be-placed` (tip `73cd8eb`, 6 commits) — Wave 26's Floor-A fix and APR-0034. Landed in 27.1.
+**Ignore:** `session/20260915T003401Z-nfl-capture-gap-0912` (tip `4985290`) reads NOT-LANDED but its content landed under new SHAs via merge `57beb30`. GG-276 is RESOLVED on main. Do not re-land it.
 **IDs:** do not pre-assign. Claim at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
 **Queue drift:** this file must be COMMITTED, not left as a working-tree edit — GG-260.
 
@@ -9,12 +11,15 @@
 
 ## Read this first (standing)
 
-- Fire one wave at a time. Three concurrent maximum, disjoint file surfaces.
-- **Deliverable 0 in every block: land any un-landed predecessor.**
+- **Three blocks per wave. Not four.** Hard ceiling, operator directive 2026-09-15.
+- **A block in the wave fires immediately, concurrently with every other block.** A sequencing note is not a fence. Work that must wait goes in "Queued next," not in the wave.
+- **Deliverable 0 in every block: land any un-landed predecessor.** Wave 25 left two strays, Wave 26 left one. Every wave so far has left at least one.
+- **A premise written in a block is a claim to verify, not a fact.** Two waves running, the briefing asserted something it had not derived — `ActiveEnterTimestamp` (T-548 corrected it) and "Weeks 1 and 2 have resolved" (GG-281; only Week 1 had). Both were caught by the terminal, neither by the window. Check the premise before acting on it and register the correction if it is wrong.
 - **Push after each deliverable, not at close-out.** Budget the close-out separately.
 - Verify a code fix by importing and calling the real function. Never re-implement its logic in a test harness.
-- **Benchmark the real thing, not the unit test.** GG-272 and GG-273 were both caught only because a deliverable measured the deployed pipeline instead of trusting a passing test.
-- Register-and-stop on any gap outside scope (Hard Rule 11). Do not fix it incidentally.
+- **Benchmark the real thing, not the unit test.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279). Prove the *running* process carries the change.
+- Register-and-stop on any gap outside scope (Hard Rule 11).
 - If a permission control refuses you, report the exact command and refusal text, then hand back.
 
 ---
@@ -23,225 +28,244 @@
 
 | Wave | Status | Outcome |
 |---|---|---|
-| 10–19 | ✅ CLOSED | see history |
-| **20** | ✅ CLOSED | Moneyline reframe. Settlement derivation + NFL result fetcher + resolver (T-527); GG-252 parser fix — NFL game markets went 0→64/404/304/55 parsed, MLB props held 286/286; NFL C1 ingestion (T-526). |
-| **21** | ✅ CLOSED | Landed Wave 20; capture-fidelity audit (T-528, verdict GO); **day-3 Wednesday cron gap found and closed** (GG-261); NFL depth capture enabled and VPS-deployed (GG-259); T1 NFL run script landed (T-530). |
-| **22** | ✅ CLOSED | NFL shadow run + EXP-027 LR adapter + NFL dashboard panel (T-534/GG-263); settlement resolver hardened with idempotency (T-535); depth-capture preflight proved the cron path clean before it fired (T-537/GG-265). |
-| **23** | ✅ CLOSED | **Dashboard outage root-caused four levels deep** — see below. T1 MLB game-market run script + additive MLB parsing (T-538/GG-255 → LIKELY RESOLVED). |
-| **24** | ⬜ **ACTIVE** | Stop the outage recurring · close the provenance gap · settle the first real game |
+| 10–24 | ✅ CLOSED | see history |
+| **25** | ✅ CLOSED | GG-271 ACTIVATED and proven (T-548) · GG-203 remediated to exhaustion, still broken (T-547) · NFL Saturday capture gap root-caused (T-545/GG-276) · NFL T1 opened 0 positions, GG-274 still OPEN (T-546). Fired 4-wide; 2 branches left unlanded. |
+| **26** | ✅ **CLOSED, 2 OF 3 LANDED** | **Capture coverage closed properly** — GG-276 and GG-280 both RESOLVED, detector generalized to sport/dow-agnostic, Wave 25's strays landed (T-549) · **EXP-027 re-run: UNDERPOWERED, and the number is the story** (T-550/GG-281) · **Floor A was real and is fixed; Floor B is now APR-0034** (T-551/GG-282, unlanded). |
+| **27** | ⬜ **ACTIVE** | Land Wave 26 and try to open a position · confront the n* wall · fix the two cohort defects |
 
-### ✅ WAVE 23 — what the dashboard outage actually was
+### ✅ WAVE 26 — what actually happened
 
-The "Cannot fetch data / check SSH tunnel" error was none of those things. Four distinct faults, each hidden behind the last:
+**The min-bet floor was a real own goal, and it is fixed.** T-551 confirmed both T1 game-market run scripts inherited `risk.py`'s live `$10` floor while setting an ADR-0050 `$1.00` measurement stake — a guaranteed refusal on every approved bet. Fixed in both scripts with tests, aligned to the paper floor their four sibling runners already pass. **This is the first time in this project's history that a refusal class was found to be self-inflicted rather than external.**
 
-| Gap | What it was | Status |
-|---|---|---|
-| **GG-270** | `/api/data` did an unbounded `json.load()` of a 33MB file, OOM-killing the service in a restart loop. Blanked MLB *and* NFL panels behind a false "SSH tunnel" message. | RESOLVED |
-| **GG-269** | The service was in an active OOM crash-loop that `systemctl is-active` does **not** reliably reveal — the health check that reported "active" was lying. | RESOLVED |
-| **GG-272** | GG-270's own fix introduced a 2.2–4.6s latency regression, two separate causes. Caught only because a deliverable benchmarked the live pipeline instead of trusting green unit tests. | RESOLVED |
-| **GG-273** | systemd `CPUQuota=10%` throttled the now-fixed 0.39s request into ~3.8–4.15s wall time, making a correct fix look broken. Proved with `cpu.stat`: 38 of 38 accounting periods throttled, ~3.38s of the 3.79s was pure throttling. | RESOLVED |
-| **GG-271** | **The root cause, still open.** The T4 MLB writer appends to an unbounded `rejected_positions` array — 24k+ entries, ~33MB and growing. Registered-and-stopped as out of scope. | **OPEN** |
+**Floor B became APR-0034** — *Should T4 MLB run with `kalshi_client=None` while GG-203 is unresolved?* Three options presented, none selected, plus what superseding ADR would be required under Hard Rule 3. It is on your desk.
 
-**This is why Wave 24 opens with GG-271.** Everything above was treating symptoms of a file that is still growing.
+**EXP-027 is UNDERPOWERED, and the gap is not close.** Verbatim re-run, zero code changes: `clean_n = 14` games against **`n* = 2,610.35`**. 2026 prospective: accuracy 0.5625, Brier 0.2290, ECE 0.1739, n=16 — against the 2025 out-of-sample baseline of 0.6056 / 0.2210 / 0.0661, n=284. The session correctly refused to read anything into a 16-game sample.
 
-### ⬜ WAVE 24 — fire 3-wide, disjoint surfaces
+**The number nobody has said out loud:** at `mean=0.0321` and `sd=0.4992` per bet, `n*` is ~2,610 games. An NFL regular season is 272 games. **That gate is roughly ten NFL seasons away at the observed effect size.** It is not a "wait a few more weeks" situation, and no amount of Week 2, 3 and 4 data changes the order of magnitude. That is 27.2.
 
-| # | Block | Tier | Why |
-|---|---|---|---|
-| 24.1 | **GG-271** — bound the `rejected_positions` array | STANDARD | The outage's root cause. Still growing. Will take the dashboard down again. |
-| 24.2 | **GG-267** — per-row model provenance | SHORT | Did not run in Wave 23. The panel can't distinguish a stub row from a real forecast. |
-| 24.3 | **Settle the Week 1 opener** | STANDARD | First real end-to-end close: market → forecast → size → position → settlement. |
+**Two cohort defects found while disclosing the capture gap, both register-and-stop.** GG-283: the backtest's Kalshi team-code alphabet has `WSH` but not `WAS`, and a live ticker uses `WAS` — `parse_event_teams` silently returns `None` and drops the game. GG-284: `2026_01_CLE_JAX` has zero archived KXNFLGAME rows on *any* date, not just 09-12. Both correctly left unfixed mid-run so the pre-registered cohort was not changed underneath the gate.
 
 ---
 
-# 24.1 — GG-271 · BOUND THE T4 LEDGER · STANDARD
+### ⬜ WAVE 27 — fire all three together, disjoint surfaces
+
+| # | Block | Tier | Why |
+|---|---|---|---|
+| 27.1 | **Land Wave 26 + open and settle a position** | STANDARD | Floor A's fix may have unblocked the 24 refused evaluations. The loop has never closed once. |
+| 27.2 | **The n\* wall — is the gate reachable at all?** | STANDARD | clean_n=14 against n\*=2,610. Ten seasons. Someone has to ask whether the gate statistic is the right one. |
+| 27.3 | **GG-283 + GG-284 — two defects in the NFL cohort** | STANDARD | One game silently dropped by a team-code typo, one missing from the archive entirely. |
+
+**Surfaces:** 27.1 owns the two T1 run scripts, the NFL portfolio and the settlement resolver. 27.2 owns `run_power_calc.py`, a new APR in `00_ADMIN/`, and read-only analysis. 27.3 owns the backtest's team-code table, the archiver and `PRICE_ARCHIVE/`. All three write the gap log and DECISION_LOG — self-serialising close-out applies.
+
+---
+
+# 27.1 — LAND WAVE 26 · OPEN AND SETTLE A POSITION · STANDARD
 
 ```
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "gg271-bound-t4-rejected-positions"
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "land-w26-open-and-settle"
 Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
 Gap-log entry as your FIRST pushed commit.
 *** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
 
 TIER: STANDARD.
 
-GG-271: the T4 MLB writer appends an unbounded `rejected_positions` array to
-logs/paper_portfolio_mlb_t4.json -- 24k+ entries / ~33MB observed 2026-09-10. This is the ROOT CAUSE
-of the GG-269/270/272/273 outage chain that blanked the operator's dashboard for two days. Those four
-are resolved; this one is not, and the file is still growing.
+DELIVERABLE 0 -- LAND WAVE 26'S UNLANDED BRANCH FIRST.
+  origin/session/20260915T235119Z-why-no-bet-can-be-placed  (tip 73cd8eb, 6 commits)
+  Carries T-551/GG-282's Floor-A fix (min_bet_usd in both T1 game-market run scripts, with tests)
+  and APR-0034. Everything below depends on that fix being on main.
+  Confirm with `git merge-base --is-ancestor 73cd8eb origin/main` AFTER merging. A merge command
+  exiting 0 is not the check.
+  Then confirm the fix is actually present: grep min_bet_usd in both run scripts on main and paste it.
 
-*** THIS FILE IS LIVE PRODUCTION STATE FOR THE ONLY BAND CURRENTLY TRADING. ***
-GG-034's file-lock invariant governs every mutation. GG-224 showed a clobber happening ON the
-protected path. Treat every write as dangerous.
+DELIVERABLE 1 -- RE-RUN THE OPEN ATTEMPT AND COMPARE THE REFUSAL BREAKDOWN.
+  T-546 ran the real EXP-027 adapter (not the stub) against 1,185 live markets on 2026-09-15 and
+  opened zero: 1,105 no_model_prediction, 52 no_live_quotes, 24 min_bet_floor, 4 no_edge.
+  Re-run the same path with Floor A now fixed. Use the VPS venv and the `export $(grep -v '^#' .env
+  | xargs)` pattern -- plain `source .env` does not export into the Python subprocess (T-546 lost two
+  attempts to this).
+  **Report the new refusal breakdown against those four numbers before doing anything else.** The
+  min_bet_floor count is the measurement: if it went to zero, Floor A was the blocker for those 24.
+  Confirm model_identity on every row is the EXP-027 string, not the stub.
 
-DELIVERABLE 1 -- MEASURE AND LOCATE BEFORE CHANGING ANYTHING.
-  Current size, entry count, growth rate per day, and oldest/newest entry timestamps.
-  Find every writer that appends to `rejected_positions` -- grep the whole repo, do not assume it is
-  one site. Quote each with file and line.
-  Establish what actually READS it. If nothing reads it, say so plainly -- that changes the right fix
-  from "rotate" to "stop writing it".
-  **Report findings before writing code.**
+DELIVERABLE 2 -- IF A POSITION OPENS, SETTLE IT END TO END. This closes GG-274.
+  Fetch the final score with nfl_espn_results.py, on the VPS (GG-266: the Mac's Python cannot
+  TLS-handshake with ESPN). Confirm FINAL, not in progress -- verify T-535's guard fires, do not
+  assume. Cross-check the score against a second independent source and paste both.
+  Dry-run the resolver against a COPY first. Per position: market type, derived actual_stat,
+  threshold, YES/NO outcome, P&L. Hand-verify the arithmetic against the score -- moneyline is final
+  margin vs threshold 0. On a tie the resolver must REFUSE via check_settlement_ambiguity() (GG-257).
+  **Paste the full dry-run. Do not settle live until the arithmetic is verified line by line.**
+  Then back up the live file, settle under the existing lock discipline, run it AGAIN, and prove the
+  ledger is byte-identical on the second pass.
 
-DELIVERABLE 2 -- DECIDE THE FIX ON THE EVIDENCE, AND SAY WHY.
-  Options, in rough order of preference:
-   (a) stop writing rejections into the portfolio file at all; they belong in the audit log, which is
-       already append-only and rotated
-   (b) bound the array (ring buffer / last N) with N justified by what actually reads it
-   (c) rotate the file
-  **Do not implement more than one.** Whatever you pick, the portfolio file must stay a portfolio
-  file -- position state -- not an event log.
-  If rejections carry information nothing else preserves, say that explicitly; it changes the answer.
+DELIVERABLE 3 -- IF IT STILL OPENS ZERO, THAT IS THE FINDING. REPORT IT PROPERLY.
+  Name the dominant refusal class and what would have to change to clear it. Do not manufacture a
+  position. Do not widen a threshold, loosen a gate, or switch to the stub model to get a row.
+  no_model_prediction at ~93% means EXP-027's moneyline-only scope, not a defect -- say so plainly.
 
-DELIVERABLE 3 -- IMPLEMENT UNDER THE LOCK, AND MIGRATE SAFELY.
-  Every mutation goes through PaperTrader's existing `with self._lock, self._file_lock():
-  self._reload_locked(); ...; self._save()` pattern. Do not hand-roll fcntl. Do not add a second
-  lock discipline.
-  Migrating the existing 33MB file: back it up first, verify the backup loads and its open positions
-  match the original exactly, then migrate. **If the position set differs by even one entry, restore
-  and stop.**
-  **Do not restart the T4 service to do this.** The 2026-08-29 restart pre-authorization was scoped
-  to the 11.1 repair and does not extend here. If a restart is genuinely required, stop and report
-  that it is -- do not take it.
+DELIVERABLE 4 -- ONE HONEST PARAGRAPH. If a position settled, it is one paper position on a model
+  whose own gate returned UNDERPOWERED at clean_n=14 against n*=2,610. A win is not evidence of edge
+  and a loss is not evidence against it. Write it so it cannot be misread as a signal.
 
-DELIVERABLE 4 -- PROVE IT HOLDS. A test that simulates sustained rejection volume and asserts the file
-  stays bounded. Then re-measure the live file post-migration: size, open-position count (must be
-  unchanged), and /api/data latency (must stay under 2s).
+DO NOT: submit a live order, or construct PaperTrader with a non-None kalshi_client.
+DO NOT: modify settle_position() -- GG-257 is registered, not assigned here.
+DO NOT: change min_bet_usd, kelly_fraction, MIN_BET_USD, or any _HARD_LIMITS value beyond what
+  Deliverable 0 lands.
+DO NOT: touch the backtest, its team-code table, the archiver or PRICE_ARCHIVE/ -- 27.3 owns those.
+DO NOT: touch run_power_calc.py or draft any APR -- 27.2 owns that.
+DO NOT: touch any MLB ledger or the T4 writer. DO NOT: restart any service. DO NOT: promote a cell.
+DO NOT: add a cron entry for any T1 game-market run script.
 
-DO NOT: restart any service. DO NOT: touch kelly_fraction/sizing, promote a cell, submit a live order,
-  or settle a position. DO NOT: touch deploy/cron.conf or the archiver.
-DO NOT: touch scripts/web_dashboard.py or any NFL path -- other blocks own those this wave.
-DO NOT: promote assert_ledger_invariants.py to --strict.
-DO NOT: delete any historical rejection data without first writing it somewhere durable.
-
-SCOPE FENCE: the T4 writer path, paper_trader.py if the lock path genuinely requires it, a migration
-script under scripts/, tests, gap-log + DECISION_LOG.
+SCOPE FENCE: the merge, the two T1 game-market run scripts if a proven defect blocks the run, a
+settlement run + its backup, apply_resolved_nfl_game_markets.py only if a proven defect blocks it,
+gap-log + DECISION_LOG.
 Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
 
-REPORT BACK: size/count/growth-rate/timestamps; every writer with file+line; what reads it; which
-option you chose and why; the backup verification; post-migration size and open-position count
-(before vs after); the bounded-growth test; live /api/data latency; GG-271 disposition.
+REPORT BACK: the ancestor check post-merge and the grepped min_bet_usd lines; the new refusal
+breakdown against T-546's four numbers; whether a position opened; if so both independent scores, the
+hand-verified dry-run table, the backup verification, realized P&L and the idempotency proof; GG-274's
+disposition; your Deliverable 4 paragraph.
 ```
 
 ---
 
-# 24.2 — GG-267 · PER-ROW MODEL PROVENANCE · SHORT
+# 27.2 — THE n* WALL · IS THE GATE REACHABLE · STANDARD
 
 ```
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "gg267-per-row-model-provenance"
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "n-star-wall-gate-reachability"
 Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
 Gap-log entry as your FIRST pushed commit.
 *** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
 
-TIER: SHORT. This was scoped in Wave 23 and did not run. GG-267 is still OPEN.
+TIER: STANDARD. This is ANALYSIS and a decision request. Change no gate, no threshold, no parameter.
 
-GG-267: the NFL position/audit data model has no per-row model-identity field. The dashboard's
-provenance label is section-wide, so a row produced by the EXP-027 LR and a row produced by
-StubNFLForecastModel are indistinguishable once written. The operator is beginning to read this panel
-to make decisions. This project's signature failure is an instrument that drifts from the thing it
-measures -- close this before the panel is trusted, not after.
+EXP-027's re-run (T-550, 2026-09-15) returned clean_n=14 against n*=2610.35, at
+mean_pnl_per_bet=0.0321 and sd=0.4992. An NFL regular season is 272 games. Nobody has stated the
+implication: at the observed effect size that gate is roughly ten NFL seasons from clearing, and
+Weeks 2 through 18 do not change the order of magnitude.
+APR-0024 sets the standard -- per-band `clean_n >= n*`, n* derived live from that band's own observed
+mean and stdev of P&L per bet. That is the right shape for a low-variance signal. The question this
+block asks is whether it is reachable for signals whose per-bet sd is ~15x their mean.
 
-DELIVERABLE 1 -- Read run_t1_nfl_game_market.py's position/audit write path and
-  nfl_exp027_adapter.py in full. Quote the current row schema and the adapter's PROVENANCE class
-  attribute.
+DELIVERABLE 1 -- COMPUTE THE WALL FOR EVERY CELL THAT HAS DATA. Do not stop at NFL moneyline.
+  For each band/cell with a resolved cohort -- T4M-PROJ, T1, T2, and EXP-027's NFL moneyline -- run
+  scripts/run_power_calc.py and report: observed mean, sd, sd/mean ratio, n*, current clean_n, and
+  **n* expressed in seasons or months of real cadence at that cell's own measured bet rate.**
+  That last column is the one that has never been computed. It is the whole point of this block.
 
-DELIVERABLE 2 -- Add a per-row model-identity field, written at position-open AND at every audit
-  event: the model identity (adapter PROVENANCE string, or an explicit stub marker) plus enough to
-  distinguish runs.
-  **It must be impossible to write a row without one.** No default that could silently label a stub
-  row as the LR. If the model cannot state its identity, the row records UNKNOWN explicitly.
-  Backward compatible: rows already on disk load fine and read UNKNOWN -- a reader never assumes.
+DELIVERABLE 2 -- ASK WHETHER P&L-PER-BET IS THE RIGHT GATE STATISTIC.
+  Calibration metrics converge far faster than P&L per bet, because they do not carry payoff
+  variance. EXP-027's own 2025 baseline reports Brier 0.2210 and ECE 0.0661 at n=284 -- quantities
+  that are already informative at a sample where n* on P&L is not remotely met.
+  Establish, with the numbers: what n would be required for a Brier or ECE read at the same power,
+  versus n* on P&L, for at least two cells. Show the calculation.
+  **Do not propose replacing the gate.** Establish the size of the difference and let the APR carry it.
 
-DELIVERABLE 3 -- Render it. scripts/web_dashboard.py is free this wave (Wave 23's dashboard work is
-  closed) -- surface the per-row label in the NFL panel so the operator can see, per row, which model
-  produced it. Keep it additive; **do not alter any MLB panel, path, or key.**
-  Verify by loading the page and confirming both the NFL per-row labels and all MLB panels render.
-  Re-check /api/data stays under 2s after your change -- GG-272's lesson.
+DELIVERABLE 3 -- STATE THE STRATEGIC CONSEQUENCE PLAINLY, IN ONE SECTION.
+  If every cell's n* is years away, then G6 as currently written cannot close on P&L evidence within
+  any practical horizon, and the coverage target (one cell of ~25 ACTIVE) compounds it.
+  Say whether that is true, cell by cell, from Deliverable 1's table. If it is not true for some
+  cell, name that cell -- it is the one worth prioritizing.
 
-DELIVERABLE 4 -- Tests: a stub row and an LR row are distinguishable on disk; a legacy row with no
-  field loads and reads UNKNOWN; no code path can write a row with the field absent or empty.
+DELIVERABLE 4 -- DRAFT THE APR. DO NOT DECIDE IT.
+  A decision request in 00_ADMIN/, numbered per convention, presenting options: keep the P&L gate and
+  accept the horizon; add a calibration-based interim gate for cell promotion while P&L stays the
+  gate for live capital; re-derive n* under a different power/alpha; or something else the analysis
+  surfaces. Note what superseding ADR each would require (APR-0024 and ADR-0057 are in force;
+  Hard Rule 3 applies). Recommend, do not select.
 
-DO NOT: re-fit, retrain or instantiate the EXP-027 model to read its identity -- use the class
-  attribute; its docstring warns instantiation re-fits.
-DO NOT: touch logs/paper_portfolio_mlb_t4.json or the T4 writer (24.1 owns those).
-DO NOT: touch kelly_fraction/sizing, deploy/cron.conf, settle_position(), or any MLB run path.
-DO NOT: submit a live order or settle any position.
+DO NOT: change n*, alpha, power, any gate threshold, or any pre-registered verdict.
+DO NOT: relabel EXP-027's UNDERPOWERED verdict. It stands regardless of what this analysis finds.
+DO NOT: touch kelly_fraction/sizing, promote a cell, submit an order, or settle a position.
+DO NOT: touch the T1 run scripts, the settlement path or the NFL portfolio -- 27.1 owns those.
+DO NOT: touch the backtest's team-code table, the archiver or PRICE_ARCHIVE/ -- 27.3 owns those.
+DO NOT: restart any service.
 
-SCOPE FENCE: run_t1_nfl_game_market.py, nfl_exp027_adapter.py, scripts/web_dashboard.py (NFL panel
-only), tests, gap-log + DECISION_LOG.
+SCOPE FENCE: read-only analysis, scripts/run_power_calc.py invocations, one new APR in 00_ADMIN/,
+gap-log + DECISION_LOG.
 Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
 
-REPORT BACK: the quoted current schema and PROVENANCE attribute; the field and where it is enforced;
-how the panel renders it; post-change /api/data latency; the three test results; confirmation MLB
-panels are unchanged.
+REPORT BACK: the per-cell table including n* in seasons/months at real cadence; the calibration-vs-P&L
+sample-size comparison with its calculation shown; your Deliverable 3 statement cell by cell; the
+APR's filename and its recommendation in two sentences.
 ```
 
 ---
 
-# 24.3 — SETTLE THE WEEK 1 OPENER · STANDARD
+# 27.3 — GG-283 + GG-284 · TWO DEFECTS IN THE NFL COHORT · STANDARD
 
 ```
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4 if you have SSH. Paste outputs.
-scripts/new_session_worktree.sh "settle-week1-opener-first-real-close"
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "gg283-gg284-nfl-cohort-defects"
 Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
 Gap-log entry as your FIRST pushed commit.
 *** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
 
-TIER: STANDARD. The Week 1 opener kicked off 2026-09-10T00:20Z and is final. T-534 ran a paper
-shadow against it with the EXP-027 LR; T-535 built and hardened the resolver. **Nothing has ever
-been settled through this path.** This block closes the first full loop end-to-end:
-market -> forecast -> size -> position -> settlement.
+TIER: STANDARD.
 
-*** GATE *** `git fetch origin`, then establish and REPORT, before doing anything else:
-  - Does logs/paper_portfolio_t1_nfl_game_market.json exist on the VPS, and does it contain any
-    positions from T-534's shadow run? Paste the position count.
-  - **If there are ZERO positions, STOP.** That is a complete and valid answer: report why T-534
-    opened none (check its audit log for refusal codes) and hand back. Do not manufacture a position
-    to have something to settle. Do not re-run the shadow against a finished game.
+Both were found by T-550 while disclosing the GG-276 capture gap, and both were correctly left
+unfixed so the pre-registered cohort was not changed mid-run.
+  GG-283 -- exp027_hyp012_nfl_moneyline_backtest.py's Kalshi team-code alphabet contains "WSH" but
+  not "WAS"; a live KXNFLGAME ticker uses "WAS", so parse_event_teams returns None and the game is
+  dropped SILENTLY. 2026_01_WAS_PHI was lost this way despite healthy pregame snapshots 09-05 to 09-11.
+  GG-284 -- 2026_01_CLE_JAX has zero archived KXNFLGAME rows on ANY date in the captured September
+  window, not just 09-12, so GG-276 is ruled out as sole cause. Cause unconfirmed.
+Together they cost 2 of 16 resolved games -- 12.5% of an already tiny cohort.
 
-DELIVERABLE 1 -- FETCH THE REAL RESULT. Use nfl_espn_results.py to get the opener's final score.
-  Confirm the game is FINAL, not in-progress -- T-535 built a not-yet-final guard; verify it fires
-  correctly rather than trusting it.
-  Cross-check the final score against a second independent source and paste both. A settlement run
-  on a wrong score is worse than no settlement.
-  **GG-266 warning:** the local dev machine's Python (3.9.6/LibreSSL) cannot TLS-handshake with
-  ESPN. If you hit that, run this step on the VPS and say so.
+DELIVERABLE 1 -- AUDIT THE WHOLE ALPHABET, NOT JUST WAS.
+  A silent None on one code means the mapping was never validated against live tickers. Pull the
+  distinct team codes actually appearing in captured KXNFLGAME tickers across the whole archive and
+  diff them against _NFL_TEAM_CODES. Report every mismatch in both directions.
+  **Report the full diff before fixing anything.** If WAS is the only one, say so; if there are
+  others, they matter more than WAS does.
 
-DELIVERABLE 2 -- DRY RUN FIRST, AGAINST A COPY. Copy the portfolio file; run the resolver against
-  the COPY. For every position report: market type, derived actual_stat, threshold, YES/NO outcome,
-  and P&L. Verify each derivation by hand against the final score -- moneyline is final point margin
-  vs threshold 0; spread is margin vs the line; totals are combined or team score vs the line.
-  If the game was a tie, the resolver must REFUSE via check_settlement_ambiguity() per GG-257.
-  **Paste the full dry-run output. Do not proceed to Deliverable 3 until the arithmetic is verified
-  line by line.**
+DELIVERABLE 2 -- MAKE THE FAILURE LOUD, NOT JUST CORRECT.
+  Fix the alphabet. Then make parse_event_teams unable to fail silently again: an unmapped code must
+  surface -- a counter, a warning, a refusal -- not a None that reads as "no game here."
+  A silent drop that shrinks a statistical cohort is the same failure class as GG-276's silent
+  capture gap and GG-203's silent order failures. Tests for both the fix and the loudness.
 
-DELIVERABLE 3 -- SETTLE FOR REAL. Only after Deliverable 2 verifies clean.
-  Back up the live portfolio file first and confirm the backup loads.
-  Run the resolver against the live file, under the existing lock discipline.
-  Then run it AGAIN and prove idempotency -- the ledger must be byte-identical after the second pass
-  (T-535 built this; verify it, do not assume it).
-  Report the resulting realized P&L and the final ledger state.
+DELIVERABLE 3 -- FIND OUT WHAT HAPPENED TO CLE_JAX.
+  Zero rows on every date is not a cron-window gap. Check: did KXNFLGAME markets for that matchup
+  exist on Kalshi at all; did the archiver query and get nothing; is it a series-naming or
+  event-ticker variant the archiver does not match; or was it never listed.
+  **Name the cause with evidence, or state explicitly that it could not be determined and why.**
+  If it is a matching defect, fix it and prove the fix against the live exchange.
 
-DELIVERABLE 4 -- SAY WHAT IT MEANS, HONESTLY. One paragraph: what this result does and does not tell
-  us. **It is one game on a model whose own pre-registered gate came back UNDERPOWERED (EXP-027).**
-  A win here is not evidence of edge and a loss is not evidence against it. Write it so the operator
-  cannot mistake a single settled paper position for a signal.
+DELIVERABLE 4 -- STATE THE COHORT EFFECT. DO NOT RE-RUN THE GATE.
+  Say how many games these fixes would restore to the EXP-027 cohort, and note that clean_n would go
+  from 14 toward 16 against n*=2610 -- immaterial to the verdict.
+  **Do not re-run the backtest and do not touch its pre-registered parameters.** Whether and when to
+  re-run on a corrected cohort is a separate decision, not yours to take here.
 
-DO NOT: place any new position. DO NOT: submit a live order. DO NOT: modify settle_position() --
-  GG-257 is registered, not assigned here.
-DO NOT: touch logs/paper_portfolio_mlb_t4.json or the T4 writer (24.1 owns those).
-DO NOT: touch scripts/web_dashboard.py (24.2 owns it). DO NOT: touch any MLB ledger.
-DO NOT: touch kelly_fraction/sizing, deploy/cron.conf, or promote any cell.
-DO NOT: adjust, retrain or re-fit the model based on this outcome. One game changes nothing.
+DO NOT: change any pre-registered parameter, threshold, cohort rule or verdict label.
+DO NOT: re-run the EXP-027 gate or relabel its UNDERPOWERED verdict.
+DO NOT: backfill, reconstruct or synthesise archive rows (GG-156).
+DO NOT: modify or re-time any existing capture window. Adding a missing series match is different --
+  if you add one, prove it with an env -i cron dry-run, the T-537 pattern.
+DO NOT: touch the T1 run scripts, settlement or the NFL portfolio -- 27.1 owns those.
+DO NOT: touch run_power_calc.py or draft any APR -- 27.2 owns that.
+DO NOT: touch kelly_fraction/sizing, promote a cell, submit an order, or settle a position.
+DO NOT: restart any service.
 
-SCOPE FENCE: a settlement run + its backup, apply_resolved_nfl_game_markets.py only if a proven
-defect blocks the run, gap-log + DECISION_LOG.
+SCOPE FENCE: the backtest's team-code table and parse_event_teams, the archiver's series matching,
+tests, gap-log + DECISION_LOG.
 Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
 
-REPORT BACK: the gate result (position count -- and if zero, why); both independent final scores;
-the full dry-run table with hand-verified arithmetic; the backup verification; realized P&L; the
-idempotency proof; and your Deliverable 4 paragraph.
+REPORT BACK: the full live-ticker-vs-_NFL_TEAM_CODES diff; the fix and the loudness mechanism with
+its tests; CLE_JAX's cause with evidence or an explicit could-not-determine; the cohort effect in
+games; confirmation you did not re-run the gate.
 ```
+
+---
+
+## Queued next — not yet fired
+
+**Wave 28 — depends on 27.** If 27.1 settles a position, GG-274 closes and the loop has run end to end for the first time; the next question is cadence, which means a cron entry and therefore your authorization. If 27.2's analysis shows the P&L gate is unreachable everywhere, the next question is the gate itself, and that is an ADR — which runs into unsigned **ADR-0063** either way.
+
+**GG-279 — deploy-vs-activation still has no structural check.** The design sketched with it: compare each long-running service's `ActiveEnterTimestamp` against its source's most recent relevant commit. Worth one SHORT block once a slot frees; it prevents the exact class that cost GG-271 four days.
 
 ---
 
@@ -249,10 +273,10 @@ idempotency proof; and your Deliverable 4 paragraph.
 
 | Item | Plain English | What happens if it waits |
 |---|---|---|
-| **GG-203** | 26 days. Every attempt to place a real order with the exchange fails. It is an account/key problem, not a code problem — a support ticket or a new demo key. | Nothing can ever trade for real, no matter how much gets built. Biggest item on the board and only you can move it. |
-| **ADR-0063** | The written rule for how the emergency-stop levels line up with bet sizing. Drafted 09-05, still unsigned. | Blocks the write side of the kill switch and everything in Wave 25. |
-| **GG-262** | The live server's schedule for one MLB job doesn't match what's in the repo. Nobody knows why. | Low risk today, but it means the repo is not a reliable picture of what the server is running. |
-| **GG-266** | Your Mac's Python is too old to talk to ESPN over HTTPS. | Local test runs silently skip all live-network tests. VPS is unaffected. |
+| **APR-0034** | New, from Wave 26. Should T4 MLB stop submitting demo orders while Kalshi's order path is broken? Three options, none selected. If the demo round-trip is optional, this is the one thing that could restart MLB accrual without Kalshi doing anything. | T4 MLB stays at zero. 33 days and counting since the last position entered. |
+| **ADR-0063** | The emergency-stop / bet-sizing hierarchy. Drafted 2026-09-05, still unsigned, still absent from `APPROVALS_REGISTER.md`. | Blocks the kill-switch write side, and blocks any cell promotion that 27.1 or 27.2 might make reachable. Eleven days unsigned. |
+| **GG-203 / Kalshi** | Your correspondence. Their "expected... periodically unstable" reply does not address a 100% failure rate over 33 days on a fresh key. | Nothing accrues in T4 MLB. APR-0034 is the only lever that does not depend on them. |
+| **GG-262** | The live server's schedule for one MLB job doesn't match the repo. Cause unknown. | Same class as GG-271 and GG-276. Capture lines are now audited; this one is not. |
 
 ---
 
@@ -261,11 +285,14 @@ idempotency proof; and your Deliverable 4 paragraph.
 - Touch sizing or any `kelly_fraction` without an ADR, including T1.
 - Promote `assert_ledger_invariants.py` to `--strict`.
 - Bypass or disable a permission control — report what refused you and hand back.
-- Re-investigate GG-203 in-repo; the ruled-out list is exhaustive.
+- Re-investigate GG-203 in-repo. T-492 ruled out the code; T-547 rotated the key and filed with support.
 - Repair a derived file without establishing provenance first (GG-228).
 - Land red work to clear a backlog.
 - Relabel a pre-registered verdict, or change a pre-registered parameter, after seeing results.
 - Recommend against a sport or market family on one finding.
-- Modify or re-time the MLB price capture.
-- Restart a production service without a scoped, written authorization.
-- Pre-assign T-/GG- numbers. Claim at run time.
+- Modify or re-time an existing price-capture window. Adding a missing day or series is different.
+- Restart a production service without a scoped, written authorization. None is authorized in Wave 27.
+- Add a cron entry for any T1 game-market run script without explicit operator authorization.
+- Pre-assign T-/GG- numbers. Claim at run time; verify uniqueness across `git log --all`.
+- Report a live fix RESOLVED without proving the running process, not the file on disk, contains it.
+- Manufacture a position, a row, or a cohort member to have something to measure.
