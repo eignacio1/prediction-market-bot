@@ -3409,6 +3409,31 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ---
 
+### GG-280 — No systematic day-of-week capture-coverage audit has ever existed for `deploy/cron.conf`; both known gaps (GG-261 Wed/NFL, GG-276 Sat/NFL) were found by accident, after data was already lost, not by any check designed to find them
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-280 |
+| Category | Systemic blind spot — no audit tool or protocol step has ever verified that `deploy/cron.conf`'s capture block covers all 7 days of the week, for either sport, as a matrix. Coverage gaps have only ever been found one day-of-week at a time, incidentally, while a session was doing unrelated work. |
+| What was missed | GG-261 (2026-09-09, T-533) found a missing Wednesday NFL price-archive line while investigating a kickoff-timestamp question, not while auditing coverage. GG-276 (2026-09-15, Wave 25) found a missing Saturday NFL line the same way — discovered, not audited for. Both are the same failure shape: a day-of-week field silently absent from the capture block, invisible until a session happens to look at that specific day. No session before this one (T-549) was ever tasked with building the full 7-day × 2-sport (NFL, MLB) coverage matrix as a standing check. |
+| When it should have been caught | At GG-261's own close-out (2026-09-09) — finding one missing day-of-week line in a cron block is the natural trigger to check whether any *other* day is also missing, for either sport, rather than closing the single line found and moving on. That check was not run then, and GG-276 (a second, independent instance of the identical failure shape, six days later) is direct evidence the gap was real, not hypothetical. |
+| Phases it survived | GG-261 fix (Wed NFL line added, 2026-09-09) → six days of live cron execution → GG-276 (Sat NFL line found missing, Wave 25, 2026-09-15) → Wave 25's two branches landing this same failure shape's second fix, still unmerged to `origin/main` at this gap's registration → this entry (T-549), the first session explicitly scoped to build the full matrix rather than patch the single day found. |
+| Why it survived | Every existing coverage check (T-528's capture-fidelity audit, GG-261's own remediation) tested a specific, already-suspected day/window rather than enumerating all 7 days × both sports as a structural matrix. No governance_scan.sh assertion, no Step 4 health check, and no cron.conf review step has ever asked "which days of week have zero capture coverage, for each sport" as a general question — only "is this particular day's window correct," which presupposes the day is already known to matter. |
+| Impact | At minimum two capture days lost outright (the Wed and Sat windows, until each was independently discovered and patched) — GG-156 already establishes this data is not backfillable once a day passes uncaptured. Unknown until this session's Deliverable 1 matrix audit whether a third day-of-week gap exists undiscovered, for either sport, since no one has ever checked all 7 systematically. |
+| Discovery | 2026-09-15, T-549 (this session), registered before Deliverable 1's matrix audit is run, per Hard Rule 7 (log the decision to investigate immediately, not after the finding) and this session's explicit brief: build the full 7-day × 2-sport matrix and report it before changing anything. |
+| Resolution | Pending this session's own Deliverable 1 (full matrix, reported before any change), Deliverable 3 (env -i dry-run proof for the Saturday fix and any newly found missing lines), and Deliverable 4 (a generalized alarm-only detector in `governance_scan.sh` that alarms on any in-season day-of-week producing zero rows for a sport that should have captured that day — turning this from an accident-prone check into a structural one). This entry is the umbrella gap; GG-261 and GG-276 remain the two confirmed instances and are not superseded by it. |
+| Cross-references | [[GG-261]] (Wed/NFL, 2026-09-09, T-533 — first confirmed instance). GG-276 (Sat/NFL, Wave 25 — second confirmed instance; landing to `origin/main` is this session's Deliverable 0, prior to this gap's own audit work). GG-156 (unbackfillable capture-loss invariant — cited, not re-litigated). |
+| Status | OPEN — registered 2026-09-15 (T-549), audit in progress this session. |
+
+</details>
+
+---
+
 ### GG-281 — EXP-027/HYP-012 re-run (2026-09-15): still UNDERPOWERED; task premise of "Weeks 1 and 2 resolved" was factually wrong at run time (only Week 1 had resolved)
 
 **Status:** OPEN · **Severity:** LOW
