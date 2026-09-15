@@ -531,3 +531,4 @@
 | 2026-09-15T23:52:01Z | T-549, GG-280 | T-549: land Wave 25 branches + full 7-day/2-sport capture coverage audit + generalized detector |
 | 2026-09-15T23:52:22Z | T-550, GG-281 | T-550/GG-281: EXP-027/HYP-012 NFL moneyline backtest re-run (weeks 1-2 resolved) |
 | 2026-09-15T23:54:08Z | T-551, GG-282 | T-551/GG-282 (reserved if new gap needed): investigate min_bet_usd floor gap in T1 game-market run scripts + demo-order dependency (GG-203), draft APR |
+| 2026-09-15T05:10:56Z | T-545/GG-276 | MERGED: NO — branch `session/20260915T003401Z-nfl-capture-gap-0912` awaiting merge — T-545/GG-276 NFL Saturday capture gap: shape/cause/detector/fix landed, PR #133 open pending operator merge (commit `ceaea6f`) |
