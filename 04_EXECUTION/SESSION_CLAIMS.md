@@ -522,3 +522,4 @@
 | 2026-09-15T00:35:18Z | T-546/GG-277 | T-546/GG-277: settle first real NFL T1 position end-to-end (GG-274 carried from 24.3) |
 | 2026-09-15T00:43:14Z | T-547, GG-203 (GG-278 reserved if new gap found) | T-547/GG-203: Kalshi order-write remediation — confirm still broken, read account state, rotate only if clear, escalate if needed, build silent-failure detector |
 | 2026-09-15T04:57:29Z | T-546/GG-277 | MERGED: NO — branch `session/20260915T003417Z-settle-first-nfl-position` awaiting merge — T-546/GG-277: real EXP-027 open-attempt on live NFL markets, 0 positions (all refusals legitimate), GG-274 remains OPEN (commit `cf2b2ff`) |
+| 2026-09-15T04:56:48Z | T-548, GG-279 | T-548/GG-279 (reserved if new gap needed): GG-271 ring buffer activation — diagnose+correct disposition, t4-mlb already restarted by T-542's own deploy prior to this session, verify hold-through-write-cycle |
