@@ -24,3 +24,17 @@ This traces back to the same dashboard-outage chain as T-541: the T4 MLB portfol
 The live file on the VPS was migrated down to 7.3MB with the trading service never restarted and open positions verified byte-for-byte unchanged before and after. Along the way, the migration script itself was caught reading a mid-write file and getting torn data, so it was rebuilt to do all its work inside the same lock the live trader already uses — a real bug caught before it could cause a second incident.
 
 Dashboard response time is confirmed back under a second. GG-271 is marked resolved. The only remaining step is merging this session's branch into main, which needs a PR review since it touches trading code.
+## T-544/GG-267 — Per-row NFL model provenance (2026-09-11)
+
+Until now, a bet placed by the real trained model and a bet placed by the temporary stand-in model looked identical in the trading records — no way to tell which one made which decision. Fixed: every new bet now carries a label naming exactly which model produced it, shown on the dashboard next to each position. Older bets that predate this change safely show "unknown" instead of guessing or crashing.
+
+Verified with a full new test set (8/8 passing) plus the entire existing test suite (88/88, zero regressions). One known gap: the dashboard's visual rendering wasn't checked in an actual browser this session, only through its underlying data — disclosed rather than hidden, and judged not to need a separate write-up.
+
+Branch is pushed; opening a merge request into the main line is the next decision, not yet made.
+## T-543/GG-274 — NFL Week 1 settlement gate check (2026-09-11)
+
+Task was to settle the NFL opener shadow run end-to-end — but only after checking whether that shadow run actually opened any positions to settle. It hadn't been checked.
+
+Checked two independent ways: the file that would hold those positions doesn't exist on the server, and a fresh read of that run's own log confirms it evaluated 827 markets and opened zero. Both checks agree with each other and with what was already on record.
+
+Per your instruction, zero positions is a complete answer, not a problem to work around — stopped here. No score fetched, nothing settled, nothing touched on either live ledger. Whether the settlement path actually works against a real position stays open until a future shadow run opens one that survives to a finished game.
