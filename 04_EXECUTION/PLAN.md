@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-14T23:58:00Z (T-544 — T-544/GG-267 merge tail: completed conflict-resolved merge, re-merged PR #130, closure row, VPS deploy) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260914_2358.md` for full session detail.
+**Last reviewed:** 2026-09-14T23:58:00Z (T-544 — T-544/GG-267 merge tail: completed conflict-resolved merge, re-merged PR #130, closure row, VPS deploy) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260914_2358.md` for full session detail. (T-542/GG-271 RESOLVED 2026-09-11T19:47:00Z — bounded rejected_positions ring buffer, live VPS migration verified — see `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1947.md`.)
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

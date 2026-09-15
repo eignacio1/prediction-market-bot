@@ -27,7 +27,11 @@ if str(_SRC) not in sys.path:
 
 os.environ.setdefault("BOT_ENV", "paper")
 
-from prediction_market_bot.c5_execution.paper_trader import PaperTrader, INITIAL_BANKROLL_USD
+from prediction_market_bot.c5_execution.paper_trader import (
+    PaperTrader,
+    INITIAL_BANKROLL_USD,
+    MAX_REJECTED_POSITIONS,
+)
 
 _PAST_DATE = "2026-05-30"
 _TODAY = "2026-05-31"
@@ -441,6 +445,97 @@ class TestFailedKalshiOrderRouting:
         path.write_text(json.dumps(legacy_state))
         trader = PaperTrader(path, _make_logger())
         assert trader.get_state()["rejected_positions"] == []
+
+
+class TestRejectedPositionsBounded:
+    """GG-271: rejected_positions must never grow unbounded. 25,243 entries /
+    29.27MB observed live 2026-09-11 (88.9% of the file), growing ~1,000-
+    1,200/day and accelerating -- the root cause of the GG-269/270/272/273
+    outage chain. _save() now truncates to the most recent
+    MAX_REJECTED_POSITIONS entries on every call, regardless of caller."""
+
+    @pytest.mark.unit
+    def test_sustained_rejection_volume_stays_bounded(self, tmp_path):
+        from prediction_market_bot.c5_execution.kalshi_client import KalshiOrder
+        client = MagicMock()
+        client.has_signing_key.return_value = True
+        client.submit_order.return_value = KalshiOrder(
+            ok=False, order_id="", client_order_id="POS-X",
+            ticker="KXMLBHIT-TEST", side="yes", contracts=0,
+            yes_price_cents=45, actual_cost_usd=0.0, status="error",
+            error="HTTP 410",
+        )
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(), kalshi_client=client)
+
+        n_rejections = MAX_REJECTED_POSITIONS + 500  # sustained volume, well past the cap
+        with patch("prediction_market_bot.c5_execution.paper_trader.time.sleep"):
+            for _ in range(n_rejections):
+                trader.open_position(
+                    approval=_make_approval(0.595, "YES"),
+                    player_name="Juan Soto", player_id=665742,
+                    kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+                    mid_price=0.595, vig=0.09, game_date=_PAST_DATE,
+                    pool_isolated=True,
+                )
+
+        rejected = trader.get_state()["rejected_positions"]
+        assert len(rejected) == MAX_REJECTED_POSITIONS, (
+            f"expected the ring buffer to cap at {MAX_REJECTED_POSITIONS} "
+            f"after {n_rejections} rejections, got {len(rejected)}"
+        )
+        # Drop-oldest semantics: the buffer holds the most recent entries.
+        # position_id is a random uuid per call, so recency is checked via
+        # entered_at ordering instead of identity.
+        timestamps = [p["entered_at"] for p in rejected]
+        assert timestamps == sorted(timestamps), "buffer must retain entries in insertion order"
+
+        # The bound is enforced on-disk too, not just in-memory.
+        import json
+        on_disk = json.loads((tmp_path / "p.json").read_text())
+        assert len(on_disk["rejected_positions"]) == MAX_REJECTED_POSITIONS
+
+    @pytest.mark.unit
+    def test_bound_does_not_touch_open_or_closed_positions(self, tmp_path):
+        from prediction_market_bot.c5_execution.kalshi_client import KalshiOrder
+        ok_client = MagicMock()
+        ok_client.has_signing_key.return_value = True
+        ok_client.submit_order.return_value = KalshiOrder(
+            ok=True, order_id="ORD-1", client_order_id="POS-1",
+            ticker="KXMLBHIT-TEST", side="yes", contracts=1,
+            yes_price_cents=45, actual_cost_usd=0.45, status="resting",
+        )
+        trader = PaperTrader(tmp_path / "p.json", _make_logger(), kalshi_client=ok_client)
+        trader.open_position(
+            approval=_make_approval(0.45, "YES"),
+            player_name="Kept Open", player_id=1,
+            kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+            mid_price=0.45, vig=0.02, game_date=_PAST_DATE,
+            pool_isolated=True,
+        )
+
+        fail_client = MagicMock()
+        fail_client.has_signing_key.return_value = True
+        fail_client.submit_order.return_value = KalshiOrder(
+            ok=False, order_id="", client_order_id="POS-X",
+            ticker="KXMLBHIT-TEST", side="yes", contracts=0,
+            yes_price_cents=45, actual_cost_usd=0.0, status="error",
+            error="HTTP 410",
+        )
+        trader._kalshi = fail_client
+        with patch("prediction_market_bot.c5_execution.paper_trader.time.sleep"):
+            for _ in range(MAX_REJECTED_POSITIONS + 250):
+                trader.open_position(
+                    approval=_make_approval(0.595, "YES"),
+                    player_name="Rejected", player_id=2,
+                    kalshi_ticker="KXMLBHIT-TEST", kalshi_threshold=1,
+                    mid_price=0.595, vig=0.09, game_date=_PAST_DATE,
+                    pool_isolated=True,
+                )
+
+        state = trader.get_state()
+        assert len(state["open_positions"]) == 1
+        assert state["open_positions"][0]["player_name"] == "Kept Open"
+        assert len(state["rejected_positions"]) == MAX_REJECTED_POSITIONS
 
 
 # ---------------------------------------------------------------------------
