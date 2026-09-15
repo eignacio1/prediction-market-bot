@@ -3322,6 +3322,8 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Cross-references | T-534 (shadow run, 0 positions opened), T-535 (resolver build/harden, untested against a live position), T-543 (this session — gate check confirming 0 positions, no further work attempted), GG-257 (tie-refusal via `check_settlement_ambiguity()`, registered not assigned here). |
 | Status | OPEN — gate-checked 2026-09-11 (T-543): confirmed 0 positions exist from T-534's shadow run (VPS portfolio file absent; independently re-verified against the raw audit log). Settlement-path integration remains untested against any real position. Re-open this task the next time a T1 NFL shadow run actually opens a position that reaches a finished game. |
 
+**Pickup (2026-09-15, T-546/GG-277):** Operator-directed STANDARD task carried forward from the 24.3 assignment that never fired. Unlike T-543, this session is explicitly instructed NOT to stop on a zero-position gate result — if the gate again finds 0 positions, this session opens one against a live market using the EXP-027 adapter (not `StubNFLForecastModel`), then carries the resulting position through to a real settlement to close this gap on live evidence for the first time. Re-running the gate check now rather than trusting T-543's 2026-09-11 finding as still current, per Hard Rule 10.
+
 </details>
 
 ### GG-275 — `lib_chain_archive.py` silently discards the prior "Last reviewed" line on every single-entry chain collapse (regression in the GG-176 fix)
