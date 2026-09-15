@@ -3472,3 +3472,28 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — registered 2026-09-15/16 (T-553). Needs a follow-up T-NNN, owned by the archiver/PRICE_ARCHIVE session, to determine why this specific event was never captured. |
 
 </details>
+
+---
+
+### GG-282 — Investigation: do the two new T1 game-market run scripts inherit the live $10 `min_bet_usd` floor instead of the paper $1.00 floor their sibling runners pass, and is T4 MLB's `kalshi_client=None` demo-order path (GG-203) load-bearing or optional?
+
+**Status:** OPEN · **Severity:** UNSPECIFIED
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-282 |
+| Category | Registration-at-claim-time — this entry is being opened before investigation, per the gap-log invariant (register before remediation work begins), to track the session's two open questions independently of whatever the findings turn out to be. |
+| What was found | Not yet determined — investigation in progress. Two independent candidate floors are being examined: (A) `run_paper_trade.py`, `run_t4_mlb_live.py`, `run_mlb_paper_trade.py`, and `run_t2_mlb_sameday.py` all explicitly override `RiskEngine`'s `min_bet_usd` (to `1.0` or `0.01`) against the live default `MIN_BET_USD=10.0` (`risk.py:118`); the two new T1 game-market run scripts pass `fixed_stake_usd` but were flagged (unverified at claim time) as possibly passing no `min_bet_usd` override at all, which would mean they inherit the live $10 floor against an ADR-0050 $1.00 measurement stake. T-546's real-model run against live NFL markets already logged 24/1,185 evaluations refused `min_bet_floor` (GG-277's DECISION_LOG entry, 2026-09-15) — consistent with, but not yet confirmed as caused by, this specific gap. (B) `paper_trader.py`'s `open_position()` only submits to the Kalshi demo venue when `self._kalshi and self._kalshi.has_signing_key() and kalshi_ticker` all hold (ADR-0008); with `kalshi_client=None`, positions open locally with `kalshi_order_status="local_only"`. GG-203 has blocked T4M-PROJ for 33+ days at exactly this step; whether the demo round-trip is load-bearing (something downstream reads `kalshi_order_id`/`kalshi_order_status` for correctness) or merely a validation nicety ADR-0008 wanted exercised is unverified at claim time. |
+| When it should have been caught | (A) At the point the two new T1 game-market run scripts were written, if their `RiskEngine` construction was reviewed against their sibling runners' explicit `min_bet_usd` overrides before merge. (B) At GG-203's original triage, if the demo-order dependency's actual downstream consumers had been enumerated before 33 days of T4M-PROJ blockage accrued. |
+| Phases it survived | Unknown — pending Deliverable 1 (quote every `RiskEngine` construction site with file/line) and Deliverable 2 (census `kalshi_order_id`/`kalshi_order_status` readers) before this can be answered. |
+| Why it survived | Pending investigation. |
+| Impact | Pending investigation — if (A) is confirmed unintended, every T1 game-market evaluation whose computed size sits between $0 and $10 is being refused at C4 purely on an inherited default, indistinguishable in the audit log from a genuine `min_bet_floor` refusal on the live floor unless the two are read against the calling script's actual `RiskEngine` construction. |
+| Discovery | Operator-directed STANDARD task, 2026-09-15, claimed as T-551/GG-282: "Two independent things stop a bet reaching a venue right now, and neither has been examined." |
+| Resolution | Not yet resolved — registration only, first commit of this session per the gap-log invariant. To be updated with Deliverables 1–4's findings (verified floor cause, fix or no-fix disposition, re-run refusal-count delta, and the drafted APR for Floor B) before session close-out. |
+| Cross-references | GG-203 (T4M-PROJ blocked 33+ days at the demo-order step — Floor B's subject), T-546/GG-277 (real-model NFL open-attempt, 24/1,185 `min_bet_floor` refusals — the empirical anchor for Floor A), ADR-0050 (measurement-stake sizing), ADR-0058 (per-contract stake cap / `MeasurementStakeRefused` — the refusal this task explicitly distinguishes from `min_bet_floor`), ADR-0008 (Kalshi demo-order submission — Floor B's governing ADR). |
+| Status | OPEN — registered 2026-09-15 (T-551), investigation in progress. |
+
+</details>
