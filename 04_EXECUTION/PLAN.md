@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-15T04:56:00Z (T-546/GG-277 — T-546/GG-277: real EXP-027 open-attempt on live NFL markets, 0 positions (all refusals legitimate), GG-274 remains OPEN) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260915_0456.md` for full session detail.
+**Last reviewed:** 2026-09-15T05:17:00Z (T-548 — T-548/GG-271 corrected to ACTIVATED (t4-mlb cap confirmed live, no restart needed); GG-279 opened for the activation-vs-landing gap) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260915_0517.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  
