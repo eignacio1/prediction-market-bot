@@ -520,3 +520,4 @@
 | 2026-09-15T00:34:47Z | TBD | GG-271 ring buffer activation: verify t4-mlb restart applies MAX_REJECTED_POSITIONS cap |
 | 2026-09-15T00:34:57Z | T-545/GG-276 | T-545/GG-276: NFL price-archive capture gap (09-12 zero-KXNFL day) — shape, cause, detector, fix-if-fixable |
 | 2026-09-15T00:35:18Z | T-546/GG-277 | T-546/GG-277: settle first real NFL T1 position end-to-end (GG-274 carried from 24.3) |
+| 2026-09-15T00:43:14Z | T-547, GG-203 (GG-278 reserved if new gap found) | T-547/GG-203: Kalshi order-write remediation — confirm still broken, read account state, rotate only if clear, escalate if needed, build silent-failure detector |
