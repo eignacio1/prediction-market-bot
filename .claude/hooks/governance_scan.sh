@@ -611,6 +611,19 @@ echo ""
 echo "LEDGER FIELD INTEGRITY (T-432 -- alarm-only, does not affect this hook's exit code):"
 python3 "$PROJECT/scripts/assert_ledger_invariants.py" 2>&1 | tail -20 || true
 
+# --- Order-write parity check (GG-203/T-547 D5) ---
+# GG-203 sat undetected for 10 days (2026-08-15 through 2026-08-24): every
+# risk_eval_approved event was followed by a kalshi_order_failed event, a
+# 100% execution-layer failure rate, while every other liveness probe
+# above (systemctl is-active, cycle-log recency, T1 player-match counts)
+# reported healthy throughout. This compares approvals against execution
+# outcomes directly instead of relying on a session to notice by hand.
+# ALARM-ONLY (operator directive): the detector always exits 0; its output
+# is read, its exit code is not gating.
+echo ""
+echo "ORDER-WRITE PARITY (GG-203/T-547 D5 -- alarm-only, does not affect this hook's exit code):"
+python3 "$PROJECT/scripts/gg203_order_write_detector.py" 2>&1 | tail -20 || true
+
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
 echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q7)"
