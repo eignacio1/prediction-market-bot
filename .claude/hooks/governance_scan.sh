@@ -319,6 +319,17 @@ else
     echo "  skipped (last sync $(( pa_age / 60 ))min ago, under ${PA_MAX_AGE}s TTL)"
 fi
 
+# --- GG-276: NFL price-archive capture gap detector ---
+# 2026-09-12 (a Saturday) had zero KXNFL rows -- deploy/cron.conf's NFL-capture
+# block has day-of-week entries for 0-5 (Sun-Fri) only, no 6 (Saturday). This
+# check reads the local synced copy of exp_output/PRICE_ARCHIVE/ (the sync
+# block immediately above) and alarms if yesterday's archive file has zero
+# KXNFL rows during NFL season -- alarm-only, same as the GG-163 probe below.
+# Verified 2026-09-14/15: fires on 2026-09-12, stays quiet on 09-11 and 09-13.
+echo ""
+echo "NFL CAPTURE GAP (GG-276 — zero KXNFL rows in NFL season):"
+python3 "$PROJECT/scripts/lib/nfl_capture_gap_check.py" 2>&1 | sed 's/^/  /'
+
 # --- GG-163: T4 MLB cycle-log write-recency probe ---
 # Every VPS-facing check above this point reads systemd state or a portfolio
 # JSON snapshot -- none of them ever checked whether t4_mlb_cycle_log.jsonl
