@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-15T05:17:00Z (T-548 — T-548/GG-271 corrected to ACTIVATED (t4-mlb cap confirmed live, no restart needed); GG-279 opened for the activation-vs-landing gap) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260915_0517.md` for full session detail.
+**Last reviewed:** 2026-09-16T00:16:00Z (T-550 — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0016.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

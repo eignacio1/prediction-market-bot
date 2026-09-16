@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-15T05:17:00Z (T-548 — T-548/GG-271 corrected to ACTIVATED (t4-mlb cap confirmed live, no restart needed); GG-279 opened for the activation-vs-landing gap) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260915_0517.md` for full session detail.
+**Last reviewed:** 2026-09-16T00:16:00Z (T-550 — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0016.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*

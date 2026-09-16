@@ -40,3 +40,23 @@ One process gap, logged for later: a code fix landing isn't the same as it actua
 The fix sits in a pull request (#133) awaiting your review rather than auto-deployed — the last five changes here were all merged by you, so I kept that pattern rather than pushing it live myself. It still needs deploying plus confirming next Saturday. Until then the gap stays open in tracking.
 
 One loose thread, not chased: two other days had suspiciously identical football counts. Flagged, out of scope.
+
+---
+
+**Update — T-550 (football re-run against actual game results):**
+
+**What changed today, in one paragraph:**
+We re-ran the football betting model against real, finished games — not a dry run, actual completed Week 1 matchups. Result: still not enough data to say whether the model has an edge. We'd need roughly 2,600 qualifying games to draw a reliable conclusion at this bet size; we have 14. The average result across those 14 was slightly positive, but with this little data that's statistical noise, not evidence. Along the way we found the task briefing had assumed two weeks of games had finished when only one had, and we found two specific games silently dropped from the count for two unrelated technical reasons (a team-abbreviation mismatch, and one matchup with no archived price data at all) — neither related to the Saturday data-gap fixed earlier today. Both are logged, neither was fixed in this session since fixing them mid-experiment would taint the result.
+
+**What this means for your money:**
+No change — still zero real money at risk in football. This result doesn't support betting more, and it doesn't rule football out either — it just isn't enough games yet to know.
+
+**Does anything need your decision right now?**
+No — nothing needs you today. When more football weeks finish, this same script should be re-run to build up toward that ~2,600-game threshold.
+
+**Anything that worried the session, even if not urgent:**
+The task briefing itself was factually wrong about how many weeks had finished — worth noting since a wrong starting assumption, if unchecked, could have led to us treating a one-week sample as a two-week one. Also flagged two small, low-severity code gaps in how the model finds and counts games — future cleanup, not urgent.
+
+---
+
+*Full technical detail: see `SESSION_HANDOFF_20260916_0016.md` and `DECISION_LOG.md` for this date.*

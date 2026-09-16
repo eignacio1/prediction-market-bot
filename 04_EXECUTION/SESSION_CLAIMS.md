@@ -533,3 +533,4 @@
 | 2026-09-15T23:54:08Z | T-551, GG-282 | T-551/GG-282 (reserved if new gap needed): investigate min_bet_usd floor gap in T1 game-market run scripts + demo-order dependency (GG-203), draft APR |
 | 2026-09-15T05:10:56Z | T-545/GG-276 | MERGED: NO — branch `session/20260915T003401Z-nfl-capture-gap-0912` awaiting merge — T-545/GG-276 NFL Saturday capture gap: shape/cause/detector/fix landed, PR #133 open pending operator merge (commit `ceaea6f`) |
 | 2026-09-16T00:05:40Z | T-552, T-553, GG-283, GG-284 | T-552/GG-283: KXNFLGAME ticker alphabet mismatch (WAS vs WSH) silently drops game from EXP-027 cohort; T-553/GG-284: 2026_01_CLE_JAX has zero archived KXNFLGAME price rows across entire Sept archive, cause unconfirmed |
+| 2026-09-16T00:21:39Z | T-550 | MERGED: NO — branch `session/20260915T235134Z-exp027-rerun-weeks1-2` awaiting merge — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed (commit `cd59841`) |
