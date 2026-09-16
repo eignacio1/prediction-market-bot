@@ -319,16 +319,26 @@ else
     echo "  skipped (last sync $(( pa_age / 60 ))min ago, under ${PA_MAX_AGE}s TTL)"
 fi
 
-# --- GG-276: NFL price-archive capture gap detector ---
-# 2026-09-12 (a Saturday) had zero KXNFL rows -- deploy/cron.conf's NFL-capture
-# block has day-of-week entries for 0-5 (Sun-Fri) only, no 6 (Saturday). This
-# check reads the local synced copy of exp_output/PRICE_ARCHIVE/ (the sync
-# block immediately above) and alarms if yesterday's archive file has zero
-# KXNFL rows during NFL season -- alarm-only, same as the GG-163 probe below.
-# Verified 2026-09-14/15: fires on 2026-09-12, stays quiet on 09-11 and 09-13.
+# --- GG-280: capture-coverage gap detector (generalized from GG-276) ---
+# GG-276 found 2026-09-12 (a Saturday) had zero KXNFL rows because
+# deploy/cron.conf's NFL-capture block had day-of-week entries for 0-5
+# (Sun-Fri) only, no 6 (Saturday) -- since fixed. GG-280 generalizes the
+# detector from that one NFL/Saturday instance to the failure *shape*: it
+# parses deploy/cron.conf's own archiver lines to derive, per sport, which
+# cron day-of-week values are actually scheduled, then alarms if any in-season
+# day that a sport is scheduled for produces zero rows of that sport in the
+# archive file -- catching a repeat of GG-261 (Wednesday/NFL) or GG-276
+# (Saturday/NFL), a symmetric gap in MLB's schedule, or a future sport, without
+# needing a new detector each time. Reads the local synced copy of
+# exp_output/PRICE_ARCHIVE/ (the sync block immediately above). Alarm-only,
+# same as the GG-163 probe below. Verified 2026-09-15 (T-549): fires on
+# 2026-09-12 (zero NFL rows), stays quiet on 09-11 and 09-13, and MLB (whose
+# cron lines are unrestricted day-of-week, `* * *`) shows OK on all three days
+# with no false alarms -- superseding (and removing) the NFL-only
+# scripts/lib/nfl_capture_gap_check.py this script replaces.
 echo ""
-echo "NFL CAPTURE GAP (GG-276 — zero KXNFL rows in NFL season):"
-python3 "$PROJECT/scripts/lib/nfl_capture_gap_check.py" 2>&1 | sed 's/^/  /'
+echo "CAPTURE COVERAGE GAP (GG-280 — zero rows for a sport due that day, per cron.conf's own schedule):"
+python3 "$PROJECT/scripts/lib/capture_coverage_gap_check.py" 2>&1 | sed 's/^/  /'
 
 # --- GG-163: T4 MLB cycle-log write-recency probe ---
 # Every VPS-facing check above this point reads systemd state or a portfolio
