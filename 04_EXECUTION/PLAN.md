@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-16T00:16:00Z (T-550 — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0016.md` for full session detail.
+**Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Weekly; update on any milestone slip > 3 days; update at each gate  
 **Staleness triggers:** Milestone complete; milestone slips; scope change; resource change  

@@ -535,3 +535,4 @@
 | 2026-09-16T00:05:40Z | T-552, T-553, GG-283, GG-284 | T-552/GG-283: KXNFLGAME ticker alphabet mismatch (WAS vs WSH) silently drops game from EXP-027 cohort; T-553/GG-284: 2026_01_CLE_JAX has zero archived KXNFLGAME price rows across entire Sept archive, cause unconfirmed |
 | 2026-09-16T00:21:39Z | T-550 | MERGED: NO — branch `session/20260915T235134Z-exp027-rerun-weeks1-2` awaiting merge — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed (commit `cd59841`) |
 | 2026-09-16T00:23:15Z | T-550 | CLOSED — merge-check confirmed (950918e is ancestor of origin/main); branch session/20260915T235134Z-exp027-rerun-weeks1-2 fast-forwarded onto main |
+| 2026-09-16T04:53:55Z | T-549 | CLOSED — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector (commit `e484670`) |
