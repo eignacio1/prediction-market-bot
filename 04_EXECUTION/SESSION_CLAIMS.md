@@ -536,3 +536,4 @@
 | 2026-09-16T00:21:39Z | T-550 | MERGED: NO — branch `session/20260915T235134Z-exp027-rerun-weeks1-2` awaiting merge — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed (commit `cd59841`) |
 | 2026-09-16T00:23:15Z | T-550 | CLOSED — merge-check confirmed (950918e is ancestor of origin/main); branch session/20260915T235134Z-exp027-rerun-weeks1-2 fast-forwarded onto main |
 | 2026-09-16T04:53:55Z | T-549 | CLOSED — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector (commit `e484670`) |
+| 2026-09-16T04:55:11Z | T-549, GG-280 | CLOSED — merge confirmed, HEAD (8009355) is ancestor of origin/main (merge-check YES) |
