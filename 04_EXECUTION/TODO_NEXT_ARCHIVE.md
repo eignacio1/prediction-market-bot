@@ -2,7 +2,9 @@
 
 ## Last Reviewed Chain Archive
 
-
+<!-- archived from TODO_NEXT.md, 1 entry (manually preserved, T-551/T-549 concurrent-merge conflict -- generator wrote only one authoritative line per file and this session's merge against origin/main would have silently dropped the other side's line, see DECISION_LOG.md 2026-09-16 T-551) -->
+**Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 
 
