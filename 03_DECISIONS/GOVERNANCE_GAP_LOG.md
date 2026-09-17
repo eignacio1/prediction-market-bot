@@ -3524,3 +3524,25 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | **PARTIALLY RESOLVED** — Floor A fixed, tested, and re-verified live 2026-09-15 (T-551, commit `92bd8e8`). Floor B investigated in full (Deliverable 2) and a non-binding recommendation drafted as APR-0034 (commit `2e387b2`); the operator decision itself remains OPEN and is not this session's to make (Hard Rule 11 / scope fence). This entry should not be closed as fully RESOLVED until the operator acts on APR-0034 one way or the other. |
 
 </details>
+
+---
+
+### GG-285 — At observed effect sizes, APR-0024's per-band P&L n* is 10-11 NFL seasons (NFL moneyline) and ~1.6 MLB seasons (T4M-PROJ) from clearing; the P&L gate as currently written may not close within any practical operating horizon for signals whose sd/mean ratio is ~15-28x
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-285 |
+| Category | Gate-design analysis — APR-0024's variance-derived `n*` standard, applied to signals with the sd/mean ratios actually observed, produces a sample-size requirement that is not reachable within a practical horizon at real bet cadence |
+| What was found | Fresh per-cell power calc (`scripts/run_power_calc.py`, live VPS data pulled 2026-09-17): T4M-PROJ `clean_n=765`, `mean=$0.05193/bet`, `sd=$1.4628/bet` (ratio 28.2x), `n*=8587`, cadence=198.4 clean bets/week (27-day measured span) → total `n*` at this cadence ≈ 43.3 weeks ≈ 10.0 months ≈ 1.6 MLB regular seasons (season ≈ 27 weeks). T1/T2/T3 all `clean_n=0` (T1 `raw_n=466` but zero clean — epoch contamination per GG-124's known pattern; T2 `raw_n=2`; T3 `raw_n=0`, never traded) — variance not estimable, no `n*` computable at all. NFL moneyline (EXP-027/HYP-012, T-550 re-run): `clean_n=14`, `mean=$0.03214/bet`, `sd=$0.49920/bet` (ratio 15.5x), `n*=2610.35`; at the observed Week-1 clean rate (14/16 = 87.5% of `n_prospective_scheduled=272` games/season ⇒ ≈238 clean games/season ⇒ ≈13.2 clean games/week over an 18-week season), total `n*` at this cadence ≈ 197 weeks ≈ 45.6 months ≈ 11.0 NFL seasons. Full per-cell table, calibration-vs-P&L sample-size comparison, and cell-by-cell strategic-consequence statement in `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T554_nstar_wall_analysis.md` (this session). |
+| Why it matters | APR-0024 governs G6 sample-adequacy system-wide. If the two cells with any resolved cohort at all (T4M-PROJ, NFL moneyline) both require single-digit-to-double-digit years of continuous, uninterrupted cadence at their *current* measured rate to clear `clean_n >= n*` on P&L-per-bet alone, then G6 cannot close on P&L evidence within any practical horizon for those cells as things stand, and the ~25-cell coverage target (`COVERAGE_TARGET_MATRIX.md`) compounds the problem rather than diluting it — each new cell starts its own multi-year P&L clock from zero. This is an analysis/decision request, not a proposed fix: no gate, threshold, or pre-registered verdict is changed by this entry. EXP-027's UNDERPOWERED verdict stands unmodified. |
+| Discovery | 2026-09-17, T-554 (this session), STANDARD-tier analysis task per explicit operator framing: "Nobody has stated the implication." |
+| Resolution | Not resolved — this is a decision request. APR drafted at `00_ADMIN/APR-0035_pnl_gate_reachability_decision_request.md` (this session; corrected from an earlier-typed `APR-0026`, which was already taken by a different session — confirmed via full-history search before the APR was actually written), presenting options (keep P&L gate and accept horizon / add a calibration-based interim cell-promotion gate while P&L stays the live-capital gate / re-derive n* under different power-alpha / other) without selecting one. Recommendation, not decision, per task framing. |
+| Cross-references | APR-0024 (the standard under analysis); APR-0035 (this session's drafted, undecided decision request); ADR-0057 (in force, unaffected); GG-004 (commercial-validation gap, parent); GG-124 (T1/T2/T3 transient-to-persistent clean_n=0 pattern, still live for T1 at this measurement); T-550/GG-281/GG-283/GG-284 (EXP-027 re-run this analysis builds on, none of which are relabeled or reopened here). |
+| Status | OPEN — registered 2026-09-17 (T-554). Resolution path is APR-0035's operator decision, not a code or data fix. Closes when the operator selects an option and any required superseding ADR/APR is accepted. |
+
+</details>
