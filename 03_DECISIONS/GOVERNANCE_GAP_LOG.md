@@ -3456,50 +3456,6 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 
 ---
 
-### GG-283 — `exp027_hyp012_nfl_moneyline_backtest.py`'s Kalshi team-code alphabet lacks "WAS"; at least one live 2026 KXNFLGAME ticker uses "WAS" (not "WSH"), causing `parse_event_teams` to silently return `None` and drop that game from the EXP-027 cohort
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-283 |
-| Category | Data-parsing defect — venue ticker alphabet assumption contradicted by observed live data |
-| What was found | `scripts/exp027_hyp012_nfl_moneyline_backtest.py`'s `_NFL_TEAM_CODES` (line 98) includes `"WSH"` and not `"WAS"`, per its own comment: "nflverse ... uses LA/WAS; Kalshi's ticker alphabet uses LAR/WSH instead." The live archive (`exp_output/PRICE_ARCHIVE/prices_2026-09-*.jsonl`) contains real, well-formed KXNFLGAME rows for the 2026-09-13 WAS@PHI game under ticker `KXNFLGAME-26SEP13WASPHI-{WAS,PHI}` — i.e. Kalshi's real ticker uses `"WAS"`, contradicting the script's hardcoded assumption for this game. `parse_event_teams("26SEP13WASPHI")` tries every split of `"WASPHI"` against `_NFL_TEAM_CODES`; the correct split (`"WAS"`/`"PHI"`) fails because `"WAS"` is absent from the set, so the function returns `None` and `load_nfl_closing_prices()` silently `continue`s past every row for this event (confirmed empirically: 0 of 966+ WASPHI rows across 09-05 through 09-13 survive into the function's `closing` output). This game (`2026_01_WAS_PHI`) is otherwise a normal resolved Week 1 game with no other data problem. |
-| Why it matters | A silent `None`-and-`continue` on a real, resolvable game shrinks the cohort without any log line or count discrepancy pointing at it — `[join] events=... matched_to_schedule=... unmatched=...` reports an aggregate unmatched count but not which games or why. This is exactly the kind of quiet, non-alarming data loss GG-166/Q7 exists to catch generally; here it is caught by manual per-game reconciliation, not by any structural check. Whether Kalshi's real alphabet uses "WAS" for all WAS-involving events (this may be the actual convention, with "WSH" being the wrong assumption) or mixes both across different weeks/events is unconfirmed — this entry does not assert which is correct, only that at least one live ticker contradicts the script's current assumption. |
-| Discovery | 2026-09-15/16, T-552 (this session), while investigating Deliverable 1's disclosure obligation for GG-276's 09-12 capture gap — found while tracing which of the 16 resolved games failed to join to a market row and why. |
-| Resolution | Not fixed in this session — out of scope. Fixing `_NFL_TEAM_CODES`/`_KALSHI_TO_NFLVERSE` would change the EXP-027 cohort (adds a game, changes `clean_n`), which the task's binding pre-registration explicitly forbids mid-run ("do not change a parameter, a threshold, a cohort definition ... after seeing a result"). Registered for a future session to investigate Kalshi's actual live ticker alphabet for Washington across all captured NFL weeks (does it ever use "WSH"? is "WAS" the only form seen?) and fix the alphabet/translation table accordingly, pre-registered fresh rather than applied retroactively to EXP-027's already-observed cohort. |
-| Cross-references | GG-281 (this session's EXP-027 re-run, where this game's exclusion was found); GG-284 (the other excluded game, unrelated cause); GG-276 (Saturday capture gap — investigated and ruled out as the cause of this game's exclusion; the WAS_PHI ticker has pregame snapshots on 09-05 through 09-11, so the 09-12 gap does not explain this game's absence — the parse failure does). |
-| Status | OPEN — registered 2026-09-15/16 (T-552). Needs a follow-up T-NNN to confirm Kalshi's real Washington ticker code across all captured NFL data and correct `_NFL_TEAM_CODES`/`_KALSHI_TO_NFLVERSE`, pre-registered before any re-run that would use the fix. |
-
-</details>
-
----
-
-### GG-284 — `2026_01_CLE_JAX` (Week 1, 2026-09-13) has zero archived KXNFLGAME price rows across the entire captured September window; cause unconfirmed
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-284 |
-| Category | Data-completeness gap — unexplained total absence of archived market data for one resolved game |
-| What was found | `exp_output/PRICE_ARCHIVE/prices_2026-09-*.jsonl` (every date 09-01 through 09-15) contains zero rows matching ticker substrings `CLEJAX` or `JAXCLE` under `series_ticker == "KXNFLGAME"` — not just missing on 2026-09-12 (the known GG-276 Saturday gap), but absent from every single day, including 2026-09-13 (the game's own date) and every day before and after it. By contrast, the other 09-13 game investigated alongside this one (WAS@PHI, see GG-283) has hundreds of rows per day from 09-05 onward. This game (`2026_01_CLE_JAX`, home=JAX, away=CLE) is a normal, resolved Week 1 game with a final score in the schedule data — there is no indication the game itself was cancelled, delayed, or unusual. |
-| Why it matters | This is a different failure shape from GG-276 (a known one-day scheduling gap) and from GG-283 (a parse-time alphabet mismatch on data that exists) — here the market data appears never to have been captured or never to have existed under the expected ticker for this specific matchup, across the *entire* observed window. Ruling out GG-276 specifically: if the 09-12 gap were the cause, this game would still show rows on 09-05 through 09-11 and 09-13 (as WAS@PHI does) with only the 09-12 slice missing; instead it has zero rows on every date, which the 09-12 gap alone cannot produce. |
-| Discovery | 2026-09-15/16, T-553 (this session), while investigating Deliverable 1's disclosure obligation for GG-276 — found while tracing which of the 16 resolved games failed to join to a market row and why. |
-| Resolution | Not investigated further in this session — out of scope (scope fence excludes `deploy/cron.conf`, the archiver, and `PRICE_ARCHIVE/`, all owned by a different concurrent session). Candidate causes not yet distinguished: (a) Kalshi never listed a KXNFLGAME market for this specific matchup; (b) the archiver's series-family enumeration missed this one event_ticker for a reason unrelated to day-of-week scheduling; (c) an event-ticker naming convention this script's parser doesn't recognize (e.g. a different date-prefix or team-order edge case not covered by `parse_event_teams`'s exhaustive split, though that function was verified separately to correctly parse `"CLEJAX"` when tested in isolation — the absence is upstream of parsing, in the archive itself, not a parser bug for this game). Needs a follow-up T-NNN, scoped to the archiver/PRICE_ARCHIVE owner, to determine which. |
-| Cross-references | GG-281 (this session's EXP-027 re-run, where this game's exclusion was found); GG-283 (the other excluded game, a confirmed parser-alphabet cause — distinct from this game's total-absence cause); GG-276 (Saturday capture gap — investigated and ruled out as the cause here, see "Why it matters"). |
-| Status | OPEN — registered 2026-09-15/16 (T-553). Needs a follow-up T-NNN, owned by the archiver/PRICE_ARCHIVE session, to determine why this specific event was never captured. |
-
-</details>
-
----
-
 ### GG-282 — Investigation: do the two new T1 game-market run scripts inherit the live $10 `min_bet_usd` floor instead of the paper $1.00 floor their sibling runners pass, and is T4 MLB's `kalshi_client=None` demo-order path (GG-203) load-bearing or optional?
 
 **Status:** PARTIALLY RESOLVED (2026-09-15, T-551) — Floor A fixed and verified; Floor B investigated, decision requested via APR-0034, not decided · **Severity:** MEDIUM
