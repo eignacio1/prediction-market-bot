@@ -95,17 +95,29 @@ Z_POWER_95 = 1.6448536269514722  # power=.95
 # Kalshi's KXNFLGAME ticker team-code alphabet -- reimplemented from
 # scripts/apply_resolved_nfl_game_markets.py (T-527, a different session's
 # deliverable; read-only pattern-mining, not imported).
+#
+# GG-283/GG-284 (T-555, 2026-09-17): a full audit of every KXNFLGAME ticker in
+# the archive (9186 rows, 48 distinct event_segments) against this alphabet
+# found the live exchange uses "WAS" (586 occurrences, 0 "WSH") and "JAC" (564
+# occurrences, 0 "JAX") -- this table only had the nflverse-style forms ("JAX",
+# "WSH"), so both were silently unparseable. Kept as a superset (both forms
+# retained per team) rather than swapped, since only the "WAS"/"JAC" forms are
+# empirically attested and there is no evidence the "WSH"/"JAX" forms never
+# occur elsewhere; the superset is strictly safer either way. Verified this
+# introduces no split ambiguity across all 34*34 code-pair concatenations
+# (see T-555 session notes) before landing.
 _NFL_TEAM_CODES = frozenset({
     "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE",
-    "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC",
+    "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAC", "JAX", "KC",
     "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NO", "NYG",
-    "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WSH",
+    "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS", "WSH",
 })
 _EVENT_DATE_PREFIX_LEN = 7  # e.g. "26SEP21" = 2026-09-21
 
-# nflverse (schedule/team-stats source) uses LA/WAS; Kalshi's ticker alphabet
-# uses LAR/WSH instead -- every other code matches. Translate Kalshi -> nflverse.
-_KALSHI_TO_NFLVERSE = {"LAR": "LA", "WSH": "WAS"}
+# nflverse (schedule/team-stats source) uses LA/WAS/JAX; Kalshi's live ticker
+# alphabet uses LAR/WAS/JAC -- WAS already matches nflverse as of GG-283's fix
+# (both use "WAS"), so only LAR and JAC need translation. Translate Kalshi -> nflverse.
+_KALSHI_TO_NFLVERSE = {"LAR": "LA", "WSH": "WAS", "JAC": "JAX"}
 
 
 def _translate(code: str) -> str:
@@ -387,11 +399,22 @@ def _eval(model: Pipeline, df: pd.DataFrame) -> dict:
 # Step 5 -- KXNFLGAME archive: closing pregame price per game (2026 only)
 # ---------------------------------------------------------------------------
 
-def load_nfl_closing_prices() -> list[dict]:
-    files = sorted((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE").glob("prices_2026-*.jsonl"))
-    files = [f for f in files if f.suffix == ".jsonl"]
+def _load_kxnflgame_rows(files: list[Path]) -> tuple[list[dict], dict[str, int]]:
+    """Parses KXNFLGAME rows out of the given PRICE_ARCHIVE jsonl files.
+
+    Returns (kept_rows, unparsed_segment_counts). GG-283/GG-284 (T-555): an
+    event_segment that parse_event_teams() can't split against the known
+    alphabet used to be a silent `continue` -- indistinguishable from any
+    other legitimate filter reason (bad JSON, wrong series, missing pregame
+    cutoff, missing price fields) and indistinguishable from "no game here".
+    That is the same failure class as GG-276's silent capture gap and
+    GG-203's silent order failures: a cohort-shrinking defect that produces
+    no trace. Every unparsed segment is now counted and reported loudly
+    (see the WARNING block below) instead of vanishing into the drop count.
+    """
     total = 0
     kept = []
+    unparsed_segments: dict[str, int] = {}
     for fp in files:
         with fp.open() as fh:
             for line in fh:
@@ -408,6 +431,7 @@ def load_nfl_closing_prices() -> list[dict]:
                 event_segment, team_suffix = parts[1], parts[2]
                 teams = parse_event_teams(event_segment)
                 if teams is None:
+                    unparsed_segments[event_segment] = unparsed_segments.get(event_segment, 0) + 1
                     continue
                 date_code = event_segment[:_EVENT_DATE_PREFIX_LEN]
                 try:
@@ -431,6 +455,24 @@ def load_nfl_closing_prices() -> list[dict]:
                     "yes_mid": float(yes_mid), "half_spread": float(half_spread),
                 })
     print(f"[archive] KXNFLGAME rows total={total} kept(pregame,parsed)={len(kept)}")
+    if unparsed_segments:
+        total_dropped = sum(unparsed_segments.values())
+        print(
+            f"[archive] WARNING: {len(unparsed_segments)} distinct event_segment(s) failed "
+            f"team-code parsing -- {total_dropped} row(s) SILENTLY DROPPED from the cohort "
+            f"unless you are reading this line (same failure class as GG-276/GG-203: a None "
+            f"that reads as 'no game here'). Update _NFL_TEAM_CODES/_KALSHI_TO_NFLVERSE if "
+            f"any of these are real teams under a new ticker form:"
+        )
+        for seg in sorted(unparsed_segments):
+            print(f"[archive]   UNPARSED event_segment={seg!r} rows_dropped={unparsed_segments[seg]}")
+    return kept, unparsed_segments
+
+
+def load_nfl_closing_prices() -> list[dict]:
+    files = sorted((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE").glob("prices_2026-*.jsonl"))
+    files = [f for f in files if f.suffix == ".jsonl"]
+    kept, _unparsed = _load_kxnflgame_rows(files)
 
     latest: dict[str, dict] = {}
     for row in kept:
