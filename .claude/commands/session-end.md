@@ -271,19 +271,44 @@ NEXT SESSION PRIMER:
 scripts/session_end_timer.sh merge-check
 ```
 
-If it prints `MERGE_CHECK: YES`, append the real closure row (`SESSION_CLAIMS.md` is append-only/`merge=union` — never edit the earlier row):
+Then write the closure row with the script — **not by hand, and not onto your own branch**:
 
 ```bash
-cat <<EOF >> 04_EXECUTION/SESSION_CLAIMS.md
-| $(date -u +%Y-%m-%dT%H:%M:%SZ) | <TASK_ID> | CLOSED — merge confirmed, HEAD is ancestor of origin/main (merge-check YES) |
-EOF
+scripts/close_session_claim.sh "<TASK_ID>" "<one-line summary>"
 ```
 
-If it still prints `MERGE_CHECK: NO`, the merge did not actually land (a fast-forward that silently failed, a PR that didn't merge, wrong branch checked out) — do **not** append a CLOSED row. Go back to Step 8.1–3, fix it, or fall back to Step 8.5 (register the merge as its own T-NNN and leave the "MERGED: NO" row as the honest current state).
+It re-runs the ancestor assertion itself, writes `CLOSED` only if HEAD is on `origin/main` and an honest `MERGED: NO — branch <name> awaiting merge` otherwise, commits that row **alone**, and pushes it **straight to `origin/main`** with rebase-retry — the same mechanism `scripts/claim_session.sh` has always used at claim time (`SESSION_CLAIMS.md` is `merge=union`, so concurrent rows auto-merge). Never edit an earlier row; the file is append-only.
+
+**Why the row goes to `main` directly instead of riding your branch (2026-09-17).** Step 6-gen appends its row to `SESSION_CLAIMS.md` *on the session branch*. When the branch never merges, that row never reaches `origin/main` — so the row whose entire job is to make an unmerged branch visible is itself trapped on the unmerged branch, and the next session's claims scan sees nothing. That is not hypothetical: **T-545, T-547 and T-551 all finished, pushed, and wrote closure rows, and `origin/main` showed no row for any of them.** Claim rows always reached `main` because `claim_session.sh` pushes them there directly; closure rows never did. This closes that asymmetry.
+
+If the script exits nonzero, the row is committed locally but did **not** reach `origin/main` — say so to the operator explicitly. Do not end the session claiming it landed.
+
+A `MERGED: NO` row is not a failure state to hide from — it is the honest current state, and it is now *visible to everyone* rather than buried on a branch nobody merged. If the merge genuinely cannot happen this session, pair it with Step 8.5's T-NNN.
 
 This is what makes "closed" and "on origin/main" the same fact instead of two facts that can silently drift apart — the failure mode observed four times (T-456 x2, T-458, T-460, see GG-186): a window writes a closure row from local `HEAD` state and ends the session without ever checking that `HEAD` reached `origin/main`. With this step, a window physically cannot produce a "CLOSED" row without the live assertion backing it, and a window that skips this step leaves a "MERGED: NO" row instead — visible to the next session's Step 0c scan and to any audit, rather than a false "CLOSED".
 
 **Exit check:** `git branch -a` should show no session branch that is both unpushed-or-unmerged AND unaccounted-for in the handoff. Additionally: the *last* SESSION_CLAIMS.md row for this session's task ID must read "CLOSED" with a passing `merge-check`, never "MERGED: NO" left as the final word without an accompanying T-NNN follow-up per Step 8.5.
+
+---
+
+## Step 9 — Stray-branch sweep (mandatory, untiered — the last thing you run)
+
+```bash
+scripts/sweep_stray_branches.sh 14
+```
+
+Fetches, then reports every session branch on `origin` that is not an ancestor of `origin/main`. Two seconds; it fits the budget.
+
+**Read the output against exactly two questions:**
+
+1. **Is one of them mine?** Then Step 8 is not finished. Go back and land it. A branch you pushed but did not merge is the single most common way this project creates work for the next session.
+2. **Are any of them somebody else's?** Then name them — branch, commit count, age — in the SESSION_HANDOFF and in one plain line of the operator digest. **Do not merge them.** A stray branch is the operator's routing decision; it becomes a Deliverable 0 in a queue block, sized and claimed like any other work. Landing someone else's branch turns one session into three (Hard Rule 11) and is exactly the cleanup burden this step exists to surface rather than silently absorb.
+
+**Two read-it-right caveats, both real:**
+- The script says loudly if it could not fetch. A `NOT LANDED` call against a stale ref can be false; a `LANDED` call cannot. Never write "did not land" off a stale ref — write "not visible at ref `<SHA>`, which may be stale."
+- A branch whose content landed under different SHAs (rebase, cherry-pick, squash-merge) still reads `NOT LANDED`. Before flagging one, check whether its GG/T is already resolved on `main` — `origin/session/20260915T003401Z-nfl-capture-gap-0912` is a live example: content merged, GG-276 RESOLVED, branch ref still reads unlanded forever.
+
+This step reports; it never merges, never deletes, and always exits 0. It cannot fail your close-out — it can only tell you the truth about what you are leaving behind.
 
 ---
 
@@ -302,5 +327,7 @@ This is what makes "closed" and "on origin/main" the same fact instead of two fa
 04_EXECUTION/.last_session_checkpoint          —                                                     always
 11_MEMORY_HANDOFF/OPERATOR_DIGEST_[date].md    STANDARD: prose digest, Step 6B                       MICRO only: one-liner
 ```
+
+**Closure row and stray sweep (Steps 8-confirm and 9) are untiered and script-driven — `scripts/close_session_claim.sh` and `scripts/sweep_stray_branches.sh`. Neither is hand-authored and neither counts against the write budget.**
 
 MICRO tier's total model-authored write count: DECISION_LOG row (only if Step 1A found a real decision), the SESSION_HANDOFF file, and the commit — **≤3**. Everything in the GENERATED column runs regardless of tier via one Step 6-gen call.
