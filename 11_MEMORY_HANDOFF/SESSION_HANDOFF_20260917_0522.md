@@ -4,15 +4,15 @@
 task_id: T-555
 tier: STANDARD
 timestamp: 2026-09-17T05:22:00Z
-commit: e1cc223
-one_line_summary: T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); addendum cherry-picks blocked by classifier, not retried
+commit: 744b8f1
+one_line_summary: T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); merged origin/main conflicts, pushed, PR #137 open awaiting operator merge; addendum cherry-picks blocked by classifier, not retried
 gg_touched: GG-283, GG-284
 adr_touched: none
 plan_deliverable_moved: no
 -->
 
 **Trigger:** Operator close-out (T-555's 4 deliverables complete).
-**Last commit:** `e1cc223` (session branch, unmerged) — pushed to origin, no VPS deploy needed.
+**Last commit:** `744b8f1` (session branch, merged with origin/main, unmerged into `main`) — pushed to origin, PR #137 open, no VPS deploy needed.
 
 ---
 
@@ -45,7 +45,7 @@ Phase 6/7 ACTIVE. Tests 14/14 passing (session scope). Capital: paper only, unto
 
 ## ONE THING PENDING
 
-Branch pushed, **not merged to `main`**; `origin/main` advanced to `34122b4` (last merge `790ae17`) — re-merge first. `close_session_claim.sh`/`sweep_stray_branches.sh` absent (blocked cherry-picks) — Step 8-confirm uses heredoc fallback; Step 9 not run. Next: authorize cherry-picks or drop, then merge via PR.
+Branch merged with `origin/main` (conflict-resolved across DECISION_LOG/PLAN/TODO_NEXT/MEMORY_BANK — no content lost), pushed as `744b8f1`, **PR #137 open** (https://github.com/eignacio1/prediction-market-bot/pull/137), awaiting operator merge per this repo's operator-merges convention. `close_session_claim.sh`/`sweep_stray_branches.sh` absent (blocked cherry-picks) — Step 8-confirm ran `merge-check` → NO (expected, PR not yet merged), SESSION_CLAIMS.md correctly still reads MERGED: NO; Step 9 (stray-branch sweep) not run, script absent. Next: operator merges PR #137, then a follow-up session runs merge-check again to append the CLOSED row and retires the worktree; separately, authorize or drop the two addendum cherry-picks.
 
 ---
 
