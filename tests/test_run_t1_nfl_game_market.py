@@ -41,6 +41,7 @@ from prediction_market_bot.run_t1_nfl_game_market import (  # noqa: E402
     evaluate_and_maybe_trade,
 )
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader  # noqa: E402
+from prediction_market_bot.c4_risk_engine.risk import RiskEngine  # noqa: E402
 
 
 def _make_market(**overrides) -> GameMarket:
@@ -254,6 +255,75 @@ def test_legacy_row_no_model_identity_loads_as_unknown(trader):
     assert "model_identity" not in legacy_row
     assert (legacy_row.get("model_identity") or "UNKNOWN") == "UNKNOWN"
     assert reloaded is not None  # loaded without raising
+
+
+# ── GG-282/T-551: min_bet_usd floor fix (Deliverable 3) ────────────────────
+#
+# The RiskEngine construction in main() previously omitted min_bet_usd,
+# inheriting the live MIN_BET_USD=10.0 floor (risk.py) against this script's
+# $1.00 ADR-0050 flat measurement stake (T1_MEASUREMENT_STAKE_USD) -- every
+# approval-path evaluation was structurally guaranteed to be rejected
+# "min_bet_floor". Two tests: (1) the fix (min_bet_usd=1.0, matching main()'s
+# actual construction) lets a $1.00 measurement stake clear end-to-end, and
+# (2) the live floor (no override -- the global MIN_BET_USD default) still
+# refuses a $1.00 stake "min_bet_floor", proving this fix does not touch the
+# live floor itself (Hard Rule: DO NOT change MIN_BET_USD).
+
+
+def test_fixed_measurement_stake_not_refused_with_paper_floor_override(tmp_path):
+    """Mirrors main()'s actual RiskEngine construction (min_bet_usd=1.0).
+    A $1.00 ADR-0050 measurement stake must clear the risk gate end-to-end
+    (outcome OPENED), not be rejected "min_bet_floor"."""
+    audit = AuditLogger(tmp_path / "audit_floor_fix_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-FLOOR-FIX", bankroll=1000.0,
+        min_bet_usd=1.0,  # matches main()'s post-fix construction verbatim
+    )
+    trader = PaperTrader(portfolio_path=tmp_path / "paper_portfolio_floor_fix_test.json", logger=audit)
+    mkt = _make_market()
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        # fixed_p=0.65 -> edge = 0.65-0.56 = 0.09, comfortably above both this
+        # script's EDGE_THRESHOLD (0.02) and RiskEngine's own MIN_EDGE gate
+        # (0.04) -- the point of this test is the min_bet_floor fix, not the
+        # edge gate, so the edge margin is deliberately generous.
+        model=StubNFLForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+
+def test_fixed_measurement_stake_still_refused_min_bet_floor_on_live_default(tmp_path):
+    """Without the min_bet_usd override -- i.e. RiskEngine's live default --
+    the same $1.00 flat measurement stake must still be refused
+    "min_bet_floor". Proves the fix is a paper-mode override, not a change
+    to the live MIN_BET_USD floor itself (Hard Rule: DO NOT change
+    MIN_BET_USD)."""
+    audit = AuditLogger(tmp_path / "audit_live_floor_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-LIVE-FLOOR", bankroll=1000.0,
+        # no min_bet_usd override -- inherits the live MIN_BET_USD=10.0 floor
+    )
+    forecast_record = {
+        "forecast_id": "FCST-TEST-FLOOR-LIVE",
+        "p_estimate": 0.65,
+        "market_implied_prob": 0.56,
+        "edge": 0.09,  # comfortably above RiskEngine's own MIN_EDGE gate (0.04)
+        "recommended_direction": "YES",
+    }
+    ok, approval = engine.evaluate_forecast(
+        forecast_record=forecast_record,
+        session_id="TEST-LIVE-FLOOR",
+        pool_isolated=True,
+        fixed_stake_usd=1.00,  # same $1.00 ADR-0050 flat measurement stake
+    )
+    assert ok
+    assert approval.get("approval_status") != "APPROVED"
+    assert approval.get("rejection_reason") == "min_bet_floor"
 
 
 def test_open_position_never_writes_missing_or_empty_model_identity(trader):

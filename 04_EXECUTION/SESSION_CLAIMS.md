@@ -535,6 +535,7 @@
 | 2026-09-16T00:05:40Z | T-552, T-553, GG-283, GG-284 | T-552/GG-283: KXNFLGAME ticker alphabet mismatch (WAS vs WSH) silently drops game from EXP-027 cohort; T-553/GG-284: 2026_01_CLE_JAX has zero archived KXNFLGAME price rows across entire Sept archive, cause unconfirmed |
 | 2026-09-16T00:21:39Z | T-550 | MERGED: NO — branch `session/20260915T235134Z-exp027-rerun-weeks1-2` awaiting merge — EXP-027/HYP-012 verbatim re-run: UNDERPOWERED (clean_n=14 vs n*=2610); GG-281/283/284 registered, none fixed (commit `cd59841`) |
 | 2026-09-16T00:23:15Z | T-550 | CLOSED — merge-check confirmed (950918e is ancestor of origin/main); branch session/20260915T235134Z-exp027-rerun-weeks1-2 fast-forwarded onto main |
+| 2026-09-16T05:01:46Z | T-551 | MERGED: NO — branch `session/20260915T235119Z-why-no-bet-can-be-placed` awaiting merge — T-551/GG-282: fixed min_bet_usd floor gap (T1 NFL/MLB game-market scripts), drafted APR-0034 for T4 MLB Floor B decision request (commit `89ce40e`) |
 | 2026-09-16T04:53:55Z | T-549 | CLOSED — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector (commit `e484670`) |
 | 2026-09-16T04:55:11Z | T-549, GG-280 | CLOSED — merge confirmed, HEAD (8009355) is ancestor of origin/main (merge-check YES) |
 | 2026-09-17T00:17:44Z | TBD | STANDARD — land Wave 26 branch (T-551/GG-282 Floor-A fix), re-run EXP-027 open attempt, settle if position opens — Wave 27 queue item |

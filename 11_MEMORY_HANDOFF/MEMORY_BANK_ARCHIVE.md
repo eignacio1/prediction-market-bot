@@ -2263,7 +2263,9 @@ as of 2026-07-24, Window D — offline what-if replay harness (`scripts/what_if_
 as of 2026-07-31, GG-149/GG-150 T4 offsetting-position suppression close-out (epoch 11→12, `bands_affected={"T4M-PROJ"}`, PR #62 merged `2084449`) — MEMORY_BANK ✅ that session (Last reviewed, Current State Snapshot, What Must Happen Next, this Compass OS Health row updated) | TODO_NEXT ✅ that session (GG-149/GG-150 marked COMPLETE, GG-151 noted, Last reviewed updated) | DECISION_LOG ✅ that session (2026-07-31 Notable Judgment Calls row added) | GOVERNANCE_GAP_LOG ✅ that session (GG-149/GG-150 → RESOLVED, GG-151 registered OPEN) | *(builds on 2026-07-30 R2 T-402/GG-142 close-out and earlier chain, archived above.)*
 ## Last Reviewed Chain Archive
 
-
+<!-- archived from MEMORY_BANK.md, 1 entry (manually preserved, T-551/T-549 concurrent-merge conflict -- generator wrote only one authoritative line per file and this session's merge against origin/main would have silently dropped the other side's line, see DECISION_LOG.md 2026-09-16 T-551) -->
+**Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 
 

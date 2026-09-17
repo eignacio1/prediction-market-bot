@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
+**Last reviewed:** 2026-09-16T05:00:07Z (T-551 — T-551/GG-282: fixed min_bet_usd floor gap (T1 NFL/MLB game-market scripts), drafted APR-0034 for T4 MLB Floor B decision request) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0500.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  
