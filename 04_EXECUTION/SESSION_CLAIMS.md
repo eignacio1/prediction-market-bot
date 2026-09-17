@@ -538,3 +538,4 @@
 | 2026-09-16T04:53:55Z | T-549 | CLOSED — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector (commit `e484670`) |
 | 2026-09-16T04:55:11Z | T-549, GG-280 | CLOSED — merge confirmed, HEAD (8009355) is ancestor of origin/main (merge-check YES) |
 | 2026-09-17T00:17:44Z | TBD | STANDARD — land Wave 26 branch (T-551/GG-282 Floor-A fix), re-run EXP-027 open attempt, settle if position opens — Wave 27 queue item |
+| 2026-09-17T00:18:31Z | T-554, GG-285 | T-554/GG-285: n* wall gate-reachability analysis — is APR-0024 P&L gate reachable within practical horizon |
