@@ -542,3 +542,4 @@
 | 2026-09-17T00:18:31Z | T-554, GG-285 | T-554/GG-285: n* wall gate-reachability analysis — is APR-0024 P&L gate reachable within practical horizon |
 | 2026-09-17T00:18:50Z | T-555, GG-283, GG-284 (GG-286 reserved) | T-555 follow-up: GG-283 alphabet audit+fix+loud-failure, GG-284 CLE_JAX cause (GG-286 reserved if new gap found) |
 | 2026-09-17T00:41:40Z | T-554 | MERGED: NO — branch `session/20260917T001736Z-n-star-wall-gate-reachability` awaiting merge — T-554/GG-285 n*-wall gate-reachability analysis complete; APR-0035 drafted, awaiting operator decision. (commit `be730b7`) |
+| 2026-09-17T00:47:00Z | T-554 | CLOSED — merge confirmed, HEAD (f94332f) is ancestor of origin/main (merge-check YES, merged as b9aa538 via PR #136) |
