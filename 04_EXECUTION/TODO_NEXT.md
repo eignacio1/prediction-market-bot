@@ -2,10 +2,14 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-16T05:00:07Z (T-551 — T-551/GG-282: fixed min_bet_usd floor gap (T1 NFL/MLB game-market scripts), drafted APR-0034 for T4 MLB Floor B decision request) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0500.md` for full session detail.
+**Last reviewed:** 2026-09-17T00:41:00Z (T-554 — T-554/GG-285 n*-wall gate-reachability analysis complete; APR-0035 drafted, awaiting operator decision.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0041.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-554/GG-285 — APR-0024's per-band P&L `n*` gate-reachability analysis — ✅ COMPLETE 2026-09-17 (worktree `session/20260917T001736Z-n-star-wall-gate-reachability`)
+
+STANDARD-tier analysis (not a change): computed the per-band n*-wall (T4M-PROJ ≈1.6-1.7 MLB seasons; NFL moneyline ≈11 NFL seasons/~11 calendar years; T1/T2/T3 not computable, clean_n<2), compared required sample size for calibration (Brier/ECE, already informative at n=284) vs. P&L (n*=2610 for NFL), and drafted `00_ADMIN/APR-0035_pnl_gate_reachability_decision_request.md` presenting 4 options without selecting one. **Awaiting operator decision on APR-0035.** No gate/threshold/verdict changed. See `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T554_nstar_wall_analysis.md` and `DECISION_LOG.md` 2026-09-17.
 
 ## T-549/GG-280 — Land Wave 25 stray branches + full 7-day/2-sport capture-coverage audit + generalized detector — ✅ COMPLETE 2026-09-15 (worktree `session/20260915T235118Z-land-w25-capture-coverage-audit`, HEAD `e484670`)
 
