@@ -7,3 +7,11 @@ Not within any practical horizon, for either cell with enough data to measure. T
 No gate, threshold, or verdict changes — EXP-027's UNDERPOWERED call stands. Drafted `APR-0035`: four options (keep gate as-is; add a faster calibration-based gate for cell promotion, P&L stays the live-capital gate; re-derive the sample size under different assumptions; a hybrid), none selected — your call.
 
 **Awaiting your decision on APR-0035.** No urgency, nothing blocked today.
+
+## 2026-09-17 05:42 — T-556: NFL positions opened; Kalshi order-fail diagnosis (no fix yet)
+
+**What happened:** The system placed its first-ever 42 NFL bets on the demo Kalshi account. All 42 are on unplayed games, so none can be scored win/loss yet — expected, not a problem.
+
+Separately, we dug into why real-money order placement keeps failing (GG-203). Ruled out four suspects: wrong web address, broken order form, mismatched account, "bet doesn't exist on practice site." None are the cause. Best guess now: Kalshi's internal order-routing is misconfigured on their end. No fix applied — needs Kalshi support, not more code on our side.
+
+**Next:** after 2026-09-20, check whether those 42 NFL bets can finally be scored as win/loss.
