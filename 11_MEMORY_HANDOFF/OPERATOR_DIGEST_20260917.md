@@ -18,3 +18,13 @@ No gate, threshold, or verdict changes — EXP-027's UNDERPOWERED call stands. D
 Separately, we dug into why real-money order placement keeps failing (GG-203). Ruled out four suspects: wrong web address, broken order form, mismatched account, "bet doesn't exist on practice site." None are the cause. Best guess now: Kalshi's internal order-routing is misconfigured on their end. No fix applied — needs Kalshi support, not more code on our side.
 
 **Next:** after 2026-09-20, check whether those 42 NFL bets can finally be scored as win/loss.
+
+## 2026-09-18 02:57 — T-558: GG-203 root cause found (still needs your action)
+
+**What happened:** Found why real-money orders keep failing (GG-203). Not a code bug — a funding issue: Kalshi splits balance into "shards" by sport, and the practice account's sports shard has $0, though the overall balance shows funds. Confirmed two ways: extra order routing info made no difference (rules out a code fix); the balance-by-shard read showed $0 specifically in sports.
+
+**Your money:** No live capital at risk — practice account only. No risk-limit or sizing change.
+
+**Decision needed:** Yes — one API call moves balance into the sports shard. That's a funding action, outside what a coding session can do alone; needs your authorization, then one test order to confirm. GG-203 stays diagnosed, not fixed, until then.
+
+**Worried about:** Nothing new.
