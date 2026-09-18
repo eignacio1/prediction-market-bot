@@ -2,7 +2,8 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-17T05:22:00Z (T-555 — T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); addendum cherry-picks blocked by classifier, not retried) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0522.md` for full session detail.
+**Last reviewed:** 2026-09-17T05:38:46Z (T-556 — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0538.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-09-17T05:22:00Z (T-555 — T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); addendum cherry-picks blocked by classifier, not retried) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0522.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-17T00:41:00Z (T-554 — T-554/GG-285 n*-wall gate-reachability analysis complete; APR-0035 drafted, awaiting operator decision.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0041.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
@@ -77,6 +78,8 @@ Cut the current Compass OS Health line over to a fresh dated header, archiving t
 ## T-483 — GG-203 follow-up: diagnose + fix T4M-PROJ's 100% Kalshi order-submission failure — ✅ SUPERSEDED 2026-09-15 by T-547 (D1-D5 all complete; see below)
 
 **T-547 (2026-09-15, worktree `session/20260915T004232Z-gg203-kalshi-order-write-remediation`) closes out the addendum this task opened:** D1 reconfirmed the failure live; D2/D3 reviewed account state and reloaded credentials via restart only; a genuine key rotation reproduced the identical failure on a fresh key (ruling out credential staleness); D4 filed a support ticket with Kalshi via email; D5 built `scripts/gg203_order_write_detector.py`, an alarm-only daily parity check (`risk_eval_approved` vs `kalshi_order_failed`, alarms >=90% failure rate), verified against 2026-08-20 (100%, alarms) and 2026-08-01 (1.2%, OK), and wired into `.claude/hooks/governance_scan.sh`. Kalshi's support reply (received 2026-09-15) was generic demo-instability boilerplate, assessed as not addressing the specific reproduction (100% failure, 32 days, fresh key) — D4 stays FILED, not CLOSED. **GG-203 itself remains IN PROGRESS, not RESOLVED** — root cause is still external/Kalshi-side, no in-repo fix applies. Operator is taking over further Kalshi correspondence outside any session. See `DECISION_LOG.md` 2026-09-15 (T-547 row) for full detail.
+
+**T-556 addendum (2026-09-17, operator-authorized, diagnosis only):** ruled out base URL mismatch (exact match to Kalshi's canonical demo host) and `CreateOrderV2Request` schema defect (no missing required fields); confirmed balance-read/order-write host-consistency; refuted "ticker doesn't exist on demo" via matching `exchange_index:3`. Revised leading hypothesis: `exchange_index` auto-routing or account-level shard-provisioning fault. No code/config/credential change; GG-203 stays IN PROGRESS. See `DECISION_LOG.md` 2026-09-17 (T-556 addendum row).
 
 <details><summary>Original T-483 entry (superseded, preserved for record)</summary>
 
