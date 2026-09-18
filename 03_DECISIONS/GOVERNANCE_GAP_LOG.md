@@ -3530,3 +3530,28 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Status | OPEN — registered 2026-09-17 (T-554). Resolution path is APR-0035's operator decision, not a code or data fix. Closes when the operator selects an option and any required superseding ADR/APR is accepted. |
 
 </details>
+
+---
+
+### GG-288 — session-end close-out fix (closure-row-push + stray-branch-sweep) sat on local `main` unpushed across a full session and was squash-merged over by PR #138, and T-554's own closure row failed to reach `origin/main` despite the script reporting an honest failure
+
+**Status:** OPEN · **Severity:** UNSPECIFIED
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-288 |
+| Category | Registration-at-claim-time — this entry is opened before investigation, per the gap-log invariant (register before remediation work begins), to track this session's two open questions independently of what the diagnosis turns out to be. |
+| What was found (pre-investigation) | Two commits — `44b7fb5` ("Wave 27 queue...") and `580e9c9` ("session-end: push closure rows straight to main + mandatory stray-branch sweep") — exist on the operator's local `main` tree but are confirmed (`git merge-base --is-ancestor`, both return non-zero) NOT ancestors of `origin/main`. `origin/main`'s `git ls-tree` does not contain `scripts/close_session_claim.sh` or `scripts/sweep_stray_branches.sh`, and `.claude/commands/session-end.md` on `origin/main` has no "Step 9 — Stray-branch sweep" section. PR #138 (T-556) squash-merged Wave 26 landing work without these two commits in its history. Separately, a T-554 session ran `close_session_claim.sh`, which committed a closure row (`1431cdd`, "Session close: T-554 — MERGED: NO") but could not push it — that commit also sits unpushed on local `main` only. The script's own documented failure path is to commit-then-report-honestly-on-push-failure; it did so, but the row never reached `origin/main`, which is the entire point of the script. |
+| When it should have been caught | At the point `580e9c9`/`44b7fb5` were authored, if a push (or a session-end step verifying its own commits reached `origin/main`) had run before the session ended. Not caught — no verification step existed. |
+| Phases it survived | At minimum one full T-556 session (which squash-merged PR #138 without these commits present) and one full T-554 session (whose own closure-row push failed silently from the operator's perspective, surfaced only by this session's diagnosis). |
+| Why it survived | Under investigation this session (Deliverable 3) — hypothesis entering investigation: local `main` was significantly behind `origin/main` (T-554's session diagnosis references "~66 commits behind"; this session's own fetch found local `main` 75 commits behind, 4 ahead), and the rebase-retry loop in whatever push mechanism was in use either failed, timed out, or was never completed against that large a divergence. Not yet confirmed against the actual script logic at registration time. |
+| Impact | The close-out fix these two commits implement — closure-row-push-to-main plus stray-branch sweep — does not exist on `main` as deployed, meaning the exact failure mode it was built to prevent (a session's closure state never reaching shared `main`) is currently unmitigated project-wide, and has already recurred at least once (T-554) since the fix was authored. |
+| Discovery | 2026-09-18, T-557 (this session), Deliverable 2/3 per operator task brief: "Two commits sit on the operator's LOCAL main tree, unpushed... PR #138 squash-merged WITHOUT them." |
+| Resolution | Pending this session's work (Deliverable 2: cherry-pick both commits onto this session's branch and land via normal push/merge; Deliverable 3: diagnose the T-554 push failure's root cause and harden the script against a far-behind local `main` silently swallowing the row). To be updated in a same-session Pickup addendum below once both are complete — do not treat this entry as resolved until that addendum is appended. |
+| Cross-references | T-554 (the session whose closure row failed to land — `1431cdd`), T-556/PR #138 (the squash-merge that landed Wave 26 work without the close-out fix present), GG-101 (concurrent-session working-tree collision — the broader problem class the isolated-worktree default and this fix both mitigate). |
+| Status | OPEN — registered 2026-09-18 (T-557), before investigation, per Hard Rule 11 / registration-at-claim-time convention. |
+
+</details>
