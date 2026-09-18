@@ -552,3 +552,4 @@
 | 2026-09-18T02:27:54Z | T-558, GG-290 | GG-203 exchange sharding diagnostic (T-556 addendum follow-on, external corroboration: shard-scoped balance + degeneracy_v3 PR) |
 | 2026-09-18T03:01:16Z | T-558 | MERGED: NO — branch `session/20260918T022533Z-gg203-exchange-sharding` awaiting merge — T-558/GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED (commit `e0036a7`) |
 | 2026-09-18T02:48:33Z | T-559, GG-291 | T-559/GG-291: NFL T1 settlement rehearsal against ledger copy (no live settlement) — found kalshi_threshold=None crash defect |
+| 2026-09-18T03:05:00Z | T-558 | CLOSED — merge confirmed via direct fast-forward push, origin/main HEAD `53e268b` is a direct ancestor (merge-check: YES) — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED |
