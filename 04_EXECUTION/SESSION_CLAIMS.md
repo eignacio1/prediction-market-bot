@@ -560,3 +560,4 @@
 | 2026-09-18T14:30:08Z | T-560, GG-203 | T-560: GG-203 shard-3 verify collateral allocation + restart accrual (no fund moves) |
 | 2026-09-18T14:30:56Z | T-561, GG-293 | T-561/GG-293: land stranded close-out-fix commits (44b7fb5,580e9c9) from local main to origin/main via cherry-pick; harden close_session_claim.sh push; record classifier refusal if blocked |
 | 2026-09-18T14:36:16Z | GG-291, T-TBD | GG-291 kalshi_threshold null-write defect: census, write-path fix, 42-position backfill, rehearsal |
+| 2026-09-18T14:37:00Z | T-560 | CLOSED — merge confirmed via PR #143 merge commit `86e7a35`, origin/main HEAD equals merge commit (merge-check: YES) — T-560/GG-203: shard-3 balance re-verified, still $0.0000, gate STOP per task's own terms, no deliverables 1-4 attempted, no fund/order/service/credential action taken. |
