@@ -548,3 +548,4 @@
 | 2026-09-17T05:48:05Z | T-556 | CLOSED — merge confirmed via PR #138 squash-merge, origin/main HEAD `6e165d4` contains this session's commits (ancestor check does not detect squash-merges) — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix) |
 | 2026-09-18T02:25:57Z | TBD | Rehearse first NFL T1 settlement against a ledger copy (no live settlement) |
 | 2026-09-18T02:26:29Z | T-557, GG-288, GG-289 (reserved if needed) | T-557: land T-555 stray + install session-end close-out fix (Wave 27/28), fix T-554 push-failure mode |
+| 2026-09-18T02:27:54Z | T-558, GG-290 | GG-203 exchange sharding diagnostic (T-556 addendum follow-on, external corroboration: shard-scoped balance + degeneracy_v3 PR) |
