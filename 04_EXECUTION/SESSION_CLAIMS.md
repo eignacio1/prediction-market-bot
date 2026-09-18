@@ -553,3 +553,4 @@
 | 2026-09-18T03:01:16Z | T-558 | MERGED: NO — branch `session/20260918T022533Z-gg203-exchange-sharding` awaiting merge — T-558/GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED (commit `e0036a7`) |
 | 2026-09-18T02:48:33Z | T-559, GG-291 | T-559/GG-291: NFL T1 settlement rehearsal against ledger copy (no live settlement) — found kalshi_threshold=None crash defect |
 | 2026-09-18T03:05:00Z | T-558 | CLOSED — merge confirmed via direct fast-forward push, origin/main HEAD `53e268b` is a direct ancestor (merge-check: YES) — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED |
+| 2026-09-18T03:05:20Z | T-559 | MERGED: NO — branch `session/20260918T022535Z-rehearse-first-settlement` awaiting merge — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21 (commit `93cfd09`) |

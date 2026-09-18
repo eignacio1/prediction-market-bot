@@ -1610,3 +1610,5 @@ the T4 writer, `.claude/commands/`, `scripts/close_session_claim.sh`, or any Kel
 logic — all forbidden by this task's explicit DO NOT list.
 
 Related IDs: GG-291, GG-287, GG-257, GG-266, T-556, T-559.
+
+| 2026-09-18 | **T-559/GG-291: patched a disposable COPY's `kalshi_threshold` to unblock the settlement rehearsal, rather than fixing the real open-time write path in-scope.** GG-291 (all 42 real open `nfl_moneyline` positions have `kalshi_threshold=None`, crashing `settle_position()`) was discovered mid-rehearsal. Fixing `run_t1_nfl_game_market.py`'s write path or backfilling the real portfolio was out of this session's scope fence (copy-only, no live-file writes) and would have been an unreviewed mid-session scope expansion (Hard Rule 11). `patch_threshold.py` is explicitly disposable/rehearsal-only; the real fix is mandated as a pre-flight step in `NFL_T1_FIRST_SETTLEMENT_RUNBOOK.md` step 3, must land before 2026-09-21. | Owner: session/20260918T022535Z-rehearse-first-settlement (T-559). |
