@@ -7,6 +7,18 @@ position — 18 of the 42 real open positions have `game_date=2026-09-20`, the e
 cohort. Nothing before this runbook has run a real settlement; everything below is informed by what
 actually broke in rehearsal, not by assumption.
 
+**Updated 2026-09-18, T-562/GG-291 Deliverable 4 (same day, later same session-claim lineage):**
+GG-291's fix landed for real between the original rehearsal and this update — both halves, not just
+one: `paper_trader.py`'s `open_position()` and both T1 game-market run scripts now stamp
+`kalshi_threshold` at write time and refuse to write a settleable position with a null threshold
+(Deliverable 2, commit `03acefe`); the real, live 42-position `nfl_moneyline` cohort on the VPS has
+been backfilled to `kalshi_threshold=0.0` with a verified backup and a diff proving exactly 42 rows
+changed, one field only (Deliverable 3, commit `b36429b`). A **second, independent rehearsal** was
+then run this same day against a fresh disposable copy of the now-repaired real file, using synthetic
+finals for all 9 games on 2026-09-20 (including a deliberate exact tie) — see "Deliverable-4
+re-rehearsal results" below. Step 3 is now a **verification** step, not a pre-flight fix — the defect
+is closed, but verify it hasn't regressed before trusting that going into the real run.
+
 **Do not skip step 3.** It is the one rehearsal finding that will crash the real run if unaddressed.
 
 ---
@@ -48,29 +60,39 @@ running `--apply`. This step exists because GG-291's crash was caught in rehears
 looking closely at what the resolver was about to do before trusting it blindly — apply the same
 scrutiny to the data feeding it.
 
-## 3. Fix the `kalshi_threshold=None` defect (GG-291) — MANDATORY, pre-flight
+## 3. Verify the `kalshi_threshold=None` defect (GG-291) is still closed — MANDATORY, pre-flight
 
-**This is the one finding from rehearsal that will crash the real run if skipped.** Rehearsal
-(GG-291) confirmed all 42 real open `nfl_moneyline` positions carry `kalshi_threshold=None`, and
-`settle_position()` crashes with `TypeError: '>=' not supported between instances of 'float' and
-'NoneType'` on the first settleable position. Before running `--apply` against the real portfolio:
+**Status as of 2026-09-18 (T-562/GG-291 Deliverables 2-3): CLOSED, both halves.** The original
+rehearsal (T-559) found all 42 real open `nfl_moneyline` positions carrying `kalshi_threshold=None`,
+which crashes `settle_position()` with `TypeError: '>=' not supported between instances of 'float'
+and 'NoneType'` on the first settleable position. Both fixes have since landed for real, not just in
+rehearsal:
 
-1. Verify the defect is still present: read the real portfolio file and confirm whether
-   `kalshi_threshold` is still `null` on the open `nfl_moneyline` positions (it may have been fixed
-   by another session between 2026-09-18 and the real run — check `GOVERNANCE_GAP_LOG.md` GG-291's
-   status first).
-2. If still present, this must be fixed for real, not patched around — either:
-   - backfill `kalshi_threshold=0.0` directly on the real portfolio's 42 `nfl_moneyline` positions
-     (the value `game_market_settlement.py`'s own docstring documents as correct for moneyline —
-     "a moneyline is a spread at zero"), with a backup taken first and the backup verified via
-     `diff` against pre-change state, or
-   - fix the open-time write path (wherever `run_t1_nfl_game_market.py` constructs these position
-     records) so future positions never write `kalshi_threshold=None` in the first place, or both.
-3. **Do not use the rehearsal's copy-only workaround (`patch_threshold.py`) against the real file
-   as-is without adapting it into a reviewed, backed-up, verified change** — it was written
-   explicitly as a disposable rehearsal expedient, not a production migration script.
-4. Re-verify: read the real portfolio again and confirm every open `nfl_moneyline` position has a
-   non-null `kalshi_threshold` before proceeding to step 4.
+- **Write path (Deliverable 2, commit `03acefe`):** `paper_trader.py`'s `open_position()` and both
+  T1 game-market run scripts (`run_t1_nfl_game_market.py`, `nfl_exp027_adapter.py`) now derive and
+  stamp `kalshi_threshold` at open time per market type, and refuse to write a settleable position
+  with an undeterminable threshold rather than silently defaulting to `None`. Covered by tests
+  (51 passed).
+- **Backfill (Deliverable 3, commit `b36429b`):** the real, live 42-position `nfl_moneyline` cohort
+  on the VPS was backfilled to `kalshi_threshold=0.0` (documented in `game_market_settlement.py`'s
+  own docstring as correct — "a moneyline is a spread at zero"), with a verified backup and a
+  before/after diff proving exactly 42 rows changed, exactly one substantive field
+  (`kalshi_threshold`) plus provenance (`repaired_at`/`repair_ref`) — nothing else moved.
+
+This step is now **verification that the fix has not regressed**, not a pre-flight repair:
+
+1. Read the real portfolio file and confirm every open `nfl_moneyline` position still has a
+   non-null `kalshi_threshold` (it should — the write path can no longer produce a null one, and the
+   backfill is a one-time, already-applied correction). Check `GOVERNANCE_GAP_LOG.md` GG-291's
+   status first in case something has changed between 2026-09-18 and the real run.
+2. If a null threshold is found anyway (e.g. from a position opened by an unpatched code path, or a
+   new market type this fix didn't cover), stop and treat it as a **new** defect — register a fresh
+   GG-NNN, do not silently re-run the GG-291 backfill script against a changed population without
+   re-verifying its exact-count guard first (it aborts unless the match count equals its expected
+   value, by design — do not raise that guard to "make it pass").
+3. Do not hand-construct a new one-off threshold patch for the real file — if a regression is found,
+   fix the write path first (per the GG-291 precedent), then repair data with the same
+   backup-verify-diff discipline Deliverable 3 used.
 
 ## 4. Backup and verify the backup
 
@@ -136,10 +158,39 @@ something synthetic data didn't exercise.
 
 | Failure mode | Where hit in rehearsal | Resolution in this runbook |
 |---|---|---|
-| `kalshi_threshold=None` crashes `settle_position()` | Deliverable 3, first `--apply` attempt | Step 3 — mandatory pre-flight fix, not a rehearsal-only patch |
-| Moneyline exact tie must be refused, not guessed | Deliverable 3, deliberate CIN/HOU synthetic tie | Step 5 — dry-run must show `SettlementAmbiguityError` on any real tie, matching GG-257 |
-| Re-running settlement must not double-settle or corrupt state | Deliverable 3, two-run sha256 idempotency check | Step 8 — mandatory re-run and hash/count check before declaring done |
+| `kalshi_threshold=None` crashes `settle_position()` | Deliverable 3, first `--apply` attempt | Step 3 — verified CLOSED (write path fixed + real backfill applied, T-562/GG-291 Deliverables 2-3); re-verify, don't re-fix, unless a regression is found |
+| Moneyline exact tie must be refused, not guessed | Deliverable 3, deliberate CIN/HOU synthetic tie; re-confirmed Deliverable 4, deliberate PHI/TEN synthetic tie against the repaired file | Step 5 — dry-run must show `SettlementAmbiguityError` on any real tie, matching GG-257 |
+| Re-running settlement must not double-settle or corrupt state | Deliverable 3, two-run sha256 idempotency check; re-confirmed Deliverable 4 against the repaired file (byte-identical sha256, `Settled this run: 0` on rerun) | Step 8 — mandatory re-run and hash/count check before declaring done |
 | GG-266's Mac/ESPN reachability claim did not reproduce in this session's real network calls | Deliverable 2, not-yet-final dry run | Step 1 — run on VPS as designed regardless; treat a real VPS-side reproduction (or non-reproduction) as new evidence for GG-266, not something this runbook resolves |
 | A crashed run still writes a pre-attempt backup, and that backup is trustworthy | Deliverable 3, crash reproduction + `diff` check | Step 4 — still take an independent manual backup; don't rely solely on the automatic one on the first-ever real run |
 
-Related IDs: GG-291, GG-287, GG-257, GG-266, T-556, T-559.
+## Deliverable-4 re-rehearsal results (2026-09-18, T-562/GG-291, same-day follow-on)
+
+After Deliverables 2-3 landed for real (write-path fix + live 42-row backfill, both committed and
+pushed), a **second, independent rehearsal** was run against a fresh disposable copy of the
+now-repaired real portfolio snapshot, exercising the unmodified `apply_resolved_nfl_game_markets.py`
+resolver end-to-end with synthetic finals (no network calls) via
+`unittest.mock.patch.object(resolver, "fetch_nfl_final_score", ...)` — the same mocking pattern this
+repo's own `tests/test_apply_resolved_nfl_game_markets.py` uses.
+
+**Synthetic slate — all 9 games on 2026-09-20, including one deliberate exact tie (PHI @ TEN,
+24-24):**
+
+| Result | Count | Detail |
+|---|---|---|
+| Dry run (no `--apply`) | 0 settled, file hash unchanged | Confirms dry run makes no writes |
+| `--apply`, first run | 16 settled, 2 refused, 24 unresolved | 14 LOSS at `pnl=-1.0000`, 2 WIN at `pnl=+1.2727` (CAR/ATL game) — every one of the 18 positions' outcome and P&L cross-checked line-by-line against an independent hand re-derivation of `settle_position()`'s formula computed *before* running the resolver; 0 mismatches |
+| Tie refusal | 2/2 refused | Both `POS-1C334B5A21` (TEN, YES) and `POS-91144F65ED` (PHI, NO) raised `SettlementAmbiguityError` and remained `status: "OPEN"` — not settled, matching GG-257 |
+| Later-dated positions (09-21/24/27/28) | 24/24 still OPEN | Fake `fetch_nfl_final_score` returns `None` for any date other than 2026-09-20, correctly leaving all not-yet-final positions untouched |
+| `--apply`, second run (idempotency) | 0 settled | `Settled this run: 0`; both refused positions still refused/still OPEN; portfolio file sha256 byte-identical before and after the second run |
+
+**Precondition asserted and confirmed before running any of the above:** all 42 positions in the
+repaired snapshot have `kalshi_threshold == 0.0` (none `None`) — i.e. this rehearsal ran against the
+*fixed* population, proving the write-path fix and the backfill work together end-to-end, not just
+individually.
+
+**Conclusion: no crash, no double-settlement, no silent tie-guessing, byte-identical idempotency.**
+Deliverable 4's rehearsal script and its scratch working files are disposable session artifacts (same
+status as T-559's `patch_threshold.py`/`hand_verify.py`) and are not committed to the repo.
+
+Related IDs: GG-291, GG-287, GG-257, GG-266, GG-294, T-556, T-559, T-562.
