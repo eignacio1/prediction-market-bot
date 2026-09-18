@@ -549,3 +549,4 @@
 | 2026-09-18T02:25:57Z | TBD | Rehearse first NFL T1 settlement against a ledger copy (no live settlement) |
 | 2026-09-18T02:26:29Z | T-557, GG-288, GG-289 (reserved if needed) | T-557: land T-555 stray + install session-end close-out fix (Wave 27/28), fix T-554 push-failure mode |
 | 2026-09-18T02:27:54Z | T-558, GG-290 | GG-203 exchange sharding diagnostic (T-556 addendum follow-on, external corroboration: shard-scoped balance + degeneracy_v3 PR) |
+| 2026-09-18T03:01:16Z | T-558 | MERGED: NO — branch `session/20260918T022533Z-gg203-exchange-sharding` awaiting merge — T-558/GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED (commit `e0036a7`) |
