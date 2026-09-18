@@ -1561,3 +1561,52 @@ Related IDs: T-556, GG-287, GG-274, GG-282, GG-277, GG-266, GG-257, ADR-0050, AD
 | 2026-09-17 | **T-556 addendum: GG-203 diagnosis-only re-investigation (operator-authorized, narrow scope, no Kalshi support ticket) — four findings, no code/config/credential change.** ADDENDUM-1: deployed demo base URL matches Kalshi's canonical demo host exactly — ruled out. ADDENDUM-2: `submit_order()` body diffed field-by-field vs. live `CreateOrderV2Request` schema — no missing required fields; the observed `404` is undocumented (schema lists 201/400/401/403/409/429/500/503 only). ADDENDUM-3: balance-read and order-write both route through the same `BOT_ENV`-driven demo base URL — host-consistent with each other; the real asymmetry is market-discovery calls defaulting `authenticated=False`, always production. Demo/prod `KXMLBHIT` comparison shows identical `exchange_index:3`, refuting "ticker doesn't exist on demo." Revised hypothesis: `exchange_index` auto-routing or account-level shard-provisioning fault, not ticker/URL/schema. ADDENDUM-4: Discord draft prepared, not posted. GG-203 stays IN PROGRESS. | GG-203, T-556 | Claude Sonnet 5 (worktree `session/20260917T001717Z-land-w26-open-and-settle`, T-556) |
 | 2026-09-17 | **T-558: GG-203 exchange-sharding diagnostic block opened, narrowly overriding the standing "do not re-investigate GG-203 in-repo" rule again, operator-authorized.** Acts on T-556's own deferred option (b) — testing explicit `exchange_index` values against demo as a diagnostic — now with external corroboration T-556 lacked: an independent developer (BradSherwood24/degeneracy_v3 PR #9) hit the identical `market_not_found` symptom and fixed it by explicitly propagating `exchange_index` on order submission after finding Kalshi silently defaults to shard 0 when it's omitted, matching the field T-556's ADDENDUM-3 already flagged as unsent-but-optional in this repo's request body. Working hypothesis: Kalshi's documented ticker-based shard auto-routing isn't resolving for this account and/or shard-3 (Sports) collateral is separately unallocated from the shard-0 aggregate balance T-492 read — explaining the full rotating error set (`market_not_found` → `user_not_found` → `insufficient_shard_balance`) as one cause. Plan: D1 one isolated VPS-side demo-only diagnostic script submitting one KXMLBHIT order twice (as-is, then with `exchange_index` set) with full request/response bodies captured; D2 read Get Balance's per-shard breakdown, report (not execute) Intra Account Transfer requirements if shard 3 is unfunded; D3 implement `exchange_index` propagation in `kalshi_client.py` — capture-at-discovery, carry-on-order, refuse-to-dispatch-on-unknown — only if D1 proves it, with two tests; D4 fix or register the `authenticated=False`→production market-discovery/demo-order-write asymmetry T-556 surfaced. T-492's ruled-out list (base URL, schema, credentials, ticker construction, paper-trader leak) is not re-run. No production order, no fund movement, no key rotation. | GG-203, T-558 | Claude Sonnet 5 (worktree `session/20260918T022533Z-gg203-exchange-sharding`, T-558) |
 | 2026-09-17 | **T-558 D1/D2/D4 complete: GG-203's root cause mechanistically confirmed as unallocated shard-3 collateral on the demo account, not a missing request field.** D1 (isolated VPS-side demo-only diagnostic script, deleted after use) submitted one open KXMLBHIT order twice — as the bot sends it today, then again with `exchange_index: 3` (the market's own value, read live from its raw record) added — and got byte-identical `insufficient_shard_balance` failures both times, disproving the `exchange_index`-propagation hypothesis borrowed from `degeneracy_v3` PR #9 (D3 therefore explicitly not implemented, per this block's own stated conditionality). D2 (read-only) found `GET /portfolio/balance`'s `balance_breakdown` field — never read by T-492 or T-556, both of which only read the aggregate `balance_dollars` — shows shard 0 = `397.4368`, shards 1/2/3 = `0.0000`; the account has simply never had collateral allocated to shard 3 (Sports, where KXMLBHIT lives), fully explaining the `insufficient_shard_balance` body's own "Exchange user not found" text. Documented (no call made, no funds moved) what fixes it: `POST /portfolio/intra_exchange_instance_transfer` with `destination_exchange_shard=3` — an operator-executed funding action outside this session's authorization, not a code defect. D4 closed with no code change: all three market-discovery call sites in `kalshi_client.py` uniformly default `authenticated=False` (→ production) by deliberate, documented T-114 (2026-06-01) design, and the one concrete downstream risk that asymmetry could plausibly cause for GG-203 — a demo/prod `exchange_index` mismatch — was already ruled out by T-556's ADDENDUM-3 and reconfirmed by this block's own D1 read (`exchange_index: 3` identical). GG-203 status moved IN PROGRESS → PARTIALLY RESOLVED: diagnosis complete and actionable, but not RESOLVED since no order has actually succeeded — that requires the operator to run the shard transfer. No production order submitted, no funds moved, no API key rotated; both throwaway diagnostic scripts deleted from the VPS after use. | GG-203, T-558 | Claude Sonnet 5 (worktree `session/20260918T022533Z-gg203-exchange-sharding`, T-558) |
+
+## 2026-09-18 — T-559/GG-291: NFL T1 settlement rehearsal against a ledger copy; found and reported (not fixed) a settlement-blocking defect
+
+**Decision/finding:** Ran a full rehearsal of the first-ever NFL T1 settlement, entirely against a
+disposable copy of the real 42-position portfolio, per explicit operator scope (no live settlement,
+no modification of `settle_position()` or `apply_resolved_nfl_game_markets.py`, no fabricated score
+outside the rehearsal copy). Four results:
+
+1. **Inventory (Deliverable 1):** all 42 real open positions are `nfl_moneyline`, 100% real EXP-027
+   provenance, 100% `kalshi_order_id: null` / `kalshi_order_status: "local_only"` (paper-only, as
+   expected), `game_date` histogram `{2026-09-20: 18, 09-21: 2, 09-24: 2, 09-27: 18, 09-28: 2}` —
+   matches T-556's reported 18/2/2/18/2 split exactly, no disagreement.
+2. **Not-yet-final guard (Deliverable 2):** ran the real, unpatched resolver against the copy today
+   (2026-09-18, before the earliest game on 09-20) — it correctly REFUSED to settle all 42 positions
+   ("not final yet"/no parseable result), with zero attempted settlements. Guard works as designed.
+   Side observation: this run made real ESPN network calls from this Mac with zero TLS/connection
+   errors, contradicting GG-266's premise — recorded as an amendment note on GG-266, not a fix or
+   re-verification of it.
+3. **Rehearsed settlement (Deliverable 3):** constructed synthetic, clearly-labeled final scores for
+   the 09-20 slate (including one deliberate exact tie, CIN/HOU 20-20) and ran the real resolver
+   against the copy. Found a **real, settlement-blocking defect**: all 42 positions carry
+   `kalshi_threshold=None`, which crashes `settle_position()` with `TypeError` on the first
+   settleable position — reproduced directly, backup-integrity confirmed via `diff` (no corruption).
+   Per scope, did not fix the real code path; used a copy-only data patch
+   (`kalshi_threshold=None -> 0.0`, the value `game_market_settlement.py`'s own docstring documents
+   as correct for moneyline) to unblock the rehearsal's remaining proof obligations. Result: 16 of 18
+   non-tied 09-20 positions settled, matching an independent hand-calculation exactly (14 LOSS @
+   -1.0000, 2 WIN @ +0.5873, total -12.8254); both CIN/HOU tie legs correctly REFUSED
+   (`SettlementAmbiguityError`, GG-257) rather than guessed; re-ran the same `--apply` a second time
+   and confirmed byte-identical output (sha256 match) — idempotent, safe to re-run.
+4. **Runbook (Deliverable 4):** wrote `04_EXECUTION/NFL_T1_FIRST_SETTLEMENT_RUNBOOK.md` for the real
+   2026-09-21 session, incorporating every failure mode hit in rehearsal (the `kalshi_threshold=None`
+   defect and required pre-flight fix, backup/verify, dry-run-against-copy-first, hand-verification,
+   idempotency re-run, GG-266's Mac-vs-VPS reachability question) as an ordered checklist.
+
+**Why:** operator-directed rehearsal, explicitly to make the actual first live settlement (2026-09-21,
+the earliest of 42 real open NFL T1 positions) "boring" by finding failure modes against a copy first
+rather than against the live ledger.
+
+**Gap registered:** GG-291 (OPEN, HIGH) — `kalshi_threshold=None` on all 42 real positions; must be
+fixed (backfill and/or open-time write-path fix) and verified before the 2026-09-21 real run, or that
+run will crash on its first settleable position exactly as reproduced here.
+
+**Scope discipline:** did not touch the live portfolio file, `settle_position()`,
+`apply_resolved_nfl_game_markets.py`, `run_t1_nfl_game_market.py`, `kalshi_client.py`, any MLB ledger,
+the T4 writer, `.claude/commands/`, `scripts/close_session_claim.sh`, or any Kelly/sizing/promotion
+logic — all forbidden by this task's explicit DO NOT list.
+
+Related IDs: GG-291, GG-287, GG-257, GG-266, T-556, T-559.
