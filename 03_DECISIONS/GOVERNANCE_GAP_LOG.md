@@ -3608,3 +3608,24 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 ---
 
 **Amendment to GG-266 (2026-09-18, T-559):** this session's Deliverable 2 (the not-yet-final refusal-guard proof) ran the real, unpatched `apply_resolved_nfl_game_markets.py` resolver — real `fetch_nfl_final_score()`, not monkeypatched — against a copy of the real portfolio from this Mac, for the 24 future-dated (2026-09-21 through 09-28) positions, and made real network calls to ESPN's scoreboard endpoint with zero TLS/connection errors; the resolver correctly reported each as "not final yet" for the right reason (game hasn't happened), not a network failure. This directly contradicts GG-266's premise (local Mac Python/LibreSSL cannot TLS-handshake with ESPN's endpoint at all). Recorded as an observation only — GG-266 remains OPEN/LOW pending its own owner's re-verification; this session did not re-run GG-266's original repro steps and does not claim to have resolved it, only that its own unrelated task path did not reproduce the symptom GG-266 describes.
+
+
+### GG-292 — 14 stray remote session branches (2026-08-24 through 2026-09-15) unlanded; `sweep_stray_branches.sh` unavailable on origin/main to sweep them
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-292 |
+| Category | Tooling/process — accumulated backlog, out-of-scope discovery during T-557's Step 9 (stray-branch sweep) |
+| What was found | `git branch -r --no-merged origin/main` (the sanctioned manual substitute for the missing `sweep_stray_branches.sh` — see GG-289) returned 15 remote branches never merged to `origin/main`. One (`session/20260918T022544Z-land-strays-install-closeout-fix`, this session's own) was verified content-superseded via diff-stat against `origin/main` and deleted safely. The remaining 14 belong to other, unrelated past sessions, dated 2026-08-24 through 2026-09-15: `session/20260824T233617Z-t484-phase2-input`, `session/20260825T043355Z-t493-adr0058-t1-reopen`, `session/20260826T045926Z-t497-t1-flat-stake-wrapper`, `session/20260903T002904Z-record-signoffs-20260903`, `session/20260903T184908Z-apr0033-accept-and-reroute`, `session/20260904T000244Z-rerecord-adr-signoffs`, `session/20260904T000252Z-gg242-filename-sweep`, `session/20260905T162347Z-hyp011-moneyline-lr-run`, `session/20260905T221723Z-t500-nfl-price-capture`, `session/20260905T221739Z-nfl-readiness-audit`, `session/20260905T221746Z-t4-nfl-nhl-scaffolding`, `session/20260909T153928Z-gg255-mlb-t1-game-market-run-script`, `session/20260910T012346Z-gg267-per-row-model-provenance`, `session/20260915T003401Z-nfl-capture-gap-0912`. |
+| Why it matters | Unknown whether each branch's work was (a) intentionally abandoned, (b) landed by content elsewhere under a different branch/commit, or (c) still-needed work orphaned by a session that never closed out. `sweep_stray_branches.sh`, the script that would normally triage this, does not exist on `origin/main` — it is part of the still classifier-blocked `580e9c9` commit (GG-288/GG-289) — so this triage was done by hand this session and is not repeatable without the same manual `git branch -r --no-merged` grep until that script lands. |
+| Impact | LOW / informational. No action taken on any of the 14 — none merged, none evaluated for content, per Hard Rule 11 (name only, do not merge) and the standing task constraint not to merge anything older than 2026-09-15 without asking (13 of the 14 predate that date outright; the 14th, `20260915T003401Z`, is same-day but a different, unverified session). Nothing is at risk sitting as-is; this is a backlog-visibility gap, not a live failure. |
+| Discovery | 2026-09-18, T-557 (this session), Step 9 of `/session-end` (stray-branch sweep), using the manual `git branch -r --no-merged origin/main` substitute for the unavailable `sweep_stray_branches.sh`. |
+| Resolution | Not resolved — requires operator review of each of the 14 branches to decide land / discard / leave. Blocked in part on the same Deliverable 2/GG-289 classifier question (once `sweep_stray_branches.sh` lands, future sessions get a repeatable triage tool instead of a manual grep). |
+| Cross-references | GG-288, GG-289 (classifier block on `580e9c9`, which contains `sweep_stray_branches.sh`), Hard Rule 11 (register-and-stop on out-of-scope discovery). |
+
+</details>
