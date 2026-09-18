@@ -550,3 +550,4 @@
 | 2026-09-18T02:25:57Z | TBD | Rehearse first NFL T1 settlement against a ledger copy (no live settlement) |
 | 2026-09-18T02:26:29Z | T-557, GG-288, GG-289 (reserved if needed) | T-557: land T-555 stray + install session-end close-out fix (Wave 27/28), fix T-554 push-failure mode |
 | 2026-09-18T02:27:54Z | T-558, GG-290 | GG-203 exchange sharding diagnostic (T-556 addendum follow-on, external corroboration: shard-scoped balance + degeneracy_v3 PR) |
+| 2026-09-18T02:48:33Z | T-559, GG-291 | T-559/GG-291: NFL T1 settlement rehearsal against ledger copy (no live settlement) — found kalshi_threshold=None crash defect |
