@@ -547,3 +547,4 @@
 | 2026-09-17T05:42:23Z | T-556 | MERGED: NO — branch `session/20260917T001717Z-land-w26-open-and-settle` awaiting merge — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix) (commit `3b9d51f`) |
 | 2026-09-17T05:48:05Z | T-556 | CLOSED — merge confirmed via PR #138 squash-merge, origin/main HEAD `6e165d4` contains this session's commits (ancestor check does not detect squash-merges) — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix) |
 | 2026-09-18T02:25:57Z | TBD | Rehearse first NFL T1 settlement against a ledger copy (no live settlement) |
+| 2026-09-18T02:26:29Z | T-557, GG-288, GG-289 (reserved if needed) | T-557: land T-555 stray + install session-end close-out fix (Wave 27/28), fix T-554 push-failure mode |
