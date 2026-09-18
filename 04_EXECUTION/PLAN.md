@@ -2,7 +2,8 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-17T05:38:46Z (T-556 — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0538.md` for full session detail.
+**Last reviewed:** 2026-09-18T13:59:06Z (T-557 — Landed T-555 stray (GG-283/GG-284, Deliverable 1 complete). Deliverables 2/3/4 (cherry-pick Wave 27/28 commits, fix T-554's push-failure, reconcile ACTIVE_QUEUE.md) remain blocked — auto-mode classifier Self-Modification denial on 44b7fb5/580e9c9 confirmed twice independently. Registered GG-288 addendum + GG-289. Operator decision needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_1359.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-17T05:22:00Z (T-555 — T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); addendum cherry-picks blocked by classifier, not retried) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0522.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-17T00:41:00Z (T-554 — T-554/GG-285 n*-wall gate-reachability analysis complete; APR-0035 drafted, awaiting operator decision.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0041.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
