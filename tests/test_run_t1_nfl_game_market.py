@@ -195,6 +195,7 @@ def test_stub_and_lr_rows_distinguishable_on_disk(trader):
         vig=0.04,
         game_date="2026-09-08",
         market_type=MarketType.NFL_MONEYLINE,
+        kalshi_threshold=0.0,  # GG-291: moneyline is a spread at zero
     )
     ok_lr, pos_lr = trader.open_position(
         approval=_base_approval(model_identity=lr_identity),
@@ -203,6 +204,7 @@ def test_stub_and_lr_rows_distinguishable_on_disk(trader):
         vig=0.04,
         game_date="2026-09-08",
         market_type=MarketType.NFL_MONEYLINE,
+        kalshi_threshold=0.0,  # GG-291: moneyline is a spread at zero
     )
 
     assert ok_stub and ok_lr
@@ -232,6 +234,7 @@ def test_legacy_row_no_model_identity_loads_as_unknown(trader):
         vig=0.04,
         game_date="2026-09-08",
         market_type=MarketType.NFL_MONEYLINE,
+        kalshi_threshold=0.0,  # GG-291: moneyline is a spread at zero
     )
     assert ok
 
@@ -337,6 +340,7 @@ def test_open_position_never_writes_missing_or_empty_model_identity(trader):
         vig=0.04,
         game_date="2026-09-08",
         market_type=MarketType.NFL_MONEYLINE,
+        kalshi_threshold=0.0,  # GG-291: moneyline is a spread at zero
     )
     assert ok_a
     assert pos_a["model_identity"] == "UNKNOWN"
@@ -349,6 +353,135 @@ def test_open_position_never_writes_missing_or_empty_model_identity(trader):
         vig=0.04,
         game_date="2026-09-08",
         market_type=MarketType.NFL_MONEYLINE,
+        kalshi_threshold=0.0,  # GG-291: moneyline is a spread at zero
     )
     assert ok_b
     assert pos_b["model_identity"] == "UNKNOWN"
+
+
+# ── GG-291/T-562: threshold derivation + refusal (Deliverable 2 required
+# tests) ─────────────────────────────────────────────────────────────────
+#
+# Three tests required by the task brief:
+#   (1) an opened moneyline carries kalshi_threshold == 0.0
+#   (2) an opened spread carries its line as kalshi_threshold
+#   (3) a position whose threshold cannot be determined refuses rather than
+#       writing null -- both at the run-script level (REFUSED_NO_THRESHOLD,
+#       via evaluate_and_maybe_trade) and at paper_trader.py's own
+#       defense-in-depth guard (UndeterminedThresholdError, via a direct
+#       open_position() call bypassing this script entirely).
+
+
+def test_opened_moneyline_carries_zero_threshold(tmp_path):
+    """A moneyline is a spread at zero (game_market_settlement.py module
+    docstring) -- the opened position's kalshi_threshold must be exactly
+    0.0, not None and not silently omitted."""
+    audit = AuditLogger(tmp_path / "audit_gg291_moneyline_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-GG291-MONEYLINE", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(portfolio_path=tmp_path / "paper_portfolio_gg291_moneyline.json", logger=audit)
+    mkt = _make_market(market_type="moneyline", threshold=None)
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),  # edge=0.09, clears both gates
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 0.0
+
+
+def test_opened_spread_carries_its_line_as_threshold(tmp_path):
+    """A spread/run_line/total/team_total market carries GameMarket.threshold
+    (the real line) straight through to the opened position's
+    kalshi_threshold -- never 0.0, never None."""
+    audit = AuditLogger(tmp_path / "audit_gg291_spread_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-GG291-SPREAD", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(portfolio_path=tmp_path / "paper_portfolio_gg291_spread.json", logger=audit)
+    mkt = _make_market(
+        ticker="KXNFLSPREAD-26SEP08DEN-DEN",
+        market_type="spread",
+        threshold=-3.5,
+        outcome_desc="DEN covers -3.5",
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),  # edge=0.09, clears both gates
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == -3.5
+
+
+def test_undeterminable_threshold_refuses_at_run_script_level(tmp_path):
+    """A non-moneyline game market with threshold=None (GameMarket data that
+    should never occur per kalshi_client.py's contract, but must still be
+    handled defensively) is refused REFUSED_NO_THRESHOLD before any
+    model/risk work runs -- no position is ever written, and no
+    UndeterminedThresholdError propagates out of evaluate_and_maybe_trade()."""
+    audit = AuditLogger(tmp_path / "audit_gg291_no_threshold_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-GG291-NO-THRESHOLD", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(portfolio_path=tmp_path / "paper_portfolio_gg291_no_threshold.json", logger=audit)
+    mkt = _make_market(
+        ticker="KXNFLSPREAD-26SEP08KC-KC",
+        market_type="spread",
+        threshold=None,  # malformed/undeterminable -- must refuse, not crash
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "REFUSED_NO_THRESHOLD"
+    assert not trader._path.exists() or json.loads(trader._path.read_text())["open_positions"] == []
+
+
+def test_undeterminable_threshold_refuses_at_paper_trader_guard(trader):
+    """paper_trader.py's own defense-in-depth guard (UndeterminedThresholdError)
+    must refuse a direct open_position() call for a required-threshold market
+    type when kalshi_threshold=None is passed -- this is the last line of
+    defense if a caller other than this run script ever bypasses the
+    run-script-level check above."""
+    from prediction_market_bot.c5_execution.paper_trader import UndeterminedThresholdError  # noqa: E402
+
+    with pytest.raises(UndeterminedThresholdError):
+        trader.open_position(
+            approval=_base_approval(),
+            kalshi_ticker="KXNFLSPREAD-26SEP08SF-SF",
+            mid_price=0.56,
+            vig=0.04,
+            game_date="2026-09-08",
+            market_type=MarketType.NFL_SPREAD,
+            kalshi_threshold=None,
+        )
+
+    # No partial/corrupt write: the position must not appear on disk at all.
+    if trader._path.exists():
+        on_disk = json.loads(trader._path.read_text())
+        tickers = {p["kalshi_ticker"] for p in on_disk.get("open_positions", [])}
+        assert "KXNFLSPREAD-26SEP08SF-SF" not in tickers

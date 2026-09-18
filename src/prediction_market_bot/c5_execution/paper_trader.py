@@ -142,6 +142,47 @@ class PortfolioReconciliationError(RuntimeError):
     beyond RECONCILE_TOLERANCE_USD under strict reconciliation (GG-034)."""
 
 
+class UndeterminedThresholdError(ValueError):
+    """Raised by open_position() when market_type is a numeric game-market
+    type (GG-291/T-562) and kalshi_threshold is None. These eight types are
+    settled by settle_position()'s `actual_stat >= threshold` boolean
+    comparison (directly, or via game_market_settlement.py for the four NFL
+    types) and a None threshold there crashes at settlement time with
+    `TypeError: '>=' not supported between instances of 'float' and
+    'NoneType'` -- exactly the GG-291 incident (42 open nfl_moneyline
+    positions written with kalshi_threshold: null). This is defense in depth:
+    the correct fix is each caller deriving and passing the right threshold
+    per type (moneyline/run_line implicit 0.0; spread/total/team_total pass
+    through GameMarket.threshold) -- this guard exists so a *future* caller
+    that forgets to do that fails loudly at write time instead of writing a
+    silent null that only surfaces as a crash at settlement, days or weeks
+    later. player-prop types (MLB_PLAYER_PROP_HITS, NBA_PLAYER_POINTS) and
+    MLB_PARTIAL_GAME (three-way win/loss/tie outcome, no numeric threshold,
+    no settlement module yet -- GG-294) are legitimately excluded; see
+    _THRESHOLD_REQUIRED_MARKET_TYPES below."""
+
+
+# GG-291/T-562: game-market types settled via a numeric `actual_stat >=
+# threshold` comparison -- these must never carry kalshi_threshold=None past
+# open_position(). Deliberately excludes MLB_PARTIAL_GAME (three-way outcome,
+# no numeric threshold exists at all -- GG-294, a separate unresolved gap)
+# and the player-prop types (MLB_PLAYER_PROP_HITS, NBA_PLAYER_POINTS), whose
+# kalshi_threshold is the prop line itself, supplied by their own callers,
+# not the concern this guard addresses.
+_THRESHOLD_REQUIRED_MARKET_TYPES: frozenset[MarketType] = frozenset(
+    {
+        MarketType.NFL_MONEYLINE,
+        MarketType.NFL_SPREAD,
+        MarketType.NFL_GAME_TOTAL,
+        MarketType.NFL_TEAM_TOTAL,
+        MarketType.MLB_MONEYLINE,
+        MarketType.MLB_RUN_LINE,
+        MarketType.MLB_GAME_TOTAL,
+        MarketType.MLB_TEAM_TOTAL,
+    }
+)
+
+
 def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
@@ -447,7 +488,7 @@ class PaperTrader:
         game_date: str,
         player_name: str | None = None,
         player_id: int | None = None,
-        kalshi_threshold: int | None = None,
+        kalshi_threshold: float | None = None,
         market_type: MarketType | None = None,
         session_id: str | None = None,
         pool_isolated: bool = False,
@@ -463,10 +504,20 @@ class PaperTrader:
         pool_isolated=True hardcoded) so T1 and T4 do not compete for the same
         bankroll. Logs to C6. Returns (ok, position_record).
 
-        player_name/player_id/kalshi_threshold (box 1.4, T-442) are optional —
-        meaningful only for player-prop markets (e.g. KXMLBHIT); a moneyline,
-        run-line, or totals bet leaves them None. kalshi_ticker/mid_price/vig/
-        game_date are universal to every market type and remain required.
+        player_name/player_id are optional — meaningful only for player-prop
+        markets (e.g. KXMLBHIT). kalshi_threshold is ALSO required, not
+        optional, for the eight numeric game-market types in
+        _THRESHOLD_REQUIRED_MARKET_TYPES (moneyline/run_line implicit 0.0;
+        spread/total/team_total pass through GameMarket.threshold) — a
+        moneyline is a spread at zero (game_market_settlement.py), not a
+        market with no threshold. GG-291/T-562: this docstring previously
+        said the opposite ("a moneyline... bet leaves them None") and that
+        was the root cause of 42 live nfl_moneyline positions being written
+        with kalshi_threshold: null, crashing settle_position() on the first
+        one reached. See UndeterminedThresholdError, raised below, for the
+        write-time guard this correction is paired with.
+        kalshi_ticker/mid_price/vig/game_date are universal to every market
+        type and remain required.
 
         market_type (box 1.5, T-442) selects the vig-cascade cell in
         _NO_DIRECTION_VIG_COEFFICIENT. Every existing caller omits it, so it
@@ -530,6 +581,23 @@ class PaperTrader:
             # only -1.0*vig, since 1.0*vig == 2.0*half_spread exactly. Mirrors
             # run_mlb_paper_trade.py::_directional_edge()'s NO branch.
             _resolved_market_type = market_type or MarketType.MLB_PLAYER_PROP_HITS
+
+            # GG-291/T-562: refuse rather than silently write a null threshold
+            # for a numeric game-market type. Raised before any state mutation
+            # (lock is held but nothing has been appended/saved yet) — this is
+            # a caller programming error, not a runtime condition to log and
+            # continue past.
+            if (
+                _resolved_market_type in _THRESHOLD_REQUIRED_MARKET_TYPES
+                and kalshi_threshold is None
+            ):
+                raise UndeterminedThresholdError(
+                    f"open_position: market_type={_resolved_market_type.value!r} "
+                    f"requires a non-None kalshi_threshold (ticker={kalshi_ticker!r}) "
+                    f"-- refusing to write a settleable position that would crash "
+                    f"settle_position() later (GG-291)."
+                )
+
             if market_type is None:
                 # GG-184: every current call site relies on this default rather
                 # than passing market_type explicitly. Non-fatal — just make the

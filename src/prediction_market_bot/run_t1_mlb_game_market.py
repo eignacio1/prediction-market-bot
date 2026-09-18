@@ -198,9 +198,9 @@ def evaluate_and_maybe_trade(
     """Evaluate one GameMarket and, if approved, open a paper position.
 
     Returns a short outcome tag for testing/logging:
-      REFUSED_UNPARSED | REFUSED_KILL_SWITCH | REFUSED_NO_MODEL |
-      REFUSED_NO_EDGE | REFUSED_STAKE | REJECTED | KILL_SWITCH_HALT |
-      C6_WRITE_FAILURE | OPENED
+      REFUSED_UNPARSED | REFUSED_NO_THRESHOLD | REFUSED_NO_SETTLEMENT_PATH |
+      REFUSED_KILL_SWITCH | REFUSED_NO_MODEL | REFUSED_NO_EDGE |
+      REFUSED_STAKE | REJECTED | KILL_SWITCH_HALT | C6_WRITE_FAILURE | OPENED
     """
     # GG-252: refuse to trade out of a batch known to have dropped markets —
     # a snapshot with unparsed_count > 0 signals parser/data-quality
@@ -221,6 +221,40 @@ def evaluate_and_maybe_trade(
             session_id=session_id,
         )
         return "REFUSED_UNPARSED"
+
+    # GG-291/T-562: MLB_PARTIAL_GAME (KXMLBF3/F5/F7) has no numeric
+    # threshold at all -- it's a three-way win/loss/tie market, structurally
+    # unlike the other five MLB game-market types -- and no settlement
+    # module supports it yet (game_market_settlement.py is NFL-only; GG-294,
+    # OPEN, registered and explicitly deferred this session). Refuse to open
+    # rather than write a position this codebase cannot yet settle.
+    if market_type is MarketType.MLB_PARTIAL_GAME:
+        audit.warning(
+            COMPONENT, "gg294_no_settlement_path",
+            payload={"ticker": mkt.ticker, "market_type": market_type.value},
+            session_id=session_id,
+        )
+        return "REFUSED_NO_SETTLEMENT_PATH"
+
+    # GG-291/T-562: derive the settlement threshold once, up front, and
+    # refuse before doing any further evaluation work if it can't be
+    # determined. A moneyline is a spread at zero (game_market_settlement.py
+    # module docstring) — 0.0, not None. run_line/total/team_total carry the
+    # real line on GameMarket.threshold; refuse rather than open a position
+    # paper_trader.py's UndeterminedThresholdError guard would reject anyway,
+    # since that guard fires mid-open_position() after model/risk work has
+    # already run.
+    if market_type is MarketType.MLB_MONEYLINE:
+        kalshi_threshold = 0.0
+    else:
+        kalshi_threshold = mkt.threshold
+        if kalshi_threshold is None:
+            audit.warning(
+                COMPONENT, "gg291_no_threshold",
+                payload={"ticker": mkt.ticker, "market_type": market_type.value},
+                session_id=session_id,
+            )
+            return "REFUSED_NO_THRESHOLD"
 
     # Cell-tier kill switch (Deliverable 1) — READ-side only. This script
     # never calls halt_cell(); the write path stays unwired, as before.
@@ -358,6 +392,7 @@ def evaluate_and_maybe_trade(
         vig=mkt.vig,
         game_date=mkt.game_date,
         market_type=market_type,
+        kalshi_threshold=kalshi_threshold,  # GG-291/T-562
         session_id=session_id,
         pool_isolated=True,
     )
