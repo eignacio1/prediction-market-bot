@@ -3629,3 +3629,24 @@ The ~24 `.md` doc/handoff/archive hits from this entry's original discovery were
 | Cross-references | GG-288, GG-289 (classifier block on `580e9c9`, which contains `sweep_stray_branches.sh`), Hard Rule 11 (register-and-stop on out-of-scope discovery). |
 
 </details>
+
+---
+
+### GG-293 — Registration-at-claim-time: attempt to land stranded close-out-fix commits (`44b7fb5`, `580e9c9`) from operator's local `main` onto `origin/main`, given two prior confirmed classifier denials (GG-289)
+
+**Status:** OPEN · **Severity:** UNSPECIFIED
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-293 |
+| Category | Registration-at-claim-time, per the gap-log invariant — opened before investigation to track this session's task independently of outcome. |
+| What is being investigated | T-561 (this session) is directed to: (1) attempt `git fetch origin && git cherry-pick 44b7fb5 580e9c9 && git push` exactly once, stopping and recording verbatim if the auto-mode classifier refuses (per GG-289, this has already been denied twice independently — once on T-555's branch, once on T-557); (2) if it lands, harden `close_session_claim.sh` to fetch-and-rebase before its first push attempt and push from a purpose-built ref rather than `HEAD`, addressing the T-554 closure-row push failure (GG-288); (3) if blocked, write the exact by-hand sequence for the operator. |
+| Entering state | Local `main` (operator's physical tree) carries `44b7fb5`/`580e9c9` plus 3 further commits (`1431cdd`, `55272ce`, `d9119b1`), none an ancestor of `origin/main` (confirmed via `git log origin/main..main`). `origin/main` has 111 commits local `main` lacks. Neither `scripts/close_session_claim.sh`, `scripts/sweep_stray_branches.sh`, nor a "Step 9" section in `.claude/commands/session-end.md` exist on `origin/main` (confirmed via `git ls-tree` / `git show` against `origin/main` this session, before any write). |
+| Why registered now | Hard Rule 11 / the gap-log invariant require registration before remediation work begins, not after. This session's task brief itself anticipates a permission-control refusal and is explicit that a clean, recorded refusal is a successful outcome — this entry exists so that outcome (or a successful land) is tracked structurally rather than only in the session's final report. |
+| Cross-references | [[GG-288]] (T-554's closure-row push failure — Deliverable 2 of this session addresses its stated fix), [[GG-289]] (the two prior confirmed classifier denials against this exact commit pair — Deliverable 1 of this session is a third, final attempt per explicit operator instruction, not a retry-until-success loop), [[GG-292]] (14 stray branches — explicitly out of scope for this session per Hard Rule 11 / the task's DO NOT list). |
+| Status | OPEN — registered 2026-09-18 (T-561), before investigation. To be updated with a same-session addendum once Deliverables 1-3 conclude. |
+
+</details>
