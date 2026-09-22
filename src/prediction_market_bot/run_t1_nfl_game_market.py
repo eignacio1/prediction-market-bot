@@ -67,6 +67,8 @@ from prediction_market_bot.c5_execution.kalshi_client import (  # noqa: E402
     GameMarket,
     GameMarketSnapshot,
     KalshiMarketClient,
+    KalshiThresholdUndefined,
+    derive_kalshi_threshold,
 )
 from prediction_market_bot.c5_execution.market_type_registry import (  # noqa: E402
     CellKillSwitchStatus,
@@ -211,7 +213,7 @@ def evaluate_and_maybe_trade(
     Returns a short outcome tag for testing/logging:
       REFUSED_UNPARSED | REFUSED_KILL_SWITCH | REFUSED_NO_MODEL |
       REFUSED_NO_EDGE | REFUSED_STAKE | REJECTED | KILL_SWITCH_HALT |
-      C6_WRITE_FAILURE | OPENED
+      C6_WRITE_FAILURE | REFUSED_NO_THRESHOLD | OPENED
     """
     # GG-267: resolved once per market evaluation, off the model object the
     # caller already constructed (never re-instantiated) — see
@@ -387,12 +389,30 @@ def evaluate_and_maybe_trade(
         "model_identity": model_identity,             # GG-267
     }
 
+    # GG-291: kalshi_threshold must never be written as None for a
+    # settleable game-market position -- derive_kalshi_threshold() raises
+    # rather than silently returning None. Refuse and audit instead of
+    # letting open_position() write a null threshold.
+    try:
+        kalshi_threshold = derive_kalshi_threshold(mkt)
+    except KalshiThresholdUndefined as exc:
+        audit.error(
+            COMPONENT, "gg291_no_derivable_threshold",
+            payload={
+                "ticker": mkt.ticker, "market_type": market_type.value,
+                "reason": str(exc), "model_identity": model_identity,
+            },
+            session_id=session_id,
+        )
+        return "REFUSED_NO_THRESHOLD"
+
     trader.open_position(
         approval=approval,
         kalshi_ticker=mkt.ticker,
         mid_price=mkt.mid_price,
         vig=mkt.vig,
         game_date=mkt.game_date,
+        kalshi_threshold=kalshi_threshold,
         market_type=market_type,
         session_id=session_id,
         pool_isolated=True,

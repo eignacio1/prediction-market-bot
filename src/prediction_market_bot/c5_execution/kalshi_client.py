@@ -288,6 +288,49 @@ class GameMarket:
         return self.yes_ask > 0 and self.yes_bid > 0
 
 
+class KalshiThresholdUndefined(ValueError):
+    """Raised by derive_kalshi_threshold() when a GameMarket has no numeric
+    threshold and is not one of the known structured (bare-proposition)
+    market types. See derive_kalshi_threshold()'s docstring — this exists so
+    a settleable position is refused at open_position() call time rather
+    than silently written with kalshi_threshold=None (GG-291)."""
+
+
+def derive_kalshi_threshold(mkt: "GameMarket") -> float:
+    """Return the kalshi_threshold value a caller must pass to
+    PaperTrader.open_position() for this market, never None (GG-291).
+
+    mkt.threshold (GameMarket.threshold, sourced from Kalshi's own
+    floor_strike) is the single source of truth for spread/run_line/total/
+    team_total lines -- returned as-is, unrounded.
+
+    moneyline and partial_game are the two market_types where
+    GameMarket.threshold is legitimately always None (see GameMarket's own
+    docstring: both are "structured" bare-proposition strikes with no
+    floor_strike at all). Both settle on a point-margin-vs-zero basis, so
+    0.0 is the correct threshold, not a placeholder -- this mirrors
+    game_market_settlement.py's "a moneyline is a spread at zero" design
+    note.
+
+    Any other market_type with threshold is None is not a data value this
+    function has ever been told how to handle -- refuse (raise) rather than
+    write a null threshold into a settleable position. Never parse the
+    ticker's strike-suffix digits here; see the ticker-shape comment above
+    GameMarket and game_market_settlement.py's module docstring for why.
+    """
+    if mkt.threshold is not None:
+        return float(mkt.threshold)
+    if mkt.market_type in ("moneyline", "partial_game"):
+        return 0.0
+    raise KalshiThresholdUndefined(
+        f"no derivable kalshi_threshold for ticker={mkt.ticker!r} "
+        f"market_type={mkt.market_type!r}: threshold is None and "
+        f"market_type is not one of the known structured types "
+        f"('moneyline', 'partial_game'). Refusing to open a position with "
+        f"a null threshold."
+    )
+
+
 @dataclass
 class DS02Snapshot:
     """

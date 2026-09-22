@@ -447,7 +447,7 @@ class PaperTrader:
         game_date: str,
         player_name: str | None = None,
         player_id: int | None = None,
-        kalshi_threshold: int | None = None,
+        kalshi_threshold: float | None = None,
         market_type: MarketType | None = None,
         session_id: str | None = None,
         pool_isolated: bool = False,
@@ -463,10 +463,18 @@ class PaperTrader:
         pool_isolated=True hardcoded) so T1 and T4 do not compete for the same
         bankroll. Logs to C6. Returns (ok, position_record).
 
-        player_name/player_id/kalshi_threshold (box 1.4, T-442) are optional —
-        meaningful only for player-prop markets (e.g. KXMLBHIT); a moneyline,
-        run-line, or totals bet leaves them None. kalshi_ticker/mid_price/vig/
-        game_date are universal to every market type and remain required.
+        player_name/player_id (box 1.4, T-442) are optional — meaningful only
+        for player-prop markets (e.g. KXMLBHIT); a game-market bet (moneyline,
+        spread/run_line, totals, team_totals) leaves them None.
+        kalshi_threshold is float | None but should be None only for a
+        player-prop market whose C1/C2 layer has no threshold concept at
+        all — every game-market caller must pass a real float (0.0 for
+        moneyline/partial_game, the real floor_strike otherwise; see
+        kalshi_client.py::derive_kalshi_threshold(), GG-291). This method
+        does not itself enforce that -- the refuse/raise guard lives at each
+        call site, since only the caller knows whether a None here is
+        expected for its market type. kalshi_ticker/mid_price/vig/game_date
+        are universal to every market type and remain required.
 
         market_type (box 1.5, T-442) selects the vig-cascade cell in
         _NO_DIRECTION_VIG_COEFFICIENT. Every existing caller omits it, so it

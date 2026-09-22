@@ -257,6 +257,126 @@ def test_legacy_row_no_model_identity_loads_as_unknown(trader):
     assert reloaded is not None  # loaded without raising
 
 
+# ── GG-291: kalshi_threshold write-path fix ────────────────────────────────
+#
+# 42 real T1 NFL moneyline positions were opened with kalshi_threshold=null
+# because open_position() was never passed the argument -- it silently
+# defaulted to None (and the signature was typed int | None, a type trap:
+# real thresholds are floats, e.g. spread/total half-point lines). Fixed by
+# deriving kalshi_threshold from GameMarket.threshold (Kalshi's own
+# floor_strike) via kalshi_client.py::derive_kalshi_threshold() at each run
+# script's call site, refusing (REFUSED_NO_THRESHOLD) rather than writing
+# null when no threshold can be derived. Three tests below, matching the
+# task brief verbatim: moneyline carries 0.0; spread carries its
+# floor_strike as an unrounded float; no-derivable-threshold refuses.
+
+
+def test_moneyline_position_carries_zero_threshold(tmp_path):
+    """A moneyline is a spread at zero (see game_market_settlement.py's
+    module docstring) -- GameMarket.threshold is legitimately None for
+    moneyline, and derive_kalshi_threshold() must translate that into the
+    real settlement threshold 0.0, not leave it null."""
+    audit = AuditLogger(tmp_path / "audit_gg291_moneyline_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-ML", bankroll=1000.0,
+        min_bet_usd=1.0,  # matches main()'s actual construction (GG-282/T-551)
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_ml_test.json", logger=audit,
+    )
+    mkt = _make_market()  # defaults: market_type="moneyline", threshold=None
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),  # edge=0.09, clears EDGE_THRESHOLD/MIN_EDGE
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 0.0
+    assert isinstance(pos["kalshi_threshold"], float)
+
+
+def test_spread_position_carries_real_floor_strike(tmp_path):
+    """A spread/total/team-total position must carry GameMarket.threshold
+    (Kalshi's real floor_strike) verbatim and unrounded -- never 0.0, never
+    a value re-derived from the ticker's strike-suffix digits (explicitly
+    forbidden, see kalshi_client.py and game_market_settlement.py). Real
+    Kalshi spread strikes are always half-point lines (game_market_settlement.py
+    docstring); 3.5 here is deliberately non-integer to catch a truncating
+    int cast regressing back in."""
+    audit = AuditLogger(tmp_path / "audit_gg291_spread_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-SPREAD", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_spread_test.json", logger=audit,
+    )
+    mkt = _make_market(
+        ticker="KXNFLSPREAD-26SEP08DEN-DEN35",
+        market_type="spread",
+        threshold=3.5,
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 3.5
+    assert isinstance(pos["kalshi_threshold"], float)
+
+
+def test_refuses_when_no_derivable_threshold(tmp_path):
+    """Defensive path: real Kalshi spread markets always carry a floor_strike
+    (GameMarket.threshold), so this shape (spread market_type with
+    threshold=None) should not occur against live data -- but if it ever
+    does, derive_kalshi_threshold() must raise and the run script must
+    refuse (REFUSED_NO_THRESHOLD) rather than let open_position() write a
+    null threshold into a settleable position (the exact GG-291 defect).
+    No position may be written to disk."""
+    audit = AuditLogger(tmp_path / "audit_gg291_norefuse_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-NOTHRESH", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_nothresh_test.json", logger=audit,
+    )
+    mkt = _make_market(
+        ticker="KXNFLSPREAD-26SEP08DEN-DEN35",
+        market_type="spread",
+        threshold=None,
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubNFLForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "REFUSED_NO_THRESHOLD"
+
+    if trader._path.exists():
+        on_disk = json.loads(trader._path.read_text())
+        assert on_disk.get("open_positions", []) == []
+
+
 # ── GG-282/T-551: min_bet_usd floor fix (Deliverable 3) ────────────────────
 #
 # The RiskEngine construction in main() previously omitted min_bet_usd,
