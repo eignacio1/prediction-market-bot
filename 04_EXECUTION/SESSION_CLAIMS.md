@@ -565,3 +565,4 @@
 
 | 2026-09-21T23:55:00Z | T-562 | CLAIMED-RETROACTIVELY, then CLOSED — merged+pushed 5 local-only "Cowork strategic window" Wave 27-29 queue commits (5d94d62..d9119b1, touching only ACTIVE_QUEUE.md/SESSION_CLAIMS.md/close_session_claim.sh/sweep_stray_branches.sh/session-end.md) into origin/main directly on shared `main`, no worktree, no prior claim -- process deviation from Hard Rule 10/11, self-flagged. Clean merge (16cd321), no conflicts, pushed. See DECISION_LOG.md same date. |
 | 2026-09-22T00:48:48Z | T-563, GG-291 | T-563/GG-291: kalshi_threshold null-write defect — census, write-path fix, 42-position NFL backfill, rehearsal, first live settlement |
+| 2026-09-22T04:58:24Z | T-563 | MERGED: NO — branch `session/20260922T004800Z-gg291-unblock-and-settle` awaiting merge — T-563/GG-291: fixed kalshi_threshold null-write defect (7 tests, 190 regression clean); Deliverables 4/5 deferred to T-564 (commit `f97f439`) |

@@ -25,6 +25,7 @@ market_type rather than silently applying NFL settlement logic to it.
 from __future__ import annotations
 
 import builtins
+import json
 import os
 import sys
 from pathlib import Path
@@ -249,3 +250,150 @@ def test_fixed_measurement_stake_still_refused_min_bet_floor_on_live_default(tmp
     assert ok
     assert approval.get("approval_status") != "APPROVED"
     assert approval.get("rejection_reason") == "min_bet_floor"
+
+
+# ── GG-291: kalshi_threshold write-path fix ────────────────────────────────
+#
+# Mirrors tests/test_run_t1_nfl_game_market.py's analogous three tests
+# exactly (this suite is a port, not an invention). 42 real T1 NFL moneyline
+# positions were opened with kalshi_threshold=null because open_position()
+# was never passed the argument. This script (run_t1_mlb_game_market.py) is
+# dark/unused in production (no cron entry, isolated from the two live MLB
+# ledgers -- see test_never_opens_live_mlb_portfolio_files above) but shares
+# the identical open_position() call-site defect, so it received the
+# identical fix: derive_kalshi_threshold() at the call site, refusing
+# (REFUSED_NO_THRESHOLD) rather than writing null. MLB's own
+# _GAME_MARKET_TYPE_MAP additionally maps "partial_game" (KXMLBF3/F5/F7),
+# which -- like moneyline -- legitimately has threshold=None and must
+# resolve to 0.0, not refuse.
+
+
+def test_moneyline_position_carries_zero_threshold(tmp_path):
+    audit = AuditLogger(tmp_path / "audit_gg291_moneyline_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-ML", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_ml_test.json", logger=audit,
+    )
+    mkt = _make_market()  # defaults: market_type="moneyline", threshold=None
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubMLBGameMarketForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 0.0
+    assert isinstance(pos["kalshi_threshold"], float)
+
+
+def test_run_line_position_carries_real_floor_strike(tmp_path):
+    """MLB's spread-equivalent (run_line) must carry GameMarket.threshold
+    verbatim and unrounded -- never 0.0, never re-derived from the ticker's
+    strike-suffix digits."""
+    audit = AuditLogger(tmp_path / "audit_gg291_runline_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-RUNLINE", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_runline_test.json", logger=audit,
+    )
+    mkt = _make_market(
+        ticker="KXMLBSPREAD-26SEP08NYY-NYY15",
+        market_type="run_line",
+        threshold=1.5,
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubMLBGameMarketForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 1.5
+    assert isinstance(pos["kalshi_threshold"], float)
+
+
+def test_partial_game_position_carries_zero_threshold(tmp_path):
+    """MLB's partial_game (KXMLBF3/F5/F7) is the second market_type -- along
+    with moneyline -- where GameMarket.threshold is legitimately None; must
+    resolve to 0.0, not refuse."""
+    audit = AuditLogger(tmp_path / "audit_gg291_partialgame_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-PARTIAL", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_partial_test.json", logger=audit,
+    )
+    mkt = _make_market(
+        ticker="KXMLBF5-26SEP08NYY-NYY",
+        market_type="partial_game",
+        threshold=None,
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubMLBGameMarketForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "OPENED"
+
+    on_disk = json.loads(trader._path.read_text())
+    pos = next(p for p in on_disk["open_positions"] if p["kalshi_ticker"] == mkt.ticker)
+    assert pos["kalshi_threshold"] == 0.0
+    assert isinstance(pos["kalshi_threshold"], float)
+
+
+def test_refuses_when_no_derivable_threshold(tmp_path):
+    """Defensive path: real Kalshi run_line markets always carry a
+    floor_strike, so this shape should not occur against live data -- but if
+    it ever does, derive_kalshi_threshold() must raise and the run script
+    must refuse (REFUSED_NO_THRESHOLD) rather than write a null threshold
+    into a settleable position (the exact GG-291 defect). No position may be
+    written to disk."""
+    audit = AuditLogger(tmp_path / "audit_gg291_norefuse_test.jsonl")
+    engine = RiskEngine(
+        logger=audit, snapshot_id="SNAP-TEST-GG291-NOTHRESH", bankroll=1000.0,
+        min_bet_usd=1.0,
+    )
+    trader = PaperTrader(
+        portfolio_path=tmp_path / "paper_portfolio_gg291_nothresh_test.json", logger=audit,
+    )
+    mkt = _make_market(
+        ticker="KXMLBSPREAD-26SEP08NYY-NYY15",
+        market_type="run_line",
+        threshold=None,
+    )
+
+    outcome = evaluate_and_maybe_trade(
+        mkt,
+        snapshot_unparsed_count=0,
+        model=StubMLBGameMarketForecastModel(fixed_p=0.65),
+        engine=engine,
+        trader=trader,
+        audit=audit,
+    )
+    assert outcome == "REFUSED_NO_THRESHOLD"
+
+    if trader._path.exists():
+        on_disk = json.loads(trader._path.read_text())
+        assert on_disk.get("open_positions", []) == []
