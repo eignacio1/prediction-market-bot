@@ -2,7 +2,8 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-18T13:59:06Z (T-557 — Landed T-555 stray (GG-283/GG-284, Deliverable 1 complete). Deliverables 2/3/4 (cherry-pick Wave 27/28 commits, fix T-554's push-failure, reconcile ACTIVE_QUEUE.md) remain blocked — auto-mode classifier Self-Modification denial on 44b7fb5/580e9c9 confirmed twice independently. Registered GG-288 addendum + GG-289. Operator decision needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_1359.md` for full session detail.
+**Last reviewed:** 2026-09-22T00:04:00Z (T-562 — T-562/GG-291 RESOLVED — NFL T1 kalshi_threshold null-write fixed, 42 live positions backfilled+verified, re-rehearsed idempotent; real 2026-09-21 settlement not yet run.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260921_1704.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-17T05:38:46Z (T-556 — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0538.md` for full session detail.
@@ -12,6 +13,10 @@
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-562/GG-291 — Fix + backfill `kalshi_threshold: null` on 42 NFL T1 positions before 2026-09-21 real settlement — ✅ COMPLETE 2026-09-18 (worktree `session/20260918T142928Z-gg291-threshold-backfill`, commits `03acefe`/`b36429b`/`b633367`/`4b96214`)
+
+All 4 deliverables landed: census (blast radius confirmed 42 `nfl_moneyline` positions), write-path fix (`paper_trader.py::open_position` now stamps `kalshi_threshold` at open time, refuses when undeterminable; 4 new tests, full suite 51/51 — see DECISION_LOG.md test-suite proxy note this session), live backfill (`gg291_repair_nfl_moneyline_threshold.py`, verified backup + optimistic-concurrency check + exact 42-row/one-field diff), and a second independent rehearsal against the repaired file (synthetic finals incl. a deliberate tie, correct GG-257 refusal, byte-identical idempotent re-apply). GG-291 OPEN → RESOLVED. **Pending, next session or operator-run:** the real 2026-09-21 NFL settlement itself has not been executed by any session — recommendation delivered was GO. See `DECISION_LOG.md` 2026-09-18 (T-562).
 
 ## T-554/GG-285 — APR-0024's per-band P&L `n*` gate-reachability analysis — ✅ COMPLETE 2026-09-17 (worktree `session/20260917T001736Z-n-star-wall-gate-reachability`)
 
