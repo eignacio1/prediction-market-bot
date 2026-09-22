@@ -27,7 +27,7 @@
 |---|---|---|
 | 10–27 | ✅ CLOSED | see history |
 | **28** | ✅ **CLOSED, ALL THREE LANDED** | **GG-203 root cause found** — shard-3 collateral is $0.00 (T-558) · **GG-291 caught before it could hit the live ledger** (T-559) · T-555 stray landed, GG-289 classifier block diagnosed, GG-292 registered (T-557). |
-| **29** | ⬜ **ACTIVE** | Make the 42 positions settleable before Sunday · restart MLB accrual · install the close-out fix |
+| **29** | ⚠️ **1 OF 3** — 29.2 gated STOP (shard 3 still $0.00); 29.3 landed via T-562; **29.1 claimed and never executed** | Make the 42 positions settleable before Sunday · restart MLB accrual · install the close-out fix |
 
 ### ✅ WAVE 28 — what actually happened
 
@@ -39,7 +39,11 @@
 
 ---
 
-### ⬜ WAVE 29 — fire all three together, disjoint surfaces
+### ⬜ WAVE 30 — one block, fire alone
+
+**29.1 was claimed on 2026-09-18 and no work followed. The Sunday settlement window was missed.** It is re-issued below as 30.1, now including the live settlement, since the games have been played. Fire it alone — it ends in the first live write to a real ledger.
+
+### Wave 29 blocks (29.2/29.3 closed; 29.1 superseded by 30.1)
 
 | # | Block | Tier | Why |
 |---|---|---|---|
@@ -261,6 +265,101 @@ Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GA
 REPORT BACK: whether it landed, with the ls-tree and Step 9 greps if so; the verbatim refusal text
 if not; your hardening change and your own closure row verified on origin/main if you got that far;
 and the by-hand sequence for the operator if the classifier blocked you.
+```
+
+---
+
+# 30.1 — GG-291 · UNBLOCK AND SETTLE · STANDARD · URGENT
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "gg291-unblock-and-settle"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+
+TIER: STANDARD. *** URGENT. This was claimed on 2026-09-18 and never executed -- the claim row
+exists, no work followed, and the Sunday settlement window was missed as a direct result. ***
+
+42 real NFL T1 positions are open. Their games ran 2026-09-20 through 09-28, so **20 of them are
+now final and settleable** (18 on 09-20, 2 on 09-21) -- verify that count yourself, do not take it
+from this brief. They cannot be settled because every one stores `kalshi_threshold: null`.
+
+Derived fresh at `origin/main` 91878b3 (verify each before relying on it):
+  - Crash: `paper_trader.py:983`  `yes_won = actual_stat >= threshold`, fed by `:977`
+    `threshold = pos["kalshi_threshold"]`. `:831` reads the same field.
+  - Default: `paper_trader.py:450`  `kalshi_threshold: int | None = None`.
+  - `run_t1_nfl_game_market.py:390` and `run_t1_mlb_game_market.py:354` both call
+    `open_position()` WITHOUT `kalshi_threshold`. Both sports have the defect; MLB's is latent
+    only because it has never opened a position.
+  - Correct values are documented, not a design question: moneyline is a spread at zero
+    (`strike_type="structured"`, `floor_strike` null) -> `0.0`; spread/total/team-total carry
+    `strike_type="greater"` with a real `floor_strike` (e.g. 7.5, 63.5) -> that value.
+  - **Type trap:** the parameter is annotated `int | None`, but game-market thresholds are floats
+    (7.5, 63.5). Fix the annotation as part of this, or you will ship a half-fix that silently
+    truncates every spread and total.
+
+DELIVERABLE 1 -- CENSUS FIRST, BOTH SPORTS, EVERY MARKET TYPE. Change nothing yet.
+  How many positions in every portfolio file carry a null threshold, by sport and market type?
+  Which types legitimately may be null and which never can? Confirm the 42 and report how many
+  have a `game_date` strictly in the past as of now -- that is your settleable set.
+  **Report before writing code.**
+
+DELIVERABLE 2 -- FIX THE WRITE PATH IN BOTH SCRIPTS, AND CLOSE THE SILENT DEFAULT.
+  Derive `kalshi_threshold` per market type and pass it at open time. Do not hardcode 0.0 for
+  everything. Correct the `int | None` annotation to accept floats.
+  Then make the failure loud: a settleable position must not be writable with a null threshold --
+  refuse or raise at write time. A null that only surfaces at settlement is this whole defect.
+  Tests: moneyline carries 0.0; spread carries its floor_strike as a float, unrounded; a position
+  with no derivable threshold refuses rather than writing null.
+
+DELIVERABLE 3 -- BACKFILL THE 42. LIVE LEDGER REPAIR -- TREAT IT AS ONE (GG-228).
+  Back up first; verify the backup loads and its position set matches exactly.
+  Set `kalshi_threshold = 0.0` on the `nfl_moneyline` positions ONLY, stamping each repaired row
+  with provenance (`repaired_at` / `repair_ref`) per ADR-0055's precedent.
+  Diff before and after and prove ONLY that field moved, on exactly the expected row count. If the
+  count is not what Deliverable 1 found, stop and report.
+
+DELIVERABLE 4 -- REHEARSE ON A COPY BEFORE TOUCHING THE REAL LEDGER.
+  Follow `04_EXECUTION/NFL_T1_FIRST_SETTLEMENT_RUNBOOK.md` (T-559). Fetch real finals for the
+  settleable games on the VPS (GG-266: the Mac cannot TLS-handshake with ESPN) and cross-check
+  every score against a second independent source -- paste both.
+  Run the resolver against a COPY. Per position: derived actual_stat, threshold, YES/NO, P&L,
+  hand-verified against the final score. Moneyline is final margin vs 0. If any game tied,
+  `check_settlement_ambiguity()` must REFUSE (GG-257). Run twice, prove byte-identical.
+  **Do not proceed to Deliverable 5 until every line of arithmetic is verified by hand.**
+
+DELIVERABLE 5 -- SETTLE FOR REAL. First live settlement in this project's history.
+  Only the positions whose games are final. Back up the live file and verify the backup first.
+  Run under the existing lock discipline, then run again and prove the ledger is byte-identical.
+  Report realized P&L and the resulting ledger state. Closes GG-274 and GG-287.
+  **If you reach Hard Rule 8's context trigger before this deliverable, STOP and hand off.**
+  Deliverables 1-4 landed cleanly are a complete, valuable session; a settlement rushed at 70%
+  context against a live ledger is not. Say plainly which you did.
+
+DELIVERABLE 6 -- ONE HONEST PARAGRAPH. Whatever the P&L, this is ~20 paper positions from a model
+  whose own pre-registered gate returned UNDERPOWERED at clean_n=14 against n*=2,610. A win is not
+  evidence of edge and a loss is not evidence against it. Write it so it cannot be misread.
+
+DO NOT: settle any position whose game is not final. Verify each, do not infer from the date alone.
+DO NOT: apply the rehearsal's disposable 0.0 data workaround to the live file in place of
+  Deliverable 3's backed-up, provenance-stamped repair.
+DO NOT: change settlement LOGIC (`yes_won`, the tie rule, the not-yet-final guard). This is a
+  missing-data defect. If you believe the logic is also wrong, register and stop.
+DO NOT: open any new position, or construct PaperTrader with a non-None kalshi_client.
+DO NOT: touch kelly_fraction/sizing, MIN_BET_USD, _HARD_LIMITS, or promote a cell.
+DO NOT: touch kalshi_client.py's order path or the Kalshi account. DO NOT: restart any service.
+DO NOT: merge any of the 17 stray branches (GG-292) -- operator routing, not yours.
+
+SCOPE FENCE: both T1 game-market run scripts, paper_trader.py's threshold write path and
+annotation, a backed-up repair + settlement of the NFL portfolio, the runbook, tests,
+gap-log + DECISION_LOG.
+Self-serialising close-out: rebase onto origin/main before writing GOVERNANCE_GAP_LOG.md/DECISION_LOG.md.
+
+REPORT BACK: the null-threshold census by sport and market type; your settleable count and how you
+verified each game is final; the write-path fix and its three tests; the backup verification and
+before/after diff; both independent score sources; the hand-verified rehearsal table; whether you
+settled live and the realized P&L with its idempotency proof; and your Deliverable 6 paragraph.
 ```
 
 ---
