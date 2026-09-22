@@ -12,7 +12,7 @@ No change — still zero real money at risk, same as every day until the gate cl
 No — you already told it to finish close-out and let a future terminal window handle the merge. That's noted and it's what happened. When you're ready, the ready branch is `session/20260918T142949Z-install-closeout-fix-v2`, and it's a clean fast-forward onto `main` — either you push it yourself, or add a Bash permission rule if you want Claude able to do it directly next time.
 
 **Anything that worried the session, even if not urgent:**
-One odd thing worth knowing: at one point even a completely harmless, read-only status check got blocked by the same control, not just the actual `main` push. That might just be Claude being extra cautious after being told "no" twice in a row — not registered as a real problem yet, just flagging it in case it happens again.
+One odd thing worth knowing: at one point even a completely harmless, read-only status check got blocked by the same control, not just the actual `main` push. That might just be Claude being extra cautious after being told "no" twice in a row — not registered as a real problem yet, just flagging it in case it happens again. Separately, a routine scan found 4 other branches of unfinished work from other sessions sitting unmerged — nothing was touched, just noted for whoever is routing that work.
 
 ---
 

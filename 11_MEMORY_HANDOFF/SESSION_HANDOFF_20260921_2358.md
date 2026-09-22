@@ -11,8 +11,8 @@ adr_touched: none
 plan_deliverable_moved: no
 -->
 
-**Trigger:** operator-initiated ("finish the rest of the /session-end and I'll have the next term window merge it")
-**Last commit:** `91d10da` (branch `session/20260918T142949Z-install-closeout-fix`, also published as `-v2`) — NOT yet on `origin/main`.
+**Trigger:** operator-initiated ("finish /session-end, next window merges it")
+**Last commit:** `91d10da` (branch `session/20260918T142949Z-install-closeout-fix`, also `-v2`) — NOT yet on `origin/main`.
 
 ---
 
@@ -24,30 +24,34 @@ Phase 6/7 ACTIVE, unchanged. No `src/` change. No live capital.
 
 ## ⚠️ STRATEGIC DECISIONS THIS SESSION
 
-| Decision | Rationale | Canonical Reference | Owner |
-|----------|-----------|--------------------|----|
-| Defer `origin/main` merge to a future window | 2 identical `[Auto-Mode Bypass]` refusals this session — real boundary, not a fluke | `DECISION_LOG.md` 2026-09-21; GG-293 addendum | Operator |
+| Decision | Rationale | Reference |
+|----------|-----------|----|
+| Defer `origin/main` merge | 2 identical `[Auto-Mode Bypass]` refusals — real boundary | `DECISION_LOG.md` 2026-09-21; GG-293 |
 
 ---
 
 ## Tasks Completed This Session
 
-- Rebased branch cleanly onto `origin/main`(420e368), tip `91d10da`, published to `-v2`.
-- Push to `origin/main` (explicit operator instruction) — refused, `[Auto-Mode Bypass]`, same text as prior denial. Not retried.
-- New observation (unregistered): a read-only compound command was also refused; single non-chained equivalent succeeded. Noted in GG-293 addendum only.
-- GG-293 addendum, DECISION_LOG entry, TODO_NEXT.md task added.
+- Rebased branch onto `origin/main`, tip `91d10da`, published to `-v2`.
+- Push to `origin/main` under explicit operator instruction — refused, same `[Auto-Mode Bypass]` text as before. Not retried.
+- New unregistered observation: a read-only compound command also refused; single non-chained form succeeded (GG-293 addendum only).
+- GG-293 addendum, DECISION_LOG entry, TODO_NEXT.md task, Step 9 sweep below.
 
 ---
 
 ## ONE THING PENDING
 
-Land branch `session/20260918T142949Z-install-closeout-fix-v2`, tip `91d10da406186668a44acf011c2868c216f86e97`, onto `origin/main`. Clean fast-forward candidate as of this session — re-verify against current `origin/main` first. Two agent-side push attempts refused this session — next window: operator pushes directly, or confirm a permission rule change before an agent retries.
+Land `session/20260918T142949Z-install-closeout-fix-v2`, tip `91d10da4`, onto `origin/main`. Clean fast-forward as of this session — re-verify first. 2 agent-side push attempts refused — next window: operator pushes directly, or confirm the permission rule changed before retrying.
 
 ---
 
-## Key Constraints to Remember
+## Stray branches (Step 9 sweep, not mine — do not merge)
 
-No live capital until G6. Do not attempt a 3rd agent-side push to `origin/main` on this branch without confirming the permission boundary changed (GG-293).
+4 unlanded, not mine: `gg255-mlb-t1-game-market-run-script` (4c/12d), `gg267-per-row-model-provenance` (3c/10d), `nfl-capture-gap-0912` (5c/6d — likely GG-276 landed under a different SHA, per session-end.md's own caveat), `gg291-threshold-backfill` (6c/0d, out of scope fence). Operator routing call, Hard Rule 11.
+
+## Key Constraints
+
+No live capital until G6. No 3rd agent-side push to `origin/main` without confirming the permission boundary changed (GG-293).
 
 ---
 
@@ -55,5 +59,5 @@ No live capital until G6. Do not attempt a 3rd agent-side push to `origin/main` 
 
 ```bash
 cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
-# Tell Claude: "Read GG-293 + this handoff. Land -v2 branch (tip 91d10da4) onto origin/main."
+# Tell Claude: "Read GG-293 + this handoff. Land -v2 onto origin/main."
 ```
