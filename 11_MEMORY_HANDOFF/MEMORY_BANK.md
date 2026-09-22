@@ -2,7 +2,13 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-11T19:50:11Z (T-544 — T-544/GG-267: mandatory per-row NFL model_identity field, enforced at write time, rendered on dashboard, GG-267 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260911_1950.md` for full session detail.
+**Last reviewed:** 2026-09-18T13:59:06Z (T-557 — Landed T-555 stray (GG-283/GG-284, Deliverable 1 complete). Deliverables 2/3/4 (cherry-pick Wave 27/28 commits, fix T-554's push-failure, reconcile ACTIVE_QUEUE.md) remain blocked — auto-mode classifier Self-Modification denial on 44b7fb5/580e9c9 confirmed twice independently. Registered GG-288 addendum + GG-289. Operator decision needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_1359.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-09-17T05:38:46Z (T-556 — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0538.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
+**Also reviewed (concurrent session):** 2026-09-17T05:22:00Z (T-555 — T-555 closed GG-283/GG-284 (NFL alphabet + CLE_JAX); addendum cherry-picks blocked by classifier, not retried) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0522.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-09-17T00:41:00Z (T-554 — T-554/GG-285 n*-wall gate-reachability analysis complete; APR-0035 drafted, awaiting operator decision.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0041.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Next review:** Every session; weekly cadence; after every gate clearance  
 **Staleness triggers:** Any artifact added, changed, or superseded; any gate cleared; any new context window opened  

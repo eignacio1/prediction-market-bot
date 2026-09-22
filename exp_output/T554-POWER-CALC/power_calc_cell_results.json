@@ -1,0 +1,44 @@
+{
+  "mlb_player_prop_hits:T1": {
+    "band": "T1",
+    "raw_n": 466,
+    "clean_n": 0,
+    "ticker_date_mismatch_n": 0,
+    "ticker_date_mismatch_pct": 0.0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance.",
+    "market_type": "mlb_player_prop_hits"
+  },
+  "mlb_player_prop_hits:T2": {
+    "band": "T2",
+    "raw_n": 2,
+    "clean_n": 0,
+    "ticker_date_mismatch_n": 0,
+    "ticker_date_mismatch_pct": 0.0,
+    "status": "INSUFFICIENT_DATA",
+    "reason": "clean_n=0 < 2 \u2014 cannot estimate a sample variance.",
+    "market_type": "mlb_player_prop_hits"
+  },
+  "mlb_player_prop_hits:T4M-PROJ": {
+    "band": "T4M-PROJ",
+    "raw_n": 2994,
+    "clean_n": 765,
+    "ticker_date_mismatch_n": 0,
+    "ticker_date_mismatch_pct": 0.0,
+    "status": "COMPUTED",
+    "mean_pnl_per_bet": 0.051933071895424836,
+    "stdev_pnl_per_bet": 1.4627936167397133,
+    "alpha": 0.05,
+    "power": 0.95,
+    "z_alpha": 1.644853625133699,
+    "z_beta": 1.644853625133699,
+    "n_star": 8587,
+    "gap_to_n_star": 7822,
+    "cadence_bets_per_week": 198.36843786312488,
+    "cadence_span_days": 26.995221909722222,
+    "cadence_immature": false,
+    "eta_weeks": 39.43167614899108,
+    "met": false,
+    "market_type": "mlb_player_prop_hits"
+  }
+}

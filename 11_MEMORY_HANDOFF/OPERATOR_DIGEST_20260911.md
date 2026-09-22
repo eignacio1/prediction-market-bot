@@ -17,6 +17,13 @@ Three stacked problems. First, the backend was crash-looping because reading one
 
 Confirmed with five real live requests: all succeeded in under a second with real baseball data. No other system (betting crons, data archiver) was touched.
 
+## T-542/GG-271 — Bounding the rejected-orders file (2026-09-11)
+
+This traces back to the same dashboard-outage chain as T-541: the T4 MLB portfolio file on the VPS was growing without limit because every rejected Kalshi order got appended to a list that never got trimmed — it had reached 39MB and 25,000+ entries. This session measured the problem, confirmed who reads and writes that data, and put a cap on it (most recent 2,000 rejections kept, older ones preserved in a separate backup file, nothing discarded).
+
+The live file on the VPS was migrated down to 7.3MB with the trading service never restarted and open positions verified byte-for-byte unchanged before and after. Along the way, the migration script itself was caught reading a mid-write file and getting torn data, so it was rebuilt to do all its work inside the same lock the live trader already uses — a real bug caught before it could cause a second incident.
+
+Dashboard response time is confirmed back under a second. GG-271 is marked resolved. The only remaining step is merging this session's branch into main, which needs a PR review since it touches trading code.
 ## T-544/GG-267 — Per-row NFL model provenance (2026-09-11)
 
 Until now, a bet placed by the real trained model and a bet placed by the temporary stand-in model looked identical in the trading records — no way to tell which one made which decision. Fixed: every new bet now carries a label naming exactly which model produced it, shown on the dashboard next to each position. Older bets that predate this change safely show "unknown" instead of guessing or crashing.

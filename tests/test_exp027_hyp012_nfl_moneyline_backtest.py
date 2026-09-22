@@ -52,6 +52,18 @@ def test_parse_event_date_roundtrip():
     assert (d.year, d.month, d.day) == (2026, 9, 21)
 
 
+def test_parse_event_teams_finds_live_ticker_forms_jac_and_was():
+    # GG-283/GG-284 (T-555): live KXNFLGAME tickers use "JAC" (Jacksonville)
+    # and "WAS" (Washington), not the nflverse-style "JAX"/"WSH" this table
+    # used to contain exclusively -- both games were silently dropped from
+    # the EXP-027 cohort until this alphabet was widened to a superset.
+    assert exp027.parse_event_teams("26SEP07CLEJAC") == ("CLE", "JAC")
+    assert exp027.parse_event_teams("26SEP07WASPHI") == ("WAS", "PHI")
+    # nflverse-style forms remain valid too (superset, not a swap).
+    assert exp027.parse_event_teams("26SEP07CLEJAX") == ("CLE", "JAX")
+    assert exp027.parse_event_teams("26SEP07WSHPHI") == ("WSH", "PHI")
+
+
 # ---------------------------------------------------------------------------
 # Team-code translation
 # ---------------------------------------------------------------------------
@@ -59,11 +71,78 @@ def test_parse_event_date_roundtrip():
 def test_translate_maps_kalshi_codes_to_nflverse():
     assert exp027._translate("LAR") == "LA"
     assert exp027._translate("WSH") == "WAS"
+    assert exp027._translate("JAC") == "JAX"
 
 
 def test_translate_is_identity_for_unmapped_codes():
     assert exp027._translate("KC") == "KC"
     assert exp027._translate("BUF") == "BUF"
+    # WAS already matches nflverse's own code, so it's deliberately absent
+    # from _KALSHI_TO_NFLVERSE and must pass through unchanged.
+    assert exp027._translate("WAS") == "WAS"
+
+
+# ---------------------------------------------------------------------------
+# Loud-failure mechanism (GG-283/GG-284, T-555): an unparseable event_segment
+# must be counted and printed, never a bare silent `continue`.
+# ---------------------------------------------------------------------------
+
+def _write_price_row(fp, *, ticker: str, event_ticker: str, run_ts: str,
+                      series_ticker: str = "KXNFLGAME", yes_mid: float = 0.55,
+                      half_spread: float = 0.01) -> None:
+    import json as _json
+    fp.write(_json.dumps({
+        "series_ticker": series_ticker, "ticker": ticker, "event_ticker": event_ticker,
+        "run_ts": run_ts, "yes_mid": yes_mid, "half_spread": half_spread,
+    }) + "\n")
+
+
+def test_load_kxnflgame_rows_counts_and_reports_unparsed_segments(tmp_path, capsys):
+    fp = tmp_path / "prices_2026-09-05.jsonl"
+    with fp.open("w") as fh:
+        # Valid, parseable row -- must be kept.
+        _write_price_row(
+            fh, ticker="KXNFLGAME-26SEP07KCLAC-KC", event_ticker="KXNFLGAME-26SEP07KCLAC",
+            run_ts="2026-09-05T12:00:00Z",
+        )
+        # Unparseable: unknown team-code segment (garbage, not a real matchup).
+        _write_price_row(
+            fh, ticker="KXNFLGAME-26SEP07ZZZQQQ-ZZZ", event_ticker="KXNFLGAME-26SEP07ZZZQQQ",
+            run_ts="2026-09-05T12:00:00Z",
+        )
+        # Same unparseable segment again -- must accumulate in the counter, not
+        # just register presence once.
+        _write_price_row(
+            fh, ticker="KXNFLGAME-26SEP07ZZZQQQ-QQQ", event_ticker="KXNFLGAME-26SEP07ZZZQQQ",
+            run_ts="2026-09-05T12:05:00Z",
+        )
+
+    kept, unparsed = exp027._load_kxnflgame_rows([fp])
+
+    assert len(kept) == 1
+    assert kept[0]["ticker"] == "KXNFLGAME-26SEP07KCLAC-KC"
+    assert unparsed == {"26SEP07ZZZQQQ": 2}
+
+    captured = capsys.readouterr()
+    assert "WARNING" in captured.out
+    assert "26SEP07ZZZQQQ" in captured.out
+    assert "rows_dropped=2" in captured.out
+
+
+def test_load_kxnflgame_rows_silent_when_all_segments_parse(tmp_path, capsys):
+    fp = tmp_path / "prices_2026-09-05.jsonl"
+    with fp.open("w") as fh:
+        _write_price_row(
+            fh, ticker="KXNFLGAME-26SEP07KCLAC-KC", event_ticker="KXNFLGAME-26SEP07KCLAC",
+            run_ts="2026-09-05T12:00:00Z",
+        )
+
+    kept, unparsed = exp027._load_kxnflgame_rows([fp])
+
+    assert len(kept) == 1
+    assert unparsed == {}
+    captured = capsys.readouterr()
+    assert "WARNING" not in captured.out
 
 
 # ---------------------------------------------------------------------------

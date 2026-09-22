@@ -28,7 +28,7 @@
   "n_train": 2734,
   "n_backtest": 284,
   "n_prospective_scheduled": 272,
-  "n_prospective_resolved": 0,
+  "n_prospective_resolved": 16,
   "leakage_checks": {
     "check1_train_gameday_before_2025": {
       "pass": false,
@@ -61,7 +61,7 @@
     "check3_disjoint_game_ids": {
       "pass": true,
       "n_train": 2734,
-      "n_test": 284,
+      "n_test": 300,
       "n_overlap": 0
     },
     "check4_recency_window_ti01_spotcheck": {
@@ -80,16 +80,22 @@
     "ece": 0.06609610023321058
   },
   "prospective_2026_eval": {
-    "n": 0
+    "n": 16,
+    "accuracy": 0.5625,
+    "brier": 0.2289631273665222,
+    "ece": 0.1738662642019111
   },
   "primary_gate": {
-    "n_scored_vs_market": 0,
-    "model_brier_vs_market": null,
-    "qualifying_bets_row_level": 0,
-    "clean_n_games": 0,
-    "mean_pnl_per_bet_net_of_fill_cost_game_level": NaN,
-    "sd_pnl_per_bet_game_level": NaN,
-    "n_star": Infinity,
+    "n_scored_vs_market": 14,
+    "model_brier_vs_market": {
+      "model": 0.2519628652661157,
+      "market_closing_line": 0.23278214285714285
+    },
+    "qualifying_bets_row_level": 14,
+    "clean_n_games": 14,
+    "mean_pnl_per_bet_net_of_fill_cost_game_level": 0.03214285714285714,
+    "sd_pnl_per_bet_game_level": 0.49920211062529296,
+    "n_star": 2610.347789988419,
     "verdict": "UNDERPOWERED",
     "pre_registered_threshold": "P&L/bet > 0 net of fill cost AND clean_n >= n* (one-sided alpha=.05), computed against the 2026 prospective window only; if clean_n < n* the verdict is UNDERPOWERED, not a forced directional PASS/FALSIFIED."
   }

@@ -418,6 +418,16 @@ def main(model: NFLForecastModel | None = None) -> dict[str, int]:
     kalshi = KalshiMarketClient.from_env()
     engine = RiskEngine(
         logger=audit, snapshot_id="SNAP-T1-NFLGM-001", bankroll=INITIAL_BANKROLL_USD,
+        # min_bet_usd=1.0: aligns to existing precedent (run_mlb_paper_trade.py's
+        # MIN_BET_PAPER, run_t2_mlb_sameday.py's MIN_BET_PAPER, run_t4_mlb_live.py's
+        # 0.01), not a new value. Without this override, RiskEngine defaults to the
+        # live MIN_BET_USD=10.0 floor (risk.py) against this script's $1.00 ADR-0050
+        # measurement stake (T1_MEASUREMENT_STAKE_USD) — an unintended mismatch
+        # (GG-282/T-551): ADR-0059 explicitly cites the sibling paper-mode override
+        # as the precedent that makes the flat-stake bypass "already work for T1
+        # with zero code change," but that override was never actually applied when
+        # this script was written (T-530/DECISION_LOG does not mention min_bet_usd).
+        min_bet_usd=1.0,
     )
     # kalshi_client=None, unconditionally — this is the sole mechanical
     # guard against a live order path (GG-255 DO NOT constraint).

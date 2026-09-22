@@ -319,6 +319,27 @@ else
     echo "  skipped (last sync $(( pa_age / 60 ))min ago, under ${PA_MAX_AGE}s TTL)"
 fi
 
+# --- GG-280: capture-coverage gap detector (generalized from GG-276) ---
+# GG-276 found 2026-09-12 (a Saturday) had zero KXNFL rows because
+# deploy/cron.conf's NFL-capture block had day-of-week entries for 0-5
+# (Sun-Fri) only, no 6 (Saturday) -- since fixed. GG-280 generalizes the
+# detector from that one NFL/Saturday instance to the failure *shape*: it
+# parses deploy/cron.conf's own archiver lines to derive, per sport, which
+# cron day-of-week values are actually scheduled, then alarms if any in-season
+# day that a sport is scheduled for produces zero rows of that sport in the
+# archive file -- catching a repeat of GG-261 (Wednesday/NFL) or GG-276
+# (Saturday/NFL), a symmetric gap in MLB's schedule, or a future sport, without
+# needing a new detector each time. Reads the local synced copy of
+# exp_output/PRICE_ARCHIVE/ (the sync block immediately above). Alarm-only,
+# same as the GG-163 probe below. Verified 2026-09-15 (T-549): fires on
+# 2026-09-12 (zero NFL rows), stays quiet on 09-11 and 09-13, and MLB (whose
+# cron lines are unrestricted day-of-week, `* * *`) shows OK on all three days
+# with no false alarms -- superseding (and removing) the NFL-only
+# scripts/lib/nfl_capture_gap_check.py this script replaces.
+echo ""
+echo "CAPTURE COVERAGE GAP (GG-280 — zero rows for a sport due that day, per cron.conf's own schedule):"
+python3 "$PROJECT/scripts/lib/capture_coverage_gap_check.py" 2>&1 | sed 's/^/  /'
+
 # --- GG-163: T4 MLB cycle-log write-recency probe ---
 # Every VPS-facing check above this point reads systemd state or a portfolio
 # JSON snapshot -- none of them ever checked whether t4_mlb_cycle_log.jsonl
@@ -610,6 +631,19 @@ INNEREOF
 echo ""
 echo "LEDGER FIELD INTEGRITY (T-432 -- alarm-only, does not affect this hook's exit code):"
 python3 "$PROJECT/scripts/assert_ledger_invariants.py" 2>&1 | tail -20 || true
+
+# --- Order-write parity check (GG-203/T-547 D5) ---
+# GG-203 sat undetected for 10 days (2026-08-15 through 2026-08-24): every
+# risk_eval_approved event was followed by a kalshi_order_failed event, a
+# 100% execution-layer failure rate, while every other liveness probe
+# above (systemctl is-active, cycle-log recency, T1 player-match counts)
+# reported healthy throughout. This compares approvals against execution
+# outcomes directly instead of relying on a session to notice by hand.
+# ALARM-ONLY (operator directive): the detector always exits 0; its output
+# is read, its exit code is not gating.
+echo ""
+echo "ORDER-WRITE PARITY (GG-203/T-547 D5 -- alarm-only, does not affect this hook's exit code):"
+python3 "$PROJECT/scripts/gg203_order_write_detector.py" 2>&1 | tail -20 || true
 
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
