@@ -1,20 +1,43 @@
 # Active queue — the only prompt file to read
 
-**Verified against:** `origin/main = a2d827e` (2026-09-18, Cowork strategic window) — *may be stale; the window cannot `git fetch`. Run `git fetch origin` first. A LANDED call is safe from a stale ref; a "not landed" call is not.*
-**Live state, derived by import not grep (2026-09-18):** 92 cells · **22 execution bands** · **1 cell ACTIVE** · 88 NOT_IMPLEMENTED · 2 BLOCKED · 1 DARK · 133 gap-log entries, **93 OPEN**, next free **GG-293**.
-**42 NFL T1 paper positions open**, games from 2026-09-20. **Zero MLB positions entered in 35 days** (last: 2026-08-14T03:33:45Z). **14 unlanded remote branches** (GG-292).
-**Operator approvals granted 2026-09-18:** shard-3 funding, GG-291 fix, close-out-fix install, ADR-0063 + APR-0035 dispositions.
+**Verified against:** `origin/main = e9a335d` (2026-09-22, Cowork strategic window) — *may be stale; this window cannot `git fetch` (no credentials on this machine). Run `git fetch origin` first. A LANDED call is safe from a stale ref; a "not landed" call is not — say "not visible at my ref," never "did not land."*
+
+**Live state, derived by import not grep, 2026-09-22 at `e9a335d`:** 92 cells · **22 execution bands** · **1 cell ACTIVE** (MLB player-prop hits × T4M-PROJ) · 88 NOT_IMPLEMENTED · 2 BLOCKED · 1 DARK · **134 gap-log entries, 94 OPEN, next free GG-296**. Header/status parity 134=134 ✅ · GG-id uniqueness ✅.
+
+**42 NFL T1 paper positions open**, ~20 games played since 2026-09-20, **none settled**. **Zero MLB positions entered since 2026-08-14T03:33:45Z.** T4 is evaluating live (last cycle-log row 2026-09-22T00:02:47Z) but entering nothing.
+
+> **⚠️ THE LOCAL REPO IS DIVERGED. READ THIS BEFORE STARTING ANY BLOCK.**
+> Local `main` = `c8639fe` is **not** a descendant of `origin/main` = `e9a335d`. Two commits are local-only and unpushed (Wave 30 queue re-issue; the 2026-09-22 handoff documents). Six commits are on origin only — **all of T-563, including the commit that registered GG-295**.
+> A session that derives state from the local working tree gets *133 gaps / 93 OPEN / next free GG-293* and concludes GG-295 does not exist. **Fetch first. Derive from `origin/main`, never from the local tree.** Block 31.3 reconciles this.
+
+---
+
+## ⬛ FIRE NOW — Wave 31, three blocks, concurrent
+
+Paste each fence below into its own terminal. They are disjoint by design and may all start at once.
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **31.1** | STANDARD | Reproduce the model-vs-market calibration result from the live ledger, and extend it. |
+| 2nd | **31.2** | STANDARD | Settle the NFL positions whose games are final. First end-to-end close, ever. |
+| 3rd | **31.3** | SHORT | Land the stranded handoff commits; then 58 branches -> 17 and 61 worktrees -> 2. |
+
+**Fire order does not matter.** 31.3 touches only git refs, `11_MEMORY_HANDOFF/` and this file;
+31.1 touches only analysis code and outputs; 31.2 owns the NFL ledger and is the only block
+authorized to write `GOVERNANCE_GAP_LOG.md` or `DECISION_LOG.md` this wave.
+
+**Every block fetches first.** The SHAs in this file come from a window that could not `git fetch`.
 
 ---
 
 ## Read this first (standing)
 
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15.
-- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next."
+- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next." A sequencing note is not a fence.
 - **Deliverable 0 in every block: land any un-landed predecessor.**
 - **Check your deliverables against real-world sequencing before starting (GG-287).** Do not accept a task that requires an event which has not happened yet.
-- **A premise written in a block is a claim to verify, not a fact.**
-- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. This is absolute and no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
 - **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
 - **A merge is not a deployment, and a deployment is not an activation** (GG-279).
 - Register-and-stop on any gap outside scope (Hard Rule 11).
@@ -25,35 +48,305 @@
 
 | Wave | Status | Outcome |
 |---|---|---|
-| 10–27 | ✅ CLOSED | see history |
-| **28** | ✅ **CLOSED, ALL THREE LANDED** | **GG-203 root cause found** — shard-3 collateral is $0.00 (T-558) · **GG-291 caught before it could hit the live ledger** (T-559) · T-555 stray landed, GG-289 classifier block diagnosed, GG-292 registered (T-557). |
-| **29** | ⚠️ **1 OF 3** — 29.2 gated STOP (shard 3 still $0.00); 29.3 landed via T-562; **29.1 claimed and never executed** | Make the 42 positions settleable before Sunday · restart MLB accrual · install the close-out fix |
-
-### ✅ WAVE 28 — what actually happened
-
-**GG-203, 35 days, solved — and not by the hypothesis everyone believed.** T-558 submitted one real KXMLBHIT order to demo twice: once as the bot builds it, once with `exchange_index: 3` added from the market's own record. **Byte-for-byte identical failure.** That killed the `exchange_index`-propagation theory outright, including the outside developer's matching fix, so D3 was correctly never implemented. Then D2 read something nobody had read before — `GET /portfolio/balance` returns a `balance_breakdown` array alongside the headline number: **shard 0 = $397.44, shard 1 = $0.00, shard 2 = $0.00, shard 3 (Sports, where KXMLBHIT lives) = $0.00.** Every prior read, including T-492's and T-556's, took the aggregate and saw a funded account. It was funded on the wrong shard the entire time. `market_not_found` → `user_not_found` → `insufficient_shard_balance` are three renderings of one missing allocation. **No code change can fix it.**
-
-**The rehearsal paid for itself on its first run.** T-559 ran the real resolver against a full copy of the real 42-position portfolio with synthetic finals. It crashed — `TypeError: '>=' not supported between instances of 'float' and 'NoneType'` at `paper_trader.py::settle_position()`, on the first position. **All 42 positions carry `kalshi_threshold: null`.** `run_t1_nfl_game_market.py` never writes the field and `paper_trader.py:430` defaults it to `None`; `game_market_settlement.py`'s own docstring says the value should be `0.0` ("a moneyline is a spread at zero"). Without the rehearsal this would have hit the live ledger Sunday. A crash leaves the file byte-identical (backup runs first), so there was no corruption risk — but zero settlements and a manual rescue mid-run on the first real attempt. **GG-291, HIGH, gating Sunday.**
-
-**We are blocked from fixing our own close-out process.** GG-289: the auto-mode classifier treats edits to `.claude/commands/session-end.md` and the two new scripts as Self-Modification and blocks them — confirmed twice independently, and the likely real reason T-554's closure row never pushed. The scripts are still absent from `origin/main`. 14 branches are now stray (GG-292), correctly registered rather than absorbed.
+| 10–28 | ✅ CLOSED | see history below and in `11_MEMORY_HANDOFF/` |
+| **29** | ⚠️ **1 OF 3** | 29.2 gated STOP (shard 3 was still $0.00); 29.3 landed via T-562; 29.1 claimed and never executed — superseded by 30.1 |
+| **30** | ⚠️ **PARTIAL (T-563)** | Write path fixed (`derive_kalshi_threshold()` / `KalshiThresholdUndefined`). Backfill found **already done by an unidentified actor** → GG-295 registered, HIGH, OPEN. **Deliverable 5, the live settlement, never ran.** |
+| **31** | ⬜ **FIRING** | **The pivot.** Calibration benchmark reproduction · the live NFL settlement · repo reconciliation. |
 
 ---
 
-### ⬜ WAVE 30 — one block, fire alone
+### ⬜ WAVE 31 — the pivot, plus the last of the plumbing
 
-**29.1 was claimed on 2026-09-18 and no work followed. The Sunday settlement window was missed.** It is re-issued below as 30.1, now including the live settlement, since the games have been played. Fire it alone — it ends in the first live write to a real ledger.
+**Why this wave is shaped this way.** Waves 25–30 were six consecutive waves of infrastructure. The operator's directive, 2026-09-22: *"we have not focused nearly enough on edge calibration bc we've been busy piping the architecture."*
 
-### Wave 29 blocks (29.2/29.3 closed; 29.1 superseded by 30.1)
+The Cowork strategic window ran the first calibration read on 2026-09-22, from the local VPS ledger mirror, using the project's own `is_clean_for_band` filter and C7's own Brier/ECE functions. **T4M-PROJ, clean_n = 765, epoch 12, games 2026-07-31 to 2026-08-13 (11 game-days):**
+
+| Metric | Model | ADR-0046 MLB baseline | Read |
+|---|---|---|---|
+| Brier | 0.2191 | 0.2190 | on baseline |
+| ECE | 0.0519 | 0.0680 | better than baseline |
+| Mean forecast vs observed rate | 0.3976 vs 0.4026 | — | essentially unbiased |
+| Skill vs climatology | **+0.089** | — | carries real information |
+| **Brier vs the market's own price, same 765 events** | **0.2191** | **market 0.1890** | **the market forecast better** |
+
+Paired difference **+0.0301** (se 0.0053, t = 5.66, 95% CI [+0.020, +0.041]). Day-clustered over 11 game-days: **+0.0593** (se 0.0207, t = 2.87, CI [+0.019, +0.100]). Cohort P&L is **positive** — +$39.73 total, +$0.052/bet, 40.5% win rate on $1 measurement stakes.
+
+**The T4 thesis is that the market lags live game state and the model does not. On 765 resolved bets the market was ahead of the model** — measured on the sample the model itself selected as its best opportunities, which makes the finding stronger, not weaker. Positive P&L alongside market-inferior calibration means the return is coming from price/payoff asymmetry, not forecast superiority.
+
+**This has not been independently reproduced.** It was derived in one Cowork window from a local mirror with no second check, and this project's record says an un-reproduced Cowork finding is exactly the kind that turns out to be wrong. **31.1 reproduces it from the live ledger before it is allowed to move the roadmap.** Operator decision, 2026-09-22: reorder — reproduce now, settle concurrently.
+
+### Wave 31 blocks
 
 | # | Block | Tier | Why |
 |---|---|---|---|
-| 29.1 | **GG-291 — make the 42 settleable** | STANDARD | Games start Sunday. The resolver crashes on position one today. |
-| 29.2 | **Shard 3 — verify funding, restart MLB accrual** | STANDARD | 35 days at zero. One allocation should end it; nobody has confirmed it does. |
-| 29.3 | **Install the close-out fix** | SHORT | Two waves of strays; sessions are structurally blocked from installing the fix. |
+| 31.1 | **Calibration benchmark — model vs market, reproduced and extended** | STANDARD | The highest-value untouched analysis in the project, and a result that may reframe APR-0035. |
+| 31.2 | **GG-291 Deliverable 5 — the live NFL settlement** | STANDARD | ~20 games played and unsettled. First end-to-end close of the loop, ever. Decaying evidence. |
+| 31.3 | **Reconcile local `main`, then clean the ref estate** | SHORT | The handoff documents are stranded and the local tree hides GG-295. Then: 58 remote branches -> 17, 61 worktrees -> 2, with zero judgment calls. |
 
-**Surfaces:** 29.1 owns the NFL portfolio, `settle_position()` and the T1 run scripts. 29.2 owns `kalshi_client.py` and the Kalshi account. 29.3 owns `.claude/commands/` and `scripts/`.
+**Surfaces — disjoint, enforced:** 31.1 owns `scripts/` analysis code, `exp_output/`, and `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`. 31.2 owns the NFL portfolio, the settlement path, the runbook, **and is the only block this wave authorized to write `GOVERNANCE_GAP_LOG.md` or `DECISION_LOG.md`**. 31.3 owns git refs and `11_MEMORY_HANDOFF/`.
 
 ---
+
+# 31.1 — CALIBRATION BENCHMARK · MODEL vs MARKET · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "calibration-model-vs-market"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md THIS WAVE. 31.2 owns them. ***
+*** Record every gap candidate in your own results file for registration next wave. ***
+
+TIER: STANDARD.
+
+A Cowork strategic window computed the figures below on 2026-09-22 from the LOCAL mirror
+`logs/.vps_portfolio_cache_mlb_t4.json` (last_updated 2026-09-21T01:57:35Z). They are a CLAIM.
+Your job is to reproduce them from the LIVE ledger on the VPS, establish whether they are
+comparable to the ADR-0046 baselines, and extend the benchmark. Nothing here is established.
+
+  T4M-PROJ, clean_n=765, logic_epoch 12, games 2026-07-31 to 2026-08-13:
+    Brier 0.2191 (ADR-0046 BRIER_BASELINE_MLB = 0.2190)
+    ECE   0.0519 (ADR-0046 ECE_BASELINE_MLB   = 0.0680)
+    observed base rate 0.4026, mean model_p 0.3976, skill vs climatology +0.089
+    market Brier on the same 765 events 0.1890
+    paired diff (model - market) +0.0301, se 0.0053, t=5.66
+    day-clustered over 11 game-days +0.0593, se 0.0207, t=2.87
+    cohort P&L +$39.73 total, +$0.052/bet, win rate 40.5%
+
+  Outcome construction used: y = 1 if actual_hits >= kalshi_threshold else 0; p = model_p;
+  market price = mid_price_at_entry (YES-side, verified against entry_price_paid on a NO row).
+  Clean filter: prediction_market_bot.logic_epoch.is_clean_for_band(logic_epoch, "T4M-PROJ").
+  Brier/ECE via c7_monitoring.monitor._compute_brier / _compute_ece (10 equal-width bins).
+
+DELIVERABLE 1 -- PRE-REGISTER YOUR VERDICT CRITERIA BEFORE YOU COMPUTE ANYTHING.
+  Write, commit and push, BEFORE running any analysis: what result would count as REPRODUCED,
+  what would count as NOT REPRODUCED, and what magnitude of model-minus-market Brier difference
+  you will treat as material. State the test you will use for significance and the clustering
+  unit. Once pushed, these are immutable -- a pre-registered criterion may not be relabelled
+  after seeing results (standing DO NOT).
+
+DELIVERABLE 2 -- REPRODUCE FROM THE LIVE LEDGER, NOT THE MIRROR.
+  Pull the live T4 portfolio from the VPS. Report its last_updated and its closed-position count,
+  and say whether it differs from the mirror's 2994 closed / 765 clean. If it differs, the mirror
+  was stale and the reproduction supersedes the claim -- say so plainly.
+  Recompute every figure in the table above. Report reproduced / not reproduced per figure.
+  If any figure does not reproduce, report what you got and STOP before Deliverable 4.
+
+DELIVERABLE 3 -- ESTABLISH COMPARABILITY WITH THE ADR-0046 BASELINE. THIS IS THE WEAK JOINT.
+  Read ADR-0046 and its derivation path. Determine whether its n=261 baseline was derived with
+  the SAME outcome construction, the same clean filter, and the same ECE binning as Deliverable 2.
+  If it was not, the Brier-vs-baseline and ECE-vs-baseline rows are NOT a valid comparison --
+  say so explicitly and report both the comparable and non-comparable framings side by side.
+  Do not silently reconcile them. The model-vs-market comparison does not depend on this and
+  stands either way; say which of your conclusions survive and which do not.
+
+DELIVERABLE 4 -- EXTEND THE MARKET BENCHMARK. THIS IS THE PART NOBODY HAS EVER RUN.
+  Run the same model-vs-market paired Brier comparison on every band and every (market_type, band)
+  cell with clean_n >= MIN_N, both sports, using each cohort's own clean-epoch floor. Report a
+  table: cell, clean_n, model Brier, market Brier, paired diff, se, clustered diff, span in days.
+  Then run it on the `rejected_positions` cohort (2000 rows in the mirror) -- the evaluations the
+  risk engine refused. Those carry a model_p and a market price and no selection-by-approval,
+  so they are the closest thing to a holdout this project has. Report whether the model-vs-market
+  sign is the same there. Say clearly what that does and does not establish.
+
+DELIVERABLE 5 -- WRITE IT UP AS EVIDENCE, NOT AS A RECOMMENDATION.
+  `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/` -- the pre-registration, every figure with its n,
+  se and clustering unit, the comparability verdict from Deliverable 3, and an explicit list of
+  what you did NOT check. State the sample's limits in the summary itself: 765 bets but only
+  11 game-days across 14 calendar days, one cell, one sport.
+
+DO NOT: recommend against a sport, market family, band or cell on this finding. That is forbidden
+  on one result (standing DO NOT) and is not what this block is for.
+DO NOT: touch kelly_fraction or any sizing value, promote or demote a cell, or change a model.
+DO NOT: change ADR-0046's baseline constants. If you conclude they are wrong or non-comparable,
+  record it as a gap candidate for 31.2 to register and stop.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 31.2 owns them this wave.
+DO NOT: touch the NFL portfolio, the settlement path or the runbook -- 31.2 owns those.
+DO NOT: restart any service, submit any order, or modify a price-capture window.
+DO NOT: manufacture a position, row, cohort member or final score to have something to measure.
+
+SCOPE FENCE: a new analysis script under `scripts/`, its output under `exp_output/`, the results
+summary under `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`, and read-only pulls from the VPS.
+Self-serialising close-out: rebase onto origin/main before your final push.
+
+REPORT BACK: the pre-registration as pushed; live-vs-mirror ledger comparison; reproduced /
+not reproduced per figure; the comparability verdict on ADR-0046 and which conclusions survive it;
+the full per-cell extension table; the rejected-cohort result and its sign; and your gap
+candidates listed for 31.2, unregistered.
+```
+
+---
+
+# 31.2 — GG-291 DELIVERABLE 5 · THE LIVE NFL SETTLEMENT · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "gg291-live-settlement"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md AND DECISION_LOG.md THIS WAVE. 31.1 and 31.3 do not write them. ***
+
+TIER: STANDARD. This is the first end-to-end close of the loop in the project's history.
+
+T-563 fixed the write path (`derive_kalshi_threshold()` / `KalshiThresholdUndefined` in
+`kalshi_client.py`, called by both T1 game-market run scripts) and proved the not-yet-final guard
+refuses correctly against a copy with real network calls. Deliverable 5, the live settlement,
+never executed. Runbook: `04_EXECUTION/NFL_T1_FIRST_SETTLEMENT_RUNBOOK.md`. Read it first.
+
+On GG-295 (HIGH, OPEN): the 42 positions' thresholds were backfilled by an unidentified actor with
+no commit anywhere in history and a false attribution to T-562. The operator has reviewed this and
+authorized settlement to proceed. The basis is that T-563 established CONTENT provenance -- it
+diffed against the pre-backfill snapshot and confirmed exactly 42 rows changed, only the three
+fields kalshi_threshold/repaired_at/repair_ref on each, nothing else. What remains unestablished is
+ACTOR identity, which needs VPS shell history and is queued separately. **Re-verify that diff
+yourself against the snapshot before you settle. Do not take T-563's word or this block's word
+for it.** If the diff does not reproduce exactly -- 42 rows, three fields, nothing else -- STOP and
+hand back. That is a complete and correct outcome for this block.
+
+DELIVERABLE 1 -- RE-ESTABLISH THE PRE-CONDITION YOURSELF.
+  Re-run T-563's diff of the live NFL portfolio against
+  `paper_portfolio_t1_nfl_game_market.pre_gg291_backfill_20260918T190405Z.json`.
+  Paste the row count, the changed-field set, and an explicit statement that nothing else moved.
+  Confirm the running code contains the write-path fix -- prove it from the running process, not
+  from the file on disk (standing DO NOT).
+
+DELIVERABLE 2 -- ESTABLISH WHICH GAMES ARE ACTUALLY FINAL. DO NOT ASSUME ~20.
+  For each of the 42 positions, report the game and whether it is final per the real data source.
+  The "~20 games played" figure in the handoff is unverified. Report the real count.
+  A game that is not final must be refused by the not-yet-final guard, not skipped silently.
+
+DELIVERABLE 3 -- BACK UP, THEN SETTLE THE FINAL POSITIONS ONLY.
+  Back up first; verify the backup loads and its position set matches exactly before any write.
+  Settle only positions whose games are final. Include the tie/ambiguity path --
+  `check_settlement_ambiguity()` must REFUSE, not guess (GG-257).
+  Stamp provenance on every row you write, per ADR-0055's precedent. This is the ledger whose
+  provenance was already violated once; yours must be impeccable.
+
+DELIVERABLE 4 -- PROVE THE WRITE. SIMULATION IS NOT SUCCESS.
+  Re-run the five ADR-0055 STEP-2 assertions on the REAL file post-write.
+  Run `python3 scripts/assert_ledger_invariants.py` and paste its summary. Do NOT pass --strict.
+  Prove idempotency: run settlement a second time and show the file is byte-identical.
+  Report the realized P&L per position and in aggregate, and the resulting NFL bankroll.
+
+DELIVERABLE 5 -- CLOSE WHAT THIS ACTUALLY CLOSES, AND ONLY THAT.
+  Update GG-291, GG-274 and GG-287 to reflect what the live settlement did and did not prove.
+  GG-295 stays OPEN -- actor identity is not established by this block and must not be written
+  as resolved. GG-203 stays PARTIALLY RESOLVED -- a settlement is not a fill.
+  DECISION_LOG entry per Hard Rule 7, appended via heredoc, never via a multi-KB exact-match Edit.
+
+DO NOT: settle a position whose game is not final, or work around the not-yet-final guard.
+DO NOT: change settlement LOGIC (`yes_won`, the tie rule, the guard). Missing data is not a logic
+  defect. If you believe the logic is wrong, register and stop.
+DO NOT: write GG-295 as RESOLVED. Content provenance is not actor provenance.
+DO NOT: open a new position. A fresh open cannot be settled in the same session (GG-287).
+DO NOT: touch kelly_fraction, promote a cell, submit an order, or restart a service.
+DO NOT: touch `scripts/` analysis code, `exp_output/`, or RESULTS_SUMMARIES -- 31.1 owns those.
+DO NOT: touch `11_MEMORY_HANDOFF/` or rewrite git refs -- 31.3 owns those.
+DO NOT: manufacture a final score. If a source is unavailable, refuse and report.
+
+SCOPE FENCE: the NFL portfolio and its backup, the settlement path, the runbook, tests,
+GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+Self-serialising close-out: re-read GOVERNANCE_GAP_LOG.md and DECISION_LOG.md fresh against HEAD
+immediately before writing them (Hard Rule 10) -- 31.1 and 31.3 are running concurrently.
+
+REPORT BACK: the re-verified backfill diff; the real final-game count per position; the backup
+verification; the settlement results with per-position and aggregate P&L; the five assertions and
+the invariant-script summary post-write; the byte-identical idempotency proof; and an explicit
+statement of what this settlement did NOT prove.
+```
+
+---
+
+# 31.3 — RECONCILE LOCAL main + CLEAN THE REF ESTATE · SHORT
+
+```
+Run the CLAUDE.md session-start protocol in full. Paste outputs.
+*** DO NOT create a worktree for this block -- it operates on the shared repo's refs by design. ***
+*** Read Step 0d before you touch anything: path-scoped commits only. Never `git add -A`,
+    `git commit -a`, unscoped `git stash`, `git reset --hard`, `git checkout -- <foreign>`,
+    or `git clean -fd`. 31.1 and 31.2 are running concurrently and may hold uncommitted work. ***
+Claim your own IDs at run time (GG-236).
+
+TIER: SHORT. One deliverable: make `origin/main` the true picture again, and leave the ref
+estate honest. Both halves are mechanical -- nothing below requires a judgment call about whether
+any work is still wanted. Anything that does require that judgment is explicitly out of scope.
+
+Local `main` = `c8639fe` is not a descendant of `origin/main` = `e9a335d`. Verify both yourself
+after fetching -- these SHAs are from a window that could not fetch and may be stale.
+Expected shape: 2 commits local-only, 6 commits origin-only, merge-base `91878b3`.
+  local-only:  c8639fe (2026-09-22 handoff docs), 8900567 (Wave 30 queue re-issue)
+  origin-only: all of T-563, including 603265b which registered GG-295
+The consequence being fixed: a session deriving state from the local tree reads 133 gaps / 93 OPEN
+/ next free GG-293 and concludes GG-295 does not exist.
+
+DELIVERABLE 1 -- FETCH, CONFIRM THE SHAPE, AND LAND THE STRANDED WORK.
+  `git fetch origin`, then report the real divergence counts and merge-base.
+  Land the local-only commits onto origin/main -- rebase or cherry-pick, path-scoped, preserving
+  authorship. The content to preserve is `11_MEMORY_HANDOFF/NEW_WINDOW_PASTE_IN_2026-09-22.md`,
+  `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-09-22.md`, and the current state of
+  `04_EXECUTION/ACTIVE_QUEUE.md` (which now carries Wave 31 and is newer than commit 8900567).
+  If the queue file conflicts, the WORKING-TREE version wins -- it is the live queue.
+  Also land the three untracked 2026-09-15 handoff files in `11_MEMORY_HANDOFF/` if they are
+  absent from origin; if they are already there, say so and leave them.
+  Verify after: local main and origin/main agree, and GG-295 is present in the working tree's
+  gap log with 134 headers / 94 OPEN.
+
+  Housekeeping while you are in the refs: `git worktree list` shows a stale entry
+  `ro_e9a335d` (detached, locked, checkout already gone) left by the Cowork strategic window --
+  that window could not delete `.git/worktrees/ro_e9a335d` from its mount. Unlock and prune it.
+  Two other sessions' stale worktree entries are also undeletable from that mount
+  (`20260826T045926Z-t497-t1-flat-stake-wrapper`, `20260910T012346Z-gg267-per-row-model-provenance`)
+  -- prune those too if you can, and report if you cannot.
+
+DELIVERABLE 2 -- CLEAN THE ESTATE. MECHANICAL ONLY. NOTHING HERE NEEDS A JUDGMENT CALL.
+  Census derived 2026-09-22 at `e9a335d` -- re-derive every count yourself after fetching.
+  Expected: 58 remote branches, of which 40 are already fully merged into origin/main; 61
+  registered worktrees, of which 59 are prunable (checkout directory already gone).
+
+  (a) Delete every remote branch that `git branch -r --merged origin/main` reports as merged.
+      Safety note you can rely on: "merged into an OLDER origin/main" still implies "merged into
+      the current one," because the newer ref contains the older. A stale ref cannot make this
+      check unsafe in the delete direction. Re-run it post-fetch anyway and use the fresh list.
+      Delete the matching local branches too (`git branch -d`, never `-D` -- if `-d` refuses,
+      that branch is not actually merged; leave it and report it).
+  (b) `git worktree prune`. Several entries are locked or undeletable from some mounts
+      (`ro_e9a335d` left by the Cowork window; also
+      `20260826T045926Z-t497-t1-flat-stake-wrapper` and
+      `20260910T012346Z-gg267-per-row-model-provenance`). Unlock and prune what you can.
+      Report anything that still refuses and why -- do not force-remove a worktree whose
+      checkout directory still EXISTS and contains uncommitted work.
+  (c) Report the post-cleanup counts: remote branches, local branches, registered worktrees.
+      Expected landing point: 17 unmerged remote branches and 2 live worktrees.
+
+*** THE 17 UNMERGED BRANCHES ARE OUT OF SCOPE AND PROTECTED. ***
+  They hold ~54 unique commits of real work and are queued for a Wave 32 operator routing pass.
+  Do not delete, merge, cherry-pick, rebase or rename any of them.
+  In particular DO NOT MERGE THEM: each is weeks behind main, so `git diff origin/main <branch>`
+  reports up to 25,234 deletions -- that is main's later work the branch never saw, not content
+  the branch removes. A merge would delete a month of work. This is why they are a separate,
+  operator-authorized pass and not part of a cleanup block.
+
+DO NOT: force-push, or rewrite any commit already on origin/main.
+DO NOT: absorb, land, cherry-pick or delete any UNMERGED branch (Hard Rule 11, GG-292). Deleting
+  an already-merged branch is not absorption -- its content is in main by definition. The 17
+  unmerged branches are a separate operator-routed task and are NOT in scope here.
+DO NOT: touch `03_DECISIONS/OPERATOR_CONSOLE.md` -- it has uncommitted local modifications whose
+  owner is unknown. Report that it is dirty; leave it alone.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 31.2 owns them this wave.
+DO NOT: touch `scripts/`, `exp_output/`, the NFL portfolio, or the settlement path.
+DO NOT: resolve a conflict in any file 31.1 or 31.2 owns. Stop and hand back instead.
+
+SCOPE FENCE: git refs and worktree metadata, `11_MEMORY_HANDOFF/`, `04_EXECUTION/ACTIVE_QUEUE.md`.
+No file content outside `11_MEMORY_HANDOFF/` and the queue is edited by this block.
+
+REPORT BACK: the real divergence counts and merge-base after fetching; exactly which commits you
+landed and by what method; confirmation that no commit already on origin was rewritten; the
+post-reconciliation gap-log counts (expect 134 / 94 / next free GG-296); the merged-branch delete
+list with its count; the worktree prune result and anything that refused; and the final
+branch/worktree counts against the expected 17 and 2.
+```
+
 
 # 29.1 — GG-291 · MAKE THE 42 SETTLEABLE · STANDARD
 
@@ -366,19 +659,67 @@ settled live and the realized P&L with its idempotency proof; and your Deliverab
 
 ## Queued next — not yet fired
 
-**Wave 30 — settle for real.** Fires after 2026-09-20's games conclude, gated on 29.1 returning a
-go. Follows `NFL_T1_FIRST_SETTLEMENT_RUNBOOK.md` against the real ledger: fetch finals on the VPS
-(GG-266), cross-check a second source, back up, dry-run against a copy, hand-verify, settle under
-the lock, prove idempotency. Closes GG-274 and GG-287. **First end-to-end close in the project's
-history** — and a win or loss across 18 games is not evidence of edge either way.
+**Wave 32 — force APR-0035 to a decision, with 31.1's numbers in hand.** The P&L gate is ~1.6 MLB
+seasons / ~11 NFL seasons from clearing at measured effect sizes. If 31.1 reproduces the
+model-vs-market result, the question changes shape: it is no longer "how long to reach n*" but
+"is this cohort worth accruing." Do not pre-write the answer into this queue — it is the operator's.
 
-**MLB T1 game markets have never run live.** Same Floor-A fix applies and the path uses
-`kalshi_client=None`, so GG-203 never blocked it. Blocked instead on the model question: its default
-is `StubMLBGameMarketForecastModel`, and stub-sourced positions are worth nothing. Establish whether
+**GG-295 actor provenance — SHORT block, terminal only.** T-563 established content provenance
+(42 rows, three fields, diffed against the pre-backfill snapshot). Actor identity is unestablished
+and needs VPS shell/SSH history around 2026-09-18T19:04 UTC. Deliberately NOT gating 31.2 — the
+operator's call, 2026-09-22. Also in scope when it fires: audit every other `repair_ref` stamp in
+the codebase for the same corroboration gap, per GG-295's own recommendation (3).
+
+**GG-203 — watch for a real fill.** Shard 3 is funded ($200, 2026-09-22). No order has been
+confirmed to fill. Closes only when the live `t4-mlb` service is observed converting an approval
+into a fill — not a hand-built order succeeding. No restart is authorized.
+
+**MLB T1 game markets have never run live.** The path uses `kalshi_client=None` so GG-203 never
+blocked it. Blocked instead on the model question: its default is
+`StubMLBGameMarketForecastModel`, and stub-sourced positions are worth nothing. Establish whether
 EXP-026/HYP-011 produced a real forecaster before scheduling it.
 
-**GG-292 — 14 stray branches.** Needs one operator routing pass: land, abandon, or archive, named
-branch by branch. Not a block until you say which.
+**Wave 32 — the branch routing pass. This is the one that needs you, briefly.**
+After 31.3 runs, the estate is 17 unmerged branches holding ~54 unique commits. 31.3 deliberately
+does not touch them. They sort into four buckets; only bucket B needs an operator call:
+
+- **A — free delete (1 branch).** `session/20260903T184908Z-apr0033-accept-and-reroute` has 0
+  unpatched commits by `git cherry` — its content is already in main by equivalent patch.
+  Verify post-fetch, then delete.
+- **B — NEEDS EARL, 9 branches touching `src/`, `scripts/`, `tests/` or `deploy/`.** The question
+  is not "can we land it" but "is this still wanted" — several predate ADRs that may have
+  superseded them. Keep/kill, named branch by branch:
+  `t497-t1-flat-stake-wrapper` (measurement_stake.py + assertions) ·
+  `t4-nfl-nhl-scaffolding` (market_type_registry.py, execution_bands.py) ·
+  `gg255-mlb-t1-game-market-run-script` (kalshi_client.py, run_t1_mlb_game_market.py) ·
+  `gg267-per-row-model-provenance` (paper_trader.py, run_t1_nfl_game_market.py) ·
+  `nfl-capture-gap-0912` (cron.conf, nfl_capture_gap_check.py) ·
+  `gg291-threshold-backfill` (superseded in substance by T-563 — likely kill) ·
+  `install-closeout-fix` + `install-closeout-fix-v2` (duplicate pair; the scripts are already on
+  origin/main, so likely both kill) · `gg242-filename-sweep` (assert_ledger_invariants.py).
+- **C — extract, do not cherry-pick (the remaining ~6).** Their unique commits touch only
+  `DECISION_LOG.md`, `GOVERNANCE_GAP_LOG.md` and handoff files. Those two logs have in-place edits
+  and no union merge, so cherry-picking through them is a conflict grind with real corruption
+  risk. Pull the entries out as text and append them.
+- **D — duplicate pairs, pick one each.** `record-signoffs-20260903` vs `rerecord-adr-signoffs`
+  (GG-240: the first was stranded by a classifier refusal and superseded by the second, so the
+  second is the keeper). `install-closeout-fix` vs `-v2` — see bucket B.
+
+**Standing rule for this pass: cherry-pick or extract. Never merge.** See the warning in 31.3.
+
+**`OPERATOR_CONSOLE.md` — the live gap log has 23 resolved entries in it, and the generator counts them as open.**
+Derived 2026-09-22. The file is generated by `scripts/generate_operator_console.py` from
+`.claude/hooks/governance_scan.sh` on every scan, which is why it shows as uncommitted drift in the
+shared `main` tree (GG-260's class). That part is benign. The defect underneath is not:
+`classify()` has **no resolved filter** — every entry in the live log is bucketed
+blocked/broken/accruing. It relies on T-420's guarantee that resolved entries are moved verbatim to
+`GOVERNANCE_GAP_LOG_ARCHIVE.md`, and that discipline has lapsed. Live-log status distribution:
+94 `OPEN`, but also **10 `RESOLVED`, 8 `PARTIALLY RESOLVED`, 2 `LIKELY RESOLVED`, 1 `PARTIAL RESOLVE`,
+and 9 `RESOLVED (<date/task>)` variants — 23 resolved-class entries total.** The console therefore
+reports "133 open/in-progress entries" against a committed baseline of 83.
+CLAUDE.md Step 3 states the split made it "structurally impossible" for this file to contain a
+RESOLVED entry masquerading as open. That claim is now false. **Gap candidate — unregistered,
+for the next wave that owns the gap log.**
 
 **GG-279 — deploy-vs-activation has no structural check.** One SHORT block.
 
@@ -388,10 +729,10 @@ branch by branch. Not a block until you say which.
 
 | Item | Plain English | What happens if it waits |
 |---|---|---|
-| **ADR-0063** | Emergency-stop / bet-sizing hierarchy. Approved 2026-09-18 — **needs your signature in `APPROVALS_REGISTER.md` to take effect.** | Until the register row exists, nothing downstream can cite it. Thirteen days drafted. |
-| **APR-0035** | The n\* wall. P&L gate is ~1.6 MLB seasons / ~11 NFL seasons away at measured effect sizes. Approved in principle 2026-09-18 — **which option?** | G6 cannot close on P&L evidence in any practical horizon until this is settled. |
-| **APR-0034** | Whether T4 MLB should stop sending demo orders. | **Likely moot** — if 29.2 confirms shard 3 funded and filling, withdraw it. |
-| **GG-292** | 14 stray branches, oldest ~13 days. | Each is someone's finished work. One routing pass from you turns them into blocks or closes them out. |
+| **APR-0035** | The n\* wall — and it may have just changed shape. If 31.1 reproduces, the model is losing to the market's own price on the exact bets it selected as its best. The question stops being "how many seasons to reach the gate" and becomes "is this the right thing to accrue." | G6 cannot close on P&L evidence in any practical horizon until this is settled. Fourth week open. |
+| **ADR-0063** | Emergency-stop / bet-sizing hierarchy. Approved in chat 2026-09-18 — **still needs a signature row in `APPROVALS_REGISTER.md`.** This window confirmed by grep that no row exists. | Until the register row exists, nothing downstream can cite it. |
+| **APR-0034** | Whether T4 MLB should stop sending demo orders. | **Likely moot** now shard 3 is funded — withdraw it once a fill is confirmed. |
+| **GG-292** | Stray branches, oldest ~2 weeks. Count unverified (see Queued next). | Each is someone's finished work. One routing pass from you turns them into blocks or closes them out. |
 
 ---
 
@@ -405,7 +746,7 @@ branch by branch. Not a block until you say which.
 - Relabel a pre-registered verdict, or change a pre-registered parameter, after seeing results.
 - Recommend against a sport or market family on one finding.
 - Modify or re-time an existing price-capture window.
-- Restart a production service without a scoped, written authorization. None is authorized in Wave 29.
+- Restart a production service without a scoped, written authorization. None is authorized in Wave 31.
 - Add a cron entry for any T1 game-market run script without explicit operator authorization.
 - Pre-assign T-/GG- numbers. Claim at run time; verify uniqueness across `git log --all`.
 - Report a live fix RESOLVED without proving the running process contains it.
