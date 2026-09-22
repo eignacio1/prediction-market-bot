@@ -569,3 +569,4 @@
 | 2026-09-22T05:09:22Z | T-563 | CLOSED — merge confirmed, HEAD (bb47074) is ancestor of origin/main — T-563/GG-291: fixed kalshi_threshold null-write defect (7 tests, 190 regression clean); Deliverables 4/5 deferred to T-564 (commit f97f439, merged via PR #145) |
 | 2026-09-22T23:51:23Z | T-565 | T-565: reproduce/extend T4M-PROJ model-vs-market calibration benchmark from live VPS ledger vs mirror claim; comparability check against ADR-0046 baseline; extend to per-cell + rejected-cohort. No GG/DECISION_LOG ownership this wave (31.2 owns). |
 | 2026-09-22T23:51:23Z | T-564 | T-564/GG-291: Deliverable 4 (rehearsal) + 5 (real settlement) — NFL T1 first live settlement close-out |
+| 2026-09-22T23:51:06Z | TBD (GG-236) | Wave 31.3: reconcile origin/main divergence, land stranded local commits, prune merged branches/worktrees |
