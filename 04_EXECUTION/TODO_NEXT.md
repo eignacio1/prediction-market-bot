@@ -2,7 +2,8 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-18T13:59:06Z (T-557 — Landed T-555 stray (GG-283/GG-284, Deliverable 1 complete). Deliverables 2/3/4 (cherry-pick Wave 27/28 commits, fix T-554's push-failure, reconcile ACTIVE_QUEUE.md) remain blocked — auto-mode classifier Self-Modification denial on 44b7fb5/580e9c9 confirmed twice independently. Registered GG-288 addendum + GG-289. Operator decision needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_1359.md` for full session detail.
+**Last reviewed:** 2026-09-21T23:58:00Z (T-561 — T-561/GG-293: verified ready branch -v2 (91d10da), 2nd Auto-Mode Bypass push-to-main refusal, merge deferred to next window) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260921_2358.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-17T05:38:46Z (T-556 — Landed W26+opened 42 NFL T1 positions (unsettleable, GG-287); GG-203 addendum diagnosis (4 findings, no fix)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260917_0538.md` for full session detail.
@@ -12,6 +13,10 @@
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-561/GG-293 — Land ready branch `session/20260918T142949Z-install-closeout-fix-v2` onto `origin/main` — 🟡 IN PROGRESS, merge deferred to next session
+
+Branch tip `91d10da406186668a44acf011c2868c216f86e97` is a verified conflict-free fast-forward candidate against `origin/main` (`420e368`), carrying `close_session_claim.sh`, `sweep_stray_branches.sh`, session-end.md Step 9, and the GG-293 investigation record. Two independent, verbatim-identical `[Auto-Mode Bypass]` classifier refusals blocked a direct `git push origin HEAD:main` this session (once under default posture, once under explicit operator "do it yourself" instruction) — see GG-293 second-window addendum. Operator directive: defer the merge to a future terminal window rather than retry a third time. **Next session: fetch, confirm the branch is still a clean fast-forward, and land it** (either via the operator's own terminal, or by first checking whether a Bash permission rule has been added). Do not force-push. Do not re-attempt from an agent Bash tool without first checking whether the permission boundary has changed.
 
 ## T-554/GG-285 — APR-0024's per-band P&L `n*` gate-reachability analysis — ✅ COMPLETE 2026-09-17 (worktree `session/20260917T001736Z-n-star-wall-gate-reachability`)
 
