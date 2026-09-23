@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-23T00:34:00Z (T-564 — T-564/GG-291: first real NFL T1 settlement — 20/42 settled, +13.4778 P&L, GG-291/GG-274/GG-287 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0034.md` for full session detail.
+**Last reviewed:** 2026-09-23T05:23:00Z (T-568 — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0523.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
