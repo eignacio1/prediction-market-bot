@@ -578,3 +578,4 @@
 | 2026-09-23T00:40:15Z | T-564 | CLOSED — merge confirmed, HEAD (cf0e84b) is ancestor of origin/main — First real NFL T1 settlement (GG-291/GG-274/GG-287 RESOLVED): 20/42 settled, +13.4778 P&L; session-end close-out complete |
 | 2026-09-23T00:58:26Z | T-566 | T-566: measure real vig/spread from price archive vs C4 gate assumption, quantify gap, draft APR (no code change) |
 | 2026-09-23T00:59:04Z | T-567 | T-567: STANDARD -- pre-register + compute market-efficiency-gradient ranking across 11 traded market families (MLB+NFL), locate KXMLBHIT and core-four bands on it -- evidence only, no operator decision, no GG/DECISION_LOG ownership (32.3 owns) |
+| 2026-09-23T00:59:26Z | T-568, GG-296 | T-568/GG-296: MLB final-week T4M-PROJ shard-3 collateral accrual — measure demand, fund shard, observe live fill, characterize cohort |
