@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-23T00:34:00Z (T-564 — T-564/GG-291: first real NFL T1 settlement — 20/42 settled, +13.4778 P&L, GG-291/GG-274/GG-287 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0034.md` for full session detail.
+**Last reviewed:** 2026-09-23T06:07:40Z (T-567 — T-567 efficiency-gradient ranking complete — all 4 deliverables done, KXMLBHIT ties in tier 3, core four don't separate from props) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0607.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.

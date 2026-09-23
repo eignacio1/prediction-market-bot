@@ -12,3 +12,4 @@ The net result on those 20 settled bets: **up $13.48** (paper money, not real). 
 What this does **not** prove: there's still no live capital at risk anywhere, no real bet was placed with real money, and we haven't yet seen what happens when two teams tie (a case the code is designed to refuse to guess on, but hasn't been tested against a real tie yet). The remaining 22 positions will get settled in a future session once their games wrap up.
 
 One housekeeping note: our internal state-of-the-project summary file is over a month out of date (last refreshed 2026-08-14) and our task-plan document never got a line item for NFL work at all. Neither is urgent, both are now flagged for a future cleanup pass.
+- T-567 (auto): T-567 efficiency-gradient ranking complete — all 4 deliverables done, KXMLBHIT ties in tier 3, core four don't separate from props
