@@ -576,3 +576,4 @@
 | 2026-09-23T00:22:51Z | T-565 | CLOSED — merge confirmed, HEAD (113a542) is ancestor of origin/main — T4M-PROJ model-vs-market calibration reproduction from live VPS ledger, vs-ADR-0046 comparability verdict (NOT COMPARABLE), extension to all bands/rejected cohort -- 5/5 deliverables complete |
 | 2026-09-23T00:36:40Z | T-564 | CLOSED — T-564/GG-291: first real NFL T1 settlement — 20/42 settled, +13.4778 P&L, GG-291/GG-274/GG-287 RESOLVED (commit `7965d76`) |
 | 2026-09-23T00:40:15Z | T-564 | CLOSED — merge confirmed, HEAD (cf0e84b) is ancestor of origin/main — First real NFL T1 settlement (GG-291/GG-274/GG-287 RESOLVED): 20/42 settled, +13.4778 P&L; session-end close-out complete |
+| 2026-09-23T00:58:26Z | T-566 | T-566: measure real vig/spread from price archive vs C4 gate assumption, quantify gap, draft APR (no code change) |
