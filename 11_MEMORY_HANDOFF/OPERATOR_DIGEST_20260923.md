@@ -27,3 +27,7 @@ Every bet this system considers has to clear a threshold: the model's edge over 
 This session measured what that cost actually is, using 54 days of real price history. For most markets the gap between zero and reality is small. But for a handful — partial-game markets and team-total markets — the real cost is close to, or several times larger than, the entire edge threshold the system requires. Re-checking past approved bets against the real number: 11% would have failed the bar using a typical cost, and as many as 72% would fail under worse-than-typical conditions.
 
 Nothing was changed. This is a measurement and a decision document (APR-0036) laying out four options — the operator decides which, if any, to adopt.
+
+## T-568 close-out — stray branch sweep
+
+8 session branches sit unlanded on origin (2 are today's in-progress work, 6 range 1-13 days old). None were merged — report only. Oldest three (13d/11d/8d) worth a look: check whether their work already landed under a different commit before assuming it's lost. Full list in `SESSION_HANDOFF_20260923_0523.md` § Step 9.

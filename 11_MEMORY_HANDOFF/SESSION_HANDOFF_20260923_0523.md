@@ -74,3 +74,20 @@ cd "/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 ## NEXT SESSION PRIMER
 
 Reconcile GG-297 first (see above). Shard-3 funding is an open operator decision (true demand $4,643.70) — do not fund on the old ring-buffer counter.
+
+---
+
+## Step 9 — Stray Branch Sweep (completed post-truncation, 2026-09-23T05:36Z)
+
+8 unlanded branches found via `scripts/sweep_stray_branches.sh 14`, none belonging to this session (T-568's own branch landed cleanly). Not merged — report only, per script's own instruction:
+
+- `session/20260909T153928Z-gg255-mlb-t1-game-market-run-script` — 4 commits, 13d old
+- `session/20260910T012346Z-gg267-per-row-model-provenance` — 3 commits, 11d old
+- `session/20260915T003401Z-nfl-capture-gap-0912` — 5 commits, 8d old
+- `session/20260918T142928Z-gg291-threshold-backfill` — 6 commits, 1d old
+- `session/20260918T142949Z-install-closeout-fix` — 3 commits, 4d old
+- `session/20260918T142949Z-install-closeout-fix-v2` — 6 commits, 1d old
+- `session/20260923T005823Z-efficiency-gradient-ranking` — 2 commits, 0d old (likely still in-progress)
+- `session/20260923T005837Z-vig-grounding-from-archive` — 2 commits, 0d old (likely still in-progress)
+
+Operator should triage the older ones (13d/11d/8d) — check whether their GG/task is already resolved on main under a different SHA before assuming lost work.
