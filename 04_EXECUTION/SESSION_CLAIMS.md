@@ -577,3 +577,4 @@
 | 2026-09-23T00:36:40Z | T-564 | CLOSED — T-564/GG-291: first real NFL T1 settlement — 20/42 settled, +13.4778 P&L, GG-291/GG-274/GG-287 RESOLVED (commit `7965d76`) |
 | 2026-09-23T00:40:15Z | T-564 | CLOSED — merge confirmed, HEAD (cf0e84b) is ancestor of origin/main — First real NFL T1 settlement (GG-291/GG-274/GG-287 RESOLVED): 20/42 settled, +13.4778 P&L; session-end close-out complete |
 | 2026-09-23T00:58:26Z | T-566 | T-566: measure real vig/spread from price archive vs C4 gate assumption, quantify gap, draft APR (no code change) |
+| 2026-09-23T05:15:16Z | T-566 | MERGED: NO — branch `session/20260923T005837Z-vig-grounding-from-archive` awaiting merge — T-566: measured real archive vig/spread vs C4 gate assumption; T1 zero-vig gap quantified; 87/547 of 765 flip at median/p90; APR-0036 drafted (commit `9e998b9`) |

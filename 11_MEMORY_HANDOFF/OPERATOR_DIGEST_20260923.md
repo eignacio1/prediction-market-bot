@@ -12,3 +12,11 @@ The net result on those 20 settled bets: **up $13.48** (paper money, not real). 
 What this does **not** prove: there's still no live capital at risk anywhere, no real bet was placed with real money, and we haven't yet seen what happens when two teams tie (a case the code is designed to refuse to guess on, but hasn't been tested against a real tie yet). The remaining 22 positions will get settled in a future session once their games wrap up.
 
 One housekeeping note: our internal state-of-the-project summary file is over a month out of date (last refreshed 2026-08-14) and our task-plan document never got a line item for NFL work at all. Neither is urgent, both are now flagged for a future cleanup pass.
+
+## T-566 — Measuring the real cost of trading, not assuming it
+
+Every bet this system considers has to clear a threshold: the model's edge over the market price has to be big enough to be worth taking, after accounting for the real cost of getting in and out. For two of the three time horizons (same-day and live in-game), the system already measures that real cost from live prices every time it checks. For the third — the pregame game-market bets (moneyline, spread, totals) — it had never been measured at all. The code just assumed that cost was zero.
+
+This session measured what that cost actually is, using 54 days of real price history. For most markets the gap between zero and reality is small. But for a handful — partial-game markets and team-total markets — the real cost is close to, or several times larger than, the entire edge threshold the system requires. Re-checking past approved bets against the real number: 11% would have failed the bar using a typical cost, and as many as 72% would fail under worse-than-typical conditions.
+
+Nothing was changed. This is a measurement and a decision document (APR-0036) laying out four options — the operator decides which, if any, to adopt.
