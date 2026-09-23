@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-23T00:21Z (T-565 — T4M-PROJ model-vs-market calibration reproduction from live VPS ledger, vs-ADR-0046 comparability verdict (NOT COMPARABLE), and extension to all bands/rejected cohort -- 5/5 deliverables complete.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0021.md` for full session detail.
+**Last reviewed:** 2026-09-23T00:34:00Z (T-564 — T-564/GG-291: first real NFL T1 settlement — 20/42 settled, +13.4778 P&L, GG-291/GG-274/GG-287 RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0034.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
@@ -18,9 +18,9 @@
 
 Root cause: NFL/MLB T1 game-market run scripts wrote `kalshi_threshold=None` (int-typed type trap). Fixed: `derive_kalshi_threshold()`/`KalshiThresholdUndefined` in `kalshi_client.py`; run scripts derive-or-refuse; `paper_trader.py` retyped `float | None`. 7 new tests, 190-test regression clean. GG-291 left OPEN pending Deliverable 5. See `DECISION_LOG.md` 2026-09-21.
 
-## T-564/GG-291 — Deliverables 4 (rehearsal) + 5 (real settlement, 42 NFL T1 positions) — OPEN, unstaffed, registered 2026-09-21 (T-563)
+## T-564/GG-291 — Deliverables 4 (rehearsal) + 5 (real settlement, 42 NFL T1 positions) — ✅ COMPLETE 2026-09-22 (worktree `session/20260922T235033Z-gg291-live-settlement`, commit `7965d76`)
 
-Deferred per operator "work fast" instruction — real settlement needs VPS finals, two independent score sources, and idempotency proof; unsafe to rush. Write path fixed, positions already correct (GG-295) — unblocked, not attempted. Gate is UNDERPOWERED at current clean_n; a settlement result isn't itself evidence of edge.
+First real NFL T1 settlement in project history. 20/42 positions settled (10 final games), 22/42 correctly left open (11 not-yet-final games), 0 refused. Aggregate realized P&L +13.4778 (`total_realized_pnl`; `bankroll_usd` stays flat by pipeline design). Byte-identical idempotency proven on re-run. GG-291, GG-274, GG-287 all closed RESOLVED — see `GOVERNANCE_GAP_LOG.md` and `DECISION_LOG.md` 2026-09-22. GG-295 (actor identity, backfill) and GG-203 (shard-3 gate) explicitly left untouched. **Did NOT prove:** no live capital/no real order (paper-only); GG-257 tie-refusal path rehearsed but not hit against real data (no real tie this slate); 22 positions await a future session once their games conclude.
 
 ## T-554/GG-285 — APR-0024's per-band P&L `n*` gate-reachability analysis — ✅ COMPLETE 2026-09-17 (worktree `session/20260917T001736Z-n-star-wall-gate-reachability`)
 
