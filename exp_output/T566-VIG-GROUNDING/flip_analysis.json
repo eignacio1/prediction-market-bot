@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "band": "T4M-PROJ",
+    "series": "KXMLBHIT",
+    "portfolio_path": "/Users/earlignacio/.claude/tmp/claude-501/-Users-earlignacio-Documents-Claude-Projects-Prediction-Markets/7858b093-0a26-4b66-a4a2-8f641a52a6fa/scratchpad/t566_paper_portfolio_mlb_t4.json",
+    "spread_summary": "exp_output/T566-VIG-GROUNDING/spread_summary.json",
+    "min_edge_to_approve": 0.04,
+    "min_bucket_n": 5,
+    "clean_cohort_n": 765,
+    "generated_at": "2026-09-23T05:06:08.314859+00:00"
+  },
+  "runs": {
+    "median": {
+      "n_evaluated": 765,
+      "n_skipped_thin_bucket": 0,
+      "flip_to_reject": 87,
+      "flip_to_reject_pct": 11.372549019607844,
+      "unchanged": 678,
+      "avg_net_edge_delta": 0.010378929084967316
+    },
+    "p90": {
+      "n_evaluated": 765,
+      "n_skipped_thin_bucket": 0,
+      "flip_to_reject": 547,
+      "flip_to_reject_pct": 71.50326797385621,
+      "unchanged": 218,
+      "avg_net_edge_delta": -0.08739884869281032
+    }
+  }
+}
