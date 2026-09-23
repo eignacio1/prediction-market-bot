@@ -572,3 +572,4 @@
 | 2026-09-22T23:51:06Z | TBD (GG-236) | Wave 31.3: reconcile origin/main divergence, land stranded local commits, prune merged branches/worktrees |
 | 2026-09-23T00:12:04Z | GG-236 | CLOSED — Wave 31.3: reconciled origin/main, landed stranded commits, deleted 40 merged branches, pruned worktrees (commit `90e1cb0`) |
 | 2026-09-23T00:13:32Z | GG-236 | CLOSED — merge confirmed, HEAD (ff90921) is ancestor of origin/main — Wave 31.3 session-end confirmed: reconciled origin/main, deleted 40 merged branches, pruned worktrees, pushed to origin/main |
+| 2026-09-23T00:22:21Z | T-565 | MERGED: NO — branch `session/20260922T235038Z-calibration-model-vs-market` awaiting merge — T4M-PROJ model-vs-market calibration reproduction from live VPS ledger, vs-ADR-0046 comparability verdict (NOT COMPARABLE), and extension to all bands/rejected cohort -- 5/5 deliverables complete. (commit `2d3321d`) |

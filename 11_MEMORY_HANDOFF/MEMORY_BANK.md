@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-23T00:11:26Z (GG-236 — Wave 31.3: reconciled origin/main, landed stranded commits, deleted 40 merged branches, pruned worktrees) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0011.md` for full session detail.
+**Last reviewed:** 2026-09-23T00:21Z (T-565 — T4M-PROJ model-vs-market calibration reproduction from live VPS ledger, vs-ADR-0046 comparability verdict (NOT COMPARABLE), and extension to all bands/rejected cohort -- 5/5 deliverables complete.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0021.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
