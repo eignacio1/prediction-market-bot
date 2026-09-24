@@ -3780,3 +3780,25 @@ Separately, also per explicit task instruction ("confirm the running code contai
 </details>
 
 ---
+
+### GG-301 — T4M-PROJ's calibration headline reverses sign and turns net-negative when restricted to Kalshi-confirmed-filled rows only (n=34 of 765)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record</summary>
+
+| Field | Value |
+|---|---|
+| Gap ID | GG-301 |
+| Category | Ledger integrity / calibration validity |
+| What was found | T-571 Deliverable 2 recomputed T-565's committed calibration script (`scripts/t565_calibration_model_vs_market.py`, unmodified — imported and called, never edited) against a subset of the original 765-row T4M-PROJ clean cohort (2026-07-31..2026-08-13) restricted to the 34 rows GG-300/GG-297's phantom-fill test confirms as Kalshi-FILLED. Two variants: **Variant A** (exclude only confirmed-CANCELED in-window) finds zero such rows in-window and therefore reproduces the original 765-row figures exactly, unchanged (model_brier=0.2191, market_brier=0.1890, paired diff bet-level +0.0301/t=5.66, day-clustered +0.0593/t=2.87/n_days=11) — this is expected, not a new finding, since GG-300's own Update row already established 0 CANCELED rows exist inside this window. **Variant B** (confirmed-FILLED-only, n=34, n_days=9) is the new finding: model_brier=0.2730 (worse, not better), market_brier=0.1415 (market improves), paired diff bet-level **+0.1314** (se 0.0267, t=4.92, df=33) and day-clustered **+0.1115** (se 0.0358, t=3.12, df=8, n_days=9) — both *larger* gaps against the model than the full-cohort figures, not smaller; skill_vs_climatology=**-0.156** (negative — the model is worse than a constant base-rate prediction on this subset); win_rate=0.176 (vs. 0.405 on the full 765); total_pnl=**-$6.78** (vs. +$39.73 on the full 765) — the confirmed-real subset is a net LOSS, not the modest net gain the full 765-row cohort shows. |
+| Why this matters | T-565's headline claim — the project's one demonstrated calibration finding, feeding the G6 evidence record and APR-0024's sample-adequacy standard — is computed on 765 rows of which only 34 (4.4%) are independently confirmed to have actually been filled at Kalshi (per GG-300). On exactly that 34-row confirmed-real subset, the finding does not merely weaken — it reverses direction (model worse than market, worse than climatology, net P&L loss). This does not prove the full-cohort finding is wrong: n=34/n_days=9 is a small, likely underpowered sample on its own, and Variant B is drawn non-randomly (only rows where a FILLED order happened to be retrievable) — this could easily be a selection artifact rather than a true reversal. But it means the honest current state is: **the only subset of the calibration cohort independently verified as real trades shows the opposite of what the project's headline claim states.** |
+| Impact | HIGH. No clean_n restated, no cell status/kelly_fraction changed, no ledger row edited/excluded — this is a scratch recompute (`scripts/t571_deliverable2_confirmed_only_recompute.py`, new file, does not modify `t565_calibration_model_vs_market.py`) reported as a delta only, per this session's explicit scope fence. It does mean any operator-facing claim that "T4M-PROJ shows real calibration edge" should be read as resting on the 765-row cohort's aggregate, not on independently-verified trades specifically — and that the one subset where independent verification exists points the other way. Whether this is noise (n=34, non-random selection into "retrievable") or signal is not resolved by this session and requires either a larger confirmed-FILLED sample (as more Kalshi retention/order data becomes checkable) or an operator decision on evidentiary standard — this gap does not make that call. |
+| Discovery | 2026-09-23, T-571 (ledger-integrity-audit wave, worktree `session/20260923T234404Z-ledger-integrity-audit`), Deliverable 2. Read-only throughout. |
+| Resolution | Not resolved — diagnosis only. Two things NOT done, disclosed rather than silently assumed: (1) no statistical correction for the non-random selection into "confirmed FILLED" was attempted (rows are FILLED because their order_id happened to still be retrievable at check time, not because of any property of the bet itself — but this has not been positively ruled out as correlated with, e.g., earlier game_dates or particular players/thresholds); (2) no power analysis was run on whether n=34/n_days=9 could produce this magnitude of reversal by chance alone under the null that the true effect matches the full-765 figure — a `scripts/run_power_calc.py`-style check would clarify this and is the natural next step, not performed here per this session's scope fence (analysis-script territory belongs to session "33.1"). |
+| Cross-references | GG-300 (the phantom-fill sizing this recompute is built on), GG-297/GG-295 (the underlying ledger-integrity findings), GG-004 (G6 sample-adequacy standard this bears on directly), T-565 (`2d3321d`, the committed script this recompute reuses unmodified), GG-228 (repair-decision authority — operator only; this gap makes no repair recommendation). |
+
+</details>
+
+---
