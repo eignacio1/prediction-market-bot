@@ -1,0 +1,108 @@
+{
+  "deliverable_2_primary": {
+    "label": "T4M-PROJ clean (Deliverable 2 primary)",
+    "n": 905,
+    "n_game_days": 12,
+    "game_date_min": "2026-07-31",
+    "game_date_max": "2026-09-22",
+    "model_brier": 0.21782271608013482,
+    "model_ece": 0.04610958453038675,
+    "market_brier": 0.18889129834254142,
+    "base_rate": 0.40552486187845305,
+    "mean_model_p": 0.3946704022099452,
+    "skill_vs_climatology": 0.09645042169741391,
+    "paired_bet_level": {
+      "n": 905,
+      "mean_diff": 0.02893141773759337,
+      "se": 0.0047440219885209614,
+      "t": 6.098499924241136,
+      "df": 904
+    },
+    "paired_day_clustered": {
+      "n_days": 12,
+      "mean_diff": 0.056192472406407255,
+      "se": 0.019114756685191883,
+      "t": 2.93974301278652,
+      "df": 11,
+      "day_span_min": "2026-07-31",
+      "day_span_max": "2026-09-22"
+    },
+    "total_pnl": 26.129300000000057,
+    "pnl_per_bet": 0.02887215469613266,
+    "win_rate": 0.40552486187845305
+  },
+  "deliverable_4_cell_table": [
+    {
+      "band": "T1",
+      "clean_n": 0,
+      "status": "OMITTED_BELOW_MIN_N"
+    },
+    {
+      "band": "T2",
+      "clean_n": 0,
+      "status": "OMITTED_BELOW_MIN_N"
+    },
+    {
+      "band": "T4M-PROJ",
+      "clean_n": 905,
+      "status": "COMPUTED",
+      "summary": {
+        "label": "band=T4M-PROJ clean",
+        "n": 905,
+        "n_game_days": 12,
+        "game_date_min": "2026-07-31",
+        "game_date_max": "2026-09-22",
+        "model_brier": 0.21782271608013482,
+        "model_ece": 0.04610958453038675,
+        "market_brier": 0.18889129834254142,
+        "base_rate": 0.40552486187845305,
+        "mean_model_p": 0.3946704022099452,
+        "skill_vs_climatology": 0.09645042169741391,
+        "paired_bet_level": {
+          "n": 905,
+          "mean_diff": 0.02893141773759337,
+          "se": 0.0047440219885209614,
+          "t": 6.098499924241136,
+          "df": 904
+        },
+        "paired_day_clustered": {
+          "n_days": 12,
+          "mean_diff": 0.056192472406407255,
+          "se": 0.019114756685191883,
+          "t": 2.93974301278652,
+          "df": 11,
+          "day_span_min": "2026-07-31",
+          "day_span_max": "2026-09-22"
+        },
+        "total_pnl": 26.129300000000057,
+        "pnl_per_bet": 0.02887215469613266,
+        "win_rate": 0.40552486187845305
+      }
+    }
+  ],
+  "deliverable_4_rejected_cohort": {
+    "label": "rejected_positions (all, no clean filter)",
+    "n": 0
+  },
+  "diagnostics": {
+    "portfolios": [
+      {
+        "file": "paper_portfolio_mlb_t4.LIVE.20260922.json",
+        "last_updated": "2026-09-23T23:48:11.345Z",
+        "closed": 3134,
+        "rejected": 2000
+      },
+      {
+        "file": "paper_portfolio_mlb.LIVE.20260922.json",
+        "last_updated": "2026-08-06T00:05:01.517Z",
+        "closed": 468,
+        "rejected": 16
+      }
+    ],
+    "excluded_no_band": {
+      "paper_portfolio_mlb_t4.LIVE.20260922.json": 365,
+      "paper_portfolio_mlb.LIVE.20260922.json": 0
+    },
+    "excluded_no_hits_field": {}
+  }
+}
