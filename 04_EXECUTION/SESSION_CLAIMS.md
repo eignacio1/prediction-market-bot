@@ -598,3 +598,4 @@
 | 2026-09-24T00:51:37Z | T-570 | CLOSED — merge confirmed, HEAD (0b31af6) is ancestor of origin/main — T-570: retirement mechanism (warn-only) landed on main; findings handed to 33.2 for GG registration. |
 | 2026-09-24T04:17:53Z | T-571 | MERGED: NO — branch `session/20260923T234404Z-ledger-integrity-audit` awaiting merge — T-571 ledger audit: 731/765 T4M-PROJ rows Kalshi-unconfirmed; confirmed-real n=34 reverses T-565's headline; 42 NFL rows quarantined (GG-300/301/302). (commit `2b44acb`) |
 | 2026-09-24T04:20:11Z | T-571 | CLOSED — merge confirmed, HEAD (7415cde) is ancestor of origin/main — Ledger integrity audit: T4M-PROJ confirmed-real n=34 reverses T-565 headline; 42 NFL rows quarantined (GG-300/301/302) |
+| 2026-09-24T04:50:53Z | T-572 | T-572: CLV measurement harness (closing-line-value instrument for T4 MLB archive) |
