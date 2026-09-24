@@ -1,0 +1,171 @@
+{
+  "instrument": "T-572 CLV harness",
+  "preregistration": "05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T572_clv_harness_PREREGISTRATION.md",
+  "data_prep": {
+    "singleton_tickers_dropped": 208,
+    "nonmonotonic_rows_dropped": 0,
+    "usable_tickers": 8169
+  },
+  "cohort_construction_diagnostics": {
+    "tickers_scanned": 8169,
+    "no_qualifying_row": 2456,
+    "no_closing_observation_excluded": 0,
+    "control_no_candidate_after_fallback": 86,
+    "control_bucket_fallback_count": 272
+  },
+  "approvals": {
+    "n_entries": 5713,
+    "n_rows_computed": 5551,
+    "excluded": {
+      "NoClosingObservationError": 162
+    },
+    "aggregate": {
+      "n": 5551,
+      "by_ticker": {
+        "mean": 0.006399747793190417,
+        "ci_low": -0.0019351918573230025,
+        "ci_high": 0.0157669113673212,
+        "n_clusters": 5551,
+        "n_obs": 5551
+      },
+      "by_game": {
+        "mean": 0.006399747793190417,
+        "ci_low": -0.0034717811528661336,
+        "ci_high": 0.017146947801091095,
+        "n_clusters": 765,
+        "n_obs": 5551
+      },
+      "size_weighted": null
+    }
+  },
+  "control": {
+    "n_entries": 5627,
+    "n_rows_computed": 5627,
+    "excluded": {},
+    "aggregate": {
+      "n": 5627,
+      "by_ticker": {
+        "mean": -0.021932646170250578,
+        "ci_low": -0.03064528167762573,
+        "ci_high": -0.013105140394526394,
+        "n_clusters": 5627,
+        "n_obs": 5627
+      },
+      "by_game": {
+        "mean": -0.021932646170250578,
+        "ci_low": -0.03228986138675918,
+        "ci_high": -0.012948831925520193,
+        "n_clusters": 776,
+        "n_obs": 5627
+      },
+      "size_weighted": null
+    }
+  },
+  "difference_approvals_minus_control_paired_by_ticker": {
+    "n": 5477,
+    "by_ticker": {
+      "mean": 0.023811393098411543,
+      "ci_low": 0.012900173452620048,
+      "ci_high": 0.03406497626437831,
+      "n_clusters": 5477,
+      "n_obs": 5477
+    },
+    "by_game": {
+      "mean": 0.023811393098411543,
+      "ci_low": 0.013349457783859129,
+      "ci_high": 0.034982391675090076,
+      "n_clusters": 762,
+      "n_obs": 5477
+    }
+  },
+  "robustness_second_to_last_closing_row": {
+    "approvals": {
+      "n_rows_computed": 5478,
+      "excluded": {
+        "NoClosingObservationError": 235
+      },
+      "aggregate": {
+        "n": 5478,
+        "by_ticker": {
+          "mean": 0.003881891201168309,
+          "ci_low": -0.005591799014238773,
+          "ci_high": 0.012818524096385541,
+          "n_clusters": 5478,
+          "n_obs": 5478
+        },
+        "by_game": {
+          "mean": 0.003881891201168309,
+          "ci_low": -0.005239341309571847,
+          "ci_high": 0.013534585315157544,
+          "n_clusters": 756,
+          "n_obs": 5478
+        },
+        "size_weighted": null
+      }
+    },
+    "control": {
+      "n_rows_computed": 5515,
+      "excluded": {
+        "NoClosingObservationError": 112
+      },
+      "aggregate": {
+        "n": 5515,
+        "by_ticker": {
+          "mean": -0.013342701722574797,
+          "ci_low": -0.022246260199456025,
+          "ci_high": -0.004603467815049868,
+          "n_clusters": 5515,
+          "n_obs": 5515
+        },
+        "by_game": {
+          "mean": -0.013342701722574797,
+          "ci_low": -0.02234337144615868,
+          "ci_high": -0.004104132365920229,
+          "n_clusters": 771,
+          "n_obs": 5515
+        },
+        "size_weighted": null
+      }
+    }
+  },
+  "confounds": {
+    "backward_placebo": {
+      "passes": false,
+      "ratio": 19.39209831688505,
+      "forward": {
+        "slope": -0.045565655684679233,
+        "intercept": 0.011000884713746465,
+        "ci_low": -0.08152586669819303,
+        "ci_high": -0.009050975187652927,
+        "n": 5551
+      },
+      "backward": {
+        "slope": -0.8836136749106319,
+        "intercept": 0.03210806307097377,
+        "ci_low": -0.9253264237698507,
+        "ci_high": -0.8344302701864685,
+        "n": 5551
+      },
+      "forward_excludes_zero": true,
+      "backward_includes_zero": false,
+      "threshold": 0.5
+    },
+    "mean_reversion_decomposition": {
+      "b1_signal": 0.11466701597874328,
+      "b1_ci_low": -0.006737602326074617,
+      "b1_ci_high": 0.24985704737156053,
+      "b2_own_dislocation": -0.175156657937929,
+      "b2_ci_low": -0.279586860994336,
+      "b2_ci_high": -0.07867177351489137,
+      "n": 2986,
+      "signal_survives_dislocation_control": false,
+      "n_excluded_no_prior_history": 2565
+    }
+  },
+  "verdict": {
+    "verdict": "INCONCLUSIVE",
+    "reason": "approvals by-ticker CLV CI spans 0",
+    "ci_low": -0.0019351918573230025,
+    "ci_high": 0.0157669113673212
+  }
+}
