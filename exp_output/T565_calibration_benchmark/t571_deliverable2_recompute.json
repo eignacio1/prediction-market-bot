@@ -1,0 +1,96 @@
+{
+  "window": [
+    "2026-07-31",
+    "2026-08-13"
+  ],
+  "original_t565_baseline": {
+    "clean_n": 765,
+    "model_brier": 0.2191,
+    "market_brier": 0.189,
+    "paired_bet_level": {
+      "mean_diff": 0.0301,
+      "se": 0.0053,
+      "t": 5.66
+    },
+    "paired_day_clustered": {
+      "mean_diff": 0.0593,
+      "se": 0.0207,
+      "t": 2.87,
+      "n_days": 11
+    },
+    "span": [
+      "2026-07-31",
+      "2026-08-13"
+    ]
+  },
+  "verdict_counts_in_window": {
+    "FILLED": 34,
+    "CANCELED": 0,
+    "NOT_RETRIEVABLE": 731,
+    "NO_VERDICT": 0
+  },
+  "variant_a_exclude_confirmed_canceled": {
+    "label": "Variant A: exclude confirmed-CANCELED in-window",
+    "n": 765,
+    "n_game_days": 11,
+    "game_date_min": "2026-07-31",
+    "game_date_max": "2026-08-13",
+    "model_brier": 0.21909872492313465,
+    "model_ece": 0.05188403921568626,
+    "market_brier": 0.18899794117647056,
+    "base_rate": 0.40261437908496733,
+    "mean_model_p": 0.39756159215686326,
+    "skill_vs_climatology": 0.08904734936243242,
+    "paired_bet_level": {
+      "n": 765,
+      "mean_diff": 0.030100783746664028,
+      "se": 0.00531666327739699,
+      "t": 5.66159302858864,
+      "df": 764
+    },
+    "paired_day_clustered": {
+      "n_days": 11,
+      "mean_diff": 0.05925163646522091,
+      "se": 0.02066926525240848,
+      "t": 2.866654220246974,
+      "df": 10,
+      "day_span_min": "2026-07-31",
+      "day_span_max": "2026-08-13"
+    },
+    "total_pnl": 39.72880000000007,
+    "pnl_per_bet": 0.051933071895424926,
+    "win_rate": 0.40522875816993464
+  },
+  "variant_b_confirmed_filled_only": {
+    "label": "Variant B: confirmed-FILLED-only, in-window (n=34 expected)",
+    "n": 34,
+    "n_game_days": 9,
+    "game_date_min": "2026-07-31",
+    "game_date_max": "2026-08-11",
+    "model_brier": 0.2729552150870883,
+    "model_ece": 0.2497552647058824,
+    "market_brier": 0.14154558823529412,
+    "base_rate": 0.6176470588235294,
+    "mean_model_p": 0.48848426470588224,
+    "skill_vs_climatology": -0.15581036132115056,
+    "paired_bet_level": {
+      "n": 34,
+      "mean_diff": 0.1314096268517941,
+      "se": 0.026701522772659355,
+      "t": 4.921428188595638,
+      "df": 33
+    },
+    "paired_day_clustered": {
+      "n_days": 9,
+      "mean_diff": 0.11153107355935744,
+      "se": 0.03576662815447914,
+      "t": 3.1182999157103977,
+      "df": 8,
+      "day_span_min": "2026-07-31",
+      "day_span_max": "2026-08-11"
+    },
+    "total_pnl": -6.783600000000003,
+    "pnl_per_bet": -0.19951764705882363,
+    "win_rate": 0.17647058823529413
+  }
+}
