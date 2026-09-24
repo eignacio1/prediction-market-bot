@@ -600,3 +600,4 @@
 | 2026-09-24T04:20:11Z | T-571 | CLOSED — merge confirmed, HEAD (7415cde) is ancestor of origin/main — Ledger integrity audit: T4M-PROJ confirmed-real n=34 reverses T-565 headline; 42 NFL rows quarantined (GG-300/301/302) |
 | 2026-09-24T04:50:53Z | T-572 | T-572: CLV measurement harness (closing-line-value instrument for T4 MLB archive) |
 | 2026-09-24T04:51:23Z | T-573, GG-303+ | T-573: 34.2 cohort verification -- Kalshi retrieval ceiling + selection-bias test on GG-300's 731/34 split |
+| 2026-09-24T04:52:34Z | T-574 | T-574: resolved-class filter fix for classify(); CLAUDE.md Step 3 correction; retire_resolved_gaps.py gated execution; GG-279 deploy-vs-activation check |
