@@ -590,3 +590,4 @@
 | 2026-09-23T23:45:02Z | T-569 | T4 latency thesis measurement: does mip lag p_t4 at ~60s cadence (no bets/ledger) |
 | 2026-09-23T23:45:34Z | T-570 | T-570: retirement mechanism (warn-only) -- retire_resolved_gaps.py archive-mover proven on copy only, governance_scan zero-resolved-in-live-log assertion (warn-only), operator console Section 0 retirement-debt rollup, branch/worktree sweep + register-parity reverse check. No GG log/DECISION_LOG writes -- 33.2 owns them. |
 | 2026-09-23T23:45:57Z | T-571 / GG-300+ | T-571: ledger integrity audit — verify T4M-PROJ 765 clean cohort against Kalshi fill records (GG-297 test applied to closed rows), NFL T1 model provenance (GG-255), evidence-base table |
+| 2026-09-24T00:45:53Z | T-570 | MERGED: NO — branch `session/20260923T234404Z-retirement-mechanism` awaiting merge — T-570: retirement mechanism (warn-only) landed; findings handed to 33.2 for GG registration. (commit `0bdaef9`) |

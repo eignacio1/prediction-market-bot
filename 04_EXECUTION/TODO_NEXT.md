@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-23T06:07:40Z (T-567 — T-567 efficiency-gradient ranking complete — all 4 deliverables done, KXMLBHIT ties in tier 3, core four don't separate from props) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0607.md` for full session detail.
+**Last reviewed:** 2026-09-24T00:45:31Z (T-570 — T-570: retirement mechanism (warn-only) landed; findings handed to 33.2 for GG registration.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0045.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-23T05:23:00Z (T-568 — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0523.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
