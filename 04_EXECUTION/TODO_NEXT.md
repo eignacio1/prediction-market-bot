@@ -4,6 +4,7 @@
 **Owner (role):** Execution Lead (EL)  
 **Last reviewed:** 2026-09-24T00:45:31Z (T-570 — T-570: retirement mechanism (warn-only) landed; findings handed to 33.2 for GG registration.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0045.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
+**Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-23T05:23:00Z (T-568 — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0523.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T03:03:00Z (T-559 — T-559: NFL T1 settlement rehearsal on copy found GG-291 (kalshi_threshold=None crash); runbook written for 2026-09-21) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0303.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-18T02:57:15Z (T-558 — GG-203: root cause confirmed (shard-3 collateral unfunded on demo); status IN PROGRESS -> PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260918_0257.md` for full session detail.
