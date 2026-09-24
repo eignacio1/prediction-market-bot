@@ -19,6 +19,19 @@ Rules:
      PENDING (uppercase — the register's status convention).
   4. A doc whose Status is DRAFT/PROPOSED/PENDING must not have a register row
      recording ACCEPTED.
+  5. (T-570, 2026-09-23, retirement-mechanism) The reverse of rule 2's floor:
+     an ADR with a resolved Status must have its OWN dedicated register row —
+     `| ADR-NNNN |` — not merely appear as a mention inside another row's
+     evidence cell. Rule 2 already requires *a* mention somewhere; rule 5
+     requires that mention to be the ADR's own row. Same exemptions list as
+     rule 2 (this is a stricter floor on the same legacy-ADR population, not
+     a new one). Run against real data 2026-09-23: 12 ACCEPTED ADRs not on
+     the exemptions list currently fail this rule (ADR-0001, 0003, 0010,
+     0015, 0018, 0024, 0026, 0027, 0028, 0032, 0045, 0046) — reported as a
+     real finding for governance triage, not silently backfilled into the
+     exemptions file by this change (adding an exemption is an adjudication
+     this script does not make for itself, and requires the stated reason +
+     DECISION_LOG.md note the exemptions file itself demands).
 
 Exit 0 with "CLEAN" line if parity holds; exit 1 and list findings otherwise.
 Output is indented two spaces to slot into governance_scan.sh's format.
@@ -126,6 +139,17 @@ def main() -> int:
                 f"APPROVALS_REGISTER.md (doc status: {status.strip()[:80]})"
             )
             continue
+        if (
+            doc_id.startswith("ADR")
+            and resolved
+            and not rows
+            and doc_id not in exempt
+        ):
+            findings.append(
+                f"{doc_id}: resolved and mentioned in APPROVALS_REGISTER.md, but has "
+                f"no OWN dedicated row (only an incidental mention, e.g. inside "
+                f"another row's evidence cell) (doc status: {status.strip()[:80]})"
+            )
         for row in rows:
             # Date/status is the 4th column. A correction note may legitimately
             # contain the word PENDING (e.g. APR-0022's GG-126 annotation), so a
