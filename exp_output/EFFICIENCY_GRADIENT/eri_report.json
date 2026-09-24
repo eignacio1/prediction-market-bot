@@ -1,0 +1,518 @@
+{
+  "families": {
+    "KXMLBF3": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 0.77,
+      "depth_rank": 13.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.245,
+        "price_discovery_late_diff_variance": 0.01846291320064354
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 10.833333333333334,
+        "ci90_lo": 10.833333333333334,
+        "median": 10.833333333333334,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 10.833333333333334,
+      "family_group": "PARTIAL_GAME_WINNER",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1146,
+      "n_markets": 2094,
+      "n_price_dates": 54,
+      "n_price_rows": 54126,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.13333333333333333,
+      "tightness_n": 53102,
+      "tightness_rank": 12.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBF5": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 60.88,
+      "depth_rank": 8.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.3,
+        "price_discovery_late_diff_variance": 0.018852849344359778
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 9.166666666666666,
+        "ci90_lo": 7.5,
+        "median": 8.166666666666666,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 8.166666666666666,
+      "family_group": "PARTIAL_GAME_WINNER",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1129,
+      "n_markets": 2094,
+      "n_price_dates": 54,
+      "n_price_rows": 57012,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.08,
+      "tightness_n": 55049,
+      "tightness_rank": 9.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBF5SPREAD": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 22.73,
+      "depth_rank": 12.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.265,
+        "price_discovery_late_diff_variance": 0.018473659457387367
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 10.166666666666666,
+        "ci90_lo": 10.166666666666666,
+        "median": 10.166666666666666,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 10.166666666666666,
+      "family_group": "RUN_LINE",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1171,
+      "n_markets": 2792,
+      "n_price_dates": 54,
+      "n_price_rows": 76048,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.1142857142857143,
+      "tightness_n": 72891,
+      "tightness_rank": 11.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBF5TOTAL": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 69.905,
+      "depth_rank": 7.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.36,
+        "price_discovery_late_diff_variance": 0.017609141896285756
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 7.0,
+        "ci90_lo": 6.166666666666667,
+        "median": 6.5,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 6.5,
+      "family_group": "GAME_TOTAL",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1052,
+      "n_markets": 4886,
+      "n_price_dates": 54,
+      "n_price_rows": 133371,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.04597701149425287,
+      "tightness_n": 120196,
+      "tightness_rank": 5.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBF7": {
+      "depth_date_span": null,
+      "depth_median_usd": null,
+      "depth_rank": null,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.375,
+        "price_discovery_late_diff_variance": 0.015399800342741543
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 10.75,
+        "ci90_lo": 10.75,
+        "median": 10.75,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 10.75,
+      "family_group": null,
+      "n_depth_rows": 0,
+      "n_depth_usable": 0,
+      "n_markets": 2103,
+      "n_price_dates": 54,
+      "n_price_rows": 60078,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.24,
+      "tightness_n": 58267,
+      "tightness_rank": 14.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBGAME": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 52.155,
+      "depth_rank": 9.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.385,
+        "price_discovery_late_diff_variance": 0.01815233706445769
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 6.5,
+        "ci90_lo": 5.5,
+        "median": 6.166666666666667,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 6.166666666666667,
+      "family_group": "GAME_WINNER",
+      "n_depth_rows": 2428,
+      "n_depth_usable": 2428,
+      "n_markets": 1492,
+      "n_price_dates": 54,
+      "n_price_rows": 109416,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.028571428571428574,
+      "tightness_n": 107629,
+      "tightness_rank": 2.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBHIT": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 48.2,
+      "depth_rank": 10.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.22000000000000003,
+        "price_discovery_late_diff_variance": 0.024298122052733618
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 10.5,
+        "ci90_lo": 9.5,
+        "median": 10.166666666666666,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 10.166666666666666,
+      "family_group": "PLAYER_PROP",
+      "n_depth_rows": 2424,
+      "n_depth_usable": 1733,
+      "n_markets": 33285,
+      "n_price_dates": 54,
+      "n_price_rows": 441927,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.15384615384615385,
+      "tightness_n": 289727,
+      "tightness_rank": 13.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBSPREAD": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 582.12,
+      "depth_rank": 3.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.22999999999999998,
+        "price_discovery_late_diff_variance": 0.01829489775024996
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 5.5,
+        "ci90_lo": 5.333333333333333,
+        "median": 5.5,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 5.5,
+      "family_group": "RUN_LINE",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1137,
+      "n_markets": 5677,
+      "n_price_dates": 54,
+      "n_price_rows": 133300,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.046511627906976744,
+      "tightness_n": 123504,
+      "tightness_rank": 6.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBTEAMTOTAL": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 40.6,
+      "depth_rank": 11.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.27499999999999997,
+        "price_discovery_late_diff_variance": 0.017823629136333615
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 8.833333333333334,
+        "ci90_lo": 8.166666666666666,
+        "median": 8.666666666666666,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 8.833333333333334,
+      "family_group": "TEAM_TOTAL",
+      "n_depth_rows": 2428,
+      "n_depth_usable": 2129,
+      "n_markets": 9856,
+      "n_price_dates": 54,
+      "n_price_rows": 294000,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.07407407407407407,
+      "tightness_n": 272845,
+      "tightness_rank": 8.0,
+      "volume_max_median": 0.0
+    },
+    "KXMLBTOTAL": {
+      "depth_date_span": [
+        "2026-08-04",
+        "2026-09-23"
+      ],
+      "depth_median_usd": 3828.005,
+      "depth_rank": 1.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.19,
+        "price_discovery_late_diff_variance": 0.016530077695901042
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 3.8333333333333335,
+        "ci90_lo": 3.5,
+        "median": 3.8333333333333335,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 3.8333333333333335,
+      "family_group": "GAME_TOTAL",
+      "n_depth_rows": 1214,
+      "n_depth_usable": 1174,
+      "n_markets": 8399,
+      "n_price_dates": 54,
+      "n_price_rows": 224080,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-08-01",
+        "2026-09-23"
+      ],
+      "tightness_median": 0.029850746268656716,
+      "tightness_n": 203753,
+      "tightness_rank": 3.0,
+      "volume_max_median": 0.0
+    },
+    "KXNFLGAME": {
+      "depth_date_span": [
+        "2026-09-09",
+        "2026-09-22"
+      ],
+      "depth_median_usd": 1016.75,
+      "depth_rank": 2.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.235,
+        "price_discovery_late_diff_variance": 0.0155735838148329
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 3.8333333333333335,
+        "ci90_lo": 3.5,
+        "median": 3.5,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 3.5,
+      "family_group": "GAME_WINNER",
+      "n_depth_rows": 201,
+      "n_depth_usable": 201,
+      "n_markets": 96,
+      "n_price_dates": 17,
+      "n_price_rows": 13908,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-09-05",
+        "2026-09-22"
+      ],
+      "tightness_median": 0.02666666666666667,
+      "tightness_n": 13787,
+      "tightness_rank": 1.0,
+      "volume_max_median": 0.0
+    },
+    "KXNFLSPREAD": {
+      "depth_date_span": [
+        "2026-09-09",
+        "2026-09-22"
+      ],
+      "depth_median_usd": 139.52,
+      "depth_rank": 4.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.165,
+        "price_discovery_late_diff_variance": 0.013544805516664793
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 7.833333333333333,
+        "ci90_lo": 6.166666666666667,
+        "median": 6.333333333333333,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 6.166666666666667,
+      "family_group": "RUN_LINE",
+      "n_depth_rows": 201,
+      "n_depth_usable": 187,
+      "n_markets": 1299,
+      "n_price_dates": 17,
+      "n_price_rows": 94759,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-09-05",
+        "2026-09-22"
+      ],
+      "tightness_median": 0.07194244604316548,
+      "tightness_n": 89389,
+      "tightness_rank": 7.0,
+      "volume_max_median": 0.0
+    },
+    "KXNFLTEAMTOTAL": {
+      "depth_date_span": [
+        "2026-09-09",
+        "2026-09-22"
+      ],
+      "depth_median_usd": 104.0,
+      "depth_rank": 5.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.08,
+        "price_discovery_late_diff_variance": 0.008754987939770503
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 7.833333333333333,
+        "ci90_lo": 7.166666666666667,
+        "median": 7.5,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 7.5,
+      "family_group": "TEAM_TOTAL",
+      "n_depth_rows": 201,
+      "n_depth_usable": 182,
+      "n_markets": 1299,
+      "n_price_dates": 17,
+      "n_price_rows": 62803,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-09-05",
+        "2026-09-22"
+      ],
+      "tightness_median": 0.09375,
+      "tightness_n": 52397,
+      "tightness_rank": 10.0,
+      "volume_max_median": 0.0
+    },
+    "KXNFLTOTAL": {
+      "depth_date_span": [
+        "2026-09-09",
+        "2026-09-22"
+      ],
+      "depth_median_usd": 73.32,
+      "depth_rank": 6.0,
+      "diagnostics": {
+        "open_window_drift_median_abs": 0.3,
+        "price_discovery_late_diff_variance": 0.011839965133125033
+      },
+      "eri_bootstrap": {
+        "ci90_hi": 6.833333333333333,
+        "ci90_lo": 5.5,
+        "median": 5.833333333333333,
+        "n_bootstrap_valid": 2000
+      },
+      "eri_point": 5.833333333333333,
+      "family_group": "GAME_TOTAL",
+      "n_depth_rows": 201,
+      "n_depth_usable": 191,
+      "n_markets": 957,
+      "n_price_dates": 17,
+      "n_price_rows": 69367,
+      "oi_max_median": 0.0,
+      "participation_rank": 7.5,
+      "price_date_span": [
+        "2026-09-05",
+        "2026-09-22"
+      ],
+      "tightness_median": 0.039735099337748346,
+      "tightness_n": 65396,
+      "tightness_rank": 4.0,
+      "volume_max_median": 0.0
+    }
+  },
+  "n_families": 14,
+  "tie_groups_most_to_least_efficient": [
+    [
+      "KXNFLGAME",
+      "KXMLBTOTAL"
+    ],
+    [
+      "KXMLBSPREAD",
+      "KXNFLTOTAL",
+      "KXMLBGAME",
+      "KXNFLSPREAD",
+      "KXMLBF5TOTAL",
+      "KXNFLTEAMTOTAL",
+      "KXMLBF5",
+      "KXMLBTEAMTOTAL"
+    ],
+    [
+      "KXMLBF5SPREAD",
+      "KXMLBHIT"
+    ],
+    [
+      "KXMLBF7"
+    ],
+    [
+      "KXMLBF3"
+    ]
+  ]
+}
