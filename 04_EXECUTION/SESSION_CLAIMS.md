@@ -588,3 +588,4 @@
 | 2026-09-23T05:35:34Z | T-568 | CLOSED — merge confirmed, HEAD (a6479e7) is ancestor of origin/main — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299; merged T-566/T-568 same-day nav-chain conflict |
 | 2026-09-23T06:13:29Z | T-567 | CLOSED — merge confirmed, HEAD (934a575) is ancestor of origin/main — T-567 efficiency-gradient ranking complete — all 4 deliverables done, KXMLBHIT ties in tier 3, core four don't separate from props (merged 934a575) |
 | 2026-09-23T23:45:02Z | T-569 | T4 latency thesis measurement: does mip lag p_t4 at ~60s cadence (no bets/ledger) |
+| 2026-09-24T00:31:25Z | T-569 | MERGED: NO — branch `session/20260923T234421Z-t4-latency-thesis` awaiting merge — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED (commit `c9d5f7c`) |
