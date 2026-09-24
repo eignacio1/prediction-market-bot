@@ -601,3 +601,4 @@
 | 2026-09-24T04:50:53Z | T-572 | T-572: CLV measurement harness (closing-line-value instrument for T4 MLB archive) |
 | 2026-09-24T04:51:23Z | T-573, GG-303+ | T-573: 34.2 cohort verification -- Kalshi retrieval ceiling + selection-bias test on GG-300's 731/34 split |
 | 2026-09-24T04:52:34Z | T-574 | T-574: resolved-class filter fix for classify(); CLAUDE.md Step 3 correction; retire_resolved_gaps.py gated execution; GG-279 deploy-vs-activation check |
+| 2026-09-24T05:15:05Z | T-572 | MERGED: NO — branch `session/20260924T045012Z-clv-harness` awaiting merge (HEAD a9a067b not on origin/main) — CLV harness built+applied to full T4-MLB archive; verdict INCONCLUSIVE (approvals CI spans 0), control cohort significantly negative, approvals-vs-control diff significantly positive, both confounds fail; 1/92 cells scoreable today |
