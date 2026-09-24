@@ -91,10 +91,16 @@ def load_exemptions() -> set[str]:
     return ids
 
 
-def main() -> int:
+def collect_findings() -> tuple[list[str], int]:
+    """Core parity-check loop, factored out of main() (T-570, 2026-09-23) so
+    other tools (generate_operator_console.py's retirement-debt Section 0) can
+    reuse the same findings without re-implementing the rules or shelling out
+    to this script and re-parsing its printed output. Returns (findings,
+    checked_count). Caller is responsible for checking REGISTER.exists()
+    first -- this returns ([], 0) if it's missing, matching main()'s prior
+    early-return behavior."""
     if not REGISTER.exists():
-        print("  Could not read APPROVALS_REGISTER.md — parity check skipped")
-        return 0
+        return [], 0
 
     register_text = REGISTER.read_text(encoding="utf-8")
     register_rows: dict[str, list[str]] = {}
@@ -170,6 +176,17 @@ def main() -> int:
                     f"{doc_id}: register row records a resolved status but doc "
                     f"status is still {status.strip()[:60]}"
                 )
+
+    return findings, checked
+
+
+def main() -> int:
+    if not REGISTER.exists():
+        print("  Could not read APPROVALS_REGISTER.md — parity check skipped")
+        return 0
+
+    findings, checked = collect_findings()
+    exempt = load_exemptions()
 
     if findings:
         print(f"  {len(findings)} PARITY MISMATCH(ES) — register write-back missed (GG-126 class):")

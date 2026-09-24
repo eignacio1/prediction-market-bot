@@ -1,8 +1,235 @@
 # Operator Console
 
-> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 83 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
+> **GENERATED FILE — do not hand-patch.** Produced by `scripts/generate_operator_console.py` from `GOVERNANCE_GAP_LOG.md`'s live entries on every governance scan. Regenerated 138 open/in-progress entries into three sections, ranked by **blocks operator**, not severity. To change what appears here, fix the entry in GOVERNANCE_GAP_LOG.md or the classification regex in the generator script — never this file directly.
 
-> **Severity debt:** 30/83 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
+> **Severity debt:** 32/138 live entries have no explicit severity (`UNSPECIFIED`) — sort order below is unreliable wherever it relies on severity for entries not in this backfill's scope. See GG-165.
+
+---
+
+## 0. Overdue for retirement (210)
+
+Artifact CREATION (session claims, gap registration) is mechanical and enforced. Artifact RETIREMENT (archiving resolved gaps, deleting merged branches, closing register rows) is manual and gets forgotten -- it does not scale across a growing gap log and, per direct enumeration (`ls -d [0-9][0-9]_*`), **13** top-level department directories -- not the 12 this rollup's originating task assumed; `09_INTEGRATION_PATCHES` and `09_SECURITY_PRIVACY_COMPLIANCE` share the `09_` prefix. This section is filing, never adjudication: everything below is something already marked done elsewhere that hasn't been filed away yet. Nothing here is deleted or archived by generating this file (T-570, 2026-09-23).
+
+**Unarchived resolved gaps (24)** -- RESOLVED/CLOSED-AS-ARTIFACT entries still in the live GOVERNANCE_GAP_LOG.md instead of the archive (`scripts/retire_resolved_gaps.py`):
+- **[GG-252]** `kalshi_client.py`'s `PlayerMarket` dataclass and `_parse_market()` are player-prop-shaped and cannot represent a moneyline/spread market; the bot parses 0 NFL game markets today despite 264+ being live on Kalshi — `RESOLVED` · severity `HIGH`
+- **[GG-270]** `scripts/web_dashboard.py`'s `/api/data` unbounded-`json.load()` of `paper_portfolio_mlb_t4.json` OOM-killed the dashboard service in a restart loop, blanking every panel (MLB and NFL alike) behind a false "SSH tunnel" error — `RESOLVED (2026-09-09/10)` · severity `HIGH`
+- **[GG-272]** GG-270's own OOM fix introduced a latency regression (~2.2-4.6s, two separate causes) that would have kept `/api/data` failing Deliverable 3's "comfortably under 2s" requirement, caught only because Deliverable 4 benchmarked the full pipeline instead of trusting the unit tests alone — `RESOLVED (2026-09-11)` · severity `HIGH`
+- **[GG-280]** No systematic day-of-week capture-coverage audit has ever existed for `deploy/cron.conf`; both known gaps (GG-261 Wed/NFL, GG-276 Sat/NFL) were found by accident, after data was already lost, not by any check designed to find them — `RESOLVED (2026-09-15, T-549)` · severity `HIGH`
+- **[GG-291]** All 42 real open NFL T1 `nfl_moneyline` positions carry `kalshi_threshold=None`; the real settlement resolver crashes with `TypeError` on the first position it attempts to settle — `RESOLVED (2026-09-22, T-564)` · severity `HIGH`
+- **[GG-223]** T4M-PROJ epoch-12: 46 open positions stuck with `game_date` mismatched to ticker-embedded date (GG-166/GG-170 lineage) — repaired under ADR-0055 D2 — `RESOLVED 2026-08-28 (T-502)` · severity `MEDIUM`
+- **[GG-245]** Forward price archiver (`deploy/cron.conf`) captured zero KXNFL rows; NFL season opens 2026-09-09 with no capture in place — `RESOLVED (2026-09-07)` · severity `MEDIUM`
+- **[GG-259]** NFL price-archive cron lines carry zero `--depth-sample-per-family` sampling; Week 1 orderbook-depth history is being permanently lost while this stays disabled — `RESOLVED` · severity `MEDIUM`
+- **[GG-263]** NFL infrastructure built across Waves 20-21 (T1 game-market run script, EXP-027 LR model, T4 NFL/NHL sub-bands, capture cron) has no operator-visible output — no live shadow run against real markets, no dashboard panel — `RESOLVED (2026-09-09)` · severity `MEDIUM`
+- **[GG-265]** NFL depth-capture cron path (T-533's day-3 line + `--depth-sample-per-family 1`) had never actually fired; config inspection alone is not proof it will (GG-245 precedent) — `RESOLVED` · severity `MEDIUM`
+- **[GG-271]** T4 MLB writer process appends an unbounded `rejected_positions` array to `paper_portfolio_mlb_t4.json` (24k+ entries / ~33MB observed 2026-09-10); register-and-stop, out of scope for this session — `RESOLVED (2026-09-11, code+migration) · ACTIVATED (2026-09-15, confirmed live in running process)` · severity `MEDIUM`
+- **[GG-273]** systemd `CPUQuota=10%` on `pmbot-web-dashboard.service` throttled the now-fixed (~0.39s CPU) `/api/data` request into ~3.8-4.15s live wall time, masking GG-272's fix as a failure against Deliverable 3's "comfortably under 2s" target — `RESOLVED (2026-09-11)` · severity `MEDIUM`
+- **[GG-274]** NFL T1 settlement path (market → forecast → size → position → settlement) has never been exercised end-to-end against a real resolved game — `RESOLVED (2026-09-22, T-564)` · severity `MEDIUM`
+- **[GG-276]** NFL price archive has zero KXNFL rows for 2026-09-12 (a Saturday); `deploy/cron.conf`'s NFL-capture block has no day-of-week=6 (Saturday) entry — `RESOLVED (2026-09-15, T-549)` · severity `MEDIUM`
+- **[GG-178]** `scripts/check_register_parity.py`'s `RESOLVED_PAT` regex is a bare substring search with no negation awareness, so it false-flags any ADR whose Status prose contains the literal text "NOT ACCEPTED"/"not yet ACCEPTED" as resolved — `RESOLVED` · severity `LOW`
+- **[GG-222]** GG-126-class recurrence: APR-0032/ADR-0056 write-back-missed for a week, plus `check_register_parity.py`'s `RESOLVED_PAT` has a false-positive bug on "NOT ACCEPTED" Status lines — `RESOLVED` · severity `LOW`
+- **[GG-227]** `APR-0033` has no `APPROVALS_REGISTER.md` row at all (GG-126 class, distinct from GG-222/GG-178's regex bug) — `RESOLVED` · severity `LOW`
+- **[GG-236]** `claim_session.sh`'s GG-number collision check cannot see numbers registered on an unlanded branch, producing a live GG-235 duplicate risk between T-509 and T-513 — `RESOLVED` · severity `LOW`
+- **[GG-237]** T-513's GG-235 claim collided with T-509's already-landed GG-235, exactly as GG-236 predicted; renumbered before any content was written — `RESOLVED` · severity `LOW`
+- **[GG-238]** `scripts/assert_ledger_invariants.py`'s own default CLI argument paths are stale in the same way GG-235's doc was, so the doc fix alone does not make the plain (no-flag) invocation work — `RESOLVED` · severity `LOW`
+- **[GG-242]** GG-235/GG-238's VPS filename-rename fix was not exhaustive: 23 other `.py`/`.sh` files plus hooks and docs still reference the stale `.vps_portfolio_cache_mlb*.json` names — `RESOLVED` · severity `LOW`
+- **[GG-251]** ADR-0062 §4/§6 BOUNDARY authorization-posture conflict resolved conservatively; T-522's prior scaffolding build re-verified and landed under this number (GG-246 never registered) — `RESOLVED (2026-09-07)` · severity `LOW`
+- **[GG-267]** No per-row model-identity field in the NFL position/audit data model; dashboard provenance label is section-wide/run-wide, not per-row-verified — `RESOLVED (2026-09-11)` · severity `LOW`
+- **[GG-287]** Deliverable design "open a position and settle it end-to-end, same session" is structurally unachievable for NFL T1's live open-attempt mechanism, because Kalshi only lists live tradable quotes for markets whose game has not yet concluded — `RESOLVED (2026-09-22, T-564)` · severity `LOW`
+
+**Merged-but-undeleted local branches (39)** -- ancestors of origin/main, safe to `git branch -d` (`scripts/sweep_stray_branches.sh --execute`):
+- `fix-t504-gg229`
+- `land-b`
+- `local-main`
+- `main-sync`
+- `nfl-capture-rebase`
+- `session/20260811T043030Z-invariant-policy`
+- `session/20260814T144536Z-replay-gate-band-coverage`
+- `session/20260818T044631Z-phase2-team-outcomes`
+- `session/20260820T000400Z-outcome-store-coverage`
+- `session/20260820T005627Z-gg185-restart-trigger`
+- `session/20260821T190312Z-nfl-skeleton-spike`
+- `session/20260824T233621Z-t485-adr0057-g6-rescope`
+- `session/20260825T043349Z-t492-gg203-order-submission`
+- `session/20260826T000519Z-t495-nhl-skeleton`
+- `session/20260826T000519Z-t496-venue-compliance-geo`
+- `session/20260826T045926Z-t497-t1-flat-stake-wrapper`
+- `session/20260827T002221Z-t498-adr0059-nfr03-latency`
+- `session/20260827T013319Z-t499-phase-closeout`
+- `session/20260828T002140Z-t500-hyp010-nb-completion`
+- `session/20260828T002227Z-t502-adr0055-d2-stuck-open`
+- `session/20260829T190241Z-t503-adr0055-d1-d3-repair`
+- `session/20260901T052405Z-t508-land-t506-remainder`
+- `session/20260903T184226Z-apr0033-phase2-moneyline-reroute`
+- `session/20260903T184908Z-apr0033-accept-and-reroute`
+- `session/20260905T162402Z-land-t518-gg242`
+- `session/20260907T234550Z-gg252-nfl-parser`
+- `session/20260908T235535Z-nfl-week1-capture-fidelity-audit`
+- `session/20260908T235648Z-gg255-t1-game-market-run-script`
+- `session/20260911T152320Z-gg271-bound-t4-rejected-positions`
+- `session/20260911T184821Z-gg267-per-row-model-provenance`
+- `session/20260918T022535Z-rehearse-first-settlement`
+- `session/20260922T235033Z-gg291-live-settlement`
+- `session/20260922T235038Z-calibration-model-vs-market`
+- `session/20260923T005823Z-efficiency-gradient-ranking`
+- `session/20260923T005826Z-mlb-final-week-accrual`
+- `session/20260923T005837Z-vig-grounding-from-archive`
+- `session/20260923T234404Z-ledger-integrity-audit`
+- `t493-closeout-push`
+- `t555-merge-check`
+
+**Prunable worktree metadata (0)** -- `git worktree prune -v` dry-run output:
+_None currently detected._
+
+**ADRs/APRs missing register accountability (15)** -- `scripts/check_register_parity.py` rules 1, 2, and 5. Rule 1 requires EVERY APR to have its own row regardless of status (so a non-ACCEPTED APR like APR-0034/0035/0036, still DECISION REQUEST, correctly appears below); rules 2/5 apply only to resolved (ACCEPTED-class) ADRs, requiring their own dedicated row, not just a mention. Stale-PENDING/premature-ACCEPTED drift findings (rules 3/4) are excluded, out of scope for a "missing entirely" rollup:
+- APR-0034: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presents option)
+- APR-0035: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presented optio)
+- APR-0036: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presented optio)
+- ADR-0001: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
+- ADR-0003: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** **ACCEPTED — 2026-05-23** — OQ-006 resolved; Polymarket US CA-legal )
+- ADR-0010: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-02)
+- ADR-0015: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
+- ADR-0018: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — APR-0018 signed 2026-06-09)
+- ADR-0024: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
+- ADR-0026: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-16)
+- ADR-0027: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-16)
+- ADR-0028: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — DS sign-off Earl Ignacio, 2026-06-22 SESSION 72 (initial )
+- ADR-0032: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
+- ADR-0045: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-07-15.)
+- ADR-0046: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — Earl Ignacio, in-session directive, 2026-07-16.)
+
+**Session claims with no closure row (132)** -- `04_EXECUTION/SESSION_CLAIMS.md` T-NNN tokens with a claim row but no row whose text starts "CLOSED" (includes work that is genuinely still in flight, not only forgotten closures -- this is a filing signal, not a verdict). **Known noise (T-570):** the literal "CLOSED —" prefix is a convention that hardened over time -- older rows often record closure in free text that doesn't start with that word (e.g. T-224's row ends "...T-224 close (...)" rather than opening with CLOSED), so this list over-reports for anything claimed before the convention was consistent. Treat entries below the most recent ~50 rows as needing a manual skim, not a trusted count, until a follow-on tightens the detection or the older rows are normalized:
+- `T-224`
+- `T-243`
+- `T-247`
+- `T-250`
+- `T-253`
+- `T-254`
+- `T-255`
+- `T-256`
+- `T-257`
+- `T-258`
+- `T-259`
+- `T-261`
+- `T-280`
+- `T-300`
+- `T-320`
+- `T-321`
+- `T-322`
+- `T-323`
+- `T-324`
+- `T-325`
+- `T-326`
+- `T-327`
+- `T-328`
+- `T-329`
+- `T-330`
+- `T-331`
+- `T-332`
+- `T-333`
+- `T-334`
+- `T-335`
+- `T-336`
+- `T-337`
+- `T-338`
+- `T-339`
+- `T-340`
+- `T-341`
+- `T-342`
+- `T-343`
+- `T-344`
+- `T-345`
+- `T-346`
+- `T-347`
+- `T-348`
+- `T-349`
+- `T-350`
+- `T-351`
+- `T-352`
+- `T-353`
+- `T-354`
+- `T-355`
+- `T-356`
+- `T-357`
+- `T-361`
+- `T-362`
+- `T-363`
+- `T-365`
+- `T-366`
+- `T-367`
+- `T-368`
+- `T-369`
+- `T-371`
+- `T-372`
+- `T-373`
+- `T-374`
+- `T-375`
+- `T-376`
+- `T-377`
+- `T-378`
+- `T-379`
+- `T-380`
+- `T-381`
+- `T-382`
+- `T-383`
+- `T-385`
+- `T-388`
+- `T-389`
+- `T-390`
+- `T-391`
+- `T-392`
+- `T-393`
+- `T-394`
+- `T-396`
+- `T-397`
+- `T-398`
+- `T-399`
+- `T-400`
+- `T-403`
+- `T-405`
+- `T-409`
+- `T-410`
+- `T-411`
+- `T-412`
+- `T-413`
+- `T-414`
+- `T-415`
+- `T-417`
+- `T-418`
+- `T-419`
+- `T-420`
+- `T-421`
+- `T-422`
+- `T-423`
+- `T-426`
+- `T-427`
+- `T-428`
+- `T-429`
+- `T-449`
+- `T-463`
+- `T-474`
+- `T-476`
+- `T-481`
+- `T-492`
+- `T-497`
+- `T-509`
+- `T-512`
+- `T-522`
+- `T-527`
+- `T-536`
+- `T-539`
+- `T-540`
+- `T-545`
+- `T-547`
+- `T-551`
+- `T-552`
+- `T-553`
+- `T-555`
+- `T-561`
+- `T-562`
+- `T-566`
+- `T-569`
+- `T-570`
+- `T-571`
 
 ---
 
@@ -30,7 +257,7 @@ Something is silently wrong right now — a HALT, an undetected blind spot, a co
 
 ---
 
-## 3. What is accruing and its clock (73)
+## 3. What is accruing and its clock (104)
 
 Open, tracked, not currently blocking Earl and not flagged as actively broken — but still open, and the clock (epoch resets, n* thresholds, re-check triggers) keeps running. Default bucket: absence of blocked/broken signal, not absence of importance.
 
@@ -40,8 +267,15 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-186]** SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, with no check that either branch had actually reached `origin/main` — 4th occurrence of the same pattern (T-456 x2, T-458, T-460) — `PARTIALLY RESOLVED` · severity `HIGH`
 - **[GG-189]** T-465 register-and-stop: 46 stuck-open T4M-PROJ epoch-12 positions, 76 rejected-position mismatches, and outcome-store coverage gap block any GG-185/GG-170 backfill — `OPEN` · severity `HIGH`
 - **[GG-190]** T-471: the step-function onset of GG-185's game_date corruption (0/77 mismatched under commit `cbd09ae`, 532/532 under `687bf9e`) is not explained by any source-code, deploy, or environment difference found between the two commits — root cause NOT found, evidence bounded and next steps specified — `OPEN` · severity `HIGH`
-- **[GG-203]** T4M-PROJ has approved zero bets to execution since 2026-08-15T00:06:20Z: every Kalshi order submission has failed, 1:1 with approvals, for 10 consecutive days, while every liveness signal in Step 4 short of the order-outcome audit trail reports healthy — `PARTIALLY RESOLVED` · severity `HIGH`
+- **[GG-203]** T4M-PROJ has approved zero bets to execution since 2026-08-15T00:06:20Z: every Kalshi order submission has failed, 1:1 with approvals, for 10 consecutive days, while every liveness signal in Step 4 short of the order-outcome audit trail reports healthy — `PARTIALLY RESOLVED (T-568 — first confirmed real fill)` · severity `HIGH`
 - **[GG-204]** ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0` — `OPEN` · severity `HIGH`
+- **[GG-253]** No NFL C1 ingestion module exists; the only generic `team_stats_store.py` is NBA-shaped (`plus_minus`-derived) and not usable as an NFL feature source — `PARTIALLY RESOLVED` · severity `HIGH`
+- **[GG-254]** No moneyline/categorical-outcome settlement logic exists anywhere in `src/`, for any sport; `paper_trader.py::settle_position()`'s threshold-crossing model cannot express a game-winner outcome — `PARTIALLY RESOLVED` · severity `HIGH`
+- **[GG-255]** `measurement_stake.py` defines all nine ADR-0058 T1 game-market cells but has exactly one real importer codebase-wide (an audit tool); no run script or cron entry exists for any T1 game-market cell, NFL or MLB — `LIKELY RESOLVED` · severity `HIGH`
+- **[GG-269]** `pmbot-web-dashboard.service` is in an active OOM crash-loop under its 128MB cgroup memory cap; `systemctl is-active`-style checks do not reliably show it — `OPEN` · severity `HIGH`
+- **[GG-295]** Live NFL T1 portfolio's `kalshi_threshold` backfill (all 42 positions) has no corresponding commit anywhere in repo history and is misattributed to an unrelated session (T-562) — `OPEN` · severity `HIGH`
+- **[GG-296]** T4M-PROJ's shard-3 demand figure (~2,000 approvals/$1,907.85 stake, 2026-09-20) is a ring-buffer ceiling artifact, not a measured count, and any collateral-funded accrual night risks non-randomly truncating the project's only clean G6 cohort — `OPEN` · severity `HIGH`
+- **[GG-297]** 139 of 140 T4M-PROJ "OPEN" positions in `paper_portfolio_mlb_t4.json` (all dated 2026-09-22) are `status: "canceled"`/zero-fill at Kalshi, not live open bets — the local ledger's open-position status is unreliable and, if resolved as-is, would inject fabricated trades into the G6 cohort — `OPEN` · severity `HIGH`
 - **[GG-056]** NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume — `PLAN ACCEPTED` · severity `MEDIUM`
 - **[GG-098]** MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (Small-n Subset Structure Masked; Aggregate Sign-Flipped n=151→169) — `OPEN` · severity `MEDIUM`
 - **[GG-159]** PROJECT_ASSESSMENT_2026-07-30's T4M-PROJ headline reconstruction didn't match the code it claimed to match — verified figure is n=388/+9.65%, not n=344/+10.99% — `OPEN` · severity `MEDIUM`
@@ -56,24 +290,46 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-206]** `t4_mlb_totals_outcome_store.jsonl` (and its sibling `t4_mlb_outcome_store.jsonl`) are gitignored under a rule documented for CAT-04 audit logs, but the files are CAT-03 resolution data with no backup/sync path — single-laptop-copy risk for an irreplaceable, StatsAPI-cost dataset — `OPEN` · severity `MEDIUM`
 - **[GG-209]** MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only stop new bets, not exit existing exposure early — `OPEN` · severity `MEDIUM`
 - **[GG-216]** Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account classification flip is a live-capital blocker with no structural check — `OPEN` · severity `MEDIUM`
-- **[GG-223]** T4M-PROJ epoch-12: 46 open positions stuck with `game_date` mismatched to ticker-embedded date (GG-166/GG-170 lineage) — repaired under ADR-0055 D2 — `RESOLVED 2026-08-28 (T-502)` · severity `MEDIUM`
 - **[GG-224]** Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their next flush cycle — `OPEN` · severity `MEDIUM`
+- **[GG-226]** NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports — `OPEN` · severity `MEDIUM`
+- **[GG-228]** Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to the derived artifact, not its source of record (distinct from GG-224/ADR-0061's live-service in-memory-flush hazard) — `OPEN` · severity `MEDIUM`
+- **[GG-232]** ADR-0054(a) staffing gap: three named-not-staffed follow-ons (replay-harness `market_type=`, cell-unaware ledger/monitor tooling) sat unstaffed from sign-off to this entry — `IN PROGRESS` · severity `MEDIUM`
+- **[GG-240]** ADR-0062's T-512 sign-off is recorded only on an unlanded branch; three merge routes to `origin/main` were refused, leaving the ADR PROPOSED in the canonical record despite an operator-confirmed accept decision — `OPEN` · severity `MEDIUM`
+- **[GG-260]** Shared `main` working tree carries uncommitted `ACTIVE_QUEUE.md` drift invisible to worktree-isolated sessions; recurrence of the condition T-505 fixed in Wave 10 — `OPEN` · severity `MEDIUM`
+- **[GG-261]** T-528's capture-fidelity "zero coverage gaps" verdict tested kickoff-instant coverage only, not pregame-window coverage; missed the day-3 (Wed UTC) NFL price-archive gap — `OPEN` · severity `MEDIUM`
+- **[GG-275]** `lib_chain_archive.py` silently discards the prior "Last reviewed" line on every single-entry chain collapse (regression in the GG-176 fix) — `OPEN` · severity `MEDIUM`
+- **[GG-279]** A code fix landing (and even fully migrating on-disk state) in a long-running service's source is not activated in that service's own running memory until it is restarted; neither session-start nor session-close-out protocol checks process-level activation vs. mere code-landing — `OPEN` · severity `MEDIUM`
+- **[GG-282]** Investigation: do the two new T1 game-market run scripts inherit the live $10 `min_bet_usd` floor instead of the paper $1.00 floor their sibling runners pass, and is T4 MLB's `kalshi_client=None` demo-order path (GG-203) load-bearing or optional? — `PARTIALLY RESOLVED (2026-09-15, T-551) — Floor A fixed and verified; Floor B investigated, decision requested via APR-0034, not decided` · severity `MEDIUM`
+- **[GG-285]** At observed effect sizes, APR-0024's per-band P&L n* is 10-11 NFL seasons (NFL moneyline) and ~1.6 MLB seasons (T4M-PROJ) from clearing; the P&L gate as currently written may not close within any practical operating horizon for signals whose sd/mean ratio is ~15-28x — `OPEN` · severity `MEDIUM`
+- **[GG-298]** `rejected_positions` field name implies risk-engine declines but actually holds post-approval exchange-side order-submission failures, making it unusable as a holdout/decline cohort under its documented name — `OPEN` · severity `MEDIUM`
 - **[GG-007]** T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton Values — `OPEN` · severity `LOW`
 - **[GG-162]** GG-NNN numbers picked mid-session have no atomic reservation, unlike T-/ADR- ranges claimed at session start; two concurrent sessions independently registered GG-159 on 2026-08-04 — `OPEN` · severity `LOW`
 - **[GG-165]** 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-423's XS scope — `OPEN` · severity `LOW`
 - **[GG-167]** `deploy.yml`'s dirty-tree guard only inspects tracked files; an untracked-file collision on the VPS silently blocked `git pull --ff-only` during GG-163's deploy, sibling gap shape to the already-resolved GG-130 — `OPEN` · severity `LOW`
 - **[GG-177]** `session_end_prep.sh`'s Step 0 SESSION_CLAIMS.md lookup matches on the worktree branch's timestamp, but `claim_session.sh` stamps its row at actual claim-command time — the two are seconds-to-minutes apart, so the exact-string match fails on effectively every session even when the claim genuinely exists — `OPEN` · severity `LOW`
-- **[GG-178]** `scripts/check_register_parity.py`'s `RESOLVED_PAT` regex is a bare substring search with no negation awareness, so it false-flags any ADR whose Status prose contains the literal text "NOT ACCEPTED"/"not yet ACCEPTED" as resolved — `RESOLVED` · severity `LOW`
 - **[GG-183]** Per-cell kill-switch state (ADR-0053 §2.3/§6.3 item 4) has a store and a resolution helper but is not wired into C4/C7's live kill-switch check — `OPEN` · severity `LOW`
-- **[GG-184]** `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rather than passing it explicitly — `OPEN` · severity `LOW`
+- **[GG-184]** `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rather than passing it explicitly — `PARTIALLY RESOLVED` · severity `LOW`
 - **[GG-187]** T2's gross-edge formula is known but epoch-conditional; unsafe to backfill into assert_ledger_invariants.py's flat multiplier — `OPEN` · severity `LOW`
 - **[GG-195]** 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope — `OPEN` · severity `LOW`
 - **[GG-200]** `ACTIVE_QUEUE.md` Block G cites `GG-194` as its tracking gap; no `GG-194` exists in the log or its archive — `OPEN` · severity `LOW`
 - **[GG-217]** No Kalshi series exists for an NHL team-total market; the four-family coverage target cannot be fully seeded for NHL as it was for NFL — `OPEN` · severity `LOW`
 - **[GG-218]** T1 has no automated alarm for a position stuck OPEN past a plausible resolution window (postponed/rescheduled game, no `apply_resolved_hits.py` match) — `OPEN` · severity `LOW`
 - **[GG-221]** HYP-010 Phase 2 plan defines a reroute for FALSIFIED and none for INCONCLUSIVE; two independent model fits have now both landed there — `OPEN` · severity `LOW`
-- **[GG-222]** GG-126-class recurrence: APR-0032/ADR-0056 write-back-missed for a week, plus `check_register_parity.py`'s `RESOLVED_PAT` has a false-positive bug on "NOT ACCEPTED" Status lines — `OPEN` · severity `LOW`
-- **[GG-227]** `APR-0033` has no `APPROVALS_REGISTER.md` row at all (GG-126 class, distinct from GG-222/GG-178's regex bug) — `OPEN` · severity `LOW`
+- **[GG-229]** `TestPromoteCellStatus` RULED_OUT fixtures leak global registry state via `del` instead of restore — `OPEN` · severity `LOW`
+- **[GG-230]** `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-blob threshold, flagged and never registered — `OPEN` · severity `LOW`
+- **[GG-233]** Task briefing restated ADR-0056 D2 as adopting the superseded `T4N-` convention, not the actually-signed `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` form — `OPEN` · severity `LOW`
+- **[GG-234]** Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-closed sessions by the time the assigned session actually started — `OPEN` · severity `LOW`
+- **[GG-235]** `04_EXECUTION/LEDGER_INVARIANT_SUITE.md`'s documented VPS-fetch commands reference filenames that no longer exist on the VPS — `OPEN` · severity `LOW`
+- **[GG-243]** T-number collision: "T-518" independently claimed by two unrelated tasks (TODO_NEXT.md's EXP-026 entry vs. this session's ADR-0060/0061/0062 re-recording) — `OPEN` · severity `LOW`
+- **[GG-244]** Operator task brief's T4-segment count (11 segments / eight `kelly_fraction` regimes) does not match source (13 segments / six distinct values) — `OPEN` · severity `LOW`
+- **[GG-256]** `scripts/claim_session.sh`'s rebase-retry did not prevent a duplicate T-number claim; two concurrent sessions both claimed T-526 one second apart — `OPEN` · severity `LOW`
+- **[GG-257]** `settle_position()`'s boolean win/loss model cannot express Kalshi's $0.50/$0.50 split payout for an NFL moneyline exact tie — `OPEN` · severity `LOW`
+- **[GG-258]** Task brief pre-assigned `EXP-026`/`HYP-011` to a new NFL moneyline-LR experiment, but those IDs are already canonically registered to a different, pre-existing MLB moneyline experiment — `OPEN` · severity `LOW`
+- **[GG-262]** Live VPS crontab's `run_mlb_pregame.py` schedule (`20 21 * * *`) diverges from repo `deploy/cron.conf`'s value (`30 16 * * *`); origin/cause not determined — `OPEN` · severity `LOW`
+- **[GG-266]** Local dev machine's system Python (3.9.6/LibreSSL 2.8.3) cannot TLS-handshake with ESPN's scoreboard endpoint; affects every existing `integration`-marked live-network test, not just this session's new one — `OPEN` · severity `LOW`
+- **[GG-281]** EXP-027/HYP-012 re-run (2026-09-15): still UNDERPOWERED; task premise of "Weeks 1 and 2 resolved" was factually wrong at run time (only Week 1 had resolved) — `OPEN` · severity `LOW`
+- **[GG-292]** 14 stray remote session branches (2026-08-24 through 2026-09-15) unlanded; `sweep_stray_branches.sh` unavailable on origin/main to sweep them — `OPEN` · severity `LOW`
+- **[GG-299]** ADR-0046's ECE baseline (0.0680, n=261) drifts +22% relative (to 0.0832) when its own exact methodology is re-applied to a later live pull of its own source file (n=468); Brier holds steady (0.2190→0.2200) over the same re-pull — `OPEN` · severity `LOW`
 - **[GG-004]** EV Validation Benchmark Was Never the Commercial Question — `OPEN` · severity `UNSPECIFIED`
 - **[GG-014]** Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode — `PARTIALLY RESOLVED` · severity `UNSPECIFIED`
 - **[GG-020]** Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts — `ACCEPTED UNCERTAINTY` · severity `UNSPECIFIED`
@@ -107,6 +363,8 @@ Open, tracked, not currently blocking Earl and not flagged as actively broken �
 - **[GG-160]** Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no mechanism exists that resolves a doc's code citations against current source — `OPEN` · severity `UNSPECIFIED`
 - **[GG-164]** T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock "today" at write time, not the game's actual date; `(player_id, game_date, threshold)` is not a valid join key without correction, and doubleheaders break it further — `OPEN` · severity `MEDIUM · **Assertion:** PENDING(T-432, assertion A) — RESOLVED is not eligible until this lands (ADR-0052); this entry's original "Why it survived" field asserted an unverified negative ("isn't used as a resolution join key anywhere") that GG-166 directly contradicted — the motivating case for ADR-0052`
 - **[GG-166]** `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4M-PROJ positions against the wrong day's box score for ~44% of the epoch-12 clean cohort — corrupting live paper-trading WIN/LOSS/pnl, not just a future-risk join key — `OPEN — code fixed, ledger `game_date` corrected, GG-170 authority settled and 1,127/1,220 (92.4%) of the stale outcome/pnl population re-derived (T-437, 2026-08-11/12); 93 positions still outstanding pending outcome-store coverage; T4M-PROJ power-calc baseline now flips TARGET MET → NOT MET post-correction` · severity `CRITICAL · **Assertion:** PENDING(T-432, assertion A) — shared with GG-164 (same defect, write-site vs. read-site); B2's per-resolution `game_date_ticker_mismatch` refusal is a point check at resolution time, not a standing suite-level invariant, so this remains PENDING not LANDED (ADR-0052); also the concrete G6 precondition example (ADR-0052 §2.3) — Kelly sizing and the drawdown kill switch both read this same ledger`
+- **[GG-288]** session-end close-out fix (closure-row-push + stray-branch-sweep) sat on local `main` unpushed across a full session and was squash-merged over by PR #138, and T-554's own closure row failed to reach `origin/main` despite the script reporting an honest failure — `OPEN` · severity `UNSPECIFIED`
+- **[GG-289]** Auto-mode classifier's Self-Modification block on `.claude/commands/session-end.md` + `scripts/close_session_claim.sh` + `scripts/sweep_stray_branches.sh` is a structural, repeatable barrier — confirmed twice independently — and is the likely actual root cause of T-554's silent closure-row push failure, not mere git divergence — `OPEN` · severity `UNSPECIFIED`
 
 ---
 
