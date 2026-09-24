@@ -217,3 +217,110 @@ class TestUnclosedSessionClaims:
         )
         monkeypatch.setattr(goc, "CLAIMS", claims)
         assert goc.unclosed_session_claims() == ["T-50", "T-600"]
+
+
+# ---------------------------------------------------------------------------
+# shared_tree_behind_origin() -- T-574 (2026-09-24, Deliverable 0(f))
+# ---------------------------------------------------------------------------
+
+class TestSharedTreeBehindOrigin:
+    def test_up_to_date_tree_reports_zero(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        monkeypatch.chdir(work)
+
+        result = goc.shared_tree_behind_origin()
+        assert result is not None
+        assert result["branch"] == "main"
+        assert result["behind"] == 0
+
+    def test_behind_tree_reports_correct_count(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        other = tmp_path / "other"
+        _git(tmp_path, "clone", str(tmp_path / "origin.git"), str(other))
+        _git(other, "config", "user.email", "test@example.com")
+        _git(other, "config", "user.name", "Test")
+        for i in range(2):
+            (other / "f.txt").write_text(f"change {i}\n")
+            _git(other, "commit", "-am", f"change {i}")
+        _git(other, "push", "origin", "main")
+        monkeypatch.chdir(work)
+
+        result = goc.shared_tree_behind_origin()
+        assert result is not None
+        assert result["behind"] == 2
+
+    def test_never_writes_anything_to_the_tree(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        monkeypatch.chdir(work)
+        before = _git(work, "status", "--porcelain").stdout
+
+        goc.shared_tree_behind_origin()
+
+        after = _git(work, "status", "--porcelain").stdout
+        assert before == after == ""
+
+
+# ---------------------------------------------------------------------------
+# closed_wave_fences() -- T-574 (2026-09-24, Deliverable 0(f))
+# ---------------------------------------------------------------------------
+
+def _queue(text: str, tmp_path: Path) -> Path:
+    p = tmp_path / "ACTIVE_QUEUE.md"
+    p.write_text(text)
+    return p
+
+
+class TestClosedWaveFences:
+    def test_missing_file_returns_empty(self, tmp_path):
+        assert goc.closed_wave_fences(tmp_path / "nope.md") == []
+
+    def test_closed_wave_with_leftover_fence_is_reported(self, tmp_path):
+        text = (
+            "## Sequencing track\n\n"
+            "| Wave | Status | Outcome |\n"
+            "|---|---|---|\n"
+            "| **31** | ✅ CLOSED — all landed | some outcome |\n\n"
+            "## Read this first (standing)\n\n"
+            "some text\n\n"
+            "## ⬜ WAVE 31 — OLD BLOCK\n\n"
+            "# 31.1 — SOMETHING\n\n"
+            "```\n"
+            "leftover prompt text\n"
+            "```\n\n"
+            "## Queued next\n\n"
+        )
+        q = _queue(text, tmp_path)
+        findings = goc.closed_wave_fences(q)
+        assert len(findings) == 1
+        assert "Wave 31" in findings[0]
+        assert "1 fenced block" in findings[0]
+
+    def test_open_wave_with_fence_is_not_reported(self, tmp_path):
+        text = (
+            "## Sequencing track\n\n"
+            "| Wave | Status | Outcome |\n"
+            "|---|---|---|\n"
+            "| **34** | ⬜ FIRING | in progress |\n\n"
+            "## Read this first (standing)\n\n"
+            "some text\n\n"
+            "## ⬜ WAVE 34 — REBUILD MEASUREMENT\n\n"
+            "```\n"
+            "current prompt text\n"
+            "```\n\n"
+            "## Queued next\n\n"
+        )
+        q = _queue(text, tmp_path)
+        assert goc.closed_wave_fences(q) == []
+
+    def test_closed_wave_with_no_fence_is_not_reported(self, tmp_path):
+        text = (
+            "## Sequencing track\n\n"
+            "| Wave | Status | Outcome |\n"
+            "|---|---|---|\n"
+            "| **31** | ✅ CLOSED — all landed | some outcome |\n\n"
+            "## Read this first (standing)\n\n"
+            "some text\n\n"
+            "## Queued next\n\n"
+        )
+        q = _queue(text, tmp_path)
+        assert goc.closed_wave_fences(q) == []
