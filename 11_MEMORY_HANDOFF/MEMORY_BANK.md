@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-24T00:45:31Z (T-570 — T-570: retirement mechanism (warn-only) landed; findings handed to 33.2 for GG registration.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0045.md` for full session detail.
+**Last reviewed:** 2026-09-24T04:14:16Z (T-571 — T-571 ledger audit: 731/765 T4M-PROJ rows Kalshi-unconfirmed; confirmed-real n=34 reverses T-565's headline; 42 NFL rows quarantined (GG-300/301/302).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0414.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-23T05:23:00Z (T-568 — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0523.md` for full session detail.
