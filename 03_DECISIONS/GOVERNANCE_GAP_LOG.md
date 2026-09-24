@@ -3802,3 +3802,29 @@ Separately, also per explicit task instruction ("confirm the running code contai
 </details>
 
 ---
+
+### GG-302
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record</summary>
+
+**Gap ID:** GG-302
+**Category:** Ledger integrity / evidence quarantine (T-571 Deliverable 3)
+**What was found:** All 42 live NFL T1 game-market rows (20 closed + 22 open, `paper_portfolio_t1_nfl_game_market.json` on the VPS) trace to exactly ONE paper-trader process invocation: internal `session_id=PT-T1-NFLGM-22640C8C`, `audit_t1_nfl_game_market.jsonl` timestamps 2026-09-17T00:25:48.188Z through 2026-09-17T00:27:00.978Z (a ~72-second run), 46 risk evals / 42 approved / 42 `paper_order_opened` — an exact match to the ledger's 42-row count. All 42 rows carry `model_identity = "EXP-027 LR (T-531, HYP-012, verdict UNDERPOWERED)"`, matching `EXP027NFLForecastModel.PROVENANCE` in `nfl_exp027_adapter.py` exactly — **not** the `StubNFLForecastModel` default GG-255 warned about. A second, earlier session (`PT-T1-NFLGM-4B36EB7E`, 2026-09-15T04:41:48–04:43:21Z, 24 risk evals, 0 approvals, 0 positions opened) produced nothing and is consistent with GG-263's "one logged run produced zero positions" finding.
+
+This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub, produced these rows) and resolves RUN-EVENT provenance to a specific ~72-second window and internal session_id. It does **not** resolve ACTOR provenance: no cron entry exists for NFL (confirmed T-571 Deliverable 3 investigation), no `DECISION_LOG.md` entry references an NFL run around 2026-09-17, and the `approval_commit` field recorded on every row (`66bb0d3c6fff57b2dd75ffc2241ece102fac78f5`, dated 2026-07-31, GG-149's T4-MLB commit — unrelated to NFL) was verified by code read (`logic_epoch.py` `CURRENT_APPROVAL_COMMIT = _BOUNDARIES[-1].commit_sha`) to be a static epoch-boundary marker baked into the source tree, not a live git-HEAD-at-runtime capture — it does not and cannot identify which commit or session actually executed the 2026-09-17 manual invocation. No artifact examined (ledger fields, audit log, DECISION_LOG, cron config, git history) identifies who ran this, from where, or under what review.
+
+**Why this matters:** a manual, undocumented, unreviewed production run against live paper-trading risk approval (C4) produced 42 real approved positions using a model whose own embedded verdict string is "UNDERPOWERED" (EXP-027/HYP-012), with zero `DECISION_LOG.md` trail — a direct gap against Hard Rule 7 ("every strategic decision made in a session goes into DECISION_LOG.md immediately"). Whether this run was an authorized test, an accidental invocation, or something else cannot be determined from any artifact in this repo or on the VPS.
+
+**Impact:** per this session's task instruction, since actor/authorization provenance is unrecoverable, all 42 NFL T1 rows (20 settled + 22 open) are QUARANTINED from G6 evidence, calibration benchmarks, and `clean_n` counts as a standing constraint — not a one-session note. Any future session scoring, citing, or aggregating NFL T1 results must first re-check this entry's status. This quarantine is orthogonal to and does not resolve GG-295 (NFL threshold-backfill actor provenance, a separate 42-row defect on the same band) — the two are not to be conflated or jointly "resolved" by addressing only one.
+
+**Discovery:** T-571 Deliverable 3, via direct ledger field inspection (`model_identity`, `approval_commit`) cross-referenced against `audit_t1_nfl_game_market.jsonl` session_id grouping and `nfl_exp027_adapter.py`/`logic_epoch.py` source.
+
+**Resolution:** Not resolved. Registering the quarantine as the resolution to Deliverable 3's mandate ("if unrecoverable, quarantine and register as a standing constraint") — actor identity is the specific unrecoverable element; model and run-event provenance are resolved and stated above for the record. No ledger row edited, excluded, or re-stamped. No `clean_n` restated.
+
+**Cross-references:** GG-295 (NFL threshold-backfill actor provenance — separate, not resolved by this entry), GG-255 (stub-default pipeline-wiring risk — ruled out as the cause here), GG-263 (RESOLVED — T-534's logged run produced zero positions, consistent with the 2026-09-15 session found here), GG-267 (PROVENANCE field mechanism that made this finding possible), T-571.
+
+</details>
+
+---
