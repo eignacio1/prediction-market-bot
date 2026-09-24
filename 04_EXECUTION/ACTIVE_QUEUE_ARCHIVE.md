@@ -10,6 +10,508 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 33 — CLOSED 2026-09-23 (all three landed)
+
+**Recovered 2026-09-24.** These prompts were deleted from `ACTIVE_QUEUE.md` during the Wave 34
+rotation without being archived first, in violation of the queue's own archive rule. Recovered
+from the strategic window's delivered copy of the Wave 33 queue and restored here verbatim.
+
+## ⬜ WAVE 33 — TEST THE THESIS, VERIFY THE COHORT
+
+---
+
+# 33.1 — THE T4 LATENCY THESIS · DOES THE MARKET ACTUALLY LAG? · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "t4-latency-thesis"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 33.2 owns them. ***
+*** Record gap candidates in your own results file for 33.2 to register. ***
+
+TIER: STANDARD. This is the most load-bearing untested claim in the project.
+
+T4's entire thesis, stated in CLAUDE.md: "prediction markets are slow to incorporate live in-game
+state... the market price lags behind the true updated probability... the market hasn't updated
+yet, the bot has." Every T4 band, the 11-sub-band decomposition, and T4M-PROJ's ACTIVE status rest
+on it. **It has never been measured.** This block measures it, and needs no bets, no fills, no
+settlements and no ledger -- so its result survives whatever 33.2 finds about the ledger.
+
+THE INSTRUMENT. `logs/t4_mlb_cycle_log.jsonl` on the VPS. Pull it fresh -- the local mirror
+`logs/.vps_t4_mlb_cycle_log_cache.jsonl` stops at 2026-08-07 and must NOT be used as the source.
+Every row carries, at a measured ~60s cadence (p10 56s / median 60s / p90 65s):
+  ts, ticker, p_t4 (model prob), mip (market implied prob), vig, gross_edge, net_edge,
+  h_so_far, ab_so_far, ab_remaining, inning, batting_slot, ba_l10, threshold, game_date
+Both the model's probability AND the market's price AND the game state, side by side, per cycle.
+In a 400k-row sample of the stale mirror, 9.8% of consecutive same-ticker pairs carried a game-
+state change -- thousands of events. Re-derive that rate on the fresh pull; do not reuse it.
+
+DELIVERABLE 1 -- PRE-REGISTER, PUSH, THEN COMPUTE. IMMUTABLE ONCE PUSHED.
+  Write and push BEFORE any analysis: the exact event definition, the test statistics, the horizons,
+  and what result you will call THESIS SUPPORTED / NOT SUPPORTED / INCONCLUSIVE. Include your
+  handling of the two confounds named in D3. Do not relabel any of it afterwards.
+
+DELIVERABLE 2 -- THE DIRECT TEST: does `mip` move AFTER a state change, or was it already there?
+  Define a state-change event on a single ticker's time-ordered series (h_so_far increments,
+  ab_so_far increments, inning advances -- report these separately, they are not the same event).
+  For each event at time T, measure `mip` and `p_t4` at T and at T+1, T+2, T+3, T+4 cycles
+  (~60/120/180/240s). Report the mean and distribution of `mip` movement per horizon, split by
+  event type and by direction of the model's implied update.
+  *** State the resolution limit in the results, prominently: this instrument measures lag at the
+  ~60s cadence the bot itself evaluates on. If the market updates in 10 seconds, this test reports
+  "already updated by the next sample" -- which is itself decisive, because a lag the bot cannot
+  observe at its own cycle rate is a lag the bot cannot trade. Do not present that as a null. ***
+
+DELIVERABLE 3 -- THE SHARP TEST: does our own edge signal predict the market's NEXT MOVE?
+  This is the cleanest formulation of the thesis and it requires no outcomes at all.
+  If the market lags and the model is ahead of it, then `gross_edge` at time T (= p_t4 - mip)
+  should PREDICT the subsequent movement of `mip` from T to T+k. Regress (or bin) forward
+  `delta_mip(T to T+k)` on `gross_edge(T)`, for k = 1..4 cycles. Report slope, se, and clustering by game
+  and by ticker -- rows within a ticker are not independent and must not be treated as such.
+  **Both confounds must be addressed explicitly, not mentioned and dropped:**
+   (a) MEAN REVERSION. A large `gross_edge` may be a transient `mip` dislocation that simply
+       reverts, which looks like "market moves toward model" with zero model skill. Distinguish
+       "mip converges toward p_t4" from "mip reverts toward its own trailing mean" -- run both and
+       report both slopes. If reversion explains it, say so plainly.
+   (b) SHARED INFORMATION. `p_t4` and `mip` are both functions of overlapping public state, so
+       correlation is expected. The thesis needs `gross_edge` to predict mip's FORWARD move, not
+       merely to co-move. Say which one your statistic actually measures.
+
+DELIVERABLE 4 -- SEGMENT IT, BECAUSE "T4" IS NOT ONE THING.
+  Report the D3 result split by inning bucket, by `ab_remaining`, by price stratum (`mip` band),
+  and by threshold. The thesis may hold in some regimes and not others -- that is a more useful
+  answer than a single pooled number, and it is directly actionable for band design.
+
+DELIVERABLE 5 -- WRITE IT UP AS EVIDENCE, AND STATE WHAT IT DOES NOT ESTABLISH.
+  `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`. Include: the pre-registration, every statistic with
+  n / se / clustering unit, the resolution-limit caveat from D2, both confound results from D3, the
+  segmentation, and an explicit list of what was NOT checked. A supported thesis here still does
+  not establish that the lag is large enough to clear costs -- 32.1 measured that 71.5% of the 765
+  approvals flip to rejected at median spread. Name that tension; do not resolve it.
+
+DO NOT: use the stale local cycle-log mirror as the data source. Pull fresh from the VPS.
+DO NOT: touch any portfolio/ledger file, or use settled outcomes -- this test needs none, and the
+  ledgers are under audit by 33.2 this wave.
+DO NOT: change kelly_fraction, a cell status, a band definition, or any constant.
+DO NOT: recommend retiring or promoting T4 or any sub-band on this result. Report the measurement.
+DO NOT: restart a service, submit an order, or modify a price-capture window.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 33.2 owns them.
+DO NOT: touch governance tooling, hooks, or the operator console -- 33.3 owns those.
+
+SCOPE FENCE: one new analysis module under `scripts/`, its own `exp_output/` dir, a results summary
+under `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`, and read-only pulls from the VPS.
+
+REPORT BACK: the pre-registration as pushed; fresh-pull row count, date span and re-derived
+state-change rate; D2's per-horizon mip movement by event type with the resolution caveat stated;
+D3's forward-prediction slopes WITH both confound results; the D4 segmentation; and your verdict
+against the pre-registered labels -- plus an explicit list of what this does not establish.
+```
+
+---
+
+# 33.2 — IS THE 765 REAL? · LEDGER INTEGRITY · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "ledger-integrity-audit"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md AND DECISION_LOG.md THIS WAVE. ***
+
+TIER: STANDARD.
+
+ONE DELIVERABLE, stated plainly: **establish whether recorded positions represent real trades.**
+
+Two independent HIGH findings now say the ledger misrepresents reality:
+  GG-295 -- 42 NFL rows' thresholds were written by an unidentified actor, no commit anywhere in
+    repo history, falsely attributed to T-562.
+  GG-297 -- 139 of 140 T4M-PROJ positions marked OPEN (all dated 2026-09-22) are `canceled` /
+    zero-fill at Kalshi. Only 1 carries a genuine fill.
+And T4M-PROJ's 765-row epoch-12 clean cohort is **the only scorable cohort in the project.** Every
+calibration figure the project has -- including T-565's reproduced model-vs-market result -- is
+computed from it. T-565 reproduced that result by re-reading the same ledger, which cannot detect
+this class of problem. **If the 765 contains phantoms, the project's one real finding is unsound.**
+
+DELIVERABLE 1 -- APPLY GG-297'S TEST TO THE COHORT THAT MATTERS.
+  GG-297 was found on 2026-09-22 open positions. Run the same check against all 765 epoch-12
+  T4M-PROJ closed rows: for each, what does Kalshi's own order/fill record say actually happened?
+  Report: confirmed filled, confirmed canceled/zero-fill, and NOT RETRIEVABLE as three separate
+  counts -- never collapse "cannot verify" into "verified." If Kalshi's retention window does not
+  reach back to 2026-07-31..08-13, say so explicitly and report exactly how far back it does reach;
+  that boundary is itself the finding and must be stated, not worked around.
+  Pass `authenticated=True` on every portfolio/order read -- `_get()` defaults to
+  `authenticated=False`, which resolves to PRODUCTION regardless of BOT_ENV (T-556, unfixed).
+
+DELIVERABLE 2 -- IF PHANTOMS EXIST IN THE 765, SIZE THE DAMAGE. DO NOT REPAIR ANYTHING.
+  How many, on which game-dates, and what happens to T-565's headline figures when they are
+  excluded -- Brier, ECE, market Brier, the paired diff, and the day-clustered t.
+  Recompute using T-565's committed script (`scripts/t565_calibration_model_vs_market.py`) and its
+  pre-registered construction, unchanged, so the before/after is comparable.
+  **Report the delta. Do not edit the ledger, do not exclude rows from the live cohort, do not
+  restate the clean_n.** GG-228 applies: no repair of a derived file before provenance is settled,
+  and the repair decision is the operator's.
+
+DELIVERABLE 3 -- NFL: WHICH MODEL WROTE THE 20 SETTLED ROWS? This was ported from 31.2 and dropped.
+  `run_t1_nfl_game_market.py::main(model=None)` defaults to `StubNFLForecastModel`
+  (`PROVENANCE = "STUB ... NOT a trained model, GG-255"`). Nothing in `src/`, `scripts/` or
+  `deploy/` passes `EXP027NFLForecastModel` into it; `web_dashboard.py` reads EXP-027's provenance
+  string as a DISPLAY LABEL ONLY and never instantiates the model. There is no NFL cron entry, so
+  every run was launched by hand and the model argument is not recoverable from the repo.
+  Establish it from the rows themselves, the audit log, or the run history -- or state plainly that
+  it is unrecoverable. **If it cannot be established, the 20 settled rows and the 22 still-open
+  ones are QUARANTINED from G6 evidence, NFL calibration and any clean_n** -- record that as a
+  standing constraint in the gap log, not as a one-session note.
+
+DELIVERABLE 4 -- SAY WHAT THE PROJECT'S EVIDENCE BASE ACTUALLY IS, AS OF NOW.
+  One table: every cohort the project might score (T4M-PROJ 765, NFL T1 20 settled / 22 open, T1
+  MLB, T2, NBA), its verified/unverified/quarantined status after D1-D3, and one line on why.
+  This becomes the reference the calibration track cites instead of re-deriving it each wave.
+  Update GG-295, GG-297 and GG-298 with what this session established. Register anything new.
+  Clear the gap-candidate backlog handed over by 33.1 and 33.3.
+
+DO NOT: repair, edit, backfill, exclude or re-stamp any ledger row. This block is diagnosis only.
+DO NOT: mark GG-295 resolved -- actor provenance is not this block's scope and content provenance
+  is not actor provenance.
+DO NOT: restate `clean_n` anywhere, or change a cell status, kelly_fraction, or constant.
+DO NOT: manufacture a position, row, cohort member or outcome; do not infer a fill from a local
+  status field alone -- that is exactly the defect under audit.
+DO NOT: restart a service, submit an order, or modify a price-capture window.
+DO NOT: touch `scripts/` analysis modules or `exp_output/` belonging to 33.1, or governance tooling
+  belonging to 33.3.
+
+SCOPE FENCE: read-only ledger and Kalshi order-record access, T-565's existing script run
+unchanged, a results summary, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+Self-serialising close-out: re-read both logs fresh against HEAD immediately before writing --
+33.1 and 33.3 are running concurrently.
+
+REPORT BACK: the three-way count (filled / canceled / not-retrievable) across the 765 with Kalshi's
+actual retention boundary stated; the recomputed T-565 figures with phantoms excluded and the
+delta; the NFL provenance verdict or an explicit unrecoverable finding plus the quarantine record;
+and the evidence-base table. State plainly whether the project's one real calibration finding
+still stands.
+```
+
+---
+
+# 33.3 — BUILD THE RETIREMENT MECHANISM · WARN-ONLY · SHORT
+
+```
+Run the CLAUDE.md session-start protocol in full. Paste outputs.
+scripts/new_session_worktree.sh "retirement-mechanism"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 33.2 owns them. ***
+
+TIER: SHORT. One deliverable: make retirement a machine step instead of a person remembering.
+
+The diagnosis: every artifact in this project has an automated, enforced CREATION path and a
+manual, remembered RETIREMENT path. `claim_session.sh` reserves IDs atomically with rebase-retry.
+Gap registration is mandatory and checked. Creation is mechanical; retirement is memory. That
+worked when the project was navigable and does not survive 12 departments and 138 gaps.
+
+*** SHIP WARN-ONLY. DO NOT EXECUTE THE ARCHIVE MOVE THIS SESSION. *** 33.2 owns the gap log this
+wave and is actively writing it. Build the tooling, prove it on a COPY, leave the live log
+untouched. The first real run is a later wave's call.
+
+DELIVERABLE 1 -- `scripts/retire_resolved_gaps.py`, and prove it on a copy only.
+  Moves every live-log entry whose Status token is resolved-class, VERBATIM, into
+  `GOVERNANCE_GAP_LOG_ARCHIVE.md`. Must handle the format drift that already exists: bare
+  `RESOLVED`; dated variants (`RESOLVED (2026-09-11)`, `RESOLVED 2026-08-28 (T-502)`,
+  `RESOLVED (2026-09-11, code+migration)`); `CLOSED-AS-ARTIFACT`; and at least one entry whose
+  Status value runs to a full paragraph. Idempotent. Archive stays append-only; entries never
+  return. `PARTIALLY RESOLVED` / `PARTIAL RESOLVE` / `LIKELY RESOLVED` / `IN PROGRESS` /
+  `PLAN ACCEPTED` / `ACCEPTED UNCERTAINTY` / `WATCH ITEM` are STAY tokens -- they are NOT
+  resolved-class and must not be moved. Get that list right; it is the whole safety margin.
+  Run it against a COPY of the live log. Report what it WOULD move, entry by entry, and diff the
+  copy to prove nothing but whole entries moved.
+
+DELIVERABLE 2 -- the assertion that would have caught this on day one.
+  Add to `.claude/hooks/governance_scan.sh`: the live log must contain ZERO resolved-class
+  statuses. **Warn-only this session** -- print loudly, do not fail the scan, do not gate anything.
+  Note in the script's own comments the criterion for promoting it to hard-fail later.
+
+DELIVERABLE 3 -- teach the console to see retirement debt.
+  `generate_operator_console.py`: add a resolved-class filter (`classify()` currently has NONE, so
+  every live-log entry is bucketed blocked/broken/accruing and resolved entries render as
+  "accruing" -- this is why it reported 133 open against a real 94 on 2026-09-22).
+  Then add **Section 0 -- "Overdue for retirement"**, a roll-up across all twelve departments:
+  unarchived resolved gaps; merged-but-undeleted branches; prunable worktrees; ADRs/APRs whose own
+  file reads ACCEPTED but which have no `APPROVALS_REGISTER.md` row (ADR-0063 and APR-0035 are
+  live examples); and session claims with no closure row. One number the operator reads weekly.
+
+DELIVERABLE 4 -- close the two loops that already exist but only run one way.
+  (a) `sweep_stray_branches.sh` already runs as `/session-end` Step 9 -- extend it to also delete
+      merged remote AND local branches (`git branch -d`, NEVER `-D`; if `-d` refuses, the branch is
+      not merged -- leave it and report) and to `git worktree prune`.
+  (b) `check_register_parity.py` checks one direction only. Add the reverse: any ADR/APR file whose
+      own status reads ACCEPTED must have a register row. This is why ADR-0063 is invisible to it.
+
+DO NOT: run the archive move against the live `GOVERNANCE_GAP_LOG.md`. Copy only, this session.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md at all -- 33.2 owns them and is writing
+  them concurrently. Record your own findings in your results file for 33.2 to register.
+DO NOT: change any gap's status, close anything, or judge whether work is finished. This mechanism
+  FILES things already marked done. Retirement is filing, never adjudication.
+DO NOT: make the new assertion hard-fail, or gate any existing check on it, this session.
+DO NOT: delete any UNMERGED branch (17 outstanding, operator-routed, Hard Rule 11).
+DO NOT: touch ledgers, `exp_output/`, or 33.1's analysis modules.
+
+SCOPE FENCE: `scripts/retire_resolved_gaps.py` (new), `scripts/generate_operator_console.py`,
+`scripts/sweep_stray_branches.sh`, `scripts/check_register_parity.py`,
+`.claude/hooks/governance_scan.sh`, their tests, and a short results note.
+
+REPORT BACK: the entry-by-entry list the retire script WOULD move from a copy, with the stay-token
+list you implemented; the copy diff proving only whole entries moved; the warn-only assertion's
+output against the live log today; the console's new Section 0 rendered, with its twelve-department
+roll-up counts; and the two extended loops with evidence each works.
+```
+
+---
+
+
+
+---
+
+## Wave 32 — CLOSED 2026-09-24 (all three landed; 32.3 correctly STOPPED before funding)
+
+# 32.1 — GROUND THE EDGE GATE · REAL VIG PER SERIES · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "vig-grounding-from-archive"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md THIS WAVE. 32.3 owns them. ***
+*** Record gap candidates in your own results file for 32.3 to register. ***
+
+TIER: STANDARD. *** YOU ALSO OWN THE SHARED `main` TREE THIS WAVE. DELIVERABLE 0 FIRST. ***
+
+DELIVERABLE 0 -- SYNC AND LAND THE SHARED TREE. DO THIS BEFORE YOUR WORKTREE, BEFORE ANALYSIS.
+  The shared working tree is 7 commits behind `origin/main` (local `c68a9c8` vs origin `18b0e0d`)
+  and carries the strategic window's uncommitted Wave 32 queue rebuild. Both halves matter: a
+  session deriving state from the shared tree reads PRE-Wave-31 reality, and the rebuilt queue +
+  its new archive file exist nowhere but that tree.
+  Derived 2026-09-23 in the shared tree -- re-derive, do not trust these:
+    dirty:    03_DECISIONS/OPERATOR_CONSOLE.md (generated), 04_EXECUTION/ACTIVE_QUEUE.md
+    untracked: 04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md, "Reload Dashboard.command"
+    incoming: 13 files, NONE of which collide with the dirty set -- a ff-only pull is clean
+  (a) `git fetch origin`, then re-run the collision check yourself before pulling:
+      compare `git diff --name-only HEAD origin/main` against your dirty set. If ANY file appears
+      in both, STOP and report -- do not pull, do not stash, do not check out over it.
+  (b) `OPERATOR_CONSOLE.md` is a GENERATED file (`scripts/generate_operator_console.py`, run by
+      `.claude/hooks/governance_scan.sh` every scan). Its diff is hook output, not work. Discard it
+      -- T-533 precedent, DECISION_LOG 2026-09-09. Leave "Reload Dashboard.command" alone.
+  (c) `git pull --ff-only`. If it refuses, STOP and report the exact refusal. Never force it.
+  (d) Commit and push, PATH-SCOPED, exactly these two paths and nothing else:
+      `04_EXECUTION/ACTIVE_QUEUE.md` and `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`.
+      Never `git add -A`, `git commit -a`, unscoped `stash`, `reset --hard`, or `clean -fd` --
+      32.2 and 32.3 are running concurrently and the shared tree is not yours alone.
+  (e) Verify and report: shared tree at `origin/main`, both queue files visible on origin, and the
+      queue's own invariant holds -- exactly THREE fenced blocks in `ACTIVE_QUEUE.md`
+      (`grep -c '^```' 04_EXECUTION/ACTIVE_QUEUE.md` returns 6).
+  (f) Then check whether this is structurally preventable: does
+      `.claude/hooks/session_guard.sh` actually surface shared-tree-behind-origin as a visible
+      warning? It is documented as checking "HEAD-vs-origin drift," yet the tree reached 7 commits
+      behind with nobody noticing. If the check is absent, silent, or only fires on a different
+      condition, record it as a gap candidate against **GG-260** (OPEN -- shared-tree drift
+      invisible to worktree-isolated sessions) for 32.3 to register. Do not fix it this session.
+
+The C4 edge gate is `model_p > market_implied_prob + vig`. The `vig` term is an assumption. The
+price archive carries an observed `half_spread` and full bid/ask on 1.8M rows. This block replaces
+the assumption with a measurement, per series family. It does NOT change the gate.
+
+DELIVERABLE 1 -- WHAT IS THE GATE USING TODAY? Read it out of the code, not the docs.
+  Enumerate every place a vig / cost / spread term enters an edge or gating decision across
+  `risk.py`, `run_t4_mlb_live.py`, both T1 game-market run scripts, `run_t2_mlb_sameday.py` and
+  `execution_bands.py`. For each: the literal value or expression, its provenance if traceable,
+  and whether it is per-series or global. Report before analyzing anything.
+
+DELIVERABLE 2 -- MEASURE THE REAL DISTRIBUTION, PER SERIES FAMILY.
+  Per `series_ticker`: distribution of `half_spread` and of `(yes_ask - yes_bid)` -- median, IQR,
+  p90 -- and how each moves with `yes_mid` (spreads widen at the tails) and with time-to-close.
+  Report n and date span per series. Handle the `.BROKEN_FIRSTRUN` file explicitly: say whether
+  you included it and why.
+
+DELIVERABLE 3 -- QUANTIFY THE GAP. DO NOT CLOSE IT.
+  Per family: what the code assumes vs what the market charged. State whether the current constant
+  is conservative (over-charges, suppresses bets) or permissive (under-charges, approves bets with
+  no real edge), in probability points.
+  Then re-run the T4M-PROJ epoch-12 clean cohort's 765 gate decisions under measured vig and report
+  how many flip. That number is the finding.
+
+DELIVERABLE 4 -- WRITE IT UP AS AN APR, NOT A CODE CHANGE.
+  Changing a live gating constant requires an ADR (Hard Rule 3). Draft the decision request with
+  the measured values as evidence. Do not implement. Do not change a constant.
+
+DO NOT: change any vig, cost, spread or gating constant anywhere in src/.
+DO NOT: touch kelly_fraction, promote a cell, submit an order, or restart a service.
+DO NOT: modify or re-time a price-capture window. Reading the archive is fine.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 32.3 owns them.
+DO NOT: touch the efficiency module or its outputs -- 32.2 owns those.
+DO NOT: recommend against a series family on this finding alone (standing DO NOT).
+DO NOT: cite ADR-0046's BRIER/ECE baselines as a validity reference -- T-565 proved them
+  NOT COMPARABLE to band-scoped cohorts, and its ECE baseline drifted +22% at larger n.
+
+SCOPE FENCE: Deliverable 0's shared-tree sync plus the two queue files named there; then one new
+analysis script under `scripts/`, its `exp_output/` dir, a results summary under
+`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`, one APR draft under `00_ADMIN/`.
+
+REPORT BACK: Deliverable 0 first -- your own collision check, the pull result, the two paths you
+committed, the three-fence verification, and your finding on `session_guard.sh`. Then: the
+code-derived inventory of every live cost term; measured per-series spread distributions with n and
+span; assumed-vs-actual gap per family in probability points; how many of the 765 gate decisions
+flip under measured vig; and the APR draft path.
+```
+
+---
+
+# 32.2 — RANK THE EFFICIENCY GRADIENT · 11 SERIES · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "efficiency-gradient-ranking"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md THIS WAVE. 32.3 owns them. ***
+
+TIER: STANDARD.
+
+CLAUDE.md states the strategy only works where pricing is inefficient, then states -- in its own
+words, as an OPEN OPERATOR DECISION that must not be resolved in-session -- that the coverage
+target expands toward moneyline, run line and totals, the opposite end of that gradient. That
+tension has never been measured, only argued. The archive can measure it.
+
+DELIVERABLE 1 -- PRE-REGISTER THE RANKING METRIC BEFORE COMPUTING IT.
+  Write, commit and push, BEFORE any analysis: which observables define "more efficient" here, how
+  they combine, and the ordering you expect. Consider and justify including or excluding: relative
+  spread at comparable `yes_mid`, depth from `depth_*.jsonl`, price-discovery speed (variance of
+  `yes_mid` changes approaching close), volume and open_interest, and distance from `last_price`
+  to closing price. Immutable once pushed -- do not relabel after seeing the ranking.
+
+DELIVERABLE 2 -- RANK THE ELEVEN FAMILIES.
+  Per-family n, date span, and a stated uncertainty on each position. A rank with overlapping
+  error bars is a TIE and must be reported as one.
+  Report MLB and NFL separately: NFL has ~201 rows per family against MLB's tens of thousands.
+  If NFL is not yet rankable, say so plainly rather than ranking it.
+
+DELIVERABLE 3 -- LOCATE THE BOT ON ITS OWN GRADIENT.
+  Where does `KXMLBHIT` -- the one cell that has ever traded -- sit? CLAUDE.md asserts player props
+  in low-attention MLB windows are the inefficient end. Is that true in the data, or a belief the
+  project has been operating on?
+  Then: where would each of the core four (moneyline, spread, totals, team totals) place the bot?
+  Present as evidence for the operator's decision. **Do not make the decision.**
+
+DELIVERABLE 4 -- WRITE IT UP AS THE INPUT TO THAT DECISION.
+  A summary an operator can read in five minutes: the ranking, the tie structure, where the bot
+  sits, and explicitly what this does NOT establish (efficiency is not edge; a thin market can be
+  thin and still unbeatable).
+
+DO NOT: resolve the operator decision, recommend a market family, or soften the tension into a
+  monitoring note. CLAUDE.md forbids all three explicitly.
+DO NOT: recommend against a sport or market family on one finding (standing DO NOT).
+DO NOT: change any constant, cell status, kelly_fraction, or capture window.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 32.3 owns them.
+DO NOT: touch the vig module or its outputs -- 32.1 owns those.
+DO NOT: pull, commit, push or otherwise touch the shared `main` working tree -- 32.1 owns it this
+  wave (its Deliverable 0). Work only in your own worktree.
+
+SCOPE FENCE: one new analysis module under `scripts/`, its own `exp_output/` dir, and a results
+summary under `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`.
+
+REPORT BACK: the pre-registration as pushed; the eleven-family ranking with n, span and ties;
+where KXMLBHIT actually sits and whether CLAUDE.md's premise survives; where the core four would
+place the bot; and an explicit list of what this does not establish.
+```
+
+---
+
+# 32.3 — MLB FINAL WEEK · FUND, ACCRUE UNBIASED, CONFIRM A FILL · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "mlb-final-week-accrual"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md AND DECISION_LOG.md THIS WAVE. ***
+
+TIER: STANDARD. *** EXPIRES 2026-09-28 -- MLB regular-season end, derived from archive
+close_times (KXMLBGAME 09-28; TOTAL/SPREAD/TEAMTOTAL/F5/F3/F7 09-27; KXMLBHIT 09-26). ***
+
+T4M-PROJ is the only ACTIVE cell and the only cohort with a real clean_n (765, frozen since
+2026-08-13, 11 game-days). It is NOT opportunity-starved: on 2026-09-20 it produced >=2,000
+C4-approved orders in 6.8 hours totalling $1,907.85 of intended stake, and every one failed
+`insufficient_shard_balance`. Shard 3 holds $200 -- roughly 10x under-funded.
+The goal is NOT volume. It is (a) ONE fill confirmed from the live service, and (b) any rows
+added being UNBIASED -- a collateral-truncated night injects an early-inning selection bias
+straight into the project's only clean cohort.
+
+DELIVERABLE 1 -- MEASURE TRUE DEMAND. 2,000 is a ring-buffer ceiling, not a count.
+  GG-271's bounded `rejected_positions` buffer (ACTIVATED 2026-09-15) caps at 2,000, so real
+  2026-09-20 volume is unknown above that. Recover it from the audit trail / cycle log, not the
+  portfolio array. Report approvals per game-day for the last 7 days, intended-stake total per
+  day, and the observed per-day maximum. If the true count cannot be recovered, say so and use
+  2,000 as an explicit LOWER BOUND -- never present the ceiling as the count.
+
+DELIVERABLE 2 -- FUND SHARD 3 TO COVER MEASURED DEMAND, WITH HEADROOM. Demo collateral only.
+  Sandbox/demo action, pre-authorized by standing operator directive. NOT a capital decision and
+  must NOT be escalated. Move demo funds so shard 3 covers D1's measured daily intended stake
+  plus at least 50% headroom.
+  Read `GET /portfolio/balance`'s `balance_breakdown` ARRAY before and after and paste both --
+  the aggregate is what fooled every read for 38 days. Pass `authenticated=True` on every
+  portfolio read: `_get()` defaults to `authenticated=False`, resolving to PRODUCTION regardless
+  of BOT_ENV (T-556, unfixed).
+  *** If the demo account cannot reach that level, STOP and report. Do NOT accrue on a
+  known-truncating balance -- a biased cohort is worse than no cohort. ***
+
+DELIVERABLE 3 -- OBSERVE A REAL FILL FROM THE LIVE SERVICE.
+  GG-203 closes only when the running `t4-mlb` service converts an approval into a fill -- NOT a
+  hand-built order succeeding. Report the approval, order id, fill, and resulting ledger row.
+  If no approval fires in the window, that is a finding: report evaluation counts and say so.
+  NO RESTART IS AUTHORIZED. If you believe one is required, register and stop.
+
+DELIVERABLE 4 -- CHARACTERIZE WHAT THE COHORT GAINED. The calibration track depends on this.
+  For every position added: how many, across how many distinct game-days, and the within-day
+  distribution by inning / `ab_remaining_at_entry`. Compare that shape to the existing 765.
+  State plainly whether collateral ran out on any night and at what clock time -- if it did, rows
+  after that point are missing non-randomly and the day is contaminated. FLAG such a day for
+  exclusion; do not exclude it yourself.
+  Report final T4M-PROJ clean_n, final game date accrued, and the freeze date.
+
+DELIVERABLE 5 -- UPDATE ONLY WHAT IS PROVEN, AND CLEAR T-565'S BACKLOG.
+  GG-203 stays PARTIALLY RESOLVED unless a service-produced fill was observed.
+  Register the gap candidates in T-565's results file ("Gap candidates for 31.2" -- 31.2 never
+  registered them), including the `rejected_positions` naming/framing mismatch and ADR-0046's
+  ECE instability (0.0680 -> 0.0832, +22%, identical methodology at larger n).
+
+DO NOT: restart any production service.
+DO NOT: touch kelly_fraction or sizing. ADR-0050's flat measurement stake is the authorized
+  configuration; funding collateral is not a sizing change and must not become one.
+DO NOT: submit an order against the production account or with real funds. Demo only, always.
+DO NOT: accrue on a balance you have shown will truncate the night.
+DO NOT: manufacture a position, row, cohort member or outcome.
+DO NOT: modify or re-time a price-capture window.
+DO NOT: touch `scripts/` analysis code or `exp_output/` -- 32.1 and 32.2 own those.
+DO NOT: pull, commit, push or otherwise touch the shared `main` working tree -- 32.1 owns it this
+  wave (its Deliverable 0). Work only in your own worktree.
+
+SCOPE FENCE: the VPS t4-mlb service (observation only), Kalshi demo account collateral,
+kalshi_client.py reads, the MLB ledgers, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+Self-serialising close-out: re-read both logs fresh against HEAD immediately before writing.
+
+REPORT BACK: true approval volume per game-day with the ring-buffer caveat stated; per-shard
+balance breakdown before and after funding, verbatim; whether a service-produced fill was observed
+and its full trail; the added cohort's day/inning shape vs the existing 765; whether any night
+truncated and when; final clean_n and freeze date; and what GG-203 still lacks.
+```
+
+---
+
+
+
+---
+
 ## Wave 31 — CLOSED 2026-09-23 (all three landed)
 
 # 31.1 — CALIBRATION BENCHMARK · MODEL vs MARKET · STANDARD
@@ -585,6 +1087,317 @@ verified each game is final; the write-path fix and its three tests; the backup 
 before/after diff; both independent score sources; the hand-verified rehearsal table; whether you
 settled live and the realized P&L with its idempotency proof; and your Deliverable 6 paragraph.
 ```
+
+---
+
+
+## WAVE 33 — CLOSED 2026-09-24 (archived verbatim)
+
+Landed at `origin/main = b25fcb6`. 33.1 = T-569 (PR #147) · 33.2 = T-571 (PR #148) · 33.3 = T-570.
+Outcomes are in the sequencing track in `ACTIVE_QUEUE.md`. Prompts below are the text as fired.
+
+## ⬜ WAVE 33 — TEST THE THESIS, VERIFY THE COHORT
+
+---
+
+# 33.1 — THE T4 LATENCY THESIS · DOES THE MARKET ACTUALLY LAG? · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "t4-latency-thesis"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 33.2 owns them. ***
+*** Record gap candidates in your own results file for 33.2 to register. ***
+
+TIER: STANDARD. This is the most load-bearing untested claim in the project.
+
+T4's entire thesis, stated in CLAUDE.md: "prediction markets are slow to incorporate live in-game
+state... the market price lags behind the true updated probability... the market hasn't updated
+yet, the bot has." Every T4 band, the 11-sub-band decomposition, and T4M-PROJ's ACTIVE status rest
+on it. **It has never been measured.** This block measures it, and needs no bets, no fills, no
+settlements and no ledger -- so its result survives whatever 33.2 finds about the ledger.
+
+THE INSTRUMENT. `logs/t4_mlb_cycle_log.jsonl` on the VPS. Pull it fresh -- the local mirror
+`logs/.vps_t4_mlb_cycle_log_cache.jsonl` stops at 2026-08-07 and must NOT be used as the source.
+Every row carries, at a measured ~60s cadence (p10 56s / median 60s / p90 65s):
+  ts, ticker, p_t4 (model prob), mip (market implied prob), vig, gross_edge, net_edge,
+  h_so_far, ab_so_far, ab_remaining, inning, batting_slot, ba_l10, threshold, game_date
+Both the model's probability AND the market's price AND the game state, side by side, per cycle.
+In a 400k-row sample of the stale mirror, 9.8% of consecutive same-ticker pairs carried a game-
+state change -- thousands of events. Re-derive that rate on the fresh pull; do not reuse it.
+
+DELIVERABLE 1 -- PRE-REGISTER, PUSH, THEN COMPUTE. IMMUTABLE ONCE PUSHED.
+  Write and push BEFORE any analysis: the exact event definition, the test statistics, the horizons,
+  and what result you will call THESIS SUPPORTED / NOT SUPPORTED / INCONCLUSIVE. Include your
+  handling of the two confounds named in D3. Do not relabel any of it afterwards.
+
+DELIVERABLE 2 -- THE DIRECT TEST: does `mip` move AFTER a state change, or was it already there?
+  Define a state-change event on a single ticker's time-ordered series (h_so_far increments,
+  ab_so_far increments, inning advances -- report these separately, they are not the same event).
+  For each event at time T, measure `mip` and `p_t4` at T and at T+1, T+2, T+3, T+4 cycles
+  (~60/120/180/240s). Report the mean and distribution of `mip` movement per horizon, split by
+  event type and by direction of the model's implied update.
+  *** State the resolution limit in the results, prominently: this instrument measures lag at the
+  ~60s cadence the bot itself evaluates on. If the market updates in 10 seconds, this test reports
+  "already updated by the next sample" -- which is itself decisive, because a lag the bot cannot
+  observe at its own cycle rate is a lag the bot cannot trade. Do not present that as a null. ***
+
+DELIVERABLE 3 -- THE SHARP TEST: does our own edge signal predict the market's NEXT MOVE?
+  This is the cleanest formulation of the thesis and it requires no outcomes at all.
+  If the market lags and the model is ahead of it, then `gross_edge` at time T (= p_t4 - mip)
+  should PREDICT the subsequent movement of `mip` from T to T+k. Regress (or bin) forward
+  `delta_mip(T to T+k)` on `gross_edge(T)`, for k = 1..4 cycles. Report slope, se, and clustering by game
+  and by ticker -- rows within a ticker are not independent and must not be treated as such.
+  **Both confounds must be addressed explicitly, not mentioned and dropped:**
+   (a) MEAN REVERSION. A large `gross_edge` may be a transient `mip` dislocation that simply
+       reverts, which looks like "market moves toward model" with zero model skill. Distinguish
+       "mip converges toward p_t4" from "mip reverts toward its own trailing mean" -- run both and
+       report both slopes. If reversion explains it, say so plainly.
+   (b) SHARED INFORMATION. `p_t4` and `mip` are both functions of overlapping public state, so
+       correlation is expected. The thesis needs `gross_edge` to predict mip's FORWARD move, not
+       merely to co-move. Say which one your statistic actually measures.
+
+DELIVERABLE 4 -- SEGMENT IT, BECAUSE "T4" IS NOT ONE THING.
+  Report the D3 result split by inning bucket, by `ab_remaining`, by price stratum (`mip` band),
+  and by threshold. The thesis may hold in some regimes and not others -- that is a more useful
+  answer than a single pooled number, and it is directly actionable for band design.
+
+DELIVERABLE 5 -- WRITE IT UP AS EVIDENCE, AND STATE WHAT IT DOES NOT ESTABLISH.
+  `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`. Include: the pre-registration, every statistic with
+  n / se / clustering unit, the resolution-limit caveat from D2, both confound results from D3, the
+  segmentation, and an explicit list of what was NOT checked. A supported thesis here still does
+  not establish that the lag is large enough to clear costs -- 32.1 measured that 71.5% of the 765
+  approvals flip to rejected at median spread. Name that tension; do not resolve it.
+
+DO NOT: use the stale local cycle-log mirror as the data source. Pull fresh from the VPS.
+DO NOT: touch any portfolio/ledger file, or use settled outcomes -- this test needs none, and the
+  ledgers are under audit by 33.2 this wave.
+DO NOT: change kelly_fraction, a cell status, a band definition, or any constant.
+DO NOT: recommend retiring or promoting T4 or any sub-band on this result. Report the measurement.
+DO NOT: restart a service, submit an order, or modify a price-capture window.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 33.2 owns them.
+DO NOT: touch governance tooling, hooks, or the operator console -- 33.3 owns those.
+
+SCOPE FENCE: one new analysis module under `scripts/`, its own `exp_output/` dir, a results summary
+under `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/`, and read-only pulls from the VPS.
+
+REPORT BACK: the pre-registration as pushed; fresh-pull row count, date span and re-derived
+state-change rate; D2's per-horizon mip movement by event type with the resolution caveat stated;
+D3's forward-prediction slopes WITH both confound results; the D4 segmentation; and your verdict
+against the pre-registered labels -- plus an explicit list of what this does not establish.
+```
+
+---
+
+# 33.2 — IS THE 765 REAL? · LEDGER INTEGRITY · STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "ledger-integrity-audit"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md AND DECISION_LOG.md THIS WAVE. ***
+
+TIER: STANDARD.
+
+ONE DELIVERABLE, stated plainly: **establish whether recorded positions represent real trades.**
+
+Two independent HIGH findings now say the ledger misrepresents reality:
+  GG-295 -- 42 NFL rows' thresholds were written by an unidentified actor, no commit anywhere in
+    repo history, falsely attributed to T-562.
+  GG-297 -- 139 of 140 T4M-PROJ positions marked OPEN (all dated 2026-09-22) are `canceled` /
+    zero-fill at Kalshi. Only 1 carries a genuine fill.
+And T4M-PROJ's 765-row epoch-12 clean cohort is **the only scorable cohort in the project.** Every
+calibration figure the project has -- including T-565's reproduced model-vs-market result -- is
+computed from it. T-565 reproduced that result by re-reading the same ledger, which cannot detect
+this class of problem. **If the 765 contains phantoms, the project's one real finding is unsound.**
+
+DELIVERABLE 1 -- APPLY GG-297'S TEST TO THE COHORT THAT MATTERS.
+  GG-297 was found on 2026-09-22 open positions. Run the same check against all 765 epoch-12
+  T4M-PROJ closed rows: for each, what does Kalshi's own order/fill record say actually happened?
+  Report: confirmed filled, confirmed canceled/zero-fill, and NOT RETRIEVABLE as three separate
+  counts -- never collapse "cannot verify" into "verified." If Kalshi's retention window does not
+  reach back to 2026-07-31..08-13, say so explicitly and report exactly how far back it does reach;
+  that boundary is itself the finding and must be stated, not worked around.
+  Pass `authenticated=True` on every portfolio/order read -- `_get()` defaults to
+  `authenticated=False`, which resolves to PRODUCTION regardless of BOT_ENV (T-556, unfixed).
+
+DELIVERABLE 2 -- IF PHANTOMS EXIST IN THE 765, SIZE THE DAMAGE. DO NOT REPAIR ANYTHING.
+  How many, on which game-dates, and what happens to T-565's headline figures when they are
+  excluded -- Brier, ECE, market Brier, the paired diff, and the day-clustered t.
+  Recompute using T-565's committed script (`scripts/t565_calibration_model_vs_market.py`) and its
+  pre-registered construction, unchanged, so the before/after is comparable.
+  **Report the delta. Do not edit the ledger, do not exclude rows from the live cohort, do not
+  restate the clean_n.** GG-228 applies: no repair of a derived file before provenance is settled,
+  and the repair decision is the operator's.
+
+DELIVERABLE 3 -- NFL: WHICH MODEL WROTE THE 20 SETTLED ROWS? This was ported from 31.2 and dropped.
+  `run_t1_nfl_game_market.py::main(model=None)` defaults to `StubNFLForecastModel`
+  (`PROVENANCE = "STUB ... NOT a trained model, GG-255"`). Nothing in `src/`, `scripts/` or
+  `deploy/` passes `EXP027NFLForecastModel` into it; `web_dashboard.py` reads EXP-027's provenance
+  string as a DISPLAY LABEL ONLY and never instantiates the model. There is no NFL cron entry, so
+  every run was launched by hand and the model argument is not recoverable from the repo.
+  Establish it from the rows themselves, the audit log, or the run history -- or state plainly that
+  it is unrecoverable. **If it cannot be established, the 20 settled rows and the 22 still-open
+  ones are QUARANTINED from G6 evidence, NFL calibration and any clean_n** -- record that as a
+  standing constraint in the gap log, not as a one-session note.
+
+DELIVERABLE 4 -- SAY WHAT THE PROJECT'S EVIDENCE BASE ACTUALLY IS, AS OF NOW.
+  One table: every cohort the project might score (T4M-PROJ 765, NFL T1 20 settled / 22 open, T1
+  MLB, T2, NBA), its verified/unverified/quarantined status after D1-D3, and one line on why.
+  This becomes the reference the calibration track cites instead of re-deriving it each wave.
+  Update GG-295, GG-297 and GG-298 with what this session established. Register anything new.
+  Clear the gap-candidate backlog handed over by 33.1 and 33.3.
+
+DO NOT: repair, edit, backfill, exclude or re-stamp any ledger row. This block is diagnosis only.
+DO NOT: mark GG-295 resolved -- actor provenance is not this block's scope and content provenance
+  is not actor provenance.
+DO NOT: restate `clean_n` anywhere, or change a cell status, kelly_fraction, or constant.
+DO NOT: manufacture a position, row, cohort member or outcome; do not infer a fill from a local
+  status field alone -- that is exactly the defect under audit.
+DO NOT: restart a service, submit an order, or modify a price-capture window.
+DO NOT: touch `scripts/` analysis modules or `exp_output/` belonging to 33.1, or governance tooling
+  belonging to 33.3.
+
+SCOPE FENCE: read-only ledger and Kalshi order-record access, T-565's existing script run
+unchanged, a results summary, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+Self-serialising close-out: re-read both logs fresh against HEAD immediately before writing --
+33.1 and 33.3 are running concurrently.
+
+REPORT BACK: the three-way count (filled / canceled / not-retrievable) across the 765 with Kalshi's
+actual retention boundary stated; the recomputed T-565 figures with phantoms excluded and the
+delta; the NFL provenance verdict or an explicit unrecoverable finding plus the quarantine record;
+and the evidence-base table. State plainly whether the project's one real calibration finding
+still stands.
+```
+
+---
+
+# 33.3 — BUILD THE RETIREMENT MECHANISM · WARN-ONLY · SHORT
+
+```
+Run the CLAUDE.md session-start protocol in full. Paste outputs.
+scripts/new_session_worktree.sh "retirement-mechanism"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 33.2 owns them. ***
+
+TIER: SHORT. One deliverable: make retirement a machine step instead of a person remembering.
+
+The diagnosis: every artifact in this project has an automated, enforced CREATION path and a
+manual, remembered RETIREMENT path. `claim_session.sh` reserves IDs atomically with rebase-retry.
+Gap registration is mandatory and checked. Creation is mechanical; retirement is memory. That
+worked when the project was navigable and does not survive 12 departments and 138 gaps.
+
+*** SHIP WARN-ONLY. DO NOT EXECUTE THE ARCHIVE MOVE THIS SESSION. *** 33.2 owns the gap log this
+wave and is actively writing it. Build the tooling, prove it on a COPY, leave the live log
+untouched. The first real run is a later wave's call.
+
+DELIVERABLE 1 -- `scripts/retire_resolved_gaps.py`, and prove it on a copy only.
+  Moves every live-log entry whose Status token is resolved-class, VERBATIM, into
+  `GOVERNANCE_GAP_LOG_ARCHIVE.md`. Must handle the format drift that already exists: bare
+  `RESOLVED`; dated variants (`RESOLVED (2026-09-11)`, `RESOLVED 2026-08-28 (T-502)`,
+  `RESOLVED (2026-09-11, code+migration)`); `CLOSED-AS-ARTIFACT`; and at least one entry whose
+  Status value runs to a full paragraph. Idempotent. Archive stays append-only; entries never
+  return. `PARTIALLY RESOLVED` / `PARTIAL RESOLVE` / `LIKELY RESOLVED` / `IN PROGRESS` /
+  `PLAN ACCEPTED` / `ACCEPTED UNCERTAINTY` / `WATCH ITEM` are STAY tokens -- they are NOT
+  resolved-class and must not be moved. Get that list right; it is the whole safety margin.
+  Run it against a COPY of the live log. Report what it WOULD move, entry by entry, and diff the
+  copy to prove nothing but whole entries moved.
+
+DELIVERABLE 2 -- the assertion that would have caught this on day one.
+  Add to `.claude/hooks/governance_scan.sh`: the live log must contain ZERO resolved-class
+  statuses. **Warn-only this session** -- print loudly, do not fail the scan, do not gate anything.
+  Note in the script's own comments the criterion for promoting it to hard-fail later.
+
+DELIVERABLE 3 -- teach the console to see retirement debt.
+  `generate_operator_console.py`: add a resolved-class filter (`classify()` currently has NONE, so
+  every live-log entry is bucketed blocked/broken/accruing and resolved entries render as
+  "accruing" -- this is why it reported 133 open against a real 94 on 2026-09-22).
+  Then add **Section 0 -- "Overdue for retirement"**, a roll-up across all twelve departments:
+  unarchived resolved gaps; merged-but-undeleted branches; prunable worktrees; ADRs/APRs whose own
+  file reads ACCEPTED but which have no `APPROVALS_REGISTER.md` row (ADR-0063 and APR-0035 are
+  live examples); and session claims with no closure row. One number the operator reads weekly.
+
+DELIVERABLE 4 -- close the two loops that already exist but only run one way.
+  (a) `sweep_stray_branches.sh` already runs as `/session-end` Step 9 -- extend it to also delete
+      merged remote AND local branches (`git branch -d`, NEVER `-D`; if `-d` refuses, the branch is
+      not merged -- leave it and report) and to `git worktree prune`.
+  (b) `check_register_parity.py` checks one direction only. Add the reverse: any ADR/APR file whose
+      own status reads ACCEPTED must have a register row. This is why ADR-0063 is invisible to it.
+
+DO NOT: run the archive move against the live `GOVERNANCE_GAP_LOG.md`. Copy only, this session.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md at all -- 33.2 owns them and is writing
+  them concurrently. Record your own findings in your results file for 33.2 to register.
+DO NOT: change any gap's status, close anything, or judge whether work is finished. This mechanism
+  FILES things already marked done. Retirement is filing, never adjudication.
+DO NOT: make the new assertion hard-fail, or gate any existing check on it, this session.
+DO NOT: delete any UNMERGED branch (17 outstanding, operator-routed, Hard Rule 11).
+DO NOT: touch ledgers, `exp_output/`, or 33.1's analysis modules.
+
+SCOPE FENCE: `scripts/retire_resolved_gaps.py` (new), `scripts/generate_operator_console.py`,
+`scripts/sweep_stray_branches.sh`, `scripts/check_register_parity.py`,
+`.claude/hooks/governance_scan.sh`, their tests, and a short results note.
+
+REPORT BACK: the entry-by-entry list the retire script WOULD move from a copy, with the stay-token
+list you implemented; the copy diff proving only whole entries moved; the warn-only assertion's
+output against the live log today; the console's new Section 0 rendered, with its twelve-department
+roll-up counts; and the two extended loops with evidence each works.
+```
+
+---
+
+## THE RETIREMENT MECHANISM — spec (now FIRING as block 33.3)
+
+**The diagnosis, in one line: every artifact in this project has an automated, enforced creation
+path and a manual, remembered retirement path.**
+
+`claim_session.sh` reserves IDs atomically with rebase-retry so two sessions cannot collide.
+`new_session_worktree.sh` creates isolation by default. Gap registration is mandatory and checked.
+Creation is a machine step. **Retirement is a person remembering** — and that worked when the
+project was small and navigable. It does not survive 12 departments, 134 gaps, 254 sessions and
+2,150 commits. The observed debt is not carelessness; it is the predictable output of an asymmetry.
+
+**Measured retirement debt, 2026-09-22 at `e9a335d`:**
+
+| Department | Debt | Should have been retired by |
+|---|---|---|
+| `03_DECISIONS` | **23 resolved-class entries still in the live gap log** | the T-420 archive-move, per its own contract |
+| `00_ADMIN` | **ADR-0063 and APR-0035 signed in chat, no register row** | the signing session (GG-126 class, 6+ recurrences) |
+| git estate | **40 merged branches undeleted, 59 prunable worktrees** | `/session-end` Step 9 |
+| git estate | **54 commits stranded across 16 unmerged branches** | each session's own close-out |
+| `03_DECISIONS` | **operator console reports 133 open against a real 94** | never — it has no retirement awareness at all |
+
+**The design principle: retirement becomes symmetric with creation — a machine step that runs
+whether or not anyone remembers.** Five components, in dependency order:
+
+1. **`scripts/retire_resolved_gaps.py`** — moves every live-log entry whose Status token is
+   resolved-class, verbatim, into `GOVERNANCE_GAP_LOG_ARCHIVE.md`. Must handle the format drift
+   that already exists: bare `RESOLVED`, dated variants (`RESOLVED (2026-09-11)`,
+   `RESOLVED 2026-08-28 (T-502)`), `CLOSED-AS-ARTIFACT`, and one entry whose Status value is a
+   full paragraph. Idempotent; archive stays append-only and entries never move back.
+2. **A parity assertion in `.claude/hooks/governance_scan.sh`** — the live log must contain ZERO
+   resolved-class statuses. **This one check would have caught all 23 on day one.** Ship it
+   warn-only for one wave, then make it hard-fail.
+3. **`generate_operator_console.py` gains a resolved filter and a new Section 0: "Overdue for
+   retirement."** Not just gaps — one roll-up across all twelve departments: unarchived resolved
+   gaps, merged-but-undeleted branches, prunable worktrees, ADR/APR accepted-without-a-register-row,
+   and session claims with no closure row. **This is the CEO dashboard for the company: one number,
+   read weekly, that says what should have closed and didn't.**
+4. **Extend `sweep_stray_branches.sh`** to also delete merged remote and local branches (`-d`,
+   never `-D`) and prune worktrees. It already runs as `/session-end` Step 9, so the cadence exists
+   — only the scope is missing.
+5. **`check_register_parity.py` gains the reverse direction** — any ADR or APR whose own file
+   reads ACCEPTED must have a register row. It currently checks one way only, which is why
+   ADR-0063 is invisible to it.
+
+**Deliberately NOT in scope:** changing any gap's status, closing anything, or judging whether work
+is finished. This mechanism only moves things that are *already* marked done into where done things
+live. Retirement is filing, never adjudication.
+
+---
 
 ---
 
