@@ -19,6 +19,19 @@ Rules:
      PENDING (uppercase — the register's status convention).
   4. A doc whose Status is DRAFT/PROPOSED/PENDING must not have a register row
      recording ACCEPTED.
+  5. (T-570, 2026-09-23, retirement-mechanism) The reverse of rule 2's floor:
+     an ADR with a resolved Status must have its OWN dedicated register row —
+     `| ADR-NNNN |` — not merely appear as a mention inside another row's
+     evidence cell. Rule 2 already requires *a* mention somewhere; rule 5
+     requires that mention to be the ADR's own row. Same exemptions list as
+     rule 2 (this is a stricter floor on the same legacy-ADR population, not
+     a new one). Run against real data 2026-09-23: 12 ACCEPTED ADRs not on
+     the exemptions list currently fail this rule (ADR-0001, 0003, 0010,
+     0015, 0018, 0024, 0026, 0027, 0028, 0032, 0045, 0046) — reported as a
+     real finding for governance triage, not silently backfilled into the
+     exemptions file by this change (adding an exemption is an adjudication
+     this script does not make for itself, and requires the stated reason +
+     DECISION_LOG.md note the exemptions file itself demands).
 
 Exit 0 with "CLEAN" line if parity holds; exit 1 and list findings otherwise.
 Output is indented two spaces to slot into governance_scan.sh's format.
@@ -78,10 +91,16 @@ def load_exemptions() -> set[str]:
     return ids
 
 
-def main() -> int:
+def collect_findings() -> tuple[list[str], int]:
+    """Core parity-check loop, factored out of main() (T-570, 2026-09-23) so
+    other tools (generate_operator_console.py's retirement-debt Section 0) can
+    reuse the same findings without re-implementing the rules or shelling out
+    to this script and re-parsing its printed output. Returns (findings,
+    checked_count). Caller is responsible for checking REGISTER.exists()
+    first -- this returns ([], 0) if it's missing, matching main()'s prior
+    early-return behavior."""
     if not REGISTER.exists():
-        print("  Could not read APPROVALS_REGISTER.md — parity check skipped")
-        return 0
+        return [], 0
 
     register_text = REGISTER.read_text(encoding="utf-8")
     register_rows: dict[str, list[str]] = {}
@@ -126,6 +145,17 @@ def main() -> int:
                 f"APPROVALS_REGISTER.md (doc status: {status.strip()[:80]})"
             )
             continue
+        if (
+            doc_id.startswith("ADR")
+            and resolved
+            and not rows
+            and doc_id not in exempt
+        ):
+            findings.append(
+                f"{doc_id}: resolved and mentioned in APPROVALS_REGISTER.md, but has "
+                f"no OWN dedicated row (only an incidental mention, e.g. inside "
+                f"another row's evidence cell) (doc status: {status.strip()[:80]})"
+            )
         for row in rows:
             # Date/status is the 4th column. A correction note may legitimately
             # contain the word PENDING (e.g. APR-0022's GG-126 annotation), so a
@@ -146,6 +176,17 @@ def main() -> int:
                     f"{doc_id}: register row records a resolved status but doc "
                     f"status is still {status.strip()[:60]}"
                 )
+
+    return findings, checked
+
+
+def main() -> int:
+    if not REGISTER.exists():
+        print("  Could not read APPROVALS_REGISTER.md — parity check skipped")
+        return 0
+
+    findings, checked = collect_findings()
+    exempt = load_exemptions()
 
     if findings:
         print(f"  {len(findings)} PARITY MISMATCH(ES) — register write-back missed (GG-126 class):")

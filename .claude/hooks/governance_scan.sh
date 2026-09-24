@@ -96,6 +96,37 @@ python3 "scripts/lib/gg_id_uniqueness_check.py" \
 
 python3 "scripts/lib/governance_gap_burndown.py" "$OPEN_N" "$TOTAL_N" "logs/.governance_gap_history.jsonl"
 
+# --- Retirement debt: zero-resolved-class-in-live-log assertion (T-570, 2026-09-23) ---
+# WARN-ONLY. Creation (session claims, gap registration) is mechanical and enforced;
+# retirement (archiving a gap once its own Status line already reads resolved-class)
+# has been manual and forgotten -- this surfaces the debt every session without
+# gating on it. Runs scripts/retire_resolved_gaps.py in its default dry-run mode
+# (read-only against both files; it never writes without --apply, which this call
+# never passes) and prints its resolved-class count as a loud, non-fatal warning.
+# Never `|| true`-suppressed on purpose -- the script itself always exits 0 in
+# dry-run, so there is nothing to suppress; this comment records that invariant
+# rather than relying on a shell idiom to enforce it.
+#
+# PROMOTION CRITERION for turning this into a hard-fail later: only once (a) an
+# operator-approved --apply run has actually landed against the real live log at
+# least once (this session explicitly defers that first real run), and (b) the
+# archive-move has been running warn-only for long enough that a nonzero count here
+# reliably means "nobody has retired this gap yet," not "the tool is still new and
+# nobody's looked." Until both hold, a hard-fail would gate every session on a debt
+# nobody has a mechanism to clear yet -- do not flip this without an ADR recording
+# that both conditions were checked.
+RETIREMENT_DEBT_OUT=$(python3 "scripts/retire_resolved_gaps.py" \
+    --src "03_DECISIONS/GOVERNANCE_GAP_LOG.md" \
+    --archive "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md" 2>&1)
+RETIREMENT_DEBT_N=$(echo "$RETIREMENT_DEBT_OUT" | grep -oE "^resolved-class entries that WOULD move: [0-9]+" | grep -oE "[0-9]+$")
+RETIREMENT_DEBT_N=${RETIREMENT_DEBT_N:-0}
+if [ "$RETIREMENT_DEBT_N" -gt 0 ]; then
+    echo "  *** RETIREMENT DEBT (warn-only): $RETIREMENT_DEBT_N resolved-class gap(s) still in the live log, not yet archived. ***"
+    echo "  *** Run: python3 scripts/retire_resolved_gaps.py  (dry-run) to see which; --apply requires operator sign-off. ***"
+else
+    echo "  Retirement debt: 0 resolved-class gaps sitting unarchived in the live log."
+fi
+
 # --- Operator console (T-420, 2026-08-05 restructure) ---
 # Regenerate on every scan from GOVERNANCE_GAP_LOG.md's live entries -- read-only
 # against the log, three sections ranked by "blocks operator" not severity.
