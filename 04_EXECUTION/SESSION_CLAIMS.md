@@ -609,3 +609,4 @@
 | 2026-09-25T01:15:49Z | T-572 | CLOSED — T-572 CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2 (commit `a65a315`) |
 | 2026-09-25T01:18:59Z | T-572 | CLOSED — merge confirmed, HEAD (45bfe56) is ancestor of origin/main — CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2 |
 | 2026-09-25T01:57:00Z | T-575 | T-575: feature-space audit -- consumed vs available-unwired vs absent inventory (read-only, operator 2026-09-24 scoping directive) |
+| 2026-09-25T01:57:02Z | T-575, GG-303 | T-575: GG-303 order-id write-defect — fix ledger write boundary to prevent fabricated kalshi_order_id |
