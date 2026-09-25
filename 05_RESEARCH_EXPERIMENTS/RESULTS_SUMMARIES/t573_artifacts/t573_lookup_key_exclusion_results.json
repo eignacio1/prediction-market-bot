@@ -1,0 +1,711 @@
+{
+  "part_a_confirmed_ticker_check": {
+    "n_match": 35,
+    "n_checkable": 35,
+    "n_total": 35,
+    "rows": [
+      {
+        "position_id": "POS-83E667A6BE",
+        "kalshi_order_id": "d896654b-c99c-419f-8c0d-641e692994e7",
+        "ledger_kalshi_ticker": "KXMLBHIT-26JUL312138MILLAA-LAAMTROUT27-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26JUL312138MILLAA-LAAMTROUT27-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-BE287EEA28",
+        "kalshi_order_id": "d2deb53b-b55c-44e4-b96e-d0ccf524ba44",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG011905PHIBAL-BALGHENDERSON2-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG011905PHIBAL-BALGHENDERSON2-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-B3F14646F5",
+        "kalshi_order_id": "84aa38a5-9514-4e45-bf02-922b293a40d4",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG012110BOSLAD-LADSOHTANI17-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG012110BOSLAD-LADSOHTANI17-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-78C5C02561",
+        "kalshi_order_id": "6b80b6e0-b076-44b2-83c2-38ea169c8139",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG012110BOSLAD-LADFFREEMAN5-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG012110BOSLAD-LADFFREEMAN5-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-B5F2ADAB4F",
+        "kalshi_order_id": "feee66cb-ddbb-4922-bc29-41dfdccaac47",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG021920BOSLAD-LADMBETTS50-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG021920BOSLAD-LADMBETTS50-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-A2E9D297C0",
+        "kalshi_order_id": "9e1f0df3-501e-4675-a95a-e03a0cab62d1",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG012040SFSD-SDFTATIS23-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG012040SFSD-SDFTATIS23-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-A95A1D7DA4",
+        "kalshi_order_id": "43c4445e-f890-46c9-9ec6-bdd11df3d612",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-CF7D524A61",
+        "kalshi_order_id": "0db7b089-856e-4c73-82d9-5929b8d6f543",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG032005LADCHC-LADSOHTANI17-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG032005LADCHC-LADSOHTANI17-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-D14C513AB0",
+        "kalshi_order_id": "04745f63-bf2f-479c-9437-7791198f7ee5",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG032040TBCOL-TBJARANDA8-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG032040TBCOL-TBJARANDA8-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-A65C954184",
+        "kalshi_order_id": "7d338f3c-f731-47f6-b71c-3cf70932de3c",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-157A2A40EE",
+        "kalshi_order_id": "215b956c-a56f-42d3-a548-1a93f6711b06",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG032005LADCHC-LADFFREEMAN5-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-26F63F093B",
+        "kalshi_order_id": "d6a61ca3-c83f-49d8-b65b-63345541bfb9",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG071840NYMPIT-PITNGONZALES3-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG071840NYMPIT-PITNGONZALES3-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-8C83D463F1",
+        "kalshi_order_id": "671980f2-6b0d-428b-a29e-3bc65cff2ae2",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG071840NYMPIT-PITNGONZALES3-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG071840NYMPIT-PITNGONZALES3-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-088E11C901",
+        "kalshi_order_id": "f894594a-0dbd-45f9-a326-433592e3db39",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG071845CINWSH-WSHDLILE4-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG071845CINWSH-WSHDLILE4-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-853096EC4D",
+        "kalshi_order_id": "25c10ffa-ae92-47d2-955f-3e6c8081fea8",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG081910CHCKC-KCBWITT7-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG081910CHCKC-KCBWITT7-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-21B884F83F",
+        "kalshi_order_id": "2d41ca62-c449-4016-9fd5-a3643c715e3a",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG081910CHCKC-CHCABREGMAN3-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG081910CHCKC-CHCABREGMAN3-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-AA5E52214C",
+        "kalshi_order_id": "7bcd16c5-8a6f-4252-a835-6e0c9479a754",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG081910MINMIL-MINAMARTIN16-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG081910MINMIL-MINAMARTIN16-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-312085F898",
+        "kalshi_order_id": "ea1333fb-1e70-443b-afa7-593a22a36a68",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG092020HOUSD-SDJMERRILL3-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG092020HOUSD-SDJMERRILL3-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-1D1E4227DE",
+        "kalshi_order_id": "295ca105-0672-4d78-a02b-1b3a28e6bd9d",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101945PHISTL-PHIBSTOTT5-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101945PHISTL-PHIBSTOTT5-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-B2F80DA0A2",
+        "kalshi_order_id": "78d064ac-7737-4e17-a388-122067d1f228",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSCDURBIN17-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSCDURBIN17-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-88CB00D966",
+        "kalshi_order_id": "cfe7e536-c441-4122-a665-fb835a1ec6c9",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101940BALMIN-BALTONEILL9-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101940BALMIN-BALTONEILL9-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-02F0A85246",
+        "kalshi_order_id": "d7aa01e7-00fd-4fd6-8069-790dd71c6725",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101940BALMIN-BALCCOWSER17-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101940BALMIN-BALCCOWSER17-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-64941DB53E",
+        "kalshi_order_id": "f3469293-2c8a-40ac-98c9-d867254f53dd",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101940BALMIN-MINBLEE22-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101940BALMIN-MINBLEE22-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-FB62963526",
+        "kalshi_order_id": "03811d72-8a99-479a-b27c-b75d1625f738",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-TORVGUERRERO27-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-TORVGUERRERO27-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-AC642F2DAA",
+        "kalshi_order_id": "80ce3697-427c-4bc0-a925-ef2028a5791e",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSNSOGARD20-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSNSOGARD20-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-9C3FA69B09",
+        "kalshi_order_id": "cf57e641-adc8-43f6-9c94-0b7daa14b7d7",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSCRAFAELA3-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSCRAFAELA3-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-0449887DBE",
+        "kalshi_order_id": "53b2e7c3-9579-44fe-a820-239ddbfe7044",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSWABREU52-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSWABREU52-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-E128488BB7",
+        "kalshi_order_id": "bb3585ed-7046-45cc-ae7b-2169be0d9771",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSNSOGARD20-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSNSOGARD20-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-CEE132FF56",
+        "kalshi_order_id": "50d3be43-eb4e-4b0b-8104-cc86c12dc1f9",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-TORJSMITH8-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-TORJSMITH8-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-37AD23592A",
+        "kalshi_order_id": "6d693f66-1159-41ba-bf33-d018bebadb17",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101945PHISTL-PHIKSCHWARBER12-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101945PHISTL-PHIKSCHWARBER12-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-C32BD90508",
+        "kalshi_order_id": "80cbcb57-fbef-4ec7-92cd-dbd821440eac",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG102210KCLAD-LADMBETTS50-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG102210KCLAD-LADMBETTS50-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-691AD12DB6",
+        "kalshi_order_id": "50313766-2a24-4ff4-a137-5d1eb39ff860",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG112210KCLAD-LADMBETTS50-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG112210KCLAD-LADMBETTS50-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-DCAACBB56A",
+        "kalshi_order_id": "f503a6a6-13c5-4012-b81c-079660e99d44",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101940BALMIN-MINAMARTIN16-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101940BALMIN-MINAMARTIN16-2",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-65A9F0420B",
+        "kalshi_order_id": "8d3ff41b-d802-407a-9252-1322de510606",
+        "ledger_kalshi_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSASEIGLER48-1",
+        "kalshi_returned_ticker": "KXMLBHIT-26AUG101907BOSTOR-BOSASEIGLER48-1",
+        "exact_match": true
+      },
+      {
+        "position_id": "POS-466189FABE",
+        "kalshi_order_id": "01a0cb8e-8c40-79ed-b7e7-647dbc8d5e6d",
+        "ledger_kalshi_ticker": "KXMLBHIT-26SEP221915CINATL-CINSSTEWART27-2",
+        "kalshi_returned_ticker": "KXMLBHIT-26SEP221915CINATL-CINSSTEWART27-2",
+        "exact_match": true
+      }
+    ]
+  },
+  "part_b_alternate_key_probe": {
+    "n_sampled": 30,
+    "n_dates": 10,
+    "n_resolved_under_alternate_key": 0,
+    "rows": [
+      {
+        "position_id": "POS-F0B95D481E",
+        "kalshi_order_id": "6898deae-8a2d-49d8-b08b-c92d68a83636",
+        "ticker": "KXMLBHIT-26JUL311420NYYCHC-CHCPCROWARMSTRONG4-1",
+        "game_date": "2026-07-31",
+        "event_ticker": "KXMLBHIT-26JUL311420NYYCHC",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-F274E1A35B",
+        "kalshi_order_id": "9ed4523c-af12-4728-9339-0c723692a6fa",
+        "ticker": "KXMLBHIT-26JUL311420NYYCHC-CHCABREGMAN3-1",
+        "game_date": "2026-07-31",
+        "event_ticker": "KXMLBHIT-26JUL311420NYYCHC",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-12ED2AC726",
+        "kalshi_order_id": "3fea02a4-b097-4f6d-a69b-c795e622203f",
+        "ticker": "KXMLBHIT-26JUL311420NYYCHC-CHCABREGMAN3-2",
+        "game_date": "2026-07-31",
+        "event_ticker": "KXMLBHIT-26JUL311420NYYCHC",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-289AA1D285",
+        "kalshi_order_id": "664e1647-b48b-48c4-bd9f-4df7c7ce24b0",
+        "ticker": "KXMLBHIT-26AUG011905PHIBAL-PHIBHARPER3-2",
+        "game_date": "2026-08-01",
+        "event_ticker": "KXMLBHIT-26AUG011905PHIBAL",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-3C861E4713",
+        "kalshi_order_id": "e719c2bd-3216-4491-8d75-a2dfe3d1b7b0",
+        "ticker": "KXMLBHIT-26AUG011905PHIBAL-PHIBHARPER3-1",
+        "game_date": "2026-08-01",
+        "event_ticker": "KXMLBHIT-26AUG011905PHIBAL",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-4835DD8205",
+        "kalshi_order_id": "c25d7be9-1edd-49e7-bd43-44e6c934df74",
+        "ticker": "KXMLBHIT-26AUG011905PHIBAL-BALPALONSO25-2",
+        "game_date": "2026-08-01",
+        "event_ticker": "KXMLBHIT-26AUG011905PHIBAL",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 5,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 5,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-25ADFA8839",
+        "kalshi_order_id": "99a178ae-b00b-4f6d-bba0-d4cb6e5887dd",
+        "ticker": "KXMLBHIT-26AUG021920BOSLAD-LADFFREEMAN5-1",
+        "game_date": "2026-08-02",
+        "event_ticker": "KXMLBHIT-26AUG021920BOSLAD",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-5199E74529",
+        "kalshi_order_id": "3167d999-43a7-4a27-a660-ad6a84f1cad0",
+        "ticker": "KXMLBHIT-26AUG021920BOSLAD-LADSOHTANI17-2",
+        "game_date": "2026-08-02",
+        "event_ticker": "KXMLBHIT-26AUG021920BOSLAD",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-DFB6A455C3",
+        "kalshi_order_id": "162df120-13b5-4b21-b9b8-40cb8c27a91d",
+        "ticker": "KXMLBHIT-26AUG021920BOSLAD-LADFFREEMAN5-2",
+        "game_date": "2026-08-02",
+        "event_ticker": "KXMLBHIT-26AUG021920BOSLAD",
+        "event_level_orders_found_TOTAL": 1,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-97B3CA0299",
+        "kalshi_order_id": "a691e2d6-ed5c-47e5-8899-09b62622f9f2",
+        "ticker": "KXMLBHIT-26AUG032140SDAZ-AZKMARTE4-1",
+        "game_date": "2026-08-03",
+        "event_ticker": "KXMLBHIT-26AUG032140SDAZ",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 9,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 9,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-29AF6E9750",
+        "kalshi_order_id": "c316d2ea-34b0-4974-a329-4d8010b8ed76",
+        "ticker": "KXMLBHIT-26AUG032140SDAZ-SDJMERRILL3-1",
+        "game_date": "2026-08-03",
+        "event_ticker": "KXMLBHIT-26AUG032140SDAZ",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 9,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 9,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-BEC81CCFFE",
+        "kalshi_order_id": "024865b3-12e9-4e72-9969-4c9213c3fa4a",
+        "ticker": "KXMLBHIT-26AUG032140SDAZ-SDJMERRILL3-2",
+        "game_date": "2026-08-03",
+        "event_ticker": "KXMLBHIT-26AUG032140SDAZ",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 9,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 9,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-03364C9830",
+        "kalshi_order_id": "d2121004-d7b3-4637-ab6c-b212ad202ce4",
+        "ticker": "KXMLBHIT-26AUG071940MINMIL-MINRLEWIS23-2",
+        "game_date": "2026-08-07",
+        "event_ticker": "KXMLBHIT-26AUG071940MINMIL",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 3,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 3,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-978D7B2E99",
+        "kalshi_order_id": "f6d36416-73db-4505-9352-f3b164d34969",
+        "ticker": "KXMLBHIT-26AUG071940MINMIL-MINRLEWIS23-1",
+        "game_date": "2026-08-07",
+        "event_ticker": "KXMLBHIT-26AUG071940MINMIL",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 3,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 3,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-8B755001B1",
+        "kalshi_order_id": "7008131d-8ed0-41e3-a683-cf60ed51382d",
+        "ticker": "KXMLBHIT-26AUG071940MINMIL-MINLKEASCHALL15-1",
+        "game_date": "2026-08-07",
+        "event_ticker": "KXMLBHIT-26AUG071940MINMIL",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 3,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 3,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-0C55C07D52",
+        "kalshi_order_id": "342db676-34fc-4d16-82b1-5e8af9794fc0",
+        "ticker": "KXMLBHIT-26AUG081845CINWSH-WSHJYOUNG30-1",
+        "game_date": "2026-08-08",
+        "event_ticker": "KXMLBHIT-26AUG081845CINWSH",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-9526A74CCF",
+        "kalshi_order_id": "dde76f1d-cd8b-441d-ae5b-2a1f0ecbf988",
+        "ticker": "KXMLBHIT-26AUG081805TORPHI-PHIBMARSH16-1",
+        "game_date": "2026-08-08",
+        "event_ticker": "KXMLBHIT-26AUG081805TORPHI",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-4A33203A73",
+        "kalshi_order_id": "49a7fd06-253e-412c-8bc2-796dedfe7810",
+        "ticker": "KXMLBHIT-26AUG081915CLECWS-CWSMMURAKAMI5-1",
+        "game_date": "2026-08-08",
+        "event_ticker": "KXMLBHIT-26AUG081915CLECWS",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 6,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 6,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-8D71F5B430",
+        "kalshi_order_id": "1ef9e210-0b37-4392-80c3-98e287a35ce5",
+        "ticker": "KXMLBHIT-26AUG101940BALMIN-MINRLEWIS23-2",
+        "game_date": "2026-08-10",
+        "event_ticker": "KXMLBHIT-26AUG101940BALMIN",
+        "event_level_orders_found_TOTAL": 4,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 19,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 19,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-5314A6BD33",
+        "kalshi_order_id": "51e1e7e4-36d2-4778-8add-9f8ae88d8f73",
+        "ticker": "KXMLBHIT-26AUG101940BALMIN-MINRLEWIS23-1",
+        "game_date": "2026-08-10",
+        "event_ticker": "KXMLBHIT-26AUG101940BALMIN",
+        "event_level_orders_found_TOTAL": 4,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 19,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 19,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-495E35B2BD",
+        "kalshi_order_id": "6abc251c-f204-4526-93b6-a1cad10872a7",
+        "ticker": "KXMLBHIT-26AUG101940BALMIN-MINJBELL56-1",
+        "game_date": "2026-08-10",
+        "event_ticker": "KXMLBHIT-26AUG101940BALMIN",
+        "event_level_orders_found_TOTAL": 4,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 19,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 19,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-EA3DDA0DF5",
+        "kalshi_order_id": "2ad8114a-eb24-4801-94c2-546d426c334e",
+        "ticker": "KXMLBHIT-26AUG111945PHISTL-PHIABOHM28-1",
+        "game_date": "2026-08-11",
+        "event_ticker": "KXMLBHIT-26AUG111945PHISTL",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 17,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 17,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-896882AA36",
+        "kalshi_order_id": "9b7547e1-99c7-45fe-9fad-d0e835a17b22",
+        "ticker": "KXMLBHIT-26AUG111840CLEDET-DETSTORKELSON20-2",
+        "game_date": "2026-08-11",
+        "event_ticker": "KXMLBHIT-26AUG111840CLEDET",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 17,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 17,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-BF9F958A2D",
+        "kalshi_order_id": "e1a4a229-bc89-4150-9769-a2fa43856191",
+        "ticker": "KXMLBHIT-26AUG111905SEANYY-NYYBRICE22-1",
+        "game_date": "2026-08-11",
+        "event_ticker": "KXMLBHIT-26AUG111905SEANYY",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 17,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 17,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-DC9160E340",
+        "kalshi_order_id": "3fb69d7a-d743-4be3-93be-285179f081bc",
+        "ticker": "KXMLBHIT-26AUG121845CHCWSH-CHCABREGMAN3-1",
+        "game_date": "2026-08-12",
+        "event_ticker": "KXMLBHIT-26AUG121845CHCWSH",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 16,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 16,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-E81E8747C5",
+        "kalshi_order_id": "fdbaffc6-0a98-4179-b4c9-0839a3907ce0",
+        "ticker": "KXMLBHIT-26AUG121845CHCWSH-CHCPCROWARMSTRONG4-2",
+        "game_date": "2026-08-12",
+        "event_ticker": "KXMLBHIT-26AUG121845CHCWSH",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 16,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 16,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-317B3744EF",
+        "kalshi_order_id": "a3e90023-ccdc-43e3-9e23-f842fd8b16c3",
+        "ticker": "KXMLBHIT-26AUG121845CHCWSH-CHCABREGMAN3-2",
+        "game_date": "2026-08-12",
+        "event_ticker": "KXMLBHIT-26AUG121845CHCWSH",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 16,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 16,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-8E21592CB5",
+        "kalshi_order_id": "c36dd1b6-6b75-4c79-bd56-561e078ea9c2",
+        "ticker": "KXMLBHIT-26AUG132210MILLAD-LADSOHTANI17-2",
+        "game_date": "2026-08-13",
+        "event_ticker": "KXMLBHIT-26AUG132210MILLAD",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 1,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 1,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-4F5F729D36",
+        "kalshi_order_id": "1c9cc55b-b6d2-49e5-b109-79f4bc76cc3f",
+        "ticker": "KXMLBHIT-26AUG132210MILLAD-LADSOHTANI17-1",
+        "game_date": "2026-08-13",
+        "event_ticker": "KXMLBHIT-26AUG132210MILLAD",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 1,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 1,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      },
+      {
+        "position_id": "POS-138C49EB9B",
+        "kalshi_order_id": "fbedc857-54dd-458d-9508-247cf74aa014",
+        "ticker": "KXMLBHIT-26AUG132207TEXLAA-LAAMTROUT27-2",
+        "game_date": "2026-08-13",
+        "event_ticker": "KXMLBHIT-26AUG132207TEXLAA",
+        "event_level_orders_found_TOTAL": 0,
+        "event_level_orders_MATCHING_THIS_TICKER": 0,
+        "series_ticker": "KXMLBHIT",
+        "series_window_orders_found_TOTAL": 1,
+        "series_window_orders_MATCHING_THIS_TICKER": 0,
+        "nofilter_window_orders_found_TOTAL": 1,
+        "nofilter_window_orders_MATCHING_THIS_TICKER": 0,
+        "RESOLVED_UNDER_ALTERNATE_KEY": false
+      }
+    ]
+  }
+}

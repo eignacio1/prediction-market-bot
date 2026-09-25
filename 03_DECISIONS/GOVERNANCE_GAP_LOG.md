@@ -3709,6 +3709,7 @@ Separately, also per explicit task instruction ("confirm the running code contai
 | Resolution | Not resolved — register-and-stop per Hard Rule 11 (resolution-pipeline code is owned by other sessions this wave, out of this session's scope). Recommended next action, for whichever session owns settlement: (1) before resolving any `open_positions` row, verify real fill status via `GET /portfolio/orders/{order_id}` or cross-check against `GET /portfolio/fills`, not the locally-cached `kalshi_order_status`; (2) audit `t4_mlb_resolved_ledger.jsonl` for any of the 139 canceled `kalshi_order_id`s already present with a resolved outcome/P&L, and if found, exclude them from any G6 `clean_n` count immediately; (3) consider adding a periodic re-poll of open positions' real order status into the live pipeline so the local ledger's `status: "OPEN"` reliably means "confirmed filled and unresolved," not "was accepted at submission time." |
 | Cross-references | GG-203 (T-568 addendum row, 2026-09-23 — the one real fill this finding is measured against), GG-296 (the other, distinct cohort-integrity risk this wave surfaced), APR-0024/GG-004 (G6 sample-adequacy standard this cohort feeds), ADR-0050 (flat `$1.00` measurement stake — confirms each of the 140 intended positions carried real, non-trivial capital exposure if filled, making the phantom-fill distinction material rather than negligible). |
 | Update (2026-09-23, T-571) | A separate task this session (ledger-integrity audit Deliverable 1) extended this exact test — per-order `GET /portfolio/orders/{order_id}`, `authenticated=True` — from the 140 `open_positions` rows above to every epoch-12 T4M-PROJ **closed** row currently in the ledger (905 rows, spanning 2026-07-31 to 2026-09-22; `logic_epoch.is_clean_for_band()`-filtered). Result on the full 905: 35 FILLED, 139 CANCELED, 731 NOT_RETRIEVABLE (404/no-record). The 139 CANCELED are the same 2026-09-22 batch this gap already documents as OPEN-but-phantom — they now also appear resolved-to-CLOSED in the current ledger pull, meaning the contamination this gap warned about (resolving canceled/zero-fill positions as if they were real trades) has occurred: those 139 rows now carry a recorded `outcome`/`pnl` despite zero capital ever at risk. Restricting to the 765-row cohort T-565's committed calibration run (`scripts/t565_calibration_model_vs_market.py`, commit `2d3321d`) actually used (dated 2026-07-31 through 2026-08-13, predating the 2026-09-22 canceled batch entirely): 34 FILLED, 0 CANCELED, 731 NOT_RETRIEVABLE. **731 of 765 rows (95.6%) in the project's sole G6 calibration cohort have no independent Kalshi confirmation of ever being filled — not "confirmed phantom," but not "confirmed real" either; see new gap GG-300 for the full sizing and the NOT_RETRIEVABLE-vs-confirmed distinction, which this gap's original text did not need to draw since its own 140-row sample happened to split cleanly into just FILLED/CANCELED with no NOT_RETRIEVABLE case.** Read-only; no ledger row edited, excluded, or re-stamped by this update. |
+| Update (2026-09-24, T-573) | This wave's block 34.2 traced the mechanism behind the 139 CANCELED/phantom rows one level deeper and found it is not isolated to this one 2026-09-22 batch: 172 distinct `kalshi_ticker` values across the epoch-12 T4M-PROJ clean cohort are each claimed by 2-4 ledger rows carrying distinct, non-existent `kalshi_order_id`s (386 NR rows affected; see new gap GG-303 for the full partition). This is a second, structurally similar integrity defect — duplicated tickers with fabricated order IDs, rather than canceled-but-recorded-as-open — surfacing in the same ledger this gap already flagged as unreliable for open-position status. Read-only; no ledger row edited. Cross-reference: GG-303. |
 
 </details>
 
@@ -3777,6 +3778,7 @@ Separately, also per explicit task instruction ("confirm the running code contai
 | Resolution | Not resolved — diagnosis only, per this session's explicit scope fence (no repair, no exclusion, no re-stamping; repair decision is the operator's per GG-228). Two disclosed follow-on items, deliberately folded into this entry rather than fragmented into additional new GG numbers: (1) **Retention-purge hypothesis is data-pattern-inferred, NOT code-confirmed** — the working theory that Kalshi's single-order lookup has a retention window shorter than 2026-07-31 is consistent with the pattern (older rows uniformly NOT_RETRIEVABLE, no NOT_RETRIEVABLE rows in the 2026-09-22 batch which instead resolved cleanly to CANCELED) but `KalshiMarketClient._post()`'s implementation, and Kalshi's actual documented retention policy, were never reviewed in this session — this is a disclosed limitation, not a finding. A companion script, `t571_ticker_crosscheck.py` (drafted this session, not yet run against live credentials), is designed to distinguish "order existed once, purged by ID" from "no order for this ticker ever existed under any order_id" via `GET /portfolio/orders?ticker=<ticker>` — running it is the direct next step to convert this from hypothesis to finding. (2) **Day-span/time-accumulation confound** — the current-ledger pull (905 rows, 07-31→09-22, ~7 weeks) and the original T-565 baseline (765 rows, 07-31→08-13, ~2 weeks) are not perfectly matched windows; the NOT_RETRIEVABLE count is identical (731) across both because the extra 140 rows in the wider pull are entirely the 2026-09-22 batch (35+139=174, close to but not exactly matching the extra 140 — the discrepancy is the 34 pre-existing FILLED rows already counted in the 765, i.e. 765+140=905 is exact), so the two pulls are not double-counting, but this was not independently re-verified row-by-row beyond the arithmetic check stated here. |
 | Cross-references | GG-004 (G6 sample-adequacy standard — this gap bears directly on whether T4M-PROJ's `clean_n` represents verified trades), GG-297 (the 140-row test this extends, and the source of the phantom base-rate context), GG-295 (adjacent ledger-integrity finding from the same audit, actor-provenance still open), GG-228 (repair-decision authority — operator only), T-565 (`2d3321d`, the committed calibration script this gap's finding directly qualifies), T-556 (the `authenticated=True` requirement this script and its predecessor both honor). |
 | Update (2026-09-23, T-571) | **Correction: the Resolution row above states the companion script "not yet run against live credentials" — that was true when written but is no longer true.** `t571_ticker_crosscheck.py` was run against live credentials this session (on the VPS, output at `/tmp/t571_ticker_crosscheck_results.json`). It sampled up to 3 NOT_RETRIEVABLE rows per affected game_date (30 rows sampled, spanning 10 distinct dates 2026-07-31 through 2026-08-07, out of the 731 NOT_RETRIEVABLE population) and queried `GET /portfolio/orders?ticker=<ticker>` (list-by-ticker, not by order_id) for each. **Result: 30/30 sampled tickers returned zero orders under any order_id (`ticker_orders_found: 0` for every row; `n_zero=30, n_nonzero=0, n_total=30`).** This is evidence against the retention-purge hypothesis and toward the more serious alternative: for this sample, Kalshi holds no record of an order ever being placed for these tickers under any ID — not merely that the one recorded order_id aged out of a single-order-lookup retention window. **Scoping this precisely, per this session's DO-NOT constraints:** this is a 30-row sample of a 731-row population (4.1%), not a census — it does not prove all 731 were never submitted, and a zero-orders-by-ticker result is still not proof of non-submission with absolute certainty (e.g. an undiscovered ticker-normalization mismatch between the ledger's `kalshi_ticker` field and Kalshi's own indexing could in principle produce the same signature) — that alternative was not separately ruled out this session. What the sample does establish: the retention-purge explanation, as originally hypothesized in this entry's Resolution row, is not supported by any of the 30 rows tested, and the honest current framing of the 731 NOT_RETRIEVABLE rows shifts from "unconfirmed either way, purge vs. never-submitted both plausible" to "most direct available evidence points toward never-submitted, on a 4.1% sample, not yet extended to the full population." No ledger row edited, excluded, or re-stamped. `t571_ticker_crosscheck.py` and its results are committed alongside this update. |
+| Update (2026-09-24, T-573) | This wave's block 34.2 ran three further checks before trusting the 731 figure as a clean retrieval ceiling. **(1) Lookup-key exclusion (Deliverable 1b):** Part A confirmed, for all 35 confirmed-FILLED rows, that the order's own Kalshi-returned `ticker` field matches the ledger's `kalshi_ticker` exactly, character-for-character (35/35) — the ledger's ticker field is a trustworthy key. Part B probed a 30-row sample of NOT_RETRIEVABLE rows (3 per date, 10 dates) via event-level, series+date-window, and unfiltered date-window queries: 0/30 resolved under any alternate key. The STOP condition in `t573_lookup_key_exclusion.py` did not fire. **This confirms the 731 figure is not an artifact of a lookup-key or ticker-normalization bug.** **(2) Full-population census (`t573_full_census.py`, Deliverable 2):** extended check (2) to all 731 rows (not a sample) via event-ticker and account-wide date-window listing, deduplicated to ~50-80 unique event/date queries. Result: `n_resolved_under_alternate_key=9`. These 9 are NOT a contradiction of the 0/30 lookup-key-exclusion finding above — they are exactly the rows in buckets A+C of the duplicate-ticker partition (see GG-303): a sibling FILLED row's order shares the identical ticker, so an alternate-key ticker search surfaces that sibling's real order, not evidence that the row's own order was ever placed. **(3) Retrieval-ceiling characterization (Deliverable 1):** same-date FILLED orders remain retrievable roughly 54 days post-game-date in this dataset (oldest confirmed-FILLED game_date vs. check date), and no rate-limit errors occurred across 90+ live API calls this wave — consistent with the 731 figure reflecting genuine non-submission/unresolvable status rather than a retention-window or throttling artifact. **Net effect on this gap: the 731/95.6% figure stands, strengthened rather than weakened** — the lookup-key alternative explanation is now excluded (not just suspected-excluded), and the duplicate-ticker mechanism (GG-303) accounts for the only 9 rows that did resolve under a broader search. No ledger row edited, excluded, or re-stamped. Cross-reference: GG-303. |
 
 </details>
 
@@ -3799,6 +3801,7 @@ Separately, also per explicit task instruction ("confirm the running code contai
 | Discovery | 2026-09-23, T-571 (ledger-integrity-audit wave, worktree `session/20260923T234404Z-ledger-integrity-audit`), Deliverable 2. Read-only throughout. |
 | Resolution | Not resolved — diagnosis only. Two things NOT done, disclosed rather than silently assumed: (1) no statistical correction for the non-random selection into "confirmed FILLED" was attempted (rows are FILLED because their order_id happened to still be retrievable at check time, not because of any property of the bet itself — but this has not been positively ruled out as correlated with, e.g., earlier game_dates or particular players/thresholds); (2) no power analysis was run on whether n=34/n_days=9 could produce this magnitude of reversal by chance alone under the null that the true effect matches the full-765 figure — a `scripts/run_power_calc.py`-style check would clarify this and is the natural next step, not performed here per this session's scope fence (analysis-script territory belongs to session "33.1"). |
 | Cross-references | GG-300 (the phantom-fill sizing this recompute is built on), GG-297/GG-295 (the underlying ledger-integrity findings), GG-004 (G6 sample-adequacy standard this bears on directly), T-565 (`2d3321d`, the committed script this recompute reuses unmodified), GG-228 (repair-decision authority — operator only; this gap makes no repair recommendation). |
+| Update (2026-09-24, T-573) | This wave's block 34.2, Deliverable 3, directly tests the "selection artifact" alternative this entry's Resolution row flagged as untested. **Pre-registered 8 observables before running any test** (`scripts/t573_selection_bias_test.py`, docstring states the pre-registration): 5 continuous (`mid_price_at_entry`, `gross_edge`, `h_so_far_at_entry`, `ab_remaining_at_entry`, `size_usd`) via two-sided Mann-Whitney U (hand-implemented, normal approximation with tie correction — no scipy on the VPS), Bonferroni-corrected alpha=0.05/5=0.01; 2 categorical (`kalshi_threshold`, `game_date`) reported descriptively. **Result: 3 of 5 continuous observables are significant surviving Bonferroni correction** — `mid_price_at_entry` (FILLED mean 0.6527 vs NR mean 0.3950, p<0.00001), `gross_edge` (FILLED −0.1913 vs NR −0.0340, p=0.00203), `size_usd` (FILLED 0.6271 vs NR 0.9123, p=0.00001). Not significant: `h_so_far_at_entry` (p=0.364), `ab_remaining_at_entry` (p=0.868). `game_date` is also visibly skewed: 42.9% of FILLED rows fall on a single date (2026-08-10) vs only 18.1% of NR rows on that date. **This confirms the selection-artifact hypothesis rather than ruling it out: the 34-row confirmed-FILLED subset is not a random draw from the 765-row cohort — it differs systematically on entry price, edge, and order size, and clusters non-randomly by date.** Direct consequence for this gap's own headline: **the correct standing claim is not "the confirmed-real subset reverses the finding" — it is that the confirmed-real subset is a different, non-random sample answering a different question, so the project's calibration headline is UNKNOWN, not reversed.** Neither the original 765-row positive finding nor this gap's 34-row negative finding can be trusted alone as the project's answer until the cohort is scorable on a random or exhaustive basis (see GG-300/GG-303 for why it currently is not). No ledger row edited, excluded, or re-stamped; no statistical correction applied to either headline — this is a diagnostic finding, not a repair. Cross-reference: GG-300, GG-303. |
 
 </details>
 
@@ -3825,6 +3828,182 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 **Resolution:** Not resolved. Registering the quarantine as the resolution to Deliverable 3's mandate ("if unrecoverable, quarantine and register as a standing constraint") — actor identity is the specific unrecoverable element; model and run-event provenance are resolved and stated above for the record. No ledger row edited, excluded, or re-stamped. No `clean_n` restated.
 
 **Cross-references:** GG-295 (NFL threshold-backfill actor provenance — separate, not resolved by this entry), GG-255 (stub-default pipeline-wiring risk — ruled out as the cause here), GG-263 (RESOLVED — T-534's logged run produced zero positions, consistent with the 2026-09-15 session found here), GG-267 (PROVENANCE field mechanism that made this finding possible), T-571.
+
+</details>
+
+---
+
+### GG-303 — 395 of 731 T4M-PROJ NOT_RETRIEVABLE rows (54.0%) share a `kalshi_ticker` with another ledger row under a distinct, non-existent `kalshi_order_id` — a ledger-write defect independent of the retention/non-submission question GG-300 already raised
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-303 |
+| Category | Ledger write-integrity defect — T4M-PROJ epoch-12 clean cohort, `paper_portfolio_mlb_t4.json`. Direct extension of GG-300/GG-297's phantom-fill work; discovered while reconciling GG-300's `n_resolved_under_alternate_key=9` figure into an explainable mechanism. |
+| What was found | `scripts/t573_duplicate_ticker_full_join.py` (T-573, this wave) performed a pure local join (no API calls) of `kalshi_ticker` across all 35 confirmed-FILLED and all 731 NOT_RETRIEVABLE epoch-12 T4M-PROJ clean rows. Every ledger row's `kalshi_order_id` is unique — the duplication is entirely in `kalshi_ticker`. Partitioning all 731 NR rows into four mutually exclusive buckets: **A) FILLED-collision only** (ticker also claimed by a FILLED row, no NR sibling) = 5 rows; **B) NR-internal-duplicate only** (ticker shared by 2-4 NR rows, no FILLED collision) = 386 rows, spanning 172 distinct duplicate-ticker groups (`{2: 129, 3: 40, 4: 3}` group-size distribution); **C) BOTH / 3-way** (ticker has 1 FILLED + ≥2 NR rows) = 4 rows, spanning exactly 2 tickers (`KXMLBHIT-26JUL312138MILLAA-LAAMTROUT27-1`, `KXMLBHIT-26AUG101940BALMIN-BALCCOWSER17-1`); **D) Neither** (unique ticker within NR, no FILLED collision) = 336 rows. Sum = 5+386+4+336 = 731, exact. **Total rows implicated in some ticker-duplication anomaly: 395/731 (54.0%)** = A+B+C. Each of these 395 rows carries a `kalshi_order_id` that is syntactically well-formed but does not correspond to any order Kalshi holds a record of (per GG-300's per-order lookup) — i.e., the ledger recorded a distinct, fabricated order_id for what appears, by ticker, to be the same underlying market position logged more than once. |
+| Why this matters | This is a *different* defect from the one GG-300 already registered. GG-300 asked "does an independent record confirm this order was ever filled?" and found 731/765 answer no. GG-303 asks "why do so many of those 731 rows collide on ticker with each other or with a confirmed-real row?" and finds a write-side duplication mechanism: at minimum 386 rows (bucket B) are re-logging of the *same* market under *different* fabricated order_ids with no other ledger row for that ticker ever confirmed real, and 9 rows (A+C) are duplicates of a ticker that *did* have one genuine fill. This directly explains GG-300's Update-row finding that 9/731 rows "resolved under an alternate key" in the full census — those 9 are not evidence the trades were real, they are evidence the ticker was logged multiple times and one of the duplicates happened to be the real fill. Without this reconciliation, a future session could misread the census's 9-row figure as partial rehabilitation of the 731; it is not. |
+| Impact | HIGH. This does not by itself prove non-submission for all 395 rows — bucket D's 336 rows (46% of the 731) show no duplication at all and remain governed purely by GG-300's finding. But for the 395 duplicated rows specifically, the pattern (multiple ledger rows, one ticker, distinct non-existent order_ids) is more consistent with a client-side write/retry defect (e.g., re-submission on a transient error writing a new fabricated order_id each time without the original order ever clearing) than with simple non-submission — this is a mechanism hypothesis, not yet confirmed against `kalshi_client.py`'s submission/retry code path, which this session did not review (out-of-scope: no repair, no code change, per Hard Rule 11). No `clean_n`, cell status, or kelly_fraction changed; no ledger row edited, excluded, or re-stamped. |
+| Discovery | 2026-09-24, T-573 (this session, Wave 34 block 34.2), Deliverables 1b/2, `scripts/t573_duplicate_ticker_full_join.py`. Read-only: pure local JSON comparison, no API calls, no ledger writes. |
+| Resolution | Not resolved — register-and-stop per Hard Rule 11. Recommended next action for whichever session owns `kalshi_client.py`'s order-submission path: (1) review the submit/retry logic for a code path that can write a new `paper_portfolio_mlb_t4.json` row with a freshly generated `kalshi_order_id` on retry without first confirming the prior attempt's order_id failed or was canceled; (2) if confirmed, this is a candidate root cause for a meaningful fraction of GG-300's 731-row figure and should be fixed before further clean_n growth compounds it; (3) full per-row artifact (`t573_duplicate_ticker_full_join_results.json`) is committed alongside this entry and lists every affected `position_id` by bucket for direct follow-up. |
+| Cross-references | GG-300 (the phantom-fill finding this reconciles the census-9-rows anomaly against), GG-297 (the related but distinct OPEN-position phantom-fill defect), GG-004 (G6 sample-adequacy standard this bears on), T-573 (this wave's block 34.2). |
+
+</details>
+
+---
+
+### GG-304 — `kalshi_order_status` field reads `"submitted"` uniformly across both confirmed-FILLED and confirmed-unretrievable T4M-PROJ rows, making it non-discriminating for any downstream fill-status inference
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-304 |
+| Category | Ledger field reliability — `paper_portfolio_mlb_t4.json`. Adjacent to GG-297's finding that `kalshi_order_status` is set once at submission-acceptance time and never re-polled. |
+| What was found | Across this wave's verification work (T-571's original 905-row per-order check, reused by T-573 this session), the locally-cached `kalshi_order_status` field reads `"submitted"` for 100% of both the 35 confirmed-FILLED rows and the 731 confirmed-NOT_RETRIEVABLE rows — the field carries no information distinguishing a row later confirmed real from a row that could never be confirmed at all. This is consistent with GG-297's root-cause finding (the field is set once from `submit_order()`'s acceptance-time return value and never re-polled) but had not previously been stated as a direct consequence: any future session or script that filters, scores, or reasons about this ledger using `kalshi_order_status` as a fill-confidence signal will get zero discriminative value from it. |
+| Why this matters | A field named `kalshi_order_status` reads as authoritative fill-status information to anyone encountering the schema without first reading GG-297. It is not — it is a submission-acceptance marker that never changes. This is the same naming-vs-behavior trap GG-298 already registered for `rejected_positions`; this is the second field in the same ledger schema found to have this property this wave. |
+| Impact | MEDIUM: no data-loss or scoring-corruption risk on its own (no script currently observed relies on this field for a fill-confidence decision), but a standing trap for the next session that reaches for it expecting real status, exactly as GG-298 already documented for a different field in the same file. |
+| Discovery | 2026-09-24, T-573 (this wave, block 34.2), Deliverable 3 observation while building the selection-bias test's field list — noted as a byproduct, not the deliverable's primary target. |
+| Resolution | Not resolved — recommend either re-polling real order status periodically (as GG-297's Resolution row already recommends for a related reason) or renaming/documenting the field explicitly as submission-acceptance-only, not fill-status, so it stops reading as authoritative. No code change made (out of scope this session). |
+| Cross-references | GG-297 (root cause: field set once at submission, never re-polled), GG-298 (same naming-vs-behavior defect class, different field), GG-300 (the independent per-order verification that surfaced this field's non-discriminating behavior). |
+
+</details>
+
+---
+
+### GG-305 — `session_guard.sh`'s Compass OS Health length-threshold check has been failing against `MEMORY_BANK.md` line 1111 (5159 chars vs. a 3000-char threshold) for at least 41 days without remediation
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-305 |
+| Category | Documentation-health drift, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | T-572's session-start `session_guard.sh` run reported `Compass OS Health line length: 5159 chars (line 1111)`, exceeding the script's own 3000-char threshold, at `11_MEMORY_HANDOFF/MEMORY_BANK.md` line 1111. Git-blame-adjacent evidence (line last touched relative to session dates observed across this wave) places this breach at roughly 41 days stale as of 2026-09-24. |
+| Why this matters | An overlength line in the file this project's own session-start protocol treats as a primary state document degrades readability and is exactly the kind of "decaying state embedded in a file read every session" pattern CLAUDE.md's own remediation-pass history (2026-07-19, 2026-07-02) explicitly warns against for CLAUDE.md itself — the same principle applies to `MEMORY_BANK.md`. |
+| Impact | LOW: cosmetic/readability only, no data-integrity or gate-status risk. Left unaddressed for 41+ days suggests the guard's warning is not currently acted upon by routine sessions, which is itself worth noting even though this entry does not escalate severity on that basis. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), surfaced via routine `session_guard.sh` output; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend a future session split or trim `MEMORY_BANK.md` line 1111 to below the 3000-char threshold. No content change made this session (out of scope: this session owns governance-log registration only, not `MEMORY_BANK.md` edits). |
+| Cross-references | T-572 (discovering session), `.claude/hooks/session_guard.sh` (the check itself). |
+
+</details>
+
+---
+
+### GG-306 — CLAUDE.md's coverage-target framing ("~25/30 cells") is never reconciled against `market_type_registry.py`'s actual 92-cell granularity, understating the registry's real scope by roughly 3x wherever the coarse figure is read on its own
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-306 |
+| Category | Documentation/terminology mismatch, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` and CLAUDE.md both use a coarse "~25 cells" / "~25 of ~25" framing throughout when describing the project's `(MarketType, ExecutionBand)` coverage target. A direct read of `market_type_registry.py`'s live registry (`reg._cells`) this wave found the actual registry holds **92 cells** (`Counter({'NOT_IMPLEMENTED': 88, 'BLOCKED': 2, 'ACTIVE': 1, 'DARK': 1})`) — roughly 3.7x the figure used in the narrative documents. Neither document explains or reconciles the discrepancy; the "~25" figure appears to originate from a coarser market-type × band grid (fewer market types × 5 bands) that predates or does not match the registry's finer-grained cell keying described in CLAUDE.md's own "Adding a new sport" section (the registry keys on the pair, and `RULED_OUT` is a first-class status per-cell). |
+| Why this matters | A session reasoning about "how much of the coverage target is done" using the "~25 cells" framing alone, without separately checking the registry, will materially understate the true denominator (92, not ~25) and could overstate fractional progress (e.g. "1 of 25 = 4%" reads very differently from "1 of 92 ≈ 1.1%," and the NOT_IMPLEMENTED count, 88, is the more operationally relevant number for backlog sizing). |
+| Impact | LOW: no gate-status or capital-risk effect — this is a narrative/reporting consistency issue, not a data-integrity one. Becomes higher-impact only if an operator-facing coverage percentage is quoted from the coarse framing without noting the registry's actual cell count. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), via direct comparison of `COVERAGE_TARGET_MATRIX.md`'s narrative framing against a live `market_type_registry.py` read; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend `COVERAGE_TARGET_MATRIX.md` be updated to either state both figures side by side (coarse market-type × band grid vs. actual registry cell count) or drop the coarse framing in favor of the registry's own live count going forward. No document change made this session (registration-only, per this wave's scope). |
+| Cross-references | T-572 (discovering session), CLAUDE.md "Adding a new sport" section (registry cell-keying description), `market_type_registry.py`. |
+
+</details>
+
+---
+
+### GG-307 — `build_t4mlb_cohorts`'s edge-reconstruction formula has never been tested against T4M_ARITH/T4M_FLOW inputs, only against T4M-PROJ — a disclosed scope boundary on this wave's scoring-harness work, not a defect
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-307 |
+| Category | Scope boundary / untested code path, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. Not a confirmed defect — this entry documents an untested path so it is not silently assumed to work when T4M_ARITH/T4M_FLOW are eventually activated. |
+| What was found | `build_t4mlb_cohorts`'s edge-reconstruction formula (part of this wave's block 34.1 scoring-harness build) was written and validated only against T4M-PROJ ledger rows — the sole ACTIVE T4M-band cell. T4M_ARITH and T4M_FLOW are built-but-BLOCKED per `EXECUTION_BANDS.md`'s Live Registry and were not exercised by this wave's harness at all; whether the same formula produces correct edge values for their (structurally different, per CLAUDE.md's band-description) inputs is unknown. |
+| Why this matters | If a future session activates T4M_ARITH or T4M_FLOW and reuses `build_t4mlb_cohorts` unmodified, assuming it "already works" because it was validated this wave, that assumption would be unverified — the formula's correctness on those bands' input shape has never been checked. |
+| Impact | LOW as filed: purely prospective, since T4M_ARITH/T4M_FLOW are currently BLOCKED and not contributing to any live cohort or gate calculation. Would become material only at the point either band is activated. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), disclosed as an explicit scope boundary in its own results; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — no action needed until T4M_ARITH/T4M_FLOW activation is proposed; at that point, the formula should be validated against that band's actual input schema before being trusted. No code change made this session (out of scope). |
+| Cross-references | T-572 (discovering/building session), `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry (T4M_ARITH/T4M_FLOW BLOCKED status). |
+
+</details>
+
+---
+
+### GG-308 — `scripts/close_session_claim.sh` pushes the entire branch tip to `origin/main` via `git push origin HEAD:main` instead of isolating just the closure row, contradicting its own GG-186-follow-on docstring intent
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-308 |
+| Category | Concurrent-session isolation tooling defect, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | `scripts/close_session_claim.sh`'s docstring states an intent consistent with GG-186's follow-on fix — isolating just the session-closure row so it can land on `origin/main` independent of the calling branch's full merge status. The script's actual mechanism is `git push origin HEAD:main`, which pushes the entire current branch tip, not an isolated commit — contradicting the stated intent. Discovered incidentally this wave via a fresh `origin/main` rebase onto commit `a65a315` (authored 2026-09-24 18:11:42 by Earl Ignacio), which itself landed via this exact path. |
+| Why this matters | If a session runs `close_session_claim.sh` from a branch carrying unrelated, unreviewed, or in-progress work beyond the closure row itself, that entire branch tip lands on `main` — exactly the kind of uncontrolled shared-tree write Hard Rule 10/GG-101 exist to prevent, and the opposite of what the script's own docstring claims it does. |
+| Impact | MEDIUM. Confirmed no data loss occurred in the specific instance that surfaced this (fast-forward-only push, commit `a65a315`, content already reviewed/intended for landing) — the operator's own commit confirmed this specific instance's landed content can stay landed. But the mechanism itself remains a standing risk for a future invocation where the calling branch is not clean at closure time. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), via a fresh `origin/main` rebase during routine session start; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — register-and-stop per Hard Rule 11 (script-repair is out of this session's scope). Proposed remedies, disclosed by the discovering session and carried forward here: (1) commit the closure row against a fresh fetch in a detached/orphan context and push only that commit; (2) `git push origin <commit-sha>:refs/heads/main` in place of `HEAD:main`, pushing a specific known-good commit rather than whatever HEAD currently is. No code change made this session. |
+| Cross-references | GG-186 (the original follow-on this script's docstring intent traces to), GG-101 (concurrent-session working-tree collision risk this defect class relates to), T-572 (discovering session), commit `a65a315`. |
+
+</details>
+
+---
+
+### GG-309 — CLAUDE.md Step 4's `SemanticFloorViolation` grep (T1 MLB silent-failure detector) has no recency window, so a single 2.5-month-old hit reads identically to a live-today failure
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-309 |
+| Category | Session-start protocol defect, same defect class as the already-fixed `payload.staleness_halts` cumulative-counter issue (GG-085). Surfaced by this wave's block 34.3 (T-574) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | CLAUDE.md Step 4's semantic-oracle check `grep -c "SemanticFloorViolation" .../paper_mlb_cron.log` counts all-time occurrences in the log with no recency window — structurally identical to the defect GG-085 already fixed for `payload.staleness_halts` (a cumulative counter misread as a live-status signal). T-574 found one such hit dated 2026-07-10, roughly 2.5 months stale as of this wave (2026-09-24/25), which would still surface as `count > 0` and read as "T1 pipeline silence — investigate immediately" per Step 4's own stated alarm condition, even though nothing about it is current. |
+| Why this matters | GG-085's own text states this exact failure mode was already found and fixed once for a sibling counter in the same protocol step; this is the same class of defect recurring in a different check within the same Step 4 that GG-085 patched. A session running the mandatory session-start protocol today would see a nonzero count and could either falsely alarm on stale history or, worse, grow desensitized to the check if it always reads nonzero. |
+| Impact | MEDIUM: this is a detection-protocol reliability issue, not a live pipeline defect — T1 MLB's actual current health is not affected by this gap, only the session-start check's ability to correctly signal it. |
+| Discovery | 2026-09-24/25, T-574 (Wave 34 block 34.3, this wave), during routine session-start protocol execution; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend windowing the `SemanticFloorViolation` grep the same way GG-085's fix windowed the staleness-halt check (e.g. `tail -N` by line count or a date-bounded grep), so only recent occurrences alarm. No change made to CLAUDE.md or the check itself this session (out of scope — CLAUDE.md/hook edits belong to 34.3's territory this wave, already closed). |
+| Cross-references | GG-085 (the sibling defect already fixed, same recency-window pattern), T-574 (discovering session), CLAUDE.md Step 4. |
+
+</details>
+
+---
+
+### GG-310 — `ACTIVE_QUEUE.md` Wave 33 archival lapse (already recovered in commit `4a00b8e`; now structurally prevented going forward by T-574's `closed_wave_fences()` detector)
+
+**Status:** CLOSED-AS-ARTIFACT · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-310 |
+| Category | Process gap, already remediated both by direct recovery and by a structural detector — registered for the historical record per this wave's Deliverable 5, at block 34.3 (T-574)'s explicit recommendation that a brief low-weight entry is still warranted rather than skipping registration entirely. |
+| What was found | Wave 33's archived prompts/queue state in `ACTIVE_QUEUE.md` had lapsed out of sync with the closed wave's actual status — content that should have been archived when Wave 33 closed was not, and was recovered by hand this wave (commit `4a00b8e`, "Recover Wave 33 archived prompts, land Wave 34 queue state"). |
+| Why this matters | An un-archived closed-wave fence in the active queue file risks a future session reading stale wave-33 state as if it were still open/actionable, or losing that history if it is later overwritten without being archived first — exactly what was nearly the case here before the manual recovery. |
+| Impact | LOW as filed: the lapse was fully recovered before this wave began substantive work (commit `4a00b8e`, landed prior to this session's claim), and T-574's own `closed_wave_fences()` detector (already committed/pushed as commit `c849eae`, this wave) now catches this defect class structurally going forward — this entry exists for the historical record and cross-reference, not as an open remediation item. |
+| Discovery | 2026-09-24, recovered by a session earlier this wave (commit `4a00b8e`); structural detector added by T-574 (Wave 34 block 34.3, commit `c849eae`); registration recommended by T-574, executed by block 34.2 (this session) per Deliverable 5. |
+| Resolution | CLOSED-AS-ARTIFACT — recovery already landed (`4a00b8e`), structural prevention already landed (`c849eae`, `closed_wave_fences()`). No further action needed. |
+| Cross-references | T-574 (`closed_wave_fences()` detector), commit `4a00b8e` (manual recovery), commit `c849eae` (structural fix). |
 
 </details>
 
