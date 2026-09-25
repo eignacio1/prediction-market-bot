@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-24T04:14:16Z (T-571 — T-571 ledger audit: 731/765 T4M-PROJ rows Kalshi-unconfirmed; confirmed-real n=34 reverses T-565's headline; 42 NFL rows quarantined (GG-300/301/302).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0414.md` for full session detail.
+**Last reviewed:** 2026-09-25T01:35:47Z (T-573 — T-573 cohort verification: 731 NR rows reconciled (GG-303 dup-ticker defect found), selection bias confirmed on the 34 FILLED rows — calibration headline is UNKNOWN, not reversed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0135.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-23T05:23:00Z (T-568 — T-568/GG-296: measured true T4M-PROJ demand, held shard-3 funding, confirmed first real fill, registered GG-297/298/299) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0523.md` for full session detail.
