@@ -100,3 +100,13 @@ During Deliverable 0 (shared-tree landing, before this worktree was created), Wa
 - `43d1c69` — `assert_service_activation.py` comparison primitive (Deliverable 4)
 
 All pushed to `origin/session/20260924T045227Z-resolved-filter` immediately after each commit, per this session's explicit instruction.
+
+---
+
+## 9. Addendum — self-inflicted false "CLOSED" row, found and corrected same-session (2026-09-25T01:16–2026-09-25T01:2x)
+
+While closing out via `close_session_claim.sh`, running it directly from my own branch would have replicated T-572's already-documented "pushes whole unreviewed branch" defect (§7(gap candidate re: close_session_claim.sh push-whole-branch), so I instead ran it from a clean `git worktree add --detach origin/main`. That avoided the branch-push defect but introduced a different one: the script's `git merge-base --is-ancestor HEAD origin/main` check was tautologically true (HEAD *was* origin/main's own tip in that detached context), so it wrote a false `CLOSED — merge confirmed` row for T-574 even though PR #149 (containing all actual T-574 work) was still open/unmerged.
+
+**Corrected same-session:** appended a follow-up row to `SESSION_CLAIMS.md` on `origin/main` (commit `6419ec3`) stating the true state (`MERGED: NO`, PR #149 open) and flagging the mechanism.
+
+**Gap candidate (d) for 34.2 to register:** `close_session_claim.sh`'s ancestor-check is spoofable whenever it is run from a checkout whose HEAD already equals `origin/main` — including the exact detached-worktree pattern used here to avoid gap candidate's other defect (whole-branch push). The two defects compound: there is currently no safe way to run this script when the caller's real branch is unmerged. Suggested fix: require an explicit `--branch-sha <sha>` argument compared against `origin/main`, rather than trusting ambient `HEAD`.
