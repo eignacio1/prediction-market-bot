@@ -1,0 +1,197 @@
+{
+  "tiers": {
+    "CONFIRMED-REAL": {
+      "n": 35,
+      "n_pids": 35,
+      "date_span": [
+        "2026-07-31",
+        "2026-09-22"
+      ],
+      "n_distinct_dates": 10,
+      "top_date_share": 0.42857142857142855,
+      "observables": {
+        "mid_price_at_entry": {
+          "n": 35,
+          "mean": 0.6527142857142856
+        },
+        "gross_edge": {
+          "n": 35,
+          "mean": -0.1913194571428571
+        },
+        "h_so_far_at_entry": {
+          "n": 35,
+          "mean": 0.2857142857142857
+        },
+        "ab_remaining_at_entry": {
+          "n": 35,
+          "mean": 2.4285714285714284
+        },
+        "size_usd": {
+          "n": 35,
+          "mean": 0.6271428571428573
+        }
+      }
+    },
+    "CONFIRMED-CANCELED": {
+      "n": 139,
+      "n_pids": 139,
+      "date_span": [
+        "2026-09-22",
+        "2026-09-22"
+      ],
+      "n_distinct_dates": 1,
+      "top_date_share": 1.0,
+      "observables": {
+        "mid_price_at_entry": {
+          "n": 139,
+          "mean": 0.37190647482014366
+        },
+        "gross_edge": {
+          "n": 139,
+          "mean": -0.015059410071942444
+        },
+        "h_so_far_at_entry": {
+          "n": 139,
+          "mean": 0.09352517985611511
+        },
+        "ab_remaining_at_entry": {
+          "n": 139,
+          "mean": 2.5611510791366907
+        },
+        "size_usd": {
+          "n": 139,
+          "mean": 0.9546762589928057
+        }
+      }
+    },
+    "DUPLICATE-SUSPECT": {
+      "n": 395,
+      "n_pids": 395,
+      "date_span": [
+        "2026-07-31",
+        "2026-08-13"
+      ],
+      "n_distinct_dates": 9,
+      "top_date_share": 0.25316455696202533,
+      "observables": {
+        "mid_price_at_entry": {
+          "n": 395,
+          "mean": 0.3620506329113925
+        },
+        "gross_edge": {
+          "n": 395,
+          "mean": -0.007865518987341771
+        },
+        "h_so_far_at_entry": {
+          "n": 395,
+          "mean": 0.2759493670886076
+        },
+        "ab_remaining_at_entry": {
+          "n": 395,
+          "mean": 2.1443037974683543
+        },
+        "size_usd": {
+          "n": 395,
+          "mean": 0.939113924050633
+        }
+      }
+    },
+    "UNCONFIRMED-CLEAN": {
+      "n": 336,
+      "n_pids": 336,
+      "date_span": [
+        "2026-07-31",
+        "2026-08-13"
+      ],
+      "n_distinct_dates": 9,
+      "top_date_share": 0.29464285714285715,
+      "observables": {
+        "mid_price_at_entry": {
+          "n": 336,
+          "mean": 0.4337053571428572
+        },
+        "gross_edge": {
+          "n": 336,
+          "mean": -0.0646784732142857
+        },
+        "h_so_far_at_entry": {
+          "n": 336,
+          "mean": 0.15476190476190477
+        },
+        "ab_remaining_at_entry": {
+          "n": 336,
+          "mean": 2.6041666666666665
+        },
+        "size_usd": {
+          "n": 336,
+          "mean": 0.880803571428572
+        }
+      }
+    }
+  },
+  "bias_screen_unconfirmed_clean_vs_confirmed_real": {
+    "mid_price_at_entry": {
+      "mean_real": 0.6527142857142856,
+      "mean_clean_nr": 0.4337053571428572,
+      "p": 0.00013633265075285728,
+      "survives_bonferroni": true
+    },
+    "gross_edge": {
+      "mean_real": -0.1913194571428571,
+      "mean_clean_nr": -0.0646784732142857,
+      "p": 0.026184496349968,
+      "survives_bonferroni": false
+    },
+    "h_so_far_at_entry": {
+      "mean_real": 0.2857142857142857,
+      "mean_clean_nr": 0.15476190476190477,
+      "p": 0.04843567298775531,
+      "survives_bonferroni": false
+    },
+    "ab_remaining_at_entry": {
+      "mean_real": 2.4285714285714284,
+      "mean_clean_nr": 2.6041666666666665,
+      "p": 0.02743831721482537,
+      "survives_bonferroni": false
+    },
+    "size_usd": {
+      "mean_real": 0.6271428571428573,
+      "mean_clean_nr": 0.880803571428572,
+      "p": 0.0007451333973957919,
+      "survives_bonferroni": true
+    }
+  },
+  "bias_screen_any_survive_bonferroni": true,
+  "calibration_scenarios": {
+    "S1_confirmed_real_only": {
+      "n": 35,
+      "n_dates": 10,
+      "model_brier": 0.26184606052220005,
+      "market_brier": 0.5215307142857141,
+      "skill_vs_market": 0.4979278240959919,
+      "skill_vs_climatology": -0.8434564605729598,
+      "win_rate": 0.17142857142857143,
+      "total_pnl": -7.783599999999999
+    },
+    "S2_real_plus_clean": {
+      "n": 371,
+      "n_dates": 12,
+      "model_brier": 0.29790663587101884,
+      "market_brier": 0.3609041778975742,
+      "skill_vs_market": 0.17455475964158618,
+      "skill_vs_climatology": -0.2204347659956869,
+      "win_rate": 0.42318059299191374,
+      "total_pnl": 10.5667
+    },
+    "S3_clean_only": {
+      "n": 336,
+      "n_dates": 9,
+      "model_brier": 0.3016629458031875,
+      "market_brier": 0.3441722470238096,
+      "skill_vs_market": 0.12351170551436519,
+      "skill_vs_climatology": -0.21913513260771933,
+      "win_rate": 0.4494047619047619,
+      "total_pnl": 18.3503
+    }
+  }
+}
