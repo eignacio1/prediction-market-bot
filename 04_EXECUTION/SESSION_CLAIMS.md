@@ -610,3 +610,4 @@
 | 2026-09-25T01:18:59Z | T-572 | CLOSED — merge confirmed, HEAD (45bfe56) is ancestor of origin/main — CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2 |
 | 2026-09-25T01:57:00Z | T-575 | T-575: feature-space audit -- consumed vs available-unwired vs absent inventory (read-only, operator 2026-09-24 scoping directive) |
 | 2026-09-25T01:57:02Z | T-575, GG-303 | T-575: GG-303 order-id write-defect — fix ledger write boundary to prevent fabricated kalshi_order_id |
+| 2026-09-25T01:57:47Z | T-576, GG-303 | T-576 (correction: my T-575 claim collided with a concurrent session's T-575 'feature-space audit' claim, ~2s apart — claim_session.sh's collision check did not catch it, likely a read-before-other's-push race during rebase-retry; re-claiming under T-576) — GG-303 order-id write-defect: fix ledger write boundary to prevent fabricated kalshi_order_id |
