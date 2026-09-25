@@ -20,3 +20,4 @@ No — nothing needs you today. Findings are logged as open questions (GG-300, G
 Yes — the project's one credible working result (the baseball calibration finding) does not currently stand as proven on verified real trades. It needs the 731 unconfirmed trades resolved, or a check for whether the 34 confirmed ones are a biased sample, before anyone should treat that finding as settled.
 
 *Full technical detail: see `SESSION_HANDOFF_20260924_0414.md` and `DECISION_LOG.md` for this date.*
+- T-574 (auto): T-574 (Wave 34, session 34.1): 4 governance-tooling deliverables done, results file for 34.2, branch unmerged.
