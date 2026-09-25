@@ -181,7 +181,16 @@ achieves a positive forward slope that also clears confound (b).
 
 ## Verdict (mechanical application of §6 of the pre-registration)
 
-**THESIS: NOT SUPPORTED.**
+**THESIS: NOT SUPPORTED (current feature set).**
+
+**Scope correction (added by T-575, 2026-09-25, per operator directive — no statistic above was
+re-run or altered):** the model under test, `p_hits_gte_threshold(h_so_far, ab_remaining,
+ba_l10, threshold)` (`run_t4_mlb_live.py:687`), is a closed-form binomial survival function over
+four inputs only — it carries no score/leverage, opponent-pitcher, park, or qualitative signal
+(see T-575's `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T575_feature_space_audit_RESULTS.md` for
+the full inventory). This verdict is therefore a finding about that specific four-input model
+failing to beat the market, not a general finding that the T4 live-latency market is efficient
+to any better-informed model.
 
 - Criterion 1 for SUPPORTED (pooled forward slope positive, CI excluding 0, majority of k)
   **fails** — the pooled forward slope is negative at all four k, each with a CI excluding 0.
