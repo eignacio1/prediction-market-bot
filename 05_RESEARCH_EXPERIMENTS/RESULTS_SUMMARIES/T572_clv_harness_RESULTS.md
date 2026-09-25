@@ -138,6 +138,27 @@ and would need a sibling function per distinct approval-decision formula.
    picks up extending this instrument to them, the formula-parity check described in Deliverable 5's
    table above is the first thing to verify, not an assumption to carry forward.
 
+4. **`scripts/close_session_claim.sh` pushes the entire branch to `origin/main`, not just the
+   closure row — contradicts its own stated purpose.** Run at close-out this session
+   (`scripts/close_session_claim.sh "T-572" "..."`). Its docstring states the job is to land only
+   the closure row on `origin/main` "independently of whether this session's own branch ever
+   merges" (GG-186 follow-on, referenced in its own header comment) — i.e. the intent is visibility
+   without requiring the branch to merge. Mechanically it does `git add "$CLAIMS" && git commit`
+   (row alone, correctly path-scoped) but then `git push origin HEAD:main`, which pushes the
+   *entire current branch tip*, not just the new commit. In this session that meant all 4 T-572
+   commits (pre-registration, harness+tests, results) landed directly on `origin/main` with no PR
+   and no review, immediately after the script printed "MERGED: NO" — the message became false the
+   instant the push succeeded. Confirmed no data loss resulted (fast-forward only, rebase-retry
+   correctly preserved concurrent T-573/T-574 commits already on `origin/main` — verified by
+   diffing `origin/main` log before/after), so this is a process-integrity gap, not a
+   destructive-action gap: any branch with substantive, unreviewed commits will silently bypass
+   whatever review path the rest of the project uses (repo history shows normal work lands via PR,
+   e.g. "Merge pull request #148"). Operator confirmed this specific instance can stay landed
+   (content is scope-safe, tests pass); the script itself should still be fixed — the closure row
+   needs a mechanism that doesn't require pushing the whole branch (e.g. commit the row against a
+   fresh fetch of `origin/main` in a detached/orphan context, or `git push origin
+   <commit-sha>:refs/heads/main` for a synthetic single-commit ref, rather than `HEAD:main`).
+
 ---
 
 ## What was NOT checked
