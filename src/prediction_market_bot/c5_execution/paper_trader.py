@@ -642,11 +642,21 @@ class PaperTrader:
                     mid_price=mid_price,
                     client_order_id=pos["position_id"],
                 )
-                if order.ok:
+                # GG-303/T-576 defense-in-depth: never trust order.order_id as a
+                # confirmed exchange acknowledgement if it's empty, even when
+                # order.ok is True. kalshi_client.py's submit_order() now refuses
+                # this case itself, but the write boundary here must not depend
+                # solely on that upstream guarantee holding forever.
+                if order.ok and order.order_id:
                     pos["kalshi_order_id"] = order.order_id
                     pos["kalshi_order_status"] = order.status
                     pos["kalshi_contracts"] = order.contracts
                 else:
+                    if order.ok and not order.order_id:
+                        order.error = order.error or (
+                            "order.ok=True but order_id was empty -- refusing to "
+                            "persist as a confirmed position (GG-303)"
+                        )
                     # GG-079/T-234: a non-2xx response means Kalshi never accepted
                     # this order — no capital is at risk with the venue. Route to
                     # rejected_positions at write time rather than open_positions,

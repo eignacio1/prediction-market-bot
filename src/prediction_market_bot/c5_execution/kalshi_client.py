@@ -1121,9 +1121,26 @@ class KalshiMarketClient:
             )
 
         order_data = data.get("order", data)
+        returned_order_id = order_data.get("order_id", "")
+
+        # GG-303/T-576: an HTTP 200/201 response alone is not acknowledgement.
+        # A response body with no resolvable order_id must not be treated as a
+        # confirmed order -- refuse the write rather than persist a fabricated id.
+        if not returned_order_id:
+            return KalshiOrder(
+                ok=False, order_id="", client_order_id=client_order_id,
+                ticker=ticker, side=side, contracts=contracts,
+                yes_price_cents=price_cents, actual_cost_usd=actual_cost,
+                status="error",
+                error=(
+                    "Kalshi returned HTTP success with no order_id in the "
+                    f"response body -- not acknowledged as a real order (raw: {data!r})"
+                ),
+            )
+
         return KalshiOrder(
             ok=True,
-            order_id=order_data.get("order_id", ""),
+            order_id=returned_order_id,
             client_order_id=client_order_id,
             ticker=ticker,
             side=side,
