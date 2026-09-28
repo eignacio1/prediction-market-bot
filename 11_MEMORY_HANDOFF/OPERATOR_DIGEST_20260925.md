@@ -5,3 +5,4 @@
 **Bottom line:** neither the old "it's working" number nor the newer "it's losing" number can be trusted as the real answer. Fixing this requires repairing the ledger-write bug first, then re-running the analysis on a clean, representative sample. Nothing was changed in the trading system itself this session — this was read-only diagnosis.
 
 **Also fixed:** a git merge conflict blocked PR #150 (this session's work) from landing on main — resolved and merged (commit `1da5865`).
+- T-577 (auto): T-577 cohort salvage pre-registered analysis complete -- UNRECOVERABLE verdict, only n=35 CONFIRMED-REAL is usable.
