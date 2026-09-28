@@ -6,3 +6,4 @@
 
 **Also fixed:** a git merge conflict blocked PR #150 (this session's work) from landing on main — resolved and merged (commit `1da5865`).
 - T-577 (auto): T-577 cohort salvage pre-registered analysis complete -- UNRECOVERABLE verdict, only n=35 CONFIRMED-REAL is usable.
+- T-576 (auto): GG-303 fix confirmed landed on main (a3db7e3) -- ledger no longer writes a phantom confirmed position when Kalshi returns no order_id. 4 new tests, 302 regression tests passing. Prod restart to activate the fix, and repair of the 395 pre-existing corrupted rows, remain pending operator decision.
