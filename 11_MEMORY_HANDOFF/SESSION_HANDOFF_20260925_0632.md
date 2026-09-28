@@ -46,3 +46,7 @@ Session "35.1": (1) log the verdict in `DECISION_LOG.md`, (2) register the two c
 ## Resume command
 
 `scripts/session_delta.sh 7cf7a54` from a fresh worktree, then read `T577_RESULTS_cohort_salvage.md` for full context.
+
+## Step 9 — stray branches (flag only, not mine, not merged)
+
+7 unlanded `origin/session/*` branches found by `sweep_stray_branches.sh 14` at close-out (3–13 days old): `20260915T003401Z-nfl-capture-gap-0912`, `20260918T142928Z-gg291-threshold-backfill`, `20260918T142949Z-install-closeout-fix`(+`-v2`), `20260923T005837Z-vig-grounding-from-archive`, `20260924T045012Z-clv-harness`, `20260924T045227Z-resolved-filter`. This session's own branch landed cleanly on `origin/main`.
