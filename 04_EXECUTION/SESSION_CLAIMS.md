@@ -625,3 +625,4 @@
 | 2026-09-29T00:21:49Z | T-579, GG-311 | T-579: 36.3 -- land Wave 36 queue, activate GG-303 write fix (authorized), Operator Console Section 0 retirement roll-up |
 | 2026-09-29T00:56:14Z | T-579 | CLOSED — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean. (commit `2a0f77a`) |
 | 2026-09-29T00:56:50Z | T-579 | CLOSED — merge confirmed, HEAD (72fa609) is ancestor of origin/main — 36.3 -- Wave 36 landed, GG-303 activated (auth'd), Operator Console Section 0 complete, Q1-Q7 clean |
+| 2026-09-29T04:42:23Z | T-578 | CLOSED — merge confirmed, HEAD (6fc3e1b) is ancestor of origin/main — park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated; merged via PR #152 (8f3557d) |
