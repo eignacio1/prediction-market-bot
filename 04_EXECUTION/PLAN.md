@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-29T05:29:00Z (T-584 — T-584 GG-312 parity checker fixed both directions; all 36 ratified ADRs covered; Section 0 15->5.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0529.md` for full session detail.
+**Last reviewed:** 2026-09-29T05:45:00Z (T-587 — T-587 wave 38.1: NFL T1 runs now self-identify (runtime sha/trigger/run id/host); live hand-run wrote 802 STUB rows (GG-317).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0545.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
