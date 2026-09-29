@@ -619,3 +619,4 @@
 | 2026-09-28T23:59:58Z | T-575 | CLOSED — T-575 feature-space audit + T-569 verdict corrected to "NOT SUPPORTED (current feature set)" — read-only (commit `a61de7e`) |
 | 2026-09-29T00:03:44Z | T-575 | CLOSED — merge confirmed, HEAD (9b8df7f) is ancestor of origin/main — Feature-space audit + T-569 verdict corrected to NOT SUPPORTED (current feature set); session-end close-out merged |
 | 2026-09-29T00:16:06Z | TBD (claim at run time) | T4 game-state/leverage signal (Wave 36 block 36.2) |
+| 2026-09-29T00:16:52Z | T-578 | T-578: park_factor_hits dead-feature audit (T-575 item 2) -- verify, quantify cost, fix-or-retire, ADR-0064 draft |
