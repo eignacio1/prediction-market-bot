@@ -630,6 +630,14 @@ class PaperTrader:
                 # entirely (no key at all) reads the same "UNKNOWN" on load
                 # via .get() at render time — see web_dashboard.py.
                 "model_identity": approval.get("model_identity") or "UNKNOWN",
+                # GG-302: runtime run-provenance (see run_provenance.py). Opt-in
+                # via approval["run_provenance"]; absent -> literal "UNKNOWN",
+                # never a static marker. approval_commit above is an epoch
+                # marker and identifies no run; these fields do.
+                "runtime_git_sha": (approval.get("run_provenance") or {}).get("runtime_git_sha") or "UNKNOWN",
+                "run_trigger": (approval.get("run_provenance") or {}).get("run_trigger") or "UNKNOWN",
+                "run_id": (approval.get("run_provenance") or {}).get("run_id") or "UNKNOWN",
+                "run_host": (approval.get("run_provenance") or {}).get("run_host") or "UNKNOWN",
             }
 
             # Submit to Kalshi demo if client is available (ADR-0008)
