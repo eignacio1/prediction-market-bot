@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-28T23:58:00Z (T-575 — T-575 feature-space audit + T-569 verdict corrected to "NOT SUPPORTED (current feature set)" — read-only) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260928_2358.md` for full session detail.
+**Last reviewed:** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-25T01:14:00Z (T-572 — T-572 CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0114.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
