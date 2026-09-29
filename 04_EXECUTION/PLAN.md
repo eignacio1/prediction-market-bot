@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-25T06:32:17Z (T-577 — T-577 cohort salvage pre-registered analysis complete -- UNRECOVERABLE verdict, only n=35 CONFIRMED-REAL is usable.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0632.md` for full session detail.
+**Last reviewed:** 2026-09-28T23:58:00Z (T-575 — T-575 feature-space audit + T-569 verdict corrected to "NOT SUPPORTED (current feature set)" — read-only) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260928_2358.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-25T01:14:00Z (T-572 — T-572 CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0114.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
