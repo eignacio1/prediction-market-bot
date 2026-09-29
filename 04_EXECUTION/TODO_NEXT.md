@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-28T23:58:00Z (T-575 — T-575 feature-space audit + T-569 verdict corrected to "NOT SUPPORTED (current feature set)" — read-only) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260928_2358.md` for full session detail.
+**Last reviewed:** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-25T01:14:00Z (T-572 — T-572 CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0114.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.
@@ -16,6 +16,8 @@
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 
 *(34 completed `## T-NNN` task entries — spanning T-325 through T-395 — archived verbatim to `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § TODO_NEXT Task Archive, 2026-07-23 (T-396). This file's own "Only contains tasks executable in the next 1–3 sessions" purpose line had drifted — see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md` 2026-07-23 for the archival decision and GG-133 for the standing-cadence gap this revealed. 86 more sections — 1295 lines, spanning legacy 2026-05/06 blocks through T-397 — archived the same way 2026-07-24 via the new `scripts/archive_todo_next.sh`, see below.)*
+
+## T-578 — `park_factor_hits` dead-feature audit (T-575 item 2): verify, quantify cost, fix-or-retire, ADR-0064 draft — ✅ COMPLETE 2026-09-28 (worktree `session/20260929T001608Z-park-factor-dead-feature`, commits `b710609`/`8dc2854`). T-575's "~100% neutral, likely dead" hypothesis REFUTED IN MAGNITUDE (measured 15.26% of 132,184 rows, root-caused per-team to venue-name string-matching gaps, not absent data). Decision: repair not retire — `_VENUE_NAME_ALIASES` fix implemented+tested this branch, near-zero with/without re-scoring delta, both configs pass ADR-0009 shadow gate. **Not activated** — ADR-0064 (PROPOSED) requires operator sign-off + fresh ADR-0042 D2 holdout gate before deploy. Results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T578_park_factor_hits_audit.md`. **Open follow-up (unstaffed):** session/block 36.3 to register the GG-145 status-update candidate (in the results file's "Gap candidate" section) into `GOVERNANCE_GAP_LOG.md` — this session does not own that file.
 
 ## T-563/GG-291 — Fix `kalshi_threshold` null-write defect (Deliverable 2 of 6) — ✅ COMPLETE 2026-09-21 (worktree `session/20260922T004800Z-gg291-unblock-and-settle`)
 
