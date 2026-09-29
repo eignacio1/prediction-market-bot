@@ -28,7 +28,7 @@ Primary holdout: train 2015–2024 (n=2734), test season 2025 (n=284), temporal,
 | Brier | 0.2210 [0.2057, 0.2375] | 0.2203 [0.2053, 0.2363] | −0.0007 [−0.0020, +0.0005] |
 | ECE | 0.066 [0.046, 0.128] | 0.069 [0.047, 0.129] | +0.002 [−0.022, +0.026] |
 
-Every difference interval spans zero. Rolling-origin 2020–2025 (six holdouts, n≈270–285 each): candidate Brier differs from incumbent by at most 0.0009 in absolute value and every interval spans zero; it is better in 1 of 6 seasons (2025), worse or equal in the other 5. **The honest reading is no detectable difference.**
+Every difference interval spans zero. Rolling-origin 2020–2025 (six holdouts, n≈270–285 each): candidate Brier differs from incumbent by at most 0.0011 in absolute value (per-season diffs: +0.0011, +0.0004, +0.0002, +0.0002, +0.0005, −0.0007) and every interval spans zero; it is better in 1 of 6 seasons (2025), worse or equal in the other 5. **The honest reading is no detectable difference.**
 
 Closing line (2026 Kalshi KXNFLGAME archive, n=48 games): market closing Brier 0.2335, incumbent 0.2400, candidate 0.2453. Neither model beats the market's closing price at this n, and the sample is far too small to rank the two models.
 
