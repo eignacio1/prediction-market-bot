@@ -618,3 +618,4 @@
 | 2026-09-28T23:39:02Z | T-577 | CLOSED — merge confirmed, HEAD (2ac5891) is ancestor of origin/main — Cohort salvage pre-registered analysis complete -- UNRECOVERABLE verdict, only n=35 CONFIRMED-REAL is usable (commit 2ac5891) |
 | 2026-09-28T23:59:58Z | T-575 | CLOSED — T-575 feature-space audit + T-569 verdict corrected to "NOT SUPPORTED (current feature set)" — read-only (commit `a61de7e`) |
 | 2026-09-29T00:03:44Z | T-575 | CLOSED — merge confirmed, HEAD (9b8df7f) is ancestor of origin/main — Feature-space audit + T-569 verdict corrected to NOT SUPPORTED (current feature set); session-end close-out merged |
+| 2026-09-29T00:16:06Z | TBD (claim at run time) | T4 game-state/leverage signal (Wave 36 block 36.2) |
