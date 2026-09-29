@@ -17,3 +17,4 @@
 - ADR-0066 is drafted as PROPOSED. I recommend not accepting it.
 - Needs your decision: whether to schedule an NFL T1 cron (I added none), and whether to source historical moneylines for a bigger closing-line test (2026 has only 48 games).
 - I did not touch the governance gap log or decision log (37.3 owns them). Concerns for it are in the handoff.
+- T-586 (auto): T-586 priced NFL+MLB absent attributes (source/tier/backfill) and ranked them; decision input only, no edge measured.

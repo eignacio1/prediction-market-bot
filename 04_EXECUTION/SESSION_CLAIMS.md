@@ -642,3 +642,4 @@
 | 2026-09-29T05:15:10Z | T-581 | CLOSED — T-581: EXP-027 EPA splits built offline; no detectable gain (CIs span 0); ADR-0066 drafted PROPOSED, unwired. (commit `64c0313`) |
 | 2026-09-29T05:21:54Z | T-584 | SHORT/STANDARD single deliverable: fix check_register_parity.py to see the whole class (GG-312) + Section 0 wiring; no GGL/DECISION_LOG writes |
 | 2026-09-29T05:22:23Z | T-586 | STANDARD costing study: price NFL+MLB absent-attribute list (source/integration tier/backfill), rank, decision input; read-only src/, no GGL/DECISION_LOG writes |
+| 2026-09-29T05:29:22Z | T-586 | MERGED: NO — branch `session/20260929T052132Z-absent-attribute-pricing` awaiting merge — T-586 priced NFL+MLB absent attributes (source/tier/backfill) and ranked them; decision input only, no edge measured. (commit `81071a3`) |

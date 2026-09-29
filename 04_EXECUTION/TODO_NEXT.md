@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-29T05:15:00Z (T-581 — T-581: EXP-027 EPA splits built offline; no detectable gain (CIs span 0); ADR-0066 drafted PROPOSED, unwired.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0515.md` for full session detail.
+**Last reviewed:** 2026-09-29T05:30:00Z (T-586 — T-586 priced NFL+MLB absent attributes (source/tier/backfill) and ranked them; decision input only, no edge measured.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0530.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
