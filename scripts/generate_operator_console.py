@@ -130,6 +130,99 @@ def prunable_worktrees():
     return [line.strip() for line in out.stdout.splitlines() if line.strip()]
 
 
+def shared_tree_behind_origin():
+    """How many commits the shared main-tree checkout (`git worktree list`'s
+    first entry -- the primary checkout, distinct from the isolated
+    per-session worktrees under PM-worktrees/) sits behind origin/main.
+
+    T-574 (2026-09-24, Deliverable 0(f)): a session that skips the
+    launch-isolated default (Hard Rule 10 / CLAUDE.md Step 0a) and works
+    directly in the shared tree can silently drift behind origin for days
+    with nothing surfacing it. Read-only: fetches origin/main, never merges,
+    resets, or checks out anything. Returns None if it can't be determined
+    (no worktree metadata, detached HEAD, etc.) -- absence of a number here
+    means "undetermined," not "zero.\""""
+    _git("fetch", "--quiet", "origin", "main")
+    out = _git("worktree", "list", "--porcelain")
+    if out is None or out.returncode != 0 or not out.stdout.strip():
+        return None
+    first_block = out.stdout.split("\n\n")[0]
+    path = branch = None
+    for line in first_block.splitlines():
+        if line.startswith("worktree "):
+            path = line[len("worktree "):].strip()
+        elif line.startswith("branch "):
+            ref = line[len("branch "):].strip()
+            branch = ref[len("refs/heads/"):] if ref.startswith("refs/heads/") else ref
+    if not path or not branch:
+        return None
+    count = _git("-C", path, "rev-list", "--count", f"{branch}..origin/main")
+    if count is None or count.returncode != 0:
+        return None
+    try:
+        behind = int(count.stdout.strip())
+    except ValueError:
+        return None
+    return {"path": path, "branch": branch, "behind": behind}
+
+
+ACTIVE_QUEUE = Path("04_EXECUTION/ACTIVE_QUEUE.md")
+SEQ_HEADER_RE = re.compile(r"^## Sequencing track\s*$", re.M)
+SEQ_ROW_RE = re.compile(r"^\|\s*\*\*(\d+)\*\*\s*\|\s*(.+?)\s*\|", re.M)
+WAVE_HEADER_RE = re.compile(r"^## .*?\bwave (\d+)\b.*$", re.M | re.I)
+
+
+def _section(text, header_re):
+    """Text between the first header matching `header_re` and the next
+    top-level '## ' header (or EOF). Used to scope table-row parsing to one
+    named section instead of matching similarly-shaped rows elsewhere."""
+    m = header_re.search(text)
+    if not m:
+        return ""
+    rest = text[m.end():]
+    nxt = re.search(r"^## ", rest, re.M)
+    return rest[: nxt.start()] if nxt else rest
+
+
+def closed_wave_fences(queue_path=None):
+    """Wave numbers the Sequencing track table marks CLOSED that still have
+    a pasteable fenced code block under one of their own '## ... Wave N ...'
+    headers.
+
+    ACTIVE_QUEUE.md's own stated rule (top of file): "Closed block prompts
+    move verbatim to ACTIVE_QUEUE_ARCHIVE.md. Closed waves stay visible here
+    as sequencing-track rows and outcome prose, never as pasteable fences."
+    T-574 (2026-09-24, Deliverable 0(f)) found exactly this defect by hand
+    during Deliverable 0 (Wave 33 prompts left un-archived) -- this makes
+    the check structural instead of relying on a session noticing."""
+    path = queue_path or ACTIVE_QUEUE
+    if not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8")
+    closed_waves = {
+        m.group(1) for m in SEQ_ROW_RE.finditer(_section(text, SEQ_HEADER_RE))
+        if "CLOSED" in m.group(2)
+    }
+    if not closed_waves:
+        return []
+    headers = [(m.start(), m.group(1), m.group(0).strip()) for m in WAVE_HEADER_RE.finditer(text)]
+    headers.append((len(text), None, None))
+    findings = []
+    for i in range(len(headers) - 1):
+        start, wave_no, header_line = headers[i]
+        if wave_no not in closed_waves:
+            continue
+        section = text[start:headers[i + 1][0]]
+        fence_lines = re.findall(r"^```", section, re.M)
+        fence_count = len(fence_lines) // 2
+        if fence_count > 0:
+            findings.append(
+                f"Wave {wave_no} marked CLOSED but `{header_line}` still has "
+                f"{fence_count} fenced block(s)"
+            )
+    return findings
+
+
 _NO_ROW_MARKERS = (
     "no APPROVALS_REGISTER.md row at all",
     "never mentioned in APPROVALS_REGISTER.md",
@@ -195,6 +288,8 @@ def main():
     prunable_wt = prunable_worktrees()
     no_row_findings = accepted_without_register_row()
     open_claims = unclosed_session_claims()
+    shared_behind = shared_tree_behind_origin()
+    wave_fences = closed_wave_fences()
 
     lines = []
     lines.append("# Operator Console")
@@ -220,12 +315,15 @@ def main():
     lines.append("---")
     lines.append("")
 
+    shared_behind_n = 1 if (shared_behind and shared_behind["behind"] > 0) else 0
     retirement_n = (
         len(buckets["retirement_debt"])
         + len(landed_branches)
         + len(prunable_wt)
         + len(no_row_findings)
         + len(open_claims)
+        + shared_behind_n
+        + len(wave_fences)
     )
     lines.append(f"## 0. Overdue for retirement ({retirement_n})")
     lines.append("")
@@ -307,6 +405,33 @@ def main():
     if open_claims:
         for tid in open_claims:
             lines.append(f"- `{tid}`")
+    else:
+        lines.append("_None currently detected._")
+    lines.append("")
+
+    lines.append(f"**Shared main tree behind origin/main ({shared_behind_n})** "
+                  "-- a session that skips the launch-isolated default (Step 0a) "
+                  "and works directly in the shared checkout can drift behind "
+                  "origin unnoticed (T-574):")
+    if shared_behind is None:
+        lines.append("_Undetermined (no worktree metadata / detached HEAD)._")
+    elif shared_behind["behind"] > 0:
+        lines.append(
+            f"- `{shared_behind['path']}` on `{shared_behind['branch']}` is "
+            f"{shared_behind['behind']} commit(s) behind `origin/main`"
+        )
+    else:
+        lines.append("_None currently detected._")
+    lines.append("")
+
+    lines.append(f"**Closed-wave fences still in ACTIVE_QUEUE.md ({len(wave_fences)})** "
+                  "-- pasteable code fences left under a header for a wave the "
+                  "Sequencing track already marks CLOSED, in violation of this "
+                  "file's own stated rule (T-574, found by hand during Wave 33 "
+                  "recovery):")
+    if wave_fences:
+        for f in wave_fences:
+            lines.append(f"- {f}")
     else:
         lines.append("_None currently detected._")
     lines.append("")
