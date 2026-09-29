@@ -227,6 +227,12 @@ _NO_ROW_MARKERS = (
     "no APPROVALS_REGISTER.md row at all",
     "never mentioned in APPROVALS_REGISTER.md",
     "no OWN dedicated row",
+    # T-584 (GG-312): checker integrity + reverse-direction findings share
+    # this rollup so an unreadable header or a dangling row is as visible
+    # as a missing row, instead of a silent skip.
+    "no parseable Status header",
+    "register row points at no real document",
+    "enumerated by a RATIFY register row but no same-id document",
 )
 
 
@@ -373,14 +379,16 @@ def main():
     lines.append("")
 
     lines.append(f"**ADRs/APRs missing register accountability ({len(no_row_findings)})** "
-                  "-- `scripts/check_register_parity.py` rules 1, 2, and 5. Rule 1 "
+                  "-- `scripts/check_register_parity.py` rules 1, 2, 5 and 6 (T-584). Rule 1 "
                   "requires EVERY APR to have its own row regardless of status "
                   "(so a non-ACCEPTED APR like APR-0034/0035/0036, still "
                   "DECISION REQUEST, correctly appears below); rules 2/5 apply "
                   "only to resolved (ACCEPTED-class) ADRs, requiring their own "
                   "dedicated row, not just a mention. Stale-PENDING/premature-"
                   "ACCEPTED drift findings (rules 3/4) are excluded, out of "
-                  "scope for a \"missing entirely\" rollup:")
+                  "scope for a \"missing entirely\" rollup. Rule 6 adds the reverse "
+                  "direction: unreadable Status headers, RATIFY-enumerated IDs "
+                  "with no doc, and dated rows pointing at no real document:")
     if no_row_findings:
         for f in no_row_findings:
             lines.append(f"- {f}")

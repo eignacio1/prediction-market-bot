@@ -82,6 +82,10 @@ from prediction_market_bot.c5_execution.measurement_stake import (  # noqa: E402
 )
 from prediction_market_bot.c5_execution.paper_trader import PaperTrader  # noqa: E402
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+from prediction_market_bot.run_provenance import (  # noqa: E402
+    ProvenanceAuditLogger,
+    capture_run_provenance,
+)
 from prediction_market_bot.execution_bands import ExecutionBand  # noqa: E402
 
 COMPONENT = "run_t1_nfl_game_market"
@@ -207,6 +211,7 @@ def evaluate_and_maybe_trade(
     trader: PaperTrader,
     audit: AuditLogger,
     session_id: str = SESSION_ID,
+    run_provenance: dict[str, Any] | None = None,
 ) -> str:
     """Evaluate one GameMarket and, if approved, open a paper position.
 
@@ -387,6 +392,7 @@ def evaluate_and_maybe_trade(
         "price_stratum": price_stratum,              # ADR-0050 addendum §C
         "contracts": contracts,                       # ADR-0050 addendum §B
         "model_identity": model_identity,             # GG-267
+        "run_provenance": run_provenance or {},       # GG-302
     }
 
     # GG-291: kalshi_threshold must never be written as None for a
@@ -434,7 +440,10 @@ def main(model: NFLForecastModel | None = None) -> dict[str, int]:
             file=sys.stderr,
         )
 
-    audit = AuditLogger(AUDIT_LOG_PATH)
+    # GG-302: captured at runtime, stamped on every audit event and position row.
+    provenance = capture_run_provenance(run_id=SESSION_ID)
+    audit = ProvenanceAuditLogger(AUDIT_LOG_PATH, provenance)
+    audit.info(COMPONENT, "run_started", payload={}, session_id=SESSION_ID)
     kalshi = KalshiMarketClient.from_env()
     engine = RiskEngine(
         logger=audit, snapshot_id="SNAP-T1-NFLGM-001", bankroll=INITIAL_BANKROLL_USD,
@@ -472,6 +481,7 @@ def main(model: NFLForecastModel | None = None) -> dict[str, int]:
                 mkt,
                 snapshot_unparsed_count=snapshot.unparsed_count,
                 model=model, engine=engine, trader=trader, audit=audit,
+                run_provenance=provenance,
             )
             outcome_counts[outcome] = outcome_counts.get(outcome, 0) + 1
             if outcome == "KILL_SWITCH_HALT":

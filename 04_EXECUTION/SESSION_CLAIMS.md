@@ -644,3 +644,9 @@
 | 2026-09-29T05:22:23Z | T-586 | STANDARD costing study: price NFL+MLB absent-attribute list (source/integration tier/backfill), rank, decision input; read-only src/, no GGL/DECISION_LOG writes |
 | 2026-09-29T05:29:22Z | T-586 | MERGED: NO — branch `session/20260929T052132Z-absent-attribute-pricing` awaiting merge — T-586 priced NFL+MLB absent attributes (source/tier/backfill) and ranked them; decision input only, no edge measured. (commit `81071a3`) |
 | 2026-09-29T05:29:48Z | T-586 | MERGED: NO — branch `session/20260929T052132Z-absent-attribute-pricing` awaiting merge (HEAD 5861401 not on origin/main) — absent-attribute costing study, doc-only |
+| 2026-09-29T05:27:04Z | T-587, GG-316 | STANDARD — 38.1 NFL accrual path: runtime run-provenance (GG-302 remediation), live hand-run, accrual arithmetic; cron deliverable gated on operator authorization (absent -> skipped) |
+| 2026-09-29T05:29:24Z | T-584 | MERGED: NO — branch `session/20260929T052125Z-gg312-parity-checker` awaiting merge — T-584 GG-312 parity checker fixed both directions; all 36 ratified ADRs covered; Section 0 15->5. (commit `28a8b63`) |
+| 2026-09-29T05:29:33Z | T-584 | MERGED: NO — branch `session/20260929T052125Z-gg312-parity-checker` awaiting merge (HEAD e9c5a07 not on origin/main) — GG-312 parity checker fixed both directions; Section 0 15->5 |
+| 2026-09-29T05:30:02Z | T-584 | CLOSED — merge confirmed, HEAD (dab4041) is ancestor of origin/main — GG-312 parity checker fixed both directions; Section 0 15->5 |
+| 2026-09-29T05:42:12Z | T-587 | CLOSED — T-587 wave 38.1: NFL T1 runs now self-identify (runtime sha/trigger/run id/host); live hand-run wrote 802 STUB rows (GG-317). (commit `b2faddb`) |
+| 2026-09-29T05:42:27Z | T-587 | CLOSED — merge confirmed, HEAD (846164e) is ancestor of origin/main — NFL run provenance landed; hand-run 802 STUB rows (GG-317) |

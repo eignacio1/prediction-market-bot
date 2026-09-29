@@ -18,3 +18,11 @@
 - Needs your decision: whether to schedule an NFL T1 cron (I added none), and whether to source historical moneylines for a bigger closing-line test (2026 has only 48 games).
 - I did not touch the governance gap log or decision log (37.3 owns them). Concerns for it are in the handoff.
 - T-586 (auto): T-586 priced NFL+MLB absent attributes (source/tier/backfill) and ranked them; decision input only, no edge measured.
+- T-584 (auto): T-584 GG-312 parity checker fixed both directions; all 36 ratified ADRs covered; Section 0 15->5.
+
+## T-587 — NFL runs can now say who ran them
+- Every NFL test-run record now stamps which code version ran it, whether a person or the scheduler started it, and on which machine. This closes the hole that made the 42 earlier rows unattributable.
+- I ran it once by hand against live Kalshi (practice money only). It looked at 1,209 markets and logged 802 practice trades, every one stamped correctly.
+- Those 802 trades come from a placeholder model, not a real one, so they prove the plumbing works and nothing about edge. They should not count toward any evidence total; that is now logged as a new gap for your decision.
+- No NFL schedule was set up, because no authorization was on file. A full season would still fall far short of the sample needed if games are counted as the independent units.
+- Still zero real money at risk.

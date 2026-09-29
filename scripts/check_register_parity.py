@@ -33,6 +33,31 @@ Rules:
      this script does not make for itself, and requires the stated reason +
      DECISION_LOG.md note the exemptions file itself demands).
 
+  6. (T-584, 2026-09-29, GG-312) Both directions + no silent skips:
+     a. Exemptions NO LONGER suppress rules 2/5 for a resolved ADR. The file
+        hid 27 of the 36 accepted-without-row ADRs (15 of them post-dating the
+        "legacy" convention it claims to grandfather). Exemptions still apply
+        to rule 1 (APR rows) and to nothing else; the CLEAN line reports how
+        many exemption entries are now redundant.
+     b. An ADR counts as having register accountability if ANY of: its own
+        `| ADR-NNNN |` row; a row whose SUBJECT cell (2nd column) leads with
+        it (`| APR-0020 | ADR-0026: ... |`, `ADR-0003 formal acceptance`) --
+        the subject-vs-evidence-mention distinction rule 5 always intended; or
+        a dated `RATIFY-*` row that enumerates it inside its "Population"
+        list (text before "Not covered" -- IDs a ratification row explicitly
+        does NOT cover are never counted).
+     c. A doc whose Status header cannot be parsed is now a FINDING, not a
+        silent `continue` (that skip is why `## Status`-format ADR-0006/0007
+        were invisible). `## Status` + next non-blank line is now parsed.
+     d. Reverse direction: every `| APR-/ADR-NNNN |` register row must point
+        at a real document -- either a same-id APR-*.md/ADR-*.md, or (older
+        gate-passage approvals that never had a standalone doc) an Evidence
+        cell that cites at least one file that exists in the repo, or another
+        APR/ADR id that has a real doc. Rows still reading PENDING (approval
+        not yet granted) are skipped -- a placeholder has nothing to point at.
+        Every ID a RATIFY row enumerates must have a same-id doc (no evidence
+        fallback).
+
 Exit 0 with "CLEAN" line if parity holds; exit 1 and list findings otherwise.
 Output is indented two spaces to slot into governance_scan.sh's format.
 """
@@ -40,6 +65,7 @@ Output is indented two spaces to slot into governance_scan.sh's format.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -70,13 +96,24 @@ def is_resolved(text: str) -> bool:
 
 
 def doc_status(path: Path) -> str | None:
-    """First Status line in the doc header, or None if unparseable."""
+    """Status line from the doc header, or None if unparseable.
+
+    Two formats exist in the wild: `**Status:** ...` on one line, and a
+    `## Status` heading whose value is the next non-blank line (ADR-0004/
+    0006/0007), often backtick-wrapped. The latter is normalized to the
+    former shape so downstream slicing/printing is uniform."""
     try:
-        for line in path.read_text(encoding="utf-8").splitlines()[:20]:
-            if re.match(r"\s*\*\*Status", line):
-                return line
+        lines = path.read_text(encoding="utf-8").splitlines()[:40]
     except OSError:
-        pass
+        return None
+    for i, line in enumerate(lines):
+        if re.match(r"\s*\*\*Status", line):
+            return line
+        if re.match(r"\s*#{1,6}\s*Status\s*$", line):
+            for nxt in lines[i + 1 :]:
+                if nxt.strip():
+                    return "**Status:** " + nxt.strip().replace("`", "")
+            return None
     return None
 
 
@@ -88,6 +125,73 @@ def load_exemptions() -> set[str]:
         line = line.split("#", 1)[0].strip()
         if line:
             ids.add(line)
+    return ids
+
+
+_SUBJECT_LEAD_PAT = re.compile(r"^\W*((?:APR|ADR)-\d{4})")
+
+
+_FILE_TOKEN_PAT = re.compile(r"[A-Za-z0-9_./\-]+\.(?:md|py|csv|json|jsonl|txt|sh|ya?ml)\b")
+
+
+def repo_basenames() -> set[str]:
+    """Basenames of every tracked file (git ls-files; rglob fallback)."""
+    try:
+        out = subprocess.run(
+            ["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True
+        ).stdout.splitlines()
+        return {Path(f).name for f in out}
+    except (OSError, subprocess.CalledProcessError):
+        return {p.name for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts}
+
+
+def evidence_resolves(
+    row: str, basenames: set[str], doc_ids: set[str], own_id: str
+) -> bool:
+    """True if the row's Evidence cell (6th column) cites >=1 existing file,
+    or another APR/ADR id that has a real same-id document."""
+    cells = [c.strip() for c in row.split("|")]
+    if len(cells) <= 5:
+        return False
+    if any(Path(t).name in basenames for t in _FILE_TOKEN_PAT.findall(cells[5])):
+        return True
+    return any(i in doc_ids and i != own_id for i in ID_PAT.findall(cells[5]))
+
+
+def row_is_pending(row: str) -> bool:
+    """Date cell (4th column) reads PENDING and records no resolved keyword:
+    a placeholder for a not-yet-granted approval has nothing to point at."""
+    cells = [c.strip() for c in row.split("|")]
+    date_cell = cells[4] if len(cells) > 4 else ""
+    return "PENDING" in date_cell and not is_resolved(date_cell)
+
+
+def ratified_ids(register_text: str) -> set[str]:
+    """IDs a dated `RATIFY-*` register row affirms: every ID between its
+    "**Population" marker and its "Not covered" marker. Anything after
+    "Not covered" (or with no Population marker at all) is never counted."""
+    ids: set[str] = set()
+    for line in register_text.splitlines():
+        if not re.match(r"\|\s*RATIFY-[^|]+\|", line):
+            continue
+        start = line.find("**Population")
+        if start < 0:
+            continue
+        end = line.find("Not covered", start)
+        segment = line[start : end if end > start else None]
+        ids.update(ID_PAT.findall(segment))
+    return ids
+
+
+def subject_led_ids(register_rows_all: list[str]) -> set[str]:
+    """IDs that lead the SUBJECT cell (2nd column) of some register row."""
+    ids: set[str] = set()
+    for line in register_rows_all:
+        cells = [c.strip() for c in line.split("|")]
+        if len(cells) > 2:
+            m = _SUBJECT_LEAD_PAT.match(cells[2])
+            if m:
+                ids.add(m.group(1))
     return ids
 
 
@@ -110,6 +214,9 @@ def collect_findings() -> tuple[list[str], int]:
             register_rows.setdefault(m.group(1), []).append(line)
     mentioned_ids = set(ID_PAT.findall(register_text))
     exempt = load_exemptions()
+    table_rows = [l for l in register_text.splitlines() if l.startswith("|")]
+    ratified = ratified_ids(register_text)
+    accountable = set(register_rows) | subject_led_ids(table_rows) | ratified
 
     docs: list[tuple[str, Path]] = []
     for pattern, folder in (("APR-*.md", "00_ADMIN"), ("ADR-*.md", "03_DECISIONS")):
@@ -123,7 +230,13 @@ def collect_findings() -> tuple[list[str], int]:
     for doc_id, path in docs:
         status = doc_status(path)
         if status is None:
-            continue  # no parseable Status header — nothing to compare
+            # T-584: was a silent `continue` -- the blind spot that hid
+            # `## Status`-format ADRs. An unreadable header is now loud.
+            findings.append(
+                f"{doc_id}: no parseable Status header in {path.name} "
+                f"(parity cannot be checked)"
+            )
+            continue
         checked += 1
         resolved = is_resolved(status)
         rows = register_rows.get(doc_id, [])
@@ -138,7 +251,6 @@ def collect_findings() -> tuple[list[str], int]:
             doc_id.startswith("ADR")
             and resolved
             and doc_id not in mentioned_ids
-            and doc_id not in exempt
         ):
             findings.append(
                 f"{doc_id}: resolved in doc but never mentioned in "
@@ -148,8 +260,7 @@ def collect_findings() -> tuple[list[str], int]:
         if (
             doc_id.startswith("ADR")
             and resolved
-            and not rows
-            and doc_id not in exempt
+            and doc_id not in accountable
         ):
             findings.append(
                 f"{doc_id}: resolved and mentioned in APPROVALS_REGISTER.md, but has "
@@ -177,6 +288,24 @@ def collect_findings() -> tuple[list[str], int]:
                     f"status is still {status.strip()[:60]}"
                 )
 
+    # Rule 6d: register rows / ratified IDs must point at a real document.
+    doc_ids = {d for d, _ in docs}
+    basenames = repo_basenames()
+    for rid in sorted(ratified - doc_ids):
+        findings.append(
+            f"{rid}: enumerated by a RATIFY register row but no same-id "
+            f"document exists (APR-*.md in 00_ADMIN/ or ADR-*.md in 03_DECISIONS/)"
+        )
+    for rid in sorted(set(register_rows) - doc_ids):
+        live = [r for r in register_rows[rid] if not row_is_pending(r)]
+        if live and not any(
+            evidence_resolves(r, basenames, doc_ids, rid) for r in live
+        ):
+            findings.append(
+                f"{rid}: register row points at no real document (no same-id "
+                f"doc, and its Evidence cell cites no existing file or documented APR/ADR id)"
+            )
+
     return findings, checked
 
 
@@ -187,6 +316,7 @@ def main() -> int:
 
     findings, checked = collect_findings()
     exempt = load_exemptions()
+    redundant = sum(1 for e in exempt if e.startswith("ADR-"))
 
     if findings:
         print(f"  {len(findings)} PARITY MISMATCH(ES) — register write-back missed (GG-126 class):")
@@ -196,7 +326,8 @@ def main() -> int:
         return 1
     print(
         f"  CLEAN — {checked} APR/ADR docs checked against the register "
-        f"({len(exempt)} legacy-exempt)"
+        f"({len(exempt)} exemption entries; {redundant} ADR entries no longer "
+        f"suppress anything -- rules 2/5 ignore exemptions since T-584)"
     )
     return 0
 
