@@ -3382,3 +3382,26 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 </details>
 
 ---
+
+---
+
+### GG-316 — A T1 NFL run cannot be attributed to an actor: `approval_commit` is a static epoch marker, not a runtime capture, and no run/trigger/host field exists on any row or audit event — scheduling anything before fixing this reproduces GG-302 at higher frequency
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-316 |
+| Category | Run provenance / attribution — root-cause class behind GG-302 (T-587, wave 38.1) |
+| What was found | `approval_commit` on every position row is `logic_epoch.CURRENT_APPROVAL_COMMIT = _BOUNDARIES[-1].commit_sha` (`paper_trader.py`, T-320): a constant baked into the source tree. It is identical for every run of every checkout at a given epoch, so it identifies neither the code that ran, nor how it was launched, nor where. Beyond `model_identity` (GG-267) and an internal `session_id` (a fresh uuid per process), no field on a T1 NFL position row or audit event records the deployed git sha, the trigger (cron vs manual), a run id linked to the row, or the host. `deploy/cron.conf` has no NFL entry (T-575/T-566), so every NFL run to date was manual. |
+| Why this matters | GG-302's 42 rows are unattributable to any actor because of exactly this. A cron entry added on top of the same schema would produce scheduled rows indistinguishable from a hand-run, making the next quarantine decision equally unrecoverable at higher volume. Attribution has to exist before accrual does. |
+| Impact | HIGH. Blocks admitting any NFL T1 row as evidence. Does not by itself invalidate MLB rows, which have their own provenance paths. |
+| Discovery | Wave 38.1 brief, verified in source by T-587: `logic_epoch.py:603`, `paper_trader.py` position-row construction. |
+| Resolution (code, this session) | **Chose "add a distinct runtime field beside `approval_commit`"; `approval_commit` is deliberately left unchanged** because backfill, band-monitor and replay tooling read it as an epoch marker. New `run_provenance.py` captures at runtime: `runtime_git_sha` (+ `runtime_git_dirty`), `run_trigger` (`cron`\|`manual`), `run_trigger_attested`, `run_id`, `run_host`, `run_started_at`, `run_pid`, and tty/ssh evidence. Every audit event is stamped via `ProvenanceAuditLogger` (including RiskEngine/PaperTrader events); position rows carry `runtime_git_sha`, `run_trigger`, `run_id`, `run_host`. **Trigger is attested, not inferred:** a scheduled entry must export `PMBOT_RUN_TRIGGER=cron`; anything else records `manual`. Absent provenance writes the literal `UNKNOWN`, never a static marker. Status stays OPEN until the fix is deployed AND a row written by the deployed process is read back with the fields populated. A merge is not a deployment (GG-279). |
+| Known limits | The `cron` trigger is a self-attestation; the tty/ssh evidence fields make a false attestation checkable but do not prevent it. The `paper_trader.py` opt-in pass-through sits slightly outside the wave's stated scope fence; it is the only way for position rows to carry the fields. Rows written before deployment have no such fields. |
+| Cross-references | GG-302 (the incident), GG-267 (model-identity precedent), GG-279, GG-262 (VPS crontab diverges from repo), T-320, T-575, T-587. |
+
+</details>
