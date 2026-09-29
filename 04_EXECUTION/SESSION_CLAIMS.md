@@ -620,6 +620,8 @@
 | 2026-09-29T00:03:44Z | T-575 | CLOSED — merge confirmed, HEAD (9b8df7f) is ancestor of origin/main — Feature-space audit + T-569 verdict corrected to NOT SUPPORTED (current feature set); session-end close-out merged |
 | 2026-09-29T00:16:06Z | TBD (claim at run time) | T4 game-state/leverage signal (Wave 36 block 36.2) |
 | 2026-09-29T00:16:52Z | T-578 | T-578: park_factor_hits dead-feature audit (T-575 item 2) -- verify, quantify cost, fix-or-retire, ADR-0064 draft |
+| 2026-09-29T04:33:04Z | T-578 | MERGED: NO — branch `session/20260929T001608Z-park-factor-dead-feature` awaiting merge — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated (commit `8dc2854`) |
+| 2026-09-29T04:36:07Z | T-578 | MERGED: NO — branch `session/20260929T001608Z-park-factor-dead-feature` awaiting merge — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated (commit `8dc2854`) |
 | 2026-09-29T00:21:49Z | T-579, GG-311 | T-579: 36.3 -- land Wave 36 queue, activate GG-303 write fix (authorized), Operator Console Section 0 retirement roll-up |
 | 2026-09-29T00:56:14Z | T-579 | CLOSED — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean. (commit `2a0f77a`) |
 | 2026-09-29T00:56:50Z | T-579 | CLOSED — merge confirmed, HEAD (72fa609) is ancestor of origin/main — 36.3 -- Wave 36 landed, GG-303 activated (auth'd), Operator Console Section 0 complete, Q1-Q7 clean |
