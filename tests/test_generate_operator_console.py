@@ -217,3 +217,81 @@ class TestUnclosedSessionClaims:
         )
         monkeypatch.setattr(goc, "CLAIMS", claims)
         assert goc.unclosed_session_claims() == ["T-50", "T-600"]
+
+
+# ---------------------------------------------------------------------------
+# shared_tree_behind_origin() -- shared main-tree checkout drift vs origin/main
+# ---------------------------------------------------------------------------
+
+class TestSharedTreeBehindOrigin:
+    def test_up_to_date_tree_reports_zero(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        monkeypatch.chdir(work)
+        result = goc.shared_tree_behind_origin()
+        assert result is not None
+        assert result["behind"] == 0
+
+    def test_behind_tree_reports_correct_count(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        origin = tmp_path / "origin.git"
+        other = tmp_path / "other"
+        _git(tmp_path, "clone", str(origin), str(other))
+        _git(other, "config", "user.email", "test@example.com")
+        _git(other, "config", "user.name", "Test")
+        for i in range(3):
+            (other / "f.txt").write_text(f"b{i}\n")
+            _git(other, "commit", "-am", f"c{i}")
+        _git(other, "push", "origin", "main")
+        monkeypatch.chdir(work)
+        result = goc.shared_tree_behind_origin()
+        assert result is not None
+        assert result["behind"] == 3
+
+    def test_never_writes_anything_to_the_tree(self, tmp_path, monkeypatch):
+        work = _make_repo(tmp_path)
+        monkeypatch.chdir(work)
+        before = _git(work, "status", "--porcelain").stdout
+        goc.shared_tree_behind_origin()
+        after = _git(work, "status", "--porcelain").stdout
+        assert before == after == ""
+
+
+# ---------------------------------------------------------------------------
+# closed_wave_fences() -- pasteable fences left under a CLOSED wave header
+# ---------------------------------------------------------------------------
+
+class TestClosedWaveFences:
+    def test_missing_file_returns_empty(self, tmp_path):
+        assert goc.closed_wave_fences(tmp_path / "nope.md") == []
+
+    def test_closed_wave_with_leftover_fence_is_reported(self, tmp_path):
+        q = tmp_path / "ACTIVE_QUEUE.md"
+        q.write_text(
+            "## Sequencing track\n\n"
+            "| **33** | CLOSED |\n\n"
+            "## Wave 33 block\n\n"
+            "```\nsome leftover block\n```\n"
+        )
+        findings = goc.closed_wave_fences(q)
+        assert len(findings) == 1
+        assert "Wave 33" in findings[0]
+
+    def test_open_wave_with_fence_is_not_reported(self, tmp_path):
+        q = tmp_path / "ACTIVE_QUEUE.md"
+        q.write_text(
+            "## Sequencing track\n\n"
+            "| **36** | ACTIVE |\n\n"
+            "## Wave 36 block\n\n"
+            "```\nstill relevant\n```\n"
+        )
+        assert goc.closed_wave_fences(q) == []
+
+    def test_closed_wave_with_no_fence_is_not_reported(self, tmp_path):
+        q = tmp_path / "ACTIVE_QUEUE.md"
+        q.write_text(
+            "## Sequencing track\n\n"
+            "| **33** | CLOSED |\n\n"
+            "## Wave 33 block\n\n"
+            "no fences here\n"
+        )
+        assert goc.closed_wave_fences(q) == []
