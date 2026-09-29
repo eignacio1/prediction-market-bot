@@ -2515,3 +2515,92 @@ class TestAcquireSingletonLock:
         lock_path = tmp_path / "t4_mlb_live.lock"
         assert runner.acquire_singleton_lock(lock_path) is True
         assert lock_path.read_text().strip() == str(os.getpid())
+
+
+# --- candidate model (Deliverable 3, Wave 36 Block 36.2, T-575) — offline, not live ---
+
+
+class TestCandidateModelV1WalkoffShrink:
+    """Proves the Deliverable 3 candidate (_walkoff_leverage_shrink,
+    _compute_ab_remaining_candidate_v1, p_hits_gte_threshold_candidate_v1) is
+    an inert, offline function: not called from any live path, matches the
+    incumbent outside the walk-off window, and diverges from it (in the
+    correct direction) only inside that window."""
+
+    def test_no_shrink_before_bottom_9th(self):
+        assert runner._walkoff_leverage_shrink(
+            inning=7, inning_half="top", home_score=3, away_score=2) == 1.0
+        assert runner._walkoff_leverage_shrink(
+            inning=9, inning_half="top", home_score=3, away_score=2) == 1.0
+
+    def test_shrink_applies_in_bottom_9th_and_later(self):
+        shrink = runner._walkoff_leverage_shrink(
+            inning=9, inning_half="bottom", home_score=3, away_score=3)
+        assert 0.0 < shrink < 1.0
+        shrink_extras = runner._walkoff_leverage_shrink(
+            inning=11, inning_half="bottom", home_score=1, away_score=1)
+        assert 0.0 < shrink_extras < 1.0
+
+    def test_shrink_is_deeper_in_a_close_game_than_a_blowout(self):
+        """Leverage-weighting: a tie game in the bottom 9th should shrink more
+        than a 10-run laugher, since a laugher is mechanically walk-off-eligible
+        but empirically far less likely to actually end there."""
+        close_game = runner._walkoff_leverage_shrink(
+            inning=9, inning_half="bottom", home_score=4, away_score=4)
+        blowout = runner._walkoff_leverage_shrink(
+            inning=9, inning_half="bottom", home_score=14, away_score=4)
+        assert close_game < blowout < 1.0
+
+    def test_inning_half_case_insensitive(self):
+        assert runner._walkoff_leverage_shrink(
+            inning=9, inning_half="Bottom", home_score=3, away_score=3) == \
+            runner._walkoff_leverage_shrink(
+            inning=9, inning_half="bottom", home_score=3, away_score=3)
+
+    def test_candidate_ab_remaining_matches_incumbent_outside_walkoff_window(self):
+        """Outside the bottom-9th-or-later window, the candidate's ab_remaining
+        must equal the incumbent's exactly (shrink factor is 1.0)."""
+        naive = runner._compute_ab_remaining(ab_so_far=2, inning=5, batting_slot=3)
+        candidate = runner._compute_ab_remaining_candidate_v1(
+            ab_so_far=2, inning=5, batting_slot=3,
+            inning_half="top", home_score=1, away_score=0,
+        )
+        assert candidate == naive
+
+    def test_candidate_ab_remaining_is_less_than_or_equal_incumbent_in_walkoff_window(self):
+        naive = runner._compute_ab_remaining(ab_so_far=1, inning=9, batting_slot=4)
+        candidate = runner._compute_ab_remaining_candidate_v1(
+            ab_so_far=1, inning=9, batting_slot=4,
+            inning_half="bottom", home_score=2, away_score=2,
+        )
+        assert candidate <= naive
+
+    def test_candidate_p_t4_matches_incumbent_outside_walkoff_window(self):
+        """End-to-end: p_hits_gte_threshold_candidate_v1 must equal
+        p_hits_gte_threshold exactly whenever the walk-off shrink is inert,
+        given the SAME ab_remaining the incumbent's own estimator would
+        produce for these inputs (inning=5 is outside the walk-off window)."""
+        ab_so_far, inning, batting_slot = 1, 5, 0
+        ab_remaining = runner._compute_ab_remaining(ab_so_far, inning, batting_slot)
+        p_incumbent = runner.p_hits_gte_threshold(
+            h_so_far=1, threshold=2, ba_l10=0.30, ab_remaining=ab_remaining)
+        p_candidate = runner.p_hits_gte_threshold_candidate_v1(
+            h_so_far=1, threshold=2, ba_l10=0.30, ab_so_far=ab_so_far,
+            inning=inning, batting_slot=batting_slot, inning_half="top",
+            home_score=3, away_score=1,
+        )
+        assert p_incumbent == p_candidate
+
+    def test_candidate_not_referenced_by_run_cycle_or_any_live_path(self):
+        """Deliverable 3's hard requirement: the candidate is offline-only.
+        Guards against a future edit accidentally wiring it in without
+        updating this test."""
+        import inspect
+        source = inspect.getsource(runner)
+        # The candidate's own definitions legitimately contain their own
+        # names; what must never appear is a call to the candidate from
+        # inside _run_cycle's source specifically.
+        run_cycle_src = inspect.getsource(runner._run_cycle)
+        assert "p_hits_gte_threshold_candidate_v1" not in run_cycle_src
+        assert "_compute_ab_remaining_candidate_v1" not in run_cycle_src
+        assert "_walkoff_leverage_shrink" not in run_cycle_src

@@ -832,6 +832,117 @@ def p_hits_gte_threshold(
 
 
 # ---------------------------------------------------------------------------
+# CANDIDATE MODEL -- NOT LIVE (Wave 36 Block 36.2, Deliverable 3, T-575)
+# ---------------------------------------------------------------------------
+# Offline candidate only. Nothing below this banner is called from
+# _run_cycle() or any other live path -- the incumbent pair above
+# (p_hits_gte_threshold + _compute_ab_remaining) remains the sole live model.
+# Activation requires: a DEFENSIBLE_IMPROVEMENT verdict from
+# scripts/ab_harness.py holdout mode, a superseding ADR (ADR-0004 frozen-model
+# policy), the operator's signature, and a logic_epoch bump. See the Wave 36
+# Block 36.2 results summary for the harness attempt and its verdict, and the
+# draft ADR under 03_DECISIONS/ for the full writeup -- neither is accepted.
+
+_WALKOFF_BASE_DISCOUNT = 0.15  # undefended placeholder magnitude -- see ADR draft
+
+
+def _walkoff_leverage_shrink(
+    inning: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> float:
+    """Fraction (<=1.0) to shrink a projected ab_remaining by, to reflect a
+    game-ending (walk-off) possibility the incumbent's pure innings-based
+    estimator has no way to see.
+
+    A plate appearance can end the game outright only in the bottom of the
+    9th or later (the home half of the final scheduled inning, or any extra
+    inning) -- in every earlier inning-half, at least one more half-inning is
+    guaranteed regardless of score. Returns 1.0 (no shrink) outside that
+    window. Inside it, the discount scales with leverage via 1/(1+|score_diff|)
+    -- a one-run game shrinks harder than a laugher, since a laugher is far
+    less likely to actually end on the next plate appearance even though it
+    mechanically could.
+    """
+    if inning < 9 or inning_half.lower() != "bottom":
+        return 1.0
+    score_diff = abs(home_score - away_score)
+    leverage = 1.0 / (1.0 + score_diff)
+    return 1.0 - (_WALKOFF_BASE_DISCOUNT * leverage)
+
+
+def _compute_ab_remaining_candidate_v1(
+    ab_so_far: int,
+    inning: int,
+    batting_slot: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> int:
+    """Deliverable 3 candidate: the incumbent's _compute_ab_remaining, shrunk
+    for walk-off risk. Offline candidate for the A/B harness only -- never
+    called from any live path."""
+    naive = _compute_ab_remaining(ab_so_far, inning, batting_slot)
+    shrink = _walkoff_leverage_shrink(inning, inning_half, home_score, away_score)
+    return max(0, round(naive * shrink))
+
+
+def p_hits_gte_threshold_candidate_v1(
+    h_so_far: int,
+    threshold: int,
+    ba_l10: float,
+    ab_so_far: int,
+    inning: int,
+    batting_slot: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> float:
+    """Deliverable 3 candidate model (T-575/Wave 36 Block 36.2).
+
+    Same Binomial core as the incumbent p_hits_gte_threshold -- the only
+    change is that ab_remaining is computed leverage-aware via
+    _compute_ab_remaining_candidate_v1 instead of the incumbent's
+    pure-innings _compute_ab_remaining. This is the single, deliberately
+    narrow change the functional-form justification below defends; it does
+    not touch ba_l10, pitcher identity, or pitch count -- those are logged
+    (Deliverable 2) but not yet modeled, left for a future candidate once
+    this one either clears or fails its own gate.
+
+    FUNCTIONAL FORM AND ITS ASSUMPTIONS (one paragraph, per Deliverable 3):
+    _compute_ab_remaining projects a batter's remaining plate appearances
+    from innings-left alone, with zero awareness that the game itself can
+    end mid-inning: in the bottom of the 9th or later, the moment the home
+    team takes the lead the game is over and every batter still due up that
+    inning gets zero more plate appearances. That is exactly the situation
+    T-575 flagged as "the weakest plausible model for the latency thesis" --
+    it is not a subtle mis-calibration, it is a hard logical gap the model
+    cannot see without the score/inning-half fields Deliverable 2 just wired
+    in. The candidate's fix is the smallest correction that closes that gap:
+    multiply the incumbent's ab_remaining by a shrink factor, 1.0 everywhere
+    except the walk-off-eligible window (bottom 9th+), where it dips by up to
+    _WALKOFF_BASE_DISCOUNT, scaled down as the score gap widens (1/(1+|diff|))
+    on the assumption that a lopsided late-game score is mechanically walk-off
+    -eligible but empirically much less likely to actually end there. This
+    assumes plate-appearance-level walk-off probability is well approximated
+    by score-differential alone (it ignores baserunners, outs, and batting
+    order, which a richer model could add); it assumes _WALKOFF_BASE_DISCOUNT
+    is a single global constant rather than fit per situation (deliberately
+    undefended here -- Deliverable 4 could not fit or validate it against any
+    non-forbidden resolved-bet data, see the results summary); and it assumes
+    the shrink should apply multiplicatively to ab_remaining rather than as a
+    separate discrete "game already over" state, which is simpler but slightly
+    overstates continuity risk in the very last plate appearances of a blowout.
+    Not wired to any live path.
+    """
+    ab_remaining = _compute_ab_remaining_candidate_v1(
+        ab_so_far, inning, batting_slot, inning_half, home_score, away_score,
+    )
+    return p_hits_gte_threshold(h_so_far, threshold, ba_l10, ab_remaining)
+
+
+# ---------------------------------------------------------------------------
 # T4 band budget helpers (mirrors run_t4_live.py)
 # ---------------------------------------------------------------------------
 
