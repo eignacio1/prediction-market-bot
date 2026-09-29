@@ -773,6 +773,174 @@ class TestEspnPollOnceMlb:
 
 
 # ---------------------------------------------------------------------------
+# _extract_espn_game_state + MLBLiveBatterState game-state fields
+# (T-575/Wave 36 Block 36.2). Field shapes below (competitors/homeAway/score,
+# plays[-1].period.type/outs/onFirst/onSecond/onThird/participants, real
+# batting/pitching label sets including "PC") were verified against a real
+# ESPN summary payload for event 401817106 (2026-09-27 NYM@WSH final),
+# fetched from the same _ESPN_MLB_SUMMARY endpoint _espn_poll_once_mlb()
+# already calls — not invented from the code's own assumptions.
+# ---------------------------------------------------------------------------
+
+
+def _make_espn_summary_response_with_game_state(
+    player_name: str = "Juan Soto",
+    h_val: str = "1",
+    ab_val: str = "3",
+    in_progress: bool = True,
+    inning: int = 5,
+    home_score: int = 6,
+    away_score: int = 4,
+    inning_half: str = "Top",
+    outs: int = 2,
+    on_first: bool = True,
+    pitcher_id: int = 5337128,
+    pitcher_name: str = "Erik Tolman",
+    pitcher_pc: int = 22,
+) -> dict:
+    status_name = "STATUS_IN_PROGRESS" if in_progress else "STATUS_FINAL"
+    play = {
+        "period": {"type": inning_half, "number": inning},
+        "outs": outs,
+        "participants": [
+            {"athlete": {"id": pitcher_id}, "type": "pitcher"},
+            {"athlete": {"id": 4925604}, "type": "batter"},
+        ],
+    }
+    if on_first:
+        play["onFirst"] = {"athlete": {"id": 38904}}
+    return {
+        "header": {
+            "competitions": [{
+                "status": {
+                    "type": {"name": status_name},
+                    "period": inning,
+                },
+                "competitors": [
+                    {"homeAway": "home", "score": str(home_score)},
+                    {"homeAway": "away", "score": str(away_score)},
+                ],
+            }]
+        },
+        "boxscore": {
+            "players": [{
+                "statistics": [
+                    {
+                        # real batting label set (event 401817106), not "SO"
+                        "labels": ["H-AB", "AB", "R", "H", "RBI", "HR", "BB", "K", "#P", "AVG", "OBP", "SLG"],
+                        "athletes": [{
+                            "athlete": {"displayName": player_name},
+                            "stats": ["0-3", ab_val, "0", h_val, "0", "0", "0", "1", "12", ".250", ".300", ".400"],
+                        }]
+                    },
+                    {
+                        # real pitching label set (event 401817106)
+                        "labels": ["IP", "H", "R", "ER", "BB", "K", "HR", "PC-ST", "ERA", "PC"],
+                        "athletes": [{
+                            "athlete": {"id": pitcher_id, "displayName": pitcher_name},
+                            "stats": ["2.0", "1", "0", "0", "0", "2", "0", str(pitcher_pc) + "-15", "3.50", str(pitcher_pc)],
+                        }]
+                    },
+                ]
+            }]
+        },
+        "plays": [play],
+    }
+
+
+class TestEspnGameStateExtraction:
+    """Deliverable 1/2 (T-575/Wave 36 Block 36.2): confirms the game-state
+    fields found in the real ESPN payload are extracted correctly, and that
+    they are logging-only — p_t4 is unaffected."""
+
+    def test_extracts_score_inning_half_outs_bases_pitcher(self):
+        name_to_pregame = {"juansoto": {"player_id": 660670, "threshold": 1, "p_t1": 0.55,
+                                        "ba_l10": 0.30, "h_l10_mean": 1.2, "ticker": "T-SOTO"}}
+        resp = _make_espn_summary_response_with_game_state(player_name="Juan Soto")
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = resp
+            result = runner._espn_poll_once_mlb("ESPN123", name_to_pregame)
+        assert len(result) == 1
+        batter = result[0]
+        assert batter.home_score == 6
+        assert batter.away_score == 4
+        assert batter.inning_half == "top"
+        assert batter.outs == 2
+        assert batter.on_first is True
+        assert batter.on_second is False
+        assert batter.on_third is False
+        assert batter.current_pitcher_id == 5337128
+        assert batter.current_pitcher_name == "Erik Tolman"
+        assert batter.pitcher_pitch_count == 22
+        # existing fields untouched by the extension
+        assert batter.h_so_far == 1
+        assert batter.ab_so_far == 3
+        assert batter.inning == 5
+
+    def test_missing_game_state_falls_back_to_defaults(self):
+        """A payload shaped like the pre-existing minimal test mock (no
+        competitors/plays keys) must not raise — game-state fields degrade
+        to MLBLiveBatterState's declared defaults."""
+        name_to_pregame = {"juansoto": {"player_id": 660670, "threshold": 1, "p_t1": 0.55,
+                                        "ba_l10": 0.30, "h_l10_mean": 1.2, "ticker": "T-SOTO"}}
+        resp = _make_espn_summary_response(player_name="Juan Soto")
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = resp
+            result = runner._espn_poll_once_mlb("ESPN123", name_to_pregame)
+        assert len(result) == 1
+        batter = result[0]
+        assert batter.home_score == 0
+        assert batter.away_score == 0
+        assert batter.inning_half == ""
+        assert batter.outs == 0
+        assert batter.on_first is False
+        assert batter.current_pitcher_id is None
+        assert batter.pitcher_pitch_count is None
+
+    def test_p_t4_byte_identical_with_and_without_game_state(self):
+        """Deliverable 2's hard requirement: p_hits_gte_threshold's output for
+        identical (h_so_far, threshold, ba_l10, ab_remaining) inputs must not
+        change depending on whether game-state fields are present on the
+        MLBLiveBatterState used to source those inputs — the model consumes
+        none of the new fields."""
+        name_to_pregame = {"juansoto": {"player_id": 660670, "threshold": 1, "p_t1": 0.55,
+                                        "ba_l10": 0.30, "h_l10_mean": 1.2, "ticker": "T-SOTO"}}
+
+        resp_without = _make_espn_summary_response(player_name="Juan Soto", h_val="2", ab_val="4")
+        resp_with = _make_espn_summary_response_with_game_state(player_name="Juan Soto", h_val="2", ab_val="4")
+
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = resp_without
+            batter_without = runner._espn_poll_once_mlb("ESPN123", name_to_pregame)[0]
+
+        with patch("prediction_market_bot.run_t4_mlb_live.requests.get") as mock_get:
+            mock_get.return_value.status_code = 200
+            mock_get.return_value.raise_for_status = lambda: None
+            mock_get.return_value.json.return_value = resp_with
+            batter_with = runner._espn_poll_once_mlb("ESPN123", name_to_pregame)[0]
+
+        assert batter_without.h_so_far == batter_with.h_so_far
+        assert batter_without.ab_so_far == batter_with.ab_so_far
+
+        ab_remaining = 3
+        p_without = runner.p_hits_gte_threshold(
+            h_so_far=batter_without.h_so_far, threshold=3,
+            ba_l10=0.30, ab_remaining=ab_remaining,
+        )
+        p_with = runner.p_hits_gte_threshold(
+            h_so_far=batter_with.h_so_far, threshold=3,
+            ba_l10=0.30, ab_remaining=ab_remaining,
+        )
+        assert p_without == p_with  # byte-identical, not just close
+
+
+# ---------------------------------------------------------------------------
 # _espn_game_status — GG-058
 # ---------------------------------------------------------------------------
 
