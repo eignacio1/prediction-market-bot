@@ -4011,3 +4011,26 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 </details>
 
 ---
+
+### GG-312 — Register-parity failure class: 36 accepted ADRs accumulated with no `APPROVALS_REGISTER.md` row of their own, `check_register_parity.py` sees only 7 of them, and write-back is still manual
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-312 |
+| Category | Governance / audit-trail integrity — the fifth recurrence of the GG-126 class (GG-108, GG-122, GG-126, GG-126-recurrence 2026-07-17, and now this) |
+| What was found | A governance audit on 2026-09-29 found accepted ADRs with no `| ADR-NNNN |` row in `00_ADMIN/APPROVALS_REGISTER.md`. Re-derived from the files by T-582 (block 37.3): **36** accepted ADRs whose own decision has no register row (42 resolved ADRs lack a row literally named for them; 6 of those — ADR-0003, -0004, -0018, -0026, -0027, -0028 — are the subject of an APR row, e.g. APR-0011/0012/0018/0020/0021/0022, and are excluded). The 36 include load-bearing decisions: **ADR-0010** (band Kelly / reserve mandate), **ADR-0024** (stop-pivot criterion), **ADR-0001** (Compass OS), **ADR-0006** (exposure-based risk framework). The register-parity population is not a small legacy tail: ADR-0040 through ADR-0046 were accepted July 2026, after the convention of writing every accepted decision back to the register was already in force. |
+| Why the existing checker did not catch it | `scripts/check_register_parity.py` (GG-126, extended with rule 5 in T-570) currently reports 15 mismatches and **detects 7 of the 36** (ADR-0001, -0010, -0015, -0024, -0032, -0045, -0046 via rule 5). The other 29 are invisible for two separate reasons: (a) **27 are on `00_ADMIN/REGISTER_PARITY_EXEMPTIONS.txt`** (ADR-0002, -0008, -0009, -0011, -0012, -0013, -0014, -0016, -0017, -0019, -0020, -0021, -0022, -0023, -0025, -0029, -0031, -0033, -0034, -0036, -0037, -0038, -0039, -0040, -0041, -0043, -0044) — the file's stated rationale is that these "predate the convention", which is not true of the July-2026 entries, and the file suppresses rules 2 and 5 for exactly this population; (b) **2 are invisible to the parser** (ADR-0006, -0007) — the checker reads only a line beginning `**Status`, and ADRs written with a `## Status` heading return None and hit the `no parseable Status header` skip (ADR-0004 has the same format). Rule 5 also produces false positives: it flags ADR-0003, -0018, -0026, -0027, -0028, which ARE registered as the subject of an APR row. So: rule 5 (the reverse direction, added 33.3/34.3) **does catch the class in principle but only for ADRs not on the exemption list and with a parseable Status line — it does not catch the class as it actually occurred.** |
+| Why this matters | Founding-period decisions that govern sizing and stop criteria have no record of who approved them or when. The operator ratified them wholesale on 2026-09-29 (`APPROVALS_REGISTER.md`, T-582 entry); original sign-off dates are unrecoverable. Nothing prevents the next accepted ADR from being missed the same way: the write-back from "ADR accepted" to "register row" is a manual step with no forcing function, and the checker that would flag it is defeated by an exemption list plus a format assumption. |
+| Impact | HIGH as filed: audit-trail gap on load-bearing decisions, recurred five times, with the detector demonstrably blind to ~80% of the current instance. No effect on live sizing (`kelly_fraction` values are governed by ADR-0048 and are unchanged by this gap or by the ratification). |
+| Discovery | 2026-09-29 strategic-window governance audit; re-derived and characterised by T-582 (block 37.3). |
+| Proposed remediation (NOT done in this block — recording only) | (1) Make `check_register_parity.py` parse `## Status` sections; (2) retire the exemption list for ADR ≥ 0040 and re-baseline the rest against the T-582 ratification entry (adding or removing an exemption is an adjudication and needs its own DECISION_LOG note); (3) exclude ADRs that are the subject of an APR row from rule 5; (4) a structural write-back: the ADR-acceptance path should emit the register row rather than rely on the author remembering. Each is separately scoped. |
+| Cross-references | GG-126 (parent class), T-570 (rule 5), T-582 (this registration and the ratification entry), `00_ADMIN/REGISTER_PARITY_EXEMPTIONS.txt`, `00_ADMIN/APPROVALS_REGISTER.md`. |
+
+</details>
+
+---
