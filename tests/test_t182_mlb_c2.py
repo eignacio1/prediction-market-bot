@@ -602,6 +602,85 @@ class TestComputeFeaturesBulk:
         _, df_out = store.compute_features_bulk(df_in, _empty_starters(), MLBPitcherStatsStore(), MLBTeamStatsStore())
         assert np.allclose(df_out["park_factor_hits"].values, 1.000)
 
+    # -----------------------------------------------------------------
+    # T-578/GG-145: _VENUE_NAME_ALIASES resolution + explicit-neutral
+    # entries + park_factor_venue_unmatched aggregate logging.
+    # -----------------------------------------------------------------
+
+    @pytest.mark.parametrize(
+        "alias_venue_name,canonical_venue_name",
+        [
+            ("Oriole Park at Camden Yards", "Camden Yards"),  # BAL
+            ("Rate Field", "Guaranteed Rate Field"),  # CWS renamed 2025
+            ("Daikin Park", "Minute Maid Park"),  # HOU renamed 2025
+            ("UNIQLO Field at Dodger Stadium", "Dodger Stadium"),  # LAD
+        ],
+    )
+    def test_park_factor_alias_resolves_to_canonical_value(self, alias_venue_name, canonical_venue_name):
+        store, _ = _make_store()
+        game_ids = list(range(100, 106))
+        starters = _make_starters(game_ids, venue_name=alias_venue_name)
+        df_in = _n_game_log(6, game_id_start=100)
+        _, df_out = store.compute_features_bulk(df_in, starters, MLBPitcherStatsStore(), MLBTeamStatsStore())
+        expected = _PARK_FACTOR_HITS[canonical_venue_name]
+        assert np.allclose(df_out["park_factor_hits"].values, expected)
+        # sanity: alias must actually differ from the un-aliased literal
+        # string, or this test would pass vacuously even if the alias
+        # table were empty
+        assert alias_venue_name != canonical_venue_name
+
+    @pytest.mark.parametrize(
+        "explicit_neutral_venue_name",
+        ["Steinbrenner Field", "Sutter Health Park", "Las Vegas Ballpark"],
+    )
+    def test_park_factor_explicit_neutral_entry_resolves_directly(self, explicit_neutral_venue_name):
+        """Temp venues with a documented, deliberate 1.000 must resolve via a
+        direct _PARK_FACTOR_HITS hit — not by silently falling through the
+        unmatched-venue default path (which would also log a spurious
+        park_factor_venue_unmatched warning for a venue that's actually
+        already handled)."""
+        store, logger = _make_store()
+        game_ids = list(range(100, 106))
+        starters = _make_starters(game_ids, venue_name=explicit_neutral_venue_name)
+        df_in = _n_game_log(6, game_id_start=100)
+        _, df_out = store.compute_features_bulk(df_in, starters, MLBPitcherStatsStore(), MLBTeamStatsStore())
+        assert np.allclose(df_out["park_factor_hits"].values, 1.000)
+        events = [call.args[1] for call in logger.log.call_args_list]
+        assert "park_factor_venue_unmatched" not in events
+
+    def test_park_factor_unmatched_venue_logs_aggregate_warning(self):
+        store, logger = _make_store()
+        game_ids = list(range(100, 106))
+        starters = _make_starters(game_ids, venue_name="Mystery Field")
+        df_in = _n_game_log(6, game_id_start=100)
+        store.compute_features_bulk(df_in, starters, MLBPitcherStatsStore(), MLBTeamStatsStore())
+        calls = [c for c in logger.log.call_args_list if c.args[1] == "park_factor_venue_unmatched"]
+        assert len(calls) == 1
+        payload = calls[0].kwargs["payload"]
+        assert payload["unmatched_venue_names"] == {"Mystery Field": 6}
+        assert payload["unmatched_row_count"] == 6
+        assert payload["missing_venue_row_count"] == 0
+
+    def test_park_factor_missing_venue_logs_aggregate_warning(self):
+        store, logger = _make_store()
+        df_in = _n_game_log(6, game_id_start=100)
+        store.compute_features_bulk(df_in, _empty_starters(), MLBPitcherStatsStore(), MLBTeamStatsStore())
+        calls = [c for c in logger.log.call_args_list if c.args[1] == "park_factor_venue_unmatched"]
+        assert len(calls) == 1
+        payload = calls[0].kwargs["payload"]
+        assert payload["unmatched_venue_names"] == {}
+        assert payload["unmatched_row_count"] == 0
+        assert payload["missing_venue_row_count"] == 6
+
+    def test_park_factor_no_warning_when_all_venues_resolve(self):
+        store, logger = _make_store()
+        game_ids = list(range(100, 106))
+        starters = _make_starters(game_ids, venue_name="Coors Field")
+        df_in = _n_game_log(6, game_id_start=100)
+        store.compute_features_bulk(df_in, starters, MLBPitcherStatsStore(), MLBTeamStatsStore())
+        events = [call.args[1] for call in logger.log.call_args_list]
+        assert "park_factor_venue_unmatched" not in events
+
     def test_opp_runs_allowed_populated(self):
         store, _ = _make_store()
         ts = _make_team_store("NYY", n_games=10, runs_allowed=3.5)

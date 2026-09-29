@@ -555,9 +555,15 @@ class MLBIngestionClient:
         )
         data = self._get(
             f"{MLB_BASE_URL}/api/v1/schedule",
-            # Note: "venue" hydrate returns 406 from DigitalOcean/Fastly CDN.
-            # venue_id/venue_name will be absent; park_factor_hits uses team abbr
-            # from static lookup so venue data is not needed at inference time.
+            # Note: "venue" hydrate returns 406 from DigitalOcean/Fastly CDN, so it
+            # is deliberately excluded here. The base (non-hydrated) schedule
+            # response still includes game.venue.{id,name} for most games, which is
+            # what park_factor_hits actually keys off (mlb_features.py
+            # _PARK_FACTOR_HITS, venue-name-keyed — there is no team-abbr-keyed
+            # table; a prior version of this comment claimed one existed and was
+            # wrong, corrected T-578/GG-145 2026-09-28). Venue data is genuinely
+            # absent for some games (see missing_venue_row_count in
+            # park_factor_venue_unmatched audit events), not absent by design.
             params={"sportId": 1, "date": game_date, "hydrate": "probablePitcher,team"},
         )
         if data is None:

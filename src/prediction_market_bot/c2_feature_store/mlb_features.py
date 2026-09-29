@@ -133,6 +133,21 @@ LABEL_TEST = "TEST"
 # Neutral = 1.000. Values above 1.0 favor hitters; below 1.0 favor pitchers.
 # Unknown venues default to 1.000 (neutral) — caller sees NaN only for missing
 # game_starters entries.
+#
+# T-578/GG-145 (2026-09-28): measured 15.26% of 132,184 historical feature
+# rows silently defaulted to neutral via a venue-name string that didn't
+# exactly match a key here — see
+# 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T578_park_factor_hits_audit.md.
+# Two root causes, both addressed below: (1) Citi Field/NYM was entirely
+# absent from this table — added. (2) Several venues were renamed or
+# relocated for the 2025/2026 seasons, which this table predates — handled
+# via _VENUE_NAME_ALIASES immediately below. Every rename/relocation string
+# added below (Citi Field, Oriole Park at Camden Yards, Rate Field, Daikin
+# Park, UNIQLO Field at Dodger Stadium, Las Vegas Ballpark) was confirmed
+# against the LIVE MLB Stats API schedule endpoint (several May/June 2026
+# game dates, direct `curl`, this session) — not assumed from public renam-
+# ing news alone. Sutter Health Park and Steinbrenner Field predate this
+# verification pass and were not independently reconfirmed live.
 # ---------------------------------------------------------------------------
 _PARK_FACTOR_HITS: dict[str, float] = {
     "Coors Field": 1.120,              # COL — extreme altitude
@@ -154,10 +169,14 @@ _PARK_FACTOR_HITS: dict[str, float] = {
     "Nationals Park": 0.990,           # WSH
     "Progressive Field": 0.988,        # CLE
     "Kauffman Stadium": 0.988,         # KC
-    "Tropicana Field": 0.985,          # TB
+    "Tropicana Field": 0.985,          # TB (permanent home; damaged Oct 2024,
+                                        #     not in live use for 2025 — see
+                                        #     "Steinbrenner Field" below)
     "Rogers Centre": 0.985,            # TOR
-    "Guaranteed Rate Field": 0.983,    # CWS
-    "Minute Maid Park": 0.982,         # HOU
+    "Guaranteed Rate Field": 0.983,    # CWS (renamed "Rate Field" Feb 2025;
+                                        #     see _VENUE_NAME_ALIASES)
+    "Minute Maid Park": 0.982,         # HOU (renamed "Daikin Park" Jan 2025;
+                                        #     see _VENUE_NAME_ALIASES)
     "Dodger Stadium": 0.980,           # LAD
     "T-Mobile Park": 0.977,            # SEA
     "loanDepot park": 0.975,           # MIA
@@ -165,6 +184,67 @@ _PARK_FACTOR_HITS: dict[str, float] = {
     "Oracle Park": 0.970,              # SF
     "Oakland Coliseum": 0.968,         # ATH (pre-2025)
     "Sutter Health Park": 1.000,       # ATH temp (2025) — limited data
+    "Las Vegas Ballpark": 1.000,       # ATH temp (confirmed live 2026-06 —
+                                        #     ATH split home games across
+                                        #     BOTH Sutter Health Park and
+                                        #     this venue in the 2025-2026
+                                        #     window, not one temp venue as
+                                        #     previously assumed). Triple-A
+                                        #     facility (id 5355) with no
+                                        #     established MLB multi-year hit
+                                        #     park factor — explicit
+                                        #     documented neutral, same
+                                        #     treatment as Sutter Health Park
+                                        #     and Steinbrenner Field above.
+    "Citi Field": 0.960,               # NYM — Baseball-Reference multi-year
+                                        #     (3yr) batting park factor "96",
+                                        #     retrieved 2026-09-28. Was
+                                        #     entirely absent (GG-145/T-578).
+    "Steinbrenner Field": 1.000,       # TB temp (2025, post-Hurricane Milton
+                                        #     Tropicana Field damage) — no
+                                        #     established multi-year MLB hit
+                                        #     park factor exists for this
+                                        #     spring-training facility;
+                                        #     explicit documented neutral,
+                                        #     same treatment as Sutter Health
+                                        #     Park above. Do NOT alias to
+                                        #     Tropicana Field's 0.985 — it is
+                                        #     a physically different park.
+}
+
+# ---------------------------------------------------------------------------
+# Venue name aliases (T-578/GG-145, 2026-09-28).
+# _PARK_FACTOR_HITS is keyed on the exact venue-name string the MLB Stats API
+# returns (game.venue.name). Some physical parks are known by more than one
+# such string — an official long-form name vs. a short form, or a 2025/2026
+# sponsorship rename/relocation. Every entry below was confirmed directly
+# against the LIVE MLB Stats API schedule endpoint this session (direct
+# `curl` against several May/June 2026 game dates, cross-checked by home
+# team) — not assumed from public renaming news alone. Rather than key
+# _PARK_FACTOR_HITS itself on whichever string happened to be observed,
+# every real-world variant is mapped here to the _PARK_FACTOR_HITS key that
+# already holds the correct factor for that physical park, so the table
+# tolerates the API returning either the old or the new/full/short name.
+# ---------------------------------------------------------------------------
+_VENUE_NAME_ALIASES: dict[str, str] = {
+    "Oriole Park at Camden Yards": "Camden Yards",       # BAL official full
+                                                          # name — confirmed
+                                                          # live 2026-06.
+    "Rate Field": "Guaranteed Rate Field",               # CWS renamed Feb
+                                                          # 2025 — confirmed
+                                                          # live 2026-06.
+    "Daikin Park": "Minute Maid Park",                   # HOU renamed Jan
+                                                          # 2025 — confirmed
+                                                          # live 2026-06.
+    "UNIQLO Field at Dodger Stadium": "Dodger Stadium",  # LAD — sponsorship-
+                                                          # prefixed name;
+                                                          # this alias was the
+                                                          # actual root cause
+                                                          # of LAD's ~24% miss
+                                                          # rate (previously
+                                                          # unexplained) —
+                                                          # confirmed live
+                                                          # 2026-06.
 }
 
 # IF-C2-C3 output identity/metadata columns
@@ -496,14 +576,53 @@ class MLBFeatureStore:
             feature_df["opp_sp_bb9_l5"] = sp_bb9
             feature_df["opp_sp_is_known"] = sp_known
 
-            # Park factor (hit PF by venue name from game_starters)
+            # Park factor (hit PF by venue name from game_starters).
+            # T-578/GG-145: unmatched venue-name strings and missing venue
+            # data are no longer silent — both are tallied here and logged
+            # as one aggregate WARNING below (never per-row: avoids log
+            # spam while still making the miss rate visible for the first
+            # time, matching the temporal_integrity_warning pattern above).
+            _unmatched_venue_names: dict[str, int] = {}
+            _missing_venue_row_count = 0
+
             def _park_factor(row: pd.Series) -> float:
+                nonlocal _missing_venue_row_count
                 venue = _get_venue_name(row.get("game_id"), game_starters)
                 if venue is None:
+                    _missing_venue_row_count += 1
                     return 1.000
-                return _PARK_FACTOR_HITS.get(str(venue), 1.000)
+                venue = str(venue)
+                if venue in _PARK_FACTOR_HITS:
+                    return _PARK_FACTOR_HITS[venue]
+                canonical = _VENUE_NAME_ALIASES.get(venue)
+                if canonical is not None:
+                    return _PARK_FACTOR_HITS[canonical]
+                _unmatched_venue_names[venue] = _unmatched_venue_names.get(venue, 0) + 1
+                return 1.000
 
             feature_df["park_factor_hits"] = feature_df.apply(_park_factor, axis=1)
+
+            if _unmatched_venue_names or _missing_venue_row_count:
+                ok = self._log(
+                    "park_factor_venue_unmatched",
+                    {
+                        "unmatched_venue_names": _unmatched_venue_names,
+                        "unmatched_row_count": sum(_unmatched_venue_names.values()),
+                        "missing_venue_row_count": _missing_venue_row_count,
+                        "note": (
+                            "park_factor_hits defaulted to neutral (1.000) for these "
+                            "rows: unmatched_venue_names had a venue string with no "
+                            "_PARK_FACTOR_HITS/_VENUE_NAME_ALIASES entry (table gap — "
+                            "fix the table); missing_venue_row_count had no venue data "
+                            "at all in game_starters (upstream/ingestion gap). GG-145/T-578."
+                        ),
+                    },
+                    severity="WARNING",
+                    session_id=session_id,
+                    feature_run_id=run_id,
+                )
+                if not ok:
+                    all_ok = False
 
             # Metadata
             feature_df["feature_run_id"] = run_id
