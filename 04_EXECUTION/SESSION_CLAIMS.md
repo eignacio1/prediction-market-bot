@@ -650,3 +650,4 @@
 | 2026-09-29T05:30:02Z | T-584 | CLOSED — merge confirmed, HEAD (dab4041) is ancestor of origin/main — GG-312 parity checker fixed both directions; Section 0 15->5 |
 | 2026-09-29T05:42:12Z | T-587 | CLOSED — T-587 wave 38.1: NFL T1 runs now self-identify (runtime sha/trigger/run id/host); live hand-run wrote 802 STUB rows (GG-317). (commit `b2faddb`) |
 | 2026-09-29T05:42:27Z | T-587 | CLOSED — merge confirmed, HEAD (846164e) is ancestor of origin/main — NFL run provenance landed; hand-run 802 STUB rows (GG-317) |
+| 2026-09-29T05:42:49Z | T-586 | CLOSED — merge confirmed, HEAD (898de08) is ancestor of origin/main — absent-attribute costing study, doc-only |
