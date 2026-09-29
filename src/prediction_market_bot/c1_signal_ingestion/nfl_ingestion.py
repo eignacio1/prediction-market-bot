@@ -140,6 +140,15 @@ _NFL_TEAM_STATS_COLUMNS: list[str] = [
     "off_epa",
 ]
 
+# T-581 (EXP-027 EPA-splits candidate): opt-in schema that additionally RETAINS
+# the raw passing_epa / rushing_epa columns instead of collapsing them into
+# off_epa alone. Default fetch behaviour is unchanged (include_splits=False)
+# -- the incumbent EXP-027 path never sees these columns.
+_NFL_TEAM_STATS_SPLIT_COLUMNS: list[str] = _NFL_TEAM_STATS_COLUMNS + [
+    "passing_epa",
+    "rushing_epa",
+]
+
 _NFL_RAW_TEAM_STATS_SOURCE_COLUMNS = [
     "season", "week", "season_type", "game_id", "team", "opponent_team",
     "passing_epa", "rushing_epa",
@@ -236,13 +245,15 @@ class NFLIngestionClient:
         df["gameday"] = pd.to_datetime(df["gameday"], errors="coerce").dt.date
         return df
 
-    def _normalize_team_stats_df(self, raw: pd.DataFrame) -> pd.DataFrame:
+    def _normalize_team_stats_df(
+        self, raw: pd.DataFrame, include_splits: bool = False,
+    ) -> pd.DataFrame:
         missing = [c for c in _NFL_RAW_TEAM_STATS_SOURCE_COLUMNS if c not in raw.columns]
         if missing:
             raise ValueError(f"nflverse stats_team_week CSV missing expected columns: {missing}")
         df = raw[_NFL_RAW_TEAM_STATS_SOURCE_COLUMNS].copy()
         df["off_epa"] = df["passing_epa"] + df["rushing_epa"]
-        return df[_NFL_TEAM_STATS_COLUMNS]
+        return df[_NFL_TEAM_STATS_SPLIT_COLUMNS if include_splits else _NFL_TEAM_STATS_COLUMNS]
 
     # ------------------------------------------------------------------
     # Public API — schedule (rest days + home/away live here)
@@ -313,8 +324,12 @@ class NFLIngestionClient:
         self,
         season: int,
         session_id: str | None = None,
+        include_splits: bool = False,
     ) -> tuple[bool, pd.DataFrame]:
         """Fetch per-team-game EPA stats for one season.
+
+        include_splits=True (T-581) additionally retains passing_epa /
+        rushing_epa; default False keeps the original IF-C1-C2 schema.
 
         off_epa = passing_epa + rushing_epa (standard modern NFL offensive
         efficiency proxy). Defensive EPA-allowed is NOT computed here — it
@@ -353,7 +368,7 @@ class NFLIngestionClient:
             return False, pd.DataFrame(columns=_NFL_TEAM_STATS_COLUMNS)
 
         try:
-            df = self._normalize_team_stats_df(raw)
+            df = self._normalize_team_stats_df(raw, include_splits=include_splits)
         except ValueError as exc:
             self._logger.log(
                 COMPONENT, "team_stats_fetch_error",
@@ -373,8 +388,11 @@ class NFLIngestionClient:
         self,
         seasons: list[int],
         session_id: str | None = None,
+        include_splits: bool = False,
     ) -> tuple[bool, pd.DataFrame]:
         """Fetch team-game EPA stats for multiple seasons and concatenate.
+
+        include_splits (T-581): forwarded to fetch_team_stats(); default False.
 
         Returns (False, data) if ANY individual fetch fails for a reason
         OTHER than the documented 404/cold-start case (partial data is
@@ -386,11 +404,13 @@ class NFLIngestionClient:
         frames: list[pd.DataFrame] = []
         any_error = False
         for season in seasons:
-            ok, df = self.fetch_team_stats(season, session_id)
+            ok, df = self.fetch_team_stats(season, session_id, include_splits=include_splits)
             if not ok:
                 any_error = True
             elif not df.empty:
                 frames.append(df)
         if not frames:
-            return not any_error, pd.DataFrame(columns=_NFL_TEAM_STATS_COLUMNS)
+            return not any_error, pd.DataFrame(
+                columns=_NFL_TEAM_STATS_SPLIT_COLUMNS if include_splits else _NFL_TEAM_STATS_COLUMNS
+            )
         return not any_error, pd.concat(frames, ignore_index=True)

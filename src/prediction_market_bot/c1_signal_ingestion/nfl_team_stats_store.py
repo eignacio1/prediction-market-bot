@@ -109,6 +109,13 @@ class NFLTeamStatsStore:
 
         opp_off_epa = team_stats_df.set_index(["game_id", "team"])["off_epa"]
 
+        # T-581: split columns are optional -- present only when the frame was
+        # fetched with include_splits=True. Absent => store schema is unchanged.
+        has_splits = {"passing_epa", "rushing_epa"}.issubset(team_stats_df.columns)
+        if has_splits:
+            opp_pass_epa = team_stats_df.set_index(["game_id", "team"])["passing_epa"]
+            opp_rush_epa = team_stats_df.set_index(["game_id", "team"])["rushing_epa"]
+
         date_by_game_id: dict[str, Any] = {}
         if schedule_df is not None and not schedule_df.empty and "game_id" in schedule_df.columns:
             date_by_game_id = dict(zip(schedule_df["game_id"], schedule_df["gameday"]))
@@ -123,11 +130,23 @@ class NFLTeamStatsStore:
             except KeyError:
                 def_epa_allowed = None
 
-            team_logs.setdefault(team, []).append({
+            record = {
                 "game_date": date_by_game_id.get(game_id),
                 "off_epa": row["off_epa"],
                 "def_epa_allowed": def_epa_allowed,
-            })
+            }
+            if has_splits:
+                # T-581: passing/rushing split of the team's own offense, and
+                # of the opponent's offense (= this team's defense allowed).
+                record["pass_epa"] = row["passing_epa"]
+                record["rush_epa"] = row["rushing_epa"]
+                try:
+                    record["def_pass_epa_allowed"] = opp_pass_epa.loc[(game_id, opponent)]
+                    record["def_rush_epa_allowed"] = opp_rush_epa.loc[(game_id, opponent)]
+                except KeyError:
+                    record["def_pass_epa_allowed"] = None
+                    record["def_rush_epa_allowed"] = None
+            team_logs.setdefault(team, []).append(record)
 
         for abbr, records in team_logs.items():
             store.add_team_log(abbr, pd.DataFrame(records))
@@ -212,6 +231,39 @@ class NFLTeamStatsStore:
         return self._get_recency_weighted(
             team_abbr, as_of_date, "def_epa_allowed", window, min_periods, decay
         )
+
+    # ------------------------------------------------------------------
+    # T-581 split accessors -- same recency window/decay/TI-01 filter as the
+    # aggregates. Return None when the store was built without splits.
+    # ------------------------------------------------------------------
+
+    def get_pass_epa(
+        self, team_abbr: str, as_of_date: str,
+        window: int = DEFAULT_WINDOW, min_periods: int = MIN_PERIODS, decay: float = DEFAULT_DECAY,
+    ) -> float | None:
+        """Recency-weighted mean passing EPA (own offense)."""
+        return self._get_recency_weighted(team_abbr, as_of_date, "pass_epa", window, min_periods, decay)
+
+    def get_rush_epa(
+        self, team_abbr: str, as_of_date: str,
+        window: int = DEFAULT_WINDOW, min_periods: int = MIN_PERIODS, decay: float = DEFAULT_DECAY,
+    ) -> float | None:
+        """Recency-weighted mean rushing EPA (own offense)."""
+        return self._get_recency_weighted(team_abbr, as_of_date, "rush_epa", window, min_periods, decay)
+
+    def get_def_pass_epa_allowed(
+        self, team_abbr: str, as_of_date: str,
+        window: int = DEFAULT_WINDOW, min_periods: int = MIN_PERIODS, decay: float = DEFAULT_DECAY,
+    ) -> float | None:
+        """Recency-weighted mean passing EPA allowed (opponents' passing_epa)."""
+        return self._get_recency_weighted(team_abbr, as_of_date, "def_pass_epa_allowed", window, min_periods, decay)
+
+    def get_def_rush_epa_allowed(
+        self, team_abbr: str, as_of_date: str,
+        window: int = DEFAULT_WINDOW, min_periods: int = MIN_PERIODS, decay: float = DEFAULT_DECAY,
+    ) -> float | None:
+        """Recency-weighted mean rushing EPA allowed (opponents' rushing_epa)."""
+        return self._get_recency_weighted(team_abbr, as_of_date, "def_rush_epa_allowed", window, min_periods, decay)
 
     # ------------------------------------------------------------------
     # Dunder / properties
