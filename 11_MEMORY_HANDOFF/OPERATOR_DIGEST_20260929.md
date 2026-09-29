@@ -8,3 +8,4 @@
 - Found that the automatic register checker only notices 7 of those 36 missing entries; logged as a new gap (GG-312).
 - Filed 25 finished gap records into the archive, unchanged, and deleted 23 old merged branches. 26 branches were left alone (in use by other sessions, or not merged).
 - Still zero real money at risk. 17 old unmerged branches on the server are yours to route.
+- T-583 (auto): T-583 built a parallel T4 A/B harness (game-clustered paired Δ-Brier, loud refusals incl. T4M-PROJ); no real cohort scorable until 2027.
