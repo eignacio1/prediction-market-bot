@@ -640,3 +640,4 @@
 | 2026-09-29T05:13:26Z | T-583 | MERGED: NO — branch `session/20260929T050106Z-t4-ab-harness` awaiting merge — T-583 built a parallel T4 A/B harness (game-clustered paired Δ-Brier, loud refusals incl. T4M-PROJ); no real cohort scorable until 2027. (commit `7b4bbdd`) |
 | 2026-09-29T05:14:14Z | T-583 | CLOSED — merge confirmed, HEAD (bfe2357) is ancestor of origin/main — T4 A/B harness merged to main; parallel harness, T1 untouched |
 | 2026-09-29T05:15:10Z | T-581 | CLOSED — T-581: EXP-027 EPA splits built offline; no detectable gain (CIs span 0); ADR-0066 drafted PROPOSED, unwired. (commit `64c0313`) |
+| 2026-09-29T05:21:54Z | T-584 | SHORT/STANDARD single deliverable: fix check_register_parity.py to see the whole class (GG-312) + Section 0 wiring; no GGL/DECISION_LOG writes |
