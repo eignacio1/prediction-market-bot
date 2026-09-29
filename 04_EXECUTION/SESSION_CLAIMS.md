@@ -644,3 +644,4 @@
 | 2026-09-29T05:22:23Z | T-586 | STANDARD costing study: price NFL+MLB absent-attribute list (source/integration tier/backfill), rank, decision input; read-only src/, no GGL/DECISION_LOG writes |
 | 2026-09-29T05:27:04Z | T-587, GG-316 | STANDARD — 38.1 NFL accrual path: runtime run-provenance (GG-302 remediation), live hand-run, accrual arithmetic; cron deliverable gated on operator authorization (absent -> skipped) |
 | 2026-09-29T05:29:24Z | T-584 | MERGED: NO — branch `session/20260929T052125Z-gg312-parity-checker` awaiting merge — T-584 GG-312 parity checker fixed both directions; all 36 ratified ADRs covered; Section 0 15->5. (commit `28a8b63`) |
+| 2026-09-29T05:29:33Z | T-584 | MERGED: NO — branch `session/20260929T052125Z-gg312-parity-checker` awaiting merge (HEAD e9c5a07 not on origin/main) — GG-312 parity checker fixed both directions; Section 0 15->5 |
