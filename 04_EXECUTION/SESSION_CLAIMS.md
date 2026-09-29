@@ -634,3 +634,4 @@
 | 2026-09-29T05:02:26Z | T-582, GG-312..GG-315 | 37.3 governance burndown: ratification record, archive resolved GGs, sweep merged branches (STANDARD; recording only; shared main tree per operator) |
 | 2026-09-29T05:07:18Z | T-582 | CLOSED — merge confirmed, HEAD (2cb7275) is ancestor of origin/main — 37.3 governance burndown — ratification row recorded (36 ADRs), GG-312 registered, 25 resolved gaps archived verbatim, 23 merged branches deleted (26 refused, none forced), Console Section 0 210->175; recording only, nothing adjudicated |
 | 2026-09-29T05:11:43Z | T-582 | CLOSED — 37.3 governance burndown: ratification row (36 ADRs), GG-312 registered, 25 gaps archived, 23 branches swept; recording only. (commit `2f42318`) |
+| 2026-09-29T05:11:56Z | T-582 | CLOSED — merge confirmed, HEAD (0685547) is ancestor of origin/main — session-end handoff landed; recording only |
