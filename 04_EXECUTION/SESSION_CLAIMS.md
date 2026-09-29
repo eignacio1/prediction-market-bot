@@ -630,3 +630,4 @@
 | 2026-09-29T04:43:56Z | T-580 | MERGED: NO — branch `session/20260929T001556Z-t4-game-state-signal` awaiting merge — T-580/Wave36 36.2: T4 MLB game-state fields logged (p_t4 unchanged), offline walk-off candidate built, A/B gate found non-runnable (no data), ADR-0065 PROPOSED (commit `a9bffdc`) |
 | 2026-09-29T04:50:00Z | T-580 (correction of MERGED:NO row above) | MERGED: YES — merge commit `ea48d57`, pushed to origin/main. Resolved 3-file nav conflict against concurrent T-578 merge. |
 | 2026-09-29T05:02:04Z | T-581, ADR-0066 | STANDARD: EXP-027 NFL EPA pass/rush splits — offline enriched candidate, holdout eval, ADR draft (not accepted, not wired) |
+| 2026-09-29T05:02:14Z | T-583 | STANDARD — Wave 37 A/B harness for T4: shared-core-with-adapters decision, input contract w/ loud refusal (incl. T4M-PROJ 765/905 cohort), prove on existing cohort; does NOT own GGL/DECISION_LOG |
