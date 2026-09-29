@@ -6,14 +6,14 @@
 
 ---
 
-## 0. Overdue for retirement (174)
+## 0. Overdue for retirement (169)
 
 Artifact CREATION (session claims, gap registration) is mechanical and enforced. Artifact RETIREMENT (archiving resolved gaps, deleting merged branches, closing register rows) is manual and gets forgotten -- it does not scale across a growing gap log and, per direct enumeration (`ls -d [0-9][0-9]_*`), **13** top-level department directories -- not the 12 this rollup's originating task assumed; `09_INTEGRATION_PATCHES` and `09_SECURITY_PRIVACY_COMPLIANCE` share the `09_` prefix. This section is filing, never adjudication: everything below is something already marked done elsewhere that hasn't been filed away yet. Nothing here is deleted or archived by generating this file (T-570, 2026-09-23).
 
 **Unarchived resolved gaps (0)** -- RESOLVED/CLOSED-AS-ARTIFACT entries still in the live GOVERNANCE_GAP_LOG.md instead of the archive (`scripts/retire_resolved_gaps.py`):
 _None currently detected._
 
-**Merged-but-undeleted local branches (26)** -- ancestors of origin/main, safe to `git branch -d` (`scripts/sweep_stray_branches.sh --execute`):
+**Merged-but-undeleted local branches (31)** -- ancestors of origin/main, safe to `git branch -d` (`scripts/sweep_stray_branches.sh --execute`):
 - `land-b`
 - `nfl-capture-rebase`
 - `session/20260811T043030Z-invariant-policy`
@@ -39,29 +39,24 @@ _None currently detected._
 - `session/20260925T015621Z-feature-space-audit`
 - `session/20260929T001556Z-t4-game-state-signal`
 - `session/20260929T002124Z-gg303-activate-section0`
+- `session/20260929T050106Z-t4-ab-harness`
+- `session/20260929T050111Z-exp027-epa-splits`
+- `session/20260929T052119Z-absent-attribute-pricing`
+- `session/20260929T052119Z-nfl-accrual-path`
+- `session/20260929T052132Z-absent-attribute-pricing`
 - `t493-closeout-push`
 
 **Prunable worktree metadata (0)** -- `git worktree prune -v` dry-run output:
 _None currently detected._
 
-**ADRs/APRs missing register accountability (15)** -- `scripts/check_register_parity.py` rules 1, 2, and 5. Rule 1 requires EVERY APR to have its own row regardless of status (so a non-ACCEPTED APR like APR-0034/0035/0036, still DECISION REQUEST, correctly appears below); rules 2/5 apply only to resolved (ACCEPTED-class) ADRs, requiring their own dedicated row, not just a mention. Stale-PENDING/premature-ACCEPTED drift findings (rules 3/4) are excluded, out of scope for a "missing entirely" rollup:
+**ADRs/APRs missing register accountability (5)** -- `scripts/check_register_parity.py` rules 1, 2, 5 and 6 (T-584). Rule 1 requires EVERY APR to have its own row regardless of status (so a non-ACCEPTED APR like APR-0034/0035/0036, still DECISION REQUEST, correctly appears below); rules 2/5 apply only to resolved (ACCEPTED-class) ADRs, requiring their own dedicated row, not just a mention. Stale-PENDING/premature-ACCEPTED drift findings (rules 3/4) are excluded, out of scope for a "missing entirely" rollup. Rule 6 adds the reverse direction: unreadable Status headers, RATIFY-enumerated IDs with no doc, and dated rows pointing at no real document:
 - APR-0034: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presents option)
 - APR-0035: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presented optio)
 - APR-0036: no APPROVALS_REGISTER.md row at all (doc status: **Status:** DECISION REQUEST — not adjudicated at drafting time; presented optio)
-- ADR-0001: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
-- ADR-0003: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** **ACCEPTED — 2026-05-23** — OQ-006 resolved; Polymarket US CA-legal )
-- ADR-0010: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-02)
-- ADR-0015: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
-- ADR-0018: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — APR-0018 signed 2026-06-09)
-- ADR-0024: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
-- ADR-0026: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-16)
-- ADR-0027: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — 2026-06-16)
-- ADR-0028: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — DS sign-off Earl Ignacio, 2026-06-22 SESSION 72 (initial )
-- ADR-0032: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED)
-- ADR-0045: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-07-15.)
-- ADR-0046: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — Earl Ignacio, in-session directive, 2026-07-16.)
+- APR-0007: register row points at no real document (no same-id doc, and its Evidence cell cites no existing file or documented APR/ADR id)
+- APR-0016: register row points at no real document (no same-id doc, and its Evidence cell cites no existing file or documented APR/ADR id)
 
-**Session claims with no closure row (133)** -- `04_EXECUTION/SESSION_CLAIMS.md` T-NNN tokens with a claim row but no row whose text starts "CLOSED" (includes work that is genuinely still in flight, not only forgotten closures -- this is a filing signal, not a verdict). **Known noise (T-570):** the literal "CLOSED —" prefix is a convention that hardened over time -- older rows often record closure in free text that doesn't start with that word (e.g. T-224's row ends "...T-224 close (...)" rather than opening with CLOSED), so this list over-reports for anything claimed before the convention was consistent. Treat entries below the most recent ~50 rows as needing a manual skim, not a trusted count, until a follow-on tightens the detection or the older rows are normalized:
+**Session claims with no closure row (132)** -- `04_EXECUTION/SESSION_CLAIMS.md` T-NNN tokens with a claim row but no row whose text starts "CLOSED" (includes work that is genuinely still in flight, not only forgotten closures -- this is a filing signal, not a verdict). **Known noise (T-570):** the literal "CLOSED —" prefix is a convention that hardened over time -- older rows often record closure in free text that doesn't start with that word (e.g. T-224's row ends "...T-224 close (...)" rather than opening with CLOSED), so this list over-reports for anything claimed before the convention was consistent. Treat entries below the most recent ~50 rows as needing a manual skim, not a trusted count, until a follow-on tightens the detection or the older rows are normalized:
 - `T-224`
 - `T-243`
 - `T-247`
@@ -193,11 +188,10 @@ _None currently detected._
 - `T-566`
 - `T-573`
 - `T-580`
-- `T-581`
-- `T-583`
+- `T-584`
 
-**Shared main tree behind origin/main (0)** -- a session that skips the launch-isolated default (Step 0a) and works directly in the shared checkout can drift behind origin unnoticed (T-574):
-_None currently detected._
+**Shared main tree behind origin/main (1)** -- a session that skips the launch-isolated default (Step 0a) and works directly in the shared checkout can drift behind origin unnoticed (T-574):
+- `/Users/earlignacio/Documents/Claude/Projects/Prediction Markets` on `main` is 13 commit(s) behind `origin/main`
 
 **Closed-wave fences still in ACTIVE_QUEUE.md (0)** -- pasteable code fences left under a header for a wave the Sequencing track already marks CLOSED, in violation of this file's own stated rule (T-574, found by hand during Wave 33 recovery):
 _None currently detected._

@@ -147,7 +147,9 @@ def test_rule5_does_not_flag_adr_with_its_own_row(tmp_path, monkeypatch, capsys)
     assert "CLEAN" in out
 
 
-def test_rule5_respects_exemptions_list(tmp_path, monkeypatch, capsys):
+def test_rule5_ignores_exemptions_list(tmp_path, monkeypatch, capsys):
+    # T-584/GG-312: the exemptions file used to suppress rule 5, which hid 27
+    # of the 36 unregistered accepted ADRs. It no longer suppresses anything.
     register = (
         "| ID | Decision | Status | Date | Evidence |\n"
         "|---|---|---|---|---|\n"
@@ -159,8 +161,8 @@ def test_rule5_respects_exemptions_list(tmp_path, monkeypatch, capsys):
 
     rc = crp.main()
     out = capsys.readouterr().out
-    assert rc == 0
-    assert "ADR-9003" not in out
+    assert rc == 1
+    assert "ADR-9003" in out
 
 
 def test_rule5_does_not_fire_when_adr_is_not_resolved(tmp_path, monkeypatch, capsys):
@@ -183,3 +185,128 @@ def test_rule5_does_not_fire_when_adr_is_not_resolved(tmp_path, monkeypatch, cap
     out = capsys.readouterr().out
     assert rc == 0
     assert "CLEAN" in out
+
+
+# ---------------------------------------------------------------------------
+# T-584 / GG-312 -- forward + reverse parity: one regression per Status format
+# found in the 36 accepted-but-unregistered ADRs, plus ratification coverage.
+# ---------------------------------------------------------------------------
+
+import check_register_parity as crp  # noqa: E402
+import pytest  # noqa: E402
+
+RATIFIED_36 = {
+    f"ADR-{n}" for n in (
+        "0006 0007 0029 0031 0034 0036 0037 0039 0040 0041 0043 0044 0045 0046 "
+        "0001 0002 0008 0009 0010 0011 0012 0013 0014 0015 0016 0017 0019 0020 "
+        "0021 0022 0023 0024 0025 0032 0033 0038"
+    ).split()
+}
+
+
+@pytest.mark.parametrize(
+    "status_line",
+    [
+        "**Status:** ACCEPTED",
+        "**Status:** ACCEPTED 2026-05-14",
+        "**Status:** ACCEPTED (2026-05-14)",
+        "**Status:** ACCEPTED (as amended)",
+        "**Status:** ACCEPTED -- DS sign-off Earl Ignacio, 2026-06-01",
+        "**Status:** **ACCEPTED — 2026-06-01**",
+        "**Status:** ACCEPTED (Earl Ignacio, 2026-08-21, T-474 session",
+    ],
+)
+def test_accepted_status_formats_resolve(status_line):
+    assert is_resolved(status_line)
+
+
+@pytest.mark.parametrize(
+    "status_line",
+    [
+        "**Status:** DRAFT -- NOT ACCEPTED",
+        "**Status:** PROPOSED. Not yet ACCEPTED.",
+        "**Status:** DECISION REQUEST",
+    ],
+)
+def test_negation_guards_still_hold(status_line):
+    assert not is_resolved(status_line)
+
+
+def test_doc_status_bold_line(tmp_path):
+    p = tmp_path / "ADR-9001.md"
+    p.write_text("# T\n\n**Status:** ACCEPTED (as amended)\n")
+    assert is_resolved(crp.doc_status(p))
+
+
+def test_doc_status_heading_format_with_backticks(tmp_path):
+    # ADR-0006/0007 shape: `## Status` heading, value on next non-blank line.
+    p = tmp_path / "ADR-9002.md"
+    p.write_text("# T\n\n## Status\n\n`ACCEPTED`\n")
+    s = crp.doc_status(p)
+    assert s is not None and "`" not in s and is_resolved(s)
+
+
+def test_doc_status_heading_negated(tmp_path):
+    p = tmp_path / "ADR-9003.md"
+    p.write_text("# T\n\n## Status\n\n`PROPOSED -- NOT ACCEPTED`\n")
+    assert not is_resolved(crp.doc_status(p))
+
+
+def test_doc_status_unparseable_returns_none(tmp_path):
+    p = tmp_path / "ADR-9004.md"
+    p.write_text("# T\n\nNo status header anywhere.\n")
+    assert crp.doc_status(p) is None
+
+
+def test_subject_lead_counts_only_subject_cell():
+    rows = [
+        "| APR-0001 | ADR-0003 amendment | x | 2026-01-01 | y | z |",
+        "| APR-0002 | Something | mentions ADR-0018 | 2026-01-01 | y | ADR-0018 |",
+        "| APR-0003 | **ADR-0026** retune | x | 2026-01-01 | y | z |",
+    ]
+    ids = crp.subject_led_ids(rows)
+    assert "ADR-0003" in ids and "ADR-0026" in ids
+    assert "ADR-0018" not in ids  # evidence-cell mention is not accountability
+
+
+def test_pending_row_detection():
+    assert crp.row_is_pending("| APR-0008 | s | c | PENDING | p | e |")
+    assert not crp.row_is_pending("| APR-0008 | s | c | 2026-01-01 | p | e |")
+    assert not crp.row_is_pending("| APR-0008 | s | c | PENDING -> ACCEPTED 2026-02-02 | p | e |")
+
+
+def test_evidence_resolves_file_and_doc_id():
+    row = "| APR-0099 | s | c | 2026-01-01 | see scripts/check_register_parity.py |"
+    assert crp.evidence_resolves(row, {"check_register_parity.py"}, set(), "APR-0099")
+    assert not crp.evidence_resolves(row, {"other.py"}, set(), "APR-0099")
+    row2 = "| APR-0099 | s | c | 2026-01-01 | per ADR-0004 |"
+    assert crp.evidence_resolves(row2, set(), {"ADR-0004"}, "APR-0099")
+    assert not crp.evidence_resolves(row2, set(), set(), "APR-0099")
+    row3 = "| APR-0099 | s | c | 2026-01-01 | self APR-0099 |"
+    assert not crp.evidence_resolves(row3, set(), {"APR-0099"}, "APR-0099")
+
+
+def test_ratified_ids_respects_population_and_not_covered():
+    text = (
+        "| RATIFY-X | s | c | 2026-09-29 | p | **Population (2 ADRs):** ADR-0001, "
+        "ADR-0002. Not covered: ADR-0003 |\n"
+        "| RATIFY-Y | s | c | 2026-09-29 | p | no marker, ADR-0004 |\n"
+    )
+    assert crp.ratified_ids(text) == {"ADR-0001", "ADR-0002"}
+
+
+def test_live_ratification_row_covers_exactly_the_36():
+    text = (_ROOT / "00_ADMIN" / "APPROVALS_REGISTER.md").read_text(encoding="utf-8")
+    assert crp.ratified_ids(text) == RATIFIED_36
+
+
+def test_live_36_have_docs_and_no_forward_finding_even_without_exemptions(monkeypatch):
+    # The exemptions file must not be what makes these pass.
+    monkeypatch.setattr(crp, "load_exemptions", lambda: set())
+    findings, _ = crp.collect_findings()
+    forward = [
+        f for f in findings
+        if any(i in f for i in RATIFIED_36)
+        or "no register accountability" in f
+    ]
+    assert forward == [], forward
