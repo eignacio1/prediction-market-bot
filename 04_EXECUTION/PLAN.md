@@ -2,8 +2,9 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
+**Last reviewed:** 2026-09-29T04:42:50Z (T-580 — T-580/Wave36 36.2: T4 MLB game-state fields logged (p_t4 unchanged), offline walk-off candidate built, A/B gate found non-runnable (no data), ADR-0065 PROPOSED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0442.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
+**Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-25T01:14:00Z (T-572 — T-572 CLV harness built+applied to T4-MLB archive; verdict INCONCLUSIVE (backward-placebo + mean-reversion confounds both fail); 4 gap candidates for 34.2) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260925_0114.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-24T00:30:38Z (T-569 — T-569: T4 latency thesis measured (D2/D3/D4 pre-registered) — verdict NOT SUPPORTED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260924_0030.md` for full session detail.

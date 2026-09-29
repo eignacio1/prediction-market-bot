@@ -286,6 +286,24 @@ class MLBLiveBatterState:
     ab_so_far: int
     inning: int
     game_id: str
+    # --- game-state/leverage fields (T-575/Wave 36 Block 36.2, GG-TBD) ---
+    # Logging-only in this block: p_hits_gte_threshold() does not consume these.
+    # Sourced from the same _ESPN_MLB_SUMMARY response already fetched per poll
+    # (header.competitions[0].competitors[] for score; plays[-1] for inning
+    # half/outs/base state/current pitcher; boxscore pitching stat group's
+    # "PC" label for that pitcher's cumulative pitch count). One game-state
+    # snapshot is computed per poll and stamped onto every batter row in that
+    # poll, matching the existing convention for `inning` above.
+    home_score: int = 0
+    away_score: int = 0
+    inning_half: str = ""
+    outs: int = 0
+    on_first: bool = False
+    on_second: bool = False
+    on_third: bool = False
+    current_pitcher_id: Optional[int] = None
+    current_pitcher_name: str = ""
+    pitcher_pitch_count: Optional[int] = None
 
 
 # ---------------------------------------------------------------------------
@@ -572,6 +590,105 @@ def _rollover_game_ids(
     return carried_over + [gid for gid in newly_discovered if gid not in carried_over]
 
 
+def _extract_espn_game_state(
+    d: dict[str, Any],
+    comp: dict[str, Any],
+    players_teams: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """
+    Best-effort extraction of score/leverage game-state fields from the same
+    ESPN summary payload _espn_poll_once_mlb() already fetches (T-575/Wave 36
+    Block 36.2). Logging-only: the caller must not let this change p_t4 or
+    any fire-condition input. Never raises — any missing/malformed field is
+    simply omitted from the returned dict, and MLBLiveBatterState's defaults
+    apply. Verified against a real ESPN summary payload (event 401817106,
+    2026-09-27), not just the code's own prior assumptions:
+      - score:        header.competitions[0].competitors[].{homeAway,score}
+      - inning half,
+        outs, bases:  plays[-1].{period.type, outs, onFirst/onSecond/onThird}
+      - pitcher:      plays[-1].participants[type=="pitcher"].athlete.id,
+                       cross-referenced into boxscore.players[].statistics[]
+                       (the group with "IP" in labels) for name + "PC" stat.
+    """
+    out: dict[str, Any] = {}
+
+    try:
+        for competitor in comp.get("competitors", []):
+            side = competitor.get("homeAway")
+            score = competitor.get("score")
+            if score is None:
+                continue
+            try:
+                score_int = int(score)
+            except (ValueError, TypeError):
+                continue
+            if side == "home":
+                out["home_score"] = score_int
+            elif side == "away":
+                out["away_score"] = score_int
+    except Exception:
+        logger.debug("ESPN game-state: score extraction failed", exc_info=True)
+
+    current_pitcher_id: Optional[int] = None
+    try:
+        plays = d.get("plays", [])
+        if plays:
+            last_play = plays[-1]
+            period = last_play.get("period", {}) or {}
+            half = str(period.get("type", "")).lower()
+            if half in ("top", "bottom"):
+                out["inning_half"] = half
+            outs = last_play.get("outs")
+            if outs is not None:
+                out["outs"] = int(outs)
+            out["on_first"] = "onFirst" in last_play
+            out["on_second"] = "onSecond" in last_play
+            out["on_third"] = "onThird" in last_play
+
+            for participant in last_play.get("participants", []):
+                if participant.get("type") == "pitcher":
+                    pid_raw = participant.get("athlete", {}).get("id")
+                    if pid_raw is not None:
+                        current_pitcher_id = int(pid_raw)
+                    break
+            if current_pitcher_id is not None:
+                out["current_pitcher_id"] = current_pitcher_id
+    except Exception:
+        logger.debug("ESPN game-state: play-state extraction failed", exc_info=True)
+
+    if current_pitcher_id is not None:
+        try:
+            for team_data in players_teams:
+                for stat_group in team_data.get("statistics", []):
+                    labels = stat_group.get("labels", [])
+                    if "IP" not in labels:
+                        continue  # batting group, not the pitching group
+                    pc_idx = labels.index("PC") if "PC" in labels else None
+                    for athlete_entry in stat_group.get("athletes", []):
+                        athlete = athlete_entry.get("athlete", {})
+                        aid_raw = athlete.get("id")
+                        if aid_raw is None:
+                            continue
+                        try:
+                            aid = int(aid_raw)
+                        except (ValueError, TypeError):
+                            continue
+                        if aid != current_pitcher_id:
+                            continue
+                        out["current_pitcher_name"] = athlete.get("displayName", "")
+                        if pc_idx is not None:
+                            stats = athlete_entry.get("stats", [])
+                            try:
+                                out["pitcher_pitch_count"] = int(stats[pc_idx])
+                            except (IndexError, ValueError, TypeError):
+                                pass
+                        break
+        except Exception:
+            logger.debug("ESPN game-state: pitcher lookup failed", exc_info=True)
+
+    return out
+
+
 def _espn_poll_once_mlb(
     espn_game_id: str,
     name_to_pregame: dict[str, dict[str, Any]],
@@ -609,6 +726,8 @@ def _espn_poll_once_mlb(
     bx = d.get("boxscore", {})
     players_teams = bx.get("players", [])
     states: list[MLBLiveBatterState] = []
+
+    game_state = _extract_espn_game_state(d, comp, players_teams)
 
     for team_data in players_teams:
         for stat_group in team_data.get("statistics", []):
@@ -656,6 +775,7 @@ def _espn_poll_once_mlb(
                     ab_so_far=ab_so_far,
                     inning=inning,
                     game_id=espn_game_id,
+                    **game_state,
                 ))
             break   # only read batting stats, not pitching
 
@@ -709,6 +829,117 @@ def p_hits_gte_threshold(
         for k in range(h_needed, ab_remaining + 1)
     )
     return float(min(1.0, max(0.0, p_gte)))
+
+
+# ---------------------------------------------------------------------------
+# CANDIDATE MODEL -- NOT LIVE (Wave 36 Block 36.2, Deliverable 3, T-575)
+# ---------------------------------------------------------------------------
+# Offline candidate only. Nothing below this banner is called from
+# _run_cycle() or any other live path -- the incumbent pair above
+# (p_hits_gte_threshold + _compute_ab_remaining) remains the sole live model.
+# Activation requires: a DEFENSIBLE_IMPROVEMENT verdict from
+# scripts/ab_harness.py holdout mode, a superseding ADR (ADR-0004 frozen-model
+# policy), the operator's signature, and a logic_epoch bump. See the Wave 36
+# Block 36.2 results summary for the harness attempt and its verdict, and the
+# draft ADR under 03_DECISIONS/ for the full writeup -- neither is accepted.
+
+_WALKOFF_BASE_DISCOUNT = 0.15  # undefended placeholder magnitude -- see ADR draft
+
+
+def _walkoff_leverage_shrink(
+    inning: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> float:
+    """Fraction (<=1.0) to shrink a projected ab_remaining by, to reflect a
+    game-ending (walk-off) possibility the incumbent's pure innings-based
+    estimator has no way to see.
+
+    A plate appearance can end the game outright only in the bottom of the
+    9th or later (the home half of the final scheduled inning, or any extra
+    inning) -- in every earlier inning-half, at least one more half-inning is
+    guaranteed regardless of score. Returns 1.0 (no shrink) outside that
+    window. Inside it, the discount scales with leverage via 1/(1+|score_diff|)
+    -- a one-run game shrinks harder than a laugher, since a laugher is far
+    less likely to actually end on the next plate appearance even though it
+    mechanically could.
+    """
+    if inning < 9 or inning_half.lower() != "bottom":
+        return 1.0
+    score_diff = abs(home_score - away_score)
+    leverage = 1.0 / (1.0 + score_diff)
+    return 1.0 - (_WALKOFF_BASE_DISCOUNT * leverage)
+
+
+def _compute_ab_remaining_candidate_v1(
+    ab_so_far: int,
+    inning: int,
+    batting_slot: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> int:
+    """Deliverable 3 candidate: the incumbent's _compute_ab_remaining, shrunk
+    for walk-off risk. Offline candidate for the A/B harness only -- never
+    called from any live path."""
+    naive = _compute_ab_remaining(ab_so_far, inning, batting_slot)
+    shrink = _walkoff_leverage_shrink(inning, inning_half, home_score, away_score)
+    return max(0, round(naive * shrink))
+
+
+def p_hits_gte_threshold_candidate_v1(
+    h_so_far: int,
+    threshold: int,
+    ba_l10: float,
+    ab_so_far: int,
+    inning: int,
+    batting_slot: int,
+    inning_half: str,
+    home_score: int,
+    away_score: int,
+) -> float:
+    """Deliverable 3 candidate model (T-575/Wave 36 Block 36.2).
+
+    Same Binomial core as the incumbent p_hits_gte_threshold -- the only
+    change is that ab_remaining is computed leverage-aware via
+    _compute_ab_remaining_candidate_v1 instead of the incumbent's
+    pure-innings _compute_ab_remaining. This is the single, deliberately
+    narrow change the functional-form justification below defends; it does
+    not touch ba_l10, pitcher identity, or pitch count -- those are logged
+    (Deliverable 2) but not yet modeled, left for a future candidate once
+    this one either clears or fails its own gate.
+
+    FUNCTIONAL FORM AND ITS ASSUMPTIONS (one paragraph, per Deliverable 3):
+    _compute_ab_remaining projects a batter's remaining plate appearances
+    from innings-left alone, with zero awareness that the game itself can
+    end mid-inning: in the bottom of the 9th or later, the moment the home
+    team takes the lead the game is over and every batter still due up that
+    inning gets zero more plate appearances. That is exactly the situation
+    T-575 flagged as "the weakest plausible model for the latency thesis" --
+    it is not a subtle mis-calibration, it is a hard logical gap the model
+    cannot see without the score/inning-half fields Deliverable 2 just wired
+    in. The candidate's fix is the smallest correction that closes that gap:
+    multiply the incumbent's ab_remaining by a shrink factor, 1.0 everywhere
+    except the walk-off-eligible window (bottom 9th+), where it dips by up to
+    _WALKOFF_BASE_DISCOUNT, scaled down as the score gap widens (1/(1+|diff|))
+    on the assumption that a lopsided late-game score is mechanically walk-off
+    -eligible but empirically much less likely to actually end there. This
+    assumes plate-appearance-level walk-off probability is well approximated
+    by score-differential alone (it ignores baserunners, outs, and batting
+    order, which a richer model could add); it assumes _WALKOFF_BASE_DISCOUNT
+    is a single global constant rather than fit per situation (deliberately
+    undefended here -- Deliverable 4 could not fit or validate it against any
+    non-forbidden resolved-bet data, see the results summary); and it assumes
+    the shrink should apply multiplicatively to ab_remaining rather than as a
+    separate discrete "game already over" state, which is simpler but slightly
+    overstates continuity risk in the very last plate appearances of a blowout.
+    Not wired to any live path.
+    """
+    ab_remaining = _compute_ab_remaining_candidate_v1(
+        ab_so_far, inning, batting_slot, inning_half, home_score, away_score,
+    )
+    return p_hits_gte_threshold(h_so_far, threshold, ba_l10, ab_remaining)
 
 
 # ---------------------------------------------------------------------------
@@ -1120,6 +1351,16 @@ def _run_cycle(
                             "ab_remaining": ab_remaining,
                             "inning":       ls.inning,
                             "batting_slot": batting_slot,
+                            "home_score":   ls.home_score,
+                            "away_score":   ls.away_score,
+                            "inning_half":  ls.inning_half,
+                            "outs":         ls.outs,
+                            "on_first":     ls.on_first,
+                            "on_second":    ls.on_second,
+                            "on_third":     ls.on_third,
+                            "current_pitcher_id":   ls.current_pitcher_id,
+                            "current_pitcher_name": ls.current_pitcher_name,
+                            "pitcher_pitch_count":  ls.pitcher_pitch_count,
                         })
                 continue
 
@@ -1197,6 +1438,16 @@ def _run_cycle(
                         "ab_remaining": ab_remaining,
                         "inning":       ls.inning,
                         "batting_slot": batting_slot,
+                        "home_score":   ls.home_score,
+                        "away_score":   ls.away_score,
+                        "inning_half":  ls.inning_half,
+                        "outs":         ls.outs,
+                        "on_first":     ls.on_first,
+                        "on_second":    ls.on_second,
+                        "on_third":     ls.on_third,
+                        "current_pitcher_id":   ls.current_pitcher_id,
+                        "current_pitcher_name": ls.current_pitcher_name,
+                        "pitcher_pitch_count":  ls.pitcher_pitch_count,
                     })
 
             if dry_run:
@@ -1221,6 +1472,16 @@ def _run_cycle(
                         "ab_remaining": ab_remaining,
                         "inning":       ls.inning,
                         "batting_slot": batting_slot,
+                        "home_score":   ls.home_score,
+                        "away_score":   ls.away_score,
+                        "inning_half":  ls.inning_half,
+                        "outs":         ls.outs,
+                        "on_first":     ls.on_first,
+                        "on_second":    ls.on_second,
+                        "on_third":     ls.on_third,
+                        "current_pitcher_id":   ls.current_pitcher_id,
+                        "current_pitcher_name": ls.current_pitcher_name,
+                        "pitcher_pitch_count":  ls.pitcher_pitch_count,
                         "would_fire":   net_edge > 0,
                     })
                 evaluated += 1
