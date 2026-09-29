@@ -631,3 +631,4 @@
 | 2026-09-29T04:50:00Z | T-580 (correction of MERGED:NO row above) | MERGED: YES — merge commit `ea48d57`, pushed to origin/main. Resolved 3-file nav conflict against concurrent T-578 merge. |
 | 2026-09-29T05:02:04Z | T-581, ADR-0066 | STANDARD: EXP-027 NFL EPA pass/rush splits — offline enriched candidate, holdout eval, ADR draft (not accepted, not wired) |
 | 2026-09-29T05:02:14Z | T-583 | STANDARD — Wave 37 A/B harness for T4: shared-core-with-adapters decision, input contract w/ loud refusal (incl. T4M-PROJ 765/905 cohort), prove on existing cohort; does NOT own GGL/DECISION_LOG |
+| 2026-09-29T05:02:26Z | T-582, GG-312..GG-315 | 37.3 governance burndown: ratification record, archive resolved GGs, sweep merged branches (STANDARD; recording only; shared main tree per operator) |
