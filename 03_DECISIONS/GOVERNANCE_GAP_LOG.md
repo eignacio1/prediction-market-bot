@@ -3405,3 +3405,24 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-302 (the incident), GG-267 (model-identity precedent), GG-279, GG-262 (VPS crontab diverges from repo), T-320, T-575, T-587. |
 
 </details>
+
+---
+
+### GG-317 — The T1 NFL run script defaults to the fixed-p STUB model and will open one paper row on every market with a nominal edge: one hand-run on 2026-09-29 wrote 802 STUB-labeled rows into the NFL pool (66% of evaluated markets), inflating the pool with rows that are pipeline-shape evidence only
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-317 |
+| Category | Evidence hygiene / sample inflation (T-587 D2 finding) |
+| What was found | `main()` in `run_t1_nfl_game_market.py` defaults to `StubNFLForecastModel` (fixed p=0.55, no NFL C2/C3 exists, GG-255). The D2 hand-run (run_id `PT-T1-NFLGM-71208CC5`, sha `1d65b9b`, trigger `manual`, host `earlgrey`) evaluated 1,209 markets over 18 games: OPENED 802, REJECTED 288, REFUSED_NO_MODEL 50, REFUSED_NO_EDGE 40, REFUSED_STAKE 29. Pool `open_positions` went 22 to 824. All 802 rows carry `model_identity` = STUB and $1 measurement stakes. Approval is driven by the constant p versus each quote, so the 66% rate is a property of the stub, not of any model. |
+| Why this matters | Row counts in this pool now overstate usable evidence by about 36x. Any band monitor or n-count that counts NFL T1 rows without filtering `model_identity` will read a large clean_n that means nothing. The rows are attributable (D1) but not model evidence. Re-running the script re-opens new rows; whether it de-duplicates against still-open tickers is UNVERIFIED. |
+| Not done here | Nothing was quarantined, deleted or reclassified (out of scope; changing pool contents is an operator call). The 42 GG-302 rows remain quarantined and were not used. A pre-run backup of the pool exists on the VPS: `logs/paper_portfolio_t1_nfl_game_market.pre_t587_handrun_20260929.json`. |
+| Suggested resolution | Operator decides: (a) quarantine all `model_identity` STUB rows from every n-count, keyed on `runtime_git_sha`/`run_id`; (b) require an explicit flag for STUB runs; (c) verify re-run de-duplication before any schedule. |
+| Cross-references | GG-316 (provenance that makes these rows identifiable), GG-302, GG-255, GG-267, T-587. |
+
+</details>
