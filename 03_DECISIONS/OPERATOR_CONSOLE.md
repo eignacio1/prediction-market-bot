@@ -6,7 +6,7 @@
 
 ---
 
-## 0. Overdue for retirement (175)
+## 0. Overdue for retirement (174)
 
 Artifact CREATION (session claims, gap registration) is mechanical and enforced. Artifact RETIREMENT (archiving resolved gaps, deleting merged branches, closing register rows) is manual and gets forgotten -- it does not scale across a growing gap log and, per direct enumeration (`ls -d [0-9][0-9]_*`), **13** top-level department directories -- not the 12 this rollup's originating task assumed; `09_INTEGRATION_PATCHES` and `09_SECURITY_PRIVACY_COMPLIANCE` share the `09_` prefix. This section is filing, never adjudication: everything below is something already marked done elsewhere that hasn't been filed away yet. Nothing here is deleted or archived by generating this file (T-570, 2026-09-23).
 
@@ -61,7 +61,7 @@ _None currently detected._
 - ADR-0045: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — DS sign-off Earl Ignacio 2026-07-15.)
 - ADR-0046: resolved and mentioned in APPROVALS_REGISTER.md, but has no OWN dedicated row (only an incidental mention, e.g. inside another row's evidence cell) (doc status: **Status:** ACCEPTED — Earl Ignacio, in-session directive, 2026-07-16.)
 
-**Session claims with no closure row (134)** -- `04_EXECUTION/SESSION_CLAIMS.md` T-NNN tokens with a claim row but no row whose text starts "CLOSED" (includes work that is genuinely still in flight, not only forgotten closures -- this is a filing signal, not a verdict). **Known noise (T-570):** the literal "CLOSED —" prefix is a convention that hardened over time -- older rows often record closure in free text that doesn't start with that word (e.g. T-224's row ends "...T-224 close (...)" rather than opening with CLOSED), so this list over-reports for anything claimed before the convention was consistent. Treat entries below the most recent ~50 rows as needing a manual skim, not a trusted count, until a follow-on tightens the detection or the older rows are normalized:
+**Session claims with no closure row (133)** -- `04_EXECUTION/SESSION_CLAIMS.md` T-NNN tokens with a claim row but no row whose text starts "CLOSED" (includes work that is genuinely still in flight, not only forgotten closures -- this is a filing signal, not a verdict). **Known noise (T-570):** the literal "CLOSED —" prefix is a convention that hardened over time -- older rows often record closure in free text that doesn't start with that word (e.g. T-224's row ends "...T-224 close (...)" rather than opening with CLOSED), so this list over-reports for anything claimed before the convention was consistent. Treat entries below the most recent ~50 rows as needing a manual skim, not a trusted count, until a follow-on tightens the detection or the older rows are normalized:
 - `T-224`
 - `T-243`
 - `T-247`
@@ -194,7 +194,6 @@ _None currently detected._
 - `T-573`
 - `T-580`
 - `T-581`
-- `T-582`
 - `T-583`
 
 **Shared main tree behind origin/main (0)** -- a session that skips the launch-isolated default (Step 0a) and works directly in the shared checkout can drift behind origin unnoticed (T-574):
