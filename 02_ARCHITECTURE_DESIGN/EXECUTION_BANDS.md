@@ -343,7 +343,7 @@ A strategy passes C1–C2 (feasibility) before C3–C4 (evidence). A strategy ma
 
 | Status | Meaning | Execution behavior |
 |--------|---------|-------------------|
-| **ACTIVE** | C1–C4 all pass; validated by EXP | Eligible to drive bet sizing |
+| **ACTIVE** | C1–C5 all pass (C5 per ADR-0068, PROPOSED); validated by EXP | Eligible to drive bet sizing |
 | **SKELETON** | C1–C2 pass; C3–C4 pending evidence | Signals logged; bet sizing blocked |
 | **BLOCKED** | C1–C2 fail OR gate condition unmet | No execution; no signals |
 
