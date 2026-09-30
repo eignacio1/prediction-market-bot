@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-09-30T05:10:00Z (T-593 — T-593: NFL ingestion now retains weather/QB/coach/referee + sacks/QB-hits/penalties (opt-in, allowlist); 2026 captured; no model wiring.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260930_0510.md` for full session detail.
+**Last reviewed:** 2026-09-30T05:30:00Z (T-595 — T-595: 40.3 landed, VPS provenance snapshotted (13/13 verify), T4M-PROJ model_identity stamped forward-only, claim re-check fixed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260930_0530.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
