@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-09-30T00:25:00Z (T-588 — T-588 (39.2): unwired fail-closed is_countable_evidence(); census; T4M-PROJ clean_n 1694->0 computed; GG-317 updated, GG-318/319 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260930_0025.md` for full session detail.
+**Last reviewed:** 2026-09-30T01:15:00Z (T-592 — T-592 provenance allowlist: 1,694/1,694 T4M-PROJ clean rows attributable via inert 13-window allowlist; nothing flipped.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260930_0115.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
