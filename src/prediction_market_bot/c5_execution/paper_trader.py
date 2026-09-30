@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import threading
 import time
 import uuid
@@ -328,6 +329,25 @@ class PaperTrader:
                 pass
 
     def _save(self) -> bool:
+        """Persist the ledger and count the call (T-589/D3).
+
+        ``save_stats`` is a real in-process counter keyed by the calling method,
+        so the number of full-file rewrites per cycle is measured, not estimated.
+        """
+        site = sys._getframe(1).f_code.co_name
+        t0 = time.perf_counter()
+        ok = self._save_impl()
+        st = self.__dict__.setdefault("save_stats", {"calls": 0, "ms": 0.0, "bytes": 0, "by_site": {}})
+        ms = (time.perf_counter() - t0) * 1000
+        st["calls"] += 1
+        st["ms"] += ms
+        st["bytes"] += self.__dict__.get("_last_save_bytes", 0)
+        b = st["by_site"].setdefault(site, {"calls": 0, "ms": 0.0})
+        b["calls"] += 1
+        b["ms"] += ms
+        return ok
+
+    def _save_impl(self) -> bool:
         try:
             self._path.parent.mkdir(parents=True, exist_ok=True)
             # GG-034: realized P&L and bankroll are derived from the ledger on every
@@ -344,7 +364,9 @@ class PaperTrader:
             rejected = self._state.get("rejected_positions")
             if isinstance(rejected, list) and len(rejected) > MAX_REJECTED_POSITIONS:
                 self._state["rejected_positions"] = rejected[-MAX_REJECTED_POSITIONS:]
-            self._atomic_write_text(json.dumps(self._state, indent=2))
+            text = json.dumps(self._state, indent=2)
+            self._last_save_bytes = len(text.encode())
+            self._atomic_write_text(text)
             return True
         except OSError:
             return False

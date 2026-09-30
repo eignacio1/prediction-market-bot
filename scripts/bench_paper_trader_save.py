@@ -35,13 +35,45 @@ def scaled(base: dict, k: int) -> dict:
     return s
 
 
+def cycle(base: dict, n_open: int, n_reject: int) -> dict:
+    """D3: drive REAL PaperTrader mutators on a pool copy; report the built-in counter."""
+    tmp = Path(tempfile.mkdtemp(prefix="bench_cycle_"))
+    try:
+        pool = tmp / "pool.json"
+        pool.write_text(json.dumps(base))
+        tr = PaperTrader(pool, MagicMock())
+        ap = {"approved_size": 1.0, "approved_direction": "YES", "band": "T4M-PROJ",
+              "model_identity": "BENCH", "risk_eval_id": "b", "forecast_id": "b", "model_p": 0.6, "gross_edge": 0.1}
+        tr.__dict__.pop("save_stats", None)
+        t_open = time.perf_counter()
+        for i in range(n_open):
+            ok, pos = tr.open_position(ap, f"KXMLBHIT-BENCH{i}-1", 0.5, 0.02, "2026-09-29",
+                             player_name=f"P{i}", player_id=i, kalshi_threshold=1, pool_isolated=True)
+            assert ok and pos, "open_position did not open"
+        st_open_ms = (time.perf_counter() - t_open) * 1000
+        for i in range(n_reject):
+            tr._state.setdefault("rejected_positions", []).append({"position_id": f"R{i}", "status": "REJECTED"})
+            tr._save()
+        tr.save_stats["open_call_ms"] = st_open_ms
+        return tr.save_stats
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("source")
     ap.add_argument("--reps", type=int, default=15)
     ap.add_argument("--scales", default="1,2,5,10")
+    ap.add_argument("--cycle", default="", help="D3: 'OPENS,REJECTS' driven through real mutators, e.g. 26,0")
     a = ap.parse_args()
     base = json.load(open(a.source))
+    if a.cycle:
+        o, r = (int(x) for x in a.cycle.split(","))
+        st = cycle(base, o, r)
+        print(json.dumps({"opens": o, "rejects": r, "calls": st["calls"], "ms_save": round(st["ms"], 1), "ms_open_calls_incl_reload": round(st["open_call_ms"], 1),
+                          "MB_written": round(st["bytes"] / 1e6, 1), "by_site": st["by_site"]}))
+        return
     src_bytes = os.path.getsize(a.source)
     tmp = Path(tempfile.mkdtemp(prefix="bench_save_"))
     try:
