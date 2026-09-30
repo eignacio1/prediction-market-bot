@@ -985,7 +985,7 @@ Assessment by dimension:
 At ultra-low latency, execution quality IS the edge — model complexity is deliberately reduced because computation time eats into the edge window. As time horizon lengthens, more complex models are justified because the edge window is large enough to absorb inference time.
 
 In prediction markets:
-- **T1 (multi-day):** Full 78-feature LR+Platt — execution timing irrelevant; edge from superior probability estimation over retail crowd
+- **T1 (multi-day):** LR+Platt (MLB measured at 18 features, T-597 D4; 78 was an NBA-era design figure) — execution timing irrelevant; edge from superior probability estimation over retail crowd
 - **T3 (pre-tip):** Price drift signal only — edge window is 15–60 min; fast price comparison matters more than deep model
 - **T4/T5 (in-play):** No model at all — arithmetic game state; sub-second execution IS the edge
 
@@ -1023,7 +1023,7 @@ Final 5 min:      T5 — Near-deterministic outcomes; arithmetic certainty
 ### P2: Model Complexity vs. Compute Budget
 
 ```
-T1: 30,000ms budget → full pipeline (C1→C2→C3); 78 features; qualitative enrichment
+T1: 30,000ms budget → full pipeline (C1→C2→C3); MLB measured 18 features (78 = NBA-era design figure, T-597 D4); qualitative enrichment
 T2:  5,000ms budget → cached T1 output + injury lookup; no retraining
 T3:    500ms budget → JSON file read + single API call; no model inference
 T4:     50ms budget → Bayesian arithmetic update; lookup table pre-computed

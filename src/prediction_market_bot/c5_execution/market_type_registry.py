@@ -571,9 +571,30 @@ _OTHER_MLB_FAMILIES: tuple[MarketType, ...] = (
 
 _cells: list[MarketTypeCell] = [
     # --- MLB_PLAYER_PROP_HITS: the one family with MLB-native T4 sub-bands ---
-    MarketTypeCell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T1_MULTI_DAY, CellStatus.NOT_IMPLEMENTED),
-    MarketTypeCell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T2_SAME_DAY, CellStatus.NOT_IMPLEMENTED),
-    MarketTypeCell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T3_PRE_TIP, CellStatus.NOT_IMPLEMENTED),
+    # T-597 D3: RECORDS REALITY, NOT PROMOTION. These three were NOT_IMPLEMENTED
+    # while cron runs them daily (measured 2026-09-30). SHADOW = "paper-evaluate
+    # without betting", which is what they do: kelly_fraction=0.0 for T1/T2/T3
+    # (ADR-0048), so 0 bets. No band reassignment; no move toward ACTIVE.
+    MarketTypeCell(
+        MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW,
+        notes="T-597 D3 records reality, not promotion. run_mlb_paper_trade.py cron 0 11 UTC; "
+              "18-feature LR+Platt evaluates daily; kelly 0.0 (ADR-0048) so 0 bets; "
+              "paper_portfolio_mlb.json last written 2026-08-06.",
+        citing_decision="ADR-0048",
+    ),
+    MarketTypeCell(
+        MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T2_SAME_DAY, CellStatus.SHADOW,
+        notes="T-597 D3 records reality, not promotion. run_t2_mlb_sameday.py cron 30 19 UTC; "
+              "evaluates lineup/scratch overlay daily; kelly 0.0 (ADR-0048); bets_placed=0.",
+        citing_decision="ADR-0048",
+    ),
+    MarketTypeCell(
+        MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T3_PRE_TIP, CellStatus.SHADOW,
+        notes="T-597 D3 records reality, not promotion. run_t3_mlb_pretip.py every 15 min "
+              "20-03 UTC; read-only drift scan, no order path; kelly 0.0 (ADR-0048). "
+              "T-597 D2 verdict: MISFILED (shallow, not fast); reassignment is drafted only.",
+        citing_decision="ADR-0048",
+    ),
     MarketTypeCell(
         MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T4M_PROJ, CellStatus.ACTIVE,
         notes="ADR-0023; run_t4_mlb_live.py; the only cell placing live bets today.",

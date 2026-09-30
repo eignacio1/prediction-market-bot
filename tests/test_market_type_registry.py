@@ -82,7 +82,8 @@ class TestRegistryStartingState:
         assert blocked == {ExecutionBand.T4M_ARITH, ExecutionBand.T4M_FLOW}
 
     def test_every_other_cell_is_not_implemented_or_dark(self):
-        allowed = {CellStatus.NOT_IMPLEMENTED, CellStatus.DARK}
+        # T-597 D3: prop-hits T1/T2/T3 are SHADOW (running, kelly 0.0) -- records reality.
+        allowed = {CellStatus.NOT_IMPLEMENTED, CellStatus.DARK, CellStatus.SHADOW}
         for cell in MARKET_TYPE_REGISTRY.values():
             if cell.status in (CellStatus.ACTIVE, CellStatus.BLOCKED):
                 continue
@@ -114,7 +115,8 @@ class TestRegistryKeyedOnPair:
         # Same market type, different band -> different status. Proves the
         # band is part of the key, not an incidental attribute.
         pregame_cell = get_cell(MarketType.MLB_PLAYER_PROP_HITS, ExecutionBand.T1_MULTI_DAY)
-        assert pregame_cell.status is CellStatus.NOT_IMPLEMENTED
+        # T-597 D3: records reality (cron runs T1 daily at kelly 0), not promotion.
+        assert pregame_cell.status is CellStatus.SHADOW
 
     def test_unseeded_pair_raises_keyerror(self):
         with pytest.raises(KeyError):

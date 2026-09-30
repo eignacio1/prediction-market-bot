@@ -63,7 +63,7 @@ Derived from high-frequency trading theory (Jane Street, HRT, Virtu):
 > **At the lowest latency, execution quality IS the edge. Model complexity is inversely proportional to time horizon because computation time eats into the edge window.**
 
 Applied to prediction markets:
-- **T1 (multi-day):** Full 78-feature ML pipeline — execution timing irrelevant; edge comes from superior probability estimation
+- **T1 (multi-day):** Deepest tree of the bands (LR+Platt; MLB player-prop model measured at 18 features, 0 qualitative — see T-597 D4; the earlier "78-feature" figure was an NBA-era design number) — execution timing irrelevant; edge comes from superior probability estimation
 - **T3 (pre-tip):** Minimal signal (momentum only) — edge window is minutes; fast execution matters more than model depth
 - **T4/T5 (in-play):** No model — pure game-state arithmetic or Bayesian update; sub-second execution IS the edge
 
@@ -111,7 +111,7 @@ that granularity at **every** arm.
 | Attribute | Value |
 |-----------|-------|
 | Horizon | 12–48h before game |
-| Model | Full LR+Platt, 78 features (31 quant + 47 qual), QS-2026-05-28-002 |
+| Model | LR+Platt. **MLB (measured 2026-09-30): 18 features, 0 qualitative** (`models/mlb_v1_model_meta.json`, `feature_count: 18`). The NBA-era design figure was 78 (31 quant + 47 qual, QS-2026-05-28-002) — not true of the MLB T1 model |
 | Signal | Season-trend mispricing; qualitative role classification |
 | Kelly fraction | 0.25 (quarter-Kelly, ADR-0004) |
 | Execution SLA | 3600s (1h) — execution timing irrelevant |
@@ -217,7 +217,7 @@ T5 Kelly fraction (0.15) is intentionally higher than T4 (0.05) — when arithme
 
 | Band | Horizon | Model | Kelly | Compute | Exec SLA | Infra | Phase |
 |------|---------|-------|-------|---------|----------|-------|-------|
-| T1 | Multi-day | Full LR+78 feat | 0.25 | 30,000ms | 3600s | Cron | 6 ✅ |
+| T1 | Multi-day | LR+Platt, 18 feat (MLB, measured) | 0.25 | 30,000ms | 3600s | Cron | 6 ✅ |
 | T2 | Same-day | Injury overlay | 0.20 | 5,000ms | 1800s | Cron | 7 (T-075) |
 | T3 | Pre-tip | Momentum signal | 0.10 | 500ms | 300s | Cron | 7 ✅ |
 | T4 | In-play | Bayesian | 0.05 | 50ms | 5s | Real-time | 8 |
@@ -292,7 +292,7 @@ Full decision tree specification: `02_ARCHITECTURE_DESIGN/ARB_FRAMEWORK.md`
 ```
                 T1          T2          T3          T4          T5
 Strategy A:   [FULL]     [overlay]  [momentum]  [Bayesian]  [arithmetic]
-               78 feat     cached+    1 signal    1 update    2 ops
+               18 feat (MLB) cached+    1 signal    1 update    2 ops
 
 Strategy C:  [SCAN]     [REFRESH]  [VERIFY+FIRE] [LOOKUP]    N/A
               all mkt     top-N      1 API+1 op    1 op
