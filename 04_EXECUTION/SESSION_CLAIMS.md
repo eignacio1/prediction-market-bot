@@ -673,3 +673,4 @@
 | 2026-09-30T05:36:56Z | T-596; GG via results summary only; no ADR | EXP-029: frozen EXP-028 model vs Kalshi KXMLBHIT market gate (D0-D6) |
 | 2026-09-30T05:37:16Z | T-597; no GG/ADR (gaps via results summary) | 42.x reality reconciliation: NFL capture proof, T3 measurement, registry-to-reality, 78-feature correction, change-control drafts (STANDARD; one deliverable = results summary) |
 | 2026-09-30T05:37:37Z | T-598; GG numbers claimed at run time | STANDARD — T4 structure enhancer: inventory 30 cycle-log fields, pre-register, build deeper T4 model (new module, incumbent untouched), score via T-583 harness (D0-D6). Deliverable: scored verdict for GG-320. |
+| 2026-09-30T05:49:23Z | T-598 | CLOSED — merge confirmed, HEAD (78b938a) is ancestor of origin/main — EXP-030 scored once; NO DETECTABLE DIFFERENCE; GG-323 opened |
