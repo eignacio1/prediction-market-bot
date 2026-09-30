@@ -651,3 +651,4 @@
 | 2026-09-29T05:42:12Z | T-587 | CLOSED — T-587 wave 38.1: NFL T1 runs now self-identify (runtime sha/trigger/run id/host); live hand-run wrote 802 STUB rows (GG-317). (commit `b2faddb`) |
 | 2026-09-29T05:42:27Z | T-587 | CLOSED — merge confirmed, HEAD (846164e) is ancestor of origin/main — NFL run provenance landed; hand-run 802 STUB rows (GG-317) |
 | 2026-09-29T05:42:49Z | T-586 | CLOSED — merge confirmed, HEAD (898de08) is ancestor of origin/main — absent-attribute costing study, doc-only |
+| 2026-09-30T00:14:09Z | T-588, GG-318+ | STANDARD — 39.2 evidence boundary: pool census by evidence class, is_countable_evidence predicate (unwired), band-monitor delta; register findings (GG-317 update) |
