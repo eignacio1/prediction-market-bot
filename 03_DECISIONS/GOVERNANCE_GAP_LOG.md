@@ -3532,3 +3532,24 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-162, GG-236, GG-256, T-592, T-595. |
 
 </details>
+
+---
+
+### GG-323 — T4 cycle log carries game-state fields on 0.9% of rows; the T-583 harness admits only a pre-epoch-12 window of ~210 games; September cycle rows have no decoupled outcomes
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-323 |
+| Category | Evidence adequacy: a scoreable T4 structure candidate is constrained by logged inputs, cohort labels, and outcome coverage (T-598, GG-320) |
+| What was found | (1) `t4_mlb_cycle_log.jsonl` (436,747 rows, 31 distinct keys, not 30) carries `home_score, away_score, inning_half, outs, on_first/second/third, current_pitcher_*, pitcher_pitch_count` on 3,840 rows (0.9%), all from 2026-09-29. A candidate using base/out/score/pitcher state cannot reach the harness minimum of 30 train and 30 test games. (2) `ba_l10_shrunk`, the input the live incumbent uses, exists only from 2026-07-18. (3) Rows timestamped 2026-07-31 or later label as logic epoch 12; the harness refuses T4M-PROJ epoch 12 by label, and 879 manifest tickers are refused by ticker. The clean window is therefore 2026-07-02 to 2026-07-30 by ticker-derived date, about 210 games, of which about 113 (07-18 to 07-30) have the shrunk input. (4) Decoupled outcomes (T-421, T-503) cover cycle tickers only through 2026-08-19; 2026-08-20 to 2026-09-29 (about 40 game-days) has none. (5) `game_date` in the cycle log is wrong on a majority of rows (GG-164); ticker-derived date is used throughout. |
+| Why it matters | Any T4 structure result is conditioned on a summer-only, early-season-of-logging window, and cannot test state-dependent structure until state accrues. A null there is a statement about this window, not about the band. |
+| Done | Field coverage, window counts and outcome coverage measured read-only from a scratchpad copy (sha256 440df62c...66b4) and recorded in the T-598 pre-registration. |
+| Not done | No resolution of September outcomes; no state-field backfill. Not in scope for T-598 (Hard Rule 11). |
+| Cross-references | GG-164, GG-170, GG-320, T-583, T-598. |
+
+</details>
