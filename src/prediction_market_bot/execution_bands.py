@@ -12,7 +12,7 @@ Inspired by HFT time-horizon principle:
   - Longer horizon (T1/T2/T3): model complexity scales with available compute time
 
 Band summary (ADR-0010 Kelly fractions):
-  T1 — Multi-day:    Full LR+Platt (78 feat); PIPE-02; Kelly 0.10
+  T1 — Multi-day:    Full LR+Platt (MLB: 18 feat measured, T-597 D4); PIPE-02; Kelly 0.10
   T2 — Same-day:     Injury overlay on T1; PIPE-05; Kelly 0.13
   T3 — Pre-tip:      Momentum signal only; PIPE-06; Kelly 0.07
   T4 — In-play:      Poisson game-state; PIPE-07 (real-time infra required); Kelly 0.20
@@ -150,7 +150,7 @@ class BandConfig:
 BAND_CONFIGS: dict[ExecutionBand, BandConfig] = {
     ExecutionBand.T1_MULTI_DAY: BandConfig(
         band=ExecutionBand.T1_MULTI_DAY,
-        model_class="full_lr_platt",         # LR+Platt, 78 features, qualitative enrichment
+        model_class="full_lr_platt",         # LR+Platt; MLB measured 18 features (T-597 D4), 78 was NBA-era design figure
         max_compute_ms=30_000,               # 30s — full pipeline; batched; irrelevant to edge
         execution_sla_s=3600,                # 1 hour — execution timing immaterial at this horizon
         kelly_fraction=0.0,                   # ADR-0048 (2026-07-29, supersedes ADR-0040's 0.061): GG-135 found MAIN's real variance alone (independent of edge sign) produces ~100%/yr kill-switch trip probability at any positive Kelly; zeroed pending edge-conditional reactivation (ADR-0048 lookup table). DS sign-off: operator 2026-07-29. Evaluations continue to log for research; only sizing is zero.

@@ -57,3 +57,13 @@ Reading against the horizon doctrine (ADR-0068): T3 is a shallowest-tree cell (o
 Caveat: the 30s median shows the *compute* is fast enough for a speed band; what is missing is a poll rate and order path that would use it. Whether T3 should be rebuilt to earn its band, or reassigned, is an operator decision -> drafted in D5, not applied.
 
 Doc drift found: `EXECUTION_BANDS.md` lines 240-244 say T2/T3 cron lines are "commented out until Phase 7 activation"; both are live on the VPS. T3 also reports weights of 0.10 (line 222) while code is 0.0 (ADR-0048).
+
+## D4 — T1 tree: 18 features, not 78
+
+**Measured:** the production T1 MLB model (`mlb-v1-a1c25470`, `models/mlb_v1_model_meta.json` on the VPS) has `feature_count: 18`, all quantitative, **0 qualitative**: `b2b_flag, ba_l10, bb_rate_l10, days_rest, h_l10_mean, hr_rate_l10, is_home_game, k_rate_l10, obp_l10, opp_runs_allowed_l10, opp_sp_bb9_l5, opp_sp_era_l5, opp_sp_is_known, opp_sp_k9_l5, ops_l10, park_factor_hits, slg_l10, team_id`. The live run confirms it: `run_mlb_paper_trade.py` logs "18 features | thresholds=[1, 2]" on every run. LR + per-threshold Platt, trained 2026-06-24 (ADR-0004). Note `ba_l10_shrunk` (ADR-0047) is in the feature CSV but is **not** in the trained model's 18 — the shrinkage does not reach the model (registered below).
+
+**History of the 78:** first appears in commit `b1d3110` (2026-05-29) in `EXECUTION_BANDS.md`, `STRATEGY_OVERVIEW.md` and the `execution_bands.py` comments as "78 features (31 quant + 47 qual), QS-2026-05-28-002" — the NBA experiment model (EXP-008/009/010, all NBA, still say 78 accurately). It described NBA, written before any MLB model existed. The MLB T1 model was trained 2026-06-24 with 18. So **it was never true of MLB T1**; it stopped describing the live system the day the pool switched to MLB. Nobody re-derived it; ADR-0068 and CLAUDE.md inherited it.
+
+**Corrected (restating docs only; no ADR Decision section touched):** `EXECUTION_BANDS.md` (3 places + table row), `STRATEGY_OVERVIEW.md` (2), `execution_bands.py` (2 comments; no behavior change, parses clean).
+**Not corrected — outside my ownership, see gaps:** `CLAUDE.md:111` ("full 78-feature pipeline"), and ADR-0068's context. NBA-specific `run_exp0xx.py` and `train_and_save_model.py` correctly describe the NBA model and are left alone.
+Also stale in the same table (out of D4 scope): T1 Kelly shown as 0.25; code is 0.0 (ADR-0048).
