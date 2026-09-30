@@ -664,3 +664,4 @@
 | 2026-09-30T01:09:00Z | T-591 | CLOSED — merge confirmed, HEAD (bb49cdb) is ancestor of origin/main — pre-game feature architecture SPEC + summary; NFL remainder underpowered vs n* |
 | 2026-09-30T05:01:43Z | T-593; no GG/ADR claimed | NFL ingestion allowlist widen (40.2 finding): retain priced+present nflverse fields, backfill retrievable weeks, no model wiring; STANDARD |
 | 2026-09-30T05:02:17Z | T-594 (verify at run time); no GG/ADR | STANDARD — 41.x pregame MLB model: matrix characterisation, pre-registration, fit on train/val, one-shot holdout via T-583 harness; new src module + tests + EXP + prereg + results only; trades nothing |
+| 2026-09-30T05:02:59Z | T-595; GG-321+ (claimed at run time); no ADR | STANDARD — 41.x provenance preservation: land 40.3, snapshot perishable VPS record, forward-stamp T4 model_identity, fix claim re-check hole (D0-D4) |
