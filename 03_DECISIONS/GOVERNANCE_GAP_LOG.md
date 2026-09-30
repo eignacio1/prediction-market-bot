@@ -3469,3 +3469,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-318, GG-317, GG-316, GG-228, T-588. |
 
 </details>
+
+### GG-320 — T4M-PROJ fails ADR-0068 criterion C5: a stripped three-scalar tree is filed in a band whose measured cadence (~60s) does not pay for the stripping, and the latency thesis that licensed it measured NOT SUPPORTED
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-320 |
+| Category | Band misfiling — shallow without fast (C5, ADR-0068 PROPOSED) |
+| What was found | T4M-PROJ (the only ACTIVE cell in the registry) evaluates `p_hits_gte_threshold(h_so_far, ab_remaining, ba_l10, threshold)`: three scalar inputs plus the threshold, no pitcher, park, weather, lineup, score or leverage input. Its stripping was licensed by the EXECUTION_BANDS.md clause that sub-second execution is the edge. The pipeline polls on a ~60s cycle; BAND_ASSIGNMENT_FRAMEWORK.md § P3 independently records the T5 kill-switch SLA as 60s, "12x too slow". T-569 tested the latency premise and returned NOT SUPPORTED (current feature set). |
+| Why it matters | The cell's tree depth was justified by an assumed speed advantage that was never measured and, when measured, was not found. A cell that is shallow without being fast is misfiled, not optimized. |
+| Scope of this entry | Registered by T-592 at the start of the run so the number is reserved. The full 92-cell C5 table (which other cells share this mechanism, and how many are UNKNOWN because unbuilt) is in the T-592 results summary; a follow-up entry will be added there only for further distinct misfiled mechanisms. |
+| Not done here | No cell reassigned, demoted, activated or deactivated. No sizing or kelly_fraction touched. T-569's verdict is not relabeled: it is a statement about the current feature set, not a permanent property of the band. |
+| Suggested resolution | Operator decision, with DECISION_LOG entry + DS sign-off: either refile T4M-PROJ to the band its cadence supports and deepen the tree accordingly (ADR-0068 corollary: more structure, not automatically more speed), or produce a measured execution advantage. Blocked on ADR-0068 sign-off. |
+| Cross-references | ADR-0068 (PROPOSED), ADR-0014, T-569, T-583, GG-318, GG-319, T-592. |
+
+</details>
