@@ -662,3 +662,4 @@
 | 2026-09-30T00:53:30Z | T-592, GG-320+ (claimed at run time), ADR-0068 (operator-drafted, stays PROPOSED) | STANDARD — 40.1 band horizon doctrine: land operator-directed doctrine drafts, docs cross-check, C5 audit across 92 cells (report only), register misfiled-cell gaps |
 | 2026-09-30T01:08:38Z | T-591 | MERGED: NO — branch `session/20260930T005221Z-pregame-feature-architecture` awaiting merge — T-591 pre-game feature architecture SPEC + summary; NFL remainder ~215 rows vs n* 2,610 (~8%), underpowered. (commit `cf9056a`) |
 | 2026-09-30T01:09:00Z | T-591 | CLOSED — merge confirmed, HEAD (bb49cdb) is ancestor of origin/main — pre-game feature architecture SPEC + summary; NFL remainder underpowered vs n* |
+| 2026-09-30T05:01:43Z | T-593; no GG/ADR claimed | NFL ingestion allowlist widen (40.2 finding): retain priced+present nflverse fields, backfill retrievable weeks, no model wiring; STANDARD |
