@@ -3489,3 +3489,46 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | ADR-0068 (PROPOSED), ADR-0014, T-569, T-583, GG-318, GG-319, T-592. |
 
 </details>
+
+---
+
+### GG-321 — The only evidence that could attribute the 13 T4M-PROJ epoch-12 process windows (VPS git reflog and `t4-mlb` journal) is perishable, host-local and was not preserved anywhere in the repo
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-321 |
+| Category | Evidence preservation: provenance record held only in expiring host state (T-592 limitation, T-595 D1) |
+| What was found | The T-592 provenance allowlist cites, per window, a journal `Started t4-mlb.service` line, a VPS `git reflog HEAD` line and a cycle-log session extent. The reflog is subject to git's default 90-day reachable-entry expiry (W01's citation ages out ~2026-10-29) and the journal to journald retention/vacuum; both live on one VPS and neither had been copied into the repo. At capture (2026-09-30) neither had rolled: reflog spans 2026-05-29 onward, journal 2026-06-27 onward. |
+| Why it matters | If the record expires, the allowlist's citations become unverifiable and the windows can never be re-attributed. The loader alone only checks that citation text is non-empty, so it would keep passing after the evidence was gone. |
+| Done (T-595 D1) | Read-only snapshot committed at `05_RESEARCH_EXPERIMENTS/provenance/snapshot_2026-09-30/` (full HEAD reflog, full journal, 12 cited blobs, all-session cycle-log extents, sha256 MANIFEST with host/time/commands). `scripts/verify_provenance_snapshot.py` re-derives every window from the snapshot alone: 13/13 validate, with tamper tests. |
+| Not done | The 200 MB cycle log itself is not copied (extents only). `pregame_mlb_*.json` inputs and the VPS working-tree state at each start remain unrecoverable (T-592 L1/L2). The allowlist is NOT applied, wired to any counter, or accepted for historical rows; that needs operator sign-off. No row was touched (GG-228). |
+| Suggested resolution | Operator decides whether the allowlist is ever applied. Independently, snapshot any future window citations at the time they are made. |
+| Cross-references | GG-318, GG-319, GG-228, T-592, T-595. |
+
+</details>
+
+---
+
+### GG-322 — `claim_session.sh` runs its ID-collision check once, before the claim commit; the push-retry loop rebases onto other sessions' claims and re-pushes without re-verifying uniqueness
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-322 |
+| Category | Claim protocol: check-then-act race (GG-162 family; T-595 D3) |
+| What was found | `check_id_collision` runs once, before the claim row is committed. If the push is rejected, the loop does `git fetch` + `git pull --rebase` (union-merging whatever claim rows landed meanwhile) and pushes again with no re-check. A range that became taken during the retry window is pushed anyway. Wave 40 produced two blocks both recorded as T-592 (claimed 2026-09-30T00:53:29Z and 00:53:30Z; one had lost a race for T-591, released it and re-claimed). Whether that specific duplicate arose through this retry path or a manual re-claim is not established by the evidence; the code path is confirmed to lack the re-check either way. |
+| Why it matters | Two sessions can hold one T-number, and results, commits and gap entries then attribute to the wrong block. |
+| Done (T-595 D3) | Collision re-verification is unconditional on every push attempt, including after any rebase; a taken ID aborts the claim and un-does the local claim commit. Tested. The T-592 duplicate is recorded in SESSION_CLAIMS naming both blocks; T-592 is NOT renumbered. |
+| Not done | This is detection at claim time, not atomic reservation (GG-162 remains open for GG-numbers). |
+| Cross-references | GG-162, GG-236, GG-256, T-592, T-595. |
+
+</details>
