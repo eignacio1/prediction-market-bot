@@ -86,6 +86,12 @@ C4, C6, C7, C8 are sport-agnostic and do not change when new sports are added. C
 
 **The bands are not pre-decided time-horizon thresholds. The model computation determines which decision-tree bucket a bet routes to.**
 
+*Reconciliation with `EXECUTION_BANDS.md` (2026-09-30).* That document defines each band by a horizon
+(T1 = 12–48h, and so on) and this one says horizons are not pre-decided. Both are correct once the terms are
+separated: **horizon is the property that determines how deep a tree may be; routing is the runtime decision
+about which tree a given bet is evaluated under.** A bet's routing is computed; a band's permitted depth is
+structural. See ADR-0068.
+
 A bet that fires during a live game does not automatically belong to T4. The model evaluates available information — time remaining, score state, player stats, market price — and that computation determines which decision tree applies and therefore which band the bet executes on. Multiple bands can fire on the same market in the same game window. A bet in the third quarter might resolve to T1 (stale pregame model still dominates), T4 (live Bayesian update carries the signal), or both (CONFIRM/FADE protocol applies). The math decides.
 
 This framing has a direct architectural implication: **if the bot works as designed, one game — not one night of games, one game — produces approximately 1,000 bet evaluations by itself.** And it produces those 1,000 evaluations within the capital constraint, whether that ceiling is $500, $1,000, or $1M. The architecture must fit this. Capital sizing, kill switches, and decision routing cannot assume a small, discrete set of pre-scheduled bet events. They must be dynamically agnostic — operating per bucket, approaching per bet.
@@ -96,7 +102,33 @@ Kill switches follow the same logic: a band-level kill switch (e.g., T4 budget e
 
 **Current band status (which sub-bands are ACTIVE/BLOCKED/dark, per sport) lives in `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry — not here.** That inventory changes often (activations, EXP results, ADR-gated promotions) and this file does not track state (see "Gate structure" below). Before touching any T4 code, read that section first — NBA's `t4_execution_engine.py` and MLB's `t4_mlb_execution_engine.py` are separate files with separate registries, separate ADRs, and separate activation status; conflating them is a recurring, logged failure mode (GG-061).
 
-The longer the time horizon, the more complex the decision tree (more data sources, more interaction effects, more model inputs). T1 is the simplest — historical rolling stats and rest factors. T4/T5 are the most complex — live Bayesian updates, real-time score state, within-game momentum, market microstructure. This complexity gradient is intentional and governs activation sequencing: simpler bands are activated first, complex bands after their decision trees are calibrated.
+**The horizon doctrine (operator, 2026-09-30 — restated and corrected; canonical text in ADR-0068).**
+The bands are organized the way a quant fund organizes strategies: **decision-tree depth is governed by
+decision horizon.** A short horizon buys less time to compute, so the tree is stripped and execution speed
+carries the edge; a long horizon buys time to condition on matchup, personnel, venue, weather and
+qualitative factors, so the tree is deep and estimation quality carries the edge.
+
+**The longer the horizon, the DEEPER the tree.** T1 (12–48h) is the deepest — the full 78-feature pipeline.
+T4/T5 (in-play) are the shallowest — a Bayesian update or two arithmetic operations. *An earlier version of
+this paragraph asserted the reverse and contradicted both `EXECUTION_BANDS.md` and the implementation; it is
+corrected here.*
+
+**The test that makes this checkable — a band's shallowness must be paid for in speed.** Stripping a decision
+tree is only licensed by a measured execution advantage at that horizon. **A cell that is shallow without
+being fast is misfiled, not optimized.** T4M-PROJ is the standing example: a ~60s polling cycle running a
+three-scalar binomial, i.e. a speed-band decision tree at a slow-band cadence. T-569 measured the latency
+thesis that licensed the stripping and returned **NOT SUPPORTED (current feature set)**.
+
+**Horizon is not throughput.** Evaluation rate says how often we look; horizon says how fast the underlying
+information changes. A cell firing thousands of evaluations per game against markets that move on discrete
+events minutes apart is a long-horizon cell with a high poll rate — and is entitled to a deep tree.
+
+**Build sequencing (operator directive, 2026-09-30): pre-game first.** The widest horizon is where the
+matchup/sport/player/team/external/qualitative architecture can actually be piped in, and where evidence
+accrues at a countable rate — pre-game markets resolve once per game and are roughly independent across
+games, whereas in-play rows are serially correlated within a game and inflate n without inflating
+information. Build the deep tree at the widest horizon first, then carry that granularity inward. The north
+star remains that level of granularity at **every** arm.
 
 ### Venue architecture
 

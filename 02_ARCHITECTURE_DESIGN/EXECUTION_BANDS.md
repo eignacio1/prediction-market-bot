@@ -69,6 +69,39 @@ Applied to prediction markets:
 
 The same principle governs Kelly fraction: shorter horizons use simpler, less-calibrated signals, so position sizes are reduced to reflect lower model confidence.
 
+### Amendment — 2026-09-30 (operator restatement; canonical text in ADR-0068)
+
+The principle above is correct and is retained. Three clauses were missing, and their absence let a
+misfiled cell run for an entire MLB season without contradiction.
+
+**A. Shallowness must be paid for in measured speed.** The text above licenses a stripped tree wherever
+"sub-second execution IS the edge" — but never required that the sub-second execution be *demonstrated*.
+The T4 pipeline has never been sub-second: it polls on a ~60s cycle, and P3 of
+`BAND_ASSIGNMENT_FRAMEWORK.md` already records the T5 kill-switch SLA as 60s, "12x too slow." The tree was
+stripped on a latency premise the architecture did not satisfy. **T-569 tested that premise directly and
+returned NOT SUPPORTED (current feature set).**
+
+> **The rule, stated as a test: a band's decision-tree depth must be justified by its decision horizon and
+> paid for by a measured execution advantage. A cell that is shallow without being fast is misfiled, not
+> optimized.**
+
+The corollary matters as much as the rule: the remedy for a misfiled cell is **not more speed**. At a 60s
+cadence there is ample time to condition on pitcher, park, lineup, score state and leverage. T4's headroom
+is in **structure**, and the stripping there was inherited rather than chosen.
+
+**B. Horizon is not throughput.** Evaluation rate is how often the system looks; horizon is how fast the
+underlying information changes. T4S11 fires thousands of evaluations per game, but the markets it prices
+move on discrete events (at-bats) that arrive minutes apart. High poll rate, long horizon. **Band membership
+keys on decision horizon, never on evaluation count.**
+
+**C. Build sequencing — widest horizon first.** The matchup/sport/player/team/external/qualitative feature
+architecture is piped in at pre-game, where it exists, is stable, and has a context window wide enough to
+evaluate. Pre-game also accrues evidence at a countable rate: markets resolve once per game and are roughly
+independent across games, where in-play rows are serially correlated within a game and inflate n without
+inflating information (this is why the T4 A/B harness built in T-583 clusters by game). Establish the deep
+tree at the widest horizon, then carry that granularity inward toward the shorter bands. The north star is
+that granularity at **every** arm.
+
 ---
 
 ## Band Definitions
@@ -292,9 +325,9 @@ The arb strategies share the band infrastructure (pipelines, VPS cron, C5) with 
 
 **Registry:** `src/prediction_market_bot/execution_bands.py` — `BAND_REGISTRY` singleton. All strategies A–K must be registered in `BAND_REGISTRY` before deployment. Unregistered strategies cannot be activated.
 
-### Four-Criterion Test (C1–C4)
+### Five-Criterion Test (C1–C5)
 
-Before assigning a strategy to a band, all four criteria must pass:
+Before assigning a strategy to a band, all five criteria must pass:
 
 | Criterion | Test | Fail condition |
 |-----------|------|---------------|
@@ -302,6 +335,7 @@ Before assigning a strategy to a band, all four criteria must pass:
 | **C2 — SLA achievable** | Can a bet be submitted before the execution SLA expires, given venue API latency? | `venue_api_p90_ms + compute_ms > sla_ms` for target band |
 | **C3 — Signal exists** | Does the strategy have a validated signal for this band's time horizon? | No signal or signal is untested at this horizon |
 | **C4 — Evidence validated** | Has the band assignment been confirmed by a registered experiment (EXP-NNN)? | No EXP result; hypothesis unvalidated |
+| **C5 — Depth justified by horizon** (ADR-0068) | Is the decision-tree depth consistent with the band's decision horizon, and — where the tree is stripped — is the execution advantage that licenses the stripping **measured**, not assumed? | Tree is shallow relative to the horizon with no measured latency advantage. The cell is misfiled. |
 
 A strategy passes C1–C2 (feasibility) before C3–C4 (evidence). A strategy may be SKELETON if it passes C1–C2 but is pending C3–C4 evidence.
 

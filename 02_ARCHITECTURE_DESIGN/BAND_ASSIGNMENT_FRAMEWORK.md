@@ -71,7 +71,7 @@ This document's "Current Band Registry — All 11 Strategies" table and all P1�
 
 ### P2: Band Assignment Criteria
 
-A strategy qualifies for assignment to band Tx if ALL four criteria are met:
+A strategy qualifies for assignment to band Tx if ALL five criteria are met:
 
 | Criterion | Definition | Test |
 |-----------|-----------|------|
@@ -79,6 +79,7 @@ A strategy qualifies for assignment to band Tx if ALL four criteria are met:
 | **C2 — SLA achievable** | `venue.api_latency_ms` + compute_ms + order_submission_ms ≤ `BandConfig.execution_sla_s × 1000` | Per venue; verified against VenueBandConstraint |
 | **C3 — Signal exists** | There is a meaningful signal to compute at this time horizon | Defined signal source; not "we'll add data later" |
 | **C4 — Evidence basis** | An EXP or backtest validates the signal quality at this horizon | EXP-NNN reference required; "theoretical" is not sufficient for ACTIVE status |
+| **C5 — Depth justified by horizon** (ADR-0068, 2026-09-30) | Decision-tree depth is consistent with the band's decision horizon; a stripped tree is licensed only by a **measured** execution advantage | Shallow tree + no measured latency advantage = misfiled cell. Assumed speed does not satisfy C5. Horizon is how fast the information changes, never evaluation count. |
 
 **Partial qualification — SKELETON status:**  A strategy may be registered in a band at SKELETON status if C1–C3 are met but C4 (evidence) is absent. SKELETON status means: code exists; pipeline runs; decisions are logged but not executed. Promotion from SKELETON → ACTIVE requires C4 evidence.
 

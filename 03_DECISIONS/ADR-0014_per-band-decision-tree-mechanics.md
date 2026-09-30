@@ -7,6 +7,7 @@
 **Approval required:** DS (Earl Ignacio) sign-off before this document is ACCEPTED  
 **Supersedes:** Scatter of decision-tree detail across ADR-0010, ADR-0013, execution_bands.py, game_state_model.py, execution_bands_orchestrator.py  
 **Supplements:** ADR-0010 (Kelly fractions), ADR-0013 (T4 band budget), ADR-0011 (Phase 8 paper scope)  
+**Supplemented by:** ADR-0068 (2026-09-30) — states the *principle* behind the per-band trees specified here (depth governed by horizon; stripping licensed only by measured speed) and adds criterion C5. This ADR says what each band computes; ADR-0068 says why they differ and how to check a cell is filed in the right band.  
 **Related:** GG-007 (T4_MIN_DELTA_P uncalibrated), GG-009 (taker fee not in edge), T-131 (fee-adjusted edge ADR)
 
 ---
