@@ -653,3 +653,4 @@
 | 2026-09-29T05:42:49Z | T-586 | CLOSED — merge confirmed, HEAD (898de08) is ancestor of origin/main — absent-attribute costing study, doc-only |
 | 2026-09-30T00:14:09Z | T-588, GG-318+ | STANDARD — 39.2 evidence boundary: pool census by evidence class, is_countable_evidence predicate (unwired), band-monitor delta; register findings (GG-317 update) |
 | 2026-09-30T00:14:49Z | T-589, ADR-0067 (conditional); GG: none (gaps go in results summary for 39.2) | STANDARD — 39.1 ledger durability: atomic paper_trader _save, save-cost + write-amplification measurement, mandatory model_identity at write boundary; ADR only if D3 demands; no GGL/DECISION_LOG writes |
+| 2026-09-30T00:42:26Z | T-589 | MERGED: NO — branch `session/20260930T001343Z-t4-ledger-durability` awaiting merge — T-589 ledger durability: atomic _save, save-cost bench, ADR-0067 PROPOSED, model_identity mandatory (branch-only, NOT deploy-safe). (commit `c858265`) |
