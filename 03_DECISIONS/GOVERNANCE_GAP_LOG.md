@@ -3423,6 +3423,49 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why this matters | Row counts in this pool now overstate usable evidence by about 36x. Any band monitor or n-count that counts NFL T1 rows without filtering `model_identity` will read a large clean_n that means nothing. The rows are attributable (D1) but not model evidence. Re-running the script re-opens new rows; whether it de-duplicates against still-open tickers is UNVERIFIED. |
 | Not done here | Nothing was quarantined, deleted or reclassified (out of scope; changing pool contents is an operator call). The 42 GG-302 rows remain quarantined and were not used. A pre-run backup of the pool exists on the VPS: `logs/paper_portfolio_t1_nfl_game_market.pre_t587_handrun_20260929.json`. |
 | Suggested resolution | Operator decides: (a) quarantine all `model_identity` STUB rows from every n-count, keyed on `runtime_git_sha`/`run_id`; (b) require an explicit flag for STUB runs; (c) verify re-run de-duplication before any schedule. |
+| Census (T-588, 2026-09-30) | Read-only census of the six live VPS pool files (copies; sha256 recorded). Only one pool contains any STUB row: NFL T1 game-market, open_positions 824 = 802 STUB + 22 EXP-027 LR; closed 20 = all EXP-027 LR. Every other pool row is UNATTRIBUTED (model_identity absent or literal UNKNOWN): MLB T1 `paper_portfolio_mlb.json` 468 closed / 17 open / 16 rejected, all absent, epochs 1-8; MLB T4 `paper_portfolio_mlb_t4.json` closed 3,923 = 2,994 absent + 929 UNKNOWN, open 63 UNKNOWN, rejected 2,000 UNKNOWN; NBA T1 158 closed and NBA T4 2,895 closed, all absent. Rows carrying a real run_id: 802 (the STUB rows); zero anywhere else, including the 20 closed EXP-027 rows. Full tables in the T-588 results summary. |
+| Mechanism confirmed (T-588) | A STUB row with a valid `logic_epoch` passes `is_clean_for_band()` because that predicate reads only the stamped epoch. Fix path is the new unwired predicate `is_countable_evidence()` in `logic_epoch.py`; nothing counts with it yet. Status stays OPEN. |
 | Cross-references | GG-316 (provenance that makes these rows identifiable), GG-302, GG-255, GG-267, T-587. |
+
+</details>
+
+---
+
+### GG-318 — The T4M-PROJ writer stamps the literal string `UNKNOWN` as `model_identity` on every post-stamp row (2,992 rows at epoch 12): the writer class has no `PROVENANCE`, so provenance was added to the schema but never populated for the band that carries the G6 evidence
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-318 |
+| Category | Provenance gap: field present, value empty (T-588 census finding) |
+| What was found | In `paper_portfolio_mlb_t4.json`: open_positions 63/63, rejected_positions 2,000/2,000 and closed_positions 929 carry `model_identity` = `UNKNOWN`, all at logic_epoch 12. A further 765 closed epoch-12 rows have the field absent (written before the stamp existed). `paper_trader.py` writes `approval.get("model_identity") or "UNKNOWN"`, so a forecaster without a `PROVENANCE` attribute yields UNKNOWN. None of these rows carries a real `run_id`. |
+| Why this matters | Under any fail-closed evidence predicate every T4M-PROJ row is UNATTRIBUTED, so the band's countable evidence is zero until provenance is established for it by named, dated, evidenced runs. The absence is the finding. It must not be backfilled (GG-228). |
+| Not done here | No row was touched. No writer was edited (`paper_trader.py` is owned by 39.1). |
+| Suggested resolution | Operator decides. Preferred route: a provenance-established allowlist of runs, evidenced from git history and audit events, plus a `PROVENANCE` on the T4M-PROJ forecaster going forward. |
+| Cross-references | GG-317, GG-316, GG-267, GG-228, T-588. |
+
+</details>
+
+---
+
+### GG-319 — The T4 resolved ledger the band monitor reads for T4M-PROJ has no `model_identity` (or any run-provenance) column: provenance is dropped when positions are derived into the ledger, so the monitor cannot see evidence class even where the pool row has it
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-319 |
+| Category | Derived-store provenance loss (T-588 census finding) |
+| What was found | `t4_mlb_resolved_ledger.jsonl`: 3,923 of 3,923 rows lack `model_identity`. Schema is band, position_id, forecast_id, kalshi_ticker, player_name, player_id, threshold, direction, game_date, entered_at, resolved_at, model_p, mip, vig, edge, outcome, pnl, size_usd, actual_hits, logic_epoch, approval_commit. `run_band_monitor.py` loads T4M-PROJ from this file, so any evidence-class filter applied there reads all rows as UNATTRIBUTED regardless of the source pool row. Also observed: the 20 closed NFL EXP-027 rows carry `model_identity` but no `run_id`, so run provenance may also be dropped on close (UNVERIFIED, not diagnosed). |
+| Not done here | Ledger not modified or regenerated. Joining back to the pool by position_id to recover the field was NOT done: it would be derivation without established provenance for the 2,994 absent-field rows. |
+| Suggested resolution | Operator decides: carry provenance fields into the ledger at write time going forward; treat existing rows per the GG-318 allowlist route. |
+| Cross-references | GG-318, GG-317, GG-316, GG-228, T-588. |
 
 </details>
