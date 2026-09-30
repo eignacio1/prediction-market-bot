@@ -652,3 +652,4 @@
 | 2026-09-29T05:42:27Z | T-587 | CLOSED — merge confirmed, HEAD (846164e) is ancestor of origin/main — NFL run provenance landed; hand-run 802 STUB rows (GG-317) |
 | 2026-09-29T05:42:49Z | T-586 | CLOSED — merge confirmed, HEAD (898de08) is ancestor of origin/main — absent-attribute costing study, doc-only |
 | 2026-09-30T00:14:09Z | T-588, GG-318+ | STANDARD — 39.2 evidence boundary: pool census by evidence class, is_countable_evidence predicate (unwired), band-monitor delta; register findings (GG-317 update) |
+| 2026-09-30T00:24:37Z | T-588 | MERGED: NO — branch `session/20260930T001333Z-evidence-boundary` awaiting merge — T-588 (39.2): unwired fail-closed is_countable_evidence(); census; T4M-PROJ clean_n 1694->0 computed; GG-317 updated, GG-318/319 registered (commit `d837096`) |
