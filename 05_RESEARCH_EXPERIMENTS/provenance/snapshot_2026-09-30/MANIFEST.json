@@ -1,0 +1,125 @@
+{
+ "schema": "provenance_snapshot_manifest/1",
+ "task": "T-595 / Wave 41 D1",
+ "status": "READ-ONLY EVIDENCE \u2014 do not edit, regenerate or prune. Verify with scripts/verify_provenance_snapshot.py.",
+ "captured_utc_start": "2026-09-30T05:06:05Z",
+ "captured_utc_end": "2026-09-30T05:06:17Z",
+ "host": {
+  "hostname": "earlgrey",
+  "ssh_alias": "prediction-market-vps",
+  "repo": "/opt/prediction-market-bot",
+  "vps_HEAD_at_capture": "6d2996298c03f103626c4dfae128a2def23ac397"
+ },
+ "purpose": "Preserve the perishable record cited by the inert T4M-PROJ provenance allowlist (T-592/Wave 40.3) before VPS git reflog / journald prune it (W01 reflog line ages out ~2026-10-29).",
+ "read_only_note": "Every command below only reads. No service was restarted/reloaded/reconfigured, no log or journal rotated/truncated, nothing written on the VPS. GIT_OPTIONAL_LOCKS=0 set on git commands.",
+ "commands": {
+  "vps_git_reflog_HEAD_full.txt": "ssh prediction-market-vps \"cd /opt/prediction-market-bot && GIT_OPTIONAL_LOCKS=0 git reflog show HEAD --date=iso --format='%H %gd | %gs'\"  (whole HEAD reflog, 643 lines, verbatim, newest first)",
+  "vps_journal_t4-mlb_full.txt": "ssh prediction-market-vps \"journalctl -u t4-mlb --no-pager -o short-iso-precise\"  (entire retained unit journal, verbatim; earliest retained entry 2026-06-27T18:45:13Z)",
+  "vps_git_blob_ids.txt": "ssh prediction-market-vps 'cd /opt/prediction-market-bot; for s in <12 cited shas>; do printf \"%s %s\\n\" $s $(GIT_OPTIONAL_LOCKS=0 git rev-parse $s:src/prediction_market_bot/run_t4_mlb_live.py); done'",
+  "blobs/run_t4_mlb_live.py.<sha>": "ssh prediction-market-vps \"cd /opt/prediction-market-bot && GIT_OPTIONAL_LOCKS=0 git show <sha>:src/prediction_market_bot/run_t4_mlb_live.py\"  (12 distinct commits covering 13 windows; each file's git object id verified equal to vps_git_blob_ids.txt)",
+  "vps_cycle_log_session_extents.json": "ssh prediction-market-vps \"cd /opt/prediction-market-bot && nice -n 19 python3 -c '<stream logs/t4_mlb_cycle_log.jsonl; per session_id: min ts, max ts, row count>'\"  (all 115 sessions; the raw 201,875,395-byte cycle log is NOT copied, only extents)",
+  "vps_host_and_cyclelog_fingerprint.txt": "ssh prediction-market-vps \"hostname; git rev-parse HEAD; stat -c '%s bytes mtime=%y' logs/t4_mlb_cycle_log.jsonl; sha256sum logs/t4_mlb_cycle_log.jsonl\"  (taken after the extents read; log mtime 04:41:07Z precedes the capture, i.e. the file was unchanged during it)"
+ },
+ "not_captured": [
+  "the full cycle log (200 MB, still on the VPS and append-only)",
+  "pregame_mlb_*.json inputs (limitation L2/G-D in the T-592 summary; not commit-pinned anywhere)",
+  "VPS working-tree state at each process start (limitation L1; unrecoverable)"
+ ],
+ "files": [
+  {
+   "path": "blobs/run_t4_mlb_live.py.0bc269ebad9c98f51c6a483352a14bc2077fb997",
+   "bytes": 82336,
+   "sha256": "04c2dcfda56e929a5927b4fd91839aef3e2d7504ee7ac4d479aa37fb576edb40"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.14091b3fdf9a5cd2778897c6a360441ecc546aea",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.1da5865c1f560a3bd3e102c967a841292d6926d8",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.20142502da74408b5f60149bd73652651d071c9f",
+   "bytes": 82336,
+   "sha256": "04c2dcfda56e929a5927b4fd91839aef3e2d7504ee7ac4d479aa37fb576edb40"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.2387814b14f913d88b245026d5c4a8259c533f22",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.484b405eebda97ce5586ee2914bc90b8ec3c01cb",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.687bf9e0894a278d1af1623beba836dd133b6d14",
+   "bytes": 82616,
+   "sha256": "73de44822635ab3989d628f0a2615909ca8f397214fe208b5d092157b2ce9438"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.7493ecd14ccf41a369efeb8e094f96c6f85191a0",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.7f6e0c78b65acfd5b345eb814041f6959bf0b3bd",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.93efca2a55613531563602a4e1913de454180d32",
+   "bytes": 82336,
+   "sha256": "04c2dcfda56e929a5927b4fd91839aef3e2d7504ee7ac4d479aa37fb576edb40"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.cbd09ae8594d404977efbc0e473d2aa4cca60a5c",
+   "bytes": 82336,
+   "sha256": "04c2dcfda56e929a5927b4fd91839aef3e2d7504ee7ac4d479aa37fb576edb40"
+  },
+  {
+   "path": "blobs/run_t4_mlb_live.py.e71fda5fbc115ec40ce2d491ed5f863876025e7e",
+   "bytes": 87670,
+   "sha256": "1a6485d2b33410ab2368e085d7c860e6480aa180342cd7ac106a30033ae337fc"
+  },
+  {
+   "path": "capture_finished_utc.txt",
+   "bytes": 21,
+   "sha256": "f79bd2daf33d6798ba91588b5b8411599b324a54144e84b7852d3e9b5f3b8ca6"
+  },
+  {
+   "path": "capture_started_utc.txt",
+   "bytes": 21,
+   "sha256": "ced7d863a891374f6ab245799c92efb7f68a9411a89b94b9bf4f41d487ccb28b"
+  },
+  {
+   "path": "vps_cycle_log_session_extents.json",
+   "bytes": 16651,
+   "sha256": "4a2fd77a6479f807732c02f23ddc576e42fa8d78ff6beaa9638adceea4041085"
+  },
+  {
+   "path": "vps_git_blob_ids.txt",
+   "bytes": 984,
+   "sha256": "e904a6a9e89e6280c6ed7f0d4ae1a25dc6ff75e45e342f327235b2a3de4e1bff"
+  },
+  {
+   "path": "vps_git_reflog_HEAD_full.txt",
+   "bytes": 70053,
+   "sha256": "4535cfa27214c27b728f5a92e545b57ce0001cc87b0664739a7cedfe3e87033d"
+  },
+  {
+   "path": "vps_host_and_cyclelog_fingerprint.txt",
+   "bytes": 207,
+   "sha256": "6404a2f2a7243b7d66c5bcefb74748e9820c543a988581532f9ff522d45a39da"
+  },
+  {
+   "path": "vps_journal_t4-mlb_full.txt",
+   "bytes": 280916,
+   "sha256": "25b9970ffa7852d07419fd2248e031c2acf8f2675d22d86d81a73c004998ae50"
+  }
+ ]
+}
