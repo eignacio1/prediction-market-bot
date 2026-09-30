@@ -671,3 +671,4 @@
 | 2026-09-30T05:27:33Z | T-595 | CLOSED — T-595: 40.3 landed, VPS provenance snapshotted (13/13 verify), T4M-PROJ model_identity stamped forward-only, claim re-check fixed. (commit `a367019`) |
 | 2026-09-30T05:27:48Z | T-595 | CLOSED — merge confirmed, HEAD (af302a2) is ancestor of origin/main — D0-D4 complete; see T595 results summary |
 | 2026-09-30T05:36:56Z | T-596; GG via results summary only; no ADR | EXP-029: frozen EXP-028 model vs Kalshi KXMLBHIT market gate (D0-D6) |
+| 2026-09-30T05:37:16Z | T-597; no GG/ADR (gaps via results summary) | 42.x reality reconciliation: NFL capture proof, T3 measurement, registry-to-reality, 78-feature correction, change-control drafts (STANDARD; one deliverable = results summary) |
