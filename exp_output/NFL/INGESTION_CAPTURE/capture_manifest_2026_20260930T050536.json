@@ -1,0 +1,66 @@
+{
+  "season": 2026,
+  "datasets": {
+    "schedule": {
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv",
+      "retrieved_at_utc": "2026-09-30T05:05:36.011185+00:00",
+      "http_status": 200,
+      "bytes": 2182348,
+      "sha256": "62032e264613124b16ba8fd43871ad3d1d372459e5acb8d91d3f9f7056094e91",
+      "rows": 272,
+      "columns": [
+        "game_id",
+        "season",
+        "game_type",
+        "week",
+        "gameday",
+        "home_team",
+        "away_team",
+        "home_score",
+        "away_score",
+        "home_rest",
+        "away_rest",
+        "temp",
+        "wind",
+        "roof",
+        "surface",
+        "away_qb_id",
+        "away_qb_name",
+        "home_qb_id",
+        "home_qb_name",
+        "away_coach",
+        "home_coach",
+        "referee",
+        "_retrieved_at_utc",
+        "_source_url"
+      ],
+      "file": "schedule_ext_2026_20260930T050536.parquet"
+    },
+    "team_stats": {
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_2026.csv",
+      "retrieved_at_utc": "2026-09-30T05:05:36.412490+00:00",
+      "http_status": 200,
+      "bytes": 40384,
+      "sha256": "8e4ec146327dd4af1ce01b1d10b57182725c9e44a20744ebb33561b454faa42a",
+      "rows": 96,
+      "columns": [
+        "season",
+        "week",
+        "season_type",
+        "game_id",
+        "team",
+        "opponent_team",
+        "off_epa",
+        "attempts",
+        "carries",
+        "sacks_suffered",
+        "def_sacks",
+        "def_qb_hits",
+        "penalties",
+        "_retrieved_at_utc",
+        "_source_url"
+      ],
+      "file": "team_stats_ext_2026_20260930T050536.parquet"
+    }
+  }
+}
