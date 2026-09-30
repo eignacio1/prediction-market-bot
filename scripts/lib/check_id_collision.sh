@@ -45,13 +45,17 @@
 # without a live remote. claim_session.sh sources this and calls the function
 # before appending a new claim row.
 #
-# check_id_collision <range> <repo_root>
+# check_id_collision <range> <repo_root> [exclude_row]
+#   exclude_row (GG-322/T-595): a SESSION_CLAIMS.md line, matched whole-line and
+#   exactly, ignored by Rule B. claim_session.sh passes the claimant's OWN
+#   already-committed row when it re-verifies after a rebase, so the check sees
+#   every OTHER session's claims without colliding with itself.
 #   Prints one "COLLISION: <id> already appears in <file>" line per hit to
 #   stderr. Returns 0 (no collision) or 1 (at least one collision found).
 # ============================================================================
 
 check_id_collision() {
-  local range="$1" repo_root="$2"
+  local range="$1" repo_root="$2" exclude_row="${3:-}"
   local ids
   ids="$(grep -oE '(T|GG|ADR)-[0-9]+' <<< "$range" | sort -u || true)"
   [ -z "$ids" ] && return 0
@@ -116,7 +120,7 @@ check_id_collision() {
     # id/range column (field 3 of a "| ts | ids | focus |" row), not a
     # mention anywhere else.
     if [ -f "$claims_file" ] && \
-       awk -F'|' 'NF>=3{print $3}' "$claims_file" | grep -qE "(^|[^0-9A-Za-z])${id}([^0-9]|\$)"; then
+       awk -F'|' -v skip="$exclude_row" '$0 != skip && NF>=3{print $3}' "$claims_file" | grep -qE "(^|[^0-9A-Za-z])${id}([^0-9]|\$)"; then
       echo "COLLISION: ${id} already appears in ${claims_file#"$repo_root"/} (active claim)" >&2
       hit=1
     fi

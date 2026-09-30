@@ -54,7 +54,8 @@ if ! check_id_collision "$RANGE" "$REPO_ROOT"; then
 fi
 
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-printf '| %s | %s | %s |\n' "$STAMP" "$RANGE" "$FOCUS" >> "$CLAIMS"
+ROW="$(printf '| %s | %s | %s |' "$STAMP" "$RANGE" "$FOCUS")"
+printf '%s\n' "$ROW" >> "$CLAIMS"
 git add "$CLAIMS"
 git commit --quiet -m "Session claim: ${RANGE} — ${FOCUS}"
 
@@ -64,11 +65,24 @@ for attempt in 1 2 3 4 5; do
     exit 0
   fi
   echo "… push rejected — a concurrent session pushed first. Rebasing (union-merges the claim) and retrying ($attempt/5)."
-  git fetch --quiet origin main
+  git fetch --quiet origin '+refs/heads/*:refs/remotes/origin/*' || git fetch --quiet origin main
   git pull --quiet --rebase origin main || {
     echo "⚠️  Rebase hit a conflict outside SESSION_CLAIMS.md. Resolve manually, then: git push origin HEAD:main" >&2
     exit 1
   }
+  # GG-322 / T-595: the check above ran ONCE, before our commit. The rebase we
+  # just did may have brought in another session's claim for the same ID (that is
+  # exactly what a rejected push means), and union-merge keeps both rows. Re-verify
+  # unconditionally on EVERY retry, ignoring only our own row. On a collision,
+  # take our claim back out (path-scoped to the claims file) and refuse.
+  if ! check_id_collision "$RANGE" "$REPO_ROOT" "$ROW"; then
+    echo "❌ Refusing claim: while the push was retrying, another session claimed an ID in \"$RANGE\" (see COLLISION lines above). Withdrawing our local claim; nothing was pushed." >&2
+    git reset --soft HEAD~1
+    git restore --staged -- "$CLAIMS"
+    grep -vxF -- "$ROW" "$CLAIMS" > "$CLAIMS.tmp.$$" || true
+    mv "$CLAIMS.tmp.$$" "$CLAIMS"
+    exit 1
+  fi
 done
 echo "⚠️  Could not push the claim after 5 attempts. Your claim commit is local — push it manually before proceeding." >&2
 exit 1
