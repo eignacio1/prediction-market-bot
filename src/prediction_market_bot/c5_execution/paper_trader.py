@@ -145,6 +145,12 @@ class PortfolioReconciliationError(RuntimeError):
     beyond RECONCILE_TOLERANCE_USD under strict reconciliation (GG-034)."""
 
 
+class MissingModelIdentityError(ValueError):
+    """Raised by open_position when approval["model_identity"] is absent, blank,
+    or the literal "UNKNOWN". A position row must name the model that produced
+    it (T-589 D6; GG-267 provenance). There is deliberately no default."""
+
+
 def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
@@ -571,6 +577,16 @@ class PaperTrader:
             if size <= 0 or direction == "PASS":
                 return True, {}
 
+            # T-589 D6: model_identity is mandatory at the write boundary. Checked
+            # before any venue order or ledger mutation, so a caller that omits it
+            # fails loudly instead of persisting a row labelled "UNKNOWN".
+            _mi = approval.get("model_identity")
+            if not isinstance(_mi, str) or not _mi.strip() or _mi.strip().upper() == "UNKNOWN":
+                raise MissingModelIdentityError(
+                    f"open_position requires a real approval['model_identity'] "
+                    f"(got {_mi!r}); refusing to write an unlabelled position"
+                )
+
             entry_cost = size  # cost = size (we pay mid_price per $1 contract)
 
             model_p    = float(approval.get("model_p", 0.0))
@@ -704,7 +720,7 @@ class PaperTrader:
                 # for a real model label. A legacy row predating this field
                 # entirely (no key at all) reads the same "UNKNOWN" on load
                 # via .get() at render time — see web_dashboard.py.
-                "model_identity": approval.get("model_identity") or "UNKNOWN",
+                "model_identity": approval["model_identity"].strip(),
                 # GG-302: runtime run-provenance (see run_provenance.py). Opt-in
                 # via approval["run_provenance"]; absent -> literal "UNKNOWN",
                 # never a static marker. approval_commit above is an epoch

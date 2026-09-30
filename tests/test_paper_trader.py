@@ -59,6 +59,7 @@ def _make_approval(size: float, direction: str = "YES", **extra) -> dict:
         "approved_direction": direction,
         "risk_eval_id": "RISK-TEST001",
         "forecast_id": "FCST-TEST001",
+        "model_identity": "TEST-MODEL",
         **extra,
     }
 
