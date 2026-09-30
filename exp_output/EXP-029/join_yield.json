@@ -1,0 +1,45 @@
+{
+ "window": [
+  "2026-08-01",
+  "2026-09-30"
+ ],
+ "rows_attempted": 36760,
+ "rows_kept": 2006,
+ "games_kept": 404,
+ "dates_kept": 53,
+ "dates_in_archive_window": 60,
+ "dropped_by_reason": {
+  "no authoritative ticker->player_id mapping (not evaluated by T4 / not in outcome store)": {
+   "rows": 8400,
+   "games": null
+  },
+  "threshold != 1 (model target is P(h>=1))": {
+   "rows": 25310,
+   "games": null
+  },
+  "no snapshot before scheduled first pitch": {
+   "rows": 189,
+   "games": 39
+  },
+  "in T-577 forbidden-cohort manifest (harness refuses)": {
+   "rows": 406,
+   "games": null
+  },
+  "latest pre-first-pitch snapshot older than 60 min": {
+   "rows": 421,
+   "games": 112
+  },
+  "multiple matrix rows same player/date (doubleheader or dup) - not disambiguated": {
+   "rows": 9,
+   "games": null
+  },
+  "no matrix row for (player_id, ticker date)": {
+   "rows": 19,
+   "games": null
+  }
+ },
+ "outcome_crosscheck_vs_T421_store": {
+  "n_compared": 291,
+  "n_disagree": 0
+ }
+}
