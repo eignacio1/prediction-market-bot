@@ -84,6 +84,7 @@ ok=False is a terminal failure — caller MUST trigger the kill switch (NFR-03).
 
 from __future__ import annotations
 
+import hashlib
 import io
 import time
 import uuid
@@ -154,6 +155,38 @@ _NFL_RAW_TEAM_STATS_SOURCE_COLUMNS = [
     "passing_epa", "rushing_epa",
 ]
 
+# T-593 (40.2 finding): opt-in EXTENDED schemas that stop discarding fields
+# nflverse already delivers. Explicit allowlists, named field by field -- NOT
+# a passthrough, so an upstream schema change stays a loud ValueError here
+# rather than a silent schema change downstream. The default (core) schemas
+# above are untouched: data_contracts.py mirrors them exactly and every
+# existing reader sees identical frames unless it opts in.
+# Each field is tied to a T-586 attribute (05_RESEARCH_EXPERIMENTS/
+# RESULTS_SUMMARIES/T586_absent_attribute_pricing.md, Payload-field tier).
+# Deliberately EXCLUDED from games.csv: moneyline/spread/total/odds columns
+# (market-derived -> circular against the benchmark, T-586 s5) and
+# result/total (outcome columns; derivable from the retained scores).
+_NFL_SCHEDULE_EXTENDED_FIELDS: list[str] = [
+    "temp", "wind", "roof", "surface",          # N1 weather
+    "away_qb_id", "away_qb_name",               # N2 starting QB
+    "home_qb_id", "home_qb_name",
+    "away_coach", "home_coach",                 # N3 head coach
+    "referee",                                  # N4 referee
+]
+_NFL_SCHEDULE_EXTENDED_COLUMNS: list[str] = (
+    _NFL_SCHEDULE_COLUMNS + _NFL_SCHEDULE_EXTENDED_FIELDS
+)
+
+_NFL_TEAM_STATS_EXTENDED_FIELDS: list[str] = [
+    "attempts", "carries",                      # N5 raw pace inputs
+    "sacks_suffered", "def_sacks", "def_qb_hits", "penalties",   # N5/N6
+]
+
+
+def _team_stats_columns(include_splits: bool, include_extended: bool) -> list[str]:
+    cols = _NFL_TEAM_STATS_SPLIT_COLUMNS if include_splits else _NFL_TEAM_STATS_COLUMNS
+    return cols + _NFL_TEAM_STATS_EXTENDED_FIELDS if include_extended else list(cols)
+
 
 class NFLIngestionClient:
     """Fetch NFL schedule and team-efficiency data from nflverse-data.
@@ -184,6 +217,10 @@ class NFLIngestionClient:
         self._snapshot_id = snapshot_id
         self._delay = request_delay
         self._last_request_ts: float | None = None
+        # T-593: per-URL fetch provenance (retrieval timestamp, HTTP status,
+        # byte count, sha256 of the response body) for the most recent
+        # successful GET of each URL. Read by capture_extended().
+        self.last_fetch_meta: dict[str, dict[str, Any]] = {}
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -221,6 +258,14 @@ class NFLIngestionClient:
                     return 404, None
                 resp.raise_for_status()
                 df = pd.read_csv(io.StringIO(resp.text), low_memory=False)
+                body = resp.content if isinstance(resp.content, (bytes, bytearray)) else b""
+                self.last_fetch_meta[url] = {
+                    "url": url,
+                    "retrieved_at_utc": self._utc_now_iso(),
+                    "http_status": 200,
+                    "bytes": len(body),
+                    "sha256": hashlib.sha256(body).hexdigest(),
+                }
                 return 200, df
             except requests.HTTPError as exc:
                 code = exc.response.status_code if exc.response is not None else None
@@ -237,23 +282,30 @@ class NFLIngestionClient:
     # Normalization
     # ------------------------------------------------------------------
 
-    def _normalize_schedule_df(self, raw: pd.DataFrame) -> pd.DataFrame:
-        missing = [c for c in _NFL_SCHEDULE_COLUMNS if c not in raw.columns]
+    def _normalize_schedule_df(
+        self, raw: pd.DataFrame, include_extended: bool = False,
+    ) -> pd.DataFrame:
+        cols = _NFL_SCHEDULE_EXTENDED_COLUMNS if include_extended else _NFL_SCHEDULE_COLUMNS
+        missing = [c for c in cols if c not in raw.columns]
         if missing:
             raise ValueError(f"nflverse games.csv missing expected columns: {missing}")
-        df = raw[_NFL_SCHEDULE_COLUMNS].copy()
+        df = raw[cols].copy()
         df["gameday"] = pd.to_datetime(df["gameday"], errors="coerce").dt.date
         return df
 
     def _normalize_team_stats_df(
         self, raw: pd.DataFrame, include_splits: bool = False,
+        include_extended: bool = False,
     ) -> pd.DataFrame:
-        missing = [c for c in _NFL_RAW_TEAM_STATS_SOURCE_COLUMNS if c not in raw.columns]
+        needed = _NFL_RAW_TEAM_STATS_SOURCE_COLUMNS + (
+            _NFL_TEAM_STATS_EXTENDED_FIELDS if include_extended else []
+        )
+        missing = [c for c in needed if c not in raw.columns]
         if missing:
             raise ValueError(f"nflverse stats_team_week CSV missing expected columns: {missing}")
-        df = raw[_NFL_RAW_TEAM_STATS_SOURCE_COLUMNS].copy()
+        df = raw[needed].copy()
         df["off_epa"] = df["passing_epa"] + df["rushing_epa"]
-        return df[_NFL_TEAM_STATS_SPLIT_COLUMNS if include_splits else _NFL_TEAM_STATS_COLUMNS]
+        return df[_team_stats_columns(include_splits, include_extended)]
 
     # ------------------------------------------------------------------
     # Public API — schedule (rest days + home/away live here)
@@ -263,8 +315,15 @@ class NFLIngestionClient:
         self,
         seasons: list[int] | None = None,
         session_id: str | None = None,
+        include_extended: bool = False,
     ) -> tuple[bool, pd.DataFrame]:
         """Fetch the full nflverse schedule (games.csv), one row per game.
+
+        include_extended=True (T-593) additionally retains the explicit
+        _NFL_SCHEDULE_EXTENDED_FIELDS (weather, QB, coach, referee); default
+        False keeps the original IF-C1-C2 schema. NOTE point-in-time: for an
+        unplayed game these fields are whatever nflverse holds at retrieval
+        (weather/referee null until close to kickoff; QB may be a projection).
 
         Includes home_rest/away_rest and home_team/away_team — nflverse
         pre-computes rest days for every scheduled game including unplayed
@@ -297,7 +356,7 @@ class NFLIngestionClient:
             return False, pd.DataFrame(columns=_NFL_SCHEDULE_COLUMNS)
 
         try:
-            df = self._normalize_schedule_df(raw)
+            df = self._normalize_schedule_df(raw, include_extended=include_extended)
         except ValueError as exc:
             self._logger.log(
                 COMPONENT, "schedule_fetch_error",
@@ -325,8 +384,13 @@ class NFLIngestionClient:
         season: int,
         session_id: str | None = None,
         include_splits: bool = False,
+        include_extended: bool = False,
     ) -> tuple[bool, pd.DataFrame]:
         """Fetch per-team-game EPA stats for one season.
+
+        include_extended=True (T-593) additionally retains
+        _NFL_TEAM_STATS_EXTENDED_FIELDS (attempts, carries, sacks_suffered,
+        def_sacks, def_qb_hits, penalties); default False is unchanged.
 
         include_splits=True (T-581) additionally retains passing_epa /
         rushing_epa; default False keeps the original IF-C1-C2 schema.
@@ -357,7 +421,7 @@ class NFLIngestionClient:
                 payload={"season": season, "note": "season has not started / no games completed yet"},
                 session_id=session_id, snapshot_id=self._snapshot_id, severity="WARNING",
             )
-            return True, pd.DataFrame(columns=_NFL_TEAM_STATS_COLUMNS)
+            return True, pd.DataFrame(columns=_team_stats_columns(include_splits, include_extended))
 
         if status != 200 or raw is None:
             self._logger.log(
@@ -368,7 +432,9 @@ class NFLIngestionClient:
             return False, pd.DataFrame(columns=_NFL_TEAM_STATS_COLUMNS)
 
         try:
-            df = self._normalize_team_stats_df(raw, include_splits=include_splits)
+            df = self._normalize_team_stats_df(
+                raw, include_splits=include_splits, include_extended=include_extended,
+            )
         except ValueError as exc:
             self._logger.log(
                 COMPONENT, "team_stats_fetch_error",
@@ -389,8 +455,11 @@ class NFLIngestionClient:
         seasons: list[int],
         session_id: str | None = None,
         include_splits: bool = False,
+        include_extended: bool = False,
     ) -> tuple[bool, pd.DataFrame]:
         """Fetch team-game EPA stats for multiple seasons and concatenate.
+
+        include_extended (T-593): forwarded to fetch_team_stats(); default False.
 
         include_splits (T-581): forwarded to fetch_team_stats(); default False.
 
@@ -404,13 +473,81 @@ class NFLIngestionClient:
         frames: list[pd.DataFrame] = []
         any_error = False
         for season in seasons:
-            ok, df = self.fetch_team_stats(season, session_id, include_splits=include_splits)
+            ok, df = self.fetch_team_stats(
+                season, session_id, include_splits=include_splits,
+                include_extended=include_extended,
+            )
             if not ok:
                 any_error = True
             elif not df.empty:
                 frames.append(df)
         if not frames:
             return not any_error, pd.DataFrame(
-                columns=_NFL_TEAM_STATS_SPLIT_COLUMNS if include_splits else _NFL_TEAM_STATS_COLUMNS
+                columns=_team_stats_columns(include_splits, include_extended)
             )
         return not any_error, pd.concat(frames, ignore_index=True)
+
+    # ------------------------------------------------------------------
+    # Public API — extended capture (T-593)
+    # ------------------------------------------------------------------
+
+    def capture_extended(
+        self,
+        season: int,
+        out_dir: Any,
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """Fetch the EXTENDED schedule + team stats for one season and persist
+        them, with per-source provenance, to out_dir.
+
+        Append-only: every call writes new files named with the retrieval
+        timestamp and never overwrites (nflverse files are mutable, rolling
+        snapshots -- weather/referee/QB values for an unplayed game change
+        between retrievals, so each retrieval is its own record). Each row
+        carries _retrieved_at_utc and _source_url. Returns (ok, manifest);
+        ok=False on any fetch failure (kill-switch semantics, as elsewhere).
+        This method captures only: it feeds no model and schedules nothing.
+        """
+        from pathlib import Path
+        import json
+
+        out = Path(out_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        ok_s, sched = self.fetch_schedule(
+            seasons=[season], session_id=session_id, include_extended=True)
+        ok_t, stats = self.fetch_team_stats(
+            season, session_id=session_id, include_extended=True)
+        if not (ok_s and ok_t):
+            return False, {"season": season, "ok_schedule": ok_s, "ok_team_stats": ok_t}
+
+        stats_url = NFLVERSE_TEAM_STATS_URL_TEMPLATE.format(season=season)
+        sources = {
+            "schedule": (NFLVERSE_GAMES_URL, sched),
+            "team_stats": (stats_url, stats),
+        }
+        manifest: dict[str, Any] = {"season": season, "datasets": {}}
+        for name, (url, df) in sources.items():
+            meta = self.last_fetch_meta.get(url)
+            if meta is None:  # e.g. 404 cold start: nothing was retrieved
+                manifest["datasets"][name] = {"url": url, "rows": 0, "note": "no source file"}
+                continue
+            stamp = meta["retrieved_at_utc"].replace(":", "").replace("-", "").split(".")[0]
+            path = out / f"{name}_ext_{season}_{stamp}.parquet"
+            if path.exists():
+                raise FileExistsError(f"refusing to overwrite capture: {path}")
+            df = df.copy()
+            df["_retrieved_at_utc"] = meta["retrieved_at_utc"]
+            df["_source_url"] = url
+            df.to_parquet(path)
+            manifest["datasets"][name] = {
+                **meta, "rows": len(df), "columns": list(df.columns), "file": path.name,
+            }
+        mpath = out / f"capture_manifest_{season}_{stamp}.json"
+        mpath.write_text(json.dumps(manifest, indent=2, default=str))
+        manifest["manifest_file"] = mpath.name
+        self._logger.log(
+            COMPONENT, "extended_capture_complete",
+            payload={"season": season, "manifest": mpath.name},
+            session_id=session_id, snapshot_id=self._snapshot_id, severity="INFO",
+        )
+        return True, manifest
