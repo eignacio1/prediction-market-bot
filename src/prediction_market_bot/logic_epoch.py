@@ -694,3 +694,64 @@ def is_clean_for_band(stamped_epoch: int | None, band: str) -> bool:
     if stamped_epoch is None:
         return False
     return stamped_epoch >= clean_epoch_floor_for_band(band)
+
+
+# ---------------------------------------------------------------------------
+# Evidence class (T-588 / GG-317). ADDITIVE and UNWIRED: nothing in the repo
+# counts with `is_countable_evidence()` yet. Which counters adopt it is an
+# operator decision. `is_clean_for_band()` above is unchanged.
+# ---------------------------------------------------------------------------
+
+EVIDENCE_MODEL = "MODEL_EVIDENCE"
+EVIDENCE_STUB = "STUB"
+EVIDENCE_UNATTRIBUTED = "UNATTRIBUTED"
+
+# `model_identity` prefixes registered as real, non-stub forecasters. An
+# identity that is not on this list is NOT assumed real: it is classified
+# UNATTRIBUTED (fail closed). Add an entry only with a citable source.
+REGISTERED_MODEL_IDENTITY_PREFIXES: tuple[str, ...] = (
+    "EXP-027 LR",  # nfl_exp027_adapter.PROVENANCE (T-531, HYP-012)
+)
+
+
+def evidence_class(row: object) -> str:
+    """Classify a pool row by its already-stamped `model_identity` only.
+
+    STUB: identity names a stub. UNATTRIBUTED: identity absent, empty,
+    non-string, the literal "UNKNOWN", or not on the registered-model list.
+    MODEL_EVIDENCE: identity starts with a registered real-model prefix.
+    Reads no other field and repairs nothing (GG-228).
+    """
+    if not isinstance(row, dict):
+        return EVIDENCE_UNATTRIBUTED
+    identity = row.get("model_identity")
+    if not isinstance(identity, str) or not identity.strip():
+        return EVIDENCE_UNATTRIBUTED
+    text = identity.strip()
+    if text.upper() == "UNKNOWN":
+        return EVIDENCE_UNATTRIBUTED
+    if "STUB" in text.upper():
+        return EVIDENCE_STUB
+    if text.startswith(REGISTERED_MODEL_IDENTITY_PREFIXES):
+        return EVIDENCE_MODEL
+    return EVIDENCE_UNATTRIBUTED
+
+
+def is_countable_evidence(row: object, band: str) -> bool:
+    """True iff `row` is epoch-clean for `band` AND MODEL_EVIDENCE.
+
+    Fails closed: any non-dict row, missing/non-int epoch, pre-floor epoch,
+    STUB, or UNATTRIBUTED row returns False. UNTAGGED additionally requires
+    `CURRENT_LOGIC_EPOCH`, mirroring `run_band_monitor.filter_clean`.
+    """
+    if not isinstance(row, dict):
+        return False
+    epoch = row.get("logic_epoch")
+    if isinstance(epoch, bool) or not isinstance(epoch, int):
+        return False
+    if band == "UNTAGGED":
+        if epoch != CURRENT_LOGIC_EPOCH:
+            return False
+    elif not is_clean_for_band(epoch, band):
+        return False
+    return evidence_class(row) == EVIDENCE_MODEL
