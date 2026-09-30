@@ -1,6 +1,6 @@
 # T-597 — Reality reconciliation (Wave 42.x)
 
-**Status:** IN PROGRESS (sections appended per deliverable). **Decisions logged:** n/a — GOVERNANCE_GAP_LOG / DECISION_LOG are owned by 42.2; gaps are listed under "GAPS FOUND — FOR REGISTRATION". Session-start protocol run in full: stub scan CLEAN, GG-id uniqueness OK, 113 OPEN gaps (132 headers = 132 status lines), Step 4 VPS health all green (t4-mlb active, cycle log age 0h, dashboard NRestarts=0, 0 oom-kills).
+**Status:** COMPLETE (D0-D6; D1 stopped at the configuration-vs-scheduling line, see D1). **Decisions logged:** n/a — GOVERNANCE_GAP_LOG / DECISION_LOG are owned by 42.2; gaps are listed under "GAPS FOUND — FOR REGISTRATION". Session-start protocol run in full: stub scan CLEAN, GG-id uniqueness OK, 113 OPEN gaps (132 headers = 132 status lines), Step 4 VPS health all green (t4-mlb active, cycle log age 0h, dashboard NRestarts=0, 0 oom-kills).
 
 ## D0 — Predecessors and sync
 | Item | Before | After |
@@ -83,3 +83,33 @@ Each cell verified independently on the VPS (2026-09-30):
 
 Why SHADOW and not ACTIVE/DARK: `CellStatus.SHADOW` is defined as "paper-evaluate this cell without betting", which is exactly the measured behavior. DARK means paused; these run daily. `citing_decision="ADR-0048"` (the zeroing). Each cell's `notes` carries "records reality, not promotion". Tests updated (`tests/test_market_type_registry.py`: T1 assertion and the allowed-status set); 48 pass, 243 across all registry-consuming tests. Any move toward ACTIVE would require formula-assertion coverage and is only drafted (D5).
 Not done: no generated coverage matrix in `02_ARCHITECTURE_DESIGN/` was regenerated from the registry (see gaps).
+
+## D6 — Summary of outcomes
+
+| D | Outcome |
+|---|---|
+| D0 | Nothing to land; SHAs recorded. |
+| D1 | **Not enabled.** The capture is one-shot code with no scheduler; enabling it is scheduling, which I judged over the configuration line and stopped at. Verified faithful by hand. Drafted as CC-597-A. |
+| D2 | T3 **MISFILED**: fast compute (median 30s, 0/3,058 SLA breaches) but one-scalar tree, 900s cadence, no order path. |
+| D3 | T1/T2/T3 -> SHADOW (records reality, not promotion). T4M-PROJ untouched. |
+| D4 | T1 = 18 features, 0 qualitative. "78" was an NBA-era figure (2026-05-29), never true of MLB. Restating docs corrected; no ADR Decision edited. |
+| D5 | CC-597-A..E drafted. Only CC-597-D is applied (D3); all others draft. |
+
+No production service restarted, no cron changed, no sizing/kelly touched, no GOVERNANCE_GAP_LOG / DECISION_LOG writes.
+
+## GAPS FOUND -- FOR REGISTRATION (42.2 to register)
+
+1. No scheduled NFL ingestion path or production caller of `capture_extended` exists.
+2. The only NFL capture parquet lives in an ended laptop worktree — at risk of loss.
+3. T-593 claim-log row says "MERGED: NO" though its code is on `origin/main`.
+4. `CLAUDE.md:111` still says "full 78-feature pipeline"; ADR-0068 context inherits the same figure (not my files; ADR Decision untouched).
+5. `ba_l10_shrunk` (ADR-0047) is in the feature CSV but **not** in the trained 18-feature model (trained 2026-06-24) — the shrinkage does not reach the model. Verify before anything relies on ADR-0047's activation.
+6. `EXECUTION_BANDS.md` still shows stale values beyond features: T1 Kelly 0.25 and T3 0.10 (code 0.0, ADR-0048), and says T2/T3 cron lines are commented out (both are live).
+7. T4M-PROJ is registered ACTIVE at kelly 0.0 (GG-320 question; CC-597-C).
+8. One T1 run logged "0 players in live MLB markets | 0 pairs" — undiagnosed.
+9. T3 polls every 900s against a 300s SLA and has no order path.
+10. `paper_portfolio_mlb.json` (T1 book) last written 2026-08-06: T1 has placed no bets for ~8 weeks (consistent with kelly 0.0, but worth stating as a fact).
+11. MEMORY_BANK "Compass OS Health" line exceeds 3000 chars.
+12. Q7 ledger-invariant caches are absent in fresh worktrees, so the check runs blind there.
+13. T-592 double-claim ambiguity (already recorded by T-595).
+14. No coverage-matrix regeneration from the registry after D3.
