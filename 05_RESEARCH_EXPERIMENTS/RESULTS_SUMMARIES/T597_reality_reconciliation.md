@@ -67,3 +67,19 @@ Doc drift found: `EXECUTION_BANDS.md` lines 240-244 say T2/T3 cron lines are "co
 **Corrected (restating docs only; no ADR Decision section touched):** `EXECUTION_BANDS.md` (3 places + table row), `STRATEGY_OVERVIEW.md` (2), `execution_bands.py` (2 comments; no behavior change, parses clean).
 **Not corrected — outside my ownership, see gaps:** `CLAUDE.md:111` ("full 78-feature pipeline"), and ADR-0068's context. NBA-specific `run_exp0xx.py` and `train_and_save_model.py` correctly describe the NBA model and are left alone.
 Also stale in the same table (out of D4 scope): T1 Kelly shown as 0.25; code is 0.0 (ADR-0048).
+
+## D3 — Registry corrections for `mlb_player_prop_hits` T1/T2/T3
+
+**This section RECORDS REALITY. Nothing here is a promotion, band reassignment, activation or deactivation.**
+
+Each cell verified independently on the VPS (2026-09-30):
+
+| Cell | Was | Now | Independent evidence |
+|---|---|---|---|
+| T1 | NOT_IMPLEMENTED | SHADOW | cron `0 11` `run_mlb_paper_trade.py`; recent runs log "players in live MLB markets" (73/70/32) and "Bets placed today: 0"; 18-feature model evaluates; `kelly_fraction=0.0` (ADR-0048); `paper_portfolio_mlb.json` last written 2026-08-06, 0 open positions |
+| T2 | NOT_IMPLEMENTED | SHADOW | cron `30 19` `run_t2_mlb_sameday.py`; 2026-09-29 report: t2_evaluated=4, scratches=3, live_game_skips=12, bets_placed=0; kelly 0.0 |
+| T3 | NOT_IMPLEMENTED | SHADOW | cron every 15 min; 3,058 reports; read-only, no order path (D2); kelly 0.0 |
+| T4M-PROJ | ACTIVE | **unchanged** | kelly 0.0 while registered ACTIVE ("only cell placing live bets") — that is the GG-320 question; drafted in D5, not touched |
+
+Why SHADOW and not ACTIVE/DARK: `CellStatus.SHADOW` is defined as "paper-evaluate this cell without betting", which is exactly the measured behavior. DARK means paused; these run daily. `citing_decision="ADR-0048"` (the zeroing). Each cell's `notes` carries "records reality, not promotion". Tests updated (`tests/test_market_type_registry.py`: T1 assertion and the allowed-status set); 48 pass, 243 across all registry-consuming tests. Any move toward ACTIVE would require formula-assertion coverage and is only drafted (D5).
+Not done: no generated coverage matrix in `02_ARCHITECTURE_DESIGN/` was regenerated from the registry (see gaps).
