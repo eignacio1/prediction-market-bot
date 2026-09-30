@@ -37,3 +37,23 @@ Spot check against nflverse, fetched fresh ~20 min after capture: schedule sha25
 
 **Why I stopped short of enabling it.** Every route to "on" crosses a line I was told not to cross: (a) a cron entry is new scheduling; (b) hooking `capture_extended` into `archive_market_prices.py` or its window modifies the price-capture path (standing DO NOT); (c) a manual VPS run is one more snapshot, not "on". The brief said that if I judged the line differently I should stop and say so — I judge that **there is no schedule to configure inside**, so enabling = scheduling. Operator decision needed; see D5 entry CC-B.
 Cost of waiting is real and grows: the source is a rolling, post-hoc snapshot, so pre-kickoff QB/weather/referee values are only obtainable by capturing *before* each kickoff. Each week without a pre-kickoff capture permanently loses that week's point-in-time state.
+
+## D2 — T3 (`mlb_player_prop_hits:T3`) measurement
+
+**Verdict: MISFILED (as a speed-paid-for shallow cell) — with one stated caveat on what "execution advantage" could mean here.**
+
+Evidence (VPS, `/opt/prediction-market-bot/logs`, measured 2026-09-30 ~04:00Z):
+
+| Test | Measured | Source |
+|---|---|---|
+| Cadence | every 15 min, 20:00-23:45Z and 00:00-03:45Z (32 runs/day); 3,058 report files since 2026-06-26 | crontab; `t3_mlb_*.json` |
+| Achieved end-to-end latency (scheduled minute -> report written) | median 30.1s, p95 96.4s, max 220.0s, **0 of 3,058 > 300s** | file mtime minus 15-min slot; upper bound (includes cron start + Python import + Kalshi fetch) |
+| SLA | 300s (`execution_bands.py` T3), met on every run | `BandConfig.execution_sla_s` |
+| Tree depth | 1 scalar comparison: `price_drift = current_mid - t1_mid` vs `MOMENTUM_THRESHOLD`; then a multiplier on the cached T1 edge. Inputs: T1 direction, T1 mid, T1 edge, live mid. No model, no features. | `run_t3_mlb_pretip.py:184-215` |
+| Order path | **None.** Docstring: "Read-only scan — never places orders." `kelly_fraction=0.0` (ADR-0048). Output is a JSON report only. | `run_t3_mlb_pretip.py:29,265` |
+| Execution advantage at horizon | **None measurable.** The SLA is met, but nothing executes; the 900s poll interval is 3x the 300s SLA the band claims its edge window needs. No latency-thesis measurement exists for T3 (T-569 measured T4M-PROJ only). | above |
+
+Reading against the horizon doctrine (ADR-0068): T3 is a shallowest-tree cell (one drift comparison) claiming a speed band's SLA, but its realized cadence is slow and it has no order path, so the shallowness is not paid for in execution speed. Latency is fine; there is simply nothing to be fast *at*. That is "shallow without being fast" in the operative sense -> MISFILED.
+Caveat: the 30s median shows the *compute* is fast enough for a speed band; what is missing is a poll rate and order path that would use it. Whether T3 should be rebuilt to earn its band, or reassigned, is an operator decision -> drafted in D5, not applied.
+
+Doc drift found: `EXECUTION_BANDS.md` lines 240-244 say T2/T3 cron lines are "commented out until Phase 7 activation"; both are live on the VPS. T3 also reports weights of 0.10 (line 222) while code is 0.0 (ADR-0048).
