@@ -711,6 +711,12 @@ EVIDENCE_UNATTRIBUTED = "UNATTRIBUTED"
 # UNATTRIBUTED (fail closed). Add an entry only with a citable source.
 REGISTERED_MODEL_IDENTITY_PREFIXES: tuple[str, ...] = (
     "EXP-027 LR",  # nfl_exp027_adapter.PROVENANCE (T-531, HYP-012)
+    # T4M-PROJ, FORWARD rows only (T-595 D2, Wave 41). Source: run_t4_mlb_live.T4M_PROJ_MODEL_IDENTITY,
+    # stamped only when ba_l10_shrunk actually fed p_hits_gte_threshold (ADR-0047 / APR-0025); the
+    # raw-fallback label T4M_PROJ_MODEL_IDENTITY_RAW_FALLBACK is deliberately NOT registered. This
+    # entry does NOT attribute any historical row: those carry "UNKNOWN"/no identity and stay
+    # UNATTRIBUTED. The inert T-592 provenance allowlist is a separate mechanism and is not applied.
+    "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
 )
 
 

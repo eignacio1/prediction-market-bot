@@ -209,6 +209,21 @@ _AB_BY_SLOT: dict[int, float] = {
 }
 
 
+# T-595 D2 (Wave 41): per-row model identity for T4M-PROJ. FORWARD ONLY: stamped on rows
+# opened from this commit on; no existing row is touched (GG-228). Two labels because the
+# pregame loader silently falls back to raw ba_l10 when `ba_l10_shrunk` is absent
+# (see _load_pregame_context), and a single constant would then mislabel those rows.
+# Only the first is on `logic_epoch.REGISTERED_MODEL_IDENTITY_PREFIXES`; the fallback
+# label is deliberately NOT registered, so such rows classify UNATTRIBUTED (fail closed).
+T4M_PROJ_MODEL_IDENTITY = "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)"
+T4M_PROJ_MODEL_IDENTITY_RAW_FALLBACK = "T4M-PROJ Binomial (ba_l10 RAW FALLBACK; ba_l10_shrunk absent, ADR-0047 not applied)"
+
+
+def t4m_proj_model_identity(shrunk_present: bool) -> str:
+    """Identity for a T4M-PROJ row, from whether ba_l10_shrunk actually drove p_t4."""
+    return T4M_PROJ_MODEL_IDENTITY if shrunk_present is True else T4M_PROJ_MODEL_IDENTITY_RAW_FALLBACK
+
+
 def measurement_stake_and_stratum(entry_price: float) -> tuple[float, float, str]:
     """ADR-0050 addendum §B/§C (2026-07-30): contract-capped flat measurement
     stake + pre-registered price stratum for a single T4M-PROJ bet.
@@ -450,6 +465,9 @@ def _load_pregame_context() -> tuple[dict[int, list[dict[str, Any]]], dict[str, 
             "p_t1":        float(fc.get("p_estimate", 0.5)),
             "ba_l10":      raw_ba_l10,
             "ba_l10_shrunk": float(_shrunk) if _shrunk is not None else raw_ba_l10,
+            # T-595 D2: records whether the value above is the real shrunk estimate or
+            # the raw fallback, so the row's model_identity can be stamped truthfully.
+            "ba_l10_shrunk_present": _shrunk is not None,
             "h_l10_mean":  float(fc.get("h_l10_mean") or 1.0),
         }
         by_player_id.setdefault(pid, []).append(ctx)
@@ -1282,6 +1300,8 @@ def _run_cycle(
         # GG-105/APR-0025/ADR-0047: shrunk value drives the live Binomial calc below;
         # raw ba_l10 is retained only for audit-log comparison (fallback to raw if absent).
         ba_l10_shrunk = market_ctxs[0].get("ba_l10_shrunk", ba_l10)
+        # Absent flag (ctx from an older loader) reads False: fail closed to the fallback label.
+        _shrunk_present = market_ctxs[0].get("ba_l10_shrunk_present", False)
         batting_slot = _slots.get(player_id, 0)
         ab_remaining = _compute_ab_remaining(ls.ab_so_far, ls.inning, batting_slot)
 
@@ -1635,7 +1655,9 @@ def _run_cycle(
                         "gross_edge": gross_edge, "band": "T4M-PROJ",  # T-253
                         "entry_price_paid": round(entry_price, 4),  # ADR-0050 addendum §C
                         "price_stratum": price_stratum,             # ADR-0050 addendum §C
-                        "contracts": contracts}                     # ADR-0050 addendum §B
+                        "contracts": contracts,                     # ADR-0050 addendum §B
+                        # T-595 D2: mandatory at open_position under T-589 D6; forward rows only
+                        "model_identity": t4m_proj_model_identity(_shrunk_present)}
 
             if t4_deployed_usd + approved_size > t4_band_budget:
                 logger.info(

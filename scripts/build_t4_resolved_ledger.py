@@ -142,6 +142,11 @@ def build_ledger(portfolio_path: Path) -> tuple[list[dict], int]:
             # T4M-PROJ, not just the T1/T2/T3 loader (which copies via dict(p)).
             "logic_epoch": p.get("logic_epoch"),
             "approval_commit": p.get("approval_commit"),
+            # T-595 D2: pass the pool row's model_identity through UNCHANGED — no default,
+            # no relabel, no repair (GG-228). Absent stays None, "UNKNOWN" stays "UNKNOWN";
+            # logic_epoch.evidence_class() classifies both UNATTRIBUTED. Closes GG-319's drop
+            # for rows written from now on; the monitor itself is not changed.
+            "model_identity": p.get("model_identity"),
         })
 
     n_open = len(data.get("open_positions", []))
