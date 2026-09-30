@@ -15,3 +15,4 @@
 - One cleanup of stale drafts is blocked by a lock on the shared folder. I left it for you.
 
 **T-598 (T4 structure test).** We built a slightly smarter version of the in-game hit-probability model and tested it once on 40 games it had never seen. Result: no detectable difference from the current model (the estimate leaned slightly worse, but the margin of error covers zero). It also failed a check against fitting pure noise. This says nothing about whether the band should change. No real money at risk. A new gap (GG-323) notes we lack recorded game-state data and outcomes after mid-August to test deeper versions.
+- T-596 (auto): EXP-029 (T-596): frozen EXP-028 model scored once vs KXMLBHIT market on 215 games -> HARMFUL (dBrier -0.0039).
