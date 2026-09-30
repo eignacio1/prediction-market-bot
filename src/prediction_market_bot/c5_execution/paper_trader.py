@@ -43,9 +43,11 @@ Kill switch:
 from __future__ import annotations
 
 import json
+import os
 import threading
 import time
 import uuid
+import warnings
 from contextlib import contextmanager
 from datetime import datetime, date, timezone
 from pathlib import Path
@@ -342,10 +344,61 @@ class PaperTrader:
             rejected = self._state.get("rejected_positions")
             if isinstance(rejected, list) and len(rejected) > MAX_REJECTED_POSITIONS:
                 self._state["rejected_positions"] = rejected[-MAX_REJECTED_POSITIONS:]
-            self._path.write_text(json.dumps(self._state, indent=2))
+            self._atomic_write_text(json.dumps(self._state, indent=2))
             return True
         except OSError:
             return False
+
+    def _atomic_write_text(self, text: str) -> None:
+        """Replace the ledger file with ``text`` atomically (T-589/D1).
+
+        A bare ``Path.write_text`` truncates the target first and then writes, so
+        a crash / OOM kill / full disk between the two leaves a truncated or empty
+        ledger. Here the bytes go to a temp file in the SAME directory (os.replace
+        raises OSError across filesystems, and /tmp is a different one on the VPS),
+        are flushed and fsync'd, and only then renamed over the target. The target
+        therefore always holds either the complete old state or the complete new
+        state. Mode and ownership of an existing target are carried over so the
+        replacement is not a silent permission change. Call only from inside the
+        existing flock critical section; the lock is not taken here.
+        """
+        target = self._path
+        tmp = target.with_name(f"{target.name}.tmp.{os.getpid()}.{uuid.uuid4().hex[:8]}")
+        try:
+            prior = os.stat(target)
+        except FileNotFoundError:
+            prior = None
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        try:
+            with os.fdopen(fd, "w") as fh:
+                if prior is not None:
+                    os.fchmod(fh.fileno(), prior.st_mode & 0o7777)
+                    try:
+                        os.fchown(fh.fileno(), prior.st_uid, prior.st_gid)
+                    except PermissionError:
+                        if (os.fstat(fh.fileno()).st_uid, os.fstat(fh.fileno()).st_gid) != (prior.st_uid, prior.st_gid):
+                            warnings.warn(
+                                f"{target}: could not preserve owner/group on atomic replace",
+                                RuntimeWarning, stacklevel=3,
+                            )
+                fh.write(text)
+                fh.flush()
+                os.fsync(fh.fileno())
+            os.replace(tmp, target)
+        except BaseException:
+            try:
+                os.unlink(tmp)
+            except FileNotFoundError:
+                pass
+            raise
+        try:  # persist the rename itself; best-effort (not all filesystems allow dir fsync)
+            dfd = os.open(target.parent, os.O_RDONLY)
+            try:
+                os.fsync(dfd)
+            finally:
+                os.close(dfd)
+        except OSError:
+            pass
 
     def ensure_persisted(self) -> None:
         """Write the portfolio file if it does not yet exist.
