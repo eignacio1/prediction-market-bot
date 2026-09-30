@@ -12,7 +12,7 @@ The frozen model cannot be shown to beat the market; on this sample it measurabl
 Scope: only tickers the live T4 process evaluated (~20% of threshold-1 archive tickers), ab>=1 population.
 
 ## D0 — predecessors landed
-origin/main 524c845 → a9c66a9; fb0587c is an ancestor. (Branch tip was 039b6bc; `git diff fb0587c tip -- src tests exp_output` empty.)
+Predecessor commit fb0587c is verified an ancestor of origin/main (a9c66a9 was the landing merge as recorded during the session; the pre-landing origin/main SHA is not re-verified here).
 
 ## D1 — extended matrix
 Original 132,184×45 sha256 `b2a845a6fb35cfc8c0ec7589524313aeabd20e2140a353409e984f44979114a4`;
@@ -21,9 +21,9 @@ extended 152,987×45 sha256 `13249f5459ccf29beb4a28a3bb4ef1df4d4bfb32da3488181bb
 Extension rows 2026-07-18..09-27 (20,804 rows / 970 games). Missingness is LOWER than baseline on every column
 that differs (ba_l10 family 0.9% vs 4.3%; opp_sp_* 5.9% vs 15.3%): early-season warm-up NaNs are absent late
 in the season. Nothing worsens, so the join is not invalidated.
-Overlap rows re-fetched from the source differ slightly (≤96 rows/column; 6 of 7 `ab` changes are 2026-07-17 box
-scores that were partial when the original was built; `park_factor_hits` drifts on 15,447 rows and is not a model
-feature). Original file is untouched; scored features come from the extended file for 2026-08+ rows only.
+Regeneration also rewrote some overlap rows (partial 2026-07-17 box scores; `park_factor_hits` drift, not a model
+feature); counts not re-verified in this summary. Original file is untouched; scored features come from the
+extended file for 2026-08+ rows only.
 
 ## D2 — join (real tickers; `join_yield.json`)
 Attempted 36,760 KXMLBHIT tickers (2026-08-01..09-30). Kept 2,006 rows / 404 games / 53 of 60 dates.
