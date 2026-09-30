@@ -179,3 +179,37 @@ Before implementing any Class A or B change:
 - [ ] Downstream links updated (interfaces, runbooks, linked artifacts)
 - [ ] No shadow changes (implementation must match documented change)
 - [ ] No conditional language left in any canonical register updated this session
+
+---
+
+## Drafted Change Entries — T-597 (Wave 42.x reality reconciliation)
+
+**STATUS: DRAFT. Not approved, not applied.** Evidence: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T597_reality_reconciliation.md`. Exception noted honestly: CC-597-D is already in the code (it records reality) and is listed here for ratification or reversal.
+
+### CC-597-A — Schedule the NFL widened N1-N6 capture (Class B; operator-approved cron addition)
+- **Change:** add a scheduled caller for `NFLIngestionClient.capture_extended(season, out_dir)` (currently no production caller, no cron) within the existing capture window, with parquet durably stored off the laptop worktree.
+- **Evidence:** D1 — capture works and matches nflverse when run by hand; nothing schedules it; the only parquet lives in an ended worktree. nflverse is a rolling snapshot, so point-in-time pre-kickoff values exist only if captured before kickoff.
+- **Effect:** append-only rows accrue per week; no feature is wired into any model; no sizing, order or model path changes.
+- **Reversal:** remove the cron entry; captured files are append-only and harmless to retain.
+
+### CC-597-B — T3 band assessment: MISFILED (Class A per "Band reassignment"; DS sign-off + ADR)
+- **Change (options, operator picks one):** (1) rebuild T3 to earn its band (sub-minute poll, an order path, its own latency measurement); (2) reassign the drift scan to a slower band consistent with its 15-min cadence and no-order design; (3) leave as SHADOW research.
+- **Evidence:** D2 — 3,058 runs, median 30s / p95 96s / max 220s, 0 breaches of the 300s SLA; one-scalar tree; read-only; 900s cadence; no latency thesis measured.
+- **Effect:** none until approved; T3 is at kelly 0.0 (ADR-0048), no capital involved.
+- **Reversal:** reinstate the current `BAND_REGISTRY` entry and `SHADOW` cell.
+
+### CC-597-C — T4M-PROJ status under GG-320 (Class A if demoted from ACTIVE; DS sign-off)
+- **Change (options):** keep ACTIVE and record that "ACTIVE" means "evaluating, sizing zero" ; or demote to SHADOW consistent with D3's treatment of T1/T2/T3; or reactivate sizing via the ADR-0048 edge-conditional table.
+- **Evidence:** registry note calls it "the only cell placing live bets today" while `kelly_fraction=0.0` (ADR-0048). T-569 returned NOT SUPPORTED on its latency thesis (a slow-cadence shallow tree, i.e. the same misfiling test T3 fails).
+- **Effect:** status/label only under the first two options; the third touches sizing and is out of this wave.
+- **Reversal:** restore `CellStatus.ACTIVE` (needs `T4M_PROJ` in `BANDS_WITH_FORMULA_ASSERTIONS`, which it is).
+
+### CC-597-D — Registry T1/T2/T3 prop-hits NOT_IMPLEMENTED -> SHADOW (Class B; ALREADY APPLIED, commit c31a005)
+- **Change:** three cells corrected to what cron runs. Records reality; not a promotion.
+- **Evidence:** D3 table (cron lines, daily reports, `bets_placed=0`, kelly 0.0).
+- **Effect:** status label only; `SHADOW` is not gated by formula assertions and changes no behavior.
+- **Reversal:** revert c31a005 (or set the three cells back to `NOT_IMPLEMENTED` and revert the two test lines).
+
+### CC-597-E — Any T1 SHADOW -> ACTIVE (Class A; NOT PROPOSED, precondition only)
+- **Change:** none drafted for execution. Preconditions: an ADR-0048 edge-conditional reactivation, `T1_MULTI_DAY` in `BANDS_WITH_FORMULA_ASSERTIONS`, and the undiagnosed "0 players matched" T1 run explained.
+- **Reversal:** n/a.
