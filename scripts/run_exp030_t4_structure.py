@@ -5,6 +5,7 @@
 Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP030_T4_STRUCTURE_PREREGISTRATION_2026-09-30.md
 """
 import argparse, json, sys
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -46,7 +47,7 @@ def load_rows(data_dir: Path, holdout: bool) -> list:
         rows.append({**r, "game_date": d, "game_id": t.split("-")[1], "p_incumbent": p,
                      "outcome": int(o["actual_hits"] >= r["threshold"]),
                      "resolution_source": "boxscore_rederived", "cohort_band": "T4M-PROJ",
-                     "logic_epoch": epoch_for_timestamp(r["ts"])})
+                     "logic_epoch": epoch_for_timestamp(datetime.fromisoformat(r["ts"].replace("Z", "+00:00")))})
     return rows
 
 
