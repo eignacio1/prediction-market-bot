@@ -13,3 +13,4 @@ Yes: do you want us to build a list of specific, proven-good runs so those recor
 The record-keeping for baseball bets never labels which model made them, so the evidence trail is thinner than it looks.
 
 *Full technical detail: see `SESSION_HANDOFF_20260930_0025.md` and `DECISION_LOG.md` for this date.*
+- T-591 (auto): T-591 pre-game feature architecture SPEC + summary; NFL remainder ~215 rows vs n* 2,610 (~8%), underpowered.
