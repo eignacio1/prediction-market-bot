@@ -1,0 +1,57 @@
+{
+ "n_train": 46514,
+ "n_val": 46528,
+ "forward_vs_B0_validation": {
+  "delta_brier": {
+   "mean": 0.00483988195921284,
+   "ci_low": 0.004215241130624345,
+   "ci_high": 0.005465882986347822,
+   "n_clusters": 2387,
+   "n_obs": 46528
+  },
+  "delta_logloss": {
+   "mean": 0.009932659377766075,
+   "ci_low": 0.008626971536335081,
+   "ci_high": 0.011241098466171488,
+   "n_clusters": 2387,
+   "n_obs": 46528
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "placebo_backward_postfilter_vs_B0_validation": {
+  "delta_brier": {
+   "mean": 0.004943256265634973,
+   "ci_low": 0.004319367898863018,
+   "ci_high": 0.005559319143568932,
+   "n_clusters": 2387,
+   "n_obs": 45120
+  },
+  "delta_logloss": {
+   "mean": 0.010130484514598644,
+   "ci_low": 0.008852494546233438,
+   "ci_high": 0.011392798365166486,
+   "n_clusters": 2387,
+   "n_obs": 45120
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "placebo_ratio_backward_over_forward": 1.0213588486854224,
+ "permutation_null_onesided": {
+  "delta_brier": {
+   "mean": -4.453645634265785e-05,
+   "ci_low": -0.0001332613569303338,
+   "ci_high": 4.373388974585077e-05,
+   "n_clusters": 2387,
+   "n_obs": 46528
+  },
+  "delta_logloss": {
+   "mean": -9.120461914681549e-05,
+   "ci_low": -0.0002713033596502611,
+   "ci_high": 9.303073574411439e-05,
+   "n_clusters": 2387,
+   "n_obs": 46528
+  },
+  "verdict": "NO DETECTABLE DIFFERENCE",
+  "leak_declared": false
+ }
+}
