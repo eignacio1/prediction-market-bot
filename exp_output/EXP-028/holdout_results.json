@@ -1,0 +1,96 @@
+{
+ "chosen_C": 10.0,
+ "n_holdout": 27732,
+ "n_games": 1414,
+ "holdout_base_rate": 0.5751117842203952,
+ "train_val_base_rate": 0.5816942886008469,
+ "brier_model": 0.23920115558637545,
+ "brier_B0": 0.24440154923514745,
+ "vs_B0": {
+  "delta_brier": {
+   "mean": 0.005200393648772019,
+   "ci_low": 0.004384202035831356,
+   "ci_high": 0.006005113895422859,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "delta_logloss": {
+   "mean": 0.010648132539984347,
+   "ci_low": 0.00897948002659408,
+   "ci_high": 0.012433625025439054,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "vs_B1": {
+  "delta_brier": {
+   "mean": 0.00364227248127161,
+   "ci_low": 0.0029285298263090516,
+   "ci_high": 0.004352862499802532,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "delta_logloss": {
+   "mean": 0.008397634797260696,
+   "ci_low": 0.006804905564166784,
+   "ci_high": 0.010009093626137675,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "B1_vs_B0": {
+  "delta_brier": {
+   "mean": 0.0015581211675004096,
+   "ci_low": 0.0002882693343552853,
+   "ci_high": 0.002814598555821611,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "delta_logloss": {
+   "mean": 0.00225049774272365,
+   "ci_low": -0.0004542369654046843,
+   "ci_high": 0.005025812377142683,
+   "n_clusters": 1414,
+   "n_obs": 27732
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "placebo_backward_vs_B0": {
+  "delta_brier": {
+   "mean": 0.008462529628343365,
+   "ci_low": 0.007656181487198157,
+   "ci_high": 0.00927054417799001,
+   "n_clusters": 1414,
+   "n_obs": 27259
+  },
+  "delta_logloss": {
+   "mean": 0.017247147802657604,
+   "ci_low": 0.015598284770958364,
+   "ci_high": 0.01893202820168978,
+   "n_clusters": 1414,
+   "n_obs": 27259
+  },
+  "verdict": "DEFENSIBLE_IMPROVEMENT"
+ },
+ "coef": {
+  "ba_l10_shrunk": -0.04583666774755379,
+  "slg_l10": -0.001495109220907439,
+  "obp_l10": 0.0249708775836499,
+  "h_l10_mean": 0.07691673240256523,
+  "k_rate_l10": -0.05650137791776222,
+  "bb_rate_l10": 0.02732074354603637,
+  "hr_rate_l10": 0.01087412793000894,
+  "ab_l10_mean": 0.20318491008282158,
+  "opp_runs_allowed_l10": 0.02428348985054043,
+  "opp_sp_era_l5": 0.019211405631565103,
+  "opp_sp_k9_l5": -0.06183871441722985,
+  "opp_sp_bb9_l5": -0.007691582942861725,
+  "opp_sp_missing": 0.0052479019103113655,
+  "is_home_game": -0.015586677782331313,
+  "days_rest": -0.004467359356130608,
+  "b2b_flag": 0.02831420332007264
+ },
+ "B2_market": "NOT TESTABLE: priced-and-featured overlap = 0 rows"
+}
