@@ -1,0 +1,331 @@
+{
+ "schema": "t4m_proj_provenance_allowlist/1",
+ "status": "INERT \u2014 wired into nothing; proposal for operator sign-off (T-592, Wave 40.2)",
+ "asserted_by": "reconstruction from VPS journal + reflog + cycle log; see 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T592_provenance_allowlist_2026-09-30.md",
+ "windows": [
+  {
+   "window_id": "W01",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-591DFBAD",
+   "window_start_utc": "2026-07-31T19:38:19Z",
+   "window_end_utc": "2026-07-31T20:46:52Z",
+   "process_started_utc": "2026-07-31T19:38:02Z",
+   "commit_sha": "0bc269ebad9c98f51c6a483352a14bc2077fb997",
+   "commit_sha_became_head_utc": "2026-07-31T19:37:59Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 3,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-07-31T19:38:02Z",
+    "commit": "VPS git reflog: HEAD=0bc269eb from 'pull --ff-only origin main: Fast-forward' at 2026-07-31T19:37:59Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-591DFBAD: first row 2026-07-31T19:38:19Z, last row 2026-07-31T20:46:52Z, 57 cycle rows; no 'Started' event inside window",
+    "code": "git show 0bc269eb:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W02",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-FE41CC24",
+   "window_start_utc": "2026-07-31T22:13:28Z",
+   "window_end_utc": "2026-08-01T04:56:48Z",
+   "process_started_utc": "2026-07-31T21:14:08Z",
+   "commit_sha": "20142502da74408b5f60149bd73652651d071c9f",
+   "commit_sha_became_head_utc": "2026-07-31T21:14:05Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 75,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-07-31T21:14:08Z",
+    "commit": "VPS git reflog: HEAD=20142502 from 'pull --ff-only origin main: Fast-forward' at 2026-07-31T21:14:05Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-FE41CC24: first row 2026-07-31T22:13:28Z, last row 2026-08-01T04:56:48Z, 2861 cycle rows; no 'Started' event inside window",
+    "code": "git show 20142502:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W03",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-3F2695DD",
+   "window_start_utc": "2026-08-01T23:04:59Z",
+   "window_end_utc": "2026-08-02T00:07:02Z",
+   "process_started_utc": "2026-08-01T23:03:58Z",
+   "commit_sha": "93efca2a55613531563602a4e1913de454180d32",
+   "commit_sha_became_head_utc": "2026-08-01T23:03:08Z",
+   "head_moves_after_start_not_loaded": [
+    {
+     "utc": "2026-08-01T23:05:47Z",
+     "sha7": "2f13b4bf"
+    }
+   ],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 32,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-08-01T23:03:58Z",
+    "commit": "VPS git reflog: HEAD=93efca2a from 'pull --ff-only origin main: Fast-forward' at 2026-08-01T23:03:08Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-3F2695DD: first row 2026-08-01T23:04:59Z, last row 2026-08-02T00:07:02Z, 668 cycle rows; no 'Started' event inside window",
+    "code": "git show 93efca2a:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W04",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-E726FE66",
+   "window_start_utc": "2026-08-02T00:08:57Z",
+   "window_end_utc": "2026-08-04T04:13:57Z",
+   "process_started_utc": "2026-08-02T00:08:05Z",
+   "commit_sha": "cbd09ae8594d404977efbc0e473d2aa4cca60a5c",
+   "commit_sha_became_head_utc": "2026-08-02T00:07:26Z",
+   "head_moves_after_start_not_loaded": [
+    {
+     "utc": "2026-08-04T00:45:57Z",
+     "sha7": "fc44594f"
+    },
+    {
+     "utc": "2026-08-04T00:47:53Z",
+     "sha7": "2b9917fb"
+    },
+    {
+     "utc": "2026-08-04T00:55:26Z",
+     "sha7": "32fb868a"
+    }
+   ],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 77,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-08-02T00:08:05Z",
+    "commit": "VPS git reflog: HEAD=cbd09ae8 from 'merge origin/main: Fast-forward' at 2026-08-02T00:07:26Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-E726FE66: first row 2026-08-02T00:08:57Z, last row 2026-08-04T04:13:57Z, 4457 cycle rows; no 'Started' event inside window",
+    "code": "git show cbd09ae8:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W05",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-06538707",
+   "window_start_utc": "2026-08-08T00:03:33Z",
+   "window_end_utc": "2026-08-15T04:34:04Z",
+   "process_started_utc": "2026-08-07T05:26:30Z",
+   "commit_sha": "687bf9e0894a278d1af1623beba836dd133b6d14",
+   "commit_sha_became_head_utc": "2026-08-07T05:26:27Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 578,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-08-07T05:26:30Z",
+    "commit": "VPS git reflog: HEAD=687bf9e0 from 'pull --ff-only origin main: Fast-forward' at 2026-08-07T05:26:27Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-06538707: first row 2026-08-08T00:03:33Z, last row 2026-08-15T04:34:04Z, 44210 cycle rows; no 'Started' event inside window",
+    "code": "git show 687bf9e0:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W06",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-09D88074",
+   "window_start_utc": "2026-09-22T17:07:20Z",
+   "window_end_utc": "2026-09-23T00:23:46Z",
+   "process_started_utc": "2026-09-22T06:55:21Z",
+   "commit_sha": "2387814b14f913d88b245026d5c4a8259c533f22",
+   "commit_sha_became_head_utc": "2026-09-22T05:08:55Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 140,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-22T06:55:21Z",
+    "commit": "VPS git reflog: HEAD=2387814b from 'pull --ff-only origin main: Fast-forward' at 2026-09-22T05:08:55Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-09D88074: first row 2026-09-22T17:07:20Z, last row 2026-09-23T00:23:46Z, 2369 cycle rows; no 'Started' event inside window",
+    "code": "git show 2387814b:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W07",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-A2D81226",
+   "window_start_utc": "2026-09-23T17:11:42Z",
+   "window_end_utc": "2026-09-24T00:33:08Z",
+   "process_started_utc": "2026-09-23T06:14:30Z",
+   "commit_sha": "7f6e0c78b65acfd5b345eb814041f6959bf0b3bd",
+   "commit_sha_became_head_utc": "2026-09-23T06:14:27Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 130,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-23T06:14:30Z",
+    "commit": "VPS git reflog: HEAD=7f6e0c78 from 'pull --ff-only origin main: Fast-forward' at 2026-09-23T06:14:27Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-A2D81226: first row 2026-09-23T17:11:42Z, last row 2026-09-24T00:33:08Z, 4485 cycle rows; no 'Started' event inside window",
+    "code": "git show 7f6e0c78:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W08",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-85DBFA89",
+   "window_start_utc": "2026-09-24T00:35:14Z",
+   "window_end_utc": "2026-09-24T00:51:50Z",
+   "process_started_utc": "2026-09-24T00:34:22Z",
+   "commit_sha": "e71fda5fbc115ec40ce2d491ed5f863876025e7e",
+   "commit_sha_became_head_utc": "2026-09-24T00:34:19Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 19,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-24T00:34:22Z",
+    "commit": "VPS git reflog: HEAD=e71fda5f from 'pull --ff-only origin main: Fast-forward' at 2026-09-24T00:34:19Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-85DBFA89: first row 2026-09-24T00:35:14Z, last row 2026-09-24T00:51:50Z, 613 cycle rows; no 'Started' event inside window",
+    "code": "git show e71fda5f:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W09",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-F3276022",
+   "window_start_utc": "2026-09-24T00:53:31Z",
+   "window_end_utc": "2026-09-24T04:20:48Z",
+   "process_started_utc": "2026-09-24T00:52:39Z",
+   "commit_sha": "14091b3fdf9a5cd2778897c6a360441ecc546aea",
+   "commit_sha_became_head_utc": "2026-09-24T00:52:36Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 77,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-24T00:52:39Z",
+    "commit": "VPS git reflog: HEAD=14091b3f from 'pull --ff-only origin main: Fast-forward' at 2026-09-24T00:52:36Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-F3276022: first row 2026-09-24T00:53:31Z, last row 2026-09-24T04:20:48Z, 3780 cycle rows; no 'Started' event inside window",
+    "code": "git show 14091b3f:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W10",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-E9D58C50",
+   "window_start_utc": "2026-09-24T16:38:18Z",
+   "window_end_utc": "2026-09-25T01:41:48Z",
+   "process_started_utc": "2026-09-24T05:16:17Z",
+   "commit_sha": "484b405eebda97ce5586ee2914bc90b8ec3c01cb",
+   "commit_sha_became_head_utc": "2026-09-24T05:16:14Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 129,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-24T05:16:17Z",
+    "commit": "VPS git reflog: HEAD=484b405e from 'pull --ff-only origin main: Fast-forward' at 2026-09-24T05:16:14Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-E9D58C50: first row 2026-09-24T16:38:18Z, last row 2026-09-25T01:41:48Z, 5803 cycle rows; no 'Started' event inside window",
+    "code": "git show 484b405e:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W11",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-89F36A4B",
+   "window_start_utc": "2026-09-25T01:42:28Z",
+   "window_end_utc": "2026-09-25T02:14:20Z",
+   "process_started_utc": "2026-09-25T01:41:57Z",
+   "commit_sha": "1da5865c1f560a3bd3e102c967a841292d6926d8",
+   "commit_sha_became_head_utc": "2026-09-25T01:41:54Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 11,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-25T01:41:57Z",
+    "commit": "VPS git reflog: HEAD=1da5865c from 'pull --ff-only origin main: Fast-forward' at 2026-09-25T01:41:54Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-89F36A4B: first row 2026-09-25T01:42:28Z, last row 2026-09-25T02:14:20Z, 252 cycle rows; no 'Started' event inside window",
+    "code": "git show 1da5865c:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W12",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-9FC5E7E4",
+   "window_start_utc": "2026-09-25T02:16:02Z",
+   "window_end_utc": "2026-09-26T04:37:45Z",
+   "process_started_utc": "2026-09-25T02:15:37Z",
+   "commit_sha": "7493ecd14ccf41a369efeb8e094f96c6f85191a0",
+   "commit_sha_became_head_utc": "2026-09-25T02:15:30Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 234,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-25T02:15:37Z",
+    "commit": "VPS git reflog: HEAD=7493ecd1 from 'pull --ff-only origin main: Fast-forward' at 2026-09-25T02:15:30Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-9FC5E7E4: first row 2026-09-25T02:16:02Z, last row 2026-09-26T04:37:45Z, 11364 cycle rows; no 'Started' event inside window",
+    "code": "git show 7493ecd1:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  },
+  {
+   "window_id": "W13",
+   "band": "T4M-PROJ",
+   "market_type": "mlb_player_prop_hits",
+   "logic_epoch": 12,
+   "session_id": "T4-MLB-FD35EF10",
+   "window_start_utc": "2026-09-26T16:38:15Z",
+   "window_end_utc": "2026-09-27T21:59:40Z",
+   "process_started_utc": "2026-09-26T06:44:57Z",
+   "commit_sha": "7493ecd14ccf41a369efeb8e094f96c6f85191a0",
+   "commit_sha_became_head_utc": "2026-09-25T02:15:30Z",
+   "head_moves_after_start_not_loaded": [],
+   "model_identity_asserted": "T4M-PROJ Binomial (ba_l10_shrunk, ADR-0047)",
+   "p_hits_gte_threshold_sha256": "2193b3a07d1ab0ceb0c5faaf23459f1dedea6dea6a5d7137dabdaab03e5a6f4c",
+   "call_uses_ba_l10_shrunk": true,
+   "epoch12_rows_in_window": 189,
+   "citation": {
+    "process_start": "VPS journalctl -u t4-mlb: 'Started t4-mlb.service' at 2026-09-26T06:44:57Z",
+    "commit": "VPS git reflog: HEAD=7493ecd1 from 'pull --ff-only origin main: Fast-forward' at 2026-09-25T02:15:30Z, no later HEAD move before this process started",
+    "session_to_process": "logs/t4_mlb_cycle_log.jsonl session_id T4-MLB-FD35EF10: first row 2026-09-26T16:38:15Z, last row 2026-09-27T21:59:40Z, 10854 cycle rows; no 'Started' event inside window",
+    "code": "git show 7493ecd1:src/prediction_market_bot/run_t4_mlb_live.py \u2014 p_hits_gte_threshold sha256 2193b3a07d1ab0ce; call site passes ba_l10=ba_l10_shrunk"
+   }
+  }
+ ],
+ "scope_of_assertion": "Each window asserts ONLY that the t4-mlb process which wrote these rows contained the committed T4M-PROJ in-play formula p_hits_gte_threshold (fed ba_l10_shrunk) at commit_sha. It does not assert anything about how the pregame ba_l10_shrunk input was produced.",
+ "limitations": [
+  "L1: VPS working-tree state at process start is not recorded by git reflog. Uncommitted or scp-copied edits cannot be excluded from the record; today's tracked tree is clean (weak, current-only evidence).",
+  "L2: The pregame_mlb_*.json input is data, not commit-pinned. Its ba_l10_shrunk value, and whether it fell back to raw ba_l10, is not established here (about 7% of cycle-log rows in these sessions carry no ba_l10_shrunk field).",
+  "L3: 'model_identity_asserted' is a proposed label, not a value in REGISTERED_MODEL_IDENTITY_PREFIXES. logic_epoch.py is unchanged, so is_countable_evidence() still returns False for every row.",
+  "L4: Windows use observed cycle-log extents (first to last row), not journal start-to-stop, so they are conservative."
+ ]
+}
