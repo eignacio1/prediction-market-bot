@@ -1,0 +1,40 @@
+{
+ "verdict": "HARMFUL",
+ "gate_eligible": true,
+ "synthetic": false,
+ "hypothesis": "EXP-029 pre-registered: frozen EXP-028 model (C=10, fit 2024-25) vs Kalshi KXMLBHIT pre-first-pitch mid; game-clustered paired dBrier.",
+ "cutoff": "2026-09-01",
+ "n_train_games": 189,
+ "n_test_games": 215,
+ "n_test_rows": 1316,
+ "n_differing_test_games": 215,
+ "brier_gain": {
+  "mean": -0.0039322287073225715,
+  "ci_low": -0.006290973472317171,
+  "ci_high": -0.0015218137294846256,
+  "n_clusters": 215,
+  "n_obs": 1316
+ },
+ "logloss_gain": {
+  "mean": -0.008454403815869935,
+  "ci_low": -0.013667734713848101,
+  "ci_high": -0.0033676107867066027,
+  "n_clusters": 215,
+  "n_obs": 1316
+ },
+ "unit": "game-clustered paired bootstrap; positive = candidate better",
+ "brier_market": 0.22378672112462009,
+ "brier_model": 0.22771894983194263,
+ "base_rate": 0.6504559270516718,
+ "mean_p_market": 0.6240463525835866,
+ "mean_p_model": 0.6128531886998542,
+ "harness_verdict_label": "HARMFUL",
+ "d5": {
+  "delta_mean": -0.0039322287073225715,
+  "se_clustered": 0.0012330934884912895,
+  "n_rows": 1316,
+  "n_games": 215,
+  "80pct_power_alpha05_onesided": "delta_mean <= 0: no positive edge to power for",
+  "95pct_power_alpha05_onesided": "delta_mean <= 0: no positive edge to power for"
+ }
+}
