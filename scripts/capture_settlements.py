@@ -49,6 +49,7 @@ HASH_FIELDS = ("ticker", "status", "result", "settlement_value_dollars", "expira
 BULK_THRESHOLD = 300          # unsettled tickers in a series above which bulk paging is cheaper
 PAUSE_S = 0.30                # matches the archiver's floor (~3.3 req/s)
 MAX_RETRIES = 4
+MAX_SINGLE_FALLBACK = 500    # per series per run; remainder stays uncaptured and is reported
 WRITER_VERSION = "capture_settlements/1"
 
 
@@ -210,7 +211,7 @@ def capture(archive_dir: str, store: Path, get=http_get, now: datetime | None = 
                 found, calls = fetch_bulk(series, set(need), get)
                 missing = [t for t in need if t not in found]
                 if missing:       # bulk lists only settled; ask the venue about the rest by ticker
-                    f2, c2 = fetch_single(missing, get); found.update(f2); calls += c2
+                    f2, c2 = fetch_single(missing[:MAX_SINGLE_FALLBACK], get); found.update(f2); calls += c2
             else:
                 found, calls = fetch_single(need, get)
         except FetchFailed as e:
