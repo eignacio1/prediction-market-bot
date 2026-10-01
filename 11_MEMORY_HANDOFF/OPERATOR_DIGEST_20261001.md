@@ -6,3 +6,6 @@
 - A test on the last pre-game price would be a new experiment and needs your decision first.
 - Still open from earlier: the 0-player T1 run on 2026-09-28 has not been diagnosed. Bet count not re-checked this close-out.
 - No model, order, sizing or pool was touched. Paper only.
+# Operator Digest — 2026-10-01
+
+- T-600 (auto): T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized.
