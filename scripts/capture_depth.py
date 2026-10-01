@@ -39,7 +39,8 @@ MAX_RETRIES = 4
 PER_SERIES = 12           # tickers per series per slot; see results summary for derivation
 LIST_PAGES = 5
 DEFAULT_SERIES = ["KXMLBGAME", "KXMLBSPREAD", "KXMLBTOTAL", "KXMLBTEAMTOTAL", "KXMLBHIT",
-                  "KXMLBHR", "KXMLBTB", "KXMLBF3", "KXMLBF5", "KXMLBF7"]
+                  "KXMLBF3", "KXMLBF5", "KXMLBF7", "KXMLBF5SPREAD", "KXMLBF5TOTAL",
+                  "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL"]  # == the archive's 14
 WRITER_VERSION = "capture_depth/1"
 
 
