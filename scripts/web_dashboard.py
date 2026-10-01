@@ -55,6 +55,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -87,6 +88,32 @@ DEFAULT_PORT = 8050
 DEFAULT_HOST = "127.0.0.1"   # Localhost only — SSH tunnel access
 
 _log_dir: Path = Path("logs/")
+
+# Cycle-log tail bound (T-600/D2). ~460 B/row observed -> ~90 KB payload.
+CYCLE_TAIL_ROWS = 200
+_CYCLE_LOG_NAMES = (".vps_t4_mlb_cycle_log_cache.jsonl", "t4_mlb_cycle_log.jsonl")
+
+
+def _resolve_running_sha() -> str:
+    """Commit sha of the code this process loaded, captured ONCE at import.
+
+    Deliberately not re-read per request: a `git pull` after process start
+    changes the checkout but not the running code, and the status bar must
+    report what is running, not what is on disk (GG-279).
+    """
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=str(Path(__file__).parent.parent),
+            capture_output=True, text=True, timeout=5,
+        )
+        sha = out.stdout.strip()
+        return sha if out.returncode == 0 and re.fullmatch(r"[0-9a-f]{40}", sha) else "unknown"
+    except Exception:
+        return "unknown"
+
+
+_PROCESS_STARTED_AT = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+_RUNNING_SHA = _resolve_running_sha()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -289,6 +316,98 @@ def _pipe_mtimes(d: Path) -> dict[str, str]:
     return result
 
 
+_JSON_TOKEN_RE = re.compile(r'"(?:\\.|[^"\\])*"|[\[\]{}]')
+_REJECTED_COUNT_CACHE: dict[str, tuple[float, int, Any]] = {}
+_COUNT_LINE_LIMIT = 1 << 20
+
+
+def _count_json_array_key(p: Path, key: str) -> int | None:
+    """Count the elements of `"<key>": [...]` WITHOUT materializing it.
+
+    Streams the file line by line (bounded memory: one line <= 1 MiB), tracks
+    bracket/brace depth with string-aware tokens, and counts elements that
+    open at the array's top level (objects/arrays/strings; rejected_positions
+    holds objects). Relies on the writer's indent=2 layout only for bounded
+    line length: a line over the limit aborts with None ("unknown"), never a
+    guess. Cached by (mtime, size) so unchanged files cost one stat.
+    Returns None when the file or key is absent/unreadable.
+    """
+    try:
+        st = p.stat()
+    except OSError:
+        return None
+    ck = f"{p}:{key}"
+    hit = _REJECTED_COUNT_CACHE.get(ck)
+    if hit and hit[0] == st.st_mtime and hit[1] == st.st_size:
+        return hit[2]
+    needle = f'"{key}"'
+    count = 0
+    depth = 0          # 0 = before/after the array; 1 = directly inside it
+    in_array = False
+    done = False
+    result: int | None = None
+    with open(p, "rb") as f:
+        while True:
+            raw = f.readline(_COUNT_LINE_LIMIT)
+            if not raw:
+                break
+            if len(raw) == _COUNT_LINE_LIMIT and not raw.endswith(b"\n"):
+                return None
+            line = raw.decode("utf-8", errors="replace")
+            if not in_array:
+                i = line.find(needle)
+                if i == -1:
+                    continue
+                j = line.find("[", i + len(needle))
+                if j == -1:
+                    return None
+                in_array = True
+                line = line[j:]
+            for m in _JSON_TOKEN_RE.finditer(line):
+                tok = m.group()
+                if tok in "[{":
+                    if depth == 1:
+                        count += 1
+                    depth += 1
+                elif tok in "]}":
+                    depth -= 1
+                    if depth == 0:
+                        done = True
+                        break
+                elif depth == 1:
+                    count += 1  # string element
+            if done:
+                result = count
+                break
+    _REJECTED_COUNT_CACHE[ck] = (st.st_mtime, st.st_size, result)
+    return result
+
+
+def _rejected_counts(d: Path) -> dict[str, int | None]:
+    """Rejected-position COUNT per pool (T-600/D2). Counts only — the arrays
+    themselves stay out of the payload. Each pool isolated so one bad file
+    yields None for that pool alone."""
+    pools = {
+        "mlb": "paper_portfolio_mlb.json",
+        "mlb_t4": "paper_portfolio_mlb_t4.json",
+        "nfl": "paper_portfolio_t1_nfl_game_market.json",
+    }
+    out: dict[str, int | None] = {}
+    for pool, fname in pools.items():
+        try:
+            out[pool] = _count_json_array_key(d / fname, "rejected_positions")
+        except Exception:
+            out[pool] = None
+    return out
+
+
+def _load_cycle_tail(d: Path, n: int = CYCLE_TAIL_ROWS) -> list[dict]:
+    for name in _CYCLE_LOG_NAMES:
+        if (d / name).exists():
+            return _load_jsonl(d / name, tail=n)
+    return []
+
+
 def _load_all_data() -> dict:
     d = _log_dir
 
@@ -319,6 +438,11 @@ def _load_all_data() -> dict:
         "nfl_portfolio": safe(lambda: _load_json(d / "paper_portfolio_t1_nfl_game_market.json"), {}),
         "nfl_audit":     safe(lambda: _load_jsonl(d / "audit_t1_nfl_game_market.jsonl", tail=1000), []),
         "nfl_model_provenance": _NFL_MODEL_PROVENANCE,
+        # Live Terminal (T-600/D2) — additive only; every key above unchanged.
+        "rejected_counts": safe(lambda: _rejected_counts(d), {}),
+        "t4_cycle_tail":   safe(lambda: _load_cycle_tail(d), []),
+        "process":         safe(lambda: {"started_at": _PROCESS_STARTED_AT,
+                                         "sha": _RUNNING_SHA}, {}),
     }
 
 
@@ -563,6 +687,8 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
   <span class="id">PMBOT</span><span class="sep">│</span>
   <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
   <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
+  <span class="sep">│</span><span class="sub">SHA <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
   <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
   <span class="led down" id="led"><b></b><span id="ledtxt">INIT</span></span><span class="sep">│</span>
@@ -591,6 +717,9 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
      event_type, severity, payload{}}
    pipe_mtimes{label:isoZ} · server_time · current_logic_epoch
    nfl_model_provenance
+   rejected_counts{mlb,mlb_t4,nfl → int|null}  (counts only; arrays never sent)
+   t4_cycle_tail[{ts,cycle_id,session_id,ticker,...}]  (bounded, oldest→newest)
+   process{started_at:isoZ, sha:40-hex|"unknown"}  (sha = code the process loaded)
    ══════════════════════════════════════════════════════════════════════ */
 
 const REFRESH_S=30;
@@ -711,9 +840,34 @@ function render(){
   if(S.demo) led('stale','DEMO');
   else if(age!=null&&age>3600) led('stale','DATA '+fmtAge(age));
   else led('live','LIVE');
+  statusExtras(d);
   $('#foot').textContent=`server ${d.server_time||'—'} · epoch ${d.current_logic_epoch??'—'} · `+
     `${D.open.length} open / ${D.closed.length} closed / ${D.events.length} events in window · `+
-    `NFL model ${d.nfl_model_provenance||'—'}`;
+    `NFL model ${d.nfl_model_provenance||'—'}`+rejFoot(d);
+}
+
+/* T-600/D2 — running sha + T4 cycle-rate readout. Both degrade to "—" when the
+   server predates the keys (older dashboard) so the page never throws on them. */
+function cycleRate(tail){
+  if(!Array.isArray(tail)||!tail.length) return null;
+  const ts=tail.map(r=>Date.parse(r&&r.ts)).filter(Number.isFinite);
+  if(!ts.length) return null;
+  const cycles=new Set(tail.map(r=>r&&r.cycle_id).filter(Boolean)).size;
+  const lo=Math.min(...ts), hi=Math.max(...ts), spanMin=(hi-lo)/60000;
+  return {cycles, rows:tail.length, perMin:spanMin>0?cycles/spanMin:null,
+          ageS:Math.round((Date.now()-hi)/1000)};
+}
+function statusExtras(d){
+  const pr=d.process||{}, sha=typeof pr.sha==='string'?pr.sha:'';
+  const se=$('#sha');
+  if(se){ se.textContent=sha&&sha!=='unknown'?sha.slice(0,7):'unknown';
+    se.title='running commit '+(sha||'unknown')+(pr.started_at?' · started '+pr.started_at:''); }
+  const ce=$('#cyc'), r=cycleRate(d.t4_cycle_tail);
+  if(ce){ ce.textContent=r?((r.perMin!=null?r.perMin.toFixed(1)+' cyc/min':r.cycles+' cyc')+' · last '+fmtAge(r.ageS)):'—'; }
+}
+function rejFoot(d){
+  const c=d.rejected_counts; if(!c||typeof c!=='object') return '';
+  return ' · rejected '+Object.entries(c).map(([k,v])=>k+' '+(v==null?'?':v)).join(' / ');
 }
 
 /* ═══════════ METRIC RAIL (per module) ═══════════ */
@@ -1258,6 +1412,10 @@ const _mkc=(n,seed,mid_ident,pfx)=>_mk(n,seed,mid_ident,pfx).map((p,i)=>({...p,s
 const DEMO={
   server_time:new Date(_now).toISOString().replace(/\.\d+Z$/,'Z'), current_logic_epoch:12,
   nfl_model_provenance:REAL_NFL,
+  rejected_counts:{mlb:212, mlb_t4:2000, nfl:0},
+  process:{started_at:_iso(3600*5), sha:'0123456789abcdef0123456789abcdef01234567'},
+  t4_cycle_tail:Array.from({length:40},(_,i)=>({ts:_iso(2400-i*60), cycle_id:'C'+String(900+Math.floor(i/2)).padStart(4,'0')+'-demo',
+    session_id:'T4-MLB-DEMO', ticker:'KXMLBHIT-DEMO', mip:0.3})).reverse(),
   portfolio:{bankroll_usd:733.75, initial_bankroll_usd:838.00, total_realized_pnl:-106.01,
     daily_net_pnl:15.84, current_daily_loss:0, last_updated:_iso(240),
     open_positions:_mk(11,3,REAL_MLB,'KXMLBHIT'), closed_positions:_mkc(40,5,REAL_MLB,'KXMLBHIT')},

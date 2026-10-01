@@ -190,6 +190,8 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
   <span class="id">PMBOT</span><span class="sep">│</span>
   <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
   <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
+  <span class="sep">│</span><span class="sub">SHA <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
   <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
   <span class="led down" id="led"><b></b><span id="ledtxt">INIT</span></span><span class="sep">│</span>
@@ -218,6 +220,9 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
      event_type, severity, payload{}}
    pipe_mtimes{label:isoZ} · server_time · current_logic_epoch
    nfl_model_provenance
+   rejected_counts{mlb,mlb_t4,nfl → int|null}  (counts only; arrays never sent)
+   t4_cycle_tail[{ts,cycle_id,session_id,ticker,...}]  (bounded, oldest→newest)
+   process{started_at:isoZ, sha:40-hex|"unknown"}  (sha = code the process loaded)
    ══════════════════════════════════════════════════════════════════════ */
 
 const REFRESH_S=30;
@@ -338,9 +343,34 @@ function render(){
   if(S.demo) led('stale','DEMO');
   else if(age!=null&&age>3600) led('stale','DATA '+fmtAge(age));
   else led('live','LIVE');
+  statusExtras(d);
   $('#foot').textContent=`server ${d.server_time||'—'} · epoch ${d.current_logic_epoch??'—'} · `+
     `${D.open.length} open / ${D.closed.length} closed / ${D.events.length} events in window · `+
-    `NFL model ${d.nfl_model_provenance||'—'}`;
+    `NFL model ${d.nfl_model_provenance||'—'}`+rejFoot(d);
+}
+
+/* T-600/D2 — running sha + T4 cycle-rate readout. Both degrade to "—" when the
+   server predates the keys (older dashboard) so the page never throws on them. */
+function cycleRate(tail){
+  if(!Array.isArray(tail)||!tail.length) return null;
+  const ts=tail.map(r=>Date.parse(r&&r.ts)).filter(Number.isFinite);
+  if(!ts.length) return null;
+  const cycles=new Set(tail.map(r=>r&&r.cycle_id).filter(Boolean)).size;
+  const lo=Math.min(...ts), hi=Math.max(...ts), spanMin=(hi-lo)/60000;
+  return {cycles, rows:tail.length, perMin:spanMin>0?cycles/spanMin:null,
+          ageS:Math.round((Date.now()-hi)/1000)};
+}
+function statusExtras(d){
+  const pr=d.process||{}, sha=typeof pr.sha==='string'?pr.sha:'';
+  const se=$('#sha');
+  if(se){ se.textContent=sha&&sha!=='unknown'?sha.slice(0,7):'unknown';
+    se.title='running commit '+(sha||'unknown')+(pr.started_at?' · started '+pr.started_at:''); }
+  const ce=$('#cyc'), r=cycleRate(d.t4_cycle_tail);
+  if(ce){ ce.textContent=r?((r.perMin!=null?r.perMin.toFixed(1)+' cyc/min':r.cycles+' cyc')+' · last '+fmtAge(r.ageS)):'—'; }
+}
+function rejFoot(d){
+  const c=d.rejected_counts; if(!c||typeof c!=='object') return '';
+  return ' · rejected '+Object.entries(c).map(([k,v])=>k+' '+(v==null?'?':v)).join(' / ');
 }
 
 /* ═══════════ METRIC RAIL (per module) ═══════════ */
@@ -885,6 +915,10 @@ const _mkc=(n,seed,mid_ident,pfx)=>_mk(n,seed,mid_ident,pfx).map((p,i)=>({...p,s
 const DEMO={
   server_time:new Date(_now).toISOString().replace(/\.\d+Z$/,'Z'), current_logic_epoch:12,
   nfl_model_provenance:REAL_NFL,
+  rejected_counts:{mlb:212, mlb_t4:2000, nfl:0},
+  process:{started_at:_iso(3600*5), sha:'0123456789abcdef0123456789abcdef01234567'},
+  t4_cycle_tail:Array.from({length:40},(_,i)=>({ts:_iso(2400-i*60), cycle_id:'C'+String(900+Math.floor(i/2)).padStart(4,'0')+'-demo',
+    session_id:'T4-MLB-DEMO', ticker:'KXMLBHIT-DEMO', mip:0.3})).reverse(),
   portfolio:{bankroll_usd:733.75, initial_bankroll_usd:838.00, total_realized_pnl:-106.01,
     daily_net_pnl:15.84, current_daily_loss:0, last_updated:_iso(240),
     open_positions:_mk(11,3,REAL_MLB,'KXMLBHIT'), closed_positions:_mkc(40,5,REAL_MLB,'KXMLBHIT')},
