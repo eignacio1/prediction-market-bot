@@ -679,3 +679,4 @@
 | 2026-10-01T01:25:11Z | T-599 (verify); GG-324+ and EXP id claimed at run time; ADR none | STANDARD — market-efficiency survey: inventory archive, pre-register ranking, measure efficiency proxies + calibration per MLB/NFL family with null bands, join to build substrate. Deliverable: results summary + ranking. Measures market only; no model/sizing. |
 | 2026-10-01T01:25:33Z | T-600; no GG/ADR (gaps via results summary) | 43.2 live terminal landing: swap _HTML byte-faithful, extend /api/data additively, verify both endpoints; restart gated |
 | 2026-10-01T01:25:51Z | T-601; no GG/ADR | STANDARD — 43.3 NFL pre-kickoff capture runner: price lost weeks, idempotent append-only runner + tests, 2 hand-runs, DRAFTED cron (commented, not installed), valuation. Deliverable: results summary. |
+| 2026-10-01T01:38:13Z | T-599 | CLOSED — T-599/EXP-031: surveyed 14 Kalshi families vs pre-registered rule; zero candidates, shortlist empty (GG-324). (commit `aaef16d`) |
