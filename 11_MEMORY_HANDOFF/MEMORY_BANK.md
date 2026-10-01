@@ -2,7 +2,8 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
+**Last reviewed:** 2026-10-01T02:30:00Z (T-603 — EXP-032 execution cost surface: no E crosses zero under any evidenced policy; H partly artefact, B shrinks with it.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0230.md` for full session detail.
+**Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
 **Also reviewed (concurrent session):** 2026-09-29T00:56:00Z (T-579 — T-579 (36.3) — landed Wave 36 queue, activated GG-303 write fix under authorization (running-process proof only, audit-log leg not yet demonstrated — no live game state), completed Operator Console Section 0 (7/7 counts), full Q1-Q7 adversarial pass clean.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0056.md` for full session detail.
