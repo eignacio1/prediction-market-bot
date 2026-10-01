@@ -693,3 +693,4 @@
 | 2026-10-01T01:50:58Z | T-602 (no GG/ADR; 44.1 owns logs) | STANDARD: archive self-sufficiency — settlement capture + depth capture writers (new scripts only), terminal restart skipped unless authorized |
 | 2026-10-01T01:51:19Z | T-603 (verify); GG-325+ and EXP-032 claimed at run time; ADR none | STANDARD — execution-cost surface: H as function of time/side/price from archive; pre-register cost recompute, recompute E under policies, capacity check, drift w/ backward placebo. Cost side only; no model/sizing. Deliverable: EXP-032 results summary. |
 | 2026-10-01T01:53:01Z | EXP-032, ADR-0069 (T-/GG- TBD at close) | multileg-coherence: EXP-032 multi-leg coherence analysis + draft correlation-group ADR (STANDARD, single deliverable) |
+| 2026-10-01T01:53:48Z | EXP-033 | multileg-coherence: CORRECTION to prior row — use EXP-033, not EXP-032 (T-603 claimed EXP-032 first at 01:51:19Z); ADR-0069 stays mine per prior row; STANDARD |
