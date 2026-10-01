@@ -683,3 +683,4 @@
 | 2026-10-01T01:37:00Z | T-600 | MERGED: NO — branch `session/20261001T012448Z-live-terminal-landing` awaiting merge — T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized. (commit `2e54e71`) |
 | 2026-10-01T01:37:32Z | T-600 | MERGED: NO — branch `session/20261001T012448Z-live-terminal-landing` awaiting merge (HEAD de94172 not on origin/main) — Live Terminal landed on branch; merge to main pending (diverged origin/main), VPS restart unauthorized |
 | 2026-10-01T01:39:14Z | T-599 | MERGED: NO — branch `session/20261001T012443Z-market-efficiency-survey` awaiting merge — T-599/EXP-031: surveyed 14 Kalshi families vs pre-registered rule; zero candidates, shortlist empty (GG-324). (commit `aaef16d`) |
+| 2026-10-01T01:39:21Z | T-599 | CLOSED — merge confirmed, HEAD (c6f2572) is ancestor of origin/main — T-599/EXP-031: 14 Kalshi families surveyed; zero candidates (GG-324) |
