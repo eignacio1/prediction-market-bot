@@ -1,0 +1,249 @@
+{
+ "archive_tickers": 84786,
+ "archive_tickers_not_in_meta": 0,
+ "unmapped_sample": [],
+ "distribution": {
+  "complementary|KXMLBF3": {
+   "sets": 760,
+   "testable_sets": 760,
+   "legs_per_set": {
+    "3": 760
+   },
+   "testable_set_runs": 19644
+  },
+  "complementary|KXMLBF5": {
+   "sets": 760,
+   "testable_sets": 760,
+   "legs_per_set": {
+    "3": 760
+   },
+   "testable_set_runs": 20692
+  },
+  "complementary|KXMLBF7": {
+   "sets": 765,
+   "testable_sets": 765,
+   "legs_per_set": {
+    "3": 765
+   },
+   "testable_set_runs": 21790
+  },
+  "complementary|KXMLBGAME": {
+   "sets": 784,
+   "testable_sets": 784,
+   "legs_per_set": {
+    "2": 784
+   },
+   "testable_set_runs": 58917
+  },
+  "complementary|KXNFLGAME": {
+   "sets": 79,
+   "testable_sets": 79,
+   "legs_per_set": {
+    "2": 79
+   },
+   "testable_set_runs": 10844
+  },
+  "nested|KXMLBF5SPREAD": {
+   "sets": 1520,
+   "testable_sets": 1520,
+   "legs_per_set": {
+    "2": 1520
+   },
+   "testable_set_runs": 41210
+  },
+  "nested|KXMLBF5SPREAD<=KXMLBF5": {
+   "sets": 3040,
+   "testable_sets": 3040,
+   "legs_per_set": {
+    "2": 3040
+   },
+   "testable_set_runs": 82378
+  },
+  "nested|KXMLBF5TOTAL": {
+   "sets": 760,
+   "testable_sets": 760,
+   "legs_per_set": {
+    "7": 760
+   },
+   "testable_set_runs": 20522
+  },
+  "nested|KXMLBF5TOTAL<=KXMLBTOTAL": {
+   "sets": 3794,
+   "testable_sets": 3745,
+   "legs_per_set": {
+    "2": 3794
+   },
+   "testable_set_runs": 98302
+  },
+  "nested|KXMLBHIT": {
+   "sets": 13137,
+   "testable_sets": 11509,
+   "legs_per_set": {
+    "3": 10485,
+    "4": 2626,
+    "2": 26
+   },
+   "testable_set_runs": 151959
+  },
+  "nested|KXMLBSPREAD": {
+   "sets": 1540,
+   "testable_sets": 1540,
+   "legs_per_set": {
+    "4": 219,
+    "3": 841,
+    "6": 107,
+    "9": 35,
+    "7": 65,
+    "5": 176,
+    "8": 55,
+    "10": 18,
+    "11": 11,
+    "12": 4,
+    "13": 4,
+    "15": 2,
+    "19": 1,
+    "14": 2
+   },
+   "testable_set_runs": 45698
+  },
+  "nested|KXMLBSPREAD<=KXMLBGAME": {
+   "sets": 6683,
+   "testable_sets": 6190,
+   "legs_per_set": {
+    "2": 6683
+   },
+   "testable_set_runs": 144847
+  },
+  "nested|KXMLBTEAMTOTAL": {
+   "sets": 1540,
+   "testable_sets": 1540,
+   "legs_per_set": {
+    "7": 1540
+   },
+   "testable_set_runs": 45627
+  },
+  "nested|KXMLBTEAMTOTAL<=KXMLBTOTAL": {
+   "sets": 9138,
+   "testable_sets": 9086,
+   "legs_per_set": {
+    "2": 9138
+   },
+   "testable_set_runs": 251375
+  },
+  "nested|KXMLBTOTAL": {
+   "sets": 769,
+   "testable_sets": 769,
+   "legs_per_set": {
+    "11": 469,
+    "10": 8,
+    "13": 69,
+    "12": 78,
+    "14": 37,
+    "17": 17,
+    "15": 39,
+    "16": 21,
+    "18": 13,
+    "20": 3,
+    "21": 3,
+    "19": 7,
+    "22": 2,
+    "26": 1,
+    "25": 1,
+    "23": 1
+   },
+   "testable_set_runs": 22861
+  },
+  "nested|KXNFLSPREAD": {
+   "sets": 128,
+   "testable_sets": 128,
+   "legs_per_set": {
+    "14": 28,
+    "11": 46,
+    "17": 5,
+    "9": 5,
+    "18": 9,
+    "16": 17,
+    "12": 6,
+    "19": 1,
+    "13": 5,
+    "15": 3,
+    "22": 2,
+    "20": 1
+   },
+   "testable_set_runs": 11646
+  },
+  "nested|KXNFLSPREAD<=KXNFLGAME": {
+   "sets": 1727,
+   "testable_sets": 1723,
+   "legs_per_set": {
+    "2": 1727
+   },
+   "testable_set_runs": 149496
+  },
+  "nested|KXNFLTEAMTOTAL": {
+   "sets": 128,
+   "testable_sets": 128,
+   "legs_per_set": {
+    "14": 76,
+    "13": 44,
+    "16": 5,
+    "18": 1,
+    "15": 2
+   },
+   "testable_set_runs": 8498
+  },
+  "nested|KXNFLTEAMTOTAL<=KXNFLTOTAL": {
+   "sets": 366,
+   "testable_sets": 364,
+   "legs_per_set": {
+    "2": 366
+   },
+   "testable_set_runs": 20995
+  },
+  "nested|KXNFLTOTAL": {
+   "sets": 64,
+   "testable_sets": 64,
+   "legs_per_set": {
+    "19": 44,
+    "23": 4,
+    "21": 13,
+    "22": 1,
+    "25": 1,
+    "29": 1
+   },
+   "testable_set_runs": 5840
+  }
+ },
+ "exclusions": {
+  "KXMLBF5TOTAL|cross_floor_unmatched": 1589,
+  "KXMLBHIT|ladder_single_rung": 3,
+  "KXMLBTEAMTOTAL|cross_floor_unmatched": 1642,
+  "KXNFLTEAMTOTAL|cross_floor_unmatched": 1398
+ },
+ "exhaustiveness_n_yes_by_family": {
+  "KXMLBGAME": {
+   "1": 780
+  },
+  "KXMLBF3": {
+   "1": 757
+  },
+  "KXMLBF5": {
+   "1": 756
+  },
+  "KXMLBF7": {
+   "1": 760
+  },
+  "KXNFLGAME": {
+   "1": 48
+  }
+ },
+ "families_per_game_key": {
+  "1": 28,
+  "3": 49,
+  "4": 64,
+  "7": 1,
+  "8": 1,
+  "9": 18,
+  "10": 878
+ }
+}
