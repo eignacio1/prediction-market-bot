@@ -172,6 +172,7 @@ _NFL_SCHEDULE_EXTENDED_FIELDS: list[str] = [
     "home_qb_id", "home_qb_name",
     "away_coach", "home_coach",                 # N3 head coach
     "referee",                                  # N4 referee
+    "gametime",                                 # kickoff (US Eastern); T-601 provenance
 ]
 _NFL_SCHEDULE_EXTENDED_COLUMNS: list[str] = (
     _NFL_SCHEDULE_COLUMNS + _NFL_SCHEDULE_EXTENDED_FIELDS
@@ -526,6 +527,7 @@ class NFLIngestionClient:
             "team_stats": (stats_url, stats),
         }
         manifest: dict[str, Any] = {"season": season, "datasets": {}}
+        stamp = None
         for name, (url, df) in sources.items():
             meta = self.last_fetch_meta.get(url)
             if meta is None:  # e.g. 404 cold start: nothing was retrieved
@@ -542,6 +544,8 @@ class NFLIngestionClient:
             manifest["datasets"][name] = {
                 **meta, "rows": len(df), "columns": list(df.columns), "file": path.name,
             }
+        if stamp is None:  # no source retrieved at all: nothing to record
+            return False, {**manifest, "note": "no source file retrieved"}
         mpath = out / f"capture_manifest_{season}_{stamp}.json"
         mpath.write_text(json.dumps(manifest, indent=2, default=str))
         manifest["manifest_file"] = mpath.name
