@@ -3576,3 +3576,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Update 2026-09-30 (T-599, EXP-031):** survey executed against all 14 archived families; zero candidates under the pre-registered rule; limitation (first-seen snapshot) logged. A last-pre-game-snapshot follow-up would need its own pre-registration. Results: `RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md`. Archive holds a `prices_2026-08-01.jsonl.BROKEN_FIRSTRUN` file that was not read.
 </details>
+
+### GG-325 — EXP-031's cost term H is a single scalar (half-spread at the first-seen snapshot) per family; execution cost has never been measured as a function of time, side, or price, so "zero candidates" may be an artefact of when the archive first looked
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-325 |
+| Category | Evidence adequacy / measurement design: EXP-031 ranked families on E = B − null_median − H with H frozen at one moment per family (T-603) |
+| What was found | EXP-031 (T-599) found KXMLBTEAMTOTAL and all five F-series families clear their calibration-gap null (B > null_99.5) and are eliminated by H alone (F5SPREAD H .275, F5TOTAL H .145, TEAMTOTAL H .040). H was the median half-spread at the first-seen two-sided snapshot, which in this archive is typically days before settlement. Spread/vig versus time-to-settlement, session phase, side, price level and tick discreteness were inventoried but not ranked, and convergence between first-seen quote and settlement was not computed. |
+| Why it matters | If the toll falls materially at some measurable point of the surface, "zero candidates" is a statement about the first-seen snapshot, not about the venue. If it does not, the toll is structural and the elimination stands on firmer ground. Either answer is currently unevidenced. |
+| Done | Registered before any recompute. Pre-registration (EXP-032) follows as the next pushed commit, alone; nothing has been recomputed. |
+| Not done | Everything: surface, policy recompute, capacity check, drift/placebo. |
+| Constraints | Cost side only. B and the null bands are EXP-031 outputs taken as given. No fill assumed that the archive cannot evidence. No model fit, no position, no sizing change, no settlement re-fetch. Archive and EXP-031 cache read-only. Archive capture defects (44.3 owns the fix) will be named where they limit the measurement. |
+| Cross-references | EXP-031, GG-324, T-599, T-603, T-569 (distinct: ~60s latency thesis, not this), EXP-029 (placebo convention), COVERAGE_TARGET_MATRIX.md. |
+
+</details>
