@@ -132,3 +132,11 @@ def test_upstream_failure_refused_not_recorded(tmp_path):
         with pytest.raises(cap.PartialCapture, match="upstream fetch failed"):
             cap.run(2026, None, tmp_path, _client(), now=NOW, commit_sha=SHA)
     assert _index(tmp_path) == []
+
+
+def test_accept_partial_records_partial_never_complete(tmp_path):
+    out = _run(tmp_path, _sched(null_col="away_qb_id"), _stats(), accept_partial=True)
+    sched_rec = next(r for r in _index(tmp_path) if r["source"] == "schedule")
+    assert sched_rec["status"] == "partial"
+    assert "null away_qb_id" in sched_rec["partial_reasons"][0]
+    assert out["results"]["schedule"]["action"] == "appended"

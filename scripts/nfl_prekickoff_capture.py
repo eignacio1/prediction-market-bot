@@ -15,7 +15,8 @@ Semantics
     Re-running with unchanged upstream content writes nothing.
   * Append, never overwrite: changed content is a NEW record with its own
     timestamp; existing files/lines are never opened for write.
-  * Partial upstream data is refused (exit 2, nothing recorded as complete).
+  * Partial upstream data is refused (exit 2, nothing recorded as complete);
+    --accept-partial records field gaps as status=partial with reasons.
   * Captures only. Feeds no model, adapter, sizing or run path.
 """
 from __future__ import annotations
@@ -89,7 +90,7 @@ def pick_week(sched: pd.DataFrame, season: int, now: datetime, week: int | None)
 
 
 def validate(sched: pd.DataFrame, stats: pd.DataFrame, season: int, week: int):
-    """Return the target-week schedule slice, or raise PartialCapture."""
+    """Return (target-week slice, soft gaps), or raise PartialCapture on a hard defect."""
     missing = [c for c in _NFL_SCHEDULE_EXTENDED_FIELDS if c not in sched.columns] + \
               [c for c in _NFL_TEAM_STATS_EXTENDED_FIELDS if c not in stats.columns]
     if missing:
@@ -98,10 +99,15 @@ def validate(sched: pd.DataFrame, stats: pd.DataFrame, season: int, week: int):
                & (sched["game_type"] == "REG")]
     if wk.empty:
         raise PartialCapture(f"schedule has no rows for week {week}")
-    for col in ["home_team", "away_team"] + REQUIRED_PREKICKOFF:
+    for col in ["home_team", "away_team", "gameday", "gametime"]:
         n = int(wk[col].isna().sum())
         if n:
             raise PartialCapture(f"{n}/{len(wk)} week-{week} games have null {col}")
+    gaps = []  # upstream not yet populated; refusable, or recordable as status=partial
+    for col in REQUIRED_PREKICKOFF:
+        bad = wk.loc[wk[col].isna(), "game_id"].tolist()
+        if bad:
+            gaps.append(f"{len(bad)}/{len(wk)} week-{week} games have null {col}: {bad}")
     if week > 1:
         prev_teams = set(sched[(sched["season"] == season) & (sched["week"] == week - 1)
                                & (sched["game_type"] == "REG")][["home_team", "away_team"]]
@@ -114,7 +120,7 @@ def validate(sched: pd.DataFrame, stats: pd.DataFrame, season: int, week: int):
         for col in _NFL_TEAM_STATS_EXTENDED_FIELDS:
             if st[col].isna().any():
                 raise PartialCapture(f"team_stats week {week - 1} has null {col}")
-    return wk
+    return wk, gaps
 
 
 def last_hashes(index: Path) -> dict:
@@ -127,7 +133,8 @@ def last_hashes(index: Path) -> dict:
 
 
 def run(season: int, week: int | None, store: Path, client: NFLIngestionClient,
-        now: datetime | None = None, commit_sha: str | None = None) -> dict:
+        now: datetime | None = None, commit_sha: str | None = None,
+        accept_partial: bool = False) -> dict:
     store.mkdir(parents=True, exist_ok=True)
     now = now or datetime.now(timezone.utc)
     commit_sha = commit_sha or runtime_commit_sha()
@@ -143,7 +150,9 @@ def run(season: int, week: int | None, store: Path, client: NFLIngestionClient,
         sched = pd.read_parquet(staging / ds["schedule"]["file"])
         stats = pd.read_parquet(staging / ds["team_stats"]["file"])
         week = pick_week(sched, season, now, week)
-        wk = validate(sched, stats, season, week)
+        wk, gaps = validate(sched, stats, season, week)
+        if gaps and not accept_partial:
+            raise PartialCapture("; ".join(gaps))
         kicks = sorted(kickoff_utc(a, b) for a, b in zip(wk["gameday"], wk["gametime"]))
         preceded = [k.strftime("%Y-%m-%dT%H:%M:%SZ") for k in kicks if k > now]
         scoped = {
@@ -164,7 +173,8 @@ def run(season: int, week: int | None, store: Path, client: NFLIngestionClient,
                 raise FileExistsError(f"refusing to overwrite capture: {dest}")
             df.to_parquet(dest)
             rec = {
-                "season": season, "week": week, "source": name, "status": "complete",
+                "season": season, "week": week, "source": name, "status": "partial" if gaps else "complete",
+                "partial_reasons": gaps,
                 "captured_at_utc": meta["retrieved_at_utc"], "source_url": meta["url"],
                 "upstream_sha256": meta["sha256"], "content_sha256": h,
                 "rows": len(df), "file": fname,
@@ -188,6 +198,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--season", type=int, default=2026)
     ap.add_argument("--week", type=int, default=None, help="default: next week with a future kickoff")
+    ap.add_argument("--accept-partial", action="store_true",
+                    help="record pre-kickoff field gaps as status=partial (never as complete)")
     ap.add_argument("--store", type=Path, default=DEFAULT_STORE)
     a = ap.parse_args(argv)
     from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
@@ -195,7 +207,7 @@ def main(argv=None) -> int:
     logger = AuditLogger(str(a.store / "ingest_audit.jsonl"), min_severity="INFO")
     client = NFLIngestionClient(logger=logger, snapshot_id="T601-PREKICKOFF")
     try:
-        out = run(a.season, a.week, a.store, client)
+        out = run(a.season, a.week, a.store, client, accept_partial=a.accept_partial)
     except (PartialCapture, FileExistsError) as e:
         print(f"REFUSED: {e}", file=sys.stderr)
         return 2
