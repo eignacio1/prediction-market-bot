@@ -3553,3 +3553,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-164, GG-170, GG-320, T-583, T-598. |
 
 </details>
+
+### GG-324 — Market efficiency has been measured for exactly one Kalshi family (KXMLBHIT); the rest of the archived board has never been surveyed, so "where is the market least efficient" is an assumption, not a finding
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-324 |
+| Category | Evidence adequacy / strategic premise: CLAUDE.md § "Market efficiency gradient" says the strategy is designed for less-efficient markets, but no instrument has compared efficiency across families (T-599) |
+| What was found | EXP-029 (T-596) scored the frozen pre-game model against KXMLBHIT only and returned HARMFUL (game-clustered paired dBrier -0.00393, 215 games). That is a verdict about one family and one model. The price archive (`exp_output/PRICE_ARCHIVE/`, gitignored, present only in the main working tree, not in worktrees) holds quotes for other MLB families (per the T-599 brief: KXMLBGAME, KXMLBTEAMTOTAL, KXMLBTOTAL, KXMLBSPREAD, KXMLBF3, KXMLBF5, KXMLBF5TOTAL, KXMLBF5SPREAD) and NFL families. No calibration, spread, vig or convergence measurement exists for any of them. The figures in the T-599 brief (~1.82M rows, 119 files, 2026-08-01 to 09-30) were NOT verified at registration time; a directory listing at registration showed 122 entries, so the brief's count is already at least partly inexact. Verification is Deliverable 1. |
+| Why it matters | The COVERAGE_TARGET_MATRIX records an unadjudicated tension between generality and edge. Without a per-family efficiency measurement, expansion targets are chosen without evidence on the very axis the strategy claims to depend on, and a HARMFUL verdict on one family can be silently over- or under-generalized. |
+| Done | Registered before any ranking is computed. Pre-registration (D2) follows as the next pushed commit; nothing has been measured. |
+| Not done | Everything. No inventory, no proxies, no ranking, no null bands. |
+| Constraints | Measures the market, not our model. No model is fit or tuned, no position opened, no sizing touched. Archive is read-only. |
+| Cross-references | EXP-029, T-596, T-599, GG-004, COVERAGE_TARGET_MATRIX.md, CLAUDE.md market efficiency gradient. |
+
+</details>
