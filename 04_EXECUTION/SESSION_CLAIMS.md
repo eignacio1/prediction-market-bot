@@ -697,3 +697,4 @@
 | 2026-10-01T02:24:01Z | EXP-033 | MERGED: NO — branch `session/20261001T015004Z-multileg-coherence` awaiting merge — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED. (commit `7bdbb9a`) |
 | 2026-10-01T02:24:24Z | EXP-033 | MERGED: NO — branch `session/20261001T015004Z-multileg-coherence` awaiting merge (HEAD 8c8c6a1 not on origin/main) — multi-leg coherence 0/24 survive; ADR-0069 PROPOSED; branch awaiting merge routing |
 | 2026-10-01T02:24:45Z | T-603 | CLOSED — EXP-032 execution cost surface: no E crosses zero under any evidenced policy; H partly artefact, B shrinks with it. (commit `be19d2c`) |
+| 2026-10-01T02:25:12Z | T-603 | CLOSED — merge confirmed, HEAD (13fc4d6) is ancestor of origin/main — EXP-032 execution cost surface: no E crosses zero under any evidenced policy |
