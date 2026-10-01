@@ -3590,9 +3590,66 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Category | Evidence adequacy / measurement design: EXP-031 ranked families on E = B − null_median − H with H frozen at one moment per family (T-603) |
 | What was found | EXP-031 (T-599) found KXMLBTEAMTOTAL and all five F-series families clear their calibration-gap null (B > null_99.5) and are eliminated by H alone (F5SPREAD H .275, F5TOTAL H .145, TEAMTOTAL H .040). H was the median half-spread at the first-seen two-sided snapshot, which in this archive is typically days before settlement. Spread/vig versus time-to-settlement, session phase, side, price level and tick discreteness were inventoried but not ranked, and convergence between first-seen quote and settlement was not computed. |
 | Why it matters | If the toll falls materially at some measurable point of the surface, "zero candidates" is a statement about the first-seen snapshot, not about the venue. If it does not, the toll is structural and the elimination stands on firmer ground. Either answer is currently unevidenced. |
-| Done | Registered before any recompute. Pre-registration (EXP-032) follows as the next pushed commit, alone; nothing has been recomputed. |
-| Not done | Everything: surface, policy recompute, capacity check, drift/placebo. |
+| Done | Registered before any recompute; EXP-032 pre-registered (c663f41, alone); cost surface, policies a/b/c, capacity and drift/placebo run (6aa502a). Result: no family's E crosses zero under an evidenced policy; policy (b) E>0 for KXMLBF7 and KXMLBTEAMTOTAL fails the B-at-entry check; drift placebo ratios 1.5-30 (fail). Summary: RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md. Open follow-ons: GG-326, GG-327, GG-328. |
+| Not done | NFL pregame clock; F3/F5/F5SPREAD/F5TOTAL hours-to-start surface and policy (b) (GG-327); any fill evidence finer than ~20-minute snapshots; depth beyond the sample. |
 | Constraints | Cost side only. B and the null bands are EXP-031 outputs taken as given. No fill assumed that the archive cannot evidence. No model fit, no position, no sizing change, no settlement re-fetch. Archive and EXP-031 cache read-only. Archive capture defects (44.3 owns the fix) will be named where they limit the measurement. |
 | Cross-references | EXP-031, GG-324, T-599, T-603, T-569 (distinct: ~60s latency thesis, not this), EXP-029 (placebo convention), COVERAGE_TARGET_MATRIX.md. |
+
+</details>
+
+### GG-326 — The price archive has a 6-12h-to-close capture hole and ~20-minute resolution; policy (c) fill evidence and the 6-12h cost cells depend on it
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-326 |
+| Category | Data capture adequacy (T-603 / EXP-032) |
+| What was found | Snapshots at 6-12h to close are in the low thousands against tens of thousands in neighbouring buckets (e.g. KXMLBHIT 1,717 vs 44,926 at 12-24h). Snapshot spacing (~20 min) means a resting-order fill between snapshots is invisible, so policy (c) fill rates are lower bounds and its E is conservative by construction. Archive `close_time == expiration_time` on all 2.125M rows, so the archive cannot supply a settlement clock; EXP-032 used the EXP-031 settlement cache. |
+| Why it matters | The cheapest-point search and the fill evidence cannot be finer than the capture. |
+| Done | Reported in EXP-032 results section 6. |
+| Not done | Fix owned by 44.3 (archive self-sufficiency); not touched here. |
+| Cross-references | GG-325, EXP-032, T-603 |
+
+</details>
+
+### GG-327 — EXP-032 clock sanity gate range [2.0, 4.5]h is mis-sized for partial-game families; F3/F5/F5SPREAD/F5TOTAL could not be re-priced by hours-to-start
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-327 |
+| Category | Pre-registration design defect (found after the freeze, not edited) |
+| What was found | The frozen gate required median(close - start) in [2.0, 4.5]h. F3/F5/F5SPREAD/F5TOTAL markets close 1.0-1.7h after start (>99% inside (0, 8]h), so they failed the gate and fell back to the close clock: policy (b) and drift UNMEASURED for them. Their policy (a) and (c) results stand. |
+| Why it matters | Four of the families EXP-031 killed by H alone are exactly the ones whose cost-by-time surface was not measured. |
+| Done | Reported as-is; threshold not changed after seeing results. |
+| Not done | A follow-up pre-registered experiment with a corrected per-family gate (a NEW experiment, not an edit). |
+| Cross-references | GG-325, EXP-032, EXP-031 |
+
+</details>
+
+### GG-328 — Archive books are exactly complementary (no_ask = 1 - yes_bid); YES/NO cost asymmetry exists only in availability, contradicting the "separate side costs" premise
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-328 |
+| Category | Finding / measurement premise (T-603 / EXP-032) |
+| What was found | Zero residual on 2.125M rows for both identities, so the two-sided toll is side-symmetric. Availability is not: KXMLBHIT NO-side buyable 64.0% vs YES 90.8% of snapshots; `yes_bid == 0` on 9.3% of rows. Worth knowing whether the archive derives one side from the other (capture-time construction) rather than recording both books. |
+| Why it matters | If the NO book is derived, side-specific depth and fill evidence are not independent observations. |
+| Done | Measured and reported. |
+| Not done | Check the capture path with 44.3's owner. |
+| Cross-references | GG-325, GG-326, EXP-032 |
 
 </details>

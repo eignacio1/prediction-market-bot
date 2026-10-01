@@ -1680,3 +1680,10 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - Limit: first-seen snapshot rule penalises early-listed families; a last-pre-game-quote test would be a NEW pre-registered experiment, not run. Null band narrow (correlated tickers). No family recommended for/against; EXP-029 neither confirmed nor overturned.
 - D5 shortlist empty. MLB game markets have no real forecaster (stub) and missing factor classes; every non-HIT MLB/NFL registry cell is NOT_IMPLEMENTED.
 - Results: RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md. No model, order, pool, sizing touched. Q1-Q7 deviations (0-player T1 run 2026-09-28 undiagnosed) go to the final report, not fixed here (Rule 11).
+
+## 2026-10-01 — EXP-032 execution cost surface (T-603, GG-325)
+- Pre-registered (c663f41, pushed alone) a cost-side-only recompute of EXP-031's E under policies (a) first-seen, (b) cheapest MEASURED point, (c) rest at mid with fills evidenced only by a strictly-through later pregame quote. B and null bands taken from EXP-031 unchanged.
+- Result: no family's E crosses zero under an evidenced policy. (a) and (c) never; (b) gives E>0 for KXMLBF7 (+.023) and KXMLBTEAMTOTAL (+.011) but B at the cheap entry point is gone (E_entry -.001 / +.001), so neither is a CANDIDATE. KXMLBHIT reference NEAR (+.004, CI spans zero). Correctness gates (a) and forced-fill (c) reproduce EXP-031 on 14/14 families.
+- The toll is time-dependent (F7 20c -> 1c, TEAMTOTAL 4c -> 0.5c toward start), so EXP-031's H was a first-look artefact; the calibration gap B shrinks with it. Drift between first-seen and last pregame quote fails the backward placebo (ratios 1.5-30 vs EXP-029's 1.02). Not T-569.
+- Limits: clock gate range mis-sized for F-series (GG-327, not edited); archive capture hole/resolution (GG-326); NFL has no pregame clock; depth is sample-only so capacity supports no stake. No recommendation for or against any sport or family.
+- Results: RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md. No model, order, pool, sizing touched.
