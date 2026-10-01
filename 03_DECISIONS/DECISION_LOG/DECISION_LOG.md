@@ -1672,3 +1672,11 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - Scored once (lock file). Test 1,316 rows / 215 games; paired dBrier (market - model) = -0.00393, CI [-0.00629, -0.00152]. Market beat the model. Scope: T4-evaluated tickers only (~20% of threshold-1 archive).
 - Fixed D4 controls under new id EXP-029; EXP-028 unedited. D5: no positive edge, so no required-n. Pre-game cell on this feature set not worth activating.
 - Gaps (unregistered, listed in EXP029_market_gate_RESULTS_2026-09-30.md) await GG numbers. Q1-Q7 and session-end not run.
+
+## 2026-09-30 — EXP-031 (T-599, GG-324): cross-family market-efficiency survey — zero candidates
+- Premise corrected: archive is 122 entries (62 price, 59 depth, 1 BROKEN_FIRSTRUN file not read), ~2.12M price rows, 14 families (10 MLB, 4 NFL); it holds no settlements, so outcomes = Kalshi's own `result` via the public read-only endpoint (cached in exp_output/EXP-031-MKT-EFF-SURVEY/settlements/).
+- Pre-registered ranking (B calibration gap, H half-spread, E = B - null median - H; 99.5% own-n null; labels CANDIDATE / NO BETTER THAN KXMLBHIT / INCONCLUSIVE) pushed alone (803f881) before any statistic existed; unamended.
+- Result: **no CANDIDATE.** 10 MLB families labelled NO BETTER; 4 NFL INCONCLUSIVE (n/days). KXMLBSPREAD, KXMLBTOTAL, KXMLBGAME fail their own null. KXMLBHIT (reference) clears its null with E≈0 (CI spans 0). F3/F5/F7/F5SPREAD/TEAMTOTAL clear null but E<0: first-seen quotes are wide (H up to 0.275), so cost exceeds gap.
+- Limit: first-seen snapshot rule penalises early-listed families; a last-pre-game-quote test would be a NEW pre-registered experiment, not run. Null band narrow (correlated tickers). No family recommended for/against; EXP-029 neither confirmed nor overturned.
+- D5 shortlist empty. MLB game markets have no real forecaster (stub) and missing factor classes; every non-HIT MLB/NFL registry cell is NOT_IMPLEMENTED.
+- Results: RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md. No model, order, pool, sizing touched. Q1-Q7 deviations (0-player T1 run 2026-09-28 undiagnosed) go to the final report, not fixed here (Rule 11).

@@ -3572,4 +3572,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Constraints | Measures the market, not our model. No model is fit or tuned, no position opened, no sizing touched. Archive is read-only. |
 | Cross-references | EXP-029, T-596, T-599, GG-004, COVERAGE_TARGET_MATRIX.md, CLAUDE.md market efficiency gradient. |
 
+
+
+**Update 2026-09-30 (T-599, EXP-031):** survey executed against all 14 archived families; zero candidates under the pre-registered rule; limitation (first-seen snapshot) logged. A last-pre-game-snapshot follow-up would need its own pre-registration. Results: `RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md`. Archive holds a `prices_2026-08-01.jsonl.BROKEN_FIRSTRUN` file that was not read.
 </details>
