@@ -699,3 +699,4 @@
 | 2026-10-01T02:24:45Z | T-603 | CLOSED — EXP-032 execution cost surface: no E crosses zero under any evidenced policy; H partly artefact, B shrinks with it. (commit `be19d2c`) |
 | 2026-10-01T02:25:12Z | T-603 | CLOSED — merge confirmed, HEAD (13fc4d6) is ancestor of origin/main — EXP-032 execution cost surface: no E crosses zero under any evidenced policy |
 | 2026-10-01T02:50:38Z | T-602 | MERGED: NO — branch `t602-clean` awaiting merge — T-602 archive self-sufficiency: new read-only settlement + depth writers, proven idempotent on live Kalshi; cron lines drafted (commented), nothing installed or restarted. (commit `934e384`) |
+| 2026-10-01T02:50:58Z | T-602 | CLOSED — merge confirmed, HEAD (84f72b4) is ancestor of origin/main — archive self-sufficiency: settlement + depth writers; cron drafted only |
