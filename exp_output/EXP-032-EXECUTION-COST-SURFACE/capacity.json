@@ -1,0 +1,38 @@
+{
+ "KXMLBF7": {
+  "rows": 6,
+  "tickers": 1,
+  "stakes": {
+   "5": false,
+   "25": false,
+   "100": false,
+   "500": false
+  },
+  "within_5c_usd_min_side_p25": 0.0,
+  "sample_sufficient": false
+ },
+ "KXMLBTEAMTOTAL": {
+  "rows": 2413,
+  "tickers": 361,
+  "stakes": {
+   "5": false,
+   "25": false,
+   "100": false,
+   "500": false
+  },
+  "within_5c_usd_min_side_p25": 0.0,
+  "sample_sufficient": true
+ },
+ "KXMLBHIT": {
+  "rows": 1889,
+  "tickers": 761,
+  "stakes": {
+   "5": false,
+   "25": false,
+   "100": false,
+   "500": false
+  },
+  "within_5c_usd_min_side_p25": 6.54,
+  "sample_sufficient": true
+ }
+}
