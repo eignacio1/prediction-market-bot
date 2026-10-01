@@ -1,0 +1,1419 @@
+{
+ "families": {
+  "KXMLBF3": {
+   "B": 0.0465,
+   "E": -0.14369,
+   "H": 0.175,
+   "buckets": [
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.0,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0871,
+     "lo": 0.1,
+     "n": 94
+    },
+    {
+     "f_minus_p": 0.0217,
+     "lo": 0.2,
+     "n": 482
+    },
+    {
+     "f_minus_p": -0.0126,
+     "lo": 0.3,
+     "n": 736
+    },
+    {
+     "f_minus_p": -0.077,
+     "lo": 0.4,
+     "n": 906
+    },
+    {
+     "f_minus_p": -0.1355,
+     "lo": 0.5,
+     "n": 48
+    },
+    {
+     "f_minus_p": -0.64,
+     "lo": 0.6,
+     "n": 2
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.7,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.8,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.9,
+     "n": 0
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.03441,
+     0.06346
+    ],
+    "E": [
+     -0.18199,
+     -0.13036
+    ],
+    "H": [
+     0.165,
+     0.22
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.03638,
+     0.06128
+    ],
+    "E": [
+     -0.15883,
+     -0.13163
+    ],
+    "H": [
+     0.17,
+     0.19
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 756,
+   "excluded_not_yes_no_or_unsettled": 9,
+   "included_settled_tickers": 2268,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.3634,
+   "null_B_99.5": 0.03439,
+   "null_B_median": 0.01519,
+   "overall_yes_freq": 0.3333,
+   "rank": 8,
+   "snapshot_tickers_two_sided": 2277,
+   "tickers_per_event": 3.0,
+   "vig_median": 0.35
+  },
+  "KXMLBF5": {
+   "B": 0.04902,
+   "E": -0.12865,
+   "H": 0.16,
+   "buckets": [
+    {
+     "f_minus_p": 0.2422,
+     "lo": 0.0,
+     "n": 9
+    },
+    {
+     "f_minus_p": 0.0162,
+     "lo": 0.1,
+     "n": 226
+    },
+    {
+     "f_minus_p": -0.0297,
+     "lo": 0.2,
+     "n": 265
+    },
+    {
+     "f_minus_p": -0.0349,
+     "lo": 0.3,
+     "n": 593
+    },
+    {
+     "f_minus_p": -0.0632,
+     "lo": 0.4,
+     "n": 916
+    },
+    {
+     "f_minus_p": -0.0523,
+     "lo": 0.5,
+     "n": 212
+    },
+    {
+     "f_minus_p": -0.1543,
+     "lo": 0.6,
+     "n": 43
+    },
+    {
+     "f_minus_p": 0.28,
+     "lo": 0.7,
+     "n": 4
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.8,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.9,
+     "n": 0
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.03929,
+     0.0654
+    ],
+    "E": [
+     -0.14481,
+     -0.10584
+    ],
+    "H": [
+     0.14,
+     0.17762
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.04203,
+     0.06092
+    ],
+    "E": [
+     -0.13897,
+     -0.11201
+    ],
+    "H": [
+     0.15,
+     0.17
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 756,
+   "excluded_not_yes_no_or_unsettled": 12,
+   "included_settled_tickers": 2268,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.3762,
+   "null_B_99.5": 0.03551,
+   "null_B_median": 0.01768,
+   "overall_yes_freq": 0.3333,
+   "rank": 7,
+   "snapshot_tickers_two_sided": 2280,
+   "tickers_per_event": 3.0,
+   "vig_median": 0.32
+  },
+  "KXMLBF5SPREAD": {
+   "B": 0.08987,
+   "E": -0.19839,
+   "H": 0.275,
+   "buckets": [
+    {
+     "f_minus_p": -0.0192,
+     "lo": 0.0,
+     "n": 30
+    },
+    {
+     "f_minus_p": 0.0278,
+     "lo": 0.1,
+     "n": 473
+    },
+    {
+     "f_minus_p": -0.0165,
+     "lo": 0.2,
+     "n": 506
+    },
+    {
+     "f_minus_p": -0.0942,
+     "lo": 0.3,
+     "n": 1229
+    },
+    {
+     "f_minus_p": -0.1655,
+     "lo": 0.4,
+     "n": 746
+    },
+    {
+     "f_minus_p": -0.2574,
+     "lo": 0.5,
+     "n": 39
+    },
+    {
+     "f_minus_p": 0.385,
+     "lo": 0.6,
+     "n": 1
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.7,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.8,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.9,
+     "n": 0
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.07689,
+     0.10535
+    ],
+    "E": [
+     -0.227,
+     -0.1614
+    ],
+    "H": [
+     0.24,
+     0.305
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.07434,
+     0.10623
+    ],
+    "E": [
+     -0.21478,
+     -0.17943
+    ],
+    "H": [
+     0.255,
+     0.29
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 756,
+   "excluded_not_yes_no_or_unsettled": 16,
+   "included_settled_tickers": 3024,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.3306,
+   "null_B_99.5": 0.03086,
+   "null_B_median": 0.01326,
+   "overall_yes_freq": 0.2497,
+   "rank": 10,
+   "snapshot_tickers_two_sided": 3040,
+   "tickers_per_event": 4.0,
+   "vig_median": 0.55
+  },
+  "KXMLBF5TOTAL": {
+   "B": 0.06286,
+   "E": -0.09514,
+   "H": 0.145,
+   "buckets": [
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.0,
+     "n": 0
+    },
+    {
+     "f_minus_p": -0.0273,
+     "lo": 0.1,
+     "n": 35
+    },
+    {
+     "f_minus_p": 0.0145,
+     "lo": 0.2,
+     "n": 321
+    },
+    {
+     "f_minus_p": -0.0156,
+     "lo": 0.3,
+     "n": 497
+    },
+    {
+     "f_minus_p": 0.0325,
+     "lo": 0.4,
+     "n": 901
+    },
+    {
+     "f_minus_p": 0.103,
+     "lo": 0.5,
+     "n": 1596
+    },
+    {
+     "f_minus_p": 0.0843,
+     "lo": 0.6,
+     "n": 852
+    },
+    {
+     "f_minus_p": 0.0774,
+     "lo": 0.7,
+     "n": 570
+    },
+    {
+     "f_minus_p": 0.0184,
+     "lo": 0.8,
+     "n": 287
+    },
+    {
+     "f_minus_p": 0.0163,
+     "lo": 0.9,
+     "n": 219
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.05005,
+     0.08129
+    ],
+    "E": [
+     -0.16586,
+     -0.01323
+    ],
+    "H": [
+     0.065,
+     0.22
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.04722,
+     0.08527
+    ],
+    "E": [
+     -0.13379,
+     -0.04562
+    ],
+    "H": [
+     0.1,
+     0.18
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 756,
+   "excluded_not_yes_no_or_unsettled": 28,
+   "included_settled_tickers": 5278,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.5644,
+   "null_B_99.5": 0.02416,
+   "null_B_median": 0.013,
+   "overall_yes_freq": 0.6239,
+   "rank": 6,
+   "snapshot_tickers_two_sided": 5306,
+   "tickers_per_event": 6.98,
+   "vig_median": 0.29
+  },
+  "KXMLBF7": {
+   "B": 0.04984,
+   "E": -0.16672,
+   "H": 0.2,
+   "buckets": [
+    {
+     "f_minus_p": 0.01,
+     "lo": 0.0,
+     "n": 31
+    },
+    {
+     "f_minus_p": 0.0018,
+     "lo": 0.1,
+     "n": 239
+    },
+    {
+     "f_minus_p": -0.0987,
+     "lo": 0.2,
+     "n": 205
+    },
+    {
+     "f_minus_p": 0.0124,
+     "lo": 0.3,
+     "n": 282
+    },
+    {
+     "f_minus_p": -0.0619,
+     "lo": 0.4,
+     "n": 1296
+    },
+    {
+     "f_minus_p": -0.0267,
+     "lo": 0.5,
+     "n": 183
+    },
+    {
+     "f_minus_p": 0.1202,
+     "lo": 0.6,
+     "n": 20
+    },
+    {
+     "f_minus_p": 0.29,
+     "lo": 0.7,
+     "n": 2
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.8,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.025,
+     "lo": 0.9,
+     "n": 3
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.04293,
+     0.06356
+    ],
+    "E": [
+     -0.25567,
+     -0.1396
+    ],
+    "H": [
+     0.17238,
+     0.29762
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.04549,
+     0.06485
+    ],
+    "E": [
+     -0.17227,
+     -0.15266
+    ],
+    "H": [
+     0.195,
+     0.205
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 756,
+   "excluded_not_yes_no_or_unsettled": 15,
+   "included_settled_tickers": 2261,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.3778,
+   "null_B_99.5": 0.03632,
+   "null_B_median": 0.01656,
+   "overall_yes_freq": 0.3344,
+   "rank": 9,
+   "snapshot_tickers_two_sided": 2276,
+   "tickers_per_event": 2.99,
+   "vig_median": 0.4
+  },
+  "KXMLBGAME": {
+   "B": 0.02113,
+   "E": -0.03878,
+   "H": 0.04,
+   "buckets": [
+    {
+     "f_minus_p": -0.015,
+     "lo": 0.0,
+     "n": 1
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.1,
+     "n": 0
+    },
+    {
+     "f_minus_p": -0.1717,
+     "lo": 0.2,
+     "n": 18
+    },
+    {
+     "f_minus_p": -0.0221,
+     "lo": 0.3,
+     "n": 199
+    },
+    {
+     "f_minus_p": -0.0048,
+     "lo": 0.4,
+     "n": 600
+    },
+    {
+     "f_minus_p": 0.0165,
+     "lo": 0.5,
+     "n": 568
+    },
+    {
+     "f_minus_p": 0.0677,
+     "lo": 0.6,
+     "n": 162
+    },
+    {
+     "f_minus_p": 0.2027,
+     "lo": 0.7,
+     "n": 11
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.8,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.015,
+     "lo": 0.9,
+     "n": 1
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.01304,
+     0.05868
+    ],
+    "E": [
+     -0.04736,
+     0.00126
+    ],
+    "H": [
+     0.035,
+     0.045
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.01284,
+     0.05624
+    ],
+    "E": [
+     -0.04632,
+     -0.00233
+    ],
+    "H": [
+     0.035,
+     0.04
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": true,
+   "distinct_days": 57,
+   "distinct_events": 780,
+   "excluded_not_yes_no_or_unsettled": 8,
+   "included_settled_tickers": 1560,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.4922,
+   "null_B_99.5": 0.04171,
+   "null_B_median": 0.01991,
+   "overall_yes_freq": 0.5,
+   "rank": 5,
+   "snapshot_tickers_two_sided": 1568,
+   "tickers_per_event": 2.0,
+   "vig_median": 0.08
+  },
+  "KXMLBHIT": {
+   "B": 0.01372,
+   "E": -0.00079,
+   "H": 0.01,
+   "buckets": [
+    {
+     "f_minus_p": 0.0078,
+     "lo": 0.0,
+     "n": 9733
+    },
+    {
+     "f_minus_p": 0.0198,
+     "lo": 0.1,
+     "n": 5322
+    },
+    {
+     "f_minus_p": 0.0252,
+     "lo": 0.2,
+     "n": 4696
+    },
+    {
+     "f_minus_p": 0.0173,
+     "lo": 0.3,
+     "n": 890
+    },
+    {
+     "f_minus_p": 0.0126,
+     "lo": 0.4,
+     "n": 759
+    },
+    {
+     "f_minus_p": 0.0062,
+     "lo": 0.5,
+     "n": 3899
+    },
+    {
+     "f_minus_p": 0.0132,
+     "lo": 0.6,
+     "n": 4815
+    },
+    {
+     "f_minus_p": 0.028,
+     "lo": 0.7,
+     "n": 443
+    },
+    {
+     "f_minus_p": 0.076,
+     "lo": 0.8,
+     "n": 10
+    },
+    {
+     "f_minus_p": 0.0074,
+     "lo": 0.9,
+     "n": 965
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.0093,
+     0.02044
+    ],
+    "E": [
+     -0.00522,
+     0.00592
+    ],
+    "H": [
+     0.01,
+     0.01
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.00893,
+     0.01965
+    ],
+    "E": [
+     -0.00559,
+     0.00514
+    ],
+    "H": [
+     0.01,
+     0.01
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": true,
+   "distinct_days": 61,
+   "distinct_events": 726,
+   "excluded_not_yes_no_or_unsettled": 593,
+   "included_settled_tickers": 31532,
+   "label": "REFERENCE",
+   "mean_price": 0.3033,
+   "null_B_99.5": 0.00821,
+   "null_B_median": 0.00452,
+   "overall_yes_freq": 0.317,
+   "rank": 1,
+   "snapshot_tickers_two_sided": 32125,
+   "tickers_per_event": 43.43,
+   "vig_median": 0.02
+  },
+  "KXMLBSPREAD": {
+   "B": 0.00923,
+   "E": -0.01114,
+   "H": 0.01,
+   "buckets": [
+    {
+     "f_minus_p": -0.012,
+     "lo": 0.0,
+     "n": 161
+    },
+    {
+     "f_minus_p": -0.0103,
+     "lo": 0.1,
+     "n": 1358
+    },
+    {
+     "f_minus_p": -0.0041,
+     "lo": 0.2,
+     "n": 2241
+    },
+    {
+     "f_minus_p": -0.0083,
+     "lo": 0.3,
+     "n": 1495
+    },
+    {
+     "f_minus_p": -0.0084,
+     "lo": 0.4,
+     "n": 570
+    },
+    {
+     "f_minus_p": -0.0328,
+     "lo": 0.5,
+     "n": 140
+    },
+    {
+     "f_minus_p": 0.0565,
+     "lo": 0.6,
+     "n": 58
+    },
+    {
+     "f_minus_p": 0.1376,
+     "lo": 0.7,
+     "n": 42
+    },
+    {
+     "f_minus_p": 0.0044,
+     "lo": 0.8,
+     "n": 27
+    },
+    {
+     "f_minus_p": -0.0102,
+     "lo": 0.9,
+     "n": 40
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.00669,
+     0.02423
+    ],
+    "E": [
+     -0.01368,
+     0.00386
+    ],
+    "H": [
+     0.01,
+     0.01
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.00638,
+     0.02654
+    ],
+    "E": [
+     -0.01398,
+     0.00618
+    ],
+    "H": [
+     0.01,
+     0.01
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": true,
+   "distinct_days": 61,
+   "distinct_events": 766,
+   "excluded_not_yes_no_or_unsettled": 24,
+   "included_settled_tickers": 6132,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.2853,
+   "null_B_99.5": 0.02064,
+   "null_B_median": 0.01037,
+   "overall_yes_freq": 0.279,
+   "rank": 2,
+   "snapshot_tickers_two_sided": 6156,
+   "tickers_per_event": 8.01,
+   "vig_median": 0.02
+  },
+  "KXMLBTEAMTOTAL": {
+   "B": 0.02572,
+   "E": -0.02403,
+   "H": 0.04,
+   "buckets": [
+    {
+     "f_minus_p": -0.0407,
+     "lo": 0.0,
+     "n": 97
+    },
+    {
+     "f_minus_p": -0.0034,
+     "lo": 0.1,
+     "n": 904
+    },
+    {
+     "f_minus_p": -0.0268,
+     "lo": 0.2,
+     "n": 1800
+    },
+    {
+     "f_minus_p": -0.0444,
+     "lo": 0.3,
+     "n": 1652
+    },
+    {
+     "f_minus_p": -0.0268,
+     "lo": 0.4,
+     "n": 1421
+    },
+    {
+     "f_minus_p": 0.014,
+     "lo": 0.5,
+     "n": 1747
+    },
+    {
+     "f_minus_p": 0.0316,
+     "lo": 0.6,
+     "n": 1215
+    },
+    {
+     "f_minus_p": 0.0373,
+     "lo": 0.7,
+     "n": 1040
+    },
+    {
+     "f_minus_p": 0.0075,
+     "lo": 0.8,
+     "n": 756
+    },
+    {
+     "f_minus_p": 0.0178,
+     "lo": 0.9,
+     "n": 69
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.01832,
+     0.03732
+    ],
+    "E": [
+     -0.05944,
+     -0.01561
+    ],
+    "H": [
+     0.035,
+     0.075
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.01864,
+     0.03673
+    ],
+    "E": [
+     -0.03722,
+     -0.01467
+    ],
+    "H": [
+     0.04,
+     0.05
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": false,
+   "distinct_days": 61,
+   "distinct_events": 766,
+   "excluded_not_yes_no_or_unsettled": 56,
+   "included_settled_tickers": 10701,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.4682,
+   "null_B_99.5": 0.01734,
+   "null_B_median": 0.00975,
+   "overall_yes_freq": 0.4628,
+   "rank": 4,
+   "snapshot_tickers_two_sided": 10757,
+   "tickers_per_event": 13.97,
+   "vig_median": 0.08
+  },
+  "KXMLBTOTAL": {
+   "B": 0.01373,
+   "E": -0.01165,
+   "H": 0.015,
+   "buckets": [
+    {
+     "f_minus_p": -0.0514,
+     "lo": 0.0,
+     "n": 35
+    },
+    {
+     "f_minus_p": 0.0061,
+     "lo": 0.1,
+     "n": 529
+    },
+    {
+     "f_minus_p": -0.0005,
+     "lo": 0.2,
+     "n": 1474
+    },
+    {
+     "f_minus_p": 0.0041,
+     "lo": 0.3,
+     "n": 1191
+    },
+    {
+     "f_minus_p": 0.0164,
+     "lo": 0.4,
+     "n": 955
+    },
+    {
+     "f_minus_p": 0.018,
+     "lo": 0.5,
+     "n": 893
+    },
+    {
+     "f_minus_p": 0.0156,
+     "lo": 0.6,
+     "n": 842
+    },
+    {
+     "f_minus_p": 0.0428,
+     "lo": 0.7,
+     "n": 976
+    },
+    {
+     "f_minus_p": 0.0205,
+     "lo": 0.8,
+     "n": 1178
+    },
+    {
+     "f_minus_p": 0.0032,
+     "lo": 0.9,
+     "n": 1020
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.0088,
+     0.03357
+    ],
+    "E": [
+     -0.01591,
+     0.01023
+    ],
+    "H": [
+     0.01,
+     0.015
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.00887,
+     0.03268
+    ],
+    "E": [
+     -0.01646,
+     0.00731
+    ],
+    "H": [
+     0.01,
+     0.015
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": true,
+   "distinct_days": 61,
+   "distinct_events": 764,
+   "excluded_not_yes_no_or_unsettled": 43,
+   "included_settled_tickers": 9093,
+   "label": "NO BETTER THAN KXMLBHIT",
+   "mean_price": 0.552,
+   "null_B_99.5": 0.01898,
+   "null_B_median": 0.01038,
+   "overall_yes_freq": 0.5652,
+   "rank": 3,
+   "snapshot_tickers_two_sided": 9136,
+   "tickers_per_event": 11.9,
+   "vig_median": 0.03
+  },
+  "KXNFLGAME": {
+   "B": 0.14844,
+   "E": 0.03667,
+   "H": 0.01,
+   "buckets": [
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.0,
+     "n": 0
+    },
+    {
+     "f_minus_p": 0.02,
+     "lo": 0.1,
+     "n": 5
+    },
+    {
+     "f_minus_p": 0.1967,
+     "lo": 0.2,
+     "n": 9
+    },
+    {
+     "f_minus_p": -0.2143,
+     "lo": 0.3,
+     "n": 15
+    },
+    {
+     "f_minus_p": 0.1868,
+     "lo": 0.4,
+     "n": 19
+    },
+    {
+     "f_minus_p": -0.1376,
+     "lo": 0.5,
+     "n": 17
+    },
+    {
+     "f_minus_p": 0.1072,
+     "lo": 0.6,
+     "n": 16
+    },
+    {
+     "f_minus_p": -0.146,
+     "lo": 0.7,
+     "n": 10
+    },
+    {
+     "f_minus_p": -0.02,
+     "lo": 0.8,
+     "n": 5
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.9,
+     "n": 0
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.14758,
+     0.21391
+    ],
+    "E": [
+     0.03667,
+     0.10214
+    ],
+    "H": [
+     0.005,
+     0.01
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.08154,
+     0.27258
+    ],
+    "E": [
+     -0.02659,
+     0.16333
+    ],
+    "H": [
+     0.005,
+     0.01
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": false,
+   "distinct_days": 2,
+   "distinct_events": 48,
+   "excluded_not_yes_no_or_unsettled": 62,
+   "included_settled_tickers": 96,
+   "label": "INCONCLUSIVE",
+   "mean_price": 0.4998,
+   "null_B_99.5": 0.18896,
+   "null_B_median": 0.10177,
+   "overall_yes_freq": 0.5,
+   "snapshot_tickers_two_sided": 158,
+   "tickers_per_event": 2.0,
+   "vig_median": 0.02
+  },
+  "KXNFLSPREAD": {
+   "B": 0.02271,
+   "E": -0.03148,
+   "H": 0.03,
+   "buckets": [
+    {
+     "f_minus_p": 0.052,
+     "lo": 0.0,
+     "n": 96
+    },
+    {
+     "f_minus_p": 0.0124,
+     "lo": 0.1,
+     "n": 371
+    },
+    {
+     "f_minus_p": 0.0085,
+     "lo": 0.2,
+     "n": 358
+    },
+    {
+     "f_minus_p": -0.0082,
+     "lo": 0.3,
+     "n": 184
+    },
+    {
+     "f_minus_p": -0.0386,
+     "lo": 0.4,
+     "n": 125
+    },
+    {
+     "f_minus_p": -0.0854,
+     "lo": 0.5,
+     "n": 101
+    },
+    {
+     "f_minus_p": -0.0079,
+     "lo": 0.6,
+     "n": 56
+    },
+    {
+     "f_minus_p": -0.0693,
+     "lo": 0.7,
+     "n": 21
+    },
+    {
+     "f_minus_p": 0.175,
+     "lo": 0.8,
+     "n": 2
+    },
+    {
+     "f_minus_p": 0.0,
+     "lo": 0.9,
+     "n": 0
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.01965,
+     0.09354
+    ],
+    "E": [
+     -0.05502,
+     0.04199
+    ],
+    "H": [
+     0.01,
+     0.085
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.01825,
+     0.07923
+    ],
+    "E": [
+     -0.04256,
+     0.02405
+    ],
+    "H": [
+     0.025,
+     0.05
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": true,
+   "distinct_days": 14,
+   "distinct_events": 48,
+   "excluded_not_yes_no_or_unsettled": 406,
+   "included_settled_tickers": 1314,
+   "label": "INCONCLUSIVE",
+   "mean_price": 0.286,
+   "null_B_99.5": 0.04611,
+   "null_B_median": 0.0242,
+   "overall_yes_freq": 0.2831,
+   "snapshot_tickers_two_sided": 1720,
+   "tickers_per_event": 27.38,
+   "vig_median": 0.06
+  },
+  "KXNFLTEAMTOTAL": {
+   "B": 0.04769,
+   "E": -0.00879,
+   "H": 0.03,
+   "buckets": [
+    {
+     "f_minus_p": -0.029,
+     "lo": 0.0,
+     "n": 168
+    },
+    {
+     "f_minus_p": -0.0377,
+     "lo": 0.1,
+     "n": 93
+    },
+    {
+     "f_minus_p": -0.0666,
+     "lo": 0.2,
+     "n": 160
+    },
+    {
+     "f_minus_p": 0.0699,
+     "lo": 0.3,
+     "n": 92
+    },
+    {
+     "f_minus_p": 0.0108,
+     "lo": 0.4,
+     "n": 133
+    },
+    {
+     "f_minus_p": 0.0195,
+     "lo": 0.5,
+     "n": 101
+    },
+    {
+     "f_minus_p": -0.1386,
+     "lo": 0.6,
+     "n": 69
+    },
+    {
+     "f_minus_p": 0.0682,
+     "lo": 0.7,
+     "n": 132
+    },
+    {
+     "f_minus_p": -0.0343,
+     "lo": 0.8,
+     "n": 142
+    },
+    {
+     "f_minus_p": -0.0461,
+     "lo": 0.9,
+     "n": 212
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.03427,
+     0.11059
+    ],
+    "E": [
+     -0.06524,
+     0.05183
+    ],
+    "H": [
+     0.02,
+     0.10881
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.03713,
+     0.07963
+    ],
+    "E": [
+     -0.01946,
+     0.02156
+    ],
+    "H": [
+     0.03,
+     0.035
+    ]
+   },
+   "clears_null": true,
+   "day_fragile": true,
+   "distinct_days": 16,
+   "distinct_events": 48,
+   "excluded_not_yes_no_or_unsettled": 418,
+   "included_settled_tickers": 1302,
+   "label": "INCONCLUSIVE",
+   "mean_price": 0.5164,
+   "null_B_99.5": 0.04535,
+   "null_B_median": 0.02648,
+   "overall_yes_freq": 0.4977,
+   "snapshot_tickers_two_sided": 1720,
+   "tickers_per_event": 27.12,
+   "vig_median": 0.06
+  },
+  "KXNFLTOTAL": {
+   "B": 0.04816,
+   "E": -0.01331,
+   "H": 0.03,
+   "buckets": [
+    {
+     "f_minus_p": -0.0182,
+     "lo": 0.0,
+     "n": 34
+    },
+    {
+     "f_minus_p": 0.0153,
+     "lo": 0.1,
+     "n": 55
+    },
+    {
+     "f_minus_p": 0.0928,
+     "lo": 0.2,
+     "n": 44
+    },
+    {
+     "f_minus_p": -0.0209,
+     "lo": 0.3,
+     "n": 94
+    },
+    {
+     "f_minus_p": -0.0674,
+     "lo": 0.4,
+     "n": 201
+    },
+    {
+     "f_minus_p": -0.0472,
+     "lo": 0.5,
+     "n": 265
+    },
+    {
+     "f_minus_p": -0.0976,
+     "lo": 0.6,
+     "n": 81
+    },
+    {
+     "f_minus_p": -0.0037,
+     "lo": 0.7,
+     "n": 60
+    },
+    {
+     "f_minus_p": 0.0489,
+     "lo": 0.8,
+     "n": 74
+    },
+    {
+     "f_minus_p": 0.0234,
+     "lo": 0.9,
+     "n": 64
+    }
+   ],
+   "ci_day": {
+    "B": [
+     0.03527,
+     0.15512
+    ],
+    "E": [
+     -0.16958,
+     0.04102
+    ],
+    "H": [
+     0.015,
+     0.245
+    ]
+   },
+   "ci_game": {
+    "B": [
+     0.03042,
+     0.12373
+    ],
+    "E": [
+     -0.04983,
+     0.06054
+    ],
+    "H": [
+     0.02,
+     0.08
+    ]
+   },
+   "clears_null": false,
+   "day_fragile": true,
+   "distinct_days": 11,
+   "distinct_events": 48,
+   "excluded_not_yes_no_or_unsettled": 304,
+   "included_settled_tickers": 972,
+   "label": "INCONCLUSIVE",
+   "mean_price": 0.5203,
+   "null_B_99.5": 0.05734,
+   "null_B_median": 0.03147,
+   "overall_yes_freq": 0.4928,
+   "snapshot_tickers_two_sided": 1276,
+   "tickers_per_event": 20.25,
+   "vig_median": 0.06
+  }
+ },
+ "generated_at": "2026-10-01T01:35:50.377848+00:00",
+ "inconclusive": [
+  "KXNFLGAME",
+  "KXNFLSPREAD",
+  "KXNFLTEAMTOTAL",
+  "KXNFLTOTAL"
+ ],
+ "ranking": [
+  "KXMLBHIT",
+  "KXMLBSPREAD",
+  "KXMLBTOTAL",
+  "KXMLBTEAMTOTAL",
+  "KXMLBGAME",
+  "KXMLBF5TOTAL",
+  "KXMLBF5",
+  "KXMLBF3",
+  "KXMLBF7",
+  "KXMLBF5SPREAD"
+ ]
+}

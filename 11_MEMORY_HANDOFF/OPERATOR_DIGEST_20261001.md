@@ -4,3 +4,5 @@
 - It is instrumentation for next season, not new evidence for this one (about 8% of the sample the model test needs).
 - The schedule to run it automatically is drafted but NOT switched on. Needs your yes; first game is Thursday night.
 - Still zero real money at risk.
+
+- T-600 (auto): T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized.

@@ -1,0 +1,124 @@
+{
+ "KXMLBF3": {
+  "archive_tickers": 2280,
+  "results": {
+   "yes": 757,
+   "no": 1514,
+   "NOT_IN_SETTLED_LIST": 6,
+   "scalar": 3
+  }
+ },
+ "KXMLBF5": {
+  "archive_tickers": 2280,
+  "results": {
+   "no": 1512,
+   "yes": 756,
+   "NOT_IN_SETTLED_LIST": 9,
+   "scalar": 3
+  }
+ },
+ "KXMLBF5SPREAD": {
+  "archive_tickers": 3040,
+  "results": {
+   "no": 2269,
+   "yes": 755,
+   "NOT_IN_SETTLED_LIST": 12,
+   "scalar": 4
+  }
+ },
+ "KXMLBF5TOTAL": {
+  "archive_tickers": 5320,
+  "results": {
+   "yes": 3304,
+   "no": 1988,
+   "NOT_IN_SETTLED_LIST": 21,
+   "scalar": 7
+  }
+ },
+ "KXMLBF7": {
+  "archive_tickers": 2295,
+  "results": {
+   "yes": 760,
+   "no": 1520,
+   "NOT_IN_SETTLED_LIST": 9,
+   "scalar": 6
+  }
+ },
+ "KXMLBGAME": {
+  "archive_tickers": 1568,
+  "results": {
+   "yes": 780,
+   "no": 780,
+   "NOT_IN_SETTLED_LIST": 6,
+   "scalar": 2
+  }
+ },
+ "KXMLBHIT": {
+  "archive_tickers": 36905,
+  "results": {
+   "scalar": 575,
+   "no": 26191,
+   "yes": 10003,
+   "NOT_IN_SETTLED_LIST": 136
+  }
+ },
+ "KXMLBSPREAD": {
+  "archive_tickers": 6232,
+  "results": {
+   "no": 4497,
+   "yes": 1711,
+   "NOT_IN_SETTLED_LIST": 18,
+   "scalar": 6
+  }
+ },
+ "KXMLBTEAMTOTAL": {
+  "archive_tickers": 10780,
+  "results": {
+   "no": 5772,
+   "yes": 4952,
+   "NOT_IN_SETTLED_LIST": 42,
+   "scalar": 14
+  }
+ },
+ "KXMLBTOTAL": {
+  "archive_tickers": 9163,
+  "results": {
+   "no": 3981,
+   "yes": 5139,
+   "NOT_IN_SETTLED_LIST": 32,
+   "scalar": 11
+  }
+ },
+ "KXNFLGAME": {
+  "archive_tickers": 158,
+  "results": {
+   "no": 48,
+   "NOT_IN_SETTLED_LIST": 62,
+   "yes": 48
+  }
+ },
+ "KXNFLSPREAD": {
+  "archive_tickers": 1725,
+  "results": {
+   "NOT_IN_SETTLED_LIST": 406,
+   "yes": 372,
+   "no": 947
+  }
+ },
+ "KXNFLTEAMTOTAL": {
+  "archive_tickers": 1764,
+  "results": {
+   "yes": 648,
+   "NOT_IN_SETTLED_LIST": 437,
+   "no": 679
+  }
+ },
+ "KXNFLTOTAL": {
+  "archive_tickers": 1276,
+  "results": {
+   "yes": 479,
+   "no": 493,
+   "NOT_IN_SETTLED_LIST": 304
+  }
+ }
+}

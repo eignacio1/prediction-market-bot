@@ -1,28 +1,28 @@
 # Session Handoff — 2026-10-01T01:40Z
 
 <!-- session-meta
-task_id: T-601
-tier: STANDARD
+task_id: T-600
+tier: MICRO
 timestamp: 2026-10-01T01:40:00Z
-commit: 9734d57
-one_line_summary: T-601: NFL pre-kickoff capture runner built+tested, 2 live hand-runs clean; cron drafted (commented), not installed.
+commit: 2e54e71
+one_line_summary: T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized.
 gg_touched: none
 adr_touched: none
 plan_deliverable_moved: no
 -->
 
-**Trigger:** wave complete. **Last commit:** `9734d57` on branch `session/20261001T012446Z-nfl-prekickoff-capture`.
+**Trigger:** wave complete. **Last commit:** `2e54e71` on session branch (not on main).
 
 ## Strategic Decisions This Session
-None logged (GG/DECISION_LOG owned by 43.1; candidates in the results summary "GAPS FOR 43.1"). Finding: T-597's "lost data" premise is partly wrong — nfldata git history makes weeks 1–3 recoverable.
+None — implementation-only session. (GG/DECISION_LOG writes belong to 43.1; gaps are in the results summary.)
 
 ## What changed
-- `scripts/nfl_prekickoff_capture.py` + `tests/test_t601_nfl_prekickoff_capture.py` (11 pass with T-593's); `nfl_ingestion.py`: `gametime` allowlisted, `capture_extended` unbound-`stamp` fix.
-- `deploy/cron.conf`: commented DRAFT only. Summary: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T601_nfl_prekickoff_capture.md`.
-- Full suite not run this session; paper bet count not re-checked.
+- `Live Terminal.html` (new, repo root) embedded verbatim as `_HTML`; `cmp`-proven byte-identical over HTTP; drift test added.
+- `/api/data` + `rejected_counts`, `t4_cycle_tail`, `process{started_at,sha}`; terminal status bar shows SHA and T4 cycle rate. 31 dashboard tests pass.
+- Local timing: `/` ~1ms, `/api/data` 0.2–0.56s (realistic caches, synthetic audit).
 
 ## One thing pending
-Operator decision: authorize installing the drafted capture cron (week 4 first kickoff Fri 00:15Z). Verify against the LIVE crontab (GG-262) before install; no authorization line exists yet.
+Operator adds an authorization line for `pmbot-web-dashboard` restart in ACTIVE_QUEUE "Needs your decision"; then restart and verify from the running process (`/` vs file, new keys, `process.sha`). Gaps for registration: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T600_live_terminal_landing.md`.
 
 ## Resume
-`scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"`
+`cd PM-worktrees/20261001T012448Z-live-terminal-landing`; merge branch to main (src not touched; scripts/ only).
