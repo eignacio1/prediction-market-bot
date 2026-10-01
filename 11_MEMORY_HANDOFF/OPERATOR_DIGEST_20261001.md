@@ -14,3 +14,5 @@
 - Still zero real money at risk.
 
 - T-600 (auto): T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized.
+
+**EXP-033 — do multi-leg bets price looser than single bets?** No. I checked 24 combinations of related Kalshi markets from the same game for prices that contradict each other. Some looked off on paper, but once you pay the cost of buying every piece at the same time, nothing was left, and normal timing noise explained the rest. One NFL cluster is worth watching. Nothing was bought, no money was at risk, and a proposed rule for grouping same-game exposure (ADR-0069) is written down but not approved and changes nothing.
