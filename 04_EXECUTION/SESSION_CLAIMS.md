@@ -698,3 +698,4 @@
 | 2026-10-01T02:24:24Z | EXP-033 | MERGED: NO — branch `session/20261001T015004Z-multileg-coherence` awaiting merge (HEAD 8c8c6a1 not on origin/main) — multi-leg coherence 0/24 survive; ADR-0069 PROPOSED; branch awaiting merge routing |
 | 2026-10-01T02:24:45Z | T-603 | CLOSED — EXP-032 execution cost surface: no E crosses zero under any evidenced policy; H partly artefact, B shrinks with it. (commit `be19d2c`) |
 | 2026-10-01T02:25:12Z | T-603 | CLOSED — merge confirmed, HEAD (13fc4d6) is ancestor of origin/main — EXP-032 execution cost surface: no E crosses zero under any evidenced policy |
+| 2026-10-01T02:50:38Z | T-602 | MERGED: NO — branch `t602-clean` awaiting merge — T-602 archive self-sufficiency: new read-only settlement + depth writers, proven idempotent on live Kalshi; cron lines drafted (commented), nothing installed or restarted. (commit `934e384`) |

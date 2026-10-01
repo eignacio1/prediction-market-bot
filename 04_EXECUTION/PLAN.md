@@ -2,7 +2,8 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-01T02:30:00Z (T-603 — EXP-032 execution cost surface: no E crosses zero under any evidenced policy; H partly artefact, B shrinks with it.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0230.md` for full session detail.
+**Last reviewed:** 2026-10-01T03:00:00Z (T-602 — T-602 archive self-sufficiency: new read-only settlement + depth writers, proven idempotent on live Kalshi; cron lines drafted (commented), nothing installed or restarted.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0300.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-09-29T04:32:00Z (T-578 — T-578: park_factor_hits repaired (15.26% rows affected, not ~100%); ADR-0064 drafted, not activated) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260929_0432.md` for full session detail.
