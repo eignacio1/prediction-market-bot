@@ -676,3 +676,4 @@
 | 2026-09-30T05:49:23Z | T-598 | CLOSED — merge confirmed, HEAD (78b938a) is ancestor of origin/main — EXP-030 scored once; NO DETECTABLE DIFFERENCE; GG-323 opened |
 | 2026-09-30T06:24:15Z | T-596 | CLOSED — EXP-029 (T-596): frozen EXP-028 model scored once vs KXMLBHIT market on 215 games -> HARMFUL (dBrier -0.0039). (commit `5a17e79`) |
 | 2026-09-30T06:24:27Z | T-596 | CLOSED — merge confirmed, HEAD (64fd3cb) is ancestor of origin/main — EXP-029 frozen model vs market: HARMFUL |
+| 2026-10-01T01:25:11Z | T-599 (verify); GG-324+ and EXP id claimed at run time; ADR none | STANDARD — market-efficiency survey: inventory archive, pre-register ranking, measure efficiency proxies + calibration per MLB/NFL family with null bands, join to build substrate. Deliverable: results summary + ranking. Measures market only; no model/sizing. |
