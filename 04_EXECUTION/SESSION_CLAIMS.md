@@ -680,3 +680,4 @@
 | 2026-10-01T01:25:33Z | T-600; no GG/ADR (gaps via results summary) | 43.2 live terminal landing: swap _HTML byte-faithful, extend /api/data additively, verify both endpoints; restart gated |
 | 2026-10-01T01:25:51Z | T-601; no GG/ADR | STANDARD — 43.3 NFL pre-kickoff capture runner: price lost weeks, idempotent append-only runner + tests, 2 hand-runs, DRAFTED cron (commented, not installed), valuation. Deliverable: results summary. |
 | 2026-10-01T01:37:00Z | T-600 | MERGED: NO — branch `session/20261001T012448Z-live-terminal-landing` awaiting merge — T-600 Live Terminal landed (byte-faithful embed + 3 additive /api/data keys, tested); VPS restart skipped, unauthorized. (commit `2e54e71`) |
+| 2026-10-01T01:37:32Z | T-600 | MERGED: NO — branch `session/20261001T012448Z-live-terminal-landing` awaiting merge (HEAD de94172 not on origin/main) — Live Terminal landed on branch; merge to main pending (diverged origin/main), VPS restart unauthorized |
