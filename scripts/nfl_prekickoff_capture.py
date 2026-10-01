@@ -173,8 +173,8 @@ def run(season: int, week: int | None, store: Path, client: NFLIngestionClient,
                 raise FileExistsError(f"refusing to overwrite capture: {dest}")
             df.to_parquet(dest)
             rec = {
-                "season": season, "week": week, "source": name, "status": "partial" if gaps else "complete",
-                "partial_reasons": gaps,
+                "season": season, "week": week, "source": name, "status": "partial" if (gaps and name == "schedule") else "complete",
+                "partial_reasons": gaps if name == "schedule" else [],
                 "captured_at_utc": meta["retrieved_at_utc"], "source_url": meta["url"],
                 "upstream_sha256": meta["sha256"], "content_sha256": h,
                 "rows": len(df), "file": fname,

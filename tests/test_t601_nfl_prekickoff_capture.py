@@ -140,3 +140,5 @@ def test_accept_partial_records_partial_never_complete(tmp_path):
     assert sched_rec["status"] == "partial"
     assert "null away_qb_id" in sched_rec["partial_reasons"][0]
     assert out["results"]["schedule"]["action"] == "appended"
+    ts_rec = next(r for r in _index(tmp_path) if r["source"] == "team_stats")
+    assert ts_rec["status"] == "complete" and ts_rec["partial_reasons"] == []
