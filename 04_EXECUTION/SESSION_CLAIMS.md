@@ -689,3 +689,4 @@
 | 2026-10-01T01:39:14Z | T-599 | MERGED: NO — branch `session/20261001T012443Z-market-efficiency-survey` awaiting merge — T-599/EXP-031: surveyed 14 Kalshi families vs pre-registered rule; zero candidates, shortlist empty (GG-324). (commit `aaef16d`) |
 | 2026-10-01T01:39:21Z | T-599 | CLOSED — merge confirmed, HEAD (c6f2572) is ancestor of origin/main — T-599/EXP-031: 14 Kalshi families surveyed; zero candidates (GG-324) |
 | 2026-10-01T01:41:28Z | T-601 | MERGED: NO — branch `session/20261001T012446Z-nfl-prekickoff-capture` awaiting merge — T-601: NFL pre-kickoff capture runner built+tested, 2 live hand-runs clean; cron drafted (commented), not installed. (commit `9734d57`) |
+| 2026-10-01T01:41:44Z | T-601 | CLOSED — merge confirmed, HEAD (1fa64b7) is ancestor of origin/main — T-601: NFL pre-kickoff capture runner landed |
