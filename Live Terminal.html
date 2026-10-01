@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PMBOT — LIVE TERMINAL</title>
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   PMBOT LIVE TERMINAL
+   Pure black. Colour is rationed: green/red = P&L sign only,
+   amber/red = severity only, amber = chrome. Band and sport identity is
+   carried by LABEL, never by hue — nothing depends on colour vision.
+   Contrast on #000: ink 17.1 · dim 6.1 · amber 11.5 · green 10.0 · red 6.4
+   ══════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#000; --hair:#1c1c1c; --hair-2:#121212; --raise:#0a0a0a;
+  --ink:#e8e8e4; --dim:#8a8a84; --faint:#5a5a55;
+  --amber:#ffb020; --amber-dim:#a8762a;
+  --green:#2ecc71; --red:#ff4d4d; --cyan:#4dd0e1; --violet:#c9a0ff;
+  --mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono);
+  font-size:12px; line-height:1.4; font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+::selection{background:var(--amber); color:#000}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:#242424}
+::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+
+/* ─── STATUS BAR ─── */
+.status{position:sticky; top:0; z-index:60; background:#000; border-bottom:1px solid var(--hair);
+  display:flex; align-items:center; height:32px; padding:0 12px}
+.status .id{color:var(--amber); font-weight:700; letter-spacing:.11em; font-size:12.5px}
+.status .sep{color:var(--faint); margin:0 10px}
+.status .sub{color:var(--dim); letter-spacing:.04em}
+.sp{flex:1}
+.led{display:inline-flex; align-items:center; gap:6px; padding:2px 9px; border:1px solid var(--hair);
+  letter-spacing:.08em; font-weight:700; font-size:11px}
+.led b{width:7px;height:7px;border-radius:50%;display:inline-block}
+.led.live{color:var(--green); border-color:#144d2b} .led.live b{background:var(--green); animation:pulse 2s infinite}
+.led.stale{color:var(--amber); border-color:#4d3a10} .led.stale b{background:var(--amber)}
+.led.down{color:var(--red); border-color:#4d1717} .led.down b{background:var(--red); animation:blink .9s steps(2) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+.tbtn{background:none; border:1px solid var(--hair); color:var(--dim); font:inherit; font-size:11px;
+  padding:2.5px 9px; cursor:pointer; letter-spacing:.06em}
+.tbtn:hover{border-color:var(--amber-dim); color:var(--amber)}
+.tbtn.on{border-color:var(--amber); color:var(--amber)}
+
+/* ─── MODULE BAR (ERP-style) ─── */
+.modbar{position:sticky; top:32px; z-index:55; display:flex; align-items:stretch;
+  background:#000; border-bottom:1px solid var(--hair); overflow-x:auto}
+.mod{background:none; border:none; border-right:1px solid var(--hair-2); color:var(--dim);
+  font:inherit; font-size:11px; letter-spacing:.11em; padding:7px 16px; cursor:pointer;
+  white-space:nowrap; position:relative; text-transform:uppercase; font-weight:700}
+.mod:hover{color:var(--ink); background:#080808}
+.mod.on{color:var(--amber); background:#0c0a04}
+.mod.on::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--amber)}
+.mod .badge{margin-left:8px; color:var(--faint); font-weight:400; font-size:10px}
+.mod.on .badge{color:var(--amber-dim)}
+.mod .warn{color:var(--red)}
+
+/* ─── BANNER ─── */
+.banner{background:#170505; border-bottom:1px solid #4d1717; color:var(--red);
+  padding:7px 12px; letter-spacing:.03em; display:none}
+.banner.show{display:block}
+.banner .dl{color:var(--dim); margin-left:10px}
+.banner.demo{background:#171003; border-color:#4d3a10; color:var(--amber)}
+
+/* ─── METRIC RAIL ─── */
+.rail{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); border-bottom:1px solid var(--hair)}
+.met{padding:7px 12px; border-right:1px solid var(--hair-2); position:relative; overflow:hidden}
+.met:last-child{border-right:none}
+.met .k{color:var(--faint); font-size:9.4px; letter-spacing:.12em; text-transform:uppercase}
+.met .v{font-size:16.5px; font-weight:700; letter-spacing:-.01em; margin-top:2px; white-space:nowrap}
+.met .d{font-size:10px; color:var(--faint); margin-top:1px; white-space:nowrap; height:13px}
+.pos{color:var(--green)} .neg{color:var(--red)} .amb{color:var(--amber)} .cy{color:var(--cyan)}
+.vi{color:var(--violet)}
+.met.flash::after{content:""; position:absolute; inset:0; background:var(--amber); opacity:.16;
+  animation:fade .9s ease-out forwards; pointer-events:none}
+@keyframes fade{to{opacity:0}}
+
+/* ─── LAYOUT ─── */
+.grid{display:grid; gap:0}
+.g-7-5{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.g-1{grid-template-columns:minmax(0,1fr)}
+.g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:1180px){.g-7-5,.g-2{grid-template-columns:1fr}}
+.col{min-width:0; border-right:1px solid var(--hair)}
+.col:last-child{border-right:none}
+.panel{border-bottom:1px solid var(--hair); min-width:0}
+.ph{display:flex; align-items:center; gap:9px; padding:6px 12px;
+  border-bottom:1px solid var(--hair-2); background:var(--raise); flex-wrap:wrap}
+.ph .t{color:var(--amber); letter-spacing:.14em; font-size:10.5px; font-weight:700; text-transform:uppercase}
+.ph .n{color:var(--faint); font-size:10.5px}
+.pb{padding:10px 12px} .pb.flush{padding:0}
+
+/* ─── TABLES ─── */
+table{width:100%; border-collapse:collapse; font-size:11.4px}
+thead th{position:sticky; top:0; background:#000; z-index:2; text-align:left; color:var(--faint);
+  font-weight:400; letter-spacing:.1em; font-size:9.4px; text-transform:uppercase; padding:5px 8px;
+  border-bottom:1px solid var(--hair); white-space:nowrap; cursor:pointer; user-select:none}
+thead th:hover{color:var(--amber)}
+thead th.na{cursor:default} thead th.na:hover{color:var(--faint)}
+thead th .ar{color:var(--amber); font-size:8px}
+tbody td{padding:4px 8px; border-bottom:1px solid var(--hair-2); white-space:nowrap}
+tbody tr:hover td{background:#0c0c0c}
+td.r{text-align:right} td.dim{color:var(--dim)}
+.scroll{overflow:auto; max-height:var(--h,300px)}
+tr.new td{animation:rowflash 1.6s ease-out}
+@keyframes rowflash{0%{background:#3a2a06}100%{background:transparent}}
+
+.tag{display:inline-block; border:1px solid var(--hair); padding:0 5px; font-size:9.6px;
+  letter-spacing:.09em; color:var(--dim); font-weight:700}
+.tag.t1{color:var(--cyan); border-color:#17414a}
+.tag.t4{color:var(--amber); border-color:#4d3a10}
+.tag.nfl{color:var(--violet); border-color:#33224d}
+.tag.stub{color:var(--red); border-color:#4d1717; background:#150404}
+.tag.real{color:var(--green); border-color:#144d2b}
+.tag.unk{color:var(--faint)}
+.dir{font-weight:700; font-size:10px; letter-spacing:.06em}
+.dir.y{color:var(--green)} .dir.n{color:var(--red)}
+.sev{font-size:9.6px; letter-spacing:.08em; font-weight:700}
+.sev.WARNING{color:var(--amber)} .sev.ERROR,.sev.CRITICAL{color:var(--red)} .sev.INFO{color:var(--dim)}
+
+/* ─── TAPE ─── */
+.tl{display:grid; grid-template-columns:62px 34px 1fr; gap:8px; padding:3px 12px;
+  border-bottom:1px solid var(--hair-2)}
+.tl:hover{background:#0c0c0c}
+.tl.new{animation:rowflash 1.6s ease-out}
+.tl .ts{color:var(--faint); font-size:10.2px}
+.tl .bd{font-size:9.6px; letter-spacing:.06em; font-weight:700}
+.tl .msg{overflow:hidden; text-overflow:ellipsis}
+.tl .msg em{color:var(--dim); font-style:normal}
+
+/* ─── CHARTS ─── */
+svg{display:block; width:100%; overflow:visible}
+.ax{stroke:var(--hair); stroke-width:1}
+.axl{fill:var(--faint); font-size:10px; font-family:var(--mono)}
+.axl.sm{font-size:9px}
+.ident{stroke:var(--amber-dim); stroke-width:1; stroke-dasharray:3 3}
+.vigband{fill:var(--amber); opacity:.07}
+.pt{stroke-width:1.2}
+.legend{display:flex; gap:14px; font-size:10px; color:var(--dim); padding:6px 12px 0; flex-wrap:wrap}
+.legend span{display:inline-flex; align-items:center; gap:5px}
+.sw{width:9px;height:9px;display:inline-block;border-radius:50%}
+
+/* ─── LANES / HEALTH ─── */
+.lane{display:grid; grid-template-columns:46px 1fr 62px 66px; gap:8px; align-items:center;
+  padding:6px 12px; border-bottom:1px solid var(--hair-2)}
+.lane .bar{height:5px; background:#141414; position:relative}
+.lane .bar i{position:absolute; left:0; top:0; bottom:0; display:block}
+.lane .nn{text-align:right; font-size:11px}
+.sublane{padding:0 12px 7px 66px; color:var(--dim); font-size:10px; border-bottom:1px solid var(--hair-2)}
+.hw{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center;
+  padding:5px 12px; border-bottom:1px solid var(--hair-2); font-size:11px}
+.hw .lbl{color:var(--dim)}
+.age.ok{color:var(--green)} .age.warn{color:var(--amber)} .age.bad{color:var(--red)}
+.hw .dot{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.hw .dot.ok{background:var(--green)} .hw .dot.warn{background:var(--amber)} .hw .dot.bad{background:var(--red)}
+
+.note{border-left:2px solid var(--amber); background:#100c02; padding:8px 12px;
+  color:var(--dim); font-size:11px; line-height:1.55; margin:10px 12px}
+.note.bad{border-color:var(--red); background:#120404}
+.note b{color:var(--ink); font-weight:400}
+.note .hl{color:var(--red); font-weight:700}
+.empty{color:var(--faint); padding:16px 12px; font-style:italic; font-size:11px}
+.tt{position:fixed; z-index:200; pointer-events:none; opacity:0; background:#0a0a0a;
+  border:1px solid var(--hair); padding:7px 10px; font-size:10.8px; color:var(--ink);
+  max-width:320px; transition:opacity .08s; box-shadow:0 6px 24px rgba(0,0,0,.9)}
+.tt .h{color:var(--amber); font-weight:700; margin-bottom:3px; letter-spacing:.06em}
+.tt .r{display:flex; justify-content:space-between; gap:14px; color:var(--dim)}
+.tt .r b{color:var(--ink); font-weight:400}
+.filt{background:#000; border:1px solid var(--hair); color:var(--ink); font:inherit; font-size:11px;
+  padding:2px 8px; width:150px; outline:none}
+.filt:focus{border-color:var(--amber-dim)}
+.filt::placeholder{color:var(--faint)}
+.kv{display:grid; grid-template-columns:auto 1fr; gap:3px 14px; font-size:11px; padding:2px 0}
+.kv dt{color:var(--faint)} .kv dd{margin:0}
+footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px solid var(--hair)}
+</style>
+</head>
+<body>
+<div class="tt" id="tt"></div>
+
+<div class="status">
+  <span class="id">PMBOT</span><span class="sep">│</span>
+  <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
+  <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
+  <span class="sp"></span>
+  <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
+  <span class="led down" id="led"><b></b><span id="ledtxt">INIT</span></span><span class="sep">│</span>
+  <button class="tbtn" id="pause" title="space">⏸ PAUSE</button>
+  <button class="tbtn" id="refresh" title="r">⟳ <span id="cd">--</span>s</button>
+</div>
+
+<div class="modbar" id="modbar"></div>
+<div class="banner" id="banner"></div>
+<div class="rail" id="rail"></div>
+<div id="work"></div>
+<footer id="foot">—</footer>
+
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════════════════
+   CONTRACT — /api/data exactly as scripts/web_dashboard.py emits it.
+   portfolio | t4_portfolio | nfl_portfolio → {bankroll_usd,
+     initial_bankroll_usd, total_realized_pnl, current_daily_loss,
+     daily_net_pnl, open_positions[], closed_positions[], last_updated}
+   position → {position_id, player_name, kalshi_ticker, kalshi_threshold,
+     direction, size_usd, model_p, mid_price_at_entry, gross_edge,
+     vig_at_entry, entered_at, status, outcome, pnl, actual_pts,
+     resolved_at, game_date, model_identity, logic_epoch, ...}
+   audit | t4_audit | nfl_audit → {timestamp, event_id, component,
+     event_type, severity, payload{}}
+   pipe_mtimes{label:isoZ} · server_time · current_logic_epoch
+   nfl_model_provenance
+   ══════════════════════════════════════════════════════════════════════ */
+
+const REFRESH_S=30;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=(v,d=2)=>(v==null||v===''||isNaN(v))?'—':Number(v).toFixed(d);
+const usd=v=>(v==null||isNaN(v))?'—':(v<0?'-':'')+'$'+Math.abs(Number(v)).toFixed(2);
+const sgn=v=>(v==null||isNaN(v))?'':(v>0?'pos':v<0?'neg':'');
+const toArr=a=>Array.isArray(a)?a:[];
+const hhmm=t=>{const d=new Date(t);return isNaN(d)?'—':d.toISOString().slice(11,19)};
+const mmdd=t=>{const d=new Date(t);return isNaN(d)?'—':d.toISOString().slice(5,16).replace('T',' ')};
+const clip=(s,n)=>{s=String(s); if(s.length<=n)return s; const c=s.slice(0,n),i=c.lastIndexOf(' ');
+  return (i>n*0.6?c.slice(0,i):c)+'…'};
+
+/* model_identity classification — the difference between a row and evidence */
+function evClass(p){
+  const m=p.model_identity;
+  if(m==null||m===''||m==='UNKNOWN') return 'UNATTRIBUTED';
+  if(/stub/i.test(m)) return 'STUB';
+  return 'MODEL';
+}
+const EVTAG={MODEL:['real','REAL'],STUB:['stub','STUB'],UNATTRIBUTED:['unk','UNATTR']};
+
+let S={data:null, mod:'OVERVIEW', paused:false, cd:REFRESH_S, band:'ALL', filt:'',
+       seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false,
+       sortKey:'entered_at', sortDir:-1};
+
+const tt=$('#tt');
+function tip(e,h){tt.innerHTML=h; tt.style.opacity='1';
+  const r=tt.getBoundingClientRect(); let x=e.clientX+14,y=e.clientY+14;
+  if(x+r.width>innerWidth-10)x=e.clientX-r.width-14;
+  if(y+r.height>innerHeight-10)y=e.clientY-r.height-14;
+  tt.style.left=x+'px'; tt.style.top=y+'px'}
+function untip(){tt.style.opacity='0'}
+function wireTips(root){ (root||document).querySelectorAll('[data-tip]').forEach(n=>{
+  n.addEventListener('mousemove',e=>tip(e,decodeURIComponent(n.dataset.tip)));
+  n.addEventListener('mouseleave',untip)}) }
+
+/* ═══════════ FETCH ═══════════ */
+async function pull(){
+  try{
+    const r=await fetch('/api/data',{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status+' from /api/data');
+    const j=await r.json(); if(j.error) throw new Error(j.error);
+    S.demo=false; S.lastOk=Date.now(); banner(false); apply(j);
+  }catch(err){
+    if(S.first){ S.demo=true;
+      banner('demo','NOT CONNECTED — schema-accurate DEMO payload so the layout can be judged offline. '+
+        'Served live this page reads /api/data on the VPS. Reason: '+err.message);
+      apply(DEMO);
+    } else {
+      banner('err','Cannot fetch /api/data — '+err.message+'. Check the SSH tunnel is open. Retrying in '+REFRESH_S+'s…');
+      led('down','NO DATA');
+    }
+  }
+  S.first=false;
+}
+function banner(k,msg){const b=$('#banner');
+  if(!k){b.className='banner'; b.textContent=''; return}
+  b.className='banner show'+(k==='demo'?' demo':'');
+  b.innerHTML=esc(msg)+(k==='err'?`<span class="dl">last good data ${S.lastOk?Math.round((Date.now()-S.lastOk)/1000)+'s ago':'never this session'}</span>`:'')}
+function led(k,t){$('#led').className='led '+k; $('#ledtxt').textContent=t}
+
+/* ═══════════ DERIVE ═══════════ */
+function derive(d){
+  const P=d.portfolio||{}, T4=d.t4_portfolio||{}, NF=d.nfl_portfolio||{};
+  const tag=(a,b,s)=>toArr(a).map(p=>({...p,_band:b,_sport:s}));
+  return {P,T4,NF,
+    open:[...tag(P.open_positions,'T1','MLB'),...tag(T4.open_positions,'T4','MLB'),...tag(NF.open_positions,'NFL','NFL')],
+    closed:[...tag(P.closed_positions,'T1','MLB'),...tag(T4.closed_positions,'T4','MLB'),...tag(NF.closed_positions,'NFL','NFL')],
+    events:[...tag(d.audit,'T1','MLB'),...tag(d.t4_audit,'T4','MLB'),...tag(d.nfl_audit,'NFL','NFL')]
+      .filter(e=>e&&e.timestamp).sort((a,b)=>String(b.timestamp).localeCompare(String(a.timestamp)))};
+}
+
+/* ═══════════ MODULES ═══════════ */
+const MODULES=[
+  {k:'OVERVIEW', label:'Overview'},
+  {k:'MLB',      label:'MLB · T1/T4'},
+  {k:'NFL',      label:'NFL · T1'},
+  {k:'EVIDENCE', label:'Evidence'},
+  {k:'FEEDS',    label:'Feeds & Health'},
+];
+function modbar(D){
+  const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
+  const errs=D.events.filter(e=>e.severity==='ERROR'||e.severity==='CRITICAL').length;
+  const badge={
+    OVERVIEW:`${D.open.length} open`,
+    MLB:`${D.open.filter(p=>p._sport==='MLB').length} open`,
+    NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
+    EVIDENCE: stub? `<span class="warn">${stub} stub</span>` : 'clean',
+    FEEDS: errs? `<span class="warn">${errs} err</span>` : 'ok',
+  };
+  $('#modbar').innerHTML=MODULES.map(m=>
+    `<button class="mod ${S.mod===m.k?'on':''}" data-m="${m.k}">${esc(m.label)}<span class="badge">${badge[m.k]||''}</span></button>`).join('');
+  $$('.mod').forEach(b=>b.addEventListener('click',()=>{S.mod=b.dataset.m; S.filt=''; render()}));
+}
+
+/* ═══════════ APPLY / RENDER ═══════════ */
+let LAST=null;
+function apply(d){ LAST=d; render(); }
+function render(){
+  const d=LAST; if(!d) return;
+  const D=derive(d);
+  $('#epoch').textContent=d.current_logic_epoch??'—';
+  modbar(D);
+  rail(D,d);
+  const w=$('#work');
+  if(S.mod==='OVERVIEW') w.innerHTML=viewOverview();
+  else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
+  else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
+  else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
+  else w.innerHTML=viewFeeds();
+  fill(D,d);
+
+  const lw=Math.max(...[D.P.last_updated,D.T4.last_updated,D.NF.last_updated]
+    .map(t=>t?new Date(t).getTime():0),0);
+  const age=lw?Math.round((Date.now()-lw)/1000):null;
+  if(S.demo) led('stale','DEMO');
+  else if(age!=null&&age>3600) led('stale','DATA '+fmtAge(age));
+  else led('live','LIVE');
+  $('#foot').textContent=`server ${d.server_time||'—'} · epoch ${d.current_logic_epoch??'—'} · `+
+    `${D.open.length} open / ${D.closed.length} closed / ${D.events.length} events in window · `+
+    `NFL model ${d.nfl_model_provenance||'—'}`;
+}
+
+/* ═══════════ METRIC RAIL (per module) ═══════════ */
+let PREVM=null, PREVKEY=null;
+function railSpec(D,d){
+  const sum=(a,f)=>a.reduce((s,x)=>s+(Number(f(x))||0),0);
+  if(S.mod==='NFL'){
+    const o=D.open.filter(p=>p._sport==='NFL'), c=D.closed.filter(p=>p._sport==='NFL');
+    const all=[...o,...c];
+    const stub=all.filter(p=>evClass(p)==='STUB').length;
+    const real=all.filter(p=>evClass(p)==='MODEL').length;
+    const un=all.filter(p=>evClass(p)==='UNATTRIBUTED').length;
+    const res=c.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
+    return [['BANKROLL',usd(D.NF.bankroll_usd),D.NF.bankroll_usd,''],
+      ['REALISED P&L',usd(D.NF.total_realized_pnl),D.NF.total_realized_pnl,'sign'],
+      ['OPEN',String(o.length),o.length,''],
+      ['EXPOSURE',usd(sum(o,p=>p.size_usd)),sum(o,p=>p.size_usd),''],
+      ['ROWS TOTAL',String(all.length),all.length,''],
+      ['REAL MODEL',String(real),real,'cy'],
+      ['STUB ROWS',String(stub),stub,'bad'],
+      ['UNATTRIBUTED',String(un),un,'warnv'],
+      ['SETTLED',String(res.length),res.length,''],
+      ['LAST WRITE',D.NF.last_updated?fmtAge(Math.round((Date.now()-new Date(D.NF.last_updated))/1000)):'—',null,'']];
+  }
+  if(S.mod==='MLB'){
+    const o=D.open.filter(p=>p._sport==='MLB'), c=D.closed.filter(p=>p._sport==='MLB');
+    const res=c.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
+    const w=res.filter(p=>p.outcome==='WIN').length;
+    return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
+      ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
+      ['T4 P&L',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,'sign'],
+      ['DAILY P&L',usd((Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0)),
+        (Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0),'sign'],
+      ['OPEN T1',String(o.filter(p=>p._band==='T1').length),o.filter(p=>p._band==='T1').length,''],
+      ['OPEN T4',String(o.filter(p=>p._band==='T4').length),o.filter(p=>p._band==='T4').length,''],
+      ['EXPOSURE',usd(sum(o,p=>p.size_usd)),sum(o,p=>p.size_usd),''],
+      ['W / L',`${w}/${res.length-w}`,w,''],
+      ['WIN RATE',res.length?(w/res.length*100).toFixed(1)+'%':'—',res.length?w/res.length:null,''],
+      ['SETTLED',String(res.length),res.length,'']];
+  }
+  // OVERVIEW / EVIDENCE / FEEDS
+  const cum=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.total_realized_pnl)||0),0);
+  const daily=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.daily_net_pnl)||0),0);
+  const dd=(D.P.initial_bankroll_usd&&D.P.bankroll_usd!=null)?(D.P.initial_bankroll_usd-D.P.bankroll_usd)/D.P.initial_bankroll_usd:null;
+  const res=D.closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
+  const w=res.filter(p=>p.outcome==='WIN').length;
+  const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
+  return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
+    ['CUM P&L',usd(cum),cum,'sign'],
+    ['DRAWDOWN',dd==null?'—':(dd*100).toFixed(2)+'%',dd,'inv'],
+    ['DAILY P&L',usd(daily),daily,'sign'],
+    ['OPEN',String(D.open.length),D.open.length,''],
+    ['EXPOSURE',usd(sum(D.open,p=>p.size_usd)),sum(D.open,p=>p.size_usd),''],
+    ['W / L',`${w}/${res.length-w}`,w,''],
+    ['WIN RATE',res.length?(w/res.length*100).toFixed(1)+'%':'—',res.length?w/res.length:null,''],
+    ['STUB ROWS',String(stub),stub,stub?'bad':''],
+    ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
+    ['T4 P&L',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,'sign'],
+    ['NFL P&L',usd(D.NF.total_realized_pnl),D.NF.total_realized_pnl,'sign']];
+}
+function rail(D,d){
+  const spec=railSpec(D,d);
+  const host=$('#rail');
+  const cls=m=>m==='sign'?'':m==='inv'?'':m==='bad'?'neg':m==='cy'?'cy':m==='warnv'?'amb':'';
+  host.innerHTML=spec.map(([k,txt,v,mode],i)=>{
+    let c=mode==='sign'?sgn(v):mode==='inv'?(v>0.1?'neg':v>0.05?'amb':''):cls(mode);
+    const pv=(PREVKEY===S.mod&&PREVM)?PREVM[i]?.[2]:null;
+    let delta='';
+    if(pv!=null&&v!=null&&!isNaN(v)&&!isNaN(pv)&&v!==pv){
+      const dv=v-pv;
+      delta=`<span class="${dv>0?'pos':'neg'}">${dv>0?'▲':'▼'} ${Math.abs(dv)>=1?Math.abs(dv).toFixed(2):Math.abs(dv).toFixed(3)}</span>`;
+    }
+    return `<div class="met" data-i="${i}"><div class="k">${esc(k)}</div>`+
+      `<div class="v ${c}">${txt}</div><div class="d">${delta}</div></div>`;
+  }).join('');
+  if(PREVKEY===S.mod&&PREVM) spec.forEach(([,,v],i)=>{ if(PREVM[i]&&v!==PREVM[i][2]){
+    const n=host.querySelector(`.met[data-i="${i}"]`); if(n){n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash')} }});
+  PREVM=spec; PREVKEY=S.mod;
+}
+
+/* ═══════════ VIEW SHELLS ═══════════ */
+const P_=(t,n,body,extra='')=>`<div class="panel"><div class="ph"><span class="t">${t}</span>`+
+  `<span class="n" id="${n}">—</span><span class="sp"></span>${extra}</div>${body}</div>`;
+const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
+
+function viewOverview(){return `<div class="grid g-7-5">
+  <div class="col">
+    ${P_('Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`,
+      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`)}
+    ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR)}
+    ${P_('Recently Resolved','resN',SCROLL('resWrap',220),`<span class="n" id="resPnl"></span>`)}
+  </div>
+  <div class="col">
+    ${P_('Live Tape','tapeN',SCROLL('tape',318),`<span class="n">newest first · flashes on arrival</span>`)}
+    ${P_('Edge Ladder','ladN',`<div class="pb"><div id="ladder"></div></div>`)}
+    ${P_('Band Lanes','lanesN',`<div class="pb flush"><div id="lanes"></div></div>`)}
+    ${P_('Alerts','alertN',SCROLL('alerts',190),`<span class="n">deduped, most recent first</span>`)}
+  </div></div>`;}
+
+function viewSport(sport){
+  const nflNote = sport==='NFL' ? `<div id="nflNote"></div>` : '';
+  return `${nflNote}<div class="grid g-7-5">
+  <div class="col">
+    ${P_(sport+' — Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`)}
+    ${P_(sport+' — Open Positions','openN',SCROLL('posWrap',320),`<input class="filt" id="posFilt" placeholder="filter…  /">`)}
+    ${P_(sport+' — Recently Resolved','resN',SCROLL('resWrap',230),`<span class="n" id="resPnl"></span>`)}
+  </div>
+  <div class="col">
+    ${P_(sport+' — Live Tape','tapeN',SCROLL('tape',330),`<span class="n">this sport only</span>`)}
+    ${P_(sport+' — Edge Ladder','ladN',`<div class="pb"><div id="ladder"></div></div>`)}
+    ${P_(sport+' — Alerts','alertN',SCROLL('alerts',210))}
+    ${P_(sport+' — Pool',`poolN`,`<div class="pb"><div id="poolKv"></div></div>`)}
+  </div></div>`;}
+
+function viewEvidence(){return `<div class="grid g-2">
+  <div class="col">
+    ${P_('Evidence Class — every row in every pool','evN',`<div class="pb flush"><div id="evTable"></div></div>`,
+      `<span class="n">model_identity decides whether a row can ever count</span>`)}
+    ${P_('Band Lanes — clean vs raw','lanesN',`<div class="pb flush"><div id="lanes"></div></div>`)}
+  </div>
+  <div class="col">
+    ${P_('Rows by model_identity','miN',`<div class="pb flush"><div id="miTable"></div></div>`)}
+    ${P_('What this means','evNote',`<div id="evNote"></div>`)}
+    ${P_('Evidence-relevant events','tapeN',SCROLL('tape',240),`<span class="n">provenance, stub and epoch traffic</span>`)}
+  </div></div>`;}
+
+function viewFeeds(){return `<div class="grid g-2">
+  <div class="col">
+    ${P_('Feed Health','healthN',`<div class="pb flush"><div id="health"></div></div>`,
+      `<span class="n">staleness since last write</span>`)}
+    ${P_('Event Rate by Component','compN',`<div class="pb flush"><div id="compTable"></div></div>`)}
+  </div>
+  <div class="col">
+    ${P_('Alerts — all severities','alertN',SCROLL('alerts',420))}
+    ${P_('Live Tape','tapeN',SCROLL('tape',260))}
+  </div></div>`;}
+
+const LEGEND=`<div class="legend">
+  <span><span class="sw" style="background:var(--green)"></span>YES side</span>
+  <span><span class="sw" style="background:transparent;border:1.4px solid var(--red)"></span>NO side</span>
+  <span><span style="width:14px;height:0;border-top:1px dashed var(--amber-dim);display:inline-block"></span>model = market</span>
+  <span><span class="sw" style="background:var(--amber);opacity:.35;border-radius:2px"></span>vig band (±3¢)</span>
+  <span style="color:var(--faint)">radius = stake</span></div>`;
+const FILTERBAR=`<input class="filt" id="posFilt" placeholder="filter…  /">
+  <button class="tbtn bf on" data-b="ALL">ALL</button>
+  <button class="tbtn bf" data-b="T1">T1</button>
+  <button class="tbtn bf" data-b="T4">T4</button>
+  <button class="tbtn bf" data-b="NFL">NFL</button>`;
+
+/* ═══════════ FILL ═══════════ */
+function fill(D,d){
+  const sportOf=S.mod==='MLB'?'MLB':S.mod==='NFL'?'NFL':null;
+  const open = sportOf?D.open.filter(p=>p._sport===sportOf):D.open;
+  const closed = sportOf?D.closed.filter(p=>p._sport===sportOf):D.closed;
+  const events = sportOf?D.events.filter(e=>e._sport===sportOf):D.events;
+
+  if($('#scatter')) scatter(open);
+  if($('#posWrap')) positions(open);
+  if($('#resWrap')) resolved(closed);
+  if($('#tape'))    tape(S.mod==='EVIDENCE'
+      ? events.filter(e=>/stub|model|provenance|epoch|identity|refused|clean_n|calibration/i
+          .test((e.event_type||'')+JSON.stringify(e.payload||{})))
+      : events);
+  if($('#ladder'))  ladder(open);
+  if($('#lanes'))   lanes(D,d);
+  if($('#alerts'))  alerts(events, S.mod==='FEEDS');
+  if($('#health'))  {health(d,D); }
+  if($('#nflNote')) nflNote(D,d);
+  if($('#poolKv'))  poolKv(D,d,sportOf);
+  if($('#evTable')) evidence(D,d);
+  if($('#compTable')) components(D.events);
+  if($('#posFilt')){ $('#posFilt').value=S.filt;
+    $('#posFilt').addEventListener('input',e=>{S.filt=e.target.value.trim(); positions(open)}); }
+  $$('.bf').forEach(b=>{ b.classList.toggle('on',b.dataset.b===S.band);
+    b.addEventListener('click',()=>{S.band=b.dataset.b; $$('.bf').forEach(o=>o.classList.remove('on'));
+      b.classList.add('on'); positions(open)}) });
+}
+
+/* ═══════════ SCATTER ═══════════ */
+function scatter(open){
+  const pts=open.filter(p=>p.model_p!=null&&p.mid_price_at_entry!=null);
+  const n=$('#scatN'); if(n) n.textContent=pts.length+' open priced';
+  const W=760,H=258,L=42,R=14,T=10,B=28;
+  const x=v=>L+v*(W-L-R), y=v=>T+(1-v)*(H-T-B);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Model probability versus market implied price">`;
+  s+=`<polygon class="vigband" points="${x(0)},${y(0.03)} ${x(0.97)},${y(1)} ${x(1)},${y(1)} ${x(1)},${y(0.97)} ${x(0.03)},${y(0)} ${x(0)},${y(0)}"/>`;
+  s+=`<line class="ident" x1="${x(0)}" y1="${y(0)}" x2="${x(1)}" y2="${y(1)}"/>`;
+  for(let i=0;i<=5;i++){const v=i/5;
+    s+=`<line class="ax" x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H-B}" opacity=".45"/>`;
+    s+=`<line class="ax" x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" opacity=".45"/>`;
+    s+=`<text class="axl sm" x="${x(v)}" y="${H-B+13}" text-anchor="middle">${v.toFixed(1)}</text>`;
+    s+=`<text class="axl sm" x="${L-7}" y="${y(v)+3}" text-anchor="end">${v.toFixed(1)}</text>`}
+  s+=`<text class="axl sm" x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle" style="letter-spacing:.1em">MARKET IMPLIED PRICE →</text>`;
+  s+=`<text class="axl sm" x="11" y="${(T+H-B)/2}" text-anchor="middle" transform="rotate(-90 11 ${(T+H-B)/2})" style="letter-spacing:.1em">MODEL P →</text>`;
+  pts.forEach(p=>{
+    const yes=String(p.direction||'').toUpperCase()==='YES', col=yes?'var(--green)':'var(--red)';
+    const r=Math.max(3,Math.min(9,Math.sqrt(Math.abs(Number(p.size_usd)||1))*1.5));
+    const ec=evClass(p);
+    s+=`<circle class="pt" cx="${x(Math.max(0,Math.min(1,p.mid_price_at_entry))).toFixed(1)}" cy="${y(Math.max(0,Math.min(1,p.model_p))).toFixed(1)}" r="${r.toFixed(1)}" fill="${yes?col:'none'}" fill-opacity="${yes?.55:1}" stroke="${col}" stroke-dasharray="${ec==='STUB'?'2 2':''}" data-tip="${encodeURIComponent(
+      `<div class="h">${esc(p.player_name||p.kalshi_ticker||'—')} · ${esc(p._band)}</div>`+
+      `<div class="r"><span>threshold</span><b>H≥${esc(p.kalshi_threshold??'?')}</b></div>`+
+      `<div class="r"><span>side</span><b>${esc(p.direction||'—')}</b></div>`+
+      `<div class="r"><span>model p</span><b>${num(p.model_p,4)}</b></div>`+
+      `<div class="r"><span>market mid</span><b>${num(p.mid_price_at_entry,4)}</b></div>`+
+      `<div class="r"><span>gross edge</span><b>${num(p.gross_edge,4)}</b></div>`+
+      `<div class="r"><span>size</span><b>${usd(p.size_usd)}</b></div>`+
+      `<div class="r"><span>evidence</span><b>${ec}</b></div>`+
+      `<div class="r"><span>entered</span><b>${mmdd(p.entered_at)}</b></div>`)}"/>`;
+  });
+  if(!pts.length) s+=`<text class="axl" x="${W/2}" y="${H/2}" text-anchor="middle" style="font-size:11px">no priced open positions</text>`;
+  $('#scatter').innerHTML=s+`</svg>`; wireTips($('#scatter'));
+}
+
+/* ═══════════ POSITIONS ═══════════ */
+const POSCOLS=[
+  ['BAND','_band',p=>`<span class="tag ${p._band.toLowerCase()}">${p._band}</span>`],
+  ['EVID','model_identity',p=>{const [c,l]=EVTAG[evClass(p)]; return `<span class="tag ${c}">${l}</span>`}],
+  ['PLAYER / TICKER','player_name',p=>esc(p.player_name||p.kalshi_ticker||'—')],
+  ['THR','kalshi_threshold',p=>p.kalshi_threshold==null?'—':'H≥'+esc(p.kalshi_threshold)],
+  ['DIR','direction',p=>{const y=String(p.direction||'').toUpperCase()==='YES';
+    return `<span class="dir ${y?'y':'n'}">${esc(p.direction||'—')}</span>`}],
+  ['SIZE','size_usd',p=>usd(p.size_usd),'r'],
+  ['MODEL P','model_p',p=>num(p.model_p,4),'r'],
+  ['MKT','mid_price_at_entry',p=>num(p.mid_price_at_entry,4),'r'],
+  ['EDGE','gross_edge',p=>`<span class="${sgn(p.gross_edge)}">${num(p.gross_edge,4)}</span>`,'r'],
+  ['VIG','vig_at_entry',p=>num(p.vig_at_entry,3),'r'],
+  ['EPOCH','logic_epoch',p=>`<span class="dim">${p.logic_epoch??'—'}</span>`,'r'],
+  ['ENTERED','entered_at',p=>`<span class="dim">${mmdd(p.entered_at)}</span>`],
+];
+function positions(all){
+  let rows=all;
+  if(S.band!=='ALL') rows=rows.filter(p=>p._band===S.band);
+  if(S.filt){const q=S.filt.toLowerCase();
+    rows=rows.filter(p=>JSON.stringify([p.player_name,p.kalshi_ticker,p.direction,p._band,p.kalshi_threshold,p.model_identity]).toLowerCase().includes(q))}
+  const k=S.sortKey,dir=S.sortDir;
+  rows=[...rows].sort((a,b)=>{const A=a[k],B=b[k];
+    if(A==null)return 1; if(B==null)return -1;
+    return (typeof A==='number'&&typeof B==='number')?(A-B)*dir:String(A).localeCompare(String(B))*dir});
+  const n=$('#openN'); if(n) n.textContent=`${rows.length}${rows.length!==all.length?' / '+all.length:''} open`;
+  const host=$('#posWrap'); if(!host) return;
+  if(!rows.length){host.innerHTML=`<div class="empty">no open positions match</div>`; return}
+  const head=POSCOLS.map(([lab,key,,al])=>`<th data-k="${key}" class="${al==='r'?'r':''}">${lab}${k===key?` <span class="ar">${dir>0?'▲':'▼'}</span>`:''}</th>`).join('');
+  const body=rows.map(p=>{
+    const id=p.position_id||`${p._band}|${p.kalshi_ticker}|${p.entered_at}`;
+    const isNew=!S.seenPos.has(id); S.seenPos.add(id);
+    return `<tr class="${isNew&&!S.first?'new':''}">`+POSCOLS.map(([,,fn,al])=>`<td class="${al==='r'?'r':''}">${fn(p)}</td>`).join('')+`</tr>`}).join('');
+  host.innerHTML=`<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  host.querySelectorAll('th[data-k]').forEach(th=>th.addEventListener('click',()=>{
+    const key=th.dataset.k;
+    if(S.sortKey===key)S.sortDir*=-1; else{S.sortKey=key;S.sortDir=-1}
+    positions(all)}));
+}
+
+/* ═══════════ RESOLVED ═══════════ */
+function resolved(closed){
+  const rows=[...closed].filter(p=>p.resolved_at||p.outcome)
+    .sort((a,b)=>String(b.resolved_at||'').localeCompare(String(a.resolved_at||''))).slice(0,150);
+  const res=closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
+  const w=res.filter(p=>p.outcome==='WIN').length;
+  const tot=closed.reduce((s,p)=>s+(Number(p.pnl)||Number(p.exit_pnl)||0),0);
+  const n=$('#resN'); if(n) n.textContent=`${res.length} settled`;
+  const pn=$('#resPnl'); if(pn) pn.innerHTML=`<span class="pos">${w}W</span> / <span class="neg">${res.length-w}L</span> · <span class="${sgn(tot)}">${usd(tot)}</span>`;
+  const host=$('#resWrap'); if(!host) return;
+  if(!rows.length){host.innerHTML=`<div class="empty">nothing resolved in window</div>`; return}
+  host.innerHTML=`<table><thead><tr><th class="na">BAND</th><th class="na">EVID</th><th class="na">PLAYER</th>
+    <th class="na">THR</th><th class="na">DIR</th><th class="na r">ACTUAL</th><th class="na">RESULT</th>
+    <th class="na r">P&amp;L</th><th class="na">RESOLVED</th></tr></thead><tbody>`+
+    rows.map(p=>{const y=String(p.direction||'').toUpperCase()==='YES';
+      const pl=Number(p.pnl)||Number(p.exit_pnl)||0, win=p.outcome==='WIN';
+      const [c,l]=EVTAG[evClass(p)];
+      return `<tr><td><span class="tag ${p._band.toLowerCase()}">${p._band}</span></td>`+
+        `<td><span class="tag ${c}">${l}</span></td>`+
+        `<td>${esc(p.player_name||p.kalshi_ticker||'—')}</td>`+
+        `<td>${p.kalshi_threshold==null?'—':'H≥'+esc(p.kalshi_threshold)}</td>`+
+        `<td><span class="dir ${y?'y':'n'}">${esc(p.direction||'—')}</span></td>`+
+        `<td class="r dim">${p.actual_stat??p.actual_pts??'—'}</td>`+
+        `<td><span class="${win?'pos':'neg'}" style="font-weight:700">${esc(p.outcome||'—')}</span></td>`+
+        `<td class="r ${sgn(pl)}">${usd(pl)}</td><td class="dim">${mmdd(p.resolved_at)}</td></tr>`}).join('')+`</tbody></table>`;
+}
+
+/* ═══════════ TAPE ═══════════ */
+function summarise(e){
+  const t=e.event_type||'event', pl=e.payload||{}, bits=[];
+  if(pl.player_name)bits.push(pl.player_name);
+  if(pl.ticker||pl.kalshi_ticker)bits.push(pl.ticker||pl.kalshi_ticker);
+  if(pl.threshold!=null)bits.push('H≥'+pl.threshold);
+  if(pl.direction)bits.push(pl.direction);
+  if(pl.size_usd!=null)bits.push(usd(pl.size_usd));
+  if(pl.gross_edge!=null)bits.push('edge '+num(pl.gross_edge,4));
+  if(pl.p_model!=null||pl.model_p!=null)bits.push('p '+num(pl.p_model??pl.model_p,4));
+  if(pl.clean_n!=null)bits.push('clean_n '+pl.clean_n);
+  if(pl.verdict||pl.edge_monotonicity_verdict)bits.push(pl.verdict||pl.edge_monotonicity_verdict);
+  if(pl.reason)bits.push(clip(pl.reason,64));
+  if(pl.action_required)bits.push(clip(pl.action_required,74));
+  return `<b style="color:var(--amber);font-weight:400">${esc(t)}</b>`+(bits.length?` <em>${esc(bits.join(' · '))}</em>`:'');
+}
+function tape(events){
+  const rows=events.slice(0,220);
+  const n=$('#tapeN'); if(n) n.textContent=`${events.length} in window`;
+  const host=$('#tape'); if(!host) return;
+  if(!rows.length){host.innerHTML=`<div class="empty">no audit events in window</div>`; return}
+  host.innerHTML=rows.map(e=>{
+    const id=e.event_id||`${e.timestamp}|${e.event_type}`;
+    const isNew=!S.seenEvt.has(id); S.seenEvt.add(id);
+    const bc=e._band==='T1'?'var(--cyan)':e._band==='T4'?'var(--amber)':'var(--violet)';
+    return `<div class="tl ${isNew&&!S.first?'new':''}"><span class="ts">${hhmm(e.timestamp)}</span>`+
+      `<span class="bd" style="color:${bc}">${esc(e._band)}</span><span class="msg">${summarise(e)}</span></div>`}).join('');
+}
+
+/* ═══════════ EDGE LADDER — 1:1 text scale ═══════════ */
+function ladder(open){
+  const rows=open.filter(p=>p.gross_edge!=null).sort((a,b)=>b.gross_edge-a.gross_edge);
+  const n=$('#ladN');
+  const host=$('#ladder'); if(!host) return;
+  if(!rows.length){ if(n)n.textContent=''; host.innerHTML=`<div class="empty">no edges on open positions</div>`; return}
+  const top=[...rows.slice(0,7),...rows.slice(-7)].filter((v,i,a)=>a.indexOf(v)===i);
+  if(n) n.textContent=`widest ${Math.min(7,rows.length)} each way of ${rows.length}`;
+  const mx=Math.max(...rows.map(p=>Math.abs(p.gross_edge)),0.01);
+  // viewBox width ~ rendered width so 10px text renders at 10px
+  const W=760, rowH=17, H=top.length*rowH+24, mid=W*0.50, half=W*0.34;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gross edge on open positions">`;
+  s+=`<line class="ax" x1="${mid}" y1="2" x2="${mid}" y2="${H-19}"/>`;
+  s+=`<text class="axl sm" x="${mid}" y="${H-5}" text-anchor="middle">0</text>`;
+  s+=`<text class="axl sm" x="${mid-half}" y="${H-5}" text-anchor="middle">−${mx.toFixed(3)}</text>`;
+  s+=`<text class="axl sm" x="${mid+half}" y="${H-5}" text-anchor="middle">+${mx.toFixed(3)}</text>`;
+  top.forEach((p,i)=>{
+    const y=4+i*rowH, v=p.gross_edge, w=Math.abs(v)/mx*half;
+    const col=v>=0?'var(--green)':'var(--red)';
+    s+=`<rect x="${v>=0?mid:mid-w}" y="${y}" width="${Math.max(w,0.8).toFixed(1)}" height="${rowH-6}" fill="${col}" fill-opacity=".8" data-tip="${encodeURIComponent(
+      `<div class="h">${esc(p.player_name||p.kalshi_ticker||'—')} · ${esc(p._band)}</div>`+
+      `<div class="r"><span>gross edge</span><b>${num(v,4)}</b></div>`+
+      `<div class="r"><span>size</span><b>${usd(p.size_usd)}</b></div>`+
+      `<div class="r"><span>model / market</span><b>${num(p.model_p,3)} / ${num(p.mid_price_at_entry,3)}</b></div>`+
+      `<div class="r"><span>evidence</span><b>${evClass(p)}</b></div>`)}"/>`;
+    s+=`<text class="axl" x="${v>=0?mid-6:mid+6}" y="${y+rowH-8}" text-anchor="${v>=0?'end':'start'}" style="fill:var(--dim)">${esc(clip(p.player_name||p.kalshi_ticker||'—',20))}</text>`;
+    s+=`<text class="axl sm" x="${v>=0?mid+w+5:mid-w-5}" y="${y+rowH-8}" text-anchor="${v>=0?'start':'end'}" style="fill:${col}">${v>0?'+':''}${v.toFixed(3)}</text>`;
+  });
+  host.innerHTML=s+`</svg>`; wireTips(host);
+}
+
+/* ═══════════ BAND LANES ═══════════ */
+function lanes(D,d){
+  const ep=d.current_logic_epoch, host=$('#lanes'); if(!host) return;
+  const B=[['T1','MLB'],['T4','MLB'],['NFL','NFL']];
+  const mx=Math.max(1,...B.map(([b])=>D.closed.filter(p=>p._band===b).length));
+  const n=$('#lanesN'); if(n) n.textContent='clean / raw · realised P&L';
+  host.innerHTML=B.map(([b])=>{
+    const o=D.open.filter(p=>p._band===b), c=D.closed.filter(p=>p._band===b);
+    const clean=c.filter(p=>ep!=null&&Number(p.logic_epoch)>=Number(ep)).length;
+    const countable=c.filter(p=>ep!=null&&Number(p.logic_epoch)>=Number(ep)&&evClass(p)==='MODEL').length;
+    const pnl=c.reduce((s,p)=>s+(Number(p.pnl)||Number(p.exit_pnl)||0),0);
+    return `<div class="lane"><span class="tag ${b.toLowerCase()}">${b}</span>
+      <span class="bar"><i style="width:${(c.length/mx*100).toFixed(1)}%;background:#2a2a28"></i>
+        <i style="width:${(clean/mx*100).toFixed(1)}%;background:var(--cyan);opacity:.85"></i>
+        <i style="width:${(countable/mx*100).toFixed(1)}%;background:var(--green)"></i></span>
+      <span class="nn dim">${o.length} open</span>
+      <span class="nn ${sgn(pnl)}">${usd(pnl)}</span></div>
+      <div class="sublane">raw ${c.length} · epoch-clean <span class="cy">${clean}</span> · countable <span class="${countable?'pos':'neg'}">${countable}</span>${ep!=null?` · floor ${ep}`:''}</div>`;
+  }).join('');
+}
+
+/* ═══════════ ALERTS ═══════════ */
+function alerts(events,all){
+  const sev=events.filter(e=>e.severity&&(all||e.severity!=='INFO'));
+  const seen=new Map();
+  sev.forEach(e=>{const k=`${e._band}|${e.component}|${e.event_type}`;
+    if(!seen.has(k))seen.set(k,{...e,_n:1}); else seen.get(k)._n++});
+  const rows=[...seen.values()].slice(0,120);
+  const n=$('#alertN'); if(n) n.textContent=`${sev.length} raised · ${rows.length} distinct`;
+  const host=$('#alerts'); if(!host) return;
+  if(!rows.length){host.innerHTML=`<div class="empty">no warnings or errors in window</div>`; return}
+  host.innerHTML=`<table><thead><tr><th class="na">TIME</th><th class="na">BND</th><th class="na">SEV</th>
+    <th class="na">COMP</th><th class="na">EVENT</th><th class="na r">×</th></tr></thead><tbody>`+
+    rows.map(e=>`<tr><td class="dim">${hhmm(e.timestamp)}</td>`+
+      `<td><span class="tag ${e._band.toLowerCase()}">${e._band}</span></td>`+
+      `<td><span class="sev ${esc(e.severity)}">${esc(e.severity)}</span></td>`+
+      `<td class="dim">${esc(e.component||'—')}</td><td>${esc(e.event_type||'—')}</td>`+
+      `<td class="r ${e._n>1?'amb':'dim'}">${e._n}</td></tr>`).join('')+`</tbody></table>`;
+}
+
+/* ═══════════ NFL NOTE ═══════════ */
+function nflNote(D,d){
+  const all=[...D.open,...D.closed].filter(p=>p._sport==='NFL');
+  const stub=all.filter(p=>evClass(p)==='STUB').length;
+  const real=all.filter(p=>evClass(p)==='MODEL').length;
+  const un=all.filter(p=>evClass(p)==='UNATTRIBUTED').length;
+  const host=$('#nflNote'); if(!host) return;
+  if(!all.length){ host.innerHTML=`<div class="note">NFL pool is empty in this payload. <b>/api/data</b> does carry
+    <b>nfl_portfolio</b> and <b>nfl_audit</b> — an empty pool here means the T1 NFL run path has not written,
+    not that the terminal is MLB-only.</div>`; return }
+  const pctStub=(stub/all.length*100).toFixed(0);
+  host.innerHTML= stub
+    ? `<div class="note bad"><span class="hl">${stub} of ${all.length} NFL rows (${pctStub}%) are STUB-sourced and are not evidence.</span>
+       The T1 NFL run path defaults to <b>StubNFLForecastModel</b> — a fixed p with no NFL feature store — so approval
+       is driven by a constant versus each quote. Row counts here overstate usable evidence.
+       Real model rows: <b>${real}</b> · unattributed: <b>${un}</b>. Model in use: <b>${esc(d.nfl_model_provenance||'—')}</b>.</div>`
+    : `<div class="note">NFL rows: <b>${all.length}</b> · real model <b>${real}</b> · unattributed <b>${un}</b>.
+       Model in use: <b>${esc(d.nfl_model_provenance||'—')}</b>.</div>`;
+}
+
+/* ═══════════ POOL KV ═══════════ */
+function poolKv(D,d,sport){
+  const host=$('#poolKv'); if(!host) return;
+  const pools = sport==='NFL' ? [['NFL T1',D.NF]] : [['MLB T1',D.P],['MLB T4',D.T4]];
+  host.innerHTML=pools.map(([lab,P])=>`<div style="margin-bottom:10px">
+    <div style="color:var(--amber);font-size:10.5px;letter-spacing:.1em;margin-bottom:4px">${lab}</div>
+    <dl class="kv">
+      <dt>bankroll</dt><dd>${usd(P.bankroll_usd)}</dd>
+      <dt>initial</dt><dd>${usd(P.initial_bankroll_usd)}</dd>
+      <dt>realised P&L</dt><dd class="${sgn(P.total_realized_pnl)}">${usd(P.total_realized_pnl)}</dd>
+      <dt>daily net</dt><dd class="${sgn(P.daily_net_pnl)}">${usd(P.daily_net_pnl)}</dd>
+      <dt>open / closed</dt><dd>${toArr(P.open_positions).length} / ${toArr(P.closed_positions).length}</dd>
+      <dt>last write</dt><dd>${P.last_updated?fmtAge(Math.round((Date.now()-new Date(P.last_updated))/1000))+' ago':'—'}</dd>
+    </dl></div>`).join('');
+  const n=$('#poolN'); if(n) n.textContent=pools.length+' pool'+(pools.length>1?'s':'');
+}
+
+/* ═══════════ EVIDENCE MODULE ═══════════ */
+function evidence(D,d){
+  const ep=d.current_logic_epoch;
+  const rowsFor=(lab,arr)=>{
+    const m=arr.filter(p=>evClass(p)==='MODEL').length;
+    const st=arr.filter(p=>evClass(p)==='STUB').length;
+    const un=arr.filter(p=>evClass(p)==='UNATTRIBUTED').length;
+    const clean=arr.filter(p=>ep!=null&&Number(p.logic_epoch)>=Number(ep)).length;
+    const cnt=arr.filter(p=>ep!=null&&Number(p.logic_epoch)>=Number(ep)&&evClass(p)==='MODEL').length;
+    return `<tr><td class="k">${lab}</td><td class="r">${arr.length}</td>
+      <td class="r cy">${clean}</td><td class="r ${m?'pos':'dim'}">${m}</td>
+      <td class="r ${st?'neg':'dim'}">${st}</td><td class="r dim">${un}</td>
+      <td class="r ${cnt?'pos':'neg'}" style="font-weight:700">${cnt}</td></tr>`};
+  const groups=[['MLB T1',D.open.concat(D.closed).filter(p=>p._band==='T1')],
+    ['MLB T4',D.open.concat(D.closed).filter(p=>p._band==='T4')],
+    ['NFL T1',D.open.concat(D.closed).filter(p=>p._band==='NFL')]];
+  const tot=D.open.concat(D.closed);
+  $('#evTable').innerHTML=`<table><thead><tr><th class="na">POOL</th><th class="na r">ROWS</th>
+    <th class="na r">EPOCH-CLEAN</th><th class="na r">MODEL</th><th class="na r">STUB</th>
+    <th class="na r">UNATTR</th><th class="na r">COUNTABLE</th></tr></thead><tbody>`+
+    groups.map(([l,a])=>rowsFor(l,a)).join('')+rowsFor('ALL',tot)+`</tbody></table>`;
+  const n=$('#evN'); if(n) n.textContent=`${tot.length} rows across 3 pools`;
+
+  const mi=new Map();
+  tot.forEach(p=>{const k=p.model_identity||'(absent)'; mi.set(k,(mi.get(k)||0)+1)});
+  const mis=[...mi.entries()].sort((a,b)=>b[1]-a[1]);
+  $('#miTable').innerHTML=`<table><thead><tr><th class="na">MODEL_IDENTITY</th><th class="na">CLASS</th>
+    <th class="na r">ROWS</th></tr></thead><tbody>`+mis.map(([k,v])=>{
+      const c=/stub/i.test(k)?'STUB':(k==='(absent)'||k==='UNKNOWN')?'UNATTRIBUTED':'MODEL';
+      const [cc,ll]=EVTAG[c];
+      return `<tr><td style="white-space:normal">${esc(clip(k,70))}</td>`+
+        `<td><span class="tag ${cc}">${ll}</span></td><td class="r">${v}</td></tr>`}).join('')+`</tbody></table>`;
+  const mn=$('#miN'); if(mn) mn.textContent=`${mis.length} distinct`;
+
+  const cnt=tot.filter(p=>ep!=null&&Number(p.logic_epoch)>=Number(ep)&&evClass(p)==='MODEL').length;
+  $('#evNote').innerHTML=`<div class="note ${cnt?'':'bad'}">
+    <b>Countable</b> means a row is both epoch-clean for its band <b>and</b> carries a real model identity.
+    A row can be perfectly valid and still count for nothing — that is a provenance property, not a data problem.
+    Right now <b class="${cnt?'pos':'hl'}">${cnt}</b> of ${tot.length} rows in these pools would survive a
+    fail-closed evidence predicate. Epoch floor <b>${ep??'—'}</b>.</div>`;
+}
+
+/* ═══════════ COMPONENTS ═══════════ */
+function components(events){
+  const m=new Map();
+  events.forEach(e=>{const k=e.component||'—';
+    const o=m.get(k)||{n:0,w:0,er:0}; o.n++;
+    if(e.severity==='WARNING')o.w++; if(e.severity==='ERROR'||e.severity==='CRITICAL')o.er++;
+    m.set(k,o)});
+  const rows=[...m.entries()].sort((a,b)=>b[1].n-a[1].n);
+  const n=$('#compN'); if(n) n.textContent=`${rows.length} components · ${events.length} events`;
+  $('#compTable').innerHTML=`<table><thead><tr><th class="na">COMPONENT</th><th class="na r">EVENTS</th>
+    <th class="na r">WARN</th><th class="na r">ERROR</th></tr></thead><tbody>`+
+    rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="r">${v.n}</td>
+      <td class="r ${v.w?'amb':'dim'}">${v.w}</td><td class="r ${v.er?'neg':'dim'}">${v.er}</td></tr>`).join('')+`</tbody></table>`;
+}
+
+/* ═══════════ HEALTH ═══════════ */
+function fmtAge(s){if(s==null)return '—';
+  if(s<60)return s+'s'; if(s<3600)return Math.floor(s/60)+'m'+(s%60)+'s';
+  if(s<86400)return Math.floor(s/3600)+'h'+Math.floor((s%3600)/60)+'m';
+  return Math.floor(s/86400)+'d'+Math.floor((s%86400)/3600)+'h'}
+function ageCls(s,w,b){return s==null?'':s>b?'bad':s>w?'warn':'ok'}
+let HEALTH=[];
+function health(d,D){
+  HEALTH=[...Object.entries(d.pipe_mtimes||{}).map(([k,v])=>({lbl:k,t:v,warn:26*3600,bad:50*3600})),
+    {lbl:'PORTFOLIO  MLB T1', t:D.P.last_updated,  warn:26*3600, bad:72*3600},
+    {lbl:'PORTFOLIO  MLB T4', t:D.T4.last_updated, warn:2*3600,  bad:12*3600},
+    {lbl:'PORTFOLIO  NFL T1', t:D.NF.last_updated, warn:8*86400, bad:14*86400}];
+  const n=$('#healthN'); if(n) n.textContent=HEALTH.length+' feeds';
+  paintHealth();
+}
+function paintHealth(){
+  const host=$('#health'); if(!host) return;
+  const now=Date.now();
+  host.innerHTML=HEALTH.map(h=>{
+    const ts=h.t&&!isNaN(new Date(h.t))?new Date(h.t).getTime():null;
+    const age=ts?Math.round((now-ts)/1000):null;
+    const c=age==null?'':ageCls(age,h.warn,h.bad);
+    return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
+      `<span class="age ${c}">${age==null?esc(h.t||'no log yet'):fmtAge(age)+' ago'}</span>`+
+      `<span class="dot ${c}"></span></div>`}).join('');
+}
+
+/* ═══════════ LOOP ═══════════ */
+function tick(){
+  $('#clock').textContent=new Date().toISOString().slice(11,19)+'Z';
+  paintHealth();
+  if(S.paused){$('#cd').textContent='||'; return}
+  S.cd--; if(S.cd<=0){S.cd=REFRESH_S; pull()}
+  $('#cd').textContent=String(S.cd).padStart(2,'0');
+}
+$('#refresh').addEventListener('click',()=>{S.cd=REFRESH_S; pull()});
+$('#pause').addEventListener('click',()=>{S.paused=!S.paused;
+  $('#pause').classList.toggle('on',S.paused);
+  $('#pause').textContent=S.paused?'▶ RESUME':'⏸ PAUSE'});
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'){if(e.key==='Escape')e.target.blur(); return}
+  if(e.key==='r'){S.cd=REFRESH_S; pull()}
+  if(e.key===' '){e.preventDefault(); $('#pause').click()}
+  if(e.key==='/'){e.preventDefault(); $('#posFilt')?.focus()}
+  const mi=['1','2','3','4','5'].indexOf(e.key);
+  if(mi>=0&&MODULES[mi]){S.mod=MODULES[mi].k; render()}
+});
+
+/* ═══════════ DEMO PAYLOAD (schema-accurate; only when /api/data is unreachable) ═══════════ */
+const _now=Date.now(), _iso=s=>new Date(_now-s*1000).toISOString().replace(/\.\d+Z$/,'Z');
+const NAMES=['CJ Abrams','Julio Rodríguez','Mike Trout','Nick Kurtz','Bobby Witt Jr.',
+  'Freddie Freeman','Bryce Harper','Trea Turner','Kyle Schwarber','Francisco Lindor'];
+const REAL_MLB='MLB LR+Platt QS-2026-05-28-002';
+const STUB_NFL='STUB (StubNFLForecastModel — NOT a trained model, GG-255)';
+const REAL_NFL='EXP-027 LR (T-531, HYP-012, verdict UNDERPOWERED)';
+const _mk=(n,seed,mid_ident,tick_pfx)=>Array.from({length:n},(_,i)=>{
+  const mp=+(0.18+((seed*7+i*13)%70)/100).toFixed(4);
+  const md=+(mp+(((seed*3+i*11)%25)-12)/100).toFixed(4);
+  return {position_id:`PT-${seed}${i}`, player_name:NAMES[(seed+i)%10],
+    kalshi_ticker:`${tick_pfx}-26SEP-${seed}${i}`, kalshi_threshold:1+((i+seed)%2),
+    direction:((i+seed)%3===0)?'YES':'NO', size_usd:+(3+((seed*5+i*7)%20)).toFixed(2),
+    model_p:mp, mid_price_at_entry:Math.min(.98,Math.max(.02,md)),
+    gross_edge:+(mp-md).toFixed(4), vig_at_entry:0.03, entered_at:_iso(600+i*420),
+    status:'OPEN', logic_epoch:12, model_identity:(typeof mid_ident==='function')?mid_ident(i):mid_ident}});
+const _mkc=(n,seed,mid_ident,pfx)=>_mk(n,seed,mid_ident,pfx).map((p,i)=>({...p,status:'RESOLVED',
+  outcome:((i+seed)%2)?'WIN':'LOSS', pnl:+(((i+seed)%2?1:-1)*(.05+((i*seed)%150)/100)).toFixed(2),
+  actual_pts:(i+seed)%4, resolved_at:_iso(3600+i*900)}));
+const DEMO={
+  server_time:new Date(_now).toISOString().replace(/\.\d+Z$/,'Z'), current_logic_epoch:12,
+  nfl_model_provenance:REAL_NFL,
+  portfolio:{bankroll_usd:733.75, initial_bankroll_usd:838.00, total_realized_pnl:-106.01,
+    daily_net_pnl:15.84, current_daily_loss:0, last_updated:_iso(240),
+    open_positions:_mk(11,3,REAL_MLB,'KXMLBHIT'), closed_positions:_mkc(40,5,REAL_MLB,'KXMLBHIT')},
+  t4_portfolio:{bankroll_usd:201.98, initial_bankroll_usd:200.00, total_realized_pnl:1.98,
+    daily_net_pnl:0, last_updated:_iso(70),
+    open_positions:_mk(6,9,'UNKNOWN','KXMLBHIT'), closed_positions:_mkc(60,2,'UNKNOWN','KXMLBHIT')},
+  nfl_portfolio:{bankroll_usd:100.00, initial_bankroll_usd:100.00, total_realized_pnl:0,
+    daily_net_pnl:0, last_updated:_iso(86400*2),
+    open_positions:_mk(22,7,i=>i<3?REAL_NFL:STUB_NFL,'KXNFLGAME'),
+    closed_positions:_mkc(30,4,i=>i<4?REAL_NFL:STUB_NFL,'KXNFLGAME')},
+  audit:[
+    {timestamp:_iso(45),event_id:'E1',component:'C5',event_type:'position_opened',severity:'INFO',
+     payload:{player_name:'Bobby Witt Jr.',threshold:1,direction:'NO',size_usd:8.06,gross_edge:-0.1282,p_model:0.6418}},
+    {timestamp:_iso(180),event_id:'E2',component:'C7',event_type:'band_monitor_calibration_alarm',severity:'WARNING',
+     payload:{band:'T1',clean_n:60,edge_monotonicity_verdict:'ANTI-PREDICTIVE',
+       action_required:'DS review required before any capital decision touches this band (GG-098) — warn-only'}},
+    {timestamp:_iso(420),event_id:'E3',component:'C1',event_type:'pitcher_game_log_empty',severity:'WARNING',
+     payload:{reason:'upstream returned 0 rows for probable starter'}},
+    {timestamp:_iso(900),event_id:'E4',component:'C3',event_type:'forecast_emitted',severity:'INFO',
+     payload:{player_name:'Mike Trout',threshold:1,p_model:0.5993}},
+    {timestamp:_iso(1500),event_id:'E5',component:'PIPE-06pre',event_type:'data_contract_violation',severity:'WARNING',
+     payload:{reason:"unexpected column 'ba_l10_shrunk' present"}}],
+  t4_audit:[
+    {timestamp:_iso(20),event_id:'T1e',component:'C5',event_type:'t4_evaluation_cycle',severity:'INFO',
+     payload:{ticker:'KXMLBHIT-26SEP-91',p_model:0.7412,gross_edge:0.0181}},
+    {timestamp:_iso(95),event_id:'T2e',component:'C5',event_type:'position_rejected',severity:'INFO',
+     payload:{ticker:'KXMLBHIT-26SEP-92',reason:'edge below T4_MIN_DELTA_P after vig'}},
+    {timestamp:_iso(310),event_id:'T3e',component:'C4',event_type:'staleness_halt',severity:'ERROR',
+     payload:{reason:'ESPN feed age 214s exceeds 120s ceiling'}}],
+  nfl_audit:[
+    {timestamp:_iso(3000),event_id:'N1',component:'C5',event_type:'position_opened',severity:'INFO',
+     payload:{ticker:'KXNFLGAME-26SEP-71',direction:'YES',size_usd:1.00,p_model:0.55}},
+    {timestamp:_iso(3200),event_id:'N2',component:'C5',event_type:'stub_model_in_use',severity:'WARNING',
+     payload:{reason:'default StubNFLForecastModel — rows are pipeline-shape evidence only (GG-317)'}},
+    {timestamp:_iso(3400),event_id:'N3',component:'C5',event_type:'refused_no_model',severity:'WARNING',
+     payload:{reason:'no NFL C2/C3 feature store for this market family (GG-255)'}}],
+  pipe_mtimes:{'PIPE-05  (23:30Z)':_iso(3600*7),'PIPE-05R (06:30Z)':_iso(3600*2),
+    'PIPE-05FX(22:30Z)':_iso(3600*8),'PIPE-05C (Mon14Z)':_iso(3600*60)},
+};
+
+pull();
+setInterval(tick,1000);
+</script>
+</body>
+</html>
