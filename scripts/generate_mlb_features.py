@@ -135,6 +135,24 @@ def _pitcher_cache_path(season: int) -> Path:
     return CACHE_DIR / f"pitcher_logs_{season}.parquet"
 
 
+POSTSEASON_GAME_TYPES = "F,D,L,W"  # wild card, division, league champ., world series
+
+
+def _batter_post_cache_path(season: int) -> Path:
+    return CACHE_DIR / f"batter_logs_{season}_post.parquet"
+
+
+def _games_post_cache_path(season: int) -> Path:
+    return CACHE_DIR / f"completed_games_{season}_post.parquet"
+
+
+def _postseason_date_range(season: int) -> tuple[str, str]:
+    end = f"{season}-11-15"
+    if season == 2026:
+        end = min(end, _today_iso())
+    return f"{season}-09-25", end
+
+
 def _games_cache_path(season: int) -> Path:
     return CACHE_DIR / f"completed_games_{season}.parquet"
 
@@ -225,6 +243,55 @@ def _load_or_fetch_batter_logs(
     return df
 
 
+def _load_or_fetch_batter_logs_post(
+    season: int,
+    players: list[dict],
+    client: MLBIngestionClient,
+    session_id: str,
+) -> pd.DataFrame:
+    """Postseason batter logs (opt-in, D6(b)). Separate cache; never touches the R cache."""
+    cache = _batter_post_cache_path(season)
+    if cache.exists():
+        print(f"  [CACHE] Postseason batter logs {season}: hit")
+        return pd.read_parquet(cache)
+    print(f"  [FETCH] Postseason batter logs {season} ({len(players)} players)...")
+    ok, df = client.fetch_batter_game_logs_bulk(
+        player_ids=[p["player_id"] for p in players],
+        season=str(season),
+        season_type=POSTSEASON_GAME_TYPES,
+        session_id=session_id,
+    )
+    if not ok:
+        print(f"    [WARN] Some postseason fetches failed for season {season}.")
+    if df.empty:
+        df = pd.DataFrame()
+    else:
+        df = df.copy()
+        df["season_type"] = "Postseason"
+    df.to_parquet(cache, index=False)
+    print(f"    {len(df)} postseason game rows cached")
+    return df
+
+
+def _load_or_fetch_completed_games_post(
+    season: int,
+    client: MLBIngestionClient,
+    session_id: str,
+) -> pd.DataFrame:
+    cache = _games_post_cache_path(season)
+    if cache.exists():
+        print(f"  [CACHE] Postseason games {season}: hit")
+        return pd.read_parquet(cache)
+    start, end = _postseason_date_range(season)
+    ok, df = client.fetch_completed_games(
+        start, end, session_id=session_id, game_types=POSTSEASON_GAME_TYPES
+    )
+    if not ok or df.empty:
+        df = pd.DataFrame()
+    df.to_parquet(cache, index=False)
+    return df
+
+
 def _load_or_fetch_completed_games(
     season: int,
     client: MLBIngestionClient,
@@ -311,6 +378,7 @@ def _load_or_fetch_pitcher_logs(
 def main(
     seasons: list[int] = DEFAULT_SEASONS,
     dry_run: bool = False,
+    include_postseason: bool = False,
 ) -> None:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
@@ -360,6 +428,10 @@ def main(
 
         # 2. Batter game logs
         batter_df = _load_or_fetch_batter_logs(season, players, client, session_id)
+        if include_postseason:
+            post_df = _load_or_fetch_batter_logs_post(season, players, client, session_id)
+            if not post_df.empty:
+                batter_df = pd.concat([batter_df, post_df], ignore_index=True)
         if batter_df.empty:
             print(f"  [SKIP] No batter game logs for {season}.")
             continue
@@ -379,6 +451,10 @@ def main(
 
         # 3. Completed games → team store
         completed_df = _load_or_fetch_completed_games(season, client, session_id)
+        if include_postseason:
+            post_games = _load_or_fetch_completed_games_post(season, client, session_id)
+            if not post_games.empty:
+                completed_df = pd.concat([completed_df, post_games], ignore_index=True)
         team_store = MLBTeamStatsStore.build_from_games(completed_df) if not completed_df.empty else MLBTeamStatsStore()
         print(f"  [TSS] {len(team_store)} teams in store")
 
@@ -518,5 +594,10 @@ if __name__ == "__main__":
         action="store_true",
         help="Run without writing output files (cache writes still happen)",
     )
+    parser.add_argument(
+        "--include-postseason",
+        action="store_true",
+        help="Also fetch and include postseason games (default off: regular season only)",
+    )
     args = parser.parse_args()
-    main(seasons=args.seasons, dry_run=args.dry_run)
+    main(seasons=args.seasons, dry_run=args.dry_run, include_postseason=args.include_postseason)
