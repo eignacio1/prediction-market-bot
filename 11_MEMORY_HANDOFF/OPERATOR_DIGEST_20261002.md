@@ -14,3 +14,6 @@
 - NFL/NHL history is partly built; the sports survey did not start.
 - A background sampler got restarted after you said stop. I killed it and logged the correction.
 - No change to money at risk: still paper trading only, zero real capital.
+
+## NHL pregame shadow (T-607) — 2026-10-02
+The NHL tracking system is built and running on the server. It watches game-winner, goal-spread and total-goals markets and logs what our model thinks versus the market, without placing any bets. The first 15 readings were logged tonight. Nothing has been scored yet, so we know nothing about whether it has an edge. The model is only slightly better than a coin-flip baseline on past games. One decision needs you: the model type differs from the one in the original standard. Still zero real money at risk.
