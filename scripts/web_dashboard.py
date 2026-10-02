@@ -906,6 +906,29 @@ def _load_all_data() -> dict:
 # HTTP Handler
 # ─────────────────────────────────────────────────────────────────────────────
 
+_PROJECT_CACHE: dict = {"t": 0.0, "html": ""}
+_PROJECT_TTL_S = 60.0
+
+
+def _project_page() -> str:
+    """/project: analytical page regenerated from this checkout, cached at most 60 s."""
+    import time as _t
+    now = _t.time()
+    if _PROJECT_CACHE["html"] and now - _PROJECT_CACHE["t"] < _PROJECT_TTL_S:
+        return _PROJECT_CACHE["html"]
+    try:
+        if str(_REPO_ROOT / "scripts") not in sys.path:
+            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+        import generate_project_state as gps
+        html = gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
+    except Exception as e:  # never 500: say what is missing
+        html = ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
+                f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
+                "<p><a href='/'>Live Terminal</a></p>")
+    _PROJECT_CACHE.update(t=now, html=html)
+    return html
+
+
 class DashboardHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         path = self.path.split("?")[0]
@@ -913,11 +936,22 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._serve_html()
         elif path == "/api/data":
             self._serve_data()
+        elif path == "/project":
+            self._serve_project()
         else:
             self.send_error(404, "Not found")
 
     def _serve_html(self) -> None:
         body = _HTML.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store, no-cache")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _serve_project(self) -> None:
+        body = _project_page().encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
@@ -1177,6 +1211,7 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
   <span class="sub"> · ORIGIN <b id="osha" class="cy" title="origin/main as of the last fetch on the server">—</b> <b id="obehind"></b></span>
   <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
+  <span class="sub"><a href="/project" style="color:var(--amber)" title="analytical project-state page">PROJECT STATE →</a></span>
   <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
   <span class="led down" id="led"><b></b><span id="ledtxt">INIT</span></span><span class="sep">│</span>
   <button class="tbtn" id="pause" title="space">⏸ PAUSE</button>
