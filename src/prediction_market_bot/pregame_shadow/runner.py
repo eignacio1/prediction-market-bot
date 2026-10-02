@@ -28,7 +28,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              list_markets: Callable[[str], tuple[bool, list[dict]]],
              kickoff_for: Callable[[str], Optional[tuple[datetime, str]]],
              ledger_dir: Path, run_id: str, now_utc: datetime, code_sha: str,
-             raw_filter: Optional[Callable[[dict], bool]] = None) -> dict:
+             raw_filter: Optional[Callable[[dict], bool]] = None,
+             only_bands: Optional[set] = None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -53,6 +54,9 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             band = band_for_horizon(hours)
             if band is None:
                 skipped[f"{mt_name}:outside_band_windows"] += 1
+                continue
+            if only_bands is not None and band not in only_bands:
+                skipped[f"{mt_name}:band_not_requested"] += 1
                 continue
             bid, ask = _f(m.get("yes_bid_dollars")), _f(m.get("yes_ask_dollars"))
             if bid is None or ask is None or bid <= 0 or ask <= 0 or ask < bid or ask >= 1:

@@ -72,6 +72,7 @@ def main(argv=None) -> int:
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--ledger-dir", default=str(ROOT / "exp_output" / "PREGAME_SHADOW"))
     ap.add_argument("--model", default=str(ROOT / "models" / "nfl_pregame_v1.json"))
+    ap.add_argument("--bands", default="", help="comma list of T1,T2,T3 to evaluate (default: all in-window)")
     ap.add_argument("--now", help="ISO UTC override (testing only)")
     ap.add_argument("--dry-run", action="store_true", help="evaluate into a throwaway ledger dir")
     a = ap.parse_args(argv)
@@ -108,7 +109,8 @@ def main(argv=None) -> int:
     run_id = now.strftime("%Y%m%dT%H%M%SZ")
     res = run_once(forecaster=fc, cells=CELLS, list_markets=ad.list_series_markets_raw,
                    kickoff_for=index.kickoff_for_event, ledger_dir=ledger_dir, run_id=run_id,
-                   now_utc=now, code_sha=code_sha(), raw_filter=raw_filter)
+                   now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
+                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None))
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", res["written"])
     print("skipped:", res["skipped"])
