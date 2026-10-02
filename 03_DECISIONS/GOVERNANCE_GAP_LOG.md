@@ -3653,3 +3653,71 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-325, GG-326, EXP-032 |
 
 </details>
+
+### GG-329 — archive_market_prices.py docstring claims KXMLBGAME/SPREAD/TOTAL history "CANNOT BE BACKFILLED"; Kalshi historical endpoints return it
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-329 |
+| Category | Premise / documentation (Wave 45 block 45.1, EXP-035) |
+| What was found | `GET /historical/cutoff` (2026-10-02) gives `market_settled_ts` = 2026-08-03T00:00:00Z. `GET /historical/markets?series_ticker=` returns settled markets back to at least 2025-04 (KXNHLGAME 2025-04-30, KXNBAGAME 2025-04-16, KXEPLGAME 2025-05-11, KXMLSGAME 2025-05-29, KXUFCFIGHT 2025-05-11, KXWNBAGAME 2025-05-23). `GET /historical/markets/{ticker}/candlesticks` (period_interval 1/60/1440) returns yes_bid/yes_ask OHLC, price OHLC, volume and open_interest, unauthenticated, no rate-limit headers observed. Candles exist while price and volume are null/zero (pre-trade book). |
+| Why it matters | The archiver docstring says quote history "CANNOT BE BACKFILLED". For the sampled sports series it can, at candle granularity. Whether candles reproduce the archive's snapshots is NOT yet established (D1b correctness gate). |
+| Disposition | Docstring-only correction to `scripts/archive_market_prices.py` deferred until D1(b) passes; if the gate fails the docstring stays and this entry records why. |
+
+</details>
+
+### GG-330 — Q7 ledger-invariant check is vacuously green in a fresh worktree (SOURCE_UNAVAILABLE x3, exit 0)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-330 |
+| Category | Monitor honesty (session-start protocol Q7) |
+| What was found | `scripts/assert_ledger_invariants.py` in a new isolated worktree reports 0 violations because its logs/cache inputs are absent (SOURCE_UNAVAILABLE x3). Alarm-only exit 0 makes this indistinguishable from a clean pass. |
+| Why it matters | Isolation (Step 0a) is the default, so the default session runs Q7 against nothing and reads green. |
+| Disposition | Register only (HR11). Fix belongs to a separate task: print an explicit "NOT EVALUATED" line when every source is unavailable. |
+
+</details>
+
+### GG-331 — PRICE_ARCHIVE exists only in the shared main tree (gitignored); isolated worktrees cannot reproduce archive-based results without an absolute path
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-331 |
+| Category | Reproducibility (EXP-031/032/033 inputs) |
+| What was found | `exp_output/PRICE_ARCHIVE/` (1.1G) is gitignored and present only under the main checkout. A worktree has none, so `market_efficiency_survey.py` needs `--archive <absolute main-tree path>`. |
+| Why it matters | Results are reproducible only on the one machine and only while the shared tree is intact; the archive is the sole copy of snapshot data that candles may not replace. |
+| Disposition | Register only. This block reads it read-only by absolute path. |
+
+</details>
+
+### GG-332 — Kalshi fee schedule PDF unreachable (HTTP 429) from every source tried; ADR-0016 divergence cannot be confirmed from the primary document
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-332 |
+| Category | Premise verification (D1c) |
+| What was found | `https://kalshi.com/docs/kalshi-fee-schedule.pdf` returned 429 via WebFetch and curl (with and without a browser UA, plus a web.archive.org copy) on 2026-10-02. Published API docs (openapi.yaml, 2026-10-02) state series carry `fee_type` (quadratic, quadratic_with_maker_fees, quadratic_with_combo_maker_fees, flat) and `fee_multiplier`, and that `quadratic` is described by the PDF's General Trading Fees Table. KXMLBTEAMTOTAL reports `quadratic`, multiplier 0.5. Fee Rounding doc (2026-10-02): trade fee is rounded UP to $0.000001; rounding fee and rebate align balances to $0.0001 (direct) or $0.01 (non-direct). |
+| Why it matters | ADR-0016 uses 0.07*P*(1-P) with no multiplier and no rounding. A 0.5 series multiplier would halve it for MLB series. The formula itself is unconfirmed. |
+| Disposition | Do not assert the venue formula until the PDF text is read. Carry both fee models with the series multiplier as a stated sensitivity. |
+
+</details>
