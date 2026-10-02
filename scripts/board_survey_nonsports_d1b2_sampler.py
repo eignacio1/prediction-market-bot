@@ -1,6 +1,7 @@
 """EXP-034 D1(b)-2: read-only live yes_bid/yes_ask sampler. Same ticker rule, rounds and reads as the frozen D1(b)
 sampler (D1B2_AMENDMENT_PREREG.md). Public endpoint, no auth, no orders. One request in flight, spaced apart."""
 import json
+import os
 import sys
 import time
 import datetime as dt
@@ -28,12 +29,17 @@ def get(path):
 
 
 def main(out):
-    tickers = []
-    for s in SERIES:
-        tickers += [m["ticker"] for m in get(f"/markets?series_ticker={s}&status=open&limit=100")["markets"][:2]]
-    with open(out + ".tickers.json", "w") as f:
-        json.dump(tickers, f)
-    for rnd in range(ROUNDS):
+    start_rnd = 0
+    if os.path.exists(out + ".tickers.json"):  # resume after a process death: same fixed tickers, next round
+        tickers = json.load(open(out + ".tickers.json"))
+        start_rnd = max(json.loads(line)["round"] for line in open(out)) + 1
+    else:
+        tickers = []
+        for s in SERIES:
+            tickers += [m["ticker"] for m in get(f"/markets?series_ticker={s}&status=open&limit=100")["markets"][:2]]
+        with open(out + ".tickers.json", "w") as f:
+            json.dump(tickers, f)
+    for rnd in range(start_rnd, ROUNDS):
         for t in tickers:
             m = get(f"/markets/{t}")["market"]
             row = {"round": rnd, "ticker": t, "ts": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -46,4 +52,6 @@ def main(out):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 2:  # optional: wait N seconds first so a resumed round is still >= GAP_S after the last one
+        time.sleep(float(sys.argv[2]))
     main(sys.argv[1])
