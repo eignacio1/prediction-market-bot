@@ -696,8 +696,12 @@ class MLBIngestionClient:
         start_date: str,
         end_date: str,
         session_id: str | None = None,
+        game_types: str = "R",
     ) -> tuple[bool, pd.DataFrame]:
         """Return final scores for all completed games in [start_date, end_date].
+
+        ``game_types`` is the MLB Stats API gameType filter; default "R" is the
+        regular season (unchanged behaviour). Postseason: "F,D,L,W".
 
         Output columns: game_id, game_date, home_team_id, home_team_abbr,
         away_team_id, away_team_abbr, home_runs, away_runs.
@@ -720,7 +724,7 @@ class MLBIngestionClient:
                 "startDate": start_date,
                 "endDate": end_date,
                 "hydrate": "linescore,team",
-                "gameType": "R",
+                "gameType": game_types,
             },
         )
         if data is None:

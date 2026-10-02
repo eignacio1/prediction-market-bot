@@ -436,3 +436,74 @@ class TestMainDryRun:
         df = pd.read_csv(tmp_dirs["output_csv"])
         # 3 rows × 2 seasons = 6 rows
         assert len(df) == 6
+
+
+_GOLDEN_DEFAULT_SHA = "7ea0e37659be4d12b862c2b79a7040cf2da210b9b8a11009f397a207612bfcfa"
+
+
+class TestPostseasonOptIn:
+    """D6(b): postseason is additive; the default regular-season path is unchanged."""
+
+    def _run(self, tmp_dirs, sample_batter_df, sample_feature_df, include):
+        games_df = pd.DataFrame({
+            "game_id": [1], "game_date": ["2024-04-01"],
+            "home_team_id": [147], "home_team_abbr": ["NYY"],
+            "away_team_id": [111], "away_team_abbr": ["BOS"],
+            "home_runs": [5], "away_runs": [3],
+        })
+        post_b = sample_batter_df.copy()
+        post_b["game_id"] = post_b["game_id"] + 900000
+        post_b["season_type"] = "Postseason"
+        fs = MagicMock()
+        fs.compute_features_bulk.return_value = (True, sample_feature_df)
+        fs.assign_train_test_labels.return_value = (True, sample_feature_df)
+        post_loader = MagicMock(return_value=post_b)
+        post_games = MagicMock(return_value=pd.DataFrame())
+        with (
+            patch("generate_mlb_features.MLBIngestionClient", return_value=MagicMock()),
+            patch("generate_mlb_features.MLBFeatureStore", return_value=fs),
+            patch("generate_mlb_features._load_or_fetch_players",
+                  return_value=[{"player_id": 660670, "full_name": "Juan Soto"}]),
+            patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=sample_batter_df),
+            patch("generate_mlb_features._load_or_fetch_batter_logs_post", post_loader),
+            patch("generate_mlb_features._load_or_fetch_completed_games", return_value=games_df),
+            patch("generate_mlb_features._load_or_fetch_completed_games_post", post_games),
+            patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
+            patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),
+        ):
+            gmf.main(seasons=[2024], dry_run=False, include_postseason=include)
+        return fs, post_loader, post_games
+
+    def test_default_output_unchanged(self, tmp_dirs, sample_batter_df, sample_feature_df, monkeypatch):
+        monkeypatch.delenv("BOT_C4_ACTIVE", raising=False)
+        fs, post_loader, post_games = self._run(tmp_dirs, sample_batter_df, sample_feature_df, False)
+        post_loader.assert_not_called()
+        post_games.assert_not_called()
+        sent = fs.compute_features_bulk.call_args.args[0] if fs.compute_features_bulk.call_args.args \
+            else next(iter(fs.compute_features_bulk.call_args.kwargs.values()))
+        pd.testing.assert_frame_equal(sent, sample_batter_df)
+        # Golden digest captured from the PRE-change script (git stash of the edits) for these inputs
+        # - the regular-season default path is byte-for-byte unchanged.
+        import hashlib
+        out = tmp_dirs["output_csv"].read_bytes()
+        again = self._golden_bytes(tmp_dirs, sample_batter_df, sample_feature_df)
+        assert out == again
+        assert hashlib.sha256(out).hexdigest() == _GOLDEN_DEFAULT_SHA
+
+    def _golden_bytes(self, tmp_dirs, sample_batter_df, sample_feature_df):
+        self._run(tmp_dirs, sample_batter_df, sample_feature_df, False)
+        return tmp_dirs["output_csv"].read_bytes()
+
+    def test_flag_appends_postseason_rows(self, tmp_dirs, sample_batter_df, sample_feature_df, monkeypatch):
+        monkeypatch.delenv("BOT_C4_ACTIVE", raising=False)
+        fs, post_loader, _ = self._run(tmp_dirs, sample_batter_df, sample_feature_df, True)
+        post_loader.assert_called_once()
+        sent = fs.compute_features_bulk.call_args.args[0] if fs.compute_features_bulk.call_args.args \
+            else next(iter(fs.compute_features_bulk.call_args.kwargs.values()))
+        assert len(sent) == 2 * len(sample_batter_df)
+        assert set(sent["season_type"]) >= {"Postseason"}
+
+    def test_postseason_range_and_cache_paths_separate(self):
+        assert gmf._batter_post_cache_path(2025) != gmf._batter_cache_path(2025)
+        assert gmf._games_post_cache_path(2025) != gmf._games_cache_path(2025)
+        assert gmf._postseason_date_range(2025) == ("2025-09-25", "2025-11-15")
