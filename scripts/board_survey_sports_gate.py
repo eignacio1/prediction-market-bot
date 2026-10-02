@@ -40,6 +40,40 @@ def q(side: dict, field: str):
     return None if v in (None, "") else float(v)
 
 
+def norm_candle(c: dict) -> dict:
+    """Schema-neutral view of one candle. Live keys are `*_dollars` / `*_fp`, historical keys are bare;
+    both parse to identical floats. Absent / null / "" -> None."""
+    def num(v):
+        return None if v in (None, "") else float(v)
+    def side(name):
+        s = c.get(name) or {}
+        return {f: num(s.get(f, s.get(f + "_dollars"))) for f in ("open", "high", "low", "close")}
+    p = c.get("price") or {}
+    return {"end_period_ts": c["end_period_ts"], "yes_bid": side("yes_bid"), "yes_ask": side("yes_ask"),
+            "price_close": num(p.get("close", p.get("close_dollars"))),
+            "price_previous": num(p.get("previous", p.get("previous_dollars"))),
+            "volume": num(c.get("volume", c.get("volume_fp"))),
+            "open_interest": num(c.get("open_interest", c.get("open_interest_fp")))}
+
+
+def part1_match(cs: list, tt: int):
+    """Part 1's frozen matching rule, as `evaluate` applied it: sort by end_period_ts, take the FIRST candle
+    with end_period_ts >= tt (no prevailing-quote semantics). Returns (idx, sorted_cs); idx None if none."""
+    cs = sorted(cs, key=lambda c: c["end_period_ts"])
+    return next((i for i, c in enumerate(cs) if c["end_period_ts"] >= tt), None), cs
+
+
+def binary_settled(snaps: dict, settle: dict) -> list:
+    """Archive tickers with a binary settlement. Scalar (and any other) results are excluded."""
+    return [t for t in snaps if t in settle and settle[t].get("result") in ("yes", "no")]
+
+
+def read_ref_tau(exp032: str, series: str = SERIES) -> dict:
+    """EXP-032's measured tau cells for a family: {bucket_label: hs_med}."""
+    tau = json.load(open(os.path.join(exp032, "results.json")))["families"][series]["surface"]["tau"]
+    return {lab: cell["hs_med"] for lab, cell in tau.items() if cell.get("measured")}
+
+
 def archive_snaps(archive: str) -> dict:
     """ticker -> [(run_ts, bid, ask)] usable two-sided rows, sorted."""
     out: dict = {}
@@ -123,7 +157,7 @@ def evaluate(archive: str, store_dir: str, exp031: str, exp032: str, out: str):
     settle = {}
     for f in glob.glob(os.path.join(exp031, "settlements", "*.json")):
         settle.update(json.load(open(f)))
-    s_tickers = [t for t in snaps if t in settle and settle[t].get("result") in ("yes", "no")]
+    s_tickers = binary_settled(snaps, settle)
     hourly, minute, markets = {}, {}, set()
     for r in (r for s_ in stores for r in s_.rows()):
         if r["kind"] == "markets_page":
@@ -147,8 +181,7 @@ def evaluate(archive: str, store_dir: str, exp031: str, exp032: str, out: str):
         for (st_, en_), cs in wins.items():
             tt = (st_ + en_) // 2
             run = next(r for r in snaps[t] if abs(ts(r[0]) - tt) <= 1)
-            cs = sorted(cs, key=lambda c: c["end_period_ts"])
-            idx = next((i for i, c in enumerate(cs) if c["end_period_ts"] >= tt), None)
+            idx, cs = part1_match(cs, tt)
             if idx is None:
                 n += 1; continue
             c = cs[idx]; nb = cs[max(0, idx - 1): idx + 2]
