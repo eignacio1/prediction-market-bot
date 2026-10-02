@@ -42,7 +42,7 @@ def join_row(row: dict, home: str, away: str, home_score: float, away_score: flo
     mt = MarketType[row["market_type"]]
     kalshi_tkr = row["market_ticker"]
     # derive_actual_stat takes Kalshi's own team-code alphabet in the ticker suffix; nflverse
-    # LA/WAS/JAX differ only for three teams, so map the ticker side explicitly.
+    # LA/JAX differ from Kalshi LAR/JAC (Washington is WAS in both), so map the ticker side explicitly.
     actual, _ = derive_actual_stat(mt, kalshi_tkr, _to_kalshi(home), _to_kalshi(away),
                                    home_score, away_score)
     if parsed["market_type"] == "NFL_MONEYLINE":
@@ -58,4 +58,4 @@ def join_row(row: dict, home: str, away: str, home_score: float, away_score: flo
 
 
 def _to_kalshi(code: str) -> str:
-    return {"LA": "LAR", "WAS": "WSH", "JAX": "JAC"}.get(code, code)
+    return {"LA": "LAR", "JAX": "JAC"}.get(code, code)

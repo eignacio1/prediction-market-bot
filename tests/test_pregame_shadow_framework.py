@@ -228,3 +228,13 @@ def test_information_cutoff_no_feature_uses_data_dated_after_as_of(tiny_league):
     s4 = sched.copy(); s4.loc[s4.gameday == str(day_of.date()), ["home_score", "away_score"]] = 99
     r_day2 = NFLPregameFeatureBuilder(stats, s4).row("AAA", "BBB", day_of, 7, 7)
     assert r_day["sha256"] == r_day2["sha256"]
+
+
+def test_live_kalshi_team_codes_all_parse():
+    """Event strings observed live 2026-10-02 (Kalshi uses WAS, LAR, JAC). WSH was a wrong assumption."""
+    from prediction_market_bot.pregame_shadow.nfl_forecaster import parse_event_ticker
+    live = ["ARINYG", "ATLNO", "BALATL", "BUFLAR", "CHIGB", "CINMIA", "CLENYJ", "DALHOU", "DENLAC", "DENSF",
+            "DETARI", "DETCAR", "GBTB", "HOUTEN", "INDPIT", "INDWAS", "JACCIN", "KCLV", "LACSEA", "LARPHI",
+            "LVNE", "MIAMIN", "MINNO", "NEBUF", "NYGWAS", "NYJCHI", "PHIJAC", "SFSEA", "TBDAL", "TENBAL"]
+    bad = [e for e in live if parse_event_ticker(f"KXNFLGAME-26OCT04{e}") is None]
+    assert bad == []
