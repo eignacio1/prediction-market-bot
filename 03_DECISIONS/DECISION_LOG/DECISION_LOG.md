@@ -1700,3 +1700,9 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - Not done here: CLAUDE.md § Market efficiency gradient still reads "OPEN OPERATOR DECISION" and COVERAGE_TARGET_MATRIX.md still lists the question as open. Neither is in this block's ownership; both need an edit by their owner to match this entry. Rules, the efficiency-gradient constraint, and "volume is not depth" are unchanged.
 - Registered the same sitting: GG-340..GG-356 (17 gaps from the three GAPS FOUND lists of W45_462, EXP034, WAVE45_land_the_record), deduplicated against GG-329..333 and each other. Items folded into existing entries: Q7 vacuous in worktrees (EXP034 #4, WAVE45 #3) = GG-330; fee-model divergence from EXP-035 D2(e) appended to GG-332 as a dated update, not a new gap; EXP034 #2 (re-run or close) is superseded by this block's D3, not a gap; W45_462 #10 registered as GG-355. WAVE45 #4 / W45_462 #4-6,#8 folded into GG-343..345.
 - Landed: EXP-034 w46 work cherry-picked (6 commits, nav commits skipped), 9 board_survey tests green, pushed a9cbeab. EXP-034 D1(b) verdict stays FAIL as run.
+
+## 2026-10-02 — EXP-035 Gate 2 (KXMLBTOTAL) run as frozen: PASSED 7/7 (Wave 47 / 47.1 D2)
+- Ran `scripts/board_survey_sports_gate2.py evaluate` exactly per `EXP035_GATE2_PREREGISTRATION_2026-10-02.md` (pushed before any candle fetch). Nothing fixed or amended: the code already matched the frozen text.
+- Result: G1 1.0000/0.9895, G2 0.9437, G3 0.9990, G4 |dB|=0.00022, G5 |dH|=0.0000, G6 same sign (E_candle -0.00134 vs E_ref -0.00156), G7 7/7 buckets. G7 [24,48) passes at the 0.005 limit by float margin (tick quantisation).
+- Consequence: D4 proceeds (publish validated NFL/NHL history). Part 1 (EXP-035 board survey) remains FAILED as recorded; Gate 2 does not relabel it.
+- Results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_GATE2_RESULTS_KXMLBTOTAL_2026-10-02.md`.
