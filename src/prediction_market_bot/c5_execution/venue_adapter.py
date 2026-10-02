@@ -184,6 +184,69 @@ class KalshiVenueAdapter:
             return True, _tag_market(market, self.venue_id)
         return ok, market
 
+    # ------------------------------------------------------------------
+    # ADDITIVE (EXP-037 / T-608): read-only game-market listing for the
+    # pregame shadow runner. No existing method above is changed.
+    # ------------------------------------------------------------------
+
+    def list_series_markets_raw(
+        self,
+        series_ticker: str,
+        status: str = "open",
+        *,
+        max_pages: int = 20,
+        min_interval_s: float = 1.1,
+        _sleep=None,
+        _clock=None,
+    ) -> tuple[bool, list[dict[str, Any]]]:
+        """Cursor-paginated read of GET /markets for one series (no N+1 detail GETs).
+
+        Returns the raw market dicts (yes/no bid/ask in dollars, floor_strike,
+        volume_fp ...). Read-only, unauthenticated, production price-discovery
+        host. Throttled to >= ``min_interval_s`` between requests (cap: 1 req/s);
+        the interval doubles on every 429 for the remainder of the call.
+        """
+        import time as _time
+
+        from prediction_market_bot.c5_execution import kalshi_client as _kc
+
+        sleep = _sleep or _time.sleep
+        clock = _clock or _time.monotonic
+        interval = max(float(min_interval_s), 1.0)
+        out: list[dict[str, Any]] = []
+        cursor: Optional[str] = None
+        last_req = None
+        for _ in range(max_pages):
+            if last_req is not None:
+                wait = interval - (clock() - last_req)
+                if wait > 0:
+                    sleep(wait)
+            params: dict[str, Any] = {"series_ticker": series_ticker, "status": status, "limit": 200}
+            if cursor:
+                params["cursor"] = cursor
+            last_req = clock()
+            try:
+                r = self._client._session.get(
+                    f"{_kc._price_discovery_url()}/markets",
+                    params=params,
+                    timeout=_kc.REQUEST_TIMEOUT_S,
+                )
+            except Exception as exc:  # network error: report, keep what we have
+                return False, out or [{"error": type(exc).__name__, "detail": str(exc)}]
+            if r.status_code == 429:
+                interval *= 2.0
+                sleep(interval)
+                last_req = clock()
+                continue
+            if r.status_code != 200:
+                return False, out or [{"error": f"HTTP {r.status_code}"}]
+            data = r.json()
+            out.extend(data.get("markets", []))
+            cursor = data.get("cursor") or None
+            if not cursor:
+                return True, out
+        return True, out
+
 
 # ---------------------------------------------------------------------------
 # Phase 7+ venue adapters
