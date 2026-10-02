@@ -50,6 +50,36 @@ body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono);
 .tbtn:hover{border-color:var(--amber-dim); color:var(--amber)}
 .tbtn.on{border-color:var(--amber); color:var(--amber)}
 
+/* ─── v2: freshness chips, NOT LIVE / DEMO states, new modules ─── */
+.fr{font-size:10px; letter-spacing:.05em; padding:0 6px; border:1px solid var(--hair); color:var(--faint)}
+.fr.ok{color:var(--green); border-color:#144d2b} .fr.warn{color:var(--amber); border-color:#4d3a10}
+.fr.bad{color:var(--red); border-color:#4d1717} .fr.off{color:var(--faint)} .fr.aw{color:var(--faint); font-style:italic}
+body.notlive .panel .pb{opacity:.28; filter:grayscale(1)}
+body.demo .panel{position:relative}
+body.demo .panel::after{content:"DEMO"; position:absolute; right:14px; top:36px; font-size:34px; font-weight:700;
+  letter-spacing:.3em; color:var(--amber); opacity:.13; pointer-events:none; transform:rotate(-8deg)}
+.aw{color:var(--faint); font-style:italic; padding:10px 12px}
+.pipe-row{display:flex; gap:10px; padding:8px 10px; border-bottom:1px solid var(--line,#1a1a1a); align-items:stretch}
+.pipe-sp{width:48px; color:var(--amber); font-weight:700; letter-spacing:.1em; padding-top:4px}
+.pipe-flow{display:flex; flex-wrap:wrap; gap:4px; align-items:stretch; flex:1}
+.pipe-tile{border:1px solid; padding:6px 8px; min-width:150px; max-width:230px; flex:1 1 150px; background:#050505}
+.pipe-c{font-size:10.5px; letter-spacing:.1em; font-weight:700} .pipe-h{margin:3px 0; font-size:12px}
+.pipe-d,.pipe-s{color:var(--faint); font-size:10.5px; word-break:break-word}
+.pipe-ar{color:var(--faint); align-self:center}
+.pipe-g{margin:0; padding:8px 12px 8px 28px; color:var(--amber)}
+.cg{border-collapse:separate; border-spacing:2px; width:auto}
+.cg td,.cg th{padding:3px 7px; text-align:center; font-size:10.5px; border:none}
+.cg th{color:var(--faint); font-weight:400; position:static; cursor:default}
+.cg th.rl{text-align:right}
+.cg td.c{min-width:46px; border:1px solid var(--hair); color:#000; font-weight:700}
+.cg td.c.recent{outline:2px solid var(--amber); outline-offset:1px}
+.cg td.c.s-active{background:var(--green)} .cg td.c.s-shadow{background:var(--cyan)}
+.cg td.c.s-blocked{background:var(--amber)} .cg td.c.s-dark{background:#555; color:var(--ink)}
+.cg td.c.s-ruled_out{background:var(--red)} .cg td.c.s-not_implemented{background:#141414; color:var(--faint)}
+.cg td.c.s-none{background:transparent; border-color:var(--hair-2); color:#222}
+.lg{display:flex; gap:12px; flex-wrap:wrap; padding:8px 12px; color:var(--dim); font-size:10.5px}
+.lg i{display:inline-block; width:10px; height:10px; margin-right:5px; vertical-align:-1px}
+
 /* ─── MODULE BAR (ERP-style) ─── */
 .modbar{position:sticky; top:32px; z-index:55; display:flex; align-items:stretch;
   background:#000; border-bottom:1px solid var(--hair); overflow-x:auto}
@@ -190,7 +220,8 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
   <span class="id">PMBOT</span><span class="sep">│</span>
   <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
   <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
-  <span class="sep">│</span><span class="sub">SHA <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sep">│</span><span class="sub">RUN <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sub"> · ORIGIN <b id="osha" class="cy" title="origin/main as of the last fetch on the server">—</b> <b id="obehind"></b></span>
   <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
   <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
@@ -246,8 +277,12 @@ function evClass(p){
 }
 const EVTAG={MODEL:['real','REAL'],STUB:['stub','STUB'],UNATTRIBUTED:['unk','UNATTR']};
 
+const DEMO_FLAG=/[?&]demo(=|&|$)/.test(location.search);
+let LASTPULL=0;
+const EMPTY={portfolio:{},t4_portfolio:{},nfl_portfolio:{},audit:[],t4_audit:[],nfl_audit:[],pipe_log:[],
+  pipe_mtimes:{},t4_cycle_tail:[],server_time:null};
 let S={data:null, mod:'OVERVIEW', paused:false, cd:REFRESH_S, band:'ALL', filt:'',
-       seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false,
+       seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false, notlive:false,
        sortKey:'entered_at', sortDir:-1};
 
 const tt=$('#tt');
@@ -264,15 +299,15 @@ function wireTips(root){ (root||document).querySelectorAll('[data-tip]').forEach
 /* ═══════════ FETCH ═══════════ */
 async function pull(){
   try{
+    if(DEMO_FLAG){ S.demo=true; S.notlive=false; banner('demo','DEMO — seed data shown because ?demo is set. Nothing on this page is live.'); apply(DEMO); S.first=false; return }
     const r=await fetch('/api/data',{cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status+' from /api/data');
     const j=await r.json(); if(j.error) throw new Error(j.error);
-    S.demo=false; S.lastOk=Date.now(); banner(false); apply(j);
+    S.demo=false; S.notlive=false; S.lastOk=Date.now(); LASTPULL=Date.now(); banner(false); apply(j);
   }catch(err){
-    if(S.first){ S.demo=true;
-      banner('demo','NOT CONNECTED — schema-accurate DEMO payload so the layout can be judged offline. '+
-        'Served live this page reads /api/data on the VPS. Reason: '+err.message);
-      apply(DEMO);
+    if(!S.lastOk){ S.demo=false; S.notlive=true;
+      banner('err','NOT LIVE — no data from /api/data ('+err.message+'). Panels are blank. Open the tunnel (Open Dashboard.command); add ?demo to preview layout with seed data.');
+      apply(EMPTY);
     } else {
       banner('err','Cannot fetch /api/data — '+err.message+'. Check the SSH tunnel is open. Retrying in '+REFRESH_S+'s…');
       led('down','NO DATA');
@@ -303,7 +338,12 @@ const MODULES=[
   {k:'MLB',      label:'MLB · T1/T4'},
   {k:'NFL',      label:'NFL · T1'},
   {k:'EVIDENCE', label:'Evidence'},
+  {k:'PIPELINE', label:'Pipeline C1–C8'},
   {k:'FEEDS',    label:'Feeds & Health'},
+  {k:'COVERAGE', label:'Coverage'},
+  {k:'SHADOW',   label:'Shadow'},
+  {k:'POSTSEASON',label:'MLB Postseason'},
+  {k:'VERDICTS', label:'Verdicts'},
 ];
 function modbar(D){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
@@ -314,6 +354,10 @@ function modbar(D){
     NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
     EVIDENCE: stub? `<span class="warn">${stub} stub</span>` : 'clean',
     FEEDS: errs? `<span class="warn">${errs} err</span>` : 'ok',
+    PIPELINE: LAST&&LAST.pipeline&&LAST.pipeline.tiles&&LAST.pipeline.tiles.length?(LAST.pipeline.gaps.length?`<span class="warn">${LAST.pipeline.gaps.length} gaps</span>`:'wired'):'awaiting',
+    COVERAGE: LAST&&LAST.coverage&&LAST.coverage.total?`${LAST.coverage.total} cells`:'awaiting',
+    SHADOW: LAST&&LAST.shadow&&LAST.shadow.cells&&LAST.shadow.cells.length?`${LAST.shadow.cells.length} cells`:'awaiting',
+    POSTSEASON: '', VERDICTS: '',
   };
   $('#modbar').innerHTML=MODULES.map(m=>
     `<button class="mod ${S.mod===m.k?'on':''}" data-m="${m.k}">${esc(m.label)}<span class="badge">${badge[m.k]||''}</span></button>`).join('');
@@ -334,13 +378,23 @@ function render(){
   else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
   else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
   else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
+  else if(S.mod==='COVERAGE') w.innerHTML=viewCoverage();
+  else if(S.mod==='SHADOW') w.innerHTML=viewShadow();
+  else if(S.mod==='POSTSEASON') w.innerHTML=viewPost();
+  else if(S.mod==='VERDICTS') w.innerHTML=viewVerdicts();
+  else if(S.mod==='PIPELINE') w.innerHTML=viewPipeline();
   else w.innerHTML=viewFeeds();
   fill(D,d);
+  fillV2(d);
+  paintFresh();
+  document.body.classList.toggle('notlive',!!S.notlive);
+  document.body.classList.toggle('demo',!!S.demo);
 
   const lw=Math.max(...[D.P.last_updated,D.T4.last_updated,D.NF.last_updated]
     .map(t=>t?new Date(t).getTime():0),0);
   const age=lw?Math.round((Date.now()-lw)/1000):null;
-  if(S.demo) led('stale','DEMO');
+  if(S.notlive) led('down','NOT LIVE');
+  else if(S.demo) led('stale','DEMO');
   else if(age!=null&&age>3600) led('stale','DATA '+fmtAge(age));
   else led('live','LIVE');
   statusExtras(d);
@@ -365,6 +419,11 @@ function statusExtras(d){
   const se=$('#sha');
   if(se){ se.textContent=sha&&sha!=='unknown'?sha.slice(0,7):'unknown';
     se.title='running commit '+(sha||'unknown')+(pr.started_at?' · started '+pr.started_at:''); }
+  const og=d.origin||{}, oe=$('#osha'), ob=$('#obehind');
+  if(oe){ oe.textContent=og.origin_sha?og.origin_sha.slice(0,7):'awaiting';
+    oe.title='origin/main'+(og.ref_as_of?' · ref fetched '+og.ref_as_of:' · fetch time unknown'); }
+  if(ob){ const n=og.commits_behind;
+    ob.textContent=n==null?'':(n===0?'= in sync':n+' behind'); ob.className=n==null?'':n===0?'pos':'amb'; }
   const ce=$('#cyc'), r=cycleRate(d.t4_cycle_tail);
   if(ce){ ce.textContent=r?((r.perMin!=null?r.perMin.toFixed(1)+' cyc/min':r.cycles+' cyc')+' · last '+fmtAge(r.ageS)):'—'; }
 }
@@ -377,6 +436,26 @@ function rejFoot(d){
 let PREVM=null, PREVKEY=null;
 function railSpec(D,d){
   const sum=(a,f)=>a.reduce((s,x)=>s+(Number(f(x))||0),0);
+  if(S.mod==='COVERAGE'){ const c=d.coverage||{}, k=c.counts||{};
+    if(!c.total) return [['COVERAGE','awaiting',null,'']];
+    return [['CELLS',String(c.total),c.total,''],['ACTIVE',String(k.active||0),k.active||0,''],
+      ['SHADOW',String(k.shadow||0),k.shadow||0,'cy'],['BLOCKED',String(k.blocked||0),k.blocked||0,'warnv'],
+      ['DARK',String(k.dark||0),k.dark||0,''],['RULED OUT',String(k.ruled_out||0),k.ruled_out||0,''],
+      ['NOT IMPL.',String(k.not_implemented||0),k.not_implemented||0,'']]; }
+  if(S.mod==='SHADOW'){ const sh=d.shadow||{}, cs=sh.cells||[];
+    if(!cs.length) return [['SHADOW','awaiting',null,'']];
+    return [['CELLS',String(cs.length),cs.length,''],['ROWS TODAY',String(sum(cs,c=>c.rows_today)),sum(cs,c=>c.rows_today),'cy']]; }
+  if(S.mod==='POSTSEASON'){ const m=d.mlb_postseason||{};
+    return [['T1 MATCHED',m.t1_players_matched_last_run==null?'awaiting':String(m.t1_players_matched_last_run),m.t1_players_matched_last_run,''],
+      ['T4 CYCLE AGE',m.t4_cycle_age_s==null?'awaiting':fmtAge(Math.round(m.t4_cycle_age_s)),m.t4_cycle_age_s,''],
+      ['OPEN',m.open_positions==null?'awaiting':String(m.open_positions),m.open_positions,''],
+      ['STUCK',m.stuck_positions==null?'awaiting':String(m.stuck_positions),m.stuck_positions,m.stuck_positions>0?'bad':'']]; }
+  if(S.mod==='PIPELINE'){ const p=d.pipeline||{}, t=p.tiles||[];
+    if(!t.length) return [['PIPELINE','awaiting',null,'']];
+    const n=st=>t.filter(x=>x.status===st).length;
+    return [['TILES',String(t.length),t.length,''],['OK',String(n('ok')),n('ok'),''],['WARN',String(n('warn')),n('warn'),'warnv'],
+      ['BAD',String(n('bad')),n('bad'),n('bad')>0?'bad':''],['NOT INSTR.',String(n('ni')),n('ni'),n('ni')>0?'warnv':'']]; }
+  if(S.mod==='VERDICTS') return [['VERDICTS',String(Object.keys(d.verdicts||{}).length),null,'']];
   if(S.mod==='NFL'){
     const o=D.open.filter(p=>p._sport==='NFL'), c=D.closed.filter(p=>p._sport==='NFL');
     const all=[...o,...c];
@@ -452,19 +531,21 @@ function rail(D,d){
 }
 
 /* ═══════════ VIEW SHELLS ═══════════ */
-const P_=(t,n,body,extra='')=>`<div class="panel"><div class="ph"><span class="t">${t}</span>`+
-  `<span class="n" id="${n}">—</span><span class="sp"></span>${extra}</div>${body}</div>`;
+const P_=(t,n,body,extra='',fr='')=>`<div class="panel"><div class="ph"><span class="t">${t}</span>`+
+  `<span class="n" id="${n}">—</span><span class="sp"></span>${extra}`+
+  (fr?`<span class="fr" data-fr="${fr}">…</span>`:'')+`</div>${body}</div>`;
+const frKey=()=>S.mod==='NFL'?'nfl':'t1_mlb';
 const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
 
 function viewOverview(){return `<div class="grid g-7-5">
   <div class="col">
     ${P_('Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`,
-      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`)}
-    ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR)}
+      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`,'t1_mlb')}
+    ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR,'t1_mlb')}
     ${P_('Recently Resolved','resN',SCROLL('resWrap',220),`<span class="n" id="resPnl"></span>`)}
   </div>
   <div class="col">
-    ${P_('Live Tape','tapeN',SCROLL('tape',318),`<span class="n">newest first · flashes on arrival</span>`)}
+    ${P_('Live Tape','tapeN',SCROLL('tape',318),`<span class="n">newest first · flashes on arrival</span>`,'audit_mlb')}
     ${P_('Edge Ladder','ladN',`<div class="pb"><div id="ladder"></div></div>`)}
     ${P_('Band Lanes','lanesN',`<div class="pb flush"><div id="lanes"></div></div>`)}
     ${P_('Alerts','alertN',SCROLL('alerts',190),`<span class="n">deduped, most recent first</span>`)}
@@ -475,7 +556,7 @@ function viewSport(sport){
   return `${nflNote}<div class="grid g-7-5">
   <div class="col">
     ${P_(sport+' — Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`)}
-    ${P_(sport+' — Open Positions','openN',SCROLL('posWrap',320),`<input class="filt" id="posFilt" placeholder="filter…  /">`)}
+    ${P_(sport+' — Open Positions','openN',SCROLL('posWrap',320),`<input class="filt" id="posFilt" placeholder="filter…  /">`,sport==='NFL'?'nfl':'t1_mlb')}
     ${P_(sport+' — Recently Resolved','resN',SCROLL('resWrap',230),`<span class="n" id="resPnl"></span>`)}
   </div>
   <div class="col">
@@ -500,7 +581,7 @@ function viewEvidence(){return `<div class="grid g-2">
 function viewFeeds(){return `<div class="grid g-2">
   <div class="col">
     ${P_('Feed Health','healthN',`<div class="pb flush"><div id="health"></div></div>`,
-      `<span class="n">staleness since last write</span>`)}
+      `<span class="n">staleness since last write · season-aware</span>`)}
     ${P_('Event Rate by Component','compN',`<div class="pb flush"><div id="compTable"></div></div>`)}
   </div>
   <div class="col">
@@ -508,6 +589,86 @@ function viewFeeds(){return `<div class="grid g-2">
     ${P_('Live Tape','tapeN',SCROLL('tape',260))}
   </div></div>`;}
 
+const AW=src=>`<div class="aw">awaiting ${esc(src)}</div>`;
+function viewCoverage(){return `<div class="grid g-1">
+  ${P_('Coverage — market type × band','covN',`<div class="pb flush"><div id="cov"></div></div>`,`<span class="n" id="covRule"></span>`)}</div>`;}
+function viewShadow(){return `<div class="grid g-1">
+  ${P_('Shadow cells','shN',`<div class="pb flush"><div id="shCells"></div></div>`,`<span class="n">no orders · no sizing</span>`)}
+  ${P_('Shadow tape','shT',SCROLL('shTape',340),`<span class="n">newest first</span>`)}</div>`;}
+function viewPost(){return `<div class="grid g-2"><div class="col">
+  ${P_('MLB postseason — pipelines','psN',`<div class="pb flush"><div id="ps"></div></div>`,'','t4_mlb')}</div>
+  <div class="col">${P_('Open positions (all MLB pools)','psO',SCROLL('posWrap',320),'','t1_mlb')}</div></div>`;}
+function viewPipeline(){return `<div class="grid g-1">
+  ${P_('Pipeline — C1 → C8, one tile per component per sport','pipN',`<div class="pb flush"><div id="pipe"></div></div>`,`<span class="n">each tile read from its real output</span>`)}
+  ${P_('GAPS FOUND — not instrumented','pipG',`<div class="pb flush"><div id="pipeGaps"></div></div>`)}</div>`;}
+function viewVerdicts(){return `<div class="grid g-1">
+  ${P_('Latest verdicts','vN',`<div class="pb flush"><div id="verd"></div></div>`,`<span class="n">files are repo-relative paths</span>`)}</div>`;}
+const PCOL={ok:'var(--green)',warn:'var(--amber)',bad:'var(--red)',ni:'var(--faint)',idle:'var(--faint)'};
+function fillPipeline(d){
+  if(!$('#pipe')) return;
+  const p=d.pipeline, t=(p&&p.tiles)||[];
+  if(!t.length){ $('#pipe').innerHTML=AW((p&&p.awaiting)||'/api/data pipeline'); $('#pipN').textContent='—'; $('#pipeGaps').innerHTML=AW('pipeline'); return; }
+  $('#pipN').textContent=t.length+' tiles';
+  const sports=[]; t.forEach(x=>{ if(sports.indexOf(x.sport)<0) sports.push(x.sport); });
+  $('#pipe').innerHTML=sports.map(sp=>`<div class="pipe-row"><div class="pipe-sp">${esc(sp)}</div><div class="pipe-flow">`+
+    t.filter(x=>x.sport===sp).map(x=>{ const c=PCOL[x.status]||'var(--faint)';
+      return `<div class="pipe-tile" style="border-color:${c}"><div class="pipe-c" style="color:${c}">${esc(x.c)} · ${esc(String(x.status).toUpperCase())}</div>`+
+        `<div class="pipe-h">${esc(x.headline||'')}</div><div class="pipe-d">${esc(x.detail||'')}</div>`+
+        `<div class="pipe-s">${esc(x.source||'')}${x.age_s!=null?' · '+fmtAge(Math.round(x.age_s)):''}</div></div>`; }).join('<span class="pipe-ar">→</span>')+
+    `</div></div>`).join('');
+  const g=p.gaps||[];
+  $('#pipeGaps').innerHTML=g.length?`<ul class="pipe-g">`+g.map(x=>`<li>${esc(x)}</li>`).join('')+`</ul>`:`<div class="aw">none — every component has observable output</div>`;
+  $('#pipG').textContent=g.length+' gaps';
+}
+const f4=v=>v==null||isNaN(v)?'—':Number(v).toFixed(4);
+function fillV2(d){
+  fillPipeline(d);
+  if($('#cov')){ const c=d.coverage;
+    if(!c||!c.cells){ $('#cov').innerHTML=AW((c&&c.awaiting)||'/api/data coverage'); $('#covN').textContent='—'; }
+    else { $('#covN').textContent=c.total+' cells'; $('#covRule').textContent='outlined = '+c.recent_rule;
+      const m={}; c.cells.forEach(x=>m[x.market_type+'|'+x.band]=x);
+      const L={active:'A',shadow:'S',blocked:'B',dark:'D',ruled_out:'R',not_implemented:'·'};
+      $('#cov').innerHTML=`<table class="cg"><thead><tr><th></th>${c.bands.map(b=>`<th>${esc(b)}</th>`).join('')}</tr></thead><tbody>`+
+        c.market_types.map(t=>`<tr><th class="rl">${esc(t)}</th>`+c.bands.map(b=>{const x=m[t+'|'+b];
+          return x?`<td class="c s-${x.status}${x.recent?' recent':''}" title="${esc(t+' / '+b+' — '+x.status+(x.reason?' — '+x.reason:''))}">${L[x.status]||'?'}</td>`
+                  :`<td class="c s-none">·</td>`}).join('')+`</tr>`).join('')+`</tbody></table>`+
+        `<div class="lg">`+[['active','var(--green)'],['shadow','var(--cyan)'],['blocked','var(--amber)'],['dark','#555'],
+          ['ruled out','var(--red)'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
+        `<span>blank = unseeded</span></div>`; } }
+  if($('#shCells')){ const sh=d.shadow;
+    if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
+    else { $('#shN').textContent=sh.cells.length+' cells';
+      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
+        sh.cells.map(c=>`<tr><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td>`+
+          `<td>${esc(c.last_ts||'—')}</td><td class="r">${c.settled_n==null?'awaiting':c.settled_n}</td><td class="r">${c.judged_n==null?'awaiting':c.judged_n}</td>`+
+          `<td class="r">${c.delta_brier_market==null?'awaiting':f4(c.delta_brier_market)}</td><td class="r">${c.delta_brier_climo==null?'awaiting':f4(c.delta_brier_climo)}</td>`+
+          `<td class="r">${f4(c.latest_e_net)}</td></tr>`).join('')+`</tbody></table>`;
+      $('#shTape').innerHTML=`<table><thead><tr><th>TS</th><th>SPORT</th><th>MARKET</th><th>TICKER</th><th>P_YES</th><th>MID</th><th>E_NET YES</th><th>E_NET NO</th></tr></thead><tbody>`+
+        (sh.tape||[]).map(r=>`<tr><td>${esc(r.ts_utc)}</td><td>${esc(r.sport)}</td><td>${esc(r.market_type)}</td><td>${esc(r.market_ticker)}</td>`+
+          `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r">${f4(r.e_net_yes_k007)}</td><td class="r">${f4(r.e_net_no_k007)}</td></tr>`).join('')+`</tbody></table>`; } }
+  if($('#ps')){ const m=d.mlb_postseason;
+    if(!m||m.awaiting&&m.t1_players_matched_last_run==null&&m.t4_cycle_age_s==null){ $('#ps').innerHTML=AW((m&&m.awaiting)||'mlb sources'); }
+    else { const row=(k,v)=>`<div class="hw"><span class="lbl">${k}</span><span class="age">${v}</span></div>`;
+      $('#ps').innerHTML=row('T1 players matched (last run)',m.t1_players_matched_last_run==null?'awaiting paper_mlb_cron.log':m.t1_players_matched_last_run)+
+        row('T4 cycle-log age',m.t4_cycle_age_s==null?'awaiting t4 cycle log':fmtAge(Math.round(m.t4_cycle_age_s)))+
+        row('open positions',m.open_positions)+row('stuck positions ('+esc(m.stuck_rule)+')',m.stuck_positions); } }
+  if($('#verd')){ const v=d.verdicts||{}, ks=Object.keys(v);
+    if(!ks.length) $('#verd').innerHTML=AW('/api/data verdicts');
+    else $('#verd').innerHTML=`<table><thead><tr><th>TEST</th><th>VERDICT</th><th>WRITTEN</th><th>FILE</th></tr></thead><tbody>`+
+      ks.map(k=>{const x=v[k]; if(x.awaiting) return `<tr><td>${esc(k)}</td><td class="dim" colspan="3">awaiting ${esc(x.awaiting)}</td></tr>`;
+        const c=x.passed===true?'pos':x.passed===false?'neg':'dim';
+        return `<tr><td>${esc(k)}</td><td class="${c}">${esc(x.verdict||'unscored')}</td><td>${esc(x.written_at)}</td><td class="dim">${esc(x.file)}</td></tr>`}).join('')+`</tbody></table>`; }
+}
+function paintFresh(){
+  const f=(LAST&&LAST.freshness)||{}, el=Date.now()-LASTPULL;
+  $$('[data-fr]').forEach(e=>{ const x=f[e.dataset.fr]; e.className='fr';
+    if(S.demo){ e.textContent='DEMO'; e.className='fr off'; return }
+    if(S.notlive||!x){ e.textContent='no data'; e.className='fr aw'; return }
+    if(x.awaiting){ e.textContent='awaiting '+x.awaiting; e.className='fr aw'; return }
+    const age=Math.round(x.age_s+(LASTPULL?el/1000:0));
+    e.textContent='read '+fmtAge(age)+' ago'+(x.level==='off'?' · off-season':'');
+    e.className='fr '+(x.level==='red'?'bad':x.level==='amber'?'warn':x.level==='ok'?'ok':'off'); });
+}
 const LEGEND=`<div class="legend">
   <span><span class="sw" style="background:var(--green)"></span>YES side</span>
   <span><span class="sw" style="background:transparent;border:1.4px solid var(--red)"></span>NO side</span>
@@ -522,7 +683,7 @@ const FILTERBAR=`<input class="filt" id="posFilt" placeholder="filter…  /">
 
 /* ═══════════ FILL ═══════════ */
 function fill(D,d){
-  const sportOf=S.mod==='MLB'?'MLB':S.mod==='NFL'?'NFL':null;
+  const sportOf=(S.mod==='MLB'||S.mod==='POSTSEASON')?'MLB':S.mod==='NFL'?'NFL':null;
   const open = sportOf?D.open.filter(p=>p._sport===sportOf):D.open;
   const closed = sportOf?D.closed.filter(p=>p._sport===sportOf):D.closed;
   const events = sportOf?D.events.filter(e=>e._sport===sportOf):D.events;
@@ -857,6 +1018,9 @@ function health(d,D){
     {lbl:'PORTFOLIO  MLB T1', t:D.P.last_updated,  warn:26*3600, bad:72*3600},
     {lbl:'PORTFOLIO  MLB T4', t:D.T4.last_updated, warn:2*3600,  bad:12*3600},
     {lbl:'PORTFOLIO  NFL T1', t:D.NF.last_updated, warn:8*86400, bad:14*86400}];
+  const sn=d.season||{};
+  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/MLB/.test(h.lbl)?'MLB':null;
+    if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
   const n=$('#healthN'); if(n) n.textContent=HEALTH.length+' feeds';
   paintHealth();
 }
@@ -866,16 +1030,16 @@ function paintHealth(){
   host.innerHTML=HEALTH.map(h=>{
     const ts=h.t&&!isNaN(new Date(h.t))?new Date(h.t).getTime():null;
     const age=ts?Math.round((now-ts)/1000):null;
-    const c=age==null?'':ageCls(age,h.warn,h.bad);
+    const c=age==null||h.off?'':ageCls(age,h.warn,h.bad);
     return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
-      `<span class="age ${c}">${age==null?esc(h.t||'no log yet'):fmtAge(age)+' ago'}</span>`+
+      `<span class="age ${c}">${age==null?esc(h.t||'no log yet'):fmtAge(age)+' ago'}${h.off?' · off-season':''}</span>`+
       `<span class="dot ${c}"></span></div>`}).join('');
 }
 
 /* ═══════════ LOOP ═══════════ */
 function tick(){
   $('#clock').textContent=new Date().toISOString().slice(11,19)+'Z';
-  paintHealth();
+  paintHealth(); paintFresh();
   if(S.paused){$('#cd').textContent='||'; return}
   S.cd--; if(S.cd<=0){S.cd=REFRESH_S; pull()}
   $('#cd').textContent=String(S.cd).padStart(2,'0');
@@ -889,7 +1053,7 @@ addEventListener('keydown',e=>{
   if(e.key==='r'){S.cd=REFRESH_S; pull()}
   if(e.key===' '){e.preventDefault(); $('#pause').click()}
   if(e.key==='/'){e.preventDefault(); $('#posFilt')?.focus()}
-  const mi=['1','2','3','4','5'].indexOf(e.key);
+  const mi=['1','2','3','4','5','6','7','8','9'].indexOf(e.key);
   if(mi>=0&&MODULES[mi]){S.mod=MODULES[mi].k; render()}
 });
 

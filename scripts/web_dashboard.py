@@ -408,7 +408,445 @@ def _load_cycle_tail(d: Path, n: int = CYCLE_TAIL_ROWS) -> list[dict]:
     return []
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Operator terminal v2 (Wave 47 / 47.1 D6) — additive, read-only keys.
+# Every value is read from a file a block writes. A missing source yields
+# {"awaiting": "<source>"} — never a placeholder number.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+# Shadow ledgers are append-only JSONL, one row per (run_id, market_ticker) in
+# the 47.2 schema. The writer's directory is not fixed yet, so several
+# candidate globs (relative to the repo root) are scanned; rows self-describe
+# their cell via sport/market_type/band, so filenames do not matter.
+SHADOW_GLOBS = ("logs/shadow/*.jsonl", "logs/shadow_*.jsonl",
+                "exp_output/PREGAME_SHADOW/**/*.jsonl")
+SHADOW_TAIL_ROWS = 300
+VERDICT_SOURCES = (
+    ("GATE2", "exp_output/BOARD_SURVEY_SPORTS_G2/gate2_result.json"),
+    ("EXP-034", "exp_output/EXP-034-NONSPORTS-CONTROL/d1b_gate_result.json"),
+    ("EXP-035", "exp_output/EXP-035-BOARD-SURVEY-SPORTS/gate_result.json"),
+)
+_COVERAGE_RECENT_DAYS = 7
+
+
+def _parse_ts(s: Any) -> float | None:
+    try:
+        return datetime.fromisoformat(str(s).replace("Z", "+00:00")).timestamp()
+    except Exception:
+        return None
+
+
+def _season_state(now: datetime) -> dict:
+    """Coarse season calendar per sport -> expected cadence (amber/red seconds).
+
+    Idle in an off-window is not red: off-season panels get state 'off' and no
+    thresholds, so the frontend greys them instead of alarming.
+    """
+    m, d = now.month, now.day
+    def win(active: bool, amber: int, red: int) -> dict:
+        return {"state": "in_season" if active else "off",
+                "amber_s": amber if active else None, "red_s": red if active else None}
+    nfl = m in (9, 10, 11, 12, 1) or (m == 2 and d <= 14)
+    nhl = m in (10, 11, 12, 1, 2, 3, 4, 5) or (m == 6 and d <= 25)
+    mlb_post = (m == 10) or (m == 9 and d >= 28)
+    mlb = (4 <= m <= 9) or mlb_post or (m == 3 and d >= 26)
+    return {"MLB": win(mlb, 6 * 3600, 24 * 3600),
+            "MLB_POSTSEASON": win(mlb_post, 6 * 3600, 24 * 3600),
+            "NFL": win(nfl, 3 * 86400, 7 * 86400),
+            "NHL": win(nhl, 24 * 3600, 3 * 86400)}
+
+
+def _file_age(p: Path, now_ts: float) -> float | None:
+    try:
+        return max(0.0, now_ts - p.stat().st_mtime)
+    except Exception:
+        return None
+
+
+def _last_row_ts(p: Path) -> float | None:
+    rows = _load_jsonl(p, tail=1) if p.exists() else []
+    if not rows:
+        return None
+    r = rows[-1]
+    return _parse_ts(r.get("ts") or r.get("ts_utc") or r.get("timestamp"))
+
+
+def _freshness(d: Path, now: datetime) -> dict:
+    now_ts = now.timestamp()
+    season = _season_state(now)
+    def cyc() -> float | None:
+        for name in _CYCLE_LOG_NAMES:
+            if (d / name).exists():
+                t = _last_row_ts(d / name)
+                return None if t is None else max(0.0, now_ts - t)
+        return None
+    panels = {
+        "t1_mlb":    ("paper_portfolio_mlb.json", _file_age(d / "paper_portfolio_mlb.json", now_ts), "MLB"),
+        "t4_mlb":    ("t4_mlb_cycle_log.jsonl", cyc(), "MLB"),
+        "nfl":       ("audit_t1_nfl_game_market.jsonl",
+                      _file_age(d / "audit_t1_nfl_game_market.jsonl", now_ts), "NFL"),
+        "audit_mlb": ("audit_mlb.jsonl", _file_age(d / "audit_mlb.jsonl", now_ts), "MLB"),
+    }
+    out = {}
+    for k, (src, age, sport) in panels.items():
+        s = season[sport]
+        if age is None:
+            out[k] = {"source": src, "awaiting": src, "age_s": None, "level": "none"}
+            continue
+        lvl = "off" if s["state"] == "off" else (
+            "red" if age > s["red_s"] else "amber" if age > s["amber_s"] else "ok")
+        out[k] = {"source": src, "age_s": round(age, 1), "level": lvl,
+                  "season": s["state"], "amber_s": s["amber_s"], "red_s": s["red_s"]}
+    return out
+
+
+_ORIGIN_CACHE: dict = {"at": 0.0, "val": None}
+
+
+def _git(args: list[str]) -> str | None:
+    try:
+        r = subprocess.run(["git", *args], cwd=str(_REPO_ROOT), capture_output=True,
+                           text=True, timeout=4)
+        return r.stdout.strip() if r.returncode == 0 else None
+    except Exception:
+        return None
+
+
+def _origin_status() -> dict:
+    """origin/main sha vs the RUNNING sha. Reads the local remote-tracking ref
+    (no network in the request path); `as_of` is FETCH_HEAD's mtime so a stale
+    ref is visible rather than silently trusted. Cached 30s."""
+    import time
+    if _ORIGIN_CACHE["val"] is not None and time.time() - _ORIGIN_CACHE["at"] < 30:
+        return _ORIGIN_CACHE["val"]
+    sha = _git(["rev-parse", "origin/main"])
+    if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha):
+        val = {"awaiting": "origin/main ref", "running_sha": _RUNNING_SHA}
+    else:
+        behind = None
+        if _RUNNING_SHA != "unknown":
+            n = _git(["rev-list", "--count", f"{_RUNNING_SHA}..origin/main"])
+            behind = int(n) if n and n.isdigit() else None
+        try:
+            as_of = datetime.fromtimestamp(
+                (_REPO_ROOT / ".git" / "FETCH_HEAD").stat().st_mtime, tz=timezone.utc
+            ).strftime("%Y-%m-%dT%H:%M:%SZ")
+        except Exception:
+            as_of = None
+        val = {"origin_sha": sha, "running_sha": _RUNNING_SHA,
+               "commits_behind": behind, "ref_as_of": as_of}
+    _ORIGIN_CACHE.update(at=time.time(), val=val)
+    return val
+
+
+def _coverage(now: datetime) -> dict:
+    """92-cell (market type x band) grid from the registry, by status."""
+    try:
+        sys.path.insert(0, str(_REPO_ROOT / "src"))
+        from prediction_market_bot.c5_execution import market_type_registry as R
+        cells = list(R.MARKET_TYPE_REGISTRY.values()) if isinstance(
+            R.MARKET_TYPE_REGISTRY, dict) else list(R.MARKET_TYPE_REGISTRY)
+    except Exception as e:
+        return {"awaiting": f"market_type_registry ({type(e).__name__})"}
+    out, counts, bands, types = [], {}, [], []
+    cutoff = now.timestamp() - _COVERAGE_RECENT_DAYS * 86400
+    for c in cells:
+        st = getattr(c.status, "name", str(c.status)).lower()
+        mt = getattr(c.market_type, "name", str(c.market_type))
+        bd = getattr(c.band, "name", str(c.band))
+        md = getattr(c, "measured_date", None)
+        mts = _parse_ts(md) if md else None
+        recent = st == "shadow" or (mts is not None and mts >= cutoff)
+        counts[st] = counts.get(st, 0) + 1
+        if bd not in bands: bands.append(bd)
+        if mt not in types: types.append(mt)
+        out.append({"market_type": mt, "band": bd, "status": st, "recent": recent,
+                    "reason": getattr(c, "reason", None)})
+    return {"cells": out, "counts": counts, "total": len(out), "bands": bands,
+            "market_types": types,
+            "recent_rule": f"SHADOW status or measured_date within {_COVERAGE_RECENT_DAYS}d"}
+
+
+def _shadow(now: datetime) -> dict:
+    files: list[Path] = []
+    for g in SHADOW_GLOBS:
+        files += sorted(_REPO_ROOT.glob(g))
+    if not files:
+        return {"awaiting": "shadow ledgers (47.2/47.3 runner)", "cells": [], "tape": []}
+    day = now.strftime("%Y-%m-%d")
+    cells: dict = {}
+    tape: list = []
+    for f in files:
+        for r in _load_jsonl(f, tail=SHADOW_TAIL_ROWS):
+            key = f"{r.get('sport')}|{r.get('market_type')}|{r.get('band')}"
+            c = cells.setdefault(key, {"sport": r.get("sport"), "market_type": r.get("market_type"),
+                                       "band": r.get("band"), "rows_today": 0, "last_ts": None,
+                                       "latest_e_net": None, "settled_n": None, "judged_n": None,
+                                       "delta_brier_market": None, "delta_brier_climo": None})
+            ts = str(r.get("ts_utc") or "")
+            if ts.startswith(day): c["rows_today"] += 1
+            if c["last_ts"] is None or ts > c["last_ts"]:
+                c["last_ts"] = ts
+                c["latest_e_net"] = r.get("e_net_yes_k007")
+            tape.append(r)
+        # scored summary, if the settlement join has written one beside the ledger
+        sc = f.with_name(f.stem + ".scored.json")
+        if sc.exists():
+            s = _load_json(sc)
+            for key, c in cells.items():
+                if s.get("cell") in (None, key):
+                    for k in ("settled_n", "judged_n", "delta_brier_market", "delta_brier_climo"):
+                        if k in s: c[k] = s[k]
+    tape.sort(key=lambda r: str(r.get("ts_utc") or ""), reverse=True)
+    keep = ("ts_utc", "sport", "market_type", "band", "market_ticker", "p_yes", "mid",
+            "e_net_yes_k007", "e_net_no_k007")
+    return {"cells": list(cells.values()), "tape": [{k: r.get(k) for k in keep} for r in tape[:60]]}
+
+
+def _verdicts() -> dict:
+    out = {}
+    for name, rel in VERDICT_SOURCES:
+        p = _REPO_ROOT / rel
+        if not p.exists():
+            out[name] = {"awaiting": rel}
+            continue
+        j = _load_json(p)
+        g = j.get("gate")
+        if isinstance(g, dict) and isinstance(g.get("gate"), str):
+            j = {**j, "verdict": g["gate"]}      # EXP-034 shape: {"gate": {"gate": "FAIL"}}
+        passed = j.get("ALL_PASSED", j.get("all_passed", j.get("passed")))
+        if passed is None and isinstance(j.get("verdict"), str):
+            passed = j["verdict"].upper() == "PASS"
+        out[name] = {"file": rel, "passed": passed if isinstance(passed, bool) else None,
+                     "verdict": j.get("verdict") or ("PASS" if passed is True else
+                                                     "FAIL" if passed is False else None),
+                     "written_at": datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc
+                                                          ).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    return out
+
+
+def _mlb_postseason(d: Path, now: datetime, t1_port: dict, t4_port: dict) -> dict:
+    now_ts = now.timestamp()
+    ca = None
+    for name in _CYCLE_LOG_NAMES:
+        if (d / name).exists():
+            t = _last_row_ts(d / name)
+            ca = None if t is None else round(max(0.0, now_ts - t), 1)
+            break
+    matched = None
+    for line in reversed(_load_tail(d / "paper_mlb_cron.log", n=200)):
+        m = re.search(r"(\d+)\s+players in live MLB", str(line))
+        if m:
+            matched = int(m.group(1)); break
+    def opens(p: dict) -> list:
+        v = p.get("open_positions") or p.get("positions") or []
+        return list(v.values()) if isinstance(v, dict) else list(v)
+    allopen = opens(t1_port) + opens(t4_port)
+    stuck = 0
+    for p in allopen:
+        t = _parse_ts(p.get("entry_time") or p.get("opened_at") or p.get("ts"))
+        if t is not None and now_ts - t > 36 * 3600:
+            stuck += 1
+    return {"t1_players_matched_last_run": matched, "t4_cycle_age_s": ca,
+            "open_positions": len(allopen), "stuck_positions": stuck,
+            "stuck_rule": "open > 36h",
+            "awaiting": None if (matched is not None or ca is not None) else "paper_mlb_cron.log / t4 cycle log"}
+
+
+# ── PIPELINE (47.1 D6 g): C1-C8 as a flow, one tile per component per sport ──
+# Each tile reads its component's real output. No observable output ->
+# status "ni" ("not instrumented"), and the tile is listed under `gaps`.
+_LAST_LOAD_MS: int | None = None
+FEATURE_STORES = {"MLB": "exp_output/MLB/mlb_feature_matrix.csv"}
+_PIPE_FEED_LOGS = ("paper_mlb_cron.log", "resolve_mlb_cron.log",
+                   "mlb_feature_refresh.log", "mlb_calib_monitor.log")
+
+
+def _tile(c: str, sport: str, status: str, headline: str, detail: str = "",
+          source: str = "", age_s: float | None = None) -> dict:
+    return {"c": c, "sport": sport, "status": status, "headline": headline,
+            "detail": detail, "source": source, "age_s": age_s}
+
+
+def _ni(c: str, sport: str, what: str) -> dict:
+    return _tile(c, sport, "ni", "not instrumented", what)
+
+
+def _newest_game_date(p: Path) -> str | None:
+    """Newest game_date in a CSV feature store (tail read; header gives the column)."""
+    with p.open("r", encoding="utf-8", errors="replace") as fh:
+        header = fh.readline().strip().split(",")
+    if "game_date" not in header:
+        return None
+    i = header.index("game_date")
+    best = None
+    for line in _read_tail_lines(p, 4000):
+        cols = line.split(",")
+        if len(cols) > i and re.fullmatch(r"\d{4}-\d{2}-\d{2}", cols[i].strip()):
+            best = max(best or cols[i].strip(), cols[i].strip())
+    return best
+
+
+def _band_kelly() -> dict[str, float]:
+    from prediction_market_bot.execution_bands import BAND_CONFIGS
+    return {b.value: c.kelly_fraction for b, c in BAND_CONFIGS.items()}
+
+
+def _hard_limits() -> dict:
+    from prediction_market_bot.c4_risk_engine.risk import _HARD_LIMITS, MAX_DAILY_LOSS_PCT
+    return {**_HARD_LIMITS, "MAX_DAILY_LOSS_PCT": MAX_DAILY_LOSS_PCT}
+
+
+def _comp_stats(rows: list[dict], comp: str, now_ts: float) -> dict:
+    mine = [r for r in rows if r.get("component") == comp]
+    ts = [t for t in (_parse_ts(r.get("timestamp")) for r in mine) if t]
+    last = max(ts) if ts else None
+    last_ev = next((r.get("event_type") for r in reversed(mine)), None)
+    h = sum(1 for t in ts if now_ts - t <= 3600)
+    return {"n": len(mine), "last_age_s": (now_ts - last) if last else None,
+            "last_event": last_ev, "last_hour": h}
+
+
+def _pipeline(d: Path, now: datetime, data: dict | None = None) -> dict:
+    now_ts = now.timestamp()
+    season = _season_state(now)
+    tiles: list[dict] = []
+    gaps: list[str] = []
+    audit = list((data or {}).get("audit") or []) + list((data or {}).get("t4_audit") or [])
+
+    # ---- MLB ----
+    # C1: last pull per feed + failures in the T1 cron log tail
+    ages = {}
+    for f in _PIPE_FEED_LOGS:
+        a = _file_age(d / f, now_ts)
+        if a is not None:
+            ages[f] = a
+    log_tail = _load_tail(d / "paper_mlb_cron.log", n=400) if (d / "paper_mlb_cron.log").exists() else []
+    fails = sum(1 for ln in log_tail if re.search(r"\b406\b|Traceback|ERROR", ln))
+    if ages:
+        newest = min(ages.values())
+        tiles.append(_tile("C1", "MLB", "bad" if fails else "ok",
+                           f"{len(ages)}/{len(_PIPE_FEED_LOGS)} feeds seen · newest {int(newest // 3600)}h ago",
+                           f"failures in last 400 log lines: {fails}",
+                           "logs/{paper,resolve,mlb_feature_refresh,mlb_calib_monitor}*.log mtime",
+                           newest))
+    else:
+        tiles.append(_ni("C1", "MLB", "awaiting cron logs"))
+    # C2: newest game_date in the feature store
+    fs = _REPO_ROOT / FEATURE_STORES["MLB"]
+    try:
+        gd = _newest_game_date(fs) if fs.exists() else None
+    except Exception:
+        gd = None
+    if gd:
+        lag = (now.date() - datetime.strptime(gd, "%Y-%m-%d").date()).days
+        live_season = season.get("MLB", {}).get("state") in ("in_season", "postseason", "live")
+        st = "ok" if lag <= 2 else ("bad" if live_season else "off")
+        tiles.append(_tile("C2", "MLB", st, f"newest game_date {gd}",
+                           f"{lag}d behind today" + ("" if live_season else " (MLB not in season)"),
+                           FEATURE_STORES["MLB"], lag * 86400.0))
+    else:
+        tiles.append(_ni("C2", "MLB", "feature store not readable: " + FEATURE_STORES["MLB"]))
+    # C3: model id/sha — no model sha is emitted by the T1/T4 MLB audit rows
+    tiles.append(_ni("C3", "MLB", "no model id/sha in audit output (T1 LR+Platt, T4M binomial)"))
+    # C4: kelly per band (live import), kill-switch, drawdown vs limit
+    try:
+        kel = _band_kelly()
+        lim = _hard_limits()
+        pf = (data or {}).get("portfolio") or {}
+        init, bank = pf.get("initial_bankroll_usd"), pf.get("bankroll_usd")
+        dd = (init - bank) / init if init and bank is not None and init > 0 else None
+        ks = any("KILL" in str(r.get("event_type", "")).upper() for r in audit[-500:])
+        live_k = {k: v for k, v in kel.items() if k in ("T1", "T4M-PROJ")}
+        st = "bad" if ks else ("warn" if dd is not None and dd >= 0.8 * lim["max_drawdown_pct"] else "ok")
+        tiles.append(_tile("C4", "MLB", st,
+                           "kill switch TRIPPED" if ks else "kill switch clear",
+                           f"kelly {live_k} · drawdown "
+                           + (f"{dd:.1%}" if dd is not None else "n/a")
+                           + f" vs limit {lim['max_drawdown_pct']:.0%}",
+                           "execution_bands.BAND_CONFIGS · risk._HARD_LIMITS · paper_portfolio_mlb.json"))
+    except Exception as e:
+        tiles.append(_ni("C4", "MLB", f"risk config unreadable ({type(e).__name__})"))
+    # C5: orders actually submitted are counted from audit rows, never asserted
+    rej = {k: v for k, v in ((data or {}).get("rejected_counts") or {}).items() if v is not None}
+    if audit:
+        sub = sum(1 for r in audit if re.search(r"order.*(submit|placed)|submit.*order",
+                                                str(r.get("event_type", "")), re.I))
+        tiles.append(_tile("C5", "MLB", "warn" if sub else "ok",
+                           f"{sub} order-submit events in audit tail",
+                           "ledger: paper portfolios only · rejections: "
+                           + (", ".join(f"{k}={v}" for k, v in rej.items()) or "none recorded"),
+                           "audit_mlb*.jsonl event_type · rejected_counts"))
+    else:
+        tiles.append(_ni("C5", "MLB", "no audit rows to count order events"))
+    # C6/C7: audit event rate, last event, alarms
+    c6 = _comp_stats(audit, "C6", now_ts)
+    allr = _comp_stats([dict(r, component="ALL") for r in audit], "ALL", now_ts)
+    if audit:
+        tiles.append(_tile("C6", "MLB", "ok" if allr["last_hour"] else "off",
+                           f"{allr['last_hour']} events/h · last {allr['last_event']}",
+                           f"{len(audit)} rows in tail; C6-tagged {c6['n']}", "audit_mlb*.jsonl", allr["last_age_s"]))
+    else:
+        tiles.append(_ni("C6", "MLB", "awaiting audit_mlb.jsonl"))
+    alarms = [r for r in audit if r.get("component") == "C7" and r.get("severity") in ("WARNING", "ERROR", "CRITICAL")]
+    if audit:
+        recent = [r for r in alarms if (_parse_ts(r.get("timestamp")) or 0) >= now_ts - 86400]
+        tiles.append(_tile("C7", "MLB", "warn" if recent else "ok",
+                           f"{len(recent)} C7 alarms in 24h",
+                           f"{len(alarms)} in audit tail; staleness/contamination via freshness panel",
+                           "audit_mlb*.jsonl (component=C7)"))
+    else:
+        tiles.append(_ni("C7", "MLB", "awaiting audit rows"))
+
+    # ---- NFL ----
+    nfl_audit = list((data or {}).get("nfl_audit") or [])
+    if nfl_audit:
+        st = _comp_stats(nfl_audit, "C1", now_ts)
+        newest = max((t for t in (_parse_ts(r.get("timestamp")) for r in nfl_audit) if t), default=None)
+        tiles.append(_tile("C1", "NFL", "ok", f"{len(nfl_audit)} audit rows",
+                           "NFL game-market pipeline", "audit_t1_nfl_game_market.jsonl",
+                           (now_ts - newest) if newest else None))
+    else:
+        tiles.append(_ni("C1", "NFL", "no audit_t1_nfl_game_market.jsonl rows"))
+    tiles.append(_ni("C2", "NFL", "no NFL feature store"))
+    prov = str((data or {}).get("nfl_model_provenance") or _NFL_MODEL_PROVENANCE)
+    tiles.append(_tile("C3", "NFL", "bad" if "STUB" in prov.upper() else "ok",
+                       "STUB MODEL IN USE" if "STUB" in prov.upper() else "trained model",
+                       prov, "run_t1_nfl_game_market (PROVENANCE)"))
+    try:
+        nk = _band_kelly().get("T1")
+    except Exception:
+        nk = None
+    tiles.append(_tile("C4", "NFL", "ok", f"kelly T1 {nk}", "same C4 limits as MLB (sport-agnostic)",
+                       "execution_bands.BAND_CONFIGS"))
+    if nfl_audit:
+        sub = sum(1 for r in nfl_audit if re.search(r"order.*(submit|placed)|submit.*order",
+                                                    str(r.get("event_type", "")), re.I))
+        tiles.append(_tile("C5", "NFL", "warn" if sub else "ok",
+                           f"{sub} order-submit events in audit tail", "paper ledger only",
+                           "audit_t1_nfl_game_market.jsonl event_type"))
+    else:
+        tiles.append(_ni("C5", "NFL", "no audit rows to count order events"))
+    tiles.append(_ni("C6", "NFL", "no per-sport audit rate wired") if not nfl_audit else
+                 _tile("C6", "NFL", "ok", f"{len(nfl_audit)} rows in tail", "", "audit_t1_nfl_game_market.jsonl"))
+    tiles.append(_ni("C7", "NFL", "no NFL monitoring output"))
+
+    # ---- C8 (server) ----
+    ms = _LAST_LOAD_MS
+    tiles.append(_tile("C8", "SERVER", "ok", f"sha {_RUNNING_SHA[:8] if _RUNNING_SHA else '?'}",
+                       f"up since {_PROCESS_STARTED_AT} · last /api/data build "
+                       + (f"{ms}ms" if ms is not None else "n/a (first request)"),
+                       "web_dashboard process"))
+    for t in tiles:
+        if t["status"] == "ni":
+            gaps.append(f"{t['c']} {t['sport']}: {t['detail']}")
+    return {"tiles": tiles, "gaps": gaps, "as_of": now.strftime("%Y-%m-%dT%H:%M:%SZ")}
+
+
 def _load_all_data() -> dict:
+    global _LAST_LOAD_MS
+    _t0 = datetime.now(tz=timezone.utc)
     d = _log_dir
 
     # Per-key isolation (GG-270/T-539): each loader already swallows its own
@@ -421,7 +859,7 @@ def _load_all_data() -> dict:
         except Exception:
             return default
 
-    return {
+    out = {
         "portfolio":    safe(lambda: _load_json(d / "paper_portfolio_mlb.json"), {}),
         # rejected_positions grows unbounded and isn't read by the frontend —
         # dropped before parse time, not after. See _load_json_dropping_key.
@@ -443,7 +881,25 @@ def _load_all_data() -> dict:
         "t4_cycle_tail":   safe(lambda: _load_cycle_tail(d), []),
         "process":         safe(lambda: {"started_at": _PROCESS_STARTED_AT,
                                          "sha": _RUNNING_SHA}, {}),
+        # Operator terminal v2 (47.1 D6) — additive.
+        "season":          safe(lambda: _season_state(datetime.now(tz=timezone.utc)), {}),
+        "freshness":       safe(lambda: _freshness(d, datetime.now(tz=timezone.utc)), {}),
+        "origin":          safe(_origin_status, {}),
+        "coverage":        safe(lambda: _coverage(datetime.now(tz=timezone.utc)),
+                                {"awaiting": "market_type_registry"}),
+        "shadow":          safe(lambda: _shadow(datetime.now(tz=timezone.utc)),
+                                {"awaiting": "shadow ledgers", "cells": [], "tape": []}),
+        "verdicts":        safe(_verdicts, {}),
+        "mlb_postseason":  safe(lambda: _mlb_postseason(
+            d, datetime.now(tz=timezone.utc),
+            _load_json(d / "paper_portfolio_mlb.json"),
+            _load_json_dropping_key(d / "paper_portfolio_mlb_t4.json", "rejected_positions")),
+            {"awaiting": "mlb sources"}),
     }
+    out["pipeline"] = safe(lambda: _pipeline(d, datetime.now(tz=timezone.utc), out),
+                           {"tiles": [], "gaps": [], "awaiting": "pipeline sources"})
+    _LAST_LOAD_MS = int((datetime.now(tz=timezone.utc) - _t0).total_seconds() * 1000)
+    return out
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -546,6 +1002,36 @@ body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--mono);
   padding:2.5px 9px; cursor:pointer; letter-spacing:.06em}
 .tbtn:hover{border-color:var(--amber-dim); color:var(--amber)}
 .tbtn.on{border-color:var(--amber); color:var(--amber)}
+
+/* ─── v2: freshness chips, NOT LIVE / DEMO states, new modules ─── */
+.fr{font-size:10px; letter-spacing:.05em; padding:0 6px; border:1px solid var(--hair); color:var(--faint)}
+.fr.ok{color:var(--green); border-color:#144d2b} .fr.warn{color:var(--amber); border-color:#4d3a10}
+.fr.bad{color:var(--red); border-color:#4d1717} .fr.off{color:var(--faint)} .fr.aw{color:var(--faint); font-style:italic}
+body.notlive .panel .pb{opacity:.28; filter:grayscale(1)}
+body.demo .panel{position:relative}
+body.demo .panel::after{content:"DEMO"; position:absolute; right:14px; top:36px; font-size:34px; font-weight:700;
+  letter-spacing:.3em; color:var(--amber); opacity:.13; pointer-events:none; transform:rotate(-8deg)}
+.aw{color:var(--faint); font-style:italic; padding:10px 12px}
+.pipe-row{display:flex; gap:10px; padding:8px 10px; border-bottom:1px solid var(--line,#1a1a1a); align-items:stretch}
+.pipe-sp{width:48px; color:var(--amber); font-weight:700; letter-spacing:.1em; padding-top:4px}
+.pipe-flow{display:flex; flex-wrap:wrap; gap:4px; align-items:stretch; flex:1}
+.pipe-tile{border:1px solid; padding:6px 8px; min-width:150px; max-width:230px; flex:1 1 150px; background:#050505}
+.pipe-c{font-size:10.5px; letter-spacing:.1em; font-weight:700} .pipe-h{margin:3px 0; font-size:12px}
+.pipe-d,.pipe-s{color:var(--faint); font-size:10.5px; word-break:break-word}
+.pipe-ar{color:var(--faint); align-self:center}
+.pipe-g{margin:0; padding:8px 12px 8px 28px; color:var(--amber)}
+.cg{border-collapse:separate; border-spacing:2px; width:auto}
+.cg td,.cg th{padding:3px 7px; text-align:center; font-size:10.5px; border:none}
+.cg th{color:var(--faint); font-weight:400; position:static; cursor:default}
+.cg th.rl{text-align:right}
+.cg td.c{min-width:46px; border:1px solid var(--hair); color:#000; font-weight:700}
+.cg td.c.recent{outline:2px solid var(--amber); outline-offset:1px}
+.cg td.c.s-active{background:var(--green)} .cg td.c.s-shadow{background:var(--cyan)}
+.cg td.c.s-blocked{background:var(--amber)} .cg td.c.s-dark{background:#555; color:var(--ink)}
+.cg td.c.s-ruled_out{background:var(--red)} .cg td.c.s-not_implemented{background:#141414; color:var(--faint)}
+.cg td.c.s-none{background:transparent; border-color:var(--hair-2); color:#222}
+.lg{display:flex; gap:12px; flex-wrap:wrap; padding:8px 12px; color:var(--dim); font-size:10.5px}
+.lg i{display:inline-block; width:10px; height:10px; margin-right:5px; vertical-align:-1px}
 
 /* ─── MODULE BAR (ERP-style) ─── */
 .modbar{position:sticky; top:32px; z-index:55; display:flex; align-items:stretch;
@@ -687,7 +1173,8 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
   <span class="id">PMBOT</span><span class="sep">│</span>
   <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
   <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
-  <span class="sep">│</span><span class="sub">SHA <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sep">│</span><span class="sub">RUN <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
+  <span class="sub"> · ORIGIN <b id="osha" class="cy" title="origin/main as of the last fetch on the server">—</b> <b id="obehind"></b></span>
   <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
   <span class="sub" id="clock">--:--:--Z</span><span class="sep">│</span>
@@ -743,8 +1230,12 @@ function evClass(p){
 }
 const EVTAG={MODEL:['real','REAL'],STUB:['stub','STUB'],UNATTRIBUTED:['unk','UNATTR']};
 
+const DEMO_FLAG=/[?&]demo(=|&|$)/.test(location.search);
+let LASTPULL=0;
+const EMPTY={portfolio:{},t4_portfolio:{},nfl_portfolio:{},audit:[],t4_audit:[],nfl_audit:[],pipe_log:[],
+  pipe_mtimes:{},t4_cycle_tail:[],server_time:null};
 let S={data:null, mod:'OVERVIEW', paused:false, cd:REFRESH_S, band:'ALL', filt:'',
-       seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false,
+       seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false, notlive:false,
        sortKey:'entered_at', sortDir:-1};
 
 const tt=$('#tt');
@@ -761,15 +1252,15 @@ function wireTips(root){ (root||document).querySelectorAll('[data-tip]').forEach
 /* ═══════════ FETCH ═══════════ */
 async function pull(){
   try{
+    if(DEMO_FLAG){ S.demo=true; S.notlive=false; banner('demo','DEMO — seed data shown because ?demo is set. Nothing on this page is live.'); apply(DEMO); S.first=false; return }
     const r=await fetch('/api/data',{cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status+' from /api/data');
     const j=await r.json(); if(j.error) throw new Error(j.error);
-    S.demo=false; S.lastOk=Date.now(); banner(false); apply(j);
+    S.demo=false; S.notlive=false; S.lastOk=Date.now(); LASTPULL=Date.now(); banner(false); apply(j);
   }catch(err){
-    if(S.first){ S.demo=true;
-      banner('demo','NOT CONNECTED — schema-accurate DEMO payload so the layout can be judged offline. '+
-        'Served live this page reads /api/data on the VPS. Reason: '+err.message);
-      apply(DEMO);
+    if(!S.lastOk){ S.demo=false; S.notlive=true;
+      banner('err','NOT LIVE — no data from /api/data ('+err.message+'). Panels are blank. Open the tunnel (Open Dashboard.command); add ?demo to preview layout with seed data.');
+      apply(EMPTY);
     } else {
       banner('err','Cannot fetch /api/data — '+err.message+'. Check the SSH tunnel is open. Retrying in '+REFRESH_S+'s…');
       led('down','NO DATA');
@@ -800,7 +1291,12 @@ const MODULES=[
   {k:'MLB',      label:'MLB · T1/T4'},
   {k:'NFL',      label:'NFL · T1'},
   {k:'EVIDENCE', label:'Evidence'},
+  {k:'PIPELINE', label:'Pipeline C1–C8'},
   {k:'FEEDS',    label:'Feeds & Health'},
+  {k:'COVERAGE', label:'Coverage'},
+  {k:'SHADOW',   label:'Shadow'},
+  {k:'POSTSEASON',label:'MLB Postseason'},
+  {k:'VERDICTS', label:'Verdicts'},
 ];
 function modbar(D){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
@@ -811,6 +1307,10 @@ function modbar(D){
     NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
     EVIDENCE: stub? `<span class="warn">${stub} stub</span>` : 'clean',
     FEEDS: errs? `<span class="warn">${errs} err</span>` : 'ok',
+    PIPELINE: LAST&&LAST.pipeline&&LAST.pipeline.tiles&&LAST.pipeline.tiles.length?(LAST.pipeline.gaps.length?`<span class="warn">${LAST.pipeline.gaps.length} gaps</span>`:'wired'):'awaiting',
+    COVERAGE: LAST&&LAST.coverage&&LAST.coverage.total?`${LAST.coverage.total} cells`:'awaiting',
+    SHADOW: LAST&&LAST.shadow&&LAST.shadow.cells&&LAST.shadow.cells.length?`${LAST.shadow.cells.length} cells`:'awaiting',
+    POSTSEASON: '', VERDICTS: '',
   };
   $('#modbar').innerHTML=MODULES.map(m=>
     `<button class="mod ${S.mod===m.k?'on':''}" data-m="${m.k}">${esc(m.label)}<span class="badge">${badge[m.k]||''}</span></button>`).join('');
@@ -831,13 +1331,23 @@ function render(){
   else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
   else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
   else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
+  else if(S.mod==='COVERAGE') w.innerHTML=viewCoverage();
+  else if(S.mod==='SHADOW') w.innerHTML=viewShadow();
+  else if(S.mod==='POSTSEASON') w.innerHTML=viewPost();
+  else if(S.mod==='VERDICTS') w.innerHTML=viewVerdicts();
+  else if(S.mod==='PIPELINE') w.innerHTML=viewPipeline();
   else w.innerHTML=viewFeeds();
   fill(D,d);
+  fillV2(d);
+  paintFresh();
+  document.body.classList.toggle('notlive',!!S.notlive);
+  document.body.classList.toggle('demo',!!S.demo);
 
   const lw=Math.max(...[D.P.last_updated,D.T4.last_updated,D.NF.last_updated]
     .map(t=>t?new Date(t).getTime():0),0);
   const age=lw?Math.round((Date.now()-lw)/1000):null;
-  if(S.demo) led('stale','DEMO');
+  if(S.notlive) led('down','NOT LIVE');
+  else if(S.demo) led('stale','DEMO');
   else if(age!=null&&age>3600) led('stale','DATA '+fmtAge(age));
   else led('live','LIVE');
   statusExtras(d);
@@ -862,6 +1372,11 @@ function statusExtras(d){
   const se=$('#sha');
   if(se){ se.textContent=sha&&sha!=='unknown'?sha.slice(0,7):'unknown';
     se.title='running commit '+(sha||'unknown')+(pr.started_at?' · started '+pr.started_at:''); }
+  const og=d.origin||{}, oe=$('#osha'), ob=$('#obehind');
+  if(oe){ oe.textContent=og.origin_sha?og.origin_sha.slice(0,7):'awaiting';
+    oe.title='origin/main'+(og.ref_as_of?' · ref fetched '+og.ref_as_of:' · fetch time unknown'); }
+  if(ob){ const n=og.commits_behind;
+    ob.textContent=n==null?'':(n===0?'= in sync':n+' behind'); ob.className=n==null?'':n===0?'pos':'amb'; }
   const ce=$('#cyc'), r=cycleRate(d.t4_cycle_tail);
   if(ce){ ce.textContent=r?((r.perMin!=null?r.perMin.toFixed(1)+' cyc/min':r.cycles+' cyc')+' · last '+fmtAge(r.ageS)):'—'; }
 }
@@ -874,6 +1389,26 @@ function rejFoot(d){
 let PREVM=null, PREVKEY=null;
 function railSpec(D,d){
   const sum=(a,f)=>a.reduce((s,x)=>s+(Number(f(x))||0),0);
+  if(S.mod==='COVERAGE'){ const c=d.coverage||{}, k=c.counts||{};
+    if(!c.total) return [['COVERAGE','awaiting',null,'']];
+    return [['CELLS',String(c.total),c.total,''],['ACTIVE',String(k.active||0),k.active||0,''],
+      ['SHADOW',String(k.shadow||0),k.shadow||0,'cy'],['BLOCKED',String(k.blocked||0),k.blocked||0,'warnv'],
+      ['DARK',String(k.dark||0),k.dark||0,''],['RULED OUT',String(k.ruled_out||0),k.ruled_out||0,''],
+      ['NOT IMPL.',String(k.not_implemented||0),k.not_implemented||0,'']]; }
+  if(S.mod==='SHADOW'){ const sh=d.shadow||{}, cs=sh.cells||[];
+    if(!cs.length) return [['SHADOW','awaiting',null,'']];
+    return [['CELLS',String(cs.length),cs.length,''],['ROWS TODAY',String(sum(cs,c=>c.rows_today)),sum(cs,c=>c.rows_today),'cy']]; }
+  if(S.mod==='POSTSEASON'){ const m=d.mlb_postseason||{};
+    return [['T1 MATCHED',m.t1_players_matched_last_run==null?'awaiting':String(m.t1_players_matched_last_run),m.t1_players_matched_last_run,''],
+      ['T4 CYCLE AGE',m.t4_cycle_age_s==null?'awaiting':fmtAge(Math.round(m.t4_cycle_age_s)),m.t4_cycle_age_s,''],
+      ['OPEN',m.open_positions==null?'awaiting':String(m.open_positions),m.open_positions,''],
+      ['STUCK',m.stuck_positions==null?'awaiting':String(m.stuck_positions),m.stuck_positions,m.stuck_positions>0?'bad':'']]; }
+  if(S.mod==='PIPELINE'){ const p=d.pipeline||{}, t=p.tiles||[];
+    if(!t.length) return [['PIPELINE','awaiting',null,'']];
+    const n=st=>t.filter(x=>x.status===st).length;
+    return [['TILES',String(t.length),t.length,''],['OK',String(n('ok')),n('ok'),''],['WARN',String(n('warn')),n('warn'),'warnv'],
+      ['BAD',String(n('bad')),n('bad'),n('bad')>0?'bad':''],['NOT INSTR.',String(n('ni')),n('ni'),n('ni')>0?'warnv':'']]; }
+  if(S.mod==='VERDICTS') return [['VERDICTS',String(Object.keys(d.verdicts||{}).length),null,'']];
   if(S.mod==='NFL'){
     const o=D.open.filter(p=>p._sport==='NFL'), c=D.closed.filter(p=>p._sport==='NFL');
     const all=[...o,...c];
@@ -949,19 +1484,21 @@ function rail(D,d){
 }
 
 /* ═══════════ VIEW SHELLS ═══════════ */
-const P_=(t,n,body,extra='')=>`<div class="panel"><div class="ph"><span class="t">${t}</span>`+
-  `<span class="n" id="${n}">—</span><span class="sp"></span>${extra}</div>${body}</div>`;
+const P_=(t,n,body,extra='',fr='')=>`<div class="panel"><div class="ph"><span class="t">${t}</span>`+
+  `<span class="n" id="${n}">—</span><span class="sp"></span>${extra}`+
+  (fr?`<span class="fr" data-fr="${fr}">…</span>`:'')+`</div>${body}</div>`;
+const frKey=()=>S.mod==='NFL'?'nfl':'t1_mlb';
 const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
 
 function viewOverview(){return `<div class="grid g-7-5">
   <div class="col">
     ${P_('Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`,
-      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`)}
-    ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR)}
+      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`,'t1_mlb')}
+    ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR,'t1_mlb')}
     ${P_('Recently Resolved','resN',SCROLL('resWrap',220),`<span class="n" id="resPnl"></span>`)}
   </div>
   <div class="col">
-    ${P_('Live Tape','tapeN',SCROLL('tape',318),`<span class="n">newest first · flashes on arrival</span>`)}
+    ${P_('Live Tape','tapeN',SCROLL('tape',318),`<span class="n">newest first · flashes on arrival</span>`,'audit_mlb')}
     ${P_('Edge Ladder','ladN',`<div class="pb"><div id="ladder"></div></div>`)}
     ${P_('Band Lanes','lanesN',`<div class="pb flush"><div id="lanes"></div></div>`)}
     ${P_('Alerts','alertN',SCROLL('alerts',190),`<span class="n">deduped, most recent first</span>`)}
@@ -972,7 +1509,7 @@ function viewSport(sport){
   return `${nflNote}<div class="grid g-7-5">
   <div class="col">
     ${P_(sport+' — Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`)}
-    ${P_(sport+' — Open Positions','openN',SCROLL('posWrap',320),`<input class="filt" id="posFilt" placeholder="filter…  /">`)}
+    ${P_(sport+' — Open Positions','openN',SCROLL('posWrap',320),`<input class="filt" id="posFilt" placeholder="filter…  /">`,sport==='NFL'?'nfl':'t1_mlb')}
     ${P_(sport+' — Recently Resolved','resN',SCROLL('resWrap',230),`<span class="n" id="resPnl"></span>`)}
   </div>
   <div class="col">
@@ -997,7 +1534,7 @@ function viewEvidence(){return `<div class="grid g-2">
 function viewFeeds(){return `<div class="grid g-2">
   <div class="col">
     ${P_('Feed Health','healthN',`<div class="pb flush"><div id="health"></div></div>`,
-      `<span class="n">staleness since last write</span>`)}
+      `<span class="n">staleness since last write · season-aware</span>`)}
     ${P_('Event Rate by Component','compN',`<div class="pb flush"><div id="compTable"></div></div>`)}
   </div>
   <div class="col">
@@ -1005,6 +1542,86 @@ function viewFeeds(){return `<div class="grid g-2">
     ${P_('Live Tape','tapeN',SCROLL('tape',260))}
   </div></div>`;}
 
+const AW=src=>`<div class="aw">awaiting ${esc(src)}</div>`;
+function viewCoverage(){return `<div class="grid g-1">
+  ${P_('Coverage — market type × band','covN',`<div class="pb flush"><div id="cov"></div></div>`,`<span class="n" id="covRule"></span>`)}</div>`;}
+function viewShadow(){return `<div class="grid g-1">
+  ${P_('Shadow cells','shN',`<div class="pb flush"><div id="shCells"></div></div>`,`<span class="n">no orders · no sizing</span>`)}
+  ${P_('Shadow tape','shT',SCROLL('shTape',340),`<span class="n">newest first</span>`)}</div>`;}
+function viewPost(){return `<div class="grid g-2"><div class="col">
+  ${P_('MLB postseason — pipelines','psN',`<div class="pb flush"><div id="ps"></div></div>`,'','t4_mlb')}</div>
+  <div class="col">${P_('Open positions (all MLB pools)','psO',SCROLL('posWrap',320),'','t1_mlb')}</div></div>`;}
+function viewPipeline(){return `<div class="grid g-1">
+  ${P_('Pipeline — C1 → C8, one tile per component per sport','pipN',`<div class="pb flush"><div id="pipe"></div></div>`,`<span class="n">each tile read from its real output</span>`)}
+  ${P_('GAPS FOUND — not instrumented','pipG',`<div class="pb flush"><div id="pipeGaps"></div></div>`)}</div>`;}
+function viewVerdicts(){return `<div class="grid g-1">
+  ${P_('Latest verdicts','vN',`<div class="pb flush"><div id="verd"></div></div>`,`<span class="n">files are repo-relative paths</span>`)}</div>`;}
+const PCOL={ok:'var(--green)',warn:'var(--amber)',bad:'var(--red)',ni:'var(--faint)',idle:'var(--faint)'};
+function fillPipeline(d){
+  if(!$('#pipe')) return;
+  const p=d.pipeline, t=(p&&p.tiles)||[];
+  if(!t.length){ $('#pipe').innerHTML=AW((p&&p.awaiting)||'/api/data pipeline'); $('#pipN').textContent='—'; $('#pipeGaps').innerHTML=AW('pipeline'); return; }
+  $('#pipN').textContent=t.length+' tiles';
+  const sports=[]; t.forEach(x=>{ if(sports.indexOf(x.sport)<0) sports.push(x.sport); });
+  $('#pipe').innerHTML=sports.map(sp=>`<div class="pipe-row"><div class="pipe-sp">${esc(sp)}</div><div class="pipe-flow">`+
+    t.filter(x=>x.sport===sp).map(x=>{ const c=PCOL[x.status]||'var(--faint)';
+      return `<div class="pipe-tile" style="border-color:${c}"><div class="pipe-c" style="color:${c}">${esc(x.c)} · ${esc(String(x.status).toUpperCase())}</div>`+
+        `<div class="pipe-h">${esc(x.headline||'')}</div><div class="pipe-d">${esc(x.detail||'')}</div>`+
+        `<div class="pipe-s">${esc(x.source||'')}${x.age_s!=null?' · '+fmtAge(Math.round(x.age_s)):''}</div></div>`; }).join('<span class="pipe-ar">→</span>')+
+    `</div></div>`).join('');
+  const g=p.gaps||[];
+  $('#pipeGaps').innerHTML=g.length?`<ul class="pipe-g">`+g.map(x=>`<li>${esc(x)}</li>`).join('')+`</ul>`:`<div class="aw">none — every component has observable output</div>`;
+  $('#pipG').textContent=g.length+' gaps';
+}
+const f4=v=>v==null||isNaN(v)?'—':Number(v).toFixed(4);
+function fillV2(d){
+  fillPipeline(d);
+  if($('#cov')){ const c=d.coverage;
+    if(!c||!c.cells){ $('#cov').innerHTML=AW((c&&c.awaiting)||'/api/data coverage'); $('#covN').textContent='—'; }
+    else { $('#covN').textContent=c.total+' cells'; $('#covRule').textContent='outlined = '+c.recent_rule;
+      const m={}; c.cells.forEach(x=>m[x.market_type+'|'+x.band]=x);
+      const L={active:'A',shadow:'S',blocked:'B',dark:'D',ruled_out:'R',not_implemented:'·'};
+      $('#cov').innerHTML=`<table class="cg"><thead><tr><th></th>${c.bands.map(b=>`<th>${esc(b)}</th>`).join('')}</tr></thead><tbody>`+
+        c.market_types.map(t=>`<tr><th class="rl">${esc(t)}</th>`+c.bands.map(b=>{const x=m[t+'|'+b];
+          return x?`<td class="c s-${x.status}${x.recent?' recent':''}" title="${esc(t+' / '+b+' — '+x.status+(x.reason?' — '+x.reason:''))}">${L[x.status]||'?'}</td>`
+                  :`<td class="c s-none">·</td>`}).join('')+`</tr>`).join('')+`</tbody></table>`+
+        `<div class="lg">`+[['active','var(--green)'],['shadow','var(--cyan)'],['blocked','var(--amber)'],['dark','#555'],
+          ['ruled out','var(--red)'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
+        `<span>blank = unseeded</span></div>`; } }
+  if($('#shCells')){ const sh=d.shadow;
+    if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
+    else { $('#shN').textContent=sh.cells.length+' cells';
+      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
+        sh.cells.map(c=>`<tr><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td>`+
+          `<td>${esc(c.last_ts||'—')}</td><td class="r">${c.settled_n==null?'awaiting':c.settled_n}</td><td class="r">${c.judged_n==null?'awaiting':c.judged_n}</td>`+
+          `<td class="r">${c.delta_brier_market==null?'awaiting':f4(c.delta_brier_market)}</td><td class="r">${c.delta_brier_climo==null?'awaiting':f4(c.delta_brier_climo)}</td>`+
+          `<td class="r">${f4(c.latest_e_net)}</td></tr>`).join('')+`</tbody></table>`;
+      $('#shTape').innerHTML=`<table><thead><tr><th>TS</th><th>SPORT</th><th>MARKET</th><th>TICKER</th><th>P_YES</th><th>MID</th><th>E_NET YES</th><th>E_NET NO</th></tr></thead><tbody>`+
+        (sh.tape||[]).map(r=>`<tr><td>${esc(r.ts_utc)}</td><td>${esc(r.sport)}</td><td>${esc(r.market_type)}</td><td>${esc(r.market_ticker)}</td>`+
+          `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r">${f4(r.e_net_yes_k007)}</td><td class="r">${f4(r.e_net_no_k007)}</td></tr>`).join('')+`</tbody></table>`; } }
+  if($('#ps')){ const m=d.mlb_postseason;
+    if(!m||m.awaiting&&m.t1_players_matched_last_run==null&&m.t4_cycle_age_s==null){ $('#ps').innerHTML=AW((m&&m.awaiting)||'mlb sources'); }
+    else { const row=(k,v)=>`<div class="hw"><span class="lbl">${k}</span><span class="age">${v}</span></div>`;
+      $('#ps').innerHTML=row('T1 players matched (last run)',m.t1_players_matched_last_run==null?'awaiting paper_mlb_cron.log':m.t1_players_matched_last_run)+
+        row('T4 cycle-log age',m.t4_cycle_age_s==null?'awaiting t4 cycle log':fmtAge(Math.round(m.t4_cycle_age_s)))+
+        row('open positions',m.open_positions)+row('stuck positions ('+esc(m.stuck_rule)+')',m.stuck_positions); } }
+  if($('#verd')){ const v=d.verdicts||{}, ks=Object.keys(v);
+    if(!ks.length) $('#verd').innerHTML=AW('/api/data verdicts');
+    else $('#verd').innerHTML=`<table><thead><tr><th>TEST</th><th>VERDICT</th><th>WRITTEN</th><th>FILE</th></tr></thead><tbody>`+
+      ks.map(k=>{const x=v[k]; if(x.awaiting) return `<tr><td>${esc(k)}</td><td class="dim" colspan="3">awaiting ${esc(x.awaiting)}</td></tr>`;
+        const c=x.passed===true?'pos':x.passed===false?'neg':'dim';
+        return `<tr><td>${esc(k)}</td><td class="${c}">${esc(x.verdict||'unscored')}</td><td>${esc(x.written_at)}</td><td class="dim">${esc(x.file)}</td></tr>`}).join('')+`</tbody></table>`; }
+}
+function paintFresh(){
+  const f=(LAST&&LAST.freshness)||{}, el=Date.now()-LASTPULL;
+  $$('[data-fr]').forEach(e=>{ const x=f[e.dataset.fr]; e.className='fr';
+    if(S.demo){ e.textContent='DEMO'; e.className='fr off'; return }
+    if(S.notlive||!x){ e.textContent='no data'; e.className='fr aw'; return }
+    if(x.awaiting){ e.textContent='awaiting '+x.awaiting; e.className='fr aw'; return }
+    const age=Math.round(x.age_s+(LASTPULL?el/1000:0));
+    e.textContent='read '+fmtAge(age)+' ago'+(x.level==='off'?' · off-season':'');
+    e.className='fr '+(x.level==='red'?'bad':x.level==='amber'?'warn':x.level==='ok'?'ok':'off'); });
+}
 const LEGEND=`<div class="legend">
   <span><span class="sw" style="background:var(--green)"></span>YES side</span>
   <span><span class="sw" style="background:transparent;border:1.4px solid var(--red)"></span>NO side</span>
@@ -1019,7 +1636,7 @@ const FILTERBAR=`<input class="filt" id="posFilt" placeholder="filter…  /">
 
 /* ═══════════ FILL ═══════════ */
 function fill(D,d){
-  const sportOf=S.mod==='MLB'?'MLB':S.mod==='NFL'?'NFL':null;
+  const sportOf=(S.mod==='MLB'||S.mod==='POSTSEASON')?'MLB':S.mod==='NFL'?'NFL':null;
   const open = sportOf?D.open.filter(p=>p._sport===sportOf):D.open;
   const closed = sportOf?D.closed.filter(p=>p._sport===sportOf):D.closed;
   const events = sportOf?D.events.filter(e=>e._sport===sportOf):D.events;
@@ -1354,6 +1971,9 @@ function health(d,D){
     {lbl:'PORTFOLIO  MLB T1', t:D.P.last_updated,  warn:26*3600, bad:72*3600},
     {lbl:'PORTFOLIO  MLB T4', t:D.T4.last_updated, warn:2*3600,  bad:12*3600},
     {lbl:'PORTFOLIO  NFL T1', t:D.NF.last_updated, warn:8*86400, bad:14*86400}];
+  const sn=d.season||{};
+  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/MLB/.test(h.lbl)?'MLB':null;
+    if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
   const n=$('#healthN'); if(n) n.textContent=HEALTH.length+' feeds';
   paintHealth();
 }
@@ -1363,16 +1983,16 @@ function paintHealth(){
   host.innerHTML=HEALTH.map(h=>{
     const ts=h.t&&!isNaN(new Date(h.t))?new Date(h.t).getTime():null;
     const age=ts?Math.round((now-ts)/1000):null;
-    const c=age==null?'':ageCls(age,h.warn,h.bad);
+    const c=age==null||h.off?'':ageCls(age,h.warn,h.bad);
     return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
-      `<span class="age ${c}">${age==null?esc(h.t||'no log yet'):fmtAge(age)+' ago'}</span>`+
+      `<span class="age ${c}">${age==null?esc(h.t||'no log yet'):fmtAge(age)+' ago'}${h.off?' · off-season':''}</span>`+
       `<span class="dot ${c}"></span></div>`}).join('');
 }
 
 /* ═══════════ LOOP ═══════════ */
 function tick(){
   $('#clock').textContent=new Date().toISOString().slice(11,19)+'Z';
-  paintHealth();
+  paintHealth(); paintFresh();
   if(S.paused){$('#cd').textContent='||'; return}
   S.cd--; if(S.cd<=0){S.cd=REFRESH_S; pull()}
   $('#cd').textContent=String(S.cd).padStart(2,'0');
@@ -1386,7 +2006,7 @@ addEventListener('keydown',e=>{
   if(e.key==='r'){S.cd=REFRESH_S; pull()}
   if(e.key===' '){e.preventDefault(); $('#pause').click()}
   if(e.key==='/'){e.preventDefault(); $('#posFilt')?.focus()}
-  const mi=['1','2','3','4','5'].indexOf(e.key);
+  const mi=['1','2','3','4','5','6','7','8','9'].indexOf(e.key);
   if(mi>=0&&MODULES[mi]){S.mod=MODULES[mi].k; render()}
 });
 

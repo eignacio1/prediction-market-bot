@@ -79,8 +79,10 @@ class TestTerminalByteFidelity:
     def test_demo_fallback_and_not_connected_banner_survive(self):
         # Offline judgement of the page depends on both; they must never be dropped.
         raw = _SOURCE.read_text(encoding="utf-8")
-        assert "DEMO" in raw
-        assert "NOT CONNECTED" in raw
+        # v2 (47.1 D6): demo data only behind an explicit ?demo flag; default is NOT LIVE.
+        assert "DEMO_FLAG" in raw and "DEMO" in raw
+        assert "NOT LIVE" in raw
+        assert "NOT CONNECTED" not in raw, "the old silent demo fallback must not return"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -226,7 +228,9 @@ class TestProcessInfo:
         d = _api(server)
         assert _EXISTING_KEYS <= set(d)
         assert {"rejected_counts", "t4_cycle_tail", "process"} <= set(d)
-        assert set(d) - _EXISTING_KEYS == {"rejected_counts", "t4_cycle_tail", "process"}
+        assert set(d) - _EXISTING_KEYS == {
+            "rejected_counts", "t4_cycle_tail", "process",
+            "season", "freshness", "origin", "coverage", "shadow", "verdicts", "mlb_postseason", "pipeline"}
 
 
 class TestTerminalWiring:
