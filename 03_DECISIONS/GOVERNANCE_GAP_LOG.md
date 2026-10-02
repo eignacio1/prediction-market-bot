@@ -3721,3 +3721,20 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Do not assert the venue formula until the PDF text is read. Carry both fee models with the series multiplier as a stated sensitivity. |
 
 </details>
+
+### GG-333 — EXP-035 Part 1 correctness gate FAILED (G2, G3, G4, G5, G7): hourly candles do not reproduce the archive's B/H; candle numbers VOID
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-333 |
+| Category | Instrument validity (D1b) |
+| What was found | Gate run 2026-10-02 against the frozen Part 1 pre-registration (e28166a), no rescue. Passed: G1 (ticker coverage 1.000; usable candle coverage 0.9976), G6 (sign agrees; E_candle -0.0678 vs ref -0.02403). FAILED: G2 share 0.335 (need >=0.80, n=1988); G3 share 0.472 (need >=0.95); G4 B_candle 0.03193 vs 0.02572 (tol 0.003, n=10675); G5 H_candle 0.090 vs 0.04 (tol 0.005); G7 tau bucket [24,48) median half-spread 0.065 vs 0.03 (other buckets ok). Artifact: exp_output/EXP-035-BOARD-SURVEY-SPORTS/gate_result.json. |
+| Why it matters | Per pre-registration, any failure voids every candle-derived number. EXP-035 stops after D1; no D2-D7 outcome statistic may be computed from candles. The candle-based E is more negative than the archive's (-0.068 vs -0.024) but is VOID and must not be cited as evidence either way. |
+| Disposition | Hand back to operator. Do not alter G1-G7 thresholds. Open questions (not tested): whether hourly OHLC close is a different object from the archive's first-seen quote (a design issue the pre-registration did not anticipate), vs a code defect in evaluate. Both need operator decision before any re-registration via AMENDMENT. Candle-vs-archive discrepancy also bears on the archiver docstring correction (GG-329): history is reachable but not equivalent to the archive, so the docstring edit was NOT made. |
+
+</details>
