@@ -238,3 +238,14 @@ def test_live_kalshi_team_codes_all_parse():
             "LVNE", "MIAMIN", "MINNO", "NEBUF", "NYGWAS", "NYJCHI", "PHIJAC", "SFSEA", "TBDAL", "TENBAL"]
     bad = [e for e in live if parse_event_ticker(f"KXNFLGAME-26OCT04{e}") is None]
     assert bad == []
+
+
+def test_nfl_t1_cells_shadow_and_others_untouched():
+    from prediction_market_bot.c5_execution.market_type_registry import (
+        CellStatus, ExecutionBand, MarketType, get_cell)
+    for mt in (MarketType.NFL_MONEYLINE, MarketType.NFL_SPREAD,
+               MarketType.NFL_GAME_TOTAL, MarketType.NFL_TEAM_TOTAL):
+        c = get_cell(mt, ExecutionBand.T1_MULTI_DAY)
+        assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037"
+        for b in (ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP, ExecutionBand.T4NFL_ARITH):
+            assert get_cell(mt, b).status is CellStatus.NOT_IMPLEMENTED
