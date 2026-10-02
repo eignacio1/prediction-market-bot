@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-02T22:05:00Z (T-606 — W45 46.2 sync-and-diagnose: shared tree ff'd to origin/main, queue + ADR-0067 docs landed, Step 4 anomalies all EXPECTED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2205.md` for full session detail.
+**Last reviewed:** 2026-10-02T23:57:00Z (T-608 — EXP-037 (T-608) 47.2: NFL+MLB pregame shadow code, models, pre-regs built; NFL-only branch green, NOT landed, nothing on VPS.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2357.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
