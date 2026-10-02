@@ -12,7 +12,7 @@ from prediction_market_bot.c1_signal_ingestion.nfl_pregame_features import NFLPr
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
 from prediction_market_bot.pregame_shadow.nfl_model import NFLPregameModel, p_yes_for
 
-KALSHI_TO_NFLVERSE = {"LAR": "LA", "WSH": "WAS", "JAC": "JAX"}
+KALSHI_TO_NFLVERSE = {"LAR": "LA", "JAC": "JAX"}  # Kalshi uses WAS for Washington (live 2026-10-02)
 NFLVERSE_TEAMS = {
     "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND",
     "JAX", "KC", "LA", "LAC", "LV", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF",
