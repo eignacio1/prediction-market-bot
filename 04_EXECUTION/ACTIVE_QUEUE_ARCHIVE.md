@@ -10,6 +10,2545 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 44 — CLOSED 2026-10-01 (all three landed at origin/main d8d5850: T-603 / EXP-033 / T-602). EXP-032: no family's E crosses zero under any evidenced policy; EXP-033: 0 of 24 multi-leg cells survive; settlement + depth writers built and proven, cron lines DRAFTED not installed, restart skipped (no authorization line). Pre-registered stop condition FIRED -- next decision is venue / asset-class selection.
+
+## ⬛ FIRE NOW — Wave 44, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **44.1** | LARGE | **Attack the cost side.** H killed every family. Measure the real execution-cost surface through time and recompute E against the best achievable cost, not the first-seen one. |
+| 2nd | **44.2** | LARGE | **Ask the multi-leg question.** Do complementary legs on one game price coherently? Plus draft the correlation-group ADR that the parlay arm has been blocked behind since Section 2.5 was written. |
+| 3rd | **44.3** | LARGE | **Make the archive self-sufficient and close the operator loop.** Settlement and depth capture, built and proven; terminal restart on your word. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **44.1 owns** a new analysis script, a new EXP id, its pre-registration and results,
+  **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.** Read-only over the archive.
+- **44.2 owns** a different new analysis script, a different new EXP id, `ADR-0053` (the §2.5 draft, as
+  a NEW ADR), its own results. Read-only over the archive. **No GGL / DECISION_LOG writes.**
+- **44.3 owns** `scripts/archive_market_prices.py`'s *sibling* writers (new files only),
+  `scripts/web_dashboard.py`, `deploy/` for the dashboard service and a DRAFTED cron line, one results
+  summary. **No GGL / DECISION_LOG writes.**
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Each block carries its workstream to a measured verdict.** Operator directive 2026-09-30. Terminals are fresh and can take the load; stop only at a governance boundary, and name the boundary when you stop.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.**
+- **Claim IDs at run time and re-verify after ANY release or retry** (GG-322).
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file. *Wave 43 disproved one of its own briefs; that is the system working, not a failure.*
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no approval in a block overrides it.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-41 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **42** | CLOSED | **EXP-029 HARMFUL** — the frozen pre-game model loses to KXMLBHIT, CI excludes zero; placebo ratio 1.02 says its skill is time-symmetric persistence. **EXP-030 NO DETECTABLE DIFFERENCE** — T4's 27 extra fields do not help. T3 MISFILED with no order path at all. |
+| **43** | **CLOSED -- ALL THREE LANDED** (`aedfac9`) | **EXP-031: ZERO CANDIDATES across 14 families** — but several clear their null and are killed by H, not by B. **Terminal landed byte-faithful**, `/api/data` 0.21–0.56 s, restart correctly SKIPPED. **NFL loss premise disproved: nothing unrecoverable.** |
+| **44** | **FIRING** | Attack the cost side — ask the multi-leg question — make the archive self-sufficient. |
+
+---
+
+## Why this wave is shaped this way
+
+**For the first time the project knows what is actually in its way, and it is not the model.** Four
+waves established, in order: the model beats climatology; the model loses to the market; depth does not
+rescue the in-play cell; and now — across fourteen families — real calibration gaps exist and the
+spread is wider than all of them. `H` is the binding constraint. **Nobody has ever measured `H`
+properly.** It was one number taken at one snapshot.
+
+**44.1 attacks that directly, with data already on disk.** If the spread tightens as settlement
+approaches, or at particular hours, or differs between the side we want and the side we don't, then the
+`E` that killed every family was computed against a cost we would never actually pay. That is a
+recompute, not a new model, and it either produces the candidate EXP-031 could not find or it proves
+the toll is structural. Both answers are decision-grade.
+
+**44.2 asks the question EXP-031 tripped over without looking at it.** Complementary legs on one game —
+2 to 44 per event — must cohere: a game's leg set either forms a consistent book or it does not, and
+incoherence is measurable with arithmetic, no forecaster required. This is also the honest entry point
+to the big-hitter / parlay arm, which has been blocked since ADR-0053 §2.5 was written and **never
+drafted as an ADR**. Thin, correlated, multi-leg markets are where price-making is worst — and this
+survey has just shown that the thinnest families carry the largest biases.
+
+**44.3 fixes the thing that will tax every future survey.** EXP-031 discovered the archive holds **no
+settlement at all** and had to fetch outcomes from Kalshi's public `result` endpoint. Depth is sampled
+too thinly to measure capacity. Both are capture-design defects, and both make every future analysis
+more expensive and less conclusive. The same block closes the operator loop: the terminal is landed,
+tested and byte-faithful, and the VPS is still serving the old page.
+
+---
+
+## WAVE 44 BLOCKS
+
+---
+
+# 44.1 -- ATTACK THE COST SIDE: WHAT IS H, REALLY - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "execution-cost-surface"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: T-601, GG-324, ADR-0068. Verify; do not assume.
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new analysis script under scripts/, its tests, one NEW EXP id under exp_output/,
+  its pre-registration and results summary, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+READ-ONLY: exp_output/PRICE_ARCHIVE/, EXP-031's cached settlements/, every pool and model file.
+
+THE FINDING THIS BLOCK ACTS ON -- verify it, do not assume it:
+  EXP-031 scored every family on E = B - null_median - H and returned ZERO CANDIDATES. But several
+  families CLEAR their null -- KXMLBTEAMTOTAL and all five F-series -- and are killed by H alone:
+    KXMLBF5SPREAD  B .0899 (clears)  H .275  E -.1984   <- largest bias in the survey, median vig 0.55
+    KXMLBF5TOTAL   B .0629 (clears)  H .145  E -.0951
+    KXMLBTEAMTOTAL B .0257 (clears)  H .040  E -.0240
+    KXMLBHIT       B .0137 (clears)  H .010  E -.0008   <- reference; CI spans zero
+  H was the half-spread AT THE FIRST-SEEN SNAPSHOT. One number, one moment, per family. EXP-031 also
+  states that vig, spread stability and tick discreteness were inventoried but NOT ranked, and that
+  convergence was NOT computed at all.
+  So the number that killed every family is the least-examined number in the study.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs. Confirm EXP-031's artifacts
+  (d1_inventory.json, d1_settled_coverage.json, d3_d4_results.json, settlements/) are present and
+  reusable; do NOT re-derive what they already contain, and do NOT re-fetch settlements.
+
+DELIVERABLE 1 -- BUILD THE COST SURFACE. H IS A FUNCTION, NOT A SCALAR.
+  For every family, measure the quoted spread (and implied vig) as a function of:
+    - time to settlement (bucketed; the archive carries multiple snapshots per ticker-day,
+      median 6-24 -- use the real distribution, do not assume uniformity)
+    - time of day / session phase
+    - side: the cost of taking YES versus taking NO, separately -- they are not symmetric
+    - price level (a 0.05 market and a 0.50 market do not carry the same proportional toll)
+  Report coverage per cell of that surface. Where a cell has too few observations to measure, it is
+  UNMEASURED, not interpolated. Say how much of each family's surface is actually measured.
+
+DELIVERABLE 2 -- PRE-REGISTER THE RECOMPUTE. BEFORE RECOMPUTING ANYTHING. PUSH IT ALONE.
+  State in advance:
+    - the execution policies you will price. At minimum: (a) cross at first-seen -- EXP-031's
+      assumption, the baseline; (b) cross at the cheapest MEASURED point of the surface; (c) rest at
+      mid and assume no fill unless the archive shows the quote crossed it.
+    - the fill assumption for every non-crossing policy, stated explicitly. **An unfilled order earns
+      nothing. A policy that assumes fills it cannot evidence is a fabricated edge** -- say exactly
+      what evidences a fill in this archive and what does not.
+    - how B is held fixed. You are recomputing the COST side only. Do not re-derive, re-bucket or
+      re-window B -- take EXP-031's B and null bands as given inputs. Re-cutting B here would be
+      re-cutting a pre-registered result after seeing it, which the standing DO NOT forbids.
+    - the decision rule: what E, under which policy, with what CI, makes a family a CANDIDATE.
+  Frozen once pushed.
+
+DELIVERABLE 3 -- RECOMPUTE E UNDER EVERY POLICY. SAME TABLE, SAME FAMILIES, SAME TREATMENT.
+  Reproduce EXP-031's ranking table with a column per policy. KXMLBHIT stays in as the reference.
+  Carry EXP-031's own CIs and its day-fragility flags through -- do not quietly drop a caveat that
+  made a family fragile in the original.
+  **State plainly whether ANY family's E crosses zero under ANY evidenced policy, and by how much
+  relative to its CI.** If none does, that is the answer and it is a strong one.
+
+DELIVERABLE 4 -- THE CAPACITY CHECK. AN EDGE YOU CANNOT SIZE IS NOT AN EDGE.
+  EXP-031 reports depth as SAMPLE ONLY: ~1.4k-2.8k rows per family, and KXMLBF7 has 7 depth rows
+  across 2 tickers. For any family that becomes a candidate in D3, report what the depth sample can
+  and cannot support: at the stake sizes this project would use, is there evidence of enough size at
+  the quote to fill at all?
+  If the depth sample is too thin to answer, the family is CANDIDATE-PENDING-CAPACITY, not CANDIDATE.
+  Do not promote a family past a capacity question you cannot answer from the data held.
+
+DELIVERABLE 5 -- THE TIME DIMENSION, BOUNDED AND CONTROLLED.
+  EXP-031 did not compute convergence. Measure, per family, whether price drifts systematically
+  between first-seen quote and settlement, by price bucket.
+  **THIS IS NOT T-569.** T-569 tested a latency-arbitrage thesis on T4 at a ~60-second cadence with
+  three scalars and returned NOT SUPPORTED. This is a different horizon (hours to days) and a
+  different claim (systematic drift in the price series, not a speed race). Say so in the write-up so
+  nobody reads this as reviving a dead thesis -- and if your result coincidentally resembles T-569's,
+  report that resemblance rather than burying it.
+  Run a BACKWARD PLACEBO, as T-569 and EXP-029 established: if the backward drift matches the forward
+  drift, the "convergence" is time-symmetric structure, not an exploitable path. EXP-029's placebo
+  ratio was 1.02 and that single number is what correctly killed the pre-game model. Compute and report
+  the ratio here.
+
+DELIVERABLE 6 -- REGISTER AND REPORT.
+  Register what this found, including any capture defect it depends on (44.3 is fixing the archive;
+  your gaps should name what you could not measure and why). One DECISION_LOG entry.
+  Results summary against the pre-registration line by line: the cost surface with its coverage map,
+  the recomputed table by policy, the capacity check, the drift result with its placebo ratio, and one
+  paragraph answering: is the toll on this venue structural, or is it an artefact of when we looked?
+
+DO NOT:
+  - Recompute, re-bucket, re-window or otherwise touch B or the null bands. Cost side only.
+  - Assume a fill the archive cannot evidence. Name the evidence or price the policy as unfillable.
+  - Change a pre-registered policy, threshold or decision rule after seeing any result.
+  - Promote a family to CANDIDATE past an unanswerable capacity question.
+  - Re-fetch settlements. EXP-031 cached them; reuse the cache.
+  - Recommend against a sport or market family on one finding; and do not assume the rest of the board
+    behaves like the families that happened to be measurable.
+  - Build, fit or tune any forecasting model. This block measures the venue, not us.
+  - Open a position, write to any pool, or schedule anything.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 44.2 -- THE MULTI-LEG QUESTION, AND THE ADR IT HAS BEEN BLOCKED BEHIND - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "multileg-coherence"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new analysis script under scripts/, its tests, one NEW EXP id under exp_output/,
+  its pre-registration and results summary, and ONE NEW ADR drafting the ADR-0053 Section 2.5
+  correlation group. Claim the ADR number at run time; highest seen is 0068.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 44.1 owns them. Gaps go in your results
+  summary under "GAPS FOUND -- FOR REGISTRATION BY 44.1 OR WAVE 45".
+READ-ONLY: exp_output/PRICE_ARCHIVE/, EXP-031's settlements/ cache, every pool and model file.
+
+WHY THIS BLOCK EXISTS:
+  EXP-031 reported, as a LIMITATION on its null band, that "complementary tickers within a game are
+  correlated, 2-44 per event." It treated that as statistical nuisance. It is also an unasked question:
+  a set of legs on one game either forms a coherent book or it does not, and incoherence is arithmetic,
+  not forecasting. No model is required and none is permitted in this block.
+  This is also the entry point to the market class the operator has described as the eventual arm --
+  big hitters, low-probability parlays, sharp-money low-win-rate lines. That arm is blocked behind
+  ADR-0053 Section 2.5 (correlation group), which has NEVER BEEN DRAFTED AS AN ADR. Nothing exists to
+  approve. This block changes that, on measured evidence rather than on intent.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- RECONSTRUCT THE LEG SETS. GET THE GROUPING RIGHT BEFORE MEASURING ANYTHING.
+  From ticker structure and the archive's fields, group tickers into per-event sets: which legs belong
+  to the same game, and what relation they bear to each other -- complementary (mutually exclusive and
+  exhaustive), nested (a threshold ladder, where one leg strictly implies another), or merely related.
+  Report the distribution: events, legs per event, how many events give a set complete enough to test.
+  **GET THIS WRONG AND EVERY NUMBER DOWNSTREAM IS NOISE.** State how you verified the grouping -- a
+  ticker-string heuristic that was never checked against actual market metadata is not verification.
+  Where grouping is uncertain, exclude the event and say how many you excluded.
+
+DELIVERABLE 2 -- PRE-REGISTER THE COHERENCE TESTS. BEFORE COMPUTING. PUSH ALONE.
+  Name the tests, their direction, and the decision rule. At minimum:
+    - SUM COHERENCE on complementary sets: do the legs' implied probabilities sum to 1 plus the vig,
+      or to something else? State the vig model you are netting out and where it comes from.
+    - MONOTONICITY on nested ladders: a threshold ladder must be monotone. Does it invert anywhere?
+      An inversion is a hard arithmetic error in the book, not a probabilistic judgement.
+    - DUTCH-BOOK MARGIN: after the measured cost of crossing every required leg (use EXP-031's H and,
+      if 44.1 has landed, its cost surface -- cite which you used), does any set admit a position that
+      wins in every outcome? Price it with the toll included, never without.
+  State the null: how often do these violations arise by chance given snapshot timing, stale quotes and
+  the number of sets tested? **Multiple testing is the obvious failure mode here -- with thousands of
+  sets, violations WILL appear. Pre-register the correction.**
+  Frozen once pushed.
+
+DELIVERABLE 3 -- MEASURE, WITH THE TOLL IN AND THE NULL APPLIED.
+  Report per family and per relation type: sets tested, violations found, violation magnitude
+  distribution, how many survive the cost of crossing, and how many survive the multiple-testing
+  correction.
+  Stale quotes are the leading false positive: a set is only incoherent if the legs were quoted close
+  enough in time to be traded together. Define that window in the pre-registration and enforce it.
+  **If nothing survives, write that.** A clean null here is as valuable as the one EXP-031 produced,
+  and it closes a question that has been open since Section 2.5 was written.
+
+DELIVERABLE 4 -- CAPACITY AND EXECUTABILITY, HONESTLY.
+  A multi-leg position needs EVERY leg filled. Partial fill on a dutch book is not a reduced edge, it
+  is an open directional position nobody authorized.
+  For any surviving violation: how many legs, what depth exists on each (EXP-031's depth is SAMPLE
+  ONLY -- say so), and what the all-or-nothing fill requirement means in practice.
+  **Do not report an exploitable structure without stating the leg count and the fill requirement.**
+
+DELIVERABLE 5 -- DRAFT THE CORRELATION-GROUP ADR.
+  Draft ADR-0053 Section 2.5 as its own new ADR, grounded in what D1-D4 measured. It must define:
+  what a correlation group IS in this system; how group membership is determined and stored; how
+  exposure aggregates across a group (so a parlay is not sized as if its legs were independent); what
+  the kill-switch and budget semantics are at group level; which existing ADRs it supplements
+  (ADR-0010 band/Kelly hierarchy, ADR-0026 portfolio free-cash invariant) and which it does not touch.
+  Status PROPOSED. No register row. **It changes no sizing and activates nothing** -- say that
+  explicitly in the Consequences section, since the arm it unblocks is the highest-variance one in the
+  roadmap and the ADR must not read as permission.
+
+DELIVERABLE 6 -- REPORT.
+  Results summary against the pre-registration line by line, plus one paragraph: on this venue, do
+  multi-leg structures price more loosely than single legs -- and if so, does the loosening survive the
+  cost of crossing every leg?
+
+DO NOT:
+  - Build, fit or tune any forecasting model. Coherence is arithmetic.
+  - Report a violation without netting out the cost of crossing every leg.
+  - Report a violation without the multiple-testing correction you pre-registered.
+  - Treat quotes from different times as simultaneous. Enforce the pre-registered window.
+  - Infer a leg grouping from a ticker-string pattern you did not verify.
+  - Accept the new ADR, add a register row, or imply it authorizes anything.
+  - Touch sizing, stake, or kelly_fraction -- including in the ADR's own text.
+  - Open a position, write to any pool, or schedule anything.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 44.3 -- MAKE THE ARCHIVE SELF-SUFFICIENT, AND CLOSE THE OPERATOR LOOP - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "archive-self-sufficiency"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  NEW writer scripts under scripts/ (settlement capture, depth capture), their tests,
+  scripts/web_dashboard.py, deploy/ entries for the dashboard service and DRAFTED cron lines,
+  one results summary.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 44.1 owns them.
+DO NOT EDIT scripts/archive_market_prices.py or any existing capture window. New writers only.
+
+THE TWO DEFECTS THIS BLOCK FIXES -- verify both before building:
+  1. THE ARCHIVE CANNOT SETTLE ITSELF. EXP-031 found every row carries status=active and the archive
+     contains NO settlement at all. It had to pull outcomes from Kalshi's public read-only `result`
+     endpoint and cache 24 MB under settlements/. Every future survey pays that cost and depends on an
+     endpoint nobody captures from.
+  2. DEPTH IS SAMPLED TOO THINLY TO MEASURE CAPACITY. ~1.4k-2.8k depth rows per family; KXMLBF7 has
+     SEVEN depth rows across TWO tickers. Capacity -- whether an edge can be sized at all -- cannot be
+     answered from what is captured.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- SETTLEMENT CAPTURE, BUILT AND PROVEN.
+  A NEW standalone writer that records final settlement per ticker: ticker, family, settled value,
+  settlement timestamp, source URL, upstream content hash, retrieval UTC time, runtime commit sha.
+  Append-only and idempotent per ticker on content hash; an existing settlement is never rewritten.
+  Back-capture every settled ticker the archive already holds, so the existing ~2.12 M rows become
+  self-sufficient. Reconcile against EXP-031's cached settlements/: same tickers, same outcomes, and
+  report EVERY discrepancy rather than preferring one source. A discrepancy is a finding.
+  Tests: idempotency, append-not-overwrite, partial/failed fetch refusal, provenance fields present.
+  Read-only against the venue. This endpoint returns results; it places nothing.
+
+DELIVERABLE 2 -- DEPTH CAPTURE, SIZED TO THE QUESTION IT MUST ANSWER.
+  State first, from D1 of 44.1 if it has landed or from EXP-031's inventory otherwise, what depth
+  sampling rate would actually support a capacity answer at this project's stake sizes. Then build a
+  NEW depth writer to that rate.
+  **DO NOT MODIFY OR RE-TIME THE EXISTING PRICE-CAPTURE WINDOW** (standing DO NOT). This is an
+  additive sibling writer with its own schedule, not a change to archive_market_prices.py.
+  Report the storage cost per day and per season at the chosen rate, and the API call volume --
+  including whether that volume stays inside the venue's documented rate limits. If it does not, say
+  so and propose the rate that does, rather than building something that will be throttled.
+
+DELIVERABLE 3 -- HAND-RUN BOTH, TWICE EACH.
+  Run each writer against live sources. Verify the output against the source with row counts and a
+  column-level diff, not a spot check. Then run each AGAIN immediately and prove no duplicate and no
+  corruption. Report all four runs with hashes. A writer that has not been run twice has not been tested.
+
+DELIVERABLE 4 -- DRAFT THE SCHEDULES. DO NOT INSTALL THEM.
+  Write the exact cron lines both writers need, with the cadence justified from D2's evidence, as
+  COMMENTED lines in deploy/cron.conf and in your report.
+  **DO NOT INSTALL, UNCOMMENT OR RUN crontab.** These writers open no positions and are not
+  game-market run scripts, but installing a schedule is still scheduling, and 42.3 and 43.3 both drew
+  that line correctly. If an authorization line naming these capture writers appears under "Needs your
+  decision", install within exactly that scope and verify from the LIVE crontab, not the repo file
+  (GG-262: the VPS crontab already diverges from the repo, cause unknown). Absent = skip and say so.
+
+DELIVERABLE 5 -- CLOSE THE OPERATOR LOOP: THE TERMINAL RESTART.
+  T-600 landed the new terminal byte-faithful (59,130 bytes served, mutation-checked, 31/31 tests) and
+  correctly SKIPPED the restart for want of an authorization line. The VPS still serves the old page.
+  **Check "Needs your decision" for a line naming `pmbot-web-dashboard`.** Absent: SKIP, say so
+  plainly, and report that there is still no running sha. Present: restart within that scope, then
+  verify FROM THE RUNNING PROCESS -- GET `/` and compare to the file on disk, GET `/api/data` for
+  `rejected_counts`, `t4_cycle_tail` and `process`, and compare `process.sha` to the deployed commit.
+  A merge is not a deployment and a deployment is not an activation (GG-279). Report the RUNNING sha.
+
+DELIVERABLE 6 -- REPORT.
+  Results summary: settlement back-capture coverage and every reconciliation discrepancy, the depth
+  rate with its storage and rate-limit arithmetic, all four hand-runs with hashes, the drafted cron
+  lines, and the restart outcome or the skip with its reason.
+
+DO NOT:
+  - Edit scripts/archive_market_prices.py, or modify/re-time any existing capture window.
+  - Install, uncomment or activate any cron entry absent an authorization line. Absent = skip.
+  - Restart any service absent an authorization line naming it.
+  - Prefer one settlement source over another when they disagree. Report the discrepancy.
+  - Build a capture rate that exceeds the venue's documented limits.
+  - Backfill, rewrite or relabel any existing archive row. New files only (GG-228).
+  - Place any order, or use any endpoint that can. Read-only against the venue.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 44.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+
+## Wave 43 — CLOSED 2026-10-01 (all three landed: T-599 / T-600 / T-601). EXP-031 ZERO CANDIDATES; terminal landed byte-faithful, restart correctly skipped; NFL loss premise disproved -- nothing unrecoverable.
+
+## ⬛ FIRE NOW — Wave 43, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **43.1** | LARGE | **Rank every market family by how beatable it is**, from the archive alone, pre-registered, end to end. The decisive consequence of EXP-029. |
+| 2nd | **43.2** | LARGE | **Land the operator's instrument.** New live terminal front-end plus the `/api/data` fields it needs. Restart gated on authorization. |
+| 3rd | **43.3** | LARGE | **Stop losing NFL weeks.** Build the pre-kickoff capture to one-line-authorizable, prove it by hand-run, and price what each missed week costs. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **43.1 owns** `exp_output/PRICE_ARCHIVE/` (read-only), a new analysis script, a new EXP id, its
+  pre-registration and results, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.**
+- **43.2 owns** `scripts/web_dashboard.py`, `Live Terminal.html`, `deploy/` for the dashboard service
+  only, and one results summary. **No GGL / DECISION_LOG writes.**
+- **43.3 owns** `src/prediction_market_bot/nfl_ingestion.py`, a new capture runner under `scripts/`,
+  `deploy/cron.conf` **as a drafted line only**, and one results summary. **No GGL / DECISION_LOG writes.**
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Each block carries its workstream to a measured verdict.** Operator directive 2026-09-30. Stop only at a governance boundary, and name the boundary when you stop.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.**
+- **Claim IDs at run time and re-verify after ANY release or retry** (GG-322).
+- **Check your deliverables against real-world sequencing before starting (GG-287).**
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no approval in a block overrides it.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-40 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **41** | CLOSED | EXP-028: skill over climatology **DETECTED** (+0.0052 Brier, 1,414 games) and it beat the one-line rule too. Market edge **NOT TESTABLE** — matrix and prices did not overlap. Provenance snapshotted in-repo, **13/13 verify offline**. |
+| **42** | **CLOSED -- ALL THREE LANDED** (`633e1b5`) | **EXP-029: HARMFUL** — the frozen model loses to KXMLBHIT, CI excludes zero; placebo ratio 1.02 says the skill is time-symmetric persistence. **EXP-030: NO DETECTABLE DIFFERENCE** — T4's 27 extra fields do not help. **T3 measured MISFILED**, and it has **no order path at all**. NFL capture confirmed **never enabled: zero production callers, zero weeks.** |
+| **43** | **FIRING** | Rank the venue's market families — land the operator's instrument — stop losing NFL weeks. |
+
+---
+
+## Why this wave is shaped this way
+
+**One market family said no. The project has eight more on disk and has never asked them.** EXP-029 is a
+clean, decisive negative about *KXMLBHIT* — a high-liquidity, heavily-traded player-prop market whose
+price already encodes exactly the persistence the model found. That tells you almost nothing about
+`KXMLBF3`, `KXMLBF5SPREAD`, `KXMLBTEAMTOTAL` or the NFL families. Measuring relative efficiency across
+them is pure archive arithmetic: spread, vig, price discreteness, convergence speed, favourite-longshot
+bias, depth. **No model, no season, no capital, and the data has been sitting there since August.**
+
+That is also the honest reading of the standing DO NOT: *never recommend against a sport or market
+family on one finding*. The corollary is the same rule pointed forward — **do not assume the rest of the
+board behaves like the one cell you measured.**
+
+**The second block is your instrument, and it is the one you said catches things.** The live terminal
+has been rebuilt — full black, five modules, model-vs-market scatter, evidence class on every row, and
+an NFL module that leads with the fact that 87% of that pool is stub-sourced. It is sitting as a file
+and the VPS is still serving the old page. Landing it is a complete workstream and it belongs in one
+block, with the service restart — and only the restart — gated on your word.
+
+**The third block has a clock.** 42.3 proved the NFL extended capture has **zero production callers and
+zero enabled weeks**, and that nflverse is a rolling post-hoc snapshot: pre-kickoff QB, weather and
+referee state is obtainable **only by capturing before kickoff**. Every week without one is permanently
+gone. The block that found it correctly refused to enable it, because with no schedule to configure
+inside, enabling *is* scheduling. So 43.3 builds everything up to that line and makes the authorization
+a single line you either write or don't.
+
+---
+
+## WAVE 43 BLOCKS
+
+---
+
+# 43.1 -- RANK EVERY MARKET FAMILY BY HOW BEATABLE IT IS - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "market-efficiency-survey"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: T-598, GG-323, ADR-0068. Verify; do not assume.
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new analysis script under scripts/, its tests, one NEW EXP id under exp_output/,
+  its pre-registration and results summary, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+READ-ONLY, DO NOT EDIT: exp_output/PRICE_ARCHIVE/ and every pool, ledger and model file.
+
+WHY THIS BLOCK EXISTS -- verify the premise, do not take it on trust:
+  EXP-029 measured the frozen pre-game model against KXMLBHIT and returned HARMFUL: game-clustered
+  paired delta-Brier (market - model) -0.00393, CI [-0.00629, -0.00152], 215 games. The corrected
+  placebo drew backward +0.00494 against forward +0.00484, ratio 1.02 -- the model's skill is
+  time-symmetric persistence, which a liquid market prices.
+  That is a verdict about ONE family at ONE venue. The standing DO NOT forbids condemning a sport or
+  market family on one finding; the same rule forward forbids ASSUMING the rest of the board behaves
+  like the one cell that was measured.
+  The archive holds ~1.82M rows over 119 files, 2026-08-01 to 09-30, across at least nine MLB families
+  (KXMLBGAME, KXMLBHIT, KXMLBTEAMTOTAL, KXMLBTOTAL, KXMLBSPREAD, KXMLBF3, KXMLBF5, KXMLBF5TOTAL,
+  KXMLBF5SPREAD) plus NFL families. Confirm the real inventory yourself in Deliverable 1.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- INVENTORY THE ARCHIVE HONESTLY, BEFORE DESIGNING ANYTHING.
+  Per series family: rows, distinct tickers, distinct days, snapshots per ticker per day, the fields
+  actually present, and how many tickers reach a settled state within the window.
+  State plainly which families have enough coverage to measure and which do not. A family you cannot
+  measure is reported as UNMEASURABLE with the reason -- not quietly dropped and not estimated.
+
+DELIVERABLE 2 -- PRE-REGISTER THE RANKING. BEFORE COMPUTING ANY RANK. PUSH IT ALONE.
+  Name the efficiency proxies, their direction, how they combine into a rank, and the tie-break --
+  ALL of it fixed before you see a single number. Candidate proxies, justify what you use and what
+  you drop:
+    - quoted spread and its stability through the day
+    - implied vig (sum of both sides' implied probability minus 1)
+    - price discreteness / tick granularity relative to the probabilities being expressed
+    - convergence: how early the price reaches its settled value, and how monotonically
+    - favourite-longshot bias: realised frequency vs implied price, bucketed -- the classic
+      mispricing, and the one most likely to survive in a thin family
+    - depth where the archive carries it, and how fast depth refreshes
+  State the decision rule in advance: what pattern would make a family a CANDIDATE, what would make it
+  NO BETTER THAN KXMLBHIT, and what would make the whole survey INCONCLUSIVE.
+  Frozen once pushed. Changing a pre-registered parameter after seeing results is on the DO NOT list.
+
+DELIVERABLE 3 -- MEASURE. ALL FAMILIES, SAME TREATMENT.
+  Compute every pre-registered proxy for every measurable family, with uncertainty, clustered by day
+  and by game where the grain allows. KXMLBHIT is in the table as the reference point, not excluded.
+  Report a table and ONE ranking, produced by the pre-registered rule and nothing else.
+  THE CALIBRATION CHECK IS THE CORE OF THIS BLOCK: for each family, bucket quotes by implied price and
+  compare against realised settlement frequency. A family whose prices are systematically wrong in a
+  stable direction is the finding. A family whose prices are right is also the finding -- write it.
+
+DELIVERABLE 4 -- CONTROL IT. AN UNCONTROLLED EFFICIENCY RANKING IS A LIST OF NOISE.
+  Thin families have few rows and will show apparent mispricing from sampling alone. Before ranking,
+  run the null: resample within a family at its own n and show what spread of "bias" arises by chance.
+  Report every family's measured bias against its own null band. A family that does not clear its null
+  is NOT a candidate no matter where the raw rank puts it. Say which families fail this.
+
+DELIVERABLE 5 -- JOIN THE RANKING TO WHAT WE COULD ACTUALLY BUILD.
+  For the top-ranked candidates only, cross against:
+    - 01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md -- do the factor classes exist for this family?
+    - T586_absent_attribute_pricing.md -- what would the missing inputs cost?
+    - the cell registry -- is there a (MarketType, ExecutionBand) cell for it, and what is its status?
+  Output a short, ordered shortlist: family, why it ranked, what a model for it would need, what that
+  costs, and whether a cell exists. If the honest answer is that the best-ranked family has no feature
+  substrate at any acceptable cost, WRITE THAT -- it moves the decision to data acquisition and that is
+  decision-grade.
+
+DELIVERABLE 6 -- REGISTER AND REPORT.
+  Register what the survey found. One DECISION_LOG entry. Results summary covering D1-D5 against the
+  pre-registration line by line, with the ranking, the null bands, and the shortlist.
+
+DO NOT:
+  - Rank before the pre-registration is pushed.
+  - Change a pre-registered proxy, weight, bucket or decision rule after seeing any result.
+  - Re-cut, re-window or re-bucket a family to make it rank better.
+  - Declare a family exploitable on a bias that does not clear its own null band.
+  - Recommend against a sport or market family on one finding -- including KXMLBHIT, whose single
+    verdict is about the model tested, not about the family forever.
+  - Build, fit or tune any model. This block measures the market, not us.
+  - Open a position, write to any pool, or schedule anything.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 43.2 -- LAND THE OPERATOR'S INSTRUMENT, END TO END - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "live-terminal-landing"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  scripts/web_dashboard.py, the "Live Terminal.html" source file at the repo root,
+  deploy/ entries for the dashboard service ONLY, one results summary.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 43.1 owns those. Gaps go in your
+  results summary under "GAPS FOUND -- FOR REGISTRATION".
+
+WHAT EXISTS ALREADY:
+  "Live Terminal.html" is in the repo root -- a complete, self-contained replacement front-end written
+  against the real /api/data contract. Full black, five modules (Overview / MLB / NFL / Evidence /
+  Feeds & Health), model-vs-market scatter, per-row evidence class from model_identity, staleness
+  clocks, live tape with change detection. Opened as a file:// it cannot reach /api/data and falls back
+  to a labelled DEMO payload -- that fallback is deliberate, keep it.
+  scripts/web_dashboard.py serves the page from the module-level _HTML string and the data from
+  _load_all_data(). The service is pmbot-web-dashboard on the VPS, port 8050, reached by SSH tunnel.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- SWAP THE FRONT-END, AND PROVE THE PAGE IS BYTE-FAITHFUL.
+  Replace _HTML in scripts/web_dashboard.py with the contents of "Live Terminal.html".
+  The file contains backslashes, backticks and ${...} template literals. _HTML is an r-string; verify
+  the delimiter cannot terminate early and that NOTHING is escaped, reflowed or re-indented in transit.
+  PROVE IT: start the server locally, GET /, and assert the served bytes equal the source file's bytes.
+  A diff of even one byte means the embedding is wrong -- fix the embedding, never the page.
+  Add a test that fails if the two ever drift.
+
+DELIVERABLE 2 -- EXTEND /api/data FOR WHAT THE TERMINAL CANNOT CURRENTLY SHOW.
+  The terminal renders what the payload carries and nothing more. Add, keeping every existing key
+  unchanged and additive-only (the GG-263 pattern):
+    - rejected-position counts per pool (counts only -- the rejected array is dropped before parse on
+      purpose and must stay dropped)
+    - the T4 cycle-log tail from logs/.vps_t4_mlb_cycle_log_cache.jsonl, bounded, so in-play
+      evaluation traffic is visible between position writes
+    - per-pool last-write timestamps already exist; add the VPS process start time and the running
+      commit sha, so the page can show what code is actually serving
+  Each addition goes through the same safe() per-key isolation already in _load_all_data -- one bad
+  loader must not take down the payload. Add a test per key.
+  Then wire them into the terminal: a cycle-rate readout and a "running sha" field in the status bar.
+  DO NOT add a key that requires reading an unbounded file into memory.
+
+DELIVERABLE 3 -- VERIFY BOTH ENDPOINTS THE WAY THE LAUNCHER DOES, LOCALLY FIRST.
+  "Reload Dashboard.command" checks / and /api/data separately because the page can serve perfectly
+  while the data endpoint is dead -- that is the exact failure the operator has already hit.
+  Reproduce both checks against your local server: status codes AND wall-clock time for /api/data.
+  If /api/data takes more than ~5s on a realistic payload, that is a finding: report the time, say
+  which key costs it, and fix it if the fix is in this block's surface.
+
+DELIVERABLE 4 -- THE RESTART IS GATED. READ THIS CAREFULLY.
+  Landing the code is in scope. Restarting pmbot-web-dashboard on the VPS is NOT, unless an
+  authorization line naming that service appears under "Needs your decision" in this queue.
+  **Check for it. If it is absent, SKIP the restart, say so plainly in your report, and stop at a
+  pushed, tested commit.** An absent authorization is a complete and correct reason to skip.
+  If present: restart within the authorized scope, then verify from the RUNNING process -- GET / and
+  compare against the file on disk, and GET /api/data for the new keys. A merge is not a deployment and
+  a deployment is not an activation (GG-279). Report the running commit sha, not the repo's.
+
+DELIVERABLE 5 -- REPORT.
+  Results summary: the byte-faithfulness proof, each new payload key with its test, both endpoint
+  timings, and the restart outcome or the skip with its reason. Push after each deliverable.
+
+DO NOT:
+  - Alter the terminal's HTML, CSS or JS to make the embedding easier. Fix the embedding.
+  - Remove the DEMO fallback or the NOT CONNECTED banner. Offline judgement of the page depends on them.
+  - Load rejected_positions into the payload. Counts only.
+  - Restart, reload or reconfigure any service without the authorization line.
+  - Modify or re-time any price-capture window, or add any cron entry.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 43.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 43.3 -- STOP LOSING NFL WEEKS - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "nfl-prekickoff-capture"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/nfl_ingestion.py, one new capture runner under scripts/, its tests,
+  a DRAFTED cron line (written to your results summary and to deploy/cron.conf ONLY as a comment),
+  one results summary.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 43.1 owns those.
+
+THE FINDING THIS BLOCK ACTS ON (T-597; verify it before building on it):
+  The extended N1-N6 allowlist landed in Wave 41 as OPT-IN (include_extended=True) and NOTHING passes
+  it. `grep -rn NFLIngestionClient src scripts` returns ZERO production callers; capture_extended() has
+  no invoker. The VPS holds only a manifest, no parquet. The only real rows are two files in an ended
+  worktree on the operator's laptop -- ONE manual run, zero enabled weeks.
+  Fidelity is not the problem: that one snapshot matched nflverse exactly -- schema sha256 identical,
+  272/272 rows, 0 mismatches across 11 extended columns; 96/96 team-stat rows, 0 mismatches.
+  The problem is TIMING. nflverse is a rolling, post-hoc snapshot: pre-kickoff QB, weather, referee and
+  coach state exists only if captured BEFORE each kickoff. Every week without a pre-kickoff capture
+  permanently loses that week's point-in-time state. Week 4 was already unpublished upstream.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- PRICE WHAT HAS ALREADY BEEN LOST, AND WHAT IS LOST PER WEEK.
+  From the schedule: how many 2026 weeks have already passed without a pre-kickoff capture, and for how
+  many of those is the point-in-time state now unrecoverable from any source. Check whether any upstream
+  archive or revision history recovers any of it -- do not assume it is gone, and do not assume it is
+  recoverable. Report per week: recoverable / unrecoverable / unknown, with the evidence.
+  Then: weeks remaining this season, and what a capture from here forward would yield by January.
+  This is the number that makes the authorization decidable. Do not round it into a sentence.
+
+DELIVERABLE 2 -- BUILD THE RUNNER SO ENABLING IT IS ONE LINE.
+  A standalone capture runner that calls capture_extended() with the widened allowlist, writes to the
+  append-only store, and is SAFE TO RUN REPEATEDLY: idempotent per (season, week, source), never
+  rewriting an existing capture, appending a new point-in-time record instead. It must record, per
+  capture: UTC timestamp, source URL, upstream content hash, the kickoff times it precedes, and the
+  runtime commit sha -- so a captured row can never become an unattributable row (GG-302, GG-316).
+  Fail loudly on partial upstream data. A half-captured week recorded as complete is worse than a gap.
+  Tests for: idempotency, append-not-overwrite, partial-data refusal, provenance fields present.
+
+DELIVERABLE 3 -- PROVE IT BY HAND-RUN, TWICE.
+  Run it once against live nflverse. Verify against the source the way T-597 did -- row counts and a
+  column-level diff, not a spot check. Then run it AGAIN immediately and prove the second run adds no
+  duplicate and corrupts nothing.
+  Report both runs, with hashes. A runner that has not been run twice has not been tested.
+
+DELIVERABLE 4 -- DRAFT THE SCHEDULE. DO NOT INSTALL IT.
+  Write the exact cron line the capture needs -- the schedule derived from real kickoff times, not a
+  guess, with the lead time justified from D1's timing evidence -- as a COMMENTED line in
+  deploy/cron.conf and in your report.
+  **DO NOT INSTALL IT, DO NOT UNCOMMENT IT, DO NOT RUN crontab.** The standing DO NOT forbids adding a
+  cron entry for a game-market path without explicit operator authorization, and T-597 judged correctly
+  that with no existing schedule to configure inside, enabling IS scheduling. That judgement stands.
+  Your deliverable is that the authorization becomes a one-line decision with the cost of waiting
+  already quantified -- not that the decision gets made here.
+  If an authorization line naming this capture appears under "Needs your decision" in this queue, you
+  may install it within exactly that scope and must then verify from the LIVE crontab, not the repo
+  file (GG-262: the VPS crontab already diverges from the repo, cause unknown). Absent = skip.
+
+DELIVERABLE 5 -- SAY WHAT THE CAPTURED DATA WOULD BE WORTH.
+  Capture is not evidence. Cross D1's yield against 01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md and
+  EXP-027's n* of ~2,610: if every remaining week were captured perfectly, does any NFL band reach
+  adequacy this season? 40.2 already measured the remainder at ~215 rows against 2,610 -- about 8%.
+  If the honest answer is that this season's capture is INSTRUMENTATION for 2027 rather than evidence
+  for 2026, write exactly that. It is still worth doing and it is a different claim.
+
+DELIVERABLE 6 -- REPORT.
+  Results summary: D1's per-week loss table, the runner and its tests, both hand-runs with hashes, the
+  drafted cron line, and D5's honest valuation. Push after each deliverable.
+
+DO NOT:
+  - Install, uncomment or activate any cron entry absent an authorization line. Absent = skip.
+  - Run crontab in any mode that writes.
+  - Modify or re-time any existing price-capture window, or hook capture into archive_market_prices.py.
+  - Wire any captured feature into a model, adapter or run path. That is a model change with its own gate.
+  - Fabricate a value for a week whose point-in-time source is gone. Missing is a value; invented is not.
+  - Record a partial capture as complete.
+  - Restart or reload any production service.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 43.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+## Wave 42 — CLOSED 2026-09-30 (all three landed: T-596 / T-598 / T-597). EXP-029 HARMFUL vs market; EXP-030 no detectable difference.
+
+## ⬛ FIRE NOW — Wave 42, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **42.1** | LARGE | **Answer the market question end to end.** Extend the matrix into the priced window, join on real tickers, run the T-583 gate against the market with the frozen model, and fix the control. |
+| 2nd | **42.2** | LARGE | **Spend T4's 27 unconsumed fields, end to end.** Pre-register, build the deeper tree, run the ADR-0042 D2 gate, return a verdict. The doctrine's corollary, tested. |
+| 3rd | **42.3** | LARGE | **Make the running system match the documented system.** Turn on NFL capture and prove it, measure T3, and correct the registry to measured reality with the change-control entries drafted. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **42.1 owns** `scripts/generate_mlb_features.py`, `exp_output/EXP-028/` and its successor EXP id,
+  `pregame_hits_model.py`, the price-archive join path, and its own pre-registration + results.
+- **42.2 owns** `run_t4_mlb_live.py`'s model path, a new T4 model module, its tests, a new EXP id,
+  its own pre-registration + results, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.**
+- **42.3 owns** `nfl_ingestion.py` and the NFL capture config, `execution_bands.py` /
+  `market_type_registry.py`, `02_ARCHITECTURE_DESIGN/`, T3's run path for measurement only, and
+  `08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md` entries.
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Each block carries its workstream to a measured verdict.** Operator directive 2026-09-30. Stop only at a governance boundary, and name the boundary when you stop.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.**
+- **Claim IDs at run time and re-verify after ANY release or retry** (GG-322 fixed the script; the rule stands regardless).
+- **Check your deliverables against real-world sequencing before starting (GG-287).**
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-39 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **40** | CLOSED | Horizon doctrine landed (ADR-0068, criterion C5). C5 audit: PASS 2 / MISFILED 1 / UNKNOWN 89; **GG-320 HIGH** on T4M-PROJ. Pre-game spec written; **NFL underpowered ~12×**. Allowlist: **1,694 of 1,694 recoverable, cited, inert.** |
+| **41** | **CLOSED -- ALL THREE LANDED** (`d81742e`) | **EXP-028: skill over climatology DETECTED (+0.0052 Brier, 27,732 rows); market edge NOT TESTABLE (overlap 0).** Provenance snapshot in-repo, **13/13 validate offline**. Forward identity stamping landed. NFL allowlist widened (opt-in). GG-321, GG-322. |
+| **42** | **FIRING** | Answer the market question — spend T4's unconsumed fields — reconcile the running system to the documented one. |
+
+---
+
+## Why this wave is shaped this way
+
+**Wave 41 answered half the question it was built to answer, and the missing half is a calendar
+accident, not a modelling one.** EXP-028 shows a 16-feature pre-game tree beating climatology by
++0.0052 Brier and beating the one-line rule by +0.0036 over 1,414 games. That is the pre-game directive
+working: depth at the widest horizon buys measurable skill. But the feature matrix stops on 2026-07-17
+and the price archive starts on 2026-08-01, so the one comparison that matters — **model versus the
+market** — has zero rows to run on. The block named the fix precisely: extend the matrix over
+2026-08-01→09-30 with `generate_mlb_features.py`, join to the archive on real tickers, and run T-583's
+`run_gate` unmodified with the frozen model. That is also the first genuinely unseen holdout. **It is
+one workstream and it goes in one block.**
+
+**The doctrine's corollary has never been tested and the instrument to test it has been idle since
+Wave 37.** C5 measured T4M-PROJ logging 30 fields and consuming 3, at a 60-second cadence that affords
+plenty of time to consume more — GG-320, HIGH. ADR-0068 says the remedy for a shallow-and-slow cell is
+structure, not speed. 37.1's A/B harness exists precisely to adjudicate a T4 enhancer and has still
+never scored one. 42.2 closes that loop in a single block: pre-register, build, gate, verdict.
+
+**And three cells are running that the registry says are not built.** C5 found `mlb_player_prop_hits`
+T1/T2/T3 marked NOT_IMPLEMENTED while cron demonstrably runs all three; T1's real depth is 18 features
+against a documented 78; T3 runs at 900s against its own 300s SLA. Separately, 41.3's widened NFL
+capture is opt-in and nobody has confirmed it is on. 42.3 makes the documented system match the running
+one — and drafts the change-control entries so your sign-off is a single pass, not a research task.
+
+---
+
+## WAVE 42 BLOCKS
+
+---
+
+# 42.1 -- ANSWER THE MARKET QUESTION, END TO END - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "exp028-market-gate"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: T-595, GG-322. Verify; do not assume.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  scripts/generate_mlb_features.py, exp_output/EXP-028/ and one NEW EXP id,
+  src/prediction_market_bot/c3_forecasting/pregame_hits_model.py (FROZEN -- see D3), the
+  price-archive join path, your own pre-registration and results summary.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 42.2 owns those this wave. Gaps go in
+  your results summary under "GAPS FOUND -- FOR REGISTRATION".
+
+THIS BLOCK CARRIES THE WHOLE WORKSTREAM. Do not stop after building the join. Do not stop after
+producing a joined dataset. The deliverable is a MEASURED VERDICT on whether the model beats the
+market, or a proof that it still cannot be measured and exactly why.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC.
+  41.2's branch (session/20260930T050100Z-pregame-model-mlb, tip fb0587c) carries EXP-028's model,
+  tests, holdout scoring and results summary and was NOT an ancestor of origin/main at queue-write
+  time. Verify and land it; everything below depends on it. Paste before/after SHAs.
+
+DELIVERABLE 1 -- EXTEND THE FEATURE MATRIX INTO THE PRICED WINDOW.
+  exp_output/MLB/mlb_feature_matrix.csv currently ends 2026-07-17 (132,184 rows, 45 columns). The
+  price archive runs 2026-08-01 to 2026-09-30. Extend the matrix over that window with
+  scripts/generate_mlb_features.py.
+  Verify the extension is SCHEMA-IDENTICAL and DISTRIBUTIONALLY SANE against the existing span: same
+  45 columns, same dtypes, per-column missingness compared against the 2024-2026 baseline. Report any
+  column that behaves differently and say whether it invalidates the join. A silently different
+  matrix invalidates everything downstream -- record the sha256 of both the old and the extended file.
+
+DELIVERABLE 2 -- JOIN TO THE PRICE ARCHIVE ON REAL TICKERS.
+  exp_output/PRICE_ARCHIVE/ is ~1.8M rows across eleven Kalshi series families. Join matrix rows to
+  KXMLBHIT market rows on the REAL ticker, not on a reconstructed or inferred one.
+  Report the join yield honestly: rows attempted, rows matched, rows dropped and WHY, per reason.
+  Report the resulting n in rows AND in games -- games is the clustering unit and the one that governs
+  power. If the matched n is small, say the number; do not proceed as if it were large.
+  Any unmatched-ticker heuristic you are tempted to add: don't. A wrong join is worse than a small one.
+
+DELIVERABLE 3 -- RUN THE GATE. THE MODEL IS FROZEN.
+  Use the EXP-028 model EXACTLY as it stands at fb0587c. Do not refit, retune, re-select features or
+  re-choose C. This window is the first genuinely unseen data and its value is entirely in being unseen.
+  Pre-register BEFORE running: push a short pre-registration naming the market-relative metric, the
+  decision rule, the threshold, and the n you actually have from D2 -- as its own commit, before the
+  gate runs. It is short because the model is frozen; that is the point.
+  Then run T-583's `run_gate` UNMODIFIED against the market's p_incumbent. Import it; do not
+  reimplement it and do not relax its input contract. If the contract refuses your rows, fix YOUR
+  rows -- the contract refusing malformed input is the harness working.
+  Report game-clustered paired delta-Brier vs the market with bootstrap CIs. If the interval spans
+  zero, the verdict is NO DETECTABLE DIFFERENCE and you write that.
+
+DELIVERABLE 4 -- FIX THE CONTROL THAT FAILED, PROPERLY.
+  EXP-028's P5 permutation control failed its literal two-sided criterion (delta -0.00030, CI excludes
+  0) and every result was correctly void-flagged. The diagnosis on file: `y_backward` is taken from the
+  player's sequence BEFORE the `ab >= 1` filter, so the placebo is contaminated by playing-time
+  selection, and `ab_l10_mean` -- the largest coefficient -- predicts playing time.
+  Re-specify the control so the placebo is drawn from the SAME filtered population as the forward
+  case. State the new criterion BEFORE running it, in the D3 pre-registration, including whether it is
+  one- or two-sided and why. Run it. Report whether EXP-028's original numbers come out of void-flag.
+  DO NOT retroactively edit EXP-028's pre-registration or relabel its verdict. The original stands as
+  written; this is a NEW control under a NEW experiment id, and the relationship between them is stated
+  explicitly in your results.
+
+DELIVERABLE 5 -- SAY WHAT n A MARKET EDGE WOULD NEED.
+  EXP-028 correctly refused to quote a required n before a market-relative delta and variance existed.
+  After D3 they exist. Compute it. Then say how long it takes to accrue at MLB's real cadence, and
+  whether the remaining 2026 calendar or the 2027 season reaches it. This is decision input for
+  APR-0035 and for whether any pre-game cell is worth activating.
+
+DELIVERABLE 6 -- REPORT.
+  One results summary: D1 schema/sanity check with both sha256s, D2 join yield by reason with n in
+  rows and games, D3 the gate verdict against the pre-registration, D4 the re-specified control and
+  what it does to EXP-028's void flag, D5 the required n and the calendar. Push after each deliverable.
+
+DO NOT:
+  - Refit, retune or re-select anything in the EXP-028 model. It is frozen.
+  - Touch the extended window more than once for scoring.
+  - Infer, reconstruct or fuzzy-match a ticker to raise the join yield.
+  - Retroactively edit EXP-028's pre-registration, or relabel its verdict.
+  - Run a second model specification and report the better one.
+  - Open a position, write to any pool, or schedule anything.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Manufacture a row, a cohort member, a price or a final score.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 42.2 -- SPEND T4'S 27 UNCONSUMED FIELDS, END TO END - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "t4-structure-enhancer"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  the T4 model path in src/prediction_market_bot/run_t4_mlb_live.py, one NEW T4 model module,
+  its tests, one NEW EXP id, your own pre-registration and results summary,
+  GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+
+THE CASE, FROM THE RECORD (verify it; do not take it on trust):
+  GG-320 (HIGH): T4M-PROJ fails ADR-0068 criterion C5. Measured cadence median 70s (min 45, p90 99,
+  POLL_INTERVAL_S=45) against a stripped tree of 3 scalars plus a threshold, and the latency thesis
+  that licensed the stripping measured NOT SUPPORTED (T-569, current feature set).
+  C5 also measured: the cycle log carries 30 fields and the model consumes 3.
+  ADR-0068's corollary: at this cadence the remedy is STRUCTURE, not speed.
+  37.1 (T-583) built a T4-capable A/B harness -- game-clustered paired delta-Brier, an explicit input
+  contract, and an explicit T4M-PROJ refusal path -- in Wave 37. IT HAS NEVER SCORED A CANDIDATE.
+
+THIS BLOCK CARRIES THE WHOLE WORKSTREAM: inventory the fields, pre-register, build the deeper model,
+run it through the gate, return a verdict. Do not stop after logging or after building. A built model
+that was never scored is the pattern this wave exists to end.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- INVENTORY THE 30 FIELDS AND ESTABLISH WHICH ARE USABLE.
+  From logs/.vps_t4_mlb_cycle_log_cache.jsonl and the T4 run path: every field carried, its coverage
+  rate, its availability AT DECISION TIME (not after the fact), and whether it is a genuine input or a
+  derived echo of one the model already uses.
+  LOOK-AHEAD IS THE FAILURE MODE HERE. A field that is only known after the at-bat resolves is not a
+  feature, it is the answer. Name every field you exclude and why.
+  Report: 30 fields, N usable, and the list.
+
+DELIVERABLE 2 -- PRE-REGISTER. BEFORE ANY FIT. PUSH IT ALONE.
+  ADR-0042 D2 governs this: it is a model change to the only ACTIVE cell. State:
+    - the feature set from D1, and the mapping to ADR-0068's factor classes
+    - the model class, and the incumbent it is measured against: the current three-scalar binomial
+      (`p_hits_gte_threshold` with ba_l10_shrunk, ADR-0047) -- AND climatology
+    - train/validation/holdout by DATE, holdout sealed
+    - primary metric: game-clustered paired delta-Brier on T-583's harness; decision rule; threshold
+    - a permutation control drawn from the SAME filtered population as the forward case. EXP-028's
+      control failed on exactly this and its results are void-flagged -- do not repeat that error.
+      State one- or two-sided and why, in advance.
+  Frozen once pushed. Changing a pre-registered parameter or relabelling a verdict after seeing
+  results is on the standing DO NOT list.
+
+DELIVERABLE 3 -- BUILD THE DEEPER TREE.
+  A new module. DO NOT MODIFY the existing `p_hits_gte_threshold` -- it is the incumbent in the
+  comparison and 40.3's provenance case rests on its source hash being unchanged across 12 commits.
+  Altering it would break the citation chain for 1,694 rows.
+  Fit on train/validation only, on the clean cohort.
+
+DELIVERABLE 4 -- RUN THE GATE. THIS IS THE DELIVERABLE THAT MATTERS.
+  T-583's harness, imported and UNMODIFIED, game-clustered paired delta-Brier against the incumbent
+  and against climatology, bootstrap CIs, holdout touched exactly once.
+  Note the harness carries an explicit T4M-PROJ refusal path. If it refuses your input, that refusal is
+  information: report the exact refusal and what it requires, and satisfy it properly rather than
+  relaxing the contract.
+  If the interval spans zero: NO DETECTABLE DIFFERENCE, written plainly. ADR-0066 is the precedent and
+  it was the right call. A clean null here is a real result about the feature set, and it would say the
+  in-play information genuinely is thin -- which is worth knowing and is NOT a verdict on the band.
+
+DELIVERABLE 5 -- WHAT THE RESULT MEANS FOR GG-320, AND NOTHING MORE.
+  If the deeper tree clears: GG-320's remedy is evidenced, and you write the ADR proposing the model
+  change with the measured basis. Status PROPOSED, no register row, NOT activated. Activation of a
+  model on the only ACTIVE cell is an operator decision.
+  If it does not clear: say so, and say whether the cell's problem is the feature set or the band
+  assignment. Do NOT recommend rebanding, deactivating or killing T4M-PROJ on this one result --
+  that is on the standing DO NOT list and one experiment does not carry it.
+  Register the gaps this block found. Claim GG numbers at run time; highest seen is 322.
+
+DELIVERABLE 6 -- REPORT. Results summary covering D1 through D5, against the pre-registration line by
+  line. Push after each deliverable.
+
+DO NOT:
+  - Modify `p_hits_gte_threshold` or anything 40.3's provenance citation chain depends on.
+  - Activate, deploy or route live traffic to the new model. Building and scoring is the scope.
+  - Restart or reload any production service. None is authorized in Wave 42.
+  - Use a field not available at decision time. If in doubt, exclude it and say so.
+  - Change a pre-registered parameter, split, metric or threshold after seeing any result.
+  - Re-cut, re-window or re-segment to rescue a null.
+  - Recommend against the band or the sport on one finding.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 42.3 -- MAKE THE RUNNING SYSTEM MATCH THE DOCUMENTED SYSTEM - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "reality-reconciliation"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/nfl_ingestion.py and the NFL capture configuration,
+  src/prediction_market_bot/execution_bands.py, c5_execution/market_type_registry.py,
+  02_ARCHITECTURE_DESIGN/ (all files), 08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md,
+  T3's run path FOR MEASUREMENT ONLY, one results summary.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 42.2 owns those. Gaps go in your results
+  summary under "GAPS FOUND -- FOR REGISTRATION".
+
+THIS BLOCK CARRIES THE WHOLE WORKSTREAM. It does not stop at "found the discrepancy." It corrects
+everything a terminal is allowed to correct and drafts the change-control entries for everything else,
+so the operator's part is a single sign-off pass rather than a research task.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- TURN ON THE NFL CAPTURE AND PROVE IT IS CAPTURING.
+  41.3 (T-593) landed the extended N1-N6 allowlist and append-only capture as OPT-IN. Nobody has
+  confirmed it is on. Establish, from the running system rather than the repo: is the widened set
+  actually being captured right now?
+  Then turn it on, within the existing capture window. DO NOT modify or re-time the price-capture
+  window itself (standing DO NOT) and do not add a cron entry for any T1 game-market run script.
+  Enabling an already-deployed ingestion allowlist inside its existing schedule is configuration, not
+  scheduling -- if you judge that line differently, stop and say so rather than acting.
+  Prove capture with real rows: per week since it was enabled, the widened columns present, a row
+  count, and a spot check against the nflverse source. Not "the config says so."
+  DO NOT WIRE ANY NEW FEATURE INTO ANY MODEL. That is a model change and needs its own gate.
+
+DELIVERABLE 2 -- MEASURE T3. IT IS A CANDIDATE, NOT A VERDICT.
+  C5 left `mlb_player_prop_hits:T3` UNKNOWN: ~4 inputs, cron every 15 minutes (900s) against its own
+  300s SLA, and no measured execution advantage. That is the C5 shape of a misfiled cell but it was
+  correctly not asserted, because nobody measured it.
+  Measure it: actual cadence from logs, actual SLA achieved end to end, actual tree depth from the run
+  path, and whether any execution advantage exists at that horizon at all.
+  Return PASS, MISFILED or STILL UNKNOWN with the evidence. STILL UNKNOWN is a real answer if the cell
+  does not produce enough signal to measure -- say what would be needed.
+
+DELIVERABLE 3 -- CORRECT THE REGISTRY TO MEASURED REALITY.
+  C5 found `mlb_player_prop_hits` T1, T2 and T3 marked NOT_IMPLEMENTED while cron demonstrably runs all
+  three. A registry that denies running code is worse than no registry.
+  Verify each independently, then correct the registry entries to what is actually running. This is
+  recording reality, not a band reassignment or a status promotion -- keep that distinction absolutely
+  clear in every commit message and in your report.
+  A correction that would PROMOTE a cell's activation status (e.g. to ACTIVE) is NOT recording reality;
+  it is a promotion, it needs DECISION_LOG plus DS sign-off per Band Change Governance, and it stops
+  here as a drafted proposal.
+
+DELIVERABLE 4 -- CORRECT THE 78-FEATURE CLAIM.
+  C5 measured T1's real tree depth as 18 features (model log: "18 features"), while EXECUTION_BANDS.md,
+  ADR-0068's context and other docs describe a "full 78-feature pipeline" (ADR-0004 lineage).
+  Establish which is true TODAY by running the path, not by reading it. Then correct every doc that
+  states a number that is not the measured one, and say in your report where the 78 came from and when
+  it stopped being true -- that history matters more than the correction.
+  Do NOT edit the Decision section of any ACCEPTED ADR. An ACCEPTED ADR is amended by a new ADR; a
+  factual correction goes in the docs that restate it, with a note pointing at the measurement.
+
+DELIVERABLE 5 -- DRAFT THE CHANGE-CONTROL ENTRIES FOR EVERYTHING THAT NEEDS SIGN-OFF.
+  Per 08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md, write the entries for every change this block
+  identified but could not make: band reassignments, status promotions, and T4M-PROJ's own status
+  question under GG-320. Each entry complete enough to approve or reject as written -- the change, the
+  evidence, the effect, the reversal path.
+  Draft them. Do not approve them, and do not apply them.
+
+DELIVERABLE 6 -- REPORT.
+  One results summary: D1 capture proof by week, D2's T3 verdict with evidence, D3's corrections with
+  the reality-vs-promotion line drawn explicitly, D4's measurement and doc corrections plus the history
+  of the 78, D5's drafted entries listed. Push after each deliverable.
+
+DO NOT:
+  - Promote, demote, activate, deactivate or reband any cell. Draft it; do not do it.
+  - Wire a new captured feature into any model, adapter or run path.
+  - Modify or re-time an existing price-capture window.
+  - Add a cron entry for any T1 game-market run script.
+  - Restart or reload any production service. None is authorized in Wave 42.
+  - Edit the Decision section of any ACCEPTED ADR.
+  - Switch the NFL ingestion allowlist to a passthrough.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 42.2 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+## Wave 41 — CLOSED 2026-09-30 (all three landed: T-595 / T-594 / T-593)
+
+## ⬛ FIRE NOW — Wave 41, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **41.1** | STANDARD | **Preserve the expiring evidence, close the identity hole forward.** The allowlist's citations roll off the VPS around 2026-10-29. |
+| 2nd | **41.2** | STANDARD | **Build the first pre-game model where the data already is — MLB — and score it on the T-583 harness.** Pre-registered before anything is looked at. |
+| 3rd | **41.3** | SHORT/STANDARD | **Stop dropping the NFL features.** Widen the ingestion allowlist to retain what nflverse already delivers. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **41.1 owns** `run_t4_mlb_live.py`, `scripts/build_t4_resolved_ledger.py`,
+  `src/prediction_market_bot/logic_epoch.py`, the session-claim script, a snapshot artifact,
+  **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`** — the only block this wave that registers.
+- **41.2 owns** one new pre-game model module, its tests, `exp_output/` under its own experiment id,
+  a pre-registration document and one results summary. **No GGL / DECISION_LOG.**
+- **41.3 owns** `nfl_ingestion.py`, its tests, and the NFL capture path. **No GGL / DECISION_LOG.**
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next." A sequencing note is not a fence.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.**
+- **Claim IDs at run time and RE-VERIFY AFTER ANY RELEASE.** Wave 40 produced a duplicate: two blocks both ran as T-592 because one released T-591 after losing a race and re-claimed without re-checking. 41.1 fixes the script; every block obeys the rule meanwhile.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-38 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **39** | CLOSED | Countable evidence project-wide = **42 rows**. T4M-PROJ 1,694 → 0 (GG-318, GG-319). Atomic ledger write + mandatory `model_identity` landed; burst throughput fails → **ADR-0067 PROPOSED**. Triage: 10 BLOCKING / 111 CARRIED / 6 NOTED. |
+| **40** | **CLOSED** (40.3 landed late) | **Horizon doctrine landed** — ADR-0068, criterion C5. C5 audit: **PASS 2 / MISFILED 1 / UNKNOWN 89**; **GG-320 HIGH** on T4M-PROJ. Pre-game spec written; **NFL underpowered ~12×**. Allowlist built: **1,694 of 1,694 recoverable, cited, inert.** |
+| **41** | **FIRING** | Preserve the expiring citations — build the first pre-game model on MLB — stop discarding NFL features. |
+
+---
+
+## Why this wave is shaped this way
+
+Wave 40 turned three open questions into three decisions, and two of them have clocks on them.
+
+**The season is recoverable but the proof is perishable.** 40.3's case rests on the VPS reflog and
+journal. Those roll. Around **2026-10-29** the earliest window loses its citation and the argument for
+those rows weakens from evidenced to asserted — and GG-228 forbids asserting it. Copying that record
+into the repo is a read-only action that costs almost nothing and cannot be redone later. It goes first.
+
+**The build wave was planned for NFL and 40.2's own arithmetic redirects it.** The arc said Wave 41
+builds one pre-game model and scores it. It also assumed the season being played was the place to do
+that. ~215 rows against n\* 2,610 says otherwise. Meanwhile MLB has 132,184 rows and 45 columns sitting
+on disk, spanning two and a half seasons, needing no live games at all. **So the first deep pre-game
+tree gets built where the data already is, and scored on an instrument that already exists** — T-583's
+game-clustered paired Δ-Brier harness, built in Wave 37 for precisely this and never yet used in anger.
+
+**And the NFL season stops being wasted without pretending it is evidence.** It cannot reach n\*. It can
+still capture. Right now the ingestion layer downloads weather, QB, coach, referee, sacks, QB hits and
+penalties and then discards them at an allowlist. Widening that allowlist is a few lines, it is the
+literal subject of the pre-game directive, and every week it waits is a week of features not captured.
+
+**What this wave deliberately does not do:** it does not apply the allowlist, accept an ADR, reband a
+cell, schedule anything, or wire a new feature into a live model. Those are yours.
+
+---
+
+## WAVE 41 BLOCKS
+
+---
+
+# 41.1 -- PRESERVE THE EXPIRING EVIDENCE, CLOSE THE IDENTITY HOLE FORWARD - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "provenance-preservation"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Highest seen at queue-write time: T-592, GG-320, ADR-0068. Verify; do not assume.
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/run_t4_mlb_live.py
+  scripts/build_t4_resolved_ledger.py
+  src/prediction_market_bot/logic_epoch.py
+  the session-claim script used by new_session_worktree.sh
+  one new snapshot artifact, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, one results summary.
+
+DELIVERABLE 0 -- LAND 40.3 FIRST. IT IS NOT ON origin/main.
+  Block 40.3's work is complete but its branch tip `bfd4c4d` (and `adbe4d7`) are NOT ancestors of
+  origin/main. They carry the provenance allowlist, the recompute script, its tests and the results
+  summary. Land them before anything else in this block, since D1 protects exactly that artifact's
+  citations. Paste before/after SHAs.
+  Also: the shared worktree still shows CLAUDE.md, EXECUTION_BANDS.md, BAND_ASSIGNMENT_FRAMEWORK.md
+  and ADR-0014/0068 as modified/untracked. Those are the operator-directed doctrine drafts that 40.1
+  ALREADY LANDED on origin/main in a superset form (origin/main also updated the Band Status
+  Semantics row from C1-C4 to C1-C5). The shared-tree copies are now stale duplicates. Discard them in
+  favour of origin/main -- do not re-commit them, and do not revert origin/main to them.
+
+DELIVERABLE 1 -- SNAPSHOT THE PERISHABLE RECORD. DO THIS BEFORE ANYTHING ELSE SUBSTANTIVE.
+  40.3's allowlist cites, per window, a journal start line, a reflog HEAD line, a cycle-log extent and
+  a git blob. The reflog and the systemd journal on the VPS ROLL. The results summary states the
+  earliest window (W01) loses its citation around 2026-10-29. That is roughly 30 days from now.
+  Copy the underlying record into the repository as a dated, read-only evidence artifact:
+    - the `t4-mlb` reflog lines the allowlist cites, verbatim
+    - the journal start/stop events for all 13 windows, verbatim
+    - the cycle-log session extents used
+    - a manifest: what was captured, when, from which host, by which command, with a sha256 per file
+  READ-ONLY ON THE VPS. Do not restart, reload, rotate, truncate or reconfigure anything. If a command
+  you need is refused, record the exact command and the exact refusal and hand back (standing rule).
+  Then re-run 40.3's allowlist loader against the snapshot and confirm all 13 entries still validate
+  from the snapshot alone, with no live VPS access. If any entry does not, say which and why.
+  If the reflog has ALREADY rolled past any cited line, say so plainly and do not reconstruct it.
+
+DELIVERABLE 2 -- CLOSE THE HOLE SO NO FUTURE ROW NEEDS AN ALLOWLIST.
+  40.3 named the forward fix in order, with evidence. Implement it in that order:
+    (1) `run_t4_mlb_live.py` never sets `model_identity` (grep: no hit), so `paper_trader.py:632`
+        writes the literal "UNKNOWN" on every row. Stamp a real identity in the T4 run path.
+        NOTE: 39.1 made the field MANDATORY at the write boundary (MissingModelIdentityError), so
+        verify what the live path does today before changing it -- it may now be failing rather than
+        defaulting. Report which, with evidence, before you edit.
+    (2) `build_t4_resolved_ledger.py:120-145` builds each ledger row from an explicit field list that
+        omits `model_identity`. `run_band_monitor.load_t4_ledger` does `dict(p)` and would keep it.
+        Pass it through. The monitor itself does NOT need to change (GG-319's real fix).
+    (3) Register the identity in `REGISTERED_MODEL_IDENTITY_PREFIXES` in `logic_epoch.py`, with a
+        citation, exactly as 39.2's predicate expects.
+  Tests for each step. Then state plainly: from this commit forward, does a T4M-PROJ row carry
+  enough on its face to be countable without any overlay? If not, what is still missing?
+  DO NOT BACKFILL, REWRITE OR RELABEL ANY EXISTING ROW (GG-228). Forward only.
+
+DELIVERABLE 3 -- FIX THE CLAIM PROTOCOL THAT PRODUCED A DUPLICATE.
+  Wave 40 ran two blocks as T-592. One block claimed T-591, lost a race by about a second, released it,
+  and re-claimed without re-checking uniqueness -- so it collided with a number another block had taken
+  in the interim. `Session close: T-592 -- CLOSED` is now ambiguous about which block it closes.
+  Make re-verification unconditional on any re-claim path, not only the first claim. Add the test.
+  Register the gap. Do NOT retroactively renumber T-592: rewriting a landed claim history is worse
+  than an ambiguous row. Record the ambiguity in SESSION_CLAIMS instead, naming both blocks.
+
+DELIVERABLE 4 -- REPORT.
+  One results summary: the D0 landing SHAs, the D1 snapshot manifest and re-validation result, the D2
+  before/after with the live-path evidence, D3's fix. Push after each deliverable.
+
+DO NOT:
+  - Apply the allowlist, wire it into any counter, or add it to REGISTERED_MODEL_IDENTITY_PREFIXES as
+    an accepted identity for HISTORICAL rows. It stays inert pending operator sign-off. D2(3) registers
+    the identity for rows written FORWARD, which is a different thing -- keep them separate and say so.
+  - Backfill, rewrite, relabel, quarantine or delete any row in any pool or ledger.
+  - Restart, reload or reconfigure any production service. None is authorized in Wave 41.
+  - Rotate, truncate or clear any log or journal on the VPS. You are preserving it, not managing it.
+  - Accept ADR-0067 or ADR-0068, or add a register row for either.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 41.2 -- THE FIRST PRE-GAME MODEL, BUILT WHERE THE DATA IS - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "pregame-model-mlb"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+RE-VERIFY YOUR IDS IF YOU RELEASE AND RE-CLAIM (see Wave 40's duplicate T-592).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new pre-game model module under src/, its tests, a new EXP id under exp_output/,
+  one PRE-REGISTRATION document and one results summary.
+READ-ONLY, DO NOT EDIT: logic_epoch.py, paper_trader.py, run_t4_mlb_live.py, nfl_ingestion.py,
+  every pool and ledger, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md. Findings go in your results summary.
+
+WHY MLB AND NOT NFL -- do not re-litigate this, but do verify it:
+  40.2 measured the NFL remainder at ~215 resolved rows against EXP-027's n* of ~2,610 -- about 8%,
+  and ~243 even at perfect coverage. MLB has exp_output/MLB/mlb_feature_matrix.csv: 132,184 rows,
+  45 columns, 2024-03-20 to 2026-07-17. The substrate is already on disk and needs no live season.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC, AND GET THE MATRIX.
+  40.3's branch (bfd4c4d) may still be unmerged; 41.1 lands it -- check, do not duplicate the work.
+  THE MATRIX IS AN UNTRACKED ARTIFACT IN THE SHARED TREE AND IS ABSENT FROM A FRESH WORKTREE. Obtain
+  it deliberately, record its sha256 in your pre-registration, and state whether you are reading the
+  shared-tree copy or a regenerated one. If it must be regenerated, say from what and verify the row
+  and column counts against the numbers above before using it. A silently different matrix invalidates
+  everything downstream.
+
+DELIVERABLE 1 -- CHARACTERISE THE MATRIX BEFORE YOU DESIGN ANYTHING.
+  45 columns, 132,184 rows. Establish: what is one row (player-game? team-game? game?), what the
+  columns are, coverage and missingness per column per season, and WHICH PRE-GAME MARKET FAMILY this
+  matrix can actually serve -- moneyline, run line, game total, team total, or a player prop.
+  Do not assume it serves the family you would prefer. Report what it serves, and what it does not.
+  If the matrix cannot support any pre-game game-level market, say that, and say what it CAN support.
+  That is a complete and acceptable outcome for this deliverable.
+
+DELIVERABLE 2 -- PRE-REGISTER. BEFORE ANY MODEL IS FIT. NON-NEGOTIABLE.
+  Write the pre-registration and push it as its own commit BEFORE fitting anything. It must state:
+    - the market family chosen and why, from D1's evidence
+    - the exact feature set, mapped to 01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md's factor classes
+      (matchup / sport / player / team / external / qualitative) -- name which classes you can populate
+      from this matrix and which you cannot
+    - the model class, and the baseline it is measured against: BOTH the market's implied probability
+      AND climatology. A model that beats climatology but not the market is not an edge.
+    - the train/validation/holdout split, defined by DATE, with the holdout named and sealed
+    - the primary metric (game-clustered paired delta-Brier on the T-583 harness), the decision rule,
+      and the threshold, all fixed in advance
+    - a backward placebo control, per the discipline T-569 established
+  Once pushed, these are frozen. Changing a pre-registered parameter after seeing results, or
+  relabelling the verdict, is on the standing DO NOT list.
+
+DELIVERABLE 3 -- BUILD IT, AND MEASURE IT ON THE INSTRUMENT THAT ALREADY EXISTS.
+  Fit on train/validation only. Score with T-583's harness (game-clustered paired delta-Brier,
+  built in Wave 37 and not yet used on a real candidate). Do not reimplement the harness; import it.
+  Touch the holdout exactly once, at the end, and report that number whatever it is.
+  Report bootstrap CIs. If an interval spans zero, the verdict is NO DETECTABLE DIFFERENCE and you
+  write that -- ADR-0066 is the precedent and it was the right call.
+
+DELIVERABLE 4 -- REPORT AGAINST THE PRE-REGISTRATION, LINE BY LINE.
+  For each pre-registered claim: what was predicted, what was measured, verdict. Then one paragraph:
+  is there a deep pre-game tree here that beats the market, and at what n?
+  A clean negative is a complete result and is worth as much as a positive one. Do not re-cut the data
+  to find something. Do not run a second specification and report the better one.
+
+DO NOT:
+  - Fit anything before the pre-registration is pushed.
+  - Change a pre-registered parameter, split, metric or threshold after seeing any result.
+  - Re-cut, re-window or re-segment the data to rescue a null.
+  - Touch the holdout more than once.
+  - Open a position, write to any pool, or schedule anything. This block trades nothing.
+  - Edit any file another block owns, or any governance log.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Manufacture a row, a cohort member or a final score to have something to measure.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 41.3 -- STOP DROPPING THE NFL FEATURES - SHORT/STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "nfl-ingestion-widen"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+RE-VERIFY YOUR IDS IF YOU RELEASE AND RE-CLAIM (see Wave 40's duplicate T-592).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/nfl_ingestion.py, its tests, the NFL capture path, one results summary.
+READ-ONLY, DO NOT EDIT: every model and adapter (including nfl_exp027_adapter.py), every pool,
+  GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+
+THE FINDING THIS BLOCK ACTS ON (40.2, verify it first):
+  nflverse `games.csv` already carries weather, QB, coach and referee. `stats_team_week` already
+  carries sacks, QB hits and penalties. `nfl_ingestion.py`'s allowlist retains 10 schedule columns and
+  7 team-stat columns and DISCARDS THE REST. The data is downloaded and thrown away at the gate.
+  40.2 confirms these correspond to T-586's N1-N6 at Payload-field cost -- the cheapest tier.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- ENUMERATE WHAT ARRIVES AND WHAT SURVIVES.
+  For each nflverse source the ingestion touches: every column delivered, every column retained, every
+  column dropped. Cross-reference against T-586's priced attribute list and 01_SPEC/
+  PREGAME_FEATURE_ARCHITECTURE.md's factor classes. Report the table.
+  Correct the premise above if it is wrong -- the numbers came from another block's summary.
+
+DELIVERABLE 2 -- WIDEN THE ALLOWLIST TO WHAT IS PRICED AND PRESENT.
+  Retain the fields T-586 priced at Payload-field cost and 40.2 confirmed present. Keep it an explicit
+  allowlist -- do not switch to "retain everything," which turns a schema change upstream into a silent
+  schema change here. Every added field is named in code and in your report.
+  Storage and schema impact: state bytes-per-week added and whether any downstream reader breaks on
+  the wider rows. Prove no reader breaks by running them, not by reading them.
+
+DELIVERABLE 3 -- BACKFILL WHAT IS STILL RETRIEVABLE, AND ONLY THAT.
+  Where the nflverse source files for earlier weeks of this season are still retrievable, capture the
+  widened set for them. Where they are not, say which weeks are unrecoverable and stop.
+  Backfilling a CAPTURE from its own upstream source is not the forbidden thing -- repairing a DERIVED
+  file without provenance is (GG-228). Keep the distinction explicit in your report: record, per week,
+  the source URL and its retrieval timestamp.
+
+DELIVERABLE 4 -- PROVE THE FIELDS LAND, THEN STOP.
+  Show the widened rows present and readable in the capture store, with a row count and a spot check.
+  DO NOT WIRE ANY NEW FEATURE INTO ANY MODEL. Adding a feature to a forecaster is a model change and
+  goes through ADR-0042 D2 with a pre-registration; that is a later block, not this one.
+  This block's success condition is: the data stops being discarded. Nothing more.
+
+DELIVERABLE 5 -- REPORT.
+  The D1 table, the widened allowlist, the backfill coverage by week with sources, the storage delta,
+  and a short list of any field worth capturing that this block could NOT capture, with the reason.
+
+DO NOT:
+  - Wire a new feature into a model, adapter or run path.
+  - Switch from an allowlist to a passthrough.
+  - Fabricate a value for a week whose source is gone. Missing is a value; invented is not.
+  - Modify or re-time an existing price-capture window.
+  - Schedule anything, or add any cron entry.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 41.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+## Wave 40 — CLOSED 2026-09-30 (40.1 T-592 and 40.2 T-591 landed on origin/main; 40.3 complete but its branch tip bfd4c4d was NOT merged at archive time)
+
+## ⬛ FIRE NOW — Wave 40, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **40.1** | STANDARD | **Land the horizon doctrine and test all 92 cells against it.** The operator's founding band principle is now written; C5 makes it checkable. |
+| 2nd | **40.2** | STANDARD | **Spec the pre-game feature architecture.** The operator's build directive: deepest tree at the widest horizon, then carry granularity inward. |
+| 3rd | **40.3** | STANDARD | **The provenance allowlist.** Decide, on evidence, whether any of the MLB season's 1,694 rows are countable — or prove they are not. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **40.1 owns** `CLAUDE.md`, everything in `02_ARCHITECTURE_DESIGN/`, `01_SPEC/ROADMAP_MILESTONES.md`,
+  `03_DECISIONS/ADR-0014` and `ADR-0068`, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`**.
+- **40.2 owns one new spec file only** — `01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md` — plus one results
+  summary. Read-only over `src/`, `02_ARCHITECTURE_DESIGN/` and every other spec file. **No GGL / DECISION_LOG.**
+- **40.3 owns** one new allowlist artifact, one script, its tests, one results summary. Read-only over every
+  pool file and over `logic_epoch.py`. **No GGL / DECISION_LOG.**
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next." A sequencing note is not a fence.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.**
+- **Check your deliverables against real-world sequencing before starting (GG-287).** Do not accept a task that requires an event which has not happened yet.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-37 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **38** | CLOSED | NFL T1 runs self-identify (GG-316). One hand-run opened **802 STUB rows**, 66% of evaluated markets → GG-317. Cron correctly skipped. Absent attributes priced. Register parity fixed both directions. |
+| **39** | **CLOSED -- ALL THREE LANDED** | **Countable evidence project-wide = 42 rows.** T4M-PROJ 1,694 → 0 (GG-318, GG-319). Atomic ledger write + mandatory `model_identity` landed; burst throughput does **not** hold → **ADR-0067 PROPOSED**. Gap triage: 10 BLOCKING / 111 CARRIED / 6 NOTED. |
+| **40** | **FIRING** | Land the doctrine and test every cell against it — spec the pre-game feature architecture — settle whether the season produced countable evidence. |
+
+---
+
+## Why this wave is shaped this way
+
+Three findings converged in Wave 39 and they all say the same thing.
+
+**One.** The project holds 42 rows of countable evidence, from a model whose own verdict is UNDERPOWERED. Not
+because the predicate is harsh — because provenance was never carried. There is nothing to calibrate yet.
+
+**Two.** The write path survives today's rate and fails at burst. So opening more pipes now would be
+accruing uncountable rows into a ledger that cannot take the volume. Both halves of "open the board" are
+blocked, and neither is blocked on modelling.
+
+**Three — the operator's own doctrine, now written down and now testable.** The T1–T5 taxonomy was always
+meant to work the way a quant fund's does: **decision-tree depth is governed by decision horizon.** That
+principle *was* in the record — `EXECUTION_BANDS.md` § Design Principle states it almost exactly — but with
+three defects that let a misfiled cell run a full season: it licensed stripping on **assumed** speed rather
+than measured speed; `CLAUDE.md` stated the complexity gradient **backwards** and contradicted it; and
+`ADR-0014` specified what each band computes without ever saying why the bands differ. T4M-PROJ is the
+result: a three-scalar binomial on a **60-second polling cycle** — a speed-band tree at a slow-band cadence,
+licensed by a latency thesis T-569 measured as NOT SUPPORTED.
+
+The corollary is the actionable part, and it is not "go faster." At 60 seconds there is ample time to
+condition on pitcher, park, lineup, score and leverage. **T4's headroom is structure, and the stripping was
+inherited rather than chosen.**
+
+So: write the doctrine down properly and test every cell against it (40.1); build the deep tree where the
+factors actually exist and evidence actually accrues, which is pre-game (40.2); and settle whether any of
+the season's rows can honestly be counted, without manufacturing provenance (40.3).
+
+---
+
+## WAVE 40 BLOCKS
+
+---
+
+# 40.1 -- LAND THE HORIZON DOCTRINE AND TEST ALL 92 CELLS AGAINST C5 - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "band-horizon-doctrine"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Highest seen at queue-write time: T-590, GG-319, ADR-0068. Verify; do not assume.
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  CLAUDE.md
+  02_ARCHITECTURE_DESIGN/  (all files)
+  01_SPEC/ROADMAP_MILESTONES.md   (this file only -- 40.2 owns a DIFFERENT, NEW spec file)
+  03_DECISIONS/ADR-0014_per-band-decision-tree-mechanics.md
+  03_DECISIONS/ADR-0068_execution-band-horizon-doctrine.md
+  GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, one results summary.
+
+DELIVERABLE 0 -- LAND WHAT IS ALREADY WRITTEN BUT NOT COMMITTED. READ THIS CAREFULLY.
+  The operator directed the strategic window to draft the band doctrine into the foundational docs on
+  2026-09-30. Those edits EXIST but are UNCOMMITTED in the shared worktree, because that window cannot
+  push. They are NOT on origin/main and they will NOT appear in a fresh worktree.
+  Files changed in the shared tree:
+    CLAUDE.md                                                   (modified)
+    02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md                   (modified)
+    02_ARCHITECTURE_DESIGN/BAND_ASSIGNMENT_FRAMEWORK.md         (modified)
+    03_DECISIONS/ADR-0014_per-band-decision-tree-mechanics.md   (modified)
+    03_DECISIONS/ADR-0068_execution-band-horizon-doctrine.md    (NEW, untracked, Status PROPOSED)
+  Recover them from the shared checkout, review each diff, and commit them as operator-directed content.
+  DO NOT REWRITE THEM. If you disagree with a line, say so in your report and leave it. ADR-0068 stays
+  PROPOSED: it requires DS sign-off and this block does not accept it or add a register row.
+  All three Wave 39 blocks completed their session-end protocol; confirm each is an ancestor of
+  origin/main and land any that is not (T-589 worktree HEAD fd3fc11, T-588, T-590). Paste before/after SHAs. Report what you found, even if nothing.
+
+DELIVERABLE 1 -- CHECK THE DOCS AGAINST EACH OTHER, THEN PROPAGATE.
+  The edits fixed a live contradiction: CLAUDE.md previously said T1 was the simplest band and T4/T5 the
+  most complex, which is the reverse of EXECUTION_BANDS.md and of the implementation.
+  Sweep every foundational doc for the SAME error and for any claim the doctrine now falsifies:
+    01_SPEC/ (all), 02_ARCHITECTURE_DESIGN/ (all), and any README or nav file that restates the bands.
+  Fix only statements that are now WRONG. Do not restructure documents, do not rewrite history, do not
+  edit an ADR's Decision section -- an ACCEPTED ADR is amended by a new ADR, never by editing it.
+  Report every file you changed and every file you checked and left alone.
+
+DELIVERABLE 2 -- RUN C5 ACROSS ALL 92 CELLS. THIS IS THE DELIVERABLE THAT MATTERS.
+  C5 (ADR-0068): a band's decision-tree depth must be justified by its decision horizon, and a stripped
+  tree must be paid for by a MEASURED execution advantage. Shallow without fast = misfiled.
+  For every (MarketType, ExecutionBand) cell in the registry, report:
+    - stated decision horizon (from EXECUTION_BANDS.md / execution_bands.py)
+    - ACTUAL cadence, measured -- from cron, from log timestamps, from the cycle log cache. NOT assumed,
+      NOT copied from a doc. Where you cannot measure it, write UNKNOWN. UNKNOWN is a real answer.
+    - tree depth, as a countable thing: number of model inputs actually consumed by the run path
+    - verdict: PASS / MISFILED / UNKNOWN, with the reason in one line
+  You will find most cells NOT_IMPLEMENTED. Those are UNKNOWN, not PASS -- an unbuilt cell has no
+  measured cadence. Say how many fall in each bucket.
+  T4M-PROJ is the known case and must appear explicitly: 60s cadence, 3 scalar inputs + threshold,
+  latency thesis measured NOT SUPPORTED (T-569). Report it as MISFILED with that evidence.
+  REPORT ONLY. Do not reband, promote, demote, activate or deactivate ANY cell. Band reassignment needs
+  a DECISION_LOG entry plus DS sign-off and is not in this block's scope.
+
+DELIVERABLE 3 -- REGISTER AND RECORD.
+  One gap per MISFILED cell class (group them if they share a mechanism -- do not register 40 near-identical
+  entries). One DECISION_LOG entry recording that ADR-0068 was drafted at operator direction and is awaiting
+  sign-off. Claim GG numbers at run time; highest seen is 319.
+
+DELIVERABLE 4 -- REPORT.
+  One results summary: the D0 landing record with SHAs, the D1 sweep, the full D2 cell table, and one
+  paragraph answering: with C5 in force, how many of the 92 cells are filed in a band their cadence and
+  tree depth actually justify?
+
+DO NOT:
+  - Rewrite, soften or re-argue the operator-directed doctrine text. Land it; disagree in the report.
+  - Accept ADR-0068 or ADR-0067, or add a register row for either. Both need DS sign-off.
+  - Reband, activate or deactivate any cell.
+  - Edit the Decision section of any ACCEPTED ADR.
+  - Touch sizing, stake, or kelly_fraction.
+  - Schedule anything, or add any cron entry.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 40.2 -- THE PRE-GAME FEATURE ARCHITECTURE: SPEC IT, SOURCED - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "pregame-feature-architecture"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md  (NEW FILE -- create it; it does not exist)
+  one results summary.
+READ-ONLY, DO NOT EDIT: src/, 02_ARCHITECTURE_DESIGN/ (40.1 owns it), every other spec file,
+  GOVERNANCE_GAP_LOG.md, DECISION_LOG.md. Findings go in your results summary for later registration.
+
+OPERATOR DIRECTIVE THIS BLOCK SERVES (2026-09-30, verbatim in substance):
+  Build the matchup / sport / player / team / external / qualitative architecture at the WIDEST time
+  horizon first -- pre-game -- paired with the math and stats betting formulas. That gives the baseline.
+  Then carry that granularity inward toward the shorter bands. The north star is that level of
+  granularity at EVERY arm; this is sequencing, not scope reduction.
+  The bar is institutional: the analysis depth of a serious independent analyst, not a summary table.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- WHAT WE ALREADY HAVE. DO NOT RE-DERIVE IT.
+  Two prior blocks already did this work and you must build on them, not repeat them:
+    - T-586 (wave 38.2): absent-attribute costing study, with source / integration tier / backfill /
+      rank per attribute -- 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T586_absent_attribute_pricing.md
+    - Wave 35's model inventory: which cells have a real forecaster and which have a stub
+  Produce the PRESENT-TENSE inventory for pre-game only, per sport and per market family (game spread,
+  game total, moneyline, player prop): which features are captured today, where they are stored, what
+  history depth exists, and which run path consumes them. Cite the file or store for each. If a feature
+  is claimed in a doc but not consumed by any run path, say so -- that distinction is the point.
+
+DELIVERABLE 2 -- THE TARGET ARCHITECTURE, BY FACTOR CLASS.
+  For each of the six classes the operator named -- matchup, sport, player, team, external, qualitative --
+  specify for pre-game: what the class contains, the concrete features, the source, the integration tier
+  and the backfill availability (reuse T-586's tiers; do not invent a parallel scheme), and how each
+  feature enters the probability estimate alongside the existing math/stats formula rather than beside it.
+  "External" includes venue, weather, travel and rest. "Qualitative" must be specified as something
+  MACHINE-CONSUMABLE with a stated encoding -- if a factor cannot be encoded, say so and keep it out of
+  the spec rather than writing an aspiration into a foundational document.
+  Mark every unsourced claim as Assumption, explicitly. Do not pad the spec to look complete.
+
+DELIVERABLE 3 -- BUILD ORDER, JUSTIFIED BY COST AND INFORMATION.
+  Rank the features by (expected information gain / integration cost), using T-586's costs. State the
+  ranking method before you apply it. Then split the list two ways against the calendar:
+    - buildable and testable against the REMAINING NFL season (about 14 weeks to January)
+    - waits for MLB (March 2027) or for a season that is not running
+  Say plainly how many resolved pre-game rows the NFL remainder can produce, and whether that clears
+  EXP-027's n* of about 2,610. If the honest answer is that a full remaining season still leaves the band
+  underpowered, WRITE THAT -- it is decision-grade for APR-0035, which has been open seven weeks.
+
+DELIVERABLE 4 -- WRITE THE SPEC FILE.
+  01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md, structured so a later implementation block can build against
+  it: inventory, target architecture by class, encoding rules, build order, open questions, and a clear
+  Assumptions section. Cross-reference ADR-0068 (horizon doctrine) as the reason this horizon is first.
+  It is a SPEC, not a decision: it proposes, it does not authorize.
+
+DO NOT:
+  - Build, train, or modify any model. No src/ changes. Not one line.
+  - Schedule anything, add a cron entry, or run any position-opening script.
+  - Re-derive T-586's costing or Wave 35's inventory. Cite them.
+  - Write a feature into the spec that has no identified source. Mark it Assumption or leave it out.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 40.3 -- THE PROVENANCE ALLOWLIST: COUNTABLE, OR PROVABLY NOT - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "provenance-allowlist"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new allowlist artifact (data, not code defaults), one script under scripts/, its tests,
+  one results summary.
+READ-ONLY, DO NOT EDIT: every pool file, every ledger, src/prediction_market_bot/logic_epoch.py,
+  scripts/run_band_monitor.py, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+
+THE QUESTION, STATED ONCE: an entire MLB season of T4M-PROJ rows currently counts as zero countable
+evidence. 39.2 established that this is a PROVENANCE failure, not a data failure -- 929 rows stamped the
+literal UNKNOWN (GG-318), 765 predate the field, and the resolved ledger the monitor reads carries no
+model_identity at all (GG-319). This block finds out whether provenance can be established from the
+record. It is equally successful if the answer is no.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC. Paste before/after SHAs.
+
+DELIVERABLE 1 -- RECONSTRUCT WHAT RAN, FROM THE RECORD ONLY.
+  Sources: git history of the T4M-PROJ run path, the logic_epoch boundaries and their approval_commit
+  values, audit events, cron history, deploy records, session claims, and the cycle log cache.
+  Produce a timeline of T4M-PROJ runs: time window, the commit the running process actually contained
+  (not the commit that existed), the model as of that commit, and the evidence for each assertion.
+  Where the running process cannot be established from the record, write UNESTABLISHED. Do not infer it
+  from what was merged -- a merge is not a deployment and a deployment is not an activation (GG-279).
+
+DELIVERABLE 2 -- BUILD THE ALLOWLIST AS DATA, NOT AS A DEFAULT.
+  An explicit, reviewable artifact: one entry per admitted run window, each carrying its time bounds, the
+  established commit, the model identity being asserted, and a citation for the evidence. A run with no
+  citation does not get an entry. The artifact must be readable by a human in one pass -- it is going to
+  an operator for sign-off.
+  It is INERT this wave. Wire it into nothing.
+
+DELIVERABLE 3 -- RECOMPUTE, DO NOT APPLY.
+  Re-run 39.2's delta with the allowlist admitted. Report, per cell and band: clean_n today, countable
+  without the allowlist, countable WITH it. Use 39.2's existing census/delta script; do not reimplement it.
+  Report the recovered row count as a number, and state what fraction of the 1,694 it represents.
+  Do NOT flip run_band_monitor.py or any counter. Do NOT modify logic_epoch.py.
+
+DELIVERABLE 4 -- THE HONEST NEGATIVE IS A COMPLETE RESULT.
+  If provenance cannot be established for most or all of the 1,694, say so and say why, precisely.
+  DO NOT backfill model_identity from position_id, from the epoch's approval_commit, or from anything
+  else -- that manufactures provenance the rows do not carry (GG-228), and it is forbidden here.
+  DO NOT weaken the predicate to raise the count. If the recovered number is zero, report zero.
+  Then answer one further question with evidence: does the resolved ledger's missing model_identity
+  (GG-319) make this recoverable at all, or does the monitor's own source have to change first?
+
+DELIVERABLE 5 -- REPORT.
+  One results summary: the D1 timeline with citations, the allowlist as built, the D3 recomputation, and
+  one paragraph an operator can act on -- how many of an MLB season's rows are honestly countable, and
+  what it would take to make the rest so, if anything would.
+
+DO NOT:
+  - Backfill, rewrite, relabel, quarantine, move or delete any row in any pool or ledger.
+  - Weaken is_countable_evidence() or edit logic_epoch.py.
+  - Flip any counter to the new predicate or the allowlist.
+  - Admit a run to the allowlist without a citation. An uncited entry is a manufactured one.
+  - Restart a production service to inspect it. No restart is authorized in Wave 40.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 40.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+## Wave 39 — CLOSED 2026-09-30 (all three landed: T-589 / T-588 / T-590)
+
+## ⬛ FIRE NOW — Wave 39, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **39.1** | STANDARD | **Make the ledger survive the volume.** The write path is a non-atomic full-file rewrite. It gates every "open more pipes" decision. |
+| 2nd | **39.2** | STANDARD | **Build the evidence boundary.** GG-317's 802 stub rows are countable today because the clean filter reads only `logic_epoch`. Make stub rows structurally uncountable — and measure the delta before anything flips. |
+| 3rd | **39.3** | SHORT | **Triage all 127.** BLOCKING / CARRIED / NOTED, as a proposal for your sign-off. Nothing deleted, no status token touched. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **39.1 owns `src/prediction_market_bot/c5_execution/paper_trader.py`**, its tests, one new
+  benchmark script, one ADR draft. **No GGL / DECISION_LOG writes.**
+- **39.2 owns `src/prediction_market_bot/logic_epoch.py`**, one new classification script, its
+  tests, a results summary, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`** — the only block
+  this wave that registers. Read-only over `paper_trader.py` and `run_band_monitor.py`.
+- **39.3 owns one results file and the landed-branch estate.** Read-only over the gap log.
+  **No GGL / DECISION_LOG writes — its entire output is a proposal.**
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next." A sequencing note is not a fence.
+- **Deliverable 0 in every block: land any un-landed predecessor, and sync the shared tree.** Local `main` is 28 behind `origin/main` right now.
+- **Check your deliverables against real-world sequencing before starting (GG-287).** Do not accept a task that requires an event which has not happened yet.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-36 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **37** | CLOSED | T4 A/B harness BUILT — the ADR-0042 D2 gate is runnable for T4 for the first time. EPA splits: **NO DETECTABLE DIFFERENCE** (ADR-0066). Gap log 149 → 125 live; 36 unregistered ADRs ratified as recording-only; GG-312 registered. |
+| **38** | **CLOSED -- ALL THREE LANDED** (`f293c0e`) | **NFL T1 runs now self-identify** (runtime sha / trigger / run_id / host). One hand-run opened **802 STUB rows, 66% of evaluated markets** — the stub's property, not a model's: **GG-317**. Cron correctly skipped. Absent-attribute list **priced**. Register parity fixed both directions. |
+| **39** | **FIRING** | Durability — the evidence boundary — triage the ledger of open work. |
+
+---
+
+## Why this wave is shaped this way
+
+Wave 38 answered "is anything accruing" with a number, and the number is the problem: **one hand-run
+of one script produced 802 rows in an afternoon, and all 802 are worth nothing as evidence.** That
+one fact indicts two layers at once, and this wave is those two layers plus the paperwork debt that
+keeps eating the window.
+
+**The system can now produce volume faster than it can either store it or count it honestly.**
+
+- **Storage.** Every position write calls `_save()`, which ends in
+  `self._path.write_text(json.dumps(self._state, indent=2))` — a pretty-printed, **non-atomic**,
+  full-file rewrite of the whole ledger, from 13 call sites, under `flock`. The repo already uses
+  `os.replace` in six scripts; the one file holding the evidence pool does not. At 802 new rows per
+  hand-run this is the binding constraint on opening the pipes, and it is a constraint nobody chose.
+- **Counting.** `is_clean_for_band()` decides what enters `clean_n`, and it reads exactly one field:
+  `logic_epoch`. A STUB row with a valid epoch is clean. `model_identity` is stamped at the open
+  boundary — but only `run_t1_nfl_game_market.py` supplies it, and `paper_trader.py` line ~632
+  silently defaults every other run path to the literal string `"UNKNOWN"`. So the field that would
+  tell the truth exists, is mostly unset, and nothing consults it.
+
+Neither is a calibration question and neither needs a model. They are the two things that must be
+true before "run the whole board in shadow and count only what's real" is a sentence with meaning.
+
+**39.3 is here because the window keeps going to the backlog instead of the work.** 108 OPEN, a
+console reporting 169 items overdue for retirement, a registration-to-closure rate near 4.6:1. One
+triage pass, returned as a proposal, so the next wave reads a list of what actually blocks instead
+of re-deriving it.
+
+---
+
+## WAVE 39 BLOCKS
+
+---
+
+# 39.1 -- MAKE THE LEDGER SURVIVE THE VOLUME - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "t4-ledger-durability"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Highest seen at queue-write time: T-587, GG-317, ADR-0066. Verify; do not assume.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/c5_execution/paper_trader.py
+  its tests, one new benchmark script under scripts/, one results summary, one ADR draft.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. Block 39.2 owns those this wave.
+  If you find a gap, write it IN FULL in your results summary under the heading
+  "GAPS FOUND -- FOR REGISTRATION BY 39.2 OR WAVE 40" and say so in your report. Do not
+  register it yourself, and do not let that stop you.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC.
+  The shared worktree's local `main` is 28 commits BEHIND `origin/main` (f293c0e). Fetch, confirm
+  the gap, fast-forward, and paste `git rev-parse --short main origin/main` before and after.
+  If any Wave 38 branch is still unmerged, land it first. Report what you found, even if nothing.
+
+DELIVERABLE 1 -- ATOMIC WRITE. THIS IS THE DELIVERABLE THAT MATTERS.
+  `_save()` currently ends with a single non-atomic full-file rewrite:
+      self._path.write_text(json.dumps(self._state, indent=2))
+  A crash, OOM kill or full disk between truncate and final byte leaves a truncated or empty
+  ledger. There is no temp-and-rename anywhere in this file.
+  Replace it with: write to a temp file IN THE SAME DIRECTORY as the target, flush, fsync the
+  file descriptor, then os.replace() onto the target. Keep the whole sequence inside the EXISTING
+  fcntl.flock() critical section. Do not restructure the locking, and do not change
+  `_reload_locked()`'s read-inside-the-lock behaviour, which is already correct.
+  Same directory is not a style preference: os.replace across filesystems raises OSError, and
+  /tmp is a different filesystem on the VPS.
+  Match the idiom already in this repo -- scripts/backfill_logic_epoch.py,
+  scripts/build_t4_outcome_store.py and four others already do temp-and-rename. Read one first.
+  PROVE IT, with tests that fail before your change and pass after:
+    (a) an interrupted save leaves the ON-DISK file byte-identical to its pre-save state and
+        still parses as JSON. Interrupt at the write boundary -- do not simulate it by mocking
+        the function you are testing.
+    (b) no temp file is left behind on the success path, and none on the failure path.
+    (c) a full round trip: save, reload through the real _reload_locked() path, assert equality.
+    (d) permissions and ownership after os.replace() are what they were before. A ledger that
+        becomes world-readable or root-owned is a new failure, not a fix.
+
+DELIVERABLE 2 -- MEASURE WHAT A SAVE COSTS. NUMBERS, NOT ADJECTIVES.
+  `indent=2` pretty-prints the entire state on every write. Measure, on a COPY of a real pool
+  file, never the live one:
+    - bytes and wall-clock milliseconds for one _save() at the pool's current size
+    - the same at 2x, 5x and 10x the row count, synthesised by duplicating real rows in a copy
+  Report a table: rows, file bytes, ms per save, MB written per save.
+  THEN, and only if the numbers justify it: switch json.dumps to compact separators. That is a
+  bytes-and-CPU change, not a schema change -- the parsed object is identical. Say plainly what
+  it costs in readability of a file that operators do read by hand, and if the measured saving
+  is small, DO NOT make the change. Report the measurement either way.
+
+DELIVERABLE 3 -- COUNT THE WRITE AMPLIFICATION.
+  There are 13 _save() call sites. Instrument them with a real counter, not a guess, and run one
+  realistic production cycle against a COPY of a real pool -- the t4 cycle cadence is about 60
+  seconds. Report: _save() calls per cycle, and calls-per-cycle x D2's ms and MB = cost per hour.
+  Then answer one question with that arithmetic: at the throughput Wave 38 demonstrated (802 rows
+  opened in one hand-run), does the full-file-rewrite design hold, or does it not?
+  That number decides Deliverable 4. Do not decide it in advance.
+
+DELIVERABLE 4 -- IF D3 SAYS IT DOES NOT HOLD: WRITE THE ADR AND STOP.
+  Do NOT implement an append-only position log in this block. Demoting the JSON blob from
+  system-of-record to periodic snapshot changes what the evidence pool IS, and that is an
+  operator decision, not a performance fix.
+  Write an ADR proposing it. Claim the next free ADR number at run time (highest seen: 0066).
+  It must contain: the new on-disk schema; the exact recovery procedure after an unclean stop
+  (snapshot plus tail replay, with the ordering rule stated); every reader that would have to
+  change, enumerated by file; how assert_ledger_invariants.py would verify the pair; and the
+  failure mode you are accepting in exchange. Status PROPOSED. No register row.
+  If D3 says the current design DOES hold at projected volume, say so and write no ADR. That is
+  a fully acceptable outcome and it is the cheaper one.
+
+DELIVERABLE 5 -- THE UNBOUNDED HALF.
+  MAX_REJECTED_POSITIONS = 2000 bounds `rejected_positions` by drop-oldest. `closed_positions` is
+  bounded by nothing and grows for the life of the project. Report its current size and its growth
+  rate per resolved row, from real data.
+  PROPOSE NOTHING THAT DELETES OR DROPS A ROW. A closed position is settled evidence; the rejected
+  ring buffer is not a precedent for it. Archival-with-provenance is a later ADR, not a change here.
+
+DELIVERABLE 6 -- CLOSE THE PROVENANCE HOLE AT THE WRITE BOUNDARY.
+  paper_trader.py line ~632 reads: "model_identity": approval.get("model_identity") or "UNKNOWN"
+  Only run_t1_nfl_game_market.py passes the field. Every other run path silently writes the string
+  "UNKNOWN" into the pool, which is how an unidentifiable row becomes indistinguishable from an
+  identified one.
+  Make the field MANDATORY at this boundary: a caller that does not supply a non-empty
+  model_identity gets a loud failure, not a default. Add the test.
+  DO NOT BACKFILL, REWRITE OR RELABEL ANY EXISTING ROW. Existing rows legitimately read "UNKNOWN"
+  and their provenance is not established (GG-228). Changing them is forbidden here.
+  State in your report how many rows in each pool currently read "UNKNOWN" -- read-only -- so 39.2
+  can consume that number. Your change affects rows written from now on, and only those.
+
+DELIVERABLE 7 -- REPORT.
+  One results summary under 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/: D1 test evidence, D2
+  table, D3 arithmetic, D4 verdict (ADR written or not needed, with the number that decided it),
+  D5 growth rate, D6 counts. Push after each deliverable.
+
+DO NOT:
+  - Delete, truncate, prune, compact in place, or rewrite any live pool file. Work on copies.
+  - Touch sizing, stake, or kelly_fraction. Not one line, not in a comment.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Restart a production service. No restart is authorized in Wave 39.
+  - Promote assert_ledger_invariants.py to --strict.
+  - Change what any band monitor counts. That is 39.2's surface, and 39.2 is forbidden to do it too.
+  - Report a fix as live without proving the RUNNING process contains it, not the file on disk.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 39.2 -- THE EVIDENCE BOUNDARY: MAKE STUB ROWS STRUCTURALLY UNCOUNTABLE - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "evidence-boundary"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Highest seen at queue-write time: T-587, GG-317. Verify; do not assume.
+Gap-log entry as your FIRST pushed commit. You are the only block this wave that writes to
+GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  src/prediction_market_bot/logic_epoch.py   (ADD to it; do not alter the existing epoch functions)
+  one new classification script under scripts/, its tests, one results summary,
+  GOVERNANCE_GAP_LOG.md, DECISION_LOG.md.
+READ-ONLY, DO NOT EDIT: paper_trader.py (39.1 owns it), run_band_monitor.py, and every pool file.
+  If you believe one of them must change, say so in your report and STOP there.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC.
+  The shared worktree's local `main` is 28 commits BEHIND `origin/main` (f293c0e). Fetch, confirm,
+  fast-forward, paste the before and after SHAs. Report what you found, even if nothing.
+
+DELIVERABLE 1 -- CENSUS. WHAT IS ACTUALLY IN THE POOLS, BY EVIDENCE CLASS.
+  Every live pool file. For each row read only what is already stamped -- model_identity, run_id,
+  runtime_git_sha, trigger, host (GG-316 landed these), logic_epoch, band -- and assign exactly
+  one class:
+    MODEL_EVIDENCE  -- names a real, non-stub forecaster
+    STUB            -- model_identity names a stub (e.g. StubNFLForecastModel, GG-255)
+    UNATTRIBUTED    -- model_identity absent, empty, or the literal "UNKNOWN"
+  Output a table per pool: class, row count, distinct model_identity values, epoch range, band
+  breakdown, and how many rows carry run provenance at all.
+  DO NOT MODIFY, MOVE, QUARANTINE, DELETE OR RECLASSIFY A SINGLE ROW. This deliverable reads.
+  Expect a large UNATTRIBUTED population that predates GG-316. That is the expected result, not a
+  failure, and it is not yours to fix here.
+
+DELIVERABLE 2 -- THE PREDICATE.
+  is_clean_for_band(stamped_epoch, band) reads exactly one field: the epoch. A STUB row with a
+  valid epoch is therefore "clean" today, which is the mechanism behind GG-317.
+  Add a NEW function alongside it -- do not change is_clean_for_band() or
+  clean_epoch_floor_for_band(), which other callers depend on:
+      is_countable_evidence(row, band) -> bool
+  It composes epoch-cleanliness AND evidence class, and it FAILS CLOSED: anything it cannot
+  positively establish as MODEL_EVIDENCE is not countable.
+  Tests, including these three explicitly:
+    (a) a STUB row with a perfectly valid logic_epoch returns False. This is the trap.
+    (b) an UNATTRIBUTED row returns False.
+    (c) a MODEL_EVIDENCE row with a pre-floor epoch still returns False -- the epoch rule is not
+        weakened by adding the evidence rule.
+  Wire it into NOTHING. Adding a function changes no count.
+
+DELIVERABLE 3 -- THE DELTA. COMPUTE IT; DO NOT APPLY IT.
+  For every (cell, band) the band monitor reports, print side by side: today's clean_n, the
+  clean_n under is_countable_evidence(), and the difference. Do it in your new script by importing
+  the monitor's own filter path -- do not reimplement its counting, and do not edit it.
+  Name T4M-PROJ explicitly. It is the ONLY ACTIVE cell in the registry, its rows predate
+  model_identity, so under a fail-closed predicate they read UNATTRIBUTED and its clean_n will
+  very likely go to or near zero.
+  READ THIS CAREFULLY: if that happens IT IS THE FINDING, and it does NOT mean the predicate is
+  wrong. It means the only cell we have been counting has never had established model provenance,
+  and the route forward is a provenance-established allowlist -- a named, dated, evidenced list of
+  runs whose model identity is known from git history and audit events -- NOT a weakened predicate
+  and NOT a backfilled field. Say which it is, with the numbers.
+  Do NOT flip run_band_monitor.py, or any other counter, to the new predicate. The delta is
+  decision-grade information for the operator. He decides what gets counted.
+
+DELIVERABLE 4 -- REGISTER WHAT THE CENSUS FOUND.
+  Update GG-317 in place with D1's real numbers, and register whatever new gap classes the census
+  exposes that GG-317 does not already cover -- for example a pool whose counts are already wrong
+  for a reason unrelated to the NFL stub run. One DECISION_LOG entry for the wave's registration
+  activity. Claim GG numbers at run time; highest seen is 317.
+  Do not close GG-317. Its resolution is an operator call on pool contents (its own option (a)),
+  and this block does not touch pool contents.
+
+DELIVERABLE 5 -- REPORT.
+  One results summary under 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/: the census tables, the
+  predicate and its tests, the D3 delta table with T4M-PROJ called out by name, and one paragraph
+  answering: after this block, is it structurally possible for a stub row to enter a clean_n, and
+  if yes, exactly where.
+
+DO NOT:
+  - Modify, delete, quarantine, reclassify, backfill or move any row in any pool. Read only.
+  - Edit paper_trader.py. 39.1 owns it and is landing the write-boundary fix there.
+  - Change what run_band_monitor.py or any other counter counts.
+  - Repair or backfill a derived field without established provenance (GG-228). The absence of
+    provenance is the finding; manufacturing it is the failure.
+  - Manufacture a position, a row, a cohort member or a final score to have something to measure.
+  - Weaken the predicate to preserve a count. If the count goes to zero, report zero.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 39.3 -- TRIAGE ALL 127: BLOCKING / CARRIED / NOTED - SHORT/STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "gap-ledger-triage"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  one new results file under 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/, and the LOCAL BRANCH
+  ESTATE (D3 only, and only branches that are ancestors of origin/main).
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md, GOVERNANCE_GAP_LOG_ARCHIVE.md, DECISION_LOG.md,
+  OPERATOR_CONSOLE.md, or any Status token anywhere. This block's entire output is a PROPOSAL.
+  It is deliberately powerless. That is the point: triage that can also edit becomes a burndown,
+  and a burndown needs the operator's sign-off first.
+
+DELIVERABLE 0 -- LAND PREDECESSORS AND SYNC.
+  The shared worktree's local `main` is 28 commits BEHIND `origin/main` (f293c0e). Fetch, confirm,
+  fast-forward, paste the before and after SHAs.
+
+DELIVERABLE 1 -- ONE PASS OVER ALL 127 LIVE ENTRIES.
+  Read GOVERNANCE_GAP_LOG.md at origin/main. 127 entries: 108 OPEN plus 19 in other states
+  (PARTIALLY RESOLVED, IN PROGRESS, LIKELY RESOLVED, WATCH ITEM, PLAN ACCEPTED, PARTIAL RESOLVE,
+  ACCEPTED UNCERTAINTY). Verify those counts yourself first; if they differ, use yours and say so.
+  Assign every entry EXACTLY ONE class:
+    BLOCKING -- something an operator decision or a scheduled wave cannot proceed without. Name
+                what it blocks, specifically. "Important" is not blocking.
+    CARRIED  -- real, unresolved, not blocking anything currently scheduled. Keep it live.
+    NOTED    -- a recorded observation with no action expected of anyone: superseded, subsumed by a
+                later entry, or a finding whose only value is the record. A CANDIDATE for archive
+                with a status change. You do not archive it.
+  Output ONE table: GG id, the one-line title, class, one line of reason. For BLOCKING name what
+  it blocks. For NOTED name why no action is expected and what supersedes it, if anything.
+  Every entry gets a row. 127 rows. No sampling, no "and 80 similar".
+  Do not edit an entry, a status token, or the log. Read only.
+
+DELIVERABLE 2 -- RECONCILE SECTION 0.
+  OPERATOR_CONSOLE.md's Section 0 reports 169 items overdue for retirement, while its
+  unarchived-resolved-gaps bucket reports 0 and its merged-but-undeleted-branches bucket reports
+  31. Enumerate what makes up the 169, bucket by bucket, from the generator's own logic. If the
+  number is inflated by double-counting or by a bucket that is no longer meaningful, say which and
+  by how much. Do not regenerate or hand-patch the console -- it is a generated file.
+
+DELIVERABLE 3 -- THE FREE HALF OF THE BRANCH ESTATE.
+  31 local branches are ancestors of origin/main: their work landed and they were never deleted.
+  Pure bookkeeping debt; needs no decision.
+  Run scripts/sweep_stray_branches.sh report-only first and paste the output, then run it with
+  --execute. It deletes with `git branch -d` only, never -D, and only for ancestors of
+  origin/main -- read the script's header and confirm that before running it.
+  DO NOT DELETE, MERGE, REBASE OR CHERRY-PICK ANY UNMERGED BRANCH. Nine of them need the
+  operator's keep/kill and that decision is still open. If the sweep would touch a non-ancestor,
+  stop and report it as a bug in the sweep.
+  Report: branches deleted, branches left standing and why.
+
+DELIVERABLE 4 -- THE RATE. ONE NUMBER THAT SAYS WHETHER THIS CONVERGES.
+  Over the last ten waves, from git history: gaps REGISTERED per wave, and gaps ARCHIVED per wave.
+  Report the ratio. If the log grows faster than it is burned down, say the number plainly and say
+  how long the current live log takes to clear at the observed archival rate. If the honest answer
+  is "it does not clear", that is the answer -- write it.
+
+DELIVERABLE 5 -- REPORT.
+  The results file: the 127-row table, D2's reconciliation, D3's branch outcome, D4's rate, and a
+  short "what I would ask the operator to sign off on" section -- the NOTED list, as a list, ready
+  to be approved or rejected in one pass. Do not act on it.
+
+DO NOT:
+  - Edit, archive, delete, move or restatus any gap entry. Not one, not even an obvious one.
+  - Write to GOVERNANCE_GAP_LOG.md, its archive, DECISION_LOG.md or OPERATOR_CONSOLE.md.
+  - Run retire_resolved_gaps.py with --apply. Report-only, if you run it at all.
+  - Delete, merge, rebase or cherry-pick an unmerged branch.
+  - Classify an entry BLOCKING or NOTED to make the totals look better. Ambiguous means CARRIED.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+## Wave 38 — CLOSED 2026-09-29 (all three landed; merged to origin/main as T-587 / T-586 / T-584)
+
+## ⬛ FIRE NOW — Wave 38, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **38.1** | STANDARD | **Restore accrual.** Build a scheduled, logged, attributable NFL T1 run path. **Cron entry gated on operator authorization.** |
+| 2nd | **38.2** | STANDARD | **Price the absent attributes.** ADR-0066 ruled out re-cutting what we hold; this costs what we don't. |
+| 3rd | **38.3** | SHORT | **GG-312: the parity checker sees 7 of 36.** Fix the mechanism that was supposed to prevent what we just ratified. |
+
+**Fire order does not matter.** 38.1 owns `deploy/cron.conf`, the NFL run path and its audit
+logging, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.** 38.2 is read-only over `src/` plus a
+results file. 38.3 owns `check_register_parity.py` and the console generator.
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **A block in the wave fires immediately, concurrently with every other.** Work that must wait goes in "Queued next." A sequencing note is not a fence.
+- **Deliverable 0 in every block: land any un-landed predecessor.**
+- **Check your deliverables against real-world sequencing before starting (GG-287).** Do not accept a task that requires an event which has not happened yet.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+- **Push after each deliverable.** Verify a fix by importing and calling the real function. **Benchmark the real thing.**
+- **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-35 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **36** | CLOSED | `park_factor_hits` was dead, repaired (GG-145). T4 game-state fields now logged, `p_t4` unchanged. **GG-303 ACTIVATED with running-process proof.** Section 0 live at 210. |
+| **37** | **CLOSED -- ALL THREE LANDED** (`769d64d`) | **T4 A/B harness BUILT** (game-clustered paired delta-Brier, input contract, explicit T4M-PROJ refusal, 13 tests) -- the ADR-0042 D2 gate is runnable for T4 for the first time. **EPA splits: NO DETECTABLE DIFFERENCE** (ADR-0066, every interval spans zero). **Governance burn-down: 25 resolved gaps archived** (149 live -> 125), ratification of 36 unregistered ADRs recorded as **recording-only**, Section 0 210 -> 175. **GG-312 registered: `check_register_parity.py` catches only 7 of the 36.** |
+| **38** | **FIRING** | Restore accrual - price what we don't have - fix the parity checker. |
+
+---
+
+## Why this wave is shaped this way
+
+37.1 removed a structural blocker: the T4 A/B gate now exists. 37.2 answered its question with a
+clean negative. 37.3 cut the live gap log by 24 entries and recorded the ratification without
+touching a single pending decision -- exactly the boundary asked for.
+
+What remains is the thing none of those fix: **nothing is accruing.** A harness with no incoming
+data is a scale with nothing on it. MLB is done until March; NFL runs to January and is unscheduled.
+38.1 exists to end that, and the cron entry is **operator-gated** because the standing DO NOT says
+so and because GG-302 is what an unattributable manual run costs.
+
+38.2 follows directly from ADR-0066. The cheapest enrichment on the shelf moved nothing, and the
+honest conclusion is that re-cutting held data is exhausted. What is left is the absent list --
+and before anyone builds toward it, it should be **priced**, not assumed.
+
+---
+
+## WAVE 38 BLOCKS
+
+---
+
+# 38.1 -- RESTORE ACCRUAL: A SCHEDULED, ATTRIBUTABLE NFL RUN PATH - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "nfl-accrual-path"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md AND DECISION_LOG.md THIS WAVE. ***
+
+TIER: STANDARD. The project has no evidence pipeline. This is the only live window until March.
+
+ESTABLISHED -- VERIFY, DO NOT RE-DERIVE:
+  `deploy/cron.conf` has NO NFL entry (T-575/T-566). Every NFL T1 run was launched by hand.
+  GG-302: one such run -- 46 evals / 42 approved / 42 opened in ~72 seconds on 2026-09-17 --
+  is unattributable to any actor, so all 42 rows are QUARANTINED from evidence.
+  `approval_commit` is `CURRENT_APPROVAL_COMMIT = _BOUNDARIES[-1].commit_sha`, a static epoch
+  marker baked into the source tree -- **not** a git-HEAD-at-runtime capture. It identifies nothing.
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR. Confirm 769d64d or later is your base.
+
+DELIVERABLE 1 -- MAKE A RUN SELF-IDENTIFYING BEFORE YOU SCHEDULE ANYTHING.
+  A scheduled run that cannot be attributed is GG-302 at higher frequency. Fix that first.
+  Every position and audit row a T1 NFL run writes must carry, captured AT RUNTIME: the actual
+  git HEAD sha of the deployed tree, the run trigger (cron vs manual), a run id, the host, and the
+  model identity already present. `approval_commit`'s static-marker behaviour is the defect --
+  either correct it or add a distinct runtime field beside it and say plainly which you chose.
+  Tests: a run's rows carry a sha that matches the tree it ran from; a manual run is
+  distinguishable from a scheduled one.
+
+DELIVERABLE 2 -- PROVE THE PATH END TO END, UNSCHEDULED, AGAINST REAL MARKETS.
+  Run T1 NFL by hand once against live Kalshi NFL markets, demo only. Report: markets discovered,
+  risk evaluations, approvals, positions opened, and the runtime provenance fields on each row.
+  **If it opens positions, those rows are real evidence and must be attributable** -- that is the
+  whole point of Deliverable 1 landing first.
+  If zero markets are discoverable at run time, that is a finding: report it and say why.
+
+DELIVERABLE 3 -- SCHEDULE IT. *** GATED ON WRITTEN OPERATOR AUTHORIZATION. ***
+  The standing DO NOT: "Add a cron entry for any T1 game-market run script without explicit
+  operator authorization."
+  **Check `04_EXECUTION/ACTIVE_QUEUE.md` under "Needs your decision" for an authorization line
+  naming an NFL cron entry. If absent, SKIP this deliverable entirely, say so in your report, and
+  proceed to Deliverable 4. Do not schedule on inference or urgency. An absent authorization is a
+  complete and correct reason to skip.**
+  If present: add the entry within the authorized scope, deploy, and verify from the live crontab
+  -- not from the repo file (GG-262: the VPS crontab already diverges from the repo, cause
+  unknown). Report both and reconcile them.
+
+DELIVERABLE 4 -- SAY WHAT ACCRUAL WOULD ACTUALLY PRODUCE.
+  Given NFL's remaining schedule to January, the measured approval rate from Deliverable 2, and
+  EXP-027's n* of ~2,610: how many resolved rows does a full remaining season yield, and does that
+  close any gate? Show the arithmetic. **If the honest answer is that a full season still leaves
+  the band underpowered, say so plainly** -- that is decision-grade information for APR-0035,
+  which has been open six weeks.
+
+DO NOT: schedule anything without the authorization line. Absent = skip.
+DO NOT: use or rehabilitate the 42 quarantined rows (GG-302).
+DO NOT: change the model, kelly_fraction, a cell status, or a gating constant. ADR-0066's candidate
+  is PROPOSED and unwired; it stays that way.
+DO NOT: submit an order against production or with real funds. Demo only, always.
+DO NOT: restart a production service beyond what a cron deploy requires, and only if authorized.
+DO NOT: touch the absent-attribute study or the parity checker -- 38.2 and 38.3 own those.
+
+SCOPE FENCE: `run_t1_nfl_game_market.py`'s provenance capture, `logic_epoch.py` if the sha fix
+requires it, `deploy/cron.conf` if and only if authorized, tests, GOVERNANCE_GAP_LOG.md,
+DECISION_LOG.md.
+Self-serialising close-out: re-read both logs fresh against HEAD immediately before writing.
+
+REPORT BACK: the runtime-provenance fields as implemented and their tests; the live hand-run's full
+numbers with provenance shown on the rows; whether the authorization was present and, if so, the
+live crontab verified against the repo; and the accrual arithmetic with a plain statement on
+whether a full remaining season closes anything.
+```
+
+---
+
+# 38.2 -- PRICE WHAT WE DO NOT HAVE - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "absent-attribute-pricing"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 38.1 owns them. ***
+*** READ-ONLY over src/. You build no feature, wire no source, procure nothing. ***
+
+TIER: STANDARD. This is a costing exercise, not a build.
+
+WHY NOW. ADR-0066 took T-575's cheapest wired-data enrichment -- `passing_epa`/`rushing_epa`
+splits into EXP-027 -- and found **no detectable difference**: Brier delta -0.0007
+[-0.0020, +0.0005], better in 1 of 6 rolling-origin seasons, and neither model beats the market's
+closing price at n=48. Those splits are still aggregate team EPA cut two ways.
+**The conclusion to carry: re-cutting data we already hold is exhausted as a source of edge.**
+What remains is T-575 Section 3's "absent entirely" list. Before the project builds toward any of it,
+it should be priced honestly -- by someone who has to write down the integration tier and the
+licence terms, not by assumption.
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR. Confirm 769d64d or later is your base.
+
+DELIVERABLE 1 -- RE-DERIVE THE ABSENT LIST YOURSELF, PER SPORT. Do not inherit T-575's.
+  For NFL and MLB separately: what attributes does a competent forecaster in that sport use that
+  this codebase has no source for? Ground it -- for each, name the mechanism by which it would
+  change a probability estimate. An attribute nobody can explain the mechanism for does not belong
+  on the list regardless of how standard it sounds.
+  NFL candidates to consider and justify in or out: scheme/personnel package, pace, pass rate over
+  expectation, pressure and coverage tendency, offensive-line/defensive-line matchup, weather,
+  rest and travel, injury beyond the existing flag, referee tendency.
+  MLB: pitcher identity and handedness matchup, park factor (note 36.1 just repaired the existing
+  one -- state whether that closes the item), bullpen state, defensive alignment, weather, lineup
+  slot context.
+
+DELIVERABLE 2 -- PRICE EACH ONE. Three axes, stated explicitly, no hand-waving.
+  (a) **Source**: is there a free, licensed or scrapeable source? Name it. State its terms as you
+      find them and flag anything you could not verify rather than assuming it is permissive.
+  (b) **Integration tier**: a field already in a payload we fetch / a new accessor on an existing
+      store / a new C1 ingestion module / a new external dependency. These differ by orders of
+      magnitude and the distinction is the deliverable.
+  (c) **Backfill depth**: how far back can history be obtained? A feature with no history cannot be
+      backtested and therefore cannot clear ADR-0042 D2 -- it can only accrue forward. Say which
+      side of that line each item falls on.
+  **Procure nothing. Sign up for nothing. Call no paid API. Report only.**
+
+DELIVERABLE 3 -- RANK BY EXPECTED INFORMATIVENESS PER UNIT COST, AND LABEL IT AS JUDGEMENT.
+  Produce the ranked list. State plainly that the informativeness half is your judgement and not a
+  measurement -- the cost half should be factual. Where public research supports an attribute's
+  predictive value, cite it; where you are reasoning from first principles, say so.
+  Call out explicitly any item that is **cheap AND backtestable**, since that is the only category
+  that can clear the existing gate this season.
+
+DELIVERABLE 4 -- WRITE THE DECISION INPUT.
+  A summary an operator reads in ten minutes and can act on: the absent list per sport, the three-
+  axis pricing, the ranking, and -- separately -- the items you would NOT pursue and why.
+  State what this study does not establish: that none of it is measured edge, and that a priced,
+  plausible attribute can still turn out to be worth nothing, exactly as the EPA splits just did.
+
+DO NOT: build a feature, wire a source, write an accessor, or modify any model.
+DO NOT: procure, subscribe to, register for, or call any paid or rate-limited external service.
+DO NOT: re-litigate ADR-0066 or re-run its evaluation. Its verdict stands.
+DO NOT: recommend against a sport or market family on one finding (standing DO NOT).
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 38.1 owns them.
+
+SCOPE FENCE: read-only inspection of `src/`, `scripts/`, `deploy/`, the archives and stores; public
+documentation lookup; one results summary under RESULTS_SUMMARIES.
+
+REPORT BACK: the per-sport absent list with a stated mechanism for each; the three-axis pricing
+table; the ranked list with the judgement caveat; the cheap-AND-backtestable subset called out; and
+the explicit not-pursuing list with reasons.
+```
+
+---
+
+# 38.3 -- GG-312: THE PARITY CHECKER SEES 7 OF 36 - SHORT
+
+```
+Run the CLAUDE.md session-start protocol in full. Paste outputs.
+scripts/new_session_worktree.sh "gg312-parity-checker"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 38.1 owns them. ***
+
+TIER: SHORT. One deliverable. Do not expand this into a framework.
+
+T-582 registered GG-312 while recording the ratification: **`check_register_parity.py` detects only
+7 of the 36 unregistered accepted decisions.** The checker is the mechanism that exists to prevent
+exactly the accumulation that just required an operator ratification of 36 items -- and it was
+running the whole time. A guard that catches 19% of its own target class is worse than no guard,
+because its silence reads as an all-clear.
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR. Confirm 769d64d or later is your base.
+
+DELIVERABLE 1 -- WHY DOES IT MISS 29 OF THEM? Diagnose before you touch it.
+  Run it against the live tree and reproduce the 7. Then, for each of the 29 it misses, classify
+  the reason: status-line format it cannot parse, a file path or naming convention outside its
+  glob, a register-row match that succeeds spuriously, or something else. Report the classification
+  counts. **The distribution is the finding** -- if 25 of 29 fail for one reason, that is a
+  different fix than 29 unique ones.
+
+DELIVERABLE 2 -- FIX IT SO IT SEES THE WHOLE CLASS.
+  Both directions: every ADR/APR whose own status reads ACCEPTED must have a register row, and
+  every register row must point at a real document. Handle the format variance that actually
+  exists -- bare `ACCEPTED`, dated variants, `ACCEPTED (as amended)`, `ACCEPTED -- DS sign-off ...`,
+  and the negations it already guards (`NOT ACCEPTED`, `not yet ACCEPTED`) which must keep working.
+  Regression tests covering each format you found in Deliverable 1, and a test that the 2026-09-29
+  ratification entry satisfies the checker for all 36.
+
+DELIVERABLE 3 -- WIRE IT WHERE IT WILL BE SEEN, AND VERIFY THE COUNT GOES TO ZERO.
+  It should feed Section 0's "ACCEPTED with no register row" row so the number is visible weekly
+  rather than discovered by audit. Re-render the console and report Section 0 before and after.
+  If any genuine parity failure remains after the ratification, name it -- do not tune the checker
+  until the number reads zero. **A checker that returns zero because it was adjusted to is the
+  defect this block exists to remove.**
+
+DO NOT: change any ADR's or APR's status line, or add/amend a register row. Ratification was
+  37.3's job and is done; this block only makes the checker see it.
+DO NOT: approve, accept or select an option on any pending decision. Twelve remain pending.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 38.1 owns them. Hand it candidates.
+DO NOT: touch the NFL run path or the absent-attribute study -- 38.1 and 38.2 own those.
+
+SCOPE FENCE: `scripts/check_register_parity.py`, `scripts/generate_operator_console.py`'s Section 0
+row for this class, their tests, a short results note.
+
+REPORT BACK: the reproduce-7 result and the 29-miss classification with counts; the fix and its
+per-format regression tests; Section 0's count for this class before and after; and any genuine
+parity failure that legitimately remains, named.
+```
+
+---
+
+## Wave 37 — CLOSED 2026-09-29 (all three landed)
+
+## WAVE 37 BLOCKS
+
+---
+
+# 37.1 -- MAKE THE T4 GATE RUNNABLE - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "t4-ab-harness"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 37.3 owns them. ***
+
+TIER: STANDARD. This unblocks every future T4 enhancer, not just ADR-0065's candidate.
+
+ESTABLISHED -- VERIFY, DO NOT RE-DERIVE (T-580, Wave 36 Block 36.2 Deliverable 4):
+the ADR-0042 D2 `DEFENSIBLE_IMPROVEMENT` gate cannot be validly run for T4 today, for three
+independent converging reasons: (1) the harness's default input
+`logs/.vps_portfolio_cache_mlb.json` has NEVER existed in this repo -- confirmed by a live
+FileNotFoundError and `git log --all`; (2) `ab_harness.py` / `run_ab_experiment.py` /
+`run_exp017b_decomp_mlb.py` were purpose-built for T1 MLB book-selection filtering per their own
+docstrings, with no schema concept of T4's game-state fields; (3) no resolved-bet record anywhere
+carries those fields -- they were only logged in 36.2 and the 2026 MLB accrual window has closed.
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR. Confirm cdd568e or later is your base.
+
+DELIVERABLE 1 -- DECIDE THE SHAPE BEFORE YOU BUILD, AND WRITE DOWN WHY.
+  Does T4 need a parallel harness, a generalization of the existing one, or a shared core with
+  per-band adapters? Read the existing stack first and report what is genuinely reusable --
+  `compute_clv_row`/`cohort_aggregate` from T-572's CLV work were reported as market-type-agnostic;
+  verify that claim rather than trusting it. Push your choice and its reasoning BEFORE building.
+  A generalization that breaks T1's existing behaviour is a regression, not a refactor.
+
+DELIVERABLE 2 -- BUILD IT, WITH AN EXPLICIT INPUT CONTRACT.
+  The harness must state, in code, what it requires of a cohort: which fields, what resolution
+  semantics, what minimum n, and what it refuses. **It must refuse loudly on a cohort that cannot
+  support a valid comparison rather than returning a number.** That refusal is the feature -- a
+  harness that silently scores an inadequate cohort is how the project got two contradictory
+  calibration headlines.
+  It must also refuse the T4M-PROJ 765/905-row cohort explicitly by name: T-577 declared it
+  UNRECOVERABLE and it must never become a holdout by accident.
+
+DELIVERABLE 3 -- PROVE IT ON A COHORT THAT EXISTS TODAY.
+  Demonstrate the harness end-to-end on real data it can legitimately score -- T1 MLB historical,
+  or a synthetic cohort with known ground truth where you state plainly that it is synthetic and
+  what it does and does not prove. Show it correctly REFUSING at least two inadequate cohorts.
+  Do NOT manufacture a cohort to make a test pass.
+
+DELIVERABLE 4 -- SAY WHAT IT STILL CANNOT DO, AND WHEN ADR-0065 BECOMES TESTABLE.
+  Name the conditions under which ADR-0065's candidate could actually be gated: which fields,
+  how many resolved rows, over how many game-days, from which accrual window. Cost it in calendar
+  time given MLB's season is closed. If the honest answer is "not before the 2027 MLB season
+  unless T4 runs on another sport," say exactly that.
+
+DO NOT: run the gate on ADR-0065's candidate and report a verdict -- the data does not exist yet.
+DO NOT: use the T4M-PROJ cohort as training, holdout or validation, or weaken its exclusion.
+DO NOT: change any model, constant, kelly_fraction or cell status.
+DO NOT: break or alter T1's existing harness behaviour. Prove that with its existing tests.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 37.3 owns them.
+DO NOT: touch `nfl_exp027_adapter.py` -- 37.2 owns it.
+
+SCOPE FENCE: the A/B harness stack, a new T4-capable module, tests, a results summary.
+
+REPORT BACK: the reusability assessment with your architectural choice and reasoning; the input
+contract as implemented; the end-to-end demonstration plus two refusals; proof T1's behaviour is
+unchanged; and the named conditions and calendar cost for ADR-0065 becoming testable.
+```
+
+---
+
+# 37.2 -- GIVE EXP-027 THE SPLITS - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "exp027-epa-splits"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU DO NOT OWN GOVERNANCE_GAP_LOG.md OR DECISION_LOG.md. 37.3 owns them. ***
+
+TIER: STANDARD. NFL is the only live sport the project has until March.
+
+T-575's feature audit, item 4: EXP-027 consumes exactly **two inputs** -- `off_epa` and
+`def_epa_allowed`, both aggregate sums -- while `passing_epa` / `rushing_epa` splits are **already
+fetched and simply never consumed**. It is pointed at NFL spreads, among the sharpest lines in the
+world, with two aggregate numbers. T-575 ranked this item 4 only because EXP-027 is already
+UNDERPOWERED for small-n reasons a richer feature set does not fix by itself -- that caveat stands
+and must appear in your write-up.
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR. Confirm cdd568e or later is your base.
+
+DELIVERABLE 1 -- CONFIRM THE DATA IS REALLY RESIDENT. Verify T-575's claim yourself.
+  Where do `passing_epa` / `rushing_epa` actually live, at what grain, for how many seasons, and
+  with what coverage gaps? Report the real span and any missing weeks. If they are NOT resident as
+  claimed, STOP and report -- do not add a data source inside this block.
+
+DELIVERABLE 2 -- BUILD THE ACCESSORS AND THE ENRICHED CANDIDATE. OFFLINE ONLY.
+  New accessor methods, then a candidate EXP-027 consuming the splits alongside the existing
+  aggregates. Retrain per EXP-027's existing methodology (LogisticRegression +
+  CalibratedClassifierCV sigmoid) -- same methodology, more features. Do not redesign the model
+  class; that is ADR-0004 territory and a separate decision.
+  **The incumbent stays the default. The candidate is wired into no run path.**
+
+DELIVERABLE 3 -- EVALUATE ON HISTORICAL NFL, HONESTLY, WITH A HOLDOUT.
+  Out-of-sample by season or by week -- state which and why. Report accuracy, Brier, ECE and
+  calibration curve for incumbent vs candidate on the same holdout, with n for each.
+  **Report the interval, not just the point estimate.** EXP-027's own prior verdict was
+  UNDERPOWERED at n=16 for 2026; if your holdout is also small, say so and do not dress a
+  noisy improvement as a result.
+  Also report the closing-line comparison if the archive supports it: does either model beat the
+  market's own closing price on the same games? That is the harder and more useful question.
+
+DELIVERABLE 4 -- DRAFT THE ADR. DO NOT ACCEPT IT.
+  ADR-0004 frozen-model policy applies. Draft with the holdout evidence, the functional change,
+  and an explicit statement of what it does NOT fix -- specifically that more features do not
+  resolve a small-n power problem. Note that activation also requires clearing ADR-0042 D2, and
+  that 37.1 is concurrently establishing whether that gate is runnable here.
+
+DO NOT: wire the candidate into any live run path or change the default model.
+DO NOT: add an NFL cron entry. Scheduling NFL T1 requires explicit operator authorization
+  (standing DO NOT) and is flagged under "Needs your decision" -- it is not yours to assume.
+DO NOT: use the 42 quarantined NFL T1 rows (GG-302) as training, holdout or validation data.
+DO NOT: change kelly_fraction, a cell status, or a gating constant.
+DO NOT: write GOVERNANCE_GAP_LOG.md or DECISION_LOG.md -- 37.3 owns them.
+DO NOT: touch the A/B harness stack -- 37.1 owns it.
+
+SCOPE FENCE: `nfl_exp027_adapter.py`, the NFL feature accessors and their store, tests, one ADR
+draft, a results summary.
+
+REPORT BACK: where the splits live with real coverage span and gaps; the retrained candidate's
+holdout results vs incumbent WITH intervals and n; the closing-line comparison if computable; and
+the ADR draft path with the small-n caveat stated in it.
+```
+
+---
+
+# 37.3 -- BURN DOWN THE GOVERNANCE TREE - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "governance-burndown"
+Claim your own IDs at run time (GG-236); verify uniqueness across `git log --all` (GG-256).
+Gap-log entry as your FIRST pushed commit.
+*** WORK FROM origin/main. PUSH AFTER EACH DELIVERABLE. ***
+*** YOU OWN GOVERNANCE_GAP_LOG.md, DECISION_LOG.md AND APPROVALS_REGISTER.md THIS WAVE. ***
+
+TIER: STANDARD. Filing and recording only. **This block adjudicates nothing.**
+
+DELIVERABLE 0 -- LAND ANY UN-LANDED PREDECESSOR AND THE QUEUE.
+  You own the shared `main` tree. `git fetch origin`; compare `git diff --name-only HEAD
+  origin/main` against your dirty set and STOP if any file is in both. `OPERATOR_CONSOLE.md`'s
+  diff is hook output -- discard it. `git pull --ff-only`; never force. Then commit and push
+  PATH-SCOPED: `04_EXECUTION/ACTIVE_QUEUE.md` and `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` only.
+  Verify `grep -c '^```' 04_EXECUTION/ACTIVE_QUEUE.md` returns 6.
+
+DELIVERABLE 1 -- EXECUTE THE OPERATOR RATIFICATION. Record exactly what was authorized.
+  Read the "OPERATOR RATIFICATION -- 2026-09-29" block at the top of `ACTIVE_QUEUE.md`. It carries
+  the operator's decision verbatim and its scope. **If that block is absent, STOP** -- do not
+  ratify on inference.
+  Write ONE dated entry in `APPROVALS_REGISTER.md` covering the unregistered accepted decisions.
+  It must state, in its own text: the operator's words and the date; that this affirms them as
+  operator-approved **as of 2026-09-29**; that **original sign-off dates are unrecoverable and are
+  not being invented**; and the two populations separately -- the 14 that name a signer in their
+  own status line, and the 22 that name none.
+  Enumerate every ID covered. Re-derive that list yourself from the files; do not trust this
+  block's counts. If your count differs from 14/22, report the difference rather than reconciling
+  silently.
+  **Change no ADR's own status line, no code, no constant, no cell status.**
+
+DELIVERABLE 2 -- ARCHIVE THE RESOLVED GAPS. The retire script exists; this is its first real run.
+  `scripts/retire_resolved_gaps.py` was built warn-only in 33.3/34.3 and proven on a copy.
+  Run it for real against the live log. Section 0 currently counts **24** unarchived resolved-class
+  entries -- re-derive that number rather than trusting it.
+  Stay-tokens (`PARTIALLY RESOLVED`, `PARTIAL RESOLVE`, `LIKELY RESOLVED`, `IN PROGRESS`,
+  `PLAN ACCEPTED`, `ACCEPTED UNCERTAINTY`, `WATCH ITEM`) are **NOT** resolved-class and must not
+  move. Verify none moved. Diff before and after and prove only whole entries relocated, verbatim.
+  Then re-run the structural parity assertion (headers == status lines) and the id-uniqueness check.
+
+DELIVERABLE 3 -- SWEEP THE BRANCH ESTATE. Merged only.
+  `scripts/sweep_stray_branches.sh --execute`. Section 0 counts **39** merged-but-undeleted local
+  branches -- re-derive. `git branch -d`, **never `-D`**; if `-d` refuses, that branch is not
+  merged -- leave it and report it. Prune worktrees.
+  **Do not delete any UNMERGED branch.** 17 remain operator-routed (Hard Rule 11) and nine of those
+  need a keep/kill from the operator that has not been given.
+
+DELIVERABLE 4 -- REGISTER WHAT THIS AUDIT EXPOSED, AND RE-RENDER SECTION 0.
+  Register a gap for the register-parity failure class itself: 36 accepted decisions accumulated
+  with no register row, including load-bearing ones (ADR-0010 Kelly/reserve, ADR-0024 stop-pivot,
+  ADR-0004 model class), and the write-back step is still manual. Note that
+  `check_register_parity.py` gained the reverse direction in 33.3/34.3 -- state whether it now
+  catches this class, and if not, why not.
+  Then re-render the Operator Console and report Section 0's counts before and after this block.
+  Clear the gap candidates handed over by 37.1 and 37.2.
+
+DO NOT: approve, accept, select an option on, or change the status of ANY item under "Needs your
+  decision." Ten items are pending and all ten stay pending. **APR-0035 cannot be "approved" --
+  it presents options and requires an operator selection.**
+DO NOT: change any ADR's or APR's own status line. The register entry records; it does not amend.
+DO NOT: repair, edit or re-stamp any ledger row, including GG-303's 395.
+DO NOT: delete an unmerged branch, or move a stay-token gap to the archive.
+DO NOT: touch the A/B harness or `nfl_exp027_adapter.py` -- 37.1 and 37.2 own those.
+DO NOT: restart a production service.
+
+SCOPE FENCE: `APPROVALS_REGISTER.md`, `GOVERNANCE_GAP_LOG.md`, `GOVERNANCE_GAP_LOG_ARCHIVE.md`,
+`DECISION_LOG.md`, the retire and sweep scripts' execution, the operator console re-render, and
+the two queue files.
+Self-serialising close-out: re-read the logs fresh against HEAD immediately before writing.
+
+REPORT BACK: the ratification entry as written with your own re-derived ID list and any count
+difference; the archive diff proving only whole resolved entries moved and no stay-token did; the
+branch sweep result with anything `-d` refused; the new gap registered for the parity class; and
+Section 0's counts before and after.
+```
+
+---
+
+
+
+---
+
 ## Wave 36 — CLOSED 2026-09-29 (all three landed)
 
 ## WAVE 36 BLOCKS
