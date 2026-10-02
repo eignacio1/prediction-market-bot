@@ -208,6 +208,16 @@ class StubForecaster:
         return f
 
 
+def build_real_forecaster(now):
+    """Frozen model + local finished-game store + current-season schedule (read-only)."""
+    from prediction_market_bot.c2_feature_store.nhl_features import NhlFeatureStore
+    from prediction_market_bot.c3_forecasting.nhl_pregame import NhlPregameForecaster, load_model
+    model, sha = load_model()
+    cur = now.year - (1 if now.month < 8 else 0)
+    sched = ni.load_schedule(cur) + ni.load_schedule(cur - 1)
+    return NhlPregameForecaster(model, sha, NhlFeatureStore(ni.load_games()), sched)
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--band", choices=list(BANDS), help="only evaluate games inside this band's window")
@@ -221,8 +231,7 @@ def main(argv=None) -> int:
     if a.stub:
         fcst: Forecaster = StubForecaster()
     else:
-        from prediction_market_bot.c3_forecasting.nhl_pregame import NhlPregameForecaster
-        fcst = NhlPregameForecaster()
+        fcst = build_real_forecaster(now)
     th = ni.Throttle(1.0)
     sched = []
     for s in {now.year - (1 if now.month < 8 else 0)}:
