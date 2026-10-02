@@ -71,7 +71,11 @@ def cluster_bootstrap_ci(vals_by_cluster: dict[str, list[float]], b: int = BOOT_
 
 
 def score_cell(rows: list[dict]) -> dict:
-    """rows: ledger rows already joined with y (0/0.5/1), p_clim, game_key."""
+    """rows: ledger rows already joined with y (0/0.5/1), p_clim, game_key.
+
+    SIGN CONVENTION (fixed by the EXP-037 brief, pre-registered): delta_brier_vs_X =
+    Brier(X) - Brier(model). POSITIVE means the model is better than X.
+    """
     rows = [r for r in rows if r.get("y") is not None]
     if not rows:
         return {"n_rows": 0, "n_games": 0}
@@ -81,8 +85,8 @@ def score_cell(rows: list[dict]) -> dict:
     for r in rows:
         y, g = r["y"], r["game_key"]
         bm, bk, bc = brier(r["p_yes"], y), brier(r["mid"], y), brier(r["p_clim"], y)
-        by_game_vs_mkt.setdefault(g, []).append(bm - bk)
-        by_game_vs_clim.setdefault(g, []).append(bm - bc)
+        by_game_vs_mkt.setdefault(g, []).append(bk - bm)
+        by_game_vs_clim.setdefault(g, []).append(bc - bm)
         for name, fee in (("k007", fee_k007), ("kmult", fee_kmult)):
             by_game_enet.setdefault(name, {}).setdefault(g, []).append(expected_e_net_entry(r, fee))
     n = len(rows)
