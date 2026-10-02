@@ -1,0 +1,18 @@
+# NHL pregame SHADOW-evaluation cron (T-607 / EXP-036). DRAFT -- every line commented.
+# Evaluate-and-log only: read-only Kalshi/NHL reads <=1 req/s, appends to data/shadow/nhl/.
+# NOT INSTALLED. Install exactly these lines (and nothing else) only per the operator authorization in
+# 04_EXECUTION/ACTIVE_QUEUE.md, after dry-run + green tests/test_nhl_shadow_safety.py; then verify with
+# `crontab -l` on the VPS (GG-262). Times UTC; do not touch any existing cron line.
+#
+# Refresh the NHL schedule/boxscores (read-only), daily 09:00:
+# 0 9 * * *   cd /opt/prediction-market-bot && python3 scripts/nhl_backfill.py --seasons 2026 --refresh-schedule >> logs/nhl_shadow_cron.log 2>&1
+# T1 (12-48h): once daily 14:00 for tomorrow's slate:
+# 0 14 * * *  cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_eval.py --band T1 --run-id T1-$(date -u +\%Y\%m\%dT\%H) >> logs/nhl_shadow_cron.log 2>&1
+# T2 (4-8h): every 30 min 15:00-23:30 and 00:00-01:30:
+# */30 15-23 * * * cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_eval.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+# */30 0-1 * * * cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_eval.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+# T3 (15-60 min): every 10 min 17:00-23:50 and 00:00-02:50:
+# */10 17-23 * * * cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_eval.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+# */10 0-2 * * * cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_eval.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+# Settlement join, hourly:
+# 15 * * * *  cd /opt/prediction-market-bot && python3 scripts/nhl_shadow_settle.py >> logs/nhl_shadow_cron.log 2>&1

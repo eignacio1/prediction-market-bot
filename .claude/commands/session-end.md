@@ -331,3 +331,5 @@ This step reports; it never merges, never deletes, and always exits 0. It cannot
 **Closure row and stray sweep (Steps 8-confirm and 9) are untiered and script-driven — `scripts/close_session_claim.sh` and `scripts/sweep_stray_branches.sh`. Neither is hand-authored and neither counts against the write budget.**
 
 MICRO tier's total model-authored write count: DECISION_LOG row (only if Step 1A found a real decision), the SESSION_HANDOFF file, and the commit — **≤3**. Everything in the GENERATED column runs regardless of tier via one Step 6-gen call.
+
+**Project-state snapshot (Wave 47 / 47.1 D6 i) — one script call, generated, not hand-authored, no write budget:** `python3 scripts/generate_project_state.py --html "<shared tree root>/Visual Dashboard.html"` rewrites the static offline "Visual Dashboard.html" stamped with origin/main's sha and generation time. The live `/project` page regenerates from the VPS checkout on request (cached ≤1 min).

@@ -1,0 +1,852 @@
+{
+ "gate": {
+  "n": 84,
+  "pass": 56,
+  "rate": 0.6666666666666666,
+  "worst_miss": 0.0,
+  "unmatched": 28,
+  "gate": "FAIL"
+ },
+ "pairs": [
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.0,
+   "bid_miss": 0.0,
+   "ask_read": 0.01,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.03,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 0,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 0,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 0,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 0,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 0,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 0,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 0,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 1,
+   "kind": "prior",
+   "bid_read": 0.0,
+   "bid_miss": 0.0,
+   "ask_read": 0.01,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 1,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 1,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 1,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.03,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 1,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 1,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 1,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 1,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 1,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 1,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 1,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 1,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 2,
+   "kind": "prior",
+   "bid_read": 0.0,
+   "bid_miss": 0.0,
+   "ask_read": 0.01,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 2,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 2,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 2,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 2,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 2,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 2,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 2,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 2,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 2,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 2,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 2,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.0,
+   "bid_miss": 0.0,
+   "ask_read": 0.01,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 3,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 3,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 3,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 3,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 3,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 4,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 4,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 4,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 4,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 4,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 4,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 4,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 5,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 5,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 5,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 5,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 5,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 5,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 5,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 5,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 5,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 5,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 5,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 5,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T75",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHNY-26OCT03-T68",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T71",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHCHI-26OCT03-T64",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T93",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXHIGHMIA-26OCT03-T86",
+   "round": 6,
+   "kind": "exact",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T1.0",
+   "round": 6,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXCPI-26OCT-T0.9",
+   "round": 6,
+   "kind": "prior",
+   "bid_read": 0.01,
+   "bid_miss": 0.0,
+   "ask_read": 0.02,
+   "ask_miss": 0.0,
+   "pass": true
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T90000",
+   "round": 6,
+   "kind": "unmatched",
+   "bid_read": 0.3,
+   "bid_miss": null,
+   "ask_read": 0.4,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXPAYROLLS-26NOV-T80000",
+   "round": 6,
+   "kind": "unmatched",
+   "bid_read": 0.37,
+   "bid_miss": null,
+   "ask_read": 0.47,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T4.0",
+   "round": 6,
+   "kind": "unmatched",
+   "bid_read": 0.05,
+   "bid_miss": null,
+   "ask_read": 0.15,
+   "ask_miss": null,
+   "pass": false
+  },
+  {
+   "ticker": "KXGDP-27JUL29-T3.5",
+   "round": 6,
+   "kind": "unmatched",
+   "bid_read": 0.12,
+   "bid_miss": null,
+   "ask_read": 0.22,
+   "ask_miss": null,
+   "pass": false
+  }
+ ]
+}

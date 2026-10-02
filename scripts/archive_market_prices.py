@@ -17,6 +17,19 @@ KXMLBTOTAL that data does not exist and CANNOT BE BACKFILLED. MLB's regular
 season ends in early October. Every day this is not running is a day of
 permanently lost input to that gate.
 
+Correction (2026-10-02, EXP-035 Gate 2) -- what is and is not established
+----------------------------------------------------------------------
+The "CANNOT BE BACKFILLED" statement above was written before candle history
+was tested and is superseded in scope, not deleted. Established: Kalshi candle
+history is reachable for the MLB game-market families, and EXP-035 Gate 2
+(frozen, KXMLBTOTAL only) found candle-reconstructed prevailing quotes
+equivalent to this archive's live snapshots: PASSED 7/7. The equivalence
+claim is exactly Gate 2's verdict on that one family and nothing wider; it
+does not validate other series. EXP-035 Part 1 stays FAILED as recorded. This
+archiver therefore remains the only source of live, depth-bearing snapshots
+(candles carry no book depth); it is no longer the only source of price history.
+Source: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_GATE2_RESULTS_KXMLBTOTAL_2026-10-02.md
+
 Status: read-only. Places no orders. Writes only to --out. Never touches any
         portfolio, ledger, logic_epoch register, or live config.
 
