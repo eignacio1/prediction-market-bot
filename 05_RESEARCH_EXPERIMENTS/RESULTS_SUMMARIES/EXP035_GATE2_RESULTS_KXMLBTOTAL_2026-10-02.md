@@ -3,7 +3,7 @@
 **Part 1 (EXP-035 board survey) stays FAILED as recorded; this gate does not relabel it.** Gate 2 only asks whether
 candle-reconstructed prevailing quotes agree with the live PRICE_ARCHIVE on the one family where both exist.
 
-**Store / reader (D4, if published):** see the D4 section below once written. Verdict file: `exp_output/BOARD_SURVEY_SPORTS_G2/gate2_result.json`.
+**Store / reader (D4, PARTIAL — NFL KXNFLGAME only, see store README):** store `exp_output/KALSHI_HISTORY` (`README.md`, `VALIDATION.json`); reader `from prediction_market_bot.analytics.kalshi_history import prevailing_quote, settlement`. Verdict file: `exp_output/BOARD_SURVEY_SPORTS_G2/gate2_result.json`.
 
 Frozen spec: `05_RESEARCH_EXPERIMENTS/EXP035_GATE2_PREREGISTRATION_2026-10-02.md` (seed 35035, 400 tickers, null 0.01038). Run exactly as frozen; no threshold, seed, rule or population edited.
 Fetch: 11,174 calls, 0 x 429, 0 errors, 3,740 s wall, single fetcher at the 3.3 req/s cap.
