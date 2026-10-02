@@ -3719,6 +3719,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | `https://kalshi.com/docs/kalshi-fee-schedule.pdf` returned 429 via WebFetch and curl (with and without a browser UA, plus a web.archive.org copy) on 2026-10-02. Published API docs (openapi.yaml, 2026-10-02) state series carry `fee_type` (quadratic, quadratic_with_maker_fees, quadratic_with_combo_maker_fees, flat) and `fee_multiplier`, and that `quadratic` is described by the PDF's General Trading Fees Table. KXMLBTEAMTOTAL reports `quadratic`, multiplier 0.5. Fee Rounding doc (2026-10-02): trade fee is rounded UP to $0.000001; rounding fee and rebate align balances to $0.0001 (direct) or $0.01 (non-direct). |
 | Why it matters | ADR-0016 uses 0.07*P*(1-P) with no multiplier and no rounding. A 0.5 series multiplier would halve it for MLB series. The formula itself is unconfirmed. |
 | Disposition | Do not assert the venue formula until the PDF text is read. Carry both fee models with the series multiplier as a stated sensitivity. |
+| Update 2026-10-02 (W47.1, from EXP-035 D2(e)) | Series API (retrieved 2026-10-02): KXMLBHIT and KXMLBTEAMTOTAL `fee_type=quadratic`, `fee_multiplier=0.5`; KXMLBGAME `quadratic_with_maker_fees`, 0.5. Fee-rounding doc defers the model; get-series-fee-changes lists fee types with no formula; `getting_started/fee_schedule` is 404. Coefficient still NOT established. Re-score of published E at k=0.07 vs inferred 0.035 left both published NO verdicts unchanged (fee only subtracts). Policy (c) E not re-scored (maker/fill fee treatment unestablished). The divergence is carried here, not as a separate gap. |
 
 </details>
 
@@ -3736,5 +3737,294 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | Gate run 2026-10-02 against the frozen Part 1 pre-registration (e28166a), no rescue. Passed: G1 (ticker coverage 1.000; usable candle coverage 0.9976), G6 (sign agrees; E_candle -0.0678 vs ref -0.02403). FAILED: G2 share 0.335 (need >=0.80, n=1988); G3 share 0.472 (need >=0.95); G4 B_candle 0.03193 vs 0.02572 (tol 0.003, n=10675); G5 H_candle 0.090 vs 0.04 (tol 0.005); G7 tau bucket [24,48) median half-spread 0.065 vs 0.03 (other buckets ok). Artifact: exp_output/EXP-035-BOARD-SURVEY-SPORTS/gate_result.json. |
 | Why it matters | Per pre-registration, any failure voids every candle-derived number. EXP-035 stops after D1; no D2-D7 outcome statistic may be computed from candles. The candle-based E is more negative than the archive's (-0.068 vs -0.024) but is VOID and must not be cited as evidence either way. |
 | Disposition | Hand back to operator. Do not alter G1-G7 thresholds. Open questions (not tested): whether hourly OHLC close is a different object from the archive's first-seen quote (a design issue the pre-registration did not anticipate), vs a code defect in evaluate. Both need operator decision before any re-registration via AMENDMENT. Candle-vs-archive discrepancy also bears on the archiver docstring correction (GG-329): history is reachable but not equivalent to the archive, so the docstring edit was NOT made. |
+
+</details>
+
+### GG-340 — Frozen gate pre-registrations can leave a lookback/window unspecified, so a 'none exists' outcome is implementable as a window artifact
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-340 |
+| Category | Instrument validity (pre-registration drafting) |
+| What was found | EXP-034 D1(b) frozen text did not fix the candle lookback; the runner chose 1 hour and 28/84 pairs came back UNMATCHED. A post-hoc 30-day hourly lookback (diagnostic only, verdict unchanged) made the prevailing close equal the live read for all four thin tickers. Source: EXP034_NONSPORTS_CONTROL_RESULTS_2026-10-02.md item 1. |
+| Why it matters | A gate whose pass/fail depends on an unstated window is decided by the implementer, not the pre-registration. Thin books go 10-25h without a candle, so the default matters. |
+| Disposition | Every future gate pre-registration must state lookback bounds and the no-data rule explicitly. EXP-034's original FAIL stays on record; the corrected re-test is a new amendment (W47.1 D3). Not a code fix. |
+
+</details>
+
+### GG-341 — exp_output raw stores are gitignored, so experiment quote/candle files are not reproducible from git (hash in manifest only)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-341 |
+| Category | Reproducibility |
+| What was found | EXP-034's quote file is gitignored; D1B_SAMPLE_MANIFEST.md carries only its sha256. Related to but distinct from GG-331, which is PRICE_ARCHIVE specifically. Source: EXP034_NONSPORTS_CONTROL_RESULTS_2026-10-02.md item 3. |
+| Why it matters | A reviewer cannot re-run a comparison from a clone; the hash proves a file existed, not what it contained. |
+| Disposition | Decide per experiment which raw stores are committed (small) vs hashed and archived elsewhere. Not decided here. |
+
+</details>
+
+### GG-342 — Remote branch hygiene: a stale pre-rebase branch, 33 unmerged remote branches, ~8 of them content-landed under other SHAs and unlandable by ancestry
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-342 |
+| Category | Repository hygiene |
+| What was found | Remote branch session/...-kalshi-nonsports-control holds a stale pre-rebase line (0f5de4e); EXP-034 work was pushed to the -w46 branch instead of force-pushing (EXP034_NONSPORTS_CONTROL_RESULTS_2026-10-02.md item 5). 33 unmerged remote branches, ~8 landed under other SHAs and so read unlanded forever (WAVE45_land_the_record_results.md item 11). |
+| Why it matters | Merge-confirmation by ancestry (claim_session.sh) reports content-landed work as unlanded, so closure state is unreliable for those branches. |
+| Disposition | Needs a content-equivalence landed check and an operator-approved prune. No branch deleted here. |
+
+</details>
+
+### GG-343 — SemanticFloorViolation Step 4 check is a cumulative whole-log count, not recency-windowed (same defect class as GG-085)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-343 |
+| Category | Monitoring validity |
+| What was found | Step 4 greps the whole paper_mlb_cron.log; 2026-10-02 count was 1 with no way to tell from the count when it occurred. Source: W45_462_sync_and_diagnose_results.md item 4; WAVE45_land_the_record_results.md item 4. |
+| Why it matters | A cumulative count alarms forever after one true positive and cannot show a fresh failure. |
+| Disposition | Window the check by recency as GG-085 did for staleness. CLAUDE.md protocol text is not edited here. |
+
+</details>
+
+### GG-344 — audit_mlb_t4.jsonl CONTAMINATION_HALT count (162,168) is unusable as a health signal
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-344 |
+| Category | Monitoring validity |
+| What was found | Step 4's CONTAMINATION_HALT count was 162,168 on 2026-10-02; the protocol itself calls non-zero 'expected at game-end', so the number cannot distinguish healthy from broken. Source: W45_462_sync_and_diagnose_results.md item 5. |
+| Why it matters | A signal that is always non-zero carries no information; a real contamination event would be invisible in it. |
+| Disposition | Replace with a recency-windowed, non-game-end count or retire the line. Not changed here. |
+
+</details>
+
+### GG-345 — Step 4 has no season awareness and will false-alarm through the off-season (0-player T1 runs, T4 cycle-log age, feature CSV stuck at 2026-09-27)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-345 |
+| Category | Monitoring validity |
+| What was found | 2026-10-02: T1 MLB shows 0 players on recent runs, T4 cycle-log last row 2026-10-02T02:53Z (age 19h), feature CSV stuck at 2026-09-27 post regular season. 46.2 diagnosed these as EXPECTED (season end) but the protocol cannot tell expected from broken. Source: W45_462_sync_and_diagnose_results.md items 6 and 8; EXP034_NONSPORTS_CONTROL_RESULTS_2026-10-02.md item 6; WAVE45_land_the_record_results.md item 4. Diagnosis of those anomalies is dispositioned there, not re-done. |
+| Why it matters | The protocol says 0 players in season is a signal failure; with no calendar it either cries wolf all winter or trains sessions to ignore it, which is how GG-049 stayed hidden. |
+| Disposition | Add a schedule-aware expectation (games on slate yes/no) to Step 4. Not changed here. |
+
+</details>
+
+### GG-346 — PIPE-08 schedule validator fails with HTTP 406: 110 occurrences since 2026-07-03
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-346 |
+| Category | Pipeline integrity |
+| What was found | MM/DD/YYYY date URL returns 406, ISO date returns 200, per 46.2's diagnosis. Source: W45_462_sync_and_diagnose_results.md item 1. |
+| Why it matters | A validator that fails 110 times and does not stop the pipeline is either dead or unread; both mean a guard is not guarding. |
+| Disposition | Register only; fix is out of this block (Rule 11). |
+
+</details>
+
+### GG-347 — Unattributed manual restarts of t4-mlb (and dashboard), plus an ssh poller from 73.231.159.158
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-347 |
+| Category | Operational provenance |
+| What was found | t4-mlb manually restarted 10/2 at 19:42, 21:09, 21:17, 21:45 UTC and 10/1 01:35-02:52 UTC by an unidentified actor (W45_462_sync_and_diagnose_results.md item 2). Manual dashboard restarts unrecorded; ssh poller from 73.231.159.158 seen (WAVE45_land_the_record_results.md item 6). |
+| Why it matters | Restarts reset session_id and counters and can change what a process reads; unrecorded ones break attribution of any T4 result window (compare GG-321). |
+| Disposition | Needs the operator to say whether these were theirs, and a place to log manual service actions. Not investigated further here. |
+
+</details>
+
+### GG-348 — t4-mlb.timer is inactive with no NEXT; last fired 2026-07-04
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-348 |
+| Category | Operational integrity |
+| What was found | systemd shows the timer inactive since 2026-07-04 while t4-mlb.service is active. Source: W45_462_sync_and_diagnose_results.md item 3. |
+| Why it matters | If the timer was meant to run something, it has not for three months; if not, it is dead config. |
+| Disposition | Register only; owner to confirm intent. |
+
+</details>
+
+### GG-349 — Stale .git/index.lock held open by a Virtualization XPC host process blocks all shared-tree git writes; recurrence unknown
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-349 |
+| Category | Tooling |
+| What was found | WAVE45_land_the_record_results.md item 1; W45_462_sync_and_diagnose_results.md item 7. Lock removed by 46.2; cause is a VM host process, not a git session. |
+| Why it matters | A silently held lock blocks every concurrent session in the shared tree and tempts a blind lock delete. |
+| Disposition | Register only; recurrence unmonitored. |
+
+</details>
+
+### GG-350 — Shared tree drift: 140 commits behind, 6 conflicting dirty tracked files, untracked file colliding with a tracked upstream path, untracked files remaining after sync
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-350 |
+| Category | Concurrent-session safety |
+| What was found | WAVE45_land_the_record_results.md item 2; W45_462_sync_and_diagnose_results.md item 9 (three untracked files remain after 46.2). git status at this session start still lists OPERATOR_CONSOLE.md, ACTIVE_QUEUE.md, ACTIVE_QUEUE_ARCHIVE.md modified and three untracked files. |
+| Why it matters | Unowned dirty state in main is the exact GG-101 collision surface. |
+| Disposition | Operator or owning session decides each file; nothing touched here. |
+
+</details>
+
+### GG-351 — MEMORY_BANK Compass OS Health line is 5159 chars, over the 3000-char T-334 threshold
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-351 |
+| Category | Documentation hygiene |
+| What was found | session_guard.sh flags it every session (line 1116). Source: WAVE45_land_the_record_results.md item 5. |
+| Why it matters | Inline blob growth is the pre-T-334 failure mode. |
+| Disposition | Cut over to a dated archive header; not done here. |
+
+</details>
+
+### GG-352 — macOS has no `timeout`; protocol and test snippets that use it exit 127 silently
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-352 |
+| Category | Tooling |
+| What was found | Source: WAVE45_land_the_record_results.md item 8. |
+| Why it matters | A silent 127 reads as a check that found nothing. |
+| Disposition | Document gtimeout or a python wrapper; not changed here. |
+
+</details>
+
+### GG-353 — Claim rows with open-ended or TBD ID ranges give no collision protection and block later claims
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-353 |
+| Category | Concurrent-session safety |
+| What was found | WAVE45_land_the_record_results.md item 9. Observed at this session: T-605's unclosed claim 'GG-334+' made claim_session.sh refuse a GG-334 claim, and concurrent T-607/T-608 claims landed while this block claimed, forcing a re-claim at T-615/GG-340. Related: GG-322, GG-162. |
+| Why it matters | TBD ranges do not reserve anything, and open-ended ranges reserve everything. |
+| Disposition | Require explicit closed ranges at claim time; not changed here. |
+
+</details>
+
+### GG-354 — Full test suite exceeds 10 minutes in the foreground and there is no documented fast subset
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-354 |
+| Category | Tooling |
+| What was found | Source: WAVE45_land_the_record_results.md item 10. |
+| Why it matters | Sessions either skip tests or burn context waiting. |
+| Disposition | Document a fast subset per area; not done here. |
+
+</details>
+
+### GG-355 — Nothing checks that a closing session produced Q1-Q7 evidence
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-355 |
+| Category | Protocol enforcement |
+| What was found | 46.2 closed without running or showing Q1-Q7; its own summary lists this. Source: W45_462_sync_and_diagnose_results.md item 10. |
+| Why it matters | Session-start protocol exists because model assertions of 'clean' are not evidence (GG-001); closure is not gated on it. |
+| Disposition | Register only. |
+
+</details>
+
+### GG-356 — Transient GitHub push failure ('unable to write file ...pack') with no retry guidance
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-356 |
+| Category | Tooling |
+| What was found | Single transient occurrence. Source: WAVE45_land_the_record_results.md item 7. Not shown to be recurring. |
+| Why it matters | Low unless it recurs; a push that fails mid-close-out risks an unpushed handoff. |
+| Disposition | Observation only; registered because the item was listed, not because a defect is established. |
 
 </details>
