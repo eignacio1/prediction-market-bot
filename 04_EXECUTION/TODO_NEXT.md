@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-02T19:45:00Z (EXP-034 — EXP-034 non-sports control arm PARTIAL: D0/D1(a) done, D1(b) tolerance frozen + sampler running, fee PDF blocked; D2-D6 not started) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_1945.md` for full session detail.
+**Last reviewed:** 2026-10-02T21:15:00Z (T-604 — EXP-035 sports board survey PARTIAL: Part 1 gate pre-registered, back-capture run, G1-G7 not yet evaluated; D2-D7 deferred.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2115.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

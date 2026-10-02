@@ -707,3 +707,4 @@
 | 2026-10-02T19:41:08Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge (HEAD 0f5de4e not on origin/main) — PARTIAL: D0/D1(a) done, D1(b) sampler running, D2-D6 pending |
 | 2026-10-02T19:52:35Z | W45-land-the-record | CLOSED — Wave 45 landed queue/archive/carry-forward/paste-in (fa99794); dashboard probe clean; D2/D3/D1(b) partial, see results. (commit `fa99794`) |
 | 2026-10-02T20:59:33Z | W45-land-the-record | CORRECTION to the 2026-10-02T19:52:35Z CLOSED row — status is PARTIAL, not CLOSED: record landed (fa99794); D2, D3 tests and D1(b) remain OPEN. Appended by the EXP-035 session at the operator's request; the original row is unedited. (append-only correction) |
+| 2026-10-02T21:20:00Z | T-604 | PARTIAL, not CLOSED — EXP-035: Part 1 pre-registered, scripts pushed (4a35067), back-capture store local; G1-G7 not evaluated, tests/D2-D7 open. Handoff: SESSION_HANDOFF_20261002_2115.md |
