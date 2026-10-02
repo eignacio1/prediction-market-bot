@@ -703,3 +703,4 @@
 | 2026-10-02T19:28:30Z | EXP-034 (verify), no GG/T/ADR writes | STANDARD: Kalshi NON-SPORTS control arm — board_survey_nonsports; EXP claimed at run time; single deliverable = results summary |
 | 2026-10-02T19:29:01Z | TBD (no GG/T writes; GG-log owned by 45.1) | Wave 45 land-the-record: land queue/archive/carry-forward/paste-in; predecessor merges; branch estate table; dashboard probe (STANDARD, one deliverable: landed record + report) |
 | 2026-10-02T19:29:35Z | EXP-035, GG-329+, T-604 | STANDARD: Kalshi sports board survey (net-of-fee, candle back-capture) — board_survey_sports; single deliverable = EXP results summary; owns GG-log + DECISION_LOG this wave |
+| 2026-10-02T19:40:51Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge — EXP-034 non-sports control arm PARTIAL: D0/D1(a) done, D1(b) tolerance frozen + sampler running, fee PDF blocked; D2-D6 not started (commit `e06615d`) |
