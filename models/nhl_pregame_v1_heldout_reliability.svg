@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="840" font-family="sans-serif" font-size="11">
+<rect x="40" y="30" width="340" height="340" fill="none" stroke="#888"/>
+<line x1="40" y1="370" x2="380" y2="30" stroke="#bbb" stroke-dasharray="4"/>
+<text x="40" y="20">ML_home held-out 2025-26 (n=1328, ECE=0.056)</text>
+<circle cx="163.6" cy="219.2" r="4" fill="#1f6feb"/>
+<circle cx="192.8" cy="214.1" r="4" fill="#1f6feb"/>
+<circle cx="205.6" cy="214.1" r="4" fill="#1f6feb"/>
+<circle cx="216.9" cy="196.2" r="4" fill="#1f6feb"/>
+<circle cx="226.6" cy="191.1" r="4" fill="#1f6feb"/>
+<circle cx="236.1" cy="211.5" r="4" fill="#1f6feb"/>
+<circle cx="246.0" cy="206.4" r="4" fill="#1f6feb"/>
+<circle cx="256.2" cy="168.0" r="4" fill="#1f6feb"/>
+<circle cx="269.7" cy="158.8" r="4" fill="#1f6feb"/>
+<circle cx="294.5" cy="143.3" r="4" fill="#1f6feb"/>
+<text x="40" y="390">predicted p (x) vs observed freq (y)</text>
+<rect x="460" y="30" width="340" height="340" fill="none" stroke="#888"/>
+<line x1="460" y1="370" x2="800" y2="30" stroke="#bbb" stroke-dasharray="4"/>
+<text x="460" y="20">PL_home_1.5 held-out 2025-26 (n=1328, ECE=0.033)</text>
+<circle cx="516.1" cy="301.0" r="4" fill="#1f6feb"/>
+<circle cx="534.9" cy="303.5" r="4" fill="#1f6feb"/>
+<circle cx="544.5" cy="278.0" r="4" fill="#1f6feb"/>
+<circle cx="553.1" cy="265.2" r="4" fill="#1f6feb"/>
+<circle cx="560.5" cy="288.2" r="4" fill="#1f6feb"/>
+<circle cx="568.7" cy="272.9" r="4" fill="#1f6feb"/>
+<circle cx="577.9" cy="275.4" r="4" fill="#1f6feb"/>
+<circle cx="587.2" cy="242.2" r="4" fill="#1f6feb"/>
+<circle cx="600.7" cy="243.8" r="4" fill="#1f6feb"/>
+<circle cx="629.4" cy="202.6" r="4" fill="#1f6feb"/>
+<text x="460" y="390">predicted p (x) vs observed freq (y)</text>
+<rect x="40" y="450" width="340" height="340" fill="none" stroke="#888"/>
+<line x1="40" y1="790" x2="380" y2="450" stroke="#bbb" stroke-dasharray="4"/>
+<text x="40" y="440">TOT_5.5 held-out 2025-26 (n=1328, ECE=0.063)</text>
+<circle cx="189.7" cy="613.6" r="4" fill="#1f6feb"/>
+<circle cx="200.5" cy="593.2" r="4" fill="#1f6feb"/>
+<circle cx="206.2" cy="608.5" r="4" fill="#1f6feb"/>
+<circle cx="211.3" cy="585.5" r="4" fill="#1f6feb"/>
+<circle cx="216.0" cy="575.3" r="4" fill="#1f6feb"/>
+<circle cx="220.9" cy="603.4" r="4" fill="#1f6feb"/>
+<circle cx="225.5" cy="593.2" r="4" fill="#1f6feb"/>
+<circle cx="230.5" cy="621.3" r="4" fill="#1f6feb"/>
+<circle cx="236.4" cy="571.1" r="4" fill="#1f6feb"/>
+<circle cx="248.0" cy="583.9" r="4" fill="#1f6feb"/>
+<text x="40" y="810">predicted p (x) vs observed freq (y)</text>
+<rect x="460" y="450" width="340" height="340" fill="none" stroke="#888"/>
+<line x1="460" y1="790" x2="800" y2="450" stroke="#bbb" stroke-dasharray="4"/>
+<text x="460" y="440">TOT_6.5 held-out 2025-26 (n=1328, ECE=0.064)</text>
+<circle cx="573.2" cy="639.2" r="4" fill="#1f6feb"/>
+<circle cx="583.2" cy="623.8" r="4" fill="#1f6feb"/>
+<circle cx="588.6" cy="646.8" r="4" fill="#1f6feb"/>
+<circle cx="593.5" cy="631.5" r="4" fill="#1f6feb"/>
+<circle cx="598.0" cy="608.5" r="4" fill="#1f6feb"/>
+<circle cx="602.6" cy="652.0" r="4" fill="#1f6feb"/>
+<circle cx="607.3" cy="626.4" r="4" fill="#1f6feb"/>
+<circle cx="612.1" cy="646.8" r="4" fill="#1f6feb"/>
+<circle cx="618.0" cy="612.3" r="4" fill="#1f6feb"/>
+<circle cx="629.5" cy="617.4" r="4" fill="#1f6feb"/>
+<text x="460" y="810">predicted p (x) vs observed freq (y)</text>
+</svg>
