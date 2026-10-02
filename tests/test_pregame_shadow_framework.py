@@ -137,8 +137,8 @@ def test_scoring_cluster_bootstrap_and_first_row_rule():
                          "yes_ask": 0.51, "y": 1.0 if g % 2 == 0 else 0.0, "game_key": f"G{g}"})
     s = scoring.score_cell(rows)
     assert s["n_games"] == 30 and s["n_rows"] == 90
-    assert s["delta_brier_vs_market"]["ci95"][1] < 0       # perfect-ish model beats market
-    assert s["delta_brier_vs_climatology"]["mean"] < 0
+    assert s["delta_brier_vs_market"]["ci95"][0] > 0       # model beats market => delta POSITIVE (brief convention)
+    assert s["delta_brier_vs_climatology"]["mean"] > 0
     dup = rows + [dict(rows[0], ts_utc="2026-10-04T00:00:00", p_yes=0.01)]
     assert len(scoring.first_row_per_market(dup)) == 90
     assert scoring.first_row_per_market(dup)[0]["p_yes"] != 0.01  # earliest row wins
