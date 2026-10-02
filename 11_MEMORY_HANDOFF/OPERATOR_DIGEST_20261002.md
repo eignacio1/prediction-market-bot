@@ -6,3 +6,4 @@
 **EXP-035 (sports board survey), 2026-10-02:** Partly done. The test plan for checking the data tool is locked in and the history download is nearly finished, but I haven't yet checked it against what we already recorded, so I can't say whether the downloaded data can be trusted. The rest of the survey needs a fresh session. Still no real money at risk. Separately: the test run you asked about passed, so the docs-only landing is cleared but I haven't done it.
 
 **EXP-035 update:** the data check failed. The downloaded history doesn't match what we recorded, so I've stopped the survey and set that data aside. No money, models or trades touched. Next step is your call on whether to redesign the check.
+- T-606 (auto): W45 46.2 sync-and-diagnose: shared tree ff'd to origin/main, queue + ADR-0067 docs landed, Step 4 anomalies all EXPECTED.

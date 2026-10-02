@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-02T21:35:00Z (T-604 — EXP-035 Part 1 gate FAILED (G2-G5,G7): candle numbers VOID, stopped after D1; GG-333 registered; D2-D7 not run.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2135.md` for full session detail.
+**Last reviewed:** 2026-10-02T22:05:00Z (T-606 — W45 46.2 sync-and-diagnose: shared tree ff'd to origin/main, queue + ADR-0067 docs landed, Step 4 anomalies all EXPECTED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2205.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
