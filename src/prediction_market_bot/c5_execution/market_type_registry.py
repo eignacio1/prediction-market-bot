@@ -839,6 +839,24 @@ def promote_cell_status(
     return new_cell
 
 
+# --- EXP-037 / T-608 (Wave 47.2): NFL pre-game SHADOW cells, flipped via promote_cell_status ---
+# A cell flips to SHADOW only after at least one valid row for it exists in the
+# pregame-shadow ledger (exp_output/PREGAME_SHADOW). SHADOW is evaluate-and-log: no order,
+# position, paper fill or sizing path exists in the pregame_shadow package (enforced by
+# tests/test_pregame_shadow_safety.py); kelly_fraction is untouched (ADR-0048).
+# T1 flipped 2026-10-02 (live Week 5 rows banked: ML 50 / spread 637 / total 475 / team total 646
+# ledger rows). T2 (4-8h) and T3 (15-60min) stay NOT_IMPLEMENTED until their first valid row.
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP037_NFL_PREGAME_SHADOW_PREREGISTRATION_2026-10-02.md.
+_EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = (
+    (MarketType.NFL_MONEYLINE, ExecutionBand.T1_MULTI_DAY),
+    (MarketType.NFL_SPREAD, ExecutionBand.T1_MULTI_DAY),
+    (MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
+    (MarketType.NFL_TEAM_TOTAL, ExecutionBand.T1_MULTI_DAY),
+)
+for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
+    promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
+
+
 # ---------------------------------------------------------------------------
 # Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
 # ---------------------------------------------------------------------------
