@@ -701,3 +701,4 @@
 | 2026-10-01T02:50:38Z | T-602 | MERGED: NO — branch `t602-clean` awaiting merge — T-602 archive self-sufficiency: new read-only settlement + depth writers, proven idempotent on live Kalshi; cron lines drafted (commented), nothing installed or restarted. (commit `934e384`) |
 | 2026-10-01T02:50:58Z | T-602 | CLOSED — merge confirmed, HEAD (84f72b4) is ancestor of origin/main — archive self-sufficiency: settlement + depth writers; cron drafted only |
 | 2026-10-02T19:28:30Z | EXP-034 (verify), no GG/T/ADR writes | STANDARD: Kalshi NON-SPORTS control arm — board_survey_nonsports; EXP claimed at run time; single deliverable = results summary |
+| 2026-10-02T19:40:51Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge — EXP-034 non-sports control arm PARTIAL: D0/D1(a) done, D1(b) tolerance frozen + sampler running, fee PDF blocked; D2-D6 not started (commit `e06615d`) |
