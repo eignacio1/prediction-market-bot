@@ -711,3 +711,4 @@
 | 2026-10-02T21:17:00Z | T-604 | PARTIAL, not CLOSED — EXP-035 Part 1 gate FAILED, candle numbers VOID, stopped after D1 (GG-333); D2-D7 not run. Handoff: SESSION_HANDOFF_20261002_2135.md |
 | 2026-10-02T21:40:22Z | GG-334+, T-605, EXP-035 (continue) | STANDARD: EXP-035 resume (Wave 45 block 46.1) — diagnose Part 1 failure, fee re-score, Gate 2; single deliverable = diagnosis+fee re-score results summary (Gate 2/sports verdict only if reached); owns GG-log+DECISION_LOG |
 | 2026-10-02T21:40:50Z | T-606 (no GG range; gaps reported in summary for 46.1/W47) | STANDARD: Wave 45 block 46.2 sync-and-diagnose — shared-tree sync to origin/main, stale-lock removal, ADR-0067 docs-only landing, Step 4 anomaly diagnosis; single deliverable = results summary (no GG/DECISION_LOG writes) |
+| 2026-10-01T01:42:06Z | T-601 | CLOSED — merge confirmed, HEAD (9f2b837) is ancestor of origin/main — NFL pre-kickoff capture runner merged (PR #155); cron drafted, not installed |
