@@ -701,3 +701,4 @@
 | 2026-10-01T02:50:38Z | T-602 | MERGED: NO — branch `t602-clean` awaiting merge — T-602 archive self-sufficiency: new read-only settlement + depth writers, proven idempotent on live Kalshi; cron lines drafted (commented), nothing installed or restarted. (commit `934e384`) |
 | 2026-10-01T02:50:58Z | T-602 | CLOSED — merge confirmed, HEAD (84f72b4) is ancestor of origin/main — archive self-sufficiency: settlement + depth writers; cron drafted only |
 | 2026-10-02T19:28:30Z | EXP-034 (verify), no GG/T/ADR writes | STANDARD: Kalshi NON-SPORTS control arm — board_survey_nonsports; EXP claimed at run time; single deliverable = results summary |
+| 2026-10-02T19:29:01Z | TBD (no GG/T writes; GG-log owned by 45.1) | Wave 45 land-the-record: land queue/archive/carry-forward/paste-in; predecessor merges; branch estate table; dashboard probe (STANDARD, one deliverable: landed record + report) |
