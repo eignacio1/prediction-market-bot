@@ -710,3 +710,4 @@
 | 2026-10-02T21:20:00Z | T-604 | PARTIAL, not CLOSED — EXP-035: Part 1 pre-registered, scripts pushed (4a35067), back-capture store local; G1-G7 not evaluated, tests/D2-D7 open. Handoff: SESSION_HANDOFF_20261002_2115.md |
 | 2026-10-02T21:17:00Z | T-604 | PARTIAL, not CLOSED — EXP-035 Part 1 gate FAILED, candle numbers VOID, stopped after D1 (GG-333); D2-D7 not run. Handoff: SESSION_HANDOFF_20261002_2135.md |
 | 2026-10-02T22:10:41Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge — EXP-034 non-sports control arm: D1(b) candle gate FAIL as run (56/84, 28 unmatched); candle numbers VOID, D3-D6 not run. (commit `03f1f9c`) |
+| 2026-10-02T22:11:04Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge (HEAD 41ac644 not on origin/main) — D1(b) gate FAIL as run; results on branch ...-control-w46 (41ac644), not merged: origin/main diverged |
