@@ -705,3 +705,4 @@
 | 2026-10-02T19:29:35Z | EXP-035, GG-329+, T-604 | STANDARD: Kalshi sports board survey (net-of-fee, candle back-capture) — board_survey_sports; single deliverable = EXP results summary; owns GG-log + DECISION_LOG this wave |
 | 2026-10-02T19:40:51Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge — EXP-034 non-sports control arm PARTIAL: D0/D1(a) done, D1(b) tolerance frozen + sampler running, fee PDF blocked; D2-D6 not started (commit `e06615d`) |
 | 2026-10-02T19:41:08Z | EXP-034 | MERGED: NO — branch `session/20261002T192711Z-kalshi-nonsports-control` awaiting merge (HEAD 0f5de4e not on origin/main) — PARTIAL: D0/D1(a) done, D1(b) sampler running, D2-D6 pending |
+| 2026-10-02T19:52:35Z | W45-land-the-record | CLOSED — Wave 45 landed queue/archive/carry-forward/paste-in (fa99794); dashboard probe clean; D2/D3/D1(b) partial, see results. (commit `fa99794`) |
