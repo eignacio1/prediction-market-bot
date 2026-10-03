@@ -720,3 +720,4 @@
 | 2026-10-02T23:44:01Z | T-615 | CLOSED — merge confirmed, HEAD (8f86db6) is ancestor of origin/main — Wave 47.1 partial; handoff landed; D3/D4/D5 carried over |
 | 2026-10-02T23:47:05Z | T-607 | CLOSED — merge confirmed, HEAD (cca85ce) is ancestor of origin/main — NHL pregame shadow: cron live on VPS, n=0 scored |
 | 2026-10-03T00:09:56Z | T-621..T-630 | STANDARD: Wave 48.3 eyes-and-nhl — deliverable: real-browser proof+fixes of / and /project dashboards, then NHL hardening (land exp036 prereg, T1 abstentions, team codes); no GG/DECISION_LOG writes, gaps in summary |
+| 2026-10-03T00:10:07Z | T-631 | STANDARD: Wave 48.1 exp037-land-deploy (continues EXP-037 lineage) — whole arc as ONE deliverable: land NFL + MLB postseason shadow on main, deploy+arm shadow crons on VPS, registry flips, results summary; shadow only, no orders/sizing/GG/DECISION_LOG writes |
