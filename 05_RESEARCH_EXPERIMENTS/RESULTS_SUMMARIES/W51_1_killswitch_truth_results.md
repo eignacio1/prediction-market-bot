@@ -27,10 +27,10 @@ Read-only on the VPS. Premises P1-P4 all confirmed.
 `PaperTrader._save()` (`c5_execution/paper_trader.py:328`) is the only writer and runs only inside mutations (`open_position`, `exit_position`, resolution paths). A 0-bet run does not write. Since 2026-08-06 there are no bets (kelly 0.0 under ADR-0048; latest run: 0 placed, 10 rejected by C4) AND no resolutions: **frozen because something broke** (resolver), compounded by nothing new being opened.
 
 ## D4 — Open positions
-`resolve_mlb_cron.log`: 17,064 `HTTPError: 406` from statsapi.mlb.com; every run ends `No positions settled yet`; T4 `0 resolved of 9 (GG-048)`. Kalshi historical endpoint: all 17 `finalized` (16 result `scalar`, 1 `yes`). Resolver gap: GG-440. Nothing resolved/closed/edited.
+`resolve_mlb_cron.log`: 17,064 `HTTPError: 406` from statsapi.mlb.com; every run ends `No positions settled yet`; T4 `0 resolved of 9 (GG-048)`. Kalshi historical endpoint: all 17 `finalized` (16 result `scalar`, 1 `yes`). **Follow-up 2026-10-03:** the 16 `scalar` are cancelled markets (`expiration_value` 'Cancelled'/blank, settled 0.25-0.80), only Henderson 1+ hits is a real outcome (`yes`, a $7.16 loss on our NO). Resolver gap: GG-440; cancellations: GG-450. Nothing resolved/closed/edited.
 
 ## D5 — VERDICT: (d)
-Not tripped, and correctly not tripped by the realized definition (10.60% < 20%); dashboard metric was wrong (26.63%). But the realized figure is 58 days stale and excludes $160.24 of stake already settled on Kalshi; if all 17 lost, realized = 26.6% > 20% (GG-441). Not (c): the engine as defined was not required to trip on the data it holds.
+Not tripped, and correctly not tripped by the realized definition (10.60% < 20%); dashboard metric was wrong (26.63%). But the realized figure is 58 days stale and excludes $160.24 of stake already settled on Kalshi; the original draft claimed that if all 17 lost realized would be 26.6% > 20%; **corrected 2026-10-03: 16 of 17 are Kalshi-cancelled markets, so realized after resolution is ~11.3% (void) to ~12.0% (marked to settlement), not a breach** (GG-441, GG-450). Not (c): the engine as defined was not required to trip on the data it holds.
 
 ## D6 — Fix
 Branch `session/20261003T201912Z-w51-killswitch-truth` @ `6cbe62f`, pushed, NOT merged (merge to main redeploys and restarts t4-mlb, GG-432). Dashboard tile + rail show realized drawdown, open stake separate, FROZEN label after 72h. 178 dashboard tests pass (`test_w51_1_drawdown_truth.py` added; `Live Terminal.html` mirrored for byte-fidelity tests).

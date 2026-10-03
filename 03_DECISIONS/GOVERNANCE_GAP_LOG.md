@@ -4607,11 +4607,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | `run_resolve_mlb.py` (PIPE-05R, 06:30Z daily) logs `HTTPError: 406` from statsapi.mlb.com for every player-gamelog call (17,064 occurrences in `resolve_mlb_cron.log`) and ends each run `No positions settled yet`; T4 emits `[T4][ALERT] 9 eligible position(s) but 0 resolved (GG-048)`. `paper_portfolio_mlb.json` has had no write since 2026-08-06T00:05Z. All 17 open T1 positions (game_date 2026-07-01..07-26, all tagged `aged_open`/`api_no_result_48h`) are `finalized` on Kalshi via `/trade-api/v2/historical/markets/{ticker}` (16 result=`scalar`, 1 result=`yes`); the live `/markets/{ticker}` endpoint returns 404 for them. Settled-but-unresolved = resolver gap. |
 | Why it matters | The ledger's realized P&L, bankroll, drawdown and G6 evidence are frozen at 2026-08-06 while 17 outcomes are already known to the venue. No position was resolved, closed or edited by W51.1. |
 | Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
-| Disposition | Registered only. Fix is a resolution-source change (Kalshi historical settlement and/or non-blocked MLB source), operator/ADR-gated. Note: 16 of 17 settled as `scalar`, which needs interpretation before any P&L is derived. |
+| Disposition | Registered only. Fix is a resolution-source change (Kalshi historical settlement and/or non-blocked MLB source), operator/ADR-gated. Note: 16 of 17 settled as `scalar` = cancelled markets (see GG-450), so they carry no real outcome; how to book them (void / mark to settlement / exclude from G6) is an operator decision. |
 
 </details>
 
-### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it; worst case would breach 20%
+### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it (breach scenario corrected 2026-10-03: ~11-12%, not 26.6%)
 
 **Status:** OPEN · **Severity:** HIGH
 
@@ -4622,8 +4622,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 |---|---|
 | Gap ID | GG-441 |
 | Category | Risk-control blind spot |
-| What was found | Kill switch input is `max(0,-total_realized_pnl)/initial` (`run_mlb_paper_trade.py:670-671`), recomputed from the file each run; no kill-switch state is persisted for T1 (only the T4 file flag `logs/t4_mlb_kill_switch.flag`, absent). Current: realized -106.0099 / 1000 = 10.60% (<20%), not tripped, last cron 2026-10-03 prints `Drawdown 10.6%`. But open stake is $160.243 on markets already finalized; if all 17 lost in full, realized loss = 266.25 = 26.6% > 20%. Roughly $94 of the $160 losing would cross the limit. |
-| Why it matters | Under GG-440 the control reads a number that is 58 days stale by construction, and the metric excludes exactly the exposure that has already settled. Not a trip today; a latent one. Mitigant: Kelly is 0.0 (ADR-0048), so no new stake is added. |
+| What was found | Kill switch input is `max(0,-total_realized_pnl)/initial` (`run_mlb_paper_trade.py:670-671`), recomputed from the file each run; no kill-switch state is persisted for T1 (only the T4 file flag `logs/t4_mlb_kill_switch.flag`, absent). Current: realized -106.0099 / 1000 = 10.60% (<20%), not tripped, last cron 2026-10-03 prints `Drawdown 10.6%`. Open stake is $160.243 on markets already finalized. **CORRECTION 2026-10-03 (W51.1 follow-up):** the original text here said a full loss of all 17 would put realized loss at 26.6% (> 20%). That scenario is not reachable: Kalshi's historical records show 16 of the 17 (stake $153.09) are *cancelled* markets (`expiration_value` 'Cancelled' or blank, result `scalar`, settled at 0.25-0.80), not losses; only Gunnar Henderson 1+ hits (stake $7.16, NO) settled `yes` as a real loss. Approximate realized after resolution (fees/vig ignored): ~11.3% if the 16 are voided, ~12.0% if marked to Kalshi's settlement value. Both are well under 20%; the breach is not reachable from these 17. See GG-450. The structural blind spot below (kill switch cannot see settled-unresolved stake, and reads a 58-day-stale number) is unchanged. |
+| Why it matters | Under GG-440 the control reads a number that is 58 days stale by construction, and the metric excludes exactly the exposure that has already settled. Not a trip today and, per the correction above, not a latent trip from these 17 either; the blind spot would matter for a future book with real unresolved losses. Mitigant: Kelly is 0.0 (ADR-0048), so no new stake is added. |
 | Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
 | Disposition | Registered only; no limit or definition changed (out of scope). Operator decision: whether settled-unresolved stake should count toward the kill-switch quantity. |
 
@@ -4644,5 +4644,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | Tile compared a different quantity to the 20% limit than the one the kill switch reads, overstating drawdown by the open-stake component. |
 | Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
 | Disposition | FIXED ON BRANCH, NOT MERGED: `session/20261003T201912Z-w51-killswitch-truth` @ `6cbe62f` (tile = realized; open stake separate; FROZEN label after 72h; `Live Terminal.html` mirrored; 178 dashboard tests pass). Merge deploys and restarts t4-mlb (GG-432); hand to 51.3 or next wave. GG-431's stale panel is a separate source; this branch does not touch it. |
+
+</details>
+
+### GG-450 — Kalshi cancelled 16 of 17 open T1 KXMLBHIT markets on games that were played; scalar-settled cancellations are unhandled by the resolver design
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-450 |
+| Category | Venue behavior / resolution semantics |
+| What was found | Kalshi `/trade-api/v2/historical/markets/{ticker}` for the 17 open T1 positions: 16 are `finalized` with result `scalar`, `expiration_value` 'Cancelled' (Marte pair: blank) and `settlement_value_dollars` 0.25-0.80 (looks like last price); 1 is `yes`. Several are games that were played (Witt 2026-07-19 and 07-21). Cause of cancellation unknown. Every position also shows `kalshi_order_status: failed: HTTP 410`. |
+| Why it matters | A resolver that maps outcomes to win/loss has no representation for a venue cancellation; any booking choice changes realized P&L and G6 sample counts. T4/KXMLBHIT cells may be exposed to the same cancellations; unmeasured. |
+| Source | W51.1 follow-up (2026-10-03). Scratch evidence only; not committed. |
+| Disposition | Registered only. Operator decision on booking (void / mark / exclude from G6); ADR-gated ledger change; measure cancellation rate across KXMLBHIT before generalizing. |
 
 </details>
