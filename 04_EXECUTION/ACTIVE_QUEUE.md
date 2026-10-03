@@ -3,7 +3,7 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 0a85c6e` (2026-10-03 20:35 UTC).
+**Verified against:** `origin/main = 0a52afb` (2026-10-03 20:50 UTC).
 VPS facts are the 50.2 cleanup terminal's report, not re-verified from here.
 
 | Fact | Value |
@@ -23,11 +23,11 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here.
 
 | Block | Status | Result / next |
 |---|---|---|
-| **51.1** Kill-switch truth | ⚠️ **DONE** — fix on a branch, not live | Kill switch **not tripped**: realized drawdown 10.60%. Dashboard's 26.63% wrongly counted $160 sitting in 17 positions that Kalshi already settled but the bot never recorded (GG-441). If all 17 lost, realized = 26.6% > 20%. Dashboard fix on branch `6cbe62f`. |
-| **51.2** NHL silent drops | ⏳ **RUNNING** | Team codes vs live tickers, parser fix, abstention counters. Branch only. |
+| **51.1** Kill-switch truth | ⚠️ **DONE** — fix on a branch, not live | Kill switch **not tripped**: realized drawdown 10.60%. Dashboard's 26.63% wrongly counted $160 of stake in 17 positions open since Aug 6. Follow-up: Kalshi **cancelled 16 of the 17**, so realized after booking is ~11–12%, under 20% (GG-441, GG-450). MLB resolver is dark — statsapi 406s from the VPS (GG-440). Dashboard fix on branch `6cbe62f`. |
+| **51.2** NHL silent drops | ⚠️ **DONE** — fix on a branch, not live | NHL markets for SJ / TB / LA / NJ (2-letter Kalshi codes) were being silently dropped. Fixed + abstention counters on branch `f822b6b`. GG-403 partial; follow-up T-647. |
 | **51.3** PR #157 merge-ready | ✅ **DONE** | PR #157 now MERGEABLE, CI green, ready for review (head `42a0d0d`). 9 NHL cells have rows (T1, T2, T3 × moneyline, puck line, total). |
 
-**Nothing to paste right now.** Next block is the **landing block** (merge #157, 51.1's dashboard fix, 51.2's branch; flip the 9 NHL cells to SHADOW). It needs no MLB game live — earliest **~8:30 PM PT**. It goes here when that window opens, not before.
+**Nothing to paste right now. Strategic window handing off 2026-10-03 ~1:50 PM PT** — see `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`. Next block is the **landing block** (merge #157, 51.1's dashboard fix, 51.2's branch; flip the 9 NHL cells to SHADOW). It needs no MLB game live — earliest **~8:30 PM PT**. It goes here when that window opens, not before.
 
 The three Wave 51 prompts are in `ACTIVE_QUEUE_ARCHIVE.md` (51.2's while it runs).
 
@@ -37,12 +37,12 @@ The three Wave 51 prompts are in `ACTIVE_QUEUE_ARCHIVE.md` (51.2's while it runs
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 51 — 2 of 3 done · 51.2 running
+### ⚠️ WAVE 51 — all 3 done · 2 branches + PR #157 waiting to land
 
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
-| 51.1 | Kill-switch truth | ⚠️ done, branch not merged | Verdict (d): realized drawdown **10.60%**, not tripped; dashboard's 26.63% = 10.60% realized + 16.02% stake in 17 positions already settled on Kalshi but never resolved — if all lost, realized is 26.6% > 20% (GG-441). Dashboard fix on `6cbe62f`. GG-440..442 | Merge in the landing block |
-| 51.2 | NHL silent drops: 32 team codes vs live tickers, parser fix, abstention counters (GG-403, GG-405) | ⏳ | `nhl_pregame.py`, `scripts/nhl_shadow_eval.py` (branch only) | Same |
+| 51.1 | Kill-switch truth | ⚠️ done, branch not merged | Verdict (d): realized drawdown **10.60%**, not tripped; dashboard's 26.63% = 10.60% realized + 16.02% stake in 17 positions already settled on Kalshi but never resolved — Kalshi cancelled 16 of them, so realized after booking is ~11–12% (GG-441, GG-450). Dashboard fix on `6cbe62f`. GG-440..442 | Merge in the landing block |
+| 51.2 | NHL silent drops | ⚠️ done, branch not merged | SJ/TB/LA/NJ codes were silently dropped; fixed + abstention counters on `f822b6b` | Merge in the landing block |
 | 51.3 | PR #157 merge-ready | ✅ done | PR #157 MERGEABLE, CI green (run 37151320465), head `42a0d0d`; 9 NHL cells have rows | Merge in the landing block |
 | — | ~~51.3 original: land #157 + NHL SHADOW flip~~ | ❌ withdrawn | — | Needed an idle window; becomes the landing block below |
 

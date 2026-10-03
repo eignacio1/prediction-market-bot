@@ -1,277 +1,235 @@
 # Strategic Window — Carry Forward
 
-**Written:** 2026-10-01, at the close of the window that ran Waves 38 → 44.
-**Verified against:** `origin/main = d8d5850`. Every figure below was derived by running a command
-against tracked files, not recalled. Where something is judgment rather than state, it says so.
+**Written:** 2026-10-03 ~20:50 UTC (1:50 PM PT), at the close of the window that ran Waves 45 → 51.
+**Verified against:** `origin/main = 0a52afb` via `git fetch` + GitHub API. Every figure in §4 was derived by
+running a command; where something is judgment rather than state, it says so.
+**Previous version** (Waves 38 → 44, the empirical record through EXP-033): `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-10-01.md`.
+Its §5 "empirical record" still stands and is summarized in §6 here — read the original before proposing any
+modelling work.
 
-> **This file is the operating context for the strategic window.** It is not a status report. It
-> carries the things that exist nowhere else in the repo: why the arc bent where it did, what has
-> already been disproved, and the traps that cost the last window real time.
+> **This file is the operating context for the strategic window.** It carries what exists nowhere else in the
+> repo: how the operator wants to work right now, what the last window got wrong, and the traps that cost time.
 
 ---
 
 ## 1. The role
 
-The strategic window is **eyes, not hands**. It does not execute build work. It:
+The strategic window **directs; terminals execute.** It:
 
-1. Derives true state from tracked files at `origin/main` — never from a terminal's prose summary.
-2. Writes complete paste-in prompt blocks into `04_EXECUTION/ACTIVE_QUEUE.md`.
-3. Verifies the previous wave against tracked files before writing the next.
-4. Routes findings, verdicts and decisions to the operator. It does not hand him commands to run.
+1. Derives true state from tracked files at `origin/main` — never from a terminal's prose, never from recollection.
+2. Writes paste-in prompt blocks into `04_EXECUTION/ACTIVE_QUEUE.md` and gives them to the operator in chat.
+3. Verifies each block's result against tracked files when he says it's done, and updates the queue.
+4. Routes findings, verdicts and decisions to the operator. **Never hands him commands to run.**
 
-**Operator's standing framing, in his words:** *"I'm eyes and ears on the project not the plumbing —
-that's for you and the terminals to do."* Sandbox / paper / demo actions are plumbing: handle them, do
-not escalate. **Only actions touching real capital are his.**
+Operator, in his words: *"I'm eyes and ears on the project not the plumbing — that's for you and the
+terminals to do."* Sandbox / paper / demo actions are plumbing: handle them. **Only real capital is his.**
+He wants blunt, short answers; candor about pace and strategic error, not just defects.
 
----
-
-## 2. Wave construction — the rules, and why each exists
-
-- **Three blocks per wave. Never four.** Operator directive 2026-09-15. A sequencing note is not a
-  fence; blocks fire concurrently.
-- **Each block carries its workstream to a measured verdict.** Operator directive 2026-09-30, given
-  because the window had been splitting one job across three waves — build an instrument in one wave,
-  wire it in another. *"These terminal windows can take on and should take on more work."* Blocks are
-  now LARGE and stop only at a real governance boundary: an operator decision on capital/sizing/pool
-  contents, a model change needing its gate, an unaccepted ADR, or a permission control. **Caution is
-  not a boundary.**
-- **Disjoint file surfaces, stated explicitly in the queue.** Exactly one block per wave owns
-  `GOVERNANCE_GAP_LOG.md` and `DECISION_LOG.md`; the others write findings into their results summary
-  for later registration.
-- **Deliverable 0 in every block:** land un-landed predecessors, sync the shared tree, paste
-  before/after SHAs. **The landing step is the recurring failure mode**, not the work itself.
-- **Pre-register before measuring, and push the pre-registration as its own commit.** This is the
-  single most valuable habit the project has. It is why EXP-028's void-flag, EXP-029's HARMFUL and
-  EXP-032's NEAR could not be quietly relabelled afterwards.
-- **Write the stop condition into the arc, in advance.** Every wave since 39 has pre-registered what
-  result would stop or redirect the arc. Three have fired. None were argued with after the fact.
-- **Invariants on the queue file:** exactly three fenced blocks (`grep -c '^```'` returns 6), and
-  **ASCII only inside fences**. A fourth fence means something is wrong — stop.
-- Closed prompts move **verbatim** to `ACTIVE_QUEUE_ARCHIVE.md` *before* the queue rotates. Wave 33's
-  prompts were once deleted without archiving; don't repeat it.
+**How he runs terminals now:** local Claude Code desktop sessions on his Mac (the repo is at
+`~/Documents/Claude/Projects/Prediction Markets`). `claude --cloud` is **not** available in his terminal — don't
+write launch commands for it. He pastes each block into its own session.
 
 ---
 
-## 3. Traps that cost the last window real time
+## 2. How waves are built — current rules (several changed this window)
 
-- **This window cannot `git fetch` and cannot push.** `origin/main` is frozen at the last terminal's
-  fetch. Never report "did not land" — report *"not visible at my ref `<SHA>`, which may be stale."*
-- **Derive from `origin/main`, not from local `main`.** The shared worktree is routinely dozens of
-  commits behind. I once read `rev-list --left-right` backwards and reported the tree as *ahead* when
-  it was 28 *behind*. Check the direction.
-- **`device_commit_files` silently no-ops on its first call, often.** It returns `{"written":[...]}`
-  and the file is unchanged. **Always commit, then `md5sum` on the device against the staged file, and
-  re-commit if they differ.** This is in no documentation and it will bite.
-- **The absolute `devicePath` form sometimes fails where `~/...` succeeds.** Prefer `~/Documents/...`.
-- Files written to `/mnt/user-data/outputs/` with `Write` or `Edit` appear in the chat automatically;
-  a file placed there by `cp` needs `SendUserFile`.
+- **Blocks are ~30 minutes, hard stop at 45.** Operator directives 2026-10-02 17:03 and 17:09 PT, after he cut three
+  2-hour blocks short and then rejected 75 minutes (*"none of these tasks better take 75 fucking minutes"*).
+  **This supersedes the 2026-09-30 "LARGE blocks" rule** in the previous carry-forward. Cut scope to fit the clock;
+  one job per block, done completely; a block landing `src/` code budgets ~11 min for the full suite.
+- **Never give him a block he can't run right now.** 2026-10-03 13:19 PT: *"don't give me a prompt block if I
+  can't run it now."* A block that needs a future window (idle MLB, a game settling) is issued when that window
+  opens — not before, and not with a "paste after 8:30 PM" label.
+- **Waiting is not work.** Long fetches, multi-hour samplers, slate-watching go to the VPS as cron/detached jobs
+  under their own authorization; a later block reads the output.
+- **Three blocks per wave, never four.** Disjoint file surfaces, stated in the queue's "Touches" column. Concurrent.
+- **Queue layout (status first)** — operator, 2026-10-03: the queue was "stale" because status sat at the bottom and
+  closed blocks still showed prompts. Current layout: header facts → **NOW** table (each block: status + one-line
+  result) → **Sequencing track** (one table per wave, closed waves kept as rows) → directives → standing rules →
+  decisions → DO NOT. Prompt bodies appear only for blocks to paste now; closed AND in-flight prompts move
+  **verbatim** to `ACTIVE_QUEUE_ARCHIVE.md`. Fences: `grep -c '^```'` = 2 × blocks-to-paste; ASCII only inside fences.
+- **Update the queue when every block closes**, not at wave end. He reads it as his status board.
+- **Give the blocks in chat as well**, each in its own fence, ready to paste.
+- **No pre-assigned T-/GG-/ADR- numbers.** Blocks claim at run time via `scripts/claim_session.sh`.
+- **Pre-register before measuring**; stop conditions written into the arc in advance.
+- **Deliverable 0 in every block:** confirm base, land un-landed predecessors where allowed.
 
 ---
 
-## 4. State at handoff
+## 3. Traps — the ones that cost this window real time
+
+- **`deploy.yml` restarts `t4-mlb` and `pmbot-web-dashboard` on EVERY push to main that touches any file outside
+  the 9 doc folders** (`00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS
+  07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF`). That was the "who restarted t4-mlb"
+  mystery (GG-432). **Until the operator decides GG-432, code reaches main only when no MLB game is live**:
+  Stats API shows none In Progress, T4 cycle log idle > 15 min, no first pitch within 60 min. Docs-only pushes are
+  always safe. MLB postseason runs through the World Series; the operator wants the MLB arms kept running.
+- **His local folder cannot pull from GitHub** (no credentials in the device shell; `git fetch` fails with
+  "could not read Username"). When this window pushes, his folder goes stale and he sees an old queue. Fix that
+  worked: `git bundle create <outputs>/sync.bundle <his-HEAD>..origin/main` → `device_commit_files` into his folder
+  → device shell: `git bundle verify`, `git fetch <bundle> +refs/remotes/origin/main:refs/remotes/origin/main`,
+  `git merge --ff-only origin/main`, remove the bundle. His terminal sessions also fetch into the same `.git`,
+  so after one of them runs, a plain `git merge --ff-only origin/main` in his folder may be enough.
+- **Never write a tracked file directly into his folder** to "update" it — the working copy then differs from
+  HEAD and every later `git pull` aborts ("local changes would be overwritten"). Tested 2026-10-03.
+- **Deletion in his folder.** The device shell can't delete by default; git needs to delete its own lock files,
+  so a pull without delete permission leaves a stale `.git/index.lock` (this window did exactly that once and had
+  to remove it). Delete permission is per session (`device_request_delete_permission`, folder root only); it was granted 2026-10-03 for this purpose and must be re-requested in a new window. **Operator: "Don't fucking delete
+  anything that's important."** Delete nothing but your own temp files; say exactly what you deleted.
+  His folder carries his own uncommitted work: `03_DECISIONS/OPERATOR_CONSOLE.md` (modified), `Visual Dashboard.html`,
+  `Visual Dashboard.prev-handbuilt.html`, `Reload Dashboard.command`, `04_EXECUTION/CLOUD_LAUNCH_W49.md`,
+  `04_EXECUTION/_w33_recovered.md`. Never touch them.
+- **Use read-only git in his folder** (`git --no-optional-locks ...`) except for a deliberate fast-forward.
+- **`device_commit_files` sometimes silently writes an older version.** Commit, `md5sum` on the device against
+  the staged file, re-commit if they differ.
+- **A terminal's prose is a claim.** 50.2 reported PR #157 "held"; GitHub showed it also *unmergeable* (conflicts),
+  which the report never said. Check GitHub, not the summary.
+
+---
+
+## 4. State at handoff (derived 2026-10-03 ~20:45 UTC)
 
 | Fact | Value |
 |---|---|
-| `origin/main` | **d8d5850** (2026-10-01) |
-| Highest GG / T / ADR | **GG-326** · **T-603** · **ADR-0069** |
-| Live gap entries | **138** · **119 OPEN** |
-| Unaccepted ADRs | **0067** (append-only log), **0068** (band doctrine), **0069** (game-key correlation group) — all PROPOSED |
-| Cells | 92 · 22 bands · **1 ACTIVE** (T4M-PROJ), and it is formally MISFILED |
-| Countable evidence | **42 rows**; **1,694 recoverable** on operator sign-off |
-| Capital at risk | **$0.** `kelly_fraction = 0.0` on every live band since July. Demo venue only. |
-| Price archive | ~2.12 M rows · 14 families · 2026-08-01 → 10-01 |
-| Live terminal | Landed byte-faithful, tested. **VPS still serves the old page** — restart unauthorized. |
+| `origin/main` | **0a52afb** |
+| Highest GG / T / ADR / EXP | **GG-450** · **T-653** claimed · **ADR-0070** (PROPOSED) · **EXP-037** |
+| Gap log | 197 live entries · **178 OPEN** (`grep -cE '^\*\*Status:\*\* OPEN\b'`) |
+| Cells (registry) | 92 · ACTIVE 1 (T4M-PROJ, MISFILED) · SHADOW 3 (MLB player-hits T1–T3) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 85 |
+| Actually logging in shadow | MLB player-hits T1–T3; **NHL 9 cells** (ML / puck line / total × T1, T2, T3 — 51.3's table: 1,393 rows, T3 settled 178) but registry still says NOT_IMPLEMENTED; **NFL 12 + MLB postseason 12 game cells** (EXP-037) armed 2026-10-03 ~20:02 UTC, first NFL T1 firing 2026-10-04 00:05 UTC |
+| Capital | **$0.** `kelly_fraction = 0.0` on every band. Demo venue only. |
+| VPS | HEAD `eb2d143`; `pmbot-web-dashboard` running `077558b` code. Crontab backup `/root/crontab.bak.20261003T200240Z`. |
+| Waiting to land (code, need idle window) | **PR #157** head `42a0d0d` — MERGEABLE, CI green, ready for review (process fixes GG-419/427/428 + GG-400..429 triage; no `src/`). **51.1 branch** `session/20261003T201912Z-w51-killswitch-truth` @ `6cbe62f` (dashboard drawdown fix, 178 dashboard tests). **51.2 branch** `session/20261003T201919Z-w51-nhl-team-codes` @ `f822b6b` (NHL SJ/TB/LA/NJ 2-letter code drop fixed + abstention counters; follow-up T-647). |
+| Operator's folder | fast-forwarded to `d956fb8` at 20:30 UTC; behind main again by the 51.x close-outs |
 
 ---
 
-## 5. The empirical record — read this before proposing anything
+## 5. Where the arc is
 
-**This is the most valuable section in the file.** Every line is a pre-registered result. Do not
-re-ask a question that is already answered here, and do not re-cut data to rescue one.
+**After Wave 44's stop condition fired** (venue efficient net of cost across every structure measured), the
+operator chose **"start flyin"**: coverage of cells, **pre-game first**, accepting generality over edge — with
+predictions **pre-registered** so a thin-edge result is informative, not explained away. 92 cells total; the goal
+is to get as many as possible logging honestly in shadow, then let pre-registered rules decide each one.
 
-### Proven
+**What Waves 45–51 did:**
 
-- A 16-feature pre-game tree beats **climatology** by ΔBrier **+0.0052** [.00438,.00601] over 1,414
-  games, and beats the one-line shrunk-BA rule by **+0.0036**. Depth earns its complexity. (EXP-028)
-- MLB T4M-PROJ provenance reconstructs to **13 cited windows**, formula source hash identical across
-  all 12 commits, and **verifies offline 13/13** from an in-repo snapshot. (T-592, T-595)
-- The archive's books are **exactly complementary** — `no_ask = 1 − yes_bid`, zero residual on all
-  2.125 M rows. YES and NO cost the same; they differ only in *availability*. (EXP-032)
-- **H is a strong function of time.** The half-spread falls an order of magnitude as the start
-  approaches: KXMLBF7 20c → 1c, KXMLBTEAMTOTAL 4c → 0.5c. (EXP-032)
-
-### Disproven
-
-- **T4 latency thesis** — NOT SUPPORTED at the current feature set. (T-569)
-- **NFL EPA splits** — no detectable difference; every interval spans zero. (ADR-0066)
-- **Pre-game model vs the market** — **HARMFUL.** ΔBrier −0.00393, CI [−.00629,−.00152], 215 games.
-  The corrected placebo (backward +.00494 vs forward +.00484, **ratio 1.02**) showed the model's skill
-  is time-symmetric persistence — player role and playing time — which a liquid market prices first.
-  (EXP-029)
-- **T4 structural depth** — T4's other 27 logged fields: −0.0063 [−.0203,+.0091], every C setting
-  worse, power floor met at 40/40 games. (EXP-030)
-- **Cross-family market selection** — **ZERO CANDIDATES** across 14 families. Several *clear* their
-  null (KXMLBTEAMTOTAL, all five F-series) but E < 0 because H eats the gap. (EXP-031)
-- **Execution-cost rescue** — **no family's E crosses zero under any policy the archive evidences.**
-  (EXP-032)
-- **Multi-leg coherence** — **0 of 24 cells survive.** Holm-adjusted p = 1.0 in every cell. (EXP-033)
-- **`exchange_index` propagation** — tested and disproved. (T-558)
-
-### The structural finding, and it is the project's most important
-
-EXP-032 answered *why* the board is closed, not just *that* it is:
-
-> **H falls as the start approaches — and B falls with it.** The mispricing EXP-031 measured at the
-> earliest quote has largely converged by the time the toll is cheap. Correcting the cost side removes
-> the H-kill, and then B-at-entry kills the same families instead.
-
-The edge and the cost **decay together**. That is a property of the venue's price formation, not of
-any model. KXMLBHIT under the cheap-entry policy is the closest thing to a survivor — **+0.0042, CI
-[−.0006,+.0101], B earned at entry** — explicitly labelled **NEAR** and **not promoted**, because the
-CI spans zero and it is day-fragile.
-
-And capacity closes it independently: the depth sample's **p25 within 5c is $0.00** for KXMLBTEAMTOTAL.
-No stake in this project's range is supported, at any size.
-
-### Still unknown — not assumed either way
-
-- **89 of 92 cells** have no measured cadence, so C5 cannot rule on them.
-- Whether **another venue** prices more loosely. Never examined. Only Kalshi has been measured.
-- Whether **pre-kickoff NFL state** carries signal — captured once, never modelled.
-- Whether the **2,229 non-clean** T4M-PROJ rows are recoverable. Never attempted.
-- Drift / convergence for **F3, F5, F5SPREAD, F5TOTAL** — UNMEASURED, because their markets close
-  1.0–1.7h after start and failed EXP-032's pre-registered 2.0h clock floor. **The floor was not edited
-  after the fact** (GG-327). That is the discipline working; it also leaves a real gap.
-
----
-
-## 6. The arc, and the stop condition that just fired
-
-Wave 44's arc pre-registered this:
-
-> *"If 44.1 shows no family's E crosses zero under any evidenced policy AND 44.2 finds nothing
-> surviving its toll and correction, then this venue is efficient net of cost across every structure
-> the project can currently measure, and the next decision is venue or asset-class selection — not
-> another model, another feature, or another band."*
-
-**Both halves came true.** EXP-032: no crossing under any evidenced policy. EXP-033: 0 of 24.
-
-**So the next decision is not a modelling decision.** This is judgment, not state, and it is the
-operator's call — but the window should not write a Wave 45 that quietly re-asks a settled question.
-The live options, in the order the evidence supports them:
-
-1. **Venue selection.** Every measurement to date is about one exchange. Whether a different venue,
-   or a different asset class, prices more loosely is entirely unexamined. This is the option the stop
-   condition points at.
-2. **Capacity-first.** Even the NEAR result dies on depth. 44.3 built a depth writer that reaches
-   statistical adequacy in about a week — one week of capture would convert "unmeasurable" into
-   "measured", cheaply, and would settle whether anything here is sizeable at all.
-3. **The unmeasured four.** F3/F5/F5SPREAD/F5TOTAL fell out of EXP-032 on a clock-gate technicality.
-   Re-running them under a correctly specified clock is cheap and closes a known hole — but note this
-   is *not* re-cutting: the gate failed on a stated rule, it was not edited to rescue a result.
-4. **The operator's own roadmap.** He has described the eventual arm as *"big hitters, low-probability
-   parlays, sharp-money low win rate lines"* and the north star as that level of granularity at every
-   arm. ADR-0069 now exists as the correlation-group draft. EXP-033 found no coherence violations in
-   the structures the archive holds — but the archive holds *this venue's* structures only.
-
-**What the window must not do:** propose another feature set, another band, or another model for these
-families. Four pre-registered experiments have closed that door and the standing rules forbid re-cutting
-to reopen it.
-
----
-
-## 7. Open operator decisions, carried forward
-
-None of these block a wave. All have been carried for multiple waves.
-
-| Item | State |
+| Wave | Outcome |
 |---|---|
-| **Dashboard service restart** | Terminal landed byte-faithful (59,130 bytes, mutation-checked, 31/31 tests, `/api/data` 0.21–0.56 s). Needs a line naming `pmbot-web-dashboard`. **The VPS still serves the old page.** |
-| **Settlement + depth capture schedules** | Writers built, back-captured, reconciled (1 discrepancy: a timing difference, neither source preferred). Cron lines DRAFTED as comments, not installed. |
-| **NFL pre-kickoff capture** | Runner built, 11/11 tests, hand-run twice, cron drafted. **Its urgency was disproved** — see §8. |
-| **Provenance allowlist — 1,694 rows** | Verifies offline 13/13. Two residual risks are the operator's: **L1** VPS working-tree state at each process start; **L2** provenance of each day's `ba_l10_shrunk` input. |
-| **APR-0035** | Both sides of its arithmetic now exist. Open **eight weeks**. |
-| **ADR-0067 / 0068 / 0069** | All PROPOSED. 0068 is already being *enforced* (C5 produced GG-320 and the T3 verdict) by a criterion that has not been accepted. |
-| **39.3 triage — 6 NOTED** | One sign-off pass archives six entries. Cheapest window recovery available. |
-| **T4M-PROJ and T3 disposition** | Both MISFILED under C5. T3 additionally has **no order path at all** — read-only scan, JSON report. Change-control entries drafted by 42.3. |
-| **ADR-0063** | Approved in chat 2026-09-18; file still reads PROPOSED, no register row. Pure record-keeping. |
-| **ADR-0064 / 0065 / 0066 · APR-0034 / 0036 · 9 unmerged branches · registry corrections** | Unchanged. |
+| 45 | Candle reconstruction Part 1 gate **FAILED** → candle numbers void (GG-329..333). |
+| 46 | Why: matching rule vs sparse 1-minute candles. Gate 2 pre-registered. |
+| 47 (cut at ~2h) | **Candles Gate 2 PASSED 7/7** on KXMLBTOTAL (licensed for that market structure only). **NHL arm flying** (frozen bivariate-Poisson; moneyline beats climatology by only ~0.002 Brier — reported). NFL + MLB postseason shadow built and pre-registered. Live Terminal v2 deployed. |
+| 48 (cut) | Little landed; 30-min block rule born. |
+| 49–50 (harness-run) | NFL/MLB shadow code + dashboard fixes + NHL pre-registration on main; GG-400..429 registered; 50.1 process fixes on PR #157; **50.2 armed the EXP-037 crons**. |
+| 51 | **51.1 kill-switch truth** — see §6. **51.2** NHL 2-letter team codes were being silently dropped; fixed on branch. **51.3** PR #157 made mergeable; NHL row table. |
+
+**Evidence clocks (pre-registered — breadth now, verdicts later):** NFL first look at 60 settled games per cell
+(~late October; MDE ≈ 0.025 vs a plausible effect ≤ 0.02, so the modal first-look result is "keep accruing").
+NHL judged n = 2,500 games per cell (~2 seasons). MLB postseason rows banked for 2027.
+
+**The arc (renumbered, judgment):** 52 = land Wave 51 + NHL scoring readiness (GG-401 confirmed goalie at T3,
+GG-404 spread cutoff, GG-407 clustered scorer, GG-405 matinee coverage) + MLB resolver (GG-440/450); NBA game
+markets open 10-20 in ~30-min blocks; 53 = first looks + a flat-stake paper ADR for SHADOW cells (his to accept);
+later = in-play arms only where speed is measured (ADR-0068), sizing only for a cell that cleared its gate.
 
 ---
 
-## 8. Judgment that is not in the repo
+## 6. Findings this window — verify, do not re-derive
 
-**The last window got two things wrong, both the same way: asserting from a secondary source without
-checking the primary.** Both were caught. Both are worth inheriting.
-
-1. **"The band doctrine isn't in the record."** Asserted after checking one ADR. It was in
-   `EXECUTION_BANDS.md` the whole time. What was *actually* wrong was subtler and more useful: the
-   doctrine licensed a stripped decision tree on **assumed** speed rather than measured speed, and
-   `CLAUDE.md` stated the complexity gradient **backwards**. That became ADR-0068 and criterion C5.
-2. **The NFL "weekly clock."** Wave 43's queue said each week without a pre-kickoff capture was
-   permanently lost, with urgency attached. It came from T-597's report, passed forward unchecked.
-   **43.3 disproved it**: `nflverse/nfldata` is git-versioned at ~10-minute commits (1,116 commits read,
-   92 sampled, 0 mismatching cells), and referee/temp/wind are *null before kickoff and populated only
-   after* — they were never perishable pre-kickoff fields. **Nothing is unrecoverable.**
-
-The rule that caught it is already in every block: *a premise written in a block is a claim to verify,
-not a fact — including every number in this file.* **Keep writing that line, and mean it about your own
-queue.** The second error cost a terminal part of its budget disproving the window.
-
-**Three things the terminals did right that are worth protecting as culture:**
-
-- **T-594 void-flagged its own results** rather than relax a pre-registered criterion its permutation
-  control had failed, and diagnosed the control as mis-specified instead of claiming a pass.
-- **T-597 refused to enable the NFL capture**, judging that with no existing schedule to configure
-  inside, enabling *was* scheduling — then said so explicitly rather than acting.
-- **T-603 flagged its own deviation** (a pre-registered bootstrap it did not implement) in a result
-  where nothing survived and no CI was needed.
-
-A project that reports its own failures to follow its own rules is worth more than one that always
-looks clean.
-
-**Compaction note.** The outgoing window compacted once, around Wave 38. Everything before that was its
-own summary, and both errors above trace to building on summaries. **If this window compacts, treat
-pre-compaction recollection as a lead to verify, never as a citation.**
+- **51.1 — the dashboard's 26.63% "drawdown" was the wrong quantity.** Kill switch reads *realized* loss:
+  **10.60%**, not tripped. 26.63% = 10.60% realized + 16.02% stake in 17 T1 positions open since 2026-08-06.
+- **51.1 follow-up — 16 of those 17 markets were *cancelled* by Kalshi** (scalar settlement), 1 real loss. Realized
+  after booking is **~11.3% (void) to ~12.0% (mark)** — under 20%. **This window told the operator "if all 17 lost,
+  26.6% > 20%" before the terminal checked Kalshi — wrong, corrected by the terminal.** (GG-441 HIGH: kill switch is
+  realized-only and in-memory, blind to settled-but-unresolved stake. GG-450 MEDIUM: cancelled markets unhandled.)
+- **GG-440 (HIGH): the MLB resolver cannot settle anything** — statsapi returns 406 to the VPS; 17 T1 + 9 T4
+  positions stuck. This is why the T1 book froze on 2026-08-06. Not fixed.
+- **GG-431**: the dashboard's "read 58d20h ago" panel is that same frozen T1 book (Aug 6 00:05Z + 58d20h = Oct 3 20:05Z).
+- **GG-401 (widened)**: NHL never passes a `starter_provider`, so every band uses the projected goalie — breaks the
+  EXP-036 pre-registration's T3 promise. No NHL T3 score may be read until fixed or amended.
+- **GG-400**: ADR-0070 as written covers the 12 EXP-037 cells only, not NHL.
+- **Prior empirical record (Waves 38–44) stands:** pre-game model beats climatology (+0.0052) but loses to the market
+  (−0.00393); 14 families, none survives the spread; edge and cost decay together; 0/24 multi-leg cells. Do not
+  propose another model/feature/band for those families. Full detail in the 2026-10-01 carry-forward §5.
 
 ---
 
-## 9. Standing DO NOT — carry verbatim into every block
+## 7. Open operator decisions
 
-- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no operator approval in a block overrides it — an approval authorizes a CHANGE, never a bypass.
+| Item | State / window's recommendation |
+|---|---|
+| **GG-432 — CI restarts t4-mlb on every code push** | Recommend: deploy pulls code every push, but skips the `t4-mlb` restart while an MLB game is live (restart at next idle). Until decided, code lands only in idle windows. |
+| **Book the 16 Kalshi-cancelled T1 positions** | void / mark-to-settlement / exclude from G6 — then an ADR-gated ledger write (backup + dry-run diff first). Raised by the 51.1 follow-up. |
+| **Detached read-only VPS jobs** | `scripts/vps_job.py` exists; needs a line naming *detached read-only VPS jobs*. Blocks the board survey + NFL/NHL market backtests. |
+| **T1 MLB `--include-postseason`** | Edit to an existing cron line; unauthorized. T1 player-hits blind to playoff games. |
+| **EXP-034** | Recommend park. |
+| **ADR-0070** | PROPOSED; widen to NHL (GG-400) or leave GG-400 open after acceptance. |
+| **GG-347 remaining half** | SSH poller from 73.231.159.158 — his? |
+| **MLB winter** | After the World Series: stand T1/T4 down or idle. |
+| Long-carried | Settlement + depth capture schedules · Polymarket KYC · odds feed · provenance allowlist (1,694 rows) · APR-0035 · ADR-0067/0068 · 39.3 triage · ADR-0063..0066 · APR-0034/0036 — unchanged. |
+
+Standing authorizations in force: **shadow-evaluation cron jobs** (2026-10-02 15:22 PT, new lines only) and
+**Live Terminal deploy + restart of `pmbot-web-dashboard` only** (2026-10-02 15:44 PT). Text in `ACTIVE_QUEUE.md`.
+
+---
+
+## 8. Judgment not in the repo
+
+**What this window got wrong, so you don't repeat it:**
+
+1. **Asserted a number before the primary source was read** — the "26.6% breach" scenario went to the operator
+   before anyone checked Kalshi's settlement. Same failure the previous window logged twice. Say "unverified" or check first.
+2. **Sized blocks for the work instead of the clock** — 2h, then 75 min. He cuts them; the work strands.
+3. **Handed him a block he couldn't run yet** and a `claude --cloud` template he pasted literally.
+4. **Pushed to GitHub and called the queue updated** while his folder (what he actually reads) stayed stale.
+   "Updated" means *he can see it*.
+5. **Created a stale `.git/index.lock` in his folder** with a plain `git status`. Read-only git there.
+
+**What he cares about right now:** the **Live Terminal is his only visual indicator** — keep it current with the
+bot, and every new cell, ledger or verdict should become visible on it. He wants each bot component wired in
+visually. Being told the state, short and straight. Not being made to do plumbing.
+
+**Compaction:** this window compacted once (mid-Wave 50). Treat any recollection from before a compaction as a
+lead to verify, never a citation.
+
+---
+
+## 9. Standing DO NOT — carry into every block
+
+- **Never bypass, disable, or work around a permission control.** Record the exact command and refusal text, then hand back.
 - **Submit no order against the production Kalshi account or with real funds. Demo only, always.**
 - Touch sizing or any `kelly_fraction` without an ADR, including T1.
+- **Push code to main while an MLB game is live** (until GG-432 is decided). Docs-only pushes are fine.
 - Promote `assert_ledger_invariants.py` to `--strict`.
-- Repair or backfill a DERIVED field without establishing provenance first (GG-228). Re-capturing a raw source from its own upstream is a different act — say which one you are doing.
+- Repair or backfill a DERIVED field without establishing provenance first (GG-228).
 - Land red work to clear a backlog.
 - Relabel a pre-registered verdict, or change a pre-registered parameter, after seeing results.
-- Recommend against a sport, band or market family on one finding — and do not assume the rest of the board behaves like the cells that happened to be measurable.
+- Recommend against a sport, band or market family on one finding.
 - Modify or re-time an existing price-capture window. Additive sibling writers only.
 - Rotate, truncate or clear a VPS log or journal.
-- Restart a production service without a scoped, written authorization.
-- Add a cron entry without explicit operator authorization, including for read-only capture writers.
-- Pre-assign T-/GG-/ADR- numbers. Claim at run time; verify uniqueness across `git log --all`; **re-verify after any release or retry** (GG-322 — two blocks once ran as the same T-592).
-- Report a live fix RESOLVED without proving the RUNNING process contains it, not the file on disk.
+- Restart a production service without a scoped, written authorization. Do not hand-pull on the VPS.
+- Add or edit a cron entry without explicit operator authorization.
+- Pre-assign T-/GG-/ADR- numbers.
+- Report a live fix RESOLVED without proving the RUNNING process contains it.
 - Manufacture a position, a row, a cohort member, a price, a fill, or a final score.
-- Assume a fill the data cannot evidence.
-- Revive `exchange_index` propagation — T-558 tested and disproved it.
-- Delete, truncate or rewrite a live pool file. Work on copies.
+- Delete, truncate or rewrite a live pool file. Work on copies. Delete nothing in the operator's folder but your own temp files.
 - Weaken a predicate, or widen an allowlist without citation, to raise a count.
-- Modify `p_hits_gte_threshold` — 1,694 rows' provenance citation rests on its source hash.
+- Revive `exchange_index` propagation (T-558 disproved it). Modify `p_hits_gte_threshold` (1,694 rows' provenance rests on its hash).
 
 ---
 
 ## 10. First actions for the incoming window
 
-1. Derive state from `origin/main` — refs, gap counts, max GG/T/ADR — **in one command**, and diff
-   against §4 above. Report any drift rather than assuming this file is current.
-2. Read, in full, the three Wave 44 results summaries. They are the live frontier:
-   `EXP032_RESULTS_execution_cost_surface_2026-10-01.md`,
-   `EXP033_RESULTS_multileg_coherence_2026-10-01.md`,
-   `T602_archive_self_sufficiency.md`.
-3. **Do not write Wave 45 until the operator has chosen a direction.** The stop condition fired; the
-   decision in front of him is venue / asset-class selection versus capacity-first versus closing the
-   four unmeasured families. Present the options with their evidence and let him pick.
-4. Two dashboards sit in the project root: **`Visual Dashboard.html`** (analytical — what the project
-   has established) and **`Live Terminal.html`** (operational — the bot transpiring). Both are static
-   snapshots as of 2026-10-01 and should be regenerated when a wave closes.
+1. `git fetch`; derive state from `origin/main` in one command (refs, max GG/T/ADR, OPEN count, registry
+   counts) and diff against §4. Report drift.
+2. Read `04_EXECUTION/ACTIVE_QUEUE.md` (status-first) and the 51.x handoffs:
+   `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_W51_3.md`, `SESSION_HANDOFF_20261003_2035.md`, plus
+   `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md`. Update the queue's NOW table
+   (51.2 closed) and bring the operator's folder current (§3).
+3. **The landing block** is the next thing to issue — **only once no MLB game is live** (2026-10-03: last game
+   SD@MIL, first pitch 00:30Z; earliest idle ~03:30 UTC = 8:30 PM PT; re-check the Stats API, don't trust this
+   estimate). It: probes idle → merges PR #157 → watches Deploy, verifies VPS HEAD, services, dashboard
+   `process.sha` → merges 51.1's and 51.2's branches the same way, one at a time → flips the 9 NHL cells with
+   rows to SHADOW via `promote_cell_status` → verifies on the running Live Terminal. ~30 min, hard stop 45;
+   whatever doesn't fit carries.
+4. Until then, any block issued must be runnable now and push no code to main. Good candidates (each ~30 min,
+   disjoint): GG-440 resolver diagnosis (why statsapi 406s from the VPS — read-only); NHL GG-401 confirmed-goalie
+   source (branch only); GG-431 stale panel. Confirm the operator wants a wave before writing one.
