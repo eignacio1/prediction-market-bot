@@ -721,3 +721,4 @@
 | 2026-10-02T23:47:05Z | T-607 | CLOSED — merge confirmed, HEAD (cca85ce) is ancestor of origin/main — NHL pregame shadow: cron live on VPS, n=0 scored |
 | 2026-10-03T00:09:56Z | T-621..T-630 | STANDARD: Wave 48.3 eyes-and-nhl — deliverable: real-browser proof+fixes of / and /project dashboards, then NHL hardening (land exp036 prereg, T1 abstentions, team codes); no GG/DECISION_LOG writes, gaps in summary |
 | 2026-10-03T00:10:07Z | T-631 | STANDARD: Wave 48.1 exp037-land-deploy (continues EXP-037 lineage) — whole arc as ONE deliverable: land NFL + MLB postseason shadow on main, deploy+arm shadow crons on VPS, registry flips, results summary; shadow only, no orders/sizing/GG/DECISION_LOG writes |
+| 2026-10-03T00:10:32Z | T-632..T-636, GG-357..GG-398, ADR-0070 register row | W48.2 vps-jobs-and-record: vps_job.py detached read-only runner + land queue/archive + register Wave 47 gaps (STANDARD; single deliverable = vps_job.py + record landing) |
