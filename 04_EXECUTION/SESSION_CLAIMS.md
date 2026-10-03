@@ -724,3 +724,4 @@
 | 2026-10-03T00:10:32Z | T-632..T-636, GG-357..GG-398, ADR-0070 register row | W48.2 vps-jobs-and-record: vps_job.py detached read-only runner + land queue/archive + register Wave 47 gaps (STANDARD; single deliverable = vps_job.py + record landing) |
 | 2026-10-03T00:14:34Z | TBD | --help |
 | 2026-10-03T00:14:36Z | T-632 | CLOSED — PARTIAL (operator cut): queue+archive landed (4bd008b), vps_job.py landed (b11bf62), directives logged; shared-tree ff blocked, D3 unauthorized, D4 registrations carried to next window; see SESSION_HANDOFF_20261003_W48_2.md |
+| 2026-10-03T00:16:19Z | T-631 | CLOSED — T-631 (W48.1 exp037-land-deploy) stopped early at operator request: NFL rebased onto main (suite not run), nothing landed/deployed. (commit `e01f9a6`) |
