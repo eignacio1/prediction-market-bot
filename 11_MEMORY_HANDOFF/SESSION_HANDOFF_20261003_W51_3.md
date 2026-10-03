@@ -1,5 +1,16 @@
 # Session Handoff — W51.3 PR #157 merge-ready (2026-10-03, local, STANDARD)
 
+<!-- session-meta
+task_id: W51.3
+tier: MICRO
+timestamp: 2026-10-03T20:34:00Z
+commit: 28d49cb
+one_line_summary: W51.3 — PR #157 made merge-ready (head 42a0d0d, CI green, MERGEABLE); NOT merged; NHL shadow cell table recorded
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+-->
+
 **Deliverable:** make PR #157 mergeable and pre-checked. **Nothing merged to main; nothing deployed or restarted.**
 
 | Item | Value |
