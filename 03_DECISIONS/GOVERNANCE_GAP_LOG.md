@@ -4060,6 +4060,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | EXP-036 model has no projected goalie/starter feed for the 12-48h and 4-8h bands; early-band rows may be biased by a shallow starter assumption. |
 | Source | EXP036 results GAP 3 + Q6(c) |
 | Disposition | Registered by 49.3 (registration only, no investigation). |
+| W52.D finding (2026-10-03, T-657) | T3 needs both confirmed goalie IDs by ~15 min pre-start (cron.nhl_shadow T3 */10; BANDS T3 = 0.25-1.0 h). The only known official field is boxscore playerByGameStats.<side>.goalies[].starter, which this repo has only read post-game. Every source (api-web.nhle.com schedule/boxscore/landing, dailyfaceoff) was refused by the cloud egress proxy, so verdict (c) cannot tell. Measurement: run scripts/nhl_goalie_source_probe.py (branch w52/nhl-goalie-probe) on the VPS at ~60/30/15 min pre-start on one slate. Status unchanged; no NHL T3 score may be read. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md. |
 
 </details>
 
