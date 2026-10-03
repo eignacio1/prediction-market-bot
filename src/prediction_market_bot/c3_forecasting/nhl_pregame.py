@@ -187,19 +187,40 @@ def load_model(path: Path = MODEL_PATH) -> tuple[NhlGoalsModel, str]:
 
 
 # ----------------------------------------------------------------- tickers
-_TICK = re.compile(r"^KXNHL(GAME|SPREAD|TOTAL)-(\d{2})([A-Z]{3})(\d{2})([A-Z]{3})([A-Z]{3})-(.+)$")
+_TICK = re.compile(r"^KXNHL(GAME|SPREAD|TOTAL)-(\d{2})([A-Z]{3})(\d{2})([A-Z]{4,6})-(.+)$")
 _MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
 MARKET_TYPE = {"GAME": "NHL_MONEYLINE", "SPREAD": "NHL_PUCK_LINE", "TOTAL": "NHL_GAME_TOTAL"}
-TEAM_ALIASES: dict[str, str] = {}  # Kalshi code -> NHL abbrev if they ever differ (unverified)
+# Kalshi code -> NHL-data abbrev where they differ. Evidence (live Kalshi pull 2026-10-03, 333 events):
+#   SJ -> SJS  KXNHLGAME-26OCT08SJSTL-SJ    TB -> TBL  KXNHLGAME-26OCT08MINTB-TB
+#   LA -> LAK  KXNHLGAME-26OCT06FLALA-LA    NJ -> NJD  KXNHLGAME-26OCT06UTANJ-NJ
+# The other 28 Kalshi codes equal the NHL-data abbreviation.
+TEAM_ALIASES: dict[str, str] = {"SJ": "SJS", "TB": "TBL", "LA": "LAK", "NJ": "NJD"}
+
+
+def _is_code(c: str) -> bool:
+    """3-letter codes are accepted as-is (an unknown team surfaces later as a counted no_game_match);
+    2-letter codes only if evidenced in TEAM_ALIASES."""
+    return (len(c) == 3 and c.isalpha()) or c in TEAM_ALIASES
+
+
+def split_team_codes(blob: str) -> Optional[tuple[str, str]]:
+    """Split the concatenated AWAYHOME block of a Kalshi event ticker (codes are 2 or 3 letters).
+    Returns the raw Kalshi codes, or None unless EXACTLY ONE split has both halves valid."""
+    splits = [(blob[:i], blob[i:]) for i in range(2, len(blob) - 1) if _is_code(blob[:i]) and _is_code(blob[i:])]
+    return splits[0] if len(splits) == 1 else None
 
 
 def parse_ticker(t: str) -> Optional[dict]:
     m = _TICK.match(t)
     if not m:
         return None
-    kind, yy, mon, dd, a, h, suf = m.groups()
+    kind, yy, mon, dd, blob, suf = m.groups()
     if mon not in _MON:
         return None
+    codes = split_team_codes(blob)
+    if codes is None:
+        return None
+    a, h = codes
     out = {"series": kind, "market_type": MARKET_TYPE[kind],
            "game_date": f"20{yy}-{_MON[mon]:02d}-{dd}",
            "away": TEAM_ALIASES.get(a, a), "home": TEAM_ALIASES.get(h, h),
@@ -207,7 +228,7 @@ def parse_ticker(t: str) -> Optional[dict]:
     if kind == "GAME":
         out["team"] = TEAM_ALIASES.get(suf, suf)
     elif kind == "SPREAD":
-        mm = re.match(r"^([A-Z]{3})(\d)$", suf)
+        mm = re.match(r"^([A-Z]{2,3})(\d)$", suf)
         if not mm:
             return None
         out["team"], out["strike"] = TEAM_ALIASES.get(mm.group(1), mm.group(1)), int(mm.group(2)) - 0.5
@@ -231,6 +252,7 @@ class NhlPregameForecaster:
                  model_id: str = MODEL_ID):
         self.model, self.sha, self.store = model, model_sha256, store
         self.model_id, self.starter_provider = model_id, starter_provider
+        self.last_abstain: Optional[str] = None
         self._sched = {}
         for g in schedule:
             self._sched[(g["game_date"], g["home"], g["away"])] = g
@@ -256,26 +278,36 @@ class NhlPregameForecaster:
                                         as_of_utc, home_goalie=hg, away_goalie=ag, confirmed=confirmed)
 
     def forecast(self, market_ticker: str, as_of_utc: datetime) -> Optional[PregameForecast]:
+        """Returns None on abstention; the reason is left in ``last_abstain`` for the caller's counters."""
+        self.last_abstain = None
         info = parse_ticker(market_ticker)
         if info is None:
+            self.last_abstain = "ticker_unparsed_or_team_unmapped"
             return None
         game = self._game(info)
-        if game is None or game.get("schedule_state") in ("PPD", "CNCL", "SUSP"):
+        if game is None:
+            self.last_abstain = "no_game_match"
+            return None
+        if game.get("schedule_state") in ("PPD", "CNCL", "SUSP"):
+            self.last_abstain = "game_not_scheduled"
             return None
         if as_of_utc.tzinfo is None:
             as_of_utc = as_of_utc.replace(tzinfo=timezone.utc)
         if as_of_utc >= parse_ts(game["start_time_utc"]):
+            self.last_abstain = "not_pregame"
             return None  # pregame only
         row = self.feature_row(game, as_of_utc)
         lad = self.model.ladder(row)
         if info["series"] == "GAME":
             side = "home" if info["team"] == info["home"] else "away" if info["team"] == info["away"] else None
             if side is None:
+                self.last_abstain = "team_not_in_game"
                 return None
             p = lad.p_team_win(side)
         elif info["series"] == "SPREAD":
             side = "home" if info["team"] == info["home"] else "away" if info["team"] == info["away"] else None
             if side is None:
+                self.last_abstain = "team_not_in_game"
                 return None
             p = lad.p_win_by_over(side, info["strike"])
         else:
