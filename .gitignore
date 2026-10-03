@@ -33,6 +33,8 @@ lib64/
 # patterns without a leading slash match at any depth. Un-ignore it explicitly.
 !scripts/lib/
 !scripts/lib/**
+# Re-ignore bytecode caches the line above un-ignores (trips the stop hook otherwise).
+__pycache__/
 parts/
 sdist/
 var/
