@@ -502,7 +502,7 @@ function railSpec(D,d){
   const cum=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.total_realized_pnl)||0),0);
   const daily=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.daily_net_pnl)||0),0);
   const dd=(D.P.initial_bankroll_usd&&D.P.total_realized_pnl!=null)?Math.max(0,-D.P.total_realized_pnl)/D.P.initial_bankroll_usd:null;
-  const frozenT1=D.P.last_updated&&(Date.now()-new Date(D.P.last_updated))>72*3600*1000?' FROZEN '+String(D.P.last_updated).slice(0,10):'';
+  const frozenT1=D.P.last_updated&&(Date.now()-new Date(D.P.last_updated))>72*3600*1000?' FROZEN '+String(D.P.last_updated).slice(0,10)+' ('+Math.floor((Date.now()-new Date(D.P.last_updated))/86400000)+'d ago)':'';
   const res=D.closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
   const w=res.filter(p=>p.outcome==='WIN').length;
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
@@ -647,11 +647,14 @@ function fillV2(d){
   if($('#shCells')){ const sh=d.shadow;
     if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
     else { $('#shN').textContent=sh.cells.length+' cells';
-      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
-        sh.cells.map(c=>`<tr><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td>`+
+      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>REGISTRY</th><th>ROWS TODAY</th><th>ROWS TOTAL</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
+        sh.cells.map(c=>{const rs=c.registry_status||'unknown', off=rs!=='shadow'||!c.rows_total;
+          return `<tr${off?' class="dim"':''}><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td>`+
+          `<td class="${rs==='shadow'?'':'neg'}">${rs==='shadow'?'SHADOW':esc(rs.toUpperCase())+' (ledger only)'}</td><td class="r">${c.rows_today}</td>`+
+          `<td class="r">${c.rows_total==null?'—':c.rows_total}${c.ledger?' · '+esc(c.ledger):''}</td>`+
           `<td>${esc(c.last_ts||'—')}</td><td class="r">${c.settled_n==null?'awaiting':c.settled_n}</td><td class="r">${c.judged_n==null?'awaiting':c.judged_n}</td>`+
           `<td class="r">${c.delta_brier_market==null?'awaiting':f4(c.delta_brier_market)}</td><td class="r">${c.delta_brier_climo==null?'awaiting':f4(c.delta_brier_climo)}</td>`+
-          `<td class="r">${f4(c.latest_e_net)}</td></tr>`).join('')+`</tbody></table>`;
+          `<td class="r">${f4(c.latest_e_net)}</td></tr>`}).join('')+`</tbody></table>`;
       $('#shTape').innerHTML=`<table><thead><tr><th>TS</th><th>SPORT</th><th>MARKET</th><th>TICKER</th><th>P_YES</th><th>MID</th><th>E_NET YES</th><th>E_NET NO</th></tr></thead><tbody>`+
         (sh.tape||[]).map(r=>`<tr><td>${esc(r.ts_utc)}</td><td>${esc(r.sport)}</td><td>${esc(r.market_type)}</td><td>${esc(r.market_ticker)}</td>`+
           `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r">${f4(r.e_net_yes_k007)}</td><td class="r">${f4(r.e_net_no_k007)}</td></tr>`).join('')+`</tbody></table>`; } }

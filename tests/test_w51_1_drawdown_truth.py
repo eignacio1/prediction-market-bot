@@ -10,7 +10,7 @@ NOW = datetime(2026, 10, 3, 20, 0, tzinfo=timezone.utc)
 
 
 def test_frozen_label_over_72h():
-    assert wd._frozen_label("2026-08-06T00:05:01.517Z", NOW) == "FROZEN (last write 2026-08-06)"
+    assert wd._frozen_label("2026-08-06T00:05:01.517Z", NOW) == "FROZEN (last write 2026-08-06, 58d ago)"  # W52.E: true age shown (GG-431)
 
 
 def test_not_frozen_within_72h():
