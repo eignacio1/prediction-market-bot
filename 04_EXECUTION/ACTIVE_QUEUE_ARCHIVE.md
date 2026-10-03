@@ -9,6 +9,179 @@ carrying four closed waves' fences (29.1/29.2/29.3/30.1) alongside live ones —
 it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
+## Wave 51 prompts — archived 2026-10-03 20:35 UTC. 51.1 CLOSED (verdict d: realized drawdown 10.60%, not tripped; dashboard fix on branch 6cbe62f; GG-440..442). 51.3 CLOSED (PR #157 MERGEABLE, head 42a0d0d, CI green). 51.2 IN FLIGHT at archive time (prompt archived per the in-flight rule: status row stays in the queue, prompt body does not). Verbatim:
+
+## ⬛ FIRE NOW — Wave 51, three blocks
+
+| Paste | Block | When | Budget | One-line purpose |
+|---|---|---|---|---|
+| **1st** | **51.1 Kill-switch truth** | now, LOCAL | ~30 min | Is the 20% kill switch tripped, should it be, and does the dashboard show what the risk engine reads? Read-only; any fix on a branch. |
+| **2nd** | **51.2 NHL silent drops** | now, LOCAL | ~30 min | Verify all 32 team codes against live Kalshi tickers, fix the parser, count every abstention by reason. Branch only. |
+| **3rd** | **51.3 PR #157 merge-ready** | now, LOCAL | ~30 min | Resolve #157's conflicts, CI green, pre-merge record, NHL row counts. Merges nothing. |
+
+**No block pushes code to main** — MLB postseason games are live, and any code push restarts `t4-mlb`. Landing #157,
+the NHL SHADOW flip and 51.1/51.2's branches is one short block, issued only when an idle window is actually open.
+
+### 51.1 — Kill-switch truth
+
+```text
+WAVE 51.1 - KILL-SWITCH TRUTH (local terminal, about 30 min, hard stop 45)
+
+You are a Claude Code session on the prediction-market-bot repo. Run the CLAUDE.md
+session-start protocol first: isolated worktree via
+scripts/new_session_worktree.sh "w51-killswitch-truth", then scripts/claim_session.sh
+with tier STANDARD and this single deliverable. Claim IDs at run time; this prompt
+pre-assigns no T-/GG- numbers.
+
+QUESTION: The Live Terminal shows MLB T1 drawdown 26.63% against the 20% permanent
+kill switch (risk.py _HARD_LIMITS max_drawdown_pct 0.20). Is the kill switch tripped,
+should it have been, and does the dashboard show the quantity the risk engine reads?
+
+PREMISES - claims to verify, not facts:
+P1. The 26.63% comes from logs/paper_portfolio_mlb.json on the VPS: bankroll_usd about
+    733.75, initial_bankroll_usd 1000, last_updated 2026-08-06T00:05Z, about 17 open
+    positions.
+P2. Two definitions are in play. run_mlb_paper_trade.py:670-671 passes the kill switch
+    max(0, -total_realized_pnl) / initial (realized loss only).
+    scripts/web_dashboard.py:761 and :1498 show (initial - bankroll) / initial, which also
+    counts stake locked in open positions.
+P3. GG-431's stale panel ("read 58d20h ago") is the same file:
+    2026-08-06 00:05Z + 58d20h = 2026-10-03 20:05Z.
+P4. T1 MLB kelly_fraction is 0.0 (ADR-0048); no stake is at risk either way.
+
+DELIVERABLES - read-only on the VPS (no restart, no cron change, no file edit there):
+D1. From the VPS file: total_realized_pnl, bankroll_usd, initial, count and summed stake
+    of open_positions, oldest and newest open dates. Show the arithmetic for both
+    drawdown definitions.
+D2. From logs/paper_mlb_cron.log: the "[C4] Bankroll ... Drawdown" lines around
+    2026-08-05..08-07 and the most recent one. Grep the cron log and the audit logs for
+    KILL_SWITCH and risk_eval_kill_switch. Is kill-switch state persisted anywhere, and
+    is it set now?
+D3. Why did the file stop being written on 2026-08-06? Name the code line that decides
+    whether it is written, and whether a 0-bet run (kelly 0.0) skips the write. Answer
+    plainly: frozen because nothing changed, or frozen because something broke.
+D4. Why are about 17 positions still open after 58 days? Read-only Kalshi check: are
+    their markets settled? Settled but unresolved = a resolver gap. Register it. Do not
+    resolve, close or edit any position.
+D5. VERDICT, exactly one of:
+    (a) tripped, and holding correctly;
+    (b) not tripped and correctly not tripped (realized under 20%); dashboard metric wrong;
+    (c) should have tripped and did not - register CRITICAL;
+    (d) other, stated plainly.
+D6. Only if the dashboard disagrees with the risk engine: on a branch, fix
+    web_dashboard.py so the drawdown tile shows the realized quantity the kill switch
+    reads, open stake as a separate labelled number, and a book with no write in over
+    72h labelled FROZEN with its last-write date. Tests green. Push the branch.
+    DO NOT MERGE: a code push to main auto-deploys and restarts t4-mlb (deploy.yml,
+    GG-432) while postseason games are live. Hand the branch and SHA to the landing
+    block.
+
+OUT OF SCOPE - register and stop (Hard Rule 11): editing or resolving positions, any
+kelly or limit change, any restart, any cron change.
+
+CLOSE: results summary under 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/, GG entries,
+one DECISION_LOG line for the verdict, handoff naming the branch and SHA. Pushes to
+main must be docs-only: every file under the 9 paths-ignored doc folders, nothing else.
+At 45 minutes stop at the nearest pushed boundary and say where the next session resumes.
+```
+
+### 51.2 — NHL silent drops
+
+```text
+WAVE 51.2 - NHL SILENT DROPS (local terminal, about 30 min, hard stop 45)
+
+You are a Claude Code session on the prediction-market-bot repo. Run the CLAUDE.md
+session-start protocol first: isolated worktree via
+scripts/new_session_worktree.sh "w51-nhl-team-codes", then scripts/claim_session.sh
+with tier STANDARD and this single deliverable. Claim IDs at run time.
+
+QUESTION: Is the NHL shadow arm silently dropping markets? Close GG-403 and the
+counter half of GG-405.
+
+PREMISES - claims to verify, not facts (source: GG400_429_TRIAGE_2026-10-03.md on the
+PR #157 branch):
+P1. TEAM_ALIASES is empty (src/prediction_market_bot/c3_forecasting/nhl_pregame.py:193).
+    Both parsers assume 3+3-letter team codes: _TICK regex at nhl_pregame.py:190 and
+    len(teams) != 6 at scripts/nhl_shadow_eval.py:76. A 2-letter Kalshi code returns None
+    with no log and no counter.
+P2. Night-one T3 abstained on some markets (about 195 rows vs 240 expected); causes
+    were never logged.
+P3. Scoring takes Kalshi's own result (nhl_shadow_settle.py:24-28), so overtime and
+    shootout affect only whether the model's p matches the contract, not the scored y.
+
+DELIVERABLES:
+D1. Read-only Kalshi pull of every open and recently settled KXNHLGAME, KXNHLSPREAD and
+    KXNHLTOTAL ticker. Extract every team code seen. Diff against the 32 NHL
+    abbreviations the NHL data side uses. Table: code, team, parses today (yes/no).
+D2. Fix: populate TEAM_ALIASES from D1's evidence (cite the ticker for each alias) and
+    make both parsers accept every code seen. Tests built from real tickers from D1,
+    including every previously failing code.
+D3. Abstention counters in nhl_shadow_eval.py: one named counter per reason (ticker
+    unparsed, team unmapped, no game match, forecast None, any other return-None path),
+    written to the run log or the shadow ledger's run metadata, so a dropped market is
+    never silent again.
+D4. Coverage boundary: rows before this fix lands are a different population from rows
+    after it. Record the boundary in the EXP-036 results summary as a dated note.
+    Do NOT edit the frozen pre-registration.
+D5. Full suite green. Push the branch. DO NOT MERGE: a code push to main auto-deploys
+    and restarts t4-mlb (deploy.yml, GG-432) while postseason games are live. Hand the
+    branch and SHA to the landing block.
+
+OUT OF SCOPE - register and stop (Hard Rule 11): the confirmed-goalie source (GG-401),
+the spread cutoff (GG-404), the clustered scorer (GG-407), matinee cron hours (GG-405
+first half), any cron change, any edit to the frozen model or pre-registration. If D1
+shows every code already parses, say so, keep D3, and close GG-403 on the evidence.
+
+CLOSE: results note, GG updates, handoff naming the branch and SHA. Pushes to main must
+be docs-only. At 45 minutes stop at the nearest pushed boundary.
+```
+
+### 51.3 — PR #157 merge-ready
+
+```text
+WAVE 51.3 - PR 157 MERGE-READY (local terminal, about 30 min, hard stop 45)
+
+You are a Claude Code session on the prediction-market-bot repo. Run the CLAUDE.md
+session-start protocol first: isolated worktree via
+scripts/new_session_worktree.sh "w51-pr157-ready", then scripts/claim_session.sh with
+tier STANDARD and this single deliverable. Claim IDs at run time.
+
+QUESTION: Make PR 157 mergeable and fully pre-checked, so landing it later is a short
+mechanical run. This block merges nothing to main.
+
+CONTEXT - claims to verify: PR 157 (head 855a5f0, draft, CI green) carries 50.1's
+process fixes: GG-419 claim_session HEAD guard, GG-427 deps, GG-428 network marker,
+.gitignore, and the GG-400..429 triage. GitHub reports it NOT mergeable: conflicts in
+DECISION_LOG.md, PLAN.md, TODO_NEXT.md and MEMORY_BANK.md, plus ACTIVE_QUEUE.md and
+ACTIVE_QUEUE_ARCHIVE.md since the Wave 51 rotation landed on main.
+
+D1. Merge origin/main into the PR branch. Resolve:
+    - ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md: take main's version. It already
+      contains everything the PR rotated.
+    - The 4 nav files: keep every entry from both sides, in date order. Delete nothing.
+      Paste the resolved hunks.
+    Push the PR branch. Branch pushes do not deploy.
+D2. Wait for CI green on the new head. Confirm GitHub now reports it mergeable. Mark it
+    ready for review.
+D3. Pre-merge record in the PR description: every file in the PR diff that is reachable
+    from t4-mlb or a cron job, each confirmed additive and covered by the green suite,
+    and the exact Deploy behaviour expected on merge (deploy.yml restarts t4-mlb and
+    pmbot-web-dashboard).
+D4. Read-only, for the later NHL status flip: from the NHL shadow ledger on the VPS,
+    list which NHL (MarketType x band) cells have produced valid rows, with row counts
+    and first/last dates. Record it in the handoff. Change no registry status.
+
+DO NOT: merge PR 157, push code to main, restart anything, or touch web_dashboard.py or
+any NHL source file (51.1 and 51.2 own those).
+
+CLOSE: handoff with the new PR head SHA, CI run id, mergeable state, and the D4 table.
+Pushes to main must be docs-only. At 45 minutes stop at the nearest pushed boundary.
+```
+
+---
+
+---
+
 ## Wave 51.3 (original) — WITHDRAWN 2026-10-03 20:20 UTC, never run. Operator: "don't give me a prompt block if I can't run it now" -- it needed an MLB idle window (~03:30 UTC) to merge. Replaced in the live queue by 51.3 PR #157 merge-ready; the merge + NHL SHADOW flip move to a landing block issued only when an idle window is open. Verbatim:
 
 ### 51.3 — Land PR #157 + NHL SHADOW flip
