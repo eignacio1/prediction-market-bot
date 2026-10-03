@@ -4082,7 +4082,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-403 — NHL Kalshi OT/SO settlement treatment and TEAM_ALIASES unverified
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED (2026-10-03, 51.2: VERIFIED — Kalshi uses SJ/TB/LA/NJ; aliases + 2/3-letter parser + tests fixed on branch session/20261003T201919Z-w51-nhl-team-codes, NOT merged/deployed; close on deploy. OT/SO half: scoring uses Kalshi result, no change needed.) · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4116,7 +4116,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-405 — NHL shadow: T1 abstentions uninvestigated, T3 cron-window coverage and 2026 schedule match unverified, travel not modelled
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** OPEN (2026-10-03, 51.2: abstention-counter half DONE on the same unmerged branch; matinee cron-window half and travel remain open. GG-403's parser drop is a plausible cause of the 195-vs-240 shortfall, unproven.) · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>

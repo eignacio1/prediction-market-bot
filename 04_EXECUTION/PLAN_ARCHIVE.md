@@ -2,9 +2,6 @@
 
 ## Last Reviewed Chain Archive
 
-<!-- archived from PLAN.md, 1 entry (manually preserved, W51.3 PR #157 merge-resolution: both sides' Last-reviewed lines kept, newer stays live) -->
-**Last reviewed:** 2026-10-03T03:20:00Z (50.1 — 50.1 (cloud): GG-419/427/428 + pycache ignore fixed, queue rotated, GG-400..429 triaged; PR #157 green, unmerged (merge restarts t4-mlb via CI deploy).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0250.md` for full session detail.
-
 <!-- archived from PLAN.md, 1 entry (manually preserved, T-551/T-549 concurrent-merge conflict -- generator wrote only one authoritative line per file and this session's merge against origin/main would have silently dropped the other side's line, see DECISION_LOG.md 2026-09-16 T-551) -->
 **Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
@@ -159,3 +156,4 @@
 **Last reviewed (prior):** 2026-08-25T23:49:00Z (T-492 — T-492: GG-203 root cause = external Kalshi demo-account order-write fault, no in-repo fix; amended OPEN->PARTIALLY RESOLVED) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260825_2349.md` for full session detail.
 **Last reviewed:** 2026-08-29T18:24:00Z (T-501 — T-501/GG-222 landed T-490+T-491, fixed 2 register-parity mismatches, confirmed ADR-0051 a checker false-positive) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260828_0459.md` for full session detail. *(superseded by T-500 same-day, merge-conflict archival)*
 **Last reviewed (prior):** 2026-09-23T05:12:04Z (T-566 — T-566: measured real archive vig/spread vs C4 gate assumption; T1 zero-vig gap quantified; 87/547 of 765 flip at median/p90; APR-0036 drafted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260923_0512.md` for full session detail. *(superseded by T-568 same-day, merge-conflict archival)*
+**Last reviewed:** 2026-10-03T20:40:30Z (T-646 — 51.2 NHL silent drops: Kalshi SJ/TB/LA/NJ codes were dropped (379/1,595 mkts); parser+aliases+counters on unmerged branch c12a47a.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_2040.md` for full session detail.

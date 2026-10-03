@@ -18,3 +18,6 @@
 - Because merging restarts the live MLB process, this session's changes wait for you to merge them.
 - Most urgent: a local session must turn on the NFL/MLB shadow jobs before Sunday's NFL games.
 - Still zero real money at risk.
+
+## 51.2 — NHL silent drops (STANDARD)
+The hockey test run was quietly skipping about a quarter of the markets (379 of 1,595) because Kalshi abbreviates four teams (San Jose, Tampa Bay, Los Angeles, New Jersey) differently than our data does. Fixed the matching and added counters that now say why any market is skipped. The fix is saved on its own branch and NOT live: putting it live restarts the baseball engine, so that's your call on timing. Earlier hockey results never included games with those four teams. Still no real money at risk.
