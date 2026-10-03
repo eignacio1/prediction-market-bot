@@ -739,3 +739,4 @@
 | 2026-10-03T20:20:28Z | GG-440..GG-445, T-646..T-650 | 51.2 STANDARD — NHL silent drops: D1 Kalshi team-code diff, TEAM_ALIASES fix + parser tests, abstention counters (closes GG-403, counter half of GG-405); branch push only, no merge |
 | 2026-10-03T20:21:35Z | GG-446..GG-449, T-651..T-653 | W51.3 STANDARD — make PR #157 merge-ready: merge origin/main into PR branch, resolve conflicts, CI green, mark ready, pre-merge record, NHL shadow-cell read-only table; no merge to main |
 | 2026-10-03T20:24:34Z | GG-440..GG-442 | CLOSED — W51.1 kill-switch truth: verdict (d); dashboard fix on branch session/20261003T201912Z-w51-killswitch-truth @ 6cbe62f, NOT merged (hand to 51.3); docs @ 3296af7 |
+| 2026-10-03T20:29:41Z | W51.3 | CLOSED — merge confirmed, HEAD (63a1d1c) is ancestor of origin/main — PR #157 merge-ready: head 42a0d0d, CI 37151320465 green, MERGEABLE/CLEAN, ready for review; NOT merged; NHL shadow table in handoff |
