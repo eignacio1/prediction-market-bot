@@ -719,3 +719,4 @@
 | 2026-10-02T23:40:18Z | T-615 | CLOSED — merge confirmed, HEAD (afeb2d4) is ancestor of origin/main — 47.1 PARTIAL: D0,D1,D2(Gate2 PASS),D6(dashboard deployed+verified),D7 done; D3 amendment pushed, no verdict; D4 partial; D5 not started; operator stopped run |
 | 2026-10-02T23:44:01Z | T-615 | CLOSED — merge confirmed, HEAD (8f86db6) is ancestor of origin/main — Wave 47.1 partial; handoff landed; D3/D4/D5 carried over |
 | 2026-10-02T23:47:05Z | T-607 | CLOSED — merge confirmed, HEAD (cca85ce) is ancestor of origin/main — NHL pregame shadow: cron live on VPS, n=0 scored |
+| 2026-10-03T00:09:56Z | T-621..T-630 | STANDARD: Wave 48.3 eyes-and-nhl — deliverable: real-browser proof+fixes of / and /project dashboards, then NHL hardening (land exp036 prereg, T1 abstentions, team codes); no GG/DECISION_LOG writes, gaps in summary |
