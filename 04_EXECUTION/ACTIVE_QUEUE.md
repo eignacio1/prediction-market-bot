@@ -1,9 +1,9 @@
 # Active queue — the only prompt file to read
 
-> **RULE: this file contains ONLY blocks that are currently firing.** Closed prompts move verbatim
-> to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` BEFORE the queue rotates. Waves 48 through 50 are archived there.
+> **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
+> `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 6a896c6` (2026-10-03 20:15 UTC, strategic window, via `git fetch` + GitHub API).
+**Verified against:** `origin/main = 4dbd923` (2026-10-03 20:25 UTC, strategic window, via `git fetch` + GitHub API).
 VPS facts are the 50.2 cleanup terminal's report, not re-verified from here.
 
 | Fact | Value |
@@ -244,11 +244,60 @@ Pushes to main must be docs-only. At 45 minutes stop at the nearest pushed bound
 
 ## Sequencing track
 
-| Wave | Status | Outcome |
-|---|---|---|
-| 10-48 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
-| **49-50** | **CLOSED** | Run inside harness sessions, not from this queue: NFL + MLB shadow code, dashboard fixes and the NHL pre-registration on main (49.x); process fixes on PR #157 (50.1); crons armed, tree synced, GG-430..432 (50.2). |
-| **51** | **FIRING** | 51.1 kill-switch truth · 51.2 NHL silent drops · 51.3 PR #157 merge-ready. Withdrawn: the original 51.3 (needed an idle window; archived). |
+Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ⏳ WAVE 51 — RUN NOW · 3-wide · disjoint surfaces
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 51.1 | Kill-switch truth: is the 20% kill switch tripped; does the dashboard show what the risk engine reads | ⏳ | VPS read-only; `scripts/web_dashboard.py` (branch only) | No code to main while MLB games are live |
+| 51.2 | NHL silent drops: 32 team codes vs live tickers, parser fix, abstention counters (GG-403, GG-405) | ⏳ | `nhl_pregame.py`, `scripts/nhl_shadow_eval.py` (branch only) | Same |
+| 51.3 | PR #157 merge-ready: resolve conflicts, CI green, pre-merge record, NHL row counts | ⏳ | PR #157 branch; nav files on that branch | Merges nothing |
+| — | ~~51.3 original: land #157 + NHL SHADOW flip~~ | ❌ withdrawn | — | Needed an idle window; becomes the landing block below |
+
+**Next, not yet issued:** landing block — merge #157, NHL cells with rows → SHADOW, merge 51.1/51.2's green branches. Issued only when no MLB game is live (earliest ~8:30 PM PT tonight).
+
+### ✅ WAVES 49–50 — CLOSED 2026-10-03 · run inside harness sessions, not from this queue
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 49.1–49.3 | NFL + MLB shadow code, dashboard fixes, NHL pre-registration | ✅ | On main and auto-deployed by CI (VPS `077558b1`); GG-400..429 registered; crons not armed (cloud can't reach VPS) |
+| 50.1 | Process fixes + GG-400..429 triage (T-636) | ⚠️ | PR #157, draft, green but conflicted — 51.3 makes it mergeable |
+| 50.2 | Cleanup (T-637) | ✅ | Shadow crons ARMED; tree synced; PR #156 closed; #157 held for live games; GG-430..432 (CI restarts t4-mlb) |
+
+### ✂️ WAVE 48 — CLOSED 2026-10-03
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 48.1 | Land NFL + MLB shadow (T-631) | ✂️ | Stopped early at operator request; rebased only — landed later by 49.1 |
+| 48.2 | Record + VPS jobs (T-632) | ✂️ | Queue + `vps_job.py` landed; detached jobs still unauthorized |
+| 48.3 | Dashboards in a real browser (T-621..630) | ⚠️→✅ | Fixes on a branch; landed by 49.2 |
+
+### ✂️ WAVE 47 — CLOSED 2026-10-02 · all three cut at ~2h → the 30-min block rule
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 47.1 | Candles Gate 2 + Live Terminal v2 (T-615) | ✂️ | **Gate 2 PASSED 7/7** on KXMLBTOTAL; Live Terminal v2 + `/project` deployed; GG-340..356 |
+| 47.2 | NFL + MLB postseason shadow (T-608 / EXP-037) | ✂️ | 24 cells built + pre-registered, ADR-0070 PROPOSED; landed later by 49.1 |
+| 47.3 | NHL arm (T-607 / EXP-036) | ✅ | **First new arm flying** — model frozen, cron installed, first T3 rows |
+
+### ✅ WAVE 46 — CLOSED 2026-10-02
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 46.1 | Why candles failed (T-605) | ✅ | Matching rule + sparse candles; Gate 2 pre-registered |
+| 46.2 | EXP-034 control arm | ⚠️ | Gate FAIL as run (runner lookback); numbers VOID; branch not merged |
+| 46.3 | Shared-tree repair (T-606) | ✅ | Stale lock removed, tree synced, ADR-0067 docs landed |
+
+### ⚠️ WAVE 45 — CLOSED 2026-10-02
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 45.1 | Candle reconstruction Part 1 (T-604 / EXP-035) | ✅ | Gate FAILED → candle numbers VOID; GG-329..333 |
+| 45.2 | EXP-034 setup | ⚠️ | Tolerance frozen; comparison not run |
+| 45.3 | Record + dashboard page | ⚠️ | Queue landed; dashboard page running; tree sync blocked |
+
+Waves 10–44: see `ACTIVE_QUEUE_ARCHIVE.md`.
 
 ---
 
