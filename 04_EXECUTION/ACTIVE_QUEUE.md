@@ -3,19 +3,21 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 0a52afb` (2026-10-03 20:50 UTC).
-VPS facts are the 50.2 cleanup terminal's report, not re-verified from here.
+**Verified against:** `origin/main = 52e3ea3` (2026-10-03 21:05 UTC, incoming strategic window). GitHub PR/CI state and the MLB Stats API checked live.
+VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (this window has no SSH).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | **GG-442** registered (claimed through GG-449) · **T-653** claimed · **ADR-0070** (PROPOSED) · **EXP-037** |
+| Highest GG / T / ADR / EXP | **GG-450** registered (GG-443..449 claimed, unused) · **T-653** claimed · **ADR-0070** (PROPOSED) · **EXP-037** · gap log 178 OPEN |
+| Registry (92 cells) | ACTIVE 1 · **SHADOW 7** (MLB player-hits T1-T3 + NFL T1 moneyline / spread / total / team total, flipped 2026-10-03 by T-608) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 81 |
 | Capital | **$0.** `kelly_fraction = 0.0` on every operating band. Demo venue only. SHADOW = evaluate and log. |
 | NFL + MLB postseason shadow | **Armed** (50.2): EXP-037 cron block installed; crontab backup `/root/crontab.bak.20261003T200240Z`; first NFL T1 firing 2026-10-04 00:05 UTC. |
 | NHL | Flying in shadow: 9 cells have rows (51.3). Registry still says NOT_IMPLEMENTED. Never uses the confirmed goalie (GG-401). Team-code parser unverified (GG-403). |
-| PR #157 (50.1 process fixes) | **Mergeable, CI green, ready for review** (head `42a0d0d`, 51.3). Not merged — waits for an idle window. |
+| PR #157 (50.1 process fixes) | **NOT mergeable again** (GitHub `dirty`, 21:05 UTC): main moved 13 commits after 51.3; the only conflict is `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20261003.md`, a `merge=union` file GitHub can't auto-merge. CI green on head `42a0d0d`. Landing block re-merges main into it first. |
+| 51.1 / 51.2 branches | **No CI run on either** (branches only get CI as PRs). 51.2's final full-suite rerun was not confirmed at close-out. 51.2 also conflicts with main on 4 nav files (DECISION_LOG, PLAN, TODO_NEXT, MEMORY_BANK). 51.1 merges clean. |
 | VPS | HEAD `eb2d1434` (50.2). `pmbot-web-dashboard` process still on `077558b`. |
 | Deploy | **Every push to main that touches anything outside the 9 doc folders auto-deploys and restarts `t4-mlb` + `pmbot-web-dashboard`** (`deploy.yml`, GG-432). A push is docs-only only if EVERY file in it is under `00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS 07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF`. |
-| Live games today (10-03 UTC) | ATL@LAD in progress; NYY@TB 22:30Z; SD@MIL 00:30Z. **Earliest code-push window: about 03:30 UTC = 8:30 PM PT.** |
+| Live games today (Stats API, 21:00 UTC) | CWS@CLE final · **ATL@LAD in progress** · NYY@TB 22:30Z · SD@MIL 00:30Z (5:30 PM PT). **Earliest code-push window: after SD@MIL goes Final, ~03:30 UTC = ~8:30 PM PT.** Tomorrow's first pitch SD@MIL 20:00Z. |
 
 ---
 
@@ -25,9 +27,9 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here.
 |---|---|---|
 | **51.1** Kill-switch truth | ⚠️ **DONE** — fix on a branch, not live | Kill switch **not tripped**: realized drawdown 10.60%. Dashboard's 26.63% wrongly counted $160 of stake in 17 positions open since Aug 6. Follow-up: Kalshi **cancelled 16 of the 17**, so realized after booking is ~11–12%, under 20% (GG-441, GG-450). MLB resolver is dark — statsapi 406s from the VPS (GG-440). Dashboard fix on branch `6cbe62f`. |
 | **51.2** NHL silent drops | ⚠️ **DONE** — fix on a branch, not live | NHL markets for SJ / TB / LA / NJ (2-letter Kalshi codes) were being silently dropped. Fixed + abstention counters on branch `f822b6b`. GG-403 partial; follow-up T-647. |
-| **51.3** PR #157 merge-ready | ✅ **DONE** | PR #157 now MERGEABLE, CI green, ready for review (head `42a0d0d`). 9 NHL cells have rows (T1, T2, T3 × moneyline, puck line, total). |
+| **51.3** PR #157 merge-ready | ✅ **DONE** — but stale | Was MERGEABLE at 20:34 UTC (head `42a0d0d`, CI green). Main has since moved; GitHub shows `dirty` again (one union-file conflict). 9 NHL cells have rows (T1, T2, T3 × moneyline, puck line, total). |
 
-**Nothing to paste right now. Strategic window handing off 2026-10-03 ~1:50 PM PT** — see `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`. Next block is the **landing block** (merge #157, 51.1's dashboard fix, 51.2's branch; flip the 9 NHL cells to SHADOW). It needs no MLB game live — earliest **~8:30 PM PT**. It goes here when that window opens, not before.
+**Nothing to paste right now.** New strategic window took over 2026-10-03 ~2:05 PM PT. Next block is the **landing block** (merge #157, 51.1's dashboard fix, 51.2's branch; flip the 9 NHL cells to SHADOW). It needs no MLB game live — earliest **~8:30 PM PT**. It goes here when that window opens, not before.
 
 The three Wave 51 prompts are in `ACTIVE_QUEUE_ARCHIVE.md` (51.2's while it runs).
 
@@ -43,7 +45,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|---|
 | 51.1 | Kill-switch truth | ⚠️ done, branch not merged | Verdict (d): realized drawdown **10.60%**, not tripped; dashboard's 26.63% = 10.60% realized + 16.02% stake in 17 positions already settled on Kalshi but never resolved — Kalshi cancelled 16 of them, so realized after booking is ~11–12% (GG-441, GG-450). Dashboard fix on `6cbe62f`. GG-440..442 | Merge in the landing block |
 | 51.2 | NHL silent drops | ⚠️ done, branch not merged | SJ/TB/LA/NJ codes were silently dropped; fixed + abstention counters on `f822b6b` | Merge in the landing block |
-| 51.3 | PR #157 merge-ready | ✅ done | PR #157 MERGEABLE, CI green (run 37151320465), head `42a0d0d`; 9 NHL cells have rows | Merge in the landing block |
+| 51.3 | PR #157 merge-ready | ✅ done | PR #157 MERGEABLE, CI green (run 37151320465), head `42a0d0d`; 9 NHL cells have rows. **Dirty again by 21:05 UTC** (union-file conflict after main moved) | Re-merge main, then merge in the landing block |
 | — | ~~51.3 original: land #157 + NHL SHADOW flip~~ | ❌ withdrawn | — | Needed an idle window; becomes the landing block below |
 
 **Next, not yet issued:** landing block — merge #157, NHL cells with rows → SHADOW, merge 51.1/51.2's green branches. Issued only when no MLB game is live (earliest ~8:30 PM PT tonight).
