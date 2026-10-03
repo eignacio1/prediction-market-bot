@@ -4028,3 +4028,513 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Observation only; registered because the item was listed, not because a defect is established. |
 
 </details>
+
+### GG-400 — NHL pregame model (bivariate Poisson + Platt) departs from ADR-0004 with no ADR of its own
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-400 |
+| Category | Model governance |
+| What was found | EXP-036 NHL shadow model uses bivariate Poisson + Platt, a model-class deviation from ADR-0004 identical in kind to ADR-0070's NFL/MLB probit-Platt deviation; no ADR covers it. Resolution is ADR-0070's decision (accept/reject the deviation class) — no second ADR to be written. |
+| Source | EXP036 results GAP 2; EXP-037 D0 / ADR-0070 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-401 — NHL T1/T2 pregame model has no projected-starter source
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-401 |
+| Category | Data |
+| What was found | EXP-036 model has no projected goalie/starter feed for the 12-48h and 4-8h bands; early-band rows may be biased by a shallow starter assumption. |
+| Source | EXP036 results GAP 3 + Q6(c) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-402 — Shadow runner hardcodes fee_multiplier=1
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-402 |
+| Category | Correctness |
+| What was found | fee_multiplier=1 was verified 2026-10-02 but is hardcoded; must be re-read from the series endpoint before any CANDIDATE call. |
+| Source | EXP036 results GAP 4 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-403 — NHL Kalshi OT/SO settlement treatment and TEAM_ALIASES unverified
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-403 |
+| Category | Data |
+| What was found | OT/SO treatment for ML/puck line is assumed to follow the official final result; TEAM_ALIASES is empty (Kalshi code assumed = NHL abbreviation). Unverified; wrong mapping silently drops or mis-settles rows. |
+| Source | EXP036 results GAP 5 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-404 — Live Kalshi quotes can be very wide; shadow scoring must filter on half_spread
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-404 |
+| Category | Scoring |
+| What was found | Observed live quote bid 0.01 / ask 0.35; mid-based Brier on such quotes is meaningless. Scoring must filter on half_spread. |
+| Source | EXP036 results GAP 6 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-405 — NHL shadow: T1 abstentions uninvestigated, T3 cron-window coverage and 2026 schedule match unverified, travel not modelled
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-405 |
+| Category | Coverage |
+| What was found | Three unverified coverage/feature assumptions in the NHL shadow, none investigated. |
+| Source | EXP036 results GAP 7 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-406 — Shadow code on VPS is not auto-pulled on later pushes
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-406 |
+| Category | Deployment |
+| What was found | VPS is only updated by a manual pull; landed shadow code does nothing until a local session runs scripts/arm_shadow_crons.sh. Silent gap between 'landed' and 'running'. |
+| Source | EXP036 results GAP 8; 48.1 handoff |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-407 — T3 shadow firings per game produce correlated rows; judged n must be game-clustered
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-407 |
+| Category | Statistics |
+| What was found | Many T3 firings per game are serially correlated; any score computed on raw row count inflates n. Pre-registered game-clustering must be enforced in the scorer. |
+| Source | EXP036 results GAP 9 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-408 — EXP-027 NFL incumbent has no persisted artifact and is moneyline-only: no head-to-head possible
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-408 |
+| Category | Model governance |
+| What was found | ADR-0070's candidate cannot be compared against the incumbent because the incumbent was never saved and covers one market family only. |
+| Source | EXP037 D0 harvest report §4 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-409 — EXP-037 brief's five-branch list was not recoverable from session context
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-409 |
+| Category | Process |
+| What was found | The harvest could not enumerate the five branches the brief named; recovery depended on session memory. Fork-A git cherry list was also guessed. |
+| Source | EXP037 D0 §4; SESSION_HANDOFF_20261002_2357 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-410 — NFL/MLB shadow T1, T2 and T3 use identical features
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-410 |
+| Category | Model design |
+| What was found | Frozen model v1 uses the same feature vector at every band; bands differ only by window, so T1/T2/T3 rows are not independent evidence. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-411 — NFL model: Gaussian margin model puts mass on ties
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-411 |
+| Category | Model design |
+| What was found | A continuous Gaussian margin assigns probability to a tie that cannot occur in the moneyline market; calibration impact unmeasured. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-412 — NFL model: kmult inferred, not read from the venue
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-412 |
+| Category | Correctness |
+| What was found | The fee/spread multiplier used by the NFL model was inferred rather than read from the series endpoint. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-413 — Aged open positions: 9 T4 and 17 T1/T2 never resolved
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-413 |
+| Category | Ledger integrity |
+| What was found | 47.2 counted 9 aged T4 and 17 aged T1/T2 open positions; D6(a) found no postseason-stuck cause. Unresolved positions distort OPEN counts and exposure. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-414 — T4 resolved ledger unwritten since 2026-09-28
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-414 |
+| Category | Ledger integrity |
+| What was found | The t4 resolved-positions ledger shows no writes after 09-28 while the cycle log continued into October; settlement may have stopped. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-415 — players_2026.json is stale
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-415 |
+| Category | Data |
+| What was found | Player reference file used by the MLB feature path was not refreshed for the 2026 season end. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-416 — Gate 2 / G7 passed on one family and by a floating-point margin on a 0.005 tick grid
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-416 |
+| Category | Interpretation risk |
+| What was found | Reading Gate 2 PASS 7/7 or G7 as broad price-equivalence overreaches; archive_market_prices.py docstring now bounds it but no check enforces the bound. |
+| Source | 47.1 DECISION_LOG 'Q6 concerns' (3) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-417 — Cowork strategic window sandbox can create but not delete files in the shared tree, leaving .git/index.lock behind
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-417 |
+| Category | Tooling |
+| What was found | Root cause of the 3-day stale lock that blocked Wave 45 (see GG-349): the Cowork window's `git status` took an optional index lock and its sandbox could not remove it. Window now uses read-only git (--no-optional-locks). Recurrence guard for any other sandboxed window is not in place. |
+| Source | Operator, 2026-10-03; GG-349 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-418 — VPS HEAD and branch SHAs recorded in handoffs drift between sessions
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-418 |
+| Category | Process |
+| What was found | 48.1 found VPS HEAD f7959d6 where the 47.2 handoff said 1e097e0, and fly-branch tip be65872 where it said 574b85e. Handoff SHAs are not re-verified at session start. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.1) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-419 — claim_session.sh pushes the current HEAD to main, landing unreviewed commits
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-419 |
+| Category | Process control |
+| What was found | Run from a feature branch, the claim script pushed HEAD to origin/main: 49.1's claim landed 7 untested NFL commits (82ff9d7f) before the suite ran. Script should refuse unless HEAD is main or push only the claim commit. |
+| Source | 49.1 session, 2026-10-03T01:11Z (cc10ac62 on main) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-420 — Two handoff files share the name SESSION_HANDOFF_20261003_0020.md
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-420 |
+| Category | Process |
+| What was found | 48.1 (on main) and 48.3 (on session/20261003T000917Z-eyes-and-nhl) both wrote that filename; whichever lands second collides. 48.3's was left on its branch. |
+| Source | 48.1 and 48.3 handoffs |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-421 — vps_job --rate-cap is recorded and cross-checked, not enforced by the runner
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-421 |
+| Category | Safeguard |
+| What was found | A detached read-only VPS job can exceed its stated rate cap; the runner only cross-checks the cap against the command's own --rate. |
+| Source | SESSION_HANDOFF_20261003_W48_2 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-422 — Claim ranges that share an endpoint or overlap collide; 47.1 and 48.2 held overlapping GG ranges
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-422 |
+| Category | Process control |
+| What was found | T-615's GG-340..GG-399 and T-632's GG-357..GG-398 overlap, and claim_session.sh refuses any range containing an in-use endpoint (GG-357, GG-398), so 49.3 could not carry 48.2's range and claimed GG-400..GG-429. Related: GG-353, GG-162. |
+| Source | SESSION_HANDOFF_20261003_W48_2; 49.3 claim refusal |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-423 — Live Terminal T1 freshness shows red at 58 days under a zero-Kelly book
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-423 |
+| Category | UX |
+| What was found | With kelly_fraction=0.0 no T1 sizing occurs, yet freshness renders red; ambiguous whether staleness matters for the operator. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.3) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-424 — 824 NFL STUB positions inflate OPEN count (850) and exposure ($990.84)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-424 |
+| Category | Ledger integrity |
+| What was found | STUB-identity NFL positions are counted as live in dashboard OPEN and exposure totals. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.3) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-425 — /project governance-gap Age column shows '—' when a block has no date; ADR titles render '— —'
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-425 |
+| Category | UX |
+| What was found | Gap entries without a dated field show no age; ADR title parsing leaves '— —' for several rows. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.3); 49.2 screenshot |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-426 — Session-start hook OPEN count (124) disagrees with the anchored grep (141)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-426 |
+| Category | Tooling |
+| What was found | governance_scan.sh and the CLAUDE.md Step 3 command report different OPEN totals (and the cloud scan showed 119); the count is not trusted. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.3); 49.1 session scan |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-427 — pyarrow and nba_api are imported by src/tests but not declared in pyproject dependencies
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-427 |
+| Category | Reproducibility |
+| What was found | A fresh cloud VM fails the suite at collection (nba_api) and in 7 NFL capture tests (pyarrow) until both are pip-installed by hand. |
+| Source | 49.1 full-suite run, 2026-10-03 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-428 — Live-network tests run in the default suite and fail without egress
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-428 |
+| Category | Test hygiene |
+| What was found | 15 tests (tests/integration/test_mlb_api_connectivity.py, test_nfl_espn_results live game) fail with proxy 403 in a sandbox; default pytest run is red there. Related: GG-354. |
+| Source | 49.1 full-suite run: 3596 passed, 15 network failures |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
+
+### GG-429 — Dashboard froze on last-good numbers after the data source disappeared
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-429 |
+| Category | Correctness |
+| What was found | Real-browser check (49.2): after the server died the header read NO DATA but bankroll, P&L and tab badges stayed. Fixed in 49.2 (panels and badges blank after 2 missed refreshes; tests added). Deployment of the fix to the running pmbot-web-dashboard is still owed. |
+| Source | 49.2 real-browser run; exp_output/dashboard_checks |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+</details>
