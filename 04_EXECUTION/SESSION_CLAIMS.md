@@ -729,3 +729,4 @@
 | 2026-10-03T01:11:08Z | TBD | STANDARD — land NFL+MLB shadow on main + scripts/arm_shadow_crons.sh — 49.1 |
 | 2026-10-03T01:30:40Z | GG-400..GG-429 | STANDARD — 49.3 register owed gaps + land EXP-036 prereg + DECISION_LOG wave entry |
 | 2026-10-03T01:53:54Z | 49.1-49.3 | CLOSED — 49.1-49.3 (cloud): NFL+MLB shadow code, 48.3 dashboard fixes and NHL prereg landed on main; arm_shadow_crons.sh written; GG-400..GG-429 registered; nothing deployed (VPS unreachable from cloud). (commit `077558b1`) |
+| 2026-10-03T01:54:07Z | 49.1-49.3 | CLOSED — merge confirmed, HEAD (db71d3bd) is ancestor of origin/main — cloud blocks landed on main; nothing deployed |
