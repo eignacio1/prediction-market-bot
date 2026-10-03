@@ -250,7 +250,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
-| 51.1 | Kill-switch truth: is the 20% kill switch tripped; does the dashboard show what the risk engine reads | ⏳ | VPS read-only; `scripts/web_dashboard.py` (branch only) | No code to main while MLB games are live |
+| 51.1 | Kill-switch truth | ⚠️ done, branch not merged | Verdict (d): realized drawdown **10.60%**, not tripped; dashboard's 26.63% = 10.60% realized + 16.02% stake in 17 positions already settled on Kalshi but never resolved — if all lost, realized is 26.6% > 20% (GG-441). Dashboard fix on `6cbe62f`. GG-440..442 | Merge in the landing block |
 | 51.2 | NHL silent drops: 32 team codes vs live tickers, parser fix, abstention counters (GG-403, GG-405) | ⏳ | `nhl_pregame.py`, `scripts/nhl_shadow_eval.py` (branch only) | Same |
 | 51.3 | PR #157 merge-ready: resolve conflicts, CI green, pre-merge record, NHL row counts | ⏳ | PR #157 branch; nav files on that branch | Merges nothing |
 | — | ~~51.3 original: land #157 + NHL SHADOW flip~~ | ❌ withdrawn | — | Needed an idle window; becomes the landing block below |
