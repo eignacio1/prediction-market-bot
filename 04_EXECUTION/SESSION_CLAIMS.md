@@ -741,3 +741,4 @@
 | 2026-10-03T20:24:34Z | GG-440..GG-442 | CLOSED — W51.1 kill-switch truth: verdict (d); dashboard fix on branch session/20261003T201912Z-w51-killswitch-truth @ 6cbe62f, NOT merged (hand to 51.3); docs @ 3296af7 |
 | 2026-10-03T20:29:41Z | W51.3 | CLOSED — merge confirmed, HEAD (63a1d1c) is ancestor of origin/main — PR #157 merge-ready: head 42a0d0d, CI 37151320465 green, MERGEABLE/CLEAN, ready for review; NOT merged; NHL shadow table in handoff |
 | 2026-10-03T20:31:34Z | TBD | W51.1 follow-up (MICRO): docs-only correction of GG-441 latent-breach figure (26.6% -> ~12%, 16/17 cancelled markets) + register Kalshi cancelled-market GG; no VPS writes |
+| 2026-10-03T20:32:38Z | GG-450 | CLOSED — W51.1 follow-up: GG-441 breach scenario corrected to ~11-12%, GG-450 registered; docs-only @ 9903cfa pushed to main; no VPS/ledger/code change |
