@@ -666,6 +666,23 @@ _PIPE_FEED_LOGS = ("paper_mlb_cron.log", "resolve_mlb_cron.log",
                    "mlb_feature_refresh.log", "mlb_calib_monitor.log")
 
 
+FROZEN_AFTER_S = 72 * 3600
+
+
+def _frozen_label(last_updated, now) -> str | None:
+    """'FROZEN (last write YYYY-MM-DD)' when a book has had no write in >72h, else None."""
+    try:
+        lu = datetime.fromisoformat(str(last_updated).replace("Z", "+00:00"))
+        if lu.tzinfo is None:
+            lu = lu.replace(tzinfo=timezone.utc)
+        ref = now if getattr(now, "tzinfo", None) else now.replace(tzinfo=timezone.utc)
+        if (ref - lu).total_seconds() > FROZEN_AFTER_S:
+            return f"FROZEN (last write {lu.date().isoformat()})"
+    except Exception:
+        return None
+    return None
+
+
 def _tile(c: str, sport: str, status: str, headline: str, detail: str = "",
           source: str = "", age_s: float | None = None) -> dict:
     return {"c": c, "sport": sport, "status": status, "headline": headline,
@@ -759,7 +776,13 @@ def _pipeline(d: Path, now: datetime, data: dict | None = None) -> dict:
         lim = _hard_limits()
         pf = (data or {}).get("portfolio") or {}
         init, bank = pf.get("initial_bankroll_usd"), pf.get("bankroll_usd")
-        dd = (init - bank) / init if init and bank is not None and init > 0 else None
+        # W51.1: the kill switch reads REALIZED loss only (run_mlb_paper_trade.py:
+        # max(0, -total_realized_pnl) / initial). (init - bank) / init also counts
+        # stake locked in open positions, so it is a different, larger quantity.
+        rpnl = pf.get("total_realized_pnl")
+        dd = max(0.0, -rpnl) / init if init and rpnl is not None and init > 0 else None
+        open_stake = sum(float(p.get("size_usd") or 0) for p in (pf.get("open_positions") or []))
+        frozen = _frozen_label(pf.get("last_updated"), now)
         ks = any("KILL" in str(r.get("event_type", "")).upper() for r in audit[-500:])
         live_k = {k: v for k, v in kel.items() if k in ("T1", "T4M-PROJ")}
         st = "bad" if ks else ("warn" if dd is not None and dd >= 0.8 * lim["max_drawdown_pct"] else "ok")
@@ -767,7 +790,9 @@ def _pipeline(d: Path, now: datetime, data: dict | None = None) -> dict:
                            "kill switch TRIPPED" if ks else "kill switch clear",
                            f"kelly {live_k} · drawdown "
                            + (f"{dd:.1%}" if dd is not None else "n/a")
-                           + f" vs limit {lim['max_drawdown_pct']:.0%}",
+                           + f" realized vs limit {lim['max_drawdown_pct']:.0%}"
+                           + f" · open stake ${open_stake:,.2f}"
+                           + (f" · {frozen}" if frozen else ""),
                            "execution_bands.BAND_CONFIGS · risk._HARD_LIMITS · paper_portfolio_mlb.json"))
     except Exception as e:
         tiles.append(_ni("C4", "MLB", f"risk config unreadable ({type(e).__name__})"))
@@ -1495,13 +1520,14 @@ function railSpec(D,d){
   // OVERVIEW / EVIDENCE / FEEDS
   const cum=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.total_realized_pnl)||0),0);
   const daily=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.daily_net_pnl)||0),0);
-  const dd=(D.P.initial_bankroll_usd&&D.P.bankroll_usd!=null)?(D.P.initial_bankroll_usd-D.P.bankroll_usd)/D.P.initial_bankroll_usd:null;
+  const dd=(D.P.initial_bankroll_usd&&D.P.total_realized_pnl!=null)?Math.max(0,-D.P.total_realized_pnl)/D.P.initial_bankroll_usd:null;
+  const frozenT1=D.P.last_updated&&(Date.now()-new Date(D.P.last_updated))>72*3600*1000?' FROZEN '+String(D.P.last_updated).slice(0,10):'';
   const res=D.closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
   const w=res.filter(p=>p.outcome==='WIN').length;
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
     ['CUM P&L',usd(cum),cum,'sign'],
-    ['DRAWDOWN',dd==null?'—':(dd*100).toFixed(2)+'%',dd,'inv'],
+    ['DRAWDOWN (REALIZED)',dd==null?'—':(dd*100).toFixed(2)+'%'+frozenT1,dd,'inv'],
     ['DAILY P&L',usd(daily),daily,'sign'],
     ['OPEN',String(D.open.length),D.open.length,''],
     ['EXPOSURE',usd(sum(D.open,p=>p.size_usd)),sum(D.open,p=>p.size_usd),''],
