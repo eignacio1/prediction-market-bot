@@ -12,8 +12,8 @@
 | Candles | **Validated** for archived-MLB market structure: EXP-035 Gate 2 PASSED 7/7 on KXMLBTOTAL (G7 by a floating-point margin). Part 1 stays FAILED. |
 | NHL | **Flying.** Code, frozen model and cron on main/VPS. Pre-registration now **on main** (0902d326, merged unchanged by 49.3). |
 | NFL + MLB postseason | **Code on main (49.1), not flying.** Shadow crons NOT armed: `scripts/arm_shadow_crons.sh` written, needs a LOCAL session (refuses 14 service-reachable files until reviewed with `--allow`). **NFL Week 5 kicks off Sunday 10-4.** |
-| Dashboards | NOT LIVE fix + favicon 204 on main (49.2), proven in a real browser against fixtures only. **Not deployed.** |
-| VPS | last recorded at `1e097e0`; `t4-mlb` keeps older code in memory. Not re-verified. |
+| Dashboards | NOT LIVE fix + favicon 204 on main (49.2) and **deployed by CI** (`deploy.yml` run 672: VPS HEAD `077558b1`, `pmbot-web-dashboard` restarted 01:32:57 UTC). Real-browser check against the RUNNING process still owed. |
+| VPS | **`077558b1`** per the CI deploy log (2026-10-03 01:33 UTC). **Every push to main touching non-doc paths auto-pulls and restarts `t4-mlb` AND `pmbot-web-dashboard`** (`.github/workflows/deploy.yml`, "Restart persistent services"). Shadow crons still not armed. |
 | Test suite | Sandbox `pytest -q`: 3620 passed, 43 skipped (50.1). Live-network tests are opt-in via `PMBOT_NETWORK_TESTS=1` (GG-428); CI sets it. |
 
 ---
@@ -41,8 +41,9 @@ the slate as long as the session lasts."
 
 ## ⬛ WHAT 49.x FOUND
 
-- **Everything Wave 48 stranded is on main; nothing is in the air.** NFL + MLB shadow code, the dashboard fixes and the
-  NHL pre-registration landed from cloud. Arming and deploying need the VPS — a local session.
+- **Everything Wave 48 stranded is on main and auto-deployed by CI (VPS at `077558b1`); the NFL/MLB shadow crons are NOT armed.**
+  Arming needs the VPS — a local session. Note: CI's deploy restarts `t4-mlb` on every code push, which contradicts the
+  standing "never restart t4-mlb" rule — operator to reconcile.
 - **Process holes, closed by 50.1:** `claim_session.sh` landed 7 untested NFL commits on main by pushing HEAD (GG-419 —
   now refuses unless HEAD has nothing beyond origin/main); pyarrow / nba_api undeclared (GG-427 — declared); live-network
   tests made the sandbox suite red (GG-428 — `network` marker, opt-in); `scripts/lib/__pycache__/` un-ignored (fixed).
@@ -54,7 +55,7 @@ the slate as long as the session lasts."
 
 | Paste | Block | Budget | One-line purpose |
 |---|---|---|---|
-| **1st — now, LOCAL** | **Arm + deploy** | **~30 min** | `bash scripts/arm_shadow_crons.sh` (review each refused file, `--allow <path>` per file; verify first-firing times); deploy the dashboard NOT LIVE fix, restart `pmbot-web-dashboard` only, re-run `browser_check_dashboard.py` + `browser_check_tunnel_drop.py` against the RUNNING process, verify `/api/data` `process.sha`. |
+| **1st — now, LOCAL** | **Arm + deploy** | **~30 min** | `bash scripts/arm_shadow_crons.sh` (review each refused file, `--allow <path>` per file; verify first-firing times); dashboard fix is already deployed by CI — re-run `browser_check_dashboard.py` + `browser_check_tunnel_drop.py` against the RUNNING process, verify `/api/data` `process.sha`. |
 | 2nd | **GG-400..429 triage** | ~30 min | Read each, confirm or correct severity, close duplicates. No fixes in-block (Hard Rule 11). |
 
 **Arm + deploy first:** NFL Week 5 T1 windows are open now; every hour unarmed is rows that will never exist.
@@ -153,7 +154,7 @@ resolved ledger unwritten since 09-28 (47.2's findings — 48.2 registers them).
 - *T1 MLB postseason flag* — still unauthorized; not applied; T1 still blind to playoff games (not re-verified from cloud).
 - *EXP-034* — neither run nor parked.
 - *ADR-0070* — landed on main as PROPOSED (49.x); not accepted.
-- *Who restarted t4-mlb?* — still unattributed; not investigated (cloud has no VPS access).
+- *Who restarted t4-mlb?* — **likely answered, not decided:** CI `deploy.yml` restarts `t4-mlb` on every code push to main (run 672 restarted it at 01:32:59 UTC 10-03). Match GG-347/348 timestamps against deploy runs to confirm.
 - *MLB winter* — unchanged; World Series not yet over.
 - *Settlement + depth capture schedules … APR-0034/0036* — unchanged.
 

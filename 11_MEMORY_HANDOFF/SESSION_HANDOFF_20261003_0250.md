@@ -38,3 +38,12 @@ d) Triage of GG-400..GG-429 (30 gaps, severity from source, not investigated).
 ## Unlanded branches (operator routes; not touched)
 session/20261003T000917Z-eyes-and-nhl, session/exp037-nfl-land, session/exp037-nfl-land-rebased-0e,
 session/20261002T222218Z-fly-nfl-pregame, and this block's claude/peaceful-heisenberg-51g2ee.
+
+## Addendum (02:55Z) — parallel triage + deploy finding
+- GG-400..429 triaged read-only by three parallel runners; consolidated in
+  `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG400_429_TRIAGE_2026-10-03.md` (27 gaps). Recommendations only;
+  GOVERNANCE_GAP_LOG.md untouched beyond GG-419/427/428 status lines.
+- **Correction to this handoff and to 49.x's "nothing deployed":** CI `deploy.yml` auto-deployed 49.x — VPS HEAD
+  `077558b1` (run 672, 01:33Z), and it restarts `t4-mlb` + `pmbot-web-dashboard` on every non-doc push to main.
+  Carry item (b) reduces to the browser check against the running process. Merging PR #157 will trigger the same
+  restart (it touches scripts/, tests/, pyproject.toml, .github/).
