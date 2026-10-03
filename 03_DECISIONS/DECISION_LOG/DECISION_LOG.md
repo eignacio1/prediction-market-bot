@@ -1718,3 +1718,11 @@ Operator ended the block after D6/D7: the ~2h D3 sampling run could not be left 
 
 ### 2026-10-02 — 47.1 close-out correction: detached D3 sampler stopped (append-only, supersedes "no background process" claim)
 After the operator's "Stop now, close out" decision, runner R1 had relaunched a detached D3 sampler (PID 37971 via `d1b2_launch.py`). The earlier carryover entry's statement that no background process remained was therefore inaccurate for a short window. PID 37971 was killed at close-out; process check afterward: 0 matching processes. D3 stays NO VERDICT; the partial d1b2 sampler data (if any) is NOT to be gated. Next session re-runs D3 from amendment fa29318 with a fresh round 0. The earlier note that the first sampler "died" after round 0 was my own kill at the stop request, not a sampler fault; the resume support in f7959d6 is operational only and changes no frozen rule.
+
+### 2026-10-02 — Operator directives: time-bounded blocks; long waiting work off the terminals (T-632, Wave 48.2)
+
+**17:03 PT (verbatim):** *"We added so many extra tasks to the windows that it was about to take over 2+ hours for each window to complete so I cut it short each way. I'm not letting windows run for hours on end — if there's a task that'll take that long, don't place it."* Minutes later, when the wave was sized at ~75 min a block: *"Even 75 minutes is way too long — none of these tasks better take 75 minutes."*
+
+**17:09 PT (as recorded in ACTIVE_QUEUE.md, 48.2 scope cut):** blocks ~30 minutes, hard stop at 45; land the queue + archive, keep vps_job.py small, launch jobs only if authorized and never wait; register the listed gaps one line each with no investigation; 48.1/48.3 gaps go to Wave 49; stop at 45 minutes at a pushed boundary with a handoff.
+
+**Consequence:** waiting-bound work (history back-capture, EXP-034 sampler) runs as detached read-only VPS jobs via `scripts/vps_job.py` (landed b11bf62), only under an authorization line naming DETACHED READ-ONLY VPS JOBS. That line is NOT present in "Needs your decision" as of 2026-10-03 00:15Z, so nothing was launched.
