@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-03T20:10:00Z (T-637 — 50.2 cleanup: EXP-037 shadow crons armed, tree synced, PR #157 HELD (live games), GG-430..432 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_cleanup-1003.md` for full session detail.
+**Last reviewed:** 2026-10-03T20:40:30Z (T-646 — 51.2 NHL silent drops: Kalshi SJ/TB/LA/NJ codes were dropped (379/1,595 mkts); parser+aliases+counters on unmerged branch c12a47a.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_2040.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
