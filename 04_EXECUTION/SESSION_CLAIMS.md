@@ -738,3 +738,4 @@
 | 2026-10-03T20:20:01Z | TBD | W51.1 kill-switch truth (STANDARD): verify T1 MLB drawdown 26.63% vs kill switch; read-only VPS; dashboard fix on branch, no merge |
 | 2026-10-03T20:20:28Z | GG-440..GG-445, T-646..T-650 | 51.2 STANDARD — NHL silent drops: D1 Kalshi team-code diff, TEAM_ALIASES fix + parser tests, abstention counters (closes GG-403, counter half of GG-405); branch push only, no merge |
 | 2026-10-03T20:21:35Z | GG-446..GG-449, T-651..T-653 | W51.3 STANDARD — make PR #157 merge-ready: merge origin/main into PR branch, resolve conflicts, CI green, mark ready, pre-merge record, NHL shadow-cell read-only table; no merge to main |
+| 2026-10-03T20:24:34Z | GG-440..GG-442 | CLOSED — W51.1 kill-switch truth: verdict (d); dashboard fix on branch session/20261003T201912Z-w51-killswitch-truth @ 6cbe62f, NOT merged (hand to 51.3); docs @ 3296af7 |
