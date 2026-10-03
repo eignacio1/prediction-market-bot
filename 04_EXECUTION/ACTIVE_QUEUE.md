@@ -50,7 +50,7 @@ unattended on the VPS under their own authorization, and a later block reads wha
   `(initial − bankroll) / initial` (`web_dashboard.py:761`, `:1498`), which also counts stake locked in ~17 positions
   open since August. So the tile may be alarming on money that is tied up, not lost — or the kill switch may have
   missed a real breach. No capital either way (kelly 0.0).
-- **PR #157 is not mergeable as it stands** (GitHub: `mergeable_state = dirty`) — 50.2's report did not say so. 51.3 resolves it.
+- **PR #157 is not mergeable as it stands** (GitHub: `mergeable_state = dirty`) — 50.2's report did not say so. 51.3 makes it mergeable; it lands in a later idle window.
 
 ---
 
@@ -60,10 +60,10 @@ unattended on the VPS under their own authorization, and a later block reads wha
 |---|---|---|---|---|
 | **1st** | **51.1 Kill-switch truth** | now, LOCAL | ~30 min | Is the 20% kill switch tripped, should it be, and does the dashboard show what the risk engine reads? Read-only; any fix on a branch. |
 | **2nd** | **51.2 NHL silent drops** | now, LOCAL | ~30 min | Verify all 32 team codes against live Kalshi tickers, fix the parser, count every abstention by reason. Branch only. |
-| **3rd** | **51.3 Land #157 + NHL SHADOW** | **at or after 8:30 PM PT (03:30 UTC)**, LOCAL | ~30 min | Make #157 mergeable now; merge it and flip NHL's live cells to SHADOW only once no game is live. |
+| **3rd** | **51.3 PR #157 merge-ready** | now, LOCAL | ~30 min | Resolve #157's conflicts, CI green, pre-merge record, NHL row counts. Merges nothing. |
 
-**51.1 and 51.2 push no code to main** — MLB postseason games are live, and any code push restarts `t4-mlb`.
-51.3 carries its own idle probe: pasted early, it does the conflict resolution and stops cleanly before merging.
+**No block pushes code to main** — MLB postseason games are live, and any code push restarts `t4-mlb`. Landing #157,
+the NHL SHADOW flip and 51.1/51.2's branches is one short block, issued only when an idle window is actually open.
 
 ### 51.1 — Kill-switch truth
 
@@ -116,8 +116,8 @@ D6. Only if the dashboard disagrees with the risk engine: on a branch, fix
     reads, open stake as a separate labelled number, and a book with no write in over
     72h labelled FROZEN with its last-write date. Tests green. Push the branch.
     DO NOT MERGE: a code push to main auto-deploys and restarts t4-mlb (deploy.yml,
-    GG-432) while postseason games are live. Hand the branch and SHA to 51.3 or the
-    next wave.
+    GG-432) while postseason games are live. Hand the branch and SHA to the landing
+    block.
 
 OUT OF SCOPE - register and stop (Hard Rule 11): editing or resolving positions, any
 kelly or limit change, any restart, any cron change.
@@ -168,7 +168,7 @@ D4. Coverage boundary: rows before this fix lands are a different population fro
     Do NOT edit the frozen pre-registration.
 D5. Full suite green. Push the branch. DO NOT MERGE: a code push to main auto-deploys
     and restarts t4-mlb (deploy.yml, GG-432) while postseason games are live. Hand the
-    branch and SHA to 51.3 or the next wave.
+    branch and SHA to the landing block.
 
 OUT OF SCOPE - register and stop (Hard Rule 11): the confirmed-goalie source (GG-401),
 the spread cutoff (GG-404), the clustered scorer (GG-407), matinee cron hours (GG-405
@@ -179,24 +179,24 @@ CLOSE: results note, GG updates, handoff naming the branch and SHA. Pushes to ma
 be docs-only. At 45 minutes stop at the nearest pushed boundary.
 ```
 
-### 51.3 — Land PR #157 + NHL SHADOW flip
+### 51.3 — PR #157 merge-ready
 
 ```text
-WAVE 51.3 - LAND PR 157 + NHL SHADOW FLIP (local terminal, about 30 min, hard stop 45)
-PASTE AT OR AFTER 8:30 PM PT (03:30 UTC). If pasted earlier, do D1-D2 and stop at D3.
+WAVE 51.3 - PR 157 MERGE-READY (local terminal, about 30 min, hard stop 45)
 
 You are a Claude Code session on the prediction-market-bot repo. Run the CLAUDE.md
 session-start protocol first: isolated worktree via
-scripts/new_session_worktree.sh "w51-land-157", then scripts/claim_session.sh with tier
-STANDARD and this single deliverable. Claim IDs at run time.
+scripts/new_session_worktree.sh "w51-pr157-ready", then scripts/claim_session.sh with
+tier STANDARD and this single deliverable. Claim IDs at run time.
 
-CONTEXT: PR 157 (head 855a5f0, draft, CI green) carries 50.1's process fixes: GG-419
-claim_session HEAD guard, GG-427 deps, GG-428 network marker, .gitignore, and the
-GG-400..429 triage. GitHub reports it NOT mergeable: conflicts in DECISION_LOG.md,
-PLAN.md, TODO_NEXT.md, MEMORY_BANK.md, plus ACTIVE_QUEUE.md and
-ACTIVE_QUEUE_ARCHIVE.md since the Wave 51 rotation landed. A merge to main
-auto-deploys and restarts t4-mlb and pmbot-web-dashboard (deploy.yml). Merging only
-when no game is live is the plan the operator dispatched with 50.2.
+QUESTION: Make PR 157 mergeable and fully pre-checked, so landing it later is a short
+mechanical run. This block merges nothing to main.
+
+CONTEXT - claims to verify: PR 157 (head 855a5f0, draft, CI green) carries 50.1's
+process fixes: GG-419 claim_session HEAD guard, GG-427 deps, GG-428 network marker,
+.gitignore, and the GG-400..429 triage. GitHub reports it NOT mergeable: conflicts in
+DECISION_LOG.md, PLAN.md, TODO_NEXT.md and MEMORY_BANK.md, plus ACTIVE_QUEUE.md and
+ACTIVE_QUEUE_ARCHIVE.md since the Wave 51 rotation landed on main.
 
 D1. Merge origin/main into the PR branch. Resolve:
     - ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md: take main's version. It already
@@ -204,34 +204,21 @@ D1. Merge origin/main into the PR branch. Resolve:
     - The 4 nav files: keep every entry from both sides, in date order. Delete nothing.
       Paste the resolved hunks.
     Push the PR branch. Branch pushes do not deploy.
-D2. Wait for CI green on the new head. Mark the PR ready for review.
-D3. IDLE PROBE - all three must hold; paste the evidence:
-    (i)   MLB Stats API schedule for today and tomorrow UTC shows no game In Progress;
-    (ii)  the last row of logs/t4_mlb_cycle_log.jsonl on the VPS is more than 15 minutes
-          old;
-    (iii) no MLB game starts within the next 60 minutes.
-    If any fails: stop here. Handoff says "PR 157 ready, merge at next idle window".
-    Merge nothing.
-D4. Merge PR 157 with a merge commit. Watch the Deploy run to completion. Verify on the
-    VPS: HEAD equals the merge SHA, t4-mlb and pmbot-web-dashboard active with NRestarts
-    sane, and the dashboard /api/data process.sha equals the merge SHA. If Deploy fails,
-    stop and report. Do not hand-pull on the VPS.
-D5. NHL SHADOW flip. From the NHL shadow ledger on the VPS, list which NHL
-    (MarketType x band) cells have produced valid rows. Expected: at least the three T3
-    cells - verify, do not assume. Promote exactly those cells NOT_IMPLEMENTED to SHADOW
-    via promote_cell_status (market_type_registry.py:799), with notes citing the row
-    counts and dates. Cells with no rows stay as they are. Tests green, push to main
-    (this is a second deploy - re-run the D3 probe first, then the D4 checks), and
-    confirm the Live Terminal shows the new statuses from the RUNNING process.
-STRETCH, only if under 35 minutes and the branch handoff says green: merge 51.1's
-dashboard branch and/or 51.2's NHL branch the same way (probe, merge, D4 checks, one at
-a time). Otherwise leave them for the next wave.
+D2. Wait for CI green on the new head. Confirm GitHub now reports it mergeable. Mark it
+    ready for review.
+D3. Pre-merge record in the PR description: every file in the PR diff that is reachable
+    from t4-mlb or a cron job, each confirmed additive and covered by the green suite,
+    and the exact Deploy behaviour expected on merge (deploy.yml restarts t4-mlb and
+    pmbot-web-dashboard).
+D4. Read-only, for the later NHL status flip: from the NHL shadow ledger on the VPS,
+    list which NHL (MarketType x band) cells have produced valid rows, with row counts
+    and first/last dates. Record it in the handoff. Change no registry status.
 
-OUT OF SCOPE - register and stop: any change to deploy.yml (operator decision GG-432),
-any cron change, any kelly or sizing change, any status beyond SHADOW.
+DO NOT: merge PR 157, push code to main, restart anything, or touch web_dashboard.py or
+any NHL source file (51.1 and 51.2 own those).
 
-CLOSE: handoff with each merge SHA, each Deploy run id, VPS HEAD, and the cells flipped.
-At 45 minutes stop at the nearest pushed boundary.
+CLOSE: handoff with the new PR head SHA, CI run id, mergeable state, and the D4 table.
+Pushes to main must be docs-only. At 45 minutes stop at the nearest pushed boundary.
 ```
 
 ---
@@ -261,7 +248,7 @@ At 45 minutes stop at the nearest pushed boundary.
 |---|---|---|
 | 10-48 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
 | **49-50** | **CLOSED** | Run inside harness sessions, not from this queue: NFL + MLB shadow code, dashboard fixes and the NHL pre-registration on main (49.x); process fixes on PR #157 (50.1); crons armed, tree synced, GG-430..432 (50.2). |
-| **51** | **FIRING** | 51.1 kill-switch truth · 51.2 NHL silent drops · 51.3 land #157 + NHL SHADOW (after 8:30 PM PT). |
+| **51** | **FIRING** | 51.1 kill-switch truth · 51.2 NHL silent drops · 51.3 PR #157 merge-ready. Withdrawn: the original 51.3 (needed an idle window; archived). |
 
 ---
 
@@ -269,7 +256,7 @@ At 45 minutes stop at the nearest pushed boundary.
 
 | Wave | The question it answers |
 |---|---|
-| **51** | *Is what the operator sees true, and is everything built actually landed?* Kill switch vs dashboard; NHL silent drops; #157 landed; NHL labelled SHADOW. |
+| **51** | *Is what the operator sees true, and is everything built actually landed?* Kill switch vs dashboard; NHL silent drops; #157 made mergeable. |
 | **52** | **NHL scoring readiness** — confirmed-goalie source at T3 (GG-401), pre-registered spread cutoff (GG-404), clustered scorer (GG-407), matinee coverage (GG-405). **NBA (opens 10-20)** in ~30-minute blocks. Merge whatever 51 left on branches. |
 | **53** | First looks as cells reach judged n (NFL first: 60 games ≈ late October). A **flat-stake paper ADR** for SHADOW cells — yours to accept. |
 | **later** | In-play arms only where C5 / ADR-0068 shows speed is measured. Sizing only for a cell that cleared its gate and its capacity question. |
@@ -286,7 +273,7 @@ What should reorder this, and what should stop it:
 
 ## Queued next — not yet fired
 
-**NHL scoring readiness** (GG-401, GG-404, GG-405, GG-407) — before any NHL score is read. **NBA game markets.** **The board
+**Landing block** — issued only when no MLB game is live (earliest about 8:30 PM PT tonight): merge #157, flip NHL's cells with rows to SHADOW, merge 51.1/51.2's green branches; idle probe and Deploy checks on each. **NHL scoring readiness** (GG-401, GG-404, GG-405, GG-407) — before any NHL score is read. **NBA game markets.** **The board
 survey** (after the history store completes — needs the detached-VPS-jobs line). **MLB winter disposition** after the World
 Series. **Step 4 season-awareness** (GG-343..345). **PIPE-08 406s.** **T4M-PROJ and T3 disposition** (both MISFILED). **The
 branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 51.1 reports on the T1 set). **Test-suite runtime.**
