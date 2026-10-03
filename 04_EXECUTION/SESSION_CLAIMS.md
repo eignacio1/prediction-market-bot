@@ -737,3 +737,4 @@
 | 2026-10-03T20:10:32Z | T-637 | CLOSED — merge confirmed, HEAD (6abf1a0) is ancestor of origin/main — 50.2 cleanup: crons armed, tree synced, PR #157 HELD, GG-430..432 |
 | 2026-10-03T20:20:01Z | TBD | W51.1 kill-switch truth (STANDARD): verify T1 MLB drawdown 26.63% vs kill switch; read-only VPS; dashboard fix on branch, no merge |
 | 2026-10-03T20:20:28Z | GG-440..GG-445, T-646..T-650 | 51.2 STANDARD — NHL silent drops: D1 Kalshi team-code diff, TEAM_ALIASES fix + parser tests, abstention counters (closes GG-403, counter half of GG-405); branch push only, no merge |
+| 2026-10-03T20:21:35Z | GG-446..GG-449, T-651..T-653 | W51.3 STANDARD — make PR #157 merge-ready: merge origin/main into PR branch, resolve conflicts, CI green, mark ready, pre-merge record, NHL shadow-cell read-only table; no merge to main |
