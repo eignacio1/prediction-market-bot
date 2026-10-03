@@ -734,3 +734,4 @@
 | 2026-10-03T03:15:41Z | 50.1 | MERGED: NO — branch `claude/peaceful-heisenberg-51g2ee` awaiting merge (HEAD 31254a61 not on origin/main; PR #157, operator-gated: merge triggers CI deploy that restarts t4-mlb) — GG-419/427/428 + pycache fixed, queue rotated, GG-400..429 triaged; CI green. Row written from a clean origin/main worktree because close_session_claim.sh pushes HEAD:main (GG-419 defect) |
 | 2026-10-03T20:00:21Z | GG-430..GG-439, T-637..T-645 | 50.2 cleanup: arm shadow crons, sync shared tree, merge PR #157, dashboard check (MICRO ops, local) |
 | 2026-10-03T20:10:20Z | T-637 | CLOSED — 50.2 cleanup: EXP-037 shadow crons armed, tree synced, PR #157 HELD (live games), GG-430..432 registered (commit `42a7c74`) |
+| 2026-10-03T20:10:32Z | T-637 | CLOSED — merge confirmed, HEAD (6abf1a0) is ancestor of origin/main — 50.2 cleanup: crons armed, tree synced, PR #157 HELD, GG-430..432 |
