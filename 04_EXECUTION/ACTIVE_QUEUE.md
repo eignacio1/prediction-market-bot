@@ -3,220 +3,192 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 52e3ea3` (2026-10-03 21:05 UTC, incoming strategic window). GitHub PR/CI state and the MLB Stats API checked live.
+**Verified against:** `origin/main = 1638496` (2026-10-03 22:10 UTC, strategic window). PR state and CI read live from GitHub.
 VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (this window has no SSH).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | **GG-450** registered (GG-443..449 claimed, unused) · **T-653** claimed · **ADR-0070** (PROPOSED) · **EXP-037** · gap log 178 OPEN |
-| Registry (92 cells) | ACTIVE 1 · **SHADOW 7** (MLB player-hits T1-T3 + NFL T1 moneyline / spread / total / team total, flipped 2026-10-03 by T-608) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 81 |
+| Highest GG / T / ADR / EXP | **GG-452** registered (GG-453..460 claimed, unused) · **T-663** claimed (T-660..663 unused) · **ADR-0070** (PROPOSED) · **EXP-037** · gap log **180 OPEN** |
+| Registry (92 cells) | On main: ACTIVE 1 · **SHADOW 7** (MLB player-hits T1-T3 + 4 NFL T1) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 81. **After PR #160 lands: SHADOW 16** (+9 NHL), NOT_IMPLEMENTED 72. |
 | Capital | **$0.** `kelly_fraction = 0.0` on every operating band. Demo venue only. SHADOW = evaluate and log. |
 | NFL + MLB postseason shadow | **Armed** (50.2): EXP-037 cron block installed; crontab backup `/root/crontab.bak.20261003T200240Z`; first NFL T1 firing 2026-10-04 00:05 UTC. |
-| NHL | Flying in shadow: 9 cells have rows (51.3). Registry still says NOT_IMPLEMENTED. Never uses the confirmed goalie (GG-401). Team-code parser unverified (GG-403). |
-| PR #157 (50.1 process fixes) | **NOT mergeable again** (GitHub `dirty`, 21:05 UTC): main moved 13 commits after 51.3; the only conflict is `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20261003.md`, a `merge=union` file GitHub can't auto-merge. CI green on head `42a0d0d`. Landing block re-merges main into it first. |
-| 51.1 / 51.2 branches | **No CI run on either** (branches only get CI as PRs). 51.2's final full-suite rerun was not confirmed at close-out. 51.2 also conflicts with main on 4 nav files (DECISION_LOG, PLAN, TODO_NEXT, MEMORY_BANK). 51.1 merges clean. |
+| NHL | Regular season started 10-03. 9 cells log rows (51.3; re-check = 53.2); registry flip + 2-letter team-code fix ride in **#160**. Never uses the confirmed goalie (GG-401) - no NHL T3 score may be read. |
+| Waiting to land (all CI green, none merged) | **#160** `w52/landing` @ `6f962400` = #157 + 51.1 + 51.2 + NHL 9-cell flip (clean) · **#161** `w52/live-terminal` @ `a1bdfc05`, based on #160 · **#158** GG-432 deploy change (draft, your call) · **#159** resolver (draft; waits on your GG-450 call). #157 stays open, contained in #160. |
 | VPS | HEAD `eb2d1434` (50.2). `pmbot-web-dashboard` process still on `077558b`. |
 | Deploy | **Every push to main that touches anything outside the 9 doc folders auto-deploys and restarts `t4-mlb` + `pmbot-web-dashboard`** (`deploy.yml`, GG-432). A push is docs-only only if EVERY file in it is under `00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS 07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF`. |
-| Live games today (Stats API, 21:00 UTC) | CWS@CLE final · **ATL@LAD in progress** · NYY@TB 22:30Z · SD@MIL 00:30Z (5:30 PM PT). **Earliest code-push window: after SD@MIL goes Final, ~03:30 UTC = ~8:30 PM PT.** Tomorrow's first pitch SD@MIL 20:00Z. |
+| Live games (10-03 UTC) | MLB: NYY@TB 22:30Z · SD@MIL 00:30Z (5:30 PM PT) - **earliest code-push window ~03:30 UTC = ~8:30 PM PT**, re-checked live then. NHL regular season tonight: 7 games 23:00Z, 1 at 23:30Z, 2 at 00:00Z, 01:00Z, 2 at 02:00Z. First NFL T1 shadow run 00:05Z (5:05 PM PT). |
 
 ---
 
-## ⬛ NOW — Wave 52 · ONE Claude Code session runs 52.A → 52.E in order, then stops
-
-Operator, 2026-10-03 14:13 PT: near the session limit, so the wave goes to a single Claude Code chat as one prompt, rolling block to block. It executes only; it does not generate waves or take VPS work. It updates only the Status/Result cells below as each block closes. Everything is branch/PR-only — nothing merges to main.
+## ⬛ NOW — Wave 53 · three terminal blocks · paste now · nothing merges to main
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **52.A** Landing prep | ✅ DONE | branch `w52/landing`: #157 + 51.1 + 51.2 merged, NHL 9-cell SHADOW flip | PR #160 `w52/landing` @ `6f962400`: #157 42a0d0d + 51.1 6cbe62f + 51.2 f822b6b + NHL 9-cell SHADOW flip 9f924087; suite 3649 passed/43 skipped; CI run 37156063420 success, mergeable clean; NOT merged. VPS-PENDING: NHL rows re-verify |
-| **52.B** GG-432 decision PR | ✅ DONE | branch `w52/gg432-deploy`: `deploy.yml` + decision script/tests | PR #158 `w52/gg432-deploy` @ `444b54f7`, CI green: t4-mlb restarts only if its import closure changed AND no MLB game live; for your GG-432 call (a/b/c) |
-| **52.C** MLB resolver (GG-440) | ✅ DONE (root cause LIKELY) | branch `w52/resolver-406`: `run_resolve_mlb.py` + tests; results doc | PR #159 `w52/resolver-406` @ `fd315549`, CI green: book only Kalshi yes/no, cancelled=skip, --dry-run. statsapi 406 = GG-084 IP block; ESPN path failed silently. VPS-PENDING: repro + 26-position dry run |
-| **52.D** NHL confirmed goalie (GG-401) | ✅ DONE (verdict c) | branch `w52/nhl-goalie-probe` (probe only); results doc | Cannot tell from cloud (all NHL sources proxy-refused). Measurement: run `scripts/nhl_goalie_source_probe.py` (`w52/nhl-goalie-probe` @ `3e31e95b`) on VPS at ~60/30/15 min pre-start |
-| **52.E** Live Terminal truth | ✅ DONE | branch `w52/live-terminal` stacked on `w52/landing`: `web_dashboard.py`, `Live Terminal.html`, tests | PR #161 `w52/live-terminal` @ `a1bdfc05` (base w52/landing; retarget to main after #160): every registry SHADOW cell listed, ledger-only cells labelled, settled/ copies no longer double-counted, T1 FROZEN shows age; suite 3656 passed. VPS-PENDING: check running Live Terminal after deploy |
+| **53.1** Resolver VPS confirmation (GG-440) | ⬜ **PASTE NOW** | VPS read-only; ledger copies on the Mac; `w52/resolver-406` only if the fix is wrong; W52_C results doc | — |
+| **53.2** NHL goalie timing + rows + crontab (GG-401) | ⬜ **PASTE NOW — start by ~22:25 UTC (3:25 PM PT)** to sample the 23:00Z games | VPS read-only; `w52/nhl-goalie-probe`; W52_D results doc | — |
+| **53.3** GG-451 guard into the landing PR + GG-452 VPS freeze | ⬜ **PASTE NOW** | `w52/landing` (PR #160): `scripts/close_session_claim.sh` + one test; VPS read-only | — |
 
-**Cloud limits baked in:** no VPS — every VPS fact is cited from main or marked **VPS-PENDING** for a later terminal block. **Your decisions it prepares, not takes:** GG-432 (52.B PR), GG-450 booking of cancelled T1 positions (52.C skips them), any NHL pre-registration amendment (52.D).
+Disjoint branches. Gap-log notes land on different entries (GG-440 / GG-401 / GG-451-452). **GG-451 hazard:** `close_session_claim.sh` pushes HEAD to main — every block is told not to run it.
 
-**Next, not yet issued:** the landing block — merge 52.A's PR in an idle window (earliest ~8:30 PM PT, after SD@MIL goes Final; re-checked live then), plus a terminal block for the VPS-PENDING items. Issued when the window opens.
+**Next, not yet issued:** Wave 54 = the **landing block** in the idle window (earliest ~8:30 PM PT): fold #161 into `w52/landing` so it is ONE merge, merge #160, confirm Deploy, VPS HEAD, both services, dashboard `process.sha`, `t4_mlb_cycle_log` resumes, 16 SHADOW cells on the running Live Terminal; plus a read of the first NFL T1 shadow run (00:05Z). Issued when the window opens.
 
-### Wave 52 — the one prompt (paste into Claude Code)
+### 53.1 — Resolver VPS confirmation
 
 ```
-WAVE 52 - ONE CLAUDE CODE SESSION, FIVE BLOCKS (52.A-52.E), RUN IN ORDER, THEN STOP.
-Repo: eignacio1/prediction-market-bot. Issued by the strategic window 2026-10-03 ~2:20 PM PT.
+COMMON RULES - WAVE 53 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. One job, done completely. Push at the nearest boundary when you stop.
+- MLB postseason games are live until ~03:30 UTC. Any push to main that touches a file outside the 9 doc
+  folders (00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS
+  07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF) deploys and restarts t4-mlb
+  (deploy.yml, GG-432). So: NO code to main and NO PR merges this wave. Docs-only pushes to main are fine.
+- GG-451 HAZARD: scripts/close_session_claim.sh pushes HEAD to main. Do NOT run it, and do not let
+  /session-end run it. Write your handoff file instead.
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own (main's claim script pushes
+  HEAD to main - GG-419; the fix sits in unmerged PR #160). Never reuse a number in SESSION_CLAIMS.md.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only doc-folder paths. If your
+  branch has code commits, push docs from a second worktree made from origin/main
+  (git worktree add ../<slug>-docs origin/main), not from your code branch.
+- VPS is read-only: no ledger write, no cron edit, no restart, no hand-pull, no log rotation. Work on copies.
+- No order, position, fill, stake or kelly_fraction change. Demo only.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into a SESSION_HANDOFF file (docs-only push to main).
 
-=== YOUR ROLE - READ THIS FIRST ===
-You are an EXECUTOR. You run exactly the five blocks below, in order, and then you stop.
-- You do NOT write new waves, new blocks or new prompts. You do NOT pick up work that is not listed here,
-  however useful it looks. A gap you find outside scope: register it (GG/T) and move on (Hard Rule 11).
-- You do NOT restructure 04_EXECUTION/ACTIVE_QUEUE.md. You only update the Status / Result cells of the
-  Wave 52 rows (52.A-52.E) as each block closes. The strategic window owns everything else in that file.
-- You do NOT take operator decisions (GG-432, GG-450, any ADR acceptance, any pre-registration amendment).
-  You prepare them, state them in one line each, and leave them.
-- When all five are done, or when every remaining block is blocked, write the final report (end of this
-  prompt) and STOP. Do not look for more work. The strategic window issues the next wave.
+WAVE 53.1 - MLB RESOLVER, VPS CONFIRMATION (GG-440 / PR #159). Repo: eignacio1/prediction-market-bot.
 
-=== WHAT THIS SESSION CANNOT DO (cloud, not a terminal) ===
-- No SSH to the VPS. No VPS reads or writes, no crontab, no logs, no ledgers. Where a block needs a VPS fact,
-  use the tracked record on main and cite it, or mark the item VPS-PENDING (a later terminal block does it).
-  Never invent a VPS fact.
-- No access to the operator's Mac folder. GitHub is your only shared surface.
-- GitHub GraphQL is blocked here: use REST (gh api repos/eignacio1/prediction-market-bot/...) for PRs,
-  including creating one (POST .../pulls). gh pr create may fail for that reason.
-- Outbound network goes through an allowlist. If a site is refused, record the exact error and go on;
-  do not retry through another tool.
-- Clone may be shallow: git fetch --depth=1000 origin <branch> before merging or comparing.
+WHY
+Wave 52.C (cloud, no VPS) found the LIKELY root cause: statsapi.mlb.com 406s the VPS's IP (Fastly CDN block,
+GG-084), and the ESPN fallback then settles nothing through a path that logged nothing. PR #159
+(branch w52/resolver-406, fd315549) books only Kalshi yes/no outcomes and skips cancelled markets. 17 T1 + 9 T4
+paper positions are stuck. This block turns LIKELY into CONFIRMED or REFUTED, and classifies all 26 positions.
+Read first: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_C_resolver_406_results.md (its VPS-PENDING list is
+this block's checklist), GG-440, GG-450.
 
-=== HARD LIMITS (all five blocks) ===
-- NOTHING merges to main. No file outside the 9 doc folders (00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN
-  03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS 07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE
-  11_MEMORY_HANDOFF) is pushed to main. MLB postseason games are live and deploy.yml restarts t4-mlb on every
-  code push (GG-432). Code goes on branches and PRs only. Docs-only pushes to main are fine.
-- No order, position, fill, stake or kelly_fraction change. Demo only, always. No cron edits.
-- Never bypass a permission control. Record the exact command and refusal, then move on.
-- Claim IDs once at the start with scripts/claim_session.sh (derive the next free T- and GG- numbers at run
-  time; a range of ~10 each). Never reuse a number already in SESSION_CLAIMS.md or the gap log.
-- Every premise in this prompt is a claim to verify against tracked files and GitHub, not a fact.
-- Pace: each block ~30 min, hard stop 45. At the stop, push what you have, record where it ends, and move to
-  the next block. Run the full test suite (PYTHONPATH=src python3 -m pytest tests -q, ~11 min) at most once
-  per code block; targeted tests otherwise.
-- Context: you must reach the final report. Keep narration minimal. If context passes ~60%, finish the current
-  block's push, skip to the final report, and list the unstarted blocks as NOT RUN.
+D0 - Worktree w53-resolver-vps; claim "W53.1 STANDARD - GG-440 VPS confirmation + 26-position dry run".
+D1 - On the VPS, read-only: send the resolver's exact statsapi request (URL, params, headers from
+     run_resolve_mlb.py), then vary one thing at a time (Accept: application/json; no custom headers; default
+     User-Agent). Record status and the server / via / x-served-by / x-cache headers. Send the identical
+     request from this Mac and compare.
+D2 - On the VPS: grep -c "ESPN-FALLBACK" logs/resolve_mlb_cron.log, and read the last run's lines for the 26
+     positions. Establish why ESPN settled nothing.
+D3 - Root cause: CONFIRMED or REFUTED, one sentence, with the evidence lines.
+D4 - Copy logs/paper_portfolio_mlb.json and logs/paper_portfolio_mlb_t4.json DOWN to a scratch dir on this
+     Mac (never touch the VPS originals). From PR #159's branch:
+     LOG_DIR=<copy dir> BOT_ENV=paper python3 src/prediction_market_bot/run_resolve_mlb.py --dry-run
+     Table, one row per position (all 26): ticker, band, game_date, Kalshi result, classification
+     (settles / skipped-cancelled / skipped-not-final / unresolvable), reason. Confirm ZERO cancelled markets
+     get a win or loss. Note: this Mac is not blocked by statsapi, the VPS is - say what that changes.
+D5 - If D1-D4 show the fix is wrong or incomplete, correct it on w52/resolver-406 with a test and get CI green.
+     Do not merge #159; it waits on the operator's GG-450 call and an idle window.
+D6 - Append a "VPS confirmation (W53.1)" section to the W52_C results doc and a note on GG-440 (status
+     unchanged). Docs-only push to main.
+```
 
-=== AFTER EACH BLOCK (the rolling step - do this, then continue) ===
-1. Push the block's branch / PR (code) and its results doc (docs-only push to main).
-2. Update ONLY that block's row in ACTIVE_QUEUE.md (Status + one-line Result), docs-only push to main.
-3. Go straight to the next block. Do not wait for the operator.
+### 53.2 — NHL goalie timing + rows + crontab
 
-----------------------------------------------------------------------------------------------------
-52.A - LANDING PREP: one pre-tested integration PR for everything Wave 51 left unmerged. Do NOT merge.
+```
+COMMON RULES - WAVE 53 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. One job, done completely. Push at the nearest boundary when you stop.
+- MLB postseason games are live until ~03:30 UTC. Any push to main that touches a file outside the 9 doc
+  folders (00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS
+  07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF) deploys and restarts t4-mlb
+  (deploy.yml, GG-432). So: NO code to main and NO PR merges this wave. Docs-only pushes to main are fine.
+- GG-451 HAZARD: scripts/close_session_claim.sh pushes HEAD to main. Do NOT run it, and do not let
+  /session-end run it. Write your handoff file instead.
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own (main's claim script pushes
+  HEAD to main - GG-419; the fix sits in unmerged PR #160). Never reuse a number in SESSION_CLAIMS.md.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only doc-folder paths. If your
+  branch has code commits, push docs from a second worktree made from origin/main
+  (git worktree add ../<slug>-docs origin/main), not from your code branch.
+- VPS is read-only: no ledger write, no cron edit, no restart, no hand-pull, no log rotation. Work on copies.
+- No order, position, fill, stake or kelly_fraction change. Demo only.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into a SESSION_HANDOFF file (docs-only push to main).
 
-Why: PR #157, branch 51.1 (dashboard drawdown fix) and branch 51.2 (NHL team-code fix) are waiting, plus 9
-NHL cells that log shadow rows while the registry says NOT_IMPLEMENTED. Tonight's landing must be ONE merge of
-ONE green PR, so t4-mlb restarts once, not three times.
+WAVE 53.2 - NHL: GOALIE TIMING ON TONIGHT'S SLATE + SHADOW ROWS + LIVE CRONTAB (GG-401). Repo: eignacio1/prediction-market-bot.
 
-D1. From current origin/main, create branch w52/landing. Merge with --no-ff, in order:
-   a) PR #157 head - branch claude/peaceful-heisenberg-51g2ee, expected 42a0d0d
-   b) session/20261003T201912Z-w51-killswitch-truth, expected 6cbe62f
-   c) session/20261003T201919Z-w51-nhl-team-codes, expected f822b6b
-   If any head differs from expected, stop this block and report.
-   Conflict policy (51.3 precedent): DECISION_LOG and GOVERNANCE_GAP_LOG keep every section from both sides.
-   PLAN / TODO_NEXT / MEMORY_BANK carry one "Last reviewed" line: main's newest stays live, the older line
-   moves to that file's *_ARCHIVE.md Last Reviewed Chain Archive. OPERATOR_DIGEST_* keep both sides.
-   Never drop content from either side. Expected: OPERATOR_DIGEST_20261003.md (from #157) and four nav files
-   (from 51.2).
-D2. NHL SHADOW flip, own commit. Read commit 0cf11eb (T-608 flipped 4 NFL T1 cells) and copy its pattern,
-   tests included. Flip NOT_IMPLEMENTED -> SHADOW in src/prediction_market_bot/c5_execution/market_type_registry.py
-   for the cells that have rows per the terminal-verified table in
-   11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_W51_3.md (expected 9: NHL_MONEYLINE, NHL_PUCK_LINE,
-   NHL_GAME_TOTAL x T1, T2, T3; NHL_TEAM_TOTAL has none - leave it). You cannot re-check the VPS: cite that
-   handoff in the commit and mark "rows re-verified on VPS" as VPS-PENDING for the landing block. Commit
-   message: records reality (cron already evaluates these at kelly 0), not a promotion; GG-401 means no NHL T3
-   score may be read yet.
-D3. Full suite once; must be green. Fix only what your merges broke; anything else, register and continue.
-D4. git fetch; if origin/main moved, merge it in. Push. Open ONE PR (REST) titled
-   "Wave 52 landing: #157 + 51.1 + 51.2 + NHL SHADOW flip". Body: merged heads with SHAs, each conflict and its
-   resolution, test count, and: "Merging this deploys and restarts t4-mlb and pmbot-web-dashboard. Merge only
-   when no MLB game is live." Wait for CI on the PR; record run ID, result, and mergeable_state from the
-   GitHub API. Leave PR #157 open.
+WHY
+EXP-036 promises the NHL T3 run uses the confirmed starting goalie. Wave 52.D could not tell whether any source
+names the starter in time (cloud egress was refused). Tonight is a full NHL slate: 7 games at 23:00 UTC,
+1 at 23:30, 2 at 00:00, then 01:00 and 02:00 (verify against the NHL schedule). The T3 window is 15-60 min
+before puck drop, so the 23:00 UTC games give the measurement inside this block. No NHL score may be read.
 
-----------------------------------------------------------------------------------------------------
-52.B - GG-432 DECISION PR: stop CI restarting t4-mlb mid-game. Prepare only - the operator decides.
+LIMITS
+- Do not edit src/prediction_market_bot/c3_forecasting/nhl_pregame.py or scripts/nhl_shadow_eval.py (PR #160
+  carries changes to both). Do not change any pre-registered parameter. Do not read or compute any NHL score.
+- The probe is one-shot by design. Run it by hand three times inside this block, no loop, no scheduler.
 
-Why: .github/workflows/deploy.yml restarts t4-mlb and pmbot-web-dashboard on every push to main that touches
-code, including mid-game. That is why code can only land in idle windows.
+D0 - Worktree w53-nhl-goalie; claim "W53.2 STANDARD - GG-401 goalie timing + NHL rows + crontab".
+D1 - Get scripts/nhl_goalie_source_probe.py from branch w52/nhl-goalie-probe (3e31e95b). Run it from this Mac
+     NOW, again ~15 minutes later, and again ~15 minutes after that, so the 23:00 UTC games are sampled at
+     roughly 45, 30 and 15 minutes before puck drop (if you start late, use the 00:00 UTC games and say so).
+     Fill the gaps between runs with D2 and D3.
+D2 - VPS read-only: list data/shadow/nhl/ and count rows, valid rows and last-row time for each of the 9 cells
+     PR #160 flips to SHADOW (NHL_MONEYLINE, NHL_PUCK_LINE, NHL_GAME_TOTAL x T1, T2, T3). Any cell with zero
+     rows: flag it - #160 must not flip it.
+D3 - VPS read-only: crontab -l, NHL lines only. Compare with deploy/cron.nhl_shadow.draft. Record the real T3
+     schedule and any difference.
+D4 - Verdict on GG-401, exactly one:
+     (a) the API flags the starter >= 15 min before puck drop in k of n games -> scope a StarterProvider build
+         as one ~30-min block;
+     (b) it does not -> the operator chooses: move T3 later, or amend the pre-registration (exact wording is in
+         05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md);
+     (c) still cannot tell -> why, and what would settle it.
+D5 - Probe output (JSONL) and a "Tonight's slate (W53.2)" section appended to the W52_D results doc; note on
+     GG-401, status unchanged. Docs-only push to main. Probe script changes, if any, on w52/nhl-goalie-probe.
+```
 
-D1. Read deploy.yml in full and the GG-432 entry. Write down exactly when t4-mlb is restarted today.
-D2. On branch w52/gg432-deploy (based on origin/main, NOT on w52/landing), implement the window's recommended
-   option as one PR:
-   (1) restart t4-mlb only when the push changed a file the t4-mlb process actually imports (derive the set
-       from run_t4_mlb_live.py's import graph; a dashboard-only or docs-only push must not restart it), and
-   (2) if such a file changed while an MLB game is In Progress (MLB Stats API schedule, checked inside the
-       deploy job), pull the code but skip the t4-mlb restart and say so loudly in the job summary.
-   State in the PR how the skipped restart gets done later (next deploy, or a by-hand restart) - do NOT add a
-   cron or timer; that needs the operator's authorization.
-   Keep the T-327 approval-path gate exactly as is. pmbot-web-dashboard keeps restarting (standing
-   authorization).
-D3. Test the workflow logic you can test locally (factor any decision logic into a small script with unit
-   tests). Open the PR (REST) titled "GG-432 (FOR OPERATOR DECISION - do not merge): path-scoped, game-aware
-   t4-mlb restart". Body: today vs proposed behavior in a 3-row table, and the 3 options from the queue
-   (a: this PR, b: never auto-restart t4-mlb, c: keep as is).
+### 53.3 — GG-451 guard into the landing PR + GG-452
 
-----------------------------------------------------------------------------------------------------
-52.C - MLB RESOLVER (GG-440): why no MLB paper position has settled since 2026-08-06.
+```
+COMMON RULES - WAVE 53 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. One job, done completely. Push at the nearest boundary when you stop.
+- MLB postseason games are live until ~03:30 UTC. Any push to main that touches a file outside the 9 doc
+  folders (00_ADMIN 01_SPEC 02_ARCHITECTURE_DESIGN 03_DECISIONS 04_EXECUTION 05_RESEARCH_EXPERIMENTS
+  07_TEST_VALIDATION_EVIDENCE 08_MODEL_RISK_GOVERNANCE 11_MEMORY_HANDOFF) deploys and restarts t4-mlb
+  (deploy.yml, GG-432). So: NO code to main and NO PR merges this wave. Docs-only pushes to main are fine.
+- GG-451 HAZARD: scripts/close_session_claim.sh pushes HEAD to main. Do NOT run it, and do not let
+  /session-end run it. Write your handoff file instead.
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own (main's claim script pushes
+  HEAD to main - GG-419; the fix sits in unmerged PR #160). Never reuse a number in SESSION_CLAIMS.md.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only doc-folder paths. If your
+  branch has code commits, push docs from a second worktree made from origin/main
+  (git worktree add ../<slug>-docs origin/main), not from your code branch.
+- VPS is read-only: no ledger write, no cron edit, no restart, no hand-pull, no log rotation. Work on copies.
+- No order, position, fill, stake or kelly_fraction change. Demo only.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into a SESSION_HANDOFF file (docs-only push to main).
 
-Why: run_resolve_mlb.py (PIPE-05R, 06:30 UTC daily) logs HTTPError 406 from statsapi.mlb.com on every call
-(per GG-440; ~17,000 lines) and settles nothing. 17 T1 + 9 T4 paper positions are stuck. Kalshi CANCELLED 16 of
-the 17 T1 markets (GG-450); 1 is a real loss. The operator has NOT decided how cancelled markets get booked.
+WAVE 53.3 - CLOSE THE GG-451 HAZARD INSIDE THE LANDING PR, + GG-452 VPS DEPENDENCY CHECK. Repo: eignacio1/prediction-market-bot.
 
-D1. Read GG-440, GG-441, GG-450, 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md
-   and run_resolve_mlb.py in full (note the CDN-block / ESPN comments near lines 105-120). Establish from the
-   code which path each stuck position takes and why both paths settle nothing.
-D2. Reproduce what you can from here: send the resolver's exact statsapi request (same URL, params, headers)
-   and record status + response headers; then vary one thing at a time (Accept: application/json, no custom
-   headers, default User-Agent). This is NOT the VPS's network - say so; the VPS reproduction is VPS-PENDING.
-D3. Root cause in one sentence, labelled CONFIRMED (the code and your reproduction prove it) or LIKELY (needs
-   the VPS reproduction).
-D4. Smallest fix, with tests, on branch w52/resolver-406 (based on origin/main). Hard rule: the fix must never
-   book a Kalshi-cancelled market as a win or loss - cancelled = skip and report until GG-450 is decided. If
-   the root cause is in run_t4_mlb_live.py or anything the running t4-mlb imports, stop at the diagnosis.
-   Open a PR (REST), not for merge yet.
-D5. Results doc 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_C_resolver_406_results.md: root cause, evidence,
-   the fix, and the VPS-PENDING list for a terminal (VPS reproduction; dry run against a COPY of the ledgers
-   listing each of the 26 positions -> settles / skipped-cancelled / unresolvable). Add the root cause to
-   GG-440; do NOT mark it resolved.
+WHY
+scripts/close_session_claim.sh pushes HEAD to main (GG-451). Run from a session branch with code on it, it
+lands that code on main, and deploy.yml then restarts t4-mlb - the same defect class as GG-419, which PR #157
+fixed for claim_session.sh with a guard and tests/test_claim_session_head_guard.py. Tonight's landing (PR #160,
+branch w52/landing) is the one code merge of the night, so the fix rides in it - no extra restart.
 
-----------------------------------------------------------------------------------------------------
-52.D - NHL CONFIRMED GOALIE (GG-401): can the T3 run know the confirmed starting goalie in time? Research.
-
-Why: every NHL band uses a projected goalie (nhl_pregame.py is never given a starter_provider). The EXP-036
-pre-registration promises T3 uses the confirmed starter. Until fixed or amended (operator's call), no NHL T3
-score may be read.
-
-Limits: do not edit nhl_pregame.py or nhl_shadow_eval.py (52.A is landing changes to both). Do not change any
-pre-registered parameter. Do not read or compute any NHL score. No watchers or samplers - waiting is not work.
-
-D1. Read the T3 promise in 05_RESEARCH_EXPERIMENTS/EXP036_NHL_PREGAME_SHADOW_PREREGISTRATION_2026-10-02.md and
-   the StarterProvider interface (nhl_pregame.py ~lines 230-255). NHL run times: deploy/cron.nhl_shadow.draft
-   is the tracked record (the live crontab is VPS-PENDING - say which you used). State exactly what T3 needs:
-   which field, by what minute relative to puck drop.
-D2. Probe sources for the last 2-3 days and today: the official NHL web API (api-web.nhle.com - gamecenter
-   landing, boxscore, play-by-play goalie fields) and any public starting-goalie feed. For each: names the
-   starter? marks confirmed vs projected? WHEN does it appear (timestamps the source provides)? Terms of use
-   for anything unofficial. If the network refuses a source, record it and continue.
-D3. Verdict, exactly one: (a) source X gives the confirmed starter before T3 in k of n games -> scope a
-   StarterProvider build as one ~30-min block; (b) nothing beats T3 -> operator chooses: move T3 later, or amend
-   the pre-registration to "projected goalie" (give exact wording); (c) cannot tell -> name the measurement.
-D4. Results doc 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md; any probe script
-   on branch w52/nhl-goalie-probe. Add the finding to GG-401 without changing its status.
-
-----------------------------------------------------------------------------------------------------
-52.E - LIVE TERMINAL MATCHES THE BOT: every shadow cell visible and labelled truthfully.
-
-Why: the Live Terminal is the operator's only visual indicator. After 52.A lands, the registry will hold
-SHADOW 16 (3 MLB player-hits, 4 NFL T1, 9 NHL) and EXP-037 runs NFL + MLB-postseason game cells. The operator
-must see each one, its row count and last-row time, and nothing labelled as something it is not.
-
-D1. Branch w52/live-terminal from w52/landing (it builds on 51.1's dashboard fix; it lands AFTER 52.A).
-   Read scripts/web_dashboard.py's shadow panel (_shadow, SHADOW_GLOBS ~line 422) and the registry.
-D2. Audit, with fixture ledgers shaped like the real ones (data/shadow/<sport>/<CELL>.jsonl and the EXP-037
-   ledger paths in src/prediction_market_bot/pregame_shadow/): does every registry SHADOW cell appear? Does
-   every ledger with rows appear even if the registry says NOT_IMPLEMENTED (shown as such, in a different
-   style - not hidden, not upgraded)? Is GG-431's stale panel (T1 book frozen since 2026-08-06) labelled as
-   frozen with its true age, not as live?
-D3. Fix the gaps, smallest change, tests for each. Keep Live Terminal.html in sync if the byte-fidelity tests
-   require it. Targeted dashboard tests, then the full suite once.
-D4. Open a PR (REST) based on w52/landing titled "Live Terminal: every shadow cell, truthful labels (lands
-   after Wave 52 landing PR)". Body: before/after per gap, and VPS-PENDING: check on the running Live Terminal
-   after deploy.
-
-----------------------------------------------------------------------------------------------------
-=== FINAL REPORT (write it, push it, then STOP) ===
-Write 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC timestamp>_W52_CC.md and give the same text as your last
-message. One table, one row per block:
-  Block | Status (DONE / PARTIAL / BLOCKED / NOT RUN) | Branch + head SHA | PR # + CI result + mergeable_state |
-  One-line result | VPS-PENDING items
-Then: IDs claimed and used; every gap registered; every operator decision prepared (one line each); anything
-you could not do and the exact error. Confirm: nothing merged to main, no non-docs file pushed to main.
-Then stop. Do not start anything else.
+D0 - Worktree w53-gg451; claim "W53.3 STANDARD - GG-451 guard on w52/landing + GG-452 VPS freeze".
+D1 - Check out w52/landing (expected head 6f962400; if different, stop and report). Read the GG-419 guard in
+     scripts/claim_session.sh and its test on that branch.
+D2 - Apply the same guard to scripts/close_session_claim.sh: refuse to push unless HEAD carries nothing beyond
+     origin/main except the closure commit itself; print the exact refusal and the safe alternative. Add a test
+     mirroring test_claim_session_head_guard.py. Do not change anything else.
+D3 - Targeted tests, then the full suite once (PYTHONPATH=src python3 -m pytest tests -q). Must be green.
+D4 - Push to w52/landing (this updates PR #160 - do NOT merge it). Wait for CI on #160; record run ID, result,
+     and mergeable_state from the GitHub API. PR #161 (w52/live-terminal) is based on w52/landing: confirm it
+     is still mergeable after your push. If either goes red or conflicted, revert your commit and report.
+D5 - GG-452, VPS read-only: pip freeze from the bot's venv on the VPS; diff against the repo's DEPENDENCY_LOCKS
+     files and pyproject.toml bounds. Report mismatches only. Note on GG-452, status unchanged.
+D6 - Note on GG-451: "fix on w52/landing @ <sha>, lands with #160" (status unchanged until landed). Docs-only
+     push to main.
 ```
 
 ---
@@ -225,15 +197,24 @@ Then stop. Do not start anything else.
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 52 — issued 2026-10-03 ~2:20 PM PT · one Claude Code session, five blocks in order · branch/PR-only
+### ⏳ WAVE 53 — issued 2026-10-03 ~3:15 PM PT · three terminal blocks · runnable while MLB is live
 
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
-| 52.A | Landing prep (integration PR) | ✅ DONE | `w52/landing` | Merged only in an idle window — the landing block |
-| 52.B | GG-432 decision PR | ✅ DONE | `w52/gg432-deploy` | Your GG-432 call |
-| 52.C | MLB resolver 406 (GG-440) | ✅ DONE (root cause LIKELY) | `w52/resolver-406` | VPS repro + ledger dry run (terminal); your GG-450 call |
-| 52.D | NHL confirmed goalie (GG-401) | ✅ DONE (verdict c) | `w52/nhl-goalie-probe` | Verdict a/b/c; (b) needs your amendment call |
-| 52.E | Live Terminal truth | ✅ DONE | `w52/live-terminal` (on `w52/landing`) | Lands after 52.A |
+| 53.1 | Resolver VPS confirmation (GG-440) | ⬜ | VPS read-only, ledger copies, results doc | #159 still waits on your GG-450 call |
+| 53.2 | NHL goalie timing + rows + crontab (GG-401) | ⬜ | VPS read-only, probe branch, results doc | Verdict a/b/c; (b) is your amendment call |
+| 53.3 | GG-451 guard into #160 + GG-452 freeze | ⬜ | `w52/landing` | #160 green + clean after push |
+
+### ✅ WAVE 52 — CLOSED 2026-10-03 22:00 UTC · one Claude Code session · all 5 done · nothing merged (verified on GitHub)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 52.A | Landing prep | ✅ | **PR #160** `w52/landing` @ `6f962400`, CI green, clean: #157 + 51.1 + 51.2 + NHL 9-cell SHADOW flip; suite 3649 passed. Registry on that branch: SHADOW 16. |
+| 52.B | GG-432 decision PR | ✅ | **PR #158** (draft): `t4-mlb` restarts only if its import closure changed AND no MLB game live; dashboard always restarts. Yours to decide. |
+| 52.C | MLB resolver (GG-440) | ✅ (root cause LIKELY) | **PR #159** (draft): statsapi 406 = Fastly IP block of the VPS (GG-084); ESPN fallback silent. Fix books only Kalshi yes/no, cancelled = skip, `--dry-run`. VPS confirmation = 53.1. |
+| 52.D | NHL confirmed goalie (GG-401) | ✅ verdict (c) | Cloud egress refused every NHL source. Probe script on `w52/nhl-goalie-probe`; tonight's measurement = 53.2. |
+| 52.E | Live Terminal truth | ✅ | **PR #161** on top of #160: every registry SHADOW cell shown, ledger-only cells labelled "(ledger only)", NHL settled copies no longer double-counted, GG-431 FROZEN label with true age. |
+| — | New gaps | — | **GG-451 HIGH** `close_session_claim.sh` pushes HEAD to main (fix = 53.3) · **GG-452 LOW** stale dependency locks. |
 
 ### ⚠️ WAVE 51 — all 3 done · folded into 52.A
 
@@ -374,7 +355,7 @@ branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 
 
 ## Needs your decision
 
-**Wave 52 runs without a line from you.** It prepares three of your calls: **GG-432** (52.B PR), **GG-450** booking of the 16 Kalshi-cancelled T1 positions (void / mark to settlement / exclude from G6), and any **NHL T3 pre-registration amendment** (52.D).
+**Wave 53 runs without a line from you.** Open calls below: **GG-432** (PR #158), **GG-450**, **GG-440** (Kalshi as resolution source), and — depending on 53.2 — an NHL T3 pre-registration amendment.
 
 > **AUTHORIZATION — SHADOW-EVALUATION CRON JOBS (operator, 2026-10-02 15:22 PT: "Yes permission granted").** Unchanged;
 > used by 50.2. Not covered: any order, position, fill, stake or `kelly_fraction` change; any EXISTING cron line.
@@ -384,7 +365,9 @@ branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 
 
 | Item | Plain English | What it costs while it waits |
 |---|---|---|
-| **NEW — GG-432: CI restarts t4-mlb on every code push** | Today every merge that touches code restarts the live T4 process, including mid-game. Options: (a) **window's recommendation** — deploy pulls code on every push but skips the `t4-mlb` restart while an MLB game is live (it restarts at the next idle window); (b) never auto-restart `t4-mlb`, restart only by hand; (c) keep as is. | Every code landing waits for an idle window by hand, as Wave 51 does. |
+| **GG-432: CI restarts t4-mlb on every code push** | Today every merge that touches code restarts the live T4 process, including mid-game. Options: (a) **window's recommendation, built as PR #158** — restart `t4-mlb` only when a file it imports changed AND no MLB game is live (otherwise skip, loudly; restart at the next deploy or by hand); (b) never auto-restart `t4-mlb`, restart only by hand; (c) keep as is. | Every code landing waits for an idle window by hand, as Wave 51 does. |
+| **GG-450: booking the 16 Kalshi-cancelled T1 positions** | void (stake returned, no P&L) / mark to Kalshi's settlement value / exclude from G6. PR #159 skips them until you choose. | The T1 book stays frozen; realized drawdown stays understated by the open stake (~11-12% after booking, under 20%). |
+| **GG-440: Kalshi settlement as a resolution source** | PR #159 books MLB positions from Kalshi's own yes/no result instead of statsapi (blocked from the VPS). ADR-gated. | No MLB paper position settles. |
 | **Detached read-only VPS jobs** | Long read-only work runs unattended on the VPS through `scripts/vps_job.py`. A line naming *detached read-only VPS jobs* unlocks it. | The board survey and NFL/NHL market backtests stay blocked. |
 | **T1 MLB postseason flag** | Adds `--include-postseason` to the existing T1 MLB cron line. Edits an existing line, so the shadow authorization does not cover it. | T1 player-hits stays blind for the rest of the playoffs. |
 | **EXP-034** | Run its ≥2.5-hour sampler as a VPS job, or **park** it (window's recommendation). | Nothing urgent. |
