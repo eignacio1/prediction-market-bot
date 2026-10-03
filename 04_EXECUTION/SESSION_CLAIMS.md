@@ -731,3 +731,4 @@
 | 2026-10-03T01:53:54Z | 49.1-49.3 | CLOSED — 49.1-49.3 (cloud): NFL+MLB shadow code, 48.3 dashboard fixes and NHL prereg landed on main; arm_shadow_crons.sh written; GG-400..GG-429 registered; nothing deployed (VPS unreachable from cloud). (commit `077558b1`) |
 | 2026-10-03T01:54:07Z | 49.1-49.3 | CLOSED — merge confirmed, HEAD (db71d3bd) is ancestor of origin/main — cloud blocks landed on main; nothing deployed |
 | 2026-10-03T02:24:50Z | TBD | STANDARD — 50.1 close 49.x process holes (GG-419 claim push, .gitignore pycache, GG-427 deps, GG-428 network marker, queue rotate) — cloud |
+| 2026-10-03T03:15:09Z | 50.1 | MERGED: NO — branch `claude/peaceful-heisenberg-51g2ee` awaiting merge — 50.1 (cloud): GG-419/427/428 + pycache ignore fixed, queue rotated, GG-400..429 triaged; PR #157 green, unmerged (merge restarts t4-mlb via CI deploy). (commit `1dd4d660`) |
