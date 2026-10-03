@@ -17,8 +17,10 @@ across machines, not about import resolution (that's T-282/GG-109's
 """
 from __future__ import annotations
 
+import os
 import random
 
+import pytest
 from hypothesis import settings
 
 settings.register_profile("t280-deterministic", derandomize=True, max_examples=100)
@@ -29,3 +31,18 @@ _GLOBAL_SEED = 20260709
 
 def pytest_configure(config):  # noqa: ARG001 — pytest hook signature
     random.seed(_GLOBAL_SEED)
+
+
+# GG-428: live-network tests fail with a proxy 403 in egress-restricted sandboxes,
+# turning a default `pytest -q` red for reasons unrelated to the code. Skip them
+# unless explicitly opted in; CI (which has egress) sets the variable.
+_NETWORK_ENV = "PMBOT_NETWORK_TESTS"
+
+
+def pytest_collection_modifyitems(config, items):  # noqa: ARG001 — pytest hook signature
+    if os.environ.get(_NETWORK_ENV) == "1":
+        return
+    skip = pytest.mark.skip(reason=f"live-network test; set {_NETWORK_ENV}=1 to run (GG-428)")
+    for item in items:
+        if "network" in item.keywords:
+            item.add_marker(skip)

@@ -84,6 +84,7 @@ markers = [
     "calibration: model calibration tests",
     "property: Hypothesis property-based tests on the bet-approval path (T-325)",
     "golden: golden-replay fixture tests on the bet-approval path (T-326)",
+    "network: makes live calls to external APIs; skipped unless PMBOT_NETWORK_TESTS=1 (GG-428)",
 ]
 
 [tool.bandit]

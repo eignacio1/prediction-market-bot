@@ -158,6 +158,7 @@ def test_fetch_final_score_api_failure_retries_then_returns_none(mock_sleep, moc
 
 
 @pytest.mark.integration
+@pytest.mark.network
 def test_fetch_final_score_live_real_game_2025_10_05():
     """Genuine live network call, no mocking -- real I/O against the real
     ESPN endpoint (pytest.ini's `integration` marker: "tests requiring real
