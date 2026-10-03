@@ -39,6 +39,17 @@ fi
 # onto below; the extra remote-tracking refs are read-only collision-scan
 # input, nothing merges from them.
 git fetch --quiet origin '+refs/heads/*:refs/remotes/origin/*' || git fetch --quiet origin main
+
+# GG-419: we push HEAD:main below, so every local commit not already on
+# origin/main would land on main with the claim (49.1 landed 7 untested NFL
+# commits this way). Refuse unless HEAD carries nothing beyond origin/main —
+# then the only commit the push can add is the claim itself.
+UNLANDED="$(git rev-list --count origin/main..HEAD)"
+if [ "$UNLANDED" != "0" ]; then
+  echo "❌ Refusing claim: HEAD has $UNLANDED commit(s) not on origin/main; pushing the claim would land them on main (GG-419)." >&2
+  echo "   Claim from a clean checkout of origin/main (e.g. a fresh worktree), then return to your branch." >&2
+  exit 1
+fi
 git pull --quiet --rebase origin main || true
 
 # Pre-claim collision check (GG-107 root-cause fix): refuse to claim any

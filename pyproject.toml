@@ -21,6 +21,12 @@ dependencies = [
     "python-dotenv>=1.0.0,<2.0",
     "cryptography>=42.0.0,<44.0",
     "requests>=2.31.0,<3.0",
+    # GG-427: imported by src/tests but previously undeclared. Lower bounds come from
+    # DEPENDENCY_LOCKS/requirements-base.txt (pyarrow==16.1.0, nba_api>=1.5.0); the VPS
+    # venv's installed versions were not readable from the cloud session that added these,
+    # so they are lower-bound only, not pins. Neither affects model output.
+    "pyarrow>=16.1.0",
+    "nba_api>=1.5.0",
 ]
 
 [project.optional-dependencies]
