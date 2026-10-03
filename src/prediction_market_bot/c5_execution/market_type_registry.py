@@ -857,6 +857,24 @@ for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
 
 
+# --- EXP-036 / T-654 (Wave 52.A): NHL pre-game SHADOW cells, flipped via promote_cell_status ---
+# Records reality, not a promotion: deploy/cron.nhl_shadow already evaluates these nine cells at
+# kelly_fraction 0 and logs rows to data/shadow/nhl/. Row counts per cell (all > 0, all valid) are
+# the terminal-verified W51.3 table in 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_W51_3.md (D4);
+# re-verifying them on the VPS is VPS-PENDING for the landing block. SHADOW is evaluate-and-log
+# only; kelly_fraction is untouched (ADR-0048). GG-401: every NHL band currently uses a projected
+# goalie, so no NHL T3 score may be read until GG-401 is fixed or the pre-registration amended.
+# NHL_TEAM_TOTAL is not a MarketType member (GG-217) and has no rows -- nothing to flip.
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP036_NHL_PREGAME_SHADOW_PREREGISTRATION_2026-10-02.md.
+_EXP036_NHL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
+    (_mt, _bd)
+    for _mt in (MarketType.NHL_MONEYLINE, MarketType.NHL_PUCK_LINE, MarketType.NHL_GAME_TOTAL)
+    for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP)
+)
+for _mt, _bd in _EXP036_NHL_SHADOW_CELLS:
+    promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-036")
+
+
 # ---------------------------------------------------------------------------
 # Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
 # ---------------------------------------------------------------------------
