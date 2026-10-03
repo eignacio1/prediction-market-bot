@@ -69,3 +69,11 @@ def test_next_fire():
     assert arm.next_fire("*/10 * * * * x", now).strftime("%H:%M") == "01:20"
     assert arm.next_fire("5 */6 * * * x", now).strftime("%H:%M") == "06:05"
     assert arm.next_fire("30 9 * * * x", now).strftime("%d %H:%M") == "03 09:30"
+
+
+def test_inert_records_allowed_but_service_reachable_files_still_refused():
+    assert arm.offenders(["03_DECISIONS/GOVERNANCE_GAP_LOG.md", "04_EXECUTION/PLAN.md",
+                          "exp_output/dashboard_checks/index.after.png"]) == []
+    live = ["scripts/web_dashboard.py", "Live Terminal.html",
+            "src/prediction_market_bot/c5_execution/market_type_registry.py"]
+    assert arm.offenders(live) == live

@@ -31,10 +31,16 @@ ALLOW_PREFIXES = (
     "tests/",
     "05_RESEARCH_EXPERIMENTS/",
     "11_MEMORY_HANDOFF/",
+    # inert records/evidence: no service or cron reads them
+    "03_DECISIONS/",
+    "04_EXECUTION/",
+    "exp_output/dashboard_checks/",
+    "exp_output/w48_3_screens/",
 )
 ALLOW_PATTERNS = (
     re.compile(r"^scripts/run_pregame_shadow[\w]*\.py$"),
     re.compile(r"^scripts/arm_shadow_crons\.(sh|py)$"),
+    re.compile(r"^scripts/browser_check_[\w]+\.py$"),
     re.compile(r"^src/prediction_market_bot/[\w/]*(nfl|mlb|nhl)[\w]*shadow[\w]*\.py$"),
 )
 
