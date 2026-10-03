@@ -149,6 +149,52 @@ def _ticker_to_game_date(ticker: str) -> str | None:
     except (KeyError, TickerDateParseError):
         return None
 
+
+# GG-440/GG-450 (T-656, Wave 52.C): venue-settlement gate. Kalshi cancelled 16 of
+# the 17 stuck T1 KXMLBHIT markets (result `scalar`, expiration_value 'Cancelled').
+# A stats-derived outcome must never be booked as WIN/LOSS for a market the venue
+# cancelled, and how cancellations ARE booked is an open operator decision
+# (GG-450). So a position is only booked when Kalshi reports the market settled
+# `yes` or `no`; every other state (cancelled, not yet final, or unreadable) is
+# skipped and reported, never settled and never aged. Market data is read from
+# production (_price_discovery_url), public endpoints, no auth, no orders.
+VENUE_SETTLED = "settled"
+VENUE_CANCELLED = "cancelled"
+VENUE_NOT_FINAL = "not_final"
+VENUE_UNKNOWN = "unknown"
+
+
+def _classify_venue_market(raw: dict[str, Any]) -> str:
+    result = str(raw.get("result") or "").strip().lower()
+    expiration = str(raw.get("expiration_value") or "").strip().lower()
+    status = str(raw.get("status") or "").strip().lower()
+    if result in ("yes", "no"):
+        return VENUE_SETTLED
+    if result == "scalar" or "cancel" in expiration or status in ("canceled", "cancelled", "voided"):
+        return VENUE_CANCELLED
+    return VENUE_NOT_FINAL
+
+
+def _venue_market_state(ticker: str) -> tuple[str, dict[str, Any]]:
+    """(state, raw market) for a Kalshi ticker; historical endpoint first (settled
+    markets 404 on the live one, GG-440), then the live endpoint."""
+    if not ticker:
+        return VENUE_UNKNOWN, {}
+    from prediction_market_bot.c5_execution.kalshi_client import _price_discovery_url
+    base = _price_discovery_url()
+    for path in (f"/historical/markets/{ticker}", f"/markets/{ticker}"):
+        try:
+            resp = requests.get(base + path, timeout=_REQUEST_TIMEOUT_S)
+            if resp.status_code == 404:
+                continue
+            resp.raise_for_status()
+            raw = resp.json().get("market") or {}
+            if raw:
+                return _classify_venue_market(raw), raw
+        except Exception as exc:  # noqa: BLE001 - any failure means "cannot confirm"
+            print(f"  [VENUE] {ticker}: {path} failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+    return VENUE_UNKNOWN, {}
+
 # GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
 # a sustained condition, not per-request flakiness), every further retry-loop
 # exhaustion burns up to 45s for nothing. After _CIRCUIT_BREAKER_THRESHOLD
@@ -417,6 +463,11 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
                         return float(stats[h_idx])
                     except (IndexError, ValueError, TypeError):
                         return None
+    # GG-440 (T-656): this path used to return silently, so a player absent from
+    # every final boxscore (did not play, or a name mismatch) left no trace in the
+    # log. Say so -- it is the only signal that tells those two cases apart.
+    print(f"  [ESPN-FALLBACK] player={player_name} game_date={game_date}: "
+          f"not found in any final ESPN boxscore (did not play, or name mismatch)", file=sys.stderr)
     return None
 
 
@@ -483,8 +534,13 @@ def _resolve_pool(
     logger: AuditLogger,
     session_id: str,
     monitor: SystemMonitor,
+    dry_run: bool = False,
 ) -> tuple[int, int]:
     """Resolve all eligible positions in one portfolio pool.
+
+    GG-440 (T-656): dry_run classifies every eligible position (settles /
+    skipped-cancelled / skipped-not-final / unresolvable) and writes nothing to
+    the portfolio -- no settle, no aged_open tag.
 
     Returns (resolved_count, still_open_count).
     Eligible = open positions whose game_date is strictly before today.
@@ -557,7 +613,34 @@ def _resolve_pool(
             )
             continue
 
+        venue_state, venue_raw = _venue_market_state(ticker)
+        if venue_state != VENUE_SETTLED:
+            label = {VENUE_CANCELLED: "skipped-cancelled", VENUE_NOT_FINAL: "skipped-not-final",
+                     VENUE_UNKNOWN: "skipped-venue-unknown"}[venue_state]
+            logger.warning(
+                "PIPE-05R", "venue_not_settled_skip",
+                payload={"pool": pool_label, "position_id": position_id, "player_name": player_name,
+                         "kalshi_ticker": ticker, "venue_state": venue_state,
+                         "venue_result": venue_raw.get("result"),
+                         "venue_expiration_value": venue_raw.get("expiration_value"),
+                         "note": "GG-440/GG-450: booked only when Kalshi reports yes/no; "
+                                 "cancelled-market booking awaits operator decision"},
+                session_id=session_id,
+            )
+            print(f"  [{pool_label}][{label.upper()}] {player_name:<24} {ticker} "
+                  f"(result={venue_raw.get('result')!r}, expiration_value={venue_raw.get('expiration_value')!r})")
+            continue
+
         actual_hits = fetch_actual_hits(player_id, game_date, player_name=player_name)
+
+        if dry_run:
+            if actual_hits is None:
+                print(f"  [{pool_label}][DRY-RUN unresolvable] {player_name:<24} {ticker} "
+                      f"venue={venue_raw.get('result')!r} -- no stat line from MLB API or ESPN")
+            else:
+                print(f"  [{pool_label}][DRY-RUN settles] {player_name:<24} {ticker} "
+                      f"hits={actual_hits:.0f} vs H>={threshold} dir={direction} venue={venue_raw.get('result')!r}")
+            continue
 
         if actual_hits is None:
             try:
@@ -686,8 +769,12 @@ def _resolve_pool(
 # Main
 # ---------------------------------------------------------------------------
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    dry_run = "--dry-run" in (sys.argv[1:] if argv is None else argv)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    if dry_run:
+        print("[PIPE-05R] DRY RUN -- classifying only; no position will be settled or tagged. "
+              "Run against a COPY of the ledgers (LOG_DIR=<copy>).")
     logger = AuditLogger(LOG_DIR / "audit_mlb.jsonl", min_severity="INFO")
 
     print(f"\n[PIPE-05R] MLB resolution run — {GAME_DATE}")
@@ -720,6 +807,7 @@ def main() -> None:
         logger=logger,
         session_id=SESSION_ID,
         monitor=monitor_main,
+        dry_run=dry_run,
     )
     summary_main = trader_main.summary()
 
@@ -738,6 +826,7 @@ def main() -> None:
             logger=logger,
             session_id=SESSION_ID,
             monitor=monitor_t4,
+            dry_run=dry_run,
         )
         summary_t4 = trader_t4.summary()
     else:

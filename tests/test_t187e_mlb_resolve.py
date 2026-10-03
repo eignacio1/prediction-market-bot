@@ -105,6 +105,16 @@ def _fresh_trader(portfolio_path: Path) -> PaperTrader:
 
 
 @pytest.fixture(autouse=True)
+def _venue_settled(monkeypatch):
+    """T-656 / GG-440: these tests exercise the stats-based booking path, which now
+    runs only after Kalshi reports the market settled yes/no. Stub the venue
+    lookup (no network in tests); the gate itself is tested in test_run_resolve_mlb.py."""
+    import prediction_market_bot.run_resolve_mlb as _rm
+    monkeypatch.setattr(_rm, "_venue_market_state",
+                        lambda ticker: (_rm.VENUE_SETTLED, {"result": "yes"}))
+
+
+@pytest.fixture(autouse=True)
 def _reset_mlb_circuit_breaker():
     """GG-084/T-239: the circuit breaker counter is module-level global state —
     reset it before and after every test so failures in one test can't trip
