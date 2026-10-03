@@ -727,3 +727,4 @@
 | 2026-10-03T00:16:19Z | T-631 | CLOSED — T-631 (W48.1 exp037-land-deploy) stopped early at operator request: NFL rebased onto main (suite not run), nothing landed/deployed. (commit `e01f9a6`) |
 | 2026-10-03T00:16:28Z | T-631 | CLOSED — merge confirmed, HEAD (42b3d30) is ancestor of origin/main — PARTIAL — NFL rebased (branch session/exp037-nfl-land-rebased-0e, suite not run); nothing landed on main or deployed; handoff SESSION_HANDOFF_20261003_0020.md |
 | 2026-10-03T01:11:08Z | TBD | STANDARD — land NFL+MLB shadow on main + scripts/arm_shadow_crons.sh — 49.1 |
+| 2026-10-03T01:30:40Z | GG-400..GG-429 | STANDARD — 49.3 register owed gaps + land EXP-036 prereg + DECISION_LOG wave entry |
