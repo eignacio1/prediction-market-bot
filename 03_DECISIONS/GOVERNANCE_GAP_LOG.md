@@ -4538,3 +4538,57 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered by 49.3 (registration only, no investigation). |
 
 </details>
+
+### GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-430 |
+| Category | Tooling correctness |
+| What was found | `set -u` plus `"${ALLOW[@]}"` on an empty array is an unbound-variable error in bash 3.2 (the macOS system bash): `scripts/arm_shadow_crons.sh: line 28: ALLOW[@]: unbound variable`, abort before any merge. 50.2 ran an unmodified-logic copy from scratch with only `-u` dropped (allowlist check unchanged: "allowlist OK"); repo script untouched. |
+| Why it matters | The operator's own machine cannot run the script as written without an `--allow`, pushing toward passing a dummy `--allow` and weakening the allowlist's meaning. |
+| Source | 50.2 Step 1 run, 2026-10-03T20:02Z |
+| Disposition | Registered by 50.2 (registration only). Suggested fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
+
+</details>
+
+### GG-431 — Dashboard "MODEL VS MARKET" panel shows input read 58d20h ago next to LIVE data
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-431 |
+| Category | Correctness / provenance |
+| What was found | Real-browser check of the RUNNING dashboard (VPS run 077558b, 2026-10-03T20:05Z, tunnel :18050): header LIVE, but the MODEL VS MARKET panel reads "861 open priced ... read 58d20h ago" while rendering as current. Console errors, page errors, failed requests and 4xx/5xx were all empty on / and /project. |
+| Why it matters | GG-429's rule is that no number shows unless read from a live source; a 58-day-old read rendered inside a LIVE page is the same class of defect. Not verified which source file is stale; not investigated. |
+| Source | 50.2 Step 4; evidence in session scratch (screens/index.live.txt) |
+| Disposition | Registered by 50.2 (registration only). |
+
+</details>
+
+### GG-432 — deploy.yml restarts t4-mlb and the dashboard on every code push, mid-game included
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-432 |
+| Category | Operational integrity / attribution |
+| What was found | `.github/workflows/deploy.yml` runs `systemctl restart t4-mlb pmbot-web-dashboard` unconditionally (T-328/GG-104) on any push to main outside the paths-ignore docs list. No live-game check. Deploy runs created 2026-10-02T19:41:18Z, 21:08:02Z, 21:16:40Z, 21:44:37Z and 2026-10-01T01:33:57Z-02:50:58Z (7 runs) match GG-347's "unattributed" restart times; the 10/3 01:31:46Z run (077558b1) matches t4-mlb ActiveEnter 01:32:59Z. |
+| Why it matters | Restarts reset session_id and in-game state during MLB postseason games; they are CI side effects, not an unknown actor. GG-347's restart half is explained (its ssh-poller half is not). |
+| Source | deploy.yml; `gh run list --workflow "Deploy to VPS"`; GG-347 |
+| Disposition | Registered by 50.2. Changing the restart policy is the operator's decision; deploy.yml not edited. |
+
+</details>

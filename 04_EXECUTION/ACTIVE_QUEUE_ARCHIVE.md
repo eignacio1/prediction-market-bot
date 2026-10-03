@@ -9,6 +9,81 @@ carrying four closed waves' fences (29.1/29.2/29.3/30.1) alongside live ones —
 it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
+## Wave 51.3 (original) — WITHDRAWN 2026-10-03 20:20 UTC, never run. Operator: "don't give me a prompt block if I can't run it now" -- it needed an MLB idle window (~03:30 UTC) to merge. Replaced in the live queue by 51.3 PR #157 merge-ready; the merge + NHL SHADOW flip move to a landing block issued only when an idle window is open. Verbatim:
+
+### 51.3 — Land PR #157 + NHL SHADOW flip
+
+```text
+WAVE 51.3 - LAND PR 157 + NHL SHADOW FLIP (local terminal, about 30 min, hard stop 45)
+PASTE AT OR AFTER 8:30 PM PT (03:30 UTC). If pasted earlier, do D1-D2 and stop at D3.
+
+You are a Claude Code session on the prediction-market-bot repo. Run the CLAUDE.md
+session-start protocol first: isolated worktree via
+scripts/new_session_worktree.sh "w51-land-157", then scripts/claim_session.sh with tier
+STANDARD and this single deliverable. Claim IDs at run time.
+
+CONTEXT: PR 157 (head 855a5f0, draft, CI green) carries 50.1's process fixes: GG-419
+claim_session HEAD guard, GG-427 deps, GG-428 network marker, .gitignore, and the
+GG-400..429 triage. GitHub reports it NOT mergeable: conflicts in DECISION_LOG.md,
+PLAN.md, TODO_NEXT.md, MEMORY_BANK.md, plus ACTIVE_QUEUE.md and
+ACTIVE_QUEUE_ARCHIVE.md since the Wave 51 rotation landed. A merge to main
+auto-deploys and restarts t4-mlb and pmbot-web-dashboard (deploy.yml). Merging only
+when no game is live is the plan the operator dispatched with 50.2.
+
+D1. Merge origin/main into the PR branch. Resolve:
+    - ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md: take main's version. It already
+      contains everything the PR rotated.
+    - The 4 nav files: keep every entry from both sides, in date order. Delete nothing.
+      Paste the resolved hunks.
+    Push the PR branch. Branch pushes do not deploy.
+D2. Wait for CI green on the new head. Mark the PR ready for review.
+D3. IDLE PROBE - all three must hold; paste the evidence:
+    (i)   MLB Stats API schedule for today and tomorrow UTC shows no game In Progress;
+    (ii)  the last row of logs/t4_mlb_cycle_log.jsonl on the VPS is more than 15 minutes
+          old;
+    (iii) no MLB game starts within the next 60 minutes.
+    If any fails: stop here. Handoff says "PR 157 ready, merge at next idle window".
+    Merge nothing.
+D4. Merge PR 157 with a merge commit. Watch the Deploy run to completion. Verify on the
+    VPS: HEAD equals the merge SHA, t4-mlb and pmbot-web-dashboard active with NRestarts
+    sane, and the dashboard /api/data process.sha equals the merge SHA. If Deploy fails,
+    stop and report. Do not hand-pull on the VPS.
+D5. NHL SHADOW flip. From the NHL shadow ledger on the VPS, list which NHL
+    (MarketType x band) cells have produced valid rows. Expected: at least the three T3
+    cells - verify, do not assume. Promote exactly those cells NOT_IMPLEMENTED to SHADOW
+    via promote_cell_status (market_type_registry.py:799), with notes citing the row
+    counts and dates. Cells with no rows stay as they are. Tests green, push to main
+    (this is a second deploy - re-run the D3 probe first, then the D4 checks), and
+    confirm the Live Terminal shows the new statuses from the RUNNING process.
+STRETCH, only if under 35 minutes and the branch handoff says green: merge 51.1's
+dashboard branch and/or 51.2's NHL branch the same way (probe, merge, D4 checks, one at
+a time). Otherwise leave them for the next wave.
+
+OUT OF SCOPE - register and stop: any change to deploy.yml (operator decision GG-432),
+any cron change, any kelly or sizing change, any status beyond SHADOW.
+
+CLOSE: handoff with each merge SHA, each Deploy run id, VPS HEAD, and the cells flipped.
+At 45 minutes stop at the nearest pushed boundary.
+```
+
+---
+
+## Waves 49-50 — CLOSED 2026-10-03. Run inside Claude Code desktop harness sessions that generated and executed their own prompts; those prompts were never written to this queue, so their verbatim text lives in each session's own record, not here. 49.1-49.3 (cloud): NFL + MLB shadow code, dashboard NOT LIVE fix and the NHL pre-registration landed on main; GG-400..429 registered; CI deploy.yml auto-deployed to VPS 077558b1. 50.1 (cloud, T-636): GG-419/427/428 + .gitignore fixed and GG-400..429 triaged on PR #157 (draft, head 855a5f0, not merged; became non-mergeable after 50.2's nav-file commits). 50.2 cleanup (local, T-637): EXP-037 shadow crons armed (VPS eb2d1434, crontab backup /root/crontab.bak.20261003T200240Z), shared tree synced, PR #156 closed as superseded, PR #157 HELD for live games, GG-430..432 registered. The 50.2 prompt was handed over in the strategic window's chat; its text is not preserved here. Below, verbatim: the FIRE NOW section PR #157's rotation placed in the queue (never on main); both rows closed by 50.2 (Arm + deploy) and 50.1 (triage).
+
+## ⬛ FIRE NOW
+
+| Paste | Block | Budget | One-line purpose |
+|---|---|---|---|
+| **1st — now, LOCAL** | **Arm + deploy** | **~30 min** | `bash scripts/arm_shadow_crons.sh` (review each refused file, `--allow <path>` per file; verify first-firing times); dashboard fix is already deployed by CI — re-run `browser_check_dashboard.py` + `browser_check_tunnel_drop.py` against the RUNNING process, verify `/api/data` `process.sha`. |
+| 2nd | **GG-400..429 triage** | ~30 min | Read each, confirm or correct severity, close duplicates. No fixes in-block (Hard Rule 11). |
+
+**Arm + deploy first:** NFL Week 5 T1 windows are open now; every hour unarmed is rows that will never exist.
+
+---
+
+
+---
+
 
 ## Wave 48 — CLOSED 2026-10-03. 48.1 (T-631): stopped early at operator request -- NFL rebased onto main (branch session/exp037-nfl-land-rebased-0e, suite not run), nothing landed or deployed. 48.2 (T-632): PARTIAL (operator cut) -- queue+archive landed (4bd008b), vps_job.py landed (b11bf62), directives logged; shared-tree ff blocked; D3 unauthorized; D4 registrations carried. 48.3 (T-621..T-630): dashboard real-browser checks and fixes on branch session/20261003T000917Z-eyes-and-nhl. Follow-on cloud blocks 49.1-49.3 (077558b1) landed NFL+MLB shadow code, 48.3's dashboard fixes (NOT LIVE + favicon 204) and the EXP-036 NHL pre-registration on main; wrote scripts/arm_shadow_crons.sh; registered GG-400..GG-429; NOTHING deployed or armed (VPS unreachable from cloud). Archived verbatim by 50.1.
 
