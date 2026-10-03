@@ -27,11 +27,11 @@ Operator, 2026-10-03 14:13 PT: near the session limit, so the wave goes to a sin
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **52.A** Landing prep | ✅ DONE (CI pending) | branch `w52/landing`: #157 + 51.1 + 51.2 merged, NHL 9-cell SHADOW flip | PR #160 `w52/landing` @ `6f962400`: #157 42a0d0d + 51.1 6cbe62f + 51.2 f822b6b + NHL 9-cell SHADOW flip 9f924087; suite 3649 passed/43 skipped; NOT merged. VPS-PENDING: NHL rows re-verify |
+| **52.A** Landing prep | ✅ DONE | branch `w52/landing`: #157 + 51.1 + 51.2 merged, NHL 9-cell SHADOW flip | PR #160 `w52/landing` @ `6f962400`: #157 42a0d0d + 51.1 6cbe62f + 51.2 f822b6b + NHL 9-cell SHADOW flip 9f924087; suite 3649 passed/43 skipped; CI run 37156063420 success, mergeable clean; NOT merged. VPS-PENDING: NHL rows re-verify |
 | **52.B** GG-432 decision PR | ✅ DONE | branch `w52/gg432-deploy`: `deploy.yml` + decision script/tests | PR #158 `w52/gg432-deploy` @ `444b54f7`, CI green: t4-mlb restarts only if its import closure changed AND no MLB game live; for your GG-432 call (a/b/c) |
 | **52.C** MLB resolver (GG-440) | ✅ DONE (root cause LIKELY) | branch `w52/resolver-406`: `run_resolve_mlb.py` + tests; results doc | PR #159 `w52/resolver-406` @ `fd315549`, CI green: book only Kalshi yes/no, cancelled=skip, --dry-run. statsapi 406 = GG-084 IP block; ESPN path failed silently. VPS-PENDING: repro + 26-position dry run |
 | **52.D** NHL confirmed goalie (GG-401) | ✅ DONE (verdict c) | branch `w52/nhl-goalie-probe` (probe only); results doc | Cannot tell from cloud (all NHL sources proxy-refused). Measurement: run `scripts/nhl_goalie_source_probe.py` (`w52/nhl-goalie-probe` @ `3e31e95b`) on VPS at ~60/30/15 min pre-start |
-| **52.E** Live Terminal truth | ⬜ not started | branch `w52/live-terminal` stacked on `w52/landing`: `web_dashboard.py`, `Live Terminal.html`, tests | — |
+| **52.E** Live Terminal truth | ✅ DONE | branch `w52/live-terminal` stacked on `w52/landing`: `web_dashboard.py`, `Live Terminal.html`, tests | PR #161 `w52/live-terminal` @ `a1bdfc05` (base w52/landing; retarget to main after #160): every registry SHADOW cell listed, ledger-only cells labelled, settled/ copies no longer double-counted, T1 FROZEN shows age; suite 3656 passed. VPS-PENDING: check running Live Terminal after deploy |
 
 **Cloud limits baked in:** no VPS — every VPS fact is cited from main or marked **VPS-PENDING** for a later terminal block. **Your decisions it prepares, not takes:** GG-432 (52.B PR), GG-450 booking of cancelled T1 positions (52.C skips them), any NHL pre-registration amendment (52.D).
 
@@ -229,11 +229,11 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
-| 52.A | Landing prep (integration PR) | ✅ DONE (CI pending) | `w52/landing` | Merged only in an idle window — the landing block |
+| 52.A | Landing prep (integration PR) | ✅ DONE | `w52/landing` | Merged only in an idle window — the landing block |
 | 52.B | GG-432 decision PR | ✅ DONE | `w52/gg432-deploy` | Your GG-432 call |
 | 52.C | MLB resolver 406 (GG-440) | ✅ DONE (root cause LIKELY) | `w52/resolver-406` | VPS repro + ledger dry run (terminal); your GG-450 call |
 | 52.D | NHL confirmed goalie (GG-401) | ✅ DONE (verdict c) | `w52/nhl-goalie-probe` | Verdict a/b/c; (b) needs your amendment call |
-| 52.E | Live Terminal truth | ⬜ | `w52/live-terminal` (on `w52/landing`) | Lands after 52.A |
+| 52.E | Live Terminal truth | ✅ DONE | `w52/live-terminal` (on `w52/landing`) | Lands after 52.A |
 
 ### ⚠️ WAVE 51 — all 3 done · folded into 52.A
 
