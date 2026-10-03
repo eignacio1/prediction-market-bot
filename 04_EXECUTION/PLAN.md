@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-03T00:20:00Z (T-631 — T-631 (W48.1 exp037-land-deploy) stopped early at operator request: NFL rebased onto main (suite not run), nothing landed/deployed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0020.md` for full session detail.
+**Last reviewed:** 2026-10-03T01:55:00Z (49.1-49.3 — 49.1-49.3 (cloud): NFL+MLB shadow code, 48.3 dashboard fixes and NHL prereg landed on main; arm_shadow_crons.sh written; GG-400..GG-429 registered; nothing deployed (VPS unreachable from cloud).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0155.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
