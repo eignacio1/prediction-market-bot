@@ -10,6 +10,1047 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 47 — CLOSED 2026-10-02, ALL THREE CUT SHORT BY THE OPERATOR at ~2h ("I'm not letting windows run for hours on end -- if there's a task that'll take that long don't place it"); scope added mid-wave (MLB postseason, Live Terminal, project view) had pushed every block past 2 hours. 47.1 (T-615): GG-340..356 registered; directive logged; EXP-035 Gate 2 PASSED 7/7 on KXMLBTOTAL (152e9dd; G7 by floating-point margin); Live Terminal v2 + /project deployed (4273c7f, 1e097e0; verified only in a stub DOM); docstring corrected; D3 EXP-034 corrected run NO VERDICT (sampler killed); D4 history store PARTIAL (KXNFLGAME 415/862, worktree-local); D5 survey not started. 47.2 (T-608/EXP-037): NFL + MLB shadow code, frozen models and pre-registrations built, ADR-0070 PROPOSED -- NOT on main (branch session/exp037-nfl-land green, 3592 passed); nothing on VPS; no stuck postseason positions. 47.3 (T-607/EXP-036): NHL C1/C2/model/runner on main, cron INSTALLED, first T3 rows live; pre-registration on branch exp036-prereg-2026-10-02, not on main.
+
+## ⬛ FIRE NOW — Wave 47, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **47.1** | LARGE | **Candles: go or no-go, then the whole board — and bring the Live Terminal current.** Run Gate 2 and a corrected EXP-034; on pass, publish validated NFL/NHL price history and survey every Kalshi series. Register everything owed. Rebuild the operator's dashboards: the Live Terminal for 33 new cells, a 92-cell coverage map, every C1–C8 component wired live and freshness on every panel; the project view generated from the repo instead of hand-typed, regenerated every session-end. Deploy and restart. |
+| 2nd | **47.2** | LARGE | **Fly NFL, and squeeze the MLB postseason.** NFL moneyline, spread, total, team total × T1/T2/T3 — 12 cells into SHADOW on this weekend's slate; builds the shared pre-game shadow framework. Then MLB: make sure postseason paper bets settle, feed postseason games to T1, and fly MLB's core four × T1/T2/T3 (12 more cells) for every playoff game left. |
+| 3rd | **47.3** | LARGE | **Fly NHL.** Moneyline, puck line, total × T1/T2/T3 — 9 cells into SHADOW on tonight's slate and every night after. |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **47.1 owns** `scripts/board_survey_*`, `tests/test_board_survey_*`, EXP-034's and EXP-035's
+  pre-registrations / results / exp_output dirs and raw stores, one new validated-history store and its reader
+  (`src/prediction_market_bot/analytics/kalshi_history.py`, new), the docstring of
+  `scripts/archive_market_prices.py`, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.** **Plus the operator's
+  Live Terminal and the project view:** `scripts/web_dashboard.py`, `Live Terminal.html` (kept byte-identical to
+  the embedded `_HTML`), new `scripts/generate_project_state.py`, `Visual Dashboard.html`, one appended step in
+  `.claude/commands/session-end.md`, their tests, and the `pmbot-web-dashboard` deploy/restart under the standing
+  authorization.
+- **47.2 owns** the new package `src/prediction_market_bot/pregame_shadow/`, every NFL-specific module
+  (`c1_signal_ingestion/nfl_*`, `nfl_exp027_adapter.py`, `run_t1_nfl_game_market.py`,
+  `c5_execution/game_market_settlement.py`), **`c5_execution/market_type_registry.py` (sole owner this wave,
+  including NHL cell statuses)**, **additive-only** methods in `c5_execution/venue_adapter.py`,
+  `models/nfl_pregame_*`, `scripts/run_pregame_shadow*`, their tests, drafted cron lines in `deploy/`, one
+  results summary. **Plus, for the MLB postseason:** `scripts/generate_mlb_features.py`,
+  `c1_signal_ingestion/mlb_ingestion.py`, `run_resolve_mlb.py`, `run_t1_mlb_game_market.py`,
+  `run_mlb_pregame.py`, `models/mlb_game_pregame_*` — **additive postseason handling only.** **No GGL / DECISION_LOG.**
+- **47.3 owns** every NHL-specific module (`c1_signal_ingestion/nhl_*`, `c2_feature_store/nhl_*`,
+  `c3_forecasting/nhl_*`), `models/nhl_pregame_*`, `scripts/nhl_*`, their tests, drafted cron lines for NHL in
+  a NEW file `deploy/cron.nhl_shadow.draft`, one results summary. **No GGL / DECISION_LOG.** Does not edit the
+  registry, the venue adapter or `pregame_shadow/` — it builds against the contract below.
+- **Read-only to all:** `market_efficiency_survey.py`, `execution_cost_surface.py`, `multileg_coherence.py`,
+  `capture_settlements.py`, `exp_output/PRICE_ARCHIVE/` (shared tree, by absolute path — GG-331).
+- **Venue read budget, shared with live T4M-PROJ:** 47.1 at or below 3.3 requests/s in aggregate; 47.2 and 47.3
+  at or below 1 request/s each. Halve on any 429.
+
+**The one shared interface.** 47.2 pushes `pregame_shadow/contract.py` **as its first commit, alone, exactly as
+written in its block.** 47.3 implements against that text from the start and imports it once it is on
+origin/main. The shadow-row schema in both blocks is identical by construction.
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Blocks are as large as the arc.** Operator directives 2026-09-30 and 2026-10-02. Declare the block's whole arc as the deliverable at claim time; stop only at a real governance boundary (capital, sizing, pool contents, an unaccepted ADR that the step depends on, a permission control), and name it. **Caution is not a boundary. Context is not a boundary** — if a session must end, end it at a pushed verdict, write the handoff, and say exactly where the next session resumes.
+- **Deliverable 0 in every block: land any un-landed predecessor and confirm your base.**
+- **Claim IDs at run time and re-verify after ANY release or retry** (GG-322). Claim real ranges, never "TBD".
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no approval in a block overrides it.
+- **Pre-register before scoring, pushed as its own commit.** Frozen gates stay frozen; failed gates stay failed; a new test is a new pre-registration on data it has not seen, with thresholds no looser.
+- **SHADOW means evaluate and log.** No order, no position, no paper fill, no stake, no `kelly_fraction` change. A shadow path that can reach an order function is a defect — test that it cannot.
+- **A merge is a deployment here.** Production updates by manual `git pull` in `/opt/prediction-market-bot`. Anything landing under `src/` must be additive, leave every live code path byte-for-byte unchanged in behaviour, and pass the full suite (baseline **3455 passed, 28 skipped**).
+- **No background process outlives its session unrecorded.** PID, command, output path, expected finish — in the handoff.
+- Register-and-stop on any gap outside scope (Hard Rule 11) — registration goes to 47.1 via your results summary.
+- **THE LIVE TERMINAL MOVES WITH THE BOT (operator, 2026-10-02: *"I need this dashboard updated as the bot continues to get updated — this is my only visual indicator and it's been sitting on old shit for a min"*).** Standing rule from this wave on: any block that adds a cell, a ledger, a band, a data source or an experiment verdict also adds it to `/api/data` and the Live Terminal **in the same block**, deploys it, restarts `pmbot-web-dashboard` under the standing authorization in *Needs your decision*, and verifies from the RUNNING process. A block that changes the bot and leaves the terminal behind is not closed. **The same goes for the project view** (operator, 2026-10-02: *"it's really time to start piping in the visual dashboard so that each component is now wired in visually"*): it is generated from tracked files by `scripts/generate_project_state.py`, never hand-typed, and regenerated at every `/session-end`.
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-45 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **46** | **CLOSED** | Part 1 failure diagnosed (H1/H2 supported); Gate 2 pre-registered + coded, not run. EXP-034 FAIL as run (1h lookback artifact; 56/56 matched pairs clean). Fee re-score: NO verdicts stand. Shared tree synced; ADR-0067 docs landed; Step 4 anomalies = season end. |
+| **47** | **FIRING** | Candle go/no-go and the full board survey. **33 pre-game cells into SHADOW** (NFL 12, MLB postseason 12, NHL 9); MLB playoff settlement and T1 feed fixed. |
+
+---
+
+## Why this wave is shaped this way
+
+**Coverage is the evidence, and evidence needs rows.** The board survey asks whether *prices* are
+miscalibrated. It cannot answer whether *our model* knows something a game-market price doesn't — only a model
+evaluated against live prices on real slates can, and right now that question has been asked of exactly one
+cell. NFL and NHL are both in season. Every weekend without a shadow row on the core four is evidence that will
+never exist.
+
+**Pre-game first is the doctrine and also the fastest path to countable evidence.** Pre-game markets resolve
+once per game and are roughly independent across games; in-play rows are serially correlated and inflate n
+without inflating information. NHL plays nightly — about 15 games a night across the slate — so its nine cells
+accrue evidence faster than anything the project has run.
+
+**47.1 decides how much backtest the two flying blocks get.** If Gate 2 passes, Kalshi's NFL and NHL price
+history becomes a validated benchmark and 47.2/47.3 can score their models against last season's market before
+a single live row. If it fails, they still fly — scored against climatology offline, and against the live
+market as rows accrue — and the board survey waits for forward capture.
+
+**The prediction is written down first, every time.** These books measured tight. A model that only beats
+climatology has not beaten anyone; a model that loses to the market at its pre-registered n has *completed* its
+cell (RULED_OUT, with a reason and a date), which counts toward coverage exactly as much as a winner does.
+
+---
+
+## WAVE 47 BLOCKS
+
+---
+
+# 47.1 -- CANDLES: GO OR NO-GO, THEN THE WHOLE BOARD - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+RESUME: /Users/earlignacio/Documents/Claude/Projects/PM-worktrees/20261002T192708Z-kalshi-sports-board-survey
+  (it holds the EXP-035 store). If gone, stop and report.
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: GG-333, T-606, ADR-0069, EXP-035. Claim a real GG range.
+Declare this block's whole arc as the deliverable at claim time.
+You are the only block this wave that writes GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  scripts/board_survey_*, tests/test_board_survey_*, EXP-034 and EXP-035 pre-registrations, results
+  and exp_output dirs, their raw stores, one NEW validated-history store and its reader
+  src/prediction_market_bot/analytics/kalshi_history.py (new file), the module DOCSTRING ONLY of
+  scripts/archive_market_prices.py, GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, AND for D6 the
+  operator's two dashboards: scripts/web_dashboard.py, "Live Terminal.html",
+  scripts/generate_project_state.py (new), "Visual Dashboard.html", their tests, and ONE appended
+  step in .claude/commands/session-end.md.
+READ-ONLY (import, never edit): market_efficiency_survey.py, execution_cost_surface.py,
+  multileg_coherence.py, capture_settlements.py, exp_output/PRICE_ARCHIVE/ (shared tree, absolute path).
+Venue reads: at or below 3.3 requests/s in aggregate across your processes; halve on any 429.
+
+WHERE WAVE 46 LEFT THIS -- verify, do not assume:
+  - EXP-035 Part 1 FAILED (GG-333), stays FAILED. 46.1 D2 diagnosis: H1 SUPPORTED, H2 SUPPORTED,
+    H3 NOT SUPPORTED, H4 UNDETERMINED (results: EXP035_RESULTS_board_survey_sports_2026-10-02.md).
+  - Gate 2 PRE-REGISTERED on KXMLBTOTAL at 00278d8 (EXP035_GATE2_PREREGISTRATION_2026-10-02.md), code
+    and tests at 69beae0 (scripts/board_survey_sports_gate2.py). NO candles fetched, NOT RUN.
+  - EXP-034 (branch origin/session/20261002T192711Z-kalshi-nonsports-control-w46, 8 commits NOT on
+    main): D1(b) FAIL as run, 56/84 pass, all 56 matched pairs zero miss, 28 UNMATCHED caused by a
+    1-hour candle lookback the runner chose; post-hoc 30-day hourly lookback: prevailing close equals
+    the live read exactly for all four thin tickers. Verdict stays FAIL as run.
+  - Fee: series API fee_type=quadratic, fee_multiplier=0.5 (KXMLBGAME quadratic_with_maker_fees);
+    coefficient not established from any readable document (GG-332).
+  - Unregistered gap lists waiting for you: W45_462_sync_and_diagnose_results.md GAPS FOUND (10 items),
+    EXP034_NONSPORTS_CONTROL_RESULTS_2026-10-02.md GAPS FOUND (6), WAVE45_land_the_record_results.md
+    GAPS FOUND (11), and the fee-model divergence from EXP-035 D2(e).
+
+DELIVERABLE 0 -- LAND AND BASE. Land the -w46 branch's EXP-034 work (scripts, tests, results,
+  gate artifacts) if its tests pass on current main; leave its stale nav commits. Paste SHAs.
+
+DELIVERABLE 1 -- REGISTER WHAT IS OWED, AND THE DIRECTIVE.
+  a) Register every item in the three GAPS FOUND lists above plus the fee-model divergence,
+     deduplicated against GG-329..333 and against each other. One GG per real gap.
+  b) DECISION_LOG entry, verbatim quote: operator directive 2026-10-02 ("The terminals can handle
+     weight ... We need to start flyin."), recorded as (i) block sizing, and (ii) the answer to
+     COVERAGE_TARGET_MATRIX.md open question 1: game-market expansion proceeds as a test of
+     GENERALITY, accepting likely-thinner edge, with every new cell's expectation against the
+     market pre-registered before scoring. Push before D2.
+
+DELIVERABLE 2 -- RUN GATE 2 EXACTLY AS FROZEN.
+  PREMISE TO CHECK FIRST: the Gate 2 text's fallback is "the latest hourly candle with
+  end_period_ts <= t" and states no lookback bound. EXP-034 just showed thin books can go 10-25 hours
+  without a candle. If the 69beae0 code bounds that hourly lookback, the code departs from the text:
+  fix it to reach back to market open, with a test, BEFORE running, and record it as a code
+  correction to match the frozen text -- not an amendment. If the code already matches the text,
+  change nothing. Then run. Report every gate against its threshold.
+  PASS or FAIL is the verdict. Part 1 stays FAILED either way.
+
+DELIVERABLE 3 -- EXP-034, CORRECTED, AS A NEW TEST.
+  An AMENDMENT commit, pushed BEFORE any new sampling: the D1(b) lookback is "back to market open"
+  (stated explicitly this time); 12 tickers re-drawn by the SAME rule at a new round 0; >= 6 rounds,
+  >= 20 minutes apart; every tolerance unchanged. The original FAIL stays on record. Run it in the
+  foreground (or PID recorded), pull candles after last round + 10 min, run the frozen comparison.
+  PASS or FAIL is the verdict.
+
+DELIVERABLE 4 -- IF GATE 2 PASSED: PUBLISH VALIDATED NFL AND NHL HISTORY FIRST.
+  Before the long survey, because 47.2 and 47.3 need it to backtest:
+  - Back-capture Kalshi NFL game-market series (moneyline, spread, total, team total) for the 2025
+    season and 2026 to date, and NHL (moneyline, puck line, total) for 2025-26 and 2026-27 to date,
+    with settlements.
+  - Store it under one documented path; provenance per row; idempotent, run twice.
+  - src/prediction_market_bot/analytics/kalshi_history.py: a pure read-only reader,
+      prevailing_quote(market_ticker, t_utc) -> (yes_bid, yes_ask, as_of_candle_ts) | None
+      settlement(market_ticker) -> result
+    implementing exactly Gate 2's validated rule (latest candle at or before t, lookback to market
+    open). Tests. Push. Post the store path and the reader's import line at the TOP of your results
+    summary so 47.2/47.3 find it on origin/main.
+  If Gate 2 FAILED: do not publish. Write the forward-capture plan for the NFL/NHL game-market series
+  instead (an additive sibling writer, series list, cadence, storage and API arithmetic, DRAFTED cron
+  lines, commented). That plan is the deliverable for this step.
+
+DELIVERABLE 5 -- IF GATE 2 PASSED: SURVEY THE WHOLE BOARD.
+  Sports (EXP-035 Part 2) and, if D3 passed, non-sports (EXP-034 D3+) -- each: inventory committed
+  alone (counts only), then its pre-registration pushed alone before any outcome statistic, then
+  back-capture and measure. Everything the Wave 45 blocks specified stands: E_net primary and
+  fee-excluded E alongside, both fee candidates (k = 0.07 and 0.07 x multiplier) until GG-332 closes;
+  policies (a)/(b)/(c) with B-at-entry at (b) and evidenced fills only at (c); per-family clock gates
+  sized before outcomes (GG-327); Holm with m stated; CANDIDATE-PENDING-CAPACITY as the strongest
+  label; drift with backward placebo; EXP-033 coherence tests; the weather public-forecast benchmark
+  with no look-ahead and a mapping fixed in advance.
+  If D3 FAILED and Gate 2 PASSED: survey sports; mark non-sports pending reconciliation of the two gates.
+
+DELIVERABLE 6 -- THE OPERATOR'S TWO DASHBOARDS: TELL THE TRUTH, WIRE EVERY COMPONENT, STAY CURRENT.
+  The operator, 2026-10-02: "I need this dashboard updated as the bot continues to get updated --
+  this is my only visual indicator and it's been sitting on old shit for a min." Run this
+  deliverable EARLY, in the gaps while D4/D5 fetches run; it does not wait on any verdict.
+  Design bar (do not ask him to specify it): Bloomberg-terminal, full black, ERP-style tabs and
+  modules; keep the T-600 page's existing look and everything that already works.
+  a) STOP SHOWING DEMO DATA AS IF IT WERE LIVE. When the page is opened as a file, or /api/data
+     is unreachable, it currently renders built-in seed numbers (SHA 0123456, a $733.75 bankroll,
+     invented positions) under a small error bar. Fix: with no live data, every number panel is
+     blank or greyed and the page says NOT LIVE in the header; seed data, if kept for offline
+     design work, is behind an explicit ?demo flag and watermarked DEMO on every panel.
+  b) FRESHNESS EVERYWHERE. Every panel shows the age of the file or record it reads, and turns amber
+     past an expected-cadence threshold and red past a stale one (thresholds stated per panel and
+     season-aware -- an idle NFL panel on a Wednesday is not red). The header shows the RUNNING
+     process sha next to origin/main's sha and how many commits apart they are.
+  c) NEW MODULES, read-only from the files the blocks write:
+     - COVERAGE: the 92-cell grid (market type x band) coloured by registry status, with counts,
+       and the cells that changed status this wave highlighted.
+     - SHADOW: per cell for NFL, MLB-postseason and NHL -- rows today, last row time, settled n vs
+       judged n, delta-Brier vs market and vs climatology with CI once scored, latest E_net, and a
+       live tape of shadow rows (the 47.2/47.3 row schema in this file is the contract; read
+       the ledgers 47.2 and 47.3 write, wherever their results summaries say they are).
+     - MLB POSTSEASON: T1 players matched per run, T4 cycle-log age, open and stuck paper positions.
+     - VERDICTS: the latest gate and survey verdicts (Gate 2, EXP-034, EXP-035) with links to the
+       result files.
+     - FEEDS & HEALTH made season-aware, so off-days and off-seasons read as idle, not failure.
+     Any data source a module needs that is not on disk yet shows "awaiting <source>" -- never a
+     placeholder number.
+  d) /api/data stays fast (T-600 measured 0.21-0.56s). Add keys additively; keep existing keys.
+     Keep "Live Terminal.html" byte-identical to the embedded _HTML (the drift test enforces it).
+     Tests for every new key, including empty and missing-file cases.
+  e) DEPLOY AND VERIFY, under the standing authorization in "Needs your decision": land on main
+     (full suite green); on the VPS paste git log --oneline HEAD..origin/main and list every
+     changed file reachable from t4-mlb's or any cron job's import graph -- pull only if every one
+     is additive and covered by the green suite (coordinate with 47.2 D6(d) if it has already
+     pulled); restart pmbot-web-dashboard ONLY; verify from the RUNNING process: GET / hash equals
+     the landed _HTML, GET /api/data returns the new keys with live values, process.sha equals the
+     deployed commit. Paste all three. Do NOT restart t4-mlb or any other service.
+  f) Then copy the landed "Live Terminal.html" into the shared tree's project root so the file
+     the operator has is current, and confirm in your summary that "Open Dashboard.command"
+     (tunnel only) is the way to view it while code is landing; "Reload Dashboard.command" pulls
+     main onto the VPS and restarts the service, which is a deployment.
+  g) EVERY PIPELINE COMPONENT, WIRED IN. The operator, 2026-10-02: "it's really time to start
+     piping in the visual dashboard so that each component is now wired in visually." Add a
+     PIPELINE module to the Live Terminal: C1 through C8 as a live flow, one tile per component
+     per sport, each showing its real state from its real output --
+       C1 ingestion: last successful pull per feed, rows, failures (e.g. PIPE-08 406s);
+       C2 features: newest game_date in each feature store (the MLB CSV stuck at 2026-09-27 would
+         have shown red here for five days);
+       C3 forecasting: the model id and sha in use per cell, flagged loudly if it is a STUB
+         (the old page's own tape shows "stub_model_in_use StubNFLForecastModel");
+       C4 risk: kelly_fraction per band, kill-switch state, drawdown vs limits;
+       C5 execution: venue, mode (DEMO), orders submitted (expected 0), rejections by reason;
+       C6 audit: event rate and last event; C7 monitoring: open alarms, season-aware;
+       C8: this server's own sha, uptime and /api/data latency.
+     A component with no observable output shows "not instrumented" -- that is itself a finding;
+     list each one under GAPS FOUND.
+  h) THE PROJECT VIEW, GENERATED -- NEVER HAND-TYPED AGAIN. "Visual Dashboard.html" (the
+     analytical page: verdict board, evidence ledger, cell matrix, band doctrine, pipeline, wave
+     history, governance, data assets, "your desk", standing rules) was hand-built on 2026-09-30
+     and has not changed since. Replace hand-typing with a generator:
+       scripts/generate_project_state.py (new) reads ONLY tracked files and live imports --
+       MARKET_TYPE_REGISTRY (cells), GOVERNANCE_GAP_LOG.md (OPEN gaps by severity, age, newest),
+       DECISION_LOG.md and the ADR files (PROPOSED vs ACCEPTED), every EXP pre-registration and
+       results summary (question, pre-reg sha, verdict, date), ACTIVE_QUEUE.md and its archive
+       (wave history, "Needs your decision"), git (origin/main sha, unmerged branch estate),
+       and the data stores (size, row count, newest record) -- and writes one JSON.
+     Serve it as a second page on the same server (/project) with a nav link both ways -- the
+     two stay separate artifacts, as the operator wants; the analytical page keeps its own
+     look, the Live Terminal stays full black. Also write a static, offline "Visual
+     Dashboard.html" from the same JSON into the shared tree's project root, stamped "as of
+     origin/main <sha>, generated <UTC time>", with no live calls.
+     Every number on both pages links to the file or command it came from. Each section shows
+     its own as-of time. Tests: the generator on a fixture repo, and on current main.
+  i) KEEP IT CURRENT WITHOUT ANYONE REMEMBERING. Append one step to
+     .claude/commands/session-end.md (append only; respect its 10% / 10-minute budget):
+     run scripts/generate_project_state.py and rewrite the static "Visual Dashboard.html"
+     in the shared tree's project root. The served /project page regenerates from the VPS
+     checkout on request (cached, at most once a minute).
+
+DELIVERABLE 7 -- REGISTER, LOG, REPORT.
+  Register the gaps 47.2 and 47.3 list if they are on origin/main before you close. Correct the
+  archive_market_prices.py docstring to state exactly what is established (history reachable;
+  equivalence = Gate 2's verdict). DECISION_LOG entries for each verdict. One results summary per
+  experiment, scoped to exactly what was measured.
+
+DO NOT:
+  - Relabel Part 1 or EXP-034's original run. Edit no frozen threshold, seed, rule or population.
+  - Call a lookback fix an amendment, or an amendment a fix: D2 makes code match frozen text; D3 is a
+    new test with new text.
+  - Publish the NFL/NHL history store if Gate 2 failed.
+  - Run fetchers above 3.3 requests/s in aggregate. Leave no unrecorded background process.
+  - Write into exp_output/PRICE_ARCHIVE/ or edit any capture writer's code.
+  - Re-cut B or the null for MLB/NFL families.
+  - Promote anything past CANDIDATE-PENDING-CAPACITY. Volume is not depth.
+  - Recommend against a sport, band or family on one finding.
+  - Build, fit or tune any forecasting model. That is 47.2's and 47.3's work, not this block's.
+  - Touch any pool, position, schedule, sizing or kelly_fraction. Install no cron.
+  - Restart any service other than pmbot-web-dashboard, or restart it outside D6(e)'s procedure.
+  - Show any number on the Live Terminal that is not read from a live source, or on the project
+    view that is not generated from a tracked file. No placeholders, no hand-typed figures.
+  - Edit .claude/commands/session-end.md beyond appending the one regeneration step.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 47.2 -- FLY NFL, AND SQUEEZE THE MLB POSTSEASON: 24 PRE-GAME CELLS INTO SHADOW - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "fly-nfl-pregame"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: GG-333, T-606, ADR-0069, EXP-035. Claim an EXP id for the NFL
+shadow pre-registration. Declare this block's whole arc as the deliverable at claim time.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  NEW package src/prediction_market_bot/pregame_shadow/ (contract, runner, per-cell ledger,
+  settlement join, scoring); every NFL-specific module (c1_signal_ingestion/nfl_*,
+  nfl_exp027_adapter.py, run_t1_nfl_game_market.py, c5_execution/game_market_settlement.py);
+  c5_execution/market_type_registry.py (SOLE owner this wave, including NHL cell statuses);
+  ADDITIVE-ONLY new methods in c5_execution/venue_adapter.py; models/nfl_pregame_*;
+  scripts/run_pregame_shadow*; their tests; drafted cron lines in deploy/; one results summary.
+  For D6 (MLB postseason) ONLY, additive postseason handling in: scripts/generate_mlb_features.py,
+  c1_signal_ingestion/mlb_ingestion.py, run_resolve_mlb.py, run_t1_mlb_game_market.py,
+  run_mlb_pregame.py; models/mlb_game_pregame_*.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md (47.1 owns them -- list gaps under
+  GAPS FOUND), any nhl_* module (47.3), any board_survey_* file (47.1), run_t4_mlb_live.py or any
+  T4M-PROJ code (the ACTIVE cell is not modified this wave), p_hits_gte_threshold.
+Venue reads: at or below 1 request/s; halve on any 429.
+
+THE DIRECTIVE THIS BLOCK EXECUTES (operator, 2026-10-02): "We need to start flyin." Game-market
+expansion is a test of GENERALITY, accepting likely-thinner edge, with each cell's expectation
+against the market pre-registered before it is scored. Pre-game first (ADR-0068 horizon doctrine):
+the longest horizon gets the deepest tree.
+
+THE 12 CELLS: NFL_MONEYLINE, NFL_SPREAD, NFL_GAME_TOTAL, NFL_TEAM_TOTAL x T1, T2, T3. Take each
+band's horizon definition from 02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md -- cite it; do not invent
+one. T4/T5 are out of scope this wave.
+
+DELIVERABLE 0 -- BASE, AND HARVEST BEFORE YOU BUILD.
+  Paste origin/main SHA. Then read what already exists and say what you reuse, adapt or discard,
+  with reasons:
+    on main: c1_signal_ingestion/nfl_ingestion.py, nfl_team_stats_store.py, nfl_espn_results.py,
+      nfl_exp027_adapter.py, run_t1_nfl_game_market.py, run_pregame.py,
+      c5_execution/game_market_settlement.py, scripts/exp027_hyp012_nfl_moneyline_backtest.py,
+      scripts/nfl_prekickoff_capture.py, ADR-0056 (registry/sport attribute), ADR-0062 (NFL/NHL
+      sub-bands), ADR-0066 (EPA-split candidate: no detectable difference -- incumbent stays).
+    unmerged branches (git cherry -v origin/main <b>): session/20260905T221746Z-t4-nfl-nhl-scaffolding,
+      session/20260905T162347Z-hyp011-moneyline-lr-run, session/20260905T221739Z-nfl-readiness-audit,
+      session/20260930T050102Z-nfl-ingestion-widen, session/20260905T221723Z-t500-nfl-price-capture.
+  Anything you take from a branch lands through your own tests, not by merging the branch.
+
+DELIVERABLE 1 -- THE CONTRACT. FIRST COMMIT, ALONE, EXACTLY THIS TEXT. 47.3 builds against it.
+  File src/prediction_market_bot/pregame_shadow/contract.py :
+
+    from __future__ import annotations
+    from dataclasses import dataclass
+    from datetime import datetime
+    from typing import Optional, Protocol
+
+    @dataclass(frozen=True)
+    class PregameForecast:
+        sport: str                     # "NFL" or "NHL"
+        market_type: str               # MarketType member name, e.g. "NFL_MONEYLINE"
+        event_ticker: str              # Kalshi event ticker
+        market_ticker: str             # Kalshi market ticker; p_yes is for its YES side
+        p_yes: float                   # calibrated probability, strictly inside (0, 1)
+        as_of_utc: datetime            # information cutoff; nothing after it entered p_yes
+        model_id: str                  # frozen model artifact id
+        model_sha256: str              # sha256 of the frozen artifact file
+        feature_row_sha256: str        # sha256 of the exact feature row used
+
+    class PregameForecaster(Protocol):
+        sport: str
+        def forecast(self, market_ticker: str,
+                     as_of_utc: datetime) -> Optional[PregameForecast]: ...
+
+  Plus src/prediction_market_bot/pregame_shadow/__init__.py (empty). Push. Paste the SHA.
+
+DELIVERABLE 2 -- THE SHADOW FRAMEWORK, SPORT-AGNOSTIC.
+  a) Runner: for a sport, a band and a slate, list open Kalshi markets for each cell's series, call
+     the sport's PregameForecaster at as_of = now, read the live book, write ONE shadow row per
+     (market, evaluation). Row schema, identical for every sport:
+       run_id, ts_utc, sport, market_type, band, horizon_hours_to_start, event_ticker,
+       market_ticker, p_yes, yes_bid, yes_ask, mid, half_spread, fee_k007, fee_kmult,
+       e_net_yes_k007, e_net_no_k007, model_id, model_sha256, feature_row_sha256, start_time_utc,
+       start_time_source, code_sha
+     Append-only JSONL per cell, idempotent per (run_id, market_ticker).
+  b) Settlement join: game_market_settlement.py / capture_settlements.py reads only; scalar
+     settlements handled.
+  c) Scoring: per cell, Brier and log loss of p_yes vs settlement, and of market mid vs settlement,
+     at matched rows; delta-Brier (model minus market) and (model minus climatology); game-cluster
+     bootstrap CIs; E_net at entry under the fee candidates.
+  d) Venue: ADDITIVE methods only in venue_adapter.py to list game-market series and read books;
+     every existing method byte-for-byte unchanged in behaviour.
+  e) SAFETY TESTS: the shadow package cannot import or call any order, position, sizing or
+     paper-trader function (a test that walks its import graph and fails if it reaches one); the
+     runner writes nowhere but its own ledger directory.
+  Full suite green against the 3455-passed baseline before landing.
+
+DELIVERABLE 3 -- THE NFL MODEL: DEEP, FROZEN, ONE DISTRIBUTION PER GAME.
+  Per the horizon doctrine the pre-game tree is the deep one: matchup, personnel, rest, travel,
+  venue, weather where available pre-kickoff, and the EXP-027 incumbent feature set. LR + Platt
+  scaling (ADR-0004) or a documented equivalent permitted by it. Trained on prior seasons only;
+  frozen; artifact hashed. Model each game as a PREDICTIVE DISTRIBUTION (margin and total, or team
+  points) and derive EVERY strike on every ladder from it, so moneyline, spread, total and team
+  total are coherent with each other by construction. Calibration plot and reliability table on a
+  held-out season. Information cutoff enforced in code: no feature with a timestamp after as_of_utc
+  (test it). State which features are unavailable at T1 versus T3 (e.g. inactives, weather) and how
+  the band changes the feature row.
+
+DELIVERABLE 4 -- PRE-REGISTER THE 12 CELLS. PUSH ALONE, BEFORE ANY SHADOW ROW IS SCORED.
+  Per cell: the expected sign of delta-Brier vs climatology (expected > 0) and vs the market
+  (expected <= 0 -- the operator-accepted generality test; say so); the n of settled games at which
+  the cell is judged (game-clustered, sized by a stated power calculation, not a round number);
+  decision rules fixed now:
+    RULED_OUT: delta-Brier vs market < 0 with game-cluster CI excluding zero at judged n
+      -> registry status RULED_OUT with reason and measured_date. A completed cell.
+    SHADOW (continue): CI spans zero at judged n -> keep accruing to a pre-stated second look.
+    CANDIDATE-PENDING-CAPACITY: delta-Brier vs market > 0 with CI excluding zero AND E_net > 0 at
+      entry under both fee candidates -> Wave 48 sizing question. Nothing more.
+  Backtest: if 47.1 has published validated NFL history on origin/main (its results summary names
+  the store and reader), score every cell on the 2025 season against the market BEFORE live rows,
+  as a pre-registered retrospective, and report it. If not, score against climatology only and say
+  the market comparison waits for live rows.
+
+DELIVERABLE 5 -- FLY. LIVE ROWS ON THIS WEEKEND'S SLATE.
+  Run the shadow evaluator by hand for every Week 5 game you can reach in-session, in every band
+  whose window you are inside (T1 now for Sunday games, T2/T3 if your session reaches them; TNF and
+  MNF if in range). Paste row counts per cell and three sample rows. Then flip each cell that has
+  produced at least one valid row from NOT_IMPLEMENTED to SHADOW in market_type_registry.py,
+  following the registry's own rules (ADR-0056 and its docstring). If those rules require an ADR for
+  a status change, draft it PROPOSED, record the boundary, and keep everything else going.
+  NHL cells: flip 47.3's cells to SHADOW only if 47.3's results summary on origin/main shows valid
+  rows for them; otherwise leave them for Wave 48 and say so.
+  Draft the cron lines that make T1/T2/T3 automatic (commented, in deploy/). INSTALL ONLY if
+  "Needs your decision" in ACTIVE_QUEUE.md contains an authorization line naming shadow-evaluation
+  cron jobs; then install exactly that scope and verify from the LIVE crontab (GG-262).
+
+DELIVERABLE 6 -- MLB POSTSEASON: PULL EVERY GAME THAT IS LEFT. (operator, 2026-10-02: "MLB's not
+  done - we can still pull as much weight as we can from the remainder of the playoffs.") The MLB
+  arms keep running; nothing here stands them down. In this order:
+  a) SETTLEMENT FIRST -- PROTECT THE ACTIVE CELL'S LEDGER. scripts/repair_stuck_mlb_positions.py
+     records that postseason lookups failed 100% of the time (gameType="P" -> HTTP 406). The MLB Stats
+     API's postseason game types are believed to be F (wild card), D (division), L (league
+     championship), W (World Series) -- VERIFY against the API, do not assume. Establish, read-only
+     on the VPS: has T4M-PROJ opened any paper position on a postseason game since 2026-09-29, and has
+     every one resolved? If any is stuck, or would be, fix run_resolve_mlb.py's postseason path
+     additively, with tests on real postseason game IDs, so regular-season behaviour is byte-for-
+     byte unchanged. Resolve stuck positions only through the fixed resolver -- never by hand, never
+     by writing a pool file directly.
+  b) FEED POSTSEASON GAMES TO T1. scripts/generate_mlb_features.py fetches gameType="R" only, so the
+     T1 hits pipeline has matched 0 players since 2026-09-27. Add postseason games additively so
+     today's playoff slate produces feature rows; regular-season output unchanged (test it against a
+     stored regular-season run). Rolling features (ba_l10 and kin) must say whether they mix regular
+     and postseason games -- state the choice and why. Do not modify p_hits_gte_threshold.
+  c) FLY MLB'S CORE FOUR, 12 MORE CELLS: MLB_MONEYLINE, MLB_RUN_LINE, MLB_GAME_TOTAL,
+     MLB_TEAM_TOTAL x T1, T2, T3, through the same pregame_shadow runner. Harvest
+     run_t1_mlb_game_market.py and branch session/20260909T153928Z-gg255-mlb-t1-game-market-run-script
+     first. Same model standard as D3: one predictive distribution per game (runs for each side, or
+     margin and total), every strike derived from it, frozen, hashed, information cutoff enforced
+     (the confirmed starting pitcher is the T1-versus-T3 difference that matters most). Pre-register
+     before scoring, same rules as D4. SAY PLAINLY that the postseason holds too few games to reach a
+     judged n: these rows are banked as the head start for the 2027 season, not a verdict this year.
+  d) DEPLOYMENT. Production updates by manual git pull in /opt/prediction-market-bot, so landing (a)
+     and (b) is not enough. Before any pull on the VPS: paste git log --oneline HEAD..origin/main
+     there, and list every changed file reachable from t4-mlb's or any cron job's import graph. If
+     every such change is additive and covered by the green suite, the pull is authorized for this
+     purpose (paper pipeline, kelly_fraction 0.0). Cron jobs pick up new code on their next run.
+     t4-mlb keeps its old code in memory until it restarts -- DO NOT restart it. Verify (a) and (b)
+     from the next real cron runs (resolved positions, players matched > 0 on a playoff day), not from
+     files on disk. If anything non-additive is in the pull, stop and hand back.
+  Registry: flip each MLB game cell with a valid row to SHADOW, same rules as D5.
+
+DELIVERABLE 7 -- REPORT. Results summary: what was harvested, the framework, the NFL and MLB models
+  and their calibration, the pre-registrations, the backtests (or why not), live row counts per
+  cell, the postseason settlement finding and fix, T1 players matched on a playoff day, the
+  deployment record, the registry changes with SHAs, drafted cron lines, and GAPS FOUND -- FOR
+  REGISTRATION BY 47.1 OR WAVE 48.
+
+DO NOT:
+  - Open a position, write to any pool, submit any order, create a paper fill, or touch sizing or
+    kelly_fraction. SHADOW is evaluate-and-log.
+  - Change the behaviour of any existing code path. venue_adapter.py changes are additive only.
+  - Land anything red, or land src/ without the full suite green.
+  - Score a cell before its pre-registration is pushed, or change a rule after seeing a score.
+  - Use any feature timestamped after as_of_utc. Retrain in production. Tune on the held-out season.
+  - Edit the contract after D1 (a change needs a new file and a note to 47.3).
+  - Merge an old branch wholesale. Harvest through your own tests.
+  - Install a cron entry without the authorization line. Restart any service, t4-mlb included.
+  - Modify run_t4_mlb_live.py, any T4M-PROJ code, or p_hits_gte_threshold.
+  - Resolve a stuck position by hand or by writing a pool file. Only the fixed resolver settles.
+  - Change regular-season behaviour of any MLB pipeline. Postseason handling is additive.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md; edit nhl_* or board_survey_* files.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 47.3 -- FLY NHL: 9 PRE-GAME CELLS INTO SHADOW, TONIGHT'S SLATE AND EVERY NIGHT AFTER - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+scripts/new_session_worktree.sh "fly-nhl-pregame"
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: GG-333, T-606, ADR-0069, EXP-035. Claim an EXP id for the NHL
+shadow pre-registration. Declare this block's whole arc as the deliverable at claim time.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  every NHL-specific module (c1_signal_ingestion/nhl_*, c2_feature_store/nhl_*,
+  c3_forecasting/nhl_*), models/nhl_pregame_*, scripts/nhl_*, their tests, drafted NHL cron lines in
+  a NEW file deploy/cron.nhl_shadow.draft, one results summary.
+YOU DO NOT WRITE: market_type_registry.py, venue_adapter.py or anything under pregame_shadow/ (47.2
+  owns them), GOVERNANCE_GAP_LOG.md or DECISION_LOG.md (47.1), any nfl_* or board_survey_* file.
+Venue reads: at or below 1 request/s; halve on any 429.
+
+THE DIRECTIVE THIS BLOCK EXECUTES (operator, 2026-10-02): "We need to start flyin." Game-market
+expansion is a test of GENERALITY, accepting likely-thinner edge, with each cell's expectation
+against the market pre-registered before it is scored. Pre-game first (ADR-0068): deepest tree at
+the longest horizon.
+
+THE 9 CELLS: NHL_MONEYLINE, NHL_PUCK_LINE, NHL_GAME_TOTAL x T1, T2, T3 (band horizons from
+02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md, cited). The 2026-27 regular season opened 2026-09-29
+(84 games per team) -- verify against the NHL schedule source you use. Games are nightly.
+
+THE CONTRACT YOU BUILD AGAINST (47.2 pushes it as its first commit; until it is on origin/main,
+code against this exact text and import it once it lands):
+  src/prediction_market_bot/pregame_shadow/contract.py defines
+    PregameForecast(sport, market_type, event_ticker, market_ticker, p_yes, as_of_utc, model_id,
+                    model_sha256, feature_row_sha256)   -- frozen dataclass, p_yes strictly in (0,1)
+    PregameForecaster(Protocol): attribute sport; method
+      forecast(market_ticker: str, as_of_utc: datetime) -> Optional[PregameForecast]
+  Your forecaster: c3_forecasting/nhl_pregame.py, class NhlPregameForecaster, sport = "NHL".
+SHADOW ROW SCHEMA (identical to 47.2's runner; if you must write rows before 47.2's runner is on
+origin/main, write them with scripts/nhl_shadow_eval.py in EXACTLY this schema, append-only JSONL
+per cell, idempotent per (run_id, market_ticker)):
+  run_id, ts_utc, sport, market_type, band, horizon_hours_to_start, event_ticker, market_ticker,
+  p_yes, yes_bid, yes_ask, mid, half_spread, fee_k007, fee_kmult, e_net_yes_k007, e_net_no_k007,
+  model_id, model_sha256, feature_row_sha256, start_time_utc, start_time_source, code_sha
+Once 47.2's runner is on origin/main, switch to it and retire your script.
+
+DELIVERABLE 0 -- BASE, AND WHAT EXISTS. Paste origin/main SHA. Read and report what you reuse:
+  02_ARCHITECTURE_DESIGN/NHL_SKELETON_SPIKE_BREAKAGE_LIST.md, ADR-0056, ADR-0062, the NHL rows in
+  market_type_registry.py (T-495), and branch session/20260905T221746Z-t4-nfl-nhl-scaffolding
+  (git cherry). Verify the Kalshi NHL series tickers for the three market types against the live
+  venue, and confirm Kalshi's settlement rule for each (does the moneyline include overtime and
+  shootout? how are puck-line and total strikes defined?). Cite the market rules text.
+
+DELIVERABLE 1 -- NHL DATA, C1 AND C2.
+  Source: the NHL public stats/schedule API or another documented source -- verify it is reachable
+  from where the pipeline will run (Mac and VPS); if a network control refuses it, record the exact
+  refusal and do not route around it. Ingest at least five prior regular seasons plus 2026-27 to
+  date: games, scores including OT/SO flags, team and goalie game logs, shots and shot-quality
+  measures available, special teams, rest and back-to-backs, travel, home/away.
+  THE GOALIE PROBLEM, explicitly: the starting goalie is often confirmed only hours before puck drop.
+  Define how the feature row differs by band -- projected starter at T1, confirmed starter at T3 when
+  the source shows it -- and timestamp every input so the information cutoff can be enforced.
+  Tests for every ingestion path, including missing-goalie and postponed-game cases.
+
+DELIVERABLE 2 -- THE NHL MODEL: DEEP, FROZEN, ONE DISTRIBUTION PER GAME.
+  Model each team's goals as a predictive distribution (e.g. bivariate or correlated Poisson, or a
+  documented alternative), including the regulation-tie / OT / shootout path as Kalshi settles it,
+  and derive moneyline, every puck-line strike and every total strike from that one distribution,
+  so the ladder is coherent by construction. Calibration layer per ADR-0004 (LR + Platt or a
+  documented equivalent it permits). Train on prior seasons only; freeze; hash the artifact.
+  Reliability table and calibration plot on a held-out season. Information cutoff enforced in code
+  (a test that fails if any input is timestamped after as_of_utc).
+  Implement NhlPregameForecaster against the contract.
+
+DELIVERABLE 3 -- PRE-REGISTER THE 9 CELLS. PUSH ALONE, BEFORE ANY SHADOW ROW IS SCORED.
+  Same structure as 47.2 D4: expected sign vs climatology (> 0) and vs market (<= 0, the operator-
+  accepted generality test, said so); judged n of settled games by a stated power calculation,
+  game-clustered; RULED_OUT / SHADOW-continue / CANDIDATE-PENDING-CAPACITY rules fixed now, with
+  CANDIDATE requiring delta-Brier vs market > 0 with CI excluding zero AND E_net > 0 at entry under
+  both fee candidates (k = 0.07 and 0.07 x the series fee_multiplier).
+  Backtest: if 47.1 has published validated NHL history on origin/main, score every cell on 2025-26
+  against the market as a pre-registered retrospective. If not, climatology only, and say so.
+
+DELIVERABLE 4 -- FLY. TONIGHT AND EVERY NIGHT YOUR SESSION REACHES.
+  Evaluate every game on tonight's slate in each band whose window you are inside (T3 within the
+  final pre-start window, T2 same day, T1 for tomorrow's slate), then keep going for as long as the
+  session runs. Paste row counts per cell and three sample rows. Settle completed games and produce
+  the first scored rows per cell, labelled by n against the judged n.
+  Draft the cron lines that make the three bands automatic in deploy/cron.nhl_shadow.draft
+  (commented). INSTALL ONLY if "Needs your decision" in ACTIVE_QUEUE.md contains an authorization
+  line naming shadow-evaluation cron jobs; then install exactly that scope and verify from the LIVE
+  crontab (GG-262).
+
+DELIVERABLE 5 -- REPORT. Results summary: data sources and coverage, the goalie handling, the
+  model and its calibration, the pre-registration, the backtest (or why not), live and scored row
+  counts per cell, a list of cells with valid rows (47.2 uses it to flip registry status), drafted
+  cron lines, and GAPS FOUND -- FOR REGISTRATION BY 47.1 OR WAVE 48.
+
+DO NOT:
+  - Open a position, write to any pool, submit any order, create a paper fill, or touch sizing or
+    kelly_fraction. SHADOW is evaluate-and-log.
+  - Edit market_type_registry.py, venue_adapter.py or pregame_shadow/. Request changes through your
+    results summary.
+  - Score a cell before its pre-registration is pushed, or change a rule after seeing a score.
+  - Use any input timestamped after as_of_utc. Retrain in production. Tune on the held-out season.
+  - Land anything red, or land src/ without the full suite green (baseline 3455 passed, 28 skipped).
+  - Merge an old branch wholesale. Harvest through your own tests.
+  - Install a cron entry without the authorization line. Restart any service.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md; edit nfl_* or board_survey_* files.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+
+## Wave 46 — CLOSED 2026-10-02. 46.1 (T-605): Part 1 failure diagnosed -- H1 matching rule vs sparse candles SUPPORTED, H2 two first-seen moments SUPPORTED, H3 code defect NOT SUPPORTED, H4 UNDETERMINED (6.5% demonstrably disagree, 29.9% unresolvable); fee re-score: published NO verdicts stand, E_net more negative; Gate 2 PRE-REGISTERED on KXMLBTOTAL (00278d8) and coded with tests (69beae0) but NOT RUN. 46.2 (EXP-034, branch -w46 not merged): D1(b) gate FAIL as run, 56/84 -- all 56 matched pairs pass with zero miss, 28 UNMATCHED from a 1h candle lookback in the runner; candle numbers VOID. 46.3 (T-606): stale lock removed, shared tree fast-forwarded, queue + T-601 row + ADR-0067 documents landed (3455 passed), three Step 4 anomalies all EXPECTED (season end).
+
+## ⬛ FIRE NOW — Wave 46, three blocks, concurrent
+
+| Paste | Block | Tier | One-line purpose |
+|---|---|---|---|
+| 1st | **46.1** | LARGE | **Why did the gate fail?** Diagnose it on data already fetched. Only if the cause is a design mismatch: a clean retest on a family nobody has looked at, same thresholds. Pass → the sports verdict. |
+| 2nd | **46.2** | LARGE | **Finish EXP-034.** Run its own frozen gate, then the non-sports verdict and the public-forecast benchmark. |
+| 3rd | **46.3** | STANDARD | **Sync the shared tree, land ADR-0067's documents, diagnose the three Step 4 anomalies.** |
+
+**Fire order does not matter.** Surfaces are disjoint:
+
+- **46.1 owns** `scripts/board_survey_sports*`, `tests/board_survey_sports*`, EXP-035's pre-registration /
+  results / exp_output, its raw store (`exp_output/BOARD_SURVEY_SPORTS/`), the docstring of
+  `scripts/archive_market_prices.py`, **and `GOVERNANCE_GAP_LOG.md` / `DECISION_LOG.md`.**
+- **46.2 owns** `scripts/board_survey_nonsports*`, `tests/board_survey_nonsports*`, EXP-034's
+  pre-registration / results / `exp_output/EXP-034-NONSPORTS-CONTROL/`, its raw store. **No GGL / DECISION_LOG.**
+- **46.3 owns** the shared main tree and its sync, the `04_EXECUTION/` record files (landed as written),
+  the ADR-0067 documents-only landing, one SESSION_CLAIMS row, one results summary, read-only VPS probes.
+  **No GGL / DECISION_LOG.**
+- **Read-only to all:** `market_efficiency_survey.py`, `execution_cost_surface.py`, `multileg_coherence.py`,
+  `capture_settlements.py`, `exp_output/PRICE_ARCHIVE/` (shared tree only — GG-331; reference by absolute path).
+- **Venue read budget, shared:** 46.1 and 46.2 each stay at or below **3.3 requests/s in aggregate across
+  all of their own processes**, and halve on any 429. T4M-PROJ is reading live postseason games.
+
+**Exactly three fences. A fourth means something is wrong -- stop.**
+
+---
+
+## Read this first (standing)
+
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Each block carries its workstream to a measured verdict.** Operator directive 2026-09-30. Stop only at a governance boundary — **and never before the block's MINIMUM CLOSE.** If a session must end early, end it at a verdict boundary, not mid-fetch, and say which boundary.
+- **Deliverable 0 in every block: land any un-landed predecessor, and confirm your base.** This wave only 46.3 touches the shared main tree; 46.1 and 46.2 resume their own Wave 45 worktrees.
+- **Claim IDs at run time and re-verify after ANY release or retry** (GG-322). A claim row reading "TBD" gives no collision protection — claim real numbers.
+- **A premise written in a block is a claim to verify, not a fact.** Including every number in this file.
+- **Never bypass, disable, or work around a permission control.** Record the exact command and the exact refusal text, then hand back. Absolute; no approval in a block overrides it.
+- **Frozen gates stay frozen, and failed gates stay failed.** A new test may be designed after a failure, but it is a new, separately pre-registered test, on data it has not seen, with thresholds no looser than the one that failed.
+- **No background process outlives its session unrecorded.** If you leave one running, record its PID, command, output path and expected finish in the handoff — and prefer not to.
+- **Push after each deliverable.** **A merge is not a deployment, and a deployment is not an activation** (GG-279).
+- Register-and-stop on any gap outside scope (Hard Rule 11).
+
+---
+
+## Sequencing track
+
+| Wave | Status | Outcome |
+|---|---|---|
+| 10-44 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **45** | **CLOSED** | **45.1: candle correctness gate FAILED** (G2–G5, G7; GG-333) — candle numbers VOID, no market verdict. 45.2 PARTIAL (gate frozen, not run). 45.3 PARTIAL: queue record landed (fa99794), dashboard NEW PAGE RUNNING, shared-tree sync blocked by a stale lock. |
+| **46** | **FIRING** | Why did the gate fail, and does a clean retest pass? EXP-034's own gate and verdict. The shared tree and the Step 4 anomalies. |
+
+---
+
+## Why this wave is shaped this way
+
+**The board survey stands or falls on whether the history endpoint can stand in for capture we never
+did.** If it can, the survey runs on months of history today. If it cannot, every new series needs
+forward capture — weeks of waiting and a cron line from you — before anything can be measured. Wave 45's
+gate said "not as tested". Wave 46 finds out whether that means "not at all" or "not the way we asked".
+
+**46.1 diagnoses before it retests, and retests only on clean ground.** The diagnosis uses data already
+fetched and changes nothing about the failed verdict. A retest happens only if the diagnosis points at a
+design mismatch rather than at the data — and then on an archived family nobody has compared, with every
+threshold identical to the gate that failed. That is the difference between learning from a failure and
+re-cutting until something passes.
+
+**46.2 is independent of 46.1, and that is useful.** EXP-034 checks candles against *live quotes read in
+the same session* on non-sports series, with the "latest close at or before t" rule frozen before it saw
+data. If it passes while 46.1's original gate failed, that is evidence the original matching rule was the
+problem, from a test that was never adjusted.
+
+**46.3 clears the ground the other two stand on.** The shared tree holds the price archive both surveys
+read and the queue every terminal reads. A three-day-old lock file is the only thing stopping it syncing.
+The three Step 4 anomalies sit on the one pipeline that is actually live.
+
+---
+
+## WAVE 46 BLOCKS
+
+---
+
+# 46.1 -- WHY THE GATE FAILED, AND A CLEAN RETEST ON A FAMILY NOBODY HAS LOOKED AT - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+RESUME the Wave 45 worktree (it holds the raw store and the Part 1 sample):
+  /Users/earlignacio/Documents/Claude/Projects/PM-worktrees/20261002T192708Z-kalshi-sports-board-survey
+If that worktree is gone, stop and report.
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: GG-333, T-604, ADR-0069, EXP-035. Verify; do not assume.
+You are the only block this wave that writes GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  scripts/board_survey_sports*, tests/board_survey_sports*, EXP-035's pre-registration, results
+  summary and exp_output dirs, exp_output/BOARD_SURVEY_SPORTS/, GOVERNANCE_GAP_LOG.md,
+  DECISION_LOG.md, and the module DOCSTRING ONLY of scripts/archive_market_prices.py.
+READ-ONLY (import, never edit): market_efficiency_survey.py, execution_cost_surface.py,
+  multileg_coherence.py, capture_settlements.py; exp_output/PRICE_ARCHIVE/ in the SHARED tree, by
+  absolute path (GG-331). Do not pull, stash or commit in the shared tree; 46.3 owns it.
+
+THE VERDICT THIS BLOCK STARTS FROM -- it stands, and nothing here relabels it:
+  EXP-035 Part 1 (frozen e28166a) FAILED at 0972862, unrescued (gate_result.json, GG-333):
+    G1 pass (1.000 / 0.998)        G2 0.335 (need >= 0.80)        G3 0.472 (need >= 0.95)
+    G4 B 0.0319 vs 0.0257 (+-.003) G5 H 0.090 vs 0.04 (+-.005)    G6 pass (sign)
+    G7 candle half-spread equals EXP-032's in 6 of 7 tau buckets (in-play through [12,24)h);
+       fails only [24,48)h: 0.065 vs 0.03.
+  Candle numbers from Part 1 are VOID and may not be cited as evidence either way.
+
+THE WINDOW'S READING -- FOUR HYPOTHESES, NONE ESTABLISHED. Test them; do not assume any:
+  H1 MATCHING RULE vs SPARSE CANDLES. Part 1 matched each archive snapshot at t to the 1-minute
+     candle with the smallest end_period_ts >= t inside [t-120s, t+120s]. 1-minute candles have NO
+     row when nothing changed (EXP-034 D1(a)). Where the quote was stable, that rule finds no
+     candle, or finds the NEXT change -- a different quote by construction. EXP-034 froze the
+     opposite rule before seeing data: prevailing quote = close of the latest candle at or before t.
+  H2 "FIRST-SEEN" IS TWO DIFFERENT MOMENTS. Part 1's candle first-seen = earliest usable hourly
+     candle after window start; the archive's = its first capture run. If candles see markets
+     earlier, when books are widest, B and H at "first-seen" differ while the time-bucketed surface
+     agrees -- the G4/G5 failures with G7 failing only in [24,48)h fit this.
+  H3 A CODE DEFECT in board_survey_sports_gate.py evaluate (no tests exist yet).
+  H4 THE DATA GENUINELY DIFFER: candle quotes are not the quotes the archive recorded.
+
+MINIMUM CLOSE: D2 pushed -- the diagnosis verdicts and the fee re-score on record.
+
+DELIVERABLE 0 -- BASE AND STORE STATE. Paste origin/main SHA; worktree HEAD and relation to
+  origin/main (fast-forward if behind); pgrep -af board_survey_sports (nothing should be running);
+  per-shard file counts, bytes and manifest sha256s. Sum fetch totals across ALL shards (45.1 only
+  reported shard 0: 2600 calls, 84MB, 4755s, 4 x 429).
+
+DELIVERABLE 1 -- TESTS FIRST. tests/board_survey_sports_*: both candle schemas (live *_dollars/*_fp,
+  historical bare keys) parse to identical values; sparse candles; null price with populated
+  previous; scalar settlements; store idempotency; the G7 reader against the real EXP-032
+  results.json; and a unit test that pins down what evaluate's matching rule actually does on a
+  hand-built sparse candle series. Push green. Never land red.
+
+DELIVERABLE 2 -- DIAGNOSE THE FAILURE, READ-ONLY, ON DATA ALREADY FETCHED.
+  a) G2/G3: classify every failing Part 1 snapshot -- (i) no candle within the window; (ii) a candle
+     found, but it is a later quote change than t; (iii) empty-book placeholder; (iv) the prevailing
+     close at or before t ALSO disagrees by > 0.01. Counts and shares. Only (iv) is evidence for H4.
+  b) G4/G5: per ticker, candle first-seen time minus archive first-seen time (distribution). Then
+     recompute B and H at the ARCHIVE's own first-seen timestamps from candles, labelled DIAGNOSTIC.
+  c) H3: code review of evaluate against the Part 1 text, line by line. Any defect gets a test.
+  d) Verdict per hypothesis: SUPPORTED / NOT SUPPORTED / UNDETERMINED, with the numbers.
+  e) FEE RE-SCORE OF THE OLD FRONTIER (no candles needed, so always run it): subtract the venue fee
+     from EXP-031's and EXP-032's published E columns, beside the originals. Fee source: API series
+     fee_type / fee_multiplier plus the docs.kalshi.com fee and rounding pages, cited with URL and
+     retrieval date; the PDF is unread (GG-332). If the venue's rule differs from ADR-0016's
+     0.07*p*(1-p), use the venue's and register the divergence. Relabel neither verdict.
+  Nothing in D2 changes Part 1's verdict. No D2 number is cited as validating candles.
+  DECISION: if (iv) carries the failure, or nothing can be attributed: STOP. Candles are not a
+  substitute for the archive; the board survey needs forward capture (Wave 47). Register, log,
+  report -- a complete, valid close. If H1 and/or H2 (and/or a fixed H3) account for the failure:
+  continue to D3.
+
+DELIVERABLE 3 -- GATE 2: PRE-REGISTER ON A FRESH FAMILY. PUSH IT ALONE, BEFORE ANY COMPARISON.
+  - A NEW test, titled as designed after Part 1 failed (GG-333). Part 1 stays FAILED.
+  - Family: one archived MLB family NOT used in Part 1 and NOT touched in D2. Choose it by a rule
+    written before looking at any of its candles (e.g. the archived family with the most settled
+    tickers after KXMLBTEAMTOTAL); paste the counts the rule used.
+  - Changes from Part 1 are limited to what D2 found mismatched: matching = close of the latest
+    candle at or before t (EXP-034's frozen rule); B and H computed at the archive's own first-seen
+    timestamps. NOTHING ELSE CHANGES.
+  - THRESHOLDS IDENTICAL TO PART 1: G1 >= 0.98; G2 >= 0.80 within 0.01; G3 >= 0.95; G4 |dB| <= 0.003;
+    G5 |dH| <= 0.005; G6 sign; G7 every bucket within 0.005. Loosen none.
+  - A new fixed seed, stated. KXMLBTEAMTOTAL re-run under Gate 2 is reported as SECONDARY only and
+    can never decide the verdict.
+
+DELIVERABLE 4 -- RUN GATE 2. Fetch only what it needs, one process or one shared token bucket at or
+  below 3.3 requests/s, halving on any 429. Report every gate against its threshold.
+  FAIL: candles are not validated for survey use. Register, log, report, stop -- a complete close.
+  PASS: candles are validated for time-matched use on archived MLB books. Continue.
+
+DELIVERABLE 5 -- ONLY IF GATE 2 PASSED: THE SPORTS VERDICT.
+  a) Inventory every Kalshi sports series beyond the 14 surveyed (structure, settled count, events,
+     span, start-clock source, measured start-to-close durations). Counts only; commit alone.
+  b) EXP-035 Part 2, pushed alone before any outcome statistic on a new family: cohort rule and
+     INSUFFICIENT floor per family; snapshot definition; B and null imported from EXP-031; cost
+     surface from EXP-032 plus fee; E_net = B - null - H - fee primary, fee-excluded E alongside;
+     policies (a) first-seen, (b) cheapest MEASURED cell with B-at-entry, (c) rest-at-mid with
+     fills evidenced only by a later quote strictly through the order; a clock gate PER FAMILY
+     sized from (a)'s durations (GG-327); Holm across all families, m stated;
+     CANDIDATE-PENDING-CAPACITY as the strongest label; drift with backward placebo.
+  c) Back-capture the cohort (same rate discipline, idempotent, run twice) and measure: one ranking
+     table, every family, every policy; KXMLBHIT's EXP-032 row re-scored net of fee as reference;
+     H(tau) per sport; drift with placebo; EXP-033 coherence tests (import) on every multi-leg set.
+     STATE PLAINLY: any CANDIDATE-PENDING-CAPACITY? any surviving multi-leg cell?
+
+DELIVERABLE 6 -- REGISTER, LOG, REPORT.
+  Register, deduplicated against GG-329..333: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/
+  WAVE45_land_the_record_results.md GAPS FOUND (11 items); EXP-034's candle schema divergence and
+  sparse 1-minute candles; and 46.2's / 46.3's GAPS FOUND if on origin/main before you close.
+  Correct the archive_market_prices.py docstring to say exactly what is established -- history is
+  reachable (GG-329); equivalence to the archive is Gate 2's verdict, or UNVALIDATED (GG-333) if
+  Gate 2 did not run. Docstring only. One DECISION_LOG entry.
+  Results summary: the diagnosis, the fee re-score, Gate 2 (pre-registration and result) if run,
+  the sports verdict if reached -- each scoped to exactly what was measured.
+
+DO NOT:
+  - Relabel Part 1, edit any Part 1 threshold, seed, matching rule or population, or cite a D2 number
+    as validating candles.
+  - Write Gate 2 after looking at its family's candles, or loosen any threshold in it.
+  - Run fetchers above 3.3 requests/s in aggregate. Leave no unrecorded background process.
+  - Write into exp_output/PRICE_ARCHIVE/ or edit any capture writer's code.
+  - Edit market_efficiency_survey.py, execution_cost_surface.py or multileg_coherence.py.
+  - Re-cut B or the null for MLB/NFL families. D2(e) adds fee; nothing else.
+  - Promote anything past CANDIDATE-PENDING-CAPACITY. Volume is not depth.
+  - Recommend against a sport, band or family on one finding, or assume unmeasured series behave like
+    measured ones.
+  - Build, fit or tune any forecasting model.
+  - Touch NBA pipeline code, any pool, position, schedule, sizing or kelly_fraction. Install no cron.
+  - Pull, stash, reset, checkout or commit in the shared main tree.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 46.2 -- FINISH EXP-034: ITS OWN GATE, THEN THE NON-SPORTS VERDICT - LARGE
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+RESUME the Wave 45 worktree:
+  /Users/earlignacio/Documents/Claude/Projects/PM-worktrees/20261002T192711Z-kalshi-nonsports-control
+Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
+Highest seen at queue-write time: GG-333, T-604, ADR-0069, EXP-035. EXP-034 is yours.
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  scripts/board_survey_nonsports*, tests/board_survey_nonsports*, EXP-034's pre-registration,
+  results summary and exp_output/EXP-034-NONSPORTS-CONTROL/, its raw store (location in report).
+READ-ONLY (import, never edit): market_efficiency_survey.py, execution_cost_surface.py,
+  multileg_coherence.py, capture_settlements.py.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 46.1 owns them. GAPS FOUND goes in your
+  results summary. Do not pull, stash or commit in the shared main tree; 46.3 owns it.
+
+WHERE WAVE 45 LEFT THIS -- verify, do not assume (SESSION_HANDOFF_20261002_1945.md, D1_FINDINGS.md):
+  - D1(a) done: /historical/cutoff = 2026-08-03; candles reach back to market open; 1-minute candles
+    sparse; live vs historical schema divergence; no rate-limit headers.
+  - D1(c): API series metadata fee_type=quadratic, fee_multiplier=1. Fee PDF unread: HTTP 429 behind a
+    Vercel challenge (GG-332). Correctly not bypassed.
+  - D1(b) tolerance FROZEN at 38b8490 (D1B_TOLERANCE_PREREG.md) BEFORE any comparison: 12 tickers
+    (first 2 open in KXHIGHNY, KXHIGHCHI, KXHIGHMIA, KXCPI, KXPAYROLLS, KXGDP at round 0), >= 6 rounds
+    >= 20 min apart, 1-minute candles pulled after the last round + 10 min; matching = close of the
+    latest candle at or before t; pass rule +/-0.01; gate >= 95% pass and no miss > 0.03.
+  - Sampler started as background PID 63247 at 19:33Z on 2026-10-02, 7 rounds x 21 min; only round 0
+    was recorded at close. Output d1b_live_quotes.jsonl, untracked.
+  - Branch commit 0f5de4e (session-end nav) is not on main. D2-D6 not started.
+
+YOUR SIBLING'S GATE FAILED -- READ IT, DO NOT INHERIT IT:
+  EXP-035 Part 1 (GG-333) tested candles against the MLB archive and FAILED (G2-G5, G7). Your D1(b)
+  gate is independent: different series, live quotes read in-session as the reference, and the
+  "latest close at or before t" matching rule frozen before you saw data -- the very rule 46.1 is
+  testing as the possible cause. Your gate's verdict stands on its own frozen terms. Do not adjust
+  anything because of GG-333. Report your result in full; that comparison is itself evidence.
+
+MINIMUM CLOSE: D2 pushed -- the D1(b) gate verdict on record.
+
+DELIVERABLE 0 -- BASE AND SAMPLER STATE. Paste origin/main SHA, worktree HEAD (fast-forward if
+  behind), whether PID 63247 is alive, and d1b_live_quotes.jsonl's line count, rounds present, their
+  UTC times and spacing, and its sha256. Land 0f5de4e only if still meaningful; otherwise say it is
+  superseded.
+
+DELIVERABLE 1 -- TESTS. Parser handles both candle schemas to identical values; sparse candles
+  resolve to the prevailing earlier close per the frozen matching rule; null price with populated
+  previous; scalar settlements. Push green.
+
+DELIVERABLE 2 -- THE D1(b) GATE. THE VERDICT.
+  a) If the file holds >= 6 rounds spaced >= 20 minutes: pull the 1-minute candles (after last round
+     + 10 min), run the frozen comparison, report every pair and the gate result.
+  b) If it holds fewer: the sample is incomplete. The frozen rule fixes tickers at round 0, and
+     daily weather tickers may have closed since. Write an AMENDMENT commit BEFORE any comparison:
+     keep the partial file, labelled and never compared; re-draw 12 tickers by the SAME rule at a new
+     round 0; every tolerance unchanged; run >= 6 rounds in-session in the foreground, or with the
+     PID recorded.
+  FAIL: every candle-based number in EXP-034 is VOID. Write the results summary and stop -- a
+  complete, valid close. PASS: continue.
+
+DELIVERABLE 3 -- INVENTORY, THEN PRE-REGISTRATION. EACH PUSHED ALONE.
+  a) Every Kalshi NON-SPORTS series with settled markets reachable via the endpoints: category,
+     structure, settled count, events, date span, the settlement source as Kalshi states it, open-to-
+     close durations. Too few events = listed as INSUFFICIENT, never dropped silently. Counts only.
+  b) Pre-registration, pushed alone before any outcome statistic: cohort rule and INSUFFICIENT floor;
+     snapshot definition; B and null imported from EXP-031; cost surface from EXP-032 plus fee;
+     E_net = B - null - H - fee primary, fee-excluded E alongside; policies (a) first-seen, (b)
+     cheapest MEASURED cell with B-at-entry, (c) rest-at-mid with fills evidenced only by a later
+     quote strictly through the order; the clock as hours-to-close (for weather, also hours before
+     the settling observation day) sized from (a); Holm, m stated; CANDIDATE-PENDING-CAPACITY as the
+     strongest label; drift with backward placebo. Fee source as 46.1 D2(e) states it.
+     THE PUBLIC-FORECAST BENCHMARK (weather): name the product and archive; the issue time used for
+     each snapshot, strictly BEFORE the snapshot; the exact forecast-to-bracket mapping; Brier and log
+     loss against settlement with city-day cluster CIs. The mapping is fixed here. Any free parameter
+     is fixed from documentation or from data strictly before the cohort window -- say which.
+
+DELIVERABLE 4 -- BACK-CAPTURE AND MEASURE.
+  At or below 3.3 requests/s in aggregate across your processes; halve on any 429; idempotent run
+  twice with hashes. Then: one ranking table, every family, every policy; H(tau) per category; drift
+  with placebo; EXP-033 coherence tests on bracket sets; the weather benchmark as delta-Brier (market
+  minus forecast) with CI. If the forecast archive is unreachable from where you run, record the
+  exact refusal, do not route around it, and report the benchmark UNMEASURED.
+  STATE PLAINLY: any CANDIDATE-PENDING-CAPACITY; any surviving coherence cell; is the market worse
+  than the free forecast, by how much, with what CI? Losing to a public forecast is not an edge until
+  the gap survives cost and fee at entry -- say which of those you have shown.
+
+DELIVERABLE 5 -- REPORT. Results summary line by line against the pre-registration, scoped to
+  exactly the series, window and cadence measured; state GG-333 and, if 46.1's diagnosis is on
+  origin/main before you close, whether it bears on your gate. Then:
+  GAPS FOUND -- FOR REGISTRATION BY 46.1 OR WAVE 47.
+
+DO NOT:
+  - Edit a frozen tolerance or matching rule. An AMENDMENT re-draws an incomplete sample by the same
+    rule; it changes no threshold and is pushed before any comparison.
+  - Compare a partial sampler file and then decide whether to amend. Decide on round count first.
+  - Adjust anything in response to GG-333.
+  - Run fetchers above 3.3 requests/s in aggregate. Leave no unrecorded background process.
+  - Fit, tune or select any forecasting model on outcomes; use any forecast issued after the snapshot.
+  - Change a pre-registered gate, policy, threshold, mapping or rule after seeing a result.
+  - Promote anything past CANDIDATE-PENDING-CAPACITY. Generalize past what was measured.
+  - Write into exp_output/PRICE_ARCHIVE/ or any existing store; edit any capture writer.
+  - Touch any pool, position, schedule, sizing or kelly_fraction. Install no cron entry.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 46.1 owns them.
+  - Pull, stash, reset, checkout or commit in the shared main tree.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+# 46.3 -- SYNC THE SHARED TREE, LAND ADR-0067'S DOCUMENTS, DIAGNOSE STEP 4 - STANDARD
+
+```
+Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
+You are the ONE block this wave that works in the shared main tree. Everything that commits goes
+through a fresh worktree: scripts/new_session_worktree.sh "sync-and-diagnose"
+Claim your own IDs at run time (GG-236); claim a real range, not "TBD" (45.3 GAPS item 9).
+
+YOU OWN, THIS WAVE, EXCLUSIVELY:
+  the shared main tree and its sync; 04_EXECUTION/ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md (land
+  as written -- do not edit); one appended row in 04_EXECUTION/SESSION_CLAIMS.md (see D2); the
+  ADR-0067 documents-only landing; one results summary; read-only VPS probes.
+YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 46.1 owns them. GAPS FOUND goes in your
+  results summary.
+
+WHAT THE WINDOW MEASURED AT 7af1558 -- re-verify every line before acting on it:
+  - .git/index.lock: 0 bytes, mtime 2026-09-29 17:09 PT, held open by pid 33525
+    (com.apple.Virtualization.VirtualMachine.xpc) per 45.3. Blocks every git write in the shared tree.
+  - Shared tree HEAD 9f2b837, 156 behind origin/main, 0 ahead.
+  - Dirty tracked files, each compared to its origin/main blob:
+      IDENTICAL to origin/main: 02_ARCHITECTURE_DESIGN/BAND_ASSIGNMENT_FRAMEWORK.md,
+        03_DECISIONS/ADR-0014_per-band-decision-tree-mechanics.md, CLAUDE.md
+      DIFFERS, but every locally added line is already on origin/main:
+        02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md
+      DIFFERS, generated output: 03_DECISIONS/OPERATOR_CONSOLE.md (a locally regenerated console;
+        17 of its 22 added lines are not on origin -- generated text, not authored work)
+      DIFFERS, ONE real unlanded line: 04_EXECUTION/SESSION_CLAIMS.md --
+        | 2026-10-01T01:42:06Z | T-601 | CLOSED -- merge confirmed ... (cron drafted, not installed) |
+      DIFFERS because the window wrote Wave 46 into them: 04_EXECUTION/ACTIVE_QUEUE.md,
+        04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md
+  - Untracked: "Live Terminal.html" (56,983 B, 2026-09-30 snapshot) collides with a TRACKED
+    origin/main path (59,130 B, the landed terminal). NEW_WINDOW_PASTE_IN.md and
+    STRATEGIC_WINDOW_CARRY_FORWARD.md are identical to origin/main. _w33_recovered.md, Visual
+    Dashboard.html and Reload Dashboard.command are untracked and not on origin.
+
+MINIMUM CLOSE: D3 done -- shared tree HEAD == origin/main, with nothing lost.
+
+DELIVERABLE 0 -- SNAPSHOT. In the shared tree: git status --short, HEAD, origin/main, rev-list
+  --left-right --count HEAD...origin/main (say which side is which), md5sum of every dirty and
+  untracked file listed above. Copy ALL of them to a scratch directory OUTSIDE the repo; paste the
+  copies' md5sums. That copy is the only undo.
+
+DELIVERABLE 1 -- THE STALE LOCK. AUTHORIZED, WITH CONDITIONS.
+  The operator's standing framing makes a stale lock in the local working tree plumbing, not a
+  decision. Remove .git/index.lock if, and only if, ALL of these hold, each pasted as evidence:
+    - ps -axo pid,etime,command | grep -i '[g]it' shows no git process operating on this repo;
+    - lsof on the lock shows only the Virtualization XPC host (or nothing);
+    - its mtime is more than 24 hours old.
+  Any condition fails: do not remove; paste what you saw and hand back.
+
+DELIVERABLE 2 -- LAND WHAT ONLY THE SHARED TREE HOLDS, FROM A WORKTREE.
+  In the fresh worktree off origin/main, path-scoped commits, push with rebase-retry:
+    a) ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md, byte-for-byte from the shared tree.
+    b) the one SESSION_CLAIMS.md row above, appended (merge=union file; do not rewrite other rows).
+  Paste pushed SHAs and git hash-object of each landed file against the shared-tree copy.
+
+DELIVERABLE 3 -- FAST-FORWARD THE SHARED TREE.
+  Only after D2 lands, and only file by file as classified above (re-verify each first):
+    - files identical to the pushed origin/main blob: restore to HEAD;
+    - EXECUTION_BANDS.md: restore only after re-confirming every local-added line is on origin/main;
+    - OPERATOR_CONSOLE.md: generated; restore (the D0 copy keeps the local version);
+    - "Live Terminal.html": move into the D0 scratch directory (origin's tracked version arrives);
+    - NEW_WINDOW_PASTE_IN.md, STRATEGIC_WINDOW_CARRY_FORWARD.md: move into scratch (identical
+      copies arrive).
+  Then git pull --ff-only. Paste HEAD == origin/main, then md5 of every landed file against D0.
+  ANY other path blocks the fast-forward: stop, paste the refusal and the path, hand back.
+  Report whether _w33_recovered.md's content already exists verbatim in the archive. Delete nothing.
+
+DELIVERABLE 4 -- LAND ADR-0067'S DOCUMENTS ONLY.
+  45.3 established that production updates by manual git pull in /opt/prediction-market-bot, so
+  main reaching production is a deployment. From origin/session/20260930T001343Z-t4-ledger-durability
+  land ONLY: the ADR-0067 file (stays PROPOSED), the T-589 results, SESSION_HANDOFF_20260930_0045.
+  Leave paper_trader.py, its tests and the bench script on the branch. Re-run the documents-only
+  candidate's test suite on current main (an older base returned exit 0) and paste the summary line.
+  Never land red work.
+
+DELIVERABLE 5 -- DIAGNOSE THE THREE STEP 4 ANOMALIES. READ-ONLY.
+  45.3 saw: SemanticFloorViolation = 1; two T1 MLB runs with 0 players matched; T4 cycle-log age 16h.
+  MLB is in its postseason, so fewer games and off-days are expected -- but GG-049 (T1 dark for two
+  game days) and GG-163 (T4 dark 43.5h while is-active said active) both looked exactly like this.
+  For each anomaly: the exact timestamp(s); whether MLB games with Kalshi markets existed in that
+  window (name the source); the matching cron log lines; verdict EXPECTED (with the evidence) or
+  FAILURE (with what failed). Also report, without acting, what T1 and T4 MLB will do after the
+  World Series ends -- does anything stop them, or will they run against an empty slate all winter?
+  Do NOT restart, reconfigure or reschedule anything. Do NOT rotate or clear any log.
+
+DELIVERABLE 6 -- REPORT. One results summary: D0 snapshot, lock evidence and action, landed SHAs,
+  the fast-forward result, the ADR-0067 landing and test line, the three anomaly verdicts, the
+  off-season answer, and GAPS FOUND -- FOR REGISTRATION BY 46.1 OR WAVE 47.
+
+DO NOT:
+  - Remove the lock unless every D1 condition holds and is pasted.
+  - Stash, reset --hard, clean, or checkout any path not classified in D3. Never git add -A or
+    git commit -a in the shared tree.
+  - Edit the content of the queue or archive. Land them as written.
+  - Delete any branch, worktree or file. Move-to-scratch is the only removal allowed, and only per D3.
+  - Land runtime code onto main, or land red work. Accept no ADR.
+  - Restart, reconfigure or reschedule any service or cron entry.
+  - Rotate, truncate or clear a VPS log or journal.
+  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md. 46.1 owns them.
+  - Touch sizing, stake, or kelly_fraction.
+  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
+  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
+```
+
+---
+
+
 ## Wave 45 — CLOSED 2026-10-02 (45.1 reached a verdict -- its correctness gate FAILED; 45.2 and 45.3 PARTIAL). 45.1 EXP-035 / T-604: Part 1 gate pre-registered (e28166a), run unrescued and FAILED (0972862: G1, G6 pass; G2, G3, G4, G5, G7 fail) -- candle numbers VOID; GG-329..333 registered; D2-D7 not run. 45.2 EXP-034: D1(a)/(c) done, D1(b) tolerance frozen (e40e4e6/38b8490) and sampler started, comparison NOT run, D2-D6 not started. 45.3: queue record LANDED (fa99794), dashboard NEW PAGE RUNNING (manual restarts, no OOM); shared-tree sync blocked by stale .git/index.lock; ADR-0067 docs-only landing cleared but not performed. Carried into Wave 46.
 
 ## ⬛ FIRE NOW — Wave 45, three blocks, concurrent
