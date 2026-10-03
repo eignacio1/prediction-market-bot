@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-03T01:55:00Z (49.1-49.3 — 49.1-49.3 (cloud): NFL+MLB shadow code, 48.3 dashboard fixes and NHL prereg landed on main; arm_shadow_crons.sh written; GG-400..GG-429 registered; nothing deployed (VPS unreachable from cloud).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0155.md` for full session detail.
+**Last reviewed:** 2026-10-03T20:10:00Z (T-637 — 50.2 cleanup: EXP-037 shadow crons armed, tree synced, PR #157 HELD (live games), GG-430..432 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_cleanup-1003.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
