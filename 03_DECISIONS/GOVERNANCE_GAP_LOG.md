@@ -4608,6 +4608,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | The ledger's realized P&L, bankroll, drawdown and G6 evidence are frozen at 2026-08-06 while 17 outcomes are already known to the venue. No position was resolved, closed or edited by W51.1. |
 | Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
 | Disposition | Registered only. Fix is a resolution-source change (Kalshi historical settlement and/or non-blocked MLB source), operator/ADR-gated. Note: 16 of 17 settled as `scalar` = cancelled markets (see GG-450), so they carry no real outcome; how to book them (void / mark to settlement / exclude from G6) is an operator decision. |
+| W52.C update (2026-10-03, T-656) | Root cause (LIKELY, VPS reproduction pending): statsapi 406 is the GG-084 Fastly IP block of the VPS datacenter IP, not a request-format issue. The ESPN fallback then also returned nothing, via a path that logged nothing (player absent from every final boxscore), so the log could not separate did-not-play / name mismatch / ESPN failure. The code also had no venue check, so a Kalshi-cancelled market could be booked WIN/LOSS if a source ever returned hits. Fix on PR #159 (venue gate: book only Kalshi yes/no; cancelled = skip + report; --dry-run; ESPN not-found logged). Status unchanged. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_C_resolver_406_results.md. |
 
 </details>
 
