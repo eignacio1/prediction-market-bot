@@ -743,3 +743,4 @@
 | 2026-10-03T20:31:34Z | TBD | W51.1 follow-up (MICRO): docs-only correction of GG-441 latent-breach figure (26.6% -> ~12%, 16/17 cancelled markets) + register Kalshi cancelled-market GG; no VPS writes |
 | 2026-10-03T20:32:38Z | GG-450 | CLOSED — W51.1 follow-up: GG-441 breach scenario corrected to ~11-12%, GG-450 registered; docs-only @ 9903cfa pushed to main; no VPS/ledger/code change |
 | 2026-10-03T20:32:54Z | W51.3 | CLOSED — W51.3 — PR #157 made merge-ready (head 42a0d0d, CI green, MERGEABLE); NOT merged; NHL shadow cell table recorded (commit `28d49cb`) |
+| 2026-10-03T20:34:06Z | W51.1-followup | CLOSED — W51.1 follow-up: 16/17 open T1 markets are Kalshi-cancelled; GG-441 breach corrected to ~11-12%; GG-450 registered (commit `28d49cb`) |
