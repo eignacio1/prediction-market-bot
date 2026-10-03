@@ -1,0 +1,99 @@
+PMBOT — project state
+as of origin/main 31c50a7, generated 2026-10-03T01:22:49Z
+Live Terminal →
+Verdict board & evidence ledger
+as of 2026-10-03T01:22:49Z · source 05_RESEARCH_EXPERIMENTS/EXP*PREREGISTRATION*.md · 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/
+EXP	Question	Pre-reg	Verdict
+EXP025_HYP010_NB	EXP-025 — HYP-010 Phase 2, NB refit pre-registration	9e7760d8 2026-10-02	no results summary found
+EXP030_T4_STRUCTURE	EXP-030 — T4M-PROJ structure enhancer: pre-registration (T-598, GG-320, GG-323)	9e7760d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP030_RESULTS_t4_structure_2026-09-30.md EXP-030 results — T4M-PROJ structure enhancer (T-598, GG-320)
+EXP031_MARKET_EFFICIENCY	EXP-031 — Cross-family market-efficiency ranking: PRE-REGISTRATION	9e7760d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md EXP-031 — Cross-family market-efficiency survey: RESULTS
+EXP032_EXECUTION_COST_SURFACE	EXP-032 — Execution cost surface: is the toll structural, or an artefact of when we looked?	9e7760d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md EXP-032 RESULTS — Execution cost surface (T-603, GG-325)
+EXP033_MULTILEG_COHERENCE	EXP-033 — Multi-leg coherence of Kalshi sports books: PRE-REGISTRATION	9e7760d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP033_RESULTS_multileg_coherence_2026-10-01.md EXP-033 Results — Multi-Leg Coherence (2026-10-01)
+EXP035_BOARD_SURVEY_SPORTS	EXP-035 — Kalshi sports board beyond MLB/NFL: net of cost and fee	9e7760d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_RESULTS_board_survey_sports_2026-10-02.md EXP-035 results — Part 1 FAILED; D2 diagnosis and fee re-score (T-605, 2026-10-02)
+EXP035_GATE2	EXP-035 Gate 2 — pre-registration (T-605, 2026-10-02)	00278d80 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_GATE2_RESULTS_KXMLBTOTAL_2026-10-02.md EXP-035 Gate 2 — KXMLBTOTAL candle-vs-archive agreement — RESULT: PASSED (7/7)
+EXP037_MLB_PREGAME_SHADOW	EXP-037 (T-608) — MLB pre-game shadow: pre-registration of 12 cells (2026-10-02)	c3ba0061 2026-10-03	no results summary found
+EXP037_NFL_PREGAME_SHADOW	EXP-037 (T-608) — NFL pre-game shadow: pre-registration of 12 cells (2026-10-02)	149028c3 2026-10-03	no results summary found
+Cell matrix (registry)
+as of 2026-10-03T01:11:07+00:00 · source src/prediction_market_bot/c5_execution/market_type_registry.py
+Status	Cells
+active	1
+blocked	2
+dark	1
+not_implemented	81
+shadow	7
+total	92
+Governance gaps
+as of 2026-10-02T15:26:03-07:00 · source 03_DECISIONS/GOVERNANCE_GAP_LOG.md
+
+141 OPEN of 160 live gaps. CRITICAL 2 · HIGH 20 · MEDIUM 50 · LOW 42 · UNSPECIFIED 27
+
+Newest OPEN	Severity	Age (d)
+GG-356 — Transient GitHub push failure ('unable to write file ...pack') with no retry guidance	LOW	—
+GG-355 — Nothing checks that a closing session produced Q1-Q7 evidence	MEDIUM	—
+GG-354 — Full test suite exceeds 10 minutes in the foreground and there is no documented fast subset	LOW	—
+GG-353 — Claim rows with open-ended or TBD ID ranges give no collision protection and block later claims	MEDIUM	—
+GG-352 — macOS has no `timeout`; protocol and test snippets that use it exit 127 silently	LOW	—
+GG-351 — MEMORY_BANK Compass OS Health line is 5159 chars, over the 3000-char T-334 threshold	LOW	—
+GG-350 — Shared tree drift: 140 commits behind, 6 conflicting dirty tracked files, untracked file colliding with a tracked upstream path, untracked f	MEDIUM	—
+GG-349 — Stale .git/index.lock held open by a Virtualization XPC host process blocks all shared-tree git writes; recurrence unknown	MEDIUM	—
+Decisions & ADRs
+as of 2026-10-02T17:14:14-07:00 · source 03_DECISIONS/DECISION_LOG/DECISION_LOG.md
+
+ADRs: ACCEPTED 53, UNKNOWN 5, PLACEHOLDER 1, DRAFT 1, PROPOSED 9 · 53 decision-log entries
+
+PROPOSED ADRs
+ADR-0052 — — Executable-Assertion Requirement for Governance-Gap RESOLVED Status + G6 Ledger-Invariant Precondition
+ADR-0063 — — A Kill Switch Is Meaningless Unless Tied to the Kelly Alignment of What It Halts: Five-Tier Hierarchy (Decis
+ADR-0064 — — Repair `park_factor_hits` Venue-Name Matching (Draft, Not Activated)
+ADR-0065 — T4 MLB Walk-off Leverage Shrink — Candidate Model (PROPOSED, NOT ACCEPTED)
+ADR-0066 — NFL EXP-027 Passing/Rushing EPA Splits — Candidate Model (PROPOSED, NOT ACCEPTED)
+ADR-0067 — Append-Only Position Log With Periodic Snapshot (PROPOSED, NOT ACCEPTED)
+ADR-0068 — — Execution Band Horizon Doctrine: Decision-Tree Depth Is Governed by Decision Horizon
+ADR-0069 — — Game-Key Correlation Group: Definition, Membership, Aggregation, and Group-Level Halt/Budget Semantics
+ADR-0070 — — Probit-Platt Distributional Forecaster for Game-Market Ladders: Deviation from ADR-0004
+Latest decisions
+2026-10-02	Wave 47 block 47.1 stopped early by operator; D3/D4/D5 carried over
+2026-10-02	Q6 concerns, Wave 47 block 47.1 (D7)
+2026-10-02	Live Terminal v2 + /project state page deployed (Wave 47 / 47.1 D6)
+2026-10-02	EXP-035 Gate 2 (KXMLBTOTAL) run as frozen: PASSED 7/7 (Wave 47 / 47.1 D2)
+2026-10-02	Operator directive: block sizing + answer to COVERAGE_TARGET_MATRIX open question 1 (T-615, W47.1)
+2026-10-01	EXP-032 execution cost surface (T-603, GG-325)
+2026-09-30	EXP-031 (T-599, GG-324): cross-family market-efficiency survey — zero candidates
+2026-09-30	EXP-029 (T-596): frozen EXP-028 model vs KXMLBHIT market — HARMFUL
+Your desk & wave history
+as of 2026-10-02T17:10:43-07:00 · source 04_EXECUTION/ACTIVE_QUEUE.md · 04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md
+Needs your decision	
+NEW — detached read-only VPS jobs	Long *read-only* work (the history back-capture, EXP-034's sampler) runs unattended on the VPS through `scripts/vps_job.py` instead of in a terminal: no cron, no orders, rate-capped, logged, stoppable
+NEW — T1 MLB postseason flag	Adds `--include-postseason` to the existing T1 MLB cron line so the player-hits run sees playoff games (0 players matched since 9-27). An edit to an existing cron line, so the shadow authorization
+NEW — EXP-034 (non-sports control arm)	Its corrected run needs a ≥2.5-hour live sampler. Run it as a VPS job, or park it while the sports cells fly? Window's recommendation: park — Gate 2 already validated candles, and the sports c
+ADR-0070	Model-class deviation from ADR-0004 (probit-Platt for NFL/MLB; NHL's bivariate Poisson is the same question). Shadow-only today; acceptance needed before any of these models touches a paper stake.
+Who restarted t4-mlb?	Unattributed manual restarts on 10-1 and 10-2 (GG-347/348). If it was you or a session you ran, that closes it.
+MLB winter	After the World Series: stand T1/T4 MLB down, or let them idle all winter?
+Settlement + depth capture schedules · Polymarket KYC · odds feed · provenance allowlist ·	Unchanged.
+Wave history
+Wave 47 — CLOSED 2026-10-02, ALL THREE CUT SHORT BY THE OPERATOR at ~2h ("I'm not letting windows run for hours on end -- if there's a task that'll take that long don't place it"); scope added mid-wave (MLB postseason, Live Terminal, project view) had pushed e
+Wave 46 — CLOSED 2026-10-02. 46.1 (T-605): Part 1 failure diagnosed -- H1 matching rule vs sparse candles SUPPORTED, H2 two first-seen moments SUPPORTED, H3 code defect NOT SUPPORTED, H4 UNDETERMINED (6.5% demonstrably disagree, 29.9% unresolvable); fee re-sco
+Wave 45 — CLOSED 2026-10-02 (45.1 reached a verdict -- its correctness gate FAILED; 45.2 and 45.3 PARTIAL). 45.1 EXP-035 / T-604: Part 1 gate pre-registered (e28166a), run unrescued and FAILED (0972862: G1, G6 pass; G2, G3, G4, G5, G7 fail) -- candle numbers V
+Wave 44 — CLOSED 2026-10-01 (all three landed at origin/main d8d5850: T-603 / EXP-033 / T-602). EXP-032: no family's E crosses zero under any evidenced policy; EXP-033: 0 of 24 multi-leg cells survive; settlement + depth writers built and proven, cron lines DR
+Wave 43 — CLOSED 2026-10-01 (all three landed: T-599 / T-600 / T-601). EXP-031 ZERO CANDIDATES; terminal landed byte-faithful, restart correctly skipped; NFL loss premise disproved -- nothing unrecoverable.
+Wave 42 — CLOSED 2026-09-30 (all three landed: T-596 / T-598 / T-597). EXP-029 HARMFUL vs market; EXP-030 no detectable difference.
+Wave 41 — CLOSED 2026-09-30 (all three landed: T-595 / T-594 / T-593)
+Wave 40 — CLOSED 2026-09-30 (40.1 T-592 and 40.2 T-591 landed on origin/main; 40.3 complete but its branch tip bfd4c4d was NOT merged at archive time)
+Wave 39 — CLOSED 2026-09-30 (all three landed: T-589 / T-588 / T-590)
+Wave 38 — CLOSED 2026-09-29 (all three landed; merged to origin/main as T-587 / T-586 / T-584)
+Repository
+as of 2026-10-03T01:21:59+00:00 · source git rev-parse origin/main · git branch -r --no-merged origin/main
+
+origin/main 31c50a7a955c300b0e1e814e800470a108aee8d2 — Land W48.3 (T-621) dashboard fixes + browser-check scripts from 59f7f78 (code, tests, before-shots only; nav/handoff files left on branch)
+Unmerged remote branches: 56
+
+Data assets
+as of 2026-10-03T01:22:49Z · source exp_output/ (filesystem stat; read-only)
+Store	Size	Rows	Newest record
+MLB feature matrix	awaiting path not present in this checkout
+Price archive (shared)	awaiting path not present in this checkout
+Board survey G2 raw (KXMLBTOTAL)	awaiting path not present in this checkout
+EXP-032 cost surface	awaiting path not present in this checkout
+EXP-033 coherence	awaiting path not present in this checkout
+EXP-034 non-sports control	awaiting path not present in this checkout
+Validated Kalshi history	awaiting path not present in this checkout

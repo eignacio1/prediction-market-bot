@@ -309,6 +309,12 @@ async function pull(){
     if(!S.lastOk){ S.demo=false; S.notlive=true;
       banner('err','NOT LIVE — no data from /api/data ('+err.message+'). Panels are blank. Open the tunnel (Open Dashboard.command); add ?demo to preview layout with seed data.');
       apply(EMPTY);
+    } else if(Date.now()-S.lastOk > 2*REFRESH_S*1000){
+      /* Source gone for >2 refresh cycles: last-good numbers are no longer "read from a live
+         source". Blank every panel, exactly as at first load, instead of freezing on old figures. */
+      S.notlive=true; apply(EMPTY);
+      banner('err','NOT LIVE — /api/data unreachable ('+err.message+'). Panels blanked; last good data was '+Math.round((Date.now()-S.lastOk)/1000)+'s ago. Check the SSH tunnel / service.');
+      led('down','NOT LIVE');
     } else {
       banner('err','Cannot fetch /api/data — '+err.message+'. Check the SSH tunnel is open. Retrying in '+REFRESH_S+'s…');
       led('down','NO DATA');
@@ -349,7 +355,8 @@ const MODULES=[
 function modbar(D){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   const errs=D.events.filter(e=>e.severity==='ERROR'||e.severity==='CRITICAL').length;
-  const badge={
+  const NL=S.notlive;   /* NOT LIVE: assert nothing — no counts, no 'clean'/'ok' */
+  const badge=NL?{OVERVIEW:'—',MLB:'—',NFL:'—',EVIDENCE:'—',FEEDS:'—',PIPELINE:'awaiting',COVERAGE:'awaiting',SHADOW:'awaiting',POSTSEASON:'',VERDICTS:''}:{
     OVERVIEW:`${D.open.length} open`,
     MLB:`${D.open.filter(p=>p._sport==='MLB').length} open`,
     NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,

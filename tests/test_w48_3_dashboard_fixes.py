@@ -27,3 +27,27 @@ def test_project_page_strips_markdown_emphasis():
                        "needs_decision": [{"item": "Item", "plain": "Residual risks **L1** are yours."}]}}}
     html = gps.render_html(state)
     assert "**" not in html and "Residual risks L1 are yours." in html
+
+
+def test_stale_data_blanks_panels_not_freezes():
+    """49.2: after >2 refresh cycles without data the page must go NOT LIVE (blank), not show old numbers."""
+    h = wd._HTML
+    assert "Date.now()-S.lastOk > 2*REFRESH_S*1000" in h
+    assert "S.notlive=true; apply(EMPTY);" in h and "led('down','NOT LIVE')" in h
+
+
+def test_favicon_is_204_not_404():
+    import threading, urllib.request
+    from http.server import HTTPServer
+    srv = HTTPServer(("127.0.0.1", 0), wd.DashboardHandler)
+    t = threading.Thread(target=srv.serve_forever, daemon=True); t.start()
+    try:
+        r = urllib.request.urlopen(f"http://127.0.0.1:{srv.server_port}/favicon.ico")
+        assert r.status == 204
+    finally:
+        srv.shutdown()
+
+
+def test_not_live_tab_badges_assert_nothing():
+    """49.2: in NOT LIVE the tab strip must not claim 'clean'/'ok'/'0 open'."""
+    assert "const badge=NL?{OVERVIEW:'—'" in wd._HTML and "EVIDENCE:'—',FEEDS:'—'" in wd._HTML

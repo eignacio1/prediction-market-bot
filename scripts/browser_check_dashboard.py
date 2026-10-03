@@ -5,7 +5,7 @@ Loads / and /project, records console errors, page errors, failed/4xx-5xx reques
 time to first data render, full-page screenshot, and a text dump. Writes report.json.
 Requires `pip install playwright && playwright install chromium` (not a repo dependency).
 """
-import argparse, json, pathlib, time
+import argparse, json, os, pathlib, time
 from playwright.sync_api import sync_playwright
 
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     out = pathlib.Path(a.out); out.mkdir(parents=True, exist_ok=True)
     res = []
     with sync_playwright() as p:
-        b = p.chromium.launch()
+        b = p.chromium.launch(executable_path=os.environ.get("PW_CHROMIUM") or None)
         for path in ("/", "/project"):
             ctx = b.new_context(viewport={"width": 1600, "height": 1000})
             res.append(check(ctx.new_page(), a.base, path, out, a.tag))

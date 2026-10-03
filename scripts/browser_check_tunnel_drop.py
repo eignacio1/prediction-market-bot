@@ -3,7 +3,7 @@ import os, signal, sys, time
 from playwright.sync_api import sync_playwright
 port, pid = sys.argv[1], int(sys.argv[2])
 with sync_playwright() as p:
-    b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1600, "height": 1000})
+    b = p.chromium.launch(executable_path=os.environ.get("PW_CHROMIUM") or None); pg = b.new_page(viewport={"width": 1600, "height": 1000})
     pg.goto(f"http://localhost:{port}/", wait_until="domcontentloaded")
     pg.wait_for_function("document.getElementById('sha').textContent.trim()!=='—'", timeout=60000)
     pg.wait_for_timeout(1500)
@@ -16,5 +16,5 @@ with sync_playwright() as p:
     for _ in range(3):
         pg.wait_for_timeout(30000)
         s = snap(); print(f"+{int(time.time()-t)}s after kill:", s["banner"], "||", s["head"])
-    pg.screenshot(path="exp_output/w48_3_screens/index.tunnel_dropped.png", full_page=False)
+    pg.screenshot(path=(sys.argv[3] if len(sys.argv)>3 else "exp_output/w48_3_screens")+"/index.tunnel_dropped.png", full_page=False)
     b.close()
