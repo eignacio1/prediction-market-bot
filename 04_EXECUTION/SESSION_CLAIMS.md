@@ -723,3 +723,4 @@
 | 2026-10-03T00:10:07Z | T-631 | STANDARD: Wave 48.1 exp037-land-deploy (continues EXP-037 lineage) — whole arc as ONE deliverable: land NFL + MLB postseason shadow on main, deploy+arm shadow crons on VPS, registry flips, results summary; shadow only, no orders/sizing/GG/DECISION_LOG writes |
 | 2026-10-03T00:10:32Z | T-632..T-636, GG-357..GG-398, ADR-0070 register row | W48.2 vps-jobs-and-record: vps_job.py detached read-only runner + land queue/archive + register Wave 47 gaps (STANDARD; single deliverable = vps_job.py + record landing) |
 | 2026-10-03T00:14:34Z | TBD | --help |
+| 2026-10-03T00:14:36Z | T-632 | CLOSED — PARTIAL (operator cut): queue+archive landed (4bd008b), vps_job.py landed (b11bf62), directives logged; shared-tree ff blocked, D3 unauthorized, D4 registrations carried to next window; see SESSION_HANDOFF_20261003_W48_2.md |
