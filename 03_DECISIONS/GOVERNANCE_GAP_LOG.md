@@ -4666,3 +4666,37 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered only. Operator decision on booking (void / mark / exclude from G6); ADR-gated ledger change; measure cancellation rate across KXMLBHIT before generalizing. |
 
 </details>
+
+### GG-451 — close_session_claim.sh pushes the current HEAD to main (same defect class as GG-419)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-451 |
+| Category | Process control |
+| What was found | `scripts/close_session_claim.sh` commits the closure row and runs `git push origin HEAD:main` (rebase-retry), exactly as `claim_session.sh` did before the GG-419 fix (PR #157). Run from a session branch carrying unmerged commits, the closure row lands the whole branch on main, and because deploy.yml restarts t4-mlb on any code push (GG-432), that includes a t4-mlb restart. Avoided by hand at 50.1 session-end by writing the row from a clean origin/main worktree. |
+| Source | 50.1 session-end (2026-10-03T03:15Z), reading scripts/close_session_claim.sh; recorded in 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0250.md |
+| Disposition | Registered by Wave 52 CC (T-659), registration only. Fix shape: same guard as GG-419 (refuse while `git rev-list origin/main..HEAD` is non-empty), or write the row from a temporary worktree at origin/main. Note: a guard alone means the row cannot be written from a branch with unmerged work, which is the case this script exists for, so the worktree approach is the better fit. |
+
+</details>
+
+### GG-452 — DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-452 |
+| Category | Reproducibility |
+| What was found | `06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-base.txt` (dated 2026-05-22/23) pins scikit-learn==1.4.2 and scipy==1.13.0 while pyproject.toml requires scikit-learn>=1.8.0 and scipy<1.13. tests.yml and deploy.yml's approval gate install requirements-dev.txt then `pip install -e .`, so the effective CI environment is whatever resolves on top of a stale lock; the VPS venv's actual versions are not recorded in the repo. |
+| Source | 50.1 GG-427 work (2026-10-03), recorded in SESSION_HANDOFF_20261003_0250.md |
+| Disposition | Registered by Wave 52 CC (T-659), registration only. Next step: `pip freeze` on the VPS venv (terminal), then regenerate the locks from it. Model-affecting versions change only by ADR. |
+
+</details>
