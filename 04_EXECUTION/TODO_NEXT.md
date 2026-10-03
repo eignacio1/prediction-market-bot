@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-02T23:45:00Z (T-615 — Wave 47.1 partial: Live Terminal v2 + /project deployed, Gate 2 passed 7/7, D3/D4/D5 carried over, stopped early by operator.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2345.md` for full session detail.
+**Last reviewed:** 2026-10-03T00:20:00Z (T-621 — W48.3 dashboards: real-browser check, 2 fixes (NHL shadow glob, /project markdown) committed; deploy + after-check pending.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0020.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

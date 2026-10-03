@@ -306,6 +306,11 @@ a{color:var(--acc)}code{font-size:12px}.aw{color:var(--mut);font-style:italic}.b
 .num{font-variant-numeric:tabular-nums}"""
 
 
+def _md(x: Any) -> str:
+    """Strip markdown emphasis markers from queue prose before it is shown as plain text (T-621)."""
+    return str(x).replace("**", "")
+
+
 def _e(x: Any) -> str:
     return (str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;"))
 
@@ -368,9 +373,9 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
 
     qu = S.get("queue", {})
     body = aw(qu) or ("<table><tr><th>Needs your decision</th><th></th></tr>" + "".join(
-        f"<tr><td>{_e(n['item'])}</td><td>{_e(n['plain'])}</td></tr>" for n in qu.get("needs_decision", []))
+        f"<tr><td>{_e(_md(n['item']))}</td><td>{_e(_md(n['plain']))}</td></tr>" for n in qu.get("needs_decision", []))
         + "</table><table><tr><th>Wave history</th></tr>" + "".join(
-            f"<tr><td>{_e(w['line'])}</td></tr>" for w in qu.get("waves", [])) + "</table>")
+            f"<tr><td>{_e(_md(w['line']))}</td></tr>" for w in qu.get("waves", [])) + "</table>")
     parts.append(f"<section id='queue'>{head('Your desk & wave history', qu)}{body}</section>")
 
     gt = S.get("git", {})
