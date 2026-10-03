@@ -501,13 +501,14 @@ function railSpec(D,d){
   // OVERVIEW / EVIDENCE / FEEDS
   const cum=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.total_realized_pnl)||0),0);
   const daily=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.daily_net_pnl)||0),0);
-  const dd=(D.P.initial_bankroll_usd&&D.P.bankroll_usd!=null)?(D.P.initial_bankroll_usd-D.P.bankroll_usd)/D.P.initial_bankroll_usd:null;
+  const dd=(D.P.initial_bankroll_usd&&D.P.total_realized_pnl!=null)?Math.max(0,-D.P.total_realized_pnl)/D.P.initial_bankroll_usd:null;
+  const frozenT1=D.P.last_updated&&(Date.now()-new Date(D.P.last_updated))>72*3600*1000?' FROZEN '+String(D.P.last_updated).slice(0,10):'';
   const res=D.closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
   const w=res.filter(p=>p.outcome==='WIN').length;
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
     ['CUM P&L',usd(cum),cum,'sign'],
-    ['DRAWDOWN',dd==null?'—':(dd*100).toFixed(2)+'%',dd,'inv'],
+    ['DRAWDOWN (REALIZED)',dd==null?'—':(dd*100).toFixed(2)+'%'+frozenT1,dd,'inv'],
     ['DAILY P&L',usd(daily),daily,'sign'],
     ['OPEN',String(D.open.length),D.open.length,''],
     ['EXPOSURE',usd(sum(D.open,p=>p.size_usd)),sum(D.open,p=>p.size_usd),''],
