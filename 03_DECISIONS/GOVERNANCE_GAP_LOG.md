@@ -4354,7 +4354,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-419 — claim_session.sh pushes the current HEAD to main, landing unreviewed commits
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -4490,7 +4490,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-427 — pyarrow and nba_api are imported by src/tests but not declared in pyproject dependencies
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4507,7 +4507,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-428 — Live-network tests run in the default suite and fail without egress
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 <details>
 <summary>Full record ▸</summary>

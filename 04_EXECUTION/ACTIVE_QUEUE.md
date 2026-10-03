@@ -1,19 +1,20 @@
 # Active queue — the only prompt file to read
 
 > **RULE: this file contains ONLY blocks that are currently firing.** Closed prompts move verbatim
-> to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` BEFORE the queue rotates. Wave 47 is archived there.
+> to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` BEFORE the queue rotates. Wave 48 is archived there.
 
-**Verified against:** `origin/main = 48df4c4` (2026-10-02 17:01 PT). *This window cannot `git fetch` or push.*
+**Verified against:** `origin/main = 7e808933` (2026-10-03 02:25 UTC, cloud block 50.1). *Facts below marked "not re-verified" could not be checked from a cloud session (no VPS).*
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | **GG-356** · **T-615** (claimed through T-620) · **ADR-0070** (on a branch, PROPOSED) · **EXP-037** |
+| Highest GG / T / ADR / EXP | **GG-429** · **T-636** · **ADR-0070** (on main, PROPOSED) · **EXP-037** |
 | Capital | **$0.** `kelly_fraction = 0.0` on every operating band. Demo venue only. SHADOW = evaluate and log. |
 | Candles | **Validated** for archived-MLB market structure: EXP-035 Gate 2 PASSED 7/7 on KXMLBTOTAL (G7 by a floating-point margin). Part 1 stays FAILED. |
-| NHL | **Flying.** Code, frozen model and cron on main/VPS; first T3 rows live. Pre-registration on a branch, not main. |
-| NFL + MLB postseason | **Built, not flying.** Branch `session/exp037-nfl-land` green (3592 passed), not landed; nothing on the VPS; **NFL Week 5 kicks off Sunday 10-4.** |
-| Dashboards | Live Terminal v2 + `/project` deployed — verified only in a stub DOM, never a real browser. |
-| VPS | at `1e097e0`; `t4-mlb` keeps older code in memory. |
+| NHL | **Flying.** Code, frozen model and cron on main/VPS. Pre-registration now **on main** (0902d326, merged unchanged by 49.3). |
+| NFL + MLB postseason | **Code on main (49.1), not flying.** Shadow crons NOT armed: `scripts/arm_shadow_crons.sh` written, needs a LOCAL session (refuses 14 service-reachable files until reviewed with `--allow`). **NFL Week 5 kicks off Sunday 10-4.** |
+| Dashboards | NOT LIVE fix + favicon 204 on main (49.2), proven in a real browser against fixtures only. **Not deployed.** |
+| VPS | last recorded at `1e097e0`; `t4-mlb` keeps older code in memory. Not re-verified. |
+| Test suite | Sandbox `pytest -q`: 3620 passed, 43 skipped (50.1). Live-network tests are opt-in via `PMBOT_NETWORK_TESTS=1` (GG-428); CI sets it. |
 
 ---
 
@@ -38,46 +39,25 @@ the slate as long as the session lasts."
 
 ---
 
-## ⬛ WHAT WAVE 47 FOUND
+## ⬛ WHAT 49.x FOUND
 
-- **Candles hold, scoped.** Gate 2 reproduced the archive on KXMLBTOTAL on all seven checks (G2 0.944, G3 0.999, B and H
-  within 0.0002 / 0.0000). The only hard edge: G7's earliest bucket passed by floating-point margin on a 0.005 tick grid.
-  Licensed: candle reconstruction for the same market structure. Not licensed: every other series by assumption.
-- **NHL is the first new arm in the air.** Bivariate-Poisson goals model, frozen and hashed; held-out 2025-26: moneyline
-  beats climatology by only ~0.002 Brier, an LR benchmark is better, totals under-predicted, away puck line and totals
-  slightly worse than climatology — reported, not hidden. Cron installed; 15 T3 rows on night one; T1 abstains on some
-  markets for reasons not yet investigated.
-- **NFL and MLB are one push from flying.** 12 NFL cells + 12 MLB game cells built, pre-registered, frozen. Four NFL T1 cells
-  flipped to SHADOW — on the branch only. **No stuck postseason positions** (the resolver fix was not needed).
-- **The evidence clock is long, and the pre-registrations say so.** NFL: first look at 60 settled games per cell (~4 weeks),
-  MDE ≈ 0.025 against a plausible true effect ≤ 0.02 — the modal first-look result is "keep accruing". NHL: judged n = 2,500
-  games per cell (~2 seasons). MLB postseason rows are banked for 2027. **Breadth now; verdicts later.**
-- **Dashboards deployed but unproven in a real browser** (47.1's own Q6). The operator relies on them; that gets fixed first in 48.3.
+- **Everything Wave 48 stranded is on main; nothing is in the air.** NFL + MLB shadow code, the dashboard fixes and the
+  NHL pre-registration landed from cloud. Arming and deploying need the VPS — a local session.
+- **Process holes, closed by 50.1:** `claim_session.sh` landed 7 untested NFL commits on main by pushing HEAD (GG-419 —
+  now refuses unless HEAD has nothing beyond origin/main); pyarrow / nba_api undeclared (GG-427 — declared); live-network
+  tests made the sandbox suite red (GG-428 — `network` marker, opt-in); `scripts/lib/__pycache__/` un-ignored (fixed).
+- **GG-400..GG-429 registered with severity from the source, not investigated** — triage owed.
 
 ---
 
-## ⬛ FIRE NOW — Wave 48, three blocks, concurrent
+## ⬛ FIRE NOW
 
 | Paste | Block | Budget | One-line purpose |
 |---|---|---|---|
-| **1st — now** | **48.1** | **~30 min** | **Make NFL and MLB fly before Sunday.** Land 47.2's work in one push, deploy, install the NFL + MLB shadow crons, dry-run them. |
-| 2nd | **48.2** | **~30 min** | **Get long jobs off the terminals; settle the record.** A small detached-job runner for the VPS, the history back-capture launched on it (if authorized), queue + archive landed, Wave 47 gaps registered. |
-| 3rd | **48.3** | **~30 min** | **The operator's eyes: both dashboards proven in a real browser, defects fixed, redeployed.** |
+| **1st — now, LOCAL** | **Arm + deploy** | **~30 min** | `bash scripts/arm_shadow_crons.sh` (review each refused file, `--allow <path>` per file; verify first-firing times); deploy the dashboard NOT LIVE fix, restart `pmbot-web-dashboard` only, re-run `browser_check_dashboard.py` + `browser_check_tunnel_drop.py` against the RUNNING process, verify `/api/data` `process.sha`. |
+| 2nd | **GG-400..429 triage** | ~30 min | Read each, confirm or correct severity, close duplicates. No fixes in-block (Hard Rule 11). |
 
-**48.1 first and now:** NFL T1 windows for Sunday games are open today and Saturday. Every hour it waits is rows that will never exist.
-
-Surfaces are disjoint:
-- **48.1 owns** `pregame_shadow/` (and its contract), NFL and MLB shadow modules and models, `market_type_registry.py`
-  (sole owner, including NHL flips), `deploy/cron_exp037_pregame_shadow.conf`, the VPS pull, `scripts/generate_mlb_features.py`
-  (already-built opt-in flag only), one results summary.
-- **48.2 owns** `scripts/vps_job.py` + its tests (new), the history-store builder from 47.1 D4 (`scripts/kalshi_history_build.py`,
-  `analytics/kalshi_history.py`), the shared tree's sync, the `04_EXECUTION/` record files, **`GOVERNANCE_GAP_LOG.md` /
-  `DECISION_LOG.md`**, the ADR register row for ADR-0070, one results summary.
-- **48.3 owns** `scripts/web_dashboard.py`, `Live Terminal.html`, `scripts/generate_project_state.py`, `Visual Dashboard.html`,
-  `pmbot-web-dashboard` deploy/restart (standing authorization), one results summary.
-- **The VPS pull:** 48.1 does it first. 48.3 pulls only after 48.1's pull is on record, by the same additive-check procedure.
-
-**Exactly three fences. A fourth means something is wrong -- stop.**
+**Arm + deploy first:** NFL Week 5 T1 windows are open now; every hour unarmed is rows that will never exist.
 
 ---
 
@@ -103,240 +83,10 @@ Surfaces are disjoint:
 
 | Wave | Status | Outcome |
 |---|---|---|
-| 10-46 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
-| **47** | **CLOSED — cut short at ~2h by the operator** | Gate 2 PASSED 7/7. NHL flying (cron live). NFL + MLB built, pre-registered, not landed. Dashboards v2 + `/project` deployed (unproven in a browser). EXP-034 corrected run: no verdict. History store partial. GG-340..356 registered. |
-| **48** | **FIRING** | NFL + MLB flying before Sunday. Long jobs moved to the VPS. Dashboards proven in a browser. |
-
----
-
-## Why this wave is shaped this way
-
-**Three things were blocking, and none of them was hard — each was stranded.** NFL and MLB are green on a branch.
-The history store is half-built in one worktree. The dashboards are deployed but nobody has looked at them in a
-browser. Wave 48 lands each of those in a session-sized block, and moves the one class of work that blew the clock —
-waiting — off the terminals for good.
-
-**What is deliberately NOT here:** the full board survey (it needs the history store complete — a multi-hour fetch
-that now belongs on the VPS), EXP-034's corrected run (a ≥2.5-hour live sampler — same), **NHL hardening** (team codes,
-T1 abstentions, the contract switch — Wave 49), NBA (opens 10-20; Wave 49) and in-play arms. None was dropped; each
-waits for a slot that fits the clock.
-
----
-
-## WAVE 48 BLOCKS
-
----
-
-# 48.1 -- MAKE NFL AND MLB FLY BEFORE SUNDAY - BUDGET ~30 MIN (HARD STOP 45)
-
-```
-TIME BUDGET: about 30 minutes. Hard stop at 45, at a pushed boundary, with a handoff.
-One full suite run (~11 min) is in the budget; run it ONCE, on the combined NFL + MLB branch.
-Do NOT hand-run slates or wait for games. The crons you install do the waiting.
-
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
-RESUME: scripts/new_session_worktree.sh "exp037-land-deploy", then read
-  11_MEMORY_HANDOFF/SESSION_HANDOFF_20261002_2357.md on branch
-  origin/session/20261002T222218Z-fly-nfl-pregame. It is your plan; this block is its execution.
-Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322). EXP-037 and
-T-608 are the work you continue. Declare the block's whole arc as the deliverable at claim time.
-
-YOU OWN, THIS WAVE, EXCLUSIVELY:
-  src/prediction_market_bot/pregame_shadow/ (including contract.py), NFL and MLB shadow modules and
-  models from EXP-037, c5_execution/market_type_registry.py (sole owner, NHL flips included),
-  deploy/cron_exp037_pregame_shadow.conf, scripts/generate_mlb_features.py (only the opt-in flag
-  already built on the branch), the VPS pull, one results summary.
-YOU DO NOT WRITE: GOVERNANCE_GAP_LOG.md or DECISION_LOG.md (48.2), nhl_* or dashboard files (48.3).
-
-THE STATE YOU START FROM -- verify, do not assume (handoff 2357):
-  - session/exp037-nfl-land @ fc4180d: origin/main + NFL work; full suite 3592 passed, 28 skipped;
-    two existing files touched, both additive. NOT on main.
-  - session/20261002T222218Z-fly-nfl-pregame @ 574b85e: adds D0 harvest report, ADR-0070 (PROPOSED),
-    MLB model/runner/pre-registration, --include-postseason. No full suite run on it.
-  - VPS at 1e097e0. No EXP-037 cron installed. 4 NFL T1 cells flipped to SHADOW on the branch only.
-  - No stuck postseason positions (D6(a)); no resolver change needed.
-  - NHL (47.3) runs its own runner and a local Protocol fallback because contract.py is not on main.
-
-DELIVERABLE 0 -- BASE. Paste origin/main SHA, the two branch tips, VPS HEAD.
-
-DELIVERABLE 1 -- LAND NFL AND MLB IN ONE PUSH. The operator's standing framing makes landing green
-  shadow code plumbing; no further go-ahead is needed. Rebase the 574b85e work (NFL + MLB + ADR-0070
-  doc) onto current origin/main as one branch; relax the MLB NOT_IMPLEMENTED pin in
-  tests/test_market_type_registry.py (~line 102) only as far as the cells you flip; run the full
-  suite ONCE; push. If MLB is red and NFL green, land NFL alone and report MLB -- do not debug past
-  your budget. Paste SHA and the suite summary line. ADR-0070 lands PROPOSED.
-
-DELIVERABLE 2 -- DEPLOY AND ARM NFL. On the VPS: paste git log --oneline HEAD..origin/main; list
-  every changed file reachable from t4-mlb's or any cron job's import graph; pull only if all are
-  additive and covered by the green suite. No t4-mlb restart, no pip. Run the --refresh seed. Dry-run
-  every cron line by hand. Install the NFL block from deploy/cron_exp037_pregame_shadow.conf under
-  the 2026-10-02 shadow-evaluation authorization. Paste live crontab -l, then proof of the first
-  SCHEDULED firing writing rows (do not wait past your budget for it -- if the next firing is beyond
-  your budget, record when it is due and let 48.3 or Wave 49 confirm it).
-  NFL T1 cells already shown valid: flip on main. T2/T3: flip only when a scheduled firing has
-  written a valid row for them.
-
-DELIVERABLE 3 -- ARM MLB POSTSEASON (if D1 landed it). Install the MLB game-market shadow cron
-  lines in the same install as NFL (same authorization, same dry-run rule).
-  ADDING --include-postseason TO THE EXISTING T1 MLB CRON LINE IS AN EDIT TO AN EXISTING CRON LINE.
-  The shadow authorization does not cover it. Do it only if "Needs your decision" in this file holds
-  an authorization line naming it; otherwise leave the line untouched and report T1 still matches 0.
-
-DELIVERABLE 4 -- THE CONTRACT, FOR NHL. contract.py is now on main (D1). Report its SHA in your
-  summary's first lines so 48.3 can switch NHL off its fallback. Flip NHL cells with valid rows to
-  SHADOW per 47.3's results summary (NHL_MONEYLINE_T3, NHL_PUCK_LINE_T3, NHL_GAME_TOTAL_T3 at last
-  report) and any T1/T2 cells the NHL cron has since written valid rows for.
-
-DELIVERABLE 5 -- REPORT. Short results summary: landing SHAs, suite line, VPS pull record, crontab
-  before/after, when each band's first scheduled firing is due, registry flips with SHAs, and GAPS
-  FOUND -- FOR REGISTRATION BY 48.2 (paste 47.2's list from the handoff as-is; do not re-investigate).
-
-DO NOT:
-  - Hand-run slates or wait for games past your budget. Install, dry-run, record when it fires.
-  - Edit the existing T1 MLB cron line without its own authorization line.
-  - Restart t4-mlb or any service. Pull on the VPS without the additive check pasted.
-  - Score any cell. No cell has reached its judged n.
-  - Open a position, write to any pool, submit any order, or touch sizing or kelly_fraction.
-  - Land anything red. Accept ADR-0070.
-  - Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md; edit nhl_* or dashboard files.
-  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
-  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
-```
-
----
-
-# 48.2 -- GET LONG JOBS OFF THE TERMINALS; SETTLE THE RECORD - BUDGET ~30 MIN (HARD STOP 45)
-
-```
-TIME BUDGET: about 30 minutes. Hard stop at 45, at a pushed boundary, with a handoff.
-This block LAUNCHES long jobs; it never waits for one to finish. vps_job.py is small -- keep it small.
-
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
-scripts/new_session_worktree.sh "vps-jobs-and-record"
-Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
-Highest seen at queue-write time: GG-356, T-615 (T-615..T-620 claimed by 47.1), ADR-0070, EXP-037.
-You are the only block this wave that writes GOVERNANCE_GAP_LOG.md and DECISION_LOG.md.
-
-YOU OWN, THIS WAVE, EXCLUSIVELY:
-  scripts/vps_job.py + tests (new); scripts/kalshi_history_build.py and analytics/kalshi_history.py
-  (47.1 D4's builder and reader); the shared main tree's sync; 04_EXECUTION/ACTIVE_QUEUE.md and
-  ACTIVE_QUEUE_ARCHIVE.md (land as written); GOVERNANCE_GAP_LOG.md; DECISION_LOG.md; the ADR
-  register row for ADR-0070; one results summary.
-
-WHY: the operator cut every Wave 47 window at ~2 hours and set a rule -- no task that takes that long
-goes in a window. Wave 47's overruns were waiting, not working: 47.1's Gate 2 fetch took 3,740 s at
-the 3.3 req/s cap, its EXP-034 sampler needs >= 6 rounds x 21 min, and the NFL/NHL history store
-(47.1 D4) is a multi-hour back-capture. Those jobs belong on the VPS, unattended.
-
-DELIVERABLE 0 -- BASE. Paste origin/main SHA; shared tree HEAD and left/right count.
-
-DELIVERABLE 1 -- LAND THE RECORD. The shared tree holds uncommitted Wave 46/47/48 queue and archive
-  edits. From a fresh worktree off origin/main, copy ACTIVE_QUEUE.md and ACTIVE_QUEUE_ARCHIVE.md
-  byte-for-byte from the shared tree, commit path-scoped, push; paste hash-object equality. Then
-  fast-forward the shared tree exactly as 46.3 did (restore only the two files you landed; anything
-  else blocking = stop and report; never stash, reset or clean).
-
-DELIVERABLE 2 -- scripts/vps_job.py: A DETACHED-JOB RUNNER FOR READ-ONLY LONG WORK.
-  launch <name> -- <command...>: runs on the VPS under nohup/setsid with a PID file, a log, a
-    start record (UTC, command, code sha, rate cap), and a completion marker with exit code;
-    refuses to start a second copy of the same name; never runs anything that imports an order,
-    position, sizing or paper-trader path (test it, the way pregame_shadow's safety test does).
-  status <name> / tail <name> / stop <name>.
-  It is a launcher, not a scheduler: it creates no cron entry and needs none.
-  Tests. Land.
-
-DELIVERABLE 3 -- LAUNCH THE LONG JOBS, ONLY IF AUTHORIZED.
-  Check "Needs your decision" for an authorization line naming DETACHED READ-ONLY VPS JOBS.
-  If present, launch with vps_job.py and record each launch (name, PID, expected duration from
-  call-count arithmetic, rate cap) in your summary, then MOVE ON -- do not wait:
-    a) kalshi-history: finish 47.1 D4 on the VPS -- NFL series (moneyline, spread, total, team total)
-       for 2025 and 2026 to date, and NHL (moneyline, puck line, total) for 2025-26 and 2026-27 to
-       date, with settlements; idempotent; at or below 3.3 req/s; resumes from the partial KXNFLGAME
-       work. The store lives on the VPS; the reader learns its path from one config line.
-    b) exp034-d3: the EXP-034 corrected run from amendment fa29318, fresh round 0, as frozen. Only if
-       the operator has NOT parked it (see "Needs your decision").
-  If the line is absent: land vps_job.py, write each launch command into your summary ready to run,
-  and stop there. That is a complete close.
-
-DELIVERABLE 4 -- REGISTER AND LOG.
-  - Register the gaps from: EXP036_NHL_PREGAME_SHADOW_RESULTS_2026-10-02.md (GAPS FOUND, 9), the
-    EXP-037 D0 harvest report and SESSION_HANDOFF_20261002_2357.md's list, and 47.1's DECISION_LOG Q6
-    concerns. Deduplicate against GG-329..356. One line of evidence each -- no investigation.
-    48.1/48.3's lists are Wave 49's to register.
-  - DECISION_LOG: the operator directives of 2026-10-02 17:03 and 17:09 (blocks ~30 minutes, hard stop
-    45; long waiting work off the terminals), verbatim.
-  - ADR-0070 (probit-Platt, PROPOSED) gets its register row once 48.1 lands the file. Check the
-    number is unique across git log --all. 47.3 also deviated from ADR-0004 (bivariate Poisson +
-    Platt) with no ADR: register that as a gap pointing at ADR-0070's decision, do not write a second
-    ADR without the operator.
-
-DELIVERABLE 5 -- REPORT. Results summary: landed SHAs, the runner, each launch (or the ready-to-run
-  commands), registrations with GG numbers, and GAPS FOUND.
-
-DO NOT:
-  - Wait for a launched job to finish, or run a long job in the foreground of this window.
-  - Launch any job without the authorization line. A launcher is not a scheduler; add no cron entry.
-  - Run anything through vps_job.py that can reach an order, position, sizing or paper-trader path.
-  - Relabel EXP-034's original FAIL or EXP-035 Part 1.
-  - Stash, reset --hard, clean, or checkout any shared-tree path you did not land.
-  - Restart any service. Touch any pool, position, sizing or kelly_fraction.
-  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
-  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
-```
-
----
-
-# 48.3 -- THE OPERATOR'S EYES: DASHBOARDS PROVEN IN A REAL BROWSER - BUDGET ~30 MIN (HARD STOP 45)
-
-```
-TIME BUDGET: about 30 minutes. Hard stop at 45, at a pushed boundary, with a handoff.
-One job: make both dashboards correct in a real browser. Targeted tests for scripts/; the full suite
-only if you touch src/.
-
-Run the CLAUDE.md session-start protocol in full, INCLUDING Step 4. Paste outputs.
-scripts/new_session_worktree.sh "eyes-and-nhl"
-Claim your own IDs at run time (GG-236); re-verify after ANY release or retry (GG-322).
-
-YOU OWN, THIS WAVE, EXCLUSIVELY:
-  scripts/web_dashboard.py, "Live Terminal.html" (byte-identical to its embedded _HTML),
-  scripts/generate_project_state.py, "Visual Dashboard.html", the pmbot-web-dashboard deploy/restart
-  under the standing authorization, one results summary.
-YOU DO NOT WRITE: market_type_registry.py, pregame_shadow/ (48.1), nhl_* (Wave 49),
-  GOVERNANCE_GAP_LOG.md or DECISION_LOG.md (48.2).
-
-THE STATE YOU START FROM -- verify, do not assume:
-  - Live Terminal v2 and /project were deployed by 47.1 (4273c7f, 1e097e0) and verified ONLY in a
-    JavaScriptCore stub-DOM harness, never a real browser (47.1's own Q6 concern 1).
-  - /project rendered ~13.7 KB on the VPS because gitignored exp_output stores are absent there;
-    "awaiting" panels must not read as healthy (GG-341 class).
-DELIVERABLE 0 -- BASE. Paste origin/main SHA and the VPS's running process.sha for the dashboard.
-
-DELIVERABLE 1 -- PROVE THE DASHBOARDS IN A REAL BROWSER.
-  Through the SSH tunnel (the same one "Open Dashboard.command" opens), load / and /project in
-  headless Chromium (Playwright). For each: full-page screenshot, every JS console error, every
-  failed request, time to first data render. Check: no number appears without live data (kill the
-  tunnel mid-test and confirm the page goes NOT LIVE rather than freezing on old numbers); freshness
-  ages tick; the COVERAGE grid matches the registry; the SHADOW module shows NHL rows that exist on
-  the VPS; PIPELINE tiles reflect real C1-C8 state. Fix every defect found, with tests; land; deploy
-  and restart pmbot-web-dashboard ONLY by the standing procedure, pulling only after 48.1's VPS pull
-  is on record; re-run the browser check against the RUNNING process. Commit the screenshots (or
-  their sha256 if large) and put them in your summary so the operator can see what you saw.
-  Copy the landed "Live Terminal.html" into the shared tree's project root; regenerate the static
-  "Visual Dashboard.html" there from the generator.
-
-DELIVERABLE 2 -- REPORT. Short results summary: screenshots and console results before and after,
-  every defect and fix, the running-process verification, and GAPS FOUND (Wave 49 registers them).
-  Anything you could not fix inside 45 minutes is a gap with a one-line description, not overtime.
-
-DO NOT:
-  - Show any number that is not read from a live source or generated from a tracked file.
-  - Restart any service other than pmbot-web-dashboard, or restart it outside the standing procedure.
-  - Pull on the VPS before 48.1's pull is on record.
-  - Score any cell. Open a position, write to any pool, or touch sizing or kelly_fraction.
-  - Edit market_type_registry.py, pregame_shadow/ or nhl_*. Write to GOVERNANCE_GAP_LOG.md or DECISION_LOG.md.
-  - Submit any order against the production Kalshi account or with real funds. Demo only, always.
-  - Bypass, disable or work around a permission control. Record the exact refusal and hand back.
-```
+| 10-47 | CLOSED | see `ACTIVE_QUEUE_ARCHIVE.md` |
+| **48** | **CLOSED — all three cut short** | Nothing landed from 48.1; 48.2 landed `vps_job.py` + record; 48.3's fixes on a branch. |
+| **49.1-49.3** | **CLOSED (cloud)** | NFL + MLB shadow, dashboard fixes, NHL pre-registration landed on main; GG-400..429 registered; nothing deployed. |
+| **50.1** | **CLOSED on its branch (cloud)** | GG-419, GG-427, GG-428 and the `.gitignore` hole fixed; queue rotated. |
 
 ---
 
@@ -397,6 +147,15 @@ resolved ledger unwritten since 09-28 (47.2's findings — 48.2 registers them).
 | **Who restarted t4-mlb?** | Unattributed manual restarts on 10-1 and 10-2 (GG-347/348). If it was you or a session you ran, that closes it. | An unexplained actor on the one live service. |
 | **MLB winter** | After the World Series: stand T1/T4 MLB down, or let them idle all winter? | Daily false alarms in Step 4 until spring. |
 | **Settlement + depth capture schedules · Polymarket KYC · odds feed · provenance allowlist · APR-0035 · ADR-0068 · ADR-0067 · 39.3 triage · ADR-0063/0064/0065/0066 · APR-0034/0036** | Unchanged. | — |
+
+**Status after 49.x** (one line per item above; no item decided):
+- *Detached read-only VPS jobs* — `scripts/vps_job.py` landed (b11bf62, 48.2); still no authorization line; nothing launched.
+- *T1 MLB postseason flag* — still unauthorized; not applied; T1 still blind to playoff games (not re-verified from cloud).
+- *EXP-034* — neither run nor parked.
+- *ADR-0070* — landed on main as PROPOSED (49.x); not accepted.
+- *Who restarted t4-mlb?* — still unattributed; not investigated (cloud has no VPS access).
+- *MLB winter* — unchanged; World Series not yet over.
+- *Settlement + depth capture schedules … APR-0034/0036* — unchanged.
 
 ---
 
