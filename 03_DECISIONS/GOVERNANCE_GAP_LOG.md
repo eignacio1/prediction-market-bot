@@ -4592,3 +4592,57 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered by 50.2. Changing the restart policy is the operator's decision; deploy.yml not edited. |
 
 </details>
+
+### GG-440 — MLB resolver cannot settle any position: statsapi 406 to the VPS; 17 T1 + 9 T4 positions stuck, Kalshi shows all 17 T1 markets finalized
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-440 |
+| Category | Operational integrity / resolver gap |
+| What was found | `run_resolve_mlb.py` (PIPE-05R, 06:30Z daily) logs `HTTPError: 406` from statsapi.mlb.com for every player-gamelog call (17,064 occurrences in `resolve_mlb_cron.log`) and ends each run `No positions settled yet`; T4 emits `[T4][ALERT] 9 eligible position(s) but 0 resolved (GG-048)`. `paper_portfolio_mlb.json` has had no write since 2026-08-06T00:05Z. All 17 open T1 positions (game_date 2026-07-01..07-26, all tagged `aged_open`/`api_no_result_48h`) are `finalized` on Kalshi via `/trade-api/v2/historical/markets/{ticker}` (16 result=`scalar`, 1 result=`yes`); the live `/markets/{ticker}` endpoint returns 404 for them. Settled-but-unresolved = resolver gap. |
+| Why it matters | The ledger's realized P&L, bankroll, drawdown and G6 evidence are frozen at 2026-08-06 while 17 outcomes are already known to the venue. No position was resolved, closed or edited by W51.1. |
+| Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
+| Disposition | Registered only. Fix is a resolution-source change (Kalshi historical settlement and/or non-blocked MLB source), operator/ADR-gated. Note: 16 of 17 settled as `scalar`, which needs interpretation before any P&L is derived. |
+
+</details>
+
+### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it; worst case would breach 20%
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-441 |
+| Category | Risk-control blind spot |
+| What was found | Kill switch input is `max(0,-total_realized_pnl)/initial` (`run_mlb_paper_trade.py:670-671`), recomputed from the file each run; no kill-switch state is persisted for T1 (only the T4 file flag `logs/t4_mlb_kill_switch.flag`, absent). Current: realized -106.0099 / 1000 = 10.60% (<20%), not tripped, last cron 2026-10-03 prints `Drawdown 10.6%`. But open stake is $160.243 on markets already finalized; if all 17 lost in full, realized loss = 266.25 = 26.6% > 20%. Roughly $94 of the $160 losing would cross the limit. |
+| Why it matters | Under GG-440 the control reads a number that is 58 days stale by construction, and the metric excludes exactly the exposure that has already settled. Not a trip today; a latent one. Mitigant: Kelly is 0.0 (ADR-0048), so no new stake is added. |
+| Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
+| Disposition | Registered only; no limit or definition changed (out of scope). Operator decision: whether settled-unresolved stake should count toward the kill-switch quantity. |
+
+</details>
+
+### GG-442 — Dashboard drawdown tile used (initial - bankroll)/initial, counting open stake; no FROZEN label on stale books
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-442 |
+| Category | Correctness / provenance |
+| What was found | `scripts/web_dashboard.py` C4 tile and the Live Terminal DRAWDOWN rail showed 26.63% = (1000-733.7471)/1000, which equals realized loss 10.60% plus open stake 16.02%. `bankroll_usd` is cash net of open stake (733.7471 = 1000 - 106.0099 - 160.243 exactly). The same file's `last_updated` 2026-08-06T00:05Z is the 58d20h read in GG-431. |
+| Why it matters | Tile compared a different quantity to the 20% limit than the one the kill switch reads, overstating drawdown by the open-stake component. |
+| Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
+| Disposition | FIXED ON BRANCH, NOT MERGED: `session/20261003T201912Z-w51-killswitch-truth` @ `6cbe62f` (tile = realized; open stake separate; FROZEN label after 72h; `Live Terminal.html` mirrored; 178 dashboard tests pass). Merge deploys and restarts t4-mlb (GG-432); hand to 51.3 or next wave. GG-431's stale panel is a separate source; this branch does not touch it. |
+
+</details>
