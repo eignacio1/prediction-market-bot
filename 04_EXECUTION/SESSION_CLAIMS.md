@@ -736,3 +736,4 @@
 | 2026-10-03T20:10:20Z | T-637 | CLOSED — 50.2 cleanup: EXP-037 shadow crons armed, tree synced, PR #157 HELD (live games), GG-430..432 registered (commit `42a7c74`) |
 | 2026-10-03T20:10:32Z | T-637 | CLOSED — merge confirmed, HEAD (6abf1a0) is ancestor of origin/main — 50.2 cleanup: crons armed, tree synced, PR #157 HELD, GG-430..432 |
 | 2026-10-03T20:20:01Z | TBD | W51.1 kill-switch truth (STANDARD): verify T1 MLB drawdown 26.63% vs kill switch; read-only VPS; dashboard fix on branch, no merge |
+| 2026-10-03T20:20:28Z | GG-440..GG-445, T-646..T-650 | 51.2 STANDARD — NHL silent drops: D1 Kalshi team-code diff, TEAM_ALIASES fix + parser tests, abstention counters (closes GG-403, counter half of GG-405); branch push only, no merge |
