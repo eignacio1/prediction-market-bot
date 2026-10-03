@@ -420,7 +420,10 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 # candidate globs (relative to the repo root) are scanned; rows self-describe
 # their cell via sport/market_type/band, so filenames do not matter.
 SHADOW_GLOBS = ("logs/shadow/*.jsonl", "logs/shadow_*.jsonl",
-                "exp_output/PREGAME_SHADOW/**/*.jsonl")
+                "exp_output/PREGAME_SHADOW/**/*.jsonl",
+                # T-621: NHL (EXP-036) and later runners write data/shadow/<sport>/<CELL>.jsonl;
+                # the earlier globs missed them, so the SHADOW module read AWAITING over live rows.
+                "data/shadow/**/*.jsonl")
 SHADOW_TAIL_ROWS = 300
 VERDICT_SOURCES = (
     ("GATE2", "exp_output/BOARD_SURVEY_SPORTS_G2/gate2_result.json"),
