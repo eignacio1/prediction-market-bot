@@ -111,3 +111,28 @@ def test_espn_not_found_is_logged(monkeypatch, capsys):
     monkeypatch.setattr(rm, "_espn_game_ids_for_date", lambda d: [])
     assert rm._espn_fetch_hits("Bobby Witt Jr.", "2026-07-19") is None
     assert "not found in any final ESPN boxscore" in capsys.readouterr().err
+
+
+def _espn_summary(status, athletes=()):
+    return {"header": {"competitions": [{"status": {"type": {"name": status}}}]},
+            "boxscore": {"players": [{"statistics": [{"labels": ["AB", "H"], "athletes": list(athletes)}]}]}}
+
+
+def _espn_fetch(monkeypatch, status, capsys):
+    monkeypatch.setattr(rm, "_espn_game_ids_for_date", lambda d: ["G1"])
+    resp = MagicMock()
+    resp.json.return_value = _espn_summary(status)
+    monkeypatch.setattr(rm.requests, "get", lambda *a, **k: resp)
+    assert rm._espn_fetch_hits("Gunnar Henderson", "2026-07-21") is None
+    return capsys.readouterr().err
+
+
+def test_espn_not_found_log_names_postponed_game(monkeypatch, capsys):
+    """W53.1: a POSTPONED game's empty boxscore must not be logged as plain 'did not play'."""
+    err = _espn_fetch(monkeypatch, rm._ESPN_STATUS_POSTPONED, capsys)
+    assert "POSTPONED" in err and "G1" in err
+
+
+def test_espn_not_found_log_final_game_unchanged(monkeypatch, capsys):
+    err = _espn_fetch(monkeypatch, rm._ESPN_STATUS_FINAL, capsys)
+    assert "did not play, or name mismatch" in err and "POSTPONED" not in err

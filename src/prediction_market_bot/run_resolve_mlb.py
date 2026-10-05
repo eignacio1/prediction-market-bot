@@ -421,6 +421,7 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
     if not norm_target:
         return None
 
+    postponed_ids: list[str] = []
     for game_id in _espn_game_ids_for_date(game_date):
         try:
             resp = requests.get(
@@ -442,6 +443,8 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
         status_name = comps[0].get("status", {}).get("type", {}).get("name", "")
         if status_name not in _ESPN_TERMINAL_STATUSES:
             continue  # not over yet — do not trust this game's boxscore
+        if status_name == _ESPN_STATUS_POSTPONED:
+            postponed_ids.append(game_id)
 
         for team_data in data.get("boxscore", {}).get("players", []):
             for stat_group in team_data.get("statistics", []):
@@ -464,10 +467,15 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
                     except (IndexError, ValueError, TypeError):
                         return None
     # GG-440 (T-656): this path used to return silently, so a player absent from
-    # every final boxscore (did not play, or a name mismatch) left no trace in the
-    # log. Say so -- it is the only signal that tells those two cases apart.
+    # every final boxscore left no trace in the log. W53.1: a POSTPONED game counts
+    # as terminal above, so its empty boxscore lands here too -- name that cause
+    # explicitly (the game is played on a later date, so a date-keyed lookup can
+    # never find it), since "did not play" would be wrong for those.
+    cause = ("did not play, or name mismatch" if not postponed_ids else
+             f"ESPN games {','.join(postponed_ids)} on that date were POSTPONED "
+             f"(rescheduled game is on a different date), or the player did not play, or name mismatch")
     print(f"  [ESPN-FALLBACK] player={player_name} game_date={game_date}: "
-          f"not found in any final ESPN boxscore (did not play, or name mismatch)", file=sys.stderr)
+          f"not found in any final ESPN boxscore ({cause})", file=sys.stderr)
     return None
 
 
