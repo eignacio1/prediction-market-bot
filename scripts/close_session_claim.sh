@@ -34,6 +34,17 @@ cd "$REPO_ROOT"
 
 git fetch --quiet origin main 2>/dev/null || true
 
+# GG-451: we push HEAD:main below, so every local commit not already on origin/main would land
+# on main with the closure row (and a code push to main deploys + restarts t4-mlb, GG-432).
+# Same defect class as GG-419 / claim_session.sh. Refuse unless HEAD carries nothing beyond
+# origin/main — then the only commit the push can add is the closure row itself.
+UNLANDED="$(git rev-list --count origin/main..HEAD)"
+if [ "$UNLANDED" != "0" ]; then
+  echo "❌ Refusing closure push: HEAD has $UNLANDED commit(s) not on origin/main; pushing the closure row would land them on main (GG-451)." >&2
+  echo "   Write the row from a clean checkout of origin/main (e.g. git worktree add ../<slug>-close origin/main), then return to your branch." >&2
+  exit 1
+fi
+
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 HEAD_SHORT="$(git rev-parse --short HEAD)"
 NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
