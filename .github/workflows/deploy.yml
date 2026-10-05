@@ -94,6 +94,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # GG-432: checkout + policy step decide whether THIS push may restart t4-mlb.
+      # The T-327 approval-path gate above is unchanged.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Decide t4-mlb restart (GG-432)
+        id: policy
+        run: |
+          python3 scripts/deploy_restart_policy.py \
+              --before "${{ github.event.before }}" --after "${{ github.sha }}"
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -184,17 +194,28 @@ jobs:
         # it says nothing about whether the long-running systemd services
         # reading that code actually picked it up. This left t4-mlb running
         # a stale paper_trader.py for ~2 days after the T-320/T-321 merge,
-        # caught only by manual inspection. Restart unconditionally on every
-        # deploy so staleness can no longer survive silently.
+        # caught only by manual inspection. pmbot-web-dashboard restarts on every
+        # deploy (standing authorization). GG-432: t4-mlb restarts only when the
+        # policy step found a changed t4-mlb import AND no MLB game in progress;
+        # otherwise the job summary says loudly that it was skipped.
+        env:
+          RESTART_T4: ${{ steps.policy.outputs.restart_t4 }}
         run: |
+          SERVICES="pmbot-web-dashboard"
+          if [ "$RESTART_T4" = "true" ]; then SERVICES="t4-mlb $SERVICES"; fi
+          echo "Restarting: $SERVICES"
           ssh -i ~/.ssh/id_ed25519_droplet \
               -o StrictHostKeyChecking=no \
               -o ConnectTimeout=15 \
               root@157.230.91.33 \
-              "systemctl restart t4-mlb pmbot-web-dashboard"
+              "systemctl restart $SERVICES"
 
       - name: Verify HEAD and service freshness
+        env:
+          RESTART_T4: ${{ steps.policy.outputs.restart_t4 }}
         run: |
+          CHECK="pmbot-web-dashboard"
+          if [ "$RESTART_T4" = "true" ]; then CHECK="t4-mlb $CHECK"; fi
           ssh -i ~/.ssh/id_ed25519_droplet \
               -o StrictHostKeyChecking=no \
               -o ConnectTimeout=15 \
@@ -202,7 +223,7 @@ jobs:
               "cd /opt/prediction-market-bot && \
                echo '--- VPS HEAD ---' && git log -1 --oneline && \
                PULL_EPOCH=\$(date +%s) && \
-               for svc in t4-mlb pmbot-web-dashboard; do \
+               for svc in $CHECK; do \
                  ACTIVE_TS=\$(systemctl show \"\$svc\" --property=ActiveEnterTimestamp --value); \
                  ACTIVE_EPOCH=\$(date -d \"\$ACTIVE_TS\" +%s 2>/dev/null || echo 0); \
                  echo \"--- \$svc ActiveEnterTimestamp: \$ACTIVE_TS ---\"; \
