@@ -4578,7 +4578,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-432 — deploy.yml restarts t4-mlb and the dashboard on every code push, mid-game included
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4590,7 +4590,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | `.github/workflows/deploy.yml` runs `systemctl restart t4-mlb pmbot-web-dashboard` unconditionally (T-328/GG-104) on any push to main outside the paths-ignore docs list. No live-game check. Deploy runs created 2026-10-02T19:41:18Z, 21:08:02Z, 21:16:40Z, 21:44:37Z and 2026-10-01T01:33:57Z-02:50:58Z (7 runs) match GG-347's "unattributed" restart times; the 10/3 01:31:46Z run (077558b1) matches t4-mlb ActiveEnter 01:32:59Z. |
 | Why it matters | Restarts reset session_id and in-game state during MLB postseason games; they are CI side effects, not an unknown actor. GG-347's restart half is explained (its ssh-poller half is not). |
 | Source | deploy.yml; `gh run list --workflow "Deploy to VPS"`; GG-347 |
-| Disposition | Registered by 50.2. Changing the restart policy is the operator's decision; deploy.yml not edited. |
+| Disposition | RESOLVED 2026-10-05 (W54.2, operator option (a), DECISION_LOG 2026-10-05). PR #158 merged as c2acddf4. VPS proof: the merge commit's own deploy (run 37275051112) logged `t4-mlb restart decision: not_needed -- no file imported by t4-mlb changed in this push`, restarted only pmbot-web-dashboard; VPS HEAD == c2acddf4; t4-mlb ActiveEnterTimestamp unchanged at 2026-10-05 01:31:28 UTC before and after; dashboard 2026-10-03 01:32:57 -> 2026-10-05 06:58:28 UTC. The live-game skip branch (`skip_live_game`) is unit-tested (10 tests) but not yet observed in a real deploy. See `W54_2_gg432_mlb_arm_results.md`. |
 
 </details>
 
@@ -4716,6 +4716,60 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | 2026-10-05 04:13 UTC read-only audit (W53.2): `crontab -l` EXP-037 block runs only `scripts/run_pregame_shadow.py` (NFL model) and the NFL settle. `scripts/run_mlb_pregame_shadow.py` exists on the VPS but is in no cron line. `exp_output/PREGAME_SHADOW/` holds 12 NFL ledgers and zero `MLB_*` files. `04_EXECUTION/ACTIVE_QUEUE.md` records "NFL + MLB postseason shadow: Armed" and "33 pre-game cells now log unattended" (12 NFL + 12 MLB + 9 NHL). Only 21 do. |
 | Why it matters | MLB postseason pre-game markets are live now; every day unscheduled is permanent loss of T1/T2/T3 rows for EXP-037's MLB half. |
 | Source | `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W53_2_shadow_audit_results.md` |
-| Disposition | Registered only (read-only wave). Next step: operator authorizes an MLB cron block (terminal); correct the ACTIVE_QUEUE "Armed" line meanwhile. |
+| Disposition | Registered only (read-only wave). Next step: operator authorizes an MLB cron block (terminal); correct the ACTIVE_QUEUE "Armed" line meanwhile. **2026-10-05 W54.2 update:** operator authorization already stands (2026-10-02 15:22 PT, new lines only), but arming is blocked by GG-470 (VPS cannot build/refresh the games cache) and GG-471 (helper rejects MLB lines). Still unarmed; no rows exist. |
+
+</details>
+
+### GG-470 — MLB pregame shadow cannot run on the VPS: games cache absent and unbuildable/unrefreshable (statsapi 406 on range queries)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-470 |
+| Category | Operational / arming blocker (blocks GG-453) |
+| What was found | 2026-10-05 W54.2. `scripts/run_mlb_pregame_shadow.py --dry-run` on the VPS exits `exp_output/MLB_GAME/cache_w47/games.parquet missing`. The cache is gitignored (`*.parquet`) and exists neither on the VPS nor in the operator checkout. `scripts/fetch_mlb_game_history.py` builds it from `statsapi.mlb.com/api/v1/schedule?startDate=..&endDate=..`; from the VPS that range query returns HTTP 406 for any range, any season (2024 and 2026 tested; python requests and curl). Single-date queries (`?date=YYYY-MM-DD`) return 200 from the VPS; the same range query returns 200 locally. The runner's `--refresh` calls the same fetcher and aborts ("refusing to run on stale data"), so an MLB cron with `--refresh` writes zero rows, and one without it would log rows from a frozen cache with stale results and probable starters. |
+| Why it matters | Arming the 12 MLB cells now would either log nothing or pollute the EXP-037 MLB ledgers with stale-feature rows. W54.2 therefore did NOT install the MLB cron lines. |
+| Source | W54.2 VPS read-only tests; `W54_2_gg432_mlb_arm_results.md` |
+| Disposition | Open. Operator choice needed: (1) per-date fetch path (`?date=`) for refresh, which the VPS can reach, plus a one-time cache seed built locally and copied over; (2) build and refresh the cache locally and sync it; (3) other. Same 406 family as GG-440. |
+
+</details>
+
+### GG-471 — arm_shadow_crons helper rejects MLB shadow lines; allowlist misses run_mlb_pregame_shadow.py
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-471 |
+| Category | Tooling |
+| What was found | `scripts/arm_shadow_crons.py` `dry_command()` matches only the substring `run_pregame_shadow.py`; `run_mlb_pregame_shadow.py` does not contain it, so step (d) of `arm_shadow_crons.sh` would `SystemExit("refusing to dry-run unrecognised job")` on any MLB line. The additive allowlist regex `scripts/run_pregame_shadow[\w]*\.py` likewise does not match `scripts/run_mlb_pregame_shadow.py`. |
+| Why it matters | "Run arm_shadow_crons.sh as designed" cannot arm MLB without a helper change plus a matching test. |
+| Source | Reading `scripts/arm_shadow_crons.py` at c2acddf4 |
+| Disposition | Open. Small fix, deferred behind GG-470 (nothing to arm until the cache problem is decided). |
+
+</details>
+
+### GG-472 — No MLB pregame shadow settlement script: the 12 MLB shadow cells can log but never get outcomes
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-472 |
+| Category | Coverage |
+| What was found | `scripts/run_pregame_shadow_settle.py` is NFL-only. No MLB equivalent exists, and the EXP-037 cron block has no MLB settlement line. Per operator direction (W54.2) the settlement source for Kalshi markets is Kalshi's own settlement (GG-440 decision), which an MLB settle script should use. |
+| Why it matters | Even once GG-470 is solved, MLB shadow rows stay unscored without a settle path. |
+| Source | W54.2; DECISION_LOG 2026-10-05 |
+| Disposition | Registered only; not built in W54.2. |
 
 </details>
