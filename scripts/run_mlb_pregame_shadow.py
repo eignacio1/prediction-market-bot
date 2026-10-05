@@ -10,9 +10,10 @@ Idempotent per (run_id, market_ticker).
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -31,6 +32,20 @@ from run_pregame_shadow import code_sha, make_adapter  # noqa: E402
 CELLS = [("MLB_MONEYLINE", "KXMLBGAME"), ("MLB_RUN_LINE", "KXMLBSPREAD"),
          ("MLB_GAME_TOTAL", "KXMLBTOTAL"), ("MLB_TEAM_TOTAL", "KXMLBTEAMTOTAL")]
 CACHE = ROOT / "exp_output" / "MLB_GAME" / "cache_w47"
+MAX_CACHE_AGE_H = 26      # W55.3b: Stats API 406s the VPS (GG-470); the cache is refreshed off-box and synced in
+
+
+def assert_cache_fresh(cur: Path, now: datetime, max_age_h: float = MAX_CACHE_AGE_H) -> None:
+    """Fail closed: without --refresh, a games cache with no stamp or an old stamp means stale results and
+    probable starters would be logged as features. Raises SystemExit."""
+    meta = cur.with_name(cur.stem + ".meta.json")
+    try:
+        ts = datetime.fromisoformat(json.loads(meta.read_text())["refreshed_at"].replace("Z", "+00:00"))
+    except (OSError, ValueError, KeyError) as e:
+        raise SystemExit(f"{meta} missing/unreadable ({e!r}) -- run scripts/sync_mlb_games_cache.sh; refusing stale cache")
+    if now - ts > timedelta(hours=max_age_h):
+        raise SystemExit(f"games cache refreshed {ts.isoformat()} is >{max_age_h}h old -- run "
+                         "scripts/sync_mlb_games_cache.sh; refusing to log on stale data")
 
 
 def main(argv=None) -> int:
@@ -50,6 +65,8 @@ def main(argv=None) -> int:
         if fetch_main(["--recent", "--season", str(now.year), "--today", now.date().isoformat(),
                        "--base", str(CACHE / "games.parquet"), "--out", str(CACHE / "games_current.parquet")]):
             raise SystemExit("games refresh failed -- refusing to run on stale data")
+    if not a.refresh:
+        assert_cache_fresh(CACHE / "games_current.parquet", now)
     gp = CACHE / "games.parquet"
     if not gp.exists():
         raise SystemExit(f"{gp} missing -- run scripts/fetch_mlb_game_history.py")

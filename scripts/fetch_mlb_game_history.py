@@ -8,9 +8,10 @@ column; training uses regular season 'R' only). Also used with --upcoming to ref
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -66,6 +67,18 @@ def fetch_day(day: str, sleep=time.sleep) -> list[dict]:
     raise AssertionError("unreachable")
 
 
+def stamp_path(out: Path) -> Path:
+    return out.with_name(out.stem + ".meta.json")
+
+
+def stamp_refresh(out: Path, df: pd.DataFrame, now: datetime | None = None) -> None:
+    """Sidecar the runner uses to refuse a stale cache (it cannot trust file mtime across an scp)."""
+    fin = df[df.status == "Final"]
+    meta = {"refreshed_at": (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "last_final": str(fin.game_date.max()) if len(fin) else None, "rows": int(len(df))}
+    stamp_path(out).write_text(json.dumps(meta))
+
+
 def refresh_recent(out: Path, base: Path, season: int, today: date, back: int = 5, ahead: int = 3,
                    fetch=fetch_day, sleep=time.sleep) -> int:
     """Patch the current season's games from per-date queries: base = existing `out` if present else the
@@ -93,7 +106,10 @@ def refresh_recent(out: Path, base: Path, season: int, today: date, back: int = 
     merged = pd.concat([keep, pd.DataFrame(new)], ignore_index=True).drop_duplicates("game_pk", keep="last")
     for c in ("home_score", "away_score", "home_sp", "away_sp"):     # range path yields float64 (nullable ids/scores)
         merged[c] = merged[c].astype("float64")
-    merged.to_parquet(out)
+    tmp = out.with_name(out.name + ".tmp")        # no partial writes: parquet + stamp land only on full success
+    merged.to_parquet(tmp)
+    tmp.replace(out)
+    stamp_refresh(out, merged)
     print(f"refreshed {days[0]}..{days[-1]}: {len(new)} games fetched, {len(merged)} season rows -> {out}")
     return 0
 

@@ -109,3 +109,32 @@ def test_refresh_fails_closed(tmp_path):
     with pytest.raises(RuntimeError):
         fm.refresh_recent(out, base2, 2026, date(2026, 10, 5), fetch=boom, sleep=lambda s: None)
     assert not out.exists()                          # no partial write on failure
+
+
+def test_refresh_writes_stamp_atomically(tmp_path):
+    base = tmp_path / "g.parquet"
+    pd.DataFrame([_row(1, "2026-10-02")]).to_parquet(base)
+    out = tmp_path / "games_current.parquet"
+    fm.refresh_recent(out, base, 2026, date(2026, 10, 3), back=1, ahead=0,
+                    fetch=lambda d: [_row(1, d)] if d == "2026-10-02" else [], sleep=lambda s: None)
+    import json
+    meta = json.loads(fm.stamp_path(out).read_text())
+    assert meta["last_final"] == "2026-10-02" and meta["refreshed_at"].endswith("Z")
+    assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_runner_refuses_stale_or_unstamped_cache(tmp_path):
+    from datetime import datetime, timezone
+    spec = importlib.util.spec_from_file_location("run_shadow", ROOT / "scripts" / "run_mlb_pregame_shadow.py")
+    rs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rs)
+    cur = tmp_path / "games_current.parquet"
+    now = datetime(2026, 10, 5, 12, tzinfo=timezone.utc)
+    with pytest.raises(SystemExit):
+        rs.assert_cache_fresh(cur, now)                                   # no stamp
+    meta = tmp_path / "games_current.meta.json"
+    meta.write_text('{"refreshed_at": "2026-10-04T08:00:00Z"}')
+    with pytest.raises(SystemExit):
+        rs.assert_cache_fresh(cur, now)                                   # 28h old
+    meta.write_text('{"refreshed_at": "2026-10-05T08:00:00Z"}')
+    rs.assert_cache_fresh(cur, now)                                       # 4h old: ok
