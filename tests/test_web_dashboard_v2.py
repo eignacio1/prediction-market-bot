@@ -110,6 +110,7 @@ class TestShadow:
     @pytest.mark.unit
     def test_no_ledgers_awaiting_and_no_numbers(self, tmp_path, monkeypatch):
         monkeypatch.setattr(wd, "_REPO_ROOT", tmp_path)
+        monkeypatch.setattr(wd, "_registry_cells", lambda: None)   # W52.E: registry unreadable too
         s = wd._shadow(NOW)
         assert s["cells"] == [] and s["tape"] == [] and s["awaiting"]
 

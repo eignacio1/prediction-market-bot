@@ -571,20 +571,60 @@ def _coverage(now: datetime) -> dict:
             "recent_rule": f"SHADOW status or measured_date within {_COVERAGE_RECENT_DAYS}d"}
 
 
+# W52.E (T-658): ledger rows carry short bands; the registry keys on ExecutionBand names.
+_SHADOW_BAND_NAMES = {"T1": "T1_MULTI_DAY", "T2": "T2_SAME_DAY", "T3": "T3_PRE_TIP"}
+
+
+def _registry_cells() -> dict | None:
+    """{(MarketType name, ExecutionBand name): (status, sport)} from the registry, or None if unreadable."""
+    try:
+        sys.path.insert(0, str(_REPO_ROOT / "src"))
+        from prediction_market_bot.c5_execution import market_type_registry as R
+        cells = R.MARKET_TYPE_REGISTRY.values() if isinstance(R.MARKET_TYPE_REGISTRY, dict) \
+            else R.MARKET_TYPE_REGISTRY
+        sports = getattr(R, "_SPORT_BY_MARKET_TYPE", {})
+        return {(c.market_type.name, c.band.name): (c.status.name.lower(),
+                                                    str(sports.get(c.market_type, "")).upper() or None)
+                for c in cells}
+    except Exception:
+        return None
+
+
+def _count_lines(p: Path) -> int | None:
+    try:
+        with p.open("rb") as fh:
+            return sum(chunk.count(b"\n") for chunk in iter(lambda: fh.read(1 << 20), b""))
+    except Exception:
+        return None
+
+
 def _shadow(now: datetime) -> dict:
+    """Every shadow cell, labelled by what it is (W52.E / T-658):
+    - each ledger with rows, with its registry status (a ledger whose registry cell is not
+      SHADOW is shown as such -- not hidden, not upgraded);
+    - each registry SHADOW cell, even with no ledger rows (rows 0, 'no ledger rows found');
+    - rows_total / last row per cell; `settled/` copies (nhl_shadow_settle.py) are not ledgers:
+      they feed settled_n only and are never counted as rows or shown on the tape."""
     files: list[Path] = []
     for g in SHADOW_GLOBS:
         files += sorted(_REPO_ROOT.glob(g))
-    if not files:
+    reg = _registry_cells()
+    if not files and not reg:
         return {"awaiting": "shadow ledgers (47.2/47.3 runner)", "cells": [], "tape": []}
     day = now.strftime("%Y-%m-%d")
     cells: dict = {}
     tape: list = []
+    settled_files = [f for f in files if "settled" in f.relative_to(_REPO_ROOT).parts[:-1]]
+    files = [f for f in files if f not in settled_files]
     for f in files:
-        for r in _load_jsonl(f, tail=SHADOW_TAIL_ROWS):
+        rows = _load_jsonl(f, tail=SHADOW_TAIL_ROWS)
+        file_cells: set = set()
+        for r in rows:
             key = f"{r.get('sport')}|{r.get('market_type')}|{r.get('band')}"
+            file_cells.add(key)
             c = cells.setdefault(key, {"sport": r.get("sport"), "market_type": r.get("market_type"),
-                                       "band": r.get("band"), "rows_today": 0, "last_ts": None,
+                                       "band": r.get("band"), "rows_today": 0, "rows_total": 0,
+                                       "last_ts": None,
                                        "latest_e_net": None, "settled_n": None, "judged_n": None,
                                        "delta_brier_market": None, "delta_brier_climo": None})
             ts = str(r.get("ts_utc") or "")
@@ -593,6 +633,13 @@ def _shadow(now: datetime) -> dict:
                 c["last_ts"] = ts
                 c["latest_e_net"] = r.get("e_net_yes_k007")
             tape.append(r)
+        if len(file_cells) == 1:            # one cell per file (both writers): exact total
+            n = _count_lines(f)
+            if n is not None:
+                cells[next(iter(file_cells))]["rows_total"] += n
+        else:                               # mixed file: only the tail is known
+            for r in rows:
+                cells[f"{r.get('sport')}|{r.get('market_type')}|{r.get('band')}"]["rows_total"] += 1
         # scored summary, if the settlement join has written one beside the ledger
         sc = f.with_name(f.stem + ".scored.json")
         if sc.exists():
@@ -601,6 +648,24 @@ def _shadow(now: datetime) -> dict:
                 if s.get("cell") in (None, key):
                     for k in ("settled_n", "judged_n", "delta_brier_market", "delta_brier_climo"):
                         if k in s: c[k] = s[k]
+    for sf in settled_files:            # settled copies: count settled rows per cell, nothing else
+        for r in _load_jsonl(sf, tail=100000):
+            c = cells.get(f"{r.get('sport')}|{r.get('market_type')}|{r.get('band')}")
+            if c is not None and r.get("outcome") is not None:
+                c["settled_n"] = (c["settled_n"] or 0) + 1
+    seen = set()
+    for c in cells.values():
+        full = _SHADOW_BAND_NAMES.get(str(c["band"]), str(c["band"]))
+        seen.add((c["market_type"], full))
+        st = (reg or {}).get((c["market_type"], full))
+        c["registry_status"] = st[0] if st else ("unregistered" if reg is not None else "unknown")
+    for (mt, bd), (st, sport) in sorted((reg or {}).items()):
+        if st == "shadow" and (mt, bd) not in seen:
+            cells[f"{sport}|{mt}|{bd}"] = {
+                "sport": sport, "market_type": mt, "band": bd, "rows_today": 0, "rows_total": 0,
+                "last_ts": None, "latest_e_net": None, "settled_n": None, "judged_n": None,
+                "delta_brier_market": None, "delta_brier_climo": None, "registry_status": "shadow",
+                "ledger": "no ledger rows found"}
     tape.sort(key=lambda r: str(r.get("ts_utc") or ""), reverse=True)
     keep = ("ts_utc", "sport", "market_type", "band", "market_ticker", "p_yes", "mid",
             "e_net_yes_k007", "e_net_no_k007")
@@ -664,6 +729,24 @@ _LAST_LOAD_MS: int | None = None
 FEATURE_STORES = {"MLB": "exp_output/MLB/mlb_feature_matrix.csv"}
 _PIPE_FEED_LOGS = ("paper_mlb_cron.log", "resolve_mlb_cron.log",
                    "mlb_feature_refresh.log", "mlb_calib_monitor.log")
+
+
+FROZEN_AFTER_S = 72 * 3600
+
+
+def _frozen_label(last_updated, now) -> str | None:
+    """'FROZEN (last write YYYY-MM-DD)' when a book has had no write in >72h, else None."""
+    try:
+        lu = datetime.fromisoformat(str(last_updated).replace("Z", "+00:00"))
+        if lu.tzinfo is None:
+            lu = lu.replace(tzinfo=timezone.utc)
+        ref = now if getattr(now, "tzinfo", None) else now.replace(tzinfo=timezone.utc)
+        if (ref - lu).total_seconds() > FROZEN_AFTER_S:
+            days = int((ref - lu).total_seconds() // 86400)
+            return f"FROZEN (last write {lu.date().isoformat()}, {days}d ago)"
+    except Exception:
+        return None
+    return None
 
 
 def _tile(c: str, sport: str, status: str, headline: str, detail: str = "",
@@ -759,7 +842,13 @@ def _pipeline(d: Path, now: datetime, data: dict | None = None) -> dict:
         lim = _hard_limits()
         pf = (data or {}).get("portfolio") or {}
         init, bank = pf.get("initial_bankroll_usd"), pf.get("bankroll_usd")
-        dd = (init - bank) / init if init and bank is not None and init > 0 else None
+        # W51.1: the kill switch reads REALIZED loss only (run_mlb_paper_trade.py:
+        # max(0, -total_realized_pnl) / initial). (init - bank) / init also counts
+        # stake locked in open positions, so it is a different, larger quantity.
+        rpnl = pf.get("total_realized_pnl")
+        dd = max(0.0, -rpnl) / init if init and rpnl is not None and init > 0 else None
+        open_stake = sum(float(p.get("size_usd") or 0) for p in (pf.get("open_positions") or []))
+        frozen = _frozen_label(pf.get("last_updated"), now)
         ks = any("KILL" in str(r.get("event_type", "")).upper() for r in audit[-500:])
         live_k = {k: v for k, v in kel.items() if k in ("T1", "T4M-PROJ")}
         st = "bad" if ks else ("warn" if dd is not None and dd >= 0.8 * lim["max_drawdown_pct"] else "ok")
@@ -767,7 +856,9 @@ def _pipeline(d: Path, now: datetime, data: dict | None = None) -> dict:
                            "kill switch TRIPPED" if ks else "kill switch clear",
                            f"kelly {live_k} · drawdown "
                            + (f"{dd:.1%}" if dd is not None else "n/a")
-                           + f" vs limit {lim['max_drawdown_pct']:.0%}",
+                           + f" realized vs limit {lim['max_drawdown_pct']:.0%}"
+                           + f" · open stake ${open_stake:,.2f}"
+                           + (f" · {frozen}" if frozen else ""),
                            "execution_bands.BAND_CONFIGS · risk._HARD_LIMITS · paper_portfolio_mlb.json"))
     except Exception as e:
         tiles.append(_ni("C4", "MLB", f"risk config unreadable ({type(e).__name__})"))
@@ -1495,13 +1586,14 @@ function railSpec(D,d){
   // OVERVIEW / EVIDENCE / FEEDS
   const cum=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.total_realized_pnl)||0),0);
   const daily=[D.P,D.T4,D.NF].reduce((s,x)=>s+(Number(x.daily_net_pnl)||0),0);
-  const dd=(D.P.initial_bankroll_usd&&D.P.bankroll_usd!=null)?(D.P.initial_bankroll_usd-D.P.bankroll_usd)/D.P.initial_bankroll_usd:null;
+  const dd=(D.P.initial_bankroll_usd&&D.P.total_realized_pnl!=null)?Math.max(0,-D.P.total_realized_pnl)/D.P.initial_bankroll_usd:null;
+  const frozenT1=D.P.last_updated&&(Date.now()-new Date(D.P.last_updated))>72*3600*1000?' FROZEN '+String(D.P.last_updated).slice(0,10)+' ('+Math.floor((Date.now()-new Date(D.P.last_updated))/86400000)+'d ago)':'';
   const res=D.closed.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
   const w=res.filter(p=>p.outcome==='WIN').length;
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
     ['CUM P&L',usd(cum),cum,'sign'],
-    ['DRAWDOWN',dd==null?'—':(dd*100).toFixed(2)+'%',dd,'inv'],
+    ['DRAWDOWN (REALIZED)',dd==null?'—':(dd*100).toFixed(2)+'%'+frozenT1,dd,'inv'],
     ['DAILY P&L',usd(daily),daily,'sign'],
     ['OPEN',String(D.open.length),D.open.length,''],
     ['EXPOSURE',usd(sum(D.open,p=>p.size_usd)),sum(D.open,p=>p.size_usd),''],
@@ -1640,11 +1732,14 @@ function fillV2(d){
   if($('#shCells')){ const sh=d.shadow;
     if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
     else { $('#shN').textContent=sh.cells.length+' cells';
-      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
-        sh.cells.map(c=>`<tr><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td>`+
+      $('#shCells').innerHTML=`<table><thead><tr><th>SPORT</th><th>MARKET</th><th>BAND</th><th>REGISTRY</th><th>ROWS TODAY</th><th>ROWS TOTAL</th><th>LAST ROW</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>ΔBRIER vs CLIMO</th><th>LATEST E_NET</th></tr></thead><tbody>`+
+        sh.cells.map(c=>{const rs=c.registry_status||'unknown', off=rs!=='shadow'||!c.rows_total;
+          return `<tr${off?' class="dim"':''}><td>${esc(c.sport)}</td><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td>`+
+          `<td class="${rs==='shadow'?'':'neg'}">${rs==='shadow'?'SHADOW':esc(rs.toUpperCase())+' (ledger only)'}</td><td class="r">${c.rows_today}</td>`+
+          `<td class="r">${c.rows_total==null?'—':c.rows_total}${c.ledger?' · '+esc(c.ledger):''}</td>`+
           `<td>${esc(c.last_ts||'—')}</td><td class="r">${c.settled_n==null?'awaiting':c.settled_n}</td><td class="r">${c.judged_n==null?'awaiting':c.judged_n}</td>`+
           `<td class="r">${c.delta_brier_market==null?'awaiting':f4(c.delta_brier_market)}</td><td class="r">${c.delta_brier_climo==null?'awaiting':f4(c.delta_brier_climo)}</td>`+
-          `<td class="r">${f4(c.latest_e_net)}</td></tr>`).join('')+`</tbody></table>`;
+          `<td class="r">${f4(c.latest_e_net)}</td></tr>`}).join('')+`</tbody></table>`;
       $('#shTape').innerHTML=`<table><thead><tr><th>TS</th><th>SPORT</th><th>MARKET</th><th>TICKER</th><th>P_YES</th><th>MID</th><th>E_NET YES</th><th>E_NET NO</th></tr></thead><tbody>`+
         (sh.tape||[]).map(r=>`<tr><td>${esc(r.ts_utc)}</td><td>${esc(r.sport)}</td><td>${esc(r.market_type)}</td><td>${esc(r.market_ticker)}</td>`+
           `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r">${f4(r.e_net_yes_k007)}</td><td class="r">${f4(r.e_net_no_k007)}</td></tr>`).join('')+`</tbody></table>`; } }

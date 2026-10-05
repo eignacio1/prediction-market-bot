@@ -16,7 +16,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 import requests
 
-pytestmark = pytest.mark.integration
+pytestmark = [pytest.mark.integration, pytest.mark.network]
 
 # ---------------------------------------------------------------------------
 # Constants

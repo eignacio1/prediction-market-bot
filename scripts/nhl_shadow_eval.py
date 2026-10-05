@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from prediction_market_bot.c1_signal_ingestion import nhl_ingest as ni  # noqa: E402
+from prediction_market_bot.c3_forecasting.nhl_pregame import TEAM_ALIASES, split_team_codes  # noqa: E402
 
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 SERIES = {"KXNHLGAME": "NHL_MONEYLINE", "KXNHLSPREAD": "NHL_PUCK_LINE", "KXNHLTOTAL": "NHL_GAME_TOTAL"}
@@ -73,9 +74,11 @@ def event_date_teams(event_ticker: str) -> Optional[tuple[str, frozenset]]:
     try:
         tail = event_ticker.split("-", 1)[1]
         yy, mon, dd, teams = int(tail[:2]), tail[2:5], int(tail[5:7]), tail[7:]
-        if len(teams) != 6:
+        codes = split_team_codes(teams)  # Kalshi uses 2- and 3-letter codes; mapped to NHL-data abbrevs
+        if codes is None:
             return None
-        return f"20{yy:02d}-{MONTHS.index(mon) + 1:02d}-{dd:02d}", frozenset((teams[:3], teams[3:]))
+        return (f"20{yy:02d}-{MONTHS.index(mon) + 1:02d}-{dd:02d}",
+                frozenset(TEAM_ALIASES.get(c, c) for c in codes))
     except (IndexError, ValueError):
         return None
 
@@ -168,22 +171,43 @@ def fetch_open_markets(series: str, throttle: ni.Throttle, opener=None) -> list[
             return out
 
 
+def _bump(counters: Optional[dict], key: str) -> None:
+    if counters is not None:
+        counters[key] = counters.get(key, 0) + 1
+
+
 def evaluate(markets_by_series: dict[str, list[dict]], forecaster: Forecaster, start_index: dict,
-             now: datetime, run_id: str, code_sha: str, force_band: Optional[str] = None) -> list[dict]:
+             now: datetime, run_id: str, code_sha: str, force_band: Optional[str] = None,
+             counters: Optional[dict] = None) -> list[dict]:
+    """``counters`` (mutated in place) names every reason a market did not become a row, so no
+    drop is silent. ``out_of_band`` is a normal exclusion, not a failure; every other key is a drop."""
     rows = []
     for series, markets in markets_by_series.items():
         for m in markets:
+            _bump(counters, "markets_seen")
+            if event_date_teams(m["event_ticker"]) is None:
+                _bump(counters, "ticker_unparsed_or_team_unmapped")
             start, src = resolve_start(m, start_index)
             if start is None:
+                _bump(counters, "start_unknown")
                 continue
             h = (start - now).total_seconds() / 3600.0
             band = band_for(h)
             if band is None or (force_band and band != force_band):
+                _bump(counters, "out_of_band")
+                continue
+            if quote(m) is None:
+                _bump(counters, "no_valid_quote")
                 continue
             fc = forecaster.forecast(m["ticker"], now)
+            if fc is None:
+                _bump(counters, "forecast_none:" + (getattr(forecaster, "last_abstain", None) or "unspecified"))
+                continue
             row = make_row(m, series, fc, start, src, now, run_id, code_sha, band)
             if row:
                 rows.append(row)
+            else:
+                _bump(counters, "row_not_built")
     return rows
 
 
@@ -238,10 +262,16 @@ def main(argv=None) -> int:
         sched += ni.load_schedule(s)
     index = build_start_index(sched)
     mk = {s: fetch_open_markets(s, th) for s in SERIES}
-    rows = evaluate(mk, fcst, index, now, run_id, git_sha(), a.band)
+    counters: dict[str, int] = {}
+    rows = evaluate(mk, fcst, index, now, run_id, git_sha(), a.band, counters)
     counts = {} if a.no_write else append_rows(rows, Path(a.root))
-    print(json.dumps({"run_id": run_id, "markets_read": {k: len(v) for k, v in mk.items()},
-                      "rows_evaluated": len(rows), "rows_appended_by_cell": counts}, indent=1))
+    summary = {"run_id": run_id, "ts_utc": now.isoformat(), "markets_read": {k: len(v) for k, v in mk.items()},
+               "rows_evaluated": len(rows), "rows_appended_by_cell": counts, "abstention_counters": counters}
+    if not a.no_write:  # run metadata ledger: one line per run, alongside the cell files
+        Path(a.root).mkdir(parents=True, exist_ok=True)
+        with (Path(a.root) / "run_log.jsonl").open("a") as f:
+            f.write(json.dumps(summary, sort_keys=True) + "\n")
+    print(json.dumps(summary, indent=1))
     return 0
 
 

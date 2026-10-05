@@ -49,3 +49,17 @@ Lines are committed in `deploy/cron.nhl_shadow` (`6a44430`), same commit as inst
 ## Session-start Step 4 / Q6 (adversarial)
 - Step 4 ran at session start; the Q7 invariant script reported SOURCE_UNAVAILABLE in the worktree (alarm-only, expected).
 - Q6 worries: (a) the model barely beats climatology, so the likely outcome is RULED_OUT or SHADOW-continue, which is the expected and informative result for the most efficient markets; (b) first live rows were produced minutes ago and are a pipeline check, not a result; (c) a shallow T1/T2 starter assumption could bias early-band rows.
+
+---
+
+## Dated note 2026-10-03 (wave 51.2) — coverage boundary: Kalshi 2-letter team codes (GG-403)
+
+The frozen pre-registration is NOT edited. This note records a change in which markets the shadow arm can see.
+
+**Finding.** A read-only Kalshi pull (KXNHLGAME/SPREAD/TOTAL, open + settled; 333 events, 1,595 markets) shows Kalshi uses **2-letter codes for four teams — SJ, TB, LA, NJ** — where the NHL data side uses SJS, TBL, LAK, NJD. The other 28 codes are identical on both sides. The old parsers required exactly 3+3 letters, so every event involving those four teams (**364 of 1,595 markets with a 5-letter team block and 15 with a 4-letter block = 379 markets, ~24%**) returned None with no log. Even a successful parse would not have matched the schedule, which is keyed on SJS/TBL/LAK/NJD.
+
+**Boundary.** Rows written by code before the fix SHA (see 51.2 handoff) contain **no** game involving SJ, TB, LA or NJ; rows after contain them. They are different populations (different team mix, and the first set is a non-random subset of the league). Do not pool them unannounced and do not read the earlier abstentions (195 rows vs 240 expected) as random. The ~45-row shortfall is *consistent with* this drop but the cause was never logged, so it is not proven.
+
+**Counters.** `nhl_shadow_eval.py` now emits per-reason abstention counters (`ticker_unparsed_or_team_unmapped`, `start_unknown`, `no_valid_quote`, `forecast_none:<reason>`, `out_of_band` as a normal exclusion) in its stdout summary and in `data/shadow/nhl/run_log.jsonl`. Runs before the fix have none.
+
+**Status.** Fix is on branch `session/20261003T201919Z-w51-nhl-team-codes`, **not merged** (a main push auto-deploys and restarts t4-mlb during live games, GG-432). Until it is merged and deployed, the VPS arm keeps dropping those games.
