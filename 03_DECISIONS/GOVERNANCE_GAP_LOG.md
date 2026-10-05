@@ -4700,3 +4700,21 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered by Wave 52 CC (T-659), registration only. Next step: `pip freeze` on the VPS venv (terminal), then regenerate the locks from it. Model-affecting versions change only by ADR. |
 
 </details>
+
+### GG-453 — EXP-037 MLB postseason shadow arm has no cron: 12 MLB game-market cells never log, queue says armed
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-453 |
+| Category | Operational / documentation-vs-reality |
+| What was found | 2026-10-05 04:13 UTC read-only audit (W53.2): `crontab -l` EXP-037 block runs only `scripts/run_pregame_shadow.py` (NFL model) and the NFL settle. `scripts/run_mlb_pregame_shadow.py` exists on the VPS but is in no cron line. `exp_output/PREGAME_SHADOW/` holds 12 NFL ledgers and zero `MLB_*` files. `04_EXECUTION/ACTIVE_QUEUE.md` records "NFL + MLB postseason shadow: Armed" and "33 pre-game cells now log unattended" (12 NFL + 12 MLB + 9 NHL). Only 21 do. |
+| Why it matters | MLB postseason pre-game markets are live now; every day unscheduled is permanent loss of T1/T2/T3 rows for EXP-037's MLB half. |
+| Source | `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W53_2_shadow_audit_results.md` |
+| Disposition | Registered only (read-only wave). Next step: operator authorizes an MLB cron block (terminal); correct the ACTIVE_QUEUE "Armed" line meanwhile. |
+
+</details>
