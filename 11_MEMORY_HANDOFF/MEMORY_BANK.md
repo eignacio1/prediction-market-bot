@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-03T20:34:00Z (W51.3 — W51.3 — PR #157 made merge-ready (head 42a0d0d, CI green, MERGEABLE); NOT merged; NHL shadow cell table recorded) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_W51_3.md` for full session detail.
+**Last reviewed:** 2026-10-05T04:12:54Z (W53.2 — W53.2 read-only shadow audit: NHL+NFL log valid rows, crontab matches deploy; 12 MLB shadow cells unscheduled (GG-453).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261005_W53_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
