@@ -50,6 +50,9 @@ write launch commands for it. He pastes each block into its own session.
   **verbatim** to `ACTIVE_QUEUE_ARCHIVE.md`. Fences: `grep -c '^```'` = 2 × blocks-to-paste; ASCII only inside fences.
 - **Update the queue when every block closes**, not at wave end. He reads it as his status board.
 - **Give the blocks in chat as well**, each in its own fence, ready to paste.
+- **NAMES (operator, 2026-10-05):** **Visual Dashboard** = the operational review, ERP-style, modules for the whole
+  operation (`/project`). **Live Terminal** = what the bot is actually placing, live, full black (`/`). Use these
+  names exactly; never swap them.
 - **PROTOCOL — the strategic window NEVER requests delete permission and NEVER syncs the operator's folder**
   (operator, 2026-10-04 21:17 PT: *"stop asking permissions to delete the entire fucking project folder"*). The
   permission prompt can only name the whole folder, so it reads as "delete the project". The bundle sync also raced

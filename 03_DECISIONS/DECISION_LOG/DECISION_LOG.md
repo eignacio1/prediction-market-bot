@@ -1786,3 +1786,14 @@ ADR-0071 (`03_DECISIONS/ADR-0071_kalshi-settlement-paper-resolution-source.md`) 
 - GG-440, GG-450 RESOLVED; GG-441 stays OPEN. Evidence: RESULTS_SUMMARIES/W55_1_ledger_booking_results.md.
 
 | 2026-10-05 | T-683..T-688 | W55.3: ESPN ruled out as MLB shadow games source (starter ids are ESPN athlete ids, no MLBAM id; frozen-model policy forbids substitution). Chose off-box refresh: Mac fetches Stats API, scripts/sync_mlb_games_cache.sh pushes atomically to VPS with a stamp; runner fails closed if cache >26h old. Cost: sync is manual until a scheduler exists (GG-482). GG-470/GG-453 PARTIALLY RESOLVED, not RESOLVED, for that reason. VPS T1 cron dropped --refresh (backup /root/crontab.bak.W55_3b.20261005T225931Z). No sizing change. |
+
+### 2026-10-05 — Operator: GG-477 cron stagger authorized; MLB must not go dark during games; dashboard names fixed
+**Decisions (operator, 2026-10-05 16:41 PT, strategic window):**
+1. **GG-477 cron stagger AUTHORIZED** ("Yes"): edit ONLY the minute field of the existing cron lines listed in
+   `scripts/ops/gg477_cron_stagger.py` RULES; crontab backed up first. Executed by Wave 56.2.
+2. **"MLB can't go dark while games are going on."** The MLB postseason shadow arms must keep logging through every
+   game day; the games-cache refresh may not depend on a manual step (GG-482, Wave 56.1 first).
+3. **Names, fixed:** **Visual Dashboard** = the operational review — ERP-style, modules for the whole operation
+   (state of the bot and project). **Live Terminal** = what the bot is actually placing, live (full-black
+   terminal). The `/project` page served by `pmbot-web-dashboard` is the Visual Dashboard; `/` is the Live Terminal.
+Docs-only.

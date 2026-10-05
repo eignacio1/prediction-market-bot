@@ -25,7 +25,7 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (thi
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
 | **56.1** MLB games cache via GitHub Actions (GG-482) | ⬜ **READY — first** | new workflow `mlb_games_cache_sync.yml` | — |
-| **56.2** Apply the cron stagger (GG-477) | ⬜ **READY — needs your authorization line below** | VPS crontab (minute fields only); `deploy/` cron files | — |
+| **56.2** Apply the cron stagger (GG-477) | ⬜ **READY — authorized 2026-10-05** | VPS crontab (minute fields only); `deploy/` cron files | — |
 | **56.3** MLB shadow settlement (GG-472) + Live Terminal check | ⬜ **READY** | MLB settle path; settled/ copies; dashboard read | — |
 
 **56.1 first:** the MLB games cache was last synced ~2026-10-05 22:57 UTC and the runner refuses it after 26h, so the 12 MLB cells go dark around **6 PM PT Tue 10-06** unless 56.1 lands. 56.2 owns the crontab this wave; 56.3 adds its settle line to the conf only (armed next wave).
@@ -205,7 +205,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
 | 56.1 | MLB games cache via GH Actions | ⬜ | new workflow | Fresh stamp on VPS + MLB rows, no Mac step |
-| 56.2 | Cron stagger (GG-477) | ⬜ | VPS crontab minutes, deploy/ cron files | Your authorization line |
+| 56.2 | Cron stagger (GG-477) | ⬜ | VPS crontab minutes, deploy/ cron files | Authorized 2026-10-05 |
 | 56.3 | MLB shadow settlement + Live Terminal | ⬜ | settle path, dashboard read | Settled rows; T1 book live on the terminal |
 
 ### ✅ WAVE 55 — CLOSED 2026-10-05 ~23:40 UTC · three terminal blocks (+55.3b)
@@ -384,6 +384,17 @@ branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 
 
 ## Needs your decision
 
+> **AUTHORIZATION - GG-477 CRON STAGGER (operator, 2026-10-05 16:41 PT: "Yes").** Covers: changing ONLY the minute
+> field of the existing cron lines listed in `scripts/ops/gg477_cron_stagger.py` RULES, crontab backed up first, and
+> mirroring those minutes into `deploy/` cron files. Not covered: any command, hour or other line. Used by 56.2.
+
+> **OPERATOR DIRECTIVE (2026-10-05 16:41 PT):** "MLB can't go dark while games are going on." The MLB postseason
+> shadow arms keep logging every game day; nothing in their data path may depend on a manual step.
+
+> **NAMES (operator, 2026-10-05):** **Visual Dashboard** = operational review, ERP-style (`/project` on the
+> dashboard service). **Live Terminal** = what the bot is actually placing, live (`/`).
+
+
 GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG 2026-10-05). Arming the MLB postseason shadow cells needs no line — the 2026-10-02 shadow-cron authorization covers new lines.
 
 > **AUTHORIZATION — SHADOW-EVALUATION CRON JOBS (operator, 2026-10-02 15:22 PT: "Yes permission granted").** Unchanged;
@@ -399,7 +410,7 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 | **GG-440** | ✅ **DECIDED 2026-10-04:** Kalshi settlement is the resolution source; statsapi/ESPN cross-check only — ADR + code in 54.3. | — |
 | **NHL goalie timing (GG-401)** | Pulled from Wave 53 (timing-bound). The measurement — run `scripts/nhl_goalie_source_probe.py` at ~60/30/15 min before one slate's puck drop — fits a detached read-only VPS job (row below) instead of a terminal. | No NHL T3 score may be read. |
 | **Postponed games** | ✅ **DECIDED 2026-10-04:** resolve on Kalshi's result — in 54.3. | — |
-| **NEW — GG-477 cron stagger** | Move the start minute of 5 existing cron lines (NHL T2/T3, EXP-037 T3, two pre-tip jobs) off :00/:30 so they stop starting together and OOM-killing t4-mlb at ~01:30 UTC. Minutes only; commands, hours unchanged; crontab backed up. **Window's recommendation: yes.** Unlocks 56.2. | t4-mlb can be OOM-killed nightly. |
+| **GG-477 cron stagger** | ✅ **AUTHORIZED 2026-10-05** — line above; 56.2 applies it. | — |
 | **Detached read-only VPS jobs** | Long read-only work runs unattended on the VPS through `scripts/vps_job.py`. A line naming *detached read-only VPS jobs* unlocks it. | The board survey and NFL/NHL market backtests stay blocked. |
 | **T1 MLB postseason flag** | Adds `--include-postseason` to the existing T1 MLB cron line. Edits an existing line, so the shadow authorization does not cover it. | T1 player-hits stays blind for the rest of the playoffs. |
 | **EXP-034** | Run its ≥2.5-hour sampler as a VPS job, or **park** it (window's recommendation). | Nothing urgent. |
