@@ -55,3 +55,57 @@ imports (the resolver is outside `run_t4_mlb_live.py`'s import closure).
 ## Operator decisions this depends on (not taken here)
 - GG-450: how Kalshi-cancelled markets are booked (void / mark to settlement / exclude from G6).
 - GG-440: whether Kalshi's own settlement becomes a resolution source (ADR-gated).
+
+---
+
+## VPS confirmation (W53.1, 2026-10-05)
+
+**Verdict: CONFIRMED in refined form, and it is not the whole explanation.**
+The VPS IP (157.230.91.33) gets HTTP 406 on every statsapi request that must go to origin (CDN cache MISS), independent
+of headers, gameType or cache-buster. The same requests return 200 from the Mac, and 200 from the VPS when the object
+is already in the CDN cache. Separately, 10 of the 26 stuck positions sit on POSTPONED games and could not resolve even
+on an unblocked network. Wording: "406 to the VPS on cache-MISS" is evidenced; "Fastly IP block" vs "origin" is not
+distinguishable (the 406 body is a Spring Boot-style JSON error, len 119).
+
+### D1: request matrix (VPS, requests 2.31.0; Mac for comparison)
+| Probe | VPS | Mac |
+|---|---|---|
+| resolver's exact request, player 660271, gameType R (no extra headers) | 200, len 178781, x-cache HIT (via google, varnish, varnish) | 200 |
+| + `Accept: application/json` / curl UA / browser UA / no UA | 200 (same cached object) | 200 |
+| gameType P, player 660271 | **406**, len 119, x-cache MISS, MISS | 200, len 2901 |
+| per-player R (592518, 668930, 677800, 660271) | 200 (first layer HIT) | 200 |
+| per-player P (same four) | **406** MISS, MISS | 200 |
+| cache-busted: R popular, R again, P, P+Accept, P+Accept+browser UA, obscure id 701000 | **406** MISS, MISS on all | 200 on all |
+
+A single cold probe looked like 200 on the VPS because of CDN HITs; that premise ("every request 406s") was refuted and
+the method corrected with cache-busting.
+
+### D2: log evidence
+- First 406 in `resolve_mlb_cron.log`: 2026-06-27 (R and P both). The 2026-10-04 06:30Z run reached consecutive_failures
+  123-125 with the circuit breaker open.
+- 494 `ESPN-FALLBACK` lines, all fetch errors. The old code logged nothing when ESPN fetched fine but found no player,
+  so ESPN's silence for the 26 positions was a logging gap, not evidence of success.
+
+### D4: 26-position dry run (copies of both ledgers; `--dry-run`; VPS ledgers untouched)
+| Group | n | Positions | Classification | Reason |
+|---|---|---|---|---|
+| T1 | 16 | CJ Abrams x2 (26JUL011335WSHBOS), Julio Rodriguez (26JUL032210TORSEA), Mike Trout (26JUL102010LAAMIN), Nick Kurtz x2 (26JUL101940ATHCWS), Bobby Witt Jr. x4 (26JUL191410SDKC, 26JUL211940SFKC), Ketel Marte x2 (26JUL231715AZSTL), Steven Kwan (26JUL241910CLETB), Jose Ramirez (26JUL241910CLETB), Christian Walker x2 (26JUL261410HOUCWS) | SKIPPED-CANCELLED | Kalshi result `scalar` / expiration "Cancelled" |
+| T1 | 1 | Gunnar Henderson KXMLBHIT-26JUL211910BALBOS-BALGHENDERSON2-1 (venue yes) | UNRESOLVABLE | game POSTPONED Jul 21, played as doubleheader Jul 22 |
+| T4 | 9 | all 26SEP221835TORBAL: Okamoto x3 (no), Alonso -2 (no), Henderson x3 (no), Springer -1 (yes), Springer -2 (no) | UNRESOLVABLE | game POSTPONED Sep 22, played Sep 23 |
+
+Tally: 16 cancelled, 10 postponed-game, 0 settle, 0 not-final. **Zero cancelled markets received a WIN or LOSS.**
+The Kalshi yes/no results on the 10 are consistent with the make-up-game stats.
+
+### What the Mac not being blocked changes
+The Mac can reach statsapi, but running the resolver from the Mac would still settle 0 of the 26 (16 cancelled by
+design, 10 keyed to a postponed date). Unblocking the network alone fixes nothing for this set.
+
+### D5: change on `w52/resolver-406` (c9462a1, log-only, +2 tests)
+ESPN's not-found line now names POSTPONED games on the date, so this case is visible in the log. No resolution,
+ledger, sizing or stake behavior changed. PR #159 not merged.
+
+### Open for the operator
+1. GG-450: how Kalshi-cancelled markets are booked (16 T1 positions).
+2. GG-440: Kalshi settlement as a resolution source (ADR-gated).
+3. New: how positions on postponed/rescheduled games resolve (follow the reschedule date vs. Kalshi's result).
+4. Unexplained: T4 held 9 positions on a game ESPN reports POSTPONED (a started-then-suspended game?). Needs a look.
