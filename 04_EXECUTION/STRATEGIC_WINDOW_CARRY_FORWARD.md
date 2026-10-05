@@ -50,6 +50,9 @@ write launch commands for it. He pastes each block into its own session.
   **verbatim** to `ACTIVE_QUEUE_ARCHIVE.md`. Fences: `grep -c '^```'` = 2 × blocks-to-paste; ASCII only inside fences.
 - **Update the queue when every block closes**, not at wave end. He reads it as his status board.
 - **Give the blocks in chat as well**, each in its own fence, ready to paste.
+- **PROTOCOL — load the queue into the chat every time it changes** (operator, 2026-10-04 21:14 PT: *"that should be
+  protocol"*). After every queue update: push to main, sync his folder, then send `04_EXECUTION/ACTIVE_QUEUE.md` as a
+  file card in the chat (`SendUserFile`, display render). Never point him at a folder path to go find it.
 - **No pre-assigned T-/GG-/ADR- numbers.** Blocks claim at run time via `scripts/claim_session.sh`.
 - **Pre-register before measuring**; stop conditions written into the arc in advance.
 - **Deliverable 0 in every block:** confirm base, land un-landed predecessors where allowed.

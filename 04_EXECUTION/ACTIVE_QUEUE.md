@@ -304,6 +304,8 @@ unattended on the VPS under their own authorization, and a later block reads wha
 
 ## Read this first (standing)
 
+- **Protocol (operator, 2026-10-04):** every time this file changes, the strategic window loads it into the chat as a file card. He never has to dig through folders for it.
+
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15.
 - **Every block: ~30 minutes, hard stop at 45.** One job per block, done completely. Waiting is not work.
 - **Deliverable 0 in every block: confirm your base** (`git fetch`; work from current `origin/main`).
