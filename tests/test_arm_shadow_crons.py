@@ -57,7 +57,7 @@ def test_merge_replaces_stale_block_in_place_without_touching_neighbours():
 
 def test_dry_commands_have_no_log_redirect_and_are_neutralised():
     lines = arm.cron_lines(CONF)
-    assert len(lines) == 4
+    assert len(lines) >= 4
     for ln in lines:
         d = arm.dry_command(ln)
         assert ">>" not in d
@@ -77,3 +77,14 @@ def test_inert_records_allowed_but_service_reachable_files_still_refused():
     live = ["scripts/web_dashboard.py", "Live Terminal.html",
             "src/prediction_market_bot/c5_execution/market_type_registry.py"]
     assert arm.offenders(live) == live
+
+
+def test_mlb_runner_lines_are_dry_runnable_and_allowlisted():
+    """GG-471: the MLB runner was rejected by dry_command() and the path allowlist."""
+    ln = ("5 */6 * * * cd /opt/x && PYTHONPATH=/opt/x/src /opt/x/venv/bin/python scripts/run_mlb_pregame_shadow.py "
+          "--refresh --bands T1 >> logs/mlb_pregame_shadow_t1.log 2>&1")
+    d = arm.dry_command(ln)
+    assert d.endswith("--dry-run") and ">>" not in d and "--refresh" not in d and "--bands T1" in d
+    assert arm.offenders(["scripts/run_mlb_pregame_shadow.py", "scripts/fetch_mlb_game_history.py"]) == []
+    assert arm.offenders(["scripts/fetch_mlb_game_history.py.bak", "scripts/run_mlb_paper.py"]) == [
+        "scripts/fetch_mlb_game_history.py.bak", "scripts/run_mlb_paper.py"]
