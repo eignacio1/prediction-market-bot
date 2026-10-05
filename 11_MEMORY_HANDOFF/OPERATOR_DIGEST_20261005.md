@@ -10,3 +10,5 @@
 - Your call: wait a few days and see if it clears, copy the data over from your Mac each day, or route the server's requests through a different network.
 
 **W55.2 (plain English):** The big update from the last few days is now live and working on the dashboard. No real money is at risk and nothing about betting changed. The data tracker restarted itself overnight because the small server ran out of memory (too many jobs started at the same minute). I added extra memory to the server, which should stop it. A second fix, spreading the job start times apart, is written but not yet applied because the safety layer blocked me from changing the server directly. We'll know it worked after tomorrow night's 01:30 UTC run.
+
+**W55.1 (ledger booking):** 26 old paper positions that Kalshi had already settled are now counted in the books. 16 of them were cancelled by Kalshi and are marked so they don't count toward the G6 gate. The MLB T1 book's losses now stand at 12.4% against a 20% stop, and the T4 book's at 13.5%. No real money was involved. One open item: the kill switch only reacts to losses once they're booked (GG-441).
