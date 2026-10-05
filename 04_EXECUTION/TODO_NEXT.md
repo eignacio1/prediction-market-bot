@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-05T07:50:00Z (T-672 — W54.2 GG-432 merged+proven on VPS; 12 MLB shadow cells armed but T1 blocked by Stats API 406 (GG-453/470 open)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261005T0701Z_W54_2.md` for full session detail.
+**Last reviewed:** 2026-10-05T08:00:00Z (T-680 — W55.2: PR #160 landed and proven live; GG-451 resolved; t4-mlb restart traced to host OOM (GG-477), swap applied, cron stagger staged (T-681).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261005T0800Z_W55_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
