@@ -4596,7 +4596,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-440 — MLB resolver cannot settle any position: statsapi 406 to the VPS; 17 T1 + 9 T4 positions stuck, Kalshi shows all 17 T1 markets finalized
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (W55.1):** W55.1 2026-10-05: #159 merged as 49bf44c and deployed (t4-mlb restart decision: restart, no game live). Live backups logs/paper_portfolio_mlb{,_t4}.json.bak.20261005T075734Z (sha256 19a1cf77…/338ef55e…) and pre-write *.bak.20261005T225954Z. Live resolver run 2026-10-05 ~23:00 UTC: 17 T1 + 9 T4 positions closed (16 flagged CANCELLED, booked at Kalshi settlement value), no other position altered. T1 realized drawdown 10.60%->12.44%, T4M-PROJ 12.90%->13.45%. See RESULTS_SUMMARIES/W55_1_ledger_booking_results.md.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4617,6 +4619,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it (breach scenario corrected 2026-10-03: ~11-12%, not 26.6%)
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Update (W55.1, 2026-10-05):** the 17 settled-but-unresolved T1 positions are now booked (live write, T1 realized drawdown 12.44%); the in-memory/realized-only kill-switch gap itself remains open.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4652,7 +4656,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-450 — Kalshi cancelled 16 of 17 open T1 KXMLBHIT markets on games that were played; scalar-settled cancellations are unhandled by the resolver design
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (W55.1):** W55.1 2026-10-05: #159 merged as 49bf44c and deployed (t4-mlb restart decision: restart, no game live). Live backups logs/paper_portfolio_mlb{,_t4}.json.bak.20261005T075734Z (sha256 19a1cf77…/338ef55e…) and pre-write *.bak.20261005T225954Z. Live resolver run 2026-10-05 ~23:00 UTC: 17 T1 + 9 T4 positions closed (16 flagged CANCELLED, booked at Kalshi settlement value), no other position altered. T1 realized drawdown 10.60%->12.44%, T4M-PROJ 12.90%->13.45%. See RESULTS_SUMMARIES/W55_1_ledger_booking_results.md.
 
 <details>
 <summary>Full record ▸</summary>
