@@ -4672,6 +4672,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**2026-10-05 note (W54.1):** fix on `w52/landing` @ 2365cc7 (guard refuses `HEAD:main` push when HEAD carries unlanded commits), lands with #160 (head 5dbddb2, CI green). Status unchanged until #160 merges.
+
 <details>
 <summary>Full record ▸</summary>
 
