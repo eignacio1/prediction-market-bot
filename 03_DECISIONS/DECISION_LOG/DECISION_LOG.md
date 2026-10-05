@@ -1779,3 +1779,8 @@ ADR-0071 (`03_DECISIONS/ADR-0071_kalshi-settlement-paper-resolution-source.md`) 
 - Decision: add a 2 GB swapfile with vm.swappiness=10 on the VPS (961 MB RAM, no swap) and stagger the minute field of the :00/:30 shadow/T3 crons. No order, stake, kelly_fraction, or band logic touched.
 - Evidence: 10-04 01:30:01 six python crons started at once (~136 MB each); victim pid 2884421 follows the run_t3_pretip cron shell (NBA T3, dark) — pid adjacency, not a logged job name.
 - Status: swap applied on host; stagger is scripts/ops/gg477_cron_stagger.py, operator-applied (dry-run default). OOMScoreAdjust rejected for now (shifts kills onto bet-writing crons). GG-477 stays OPEN until a clean 01:30 UTC window.
+
+## 2026-10-05 — W55.1: #159 landed, 26 stuck MLB positions booked from Kalshi settlement (ADR-0071)
+- Merged #159 (49bf44c); deploy restarted t4-mlb (no game live, GG-432 policy). Live resolver run booked 17 T1 + 9 T4 positions; 16 flagged CANCELLED at Kalshi settlement value, excluded from G6/calibration (flag-verified only).
+- Pre-registered expectation held: T1 realized drawdown 12.44%, T4M-PROJ 13.45%, both < 20% kill switch. Backups: logs/paper_portfolio_mlb{,_t4}.json.bak.20261005T075734Z and .bak.20261005T225954Z.
+- GG-440, GG-450 RESOLVED; GG-441 stays OPEN. Evidence: RESULTS_SUMMARIES/W55_1_ledger_booking_results.md.
