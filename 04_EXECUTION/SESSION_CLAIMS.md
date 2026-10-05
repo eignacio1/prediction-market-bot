@@ -756,3 +756,4 @@
 | 2026-10-05T07:19:08Z | T-670..T-671 | MERGED: NO (by design) — W54.1 DONE: #160 head 5dbddb2 CI green, CLEAN, awaiting operator merge (restarts t4-mlb; no live MLB game); handoff SESSION_HANDOFF_20261005T0715Z_W54_1.md; docs on main @ 34e814e; close_session_claim.sh not run (GG-451) |
 | 2026-10-05T07:47:51Z | T-672 | CLOSED — W54.2 GG-432 merged+proven on VPS; 12 MLB shadow cells armed but T1 blocked by Stats API 406 (GG-453/470 open) (commit `ba39403`) |
 | 2026-10-05T07:54:50Z | T-676..T-679, GG-475..GG-476 | W55.1 STANDARD - merge #159 + ADR-0071 live ledger booking |
+| 2026-10-05T07:55:06Z | T-680..T-682, GG-477..GG-479 | W55.2 STANDARD - merge #160 + Live Terminal proof + t4-mlb self-restart |
