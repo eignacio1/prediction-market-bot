@@ -32,46 +32,67 @@ def test_classify_venue_market(raw, state):
     assert rm._classify_venue_market(raw) == state
 
 
-def _pool(state, raw, hits=2.0, dry_run=False, monkeypatch=None):
+def _pool(state, raw, hits=2.0, dry_run=False, monkeypatch=None, logger=None):
     pos = {"position_id": "P1", "player_id": 677951, "player_name": "Bobby Witt Jr.",
            "game_date": "2026-07-19", "kalshi_threshold": 1, "direction": "YES", "kalshi_ticker": TICKER}
     trader = MagicMock()
     trader.get_state.return_value = {"open_positions": [pos], "closed_positions": [], "rejected_positions": []}
-    trader.settle_position.return_value = (True, {"pnl": 1.0, "outcome": "WIN"})
+    trader.settle_position_from_venue.return_value = (True, {"pnl": 1.0, "outcome": "WIN", "cancelled": False})
     monkeypatch.setattr(rm, "_ticker_to_game_date", lambda t: "2026-07-19")
     monkeypatch.setattr(rm, "_venue_market_state", lambda t: (state, raw))
     fetch = MagicMock(return_value=hits)
     monkeypatch.setattr(rm, "fetch_actual_hits", fetch)
-    rm._resolve_pool("T1/T2", trader, MagicMock(), "S", MagicMock(), dry_run=dry_run)
+    rm._resolve_pool("T1/T2", trader, logger or MagicMock(), "S", MagicMock(), dry_run=dry_run)
     return trader, fetch
 
 
 @pytest.mark.parametrize("state,raw", [
-    (rm.VENUE_CANCELLED, {"result": "scalar", "expiration_value": "Cancelled"}),
     (rm.VENUE_NOT_FINAL, {"result": ""}),
     (rm.VENUE_UNKNOWN, {}),
+    (rm.VENUE_CANCELLED, {"result": "scalar", "expiration_value": "Cancelled"}),  # no settlement value
 ])
-def test_non_settled_market_is_never_booked_or_aged(state, raw, monkeypatch):
+def test_unbookable_market_is_never_booked_or_aged(state, raw, monkeypatch):
     trader, fetch = _pool(state, raw, monkeypatch=monkeypatch)
+    trader.settle_position_from_venue.assert_not_called()
     trader.settle_position.assert_not_called()
     trader.mark_aged_open.assert_not_called()
-    fetch.assert_not_called()
 
 
-def test_settled_market_books_as_before(monkeypatch):
-    trader, fetch = _pool(rm.VENUE_SETTLED, {"result": "yes"}, monkeypatch=monkeypatch)
-    fetch.assert_called_once()
-    trader.settle_position.assert_called_once()
+def test_settled_market_books_on_kalshi_result_not_stat_feed(monkeypatch):
+    # ADR-0071: stat feed says 0 hits (NO) but Kalshi says yes -> booked on Kalshi's result.
+    trader, fetch = _pool(rm.VENUE_SETTLED, {"result": "yes"}, hits=0.0, monkeypatch=monkeypatch)
+    trader.settle_position.assert_not_called()
+    trader.settle_position_from_venue.assert_called_once()
+    assert trader.settle_position_from_venue.call_args.kwargs["venue_result"] == "yes"
+
+
+def test_cancelled_market_booked_at_settlement_value(monkeypatch):
+    raw = {"result": "scalar", "expiration_value": "Cancelled", "settlement_value_dollars": "0.3400"}
+    trader, _ = _pool(rm.VENUE_CANCELLED, raw, monkeypatch=monkeypatch)
+    kw = trader.settle_position_from_venue.call_args.kwargs
+    assert kw["venue_result"] == "scalar" and kw["settlement_value"] == 0.34
+
+
+def test_stat_feed_failure_cannot_block_booking(monkeypatch):
+    trader, fetch = _pool(rm.VENUE_SETTLED, {"result": "no"}, hits=None, monkeypatch=monkeypatch)
+    trader.settle_position_from_venue.assert_called_once()
+    trader.mark_aged_open.assert_not_called()
+
+
+def test_crosscheck_disagreement_is_logged_not_acted_on(monkeypatch):
+    logger = MagicMock()
+    trader, _ = _pool(rm.VENUE_SETTLED, {"result": "yes"}, hits=0.0, monkeypatch=monkeypatch, logger=logger)
+    events = [c.args[1] for c in logger.warning.call_args_list]
+    assert "kalshi_stat_crosscheck_disagree" in events
+    trader.settle_position_from_venue.assert_called_once()
 
 
 def test_dry_run_writes_nothing(monkeypatch, capsys):
     trader, _ = _pool(rm.VENUE_SETTLED, {"result": "yes"}, dry_run=True, monkeypatch=monkeypatch)
+    trader.settle_position_from_venue.assert_not_called()
     trader.settle_position.assert_not_called()
     trader.mark_aged_open.assert_not_called()
     assert "DRY-RUN settles" in capsys.readouterr().out
-    trader, _ = _pool(rm.VENUE_SETTLED, {"result": "yes"}, hits=None, dry_run=True, monkeypatch=monkeypatch)
-    trader.mark_aged_open.assert_not_called()
-    assert "DRY-RUN unresolvable" in capsys.readouterr().out
 
 
 def test_venue_lookup_uses_historical_then_live_and_fails_closed(monkeypatch):

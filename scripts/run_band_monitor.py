@@ -247,6 +247,9 @@ def filter_clean(recs: list[dict], band: str) -> list[dict]:
 
     Records with no `logic_epoch` at all (pre-T-320 history) are still
     excluded — `is_clean_for_band()` treats `None` as not clean."""
+    # ADR-0071 (GG-450): Kalshi-cancelled bookings carry no information about the
+    # model; excluded from clean_n / G6 / calibration regardless of epoch.
+    recs = [r for r in recs if not r.get("cancelled")]
     if band == "UNTAGGED":
         return [r for r in recs if r.get("logic_epoch") == CURRENT_LOGIC_EPOCH]
     return [r for r in recs if is_clean_for_band(r.get("logic_epoch"), band)]
