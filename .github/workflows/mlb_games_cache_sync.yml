@@ -1,0 +1,68 @@
+name: MLB Games Cache Sync
+
+# W56.1 / GG-482 / GG-470. statsapi.mlb.com answers the VPS with 406, so the games cache the 12 MLB
+# shadow cells read is refreshed HERE (GitHub runner egress) and pushed to the VPS. Mirrors
+# scripts/sync_mlb_games_cache.sh step for step: seed games.parquet from the VPS, per-date refresh,
+# scp to *.tmp, atomic mv, same meta stamp. The shadow runner refuses a cache stamp older than 26h,
+# so two runs a day leave a missed run recoverable.
+#
+# Fail-closed: any step failing exits non-zero and leaves the VPS cache untouched (mv is the last step).
+# Schedule minutes deliberately miss the :00/:30 cron stampede on the VPS (GG-477).
+# Required GitHub Actions secret: VPS_SSH_KEY (same key tss_daily_sync.yml uses).
+# Touches no file t4-mlb imports and writes no ledger.
+
+on:
+  schedule:
+    - cron: '43 12 * * *'   # 12:43 UTC: before the afternoon slate
+    - cron: '43 0 * * *'    # 00:43 UTC: picks up the evening's finals
+  workflow_dispatch:
+
+concurrency:
+  group: mlb-games-cache-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VPS: root@157.230.91.33
+      REMOTE: /opt/prediction-market-bot/exp_output/MLB_GAME/cache_w47
+      C: exp_output/MLB_GAME/cache_w47
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas pyarrow
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          chmod 600 ~/.ssh/vps_key
+          ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
+
+      - name: Seed games.parquet from the VPS
+        run: |
+          set -euo pipefail
+          mkdir -p "$C"
+          scp -i ~/.ssh/vps_key "$VPS:$REMOTE/games.parquet" "$C/games.parquet"
+
+      - name: Refresh current season from Stats API
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src:. python3 scripts/fetch_mlb_game_history.py --recent --season "$(date -u +%Y)" \
+            --base "$C/games.parquet" --out "$C/games_current.parquet"
+          test -s "$C/games_current.parquet" && test -s "$C/games_current.meta.json"
+
+      - name: Push to the VPS (tmp + atomic mv)
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/vps_key "$C/games_current.parquet" "$VPS:$REMOTE/games_current.parquet.tmp"
+          scp -i ~/.ssh/vps_key "$C/games_current.meta.json" "$VPS:$REMOTE/games_current.meta.json.tmp"
+          ssh -i ~/.ssh/vps_key "$VPS" "cd $REMOTE && mv games_current.parquet.tmp games_current.parquet && mv games_current.meta.json.tmp games_current.meta.json"
+          echo "synced $(cat "$C/games_current.meta.json")" | tee -a "$GITHUB_STEP_SUMMARY"
