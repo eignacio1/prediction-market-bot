@@ -14,3 +14,6 @@
 3. T-666: rewrite the 5 skipped tests. T-667: live write.
 4. Unrelated observation (not fixed): `tests/test_paper_trader.py` takes ~5.5 min locally.
 5. GG-451 respected: `close_session_claim.sh` NOT run; this file is the close-out.
+
+## CI correction (appended 2026-10-05 ~07:41Z)
+CI run 37276992418 on 2bce5ad is **RED**: 3 failed / 3675 passed / 23 skipped. Failing: `TestResolveMLBAgeOut` (test_aged_position_tagged_in_portfolio, test_within_grace_period_not_tagged, test_aged_position_capital_stays_deployed) — likely assume old stat-feed "stays open and age-tagged" semantics (cause not yet confirmed). Fold into T-666 (rewrite/skip as Kalshi-result tests). #159 not mergeable until green. close_session_claim.sh NOT run (GG-451); #159 not merged.
