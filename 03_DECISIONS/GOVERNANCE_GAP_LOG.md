@@ -4670,9 +4670,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-451 — close_session_claim.sh pushes the current HEAD to main (same defect class as GG-419)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
-**2026-10-05 note (W54.1):** fix on `w52/landing` @ 2365cc7 (guard refuses `HEAD:main` push when HEAD carries unlanded commits), lands with #160 (head 5dbddb2, CI green). Status unchanged until #160 merges.
+**2026-10-05 RESOLVED (W55.2):** PR #160 merged to main as `feec98f` (guard refuses `HEAD:main` push when HEAD carries unlanded commits; fix originally @ 2365cc7). `tests/test_close_session_claim_head_guard.py` + `tests/test_claim_session_head_guard.py` pass 4/4 on main. Residual: a guard alone means the closure row cannot be written from a branch with unmerged commits; the handoff file remains the closure record in that case.
 
 <details>
 <summary>Full record ▸</summary>
