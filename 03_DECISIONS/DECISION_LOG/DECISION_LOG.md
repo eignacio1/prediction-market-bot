@@ -1797,3 +1797,11 @@ ADR-0071 (`03_DECISIONS/ADR-0071_kalshi-settlement-paper-resolution-source.md`) 
    (state of the bot and project). **Live Terminal** = what the bot is actually placing, live (full-black
    terminal). The `/project` page served by `pmbot-web-dashboard` is the Visual Dashboard; `/` is the Live Terminal.
 Docs-only.
+
+### 2026-10-05 — Clarification: Visual Dashboard keeps its look; both dashboards get enhancements + a design pass
+**Operator (2026-10-05 16:46 PT):** "I didn't literally mean for the visual dashboard to be turned into a literal ERP
+site - just a suggestion given what the purpose of it is - it looks good right now. That said - proceed with the
+enhancements and apply better design philosophy to both the live terminal AND visual dashboard."
+**Effect:** the entry above's "ERP-style" means purpose, not form. Wave 56 revised: 56.2 Live Terminal (decision
+stream + design), 56.3 Visual Dashboard (operations health, books & risk, evidence clocks + design, current look kept).
+MLB shadow settlement (GG-472) moves to Wave 57. Docs-only.
