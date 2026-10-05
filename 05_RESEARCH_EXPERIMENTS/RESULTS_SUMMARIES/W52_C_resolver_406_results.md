@@ -109,3 +109,42 @@ ledger, sizing or stake behavior changed. PR #159 not merged.
 2. GG-440: Kalshi settlement as a resolution source (ADR-gated).
 3. New: how positions on postponed/rescheduled games resolve (follow the reschedule date vs. Kalshi's result).
 4. Unexplained: T4 held 9 positions on a game ESPN reports POSTPONED (a started-then-suspended game?). Needs a look.
+
+
+## W54.3 — Kalshi settlement as resolution source: dry run (2026-10-05)
+
+ADR-0071 (ACCEPTED). Code on `w52/resolver-406` (PR #159, not merged). Dry run on COPIES of both ledgers; VPS read-only; no live ledger written.
+
+| ticker | band | kalshi result | settle value | booked P&L | cancelled | G6 |
+|---|---|---|---|---|---|---|
+| KXMLBHIT-26JUL011335WSHBOS-WSHCABRAMS5-2 | T1 | scalar | 0.34 | -1.2232 | True | n |
+| KXMLBHIT-26JUL011335WSHBOS-WSHCABRAMS5-1 | T1 | scalar | 0.73 | -1.3096 | True | n |
+| KXMLBHIT-26JUL032210TORSEA-SEAJRODRGUEZ44-1 | T1 | scalar | 0.61 | -0.3224 | True | n |
+| KXMLBHIT-26JUL102010LAAMIN-LAAMTROUT27-1 | T1 | scalar | 0.68 | -0.6293 | True | n |
+| KXMLBHIT-26JUL101940ATHCWS-ATHNKURTZ16-2 | T1 | scalar | 0.25 | -0.6739 | True | n |
+| KXMLBHIT-26JUL101940ATHCWS-ATHNKURTZ16-1 | T1 | scalar | 0.66 | -1.3318 | True | n |
+| KXMLBHIT-26JUL191410SDKC-KCBWITT7-2 | T1 | scalar | 0.41 | -1.1433 | True | n |
+| KXMLBHIT-26JUL191410SDKC-KCBWITT7-1 | T1 | scalar | 0.8 | -1.6121 | True | n |
+| KXMLBHIT-26JUL211940SFKC-KCBWITT7-2 | T1 | scalar | 0.34 | -0.2318 | True | n |
+| KXMLBHIT-26JUL211940SFKC-KCBWITT7-1 | T1 | scalar | 0.75 | -0.7629 | True | n |
+| KXMLBHIT-26JUL211910BALBOS-BALGHENDERSON2-1 | T1 | yes | 1.0 | -7.1553 | False | y |
+| KXMLBHIT-26JUL231715AZSTL-AZKMARTE4-2 | T1 | scalar | 0.29 | +0.0000 | True | n |
+| KXMLBHIT-26JUL231715AZSTL-AZKMARTE4-1 | T1 | scalar | 0.69 | -0.5062 | True | n |
+| KXMLBHIT-26JUL241910CLETB-CLESKWAN38-2 | T1 | scalar | 0.28 | +0.7014 | True | n |
+| KXMLBHIT-26JUL241910CLETB-CLEJRAMREZ11-1 | T1 | scalar | 0.68 | -0.1375 | True | n |
+| KXMLBHIT-26JUL261410HOUCWS-HOUCWALKER8-2 | T1 | scalar | 0.26 | -0.8703 | True | n |
+| KXMLBHIT-26JUL261410HOUCWS-HOUCWALKER8-1 | T1 | scalar | 0.66 | -1.2224 | True | n |
+| KXMLBHIT-26SEP221835TORBAL-TORKOKAMOTO7-1 | T4M-PROJ | no | 0.0 | -1.0000 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-BALPALONSO25-2 | T4M-PROJ | no | 0.0 | +0.1236 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-BALGHENDERSON2-1 | T4M-PROJ | no | 0.0 | -1.0000 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-TORKOKAMOTO7-1 | T4M-PROJ | no | 0.0 | -1.0000 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-BALGHENDERSON2-1 | T4M-PROJ | no | 0.0 | -1.0000 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-TORGSPRINGER4-1 | T4M-PROJ | yes | 1.0 | -0.0500 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-TORGSPRINGER4-2 | T4M-PROJ | no | 0.0 | -0.5500 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-TORKOKAMOTO7-1 | T4M-PROJ | no | 0.0 | -0.5500 | False | y |
+| KXMLBHIT-26SEP221835TORBAL-BALGHENDERSON2-1 | T4M-PROJ | no | 0.0 | -0.4500 | False | y |
+26 rows; total pnl -23.907
+
+**Realized drawdown after booking (as `PaperTrader.summary()` computes it, the kill-switch input):** T1 12.44% (was 10.60%), T4M-PROJ 13.45% (was 12.90%). Both below the 20% permanent kill switch. G6 counts exclude the 16 cancelled rows (all T1; the other 10 rows, 1 T1 + 9 T4M-PROJ, are on postponed-and-replayed games and count).
+
+**Open follow-up (registered, not fixed):** other `closed_positions` readers (e.g. `build_t4_resolved_ledger.py`) do not yet honour `cancelled=true`.
