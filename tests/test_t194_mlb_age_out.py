@@ -79,12 +79,11 @@ def _open_mlb_pos(
 
 @pytest.fixture(autouse=True)
 def _venue_settled(monkeypatch):
-    """T-656 / GG-440: these tests exercise the stats-based booking path, which now
-    runs only after Kalshi reports the market settled yes/no. Stub the venue
-    lookup (no network in tests); the gate itself is tested in test_run_resolve_mlb.py."""
+    """ADR-0071 (W54.3): positions without a result are positions Kalshi has not
+    settled yet. Stub the venue as NOT_FINAL (no network in tests)."""
     import prediction_market_bot.run_resolve_mlb as _rm
     monkeypatch.setattr(_rm, "_venue_market_state",
-                        lambda ticker: (_rm.VENUE_SETTLED, {"result": "yes"}))
+                        lambda ticker: (_rm.VENUE_NOT_FINAL, {"result": ""}))
 
 
 class TestMarkAgedOpen:
@@ -271,7 +270,9 @@ class TestResolveMLBAgeOut:
         return position_id
 
     def test_aged_position_tagged_in_portfolio(self, tmp_path: Path) -> None:
-        """Positions >48h old with no API result should be tagged aged_open=True."""
+        """ADR-0071: a position >48h old that Kalshi has not settled stays open and
+        unbooked. The resolver no longer tags aged_open (W54.3 removed stat-feed aging);
+        staleness is surfaced by monitor.check_stale_open_positions instead."""
         portfolio = tmp_path / "portfolio.json"
         stale_date = (date.today() - timedelta(days=3)).isoformat()
         pid = self._make_stale_portfolio(portfolio, stale_date)
@@ -291,7 +292,7 @@ class TestResolveMLBAgeOut:
             None,
         )
         assert open_pos is not None, "Position must remain in open_positions"
-        assert open_pos.get("aged_open") is True
+        assert len(state.get("closed_positions", [])) == 0
 
     def test_within_grace_period_not_tagged(self, tmp_path: Path) -> None:
         """Positions within 48h grace period must not be tagged aged_open.
