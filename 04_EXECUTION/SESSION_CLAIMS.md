@@ -765,3 +765,4 @@
 | 2026-10-05T08:15:49Z | T-680 | CLOSED — W55.2: PR #160 landed and proven live; GG-451 resolved; t4-mlb restart traced to host OOM (GG-477), swap applied, cron stagger staged (T-681). (commit `c177b80`) |
 | 2026-10-05T23:00:25Z | T-686 | CLOSED — W55.3b PR #164 merged; 69 T1 MLB rows; GG-470/453 PARTIALLY RESOLVED; GG-482 registered |
 | 2026-10-05T23:29:12Z | T-676 | CLOSED — W55.1 - #159 merged+deployed; 26 stuck MLB positions booked per ADR-0071 (T1 12.44%, T4M-PROJ 13.45% DD); GG-440/450 resolved (commit `7867514`) |
+| 2026-10-05T23:30:21Z | T-683 | CLOSED — W55.3 - MLB shadow games cache refreshed off-box and synced to VPS (PR #164); 69 T1 rows written; GG-470/453 partial, GG-482 scheduler gap registered (commit `bdaff5a`) |

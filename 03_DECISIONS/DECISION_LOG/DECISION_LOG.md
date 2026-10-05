@@ -1784,3 +1784,5 @@ ADR-0071 (`03_DECISIONS/ADR-0071_kalshi-settlement-paper-resolution-source.md`) 
 - Merged #159 (49bf44c); deploy restarted t4-mlb (no game live, GG-432 policy). Live resolver run booked 17 T1 + 9 T4 positions; 16 flagged CANCELLED at Kalshi settlement value, excluded from G6/calibration (flag-verified only).
 - Pre-registered expectation held: T1 realized drawdown 12.44%, T4M-PROJ 13.45%, both < 20% kill switch. Backups: logs/paper_portfolio_mlb{,_t4}.json.bak.20261005T075734Z and .bak.20261005T225954Z.
 - GG-440, GG-450 RESOLVED; GG-441 stays OPEN. Evidence: RESULTS_SUMMARIES/W55_1_ledger_booking_results.md.
+
+| 2026-10-05 | T-683..T-688 | W55.3: ESPN ruled out as MLB shadow games source (starter ids are ESPN athlete ids, no MLBAM id; frozen-model policy forbids substitution). Chose off-box refresh: Mac fetches Stats API, scripts/sync_mlb_games_cache.sh pushes atomically to VPS with a stamp; runner fails closed if cache >26h old. Cost: sync is manual until a scheduler exists (GG-482). GG-470/GG-453 PARTIALLY RESOLVED, not RESOLVED, for that reason. VPS T1 cron dropped --refresh (backup /root/crontab.bak.W55_3b.20261005T225931Z). No sizing change. |

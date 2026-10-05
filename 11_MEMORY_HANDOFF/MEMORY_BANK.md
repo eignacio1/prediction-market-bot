@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-05T23:17:00Z (T-676 — W55.1 - #159 merged+deployed; 26 stuck MLB positions booked per ADR-0071 (T1 12.44%, T4M-PROJ 13.45% DD); GG-440/450 resolved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261005T2317Z_W55_1.md` for full session detail.
+**Last reviewed:** 2026-10-05T23:35:00Z (T-683 — W55.3 - MLB shadow games cache refreshed off-box and synced to VPS (PR #164); 69 T1 rows written; GG-470/453 partial, GG-482 scheduler gap registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261005T2335Z_W55_3c.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
