@@ -757,3 +757,4 @@
 | 2026-10-05T07:47:51Z | T-672 | CLOSED — W54.2 GG-432 merged+proven on VPS; 12 MLB shadow cells armed but T1 blocked by Stats API 406 (GG-453/470 open) (commit `ba39403`) |
 | 2026-10-05T07:54:50Z | T-676..T-679, GG-475..GG-476 | W55.1 STANDARD - merge #159 + ADR-0071 live ledger booking |
 | 2026-10-05T07:55:06Z | T-680..T-682, GG-477..GG-479 | W55.2 STANDARD - merge #160 + Live Terminal proof + t4-mlb self-restart |
+| 2026-10-05T07:55:23Z | T-683..T-685, GG-480..GG-481 | W55.3 STANDARD - MLB shadow games-cache refresh off statsapi |
