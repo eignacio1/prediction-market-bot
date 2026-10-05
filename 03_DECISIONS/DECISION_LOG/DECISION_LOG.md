@@ -1774,3 +1774,8 @@ ADR-0071 (`03_DECISIONS/ADR-0071_kalshi-settlement-paper-resolution-source.md`) 
 ## 2026-10-05 -- W54.2 follow-on: MLB shadow cells armed; T1 blocked by Stats API throttling
 - Per operator ("proceed in full with the recommendation"): per-date refresh path + local seed + GG-471 fix merged (PRs #162, #163), 3 MLB lines added to the EXP-037 cron block (7-line crontab diff, backup /root/crontab.bak.20261005T072628Z). No ledger, order, stake, or kelly change; t4-mlb not restarted.
 - Corrected a prior premise: VPS statsapi 406s are intermittent per-IP throttling, so per-date queries are not reliably reachable. T1 `--refresh` fails closed (by design) until a refresh succeeds; T2/T3 run but have no events in window. GG-453 stays OPEN until MLB ledger rows exist. GG-470 stays OPEN. GG-471 RESOLVED. GG-473 registered (bash 3.2 arm script).
+
+### 2026-10-05 — GG-477 remedy: swap added, cron stagger staged (W55.2 follow-up)
+- Decision: add a 2 GB swapfile with vm.swappiness=10 on the VPS (961 MB RAM, no swap) and stagger the minute field of the :00/:30 shadow/T3 crons. No order, stake, kelly_fraction, or band logic touched.
+- Evidence: 10-04 01:30:01 six python crons started at once (~136 MB each); victim pid 2884421 follows the run_t3_pretip cron shell (NBA T3, dark) — pid adjacency, not a logged job name.
+- Status: swap applied on host; stagger is scripts/ops/gg477_cron_stagger.py, operator-applied (dry-run default). OOMScoreAdjust rejected for now (shifts kills onto bet-writing crons). GG-477 stays OPEN until a clean 01:30 UTC window.
