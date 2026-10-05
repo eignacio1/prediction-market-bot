@@ -767,3 +767,4 @@
 | 2026-10-05T23:29:12Z | T-676 | CLOSED — W55.1 - #159 merged+deployed; 26 stuck MLB positions booked per ADR-0071 (T1 12.44%, T4M-PROJ 13.45% DD); GG-440/450 resolved (commit `7867514`) |
 | 2026-10-05T23:30:21Z | T-683 | CLOSED — W55.3 - MLB shadow games cache refreshed off-box and synced to VPS (PR #164); 69 T1 rows written; GG-470/453 partial, GG-482 scheduler gap registered (commit `bdaff5a`) |
 | 2026-10-05T23:49:47Z | T-689..T-691, GG-483..GG-484 | W56.2 STANDARD - Live Terminal decision stream + design pass |
+| 2026-10-05T23:50:14Z | T-692..T-694 (GG-482, GG-477 existing) | W56.1 STANDARD - MLB cache via GH Actions + GG-477 cron stagger |
