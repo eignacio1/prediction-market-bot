@@ -753,3 +753,4 @@
 | 2026-10-05T06:55:43Z | ADR-0071, T-664..T-669 | W54.3 STANDARD - ADR + Kalshi-settlement resolver + dry run |
 | 2026-10-05T06:56:00Z | T-670..T-671 | W54.1 STANDARD - final landing PR #160 (no merge) |
 | 2026-10-05T06:56:16Z | T-672..T-675, GG-470..GG-474 | W54.2 STANDARD - merge #158 + verify on VPS + arm MLB postseason shadow |
+| 2026-10-05T07:19:08Z | T-670..T-671 | MERGED: NO (by design) — W54.1 DONE: #160 head 5dbddb2 CI green, CLEAN, awaiting operator merge (restarts t4-mlb; no live MLB game); handoff SESSION_HANDOFF_20261005T0715Z_W54_1.md; docs on main @ 34e814e; close_session_claim.sh not run (GG-451) |
