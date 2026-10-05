@@ -25,8 +25,17 @@ Findings, all verified on the VPS:
 
 Not done: conf edit, push of the conf, `arm_shadow_crons.sh`, per-band manual runs, crontab diff. Crontab untouched (488 non-empty lines before; EXP-037 block still NFL-only).
 
-## D4 — dispositions
-- GG-432 RESOLVED (proof above). GG-453 stays OPEN (no rows exist; annotated with the blocker). New: GG-470 HIGH, GG-471 MEDIUM, GG-472 MEDIUM.
+## D3 (completed 2026-10-05, after operator said "proceed in full with the recommendation")
+- Code: PR #162 (@ 2f9ac401, CI 37276909845, deploy 37277514484) per-date refresh (`fetch_day`/`refresh_recent`, retry+backoff, fail-closed, no partial write), `--refresh` TypeError fixed, GG-471 helper fix + tests. PR #163 (@ 33df54ab, CI 37278349178) refresh window starts at last Final game. No t4-mlb restart (deploy policy `not_needed`).
+- Seed: `games.parquet` 28,122 rows copied to the VPS (`exp_output/MLB_GAME/cache_w47/`), checksum matched.
+- Armed: 3 MLB lines added to the EXP-037 block (T1 `7 */6` with `--refresh`, T2 `12 * * * *`, T3 `3,13,...,53`). Crontab diff = 7 added lines, nothing else changed; backup `/root/crontab.bak.20261005T072628Z`. NFL lines byte-identical.
+- Manual run of each band: T2 and T3 exit 0, wrote nothing (no event inside their windows at that hour). **T1 failed closed twice**: `REFRESH FAILED: stats api 406 ... games refresh failed -- refusing to run on stale data`.
+- Finding: the VPS 406s are intermittent per-IP throttling, not tied to date or range form (same date flipped 200->406 in minutes). My earlier belief that single-date queries are reliable from the VPS was wrong. My probing may have worsened it.
+- **Result: armed, but zero MLB ledger rows exist.** GG-453 stays OPEN.
 
-## Operator decision needed
-How should the VPS get MLB game data? (a) add a per-date (`?date=`) refresh path plus a one-time cache seed built locally and copied over; (b) build/refresh locally and sync the parquet; (c) other. After that: a small helper fix (GG-471) and then the arm step as designed.
+## D4 — dispositions
+- GG-432 RESOLVED. GG-471 RESOLVED (archived). GG-453 OPEN (annotated). GG-470 OPEN HIGH (partial: path + seed done, egress unreliable). GG-472 OPEN (no MLB settle script, out of scope). GG-473 new LOW (arm script fails on macOS bash 3.2 with empty ALLOW array; workaround `--allow <already-allowlisted conf>`).
+
+## Operator decisions needed
+1. Statsapi egress for T1: (a) let the 6-hourly cron run a few days and see whether any attempt gets through; (b) refresh `games_current.parquet` locally and sync to the VPS before each T1 window; (c) non-DigitalOcean egress/proxy.
+2. Whether to staff GG-472 (MLB settlement) before the postseason ledgers matter.

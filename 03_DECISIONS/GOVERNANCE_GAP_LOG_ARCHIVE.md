@@ -3971,3 +3971,20 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 ---
 
+### GG-471 — arm_shadow_crons helper rejects MLB shadow lines; allowlist misses run_mlb_pregame_shadow.py
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-471 |
+| Category | Tooling |
+| What was found | `scripts/arm_shadow_crons.py` `dry_command()` matches only the substring `run_pregame_shadow.py`; `run_mlb_pregame_shadow.py` does not contain it, so step (d) of `arm_shadow_crons.sh` would `SystemExit("refusing to dry-run unrecognised job")` on any MLB line. The additive allowlist regex `scripts/run_pregame_shadow[\w]*\.py` likewise does not match `scripts/run_mlb_pregame_shadow.py`. |
+| Why it matters | "Run arm_shadow_crons.sh as designed" cannot arm MLB without a helper change plus a matching test. |
+| Source | Reading `scripts/arm_shadow_crons.py` at c2acddf4 |
+| Disposition | **RESOLVED 2026-10-05 (W54.2, PR #162 @ 2f9ac401):** `dry_command()` recognises `run_mlb_pregame_shadow.py` (appends `--dry-run`, drops `--refresh` so the dry-run validates evaluation offline); allowlist now accepts `scripts/run_(mlb_)?pregame_shadow*.py` and `scripts/fetch_mlb_game_history.py`; test `test_mlb_runner_lines_are_dry_runnable_and_allowlisted`. The arm script then dry-ran all 7 lines and installed. |
+
+</details>

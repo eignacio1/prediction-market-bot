@@ -4720,7 +4720,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W53_2_shadow_audit_results.md` |
 | Disposition | Registered only (read-only wave). Next step: operator authorizes an MLB cron block (terminal); correct the ACTIVE_QUEUE "Armed" line meanwhile. **2026-10-05 W54.2 update:** operator authorization already stands (2026-10-02 15:22 PT, new lines only), but arming is blocked by GG-470 (VPS cannot build/refresh the games cache) and GG-471 (helper rejects MLB lines). Still unarmed; no rows exist. |
 
+**2026-10-05 W54.2 later update:** 7-line EXP-037 block now installed on the VPS (3 MLB lines added; crontab diff = 7 added lines, backup `/root/crontab.bak.20261005T072628Z`; NFL lines byte-identical). By hand: T2 and T3 exit 0, wrote nothing (no event inside their windows at 07:30 UTC); T1 `--refresh` failed closed twice on Stats API 406 (GG-470). **Zero MLB ledger rows exist, so this gap stays OPEN** (resolution criterion: MLB_* ledgers contain rows).
+
 </details>
+
 
 ### GG-470 — MLB pregame shadow cannot run on the VPS: games cache absent and unbuildable/unrefreshable (statsapi 406 on range queries)
 
@@ -4736,25 +4739,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | What was found | 2026-10-05 W54.2. `scripts/run_mlb_pregame_shadow.py --dry-run` on the VPS exits `exp_output/MLB_GAME/cache_w47/games.parquet missing`. The cache is gitignored (`*.parquet`) and exists neither on the VPS nor in the operator checkout. `scripts/fetch_mlb_game_history.py` builds it from `statsapi.mlb.com/api/v1/schedule?startDate=..&endDate=..`; from the VPS that range query returns HTTP 406 for any range, any season (2024 and 2026 tested; python requests and curl). Single-date queries (`?date=YYYY-MM-DD`) return 200 from the VPS; the same range query returns 200 locally. The runner's `--refresh` calls the same fetcher and aborts ("refusing to run on stale data"), so an MLB cron with `--refresh` writes zero rows, and one without it would log rows from a frozen cache with stale results and probable starters. |
 | Why it matters | Arming the 12 MLB cells now would either log nothing or pollute the EXP-037 MLB ledgers with stale-feature rows. W54.2 therefore did NOT install the MLB cron lines. |
 | Source | W54.2 VPS read-only tests; `W54_2_gg432_mlb_arm_results.md` |
-| Disposition | Open. Operator choice needed: (1) per-date fetch path (`?date=`) for refresh, which the VPS can reach, plus a one-time cache seed built locally and copied over; (2) build and refresh the cache locally and sync it; (3) other. Same 406 family as GG-440. |
-
-</details>
-
-### GG-471 — arm_shadow_crons helper rejects MLB shadow lines; allowlist misses run_mlb_pregame_shadow.py
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-471 |
-| Category | Tooling |
-| What was found | `scripts/arm_shadow_crons.py` `dry_command()` matches only the substring `run_pregame_shadow.py`; `run_mlb_pregame_shadow.py` does not contain it, so step (d) of `arm_shadow_crons.sh` would `SystemExit("refusing to dry-run unrecognised job")` on any MLB line. The additive allowlist regex `scripts/run_pregame_shadow[\w]*\.py` likewise does not match `scripts/run_mlb_pregame_shadow.py`. |
-| Why it matters | "Run arm_shadow_crons.sh as designed" cannot arm MLB without a helper change plus a matching test. |
-| Source | Reading `scripts/arm_shadow_crons.py` at c2acddf4 |
-| Disposition | Open. Small fix, deferred behind GG-470 (nothing to arm until the cache problem is decided). |
+| Disposition | **PARTIAL 2026-10-05 (W54.2):** seed `games.parquet` (28,122 rows, 2015-2026, sha256 d6dc0adf...) built locally, copied to the VPS, loads; per-date refresh path (`fetch_day`/`refresh_recent`, retry+backoff, fail-closed, window starts at last Final game) merged in PRs #162/#163, values verified identical to the range path on 7 spot-check dates. **NOT solved:** the VPS edge answers 406 *intermittently and per-IP*, not per date or per range: the same date flipped 200->406 within minutes, `gameType=` and multi-day ranges 406 more often, and by-hand `--refresh --bands T1` failed closed twice (406 for 2026-09-30, then 2026-10-03, 4 retries each, ~2.5 min). Fail-closed means no stale rows are written, but T1 MLB will log nothing until a refresh gets through. Open options for the operator: (1) let the 6-hourly T1 cron prove or disprove reliability over a few days; (2) refresh `games_current.parquet` from a machine that is not throttled (local) and sync it to the VPS before each T1 window; (3) a non-DigitalOcean egress/proxy for statsapi.mlb.com. My own probing may have worsened the throttle; the sample is not clean. |
 
 </details>
 
@@ -4773,5 +4758,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | Even once GG-470 is solved, MLB shadow rows stay unscored without a settle path. |
 | Source | W54.2; DECISION_LOG 2026-10-05 |
 | Disposition | Registered only; not built in W54.2. |
+
+</details>
+
+### GG-473 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed (empty array under set -u)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-473 |
+| Category | Tooling |
+| What was found | 2026-10-05 W54.2: `bash scripts/arm_shadow_crons.sh` with no arguments printed `ALLOW[@]: unbound variable` at line 28 and aborted before merging anything (nothing changed; safe failure). Cause: bash 3.2 (macOS default) treats `"${ALLOW[@]}"` on an empty array as unbound under `set -u`. |
+| Why it matters | The documented invocation cannot be run as written from the operator's Mac. |
+| Source | W54.2 run of the arm script |
+| Disposition | Registered only (Rule 11). Workaround used: pass `--allow deploy/cron_exp037_pregame_shadow.conf` (a path already on the allowlist, so no loosening). Fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
 
 </details>
