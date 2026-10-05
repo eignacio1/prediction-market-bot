@@ -78,10 +78,10 @@ def refresh_recent(out: Path, base: Path, season: int, today: date, back: int = 
     df = df[df.season == season]
     if df.empty:
         raise RuntimeError(f"no season={season} rows in {src} -- seed it first")
-    start = today - timedelta(days=back)
+    start = today - timedelta(days=back)              # only used when the cache holds no Final game yet
     final = df[df.status == "Final"]
-    if len(final):
-        start = min(start, date.fromisoformat(str(final.game_date.max())) - timedelta(days=1))
+    if len(final):        # earlier days already hold their results; every extra request is extra 406 exposure
+        start = date.fromisoformat(str(final.game_date.max())) - timedelta(days=1)
     if (today - start).days > MAX_GAP_DAYS:
         raise RuntimeError(f"cache last Final {final.game_date.max()} is >{MAX_GAP_DAYS}d behind {today} -- re-seed")
     days = [(start + timedelta(days=i)).isoformat() for i in range((today - start).days + 1 + ahead)]
