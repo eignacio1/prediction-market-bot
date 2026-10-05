@@ -4778,3 +4778,21 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered only (Rule 11). Workaround used: pass `--allow deploy/cron_exp037_pregame_shadow.conf` (a path already on the allowlist, so no loosening). Fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
 
 </details>
+
+### GG-477 — Global OOM on the 961 MB / no-swap VPS kills production processes at ~01:30 UTC (t4-mlb on 2026-10-05; a cron python on 2026-10-04)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-477 |
+| Category | Operational resilience |
+| What was found | t4-mlb's `NRestarts=1` / start 2026-10-05 01:31:28 UTC was an OOM kill, not a deploy: `01:30:25 t4-mlb.service: killed by the OOM killer ... status=9/KILL ... Failed with result 'oom-kill'`, auto-restarted after 60 s. Kernel log: `global_oom`, `constraint=CONSTRAINT_NONE` (host-wide, NOT t4-mlb's 512 MB cgroup `MemoryMax`); host has 961 MB RAM, **0 swap**, ~786 MB anon in use at the kill. Victim t4-mlb python had only ~137 MB anon-rss, so it was chosen, not the cause. The kill lands in the 01:25-01:30 UTC window where `run_pregame.py` (cron 25 1) and `run_paper_trade.py` (cron 30 1) start. Recurrence: 2026-10-04 01:31:15 UTC global OOM killed a `python` under `cron.service` (victim job not identified); 2026-09-23 05:04 a 695 MB python3; 2026-09-10 01:39-01:51 twelve cgroup-OOM kills. |
+| Impact | t4-mlb: ~44 s of excess cycle-log gap (last row 01:29:59, next 01:31:36 vs ~52 s normal cadence); no game live. Open question: which cron job was killed on 10-04 and whether it lost a run. Risk grows if an OOM lands mid-game or kills a cron-run bet writer. |
+| Source | W55.2 D4, VPS read-only (journalctl -u t4-mlb, journalctl -k, free -m, crontab) |
+| Disposition | Registered only (Rule 11); nothing changed or restarted. Candidate fixes (operator decision): add swap, stagger the 01:25/01:30 crons, set `OOMScoreAdjust=-500` on t4-mlb, find the per-process memory hog among the cron jobs. Related: GG-118 (dashboard OOM loop). |
+
+</details>
