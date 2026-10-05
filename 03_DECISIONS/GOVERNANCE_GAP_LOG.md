@@ -4610,6 +4610,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | W51.1 (2026-10-03); results: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W51_1_killswitch_truth_results.md` |
 | Disposition | Registered only. Fix is a resolution-source change (Kalshi historical settlement and/or non-blocked MLB source), operator/ADR-gated. Note: 16 of 17 settled as `scalar` = cancelled markets (see GG-450), so they carry no real outcome; how to book them (void / mark to settlement / exclude from G6) is an operator decision. |
 | W52.C update (2026-10-03, T-656) | Root cause (LIKELY, VPS reproduction pending): statsapi 406 is the GG-084 Fastly IP block of the VPS datacenter IP, not a request-format issue. The ESPN fallback then also returned nothing, via a path that logged nothing (player absent from every final boxscore), so the log could not separate did-not-play / name mismatch / ESPN failure. The code also had no venue check, so a Kalshi-cancelled market could be booked WIN/LOSS if a source ever returned hits. Fix on PR #159 (venue gate: book only Kalshi yes/no; cancelled = skip + report; --dry-run; ESPN not-found logged). Status unchanged. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_C_resolver_406_results.md. |
+| W53.1 VPS confirmation (2026-10-05) | Status unchanged. VPS reproduction CONFIRMED in refined form: every origin-bound (CDN cache-MISS) statsapi request from the VPS IP gets 406 regardless of headers/gameType/cache-buster; CDN-cached objects return 200; Mac gets 200 on all. The 406 does NOT explain the stuck set: dry-run of the 26 positions = 16 T1 Kalshi-cancelled (correctly skipped), 10 (1 T1 + 9 T4) on games ESPN reports POSTPONED and replayed the next day, so a game_date-keyed lookup cannot resolve them even unblocked. 0 would settle. New operator question: how postponed/rescheduled-game positions resolve. Detail: `W52_C_resolver_406_results.md` § VPS confirmation (W53.1). |
 
 </details>
 
@@ -4664,5 +4665,57 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | A resolver that maps outcomes to win/loss has no representation for a venue cancellation; any booking choice changes realized P&L and G6 sample counts. T4/KXMLBHIT cells may be exposed to the same cancellations; unmeasured. |
 | Source | W51.1 follow-up (2026-10-03). Scratch evidence only; not committed. |
 | Disposition | Registered only. Operator decision on booking (void / mark / exclude from G6); ADR-gated ledger change; measure cancellation rate across KXMLBHIT before generalizing. |
+
+</details>
+
+### GG-451 — close_session_claim.sh pushes the current HEAD to main (same defect class as GG-419)
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-451 |
+| Category | Process control |
+| What was found | `scripts/close_session_claim.sh` commits the closure row and runs `git push origin HEAD:main` (rebase-retry), exactly as `claim_session.sh` did before the GG-419 fix (PR #157). Run from a session branch carrying unmerged commits, the closure row lands the whole branch on main, and because deploy.yml restarts t4-mlb on any code push (GG-432), that includes a t4-mlb restart. Avoided by hand at 50.1 session-end by writing the row from a clean origin/main worktree. |
+| Source | 50.1 session-end (2026-10-03T03:15Z), reading scripts/close_session_claim.sh; recorded in 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0250.md |
+| Disposition | Registered by Wave 52 CC (T-659), registration only. Fix shape: same guard as GG-419 (refuse while `git rev-list origin/main..HEAD` is non-empty), or write the row from a temporary worktree at origin/main. Note: a guard alone means the row cannot be written from a branch with unmerged work, which is the case this script exists for, so the worktree approach is the better fit. |
+
+</details>
+
+### GG-452 — DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-452 |
+| Category | Reproducibility |
+| What was found | `06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-base.txt` (dated 2026-05-22/23) pins scikit-learn==1.4.2 and scipy==1.13.0 while pyproject.toml requires scikit-learn>=1.8.0 and scipy<1.13. tests.yml and deploy.yml's approval gate install requirements-dev.txt then `pip install -e .`, so the effective CI environment is whatever resolves on top of a stale lock; the VPS venv's actual versions are not recorded in the repo. |
+| Source | 50.1 GG-427 work (2026-10-03), recorded in SESSION_HANDOFF_20261003_0250.md |
+| Disposition | Registered by Wave 52 CC (T-659), registration only. Next step: `pip freeze` on the VPS venv (terminal), then regenerate the locks from it. Model-affecting versions change only by ADR. |
+
+</details>
+
+### GG-453 — EXP-037 MLB postseason shadow arm has no cron: 12 MLB game-market cells never log, queue says armed
+
+**Status:** OPEN · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-453 |
+| Category | Operational / documentation-vs-reality |
+| What was found | 2026-10-05 04:13 UTC read-only audit (W53.2): `crontab -l` EXP-037 block runs only `scripts/run_pregame_shadow.py` (NFL model) and the NFL settle. `scripts/run_mlb_pregame_shadow.py` exists on the VPS but is in no cron line. `exp_output/PREGAME_SHADOW/` holds 12 NFL ledgers and zero `MLB_*` files. `04_EXECUTION/ACTIVE_QUEUE.md` records "NFL + MLB postseason shadow: Armed" and "33 pre-game cells now log unattended" (12 NFL + 12 MLB + 9 NHL). Only 21 do. |
+| Why it matters | MLB postseason pre-game markets are live now; every day unscheduled is permanent loss of T1/T2/T3 rows for EXP-037's MLB half. |
+| Source | `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W53_2_shadow_audit_results.md` |
+| Disposition | Registered only (read-only wave). Next step: operator authorizes an MLB cron block (terminal); correct the ACTIVE_QUEUE "Armed" line meanwhile. |
 
 </details>

@@ -748,3 +748,10 @@
 | 2026-10-03T20:41:54Z | T-646 | MERGED: NO — branch `session/20261003T201919Z-w51-nhl-team-codes` awaiting merge (HEAD f822b6b not on origin/main; operator-gated: merge deploys + restarts t4-mlb, GG-432; follow-up T-647) — 51.2 NHL SJ/TB/LA/NJ code drop fixed + abstention counters; GG-403 partial, GG-405 counter half. Row written from clean origin/main worktree (close_session_claim.sh rebases the session branch, GG-419) |
 | 2026-10-03T21:27:09Z | T-654..T-663, GG-451..GG-460 | STANDARD — Wave 52 CC executor: 52.A landing PR, 52.B GG-432 deploy PR, 52.C resolver 406, 52.D NHL goalie source, 52.E Live Terminal; no merge to main |
 | 2026-10-03T20:40:47Z | T-646 | MERGED: NO — branch `session/20261003T201919Z-w51-nhl-team-codes` awaiting merge — 51.2 NHL silent drops: Kalshi SJ/TB/LA/NJ codes were dropped (379/1,595 mkts); parser+aliases+counters on unmerged branch c12a47a. (commit `c12a47a`) |
+| 2026-10-05T04:12:22Z | TBD | W53.1 STANDARD - GG-440 VPS confirmation + 26-position dry run |
+| 2026-10-05T04:12:54Z | TBD | W53.2 STANDARD - shadow ledger + crontab audit (read-only) |
+| 2026-10-05T04:13:13Z | W53.3 | W53.3 STANDARD - GG-451 guard on w52/landing + GG-452 VPS freeze |
+| 2026-10-05T04:20:56Z | W53.2 | CLOSED — W53.2 read-only shadow audit: NHL+NFL log valid rows, crontab matches deploy; 12 MLB shadow cells unscheduled (GG-453). (commit `a8fd2e0`) |
+| 2026-10-05T06:55:43Z | ADR-0071, T-664..T-669 | W54.3 STANDARD - ADR + Kalshi-settlement resolver + dry run |
+| 2026-10-05T06:56:00Z | T-670..T-671 | W54.1 STANDARD - final landing PR #160 (no merge) |
+| 2026-10-05T06:56:16Z | T-672..T-675, GG-470..GG-474 | W54.2 STANDARD - merge #158 + verify on VPS + arm MLB postseason shadow |
