@@ -38,7 +38,8 @@ ALLOW_PREFIXES = (
     "exp_output/w48_3_screens/",
 )
 ALLOW_PATTERNS = (
-    re.compile(r"^scripts/run_pregame_shadow[\w]*\.py$"),
+    re.compile(r"^scripts/run_(mlb_)?pregame_shadow[\w]*\.py$"),
+    re.compile(r"^scripts/fetch_mlb_game_history\.py$"),
     re.compile(r"^scripts/arm_shadow_crons\.(sh|py)$"),
     re.compile(r"^scripts/browser_check_[\w]+\.py$"),
     re.compile(r"^src/prediction_market_bot/[\w/]*(nfl|mlb|nhl)[\w]*shadow[\w]*\.py$"),
@@ -92,6 +93,8 @@ def dry_command(line: str) -> str:
     cmd = re.sub(r"\s>>\s*\S+\s+2>&1\s*$", "", command_of(line))
     if "run_pregame_shadow_settle.py" in cmd:
         return cmd + ' --ledger-dir "$(mktemp -d)"'
+    if "run_mlb_pregame_shadow.py" in cmd:        # GG-471: dry-run validates evaluation offline; the
+        return cmd.replace(" --refresh", "") + " --dry-run"   # Stats API refresh is proven by the by-hand run
     if "run_pregame_shadow.py" in cmd:
         return cmd + " --dry-run"
     raise SystemExit(f"refusing to dry-run unrecognised job: {cmd}")

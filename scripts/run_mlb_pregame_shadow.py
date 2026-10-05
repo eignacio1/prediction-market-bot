@@ -47,7 +47,8 @@ def main(argv=None) -> int:
         now = now.replace(tzinfo=timezone.utc)
     if a.refresh:
         from fetch_mlb_game_history import main as fetch_main
-        if fetch_main(["--first", str(now.year), "--last", str(now.year), "--out", str(CACHE / "games_current.parquet")]):
+        if fetch_main(["--recent", "--season", str(now.year), "--today", now.date().isoformat(),
+                       "--base", str(CACHE / "games.parquet"), "--out", str(CACHE / "games_current.parquet")]):
             raise SystemExit("games refresh failed -- refusing to run on stale data")
     gp = CACHE / "games.parquet"
     if not gp.exists():
