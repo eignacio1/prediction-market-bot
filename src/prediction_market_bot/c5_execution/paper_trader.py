@@ -1052,6 +1052,96 @@ class PaperTrader:
         )
         return ok, closed_pos
 
+    def settle_position_from_venue(
+        self,
+        position_id: str,
+        venue_result: str,
+        settlement_value: float | None = None,
+        *,
+        session_id: str | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """Settle a position from Kalshi's own settlement (ADR-0071, GG-440/GG-450).
+
+        venue_result "yes"/"no": outcome WIN/LOSS, same P&L math as settle_position.
+        venue_result "scalar" (cancelled): booked at Kalshi's settlement value
+        (what real capital would have received), outcome "CANCELLED", cancelled=True.
+        Cancelled rows carry no information about the model, so they are excluded
+        from G6 counts and calibration/Brier by consumers (run_band_monitor.filter_clean).
+        Cancelled bookings are historical bookkeeping and do not feed the
+        same-day circuit breaker; realized P&L (the kill switch input) includes them.
+        Idempotent: unknown / already-settled position_id returns (True, {}).
+        """
+        if venue_result not in ("yes", "no", "scalar"):
+            raise ValueError(f"unsupported venue_result {venue_result!r}")
+        cancelled = venue_result == "scalar"
+        if cancelled and (settlement_value is None or not 0.0 <= settlement_value <= 1.0):
+            raise ValueError(f"cancelled settlement needs a value in [0,1], got {settlement_value!r}")
+        with self._lock, self._file_lock():
+            self._reload_locked()
+            pos = next(
+                (p for p in self._state["open_positions"]
+                 if p["position_id"] == position_id),
+                None,
+            )
+            if pos is None:
+                return True, {}
+
+            direction = pos["direction"]
+            size      = float(pos["size_usd"])
+            mid       = float(pos["mid_price_at_entry"])
+            vig       = float(pos["vig_at_entry"])
+            ask = (mid + vig / 2) if direction == "YES" else ((1.0 - mid) + vig / 2)
+
+            if cancelled:
+                yes_value = float(settlement_value)
+                payout = yes_value if direction == "YES" else 1.0 - yes_value
+                pnl = size * (payout - ask) / ask
+                outcome = "CANCELLED"
+            else:
+                yes_won = venue_result == "yes"
+                won = yes_won if direction == "YES" else not yes_won
+                pnl = size * (1.0 - ask) / ask if won else -size
+                outcome = "WIN" if won else "LOSS"
+            pnl = round(pnl, 4)
+
+            self._state["open_positions"] = [
+                p for p in self._state["open_positions"]
+                if p["position_id"] != position_id
+            ]
+            closed_pos = {
+                **pos,
+                "outcome": outcome,
+                "pnl": pnl,
+                "resolved_at": _utc_now(),
+                "status": "CLOSED",
+                "settlement_source": "kalshi",
+                "kalshi_result": venue_result,
+                "kalshi_settlement_value": settlement_value,
+                "cancelled": cancelled,
+            }
+            self._state["closed_positions"].append(closed_pos)
+            if not cancelled:
+                self._accumulate_daily_loss(pnl)
+            self._save()
+
+        ok = self._logger.info(
+            COMPONENT, "paper_position_resolved",
+            payload={
+                "position_id": position_id,
+                "player_name": pos["player_name"],
+                "direction": direction,
+                "settlement_source": "kalshi",
+                "kalshi_result": venue_result,
+                "kalshi_settlement_value": settlement_value,
+                "cancelled": cancelled,
+                "outcome": outcome,
+                "pnl": pnl,
+                "bankroll_after": self._state["bankroll_usd"],
+            },
+            session_id=session_id,
+        )
+        return ok, closed_pos
+
     def mark_aged_open(
         self,
         position_id: str,
@@ -1114,8 +1204,9 @@ class PaperTrader:
         n_open     = len(s.get("open_positions", []))
         n_closed   = len(s.get("closed_positions", []))
         n_rejected = len(s.get("rejected_positions", []))  # GG-079/T-234
-        wins     = sum(1 for p in s.get("closed_positions", []) if p.get("outcome") == "WIN")
-        win_rate = wins / n_closed if n_closed > 0 else None
+        scored   = [p for p in s.get("closed_positions", []) if not p.get("cancelled")]
+        wins     = sum(1 for p in scored if p.get("outcome") == "WIN")
+        win_rate = wins / len(scored) if scored else None  # ADR-0071: cancelled excluded
 
         initial      = s["initial_bankroll_usd"]
         # GG-034: derive from the ledger, never trust the stored scalar here — the

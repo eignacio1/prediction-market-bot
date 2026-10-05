@@ -149,6 +149,69 @@ def _ticker_to_game_date(ticker: str) -> str | None:
     except (KeyError, TickerDateParseError):
         return None
 
+
+# GG-440/GG-450 (T-656, Wave 52.C): venue-settlement gate. Kalshi cancelled 16 of
+# the 17 stuck T1 KXMLBHIT markets (result `scalar`, expiration_value 'Cancelled').
+# A stats-derived outcome must never be booked as WIN/LOSS for a market the venue
+# cancelled, and how cancellations ARE booked is an open operator decision
+# (GG-450). So a position is only booked when Kalshi reports the market settled
+# `yes` or `no`; every other state (cancelled, not yet final, or unreadable) is
+# skipped and reported, never settled and never aged. Market data is read from
+# production (_price_discovery_url), public endpoints, no auth, no orders.
+VENUE_SETTLED = "settled"
+VENUE_CANCELLED = "cancelled"
+VENUE_NOT_FINAL = "not_final"
+VENUE_UNKNOWN = "unknown"
+
+
+def _classify_venue_market(raw: dict[str, Any]) -> str:
+    result = str(raw.get("result") or "").strip().lower()
+    expiration = str(raw.get("expiration_value") or "").strip().lower()
+    status = str(raw.get("status") or "").strip().lower()
+    if result in ("yes", "no"):
+        return VENUE_SETTLED
+    if result == "scalar" or "cancel" in expiration or status in ("canceled", "cancelled", "voided"):
+        return VENUE_CANCELLED
+    return VENUE_NOT_FINAL
+
+
+def _venue_market_state(ticker: str) -> tuple[str, dict[str, Any]]:
+    """(state, raw market) for a Kalshi ticker; historical endpoint first (settled
+    markets 404 on the live one, GG-440), then the live endpoint."""
+    if not ticker:
+        return VENUE_UNKNOWN, {}
+    from prediction_market_bot.c5_execution.kalshi_client import _price_discovery_url
+    base = _price_discovery_url()
+    for path in (f"/historical/markets/{ticker}", f"/markets/{ticker}"):
+        try:
+            resp = requests.get(base + path, timeout=_REQUEST_TIMEOUT_S)
+            if resp.status_code == 404:
+                continue
+            resp.raise_for_status()
+            raw = resp.json().get("market") or {}
+            if raw:
+                return _classify_venue_market(raw), raw
+        except Exception as exc:  # noqa: BLE001 - any failure means "cannot confirm"
+            print(f"  [VENUE] {ticker}: {path} failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+    return VENUE_UNKNOWN, {}
+
+def _settlement_value(raw: dict[str, Any]) -> float | None:
+    """YES settlement value in [0,1] from a Kalshi market payload, else None."""
+    for k in ("settlement_value_dollars", "settlement_value"):
+        v = raw.get(k)
+        if v in (None, ""):
+            continue
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            continue
+        if k == "settlement_value" and f > 1.0:
+            f /= 100.0  # cents
+        if 0.0 <= f <= 1.0:
+            return f
+    return None
+
+
 # GG-084/T-239: once the datacenter IP is hard-blocked (confirmed 2026-07-05 —
 # a sustained condition, not per-request flakiness), every further retry-loop
 # exhaustion burns up to 45s for nothing. After _CIRCUIT_BREAKER_THRESHOLD
@@ -375,6 +438,7 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
     if not norm_target:
         return None
 
+    postponed_ids: list[str] = []
     for game_id in _espn_game_ids_for_date(game_date):
         try:
             resp = requests.get(
@@ -396,6 +460,8 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
         status_name = comps[0].get("status", {}).get("type", {}).get("name", "")
         if status_name not in _ESPN_TERMINAL_STATUSES:
             continue  # not over yet — do not trust this game's boxscore
+        if status_name == _ESPN_STATUS_POSTPONED:
+            postponed_ids.append(game_id)
 
         for team_data in data.get("boxscore", {}).get("players", []):
             for stat_group in team_data.get("statistics", []):
@@ -417,6 +483,16 @@ def _espn_fetch_hits(player_name: str, game_date: str) -> float | None:
                         return float(stats[h_idx])
                     except (IndexError, ValueError, TypeError):
                         return None
+    # GG-440 (T-656): this path used to return silently, so a player absent from
+    # every final boxscore left no trace in the log. W53.1: a POSTPONED game counts
+    # as terminal above, so its empty boxscore lands here too -- name that cause
+    # explicitly (the game is played on a later date, so a date-keyed lookup can
+    # never find it), since "did not play" would be wrong for those.
+    cause = ("did not play, or name mismatch" if not postponed_ids else
+             f"ESPN games {','.join(postponed_ids)} on that date were POSTPONED "
+             f"(rescheduled game is on a different date), or the player did not play, or name mismatch")
+    print(f"  [ESPN-FALLBACK] player={player_name} game_date={game_date}: "
+          f"not found in any final ESPN boxscore ({cause})", file=sys.stderr)
     return None
 
 
@@ -483,8 +559,13 @@ def _resolve_pool(
     logger: AuditLogger,
     session_id: str,
     monitor: SystemMonitor,
+    dry_run: bool = False,
 ) -> tuple[int, int]:
     """Resolve all eligible positions in one portfolio pool.
+
+    GG-440 (T-656): dry_run classifies every eligible position (settles /
+    skipped-cancelled / skipped-not-final / unresolvable) and writes nothing to
+    the portfolio -- no settle, no aged_open tag.
 
     Returns (resolved_count, still_open_count).
     Eligible = open positions whose game_date is strictly before today.
@@ -557,50 +638,66 @@ def _resolve_pool(
             )
             continue
 
-        actual_hits = fetch_actual_hits(player_id, game_date, player_name=player_name)
-
-        if actual_hits is None:
-            try:
-                game_dt_utc = datetime.strptime(game_date, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
-                )
-                age_hours = (datetime.now(timezone.utc) - game_dt_utc).total_seconds() / 3600
-            except ValueError:
-                age_hours = 0.0
-
-            if age_hours > 48:
-                trader.mark_aged_open(
-                    position_id=position_id,
-                    reason="api_no_result_48h",
-                    session_id=session_id,
-                )
-                print(
-                    f"  [{pool_label}][AGED] {player_name:<24} — no MLB API result after "
-                    f"{age_hours:.0f}h (>48h) — tagged aged_open",
-                    file=sys.stderr,
-                )
-            else:
-                logger.warning(
-                    "PIPE-05R", "player_stats_fetch_failed",
-                    payload={
-                        "pool":         pool_label,
-                        "player_id":    player_id,
-                        "player_name":  player_name,
-                        "game_date":    game_date,
-                        "position_id":  position_id,
-                        "age_hours":    round(age_hours, 1),
-                        "note":         "MLB Stats API returned no result — position stays open",
-                    },
-                    session_id=session_id,
-                )
-                print(f"  [{pool_label}][SKIP] {player_name:<24} — no MLB API result for "
-                      f"{game_date} ({age_hours:.0f}h old — within 48h grace period)")
+        venue_state, venue_raw = _venue_market_state(ticker)
+        if venue_state not in (VENUE_SETTLED, VENUE_CANCELLED):
+            label = {VENUE_NOT_FINAL: "skipped-not-final",
+                     VENUE_UNKNOWN: "skipped-venue-unknown"}[venue_state]
+            logger.warning(
+                "PIPE-05R", "venue_not_settled_skip",
+                payload={"pool": pool_label, "position_id": position_id, "player_name": player_name,
+                         "kalshi_ticker": ticker, "venue_state": venue_state,
+                         "venue_result": venue_raw.get("result"),
+                         "venue_expiration_value": venue_raw.get("expiration_value"),
+                         "note": "ADR-0071: Kalshi settlement is the resolution source; "
+                                 "position stays open until Kalshi reports a result"},
+                session_id=session_id,
+            )
+            print(f"  [{pool_label}][{label.upper()}] {player_name:<24} {ticker} "
+                  f"(result={venue_raw.get('result')!r}, expiration_value={venue_raw.get('expiration_value')!r})")
             continue
 
-        ok, closed_pos = trader.settle_position(
+        venue_result = str(venue_raw.get("result") or "").strip().lower()
+        if venue_state == VENUE_CANCELLED:
+            venue_result = "scalar"
+        settlement_value = _settlement_value(venue_raw)
+        if venue_result == "scalar" and settlement_value is None:
+            logger.warning(
+                "PIPE-05R", "cancelled_without_settlement_value",
+                payload={"pool": pool_label, "position_id": position_id, "kalshi_ticker": ticker,
+                         "note": "ADR-0071: cannot book cancelled market without Kalshi settlement value"},
+                session_id=session_id,
+            )
+            print(f"  [{pool_label}][SKIP-NO-VALUE] {player_name:<24} {ticker}")
+            continue
+
+        # ADR-0071: statsapi/ESPN are a cross-check only -- never the booking source.
+        # Best-effort, log-only; a failure here cannot block or alter the booking.
+        actual_hits = None
+        try:
+            actual_hits = fetch_actual_hits(player_id, game_date, player_name=player_name)
+        except Exception as exc:  # noqa: BLE001
+            print(f"  [{pool_label}][XCHECK-ERR] {player_name}: {type(exc).__name__}: {exc}", file=sys.stderr)
+        if actual_hits is not None and venue_result in ("yes", "no"):
+            stat_yes = actual_hits >= threshold
+            if stat_yes != (venue_result == "yes"):
+                logger.warning(
+                    "PIPE-05R", "kalshi_stat_crosscheck_disagree",
+                    payload={"pool": pool_label, "position_id": position_id, "kalshi_ticker": ticker,
+                             "kalshi_result": venue_result, "actual_hits": actual_hits,
+                             "threshold": threshold,
+                             "note": "ADR-0071: booked on Kalshi's result; stat feed disagrees"},
+                    session_id=session_id,
+                )
+
+        if dry_run:
+            print(f"  [{pool_label}][DRY-RUN settles] {player_name:<24} {ticker} "
+                  f"kalshi={venue_result!r} value={settlement_value} dir={direction} xcheck_hits={actual_hits}")
+            continue
+
+        ok, closed_pos = trader.settle_position_from_venue(
             position_id=position_id,
-            actual_stat=actual_hits,
-            stat_label="actual_hits",
+            venue_result=venue_result,
+            settlement_value=settlement_value,
             session_id=session_id,
         )
 
@@ -608,18 +705,16 @@ def _resolve_pool(
             pnl     = closed_pos.get("pnl", 0.0)
             outcome = closed_pos.get("outcome", "?")
             sign    = "+" if pnl >= 0 else ""
-            label   = "WIN " if outcome == "WIN" else "LOSS"
-            print(f"  [{pool_label}] {player_name:<24} {label}  "
-                  f"hits={actual_hits:.0f} vs H≥{threshold}  "
-                  f"dir={direction}  P&L={sign}{pnl:.2f}")
+            print(f"  [{pool_label}] {player_name:<24} {outcome:<9} "
+                  f"kalshi={venue_result} dir={direction}  P&L={sign}{pnl:.2f}")
             resolved.append(closed_pos)
 
-            # GG-125/T-379 (APR-0031): feed the drift window from this resolved
-            # bet's entry-time model_p / mid_price_at_entry — both already
-            # captured by open_position(), previously unused after settlement.
+            # GG-125/T-379 (APR-0031): feed the drift window. ADR-0071: cancelled
+            # bookings are excluded from calibration/Brier.
             model_p = closed_pos.get("model_p")
             mip_at_entry = closed_pos.get("mid_price_at_entry")
-            if model_p is not None and mip_at_entry is not None:
+            if (not closed_pos.get("cancelled")
+                    and model_p is not None and mip_at_entry is not None):
                 monitor.record_forecast_outcome(
                     p_estimate=float(model_p),
                     outcome=1 if outcome == "WIN" else 0,
@@ -686,8 +781,12 @@ def _resolve_pool(
 # Main
 # ---------------------------------------------------------------------------
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    dry_run = "--dry-run" in (sys.argv[1:] if argv is None else argv)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    if dry_run:
+        print("[PIPE-05R] DRY RUN -- classifying only; no position will be settled or tagged. "
+              "Run against a COPY of the ledgers (LOG_DIR=<copy>).")
     logger = AuditLogger(LOG_DIR / "audit_mlb.jsonl", min_severity="INFO")
 
     print(f"\n[PIPE-05R] MLB resolution run — {GAME_DATE}")
@@ -720,6 +819,7 @@ def main() -> None:
         logger=logger,
         session_id=SESSION_ID,
         monitor=monitor_main,
+        dry_run=dry_run,
     )
     summary_main = trader_main.summary()
 
@@ -738,6 +838,7 @@ def main() -> None:
             logger=logger,
             session_id=SESSION_ID,
             monitor=monitor_t4,
+            dry_run=dry_run,
         )
         summary_t4 = trader_t4.summary()
     else:

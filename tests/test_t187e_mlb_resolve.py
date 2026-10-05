@@ -105,6 +105,28 @@ def _fresh_trader(portfolio_path: Path) -> PaperTrader:
 
 
 @pytest.fixture(autouse=True)
+def _venue_settled(monkeypatch):
+    """T-656 / GG-440: these tests exercise the stats-based booking path, which now
+    runs only after Kalshi reports the market settled yes/no. Stub the venue
+    lookup (no network in tests); the gate itself is tested in test_run_resolve_mlb.py."""
+    import prediction_market_bot.run_resolve_mlb as _rm
+    monkeypatch.setattr(_rm, "_venue_market_state",
+                        lambda ticker: (_rm.VENUE_SETTLED, {"result": "yes"}))
+
+
+def _venue_by_player(results: dict):
+    """ADR-0071 test helper: Kalshi venue state per player_id embedded in the ticker
+    (`...-{player_id}-{threshold}`). A player absent from `results` reads NOT_FINAL."""
+    import prediction_market_bot.run_resolve_mlb as _rm
+
+    def _state(ticker):
+        pid = int(ticker.rsplit("-", 2)[1])
+        r = results.get(pid)
+        return (_rm.VENUE_SETTLED, {"result": r}) if r else (_rm.VENUE_NOT_FINAL, {"result": ""})
+    return patch.object(_rm, "_venue_market_state", side_effect=_state)
+
+
+@pytest.fixture(autouse=True)
 def _reset_mlb_circuit_breaker():
     """GG-084/T-239: the circuit breaker counter is module-level global state —
     reset it before and after every test so failures in one test can't trip
@@ -722,8 +744,9 @@ class TestRunResolveMlbMain:
         assert len(state["closed_positions"]) == 0
 
     @pytest.mark.integration
-    def test_api_failure_position_stays_open(self, tmp_path):
-        """MLB API returning None leaves the position open for retry."""
+    def test_api_failure_no_longer_blocks_booking(self, tmp_path):
+        """ADR-0071: the stat feed is a cross-check only; Kalshi's result books the
+        position even when the MLB API returns None."""
         portfolio_path = tmp_path / "paper_portfolio_mlb.json"
         setup = PaperTrader(portfolio_path, _logger())
         _open_mlb_pos(setup, game_date=PAST_DATE)
@@ -732,12 +755,13 @@ class TestRunResolveMlbMain:
                    return_value=None):
             _patched_run(portfolio_path)
         state = _fresh_trader(portfolio_path).get_state()
-        assert len(state["open_positions"]) == 1
-        assert len(state["closed_positions"]) == 0
+        assert len(state["open_positions"]) == 0
+        assert len(state["closed_positions"]) == 1
+        assert state["closed_positions"][0]["settlement_source"] == "kalshi"
 
     @pytest.mark.integration
     def test_yes_win_full_resolve(self, tmp_path):
-        """YES, actual_hits=2, threshold=1 → WIN; bankroll reflects profit."""
+        """ADR-0071: Kalshi result yes, YES position → WIN; bankroll reflects profit."""
         portfolio_path = tmp_path / "paper_portfolio_mlb.json"
         setup = PaperTrader(portfolio_path, _logger())
         pre_bankroll = setup.get_state()["bankroll_usd"]
@@ -745,7 +769,7 @@ class TestRunResolveMlbMain:
                       threshold=1, size=10.0, mid=0.50, vig=0.0)
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
-                   return_value=2.0):
+                   return_value=2.0), _venue_by_player({12345: "yes"}):
             _patched_run(portfolio_path)
 
         state = _fresh_trader(portfolio_path).get_state()
@@ -753,7 +777,7 @@ class TestRunResolveMlbMain:
         assert len(state["closed_positions"]) == 1
         closed = state["closed_positions"][0]
         assert closed["outcome"] == "WIN"
-        assert closed["actual_hits"] == 2.0
+        assert closed["settlement_source"] == "kalshi"
         profit = round(10.0 * (1.0 - 0.50) / 0.50, 4)  # even odds → +10
         assert abs(closed["pnl"] - profit) < 1e-4
         assert abs(state["bankroll_usd"] - (pre_bankroll - 10.0 + 10.0 + profit)) < 1e-4
@@ -779,14 +803,14 @@ class TestRunResolveMlbMain:
 
     @pytest.mark.integration
     def test_zero_hits_yes_loses(self, tmp_path):
-        """actual_hits=0 < threshold=1 → YES LOSS."""
+        """ADR-0071: Kalshi result no, YES position → LOSS."""
         portfolio_path = tmp_path / "paper_portfolio_mlb.json"
         setup = PaperTrader(portfolio_path, _logger())
         _open_mlb_pos(setup, game_date=PAST_DATE, direction="YES",
                       threshold=1, size=10.0, mid=0.50, vig=0.0)
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
-                   return_value=0.0):
+                   return_value=0.0), _venue_by_player({12345: "no"}):
             _patched_run(portfolio_path)
 
         closed = _fresh_trader(portfolio_path).get_state()["closed_positions"][0]
@@ -795,7 +819,7 @@ class TestRunResolveMlbMain:
 
     @pytest.mark.integration
     def test_mixed_positions_partial_api_failure(self, tmp_path):
-        """API succeeds for player 11111, fails for 22222 → 1 resolved, 1 open."""
+        """ADR-0071: Kalshi settled for 11111, not final for 22222 → 1 resolved, 1 open."""
         portfolio_path = tmp_path / "paper_portfolio_mlb.json"
         setup = PaperTrader(portfolio_path, _logger())
         _open_mlb_pos(setup, game_date=PAST_DATE, player_id=11111,
@@ -807,7 +831,7 @@ class TestRunResolveMlbMain:
             return 2.0 if player_id == 11111 else None
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
-                   side_effect=_api_side):
+                   side_effect=_api_side), _venue_by_player({11111: "yes"}):
             _patched_run(portfolio_path)
 
         state = _fresh_trader(portfolio_path).get_state()
@@ -891,7 +915,7 @@ class TestT4PoolResolution:
                       mid=0.50, vig=0.0, direction="YES")
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
-                   return_value=0.0):   # 0 hits < threshold 2 → YES loses
+                   return_value=0.0), _venue_by_player({55555: "no"}):   # Kalshi no → YES loses
             _patched_run(main_path, t4_portfolio_path=t4_path)
 
         t4_state = _fresh_trader(t4_path).get_state()
@@ -1058,7 +1082,7 @@ class TestDegradedResolutionAlert:
 
     @pytest.mark.integration
     def test_majority_skip_fires_degraded_alert(self, tmp_path, capsys):
-        """8 eligible positions, only 2 resolve (<50%) — alert must fire."""
+        """8 eligible positions, only 2 settled on Kalshi (<50%) — alert must fire."""
         portfolio_path = tmp_path / "paper_portfolio_mlb.json"
         setup = PaperTrader(portfolio_path, _logger())
         for i in range(8):
@@ -1069,7 +1093,7 @@ class TestDegradedResolutionAlert:
             return 2.0 if player_id in (10000, 10001) else None
 
         with patch("prediction_market_bot.run_resolve_mlb.fetch_actual_hits",
-                   side_effect=_api_side):
+                   side_effect=_api_side), _venue_by_player({10000: "yes", 10001: "yes"}):
             _patched_run(portfolio_path)
 
         assert "GG-084" in capsys.readouterr().err
