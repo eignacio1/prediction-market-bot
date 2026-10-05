@@ -25,3 +25,11 @@ Consequence: the builder's `_sp[(season, int(id))]` lookup is keyed on MLBAM his
 2. **Hybrid: ESPN for results/status, Stats API per-date for starters only** — fewer 406-exposed calls but still depends on the throttled endpoint; weaker than 1.
 3. **MLBAM<->ESPN crosswalk by name** — alters input provenance; needs your explicit sign-off as a pre-registration amendment before use. Not recommended.
 4. Non-DO egress/proxy for statsapi (GG-470 option 3).
+
+## Addendum — W55.3b (operator: "proceed with your recommendation" = option 1)
+- PR #164 merged (bf1afb0), CI green (test 8m3s; Deploy success). **t4-mlb decision: `not_needed` — no file imported by t4-mlb changed.**
+- `scripts/sync_mlb_games_cache.sh`: local per-date refresh (Stats API 200 from the Mac) -> scp `.tmp` -> atomic mv of parquet + `games_current.meta.json` stamp. Runner without `--refresh` fails closed on a missing or >26h-old stamp. Full suite 3707 passed / 43 skipped.
+- VPS crontab: T1 line lost `--refresh` only (backup `/root/crontab.bak.W55_3b.20261005T225931Z`).
+- D4 hand run, cron's exact command, run_id 20261005T225941Z: written MLB_MONEYLINE:T1=8, MLB_RUN_LINE:T1=12, MLB_GAME_TOTAL:T1=21, MLB_TEAM_TOTAL:T1=28 (69 rows); `outside_band_windows` skips 6/13/19/28. T2/T3 wrote nothing in this run (outside window); their ledgers already hold rows from 19:12 / 20:43 UTC earlier today (seed last Final 2026-10-04, not stale on results).
+- Caveat: starters for games ~2 days out are often unannounced, so `home_sp/away_sp` are null for many T1 rows; this is horizon, not source.
+- GG-470 and GG-453 -> PARTIALLY RESOLVED (rows on disk; sustained operation depends on a daily manual sync). GG-482 registered for the missing scheduler. GG-472 untouched.

@@ -4706,7 +4706,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-453 — EXP-037 MLB postseason shadow arm has no cron: 12 MLB game-market cells never log, queue says armed
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -4722,12 +4722,14 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **2026-10-05 W54.2 later update:** 7-line EXP-037 block now installed on the VPS (3 MLB lines added; crontab diff = 7 added lines, backup `/root/crontab.bak.20261005T072628Z`; NFL lines byte-identical). By hand: T2 and T3 exit 0, wrote nothing (no event inside their windows at 07:30 UTC); T1 `--refresh` failed closed twice on Stats API 406 (GG-470). **Zero MLB ledger rows exist, so this gap stays OPEN** (resolution criterion: MLB_* ledgers contain rows).
 
+
+**2026-10-05 W55.3b update:** all three bands now have a working path: T1 wrote 69 rows by hand run (see GG-470); T2/T3 had written rows earlier the same day from the seed cache (last Final 2026-10-04). Same daily-sync dependency as GG-470 (GG-482). Not marked resolved until the sync runs unattended.
 </details>
 
 
 ### GG-470 — MLB pregame shadow cannot run on the VPS: games cache absent and unbuildable/unrefreshable (statsapi 406 on range queries)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
 
 <details>
 <summary>Full record ▸</summary>
@@ -4741,6 +4743,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | W54.2 VPS read-only tests; `W54_2_gg432_mlb_arm_results.md` |
 | Disposition | **PARTIAL 2026-10-05 (W54.2):** seed `games.parquet` (28,122 rows, 2015-2026, sha256 d6dc0adf...) built locally, copied to the VPS, loads; per-date refresh path (`fetch_day`/`refresh_recent`, retry+backoff, fail-closed, window starts at last Final game) merged in PRs #162/#163, values verified identical to the range path on 7 spot-check dates. **NOT solved:** the VPS edge answers 406 *intermittently and per-IP*, not per date or per range: the same date flipped 200->406 within minutes, `gameType=` and multi-day ranges 406 more often, and by-hand `--refresh --bands T1` failed closed twice (406 for 2026-09-30, then 2026-10-03, 4 retries each, ~2.5 min). Fail-closed means no stale rows are written, but T1 MLB will log nothing until a refresh gets through. Open options for the operator: (1) let the 6-hourly T1 cron prove or disprove reliability over a few days; (2) refresh `games_current.parquet` from a machine that is not throttled (local) and sync it to the VPS before each T1 window; (3) a non-DigitalOcean egress/proxy for statsapi.mlb.com. My own probing may have worsened the throttle; the sample is not clean. |
 
+
+**2026-10-05 W55.3b update:** ESPN ruled out as a source (scoreboard lacks MLBAM starter ids; ESPN athlete ids are a different namespace, no MLBAM crosswalk field). Option 1 landed (PR #164, bf1afb0): `scripts/sync_mlb_games_cache.sh` refreshes `games_current.parquet` on the Mac (Stats API 200 there) and scp+atomic-mv's it with a `.meta.json` stamp to the VPS; the runner without `--refresh` now fails closed on a missing or >26h-old stamp; VPS T1 cron no longer passes `--refresh` (backup `/root/crontab.bak.W55_3b.20261005T225931Z`). Manual T1 run: 69 rows written (ML 8, RL 12, TOTAL 21, TEAM_TOTAL 28). **Remaining:** sustained operation needs the sync run at least daily from a machine that is on; nothing schedules it (GG-482). If it lapses, all MLB shadow cells write nothing (fail-closed, not stale).
 </details>
 
 ### GG-472 — No MLB pregame shadow settlement script: the 12 MLB shadow cells can log but never get outcomes
@@ -4795,5 +4799,21 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | W55.2 D4, VPS read-only (journalctl -u t4-mlb, journalctl -k, free -m, crontab) |
 | Root cause (W55.2 follow-up, 2026-10-05) | Minute :00/:30 stampede, not just 01:25/01:30. On 10-04 six python crons all started at 01:30:01 (`run_paper_trade`, `run_t3_pretip`, `run_t3_mlb_pretip`, `nhl_shadow_eval` T2 and T3, `run_pregame_shadow` T3), ~136 MB each, ~800 MB on a 961 MB host. 10-04 victim = pid 2884421, spawned directly after the `run_t3_pretip` cron shell (2884420), so almost certainly NBA T3 pretip (dark, reruns every 15 min); no money-path run lost. Identification rests on pid adjacency, not a logged job name. |
 | Disposition | Remedy 1 APPLIED 2026-10-05: 2 GB `/swapfile`, `vm.swappiness=10`, persisted in `/etc/fstab` + `/etc/sysctl.d/99-swap.conf` (output showed it active; operator to confirm with `swapon --show`). Remedy 2 PENDING OPERATOR APPLY: `scripts/ops/gg477_cron_stagger.py` (dry-run by default, backs up crontab) offsets the minute field of the NHL T2/T3, pregame_shadow T3 and NBA/MLB T3 pretip crons; `run_paper_trade`/`run_pregame` untouched. Not done: `OOMScoreAdjust` (would shift kills onto bet-writing crons), VPS resize (fallback if kills recur). **Not RESOLVED until the 01:30 UTC window passes with zero OOM lines after both remedies.** Related: GG-118. |
+
+</details>
+
+### GG-482 — MLB games-cache sync has no scheduler: shadow rows stop within 26h if the operator does not run it
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-482 |
+| Category | Operational / single point of dependency |
+| What was found | 2026-10-05 W55.3b. The VPS cannot refresh MLB games from Stats API (406, GG-470), so `scripts/sync_mlb_games_cache.sh` must run from the Mac. Nothing runs it. The runner refuses a cache stamp older than 26h, so a missed day silently stops all 12 MLB shadow cells (fail-closed, correct, but evidence is lost for those windows). |
+| Disposition | Open. Options: launchd job on the Mac (fails when the Mac sleeps), a GitHub Actions scheduled job (needs a VPS ssh secret; operator decision), or a non-throttled egress for the VPS. Postseason ends late October, so a hand-run daily is workable meanwhile. |
 
 </details>

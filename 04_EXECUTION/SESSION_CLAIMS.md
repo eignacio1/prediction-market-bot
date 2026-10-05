@@ -763,3 +763,4 @@
 | 2026-10-05T07:56:26Z | T-683 | CLOSED — W55.3 BLOCKED at D2: ESPN lacks MLBAM starter ids; GG-470/453 stay OPEN; docs only |
 | 2026-10-05T08:00:15Z | T-686..T-688, GG-482 | W55.3b STANDARD - local refresh + VPS sync of MLB games cache (option 1) |
 | 2026-10-05T08:15:49Z | T-680 | CLOSED — W55.2: PR #160 landed and proven live; GG-451 resolved; t4-mlb restart traced to host OOM (GG-477), swap applied, cron stagger staged (T-681). (commit `c177b80`) |
+| 2026-10-05T23:00:25Z | T-686 | CLOSED — W55.3b PR #164 merged; 69 T1 MLB rows; GG-470/453 PARTIALLY RESOLVED; GG-482 registered |
