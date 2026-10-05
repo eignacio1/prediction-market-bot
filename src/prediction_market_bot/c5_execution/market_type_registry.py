@@ -845,13 +845,15 @@ def promote_cell_status(
 # position, paper fill or sizing path exists in the pregame_shadow package (enforced by
 # tests/test_pregame_shadow_safety.py); kelly_fraction is untouched (ADR-0048).
 # T1 flipped 2026-10-02 (live Week 5 rows banked: ML 50 / spread 637 / total 475 / team total 646
-# ledger rows). T2 (4-8h) and T3 (15-60min) stay NOT_IMPLEMENTED until their first valid row.
+# ledger rows). T2 (4-8h) and T3 (15-60min) flipped 2026-10-05 (T-670, Wave 54.1): records
+# reality, not a promotion -- the cron already evaluates them at kelly 0. Row counts per cell
+# (all valid) in 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W53_2_shadow_audit_results.md (D2).
 # Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP037_NFL_PREGAME_SHADOW_PREREGISTRATION_2026-10-02.md.
-_EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = (
-    (MarketType.NFL_MONEYLINE, ExecutionBand.T1_MULTI_DAY),
-    (MarketType.NFL_SPREAD, ExecutionBand.T1_MULTI_DAY),
-    (MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
-    (MarketType.NFL_TEAM_TOTAL, ExecutionBand.T1_MULTI_DAY),
+_EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
+    (_mt, _bd)
+    for _mt in (MarketType.NFL_MONEYLINE, MarketType.NFL_SPREAD,
+                MarketType.NFL_GAME_TOTAL, MarketType.NFL_TEAM_TOTAL)
+    for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP)
 )
 for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
