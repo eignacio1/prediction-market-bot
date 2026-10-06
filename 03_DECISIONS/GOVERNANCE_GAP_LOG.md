@@ -4810,7 +4810,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-482 — MLB games-cache sync has no scheduler: shadow rows stop within 26h if the operator does not run it
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4821,5 +4821,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Category | Operational / single point of dependency |
 | What was found | 2026-10-05 W55.3b. The VPS cannot refresh MLB games from Stats API (406, GG-470), so `scripts/sync_mlb_games_cache.sh` must run from the Mac. Nothing runs it. The runner refuses a cache stamp older than 26h, so a missed day silently stops all 12 MLB shadow cells (fail-closed, correct, but evidence is lost for those windows). |
 | Disposition | Open. Options: launchd job on the Mac (fails when the Mac sleeps), a GitHub Actions scheduled job (needs a VPS ssh secret; operator decision), or a non-throttled egress for the VPS. Postseason ends late October, so a hand-run daily is workable meanwhile. |
+| Resolution | 2026-10-06 W56.1: `.github/workflows/mlb_games_cache_sync.yml` (PR #165) runs 12:43/00:43 UTC; statsapi accepted the runner; VPS stamp matched; 71 T1 shadow rows written. See W56_1_mlb_ops_results.md. |
 
 </details>

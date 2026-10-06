@@ -1805,3 +1805,6 @@ enhancements and apply better design philosophy to both the live terminal AND vi
 **Effect:** the entry above's "ERP-style" means purpose, not form. Wave 56 revised: 56.2 Live Terminal (decision
 stream + design), 56.3 Visual Dashboard (operations health, books & risk, evidence clocks + design, current look kept).
 MLB shadow settlement (GG-472) moves to Wave 57. Docs-only.
+
+## 2026-10-06 — W56.1 (T-692): MLB cache scheduler moved to GitHub Actions; GG-477 cron stagger applied
+Under the 2026-10-05 operator directive ("MLB can't go dark") and the GG-477 stagger authorization. Workflow `mlb_games_cache_sync.yml` (PR #165) refreshes the MLB games cache twice daily from GitHub egress; statsapi accepted the runner on first dispatch. GG-482 RESOLVED. Cron minute fields on 9 lines changed on the VPS (backup /root/crontab.bak.20261006T000156Z) and mirrored into deploy/cron.conf, cron.nhl_shadow, cron_exp037_pregame_shadow.conf (PR #166). GG-477 remains OPEN pending a clean 01:30 UTC window. Results: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W56_1_mlb_ops_results.md.
