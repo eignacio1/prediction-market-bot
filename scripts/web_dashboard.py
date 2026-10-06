@@ -669,7 +669,84 @@ def _shadow(now: datetime) -> dict:
     tape.sort(key=lambda r: str(r.get("ts_utc") or ""), reverse=True)
     keep = ("ts_utc", "sport", "market_type", "band", "market_ticker", "p_yes", "mid",
             "e_net_yes_k007", "e_net_no_k007")
-    return {"cells": list(cells.values()), "tape": [{k: r.get(k) for k in keep} for r in tape[:60]]}
+    stream_keep = keep + ("event_ticker", "run_id")
+    return {"cells": list(cells.values()), "tape": [{k: r.get(k) for k in keep} for r in tape[:60]],
+            "stream": [{k: r.get(k) for k in stream_keep} for r in tape[:DECISION_ROWS]]}
+
+
+# W56.2: decision stream. One row per EVALUATION, never per order. WOULD-FIRE is a shadow
+# computation -- fee-adjusted net edge > 0 -- not an order, not a sizing decision.
+DECISION_ROWS = 150
+
+
+def _decision_from_shadow(r: dict) -> dict:
+    y, n = r.get("e_net_yes_k007"), r.get("e_net_no_k007")
+    best, side = None, None
+    cands = [(v, sd) for v, sd in ((y, "YES"), (n, "NO")) if isinstance(v, (int, float))]
+    if cands:
+        best, side = max(cands)
+    p = r.get("p_yes")
+    return {"ts": r.get("ts_utc"), "sport": r.get("sport"), "market": r.get("market_ticker"),
+            "market_type": r.get("market_type"), "band": r.get("band"), "p": p,
+            "price": r.get("mid"), "edge": best, "side": side,
+            "would_fire": bool(best is not None and best > 0), "src": "shadow"}
+
+
+def _decision_from_cycle(r: dict) -> dict:
+    e = r.get("net_edge")
+    ts = r.get("ts")
+    return {"ts": ts, "sport": "MLB", "market": r.get("ticker"), "market_type": "MLB_PLAYER_PROP_HITS",
+            "band": "T4M-PROJ", "p": r.get("p_t4"), "price": r.get("mip"),
+            "edge": e if isinstance(e, (int, float)) else None, "side": "YES",
+            "would_fire": bool(isinstance(e, (int, float)) and e > 0), "src": "t4_cycle"}
+
+
+def _book(p: dict, now: datetime, name: str) -> dict:
+    """Realized drawdown (kill-switch basis, W51.1) for one paper book; None when unreadable."""
+    init, rp = p.get("initial_bankroll_usd"), p.get("total_realized_pnl")
+    lim = None
+    try:
+        lim = _hard_limits()["max_drawdown_pct"]
+    except Exception:
+        pass
+    dd = max(0.0, -rp) / init if isinstance(init, (int, float)) and init > 0 and isinstance(rp, (int, float)) else None
+    lu = _parse_ts(p.get("last_updated"))
+    return {"book": name, "initial": init, "realized_pnl": rp, "drawdown": dd, "limit": lim,
+            "tripped": bool(dd is not None and lim is not None and dd >= lim),
+            "age_s": None if lu is None else round(max(0.0, now.timestamp() - lu), 1),
+            "awaiting": None if dd is not None else "portfolio"}
+
+
+def _decisions(now: datetime, shadow: dict, cycle_tail: list, t1p: dict, t4p: dict) -> dict:
+    rows = [_decision_from_shadow(r) for r in (shadow or {}).get("stream") or []]
+    rows += [_decision_from_cycle(r) for r in cycle_tail or []]
+    rows = [r for r in rows if r["ts"]]
+    rows.sort(key=lambda r: str(r["ts"]), reverse=True)
+    rows = rows[:DECISION_ROWS]
+    arms: dict = {}
+    for c in (shadow or {}).get("cells") or []:
+        if not c.get("last_ts"):
+            continue
+        k = f"{c.get('sport')} {c.get('band')}"
+        a = arms.setdefault(k, {"arm": k, "last_ts": None, "rows_today": 0})
+        a["rows_today"] += c.get("rows_today") or 0
+        if a["last_ts"] is None or c["last_ts"] > a["last_ts"]:
+            a["last_ts"] = c["last_ts"]
+    cyc = [r for r in cycle_tail or [] if r.get("ts")]
+    if cyc:
+        arms["MLB T4M-PROJ"] = {"arm": "MLB T4M-PROJ", "last_ts": max(str(r["ts"]) for r in cyc),
+                                "rows_today": sum(1 for r in cyc if str(r["ts"])[:10] == now.strftime("%Y-%m-%d"))}
+    for a in arms.values():
+        t = _parse_ts(a["last_ts"])
+        a["age_s"] = None if t is None else round(max(0.0, now.timestamp() - t), 1)
+    try:
+        kel = {k: v for k, v in _band_kelly().items() if k in ("T1", "T4M-PROJ")}
+    except Exception:
+        kel = None
+    return {"rows": rows, "arms": sorted(arms.values(), key=lambda a: a["arm"]),
+            "books": [_book(t1p, now, "T1"), _book(t4p, now, "T4M-PROJ")],
+            "kelly": kel, "sizing_live": (None if kel is None else any(v for v in kel.values())),
+            "fire_rule": "WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; no order, stake $0)"}
 
 
 def _verdicts() -> dict:
@@ -990,6 +1067,10 @@ def _load_all_data() -> dict:
             _load_json_dropping_key(d / "paper_portfolio_mlb_t4.json", "rejected_positions")),
             {"awaiting": "mlb sources"}),
     }
+    out["decisions"] = safe(lambda: _decisions(
+        datetime.now(tz=timezone.utc), out.get("shadow") or {}, out.get("t4_cycle_tail") or [],
+        out.get("portfolio") or {}, out.get("t4_portfolio") or {}),
+        {"awaiting": "decision sources", "rows": [], "arms": [], "books": []})
     out["pipeline"] = safe(lambda: _pipeline(d, datetime.now(tz=timezone.utc), out),
                            {"tiles": [], "gaps": [], "awaiting": "pipeline sources"})
     _LAST_LOAD_MS = int((datetime.now(tz=timezone.utc) - _t0).total_seconds() * 1000)
@@ -1295,6 +1376,27 @@ svg{display:block; width:100%; overflow:visible}
 .filt::placeholder{color:var(--faint)}
 .kv{display:grid; grid-template-columns:auto 1fr; gap:3px 14px; font-size:11px; padding:2px 0}
 .kv dt{color:var(--faint)} .kv dd{margin:0}
+/* ─── NOW: top strip + decision stream (W56.2) ─── */
+.strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); border-bottom:1px solid var(--hair); background:var(--raise)}
+.sb{padding:9px 14px; border-right:1px solid var(--hair-2); min-width:0}
+.sb:last-child{border-right:none}
+.sb .k{color:var(--faint); font-size:9.4px; letter-spacing:.12em; text-transform:uppercase}
+.sb .v{font-size:20px; font-weight:700; margin-top:2px; white-space:nowrap}
+.sb .s{color:var(--dim); font-size:10.2px; margin-top:2px}
+.sb .src{color:var(--faint); font-size:9.4px; margin-top:1px}
+.ddbar{height:4px; background:#141414; margin-top:5px; position:relative}
+.ddbar i{display:block; height:100%; background:var(--faint)}
+.ddbar.warn i{background:var(--amber)} .ddbar.bad i{background:var(--red)}
+.arms{display:flex; flex-wrap:wrap; gap:6px; padding:8px 14px; border-bottom:1px solid var(--hair)}
+.arm{border:1px solid var(--hair); padding:2px 8px; font-size:10.5px; color:var(--dim)}
+.arm b{font-weight:400; margin-left:6px}
+.arm.fresh{border-color:#144d2b} .arm.fresh b{color:var(--green)}
+.arm.old b{color:var(--amber)} .arm.old{border-color:#4d3a10}
+tr.stale td{opacity:.5}
+.wf{font-weight:700}
+.stk{color:var(--faint)}
+td.tk{max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+@media(max-width:700px){.sb .v{font-size:17px} td.tk{max-width:150px}}
 footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px solid var(--hair)}
 </style>
 </head>
@@ -1367,7 +1469,7 @@ const DEMO_FLAG=/[?&]demo(=|&|$)/.test(location.search);
 let LASTPULL=0;
 const EMPTY={portfolio:{},t4_portfolio:{},nfl_portfolio:{},audit:[],t4_audit:[],nfl_audit:[],pipe_log:[],
   pipe_mtimes:{},t4_cycle_tail:[],server_time:null};
-let S={data:null, mod:'OVERVIEW', paused:false, cd:REFRESH_S, band:'ALL', filt:'',
+let S={data:null, mod:'NOW', wfOnly:false, paused:false, cd:REFRESH_S, band:'ALL', filt:'',
        seenPos:new Set(), seenEvt:new Set(), first:true, lastOk:0, demo:false, notlive:false,
        sortKey:'entered_at', sortDir:-1};
 
@@ -1426,6 +1528,7 @@ function derive(d){
 
 /* ═══════════ MODULES ═══════════ */
 const MODULES=[
+  {k:'NOW',      label:'Now'},
   {k:'OVERVIEW', label:'Overview'},
   {k:'MLB',      label:'MLB · T1/T4'},
   {k:'NFL',      label:'NFL · T1'},
@@ -1441,7 +1544,8 @@ function modbar(D){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   const errs=D.events.filter(e=>e.severity==='ERROR'||e.severity==='CRITICAL').length;
   const NL=S.notlive;   /* NOT LIVE: assert nothing — no counts, no 'clean'/'ok' */
-  const badge=NL?{OVERVIEW:'—',MLB:'—',NFL:'—',EVIDENCE:'—',FEEDS:'—',PIPELINE:'awaiting',COVERAGE:'awaiting',SHADOW:'awaiting',POSTSEASON:'',VERDICTS:''}:{
+  const badge=NL?{OVERVIEW:'—',NOW:'—',MLB:'—',NFL:'—',EVIDENCE:'—',FEEDS:'—',PIPELINE:'awaiting',COVERAGE:'awaiting',SHADOW:'awaiting',POSTSEASON:'',VERDICTS:''}:{
+    NOW: LAST&&LAST.decisions&&(LAST.decisions.rows||[]).length?`${LAST.decisions.rows.length} evals`:'awaiting',
     OVERVIEW:`${D.open.length} open`,
     MLB:`${D.open.filter(p=>p._sport==='MLB').length} open`,
     NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
@@ -1467,7 +1571,8 @@ function render(){
   modbar(D);
   rail(D,d);
   const w=$('#work');
-  if(S.mod==='OVERVIEW') w.innerHTML=viewOverview();
+  if(S.mod==='NOW') w.innerHTML=viewNow();
+  else if(S.mod==='OVERVIEW') w.innerHTML=viewOverview();
   else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
   else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
   else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
@@ -1479,6 +1584,7 @@ function render(){
   else w.innerHTML=viewFeeds();
   fill(D,d);
   fillV2(d);
+  fillNow(d);
   paintFresh();
   document.body.classList.toggle('notlive',!!S.notlive);
   document.body.classList.toggle('demo',!!S.demo);
@@ -1527,8 +1633,16 @@ function rejFoot(d){
 
 /* ═══════════ METRIC RAIL (per module) ═══════════ */
 let PREVM=null, PREVKEY=null;
+function ddOf(P){return(P&&P.initial_bankroll_usd&&P.total_realized_pnl!=null)?Math.max(0,-P.total_realized_pnl)/P.initial_bankroll_usd:null}
 function railSpec(D,d){
   const sum=(a,f)=>a.reduce((s,x)=>s+(Number(f(x))||0),0);
+  if(S.mod==='NOW'){ const x=d.decisions||{}, rows=x.rows||[];
+    if(!rows.length) return [['DECISIONS','awaiting',null,'']];
+    const day=new Date().toISOString().slice(0,10);
+    const today=(x.arms||[]).reduce((n,a)=>n+(a.rows_today||0),0);
+    const wf=rows.filter(r=>r.would_fire).length;
+    return [['IN STREAM',String(rows.length),rows.length,''],
+      ['WOULD-FIRE',String(wf),wf,''],['ARMS',String((x.arms||[]).length),(x.arms||[]).length,'']]; }
   if(S.mod==='COVERAGE'){ const c=d.coverage||{}, k=c.counts||{};
     if(!c.total) return [['COVERAGE','awaiting',null,'']];
     return [['CELLS',String(c.total),c.total,''],['ACTIVE',String(k.active||0),k.active||0,''],
@@ -1593,7 +1707,8 @@ function railSpec(D,d){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
     ['CUM P&L',usd(cum),cum,'sign'],
-    ['DRAWDOWN (REALIZED)',dd==null?'—':(dd*100).toFixed(2)+'%'+frozenT1,dd,'inv'],
+    ['DRAWDOWN T1 (REALIZED)',dd==null?'—':(dd*100).toFixed(2)+'%'+frozenT1,dd,'inv'],
+    ['DRAWDOWN T4M-PROJ (REALIZED)',ddOf(D.T4)==null?'—':(ddOf(D.T4)*100).toFixed(2)+'%',ddOf(D.T4),'inv'],
     ['DAILY P&L',usd(daily),daily,'sign'],
     ['OPEN',String(D.open.length),D.open.length,''],
     ['EXPOSURE',usd(sum(D.open,p=>p.size_usd)),sum(D.open,p=>p.size_usd),''],
@@ -1609,7 +1724,7 @@ function rail(D,d){
   const host=$('#rail');
   const cls=m=>m==='sign'?'':m==='inv'?'':m==='bad'?'neg':m==='cy'?'cy':m==='warnv'?'amb':'';
   host.innerHTML=spec.map(([k,txt,v,mode],i)=>{
-    let c=mode==='sign'?sgn(v):mode==='inv'?(v>0.1?'neg':v>0.05?'amb':''):cls(mode);
+    let c=mode==='sign'?sgn(v):mode==='inv'?(v>=0.2?'neg':v>=0.16?'amb':''):cls(mode);
     const pv=(PREVKEY===S.mod&&PREVM)?PREVM[i]?.[2]:null;
     let delta='';
     if(pv!=null&&v!=null&&!isNaN(v)&&!isNaN(pv)&&v!==pv){
@@ -1631,6 +1746,8 @@ const P_=(t,n,body,extra='',fr='')=>`<div class="panel"><div class="ph"><span cl
 const frKey=()=>S.mod==='NFL'?'nfl':'t1_mlb';
 const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
 
+function viewNow(){return `<div id="strip" class="strip"></div><div id="arms" class="arms"></div><div class="grid g-1">
+  ${P_('Decision stream','dsN',SCROLL('dsWrap',640),`<span class="n" id="dsRule"></span><button class="tbtn" id="wfBtn">WOULD-FIRE ONLY</button>`)}</div>`;}
 function viewOverview(){return `<div class="grid g-7-5">
   <div class="col">
     ${P_('Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`,
@@ -1755,6 +1872,49 @@ function fillV2(d){
       ks.map(k=>{const x=v[k]; if(x.awaiting) return `<tr><td>${esc(k)}</td><td class="dim" colspan="3">awaiting ${esc(x.awaiting)}</td></tr>`;
         const c=x.passed===true?'pos':x.passed===false?'neg':'dim';
         return `<tr><td>${esc(k)}</td><td class="${c}">${esc(x.verdict||'unscored')}</td><td>${esc(x.written_at)}</td><td class="dim">${esc(x.file)}</td></tr>`}).join('')+`</tbody></table>`; }
+}
+function ageTxt(ts){const t=Date.parse(ts); return Number.isFinite(t)?Math.max(0,Math.round((Date.now()-t)/1000)):null}
+function fillNow(d){
+  const st=$('#strip'); if(!st) return;
+  const x=d.decisions, rows=(x&&x.rows)||[];
+  if(S.notlive||!x||(!rows.length&&!(x.books||[]).some(b=>b.drawdown!=null))){
+    st.innerHTML=`<div class="sb"><div class="k">MODE</div><div class="v neg">${S.notlive?'NOT LIVE':'NO DATA'}</div><div class="s">${S.notlive?'terminal cannot reach /api/data':'awaiting '+esc((x&&x.awaiting)||'decision sources')}</div></div>`;
+    $('#arms').innerHTML=''; $('#dsN').textContent='—'; $('#dsRule').textContent='';
+    $('#dsWrap').innerHTML=AW((x&&x.awaiting)||'decision stream (shadow ledgers + t4 cycle log)'); return; }
+  const sizing=x.sizing_live===true;
+  const kel=x.kelly?Object.entries(x.kelly).map(([k,v])=>k+' '+v).join(' · '):'kelly unreadable';
+  const mode=`<div class="sb"><div class="k">Mode</div><div class="v ${sizing?'amb':'cy'}">${sizing?'SIZING ON':'SHADOW'}</div>`+
+    `<div class="s">${sizing?'a band has kelly &gt; 0':'evaluating · no orders · stake $0'}</div><div class="src">source: execution_bands · ${esc(kel)}</div></div>`;
+  const cap=`<div class="sb"><div class="k">Real capital</div><div class="v">$0</div><div class="s">paper books · demo venue · none at risk</div><div class="src">source: standing rule (no live capital before G6)</div></div>`;
+  const books=(x.books||[]).map(b=>{
+    if(b.drawdown==null) return `<div class="sb"><div class="k">Drawdown ${esc(b.book)} (realized)</div><div class="v dim">no data</div><div class="src">awaiting ${esc(b.awaiting||'portfolio')}</div></div>`;
+    const lim=b.limit||0.2, pct=Math.min(100,b.drawdown/lim*100), cls=b.tripped?'bad':b.drawdown>=0.8*lim?'warn':'';
+    const age=b.age_s==null?null:Math.round(b.age_s+(LASTPULL?(Date.now()-LASTPULL)/1000:0));
+    return `<div class="sb"><div class="k">Drawdown ${esc(b.book)} (realized)</div><div class="v ${b.tripped?'neg':b.drawdown>=0.8*lim?'amb':''}">${(b.drawdown*100).toFixed(2)}%</div>`+
+      `<div class="ddbar ${cls}"><i style="width:${pct.toFixed(1)}%"></i></div>`+
+      `<div class="s">${b.tripped?'KILL SWITCH LIMIT BREACHED · ':''}of ${(lim*100).toFixed(0)}% kill switch · realized ${usd(b.realized_pnl)}</div>`+
+      `<div class="src ${age!=null&&age>72*3600?'amb':''}">source: portfolio book · written ${fmtAge(age)} ago</div></div>`; }).join('');
+  const day=new Date().toISOString().slice(0,10);
+  const evals=(x.arms||[]).reduce((n,a)=>n+(a.rows_today||0),0), wf=rows.filter(r=>r.would_fire).length;
+  const ev=`<div class="sb"><div class="k">Evaluations today</div><div class="v cy">${evals}</div><div class="s">${wf} of last ${rows.length} would fire · $0 each</div><div class="src">source: shadow ledgers + t4 cycle log</div></div>`;
+  st.innerHTML=mode+cap+books+ev;
+  $('#arms').innerHTML=(x.arms||[]).length?(x.arms||[]).map(a=>{
+    const age=ageTxt(a.last_ts), cls=age==null?'old':age<=1800?'fresh':age>6*3600?'old':'';
+    return `<span class="arm ${cls}" title="${esc(a.arm)} · last row ${esc(a.last_ts)} · ${a.rows_today||0} rows today">${esc(a.arm)}<b>${age==null?'no rows':fmtAge(age)+' ago'}</b></span>`; }).join(''):`<span class="aw">no arm has written a row</span>`;
+  $('#dsN').textContent=rows.length+' evaluations';
+  $('#dsRule').textContent=x.fire_rule||'';
+  const wb=$('#wfBtn'); if(wb){ wb.classList.toggle('on',S.wfOnly); wb.onclick=()=>{S.wfOnly=!S.wfOnly; fillNow(LAST)}; }
+  const f4n=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toFixed(4);
+  const shown=S.wfOnly?rows.filter(r=>r.would_fire):rows;
+  $('#dsWrap').innerHTML=shown.length?`<table><thead><tr><th>TIME (UTC)</th><th>SPORT</th><th>MARKET</th><th>BAND</th><th class="r">MODEL P</th><th class="r">MKT PRICE</th><th class="r">EDGE (NET)</th><th>WOULD-FIRE</th><th>STAKE</th></tr></thead><tbody>`+
+    shown.map(r=>{ const a=ageTxt(r.ts), stale=a!=null&&a>6*3600, t=String(r.ts||'');
+      const tm=t.slice(0,10)===day?t.slice(11,19):t.slice(5,10)+' '+t.slice(11,16);
+      const e=Number(r.edge);
+      return `<tr class="${stale?'stale':''}"><td title="${esc(t)} · ${fmtAge(a)} ago">${esc(tm)}</td><td>${esc(r.sport||'—')}</td>`+
+        `<td class="tk" title="${esc(r.market||'')}">${esc(r.market||'—')}</td><td>${esc(r.band||'—')}</td>`+
+        `<td class="r">${f4n(r.p)}</td><td class="r">${f4n(r.price)}</td><td class="r ${Number.isFinite(e)&&e>0?'pos':'dim'}">${Number.isFinite(e)?(e>0?'+':'')+e.toFixed(4):'—'}</td>`+
+        `<td class="wf">${r.would_fire?'WOULD FIRE ('+esc(r.side||'?')+')':'<span class="dim">no</span>'}</td><td class="stk">$0 SHADOW</td></tr>`}).join('')+`</tbody></table>`
+    :`<div class="aw">${S.wfOnly?'no would-fire rows in the window':'no evaluations in the window'}</div>`;
 }
 function paintFresh(){
   const f=(LAST&&LAST.freshness)||{}, el=Date.now()-LASTPULL;
@@ -2216,6 +2376,14 @@ const DEMO={
      payload:{reason:'default StubNFLForecastModel — rows are pipeline-shape evidence only (GG-317)'}},
     {timestamp:_iso(3400),event_id:'N3',component:'C5',event_type:'refused_no_model',severity:'WARNING',
      payload:{reason:'no NFL C2/C3 feature store for this market family (GG-255)'}}],
+  decisions:{rows:[
+    {ts:_iso(30),sport:'MLB',market:'KXMLBHIT-26SEP-91',market_type:'MLB_PLAYER_PROP_HITS',band:'T4M-PROJ',p:0.7412,price:0.64,edge:0.0612,side:'YES',would_fire:true,src:'t4_cycle'},
+    {ts:_iso(190),sport:'NHL',market:'KXNHLGAME-26SEP-NSH',market_type:'NHL_MONEYLINE',band:'T2',p:0.52,price:0.55,edge:-0.0412,side:'NO',would_fire:false,src:'shadow'}],
+   arms:[{arm:'MLB T4M-PROJ',last_ts:_iso(30),rows_today:412,age_s:30},{arm:'NHL T2',last_ts:_iso(190),rows_today:64,age_s:190}],
+   books:[{book:'T1',initial:1000,realized_pnl:-124.44,drawdown:0.1244,limit:0.2,tripped:false,age_s:2700},
+          {book:'T4M-PROJ',initial:1000,realized_pnl:-134.47,drawdown:0.1345,limit:0.2,tripped:false,age_s:60}],
+   kelly:{T1:0,'T4M-PROJ':0},sizing_live:false,
+   fire_rule:'WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; no order, stake $0)'},
   pipe_mtimes:{'PIPE-05  (23:30Z)':_iso(3600*7),'PIPE-05R (06:30Z)':_iso(3600*2),
     'PIPE-05FX(22:30Z)':_iso(3600*8),'PIPE-05C (Mon14Z)':_iso(3600*60)},
 };
