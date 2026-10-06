@@ -2,7 +2,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-06T00:10:00Z (T-692 — W56.1: MLB games-cache refresh via GitHub Actions (GG-482 resolved) + VPS cron stagger applied (GG-477 open pending clean window)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261006T0010Z_W56_1.md` for full session detail.
+**Last reviewed:** 2026-10-06T00:28:00Z (T-689 — W56.2 Live Terminal NOW tab: decision stream + T1/T4M-PROJ drawdown vs 20% kill switch, live on VPS (PR #167, #169).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261006T0028Z_W56_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
