@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Project-state snapshot for the analytical dashboard (Wave 47 / 47.1 D6 h).
 
-Reads ONLY tracked files, git, and live imports of the repo. Writes one JSON and,
+Reads tracked files, git, live imports of the repo and (W56.3, scripts/project_ops.py) the
+host's own on-disk logs/ledgers plus read-only systemctl/journalctl. Writes one JSON and,
 optionally, a static offline HTML page. No network, no live calls, no writes into
 exp_output/. Every item carries the repo-relative `source` it was read from, and
 every section carries its own `as_of`.
@@ -26,6 +27,8 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import project_ops  # noqa: E402
 
 GAP_LOG = "03_DECISIONS/GOVERNANCE_GAP_LOG.md"
 DECISION_LOG = "03_DECISIONS/DECISION_LOG/DECISION_LOG.md"
@@ -288,13 +291,14 @@ def build_state(repo: Path | str = REPO) -> dict:
             out["sections"][k] = fn(repo)
         except Exception as e:  # one broken source never blanks the page
             out["sections"][k] = _awaiting(k, f"{type(e).__name__}: {e}")
+    out["ops"] = project_ops.build_ops(repo)
     return out
 
 
 # ── HTML (analytical page: own look, separate from the black Live Terminal) ─
 
-_CSS = """:root{--bg:#fafaf7;--fg:#1c1c1a;--mut:#6b6b64;--line:#dcdcd4;--card:#fff;--acc:#1f5f8b;--bad:#b3261e;--ok:#1b7a3d}
-@media (prefers-color-scheme:dark){:root{--bg:#161615;--fg:#e8e8e2;--mut:#9a9a92;--line:#33332f;--card:#1d1d1b;--acc:#7db7e0;--bad:#ff8a80;--ok:#6fd08c}}
+_CSS = """:root{--bg:#fafaf7;--fg:#1c1c1a;--mut:#6b6b64;--line:#dcdcd4;--card:#fff;--acc:#1f5f8b;--bad:#b3261e;--ok:#1b7a3d;--warn:#a15c00}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--fg:#e8e8e2;--mut:#9a9a92;--line:#33332f;--card:#1d1d1b;--acc:#7db7e0;--bad:#ff8a80;--ok:#6fd08c;--warn:#f0b24a}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,Segoe UI,sans-serif}
 header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;gap:16px;flex-wrap:wrap;align-items:baseline}
 header h1{font-size:17px;margin:0}header .st{color:var(--mut);font-size:12.5px}
@@ -303,7 +307,16 @@ section{background:var(--card);border:1px solid var(--line);border-radius:6px;ma
 h2{font-size:14px;margin:0 0 4px}.asof{color:var(--mut);font-size:11.5px;margin-bottom:8px}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:3px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 a{color:var(--acc)}code{font-size:12px}.aw{color:var(--mut);font-style:italic}.bad{color:var(--bad)}.ok{color:var(--ok)}
-.num{font-variant-numeric:tabular-nums}"""
+.num,.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.warn{color:var(--warn)}.stale{opacity:.55}.nd{color:var(--mut);font-style:italic}
+.strip{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.pill{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-left-width:5px;border-radius:6px;
+background:var(--card);padding:5px 10px;font-size:12.5px;text-decoration:none;color:var(--fg)}
+.pill.ok{border-left-color:var(--ok)}.pill.warn{border-left-color:var(--warn)}.pill.bad{border-left-color:var(--bad)}
+.pill.neu{border-left-color:var(--line)}.pill.nodata{border-left-color:var(--line);color:var(--mut)}.pill .v{font-weight:600}
+.tag{border:1px solid var(--line);border-radius:3px;padding:0 5px;font-size:11px;color:var(--mut)}
+.scroll{overflow-x:auto}
+@media (max-width:640px){main{padding:10px 10px 40px}section{padding:10px}header{padding:10px}td,th{padding:3px 5px}}"""
 
 
 def _md(x: Any) -> str:
@@ -324,6 +337,110 @@ def _lnk(src: str | None, prefix: str) -> str:
     return f"<code>{_e(src)}</code>"
 
 
+# ── W56.3 operational sections ──────────────────────────────────────────────
+
+_STATE_WORD = {"ok": "healthy", "warn": "warning", "bad": "FAILING", "nodata": "no data"}
+
+
+def _cell(state: str, text: Any, dim: bool = False) -> str:
+    cls = {"ok": "ok", "warn": "warn", "bad": "bad", "nodata": "nd"}.get(state, "")
+    return f"<span class='{cls}{' stale' if dim else ''}'>{_e(text)}</span>"
+
+
+def _ago(row: dict) -> str:
+    return project_ops.fmt_age(row.get("age_h"))
+
+
+def _dd(r: dict) -> str:
+    return f"{r['drawdown']:.1%} / {r['limit']:.0%}" if r.get("drawdown") is not None else "no data"
+
+
+def _usd(x: Any) -> str:
+    return f"${float(x):,.2f}" if isinstance(x, (int, float)) else "no data"
+
+
+def _ops_tables(ops: dict, head: Any, aw: Any) -> dict[str, str]:
+    """HTML for each new section, keyed by section id. A dead section says why; it never shows zeros."""
+    out: dict[str, str] = {}
+
+    def wrap(id_: str, title: str, sec: dict, body: str, note: str = "") -> str:
+        inner = (f"<div class='nd'>no data — {_e(sec['nodata'])}</div>" if sec.get("nodata") else body)
+        return f"<section id='{id_}'>{head(title, sec)}{note}<div class='scroll'>{inner}</div></section>"
+
+    o = ops.get("operations", {})
+    body = "<table><tr><th>Arm</th><th>Last run</th><th>Last success</th><th>Source</th></tr>" + "".join(
+        f"<tr class='{'stale' if r['state'] in ('warn', 'bad') else ''}'><td>{_cell(r['state'], '● ')}{_e(r['label'])}</td>"
+        f"<td class='num'>{_e(r['last_run'] or 'no data')} <span class='nd'>({_ago(r)})</span></td>"
+        f"<td class='num'>{_e(r['last_success'] or 'no data — last lines show an error' if r.get('tail_error') else (r['last_success'] or 'no data'))}</td>"
+        f"<td><code>{_e(r['source'])}</code> <span class='tag'>{_e(r['expect'])}</span></td></tr>"
+        for r in o.get("rows", [])) + "</table>"
+    out["operations"] = wrap("operations", "Operations — cron arms", o, body,
+                             "<div class='asof'>Last run = log mtime. Last success is shown only when the log's final lines carry no error marker.</div>")
+
+    f = ops.get("feeds", {})
+    body = "<table><tr><th>Feed</th><th>Stamp</th><th>Age</th><th>Source</th></tr>" + "".join(
+        f"<tr><td>{_cell(r['state'], '● ')}{_e(r['label'])}</td><td class='num'>{_e(r['stamp'] or 'no data')}</td>"
+        f"<td class='num'>{_cell(r['state'], _ago(r))}</td><td><code>{_e(r['source'])}</code> <span class='tag'>{_e(r['expect'])}</span></td></tr>"
+        for r in f.get("rows", [])) + "</table>"
+    out["feeds"] = wrap("feeds", "Data-feed freshness", f, body)
+
+    sv = ops.get("services", {})
+    body = "<table><tr><th>Item</th><th>Value</th><th>Source</th></tr>" + "".join(
+        f"<tr><td>{_cell(r['state'], '● ')}{_e(r['label'])}</td>"
+        f"<td class='num'>{_cell(r['state'], r['value'] if r.get('value') else 'no data')}"
+        f"{(' <span class=nd>' + _e(r['note']) + '</span>') if r.get('note') else ''}</td>"
+        f"<td><code>{_e(r['source'])}</code></td></tr>" for r in sv.get("rows", [])) + "</table>"
+    out["services"] = wrap("services", "Services, host health & deploy", sv, body)
+
+    b = ops.get("books", {})
+    body = ("<table><tr><th>Paper ledger</th><th>Bankroll</th><th>Realized P&amp;L</th><th>Drawdown vs 20% kill</th>"
+            "<th>Open</th><th>Last write</th></tr>" + "".join(
+                f"<tr class='{'stale' if (r.get('age_h') or 0) > 72 else ''}'><td>{_cell(r['state'], '● ')}{_e(r['label'])}<br><code>{_e(r['source'])}</code></td>"
+                + ("<td colspan=5 class='nd'>no data — ledger unreadable</td>" if r.get("bankroll") is None and r["state"] == "nodata" else
+                   f"<td class='num'>{_usd(r.get('bankroll'))} <span class='nd'>of {_usd(r.get('initial'))}</span></td>"
+                   f"<td class='num'>{_usd(r.get('realized_pnl'))}</td>"
+                   f"<td class='num'>{_cell(r['state'], _dd(r))}</td>"
+                   f"<td class='num'>{_e(r['open_positions'] if r.get('open_positions') is not None else 'no data')}</td>"
+                   f"<td class='num'>{_e(r['last_write'] or 'no data')} <span class='nd'>({_ago(r)})</span></td>") + "</tr>"
+                for r in b.get("rows", [])) + "</table>")
+    out["books"] = wrap("books", "Books & risk — paper ledgers", b, body,
+                        "<div class='asof'>Paper money only. Drawdown is realized loss over initial bankroll, the quantity the kill switch reads. "
+                        "A band at kelly_fraction 0.0 stakes $0 by design (ADR-0048).</div>")
+
+    ev = ops.get("evidence", {})
+    body = ("<table><tr><th>SHADOW cell</th><th>Rows</th><th>Settled games</th><th>Judged n (first look → judged)</th>"
+            "<th>Last row</th></tr>" + "".join(
+                f"<tr class='{'stale' if (r.get('age_h') or 0) > 72 else ''}'><td>{_e(r['cell'])} <span class='tag'>SHADOW · not trading</span></td>"
+                + ("<td colspan=4 class='nd'>no data — no ledger found</td>" if r["state"] == "nodata" else
+                   f"<td class='num'>{_e(r['rows'])}</td>"
+                   f"<td class='num'>{_e(r['settled_games'] if r.get('settled_games') is not None else 'no data')}</td>"
+                   f"<td class='num'>{_e(r['settled_games'] if r.get('settled_games') is not None else '?')} of "
+                   f"{_e((str(r['first']) + ' → ') if r.get('first') else '')}{_e(r['judged'])} <span class='nd'>({_e(r['prereg'])})</span></td>"
+                   f"<td class='num'>{_e(r['last_row'] or 'no data')} <span class='nd'>({_ago(r)})</span></td>") + "</tr>"
+                for r in ev.get("rows", [])) + "</table>")
+    out["evidence"] = wrap("evidence", "Evidence clocks — SHADOW cells", ev, body,
+                           "<div class='asof'>Counts only: no score, no Brier. Nothing here places or sizes an order. "
+                           "MLB 2026 postseason is too small to reach its judged n; the clock that matters is 2027.</div>")
+    return out
+
+
+def _strip(S: dict, ops: dict) -> str:
+    pills = []
+    for id_, name in (("operations", "Cron arms"), ("feeds", "Data feeds"), ("services", "Services & deploy"),
+                      ("books", "Books & risk"), ("evidence", "Evidence clocks")):
+        st = ops.get(id_, {}).get("status", "nodata")
+        pills.append(f"<a class='pill {st}' href='#{id_}'>{_e(name)} <span class='v'>{_e(_STATE_WORD[st])}</span></a>")
+    gv, qu, ex = S.get("governance", {}), S.get("queue", {}), S.get("experiments", {})
+    neutral = [
+        ("verdicts", "Verdicts", f"{len(ex.get('items', []))} EXP" if not ex.get("awaiting") else "no data"),
+        ("governance", "Gaps", f"{gv.get('open')} open" if not gv.get("awaiting") else "no data"),
+        ("queue", "Your desk", f"{len(qu.get('needs_decision', []))} to decide" if not qu.get("awaiting") else "no data"),
+    ]
+    for id_, name, val in neutral:
+        pills.append(f"<a class='pill neu' href='#{id_}'>{_e(name)} <span class='v num'>{_e(val)}</span></a>")
+    return "<div class='strip'>" + "".join(pills) + "</div>"
+
+
 def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | None = "./", static: bool = False) -> str:
     S = state["sections"]
     g = S.get("git", {})
@@ -339,6 +456,11 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
         return f"<div class='aw'>awaiting {_e(sec['awaiting'])}</div>" if sec.get("awaiting") else None
 
     parts: list[str] = []
+    ops = state.get("ops", {})
+    ops_html = _ops_tables(ops, head, aw)
+    parts.append(_strip(S, ops))
+    for k in ("operations", "feeds", "services", "books", "evidence"):
+        parts.append(ops_html[k])
     # verdict board = experiments
     ex = S.get("experiments", {})
     body = aw(ex) or ("<table><tr><th>EXP</th><th>Question</th><th>Pre-reg</th><th>Verdict</th></tr>" + "".join(

@@ -26,7 +26,7 @@ Operator 2026-10-05 16:46 PT: *"proceed with the enhancements and apply better d
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **56.1** MLB cache via GitHub Actions + cron stagger | ⬜ **READY — first** | new workflow; VPS crontab (minute fields, authorized); `deploy/` cron files | — |
+| **56.1** MLB cache via GitHub Actions + cron stagger | ✅ DONE (GG-482 resolved; GG-477 stagger applied, read 01:30 UTC window) | new workflow; VPS crontab (minute fields, authorized); `deploy/` cron files | — |
 | **56.2** Live Terminal: decision stream + design | ⬜ **READY** | `/` page: `web_dashboard.py` `_HTML` + `/api/data`, `Live Terminal.html` | — |
 | **56.3** Visual Dashboard: ops health + design | ⬜ **READY** | `/project` page: `generate_project_state.py` | — |
 
