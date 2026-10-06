@@ -701,14 +701,26 @@ def _decision_from_cycle(r: dict) -> dict:
             "would_fire": bool(isinstance(e, (int, float)) and e > 0), "src": "t4_cycle"}
 
 
+def _drawdown_limit():
+    """Kill-switch drawdown limit. Import risk.py when possible; else read the literal from its source
+    (the VPS dashboard python lacks jsonlines, so the import fails there). None if neither works."""
+    try:
+        return _hard_limits()["max_drawdown_pct"]
+    except Exception:
+        pass
+    try:
+        import re
+        m = re.search(r'"max_drawdown_pct"\s*:\s*([0-9.]+)',
+                      (_REPO_ROOT / "src/prediction_market_bot/c4_risk_engine/risk.py").read_text())
+        return float(m.group(1)) if m else None
+    except Exception:
+        return None
+
+
 def _book(p: dict, now: datetime, name: str) -> dict:
     """Realized drawdown (kill-switch basis, W51.1) for one paper book; None when unreadable."""
     init, rp = p.get("initial_bankroll_usd"), p.get("total_realized_pnl")
-    lim = None
-    try:
-        lim = _hard_limits()["max_drawdown_pct"]
-    except Exception:
-        pass
+    lim = _drawdown_limit()
     dd = max(0.0, -rp) / init if isinstance(init, (int, float)) and init > 0 and isinstance(rp, (int, float)) else None
     lu = _parse_ts(p.get("last_updated"))
     return {"book": name, "initial": init, "realized_pnl": rp, "drawdown": dd, "limit": lim,
@@ -727,7 +739,7 @@ def _decisions(now: datetime, shadow: dict, cycle_tail: list, t1p: dict, t4p: di
     for c in (shadow or {}).get("cells") or []:
         if not c.get("last_ts"):
             continue
-        k = f"{c.get('sport')} {c.get('band')}"
+        k = f"{c.get('sport') or c.get('market_type') or 'unlabelled'} {c.get('band') or '—'}"
         a = arms.setdefault(k, {"arm": k, "last_ts": None, "rows_today": 0})
         a["rows_today"] += c.get("rows_today") or 0
         if a["last_ts"] is None or c["last_ts"] > a["last_ts"]:
