@@ -63,3 +63,12 @@ def test_page_has_now_module_and_truthful_labels():
     assert "--bg:#000" in h.replace(" ", "")
     assert "NOT CONNECTED" not in h
     assert h == wd._HTML
+
+
+@pytest.mark.unit
+def test_kill_switch_limit_resolves_without_risk_import(monkeypatch):
+    def boom():
+        raise ModuleNotFoundError("jsonlines")
+    monkeypatch.setattr(wd, "_hard_limits", boom)
+    assert wd._drawdown_limit() == 0.2
+    assert wd._decisions(NOW, {}, [], _port(-250.0), _port(0.0))["books"][0]["tripped"] is True
