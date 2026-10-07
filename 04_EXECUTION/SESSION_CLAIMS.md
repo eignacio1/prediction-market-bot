@@ -774,3 +774,4 @@
 | 2026-10-07T00:20:11Z | T-697..T-698, GG-487..GG-488 | W57.2 STANDARD - MLB shadow settlement + GG-477 window read |
 | 2026-10-07T00:20:56Z | T-699..T-700, GG-489 | W57.1 STANDARD - T1 MLB feature CSV staleness HALT (player-hits arm dark) |
 | 2026-10-07T00:21:16Z | T-701..T-703, GG-490..GG-492 | W57.3 STANDARD - Live Terminal placements truth + NFL paper book + leftovers |
+| 2026-10-07T00:32:27Z | T-697 | CLOSED — merge confirmed, HEAD (b474184) is ancestor of origin/main — CLOSED — W57.2: MLB shadow settlement built (PR #170) + armed (cron 11:41 UTC); 128 rows settled; GG-472, GG-477 resolved (commit b474184) |
