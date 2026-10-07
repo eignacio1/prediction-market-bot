@@ -780,3 +780,4 @@
 | 2026-10-07T01:16:53Z | T-710..T-715, GG-495..GG-497, EXP-038 | W58.2 STANDARD - NBA game markets end to end in shadow (discovery, registry, EXP-038 prereg, frozen model, cron) |
 | 2026-10-07T01:17:27Z | T-704..T-707, GG-493..GG-496 | W58.1 STANDARD - MLB player-hits proof (registers GG-489), NHL goalie GH job, retire NFL paper book (GG-490), GG triage |
 | 2026-10-07T01:17:36Z | T-716..T-720, GG-498..GG-499 | W58.3 STANDARD - calibration engine: pre-registration-aware scoring pipeline + Visual Dashboard Calibration section + daily cron |
+| 2026-10-07T01:51:01Z | T-716 | CLOSED — merge confirmed, HEAD (de35316) is ancestor of origin/main — W58.3 calibration engine live: sealed cells emit no scores, /project Calibration section, one daily cron line. |

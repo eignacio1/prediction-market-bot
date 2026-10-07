@@ -281,9 +281,21 @@ def sec_data(repo: Path) -> dict:
     return _sec("exp_output/ (filesystem stat; read-only)", _iso(), stores=out)
 
 
+CALIB_DIR = "exp_output/CALIBRATION"
+
+
+def sec_calibration(repo: Path) -> dict:
+    """Newest engine_<UTC>.json written by scripts/calibration_engine.py. Read-only; no score is computed here."""
+    files = sorted((repo / CALIB_DIR).glob("engine_*.json")) if (repo / CALIB_DIR).is_dir() else []
+    if not files:
+        return _awaiting(CALIB_DIR, "the first calibration-engine run (no engine_<UTC>.json yet)")
+    d = json.loads(files[-1].read_text())
+    return _sec(f"{CALIB_DIR}/{files[-1].name}", d.get("generated"), **{k: d[k] for k in ("cells", "historical", "summary", "gg_open")})
+
+
 def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
-    secs = {"git": sec_git, "registry": sec_registry, "governance": sec_governance,
+    secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
             "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data}
     out: dict[str, Any] = {"generated": _iso(), "repo": repo.name, "sections": {}}
     for k, fn in secs.items():
@@ -316,6 +328,8 @@ background:var(--card);padding:5px 10px;font-size:12.5px;text-decoration:none;co
 .pill.neu{border-left-color:var(--line)}.pill.nodata{border-left-color:var(--line);color:var(--mut)}.pill .v{font-weight:600}
 .tag{border:1px solid var(--line);border-radius:3px;padding:0 5px;font-size:11px;color:var(--mut)}
 .scroll{overflow-x:auto}
+.bar{display:inline-block;width:70px;height:7px;background:var(--line);border-radius:3px;vertical-align:middle;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
 @media (max-width:640px){main{padding:10px 10px 40px}section{padding:10px}header{padding:10px}td,th{padding:3px 5px}}"""
 
 
@@ -424,6 +438,52 @@ def _ops_tables(ops: dict, head: Any, aw: Any) -> dict[str, str]:
     return out
 
 
+def _calibration_html(sec: dict, head: Any) -> str:
+    """Per sport, one row per cell. Scores appear only on cells the engine itself released (no `scores` key = none)."""
+    if sec.get("awaiting") or not sec.get("summary"):
+        sec = {**sec, "awaiting": sec.get("awaiting") or "the first calibration-engine run"}
+        return f"<section id='calibration'>{head('Calibration — SHADOW cells', sec)}<div class='nd'>no data — awaiting {_e(sec['awaiting'])}</div></section>"
+    sm = sec["summary"]
+    try:
+        age_h = (_now() - datetime.fromisoformat(str(sec["as_of"]).replace("Z", "+00:00"))).total_seconds() / 3600
+    except Exception:
+        age_h = None
+    stale = age_h is not None and age_h > 36
+    top = (f"<p class='num{' stale' if stale else ''}'><b>{sm['logging']}</b> of {sm['cells']} cells logging · "
+           f"<b>{sm['with_outcomes']}</b> have outcomes · <b>{sm['reached_look']}</b> reached a look"
+           f"{' · <span class=warn>engine output is ' + project_ops.fmt_age(age_h) + ' old</span>' if stale else ''}</p>")
+    rows = []
+    for sport in ("NFL", "MLB", "NHL"):
+        cs = [c for c in sec["cells"] if c["sport"] == sport]
+        if not cs:
+            continue
+        rows.append(f"<tr><th colspan=6>{sport} <span class='tag'>SHADOW · $0 stake · not trading</span></th></tr>")
+        for c in cs:
+            st = c["status"]
+            cls = {"JUDGED": "ok", "PRELIMINARY": "warn"}.get(st, "nd")
+            pct = c.get("pct_to_first_look")
+            bar = (f"<span class='bar'><i style='width:{min(pct, 100)}%'></i></span> <span class='num'>{pct}%</span>"
+                   if pct is not None else "<span class='nd'>no look registered</span>")
+            pj = c["projection"]
+            sc = c.get("scores")
+            score = ("<span class='nd'>none released</span>" if not sc else
+                     (f"<span class='tag'>{_e(c.get('scores_label', 'JUDGED'))}</span> Brier model {sc['brier_model']:.4f} / "
+                      f"market {sc['brier_market']:.4f} · Δ vs mkt {sc['delta_brier_vs_market']['mean']:+.4f} "
+                      f"[{sc['delta_brier_vs_market']['ci95'][0]:+.4f}, {sc['delta_brier_vs_market']['ci95'][1]:+.4f}]"))
+            rows.append(f"<tr title='source: {_e(c['source'])}'><td>{_e(c['market_type'])} {_e(c['band'])}</td><td><span class='{cls}'>{_e(c['status_text'])}</span></td>"
+                        f"<td class='num'>{c['rows']} rows · {c['settled_games']} games</td><td>{bar}</td>"
+                        f"<td class='num'>{_e(pj['date'] or pj['note'])}</td><td class='num'>{score}</td>"
+                        f"</tr>")
+    hist = "".join(f"<tr><td>{_e(h['family'])}</td><td><span class='ok'>HISTORICAL</span></td>"
+                   f"<td colspan=4>scored in Waves 38-44 — <code>{_e(h['source'])}</code></td></tr>" for h in sec.get("historical", []))
+    body = ("<table><tr><th>Cell</th><th>Status</th><th>Counts</th><th>Progress to first look</th><th>Projected look</th>"
+            f"<th>Scores (only where allowed)</th></tr>{''.join(rows)}{hist}</table>")
+    note = ("<div class='asof'>Each cell follows its own pre-registration (EXP-036 NHL, EXP-037 NFL/MLB). SEALED cells show counts only. "
+            "NHL T3 stays sealed while GG-401 is open. MLB 2026 postseason rows are counted, never scored; the clock that matters is 2027-03-01. "
+            "Projection = trailing settle rate; early-season rates are noisy.</div>")
+    return f"<section id='calibration' class='{'stale' if stale else ''}'>{head('Calibration — SHADOW cells', sec)}{top}{note}<div class='scroll'>{body}</div></section>"
+
+
 def _strip(S: dict, ops: dict) -> str:
     pills = []
     for id_, name in (("operations", "Cron arms"), ("feeds", "Data feeds"), ("services", "Services & deploy"),
@@ -431,7 +491,10 @@ def _strip(S: dict, ops: dict) -> str:
         st = ops.get(id_, {}).get("status", "nodata")
         pills.append(f"<a class='pill {st}' href='#{id_}'>{_e(name)} <span class='v'>{_e(_STATE_WORD[st])}</span></a>")
     gv, qu, ex = S.get("governance", {}), S.get("queue", {}), S.get("experiments", {})
+    cb = S.get("calibration", {})
     neutral = [
+        ("calibration", "Calibration", (f"{cb['summary']['reached_look']} of {cb['summary']['cells']} at a look"
+                                        if cb.get("summary") else "no data")),
         ("verdicts", "Verdicts", f"{len(ex.get('items', []))} EXP" if not ex.get("awaiting") else "no data"),
         ("governance", "Gaps", f"{gv.get('open')} open" if not gv.get("awaiting") else "no data"),
         ("queue", "Your desk", f"{len(qu.get('needs_decision', []))} to decide" if not qu.get("awaiting") else "no data"),
@@ -461,6 +524,7 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
     parts.append(_strip(S, ops))
     for k in ("operations", "feeds", "services", "books", "evidence"):
         parts.append(ops_html[k])
+    parts.append(_calibration_html(S.get("calibration", _awaiting("calibration", "engine")), head))
     # verdict board = experiments
     ex = S.get("experiments", {})
     body = aw(ex) or ("<table><tr><th>EXP</th><th>Question</th><th>Pre-reg</th><th>Verdict</th></tr>" + "".join(

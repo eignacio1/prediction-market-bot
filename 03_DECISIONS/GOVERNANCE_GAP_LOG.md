@@ -4080,6 +4080,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Registered by 49.3 (registration only, no investigation). |
 | W52.D finding (2026-10-03, T-657) | T3 needs both confirmed goalie IDs by ~15 min pre-start (cron.nhl_shadow T3 */10; BANDS T3 = 0.25-1.0 h). The only known official field is boxscore playerByGameStats.<side>.goalies[].starter, which this repo has only read post-game. Every source (api-web.nhle.com schedule/boxscore/landing, dailyfaceoff) was refused by the cloud egress proxy, so verdict (c) cannot tell. Measurement: run scripts/nhl_goalie_source_probe.py (branch w52/nhl-goalie-probe) on the VPS at ~60/30/15 min pre-start on one slate. Status unchanged; no NHL T3 score may be read. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md. |
 
+| W58.1 timing measurement (2026-10-07, status unchanged) | `.github/workflows/nhl_goalie_probe.yml` (PR #173) probes api-web.nhle.com every 10 min, 21:00-03:50 UTC, and appends to branch `data/nhl-goalie-probe` file `goalie_source_probe.jsonl` (never main). It stops itself after 2026-10-14. Verdict rule is W52_D D3: for each game take the earliest probe where both `boxscore_starters` and `landing_starters` show both sides; flag at >=15 min before start in k of n games = (a), build a StarterProvider; flag only at/after puck drop = (b), operator picks move-T3-later or amend the pre-registration. Until then no NHL T3 score may be read. First dispatch: 9 records appended. |
 </details>
 
 ### GG-402 — Shadow runner hardcodes fee_multiplier=1
@@ -4876,5 +4877,58 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Category | Deploy / environment mismatch |
 | What was found | `pmbot-web-dashboard.service` runs `/usr/bin/python3`, which has neither `jsonlines` nor pandas (the venv at `/opt/prediction-market-bot/venv` has both). `_hard_limits()` imported `risk.py`, whose package imports the audit logger, so the C4 tile fell back to "not instrumented". `jsonlines` is already declared as a dependency; the unit simply does not use the venv. |
 | Resolution | 2026-10-06 W57.3: `_hard_limits()` tries the import first, then reads the literals from `risk.py` source with stdlib `ast` (`_hard_limits_from_source`). No new dependency, no hand-install; loading pandas into the dashboard process was rejected as an OOM risk (GG-118). Test: `tests/test_w57_3_books_truth.py` asserts source-read == import, under `python -I`. |
+
+</details>
+
+### GG-489 — T1 MLB feature CSV went stale: PIPE-05 and PIPE-06pre HALTed, player-hits arm dark for days
+
+**Status:** RESOLVED · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-489 |
+| Category | Data pipeline / silent arm outage (shared-contract, GG-072 class) |
+| What was found | The VPS feature CSV was 82 players / latest game_date 2026-09-27 (9890 rows). Both consumers of `MLB_FEATURE_CSV_CONTRACT` HALTed on `staleness_halt` (>7 days): PIPE-05 (T1) on 2026-10-05 and 10-06 (8 and 9 days stale), PIPE-06pre on 2026-10-05 and 10-06 (no `pregame_mlb_*.json` written). T2 evaluated 0 on 10-06. Root cause: the VPS 22:30 UTC cron (`generate_mlb_features.py --seasons 2026`) overwrote the good CSV nightly with degraded 2026-only output (statsapi.mlb.com returns 406 to the VPS for history), and the VPS cannot rebuild it. |
+| Impact | MLB player-hits T1/T2 produced no evaluations for ~2 game days. Registered by W57.1 claim only; first written into this log by W58.1. |
+| Source | W57.1 / W58.1 Part A |
+| Resolution | 2026-10-07 W58.1: (1) features now built by GitHub Actions `mlb_features_sync` (PR #171; schedule 23:17 and 10:17 UTC) and synced to the VPS; CSV on disk 2026-10-07 00:55:40 UTC, 51,982 rows, 661 players, max game_date 2026-10-06, 1.8% blank cells, 0 columns >50% blank. (2) The nightly overwriter is gone: VPS crontab line `30 22 * * *` commented out (operator authorization 2026-10-06 18:16 PT; backup `logs/crontab_backup_20261007T011803Z_w58_1.txt`; diff = that one line commented plus one explanatory comment line, all other 518 lines byte-identical), mirrored in `deploy/cron.conf`. (3) T1 MLB paper cron run by hand with its exact command: exit 0, no HALT, 12 players in live KXMLBHIT markets, 33 market/threshold pairs, 24 `edge_decision` rows written, 0 bets (kelly 0), 21 rejected by C4. (4) GG-072 consumer rule: PIPE-06pre re-run by hand, wrote `pregame_mlb_20261007.json` (29 players, 58 markets, 48 actionable). T3 MLB ran on cron 01:17Z (no contract violation). T2 (19:30Z cron) next runs 2026-10-07 19:30Z. Residual: `cardinality_drift` WARN (51,982 vs last-known-good 9,890) is non-HALT and will clear when the baseline updates; the 10:17Z sync finishes ~10:40Z, 20 min before the 11:00Z T1 cron, a thin margin. |
+| Dispositions | PIPE-05 T1: re-ran clean. PIPE-06pre: re-ran clean (window open). PIPE-06/T3: no HALT. T2: no HALT recorded, 0 evaluated on 10-06 (consequence of stale features), next run pending. 2026-10-05/06 T1+06pre windows lost. |
+
+</details>
+
+### GG-498 — deploy/cron.conf does not mirror the live crontab (EXP-037 and NHL shadow blocks absent)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-498 |
+| Category | Config drift / reproducibility |
+| What was found | W58.3 Part E went to mirror its cron block into `deploy/cron.conf` and found the file holds no `BEGIN EXP-037 ... END EXP-037` block and no NHL shadow (T-607) lines, both live on the VPS crontab (lines ~494-518 on 2026-10-07). The file is a commented reference using `$PROJ`, not a byte mirror. |
+| Impact | The repo cannot rebuild the live crontab; a VPS rebuild would silently drop the shadow arms. |
+| Source | W58.3 Part E |
+| Resolution | Not fixed in-session (register-and-stop). W58.3's own block was mirrored in the file's commented style. |
+
+</details>
+
+### GG-499 — Shadow settled-row schemas differ by sport (NHL no game_key/p_clim; MLB no p_clim; MLB T1 has no settled file)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-499 |
+| Category | Data contract |
+| What was found | NFL settled rows carry y, game_key, p_clim. MLB settled rows carry y, game_key but no p_clim, and no settled file exists for any MLB T1 cell. NHL settled rows carry `outcome` and precomputed Brier values but no game_key, event_ticker or p_clim. |
+| Impact | The calibration engine must join NHL to its ledger on (run_id, market_ticker) and cannot show climatology for MLB or NHL ("unavailable"). The MLB/NHL pre-registrations may call for a climatology comparison; none can be produced until settlement writes a climatology prior. |
+| Source | W58.3 Part A |
+| Resolution | Not fixed in-session. Engine degrades honestly (climatology unavailable, never faked). |
 
 </details>
