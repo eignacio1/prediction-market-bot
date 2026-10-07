@@ -4898,3 +4898,37 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Dispositions | PIPE-05 T1: re-ran clean. PIPE-06pre: re-ran clean (window open). PIPE-06/T3: no HALT. T2: no HALT recorded, 0 evaluated on 10-06 (consequence of stale features), next run pending. 2026-10-05/06 T1+06pre windows lost. |
 
 </details>
+
+### GG-498 — deploy/cron.conf does not mirror the live crontab (EXP-037 and NHL shadow blocks absent)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-498 |
+| Category | Config drift / reproducibility |
+| What was found | W58.3 Part E went to mirror its cron block into `deploy/cron.conf` and found the file holds no `BEGIN EXP-037 ... END EXP-037` block and no NHL shadow (T-607) lines, both live on the VPS crontab (lines ~494-518 on 2026-10-07). The file is a commented reference using `$PROJ`, not a byte mirror. |
+| Impact | The repo cannot rebuild the live crontab; a VPS rebuild would silently drop the shadow arms. |
+| Source | W58.3 Part E |
+| Resolution | Not fixed in-session (register-and-stop). W58.3's own block was mirrored in the file's commented style. |
+
+</details>
+
+### GG-499 — Shadow settled-row schemas differ by sport (NHL no game_key/p_clim; MLB no p_clim; MLB T1 has no settled file)
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-499 |
+| Category | Data contract |
+| What was found | NFL settled rows carry y, game_key, p_clim. MLB settled rows carry y, game_key but no p_clim, and no settled file exists for any MLB T1 cell. NHL settled rows carry `outcome` and precomputed Brier values but no game_key, event_ticker or p_clim. |
+| Impact | The calibration engine must join NHL to its ledger on (run_id, market_ticker) and cannot show climatology for MLB or NHL ("unavailable"). The MLB/NHL pre-registrations may call for a climatology comparison; none can be produced until settlement writes a climatology prior. |
+| Source | W58.3 Part A |
+| Resolution | Not fixed in-session. Engine degrades honestly (climatology unavailable, never faked). |
+
+</details>

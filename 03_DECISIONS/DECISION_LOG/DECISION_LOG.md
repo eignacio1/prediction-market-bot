@@ -1835,3 +1835,9 @@ engine (sealed cells cannot emit scores). Docs-only.
 **Operator (2026-10-06 18:16 PT):** "Yes permission granted." Scope: comment out the single cron line running
 `scripts/generate_mlb_features.py` at 22:30 UTC (statsapi-blocked; overwrites the GitHub-built CSV with degraded output
 nightly). Crontab backup first; mirrored into deploy/. No other line. Executed by Wave 58.1 Part A5. Docs-only.
+
+## 2026-10-07 — W58.3 calibration engine (T-716..T-720)
+- Engine reads only scoring.py/fees.py; PREREG table (NFL 60/150, MLB 150/600 from 2027-03-01, NHL 2500 preliminary-below, T3 sealed while GG-401 open; unreadable GG state = open). No pre-registered parameter changed.
+- Seal gate lives inside `compute_scores`; a score is computed only after the policy allows it. NHL PRELIMINARY scores exist in the JSON (allowed, labelled); sealed cells carry none.
+- Cron: one new line `49 13 * * *` in block W58.3-CALIBRATION (standing shadow-evaluation authorization). Crontab backed up (/root/crontab.w58_3.pre.20261007T014540Z), re-read before write, diff = 3 added lines, 0 removed/changed.
+- Deploy job (run 37558544298): t4-mlb restart decision = not_needed (no file imported by t4-mlb changed).
