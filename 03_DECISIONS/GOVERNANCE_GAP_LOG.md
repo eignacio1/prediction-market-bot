@@ -4878,3 +4878,22 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Resolution | 2026-10-06 W57.3: `_hard_limits()` tries the import first, then reads the literals from `risk.py` source with stdlib `ast` (`_hard_limits_from_source`). No new dependency, no hand-install; loading pandas into the dashboard process was rejected as an OOM risk (GG-118). Test: `tests/test_w57_3_books_truth.py` asserts source-read == import, under `python -I`. |
 
 </details>
+
+### GG-489 — T1 MLB feature CSV went stale: PIPE-05 and PIPE-06pre HALTed, player-hits arm dark for days
+
+**Status:** RESOLVED · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-489 |
+| Category | Data pipeline / silent arm outage (shared-contract, GG-072 class) |
+| What was found | The VPS feature CSV was 82 players / latest game_date 2026-09-27 (9890 rows). Both consumers of `MLB_FEATURE_CSV_CONTRACT` HALTed on `staleness_halt` (>7 days): PIPE-05 (T1) on 2026-10-05 and 10-06 (8 and 9 days stale), PIPE-06pre on 2026-10-05 and 10-06 (no `pregame_mlb_*.json` written). T2 evaluated 0 on 10-06. Root cause: the VPS 22:30 UTC cron (`generate_mlb_features.py --seasons 2026`) overwrote the good CSV nightly with degraded 2026-only output (statsapi.mlb.com returns 406 to the VPS for history), and the VPS cannot rebuild it. |
+| Impact | MLB player-hits T1/T2 produced no evaluations for ~2 game days. Registered by W57.1 claim only; first written into this log by W58.1. |
+| Source | W57.1 / W58.1 Part A |
+| Resolution | 2026-10-07 W58.1: (1) features now built by GitHub Actions `mlb_features_sync` (PR #171; schedule 23:17 and 10:17 UTC) and synced to the VPS; CSV on disk 2026-10-07 00:55:40 UTC, 51,982 rows, 661 players, max game_date 2026-10-06, 1.8% blank cells, 0 columns >50% blank. (2) The nightly overwriter is gone: VPS crontab line `30 22 * * *` commented out (operator authorization 2026-10-06 18:16 PT; backup `logs/crontab_backup_20261007T011803Z_w58_1.txt`; diff = that one line commented plus one explanatory comment line, all other 518 lines byte-identical), mirrored in `deploy/cron.conf`. (3) T1 MLB paper cron run by hand with its exact command: exit 0, no HALT, 12 players in live KXMLBHIT markets, 33 market/threshold pairs, 24 `edge_decision` rows written, 0 bets (kelly 0), 21 rejected by C4. (4) GG-072 consumer rule: PIPE-06pre re-run by hand, wrote `pregame_mlb_20261007.json` (29 players, 58 markets, 48 actionable). T3 MLB ran on cron 01:17Z (no contract violation). T2 (19:30Z cron) next runs 2026-10-07 19:30Z. Residual: `cardinality_drift` WARN (51,982 vs last-known-good 9,890) is non-HALT and will clear when the baseline updates; the 10:17Z sync finishes ~10:40Z, 20 min before the 11:00Z T1 cron, a thin margin. |
+| Dispositions | PIPE-05 T1: re-ran clean. PIPE-06pre: re-ran clean (window open). PIPE-06/T3: no HALT. T2: no HALT recorded, 0 evaluated on 10-06 (consequence of stale features), next run pending. 2026-10-05/06 T1+06pre windows lost. |
+
+</details>
