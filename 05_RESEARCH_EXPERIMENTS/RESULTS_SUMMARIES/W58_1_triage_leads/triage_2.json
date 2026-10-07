@@ -1,0 +1,247 @@
+[
+ {
+  "id": "GG-161",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-162",
+  "class": "STILL-OPEN",
+  "evidence": "claim_session.sh now collision-checks GG ids at claim and retry (GG-236/GG-322) but mid-session GG numbers still have no atomic reservation.",
+  "next_action": "Decide whether claim-time check suffices; else add atomic GG reservation.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-164",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-165",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-166",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN: 93 positions outstanding awaiting outcome-store coverage; code fix landed T-437.",
+  "next_action": "Re-derive remaining 93 once outcome store covers them.",
+  "severity": "CRITICAL"
+ },
+ {
+  "id": "GG-167",
+  "class": "STILL-OPEN",
+  "evidence": "deploy.yml:153 uses git status --untracked-files=no, so untracked-file collision still unguarded.",
+  "next_action": "Add untracked-collision check to deploy.yml pre-pull.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-168",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-170",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "CRITICAL"
+ },
+ {
+  "id": "GG-172",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-174",
+  "class": "STILL-OPEN",
+  "evidence": "venue_adapter.py:350 still hardcodes \"tag\": \"nba\" (KI-019).",
+  "next_action": "Confirm Polymarket tag taxonomy or parameterize tag by sport before T-077 activation.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-177",
+  "class": "STILL-OPEN",
+  "evidence": "session_end_prep.sh matches branch-timestamp against claim row STAMP set at claim time (claim_session.sh:67); offset persists.",
+  "next_action": "Match claim row on focus slug or write branch name in row.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-182",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-183",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-187",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-189",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-192",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-195",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-196",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-190",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-198",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-200",
+  "class": "STILL-OPEN",
+  "evidence": "No \"### GG-194\" header exists in log or archive; GG-194 only cited in handoffs/OPERATOR_CONSOLE.",
+  "next_action": "Register GG-194 or repoint Block G citation.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-202",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-206",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-204",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-216",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-217",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-218",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-209",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-221",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-224",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-228",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-226",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-229",
+  "class": "STILL-OPEN",
+  "evidence": "tests/test_market_type_registry.py:293,307 still use del MARKET_TYPE_REGISTRY[key].",
+  "next_action": "Replace del with save/restore fixture.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-234",
+  "class": "STILL-OPEN",
+  "evidence": "Log Status line is OPEN; no code/commit evidence of remediation verified in this triage.",
+  "next_action": "Review full GG record and execute its stated remediation, or close with evidence.",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-230",
+  "class": "STILL-OPEN",
+  "evidence": "MEMORY_BANK.md Compass OS Health line still ~5163 chars (>3000 threshold).",
+  "next_action": "Trim line to under 3000 chars.",
+  "severity": "LOW"
+ }
+]

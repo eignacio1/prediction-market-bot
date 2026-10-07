@@ -1,0 +1,247 @@
+[
+ {
+  "id": "GG-004",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Accumulate clean_n toward per-band n* via scripts/run_power_calc.py",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-007",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-027",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-037",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-038",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Operator ratify ADR-0063 (PROPOSED) kill-switch/Kelly tiers; NBA tabled",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-039",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-040",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-041",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-045",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-046",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Stand up T4 commercial-validation track per APR-0024 n* standard",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-066",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-072",
+  "class": "FIXED",
+  "evidence": "CLAUDE.md 'Incident response - shared-contract HALT recovery' section, commit 402a1b1 (T-386)",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-078",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-094",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-098",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-105",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-124",
+  "class": "FIXED",
+  "evidence": "self-resolving clean_n dip; clean_n recovered post epoch-8 reset per memory note and scan",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-125",
+  "class": "FIXED",
+  "evidence": "run_resolve_mlb.py wires record_forecast_outcome and check_and_alert, commit 807fe3f",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-132",
+  "class": "FIXED",
+  "evidence": "scripts/check_memory_bank_snapshots.sh reports count 1 for Last reviewed and Snapshot chains",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-133",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Update 00_ADMIN/CHANGELOG.md (last touched 2026-07-22)",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-134",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-137",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Decide on K=400 shrinkage candidate (ba_l10_shrunk_a1_candidate) via DS sign-off",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-140",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-143",
+  "class": "FIXED",
+  "evidence": "src/prediction_market_bot/run_t4_mlb_live.py cold-start fix + t4_cold_start_blind alarm, commit 2cbce43",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-145",
+  "class": "FIXED",
+  "evidence": "mlb_features.py park_factor_hits repaired, commit b710609 / PR #152 (T-578)",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-146",
+  "class": "FIXED",
+  "evidence": "run_exp015.py zero-guard on T1_KELLY, commits c470cb0,d877201; tests/test_exp015_t3_simulation.py 20 passed",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-150",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-151",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-153",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Decide reactivation path for T1 kelly_fraction=0.0 (execution_bands.py L156/167/178) via ADR-0048 edge lookup table",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-154",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-156",
+  "class": "FIXED",
+  "evidence": "remediation verified in prior pass",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-157",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-158",
+  "class": "FIXED",
+  "evidence": "remediation verified in prior pass",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ },
+ {
+  "id": "GG-160",
+  "class": "STILL-OPEN",
+  "evidence": "No verified remediation in code/git; logged status ?",
+  "next_action": "Assign owner/T-NNN and execute the logged remediation step",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-159",
+  "class": "FIXED",
+  "evidence": "05_RESEARCH_EXPERIMENTS/PROJECT_ASSESSMENT_2026-07-30.md carries SUPERSEDED banners with n=388/+9.65%",
+  "next_action": "Close log entry (move to archive)",
+  "severity": "NONE"
+ }
+]

@@ -1,0 +1,247 @@
+[
+ {
+  "id": "GG-312",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Adopt T-582 remediation: extend check_register_parity.py to parse Status sections, retire exemptions for ADR>=0040, add write-back row emission",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-316",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git; code merged 1d65b9b but log requires deploy readback",
+  "next_action": "Deploy run_provenance (commit 1d65b9b) and read back a deployed-process row with runtime_git_sha/run_trigger populated; log itself says OPEN until then",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-317",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Make run_t1_nfl_game_market.py refuse STUB model without explicit flag (main() still defaults to StubNFLForecastModel, line ~436) and quarantine the 802 STUB rows",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-318",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add PROVENANCE attribute to the T4M-PROJ forecaster class so model_identity is not UNKNOWN",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-319",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add model_identity/run_id columns to t4_mlb_resolved_ledger derivation",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-320",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Operator adjudication of ADR-0068 C5 re-filing/re-tree of T4M-PROJ",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-321",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Copy VPS git reflog and t4-mlb journal excerpts for the 13 windows into repo evidence file before 2026-10-29",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-322",
+  "class": "FIXED",
+  "evidence": "scripts/claim_session.sh lines ~85-95 re-run check_id_collision on every push retry; commit 214d517 T-595 D3 (GG-322)",
+  "next_action": "Flip log status to RESOLVED and archive",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-323",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Log game-state fields on all new cycle-log rows and rebuild a post-epoch-12 harness window",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-324",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Run market_efficiency_survey across remaining archived families",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-325",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Measure spread/vig vs time-to-settlement, side, price from archive",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-326",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Close 6-12h capture hole in archiver cadence",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-327",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Re-register gate range per family class in a new pre-registration",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-328",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Check whether archiver derives no side from yes side at capture",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-329",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Correct archive_market_prices.py docstring and plan historical backfill via /historical endpoints",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-330",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Make assert_ledger_invariants print explicit INCONCLUSIVE when sources unavailable",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-331",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Document or add PRICE_ARCHIVE path env var for worktrees",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-332",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Obtain fee schedule PDF out-of-band and confirm ADR-0016",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-333",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Operator decision: abandon candle route or redesign Part 1 pre-registration",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-340",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add mandatory lookback/window field to pre-registration template",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-341",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Archive quote/candle raw stores or add hashed snapshot mechanism",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-342",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Prune/merge remote branches; record landed-under-other-SHA map",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-343",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Window Step 4 SemanticFloorViolation grep to recent lines",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-344",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Replace CONTAMINATION_HALT count with recency/non-game-end windowed check",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-345",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add season-calendar awareness to Step 4",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-346",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Change run_schedule_validator_mlb.py date param (line 100, %m/%d/%Y) to ISO format",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-347",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Identify actor via VPS auth/journal and restrict or log manual restarts",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-348",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Confirm intended timer state; enable or remove t4-mlb.timer",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-349",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add lock-stale detection to session_guard.sh",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-350",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Operator reconcile shared tree with origin",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-351",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Trim MEMORY_BANK Compass OS Health line below 3000 chars",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-352",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Replace timeout in snippets with portable alternative",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-353",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Make claim_session.sh reject TBD/open-ended ranges",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-354",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Document fast test subset",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-355",
+  "class": "STILL-OPEN",
+  "evidence": "Log status OPEN; no remediation found in repo/git",
+  "next_action": "Add session-end check requiring Q1-Q7 evidence",
+  "severity": "MEDIUM"
+ }
+]

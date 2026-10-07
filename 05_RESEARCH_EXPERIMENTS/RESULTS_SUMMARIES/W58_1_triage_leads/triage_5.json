@@ -1,0 +1,247 @@
+[
+ {
+  "id": "GG-356",
+  "class": "STILL-OPEN",
+  "evidence": "Single transient observation; no code/doc evidence of fix",
+  "next_action": "Add push-retry guidance to close-out docs if it recurs; else close as observation",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-400",
+  "class": "STILL-OPEN",
+  "evidence": "ADR-0070 (probit-Platt deviation) is still Status PROPOSED, so deviation class not decided",
+  "next_action": "Operator accepts/rejects ADR-0070 deviation class; then close",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-401",
+  "class": "STILL-OPEN",
+  "evidence": "W52.D/W58.1 probe workflow running through 2026-10-14; verdict pending",
+  "next_action": "Evaluate nhl-goalie-probe data after 2026-10-14 per W52_D D3",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-402",
+  "class": "STILL-OPEN",
+  "evidence": "No evidence fee_multiplier re-read implemented",
+  "next_action": "Read fee_multiplier from series endpoint in shadow runner before any CANDIDATE call",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-404",
+  "class": "STILL-OPEN",
+  "evidence": "No evidence scorer filters half_spread",
+  "next_action": "Add half_spread filter to shadow scorer",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-405",
+  "class": "STILL-OPEN",
+  "evidence": "Entry itself says matinee cron-window and travel remain open",
+  "next_action": "Verify T3 cron-window vs matinee starts; decide on travel feature",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-406",
+  "class": "STILL-OPEN",
+  "evidence": "scripts/arm_shadow_crons.sh remains manual pull; no auto-pull found",
+  "next_action": "Add auto-pull or landed-vs-running check",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-407",
+  "class": "STILL-OPEN",
+  "evidence": "No evidence game-clustering enforced in scorer",
+  "next_action": "Enforce game-clustered n in shadow scorer",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-408",
+  "class": "STILL-OPEN",
+  "evidence": "No persisted EXP-027 artifact evidence",
+  "next_action": "Retrain/persist NFL incumbent covering all families or drop head-to-head",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-409",
+  "class": "STILL-OPEN",
+  "evidence": "Process observation, no fix",
+  "next_action": "Record branch manifest in handoff template",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-410",
+  "class": "STILL-OPEN",
+  "evidence": "Frozen v1 features identical per band; unchanged",
+  "next_action": "Document T1-T3 non-independence in scorer; consider band-specific features via ADR",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-411",
+  "class": "STILL-OPEN",
+  "evidence": "No tie handling found",
+  "next_action": "Measure calibration impact of tie mass",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-412",
+  "class": "STILL-OPEN",
+  "evidence": "No evidence kmult read from venue",
+  "next_action": "Read kmult from series endpoint",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-413",
+  "class": "STILL-OPEN",
+  "evidence": "Entry text unresolved; W55.1 booked only 17 T1 per GG-441 update, T4 9 not evidenced",
+  "next_action": "Resolve/void the aged T4 positions via Kalshi settlement (ADR-0071)",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-414",
+  "class": "STILL-OPEN",
+  "evidence": "No evidence T4 resolved ledger writing resumed",
+  "next_action": "Check VPS T4 resolved ledger mtime and resolver (read-only) then fix settlement",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-415",
+  "class": "STILL-OPEN",
+  "evidence": "No refresh evidence",
+  "next_action": "Refresh players_2026.json for MLB features",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-416",
+  "class": "STILL-OPEN",
+  "evidence": "Docstring bound only; no enforcing check",
+  "next_action": "Add assertion/check bounding Gate 2/G7 interpretation",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-417",
+  "class": "STILL-OPEN",
+  "evidence": "Window uses --no-optional-locks but recurrence guard not in place",
+  "next_action": "Add stale-lock guard for sandboxed windows",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-418",
+  "class": "STILL-OPEN",
+  "evidence": "Process drift, no re-verify step",
+  "next_action": "Add SHA re-verification to session-start",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-420",
+  "class": "STILL-OPEN",
+  "evidence": "Collision unresolved per entry",
+  "next_action": "Rename the 48.3 handoff on its branch",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-421",
+  "class": "STILL-OPEN",
+  "evidence": "scripts/vps_job.py only cross-checks --rate-cap vs command --rate (docstring line 17)",
+  "next_action": "Enforce rate cap in runner",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-422",
+  "class": "STILL-OPEN",
+  "evidence": "claim_session.sh range collision behavior unchanged; related GG-162/353",
+  "next_action": "Make claim_session.sh handle overlap/shared endpoints",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-423",
+  "class": "STILL-OPEN",
+  "evidence": "UX ambiguity, no fix evidence",
+  "next_action": "Operator decides whether T1 staleness should be neutral under kelly 0",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-424",
+  "class": "STILL-OPEN",
+  "evidence": "W58.1 commit 5fb6774 retires NFL book under ADR-0071 with ARCHIVED labels, but dashboard counting of STUB positions not verified",
+  "next_action": "Verify OPEN/exposure totals exclude archived NFL STUBs; then close",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-425",
+  "class": "STILL-OPEN",
+  "evidence": "No fix evidence",
+  "next_action": "Fix Age/title parsing in /project gap view",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-426",
+  "class": "STILL-OPEN",
+  "evidence": "governance_scan.sh uses anchored grep now but disagreement not re-measured",
+  "next_action": "Re-run hook vs anchored grep and reconcile",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-429",
+  "class": "STILL-OPEN",
+  "evidence": "Code fix said done in 49.2 but deployment to pmbot-web-dashboard still owed",
+  "next_action": "Deploy fix to VPS dashboard and verify",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-430",
+  "class": "STILL-OPEN",
+  "evidence": "scripts/arm_shadow_crons.sh:28 still uses \"${ALLOW[@]}\" with set -u (surviving of 430/473)",
+  "next_action": "Apply ${ALLOW[@]+\"${ALLOW[@]}\"}",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-431",
+  "class": "STILL-OPEN",
+  "evidence": "Stale source not identified",
+  "next_action": "Identify stale source file behind MODEL VS MARKET panel; add freshness gate",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-441",
+  "class": "STILL-OPEN",
+  "evidence": "Entry update: realized-only/in-memory kill-switch gap remains open",
+  "next_action": "Persist T1 kill-switch state and include settled-unresolved stake",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-442",
+  "class": "FIXED",
+  "evidence": "Branch session/20261003T201912Z-w51-killswitch-truth @6cbe62f is in main (merge 1eb4228); scripts/web_dashboard.py uses realized pnl and FROZEN_AFTER_S=72h label",
+  "next_action": "Mark resolved",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-452",
+  "class": "STILL-OPEN",
+  "evidence": "requirements-base.txt still pins scikit-learn==1.4.2/scipy==1.13.0 vs pyproject >=1.8.0/<1.13",
+  "next_action": "pip freeze on VPS venv, regenerate locks",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-473",
+  "class": "DUPLICATE",
+  "evidence": "Same defect as GG-430 (arm_shadow_crons.sh ALLOW[@] unbound on bash 3.2); surviving GG-430",
+  "next_action": "Close into GG-430",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-498",
+  "class": "STILL-OPEN",
+  "evidence": "Registered 2026-10-07, not fixed",
+  "next_action": "Mirror live EXP-037/NHL cron blocks into deploy/cron.conf",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-499",
+  "class": "STILL-OPEN",
+  "evidence": "Registered 2026-10-07, not fixed",
+  "next_action": "Write climatology prior and align settled-row schemas",
+  "severity": "LOW"
+ }
+]

@@ -1,0 +1,247 @@
+[
+ {
+  "id": "GG-233",
+  "class": "STILL-OPEN",
+  "evidence": "Registration-only; no propagation sweep done. ADR-0062 uses correct T4NFL-/T4NHL- form.",
+  "next_action": "grep prior handoffs/briefs for 'T4N-' citations and correct any found",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-487",
+  "class": "STILL-OPEN",
+  "evidence": "No cross-check of MLB shadow settlement y vs Kalshi settlement found; entry has no resolution.",
+  "next_action": "Add reconciliation of derived y against Kalshi settlement for shadow rows",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-235",
+  "class": "FIXED",
+  "evidence": "04_EXECUTION/LEDGER_INVARIANT_SUITE.md line 20 (GG-238 note) documents corrected real filenames; residual script-default staleness is tracked under GG-238.",
+  "next_action": "none (close; residual under GG-238)",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-240",
+  "class": "FIXED",
+  "evidence": "origin/main has ADR-0060/0061/0062 all Status ACCEPTED 2026-09-03 (T-518 re-record landed via T-519 dad15a9).",
+  "next_action": "none",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-243",
+  "class": "STILL-OPEN",
+  "evidence": "TODO_NEXT.md:72 still carries '## T-518 \u2014 Execute EXP-026' while SESSION_CLAIMS shows T-518 closed for ADR sign-offs; not renumbered.",
+  "next_action": "Renumber the TODO_NEXT EXP-026 entry to a free T-number",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-244",
+  "class": "FIXED",
+  "evidence": "Disclosed and corrected (13 segments/6 values) in ADR-0063 \u00a72/\u00a77; entry states no further action needed.",
+  "next_action": "none",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-256",
+  "class": "STILL-OPEN",
+  "evidence": "claim_session.sh still read-then-append-then-push; session claims log shows T-575 collision again (T-576 correction row).",
+  "next_action": "Implement atomic T-number reservation (lock/server counter), shared with GG-162",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-257",
+  "class": "STILL-OPEN",
+  "evidence": "settle_position() still boolean; only detect-and-refuse guard exists.",
+  "next_action": "Scoped design for split-payout settlement under GG-034 file-lock invariant",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-258",
+  "class": "STILL-OPEN",
+  "evidence": "No EXP-/HYP- ID collision check exists in scripts; local workaround used EXP-027/HYP-012.",
+  "next_action": "Extend an ID-collision check to EXP-/HYP- numbers",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-260",
+  "class": "STILL-OPEN",
+  "evidence": "No structural prevention for uncommitted shared-main ACTIVE_QUEUE.md drift; only manual port in 36ac62c.",
+  "next_action": "Add session-start/guard prompt to commit queue edits before worktree fork",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-261",
+  "class": "STILL-OPEN",
+  "evidence": "Wed cron line (5,25,45 17-23 * * 3) present in deploy/cron.conf:468, but audit-methodology (coverage definition) not fixed.",
+  "next_action": "Amend capture-fidelity audit template to test pregame-window coverage",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-262",
+  "class": "STILL-OPEN",
+  "evidence": "deploy/cron.conf:126 still '30 16 * * *'; VPS value 20 21 not reconciled.",
+  "next_action": "Read-only VPS crontab compare, decide correct value, sync repo/VPS",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-266",
+  "class": "STILL-OPEN",
+  "evidence": "Local environment issue; no change.",
+  "next_action": "Provision OpenSSL-linked Python or mark integration tests VPS/CI-only",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-269",
+  "class": "FIXED",
+  "evidence": "Live VPS read-only check: pmbot-web-dashboard NRestarts=0, ActiveState=active, 0 oom-kill in 24h; root cause fixed under GG-270 (RESOLVED in archive).",
+  "next_action": "none",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-275",
+  "class": "STILL-OPEN",
+  "evidence": "scripts/lib_chain_archive.py archives only when n_entries>1; single-entry collapse still replaces the line without archiving prior Last-reviewed.",
+  "next_action": "Archive the displaced single-entry line; backfill T-538/T-541/T-543 lines",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-279",
+  "class": "STILL-OPEN",
+  "evidence": "scripts/project_ops.py only displays ActiveEnterTimestamp; no comparison against latest source commit time.",
+  "next_action": "Build check comparing service start vs newest relevant commit",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-281",
+  "class": "FIXED",
+  "evidence": "Disclosure-only; entry states not a defect and closes on read; re-run executed verbatim.",
+  "next_action": "none",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-285",
+  "class": "STILL-OPEN",
+  "evidence": "Awaiting operator decision on APR-0035.",
+  "next_action": "Operator selects option on APR-0035",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-288",
+  "class": "FIXED",
+  "evidence": "580e9c9 and close_session_claim.sh/sweep_stray_branches.sh are on origin/main; GG-451 (2365cc7) hardened the push.",
+  "next_action": "none",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-289",
+  "class": "STILL-OPEN",
+  "evidence": "Scripts landed, but classifier Self-Modification barrier decision still not recorded as resolved.",
+  "next_action": "Operator decides authorization route for session-tooling self-edits",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-292",
+  "class": "STILL-OPEN",
+  "evidence": "git branch -r --no-merged origin/main now lists 44 branches; sweep_stray_branches.sh now on origin/main.",
+  "next_action": "Run sweep script and operator-review remainder",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-295",
+  "class": "STILL-OPEN",
+  "evidence": "No commit identified for kalshi_threshold backfill; provenance unresolved.",
+  "next_action": "Operator review of VPS access logs around 2026-09-18T19:04Z",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-296",
+  "class": "STILL-OPEN",
+  "evidence": "True-demand measure and cohort-truncation risk still unresolved in entry.",
+  "next_action": "Confirm true demand from audit_mlb_t4.jsonl and cohort impact",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-297",
+  "class": "STILL-OPEN",
+  "evidence": "Ledger open-status unreliability unresolved; only GG-303 write fix landed.",
+  "next_action": "Verify fills via GET /portfolio/orders before resolving positions",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-298",
+  "class": "STILL-OPEN",
+  "evidence": "rejected_positions field still used under that name (run_resolve_mlb.py:547, paper_trader.py).",
+  "next_action": "Rename or add failure_reason discriminator",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-299",
+  "class": "STILL-OPEN",
+  "evidence": "No re-derivation done.",
+  "next_action": "Re-derive ADR-0046 ECE/Brier on current cohort",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-300",
+  "class": "STILL-OPEN",
+  "evidence": "Diagnosis only; operator repair decision pending.",
+  "next_action": "Operator decides cohort repair/exclusion per GG-228",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-301",
+  "class": "STILL-OPEN",
+  "evidence": "Diagnosis only; depends on GG-300.",
+  "next_action": "Recompute after GG-300 repair; operator decision",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-303",
+  "class": "FIXED",
+  "evidence": "7493ecd refuses position write when Kalshi returns no order_id; b1d9afe activated fix with running-process proof.",
+  "next_action": "none (historical rows handled under GG-300)",
+  "severity": "HIGH"
+ },
+ {
+  "id": "GG-304",
+  "class": "STILL-OPEN",
+  "evidence": "kalshi_order_status semantics unchanged.",
+  "next_action": "Rename/document field or re-poll real status",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-305",
+  "class": "STILL-OPEN",
+  "evidence": "MEMORY_BANK.md line 1111 now short, but longest line is 19090 chars (line 76); session_guard.sh lacks '3000' grep, check unverified.",
+  "next_action": "Verify guard check output and trim long line",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-306",
+  "class": "STILL-OPEN",
+  "evidence": "COVERAGE_TARGET_MATRIX.md has no 92-cell reconciliation.",
+  "next_action": "Add registry cell count alongside coarse grid",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-307",
+  "class": "STILL-OPEN",
+  "evidence": "Scope boundary; ARITH/FLOW still blocked.",
+  "next_action": "Validate formula on ARITH/FLOW inputs at activation proposal",
+  "severity": "LOW"
+ },
+ {
+  "id": "GG-308",
+  "class": "FIXED",
+  "evidence": "close_session_claim.sh now has GG-451 guard (lines 41-43) refusing push when HEAD has unlanded commits, so push carries only the closure row (2365cc7).",
+  "next_action": "none",
+  "severity": "MEDIUM"
+ },
+ {
+  "id": "GG-309",
+  "class": "STILL-OPEN",
+  "evidence": "CLAUDE.md:298 grep still unwindowed.",
+  "next_action": "Window the grep (tail/date bound) like GG-085",
+  "severity": "MEDIUM"
+ }
+]

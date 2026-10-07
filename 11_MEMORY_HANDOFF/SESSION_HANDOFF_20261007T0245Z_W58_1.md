@@ -29,3 +29,5 @@ Part D: classify the 175 OPEN gaps (11 resolved-class already await archive); pr
 
 ## Resume
 `scripts/new_session_worktree.sh "w58-gap-triage"` then read ACTIVE_QUEUE row 58.1.
+
+**Addendum (post-close):** Part D was NOT done. Read-only triage runners were launched in error and returned unverified leads (20 FIXED, 1 DUPLICATE GG-473→GG-430) of 175 OPEN. Raw output saved at `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_1_triage_leads/` — treat as leads only; verify each before any gap status change.
