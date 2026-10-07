@@ -136,3 +136,30 @@ class TestProjectRoute:
         monkeypatch.setitem(sys.modules, "generate_project_state", None)
         st, body = self._get(server, "/project")
         assert st == 200 and "awaiting generate_project_state" in body
+
+
+# ── W58.3 Calibration section ────────────────────────────────────────────────
+
+def _calib_state(cells, generated="2026-10-07T00:00:00Z"):
+    import generate_project_state as g
+    sec = g._sec("exp_output/CALIBRATION/engine_x.json", generated, cells=cells, historical=[], gg_open={"GG-401": True},
+                 summary={"cells": len(cells), "logging": len(cells), "with_outcomes": len(cells), "reached_look": 0})
+    return {"generated": generated, "repo": "r", "sections": {"calibration": sec}, "ops": {}}
+
+
+def test_calibration_awaiting_says_no_data(tmp_path):
+    import generate_project_state as g
+    assert g.sec_calibration(tmp_path).get("awaiting")
+    html = g.render_html({"generated": "x", "repo": "r", "sections": {"calibration": g.sec_calibration(tmp_path)}, "ops": {}})
+    assert "no data" in html and "id='calibration'" in html
+
+
+def test_calibration_sealed_row_shows_no_score_and_literal_status():
+    import generate_project_state as g
+    cell = {"cell": "NFL_NFL_SPREAD_T1", "sport": "NFL", "band": "T1", "market_type": "SPREAD", "status": "SEALED",
+            "status_text": "SEALED (15 of 60)", "rows": 10, "settled_games": 15, "pct_to_first_look": 25.0,
+            "projection": {"date": "2026-10-14", "note": ""}, "source": "x.jsonl"}
+    html = g.render_html(_calib_state([cell]))
+    sec = html[html.index("id='calibration'"):html.index("</section>", html.index("id='calibration'"))]
+    assert "SEALED (15 of 60)" in sec and "none released" in sec and "Brier" not in sec
+    assert "2026-10-14" in html and "SHADOW" in html
