@@ -1841,3 +1841,5 @@ nightly). Crontab backup first; mirrored into deploy/. No other line. Executed b
 - Seal gate lives inside `compute_scores`; a score is computed only after the policy allows it. NHL PRELIMINARY scores exist in the JSON (allowed, labelled); sealed cells carry none.
 - Cron: one new line `49 13 * * *` in block W58.3-CALIBRATION (standing shadow-evaluation authorization). Crontab backed up (/root/crontab.w58_3.pre.20261007T014540Z), re-read before write, diff = 3 added lines, 0 removed/changed.
 - Deploy job (run 37558544298): t4-mlb restart decision = not_needed (no file imported by t4-mlb changed).
+
+| 2026-10-07 | W58.1 | Retired NFL game-market paper book under ADR-0071: 820 open positions booked once from Kalshi settlement (0 cancelled), 4 future-dated left OPEN, realised P&L +13.48 -> -160.66; book frozen and labelled ARCHIVED on both dashboards (GG-490 RESOLVED). Features cron line commented out (GG-489, operator-authorized). NHL goalie probe job live. Part D (triage of 175 OPEN gaps) deliberately deferred by operator to follow-on blocks, split by class/gap range. |
