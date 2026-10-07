@@ -2,7 +2,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-06T00:28:00Z (T-689 — W56.2 Live Terminal NOW tab: decision stream + T1/T4M-PROJ drawdown vs 20% kill switch, live on VPS (PR #167, #169).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261006T0028Z_W56_2.md` for full session detail.
+**Last reviewed:** 2026-10-07T02:00:00Z (T-716 — W58.3 calibration engine live: sealed cells emit no scores, /project Calibration section, one daily cron line.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261007T0200Z_W58_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

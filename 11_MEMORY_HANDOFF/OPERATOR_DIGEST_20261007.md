@@ -1,0 +1,2 @@
+
+**W58.3 — calibration engine (plain English).** There is now one scoreboard for every shadow experiment, on the project page. Experiments that are not yet allowed to be judged show only how many games they have, with no score, and the code makes it impossible for them to show one early. Right now 33 experiments are logging, none has reached its first look, and the NFL ones get there around Oct 14. It runs once a day by itself. Still zero real money at risk. Nothing needs your decision.
