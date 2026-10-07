@@ -20,7 +20,17 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (thi
 
 ---
 
-## ⬛ NOW — Wave 57 closed (verified on GitHub) · Wave 58 waits on two of your calls
+## ⬛ NOW — Wave 58 · three terminal blocks · run any time · evidence-first
+
+| Block | Status | Touches | Result / next |
+|---|---|---|---|
+| **58.1** Prove MLB player-hits is back + 57.1 loose ends | ⬜ **READY — first** | VPS reads + one hand run; GG-489; 22:30 cron line ONLY with your authorization line | — |
+| **58.2** NBA game markets step 1 (before 10-20) | ⬜ **READY** | Kalshi discovery; registry NBA game cells (NOT_IMPLEMENTED); pre-registration doc | — |
+| **58.3** NHL goalie timing via scheduled GitHub job (GG-401) | ⬜ **READY** | probe script + workflow; data branch `data/nhl-goalie-probe` | — |
+
+Disjoint surfaces. 58.2 changes the registry (in t4-mlb's import closure — the deploy decides the restart). **Wave 59 (queued):** NFL first-look scoring code dry-run on fixtures before NFL reaches judged n (~late Oct); NBA step 2 (frozen model); NHL goalie verdict from 58.3's data; NFL game-market book retirement (GG-490, your call).
+
+### Wave 57 results (closed, verified on GitHub)
 
 | Block | Status | Result |
 |---|---|---|
@@ -28,13 +38,179 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (thi
 | **57.2** MLB shadow settle + stagger night | ✅ **DONE** | #170 merged: MLB settle outcome join, **128 settled rows**, daily cron at 11:41 UTC. **GG-472 and GG-477 RESOLVED** (first night after the stagger clean; n=1). T1 cells settle 0 so far — their games aren't final yet. Settle uses the games cache's final scores; GG-487 registers a Kalshi cross-check. |
 | **57.3** Truthful books | ✅ **DONE** | #172 merged: Live Terminal shows T4M-PROJ paper placements separate from the $0 shadow stream; blank rows hidden; phone bar fixed; C4 tile reads limits (GG-491 resolved). **NFL game-market paper book: unmaintained** — no writer or resolver cron, ~820 past-date open positions (GG-490). T4 stakes 0.05–1.00 are **intended**: ADR-0050's contract cap (min($1, max contracts × price)). |
 
-**Queued next (Wave 58, not yet written):** prove 57.1 on the 11:00 UTC T1 run + register GG-489 + PIPE-06pre consumer check; NFL game-market book disposition; **NBA game markets before the 10-20 season open**; **NHL confirmed-goalie timing (GG-401)** — every NHL T3 score is blocked on it; first-look scoring scripts dry-run on fixtures before NFL reaches judged n (~late October).
+### 58.1 — Prove MLB player-hits is back
+
+```
+COMMON RULES - WAVE 58 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W58_<n>.md
+  (docs-only push to main).
+
+WAVE 58.1 - PROVE MLB PLAYER-HITS IS BACK, AND CLOSE 57.1's LOOSE ENDS. Repo: eignacio1/prediction-market-bot.
+
+WHY
+Operator directive: "MLB can't go dark while games are going on." 57.1 found the T1 MLB player-hits arm halting on
+a stale feature CSV (statsapi 406s the VPS; the VPS's 22:30 UTC features cron never fetched postseason games). PR #171
+moved feature generation to .github/workflows/mlb_features_sync.yml (23:17 + 10:17 UTC, gated on the unchanged
+MLB_FEATURE_CSV_CONTRACT + >= 300 players); its first run succeeded 2026-10-07 00:55 UTC. Not yet done: proof that T1
+passes PIPE-05, GG-489 registration, the GG-072 consumer check, and the VPS 22:30 cron that still overwrites the good
+file nightly with degraded output (121 of ~575 players).
+
+D0 - Worktree w58-mlb-hits-proof; claim "W58.1 STANDARD - MLB player-hits proof + 57.1 loose ends". Register GG-489
+     in GOVERNANCE_GAP_LOG.md first (57.1 claimed it but never registered it; check the number is still free).
+D1 - VPS read-only: the feature CSV on disk - max game_date, player count, blank-column share, file time - and which
+     writer produced it last (GitHub job or the 22:30 cron). Latest mlb_features_sync run result.
+D2 - Run the T1 MLB paper cron once by hand with its exact cron command (kelly 0: no T1 bets expected). It must pass
+     PIPE-05 and log evaluations. Record players matched and evaluation rows per player-hits cell (T1, T2, T3), and
+     when T2/T3 last wrote.
+D3 - GG-072 consumer rule: run_mlb_pregame.py (PIPE-06pre) enforces the same contract - check its latest log for the
+     same staleness HALT; if it halted, re-run it once by hand if its window is still open. Record each consumer's
+     disposition in GG-489.
+D4 - The 22:30 UTC features cron line: ONLY if ACTIVE_QUEUE.md shows "AUTHORIZATION - FEATURES CRON REMOVAL", back up
+     the crontab, comment out that one line (do not delete; note the GG), diff shows exactly one changed line. Without
+     that line, leave it and report.
+D5 - GG-489 RESOLVED only with D2's evidence. Results doc 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_1_mlb_hits_proof_results.md.
+     Docs-only push to main.
+
+END OF BLOCK 58.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 58.2 — NBA game markets step 1
+
+```
+COMMON RULES - WAVE 58 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W58_<n>.md
+  (docs-only push to main).
+
+WAVE 58.2 - NBA GAME MARKETS, STEP 1: KALSHI DISCOVERY + REGISTRY CELLS + PRE-REGISTRATION (before the 10-20 open).
+Repo: eignacio1/prediction-market-bot.
+
+WHY
+The NBA season opens 2026-10-20. The registry has only NBA_PLAYER_POINTS (DARK). The coverage target covers the
+standard mechanisms (moneyline, spread, game total, team total) across bands, pre-game first (operator 2026-09-30).
+NFL (EXP-037) and NHL (EXP-036) already went this way: pregame_shadow framework (runner, ledger, settlement, scoring),
+a frozen model, a pre-registration written BEFORE any data is scored. This block does step 1 only; the model and the
+shadow arm are later blocks. Everything here is shadow-only: no order, no stake, no kelly.
+
+D0 - Worktree w58-nba-step1; claim "W58.2 STANDARD - NBA game markets step 1 (discovery, cells, pre-registration)",
+     include one EXP number in the range.
+D1 - Kalshi discovery (read-only, demo/public endpoints): which NBA game-market series exist (moneyline, spread,
+     total, team total - names, ticker grammar, sample tickers, how team codes are written - remember the NHL
+     2-letter-code drop, GG-403), and whether 2026-27 regular-season markets are listed yet. Record exact series ids.
+D2 - Registry: add the NBA game MarketTypes and their cells (T1, T2, T3 at least) as NOT_IMPLEMENTED, with series
+     tickers and ticker grammar, following how the NFL/NHL types were added (read their commits). Tests, including
+     parsing real sample tickers from D1 with every team code.
+D3 - Pre-registration doc 05_RESEARCH_EXPERIMENTS/EXP0xx_NBA_PREGAME_SHADOW_PREREGISTRATION_<date>.md, modelled on
+     EXP037 NFL: cells, model class and features (and its ADR-0004 / ADR-0070 standing), training data source and
+     window, bands and run times, judged n per cell, scoring rule, stop conditions, what counts as a pass. Written now,
+     before any NBA data is scored. Flag anything that needs an operator decision instead of deciding it.
+D4 - PR (registry + tests), CI green, merge (registry is in t4-mlb's import closure: record the deploy's t4-mlb
+     decision). Pre-registration doc docs-only to main. Results doc
+     05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_2_nba_step1_results.md with the step-2/3 plan sized as ~30-min blocks.
+
+END OF BLOCK 58.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 58.3 — NHL goalie timing via scheduled GitHub job
+
+```
+COMMON RULES - WAVE 58 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W58_<n>.md
+  (docs-only push to main).
+
+WAVE 58.3 - NHL CONFIRMED GOALIE: MEASURE IT WITH A SCHEDULED GITHUB JOB, NOT A WAITING TERMINAL (GG-401).
+Repo: eignacio1/prediction-market-bot.
+
+WHY
+EXP-036 promises the NHL T3 run uses the confirmed starting goalie; every NHL band uses a projected one, so no NHL T3
+score may be read until this is settled (GG-401). 52.D/53 could not measure when the official NHL API names the
+starter: it needs probes at ~60, 30 and 15 minutes before puck drop, and the operator does not run timing blocks.
+A scheduled GitHub Actions job can do the waiting: scripts/nhl_goalie_source_probe.py (branch w52/nhl-goalie-probe,
+one-shot, read-only, api-web.nhle.com) run on a schedule, results committed to the repo for a later block to read.
+
+D0 - Worktree w58-nhl-goalie-actions; claim "W58.3 STANDARD - NHL goalie timing via scheduled GH Actions (GG-401)".
+D1 - Bring the probe script + its test from w52/nhl-goalie-probe onto a fresh branch from main. Read GG-401, the W52_D
+     results doc, deploy/cron.nhl_shadow (the real T3 run times) and the probe's output format.
+D2 - New .github/workflows/nhl_goalie_probe.yml: schedule every 10 minutes across the NHL evening window (UTC hours
+     that cover typical puck drops), plus workflow_dispatch. Each run appends the probe's JSONL to one file on a
+     dedicated branch data/nhl-goalie-probe - NEVER main (a commit every 10 minutes on main would collide with every
+     session's claim and handoff pushes). It must STOP on its own: an end date 7 days out written into the workflow. Read-only against the
+     NHL API; no VPS access; no secrets beyond what it needs.
+D3 - PR, CI green, merge (workflow + scripts/: record the t4-mlb decision). Trigger it once by workflow_dispatch and
+     confirm one appended record. Do NOT read NHL scores. Do NOT decide the verdict - a later block reads >= 2 slates.
+D4 - Note on GG-401 (status unchanged): where the data accrues, when it stops, and the verdict rule from W52_D
+     ((a) starter flagged >= 15 min pre-start in k of n games / (b) not / (c) cannot tell). Results doc
+     05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_3_nhl_goalie_actions_results.md. Docs-only push to main.
+
+END OF BLOCK 58.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
 
 ---
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ⏳ WAVE 58 — issued 2026-10-07 ~01:15 UTC (6:15 PM PT 10-06) · three terminal blocks
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 58.1 | MLB player-hits proof + loose ends | ⬜ | VPS reads, one hand run, GG-489 | T1 passes PIPE-05 and logs evaluations |
+| 58.2 | NBA step 1 | ⬜ | registry, pre-registration | Cells NOT_IMPLEMENTED; pre-reg written before any data |
+| 58.3 | NHL goalie timing via GH job | ⬜ | workflow, data branch | Job appends records, stops itself in 7 days |
 
 ### ✅ WAVE 57 — CLOSED 2026-10-07 ~01:00 UTC · three terminal blocks
 
