@@ -26,7 +26,7 @@ Operator 2026-10-06 18:10 PT: *"the terminals can handle plenty of weight... giv
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **58.1** Every arm logging, every book truthful, gap log shrinking | 🟨 **IN PROGRESS** (Part A DONE bdcd24c: GG-489 resolved, features cron line off; next B) | A: MLB player-hits proof (+ 22:30 cron line only with your authorization). B: NHL goalie timing GH job (data branch). C: retire the stale NFL paper book under ADR-0071. D: triage all 175 OPEN gaps | — |
+| **58.1** Every arm logging, every book truthful, gap log shrinking | 🟨 **PARTIAL** (A, B, C DONE: GG-489, GG-490 resolved, NHL probe running; **D deferred** to follow-on blocks) | A: MLB player-hits proof (+ 22:30 cron line only with your authorization). B: NHL goalie timing GH job (data branch). C: retire the stale NFL paper book under ADR-0071. D: triage all 175 OPEN gaps | — |
 | **58.2** NBA game markets end to end, logging before 10-20 | ⬜ **READY** | discovery, registry cells, pre-registration, frozen model, forecaster/settlement, cron lines, dashboards | — |
 | **58.3** The calibration engine | ✅ **DONE** (PR #175 merged f20f095; cron 49 13 live) | engine + 28 tests, Calibration section on /project, VPS run 33 cells / 0 at a look, daily cron block W58.3-CALIBRATION; GG-498/499 registered |
 

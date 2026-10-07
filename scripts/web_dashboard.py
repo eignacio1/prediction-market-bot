@@ -1730,7 +1730,8 @@ function railSpec(D,d){
     const real=all.filter(p=>evClass(p)==='MODEL').length;
     const un=all.filter(p=>evClass(p)==='UNATTRIBUTED').length;
     const res=c.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
-    return [['BANKROLL',usd(D.NF.bankroll_usd),D.NF.bankroll_usd,''],
+    return [['STATUS','ARCHIVED',null,'warnv'],
+      ['BANKROLL',usd(D.NF.bankroll_usd),D.NF.bankroll_usd,''],
       ['REALISED P&L',usd(D.NF.total_realized_pnl),D.NF.total_realized_pnl,'sign'],
       ['OPEN',String(o.length),o.length,''],
       ['EXPOSURE',usd(sum(o,p=>p.size_usd)),sum(o,p=>p.size_usd),''],
