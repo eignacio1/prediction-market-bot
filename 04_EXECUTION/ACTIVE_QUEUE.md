@@ -20,7 +20,7 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (thi
 
 ---
 
-## ⬛ NOW — Wave 57 · three terminal blocks · run any time
+## ⬛ NOW — Wave 57 · three terminal blocks · run any time · re-verified 2026-10-07 00:20 UTC (not yet run)
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
@@ -28,7 +28,7 @@ VPS facts are the 50.2 cleanup terminal's report, not re-verified from here (thi
 | **57.2** MLB shadow settlement + first night after the stagger | ⬜ **READY** | MLB settle path; ONE new crontab line; journal read | — |
 | **57.3** Truthful books on the Live Terminal | ⬜ **READY** | `/` page + `/api/data`; ledger reads | — |
 
-**57.1 first** — the MLB player-hits arm is dark, against the "MLB can't go dark" directive.
+**57.1 first** — the MLB player-hits arm is dark, against the "MLB can't go dark" directive. The 12 MLB postseason game cells are NOT dark: the GitHub Actions cache sync ran on schedule 2026-10-06 06:50 and 18:37 UTC.
 
 ### Wave 56 results (closed, verified on GitHub)
 
@@ -122,8 +122,9 @@ WHY
 The 12 MLB postseason shadow cells log rows (71 T1 rows after 56.1) but nothing attaches outcomes, so no MLB cell
 can ever be scored (GG-472). scripts/run_pregame_shadow_settle.py does this for NFL only (outcome join, no Brier).
 Final scores are already in the MLB games cache that 56.1's GitHub Actions job now keeps fresh. Separately: 56.1
-applied the GG-477 cron stagger; the first 01:30 UTC window after it is 2026-10-06 01:30 UTC, and the first scheduled
-games-cache sync is 2026-10-06 12:43 UTC. Read whichever has happened by the time you run; say which has not.
+applied the GG-477 cron stagger; the first 01:30 UTC window after it was 2026-10-06 01:30 UTC (read that night and any
+later one). The scheduled games-cache sync ran 2026-10-06 06:50 and 18:37 UTC (GitHub Actions, both success) - confirm
+the VPS meta stamp matches the latest run.
 
 D0 - Worktree w57-mlb-settle; claim "W57.2 STANDARD - MLB shadow settlement + GG-477 window read".
 D1 - Read GG-472, run_pregame_shadow_settle.py, scripts/run_mlb_pregame_shadow.py and the MLB ledgers' row shape.
