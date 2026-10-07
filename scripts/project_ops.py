@@ -35,6 +35,10 @@ CRON_ARMS = [
     ("MLB postseason shadow T1", "mlb_pregame_shadow_t1.log", 26, 50),
     ("MLB postseason shadow T2", "mlb_pregame_shadow_t2.log", 26, 50),
     ("MLB postseason shadow T3", "mlb_pregame_shadow_t3.log", 26, 50),
+    ("NBA schedule backfill (daily 09:47Z)", "nba_shadow_backfill.log", 26, 50),
+    ("NBA shadow T1", "nba_pregame_shadow_t1.log", 26, 50),
+    ("NBA shadow T2", "nba_pregame_shadow_t2.log", 26, 50),
+    ("NBA shadow T3", "nba_pregame_shadow_t3.log", 26, 50),
 ]
 
 # (label, repo-relative path, amber h, red h)
@@ -54,6 +58,7 @@ EVIDENCE = [
     ("NHL", "data/shadow/nhl", "NHL_", None, 2500, "EXP-036"),
     ("NFL", "exp_output/PREGAME_SHADOW", "NFL_NFL_", 60, 150, "EXP-037"),
     ("MLB", "exp_output/PREGAME_SHADOW", "MLB_MLB_", 150, 150, "EXP-037"),
+    ("NBA", "exp_output/PREGAME_SHADOW", "NBA_NBA_", 150, 400, "EXP-038"),
 ]
 
 Run = Callable[[list[str]], "str | None"]
