@@ -24,3 +24,8 @@ Findings: preseason games are listed (2026-27 regular season not yet). Team tota
 ## Data source reachability (2026-10-06)
 - ESPN NBA scoreboard: HTTP 200 from Mac and from VPS. Chosen source for schedule, start times and scores.
 - stats.nba.com and cdn.nba.com: 403 from the VPS.
+
+Date convention: the ticker date is the ET game date (KXNBAGAME-26OCT13INDOKC expires 2026-10-14T03:00Z, i.e. the evening of 10-13 ET). Kalshi gives no start time, so tip-off comes from the ESPN schedule.
+
+## Part B — registry (this PR)
+`NBA_MONEYLINE/SPREAD/GAME_TOTAL/TEAM_TOTAL` added with series KXNBAGAME/KXNBASPREAD/KXNBATOTAL/KXNBATEAMTOTAL, sport `nba`, existing `_NBA_GRAMMAR`; T1/T2/T3 cells NOT_IMPLEMENTED (12 cells). `tests/test_nba_game_registry.py` parses the three real sample tickers and all 30 team codes in both positions for every series.
