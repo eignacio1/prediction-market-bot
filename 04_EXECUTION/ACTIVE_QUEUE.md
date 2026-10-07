@@ -500,6 +500,11 @@ branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 
 
 ## Needs your decision
 
+> **AUTHORIZATION - FEATURES CRON REMOVAL (operator, 2026-10-06 18:16 PT: "Yes permission granted").** Covers:
+> commenting out the ONE VPS cron line that runs `scripts/generate_mlb_features.py` at 22:30 UTC (it overwrites the
+> GitHub-built feature CSV nightly with degraded output), crontab backed up first, mirrored into `deploy/`. Not
+> covered: any other line. Used by 58.1 Part A5.
+
 > **AUTHORIZATION - GG-477 CRON STAGGER (operator, 2026-10-05 16:41 PT: "Yes").** Covers: changing ONLY the minute
 > field of the existing cron lines listed in `scripts/ops/gg477_cron_stagger.py` RULES, crontab backed up first, and
 > mirroring those minutes into `deploy/` cron files. Not covered: any command, hour or other line. Used by 56.2.
@@ -528,7 +533,7 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 | **NHL goalie timing (GG-401)** | Pulled from Wave 53 (timing-bound). The measurement — run `scripts/nhl_goalie_source_probe.py` at ~60/30/15 min before one slate's puck drop — fits a detached read-only VPS job (row below) instead of a terminal. | No NHL T3 score may be read. |
 | **Postponed games** | ✅ **DECIDED 2026-10-04:** resolve on Kalshi's result — in 54.3. | — |
 | **GG-477 cron stagger** | ✅ **AUTHORIZED 2026-10-05** — line above; 56.2 applies it. | — |
-| **NEW — VPS 22:30 UTC features cron** | It fetches from statsapi (blocked) and overwrites the feature file daily with degraded output (121 of ~575 players). The GitHub job at 23:17 UTC puts the good file back before the 11:00 T1 run, so nothing breaks today — but it's a nightly fight. **Recommend: remove that one cron line.** Edits an existing line, so it needs your yes. | A bad file sits on the VPS 22:30–23:17 UTC nightly; one missed GitHub run = T1 on bad data. |
+| **VPS 22:30 UTC features cron** | ✅ **AUTHORIZED 2026-10-06** — line above; 58.1 A5 removes it. | — |
 | **NEW — NFL game-market paper book (GG-490)** | Old NFL paper book: no writer, no resolver, ~820 open positions on past games. The live NFL work is the EXP-037 shadow arm, which is healthy. **Recommend: retire it** — book its positions once under ADR-0071 (Kalshi settlement, backup + dry-run first), then freeze it and label it archived on both dashboards. | The Visual Dashboard keeps showing a stale book with ~820 open positions. |
 | **Detached read-only VPS jobs** | Long read-only work runs unattended on the VPS through `scripts/vps_job.py`. A line naming *detached read-only VPS jobs* unlocks it. | The board survey and NFL/NHL market backtests stay blocked. |
 | **T1 MLB postseason flag** | Adds `--include-postseason` to the existing T1 MLB cron line. Edits an existing line, so the shadow authorization does not cover it. | T1 player-hits stays blind for the rest of the playoffs. |

@@ -778,3 +778,5 @@
 | 2026-10-07T00:48:04Z | T-699 | CLOSED — merge confirmed, HEAD (b6da5e4) is ancestor of origin/main — W57.1 PARTIAL - PR #171 merged (features sync via GH Actions); D3/D4 + GG-489 registration pending |
 | 2026-10-07T00:48:16Z | T-701 | CLOSED — merge confirmed, HEAD (724c791) is ancestor of origin/main — W57.3 Live Terminal placements, stdlib C4 limits, phone bar fix; GG-490 open (NFL book), GG-491 resolved (PR #172 + docs 724c791) |
 | 2026-10-07T01:16:53Z | T-710..T-715, GG-495..GG-497, EXP-038 | W58.2 STANDARD - NBA game markets end to end in shadow (discovery, registry, EXP-038 prereg, frozen model, cron) |
+| 2026-10-07T01:17:27Z | T-704..T-707, GG-493..GG-496 | W58.1 STANDARD - MLB player-hits proof (registers GG-489), NHL goalie GH job, retire NFL paper book (GG-490), GG triage |
+| 2026-10-07T01:17:36Z | T-716..T-720, GG-498..GG-499 | W58.3 STANDARD - calibration engine: pre-registration-aware scoring pipeline + Visual Dashboard Calibration section + daily cron |
