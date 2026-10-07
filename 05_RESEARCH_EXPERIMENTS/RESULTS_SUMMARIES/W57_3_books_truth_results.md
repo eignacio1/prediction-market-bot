@@ -21,3 +21,9 @@ Screenshots in `w57_3_screens/` (`index.before/after.png`, `phone.before/after.p
 
 ## Deploy / post-deploy
 See the section appended after merge.
+
+## Deploy / post-deploy (appended after merge)
+- PR #172, CI green (`test` 6m43s), squash-merged as `00f8b59`. Deploy run 37553561725: success.
+- **t4-mlb was NOT restarted** — GG-432 policy: `not_needed -- no file imported by t4-mlb changed in this push` (t4-mlb still on its 2026-10-05 07:57 start, NRestarts=0). `pmbot-web-dashboard` restarted 00:45:57 UTC, NRestarts=0.
+- Running terminal (`/api/data` on the VPS under system python): 30 placements, latest the Chisholm YES $1.00 CLOSED LOSS row; **5 blank-market evaluation rows hidden** (the live blank-row defect, real), 0 blank rows rendered; both books report the 0.20 drawdown limit from the stdlib read, so the C4 source read works under system python.
+- Not independently eyeballed in a browser against the live URL; verified via the live API and the local browser check on a copy of live data.
