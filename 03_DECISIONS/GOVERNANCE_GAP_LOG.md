@@ -4844,3 +4844,37 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Resolution | 2026-10-06 W56.1: `.github/workflows/mlb_games_cache_sync.yml` (PR #165) runs 12:43/00:43 UTC; statsapi accepted the runner; VPS stamp matched; 71 T1 shadow rows written. See W56_1_mlb_ops_results.md. |
 
 </details>
+
+### GG-490 — NFL game-market paper book is a hand-run batch: no scheduled writer, no scheduled resolver, ~820 past-date positions unresolved
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-490 |
+| Category | Operational / unowned ledger (dashboard shows a book nobody maintains) |
+| What was found | W57.3 D1, VPS read-only survey. The NFL game-market paper ledger the dashboard reads had no write in ~162h and 824 open positions, ~820 of them with past game dates. `deploy/cron.conf` has no NFL writer line and no NFL resolver line. The only resolver is `scripts/apply_resolved_nfl_game_markets.py`, manual (dry-run default, `--apply`). The writer script is not in the repo under the name this wave's brief assumed (`scripts/run_t1_nfl_game_market.py` does not exist). The book is therefore a one-off hand-run batch, not a live arm. |
+| Impact | The Live Terminal and Overview present an NFL book whose open count and age are meaningless as health signals. Positions that should be settled sit open indefinitely. |
+| Source | W57.3 D1 |
+| Disposition | Open. No position was resolved or edited (brief: survey only). Operator decision: schedule a writer + resolver, or retire the book and label it dormant on the dashboard. |
+
+</details>
+
+### GG-491 — Dashboard runs on system python (no `jsonlines`): C4 tile was "not instrumented" because risk.py was imported
+
+**Status:** RESOLVED · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-491 |
+| Category | Deploy / environment mismatch |
+| What was found | `pmbot-web-dashboard.service` runs `/usr/bin/python3`, which has neither `jsonlines` nor pandas (the venv at `/opt/prediction-market-bot/venv` has both). `_hard_limits()` imported `risk.py`, whose package imports the audit logger, so the C4 tile fell back to "not instrumented". `jsonlines` is already declared as a dependency; the unit simply does not use the venv. |
+| Resolution | 2026-10-06 W57.3: `_hard_limits()` tries the import first, then reads the literals from `risk.py` source with stdlib `ast` (`_hard_limits_from_source`). No new dependency, no hand-install; loading pandas into the dashboard process was rejected as an OOM risk (GG-118). Test: `tests/test_w57_3_books_truth.py` asserts source-read == import, under `python -I`. |
+
+</details>

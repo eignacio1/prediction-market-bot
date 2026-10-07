@@ -230,7 +230,10 @@ tr.stale td{opacity:.5}
 .wf{font-weight:700}
 .stk{color:var(--faint)}
 td.tk{max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-@media(max-width:700px){.sb .v{font-size:17px} td.tk{max-width:150px}}
+@media(max-width:700px){.sb .v{font-size:17px} td.tk{max-width:150px}
+  .status{height:auto; flex-wrap:wrap; row-gap:3px; padding:4px 8px; white-space:normal}
+  .status .sep{margin:0 5px} .status .sp{flex-basis:100%; height:0}
+  .status .hidem{display:none}}
 footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px solid var(--hair)}
 </style>
 </head>
@@ -239,10 +242,10 @@ footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px so
 
 <div class="status">
   <span class="id">PMBOT</span><span class="sep">│</span>
-  <span class="sub">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
-  <span class="sep">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
+  <span class="sub hidem">PAPER · DEMO VENUE · <span class="amb">NO REAL CAPITAL</span></span>
+  <span class="sep hidem">│</span><span class="sub">EPOCH <b id="epoch" class="cy">—</b></span>
   <span class="sep">│</span><span class="sub">RUN <b id="sha" class="cy" title="commit the running process loaded">—</b></span>
-  <span class="sub"> · ORIGIN <b id="osha" class="cy" title="origin/main as of the last fetch on the server">—</b> <b id="obehind"></b></span>
+  <span class="sub hidem"> · ORIGIN <b id="osha" class="cy" title="origin/main as of the last fetch on the server">—</b> <b id="obehind"></b></span>
   <span class="sep">│</span><span class="sub">T4 <b id="cyc" title="T4 cycle-log rate over the bounded tail">—</b></span>
   <span class="sp"></span>
   <span class="sub"><a href="/project" style="color:var(--amber)" title="analytical project-state page">PROJECT STATE →</a></span>
@@ -581,6 +584,7 @@ const frKey=()=>S.mod==='NFL'?'nfl':'t1_mlb';
 const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
 
 function viewNow(){return `<div id="strip" class="strip"></div><div id="arms" class="arms"></div><div class="grid g-1">
+  ${P_('T4M-PROJ placements (paper orders)','plN',SCROLL('plWrap',260),`<span class="n" id="plRule"></span>`)}
   ${P_('Decision stream','dsN',SCROLL('dsWrap',640),`<span class="n" id="dsRule"></span><button class="tbtn" id="wfBtn">WOULD-FIRE ONLY</button>`)}</div>`;}
 function viewOverview(){return `<div class="grid g-7-5">
   <div class="col">
@@ -718,7 +722,7 @@ function fillNow(d){
   const sizing=x.sizing_live===true;
   const kel=x.kelly?Object.entries(x.kelly).map(([k,v])=>k+' '+v).join(' · '):'kelly unreadable';
   const mode=`<div class="sb"><div class="k">Mode</div><div class="v ${sizing?'amb':'cy'}">${sizing?'SIZING ON':'SHADOW'}</div>`+
-    `<div class="s">${sizing?'a band has kelly &gt; 0':'evaluating · no orders · stake $0'}</div><div class="src">source: execution_bands · ${esc(kel)}</div></div>`;
+    `<div class="s">${sizing?'a band has kelly &gt; 0':'kelly 0 · stream stake $0 · T4M-PROJ places flat paper stakes (ADR-0050)'}</div><div class="src">source: execution_bands · ${esc(kel)}</div></div>`;
   const cap=`<div class="sb"><div class="k">Real capital</div><div class="v">$0</div><div class="s">paper books · demo venue · none at risk</div><div class="src">source: standing rule (no live capital before G6)</div></div>`;
   const books=(x.books||[]).map(b=>{
     if(b.drawdown==null) return `<div class="sb"><div class="k">Drawdown ${esc(b.book)} (realized)</div><div class="v dim">no data</div><div class="src">awaiting ${esc(b.awaiting||'portfolio')}</div></div>`;
@@ -729,16 +733,24 @@ function fillNow(d){
       `<div class="s">${b.tripped?'KILL SWITCH LIMIT BREACHED · ':''}of ${(lim*100).toFixed(0)}% kill switch · realized ${usd(b.realized_pnl)}</div>`+
       `<div class="src ${age!=null&&age>72*3600?'amb':''}">source: portfolio book · written ${fmtAge(age)} ago</div></div>`; }).join('');
   const day=new Date().toISOString().slice(0,10);
+  const f4n=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toFixed(4);
   const evals=(x.arms||[]).reduce((n,a)=>n+(a.rows_today||0),0), wf=rows.filter(r=>r.would_fire).length;
   const ev=`<div class="sb"><div class="k">Evaluations today</div><div class="v cy">${evals}</div><div class="s">${wf} of last ${rows.length} would fire · $0 each</div><div class="src">source: shadow ledgers + t4 cycle log</div></div>`;
   st.innerHTML=mode+cap+books+ev;
   $('#arms').innerHTML=(x.arms||[]).length?(x.arms||[]).map(a=>{
     const age=ageTxt(a.last_ts), cls=age==null?'old':age<=1800?'fresh':age>6*3600?'old':'';
     return `<span class="arm ${cls}" title="${esc(a.arm)} · last row ${esc(a.last_ts)} · ${a.rows_today||0} rows today">${esc(a.arm)}<b>${age==null?'no rows':fmtAge(age)+' ago'}</b></span>`; }).join(''):`<span class="aw">no arm has written a row</span>`;
-  $('#dsN').textContent=rows.length+' evaluations';
+  const pl=x.placements||[], plw=$('#plWrap');
+  if(plw){ $('#plN').textContent=pl.length+' shown'; $('#plRule').textContent='real paper orders at the recorded size · '+((pl[0]&&pl[0].label)||'flat-stake · ADR-0050 · paper');
+    plw.innerHTML=pl.length?`<table><thead><tr><th>TIME (UTC)</th><th>MARKET</th><th>SIDE</th><th class="r">PRICE</th><th class="r">STAKE $</th><th>STATUS</th><th class="r">P&amp;L</th></tr></thead><tbody>`+
+      pl.map(r=>{ const t=String(r.ts||''), tm=t.slice(0,10)===day?t.slice(11,19):t.slice(5,10)+' '+t.slice(11,16), pn=Number(r.pnl);
+        return `<tr><td title="${esc(t)}">${esc(tm)}</td><td class="tk" title="${esc(r.market||'')}">${esc(r.player?r.player+' · ':'')}${esc(r.market||'—')}</td><td>${esc(r.side||'—')}</td>`+
+          `<td class="r">${f4n(r.price)}</td><td class="r">${r.size_usd==null?'—':'$'+Number(r.size_usd).toFixed(2)}</td>`+
+          `<td>${esc(r.status)}${r.outcome?' · '+esc(r.outcome):''}</td><td class="r ${Number.isFinite(pn)?(pn>0?'pos':pn<0?'neg':'dim'):'dim'}">${Number.isFinite(pn)?usd(pn):'—'}</td></tr>`}).join('')+`</tbody></table>`
+      :`<div class="aw">no T4M-PROJ placements in the portfolio file</div>`; }
+  $('#dsN').textContent=rows.length+' evaluations'+(x.blank_dropped?' · '+x.blank_dropped+' blank-market rows hidden':'');
   $('#dsRule').textContent=x.fire_rule||'';
   const wb=$('#wfBtn'); if(wb){ wb.classList.toggle('on',S.wfOnly); wb.onclick=()=>{S.wfOnly=!S.wfOnly; fillNow(LAST)}; }
-  const f4n=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toFixed(4);
   const shown=S.wfOnly?rows.filter(r=>r.would_fire):rows;
   $('#dsWrap').innerHTML=shown.length?`<table><thead><tr><th>TIME (UTC)</th><th>SPORT</th><th>MARKET</th><th>BAND</th><th class="r">MODEL P</th><th class="r">MKT PRICE</th><th class="r">EDGE (NET)</th><th>WOULD-FIRE</th><th>STAKE</th></tr></thead><tbody>`+
     shown.map(r=>{ const a=ageTxt(r.ts), stale=a!=null&&a>6*3600, t=String(r.ts||'');
@@ -1210,14 +1222,17 @@ const DEMO={
      payload:{reason:'default StubNFLForecastModel — rows are pipeline-shape evidence only (GG-317)'}},
     {timestamp:_iso(3400),event_id:'N3',component:'C5',event_type:'refused_no_model',severity:'WARNING',
      payload:{reason:'no NFL C2/C3 feature store for this market family (GG-255)'}}],
-  decisions:{rows:[
+  decisions:{blank_dropped:0, placements:[
+    {ts:_iso(300),market:'KXMLBHIT-DEMO-NYYJCHISHOLM13-1',player:'Jazz Chisholm Jr.',side:'YES',price:0.165,size_usd:1.0,status:'OPEN',outcome:null,pnl:null,label:'flat-stake · ADR-0050 · paper'},
+    {ts:_iso(3600),market:'KXMLBHIT-DEMO-LADPFREEMAN5-2',player:'Freddie Freeman',side:'NO',price:0.41,size_usd:0.62,status:'CLOSED',outcome:'WIN',pnl:0.35,label:'flat-stake · ADR-0050 · paper'}],
+   rows:[
     {ts:_iso(30),sport:'MLB',market:'KXMLBHIT-26SEP-91',market_type:'MLB_PLAYER_PROP_HITS',band:'T4M-PROJ',p:0.7412,price:0.64,edge:0.0612,side:'YES',would_fire:true,src:'t4_cycle'},
     {ts:_iso(190),sport:'NHL',market:'KXNHLGAME-26SEP-NSH',market_type:'NHL_MONEYLINE',band:'T2',p:0.52,price:0.55,edge:-0.0412,side:'NO',would_fire:false,src:'shadow'}],
    arms:[{arm:'MLB T4M-PROJ',last_ts:_iso(30),rows_today:412,age_s:30},{arm:'NHL T2',last_ts:_iso(190),rows_today:64,age_s:190}],
    books:[{book:'T1',initial:1000,realized_pnl:-124.44,drawdown:0.1244,limit:0.2,tripped:false,age_s:2700},
           {book:'T4M-PROJ',initial:1000,realized_pnl:-134.47,drawdown:0.1345,limit:0.2,tripped:false,age_s:60}],
    kelly:{T1:0,'T4M-PROJ':0},sizing_live:false,
-   fire_rule:'WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; no order, stake $0)'},
+   fire_rule:'WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; this stream places nothing — T4M-PROJ placements are the panel above)'},
   pipe_mtimes:{'PIPE-05  (23:30Z)':_iso(3600*7),'PIPE-05R (06:30Z)':_iso(3600*2),
     'PIPE-05FX(22:30Z)':_iso(3600*8),'PIPE-05C (Mon14Z)':_iso(3600*60)},
 };
