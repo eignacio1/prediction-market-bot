@@ -1821,3 +1821,12 @@ Under the 2026-10-05 operator directive ("MLB can't go dark") and the GG-477 sta
 - Decision: blank-market cycle rows are hidden and counted in the panel header, not silently dropped.
 - Decision: C4 tile fixed by stdlib `ast` read of `risk.py` (GG-491), not by a dependency change; the unit's python was the mismatch.
 - Registered GG-490 (NFL book unmaintained). No positions touched.
+
+### 2026-10-06 — Operator: large blocks; calibration mode
+**Operator (2026-10-06 18:10 PT):** "the terminals can handle plenty of weight. You can expand the workload for each
+block so that we're not spending each wave back and forth making such incremental build progress. I've been wanting to
+get into a calibration-esque mode for a while now... we don't need all 92 scoped in order to start getting the
+calibration focus together. But the open logs keep growing..."
+**Effect:** supersedes the 2026-10-02 ~30-minute block rule. Blocks are multi-part; each part pushed and recorded
+before the next. Wave 58 rebuilt: ops + books + gap triage; NBA arm end to end; a pre-registration-aware calibration
+engine (sealed cells cannot emit scores). Docs-only.

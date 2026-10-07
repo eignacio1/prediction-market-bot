@@ -33,7 +33,7 @@ write launch commands for it. He pastes each block into its own session.
 
 ## 2. How waves are built — current rules (several changed this window)
 
-- **Blocks are ~30 minutes, hard stop at 45.** Operator directives 2026-10-02 17:03 and 17:09 PT, after he cut three
+- **[SUPERSEDED 2026-10-06 by LARGE multi-part blocks - operator: "the terminals can handle plenty of weight"; each part pushed and recorded before the next]** ~~Blocks are ~30 minutes, hard stop at 45.~~ Operator directives 2026-10-02 17:03 and 17:09 PT, after he cut three
   2-hour blocks short and then rejected 75 minutes (*"none of these tasks better take 75 fucking minutes"*).
   **This supersedes the 2026-09-30 "LARGE blocks" rule** in the previous carry-forward. Cut scope to fit the clock;
   one job per block, done completely; a block landing `src/` code budgets ~11 min for the full suite.
