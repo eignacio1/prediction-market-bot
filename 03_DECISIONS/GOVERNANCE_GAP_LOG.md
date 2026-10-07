@@ -4848,7 +4848,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-490 — NFL game-market paper book is a hand-run batch: no scheduled writer, no scheduled resolver, ~820 past-date positions unresolved
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4863,6 +4863,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Disposition | Open. No position was resolved or edited (brief: survey only). Operator decision: schedule a writer + resolver, or retire the book and label it dormant on the dashboard. |
 
 </details>
+
+**Resolution (W58.1 Part C, 2026-10-07):** 820 of 824 open positions booked once from Kalshi settlement under ADR-0071 (353 yes, 467 no, 0 cancelled); 4 left OPEN (future games TB/DAL 10-08, CIN/MIA 10-11). Realised P&L +13.4778 -> -160.6598 (delta -174.1376 = exact sum of new rows); 20 old closed rows byte-identical; bankroll_usd unchanged. Backup sha256 47dab9c8f6888a2f99caa8fecbf3aeaea1908f630e89dd9e402547878144e9d7; dry run on a copy matched live. Side effect: daily-loss fields moved. No writer exists (frozen); ARCHIVED labels on Live Terminal and Visual Dashboard. Evidence: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_1_ops_books_gaps_results.md`. Archive move left to Part D.
 
 ### GG-491 — Dashboard runs on system python (no `jsonlines`): C4 tile was "not instrumented" because risk.py was imported
 

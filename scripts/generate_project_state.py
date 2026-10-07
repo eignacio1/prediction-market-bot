@@ -419,7 +419,11 @@ def _ops_tables(ops: dict, head: Any, aw: Any) -> dict[str, str]:
                 for r in b.get("rows", [])) + "</table>")
     out["books"] = wrap("books", "Books & risk — paper ledgers", b, body,
                         "<div class='asof'>Paper money only. Drawdown is realized loss over initial bankroll, the quantity the kill switch reads. "
-                        "A band at kelly_fraction 0.0 stakes $0 by design (ADR-0048).</div>")
+                        "A band at kelly_fraction 0.0 stakes $0 by design (ADR-0048).</div>"
+                        "<div class='asof nd'>Not listed above: the NFL game-market paper book is <b>ARCHIVED</b> (frozen 2026-10-07, GG-490). "
+                        "Final: realized P&amp;L <span class='num'>-$160.66</span> over 840 closed + 4 open (future games); "
+                        "820 positions booked from Kalshi settlement under ADR-0071. "
+                        "Source: <code>logs/w58_1_nfl_booking_report.json</code> (VPS), 2026-10-07. Paper money only, shadow.</div>")
 
     ev = ops.get("evidence", {})
     body = ("<table><tr><th>SHADOW cell</th><th>Rows</th><th>Settled games</th><th>Judged n (first look → judged)</th>"
