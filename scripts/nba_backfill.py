@@ -15,10 +15,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seasons", nargs="*", type=int, default=[2026, 2027])
     ap.add_argument("--root", default=str(N.RAW_DIR))
+    ap.add_argument("--lookahead", type=int, default=21, help="also fetch/refresh the next N days of schedule")
     a = ap.parse_args()
     th = N.Throttle()
     for s in a.seasons:
-        n = N.backfill_season(s, th, Path(a.root))
+        n = N.backfill_season(s, th, Path(a.root), lookahead_days=a.lookahead)
         st = N.load_season(s, Path(a.root))
         print(f"season {s}: fetched {n} dates; {len(N.completed_regular(st))} completed regular-season games", flush=True)
     return 0

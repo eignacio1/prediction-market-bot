@@ -133,13 +133,14 @@ def season_dates(season: int) -> list[date]:
 
 
 def backfill_season(season: int, th: Throttle, root: Path = RAW_DIR, today: Optional[date] = None,
-                    refresh_days: int = 3, fetch: Callable = fetch_date) -> int:
-    """Fetch every missing date; re-fetch the trailing ``refresh_days`` so late finals land. Returns dates fetched."""
+                    refresh_days: int = 3, fetch: Callable = fetch_date, lookahead_days: int = 0) -> int:
+    """Fetch every missing date; re-fetch the trailing ``refresh_days`` so late finals land, and (with
+    ``lookahead_days``) the upcoming schedule, always re-fetched since tip times move. Returns dates fetched."""
     today = today or datetime.now(timezone.utc).date()
     store = load_season(season, root)
     n = 0
     for d in season_dates(season):
-        if d > today:
+        if d > today + timedelta(days=lookahead_days):
             break
         key = d.isoformat()
         if key in store["dates"] and (today - d).days > refresh_days:
