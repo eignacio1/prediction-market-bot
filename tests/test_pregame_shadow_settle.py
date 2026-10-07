@@ -37,3 +37,44 @@ def test_unfinished_game_not_settled(tmp_path):
     sched = pd.DataFrame([{"gameday": "2026-10-04", "home_team": "SEA", "away_team": "LAC",
                            "home_score": float("nan"), "away_score": float("nan")}])
     assert settle(tmp_path, sched, CLIM) == {"NFL_NFL_MONEYLINE_T1": 0}
+
+
+def _mlb_games(status="Final", hs=5.0, as_=3.0):
+    return pd.DataFrame([{"game_pk": 1, "season": 2026, "status": status, "home": "LAD", "away": "ATL",
+                          "start_utc": "2026-10-03T20:00:00Z", "home_score": hs, "away_score": as_}])
+
+
+def _mlb_row(tkr, mt, ts="2026-10-02T00:00:00"):
+    return {"run_id": ts, "ts_utc": ts, "sport": "MLB", "market_type": mt, "band": "T1", "market_ticker": tkr,
+            "p_yes": 0.5}
+
+
+def test_mlb_settle_all_four_market_types(tmp_path):
+    from run_pregame_shadow_settle import settle_mlb
+    ev = "26OCT031600ATLLAD"          # ATL @ LAD, final LAD 5 - ATL 3
+    cases = {"MLB_MONEYLINE": [("KXMLBGAME-%s-LAD" % ev, 1.0), ("KXMLBGAME-%s-ATL" % ev, 0.0)],
+             "MLB_RUN_LINE": [("KXMLBSPREAD-%s-LAD2" % ev, 1.0), ("KXMLBSPREAD-%s-LAD3" % ev, 0.0),
+                              ("KXMLBSPREAD-%s-ATL2" % ev, 0.0)],
+             "MLB_GAME_TOTAL": [("KXMLBTOTAL-%s-8" % ev, 1.0), ("KXMLBTOTAL-%s-9" % ev, 0.0)],
+             "MLB_TEAM_TOTAL": [("KXMLBTEAMTOTAL-%s-LAD5" % ev, 1.0), ("KXMLBTEAMTOTAL-%s-ATL4" % ev, 0.0)]}
+    for mt, items in cases.items():
+        (tmp_path / f"MLB_{mt}_T1.jsonl").write_text("\n".join(json.dumps(_mlb_row(t, mt)) for t, _ in items) + "\n")
+    counts = settle_mlb(tmp_path, _mlb_games())
+    assert all(v == len(cases[k]) for k, v in ((n[4:-3], c) for n, c in counts.items()))
+    for mt, items in cases.items():
+        out = {j["market_ticker"]: j for j in (json.loads(x) for x in
+               (tmp_path / "settled" / f"MLB_{mt}_T1.jsonl").read_text().splitlines())}
+        for t, y in items:
+            assert out[t]["y"] == y, t
+    assert sum(settle_mlb(tmp_path, _mlb_games()).values()) == 0       # idempotent
+    raw = (tmp_path / "MLB_MLB_MONEYLINE_T1.jsonl").read_text()
+    assert "\"y\"" not in raw                                           # raw ledger never rewritten
+
+
+def test_mlb_unfinal_or_missing_game_stays_unsettled(tmp_path):
+    from run_pregame_shadow_settle import settle_mlb
+    t = "KXMLBGAME-26OCT031600ATLLAD-LAD"
+    (tmp_path / "MLB_MLB_MONEYLINE_T1.jsonl").write_text(json.dumps(_mlb_row(t, "MLB_MONEYLINE")) + "\n")
+    assert settle_mlb(tmp_path, _mlb_games(status="In Progress")) == {"MLB_MLB_MONEYLINE_T1": 0}
+    assert settle_mlb(tmp_path, _mlb_games(status="Final", hs=float("nan"))) == {"MLB_MLB_MONEYLINE_T1": 0}
+    assert not (tmp_path / "settled").exists()

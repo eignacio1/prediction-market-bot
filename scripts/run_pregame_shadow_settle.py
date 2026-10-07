@@ -63,12 +63,60 @@ def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict) -> dict:
     return counts
 
 
+def settle_mlb(ledger_dir: Path, games: pd.DataFrame) -> dict:
+    """GG-472: MLB outcome join from the games cache. Same idempotent first-row-per-(market, band) contract."""
+    from prediction_market_bot.pregame_shadow import mlb_settlement as ms
+    from prediction_market_bot.pregame_shadow.mlb_forecaster import parse_market_ticker as mlb_parse
+    finals = ms.final_games(games)
+    out_dir = ledger_dir / "settled"
+    counts: dict[str, int] = {}
+    for path in sorted(ledger_dir.glob("MLB_*_T[123].jsonl")):
+        rows = [json.loads(x) for x in path.read_text().splitlines() if x.strip()]
+        out_path = out_dir / path.name
+        have = set()
+        if out_path.exists():
+            have = {(j["market_ticker"], j["band"]) for j in
+                    (json.loads(x) for x in out_path.read_text().splitlines() if x.strip())}
+        new = []
+        for r in first_row_per_market(rows):
+            if (r["market_ticker"], r["band"]) in have:
+                continue
+            p = mlb_parse(r["market_ticker"])
+            fin = ms.find_final(finals, p) if p else None
+            if fin is None:
+                continue
+            j = ms.join_row(r, *fin)
+            if j is not None:
+                new.append(j)
+        if new:
+            out_dir.mkdir(parents=True, exist_ok=True)
+            with out_path.open("a") as fh:
+                for j in new:
+                    fh.write(json.dumps(j) + "\n")
+        counts[path.stem] = len(new)
+    return counts
+
+
+def load_mlb_games() -> pd.DataFrame:
+    cache = ROOT / "exp_output" / "MLB_GAME" / "cache_w47"
+    games = pd.read_parquet(cache / "games.parquet")
+    cur = cache / "games_current.parquet"
+    if cur.exists():                      # current-season refresh supersedes the history rows for that season
+        c = pd.read_parquet(cur)
+        games = pd.concat([games[~games.season.isin(c.season.unique())], c], ignore_index=True)
+    return games
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--sport", choices=("nfl", "mlb"), default="nfl")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--ledger-dir", default=str(ROOT / "exp_output" / "PREGAME_SHADOW"))
     ap.add_argument("--model", default=str(ROOT / "models" / "nfl_pregame_v1.json"))
     a = ap.parse_args(argv)
+    if a.sport == "mlb":     # cache is kept fresh off-box (GitHub Actions sync); no network here
+        print("settled_new:", settle_mlb(Path(a.ledger_dir), load_mlb_games()))
+        return 0
     import run_pregame_shadow as rps
     from datetime import datetime, timezone
     if a.refresh:
