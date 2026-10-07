@@ -67,3 +67,18 @@ No order, position, paper fill or sizing change follows from any outcome of this
 
 ## 9. Differences from EXP-037 (NFL)
 Judged n 150/400 vs 60/150; preseason carve-out; no tie outcomes; ESPN scores-only features vs nflverse EPA; team-total family unlisted at registration; bootstrap seed 20261006.
+
+---
+
+## Addendum D1 — frozen model (2026-10-07, written after fitting, before any shadow row exists)
+
+Artifact `models/nba_pregame_v1.json`, **sha256 `c351680aff9b6d6a83b2fb9c802c295730f9e27f5feaff91ecb17a6dc816e18e`** (verified at load).
+Held-out report: `models/nba_pregame_v1_heldout.json`.
+
+- **Split as pre-registered** (seasons by ending year): train 2016–2023 (n = 9,431 rows; 2015-16 supplies history only), calibration 2024 (n = 1,231), held-out 2025 (n = 1,231, reported only). Ridge lambda = 100, fixed a priori; no tuning on held-out.
+- **Features (14, scores-only):** rolling points for/against over the last 10 and 30 games (crossing season boundaries), rest days, back-to-back, 3-in-4, home and away. Point-in-time cutoff = min(as_of, 00:00 ET of the game date); rest comes from the schedule. A team needs ≥ 10 prior games or no row is produced.
+- **Fitted:** probit-Platt a = 1.2722, b = −0.0536; sigma_margin = 14.205, sigma_total = 18.461, rho = 0.0112.
+- **Held-out 2024-25 (vs climatology, NOT vs market):** home-win Brier 0.2111 vs 0.2489 climatology; margin RMSE 14.15 vs 15.89; total RMSE 18.40 vs 21.83. Reliability is close to the diagonal across five bins (slightly under-confident at the extremes).
+- **Extra check, not used for any choice:** 2025-26 (n = 1,231) gives Brier 0.2097 vs 0.2473 climatology. Reported because the season is complete and unused; it was not part of the pre-registered split.
+- **Data note:** ESPN counts the in-season-tournament final as a regular-season game, so seasons 2024–2026 have 1,231 games. It is kept in; effect on the fit is negligible.
+- **A model beating climatology says nothing about beating the market.** That comparison is exactly what the shadow run measures; no threshold in the decision rules above is changed by this addendum.
