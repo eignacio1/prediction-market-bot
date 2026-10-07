@@ -2426,6 +2426,24 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
+### GG-487 — MLB shadow settlement y is derived from games-cache final scores, never cross-checked against Kalshi's own settlement
+
+**Status:** OPEN · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-487 |
+| Category | Data integrity |
+| What was found | W57.2 settles MLB shadow rows from Stats API final scores (per the W57 block). GG-472/GG-440 named Kalshi's own settlement as the authoritative source. Edge cases (suspended/shortened games, ticker grammar drift) could make derived y differ from Kalshi's. |
+| Why it matters | A wrong y poisons the cell's judged-n scoring later (cf. GG-166). Cheap to check now, expensive after scoring. |
+| Disposition | Registered only (operator, 2026-10-07: proceed with cross-check rec). Build a read-only comparison of settled/ y vs Kalshi market `result` for the same tickers; report disagreement rate. Not built this session (Hard Rule 11). |
+| Source | W57.2 |
+
+</details>
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
