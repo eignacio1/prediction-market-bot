@@ -1830,3 +1830,8 @@ calibration focus together. But the open logs keep growing..."
 **Effect:** supersedes the 2026-10-02 ~30-minute block rule. Blocks are multi-part; each part pushed and recorded
 before the next. Wave 58 rebuilt: ops + books + gap triage; NBA arm end to end; a pre-registration-aware calibration
 engine (sealed cells cannot emit scores). Docs-only.
+
+### 2026-10-06 — Operator authorizes removal of the VPS 22:30 UTC MLB features cron line
+**Operator (2026-10-06 18:16 PT):** "Yes permission granted." Scope: comment out the single cron line running
+`scripts/generate_mlb_features.py` at 22:30 UTC (statsapi-blocked; overwrites the GitHub-built CSV with degraded output
+nightly). Crontab backup first; mirrored into deploy/. No other line. Executed by Wave 58.1 Part A5. Docs-only.
