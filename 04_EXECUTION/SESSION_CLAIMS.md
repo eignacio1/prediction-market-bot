@@ -783,3 +783,4 @@
 | 2026-10-07T01:51:01Z | T-716 | CLOSED — merge confirmed, HEAD (de35316) is ancestor of origin/main — W58.3 calibration engine live: sealed cells emit no scores, /project Calibration section, one daily cron line. |
 | 2026-10-07T02:29:56Z | W58.2 | CLOSED — merge confirmed, HEAD (f0accac) is ancestor of origin/main — NBA shadow arm built, deployed, cron armed; PARTIAL until regular-season rows |
 | 2026-10-07T02:41:36Z | W58.1 | CLOSED — W58.1 A-C done (GG-489, GG-490 resolved, NHL probe live, NFL book archived); Part D gap triage deferred. (commit `690b27c`) |
+| 2026-10-07T02:41:50Z | W58.1 | CLOSED — merge confirmed, HEAD (57261e0) is ancestor of origin/main — A-C done, GG-490 resolved, Part D deferred |
