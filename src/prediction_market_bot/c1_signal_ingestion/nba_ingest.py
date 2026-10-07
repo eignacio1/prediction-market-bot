@@ -52,7 +52,7 @@ def parse_event(ev: dict[str, Any]) -> Optional[dict[str, Any]]:
     st = ev["status"]["type"]
     # Exhibitions against non-NBA clubs and all-star games carry no NBA code: skip them. A regular-season
     # game with an unmapped code is a mapping bug and raises (never silently dropped).
-    mapped = [c["team"]["abbreviation"] in ESPN_TO_KALSHI for c in teams.values()]
+    mapped = [c["team"].get("abbreviation", "") in ESPN_TO_KALSHI for c in teams.values()]
     if not all(mapped) and (ev["season"]["type"] != REGULAR or not any(mapped)):
         return None
     done = bool(st.get("completed"))
@@ -68,8 +68,8 @@ def parse_event(ev: dict[str, Any]) -> Optional[dict[str, Any]]:
         "state": st["name"],
         "completed": done,
         "neutral_site": bool(comp.get("neutralSite")),
-        "home": kalshi_code(teams["home"]["team"]["abbreviation"]),
-        "away": kalshi_code(teams["away"]["team"]["abbreviation"]),
+        "home": kalshi_code(teams["home"]["team"].get("abbreviation", "")),
+        "away": kalshi_code(teams["away"]["team"].get("abbreviation", "")),
         "home_score": score(teams["home"]),
         "away_score": score(teams["away"]),
     }

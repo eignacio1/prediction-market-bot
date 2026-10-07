@@ -26,3 +26,9 @@ def test_regular_one_unmapped_raises():
 
 def test_preseason_exhibition_skipped():
     assert N.parse_event(_ev("BOS", "FUL", stype=1)) is None
+
+
+def test_team_without_abbreviation_skipped_in_playoffs():
+    e = _ev("BOS", "ZZZ", stype=3)
+    e["competitions"][0]["competitors"][1]["team"] = {}
+    assert N.parse_event(e) is None
