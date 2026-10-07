@@ -1,0 +1,20 @@
+# BEGIN EXP-038 NBA
+# EXP-038 / W58.2 -- NBA game-market pregame SHADOW (evaluate-and-log). APPEND-ONLY block in the VPS crontab.
+# AUTHORIZATION: standing shadow-cron authorization (OPERATOR, 2026-10-02 15:22 PT 'Yes permission granted';
+#   scope: shadow-evaluation T1/T2/T3 + settlement join for pregame shadow ledgers); restated in Wave 58 block 58.2.
+# Public read-only Kalshi list reads (<=1 req/s) and ESPN scoreboard reads (<=2 req/s); append to
+# exp_output/PREGAME_SHADOW/ and data/raw/nba/ only. No order, position, fill, stake or kelly (tests/test_nba_shadow_safety.py).
+# Edits, re-times or replaces no existing crontab line. Minutes avoid :00/:30 and the minutes already used by
+# NFL (5,10,8x), MLB (7,12,3x,41) and NHL (0,4,34,6x,15) jobs (GG-477 OOM stagger). All times UTC.
+# NBA only has regular-season markets from 2026-10-20; preseason markets are skipped (no_kickoff) by design.
+# Schedule + scores refresh (incl. 21-day schedule lookahead so tip-offs exist before Kalshi lists T1).
+47 9 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_backfill.py --seasons 2026 2027 >> logs/nba_shadow_backfill.log 2>&1
+# T1 (12-48h): every 6h at :11.
+11 */6 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T1 >> logs/nba_pregame_shadow_t1.log 2>&1
+# T2 (4-8h): hourly at :16.
+16 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T2 >> logs/nba_pregame_shadow_t2.log 2>&1
+# T3 (15-60 min): every 10 min.
+9,19,29,39,49,59 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba_pregame_shadow_t3.log 2>&1
+# Settlement join (outcome join only, no scoring): daily 10:23, after the 09:47 backfill lands the finals.
+23 10 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow_settle.py >> logs/nba_pregame_shadow_settle.log 2>&1
+# END EXP-038 NBA

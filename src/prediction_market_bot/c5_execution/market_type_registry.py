@@ -106,6 +106,15 @@ class MarketType(Enum):
     NHL_PUCK_LINE = "nhl_puck_line"
     NHL_GAME_TOTAL = "nhl_game_total"
 
+    # W58.2 (NBA game-market arm, EXP-038): measured live 2026-10-06 via
+    # scripts/nba_kalshi_discovery.py -- KXNBAGAME / KXNBASPREAD / KXNBATOTAL are
+    # listed; KXNBATEAMTOTAL exists as a series but had ZERO listings, so the
+    # team-total family is registered here but is un-evidenced until it lists.
+    NBA_MONEYLINE = "nba_moneyline"
+    NBA_SPREAD = "nba_spread"
+    NBA_GAME_TOTAL = "nba_game_total"
+    NBA_TEAM_TOTAL = "nba_team_total"
+
 
 # Series ticker is a property of the market family, not of (family, band) — the
 # same series is evaluated by whichever band's decision tree fires on it.
@@ -133,6 +142,11 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NHL_MONEYLINE: "KXNHLGAME",
     MarketType.NHL_PUCK_LINE: "KXNHLSPREAD",
     MarketType.NHL_GAME_TOTAL: "KXNHLTOTAL",
+    # W58.2: series ids confirmed against GET /series 2026-10-06.
+    MarketType.NBA_MONEYLINE: "KXNBAGAME",
+    MarketType.NBA_SPREAD: "KXNBASPREAD",
+    MarketType.NBA_GAME_TOTAL: "KXNBATOTAL",
+    MarketType.NBA_TEAM_TOTAL: "KXNBATEAMTOTAL",
 }
 
 
@@ -164,6 +178,10 @@ _SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NHL_MONEYLINE: "nhl",
     MarketType.NHL_PUCK_LINE: "nhl",
     MarketType.NHL_GAME_TOTAL: "nhl",
+    MarketType.NBA_MONEYLINE: "nba",
+    MarketType.NBA_SPREAD: "nba",
+    MarketType.NBA_GAME_TOTAL: "nba",
+    MarketType.NBA_TEAM_TOTAL: "nba",
 }
 
 # Fail-closed enforcement (ADR-0056 §2's enforcement clause): a MarketType
@@ -364,6 +382,10 @@ _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.NHL_MONEYLINE: _NHL_GRAMMAR,
     MarketType.NHL_PUCK_LINE: _NHL_GRAMMAR,
     MarketType.NHL_GAME_TOTAL: _NHL_GRAMMAR,
+    MarketType.NBA_MONEYLINE: _NBA_GRAMMAR,
+    MarketType.NBA_SPREAD: _NBA_GRAMMAR,
+    MarketType.NBA_GAME_TOTAL: _NBA_GRAMMAR,
+    MarketType.NBA_TEAM_TOTAL: _NBA_GRAMMAR,
 }
 
 
@@ -769,6 +791,22 @@ for _market_type in _NHL_FAMILIES:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 del _market_type, _band
+
+# --- NBA game markets (W58.2, EXP-038): T1/T2/T3 seeded NOT_IMPLEMENTED only ---
+# Promotion to SHADOW happens only after the cell logs valid rows (Part E). No T4/T5 cells are
+# seeded: the arm is pre-game shadow only. Ticker grammar verified 2026-10-06 against live
+# KXNBAGAME-26OCT13INDOKC-OKC, KXNBASPREAD-26OCT06BKNCHA-BKN38, KXNBATOTAL-26OCT07MININD-256
+# (<YY><MON><DD><AWAY3><HOME3>, no HHMM -- matches _NBA_GRAMMAR).
+_NBA_GAME_FAMILIES: tuple[MarketType, ...] = (
+    MarketType.NBA_MONEYLINE,
+    MarketType.NBA_SPREAD,
+    MarketType.NBA_GAME_TOTAL,
+    MarketType.NBA_TEAM_TOTAL,
+)
+for _market_type in _NBA_GAME_FAMILIES:
+    for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
 
 MARKET_TYPE_REGISTRY: dict[CellKey, MarketTypeCell] = {
     (cell.market_type, cell.band): cell for cell in _cells
