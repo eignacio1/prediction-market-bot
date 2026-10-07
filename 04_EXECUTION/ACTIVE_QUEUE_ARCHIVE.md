@@ -9,6 +9,184 @@ carrying four closed waves' fences (29.1/29.2/29.3/30.1) alongside live ones —
 it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
+## Wave 57 prompts — archived 2026-10-07 01:10 UTC. 57.1 PARTIAL (#171 merged: MLB features via GH Actions; T1 proof pending next 11:00 UTC run; GG-489 claimed not registered). 57.2 DONE (#170: MLB settle, 128 settled; GG-472/477 resolved). 57.3 DONE (#172: T4 placements on Live Terminal; GG-490/491). Verbatim:
+
+### 57.1 — MLB player-hits is dark
+
+```
+COMMON RULES - WAVE 57 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W57_<n>.md
+  (docs-only push to main).
+
+WAVE 57.1 - MLB PLAYER-HITS IS DARK: T1 HALTS ON A STALE FEATURE CSV. Repo: eignacio1/prediction-market-bot.
+
+WHY
+Operator directive 2026-10-05: "MLB can't go dark while games are going on." The 56.3 Visual Dashboard shows the T1
+MLB paper cron's last run ending in "DataContractViolation: PIPE-05 mlb_feature_csv staleness_halt: 8 days stale
+(halt threshold 7)", last success "no data". The 3 MLB player-hits SHADOW cells (T1-T3) showed 0 rows in 55.2.
+Likely cause (verify): the 22:30 UTC generate_mlb_features.py cron pulls statsapi, which 406s the VPS on cache miss
+(GG-470) - the same block 56.1 routed around for the games cache with a GitHub Actions job.
+
+D0 - Worktree w57-mlb-hits-dark; claim "W57.1 STANDARD - T1 MLB feature CSV staleness HALT (player-hits arm dark)".
+     Register the gap at once (56.3 noted it but did not register it).
+D1 - VPS read-only: the last 3 runs of the features cron and of the T1 paper cron (paper_mlb_cron.log), the feature
+     CSV's age, and where generate_mlb_features.py gets its data. Root cause in one sentence with evidence lines.
+     Also: when did T1 / T2 / T3 player-hits last write an evaluation row?
+D2 - Fix the data path the same way 56.1 did (refresh on a GitHub Actions runner, sync to the VPS, fail-closed,
+     stamped), or a smaller fix if the root cause is different. Do NOT relax the 7-day staleness halt or weaken the
+     data contract to get it running. Prefer a fix in code over a cron change: editing an EXISTING cron line needs
+     the operator's written line - if unavoidable, stop and report the exact line. 57.2 adds a crontab line this
+     wave; do not touch the crontab. PR, CI green, merge (record the t4-mlb decision).
+D3 - Prove it: trigger the job once; VPS read-only: fresh feature CSV; run the T1 MLB paper cron once by hand with
+     its exact command; it passes PIPE-05 and logs evaluations (kelly 0 -> no T1 bets expected). Rows per player-hits
+     cell after.
+D4 - Results doc 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W57_1_mlb_hits_results.md; gap RESOLVED only with D3's
+     evidence. Docs-only push to main.
+
+END OF BLOCK 57.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 57.2 — MLB shadow settlement + first night after the stagger
+
+```
+COMMON RULES - WAVE 57 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W57_<n>.md
+  (docs-only push to main).
+
+WAVE 57.2 - MLB SHADOW SETTLEMENT (GG-472) + READ THE FIRST NIGHT AFTER THE CRON STAGGER. Repo: eignacio1/prediction-market-bot.
+
+WHY
+The 12 MLB postseason shadow cells log rows (71 T1 rows after 56.1) but nothing attaches outcomes, so no MLB cell
+can ever be scored (GG-472). scripts/run_pregame_shadow_settle.py does this for NFL only (outcome join, no Brier).
+Final scores are already in the MLB games cache that 56.1's GitHub Actions job now keeps fresh. Separately: 56.1
+applied the GG-477 cron stagger; the first 01:30 UTC window after it was 2026-10-06 01:30 UTC (read that night and any
+later one). The scheduled games-cache sync ran 2026-10-06 06:50 and 18:37 UTC (GitHub Actions, both success) - confirm
+the VPS meta stamp matches the latest run.
+
+D0 - Worktree w57-mlb-settle; claim "W57.2 STANDARD - MLB shadow settlement + GG-477 window read".
+D1 - Read GG-472, run_pregame_shadow_settle.py, scripts/run_mlb_pregame_shadow.py and the MLB ledgers' row shape.
+     Outcome join only: no Brier, no score, no read of any result metric (pre-registration EXP-037).
+D2 - Build the MLB settle path (MLB mode in the existing script or a sibling - smallest change) from the games cache:
+     moneyline, run line, game total, team total -> y in {0,1}; no final in the cache = stays unsettled. It writes
+     only settled/ copies, never the raw ledgers. Tests with recorded fixtures. PR, CI green, merge.
+D3 - VPS: run it once by hand; record settled rows per cell. Arm it: add ONE new settle line to the EXP-037 cron
+     block (standing shadow-cron authorization, new lines only), at a minute that avoids :00/:30 and the staggered
+     minutes, mirrored into deploy/cron_exp037_pregame_shadow.conf. Back up the crontab first; diff shows one added
+     line and nothing else changed.
+D4 - GG-477, VPS read-only: journalctl -k for 01:25-01:40 UTC of the latest night that has passed, grep -ci oom;
+     t4-mlb NRestarts and start time. Clean -> RESOLVED with the evidence; not yet passed -> say so, leave OPEN.
+     GG-482: did the scheduled 12:43 UTC sync run (GitHub Actions run list + meta stamp on the VPS)?
+D5 - GG-472 RESOLVED only with settled rows on disk. Results doc
+     05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W57_2_mlb_settle_results.md. Docs-only push to main.
+
+END OF BLOCK 57.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 57.3 — Truthful books on the Live Terminal
+
+```
+COMMON RULES - WAVE 57 (read first; they bind this block)
+- Time: ~30 min, hard stop at 45. Push at the nearest boundary when you stop; say where the next session resumes.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY the PR(s) named in it. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W57_<n>.md
+  (docs-only push to main).
+
+WAVE 57.3 - TRUTHFUL BOOKS ON THE LIVE TERMINAL: T4 FLAT STAKES, THE STALE NFL PAPER BOOK, AND 56.2'S LEFTOVERS.
+Repo: eignacio1/prediction-market-bot.
+
+WHY
+The Live Terminal is "what the bot is actually placing". kelly_fraction is 0 everywhere, but T4M-PROJ places flat
+$1.00 paper measurement stakes by design (ADR-0050) - those ARE placements and must show as such, not as "$0
+shadow". 56.2/56.3 also found: an NFL game-market paper book last written ~162h ago with 824 open positions (why
+stale? why unresolved?); the C4 tile "not instrumented" because the VPS dashboard's python lacks `jsonlines`;
+empty-ticker cycle rows rendering as blank lines; the phone status bar overflowing. 56.2 also defined WOULD-FIRE as
+fee-adjusted net edge > 0 (no repo rule existed) - keep it, labelled.
+Surface: the Live Terminal ("/" page in scripts/web_dashboard.py, /api/data, Live Terminal.html). Do NOT edit
+generate_project_state.py / project_ops.py (Visual Dashboard).
+
+D0 - Worktree w57-books-truth; claim "W57.3 STANDARD - Live Terminal placements truth + NFL paper book + leftovers".
+D1 - VPS read-only: every paper ledger the dashboard reads - name, open positions, last write, who writes it (which
+     cron/process), and whether a resolver covers it. For the NFL game-market book: why no write in ~162h and why 824
+     positions are open (resolver missing, cron removed, or games not final?). Register a gap if it is a real defect;
+     do not resolve or edit any position.
+D2 - Live Terminal: show T4M-PROJ paper placements as PLACEMENTS (time, market, side, price, $ stake, flat-stake
+     ADR-0050 label), separate from the $0 shadow decision stream. Fix the empty-ticker rows (hide or label the
+     reason) and the phone status-bar overflow.
+D3 - The C4 tile: add the missing dependency the right way (declared in the repo's dependency files - see GG-452 on
+     stale locks), so the deploy installs it; no hand-install on the VPS. If that is out of reach in the clock,
+     register it and leave the tile honestly "not instrumented".
+D4 - Tests; full suite once. PR, CI green, merge (dashboard-only: record that t4-mlb was not restarted). Check the
+     RUNNING terminal after deploy: placements visible, no blank rows. Results doc
+     05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W57_3_books_truth_results.md. Docs-only push to main.
+
+DESIGN BAR (both surfaces; the operator gave full creative latitude and wants a finished product, not a mockup)
+- Every number states where it came from and how old it is. Stale data looks stale (dimmed + age), never live.
+  A panel with no data says "no data" - it never shows zeros or placeholders as if real.
+- Hierarchy first: the one-glance answer at the top ("is the bot healthy, what is it doing right now"), detail below.
+- Colour carries meaning only: green = healthy/positive edge, amber = stale/warning, red = breach/failure, neutral
+  otherwise. No decorative colour. Tabular (monospace) numerals so columns line up.
+- Dense but calm: consistent spacing, aligned columns, short labels, no walls of text, nothing that moves unless data
+  moved. Readable at laptop size; usable on a phone.
+- Truthful labels over pretty ones: SHADOW is never shown as live trading; $0 stake is said plainly.
+- Verify in a real browser (scripts/browser_check_dashboard.py exists): before/after screenshots in the results doc.
+
+END OF BLOCK 57.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 56 prompts — archived 2026-10-06 00:55 UTC. 56.1 DONE (#165/#166: MLB cache via GH Actions, GG-482 resolved; cron stagger applied). 56.2 DONE (#167/#169: Live Terminal NOW decision stream). 56.3 DONE (#168: Visual Dashboard ops health). Verbatim:
 
 ### 56.1 — MLB cache via GitHub Actions + cron stagger
