@@ -1,0 +1,72 @@
+name: NHL Goalie Probe
+
+# W58.1 Part B / GG-401. Times when api-web.nhle.com first shows a confirmed starting goalie (the
+# `starter` flag) relative to puck drop, to settle the EXP-036 T3 verdict (a)/(b) in W52_D results.
+# Read-only against api-web.nhle.com; no VPS access, no ledger, no score. Each run appends the probe's
+# JSONL to data/nhl-goalie-probe (NEVER main). Stops itself after END_DATE (7 days after merge).
+# Schedule: every 10 min across the NHL evening window, 21:00-03:50 UTC (4pm-11:50pm ET puck drops).
+# Minutes avoid :00/:30 (GG-477).
+
+on:
+  schedule:
+    - cron: '3-53/10 21-23 * * *'
+    - cron: '3-53/10 0-3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nhl-goalie-probe
+  cancel-in-progress: false
+
+env:
+  END_DATE: '2026-10-14'
+  DATA_BRANCH: data/nhl-goalie-probe
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check end date
+        id: gate
+        run: |
+          if [[ "$(date -u +%F)" > "$END_DATE" ]]; then
+            echo "past END_DATE $END_DATE: nothing to do"; echo "active=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "active=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.active == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.active == 'true'
+        with:
+          python-version: '3.11'
+
+      - name: Probe (schedule date = America/New_York calendar date)
+        if: steps.gate.outputs.active == 'true'
+        run: |
+          D=$(TZ=America/New_York date +%F)
+          python3 scripts/nhl_goalie_source_probe.py --date "$D" --out "$RUNNER_TEMP/probe.jsonl"
+          touch "$RUNNER_TEMP/probe.jsonl"
+
+      - name: Append to data branch
+        if: steps.gate.outputs.active == 'true'
+        run: |
+          set -e
+          if [ ! -s "$RUNNER_TEMP/probe.jsonl" ]; then echo "no games this slot; nothing to append"; exit 0; fi
+          git config user.name "nhl-goalie-probe"; git config user.email "actions@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin "$DATA_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$DATA_BRANCH"; git checkout -B "$DATA_BRANCH" "origin/$DATA_BRANCH"
+          else
+            git checkout --orphan "$DATA_BRANCH"; git rm -rf . >/dev/null 2>&1 || true
+            printf '# NHL goalie probe data (GG-401)\nAppend-only goalie_source_probe.jsonl; written by .github/workflows/nhl_goalie_probe.yml on main.\n' > README.md
+            git add README.md
+          fi
+          cat "$RUNNER_TEMP/probe.jsonl" >> goalie_source_probe.jsonl
+          git add goalie_source_probe.jsonl
+          git commit -m "probe $(date -u +%FT%TZ)"
+          git push origin "$DATA_BRANCH"
