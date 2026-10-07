@@ -4755,7 +4755,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-472 — No MLB pregame shadow settlement script: the 12 MLB shadow cells can log but never get outcomes
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4768,6 +4768,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | Even once GG-470 is solved, MLB shadow rows stay unscored without a settle path. |
 | Source | W54.2; DECISION_LOG 2026-10-05 |
 | Disposition | Registered only; not built in W54.2. |
+| Resolution (W57.2, 2026-10-07) | MLB outcome join built (`mlb_settlement.py`, `run_pregame_shadow_settle.py --sport mlb`, PR #170, CI green, merged). First VPS run settled 128 rows across the T2/T3 cells; T1 cells 0 (see W57_2_mlb_settle_results.md). Daily cron 11:41 UTC armed. Source is the games cache final scores per W57 block, not Kalshi settlement as this entry suggested (GG-440) - operator may still want a cross-check. |
 
 </details>
 
@@ -4791,7 +4792,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-477 — Global OOM on the 961 MB / no-swap VPS kills production processes at ~01:30 UTC (t4-mlb on 2026-10-05; a cron python on 2026-10-04)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 <details>
 <summary>Full record ▸</summary>
@@ -4805,6 +4806,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | W55.2 D4, VPS read-only (journalctl -u t4-mlb, journalctl -k, free -m, crontab) |
 | Root cause (W55.2 follow-up, 2026-10-05) | Minute :00/:30 stampede, not just 01:25/01:30. On 10-04 six python crons all started at 01:30:01 (`run_paper_trade`, `run_t3_pretip`, `run_t3_mlb_pretip`, `nhl_shadow_eval` T2 and T3, `run_pregame_shadow` T3), ~136 MB each, ~800 MB on a 961 MB host. 10-04 victim = pid 2884421, spawned directly after the `run_t3_pretip` cron shell (2884420), so almost certainly NBA T3 pretip (dark, reruns every 15 min); no money-path run lost. Identification rests on pid adjacency, not a logged job name. |
 | Disposition | Remedy 1 APPLIED 2026-10-05: 2 GB `/swapfile`, `vm.swappiness=10`, persisted in `/etc/fstab` + `/etc/sysctl.d/99-swap.conf` (output showed it active; operator to confirm with `swapon --show`). Remedy 2 PENDING OPERATOR APPLY: `scripts/ops/gg477_cron_stagger.py` (dry-run by default, backs up crontab) offsets the minute field of the NHL T2/T3, pregame_shadow T3 and NBA/MLB T3 pretip crons; `run_paper_trade`/`run_pregame` untouched. Not done: `OOMScoreAdjust` (would shift kills onto bet-writing crons), VPS resize (fallback if kills recur). **Not RESOLVED until the 01:30 UTC window passes with zero OOM lines after both remedies.** Related: GG-118. |
+| Resolution evidence (W57.2, 2026-10-07 00:22 UTC) | First 01:30 UTC window after the GG-477 stagger (2026-10-06 01:25-01:40): `journalctl -k` oom lines = 0. t4-mlb NRestarts=0, active since 2026-10-05 07:57 UTC. Last OOM kill 2026-10-05 01:30 (pre-stagger). n=1 clean night; re-open on any recurrence. |
 
 </details>
 

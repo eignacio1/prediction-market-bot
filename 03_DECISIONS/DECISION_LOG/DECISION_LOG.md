@@ -1813,3 +1813,5 @@ Under the 2026-10-05 operator directive ("MLB can't go dark") and the GG-477 sta
 /project gained a health strip + Operations/Feeds/Services/Books/Evidence sections via scripts/project_ops.py (host-local reads only; unreadable = "no data"). Deploy-decision row stays "no data" on the VPS by design (GG-432: decision lives only in the GitHub job summary). Deploy of PR #168: t4-mlb restart not_needed. No sizing/order change.
 
 | 2026-10-06 | T-689 | W56.2: Live Terminal WOULD-FIRE defined as fee-adjusted net edge > 0 (best of e_net_yes/no_k007 for shadow rows, net_edge for T4 cycle rows) because the repo has no fire rule; shown as shadow computation with stake $0. Drawdown tiles use realized basis vs 20% kill switch (limit read from risk.py source when import fails on VPS). Operator may redefine WOULD-FIRE. |
+
+| 2026-10-07 | T-697 | W57.2: MLB shadow settlement uses games-cache final scores (per block), not Kalshi settlement; GG-472 and GG-477 resolved; settle cron 41 11 UTC added (standing shadow-cron authorization). |
