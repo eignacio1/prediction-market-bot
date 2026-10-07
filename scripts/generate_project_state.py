@@ -440,7 +440,8 @@ def _ops_tables(ops: dict, head: Any, aw: Any) -> dict[str, str]:
 
 def _calibration_html(sec: dict, head: Any) -> str:
     """Per sport, one row per cell. Scores appear only on cells the engine itself released (no `scores` key = none)."""
-    if sec.get("awaiting"):
+    if sec.get("awaiting") or not sec.get("summary"):
+        sec = {**sec, "awaiting": sec.get("awaiting") or "the first calibration-engine run"}
         return f"<section id='calibration'>{head('Calibration — SHADOW cells', sec)}<div class='nd'>no data — awaiting {_e(sec['awaiting'])}</div></section>"
     sm = sec["summary"]
     try:
@@ -493,7 +494,7 @@ def _strip(S: dict, ops: dict) -> str:
     cb = S.get("calibration", {})
     neutral = [
         ("calibration", "Calibration", (f"{cb['summary']['reached_look']} of {cb['summary']['cells']} at a look"
-                                        if not cb.get("awaiting") else "no data")),
+                                        if cb.get("summary") else "no data")),
         ("verdicts", "Verdicts", f"{len(ex.get('items', []))} EXP" if not ex.get("awaiting") else "no data"),
         ("governance", "Gaps", f"{gv.get('open')} open" if not gv.get("awaiting") else "no data"),
         ("queue", "Your desk", f"{len(qu.get('needs_decision', []))} to decide" if not qu.get("awaiting") else "no data"),
