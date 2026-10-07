@@ -777,3 +777,4 @@
 | 2026-10-07T00:32:27Z | T-697 | CLOSED — merge confirmed, HEAD (b474184) is ancestor of origin/main — CLOSED — W57.2: MLB shadow settlement built (PR #170) + armed (cron 11:41 UTC); 128 rows settled; GG-472, GG-477 resolved (commit b474184) |
 | 2026-10-07T00:48:04Z | T-699 | CLOSED — merge confirmed, HEAD (b6da5e4) is ancestor of origin/main — W57.1 PARTIAL - PR #171 merged (features sync via GH Actions); D3/D4 + GG-489 registration pending |
 | 2026-10-07T00:48:16Z | T-701 | CLOSED — merge confirmed, HEAD (724c791) is ancestor of origin/main — W57.3 Live Terminal placements, stdlib C4 limits, phone bar fix; GG-490 open (NFL book), GG-491 resolved (PR #172 + docs 724c791) |
+| 2026-10-07T01:16:53Z | T-710..T-715, GG-495..GG-497, EXP-038 | W58.2 STANDARD - NBA game markets end to end in shadow (discovery, registry, EXP-038 prereg, frozen model, cron) |
