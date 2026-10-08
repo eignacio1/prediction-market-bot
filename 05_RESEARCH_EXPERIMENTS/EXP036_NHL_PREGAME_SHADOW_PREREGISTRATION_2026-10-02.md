@@ -43,3 +43,16 @@ Frozen model (ADR-0004: LR + Platt or documented equivalent), trained on prior s
 
 ## Known limitations declared in advance
 Travel distance is not modelled (no venue coordinates ingested; road-streak and rest only). Kalshi moneyline/puck-line OT/SO treatment is assumed to follow the official final result (rules text silent on OT/SO; shootout winner's margin is 1, so 1.5/2.5 strikes are unaffected).
+
+
+## Addendum 2026-10-08 — bootstrap seed (closes GG-511)
+Authorization: operator, 2026-10-07 19:03 PT ("Yes proceed with both recommendations"), recorded in 04_EXECUTION/ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Appended 2026-10-08 (W60.2 Part B) before any judged data exists. The text above is unchanged.
+
+The bootstrap seed is **20261002** (B = 10,000 on per-game means, as already specified above). Intervals produced before W59.2 used B=2000 on raw strike rows and are superseded.
+
+## Addendum 2026-10-08 — goalie amendment (W59.3 Part B verdict (b); text verbatim from W59_3_nba_nhl_readiness_results.md Part B)
+Authorization: operator, 2026-10-07 19:03 PT ("Yes proceed with both recommendations"), recorded in 04_EXECUTION/ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Appended 2026-10-08 (W60.2 Part B) before any judged data exists. The text above is unchanged.
+
+Replaces "Goalie: projected starter at T1/T2, confirmed starter at T3 when the source shows it; flagged per row." (Model-side commitments) with:
+
+> Goalie: projected starter (last start) at every band, T3 included; no confirmed-starter source is available before puck drop (W59.3 probe: `starter` flag absent pre-drop and throughout live play, present only once the game is final). Rows are flagged `confirmed=False`.

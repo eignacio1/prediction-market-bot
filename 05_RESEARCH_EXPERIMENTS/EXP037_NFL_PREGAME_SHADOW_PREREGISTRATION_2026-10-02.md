@@ -80,3 +80,9 @@ Held-out season 2025 (never used for any choice; 272 games; train 2015–2023, c
 
 ## 8. Nothing else
 No order, position, paper fill or sizing change follows from any outcome of this file. SHADOW is evaluate-and-log.
+
+
+## Addendum 2026-10-08 — ordering key for "earliest 60 settled games" (closes GG-510)
+Authorization: operator, 2026-10-07 19:03 PT ("Yes proceed with both recommendations"), recorded in 04_EXECUTION/ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Appended 2026-10-08 (W60.2 Part B) before any judged data exists. The text above is unchanged.
+
+The first look scores the earliest 60 settled games per cell. "Earliest" is defined as ascending `(start_time_utc, game_key)`: the game's scheduled start time (the game's first ledger `ts_utc` only if a game has no start time), ties broken by `game_key`, never by arrival order. The released set is frozen in a write-once manifest.

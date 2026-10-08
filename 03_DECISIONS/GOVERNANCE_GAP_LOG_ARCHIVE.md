@@ -5327,4 +5327,87 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-510 — EXP-037 does not define the ordering key for 'earliest 60 settled games'
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.2 Part B):** dated addendum appended to EXP-037 NFL and MLB pre-registrations: ordering key = (start_time_utc, game_key); engine `_games_in_order` already implements it (no code change). Authority: operator authorization 2026-10-07 19:03 PT (ACTIVE_QUEUE.md 'AUTHORIZATION - PRE-REGISTRATION ADDENDA').
+
+**Current state (2026-10-08, W59.2):** EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. **Next:** Operator/DS to ratify or replace the key via a superseding document before the first NFL look (projected 2026-11-02).
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-510 |
+| Category | Calibration engine / pre-registration |
+| What was found | EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. |
+| Why it matters | A different key selects a different 60 games and a different verdict; the choice is currently the engine's, not the pre-registration's. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-511 — EXP-036 leaves the bootstrap seed unspecified; engine deviated before W59.2
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.2 Part B):** dated addendum appended to EXP-036: bootstrap seed 20261002 (B=10,000 per-game means); engine `scoring.BOOT_SEED` = 20261002 and NHL policy B=10,000 (no code change). Authority: operator authorization 2026-10-07 19:03 PT (ACTIVE_QUEUE.md 'AUTHORIZATION - PRE-REGISTRATION ADDENDA').
+
+**Current state (2026-10-08, W59.2):** EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. **Next:** Pre-register a seed by superseding document; treat pre-W59.2 NHL intervals as superseded.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-511 |
+| Category | Calibration engine / pre-registration |
+| What was found | EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. |
+| Why it matters | Seed choice can move CI edges that decide RULED_OUT/CANDIDATE; earlier published NHL intervals used a non-spec method. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-512 — MLB settled rows carry no p_clim; no climatology baseline for MLB
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.2 Part B):** dated addendum appended to EXP-037 MLB: climatology comparison unavailable (MLB settled rows carry no p_clim, no comparator defined); no baseline invented. Authority: operator authorization 2026-10-07 19:03 PT (ACTIVE_QUEUE.md 'AUTHORIZATION - PRE-REGISTRATION ADDENDA').
+
+**Current state (2026-10-08, W59.2):** MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. **Next:** Decide whether MLB needs a climatology baseline; if so supersede the pre-registration and add p_clim at settle time (new rows only).
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-512 |
+| Category | Calibration engine / pre-registration |
+| What was found | MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. |
+| Why it matters | The NFL/NHL RULED_OUT-vs-climatology check cannot be applied to MLB, so MLB has a weaker falsification gate. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-513 — NBA cells (EXP-038) are not in the calibration engine
+
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.2 Part A):** PR #186 (squash d58623b, CI green) added the EXP-038 NBA policy and the 12 expected NBA cells to the engine. Verified on the VPS after deploy by running `scripts/calibration_engine.py --no-write` there (12 `NBA_NBA_*` cells, each SEALED 0 of 150); this was a manual run of the deployed code, not the scheduled daily run, whose first NBA listing follows its next scheduled run.
+
+**Current state (2026-10-08, W59.2):** The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. **Next:** Add NBA once EXP-038 cells are SHADOW (W59.3 10-21 flip check) and its rules are encoded.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-513 |
+| Category | Calibration engine / pre-registration |
+| What was found | The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. |
+| Why it matters | NBA results would be read outside the sealed-release mechanics. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
 

@@ -83,3 +83,14 @@ No historical market prices are available (EXP-034 D1(b) FAILED), so no historic
 
 ## 9. Nothing else
 No order, position, paper fill or sizing change follows from any outcome of this file. SHADOW is evaluate-and-log.
+
+
+## Addendum 2026-10-08 — ordering key for "earliest 60 settled games" (closes GG-510)
+Authorization: operator, 2026-10-07 19:03 PT ("Yes proceed with both recommendations"), recorded in 04_EXECUTION/ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Appended 2026-10-08 (W60.2 Part B) before any judged data exists. The text above is unchanged.
+
+The first look scores the earliest 60 settled games per cell. "Earliest" is defined as ascending `(start_time_utc, game_key)`: the game's scheduled start time (the game's first ledger `ts_utc` only if a game has no start time), ties broken by `game_key`, never by arrival order. The released set is frozen in a write-once manifest.
+
+## Addendum 2026-10-08 — MLB climatology comparison is unavailable (closes GG-512)
+Authorization: operator, 2026-10-07 19:03 PT ("Yes proceed with both recommendations"), recorded in 04_EXECUTION/ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Appended 2026-10-08 (W60.2 Part B) before any judged data exists. The text above is unchanged.
+
+This file defines no climatology comparator for MLB, and MLB settled rows carry no `p_clim` (the MLB settle step writes `y` and `game_key` only). The engine therefore reports no delta-vs-climatology for MLB and does not invent one. The NFL/NHL RULED_OUT-vs-climatology check cannot be applied to MLB; MLB's falsification gate is the delta-vs-market test in this file only. No MLB `p_clim` is added by this addendum; any later baseline needs its own superseding document and applies to new rows only.

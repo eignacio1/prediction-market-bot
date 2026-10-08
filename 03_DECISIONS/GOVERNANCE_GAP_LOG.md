@@ -3963,85 +3963,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 **2026-10-05 W55.3b update:** ESPN ruled out as a source (scoreboard lacks MLBAM starter ids; ESPN athlete ids are a different namespace, no MLBAM crosswalk field). Option 1 landed (PR #164, bf1afb0): `scripts/sync_mlb_games_cache.sh` refreshes `games_current.parquet` on the Mac (Stats API 200 there) and scp+atomic-mv's it with a `.meta.json` stamp to the VPS; the runner without `--refresh` now fails closed on a missing or >26h-old stamp; VPS T1 cron no longer passes `--refresh` (backup `/root/crontab.bak.W55_3b.20261005T225931Z`). Manual T1 run: 69 rows written (ML 8, RL 12, TOTAL 21, TEAM_TOTAL 28). **Remaining:** sustained operation needs the sync run at least daily from a machine that is on; nothing schedules it (GG-482). If it lapses, all MLB shadow cells write nothing (fail-closed, not stale).
 </details>
 
-### GG-510 — EXP-037 does not define the ordering key for 'earliest 60 settled games'
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.2):** EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. **Next:** Operator/DS to ratify or replace the key via a superseding document before the first NFL look (projected 2026-11-02).
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-510 |
-| Category | Calibration engine / pre-registration |
-| What was found | EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. |
-| Why it matters | A different key selects a different 60 games and a different verdict; the choice is currently the engine's, not the pre-registration's. |
-| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
-| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
-
-</details>
-
-### GG-511 — EXP-036 leaves the bootstrap seed unspecified; engine deviated before W59.2
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.2):** EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. **Next:** Pre-register a seed by superseding document; treat pre-W59.2 NHL intervals as superseded.
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-511 |
-| Category | Calibration engine / pre-registration |
-| What was found | EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. |
-| Why it matters | Seed choice can move CI edges that decide RULED_OUT/CANDIDATE; earlier published NHL intervals used a non-spec method. |
-| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
-| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
-
-</details>
-
-### GG-512 — MLB settled rows carry no p_clim; no climatology baseline for MLB
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.2):** MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. **Next:** Decide whether MLB needs a climatology baseline; if so supersede the pre-registration and add p_clim at settle time (new rows only).
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-512 |
-| Category | Calibration engine / pre-registration |
-| What was found | MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. |
-| Why it matters | The NFL/NHL RULED_OUT-vs-climatology check cannot be applied to MLB, so MLB has a weaker falsification gate. |
-| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
-| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
-
-</details>
-
-### GG-513 — NBA cells (EXP-038) are not in the calibration engine
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.2):** The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. **Next:** Add NBA once EXP-038 cells are SHADOW (W59.3 10-21 flip check) and its rules are encoded.
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-513 |
-| Category | Calibration engine / pre-registration |
-| What was found | The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. |
-| Why it matters | NBA results would be read outside the sealed-release mechanics. |
-| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
-| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
-
-</details>
-
 ### GG-514 — NHL judged n=2,500 unreachable this season; NFL first-look date rests on one week of coverage
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Operator decision (2026-10-07 19:03 PT, recorded 2026-10-08 W60.2 Part B):** keep EXP-036 as written (judged n 2,473; NHL stays PRELIMINARY in 2026-27; the 500-game climatology check still applies). The NFL first-look date (2026-11-02, one slate of coverage) remains a projection to re-derive as weeks accumulate.
 
 **Current state (2026-10-08, W59.2):** Projection (W59.2): NHL needs 2,470-2,484 more games, expects 573-968 from 1,290 left, so n=2,500 is not reachable on the published schedule; NHL can only stay PRELIMINARY in 2026-27. NFL date 2026-11-02 uses coverage measured on 15 games (one slate). **Next:** Operator to decide whether EXP-036's n=2,500 stands (a multi-season horizon) or is revised by a superseding document; re-derive NFL date after more weeks.
 
@@ -4055,6 +3981,42 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | NHL may never reach a verdict on the registered threshold; an early NFL date could slip by a slate or more. |
 | Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
 | Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-529 — EXP-038 second-look date trigger ('or 2027-01-31, whichever first') is undefined
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W60.2):** EXP-038 says the second look is at judged n=400 or 2027-01-31, whichever is first, but defines neither the games scored nor the n at the date, and sec. 1 'judged on whatever n they reach' conflicts with sec. 4 (no scoring before judged n). The engine releases only n=150 and n=400, lists the item in each NBA cell's `undefined_rules`, and emits no verdict for it. **Next:** Operator/DS to define the date-triggered look by superseding document before 2027-01-31.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-529 |
+| Category | Calibration engine / pre-registration |
+| What was found | See current state. |
+| Source | W60.2 Part A (`W60_2_nba_engine_addenda_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). |
+
+</details>
+
+### GG-530 — NHL shadow ledger rows carry no explicit confirmed flag
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W60.2):** The EXP-036 goalie amendment says rows are flagged `confirmed=False`. `scripts/nhl_shadow_eval.py` passes no starter_provider, so every row is modelled on the projected last-start goalie (confirmed=False, starter_source=projected_last_start), but that flag lives only inside the hashed feature row; the T3 ledger rows on the VPS (data/shadow/nhl/NHL_*_T3.jsonl, 2,246 rows) have no `confirmed`/`starter_source` field. **Next:** Add the field to the row writer (new rows only) with a test.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-530 |
+| Category | Data / pre-registration conformance |
+| What was found | See current state. |
+| Source | W60.2 Part B GG-401 check |
+| Resolution | Not fixed in-session (register-and-stop). |
 
 </details>
 
