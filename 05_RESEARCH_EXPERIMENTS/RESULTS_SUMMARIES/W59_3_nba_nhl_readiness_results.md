@@ -56,4 +56,9 @@ Operator choice (W52_D): adopt this amendment, or a different confirmed-starter 
 
 
 ## Part C — ADR-0070
-Not started.
+**DONE (2026-10-08).** Two commits, in order:
+1. `645d23a` widened scope to the EXP-036 NHL and EXP-038 NBA shadow models (shadow only; adds §5a; GG-401 not waived).
+2. `cdf10c6` set Status ACCEPTED, citing the operator's 2026-10-07 17:26 PT decision ("Yes - proceed in full").
+
+Authorizes no order, position, fill, stake or kelly_fraction change. GG-400 moved verbatim to the archive as RESOLVED.
+GG-401 stays OPEN (Part B finding added to its entry).

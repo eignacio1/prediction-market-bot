@@ -3678,23 +3678,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-400 — NHL pregame model (bivariate Poisson + Platt) departs from ADR-0004 with no ADR of its own
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-400 |
-| Category | Model governance |
-| What was found | EXP-036 NHL shadow model uses bivariate Poisson + Platt, a model-class deviation from ADR-0004 identical in kind to ADR-0070's NFL/MLB probit-Platt deviation; no ADR covers it. Resolution is ADR-0070's decision (accept/reject the deviation class) — no second ADR to be written. |
-| Source | EXP036 results GAP 2; EXP-037 D0 / ADR-0070 |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
 ### GG-401 — NHL T1/T2 pregame model has no projected-starter source
 
 **Status:** OPEN · **Severity:** LOW
@@ -3712,6 +3695,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | W52.D finding (2026-10-03, T-657) | T3 needs both confirmed goalie IDs by ~15 min pre-start (cron.nhl_shadow T3 */10; BANDS T3 = 0.25-1.0 h). The only known official field is boxscore playerByGameStats.<side>.goalies[].starter, which this repo has only read post-game. Every source (api-web.nhle.com schedule/boxscore/landing, dailyfaceoff) was refused by the cloud egress proxy, so verdict (c) cannot tell. Measurement: run scripts/nhl_goalie_source_probe.py (branch w52/nhl-goalie-probe) on the VPS at ~60/30/15 min pre-start on one slate. Status unchanged; no NHL T3 score may be read. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md. |
 
 | W58.1 timing measurement (2026-10-07, status unchanged) | `.github/workflows/nhl_goalie_probe.yml` (PR #173) probes api-web.nhle.com every 10 min, 21:00-03:50 UTC, and appends to branch `data/nhl-goalie-probe` file `goalie_source_probe.jsonl` (never main). It stops itself after 2026-10-14. Verdict rule is W52_D D3: for each game take the earliest probe where both `boxscore_starters` and `landing_starters` show both sides; flag at >=15 min before start in k of n games = (a), build a StarterProvider; flag only at/after puck drop = (b), operator picks move-T3-later or amend the pre-registration. Until then no NHL T3 score may be read. First dispatch: 9 records appended. |
+| W59.3 probe verdict (2026-10-08, status unchanged) | Verdict **(b)**: `starter` flag absent in 0 of 2 informative pre-drop readings (FLA@LAK 32.4 min, EDM@ANA 65.0 min; two slates), and absent in 0 of 8 readings 85-148 min into play; present on finished boxscores (state OFF) per a VPS positive control. No StarterProvider built. Pre-registration amendment text for the operator is in 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_3_nba_nhl_readiness_results.md Part B. No NHL T3 score may be read. |
 </details>
 
 ### GG-402 — Shadow runner hardcodes fee_multiplier=1

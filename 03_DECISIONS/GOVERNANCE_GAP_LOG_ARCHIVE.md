@@ -4727,3 +4727,22 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-400 — NHL pregame model (bivariate Poisson + Platt) departs from ADR-0004 with no ADR of its own
+
+**Status:** RESOLVED (2026-10-08, W59.3) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-400 |
+| Category | Model governance |
+| What was found | EXP-036 NHL shadow model uses bivariate Poisson + Platt, a model-class deviation from ADR-0004 identical in kind to ADR-0070's NFL/MLB probit-Platt deviation; no ADR covers it. Resolution is ADR-0070's decision (accept/reject the deviation class) — no second ADR to be written. |
+| Source | EXP036 results GAP 2; EXP-037 D0 / ADR-0070 |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+
+**W59.3 disposition (2026-10-08):** RESOLVED — ADR-0070 widened to the EXP-036 NHL and EXP-038 NBA shadow models (commit 645d23a) and then ACCEPTED (commit cdf10c6), citing the operator's 2026-10-07 decision. Shadow only; no order, position, sizing or CellStatus beyond SHADOW. GG-401 is separate and stays OPEN.
+
+</details>
