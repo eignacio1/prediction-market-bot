@@ -1177,7 +1177,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** SSH-verify daily retry/406 pattern against cron windows.
+**Current state (2026-10-08, W59.1):** VPS paper_mlb_cron.log still shows MLB schedule API 406 Not Acceptable on self-heal queries (2026-10-05 01:31Z, 2026-10-07 06:13Z); failure mode persists, not yet correlated to cron windows. **Next:** Correlate the 406 timestamps against cron windows and add a retry/UA fix to the self-heal query.
 **Actively-Broken:** YES
 
 <details>
@@ -1954,7 +1954,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Live-capital blocker; operator-side. **Next:** Add an account-geo check to the pre-live checklist.
+**Current state (2026-10-08, W59.1):** Geo/jurisdiction terms appear in VENUE_REGISTRY.md and SESSION_CLAIMS.md only; no pre-live checklist file under 04_EXECUTION contains an account-geo check. **Next:** Add an account-geo check to the pre-live checklist.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1971,32 +1971,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Discovery | T-496 (2026-08-26), tasked by the operator with distinguishing "Kalshi geo-service glitched for 48h" from "the VPS's egress IP sits in a Kalshi-classified-Nevada block and the classification flips" following GG-203's Nevada-403 finding. |
 | Resolution | Not resolved by this session (analysis/documentation-tier task, no code or infrastructure change authorized). `02_ARCHITECTURE_DESIGN/VENUE_REGISTRY.md` § "Jurisdiction / Account Geo-Compliance Tracking" (added T-496, 2026-08-26) now documents the finding, evidence, and this residual gap explicitly, so a future session has somewhere to check rather than rediscovering the absence. No monitoring mechanism (e.g., a periodic geo-classification re-check against the live egress IP, or an ADR-0005 gate condition) has been built — that remains open, unstaffed work, and is explicitly an operator decision on priority, not a session's call. |
 | Status | OPEN 2026-08-26 (T-496). |
-
-</details>
-
----
-
-### GG-218 — T1 has no automated alarm for a position stuck OPEN past a plausible resolution window (postponed/rescheduled game, no `apply_resolved_hits.py` match)
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add a stuck-OPEN-past-window alarm for T1.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-218 |
-| Category | Systemic blind spot — an operational monitoring gap adjacent to, but not caused by, this session's deliverable. |
-| What was missed | No automated check fires if a T1 position stays `OPEN` well past a plausible resolution window — e.g. a postponed/rescheduled game that `apply_resolved_hits.py`'s `game_date`-keyed batch settlement never finds a matching outcome for. The position keeps consuming ledger-derived exposure/bankroll (correctly, per this session's HARD STOP analysis in ADR-0059 §3) but nothing surfaces that it is stuck rather than merely pending. |
-| When it should have been caught | Session-start Step 4 (operational health check) or Q7 (ledger invariants) — neither currently probes position age against expected resolution timing. |
-| Phases it survived | G0→G6, current (Phase 6/7 ACTIVE). Applies identically to T1's existing live Kelly-sized `KXMLBHIT` prop positions today — not introduced or worsened by ADR-0059's flat-stake wrapper. |
-| Why it survived | T1's monitoring has focused on whether the nightly cron ran and matched players (Step 4's `SemanticFloorViolation`/players-matched checks), not on whether individual positions eventually resolve. No prior task had reason to look at position-age-vs-resolution until this session's HARD STOP evaluation required checking T1's cross-day exposure/idempotency behavior directly. |
-| Impact | Low as assessed today — no evidence of a currently-stuck position; T1's `_open_tickers` idempotency guard and ledger-derived bankroll accounting (verified this session) mean a stuck position doesn't corrupt exposure accounting, it just goes undetected as anomalous. Forward-looking risk grows as T1's game-market cells (ADR-0058) potentially activate, since postponement/rescheduling is a more routine occurrence for game-level markets than for prop markets tied to a single confirmed plate appearance. |
-| Discovery | T-497 (2026-08-26), while evaluating ADR-0059's HARD STOP condition (cross-day exposure cap / stale-position sweep / exit path) for the T1 measurement-stake safety wrapper. Registered per Hard Rule 11 rather than fixed in-session — orthogonal to this session's one deliverable. |
-| Resolution | Not resolved. A future session could add a Step-4-style probe (position `opened_at` age vs. a per-market-type expected-resolution window) or extend `assert_ledger_invariants.py` with an age-based staleness assertion. Neither is authorized or attempted here. |
-| Status | OPEN 2026-08-26 (T-497). |
 
 </details>
 
@@ -2059,7 +2033,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Distinct from GG-224. **Next:** Repair source of record, not derived file.
+**Current state (2026-10-08, W59.1):** No guard against batch regeneration overwriting repairs found in scripts/*.sh or deploy/cron.conf (grep 'regenerat'); hazard stands as written. **Next:** Repair the source of record, not the derived file.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2584,7 +2558,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add process-activation check to session-close protocol.
+**Current state (2026-10-08, W59.1):** grep of .claude/commands/session-end.md finds no restart or ActiveEnterTimestamp activation check; protocol gap persists. **Next:** Add a process-activation check (service ActiveEnterTimestamp later than deploy commit time) to session-end.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2635,7 +2609,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Analysis finding about gate design. **Next:** Operator decision on a practicable gate.
+**Current state (2026-10-08, W59.1):** Still referenced as an undecided operator item in OPERATOR_CONSOLE.md, PLAN.md and TODO_NEXT.md; no superseding gate ADR found. **Next:** Operator decision on a practicable gate.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2659,7 +2633,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Permission-classifier barrier is operator-side. **Next:** Operator to decide how self-modifying scripts are approved.
+**Current state (2026-10-08, W59.1):** session-end.md has been modified in history (580e9c9, 1e097e0) but the classifier barrier is permission-dependent; this session's Part C command was also denied by the classifier. **Next:** Operator to decide how self-modifying scripts are approved.
 
 <details>
 <summary>Full record ▸</summary>
