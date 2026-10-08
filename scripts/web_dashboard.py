@@ -65,6 +65,7 @@ from typing import Any, Callable
 _src = Path(__file__).parent.parent / "src"
 if str(_src) not in sys.path:
     sys.path.insert(0, str(_src))
+from prediction_market_bot.pregame_shadow.settled_schema import settled_y as _settled_y  # noqa: E402
 try:
     from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH  # T-321
 except Exception:
@@ -672,7 +673,7 @@ def _shadow(now: datetime) -> dict:
     for sf in settled_files:            # settled copies: count settled rows per cell, nothing else
         for r in _load_jsonl(sf, tail=100000):
             c = cells.get(f"{r.get('sport')}|{r.get('market_type')}|{r.get('band')}")
-            if c is not None and r.get("outcome") is not None:
+            if c is not None and _settled_y(r) is not None:     # `y` (NFL/MLB) or `outcome` (NHL): GG-499
                 c["settled_n"] = (c["settled_n"] or 0) + 1
     seen = set()
     for c in cells.values():

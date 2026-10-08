@@ -86,3 +86,21 @@ def test_page_labels_registry_status_and_frozen_age():
     src = (Path(wd.__file__).resolve().parents[1] / "Live Terminal.html").read_text()
     assert "<th>REGISTRY</th>" in src and "(ledger only)" in src and "<th>ROWS TOTAL</th>" in src
     assert "d ago)" in src
+
+
+def test_settled_count_accepts_y_rows_from_nfl_and_mlb(tmp_path, monkeypatch):
+    """W59.2 Part C (GG-499): NFL/MLB settled rows carry `y`, NHL carries `outcome`; all three count. y=0.0 and 0.5 are settled."""
+    monkeypatch.setattr(wd, "_REPO_ROOT", tmp_path)
+    reg = {("NFL_MONEYLINE", "T2_SAME_DAY"): ("shadow", "NFL"), ("MLB_MONEYLINE", "T1_MULTI_DAY"): ("shadow", "MLB")}
+    monkeypatch.setattr(wd, "_registry_cells", lambda: reg)
+    nfl = [_row("NFL", "NFL_MONEYLINE", "T2", "2026-10-03T12:00:00Z") for _ in range(4)]
+    mlb = [_row("MLB", "MLB_MONEYLINE", "T1", "2026-10-03T12:00:00Z") for _ in range(3)]
+    _write(tmp_path / "exp_output/PREGAME_SHADOW/NFL_NFL_MONEYLINE_T2.jsonl", nfl)
+    _write(tmp_path / "exp_output/PREGAME_SHADOW/MLB_MLB_MONEYLINE_T1.jsonl", mlb)
+    _write(tmp_path / "exp_output/PREGAME_SHADOW/settled/NFL_NFL_MONEYLINE_T2.jsonl",
+           [dict(nfl[0], y=1.0), dict(nfl[1], y=0.0), dict(nfl[2], y=0.5), dict(nfl[3], y=None)])
+    _write(tmp_path / "exp_output/PREGAME_SHADOW/settled/MLB_MLB_MONEYLINE_T1.jsonl", [dict(mlb[0], y=0.0), dict(mlb[1], y=1.0)])
+    cells = {(c["market_type"], c["band"]): c for c in wd._shadow(NOW)["cells"]}
+    assert cells[("NFL_MONEYLINE", "T2")]["settled_n"] == 3        # the unsettled (y=None) row is not counted
+    assert cells[("MLB_MONEYLINE", "T1")]["settled_n"] == 2
+    assert cells[("NFL_MONEYLINE", "T2")]["rows_total"] == 4        # settled copies still never counted as rows
