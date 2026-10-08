@@ -29,7 +29,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              kickoff_for: Callable[[str], Optional[tuple[datetime, str]]],
              ledger_dir: Path, run_id: str, now_utc: datetime, code_sha: str,
              raw_filter: Optional[Callable[[dict], bool]] = None,
-             only_bands: Optional[set] = None) -> dict:
+             only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -77,7 +77,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "model_sha256": fc.model_sha256, "feature_row_sha256": fc.feature_row_sha256,
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
-            led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band))
+            led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
             if led.append(row):
                 written[f"{mt_name}:{band}"] += 1
             else:

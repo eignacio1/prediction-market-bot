@@ -18,7 +18,9 @@ ROW_FIELDS = (
 
 
 class CellLedger:
-    def __init__(self, base_dir: Path, sport: str, market_type: str, band: str) -> None:
+    def __init__(self, base_dir: Path, sport: str, market_type: str, band: str,
+                 extra: dict | None = None) -> None:
+        self.extra = dict(extra or {})      # constant labels appended to every row (e.g. season_phase)
         self.path = Path(base_dir) / f"{sport}_{market_type}_{band}.jsonl"
         self._keys: set[tuple[str, str]] | None = None
 
@@ -42,6 +44,6 @@ class CellLedger:
             return False
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a") as fh:
-            fh.write(json.dumps({f: row[f] for f in ROW_FIELDS}, sort_keys=False) + "\n")
+            fh.write(json.dumps({**{f: row[f] for f in ROW_FIELDS}, **self.extra}, sort_keys=False) + "\n")
         keys.add(k)
         return True

@@ -27,6 +27,8 @@ from prediction_market_bot.pregame_shadow.runner import run_once  # noqa: E402
 
 CELLS = [("NBA_MONEYLINE", "KXNBAGAME"), ("NBA_SPREAD", "KXNBASPREAD"),
          ("NBA_GAME_TOTAL", "KXNBATOTAL"), ("NBA_TEAM_TOTAL", "KXNBATEAMTOTAL")]
+PRESEASON_DIR = "PREGAME_SHADOW_PRESEASON"
+PRESEASON_LABEL = {"season_phase": "preseason", "excluded_from_judged_n": True}
 SEASONS = (2026, 2027)       # ESPN season year = the year the season ends; 2026 = 2025-26 history, 2027 = 2026-27
 
 
@@ -71,6 +73,9 @@ def main(argv=None) -> int:
     ap.add_argument("--ledger-dir", default=str(ROOT / "exp_output" / "PREGAME_SHADOW"))
     ap.add_argument("--model", default=str(ROOT / "models" / "nba_pregame_v1.json"))
     ap.add_argument("--bands", default="", help="comma list of T1,T2,T3 (default: all in-window)")
+    ap.add_argument("--preseason", action="store_true",
+                    help="evaluate PRESEASON games into exp_output/PREGAME_SHADOW_PRESEASON (pipeline smoke test; "
+                         "rows labelled excluded_from_judged_n; never mixed into the judged ledgers)")
     ap.add_argument("--now", help="ISO UTC override (testing only)")
     ap.add_argument("--dry-run", action="store_true", help="evaluate into a throwaway ledger dir")
     a = ap.parse_args(argv)
@@ -81,9 +86,16 @@ def main(argv=None) -> int:
     if not games:
         raise SystemExit(f"no NBA games under {a.raw} -- run scripts/nba_backfill.py first")
     model = NBAPregameModel.load(a.model)           # sha256 verified on load
-    index = NBAScheduleIndex(games)
+    index = NBAScheduleIndex(games, season_types=(1,) if a.preseason else (2,))
     fc = NBAForecaster(model, NBAFeatureBuilder(games), index)
     ledger_dir = Path(a.ledger_dir)
+    extra = None
+    if a.preseason:
+        if a.ledger_dir == str(ROOT / "exp_output" / "PREGAME_SHADOW"):
+            ledger_dir = ROOT / "exp_output" / PRESEASON_DIR
+        if ledger_dir.name == "PREGAME_SHADOW":
+            raise SystemExit("--preseason must not write into the judged PREGAME_SHADOW ledgers")
+        extra = dict(PRESEASON_LABEL)
     if a.dry_run:
         import tempfile
         ledger_dir = Path(tempfile.mkdtemp(prefix="nba_pregame_dry_"))
@@ -92,7 +104,8 @@ def main(argv=None) -> int:
     res = run_once(forecaster=fc, cells=CELLS, list_markets=ad.list_series_markets_raw,
                    kickoff_for=index.kickoff_for_event, ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
-                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None))
+                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None),
+                   ledger_extra=extra)
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", dict(res["written"]))
     print("skipped:", dict(res["skipped"]))
