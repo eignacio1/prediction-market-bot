@@ -17,6 +17,66 @@
 
 ---
 
+## 🌲 RUNNING SITREP — the forest (this strategic window: Waves 52–60, 2026-10-03 → 10-08)
+
+*Updated by the strategic window at every wave close. Last update: Wave 59 closed / Wave 60 issued, 2026-10-08 ~02:10 UTC.*
+
+**Bottom line.** The plumbing is now mostly sound: code lands at any hour without killing live services, MLB data no
+longer depends on a blocked source, every resolved bet books from Kalshi's own settlement, and four sports log shadow
+forecasts every game day. **What we do not have yet is a single verdict on edge.** The only ACTIVE cell (T4M-PROJ,
+MLB player hits) is losing ~5¢ per bet over 1,898 bets, and 99.7% of its positions were never confirmed filled — 60.1
+finds out how much of that sample is real. The first honest edge verdict anywhere is **NFL, ~2026-11-02**.
+
+### Scoreboard
+
+| Measure | Start of window (10-03) | Now (10-08) |
+|---|---|---|
+| Real capital | $0 | $0 — demo only, Kelly 0 everywhere |
+| Cells live (of 92) | ACTIVE 1 · SHADOW 16 on a branch, unmerged | ACTIVE 1 · SHADOW 24+ on main; MLB postseason arms logging; NBA armed for 10-20 |
+| Sports logging forecasts | NFL, NHL (partly) | NFL, NHL, MLB postseason, NBA preseason (labelled, excluded) |
+| Cells at a scored look | 0 | 0 — engine sealed until each cell's pre-registered n |
+| Paper books truthful? | 26 MLB positions stuck unresolved; NFL book orphaned | All MLB booked from Kalshi (ADR-0071); NFL book archived; 1,229/1,229 settlements match Kalshi |
+| Open gaps | 176, many stale | 136, every one re-verified with dated evidence |
+| VPS stability | Nightly out-of-memory crashes | Crons staggered + swap; clean since 10-05 |
+
+### What this window built, by theme
+
+| Theme | Waves | Outcome |
+|---|---|---|
+| **Landing + deploy safety** | 52–55 | Four stuck PRs landed (#158–#161). Deploys restart t4-mlb only when its code changed and no game is live (GG-432). |
+| **MLB data off statsapi** | 52–58 | statsapi blocks the VPS → schedule, cache and features now build on GitHub Actions. The 22:30 cron that degraded features is off. Player-hits back (GG-489). |
+| **Books + settlement** | 53–55, 57–59 | Kalshi settlement = paper resolution source (ADR-0071); 26 stuck positions booked (drawdown T1 12.4%, T4 13.5%, under the 20% kill); cancelled games excluded from G6. |
+| **Shadow arms** | 53–59 | NFL 12 cells, NHL 9, MLB postseason 12, NBA built end to end (EXP-038, frozen model, crons, preseason ledger). |
+| **Calibration engine** | 58–60 | One engine, every cell under its own pre-registration, sealed below n; release frozen and tamper-evident; projections from real schedules. NBA joins in 60.2. |
+| **Dashboards** | 52, 56–60 | Live Terminal (`/`) shows what the bot places and evaluates, live. Visual Dashboard (`/project`) = health strip, books, evidence clocks, Calibration section. |
+| **Governance backlog** | 58–60 | Gap log 176 → 136, re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted. |
+
+### Against the north star — does the model know something the market doesn't?
+
+| Arm | Status | When a verdict is possible |
+|---|---|---|
+| **T4M-PROJ** (MLB player hits, ACTIVE) | -0.048/bet, n=1,898; fills unconfirmed (GG-300); latency thesis not supported (T-569) | 60.1 says what the sample can claim. Band placement (GG-320) is your call. |
+| **NFL** game markets (12 SHADOW) | Logging; 15 settled games per cell | First look **~11-02** (60 games) — rests on one week of coverage, may slip |
+| **NHL** (9 SHADOW) | Logging; T3 now judgeable with the projected goalie (60.2) | PRELIMINARY all season; base-rate check at 500 games; full verdict 2027-28 |
+| **NBA** (built) | Opening night 10-20 | Cells flip ~10-21; look date once rows exist |
+| **MLB** game markets (postseason) | Logging, never scored | 2027 regular season |
+
+### Calendar ahead
+
+| Date | What happens |
+|---|---|
+| Mon 10-12 14:20 UTC | Weekly rebuild of the T4 resolved ledger — first run under 60.1's overwrite guard |
+| 10-20 / 10-21 | NBA opening night; NBA cells flip to SHADOW once valid rows exist |
+| ~11-02 | NFL first scored look — the project's first edge verdict |
+| World Series end | MLB winter: stand T1/T4 down or idle (your call) |
+
+### Your open calls (none blocks Wave 60)
+T4M-PROJ band placement (GG-320) · a P&L gate that can actually be reached (GG-285) · approval path for self-modifying
+scripts (GG-289) · kill switch to count unresolved stake (GG-441) · MLB winter posture · the unexplained SSH poller
+(GG-347) · T1 MLB postseason flag · detached read-only VPS jobs · EXP-034 (park recommended).
+
+---
+
 ## ⬛ NOW — Wave 60 · three MEDIUM terminal blocks · run any time, all three in parallel
 
 Operator 2026-10-07 18:58 PT: Wave 59 blocks ran too long (terminals quoted 3h+ ETAs). Wave 60 blocks are MEDIUM:
