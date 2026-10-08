@@ -1866,3 +1866,16 @@ Docs-only.
 - Kalshi settlement cross-check (GG-487): 1,229/1,229 NFL+MLB settled markets agree, 0 void. No outcome changed.
 - Engine choices made without a pre-registered basis, now gaps for operator ratification: ordering key (GG-510), NHL seed 20261002 (GG-511). Also GG-512..GG-515. Docs-only registration.
 - Deploy: VPS at 0aeb81c; t4-mlb not restarted (untouched by these PRs).
+
+## 2026-10-08 ~02:05 UTC (2026-10-07 18:58 PT) — Block size: MEDIUM (60/90-minute rule); Wave 59 closed, Wave 60 issued
+
+**Decision (operator):** "You're making some of these tasks far too long. The terminals are coming back stating ETAs upwards
+of 3 hours which is ludicrous from any one terminal to take on." From Wave 60, each terminal block is two parts with a
+~60-minute target and a 90-minute hard ceiling; a block estimating more than 90 minutes does Part A only and hands Part B on.
+Amends the 2026-10-06 LARGE-block directive; three blocks per wave stands.
+**Also (operator, 2026-10-07 17:31 PT):** this strategic window runs through Wave 60; handoff only after Wave 60 is verified.
+The carry-forward and paste-in pushed at 94853bf are premature and will be rewritten at that handoff.
+**Wave 59 verified on GitHub at 7036e11:** 59.1 / 59.2 / 59.3 DONE (results docs W59_1/W59_2/W59_3). Wave 60 issued:
+60.1 cohort fill truth (GG-300) + resolved-ledger overwrite guard (GG-228); 60.2 NBA in the calibration engine (GG-513) +
+pre-registration addenda, applied only on an operator authorization line; 60.3 dashboard truth gaps + gap-log hygiene.
+**Routed to operator:** pre-registration addenda (recommend yes); NHL judged n unreachable this season, GG-514 (recommend keep).

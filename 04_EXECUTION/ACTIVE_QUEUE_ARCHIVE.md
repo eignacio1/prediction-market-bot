@@ -9,6 +9,236 @@ carrying four closed waves' fences (29.1/29.2/29.3/30.1) alongside live ones —
 it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
+## Wave 59 prompts — archived 2026-10-08 02:05 UTC. 59.1 DONE (OPEN 176->131 re-verified, 136 at close; GG-498 RESOLVED #183). 59.2 DONE (#178/#181/#182: schedule projection, frozen release manifests, GG-499 schema, 1,229/1,229 Kalshi settlements agree; GG-510..515). 59.3 DONE (#179/#180: NBA preseason ledger + season state; NHL goalie verdict (b); ADR-0070 ACCEPTED, GG-400 resolved). Verbatim:
+
+### 59.1 — The backlog
+
+```
+COMMON RULES - WAVE 59 (read first; they bind this block)
+- Size: this is a LARGE block (operator 2026-10-06: "the terminals can handle plenty of weight"). Work the
+  deliverables in order. After EACH one: push it, and update this block's row in ACTIVE_QUEUE.md (Status + one line)
+  with a docs-only push. If you must stop (context ~60%, or a blocker), stop at a pushed boundary and write the
+  handoff naming the next undone deliverable. Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY its own PRs. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- Crontab: all three Wave 59 blocks may add lines. Re-read the crontab immediately before writing, back it up, add
+  ONLY your own lines inside your own marked BEGIN/END block, never reinstall or edit another block, and diff after:
+  every pre-existing line must be byte-identical. Mirror your block into deploy/.
+- The shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md) are edited by all three blocks: fetch and
+  rebase right before each push; edit only your own entries/rows.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W59_<n>.md
+  (docs-only push to main).
+
+
+WAVE 59.1 - THE BACKLOG, FIRST AND ONLY: THE GAP LOG GETS TRUE. Repo: eignacio1/prediction-market-bot.
+
+WHY
+176 gaps are OPEN and the number only grows: triage has been the last part of a block and got cut, wave after wave.
+This block does nothing else. It also matters for calibration: the 58.3 engine treats an unreadable or open gap as
+open, so a stale log can keep cells sealed that should not be. 58.1 left unverified leads in
+05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W58_1_triage_leads/ (about 20 "fixed", 1 duplicate GG-473 -> GG-430) - they
+are LEADS, produced without verification.
+
+RULES FOR EVERY GAP
+- Classify with evidence you produced in this session (code at origin/main, tests, GitHub, VPS read-only, logs):
+  (i) FIXED - verified now; RESOLVED with one evidence line (commit/PR + how you checked it).
+  (ii) DUPLICATE - CLOSED-AS-DUPLICATE pointing at the surviving gap; merge any unique detail into it.
+  (iii) SUPERSEDED - name the ADR/decision/later gap that made it moot.
+  (iv) STILL OPEN - keep it; add a dated one-line "current state" and, where obvious, the smallest next action.
+- Never close on a document's say-so. "A handoff says it was fixed" is a lead, not evidence.
+- Follow the log's own format and rules: one structured Status line per entry; RESOLVED / CLOSED entries move
+  VERBATIM to GOVERNANCE_GAP_LOG_ARCHIVE.md; scripts/lib/gg_id_uniqueness_check.py and the header/status parity check
+  must pass after every batch.
+- Register GG-495..497 only if the defect is real (58.2 reserved them for: the Live Terminal `_shadow` settled count
+  reads `outcome` while settled rows carry `y`); 59.2 fixes it - you only register or release the numbers.
+
+PART A - The 21 leads from W58_1_triage_leads: verify each; classify. Push.
+PART B - All remaining OPEN gaps, oldest first, in batches of ~25: classify; one commit per batch; push each batch;
+         update this block's queue row with "OPEN: <before> -> <now>" after each batch.
+PART C - GG-498 (deploy/cron.conf does not mirror the live crontab): make deploy/ match the live crontab exactly
+         (VPS read-only `crontab -l` as the source of truth; no crontab edits), PR, CI green, merge; RESOLVED.
+PART D - Report in 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_1_backlog_results.md: OPEN before -> after; counts per
+         class; the 15 most important still-open gaps, one line each, ranked by what they block (scores, data, ops);
+         any gap that needs an operator decision, one line each. Docs-only push.
+
+If you run out of room, stop at a pushed batch boundary: the handoff names the next gap id to start from.
+
+END OF BLOCK 59.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 59.2 — Calibration correctness before the first look
+
+```
+COMMON RULES - WAVE 59 (read first; they bind this block)
+- Size: this is a LARGE block (operator 2026-10-06: "the terminals can handle plenty of weight"). Work the
+  deliverables in order. After EACH one: push it, and update this block's row in ACTIVE_QUEUE.md (Status + one line)
+  with a docs-only push. If you must stop (context ~60%, or a blocker), stop at a pushed boundary and write the
+  handoff naming the next undone deliverable. Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY its own PRs. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- Crontab: all three Wave 59 blocks may add lines. Re-read the crontab immediately before writing, back it up, add
+  ONLY your own lines inside your own marked BEGIN/END block, never reinstall or edit another block, and diff after:
+  every pre-existing line must be byte-identical. Mirror your block into deploy/.
+- The shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md) are edited by all three blocks: fetch and
+  rebase right before each push; edit only your own entries/rows.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W59_<n>.md
+  (docs-only push to main).
+
+
+WAVE 59.2 - CALIBRATION CORRECTNESS BEFORE THE FIRST LOOK: PROJECTION, RELEASE MECHANICS, SETTLEMENT TRUTH.
+Repo: eignacio1/prediction-market-bot.
+
+WHY
+The 58.3 calibration engine is live (33 cells tracked, 0 at a look). Before the first cell crosses its judged n, the
+machinery must be right, because a wrong release or a wrong outcome cannot be un-seen. Known problems: (1) the NFL
+first-look projection reads 2026-10-14, but NFL cells sit at 15 of 60 settled games after one NFL week - about one
+slate per week implies ~3 more weeks; (2) settled-row schemas differ by sport (GG-499: NHL lacks game_key/p_clim, MLB
+lacks p_clim, MLB T1 has no settled file); (3) the Live Terminal's shadow panel counts settled rows from `outcome`
+while settled rows carry `y` (58.2 note; 59.1 registers it); (4) MLB shadow outcomes come from the games cache's final
+scores, not Kalshi's settlement (GG-487 asks for a cross-check). The pre-registration rules are unchanged: NO score is
+read for a cell below its judged n, by you or by anything you build.
+
+PART A - Projection: rebuild the first-look projection from each sport's real schedule (games per week remaining for
+  the teams/markets in the cell, not a linear rate from the last day). Tests on fixtures. Report each cell's corrected
+  date. Visual Dashboard shows the corrected dates.
+PART B - Release mechanics: per EXP-037, the first look scores exactly the earliest 60 settled games per cell (check
+  the pre-registration's exact wording - first games by date, game-cluster CI, which bootstrap seed). Prove on
+  fixtures: at 59 games the cell emits nothing; at 60 it emits exactly the pre-registered verdict fields computed on
+  those 60 games; game 61 does not change the first look. Produce a full first-look REPORT on synthetic data in the
+  exact format the real one will have (per cell: n, delta-Brier vs market and vs climatology with CI, verdict
+  RULED_OUT / SHADOW-continue / pass per the pre-registration). This is the template the real first look will fill.
+PART C - Settled-row truth: one schema for settled rows across NFL / NHL / MLB (GG-499) without rewriting any raw
+  ledger - normalise at read time or in the settle step for new rows, and back-fill only derived settled/ copies from
+  the raw ledgers (GG-228: provenance first). Fix the Live Terminal settled count (`outcome` vs `y`). Tests.
+PART D - Settlement cross-check (GG-487): for every settled MLB and NFL shadow row so far, compare the outcome the
+  settle step assigned (from final scores) with Kalshi's own settlement for that market. Report agreements,
+  disagreements, cancelled/void markets. Any disagreement: register it and stop - do not change outcomes here.
+PART E - PRs as you go, CI green, merged (record each deploy's t4-mlb decision). Results doc
+  05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md, updated per part.
+
+DESIGN BAR (both surfaces; the operator gave full creative latitude and wants a finished product, not a mockup)
+- Every number states where it came from and how old it is. Stale data looks stale (dimmed + age), never live.
+  A panel with no data says "no data" - it never shows zeros or placeholders as if real.
+- Hierarchy first: the one-glance answer at the top ("is the bot healthy, what is it doing right now"), detail below.
+- Colour carries meaning only: green = healthy/positive edge, amber = stale/warning, red = breach/failure, neutral
+  otherwise. No decorative colour. Tabular (monospace) numerals so columns line up.
+- Dense but calm: consistent spacing, aligned columns, short labels, no walls of text, nothing that moves unless data
+  moved. Readable at laptop size; usable on a phone.
+- Truthful labels over pretty ones: SHADOW is never shown as live trading; $0 stake is said plainly.
+- Verify in a real browser (scripts/browser_check_dashboard.py exists): before/after screenshots in the results doc.
+
+END OF BLOCK 59.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 59.3 — NBA readiness + NHL goalie verdict + ADR-0070
+
+```
+COMMON RULES - WAVE 59 (read first; they bind this block)
+- Size: this is a LARGE block (operator 2026-10-06: "the terminals can handle plenty of weight"). Work the
+  deliverables in order. After EACH one: push it, and update this block's row in ACTIVE_QUEUE.md (Status + one line)
+  with a docs-only push. If you must stop (context ~60%, or a blocker), stop at a pushed boundary and write the
+  handoff naming the next undone deliverable. Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the deploy pulls code and skips the restart, logged in the job summary. Each block
+  merges ONLY its own PRs. Always read the Deploy job summary after a merge and record the t4-mlb decision.
+- Operator decisions in force: DECISION_LOG 2026-10-05 (both entries) and ADR-0071. Standing authorizations: shadow-evaluation
+  cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart (2026-10-02).
+- Start: CLAUDE.md session-start protocol, kept brief. Isolated worktree: scripts/new_session_worktree.sh <slug>.
+  Claim with scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
+- Before ANY push to main: git diff --name-only origin/main..HEAD must list only the paths you intend.
+- If a PR shows mergeable_state dirty, it is almost always SESSION_CLAIMS.md / .last_session_checkpoint (union files
+  GitHub cannot merge): merge origin/main into the PR branch locally, push, wait for CI green, then merge.
+- Crontab: all three Wave 59 blocks may add lines. Re-read the crontab immediately before writing, back it up, add
+  ONLY your own lines inside your own marked BEGIN/END block, never reinstall or edit another block, and diff after:
+  every pre-existing line must be byte-identical. Mirror your block into deploy/.
+- The shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md) are edited by all three blocks: fetch and
+  rebase right before each push; edit only your own entries/rows.
+- No order, position, fill, stake or kelly_fraction change. Demo only. No live ledger writes this wave.
+  Note: kelly_fraction is 0 on every operating band, but T4M-PROJ places FLAT $1.00 paper measurement stakes by
+  design (ADR-0050). Those are real paper positions, not a defect.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- Every premise below is a claim to verify.
+- Report back in this shape: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result |
+  anything the operator must decide. Write the same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W59_<n>.md
+  (docs-only push to main).
+
+
+WAVE 59.3 - NBA OPENING-NIGHT READINESS, NHL GOALIE VERDICT, ADR-0070 WIDENED AND ACCEPTED. Repo: eignacio1/prediction-market-bot.
+
+WHY
+NBA's regular season opens 2026-10-20; 58.2 built and armed the arm (EXP-038, frozen nba_pregame_v1), but nothing yet
+proves it will log on opening night, and the Live Terminal has no NBA season state. NHL: every NHL T3 score is blocked
+on GG-401 (confirmed starting goalie); 58.1 started a scheduled probe writing to branch data/nhl-goalie-probe until
+2026-10-14. Operator, 2026-10-07 ("proceed in full", DECISION_LOG): widen ADR-0070 to the NHL and NBA shadow models and
+accept it; NBA preseason rows stay excluded from judged n.
+
+PART A - NBA readiness (no waiting): Kalshi - are opening-night (10-20) and first-week NBA game markets listed yet?
+  Dry-run the NBA runner against them on the VPS (exact cron command, dry-run or a scratch ledger dir - not the live
+  ledger) and show what each band would log. Confirm every NBA cron line fires at a time that catches T1/T2/T3 for a
+  typical 7-10 PM ET slate. Confirm preseason rows are being banked and labelled "excluded from judged n". Add NBA to
+  the Live Terminal's season state (`_season_state` in web_dashboard.py). Write the exact one-line check a later block
+  runs on 10-21 to flip the NBA cells to SHADOW (promote_cell_status, superseding_reference="EXP-038") once valid
+  rows exist - do not flip them now.
+PART B - NHL goalie verdict from whatever the probe has collected (read data/nhl-goalie-probe). If >= 2 slates of
+  readings at >= 15 minutes before puck drop: give the verdict (a) API flags the starter in time in k of n games /
+  (b) it does not / (c) cannot tell, per the W52_D results doc. If (a): implement the StarterProvider for the T3 run
+  exactly as EXP-036 promised (that is compliance with the pre-registration, not a parameter change), tests, PR, merge;
+  GG-401 RESOLVED only when the running T3 job uses it. If (b): write the exact pre-registration amendment for the
+  operator and stop. If too few slates: interim note and the date the verdict becomes possible. Read no NHL score.
+PART C - ADR-0070: widen its scope to the EXP-036 NHL and EXP-038 NBA shadow models (same deviation from ADR-0004;
+  shadow only - authorizes no order, position, sizing or CellStatus beyond SHADOW), then mark it ACCEPTED citing the
+  operator's 2026-10-07 decision. ADRs are immutable once accepted - widen BEFORE accepting, in one commit sequence.
+  GG-400 -> RESOLVED with the commit.
+PART D - PRs as you go, CI green, merged (record each deploy's t4-mlb decision). Results doc
+  05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_3_nba_nhl_readiness_results.md, updated per part.
+STATUS (2026-10-08, W59.3): PARTS A, B, C, D DONE and merged (#179, #180; t4-mlb decision not_needed both). Part B verdict (b); amendment awaits operator. Outstanding: before/after browser screenshots of the NBA Live Terminal row (needs post-deploy browser_check_dashboard.py run); 10-21 flip via scripts/w59_3_nba_flip_check.py.
+
+DESIGN BAR (both surfaces; the operator gave full creative latitude and wants a finished product, not a mockup)
+- Every number states where it came from and how old it is. Stale data looks stale (dimmed + age), never live.
+  A panel with no data says "no data" - it never shows zeros or placeholders as if real.
+- Hierarchy first: the one-glance answer at the top ("is the bot healthy, what is it doing right now"), detail below.
+- Colour carries meaning only: green = healthy/positive edge, amber = stale/warning, red = breach/failure, neutral
+  otherwise. No decorative colour. Tabular (monospace) numerals so columns line up.
+- Dense but calm: consistent spacing, aligned columns, short labels, no walls of text, nothing that moves unless data
+  moved. Readable at laptop size; usable on a phone.
+- Truthful labels over pretty ones: SHADOW is never shown as live trading; $0 stake is said plainly.
+- Verify in a real browser (scripts/browser_check_dashboard.py exists): before/after screenshots in the results doc.
+
+END OF BLOCK 59.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
 ## Wave 58 prompts — archived 2026-10-07 03:00 UTC. 58.1 PARTIAL (A-C done; D gap triage not done). 58.2 PARTIAL (NBA arm built, deployed, cron armed; rows from ~10-19). 58.3 DONE (calibration engine live). Verbatim:
 
 ### 58.1 — Every arm logging, every book truthful, gap log shrinking
