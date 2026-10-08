@@ -1176,6 +1176,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-161 — 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" claim is contradicted by direct evidence; retries genuinely happen daily but a cron-window-correlated 406 failure mode was never surfaced
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** SSH-verify daily retry/406 pattern against cron windows.
 **Actively-Broken:** YES
 
 <details>
@@ -1204,6 +1206,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** claim_session.sh reserves T-/GG-/ADR- ranges at claim time and check_id_collision (GG-236) runs on retry, but mid-session GG numbers still have no reservation; W58.2 hit this again (GG-495/497 collision). **Next:** Reserve GG numbers atomically at registration.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1227,6 +1231,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-164 — T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock "today" at write time, not the game's actual date; `(player_id, game_date, threshold)` is not a valid join key without correction, and doubleheaders break it further
 
 **Status:** OPEN · **Severity:** MEDIUM · **Assertion:** PENDING(T-432, assertion A) — RESOLVED is not eligible until this lands (ADR-0052); this entry's original "Why it survived" field asserted an unverified negative ("isn't used as a resolution join key anywhere") that GG-166 directly contradicted — the motivating case for ADR-0052
+
+**Current state (2026-10-08, W59.1):** Assertion A still PENDING per entry; related repair work tracked in GG-166/GG-170/GG-185. **Next:** Land T-432 assertion A.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1254,6 +1260,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Severity backfill still partial; this block set no new severities. **Next:** Backfill UNSPECIFIED severities in a dedicated pass.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1278,6 +1286,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-166 — `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4M-PROJ positions against the wrong day's box score for ~44% of the epoch-12 clean cohort — corrupting live paper-trading WIN/LOSS/pnl, not just a future-risk join key
 
 **Status:** OPEN — code fixed, ledger `game_date` corrected, GG-170 authority settled and 1,127/1,220 (92.4%) of the stale outcome/pnl population re-derived (T-437, 2026-08-11/12); 93 positions still outstanding pending outcome-store coverage; T4M-PROJ power-calc baseline now flips TARGET MET → NOT MET post-correction · **Severity:** CRITICAL · **Assertion:** PENDING(T-432, assertion A) — shared with GG-164 (same defect, write-site vs. read-site); B2's per-resolution `game_date_ticker_mismatch` refusal is a point check at resolution time, not a standing suite-level invariant, so this remains PENDING not LANDED (ADR-0052); also the concrete G6 precondition example (ADR-0052 §2.3) — Kelly sizing and the drawdown kill switch both read this same ledger
+
+**Current state (2026-10-08, W59.1):** Entry's own status: code fixed, 93 positions outstanding pending outcome-store coverage; not re-derived this session. **Next:** Finish outcome-store coverage for remaining 93.
 
 **T-429 (2026-08-07) update — full blast radius measured, code hardened both sides, `game_date` field corrected in place; `actual_hits`/`outcome`/`pnl` re-derivation for closed positions explicitly NOT done this session:**
 
@@ -1384,6 +1394,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** deploy.yml line 153 still uses --untracked-files=no, so the untracked-collision blind spot persists. **Next:** Add an untracked-collision check before git pull --ff-only.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1408,6 +1420,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add budget-exhausted exemption to the Step 4 probe.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1431,6 +1445,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-170 — MLB Stats API `gameLog` date-label is transiently unstable in near-real-time; a delayed/retried resolution query can bind to `game_date+1`'s true hit total instead of `game_date`'s, root-causing the second B5 disagreement source GG-166 left unexplained
 
 **Status:** OPEN · **Severity:** CRITICAL
+
+**Current state (2026-10-08, W59.1):** CRITICAL external-source instability; no fix evidence this session. **Next:** Pin resolution query to dated gameLog and cross-check totals.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1458,6 +1474,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add band-activation boxes to MARKET_EXPANSION_ACTION_PLAN.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1481,6 +1499,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-174 — `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against Polymarket's real tag taxonomy, and silently returns an empty market set for any other value
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** venue_adapter.py:350 still hardcodes "tag": "nba" (KI-019); path dormant until Polymarket KYC. **Next:** Confirm Polymarket tag taxonomy before activation.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1506,6 +1526,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** session_end_prep.sh:136 still does an exact-string match on the claim timestamp (grep -F). **Next:** Match on claim-row branch name instead of timestamp.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1529,6 +1551,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-182 — Session-end token/time cost is unaddressed by Hard Rule 8's 60% trigger — second remediation attempt (T-434 fixed WHEN close-out starts, not WHAT IT COSTS); 2026-08-14 session-end consumed 53% context / ran 52m41s
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Measure the next session-end against the budget in session-end.md.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1554,6 +1578,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-183 — Per-cell kill-switch state (ADR-0053 §2.3/§6.3 item 4) has a store and a resolution helper but is not wired into C4/C7's live kill-switch check
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Deliberate scoped deferral; no wiring of CellKillSwitchState into C4/C7 found. **Next:** Wire when a second cell goes live.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1660,6 +1686,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** assert_ledger_invariants.py:109 still has only T1 and T4M-PROJ in GROSS_EDGE_VIG_MULTIPLIER; T2 reports NO_FORMULA. **Next:** Add epoch-conditional T2 formula.
+
 <details><summary>Full record ▸</summary>
 
 | Field | Detail |
@@ -1707,6 +1735,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Three residual populations blocking backfill; not re-derived this session. **Next:** Clear the 46 stuck-open positions first.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1730,6 +1760,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-192 — C4 tracks exposure at exactly two granularities (single bet-evaluation, whole portfolio) with nothing in between; a per-game correlation-group cap is a new grouping dimension, not a reuse of existing plumbing
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Per-game correlation-group cap still unbuilt (ADR-0054 s5.1 governs). **Next:** Build per-game exposure granularity in C4.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1755,6 +1787,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Shared main tree still carries untracked files (git status at session start showed several). **Next:** Track, delete or park them explicitly.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1779,6 +1813,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-run the sub-bucket P&L check on repaired cohort.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1802,6 +1838,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-190 — T-471: the step-function onset of GG-185's game_date corruption (0/77 mismatched under commit `cbd09ae`, 532/532 under `687bf9e`) is not explained by any source-code, deploy, or environment difference found between the two commits — root cause NOT found, evidence bounded and next steps specified
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Root cause NOT found per entry; no new evidence this session. **Next:** Run the entry's specified next steps.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1829,6 +1867,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Operator decision on sport attribute, NFL band naming, epoch inheritance.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1849,33 +1889,11 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-200 — `ACTIVE_QUEUE.md` Block G cites `GG-194` as its tracking gap; no `GG-194` exists in the log or its archive
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-200 |
-| Category | Documentation/registry drift — a queue entry references a governance-gap number that was never actually registered. |
-| What was missed | `04_EXECUTION/ACTIVE_QUEUE.md`'s Block G row ("NFL skeleton spike — cells + ticker grammar + one C1 stub, kelly_fraction=0.0, no C3") cites `GG-194` in its tracking column. `grep -n "GG-194"` against `03_DECISIONS/GOVERNANCE_GAP_LOG.md` and `03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md` returns no match in either file — the number was never registered, or was registered and later removed/renumbered without the `ACTIVE_QUEUE.md` reference being updated. |
-| When it should have been caught | Whenever Block G's row was written — a queue row citing a `GG-NNN` should only ever name a number that exists at write time, the same discipline `claim_session.sh`/Step 3's uniqueness check enforce for the reverse direction (a registered gap should have exactly one queue reference, not zero). |
-| Phases it survived | Unknown — not investigated this session (out of scope, Hard Rule 11); at minimum survived to 2026-08-21 without being caught by Step 3's OPEN-count or uniqueness scans, since both scan the gap log's own headers, not inbound references to it from other files. |
-| Why it survived | No governance check cross-references `GG-NNN` citations in `ACTIVE_QUEUE.md`/`TODO_NEXT.md` against the actual registered set in `GOVERNANCE_GAP_LOG.md`/`GOVERNANCE_GAP_LOG_ARCHIVE.md` — Step 3's checks are internal to the gap log file itself. |
-| Impact | Low as currently understood: Block G is a future/blocked queue item ("after E and F"), not in-flight work, so nothing is currently relying on `GG-194` resolving to a real entry. If Block G is picked up before this is resolved, whoever starts it will find no gap to read. |
-| Discovery | T-480 (2026-08-21 session, APR-0032 four-sport amendment) — encountered while cross-checking `ACTIVE_QUEUE.md` for NFL-related content; register-only per Hard Rule 11 (out of scope for T-480's single deliverable), not investigated further. |
-| Resolution | Not resolved. Open question for whoever owns Block G or `ACTIVE_QUEUE.md` hygiene: either register the missing `GG-194` with real content, or correct Block G's citation to the correct number (possibly `GG-198`, APR-0032's own motivating gap, or `GG-200` itself, if Block G's NFL-skeleton-spike is meant to track against this document's decisions — not decided here). |
-| Status | OPEN 2026-08-21 (T-480). |
-
-</details>
-
----
-
 ### GG-202 — T4's 45s poll cadence was tuned against MLB/NBA's near-continuous state progression; NFL's drive-level, dead-period-clustered structure breaks that assumption, and NFL game markets sit at the efficient end of the venue's own gradient
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** POLL_INTERVAL_S is still 45 for MLB (run_t4_mlb_live.py:151); NFL not live. **Next:** Decide NFL cadence before any NFL T4 work.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1937,6 +1955,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** outcome_store files still caught by .gitignore (lines 96/151); no backup path found. **Next:** Add off-box backup or un-ignore the stores.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -1960,6 +1980,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-204 — ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0`
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** ADR-0028 is immutable and T1 is clean_n=0 (kelly_fraction 0.0 per ADR-0048); contradiction stands. Operator decision. **Next:** Superseding ADR for the G6 closure condition.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1985,6 +2007,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Live-capital blocker; operator-side. **Next:** Add an account-geo check to the pre-live checklist.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2008,6 +2032,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-217 — No Kalshi series exists for an NHL team-total market; the four-family coverage target cannot be fully seeded for NHL as it was for NFL
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-measure Kalshi series list when NHL work resumes.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2033,6 +2059,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add a stuck-OPEN-past-window alarm for T1.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2056,6 +2084,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-209 — MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only stop new bets, not exit existing exposure early
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** No force-close wiring found for T1; PaperTrader.exit_position exists but is not called from the T1 pipeline. **Next:** Wire exit_position into kill-switch handling.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2082,6 +2112,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Define the INCONCLUSIVE reroute in the action plan.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2105,6 +2137,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-224 — Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their next flush cycle
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** ADR-0061 (external-repair safety contract) ACCEPTED 2026-09-03; no service-side enforcement verified this session. **Next:** Verify t4-mlb honors the ADR-0061 contract.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2130,6 +2164,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Distinct from GG-224. **Next:** Repair source of record, not derived file.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2153,6 +2189,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-226 — NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** ADR-0062 ACCEPTED 2026-09-03 authorizes 17.1 scaffolding; ExecutionBand members for NFL/NHL not verified. **Next:** Check whether 17.1 added them, then close.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2178,6 +2216,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** tests/test_market_type_registry.py still uses del in finally (lines 293, 307). **Next:** Restore prior value instead of del.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2201,6 +2241,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-234 — Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-closed sessions by the time the assigned session actually started
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Same fix family as GG-162.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2226,6 +2268,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** MEMORY_BANK.md Compass OS Health line is 5158 chars (was 5159); threshold 3000. **Next:** Split the line.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2249,6 +2293,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-233 — Task briefing restated ADR-0056 D2 as adopting the superseded `T4N-` convention, not the actually-signed `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` form
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Correct the briefing text or accept as one-off.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2344,6 +2390,8 @@ When a new governance process failure is discovered:
 ### GG-243 — T-number collision: "T-518" independently claimed by two unrelated tasks (TODO_NEXT.md's EXP-026 entry vs. this session's ADR-0060/0061/0062 re-recording)
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Same fix family as GG-256.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2441,6 +2489,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Strengthen claim_session.sh collision check under simultaneous push.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2464,6 +2514,8 @@ When a new governance process failure is discovered:
 ### GG-257 — `settle_position()`'s boolean win/loss model cannot express Kalshi's $0.50/$0.50 split payout for an NFL moneyline exact tie
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add a split-payout settlement path.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2489,6 +2541,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Rename the NFL experiment IDs.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2513,6 +2567,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Shared main tree still has uncommitted drift (git status at session start showed modified OPERATOR_CONSOLE.md and untracked files). **Next:** Make session start read origin/main, not the working tree.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2536,6 +2592,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-audit pregame-window coverage of the NFL archive.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2555,6 +2613,8 @@ When a new governance process failure is discovered:
 ### GG-262 — Live VPS crontab's `run_mlb_pregame.py` schedule (`20 21 * * *`) diverges from repo `deploy/cron.conf`'s value (`30 16 * * *`); origin/cause not determined
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Drift persists and has moved: live crontab has run_mlb_pregame at 45 18 * * * (read-only crontab -l, 2026-10-08) vs deploy/cron.conf 30 16 * * *. Tracked for fix as GG-498. **Next:** Handled under GG-498 (Part C, not done in this session).
 
 <details>
 <summary>Full record ▸</summary>
@@ -2577,6 +2637,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Local Python is still 3.9.6; TLS limitation not re-tested. **Next:** Use a newer interpreter for integration tests.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2597,6 +2659,8 @@ When a new governance process failure is discovered:
 ### GG-275 — `lib_chain_archive.py` silently discards the prior "Last reviewed" line on every single-entry chain collapse (regression in the GG-176 fix)
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. lib_chain_archive.py still present. **Next:** Preserve prior Last reviewed line on collapse.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2622,6 +2686,8 @@ When a new governance process failure is discovered:
 ### GG-279 — A code fix landing (and even fully migrating on-disk state) in a long-running service's source is not activated in that service's own running memory until it is restarted; neither session-start nor session-close-out protocol checks process-level activation vs. mere code-landing
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add process-activation check to session-close protocol.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2672,6 +2738,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Analysis finding about gate design. **Next:** Operator decision on a practicable gate.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2693,6 +2761,8 @@ When a new governance process failure is discovered:
 ### GG-289 — Auto-mode classifier's Self-Modification block on `.claude/commands/session-end.md` + `scripts/close_session_claim.sh` + `scripts/sweep_stray_branches.sh` is a structural, repeatable barrier — confirmed twice independently — and is the likely actual root cause of T-554's silent closure-row push failure, not mere git divergence
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Permission-classifier barrier is operator-side. **Next:** Operator to decide how self-modifying scripts are approved.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2716,6 +2786,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** sweep_stray_branches.sh now exists on main; 47 remote branches are not merged into origin/main (was 14). **Next:** Run the sweep after triaging unlanded work.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2735,6 +2807,8 @@ When a new governance process failure is discovered:
 ### GG-295 — Live NFL T1 portfolio's `kalshi_threshold` backfill (all 42 positions) has no corresponding commit anywhere in repo history and is misattributed to an unrelated session (T-562)
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** HIGH governance issue on a ledger mutation with no commit; not re-derived. **Next:** Operator review of provenance.
 
 <details>
 <summary>Full record ▸</summary>

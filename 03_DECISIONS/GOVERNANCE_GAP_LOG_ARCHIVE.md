@@ -4727,6 +4727,32 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-200 — `ACTIVE_QUEUE.md` Block G cites `GG-194` as its tracking gap; no `GG-194` exists in the log or its archive
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-200 |
+| Category | Documentation/registry drift — a queue entry references a governance-gap number that was never actually registered. |
+| What was missed | `04_EXECUTION/ACTIVE_QUEUE.md`'s Block G row ("NFL skeleton spike — cells + ticker grammar + one C1 stub, kelly_fraction=0.0, no C3") cites `GG-194` in its tracking column. `grep -n "GG-194"` against `03_DECISIONS/GOVERNANCE_GAP_LOG.md` and `03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md` returns no match in either file — the number was never registered, or was registered and later removed/renumbered without the `ACTIVE_QUEUE.md` reference being updated. |
+| When it should have been caught | Whenever Block G's row was written — a queue row citing a `GG-NNN` should only ever name a number that exists at write time, the same discipline `claim_session.sh`/Step 3's uniqueness check enforce for the reverse direction (a registered gap should have exactly one queue reference, not zero). |
+| Phases it survived | Unknown — not investigated this session (out of scope, Hard Rule 11); at minimum survived to 2026-08-21 without being caught by Step 3's OPEN-count or uniqueness scans, since both scan the gap log's own headers, not inbound references to it from other files. |
+| Why it survived | No governance check cross-references `GG-NNN` citations in `ACTIVE_QUEUE.md`/`TODO_NEXT.md` against the actual registered set in `GOVERNANCE_GAP_LOG.md`/`GOVERNANCE_GAP_LOG_ARCHIVE.md` — Step 3's checks are internal to the gap log file itself. |
+| Impact | Low as currently understood: Block G is a future/blocked queue item ("after E and F"), not in-flight work, so nothing is currently relying on `GG-194` resolving to a real entry. If Block G is picked up before this is resolved, whoever starts it will find no gap to read. |
+| Discovery | T-480 (2026-08-21 session, APR-0032 four-sport amendment) — encountered while cross-checking `ACTIVE_QUEUE.md` for NFL-related content; register-only per Hard Rule 11 (out of scope for T-480's single deliverable), not investigated further. |
+| Resolution | Not resolved. Open question for whoever owns Block G or `ACTIVE_QUEUE.md` hygiene: either register the missing `GG-194` with real content, or correct Block G's citation to the correct number (possibly `GG-198`, APR-0032's own motivating gap, or `GG-200` itself, if Block G's NFL-skeleton-spike is meant to track against this document's decisions — not decided here). |
+| Status | OPEN 2026-08-21 (T-480). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — grep -c GG-194 on ACTIVE_QUEUE.md returns 0 on current main; the dangling citation is gone.
+
+</details>
+
+---
+
 ### GG-400 — NHL pregame model (bivariate Poisson + Platt) departs from ADR-0004 with no ADR of its own
 
 **Status:** RESOLVED (2026-10-08, W59.3) · **Severity:** MEDIUM
