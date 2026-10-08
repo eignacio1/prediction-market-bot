@@ -4094,3 +4094,21 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Cross-references | GG-300, GG-301, GG-004, GG-228 |
 
 </details>
+
+### GG-525 — Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W60.3):** `health()` in `Live Terminal.html` pushed the NBA shadow row only when `freshness.nba_shadow.last_ts` was set. With no `exp_output/PREGAME_SHADOW/NBA_*.jsonl` the API returns `{awaiting: ...}` and the page silently dropped the row, so "awaiting" never reached the screen. **Next:** always render the row; no-ledger reads "no data - awaiting first regular-season rows" in neutral colour.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-525 |
+| Category | Dashboard truthfulness |
+| What was found | Feeds & Health had no NBA row until a ledger existed (found W59.3 Part D, never registered). |
+| Why it matters | Design bar: a panel with no data must say "no data"; absence reads as "not tracked". |
+| Source | W59.3 Part D; registered by W60.3 |
+
+</details>
