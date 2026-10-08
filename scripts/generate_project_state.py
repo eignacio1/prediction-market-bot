@@ -328,6 +328,8 @@ background:var(--card);padding:5px 10px;font-size:12.5px;text-decoration:none;co
 .pill.neu{border-left-color:var(--line)}.pill.nodata{border-left-color:var(--line);color:var(--mut)}.pill .v{font-weight:600}
 .tag{border:1px solid var(--line);border-radius:3px;padding:0 5px;font-size:11px;color:var(--mut)}
 .scroll{overflow-x:auto}
+td,th,code,.asof,.asof a{overflow-wrap:anywhere}
+section{overflow-x:auto}
 .bar{display:inline-block;width:70px;height:7px;background:var(--line);border-radius:3px;vertical-align:middle;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc)}
 @media (max-width:640px){main{padding:10px 10px 40px}section{padding:10px}header{padding:10px}td,th{padding:3px 5px}}"""
@@ -347,8 +349,8 @@ def _lnk(src: str | None, prefix: str) -> str:
         return ""
     first = src.split(" · ")[0].split(" ")[0]
     if prefix is not None and "/" in first and not first.startswith("git"):
-        return f'<a href="{_e(prefix + first)}"><code>{_e(src)}</code></a>'
-    return f"<code>{_e(src)}</code>"
+        return f'<a href="{_e(prefix + first)}" title="{_e(src)}"><code>{_e(src)}</code></a>'
+    return f'<code title="{_e(src)}">{_e(src)}</code>'
 
 
 # ── W56.3 operational sections ──────────────────────────────────────────────

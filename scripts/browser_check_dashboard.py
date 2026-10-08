@@ -29,8 +29,11 @@ def check(page, base, path, out, tag):
         page.wait_for_load_state("load", timeout=60000)
         rec["t_first_data_render_s"] = round(time.time() - t0, 2)
     page.wait_for_timeout(1500)
-    name = ("index" if path == "/" else path.strip("/")) + f".{tag}"
+    name = ("index" if path == "/" else path.strip("/")) + f".{tag}.{page.viewport_size['width']}"
     page.screenshot(path=str(out / f"{name}.png"), full_page=True)
+    rec["viewport_w"] = page.viewport_size["width"]
+    rec["scroll_w"] = page.evaluate("document.documentElement.scrollWidth")
+    rec["no_hscroll"] = rec["scroll_w"] <= rec["viewport_w"]
     rec["text"] = page.inner_text("body")[:20000]
     (out / f"{name}.txt").write_text(rec["text"])
     return rec
@@ -41,16 +44,18 @@ if __name__ == "__main__":
     ap.add_argument("--base", default="http://localhost:8050")
     ap.add_argument("--out", default="exp_output/w48_3_screens")
     ap.add_argument("--tag", default="before")
+    ap.add_argument("--widths", default="1600", help="comma-separated viewport widths, e.g. 1500,390")
     a = ap.parse_args()
     out = pathlib.Path(a.out); out.mkdir(parents=True, exist_ok=True)
     res = []
     with sync_playwright() as p:
         b = p.chromium.launch(executable_path=os.environ.get("PW_CHROMIUM") or None)
-        for path in ("/", "/project"):
-            ctx = b.new_context(viewport={"width": 1600, "height": 1000})
-            res.append(check(ctx.new_page(), a.base, path, out, a.tag))
-            ctx.close()
+        for w in [int(x) for x in a.widths.split(",")]:
+            for path in ("/", "/project"):
+                ctx = b.new_context(viewport={"width": w, "height": 1000})
+                res.append(check(ctx.new_page(), a.base, path, out, a.tag))
+                ctx.close()
         b.close()
     (out / f"report.{a.tag}.json").write_text(json.dumps(res, indent=1))
     for r in res:
-        print(r["path"], {k: v for k, v in r.items() if k != "text"})
+        print(r["path"], r["viewport_w"], {k: v for k, v in r.items() if k != "text"})
