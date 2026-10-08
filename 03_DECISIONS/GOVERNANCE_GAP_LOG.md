@@ -2031,7 +2031,9 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-228 — Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to the derived artifact, not its source of record (distinct from GG-224/ADR-0061's live-service in-memory-flush hazard)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.1):** Guard merged (PR #185, `42754c2`) and on the VPS (`git rev-parse` d58623b9, ancestor confirmed): a rebuild that would change or drop an existing row is written beside the ledger as `.rebuild_<UTC>.jsonl` with a WARNING, exit 0; append-only growth proceeds. Test-verified only; the first real exercise is the Monday 2026-10-12 14:20 UTC run. t4-mlb restart: not_needed. Entry not yet moved to the archive (sweep).
 
 **Current state (2026-10-08, W59.1):** Hazard confirmed live: deploy/cron.conf:315 still wholesale-rebuilds logs/t4_mlb_resolved_ledger.jsonl every Monday 14:20 UTC via scripts/build_t4_resolved_ledger.py from paper_portfolio_mlb_t4.json closed_positions; no external-repair-safety guard exists. **Integrity note:** the live body of this entry had been overwritten by a duplicate of GG-226's body (pre-dates W59.1; present at 94853bf); original body restored verbatim from f9891f4. **Next:** Repair the source of record (closed_positions), not the derived file; consider a header warning in the builder.
 

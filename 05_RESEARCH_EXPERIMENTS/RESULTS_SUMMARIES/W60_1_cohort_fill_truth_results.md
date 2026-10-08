@@ -38,4 +38,8 @@ The 731 T-571 NOT_RETRIEVABLE rows resolve as 730 NOT_FILLED + 1 FILLED. The T-5
 Caveats. The fills-absence inference assumes the fills endpoint is complete for this account. The evidence is full pagination, unique ids, 103/107 order-id agreement and continuous monthly coverage. It is not proof. Filled rows are not a random subset: fills may depend on price or liquidity, so -0.40/bet on n=107 may not describe what the paper rows would have earned. P&L here is the ledger's recorded `pnl`; I did not recompute it from fill prices.
 
 ## Part B — GG-228 guard
-(pending)
+`scripts/build_t4_resolved_ledger.py` now builds the rebuild in memory, writes it to a temp file, and diffs it row-by-row (by `position_id`) against the existing `logs/t4_mlb_resolved_ledger.jsonl`. Added rows: normal atomic replace. Any changed or removed row, or an unreadable existing file: the live file is untouched, the rebuild lands beside it as `t4_mlb_resolved_ledger.rebuild_<UTC>.jsonl`, a `GG-228 GUARD` WARNING names the changed/removed counts, exit 0. Tests (`tests/test_build_t4_resolved_ledger_guard.py`, 5): identical, append-only, changed-row, removed-row, main() exits 0. 146 related tests pass; CI green.
+
+- PR #185 merged as `42754c2`. Deploy summary: **t4-mlb restart decision: not_needed** (the builder is not in t4-mlb's import closure). t4-mlb stayed active.
+- VPS: `git rev-parse` = `d58623b9`; `42754c2` is an ancestor, and `guarded_write` is present in the VPS copy of the builder.
+- **The next Monday run (2026-10-12 14:20 UTC) is the first real exercise of the guard.** Until then it is test-verified only. Operator note: if that run trips the guard, `band_monitor_cron.log` has the WARNING and the sidecar file is next to the ledger. The monitor that runs in the same cron line reads the existing (unchanged) file.
