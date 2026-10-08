@@ -1420,7 +1420,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add budget-exhausted exemption to the Step 4 probe.
+**Current state (2026-10-08, W59.1):** Step 4 probe in CLAUDE.md still has no budget-exhausted exemption (re-read this session). **Next:** Add budget-exhausted exemption to the probe.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1474,7 +1474,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** HIGH
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add band-activation boxes to MARKET_EXPANSION_ACTION_PLAN.
+**Current state (2026-10-08, W59.1):** MARKET_EXPANSION_ACTION_PLAN.md still states at l.14 the band dimension is unowned and the GG-172 ID is only 'reserved'; no band-activation boxes added. **Next:** Add band-activation boxes to Phases 1-4.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1543,33 +1543,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Discovery | T-448 close-out (`/session-end`, 2026-08-14), while working through Step 0's mandatory pending-task list — the summary carried into this window flagged the mismatch as unresolved; directly reading `scripts/session_end_prep.sh` lines 126-148 confirmed the mechanism (branch-name timestamp vs. claim-command timestamp) rather than assuming the claim was actually missing. Confirmed via `grep` that the T-448 claim row exists in `SESSION_CLAIMS.md` (line 236) with the correct T-448/STANDARD content, ruling out an actually-skipped claim. |
 | Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (T-448's declared deliverable is ADR-0053 amendment/acceptance plus session-end close-out; fixing a separate script's matching logic is a distinct deliverable). Fix (when picked up): either have `claim_session.sh` accept and echo back the branch's own timestamp component so the two scripts share one source of truth, or loosen `session_end_prep.sh`'s match to a same-session-window heuristic (e.g. match on branch slug text, or any claim row within N minutes of branch creation) instead of exact string equality. |
 | Status | OPEN. |
-
-</details>
-
----
-
-### GG-182 — Session-end token/time cost is unaddressed by Hard Rule 8's 60% trigger — second remediation attempt (T-434 fixed WHEN close-out starts, not WHAT IT COSTS); 2026-08-14 session-end consumed 53% context / ran 52m41s
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Measure the next session-end against the budget in session-end.md.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-182 |
-| Category | Systemic blind spot — recurring incident; a policy-text fix (T-434) addressed a different axis of the same underlying problem and the cost axis went unaddressed. |
-| What was missed | `session-end.md` had a start trigger (Hard Rule 8's 60% context threshold) but no budget on the protocol's own cost — nothing capped tokens or wall time once close-out began, and nothing stopped it from unboundedly hand-rewriting large blocks (e.g. `DECISION_LOG.md`) via exact-match `Edit`, retrying a failed `Edit`, or re-deriving numbers already visible in scrollback. |
-| When it should have been caught | At T-434 (2026-08-10), when Hard Rule 8's trigger was lowered 80%→60% specifically because "session-end is itself context-expensive" — the causal mechanism was visible at the time, but the fix addressed only the trigger point, not the protocol's cost curve. |
-| Phases it survived | T-434's fix itself, and every `/session-end` run 2026-08-10 through 2026-08-14. |
-| Why it survived | No executable check measures session-end's own cost (context delta or wall time) against any threshold — the only signal was human judgment ("responses are slower") and a post-hoc self-report inside the SESSION_HANDOFF it was busy writing. Nothing forces a stop mid-close-out. |
-| Impact | 2026-08-14 session-end (T-448 close-out) consumed 53% of context (40%→93% used) and ran 52m41s; survived only because the operator manually intervened at ~10% headroom remaining. Second occurrence of the same cost pattern the operator has raised across many sessions, within days of T-434's fix. |
-| Discovery | Operator-reported incident, 2026-08-14. The executing window's own diagnosis: it kept re-deriving and re-writing giant verbatim `DECISION_LOG.md` paragraphs by hand — including one failed `Edit` that burned a full round-trip on an exact-match diff of a multi-KB block — instead of a minimal append from the start. |
-| Resolution | T-452 (2026-08-15): `.claude/commands/session-end.md` now states a hard budget (≤10% context, ≤10 minutes) at the top of the file; a method ban on `Edit`-ing multi-KB blocks or `DECISION_LOG.md` at all (heredoc-append only); a stop-not-retry rule on any failed exact-match `Edit`; mandatory (not suggested) use of `scripts/generate_session_artifacts.py`; hard word caps (DECISION_LOG ≤150w, TODO_NEXT ≤120w, SESSION_HANDOFF ≤300w, digest ≤150w); a no-re-derivation-at-close-out rule; and a truncation path for hitting budget mid-close-out. Hard Rule 8 in `CLAUDE.md` cross-references this budget. `generate_session_artifacts.py` was read (not expanded, per this session's explicit scope) — confirmed it already covers the "Last reviewed" chains, SESSION_CLAIMS closure row, checkpoint pointer, and MICRO digest, but explicitly and by design excludes `DECISION_LOG.md` (Hard Rule 7 — real judgment stays model-authored); that exclusion is exactly the uncovered path the 2026-08-14 incident fell into, and is called out by name in the new budget section rather than left implicit. |
-| Status | OPEN — T-455 (2026-08-15) landed the executable assertion named below; the protocol-text fix (T-452) now has a receiver, not just a rule. Still OPEN, not RESOLVED: the script exists and self-tested clean, but no live `/session-end` run has yet been observed complying with `start`/`check` end to end — that observation is what would move this to RESOLVED. |
-| Assertion | LANDED(`scripts/session_end_timer.sh`) — wall-clock probe, not context-delta (context/usage capacity is not observable in-band by a model; T-455 built against what's actually measurable). `start` timestamps session-end's own beginning; `check`, wired into `session-end.md` before the DECISION_LOG write and before the SESSION_HANDOFF write (the two expensive artifacts — not just at the end, where the verdict arrives too late to act on), prints an explicit verdict string (`WITHIN BUDGET` / `BUDGET EXCEEDED, TRUNCATE NOW`) and exits nonzero on breach. `wordcheck` mechanically enforces the word caps via `wc -w` on the same heredoc pipe used to append, replacing eyeballing — T-452's own DECISION_LOG row ran 173 words against its stated 150-word cap uncaught; this would have caught it. |
 
 </details>
 
@@ -1863,32 +1836,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-198 — Three sport-axis questions are unanswered ahead of Phase 3's cell-key work: no `sport` attribute on `MarketType`, no decided NFL band-naming convention, no decided NFL epoch-inheritance rule
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Operator decision on sport attribute, NFL band naming, epoch inheritance.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-198 |
-| Category | Architectural placeholder — a decision Phase 3's cell-key work will make implicitly, by whatever is convenient, unless made explicitly first. |
-| What was missed | Three related sport-axis decisions have no recorded answer: (1) whether `sport` becomes a first-class attribute on `MarketType` (confirmed by direct read, `market_type_registry.py`: `MarketType` members are named `MLB_*`/`NBA_*`; the word "sport" appears only in docstrings/comments, lines 61-62/154/291; no `sport` attribute or `sport_for()` function exists anywhere in `src/`, confirmed by grep); (2) what naming convention a future NFL T4 sub-band uses (confirmed by direct read, `execution_bands.py` lines 42-93: MLB already uses a `T4M-` prefix convention under a separate `T4_MLB_SUBBAND_REGISTRY`, NBA uses bare `T4-` under `T4_SUBBAND_REGISTRY` — the two sports are already asymmetric, and nothing picks the pattern a third sport follows); (3) whether NFL cells inherit MLB's 12 existing `logic_epoch.py` boundaries or start at a fresh epoch 1 (confirmed: `grep -c "LogicEpochBoundary("` = 12, all keyed on bare band-string `bands_affected` sets, e.g. `{"T4M-PROJ"}`, `{"T1"}` — zero sport-awareness in the epoch machinery itself). |
-| When it should have been caught | Should be decided before Phase 3 (segmented-pool build, ADR-0054) writes its first `bands_affected` frozenset touching a non-MLB/non-NBA cell — i.e. before NFL (or any third sport) is added to `market_type_registry.py`. |
-| Phases it survived | N/A — this is a forward-looking gap, not a survived defect. Surfaced now because ADR-0054 §4 (2026-08-19) decided the *cell key* is `(MarketType, band)`, which is correct for distinguishing cells but was never checked against whether it is sufficient for *grouping* by sport, the separate operation Phase 3 will need ("bump one epoch, every MLB cell resets same day" / "NFL's cells graduate independently of MLB's"). |
-| Why it survived | `ADR-0054` (PROPOSED, 2026-08-19) resolved the cell-key question in isolation; its own §8 follow-on list (item 5) already names "re-audit all 12 existing boundaries against their actual diffs for true per-cell blast radius" as unstaffed, but that item addresses `(MarketType, band)` granularity, not the sport-grouping, band-naming, or epoch-inheritance questions this entry raises — those are a distinct axis ADR-0054 did not consider because it was scoped to Phase 3 boxes 3.1/3.2/3.7/3.8, not to sport-expansion readiness. |
-| Impact | If Phase 3 proceeds without a decision, each of the three questions gets answered implicitly by whatever the first NFL-touching commit happens to do — e.g. a hand-rolled `T4N-PROJ` string chosen ad hoc, or a first NFL epoch boundary's `bands_affected` silently including or excluding MLB bands by accident. Retrofitting a correct answer afterward means the same 12-boundary re-audit ADR-0054 §8 already flags, done twice — once for the `(MarketType, band)` re-key, once again for whatever the accidental sport-axis answer needs to be undone. |
-| Discovery | T-473 (2026-08-20/21 session), tasked directly with drafting a decision-request APR for these three questions ahead of Phase 3. |
-| Resolution | Not started — this entry is the registration; `00_ADMIN/APR-0032` is the decision-request document itself, presenting options/evidence/recommendation for D1 (sport as first-class attribute), D2 (NFL band-naming convention), D3 (NFL epoch inheritance) to the operator. No `src/` change made or proposed in this session. |
-| Status | OPEN — awaiting operator decision on APR-0032. |
-
-</details>
-
----
-
 ### GG-202 — T4's 45s poll cadence was tuned against MLB/NBA's near-continuous state progression; NFL's drive-level, dead-period-clustered structure breaks that assumption, and NFL game markets sit at the efficient end of the venue's own gradient
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -2029,32 +1976,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-217 — No Kalshi series exists for an NHL team-total market; the four-family coverage target cannot be fully seeded for NHL as it was for NFL
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-measure Kalshi series list when NHL work resumes.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-217 |
-| Category | Data-availability gap — a venue instrument the coverage target assumes exists does not currently exist for this sport. |
-| What was missed | Nothing was missed by prior work; this is a fresh measurement. The task instruction (mirroring `COVERAGE_TARGET_MATRIX.md`'s four-family shape: moneyline, spread/puck-line, game total, team total) asked for NHL cells across all four families. Live measurement against Kalshi's `/series?category=Sports` endpoint (2026-08-25, full 3512-series listing) found only three real NHL series: `KXNHLGAME` (moneyline), `KXNHLSPREAD` (puck line), `KXNHLTOTAL` (game total, scope "Point Total"). No NHL team-total series exists; `KXNHLPTS` ("Player Points") was checked and ruled out as a false match (player-scoped, not team-scoped). NFL, seeded in the immediately preceding skeleton spike (T-474), had all four families confirmed live including `KXNFLTEAMTOTAL` — so this is not a pattern that generalized cleanly from NFL to NHL. |
-| When it should have been caught | Now — this is the first session to seed NHL cells at all, so there was no earlier opportunity. |
-| Phases it survived | N/A — first measurement. |
-| Why it survived | N/A — not a survived defect, a newly-measured fact about the venue's current NHL offering. |
-| Impact | Low. No `MarketType` member was fabricated to fill the gap (`NHL_TEAM_TOTAL` does not exist in `market_type_registry.py`'s enum) — doing so would have required inventing a ticker, which would break `test_round_trips_for_every_market_type` and violate the project's measured-not-guessed discipline. The coverage target's ~25-cell count is therefore understated by up to 5 cells (1 family × 5 bands) for NHL specifically, pending either Kalshi listing the series in the future or an operator decision on how to represent an unavailable family in the target matrix. |
-| Discovery | T-495 (2026-08-25/26), NHL skeleton spike mirroring T-474's NFL pattern. |
-| Resolution | Not resolved — no venue instrument exists to seed against. Re-check Kalshi's NHL series listing before the 2026-27 NHL season if NHL cell promotion is ever considered; re-verify rather than trusting this record as still current, per this project's own standing discipline on venue-measured facts. |
-| Status | OPEN 2026-08-26 (T-495). |
-
-</details>
-
----
-
 ### GG-218 — T1 has no automated alarm for a position stuck OPEN past a plausible resolution window (postponed/rescheduled game, no `apply_resolved_hits.py` match)
 
 **Status:** OPEN · **Severity:** LOW
@@ -2103,32 +2024,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 | Discovery | T-489 (2026-08-26), Task 5(b) of the GG-038 kill-switch SLA measurement task — investigating "can existing T1 exposure be force-closed" surfaced the call-site grep above. |
 | Resolution | Not resolved; not built here per this task's explicit scope fence and instruction to register-and-stop rather than build a fix. A fix would wire `run_mlb_paper_trade.py` (or a new operator-invoked script) to call the existing `PaperTrader.exit_position()` for all open MLB positions on kill-switch trip, sourcing a live `exit_mip`/`p_current` per position at trip time — this is new pipeline logic, not a threshold change, and needs its own design/ADR pass, not a same-session patch. |
 | Status | OPEN 2026-08-26 (T-489). |
-
-</details>
-
----
-
-### GG-221 — HYP-010 Phase 2 plan defines a reroute for FALSIFIED and none for INCONCLUSIVE; two independent model fits have now both landed there
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Define the INCONCLUSIVE reroute in the action plan.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-221 |
-| Category | Architectural placeholder — `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`'s "Note on model class" defines what happens next for exactly one of the plan's own three defined verdict states (FALSIFIED reroutes to moneyline-first), leaving the other two (PASS, INCONCLUSIVE) partially or fully unhandled at the box-2.4 decision point. |
-| What was missed | The plan's three verdict states (PASS / FALSIFIED / INCONCLUSIVE-EXTEND ARCHIVE, defined in `HYP010_PHASE2_PREREGISTRATION_2026-08-15.md`) were written assuming INCONCLUSIVE would resolve itself by archive growth on a timescale the plan implicitly treated as short (weeks). No fallback routing was written for INCONCLUSIVE reached repeatedly with a negative point estimate, nor for two independent distributional fits against the same fixed archive both landing INCONCLUSIVE. |
-| When it should have been caught | At the 2026-08-15 pre-registration session, when the three verdict states were first defined — the FALSIFIED-only reroute should have prompted the symmetric question ("and if it's inconclusive twice?") at definition time, not after two real fits produced exactly that outcome. |
-| Phases it survived | T-487/GG-207 (2026-08-2x, Poisson fit, EXP-022) landed INCONCLUSIVE-EXTEND ARCHIVE without this gap being registered — box 2.4 was simply marked N/A with no routing-gap writeup. T-500/GG-221 (this entry, 2026-08-28/29, NB refit, EXP-025) is the second fit to land in the same state, which is what surfaces the gap as structural rather than a one-off outcome. |
-| Why it survived | The plan's own three-state definition made INCONCLUSIVE look "handled" (it has a defined meaning and a defined path — extend the archive) even though it has no defined *routing* action the way FALSIFIED does. A verdict state having a definition is not the same as the plan having a next-action for it; nothing in the session-start protocol or the plan's own structure checks for that distinction. |
-| Impact | LOW. No capital, gating, or code impact — box 2.4 stays correctly marked N/A either way, and no downstream cell registry or execution-band change depends on this being resolved immediately. The cost is purely one of ambiguity: without an explicit operator decision, a future session could reasonably (and differently) choose to keep archiving indefinitely, treat the negative point estimate as informal evidence and reroute anyway, or hold Phase 2 open — three genuinely different paths with no written tiebreaker. |
-| Discovery | 2026-08-28/29, T-500/GG-221, while executing this session's own pre-registered Deliverable 2 (NB refit of HYP-010 box 2.3) — the NB fit's own INCONCLUSIVE-EXTEND ARCHIVE verdict, arriving as a second confirmation of the Poisson fit's identical verdict state, is what made the missing INCONCLUSIVE-routing case visible as a pattern rather than a single result. |
-| Resolution | Not resolved in-session, by explicit task instruction (present options, do not select one). `00_ADMIN/APR-0033_hyp010-inconclusive-routing-decision-request.md` (drafted and committed this session) presents three options to the operator — (1) treat two-for-two INCONCLUSIVE/negative-point-estimate as a de facto soft-FALSIFIED and fire the existing moneyline-first reroute, (2) hold 2.4 at N/A and keep archiving despite the multi-year timeline the re-derived n*-vs-effect-size table makes explicit, (3) reroute to moneyline-first now while formally leaving HYP-010 open at INCONCLUSIVE rather than relabeling the verdict — without selecting one. `MARKET_EXPANSION_ACTION_PLAN.md` box 2.4 records the gap and points to APR-0033. |
-| Status | OPEN 2026-08-28/29 (T-500). Awaiting operator decision via APR-0033; not self-closing. |
 
 </details>
 
@@ -2242,7 +2137,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Same fix family as GG-162.
+**Current state (2026-10-08, W59.1):** Process gap, same family as GG-256: claim_session.sh collision check exists but assignments authored against a stale SESSION_CLAIMS snapshot are not validated. **Next:** Fold into GG-256 fix; close when that lands.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2294,7 +2189,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Correct the briefing text or accept as one-off.
+**Current state (2026-10-08, W59.1):** ADR-0056 l.87 explicitly states T4N- is NOT adopted and must be corrected to T4NFL- before code ships; ADR text is correct, only the one-off briefing was wrong. **Next:** Accept as one-off (close) unless a T4N- string is found in src/.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2393,7 +2288,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Same fix family as GG-256.
+**Current state (2026-10-08, W59.1):** Same family as GG-256: claim_session.sh has pre-claim check but no atomic reservation. **Next:** Close with GG-256.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2491,7 +2386,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Strengthen claim_session.sh collision check under simultaneous push.
+**Current state (2026-10-08, W59.1):** scripts/claim_session.sh already runs check_id_collision pre-claim (l.55-62) and fetches all origin branches (GG-236), but no atomic reservation exists, so two pushes one second apart can still both pass. **Next:** Add a push-time re-check after rebase, failing the claim on duplicate.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2517,7 +2412,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add a split-payout settlement path.
+**Current state (2026-10-08, W59.1):** paper_trader.py settle_position still computes boolean yes_won (l.912, 1009, 1101); no split-payout path. **Next:** Add a split-payout settlement path.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2543,7 +2438,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Rename the NFL experiment IDs.
+**Current state (2026-10-08, W59.1):** HYP011 preregistration l.7 reserves EXP-026 for the MLB moneyline LR experiment; the NFL experiment ID collision cited in the entry is not resolved by any rename found. **Next:** Assign the NFL experiment a fresh EXP id.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3556,7 +3451,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Switch validator date URL to ISO format.
+**Current state (2026-10-08, W59.1):** Verified: run_schedule_validator_mlb.py:100 sends date as %m/%d/%Y; repair_stuck_mlb_positions.py:122 and fetch_hits_unblocked_network.py:12 document the schedule endpoint 406s on some URL shapes. **Next:** Switch validator to the ISO-date URL shape and add a regression test.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3594,7 +3489,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Owner to confirm intent; remove if dead.
+**Current state (2026-10-08, W59.1):** Verified on VPS: t4-mlb.timer 'inactive (dead) since Sun 2026-07-05 08:23:30 UTC'. The t4-mlb service itself is active (ActiveEnter 2026-10-07 06:13 UTC). **Next:** Decide whether the timer is retired (then delete unit) or must be re-armed.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3651,7 +3546,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Document gtimeout or a python wrapper.
+**Current state (2026-10-08, W59.1):** Verified: no gtimeout/timeout guidance in CLAUDE.md, .claude/ or scripts/ (grep this session); macOS has no timeout binary. **Next:** Document 'brew install coreutils' (gtimeout) in the session-start doc.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3786,7 +3681,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-read fee_multiplier from series endpoint before any CANDIDATE call.
+**Current state (2026-10-08, W59.1):** Verified: pregame_shadow/fees.py l.4 states the fee coefficient is INFERRED (0.07*0.5*q*(1-q)), not sourced from the venue schedule. **Next:** Pull the Kalshi fee schedule and replace the inferred coefficient or cite it.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3871,25 +3766,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Category | Deployment |
 | What was found | VPS is only updated by a manual pull; landed shadow code does nothing until a local session runs scripts/arm_shadow_crons.sh. Silent gap between 'landed' and 'running'. |
 | Source | EXP036 results GAP 8; 48.1 handoff |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
-### GG-407 — T3 shadow firings per game produce correlated rows; judged n must be game-clustered
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Enforce game-clustering in the scorer.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-407 |
-| Category | Statistics |
-| What was found | Many T3 firings per game are serially correlated; any score computed on raw row count inflates n. Pre-registered game-clustering must be enforced in the scorer. |
-| Source | EXP036 results GAP 9 |
 | Disposition | Registered by 49.3 (registration only, no investigation). |
 
 </details>
@@ -4008,30 +3884,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-414 — T4 resolved ledger unwritten since 2026-09-28
-
-**Status:** OPEN · **Severity:** HIGH
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Blocks T4 settlement evidence and ledger truth. **Next:** Check VPS resolver; diagnose why writes stopped after 09-28.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-414 |
-| Category | Ledger integrity |
-| What was found | The t4 resolved-positions ledger shows no writes after 09-28 while the cycle log continued into October; settlement may have stopped. |
-| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
 ### GG-415 — players_2026.json is stale
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Season ended; matters for 2027. **Next:** Refresh before 2027 season.
+**Current state (2026-10-08, W59.1):** Verified on VPS: players_2026.json exists only at exp_output/MLB/cache/players_2026.json, mtime 2026-06-24 (>3 months stale). **Next:** Add a refresh step to the cron or retire the file.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4126,7 +3983,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Enforce the cap in the runner.
+**Current state (2026-10-08, W59.1):** Verified from code: scripts/vps_job* check_command cross-checks only against the command's own --rate; --rate-cap is recorded but not enforced. **Next:** Enforce --rate-cap in check_command.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4259,7 +4116,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Guard empty ALLOW array for bash 3.2.
+**Current state (2026-10-08, W59.1):** Verified in code: scripts/arm_shadow_crons.sh has set -euo pipefail (l.8), ALLOW=() (l.14) and unguarded "${ALLOW[@]}" (l.28); aborts on bash 3.2 with empty array. **Next:** Guard expansion with ${ALLOW[@]+"${ALLOW[@]}"}.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4321,7 +4178,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. CI installs from stale locks. **Next:** Regenerate locks to match pyproject bounds.
+**Current state (2026-10-08, W59.1):** Verified: requirements-base.txt pins scikit-learn==1.4.2, scipy==1.13.0; pyproject.toml requires scikit-learn>=1.8.0,<2.0 and scipy>=1.12.0,<1.13 (scipy lock violates the pyproject bound). **Next:** Regenerate locks from pyproject and run the test suite.
 
 <details>
 <summary>Full record ▸</summary>
