@@ -275,7 +275,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
-| 59.1 | The backlog | ⬜ | gap log | OPEN count down, every change with evidence | [Corrective pass complete: all OPEN re-verified; OPEN 176 -> 131; 0 unverified; Part C pending operator permission]
+| 59.1 | The backlog | ⬜ | gap log | OPEN count down, every change with evidence | [DONE: all OPEN re-verified; OPEN 176 -> 136 at close (131 re-verified + new registrations); GG-498 RESOLVED via PR #183]
 | 59.2 | Calibration correctness | ✅ | engine, settle schema, Live Terminal count, cross-check | Release proven on fixtures; projection corrected |
 | 59.3 | NBA readiness, NHL verdict, ADR-0070 | ⬜ | NBA runner/dashboards, NHL T3, ADR | NBA proven ready for 10-20; ADR-0070 ACCEPTED |
 

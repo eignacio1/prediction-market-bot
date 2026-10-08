@@ -3959,26 +3959,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 **2026-10-05 W55.3b update:** ESPN ruled out as a source (scoreboard lacks MLBAM starter ids; ESPN athlete ids are a different namespace, no MLBAM crosswalk field). Option 1 landed (PR #164, bf1afb0): `scripts/sync_mlb_games_cache.sh` refreshes `games_current.parquet` on the Mac (Stats API 200 there) and scp+atomic-mv's it with a `.meta.json` stamp to the VPS; the runner without `--refresh` now fails closed on a missing or >26h-old stamp; VPS T1 cron no longer passes `--refresh` (backup `/root/crontab.bak.W55_3b.20261005T225931Z`). Manual T1 run: 69 rows written (ML 8, RL 12, TOTAL 21, TEAM_TOTAL 28). **Remaining:** sustained operation needs the sync run at least daily from a machine that is on; nothing schedules it (GG-482). If it lapses, all MLB shadow cells write nothing (fail-closed, not stale).
 </details>
 
-### GG-498 — deploy/cron.conf does not mirror the live crontab (EXP-037 and NHL shadow blocks absent)
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Live crontab differs from deploy/cron.conf (EXP-037 and NHL shadow blocks absent; run_mlb_pregame is 45 18 live vs 30 16 in repo). Part C not done this session at operator direction. **Next:** Mirror live blocks into deploy/cron.conf via PR with CI.
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-498 |
-| Category | Config drift / reproducibility |
-| What was found | W58.3 Part E went to mirror its cron block into `deploy/cron.conf` and found the file holds no `BEGIN EXP-037 ... END EXP-037` block and no NHL shadow (T-607) lines, both live on the VPS crontab (lines ~494-518 on 2026-10-07). The file is a commented reference using `$PROJ`, not a byte mirror. |
-| Impact | The repo cannot rebuild the live crontab; a VPS rebuild would silently drop the shadow arms. |
-| Source | W58.3 Part E |
-| Resolution | Not fixed in-session (register-and-stop). W58.3's own block was mirrored in the file's commented style. |
-
-</details>
-
-
 ### GG-510 — EXP-037 does not define the ordering key for 'earliest 60 settled games'
 
 **Status:** OPEN · **Severity:** MEDIUM

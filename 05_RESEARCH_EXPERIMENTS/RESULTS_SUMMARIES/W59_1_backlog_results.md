@@ -1,6 +1,6 @@
 # W59.1 — Gap backlog results (2026-10-08)
 
-**Status: PARTIAL.** Parts A, B, D done. Part C (GG-498, `deploy/cron.conf` mirror) NOT done: blocked by an auto-mode classifier denial ("Modify Shared Resources") on the combined write/branch command; not worked around.
+**Status: DONE.** Parts A, B, C, D done. Part C (GG-498): PR #183 (squash 58dc28c, CI green, merged by me) made `deploy/cron.conf` match the live crontab; T-601/T-602 uninstalled drafts moved to `deploy/cron.drafts.conf`; GG-498 RESOLVED and archived. At close the live log has 158 headers = 158 status lines, OPEN 136 (the rise from 131 is other sessions registering new gaps; the 131 re-verified entries were not reopened); uniqueness check passes.
 
 ## OPEN before -> after
 176 -> 131 (45 retired to the archive). Parity 153 headers = 153 status lines; `gg_id_uniqueness_check.py` passes.
@@ -19,7 +19,6 @@ Data integrity: GG-166/GG-170, GG-189, GG-333, GG-323 (state fields exist on onl
 Ops/safety: GG-441, GG-038, GG-347 (unattributed t4-mlb restarts), GG-344, GG-498, GG-046.
 
 ## Needs an operator decision
-1. Part C: allow GG-498 in smaller steps (branch, Write, PR), or leave OPEN.
 2. GG-285: a practicable P&L gate.
 3. GG-289: how classifier-flagged self-modifying scripts get approved.
 4. GG-441 and GG-320 (as previously recorded in their entries).

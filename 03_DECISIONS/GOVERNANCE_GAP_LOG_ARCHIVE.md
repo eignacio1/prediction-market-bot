@@ -5305,3 +5305,26 @@ Separately, also per explicit task instruction ("confirm the running code contai
 **W59.1 disposition (2026-10-08):** RESOLVED — Commit c377458 (W59.2 Part C, in worktree history) added src/prediction_market_bot/pregame_shadow/settled_schema.py: one normaliser giving y, game_key (NHL falls back to event_ticker) and p_clim only where the sport has one (never invented); MLB/NHL joins no longer a schema gap. Residual: MLB T1 still has no separate settled file but settle.log shows T1 cells settled.
 
 </details>
+
+### GG-498 — deploy/cron.conf does not mirror the live crontab (EXP-037 and NHL shadow blocks absent)
+
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W59.1):** PR #183 (squash 58dc28c, CI green) made `deploy/cron.conf` match the live crontab (read-only dump); T-601/T-602 uninstalled drafts moved to `deploy/cron.drafts.conf`.
+
+**Current state (2026-10-08, W59.1):** Live crontab differs from deploy/cron.conf (EXP-037 and NHL shadow blocks absent; run_mlb_pregame is 45 18 live vs 30 16 in repo). Part C not done this session at operator direction. **Next:** Mirror live blocks into deploy/cron.conf via PR with CI.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-498 |
+| Category | Config drift / reproducibility |
+| What was found | W58.3 Part E went to mirror its cron block into `deploy/cron.conf` and found the file holds no `BEGIN EXP-037 ... END EXP-037` block and no NHL shadow (T-607) lines, both live on the VPS crontab (lines ~494-518 on 2026-10-07). The file is a commented reference using `$PROJ`, not a byte mirror. |
+| Impact | The repo cannot rebuild the live crontab; a VPS rebuild would silently drop the shadow arms. |
+| Source | W58.3 Part E |
+| Resolution | Not fixed in-session (register-and-stop). W58.3's own block was mirrored in the file's commented style. |
+
+</details>
+
+
