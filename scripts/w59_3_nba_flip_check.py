@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """W59.3: READ-ONLY check run on/after 2026-10-21 -- may the NBA cells flip NOT_IMPLEMENTED -> SHADOW?
 
-A cell qualifies when exp_output/PREGAME_SHADOW/NBA_<MARKET>_<BAND>.jsonl holds >=1 valid row: model_sha256 equals
+A cell qualifies when exp_output/PREGAME_SHADOW/NBA_<MarketType>_<BAND>.jsonl (e.g. NBA_NBA_MONEYLINE_T1) holds >=1 valid row: model_sha256 equals
 the frozen model's, 0<p_yes<1, a quote present, start_time_source set. Preseason rows live in a different directory
 and never count. Prints the exact registry lines to add (promote_cell_status ... superseding_reference="EXP-038");
 it does NOT edit the registry, and flips nothing. Exit 0 = all qualifying cells listed, 1 = no cell qualifies.
@@ -33,7 +33,7 @@ def main(argv=None) -> int:
     ok = 0
     for m, mt in MT.items():
         for b, bd in BAND.items():
-            p = Path(a.ledger_dir) / f"NBA_{m}_{b}.jsonl"
+            p = Path(a.ledger_dir) / f"NBA_{mt}_{b}.jsonl"
             rows = [json.loads(l) for l in p.read_text().splitlines() if l.strip()] if p.exists() else []
             n = sum(valid(r, sha) for r in rows)
             if n:

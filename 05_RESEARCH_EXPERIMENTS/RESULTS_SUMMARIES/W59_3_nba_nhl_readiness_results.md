@@ -1,6 +1,6 @@
 # W59.3 — NBA opening-night readiness, NHL goalie verdict, ADR-0070 widened + accepted
 
-Status per part: **A in PR** · B not started · C not started. Updated per part; newest state at top of each section.
+Status per part: **A merged (#179); B DONE (verdict b); flip-check filename fix in follow-up PR; preseason cron installed 2026-10-08, first run wrote 16 T1 rows to PREGAME_SHADOW_PRESEASON/NBA_NBA_MONEYLINE_T1.jsonl; t4-mlb restart: not_needed** · B not started · C not started. Updated per part; newest state at top of each section.
 
 ## Part A — NBA readiness
 
@@ -29,8 +29,36 @@ No order, position, fill, stake or `kelly_fraction` change; no live-ledger write
 ### Screenshots
 Before/after real-browser captures: pending post-deploy (`scripts/browser_check_dashboard.py`).
 
-## Part B — NHL goalie verdict
-Not started.
+## Part B — NHL goalie verdict: **(b) the API does not flag the starter in time** (GG-401 stays OPEN)
+
+Source: branch `data/nhl-goalie-probe`, `goalie_source_probe.jsonl`, 15 readings from 3 probe runs (2026-10-07 01:27, 07:41, 2026-10-08 00:55 UTC). No NHL score was read.
+
+| Reading class | Games | Starter flag present (boxscore or landing) |
+|---|---|---|
+| ≥15 min before puck drop, inside the 15–60 min T3 window | FLA@LAK (32.4 min) | **0 of 1** |
+| ≥15 min before drop, just outside window | EDM@ANA (65.0 min) | 0 of 1 |
+| ≥15 min before drop, far early (~949–1099 min) | PIT@WSH, COL@WPG, EDM@ANA | 0 of 3 (uninformative) |
+| <15 min before drop | VGK@SEA (12.4) | 0 of 1 (excluded) |
+| After puck drop (LIVE/CRIT, 85–148 min in) | 8 games | **0 of 8** |
+
+Two slates (10-06/07 and 10-07/08) have ≥15-min readings. k = 0 of n = 2 in-window-or-near games (n = 5 counting far-early).
+
+**Positive control (VPS, 2026-10-08, read-only GET):** the probe's extractor is sound. Finished boxscores `2026020044` and `2026020045` (state OFF) show `starter: true` on exactly one goalie per side. So the flag exists, but the same field is **null for games 85–148 minutes into play**. A flag that is absent mid-game will not be present before puck drop. This is why (b) and not (c): the absence is explained, not merely unobserved. Caveat stated plainly: pre-puck-drop n is small (2 informative games); the mid-game null is the stronger evidence, and it is a different time point than the one T3 needs.
+
+**Per the W52_D rule: (b) means no StarterProvider is implemented; I stop here.** GG-401 is not resolved: **no NHL T3 score may be read.**
+
+### Exact pre-registration amendment for the operator (EXP-036, "Model-side commitments", line 42)
+Replace *"Goalie: projected starter at T1/T2, confirmed starter at T3 when the source shows it; flagged per row."* with:
+
+> Goalie: projected starter (last start) at every band, T3 included; no confirmed-starter source is available before puck drop (W59.3 probe: `starter` flag absent pre-drop and throughout live play, present only once the game is final). Rows are flagged `confirmed=False`.
+
+Operator choice (W52_D): adopt this amendment, or a different confirmed-starter source (none identified). Moving T3 later is impossible (cannot pass puck drop). An ADR is not required to amend a pre-registration that has no judged data yet, but that is the operator's call. This amendment is **not applied** by this session.
+
 
 ## Part C — ADR-0070
-Not started.
+**DONE (2026-10-08).** Two commits, in order:
+1. `645d23a` widened scope to the EXP-036 NHL and EXP-038 NBA shadow models (shadow only; adds §5a; GG-401 not waived).
+2. `cdf10c6` set Status ACCEPTED, citing the operator's 2026-10-07 17:26 PT decision ("Yes - proceed in full").
+
+Authorizes no order, position, fill, stake or kelly_fraction change. GG-400 moved verbatim to the archive as RESOLVED.
+GG-401 stays OPEN (Part B finding added to its entry).

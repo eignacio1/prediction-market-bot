@@ -79,7 +79,7 @@ def test_flip_check_is_read_only_and_counts_only_valid_rows(tmp_path):
     import hashlib
     sha = hashlib.sha256((ROOT / "models" / "nba_pregame_v1.json").read_bytes()).hexdigest()
     good = {"model_sha256": sha, "p_yes": 0.6, "mid": 0.55, "start_time_source": "espn_scoreboard_start_time"}
-    (tmp_path / "NBA_MONEYLINE_T1.jsonl").write_text(json.dumps(good) + "\n" + json.dumps({**good, "p_yes": 1.0}) + "\n")
+    (tmp_path / "NBA_NBA_MONEYLINE_T1.jsonl").write_text(json.dumps(good) + "\n" + json.dumps({**good, "p_yes": 1.0}) + "\n")
     assert m.main(["--ledger-dir", str(tmp_path)]) == 0
     assert m.main(["--ledger-dir", str(tmp_path / "none")]) == 1
     assert "promote_cell_status(" not in "".join(
