@@ -795,3 +795,4 @@
 | 2026-10-08T01:54:04Z | T-732 | CLOSED — merge confirmed, HEAD (d57c6cb) is ancestor of origin/main — W59.3 done: NBA readiness, NHL verdict (b), ADR-0070 ACCEPTED; PRs #179/#180 merged |
 | 2026-10-08T02:06:13Z | T-738..T-739, GG-525..GG-526 | W60.3 STANDARD - dashboard truth gaps (Live Terminal NBA row, GG-515 390px) + gap-log hygiene (index, GG-426, severity tokens) |
 | 2026-10-08T02:07:13Z | T-740..T-742, GG-527..GG-528 | W60.1 MEDIUM - T4M-PROJ cohort fill truth (GG-300) + GG-228 builder overwrite guard |
+| 2026-10-08T02:08:01Z | T-743..T-746, GG-529..GG-530 | W60.2 MEDIUM - NBA into calibration engine (EXP-038 policy) + pre-reg addenda (EXP-036/037; GG-510/511/512/401/513/514) |
