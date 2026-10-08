@@ -42,7 +42,9 @@ OUT = Path("03_DECISIONS/OPERATOR_CONSOLE.md")
 CLAIMS = Path("04_EXECUTION/SESSION_CLAIMS.md")
 
 HEADER_RE = re.compile(r"^### (GG-\d+) — (.+)$", re.M)
-STATUS_RE = re.compile(r"^\*\*Status:\*\* (.+?) · \*\*Severity:\*\* (.+)$", re.M)
+# W60.3: severity is the first token only -- (.+)$ swallowed a trailing "· **Assertion:** ..." field
+# (GG-164/GG-166), so the console showed "ADR-0052"/"ledger" as a severity.
+STATUS_RE = re.compile(r"^\*\*Status:\*\* (.+?) · \*\*Severity:\*\* ([A-Za-z]+)", re.M)
 BLOCKED_FIELD_RE = re.compile(r"^\*\*Blocked-On-Operator:\*\* YES\s*$", re.M)
 BROKEN_FIELD_RE = re.compile(r"^\*\*Actively-Broken:\*\* YES\s*$", re.M)
 TID_RE = re.compile(r"T-\d+")

@@ -87,7 +87,7 @@ window; handoff follows its verification.
 |---|---|---|---|
 | **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | ✅ **DONE** | A: of 1,952 epoch-12 rows only 107 (5.5%) have a real demo fill, real fills -0.40/bet (GG-300 resolved, GG-527 registered). B: GG-228 guard merged (PR #185) and on the VPS; first real exercise Mon 10-12 14:20 UTC. | — |
 | **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ✅ DONE (A+B; GG-401 still OPEN, see GG-530) | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
-| **60.3** Dashboard truth gaps + gap-log hygiene | ⬜ **READY** | Live Terminal NBA row, 390px overflow (GG-515); gap-log index, hook count (GG-426), severity tokens | — |
+| **60.3** Dashboard truth gaps + gap-log hygiene | ✅ **DONE** | A: #184 (GG-515/525 RESOLVED, VPS-verified). B: hook OPEN 176→134 = live grep (GG-426), generated arm index, severity parser fixed | — |
 
 ### Wave 59 results (closed 2026-10-08 ~02:05 UTC, verified on GitHub at `7036e11`)
 
