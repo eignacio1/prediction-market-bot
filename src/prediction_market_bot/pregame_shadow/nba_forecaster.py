@@ -60,10 +60,11 @@ def parse_market_ticker(market_ticker: str) -> Optional[dict]:
 class NBAScheduleIndex:
     """(ET game date, {home, away}) -> game dict with UTC tip-off (ESPN schedule; Kalshi lists no start time)."""
 
-    def __init__(self, games: list[dict[str, Any]]) -> None:
+    def __init__(self, games: list[dict[str, Any]], season_types: tuple[int, ...] = (2,)) -> None:
+        # default = regular season only (judged evidence); (1,) = preseason smoke-test index (W59.3)
         self._g: dict[tuple[str, frozenset], dict] = {}
         for g in games:
-            if g["season_type"] != 2:
+            if g["season_type"] not in season_types:
                 continue
             start = _dt(g["start_time_utc"])
             self._g[(et_date(start).isoformat(), frozenset((g["home"], g["away"])))] = {

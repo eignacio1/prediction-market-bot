@@ -1122,8 +1122,10 @@ function health(d,D){
     {lbl:'PORTFOLIO  MLB T1', t:D.P.last_updated,  warn:26*3600, bad:72*3600},
     {lbl:'PORTFOLIO  MLB T4', t:D.T4.last_updated, warn:2*3600,  bad:12*3600},
     {lbl:'PORTFOLIO  NFL T1', t:D.NF.last_updated, warn:8*86400, bad:14*86400}];
+  const nb=(d.freshness||{}).nba_shadow;
+  if(nb&&nb.last_ts) HEALTH.push({lbl:'SHADOW  NBA ledgers (SHADOW, $0 stake)', t:nb.last_ts, warn:nb.amber_s||86400, bad:nb.red_s||3*86400});
   const sn=d.season||{};
-  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/MLB/.test(h.lbl)?'MLB':null;
+  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/NBA/.test(h.lbl)?'NBA':/MLB/.test(h.lbl)?'MLB':null;
     if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
   const n=$('#healthN'); if(n) n.textContent=HEALTH.length+' feeds';
   paintHealth();

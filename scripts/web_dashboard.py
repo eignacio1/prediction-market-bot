@@ -454,10 +454,14 @@ def _season_state(now: datetime) -> dict:
     nhl = m in (10, 11, 12, 1, 2, 3, 4, 5) or (m == 6 and d <= 25)
     mlb_post = (m == 10) or (m == 9 and d >= 28)
     mlb = (4 <= m <= 9) or mlb_post or (m == 3 and d >= 26)
+    # NBA: regular season opens 2026-10-20; playoffs end by ~Jun 22. Preseason (Oct 3-17) is NOT in-season:
+    # preseason rows are excluded from judged n, so idle ledgers before opening night are not red.
+    nba = (m in (11, 12, 1, 2, 3, 4, 5)) or (m == 10 and d >= 20) or (m == 6 and d <= 22)
     return {"MLB": win(mlb, 6 * 3600, 24 * 3600),
             "MLB_POSTSEASON": win(mlb_post, 6 * 3600, 24 * 3600),
             "NFL": win(nfl, 3 * 86400, 7 * 86400),
-            "NHL": win(nhl, 24 * 3600, 3 * 86400)}
+            "NHL": win(nhl, 24 * 3600, 3 * 86400),
+            "NBA": win(nba, 24 * 3600, 3 * 86400)}
 
 
 def _file_age(p: Path, now_ts: float) -> float | None:
@@ -501,7 +505,24 @@ def _freshness(d: Path, now: datetime) -> dict:
             "red" if age > s["red_s"] else "amber" if age > s["amber_s"] else "ok")
         out[k] = {"source": src, "age_s": round(age, 1), "level": lvl,
                   "season": s["state"], "amber_s": s["amber_s"], "red_s": s["red_s"]}
+    out["nba_shadow"] = _nba_shadow_freshness(now_ts, season["NBA"])
     return out
+
+
+def _nba_shadow_freshness(now_ts: float, s: dict) -> dict:
+    """Age of the newest EXP-038 NBA judged-ledger write (exp_output/PREGAME_SHADOW/NBA_*.jsonl only --
+    the PREGAME_SHADOW_PRESEASON smoke-test ledger is excluded from judged n and is not read here)."""
+    src = "exp_output/PREGAME_SHADOW/NBA_*.jsonl"
+    files = sorted((_REPO_ROOT / "exp_output" / "PREGAME_SHADOW").glob("NBA_*.jsonl"))
+    ages = [a for a in (_file_age(p, now_ts) for p in files) if a is not None]
+    if not ages:
+        return {"source": src, "awaiting": src, "age_s": None, "level": "none", "season": s["state"]}
+    age = min(ages)
+    lvl = "off" if s["state"] == "off" else (
+        "red" if age > s["red_s"] else "amber" if age > s["amber_s"] else "ok")
+    return {"source": src, "age_s": round(age, 1), "level": lvl, "season": s["state"],
+            "amber_s": s["amber_s"], "red_s": s["red_s"],
+            "last_ts": datetime.fromtimestamp(now_ts - age, tz=timezone.utc).isoformat()}
 
 
 _ORIGIN_CACHE: dict = {"at": 0.0, "val": None}
@@ -2345,8 +2366,10 @@ function health(d,D){
     {lbl:'PORTFOLIO  MLB T1', t:D.P.last_updated,  warn:26*3600, bad:72*3600},
     {lbl:'PORTFOLIO  MLB T4', t:D.T4.last_updated, warn:2*3600,  bad:12*3600},
     {lbl:'PORTFOLIO  NFL T1', t:D.NF.last_updated, warn:8*86400, bad:14*86400}];
+  const nb=(d.freshness||{}).nba_shadow;
+  if(nb&&nb.last_ts) HEALTH.push({lbl:'SHADOW  NBA ledgers (SHADOW, $0 stake)', t:nb.last_ts, warn:nb.amber_s||86400, bad:nb.red_s||3*86400});
   const sn=d.season||{};
-  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/MLB/.test(h.lbl)?'MLB':null;
+  HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/NBA/.test(h.lbl)?'NBA':/MLB/.test(h.lbl)?'MLB':null;
     if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
   const n=$('#healthN'); if(n) n.textContent=HEALTH.length+' feeds';
   paintHealth();
