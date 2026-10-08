@@ -786,3 +786,4 @@
 | 2026-10-07T02:41:50Z | W58.1 | CLOSED — merge confirmed, HEAD (57261e0) is ancestor of origin/main — A-C done, GG-490 resolved, Part D deferred |
 | 2026-10-08T00:33:07Z | T-721..T-726, GG-510..GG-514 | W59.2 LARGE - calibration correctness: projection, release mechanics, settled-row schema, Kalshi settlement cross-check |
 | 2026-10-08T00:33:32Z | T-727..T-731 | W59.1 LARGE - gap backlog: gap log gets true (21 leads, all OPEN classified, GG-498 deploy/cron mirror); GG-495..497 are W58.2 reservations, released/registered by this block only if defect real |
+| 2026-10-08T00:33:51Z | T-732..T-737, GG-520..GG-524 | W59.3 LARGE - NBA opening-night readiness, NHL goalie verdict, ADR-0070 widened+accepted |
