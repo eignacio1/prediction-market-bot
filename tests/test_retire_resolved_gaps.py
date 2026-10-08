@@ -44,6 +44,8 @@ RESOLVED_CLASS_EXAMPLES = [
     "RESOLVED (2026-09-11, code+migration)",
     "RESOLVED (2026-09-11, code+migration) · ACTIVATED (2026-09-15, confirmed live in running process)",
     "CLOSED-AS-ARTIFACT",
+    "CLOSED-AS-DUPLICATE · duplicate of GG-430",
+    "CLOSED-AS-SUPERSEDED · ADR-0048",
     "CLOSED-AS-ARTIFACT · superseded by ADR-0060, see GG-300",
     (
         "RESOLVED. This is a synthetic full-paragraph Status value constructed "

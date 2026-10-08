@@ -26,7 +26,7 @@ Operator 2026-10-07 17:26 PT: "proceed in full" — backlog gets its own block, 
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **59.1** The backlog: the gap log gets true | ⬜ **READY** | gap log + archive; 21 leads verified; all OPEN gaps classified with evidence; GG-498 deploy/ cron mirror | — |
+| **59.1** The backlog: the gap log gets true | 🔄 **IN PROGRESS** — Part A done (19 of 21 leads closed, GG-156/158 kept OPEN: no checkable evidence). OPEN: 176 -> 157. Next: Part B from oldest open gap. | gap log + archive; 21 leads verified; all OPEN gaps classified with evidence; GG-498 deploy/ cron mirror | — |
 | **59.2** Calibration correctness before the first look | ⬜ **READY** | projection fix; first-look release mechanics + report template on fixtures; one settled-row schema (GG-499); Live Terminal settled count; Kalshi settlement cross-check (GG-487) | — |
 | **59.3** NBA opening-night readiness + NHL goalie verdict + ADR-0070 | ⬜ **READY** | NBA dry-run + season state; NHL probe verdict (StarterProvider if (a)); ADR-0070 widened then accepted; GG-400 | — |
 

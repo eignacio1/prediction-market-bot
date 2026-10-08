@@ -39,6 +39,8 @@ live log (2026-09-23) that must still match:
     RESOLVED (2026-09-11, code+migration)
     RESOLVED (2026-09-11, code+migration) · ACTIVATED (2026-09-15, ...)   [GG-271]
     CLOSED-AS-ARTIFACT
+    CLOSED-AS-DUPLICATE   (W59.1: names the surviving gap)
+    CLOSED-AS-SUPERSEDED  (W59.1: names the ADR/decision/gap that made it moot)
 A full-paragraph resolved Status value also matches -- the regex only anchors the
 start of the token, so it does not care how long the rest of the line is.
 
@@ -65,7 +67,7 @@ STATUS_RE = re.compile(r"^\*\*Status:\*\* (.+?) · \*\*Severity:\*\* (.+)$", re.
 
 # Prefix match, not substring -- see module docstring for why this excludes every
 # known stay token without needing a blocklist.
-RESOLVED_CLASS_RE = re.compile(r"^(RESOLVED|CLOSED-AS-ARTIFACT)(?:[^A-Za-z]|$)")
+RESOLVED_CLASS_RE = re.compile(r"^(RESOLVED|CLOSED-AS-ARTIFACT|CLOSED-AS-DUPLICATE|CLOSED-AS-SUPERSEDED)(?:[^A-Za-z]|$)")
 
 STAY_TOKENS_FOR_REFERENCE = (
     "PARTIALLY RESOLVED",
