@@ -86,7 +86,7 @@ window; handoff follows its verification.
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
 | **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | ✅ **DONE** | A: of 1,952 epoch-12 rows only 107 (5.5%) have a real demo fill, real fills -0.40/bet (GG-300 resolved, GG-527 registered). B: GG-228 guard merged (PR #185) and on the VPS; first real exercise Mon 10-12 14:20 UTC. | — |
-| **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ⬜ **READY** | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
+| **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ✅ DONE (A+B; GG-401 still OPEN, see GG-530) | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
 | **60.3** Dashboard truth gaps + gap-log hygiene | ⬜ **READY** | Live Terminal NBA row, 390px overflow (GG-515); gap-log index, hook count (GG-426), severity tokens | — |
 
 ### Wave 59 results (closed 2026-10-08 ~02:05 UTC, verified on GitHub at `7036e11`)
@@ -302,7 +302,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
 | 60.1 | Cohort fill truth + Monday guard | ⬜ | Kalshi demo GETs; resolved-ledger builder | Every epoch-12 row classified; builder never overwrites a changed row |
-| 60.2 | NBA engine + addenda | ⬜ | calibration engine; EXP-036/037 addenda (authorized 10-07 19:03 PT) | NBA cells tracked under EXP-038 before 10-21 |
+| 60.2 | NBA engine + addenda | ✅ | calibration engine; EXP-036/037 addenda (authorized 10-07 19:03 PT) | NBA cells tracked under EXP-038 before 10-21 |
 | 60.3 | Dashboard truth + gap-log hygiene | ⬜ | Live Terminal, Visual Dashboard, gap log | NBA row visible; no 390px scroll; hook count = live |
 
 ### ✅ WAVE 59 — CLOSED 2026-10-08 ~02:05 UTC · three LARGE blocks (ran long: operator set the 60/90-min rule for Wave 60)
