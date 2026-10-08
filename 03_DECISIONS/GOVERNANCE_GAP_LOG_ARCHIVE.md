@@ -5000,3 +5000,54 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-297 — 139 of 140 T4M-PROJ "OPEN" positions in `paper_portfolio_mlb_t4.json` (all dated 2026-09-22) are `status: "canceled"`/zero-fill at Kalshi, not live open bets — the local ledger's open-position status is unreliable and, if resolved as-is, would inject fabricated trades into the G6 cohort
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-297 |
+| Category | Ledger-integrity risk in the local `open_positions` array — the field the resolution/settlement pipeline (owned by other sessions, out of this session's scope to fix) is expected to read when a game resolves. |
+| What was missed | Per this wave's Deliverable 4, systematically queried Kalshi's real order status (`GET /portfolio/orders/{order_id}`, not the locally-cached `kalshi_order_status` field) for ALL 140 positions in `logs/paper_portfolio_mlb_t4.json`'s `open_positions` array — not a small sample. Result: **139 of 140 show `status: "canceled"` with `fill_count_fp: "0.00"`; only 1 (`POS-466189FABE`, Sal Stewart, see GG-203's T-568 row) shows `status: "executed"` with `fill_count_fp: "6.00"`.** The local ledger records `kalshi_order_status: "submitted"` on all 140 — this field is set from `submit_order()`'s return value at the moment Kalshi *accepts* the order (`kalshi_client.py:1131`, a code-level fallback default), not from any subsequent fill/cancellation confirmation. The ledger never re-polls order status after opening a position, so a position that was accepted then later canceled unmatched stays recorded as `status: "OPEN"` indefinitely, indistinguishable in the local file from a genuinely live bet. Cross-verified against the account's full fill history: paginated all 2,498 fills via `GET /portfolio/fills`, filtered to `exchange_index==3` — exactly 1 shard-3 fill exists in the entire account history, matching `POS-466189FABE` and confirming no other position among the 140 filled at any point, not just "not yet." |
+| Why this matters | GG-203's shard-3 funding (this wave, T-568) exists specifically to let T4M-PROJ resume contributing real filled positions to the project's only clean G6 sample-adequacy cohort (`clean_n=765`, APR-0024). If the downstream resolution pipeline resolves these 139 `open_positions` rows using their locally-recorded assumed entry price/direction and the game's real outcome — without first checking real Kalshi fill status — it would compute and record P&L for 139 trades where **zero capital was ever actually at risk**, silently injecting up to 139 fabricated rows into the project's only commercial-validation evidence. This is a distinct risk from GG-296 (ring-buffer/demand-measurement bias): GG-296 concerns which *real* positions might be non-randomly excluded; GG-297 concerns *fictitious* positions being included. |
+| Impact | HIGH and time-sensitive: 2026-09-22's games have very likely already resolved or are close to resolving as of this entry (2026-09-23) — whichever session/process owns `t4_mlb_resolved_ledger.jsonl` writes may act on these 139 rows before this gap is triaged. If any of the 139 are already present in the resolved ledger with a non-zero P&L, that is confirmation the contamination has already occurred and those rows must be excluded from any G6 cohort count. |
+| Discovery | 2026-09-23, T-568 (this session), Deliverable 4 (characterize what the cohort gained from this wave's shard-3 funding) — queried all 140 positions' real Kalshi order status rather than assuming the local `open_positions` count reflected real fills. |
+| Resolution | Not resolved — register-and-stop per Hard Rule 11 (resolution-pipeline code is owned by other sessions this wave, out of this session's scope). Recommended next action, for whichever session owns settlement: (1) before resolving any `open_positions` row, verify real fill status via `GET /portfolio/orders/{order_id}` or cross-check against `GET /portfolio/fills`, not the locally-cached `kalshi_order_status`; (2) audit `t4_mlb_resolved_ledger.jsonl` for any of the 139 canceled `kalshi_order_id`s already present with a resolved outcome/P&L, and if found, exclude them from any G6 `clean_n` count immediately; (3) consider adding a periodic re-poll of open positions' real order status into the live pipeline so the local ledger's `status: "OPEN"` reliably means "confirmed filled and unresolved," not "was accepted at submission time." |
+| Cross-references | GG-203 (T-568 addendum row, 2026-09-23 — the one real fill this finding is measured against), GG-296 (the other, distinct cohort-integrity risk this wave surfaced), APR-0024/GG-004 (G6 sample-adequacy standard this cohort feeds), ADR-0050 (flat `$1.00` measurement stake — confirms each of the 140 intended positions carried real, non-trivial capital exposure if filled, making the phantom-fill distinction material rather than negligible). |
+| Update (2026-09-23, T-571) | A separate task this session (ledger-integrity audit Deliverable 1) extended this exact test — per-order `GET /portfolio/orders/{order_id}`, `authenticated=True` — from the 140 `open_positions` rows above to every epoch-12 T4M-PROJ **closed** row currently in the ledger (905 rows, spanning 2026-07-31 to 2026-09-22; `logic_epoch.is_clean_for_band()`-filtered). Result on the full 905: 35 FILLED, 139 CANCELED, 731 NOT_RETRIEVABLE (404/no-record). The 139 CANCELED are the same 2026-09-22 batch this gap already documents as OPEN-but-phantom — they now also appear resolved-to-CLOSED in the current ledger pull, meaning the contamination this gap warned about (resolving canceled/zero-fill positions as if they were real trades) has occurred: those 139 rows now carry a recorded `outcome`/`pnl` despite zero capital ever at risk. Restricting to the 765-row cohort T-565's committed calibration run (`scripts/t565_calibration_model_vs_market.py`, commit `2d3321d`) actually used (dated 2026-07-31 through 2026-08-13, predating the 2026-09-22 canceled batch entirely): 34 FILLED, 0 CANCELED, 731 NOT_RETRIEVABLE. **731 of 765 rows (95.6%) in the project's sole G6 calibration cohort have no independent Kalshi confirmation of ever being filled — not "confirmed phantom," but not "confirmed real" either; see new gap GG-300 for the full sizing and the NOT_RETRIEVABLE-vs-confirmed distinction, which this gap's original text did not need to draw since its own 140-row sample happened to split cleanly into just FILLED/CANCELED with no NOT_RETRIEVABLE case.** Read-only; no ledger row edited, excluded, or re-stamped by this update. |
+| Update (2026-09-24, T-573) | This wave's block 34.2 traced the mechanism behind the 139 CANCELED/phantom rows one level deeper and found it is not isolated to this one 2026-09-22 batch: 172 distinct `kalshi_ticker` values across the epoch-12 T4M-PROJ clean cohort are each claimed by 2-4 ledger rows carrying distinct, non-existent `kalshi_order_id`s (386 NR rows affected; see new gap GG-303 for the full partition). This is a second, structurally similar integrity defect — duplicated tickers with fabricated order IDs, rather than canceled-but-recorded-as-open — surfacing in the same ledger this gap already flagged as unreliable for open-position status. Read-only; no ledger row edited. Cross-reference: GG-303. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — Live VPS logs/paper_portfolio_mlb_t4.json (read-only, this session): 21 open_positions, all status OPEN/submitted, none canceled; the 139-canceled state is preserved only in exp_output/T577_cohort_salvage/. Write boundary fixed in 7493ecd (GG-303, refuse position write when Kalshi returns no order_id).
+
+</details>
+
+---
+
+### GG-324 — Market efficiency has been measured for exactly one Kalshi family (KXMLBHIT); the rest of the archived board has never been surveyed, so "where is the market least efficient" is an assumption, not a finding
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-324 |
+| Category | Evidence adequacy / strategic premise: CLAUDE.md § "Market efficiency gradient" says the strategy is designed for less-efficient markets, but no instrument has compared efficiency across families (T-599) |
+| What was found | EXP-029 (T-596) scored the frozen pre-game model against KXMLBHIT only and returned HARMFUL (game-clustered paired dBrier -0.00393, 215 games). That is a verdict about one family and one model. The price archive (`exp_output/PRICE_ARCHIVE/`, gitignored, present only in the main working tree, not in worktrees) holds quotes for other MLB families (per the T-599 brief: KXMLBGAME, KXMLBTEAMTOTAL, KXMLBTOTAL, KXMLBSPREAD, KXMLBF3, KXMLBF5, KXMLBF5TOTAL, KXMLBF5SPREAD) and NFL families. No calibration, spread, vig or convergence measurement exists for any of them. The figures in the T-599 brief (~1.82M rows, 119 files, 2026-08-01 to 09-30) were NOT verified at registration time; a directory listing at registration showed 122 entries, so the brief's count is already at least partly inexact. Verification is Deliverable 1. |
+| Why it matters | The COVERAGE_TARGET_MATRIX records an unadjudicated tension between generality and edge. Without a per-family efficiency measurement, expansion targets are chosen without evidence on the very axis the strategy claims to depend on, and a HARMFUL verdict on one family can be silently over- or under-generalized. |
+| Done | Registered before any ranking is computed. Pre-registration (D2) follows as the next pushed commit; nothing has been measured. |
+| Not done | Everything. No inventory, no proxies, no ranking, no null bands. |
+| Constraints | Measures the market, not our model. No model is fit or tuned, no position opened, no sizing touched. Archive is read-only. |
+| Cross-references | EXP-029, T-596, T-599, GG-004, COVERAGE_TARGET_MATRIX.md, CLAUDE.md market efficiency gradient. |
+
+
+
+**Update 2026-09-30 (T-599, EXP-031):** survey executed against all 14 archived families; zero candidates under the pre-registered rule; limitation (first-seen snapshot) logged. A last-pre-game-snapshot follow-up would need its own pre-registration. Results: `RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md`. Archive holds a `prices_2026-08-01.jsonl.BROKEN_FIRSTRUN` file that was not read.
+**W59.1 disposition (2026-10-08):** RESOLVED — EXP-031 (RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md, T-599, names GG-324) surveyed 14 families (10 MLB measured, 4 NFL inconclusive); read this session.
+
+</details>
+
