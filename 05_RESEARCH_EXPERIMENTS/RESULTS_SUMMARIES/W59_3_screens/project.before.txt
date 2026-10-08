@@ -1,0 +1,184 @@
+PMBOT — project state
+as of origin/main 0aeb81c, generated 2026-10-08T01:39:06Z
+Live Terminal →
+Cron arms
+no data
+Data feeds
+no data
+Services & deploy
+warning
+Books & risk
+no data
+Evidence clocks
+no data
+Calibration
+no data
+Verdicts
+11 EXP
+Gaps
+157 open
+Your desk
+17 to decide
+Operations — cron arms
+as of 2026-10-08T01:39:19Z · source logs/*.log mtime + last 6 lines
+Last run = log mtime. Last success is shown only when the log's final lines carry no error marker.
+Arm	Last run	Last success	Source
+● T1 MLB paper (daily 11:00Z)	no data (no data)	no data	logs/paper_mlb_cron.log amber >26h, red >50h
+● T4 MLB live cron	no data (no data)	no data	logs/t4_mlb_live_cron.log amber >6h, red >26h
+● MLB resolver (daily 06:30Z)	no data (no data)	no data	logs/resolve_mlb_cron.log amber >26h, red >50h
+● Shadow settle (daily 09:30Z)	no data (no data)	no data	logs/pregame_shadow_settle.log amber >26h, red >50h
+● NHL shadow (T1/T2/T3 + settle)	no data (no data)	no data	logs/nhl_shadow_cron.log amber >6h, red >26h
+● NFL shadow T1	no data (no data)	no data	logs/pregame_shadow_t1.log amber >26h, red >50h
+● NFL shadow T2	no data (no data)	no data	logs/pregame_shadow_t2.log amber >26h, red >50h
+● NFL shadow T3	no data (no data)	no data	logs/pregame_shadow_t3.log amber >26h, red >50h
+● MLB postseason shadow T1	no data (no data)	no data	logs/mlb_pregame_shadow_t1.log amber >26h, red >50h
+● MLB postseason shadow T2	no data (no data)	no data	logs/mlb_pregame_shadow_t2.log amber >26h, red >50h
+● MLB postseason shadow T3	no data (no data)	no data	logs/mlb_pregame_shadow_t3.log amber >26h, red >50h
+● NBA schedule backfill (daily 09:47Z)	no data (no data)	no data	logs/nba_shadow_backfill.log amber >26h, red >50h
+● NBA shadow T1	no data (no data)	no data	logs/nba_pregame_shadow_t1.log amber >26h, red >50h
+● NBA shadow T2	no data (no data)	no data	logs/nba_pregame_shadow_t2.log amber >26h, red >50h
+● NBA shadow T3	no data (no data)	no data	logs/nba_pregame_shadow_t3.log amber >26h, red >50h
+Data-feed freshness
+as of 2026-10-08T01:39:19Z · source exp_output/MLB_GAME/cache_w47 meta · logs mtimes
+Feed	Stamp	Age	Source
+● MLB games-cache stamp (limit 26h)	no data	no data	exp_output/MLB_GAME/cache_w47/games_current.meta.json shadow refuses to log past 26h
+● Price archive (cron log)	no data	no data	logs/price_archive_cron.log amber >2h, red >26h
+● MLB feature refresh	no data	no data	logs/mlb_feature_refresh.log amber >26h, red >50h
+Services, host health & deploy
+as of 2026-10-08T01:39:19Z · source systemctl · journalctl -k · git
+Item	Value	Source
+● t4-mlb service	no data	systemctl show t4-mlb
+● pmbot-web-dashboard service	no data	systemctl show pmbot-web-dashboard
+● Kernel OOM kills, 7d (GG-477)	no data	journalctl -k
+● VPS HEAD vs origin/main	d3bb041 vs 0aeb81c — DIFFERENT	git rev-parse (local ref; fetched at deploy)
+● Last deploy's t4-mlb restart decision	no data recorded only in the GitHub job summary; the VPS keeps no copy	GitHub Deploy job summary (GG-432)
+Books & risk — paper ledgers
+as of 2026-10-08T01:39:19Z · source logs/paper_portfolio_*.json (paper ledgers, no real capital)
+Paper money only. Drawdown is realized loss over initial bankroll, the quantity the kill switch reads. A band at kelly_fraction 0.0 stakes $0 by design (ADR-0048).
+Not listed above: the NFL game-market paper book is ARCHIVED (frozen 2026-10-07, GG-490). Final: realized P&L -$160.66 over 840 closed + 4 open (future games); 820 positions booked from Kalshi settlement under ADR-0071. Source: logs/w58_1_nfl_booking_report.json (VPS), 2026-10-07. Paper money only, shadow.
+Paper ledger	Bankroll	Realized P&L	Drawdown vs 20% kill	Open	Last write
+● MLB T1/T2/T3 paper
+logs/paper_portfolio_mlb.json	no data — ledger unreadable
+● MLB T4 paper
+logs/paper_portfolio_mlb_t4.json	no data — ledger unreadable
+● NFL game-market paper
+logs/paper_portfolio_t1_nfl_game_market.json	no data — ledger unreadable
+Evidence clocks — SHADOW cells
+as of 2026-10-08T01:39:19Z · source SHADOW ledgers + settled/ copies (counts only; no score, no Brier)
+Counts only: no score, no Brier. Nothing here places or sizes an order. MLB 2026 postseason is too small to reach its judged n; the clock that matters is 2027.
+SHADOW cell	Rows	Settled games	Judged n (first look → judged)	Last row
+NHL (no ledgers) SHADOW · not trading	no data — no ledger found
+NFL (no ledgers) SHADOW · not trading	no data — no ledger found
+MLB (no ledgers) SHADOW · not trading	no data — no ledger found
+NBA (no ledgers) SHADOW · not trading	no data — no ledger found
+Calibration — SHADOW cells
+as of n/a · source exp_output/CALIBRATION
+no data — awaiting the first calibration-engine run (no engine_<UTC>.json yet)
+Verdict board & evidence ledger
+as of 2026-10-08T01:39:19Z · source 05_RESEARCH_EXPERIMENTS/EXP*PREREGISTRATION*.md · 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/
+EXP	Question	Pre-reg	Verdict
+EXP025_HYP010_NB	EXP-025 — HYP-010 Phase 2, NB refit pre-registration	228a273 2026-08-29	no results summary found
+EXP030_T4_STRUCTURE	EXP-030 — T4M-PROJ structure enhancer: pre-registration (T-598, GG-320, GG-323)	21ab065 2026-09-29	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP030_RESULTS_t4_structure_2026-09-30.md EXP-030 results — T4M-PROJ structure enhancer (T-598, GG-320)
+EXP031_MARKET_EFFICIENCY	EXP-031 — Cross-family market-efficiency ranking: PRE-REGISTRATION	803f881 2026-09-30	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP031_RESULTS_market_efficiency_survey_2026-09-30.md EXP-031 — Cross-family market-efficiency survey: RESULTS
+EXP032_EXECUTION_COST_SURFACE	EXP-032 — Execution cost surface: is the toll structural, or an artefact of when we looked?	c663f41 2026-09-30	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md EXP-032 RESULTS — Execution cost surface (T-603, GG-325)
+EXP033_MULTILEG_COHERENCE	EXP-033 — Multi-leg coherence of Kalshi sports books: PRE-REGISTRATION	0391a8f 2026-09-30	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP033_RESULTS_multileg_coherence_2026-10-01.md EXP-033 Results — Multi-Leg Coherence (2026-10-01)
+EXP035_BOARD_SURVEY_SPORTS	EXP-035 — Kalshi sports board beyond MLB/NFL: net of cost and fee	e28166a 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_RESULTS_board_survey_sports_2026-10-02.md EXP-035 results — Part 1 FAILED; D2 diagnosis and fee re-score (T-605, 2026-10-02)
+EXP035_GATE2	EXP-035 Gate 2 — pre-registration (T-605, 2026-10-02)	00278d8 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP035_GATE2_RESULTS_KXMLBTOTAL_2026-10-02.md EXP-035 Gate 2 — KXMLBTOTAL candle-vs-archive agreement — RESULT: PASSED (7/7)
+EXP036_NHL_PREGAME_SHADOW	EXP-036 — NHL pregame shadow evaluation: PRE-REGISTRATION	0902d32 2026-10-02	05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP036_NHL_PREGAME_SHADOW_RESULTS_2026-10-02.md EXP-036 / T-607 — NHL pregame shadow pipeline: results (Wave 47 block fly-nhl-pregame)
+EXP037_MLB_PREGAME_SHADOW	EXP-037 (T-608) — MLB pre-game shadow: pre-registration of 12 cells (2026-10-02)	c3ba006 2026-10-03	no results summary found
+EXP037_NFL_PREGAME_SHADOW	EXP-037 (T-608) — NFL pre-game shadow: pre-registration of 12 cells (2026-10-02)	149028c 2026-10-03	no results summary found
+EXP038_NBA_PREGAME_SHADOW	EXP-038 (W58.2) — NBA pre-game shadow: pre-registration of 12 cells (2026-10-06)	68739f9 2026-10-06	no results summary found
+Cell matrix (registry)
+as of 2026-10-06T18:20:57-07:00 · source src/prediction_market_bot/c5_execution/market_type_registry.py
+Status	Cells
+active	1
+blocked	2
+dark	1
+not_implemented	76
+shadow	24
+total	104
+Governance gaps
+as of 2026-10-07T17:42:11-07:00 · source 03_DECISIONS/GOVERNANCE_GAP_LOG.md
+
+157 OPEN of 179 live gaps. CRITICAL 2 · HIGH 21 · MEDIUM 57 · LOW 56 · UNSPECIFIED 21
+
+Newest OPEN	Severity	Age (d)
+GG-499 — Shadow settled-row schemas differ by sport (NHL no game_key/p_clim; MLB no p_clim; MLB T1 has no settled file)	LOW	—
+GG-498 — deploy/cron.conf does not mirror the live crontab (EXP-037 and NHL shadow blocks absent)	LOW	1
+GG-487 — MLB shadow settlement y is derived from games-cache final scores, never cross-checked against Kalshi's own settlement	LOW	1
+GG-452 — DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks	LOW	139
+GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it (breach scenario corr	HIGH	5
+GG-431 — Dashboard "MODEL VS MARKET" panel shows input read 58d20h ago next to LIVE data	MEDIUM	5
+GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed	LOW	5
+GG-429 — Dashboard froze on last-good numbers after the data source disappeared	HIGH	—
+Decisions & ADRs
+as of 2026-10-07T17:26:59-07:00 · source 03_DECISIONS/DECISION_LOG/DECISION_LOG.md
+
+ADRs: ACCEPTED 54, UNKNOWN 5, PLACEHOLDER 1, DRAFT 1, PROPOSED 9 · 60 decision-log entries
+
+PROPOSED ADRs
+ADR-0052 — — Executable-Assertion Requirement for Governance-Gap RESOLVED Status + G6 Ledger-Invariant Precondition
+ADR-0063 — — A Kill Switch Is Meaningless Unless Tied to the Kelly Alignment of What It Halts: Five-Tier Hierarchy (Decis
+ADR-0064 — — Repair `park_factor_hits` Venue-Name Matching (Draft, Not Activated)
+ADR-0065 — T4 MLB Walk-off Leverage Shrink — Candidate Model (PROPOSED, NOT ACCEPTED)
+ADR-0066 — NFL EXP-027 Passing/Rushing EPA Splits — Candidate Model (PROPOSED, NOT ACCEPTED)
+ADR-0067 — Append-Only Position Log With Periodic Snapshot (PROPOSED, NOT ACCEPTED)
+ADR-0068 — — Execution Band Horizon Doctrine: Decision-Tree Depth Is Governed by Decision Horizon
+ADR-0069 — — Game-Key Correlation Group: Definition, Membership, Aggregation, and Group-Level Halt/Budget Semantics
+ADR-0070 — — Probit-Platt Distributional Forecaster for Game-Market Ladders: Deviation from ADR-0004
+Latest decisions
+2026-10-07	W58.3 calibration engine (T-716..T-720)
+2026-10-06	W57.3: Live Terminal shows T4M-PROJ placements; C4 limits read stdlib-only
+2026-10-05	W56.3 Visual Dashboard (STANDARD)
+2026-10-06	W56.1 (T-692): MLB cache scheduler moved to GitHub Actions; GG-477 cron stagger applied
+2026-10-05	W55.1: #159 landed, 26 stuck MLB positions booked from Kalshi settlement (ADR-0071)
+2026-10-05	W54.3: ADR-0071 recorded; Kalshi-settlement resolver built, dry-run complete (no ledger written)
+2026-10-05	W54.2: GG-432 closed with VPS proof; MLB shadow arming held (GG-470)
+2026-10-02	Wave 47 block 47.1 stopped early by operator; D3/D4/D5 carried over
+Your desk & wave history
+as of 2026-10-07T17:42:11-07:00 · source 04_EXECUTION/ACTIVE_QUEUE.md · 04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md
+Needs your decision	
+GG-432	✅ DECIDED 2026-10-04: option (a), PR #158 — merged in 54.2.
+GG-450	✅ DECIDED 2026-10-04: booked at Kalshi settlement value, flagged cancelled, excluded from G6 + calibration — built in 54.3.
+GG-440	✅ DECIDED 2026-10-04: Kalshi settlement is the resolution source; statsapi/ESPN cross-check only — ADR + code in 54.3.
+NHL goalie timing (GG-401)	Pulled from Wave 53 (timing-bound). The measurement — run `scripts/nhl_goalie_source_probe.py` at ~60/30/15 min before one slate's puck drop — fits a detached read-only VPS job (row below) instead of
+Postponed games	✅ DECIDED 2026-10-04: resolve on Kalshi's result — in 54.3.
+GG-477 cron stagger	✅ AUTHORIZED 2026-10-05 — line above; 56.2 applies it.
+VPS 22:30 UTC features cron	✅ AUTHORIZED 2026-10-06 — line above; 58.1 A5 removes it.
+NEW — NFL game-market paper book (GG-490)	Old NFL paper book: no writer, no resolver, ~820 open positions on past games. The live NFL work is the EXP-037 shadow arm, which is healthy. Recommend: retire it — book its positions once under A
+ADR-0070 scope (GG-400)	✅ DECIDED 2026-10-07: widen to NHL + NBA, then accept — 59.3.
+NBA preseason rows	✅ DECIDED 2026-10-07: default kept — logged, labelled, excluded from judged n.
+Detached read-only VPS jobs	Long read-only work runs unattended on the VPS through `scripts/vps_job.py`. A line naming *detached read-only VPS jobs* unlocks it.
+T1 MLB postseason flag	Adds `--include-postseason` to the existing T1 MLB cron line. Edits an existing line, so the shadow authorization does not cover it.
+EXP-034	Run its ≥2.5-hour sampler as a VPS job, or park it (window's recommendation).
+ADR-0070	Model-class deviation for NFL/MLB shadow models. As written it does not cover NHL (GG-400): widen it while still PROPOSED, or accept that GG-400 stays open.
+GG-347, remaining half	The SSH poller from 73.231.159.158 — yours?
+MLB winter	After the World Series: stand T1/T4 MLB down, or idle all winter?
+Settlement + depth capture schedules · Polymarket KYC · odds feed · provenance allowlist ·	Unchanged.
+Wave history
+Wave 58 prompts — archived 2026-10-07 03:00 UTC. 58.1 PARTIAL (A-C done; D gap triage not done). 58.2 PARTIAL (NBA arm built, deployed, cron armed; rows from ~10-19). 58.3 DONE (calibration engine live). Verbatim:
+Wave 57 prompts — archived 2026-10-07 01:10 UTC. 57.1 PARTIAL (#171 merged: MLB features via GH Actions; T1 proof pending next 11:00 UTC run; GG-489 claimed not registered). 57.2 DONE (#170: MLB settle, 128 settled; GG-472/477 resolved). 57.3 DONE (#172: T4 pl
+Wave 56 prompts — archived 2026-10-06 00:55 UTC. 56.1 DONE (#165/#166: MLB cache via GH Actions, GG-482 resolved; cron stagger applied). 56.2 DONE (#167/#169: Live Terminal NOW decision stream). 56.3 DONE (#168: Visual Dashboard ops health). Verbatim:
+Wave 55 prompts — archived 2026-10-05 23:45 UTC. 55.1 DONE (#159 merged, 26 positions booked: T1 12.44%, T4 13.45%). 55.2 DONE (#160 merged, 24 SHADOW live, t4-mlb restart = host OOM GG-477). 55.3 BLOCKED (ESPN lacks MLBAM starter ids) -> 55.3b DONE (#164, off
+Wave 54 prompts — archived 2026-10-05 07:55 UTC. 54.1 DONE (#160 green+clean, SHADOW 24). 54.2 PARTIAL (#158 merged + proven; #162/#163 merged; MLB shadow armed, no rows - statsapi 406). 54.3 DONE (ADR-0071; #159 green @ 2421c0a; dry run under 20%). Verbatim:
+Wave 53 prompts — archived 2026-10-05 04:35 UTC. 53.1 PARTIAL->closed (GG-440 CONFIRMED refined; 0 of 26 settle), 53.2 DONE (GG-453), 53.3 PARTIAL (operator paste truncated at D3; D4-D6 not run). Verbatim:
+Wave 52 prompt — archived 2026-10-03 22:15 UTC. One Claude Code (cloud) session ran 52.A-52.E 21:27-22:00 UTC, all DONE, nothing merged to main (verified by the strategic window against GitHub: PRs #158-#161 open, CI green, main docs-only since 9b1b5e1). Verba
+Wave 51 prompts — archived 2026-10-03 20:35 UTC. 51.1 CLOSED (verdict d: realized drawdown 10.60%, not tripped; dashboard fix on branch 6cbe62f; GG-440..442). 51.3 CLOSED (PR #157 MERGEABLE, head 42a0d0d, CI green). 51.2 IN FLIGHT at archive time (prompt archi
+Wave 51.3 (original) — WITHDRAWN 2026-10-03 20:20 UTC, never run. Operator: "don't give me a prompt block if I can't run it now" -- it needed an MLB idle window (~03:30 UTC) to merge. Replaced in the live queue by 51.3 PR #157 merge-ready; the merge + NHL SHAD
+Wave 48 — CLOSED 2026-10-03. 48.1 (T-631): stopped early at operator request -- NFL rebased onto main (branch session/exp037-nfl-land-rebased-0e, suite not run), nothing landed or deployed. 48.2 (T-632): PARTIAL (operator cut) -- queue+archive landed (4bd008b)
+Repository
+as of 2026-10-07T18:37:17-07:00 · source git rev-parse origin/main · git branch -r --no-merged origin/main
+
+origin/main 0aeb81c5404efd6d22e6319e595c13cd08c47a88 — Merge pull request #182 from eignacio1/w59-2-part-d
+Unmerged remote branches: 46
+
+Data assets
+as of 2026-10-08T01:39:19Z · source exp_output/ (filesystem stat; read-only)
+Store	Size	Rows	Newest record
+MLB feature matrix	awaiting path not present in this checkout
+Price archive (shared)	awaiting path not present in this checkout
+Board survey G2 raw (KXMLBTOTAL)	0.0 MB / 2 files	—	2026-10-08T01:38:52Z
+EXP-032 cost surface	0.3 MB / 2 files	—	2026-10-08T01:38:52Z
+EXP-033 coherence	0.0 MB / 2 files	—	2026-10-08T01:38:52Z
+EXP-034 non-sports control	0.5 MB / 13 files	—	2026-10-08T01:38:52Z
+Validated Kalshi history	0.7 MB / 3 files	862	2026-10-08T01:38:52Z

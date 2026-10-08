@@ -1,0 +1,40 @@
+PMBOT
+│
+PAPER · DEMO VENUE · NO REAL CAPITAL
+│
+EPOCH 12
+│
+RUN 0aeb81c
+· ORIGIN 0aeb81c = in sync
+│
+T4 —
+PROJECT STATE →
+01:39:29Z
+│
+LIVE
+│
+⏸ PAUSE
+⟳ 28s
+NOWAWAITING
+OVERVIEW0 OPEN
+MLB · T1/T40 OPEN
+NFL · T10 OPEN
+EVIDENCECLEAN
+PIPELINE C1–C811 GAPS
+FEEDS & HEALTHOK
+COVERAGE104 CELLS
+SHADOW24 CELLS
+MLB POSTSEASON
+VERDICTS
+DECISIONS
+awaiting
+MODE
+NO DATA
+awaiting decision sources
+T4M-PROJ PLACEMENTS (PAPER ORDERS)
+—
+DECISION STREAM
+—
+WOULD-FIRE ONLY
+awaiting decision stream (shadow ledgers + t4 cycle log)
+server 2026-10-08T01:39:27Z · epoch 12 · 0 open / 0 closed / 0 events in window · NFL model EXP-027 LR (T-531, HYP-012, verdict UNDERPOWERED) · rejected mlb ? / mlb_t4 ? / nfl ?

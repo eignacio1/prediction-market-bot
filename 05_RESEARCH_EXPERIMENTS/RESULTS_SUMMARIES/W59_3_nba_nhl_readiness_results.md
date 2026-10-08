@@ -27,7 +27,7 @@ Cells with `FLIP-OK` get the registry edit (same pattern as `_EXP037_NFL_SHADOW_
 No order, position, fill, stake or `kelly_fraction` change; no live-ledger write. New tests: `tests/test_w59_3_nba_preseason.py` (14 passing with the NBA safety suite).
 
 ### Screenshots
-Before/after real-browser captures: pending post-deploy (`scripts/browser_check_dashboard.py`).
+Before/after real-browser captures: see Part D section (`scripts/browser_check_dashboard.py`).
 
 ## Part B — NHL goalie verdict: **(b) the API does not flag the starter in time** (GG-401 stays OPEN)
 
@@ -62,3 +62,10 @@ Operator choice (W52_D): adopt this amendment, or a different confirmed-starter 
 
 Authorizes no order, position, fill, stake or kelly_fraction change. GG-400 moved verbatim to the archive as RESOLVED.
 GG-401 stays OPEN (Part B finding added to its entry).
+
+## Part D - Real-browser before/after (headless Chromium, `scripts/browser_check_dashboard.py` + a Feeds & Health tab capture)
+Before = commit `6085e92^` (pre-#179); after = main at `8d300dd`. Both served locally, so no VPS ledger data (every feed reads "no log yet" - source: local empty `exp_output`, age: n/a).
+Files in `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_3_screens/`: `index.{before,after}.png`, `health.{before,after}.png`, `project.{before,after}.png`, `report.{before,after}.json`.
+- Console/page errors, failed requests, 4xx/5xx: **none** on either side, both pages.
+- `/api/data` after: `season_state.NBA = off` (correct for 2026-10-08; before: key absent). `freshness.nba_shadow` = `{awaiting: exp_output/PREGAME_SHADOW/NBA_*.jsonl, age_s: null, level: none, season: off}`.
+- **Gap found (not fixed, Rule 11):** the Feeds & Health tab renders NO NBA row while `nba_shadow.last_ts` is absent (JS pushes the row only when a ledger exists), so the "awaiting" state is in the API but not on screen - the design bar says a panel with no data should say "no data". Preseason rows live in `PREGAME_SHADOW_PRESEASON`, so the row stays hidden until real ledgers exist (~10-20). Registered for follow-up: render an explicit "SHADOW NBA ledgers: no data - awaiting" row.
