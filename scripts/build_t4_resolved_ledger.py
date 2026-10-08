@@ -48,8 +48,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
+import os
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -160,6 +163,66 @@ def write_jsonl(rows: list[dict], out_path: Path) -> None:
             fh.write(json.dumps(row) + "\n")
 
 
+def _row_key(row: dict) -> str:
+    return str(row.get("position_id") or json.dumps(row, sort_keys=True))
+
+
+def _read_existing(path: Path) -> tuple[list[dict] | None, str | None]:
+    """Returns (rows, None), or (None, reason) when the file cannot be read as a ledger."""
+    rows: list[dict] = []
+    try:
+        with open(path) as fh:
+            for line in fh:
+                if line.strip():
+                    rows.append(json.loads(line))
+    except (OSError, ValueError) as exc:
+        return None, f"{type(exc).__name__}: {exc}"
+    return rows, None
+
+
+def diff_ledgers(existing: list[dict], rebuilt: list[dict]) -> dict:
+    """GG-228: classify rebuilt vs existing by position_id. Added rows are safe;
+    a changed or removed existing row means the rebuild would overwrite state."""
+    old = {_row_key(r): r for r in existing}
+    new = {_row_key(r): json.loads(json.dumps(r)) for r in rebuilt}
+    changed = sorted(k for k in old if k in new and old[k] != new[k])
+    removed = sorted(k for k in old if k not in new)
+    added = sorted(k for k in new if k not in old)
+    return {"changed": changed, "removed": removed, "added": added}
+
+
+def guarded_write(rows: list[dict], out_path: Path) -> tuple[Path, dict | None]:
+    """Write the ledger without clobbering a repaired file (GG-228).
+
+    Returns (path_written, diff). If any existing row would change or disappear the
+    live file is left untouched and the rebuild lands beside it as
+    <name>.rebuild_<UTC>.jsonl; the caller still exits 0."""
+    tmp = out_path.with_name(out_path.name + ".tmp")
+    write_jsonl(rows, tmp)
+    if not out_path.exists():
+        os.replace(tmp, out_path)
+        return out_path, None
+    existing, err = _read_existing(out_path)
+    if existing is None:
+        diff = {"changed": [], "removed": [], "added": [], "unreadable": err}
+        differs = 1
+    else:
+        diff = diff_ledgers(existing, json.loads(json.dumps(rows)))
+        differs = len(diff["changed"]) + len(diff["removed"])
+    if differs:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        side = out_path.with_name(f"{out_path.stem}.rebuild_{stamp}{out_path.suffix}")
+        os.replace(tmp, side)
+        logging.getLogger("build_t4_resolved_ledger").warning(
+            "GG-228 GUARD: %d existing row(s) differ from rebuild (changed=%d removed=%d%s); "
+            "NOT overwriting %s; rebuild written to %s",
+            differs, len(diff["changed"]), len(diff["removed"]),
+            f" unreadable={diff['unreadable']}" if "unreadable" in diff else "", out_path, side)
+        return side, diff
+    os.replace(tmp, out_path)
+    return out_path, diff
+
+
 def _print_summary(rows: list[dict], n_open: int, portfolio_path: Path, out_path: Path) -> None:
     n = len(rows)
     wins = sum(1 for r in rows if r["outcome"] == "WIN")
@@ -211,8 +274,9 @@ def main(argv=None) -> int:
 
     rows, n_open = build_ledger(portfolio_path)
     out_path = Path(args.out)
-    write_jsonl(rows, out_path)
-    _print_summary(rows, n_open, portfolio_path, out_path)
+    logging.basicConfig(format="%(levelname)s %(message)s")
+    written, _ = guarded_write(rows, out_path)
+    _print_summary(rows, n_open, portfolio_path, written)
     return 0
 
 
