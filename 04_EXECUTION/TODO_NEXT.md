@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-08T02:00:00Z (W59.2 — W59.2 done: first-look projection from real schedules (NFL 2026-11-02), release mechanics, one settled-row schema, 1,229/1,229 Kalshi settlement agree; GG-510..515 registered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261008T0145Z_W59_2.md` for full session detail.
+**Last reviewed:** 2026-10-08T02:30:00Z (T-740 — W60.1: only 107/1952 (5.5%) T4M-PROJ epoch-12 rows have a real demo fill (-$0.40/bet); GG-228 overwrite guard merged.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261008T0230Z_W60_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
