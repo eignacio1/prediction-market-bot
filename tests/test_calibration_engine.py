@@ -83,7 +83,8 @@ def test_mlb_has_no_climatology_field():
 
 def test_projection_counts_only():
     rows = [{**r, "start_time_utc": f"2026-10-0{1 + i % 5}T00:00:00Z"} for i, r in enumerate(_rows(30))]
-    pj = ce.project_first_look(ce.PREREG["NFL"], rows, NOW)
+    sched = ["2026-10-0%d" % (1 + i % 5) for i in range(40)] + ["2026-10-%d" % (10 + i % 15) for i in range(60)]
+    pj = ce.project_first_look(ce.PREREG["NFL"], rows, NOW, sched, "2026-10-01T00:00:00Z")
     assert pj["date"] and pj["date"] > "2026-10-07"
     assert ce.project_first_look(ce.PREREG["MLB"], rows, NOW)["note"].startswith("judged games begin")
 
@@ -117,3 +118,54 @@ def test_module_imports_only_scoring_and_stdlib():
     tree = ast.parse(Path(ce.__file__).read_text())
     mods = {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module}
     assert not [m for m in mods if "c5_execution" in m or "c4_risk" in m or "execution_bands" in m]
+
+
+# ── W59.2 Part A: schedule-based projection ───────────────────────────────────
+
+def _sched(start, per_day_pattern):
+    """One date string per scheduled game. per_day_pattern: {offset_days: n_games}."""
+    from datetime import timedelta
+    d0 = datetime.strptime(start, "%Y-%m-%d")
+    return sorted((d0 + timedelta(days=o)).strftime("%Y-%m-%d") for o, n in per_day_pattern.items() for _ in range(n))
+
+
+def _settled(n):
+    return _rows(n)
+
+
+def test_projection_follows_weekly_schedule_not_linear_rate():
+    # Weekly slate (16 games every 7 days). 20 settled of 32 scheduled since 2026-10-01 -> coverage 0.625.
+    sched = _sched("2026-10-01", {0: 16, 7: 16, 14: 16, 21: 16, 28: 16})
+    now = datetime(2026, 10, 9, tzinfo=timezone.utc)
+    out = ce.project_first_look(ce.PREREG["NFL"], _settled(20), now, sched, "2026-10-01T00:00:00Z")
+    # need 40 more; 48 left (dates >= 10-09: wk 10-15 x16, 10-22 x16, 10-29 x16) -> 0.625/game:
+    # 10-15: 10, 10-22: 20, 10-29: 30 ... need 40 > 48*0.625=30 -> not reachable in the schedule.
+    assert out["reachable"] is False and out["date"] is None
+    assert out["coverage"] == pytest.approx(0.625)
+
+
+def test_projection_date_lands_on_slate_day_plus_settle_lag():
+    sched = _sched("2026-10-01", {0: 10, 7: 10, 14: 10, 21: 10, 28: 10, 35: 10})
+    now = datetime(2026, 10, 9, tzinfo=timezone.utc)
+    out = ce.project_first_look(ce.PREREG["NFL"], _settled(20), now, sched, "2026-10-01T00:00:00Z")
+    # past = 10-01 + 10-08 slates = 20 scheduled, 20 settled -> coverage 1.0; need 40, 40 left (4 slates)
+    # -> the 40th lands on the last slate 11-05, +1 day settle lag
+    assert out["date"] == "2026-11-06" and out["reachable"] is True
+    # a linear trailing rate would put this on a different (earlier) day; the date must sit on a slate day + lag
+    assert out["date"] in {"2026-11-06"}
+
+
+def test_projection_none_without_schedule_or_before_season():
+    assert "no published schedule" in ce.project_first_look(ce.PREREG["NFL"], _settled(3), NOW, None)["note"]
+    mlb = ce.project_first_look(ce.PREREG["MLB"], [], NOW, None)
+    assert mlb["date"] is None and "2027-03-01" in mlb["note"]
+
+
+def test_projection_coverage_unmeasurable_with_tiny_sample():
+    out = ce.project_first_look(ce.PREREG["NFL"], _settled(1), NOW, ["2026-10-06"] * 2 + ["2026-10-20"] * 50, "2026-10-05T00:00:00Z")
+    assert out["date"] is None and "unmeasurable" in out["note"]
+
+
+def test_projection_reached_returns_no_date():
+    out = ce.project_first_look(ce.PREREG["NFL"], _settled(60), NOW, ["2026-10-20"])
+    assert out["note"] == "first look reached"

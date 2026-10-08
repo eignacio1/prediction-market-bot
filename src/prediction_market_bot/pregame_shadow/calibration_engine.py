@@ -174,29 +174,93 @@ def first_row_per_unit(rows: list[dict]) -> list[dict]:
 
 
 # ── projection ────────────────────────────────────────────────────────────────
+# W59.2 Part A. The projection walks the sport's REAL remaining schedule (games per day, so per week)
+# and multiplies by the cell's observed coverage (settled games / scheduled games since the cell began
+# logging). A trailing-day rate extrapolated linearly is wrong for NFL (one slate a week, a bye-week
+# dip, season ends at week 18) and for any cell that cannot reach its look inside the published season.
+SETTLE_LAG_DAYS = 1
 
-def project_first_look(policy: Policy, settled_rows: list[dict], now: datetime, window_days: int = 14) -> dict:
-    """Projected date judged n reaches the first look, at the trailing settle rate. Counts only."""
+
+def _day(s: Any) -> str | None:
+    t = _parse(s)
+    return t.strftime("%Y-%m-%d") if t else (str(s)[:10] if s else None)
+
+
+def load_schedule(repo: Path, sport: str) -> list[str] | None:
+    """Dates (YYYY-MM-DD, one entry per scheduled regular-season game) from the sport's published
+    schedule. None = no schedule published/available (never guessed)."""
+    try:
+        if sport == "NFL":
+            d = json.loads((repo / "data/schedules/nfl_2026.json").read_text())
+            return sorted(g["gameday"] for g in d["games"] if g.get("game_type", "REG") == "REG")
+        if sport == "NHL":
+            files = sorted((repo / "data/raw/nhl/schedule").glob("*.json"))
+            games = json.loads(files[-1].read_text())["games"] if files else []
+            out = [_day(g["start_time_utc"]) for g in games if g.get("game_type") == 2 and g.get("start_time_utc")]
+            return sorted(x for x in out if x) or None
+    except Exception:
+        return None
+    return None        # MLB 2027: schedule not yet published
+
+
+def _project_one(target: int, n: int, dates: list[str], coverage: float, today: str) -> dict:
+    need = target - n
+    future = [d for d in dates if d >= today]
+    per_week: dict[str, int] = {}
+    for d in future:
+        wk = (datetime.strptime(d, "%Y-%m-%d").date())
+        k = (wk - timedelta(days=wk.weekday())).isoformat()
+        per_week[k] = per_week.get(k, 0) + 1
+    expected_total = len(future) * coverage
+    if need <= 0:
+        return {"date": None, "reached": True}
+    if expected_total < need:
+        return {"date": None, "reachable": False, "need": need,
+                "expected_additional": round(expected_total, 1), "games_remaining_on_schedule": len(future)}
+    cum = 0.0
+    for d in future:
+        cum += coverage
+        if cum >= need:
+            land = (datetime.strptime(d, "%Y-%m-%d") + timedelta(days=SETTLE_LAG_DAYS)).strftime("%Y-%m-%d")
+            return {"date": land, "reachable": True, "need": need, "games_remaining_on_schedule": len(future)}
+    return {"date": None, "reachable": False, "need": need}
+
+
+def project_first_look(policy: Policy, settled_rows: list[dict], now: datetime, schedule: list[str] | None = None,
+                       cell_first_ts: str | None = None) -> dict:
+    """Projected date judged n reaches the first look, from the real remaining schedule x cell coverage.
+    Counts only. `schedule` = one date per scheduled game (None = unavailable -> no date, said plainly)."""
     if not policy.looks:
         return {"date": None, "note": "no pre-registered look"}
     elig = [r for r in first_row_per_unit(settled_rows) if eligible(policy, r)]
-    games: dict[str, datetime] = {}
-    for r in elig:
-        t = _parse(r.get("start_time_utc"))
-        if t:
-            games[r["game_key"]] = min(t, games.get(r["game_key"], t))
-    n, target = len(games), policy.looks[0]
+    n, target = len({r["game_key"] for r in elig}), policy.looks[0]
+    today = now.strftime("%Y-%m-%d")
     if n >= target:
-        return {"date": None, "note": "first look reached", "settle_rate_per_day": None}
-    if policy.eligible_from and now.strftime("%Y-%m-%d") < policy.eligible_from:
-        return {"date": None, "note": f"judged games begin {policy.eligible_from}", "settle_rate_per_day": None}
-    recent = [t for t in games.values() if t >= now - timedelta(days=window_days)]
-    span = max(1.0, (now - min(recent)).total_seconds() / 86400) if recent else None
-    rate = len(recent) / span if recent and span else 0.0
-    if rate <= 0:
-        return {"date": None, "note": "no games settled in the trailing window", "settle_rate_per_day": 0.0}
-    return {"date": (now + timedelta(days=(target - n) / rate)).strftime("%Y-%m-%d"),
-            "note": f"at {rate:.2f} settled games/day over the last {window_days}d", "settle_rate_per_day": rate}
+        return {"date": None, "note": "first look reached", "method": "schedule"}
+    if policy.eligible_from and today < policy.eligible_from:
+        return {"date": None, "note": f"judged games begin {policy.eligible_from}; schedule not yet published",
+                "method": "schedule"}
+    if not schedule:
+        return {"date": None, "note": "no published schedule available for this sport", "method": "schedule"}
+    start = _day(cell_first_ts) or today
+    cutoff = (now - timedelta(days=SETTLE_LAG_DAYS)).strftime("%Y-%m-%d")
+    past = sum(1 for d in schedule if start <= d <= cutoff)
+    if past < 5:
+        return {"date": None, "note": f"coverage unmeasurable yet ({past} scheduled games since the cell began logging)",
+                "method": "schedule"}
+    coverage = min(1.0, n / past)
+    if coverage <= 0:
+        return {"date": None, "note": f"no settled games out of {past} scheduled since logging began", "method": "schedule",
+                "coverage": 0.0}
+    res = _project_one(target, n, schedule, coverage, today)
+    res.update({"method": "schedule", "coverage": round(coverage, 3), "coverage_basis": f"{n} settled of {past} scheduled since {start}"})
+    if res.get("date"):
+        res["note"] = (f"{res['games_remaining_on_schedule']} games left on schedule x {coverage:.0%} coverage; "
+                       f"needs {res['need']} more")
+    elif res.get("reachable") is False:
+        res["note"] = (f"not reachable on the published schedule: need {res['need']} more, expect "
+                       f"{res.get('expected_additional', 0)} from {res.get('games_remaining_on_schedule', 0)} games left")
+    return res
 
 
 def _parse(s: Any) -> datetime | None:
@@ -273,7 +337,7 @@ def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool
     res.update({"cell": cell["cell"], "sport": cell["sport"], "band": cell["band"],
                 "market_type": cell["market_type"], "rows": len(ledger_rows), "settled_games": n_games_settled,
                 "pct_to_first_look": (round(100 * min(res["judged_n"] / policy.looks[0], 1), 1) if policy.looks else None),
-                "projection": project_first_look(policy, settled, now), "last_row": last,
+                "projection": project_first_look(policy, settled, now, load_schedule(repo, cell["sport"]), min((r["ts_utc"] for r in ledger_rows), default=None)), "last_row": last,
                 "prereg": policy.citation, "source": str(cell["ledger"].relative_to(repo))})
     return res
 
