@@ -1,6 +1,6 @@
 # W59.3 — NBA opening-night readiness, NHL goalie verdict, ADR-0070 widened + accepted
 
-Status per part: **A in PR** · B not started · C not started. Updated per part; newest state at top of each section.
+Status per part: **A merged (#179); flip-check filename fix in follow-up PR; preseason cron installed 2026-10-08, first run wrote 16 T1 rows to PREGAME_SHADOW_PRESEASON/NBA_NBA_MONEYLINE_T1.jsonl; t4-mlb restart: not_needed** · B not started · C not started. Updated per part; newest state at top of each section.
 
 ## Part A — NBA readiness
 
