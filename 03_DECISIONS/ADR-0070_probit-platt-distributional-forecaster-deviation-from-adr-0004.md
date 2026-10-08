@@ -1,10 +1,10 @@
 # ADR-0070 — Probit-Platt Distributional Forecaster for Game-Market Ladders: Deviation from ADR-0004
 
-**Status:** PROPOSED
+**Status:** ACCEPTED (2026-10-08, widened scope; operator decision 2026-10-07 17:26 PT, DECISION_LOG "Wave 59 proceed in full")
 **Date:** 2026-10-02
-**Decisions logged:** pending (widening: DECISION_LOG 2026-10-07 operator entry; this commit)
+**Decisions logged:** true (DECISION_LOG 2026-10-07 operator entry; 2026-10-08 W59.3 acceptance entry)
 **Author:** Session `fly-nfl-pregame` (EXP-037 / T-608, Wave 47 block 47.2)
-**Approval required:** DS (Earl Ignacio) sign-off before ACCEPTED
+**Approval:** DS (Earl Ignacio) 2026-10-07 17:26 PT: "Yes - proceed in full", covering widening to NHL+NBA and acceptance (shadow only)
 **Deviates from:** ADR-0004 (model class selection: LR + Platt scaling)
 **Does not touch:** ADR-0040/ADR-0048 (`kelly_fraction`), ADR-0016 (fees), every pool and ledger
 
