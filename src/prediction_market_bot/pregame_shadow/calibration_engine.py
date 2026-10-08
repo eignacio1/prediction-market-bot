@@ -46,7 +46,8 @@ class Policy:
     boot_b: int = scoring.BOOT_B                  # per pre-registration
     boot_seed: int = scoring.BOOT_SEED
     per_game_mean: bool = False                   # EXP-036: per-game score = mean over that game's strikes
-    rules: str = "exp037"                         # decision-rule family: "exp037" (NFL/MLB) | "exp036" (NHL)
+    rules: str = "exp037"                         # decision-rule family: "exp037" (NFL/MLB) | "exp036" (NHL) | "exp038" (NBA)
+    undefined: tuple[str, ...] = ()               # rules the pre-registration leaves open; the engine does NOT invent them
 
 
 PREREG: dict[str, Policy] = {
@@ -62,8 +63,20 @@ PREREG: dict[str, Policy] = {
                   "figures are PRELIMINARY only; T3 sealed while GG-401 is open",
                   sealed_while_gg_open=(("T3", "GG-401"),), has_climatology=False,
                   boot_b=10_000, per_game_mean=True, rules="exp036"),
+    # EXP-038 (W60.2). Differences from NFL, all from the text: looks 150 / 400, bootstrap seed 20261006 (B=2000),
+    # climatology from the training seasons (settle writes p_clim), preseason rows never count (settled_schema.counts_toward_judged_n).
+    "NBA": Policy("NBA", (150, 400), "sealed_until_look",
+                  "EXP-038 NBA pre-registration (2026-10-06): first look judged n=150 settled regular-season games per "
+                  "cell, second look 400; preseason excluded from judged n; seed 20261006",
+                  boot_seed=20261006, rules="exp038",
+                  undefined=("second look 'or 2027-01-31, whichever first': the date trigger names no rule for which games "
+                             "are scored or at what n, so only the n=400 second look is released (GG-529)",
+                             "'judged on whatever n they reach' (spread/total T1, sec. 1) conflicts with sec. 4 (no scoring "
+                             "before 150): a cell below 150 stays sealed",
+                             "ordering key for 'earliest N games': EXP-038 sec. 3 inherits EXP-037, whose addendum fixes "
+                             "(start_time_utc, game_key); not restated in EXP-038 itself")),
 }
-# Cells with no pre-registration (e.g. NBA until W58.2/EXP-038 lands) fall through to counts only.
+# Cells with no pre-registration fall through to counts only.
 NO_PREREG = Policy("-", (), "counts_only", "no pre-registration: counts only")
 
 # Historical families already scored in Waves 38-44: shown in full, citing the existing results.
@@ -153,6 +166,8 @@ def _games_in_order(rows: list[dict]) -> list[str]:
 
 
 def eligible(policy: Policy, row: dict) -> bool:
+    if not settled_schema.counts_toward_judged_n(row):
+        return False
     return policy.eligible_from is None or str(row.get("start_time_utc", ""))[:10] >= policy.eligible_from
 
 
@@ -179,7 +194,9 @@ def verdict(policy: Policy, status: str, scores: dict, n_judged: int) -> dict:
         else:
             v, why = "SHADOW-continue", "everything else"
     else:
-        if hi < 0:
+        if policy.rules == "exp038" and hi >= 0 and lo <= 0 and n_judged >= policy.looks[-1]:
+            v, why = "UNRESOLVED", "EXP-038 sec. 5.2: CI still spans zero after the second look; never decided by judgement"
+        elif hi < 0:
             v, why = "RULED_OUT", "delta vs market < 0 with the CI upper bound < 0"
         elif lo > 0 and e7 > 0 and ek > 0:
             v, why = "CANDIDATE-PENDING-CAPACITY", "delta vs market CI lower bound > 0 and E_net > 0 under both fees"
@@ -212,6 +229,8 @@ def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open:
     out: dict[str, Any] = {"status": status, "status_text": status_text(policy, status, n_judged),
                            "judged_n": n_judged, "first_look_n": policy.looks[0] if policy.looks else None,
                            "scored_rows_available": len(elig)}
+    if policy.undefined:
+        out["undefined_rules"] = list(policy.undefined)
     if status in (STATUS_SEALED, STATUS_COUNTS):
         assert not (SCORE_KEYS & out.keys())
         return out
@@ -257,6 +276,8 @@ def load_schedule(repo: Path, sport: str) -> list[str] | None:
         if sport == "NFL":
             d = json.loads((repo / "data/schedules/nfl_2026.json").read_text())
             return sorted(g["gameday"] for g in d["games"] if g.get("game_type", "REG") == "REG")
+        if sport == "NBA":
+            return None        # no NBA regular-season schedule is checked in; never guessed (cells show counts)
         if sport == "NHL":
             files = sorted((repo / "data/raw/nhl/schedule").glob("*.json"))
             games = json.loads(files[-1].read_text())["games"] if files else []
@@ -359,14 +380,25 @@ def gg_is_open(repo: Path, gg: str) -> bool:
         return True
 
 
+# EXP-038 sec. 1: the 12 NBA cells are listed from day one so counts show before the first regular-season row.
+# Only the judged dir is read; PREGAME_SHADOW_PRESEASON is never discovered.
+EXPECTED_CELLS: dict[str, tuple[str, ...]] = {
+    "NBA": tuple(f"NBA_NBA_{mt}_{b}" for mt in ("MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL") for b in ("T1", "T2", "T3")),
+}
+
+
 def discover_cells(repo: Path) -> list[dict]:
     cells = []
     for sport, ledger_dir, settled_dir in (
         ("NFL", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
         ("MLB", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
         ("NHL", repo / "data/shadow/nhl", repo / "data/shadow/nhl/settled"),
+        ("NBA", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
     ):
-        for p in sorted(ledger_dir.glob(f"{sport}_*_T[123].jsonl")):
+        paths = {p.name: p for p in ledger_dir.glob(f"{sport}_*_T[123].jsonl")}
+        for name in EXPECTED_CELLS.get(sport, ()):
+            paths.setdefault(f"{name}.jsonl", ledger_dir / f"{name}.jsonl")
+        for _, p in sorted(paths.items()):
             stem = p.stem
             parts = stem.split("_")
             if sport != "NHL":
@@ -427,7 +459,7 @@ def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool
     policy = policy_for(cell["sport"])
     ledger_rows = _jsonl(cell["ledger"])
     settled = load_settled(cell)
-    n_games_settled = len({r["game_key"] for r in first_row_per_unit(settled)})
+    n_games_settled = len({r["game_key"] for r in first_row_per_unit(settled) if settled_schema.counts_toward_judged_n(r)})
     res = compute_scores(policy, cell["band"], settled, gg_open, load_manifest(repo, cell))
     if persist and res.get("release") and not res["release"]["frozen"]:
         persist_release(repo, cell, res["release"], now)
