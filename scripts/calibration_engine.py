@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Calibration engine CLI (W58.3). Read-only on every ledger; writes only exp_output/CALIBRATION/.
+"""Calibration engine CLI (W58.3). Read-only on every ledger; writes only exp_output/CALIBRATION/ (engine_<UTC>.json and the write-once release manifests).
 
 Prints counts, status and projected first-look date per cell. Score fields exist only for cells the
 pre-registration allows; sealed cells never carry one, so nothing sealed can be printed.
@@ -22,9 +22,17 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--repo", default=str(REPO))
     ap.add_argument("--out-dir", default=None, help="default <repo>/exp_output/CALIBRATION")
     ap.add_argument("--no-write", action="store_true")
+    ap.add_argument("--synthetic-report", metavar="PATH", help="write a first-look REPORT rehearsal on generated data and exit")
     a = ap.parse_args(argv)
     repo = Path(a.repo)
-    res = ce.run(repo)
+    if a.synthetic_report:
+        from prediction_market_bot.pregame_shadow import first_look_report as flr
+        txt = flr.render_report(flr.synthetic_cells(), "First-look REPORT - synthetic rehearsal", synthetic=True,
+                                note="NHL synthetic cell uses bootstrap B=400 for runtime (the pre-registration is B=10,000).")
+        Path(a.synthetic_report).write_text(txt)
+        print(f"wrote {a.synthetic_report}")
+        return 0
+    res = ce.run(repo, persist=not a.no_write)
     if not a.no_write:
         d = Path(a.out_dir) if a.out_dir else repo / "exp_output/CALIBRATION"
         d.mkdir(parents=True, exist_ok=True)

@@ -70,7 +70,7 @@ def cluster_bootstrap_ci(vals_by_cluster: dict[str, list[float]], b: int = BOOT_
     return mean, means[int(0.025 * b)], means[int(0.975 * b) - 1]
 
 
-def score_cell(rows: list[dict]) -> dict:
+def score_cell(rows: list[dict], b: int = BOOT_B, seed: int = BOOT_SEED, per_game_mean: bool = False) -> dict:
     """rows: ledger rows already joined with y (0/0.5/1), p_clim, game_key.
 
     SIGN CONVENTION (fixed by the EXP-037 brief, pre-registered): delta_brier_vs_X =
@@ -98,12 +98,17 @@ def score_cell(rows: list[dict]) -> dict:
         "logloss_model": sum(logloss(r["p_yes"], r["y"]) for r in rows) / n,
         "logloss_market": sum(logloss(r["mid"], r["y"]) for r in rows) / n,
     }
+    if per_game_mean:       # EXP-036: the per-game score is the mean over that game's strikes
+        _collapse = lambda d: {g: [sum(v) / len(v)] for g, v in d.items()}   # noqa: E731
+        by_game_vs_mkt, by_game_vs_clim = _collapse(by_game_vs_mkt), _collapse(by_game_vs_clim)
+        by_game_enet = {k: _collapse(v) for k, v in by_game_enet.items()}
     for key, d in (("delta_brier_vs_market", by_game_vs_mkt), ("delta_brier_vs_climatology", by_game_vs_clim)):
-        m, lo, hi = cluster_bootstrap_ci(d)
+        m, lo, hi = cluster_bootstrap_ci(d, b, seed)
         out[key] = {"mean": m, "ci95": [lo, hi]}
     for name in ("k007", "kmult"):
-        m, lo, hi = cluster_bootstrap_ci(by_game_enet[name])
+        m, lo, hi = cluster_bootstrap_ci(by_game_enet[name], b, seed)
         out[f"e_net_entry_expected_{name}"] = {"mean": m, "ci95": [lo, hi]}
+    out["bootstrap"] = {"B": b, "seed": seed, "unit": "game-mean" if per_game_mean else "game-cluster"}
     out["e_net_realised_best_side"] = {
         "k007": sum(_best_side_e_net(r, r["y"], fee_k007) for r in rows) / n,
         "kmult": sum(_best_side_e_net(r, r["y"], fee_kmult) for r in rows) / n,

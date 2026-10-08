@@ -476,7 +476,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
                       f"[{sc['delta_brier_vs_market']['ci95'][0]:+.4f}, {sc['delta_brier_vs_market']['ci95'][1]:+.4f}]"))
             rows.append(f"<tr title='source: {_e(c['source'])}'><td>{_e(c['market_type'])} {_e(c['band'])}</td><td><span class='{cls}'>{_e(c['status_text'])}</span></td>"
                         f"<td class='num'>{c['rows']} rows · {c['settled_games']} games</td><td>{bar}</td>"
-                        f"<td class='num'>{_e(pj['date'] or pj['note'])}</td><td class='num'>{score}</td>"
+                        f"<td class='num' title='{_e(pj.get('note') or '')}{_e(' · coverage ' + pj['coverage_basis'] if pj.get('coverage_basis') else '')}'>"
+                        f"{_e(pj['date'] or pj['note'])}</td><td class='num'>{score}</td>"
                         f"</tr>")
     hist = "".join(f"<tr><td>{_e(h['family'])}</td><td><span class='ok'>HISTORICAL</span></td>"
                    f"<td colspan=4>scored in Waves 38-44 — <code>{_e(h['source'])}</code></td></tr>" for h in sec.get("historical", []))
@@ -484,7 +485,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
             f"<th>Scores (only where allowed)</th></tr>{''.join(rows)}{hist}</table>")
     note = ("<div class='asof'>Each cell follows its own pre-registration (EXP-036 NHL, EXP-037 NFL/MLB). SEALED cells show counts only. "
             "NHL T3 stays sealed while GG-401 is open. MLB 2026 postseason rows are counted, never scored; the clock that matters is 2027-03-01. "
-            "Projection = trailing settle rate; early-season rates are noisy.</div>")
+            "Projected look = the sport's published remaining schedule x the cell's measured coverage (W59.2); "
+            "hover a date for the basis. Coverage is measured on few games early in a season, so treat early dates as +/- a slate.</div>")
     return f"<section id='calibration' class='{'stale' if stale else ''}'>{head('Calibration — SHADOW cells', sec)}{top}{note}<div class='scroll'>{body}</div></section>"
 
 
