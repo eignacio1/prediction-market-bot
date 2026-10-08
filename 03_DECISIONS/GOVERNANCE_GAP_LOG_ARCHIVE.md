@@ -4753,3 +4753,69 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 ---
 
+### GG-305 — `session_guard.sh`'s Compass OS Health length-threshold check has been failing against `MEMORY_BANK.md` line 1111 (5159 chars vs. a 3000-char threshold) for at least 41 days without remediation
+
+**Status:** CLOSED-AS-DUPLICATE (2026-10-08, W59.1) · of GG-230 · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-305 |
+| Category | Documentation-health drift, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | T-572's session-start `session_guard.sh` run reported `Compass OS Health line length: 5159 chars (line 1111)`, exceeding the script's own 3000-char threshold, at `11_MEMORY_HANDOFF/MEMORY_BANK.md` line 1111. Git-blame-adjacent evidence (line last touched relative to session dates observed across this wave) places this breach at roughly 41 days stale as of 2026-09-24. |
+| Why this matters | An overlength line in the file this project's own session-start protocol treats as a primary state document degrades readability and is exactly the kind of "decaying state embedded in a file read every session" pattern CLAUDE.md's own remediation-pass history (2026-07-19, 2026-07-02) explicitly warns against for CLAUDE.md itself — the same principle applies to `MEMORY_BANK.md`. |
+| Impact | LOW: cosmetic/readability only, no data-integrity or gate-status risk. Left unaddressed for 41+ days suggests the guard's warning is not currently acted upon by routine sessions, which is itself worth noting even though this entry does not escalate severity on that basis. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), surfaced via routine `session_guard.sh` output; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend a future session split or trim `MEMORY_BANK.md` line 1111 to below the 3000-char threshold. No content change made this session (out of scope: this session owns governance-log registration only, not `MEMORY_BANK.md` edits). |
+| Cross-references | T-572 (discovering session), `.claude/hooks/session_guard.sh` (the check itself). |
+
+**W59.1 disposition (2026-10-08):** DUPLICATE — Same defect as GG-230 (MEMORY_BANK.md Compass OS Health line ~5159 chars vs 3000 threshold); line is still 5158 chars on 2026-10-08, tracked in GG-230.
+
+</details>
+
+---
+
+### GG-318 — The T4M-PROJ writer stamps the literal string `UNKNOWN` as `model_identity` on every post-stamp row (2,992 rows at epoch 12): the writer class has no `PROVENANCE`, so provenance was added to the schema but never populated for the band that carries the G6 evidence
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-318 |
+| Category | Provenance gap: field present, value empty (T-588 census finding) |
+| What was found | In `paper_portfolio_mlb_t4.json`: open_positions 63/63, rejected_positions 2,000/2,000 and closed_positions 929 carry `model_identity` = `UNKNOWN`, all at logic_epoch 12. A further 765 closed epoch-12 rows have the field absent (written before the stamp existed). `paper_trader.py` writes `approval.get("model_identity") or "UNKNOWN"`, so a forecaster without a `PROVENANCE` attribute yields UNKNOWN. None of these rows carries a real `run_id`. |
+| Why this matters | Under any fail-closed evidence predicate every T4M-PROJ row is UNATTRIBUTED, so the band's countable evidence is zero until provenance is established for it by named, dated, evidenced runs. The absence is the finding. It must not be backfilled (GG-228). |
+| Not done here | No row was touched. No writer was edited (`paper_trader.py` is owned by 39.1). |
+| Suggested resolution | Operator decides. Preferred route: a provenance-established allowlist of runs, evidenced from git history and audit events, plus a `PROVENANCE` on the T4M-PROJ forecaster going forward. |
+| Cross-references | GG-317, GG-316, GG-267, GG-228, T-588. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — run_t4_mlb_live.py:218-224 defines T4M_PROJ_MODEL_IDENTITY and line 1660 stamps model_identity on forward rows; the identity is registered in logic_epoch.REGISTERED_MODEL_IDENTITY_PREFIXES (T-595 D2). Historical rows stay UNKNOWN by design and are classed UNATTRIBUTED.
+
+</details>
+
+---
+
+### GG-329 — archive_market_prices.py docstring claims KXMLBGAME/SPREAD/TOTAL history "CANNOT BE BACKFILLED"; Kalshi historical endpoints return it
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-329 |
+| Category | Premise / documentation (Wave 45 block 45.1, EXP-035) |
+| What was found | `GET /historical/cutoff` (2026-10-02) gives `market_settled_ts` = 2026-08-03T00:00:00Z. `GET /historical/markets?series_ticker=` returns settled markets back to at least 2025-04 (KXNHLGAME 2025-04-30, KXNBAGAME 2025-04-16, KXEPLGAME 2025-05-11, KXMLSGAME 2025-05-29, KXUFCFIGHT 2025-05-11, KXWNBAGAME 2025-05-23). `GET /historical/markets/{ticker}/candlesticks` (period_interval 1/60/1440) returns yes_bid/yes_ask OHLC, price OHLC, volume and open_interest, unauthenticated, no rate-limit headers observed. Candles exist while price and volume are null/zero (pre-trade book). |
+| Why it matters | The archiver docstring says quote history "CANNOT BE BACKFILLED". For the sampled sports series it can, at candle granularity. Whether candles reproduce the archive's snapshots is NOT yet established (D1b correctness gate). |
+| Disposition | Docstring-only correction to `scripts/archive_market_prices.py` deferred until D1(b) passes; if the gate fails the docstring stays and this entry records why. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — scripts/archive_market_prices.py lines 20-30 now carry a dated 2026-10-02 correction superseding the CANNOT BE BACKFILLED claim, scoped to EXP-035 Gate 2's verdict.
+
+</details>
+

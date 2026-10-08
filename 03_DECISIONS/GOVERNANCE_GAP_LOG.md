@@ -2834,6 +2834,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Threatens the only clean G6 cohort. **Next:** Re-measure demand without ring-buffer ceiling.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2855,6 +2857,8 @@ When a new governance process failure is discovered:
 ### GG-297 — 139 of 140 T4M-PROJ "OPEN" positions in `paper_portfolio_mlb_t4.json` (all dated 2026-09-22) are `status: "canceled"`/zero-fill at Kalshi, not live open bets — the local ledger's open-position status is unreliable and, if resolved as-is, would inject fabricated trades into the G6 cohort
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Ledger-integrity risk. **Next:** Reconcile local OPEN status against Kalshi order status before any resolve.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2880,6 +2884,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Rename or document rejected_positions.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2903,6 +2909,8 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-derive ECE baseline on a fixed snapshot.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -2924,6 +2932,8 @@ When a new governance process failure is discovered:
 ### GG-300 — 731 of 765 rows (95.6%) in T4M-PROJ epoch-12's clean cohort — the project's sole G6 calibration cohort — have no independent Kalshi confirmation of ever being filled; only 34 (4.4%) are confirmed real
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. 95.6% of the clean cohort unconfirmed as filled. **Next:** Confirm fills via Kalshi order history.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2948,6 +2958,8 @@ When a new governance process failure is discovered:
 ### GG-301 — T4M-PROJ's calibration headline reverses sign and turns net-negative when restricted to Kalshi-confirmed-filled rows only (n=34 of 765)
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Sign reversal on n=34 only. **Next:** Reassess once fill confirmation expands.
 
 <details>
 <summary>Full record</summary>
@@ -2998,6 +3010,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Stop treating kalshi_order_status as discriminating.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3016,31 +3030,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ---
 
-### GG-305 — `session_guard.sh`'s Compass OS Health length-threshold check has been failing against `MEMORY_BANK.md` line 1111 (5159 chars vs. a 3000-char threshold) for at least 41 days without remediation
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-305 |
-| Category | Documentation-health drift, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
-| What was found | T-572's session-start `session_guard.sh` run reported `Compass OS Health line length: 5159 chars (line 1111)`, exceeding the script's own 3000-char threshold, at `11_MEMORY_HANDOFF/MEMORY_BANK.md` line 1111. Git-blame-adjacent evidence (line last touched relative to session dates observed across this wave) places this breach at roughly 41 days stale as of 2026-09-24. |
-| Why this matters | An overlength line in the file this project's own session-start protocol treats as a primary state document degrades readability and is exactly the kind of "decaying state embedded in a file read every session" pattern CLAUDE.md's own remediation-pass history (2026-07-19, 2026-07-02) explicitly warns against for CLAUDE.md itself — the same principle applies to `MEMORY_BANK.md`. |
-| Impact | LOW: cosmetic/readability only, no data-integrity or gate-status risk. Left unaddressed for 41+ days suggests the guard's warning is not currently acted upon by routine sessions, which is itself worth noting even though this entry does not escalate severity on that basis. |
-| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), surfaced via routine `session_guard.sh` output; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
-| Resolution | Not resolved — recommend a future session split or trim `MEMORY_BANK.md` line 1111 to below the 3000-char threshold. No content change made this session (out of scope: this session owns governance-log registration only, not `MEMORY_BANK.md` edits). |
-| Cross-references | T-572 (discovering session), `.claude/hooks/session_guard.sh` (the check itself). |
-
-</details>
-
----
-
 ### GG-306 — CLAUDE.md's coverage-target framing ("~25/30 cells") is never reconciled against `market_type_registry.py`'s actual 92-cell granularity, understating the registry's real scope by roughly 3x wherever the coarse figure is read on its own
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** CLAUDE.md line 21 still says "one cell of ~25"; registry granularity not reconciled. **Next:** Reconcile figure in COVERAGE_TARGET_MATRIX.md; CLAUDE.md edits need operator OK.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3064,6 +3058,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Test edge reconstruction on ARITH/FLOW inputs when those bands activate.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3086,6 +3082,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** CLAUDE.md line 298 still has the un-windowed SemanticFloorViolation grep. **Next:** Add a tail/recency window; CLAUDE.md edit needs operator OK.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3107,6 +3105,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-312 — Register-parity failure class: 36 accepted ADRs accumulated with no `APPROVALS_REGISTER.md` row of their own, `check_register_parity.py` sees only 7 of them, and write-back is still manual
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Audit-trail integrity. **Next:** Backfill APPROVALS_REGISTER rows and fix parity checker.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3133,6 +3133,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add run/trigger/host provenance to rows before scheduling NFL T1.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3156,6 +3158,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Make STUB opt-in, not default.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3175,30 +3179,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ---
 
-### GG-318 — The T4M-PROJ writer stamps the literal string `UNKNOWN` as `model_identity` on every post-stamp row (2,992 rows at epoch 12): the writer class has no `PROVENANCE`, so provenance was added to the schema but never populated for the band that carries the G6 evidence
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-318 |
-| Category | Provenance gap: field present, value empty (T-588 census finding) |
-| What was found | In `paper_portfolio_mlb_t4.json`: open_positions 63/63, rejected_positions 2,000/2,000 and closed_positions 929 carry `model_identity` = `UNKNOWN`, all at logic_epoch 12. A further 765 closed epoch-12 rows have the field absent (written before the stamp existed). `paper_trader.py` writes `approval.get("model_identity") or "UNKNOWN"`, so a forecaster without a `PROVENANCE` attribute yields UNKNOWN. None of these rows carries a real `run_id`. |
-| Why this matters | Under any fail-closed evidence predicate every T4M-PROJ row is UNATTRIBUTED, so the band's countable evidence is zero until provenance is established for it by named, dated, evidenced runs. The absence is the finding. It must not be backfilled (GG-228). |
-| Not done here | No row was touched. No writer was edited (`paper_trader.py` is owned by 39.1). |
-| Suggested resolution | Operator decides. Preferred route: a provenance-established allowlist of runs, evidenced from git history and audit events, plus a `PROVENANCE` on the T4M-PROJ forecaster going forward. |
-| Cross-references | GG-317, GG-316, GG-267, GG-228, T-588. |
-
-</details>
-
----
-
 ### GG-319 — The T4 resolved ledger the band monitor reads for T4M-PROJ has no `model_identity` (or any run-provenance) column: provenance is dropped when positions are derived into the ledger, so the monitor cannot see evidence class even where the pool row has it
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Carry model_identity into the resolved ledger.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3217,6 +3202,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-320 — T4M-PROJ fails ADR-0068 criterion C5: a stripped three-scalar tree is filed in a band whose measured cadence (~60s) does not pay for the stripping, and the latency thesis that licensed it measured NOT SUPPORTED
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** ADR-0068 criterion C5 finding stands; T-569 latency NOT SUPPORTED. Operator decision on refiling. **Next:** Operator decision on T4M-PROJ band placement.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3240,6 +3227,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Host-local evidence may have expired. **Next:** Capture reflog/journal excerpts into repo if still available.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3262,6 +3251,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Backfill game-state fields in cycle log.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3280,6 +3271,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-324 — Market efficiency has been measured for exactly one Kalshi family (KXMLBHIT); the rest of the archived board has never been surveyed, so "where is the market least efficient" is an assumption, not a finding
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Survey efficiency across archived families.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3304,6 +3297,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Measure cost as function of time, side, price.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3324,6 +3319,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add capture in the 6-12h bucket.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3342,6 +3339,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-327 — EXP-032 clock sanity gate range [2.0, 4.5]h is mis-sized for partial-game families; F3/F5/F5SPREAD/F5TOTAL could not be re-priced by hours-to-start
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Resize gate for partial-game families in next preregistration.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3362,6 +3361,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Finding only; books exactly complementary. **Next:** Drop the separate-side-cost premise from future designs.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3374,23 +3375,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Done | Measured and reported. |
 | Not done | Check the capture path with 44.3's owner. |
 | Cross-references | GG-325, GG-326, EXP-032 |
-
-</details>
-
-### GG-329 — archive_market_prices.py docstring claims KXMLBGAME/SPREAD/TOTAL history "CANNOT BE BACKFILLED"; Kalshi historical endpoints return it
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-329 |
-| Category | Premise / documentation (Wave 45 block 45.1, EXP-035) |
-| What was found | `GET /historical/cutoff` (2026-10-02) gives `market_settled_ts` = 2026-08-03T00:00:00Z. `GET /historical/markets?series_ticker=` returns settled markets back to at least 2025-04 (KXNHLGAME 2025-04-30, KXNBAGAME 2025-04-16, KXEPLGAME 2025-05-11, KXMLSGAME 2025-05-29, KXUFCFIGHT 2025-05-11, KXWNBAGAME 2025-05-23). `GET /historical/markets/{ticker}/candlesticks` (period_interval 1/60/1440) returns yes_bid/yes_ask OHLC, price OHLC, volume and open_interest, unauthenticated, no rate-limit headers observed. Candles exist while price and volume are null/zero (pre-trade book). |
-| Why it matters | The archiver docstring says quote history "CANNOT BE BACKFILLED". For the sampled sports series it can, at candle granularity. Whether candles reproduce the archive's snapshots is NOT yet established (D1b correctness gate). |
-| Disposition | Docstring-only correction to `scripts/archive_market_prices.py` deferred until D1(b) passes; if the gate fails the docstring stays and this entry records why. |
 
 </details>
 
