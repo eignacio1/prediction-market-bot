@@ -48,7 +48,7 @@ def test_mlb_postseason_rows_counted_never_scored():
 
 
 def test_counts_only_without_prereg():
-    out = ce.compute_scores(ce.policy_for("NBA"), "T1", _rows(500), {})
+    out = ce.compute_scores(ce.policy_for("XYZ"), "T1", _rows(500), {})
     assert out["status"] == "COUNTS ONLY" and not (ce.SCORE_KEYS & out.keys())
 
 
@@ -275,3 +275,59 @@ def test_first_look_report_format_and_no_score_below_look():
     row59 = next(l for l in txt.splitlines() if l.startswith("| SYN_NFL_59_games"))
     assert "SEALED (59 of 60)" in row59 and "none (not at a look)" in row59 and "+" not in row59.replace("SYN_NFL_59_games", "")
     assert flr.render_report(cells, "T", synthetic=True) == txt        # deterministic
+
+
+# ── W60.2: NBA policy (EXP-038) ──────────────────────────────────────────────
+
+def test_nba_policy_matches_exp038():
+    p = ce.PREREG["NBA"]
+    assert p.looks == (150, 400) and p.boot_b == 2000 and p.boot_seed == 20261006
+    assert p.mode == "sealed_until_look" and p.rules == "exp038" and p.has_climatology
+    assert len(p.undefined) == 3 and any("GG-529" in u for u in p.undefined)
+
+
+def test_nba_sealed_below_judged_n_no_score_no_verdict():
+    out = ce.compute_scores(ce.PREREG["NBA"], "T1", _rows(149), {})
+    assert out["status"] == "SEALED" and out["status_text"] == "SEALED (149 of 150)"
+    assert not (ce.SCORE_KEYS & out.keys()) and "undefined_rules" in out
+
+
+def test_nba_release_at_exactly_judged_n_and_one_past_does_not_change_the_look():
+    at = ce.compute_scores(ce.PREREG["NBA"], "T1", _rows(150, y=lambda i: float(i % 2 == 0)), {})
+    past = ce.compute_scores(ce.PREREG["NBA"], "T1", _rows(151, y=lambda i: float(i % 2 == 0)), {})
+    assert at["status"] == "JUDGED" and at["scores_over_games"] == 150 and at["release"]["look"] == 150
+    assert past["scores_over_games"] == 150 and past["release"]["games"] == at["release"]["games"]
+    assert past["scores"] == at["scores"]            # incl. bootstrap CI: same games, same seed
+    assert at["verdict"]["verdict"] in ("SHADOW", "RULED_OUT", "CANDIDATE-PENDING-CAPACITY")
+
+
+def test_nba_preseason_rows_never_counted():
+    pre = [{**r, "excluded_from_judged_n": True, "season_phase": "preseason"} for r in _rows(400)]
+    out = ce.compute_scores(ce.PREREG["NBA"], "T1", pre, {})
+    assert out["judged_n"] == 0 and out["status"] == "SEALED" and not (ce.SCORE_KEYS & out.keys())
+    by_phase = [{**r, "season_phase": "preseason"} for r in _rows(400)]           # label alone is enough
+    assert ce.compute_scores(ce.PREREG["NBA"], "T1", by_phase, {})["judged_n"] == 0
+    reg = [{**r, "market_ticker": "R" + r["market_ticker"], "game_key": "R" + r["game_key"]} for r in _rows(149)]
+    mixed = ce.compute_scores(ce.PREREG["NBA"], "T1", pre + reg, {})
+    assert mixed["judged_n"] == 149 and mixed["status"] == "SEALED"
+
+
+def test_nba_unresolved_after_second_look_when_ci_spans_zero():
+    v = ce.verdict(ce.PREREG["NBA"], "JUDGED",
+                   {"delta_brier_vs_market": {"mean": 0.001, "ci95": [-0.01, 0.012]},
+                    "e_net_entry_expected_k007": {"mean": 0.0}, "e_net_entry_expected_kmult": {"mean": 0.0}}, 400)
+    assert v["verdict"] == "UNRESOLVED"
+    v1 = ce.verdict(ce.PREREG["NBA"], "JUDGED",
+                    {"delta_brier_vs_market": {"mean": 0.001, "ci95": [-0.01, 0.012]},
+                     "e_net_entry_expected_k007": {"mean": 0.0}, "e_net_entry_expected_kmult": {"mean": 0.0}}, 150)
+    assert v1["verdict"] == "SHADOW"
+
+
+def test_nba_cells_listed_before_first_row_and_preseason_dir_never_read(tmp_path):
+    (tmp_path / "exp_output/PREGAME_SHADOW_PRESEASON").mkdir(parents=True)
+    (tmp_path / "exp_output/PREGAME_SHADOW_PRESEASON/NBA_NBA_MONEYLINE_T1.jsonl").write_text('{"x":1}\n')
+    res = ce.run(tmp_path)
+    nba = [c for c in res["cells"] if c["sport"] == "NBA"]
+    assert len(nba) == 12 and all(c["rows"] == 0 and c["status"] == "SEALED" for c in nba)
+    assert {c["market_type"] for c in nba} == {"MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL"}
+    assert all("PRESEASON" not in c["source"] for c in nba)

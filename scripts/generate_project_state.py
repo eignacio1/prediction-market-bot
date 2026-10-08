@@ -457,7 +457,7 @@ def _calibration_html(sec: dict, head: Any) -> str:
            f"<b>{sm['with_outcomes']}</b> have outcomes · <b>{sm['reached_look']}</b> reached a look"
            f"{' · <span class=warn>engine output is ' + project_ops.fmt_age(age_h) + ' old</span>' if stale else ''}</p>")
     rows = []
-    for sport in ("NFL", "MLB", "NHL"):
+    for sport in ("NFL", "MLB", "NHL", "NBA"):
         cs = [c for c in sec["cells"] if c["sport"] == sport]
         if not cs:
             continue
@@ -469,6 +469,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
             bar = (f"<span class='bar'><i style='width:{min(pct, 100)}%'></i></span> <span class='num'>{pct}%</span>"
                    if pct is not None else "<span class='nd'>no look registered</span>")
             pj = c["projection"]
+            if sport == "NBA" and c["rows"] == 0:
+                pj = {**pj, "date": None, "note": "awaiting first regular-season rows (opens 2026-10-20; first rows ~10-21)"}
             sc = c.get("scores")
             score = ("<span class='nd'>none released</span>" if not sc else
                      (f"<span class='tag'>{_e(c.get('scores_label', 'JUDGED'))}</span> Brier model {sc['brier_model']:.4f} / "
@@ -483,8 +485,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
                    f"<td colspan=4>scored in Waves 38-44 — <code>{_e(h['source'])}</code></td></tr>" for h in sec.get("historical", []))
     body = ("<table><tr><th>Cell</th><th>Status</th><th>Counts</th><th>Progress to first look</th><th>Projected look</th>"
             f"<th>Scores (only where allowed)</th></tr>{''.join(rows)}{hist}</table>")
-    note = ("<div class='asof'>Each cell follows its own pre-registration (EXP-036 NHL, EXP-037 NFL/MLB). SEALED cells show counts only. "
-            "NHL T3 stays sealed while GG-401 is open. MLB 2026 postseason rows are counted, never scored; the clock that matters is 2027-03-01. "
+    note = ("<div class='asof'>Each cell follows its own pre-registration (EXP-036 NHL, EXP-037 NFL/MLB, EXP-038 NBA). SEALED cells show counts only. "
+            "NHL T3 stays sealed while GG-401 is open. NBA preseason rows are banked but never count toward judged n. MLB 2026 postseason rows are counted, never scored; the clock that matters is 2027-03-01. "
             "Projected look = the sport's published remaining schedule x the cell's measured coverage (W59.2); "
             "hover a date for the basis. Coverage is measured on few games early in a season, so treat early dates as +/- a slate.</div>")
     return f"<section id='calibration' class='{'stale' if stale else ''}'>{head('Calibration — SHADOW cells', sec)}{top}{note}<div class='scroll'>{body}</div></section>"
