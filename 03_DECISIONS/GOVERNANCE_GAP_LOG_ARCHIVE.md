@@ -5201,3 +5201,107 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 ---
 
+### GG-319 — The T4 resolved ledger the band monitor reads for T4M-PROJ has no `model_identity` (or any run-provenance) column: provenance is dropped when positions are derived into the ledger, so the monitor cannot see evidence class even where the pool row has it
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-319 |
+| Category | Derived-store provenance loss (T-588 census finding) |
+| What was found | `t4_mlb_resolved_ledger.jsonl`: 3,923 of 3,923 rows lack `model_identity`. Schema is band, position_id, forecast_id, kalshi_ticker, player_name, player_id, threshold, direction, game_date, entered_at, resolved_at, model_p, mip, vig, edge, outcome, pnl, size_usd, actual_hits, logic_epoch, approval_commit. `run_band_monitor.py` loads T4M-PROJ from this file, so any evidence-class filter applied there reads all rows as UNATTRIBUTED regardless of the source pool row. Also observed: the 20 closed NFL EXP-027 rows carry `model_identity` but no `run_id`, so run provenance may also be dropped on close (UNVERIFIED, not diagnosed). |
+| Not done here | Ledger not modified or regenerated. Joining back to the pool by position_id to recover the field was NOT done: it would be derivation without established provenance for the 2,994 absent-field rows. |
+| Suggested resolution | Operator decides: carry provenance fields into the ledger at write time going forward; treat existing rows per the GG-318 allowlist route. |
+| Cross-references | GG-318, GG-317, GG-316, GG-228, T-588. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — scripts/build_t4_resolved_ledger.py:149 now passes model_identity through (T-595 D2); VPS t4_mlb_resolved_ledger.jsonl 2026-10-08: 4,127 rows, 1,133 carry model_identity (entered 2026-09-22..10-05), last row has it plus approval_commit/logic_epoch; 2,994 legacy rows (2026-06-30..08-14) remain absent by design (no backfill without provenance, per GG-318 allowlist route).
+
+</details>
+
+### GG-321 — The only evidence that could attribute the 13 T4M-PROJ epoch-12 process windows (VPS git reflog and `t4-mlb` journal) is perishable, host-local and was not preserved anywhere in the repo
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** HIGH
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-321 |
+| Category | Evidence preservation: provenance record held only in expiring host state (T-592 limitation, T-595 D1) |
+| What was found | The T-592 provenance allowlist cites, per window, a journal `Started t4-mlb.service` line, a VPS `git reflog HEAD` line and a cycle-log session extent. The reflog is subject to git's default 90-day reachable-entry expiry (W01's citation ages out ~2026-10-29) and the journal to journald retention/vacuum; both live on one VPS and neither had been copied into the repo. At capture (2026-09-30) neither had rolled: reflog spans 2026-05-29 onward, journal 2026-06-27 onward. |
+| Why it matters | If the record expires, the allowlist's citations become unverifiable and the windows can never be re-attributed. The loader alone only checks that citation text is non-empty, so it would keep passing after the evidence was gone. |
+| Done (T-595 D1) | Read-only snapshot committed at `05_RESEARCH_EXPERIMENTS/provenance/snapshot_2026-09-30/` (full HEAD reflog, full journal, 12 cited blobs, all-session cycle-log extents, sha256 MANIFEST with host/time/commands). `scripts/verify_provenance_snapshot.py` re-derives every window from the snapshot alone: 13/13 validate, with tamper tests. |
+| Not done | The 200 MB cycle log itself is not copied (extents only). `pregame_mlb_*.json` inputs and the VPS working-tree state at each start remain unrecoverable (T-592 L1/L2). The allowlist is NOT applied, wired to any counter, or accepted for historical rows; that needs operator sign-off. No row was touched (GG-228). |
+| Suggested resolution | Operator decides whether the allowlist is ever applied. Independently, snapshot any future window citations at the time they are made. |
+| Cross-references | GG-318, GG-319, GG-228, T-592, T-595. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — Snapshot committed at 05_RESEARCH_EXPERIMENTS/provenance/snapshot_2026-09-30/ (reflog, journal, blobs, extents, MANIFEST); scripts/verify_provenance_snapshot.py run this session: 13/13 windows validate from snapshot alone. Remaining allowlist-application decision is operator-owned and separate from the preservation gap.
+
+</details>
+
+---
+
+### GG-325 — EXP-031's cost term H is a single scalar (half-spread at the first-seen snapshot) per family; execution cost has never been measured as a function of time, side, or price, so "zero candidates" may be an artefact of when the archive first looked
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-325 |
+| Category | Evidence adequacy / measurement design: EXP-031 ranked families on E = B − null_median − H with H frozen at one moment per family (T-603) |
+| What was found | EXP-031 (T-599) found KXMLBTEAMTOTAL and all five F-series families clear their calibration-gap null (B > null_99.5) and are eliminated by H alone (F5SPREAD H .275, F5TOTAL H .145, TEAMTOTAL H .040). H was the median half-spread at the first-seen two-sided snapshot, which in this archive is typically days before settlement. Spread/vig versus time-to-settlement, session phase, side, price level and tick discreteness were inventoried but not ranked, and convergence between first-seen quote and settlement was not computed. |
+| Why it matters | If the toll falls materially at some measurable point of the surface, "zero candidates" is a statement about the first-seen snapshot, not about the venue. If it does not, the toll is structural and the elimination stands on firmer ground. Either answer is currently unevidenced. |
+| Done | Registered before any recompute; EXP-032 pre-registered (c663f41, alone); cost surface, policies a/b/c, capacity and drift/placebo run (6aa502a). Result: no family's E crosses zero under an evidenced policy; policy (b) E>0 for KXMLBF7 and KXMLBTEAMTOTAL fails the B-at-entry check; drift placebo ratios 1.5-30 (fail). Summary: RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md. Open follow-ons: GG-326, GG-327, GG-328. |
+| Not done | NFL pregame clock; F3/F5/F5SPREAD/F5TOTAL hours-to-start surface and policy (b) (GG-327); any fill evidence finer than ~20-minute snapshots; depth beyond the sample. |
+| Constraints | Cost side only. B and the null bands are EXP-031 outputs taken as given. No fill assumed that the archive cannot evidence. No model fit, no position, no sizing change, no settlement re-fetch. Archive and EXP-031 cache read-only. Archive capture defects (44.3 owns the fix) will be named where they limit the measurement. |
+| Cross-references | EXP-031, GG-324, T-599, T-603, T-569 (distinct: ~60s latency thesis, not this), EXP-029 (placebo convention), COVERAGE_TARGET_MATRIX.md. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — EXP-032 (RESULTS_SUMMARIES/EXP032_RESULTS_execution_cost_surface_2026-10-01.md) measured H by hours-to-settlement, side and price (e.g. TEAMTOTAL 0.5c at <6h vs 3.0c at 24-48h); verdict no family's E crosses zero under an evidenced policy. Remaining items live in GG-326/327/328.
+
+</details>
+
+### GG-431 — Dashboard "MODEL VS MARKET" panel shows input read 58d20h ago next to LIVE data
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-431 |
+| Category | Correctness / provenance |
+| What was found | Real-browser check of the RUNNING dashboard (VPS run 077558b, 2026-10-03T20:05Z, tunnel :18050): header LIVE, but the MODEL VS MARKET panel reads "861 open priced ... read 58d20h ago" while rendering as current. Console errors, page errors, failed requests and 4xx/5xx were all empty on / and /project. |
+| Why it matters | GG-429's rule is that no number shows unless read from a live source; a 58-day-old read rendered inside a LIVE page is the same class of defect. Not verified which source file is stale; not investigated. |
+| Source | 50.2 Step 4; evidence in session scratch (screens/index.live.txt) |
+| Disposition | Registered by 50.2 (registration only). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — scripts/web_dashboard.py:1838 binds the MODEL VS MARKET panel to a per-panel freshness chip (frKey 't1_mlb'; paintFresh at :2012-2019 renders 'read <age> ago' coloured red/amber/ok/off from _freshness() on paper_portfolio_mlb.json). VPS source logs/paper_portfolio_mlb.json is 2d old (2026-10-05), not 58d; stale input is now visibly flagged per panel.
+
+</details>
+
+### GG-499 — Shadow settled-row schemas differ by sport (NHL no game_key/p_clim; MLB no p_clim; MLB T1 has no settled file)
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** LOW
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-499 |
+| Category | Data contract |
+| What was found | NFL settled rows carry y, game_key, p_clim. MLB settled rows carry y, game_key but no p_clim, and no settled file exists for any MLB T1 cell. NHL settled rows carry `outcome` and precomputed Brier values but no game_key, event_ticker or p_clim. |
+| Impact | The calibration engine must join NHL to its ledger on (run_id, market_ticker) and cannot show climatology for MLB or NHL ("unavailable"). The MLB/NHL pre-registrations may call for a climatology comparison; none can be produced until settlement writes a climatology prior. |
+| Source | W58.3 Part A |
+| Resolution | Not fixed in-session. Engine degrades honestly (climatology unavailable, never faked). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — Commit c377458 (W59.2 Part C, in worktree history) added src/prediction_market_bot/pregame_shadow/settled_schema.py: one normaliser giving y, game_key (NHL falls back to event_ticker) and p_clim only where the sport has one (never invented); MLB/NHL joins no longer a schema gap. Residual: MLB T1 still has no separate settled file but settle.log shows T1 cells settled.
+
+</details>
