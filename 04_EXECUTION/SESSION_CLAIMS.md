@@ -784,3 +784,4 @@
 | 2026-10-07T02:29:56Z | W58.2 | CLOSED — merge confirmed, HEAD (f0accac) is ancestor of origin/main — NBA shadow arm built, deployed, cron armed; PARTIAL until regular-season rows |
 | 2026-10-07T02:41:36Z | W58.1 | CLOSED — W58.1 A-C done (GG-489, GG-490 resolved, NHL probe live, NFL book archived); Part D gap triage deferred. (commit `690b27c`) |
 | 2026-10-07T02:41:50Z | W58.1 | CLOSED — merge confirmed, HEAD (57261e0) is ancestor of origin/main — A-C done, GG-490 resolved, Part D deferred |
+| 2026-10-08T00:33:07Z | T-721..T-726, GG-510..GG-514 | W59.2 LARGE - calibration correctness: projection, release mechanics, settled-row schema, Kalshi settlement cross-check |
