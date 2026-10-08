@@ -11,6 +11,7 @@ pre-registration (a superseding document) and cite it.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -28,6 +29,7 @@ SCORE_KEYS = frozenset({
     "brier_model", "brier_market", "brier_climatology", "logloss_model", "logloss_market",
     "delta_brier_vs_market", "delta_brier_vs_climatology", "reliability_bins", "brier_decomposition",
     "e_net_entry_expected_k007", "e_net_entry_expected_kmult", "e_net_realised_best_side", "scores",
+    "verdict", "release",
 })
 N_BINS = 10
 
@@ -41,6 +43,10 @@ class Policy:
     eligible_from: str | None = None  # rows with start_time_utc before this are counted, never scored
     sealed_while_gg_open: tuple[tuple[str, str], ...] = ()   # (band, GG id): sealed in that band
     has_climatology: bool = True
+    boot_b: int = scoring.BOOT_B                  # per pre-registration
+    boot_seed: int = scoring.BOOT_SEED
+    per_game_mean: bool = False                   # EXP-036: per-game score = mean over that game's strikes
+    rules: str = "exp037"                         # decision-rule family: "exp037" (NFL/MLB) | "exp036" (NHL)
 
 
 PREREG: dict[str, Policy] = {
@@ -54,7 +60,8 @@ PREREG: dict[str, Policy] = {
     "NHL": Policy("NHL", (2500,), "preliminary_below",
                   "EXP-036 NHL pre-registration (2026-10-02): judged n=2,500 settled games per cell; below that "
                   "figures are PRELIMINARY only; T3 sealed while GG-401 is open",
-                  sealed_while_gg_open=(("T3", "GG-401"),), has_climatology=False),
+                  sealed_while_gg_open=(("T3", "GG-401"),), has_climatology=False,
+                  boot_b=10_000, per_game_mean=True, rules="exp036"),
 }
 # Cells with no pre-registration (e.g. NBA until W58.2/EXP-038 lands) fall through to counts only.
 NO_PREREG = Policy("-", (), "counts_only", "no pre-registration: counts only")
@@ -123,7 +130,7 @@ def brier_decomposition(ps: list[float], ys: list[float], n_bins: int = N_BINS) 
 def _score_rows(policy: Policy, rows: list[dict]) -> dict:
     """Run scoring.score_cell and add bins/decomposition. Caller has already passed the seal gate."""
     shim = [dict(r) if "p_clim" in r else {**r, "p_clim": r["mid"]} for r in rows]
-    out = scoring.score_cell(shim)
+    out = scoring.score_cell(shim, policy.boot_b, policy.boot_seed, policy.per_game_mean)
     if not policy.has_climatology or any("p_clim" not in r for r in rows):
         out.pop("brier_climatology", None)
         out.pop("delta_brier_vs_climatology", None)
@@ -135,9 +142,13 @@ def _score_rows(policy: Policy, rows: list[dict]) -> dict:
 
 
 def _games_in_order(rows: list[dict]) -> list[str]:
+    """Deterministic order of settled games: (scheduled start, game_key). Falls back to the game's first
+    ledger timestamp only for a game with no start time. Ties break on game_key, never on arrival order."""
     first: dict[str, str] = {}
-    for r in sorted(rows, key=lambda r: r["ts_utc"]):
-        first.setdefault(r["game_key"], r["ts_utc"])
+    for r in rows:
+        k = str(r.get("start_time_utc") or r["ts_utc"])
+        if r["game_key"] not in first or k < first[r["game_key"]]:
+            first[r["game_key"]] = k
     return sorted(first, key=lambda g: (first[g], g))
 
 
@@ -145,9 +156,54 @@ def eligible(policy: Policy, row: dict) -> bool:
     return policy.eligible_from is None or str(row.get("start_time_utc", ""))[:10] >= policy.eligible_from
 
 
-def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open: dict[str, bool]) -> dict:
+def verdict(policy: Policy, status: str, scores: dict, n_judged: int) -> dict:
+    """The pre-registered decision, from the pre-registered fields only. Emitted only on a released look
+    (status JUDGED); a PRELIMINARY or sealed cell has no verdict. Never changes a cell's registry status."""
+    if status != STATUS_JUDGED or not scores:
+        return {}
+    dm = scores["delta_brier_vs_market"]
+    dc = scores.get("delta_brier_vs_climatology")
+    lo, hi = dm["ci95"]
+    e7, ek = scores["e_net_entry_expected_k007"]["mean"], scores["e_net_entry_expected_kmult"]["mean"]
+    out: dict[str, Any] = {"n": n_judged, "delta_brier_vs_market": dm,
+                           "delta_brier_vs_climatology": dc if dc is not None else "unavailable",
+                           "e_net_entry_k007": e7, "e_net_entry_kmult": ek}
+    if policy.rules == "exp036":
+        clim_dead = dc is not None and n_judged >= 500 and dc["ci95"][1] <= 0
+        if clim_dead:
+            v, why = "RULED_OUT", "(a) n>=500 and the CI of delta vs climatology has upper bound <= 0"
+        elif n_judged >= 2500 and hi < 0 and e7 < 0 and ek < 0:
+            v, why = "RULED_OUT", "(b) n>=2500, delta vs market CI upper bound < 0 and E_net < 0 under both fees"
+        elif n_judged >= 2500 and lo > 0 and e7 > 0 and ek > 0:
+            v, why = "CANDIDATE-PENDING-CAPACITY", "n>=2500, delta vs market CI lower bound > 0, E_net > 0 under both fees"
+        else:
+            v, why = "SHADOW-continue", "everything else"
+    else:
+        if hi < 0:
+            v, why = "RULED_OUT", "delta vs market < 0 with the CI upper bound < 0"
+        elif lo > 0 and e7 > 0 and ek > 0:
+            v, why = "CANDIDATE-PENDING-CAPACITY", "delta vs market CI lower bound > 0 and E_net > 0 under both fees"
+        elif lo > 0:
+            v, why = "SHADOW", "delta vs market CI excludes zero but E_net <= 0 under a fee candidate"
+        else:
+            v, why = "SHADOW", "CI spans zero"
+    out.update({"verdict": v, "rule": why})
+    if dc is not None and dc["mean"] <= 0:
+        out["model_failure_vs_climatology"] = True         # reported separately; not a decision rule
+    return out
+
+
+def manifest_digest(look: int, games: list[str]) -> str:
+    return hashlib.sha256(json.dumps({"look": look, "games": sorted(games)}).encode()).hexdigest()
+
+
+def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open: dict[str, bool],
+                   frozen: dict | None = None) -> dict:
     """Counts + status always; score fields only if the policy allows. The gate is re-derived HERE
-    from the policy and the counts, so a direct call on a sealed cell cannot leak a score."""
+    from the policy and the counts, so a direct call on a sealed cell cannot leak a score.
+
+    `frozen` = a persisted release manifest {"look": k, "games": [...]}. A look scores exactly the games
+    named in it, forever: later or late-settling games never change a released look."""
     scored = first_row_per_unit(settled_rows)
     elig = [r for r in scored if eligible(policy, r)]
     games = _games_in_order(elig)
@@ -160,11 +216,19 @@ def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open:
         assert not (SCORE_KEYS & out.keys())
         return out
     look = max([k for k in policy.looks if k <= n_judged], default=n_judged)   # earliest `look` games only
-    use = set(games[:look])
+    if frozen and frozen.get("look") == look and set(frozen["games"]) <= set(games):
+        use_games = list(frozen["games"])
+    else:
+        use_games = games[:look]
+    use = set(use_games)
     out["scores"] = _score_rows(policy, [r for r in elig if r["game_key"] in use])
     out["scores_over_games"] = len(use)
     if status == STATUS_PRELIM:
         out["scores_label"] = f"PRELIMINARY (n={n_judged} of {policy.looks[0]})"
+    else:
+        out["release"] = {"look": look, "games": sorted(use), "digest": manifest_digest(look, list(use)),
+                          "frozen": bool(frozen and frozen.get("look") == look)}
+        out["verdict"] = verdict(policy, status, out["scores"], len(use))
     return out
 
 
@@ -327,12 +391,45 @@ def load_settled(cell: dict) -> list[dict]:
     return out
 
 
-def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool]) -> dict:
+MANIFEST_DIR = "exp_output/CALIBRATION/release_manifests"
+
+
+def manifest_path(repo: Path, cell: dict, look: int) -> Path:
+    return repo / MANIFEST_DIR / f"{cell['cell']}.look{look}.json"
+
+
+def load_manifest(repo: Path, cell: dict) -> dict | None:
+    """The persisted release for this cell's most recent look, or None. Corrupt files read as absent
+    here and are caught by the digest check below -- never silently trusted."""
+    best = None
+    for p in sorted((repo / MANIFEST_DIR).glob(f"{cell['cell']}.look*.json")) if (repo / MANIFEST_DIR).exists() else []:
+        try:
+            m = json.loads(p.read_text())
+        except ValueError:
+            continue
+        if m.get("digest") == manifest_digest(m.get("look"), m.get("games", [])):
+            best = m if best is None or m["look"] > best["look"] else best
+    return best
+
+
+def persist_release(repo: Path, cell: dict, release: dict, now: datetime) -> Path | None:
+    """Write-once. An existing manifest for (cell, look) is never overwritten."""
+    p = manifest_path(repo, cell, release["look"])
+    if p.exists():
+        return None
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps({**release, "cell": cell["cell"], "released_at": now.strftime("%Y-%m-%dT%H:%M:%SZ")}, indent=1))
+    return p
+
+
+def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool], persist: bool = False) -> dict:
     policy = policy_for(cell["sport"])
     ledger_rows = _jsonl(cell["ledger"])
     settled = load_settled(cell)
     n_games_settled = len({r["game_key"] for r in first_row_per_unit(settled)})
-    res = compute_scores(policy, cell["band"], settled, gg_open)
+    res = compute_scores(policy, cell["band"], settled, gg_open, load_manifest(repo, cell))
+    if persist and res.get("release") and not res["release"]["frozen"]:
+        persist_release(repo, cell, res["release"], now)
     last = max((r["ts_utc"] for r in ledger_rows), default=None)
     res.update({"cell": cell["cell"], "sport": cell["sport"], "band": cell["band"],
                 "market_type": cell["market_type"], "rows": len(ledger_rows), "settled_games": n_games_settled,
@@ -342,10 +439,10 @@ def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool
     return res
 
 
-def run(repo: Path, now: datetime | None = None) -> dict:
+def run(repo: Path, now: datetime | None = None, persist: bool = False) -> dict:
     now = now or datetime.now(timezone.utc)
     gg = {"GG-401": gg_is_open(repo, "GG-401")}
-    cells = [evaluate_cell(c, repo, now, gg) for c in discover_cells(repo)]
+    cells = [evaluate_cell(c, repo, now, gg, persist) for c in discover_cells(repo)]
     return {"generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "gg_open": gg, "cells": cells,
             "historical": [{"family": k, "status": STATUS_HISTORICAL, "source": v} for k, v in HISTORICAL.items()],
             "summary": {"cells": len(cells),

@@ -13,7 +13,7 @@ NOW = datetime(2026, 10, 7, tzinfo=timezone.utc)
 
 
 def _rows(n_games, p=0.7, y=1.0, mid=0.5, start="2026-10-01T00:00:00Z"):
-    return [{"market_ticker": f"M{i}", "band": "T1", "ts_utc": f"2026-10-01T00:{i % 60:02d}:00Z", "game_key": f"G{i}",
+    return [{"market_ticker": f"M{i}", "band": "T1", "ts_utc": f"2026-10-01T00:{i % 60:02d}:00Z", "game_key": f"G{i:04d}",
              "p_yes": p, "mid": mid, "yes_bid": mid - 0.01, "yes_ask": mid + 0.01, "y": y if not callable(y) else y(i),
              "p_clim": 0.5, "start_time_utc": start} for i in range(n_games)]
 
@@ -37,7 +37,8 @@ def test_nhl_preliminary_label_and_t3_sealed_while_gg401_open():
     sealed = ce.compute_scores(pol, "T3", _rows(5000), {"GG-401": True})
     assert sealed["status"] == "SEALED" and not (ce.SCORE_KEYS & sealed.keys())
     assert ce.compute_scores(pol, "T3", _rows(5000), {})["status"] == "SEALED"   # unknown = open
-    assert ce.compute_scores(pol, "T3", _rows(5000), {"GG-401": False})["status"] == "JUDGED"
+    fast = __import__("dataclasses").replace(pol, boot_b=50)          # B only affects CI width, not the gate under test
+    assert ce.compute_scores(fast, "T3", _rows(2500), {"GG-401": False})["status"] == "JUDGED"
 
 
 def test_mlb_postseason_rows_counted_never_scored():
@@ -169,3 +170,108 @@ def test_projection_coverage_unmeasurable_with_tiny_sample():
 def test_projection_reached_returns_no_date():
     out = ce.project_first_look(ce.PREREG["NFL"], _settled(60), NOW, ["2026-10-20"])
     assert out["note"] == "first look reached"
+
+
+# ── W59.2 Part B: release mechanics ───────────────────────────────────────────
+
+def _games(n, start_day=1, flip_from=None, p=0.62, y_const=None):
+    """n games, one row each, distinct start times in order; y alternates so Brier is non-degenerate."""
+    from datetime import timedelta
+    base = datetime(2026, 10, 1, tzinfo=timezone.utc)
+    out = []
+    for i in range(n):
+        st = (base + timedelta(hours=6 * i)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        y = float(i % 2) if (flip_from is None or i < flip_from) else float((i + 1) % 2)
+        if y_const is not None:
+            y = y_const
+        out.append({"market_ticker": f"M{i:03d}", "band": "T1", "ts_utc": f"2026-10-01T00:{i % 60:02d}:{i // 60:02d}Z",
+                    "game_key": f"G{i:03d}", "p_yes": p, "mid": 0.5, "yes_bid": 0.49, "yes_ask": 0.51, "y": y,
+                    "p_clim": 0.5, "start_time_utc": st})
+    return out
+
+
+def test_59_emits_nothing_60_emits_verdict_61_does_not_change_first_look():
+    pol = ce.PREREG["NFL"]
+    r59 = ce.compute_scores(pol, "T1", _games(59), {})
+    assert not ({"scores", "verdict", "release"} & r59.keys()) and not (ce.SCORE_KEYS & r59.keys())
+    r60 = ce.compute_scores(pol, "T1", _games(60), {})
+    assert r60["status"] == "JUDGED" and r60["release"]["look"] == 60 and len(r60["release"]["games"]) == 60
+    assert r60["verdict"]["verdict"] in {"RULED_OUT", "SHADOW", "CANDIDATE-PENDING-CAPACITY"}
+    # the verdict is computed on exactly those 60 games: same as scoring them directly
+    direct = ce.scoring.score_cell(_games(60))
+    assert r60["scores"]["delta_brier_vs_market"] == direct["delta_brier_vs_market"]
+    assert r60["scores"]["bootstrap"] == {"B": 2000, "seed": 20261002, "unit": "game-cluster"}
+    # game 61 (with an opposite outcome) must not move the first look
+    r61 = ce.compute_scores(pol, "T1", _games(61) , {})
+    assert r61["scores"] == r60["scores"] and r61["verdict"] == r60["verdict"]
+    assert r61["judged_n"] == 61 and r61["scores_over_games"] == 60
+
+
+def test_late_settling_earlier_game_cannot_change_a_released_look():
+    pol = ce.PREREG["NFL"]
+    rows60 = _games(60)
+    first = ce.compute_scores(pol, "T1", rows60, {})
+    # a game that STARTED before every other one settles late (postponed/straggler) with an extreme outcome
+    late = dict(_games(1)[0], market_ticker="MLATE", game_key="GAAA-LATE", start_time_utc="2026-09-30T00:00:00Z", y=0.0, p_yes=0.99)
+    unfrozen = ce.compute_scores(pol, "T1", rows60 + [late], {})
+    assert unfrozen["scores"] != first["scores"]                      # order alone would have rewritten the look
+    frozen = ce.compute_scores(pol, "T1", rows60 + [late], {}, frozen={"look": 60, "games": first["release"]["games"]})
+    assert frozen["scores"] == first["scores"] and frozen["release"]["frozen"] is True
+
+
+def test_game_order_is_start_time_then_game_key_not_arrival():
+    rows = [dict(_games(1)[0], game_key=k, start_time_utc=s, ts_utc=t)
+            for k, s, t in (("B", "2026-10-02T00:00:00Z", "2026-10-01T00:00:01Z"),
+                            ("A", "2026-10-02T00:00:00Z", "2026-10-03T00:00:00Z"),
+                            ("C", "2026-10-01T00:00:00Z", "2026-10-09T00:00:00Z"))]
+    assert ce._games_in_order(rows) == ["C", "A", "B"]
+
+
+def test_manifest_is_write_once_and_tamper_evident(tmp_path):
+    cell = {"cell": "NFL_NFL_X_T1"}
+    rel = ce.compute_scores(ce.PREREG["NFL"], "T1", _games(60), {})["release"]
+    now = datetime(2026, 10, 7, tzinfo=timezone.utc)
+    assert ce.persist_release(tmp_path, cell, rel, now) is not None
+    assert ce.persist_release(tmp_path, cell, dict(rel, games=["other"]), now) is None      # never overwritten
+    assert ce.load_manifest(tmp_path, cell)["games"] == rel["games"]
+    p = ce.manifest_path(tmp_path, cell, 60)
+    m = json.loads(p.read_text()); m["games"][0] = "TAMPERED"; p.write_text(json.dumps(m))
+    assert ce.load_manifest(tmp_path, cell) is None                                           # digest mismatch -> not trusted
+
+
+@pytest.mark.parametrize("p,y,expect", [(0.9, 0.0, "RULED_OUT"), (0.5, None, "SHADOW"), (0.62, None, "SHADOW")])
+def test_verdict_rules(p, y, expect):
+    # p=0.9 on all-lose games is worse than the 0.5 market with CI wholly < 0 -> RULED_OUT;
+    # p == market, or a noisy small edge deficit whose CI spans 0, -> SHADOW
+    out = ce.compute_scores(ce.PREREG["NFL"], "T1", _games(60, p=p, y_const=y), {})
+    assert out["verdict"]["verdict"] == expect
+
+
+def test_verdict_candidate_needs_edge_under_both_fees():
+    pol = ce.PREREG["NFL"]
+    sc = lambda lo, hi, e7, ek: {"delta_brier_vs_market": {"mean": (lo + hi) / 2, "ci95": [lo, hi]},        # noqa: E731
+                                 "delta_brier_vs_climatology": {"mean": 0.01, "ci95": [0.0, 0.02]},
+                                 "e_net_entry_expected_k007": {"mean": e7}, "e_net_entry_expected_kmult": {"mean": ek}}
+    assert ce.verdict(pol, "JUDGED", sc(0.01, 0.03, 0.02, 0.03), 60)["verdict"] == "CANDIDATE-PENDING-CAPACITY"
+    assert ce.verdict(pol, "JUDGED", sc(0.01, 0.03, -0.01, 0.03), 60)["verdict"] == "SHADOW"       # edge fails under k007
+    assert ce.verdict(pol, "JUDGED", sc(-0.03, -0.01, 0.0, 0.0), 60)["verdict"] == "RULED_OUT"
+    assert ce.verdict(pol, "PRELIMINARY", sc(0.01, 0.03, 1, 1), 60) == {}                          # no verdict below a look
+
+
+def test_nhl_uses_its_own_bootstrap_spec_and_rules():
+    pol = ce.PREREG["NHL"]
+    assert (pol.boot_b, pol.per_game_mean, pol.rules) == (10_000, True, "exp036")
+    sc = {"delta_brier_vs_market": {"mean": -0.01, "ci95": [-0.02, -0.001]}, "delta_brier_vs_climatology": None,
+          "e_net_entry_expected_k007": {"mean": -0.01}, "e_net_entry_expected_kmult": {"mean": -0.01}}
+    assert ce.verdict(pol, "JUDGED", sc, 2500)["verdict"] == "RULED_OUT"
+    assert ce.verdict(pol, "JUDGED", sc, 1000)["verdict"] == "SHADOW-continue"                      # (b) needs n>=2500
+
+
+def test_first_look_report_format_and_no_score_below_look():
+    from prediction_market_bot.pregame_shadow import first_look_report as flr
+    cells = [c for c in flr.synthetic_cells(nhl_boot_b=30) if c["cell"] in ("SYN_NFL_model_worse", "SYN_NFL_real_edge", "SYN_NFL_59_games")]
+    txt = flr.render_report(cells, "T", synthetic=True)
+    assert "SYNTHETIC" in txt and "**RULED_OUT**" in txt and "**CANDIDATE-PENDING-CAPACITY**" in txt
+    row59 = next(l for l in txt.splitlines() if l.startswith("| SYN_NFL_59_games"))
+    assert "SEALED (59 of 60)" in row59 and "none (not at a look)" in row59 and "+" not in row59.replace("SYN_NFL_59_games", "")
+    assert flr.render_report(cells, "T", synthetic=True) == txt        # deterministic
