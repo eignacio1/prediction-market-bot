@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 137 of 160 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 135 of 158 are auto and unreviewed.
 
-**Counts:** Core=104 (93 OPEN), MLB=40 (29 OPEN), NBA=12 (9 OPEN), NHL=4 (3 OPEN) — 160 live gaps.
+**Counts:** Core=103 (92 OPEN), MLB=39 (28 OPEN), NBA=11 (8 OPEN), NHL=5 (3 OPEN) — 158 live gaps.
 
-## Core (104)
+## Core (103)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -107,11 +107,10 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-430 — OPEN · LOW _(auto)_: arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
 - GG-441 — OPEN · HIGH _(auto)_: Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisib
 - GG-452 — OPEN · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
-- GG-510 — OPEN · MEDIUM _(auto)_: EXP-037 does not define the ordering key for 'earliest 60 settled games'
-- GG-511 — OPEN · MEDIUM _(auto)_: EXP-036 leaves the bootstrap seed unspecified; engine deviated before W59.2
+- GG-529 — OPEN · MEDIUM _(auto)_: EXP-038 second-look date trigger ('or 2027-01-31, whichever first') is undefined
 - GG-515 — RESOLVED · LOW _(auto)_: Visual Dashboard calibration section overflows horizontally on phone width
 
-## MLB (40)
+## MLB (39)
 
 - GG-004 — OPEN · UNSPECIFIED: EV Validation Benchmark Was Never the Commercial Question
 - GG-046 — OPEN · HIGH: T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
@@ -151,10 +150,9 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-410 — OPEN · LOW _(auto)_: NFL/MLB shadow T1, T2 and T3 use identical features
 - GG-453 — PARTIALLY RESOLVED · HIGH _(auto)_: EXP-037 MLB postseason shadow arm has no cron: 12 MLB game-market cells never log, queue says armed
 - GG-470 — PARTIALLY RESOLVED · HIGH _(auto)_: MLB pregame shadow cannot run on the VPS: games cache absent and unbuildable/unrefreshable (statsapi 406 on ra
-- GG-512 — OPEN · MEDIUM _(auto)_: MLB settled rows carry no p_clim; no climatology baseline for MLB
 - GG-527 — OPEN · HIGH _(auto)_: 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never fill
 
-## NBA (12)
+## NBA (11)
 
 - GG-007 — OPEN · LOW: T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton 
 - GG-027 — OPEN · UNSPECIFIED: PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environment Classifier Not Built
@@ -166,12 +164,12 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-056 — PLAN ACCEPTED · MEDIUM: NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume
 - GG-174 — OPEN · MEDIUM _(auto)_: `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against P
 - GG-253 — PARTIALLY RESOLVED · HIGH _(auto)_: No NFL C1 ingestion module exists; the only generic `team_stats_store.py` is NBA-shaped (`plus_minus`-derived)
-- GG-513 — OPEN · LOW _(auto)_: NBA cells (EXP-038) are not in the calibration engine
 - GG-525 — RESOLVED · LOW _(auto)_: Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
 
-## NHL (4)
+## NHL (5)
 
 - GG-401 — OPEN · LOW _(auto)_: NHL T1/T2 pregame model has no projected-starter source
 - GG-403 — PARTIALLY RESOLVED · MEDIUM _(auto)_: NHL Kalshi OT/SO settlement treatment and TEAM_ALIASES unverified
 - GG-405 — OPEN · LOW _(auto)_: NHL shadow: T1 abstentions uninvestigated, T3 cron-window coverage and 2026 schedule match unverified, travel 
-- GG-514 — OPEN · MEDIUM _(auto)_: NHL judged n=2,500 unreachable this season; NFL first-look date rests on one week of coverage
+- GG-514 — ACCEPTED UNCERTAINTY · MEDIUM _(auto)_: NHL judged n=2,500 unreachable this season; NFL first-look date rests on one week of coverage
+- GG-530 — OPEN · LOW _(auto)_: NHL shadow ledger rows carry no explicit confirmed flag
