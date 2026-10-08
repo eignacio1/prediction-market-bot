@@ -177,6 +177,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** Sample-adequacy gate still the G6 blocker; governed per band by APR-0024 n*. Not re-derived this session. **Next:** Re-run run_power_calc.py at next governance scan.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -199,6 +201,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-007 — T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton Values
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. Constants unchanged. **Next:** Calibrate before any NBA T4 activation.
 
 <details>
 <summary>Full record ▸</summary>
@@ -278,6 +282,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. **Next:** Revisit at NBA preseason.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -302,6 +308,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** Alpha half still unexplained per entry; MLB-side analogue is GG-105. **Next:** Fold NBA retest into NBA preseason work.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -319,6 +327,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 ### GG-038 — T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** ADR-0060 (NFR-03 band-level kill-switch latency remedy) ACCEPTED 2026-09-03; implementation not verified this session, so not closed. **Next:** Verify band-level kill switch latency measurement against ADR-0060 acceptance criteria.
 **Actively-Broken:** YES
 
 <details>
@@ -361,6 +371,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. **Next:** Revisit at NBA preseason.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -387,6 +399,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. MLB analogue is GG-066. **Next:** Revisit at NBA preseason.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -412,6 +426,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-041 — KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis Absent
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. Finals window is past; data cannot be recovered retroactively. **Next:** Capture depth in next NBA season via archiver depth sampling.
 
 <details>
 <summary>Full record ▸</summary>
@@ -454,6 +470,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-045 — Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanalyzed
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** CLAUDE.md now says depth is volatile (GG-155/T-411, 10-100x intraday); no fixed ceiling can be documented. Operator-blocked. **Next:** Operator decision on a live-depth sizing gate.
 **Blocked-On-Operator:** YES
 
 <details>
@@ -481,6 +499,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-046 — T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** T4 independent validation still unregistered/unfinished; T-569 latency test returned NOT SUPPORTED per CLAUDE.md. Operator-blocked. **Next:** Operator decision on T4 validation track.
 **Blocked-On-Operator:** YES
 
 <details>
@@ -581,6 +601,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** MLB still polls ESPN at POLL_INTERVAL_S=45 (run_t4_mlb_live.py:151); no sub-poll event feed exists. **Next:** Needs a C1 feed decision; blocks event-driven T4 sub-bands.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -606,6 +628,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-078 — T4 MLB's Real ~341-Bet/Day Cadence Means Kill-Switch Fate Is Decided Within ~15 Days Regardless of True Edge Sign; Long-Horizon Projections for T4 Are Not Meaningful at Any Stake Cap
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** T4M-PROJ kelly_fraction is 0.0 (ADR-0048), so the kill-switch-fate concern is moot while sizing is zero; reopens on reactivation. **Next:** Re-run mc_empirical_bootstrap.py before any reactivation.
 
 <details>
 <summary>Full record ▸</summary>
@@ -664,6 +688,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** mlb_features.py still has 0 references to qualitative/PRF (grep this session). **Next:** Design MLB qualitative layer; tied to pre-game deep-tree directive (ADR-0068).
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -690,6 +716,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Aggregate-vs-direction decomposition concern stands; not re-run. **Next:** Re-run EXP-017B decomposition on current clean cohort.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -715,6 +743,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-105 — T4M-PROJ (ACTIVE, highest-volume band) shows a statistically significant, tercile-monotonic ANTI-PREDICTIVE relationship between its own computed edge and realized win rate, on clean data (Workstream B / T-322/T-323/T-324 discovery)
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** Remediation in progress per entry (ADR-0047 shrinkage live since epoch 8); T4M-PROJ now clean_n=1898 so anti-predictive tercile can be retested. **Next:** Re-run tercile test on clean cohort.
 
 <details>
 <summary>Full record ▸</summary>
@@ -786,6 +816,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** 00_ADMIN/CHANGELOG.md latest entry now 2026-08-23 (was 2026-05-30), but ~6 weeks stale again. **Next:** Add entries for Waves since 2026-08-23.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -811,6 +843,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-134 — `mc_empirical_bootstrap.py`'s forward-risk projection has four unmodeled scope gaps not disclosed as limitations at commit time
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** Four MC scope gaps not re-checked. **Next:** Add limitations section to the MC report.
 
 <details>
 <summary>Full record ▸</summary>
@@ -865,6 +899,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** Depends on GG-105 outcome; not re-checked. **Next:** Revisit after GG-105 retest.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -890,6 +926,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-140 — GG-105 remediation exhausted the entire class of monotonic-transform recalibration candidates without a structural check ruling that class out first (temperature scaling, LR+Platt refit, isotonic — all tested serially, all failed the same way)
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** Depends on GG-105 outcome; not re-checked. **Next:** Revisit after GG-105 retest.
 
 <details>
 <summary>Full record ▸</summary>
@@ -917,6 +955,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** Alarm-only by design; no blocking control built. **Next:** Operator decision on a blocking control.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -943,6 +983,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
 
+**Current state (2026-10-08, W59.1):** merge=union still applies to SESSION_CLAIMS.md (.gitattributes); dedup guarantee not added. **Next:** Add a post-merge duplicate-row check.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -967,6 +1009,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-153 — T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10 ALL_BANDS reset; cannot self-heal under the current regime
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** T1 and T4M-PROJ kelly_fraction still 0.0 (execution_bands.py lines 156/167); VPS verdict shows T1 clean_n=0. Operator-blocked. **Next:** Operator decision on edge-conditional reactivation (ADR-0048 table).
 **Blocked-On-Operator:** YES
 
 <details>
@@ -993,6 +1037,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-154 — Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently no-ops without SSH access
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Session-start greps remain hardcoded snapshots; not re-verified. **Next:** Replace hardcoded greps with checked-in assertions.
 **Actively-Broken:** YES
 
 <details>
@@ -1046,6 +1092,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-157 — `paper_trader.py` has zero orderbook/depth/fill validation; every paper fill (including the live epoch-12 flat-$1 cohort) is assumed at mid, and GG-155/T-411 shows that assumption sits against a quantity that swings 10-100x intraday
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** paper_trader.py still has no depth/fill validation (1 incidental keyword hit, no orderbook check). **Next:** Add depth-aware fill check or document mid-fill as an assumption in results.
 
 <details>
 <summary>Full record ▸</summary>
@@ -1101,6 +1149,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 ### GG-160 — Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no mechanism exists that resolves a doc's code citations against current source
 
 **Status:** OPEN · **Severity:** UNSPECIFIED
+
+**Current state (2026-10-08, W59.1):** No file:line citation checker exists (scripts has none). **Next:** Build a citation resolver or accept as doc risk.
 
 <details>
 <summary>Full record ▸</summary>
