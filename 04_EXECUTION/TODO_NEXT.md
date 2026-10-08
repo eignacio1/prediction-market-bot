@@ -2,7 +2,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-07T02:45:00Z (W58.1 — W58.1 A-C done (GG-489, GG-490 resolved, NHL probe live, NFL book archived); Part D gap triage deferred.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261007T0245Z_W58_1.md` for full session detail.
+**Last reviewed:** 2026-10-08T01:45:00Z (T-732 — W59.3 done: NBA preseason shadow ledger + Live Terminal NBA season; NHL goalie verdict (b); ADR-0070 widened+accepted, GG-400 resolved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261008T0140Z_W59_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
@@ -1097,3 +1097,5 @@ T-453 added `CellKillSwitchState`/`resolve_kill_switch_state()`/`halt_cell()` to
 - T-647 — Merge branch `session/20261003T201919Z-w51-nhl-team-codes` (c12a47a) when t4-mlb restart is safe (GG-432); then verify counters on a live run and close GG-403.
 
 - T-681 — GG-477 remedy 2: apply `scripts/ops/gg477_cron_stagger.py` on the VPS (dry-run, then `APPLY=1`; backs up crontab). Blocked on ssh-write permission (classifier denied remote writes 2026-10-05). Swap (remedy 1) already applied. After the next clean 01:30 UTC window (`journalctl -k --since 01:25 --until 01:40 | grep -ci oom` = 0), mark GG-477 RESOLVED.
+
+- T-732 (open, W59.3 follow-up): Live Terminal Feeds & Health should render an explicit "SHADOW NBA ledgers: no data - awaiting" row when `freshness.nba_shadow.last_ts` is absent (JS currently hides it). Edit `web_dashboard.py` `_html` and `Live Terminal.html` identically. Also: remove `EXP-038 NBA PRESEASON` cron block after 2026-10-20; run `scripts/w59_3_nba_flip_check.py` on 10-21.
