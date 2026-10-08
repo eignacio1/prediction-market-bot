@@ -2320,6 +2320,8 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Cross-check shadow y against Kalshi settlement.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3839,6 +3841,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN (2026-10-03, 51.2: abstention-counter half DONE on the same unmerged branch; matinee cron-window half and travel remain open. GG-403's parser drop is a plausible cause of the 195-vs-240 shortfall, unproven.) · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Investigate T1 abstentions; verify T3 cron-window coverage.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3855,6 +3859,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-406 — Shadow code on VPS is not auto-pulled on later pushes
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add auto-pull or a landed-vs-running check for shadow code.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3873,6 +3879,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Enforce game-clustering in the scorer.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3889,6 +3897,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-408 — EXP-027 NFL incumbent has no persisted artifact and is moneyline-only: no head-to-head possible
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Persist an incumbent artifact or drop the head-to-head claim.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3907,6 +3917,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Process finding. **Next:** Require briefs to list branches explicitly.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3923,6 +3935,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-410 — NFL/MLB shadow T1, T2 and T3 use identical features
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Treat T1/T2/T3 rows as one evidence stream in scoring.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3941,6 +3955,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Measure tie-mass calibration impact.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3957,6 +3973,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-412 — NFL model: kmult inferred, not read from the venue
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Read kmult from the series endpoint.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3975,6 +3993,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Unresolved positions still distort counts. **Next:** Resolve or classify the 26 aged positions.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3991,6 +4011,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-414 — T4 resolved ledger unwritten since 2026-09-28
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Blocks T4 settlement evidence and ledger truth. **Next:** Check VPS resolver; diagnose why writes stopped after 09-28.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4009,6 +4031,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Season ended; matters for 2027. **Next:** Refresh before 2027 season.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4025,6 +4049,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-416 — Gate 2 / G7 passed on one family and by a floating-point margin on a 0.005 tick grid
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add an enforcing check on the equivalence bound.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4043,6 +4069,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Keep Cowork window read-only; document.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4059,6 +4087,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-418 — VPS HEAD and branch SHAs recorded in handoffs drift between sessions
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-verify SHAs at session start.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4077,6 +4107,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Rename the landed-second file.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4093,6 +4125,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-421 — vps_job --rate-cap is recorded and cross-checked, not enforced by the runner
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Enforce the cap in the runner.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4111,6 +4145,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Reject shared endpoints at claim time.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4127,6 +4163,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-423 — Live Terminal T1 freshness shows red at 58 days under a zero-Kelly book
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Operator decision on whether staleness matters under zero Kelly. **Next:** Operator to decide; else grey the badge.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4145,6 +4183,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Distorts dashboard exposure. **Next:** Exclude STUB identities from OPEN and exposure.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4161,6 +4201,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-425 — /project governance-gap Age column shows '—' when a block has no date; ADR titles render '— —'
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Fix Age and ADR title parsing in /project.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4179,6 +4221,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Count is not trusted. **Next:** Reconcile governance_scan.sh with the CLAUDE.md anchored grep.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4196,6 +4240,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Code fix landed in 49.2 per entry; deployment to the running dashboard not confirmed this session. **Next:** Confirm the running pmbot-web-dashboard carries the fix, then resolve.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4212,6 +4258,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Guard empty ALLOW array for bash 3.2.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4231,6 +4279,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Render per-panel input age; mark stale panels.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -4248,6 +4298,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it (breach scenario corrected 2026-10-03: ~11-12%, not 26.6%)
 
 **Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Kill-switch coverage gap; most safety-relevant open item. **Next:** Operator decision: persist kill-switch state and count settled-unresolved stake.
 
 **Update (W55.1, 2026-10-05):** the 17 settled-but-unresolved T1 positions are now booked (live write, T1 realized drawdown 12.44%); the in-memory/realized-only kill-switch gap itself remains open.
 
@@ -4268,6 +4320,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-452 — DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. CI installs from stale locks. **Next:** Regenerate locks to match pyproject bounds.
 
 <details>
 <summary>Full record ▸</summary>
@@ -4329,6 +4383,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Live crontab differs from deploy/cron.conf (EXP-037 and NHL shadow blocks absent; run_mlb_pregame is 45 18 live vs 30 16 in repo). Part C not done this session at operator direction. **Next:** Mirror live blocks into deploy/cron.conf via PR with CI.
+
 <details>
 
 | Field | Detail |
@@ -4345,6 +4401,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-499 — Shadow settled-row schemas differ by sport (NHL no game_key/p_clim; MLB no p_clim; MLB T1 has no settled file)
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Normalize settled-row schemas across sports.
 
 <details>
 
