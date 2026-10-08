@@ -792,3 +792,4 @@
 | 2026-10-08T01:52:35Z | W59.1 | CLOSED — merge confirmed, HEAD (63d619e) is ancestor of origin/main — gap log re-verified; GG-498 resolved via PR #183 |
 | 2026-10-08T01:53:16Z | W59.2 | CLOSED — W59.2 done: first-look projection from real schedules (NFL 2026-11-02), release mechanics, one settled-row schema, 1,229/1,229 Kalshi settlement agree; GG-510..515 registered (commit `d69c6ea`) |
 | 2026-10-08T01:53:45Z | W59.2 | CLOSED — merge confirmed, HEAD (faab910) is ancestor of origin/main — W59.2 calibration correctness merged; PRs #178/#181/#182 plus close-out on main |
+| 2026-10-08T01:54:04Z | T-732 | CLOSED — merge confirmed, HEAD (d57c6cb) is ancestor of origin/main — W59.3 done: NBA readiness, NHL verdict (b), ADR-0070 ACCEPTED; PRs #179/#180 merged |
