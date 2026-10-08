@@ -2031,7 +2031,9 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-228 — Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to the derived artifact, not its source of record (distinct from GG-224/ADR-0061's live-service in-memory-flush hazard)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.1):** Guard merged (PR #185, `42754c2`) and on the VPS (`git rev-parse` d58623b9, ancestor confirmed): a rebuild that would change or drop an existing row is written beside the ledger as `.rebuild_<UTC>.jsonl` with a WARNING, exit 0; append-only growth proceeds. Test-verified only; the first real exercise is the Monday 2026-10-12 14:20 UTC run. t4-mlb restart: not_needed. Entry not yet moved to the archive (sweep).
 
 **Current state (2026-10-08, W59.1):** Hazard confirmed live: deploy/cron.conf:315 still wholesale-rebuilds logs/t4_mlb_resolved_ledger.jsonl every Monday 14:20 UTC via scripts/build_t4_resolved_ledger.py from paper_portfolio_mlb_t4.json closed_positions; no external-repair-safety guard exists. **Integrity note:** the live body of this entry had been overwritten by a duplicate of GG-226's body (pre-dates W59.1; present at 94853bf); original body restored verbatim from f9891f4. **Next:** Repair the source of record (closed_positions), not the derived file; consider a header warning in the builder.
 
@@ -4092,5 +4094,23 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Source | W60.1 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_1_cohort_fill_truth_results.md`) |
 | Resolution | Not resolved; operator decision on how the cohort is defined (all intended orders vs filled only) and on re-polling order status at entry. No code or ledger change made. |
 | Cross-references | GG-300, GG-301, GG-004, GG-228 |
+
+</details>
+
+### GG-525 — Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W60.3):** `health()` in `Live Terminal.html` pushed the NBA shadow row only when `freshness.nba_shadow.last_ts` was set. With no `exp_output/PREGAME_SHADOW/NBA_*.jsonl` the API returns `{awaiting: ...}` and the page silently dropped the row, so "awaiting" never reached the screen. **Next:** always render the row; no-ledger reads "no data - awaiting first regular-season rows" in neutral colour.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-525 |
+| Category | Dashboard truthfulness |
+| What was found | Feeds & Health had no NBA row until a ledger existed (found W59.3 Part D, never registered). |
+| Why it matters | Design bar: a panel with no data must say "no data"; absence reads as "not tracked". |
+| Source | W59.3 Part D; registered by W60.3 |
 
 </details>
