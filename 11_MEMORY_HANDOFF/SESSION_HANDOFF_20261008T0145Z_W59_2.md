@@ -1,3 +1,14 @@
+<!-- session-meta
+task_id: W59.2
+tier: STANDARD
+timestamp: 2026-10-08T02:00:00Z
+commit: d69c6ea
+one_line_summary: W59.2 done: first-look projection from real schedules (NFL 2026-11-02), release mechanics, one settled-row schema, 1,229/1,229 Kalshi settlement agree; GG-510..515 registered
+gg_touched: GG-499, GG-487, GG-510, GG-511, GG-512, GG-513, GG-514, GG-515
+adr_touched: none
+plan_deliverable_moved: no
+-->
+
 # SESSION HANDOFF — W59.2 calibration correctness (2026-10-08 UTC)
 
 **Status: COMPLETE. Nothing left undone in the block.**
@@ -14,4 +25,4 @@
 
 **Operator decisions needed:** ratify the ordering key before the NFL look (~2026-11-02) and a NHL seed; decide whether EXP-036's n=2,500 stands given it cannot be reached this season; MLB climatology baseline yes/no.
 
-**Next:** re-run `scripts/calibration_engine.py` weekly to refresh the NFL date. Optional follow-ups: GG-515 CSS fix; derived `settled/` back-fill (needs provenance + DECISION_LOG entry, GG-228).
+**Next:** re-run `scripts/calibration_engine.py` weekly to refresh the NFL date.

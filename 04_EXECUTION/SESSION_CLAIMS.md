@@ -790,3 +790,4 @@
 | 2026-10-08T01:41:02Z | T-732 | CLOSED — W59.3 done: NBA preseason shadow ledger + Live Terminal NBA season; NHL goalie verdict (b); ADR-0070 widened+accepted, GG-400 resolved (commit `22ba387`) |
 | 2026-10-08T01:52:17Z | W59.1 | CLOSED — W59.1 gap log re-verified (OPEN 176->136 incl. new regs); GG-498 resolved via PR #183 (cron.conf mirrors live). (commit `fa0cc71`) |
 | 2026-10-08T01:52:35Z | W59.1 | CLOSED — merge confirmed, HEAD (63d619e) is ancestor of origin/main — gap log re-verified; GG-498 resolved via PR #183 |
+| 2026-10-08T01:53:16Z | W59.2 | CLOSED — W59.2 done: first-look projection from real schedules (NFL 2026-11-02), release mechanics, one settled-row schema, 1,229/1,229 Kalshi settlement agree; GG-510..515 registered (commit `d69c6ea`) |
