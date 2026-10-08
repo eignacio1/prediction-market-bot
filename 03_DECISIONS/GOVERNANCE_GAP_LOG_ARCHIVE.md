@@ -5411,3 +5411,23 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-530 — NHL shadow ledger rows carry no explicit confirmed flag
+
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.2 follow-up):** `make_row` in `scripts/nhl_shadow_eval.py` now writes `confirmed` (False) and `starter_source` (projected_last_start) on new rows; test added. Rows written before the deploy have no such field (not rewritten). GG-401 remains OPEN pending its own criteria.
+
+**Current state (2026-10-08, W60.2):** The EXP-036 goalie amendment says rows are flagged `confirmed=False`. `scripts/nhl_shadow_eval.py` passes no starter_provider, so every row is modelled on the projected last-start goalie (confirmed=False, starter_source=projected_last_start), but that flag lives only inside the hashed feature row; the T3 ledger rows on the VPS (data/shadow/nhl/NHL_*_T3.jsonl, 2,246 rows) have no `confirmed`/`starter_source` field. **Next:** Add the field to the row writer (new rows only) with a test.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-530 |
+| Category | Data / pre-registration conformance |
+| What was found | See current state. |
+| Source | W60.2 Part B GG-401 check |
+| Resolution | Not fixed in-session (register-and-stop). |
+
+</details>
+

@@ -128,6 +128,9 @@ def make_row(market: dict, series: str, fc: Any, start: datetime, start_src: str
         "e_net_no_kmult": edge_net(fc.p_yes, bid, ask, FEE_K * mult)[1],
         "model_id": fc.model_id, "model_sha256": fc.model_sha256, "feature_row_sha256": fc.feature_row_sha256,
         "start_time_utc": start.isoformat(), "start_time_source": start_src, "code_sha": code_sha,
+        # EXP-036 goalie amendment (2026-10-08): rows are flagged confirmed=False; no pre-drop confirmed source (GG-530).
+        "confirmed": bool(getattr(fc, "confirmed", False)),
+        "starter_source": getattr(fc, "starter_source", "projected_last_start"),
     }
 
 

@@ -73,6 +73,12 @@ def test_rows_schema_and_band():
     assert rows[0]["mid"] == pytest.approx(0.52) and rows[0]["half_spread"] == pytest.approx(0.02)
 
 
+def test_rows_flagged_unconfirmed_projected_starter():
+    """GG-530 / EXP-036 goalie amendment: every row carries confirmed=False and the projected-starter source."""
+    r = ev.evaluate({"KXNHLGAME": [mkt()]}, Stub(), INDEX, NOW - timedelta(hours=18), "r1", "abc")[0]
+    assert r["confirmed"] is False and r["starter_source"] == "projected_last_start"
+
+
 def test_outside_window_forced_band_and_bad_quotes_skipped():
     assert ev.evaluate({"KXNHLGAME": [mkt()]}, Stub(), INDEX, NOW, "r", "x") == []          # 11h: no band
     assert ev.evaluate({"KXNHLGAME": [mkt()]}, Stub(), INDEX, NOW - timedelta(hours=18), "r", "x", "T3") == []
