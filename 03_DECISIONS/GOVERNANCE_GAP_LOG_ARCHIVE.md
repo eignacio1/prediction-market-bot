@@ -4819,3 +4819,41 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-343 — SemanticFloorViolation Step 4 check is a cumulative whole-log count, not recency-windowed (same defect class as GG-085)
+
+**Status:** CLOSED-AS-DUPLICATE (2026-10-08, W59.1) · of GG-309 · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-343 |
+| Category | Monitoring validity |
+| What was found | Step 4 greps the whole paper_mlb_cron.log; 2026-10-02 count was 1 with no way to tell from the count when it occurred. Source: W45_462_sync_and_diagnose_results.md item 4; WAVE45_land_the_record_results.md item 4. |
+| Why it matters | A cumulative count alarms forever after one true positive and cannot show a fresh failure. |
+| Disposition | Window the check by recency as GG-085 did for staleness. CLAUDE.md protocol text is not edited here. |
+
+**W59.1 disposition (2026-10-08):** DUPLICATE — Same defect as GG-309: the SemanticFloorViolation grep in CLAUDE.md Step 4 is a whole-log count with no recency window; CLAUDE.md line 298 still carries it, tracked in GG-309.
+
+</details>
+
+### GG-351 — MEMORY_BANK Compass OS Health line is 5159 chars, over the 3000-char T-334 threshold
+
+**Status:** CLOSED-AS-DUPLICATE (2026-10-08, W59.1) · of GG-230 · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-351 |
+| Category | Documentation hygiene |
+| What was found | session_guard.sh flags it every session (line 1116). Source: WAVE45_land_the_record_results.md item 5. |
+| Why it matters | Inline blob growth is the pre-T-334 failure mode. |
+| Disposition | Cut over to a dated archive header; not done here. |
+
+**W59.1 disposition (2026-10-08):** DUPLICATE — Same defect as GG-230: MEMORY_BANK.md Compass OS Health line over the 3000-char threshold (still 5158 chars); tracked in GG-230.
+
+</details>
+

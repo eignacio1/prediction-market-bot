@@ -3382,6 +3382,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Make the invariant check print an explicit SOURCE_UNAVAILABLE banner / nonzero in strict mode.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3399,6 +3401,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. PRICE_ARCHIVE remains gitignored and main-tree only. **Next:** Back up or mirror the archive off-machine.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3415,6 +3419,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-332 — Kalshi fee schedule PDF unreachable (HTTP 429) from every source tried; ADR-0016 divergence cannot be confirmed from the primary document
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Fee schedule PDF unconfirmed. **Next:** Retry fetch or obtain the PDF from the operator account.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3434,6 +3440,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Candle numbers remain VOID. **Next:** None until a new pre-registered instrument; keep VOID banner.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3450,6 +3458,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-340 — Frozen gate pre-registrations can leave a lookback/window unspecified, so a 'none exists' outcome is implementable as a window artifact
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add a mandatory lookback field to the pre-registration template.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3468,6 +3478,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Decide per experiment which raw stores are committed.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3485,6 +3497,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Prune merged/landed branches after confirming by content.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3498,26 +3512,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-343 — SemanticFloorViolation Step 4 check is a cumulative whole-log count, not recency-windowed (same defect class as GG-085)
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-343 |
-| Category | Monitoring validity |
-| What was found | Step 4 greps the whole paper_mlb_cron.log; 2026-10-02 count was 1 with no way to tell from the count when it occurred. Source: W45_462_sync_and_diagnose_results.md item 4; WAVE45_land_the_record_results.md item 4. |
-| Why it matters | A cumulative count alarms forever after one true positive and cannot show a fresh failure. |
-| Disposition | Window the check by recency as GG-085 did for staleness. CLAUDE.md protocol text is not edited here. |
-
-</details>
-
 ### GG-344 — audit_mlb_t4.jsonl CONTAMINATION_HALT count (162,168) is unusable as a health signal
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Replace with recency-windowed non-game-end count or retire the line.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3536,6 +3535,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Off-season persists, so the false-alarm risk is live. **Next:** Add season awareness to Step 4; CLAUDE.md edit needs operator OK.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3552,6 +3553,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-346 — PIPE-08 schedule validator fails with HTTP 406: 110 occurrences since 2026-07-03
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Switch validator date URL to ISO format.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3570,6 +3573,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Operator to identify the actor; log restarts going forward.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3586,6 +3591,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-348 — t4-mlb.timer is inactive with no NEXT; last fired 2026-07-04
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Owner to confirm intent; remove if dead.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3604,6 +3611,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Monitor recurrence; document safe lock handling.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3621,6 +3630,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Shared tree still shows dirty state per session-start git status. **Next:** Operator to commit or discard the dirty files.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3634,26 +3645,11 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-351 — MEMORY_BANK Compass OS Health line is 5159 chars, over the 3000-char T-334 threshold
-
-**Status:** OPEN · **Severity:** LOW
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-351 |
-| Category | Documentation hygiene |
-| What was found | session_guard.sh flags it every session (line 1116). Source: WAVE45_land_the_record_results.md item 5. |
-| Why it matters | Inline blob growth is the pre-T-334 failure mode. |
-| Disposition | Cut over to a dated archive header; not done here. |
-
-</details>
-
 ### GG-352 — macOS has no `timeout`; protocol and test snippets that use it exit 127 silently
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Document gtimeout or a python wrapper.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3672,6 +3668,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Require closed ID ranges in claim_session.sh.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3688,6 +3686,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-354 — Full test suite exceeds 10 minutes in the foreground and there is no documented fast subset
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Document a fast test subset per area.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3706,6 +3706,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Gate session-end on Q1-Q7 evidence.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3722,6 +3724,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-356 — Transient GitHub push failure ('unable to write file ...pack') with no retry guidance
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Single transient occurrence. **Next:** Close if no recurrence after next waves.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3740,6 +3744,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Resolution is ADR-0070's decision (ACCEPTED path per W59 queue). **Next:** Confirm ADR-0070 covers the NHL deviation, then close.
+
 <details>
 <summary>Full record ▸</summary>
 
@@ -3756,6 +3762,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-401 — NHL T1/T2 pregame model has no projected-starter source
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Find a projected-goalie source for T1/T2.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3775,6 +3783,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-402 — Shadow runner hardcodes fee_multiplier=1
 
 **Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Re-read fee_multiplier from series endpoint before any CANDIDATE call.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3809,6 +3819,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 ### GG-404 — Live Kalshi quotes can be very wide; shadow scoring must filter on half_spread
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add half_spread filter to shadow scoring.
 
 <details>
 <summary>Full record ▸</summary>
