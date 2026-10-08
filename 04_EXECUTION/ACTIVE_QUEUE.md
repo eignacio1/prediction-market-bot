@@ -249,6 +249,7 @@ PART C - ADR-0070: widen its scope to the EXP-036 NHL and EXP-038 NBA shadow mod
   GG-400 -> RESOLVED with the commit.
 PART D - PRs as you go, CI green, merged (record each deploy's t4-mlb decision). Results doc
   05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_3_nba_nhl_readiness_results.md, updated per part.
+STATUS (2026-10-08, W59.3): PARTS A, B, C, D DONE and merged (#179, #180; t4-mlb decision not_needed both). Part B verdict (b); amendment awaits operator. Outstanding: before/after browser screenshots of the NBA Live Terminal row (needs post-deploy browser_check_dashboard.py run); 10-21 flip via scripts/w59_3_nba_flip_check.py.
 
 DESIGN BAR (both surfaces; the operator gave full creative latitude and wants a finished product, not a mockup)
 - Every number states where it came from and how old it is. Stale data looks stale (dimmed + age), never live.
