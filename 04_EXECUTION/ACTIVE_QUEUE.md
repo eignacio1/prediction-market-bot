@@ -3,293 +3,96 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 7036e11` (2026-10-08 ~02:00 UTC, strategic window). Results docs and PRs read from GitHub; VPS facts are the Wave 59 terminals' reports.
+**Verified against:** `origin/main = edb3138` (2026-10-08, strategic window handoff). PRs, CI and results docs read from GitHub; VPS facts are the Wave 60 terminals' reports.
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | **GG-515** (GG-520..524 claimed by 59.3, unused) · **T-737** · **ADR-0071** · **EXP-038** · ADR-0070 **ACCEPTED** · gap log **136 OPEN** (parity 158 = 158) |
-| Registry (92 cells) | *(last counted 10-05; not re-counted this wave)* **On main and live: ACTIVE 1 · SHADOW 24** (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 64. MLB postseason game cells log rows but are not yet SHADOW in the registry. |
+| Highest GG / T / ADR / EXP | **GG-530** · **T-746** · **ADR-0071** · **EXP-038** · ADR-0070 ACCEPTED · gap log **130 OPEN** (parity 157 = 157, no duplicate ids) |
+| Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
 | Shadow arms | **NFL** 12 cells logging, first look projected **2026-11-02**. **MLB postseason** armed and logging (judged n starts 2027). **NHL** 9 cells logging; judged n unreachable this season (GG-514); no NHL T3 score may be read (GG-401). **NBA** preseason rows to a separate labelled ledger; regular season 10-20, cells flip ~10-21. |
 | Open PRs | Only stale ones from Waves 30-34 (#133, #144, #146, #149). Nothing from Waves 52-59 is waiting. |
-| VPS | Last deploy `58dc28c` (#183), 2026-10-08 01:47 UTC, success. t4-mlb not restarted by Wave 59 (no T4 file touched). |
+| VPS | Last deploy `056428f` (#188), 2026-10-08 02:43 UTC, success; t4-mlb not restarted by Wave 60 (no T4 import changed). |
 | Deploy | **GG-432 resolved (#158, 2026-10-05):** a push restarts `t4-mlb` only if it changes a file t4-mlb imports AND no MLB game is live; otherwise the restart is skipped and logged. Dashboard restarts every deploy. Code can land at any hour. |
 
 ---
 
-## 🌲 RUNNING SITREP — the forest (this strategic window: Waves 52–60, 2026-10-03 → 10-08)
+## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close. Last update: Wave 59 closed / Wave 60 issued, 2026-10-08 ~02:10 UTC.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 60 closed + handoff, 2026-10-08.*
 
-**Bottom line.** The plumbing is now mostly sound: code lands at any hour without killing live services, MLB data no
-longer depends on a blocked source, every resolved bet books from Kalshi's own settlement, and four sports log shadow
-forecasts every game day. **What we do not have yet is a single verdict on edge.** The only ACTIVE cell (T4M-PROJ,
-MLB player hits) is losing ~5¢ per bet over 1,898 bets, and 99.7% of its positions were never confirmed filled — 60.1
-finds out how much of that sample is real. The first honest edge verdict anywhere is **NFL, ~2026-11-02**.
+**Bottom line.** The plumbing is now sound. Code lands at any hour without killing live services, MLB data no longer
+depends on a blocked source, every resolved bet books from Kalshi's own settlement (1,229 of 1,229 match), and four
+sports log shadow forecasts. **We still have no verdict that the model beats the market anywhere.** Wave 60 settled
+what the only ACTIVE cell's sample is: **94.5% of T4M-PROJ's 1,952 rows were never filled.** The 107 real fills lose
+$0.40 a bet. So T4M-PROJ is a calibration record, not trading evidence (your call, GG-527). The first honest
+pre-registered edge verdict is **NFL, ~2026-11-02**.
 
 ### Scoreboard
 
 | Measure | Start of window (10-03) | Now (10-08) |
 |---|---|---|
 | Real capital | $0 | $0 — demo only, Kelly 0 everywhere |
-| Cells live (of 92) | ACTIVE 1 · SHADOW 16 on a branch, unmerged | ACTIVE 1 · SHADOW 24+ on main; MLB postseason arms logging; NBA armed for 10-20 |
-| Sports logging forecasts | NFL, NHL (partly) | NFL, NHL, MLB postseason, NBA preseason (labelled, excluded) |
-| Cells at a scored look | 0 | 0 — engine sealed until each cell's pre-registered n |
-| Paper books truthful? | 26 MLB positions stuck unresolved; NFL book orphaned | All MLB booked from Kalshi (ADR-0071); NFL book archived; 1,229/1,229 settlements match Kalshi |
-| Open gaps | 176, many stale | 136, every one re-verified with dated evidence |
-| VPS stability | Nightly out-of-memory crashes | Crons staggered + swap; clean since 10-05 |
+| Cells (registry) | 92 · ACTIVE 1 · SHADOW 16 on an unmerged branch | 104 · ACTIVE 1 · SHADOW 24 on main · 12 NBA ready to flip ~10-21 · MLB postseason logging |
+| Sports logging forecasts | NFL, NHL (partly) | NFL, NHL, MLB postseason, NBA (preseason labelled + excluded) |
+| Cells at a scored look | 0 | 0 — engine sealed below each cell's pre-registered n |
+| Books truthful? | 26 MLB positions stuck; NFL book orphaned | All booked from Kalshi (ADR-0071); NFL book archived; **T4M-PROJ fills now known: 107 of 1,952** |
+| Open gaps | 176, many stale | **130**, every one re-verified with dated evidence; hook shows the live count |
+| VPS stability | Nightly out-of-memory crashes | Staggered crons + swap; clean since 10-05 |
 
 ### What this window built, by theme
 
 | Theme | Waves | Outcome |
 |---|---|---|
-| **Landing + deploy safety** | 52–55 | Four stuck PRs landed (#158–#161). Deploys restart t4-mlb only when its code changed and no game is live (GG-432). |
-| **MLB data off statsapi** | 52–58 | statsapi blocks the VPS → schedule, cache and features now build on GitHub Actions. The 22:30 cron that degraded features is off. Player-hits back (GG-489). |
-| **Books + settlement** | 53–55, 57–59 | Kalshi settlement = paper resolution source (ADR-0071); 26 stuck positions booked (drawdown T1 12.4%, T4 13.5%, under the 20% kill); cancelled games excluded from G6. |
-| **Shadow arms** | 53–59 | NFL 12 cells, NHL 9, MLB postseason 12, NBA built end to end (EXP-038, frozen model, crons, preseason ledger). |
-| **Calibration engine** | 58–60 | One engine, every cell under its own pre-registration, sealed below n; release frozen and tamper-evident; projections from real schedules. NBA joins in 60.2. |
-| **Dashboards** | 52, 56–60 | Live Terminal (`/`) shows what the bot places and evaluates, live. Visual Dashboard (`/project`) = health strip, books, evidence clocks, Calibration section. |
-| **Governance backlog** | 58–60 | Gap log 176 → 136, re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted. |
+| **Landing + deploy safety** | 52–55 | Four stuck PRs landed (#158–#161). Deploys restart t4-mlb only when its code changed and no game is live. |
+| **MLB data off statsapi** | 52–58 | Schedule, cache and features build on GitHub Actions; the degrading 22:30 cron is off; player-hits restored. |
+| **Books + settlement** | 53–60 | Kalshi settlement is the paper resolution source; 26 stuck positions booked; settlements cross-checked; T4M-PROJ fill truth established; weekly rebuild can no longer wipe a repair. |
+| **Shadow arms** | 53–60 | NFL 12, NHL 9, MLB postseason 12, NBA 12 (EXP-038, frozen model, crons, preseason ledger). |
+| **Calibration engine** | 58–60 | One engine, every cell under its own pre-registration, sealed below n, frozen tamper-evident releases, schedule-based projections, NBA included, pre-registration holes closed by dated addenda. |
+| **Dashboards** | 52, 56–60 | Live Terminal (`/`) = what the bot places/evaluates now; Visual Dashboard (`/project`) = health, books, evidence clocks, Calibration. Phone-width clean. |
+| **Governance** | 58–60 | Gap log 176 → 130, all re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted; window handoff is now a command (`/strategic-handoff`). |
 
 ### Against the north star — does the model know something the market doesn't?
 
 | Arm | Status | When a verdict is possible |
 |---|---|---|
-| **T4M-PROJ** (MLB player hits, ACTIVE) | -0.048/bet, n=1,898; fills unconfirmed (GG-300); latency thesis not supported (T-569) | 60.1 says what the sample can claim. Band placement (GG-320) is your call. |
-| **NFL** game markets (12 SHADOW) | Logging; 15 settled games per cell | First look **~11-02** (60 games) — rests on one week of coverage, may slip |
-| **NHL** (9 SHADOW) | Logging; T3 becomes judgeable once 60.2 applies the goalie addendum | PRELIMINARY all season; base-rate check at 500 games; full verdict 2027-28 |
-| **NBA** (built) | Opening night 10-20 | Cells flip ~10-21; look date once rows exist |
-| **MLB** game markets (postseason) | Logging, never scored | 2027 regular season |
+| **T4M-PROJ** (MLB player hits, ACTIVE) | All rows -0.053/bet (CI spans 0); **real fills -0.40/bet (CI excludes 0), n=107**; latency thesis not supported (T-569) | Execution evidence says no. What the cohort counts as is GG-527 (your call). |
+| **NFL** (12 SHADOW) | Logging; 15 settled games per cell at last count | First look **~11-02** (60 games/cell) — may slip; rests on one week of coverage |
+| **NHL** (9 SHADOW) | Logging; T3 rows now carry the projected-goalie flag (new rows) | PRELIMINARY all 2026-27 (accepted); base-rate check at 500 games |
+| **NBA** (12 cells) | Sealed 0/150; opening night 10-20 | Cells flip ~10-21; first look at 150 games/cell |
+| **MLB** game markets | Postseason logging, never scored | 2027 regular season |
 
 ### Calendar ahead
 
 | Date | What happens |
 |---|---|
-| Mon 10-12 14:20 UTC | Weekly rebuild of the T4 resolved ledger — first run under 60.1's overwrite guard |
+| Mon 10-12 14:20 UTC | Weekly T4 resolved-ledger rebuild — first live test of the overwrite guard |
 | 10-20 / 10-21 | NBA opening night; NBA cells flip to SHADOW once valid rows exist |
-| ~11-02 | NFL first scored look — the project's first edge verdict |
-| World Series end | MLB winter: stand T1/T4 down or idle (your call) |
+| ~11-02 | NFL first scored look — the project's first pre-registered edge verdict |
+| World Series end | MLB winter posture (T1/T4 down or idle) — ties into GG-527 |
+| before 2027-01-31 | Define EXP-038's date-triggered second look (GG-529) |
 
-### Your open calls (none blocks Wave 60)
-T4M-PROJ band placement (GG-320) · a P&L gate that can actually be reached (GG-285) · approval path for self-modifying
-scripts (GG-289) · kill switch to count unresolved stake (GG-441) · MLB winter posture · the unexplained SSH poller
-(GG-347) · T1 MLB postseason flag · detached read-only VPS jobs · EXP-034 (park recommended).
+### Your open calls
+**T4M-PROJ cohort (GG-527) — the important one** · MLB winter posture · T4M-PROJ band placement (GG-320) · a P&L
+gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
+unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
+(GG-529, January) · EXP-034 (park recommended).
 
 ---
 
-## ⬛ NOW — Wave 60 · three MEDIUM terminal blocks · run any time, all three in parallel
+## ⬛ NOW — Wave 61 · to be written by the incoming strategic window
 
-Operator 2026-10-07 18:58 PT: Wave 59 blocks ran too long (terminals quoted 3h+ ETAs). Wave 60 blocks are MEDIUM:
-two parts, ~60 min target, 90 min hard ceiling, stop at a pushed boundary. Wave 60 is the last wave of this strategic
-window; handoff follows its verification.
+The window that ran Waves 52–60 handed off on 2026-10-08 (operational doc: `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`;
+paste-in: `04_EXECUTION/NEW_WINDOW_PASTE_IN.md`; handoff procedure: `.claude/commands/strategic-handoff.md`).
+No prompt blocks are live. The incoming window verifies state, then writes Wave 61 here with its blocks inside.
 
-| Block | Status | Touches | Result / next |
-|---|---|---|---|
-| **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | ✅ **DONE** | A: of 1,952 epoch-12 rows only 107 (5.5%) have a real demo fill, real fills -0.40/bet (GG-300 resolved, GG-527 registered). B: GG-228 guard merged (PR #185) and on the VPS; first real exercise Mon 10-12 14:20 UTC. | — |
-| **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ✅ DONE (A+B; GG-401 still OPEN, see GG-530) | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
-| **60.3** Dashboard truth gaps + gap-log hygiene | ✅ **DONE** | A: #184 (GG-515/525 RESOLVED, VPS-verified). B: hook OPEN 176→134 = live grep (GG-426), generated arm index, severity parser fixed | — |
-
-### Wave 59 results (closed 2026-10-08 ~02:05 UTC, verified on GitHub at `7036e11`)
+### Wave 60 results (closed 2026-10-08, verified on GitHub at `edb3138`)
 
 | Block | Status | Result |
 |---|---|---|
-| **59.1** The backlog | ✅ **DONE** | All OPEN gaps re-verified with live evidence (an early "not re-verified" shortcut was caught and reversed in-session). **OPEN 176 → 131**; 136 at close as other blocks registered new gaps. Parity 158 = 158, no duplicate ids. GG-498 RESOLVED (#183: `deploy/cron.conf` = live crontab). GG-228's body had been overwritten by GG-226's — restored. Surfaced: **4,169 of 4,181 T4 positions never confirmed filled (GG-300)**; epoch-12 T4M-PROJ **-0.0481/bet, n=1,898**; Monday 14:20 UTC rebuild still unguarded (GG-228) → both in 60.1. |
-| **59.2** Calibration correctness | ✅ **DONE** | #178/#181/#182. Projection now walks real schedules: **NFL first look 2026-11-02** (rests on one week of coverage); **NHL judged n is unreachable this season** (GG-514); MLB none until 2027. Release mechanics proven on fixtures (59 → nothing, 60 → verdict, 61 → no change; write-once, tamper-evident manifests). NHL bootstrap corrected to EXP-036 (B=10,000, per-game). GG-499 one settled-row schema; Live Terminal count now sees NHL rows. **Kalshi cross-check: 1,229 / 1,229 settlements agree** (NFL 1,100, MLB 129). Registered GG-510..515. |
-| **59.3** NBA readiness, NHL goalie, ADR-0070 | ✅ **DONE** | #179/#180. Kalshi lists opening night (moneyline only); VPS dry run logs all bands. Premise "preseason rows banked" was **false** — fixed with a separate labelled ledger + one new cron line (standing authorization). NBA in `_season_state`; 10-21 flip check written. **NHL goalie verdict (b):** the API's starter flag is absent before and during play, present only after the final → no StarterProvider; amendment text written, **not applied** (your call, below). **ADR-0070 ACCEPTED**, GG-400 resolved. Unregistered gap: Feeds & Health shows no NBA row until a ledger exists → 60.3. |
-
-
-### 60.1 — Is the only ACTIVE cohort real? + Monday overwrite guard
-
-```
-COMMON RULES - WAVE 60 (read first; they bind this block)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07: 3-hour ETAs are not acceptable). Two parts.
-  If your first estimate for the whole block is over 90 minutes, say so in one line, do Part A only, and name Part B
-  as the next undone part. Do not re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in ACTIVE_QUEUE.md (Status + one line) with a docs-only push.
-  Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff. Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-07, ADR-0070 (ACCEPTED 10-08), ADR-0071. Standing authorizations:
-  shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows.
-- No order, position, fill, stake or kelly_fraction change. Demo only. No live-ledger write. No cron edit beyond the
-  standing new-line authorization. Read-only GETs against the Kalshi DEMO API are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- Every premise below is a claim to verify.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W60_<n>.md (docs-only push).
-
-WAVE 60.1 - IS THE ONLY ACTIVE COHORT REAL? (GG-300) + STOP THE MONDAY OVERWRITE (GG-228). Repo: eignacio1/prediction-market-bot.
-
-WHY
-T4M-PROJ is the only ACTIVE cell and its epoch-12 clean cohort is the project's sole G6 calibration cohort. W59.1
-confirmed: 4,169 of 4,181 closed T4 positions carry kalshi_order_status="submitted" (12 are "failed: HTTP 410"), nothing
-ever re-polls order status, and T-571 found 731 of 765 cohort rows NOT_RETRIEVABLE per-order. So we do not know whether
-those paper P&L rows correspond to orders the demo venue ever filled. W59.1 also measured epoch-12 T4M-PROJ P&L at
--0.0481/bet (n=1,898 WIN/LOSS). Separately, deploy/cron.conf:315 rebuilds logs/t4_mlb_resolved_ledger.jsonl wholesale
-every Monday 14:20 UTC from closed_positions, with no guard against wiping a repair applied to the derived file (GG-228).
-
-PART A - Fill truth for the cohort (read-only, on the VPS; ~40 min)
-  1. Sample 30 of the 731 NOT_RETRIEVABLE rows with scripts/t571_verify_t4mproj_kalshi_fills.py (demo, authenticated=True
-     as the script does). Tabulate the failure reasons (404, 410, other). Do not re-run all 731.
-  2. Pull the demo account's full GET /portfolio/fills and GET /portfolio/settlements history (paginate to the end;
-     record the earliest timestamp each endpoint returns - that is the retention horizon). Join to the cohort on
-     kalshi_order_id, falling back to (ticker, side, created-time window) only where the order id is missing, and say
-     how many joins used the fallback.
-  3. Classify every epoch-12 T4M-PROJ closed row: CONFIRMED_FILLED / CONFIRMED_NOT_FILLED / UNVERIFIABLE (outside the
-     retention horizon or no match). Report counts, and P&L per bet with a game-clustered 95% CI for (i) all rows,
-     (ii) CONFIRMED_FILLED only. Counts only for any cell that is sealed; T4M-PROJ is ACTIVE, so P&L is allowed.
-  4. One plain-English verdict line: what the G6 cohort can and cannot claim. Do not change the cohort definition,
-     any status or any ledger - that is the operator's call. GG-300: current state + evidence; RESOLVED only if every
-     row is classified CONFIRMED_*.
-PART B - GG-228 guard (code only, no cron edit; ~30 min)
-  In scripts/build_t4_resolved_ledger.py: before replacing the existing derived file, rebuild to a temp path and diff
-  row-by-row against the current file. If any existing row would change or disappear, do NOT overwrite: write the
-  rebuild beside it as <name>.rebuild_<UTC>.jsonl, log a WARNING line naming the row count that differs, exit 0. Rows
-  that are only added are fine (append-only growth). Tests for: identical, append-only, changed-row, removed-row.
-  Confirm whether the builder is in t4-mlb's import closure (it should not be) and record the deploy decision. PR, CI
-  green, merge. GG-228 RESOLVED only once the merged code is on the VPS (show git rev-parse there); next Monday run
-  is the first real exercise - say so.
-Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_1_cohort_fill_truth_results.md, updated per part.
-
-END OF BLOCK 60.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
-```
-
-### 60.2 — NBA into the calibration engine + pre-registration addenda
-
-```
-COMMON RULES - WAVE 60 (read first; they bind this block)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07: 3-hour ETAs are not acceptable). Two parts.
-  If your first estimate for the whole block is over 90 minutes, say so in one line, do Part A only, and name Part B
-  as the next undone part. Do not re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in ACTIVE_QUEUE.md (Status + one line) with a docs-only push.
-  Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff. Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-07, ADR-0070 (ACCEPTED 10-08), ADR-0071. Standing authorizations:
-  shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows.
-- No order, position, fill, stake or kelly_fraction change. Demo only. No live-ledger write. No cron edit beyond the
-  standing new-line authorization. Read-only GETs against the Kalshi DEMO API are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- Every premise below is a claim to verify.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W60_<n>.md (docs-only push).
-
-WAVE 60.2 - NBA INTO THE CALIBRATION ENGINE + PRE-REGISTRATION ADDENDA. Repo: eignacio1/prediction-market-bot.
-
-WHY
-NBA regular season opens 2026-10-20 and the first judged NBA rows land ~10-21, but the calibration engine has no NBA
-policy (GG-513), so NBA cells would be untracked or tracked under the wrong rules. W59.2 also found three holes in the
-pre-registrations the engine follows: EXP-037 never defines the ordering key for "earliest 60" (GG-510; the engine
-uses (start_time_utc, game_key)); EXP-036 never specifies the bootstrap seed (GG-511; the engine uses 20261002);
-MLB settled rows have no p_clim (GG-512). W59.3 wrote an EXP-036 goalie amendment (projected starter at every band,
-T3 included; see W59_3_nba_nhl_readiness_results.md Part B). No cell has judged data, so none of this is
-results-driven. NFL's first look is projected for 2026-11-02.
-
-PART A - NBA policy in the engine (~45 min)
-  Read EXP-038 in full. Add an NBA per-sport policy to scripts/calibration_engine.py exactly as EXP-038 states it
-  (looks, judged n, bootstrap B / seed / clustering, verdict rules, preseason excluded from judged n - rows with
-  excluded_from_judged_n=true or from PREGAME_SHADOW_PRESEASON never count). Anything EXP-038 leaves undefined:
-  list it, do not invent it; the engine refuses to emit a verdict where the rule is undefined. Wire NBA into
-  load_settled via pregame_shadow/settled_schema.py. Fixture tests: preseason rows never counted; sealed below judged
-  n (no score, no verdict); release at exactly judged n; one-past does not change the look. The Visual Dashboard
-  Calibration section shows the NBA cells with counts and "awaiting first regular-season rows" until 10-21. PR, CI
-  green, merge, record the deploy decision. GG-513 RESOLVED once the daily engine run on the VPS lists NBA cells.
-PART B - Addenda (~20 min) - AUTHORIZED (operator, 2026-10-07 19:03 PT; the AUTHORIZATION - PRE-REGISTRATION ADDENDA
-  blockquote in ACTIVE_QUEUE.md "Needs your decision" is the record - read it and apply exactly what it covers).
-  Append as dated addenda at the end of each pre-registration file (never edit the original text): EXP-037 ordering
-  key; EXP-036 seed; EXP-036 goalie amendment (W59.3 Part B text, verbatim); for GG-512, state that the MLB
-  climatology comparison is unavailable and why. One DECISION_LOG entry citing the line. Close GG-510 / GG-511 /
-  GG-512 with the commit. GG-401: RESOLVED only if, under EXP-036 as amended, NHL T3 rows are now judgeable AND the
-  running T3 job already writes confirmed=False rows with the projected starter - check the live rows, say which.
-  GG-514: record the operator decision (keep EXP-036 as written; NHL PRELIMINARY in 2026-27) in its entry and set its
-  status per the log's conventions. Confirm the engine reads the amended values (seed, ordering) - no code change
-  should be needed; if one is, tests + PR.
-Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_2_nba_engine_addenda_results.md, updated per part.
-
-END OF BLOCK 60.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
-```
-
-### 60.3 — Dashboard truth gaps + gap-log hygiene
-
-```
-COMMON RULES - WAVE 60 (read first; they bind this block)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07: 3-hour ETAs are not acceptable). Two parts.
-  If your first estimate for the whole block is over 90 minutes, say so in one line, do Part A only, and name Part B
-  as the next undone part. Do not re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in ACTIVE_QUEUE.md (Status + one line) with a docs-only push.
-  Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff. Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-07, ADR-0070 (ACCEPTED 10-08), ADR-0071. Standing authorizations:
-  shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy + pmbot-web-dashboard restart.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows.
-- No order, position, fill, stake or kelly_fraction change. Demo only. No live-ledger write. No cron edit beyond the
-  standing new-line authorization. Read-only GETs against the Kalshi DEMO API are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- Every premise below is a claim to verify.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W60_<n>.md (docs-only push).
-
-WAVE 60.3 - DASHBOARD TRUTH GAPS + GAP-LOG HYGIENE. Repo: eignacio1/prediction-market-bot.
-
-WHY
-Two dashboard defects found in Wave 59 and not fixed: (1) the Live Terminal's Feeds & Health tab renders NO NBA row
-while no NBA ledger exists, so the "awaiting" state the API returns never reaches the screen (W59.3 Part D; never
-registered as a GG); (2) the Visual Dashboard scrolls horizontally at 390px (467px wide) from a long source link in
-the Calibration header (GG-515). W59.1 also noted three gap-log defects and left them: the "Gaps by Arm" index at the
-top of GOVERNANCE_GAP_LOG.md is stale; the session-start governance hook prints a stale OPEN count (GG-426); two OPEN
-entries carry non-severity tokens ("ADR-0052", "ledger") in their Severity field.
-
-PART A - Dashboards (~40 min)
-  Register the NBA-row defect as a GG first. Fix it: the Feeds & Health tab always renders the NBA shadow row; with no
-  ledger it reads "SHADOW NBA ledgers: no data - awaiting first regular-season rows" (neutral, not red). Keep
-  "Live Terminal.html" and the embedded _HTML byte-identical, as before. Fix GG-515: no horizontal scroll at 390px on
-  either surface (wrap or truncate the link with the full URL in a title attribute). Tests for both. Real-browser
-  before/after with scripts/browser_check_dashboard.py at 1500px and 390px: Live Terminal / and Visual Dashboard
-  /project, zero console errors, page width = viewport at 390px. PR, CI green, merge, confirm pmbot-web-dashboard
-  restarted on the deploy (NRestarts, ActiveEnterTimestamp) and the fix is served. Both GGs RESOLVED with that proof.
-PART B - Gap-log hygiene (~25 min)
-  Regenerate the "Gaps by Arm" index from the live entries (or replace it with a pointer to a generated file if a
-  generator already exists - check first). Fix GG-426 at its source so the hook prints the live OPEN count computed
-  the same way as CLAUDE.md Step 3; show hook output before/after. Give the two odd entries a real severity token,
-  citing their own text for the choice. Parity check (headers = status lines) and gg_id_uniqueness_check.py both pass.
-  Report OPEN before -> after. Content of other gap entries is not touched.
-Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_3_dashboard_gaplog_results.md, updated per part.
-
-DESIGN BAR (both surfaces)
-- Every number states where it came from and how old it is. Stale looks stale. A panel with no data says "no data".
-- Colour carries meaning only: green healthy, amber stale/warning, red breach/failure, neutral otherwise.
-- Readable at laptop size; usable on a phone - no horizontal scroll.
-- Truthful labels: SHADOW is never shown as live trading; $0 stake said plainly.
-
-END OF BLOCK 60.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
-```
+| **60.1** Is the only ACTIVE cohort real? + Monday guard | ✅ **DONE** | #185. Demo venue's full fill history (back to 05-19, past the cohort start) joined to all 1,952 epoch-12 T4M-PROJ rows: **107 filled (5.5%), 1,845 never filled, 0 unverifiable.** P&L/bet: all rows **-0.053** (CI -0.148..+0.043); **real fills -0.403 (CI -0.650..-0.156, 41 games)**; paper-only -0.032. GG-300 RESOLVED → **GG-527 HIGH OPEN: what the cohort counts as is your call.** GG-228 guard live on the VPS: the rebuild never overwrites a changed or removed row; first real run Mon 10-12 14:20 UTC. |
+| **60.2** NBA engine + addenda | ✅ **DONE** | #186: NBA under EXP-038 (looks 150/400, seed 20261006, preseason never counted); 12 NBA cells listed SEALED 0/150 on the VPS. Addenda appended to EXP-036/037 as authorized. GG-510/511/512/513 RESOLVED, GG-514 ACCEPTED UNCERTAINTY. Found live NHL T3 rows carried no confirmed flag → GG-530, fixed same day by #188 (new rows only). **GG-401 still OPEN** — closable once new T3 rows show the flag. New: GG-529 (EXP-038 date-triggered second look undefined; needed before 2027-01-31). |
+| **60.3** Dashboard truth + gap-log hygiene | ✅ **DONE** | #184: Live Terminal always shows the NBA row ("no data - awaiting"); no 390px scroll on `/project` (verified live, 0 console errors). #187: session-start hook now prints the live OPEN count (was stale 176 — read the main tree, not the worktree; GG-426); generated Gaps-by-Arm index; severity parser fixed. GG-515/525/426 RESOLVED. **OPEN 136 → 130** at close. |
 
 ---
 
@@ -297,13 +100,13 @@ END OF BLOCK 60.3. If you cannot see this line, the prompt reached you truncated
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 60 — issued 2026-10-08 ~02:05 UTC (7:05 PM PT 10-07) · three MEDIUM blocks (60/90-min rule) · last wave of this strategic window
+### ✅ WAVE 60 — CLOSED 2026-10-08 · three MEDIUM blocks (60/90-min rule held) · last wave of the Waves 52–60 window
 
-| # | Block | Status | Touches | Gate |
-|---|---|---|---|---|
-| 60.1 | Cohort fill truth + Monday guard | ⬜ | Kalshi demo GETs; resolved-ledger builder | Every epoch-12 row classified; builder never overwrites a changed row |
-| 60.2 | NBA engine + addenda | ✅ | calibration engine; EXP-036/037 addenda (authorized 10-07 19:03 PT) | NBA cells tracked under EXP-038 before 10-21 |
-| 60.3 | Dashboard truth + gap-log hygiene | ⬜ | Live Terminal, Visual Dashboard, gap log | NBA row visible; no 390px scroll; hook count = live |
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 60.1 | Cohort fill truth + Monday guard | ✅ | #185; 107 of 1,952 filled; real fills -0.40/bet; GG-527 to you; GG-228 guarded |
+| 60.2 | NBA engine + addenda | ✅ | #186/#188; 12 NBA cells sealed 0/150; addenda applied; GG-529/530 |
+| 60.3 | Dashboard truth + gap-log hygiene | ✅ | #184/#187; NBA row, 390px fixed, hook count live; OPEN 130 |
 
 ### ✅ WAVE 59 — CLOSED 2026-10-08 ~02:05 UTC · three LARGE blocks (ran long: operator set the 60/90-min rule for Wave 60)
 
@@ -565,6 +368,8 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 
 | Item | Plain English | What it costs while it waits |
 |---|---|---|
+| **NEW — T4M-PROJ cohort (GG-527)** | 94.5% of the only ACTIVE cell's sample never filled on the demo venue. The 107 that did fill lose **$0.40/bet, CI excluding zero** — about 8x worse than the paper rows, the classic sign that resting orders fill mainly when the price is about to go against them. Options: (a) G6 counts real fills only (T4M-PROJ is then a demonstrated loser on n=107); (b) keep the paper rows as *model calibration* evidence but never as *execution* evidence — G6 needs fills; (c) stand T4M-PROJ down for the winter with MLB. **Window recommends (b) + (c):** keep the 1,952 rows as a calibration record, require fills for any execution claim, and stop placing T4M-PROJ paper stakes after the World Series. | Every day it runs adds paper rows that can't count toward G6. |
+| **NEW — EXP-038 second look (GG-529)** | The NBA pre-registration says "n=400 or 2027-01-31, whichever first" but never says what is scored on the date. Needs a definition before 2027-01-31; the engine scores only n=150/400 until then. | Nothing before January. |
 | **Pre-registration addenda** | ✅ **DECIDED 2026-10-07 19:03 PT: yes** — authorization line above; 60.2 Part B applies them. | — |
 | **NHL judged n (GG-514)** | ✅ **DECIDED 2026-10-07 19:03 PT: keep as written** — NHL PRELIMINARY all 2026-27. | — |
 | **GG-432** | ✅ **DECIDED 2026-10-04: option (a), PR #158** — merged in 54.2. | — |

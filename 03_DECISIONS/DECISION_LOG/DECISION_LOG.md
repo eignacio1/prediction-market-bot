@@ -1895,3 +1895,17 @@ Authority line: ACTIVE_QUEUE.md "AUTHORIZATION - PRE-REGISTRATION ADDENDA". Four
 (1) GG-515/GG-525 RESOLVED on PR #184 deploy + live-VPS real-browser proof; left in live log (archiving would move others' entries). (2) GG-426 fixed at source: governance_scan.sh resolves repo root from its own path (was hardcoded main tree, printed 176 vs live 134). (3) "Gaps by Arm" is now generated (scripts/generate_gap_arm_index.py); hand index retired, T-374 classification kept as seed. (4) Odd severity tokens were a parser defect (generate_operator_console.py STATUS_RE), not entry defects; parser fixed, entries untouched.
 ## 2026-10-08 — W60.1: cohort fill truth (T-740)
 Audit found 107 of 1,952 epoch-12 T4M-PROJ rows (5.5%) match a real demo fill; real fills lose -$0.403/bet. GG-300 RESOLVED (all rows classified), GG-527 registered (HIGH). GG-228 RESOLVED via build_t4_resolved_ledger guard (PR #185); t4-mlb restart not_needed. No cohort definition, status, ledger or sizing changed. Operator decisions open: G6 cohort definition (all orders vs filled only); order-status re-polling at entry.
+
+## 2026-10-08 (PT afternoon) — Wave 60 closed; strategic window handoff (Waves 52–60); handoff made a command
+
+**Wave 60 verified on GitHub at edb3138:** 60.1 DONE (#185: T4M-PROJ epoch-12 cohort 107 of 1,952 filled on demo,
+real fills -0.403/bet CI -0.650..-0.156; GG-300 RESOLVED, GG-527 OPEN HIGH; GG-228 guard live). 60.2 DONE (#186, #188:
+NBA under EXP-038 in the engine; addenda applied; GG-510/511/512/513/530 RESOLVED, GG-514 ACCEPTED UNCERTAINTY; GG-529
+registered; GG-401 open pending new-row check). 60.3 DONE (#184, #187: GG-515/525/426 RESOLVED). Gap log 130 OPEN.
+**Routed to operator:** GG-527 — window recommends (b) keep the 1,952 rows as calibration evidence only, G6 requires
+real fills, plus (c) stand T4M-PROJ paper stakes down after the World Series. Not decided.
+**Operator directive (2026-10-08):** "give me the operational doc + the paste-in prompt for the new chat - this should
+be wired into the protocol somehow so I don't need to keep repeating it." Implemented as `.claude/commands/strategic-handoff.md`
+(/strategic-handoff), named in the paste-in and the carry-forward; the handoff always delivers the carry-forward, the
+paste-in and the queue as file cards plus the paste-in in a chat fence, unasked, and only after the last wave is verified.
+Carry-forward and paste-in rewritten (the early drafts at 94853bf were never used and are superseded).
