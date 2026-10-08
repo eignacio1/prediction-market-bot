@@ -4022,7 +4022,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-515 — Visual Dashboard calibration section overflows horizontally on phone width
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.3):** Fixed in PR #184 (squash f94b5f6): `td,th,code,.asof` wrap with overflow-wrap:anywhere, full source in a title attribute, section overflow backstop. Real browser, 390px, live VPS /project: scrollWidth 390 = viewport (was 467 reported / 1054-1082 reproduced locally). pmbot-web-dashboard restarted 2026-10-08T02:20:53Z, NRestarts=0, fix served.
 
 **Current state (2026-10-08, W59.2):** At 390px the page scrolls horizontally (scrollWidth 467): a long source link/code element in the calibration header sits outside the .scroll wrapper. Present before and after W59.2; seen in the real-browser check. **Next:** Wrap or break long source paths in the section header; re-run the phone screenshot.
 
@@ -4061,7 +4063,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-525 — Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.3):** Fixed in PR #184 (squash f94b5f6): Feeds & Health always renders the NBA shadow row; no ledger reads 'SHADOW NBA ledgers: no data - awaiting first regular-season rows' (neutral). Verified in a real browser against the live VPS dashboard at 1500px and 390px. pmbot-web-dashboard restarted 2026-10-08T02:20:53Z, NRestarts=0.
 
 **Current state (2026-10-08, W60.3):** `health()` in `Live Terminal.html` pushed the NBA shadow row only when `freshness.nba_shadow.last_ts` was set. With no `exp_output/PREGAME_SHADOW/NBA_*.jsonl` the API returns `{awaiting: ...}` and the page silently dropped the row, so "awaiting" never reached the screen. **Next:** always render the row; no-ledger reads "no data - awaiting first regular-season rows" in neutral colour.
 
