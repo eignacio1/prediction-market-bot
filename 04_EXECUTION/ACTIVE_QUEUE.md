@@ -57,7 +57,7 @@ finds out how much of that sample is real. The first honest edge verdict anywher
 |---|---|---|
 | **T4M-PROJ** (MLB player hits, ACTIVE) | -0.048/bet, n=1,898; fills unconfirmed (GG-300); latency thesis not supported (T-569) | 60.1 says what the sample can claim. Band placement (GG-320) is your call. |
 | **NFL** game markets (12 SHADOW) | Logging; 15 settled games per cell | First look **~11-02** (60 games) — rests on one week of coverage, may slip |
-| **NHL** (9 SHADOW) | Logging; T3 now judgeable with the projected goalie (60.2) | PRELIMINARY all season; base-rate check at 500 games; full verdict 2027-28 |
+| **NHL** (9 SHADOW) | Logging; T3 becomes judgeable once 60.2 applies the goalie addendum | PRELIMINARY all season; base-rate check at 500 games; full verdict 2027-28 |
 | **NBA** (built) | Opening night 10-20 | Cells flip ~10-21; look date once rows exist |
 | **MLB** game markets (postseason) | Logging, never scored | 2027 regular season |
 
