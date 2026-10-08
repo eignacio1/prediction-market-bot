@@ -5051,3 +5051,79 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-411 — NFL model: Gaussian margin model puts mass on ties
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-411 |
+| Category | Model design |
+| What was found | A continuous Gaussian margin assigns probability to a tie that cannot occur in the moneyline market; calibration impact unmeasured. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — nfl_model.py l.27 and l.70-71 handle ties explicitly: p_tie = Phi((0.5-mu)/s)-Phi((-0.5-mu)/s), moneyline = p_win + 0.5*p_tie, matching Kalshi's $0.50 split (code read this session).
+
+</details>
+
+### GG-412 — NFL model: kmult inferred, not read from the venue
+
+**Status:** CLOSED-AS-DUPLICATE (2026-10-08, W59.1) · of GG-402 · **Severity:** LOW
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-412 |
+| Category | Correctness |
+| What was found | The fee/spread multiplier used by the NFL model was inferred rather than read from the series endpoint. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+**W59.1 disposition (2026-10-08):** DUPLICATE — Same defect as GG-402: the fee multiplier/coefficient is inferred in pregame_shadow/fees.py (l.4) rather than read from the venue; ledger.py records fee_k007 and fee_kmult side by side.
+
+</details>
+
+### GG-413 — Aged open positions: 9 T4 and 17 T1/T2 never resolved
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-413 |
+| Category | Ledger integrity |
+| What was found | 47.2 counted 9 aged T4 and 17 aged T1/T2 open positions; D6(a) found no postseason-stuck cause. Unresolved positions distort OPEN counts and exposure. |
+| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — Stale premise, checked on VPS this session: logs/paper_portfolio_mlb.json has 0 open positions; logs/paper_portfolio_mlb_t4.json has 21 open, all dated 2026-10-07 (none aged).
+
+</details>
+
+### GG-424 — 824 NFL STUB positions inflate OPEN count (850) and exposure ($990.84)
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-424 |
+| Category | Ledger integrity |
+| What was found | STUB-identity NFL positions are counted as live in dashboard OPEN and exposure totals. |
+| Source | SESSION_HANDOFF_20261003_0020 (48.3) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — Stale premise, VPS this session: logs/paper_portfolio_t1_nfl_game_market.json has 4 open_positions (all STUB-labelled), not 824; the inflated open count and $990.84 exposure no longer hold.
+
+</details>
+

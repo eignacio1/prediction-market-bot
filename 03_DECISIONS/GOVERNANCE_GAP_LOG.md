@@ -2731,7 +2731,7 @@ When a new governance process failure is discovered:
 
 **Status:** OPEN · **Severity:** HIGH
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Threatens the only clean G6 cohort. **Next:** Re-measure demand without ring-buffer ceiling.
+**Current state (2026-10-08, W59.1):** Verified: paper_trader.py l.86 MAX_REJECTED_POSITIONS=2000 and the live T4 portfolio holds exactly 2000 rejected_positions (VPS, this session) - the figure is a ring-buffer ceiling. **Next:** Persist rejections to an append-only file before funding accrual.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3029,7 +3029,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Make STUB opt-in, not default.
+**Current state (2026-10-08, W59.1):** Verified: run_t1_nfl_game_market.py l.19 states the default wired model is StubNFLForecastModel (PROVENANCE 'STUB ... GG-255', l.171); live NFL pool has 4 open, all STUB. **Next:** Refuse to run the stub model without an explicit flag.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3266,7 +3266,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Fee schedule PDF unconfirmed. **Next:** Retry fetch or obtain the PDF from the operator account.
+**Current state (2026-10-08, W59.1):** Re-probed this session: kalshi.com/regulatory/fee-schedule returns HTTP 429 and the S3 PDF URL returns 404. **Next:** Operator downloads the PDF by hand and commits it, or confirm via support.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3286,7 +3286,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Candle numbers remain VOID. **Next:** None until a new pre-registered instrument; keep VOID banner.
+**Current state (2026-10-08, W59.1):** EXP035_RESULTS_board_survey_sports_2026-10-02.md l.1-5: Part 1 FAILED (G2 0.335 vs 0.80, G3 0.472 vs 0.95, G4, G5, G7), candle numbers VOID; verdict standing and unrescued. **Next:** Run the pre-registered D3 on a fresh family; do not reuse candle numbers.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3381,7 +3381,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Off-season persists, so the false-alarm risk is live. **Next:** Add season awareness to Step 4; CLAUDE.md edit needs operator OK.
+**Current state (2026-10-08, W59.1):** CLAUDE.md Step 4 text mentions 'during MLB season' only as prose (l.290); no code/hook gates the checks by season. **Next:** Add a season flag to the session-start health probe.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3571,7 +3571,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Single transient occurrence. **Next:** Close if no recurrence after next waves.
+**Current state (2026-10-08, W59.1):** claim_session.sh and close_session_claim.sh retry on rebase/push rejection only; no handling of 'unable to write file ... pack' errors. **Next:** Add a generic push retry with backoff and a gc hint.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3666,7 +3666,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Add half_spread filter to shadow scoring.
+**Current state (2026-10-08, W59.1):** Verified: runner.py l.74 records half_spread; scoring.py has no half_spread filter (grep this session). **Next:** Add a half_spread cap to shadow scoring and pre-register it.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3776,63 +3776,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-411 — NFL model: Gaussian margin model puts mass on ties
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Measure tie-mass calibration impact.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-411 |
-| Category | Model design |
-| What was found | A continuous Gaussian margin assigns probability to a tie that cannot occur in the moneyline market; calibration impact unmeasured. |
-| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
-### GG-412 — NFL model: kmult inferred, not read from the venue
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Read kmult from the series endpoint.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-412 |
-| Category | Correctness |
-| What was found | The fee/spread multiplier used by the NFL model was inferred rather than read from the series endpoint. |
-| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
-### GG-413 — Aged open positions: 9 T4 and 17 T1/T2 never resolved
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Unresolved positions still distort counts. **Next:** Resolve or classify the 26 aged positions.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-413 |
-| Category | Ledger integrity |
-| What was found | 47.2 counted 9 aged T4 and 17 aged T1/T2 open positions; D6(a) found no postseason-stuck cause. Unresolved positions distort OPEN counts and exposure. |
-| Source | SESSION_HANDOFF_20261002_2357 (47.2) |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
 ### GG-415 — players_2026.json is stale
 
 **Status:** OPEN · **Severity:** LOW
@@ -3913,7 +3856,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** LOW
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. **Next:** Rename the landed-second file.
+**Current state (2026-10-08, W59.1):** git log shows 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0020.md written by two commits (59f7f78 W48.3 and 42b3d30 T-631): a content collision is real. **Next:** Rename one handoff with a unique suffix and add a name-collision check.
 
 <details>
 <summary>Full record ▸</summary>
@@ -3980,25 +3923,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Gap ID | GG-423 |
 | Category | UX |
 | What was found | With kelly_fraction=0.0 no T1 sizing occurs, yet freshness renders red; ambiguous whether staleness matters for the operator. |
-| Source | SESSION_HANDOFF_20261003_0020 (48.3) |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
-### GG-424 — 824 NFL STUB positions inflate OPEN count (850) and exposure ($990.84)
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Distorts dashboard exposure. **Next:** Exclude STUB identities from OPEN and exposure.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-424 |
-| Category | Ledger integrity |
-| What was found | STUB-identity NFL positions are counted as live in dashboard OPEN and exposure totals. |
 | Source | SESSION_HANDOFF_20261003_0020 (48.3) |
 | Disposition | Registered by 49.3 (registration only, no investigation). |
 
@@ -4105,7 +4029,7 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** HIGH
 
-**Current state (2026-10-08, W59.1):** Not re-verified this session; entry stands as written. Kill-switch coverage gap; most safety-relevant open item. **Next:** Operator decision: persist kill-switch state and count settled-unresolved stake.
+**Current state (2026-10-08, W59.1):** c7_monitoring/monitor.py l.34-35 alerts on realized loss only (5%/10% of initial bankroll); only stale-open detection (7-day threshold, l.122) touches unresolved stake. Unchanged in code. **Next:** Add settled-but-unresolved stake to the kill-switch drawdown input; persist state.
 
 **Update (W55.1, 2026-10-05):** the 17 settled-but-unresolved T1 positions are now booked (live write, T1 realized drawdown 12.44%); the in-memory/realized-only kill-switch gap itself remains open.
 
