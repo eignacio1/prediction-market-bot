@@ -797,3 +797,4 @@
 | 2026-10-08T02:07:13Z | T-740..T-742, GG-527..GG-528 | W60.1 MEDIUM - T4M-PROJ cohort fill truth (GG-300) + GG-228 builder overwrite guard |
 | 2026-10-08T02:08:01Z | T-743..T-746, GG-529..GG-530 | W60.2 MEDIUM - NBA into calibration engine (EXP-038 policy) + pre-reg addenda (EXP-036/037; GG-510/511/512/401/513/514) |
 | 2026-10-08T02:42:00Z | T-740 | CLOSED — merge confirmed, HEAD (e43db25) is ancestor of origin/main — W60.1: 107/1952 T4M-PROJ rows really filled; GG-228 guard merged |
+| 2026-10-08T02:42:47Z | T-740 | CLOSED — merge confirmed, HEAD (71613eb) is ancestor of origin/main — W60.1: 107/1952 T4M-PROJ rows really filled; GG-228 guard merged |
