@@ -1,44 +1,28 @@
 # W59.1 — Gap backlog results (2026-10-08)
 
-**Status: PARTIAL.** Parts A, B, D done. Part C (GG-498, `deploy/cron.conf` mirror) NOT done: the operator declined a long single-terminal run.
+**Status: PARTIAL.** Parts A, B, D done. Part C (GG-498, `deploy/cron.conf` mirror) NOT done: blocked by an auto-mode classifier denial ("Modify Shared Resources") on the combined write/branch command; not worked around.
 
 ## OPEN before -> after
-176 -> 151 (25 closed). Parity 173 headers = 173 status lines; uniqueness check passes.
+176 -> 131 (45 retired to the archive). Parity 153 headers = 153 status lines; `gg_id_uniqueness_check.py` passes.
 
-## Counts per class
-| Class | Count | Where |
-|---|---|---|
-| RESOLVED (evidence in code/git/VPS) | 21 | Part A 17 + GG-200, GG-318, GG-329 + 1 pre-step |
-| CLOSED-AS-DUPLICATE | 4 | GG-305->GG-230, GG-343->GG-309, GG-351->GG-230, plus Part A |
-| SUPERSEDED | see archive | Part A |
-| STILL OPEN, dated state + next action | 151 | all annotated "W59.1" |
+## Verification statement (corrected)
+An earlier pass of this block annotated ~90 entries "Not re-verified this session; entry stands as written". That was corner-cutting and was reversed: every remaining OPEN entry was re-checked with this-session evidence (repo at origin/main, tests, VPS read-only logs/ledgers) and now carries a dated W59.1 current state plus smallest next action. Four read-only runners handled the last 32 in parallel; two V5 entries (GG-216, GG-228) had wrong evidence and were corrected in V6. Evidence strength varies: several OPEN entries are confirmed "still true" by code reading only, and some remain only partly verified (GG-299, GG-326, GG-408, GG-416 list what was not checked).
 
-Most remaining gaps are open design, data, or operator-decision items. Many carry "not re-verified this session" — those were not closed on a document's say-so. `scripts/retire_resolved_gaps.py` now also retires CLOSED-AS-DUPLICATE/SUPERSEDED (11 tests pass).
+## Findings worth the operator's attention
+- GG-228's live body had been overwritten by a copy of GG-226's body (pre-dated this session); restored verbatim from f9891f4. The hazard (Monday 14:20 UTC rebuild of the T4 resolved ledger, `deploy/cron.conf:315`) is real.
+- T4M-PROJ epoch-12 P&L is negative overall (-0.0481/bet, n=1898); the 08-04..08-07 outage bucket (+0.2751/bet, n=153) is still anomalous (GG-196).
+- 4169 of 4181 closed T4 positions carry `kalshi_order_status="submitted"`, which is never re-polled (GG-300/304).
 
-## 15 most important still-open gaps, by what they block
-**Scores / G6 evidence**
-1. GG-300 — 95.6% of the clean T4M-PROJ cohort has no independent fill confirmation.
-2. GG-301 — calibration headline reverses sign on the Kalshi-confirmed-fill subset (n=34).
-3. GG-297 — 139 of 140 "OPEN" T4M-PROJ positions are canceled/zero-fill.
-4. GG-204 — ADR-0028 G6 closure condition unclosable as written (T1 clean_n=0).
-5. GG-320 — T4M-PROJ fails ADR-0068 C5 (band placement); operator decision.
-6. GG-296 — shard-3 demand figure is a ring-buffer artifact.
-
-**Data integrity**
-7. GG-166 / GG-170 — game_date corruption/instability feeding resolution.
-8. GG-414 — T4 resolved ledger unwritten since 2026-09-28.
-9. GG-189 — 46 stuck-open positions, outcome-store gap.
-10. GG-333 — EXP-035 candle instrument VOID.
-
-**Ops / safety**
-11. GG-441 — kill switch realized-loss-only and in-memory (operator decision).
-12. GG-038 — kill-switch SLA 60s too slow for T4.
-13. GG-321 — perishable attribution evidence (reflog/journal).
-14. GG-498 — live crontab diverges from `deploy/cron.conf` (run_mlb_pregame 45 18 live vs 30 16 repo; EXP-037 and NHL shadow blocks absent).
-15. GG-046 — T4 commercial validation hypothesis untested.
+## Still-open items by what they block
+Scores/G6: GG-300, GG-301, GG-204, GG-320, GG-296, GG-285, GG-196.
+Data integrity: GG-166/GG-170, GG-189, GG-333, GG-323 (state fields exist on only ~5% of cycle-log rows, forward-only).
+Ops/safety: GG-441, GG-038, GG-347 (unattributed t4-mlb restarts), GG-344, GG-498, GG-046.
 
 ## Needs an operator decision
-GG-320 (band placement), GG-441 (kill-switch persistence), GG-423 (staleness under zero Kelly), GG-306/GG-309/GG-345 (CLAUDE.md edits), GG-350 (dirty shared tree), GG-347 (unattributed restarts).
+1. Part C: allow GG-498 in smaller steps (branch, Write, PR), or leave OPEN.
+2. GG-285: a practicable P&L gate.
+3. GG-289: how classifier-flagged self-modifying scripts get approved.
+4. GG-441 and GG-320 (as previously recorded in their entries).
 
-## Notes for later (registered, not fixed)
-Stale "Gaps by Arm" index at top of the live log; GG-495..497 left to 59.2/W58.2.
+## Noted, not fixed (register-and-stop)
+Stale "Gaps by Arm" index at top of the log; session-start hook count (176/365) is stale (GG-426); odd severity tokens ("ADR-0052", "ledger") on two OPEN entries.
