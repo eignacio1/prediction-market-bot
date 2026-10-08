@@ -46,3 +46,21 @@ look but not a frozen one; manifest write-once and tamper-evident; verdict-rule 
 
 **Gaps to register (not changed here; pre-registrations are not edited):** the "earliest 60" ordering key is undefined in EXP-037;
 the NHL seed is unspecified in EXP-036; MLB settled rows have no `p_clim`, so the pre-registered climatology comparison is unavailable for MLB.
+
+## Part C — Settled-row truth (GG-499)
+
+- One reader, `pregame_shadow/settled_schema.py`: `settled_y` takes `y` (NFL/MLB), else `outcome` (NHL); `normalize` returns a new dict with `y` and `game_key` (NHL: `event_ticker` from the ledger row joined on `(run_id, market_ticker)`). `p_clim` is never invented (MLB and NHL have none). `y=0.0` and `0.5` count as settled; `None` does not.
+- Consumers rewired: `calibration_engine.load_settled` and the Live Terminal settled count in `scripts/web_dashboard.py`. The count previously keyed on `y` only, so NHL rows (`outcome`) were missed.
+- No raw ledger rewritten. Derived `settled/` copies not back-filled, and `nhl_shadow_settle` unchanged; both deferred (a back-fill would need provenance and a DECISION_LOG entry per GG-228).
+- Tests: `tests/test_settled_schema.py` (3), plus an NFL/MLB `y` case in `tests/test_w52_e_live_terminal_shadow.py`. 52 pass locally across the schema, dashboard, engine and NHL-eval suites.
+
+## Part D — Settlement cross-check (GG-487)
+
+Read-only. `scripts/kalshi_settlement_crosscheck.py` fetched Kalshi's public market record for every distinct settled NFL and MLB market ticker (settled copies read from the VPS on 2026-10-07) and compared Kalshi's `result` with the outcome our settle step assigned.
+
+| Sport | Markets | Agree | Disagree | Void/cancelled | Unresolved at Kalshi | Missing |
+|---|---|---|---|---|---|---|
+| NFL | 1,100 | 1,100 | 0 | 0 | 0 | 0 |
+| MLB | 129 | 129 | 0 | 0 | 0 | 0 |
+
+All 1,229 were `finalized` at Kalshi. No outcomes were changed and nothing needed registering. Scope: NFL and MLB only, as specified; NHL not cross-checked. This is a point-in-time check of rows settled so far, not a standing monitor.
