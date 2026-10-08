@@ -2,7 +2,12 @@
 # Governance scan — runs before every model response in this project.
 # Output is injected into model context. Model cannot skip what it sees.
 
-PROJECT="/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
+# GG-426 (W60.3): resolve the repo root from this script's own location, not a hardcoded
+# path. The hardcoded main-checkout path made every worktree session read the (often stale)
+# main tree's gap log -- 176 OPEN printed vs 134 from the anchored grep on the live log.
+# Hardcoded path kept only as a fallback if the script is run from outside a checkout.
+PROJECT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+[ -f "$PROJECT/03_DECISIONS/GOVERNANCE_GAP_LOG.md" ] || PROJECT="/Users/earlignacio/Documents/Claude/Projects/Prediction Markets"
 cd "$PROJECT" 2>/dev/null || exit 0
 
 echo "============================================================"

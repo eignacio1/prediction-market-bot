@@ -1,0 +1,177 @@
+# Gaps by Arm — GENERATED (do not hand-edit)
+
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 137 of 160 are auto and unreviewed.
+
+**Counts:** Core=104 (93 OPEN), MLB=40 (29 OPEN), NBA=12 (9 OPEN), NHL=4 (3 OPEN) — 160 live gaps.
+
+## Core (104)
+
+- GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
+- GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
+- GG-045 — OPEN · LOW: Maximum Effective Bankroll Constrained by Kalshi Market Depth: Capital Ceiling Unanalyzed
+- GG-091 — PARTIAL RESOLVE · MEDIUM: `mypy --strict` Full-Tree Baseline: 365 Pre-Existing Errors in 57 Files, Not Yet Remediated
+- GG-127 — IN PROGRESS · UNSPECIFIED: 00_ADMIN/README.md (designated nav hub, ADR-0001) went ~7 weeks with zero updates while the project moved thro
+- GG-133 — OPEN · UNSPECIFIED _(auto)_: CHANGELOG.md has not been updated since 2026-05-30 despite ~2 months of major changes, violating its own stale
+- GG-134 — OPEN · UNSPECIFIED _(auto)_: `mc_empirical_bootstrap.py`'s forward-risk projection has four unmodeled scope gaps not disclosed as limitatio
+- GG-136 — IN PROGRESS · UNSPECIFIED _(auto)_: No standing archival cadence exists for `04_EXECUTION/TODO_NEXT.md`'s own `## T-NNN` task sections (same class
+- GG-137 — OPEN · UNSPECIFIED _(auto)_: A1's holdout-Brier-optimal K=400 shrinkage candidate gives only ~7% weight to actual player data; may trade ca
+- GG-140 — OPEN · UNSPECIFIED _(auto)_: GG-105 remediation exhausted the entire class of monotonic-transform recalibration candidates without a struct
+- GG-150 — OPEN · UNSPECIFIED _(auto)_: Cross-book (T1 vs T4) opposite-direction conflicts are alarmed, not blocked; a blocking control is an unstaffe
+- GG-151 — OPEN · UNSPECIFIED _(auto)_: `merge=union` does not guarantee dedup: identical content reaching both merge sides via different commit paths
+- GG-153 — OPEN · MEDIUM _(auto)_: T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10
+- GG-154 — OPEN · MEDIUM _(auto)_: Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently
+- GG-157 — OPEN · UNSPECIFIED _(auto)_: `paper_trader.py` has zero orderbook/depth/fill validation; every paper fill (including the live epoch-12 flat
+- GG-158 — OPEN · UNSPECIFIED _(auto)_: Price archive had zero off-VPS copies for 3+ sessions despite repeated "verified"/"deployed" reports; same fai
+- GG-160 — OPEN · UNSPECIFIED _(auto)_: Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no me
+- GG-161 — OPEN · MEDIUM _(auto)_: 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" cla
+- GG-162 — OPEN · LOW _(auto)_: GG-NNN numbers picked mid-session have no atomic reservation, unlike T-/ADR- ranges claimed at session start; 
+- GG-165 — OPEN · LOW _(auto)_: 38/46 live gap entries carry no explicit Severity (UNSPECIFIED); full backfill deliberately deferred out of T-
+- GG-167 — OPEN · LOW _(auto)_: `deploy.yml`'s dirty-tree guard only inspects tracked files; an untracked-file collision on the VPS silently b
+- GG-168 — OPEN · MEDIUM _(auto)_: Step 4's T4 cycle-log write-recency probe (GG-163/T-429) has no exemption for "daily T4 budget exhausted" — a 
+- GG-172 — OPEN · HIGH _(auto)_: `MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 are written entirely in market-type terms and contain zero boxes 
+- GG-177 — OPEN · LOW _(auto)_: `session_end_prep.sh`'s Step 0 SESSION_CLAIMS.md lookup matches on the worktree branch's timestamp, but `claim
+- GG-183 — OPEN · LOW _(auto)_: Per-cell kill-switch state (ADR-0053 §2.3/§6.3 item 4) has a store and a resolution helper but is not wired in
+- GG-184 — PARTIALLY RESOLVED · LOW _(auto)_: `open_position()`'s `market_type` parameter defaults silently; 100% of live call sites rely on the default rat
+- GG-186 — PARTIALLY RESOLVED · HIGH _(auto)_: SESSION_CLAIMS.md closure rows for T-458 and T-460 asserted "CLOSED" from local branch/commit state alone, wit
+- GG-187 — OPEN · LOW _(auto)_: T2's gross-edge formula is known but epoch-conditional; unsafe to backfill into assert_ledger_invariants.py's 
+- GG-192 — OPEN · MEDIUM _(auto)_: C4 tracks exposure at exactly two granularities (single bet-evaluation, whole portfolio) with nothing in betwe
+- GG-195 — OPEN · LOW _(auto)_: 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside a
+- GG-196 — OPEN · MEDIUM _(auto)_: Outage-window (08-04..08-07) sub-bucket of the repaired epoch-12 cohort shows anomalous P&L nearly matching th
+- GG-190 — OPEN · HIGH _(auto)_: T-471: the step-function onset of GG-185's game_date corruption (0/77 mismatched under commit `cbd09ae`, 532/5
+- GG-206 — OPEN · MEDIUM _(auto)_: `t4_mlb_totals_outcome_store.jsonl` (and its sibling `t4_mlb_outcome_store.jsonl`) are gitignored under a rule
+- GG-204 — OPEN · HIGH _(auto)_: ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0
+- GG-216 — OPEN · MEDIUM _(auto)_: Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account cla
+- GG-224 — OPEN · MEDIUM _(auto)_: Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their ne
+- GG-228 — RESOLVED · MEDIUM _(auto)_: Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to t
+- GG-229 — OPEN · LOW _(auto)_: `TestPromoteCellStatus` RULED_OUT fixtures leak global registry state via `del` instead of restore
+- GG-234 — OPEN · LOW _(auto)_: Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-clos
+- GG-230 — OPEN · LOW _(auto)_: `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-b
+- GG-232 — IN PROGRESS · MEDIUM _(auto)_: ADR-0054(a) staffing gap: three named-not-staffed follow-ons (replay-harness `market_type=`, cell-unaware ledg
+- GG-243 — OPEN · LOW _(auto)_: T-number collision: "T-518" independently claimed by two unrelated tasks (TODO_NEXT.md's EXP-026 entry vs. thi
+- GG-254 — PARTIALLY RESOLVED · HIGH _(auto)_: No moneyline/categorical-outcome settlement logic exists anywhere in `src/`, for any sport; `paper_trader.py::
+- GG-256 — OPEN · LOW _(auto)_: `scripts/claim_session.sh`'s rebase-retry did not prevent a duplicate T-number claim; two concurrent sessions 
+- GG-257 — OPEN · LOW _(auto)_: `settle_position()`'s boolean win/loss model cannot express Kalshi's $0.50/$0.50 split payout for an NFL money
+- GG-260 — OPEN · MEDIUM _(auto)_: Shared `main` working tree carries uncommitted `ACTIVE_QUEUE.md` drift invisible to worktree-isolated sessions
+- GG-261 — OPEN · MEDIUM _(auto)_: T-528's capture-fidelity "zero coverage gaps" verdict tested kickoff-instant coverage only, not pregame-window
+- GG-262 — OPEN · LOW _(auto)_: Live VPS crontab's `run_mlb_pregame.py` schedule (`20 21 * * *`) diverges from repo `deploy/cron.conf`'s value
+- GG-266 — OPEN · LOW _(auto)_: Local dev machine's system Python (3.9.6/LibreSSL 2.8.3) cannot TLS-handshake with ESPN's scoreboard endpoint;
+- GG-275 — OPEN · MEDIUM _(auto)_: `lib_chain_archive.py` silently discards the prior "Last reviewed" line on every single-entry chain collapse (
+- GG-279 — OPEN · MEDIUM _(auto)_: A code fix landing (and even fully migrating on-disk state) in a long-running service's source is not activate
+- GG-289 — OPEN · UNSPECIFIED _(auto)_: Auto-mode classifier's Self-Modification block on `.claude/commands/session-end.md` + `scripts/close_session_c
+- GG-292 — OPEN · LOW _(auto)_: 14 stray remote session branches (2026-08-24 through 2026-09-15) unlanded; `sweep_stray_branches.sh` unavailab
+- GG-295 — OPEN · HIGH _(auto)_: Live NFL T1 portfolio's `kalshi_threshold` backfill (all 42 positions) has no corresponding commit anywhere in
+- GG-298 — OPEN · MEDIUM _(auto)_: `rejected_positions` field name implies risk-engine declines but actually holds post-approval exchange-side or
+- GG-299 — OPEN · LOW _(auto)_: ADR-0046's ECE baseline (0.0680, n=261) drifts +22% relative (to 0.0832) when its own exact methodology is re-
+- GG-302 — OPEN · HIGH _(auto)_: (untitled)
+- GG-306 — OPEN · LOW _(auto)_: CLAUDE.md's coverage-target framing ("~25/30 cells") is never reconciled against `market_type_registry.py`'s a
+- GG-312 — OPEN · HIGH _(auto)_: Register-parity failure class: 36 accepted ADRs accumulated with no `APPROVALS_REGISTER.md` row of their own, 
+- GG-316 — OPEN · HIGH _(auto)_: A T1 NFL run cannot be attributed to an actor: `approval_commit` is a static epoch marker, not a runtime captu
+- GG-317 — OPEN · MEDIUM _(auto)_: The T1 NFL run script defaults to the fixed-p STUB model and will open one paper row on every market with a no
+- GG-323 — OPEN · MEDIUM _(auto)_: T4 cycle log carries game-state fields on 0.9% of rows; the T-583 harness admits only a pre-epoch-12 window of
+- GG-326 — OPEN · MEDIUM _(auto)_: The price archive has a 6-12h-to-close capture hole and ~20-minute resolution; policy (c) fill evidence and th
+- GG-327 — OPEN · LOW _(auto)_: EXP-032 clock sanity gate range [2.0, 4.5]h is mis-sized for partial-game families; F3/F5/F5SPREAD/F5TOTAL cou
+- GG-328 — OPEN · LOW _(auto)_: Archive books are exactly complementary (no_ask = 1 - yes_bid); YES/NO cost asymmetry exists only in availabil
+- GG-330 — OPEN · LOW _(auto)_: Q7 ledger-invariant check is vacuously green in a fresh worktree (SOURCE_UNAVAILABLE x3, exit 0)
+- GG-331 — OPEN · LOW _(auto)_: PRICE_ARCHIVE exists only in the shared main tree (gitignored); isolated worktrees cannot reproduce archive-ba
+- GG-332 — OPEN · MEDIUM _(auto)_: Kalshi fee schedule PDF unreachable (HTTP 429) from every source tried; ADR-0016 divergence cannot be confirme
+- GG-333 — OPEN · HIGH _(auto)_: EXP-035 Part 1 correctness gate FAILED (G2, G3, G4, G5, G7): hourly candles do not reproduce the archive's B/H
+- GG-340 — OPEN · MEDIUM _(auto)_: Frozen gate pre-registrations can leave a lookback/window unspecified, so a 'none exists' outcome is implement
+- GG-341 — OPEN · LOW _(auto)_: exp_output raw stores are gitignored, so experiment quote/candle files are not reproducible from git (hash in 
+- GG-342 — OPEN · LOW _(auto)_: Remote branch hygiene: a stale pre-rebase branch, 33 unmerged remote branches, ~8 of them content-landed under
+- GG-344 — OPEN · MEDIUM _(auto)_: audit_mlb_t4.jsonl CONTAMINATION_HALT count (162,168) is unusable as a health signal
+- GG-345 — OPEN · MEDIUM _(auto)_: Step 4 has no season awareness and will false-alarm through the off-season (0-player T1 runs, T4 cycle-log age
+- GG-346 — OPEN · MEDIUM _(auto)_: PIPE-08 schedule validator fails with HTTP 406: 110 occurrences since 2026-07-03
+- GG-349 — OPEN · MEDIUM _(auto)_: Stale .git/index.lock held open by a Virtualization XPC host process blocks all shared-tree git writes; recurr
+- GG-350 — OPEN · MEDIUM _(auto)_: Shared tree drift: 140 commits behind, 6 conflicting dirty tracked files, untracked file colliding with a trac
+- GG-352 — OPEN · LOW _(auto)_: macOS has no `timeout`; protocol and test snippets that use it exit 127 silently
+- GG-353 — OPEN · MEDIUM _(auto)_: Claim rows with open-ended or TBD ID ranges give no collision protection and block later claims
+- GG-354 — OPEN · LOW _(auto)_: Full test suite exceeds 10 minutes in the foreground and there is no documented fast subset
+- GG-355 — OPEN · MEDIUM _(auto)_: Nothing checks that a closing session produced Q1-Q7 evidence
+- GG-356 — OPEN · LOW _(auto)_: Transient GitHub push failure ('unable to write file ...pack') with no retry guidance
+- GG-402 — OPEN · LOW _(auto)_: Shadow runner hardcodes fee_multiplier=1
+- GG-404 — OPEN · MEDIUM _(auto)_: Live Kalshi quotes can be very wide; shadow scoring must filter on half_spread
+- GG-406 — OPEN · MEDIUM _(auto)_: Shadow code on VPS is not auto-pulled on later pushes
+- GG-408 — OPEN · MEDIUM _(auto)_: EXP-027 NFL incumbent has no persisted artifact and is moneyline-only: no head-to-head possible
+- GG-409 — OPEN · LOW _(auto)_: EXP-037 brief's five-branch list was not recoverable from session context
+- GG-415 — OPEN · LOW _(auto)_: players_2026.json is stale
+- GG-416 — OPEN · MEDIUM _(auto)_: Gate 2 / G7 passed on one family and by a floating-point margin on a 0.005 tick grid
+- GG-417 — OPEN · HIGH _(auto)_: Cowork strategic window sandbox can create but not delete files in the shared tree, leaving .git/index.lock be
+- GG-418 — OPEN · LOW _(auto)_: VPS HEAD and branch SHAs recorded in handoffs drift between sessions
+- GG-420 — OPEN · LOW _(auto)_: Two handoff files share the name SESSION_HANDOFF_20261003_0020.md
+- GG-421 — OPEN · MEDIUM _(auto)_: vps_job --rate-cap is recorded and cross-checked, not enforced by the runner
+- GG-422 — OPEN · MEDIUM _(auto)_: Claim ranges that share an endpoint or overlap collide; 47.1 and 48.2 held overlapping GG ranges
+- GG-423 — OPEN · LOW _(auto)_: Live Terminal T1 freshness shows red at 58 days under a zero-Kelly book
+- GG-425 — OPEN · LOW _(auto)_: /project governance-gap Age column shows '—' when a block has no date; ADR titles render '— —'
+- GG-426 — OPEN · MEDIUM _(auto)_: Session-start hook OPEN count (124) disagrees with the anchored grep (141)
+- GG-429 — OPEN · HIGH _(auto)_: Dashboard froze on last-good numbers after the data source disappeared
+- GG-430 — OPEN · LOW _(auto)_: arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
+- GG-441 — OPEN · HIGH _(auto)_: Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisib
+- GG-452 — OPEN · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
+- GG-510 — OPEN · MEDIUM _(auto)_: EXP-037 does not define the ordering key for 'earliest 60 settled games'
+- GG-511 — OPEN · MEDIUM _(auto)_: EXP-036 leaves the bootstrap seed unspecified; engine deviated before W59.2
+- GG-515 — RESOLVED · LOW _(auto)_: Visual Dashboard calibration section overflows horizontally on phone width
+
+## MLB (40)
+
+- GG-004 — OPEN · UNSPECIFIED: EV Validation Benchmark Was Never the Commercial Question
+- GG-046 — OPEN · HIGH: T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
+- GG-060 — IN PROGRESS · MEDIUM: Silent Success Indistinguishability: Zero Bets from "No Edge" Looks Identical to Zero Bets from Pipeline Failu
+- GG-064 — LIKELY RESOLVED · UNSPECIFIED: Kalshi DEMO Market `open_time` Lags LIVE for Same Ticker (Discovered During GG-063 Verification, Unconfirmed a
+- GG-066 — OPEN · UNSPECIFIED: MLB C1 Has No Real-Time/Sub-Poll-Interval Event Feed (Blocks Event-Driven T4 Sub-Bands)
+- GG-078 — OPEN · UNSPECIFIED: T4 MLB's Real ~341-Bet/Day Cadence Means Kill-Switch Fate Is Decided Within ~15 Days Regardless of True Edge S
+- GG-094 — OPEN · UNSPECIFIED: MLB Has No Qualitative/PRF-Analogue Feature Layer Despite Being the Sole ACTIVE Pool
+- GG-098 — OPEN · MEDIUM: MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (Small-n Subset Structure M
+- GG-105 — OPEN · UNSPECIFIED: T4M-PROJ (ACTIVE, highest-volume band) shows a statistically significant, tercile-monotonic ANTI-PREDICTIVE re
+- GG-121 — WATCH ITEM · UNSPECIFIED: 2026-07-11 T1 MLB `SemanticFloorViolation` (games_fetched=16, matched_players=0) surfaced by GG-049's own hear
+- GG-156 — OPEN · UNSPECIFIED _(auto)_: No forward price archive existed for any MLB market family before 2026-08-01; Phase 2's market-comparison gate
+- GG-164 — OPEN · MEDIUM _(auto)_: T4 MLB cycle log's `game_date` field is wrong on 70% of all rows (45,217/64,396): stamped from UTC wall-clock 
+- GG-166 — OPEN · CRITICAL _(auto)_: `run_resolve_mlb.py` consumes the same corrupted `game_date` field GG-164 documented, and silently resolves T4
+- GG-170 — OPEN · CRITICAL _(auto)_: MLB Stats API `gameLog` date-label is transiently unstable in near-real-time; a delayed/retried resolution que
+- GG-185 — PARTIALLY RESOLVED · CRITICAL _(auto)_: 532 closed T4M-PROJ epoch-12 positions carry a ticker-vs-`game_date` mismatch despite the GG-166 guard, which 
+- GG-188 — PARTIALLY RESOLVED · MEDIUM _(auto)_: T-463 (team runs-scored outcome store for archived `KXMLBTOTAL` game-events, Phase 2 unblock) was claimed and 
+- GG-189 — OPEN · HIGH _(auto)_: T-465 register-and-stop: 46 stuck-open T4M-PROJ epoch-12 positions, 76 rejected-position mismatches, and outco
+- GG-202 — OPEN · MEDIUM _(auto)_: T4's 45s poll cadence was tuned against MLB/NBA's near-continuous state progression; NFL's drive-level, dead-p
+- GG-203 — PARTIALLY RESOLVED · HIGH _(auto)_: T4M-PROJ has approved zero bets to execution since 2026-08-15T00:06:20Z: every Kalshi order submission has fai
+- GG-209 — OPEN · MEDIUM _(auto)_: MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only s
+- GG-233 — OPEN · LOW _(auto)_: Task briefing restated ADR-0056 D2 as adopting the superseded `T4N-` convention, not the actually-signed `T4ML
+- GG-487 — OPEN · LOW _(auto)_: MLB shadow settlement y is derived from games-cache final scores, never cross-checked against Kalshi's own set
+- GG-255 — LIKELY RESOLVED · HIGH _(auto)_: `measurement_stake.py` defines all nine ADR-0058 T1 game-market cells but has exactly one real importer codeba
+- GG-258 — OPEN · LOW _(auto)_: Task brief pre-assigned `EXP-026`/`HYP-011` to a new NFL moneyline-LR experiment, but those IDs are already ca
+- GG-282 — PARTIALLY RESOLVED · MEDIUM _(auto)_: Investigation: do the two new T1 game-market run scripts inherit the live $10 `min_bet_usd` floor instead of t
+- GG-285 — OPEN · MEDIUM _(auto)_: At observed effect sizes, APR-0024's per-band P&L n* is 10-11 NFL seasons (NFL moneyline) and ~1.6 MLB seasons
+- GG-296 — OPEN · HIGH _(auto)_: T4M-PROJ's shard-3 demand figure (~2,000 approvals/$1,907.85 stake, 2026-09-20) is a ring-buffer ceiling artif
+- GG-300 — RESOLVED · HIGH _(auto)_: 731 of 765 rows (95.6%) in T4M-PROJ epoch-12's clean cohort — the project's sole G6 calibration cohort — have 
+- GG-301 — OPEN · HIGH _(auto)_: T4M-PROJ's calibration headline reverses sign and turns net-negative when restricted to Kalshi-confirmed-fille
+- GG-304 — OPEN · MEDIUM _(auto)_: `kalshi_order_status` field reads `"submitted"` uniformly across both confirmed-FILLED and confirmed-unretriev
+- GG-307 — OPEN · LOW _(auto)_: `build_t4mlb_cohorts`'s edge-reconstruction formula has never been tested against T4M_ARITH/T4M_FLOW inputs, o
+- GG-309 — OPEN · MEDIUM _(auto)_: CLAUDE.md Step 4's `SemanticFloorViolation` grep (T1 MLB silent-failure detector) has no recency window, so a 
+- GG-320 — OPEN · HIGH _(auto)_: T4M-PROJ fails ADR-0068 criterion C5: a stripped three-scalar tree is filed in a band whose measured cadence (
+- GG-347 — OPEN · MEDIUM _(auto)_: Unattributed manual restarts of t4-mlb (and dashboard), plus an ssh poller from 73.231.159.158
+- GG-348 — OPEN · LOW _(auto)_: t4-mlb.timer is inactive with no NEXT; last fired 2026-07-04
+- GG-410 — OPEN · LOW _(auto)_: NFL/MLB shadow T1, T2 and T3 use identical features
+- GG-453 — PARTIALLY RESOLVED · HIGH _(auto)_: EXP-037 MLB postseason shadow arm has no cron: 12 MLB game-market cells never log, queue says armed
+- GG-470 — PARTIALLY RESOLVED · HIGH _(auto)_: MLB pregame shadow cannot run on the VPS: games cache absent and unbuildable/unrefreshable (statsapi 406 on ra
+- GG-512 — OPEN · MEDIUM _(auto)_: MLB settled rows carry no p_clim; no climatology baseline for MLB
+- GG-527 — OPEN · HIGH _(auto)_: 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never fill
+
+## NBA (12)
+
+- GG-007 — OPEN · LOW: T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton 
+- GG-027 — OPEN · UNSPECIFIED: PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environment Classifier Not Built
+- GG-037 — OPEN · UNSPECIFIED: Calibration Collapse + Inverted Edge Realization: the Model's Edge Signal Is Anti-Predictive
+- GG-038 — OPEN · HIGH: T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
+- GG-039 — OPEN · UNSPECIFIED: T4 Price Cache / Staleness Check Architecture
+- GG-040 — OPEN · UNSPECIFIED: T4 Real-Time Data Sources: Required Feeds Not in Current C1 Architecture
+- GG-041 — OPEN · UNSPECIFIED: KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis Absent
+- GG-056 — PLAN ACCEPTED · MEDIUM: NBA Main Pool Dormant at 24.9% Drawdown; No Reactivation Plan Before October Resume
+- GG-174 — OPEN · MEDIUM _(auto)_: `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against P
+- GG-253 — PARTIALLY RESOLVED · HIGH _(auto)_: No NFL C1 ingestion module exists; the only generic `team_stats_store.py` is NBA-shaped (`plus_minus`-derived)
+- GG-513 — OPEN · LOW _(auto)_: NBA cells (EXP-038) are not in the calibration engine
+- GG-525 — RESOLVED · LOW _(auto)_: Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
+
+## NHL (4)
+
+- GG-401 — OPEN · LOW _(auto)_: NHL T1/T2 pregame model has no projected-starter source
+- GG-403 — PARTIALLY RESOLVED · MEDIUM _(auto)_: NHL Kalshi OT/SO settlement treatment and TEAM_ALIASES unverified
+- GG-405 — OPEN · LOW _(auto)_: NHL shadow: T1 abstentions uninvestigated, T3 cron-window coverage and 2026 schedule match unverified, travel 
+- GG-514 — OPEN · MEDIUM _(auto)_: NHL judged n=2,500 unreachable this season; NFL first-look date rests on one week of coverage
