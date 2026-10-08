@@ -1843,3 +1843,12 @@ nightly). Crontab backup first; mirrored into deploy/. No other line. Executed b
 - Deploy job (run 37558544298): t4-mlb restart decision = not_needed (no file imported by t4-mlb changed).
 
 | 2026-10-07 | W58.1 | Retired NFL game-market paper book under ADR-0071: 820 open positions booked once from Kalshi settlement (0 cancelled), 4 future-dated left OPEN, realised P&L +13.48 -> -160.66; book frozen and labelled ARCHIVED on both dashboards (GG-490 RESOLVED). Features cron line commented out (GG-489, operator-authorized). NHL goalie probe job live. Part D (triage of 175 OPEN gaps) deliberately deferred by operator to follow-on blocks, split by class/gap range. |
+
+### 2026-10-07 — Operator: Wave 59 "proceed in full" — backlog first; ADR-0070 widened to NHL+NBA and accepted; NBA preseason default kept
+**Operator (2026-10-07 17:26 PT):** "Yes - proceed in full", on the strategic window's proposal (backlog as its own
+block first; projection fix + NFL first-look readiness; NBA readiness) and its two standing recommendations:
+1. **ADR-0070** (PROPOSED; probit/Platt distributional forecaster, deviation from ADR-0004) is to be **widened to cover
+   the NHL (EXP-036) and NBA (EXP-038) shadow models, then ACCEPTED** - closes GG-400's scope gap. Shadow only: it
+   authorizes no order, position, sizing or CellStatus beyond SHADOW. Executed by Wave 59.3.
+2. **NBA preseason rows** stay as EXP-038's stated default: logged and labelled, **excluded from judged n**.
+Docs-only.
