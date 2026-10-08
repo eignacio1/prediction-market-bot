@@ -25,7 +25,7 @@ def test_ledger_extra_labels_rows_and_default_is_unchanged(tmp_path):
     CellLedger(tmp_path, "NBA", "MONEYLINE", "T1").append(_row(run_id="a"))
     CellLedger(tmp_path / "p", "NBA", "MONEYLINE", "T1",
                {"season_phase": "preseason", "excluded_from_judged_n": True}).append(_row(run_id="a"))
-    plain = json.loads((tmp_path / "NBA_NBA_MONEYLINE_T1.jsonl").read_text())
+    plain = json.loads((tmp_path / "NBA_MONEYLINE_T1.jsonl").read_text())
     pre = json.loads((tmp_path / "p" / "NBA_MONEYLINE_T1.jsonl").read_text())
     assert list(plain) == list(ROW_FIELDS)
     assert pre["season_phase"] == "preseason" and pre["excluded_from_judged_n"] is True
