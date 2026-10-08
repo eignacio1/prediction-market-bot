@@ -2756,7 +2756,9 @@ When a new governance process failure is discovered:
 
 ### GG-300 — 731 of 765 rows (95.6%) in T4M-PROJ epoch-12's clean cohort — the project's sole G6 calibration cohort — have no independent Kalshi confirmation of ever being filled; only 34 (4.4%) are confirmed real
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-10-08, W60.1):** Every epoch-12 T4M-PROJ closed row (n=1,952) is now classified from the demo fills history (full pagination, earliest 2026-05-19, covers the cohort): 107 CONFIRMED_FILLED, 1,845 CONFIRMED_NOT_FILLED, 0 UNVERIFIABLE. The T-571 731 NOT_RETRIEVABLE resolve as 730 not filled + 1 filled. Only 5.5% of the cohort was ever filled; consequence registered as GG-527. Evidence: `W60_1_cohort_fill_truth_results.md`. Entry not yet moved to the archive (sweep).
 
 **Current state (2026-10-08, W59.1):** Premise unchanged: VPS paper_portfolio_mlb_t4.json closed_positions kalshi_order_status is 'submitted' x4169 and 'failed: HTTP 410' x12, so no local fill signal exists; no code re-polls order status (paper_trader.py only sets it at lines 597/660/676); 731/765 NOT_RETRIEVABLE from T-571 not re-run this session (needs Kalshi API). **Next:** Re-run scripts/t571_verify_t4mproj_kalshi_fills.py against current ledger, or pull Kalshi fills/settlements history to confirm the 731 rows.
 
@@ -4070,5 +4072,25 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Why it matters | Violates the phone-usable design bar. |
 | Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
 | Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-527 — 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never filled; the 107 real fills lose -$0.40/bet
+
+**Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-08, W60.1):** Consequence of GG-300's now-complete classification. Cohort mean P&L/bet is -0.053 (game-clustered 95% CI -0.148..+0.043, 176 games); CONFIRMED_FILLED only: -0.403 (CI -0.650..-0.156, 41 games, n=107). Cohort definition, G6 `clean_n` and band status are unchanged by this block (operator's call).
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-527 |
+| Category | Ledger integrity / G6 sample adequacy |
+| What was found | Paper positions are recorded `submitted` and settled by market outcome regardless of whether the venue ever filled the order. Only 107 of 1,952 cohort rows match a venue fill. |
+| Why it matters | The G6 calibration cohort measures paper settlement of intended orders, not executed trades. The part that executed loses money. Selection into "filled" is not random, so the two sets are not interchangeable. |
+| Source | W60.1 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_1_cohort_fill_truth_results.md`) |
+| Resolution | Not resolved; operator decision on how the cohort is defined (all intended orders vs filled only) and on re-polling order status at entry. No code or ledger change made. |
+| Cross-references | GG-300, GG-301, GG-004, GG-228 |
 
 </details>

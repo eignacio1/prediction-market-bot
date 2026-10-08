@@ -85,7 +85,7 @@ window; handoff follows its verification.
 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
-| **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | ⬜ **READY** | Kalshi demo fills/settlements (read-only GETs); `build_t4_resolved_ledger.py` | — |
+| **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | 🟨 **PART A DONE** | Part A: of 1,952 epoch-12 rows only 107 (5.5%) have a real demo fill; 1,845 never filled; real fills -0.40/bet (GG-300 resolved, GG-527 registered). Part B (overwrite guard) next. | — |
 | **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ⬜ **READY** | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
 | **60.3** Dashboard truth gaps + gap-log hygiene | ⬜ **READY** | Live Terminal NBA row, 390px overflow (GG-515); gap-log index, hook count (GG-426), severity tokens | — |
 
