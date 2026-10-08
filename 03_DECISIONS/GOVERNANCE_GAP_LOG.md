@@ -1954,7 +1954,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** Geo/jurisdiction terms appear in VENUE_REGISTRY.md and SESSION_CLAIMS.md only; no pre-live checklist file under 04_EXECUTION contains an account-geo check. **Next:** Add an account-geo check to the pre-live checklist.
+**Current state (2026-10-08, W59.1):** Partially addressed: VENUE_REGISTRY.md § Jurisdiction / Account Geo-Compliance Tracking was added 2026-08-26 (T-496) and tracks the VPS egress IP 157.230.91.33 and the Nevada_resident 403 trigger (GG-203); the premise that nothing tracked account geo is no longer true, but no structural pre-live check exists. **Next:** Add an account-geo check to the pre-live checklist.
 
 <details>
 <summary>Full record ▸</summary>
@@ -2033,53 +2033,33 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W59.1):** No guard against batch regeneration overwriting repairs found in scripts/*.sh or deploy/cron.conf (grep 'regenerat'); hazard stands as written. **Next:** Repair the source of record, not the derived file.
+**Current state (2026-10-08, W59.1):** Hazard confirmed live: deploy/cron.conf:315 still wholesale-rebuilds logs/t4_mlb_resolved_ledger.jsonl every Monday 14:20 UTC via scripts/build_t4_resolved_ledger.py from paper_portfolio_mlb_t4.json closed_positions; no external-repair-safety guard exists. **Integrity note:** the live body of this entry had been overwritten by a duplicate of GG-226's body (pre-dates W59.1; present at 94853bf); original body restored verbatim from f9891f4. **Next:** Repair the source of record (closed_positions), not the derived file; consider a header warning in the builder.
 
 <details>
 <summary>Full record ▸</summary>
 
 | Field | Detail |
 |---|---|
-| Gap ID | GG-226 |
-| Category | Architecture/scope — a task's literal instruction could not be fully executed within its declared scope fence; registered per the task's own explicit HARD STOP evaluation requirement rather than built around. |
-| What was found | T-504 (operator directive 2026-08-27: integrate every T-4 sub-bucket with the twelve new game-market families) is scope-fenced to `market_type_registry.py` and its tests only. ADR-0056 D2 grandfathers MLB's `T4M_*` prefix and NBA's bare `T4_*` prefix to their own sports exactly as-is, and reserves the `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` prefixed convention for every T4 sub-band built from here forward, for any sport. Of the 13 existing T4 sub-band `ExecutionBand` members, none carry an NFL or NHL namespace — building the needed `T4NFL-`/`T4NHL-` members is an edit to `execution_bands.py`, which is outside T-504's scope fence ("Nothing else under src/"). Reusing an NBA-named or MLB-named sub-band for an NFL/NHL family would misrepresent the registry's own one-roster-per-sport discipline that D2 exists to enforce. |
-| When it should have been caught | Not a "should have been caught earlier" gap — this is a live scope boundary discovered during T-504's execution, not a pre-existing defect. Recorded here per the task's explicit instruction to STOP and report rather than build past a scope-fence blocker. |
-| Phases it survived | N/A — new finding, not a survived defect. |
-| Why it survived | N/A. |
-| Impact | MEDIUM. Full T-4 sub-bucket integration for NFL (4 families) and NHL (3 families) — 7 of the task's 12 target families — cannot proceed until `execution_bands.py` grows sport-prefixed T4 sub-band members for those sports. MLB's own five non-prop families (the remaining namespace-valid subset) were integrated in this same session; see the T-504 commit for the create/decline table. |
-| Discovery | 2026-08-29/31, T-504, while designing the per-family create/decline judgment mandated by the task brief. |
-| Resolution | Not resolved by this entry — registration only, per the task's explicit instruction and Hard Rule 11. Follow-on (unstaffed): an `execution_bands.py` change adding `T4NFL-*`/`T4NHL-*` `ExecutionBand` members per ADR-0056 D2's convention, followed by a registry-scaffolding pass mirroring this session's MLB work, seeding NOT_IMPLEMENTED cells for the structurally-meaningful subset (by analogy to this session's MLB judgment: player-projection-flavored sub-bands likely decline, score-state/flow-flavored sub-bands likely transfer — re-derive per sport rather than assuming MLB's verdict carries over). |
+| Gap ID | GG-228 |
+| Category | Architectural placeholder (no external-repair-safety contract exists for a scheduled-regeneration-owned derived file, as distinct from GG-224/ADR-0061's live-service-owned file class) |
+| What was missed | `logs/t4_mlb_resolved_ledger.jsonl` is not a source of record — it is wholesale-rebuilt every Monday 14:20 UTC by `deploy/cron.conf` line 314 (`scripts/build_t4_resolved_ledger.py --portfolio logs/paper_portfolio_mlb_t4.json ...`), which reads `paper_portfolio_mlb_t4.json`'s `closed_positions` and regenerates the resolved ledger from scratch via `run_exp017_mlb.compute_fee_net_edge`. T-503 (this session), executing ADR-0055 D1's 532-row repair, discovered mid-session that a repair written only to `t4_mlb_resolved_ledger.jsonl` directly would have been silently discarded by the next Monday cron run, because the cron treats `closed_positions` as authoritative and the resolved ledger as fully disposable/derived. This is architecturally distinct from GG-224: GG-224's hazard is a long-running service's stale in-memory state clobbering a file on its next flush (sub-minute cadence, no source/derived relationship — the service IS the source of record for its own file); this hazard is a short-lived, weekly, cron-invoked batch job wholesale-regenerating a derived file from a separate, correctly-repairable source file (weekly cadence, explicit source/derived relationship). ADR-0061 (T-505, PROPOSED, drafted 2026-08-29/30 in response to GG-224) explicitly enumerates only long-running `PaperTrader`-backed processes in its §2 hazard inventory and does not include `build_t4_resolved_ledger.py` (a short-lived cron invocation, not a persistent service) or any source/derived-artifact regeneration hazard — this class was out of ADR-0061's scope by construction, not overlooked within it. |
+| When it should have been caught | At the time `build_t4_resolved_ledger.py` / the Monday cron line was introduced, if any external-repair-safety review of derived/regenerable artifacts existed at that time — none did. More immediately, ADR-0055's own pre-registration (2026-08-26) targeted `t4_mlb_resolved_ledger.jsonl` as if it were an independently repairable file, without noting its derived/rebuildable relationship to `closed_positions`. |
+| Phases it survived | Unknown — first identified this session (T-503); no prior repair session (T-429/GG-166, T-477 dry-run, T-502/GG-224) targeted a file with this specific source/derived regeneration relationship, so the hazard had no prior opportunity to manifest. |
+| Why it survived | ADR-0055's repair plan named the resolved ledger as a repair target without first tracing whether it was a source of record or a derived artifact; no step in the ADR-0055 or GG-224 protocols requires that trace before committing to a repair target. |
+| Impact | LOW as realized (caught and correctly routed before any repair was misapplied), but would have been a full silent revert of the 532-row D1 repair specifically in the resolved ledger (not the portfolio file) on the next Monday cron run (2026-09-07 14:20 UTC) had the repair been applied to the derived file directly rather than to `closed_positions`. |
+| Discovery | 2026-08-31, T-503, mid-repair — traced `t4_mlb_resolved_ledger.jsonl`'s provenance via `build_t4_resolved_ledger.py` and `deploy/cron.conf` line 314 before deciding a repair target, per this session's own "STOP and ask if any needed action falls outside stated scope" instruction; escalated via `AskUserQuestion`, operator selected "Also repair closed_positions (Recommended)." |
+| Resolution | Worked around this session by applying the ADR-0055 D1 repair to `closed_positions` in `paper_portfolio_mlb_t4.json` directly (the source of record), then proactively regenerating `t4_mlb_resolved_ledger.jsonl` via the same `build_t4_resolved_ledger.py` invocation the weekly cron uses, so the derived file is now consistent with its corrected source and the next Monday cron run is idempotent rather than a silent revert. This is a session-scoped correct repair target choice, not a systemic fix. **Open follow-on, unstaffed, out of this session's scope fence:** no general rule or checklist item yet requires a repair author to trace a target file's source-of-record-vs-derived status before choosing where to write a fix; this class of mistake (repairing a derived artifact instead of, or in addition to, its source) could recur for any other regenerated file in the repo. Whether this belongs as an amendment to ADR-0061's scope (a fifth "derived-artifact" hazard class, alongside its four live-service options) or as a wholly separate ADR is an open question for whoever picks up the follow-on — not decided here. |
 | Status | OPEN. |
 
 </details>
 
 ---
 
-### GG-226 — NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports
+## Gap Registration Template
 
-**Status:** OPEN · **Severity:** MEDIUM
+When a new governance process failure is discovered:
 
-**Current state (2026-10-08, W59.1):** ADR-0062 ACCEPTED 2026-09-03 authorizes 17.1 scaffolding; ExecutionBand members for NFL/NHL not verified. **Next:** Check whether 17.1 added them, then close.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-226 |
-| Category | Architecture/scope — a task's literal instruction could not be fully executed within its declared scope fence; registered per the task's own explicit HARD STOP evaluation requirement rather than built around. |
-| What was found | T-504 (operator directive 2026-08-27: integrate every T-4 sub-bucket with the twelve new game-market families) is scope-fenced to `market_type_registry.py` and its tests only. ADR-0056 D2 grandfathers MLB's `T4M_*` prefix and NBA's bare `T4_*` prefix to their own sports exactly as-is, and reserves the `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` prefixed convention for every T4 sub-band built from here forward, for any sport. Of the 13 existing T4 sub-band `ExecutionBand` members, none carry an NFL or NHL namespace — building the needed `T4NFL-`/`T4NHL-` members is an edit to `execution_bands.py`, which is outside T-504's scope fence ("Nothing else under src/"). Reusing an NBA-named or MLB-named sub-band for an NFL/NHL family would misrepresent the registry's own one-roster-per-sport discipline that D2 exists to enforce. |
-| When it should have been caught | Not a "should have been caught earlier" gap — this is a live scope boundary discovered during T-504's execution, not a pre-existing defect. Recorded here per the task's explicit instruction to STOP and report rather than build past a scope-fence blocker. |
-| Phases it survived | N/A — new finding, not a survived defect. |
-| Why it survived | N/A. |
-| Impact | MEDIUM. Full T-4 sub-bucket integration for NFL (4 families) and NHL (3 families) — 7 of the task's 12 target families — cannot proceed until `execution_bands.py` grows sport-prefixed T4 sub-band members for those sports. MLB's own five non-prop families (the remaining namespace-valid subset) were integrated in this same session; see the T-504 commit for the create/decline table. |
-| Discovery | 2026-08-29/31, T-504, while designing the per-family create/decline judgment mandated by the task brief. |
-| Resolution | Not resolved by this entry — registration only, per the task's explicit instruction and Hard Rule 11. Follow-on (unstaffed): an `execution_bands.py` change adding `T4NFL-*`/`T4NHL-*` `ExecutionBand` members per ADR-0056 D2's convention, followed by a registry-scaffolding pass mirroring this session's MLB work, seeding NOT_IMPLEMENTED cells for the structurally-meaningful subset (by analogy to this session's MLB judgment: player-projection-flavored sub-bands likely decline, score-state/flow-flavored sub-bands likely transfer — re-derive per sport rather than assuming MLB's verdict carries over). |
-| Status | OPEN. |
-
-</details>
-
----
+```markdown
 
 ### GG-229 — `TestPromoteCellStatus` RULED_OUT fixtures leak global registry state via `del` instead of restore
 

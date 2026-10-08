@@ -5153,3 +5153,31 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 ---
 
+### GG-226 — NFL/NHL T4 sub-band decomposition blocked by SCOPE FENCE: no namespace-valid `ExecutionBand` member exists for those sports
+
+**Status:** RESOLVED (2026-10-08, W59.1) · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** ADR-0062 ACCEPTED 2026-09-03 authorizes 17.1 scaffolding; ExecutionBand members for NFL/NHL not verified. **Next:** Check whether 17.1 added them, then close.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-226 |
+| Category | Architecture/scope — a task's literal instruction could not be fully executed within its declared scope fence; registered per the task's own explicit HARD STOP evaluation requirement rather than built around. |
+| What was found | T-504 (operator directive 2026-08-27: integrate every T-4 sub-bucket with the twelve new game-market families) is scope-fenced to `market_type_registry.py` and its tests only. ADR-0056 D2 grandfathers MLB's `T4M_*` prefix and NBA's bare `T4_*` prefix to their own sports exactly as-is, and reserves the `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` prefixed convention for every T4 sub-band built from here forward, for any sport. Of the 13 existing T4 sub-band `ExecutionBand` members, none carry an NFL or NHL namespace — building the needed `T4NFL-`/`T4NHL-` members is an edit to `execution_bands.py`, which is outside T-504's scope fence ("Nothing else under src/"). Reusing an NBA-named or MLB-named sub-band for an NFL/NHL family would misrepresent the registry's own one-roster-per-sport discipline that D2 exists to enforce. |
+| When it should have been caught | Not a "should have been caught earlier" gap — this is a live scope boundary discovered during T-504's execution, not a pre-existing defect. Recorded here per the task's explicit instruction to STOP and report rather than build past a scope-fence blocker. |
+| Phases it survived | N/A — new finding, not a survived defect. |
+| Why it survived | N/A. |
+| Impact | MEDIUM. Full T-4 sub-bucket integration for NFL (4 families) and NHL (3 families) — 7 of the task's 12 target families — cannot proceed until `execution_bands.py` grows sport-prefixed T4 sub-band members for those sports. MLB's own five non-prop families (the remaining namespace-valid subset) were integrated in this same session; see the T-504 commit for the create/decline table. |
+| Discovery | 2026-08-29/31, T-504, while designing the per-family create/decline judgment mandated by the task brief. |
+| Resolution | Not resolved by this entry — registration only, per the task's explicit instruction and Hard Rule 11. Follow-on (unstaffed): an `execution_bands.py` change adding `T4NFL-*`/`T4NHL-*` `ExecutionBand` members per ADR-0056 D2's convention, followed by a registry-scaffolding pass mirroring this session's MLB work, seeding NOT_IMPLEMENTED cells for the structurally-meaningful subset (by analogy to this session's MLB judgment: player-projection-flavored sub-bands likely decline, score-state/flow-flavored sub-bands likely transfer — re-derive per sport rather than assuming MLB's verdict carries over). |
+| Status | OPEN. |
+
+**W59.1 disposition (2026-10-08):** RESOLVED — execution_bands.py now defines T4NFL_ARITH, T4NFL_FLOW, T4NHL_ARITH, T4NHL_FLOW (ADR-0056 D2 prefixes, lines 96-99) and market_type_registry.py references T4NFL/T4NHL 11 times, so the missing namespace-valid ExecutionBand members this scope-fence blocker named now exist.
+
+</details>
+
+---
+
