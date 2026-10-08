@@ -26,7 +26,7 @@ window; handoff follows its verification.
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
 | **60.1** Is the only ACTIVE cohort real? (GG-300) + Monday overwrite guard (GG-228) | ⬜ **READY** | Kalshi demo fills/settlements (read-only GETs); `build_t4_resolved_ledger.py` | — |
-| **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ⬜ **READY** | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda **only if your authorization line is present** | — |
+| **60.2** NBA into the calibration engine (GG-513) + pre-registration addenda | ⬜ **READY** | `calibration_engine.py`, settled schema, Visual Dashboard Calibration; EXP-036/037 addenda (**authorized 19:03 PT**); GG-514 decision recorded | — |
 | **60.3** Dashboard truth gaps + gap-log hygiene | ⬜ **READY** | Live Terminal NBA row, 390px overflow (GG-515); gap-log index, hook count (GG-426), severity tokens | — |
 
 ### Wave 59 results (closed 2026-10-08 ~02:05 UTC, verified on GitHub at `7036e11`)
@@ -152,15 +152,16 @@ PART A - NBA policy in the engine (~45 min)
   n (no score, no verdict); release at exactly judged n; one-past does not change the look. The Visual Dashboard
   Calibration section shows the NBA cells with counts and "awaiting first regular-season rows" until 10-21. PR, CI
   green, merge, record the deploy decision. GG-513 RESOLVED once the daily engine run on the VPS lists NBA cells.
-PART B - Addenda (~20 min)
-  If ACTIVE_QUEUE.md "Needs your decision" contains a blockquote line beginning
-  "> **AUTHORIZATION - PRE-REGISTRATION ADDENDA (operator, <date/time>" (the table row describing the decision does
-  NOT count), apply exactly what that line covers as dated addenda at the end of each pre-registration file (never edit the original text):
-  EXP-037 ordering key; EXP-036 seed; EXP-036 goalie amendment (W59.3 text, verbatim); and for GG-512 state that the
-  MLB climatology comparison is unavailable and why. One DECISION_LOG entry citing the line. Close GG-510 / GG-511 /
-  GG-512 / GG-401's amendment half with the commit; GG-401 itself RESOLVED only if the amendment makes T3 rows
-  judgeable under EXP-036 as amended - say which. If the line is absent: write the four addenda as drafts in the
-  results doc and stop.
+PART B - Addenda (~20 min) - AUTHORIZED (operator, 2026-10-07 19:03 PT; the AUTHORIZATION - PRE-REGISTRATION ADDENDA
+  blockquote in ACTIVE_QUEUE.md "Needs your decision" is the record - read it and apply exactly what it covers).
+  Append as dated addenda at the end of each pre-registration file (never edit the original text): EXP-037 ordering
+  key; EXP-036 seed; EXP-036 goalie amendment (W59.3 Part B text, verbatim); for GG-512, state that the MLB
+  climatology comparison is unavailable and why. One DECISION_LOG entry citing the line. Close GG-510 / GG-511 /
+  GG-512 with the commit. GG-401: RESOLVED only if, under EXP-036 as amended, NHL T3 rows are now judgeable AND the
+  running T3 job already writes confirmed=False rows with the projected starter - check the live rows, say which.
+  GG-514: record the operator decision (keep EXP-036 as written; NHL PRELIMINARY in 2026-27) in its entry and set its
+  status per the log's conventions. Confirm the engine reads the amended values (seed, ordering) - no code change
+  should be needed; if one is, tests + PR.
 Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_2_nba_engine_addenda_results.md, updated per part.
 
 END OF BLOCK 60.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
@@ -241,7 +242,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
 | 60.1 | Cohort fill truth + Monday guard | ⬜ | Kalshi demo GETs; resolved-ledger builder | Every epoch-12 row classified; builder never overwrites a changed row |
-| 60.2 | NBA engine + addenda | ⬜ | calibration engine; EXP-036/037 addenda (authorized only) | NBA cells tracked under EXP-038 before 10-21 |
+| 60.2 | NBA engine + addenda | ⬜ | calibration engine; EXP-036/037 addenda (authorized 10-07 19:03 PT) | NBA cells tracked under EXP-038 before 10-21 |
 | 60.3 | Dashboard truth + gap-log hygiene | ⬜ | Live Terminal, Visual Dashboard, gap log | NBA row visible; no 390px scroll; hook count = live |
 
 ### ✅ WAVE 59 — CLOSED 2026-10-08 ~02:05 UTC · three LARGE blocks (ran long: operator set the 60/90-min rule for Wave 60)
@@ -467,6 +468,16 @@ branch estate** (33+ unmerged). **Aged open paper positions** (9 T4, ~17 T1 — 
 
 ## Needs your decision
 
+> **AUTHORIZATION - PRE-REGISTRATION ADDENDA (operator, 2026-10-07 19:03 PT: "Yes proceed with both recommendations").**
+> Covers: appending four dated addenda (original text untouched), before any judged data exists: (1) EXP-037 "earliest
+> 60" ordered by (start_time_utc, game_key); (2) EXP-036 bootstrap seed 20261002; (3) EXP-036 goalie: projected starter
+> (last start) at every band, T3 included, rows flagged confirmed=False - W59.3 Part B text verbatim; (4) MLB: the
+> climatology comparison is unavailable (no p_clim on MLB settled rows), stated with the reason. Not covered: any other
+> parameter, judged n, verdict rule or look. Used by 60.2 Part B.
+
+> **DECISION - NHL JUDGED N (operator, 2026-10-07 19:03 PT): keep EXP-036 as written** (judged n 2,473; NHL stays
+> PRELIMINARY in 2026-27; the 500-game climatology check still applies). Recorded on GG-514 by 60.2 Part B.
+
 > **AUTHORIZATION - FEATURES CRON REMOVAL (operator, 2026-10-06 18:16 PT: "Yes permission granted").** Covers:
 > commenting out the ONE VPS cron line that runs `scripts/generate_mlb_features.py` at 22:30 UTC (it overwrites the
 > GitHub-built feature CSV nightly with degraded output), crontab backed up first, mirrored into `deploy/`. Not
@@ -494,8 +505,8 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 
 | Item | Plain English | What it costs while it waits |
 |---|---|---|
-| **NEW — Pre-registration addenda (60.2 Part B)** | Four dated addenda, appended (originals untouched), before any judged data exists: (1) EXP-037 "earliest 60" ordered by game start time; (2) EXP-036 bootstrap seed 20261002; (3) EXP-036 goalie: projected starter at every band incl. T3, since the API never shows the starter before puck drop (59.3 verdict b); (4) MLB has no climatology baseline, so that one comparison is stated unavailable. **Recommend: yes.** Awaiting your yes; the window then adds the authorization line. | Without (3), no NHL T3 row can ever be judged. Without (1), the 11-02 NFL look rests on an engine choice, not a pre-registered one. |
-| **NEW — NHL judged n (GG-514)** | EXP-036 set judged n = 2,473 games; the NHL season has 1,312. So NHL can only be PRELIMINARY this season. Its "no skill over base rate" check still fires at 500 games. Options: keep as written (two seasons to a full verdict), or re-power now while no score has been read. **Recommend: keep.** | Nothing this season either way, beyond the label. |
+| **Pre-registration addenda** | ✅ **DECIDED 2026-10-07 19:03 PT: yes** — authorization line above; 60.2 Part B applies them. | — |
+| **NHL judged n (GG-514)** | ✅ **DECIDED 2026-10-07 19:03 PT: keep as written** — NHL PRELIMINARY all 2026-27. | — |
 | **GG-432** | ✅ **DECIDED 2026-10-04: option (a), PR #158** — merged in 54.2. | — |
 | **GG-450** | ✅ **DECIDED 2026-10-04:** booked at Kalshi settlement value, flagged cancelled, excluded from G6 + calibration — built in 54.3. | — |
 | **GG-440** | ✅ **DECIDED 2026-10-04:** Kalshi settlement is the resolution source; statsapi/ESPN cross-check only — ADR + code in 54.3. | — |

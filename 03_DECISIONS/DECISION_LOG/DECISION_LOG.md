@@ -1879,3 +1879,12 @@ The carry-forward and paste-in pushed at 94853bf are premature and will be rewri
 60.1 cohort fill truth (GG-300) + resolved-ledger overwrite guard (GG-228); 60.2 NBA in the calibration engine (GG-513) +
 pre-registration addenda, applied only on an operator authorization line; 60.3 dashboard truth gaps + gap-log hygiene.
 **Routed to operator:** pre-registration addenda (recommend yes); NHL judged n unreachable this season, GG-514 (recommend keep).
+
+## 2026-10-08 ~02:10 UTC (2026-10-07 19:03 PT) — Pre-registration addenda authorized; NHL judged n kept
+
+**Decision (operator):** "Yes proceed with both recommendations." (1) Four dated addenda authorized, applied by 60.2 Part B
+before any judged data exists: EXP-037 "earliest 60" ordering key (start_time_utc, game_key) — GG-510; EXP-036 bootstrap
+seed 20261002 — GG-511; EXP-036 goalie = projected starter at every band incl. T3, confirmed=False (W59.3 verdict b) — GG-401;
+MLB climatology comparison stated unavailable (no p_clim) — GG-512. No other parameter, judged n, verdict rule or look changes.
+(2) GG-514: EXP-036 judged n 2,473 kept as written; NHL stays PRELIMINARY in 2026-27; 500-game climatology check still applies.
+Wave 60 is the last wave of this strategic window; handoff after it is verified.
