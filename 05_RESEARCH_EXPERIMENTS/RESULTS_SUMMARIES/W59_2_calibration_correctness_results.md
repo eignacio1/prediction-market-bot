@@ -1,6 +1,6 @@
 # W59.2 — Calibration correctness before the first look
 
-Status: IN PROGRESS (Part A done; B, C, D pending). Counts only anywhere in this document; no cell has reached a look.
+Status: COMPLETE (Parts A-E). Counts only anywhere in this document; no cell has reached a look.
 
 ## Part A — Projection from the real schedule
 
@@ -64,3 +64,30 @@ Read-only. `scripts/kalshi_settlement_crosscheck.py` fetched Kalshi's public mar
 | MLB | 129 | 129 | 0 | 0 | 0 | 0 |
 
 All 1,229 were `finalized` at Kalshi. No outcomes were changed and nothing needed registering. Scope: NFL and MLB only, as specified; NHL not cross-checked. This is a point-in-time check of rows settled so far, not a standing monitor.
+
+## Part A — browser verification (real Chromium, 2026-10-08)
+
+Generated the Visual Dashboard twice from the same read-only VPS data copy (`generate_project_state.py --repo`), once from the
+pre-fix engine output (`engine_20261007T134906Z`, trailing-rate dates) and once from a fresh engine run on the merged code
+(`engine_20261008T013828Z`), and screenshotted `#calibration` at 1500px and 390px (`W59_2_screenshots/{before,after}_{desktop,phone}.png`).
+No console or page errors in either.
+
+| Cells | Before (linear) | After (schedule) |
+|---|---|---|
+| NFL, 12 | 2026-10-16 | **2026-11-02** |
+| NHL T1 / T2 / T3 | 2027-12-26 / 2027-09-03 / 2027-10-19 | **not reachable on the published schedule** (need ~2,470-2,484 more, expect 573-968 from 1,290 games left) |
+| MLB, 12 | "judged games begin 2027-03-01" | same, plus "schedule not yet published" |
+
+Hover text carries the basis (schedule x coverage). One layout defect, present before and after: at 390px the page scrolls
+horizontally (467px) from a long source link in the section header. Registered as GG-515, not fixed here.
+
+## Part E — PRs, CI, deploy
+
+PRs #178 (A+B), #181 (C), #182 (D + doc), all CI green and merged. VPS `/opt/prediction-market-bot` is at `0aeb81c` (= origin/main, includes #182).
+**t4-mlb decision: not restarted.** `ActiveEnterTimestamp` is 2026-10-07 06:13:10 UTC, before this deploy; nothing in these PRs touches T4, and the
+restart policy skips it while a game may be live (GG-432). `pmbot-web-dashboard` restarted 2026-10-08 01:38:30 UTC with the deploy, `NRestarts=0`, so the Part C count fix is live.
+
+## Gaps registered
+
+GG-510 (EXP-037 ordering key undefined), GG-511 (EXP-036 seed unspecified; engine deviation, now corrected), GG-512 (MLB no `p_clim`),
+GG-513 (NBA not in engine), GG-514 (NHL n=2,500 unreachable this season; NFL date rests on one slate), GG-515 (phone overflow). Pre-registrations untouched.

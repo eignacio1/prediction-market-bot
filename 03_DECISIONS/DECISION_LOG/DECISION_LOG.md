@@ -1858,3 +1858,11 @@ Docs-only.
 - **ADR-0070** widened to the EXP-036 NHL and EXP-038 NBA shadow models (commit 645d23a), then marked ACCEPTED (cdf10c6) citing the operator's 2026-10-07 17:26 PT decision. Shadow only: no order, position, sizing or CellStatus beyond SHADOW. GG-400 -> RESOLVED (archived). GG-401 not waived, stays OPEN.
 - **NHL goalie probe verdict (b):** `starter` flag absent pre-drop and during play; present only on finished boxscores. No StarterProvider built. Amendment text for the operator is in `W59_3_nba_nhl_readiness_results.md` Part B. **Operator decision pending:** adopt the EXP-036 line-42 amendment (projected starter at every band, confirmed=False).
 - **NBA:** preseason rows go to a labelled separate ledger (`PREGAME_SHADOW_PRESEASON`, excluded from judged n). NBA registry cells NOT flipped to SHADOW; the 10-21 flip check is `scripts/w59_3_nba_flip_check.py`.
+
+## 2026-10-08 — W59.2: calibration correctness (Parts A-E complete)
+
+- Projection now uses each sport's published schedule x measured coverage (NFL first look 2026-11-02; NHL n=2,500 not reachable this season; MLB none until 2027 schedule). Release mechanics proven on fixtures: write-once sha256 manifests, 59 emits nothing, 60 emits the pre-registered verdict, game 61 does not change it.
+- Settled-row schema unified at read time (`settled_schema.py`, GG-499); no raw ledger rewritten; derived `settled/` back-fill deliberately not done (GG-228 provenance not warranted yet).
+- Kalshi settlement cross-check (GG-487): 1,229/1,229 NFL+MLB settled markets agree, 0 void. No outcome changed.
+- Engine choices made without a pre-registered basis, now gaps for operator ratification: ordering key (GG-510), NHL seed 20261002 (GG-511). Also GG-512..GG-515. Docs-only registration.
+- Deploy: VPS at 0aeb81c; t4-mlb not restarted (untouched by these PRs).

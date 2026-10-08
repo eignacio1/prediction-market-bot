@@ -27,7 +27,7 @@ Operator 2026-10-07 17:26 PT: "proceed in full" — backlog gets its own block, 
 | Block | Status | Touches | Result / next |
 |---|---|---|---|
 | **59.1** The backlog: the gap log gets true | 🔄 **IN PROGRESS** — Part A done (19 of 21 leads closed, GG-156/158 kept OPEN: no checkable evidence). OPEN: 176 -> 157. Part B batch 1 (GG-004..GG-160, 25 gaps): 0 closed, all kept OPEN with dated state. OPEN: 157 -> 157. Batch 2 (GG-161..GG-209, 25 gaps): 1 closed (GG-200), 24 kept OPEN. OPEN: 157 -> 156. Batch 3 (GG-216..GG-295, 25 gaps): 0 closed, all kept OPEN. OPEN: 156 -> 156. Batch 4 (GG-296..GG-329, 25 gaps): 3 closed (GG-305 dup of GG-230; GG-318, GG-329 resolved), 22 kept OPEN. OPEN: 156 -> 153. Batch 5 (GG-330..GG-404, 25 gaps): 2 closed (GG-343 dup of GG-309; GG-351 dup of GG-230), 23 kept OPEN. OPEN: 153 -> 151. Batch 6 (GG-405..GG-499): all kept OPEN. Part B complete. OPEN: 151 (176 start). Part C (GG-498) not done at operator direction. Part D + handoff written. | gap log + archive; 21 leads verified; all OPEN gaps classified with evidence; GG-498 deploy/ cron mirror | — |
-| **59.2** Calibration correctness before the first look | ⬜ **READY** | projection fix; first-look release mechanics + report template on fixtures; one settled-row schema (GG-499); Live Terminal settled count; Kalshi settlement cross-check (GG-487) | — |
+| **59.2** Calibration correctness before the first look | ✅ **DONE 2026-10-08** (PRs #178, #181, #182; GG-510..515) | projection fix; first-look release mechanics + report template on fixtures; one settled-row schema (GG-499); Live Terminal settled count; Kalshi settlement cross-check (GG-487) | — |
 | **59.3** NBA opening-night readiness + NHL goalie verdict + ADR-0070 | ⬜ **READY** | NBA dry-run + season state; NHL probe verdict (StarterProvider if (a)); ADR-0070 widened then accepted; GG-400 | — |
 
 ### Wave 58 results (closed, verified on GitHub)
@@ -276,7 +276,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Touches | Gate |
 |---|---|---|---|---|
 | 59.1 | The backlog | ⬜ | gap log | OPEN count down, every change with evidence | [Corrective pass complete: all OPEN re-verified; OPEN 176 -> 131; 0 unverified; Part C pending operator permission]
-| 59.2 | Calibration correctness | ⬜ | engine, settle schema, Live Terminal count, cross-check | Release proven on fixtures; projection corrected |
+| 59.2 | Calibration correctness | ✅ | engine, settle schema, Live Terminal count, cross-check | Release proven on fixtures; projection corrected |
 | 59.3 | NBA readiness, NHL verdict, ADR-0070 | ⬜ | NBA runner/dashboards, NHL T3, ADR | NBA proven ready for 10-20; ADR-0070 ACCEPTED |
 
 ### ✅ WAVE 58 — CLOSED 2026-10-07 ~02:45 UTC · three LARGE blocks

@@ -3978,3 +3978,117 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
+
+### GG-510 — EXP-037 does not define the ordering key for 'earliest 60 settled games'
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.2):** EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. **Next:** Operator/DS to ratify or replace the key via a superseding document before the first NFL look (projected 2026-11-02).
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-510 |
+| Category | Calibration engine / pre-registration |
+| What was found | EXP-037 says the first look scores the earliest 60 settled games per cell but does not say how games are ordered. The engine uses (start_time_utc else ts_utc, game_key) and freezes the released set in a write-once manifest. |
+| Why it matters | A different key selects a different 60 games and a different verdict; the choice is currently the engine's, not the pre-registration's. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-511 — EXP-036 leaves the bootstrap seed unspecified; engine deviated before W59.2
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.2):** EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. **Next:** Pre-register a seed by superseding document; treat pre-W59.2 NHL intervals as superseded.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-511 |
+| Category | Calibration engine / pre-registration |
+| What was found | EXP-036 specifies B=10,000 on per-game means but no seed. The engine ran B=2000 on raw strike rows (the NFL setting) until W59.2, and now runs the spec'd B and per-game mean with seed 20261002 (NFL's), stated in the output bootstrap block. Earlier NHL PRELIMINARY CIs were produced under the old setting. |
+| Why it matters | Seed choice can move CI edges that decide RULED_OUT/CANDIDATE; earlier published NHL intervals used a non-spec method. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-512 — MLB settled rows carry no p_clim; no climatology baseline for MLB
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.2):** MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. **Next:** Decide whether MLB needs a climatology baseline; if so supersede the pre-registration and add p_clim at settle time (new rows only).
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-512 |
+| Category | Calibration engine / pre-registration |
+| What was found | MLB settled rows have y and game_key but no p_clim, and the MLB pre-registration defines no climatology comparator. The engine reports no climatology delta for MLB and does not invent one. |
+| Why it matters | The NFL/NHL RULED_OUT-vs-climatology check cannot be applied to MLB, so MLB has a weaker falsification gate. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-513 — NBA cells (EXP-038) are not in the calibration engine
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.2):** The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. **Next:** Add NBA once EXP-038 cells are SHADOW (W59.3 10-21 flip check) and its rules are encoded.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-513 |
+| Category | Calibration engine / pre-registration |
+| What was found | The engine and Visual Dashboard calibration section cover NFL, MLB and NHL only. NBA shadow cells have no first-look projection, release manifest or verdict path. |
+| Why it matters | NBA results would be read outside the sealed-release mechanics. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-514 — NHL judged n=2,500 unreachable this season; NFL first-look date rests on one week of coverage
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.2):** Projection (W59.2): NHL needs 2,470-2,484 more games, expects 573-968 from 1,290 left, so n=2,500 is not reachable on the published schedule; NHL can only stay PRELIMINARY in 2026-27. NFL date 2026-11-02 uses coverage measured on 15 games (one slate). **Next:** Operator to decide whether EXP-036's n=2,500 stands (a multi-season horizon) or is revised by a superseding document; re-derive NFL date after more weeks.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-514 |
+| Category | Calibration engine / pre-registration |
+| What was found | Projection (W59.2): NHL needs 2,470-2,484 more games, expects 573-968 from 1,290 left, so n=2,500 is not reachable on the published schedule; NHL can only stay PRELIMINARY in 2026-27. NFL date 2026-11-02 uses coverage measured on 15 games (one slate). |
+| Why it matters | NHL may never reach a verdict on the registered threshold; an early NFL date could slip by a slate or more. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-515 — Visual Dashboard calibration section overflows horizontally on phone width
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-08, W59.2):** At 390px the page scrolls horizontally (scrollWidth 467): a long source link/code element in the calibration header sits outside the .scroll wrapper. Present before and after W59.2; seen in the real-browser check. **Next:** Wrap or break long source paths in the section header; re-run the phone screenshot.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-515 |
+| Category | Calibration engine / pre-registration |
+| What was found | At 390px the page scrolls horizontally (scrollWidth 467): a long source link/code element in the calibration header sits outside the .scroll wrapper. Present before and after W59.2; seen in the real-browser check. |
+| Why it matters | Violates the phone-usable design bar. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
