@@ -19,7 +19,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from prediction_market_bot.pregame_shadow import scoring
+from prediction_market_bot.pregame_shadow import scoring, settled_schema
 
 STATUS_SEALED, STATUS_PRELIM, STATUS_JUDGED = "SEALED", "PRELIMINARY", "JUDGED"
 STATUS_HISTORICAL, STATUS_COUNTS = "HISTORICAL", "COUNTS ONLY"
@@ -377,17 +377,18 @@ def discover_cells(repo: Path) -> list[dict]:
 
 
 def load_settled(cell: dict) -> list[dict]:
-    """Settled rows as scoring rows (y, game_key, ts_utc, quotes). NHL is joined to its ledger."""
+    """Settled rows as scoring rows, normalised to the one schema (settled_schema.normalize). NHL settled rows
+    carry no quotes or game id of their own, so they are joined to their ledger row on (run_id, market_ticker)."""
     rows = _jsonl(cell["settled"])
-    if cell["sport"] != "NHL":
-        return rows
-    led = {(r["run_id"], r["market_ticker"]): r for r in _jsonl(cell["ledger"])}
+    led = ({(r["run_id"], r["market_ticker"]): r for r in _jsonl(cell["ledger"])} if cell["sport"] == "NHL" else None)
     out = []
     for s in rows:
-        l = led.get((s.get("run_id"), s.get("market_ticker")))
-        if l is None or s.get("outcome") is None:
+        l = led.get((s.get("run_id"), s.get("market_ticker"))) if led is not None else None
+        if led is not None and l is None:
             continue
-        out.append({**l, "y": float(s["outcome"]), "game_key": l["event_ticker"]})
+        n = settled_schema.normalize(s, l)
+        if n is not None:
+            out.append(n)
     return out
 
 
