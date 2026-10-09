@@ -14,8 +14,11 @@ scripts/new_session_worktree.sh "<short-focus-slug>"
 
 # 0b — guard + atomic claim (run from your session's tree):
 bash .claude/hooks/session_guard.sh
-scripts/claim_session.sh "<TIER: MICRO|STANDARD> — <the ONE deliverable> — <one-line focus>" "<T-/GG-/ADR- range or TBD>"
+scripts/claim_session.sh "<TIER: MICRO|STANDARD> — <the ONE deliverable> — FOR <measure, e.g. D3 or E1, or PLUMBING> — <one-line focus>" "<T-/GG-/ADR- range or TBD>"
 ```
+**Purpose before work (Hard Rule 12, 2026-10-09).** The claim names the distance-to-optimum measure the session is FOR
+(CLAUDE.md § "What winning looks like" → "Distance to optimum"; current values in the RUNNING SITREP of `04_EXECUTION/ACTIVE_QUEUE.md`). If you cannot say which
+measure your task moves, or that it is PLUMBING, stop and ask before doing anything.
 **Declare the tier and the single deliverable in the claim string itself (Hard Rule 11, T-434).**
 One session = one deliverable = one merge. If you find a defect outside that deliverable's
 scope, register a GG-/T-NNN and STOP — do not fix it in-session. If the task as written reads

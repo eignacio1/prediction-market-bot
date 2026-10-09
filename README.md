@@ -5,6 +5,13 @@ NBA) are the laboratory: binary outcomes, short feedback loops, and the market's
 part of this repository serves: **does the model know something the market doesn't?** Paper and demo only — no real capital
 until the G6 gate is cleared.
 
+## Before you do anything here
+
+Know what it is for. Every task in this project — a terminal block, a review, an outside model's audit, a reminder — names,
+before it starts, which **distance-to-optimum** measure it is meant to move (breadth, depth, execution or proof; defined in
+[`CLAUDE.md`](CLAUDE.md) § "What winning looks like", current values at the top of the RUNNING SITREP), or says plainly that it
+is plumbing. If you cannot say what your task is for, stop and ask.
+
 ## If you are picking this up
 
 1. **Where the project is right now:** the RUNNING SITREP at the top of [`04_EXECUTION/ACTIVE_QUEUE.md`](04_EXECUTION/ACTIVE_QUEUE.md)

@@ -28,6 +28,7 @@ An automated prediction market trading bot, built from scratch with institutiona
 | Need | Go to |
 |------|-------|
 | **Where we are right now** (bottom line, pillar scoreboard, calendar, operator's open calls) | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) — RUNNING SITREP at the top |
+| **How far we are from optimum** (the numbers, per pillar) | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) — DISTANCE TO OPTIMUM table, top of the sitrep; measures defined in CLAUDE.md |
 | **What winning looks like** (the operator's north star — BREADTH / DEPTH / EXECUTION / PROOF) | [CLAUDE.md](../CLAUDE.md) § "What winning looks like" |
 | What the system does and why (vision, alpha taxonomy, hard rules, session protocol) | [CLAUDE.md](../CLAUDE.md) |
 | What the system does and why (spec form) | [01_SPEC/VISION_OUTCOMES.md](../01_SPEC/VISION_OUTCOMES.md) |

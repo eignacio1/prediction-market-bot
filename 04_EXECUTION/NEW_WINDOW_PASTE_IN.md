@@ -29,6 +29,9 @@ PROTOCOLS - DO NOT GET THESE WRONG
 - The north star is CLAUDE.md, section "What winning looks like" - four pillars: BREADTH, DEPTH, EXECUTION, PROOF.
   Every block reports the pillar it moved; at every wave close, update the sitrep's pillar scoreboard and tell me if
   two waves in a row moved none.
+- The sitrep opens with the DISTANCE TO OPTIMUM table (measures defined in CLAUDE.md). Every block you write carries a
+  PURPOSE line naming the measure it moves; recompute the table at every wave close. If anything - a block, a review, a
+  reminder - can't say what it is for, it doesn't start.
 - Handoff only after your last wave is verified. When I say hand off, run /strategic-handoff
   (.claude/commands/strategic-handoff.md): it produces the operational doc, this paste-in and the queue, and delivers
   them to me without my asking.

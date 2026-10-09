@@ -8,12 +8,14 @@ Read, in this order, then say "Context loaded." and give a five-line summary of 
 
 1. `CLAUDE.md` — already in context if you are in Claude Code. Hold § "What winning looks like" (the operator's north star,
    four pillars) and the hard rules.
-2. `04_EXECUTION/ACTIVE_QUEUE.md` — the **RUNNING SITREP** at the top (bottom line, pillar scoreboard, calendar, the operator's
-   open calls), then **NOW** (the wave in flight) and **Needs your decision** (every authorization, as blockquotes).
+2. `04_EXECUTION/ACTIVE_QUEUE.md` — the **DISTANCE TO OPTIMUM** table and the **RUNNING SITREP** at the top (bottom line,
+   calendar, the operator's open calls), then **NOW** (the wave in flight) and **Needs your decision** (every authorization, as blockquotes).
 3. `11_MEMORY_HANDOFF/MEMORY_BANK.md` — the "Where we are" box and the **Current State Snapshot** (dated).
 4. If you are the strategic window: `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` in full.
 5. Live counts, never from memory: run `.claude/hooks/governance_scan.sh` (gap log OPEN count, sample adequacy, SILENT ARMS),
    and read `MARKET_TYPE_REGISTRY` for cell status.
+
+Then, before any task: name the distance-to-optimum measure it is for, or PLUMBING (Hard Rule 12). If you can't, ask.
 
 Treat every number in any document as a claim to verify against code, data or GitHub. If two sources disagree, the code and
 the data win, and the disagreement is a finding to report.

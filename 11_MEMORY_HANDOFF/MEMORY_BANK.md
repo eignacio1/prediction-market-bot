@@ -376,6 +376,7 @@ EXP-017B/C/D decomposed the n=151 MLB T1 Tier-1 book (EXP-017/GG-004). **Key res
 
 | Area | State | Source |
 |---|---|---|
+| Distance to optimum | The numeric gap per pillar (B1..P3) is the table at the top of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`; on 2026-10-09: 25/104 cells logging, 0 qualitative inputs in any model, 5.3% of demo orders filled and fills losing in both books, 0 verdicts. | ACTIVE_QUEUE |
 | Phase / capital | Phase 6 paper trading. **$0 real capital.** `kelly_fraction` 0.0 on every operating band (ADR-0048). T4M-PROJ places flat demo measurement stakes (ADR-0050), and **stops for every game after the 2026 World Series** (GG-527 (c); gate merged #193; t4-mlb restart authorized, 62.3). | execution_bands.py; ACTIVE_QUEUE |
 | Registry (104 cells) | ACTIVE 1 (MLB player hits T4M-PROJ) · SHADOW 24 (MLB player hits T1/T2/T3; NFL moneyline/spread/game total/team total × T1/T2/T3; NHL moneyline/puck line/game total × T1/T2/T3) · BLOCKED 2 (T4M-ARITH, T4M-FLOW) · DARK 1 (NBA player points T4) · NOT_IMPLEMENTED 76 (all MLB game markets, NBA game markets ×T1–T3, every T4 sub-band and T5 for games). | `MARKET_TYPE_REGISTRY` |
 | Shadow arms (evaluate + log, no orders) | **NFL** 12 cells, EXP-037, 15/60 games per cell, first look ~2026-11-02. **NHL** 9, EXP-036, PRELIMINARY all 2026-27. **NBA** 12, EXP-038, preseason rows labelled and excluded, regular season from 2026-10-20, cells flip ~10-21. **MLB postseason** 12, EXP-037 MLB, logging but not registered SHADOW; silent 10-08 (GG-532). | ACTIVE_QUEUE sitrep; W61.2 |

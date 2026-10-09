@@ -19,7 +19,38 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 61 closed, Wave 62 issued, 2026-10-08 ~18:30 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: distance-to-optimum table added, 2026-10-09 ~00:45 PT (Wave 62 in flight).*
+
+### 📏 DISTANCE TO OPTIMUM — read this first
+
+*The gap between the project and the bot at optimum, as numbers. Measures are defined in CLAUDE.md § "What winning looks like" →
+"Distance to optimum"; values are recomputed at every wave close. Values below: 2026-10-09 ~07:45 UTC, hand-derived from the cited
+sources — a generator that computes them mechanically is the first Wave 63 block. "Moved" = change since the previous wave close.*
+
+| Pillar | Measure | Now | At optimum | Moved since W61 close | Source |
+|---|---|---|---|---|---|
+| **BREADTH** | B1 registered cells logging (ACTIVE + SHADOW) / registered | **25 / 104** (+12 MLB postseason cells logging, unregistered) | every cell of the whole board registered and logging | 0 | `MARKET_TYPE_REGISTRY` |
+| | B2 market families with a logging cell / registered families | **8 / 18** | 18 / 18, with props and parlays registered | 0 | registry |
+| | B3 bands with a logging cell | **4 of 5** (no T5; T4 = T4M-PROJ only) | 5 of 5, T4 sub-bands included | 0 | registry |
+| | B4 props · parlay families logging | **1 · 0** | the board's props and parlays | 0 | registry |
+| **DEPTH** | D1 granularity-bar inputs in live pre-game models | **0 qualitative inputs anywhere; personnel/availability: NHL projected goalie only; weather: none** | matchup, personnel, team, venue, weather and qualitative factors at every pre-game arm | 0 | EXP-036/037/038 pre-registrations; T-597 |
+| | D2 largest pre-game feature set | **18** (MLB player hits T1, 0 qualitative) | coverage of the factor classes, not a count | 0 | `models/mlb_v1_model_meta.json` |
+| | D3 pre-registered challengers ready | **0** (2 NFL candidates tested exploratorily; neither beat the frozen model) | at least one per arm before its first look | 0 | `12_EXPLORATORY/` |
+| **EXECUTION** | E1 demo orders filled / closed positions | **251 / 4,705 = 5.3%** (T4 166/4,220; T1 MLB 85/485) | fills ≈ intended orders | T1 measured for the first time | W61.1, W62.3 |
+| | E2 P&L per filled bet | **T4M-PROJ −$0.26** (n=165) · **T1 MLB −$1.50** (n=83) | positive, net of fees | measured | W61.1, W62.3 |
+| | E3 win rate on fills vs non-fills | **T1 MLB 28.9% vs 52.1%** — orders fill mostly when they are about to lose | fills at least as good as non-fills | measured | W62.3 |
+| **PROOF** | P1 cells at a scored look / logging cells | **0 / 25** | every cell judged at its pre-registered n | 0 | calibration engine |
+| | P2 verdicts issued | **0** | a verdict per cell (a rigorous NO counts) | 0 | — |
+| | P3 next look | NFL ~11-02 (15/60 per cell); the pre-registration's modal outcome is SHADOW | — | — | EXP-037 |
+
+**Rule (operator, 2026-10-09: "perfection isn't a dream, it's a protocol"):** every block, session and review states before it starts
+which measure it is meant to move, and reports at close what moved and by how much — or says PLUMBING in plain words. Two waves in a
+row that move nothing is drift, and the strategic window says so unprompted.
+
+**Forest read (2026-10-09):** Waves 52–61 were almost entirely BREADTH plumbing and PROOF machinery. The instrument is ready; the
+thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
+the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
+evidence at best.
 
 **Bottom line.** The plumbing is now sound. Code lands at any hour without killing live services, MLB data no longer
 depends on a blocked source, every resolved bet books from Kalshi's own settlement (1,229 of 1,229 match), and four
@@ -27,7 +58,7 @@ sports log shadow forecasts. **We still have no verdict that the model beats the
 what the only ACTIVE cell's sample is: **94.5% of T4M-PROJ's 1,952 rows were never filled.** The 107 real fills lose
 $0.40 a bet. So T4M-PROJ is a calibration record, not trading evidence. **You decided that 2026-10-08 (GG-527 (b)+(c)); Wave 61 builds it.** The first scored
 look is **NFL, ~2026-11-02** (15 of 60 games per cell; date confirmed by 61.2) — and its own pre-registration expects it to be
-inconclusive (plausible edge below what 60 games can detect). See the pillar scoreboard below.
+inconclusive (plausible edge below what 60 games can detect). See the distance-to-optimum table above.
 
 **Wave 61 (10-08):** fills-only counting is live on both dashboards (T4M-PROJ real fills n=165, about -$0.26/bet). The
 stand-down gate is merged but not yet in the running process (62.3). The first-look release path had a real bug (no
@@ -60,18 +91,6 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 | **Fill truth + verdict readiness** | 61 | Fills-only T4M-PROJ counting on both dashboards; stand-down gate; first-look release path fixed + runbook; exploratory track fenced (no NFL challenger beats frozen). |
 | **Governance** | 58–60 | Gap log 176 → 130, all re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted; window handoff is now a command (`/strategic-handoff`). |
 
-### 🧭 Pillar scoreboard — against the north star (CLAUDE.md § "What winning looks like"; updated at every wave close)
-
-| Pillar | Where it stands (2026-10-09, derived from the registry, pre-registrations and W60–61 results) | Gap → what moves it |
-|---|---|---|
-| **BREADTH** | 4 sports logging. Registry 104 cells: ACTIVE 1, SHADOW 24; MLB postseason 12 logging but unregistered and **silent since 10-08** (GG-532, 62.1); NBA 12 flip ~10-21; 76 NOT_IMPLEMENTED. Props: MLB player hits only; parlays: none. | Expansion directive → Wave 63 opens pre-registered arms, least-efficient families first. |
-| **DEPTH** | **Weakest.** Every pre-game arm is a thin baseline by its own pre-registration: NFL has no injury/QB/weather/travel; NBA is scores-only (rolling points, net rating); MLB games are 9 decayed team-run features; NHL is LR+Platt with rest, road streak and a projected goalie (no travel). Even the deepest model in the repo (T1 MLB player hits) measured 18 features and 0 qualitative (T-597), and sits at kelly 0. **No block since Wave 52 added depth.** | Deep pre-game challengers built in `12_EXPLORATORY/` and pre-registered → Wave 63. |
-| **EXECUTION** | 166 of 4,220 closed T4 positions ever filled; T4M-PROJ fills ≈ −$0.26/bet (adverse selection signature). Shadow arms place no orders. How orders are priced and placed has no owner. | Demo-fills ADR + build (Wave 63); order-placement design next. |
-| **PROOF** | 0 cells at a scored look. **The pre-registrations themselves expect the first looks to be inconclusive** — plausible edge vs market sits at or below what 60 (NFL) / 150 (NBA) games can detect, so the modal 11-02 outcome is "keep logging", not a verdict. | Depth is what can make a look decisive; breadth multiplies the number of looks. |
-
-**Forest read (2026-10-09):** Waves 52–61 were almost entirely BREADTH plumbing and PROOF machinery. The instrument is ready; the
-thing it measures — model depth — and the thing that converts it into money — execution — were never staffed.
-
 ### PROOF, per arm — does the model know something the market doesn't?
 
 | Arm | Status | When a verdict is possible |
@@ -93,7 +112,7 @@ thing it measures — model depth — and the thing that converts it into money 
 | before 2027-01-31 | Define EXP-038's date-triggered second look (GG-529) |
 
 ### Your open calls
-~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 (demo-stake ADR acceptance due at Wave 63 close) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
+~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 (demo-stake ADR acceptance due at Wave 63 close) · **T1 MLB counting (GG-536) — new** · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
 gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
 unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
 (GG-529, January) · EXP-034 (park recommended).
@@ -567,6 +586,10 @@ unattended on the VPS under their own authorization, and a later block reads wha
 - **North star (2026-10-09):** CLAUDE.md § "What winning looks like" — four pillars, BREADTH / DEPTH / EXECUTION / PROOF.
   Every block's report and handoff names the pillar it moved (`vision_pillar:`; PLUMBING is a valid answer). The window
   updates the pillar scoreboard at every wave close and flags two pillar-less waves in a row.
+- **PURPOSE before work (2026-10-09).** Every block prompt carries, right under its title, a `PURPOSE:` line naming the
+  distance-to-optimum measure it moves (B1..P3, or PLUMBING) and the change it expects; its report and handoff state the
+  measured change (`gap_measure:` / `gap_delta:` in the session-meta block). A terminal that cannot say what its task is
+  for stops and asks before working.
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15.
 - **Blocks are LARGE and multi-part (operator 2026-10-06)** — each part pushed and recorded before the next. Waiting is still not work.
 - **Deliverable 0 in every block: confirm your base** (`git fetch`; work from current `origin/main`).
@@ -605,6 +628,9 @@ What should reorder this, and what should stop it:
 
 ## Queued next — not yet fired (refreshed 2026-10-08 by the incoming window; dated items wait for their date)
 
+- **Wave 63, first block — the distance-to-optimum generator:** compute every measure in the table above from the registry,
+  pre-registrations, model metadata, fill sidecars and calibration-engine output; print it in the governance scan, show it on the
+  Visual Dashboard, and make `gap_measure`/`gap_delta` required in the session-meta block once Wave 62 has closed.
 - **On/after 10-21 — NBA flip:** `scripts/w59_3_nba_flip_check.py` prints the `promote_cell_status` lines; flip once valid
   regular-season rows exist. Same block or next: remove the NBA preseason cron line after 10-20 (added under the new-line
   authorization; removal of a line we added).
@@ -702,6 +728,7 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 | Item | Plain English | What it costs while it waits |
 |---|---|---|
 | **Expansion (win mode)** | ✅ **DIRECTED 2026-10-08 23:20 PT: all four levers** — directive section + four lines above; Wave 63 is built on it. Demo stakes go live only on your ADR acceptance (one line). | — |
+| **NEW — T1 MLB book counting (GG-536)** | 62.3 found the T1 MLB book shows the same pattern as T4M-PROJ: only 85 of 485 positions filled; fills lost −$1.50/bet at a 28.9% win rate, while non-fills "won" 52.1%. GG-527's decision covered T4M-PROJ only. **Window recommends the same rule for T1:** rows are a calibration record; any execution or G6 claim counts real fills only. | Until decided, T1's paper P&L can be read as execution evidence. |
 | **T4M-PROJ cohort (GG-527)** | ✅ **DECIDED 2026-10-08 ~17:14 PT: (b)+(c)** — built by 61.1; gate activation by 62.3. | — |
 | **t4-mlb restart for the gate** | ✅ **AUTHORIZED 2026-10-08 ~18:25 PT: once, no live game** — line above; 62.3. | — |
 | **NEW — EXP-038 second look (GG-529)** | The NBA pre-registration says "n=400 or 2027-01-31, whichever first" but never says what is scored on the date. Needs a definition before 2027-01-31; the engine scores only n=150/400 until then. | Nothing before January. |

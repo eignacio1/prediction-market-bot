@@ -2026,3 +2026,23 @@ nobody acted on it — an alarm without an owner. Not changed in this pass (code
 
 ## 2026-10-09 — W62.1 Part B: silent-arm alarm (alarm-only, read-only)
 Per-arm "games scheduled in window, zero rows written" check, N per arm stated in `pregame_shadow/silent_arms.py`. Surfaces: /project strip pill, Live Terminal health row, governance_scan.sh. Unreadable schedule = "cannot check", never red. Live deploy initially showed every arm unknown (dashboard service on system python3, no pandas); fixed by running the check in repo venv (PR #199). GG-532 stays OPEN: fix deployed, awaiting first scheduled post-fix write. No order/stake/kelly/cron change.
+## 2026-10-09 ~08:00 UTC — Distance to optimum + purpose-before-work wired in (operator directive; Hard Rule 12)
+
+Operator (2026-10-09 00:01 PT): "wire it in fully - that means assess blast radius on our core files and input accordingly. If
+a terminal touches a fucking task it better know what its doing it for. If I'm doing a trial run on a frontier model for
+assistance on something complex or something basic like setting up calendar reminders - it better know what I'm doing it for.
+If you're doing a strategic review on a fresh window - you better know what you're doing it for... perfection isn't a dream its
+a protocol. I expect it."
+Done: CLAUDE.md north star gains "Distance to optimum — the measures" (B1-B4, D1-D3, E1-E3, P1-P3; definitions only) and Hard
+Rule 12 (name the measure before work, report the measured change after). ACTIVE_QUEUE sitrep now opens with the DISTANCE TO
+OPTIMUM table (values 2026-10-09, sourced; replaces the prose pillar scoreboard) and a standing PURPOSE-line rule for every
+block. Wired into: session-start (claim string carries "FOR <measure>"), TEMPLATE_SESSION_HANDOFF (`gap_measure:`,
+`gap_delta:`; parser-compatible), session-end, strategic-handoff (forest check recomputes the table; PURPOSE lines), carry-forward,
+paste-in, /ctx, /status, root README ("Before you do anything here"), 00_ADMIN README, MEMORY_BANK snapshot row, GLOSSARY,
+12_EXPLORATORY charter. Outside the repo: claude.ai Project doc `claude/NORTH_STAR_AND_DISTANCE_TO_OPTIMUM.md` (for every chat
+in the Project, e.g. reminders) and the project memory preference.
+Values derived 2026-10-09: B1 25/104, B2 8/18, B3 4/5, B4 1 props / 0 parlays; D1 0 qualitative inputs, personnel only NHL
+projected goalie, no weather; D2 18; D3 0; E1 251/4,705 = 5.3% (T4 166/4,220, T1 MLB 85/485); E2 T4M-PROJ -$0.26 (n=165), T1 MLB
+-$1.50 (n=83); E3 T1 MLB 28.9% fills vs 52.1% non-fills; P1 0/25; P2 0; P3 NFL ~11-02, modal SHADOW.
+Routed: GG-536 (T1 MLB counting) to the operator with the window's recommendation (same rule as GG-527 (b)). Queued: Wave 63's
+first block builds the generator that computes the table mechanically and makes gap_measure/gap_delta required after Wave 62.

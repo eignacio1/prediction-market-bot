@@ -221,7 +221,7 @@ The script writes files but does not commit — review its diff (`git status` / 
 
 ## Step 6B — Operator Digest (mandatory, T-372)
 
-**Vision pillar (2026-10-09):** fill `vision_pillar:` in the session-meta block (BREADTH / DEPTH / EXECUTION / PROOF / PLUMBING, per CLAUDE.md § "What winning looks like — the operator's north star (four pillars)"), and say it in the digest in plain words — which part of the operator's north star this session moved, or "plumbing".
+**Vision pillar + measured change (2026-10-09, Hard Rule 12):** fill `vision_pillar:`, `gap_measure:` and `gap_delta:` (the measured change with its source, or "none") in the session-meta block (BREADTH / DEPTH / EXECUTION / PROOF / PLUMBING, per CLAUDE.md § "What winning looks like — the operator's north star (four pillars)"), and say it in the digest in plain words — which part of the operator's north star this session moved, or "plumbing".
 
 **[MICRO: already done — Step 6-gen appended a one-line entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from the `session-meta` block's `one_line_summary`. Do not also hand-author a prose digest on top of it; the one-liner is the MICRO-tier digest.]**
 

@@ -29,3 +29,4 @@ Nothing here is evidence about any cell. Nothing here is a verdict.
 
 ## Addendum 2026-10-09 (strategic window, operator direction to wire the north star in)
 This track is where the **DEPTH** pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" is built: deep pre-game models to the operator's granularity bar (matchup, personnel, team, venue, weather, qualitative factors, weighted metrics), developed here as challengers and graduated only by the operator-accepted pre-registration route in rule 7. A study's results doc names the pillar it moved. Rules 1-8 are unchanged.
+Every study names, before it starts, the distance-to-optimum measure it is for (usually D3, pre-registered challengers ready) and reports the measured change (Hard Rule 12, 2026-10-09).

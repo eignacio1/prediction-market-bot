@@ -58,6 +58,9 @@ commits to main itself.
   trying to win"): more pre-registered arms, demo fills, standing authorizations, bigger VPS. See ACTIVE_QUEUE.md.
 - **North star:** CLAUDE.md § "What winning looks like — the operator's north star (four pillars)". Every block reports the pillar it moved; the forest check at every wave close updates the
   sitrep's pillar scoreboard and flags two pillar-less waves in a row (2026-10-09).
+- **Distance to optimum + purpose before work** (operator 2026-10-09: "perfection isn't a dream, it's a protocol"): the sitrep opens
+  with the DISTANCE TO OPTIMUM table (measures B1..P3 defined in CLAUDE.md); every block prompt carries a `PURPOSE:` line naming
+  the measure it moves; every wave close recomputes the table and reports what moved. Hard Rule 12.
 - **Handoff only after the last wave is verified** (2026-10-07: "AFTER wave 60 is finished then we'll handoff"), and
   the handoff always delivers the operational doc + paste-in + queue as file cards and the paste-in in a chat fence,
   unasked (2026-10-08). `/strategic-handoff` does this.
