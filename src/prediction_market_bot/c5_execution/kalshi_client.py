@@ -1151,5 +1151,48 @@ class KalshiMarketClient:
         )
 
 
+    # ------------------------------------------------------------------
+    # W64.2: book read + order cancel (used only by the OFF-by-default
+    # demo_fill_policy; nothing here is called unless that switch is ON)
+    # ------------------------------------------------------------------
+
+    def get_market_book(self, ticker: str) -> tuple[bool, dict[str, float]]:
+        """Top-of-book YES bid/ask in dollars for one market (read-only GET).
+
+        Returns (ok, {"yes_bid": float, "yes_ask": float}); 0.0 means that side is empty."""
+        ok, data = self._get(f"/markets/{ticker}")
+        if not ok:
+            return False, {}
+        raw = data.get("market", data)
+        try:
+            bid = float(raw.get("yes_bid_dollars") or raw.get("yes_bid") or 0)
+            ask = float(raw.get("yes_ask_dollars") or raw.get("yes_ask") or 0)
+        except (TypeError, ValueError):
+            return False, {}
+        if bid > 1.0 or ask > 1.0:  # legacy cent-denominated fields
+            bid, ask = bid / 100.0, ask / 100.0
+        return True, {"yes_bid": bid, "yes_ask": ask}
+
+    def _delete(self, path: str) -> tuple[bool, Any]:
+        """Signed DELETE, single attempt (a cancel must not silently retry-loop)."""
+        if not self._private_key:
+            return False, {"error": "RSA private key not loaded"}
+        url = f"{_kalshi_base_url()}{path}"
+        full_path = f"/trade-api/v2{path}"
+        try:
+            headers = _auth_headers(self._key_id, self._private_key, "DELETE", full_path)
+            r = self._session.delete(url, headers=headers, timeout=REQUEST_TIMEOUT_S)
+            if r.status_code in (200, 201, 204):
+                return True, (r.json() if r.content else {})
+            return False, {"error": f"HTTP {r.status_code}", "body": r.text[:300]}
+        except Exception as e:
+            return False, {"error": type(e).__name__, "detail": str(e)}
+
+    def cancel_order(self, order_id: str) -> tuple[bool, dict[str, Any]]:
+        """Cancel a resting order. UNVERIFIED against the live demo API (W64.2): the v2
+        path below follows the submit path's convention; first ON day must confirm it."""
+        return self._delete(f"/portfolio/events/orders/{order_id}")
+
+
 def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"

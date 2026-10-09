@@ -26,6 +26,7 @@ from prediction_market_bot.c1_signal_ingestion.mlb_game_pregame_features import 
 from prediction_market_bot.pregame_shadow.mlb_forecaster import (  # noqa: E402
     MLBForecaster, MLBScheduleIndex, parse_market_ticker)
 from prediction_market_bot.pregame_shadow.mlb_model import MLBPregameModel  # noqa: E402
+from prediction_market_bot.c5_execution.shadow_flat_stake import make_on_row  # noqa: E402
 from prediction_market_bot.pregame_shadow.runner import run_once  # noqa: E402
 from run_pregame_shadow import code_sha, make_adapter  # noqa: E402
 
@@ -96,7 +97,8 @@ def main(argv=None) -> int:
     res = run_once(forecaster=fc, cells=CELLS, list_markets=ad.list_series_markets_raw,
                    kickoff_for=index.kickoff_for_event, kickoff_miss_reason=index.miss_reason_for_event, ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
-                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None))
+                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None),
+                   on_row=make_on_row(ad))
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", res["written"])
     print("skipped:", res["skipped"])

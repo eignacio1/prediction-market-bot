@@ -23,6 +23,7 @@ from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import NBAFe
 from prediction_market_bot.pregame_shadow.nba_forecaster import (  # noqa: E402
     NBAForecaster, NBAScheduleIndex, parse_market_ticker)
 from prediction_market_bot.pregame_shadow.nba_model import NBAPregameModel  # noqa: E402
+from prediction_market_bot.c5_execution.shadow_flat_stake import make_on_row  # noqa: E402
 from prediction_market_bot.pregame_shadow.runner import run_once  # noqa: E402
 
 CELLS = [("NBA_MONEYLINE", "KXNBAGAME"), ("NBA_SPREAD", "KXNBASPREAD"),
@@ -105,6 +106,7 @@ def main(argv=None) -> int:
                    kickoff_for=index.kickoff_for_event, ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
                    only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None),
+                   on_row=make_on_row(ad),
                    ledger_extra=extra)
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", dict(res["written"]))
