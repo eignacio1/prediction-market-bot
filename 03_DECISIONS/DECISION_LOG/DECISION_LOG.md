@@ -1935,3 +1935,18 @@ retire RESOLVED entries, NFL first-look rehearsal on a synthetic cell + runbook)
 | 2026-10-09 | T-750 (W61.2 Part B) | NFL first-look rehearsal on a synthetic fixture found the release path incomplete: the cron wrote the manifest and engine JSON but never called `render_report`, so no FIRST_LOOK_REPORT.md, and the dashboard showed no verdict word. Fixed both (`scripts/calibration_engine.py` writes the report for released cells only; `generate_project_state.py` shows the verdict) in PR #190, 97e8eb7, with `tests/test_w61_2_release_rehearsal.py` (59 games stay sealed, 60 release, 75 leave the manifest unchanged). Runbook: `04_EXECUTION/NFL_FIRST_LOOK_RUNBOOK.md`. NFL projection rests on 100% measured coverage (counts only, no scores read). GG-532 (MLB shadow arm silent since 2026-10-08 01:43Z, `no_kickoff`) registered, not fixed (Hard Rule 11). No order, kelly or ledger changes (ADR-0048 holds kelly at 0.0). |
 
 | 2026-10-09 | W61.1 (GG-527) | Built operator decision (b)+(c): fills-only T4M-PROJ execution evidence (sidecar classifier, refreshed from the existing Monday ledger cron; G6 counting fills-only for T4M-PROJ only) and a code-level post-2026 stake stand-down gate (`T4M_PROJ_POST_2026_REENABLE`, default off). VPS: 4,220 positions = 166 filled / 4,054 not / 0 unverifiable. Deploy rule for the gate PR (#193): `skip_live_game` (CLE@CWS in progress) - t4-mlb still on old code; must be restarted before spring 2027 (any deploy touching a t4-mlb-imported file outside a live game, or `systemctl restart t4-mlb`). GG-527 RESOLVED; registry DARK flip deferred to after the World Series. |
+
+## 2026-10-08 (PT evening) — Wave 61 verified and closed; t4-mlb restart authorized; Wave 62 issued
+
+**Verified on GitHub at 49c6d5a:** 61.1 DONE in code (#191 fills-only T4M-PROJ counting + sidecar + dashboards; #193
+stand-down gate) — 166 of 4,220 closed T4 positions filled on demo; T4M-PROJ fills n=165, -$42.17. Gate NOT in the running
+t4-mlb process (deploy skip_live_game). GG-527 set back RESOLVED -> PARTIALLY RESOLVED by the window (activation rule).
+61.2 DONE (#190: release path did not write the REPORT, fixed; NFL 15/60 per cell, first look 11-02 confirmed; GG-401
+RESOLVED on 510/510 stored T3 rows; GG-228/300/401/515/525 retired; GG-532 OPEN: MLB postseason shadow silent since
+10-08). 61.3 PARTIAL (#189/#192/#194: fence + isolation test; no NFL challenger beats frozen EXP-037; EXPLORATORY 2025
+market mid Brier 0.2115 vs model 0.2182; history store only on the operator's Mac, GG-533 reserved unregistered).
+CI: Test Suite + Deploy green on c9e2315. Gap log 129 OPEN, parity 153=153, no duplicate ids.
+**Operator authorization (2026-10-08 ~18:25 PT, choosing the window's recommendation: "Yes, once (Recommended)"):** one
+t4-mlb restart while no MLB game is live, to load the GG-527 gate; fallback the post-World-Series block.
+**Wave 62:** 62.1 GG-532 fix + silent-arm alarm; 62.2 secure the pre-2026 price history (GG-533) + pre-commit NFL
+first-look expectations in writing before any cell reaches n; 62.3 restart + read-only T1 MLB fill audit + NBA flip dry run.
