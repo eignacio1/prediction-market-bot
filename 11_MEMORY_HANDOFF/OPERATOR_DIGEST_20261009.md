@@ -1,3 +1,4 @@
 
 ## W61.2 (T-750) — verdict readiness
 The release path for the NFL first look now works end to end. In a rehearsal on a synthetic fixture, 59 games stayed sealed. At 60 games the cell released a manifest, an engine verdict and a first-look report, and the dashboard showed the verdict word. The rehearsal found two gaps, both fixed and deployed: the report was never written, and the dashboard never showed the verdict. GG-401 is closed and the gap log is trimmed. The NFL date rests on 100% schedule coverage, and no scores were read. One new open item: GG-532, the MLB shadow arm silent since 2026-10-08 01:43Z. It is unreproduced and needs its own session. No order, kelly or ledger changes.
+- T-751 (auto): W61.3 exploratory fence + NFL challenger studies merged; no improvement over frozen EXP-037; no pre-registration warranted.

@@ -92,7 +92,7 @@ each block edits only its own entries.
 |---|---|---|---|
 | 61.1 | GG-527 built: fills-only execution evidence + T4M-PROJ stand-down gate | ⬜ | — |
 | 61.2 | Verdict readiness: VPS health, GG-401 close-out, gap-log retirement, NFL first-look rehearsal | ✅ DONE | VPS healthy; GG-401 RESOLVED; 5 gaps retired; NEW GG-532 (MLB shadow silent, no_kickoff). NFL 12 cells 15/60, first look 2026-11-02 confirmed (~11-09 if a game is missed). Release path fixed (#190): REPORT now written, verdict on dashboard. Runbook: 04_EXECUTION/NFL_FIRST_LOOK_RUNBOOK.md. |
-| 61.3 | Exploratory research track: charter, isolation guard, data inventory, first NFL challenger study | 🟨 Part A done | 12_EXPLORATORY/ fence + AST isolation test merged (PR #189, CI green, t4-mlb restart not_needed). Part B next. |
+| 61.3 | Exploratory research track: charter, isolation guard, data inventory, first NFL challenger study | 🟨 Parts A-C merged | Fence (#189), recal study (#192), rolling-origin 2019-23 (#194) all merged, CI green, t4-mlb restart not_needed. No challenger beats frozen EXP-037; no pre-reg warranted. Open: candle fetch finishing, GG-533 unregistered. |
 
 ### 61.1 — GG-527 built: fills-only execution evidence + T4M-PROJ stand-down gate
 
