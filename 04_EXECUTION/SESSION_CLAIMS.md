@@ -822,3 +822,4 @@
 | 2026-10-09T17:15:52Z | T-763 | CLOSED — merge confirmed, HEAD (67ea863) is ancestor of origin/main — W63.1 closed; PR #201 + docs on main |
 | 2026-10-09T17:18:22Z | T-769 | CLOSED — merge confirmed, HEAD (f897c8b) is ancestor of origin/main — W63.3 distance generator + fill markouts; ADR-0072 draft |
 | 2026-10-09T17:16:52Z | T-766 | CLOSED — merge confirmed, HEAD (edd333d) is ancestor of origin/main — W63.2 Part A map pushed; Part B pending |
+| 2026-10-09T17:33:22Z | T-772..T-774, GG-548..GG-549 | W64.1 MEDIUM - NFL deep challenger: QB-shrunk performance (63.2 Part B). PURPOSE: DEPTH D1 nfl_pregame team->team+personnel, D3 0->1 (PROPOSED NFL challenger pre-reg) |
