@@ -1,3 +1,5 @@
+> **HISTORICAL (banner added 2026-10-09):** a dated working file from 2026-07-13, kept at the repo root because other files reference it. It does not describe the current project — start at `README.md` / the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`.
+
 # Iteration Plan v3 — Post-Protocol: Diagnose the Anti-Predictive Signal + Pay Down Readiness Debt
 
 **Author:** analytical-copilot, 2026-07-12. **IDs assigned T-344–T-350** (max in use T-343, GG-108→ new GG-112+). Reserve via `claim_session.sh`; re-check highest-in-use first (has drifted before).

@@ -1,5 +1,11 @@
 # Market Expansion — Action Plan (checkbox-tracked)
 
+> **Status (2026-10-09, strategic window "forest" pass):** this phase plan dates from 2026-08-12 (last edited 2026-09-03). Since
+> then the work moved into waves (`04_EXECUTION/ACTIVE_QUEUE.md`), the shadow arms for NFL, NHL, NBA and MLB postseason game markets
+> were built under pre-registration (EXP-036/037/038), and on 2026-10-08 the operator lifted calibration-only mode ("we're trying to
+> win"). Read it against `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` (the BREADTH pillar) and `CLAUDE.md` § "What winning
+> looks like" — box statuses below were not re-verified in this pass.
+
 **Owner:** Operator (Earl) | **Started:** 2026-07-30 | **Last updated:** 2026-08-12
 **Specs:** `02_ARCHITECTURE_DESIGN/MARKET_UNIVERSE_SURVEY_SPEC.md` · `02_ARCHITECTURE_DESIGN/SEGMENTED_POOL_ARCHITECTURE.md`
 **Rule:** a box is checked only when the artifact exists and is committed. "Done in a session" is not done.

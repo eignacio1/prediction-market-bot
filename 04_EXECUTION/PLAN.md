@@ -1,8 +1,20 @@
 # Execution Plan — Prediction Market Trading Bot
 
+> ## ▶ WHERE WE ARE — read this first (2026-10-09, strategic window "forest" pass)
+>
+> **Phase 6 (paper trading) is current; G6 is not cleared; $0 real capital.** The phase tables below were written in May 2026 and
+> their target dates (Phase 6 → 2026-10-25, G6 → 2026-12-06, live capital 2027-Q1) were **never re-planned**: G6 timing is now
+> governed by per-band `clean_n ≥ n*` (APR-0024) and the n*-wall decision (APR-0035, open), and the operator's sequencing is
+> set by directives, not by this table — north star in `CLAUDE.md` § "What winning looks like", expansion directive 2026-10-08,
+> live plan and calendar in the RUNNING SITREP of `04_EXECUTION/ACTIVE_QUEUE.md`. Read the tables below as history.
+
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
+<<<<<<< HEAD
 **Last reviewed:** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
+=======
+**Last reviewed:** 2026-10-09T07:20:00Z (T-756 — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron-removal/first-look prep; PRs #196 #200) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0702Z_W62_3.md` for full session detail.
+>>>>>>> origin/main
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

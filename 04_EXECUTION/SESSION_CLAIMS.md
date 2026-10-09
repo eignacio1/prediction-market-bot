@@ -810,3 +810,7 @@
 | 2026-10-09T06:14:59Z | T-759..T-760, GG-538 | W62.2 MEDIUM - exploratory part 2: secure pre-2026 Kalshi history (VPS copy + manifest) + NFL first-look expectations doc |
 | 2026-10-09T06:15:33Z | T-761..T-762, GG-539..GG-540 | W62.1 MEDIUM - MLB postseason shadow matcher fix (GG-532) + silent-arm alarm |
 | 2026-10-09T06:56:02Z | T-759 | MERGED: NO — branch `session/20261009T061305Z-w62-2-exploratory-part2` awaiting merge — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened (commit `745388e`) |
+| 2026-10-09T07:07:23Z | T-756..T-758 | CLOSED — merge confirmed, HEAD (a028d80) is ancestor of origin/main — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron/first-look prep; PRs #196 #200 |
+| 2026-10-09T07:07:15Z | T-761 | CLOSED — W62.1 MLB postseason matcher fix deployed + silent-arm alarm live on dashboards; GG-532 open pending first scheduled write. (commit `815af5f`) |
+| 2026-10-09T07:07:47Z | T-761 | CLOSED — merge confirmed, HEAD (32f3c9e) is ancestor of origin/main — W62.1 Parts A+B merged/deployed; GG-532 open pending scheduled write |
+| 2026-10-09T07:10:50Z | T-756 | CLOSED — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron-removal/first-look prep; PRs #196 #200 (commit `5be55b7`) |

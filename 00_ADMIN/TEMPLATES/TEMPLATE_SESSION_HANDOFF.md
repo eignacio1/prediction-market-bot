@@ -10,6 +10,8 @@ gg_touched: [comma-separated GG-NNN opened/resolved this session, or "none"]
 adr_touched: [comma-separated ADR-NNNN drafted/accepted this session, or "none"]
 plan_deliverable_moved: [yes | no — did a PLAN.md deliverable change status/owner/date this session?]
 vision_pillar: [BREADTH | DEPTH | EXECUTION | PROOF | PLUMBING — comma-separated if more than one; which pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" this session moved. PLUMBING is a valid answer; say it plainly]
+gap_measure: [the distance-to-optimum measure(s) this session was FOR — B1..B4, D1..D3, E1..E3, P1..P3 per CLAUDE.md § "What winning looks like" → "Distance to optimum" — stated at claim time, or PLUMBING]
+gap_delta: [the measured change, with source, e.g. "B1 25/104 -> 37/104 (MARKET_TYPE_REGISTRY @ abc1234)" — or "none"; never an estimate]
 -->
 
 **Fill in the block above FIRST, by hand, as part of writing this handoff — it is the single source of truth `scripts/generate_session_artifacts.py` reads to mechanically generate the TODO_NEXT.md/MEMORY_BANK.md/PLAN.md "Last reviewed" lines, the SESSION_CLAIMS.md closure row, the checkpoint pointer, and (MICRO only) the Operator Digest one-liner. Get `one_line_summary` right — it is reused verbatim in every generated artifact. Everything else in this file below is still hand-authored narrative for a human reader; the meta block is machine-read and separate from it.**

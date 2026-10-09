@@ -1,3 +1,5 @@
+> **HISTORICAL (banner added 2026-10-09):** a dated working file from 2026-07-23, kept at the repo root because other files reference it. It does not describe the current project — start at `README.md` / the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`.
+
 # Iteration Plan — Edge + Ruin Remediation (post-MC, 2026-07-22)
 **Origin:** empirical-bootstrap MC (`05_RESEARCH_EXPERIMENTS/MC_EMPIRICAL_BOOTSTRAP_2026-07-22.md`) + GG-105/GG-124.
 **Structure:** 4 parallel workstreams (one terminal window each). Each window launches its **own git worktree** (`scripts/new_session_worktree.sh <slug>`) and claims its ID range (`scripts/claim_session.sh`) per Hard Rule 10 — no shared-tree collisions.

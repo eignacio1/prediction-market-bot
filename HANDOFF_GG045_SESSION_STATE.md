@@ -1,3 +1,5 @@
+> **HISTORICAL (banner added 2026-10-09):** a dated working file from 2026-07-20, kept at the repo root because other files reference it. It does not describe the current project — start at `README.md` / the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`.
+
 # Terminal C — GG-045 live-window depth pull — session state
 
 ## Fixed facts

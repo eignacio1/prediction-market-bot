@@ -14,3 +14,12 @@ The release path for the NFL first look now works end to end. In a rehearsal on 
 - I wrote down, before any 2026 results exist, what the first NFL look can and can't tell us. With 60 games per cell it can only detect a gap of about 0.038; last season's gap vs the market was about 0.008. Most likely result: "keep collecting."
 - Nothing here touches live betting or money. Still zero real money at risk.
 - Your calls: refresh the older tracked history files, schedule a server copy, and whether to flag that our assumed noise level looks too optimistic.
+## W62.1 — MLB postseason tracking + silent-arm alarm
+The MLB playoff tracker had gone quiet because it couldn't match a game whose start time had moved. That is fixed and live on the server. I also built an alarm: if a sport has games on the schedule but the tracker writes nothing, the dashboards now turn red and say how many hours it has been silent. Tested against the stored data, it would have gone red on the first evening. The tracker is not confirmed healthy yet; that needs its next scheduled run (about 12:07 UTC today). No money at risk, no betting changes.
+
+## W62.3 (T-756) — STANDARD
+- GG-527 RESOLVED: running t4-mlb has the stand-down gate (one authorized restart).
+- T1 MLB: only 85 of 485 orders filled (17.5%). Fills -$1.50/bet, non-fills +$0.03/bet; both CIs span zero. Registered GG-536. Your call: what may the T1 book claim.
+- NBA: flip check not ready (0 rows); removal script and first-look release verified, no src change.
+- Do on/after 2026-10-21 10:00 UTC: `python3 scripts/remove_nba_preseason_cron.py` (dry-run, then `--apply`) and `scripts/w59_3_nba_flip_check.py`.
+- Hook timeout: `governance_scan.sh` needs `"timeout": 120` in `.claude/settings.json`; not changed, say yes.

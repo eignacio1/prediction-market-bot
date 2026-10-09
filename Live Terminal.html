@@ -1127,6 +1127,10 @@ function health(d,D){
   const nb=(d.freshness||{}).nba_shadow;
   if(nb&&nb.last_ts) HEALTH.push({lbl:'SHADOW  NBA ledgers (SHADOW, $0 stake)', t:nb.last_ts, warn:nb.amber_s||86400, bad:nb.red_s||3*86400});
   else HEALTH.push({lbl:'SHADOW  NBA ledgers', none:'no data - awaiting first regular-season rows'});
+  const sa=d.silent_arms||{};
+  (sa.silent||[]).forEach(a=>HEALTH.push({lbl:'SILENT ARM  '+a.name, silent:a.text}));
+  if(sa.arms&&sa.arms.length&&!(sa.silent||[]).length)
+    HEALTH.push({lbl:'SILENT-ARM CHECK', none:'0 of '+sa.arms.length+' arms silent'+((sa.unknown||[]).length?' ('+sa.unknown.length+' cannot be checked)':'')});
   const sn=d.season||{};
   HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/NBA/.test(h.lbl)?'NBA':/MLB/.test(h.lbl)?'MLB':null;
     if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
@@ -1137,6 +1141,8 @@ function paintHealth(){
   const host=$('#health'); if(!host) return;
   const now=Date.now();
   host.innerHTML=HEALTH.map(h=>{
+    if(h.silent) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
+      `<span class="age bad" style="white-space:normal;text-align:right">${esc(h.silent)}</span><span class="dot bad"></span></div>`;
     if(h.none) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
       `<span class="age dim">${esc(h.none)}</span><span class="dot"></span></div>`;
     const ts=h.t&&!isNaN(new Date(h.t))?new Date(h.t).getTime():null;

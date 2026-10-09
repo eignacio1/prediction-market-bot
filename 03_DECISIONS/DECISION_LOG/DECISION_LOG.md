@@ -1989,6 +1989,7 @@ Done (docs only, strategic window):
   plausible edge vs market is at or below the first-look MDE, so the modal first-look outcome is SHADOW (no verdict).
   The sitrep previously called 11-02 "the first pre-registered edge verdict"; corrected.
 
+<<<<<<< HEAD
 ## 2026-10-09 — W62.2 Part A: pre-2026 Kalshi history secured (T-759, GG-538)
 Decision: KXNFLGAME history fetch is complete (892/892); `raw/` + rebuilt derived files copied to the VPS (sha256 verified) and recorded in
 `12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. Tracked `exp_output/KALSHI_HISTORY/{markets,VALIDATION.json}` deliberately NOT refreshed (stale 862/415 build) —
@@ -1997,3 +1998,62 @@ operator call. Charter gains a data-custody addendum. Exploratory only; no pre-r
 ## 2026-10-09 — W62.2 Part B: NFL first-look expectations written before judged n (T-760)
 `12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md`: exploratory, not a verdict, EXP-037 unchanged. Finding: measured per-game paired-Brier SD ~0.106 vs the
 pre-registration's assumed 0.07, so first-look MDE is ~0.038 (assumed 0.025). Modal outcome per cell: SHADOW (~91%). No addendum proposed; flagged to operator.
+=======
+
+## 2026-10-09 (UTC) - W62.3 Part A: GG-527 gate loaded; T1 MLB fill audit (GG-536)
+
+Under the operator's one-restart authorization (2026-10-08), t4-mlb was restarted once at 06:14:46Z with no game live;
+the running process (start 06:14:48Z) postdates the source containing `stake_stood_down`; GG-527 -> RESOLVED. t4-mlb
+deploy decision for this wave's PR: see PR deploy summary. T1 MLB submits demo orders; 85 of 485 closed positions filled;
+settled fills n=83 -$124.73 (-$1.50/bet, CI -3.67..+0.63), non-fills +$11.56. `t4_fill_status` made book-agnostic
+(`--book`, per-book sidecar). No T1 counting/status/ledger change; GG-536 registered for the operator.
+
+## 2026-10-09 ~07:30 UTC — Core-structure "forest" pass: stale nav docs brought current (operator directive)
+
+Operator (2026-10-08 23:42 PT): "go comb through our core document structure and adjust accordingly ... shit is stale all over
+the place. Starting with our Claude.md file ... assess the scope of files that needs to be hit and then make the adjustments
+accordingly. 'If somebody picked this up - will they know where we're at?' That's the fucking basis."
+Blast radius found (dates are last real content edits): MEMORY_BANK Current State Snapshot 2026-08-14 and Health status
+2026-07-02 (body masked by per-session generated "Last reviewed" stamps); its copy of the session protocol still used the
+retired `grep "| OPEN"` (GG-144); 00_ADMIN/README nav hub 2026-07-19 (82 days; its own 14-day GG-127 alert had been printing
+every session) and pointed "what's being worked on" at TODO_NEXT; TODO_NEXT's newest task T-580 (2026-09-28); PLAN's May-2026
+phase dates never re-planned; EXECUTION_BANDS Live Registry 2026-07-19 (MLB/NBA only; called MLB T1 "ACTIVE", registry says
+SHADOW); /ctx served a 2026-05-29 snapshot as "full context restore"; /status read May-era files; CLAUDE.md: T1 "78-feature"
+(measured 18, T-597), Q1 system description, Q2 "has EXP-017 run?" (it ran, 2026-07-07), Step 4 blind to shadow arms; no root
+README.
+Changes (docs only): CLAUDE.md corrections + new remediation-pass header; MEMORY_BANK "Where we are" box, fresh dated Current
+State Snapshot, Health status, Project Identity, protocol copy replaced by pointer, What Must Happen Next and Compass OS Health
+replaced by pointers — all superseded text moved verbatim to MEMORY_BANK_ARCHIVE.md (2026-10-09 section); 00_ADMIN/README
+re-pointed at the live-state files; banners on TODO_NEXT, PLAN, MARKET_EXPANSION_ACTION_PLAN, VISION_OUTCOMES, PROJECT_CHARTER
+and three root working files; EXECUTION_BANDS Live Registry regenerated from MARKET_TYPE_REGISTRY (with the command); /ctx and
+/status rewritten as pointer-based (old bodies archived in 11_MEMORY_HANDOFF/*_COMMAND_SNAPSHOT_*.md); GLOSSARY operating
+vocabulary; new root README.md and 04_EXECUTION/README.md.
+Tested: stale-marker sweep across 19 core files (2 hits, both historical narration); every entry file reaches the RUNNING SITREP
+in one hop; check_memory_bank_snapshots.sh clean; session-artifact generator intact; doc-reading tests 41 passed.
+Findings for the operator: (1) the nav files' "Last reviewed" lines are stamped by every session's generator, so they read
+fresh while bodies went stale for 1-3 months; (2) the GG-127 nav-hub staleness alert fired every session for ~2 months and
+nobody acted on it — an alarm without an owner. Not changed in this pass (code): the generator stamp semantics.
+
+## 2026-10-09 — W62.1 Part B: silent-arm alarm (alarm-only, read-only)
+Per-arm "games scheduled in window, zero rows written" check, N per arm stated in `pregame_shadow/silent_arms.py`. Surfaces: /project strip pill, Live Terminal health row, governance_scan.sh. Unreadable schedule = "cannot check", never red. Live deploy initially showed every arm unknown (dashboard service on system python3, no pandas); fixed by running the check in repo venv (PR #199). GG-532 stays OPEN: fix deployed, awaiting first scheduled post-fix write. No order/stake/kelly/cron change.
+## 2026-10-09 ~08:00 UTC — Distance to optimum + purpose-before-work wired in (operator directive; Hard Rule 12)
+
+Operator (2026-10-09 00:01 PT): "wire it in fully - that means assess blast radius on our core files and input accordingly. If
+a terminal touches a fucking task it better know what its doing it for. If I'm doing a trial run on a frontier model for
+assistance on something complex or something basic like setting up calendar reminders - it better know what I'm doing it for.
+If you're doing a strategic review on a fresh window - you better know what you're doing it for... perfection isn't a dream its
+a protocol. I expect it."
+Done: CLAUDE.md north star gains "Distance to optimum — the measures" (B1-B4, D1-D3, E1-E3, P1-P3; definitions only) and Hard
+Rule 12 (name the measure before work, report the measured change after). ACTIVE_QUEUE sitrep now opens with the DISTANCE TO
+OPTIMUM table (values 2026-10-09, sourced; replaces the prose pillar scoreboard) and a standing PURPOSE-line rule for every
+block. Wired into: session-start (claim string carries "FOR <measure>"), TEMPLATE_SESSION_HANDOFF (`gap_measure:`,
+`gap_delta:`; parser-compatible), session-end, strategic-handoff (forest check recomputes the table; PURPOSE lines), carry-forward,
+paste-in, /ctx, /status, root README ("Before you do anything here"), 00_ADMIN README, MEMORY_BANK snapshot row, GLOSSARY,
+12_EXPLORATORY charter. Outside the repo: claude.ai Project doc `claude/NORTH_STAR_AND_DISTANCE_TO_OPTIMUM.md` (for every chat
+in the Project, e.g. reminders) and the project memory preference.
+Values derived 2026-10-09: B1 25/104, B2 8/18, B3 4/5, B4 1 props / 0 parlays; D1 0 qualitative inputs, personnel only NHL
+projected goalie, no weather; D2 18; D3 0; E1 251/4,705 = 5.3% (T4 166/4,220, T1 MLB 85/485); E2 T4M-PROJ -$0.26 (n=165), T1 MLB
+-$1.50 (n=83); E3 T1 MLB 28.9% fills vs 52.1% non-fills; P1 0/25; P2 0; P3 NFL ~11-02, modal SHADOW.
+Routed: GG-536 (T1 MLB counting) to the operator with the window's recommendation (same rule as GG-527 (b)). Queued: Wave 63's
+first block builds the generator that computes the table mechanically and makes gap_measure/gap_delta required after Wave 62.
+>>>>>>> origin/main

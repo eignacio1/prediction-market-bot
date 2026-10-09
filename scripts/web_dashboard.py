@@ -510,6 +510,24 @@ def _freshness(d: Path, now: datetime) -> dict:
     return out
 
 
+_SILENT_CACHE: dict = {"at": 0.0, "val": None}
+
+
+def _silent_arms(d: Path, now: datetime) -> dict:
+    """W62.1 Part B: arms with games in their window and zero rows written. Computed on read, cached 60s
+    (it tails a few ledgers and reads two schedule caches). Failure -> awaiting, never a false red."""
+    import time
+    if _SILENT_CACHE["val"] is not None and time.time() - _SILENT_CACHE["at"] < 60:
+        return _SILENT_CACHE["val"]
+    try:
+        from prediction_market_bot.pregame_shadow import silent_arms as sa
+        val = sa.compute_isolated(_REPO_ROOT, logs=d)
+    except Exception as e:
+        val = {"awaiting": f"silent-arm check: {type(e).__name__}", "arms": [], "silent": [], "unknown": []}
+    _SILENT_CACHE.update(at=time.time(), val=val)
+    return val
+
+
 def _nba_shadow_freshness(now_ts: float, s: dict) -> dict:
     """Age of the newest EXP-038 NBA judged-ledger write (exp_output/PREGAME_SHADOW/NBA_*.jsonl only --
     the PREGAME_SHADOW_PRESEASON smoke-test ledger is excluded from judged n and is not read here)."""
@@ -1143,6 +1161,7 @@ def _load_all_data() -> dict:
         # Operator terminal v2 (47.1 D6) — additive.
         "season":          safe(lambda: _season_state(datetime.now(tz=timezone.utc)), {}),
         "freshness":       safe(lambda: _freshness(d, datetime.now(tz=timezone.utc)), {}),
+        "silent_arms":     safe(lambda: _silent_arms(d, datetime.now(tz=timezone.utc)), {}),
         "origin":          safe(_origin_status, {}),
         "coverage":        safe(lambda: _coverage(datetime.now(tz=timezone.utc)),
                                 {"awaiting": "market_type_registry"}),
@@ -2381,6 +2400,10 @@ function health(d,D){
   const nb=(d.freshness||{}).nba_shadow;
   if(nb&&nb.last_ts) HEALTH.push({lbl:'SHADOW  NBA ledgers (SHADOW, $0 stake)', t:nb.last_ts, warn:nb.amber_s||86400, bad:nb.red_s||3*86400});
   else HEALTH.push({lbl:'SHADOW  NBA ledgers', none:'no data - awaiting first regular-season rows'});
+  const sa=d.silent_arms||{};
+  (sa.silent||[]).forEach(a=>HEALTH.push({lbl:'SILENT ARM  '+a.name, silent:a.text}));
+  if(sa.arms&&sa.arms.length&&!(sa.silent||[]).length)
+    HEALTH.push({lbl:'SILENT-ARM CHECK', none:'0 of '+sa.arms.length+' arms silent'+((sa.unknown||[]).length?' ('+sa.unknown.length+' cannot be checked)':'')});
   const sn=d.season||{};
   HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/NBA/.test(h.lbl)?'NBA':/MLB/.test(h.lbl)?'MLB':null;
     if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
@@ -2391,6 +2414,8 @@ function paintHealth(){
   const host=$('#health'); if(!host) return;
   const now=Date.now();
   host.innerHTML=HEALTH.map(h=>{
+    if(h.silent) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
+      `<span class="age bad" style="white-space:normal;text-align:right">${esc(h.silent)}</span><span class="dot bad"></span></div>`;
     if(h.none) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
       `<span class="age dim">${esc(h.none)}</span><span class="dot"></span></div>`;
     const ts=h.t&&!isNaN(new Date(h.t))?new Date(h.t).getTime():null;
