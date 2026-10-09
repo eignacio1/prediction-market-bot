@@ -311,7 +311,7 @@ def sec_silent_arms(repo: Path) -> dict:
     """W62.1 Part B: arms with games in their window and zero rows (computed on read, files only)."""
     sys.path.insert(0, str(Path(repo) / "src"))
     from prediction_market_bot.pregame_shadow import silent_arms as sa
-    out = sa.compute(Path(repo))
+    out = sa.compute_isolated(Path(repo))
     out.setdefault("source", "exp_output/ + data/ ledgers vs per-arm schedule caches (computed on read)")
     out.setdefault("as_of", out.get("as_of") or _iso())
     return out

@@ -264,10 +264,35 @@ def compute(repo: Path, logs: Optional[Path] = None, now: Optional[datetime] = N
     return silent_arms(load_inputs(repo, logs, now), now)
 
 
-if __name__ == "__main__":   # `python -m prediction_market_bot.pregame_shadow.silent_arms [YYYY-MM-DDTHH:MMZ]`
+def compute_isolated(repo: Path, logs: Optional[Path] = None, timeout: int = 40) -> dict:
+    """compute() in the repo's own venv python. The dashboard service runs on system python3 (no pandas), and
+    the MLB/NFL schedule caches are parquet -- run in-process there, every arm reads 'cannot check'. Stdlib only."""
+    import json
+    import os
+    import subprocess
     import sys
+    repo = Path(repo)
+    py = repo / "venv" / "bin" / "python"
+    cmd = [str(py) if py.exists() else sys.executable, "-m", "prediction_market_bot.pregame_shadow.silent_arms", "--json"]
+    if logs:
+        cmd += ["--logs", str(logs)]
+    r = subprocess.run(cmd, cwd=str(repo), env={**os.environ, "PYTHONPATH": str(repo / "src")},
+                       capture_output=True, text=True, timeout=timeout)
+    return json.loads(r.stdout[r.stdout.index("{"):])
+
+
+if __name__ == "__main__":   # `python -m prediction_market_bot.pregame_shadow.silent_arms [YYYY-MM-DDTHH:MMZ] [--json] [--logs DIR]`
+    import sys
+    args = sys.argv[1:]
+    as_json = "--json" in args
+    logs = Path(args[args.index("--logs") + 1]) if "--logs" in args else None
+    pos = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--logs")]
     root = Path(__file__).resolve().parents[3]
-    at = _parse(sys.argv[1].replace("Z", "+00:00")) if len(sys.argv) > 1 else None
-    res = compute(root, now=at)
-    for a in res["arms"]:
-        print(f"[{a['status'].upper():7}] {a['text']}")
+    at = _parse(pos[0].replace("Z", "+00:00")) if pos else None
+    res = compute(root, logs=logs, now=at)
+    if as_json:
+        import json
+        print(json.dumps(res, default=str))
+    else:
+        for a in res["arms"]:
+            print(f"[{a['status'].upper():7}] {a['text']}")
