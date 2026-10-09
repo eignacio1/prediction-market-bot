@@ -138,7 +138,7 @@ rebase right before merging; each merges only its own PRs.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 64.1 | NFL deep challenger: QB-shrunk performance (63.2 Part B) | DEPTH D1 nfl team -> team+personnel; D3 0->1 | 🟡 Part A merged (PR #205; plan frozen, features + look-ahead tests, t4-mlb restart not_needed); Part B (fit/eval) next | — |
+| 64.1 | NFL deep challenger: QB-shrunk performance (63.2 Part B) | DEPTH D1 nfl team -> team+personnel; D3 0->1 | ✅ DONE: challenger beats frozen in backtest (Brier -0.0027, 6/7 seasons); PROPOSED pre-reg drafted, D3 = 1; D1 unchanged until accepted | accept/reject pre-reg |
 | 64.2 | Demo fills that don't get picked off: rule + forward test (switches OFF) | EXECUTION E1-E3 made movable (moves nothing until accepted) | ⬜ | — |
 | 64.3 | Props first: NBA player-points pre-game arm for opening night | BREADTH B4 1->2, B1 37->40 | 🟡 PARTIAL | Part A done: survey, retrain decision, EXP-039 pre-reg on main (PR #204). Part B next; moves nothing yet. |
 
