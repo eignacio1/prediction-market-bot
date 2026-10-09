@@ -828,3 +828,4 @@
 | 2026-10-09T17:53:24Z | T-775 | CLOSED — W64.3 Part A: NBA player-points survey, retrain decision, EXP-039 pre-registered on main; Part B (model/runner/cron/flip) not started. (commit `29893b2`) |
 | 2026-10-09T18:10:21Z | T-772 | CLOSED — W64.1 NFL QB-shrunk challenger beats frozen in backtest (Brier -0.0027, 6/7 seasons); PROPOSED pre-reg drafted, D3 0->1. (commit `4101d7b`) |
 | 2026-10-09T18:11:34Z | T-772 | CLOSED — merge confirmed, HEAD (53d4a5d) is ancestor of origin/main — W64.1 NFL QB-shrunk challenger; PROPOSED pre-reg, D3 0->1 |
+| 2026-10-09T18:20:16Z | T-780 | CLOSED — merge confirmed, HEAD (612bba3) is ancestor of origin/main — W64.2: placement rule + shadow stake merged #208 (414f05d), deployed, both switches OFF; pre-reg in ADR-0072 PROPOSED |
