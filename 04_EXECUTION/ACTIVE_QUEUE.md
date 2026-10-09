@@ -91,7 +91,7 @@ each block edits only its own entries.
 | # | Block | Status | One line |
 |---|---|---|---|
 | 61.1 | GG-527 built: fills-only execution evidence + T4M-PROJ stand-down gate | ⬜ | — |
-| 61.2 | Verdict readiness: VPS health, GG-401 close-out, gap-log retirement, NFL first-look rehearsal | ⬜ | — |
+| 61.2 | Verdict readiness: VPS health, GG-401 close-out, gap-log retirement, NFL first-look rehearsal | 🟨 Part A done | VPS healthy; GG-401 RESOLVED (T3 510/510); 5 gaps retired; NEW GG-532: MLB shadow arm silent ~23h (no_kickoff). Part B next. |
 | 61.3 | Exploratory research track: charter, isolation guard, data inventory, first NFL challenger study | ⬜ | — |
 
 ### 61.1 — GG-527 built: fills-only execution evidence + T4M-PROJ stand-down gate

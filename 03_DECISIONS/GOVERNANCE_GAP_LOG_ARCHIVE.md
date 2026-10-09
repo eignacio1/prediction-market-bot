@@ -5431,3 +5431,128 @@ Separately, also per explicit task instruction ("confirm the running code contai
 
 </details>
 
+### GG-228 — Scheduled batch regeneration of a derived ledger file silently overwrites an external repair applied only to the derived artifact, not its source of record (distinct from GG-224/ADR-0061's live-service in-memory-flush hazard)
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-10-08, W60.1):** Guard merged (PR #185, `42754c2`) and on the VPS (`git rev-parse` d58623b9, ancestor confirmed): a rebuild that would change or drop an existing row is written beside the ledger as `.rebuild_<UTC>.jsonl` with a WARNING, exit 0; append-only growth proceeds. Test-verified only; the first real exercise is the Monday 2026-10-12 14:20 UTC run. t4-mlb restart: not_needed. Entry not yet moved to the archive (sweep).
+
+**Current state (2026-10-08, W59.1):** Hazard confirmed live: deploy/cron.conf:315 still wholesale-rebuilds logs/t4_mlb_resolved_ledger.jsonl every Monday 14:20 UTC via scripts/build_t4_resolved_ledger.py from paper_portfolio_mlb_t4.json closed_positions; no external-repair-safety guard exists. **Integrity note:** the live body of this entry had been overwritten by a duplicate of GG-226's body (pre-dates W59.1; present at 94853bf); original body restored verbatim from f9891f4. **Next:** Repair the source of record (closed_positions), not the derived file; consider a header warning in the builder.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-228 |
+| Category | Architectural placeholder (no external-repair-safety contract exists for a scheduled-regeneration-owned derived file, as distinct from GG-224/ADR-0061's live-service-owned file class) |
+| What was missed | `logs/t4_mlb_resolved_ledger.jsonl` is not a source of record — it is wholesale-rebuilt every Monday 14:20 UTC by `deploy/cron.conf` line 314 (`scripts/build_t4_resolved_ledger.py --portfolio logs/paper_portfolio_mlb_t4.json ...`), which reads `paper_portfolio_mlb_t4.json`'s `closed_positions` and regenerates the resolved ledger from scratch via `run_exp017_mlb.compute_fee_net_edge`. T-503 (this session), executing ADR-0055 D1's 532-row repair, discovered mid-session that a repair written only to `t4_mlb_resolved_ledger.jsonl` directly would have been silently discarded by the next Monday cron run, because the cron treats `closed_positions` as authoritative and the resolved ledger as fully disposable/derived. This is architecturally distinct from GG-224: GG-224's hazard is a long-running service's stale in-memory state clobbering a file on its next flush (sub-minute cadence, no source/derived relationship — the service IS the source of record for its own file); this hazard is a short-lived, weekly, cron-invoked batch job wholesale-regenerating a derived file from a separate, correctly-repairable source file (weekly cadence, explicit source/derived relationship). ADR-0061 (T-505, PROPOSED, drafted 2026-08-29/30 in response to GG-224) explicitly enumerates only long-running `PaperTrader`-backed processes in its §2 hazard inventory and does not include `build_t4_resolved_ledger.py` (a short-lived cron invocation, not a persistent service) or any source/derived-artifact regeneration hazard — this class was out of ADR-0061's scope by construction, not overlooked within it. |
+| When it should have been caught | At the time `build_t4_resolved_ledger.py` / the Monday cron line was introduced, if any external-repair-safety review of derived/regenerable artifacts existed at that time — none did. More immediately, ADR-0055's own pre-registration (2026-08-26) targeted `t4_mlb_resolved_ledger.jsonl` as if it were an independently repairable file, without noting its derived/rebuildable relationship to `closed_positions`. |
+| Phases it survived | Unknown — first identified this session (T-503); no prior repair session (T-429/GG-166, T-477 dry-run, T-502/GG-224) targeted a file with this specific source/derived regeneration relationship, so the hazard had no prior opportunity to manifest. |
+| Why it survived | ADR-0055's repair plan named the resolved ledger as a repair target without first tracing whether it was a source of record or a derived artifact; no step in the ADR-0055 or GG-224 protocols requires that trace before committing to a repair target. |
+| Impact | LOW as realized (caught and correctly routed before any repair was misapplied), but would have been a full silent revert of the 532-row D1 repair specifically in the resolved ledger (not the portfolio file) on the next Monday cron run (2026-09-07 14:20 UTC) had the repair been applied to the derived file directly rather than to `closed_positions`. |
+| Discovery | 2026-08-31, T-503, mid-repair — traced `t4_mlb_resolved_ledger.jsonl`'s provenance via `build_t4_resolved_ledger.py` and `deploy/cron.conf` line 314 before deciding a repair target, per this session's own "STOP and ask if any needed action falls outside stated scope" instruction; escalated via `AskUserQuestion`, operator selected "Also repair closed_positions (Recommended)." |
+| Resolution | Worked around this session by applying the ADR-0055 D1 repair to `closed_positions` in `paper_portfolio_mlb_t4.json` directly (the source of record), then proactively regenerating `t4_mlb_resolved_ledger.jsonl` via the same `build_t4_resolved_ledger.py` invocation the weekly cron uses, so the derived file is now consistent with its corrected source and the next Monday cron run is idempotent rather than a silent revert. This is a session-scoped correct repair target choice, not a systemic fix. **Open follow-on, unstaffed, out of this session's scope fence:** no general rule or checklist item yet requires a repair author to trace a target file's source-of-record-vs-derived status before choosing where to write a fix; this class of mistake (repairing a derived artifact instead of, or in addition to, its source) could recur for any other regenerated file in the repo. Whether this belongs as an amendment to ADR-0061's scope (a fifth "derived-artifact" hazard class, alongside its four live-service options) or as a wholly separate ADR is an open question for whoever picks up the follow-on — not decided here. |
+| Status | OPEN. |
+
+</details>
+
+---
+
+## Gap Registration Template
+
+When a new governance process failure is discovered:
+
+```markdown
+
+### GG-300 — 731 of 765 rows (95.6%) in T4M-PROJ epoch-12's clean cohort — the project's sole G6 calibration cohort — have no independent Kalshi confirmation of ever being filled; only 34 (4.4%) are confirmed real
+
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-10-08, W60.1):** Every epoch-12 T4M-PROJ closed row (n=1,952) is now classified from the demo fills history (full pagination, earliest 2026-05-19, covers the cohort): 107 CONFIRMED_FILLED, 1,845 CONFIRMED_NOT_FILLED, 0 UNVERIFIABLE. The T-571 731 NOT_RETRIEVABLE resolve as 730 not filled + 1 filled. Only 5.5% of the cohort was ever filled; consequence registered as GG-527. Evidence: `W60_1_cohort_fill_truth_results.md`. Entry not yet moved to the archive (sweep).
+
+**Current state (2026-10-08, W59.1):** Premise unchanged: VPS paper_portfolio_mlb_t4.json closed_positions kalshi_order_status is 'submitted' x4169 and 'failed: HTTP 410' x12, so no local fill signal exists; no code re-polls order status (paper_trader.py only sets it at lines 597/660/676); 731/765 NOT_RETRIEVABLE from T-571 not re-run this session (needs Kalshi API). **Next:** Re-run scripts/t571_verify_t4mproj_kalshi_fills.py against current ledger, or pull Kalshi fills/settlements history to confirm the 731 rows.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-300 |
+| Category | Ledger integrity / G6 evidence-base soundness. Direct extension of GG-297's phantom-fill test from the 140-row 2026-09-22 OPEN-position sample to the full epoch-12 T4M-PROJ clean closed cohort that `scripts/t565_calibration_model_vs_market.py` (commit `2d3321d`) actually scores. |
+| What was found | `scripts/t571_verify_t4mproj_kalshi_fills.py` (this session, T-571) applied GG-297's per-order test — `GET /portfolio/orders/{order_id}`, `authenticated=True` explicitly passed per T-556 — to every epoch-12 T4M-PROJ clean closed row via `logic_epoch.is_clean_for_band()`. Two overlapping pulls were checked: (1) the current live ledger, 905 rows spanning 2026-07-31 through 2026-09-22 → **35 FILLED, 139 CANCELED, 731 NOT_RETRIEVABLE**; (2) restricted to exactly the 765-row window T-565's committed script used (2026-07-31 through 2026-08-13, predating the 2026-09-22 canceled batch entirely) → **34 FILLED, 0 CANCELED, 731 NOT_RETRIEVABLE**. NOT_RETRIEVABLE means Kalshi's single-order lookup returned a 404/error/unrecognized shape for that `kalshi_order_id` — this is explicitly NOT the same claim as "confirmed phantom" or "confirmed canceled"; it means no independent confirmation exists either way. Only 34/765 (4.4%) of the cohort T-565's headline Brier/ECE/paired-diff/day-clustered-t figures are computed from carry an independent Kalshi record of ever being filled. |
+| Why this matters | `GOVERNANCE_GAP_LOG.md`'s own framing (GG-004) calls T4M-PROJ epoch-12 the only scorable cohort in the project, and T-565's calibration figures are the project's one committed calibration finding. A calibration claim computed 95.6% from rows with no independent fill confirmation is not the same epistemic claim as one computed from a cohort known to be real — even though "not retrievable" is not proof the trades were fake, it is also not proof they were real, and the existing methodology (`t565_calibration_model_vs_market.py`) has no mechanism to distinguish the two before this gap. GG-297 already showed that when a large batch (139/140) of this same ledger's positions WAS independently checkable, the check found phantoms, not confirmations — that base rate is directly relevant context for how to weigh an unretrievable rate this high, without being proof applied to this specific 731. |
+| Impact | HIGH. This does not currently change any clean_n, gate status, cell status, kelly_fraction, or the G6 evidence record — no ledger row was edited, excluded, or re-stamped by this audit (explicit scope constraint, honored). It does mean the "T4M-PROJ calibration finding stands" claim, as currently stated anywhere in the project, is not fully backed by independently verified fills — it rests on 34 confirmed-real rows and 731 rows whose fill status is simply unknown, not confirmed either way. Whether that is acceptable evidence for G6 is an operator decision, not a decision this gap makes for them. |
+| Discovery | 2026-09-23, T-571 (this session, ledger-integrity-audit wave, worktree `session/20260923T234404Z-ledger-integrity-audit`), Deliverable 1 of a four-deliverable task tracing directly from GG-295/GG-297. Read-only: `scripts/t571_verify_t4mproj_kalshi_fills.py` never submits, cancels, or modifies an order or ledger row. |
+| Resolution | Not resolved — diagnosis only, per this session's explicit scope fence (no repair, no exclusion, no re-stamping; repair decision is the operator's per GG-228). Two disclosed follow-on items, deliberately folded into this entry rather than fragmented into additional new GG numbers: (1) **Retention-purge hypothesis is data-pattern-inferred, NOT code-confirmed** — the working theory that Kalshi's single-order lookup has a retention window shorter than 2026-07-31 is consistent with the pattern (older rows uniformly NOT_RETRIEVABLE, no NOT_RETRIEVABLE rows in the 2026-09-22 batch which instead resolved cleanly to CANCELED) but `KalshiMarketClient._post()`'s implementation, and Kalshi's actual documented retention policy, were never reviewed in this session — this is a disclosed limitation, not a finding. A companion script, `t571_ticker_crosscheck.py` (drafted this session, not yet run against live credentials), is designed to distinguish "order existed once, purged by ID" from "no order for this ticker ever existed under any order_id" via `GET /portfolio/orders?ticker=<ticker>` — running it is the direct next step to convert this from hypothesis to finding. (2) **Day-span/time-accumulation confound** — the current-ledger pull (905 rows, 07-31→09-22, ~7 weeks) and the original T-565 baseline (765 rows, 07-31→08-13, ~2 weeks) are not perfectly matched windows; the NOT_RETRIEVABLE count is identical (731) across both because the extra 140 rows in the wider pull are entirely the 2026-09-22 batch (35+139=174, close to but not exactly matching the extra 140 — the discrepancy is the 34 pre-existing FILLED rows already counted in the 765, i.e. 765+140=905 is exact), so the two pulls are not double-counting, but this was not independently re-verified row-by-row beyond the arithmetic check stated here. |
+| Cross-references | GG-004 (G6 sample-adequacy standard — this gap bears directly on whether T4M-PROJ's `clean_n` represents verified trades), GG-297 (the 140-row test this extends, and the source of the phantom base-rate context), GG-295 (adjacent ledger-integrity finding from the same audit, actor-provenance still open), GG-228 (repair-decision authority — operator only), T-565 (`2d3321d`, the committed calibration script this gap's finding directly qualifies), T-556 (the `authenticated=True` requirement this script and its predecessor both honor). |
+| Update (2026-09-23, T-571) | **Correction: the Resolution row above states the companion script "not yet run against live credentials" — that was true when written but is no longer true.** `t571_ticker_crosscheck.py` was run against live credentials this session (on the VPS, output at `/tmp/t571_ticker_crosscheck_results.json`). It sampled up to 3 NOT_RETRIEVABLE rows per affected game_date (30 rows sampled, spanning 10 distinct dates 2026-07-31 through 2026-08-07, out of the 731 NOT_RETRIEVABLE population) and queried `GET /portfolio/orders?ticker=<ticker>` (list-by-ticker, not by order_id) for each. **Result: 30/30 sampled tickers returned zero orders under any order_id (`ticker_orders_found: 0` for every row; `n_zero=30, n_nonzero=0, n_total=30`).** This is evidence against the retention-purge hypothesis and toward the more serious alternative: for this sample, Kalshi holds no record of an order ever being placed for these tickers under any ID — not merely that the one recorded order_id aged out of a single-order-lookup retention window. **Scoping this precisely, per this session's DO-NOT constraints:** this is a 30-row sample of a 731-row population (4.1%), not a census — it does not prove all 731 were never submitted, and a zero-orders-by-ticker result is still not proof of non-submission with absolute certainty (e.g. an undiscovered ticker-normalization mismatch between the ledger's `kalshi_ticker` field and Kalshi's own indexing could in principle produce the same signature) — that alternative was not separately ruled out this session. What the sample does establish: the retention-purge explanation, as originally hypothesized in this entry's Resolution row, is not supported by any of the 30 rows tested, and the honest current framing of the 731 NOT_RETRIEVABLE rows shifts from "unconfirmed either way, purge vs. never-submitted both plausible" to "most direct available evidence points toward never-submitted, on a 4.1% sample, not yet extended to the full population." No ledger row edited, excluded, or re-stamped. `t571_ticker_crosscheck.py` and its results are committed alongside this update. |
+| Update (2026-09-24, T-573) | This wave's block 34.2 ran three further checks before trusting the 731 figure as a clean retrieval ceiling. **(1) Lookup-key exclusion (Deliverable 1b):** Part A confirmed, for all 35 confirmed-FILLED rows, that the order's own Kalshi-returned `ticker` field matches the ledger's `kalshi_ticker` exactly, character-for-character (35/35) — the ledger's ticker field is a trustworthy key. Part B probed a 30-row sample of NOT_RETRIEVABLE rows (3 per date, 10 dates) via event-level, series+date-window, and unfiltered date-window queries: 0/30 resolved under any alternate key. The STOP condition in `t573_lookup_key_exclusion.py` did not fire. **This confirms the 731 figure is not an artifact of a lookup-key or ticker-normalization bug.** **(2) Full-population census (`t573_full_census.py`, Deliverable 2):** extended check (2) to all 731 rows (not a sample) via event-ticker and account-wide date-window listing, deduplicated to ~50-80 unique event/date queries. Result: `n_resolved_under_alternate_key=9`. These 9 are NOT a contradiction of the 0/30 lookup-key-exclusion finding above — they are exactly the rows in buckets A+C of the duplicate-ticker partition (see GG-303): a sibling FILLED row's order shares the identical ticker, so an alternate-key ticker search surfaces that sibling's real order, not evidence that the row's own order was ever placed. **(3) Retrieval-ceiling characterization (Deliverable 1):** same-date FILLED orders remain retrievable roughly 54 days post-game-date in this dataset (oldest confirmed-FILLED game_date vs. check date), and no rate-limit errors occurred across 90+ live API calls this wave — consistent with the 731 figure reflecting genuine non-submission/unresolvable status rather than a retention-window or throttling artifact. **Net effect on this gap: the 731/95.6% figure stands, strengthened rather than weakened** — the lookup-key alternative explanation is now excluded (not just suspected-excluded), and the duplicate-ticker mechanism (GG-303) accounts for the only 9 rows that did resolve under a broader search. No ledger row edited, excluded, or re-stamped. Cross-reference: GG-303. |
+
+</details>
+
+---
+
+### GG-401 — NHL T1/T2 pregame model has no projected-starter source
+
+**Status:** RESOLVED (2026-10-09, T-750) · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** c3_forecasting/nhl_pregame.py has an optional starter_provider hook (default None, line 243-278) and nhl_train.py:189 uses 'projected starter = last start'; no live goalie feed exists. scripts/nhl_goalie_source_probe.py and nhl_goalie_probe.yml exist; the W58.1 timing measurement (ends 2026-10-14) has not produced a verdict. **Next:** After 10-14 apply W52_D D3 verdict rule to the data/nhl-goalie-probe jsonl; build StarterProvider if (a).
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-401 |
+| Category | Data |
+| What was found | EXP-036 model has no projected goalie/starter feed for the 12-48h and 4-8h bands; early-band rows may be biased by a shallow starter assumption. |
+| Source | EXP036 results GAP 3 + Q6(c) |
+| Disposition | Registered by 49.3 (registration only, no investigation). |
+| W52.D finding (2026-10-03, T-657) | T3 needs both confirmed goalie IDs by ~15 min pre-start (cron.nhl_shadow T3 */10; BANDS T3 = 0.25-1.0 h). The only known official field is boxscore playerByGameStats.<side>.goalies[].starter, which this repo has only read post-game. Every source (api-web.nhle.com schedule/boxscore/landing, dailyfaceoff) was refused by the cloud egress proxy, so verdict (c) cannot tell. Measurement: run scripts/nhl_goalie_source_probe.py (branch w52/nhl-goalie-probe) on the VPS at ~60/30/15 min pre-start on one slate. Status unchanged; no NHL T3 score may be read. See 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W52_D_nhl_goalie_source_results.md. |
+
+| W58.1 timing measurement (2026-10-07, status unchanged) | `.github/workflows/nhl_goalie_probe.yml` (PR #173) probes api-web.nhle.com every 10 min, 21:00-03:50 UTC, and appends to branch `data/nhl-goalie-probe` file `goalie_source_probe.jsonl` (never main). It stops itself after 2026-10-14. Verdict rule is W52_D D3: for each game take the earliest probe where both `boxscore_starters` and `landing_starters` show both sides; flag at >=15 min before start in k of n games = (a), build a StarterProvider; flag only at/after puck drop = (b), operator picks move-T3-later or amend the pre-registration. Until then no NHL T3 score may be read. First dispatch: 9 records appended. |
+| W59.3 probe verdict (2026-10-08, status unchanged) | Verdict **(b)**: `starter` flag absent in 0 of 2 informative pre-drop readings (FLA@LAK 32.4 min, EDM@ANA 65.0 min; two slates), and absent in 0 of 8 readings 85-148 min into play; present on finished boxscores (state OFF) per a VPS positive control. No StarterProvider built. Pre-registration amendment text for the operator is in 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_3_nba_nhl_readiness_results.md Part B. No NHL T3 score may be read. |
+| W61.2 close-out (2026-10-09, T-750) | RESOLVED on stored rows, not on the code path. NHL shadow rows on the VPS (`data/shadow/nhl/NHL_*_T{1,2,3}.jsonl`) written at/after the #188 deploy cut-over 2026-10-08 02:43 UTC: **T3 n=510, 510 pass** (confirmed=False and non-empty starter_source; 0 fail; first row 2026-10-08T22:06:04Z); also T2 n=1200/1200 and T1 n=59/59. Single combination in every band: (confirmed=False, starter_source='projected_last_start'). Closing condition = the W59.3 verdict-(b) amendment (goalie = projected starter at every band, confirmed=False) is carried on every new row. Rows before the cut-over do not carry the fields and are not retro-edited. No NHL T3 score may still be read before the pre-registered n. |
+</details>
+
+### GG-515 — Visual Dashboard calibration section overflows horizontally on phone width
+
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.3):** Fixed in PR #184 (squash f94b5f6): `td,th,code,.asof` wrap with overflow-wrap:anywhere, full source in a title attribute, section overflow backstop. Real browser, 390px, live VPS /project: scrollWidth 390 = viewport (was 467 reported / 1054-1082 reproduced locally). pmbot-web-dashboard restarted 2026-10-08T02:20:53Z, NRestarts=0, fix served.
+
+**Current state (2026-10-08, W59.2):** At 390px the page scrolls horizontally (scrollWidth 467): a long source link/code element in the calibration header sits outside the .scroll wrapper. Present before and after W59.2; seen in the real-browser check. **Next:** Wrap or break long source paths in the section header; re-run the phone screenshot.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-515 |
+| Category | Calibration engine / pre-registration |
+| What was found | At 390px the page scrolls horizontally (scrollWidth 467): a long source link/code element in the calibration header sits outside the .scroll wrapper. Present before and after W59.2; seen in the real-browser check. |
+| Why it matters | Violates the phone-usable design bar. |
+| Source | W59.2 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W59_2_calibration_correctness_results.md`) |
+| Resolution | Not fixed in-session (register-and-stop). Pre-registrations are not edited; a superseding document is needed. |
+
+</details>
+
+### GG-525 — Live Terminal Feeds & Health renders no NBA row while no NBA ledger exists
+
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-10-08, W60.3):** Fixed in PR #184 (squash f94b5f6): Feeds & Health always renders the NBA shadow row; no ledger reads 'SHADOW NBA ledgers: no data - awaiting first regular-season rows' (neutral). Verified in a real browser against the live VPS dashboard at 1500px and 390px. pmbot-web-dashboard restarted 2026-10-08T02:20:53Z, NRestarts=0.
+
+**Current state (2026-10-08, W60.3):** `health()` in `Live Terminal.html` pushed the NBA shadow row only when `freshness.nba_shadow.last_ts` was set. With no `exp_output/PREGAME_SHADOW/NBA_*.jsonl` the API returns `{awaiting: ...}` and the page silently dropped the row, so "awaiting" never reached the screen. **Next:** always render the row; no-ledger reads "no data - awaiting first regular-season rows" in neutral colour.
+
+<details>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-525 |
+| Category | Dashboard truthfulness |
+| What was found | Feeds & Health had no NBA row until a ledger existed (found W59.3 Part D, never registered). |
+| Why it matters | Design bar: a panel with no data must say "no data"; absence reads as "not tracked". |
+| Source | W59.3 Part D; registered by W60.3 |
+
+</details>
