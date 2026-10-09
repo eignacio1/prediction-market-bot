@@ -1909,3 +1909,20 @@ be wired into the protocol somehow so I don't need to keep repeating it." Implem
 (/strategic-handoff), named in the paste-in and the carry-forward; the handoff always delivers the carry-forward, the
 paste-in and the queue as file cards plus the paste-in in a chat fence, unasked, and only after the last wave is verified.
 Carry-forward and paste-in rewritten (the early drafts at 94853bf were never used and are superseded).
+
+## 2026-10-08 (PT evening) — GG-527 decided (b)+(c); Wave 61 issued by the incoming strategic window
+
+**Operator decision, GG-527 (2026-10-08 ~17:14 PT, choosing the window's stated recommendation: "(b)+(c) (Recommended)"):**
+(b) every T4M-PROJ row (epoch-12 cohort of 1,952 and later rows) is model-calibration evidence only; G6 sample adequacy
+and any execution/P&L claim for T4M-PROJ count real demo fills (CONFIRMED_FILLED) only. (c) T4M-PROJ places no paper
+stake after the 2026 World Series; its registry status goes to DARK once the World Series has ended. Not covered: any
+kelly_fraction/stake change, other bands, T1 MLB winter posture, deleting or rewriting rows. Authorization blockquote in
+ACTIVE_QUEUE.md; built by 61.1. Window code read (to verify in 61.1): the T4 runner does not consult the registry, so the
+stand-down must be a code gate, not only a status flip.
+**Incoming window verification:** origin/main 1d99bee vs carry-forward §4 — no drift (GG-530, T-746, ADR-0071, EXP-038;
+130 OPEN, parity 157=157, no duplicate ids; registry 104 = ACTIVE 1, SHADOW 24, BLOCKED 2, DARK 1, NOT_IMPLEMENTED 76;
+stub scan clean). VPS not checked from the window (no SSH); 61.2 runs Step 4.
+**Exploratory research track:** operator stated "no preference"; the window's call is to start it in 61.3, fence first
+(charter + CI isolation test), on the operator's 2026-10-07 stated horizon (research, variants, feature extraction).
+**Wave 61:** 61.1 GG-527 build (fills-only evidence + stand-down gate); 61.2 verdict readiness (Step 4, GG-401 close-out,
+retire RESOLVED entries, NFL first-look rehearsal on a synthetic cell + runbook); 61.3 exploratory track.
