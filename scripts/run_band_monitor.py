@@ -162,6 +162,16 @@ def load_pool_by_band(portfolio_path: Path) -> dict[str, list[dict]]:
     return by_band
 
 
+def load_t4_ledger_execution(path: Path, sidecar: Path | None = None) -> list[dict]:
+    """GG-527: T4M-PROJ rows that count as EXECUTION evidence -- CONFIRMED_FILLED only,
+    per logs/t4_mlb_fill_status.jsonl (beside the ledger by default). A row with no
+    sidecar entry is not counted. ``load_t4_ledger`` (all rows) remains the calibration
+    record and must be labelled "calibration only - not execution evidence"."""
+    from prediction_market_bot import t4_fill_status as tfs
+    sidecar = sidecar or (Path(path).parent / "t4_mlb_fill_status.jsonl")
+    return tfs.filter_confirmed_filled(load_t4_ledger(path), tfs.load_fill_status(sidecar))
+
+
 def load_t4_ledger(path: Path) -> list[dict]:
     """T4M-PROJ resolved ledger (T-254). JSONL, one row per resolved position.
 
@@ -329,9 +339,13 @@ def run_all_bands(
     if "UNTAGGED" in by_band:
         results["UNTAGGED"] = analyze_band("UNTAGGED", by_band["UNTAGGED"], bins, boot, seed, alpha)
 
-    t4_recs = load_t4_ledger(t4_ledger_path)
+    t4_all = load_t4_ledger(t4_ledger_path)
+    t4_recs = load_t4_ledger_execution(t4_ledger_path)
     if t4_recs or t4_ledger_path.exists():
         results["T4M-PROJ"] = analyze_band("T4M-PROJ", t4_recs, bins, boot, seed, alpha)
+        results["T4M-PROJ"]["basis"] = "CONFIRMED_FILLED only (GG-527 execution evidence)"
+        results["T4M-PROJ"]["calibration_all_rows_n"] = len(t4_all)
+        results["T4M-PROJ"]["calibration_all_rows_label"] = "calibration only - not execution evidence"
     else:
         results["T4M-PROJ"] = {
             "band": "T4M-PROJ", "verdict": "NO_DATA", "n": 0,
@@ -415,7 +429,7 @@ def run_all_cells(
             res["market_type"] = mt.value
             results[f"{mt.value}:UNTAGGED"] = res
 
-    t4_recs = load_t4_ledger(t4_ledger_path)
+    t4_recs = load_t4_ledger_execution(t4_ledger_path)  # GG-527: fills only
     by_cell = _regroup_by_cell("T4M-PROJ", t4_recs)
     for mt, recs in by_cell.items():
         res = analyze_band("T4M-PROJ", recs, bins, boot, seed, alpha)

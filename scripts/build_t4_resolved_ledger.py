@@ -58,6 +58,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_exp017_mlb as e17  # noqa: E402  reuse compute_fee_net_edge (GG-077 direction-aware)
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 BAND = "T4M-PROJ"
 VPS_ALIAS = "prediction-market-vps"
 VPS_PORTFOLIO_PATH = "/opt/prediction-market-bot/logs/paper_portfolio_mlb_t4.json"
@@ -277,7 +278,26 @@ def main(argv=None) -> int:
     logging.basicConfig(format="%(levelname)s %(message)s")
     written, _ = guarded_write(rows, out_path)
     _print_summary(rows, n_open, portfolio_path, written)
+    _classify_fills(portfolio_path)
     return 0
+
+
+def _classify_fills(portfolio_path: Path) -> None:
+    """GG-527: keep logs/t4_mlb_fill_status.jsonl current from the already-scheduled weekly
+    ledger build (Mon 14:20 cron) -- no new cron line. Runs only against the live VPS
+    book (logs/paper_portfolio_mlb_t4.json), never a local cache. Never fails the build:
+    on any problem the sidecar is untouched and unclassified positions simply do not
+    count as execution evidence."""
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "src"))
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        from prediction_market_bot import t4_fill_status as tfs
+        if portfolio_path.resolve() != tfs.DEFAULT_PORTFOLIO.resolve():
+            return
+        result = tfs.run_classifier(portfolio_path, tfs.DEFAULT_SIDECAR)
+        print(f"  Fill-status sidecar (GG-527): {json.dumps(result)}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"  Fill-status sidecar (GG-527): SKIPPED {type(exc).__name__}: {exc}", file=sys.stderr)
 
 
 if __name__ == "__main__":
