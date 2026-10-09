@@ -29,13 +29,10 @@ Nothing here is evidence about any cell. Nothing here is a verdict.
 
 ## Addendum 2026-10-09 (strategic window, operator direction to wire the north star in)
 This track is where the **DEPTH** pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" is built: deep pre-game models to the operator's granularity bar (matchup, personnel, team, venue, weather, qualitative factors, weighted metrics), developed here as challengers and graduated only by the operator-accepted pre-registration route in rule 7. A study's results doc names the pillar it moved. Rules 1-8 are unchanged.
-<<<<<<< HEAD
+Every study names, before it starts, the distance-to-optimum measure it is for (usually D3, pre-registered challengers ready) and reports the measured change (Hard Rule 12, 2026-10-09).
 
 ## Addendum 2026-10-09 (W62.2, T-759, GG-538) — data custody
 Pre-2026 Kalshi price history (KXNFLGAME, 2025 season; 892 markets in the store incl. 226 ineligible 2026-season ones) is held in **two places**:
 the operator machine (`exp_output/KALSHI_HISTORY/raw/`, untracked) and the VPS (`/opt/prediction-market-bot/exp_output/KALSHI_HISTORY/`).
 File list, sizes, sha256 and coverage: `12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. Studies must filter to 2025-season tickers (`25AUG`…`26JAN`) *before*
 parsing; the store's 2026-season markets are sealed-cell data (rule 2) and are never read.
-=======
-Every study names, before it starts, the distance-to-optimum measure it is for (usually D3, pre-registered challengers ready) and reports the measured change (Hard Rule 12, 2026-10-09).
->>>>>>> origin/main
