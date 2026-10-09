@@ -1988,3 +1988,8 @@ Done (docs only, strategic window):
 - Finding surfaced by the cross-reference (routed to operator): the NFL/MLB/NBA pre-registrations themselves state the
   plausible edge vs market is at or below the first-look MDE, so the modal first-look outcome is SHADOW (no verdict).
   The sitrep previously called 11-02 "the first pre-registered edge verdict"; corrected.
+
+## 2026-10-09 — W62.2 Part A: pre-2026 Kalshi history secured (T-759, GG-538)
+Decision: KXNFLGAME history fetch is complete (892/892); `raw/` + rebuilt derived files copied to the VPS (sha256 verified) and recorded in
+`12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. Tracked `exp_output/KALSHI_HISTORY/{markets,VALIDATION.json}` deliberately NOT refreshed (stale 862/415 build) —
+operator call. Charter gains a data-custody addendum. Exploratory only; no pre-registration changed.

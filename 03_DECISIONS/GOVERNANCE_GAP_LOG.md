@@ -3768,6 +3768,19 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
+### GG-538 — The only pre-2026 Kalshi price history lived in one untracked agent worktree (single copy, no manifest)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-09, W62.2):** MITIGATED, awaiting the operator's acceptance to close: `raw/` + rebuilt `candles/`/`markets/` copied to the VPS with sha256 verified; manifest at `12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. **Next:** operator decides whether to refresh the tracked `exp_output/KALSHI_HISTORY/{markets,VALIDATION.json}` (still the stale 862/415 build) and whether a scheduled VPS copy of `raw/` is wanted.
+
+<details>
+<summary>Full record ▸</summary>
+
+Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622a0ccc3aead20c/` (untracked, not in git, not on the VPS); the tracked README claimed STATUS PARTIAL / fetch killed. Pre-2026 prices cannot be re-fetched on demand at a known cost, and they are the only price series that predates the NFL pre-registration. W62.2 completed the KXNFLGAME fetch (892/892), rebuilt derived files from `raw/` in a scratch store, and made the VPS copy. (GG-533 was reserved by W61.3 but never registered; this gap takes GG-538.)
+
+</details>
+
 ### GG-532 — MLB pregame shadow arm has written zero rows since 2026-10-08 01:43Z: every open postseason market skips as no_kickoff
 
 **Status:** OPEN · **Severity:** MEDIUM
