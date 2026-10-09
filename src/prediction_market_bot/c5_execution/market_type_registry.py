@@ -915,6 +915,26 @@ for _mt, _bd in _EXP036_NHL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-036")
 
 
+# --- EXP-037 / T-608 / W63.1 (T-763): MLB pre-game game-market SHADOW cells ---
+# Records reality, not a promotion: cron (run_mlb_pregame_shadow.py, T1 7 */6, T2 12 *, T3 3,13,..)
+# already evaluates these twelve cells at kelly_fraction 0 and banks rows in
+# exp_output/PREGAME_SHADOW/MLB_MLB_*_T[123].jsonl (first rows 2026-10-05, all 12 cells > 0;
+# T1 scheduled run 2026-10-09T12:07Z wrote 33 rows after the GG-532 fix). SHADOW is
+# evaluate-and-log only (tests/test_pregame_shadow_safety.py); kelly_fraction untouched (ADR-0048).
+# Pre-registration (committed c3ba006, 2026-10-03, before the first row): 2026 postseason rows
+# are a 2027 head start -- counted, NEVER scored; judged n is 2027 regular-season games only.
+# Authority: ACTIVE_QUEUE.md "AUTHORIZATION - STANDING: NEW PRE-REGISTERED SHADOW ARMS" (2026-10-08).
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP037_MLB_PREGAME_SHADOW_PREREGISTRATION_2026-10-02.md.
+_EXP037_MLB_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
+    (_mt, _bd)
+    for _mt in (MarketType.MLB_MONEYLINE, MarketType.MLB_RUN_LINE,
+                MarketType.MLB_GAME_TOTAL, MarketType.MLB_TEAM_TOTAL)
+    for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP)
+)
+for _mt, _bd in _EXP037_MLB_SHADOW_CELLS:
+    promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
+
+
 # ---------------------------------------------------------------------------
 # Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
 # ---------------------------------------------------------------------------

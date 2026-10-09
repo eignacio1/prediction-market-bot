@@ -2070,6 +2070,9 @@ standing authorization; player hits back on for the playoffs via the GitHub Acti
 math — MLB mechanisms translated into an NFL deep challenger (12_EXPLORATORY, frozen plan before fitting); 63.3 the
 distance-to-optimum generator + fill markout analysis feeding the demo-fills ADR draft.
 
+## 2026-10-09 — W63.1 Part A: 12 MLB game-market cells NOT_IMPLEMENTED -> SHADOW (EXP-037, T-763)
+Operator directive 2026-10-09: wire MLB to full for the postseason. EXP-037 MLB pre-registration (c3ba006, 2026-10-03T01:11Z) precedes the first game-market row (2026-10-05T13:12Z); flipped via `promote_cell_status` under the standing ACTIVE_QUEUE authorization (shadow cells, kelly 0, no stake/order change). PR #201, deployed b25b63b; VPS registry: SHADOW 36 + ACTIVE 1 = 37/104 (B1), 12/18 families (B2). t4-mlb restarted by the GG-432 policy (registry import changed, no game live). Postseason rows counted but never scored per EXP-037. GG-532 RESOLVED on the 12:07Z scheduled T1 write (33 rows).
+
 ## 2026-10-09 — W63.3 deploy + design-input decisions (T-769..T-771)
 - Part A (#202, aff51b12): distance_to_optimum.py + governance_scan + /project panel + required gap keys after 2026-10-09T07:24:13Z. Deploy: t4-mlb restart not needed (no t4-imported file changed). Ran on VPS; hand table in ACTIVE_QUEUE superseded by computed values (B1 37, B2 12, D2 18, P1 0/45).
 - D1 manifest: ops_l10, team_id added to team class (VPS run errored on them).

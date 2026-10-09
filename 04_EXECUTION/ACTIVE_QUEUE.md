@@ -132,8 +132,8 @@ fetch + rebase right before merging; each merges only its own PRs.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 63.1 | MLB wired to full for the rest of the postseason | BREADTH B1 25->37, B2 8->12; player hits logging postseason | ⬜ | — |
-| 63.2 | The math: MLB's modelling mechanisms carried into NFL | DEPTH D1, D3 0->1 | ⬜ | — |
+| 63.1 | MLB wired to full for the rest of the postseason | BREADTH B1 25->37, B2 8->12; player hits logging postseason | ✅ #201 merged+deployed: B1 37/104, B2 12/18, GG-532 RESOLVED; player hits: off-day, no wiring needed | — |
+| 63.2 | The math: MLB's modelling mechanisms carried into NFL | DEPTH D1, D3 0->1 | 🟨 Part A pushed | Map written: MLB game model = NFL structure; only personnel input is SP; top analogue = QB-shrunk performance. Part B next. |
 | 63.3 | Distance table computed + why our fills lose | PLUMBING (Rule 12) + EXECUTION E3 | ✅ | Generator live (#202); fills = adverse selection + stale pricing, win 24-28% vs 49-51% unfilled; ADR-0072 DRAFT |
 
 ### 63.1 — MLB wired to full for the rest of the postseason
