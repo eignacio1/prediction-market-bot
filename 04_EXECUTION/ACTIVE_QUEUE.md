@@ -95,7 +95,7 @@ a read-only T1 fill audit (classifier generalized), NBA flip tooling. Shared doc
 
 | # | Block | Status | One line |
 |---|---|---|---|
-| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | ⬜ | — |
+| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | 🟨 Part A deployed | PR #195 merged, VPS at cbbd2658, dry-run writes 33 rows; GG-532 open until first scheduled write; Part B (alarm) next |
 | 62.2 | Exploratory part 2: secure the price history + pre-commit NFL first-look expectations | ⬜ | — |
 | 62.3 | Load the stand-down gate (restart) + T1 MLB fill audit + NBA flip dry run | ⬜ | — |
 
@@ -340,7 +340,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | ⬜ | — |
+| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | 🟨 Part A deployed | PR #195 merged, VPS at cbbd2658, dry-run writes 33 rows; GG-532 open until first scheduled write; Part B (alarm) next |
 | 62.2 | Exploratory part 2: history secured + NFL first-look expectations | ⬜ | — |
 | 62.3 | Load the stand-down gate + T1 MLB fill audit + NBA flip dry run | ⬜ | — |
 

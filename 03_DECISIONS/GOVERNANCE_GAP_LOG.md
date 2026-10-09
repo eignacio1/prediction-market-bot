@@ -3772,6 +3772,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Current state (2026-10-09, W62.1 Part A):** FIX DEPLOYED, AWAITING FIRST SCHEDULED WRITE. PR #195 (cbbd2658) matches on teams + ET game date, uses the cache start as kickoff, adds reason `schedule_placeholder`; VPS at cbbd2658; deployed dry-run at 06:27Z would write 33 T1 rows (2 ML, 6 RL, 11 GT, 14 TT). t4-mlb restart: not_needed. Not RESOLVED until a scheduled (cron) run writes rows under the fix (next T1 12:07Z). Prior state follows.
+
 **Current state (2026-10-09, W61.2):** Last MLB ledger write 2026-10-08T01:43Z (T3), T1 06:07Z; every run since logs `written: {}` and an identical `skipped: no_kickoff` = 41 markets (10 ML + 6 RL + 11 total + 14 team total). **Next:** decide the kickoff-matching rule for postseason events (see record), then fix with a test; do not widen TOL blindly.
 
 <details>

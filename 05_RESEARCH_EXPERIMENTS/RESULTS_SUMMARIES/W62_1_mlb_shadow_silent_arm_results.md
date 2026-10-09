@@ -1,6 +1,6 @@
 # W62.1 — MLB postseason shadow matcher (GG-532) + silent-arm alarm
 
-**Status:** Part A in progress (code + tests, awaiting merge/deploy). Part B not started.
+**Status:** Part A merged + deployed (PR #195, cbbd2658; t4-mlb restart not_needed; VPS dry-run 06:27Z would write 33 T1 rows). GG-532 awaiting first scheduled write. Part B not started.
 
 ## Part A — reproduction (VPS, 2026-10-09 06:16Z, read-only dry-run)
 

@@ -1962,3 +1962,6 @@ blockquotes (standing new pre-registered shadow arms + new cron lines; standing 
 BUILD behind an off switch, ON only at operator ADR acceptance; VPS resize up to 4 GB RAM). Terminal block size unchanged
 (operator keeps terminals on strict parameters). Unchanged guardrails: pre-registration before first row, no score below
 judged n, no relabel, no real capital, kelly 0, demo only. Applies from Wave 63; Wave 62 (in flight) unchanged.
+
+## 2026-10-09 — W62.1 Part A: MLB shadow matcher fix deployed (GG-532)
+Matcher now keys on teams + ET game date, uses the schedule-cache start as kickoff (never the ticker's), placeholder starts (07:33Z) get reason `schedule_placeholder`. Consumers of MLBScheduleIndex enumerated (GG-072): shadow runner and mlb_settlement.find_final were broken the same way; both fixed. PR #195 merged at cbbd2658. Deploy decision: t4-mlb restart `not_needed` (no file imported by t4-mlb changed). No stake/kelly/cron change. GG-532 stays OPEN: fix deployed, awaiting first scheduled write (next T1 12:07Z).
