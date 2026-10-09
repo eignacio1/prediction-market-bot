@@ -38,6 +38,10 @@ def main(argv: list[str] | None = None) -> int:
         d.mkdir(parents=True, exist_ok=True)
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         (d / f"engine_{stamp}.json").write_text(json.dumps(res, indent=1, default=str))
+        released = [c for c in res["cells"] if c.get("release") and c.get("verdict")]
+        if released:        # only cells the engine itself released; frozen manifests make this report reproducible
+            from prediction_market_bot.pregame_shadow import first_look_report as flr
+            (d / "FIRST_LOOK_REPORT.md").write_text(flr.render_report(released, "First-look REPORT (released cells only)"))
     print(f"{'cell':34} {'status':26} {'rows':>7} {'games':>6} {'%look':>6}  first look")
     for c in res["cells"]:
         pj = c["projection"]
