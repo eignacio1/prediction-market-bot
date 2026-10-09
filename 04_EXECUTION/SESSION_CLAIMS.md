@@ -820,3 +820,4 @@
 | 2026-10-09T17:16:31Z | T-769 | CLOSED — W63.3 distance table now computed (generator, governance scan, dashboard) and fills shown adversely selected; ADR-0072 draft PROPOSED, switch OFF. (commit `af8d640f`) |
 | 2026-10-09T17:15:34Z | T-763 | CLOSED — 12 MLB game-market cells flipped to SHADOW (B1 25->37, B2 8->12); GG-532 resolved; player-hits premise falsified (off day), no wiring needed. (commit `see PR #201 (b25b63b) + docs push`) |
 | 2026-10-09T17:15:52Z | T-763 | CLOSED — merge confirmed, HEAD (67ea863) is ancestor of origin/main — W63.1 closed; PR #201 + docs on main |
+| 2026-10-09T17:18:22Z | T-769 | CLOSED — merge confirmed, HEAD (f897c8b) is ancestor of origin/main — W63.3 distance generator + fill markouts; ADR-0072 draft |
