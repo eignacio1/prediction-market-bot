@@ -94,7 +94,7 @@ def main(argv=None) -> int:
 
     run_id = now.strftime("%Y%m%dT%H%M%SZ")
     res = run_once(forecaster=fc, cells=CELLS, list_markets=ad.list_series_markets_raw,
-                   kickoff_for=index.kickoff_for_event, ledger_dir=ledger_dir, run_id=run_id,
+                   kickoff_for=index.kickoff_for_event, kickoff_miss_reason=index.miss_reason_for_event, ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
                    only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None))
     print(f"run_id={run_id} ledger_dir={ledger_dir}")

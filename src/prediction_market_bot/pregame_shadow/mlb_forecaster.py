@@ -7,7 +7,7 @@ T1-vs-T3 difference (a starter not shown in the snapshot at as_of is simply unkn
 from __future__ import annotations
 
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 from zoneinfo import ZoneInfo
 
@@ -77,9 +77,40 @@ def parse_market_ticker(market_ticker: str) -> Optional[dict]:
     return out
 
 
+# The Stats API publishes this exact UTC time-of-day for a game whose start is not yet scheduled (every
+# 2026 L/W preview row carries it). A cache row at this time is a placeholder, not a kickoff (GG-532).
+PLACEHOLDER_HHMM_UTC = (7, 33)
+
+
+def is_placeholder_start(t: pd.Timestamp) -> bool:
+    return (t.hour, t.minute) == PLACEHOLDER_HHMM_UTC
+
+
+def match_game(games: pd.DataFrame, home: str, away: str, ticker_start_utc: datetime) -> tuple[Optional[pd.Series], str]:
+    """Match one cache game to a Kalshi event on teams + ET game date; return (row, reason).
+
+    The ticker's HHMM is NOT trusted as a kickoff (GG-532: an event moved 17:00 -> 20:00 ET kept its ticker
+    time), so it only breaks ties between same-day games (doubleheader: nearest start). ``games`` needs
+    ``_h``/``_a``/``_t`` columns. reason is "" on a match, else "schedule_placeholder" (the only same-day
+    row is an unscheduled placeholder) or "no_kickoff" (no row, or an ambiguous tie).
+    """
+    day = pd.Timestamp(ticker_start_utc).tz_convert(ET).date()
+    g = games[(games._h == home) & (games._a == away)]
+    g = g[g._t.dt.tz_convert(ET).dt.date == day]
+    if g.empty:
+        return None, "no_kickoff"
+    real = g[~g._t.map(is_placeholder_start)]
+    if real.empty:
+        return None, "schedule_placeholder"
+    gap = (real._t - pd.Timestamp(ticker_start_utc)).abs()
+    best = real[gap == gap.min()]
+    if len(best) != 1:
+        return None, "no_kickoff"
+    return best.iloc[0], ""
+
+
 class MLBScheduleIndex:
-    """Stats API snapshot -> kickoff (UTC) and probable starters, matched on teams + start time."""
-    TOL = timedelta(minutes=45)
+    """Stats API snapshot -> kickoff (UTC) and probable starters, matched on teams + game date (see match_game)."""
 
     def __init__(self, games: pd.DataFrame) -> None:
         self.games = games[games.start_utc.notna()].copy()
@@ -88,11 +119,9 @@ class MLBScheduleIndex:
         self.games["_t"] = pd.to_datetime(self.games.start_utc, utc=True)
 
     def game(self, home: str, away: str, start_utc: datetime) -> Optional[dict]:
-        g = self.games[(self.games._h == home) & (self.games._a == away)]
-        g = g[(g._t - pd.Timestamp(start_utc)).abs() <= self.TOL]
-        if len(g) != 1:
+        r, _ = match_game(self.games, home, away, start_utc)
+        if r is None:
             return None
-        r = g.iloc[0]
         return {"start_utc": r._t.to_pydatetime(),
                 "home_sp": None if pd.isna(r.home_sp) else int(r.home_sp),
                 "away_sp": None if pd.isna(r.away_sp) else int(r.away_sp)}
@@ -103,6 +132,13 @@ class MLBScheduleIndex:
             return None
         g = self.game(ev["home"], ev["away"], ev["start_utc"])
         return (g["start_utc"], "stats_api_schedule") if g else None
+
+    def miss_reason_for_event(self, event_ticker: str) -> str:
+        """Skip-counter suffix for an event kickoff_for_event could not resolve."""
+        ev = parse_event_ticker(event_ticker)
+        if ev is None:
+            return "no_kickoff"
+        return match_game(self.games, ev["home"], ev["away"], ev["start_utc"])[1] or "no_kickoff"
 
 
 class MLBForecaster:

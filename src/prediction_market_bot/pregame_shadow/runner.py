@@ -29,7 +29,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              kickoff_for: Callable[[str], Optional[tuple[datetime, str]]],
              ledger_dir: Path, run_id: str, now_utc: datetime, code_sha: str,
              raw_filter: Optional[Callable[[dict], bool]] = None,
-             only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None) -> dict:
+             only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None,
+             kickoff_miss_reason: Optional[Callable[[str], str]] = None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -47,7 +48,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 continue
             ko = kickoff_for(ev)
             if ko is None:
-                skipped[f"{mt_name}:no_kickoff"] += 1
+                why = kickoff_miss_reason(ev) if kickoff_miss_reason else "no_kickoff"
+                skipped[f"{mt_name}:{why}"] += 1
                 continue
             start, src = ko
             hours = (start - now_utc).total_seconds() / 3600.0
