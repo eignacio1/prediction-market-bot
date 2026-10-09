@@ -1,0 +1,379 @@
+{
+ "season": 2025,
+ "n_games": 272,
+ "vs_climatology": {
+  "moneyline": {
+   "n": 272,
+   "mean": 0.029110627635431274,
+   "sd": 0.1425686439887855,
+   "lo95": 0.011570526790185878,
+   "hi95": 0.0457415020172905
+  },
+  "spread@sportsbook-line-strike": {
+   "n": 272,
+   "mean": 0.015312688587664014,
+   "sd": 0.09597240086713331,
+   "lo95": 0.004478737160057035,
+   "hi95": 0.027002591375282183
+  },
+  "game_total@sportsbook-line-strike": {
+   "n": 272,
+   "mean": 0.006477106719039023,
+   "sd": 0.08599183528530123,
+   "lo95": -0.0038379300109849415,
+   "hi95": 0.016217089173143743
+  }
+ },
+ "vs_market_mid": {
+  "T1~24h": {
+   "model_vs_mid": {
+    "n": 252,
+    "mean": -0.008209240899134508,
+    "sd": 0.10578207852081178,
+    "lo95": -0.021265474937006108,
+    "hi95": 0.005070976289237013
+   },
+   "model_vs_clim_same_games": {
+    "n": 252,
+    "mean": 0.026672963050608622,
+    "sd": 0.14502711343941932,
+    "lo95": 0.007671961269889666,
+    "hi95": 0.04471932900385193
+   },
+   "brier_mid": 0.21357688492063492,
+   "brier_model": 0.22178612581976942,
+   "weeks_covered": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  },
+  "T2~6h": {
+   "model_vs_mid": {
+    "n": 252,
+    "mean": -0.00735924089913451,
+    "sd": 0.10732497626827896,
+    "lo95": -0.020573817217661265,
+    "hi95": 0.00594778038188228
+   },
+   "model_vs_clim_same_games": {
+    "n": 252,
+    "mean": 0.026672963050608622,
+    "sd": 0.14502711343941932,
+    "lo95": 0.007671961269889666,
+    "hi95": 0.04471932900385193
+   },
+   "brier_mid": 0.2144268849206349,
+   "brier_model": 0.22178612581976942,
+   "weeks_covered": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  },
+  "T3~0.5h": {
+   "model_vs_mid": {
+    "n": 252,
+    "mean": -0.008214697248340857,
+    "sd": 0.10812045856004968,
+    "lo95": -0.02185299712645377,
+    "hi95": 0.005177939515107444
+   },
+   "model_vs_clim_same_games": {
+    "n": 252,
+    "mean": 0.026672963050608622,
+    "sd": 0.14502711343941932,
+    "lo95": 0.007671961269889666,
+    "hi95": 0.04471932900385193
+   },
+   "brier_mid": 0.21357142857142858,
+   "brier_model": 0.22178612581976942,
+   "weeks_covered": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  }
+ },
+ "mde_and_verdicts": {
+  "T1~24h": {
+   "sd_assumed_in_prereg": 0.07,
+   "sd_measured": 0.10578207852081178,
+   "MDE_n60_measured": 0.03825958672697803,
+   "MDE_n150_measured": 0.024197487278799456,
+   "MDE_n60_prereg_sd": 0.02531781477863052,
+   "MDE_n150_prereg_sd": 0.016012392015748826,
+   "verdict_probs_n60": {
+    "true_delta=-0.0082": {
+     "RULED_OUT": 0.08709918744929179,
+     "KEEP_ACCRUING": 0.9076836176155081,
+     "CANDIDATE_upper_bound": 0.00521719493520012
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.31014125031573236,
+     "KEEP_ACCRUING": 0.6895507588145673,
+     "CANDIDATE_upper_bound": 0.0003079908697003475
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.1097784879008964,
+     "KEEP_ACCRUING": 0.8866726173176006,
+     "CANDIDATE_upper_bound": 0.003548894781502998
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0035488947815030536,
+     "KEEP_ACCRUING": 0.8866726173176006,
+     "CANDIDATE_upper_bound": 0.1097784879008964
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 0.000307990869700403,
+     "KEEP_ACCRUING": 0.6895507588145673,
+     "CANDIDATE_upper_bound": 0.31014125031573236
+    }
+   },
+   "verdict_probs_n150": {
+    "true_delta=-0.0082": {
+     "RULED_OUT": 0.15636790262733985,
+     "KEEP_ACCRUING": 0.8418274376760407,
+     "CANDIDATE_upper_bound": 0.0018046596966193595
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.6389433862038858,
+     "KEEP_ACCRUING": 0.3610470810923879,
+     "CANDIDATE_upper_bound": 9.532703726278235e-06
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.21122903965791795,
+     "KEEP_ACCRUING": 0.7878598169480571,
+     "CANDIDATE_upper_bound": 0.0009111433940249825
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0009111433940249825,
+     "KEEP_ACCRUING": 0.7878598169480571,
+     "CANDIDATE_upper_bound": 0.21122903965791795
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 9.532703726278235e-06,
+     "KEEP_ACCRUING": 0.3610470810923879,
+     "CANDIDATE_upper_bound": 0.6389433862038858
+    }
+   }
+  },
+  "T2~6h": {
+   "sd_assumed_in_prereg": 0.07,
+   "sd_measured": 0.10732497626827896,
+   "MDE_n60_measured": 0.03881762671830289,
+   "MDE_n150_measured": 0.024550422758408887,
+   "MDE_n60_prereg_sd": 0.02531781477863052,
+   "MDE_n150_prereg_sd": 0.016012392015748826,
+   "verdict_probs_n60": {
+    "true_delta=-0.0074": {
+     "RULED_OUT": 0.07652720789733564,
+     "KEEP_ACCRUING": 0.9171054246691576,
+     "CANDIDATE_upper_bound": 0.006367367433506854
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.3027512997541876,
+     "KEEP_ACCRUING": 0.6969159658946403,
+     "CANDIDATE_upper_bound": 0.0003327343511720926
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.10781467438520592,
+     "KEEP_ACCRUING": 0.888522805388459,
+     "CANDIDATE_upper_bound": 0.0036625202263350642
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0036625202263350642,
+     "KEEP_ACCRUING": 0.888522805388459,
+     "CANDIDATE_upper_bound": 0.10781467438520598
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 0.0003327343511721481,
+     "KEEP_ACCRUING": 0.6969159658946403,
+     "CANDIDATE_upper_bound": 0.3027512997541876
+    }
+   },
+   "verdict_probs_n150": {
+    "true_delta=-0.0074": {
+     "RULED_OUT": 0.13132275554963635,
+     "KEEP_ACCRUING": 0.8661202757449192,
+     "CANDIDATE_upper_bound": 0.002556968705444418
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.6264050858720617,
+     "KEEP_ACCRUING": 0.37358385086161805,
+     "CANDIDATE_upper_bound": 1.1063266320276988e-05
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.20644784077758355,
+     "KEEP_ACCRUING": 0.7925882068791911,
+     "CANDIDATE_upper_bound": 0.0009639523432253272
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0009639523432253272,
+     "KEEP_ACCRUING": 0.7925882068791911,
+     "CANDIDATE_upper_bound": 0.2064478407775836
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 1.1063266320276988e-05,
+     "KEEP_ACCRUING": 0.37358385086161805,
+     "CANDIDATE_upper_bound": 0.6264050858720617
+    }
+   }
+  },
+  "T3~0.5h": {
+   "sd_assumed_in_prereg": 0.07,
+   "sd_measured": 0.10812045856004968,
+   "MDE_n60_measured": 0.039105339194341907,
+   "MDE_n150_measured": 0.024732388105514872,
+   "MDE_n60_prereg_sd": 0.02531781477863052,
+   "MDE_n150_prereg_sd": 0.016012392015748826,
+   "verdict_probs_n60": {
+    "true_delta=-0.0082": {
+     "RULED_OUT": 0.08511788976644674,
+     "KEEP_ACCRUING": 0.909472457441552,
+     "CANDIDATE_upper_bound": 0.005409652792001229
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.2990537920331356,
+     "KEEP_ACCRUING": 0.7006003025544478,
+     "CANDIDATE_upper_bound": 0.0003459054124166361
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.10683373237538413,
+     "KEEP_ACCRUING": 0.8894452022992729,
+     "CANDIDATE_upper_bound": 0.003721065325342998
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0037210653253430537,
+     "KEEP_ACCRUING": 0.8894452022992729,
+     "CANDIDATE_upper_bound": 0.10683373237538407
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 0.0003459054124166361,
+     "KEEP_ACCRUING": 0.7006003025544478,
+     "CANDIDATE_upper_bound": 0.29905379203313553
+    }
+   },
+   "verdict_probs_n150": {
+    "true_delta=-0.0082": {
+     "RULED_OUT": 0.1516373528716738,
+     "KEEP_ACCRUING": 0.8464394487794377,
+     "CANDIDATE_upper_bound": 0.001923198348888544
+    },
+    "true_delta=-0.0200": {
+     "RULED_OUT": 0.620028330651097,
+     "KEEP_ACCRUING": 0.37995974791799836,
+     "CANDIDATE_upper_bound": 1.1921430904671126e-05
+    },
+    "true_delta=-0.0100": {
+     "RULED_OUT": 0.20406060842862722,
+     "KEEP_ACCRUING": 0.7949477477585987,
+     "CANDIDATE_upper_bound": 0.0009916438127741678
+    },
+    "true_delta=+0.0000": {
+     "RULED_OUT": 0.024999999096442405,
+     "KEEP_ACCRUING": 0.9500000018071151,
+     "CANDIDATE_upper_bound": 0.02499999909644246
+    },
+    "true_delta=+0.0100": {
+     "RULED_OUT": 0.0009916438127741678,
+     "KEEP_ACCRUING": 0.7949477477585987,
+     "CANDIDATE_upper_bound": 0.20406060842862717
+    },
+    "true_delta=+0.0200": {
+     "RULED_OUT": 1.1921430904671126e-05,
+     "KEEP_ACCRUING": 0.37995974791799836,
+     "CANDIDATE_upper_bound": 0.620028330651097
+    }
+   }
+  },
+  "clim_moneyline": {
+   "sd_measured": 0.1425686439887855,
+   "MDE_n60": 0.05156466459640837,
+   "MDE_n150": 0.03261235738145951,
+   "P_CI_excludes_zero_at_estimate_n60": 0.3527877841968232
+  },
+  "clim_spread@sportsbook-line-strike": {
+   "sd_measured": 0.09597240086713331,
+   "MDE_n60": 0.03471159241449372,
+   "MDE_n150": 0.02195353864824473,
+   "P_CI_excludes_zero_at_estimate_n60": 0.23520801929706714
+  },
+  "clim_game_total@sportsbook-line-strike": {
+   "sd_measured": 0.08599183528530123,
+   "MDE_n60": 0.03110179083182515,
+   "MDE_n150": 0.019670499667742078,
+   "P_CI_excludes_zero_at_estimate_n60": 0.08981925055762174
+  }
+ }
+}
