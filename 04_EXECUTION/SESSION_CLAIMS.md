@@ -812,3 +812,4 @@
 | 2026-10-09T07:07:23Z | T-756..T-758 | CLOSED — merge confirmed, HEAD (a028d80) is ancestor of origin/main — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron/first-look prep; PRs #196 #200 |
 | 2026-10-09T07:07:15Z | T-761 | CLOSED — W62.1 MLB postseason matcher fix deployed + silent-arm alarm live on dashboards; GG-532 open pending first scheduled write. (commit `815af5f`) |
 | 2026-10-09T07:07:47Z | T-761 | CLOSED — merge confirmed, HEAD (32f3c9e) is ancestor of origin/main — W62.1 Parts A+B merged/deployed; GG-532 open pending scheduled write |
+| 2026-10-09T07:10:50Z | T-756 | CLOSED — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron-removal/first-look prep; PRs #196 #200 (commit `5be55b7`) |
