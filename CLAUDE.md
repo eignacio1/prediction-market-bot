@@ -1,6 +1,8 @@
 # Prediction Market Trading Bot — Claude Code Session Rules
 
-**Last documentation-remediation pass:** 2026-07-19 (CLAUDE.md lean-up pass, Cowork session — no VPS/push access, see DECISION_LOG.md 2026-07-19 for full scope). This file had drifted back into the exact failure mode the 2026-07-02 pass warned about: two sections (band-status inventory, commercial-validation n-count history) had accumulated multi-paragraph decaying state — the kind of content this file should point to elsewhere, not embed, since it's read first regardless of session-start protocol. Moved to their proper homes: band status → `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry; commercial-validation history → `GOVERNANCE_GAP_LOG.md` GG-004 (already had a full-history split-out file). Also found `00_ADMIN/README.md` — this project's designated nav hub per ADR-0001 — undated since 2026-05-28, still showing Phase 0/G0 status against a Phase 6/7 ACTIVE reality; revived it and registered the underlying process gap as GG-127. **Vision, hard rules, and the mandatory session-start protocol below are unchanged by this pass** — the operator explicitly asked that this framing be preserved, not trimmed. If you find another stale factual claim in this file, fix it in place and note it in `DECISION_LOG.md` per Hard Rule 7 — do not let corrections wait for the next full remediation pass.
+**Last documentation-remediation pass:** 2026-10-09 (strategic window, operator-directed "forest beyond the trees" pass — test: *if somebody picked this up, would they know where we're at?*). Added the canonical north star (§ "What winning looks like"); corrected stale claims in place: the bot's cell count, NBA's status, the T1 "78-feature" figure (measured 18, T-597), MLB player-hits T1/T2/T3 being SHADOW not ACTIVE, EXP-017 having run, Step 4's blindness to the shadow arms, and G6 counting fills only for T4M-PROJ (GG-527). Full list: DECISION_LOG 2026-10-09. **Where the project stands right now is never in this file** — it is the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`.
+
+**Earlier pass:** 2026-07-19 (CLAUDE.md lean-up pass, Cowork session — no VPS/push access, see DECISION_LOG.md 2026-07-19 for full scope). This file had drifted back into the exact failure mode the 2026-07-02 pass warned about: two sections (band-status inventory, commercial-validation n-count history) had accumulated multi-paragraph decaying state — the kind of content this file should point to elsewhere, not embed, since it's read first regardless of session-start protocol. Moved to their proper homes: band status → `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry; commercial-validation history → `GOVERNANCE_GAP_LOG.md` GG-004 (already had a full-history split-out file). Also found `00_ADMIN/README.md` — this project's designated nav hub per ADR-0001 — undated since 2026-05-28, still showing Phase 0/G0 status against a Phase 6/7 ACTIVE reality; revived it and registered the underlying process gap as GG-127. **Vision, hard rules, and the mandatory session-start protocol below are unchanged by this pass** — the operator explicitly asked that this framing be preserved, not trimmed. If you find another stale factual claim in this file, fix it in place and note it in `DECISION_LOG.md` per Hard Rule 7 — do not let corrections wait for the next full remediation pass.
 
 **Prior pass:** 2026-07-02 (SESSION 113 follow-on) — had let the T4-MLB band description and a hardcoded bankroll figure go stale for several weeks despite the underlying system changing substantially (dual-ledger split, MLB-native T4 sub-bands).
 
@@ -66,7 +68,7 @@ The edge condition: `model_p > market_implied_probability + vig`. If the model i
 **This is not one strategy. It is two separate alpha hypotheses that happen to share the same pipeline.**
 
 **T1 alpha — pregame calibration edge:**
-The thesis: a model calibrated on historical rolling statistics (ba_l10, rest, home/away, PRF qualitative factors) generates probability estimates that are systematically better-calibrated than pregame market prices. When model_p > MIP + vig, there is edge. This is the classical sports forecasting thesis — historical data produces better pregame odds than the market.
+The thesis: a model calibrated on historical rolling statistics (ba_l10, rest, home/away, PRF qualitative factors — as designed; the MLB T1 player-hits model as built measured 18 features and 0 qualitative, T-597) generates probability estimates that are systematically better-calibrated than pregame market prices. When model_p > MIP + vig, there is edge. This is the classical sports forecasting thesis — historical data produces better pregame odds than the market.
 
 **T4 alpha — live market latency edge:**
 The thesis: prediction markets are slow to incorporate live in-game state. After each at-bat, after each pitch sequence, after each momentum shift, the market price lags behind the true updated probability. The bot evaluates every 45-90 seconds whether the current in-game batter state (h_so_far, ab_so_far, inning, batting_slot, score state) combined with the pregame calibrated model produces a model_p that has drifted above the current MIP + vig. When it has, the edge is structural: the market hasn't updated yet, the bot has.
@@ -131,7 +133,7 @@ decision horizon.** A short horizon buys less time to compute, so the tree is st
 carries the edge; a long horizon buys time to condition on matchup, personnel, venue, weather and
 qualitative factors, so the tree is deep and estimation quality carries the edge.
 
-**The longer the horizon, the DEEPER the tree.** T1 (12–48h) is the deepest — the full 78-feature pipeline.
+**The longer the horizon, the DEEPER the tree.** T1 (12–48h) is the deepest by design — the 78-feature figure was the NBA-era design (31 quant + 47 qual); the MLB T1 model as built measured **18 features, 0 qualitative** (T-597, `models/mlb_v1_model_meta.json`), and the game-market pre-game arms are thinner still. Closing that gap is the DEPTH pillar.
 T4/T5 (in-play) are the shallowest — a Bayesian update or two arithmetic operations. *An earlier version of
 this paragraph asserted the reverse and contradicted both `EXECUTION_BANDS.md` and the implementation; it is
 corrected here.*
@@ -178,7 +180,7 @@ This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has r
 
 The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 requires 30 resolved paper bets with positive P&L, commercial validation now evaluated per-band against the variance-derived `n*` standard (APR-0024, superseding the flat EXP-017 30/150/500 heuristic for go-forward language — see § "The commercial validation gap" above), and DS sign-off (ADR-0005) before live capital is authorized. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
 
-For current gate progress, read `MEMORY_BANK.md`. CLAUDE.md does not track state — MEMORY_BANK.md does.
+For current gate progress, read the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md` (kept current at every wave close) and `MEMORY_BANK.md`'s Current State Snapshot (dated; refreshed at handoffs). CLAUDE.md does not track state. **For T4M-PROJ, G6 and every execution claim count real demo fills only; paper-only rows are calibration evidence (GG-527, operator 2026-10-08).**
 
 ---
 
@@ -304,6 +306,8 @@ Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) befor
 
 ### Step 4 — Operational health check (paste output)
 
+**Coverage gap, stated plainly (2026-10-09):** every probe below covers MLB T1/T4 and the frozen NBA book only. The pre-registered shadow arms (NFL, NHL, NBA, MLB postseason) have no probe in this step — GG-532 (MLB postseason arm silent ~23h) was found by hand. Since W62.1 (#198, 2026-10-09) `.claude/hooks/governance_scan.sh` prints a **SILENT ARMS** block every session (`prediction_market_bot.pregame_shadow.silent_arms`: games in window, zero rows written; alarm-only) — read it as part of this step, and treat any silent arm while its sport had games as a Q6 concern.
+
 **Root cause of GG-049:** The prior three steps check code and documents but never check whether active cron pipelines are actually producing bets. T1 MLB ran 0 bets for 2+ game days (June 27–28) without the protocol detecting it. This step is mandatory — it is the only place where a dark pipeline becomes immediately visible.
 
 ```bash
@@ -364,7 +368,7 @@ grep -n "kelly_fraction=" src/prediction_market_bot/execution_bands.py
 
 **Path correction (GG-144 remediation pass, 2026-07-29):** the second command's target, `execution_bands.py`, is at `src/prediction_market_bot/execution_bands.py` — the top-level `prediction_market_bot` package, not under any `c5_execution/` subpath. A stray reference to `c5_execution/execution_bands.py` had been circulating this session (`STRATEGIC_ANALYSIS_2026-07-29.md`); that path does not exist in this repo and never has. This file is the one that actually governs live per-band Kelly sizing (see the ruin-risk caveat below) — `risk.py`'s `DEFAULT_KELLY_FRACTION` is a separate, largely inert constant — so Q1's command now greps both files rather than only the one that doesn't hold the load-bearing values.
 
-For each limit: was it calibrated to the current system (MLB ACTIVE with T1–T4M-PROJ live, T4M-ARITH/T4M-FLOW built-but-blocked, NBA dark)? If any limit was set for a smaller or differently-shaped system, register in GOVERNANCE_GAP_LOG.md.
+For each limit: was it calibrated to the current system (as of 2026-10-09: one ACTIVE cell, MLB player hits T4M-PROJ, at flat demo measurement stakes; MLB player hits T1/T2/T3 SHADOW; T4M-ARITH/T4M-FLOW built-but-blocked; NFL, NHL, NBA and MLB postseason game markets as pre-registered shadow arms — the live inventory is `MARKET_TYPE_REGISTRY`)? If any limit was set for a smaller or differently-shaped system, register in GOVERNANCE_GAP_LOG.md.
 
 **Do not hardcode a bankroll dollar figure in this file** — it decays within days and this exact mistake (a stale $958.99/2026-06-08 figure surviving three weeks of paper trading) was found and corrected in a documentation-remediation pass. Pull the live bankroll from `MEMORY_BANK.md`'s Current State Snapshot (or the session-start governance hook, which prints both the MLB and NBA books labeled separately per GG-070) before reasoning about kill-switch proximity. The mechanism itself is stable and worth stating here: `MAX_DAILY_LOSS_PCT = 0.15` (`risk.py`) fires the daily circuit breaker at 15% of session-start bankroll; `max_drawdown_pct = 0.20` in `_HARD_LIMITS` (`risk.py`) is the *permanent* kill switch on realized drawdown. `max_daily_loss_usd` was removed and replaced by `MAX_DAILY_LOSS_PCT` per ADR-0012. All hard limits (`_HARD_LIMITS` dict in `risk.py`: `max_single_event_exposure_usd=500.0`, `max_drawdown_pct=0.20`, `max_portfolio_deployment_pct` per ADR-0026) still require formal revision via ADR at G6 when live bankroll is set — that obligation, logged 2026-05-29, remains open and unchanged.
 
@@ -382,7 +386,7 @@ Historical stub list as of 2026-06-01 (superseded — verified CLEAN, zero `# st
 
 Any new hits from the live scan must be assessed fresh: when was it written, does it predate current architecture, is the value still valid?
 
-**Standing concern baked into Q6:** The EV benchmark issue (KI-017/GG-004) — all prior EV figures used `mip=0.50`. EXP-017 is the experiment that answers the real commercial question. Until it runs, no model should claim the EV case for this system is proven. Ask: has EXP-017 been run? If not, the commercial question is open.
+**Standing concern baked into Q6:** The EV benchmark issue (KI-017/GG-004) — all prior EV figures used `mip=0.50`. EXP-017 has run (EXP-017B/C/D decomposition, 2026-07-07 — see ADR-0042); it did not close the commercial question, and GG-004 remains OPEN. No model should claim the EV case for this system is proven until a pre-registered cell reaches a verdict at its judged n.
 
 ---
 

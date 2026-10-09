@@ -2,14 +2,15 @@
 
 **Purpose:** Navigation hub and canonical entry point for the Prediction Market Trading Bot project. Start here.
 **Owner (role):** Directory Steward (DS)
-**Last reviewed:** 2026-07-19 (revival pass, Cowork session — see Compass Health section below for why this was needed)
+**Last reviewed:** 2026-10-09 (strategic window "forest" pass — test: if somebody picked this up, would they know where we're at? Found this hub 82 days stale despite the 14-day staleness alert it describes below)
+**Last reviewed (prior):** 2026-07-19 (revival pass, Cowork session — see Compass Health section below for why this was needed)
 **Last reviewed (prior):** 2026-05-21 (baseline instantiation) — this file went **~7 weeks (2026-05-21 to 2026-07-19) without a single update**, despite the project moving from Phase 0 (all gates Not Started) to Phase 6/7 ACTIVE with MLB paper trading live and G6 in progress. See Compass Health below.
 **Next review:** Weekly (Directory Integrity Review cadence, per Update Cadence table below) — this cadence is aspirational until it is actually enforced; a staleness check was added to `.claude/hooks/governance_scan.sh` on 2026-07-19 (GG-127) so this file cannot silently drift unnoticed again.
 **Staleness triggers:** New module added; major scope change; phase gate passed; ownership transfer
 **Upstream links:** None (root artifact)
 **Downstream links:** All modules below
 **Decision references:** ADR-0001
-**Confidence:** 7/10 — content is now current as of this revival, but the process that let it go stale for 7 weeks is only partially fixed (automated staleness detection exists; the weekly DIR cadence itself is not yet actually running)
+**Confidence:** 7/10 — the tables below were re-pointed at the files that actually carry live state on 2026-10-09; the per-module documents they link to are of mixed age (several unchanged since May–July) and say so where it matters
 
 ---
 
@@ -17,7 +18,7 @@
 
 An automated prediction market trading bot, built from scratch with institutional governance, designed to progress from a research-only forecasting engine to a live-capital trading system. The bot ingests signals, generates calibrated probabilistic forecasts, and — once promoted through formal gates — executes positions on prediction market venues. Full framing (vision, alpha taxonomy, market efficiency thesis) lives in `CLAUDE.md` — read that for *why*, this document for *where*.
 
-**Current phase:** Phase 6/7 ACTIVE — paper trading live on the VPS. MLB is the active G6 pool; NBA is dark/frozen (tabled per standing operator directive, not a live risk signal — see `CLAUDE.md` § "Who built this and why it matters").
+**Current phase:** Phase 6 paper trading (G0–G5 closed, G6 not cleared). Four sports log pre-registered shadow forecasts (MLB, NFL, NHL, NBA); one cell trades flat demo measurement stakes (MLB player hits, T4M-PROJ); $0 real capital. **For where the project is right now, read the RUNNING SITREP at the top of [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) — never this line.** The operator's north star is [CLAUDE.md](../CLAUDE.md) § "What winning looks like".
 **Capital status:** Research/paper-only. No real capital authorized. Live capital requires G6 Release Gate passage (30 resolved paper bets with positive P&L, per-band `clean_n ≥ n*` sample adequacy per APR-0024, and DS sign-off per ADR-0005).
 
 ---
@@ -26,7 +27,9 @@ An automated prediction market trading bot, built from scratch with institutiona
 
 | Need | Go to |
 |------|-------|
-| What the system does and why (vision, alpha taxonomy, hard rules) | [CLAUDE.md](../CLAUDE.md) |
+| **Where we are right now** (bottom line, pillar scoreboard, calendar, operator's open calls) | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) — RUNNING SITREP at the top |
+| **What winning looks like** (the operator's north star — BREADTH / DEPTH / EXECUTION / PROOF) | [CLAUDE.md](../CLAUDE.md) § "What winning looks like" |
+| What the system does and why (vision, alpha taxonomy, hard rules, session protocol) | [CLAUDE.md](../CLAUDE.md) |
 | What the system does and why (spec form) | [01_SPEC/VISION_OUTCOMES.md](../01_SPEC/VISION_OUTCOMES.md) |
 | What is in and out of scope | [01_SPEC/SCOPE_IN_OUT.md](../01_SPEC/SCOPE_IN_OUT.md) |
 | Hard risk limits and kill-switch conditions | [01_SPEC/RISK_APPETITE_CONSTRAINTS.md](../01_SPEC/RISK_APPETITE_CONSTRAINTS.md) |
@@ -39,18 +42,23 @@ An automated prediction market trading bot, built from scratch with institutiona
 | Why decisions were made (formal ADRs) | [03_DECISIONS/](../03_DECISIONS/) (files named `ADR-NNNN_*.md`) |
 | **Mathematical / model overview** (model class, calibration methodology, feature classes) | [08_MODEL_RISK_GOVERNANCE/METHODOLOGY.md](../08_MODEL_RISK_GOVERNANCE/METHODOLOGY.md) |
 | Model card, limitations, monitoring/drift plan | [08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md](../08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md), [08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md](../08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md) |
-| G6 gate checklist and current status | [08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md](../08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md) |
+| G6 gate checklist and current status | [08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md](../08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md) Checklist last edited 2026-07-06; since 2026-10-08 T4M-PROJ's G6 evidence counts real demo fills only (GG-527). |
 | **Commercial validation status (live n-counts, EV, tier progress)** | [03_DECISIONS/GOVERNANCE_GAP_LOG.md](../03_DECISIONS/GOVERNANCE_GAP_LOG.md) GG-004 + [05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG004_ev_validation_benchmark_history.md](../05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG004_ev_validation_benchmark_history.md) |
 | Open governance process gaps | [03_DECISIONS/GOVERNANCE_GAP_LOG.md](../03_DECISIONS/GOVERNANCE_GAP_LOG.md) |
-| What's being worked on right now | [04_EXECUTION/TODO_NEXT.md](../04_EXECUTION/TODO_NEXT.md) |
-| Active risks, issues, dependencies | [04_EXECUTION/RID_LOG.md](../04_EXECUTION/RID_LOG.md) |
-| **Latest strategic update / what happened most recently** | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) (top entry is always most recent) or the newest `11_MEMORY_HANDOFF/OPERATOR_DIGEST_*.md` |
-| Research questions and experiments | [05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md](../05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md) |
-| How to run the system | [06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md](../06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md) |
+| What's being worked on right now | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) — the wave under NOW (three blocks run by terminals). `TODO_NEXT.md` is the per-task ledger through T-580 (2026-09-28), not the live list. |
+| Operator decisions waiting, and every standing authorization | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) § "Needs your decision" |
+| How the strategic window runs (protocols, traps, state at last handoff) | [04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md](../04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md) |
+| Market-type × band cells and their status (the live inventory) | `src/prediction_market_bot/c5_execution/market_type_registry.py` (`MARKET_TYPE_REGISTRY`); summarized in [EXECUTION_BANDS.md § Live Registry](../02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md) |
+| Pre-registrations for the shadow arms (what each first look computes and its verdict rule) | `05_RESEARCH_EXPERIMENTS/EXP036_*`, `EXP037_*` (NFL, MLB), `EXP038_*` |
+| Exploratory research (challengers, never verdicts) | [12_EXPLORATORY/CHARTER.md](../12_EXPLORATORY/CHARTER.md) |
+| Active risks, issues, dependencies | [03_DECISIONS/GOVERNANCE_GAP_LOG.md](../03_DECISIONS/GOVERNANCE_GAP_LOG.md) (live). `04_EXECUTION/RID_LOG.md` has not been updated since 2026-05-28. |
+| **Latest strategic update / what happened most recently** | [04_EXECUTION/ACTIVE_QUEUE.md](../04_EXECUTION/ACTIVE_QUEUE.md) (sitrep + Sequencing track, newest wave first) and the newest entries at the bottom of [03_DECISIONS/DECISION_LOG/DECISION_LOG.md](../03_DECISIONS/DECISION_LOG/DECISION_LOG.md) |
+| Research questions and experiments | [05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md](../05_RESEARCH_EXPERIMENTS/RESEARCH_QUESTIONS.md) Not updated since 2026-05-28 — the experiment record is `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/` and the EXP-0NN pre-registrations. |
+| How to run the system | [06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md](../06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md) Not updated since 2026-05-28 — the live job schedule is `deploy/` (mirrors the VPS crontab) and `.github/workflows/`. |
 | **Continuous testing / validation results** | [07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md](../07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md) (strategy) + [07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/](../07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/) (results) + [07_TEST_VALIDATION_EVIDENCE/EVIDENCE/](../07_TEST_VALIDATION_EVIDENCE/EVIDENCE/) (raw evidence) |
 | Security, compliance, access controls | [09_SECURITY_PRIVACY_COMPLIANCE/POLICY_REQUIREMENTS.md](../09_SECURITY_PRIVACY_COMPLIANCE/POLICY_REQUIREMENTS.md) |
 | Runbooks, on-call, known issues | [10_INFRA_OPERATIONS/RUNBOOKS/](../10_INFRA_OPERATIONS/RUNBOOKS/), [10_INFRA_OPERATIONS/KNOWN_ISSUES.md](../10_INFRA_OPERATIONS/KNOWN_ISSUES.md) |
-| **Canonical source-of-truth index (live project state)** | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) |
+| Navigation index (module map) + dated state snapshot | [11_MEMORY_HANDOFF/MEMORY_BANK.md](../11_MEMORY_HANDOFF/MEMORY_BANK.md) — its "Where we are" box points back to ACTIVE_QUEUE for live state |
 | Latest session handoff pack | Newest `11_MEMORY_HANDOFF/SESSION_HANDOFF_*.md` or `11_MEMORY_HANDOFF/CONTEXT_PACKS/` |
 | Glossary of project-specific terms | [00_ADMIN/GLOSSARY.md](GLOSSARY.md) |
 | Approvals register (ADR/APR sign-off status) | [00_ADMIN/APPROVALS_REGISTER.md](APPROVALS_REGISTER.md) |

@@ -1,5 +1,14 @@
 # TODO Next — Prediction Market Trading Bot
 
+> ## ▶ WHERE WE ARE — read this first (2026-10-09, strategic window "forest" pass)
+>
+> **This is not the live task list any more.** Since Wave ~36 (2026-09-28) work is planned and run as waves of three terminal
+> blocks in **`04_EXECUTION/ACTIVE_QUEUE.md`** — the wave in flight is under NOW, dated work under "Queued next", the operator's
+> calls under "Needs your decision". The newest task entry below is T-580 (2026-09-28); tasks T-581 onward (through T-762 on
+> 2026-10-09) are recorded only in the queue's Sequencing track, the DECISION_LOG and `SESSION_CLAIMS.md`.
+> Entries below marked OPEN / unstaffed (e.g. T-518, T-532) were **not re-verified** in the 2026-10-09 pass; check the queue and
+> the gap log before acting on one. The "Last reviewed" lines are generated per session and do not mean this body was re-read.
+
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
 **Last reviewed:** 2026-10-09T01:05:00Z (T-747 — W61.1 GG-527 built and merged (#191,#193): fills-only T4M-PROJ evidence + post-2026 stake gate; t4-mlb restart pending) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0100Z_W61_1.md` for full session detail.

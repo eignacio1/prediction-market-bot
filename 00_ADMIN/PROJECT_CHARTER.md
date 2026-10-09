@@ -1,5 +1,10 @@
 # Project Charter — Prediction Market Trading Bot
 
+> **2026-10-09:** the operator's current north star — what winning looks like, in four pillars (BREADTH, DEPTH, EXECUTION,
+> PROOF) — is canonical in `CLAUDE.md` § "What winning looks like". Where this document's scope or outcomes read narrower
+> (e.g. NBA-first, a single market family), that section and the 2026-10-08 expansion directive supersede it; live status is
+> the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`.
+
 **Purpose:** Define the project's intent, scope boundaries, success criteria, phase gates, and top risks. This is the authoritative statement of what we are building and why.  
 **Owner (role):** Product/Problem Owner (PO) | Directory Steward (DS)  
 **Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: fixed genuine drift (§4 Constraints "Venue: TBD" — ADR-0003 has been ACCEPTED since 2026-05-23, Kalshi primary/Polymarket US secondary); gate table, risks, and success-criteria sections verified current, no further drift found.  

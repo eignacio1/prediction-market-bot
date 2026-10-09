@@ -3,7 +3,7 @@
 **Purpose:** Define the five execution time-horizon bands (T1–T5) and their model complexity, execution quality, and Kelly sizing requirements. The authoritative design document for multi-band trading strategy implementation.
 **Owner (role):** Architecture Owner (AO)
 **Status:** CANONICAL (2026-05-29)
-**Last reviewed:** 2026-07-19 (CLAUDE.md lean-up pass — added the "Live Registry" section below as this document's own current band-status inventory, moved verbatim from CLAUDE.md § "Execution timing (T1–T5 bands)". Prior to this pass, that section told readers to go check CLAUDE.md for the live registry — CLAUDE.md had, over many sessions, become the de facto live registry by default, which is exactly why it had ballooned with decaying state. This document is the correct permanent home for band status; CLAUDE.md now points here instead of the reverse.)
+**Last reviewed:** 2026-10-09 (Live Registry inventory regenerated from `MARKET_TYPE_REGISTRY`; strategic window forest pass) · **previously** 2026-07-19 (CLAUDE.md lean-up pass — added the "Live Registry" section below as this document's own current band-status inventory, moved verbatim from CLAUDE.md § "Execution timing (T1–T5 bands)". Prior to this pass, that section told readers to go check CLAUDE.md for the live registry — CLAUDE.md had, over many sessions, become the de facto live registry by default, which is exactly why it had ballooned with decaying state. This document is the correct permanent home for band status; CLAUDE.md now points here instead of the reverse.)
 **Last reviewed (prior):** 2026-05-31 (T-106: T2 activation gate corrected — FEATURE_VERSION 1.3.0 removed; gate now requires DS-04 operational + EXP validation. EXP-012 falsified injury signal at current N.)
 **Next review:** On any band activation; on Phase 8 real-time infrastructure scope; monthly grounding-docs staleness review (TODO_NEXT.md Standing Items)
 **Staleness triggers:** New band activated; Kelly fraction adjusted by ADR; execution SLA changed; new pipeline deployed
@@ -26,7 +26,30 @@ T1/T2/T3/T5 status below is still substantively accurate (T5 in particular remai
 
 ---
 
-## Live Registry — Current Band Status (moved from CLAUDE.md, 2026-07-19)
+## Live Registry — Current Band Status (moved from CLAUDE.md 2026-07-19; inventory refreshed 2026-10-09)
+
+**Authoritative source: `MARKET_TYPE_REGISTRY` in `src/prediction_market_bot/c5_execution/market_type_registry.py`** — cells keyed on
+(MarketType, ExecutionBand), each with its own `CellStatus`. The table below was read from it on 2026-10-09 (origin/main f2df389+);
+regenerate it rather than hand-editing:
+`PYTHONPATH=src python3 -c "from collections import defaultdict as D; from prediction_market_bot.c5_execution.market_type_registry import MARKET_TYPE_REGISTRY as R; d=D(lambda:D(list)); [d[str(c.market_type).split('.')[-1]][str(c.status).split('.')[-1]].append(str(c.band).split('.')[-1]) for c in (R.values() if hasattr(R,'values') else R)]; [print(m, dict(d[m])) for m in sorted(d)]"`
+
+**104 cells: ACTIVE 1 · SHADOW 24 · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76.** SHADOW = evaluate and log under a pre-registration, no orders.
+
+| Sport · market type | ACTIVE | SHADOW | BLOCKED | DARK | NOT_IMPLEMENTED |
+|---|---|---|---|---|---|
+| MLB player hits (`KXMLBHIT`) | T4M-PROJ (flat demo stakes, ADR-0050; stops after the 2026 World Series, GG-527) | T1, T2, T3 | T4M-ARITH, T4M-FLOW | — | T5 |
+| MLB moneyline · run line · game total · team total · partial game | — | — (postseason rows log under EXP-037 MLB but the cells are not registered SHADOW) | — | — | T1, T2, T3, T4 in-play, T4M-ARITH, T4M-FLOW, T5 (each) |
+| NFL moneyline · spread · game total · team total | — | T1, T2, T3 (each; EXP-037) | — | — | T4 in-play, T4NFL-ARITH, T4NFL-FLOW, T5 (each) |
+| NHL moneyline · puck line · game total | — | T1, T2, T3 (each; EXP-036) | — | — | T4 in-play, T4NHL-ARITH, T4NHL-FLOW, T5 (each) |
+| NBA moneyline · spread · game total · team total | — | — (EXP-038 arm logs preseason rows to a separate labelled ledger; cells flip to SHADOW ~2026-10-21) | — | — | T1, T2, T3 (each) |
+| NBA player points | — | — | — | T4 in-play (old NBA book, frozen) | — |
+
+`kelly_fraction` is 0.0 on every operating band (ADR-0048); the non-zero values in `execution_bands.py` sit only on bands that are
+not operating (T5, NBA T4 sub-bands, provisional MLB T4 sub-bands). **The prose below this table is the 2026-07-19 band narrative
+(MLB and NBA only) and is partly superseded** — notably, MLB player-hits T1/T2/T3 are SHADOW in the registry, not "ACTIVE", and
+the MLB T1 model measured 18 features / 0 qualitative (T-597), not 78.
+
+### Band narrative as of 2026-07-19 (MLB/NBA only; kept for its design detail)
 
 **This is the authoritative, current inventory of which sub-bands are ACTIVE / BLOCKED / dark, per sport.** It supersedes the band-status table implications elsewhere in this document (those describe original design intent, per the note above). Update this section — not CLAUDE.md — when a band's status changes; CLAUDE.md carries only a one-line pointer here so this doesn't happen twice.
 

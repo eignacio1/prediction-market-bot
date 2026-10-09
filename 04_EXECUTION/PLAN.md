@@ -1,5 +1,13 @@
 # Execution Plan — Prediction Market Trading Bot
 
+> ## ▶ WHERE WE ARE — read this first (2026-10-09, strategic window "forest" pass)
+>
+> **Phase 6 (paper trading) is current; G6 is not cleared; $0 real capital.** The phase tables below were written in May 2026 and
+> their target dates (Phase 6 → 2026-10-25, G6 → 2026-12-06, live capital 2027-Q1) were **never re-planned**: G6 timing is now
+> governed by per-band `clean_n ≥ n*` (APR-0024) and the n*-wall decision (APR-0035, open), and the operator's sequencing is
+> set by directives, not by this table — north star in `CLAUDE.md` § "What winning looks like", expansion directive 2026-10-08,
+> live plan and calendar in the RUNNING SITREP of `04_EXECUTION/ACTIVE_QUEUE.md`. Read the tables below as history.
+
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
 **Last reviewed:** 2026-10-09T01:05:00Z (T-747 — W61.1 GG-527 built and merged (#191,#193): fills-only T4M-PROJ evidence + post-2026 stake gate; t4-mlb restart pending) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0100Z_W61_1.md` for full session detail.

@@ -12,6 +12,27 @@
 
 ---
 
+
+## Operating Vocabulary (added 2026-10-09 — strategic window forest pass)
+
+| Term | Project-Specific Meaning | Notes | Owner | Last Reviewed |
+|------|--------------------------|-------|-------|---------------|
+| Wave | One round of work: three blocks written by the strategic window into `04_EXECUTION/ACTIVE_QUEUE.md`, run in parallel by terminals, then verified against GitHub and closed | Numbered (Wave 61, 62 ...); outcomes kept in the queue's Sequencing track | Strategic window | 2026-10-09 |
+| Block | One paste-in prompt for one terminal session; MEDIUM size = two parts, ~60 min target, 90 min hard ceiling, each part pushed before the next | Ends with an END OF BLOCK line so a truncated paste is caught | Strategic window | 2026-10-09 |
+| Strategic window | The directing Claude session: derives state from GitHub, writes waves, verifies results, routes decisions to the operator; never executes blocks itself | Its operating doc is `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`; hands off via `/strategic-handoff` | Operator | 2026-10-09 |
+| RUNNING SITREP | The forest view at the top of ACTIVE_QUEUE.md: bottom line, pillar scoreboard, calendar, operator's open calls | Updated at every wave close; the first place to look for where the project is | Strategic window | 2026-10-09 |
+| Pillars (BREADTH / DEPTH / EXECUTION / PROOF) | The operator's north star, canonical in CLAUDE.md § "What winning looks like". Every block and session names the pillar it moved; PLUMBING is necessary but not a pillar | Two consecutive waves with no pillar moved = drift, flagged to the operator | Operator | 2026-10-09 |
+| Cell | One (MarketType, ExecutionBand) pair in `MARKET_TYPE_REGISTRY`, with its own CellStatus | Status values: ACTIVE, SHADOW, BLOCKED, DARK, NOT_IMPLEMENTED, RULED_OUT | Execution Lead | 2026-10-09 |
+| SHADOW | Cell status: evaluate and log forecasts under a pre-registration; no order, position, stake or sizing | Evidence for calibration, never for execution | Execution Lead | 2026-10-09 |
+| Shadow arm | The jobs that produce one sport's shadow forecasts (e.g. the NFL arm = 12 cells under EXP-037) | A silent arm (games scheduled, zero rows) is flagged by the SILENT ARMS block of the governance scan | Execution Lead | 2026-10-09 |
+| Pre-registration | A committed document fixing a cell's comparisons, judged n, seed and verdict rule before its first row | Changes only by a dated addendum before any judged data, with the operator's line; never after results | Research Lead | 2026-10-09 |
+| Judged n / first look | The pre-registered sample size at which a cell is first scored (e.g. 60 games per NFL cell); the first look is that scoring | Below judged n a cell is sealed: no score may be read | Research Lead | 2026-10-09 |
+| Calibration engine | The daily job (13:49 UTC) that scores every cell under its own pre-registration, sealed below judged n, and writes frozen release manifests | Its output is the Calibration section of the Visual Dashboard | Research Lead | 2026-10-09 |
+| Fill / CONFIRMED_FILLED | A demo-venue order that actually executed, per the venue's own fill history; "submitted" is not "filled" | Since 2026-10-08 (GG-527) T4M-PROJ's G6 and execution evidence count CONFIRMED_FILLED rows only | Execution Lead | 2026-10-09 |
+| Exploratory track | `12_EXPLORATORY/`: research on archives and past seasons that builds challengers for pre-registered cells; never reads sealed results; never a verdict | Graduates only through a new operator-accepted pre-registration | Research Lead | 2026-10-09 |
+| Visual Dashboard / Live Terminal | Visual Dashboard (`/project`) = operational review of the whole bot; Live Terminal (`/`) = what the bot is placing and evaluating, live | Opened via `Open Dashboard.command` (SSH tunnel to localhost:8050) | Operator | 2026-10-09 |
+| Authorization (blockquote) | An operator decision recorded as a `> **AUTHORIZATION - ...**` line in ACTIVE_QUEUE.md "Needs your decision", with what it covers and does not | A table row describing a decision is not an authorization | Operator | 2026-10-09 |
+
 ## Prediction Market Mechanics
 
 | Term | Project-Specific Meaning | Notes | Owner | Last Reviewed |

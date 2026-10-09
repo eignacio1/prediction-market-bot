@@ -1,5 +1,10 @@
 # Vision and Outcomes — Prediction Market Trading Bot
 
+> **2026-10-09:** the operator's current north star — what winning looks like, in four pillars (BREADTH, DEPTH, EXECUTION,
+> PROOF) — is canonical in `CLAUDE.md` § "What winning looks like". Where this document's scope or outcomes read narrower
+> (e.g. NBA-first, a single market family), that section and the 2026-10-08 expansion directive supersede it; live status is
+> the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`.
+
 **Purpose:** Define the north star vision and the concrete outcomes that constitute success. Upstream of all requirements.  
 **Owner (role):** Product/Problem Owner (PO)  
 **Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: verified current, no drift found. North star vision and outcome hierarchy still align with CLAUDE.md's Principal Vision framing (calibration engine, P&L as score); tier structure (research integrity / operational safety / live capital performance) unaffected by phase progression to date.  

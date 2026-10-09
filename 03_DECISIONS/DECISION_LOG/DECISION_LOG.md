@@ -1997,3 +1997,29 @@ the running process (start 06:14:48Z) postdates the source containing `stake_sto
 deploy decision for this wave's PR: see PR deploy summary. T1 MLB submits demo orders; 85 of 485 closed positions filled;
 settled fills n=83 -$124.73 (-$1.50/bet, CI -3.67..+0.63), non-fills +$11.56. `t4_fill_status` made book-agnostic
 (`--book`, per-book sidecar). No T1 counting/status/ledger change; GG-536 registered for the operator.
+
+## 2026-10-09 ~07:30 UTC — Core-structure "forest" pass: stale nav docs brought current (operator directive)
+
+Operator (2026-10-08 23:42 PT): "go comb through our core document structure and adjust accordingly ... shit is stale all over
+the place. Starting with our Claude.md file ... assess the scope of files that needs to be hit and then make the adjustments
+accordingly. 'If somebody picked this up - will they know where we're at?' That's the fucking basis."
+Blast radius found (dates are last real content edits): MEMORY_BANK Current State Snapshot 2026-08-14 and Health status
+2026-07-02 (body masked by per-session generated "Last reviewed" stamps); its copy of the session protocol still used the
+retired `grep "| OPEN"` (GG-144); 00_ADMIN/README nav hub 2026-07-19 (82 days; its own 14-day GG-127 alert had been printing
+every session) and pointed "what's being worked on" at TODO_NEXT; TODO_NEXT's newest task T-580 (2026-09-28); PLAN's May-2026
+phase dates never re-planned; EXECUTION_BANDS Live Registry 2026-07-19 (MLB/NBA only; called MLB T1 "ACTIVE", registry says
+SHADOW); /ctx served a 2026-05-29 snapshot as "full context restore"; /status read May-era files; CLAUDE.md: T1 "78-feature"
+(measured 18, T-597), Q1 system description, Q2 "has EXP-017 run?" (it ran, 2026-07-07), Step 4 blind to shadow arms; no root
+README.
+Changes (docs only): CLAUDE.md corrections + new remediation-pass header; MEMORY_BANK "Where we are" box, fresh dated Current
+State Snapshot, Health status, Project Identity, protocol copy replaced by pointer, What Must Happen Next and Compass OS Health
+replaced by pointers — all superseded text moved verbatim to MEMORY_BANK_ARCHIVE.md (2026-10-09 section); 00_ADMIN/README
+re-pointed at the live-state files; banners on TODO_NEXT, PLAN, MARKET_EXPANSION_ACTION_PLAN, VISION_OUTCOMES, PROJECT_CHARTER
+and three root working files; EXECUTION_BANDS Live Registry regenerated from MARKET_TYPE_REGISTRY (with the command); /ctx and
+/status rewritten as pointer-based (old bodies archived in 11_MEMORY_HANDOFF/*_COMMAND_SNAPSHOT_*.md); GLOSSARY operating
+vocabulary; new root README.md and 04_EXECUTION/README.md.
+Tested: stale-marker sweep across 19 core files (2 hits, both historical narration); every entry file reaches the RUNNING SITREP
+in one hop; check_memory_bank_snapshots.sh clean; session-artifact generator intact; doc-reading tests 41 passed.
+Findings for the operator: (1) the nav files' "Last reviewed" lines are stamped by every session's generator, so they read
+fresh while bodies went stale for 1-3 months; (2) the GG-127 nav-hub staleness alert fired every session for ~2 months and
+nobody acted on it — an alarm without an owner. Not changed in this pass (code): the generator stamp semantics.
