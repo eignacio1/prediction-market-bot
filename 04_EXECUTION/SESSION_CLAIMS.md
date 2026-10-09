@@ -804,3 +804,4 @@
 | 2026-10-09T00:21:08Z | T-750..T-752, GG-532, GG-534..GG-535 | W61.2 MEDIUM - verdict readiness: VPS health, GG-401 close-out, gap-log retirement, NFL first-look rehearsal |
 | 2026-10-09T00:43:46Z | T-750 | CLOSED — W61.2 verdict readiness: VPS health, GG-401 closed, NFL release path fixed and rehearsed, runbook written; GG-532 open. (commit `b5946c6`) |
 | 2026-10-09T00:44:12Z | T-750 | CLOSED — merge confirmed, HEAD (f0f4f8c) is ancestor of origin/main — W61.2 verdict readiness closed |
+| 2026-10-09T00:58:50Z | T-751 | CLOSED — merge confirmed, HEAD (df41e51) is ancestor of origin/main — W61.3 exploratory track Parts A-C merged; no challenger improvement |
