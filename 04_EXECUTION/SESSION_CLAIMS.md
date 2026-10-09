@@ -825,3 +825,4 @@
 | 2026-10-09T17:33:22Z | T-772..T-774, GG-548..GG-549 | W64.1 MEDIUM - NFL deep challenger: QB-shrunk performance (63.2 Part B). PURPOSE: DEPTH D1 nfl_pregame team->team+personnel, D3 0->1 (PROPOSED NFL challenger pre-reg) |
 | 2026-10-09T17:34:24Z | T-775..T-777, GG-550..GG-551 | W64.3 MEDIUM - props first: NBA player-points pre-game arm (survey, model, pre-reg, wiring). PURPOSE: BREADTH B4 props 1->2, B1 37->40 |
 | 2026-10-09T17:35:00Z | T-780..T-782, GG-555..GG-556 | W64.2 MEDIUM - demo fill placement rule + forward test (switch OFF). PURPOSE: EXECUTION E1/E2/E3 made movable (moves nothing until ADR-0072 accepted) |
+| 2026-10-09T17:53:24Z | T-775 | CLOSED — W64.3 Part A: NBA player-points survey, retrain decision, EXP-039 pre-registered on main; Part B (model/runner/cron/flip) not started. (commit `29893b2`) |
