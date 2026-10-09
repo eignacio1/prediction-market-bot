@@ -293,6 +293,20 @@ def sec_calibration(repo: Path) -> dict:
     return _sec(f"{CALIB_DIR}/{files[-1].name}", d.get("generated"), **{k: d[k] for k in ("cells", "historical", "summary", "gg_open")})
 
 
+def _exec_row(r: dict) -> str:
+    """GG-527: T4M-PROJ shows real-fill figures as the execution evidence and the
+    all-rows figure as the calibration record, in plain words."""
+    x = r.get("execution")
+    if not x:
+        return ""
+    return ("<tr><td colspan=6 class='asof'>"
+            f"<b>Execution evidence (real fills only):</b> {_e(x['fills_n'])} filled trades, "
+            f"P&amp;L <span class='num'>{_usd(x['fills_pnl'])}</span>. "
+            f"<b>Calibration record (all rows, not execution evidence):</b> {_e(x['all_n'])} rows, "
+            f"P&amp;L <span class='num'>{_usd(x['all_pnl'])}</span>. "
+            "Rows whose order never filled are model-calibration data only (GG-527).</td></tr>")
+
+
 def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
@@ -418,6 +432,7 @@ def _ops_tables(ops: dict, head: Any, aw: Any) -> dict[str, str]:
                    f"<td class='num'>{_cell(r['state'], _dd(r))}</td>"
                    f"<td class='num'>{_e(r['open_positions'] if r.get('open_positions') is not None else 'no data')}</td>"
                    f"<td class='num'>{_e(r['last_write'] or 'no data')} <span class='nd'>({_ago(r)})</span></td>") + "</tr>"
+                + _exec_row(r)
                 for r in b.get("rows", [])) + "</table>")
     out["books"] = wrap("books", "Books & risk — paper ledgers", b, body,
                         "<div class='asof'>Paper money only. Drawdown is realized loss over initial bankroll, the quantity the kill switch reads. "

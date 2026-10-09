@@ -87,3 +87,25 @@ def test_g6_counting_uses_filled_rows_only(tmp_path):
     assert res["raw_n"] == 2
     assert res["calibration_all_rows_n"] == 10
     assert "not execution evidence" in res["calibration_all_rows_label"]
+
+
+def test_execution_summary_and_dashboard_labels(tmp_path):
+    closed = [
+        {"band": "T4M-PROJ", "position_id": "A", "outcome": "LOSS", "pnl": -1.0},
+        {"band": "T4M-PROJ", "position_id": "B", "outcome": "WIN", "pnl": 0.4},
+        {"band": "T4M-PROJ", "position_id": "C", "outcome": "WIN", "pnl": 0.5},
+        {"band": "T1", "position_id": "Z", "outcome": "WIN", "pnl": 9.0},
+    ]
+    status = {"A": {"fill_class": tfs.CONFIRMED_FILLED}, "B": {"fill_class": tfs.CONFIRMED_NOT_FILLED}}
+    x = tfs.execution_summary(closed, status)
+    assert (x["fills_n"], x["fills_pnl"], x["all_n"], x["all_pnl"]) == (1, -1.0, 3, -0.1)
+    import generate_project_state as gps
+    html = gps._exec_row({"execution": x})
+    assert "real fills only" in html and "not execution evidence" in html
+    assert gps._exec_row({}) == ""
+
+
+def test_live_terminal_templates_carry_fills_labels():
+    for f in (ROOT / "Live Terminal.html", ROOT / "scripts" / "web_dashboard.py"):
+        t = f.read_text()
+        assert t.count("T4 P&L · REAL FILLS") == 2 and "calibration, not execution" in t

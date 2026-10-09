@@ -751,6 +751,13 @@ def _book(p: dict, now: datetime, name: str) -> dict:
             "awaiting": None if dd is not None else "portfolio"}
 
 
+def _t4_execution(log_dir: Path) -> dict:
+    from prediction_market_bot import t4_fill_status as tfs
+    pf = _load_json_dropping_key(log_dir / "paper_portfolio_mlb_t4.json", "rejected_positions") or {}
+    status = tfs.load_fill_status(log_dir / "t4_mlb_fill_status.jsonl")
+    return tfs.execution_summary(pf.get("closed_positions") or [], status)
+
+
 PLACEMENT_ROWS = 30
 FLAT_STAKE_LABEL = "flat-stake · ADR-0050 · paper"
 
@@ -1129,6 +1136,8 @@ def _load_all_data() -> dict:
         # Live Terminal (T-600/D2) — additive only; every key above unchanged.
         "rejected_counts": safe(lambda: _rejected_counts(d), {}),
         "t4_cycle_tail":   safe(lambda: _load_cycle_tail(d), []),
+        # GG-527: T4M-PROJ execution evidence = CONFIRMED_FILLED rows only (fill-status sidecar).
+        "t4_execution":    safe(lambda: _t4_execution(d), {}),
         "process":         safe(lambda: {"started_at": _PROCESS_STARTED_AT,
                                          "sha": _RUNNING_SHA}, {}),
         # Operator terminal v2 (47.1 D6) — additive.
@@ -1599,9 +1608,9 @@ function led(k,t){$('#led').className='led '+k; $('#ledtxt').textContent=t}
 
 /* ═══════════ DERIVE ═══════════ */
 function derive(d){
-  const P=d.portfolio||{}, T4=d.t4_portfolio||{}, NF=d.nfl_portfolio||{};
+  const P=d.portfolio||{}, T4=d.t4_portfolio||{}, NF=d.nfl_portfolio||{}, X=d.t4_execution||{};
   const tag=(a,b,s)=>toArr(a).map(p=>({...p,_band:b,_sport:s}));
-  return {P,T4,NF,
+  return {P,T4,NF,X,
     open:[...tag(P.open_positions,'T1','MLB'),...tag(T4.open_positions,'T4','MLB'),...tag(NF.open_positions,'NFL','NFL')],
     closed:[...tag(P.closed_positions,'T1','MLB'),...tag(T4.closed_positions,'T4','MLB'),...tag(NF.closed_positions,'NFL','NFL')],
     events:[...tag(d.audit,'T1','MLB'),...tag(d.t4_audit,'T4','MLB'),...tag(d.nfl_audit,'NFL','NFL')]
@@ -1770,7 +1779,8 @@ function railSpec(D,d){
     const w=res.filter(p=>p.outcome==='WIN').length;
     return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
       ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
-      ['T4 P&L',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,'sign'],
+      ['T4 P&L · REAL FILLS ('+(D.X.fills_n??'—')+')',usd(D.X.fills_pnl),D.X.fills_pnl,'sign'],
+      ['T4 P&L · ALL ROWS (calibration, not execution)',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,''],
       ['DAILY P&L',usd((Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0)),
         (Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0),'sign'],
       ['OPEN T1',String(o.filter(p=>p._band==='T1').length),o.filter(p=>p._band==='T1').length,''],
@@ -1799,7 +1809,8 @@ function railSpec(D,d){
     ['WIN RATE',res.length?(w/res.length*100).toFixed(1)+'%':'—',res.length?w/res.length:null,''],
     ['STUB ROWS',String(stub),stub,stub?'bad':''],
     ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
-    ['T4 P&L',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,'sign'],
+    ['T4 P&L · REAL FILLS ('+(D.X.fills_n??'—')+')',usd(D.X.fills_pnl),D.X.fills_pnl,'sign'],
+      ['T4 P&L · ALL ROWS (calibration, not execution)',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,''],
     ['NFL P&L',usd(D.NF.total_realized_pnl),D.NF.total_realized_pnl,'sign']];
 }
 function rail(D,d){
