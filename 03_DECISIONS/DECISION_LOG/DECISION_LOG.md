@@ -1950,3 +1950,15 @@ CI: Test Suite + Deploy green on c9e2315. Gap log 129 OPEN, parity 153=153, no d
 t4-mlb restart while no MLB game is live, to load the GG-527 gate; fallback the post-World-Series block.
 **Wave 62:** 62.1 GG-532 fix + silent-arm alarm; 62.2 secure the pre-2026 price history (GG-533) + pre-commit NFL
 first-look expectations in writing before any cell reaches n; 62.3 restart + read-only T1 MLB fill audit + NBA flip dry run.
+
+## 2026-10-08 23:20 PT — OPERATOR DIRECTIVE: expansion ("we're trying to win"); calibration-only mode ended
+
+Operator: "I'm talking about decision making and execution cadence --- we're leaving money on the table. I feel it's time
+to expand our arms to intake all of this volatility knowing we're still not touching live capital." On the window's four
+levers (more pre-registered shadow arms; demo flat-stake fills on SHADOW cells via ADR; standing authorizations; VPS
+resize): "all 4 of these should fire ... CUS WE'RE TRYING TO FUCKING WIN."
+Recorded as: directive section in ACTIVE_QUEUE.md superseding the 2026-10-06 "do not add cells" rule; four authorization
+blockquotes (standing new pre-registered shadow arms + new cron lines; standing idle-window restarts; demo flat stakes
+BUILD behind an off switch, ON only at operator ADR acceptance; VPS resize up to 4 GB RAM). Terminal block size unchanged
+(operator keeps terminals on strict parameters). Unchanged guardrails: pre-registration before first row, no score below
+judged n, no relabel, no real capital, kelly 0, demo only. Applies from Wave 63; Wave 62 (in flight) unchanged.

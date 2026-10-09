@@ -80,7 +80,7 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 | before 2027-01-31 | Define EXP-038's date-triggered second look (GG-529) |
 
 ### Your open calls
-~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
+~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 (demo-stake ADR acceptance due at Wave 63 close) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
 gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
 unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
 (GG-529, January) · EXP-034 (park recommended).
@@ -482,6 +482,21 @@ Waves 10–44: see `ACTIVE_QUEUE_ARCHIVE.md`.
 
 ---
 
+## ⬛ OPERATOR DIRECTIVE, 2026-10-08 23:16–23:20 PT — EXPANSION ("we're trying to win"); supersedes calibration-only mode
+
+> *"I'm talking about decision making and execution cadence --- we're leaving money on the table. I feel it's time to
+> expand our arms to intake all of this volatility knowing we're still not touching live capital."* And, on the four
+> levers the window proposed: *"all 4 of these should fire ... CUS WE'RE TRYING TO FUCKING WIN. Tha's it."*
+
+From Wave 63 the waves build arms, not just plumbing: (1) start more evidence clocks — new pre-registered shadow arms,
+least-efficient families first, then game markets; (2) real demo fills on shadow cells (flat stake, ADR); (3) standing
+authorizations so waves don't stall on one-off lines; (4) a bigger VPS so the arms don't bring back the OOM crashes.
+**Supersedes the 2026-10-06 "calibration mode: do not add cells" rule.** Terminal block size is unchanged (MEDIUM,
+60/90) — the operator keeps terminals on strict parameters for context/quality reasons; the expansion is in what the
+waves take on and how fast decisions clear, not in block length.
+**Guardrails that do NOT loosen** (they are what makes a win real): a pre-registration committed before a cell's first
+row; no score read below judged n; no relabel after results; no real capital; kelly_fraction 0; demo venue only.
+
 ## ⬛ OPERATOR DIRECTIVE, 2026-10-07 18:58 PT — MEDIUM BLOCKS (amends the LARGE-block directive below)
 
 "You're making some of these tasks far too long. The terminals are coming back stating ETAs upwards of 3 hours which is
@@ -592,6 +607,31 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - STANDING: NEW PRE-REGISTERED SHADOW ARMS (operator, 2026-10-08 23:20 PT: "all 4 of these should
+> fire").** Covers: building new SHADOW cells for any sport, market family and band, and flipping them NOT_IMPLEMENTED ->
+> SHADOW, PROVIDED the cell's pre-registration (comparisons, judged n, verdict rule, seed, and the expected edge
+> direction - "thinner edge expected" for efficient game markets) is committed to main before the cell's first row;
+> plus the NEW cron lines those arms need, off :00/:30 and the staggered minutes, in their own marked block. Not
+> covered: editing or removing an existing cron line; promotion to ACTIVE; any order or stake (see the demo-stake line).
+
+> **AUTHORIZATION - STANDING: IDLE-WINDOW SERVICE RESTARTS (operator, 2026-10-08 23:20 PT: "all 4 of these should
+> fire").** Covers: restarting t4-mlb, pmbot-web-dashboard or a shadow service to load code already merged to main,
+> only while no MLB game is live (none In Progress, T4 cycle log idle > 15 min, no first pitch within 60 min), as often
+> as needed, each restart recorded with proof the running process has the code. Not covered: restarts during a live
+> game; any config, unit-file or code change made on the box.
+
+> **AUTHORIZATION - DEMO FLAT STAKES ON SHADOW CELLS: BUILD (operator, 2026-10-08 23:20 PT: "all 4 of these should
+> fire").** Covers: drafting the ADR (flat stake per order, demo venue only, fills classified by the 61.1 sidecar,
+> per-cell fill evidence kept separate from calibration evidence, kelly 0 unchanged) and building it behind a switch
+> that is OFF by default, with tests. Not covered: turning the switch on. It goes on when the operator ACCEPTS the ADR -
+> one line from him at wave close; that acceptance is the only remaining gate.
+
+> **AUTHORIZATION - VPS RESIZE (operator, 2026-10-08 23:20 PT: "all 4 of these should fire").** Covers: resizing the
+> droplet to at most 4 GB RAM (same region, same plan family), in a window with no live game and no shadow run due
+> within 30 min, with a snapshot or backup first and a full Step 4 health check before and after. If no DigitalOcean
+> credential is available to the terminal, the block prepares everything and the window hands the operator the single
+> console step. Not covered: region or plan-family change, deleting snapshots, any other paid service.
+
 > **AUTHORIZATION - T4-MLB RESTART TO LOAD THE GG-527 GATE (operator, 2026-10-08 ~18:25 PT: "Yes, once (Recommended)").**
 > Covers: ONE `systemctl restart t4-mlb`, only while no MLB game is live (none In Progress, T4 cycle log idle > 15
 > min, no first pitch within 60 min), to load the stake_stood_down gate merged in #193. If a game is live when the
@@ -645,6 +685,7 @@ GG-432, GG-440, GG-450 and postponed games were decided 2026-10-04 (DECISION_LOG
 
 | Item | Plain English | What it costs while it waits |
 |---|---|---|
+| **Expansion (win mode)** | ✅ **DIRECTED 2026-10-08 23:20 PT: all four levers** — directive section + four lines above; Wave 63 is built on it. Demo stakes go live only on your ADR acceptance (one line). | — |
 | **T4M-PROJ cohort (GG-527)** | ✅ **DECIDED 2026-10-08 ~17:14 PT: (b)+(c)** — built by 61.1; gate activation by 62.3. | — |
 | **t4-mlb restart for the gate** | ✅ **AUTHORIZED 2026-10-08 ~18:25 PT: once, no live game** — line above; 62.3. | — |
 | **NEW — EXP-038 second look (GG-529)** | The NBA pre-registration says "n=400 or 2027-01-31, whichever first" but never says what is scored on the date. Needs a definition before 2027-01-31; the engine scores only n=150/400 until then. | Nothing before January. |
