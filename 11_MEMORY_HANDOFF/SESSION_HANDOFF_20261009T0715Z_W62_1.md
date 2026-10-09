@@ -1,5 +1,18 @@
 # Session handoff — W62.1 (2026-10-09 ~07:15Z)
 
+<!-- session-meta
+task_id: T-761
+tier: STANDARD
+timestamp: 2026-10-09T07:15:00Z
+commit: 815af5f
+one_line_summary: W62.1 MLB postseason matcher fix deployed + silent-arm alarm live on dashboards; GG-532 open pending first scheduled write.
+gg_touched: GG-532
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+-->
+
+
 **Status: PARTIAL-DONE.** Parts A and B merged and deployed. One item open by rule: GG-532.
 
 - PRs: #195 (matcher, cbbd2658), #198 (alarm, 35159a6), #199 (alarm via venv python, 7a884251 = VPS HEAD). CI green on each; Deploy summary on each: `t4-mlb restart decision: not_needed`.

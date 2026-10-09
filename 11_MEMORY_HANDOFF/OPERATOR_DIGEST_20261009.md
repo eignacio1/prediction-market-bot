@@ -8,3 +8,6 @@ The release path for the NFL first look now works end to end. In a rehearsal on 
 - After the 2026 World Series the bot stops placing paper bets on this strategy automatically. Predictions keep being recorded. Turning bets back on needs a new decision from you.
 - One thing waiting: the running bot hasn't picked up the stop yet because a game was live during the update. It needs a restart after the last game, well before spring 2027.
 - No real money involved; paper only.
+
+## W62.1 — MLB postseason tracking + silent-arm alarm
+The MLB playoff tracker had gone quiet because it couldn't match a game whose start time had moved. That is fixed and live on the server. I also built an alarm: if a sport has games on the schedule but the tracker writes nothing, the dashboards now turn red and say how many hours it has been silent. Tested against the stored data, it would have gone red on the first evening. The tracker is not confirmed healthy yet; that needs its next scheduled run (about 12:07 UTC today). No money at risk, no betting changes.

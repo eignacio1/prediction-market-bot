@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-09T01:05:00Z (T-747 — W61.1 GG-527 built and merged (#191,#193): fills-only T4M-PROJ evidence + post-2026 stake gate; t4-mlb restart pending) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0100Z_W61_1.md` for full session detail.
+**Last reviewed:** 2026-10-09T07:15:00Z (T-761 — W62.1 MLB postseason matcher fix deployed + silent-arm alarm live on dashboards; GG-532 open pending first scheduled write.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0715Z_W62_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-01T02:25:00Z (EXP-033 — EXP-033 multi-leg coherence: 0 of 24 pre-registered cells survive the toll; ADR-0069 correlation group drafted PROPOSED.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261001_0225.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
