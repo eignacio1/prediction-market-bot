@@ -70,3 +70,34 @@ Not warranted. The challenger did not beat the frozen model; no PROPOSED challen
 ## B5. Defects registered, not fixed (Hard Rule 11)
 
 - Pre-2026 Kalshi candle store (`candles/`, `raw/`, 169M + 368M) exists only in an untracked agent worktree; deleting that worktree loses the only pre-2026 price history. Needs a GG/T entry (operator to assign).
+
+---
+
+# Part C (EXPLORATORY -- operator-approved follow-up, 2026-10-09)
+
+## C1. Candle store preserved
+`raw/` (368M) and `candles/` (169M) copied from the untracked agent worktree to the main tree
+`exp_output/KALSHI_HISTORY/` (sha256 of `candles/KXNFLGAME.jsonl` identical before/after; both dirs are local-only/untracked,
+`*.jsonl` is gitignored). Original left in place. A resumed `fetch` for KXNFLGAME (idempotent, public GETs, 1.5 req/s) was started
+to fill the Aug-Sep gap; the listing now shows 892 settled markets (up from 862). Rebuild of `candles/` from the extended `raw/`
+is pending (see handoff). Coverage used by Part B (Oct-Jan only) is unchanged until that rebuild and re-run.
+
+## C2. Rolling-origin study (`20261009_nfl_rolling_origin/`, `results.json`)
+Pre-declared candidates, fixed before running: base (frozen recipe, lambda 100), lambda 30, lambda 300, base + dome/closed-roof flag
+(static, point-in-time legal). Test seasons 2019-2023 only (5 seasons, 1,308 games): per test season T, ridge on 2015..T-2,
+probit-Platt + sigma on T-1, score T. 2024/2025/2026 outcomes are never read. Game-bootstrap B=2000, seed 20261009.
+
+| Candidate | Brier | Delta vs base (95% CI) | Seasons better than base |
+|---|---|---|---|
+| base | 0.22853 | -- | -- |
+| lambda 30 | 0.22866 | +0.00014 (-0.00018, +0.00046) | 1/5 |
+| lambda 300 | 0.22843 | -0.00010 (-0.00033, +0.00014) | 5/5 |
+| base + dome | 0.22869 | +0.00016 (-0.00027, +0.00057) | 1/5 |
+
+**Result: no distinguishable improvement.** lambda 300 is directionally better in all five seasons but the pooled effect is 1e-4 Brier with a CI
+spanning zero (about 0.04% of the Brier; not economically meaningful and not a basis for a pre-registration). The dome flag does not help. This
+study has no market prices (none exist pre-2025), so it speaks to model accuracy only, not edge over the market.
+
+## C3. Pre-registration
+Not warranted. Draft not written. Slate candidates (a) dome flag and (b) lambda are both closed as EXPLORATORY "no improvement";
+window/decay variants remain unrun.
