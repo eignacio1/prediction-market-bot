@@ -809,3 +809,4 @@
 | 2026-10-09T06:14:20Z | T-756..T-758, GG-536..GG-537 | W62.3 MEDIUM - load GG-527 gate (t4-mlb restart), T1 MLB fill audit, NBA flip dry run |
 | 2026-10-09T06:14:59Z | T-759..T-760, GG-538 | W62.2 MEDIUM - exploratory part 2: secure pre-2026 Kalshi history (VPS copy + manifest) + NFL first-look expectations doc |
 | 2026-10-09T06:15:33Z | T-761..T-762, GG-539..GG-540 | W62.1 MEDIUM - MLB postseason shadow matcher fix (GG-532) + silent-arm alarm |
+| 2026-10-09T07:07:23Z | T-756..T-758 | CLOSED — merge confirmed, HEAD (a028d80) is ancestor of origin/main — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron/first-look prep; PRs #196 #200 |
