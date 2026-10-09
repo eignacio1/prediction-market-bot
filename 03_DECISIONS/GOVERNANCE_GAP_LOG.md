@@ -3783,7 +3783,9 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-532 — MLB pregame shadow arm has written zero rows since 2026-10-08 01:43Z: every open postseason market skips as no_kickoff
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (2026-10-09, W63.1) · **Severity:** MEDIUM
+
+**Current state (2026-10-09, W63.1 Part A):** RESOLVED. The scheduled T1 job (cron `7 */6`) ran at 2026-10-09T12:07Z on VPS cbbd2658+ and wrote 33 MLB rows (newest 12:07:02Z) across the four game families after the #195 deploy; the RUNNING process contains the fix. Next scheduled T2/T3 runs continue the ledger. Evidence: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W63_1_mlb_full_results.md`.
 
 **Current state (2026-10-09, W62.1 Part A):** FIX DEPLOYED, AWAITING FIRST SCHEDULED WRITE. PR #195 (cbbd2658) matches on teams + ET game date, uses the cache start as kickoff, adds reason `schedule_placeholder`; VPS at cbbd2658; deployed dry-run at 06:27Z would write 33 T1 rows (2 ML, 6 RL, 11 GT, 14 TT). t4-mlb restart: not_needed. Not RESOLVED until a scheduled (cron) run writes rows under the fix (next T1 12:07Z). Prior state follows.
 
