@@ -9,6 +9,11 @@ The release path for the NFL first look now works end to end. In a rehearsal on 
 - One thing waiting: the running bot hasn't picked up the stop yet because a game was live during the update. It needs a restart after the last game, well before spring 2027.
 - No real money involved; paper only.
 
+## W62.2 — NFL history secured, first-look expectations written
+- The saved 2025 Kalshi NFL price history is complete (892 of 892 games) and now copied to the server with checksums verified.
+- I wrote down, before any 2026 results exist, what the first NFL look can and can't tell us. With 60 games per cell it can only detect a gap of about 0.038; last season's gap vs the market was about 0.008. Most likely result: "keep collecting."
+- Nothing here touches live betting or money. Still zero real money at risk.
+- Your calls: refresh the older tracked history files, schedule a server copy, and whether to flag that our assumed noise level looks too optimistic.
 ## W62.1 — MLB postseason tracking + silent-arm alarm
 The MLB playoff tracker had gone quiet because it couldn't match a game whose start time had moved. That is fixed and live on the server. I also built an alarm: if a sport has games on the schedule but the tracker writes nothing, the dashboards now turn red and say how many hours it has been silent. Tested against the stored data, it would have gone red on the first evening. The tracker is not confirmed healthy yet; that needs its next scheduled run (about 12:07 UTC today). No money at risk, no betting changes.
 

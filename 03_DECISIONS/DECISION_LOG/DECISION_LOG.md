@@ -1989,6 +1989,14 @@ Done (docs only, strategic window):
   plausible edge vs market is at or below the first-look MDE, so the modal first-look outcome is SHADOW (no verdict).
   The sitrep previously called 11-02 "the first pre-registered edge verdict"; corrected.
 
+## 2026-10-09 — W62.2 Part A: pre-2026 Kalshi history secured (T-759, GG-538)
+Decision: KXNFLGAME history fetch is complete (892/892); `raw/` + rebuilt derived files copied to the VPS (sha256 verified) and recorded in
+`12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. Tracked `exp_output/KALSHI_HISTORY/{markets,VALIDATION.json}` deliberately NOT refreshed (stale 862/415 build) —
+operator call. Charter gains a data-custody addendum. Exploratory only; no pre-registration changed.
+
+## 2026-10-09 — W62.2 Part B: NFL first-look expectations written before judged n (T-760)
+`12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md`: exploratory, not a verdict, EXP-037 unchanged. Finding: measured per-game paired-Brier SD ~0.106 vs the
+pre-registration's assumed 0.07, so first-look MDE is ~0.038 (assumed 0.025). Modal outcome per cell: SHADOW (~91%). No addendum proposed; flagged to operator.
 
 ## 2026-10-09 (UTC) - W62.3 Part A: GG-527 gate loaded; T1 MLB fill audit (GG-536)
 
