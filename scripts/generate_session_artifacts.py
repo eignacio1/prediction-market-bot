@@ -88,6 +88,30 @@ NAV_TARGETS = [
 ]
 
 
+# Hard Rule 12 (W63.3): handoffs timestamped after Wave 62's close must state the measure they moved and by how much.
+# Older handoffs still parse without these keys.
+GAP_KEYS_REQUIRED_AFTER = "2026-10-09T07:24:13Z"
+GAP_KEYS = ("gap_measure", "gap_delta")
+
+
+def _parse_ts(ts: str):
+    from datetime import datetime, timezone
+    ts = ts.strip().replace("Z", "+00:00")
+    for cand in (ts, ts + "T00:00:00+00:00"):
+        try:
+            d = datetime.fromisoformat(cand)
+            return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+    return None
+
+
+def gap_keys_required(timestamp: str) -> bool:
+    """True when the handoff timestamp is strictly after the Wave 62 close. Unparseable timestamps are treated as legacy."""
+    t, cutoff = _parse_ts(timestamp), _parse_ts(GAP_KEYS_REQUIRED_AFTER)
+    return bool(t and cutoff and t > cutoff)
+
+
 def parse_session_meta(handoff_path: Path) -> dict:
     text = handoff_path.read_text()
     m = META_RE.search(text)
@@ -109,6 +133,14 @@ def parse_session_meta(handoff_path: Path) -> dict:
     missing = required - fields.keys()
     if missing:
         raise SystemExit(f"ERROR: session-meta block missing required fields: {missing}")
+    if gap_keys_required(fields["timestamp"]):
+        gap_missing = [k for k in GAP_KEYS if not fields.get(k)]
+        if gap_missing:
+            raise SystemExit(
+                f"ERROR: session-meta block missing {gap_missing} (required for handoffs after {GAP_KEYS_REQUIRED_AFTER}, "
+                "Hard Rule 12): name the distance-to-optimum measure moved and the measured change "
+                "(e.g. gap_measure: E3, gap_delta: 28.9% -> 41.0% (source)), or gap_measure: PLUMBING / gap_delta: none."
+            )
     return fields
 
 

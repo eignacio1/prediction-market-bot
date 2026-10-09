@@ -1,0 +1,134 @@
+{
+  "_doc": "D1 declared manifest (W63.3): per live pre-game model, the granularity-bar factor classes it conditions on. distance_to_optimum.py checks this against each model's own feature list; any mismatch (undeclared class, declared-but-absent class, unclassifiable feature) is an ERROR, not a warning. Edit = a dated change to a measure input; log in DECISION_LOG. 'matchup' means pair-specific features (head-to-head, platoon, vs_); opponent-team aggregates (opp_*) are TEAM-class.",
+  "classes": [
+    "matchup",
+    "personnel",
+    "team",
+    "venue",
+    "weather",
+    "qualitative"
+  ],
+  "keyword_rules": {
+    "qualitative": [
+      "qual_",
+      "prf_",
+      "sentiment",
+      "narrative"
+    ],
+    "weather": [
+      "temp",
+      "wind",
+      "weather",
+      "precip",
+      "humidity",
+      "dome"
+    ],
+    "personnel": [
+      "goalie",
+      "_sp_",
+      "starter",
+      "injur",
+      "lineup",
+      "roster"
+    ],
+    "venue": [
+      "is_home",
+      "park",
+      "altitude"
+    ],
+    "matchup": [
+      "vs_",
+      "matchup",
+      "h2h",
+      "platoon"
+    ],
+    "team": [
+      "own_",
+      "opp_",
+      "home_",
+      "away_",
+      "h_",
+      "a_",
+      "_h",
+      "_a",
+      "_diff",
+      "ba_l10",
+      "slg",
+      "obp",
+      "k_rate",
+      "bb_rate",
+      "hr_rate",
+      "ab_l10",
+      "h_l10",
+      "days_rest",
+      "b2b",
+      "rest",
+      "pf_",
+      "pa_",
+      "epa",
+      "league_",
+      "runs_allowed"
+    ]
+  },
+  "rule_order": [
+    "qualitative",
+    "weather",
+    "personnel",
+    "venue",
+    "matchup",
+    "team"
+  ],
+  "models": [
+    {
+      "id": "mlb_player_hits_t1",
+      "arm": "MLB player hits T1/T2/T3",
+      "meta": "models/mlb_v1_model_meta.json",
+      "features_key": "feature_names",
+      "vps_only": true,
+      "declared_classes": [
+        "personnel",
+        "team",
+        "venue"
+      ]
+    },
+    {
+      "id": "mlb_game_pregame_v1",
+      "arm": "MLB game markets",
+      "meta": "models/mlb_game_pregame_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "personnel",
+        "team"
+      ]
+    },
+    {
+      "id": "nfl_pregame_v1",
+      "arm": "NFL game markets",
+      "meta": "models/nfl_pregame_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "team"
+      ]
+    },
+    {
+      "id": "nhl_pregame_v1",
+      "arm": "NHL game markets",
+      "meta": "models/nhl_pregame_v1.json",
+      "features_key": "glm_features",
+      "declared_classes": [
+        "personnel",
+        "team",
+        "venue"
+      ]
+    },
+    {
+      "id": "nba_pregame_v1",
+      "arm": "NBA game markets (dark)",
+      "meta": "models/nba_pregame_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "team"
+      ]
+    }
+  ]
+}

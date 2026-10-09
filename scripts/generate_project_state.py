@@ -317,11 +317,19 @@ def sec_silent_arms(repo: Path) -> dict:
     return out
 
 
+def sec_distance(repo: Path) -> dict:
+    """W63.3: the distance-to-optimum measures, computed by scripts/distance_to_optimum.py (read-only)."""
+    sys.path.insert(0, str(Path(repo) / "scripts"))
+    import distance_to_optimum as dto
+    res = dto.compute(repo)
+    return _sec("scripts/distance_to_optimum.py", res["generated"], measures=res["measures"])
+
+
 def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
             "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data,
-            "silent_arms": sec_silent_arms}
+            "silent_arms": sec_silent_arms, "distance": sec_distance}
     out: dict[str, Any] = {"generated": _iso(), "repo": repo.name, "sections": {}}
     for k, fn in secs.items():
         try:
@@ -345,7 +353,7 @@ h2{font-size:14px;margin:0 0 4px}.asof{color:var(--mut);font-size:11.5px;margin-
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:3px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 a{color:var(--acc)}code{font-size:12px}.aw{color:var(--mut);font-style:italic}.bad{color:var(--bad)}.ok{color:var(--ok)}
 .num,.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
-.warn{color:var(--warn)}.stale{opacity:.55}.nd{color:var(--mut);font-style:italic}
+.distt td{overflow-wrap:anywhere}.distt td.num{white-space:nowrap;width:2.5em}.warn{color:var(--warn)}.stale{opacity:.55}.nd{color:var(--mut);font-style:italic}
 .strip{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
 .pill{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-left-width:5px;border-radius:6px;
 background:var(--card);padding:5px 10px;font-size:12.5px;text-decoration:none;color:var(--fg)}
@@ -521,6 +529,31 @@ def _calibration_html(sec: dict, head: Any) -> str:
     return f"<section id='calibration' class='{'stale' if stale else ''}'>{head('Calibration — SHADOW cells', sec)}{top}{note}<div class='scroll'>{body}</div></section>"
 
 
+_DIST_GROUPS = (("BREADTH", ("B1", "B2", "B3", "B4")), ("DEPTH", ("D1", "D2", "D3")),
+                ("EXECUTION", ("E1", "E2", "E3")), ("PROOF", ("P1", "P2", "P3")))
+
+
+def _distance_html(sec: dict, head: Any) -> str:
+    """Stacked rows (measure | value, with source and date under the value) so it stays clean at 390px."""
+    if sec.get("awaiting"):
+        return f"<section id='distance'>{head('Distance to optimum', sec)}<div class='nd'>no data — awaiting {_e(sec['awaiting'])}</div></section>"
+    by = {m["id"]: m for m in sec.get("measures", [])}
+    rows = []
+    for pillar, ids in _DIST_GROUPS:
+        rows.append(f"<tr><th colspan=2>{pillar}</th></tr>")
+        for i in ids:
+            m = by.get(i)
+            if not m:
+                continue
+            cls = {"OK": "", "UNAVAILABLE": "aw", "ERROR": "bad"}.get(m["status"], "")
+            val = _e(m["value"]) if m["status"] == "OK" else f"{_e(m['status'])}: {_e(m.get('reason'))}"
+            rows.append(f"<tr class='dist'><td class='num'>{_e(i)}</td><td class='{cls}'>{val}"
+                        f"<div class='asof'>{_e(m['source'])} · {_e(m['as_of'] or 'n/a')}</div></td></tr>")
+    note = ("<div class='asof'>Computed from the registry, model metadata, fill sidecars and the calibration engine — never typed. "
+            "UNAVAILABLE = the input is not on this machine (fill sidecars and engine output live on the VPS); ERROR = a declared fact disagrees with the data.</div>")
+    return f"<section id='distance'>{head('Distance to optimum', sec)}{note}<table class='distt'>{''.join(rows)}</table></section>"
+
+
 def _strip(S: dict, ops: dict) -> str:
     pills = []
     for id_, name in (("operations", "Cron arms"), ("feeds", "Data feeds"), ("services", "Services & deploy"),
@@ -534,6 +567,7 @@ def _strip(S: dict, ops: dict) -> str:
     gv, qu, ex = S.get("governance", {}), S.get("queue", {}), S.get("experiments", {})
     cb = S.get("calibration", {})
     neutral = [
+        ("distance", "Distance", "computed"),
         ("calibration", "Calibration", (f"{cb['summary']['reached_look']} of {cb['summary']['cells']} at a look"
                                         if cb.get("summary") else "no data")),
         ("verdicts", "Verdicts", f"{len(ex.get('items', []))} EXP" if not ex.get("awaiting") else "no data"),
@@ -565,6 +599,7 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
     parts.append(_strip(S, ops))
     for k in ("operations", "feeds", "services", "books", "evidence"):
         parts.append(ops_html[k])
+    parts.append(_distance_html(S.get("distance", _awaiting("distance", "scripts/distance_to_optimum.py")), head))
     parts.append(_calibration_html(S.get("calibration", _awaiting("calibration", "engine")), head))
     # verdict board = experiments
     ex = S.get("experiments", {})
