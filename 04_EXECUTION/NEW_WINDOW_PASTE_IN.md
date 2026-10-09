@@ -23,7 +23,12 @@ PROTOCOLS - DO NOT GET THESE WRONG
 - No timing-bound blocks: every block runs whenever I paste it. Scheduled GitHub jobs or crons do the waiting.
 - Every prompt ends with an END OF BLOCK line so a truncated paste is caught.
 - Visual Dashboard = operational review (/project). Live Terminal = what the bot is placing, live (/).
-- MLB can't go dark while games are going on. We are in calibration mode: verdicts honestly, not more cells.
+- MLB can't go dark while games are going on.
+- We are trying to win (expansion directive, 2026-10-08): more pre-registered arms, real demo fills, faster decisions.
+  Pre-registration before a cell's first row never loosens. No real capital.
+- The north star is CLAUDE.md, section "What winning looks like" - four pillars: BREADTH, DEPTH, EXECUTION, PROOF.
+  Every block reports the pillar it moved; at every wave close, update the sitrep's pillar scoreboard and tell me if
+  two waves in a row moved none.
 - Handoff only after your last wave is verified. When I say hand off, run /strategic-handoff
   (.claude/commands/strategic-handoff.md): it produces the operational doc, this paste-in and the queue, and delivers
   them to me without my asking.

@@ -26,3 +26,6 @@ Nothing here is evidence about any cell. Nothing here is a verdict.
 - `_fence.py` — `safe_out()`; the only sanctioned write path.
 - `W61_3_exploratory_track_results.md` — results doc, updated per part.
 - Studies live in subdirectories named `<yyyymmdd>_<slug>/`; each writes only inside itself.
+
+## Addendum 2026-10-09 (strategic window, operator direction to wire the north star in)
+This track is where the **DEPTH** pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" is built: deep pre-game models to the operator's granularity bar (matchup, personnel, team, venue, weather, qualitative factors, weighted metrics), developed here as challengers and graduated only by the operator-accepted pre-registration route in rule 7. A study's results doc names the pillar it moved. Rules 1-8 are unchanged.

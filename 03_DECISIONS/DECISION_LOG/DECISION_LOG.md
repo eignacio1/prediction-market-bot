@@ -1965,3 +1965,26 @@ judged n, no relabel, no real capital, kelly 0, demo only. Applies from Wave 63;
 
 ## 2026-10-09 — W62.1 Part A: MLB shadow matcher fix deployed (GG-532)
 Matcher now keys on teams + ET game date, uses the schedule-cache start as kickoff (never the ticker's), placeholder starts (07:33Z) get reason `schedule_placeholder`. Consumers of MLBScheduleIndex enumerated (GG-072): shadow runner and mlb_settlement.find_final were broken the same way; both fixed. PR #195 merged at cbbd2658. Deploy decision: t4-mlb restart `not_needed` (no file imported by t4-mlb changed). No stake/kelly/cron change. GG-532 stays OPEN: fix deployed, awaiting first scheduled write (next T1 12:07Z).
+## 2026-10-09 ~06:45 UTC — North star wired into the operating surfaces (operator: "see the forest beyond the trees")
+
+Operator (2026-10-08 23:23-23:27 PT): the models with the whole project in context should see his vision; "don't just make
+it a strategy doc that somebody has to reference specifically... this needs cross-referencing and blast radius
+assessment to input into the correct areas ACCURATELY. Test back into it and apply accordingly."
+Done (docs only, strategic window):
+- CLAUDE.md: new subsection "What winning looks like — the operator's north star (four pillars)" under Principal Vision
+  — the single canonical statement (BREADTH / DEPTH / EXECUTION / PROOF; PLUMBING is not a pillar; two pillar-less
+  waves = drift), distilled from directives 2026-08-12, 08-27, 09-22, 09-25/29, 09-30, 10-08. Does not resolve the
+  generality-vs-edge open decision. Stale claims fixed in place (Hard Rule 7 / remediation note): "today occupies one
+  cell of ~25" -> dated + pointer to live count; "NBA is DARK/FROZEN, tabled" -> old NBA paper book frozen, NBA
+  pre-game arm (EXP-038) live from the 2026-27 regular season.
+- Wired by cross-reference, not restatement: ACTIVE_QUEUE standing rules + sitrep pillar scoreboard + forest read;
+  /strategic-handoff (forest check at every wave close; carry-forward §0; stale-rule sweep step); /session-end and
+  TEMPLATE_SESSION_HANDOFF (`vision_pillar:` meta key, optional, parser-compatible); NEW_WINDOW_PASTE_IN and the
+  carry-forward (superseded "calibration mode: not more cells" rule removed — it contradicted the 2026-10-08 expansion
+  directive); 12_EXPLORATORY/CHARTER addendum (the track builds DEPTH); COVERAGE_TARGET_MATRIX note (it is BREADTH;
+  counts are an 08-12 snapshot).
+- Tested: every surface carries the canonical cross-reference, none carries a superseded rule; handoff generator parses
+  the new template and old handoffs; tests/test_exploratory_isolation.py + test_generate_operator_console.py 41 passed.
+- Finding surfaced by the cross-reference (routed to operator): the NFL/MLB/NBA pre-registrations themselves state the
+  plausible edge vs market is at or below the first-look MDE, so the modal first-look outcome is SHADOW (no verdict).
+  The sitrep previously called 11-02 "the first pre-registered edge verdict"; corrected.

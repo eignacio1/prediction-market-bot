@@ -25,8 +25,9 @@
 depends on a blocked source, every resolved bet books from Kalshi's own settlement (1,229 of 1,229 match), and four
 sports log shadow forecasts. **We still have no verdict that the model beats the market anywhere.** Wave 60 settled
 what the only ACTIVE cell's sample is: **94.5% of T4M-PROJ's 1,952 rows were never filled.** The 107 real fills lose
-$0.40 a bet. So T4M-PROJ is a calibration record, not trading evidence. **You decided that 2026-10-08 (GG-527 (b)+(c)); Wave 61 builds it.** The first honest
-pre-registered edge verdict is **NFL, ~2026-11-02** (15 of 60 games per cell; date confirmed by 61.2).
+$0.40 a bet. So T4M-PROJ is a calibration record, not trading evidence. **You decided that 2026-10-08 (GG-527 (b)+(c)); Wave 61 builds it.** The first scored
+look is **NFL, ~2026-11-02** (15 of 60 games per cell; date confirmed by 61.2) — and its own pre-registration expects it to be
+inconclusive (plausible edge below what 60 games can detect). See the pillar scoreboard below.
 
 **Wave 61 (10-08):** fills-only counting is live on both dashboards (T4M-PROJ real fills n=165, about -$0.26/bet). The
 stand-down gate is merged but not yet in the running process (62.3). The first-look release path had a real bug (no
@@ -59,7 +60,19 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 | **Fill truth + verdict readiness** | 61 | Fills-only T4M-PROJ counting on both dashboards; stand-down gate; first-look release path fixed + runbook; exploratory track fenced (no NFL challenger beats frozen). |
 | **Governance** | 58–60 | Gap log 176 → 130, all re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted; window handoff is now a command (`/strategic-handoff`). |
 
-### Against the north star — does the model know something the market doesn't?
+### 🧭 Pillar scoreboard — against the north star (CLAUDE.md § "What winning looks like"; updated at every wave close)
+
+| Pillar | Where it stands (2026-10-09, derived from the registry, pre-registrations and W60–61 results) | Gap → what moves it |
+|---|---|---|
+| **BREADTH** | 4 sports logging. Registry 104 cells: ACTIVE 1, SHADOW 24; MLB postseason 12 logging but unregistered and **silent since 10-08** (GG-532, 62.1); NBA 12 flip ~10-21; 76 NOT_IMPLEMENTED. Props: MLB player hits only; parlays: none. | Expansion directive → Wave 63 opens pre-registered arms, least-efficient families first. |
+| **DEPTH** | **Weakest.** Every pre-game arm is a thin baseline by its own pre-registration: NFL has no injury/QB/weather/travel; NBA is scores-only (rolling points, net rating); MLB games are 9 decayed team-run features; NHL is LR+Platt with rest, road streak and a projected goalie (no travel). The deepest model in the repo (T1 MLB player hits) sits at kelly 0. **No block since Wave 52 added depth.** | Deep pre-game challengers built in `12_EXPLORATORY/` and pre-registered → Wave 63. |
+| **EXECUTION** | 166 of 4,220 closed T4 positions ever filled; T4M-PROJ fills ≈ −$0.26/bet (adverse selection signature). Shadow arms place no orders. How orders are priced and placed has no owner. | Demo-fills ADR + build (Wave 63); order-placement design next. |
+| **PROOF** | 0 cells at a scored look. **The pre-registrations themselves expect the first looks to be inconclusive** — plausible edge vs market sits at or below what 60 (NFL) / 150 (NBA) games can detect, so the modal 11-02 outcome is "keep logging", not a verdict. | Depth is what can make a look decisive; breadth multiplies the number of looks. |
+
+**Forest read (2026-10-09):** Waves 52–61 were almost entirely BREADTH plumbing and PROOF machinery. The instrument is ready; the
+thing it measures — model depth — and the thing that converts it into money — execution — were never staffed.
+
+### PROOF, per arm — does the model know something the market doesn't?
 
 | Arm | Status | When a verdict is possible |
 |---|---|---|
@@ -551,6 +564,9 @@ unattended on the VPS under their own authorization, and a later block reads wha
 
 - **Protocol (operator, 2026-10-04):** every time this file changes, the strategic window loads it into the chat as a file card. He never has to dig through folders for it.
 
+- **North star (2026-10-09):** CLAUDE.md § "What winning looks like" — four pillars, BREADTH / DEPTH / EXECUTION / PROOF.
+  Every block's report and handoff names the pillar it moved (`vision_pillar:`; PLUMBING is a valid answer). The window
+  updates the pillar scoreboard at every wave close and flags two pillar-less waves in a row.
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15.
 - **Blocks are LARGE and multi-part (operator 2026-10-06)** — each part pushed and recorded before the next. Waiting is still not work.
 - **Deliverable 0 in every block: confirm your base** (`git fetch`; work from current `origin/main`).

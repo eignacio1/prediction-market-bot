@@ -221,6 +221,8 @@ The script writes files but does not commit — review its diff (`git status` / 
 
 ## Step 6B — Operator Digest (mandatory, T-372)
 
+**Vision pillar (2026-10-09):** fill `vision_pillar:` in the session-meta block (BREADTH / DEPTH / EXECUTION / PROOF / PLUMBING, per CLAUDE.md § "What winning looks like — the operator's north star (four pillars)"), and say it in the digest in plain words — which part of the operator's north star this session moved, or "plumbing".
+
 **[MICRO: already done — Step 6-gen appended a one-line entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from the `session-meta` block's `one_line_summary`. Do not also hand-author a prose digest on top of it; the one-liner is the MICRO-tier digest.]**
 
 STANDARD: Create/append `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from `00_ADMIN/TEMPLATES/TEMPLATE_OPERATOR_DIGEST.md`, filled in for this session, and commit it in the same path-scoped commit as the SESSION_HANDOFF. This is not optional and not conditional on session size — a session with nothing to report still writes the digest and says so plainly (e.g. "No change today — still zero real money at risk"). Use `11_MEMORY_HANDOFF/OPERATOR_DIGEST_20260715.md` as the worked example of tone and length — plain English, no file paths/function names/p-values, 5-10 lines total.

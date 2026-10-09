@@ -9,6 +9,7 @@ one_line_summary: [<=120 chars, no line breaks — this becomes the ONE line eve
 gg_touched: [comma-separated GG-NNN opened/resolved this session, or "none"]
 adr_touched: [comma-separated ADR-NNNN drafted/accepted this session, or "none"]
 plan_deliverable_moved: [yes | no — did a PLAN.md deliverable change status/owner/date this session?]
+vision_pillar: [BREADTH | DEPTH | EXECUTION | PROOF | PLUMBING — comma-separated if more than one; which pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" this session moved. PLUMBING is a valid answer; say it plainly]
 -->
 
 **Fill in the block above FIRST, by hand, as part of writing this handoff — it is the single source of truth `scripts/generate_session_artifacts.py` reads to mechanically generate the TODO_NEXT.md/MEMORY_BANK.md/PLAN.md "Last reviewed" lines, the SESSION_CLAIMS.md closure row, the checkpoint pointer, and (MICRO only) the Operator Digest one-liner. Get `one_line_summary` right — it is reused verbatim in every generated artifact. Everything else in this file below is still hand-authored narrative for a human reader; the meta block is machine-read and separate from it.**

@@ -54,7 +54,10 @@ commits to main itself.
   a rebuild — keep the look). **Live Terminal** = what the bot is placing / evaluating, live, full black (`/`). Both
   open via `Open Dashboard.command` (SSH tunnel to localhost:8050; drops when the Mac sleeps — re-run it).
 - **"MLB can't go dark while games are going on"** (2026-10-05).
-- **Calibration mode** (2026-10-06): get cells to verdicts honestly; do not add cells.
+- ~~Calibration mode (2026-10-06): do not add cells~~ — **superseded 2026-10-08 by the expansion directive** ("we're
+  trying to win"): more pre-registered arms, demo fills, standing authorizations, bigger VPS. See ACTIVE_QUEUE.md.
+- **North star:** CLAUDE.md § "What winning looks like — the operator's north star (four pillars)". Every block reports the pillar it moved; the forest check at every wave close updates the
+  sitrep's pillar scoreboard and flags two pillar-less waves in a row (2026-10-09).
 - **Handoff only after the last wave is verified** (2026-10-07: "AFTER wave 60 is finished then we'll handoff"), and
   the handoff always delivers the operational doc + paste-in + queue as file cards and the paste-in in a chat fence,
   unasked (2026-10-08). `/strategic-handoff` does this.

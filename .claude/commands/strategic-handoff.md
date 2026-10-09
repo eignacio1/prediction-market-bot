@@ -14,9 +14,13 @@ A window hands off only after its last wave is **verified**, never when the wave
    gap-log parity + uniqueness. Close it in `04_EXECUTION/ACTIVE_QUEUE.md` (results table, sequencing track,
    prompts archived verbatim to `ACTIVE_QUEUE_ARCHIVE.md`). Update the **RUNNING SITREP** at the top of the queue.
    Under NOW, state that the next wave is to be written by the incoming window.
+   **Forest check** (same at every wave close, not only at handoff): tally which pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" each block
+   moved (from each handoff's `vision_pillar:` and the results docs), update the sitrep's pillar scoreboard, and tell
+   the operator unprompted if two consecutive waves moved no pillar.
 2. **Archive** the current `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` and `04_EXECUTION/NEW_WINDOW_PASTE_IN.md`
    to `11_MEMORY_HANDOFF/<name>_<YYYY-MM-DD of the outgoing version>.md` (skip if that version was never used).
 3. **Rewrite the operational doc** — `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` — sections:
+   §0 North star — a pointer to CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" (never a restatement) plus the pillar scoreboard at handoff ·
    §1 Role · §2 Protocols (every standing operator rule, with date + his words where short) · §3 Traps ·
    §4 State at handoff (derived by running commands at write time: SHA, max GG/T/ADR/EXP, OPEN count + parity,
    registry counts, capital, books, arms, scheduled jobs) · §5 Arc + what the next wave should be · §6 Open operator
@@ -24,7 +28,10 @@ A window hands off only after its last wave is **verified**, never when the wave
 4. **Rewrite the paste-in** — `04_EXECUTION/NEW_WINDOW_PASTE_IN.md` — short, ASCII, self-contained; it must name this
    command so the next window hands off the same way. Template is the current file; update only the window range,
    the handoff time and the FIRST TASK.
-5. **DECISION_LOG** entry for the handoff; docs-only commit; push to main.
-6. **Deliver, in the chat, without being asked:** `SendUserFile` with the carry-forward, the paste-in and
+5. **Stale-rule sweep:** grep the carry-forward, the paste-in, the queue's standing sections and CLAUDE.md for any rule
+   a newer operator directive superseded (2026-10-09 found "calibration mode: not more cells" still in the paste-in
+   after the expansion directive). Fix each in place; note it in the DECISION_LOG entry.
+6. **DECISION_LOG** entry for the handoff; docs-only commit; push to main.
+7. **Deliver, in the chat, without being asked:** `SendUserFile` with the carry-forward, the paste-in and
    `ACTIVE_QUEUE.md` (three file cards), then the paste-in text inside a code fence in the reply so he can copy it
    directly. One-paragraph sitrep. No commands for him to run.
