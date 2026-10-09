@@ -19,15 +19,15 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: distance-to-optimum table added, 2026-10-09 ~00:45 PT (Wave 62 in flight).*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 62 closed, Wave 63 issued, 2026-10-09 ~01:30 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
 *The gap between the project and the bot at optimum, as numbers. Measures are defined in CLAUDE.md § "What winning looks like" →
 "Distance to optimum"; values are recomputed at every wave close. Values below: 2026-10-09 ~07:45 UTC, hand-derived from the cited
-sources — a generator that computes them mechanically is the first Wave 63 block. "Moved" = change since the previous wave close.*
+sources — a generator that computes them mechanically is the first Wave 63 block. "Moved" = change during the last closed wave (Wave 62).*
 
-| Pillar | Measure | Now | At optimum | Moved since W61 close | Source |
+| Pillar | Measure | Now | At optimum | Moved in W62 | Source |
 |---|---|---|---|---|---|
 | **BREADTH** | B1 registered cells logging (ACTIVE + SHADOW) / registered | **25 / 104** (+12 MLB postseason cells logging, unregistered) | every cell of the whole board registered and logging | 0 | `MARKET_TYPE_REGISTRY` |
 | | B2 market families with a logging cell / registered families | **8 / 18** | 18 / 18, with props and parlays registered | 0 | registry |
@@ -41,7 +41,7 @@ sources — a generator that computes them mechanically is the first Wave 63 blo
 | | E3 win rate on fills vs non-fills | **T1 MLB 28.9% vs 52.1%** — orders fill mostly when they are about to lose | fills at least as good as non-fills | measured | W62.3 |
 | **PROOF** | P1 cells at a scored look / logging cells | **0 / 25** | every cell judged at its pre-registered n | 0 | calibration engine |
 | | P2 verdicts issued | **0** | a verdict per cell (a rigorous NO counts) | 0 | — |
-| | P3 next look | NFL ~11-02 (15/60 per cell); the pre-registration's modal outcome is SHADOW | — | — | EXP-037 |
+| | P3 next look | NFL ~11-02 (15/60 per cell): MDE ~0.038 Brier vs a plausible ~0.008 → ~91% "keep accruing" (W62.2) | — | — | EXP-037; W62.2 |
 
 **Rule (operator, 2026-10-09: "perfection isn't a dream, it's a protocol"):** every block, session and review states before it starts
 which measure it is meant to move, and reports at close what moved and by how much — or says PLUMBING in plain words. Two waves in a
@@ -51,6 +51,10 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 62 (10-09), in one line:** the T1 MLB book has the same execution problem as T4M-PROJ (fills lose, non-fills "win"), and the
+NFL first look is ~91% likely to say "keep accruing" with the current model — so Wave 63 goes to MLB coverage while games
+remain, NFL model depth (the math), and why our fills lose.
 
 **Bottom line.** The plumbing is now sound. Code lands at any hour without killing live services, MLB data no longer
 depends on a blocked source, every resolved bet books from Kalshi's own settlement (1,229 of 1,229 match), and four
@@ -119,22 +123,23 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 62 · issued 2026-10-08 ~18:30 PT · three MEDIUM blocks (60/90-min rule) · paste all three in parallel
+## ⬛ NOW — Wave 63 · issued 2026-10-09 ~00:45 PT · three MEDIUM blocks · paste all three in parallel
 
-Wave 61 verified on GitHub at `49c6d5a` (see Sequencing track). Surfaces: 62.1 = MLB shadow matcher + a silent-arm alarm
-(dashboards' health strip/feeds, governance scan); 62.2 = 12_EXPLORATORY/ + the price history copy; 62.3 = t4-mlb restart,
-a read-only T1 fill audit (classifier generalized), NBA flip tooling. Shared docs: each block edits only its own entries.
+Wave 62 verified on GitHub (see Sequencing track). Every block carries a PURPOSE line (Hard Rule 12). Surfaces: 63.1 = MLB arms,
+registry, feature build (GitHub Actions); 63.2 = 12_EXPLORATORY only; 63.3 = a new generator script, governance scan, Visual
+Dashboard, session-artifact generator, fill sidecars (read-only), an ADR draft. 63.1 and 63.3 both touch the Visual Dashboard -
+fetch + rebase right before merging; each merges only its own PRs.
 
-| # | Block | Status | One line |
-|---|---|---|---|
-| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | 🟨 Parts A+B deployed | PRs #195/#198/#199 merged, VPS 7a884251, t4-mlb not_needed. Silent-arm alarm live (dashboards + governance scan; 10-08 replay flags MLB silent). GG-532 stays OPEN until first scheduled post-fix write (next T1 12:07Z). |
-| 62.2 | Exploratory part 2: secure the price history + pre-commit NFL first-look expectations | 🟨 Parts A+B pushed on branch (history secured GG-538 VPS sha-verified; expectations doc written: first look under-powered, MDE 0.038 vs assumed 0.025); PR pending | — |
-| 62.3 | Load the stand-down gate (restart) + T1 MLB fill audit + NBA flip dry run | ✅ DONE | PR #196 + #200 merged, CI green; GG-527 RESOLVED; T1 MLB 85/485 filled, fills -$1.50/bet (GG-536); NBA flip not ready, removal script ready (run >=10-21 10:00 UTC)| t4-mlb restarted once, gate loaded (GG-527 RESOLVED); T1 MLB: 85/485 filled, fills -$1.50/bet (GG-536). Part B (NBA) next |
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 63.1 | MLB wired to full for the rest of the postseason | BREADTH B1 25->37, B2 8->12; player hits logging postseason | ⬜ | — |
+| 63.2 | The math: MLB's modelling mechanisms carried into NFL | DEPTH D1, D3 0->1 | ⬜ | — |
+| 63.3 | Distance table computed + why our fills lose | PLUMBING (Rule 12) + EXECUTION E3 | ⬜ | — |
 
-### 62.1 — MLB postseason shadow back up (GG-532) + silent-arm alarm
+### 63.1 — MLB wired to full for the rest of the postseason
 
 ```
-COMMON RULES - WAVE 62 (read first; they bind this block)
+COMMON RULES - WAVE 63 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -144,7 +149,8 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-08 (incl. GG-527 and the t4-mlb restart line), ADR-0070,
+- Decisions in force: DECISION_LOG through 2026-10-08 (incl. the 2026-10-08 expansion directive and four standing
+  authorizations), ADR-0070,
   ADR-0071. Standing authorizations: shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy +
   pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in ACTIVE_QUEUE.md "Needs your
   decision". A table row describing a decision is NOT an authorization.
@@ -160,59 +166,63 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
   existing cron line. Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
 - Every premise below is a claim to verify.
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W62_<n>.md (docs-only push).
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W63_<n>.md (docs-only push).
 
 
-WAVE 62.1 - MLB POSTSEASON SHADOW BACK UP (GG-532) + A SILENT-ARM ALARM. Repo: eignacio1/prediction-market-bot.
+
+WAVE 63.1 - MLB WIRED TO FULL FOR THE REST OF THE POSTSEASON. Repo: eignacio1/prediction-market-bot.
+PURPOSE: BREADTH B1 25/104 -> 37/104 and B2 8/18 -> 12/18 (register the 12 MLB postseason game cells SHADOW), and MLB
+player-hits T1/T2/T3 logging postseason games again (0 players matched since ~2026-09-27). Pillar: BREADTH.
 
 WHY
-Operator directive (2026-10-05): "MLB can't go dark while games are going on." W61.2 found the MLB postseason shadow
-arm silent since ~2026-10-08 06:07 UTC: every run logs written: {} and skipped: no_kickoff for every open market, while
-the games cache is healthy. W61.2's mechanism (from code + cache, NOT reproduced by a run): MLBScheduleIndex.game
-requires matching teams AND a start within 45 min of the ET time encoded in the Kalshi event ticker; the open event
-KXMLBGAME-26OCT081700CLECWS encodes 17:00 ET while the cache has 20:00 ET, and the LAD/MIL events (10-11..10-15) have
-only placeholder rows in the cache. It was found by hand, by a block looking for something else. Both halves matter:
-get the arm writing again, and make the next silent arm visible without anyone looking.
+Operator, 2026-10-09: "I want to have MLB wired to full cus of the limited games left." Only the 2026 postseason remains (World
+Series ends late October). Two MLB arms are not fully on: (1) the MLB postseason game-market arm (moneyline, run line, game total,
+team total x T1/T2/T3 = 12 cells, EXP-037 MLB) logs rows but the cells are NOT_IMPLEMENTED in MARKET_TYPE_REGISTRY, so the
+calibration engine and the dashboards do not count them; it was silent 10-08 (GG-532) and the fix (#195) awaited its first
+scheduled write at the 12:07 UTC T1 run; (2) MLB player-hits T1/T2/T3 (SHADOW) has matched 0 players since ~09-27 because the
+feature build only reads regular-season (gameType R) batter logs; postseason logs are opt-in in
+scripts/generate_mlb_features.py (POSTSEASON_GAME_TYPES, D6(b)), and the feature build now runs on GitHub Actions
+(mlb_features_sync.yml), not on a VPS cron.
 
-PART A - Fix the match (~45 min)
-  1. Reproduce: run the MLB postseason shadow job in dry-run (or its matcher directly) against today's open markets on
-     the VPS and show the no_kickoff skips with each ticker's encoded time vs the cache's scheduled time. Confirm or
-     correct W61.2's mechanism. Check whether Kalshi's postseason ticker time is a placeholder (compare several
-     settled postseason events' ticker time vs actual first pitch).
-  2. Fix: match on teams + game date, take the cached game for that pair and date (doubleheader: nearest start), and
-     use the CACHE's start time as kickoff - never the ticker's. A placeholder schedule row (TBD teams/time) skips
-     with its own reason ("schedule_placeholder"), not no_kickoff. Forecasts stay strictly pre-game: never write a
-     row for a game that has started; no backfill of missed games (that would manufacture rows).
-  3. Shared-contract rule (CLAUDE.md, GG-072): grep every consumer of MLBScheduleIndex / the matcher (shadow T1/T2/T3,
-     settlement, T1 MLB, dashboards). Record each consumer's disposition. Fix only the shadow path unless another
-     consumer is broken the same way - then register it, do not widen.
-  4. Tests (ticker time != cache time; placeholder row; doubleheader; started game -> no row). PR, CI green, merge;
-     record the deploy decision. Prove it on the VPS: a dry-run against today's open markets now resolves them, and
-     the next scheduled run writes rows (if no scheduled run falls inside your session, show the dry-run and say
-     when the next run is due - do not wait). GG-532 RESOLVED only on rows actually written by the scheduled job; else
-     leave it OPEN with "fix deployed, awaiting first scheduled write".
-PART B - Silent-arm alarm (~35 min, no cron edit)
-  5. One function: for each shadow arm (NFL, NHL, MLB postseason, NBA preseason/regular, and T1 MLB + T4 MLB), was at
-     least one game scheduled in its window in the last N hours (per that arm's own schedule source), and did it
-     write zero rows in that span? N per arm, stated in code with the reason. Off-days and off-season are not alarms.
-  6. Show it, computed on read (no cron): a red chip per silent arm on the Visual Dashboard (/project) health strip
-     and a row on the Live Terminal (/) feeds panel, with the arm name and hours silent in plain words. Keep the
-     current look; 390px clean. Also print it in .claude/hooks/governance_scan.sh so every session sees it.
-  7. Prove it fires: a test with a fixture arm that had games and wrote nothing -> alarm; off-day -> no alarm. On the
-     VPS, before Part A's fix reached the running job, MLB postseason would have alarmed - show that the function, run
-     against the stored ledgers for 10-08, flags it. PR, CI green, merge; verify the live dashboard shows the chips.
-Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W62_1_mlb_shadow_silent_arm_results.md, updated per part.
+PART A - The game-market arm counted (~40 min)
+  1. GG-532: show the scheduled-run rows written after the #195 deploy (cbbd2658) - count by family x band, newest timestamp. Rows
+     written by the scheduled job -> RESOLVED with that evidence; none yet -> say when the next run is and leave it OPEN.
+  2. Confirm the EXP-037 MLB pre-registration was committed before these cells' first row (git log dates vs the first row's
+     timestamp). Then, under AUTHORIZATION - STANDING: NEW PRE-REGISTERED SHADOW ARMS, flip the 12 MLB game cells
+     NOT_IMPLEMENTED -> SHADOW with promote_cell_status (or the registry's sanctioned path), citing EXP-037 MLB. If the
+     pre-registration post-dates the first row, STOP and report - do not flip.
+  3. Make sure the calibration engine lists the 12 cells (sealed; judged n per EXP-037 MLB - postseason rows count or stay
+     descriptive exactly as that pre-registration says) and both dashboards show them. Tests; PR; CI green; merge; record the
+     deploy decision. Prove on the VPS: registry counts, engine listing, Live Terminal row.
+PART B - Player hits back on for the playoffs (~45 min)
+  4. Trace why T1/T2/T3 player-hits match 0 players: feature build (regular season only?), runner filters, market discovery.
+     Show the evidence, not a guess.
+  5. Read the MLB player-hits cells' pre-registration/epoch rules: are postseason games in scope? If yes, wire them in. If not,
+     log them the way NBA preseason is logged - separate labelled rows, excluded from judged n - so the arm is on without
+     contaminating the judged sample. Say which, citing the document.
+  6. Wire postseason batter logs into the GitHub Actions feature build (mlb_features_sync.yml / generate_mlb_features.py's
+     opt-in path) and whatever the runner needs. No VPS cron line is edited. Tests; PR; CI green; merge; record the deploy
+     decision. Prove it: the next feature build contains postseason games, and the next T1 run matches > 0 players (if the next
+     run falls outside your session, show a dry run against today's slate and say when the real run is).
+  7. One line on the winter: when the World Series ends, what stops by itself (T4M-PROJ stake gate, these arms) and what still
+     needs a block (T4M-PROJ registry flip to DARK, removing anything added here for the postseason).
+Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W63_1_mlb_full_results.md, updated per part.
 
-END OF BLOCK 62.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 63.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 62.2 — Exploratory part 2: secure the price history + pre-commit NFL first-look expectations
+### 63.2 — The math: carry MLB's modelling mechanisms into NFL
 
 ```
-COMMON RULES - WAVE 62 (read first; they bind this block)
+COMMON RULES - WAVE 63 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -222,7 +232,8 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-08 (incl. GG-527 and the t4-mlb restart line), ADR-0070,
+- Decisions in force: DECISION_LOG through 2026-10-08 (incl. the 2026-10-08 expansion directive and four standing
+  authorizations), ADR-0070,
   ADR-0071. Standing authorizations: shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy +
   pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in ACTIVE_QUEUE.md "Needs your
   decision". A table row describing a decision is NOT an authorization.
@@ -238,57 +249,57 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
   existing cron line. Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
 - Every premise below is a claim to verify.
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W62_<n>.md (docs-only push).
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W63_<n>.md (docs-only push).
 
 
-WAVE 62.2 - EXPLORATORY TRACK, PART 2: SECURE THE HISTORY + WRITE DOWN WHAT THE NFL FIRST LOOK CAN TELL US.
-Repo: eignacio1/prediction-market-bot.
+
+WAVE 63.2 - THE MATH: CARRY MLB'S MODELLING MECHANISMS INTO NFL. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D1 (NFL pre-game model: from "no injury/QB/weather/travel" toward the granularity bar) and D3 0 -> 1 (a
+pre-registered NFL challenger ready to log beside the frozen model). Pillar: DEPTH.
 
 WHY
-W61.3 built the exploratory fence (12_EXPLORATORY/, charter, isolation test) and found no NFL challenger that beats the
-frozen EXP-037 model (2025 walk-forward recalibration; 2019-2023 rolling-origin; all CIs span 0). On 2025 NFL games
-with a pre-kickoff candle (n=182, EXPLORATORY) the market mid scored Brier 0.2115 vs the frozen model 0.2182 (model
-minus mid +0.0068, CI -0.0094..+0.0227): the market was at least as good as the model. Two loose ends: (1) the only
-pre-2026 Kalshi price history (raw/ 368M + candles/ 169M) lives untracked on the operator's Mac at
-exp_output/KALSHI_HISTORY/ (copied there from an agent worktree), a KXNFLGAME fetch was left running to fill Aug-Sep,
-and the candles rebuild from the extended raw/ is pending; GG-533 was reserved for this defect but never registered.
-(2) The NFL first look (~11-02, 60 games per cell, 15/60 now) will be the project's first pre-registered verdict.
-Whatever it says must have been predicted in writing beforehand, or it can be explained away afterwards
-(CLAUDE.md, efficiency-gradient section).
+Operator, 2026-10-09: "the translatability should be mechanisms that we spent fucking months on with the MLB and should absolutely
+have already been integrated in the NFL - when are we finally getting towards math work?" The NFL arm (EXP-037, 12 cells) runs a
+thin frozen model: per its pre-registration, the feature row has no point-in-time injury, QB, weather or travel input. W61.3 found
+no NFL challenger beating it (2025 recalibration; 2019-2023 rolling origin). W62.2 (PR #197): at 60 games per cell the first look
+(~11-02) can only detect a Brier edge of ~0.038 vs market; the 2025 gap is ~0.008 the other way - so ~91% "keep accruing". A
+better MODEL is the only thing that can change that. The MLB stack carries months of mechanisms the NFL model never got.
 
-PART A - Secure the history (~35 min)
-  1. Register the defect (GG-533 if still free at run time, else the next free number): the only pre-2026 price
-     history lived in an untracked agent worktree.
-  2. Check the fetch: did it finish? Market count before/after, any gaps by month. Resume only if incomplete
-     (idempotent, public GETs, polite rate). Then rebuild candles/ from the extended raw/ via a scratch --store, never
-     dirtying tracked markets/VALIDATION.json.
-  3. Put a durable copy off the Mac: VPS disk first (check free space; /opt/prediction-market-bot/exp_output/
-     KALSHI_HISTORY/ or the existing archive area), never inside logs/ or a live ledger path. Commit to 12_EXPLORATORY/ a
-     manifest: file list, sizes, sha256, coverage by family and month, both locations. Verify the VPS copy's sha256
-     matches. Update the charter's data section with where the history lives. Docs push.
-PART B - Pre-commit the expectations for the NFL first look (~45 min; pre-2026 data and the pre-registration only)
-  4. Read EXP-037's pre-registration (with its 10-07 addendum) and list exactly what the 11-02 look computes per cell,
-     and its verdict rule. No 2026 shadow row, no sealed result, no 2026 score may be read or computed.
-  5. Using pre-2026 seasons only: the paired per-game difference in Brier (model vs market mid; model vs climatology)
-     and its game-clustered variance. From that, the minimum detectable effect at n=60 per cell, alpha and power as
-     the pre-registration states (else 0.05 one-sided, 80%). Then: given the 2025 exploratory estimate, what verdict
-     is most likely per comparison, and what result would genuinely surprise us.
-  6. Write 12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md: plain English, one page, labelled EXPLORATORY and "not a
-     verdict, not an addendum - the pre-registration is unchanged". Commit and push it BEFORE any NFL cell reaches
-     judged n (the git commit date is the proof). If the analysis shows the look cannot detect any plausible effect,
-     say so in one line at the top - that is a finding for the operator, not a reason to change anything.
-Results doc: 12_EXPLORATORY/W62_2_exploratory_part2_results.md, updated per part.
+PART A - The translation map (~35 min; read code and ADRs, run nothing live)
+  1. List every modelling mechanism the MLB stack actually uses, each with its file and ADR: e.g. empirical-Bayes shrinkage of
+     rolling rates (ADR-0047, K=40), opponent-adjusted rates (ADR-0015), probability temperature/calibration (ADR-0027), Platt,
+     recency weighting, venue/park factor, lineup/personnel inputs, the PRF qualitative design (and the fact that the MLB T1
+     model as built uses 0 qualitative features, T-597). Verify each is really in the code path, not only in a document.
+  2. For each: the NFL analogue, whether a POINT-IN-TIME source exists for 2019-2025 (e.g. weekly injury reports, QB starts,
+     stadium roof/weather, rest and travel), and what it would take. Rank by expected information per unit of work. Name what
+     is NOT translatable and why. Write 12_EXPLORATORY/NFL_TRANSLATION_MAP.md. Docs push.
+PART B - Build and test the deep challenger (~50 min; 12_EXPLORATORY only, charter rules bind)
+  3. Pick the top mechanisms from the map that have point-in-time data. FREEZE the feature list, model class and evaluation plan
+     in the study's README BEFORE fitting anything (a forking-paths guard): seasons for development vs the held-out evaluation,
+     which seasons W61.3 already consumed (2025 recalibration; 2019-2023 rolling origin) and therefore cannot be the sole test.
+  4. Fit; evaluate once on the frozen plan vs the frozen EXP-037 model (Brier, game-cluster bootstrap CI) and, where 2025 Kalshi
+     mids exist (exp_output/KALSHI_HISTORY, 2025-season tickers only), vs the market. No 2026 rows, no sealed result, ever.
+  5. If it beats the frozen model with a CI excluding zero: draft a PROPOSED challenger pre-registration (cells, judged n sized
+     with W62.2's measured per-game SD ~0.106, verdict rule, seed, "thinner edge expected" vs market) so it can log beside the
+     frozen model from the next NFL week, judged only on data after the operator accepts it. If it does not: say so plainly,
+     scoped to what was tested, and name the next mechanism to try.
+Results doc: 12_EXPLORATORY/W63_2_nfl_translation_results.md, updated per part.
 
-END OF BLOCK 62.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 63.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 62.3 — Load the stand-down gate + is the T1 MLB book filled? + NBA flip dry run
+### 63.3 — The distance table computed, not typed + why our fills lose
 
 ```
-COMMON RULES - WAVE 62 (read first; they bind this block)
+COMMON RULES - WAVE 63 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -298,7 +309,8 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-08 (incl. GG-527 and the t4-mlb restart line), ADR-0070,
+- Decisions in force: DECISION_LOG through 2026-10-08 (incl. the 2026-10-08 expansion directive and four standing
+  authorizations), ADR-0070,
   ADR-0071. Standing authorizations: shadow-evaluation cron jobs, NEW lines only (2026-10-02 15:22 PT); Live Terminal deploy +
   pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in ACTIVE_QUEUE.md "Needs your
   decision". A table row describing a decision is NOT an authorization.
@@ -314,52 +326,52 @@ COMMON RULES - WAVE 62 (read first; they bind this block)
   existing cron line. Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
 - Every premise below is a claim to verify.
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W62_<n>.md (docs-only push).
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W63_<n>.md (docs-only push).
 
 
-WAVE 62.3 - LOAD THE STAND-DOWN GATE + IS THE T1 MLB BOOK FILLED? + NBA FLIP DRY RUN. Repo: eignacio1/prediction-market-bot.
 
-AUTHORITY
-Step 1 depends on the blockquote "AUTHORIZATION - T4-MLB RESTART TO LOAD THE GG-527 GATE (operator, 2026-10-08 ...)"
-in ACTIVE_QUEUE.md "Needs your decision". Confirm it is there; if missing, skip step 1 and report. It covers one
-restart only, only while no MLB game is live.
+WAVE 63.3 - THE DISTANCE TABLE COMPUTED, NOT TYPED + WHY OUR FILLS LOSE. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING for Hard Rule 12 (the distance-to-optimum table generated from data, so it cannot drift) and EXECUTION E3
+(measure the adverse selection behind "fills lose, non-fills win" in both books, as the design input for demo fills). Pillars:
+PLUMBING + EXECUTION.
 
 WHY
-W61.1 merged the GG-527 stand-down gate (#193, stake_stood_down in run_t4_mlb_live.py) and it is on the VPS at
-c9e2315, but the deploy skipped the t4-mlb restart (game live), so the RUNNING process (up since 2026-10-07 06:13Z) has
-the old code; GG-527 was marked RESOLVED too early (the strategic window has set it back to PARTIALLY RESOLVED). Under
-(b), G6 and any execution claim need real fills. W61.1 found 166 of 4,220 closed T4 positions ever filled on demo. Nobody
-has asked the same question of the T1 MLB book (paper drawdown 12.44% at 10-05). And NBA's regular season opens 10-20;
-its cells should flip ~10-21 by a mechanical check, not a scramble.
+Operator, 2026-10-09: "perfection isn't a dream its a protocol." The DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md is
+hand-derived today; hand-derived numbers drift the way the nav docs did. Separately, both books show the same execution signature:
+T4M-PROJ fills -$0.26/bet (n=165); T1 MLB fills -$1.50/bet at 28.9% win rate vs 52.1% for orders that never filled (W62.3). Before
+the demo-fills ADR is written (authorized: build behind an OFF switch, live only on operator acceptance), we need to know WHY.
 
-PART A - Load the gate, then audit T1 (~45 min)
-  1. Restart (authorized, once): check that no MLB game is live (Stats API / ESPN show none In Progress, T4 cycle log
-     idle > 15 min, no first pitch within 60 min). If one is live or imminent: do NOT restart, say so, and leave it to
-     the post-World-Series block. If idle: systemctl restart t4-mlb, then prove the running process has the gate
-     (process start time after the c9e2315 deploy; the loaded source contains stake_stood_down; service healthy, cycle
-     log resumes at the next live game). Record it on GG-527: RESOLVED only now, with that proof.
-  2. Does T1 MLB send orders to the demo venue at all? Find the placement path and show one real position's record. If
-     it does: classify every closed T1 MLB position with the 61.1 classifier (src/prediction_market_bot/t4_fill_status.py
-     - generalize it to be book-agnostic, its own sidecar per book, append-only, no ledger rewrite), and report filled
-     / not filled / unverifiable and P&L per bet both ways with a game-clustered 95% CI. If it does not (pure paper),
-     say so: then the T1 book has no fill check by construction.
-  3. One plain-English verdict line on what the T1 book can and cannot claim. Change NO counting, status or ledger for
-     T1 - GG-527's decision covers T4M-PROJ only; anything for T1 is the operator's call. Register a gap if warranted.
-PART B - NBA flip dry run (~30 min, no status change)
-  4. Run scripts/w59_3_nba_flip_check.py now and record its output (expect: not ready, no regular-season rows). Prove
-     what it will print once valid regular-season rows exist, using a fixture (never by writing rows).
-  5. The NBA preseason cron line (added under the new-line authorization; to be removed after 10-20): prepare its
-     removal as a script that backs up the crontab, removes only that line, and mirrors deploy/. Do NOT run it before
-     10-21 UTC; test it against a copy of the crontab.
-  6. Check that W61.2's first-look release fix (#190: REPORT written on release, verdict on the dashboard) covers NBA
-     cells the same way as NFL (EXP-038 looks 150/400); add NBA to 04_EXECUTION/NFL_FIRST_LOOK_RUNBOOK.md (or a sibling
-     NBA runbook). Fix any break with tests; PR, CI green, merge; record the deploy decision.
-Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W62_3_gate_t1_fills_nba_results.md, updated per part.
+PART A - The generator (~45 min)
+  1. scripts/distance_to_optimum.py: compute every measure defined in CLAUDE.md, section "What winning looks like" -> "Distance
+     to optimum": B1-B4 from MARKET_TYPE_REGISTRY; D1 from a small declared manifest per live pre-game model (factor classes it
+     conditions on), checked against each model's metadata/feature list - any mismatch is an error, not a warning; D2 from model
+     metadata; D3 from PROPOSED/ACCEPTED challenger pre-registrations in 12_EXPLORATORY; E1-E3 from the fill sidecars
+     (logs/t4_mlb_fill_status.jsonl, logs/t1_mlb_fill_status.jsonl) and their ledgers; P1-P3 from the calibration engine's
+     output. Every value carries its source path and timestamp. Missing inputs print UNAVAILABLE with the reason - never a guess.
+  2. Print it in .claude/hooks/governance_scan.sh (alarm-only) and show it on the Visual Dashboard (/project), current look,
+     390px clean. Tests (fixture registry and sidecars). PR; CI green; merge; record the deploy decision. Run it on the VPS and
+     paste the table; any value that differs from the hand-derived table in ACTIVE_QUEUE.md is a finding - report it.
+  3. scripts/generate_session_artifacts.py: make gap_measure and gap_delta required for handoffs timestamped after Wave 62's
+     close (older handoffs still parse). Test both.
+PART B - Why the fills lose (~40 min; read-only, demo venue GETs only)
+  4. For every CONFIRMED_FILLED position in both books: order type and limit price vs the market (bid/ask/mid) at submit, time
+     from submit to fill, and the market's move after the fill (markout at 1, 5, 30 minutes and to settlement) from the price
+     archive / candles where they exist. Compare with the never-filled orders at the same horizons. Game-clustered CIs.
+  5. Plain-English verdict: is this adverse selection (resting orders filled by better-informed flow), stale pricing, or
+     something else - and what order-placement rule the evidence supports (e.g. take vs make, price relative to mid, cancel
+     after N seconds). Write it as the design input section of the demo-fills ADR draft (03_DECISIONS, PROPOSED, switch OFF by
+     default). Do not build or enable anything; acceptance is the operator's.
+Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W63_3_distance_generator_fill_markouts_results.md, updated per part.
 
-END OF BLOCK 62.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 63.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ---
@@ -368,13 +380,21 @@ END OF BLOCK 62.3. If you cannot see this line, the prompt reached you truncated
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 62 — ISSUED 2026-10-08 ~18:30 PT · three MEDIUM blocks
+### ⏳ WAVE 63 — ISSUED 2026-10-09 ~00:45 PT · three MEDIUM blocks · first wave with PURPOSE lines (Hard Rule 12)
+
+| # | Block | PURPOSE | Status | Outcome |
+|---|---|---|---|---|
+| 63.1 | MLB wired to full for the rest of the postseason | B1, B2; player hits on | ⬜ | — |
+| 63.2 | The math: MLB mechanisms into NFL | D1, D3 | ⬜ | — |
+| 63.3 | Distance table computed + why fills lose | PLUMBING + E3 | ⬜ | — |
+
+### ✅ WAVE 62 — CLOSED 2026-10-09 ~08:30 UTC (verified on GitHub) · three MEDIUM blocks · moved: E1–E3 measured for T1 MLB; B, D, P unchanged
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | 🟨 Parts A+B deployed | PRs #195/#198/#199 merged, VPS 7a884251, t4-mlb not_needed. Silent-arm alarm live (dashboards + governance scan; 10-08 replay flags MLB silent). GG-532 stays OPEN until first scheduled post-fix write (next T1 12:07Z). |
-| 62.2 | Exploratory part 2: history secured + NFL first-look expectations | ⬜ | — |
-| 62.3 | Load the stand-down gate + T1 MLB fill audit + NBA flip dry run | ⬜ | — |
+| 62.1 | MLB postseason shadow back up + silent-arm alarm | ✅ code / ⏳ proof | #195/#198/#199: matcher keys on teams + date, cache kickoff; SILENT ARMS in governance scan + dashboards; GG-532 open until the first scheduled write (→ 63.1) |
+| 62.2 | Exploratory part 2 | ✅ | #197 (landed by the window after the branch went stale): pre-2026 Kalshi history on the VPS, sha-verified (GG-538); **NFL first look: MDE ~0.038 Brier at n=60 vs ~0.008 plausible → ~91% "keep accruing"**; pre-registered SD 0.07 vs measured 0.106 |
+| 62.3 | Gate + T1 fill audit + NBA dry run | ✅ | #196/#200: t4-mlb restarted once, gate in the running process (GG-527 RESOLVED); **T1 MLB 85/485 filled, fills −$1.50/bet, 28.9% vs 52.1% win rate (GG-536)**; NBA flip check + cron-removal script ready (run ≥ 10-21) |
 
 ### ✅ WAVE 61 — CLOSED 2026-10-08 ~18:10 PT (verified at `49c6d5a`) · three MEDIUM blocks, all under 60 min
 
@@ -628,7 +648,7 @@ What should reorder this, and what should stop it:
 
 ## Queued next — not yet fired (refreshed 2026-10-08 by the incoming window; dated items wait for their date)
 
-- **Wave 63, first block — the distance-to-optimum generator:** compute every measure in the table above from the registry,
+- **Built in 63.3 — the distance-to-optimum generator:** compute every measure in the table above from the registry,
   pre-registrations, model metadata, fill sidecars and calibration-engine output; print it in the governance scan, show it on the
   Visual Dashboard, and make `gap_measure`/`gap_delta` required in the session-meta block once Wave 62 has closed.
 - **On/after 10-21 — NBA flip:** `scripts/w59_3_nba_flip_check.py` prints the `promote_cell_status` lines; flip once valid
@@ -648,6 +668,10 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **OPERATOR DIRECTIVE (2026-10-09 00:14 PT):** "I want to have MLB wired to full cus of the limited games left - the
+> translatebility should be mechanisms that we spent fucking months on with the MLB and should absolutely have already been
+> integrated in the NFL - when are we finally getting towards math work?" Used by 63.1 (MLB coverage) and 63.2 (NFL depth).
 
 > **AUTHORIZATION - STANDING: NEW PRE-REGISTERED SHADOW ARMS (operator, 2026-10-08 23:20 PT: "all 4 of these should
 > fire").** Covers: building new SHADOW cells for any sport, market family and band, and flipping them NOT_IMPLEMENTED ->
