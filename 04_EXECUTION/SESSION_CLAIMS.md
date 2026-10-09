@@ -818,3 +818,4 @@
 | 2026-10-09T15:37:47Z | T-766..T-768, GG-543..GG-544 | W63.2 MEDIUM - THE MATH: NFL translation map + deep challenger. PURPOSE: DEPTH D1 + D3 0->1 (NFL pre-game model depth; pre-registered challenger) |
 | 2026-10-09T15:37:51Z | T-769..T-771, GG-546..GG-547 | W63.3 MEDIUM - PURPOSE: PLUMBING (Hard Rule 12 distance table computed from data) + EXECUTION E3 (adverse selection behind fills-lose, both books) |
 | 2026-10-09T17:15:34Z | T-763 | CLOSED — 12 MLB game-market cells flipped to SHADOW (B1 25->37, B2 8->12); GG-532 resolved; player-hits premise falsified (off day), no wiring needed. (commit `see PR #201 (b25b63b) + docs push`) |
+| 2026-10-09T17:15:52Z | T-763 | CLOSED — merge confirmed, HEAD (67ea863) is ancestor of origin/main — W63.1 closed; PR #201 + docs on main |
