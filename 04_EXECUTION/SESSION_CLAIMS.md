@@ -814,3 +814,4 @@
 | 2026-10-09T07:07:15Z | T-761 | CLOSED — W62.1 MLB postseason matcher fix deployed + silent-arm alarm live on dashboards; GG-532 open pending first scheduled write. (commit `815af5f`) |
 | 2026-10-09T07:07:47Z | T-761 | CLOSED — merge confirmed, HEAD (32f3c9e) is ancestor of origin/main — W62.1 Parts A+B merged/deployed; GG-532 open pending scheduled write |
 | 2026-10-09T07:10:50Z | T-756 | CLOSED — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron-removal/first-look prep; PRs #196 #200 (commit `5be55b7`) |
+| 2026-10-09T15:37:20Z | T-763..T-765, GG-541..GG-542 | W63.1 MEDIUM - MLB wired to full for postseason: register 12 MLB game cells SHADOW + player-hits postseason logs. PURPOSE: BREADTH B1 25/104->37/104, B2 8/18->12/18 |
