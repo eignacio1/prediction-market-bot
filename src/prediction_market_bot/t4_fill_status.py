@@ -18,8 +18,13 @@ Fill classes:
 
 Only GET calls, against the demo venue. Refuses BOT_ENV=live.
 
+W62.3 generalization: the classifier is book-agnostic. ``BOOKS`` names each book's
+portfolio and its OWN sidecar (a book never shares a sidecar, so a position_id from one
+book can never shadow another). T4 stays the default; ``--book t1_mlb`` audits the T1 MLB
+paper book (``logs/paper_portfolio_mlb.json``) into ``logs/t1_mlb_fill_status.jsonl``.
+
 CLI (VPS): PYTHONPATH=src python3 -m prediction_market_bot.t4_fill_status \
-               --portfolio logs/paper_portfolio_mlb_t4.json
+               [--book t4_mlb|t1_mlb] [--portfolio ... --sidecar ...]
 """
 from __future__ import annotations
 
@@ -39,6 +44,13 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PORTFOLIO = REPO_ROOT / "logs" / "paper_portfolio_mlb_t4.json"
 DEFAULT_SIDECAR = REPO_ROOT / "logs" / "t4_mlb_fill_status.jsonl"
+
+# book -> (portfolio, sidecar). One sidecar per book, append-only, never a ledger rewrite.
+BOOKS: dict[str, tuple[Path, Path]] = {
+    "t4_mlb": (DEFAULT_PORTFOLIO, DEFAULT_SIDECAR),
+    "t1_mlb": (REPO_ROOT / "logs" / "paper_portfolio_mlb.json",
+               REPO_ROOT / "logs" / "t1_mlb_fill_status.jsonl"),
+}
 
 CONFIRMED_FILLED = "CONFIRMED_FILLED"
 CONFIRMED_NOT_FILLED = "CONFIRMED_NOT_FILLED"
@@ -119,6 +131,76 @@ def execution_summary(closed_positions: Iterable[dict], status: dict[str, dict])
 
 
 # ---------------------------------------------------------------------------
+# Book-agnostic report (W62.3): P&L per bet both ways, game-clustered 95% CI
+# ---------------------------------------------------------------------------
+
+def game_key(pos: dict) -> str:
+    """Cluster id = the Kalshi event segment of the ticker (one game), else game_date.
+    Bets on the same game are not independent, so the bootstrap resamples games."""
+    tk = str(pos.get("kalshi_ticker") or pos.get("ticker") or "")
+    parts = tk.split("-")
+    if len(parts) >= 2 and parts[1]:
+        return parts[1]
+    return f"date:{pos.get('game_date')}"
+
+
+def cluster_bootstrap_ci(values_by_cluster: dict[str, list[float]], n_boot: int = 4000,
+                         seed: int = 20261009) -> Optional[tuple[float, float]]:
+    """95% percentile CI for mean per-bet P&L, resampling whole games (clusters)."""
+    import random
+    clusters = [v for v in values_by_cluster.values() if v]
+    if len(clusters) < 2:
+        return None
+    rng = random.Random(seed)
+    k = len(clusters)
+    means = []
+    for _ in range(n_boot):
+        tot = cnt = 0
+        for _ in range(k):
+            c = clusters[rng.randrange(k)]
+            tot += sum(c)
+            cnt += len(c)
+        means.append(tot / cnt)
+    means.sort()
+    return round(means[int(0.025 * n_boot)], 4), round(means[int(0.975 * n_boot) - 1], 4)
+
+
+def _stats(rows: list[dict]) -> dict:
+    by_game: dict[str, list[float]] = defaultdict(list)
+    for r in rows:
+        by_game[game_key(r)].append(float(r.get("pnl") or 0.0))
+    n = len(rows)
+    tot = sum(sum(v) for v in by_game.values())
+    wins = sum(1 for r in rows if r.get("outcome") == "WIN")
+    ci = cluster_bootstrap_ci(by_game)
+    return {"n": n, "games": len(by_game), "pnl_total": round(tot, 4),
+            "pnl_per_bet": round(tot / n, 4) if n else None,
+            "win_rate": round(wins / n, 4) if n else None,
+            "pnl_per_bet_ci95_game_clustered": ci}
+
+
+def book_fill_report(closed_positions: Iterable[dict], status: dict[str, dict],
+                     band: Optional[str] = None) -> dict:
+    """Settled (WIN/LOSS) positions split by fill class. ``all`` is the calibration
+    record; ``filled`` is the only execution evidence. Positions with no sidecar row are
+    reported as ``unclassified`` and never counted as filled. Pure; no I/O."""
+    settled = [p for p in closed_positions if isinstance(p, dict)
+               and p.get("outcome") in ("WIN", "LOSS") and (band is None or p.get("band") == band)]
+    groups: dict[str, list[dict]] = {c: [] for c in FILL_CLASSES}
+    groups["UNCLASSIFIED"] = []
+    for p in settled:
+        row = status.get(p.get("position_id"))
+        groups[row["fill_class"] if row else "UNCLASSIFIED"].append(p)
+    return {
+        "all": {**_stats(settled), "label": CALIBRATION_LABEL},
+        "filled": {**_stats(groups[CONFIRMED_FILLED]), "label": EXECUTION_LABEL},
+        "not_filled": _stats(groups[CONFIRMED_NOT_FILLED]),
+        "unverifiable": _stats(groups[UNVERIFIABLE]),
+        "unclassified": _stats(groups["UNCLASSIFIED"]),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Classification (pure -- venue access is injected)
 # ---------------------------------------------------------------------------
 
@@ -134,6 +216,14 @@ def classify_position(
     oid, tk = pos.get("kalshi_order_id"), pos.get("kalshi_ticker")
     et = parse_ts(pos.get("entered_at"))
     side = str(pos.get("direction") or "").lower()
+
+    # W62.3: no order id AND the venue never accepted one (rejected / local-only record).
+    # There is no order that could have filled; a coincidental fill on the same ticker
+    # belongs to something else, so skip the ticker fallback entirely.
+    if not oid:
+        st = str(pos.get("kalshi_order_status") or "")
+        if st.startswith("failed") or st == "local_only":
+            return CONFIRMED_NOT_FILLED, "no_order_accepted_by_venue", []
 
     if oid and oid in fills_by_order:
         ids = [str(f.get("fill_id") or f.get("trade_id") or "") for f in fills_by_order[oid]]
@@ -316,12 +406,14 @@ def run_classifier(
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="GG-527: classify closed T4 positions by venue fill status")
-    ap.add_argument("--portfolio", type=Path, default=DEFAULT_PORTFOLIO)
-    ap.add_argument("--sidecar", type=Path, default=DEFAULT_SIDECAR)
+    ap = argparse.ArgumentParser(description="GG-527: classify closed positions by venue fill status")
+    ap.add_argument("--book", choices=sorted(BOOKS), default="t4_mlb")
+    ap.add_argument("--portfolio", type=Path, default=None)
+    ap.add_argument("--sidecar", type=Path, default=None)
     a = ap.parse_args(argv)
     sys.path.insert(0, str(REPO_ROOT / "scripts"))
-    result = run_classifier(a.portfolio, a.sidecar)
+    d_port, d_side = BOOKS[a.book]
+    result = run_classifier(a.portfolio or d_port, a.sidecar or d_side)
     print(json.dumps(result, indent=1))
     return 0
 
