@@ -2077,3 +2077,19 @@ Operator directive 2026-10-09: wire MLB to full for the postseason. EXP-037 MLB 
 - Part A (#202, aff51b12): distance_to_optimum.py + governance_scan + /project panel + required gap keys after 2026-10-09T07:24:13Z. Deploy: t4-mlb restart not needed (no t4-imported file changed). Ran on VPS; hand table in ACTIVE_QUEUE superseded by computed values (B1 37, B2 12, D2 18, P1 0/45).
 - D1 manifest: ops_l10, team_id added to team class (VPS run errored on them).
 - Part B: demo-venue GETs only. Verdict: fills adversely selected + stale pricing; ADR-0072 DRAFT written PROPOSED, switch OFF. Nothing built or enabled. No live capital implication.
+
+## 2026-10-09 ~17:45 UTC — Wave 63 verified and closed; window correction; Wave 64 issued
+
+Verified on GitHub: 63.1 DONE (#201: 12 MLB game-market cells NOT_IMPLEMENTED -> SHADOW under the standing authorization,
+EXP-037 MLB pre-dated their first row; GG-532 RESOLVED - the 2026-10-09 12:07Z scheduled run wrote 33 rows). 63.1 Part B found
+the window's premise false: MLB player hits matched players on every game day since 09-27 (zeros only on off-days) and the
+GitHub Actions feature build already includes postseason games. Correction recorded in the sitrep: the window asserted "dark since
+9-27" from a stale archived note without checking logs. 63.2 PARTIAL (Part A NFL translation map; Part B carried to 64.1). 63.3
+DONE (#202 distance-to-optimum generator, governance scan + /project panel, gap keys required; #203 fill markouts: fills adversely
+selected, win 24-28% vs 49-52% unfilled; ADR-0072 DRAFT, switch OFF). Distance table in the queue replaced with the generator's
+2026-10-09T16:18Z output: B1 37/104, B2 12/18, D1 no live model uses matchup/weather/qualitative, NFL team-only; E1 T4 3.9%, T1
+17.5%; P1 0/45.
+Wave 64: 64.1 NFL QB-shrunk challenger (DEPTH D1/D3); 64.2 demo-fill placement rule + flat demo stakes on SHADOW cells + forward
+test pre-registration, all behind OFF switches (EXECUTION; moves nothing until operator accepts ADR-0072); 64.3 NBA player-points
+pre-game shadow arm for opening night (BREADTH B4 1->2, B1 37->40). Common rules now say: check every premise against logs/data
+before building on it.
