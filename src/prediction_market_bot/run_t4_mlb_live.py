@@ -224,6 +224,39 @@ def t4m_proj_model_identity(shrunk_present: bool) -> str:
     return T4M_PROJ_MODEL_IDENTITY if shrunk_present is True else T4M_PROJ_MODEL_IDENTITY_RAW_FALLBACK
 
 
+# GG-527 (operator decision (b)+(c), 2026-10-08): T4M-PROJ places NO paper stake for any
+# game after the 2026 season (after the 2026 World Series) unless this is set True.
+# Evaluations and cycle-log rows keep writing -- that calibration record is the asset;
+# only the stake is stood down. Default OFF. Re-enabling needs a NEW operator decision
+# (record it in DECISION_LOG), not just flipping this flag. The MARKET_TYPE_REGISTRY is
+# not consulted by this placement path, hence the gate lives here in code. The registry
+# flip of T4M-PROJ to DARK is a separate act after the World Series.
+T4M_PROJ_POST_2026_REENABLE = False
+STAND_DOWN_FIRST_YEAR = 2027
+_stand_down_skips: dict = {}
+
+
+def stake_stood_down(ticker: str) -> bool:
+    """True when GG-527 forbids a paper stake on this ticker's game (game year >=
+    2027 and re-enable off). Logs ONE counted line per (ticker) on first skip, then
+    counts silently -- never one line per cycle. Unparseable date -> not stood down
+    (the existing GG-191 refusal path owns that case)."""
+    if T4M_PROJ_POST_2026_REENABLE:
+        return False
+    gd = _ticker_to_game_date(ticker)
+    if not gd or int(gd[:4]) < STAND_DOWN_FIRST_YEAR:
+        return False
+    n = _stand_down_skips.get(ticker, 0) + 1
+    _stand_down_skips[ticker] = n
+    if n == 1:
+        logger.warning(
+            "GG-527 stand-down: no T4M-PROJ paper stake for %s (game %s, post-2026); "
+            "evaluation still logged. Skips counted in-process; total tickers=%d",
+            ticker, gd, len(_stand_down_skips),
+        )
+    return True
+
+
 def measurement_stake_and_stratum(entry_price: float) -> tuple[float, float, str]:
     """ADR-0050 addendum §B/§C (2026-07-30): contract-capped flat measurement
     stake + pre-registered price stratum for a single T4M-PROJ bet.
@@ -1608,6 +1641,9 @@ def _run_cycle(
             # ($0.005 entry -> $0.05 stake / effectively 10 contracts).
             entry_price = mip if direction == "YES" else (1.0 - mip)
             if entry_price <= 0.0:
+                evaluated += 1
+                continue
+            if stake_stood_down(ticker):  # GG-527: evaluation logged above; no stake
                 evaluated += 1
                 continue
             measurement_stake_usd, contracts, price_stratum = measurement_stake_and_stratum(
