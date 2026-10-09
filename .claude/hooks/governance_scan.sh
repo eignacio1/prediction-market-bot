@@ -683,6 +683,15 @@ echo ""
 echo "ORDER-WRITE PARITY (GG-203/T-547 D5 -- alarm-only, does not affect this hook's exit code):"
 python3 "$PROJECT/scripts/gg203_order_write_detector.py" 2>&1 | tail -20 || true
 
+# --- Silent-arm alarm (W62.1 Part B / GG-532 follow-on) ---
+# For each shadow/paper arm: was a game scheduled to start in the arm's window (N hours, per its own schedule
+# source) with zero rows written? Off-days and off-season are not alarms. READ-ONLY; alarm-only. Reads the
+# ledgers in THIS checkout's exp_output/ (the VPS checkout is where the real ones live; locally the sources are
+# usually absent, which prints "cannot check", not an alarm).
+echo ""
+echo "SILENT ARMS (W62.1 -- games in window with zero rows written; alarm-only):"
+PYTHONPATH="$PROJECT/src" python3 -m prediction_market_bot.pregame_shadow.silent_arms 2>&1 | tail -12 || true
+
 echo "============================================================"
 echo "MANDATORY BEFORE ANY IMPLEMENTATION WORK:"
 echo "  Complete ARE WE COMPROMISED? (CLAUDE.md Q1-Q7)"
