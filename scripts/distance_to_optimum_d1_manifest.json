@@ -67,7 +67,9 @@
       "pa_",
       "epa",
       "league_",
-      "runs_allowed"
+      "runs_allowed",
+      "ops_l10",
+      "team_id"
     ]
   },
   "rule_order": [
