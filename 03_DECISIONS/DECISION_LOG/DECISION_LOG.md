@@ -2093,3 +2093,8 @@ Wave 64: 64.1 NFL QB-shrunk challenger (DEPTH D1/D3); 64.2 demo-fill placement r
 test pre-registration, all behind OFF switches (EXECUTION; moves nothing until operator accepts ADR-0072); 64.3 NBA player-points
 pre-game shadow arm for opening night (BREADTH B4 1->2, B1 37->40). Common rules now say: check every premise against logs/data
 before building on it.
+
+## 2026-10-09 — W64.3 Part A: NBA player-points arm (EXP-039)
+- Legacy NBA model not reusable for KXNBAPTS: its target (points >= own l10 mean) cannot price a strike. Decision: retrain as a new frozen artifact (negative-binomial points distribution, single Platt), features personnel/team/venue only.
+- Pre-registered EXP-039 (3 cells, NBA_PLAYER_POINTS x T1/T2/T3) on main before any row (PR #204). Seed 20261009; first look n=300, second n=800/2027-01-31.
+- D1 manifest gains `nba_player_points_v1`. ADR standing for the model class remains an open operator decision (same as EXP-038).
