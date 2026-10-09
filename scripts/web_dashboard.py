@@ -521,7 +521,7 @@ def _silent_arms(d: Path, now: datetime) -> dict:
         return _SILENT_CACHE["val"]
     try:
         from prediction_market_bot.pregame_shadow import silent_arms as sa
-        val = sa.compute(_REPO_ROOT, logs=d, now=now)
+        val = sa.compute_isolated(_REPO_ROOT, logs=d)
     except Exception as e:
         val = {"awaiting": f"silent-arm check: {type(e).__name__}", "arms": [], "silent": [], "unknown": []}
     _SILENT_CACHE.update(at=time.time(), val=val)
