@@ -30,7 +30,7 @@ FORBIDDEN_PATH_FRAGMENTS = (
     "settled_rows", "first_look", "03_DECISIONS", "market_type_registry",
 )
 WRITE_ATTRS = {"write_text", "write_bytes", "to_csv", "to_json", "to_parquet", "to_pickle", "dump", "unlink", "rename", "replace",
-               "rmtree", "copy", "copy2", "copyfile", "move", "touch", "mkdir", "savefig", "save", "system"}
+               "rmtree", "remove", "rmdir", "removedirs", "symlink", "link", "truncate", "copytree", "copy", "copy2", "copyfile", "move", "touch", "mkdir", "savefig", "save", "system"}
 NET_WRITE_ATTRS = {"post", "put", "delete", "patch"}
 
 
