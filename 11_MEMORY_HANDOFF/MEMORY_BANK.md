@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-09T16:30:00Z (T-769 — W63.3 distance table now computed (generator, governance scan, dashboard) and fills shown adversely selected; ADR-0072 draft PROPOSED, switch OFF.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T1630Z_W63_3.md` for full session detail.
+**Last reviewed:** 2026-10-09T17:00:00Z (T-763 — 12 MLB game-market cells flipped to SHADOW (B1 25->37, B2 8->12); GG-532 resolved; player-hits premise falsified (off day), no wiring needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T1700Z_W63_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
