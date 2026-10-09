@@ -477,7 +477,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
             score = ("<span class='nd'>none released</span>" if not sc else
                      (f"<span class='tag'>{_e(c.get('scores_label', 'JUDGED'))}</span> Brier model {sc['brier_model']:.4f} / "
                       f"market {sc['brier_market']:.4f} · Δ vs mkt {sc['delta_brier_vs_market']['mean']:+.4f} "
-                      f"[{sc['delta_brier_vs_market']['ci95'][0]:+.4f}, {sc['delta_brier_vs_market']['ci95'][1]:+.4f}]"))
+                      f"[{sc['delta_brier_vs_market']['ci95'][0]:+.4f}, {sc['delta_brier_vs_market']['ci95'][1]:+.4f}]"
+                      + (f" · verdict <b>{_e(c['verdict']['verdict'])}</b>" if c.get("verdict") else "")))
             rows.append(f"<tr title='source: {_e(c['source'])}'><td>{_e(c['market_type'])} {_e(c['band'])}</td><td><span class='{cls}'>{_e(c['status_text'])}</span></td>"
                         f"<td class='num'>{c['rows']} rows · {c['settled_games']} games</td><td>{bar}</td>"
                         f"<td class='num' title='{_e(pj.get('note') or '')}{_e(' · coverage ' + pj['coverage_basis'] if pj.get('coverage_basis') else '')}'>"

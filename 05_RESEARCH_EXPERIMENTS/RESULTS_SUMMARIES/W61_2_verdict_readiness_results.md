@@ -37,3 +37,13 @@ First T3 row 2026-10-08T22:06:04Z. **GG-401 RESOLVED** with this evidence. Premi
 
 ### A3. Retirement
 `scripts/retire_resolved_gaps.py --apply`: moved GG-228, GG-300, GG-401, GG-515, GG-525 (verbatim). After: headers=153 / status lines=153 (equal; includes the template fence header), uniqueness OK across live + archive, live OPEN = 130 (−GG-401, +GG-532), 0 resolved-class left in live log.
+
+## Part B — NFL first-look readiness (counts only; no sealed score computed)
+
+**Step 4 — per cell (engine run `--no-write` on the VPS, 2026-10-09):** all 12 NFL cells (4 markets x T1-T3) have 15 settled judged-eligible games of 60; rows 60-1,997 per cell. Engine projection: 2026-11-02 for every cell. Independent check against `data/schedules/nfl_2026.json`: 44 REG games through 10-29, the 45th needed lands on the 11-01 slate (56 cum), +1 day lag = 11-02. **Confirmed.** All cells reach n this season. Fragility: coverage is 100% on one slate; at 95% coverage the date moves to ~11-09. Other sports (counts): MLB 12 cells 6-8 postseason games each, never scored; NHL n=19-33 of 2,500, not reachable this season; NBA 0 rows.
+Note: VPS is at `1d99bee`, so NHL T3 still reads SEALED (GG-401 still OPEN there); it flips to PRELIMINARY after this branch deploys.
+
+**Step 5 — rehearsal** (`tests/test_w61_2_release_rehearsal.py`, synthetic cell in a temp repo): 59 games -> SEALED, no score/manifest/report; 60th game -> next 13:49 UTC run reports JUDGED, writes the write-once `release_manifests/<cell>.look60.json`, a verdict in `engine_<UTC>.json`; later games (75) leave the manifest byte-identical; dashboard Calibration section renders JUDGED + Brier.
+Breaks found and fixed: (1) **no first-look REPORT was ever produced by the cron path** (`render_report` only ran via `--synthetic-report`) — CLI now writes `exp_output/CALIBRATION/FIRST_LOOK_REPORT.md` for released cells only; (2) the dashboard showed Brier but not the verdict word — verdict now shown on the row.
+
+**Step 6:** `04_EXECUTION/NFL_FIRST_LOOK_RUNBOOK.md`.
