@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-09T17:00:00Z (T-763 — 12 MLB game-market cells flipped to SHADOW (B1 25->37, B2 8->12); GG-532 resolved; player-hits premise falsified (off day), no wiring needed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T1700Z_W63_1.md` for full session detail.
+**Last reviewed:** 2026-10-09T17:55:00Z (T-775 — W64.3 Part A: NBA player-points survey, retrain decision, EXP-039 pre-registered on main; Part B (model/runner/cron/flip) not started.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T1741Z_W64_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
