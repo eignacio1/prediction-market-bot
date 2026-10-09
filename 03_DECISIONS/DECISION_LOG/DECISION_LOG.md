@@ -1926,3 +1926,8 @@ stub scan clean). VPS not checked from the window (no SSH); 61.2 runs Step 4.
 (charter + CI isolation test), on the operator's 2026-10-07 stated horizon (research, variants, feature extraction).
 **Wave 61:** 61.1 GG-527 build (fills-only evidence + stand-down gate); 61.2 verdict readiness (Step 4, GG-401 close-out,
 retire RESOLVED entries, NFL first-look rehearsal on a synthetic cell + runbook); 61.3 exploratory track.
+
+## 2026-10-09 — W61.2 Part A (T-750): GG-401 RESOLVED; GG-532 registered; 5 gaps retired
+- GG-401 -> RESOLVED on stored rows: NHL shadow rows since the #188 deploy cut-over carry confirmed=False and starter_source (T3 510/510, T2 1200/1200, T1 59/59). Row evidence, not code path.
+- GG-532 registered (MEDIUM, OPEN): MLB pregame shadow arm silent since 2026-10-08 01:43Z, all 41 open markets skip as no_kickoff (ticker-time vs Stats API start mismatch / unscheduled postseason rows). Not fixed in-session.
+- Retired verbatim to the archive: GG-228, GG-300, GG-401, GG-515, GG-525. Live OPEN count 130. Details: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W61_2_verdict_readiness_results.md.
