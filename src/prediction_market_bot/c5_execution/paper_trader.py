@@ -60,6 +60,7 @@ except ImportError:  # pragma: no cover - non-POSIX fallback
 import pandas as pd
 
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
+from prediction_market_bot.c5_execution import demo_fill_policy as _fill_policy
 from prediction_market_bot.c5_execution.market_type_registry import MarketType
 from prediction_market_bot.logic_epoch import (
     CURRENT_APPROVAL_COMMIT,
@@ -643,13 +644,30 @@ class PaperTrader:
             # Submit to Kalshi demo if client is available (ADR-0008)
             if self._kalshi and self._kalshi.has_signing_key() and kalshi_ticker:
                 side = direction.lower()  # "yes" or "no"
+                submit_mid = mid_price
+                policy_on = _fill_policy.is_enabled() and _fill_policy.assigned(pos["position_id"])
+                if policy_on:
+                    # W64.2/ADR-0072: book-anchored price (R2). A skip places NO order and
+                    # leaves no position: same shape as a venue rejection, reason logged.
+                    dec = _fill_policy.decide(self._kalshi, kalshi_ticker, side, mid_price, pos["position_id"])
+                    if dec.action != "SUBMIT":
+                        _fill_policy.append_log({"event": "skip", "reason": dec.reason,
+                                                 "position_id": pos["position_id"],
+                                                 "ticker": kalshi_ticker, "meta": dec.meta})
+                        return True, {}
+                    submit_mid = dec.mid_price
+                    pos["fill_policy"] = {"rule": "book_anchor_cancel", "model_mid": mid_price,
+                                          "submit_mid": submit_mid}
                 order = self._kalshi.submit_order(
                     ticker=kalshi_ticker,
                     side=side,
                     size_usd=size,
-                    mid_price=mid_price,
+                    mid_price=submit_mid,
                     client_order_id=pos["position_id"],
                 )
+                if policy_on and order.ok and order.order_id:
+                    _fill_policy.schedule_cancel(self._kalshi, order.order_id,
+                                                 pos["position_id"], kalshi_ticker)
                 # GG-303/T-576 defense-in-depth: never trust order.order_id as a
                 # confirmed exchange acknowledgement if it's empty, even when
                 # order.ok is True. kalshi_client.py's submit_order() now refuses

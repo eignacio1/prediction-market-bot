@@ -30,7 +30,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              ledger_dir: Path, run_id: str, now_utc: datetime, code_sha: str,
              raw_filter: Optional[Callable[[dict], bool]] = None,
              only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None,
-             kickoff_miss_reason: Optional[Callable[[str], str]] = None) -> dict:
+             kickoff_miss_reason: Optional[Callable[[str], str]] = None,
+             on_row: Optional[Callable[[dict], None]] = None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -82,6 +83,11 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
             if led.append(row):
                 written[f"{mt_name}:{band}"] += 1
+                if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
+                    try:
+                        on_row(dict(row))
+                    except Exception:  # noqa: BLE001 - observer failure never affects the shadow run
+                        pass
             else:
                 skipped[f"{mt_name}:duplicate"] += 1
     return {"written": dict(written), "skipped": dict(skipped)}
