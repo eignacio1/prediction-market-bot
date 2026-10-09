@@ -3808,7 +3808,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-527 — 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never filled; the 107 real fills lose -$0.40/bet
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-10-09, W61.1, operator decision (b)+(c) 2026-10-08):** (b) BUILT: `t4_fill_status` classifier + append-only sidecar `logs/t4_mlb_fill_status.jsonl` (kept current by the Monday `build_t4_resolved_ledger.py` cron, no cron edit); T4M-PROJ G6 clean_n / n* / P&L-per-bet count CONFIRMED_FILLED only in run_power_calc, run_band_monitor, governance_scan; all-rows prints as "calibration only - not execution evidence"; both dashboards show fills n/P&L as the execution figure (#191). VPS run: 4,220 closed T4 positions = 166 CONFIRMED_FILLED / 4,054 NOT_FILLED / 0 UNVERIFIABLE; re-run appended 0. (c) BUILT: `stake_stood_down()` gate, no T4M-PROJ paper stake for games dated >= 2027 unless `T4M_PROJ_POST_2026_REENABLE` (default False; re-enable needs a new operator decision); evaluations/cycle-log keep writing (#193). Both on VPS at c9e2315. **Caveat:** t4-mlb deploy decision was `skip_live_game`, so the running process (since 2026-10-07 06:13Z) still has the old code; the gate must be live before spring 2027 - see W61_1 results. **NOT done here:** registry flip of T4M-PROJ to DARK - happens after the 2026 World Series (later block).
 
 **Current state (2026-10-08, W60.1):** Consequence of GG-300's now-complete classification. Cohort mean P&L/bet is -0.053 (game-clustered 95% CI -0.148..+0.043, 176 games); CONFIRMED_FILLED only: -0.403 (CI -0.650..-0.156, 41 games, n=107). Cohort definition, G6 `clean_n` and band status are unchanged by this block (operator's call).
 
