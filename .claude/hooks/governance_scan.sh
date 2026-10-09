@@ -288,7 +288,7 @@ try:
     from prediction_market_bot.logic_epoch import CURRENT_LOGIC_EPOCH
 except Exception:
     CURRENT_LOGIC_EPOCH = None
-from run_band_monitor import load_t4_ledger, filter_clean
+from run_band_monitor import load_t4_ledger, load_t4_ledger_execution, filter_clean
 
 def _load(cache, local):
     path = cache if os.path.exists(cache) else local
@@ -316,10 +316,12 @@ else:
             parts.append(f'MLB {band}: raw_n={raw_n} clean_n={clean_n}')
     else:
         parts.append('MLB T1/T2: portfolio unavailable')
-    t4_recs = load_t4_ledger(Path(t4_ledger_path))
+    # GG-527: T4M-PROJ G6 counting = CONFIRMED_FILLED rows only; all-rows is calibration.
+    t4_all = load_t4_ledger(Path(t4_ledger_path))
+    t4_recs = load_t4_ledger_execution(Path(t4_ledger_path))
     t4_raw_n = len(t4_recs)
     t4_clean_n = len(filter_clean(t4_recs))
-    parts.append(f'MLB T4M-PROJ: raw_n={t4_raw_n} clean_n={t4_clean_n}')
+    parts.append(f'MLB T4M-PROJ (fills only): raw_n={t4_raw_n} clean_n={t4_clean_n}; all-rows n={len(t4_all)} [calibration only - not execution evidence]')
     print('  ' + ', '.join(parts) + '.')
     print('  (clean_n = resolved under CURRENT_LOGIC_EPOCH; G6 progress language should cite clean_n, not raw_n.)')
     print('  (T4M-PROJ counted via the canonical build_t4_resolved_ledger.py/run_band_monitor.py path — GG-112/T-344.)')

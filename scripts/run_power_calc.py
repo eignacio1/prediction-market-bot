@@ -55,6 +55,7 @@ from run_band_monitor import (   # noqa: E402
     DEFAULT_T4_LEDGER,
     load_pool_by_band,
     load_t4_ledger,
+    load_t4_ledger_execution,
     filter_clean,
 )
 
@@ -302,8 +303,12 @@ def run_all_bands(portfolio_path: Path, t4_ledger_path: Path,
     by_band = load_pool_by_band(portfolio_path)
     for band in BOOK_BANDS:
         results[band] = analyze_band_power(band, by_band.get(band, []), alpha, power)
-    t4_recs = load_t4_ledger(t4_ledger_path)
+    # GG-527: G6 counting for T4M-PROJ uses CONFIRMED_FILLED rows only.
+    t4_recs = load_t4_ledger_execution(t4_ledger_path)
     results["T4M-PROJ"] = analyze_band_power("T4M-PROJ", t4_recs, alpha, power)
+    results["T4M-PROJ"]["basis"] = "CONFIRMED_FILLED only (GG-527 execution evidence)"
+    results["T4M-PROJ"]["calibration_all_rows_n"] = len(load_t4_ledger(t4_ledger_path))
+    results["T4M-PROJ"]["calibration_all_rows_label"] = "calibration only - not execution evidence"
     return results
 
 
@@ -363,7 +368,7 @@ def run_all_cells(portfolio_path: Path, t4_ledger_path: Path,
             results[key] = res
             _persist_cell_measurement(mt, band, res)
 
-    t4_recs = load_t4_ledger(t4_ledger_path)
+    t4_recs = load_t4_ledger_execution(t4_ledger_path)  # GG-527: fills only
     for mt, recs in _regroup_by_cell("T4M-PROJ", t4_recs).items():
         res = analyze_band_power("T4M-PROJ", recs, alpha, power)
         res["market_type"] = mt.value

@@ -230,7 +230,7 @@ class TestProcessInfo:
         assert {"rejected_counts", "t4_cycle_tail", "process"} <= set(d)
         assert set(d) - _EXISTING_KEYS == {
             "rejected_counts", "t4_cycle_tail", "process",
-            "season", "freshness", "origin", "coverage", "shadow", "verdicts", "mlb_postseason", "pipeline", "decisions"}
+            "season", "freshness", "origin", "coverage", "shadow", "verdicts", "mlb_postseason", "pipeline", "decisions", "t4_execution"}
 
 
 class TestTerminalWiring:

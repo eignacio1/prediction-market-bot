@@ -143,6 +143,12 @@ def _write_portfolio(path: Path, positions: list[dict]) -> None:
 
 def _write_t4_ledger(path: Path, rows: list[dict]) -> None:
     path.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    # GG-527: T4M-PROJ counts CONFIRMED_FILLED rows only. These tests exercise the analysis
+    # math, not fill status, so mark every row filled in the sidecar beside the ledger.
+    # (test_t4_fill_status.py covers the fills-only filter itself.)
+    side = path.parent / "t4_mlb_fill_status.jsonl"
+    side.write_text("".join(json.dumps({"position_id": r.get("position_id"),
+                                        "fill_class": "CONFIRMED_FILLED"}) + "\n" for r in rows))
 
 
 def _t4_ledger_row(ticker, direction="YES", mip=0.5, model_p=0.6, outcome="WIN",

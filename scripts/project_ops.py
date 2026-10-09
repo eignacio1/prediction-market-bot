@@ -260,10 +260,22 @@ def sec_books(repo: Path, now: datetime, run: Run = default_run) -> dict:
         h = age_hours(lu, now)
         state = "nodata" if dd is None else ("bad" if dd >= KILL_SWITCH_DRAWDOWN else
                                              ("warn" if dd >= 0.8 * KILL_SWITCH_DRAWDOWN else "ok"))
-        rows.append({"label": label, "source": rel, "bankroll": d.get("bankroll_usd"), "initial": init,
-                     "realized_pnl": rpnl, "drawdown": dd, "limit": KILL_SWITCH_DRAWDOWN,
-                     "open_positions": len(op) if isinstance(op, list) else None,
-                     "last_write": _iso(lu), "age_h": h, "state": state})
+        row = {"label": label, "source": rel, "bankroll": d.get("bankroll_usd"), "initial": init,
+               "realized_pnl": rpnl, "drawdown": dd, "limit": KILL_SWITCH_DRAWDOWN,
+               "open_positions": len(op) if isinstance(op, list) else None,
+               "last_write": _iso(lu), "age_h": h, "state": state}
+        if rel.endswith("paper_portfolio_mlb_t4.json"):
+            # GG-527: T4M-PROJ execution evidence = CONFIRMED_FILLED rows only
+            try:
+                import sys as _sys
+                _sys.path.insert(0, str(repo / "src"))
+                from prediction_market_bot import t4_fill_status as tfs
+                row["execution"] = tfs.execution_summary(
+                    d.get("closed_positions") or [],
+                    tfs.load_fill_status(repo / "logs" / "t4_mlb_fill_status.jsonl"))
+            except Exception:  # never break the page
+                row["execution"] = None
+        rows.append(row)
     return {"source": "logs/paper_portfolio_*.json (paper ledgers, no real capital)", "as_of": _iso(now),
             "rows": rows, "status": _worst([r["state"] for r in rows])}
 
