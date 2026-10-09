@@ -802,3 +802,4 @@
 | 2026-10-09T00:20:07Z | T-747..T-749, GG-531 | W61.1 MEDIUM - GG-527 built: fills-only T4M-PROJ execution evidence + stand-down gate |
 | 2026-10-09T00:20:39Z | T-753..T-755, GG-533 | W61.3 MEDIUM - exploratory research track: charter, isolation guard test, data inventory, first NFL challenger study |
 | 2026-10-09T00:21:08Z | T-750..T-752, GG-532, GG-534..GG-535 | W61.2 MEDIUM - verdict readiness: VPS health, GG-401 close-out, gap-log retirement, NFL first-look rehearsal |
+| 2026-10-09T00:43:46Z | T-750 | CLOSED — W61.2 verdict readiness: VPS health, GG-401 closed, NFL release path fixed and rehearsed, runbook written; GG-532 open. (commit `b5946c6`) |
