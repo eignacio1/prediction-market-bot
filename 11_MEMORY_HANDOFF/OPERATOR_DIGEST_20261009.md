@@ -23,3 +23,5 @@ The MLB playoff tracker had gone quiet because it couldn't match a game whose st
 - NBA: flip check not ready (0 rows); removal script and first-look release verified, no src change.
 - Do on/after 2026-10-21 10:00 UTC: `python3 scripts/remove_nba_preseason_cron.py` (dry-run, then `--apply`) and `scripts/w59_3_nba_flip_check.py`.
 - Hook timeout: `governance_scan.sh` needs `"timeout": 120` in `.claude/settings.json`; not changed, say yes.
+
+**W63.1 — MLB at full for the playoffs.** The 12 MLB game-bet categories (who wins, run line, game total, team total, at three timings) are now being tracked and counted. Coverage rose from 25 to 37 of 104 cells, and from 8 to 12 of 18 bet families. Still practice only, no money at risk. The player-hits arm was never broken: it matched players on every playoff game day, and today's zero is simply an off day. The next real check is tomorrow's 7am ET run.
