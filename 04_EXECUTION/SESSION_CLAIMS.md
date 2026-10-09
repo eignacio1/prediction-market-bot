@@ -816,3 +816,4 @@
 | 2026-10-09T07:10:50Z | T-756 | CLOSED — W62.3 DONE: GG-527 gate proven, T1 MLB fill audit (GG-536), NBA flip/cron-removal/first-look prep; PRs #196 #200 (commit `5be55b7`) |
 | 2026-10-09T15:37:20Z | T-763..T-765, GG-541..GG-542 | W63.1 MEDIUM - MLB wired to full for postseason: register 12 MLB game cells SHADOW + player-hits postseason logs. PURPOSE: BREADTH B1 25/104->37/104, B2 8/18->12/18 |
 | 2026-10-09T15:37:47Z | T-766..T-768, GG-543..GG-544 | W63.2 MEDIUM - THE MATH: NFL translation map + deep challenger. PURPOSE: DEPTH D1 + D3 0->1 (NFL pre-game model depth; pre-registered challenger) |
+| 2026-10-09T15:37:51Z | T-769..T-771, GG-546..GG-547 | W63.3 MEDIUM - PURPOSE: PLUMBING (Hard Rule 12 distance table computed from data) + EXECUTION E3 (adverse selection behind fills-lose, both books) |
