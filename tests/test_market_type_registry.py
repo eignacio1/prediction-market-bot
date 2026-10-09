@@ -90,16 +90,17 @@ class TestRegistryStartingState:
             assert cell.status in allowed, cell
 
     def test_mlb_families_other_than_player_prop_have_no_active_or_blocked_cells(self):
-        other_families = [
-            MarketType.MLB_MONEYLINE,
-            MarketType.MLB_RUN_LINE,
-            MarketType.MLB_GAME_TOTAL,
-            MarketType.MLB_TEAM_TOTAL,
-            MarketType.MLB_PARTIAL_GAME,
-        ]
-        for market_type in other_families:
+        # W63.1 (T-763): the 12 pre-game game-market cells are SHADOW (EXP-037); every other
+        # cell of these families (T4/T5 in-play, partial game) stays NOT_IMPLEMENTED.
+        shadow_bands = {ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP}
+        game_families = {MarketType.MLB_MONEYLINE, MarketType.MLB_RUN_LINE,
+                         MarketType.MLB_GAME_TOTAL, MarketType.MLB_TEAM_TOTAL}
+        for market_type in [*game_families, MarketType.MLB_PARTIAL_GAME]:
             for cell in cells_for_market_type(market_type):
-                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+                if market_type in game_families and cell.band in shadow_bands:
+                    assert cell.status is CellStatus.SHADOW, cell
+                else:
+                    assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +262,9 @@ class TestPromoteCellStatus:
     def _seed_ruled_out(self):
         import datetime
         key = (MarketType.MLB_TEAM_TOTAL, ExecutionBand.T3_PRE_TIP)
+        # W63.1: this cell is a real (SHADOW) registry entry now; keep the original so teardown
+        # restores it instead of deleting it for every later test in the session.
+        self._original = MARKET_TYPE_REGISTRY.get(key)
         MARKET_TYPE_REGISTRY[key] = MarketTypeCell(
             MarketType.MLB_TEAM_TOTAL,
             ExecutionBand.T3_PRE_TIP,
@@ -290,7 +294,7 @@ class TestPromoteCellStatus:
                     MarketType.MLB_TEAM_TOTAL, ExecutionBand.T3_PRE_TIP, CellStatus.ACTIVE,
                 )
         finally:
-            del MARKET_TYPE_REGISTRY[key]
+            MARKET_TYPE_REGISTRY[key] = self._original
 
     def test_ruled_out_to_shadow_with_superseding_reference_succeeds(self):
         key = self._seed_ruled_out()
@@ -304,7 +308,7 @@ class TestPromoteCellStatus:
             assert promoted.status is CellStatus.SHADOW
             assert promoted.citing_decision == "GG-999"
         finally:
-            del MARKET_TYPE_REGISTRY[key]
+            MARKET_TYPE_REGISTRY[key] = self._original
 
     def test_unseeded_pair_raises_keyerror(self):
         with pytest.raises(KeyError):

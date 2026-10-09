@@ -251,7 +251,18 @@ def test_nfl_pregame_cells_shadow_and_inplay_untouched():
         assert get_cell(mt, ExecutionBand.T4NFL_ARITH).status is CellStatus.NOT_IMPLEMENTED
 
 
-def test_registry_shadow_total_is_24():
-    """3 MLB player-hits + 12 NFL + 9 NHL (W54.1)."""
+def test_mlb_game_market_cells_shadow_and_inplay_untouched():
+    """W63.1 (T-763): the 12 MLB game cells are SHADOW under EXP-037; T4 in-play cells stay unseeded/untouched."""
+    from prediction_market_bot.c5_execution.market_type_registry import (
+        CellStatus, ExecutionBand, MarketType, get_cell)
+    for mt in (MarketType.MLB_MONEYLINE, MarketType.MLB_RUN_LINE,
+               MarketType.MLB_GAME_TOTAL, MarketType.MLB_TEAM_TOTAL):
+        for b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+            c = get_cell(mt, b)
+            assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
+
+
+def test_registry_shadow_total_is_36():
+    """3 MLB player-hits + 12 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1)."""
     from prediction_market_bot.c5_execution.market_type_registry import CellStatus, cells_by_status
-    assert len(cells_by_status(CellStatus.SHADOW)) == 24
+    assert len(cells_by_status(CellStatus.SHADOW)) == 36
