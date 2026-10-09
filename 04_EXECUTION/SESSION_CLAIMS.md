@@ -808,3 +808,4 @@
 | 2026-10-09T01:04:03Z | T-747 | CLOSED — merge confirmed, HEAD (a09f453) is ancestor of origin/main — W61.1 GG-527 built, #191+#193 merged, on VPS c9e2315; t4-mlb restart pending |
 | 2026-10-09T06:14:20Z | T-756..T-758, GG-536..GG-537 | W62.3 MEDIUM - load GG-527 gate (t4-mlb restart), T1 MLB fill audit, NBA flip dry run |
 | 2026-10-09T06:14:59Z | T-759..T-760, GG-538 | W62.2 MEDIUM - exploratory part 2: secure pre-2026 Kalshi history (VPS copy + manifest) + NFL first-look expectations doc |
+| 2026-10-09T06:15:33Z | T-761..T-762, GG-539..GG-540 | W62.1 MEDIUM - MLB postseason shadow matcher fix (GG-532) + silent-arm alarm |
