@@ -109,3 +109,33 @@ def test_live_terminal_templates_carry_fills_labels():
     for f in (ROOT / "Live Terminal.html", ROOT / "scripts" / "web_dashboard.py"):
         t = f.read_text()
         assert t.count("T4 P&L · REAL FILLS") == 2 and "calibration, not execution" in t
+
+
+def test_rejected_or_local_only_without_order_id_is_not_filled():
+    # W62.3: no order was ever accepted -> a same-ticker fill must not rescue it.
+    from datetime import datetime, timezone
+    from prediction_market_bot import t4_fill_status as m
+    et = datetime(2026, 7, 1, tzinfo=timezone.utc).isoformat()
+    fill = {"order_id": "other", "ticker": "TK", "side": "no", "created_time": et, "fill_id": "f1"}
+    by_o, by_t = m.index_fills([fill])
+    for st in ("failed: HTTP 410", "local_only"):
+        pos = {"position_id": "P", "kalshi_ticker": "TK", "direction": "NO", "entered_at": et,
+               "kalshi_order_id": None, "kalshi_order_status": st}
+        assert m.classify_position(pos, by_o, by_t, None)[:2] == (
+            m.CONFIRMED_NOT_FILLED, "no_order_accepted_by_venue")
+
+
+def test_book_fill_report_splits_and_clusters():
+    from prediction_market_bot import t4_fill_status as m
+    mk = lambda i, g, pnl, o: {"position_id": i, "kalshi_ticker": f"KX-{g}-P", "pnl": pnl,
+                                "outcome": o, "band": "T1"}
+    closed = [mk("a", "G1", 5, "WIN"), mk("b", "G1", -3, "LOSS"), mk("c", "G2", 4, "WIN"),
+              mk("d", "G3", -2, "LOSS"), mk("e", "G4", 1, "WIN")]
+    st = {"a": {"fill_class": m.CONFIRMED_FILLED}, "b": {"fill_class": m.CONFIRMED_NOT_FILLED},
+          "c": {"fill_class": m.CONFIRMED_FILLED}, "d": {"fill_class": m.UNVERIFIABLE}}
+    r = m.book_fill_report(closed, st, band="T1")
+    assert (r["all"]["n"], r["all"]["games"], r["all"]["pnl_total"]) == (5, 4, 5)
+    assert (r["filled"]["n"], r["filled"]["pnl_total"]) == (2, 9)
+    assert r["not_filled"]["n"] == 1 and r["unverifiable"]["n"] == 1 and r["unclassified"]["n"] == 1
+    assert r["filled"]["pnl_per_bet_ci95_game_clustered"] is not None
+    assert m.BOOKS["t1_mlb"][1] != m.BOOKS["t4_mlb"][1]  # own sidecar per book

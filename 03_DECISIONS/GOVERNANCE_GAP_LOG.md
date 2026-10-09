@@ -3808,11 +3808,34 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
+### GG-536 — T1 MLB paper book: 17.5% of closed positions were filled on demo; the 83 settled fills lose $1.50/bet while the unfilled remainder is flat
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-09, W62.3):** T1 MLB (`paper_portfolio_mlb.json`) submits real demo orders like T4. Of 485 closed positions, 85 CONFIRMED_FILLED, 400 CONFIRMED_NOT_FILLED (346 no match inside the fills horizon, 54 never accepted), 0 UNVERIFIABLE. Settled: all 469 rows -$113.17 (-$0.241/bet, game-clustered 95% CI -1.365..+0.915); fills n=83 -$124.73 (-$1.503/bet, CI -3.666..+0.631, 28.9% win); non-fills n=386 +$11.56 (+$0.030/bet, 52.1% win). The ledger's 12.44% paper drawdown is therefore mostly a calibration figure. **Next (operator's call, nothing changed):** whether T1 counting/G6/dashboards should use fills only as T4M-PROJ now does (GG-527 decision covered T4M-PROJ only). Sidecar `logs/t1_mlb_fill_status.jsonl` (own book, append-only) is the evidence.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-536 |
+| Category | Ledger integrity / sample adequacy |
+| What was found | Same mechanism as GG-527: a position is recorded `submitted` and settled by market outcome whether or not the venue filled the order. For T1 MLB 82.5% of closed positions never filled. |
+| Why it matters | Any T1 MLB claim (win rate, P&L, drawdown, calibration-as-edge) rests mostly on unexecuted orders; the executed part lost money and is not interchangeable with the rest. |
+| Source | W62.3 Part A (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W62_3_gate_t1_fills_nba_results.md`) |
+| Resolution | Not resolved: no counting, status or ledger change for T1 (operator decision). Classifier generalized (`--book t1_mlb`). |
+| Cross-references | GG-527, GG-300, GG-004, GG-071 |
+
+</details>
+
 ### GG-527 — 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never filled; the 107 real fills lose -$0.40/bet
 
-**Status:** PARTIALLY RESOLVED · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 **2026-10-09 (strategic window, Wave 61 verification):** status set back from RESOLVED. Part A (fills-only counting, sidecar, dashboards; #191) is live. Part B's stake_stood_down gate (#193) is on the VPS disk at c9e2315 but the running t4-mlb process (up since 2026-10-07 06:13Z) predates it - the deploy skipped the restart (live game). A fix is RESOLVED only when the running process contains it. Restart authorized 2026-10-08 (once, no live game): 62.3, fallback the post-World-Series block.
+
+**2026-10-09 (W62.3): RESOLVED - the running process now contains the gate.** t4-mlb restarted once at 06:14:46Z (no game live: 10-09 slate empty, cycle log idle 168 min, next first pitch ~41h). New MainPID 3104947 entered active 06:14:48Z, NRestarts=0; the source it imported (`run_t4_mlb_live.py`, defines/calls `stake_stood_down`, mtime 00:56:47Z, VPS HEAD c9e2315) predates the start. Not yet seen: a stood-down row in a live cycle (first live game ~10-11 00:00Z). Evidence: `W62_3_gate_t1_fills_nba_results.md`.
 
 **Resolution (2026-10-09, W61.1, operator decision (b)+(c) 2026-10-08):** (b) BUILT: `t4_fill_status` classifier + append-only sidecar `logs/t4_mlb_fill_status.jsonl` (kept current by the Monday `build_t4_resolved_ledger.py` cron, no cron edit); T4M-PROJ G6 clean_n / n* / P&L-per-bet count CONFIRMED_FILLED only in run_power_calc, run_band_monitor, governance_scan; all-rows prints as "calibration only - not execution evidence"; both dashboards show fills n/P&L as the execution figure (#191). VPS run: 4,220 closed T4 positions = 166 CONFIRMED_FILLED / 4,054 NOT_FILLED / 0 UNVERIFIABLE; re-run appended 0. (c) BUILT: `stake_stood_down()` gate, no T4M-PROJ paper stake for games dated >= 2027 unless `T4M_PROJ_POST_2026_REENABLE` (default False; re-enable needs a new operator decision); evaluations/cycle-log keep writing (#193). Both on VPS at c9e2315. **Caveat:** t4-mlb deploy decision was `skip_live_game`, so the running process (since 2026-10-07 06:13Z) still has the old code; the gate must be live before spring 2027 - see W61_1 results. **NOT done here:** registry flip of T4M-PROJ to DARK - happens after the 2026 World Series (later block).
 

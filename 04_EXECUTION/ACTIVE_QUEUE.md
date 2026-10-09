@@ -110,7 +110,7 @@ a read-only T1 fill audit (classifier generalized), NBA flip tooling. Shared doc
 |---|---|---|---|
 | 62.1 | MLB postseason shadow back up (GG-532) + silent-arm alarm | 🟨 Part A deployed | PR #195 merged, VPS at cbbd2658, dry-run writes 33 rows; GG-532 open until first scheduled write; Part B (alarm) next |
 | 62.2 | Exploratory part 2: secure the price history + pre-commit NFL first-look expectations | ⬜ | — |
-| 62.3 | Load the stand-down gate (restart) + T1 MLB fill audit + NBA flip dry run | ⬜ | — |
+| 62.3 | Load the stand-down gate (restart) + T1 MLB fill audit + NBA flip dry run | 🔄 Part A done | t4-mlb restarted once, gate loaded (GG-527 RESOLVED); T1 MLB: 85/485 filled, fills -$1.50/bet (GG-536). Part B (NBA) next |
 
 ### 62.1 — MLB postseason shadow back up (GG-532) + silent-arm alarm
 

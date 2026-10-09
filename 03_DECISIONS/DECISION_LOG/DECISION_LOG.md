@@ -1988,3 +1988,12 @@ Done (docs only, strategic window):
 - Finding surfaced by the cross-reference (routed to operator): the NFL/MLB/NBA pre-registrations themselves state the
   plausible edge vs market is at or below the first-look MDE, so the modal first-look outcome is SHADOW (no verdict).
   The sitrep previously called 11-02 "the first pre-registered edge verdict"; corrected.
+
+
+## 2026-10-09 (UTC) - W62.3 Part A: GG-527 gate loaded; T1 MLB fill audit (GG-536)
+
+Under the operator's one-restart authorization (2026-10-08), t4-mlb was restarted once at 06:14:46Z with no game live;
+the running process (start 06:14:48Z) postdates the source containing `stake_stood_down`; GG-527 -> RESOLVED. t4-mlb
+deploy decision for this wave's PR: see PR deploy summary. T1 MLB submits demo orders; 85 of 485 closed positions filled;
+settled fills n=83 -$124.73 (-$1.50/bet, CI -3.67..+0.63), non-fills +$11.56. `t4_fill_status` made book-agnostic
+(`--book`, per-book sidecar). No T1 counting/status/ledger change; GG-536 registered for the operator.
