@@ -2069,3 +2069,8 @@ we finally getting towards math work?" Wave 63: 63.1 MLB to full for the postsea
 standing authorization; player hits back on for the playoffs via the GitHub Actions feature build — no VPS cron edit); 63.2 the
 math — MLB mechanisms translated into an NFL deep challenger (12_EXPLORATORY, frozen plan before fitting); 63.3 the
 distance-to-optimum generator + fill markout analysis feeding the demo-fills ADR draft.
+
+## 2026-10-09 — W63.3 deploy + design-input decisions (T-769..T-771)
+- Part A (#202, aff51b12): distance_to_optimum.py + governance_scan + /project panel + required gap keys after 2026-10-09T07:24:13Z. Deploy: t4-mlb restart not needed (no t4-imported file changed). Ran on VPS; hand table in ACTIVE_QUEUE superseded by computed values (B1 37, B2 12, D2 18, P1 0/45).
+- D1 manifest: ops_l10, team_id added to team class (VPS run errored on them).
+- Part B: demo-venue GETs only. Verdict: fills adversely selected + stale pricing; ADR-0072 DRAFT written PROPOSED, switch OFF. Nothing built or enabled. No live capital implication.
