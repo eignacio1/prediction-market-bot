@@ -8,3 +8,9 @@ The release path for the NFL first look now works end to end. In a rehearsal on 
 - After the 2026 World Series the bot stops placing paper bets on this strategy automatically. Predictions keep being recorded. Turning bets back on needs a new decision from you.
 - One thing waiting: the running bot hasn't picked up the stop yet because a game was live during the update. It needs a restart after the last game, well before spring 2027.
 - No real money involved; paper only.
+
+## W62.2 — NFL history secured, first-look expectations written
+- The saved 2025 Kalshi NFL price history is complete (892 of 892 games) and now copied to the server with checksums verified.
+- I wrote down, before any 2026 results exist, what the first NFL look can and can't tell us. With 60 games per cell it can only detect a gap of about 0.038; last season's gap vs the market was about 0.008. Most likely result: "keep collecting."
+- Nothing here touches live betting or money. Still zero real money at risk.
+- Your calls: refresh the older tracked history files, schedule a server copy, and whether to flag that our assumed noise level looks too optimistic.

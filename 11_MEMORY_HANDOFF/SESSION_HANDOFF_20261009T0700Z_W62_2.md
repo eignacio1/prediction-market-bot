@@ -1,3 +1,15 @@
+<!-- session-meta
+task_id: T-759
+tier: STANDARD
+timestamp: 2026-10-09T07:00:00Z
+commit: 745388e
+one_line_summary: W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened
+gg_touched: GG-538
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+-->
+
 # SESSION HANDOFF — W62.2 (exploratory part 2) — 2026-10-09
 
 **Status:** DONE (docs/exploratory only; no code in src/, no deploy needed) | **Branch:** session/20261009T061305Z-w62-2-exploratory-part2 | tasks T-759, T-760, GG-538
@@ -10,3 +22,12 @@
 3. EXP-037 §4 assumed SD (0.07) looks optimistic; no addendum proposed. Decide whether to say so before the first look.
 
 **Files:** 12_EXPLORATORY/{KALSHI_HISTORY_MANIFEST,NFL_FIRST_LOOK_EXPECTATIONS,W62_2_exploratory_part2_results}.md, 20261009_nfl_first_look_expectations/. Raw/derived data live in scratch + VPS only (untracked).
+
+## Strategic Decisions This Session
+None beyond logging in DECISION_LOG (Part A custody, Part B expectations). No thresholds changed.
+
+## One thing pending
+Merge PR #197 (CI green) before any NFL cell reaches n=60 (~11-02).
+
+## Resume
+`/session-start`, then read 12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md.
