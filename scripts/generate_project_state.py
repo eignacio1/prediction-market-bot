@@ -307,10 +307,21 @@ def _exec_row(r: dict) -> str:
             "Rows whose order never filled are model-calibration data only (GG-527).</td></tr>")
 
 
+def sec_silent_arms(repo: Path) -> dict:
+    """W62.1 Part B: arms with games in their window and zero rows (computed on read, files only)."""
+    sys.path.insert(0, str(Path(repo) / "src"))
+    from prediction_market_bot.pregame_shadow import silent_arms as sa
+    out = sa.compute(Path(repo))
+    out.setdefault("source", "exp_output/ + data/ ledgers vs per-arm schedule caches (computed on read)")
+    out.setdefault("as_of", out.get("as_of") or _iso())
+    return out
+
+
 def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
-            "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data}
+            "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data,
+            "silent_arms": sec_silent_arms}
     out: dict[str, Any] = {"generated": _iso(), "repo": repo.name, "sections": {}}
     for k, fn in secs.items():
         try:
@@ -516,6 +527,10 @@ def _strip(S: dict, ops: dict) -> str:
                       ("books", "Books & risk"), ("evidence", "Evidence clocks")):
         st = ops.get(id_, {}).get("status", "nodata")
         pills.append(f"<a class='pill {st}' href='#{id_}'>{_e(name)} <span class='v'>{_e(_STATE_WORD[st])}</span></a>")
+    for a in S.get("silent_arms", {}).get("silent", []):   # one red chip per silent arm, plain words
+        h = a.get("hours_silent")
+        pills.append(f"<a class='pill bad' href='#operations' title='{_e(a['text'])}'>{_e(a['name'])} "
+                     f"<span class='v'>silent{'' if h is None else ' ' + format(h, 'g') + 'h'}</span></a>")
     gv, qu, ex = S.get("governance", {}), S.get("queue", {}), S.get("experiments", {})
     cb = S.get("calibration", {})
     neutral = [
