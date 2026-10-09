@@ -3,7 +3,7 @@
 Kalshi MLB grammar (see mlb_forecaster.parse_market_ticker): strike = N - 0.5, so a push is impossible and
 MLB has no ties. YES means: moneyline -> subject wins; run line -> subject wins by more than strike;
 game total -> combined runs > strike; team total -> subject's runs > strike.
-Games are matched on (home, away, start time within MLBScheduleIndex.TOL), so doubleheaders resolve.
+Games are matched on (home, away, ET game date; nearest start breaks doubleheader ties) via mlb_forecaster.match_game.
 A game is final only when status == 'Final' and both scores are present; anything else stays unsettled.
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ from typing import Optional
 import pandas as pd
 
 from prediction_market_bot.c1_signal_ingestion.mlb_game_pregame_features import canon
-from prediction_market_bot.pregame_shadow.mlb_forecaster import MLBScheduleIndex, parse_market_ticker
+from prediction_market_bot.pregame_shadow.mlb_forecaster import match_game, parse_market_ticker
 
 
 def final_games(games: pd.DataFrame) -> pd.DataFrame:
@@ -27,11 +27,9 @@ def final_games(games: pd.DataFrame) -> pd.DataFrame:
 
 def find_final(finals: pd.DataFrame, parsed: dict) -> Optional[tuple[float, float]]:
     """(home_score, away_score) of the single final game matching the ticker, else None."""
-    g = finals[(finals._h == parsed["home"]) & (finals._a == parsed["away"])]
-    g = g[(g._t - pd.Timestamp(parsed["start_utc"])).abs() <= MLBScheduleIndex.TOL]
-    if len(g) != 1:
+    r, _ = match_game(finals, parsed["home"], parsed["away"], parsed["start_utc"])
+    if r is None:
         return None
-    r = g.iloc[0]
     return float(r.home_score), float(r.away_score)
 
 
