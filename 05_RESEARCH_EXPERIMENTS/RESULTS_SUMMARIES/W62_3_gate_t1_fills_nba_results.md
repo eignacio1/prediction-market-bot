@@ -1,6 +1,6 @@
 # W62.3 - stand-down gate loaded, T1 MLB fill audit, NBA flip dry run
 
-Status: Part A DONE (this file); Part B pending. Claim: T-756..T-758, GG-536..GG-537.
+Status: Part A DONE (this file); Part B: see below. Claim: T-756..T-758, GG-536..GG-537.
 
 ## Part A
 
@@ -50,3 +50,14 @@ is far below non-fills (52.1%) - the same selection pattern as T4M-PROJ; not tes
 
 No T1 counting, status or ledger was changed (GG-527's decision covers T4M-PROJ only). Registered GG-536 for the operator's call.
 Caveat: P&L above is the ledger's P&L (priced at the model's recorded entry), not re-priced at actual fill prices.
+
+
+## Part B (NBA) — results
+
+**t4-mlb deploy decision (PR #196):** `not_needed` (no t4-mlb-imported file changed). Real T1 sidecar written on the VPS (GET only): `logs/t1_mlb_fill_status.jsonl`, 485 rows = 85 CONFIRMED_FILLED / 400 CONFIRMED_NOT_FILLED, matching the audit.
+
+**Step 4 — `scripts/w59_3_nba_flip_check.py` run 2026-10-09:** all 12 cells `NO-ROWS ... 0 rows, 0 valid -> leave NOT_IMPLEMENTED`, exit 1 (not ready, as expected). Valid-row output proven by fixture, `tests/test_w59_3_nba_flip_check.py` (writes only to tmp): a cell with one valid row prints `FLIP-OK  NBA_MONEYLINE/T1_MULTI_DAY: 1/3 valid rows -> promote_cell_status(MarketType.NBA_MONEYLINE, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW, superseding_reference="EXP-038")`, exit 0; bad sha / p_yes=1 / null mid / excluded rows are rejected.
+
+**Step 5 — `scripts/remove_nba_preseason_cron.py`:** removes only the `# BEGIN/END EXP-038 NBA PRESEASON` block, backs up first, mirrors `deploy/cron.conf` + deletes `deploy/cron.nba_shadow_preseason`, dry-run by default, live `--apply` refused before 2026-10-21 10:00 UTC. Tested on a copy of the real VPS crontab (551 -> 543 lines; exactly the 8 block lines gone) and by `tests/test_remove_nba_preseason_cron.py`. NOT run on the live crontab.
+
+**Step 6 — first-look release for NBA:** no break. `tests/test_w62_3_nba_release_rehearsal.py` proves seal@149 -> release@150 (manifest, REPORT, dashboard verdict), preseason rows excluded, look150 frozen across later games, look400 manifest at 400. Runbook section added to `04_EXECUTION/NFL_FIRST_LOOK_RUNBOOK.md`. No source change was needed.

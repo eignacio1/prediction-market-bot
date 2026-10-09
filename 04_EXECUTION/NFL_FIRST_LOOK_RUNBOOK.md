@@ -18,3 +18,15 @@
 **Allowed after a look.** Read it; record it; add a dated addendum for FUTURE (not-yet-judged) data. **Not allowed:** relabel or reselect cells/games, change any model or parameter, change the bootstrap seed/B, edit the pre-registration, re-run with a different ordering, or score any still-sealed cell. A change needs a new dated pre-registration covering only data not yet judged.
 
 **Strategic window on release day.** Verify the manifest (digest, 60 games) and that other cells stayed sealed; read the REPORT without recomputing; log the verdict in DECISION_LOG; write the plain-English result into ACTIVE_QUEUE for the operator; separate cells are separate verdicts (do not pool). Second look is n=150, same procedure.
+
+---
+
+## NBA (EXP-038) — same procedure, different numbers (W62.3)
+
+**Trigger.** Same cron (`49 13 * * *` UTC, `scripts/calibration_engine.py`). Looks are judged n = **150** then **400** settled *regular-season* games per cell (12 cells: moneyline/spread/game-total/team-total x T1/T2/T3). Preseason rows (`season_phase=preseason`, `excluded_from_judged_n`) never count. The regular season opens 2026-10-20, so no cell can be near 150 before ~late Dec; no NBA schedule is checked in, so cells show counts, not a projected date.
+
+**Release behaviour (proven by `tests/test_w62_3_nba_release_rehearsal.py`).** Sealed at 149; at 150 the engine writes the frozen manifest `release_manifests/<cell>.look150.json`, `FIRST_LOOK_REPORT.md`, and the dashboard verdict. Later games never change look150. The 400 look writes its own manifest. Verdict set adds `UNRESOLVED` (EXP-038 s.5.2: CI still spans zero after n=400). The "or 2027-01-31" date trigger has no scoring rule, so it releases nothing (GG-529).
+
+**Strategic window on release day.** As NFL: verify manifest digest + 150 games, other cells still sealed, read the REPORT without recomputing, log verdict in DECISION_LOG, plain-English result in ACTIVE_QUEUE. Cells are separate verdicts.
+
+**Registry flip (before any of this).** From 2026-10-21 run `python3 scripts/w59_3_nba_flip_check.py` (read-only); it prints the `promote_cell_status` lines for cells holding a valid regular-season row. Then remove the preseason cron: `python3 scripts/remove_nba_preseason_cron.py` (dry run) and `--apply` only at/after 2026-10-21 10:00 UTC.
