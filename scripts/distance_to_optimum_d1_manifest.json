@@ -131,6 +131,17 @@
       "declared_classes": [
         "team"
       ]
+    },
+    {
+      "id": "nba_player_points_v1",
+      "arm": "NBA player points T1/T2/T3",
+      "meta": "models/nba_player_points_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "personnel",
+        "team",
+        "venue"
+      ]
     }
   ]
 }
