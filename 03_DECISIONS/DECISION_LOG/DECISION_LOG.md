@@ -2023,3 +2023,6 @@ in one hop; check_memory_bank_snapshots.sh clean; session-artifact generator int
 Findings for the operator: (1) the nav files' "Last reviewed" lines are stamped by every session's generator, so they read
 fresh while bodies went stale for 1-3 months; (2) the GG-127 nav-hub staleness alert fired every session for ~2 months and
 nobody acted on it — an alarm without an owner. Not changed in this pass (code): the generator stamp semantics.
+
+## 2026-10-09 — W62.1 Part B: silent-arm alarm (alarm-only, read-only)
+Per-arm "games scheduled in window, zero rows written" check, N per arm stated in `pregame_shadow/silent_arms.py`. Surfaces: /project strip pill, Live Terminal health row, governance_scan.sh. Unreadable schedule = "cannot check", never red. Live deploy initially showed every arm unknown (dashboard service on system python3, no pandas); fixed by running the check in repo venv (PR #199). GG-532 stays OPEN: fix deployed, awaiting first scheduled post-fix write. No order/stake/kelly/cron change.
