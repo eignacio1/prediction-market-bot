@@ -799,3 +799,4 @@
 | 2026-10-08T02:42:00Z | T-740 | CLOSED — merge confirmed, HEAD (e43db25) is ancestor of origin/main — W60.1: 107/1952 T4M-PROJ rows really filled; GG-228 guard merged |
 | 2026-10-08T02:42:47Z | T-740 | CLOSED — merge confirmed, HEAD (71613eb) is ancestor of origin/main — W60.1: 107/1952 T4M-PROJ rows really filled; GG-228 guard merged |
 | 2026-10-08T05:58:01Z | T-743..T-746 | CLOSED — merge confirmed, HEAD (056428f) is ancestor of origin/main — W60.2 NBA engine + addenda + GG-530 merged (#186,#188); GG-513 scheduled-run confirm pending 13:49Z 10-08 |
+| 2026-10-09T00:20:07Z | T-747..T-749, GG-531 | W61.1 MEDIUM - GG-527 built: fills-only T4M-PROJ execution evidence + stand-down gate |
