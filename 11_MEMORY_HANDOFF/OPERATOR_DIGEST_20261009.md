@@ -25,3 +25,4 @@ The MLB playoff tracker had gone quiet because it couldn't match a game whose st
 - Hook timeout: `governance_scan.sh` needs `"timeout": 120` in `.claude/settings.json`; not changed, say yes.
 
 **W63.1 — MLB at full for the playoffs.** The 12 MLB game-bet categories (who wins, run line, game total, team total, at three timings) are now being tracked and counted. Coverage rose from 25 to 37 of 104 cells, and from 8 to 12 of 18 bet families. Still practice only, no money at risk. The player-hits arm was never broken: it matched players on every playoff game day, and today's zero is simply an off day. The next real check is tomorrow's 7am ET run.
+- T-766 (auto): W63.2 Part A: NFL translation map written (MLB game model = NFL structure; top analogue is QB-shrunk performance); Part B pending.
