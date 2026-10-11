@@ -44,7 +44,7 @@
 <div class="main">
   <div class="topbar">
     <span class="crumb">Prediction Markets <b>/</b> Visual Dashboard</span>
-    <span class="chip info"><i></i>Wave 65 closed · 66 in flight</span>
+    <span class="chip info"><i></i>Wave 66 closed · 67 in flight</span>
     <span class="spacer"></span>
     <button class="btn" id="themeBtn">◐ Theme</button>
   </div>
@@ -55,19 +55,19 @@
 <section id="state">
   <div class="hero">
     <div class="eyebrow">State of the system · 2026-10-10</div>
-    <h2>The board is up. Demo orders are down. The first verdict is three weeks out.</h2>
+    <h2>The board is up. The fill fix is live. The first verdict is three weeks out.</h2>
     <p>Since Wave 42 the project stopped polishing one cell and built the board: <strong>37 of 104 cells</strong>
     now log pre-registered shadow forecasts across MLB, NFL and NHL, and NBA joins on opening night (10-20).
     Execution was measured for the first time and it is the weakest link: on both demo books,
     <strong>orders that fill lose</strong> — they rest at the model's price and fill when the market moves against
-    them. The fix (cancel after 60 s, price off the live book) was accepted 10-10 — but every demo order write
-    now returns 404, so neither the book nor the test can place an order until that is fixed (GG-560, Wave 66). Depth got its first live challenger — an NFL model that knows who the quarterback is, logging since 10-11 — but it is a better
+    them. The fix (cancel after 60 s, price off the live book) was accepted 10-10 and its forward test went live 10-11, after
+    Wave 66 found the "outage" was the bot ordering tickers the demo venue does not list. Depth got its first live challenger — an NFL model that knows who the quarterback is, logging since 10-11 — but it is a better
     model, not an edge: on 2025's priced games the market still beat it. <strong>No cell has a verdict yet.</strong>
     The first is NFL, ~2 Nov, and its own pre-registration expects "keep accruing".</p>
     <div class="meta">
       <span class="chip good"><i></i>37 / 104 cells logging</span>
       <span class="chip crit"><i></i>Fills win 24% vs 49% for non-fills</span>
-      <span class="chip crit"><i></i>Every demo order write 404s (GG-560)</span>
+      <span class="chip info"><i></i>Fill-fix forward test ON 10-11</span>
       <span class="chip warn"><i></i>0 cells at a scored look</span>
       <span class="chip serious"><i></i>Props breadth = 1 family, ends with the World Series</span>
       <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
@@ -140,13 +140,12 @@
   progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
   <div class="card">
     <div class="tscroll"><table class="dtab">
-      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 65</th></tr></thead>
+      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 66</th></tr></thead>
       <tbody id="distBody"></tbody>
     </table></div>
   </div>
-  <div class="note bad" style="margin-top:14px"><b>Wave 65 moved one measure (D1: NFL gains personnel).</b> Breadth and Execution
-  have now moved nothing for three waves running — drift. Wave 66 lands NBA player points (B4 1 → 2, B1 37 → 40) and goes after
-  the demo order 404s that block every fill (E1–E3). Source: <span class="mono">scripts/distance_to_optimum.py</span>, VPS run
+  <div class="note bad" style="margin-top:14px"><b>Wave 66 moved no measure — but unblocked Execution.</b> Breadth has now moved nothing for four waves: NBA player
+  points is built and on a branch, unmerged. Wave 67.1 lands it (B4 1 → 2, B1 37 → 40); 67.2 reads the forward test's first day. Source: <span class="mono">scripts/distance_to_optimum.py</span>, VPS run
   2026-10-09 16:18 UTC, plus 64.1's D3 and 65.3's D1 lines.</div>
 </section>
 
@@ -231,7 +230,7 @@
         <dt>Fills within 60 s (T4)</dt><dd>win 35%, n=51 — the benign subset</dd>
         <dt>P&amp;L per fill</dt><dd>T4 −$0.26 [−0.45, −0.07] · T1 −$1.50 [−3.67, +0.63]</dd>
       </dl>
-      <div class="note warn" style="margin-top:15px"><b>The fix is accepted; the test is blocked.</b> As of 10-11 every demo order write returns 404 (GG-560), so nothing can be placed or cancelled until Wave 66 finds out why. R1 cancels unfilled
+      <div class="note warn" style="margin-top:15px"><b>The fix is live.</b> Forward test ON since 10-11 (demo only, half the eligible orders). Orders on tickers the demo venue does not list are being removed (GG-564, 67.2). R1 cancels unfilled
       orders after 60 s; R2 prices off the live book and skips one-sided books. Half of eligible orders get it (seeded),
       half don't. Judged at ~550 fills per arm; declared underpowered if that is not reached in 8 weeks. The cancel call
       is verified on a 1-contract demo canary first (65.2).</div>
@@ -344,14 +343,14 @@
       <div class="pnode"><div class="pc">C1</div><div class="pn">Ingest</div><div class="ps">Kalshi, nflverse, NHL, NBA; MLB built on GitHub Actions, off statsapi. Pre-2026 Kalshi history secured (GG-538).</div></div>
       <div class="pnode hot"><div class="pc">C2 / C3</div><div class="pn">Features → Forecast</div><div class="ps">Shadow models for four sports. Deepest: 18 features, 0 qualitative. No matchup, weather or qualitative input anywhere.</div></div>
       <div class="pnode"><div class="pc">C4</div><div class="pn">Risk</div><div class="ps"><span class="mono">kelly_fraction 0.0</span> on every band; flat demo stakes; stand-down after the World Series.</div></div>
-      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Every demo order write 404s as of 10-11 (GG-560). Before that: fills adversely selected; fix accepted 10-10.</div></div>
+      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Fills adversely selected; fix accepted 10-10 and live 10-11. 404s were unlisted demo tickers (GG-564).</div></div>
       <div class="pnode"><div class="pc">C6</div><div class="pn">Audit</div><div class="ps">Kalshi settlement is the resolution source (ADR-0071). Fill sidecars classify every order.</div></div>
       <div class="pnode"><div class="pc">C7</div><div class="pn">Monitoring</div><div class="ps">Calibration engine sealed below judged n; silent-arm alarm; distance table every session.</div></div>
       <div class="pnode"><div class="pc">C8</div><div class="pn">Dashboards</div><div class="ps">Live Terminal (what it places now) and this page (where the project stands).</div></div>
     </div>
     <div class="note bad" style="margin-top:6px"><b>Two thin links now, not one.</b> C2/C3 is still shallow — the
     granularity bar (matchup, personnel, venue, weather, qualitative) is met nowhere. And C5 is measured broken:
-    the orders that fill are the ones about to lose. Wave 66 works C5: first make demo orders land at all (GG-560), then test the fill fix.</div>
+    the orders that fill are the ones about to lose. Wave 67 reads the forward test's first day and puts stakes on shadow cells.</div>
   </div>
 </section>
 
@@ -379,7 +378,7 @@
     </div>
     <div class="card">
       <h3>The ones that bite</h3>
-      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 66 does.</div>
+      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 67 does.</div>
       <div class="tscroll"><table class="gg"><tbody>
         <tr><td class="k">GG-166</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB resolver consumed a corrupted <span class="mono">game_date</span> (pre-Kalshi-settlement era).</td></tr>
         <tr><td class="k">GG-170</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB Stats API date label unstable in near-real-time.</td></tr>
@@ -458,7 +457,7 @@
 <section id="desk">
   <div class="sechead"><h2>Your desk</h2><span class="num" id="deskCount"></span></div>
   <p class="lede">Decided 10-10: <span class="chip good"><i></i>ADR-0072 on</span> <span class="chip good"><i></i>NFL challenger ships</span>
-  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 66 waits on what is left — but two carry dates.</p>
+  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 67 waits on what is left — but two carry dates.</p>
   <div class="dk" id="deskList"></div>
 </section>
 
