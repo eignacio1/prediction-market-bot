@@ -41,11 +41,35 @@ name: Test Suite
 # the tests above) — kept always-triggering out of caution even though no
 # runtime dependency was found.
 
-# 2026-10-10 (operator: "I'm not spending a cent on GitHub"): hosted-runner minutes are capped at the free 2,000/month
-# (budget $0). Until 2026-11-01 this suite runs ONLY on demand; every terminal runs the full suite in its own session
-# before merging (pytest tests/ -q) and pastes the summary line in its PR. Restore the push/pull_request triggers
-# below (git history: adce3be) when the suite moves to a self-hosted runner or the month resets.
+# 2026-10-11 (W68.1): triggers restored. The repository went PUBLIC 2026-10-11 12:06 PT, and GitHub-hosted Actions
+# minutes are free for public repositories, so the 2026-10-10 on-demand-only restriction (private-repo $0 budget)
+# no longer applies. Restored verbatim from adce3be, including the minutes cuts below. Deploy stays VPS-side (67.3);
+# deploy.yml stays workflow_dispatch-only.
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '03_DECISIONS/**'
+      - '04_EXECUTION/**'
+      - '11_MEMORY_HANDOFF/**'
+      - '00_ADMIN/**'
+      - '02_ARCHITECTURE_DESIGN/**'
+      - '05_RESEARCH_EXPERIMENTS/**'
+      - '07_TEST_VALIDATION_EVIDENCE/**'
+      - '08_MODEL_RISK_GOVERNANCE/**'
+      - '01_SPEC/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '03_DECISIONS/**'
+      - '04_EXECUTION/**'
+      - '11_MEMORY_HANDOFF/**'
+      - '00_ADMIN/**'
+      - '02_ARCHITECTURE_DESIGN/**'
+      - '05_RESEARCH_EXPERIMENTS/**'
+      - '07_TEST_VALIDATION_EVIDENCE/**'
+      - '08_MODEL_RISK_GOVERNANCE/**'
+      - '01_SPEC/**'
   workflow_dispatch:
 
 # 2026-10-10 (strategic window, Actions-minutes budget): Test Suite was 78% of October's minutes (1,494 of ~1,926 in
