@@ -4,7 +4,7 @@
 task_id: T-819
 tier: MEDIUM
 timestamp: 2026-10-11T20:00:00Z
-commit: see PR
+commit: faeb3fc
 one_line_summary: W68.3 NFL totals venue+weather challenger: NO (no arm beats frozen, all CIs include zero); no pre-registration.
 gg_touched: none
 adr_touched: none
