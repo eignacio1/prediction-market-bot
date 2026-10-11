@@ -1,0 +1,5 @@
+# BEGIN W66.3 NFL INJURY SNAPSHOT
+# Point-in-time NFL injury report capture (ESPN public feed). Append-only, strictly pre-kickoff, no model/feature/order path.
+# Writes ONLY exp_output/NFL/INJURY_SNAPSHOTS/. Minutes :22 and :52 unused by every other job (GG-477 stagger).
+22,52 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nfl_injury_snapshot.py >> logs/nfl_injury_snapshot_cron.log 2>&1
+# END W66.3 NFL INJURY SNAPSHOT

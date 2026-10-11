@@ -100,12 +100,12 @@
 "sport": "NBA",
 "family": "player points",
 "active": 0,
-"shadow": 0,
+"shadow": 3,
 "blocked": 0,
 "dark": 1,
 "not_built": 0,
-"total": 1,
-"logging_bands": "\u2014"
+"total": 4,
+"logging_bands": "T1_MULTI_DAY, T2_SAME_DAY, T3_PRE_TIP"
 },
 {
 "family_id": "NBA_SPREAD",
