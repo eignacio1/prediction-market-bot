@@ -167,7 +167,7 @@ or change orders.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging) | ⬜ | — |
+| 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging) | 🟡 Part A done | Repo public; Games Cache + Features Sync (19:06Z) succeeded, VPS cache stamp 19:07:42Z accepted by runner, contract gate passed, gitleaks clean (4 false positives). Part B (CI triggers + scan line) next. |
 | 68.2 | Stakes on every shadow arm (NBA, NHL) + the forward test reports itself | EXECUTION E1 (shadow-cell fills; arms reach judged n) | ⬜ | — |
 | 68.3 | The math: NFL totals - venue + weather challenger | DEPTH D1 (first live model with venue/weather), D3 | ⬜ | — |
 
