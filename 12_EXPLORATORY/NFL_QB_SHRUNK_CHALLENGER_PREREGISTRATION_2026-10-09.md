@@ -1,6 +1,6 @@
 # NFL QB-shrunk challenger — pre-registration (EXPLORATORY draft)
 
-**Status:** PROPOSED
+**Status:** ACCEPTED (operator, 2026-10-10 19:13 PT)
 **Arm:** nfl_pregame (team -> team+personnel)
 **Label:** EXPLORATORY. Stays PROPOSED until the operator accepts it. No sizing change, no order, no live ledger touched.
 **Source study:** `12_EXPLORATORY/20261009_nfl_qb_challenger/` (plan frozen before fitting), results in `W64_1_nfl_qb_challenger_results.md`.
