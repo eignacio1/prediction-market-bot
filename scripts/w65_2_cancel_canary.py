@@ -38,15 +38,29 @@ def main(out_path: str) -> int:
     def rec(step: str, ok, data) -> None:
         log.append({"ts": datetime.now(timezone.utc).isoformat(), "step": step, "ok": ok, "data": data})
 
-    ok, data = c._get("/markets", params={"status": "open", "limit": 200})
-    rec("list_markets", ok, {"n": len(data.get("markets", [])) if ok else data})
     pick = None
-    for m in (data.get("markets", []) if ok else []):
-        t = m.get("ticker", "")
-        okb, book = c.get_market_book(t)
-        if okb and book["yes_bid"] >= 0.10 and book["yes_ask"] > book["yes_bid"]:
-            pick = (t, book)
+    cursor = ""
+    seen = 0
+    for _page in range(10):
+        params = {"status": "open", "limit": 200}
+        if cursor:
+            params["cursor"] = cursor
+        ok, data = c._get("/markets", params=params)
+        if not ok:
+            rec("list_markets", False, data)
             break
+        mk = data.get("markets", [])
+        seen += len(mk)
+        for m in mk:
+            okb, book = c.get_market_book(m.get("ticker", ""))
+            # a 1c YES bid cannot fill when the best ask is >= 5c; a live bid is not required
+            if okb and book["yes_ask"] >= 0.05:
+                pick = (m["ticker"], book)
+                break
+        cursor = data.get("cursor", "")
+        if pick or not cursor:
+            break
+    rec("list_markets", True, {"seen": seen})
     if not pick:
         rec("pick_market", False, "no liquid open market found")
         json.dump(log, open(out_path, "w"), indent=1)
