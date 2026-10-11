@@ -389,6 +389,7 @@ def gg_is_open(repo: Path, gg: str) -> bool:
 # EXP-038 sec. 1: the 12 NBA cells are listed from day one so counts show before the first regular-season row.
 # Only the judged dir is read; PREGAME_SHADOW_PRESEASON is never discovered.
 EXPECTED_CELLS: dict[str, tuple[str, ...]] = {
+    "NFLQB": ("NFLQB_NFL_MONEYLINE_T1",),     # listed (n=0) from the day the cron is installed, before its first row
     "NBA": tuple(f"NBA_NBA_{mt}_{b}" for mt in ("MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL") for b in ("T1", "T2", "T3")),
 }
 

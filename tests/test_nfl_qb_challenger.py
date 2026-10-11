@@ -134,3 +134,9 @@ def test_cron_block_is_new_lines_only_and_off_round_minutes():
     jobs = [l for l in blk.splitlines() if l and not l.startswith("#")]
     assert len(jobs) == 2 and all(j.split()[0] not in ("0", "30") for j in jobs)
     assert "sizing" in blk and "run_nfl_qb_challenger_shadow.py" in jobs[0]
+
+
+def test_engine_lists_challenger_cell_before_first_row(tmp_path):
+    from prediction_market_bot.pregame_shadow.calibration_engine import discover_cells
+    cells = discover_cells(tmp_path)
+    assert any("NFLQB_NFL_MONEYLINE_T1" in str(c) for c in cells)
