@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-11T03:45:00Z (T-790 — W65.2 BLOCKED at canary: Kalshi demo order writes 404 on every market (GG-560); ADR-0072 switches stay OFF.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261011T0345Z_W65_2.md` for full session detail.
+**Last reviewed:** 2026-10-11T04:00:00Z (W65.1 — W65.1 PARTIAL: NBA player-points frozen artifact + shadow arm built, PR #217 open, not merged/deployed (no CI reported).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261011T0400Z_W65_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

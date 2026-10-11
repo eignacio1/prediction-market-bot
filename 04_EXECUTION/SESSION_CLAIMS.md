@@ -835,3 +835,4 @@
 | 2026-10-11T03:18:04Z | T-793 | CLOSED — merge confirmed, HEAD (bf47364) is ancestor of origin/main — W65.3 NFL QB challenger live in shadow |
 | 2026-10-11T03:39:50Z | T-790 | CLOSED — W65.2 BLOCKED at canary: Kalshi demo order writes 404 on every market (GG-560); ADR-0072 switches stay OFF. (commit `00f273a`) |
 | 2026-10-11T03:40:00Z | T-790 | CLOSED — merge confirmed, HEAD (64c3efb) is ancestor of origin/main — W65.2 BLOCKED at canary (GG-560); switches OFF |
+| 2026-10-11T03:58:35Z | W65.1 | MERGED: NO — branch `session/20261011T022501Z-w65-1-nba-player-points` awaiting merge — W65.1 PARTIAL: NBA player-points frozen artifact + shadow arm built, PR #217 open, not merged/deployed (no CI reported). (commit `cc787a1`) |
