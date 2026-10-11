@@ -837,3 +837,4 @@
 | 2026-10-11T03:40:00Z | T-790 | CLOSED — merge confirmed, HEAD (64c3efb) is ancestor of origin/main — W65.2 BLOCKED at canary (GG-560); switches OFF |
 | 2026-10-11T06:13:19Z | T-796..T-798, GG-564..GG-565 | W66.2 MEDIUM - why demo orders 404 (GG-560), canary, forward test ON. PURPOSE: EXECUTION E1/E2/E3 (demo orders accepted and filling) |
 | 2026-10-11T06:13:34Z | T-799..T-801, GG-566..GG-567 | W66.1 MEDIUM - GitHub at $0: deploys on VPS runner + MLB features postseason trim. PURPOSE: PLUMBING (deploys + MLB feature build survive all month on free minutes) |
+| 2026-10-11T06:13:51Z | T-802..T-804, GG-568..GG-569 | W66.3 MEDIUM - land NBA player points (#217) + NFL injury snapshots. PURPOSE: BREADTH B4 props 1->2, B1 37->40; DEPTH (NFL injury data clock) |
