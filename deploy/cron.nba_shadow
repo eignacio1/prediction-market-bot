@@ -10,11 +10,11 @@
 # Schedule + scores refresh (incl. 21-day schedule lookahead so tip-offs exist before Kalshi lists T1).
 47 9 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_backfill.py --seasons 2026 2027 >> logs/nba_shadow_backfill.log 2>&1
 # T1 (12-48h): every 6h at :11.
-11 */6 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T1 >> logs/nba_pregame_shadow_t1.log 2>&1
+11 */6 * * * cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T1 >> logs/nba_pregame_shadow_t1.log 2>&1
 # T2 (4-8h): hourly at :16.
-16 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T2 >> logs/nba_pregame_shadow_t2.log 2>&1
+16 * * * * cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T2 >> logs/nba_pregame_shadow_t2.log 2>&1
 # T3 (15-60 min): every 10 min.
-9,19,29,39,49,59 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba_pregame_shadow_t3.log 2>&1
+9,19,29,39,49,59 * * * * cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba_pregame_shadow_t3.log 2>&1
 # Settlement join (outcome join only, no scoring): daily 10:23, after the 09:47 backfill lands the finals.
 23 10 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow_settle.py >> logs/nba_pregame_shadow_settle.log 2>&1
 # END EXP-038 NBA

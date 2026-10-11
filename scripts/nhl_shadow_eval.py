@@ -138,8 +138,10 @@ def cell_path(root: Path, market_type: str, band: str) -> Path:
     return root / f"{market_type}_{band}.jsonl"
 
 
-def append_rows(rows: list[dict], root: Path) -> dict[str, int]:
-    """Append-only, idempotent per (run_id, market_ticker) within each cell file."""
+def append_rows(rows: list[dict], root: Path, on_row=None) -> dict[str, int]:
+    """Append-only, idempotent per (run_id, market_ticker) within each cell file.
+    ``on_row`` (W68.2, optional, default None): called with a COPY of each row AFTER it is persisted;
+    exceptions are swallowed. This file imports nothing order-related; the callback is injected."""
     counts: dict[str, int] = {}
     seen: dict[Path, set] = {}
     for r in rows:
@@ -158,6 +160,11 @@ def append_rows(rows: list[dict], root: Path) -> dict[str, int]:
         with p.open("a") as f:
             f.write(json.dumps(r, sort_keys=True) + "\n")
         seen[p].add(key)
+        if on_row is not None:
+            try:
+                on_row(dict(r))
+            except Exception:  # staking must never disturb the shadow ledger
+                pass
         counts[f"{r['market_type']}_{r['band']}"] = counts.get(f"{r['market_type']}_{r['band']}", 0) + 1
     return counts
 
@@ -245,7 +252,7 @@ def build_real_forecaster(now):
     return NhlPregameForecaster(model, sha, NhlFeatureStore(ni.load_games()), sched)
 
 
-def main(argv=None) -> int:
+def main(argv=None, on_row=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--band", choices=list(BANDS), help="only evaluate games inside this band's window")
     ap.add_argument("--run-id", default=None, help="idempotency key; default = band + UTC date-hour")
@@ -267,7 +274,7 @@ def main(argv=None) -> int:
     mk = {s: fetch_open_markets(s, th) for s in SERIES}
     counters: dict[str, int] = {}
     rows = evaluate(mk, fcst, index, now, run_id, git_sha(), a.band, counters)
-    counts = {} if a.no_write else append_rows(rows, Path(a.root))
+    counts = {} if a.no_write else append_rows(rows, Path(a.root), on_row=None if a.stub else on_row)
     summary = {"run_id": run_id, "ts_utc": now.isoformat(), "markets_read": {k: len(v) for k, v in mk.items()},
                "rows_evaluated": len(rows), "rows_appended_by_cell": counts, "abstention_counters": counters}
     if not a.no_write:  # run metadata ledger: one line per run, alongside the cell files

@@ -343,17 +343,49 @@ def test_client_is_listed_on_demo_maps_status(monkeypatch):
 
 def test_shadow_runner_cron_lines_load_demo_config_except_preseason_and_settle():
     """W67.2: every T1/T2/T3 shadow runner line loads deploy/demo_fill.env (so SHADOW_FLAT_STAKE is
-    in effect); the NBA lines (EXP-038 credential-free guard) and the settle jobs never do."""
+    in effect, W68.2: NBA game + NBA player points included, demo-only guard in code); the preseason and
+    settle jobs never do."""
     import re
-    run = re.compile(r"scripts/run_(pregame|mlb_pregame)_shadow\.py (--refresh )?--bands T[123]\b")
+    run = re.compile(r"scripts/run_(pregame|mlb_pregame|nba_pregame|nba_player_points)_shadow\.py (--refresh )?--bands T[123]\b")
     n = 0
-    for f in ("cron.conf", "cron_exp037_pregame_shadow.conf", "cron.nba_shadow"):
+    for f in ("cron.conf", "cron_exp037_pregame_shadow.conf", "cron.nba_shadow", "cron.nba_player_points_shadow"):
         for line in (Path(__file__).parent.parent / "deploy" / f).read_text().splitlines():
             if line.lstrip().startswith("#"):
                 continue
             if run.search(line):
                 n += 1
                 assert "deploy/demo_fill.env" in line and ".env | xargs" in line, line
-            elif "--preseason" in line or "_settle.py" in line or "run_nba_pregame_shadow" in line:
+            elif "--preseason" in line or "_settle.py" in line:
                 assert "demo_fill.env" not in line, line
-    assert n == 6 + 6      # NFL+MLB only; NBA stays credential-free (test_nba_shadow_safety), see GG
+    assert n == 12 + 6 + 6      # NFL+MLB + NBA game + NBA player points, counted in conf + fragment (W68.2)
+
+
+def test_nhl_shadow_eval_lines_use_staked_wrapper_with_demo_config():
+    """W68.2: NHL eval cron lines run the staked wrapper, load demo_fill.env and pin BOT_ENV=paper."""
+    for f in ("cron.conf", "cron.nhl_shadow"):
+        lines = [l for l in (Path(__file__).parent.parent / "deploy" / f).read_text().splitlines()
+                 if "nhl_shadow_eval" in l or "run_nhl_shadow_staked" in l]
+        assert len([l for l in lines if "run_nhl_shadow_staked.py --band" in l]) == 5, f
+        for l in lines:
+            assert "nhl_shadow_eval.py" not in l
+            assert "deploy/demo_fill.env" in l and "BOT_ENV=paper" in l, l
+
+
+def test_demo_host_guard_refuses_production_and_unknown(monkeypatch):
+    """W68.2: demo-only guard -- production host and unrecognised BOT_ENV are refused, and no order is placed."""
+    from prediction_market_bot.c5_execution import shadow_flat_stake as sfs
+    for env, want in (("paper", True), ("", True), ("live", False), ("garbage", False)):
+        if env:
+            monkeypatch.setenv("BOT_ENV", env)
+        else:
+            monkeypatch.delenv("BOT_ENV", raising=False)
+        assert sfs.demo_host_ok() is want, env
+    monkeypatch.setenv("BOT_ENV", "live")
+    monkeypatch.setenv("SHADOW_FLAT_STAKE", "on")
+    monkeypatch.setenv("DEMO_FILL_PLACEMENT_RULE", "book_anchor_cancel")
+
+    class Boom:
+        def __getattr__(self, n):
+            raise AssertionError("client touched on production host")
+    row = {"run_id": "r", "market_ticker": "T", "mid": 0.5, "e_net_yes_k007": 0.1, "e_net_no_k007": -0.1}
+    assert sfs.maybe_place(row, Boom()) is None

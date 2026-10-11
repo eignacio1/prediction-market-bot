@@ -24,6 +24,18 @@ def is_enabled() -> bool:
     return os.environ.get(SWITCH_ENV, "").strip() == "on" and pol.is_enabled()
 
 
+def demo_host_ok() -> bool:
+    """W68.2: DEMO ONLY, asserted at the point of use. True only when the order base URL resolves
+    to the Kalshi DEMO host; the production host or an unrecognised BOT_ENV is refused (fail closed).
+    This replaces the old 'NBA shadow is credential-free' guard: credentials are now allowed on
+    shadow lines, but only ever against demo."""
+    from prediction_market_bot.c5_execution import kalshi_client as kc
+    try:
+        return kc._kalshi_base_url() == kc._KALSHI_DEMO_BASE_URL
+    except ValueError:
+        return False
+
+
 def maybe_place(
     row: dict[str, Any],
     client: Any,
@@ -34,6 +46,10 @@ def maybe_place(
     e_net_no_k007. Gate = the net-of-fee edge the arm already logs is positive (> 0);
     direction = the side with the larger net edge."""
     if not is_enabled():
+        return None
+    if not demo_host_ok():
+        pol.append_log({"event": "shadow_skip", "reason": "production_host_refused",
+                        "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
         return None
     ticker = row.get("market_ticker")
     ey, en, mid = row.get("e_net_yes_k007"), row.get("e_net_no_k007"), row.get("mid")
@@ -73,6 +89,9 @@ def make_on_row(adapter: Any) -> Optional[Callable[[dict], None]]:
     """on_row callback for pregame_shadow.runner.run_once, or None when the switch is OFF
     (so OFF passes exactly what the scripts passed before). Needs a signing client."""
     if not is_enabled():
+        return None
+    if not demo_host_ok():
+        pol.append_log({"event": "shadow_skip", "reason": "production_host_refused_switch_inert"})
         return None
     client = getattr(adapter, "_client", None)
     if client is None or not client.has_signing_key():

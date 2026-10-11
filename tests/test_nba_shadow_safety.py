@@ -29,7 +29,13 @@ def test_cron_block_markers_and_scripts_only_nba():
     assert CONF.splitlines()[0] == "# BEGIN EXP-038 NBA" and CONF.rstrip().splitlines()[-1] == "# END EXP-038 NBA"
     for j in _jobs():
         assert re.search(r"scripts/(run_nba_pregame_shadow(_settle)?|nba_backfill)\.py", j), j
-        assert "kelly" not in j and ".env" not in j
+        assert "kelly" not in j
+        # W68.2: credential-free guard replaced by a DEMO-ONLY guard (code: shadow_flat_stake.demo_host_ok).
+        # Only the staked T1-T3 runner lines load credentials, and they pin BOT_ENV=paper (demo host).
+        if re.search(r"run_nba_pregame_shadow\.py --bands T[123]\b", j):
+            assert "deploy/demo_fill.env" in j and "BOT_ENV=paper" in j, j
+        else:
+            assert ".env" not in j, j
 
 
 def test_cron_minutes_off_00_30_and_unique_to_other_sports():
