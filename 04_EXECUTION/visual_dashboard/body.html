@@ -44,7 +44,7 @@
 <div class="main">
   <div class="topbar">
     <span class="crumb">Prediction Markets <b>/</b> Visual Dashboard</span>
-    <span class="chip info"><i></i>Wave 66 closed · 67 in flight</span>
+    <span class="chip info"><i></i>Wave 67 closed · 68 in flight</span>
     <span class="spacer"></span>
     <button class="btn" id="themeBtn">◐ Theme</button>
   </div>
@@ -56,7 +56,7 @@
   <div class="hero">
     <div class="eyebrow">State of the system · 2026-10-10</div>
     <h2>The board is up. The fill fix is live. The first verdict is three weeks out.</h2>
-    <p>Since Wave 42 the project stopped polishing one cell and built the board: <strong>37 of 104 cells</strong>
+    <p>Since Wave 42 the project stopped polishing one cell and built the board: <strong>40 of 107 cells</strong>
     now log pre-registered shadow forecasts across MLB, NFL and NHL, and NBA joins on opening night (10-20).
     Execution was measured for the first time and it is the weakest link: on both demo books,
     <strong>orders that fill lose</strong> — they rest at the model's price and fill when the market moves against
@@ -65,11 +65,11 @@
     model, not an edge: on 2025's priced games the market still beat it. <strong>No cell has a verdict yet.</strong>
     The first is NFL, ~2 Nov, and its own pre-registration expects "keep accruing".</p>
     <div class="meta">
-      <span class="chip good"><i></i>37 / 104 cells logging</span>
+      <span class="chip good"><i></i>40 / 107 cells logging</span>
       <span class="chip crit"><i></i>Fills win 24% vs 49% for non-fills</span>
       <span class="chip info"><i></i>Fill-fix forward test ON 10-11</span>
       <span class="chip warn"><i></i>0 cells at a scored look</span>
-      <span class="chip serious"><i></i>Props breadth = 1 family, ends with the World Series</span>
+      <span class="chip good"><i></i>Props: MLB hits + NBA points</span>
       <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
     </div>
   </div>
@@ -77,8 +77,8 @@
   <div class="grid g4">
     <div class="tile" style="--accent:var(--s1)">
       <div class="k">Breadth · cells logging</div>
-      <div class="v">37<small> / 104</small></div>
-      <div class="n">12 of 18 market families, 4 of 5 bands (no T5). +12 in Wave 63 (MLB game markets); 0 in Wave 64.</div>
+      <div class="v">40<small> / 107</small></div>
+      <div class="n">13 of 18 market families, 4 of 5 bands (no T5). +3 in Wave 67 (NBA player points).</div>
     </div>
     <div class="tile" style="--accent:var(--warn)">
       <div class="k">Depth · deepest pre-game model</div>
@@ -140,13 +140,11 @@
   progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
   <div class="card">
     <div class="tscroll"><table class="dtab">
-      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 66</th></tr></thead>
+      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 67</th></tr></thead>
       <tbody id="distBody"></tbody>
     </table></div>
   </div>
-  <div class="note bad" style="margin-top:14px"><b>Wave 66 moved no measure — but unblocked Execution.</b> Breadth has now moved nothing for four waves: NBA player
-  points is built and on a branch, unmerged. Wave 67.1 lands it (B4 1 → 2, B1 37 → 40); 67.2 reads the forward test's first day. Source: <span class="mono">scripts/distance_to_optimum.py</span>, VPS run
-  2026-10-09 16:18 UTC, plus 64.1's D3 and 65.3's D1 lines.</div>
+  <div class="note warn" style="margin-top:14px"><b>Wave 67 moved Breadth for the first time in four waves</b> — NBA player points live (B1 37/104 → 40/107, B4 1 → 2) — and shadow cells placed their first accepted demo orders. Wave 68 stakes NBA and NHL too and opens the weather class on NFL totals (D1).</div>
 </section>
 
 <!-- ============================================================ VERDICTS -->
@@ -378,7 +376,7 @@
     </div>
     <div class="card">
       <h3>The ones that bite</h3>
-      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 67 does.</div>
+      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 68 does.</div>
       <div class="tscroll"><table class="gg"><tbody>
         <tr><td class="k">GG-166</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB resolver consumed a corrupted <span class="mono">game_date</span> (pre-Kalshi-settlement era).</td></tr>
         <tr><td class="k">GG-170</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB Stats API date label unstable in near-real-time.</td></tr>
@@ -457,7 +455,7 @@
 <section id="desk">
   <div class="sechead"><h2>Your desk</h2><span class="num" id="deskCount"></span></div>
   <p class="lede">Decided 10-10: <span class="chip good"><i></i>ADR-0072 on</span> <span class="chip good"><i></i>NFL challenger ships</span>
-  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 67 waits on what is left — but two carry dates.</p>
+  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 68 waits on what is left — but two carry dates.</p>
   <div class="dk" id="deskList"></div>
 </section>
 

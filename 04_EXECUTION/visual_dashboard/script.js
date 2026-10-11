@@ -1,13 +1,13 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","37 / 104","the whole board","0 — 4th wave; NBA points on a branch (67.1)"],
-  ["Breadth","B2","Families with a logging cell","12 / 18","18 / 18, props + parlays registered","0"],
+  ["Breadth","B1","Cells logging / registered","40 / 107","the whole board","+3 (NBA player points)"],
+  ["Breadth","B2","Families with a logging cell","13 / 18","18 / 18, props + parlays registered","+1"],
   ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
-  ["Breadth","B4","Props · parlay families logging","1 · 0","the board's props and parlays","0 — the 1 ends with the World Series"],
+  ["Breadth","B4","Props · parlay families logging","2 · 0","the board's props and parlays","+1 (NBA player points)"],
   ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); nobody uses matchup, weather, qualitative","every class at every arm","0"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
   ["Depth","D3","Pre-registered challengers ready","1 (NFL QB-shrunk)","≥ 1 per arm before its first look","0 — the 1 is now live"],
-  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","0 — unblocked; forward test ON 10-11"],
+  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","first shadow-cell orders accepted (67.2)"],
   ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","0"],
   ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — first orders 10-12 00:00Z"],
   ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
@@ -76,7 +76,7 @@ const ARMS = [
   ["MLB player hits T4M-PROJ",1,"Active · demo stakes","good","ADR-0050","—","Stakes stop for every game after the World Series"],
   ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Judged sample not reachable this season (GG-514)"],
   ["NBA game markets",12,"Preseason","warn","EXP-038","150 games per cell","Regular season from 10-20; cells flip ~10-21"],
-  ["NBA player points T1–T3",3,"Built, not landed","warn","EXP-039","after opening night","On a branch since 10-11; 67.1 lands it — must log from 10-20"],
+  ["NBA player points T1–T3",3,"Logging","good","EXP-039","after opening night","Live since 10-11 (67.1); regular-season rows from 10-20"],
 ];
 const CAL = [
   ["10-12 00:00Z","First fill-fix forward-test orders (MLB game); 67.2 reads day one"],
@@ -113,8 +113,10 @@ const WAVES = [
    d:"The NFL QB challenger is live in shadow (<b>D1: NFL team → team + personnel</b>). The forward test found <b>every demo order write returning 404</b> — the bot cannot place a demo order (GG-560). NBA points built in PR #217 but never merged. Breadth and Execution: three waves without a move."},
   {w:"66", k:"hit", t:"Demo orders were never down; the forward test is ON.",
    d:"The 404s were tickers the demo venue doesn't list (18 of 55 for one game) — and the canary had picked production tickers. Fixed; canary placed and cancelled; <b>ADR-0072 ACCEPTED, forward test ON</b>. MLB build 22.5 → 17.5 min. NBA points still on a branch: Breadth unmoved four waves."},
-  {w:"67", k:"now", t:"Land NBA points · read day one · GitHub off the hook.",
-   d:"NBA player points on main and proven before 10-20 (B1 37 → 40, B4 1 → 2). Forward-test day one; skip unlisted tickers; stakes on shadow cells (E1–E3). Deploys and the MLB build move off GitHub's paid minutes."},
+  {w:"67", k:"hit", t:"Breadth moves; shadow cells trade; GitHub cuts us off.",
+   d:"<b>NBA player points live: B1 37/104 → 40/107, B4 1 → 2</b>. First accepted shadow-cell demo orders (36 in an hour). NFL injury reports captured before kickoff. Then GitHub refused all jobs — free minutes gone; repo made public, MLB data re-dispatched."},
+  {w:"68", k:"now", t:"MLB data back · stakes on every arm · NFL weather math.",
+   d:"CI and MLB feeds restored on the public repo; NBA + NHL shadow cells staked and the forward test reports itself daily (E1); NFL totals venue + weather challenger, judged against the market (D1)."},
 ];
 
 const DESK = [
