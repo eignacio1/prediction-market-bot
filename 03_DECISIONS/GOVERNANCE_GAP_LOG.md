@@ -3893,11 +3893,31 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 </details>
 
+### GG-564 — Kalshi demo lists only a subset of production markets; the bot sends orders for tickers demo does not carry, so they can never be accepted
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-10-11, W66.2):** On 2026-10-10 t4-mlb attempted 40 distinct KXMLBHIT tickers for CWS@CLE: 17 accepted orders (demo-listed players), 23 tickers 404 not_found (762 events), because demo carried 18 of production's 55 tickers for that game. Demo-fill statistics (E1, ADR-0072 arms) therefore describe only the demo-listed subset, and the failed attempts inflate `kalshi_order_failed` counts. **Next:** decide whether to (a) pre-check demo listing before ordering (changes order behavior - operator/ADR) or (b) just stratify E1 by demo-listed vs not. Not changed in W66.2.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-564 |
+| Category | Measurement validity - E1 denominator includes orders that cannot be placed |
+| Evidence | audit_mlb_t4.jsonl 2026-10-11: paper_order_opened with kalshi_order_id x17 vs kalshi_order_failed not_found x762 over 23 tickers; demo vs prod event listing 18 vs 55; GET demo/markets/<ticker> 404 vs prod 200 |
+| Source | W66.2 Part A |
+| Resolution | Not resolved. |
+| Cross-references | GG-560, GG-203, ADR-0072 |
+
+</details>
+
 ### GG-560 — Kalshi DEMO order writes return HTTP 404 not_found for every order (bot and canary alike) as of 2026-10-11; W65.2 cancel path untestable, forward test cannot start
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
 
-**Current state (2026-10-11, W65.2):** 12/12 canary submits on distinct open markets (KXMLB* first) and 762 t4-mlb `kalshi_order_failed` events (KXMLBHIT-26OCT102000CWSCLE, 00:00-02:59Z) all returned `HTTP 404 {"error":{"code":"not_found","message":"not found"}}`. Reads work; shard-3 balance is $146.22 (not a collateral problem). Same signature family as GG-203. **Next:** operator/Kalshi-side decision; re-run `scripts/w65_2_cancel_canary.py` when order writes recover. Both ADR-0072 switches stay OFF until a 1-contract canary places AND cancels.
+**Current state (2026-10-11, W66.2 Part A):** ROOT CAUSE FOUND - not an endpoint outage. The demo host lists only a SUBSET of production markets (CWS@CLE 10-10: 18 demo vs 55 production tickers; identical on both documented demo hosts); orders on a ticker absent from demo return 404 not_found. t4-mlb had 17 orders accepted that same game/window. 65.2's canary picked tickers from PRODUCTION, so 12/12 404'd. Canary fixed to select from the demo listing and PASSED on the VPS (placed, cancelled, GET status canceled, order 01a1299b-19e8-7715-8795-09ae94337432). Remaining: fixed canary merged+deployed (PR in flight). Evidence: W65_2_forward_test_on_results.md.
 
 <details>
 <summary>Full record ▸</summary>

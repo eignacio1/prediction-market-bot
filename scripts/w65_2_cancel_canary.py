@@ -38,14 +38,17 @@ def main(out_path: str) -> int:
     def rec(step: str, ok, data) -> None:
         log.append({"ts": datetime.now(timezone.utc).isoformat(), "step": step, "ok": ok, "data": data})
 
+    # GG-560 root cause: the demo host lists only a SUBSET of production markets, and a ticker
+    # absent from demo returns 404 not_found on order submit. Candidates MUST come from the demo
+    # listing itself (authenticated=True -> demo base), never from production.
     cands: list[tuple[str, dict]] = []
     cursor = ""
     seen = 0
     for _page in range(10):
-        params = {"status": "open", "limit": 200, "mve_filter": "exclude"}
+        params = {"status": "open", "limit": 1000, "mve_filter": "exclude"}
         if cursor:
             params["cursor"] = cursor
-        ok, data = c._get("/markets", params=params)
+        ok, data = c._get("/markets", params=params, authenticated=True)
         if not ok:
             rec("list_markets", False, data)
             break
@@ -54,10 +57,14 @@ def main(out_path: str) -> int:
         for m in mk:
             if len(cands) >= 12:
                 break
-            okb, book = c.get_market_book(m.get("ticker", ""))
-            # a 1c YES bid cannot fill when the best ask is >= 5c; a live two-sided book is required
-            if okb and book["yes_bid"] > 0 and book["yes_ask"] >= 0.05:
-                cands.append((m["ticker"], book))
+            try:
+                bid = float(m.get("yes_bid_dollars") or 0)
+                ask = float(m.get("yes_ask_dollars") or 0)
+            except (TypeError, ValueError):
+                continue
+            # a 1c YES bid cannot fill when the best ask is >= 3c; a two-sided book is required
+            if m.get("status") in ("active", "open") and ask >= 0.03 and bid > 0:
+                cands.append((m["ticker"], {"yes_bid": bid, "yes_ask": ask}))
         cursor = data.get("cursor", "")
         if len(cands) >= 12 or not cursor:
             break
