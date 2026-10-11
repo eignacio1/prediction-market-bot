@@ -180,7 +180,8 @@ COMMON RULES - WAVE 68 (read first; they bind this block)
   collides, re-claim; never reuse.
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - GITHUB $0 (operator 2026-10-10): CI no longer runs the test suite. Before EVERY merge run `pytest tests/ -q` in your own
-  session and paste the summary line in the PR. Never re-enable a workflow trigger or add a paid service.
+  session and paste the summary line in the PR. Never add a paid service (68.1 restores tests.yml triggers under
+  AUTHORIZATION - GITHUB PUBLIC; no other trigger changes).
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
