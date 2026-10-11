@@ -40,6 +40,8 @@ def parse_summary(payload: dict[str, Any], home_code: str, away_code: str) -> li
             keys = block.get("keys", [])
             ix = {k: i for i, k in enumerate(keys)}
             for a in block.get("athletes", []):
+                if not (a.get("athlete") or {}).get("id"):
+                    continue                     # ESPN occasionally lists an athlete entry with no id (unmatchable)
                 st = a.get("stats") or []
                 dnp = bool(a.get("didNotPlay")) or not st
                 fga = 0.0
@@ -65,7 +67,7 @@ def fetch_summary(gid: str, th: N.Throttle, opener: Callable = urllib.request.ur
                 th.slow_down()
             if attempt == retries - 1:
                 raise
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, OSError):
             if attempt == retries - 1:
                 raise
         time.sleep(1 + attempt)
