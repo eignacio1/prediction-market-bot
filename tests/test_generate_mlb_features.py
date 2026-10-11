@@ -274,7 +274,7 @@ class TestCacheHitMiss:
 
     def test_starters_cache_hit(self, tmp_dirs):
         starters = {"717465": {"home_sp_id": 100, "away_sp_id": 200}}
-        cache = tmp_dirs["cache_dir"] / "starters_2024.json"
+        cache = tmp_dirs["cache_dir"] / "starters_2024_R.json"
         cache.write_text(json.dumps(starters))
 
         mock_client = MagicMock()
@@ -282,6 +282,51 @@ class TestCacheHitMiss:
 
         mock_client.fetch_game_starters.assert_not_called()
         assert 717465 in result  # keys are converted to int
+
+
+class TestCacheSplitEquivalence:
+    """W67.3: regular-season starters/pitcher logs cached, postseason fetched live -> same data as a full fetch."""
+
+    class _Client:
+        def __init__(self):
+            self.start_calls, self.pitch_calls = [], []
+
+        def fetch_game_starters(self, gd, session_id=None):
+            self.start_calls.append(gd)
+            return True, {int(gd.replace("-", "")): {"home_sp_id": int(gd[-2:]) + 100, "away_sp_id": 300}}
+
+        def fetch_pitcher_game_logs_bulk(self, player_ids, season, session_id=None):
+            self.pitch_calls.append(list(player_ids))
+            rows = [{"player_id": pid, "game_id": n, "ip": 5.0 + n} for pid in player_ids for n in (1, 2)]
+            return True, pd.DataFrame(rows)
+
+    def test_split_equals_full_fetch(self, tmp_dirs):
+        reg_dates, post_dates = ["2024-09-01", "2024-09-02"], ["2024-10-05"]
+        full = self._Client()
+        want_starters = {}
+        for gd in sorted(set(reg_dates + post_dates)):
+            want_starters.update(full.fetch_game_starters(gd)[1])
+        sp_ids = sorted({v for d in want_starters.values() for v in d.values()})
+        want_pitch = full.fetch_pitcher_game_logs_bulk(sp_ids, "2024")[1]
+
+        # Warm the regular-season caches (what actions/cache restores), then run the split path.
+        warm = self._Client()
+        reg_starters = gmf._load_or_fetch_starters_cached(2024, reg_dates, warm, "S")
+        reg_sp = sorted({v for d in reg_starters.values() for v in d.values()})
+        gmf._load_or_fetch_pitcher_logs_cached(2024, reg_sp, warm, "S")
+
+        c = self._Client()
+        got_starters = gmf._load_or_fetch_starters(2024, reg_dates, c, "S", extra_dates=post_dates)
+        got_pitch = gmf._load_or_fetch_pitcher_logs(2024, sp_ids, reg_sp, c, "S")
+
+        assert got_starters == want_starters
+        assert c.start_calls == post_dates  # regular season came from cache
+        assert set(c.pitch_calls[0]) == set(sp_ids) - set(reg_sp)
+        got_pitch = got_pitch.sort_values(["player_id", "game_id"]).reset_index(drop=True)
+        want_pitch = want_pitch.sort_values(["player_id", "game_id"]).reset_index(drop=True)
+        pd.testing.assert_frame_equal(got_pitch, want_pitch)
+        # and the row order is the full fetch's sorted-SP-id order
+        assert list(got_pitch["player_id"]) == sorted(got_pitch["player_id"])
 
 
 # ---------------------------------------------------------------------------
@@ -344,6 +389,7 @@ class TestMainDryRun:
             patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=sample_batter_df),
             patch("generate_mlb_features._load_or_fetch_completed_games", return_value=games_df),
             patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
+            patch("generate_mlb_features._load_or_fetch_starters_cached", return_value={}),
             patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),
         ):
             gmf.main(seasons=[2024], dry_run=True)
@@ -376,6 +422,7 @@ class TestMainDryRun:
             patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=sample_batter_df),
             patch("generate_mlb_features._load_or_fetch_completed_games", return_value=games_df),
             patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
+            patch("generate_mlb_features._load_or_fetch_starters_cached", return_value={}),
             patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),
             patch("generate_mlb_features.MLBPitcherStatsStore"),
             patch("generate_mlb_features.MLBTeamStatsStore") as MockTSS,
@@ -420,6 +467,7 @@ class TestMainDryRun:
             patch("generate_mlb_features._load_or_fetch_batter_logs", return_value=sample_batter_df),
             patch("generate_mlb_features._load_or_fetch_completed_games", return_value=pd.DataFrame()),
             patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
+            patch("generate_mlb_features._load_or_fetch_starters_cached", return_value={}),
             patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),
             patch("generate_mlb_features.MLBPitcherStatsStore"),
             patch("generate_mlb_features.MLBTeamStatsStore"),
@@ -469,6 +517,7 @@ class TestPostseasonOptIn:
             patch("generate_mlb_features._load_or_fetch_completed_games", return_value=games_df),
             patch("generate_mlb_features._load_or_fetch_completed_games_post", post_games),
             patch("generate_mlb_features._load_or_fetch_starters", return_value={}),
+            patch("generate_mlb_features._load_or_fetch_starters_cached", return_value={}),
             patch("generate_mlb_features._load_or_fetch_pitcher_logs", return_value=pd.DataFrame()),
         ):
             gmf.main(seasons=[2024], dry_run=False, include_postseason=include)

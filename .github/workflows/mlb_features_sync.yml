@@ -40,10 +40,11 @@ jobs:
           pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
           pip install -e .
 
-      # 2026-10-10 (Actions minutes, budget $0): the 2026 regular season ended 2026-09-27, so its three caches are
-      # immutable. Restoring them skips ~650 batter-log requests per run. Postseason, starters and pitcher caches are
-      # NOT cached: they are refetched every run exactly as before, so postseason data is never stale. The generator's
-      # code is unchanged; a cache hit takes the same path the VPS cron used for months.
+      # 2026-10-10/11 (Actions minutes, budget $0): the 2026 regular season ended 2026-09-27, so everything derived
+      # from it is immutable: players, batter logs, completed games, regular-season starters and the pitcher logs of
+      # regular-season starters (W67.3 / T-813). Postseason batter logs, games, starters and the logs of
+      # postseason-only starters are still fetched live every run, so postseason data is never stale. v2 adds the two
+      # starter/pitcher caches; restore-keys seeds it from v1 (actions/cache never overwrites an existing key).
       - name: Restore immutable 2026 regular-season caches
         uses: actions/cache@v4
         with:
@@ -51,7 +52,11 @@ jobs:
             exp_output/MLB/cache/players_2026.json
             exp_output/MLB/cache/batter_logs_2026.parquet
             exp_output/MLB/cache/completed_games_2026.parquet
-          key: mlb-2026-regular-season-v1
+            exp_output/MLB/cache/starters_2026_R.json
+            exp_output/MLB/cache/pitcher_logs_2026_R.parquet
+          key: mlb-2026-regular-season-v2
+          restore-keys: |
+            mlb-2026-regular-season-v1
 
       - name: Generate features (regular season + postseason)
         run: python scripts/generate_mlb_features.py --seasons 2026 --include-postseason
