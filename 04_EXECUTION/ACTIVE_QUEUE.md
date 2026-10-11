@@ -151,6 +151,88 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
+## ⬛ NOW — Wave 68 · 68.1 issued EARLY 2026-10-11 ~19:00 UTC (MLB data dies tonight) · 68.2/68.3 follow at the 67 close
+
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 68.1 | MLB data without GitHub: games cache + features from the VPS | PLUMBING (keeps 16 MLB cells logging: B1) | ⬜ | — |
+
+### 68.1 — MLB data without GitHub (fire NOW)
+
+```
+COMMON RULES - WAVE 68 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-11 (incl. GitHub Actions now BLOCKED - $0 budget, free minutes gone; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- GITHUB $0 (operator 2026-10-10): CI no longer runs the test suite. Before EVERY merge run `pytest tests/ -q` in your own
+  session and paste the summary line in the PR. Never re-enable a workflow trigger or add a paid service.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT no block, inside AUTHORIZATION - ADR-0072 ON.
+  Demo only. No live-ledger row rewritten. No edit of an existing cron line . Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W68_<n>.md (docs-only push).
+
+
+
+
+
+
+WAVE 68.1 - MLB DATA WITHOUT GITHUB. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - keep the 12 MLB game-market shadow cells and the 4 MLB player-hits cells logging for the rest of the
+postseason. If this fails, B1 drops by up to 16 cells within a day. Say PLUMBING in claim and handoff.
+
+WHY
+2026-10-11 17:48Z: GitHub Actions stopped starting jobs ("recent account payments have failed or your spending limit needs to
+be increased") - the operator's $0 budget, free minutes exhausted. Two workflows were the ONLY route around statsapi's 406 to
+the VPS: MLB Games Cache Sync (12:43 + 00:43 UTC; the MLB shadow runner refuses a games-cache stamp older than 26 h - last
+success 2026-10-11 06:25Z, so the 12 MLB game cells go silent ~2026-10-12 08:25Z) and MLB Features Sync (10:17 UTC, feeds T1
+MLB at 11:00 - last CSV pushed 2026-10-11 ~17:46Z). 67.3 measured statsapi people/* = 406 from the VPS IP with any headers.
+Nobody has measured whether /schedule, /game/{pk}/boxscore or /game/{pk}/feed/live answer the VPS. No paid service, no
+public repo, no GitHub runner - those are not covered. Authority: AUTHORIZATION - GITHUB $0 + 2026-10-11 amendment.
+
+PART A - Games cache from the VPS (~30 min; deadline 2026-10-12 08:00Z)
+  1. From the VPS, one request each to statsapi /api/v1/schedule, /api/v1/game/{pk}/boxscore and /api/v1.1/game/{pk}/feed/live
+     (plain and with browser-like headers). Paste the status codes.
+  2. If /schedule answers: run scripts/sync_mlb_games_cache.sh (or its Python equivalent) from a NEW VPS cron line at the
+     workflow's minutes (12:43, 00:43), mirrored in deploy/; prove a fresh games-cache stamp and that the MLB shadow runner
+     accepts it. If nothing answers: say so in one line and stop Part A.
+PART B - Postseason features from the VPS (~45 min)
+  3. If boxscore or feed/live answers: build the postseason batter rows the generator needs from those per-game endpoints
+     (the 2026 regular season is final and already cached on the VPS or in the last pushed CSV's inputs); run the generator on
+     the VPS from a NEW cron line before 11:00 UTC; prove the CSV passes the unchanged data contract and equals a GitHub-built
+     CSV for the same date except run-metadata columns (use the 10-11 17:46Z CSV as the reference).
+  4. If no statsapi endpoint answers the VPS, stop and report exactly that; the window takes the next step to the operator.
+
+END OF BLOCK 68.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ## ⬛ NOW — Wave 67 · issued 2026-10-11 ~15:30 UTC (08:30 PT) · three MEDIUM blocks · paste all three in parallel
 
 Wave 66 verified on GitHub (see Sequencing track). **Moved: nothing measurable** — but Execution is unblocked: demo orders
