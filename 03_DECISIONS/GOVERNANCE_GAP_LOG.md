@@ -3975,3 +3975,15 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 | Cross-references | GG-570, ADR-0072 |
 
 </details>
+
+### GG-586 — ADR-0072 shadow cells have no control-arm order, so the treatment-minus-control verdict cannot be formed
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W68.2 stakes only treatment-arm SHADOW rows; the control arm places no order, so the markout/fill comparison ADR-0072 names has no control fills on shadow cells. Needs an operator/ADR decision (control arm places a plain order, or the verdict is judged on treatment-only absolute measures). Found by T-821 (W68.2).
+
+### GG-587 — Forward-report turn-off edits tracked deploy/demo_fill.env on the VPS and would trip vps_deploy.sh's dirty-tree guard
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+`scripts/demo_fill_forward_report.py` comments out the switches in `deploy/demo_fill.env` when an ADR-0072 condition trips. On the VPS that is a tracked-file edit, which `vps_deploy.sh` `heal_dirty_tree` aborts on (or reverts, re-arming the switches). Fix: commit the turn-off to main, or move the switch to an untracked override file. Also: 30-min markout and non-demo-host conditions are not evaluable by the job. Found by T-822 (W68.2).
