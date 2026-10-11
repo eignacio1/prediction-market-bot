@@ -13,3 +13,9 @@ gap_delta: deploys 0 min/push (was per-push); features run ~9.7 min -> measuring
 - Project all workflows (tests.yml, post_game_resolve, tss_daily_sync, mlb_games_cache_sync, nhl_goalie_probe) to 11-01.
 - Register: VPS IP 406-blocked by statsapi people/*; a skipped t4-mlb restart is never retried (GG numbers to be claimed).
 - DECISION_LOG entry not yet appended.
+
+## UPDATE 17:50Z — BLOCKER: Actions minutes/spend exhausted
+- Cold dispatch 38159884120 succeeded (17:29:52 -> 17:46:25, 16.5 min; fills v2 cache).
+- Warm dispatch 38161115474 failed in 6s, no steps ran. Annotation: "The job was not started because recent account payments have failed or your spending limit needs to be increased."
+- Consequence: no GitHub workflow can start. The scheduled mlb_features_sync (10:17 UTC) will not run, so the 11:00 PIPE-05 CSV will be stale. Warm-run timing NOT obtained.
+- Options for the operator (no paid service was taken): wait for the monthly reset, or raise the spending limit himself/herself. A VPS-side generator is blocked by the statsapi 406 on people/*.
