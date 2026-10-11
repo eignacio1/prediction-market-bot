@@ -11,7 +11,8 @@ name: MLB Features Sync
 
 on:
   schedule:
-    - cron: '17 23 * * *'
+    # 2026-10-10: the 23:17 run is gone. It existed to re-assert after the VPS 22:30 cron overwrote the CSV, and that
+    # cron line is commented out (58.1 A5, deploy/cron.conf). 10:17 UTC still lands before PIPE-05 at 11:00.
     - cron: '17 10 * * *'
   workflow_dispatch:
 
@@ -38,6 +39,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
           pip install -e .
+
+      # 2026-10-10 (Actions minutes, budget $0): the 2026 regular season ended 2026-09-27, so its three caches are
+      # immutable. Restoring them skips ~650 batter-log requests per run. Postseason, starters and pitcher caches are
+      # NOT cached: they are refetched every run exactly as before, so postseason data is never stale. The generator's
+      # code is unchanged; a cache hit takes the same path the VPS cron used for months.
+      - name: Restore immutable 2026 regular-season caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            exp_output/MLB/cache/players_2026.json
+            exp_output/MLB/cache/batter_logs_2026.parquet
+            exp_output/MLB/cache/completed_games_2026.parquet
+          key: mlb-2026-regular-season-v1
 
       - name: Generate features (regular season + postseason)
         run: python scripts/generate_mlb_features.py --seasons 2026 --include-postseason
