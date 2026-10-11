@@ -841,3 +841,4 @@
 | 2026-10-11T14:30:29Z | T-796 | CLOSED — merge confirmed, HEAD (b2c171a) is ancestor of origin/main — W66.2 DONE: forward test ON demo-only; PR #220; GG-536 T1 fills-only |
 | 2026-10-11T14:53:27Z | T-799 | CLOSED — W66.1 PARTIAL: postseason-only batter-log fetch shipped (features sync 22.5->17.5 min); VPS runner blocked by classifier; 2,000 min does not fit to 11-01 (commit `c44b515`) |
 | 2026-10-11T14:54:44Z | T-799 | CLOSED — merge confirmed, HEAD (a237306) is ancestor of origin/main — W66.1 PARTIAL: Part B shipped (PR #219), Part A blocked on runner-install refusal |
+| 2026-10-11T15:43:16Z | T-810..T-812, GG-570..GG-571 | W67.2 MEDIUM - forward test day one, skip unlisted demo tickers, shadow-cell stakes. PURPOSE: EXECUTION E1/E2/E3 (accepted+filled demo orders per book/arm incl. shadow) |
