@@ -325,11 +325,44 @@ def sec_distance(repo: Path) -> dict:
     return _sec("scripts/distance_to_optimum.py", res["generated"], measures=res["measures"])
 
 
+FWD_REPORT = "exp_output/FORWARD_TEST/demo_fill_forward_report.json"
+
+
+def sec_forward_test(repo: Path) -> dict:
+    """ADR-0072 forward test (W68.2 Part B): newest demo_fill_forward_report.json. Read-only."""
+    f = repo / FWD_REPORT
+    if not f.exists():
+        return _awaiting(FWD_REPORT, "first daily run of scripts/demo_fill_forward_report.py (cron 11:25 UTC)")
+    rep = json.loads(f.read_text())
+    return _sec(FWD_REPORT, rep.get("generated_utc"), report=rep)
+
+
+def _forward_html(sec: dict, head: Any) -> str:
+    if sec.get("awaiting"):
+        return f"<section id='forward'>{head('ADR-0072 forward test', sec)}<div class='nd'>no data — awaiting {_e(sec['awaiting'])}</div></section>"
+    rep = sec["report"]
+    f = lambda v, p="": "n/a" if v is None else (f"{v:{p}}" if p else str(v))  # noqa: E731
+    rows = "".join(
+        f"<tr><td>{_e(c['book'])}/{_e(c['sport'])}</td><td class='num'>{c['orders']}</td>"
+        f"<td class='num'>{_e(sum(c['skips_by_reason'].values()))}</td>"
+        f"<td class='num'>{c['cancels']['ok']}/{c['cancels']['ok'] + c['cancels']['failed']}</td>"
+        f"<td class='num'>{f(c['fills'])}</td><td class='num'>{f(c['win_rate_on_fills'], '.2f')}</td>"
+        f"<td class='num'>{f(c['settle_minus_price_on_fills'], '+.2f')}</td>"
+        f"<td class='num'>{f(c['projected_fills_8wk'], '.0f')} / {rep.get('judged_n_per_arm')}</td></tr>"
+        for c in rep.get("cells", []))
+    trips = rep.get("tripped", [])
+    flag = (f"<p class='bad'>TURN-OFF TRIPPED: {_e(', '.join(t['condition'] for t in trips))}</p>" if trips
+            else "<p class='ok'>no turn-off condition tripped</p>")
+    return (f"<section id='forward'>{head('ADR-0072 forward test', sec)}{flag}<div class='scroll'><table><tr><th>Book/sport</th><th>Orders</th>"
+            f"<th>Skips</th><th>Cancel ok</th><th>Fills</th><th>Win</th><th>Settle−price</th><th>8-wk fills / n</th></tr>"
+            f"{rows or '<tr><td colspan=8 class=nd>no events yet</td></tr>'}</table></div></section>")
+
+
 def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
             "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data,
-            "silent_arms": sec_silent_arms, "distance": sec_distance}
+            "silent_arms": sec_silent_arms, "distance": sec_distance, "forward": sec_forward_test}
     out: dict[str, Any] = {"generated": _iso(), "repo": repo.name, "sections": {}}
     for k, fn in secs.items():
         try:
@@ -601,6 +634,7 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
         parts.append(ops_html[k])
     parts.append(_distance_html(S.get("distance", _awaiting("distance", "scripts/distance_to_optimum.py")), head))
     parts.append(_calibration_html(S.get("calibration", _awaiting("calibration", "engine")), head))
+    parts.append(_forward_html(S.get("forward", _awaiting("forward", FWD_REPORT)), head))
     # verdict board = experiments
     ex = S.get("experiments", {})
     body = aw(ex) or ("<table><tr><th>EXP</th><th>Question</th><th>Pre-reg</th><th>Verdict</th></tr>" + "".join(
