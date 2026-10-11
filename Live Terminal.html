@@ -354,9 +354,9 @@ function led(k,t){$('#led').className='led '+k; $('#ledtxt').textContent=t}
 
 /* ═══════════ DERIVE ═══════════ */
 function derive(d){
-  const P=d.portfolio||{}, T4=d.t4_portfolio||{}, NF=d.nfl_portfolio||{}, X=d.t4_execution||{};
+  const P=d.portfolio||{}, T4=d.t4_portfolio||{}, NF=d.nfl_portfolio||{}, X=d.t4_execution||{}, X1=d.t1_execution||{};
   const tag=(a,b,s)=>toArr(a).map(p=>({...p,_band:b,_sport:s}));
-  return {P,T4,NF,X,
+  return {P,T4,NF,X,X1,
     open:[...tag(P.open_positions,'T1','MLB'),...tag(T4.open_positions,'T4','MLB'),...tag(NF.open_positions,'NFL','NFL')],
     closed:[...tag(P.closed_positions,'T1','MLB'),...tag(T4.closed_positions,'T4','MLB'),...tag(NF.closed_positions,'NFL','NFL')],
     events:[...tag(d.audit,'T1','MLB'),...tag(d.t4_audit,'T4','MLB'),...tag(d.nfl_audit,'NFL','NFL')]
@@ -524,8 +524,10 @@ function railSpec(D,d){
     const res=c.filter(p=>p.outcome==='WIN'||p.outcome==='LOSS');
     const w=res.filter(p=>p.outcome==='WIN').length;
     return [['BANKROLL T1',usd(D.P.bankroll_usd),D.P.bankroll_usd,''],
-      ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
+      ['T1 P&L · ALL ROWS (calibration, not execution)',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
       ['T4 P&L · REAL FILLS ('+(D.X.fills_n??'—')+')',usd(D.X.fills_pnl),D.X.fills_pnl,'sign'],
+    ['T1 P&L · REAL FILLS ('+(D.X1.fills_n??'—')+' of '+(D.X1.all_n??'—')+' rows; rest calibration only)',usd(D.X1.fills_pnl),D.X1.fills_pnl,'sign'],
+      ['T1 P&L · REAL FILLS ('+(D.X1.fills_n??'—')+' of '+(D.X1.all_n??'—')+' rows; rest calibration only)',usd(D.X1.fills_pnl),D.X1.fills_pnl,'sign'],
       ['T4 P&L · ALL ROWS (calibration, not execution)',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,''],
       ['DAILY P&L',usd((Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0)),
         (Number(D.P.daily_net_pnl)||0)+(Number(D.T4.daily_net_pnl)||0),'sign'],
@@ -554,7 +556,7 @@ function railSpec(D,d){
     ['W / L',`${w}/${res.length-w}`,w,''],
     ['WIN RATE',res.length?(w/res.length*100).toFixed(1)+'%':'—',res.length?w/res.length:null,''],
     ['STUB ROWS',String(stub),stub,stub?'bad':''],
-    ['T1 P&L',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
+    ['T1 P&L · ALL ROWS (calibration, not execution)',usd(D.P.total_realized_pnl),D.P.total_realized_pnl,'sign'],
     ['T4 P&L · REAL FILLS ('+(D.X.fills_n??'—')+')',usd(D.X.fills_pnl),D.X.fills_pnl,'sign'],
       ['T4 P&L · ALL ROWS (calibration, not execution)',usd(D.T4.total_realized_pnl),D.T4.total_realized_pnl,''],
     ['NFL P&L',usd(D.NF.total_realized_pnl),D.NF.total_realized_pnl,'sign']];

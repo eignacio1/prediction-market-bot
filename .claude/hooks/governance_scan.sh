@@ -298,9 +298,15 @@ def _load(cache, local):
     except Exception:
         return None
 
+from prediction_market_bot import t4_fill_status as _tfs
+_t1_fills = _tfs.load_fill_status(Path("logs/t1_mlb_fill_status.jsonl"))
+
 def _band_counts(portfolio, band):
     closed = portfolio.get('closed_positions', []) if portfolio else []
     rows = [p for p in closed if p.get('band') == band]
+    if band == 'T1':
+        # GG-536: T1 execution evidence = CONFIRMED_FILLED only (sidecar); no ledger row rewritten.
+        rows = _tfs.filter_confirmed_filled(rows, _t1_fills)
     raw_n = len(rows)
     clean_n = sum(1 for p in rows if p.get('logic_epoch') == CURRENT_LOGIC_EPOCH)
     return raw_n, clean_n
@@ -313,7 +319,7 @@ else:
     if mlb is not None:
         for band in ('T1', 'T2'):
             raw_n, clean_n = _band_counts(mlb, band)
-            parts.append(f'MLB {band}: raw_n={raw_n} clean_n={clean_n}')
+            parts.append(f'MLB {band}: raw_n={raw_n} clean_n={clean_n}' + (' (CONFIRMED_FILLED only, GG-536)' if band == 'T1' else ''))
     else:
         parts.append('MLB T1/T2: portfolio unavailable')
     # GG-527: T4M-PROJ G6 counting = CONFIRMED_FILLED rows only; all-rows is calibration.

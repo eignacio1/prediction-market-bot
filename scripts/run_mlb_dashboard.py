@@ -408,6 +408,15 @@ def content_portfolio(data: dict, iw: int) -> list[str]:
     wr         = f"{wins/total:.1%}" if total else "N/A"
     dl         = float(p.get("daily_net_pnl", 0))
     dl_col     = _c(RED, f"${dl:.2f}") if dl < 0 else f"${dl:.2f}"
+    # GG-536: T1 execution evidence = CONFIRMED_FILLED rows only; the totals above are ALL rows.
+    try:
+        from prediction_market_bot import t4_fill_status as _tfs
+        _x = _tfs.execution_summary(closed_pos, _tfs.load_fill_status(
+            Path(data.get("log_dir") or os.environ.get("LOG_DIR", "logs/")) / "t1_mlb_fill_status.jsonl"), band="T1")
+        fills_line = (f"  T1 EXECUTION (CONFIRMED_FILLED only): {_x['fills_n']} fills, P&L ${_x['fills_pnl']:.2f}   "
+                      + _c(DIM, f"(totals above = {_x['all_n']} ALL rows, calibration only - not execution evidence)"))
+    except Exception:
+        fills_line = _c(DIM, "  T1 EXECUTION: fill-status sidecar unavailable - totals above are calibration only")
 
     return [
         f"  Bankroll: {_c(BOLD, CYAN, f'${bankroll:,.2f}')}   "
@@ -421,6 +430,8 @@ def content_portfolio(data: dict, iw: int) -> list[str]:
         f"Win/Loss: {wins}/{losses}   "
         f"Win Rate: {wr}   "
         f"Resolved: {total}",
+
+        fills_line,
     ]
 
 

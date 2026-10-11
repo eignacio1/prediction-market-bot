@@ -110,14 +110,14 @@ def filter_confirmed_filled(recs: Iterable[dict], status: dict[str, dict]) -> li
     return [r for r in recs if is_confirmed_filled(r, status)]
 
 
-def execution_summary(closed_positions: Iterable[dict], status: dict[str, dict]) -> dict:
+def execution_summary(closed_positions: Iterable[dict], status: dict[str, dict], band: str = "T4M-PROJ") -> dict:
     """Dashboard figures. Fills = CONFIRMED_FILLED settled rows (execution evidence);
     all = every settled T4M-PROJ row (calibration record). Pure; no I/O."""
     fills_n = fills_pnl = all_n = 0
     all_pnl = 0.0
     fills_pnl = 0.0
     for p in closed_positions:
-        if not isinstance(p, dict) or p.get("band") != "T4M-PROJ" or p.get("outcome") not in ("WIN", "LOSS"):
+        if not isinstance(p, dict) or p.get("band") != band or p.get("outcome") not in ("WIN", "LOSS"):
             continue
         pnl = float(p.get("pnl") or 0.0)
         all_n += 1

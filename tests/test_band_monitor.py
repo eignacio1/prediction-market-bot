@@ -138,7 +138,14 @@ def _pos_as_dict(ticker, direction="YES", mip=0.45, model_p=0.55, vig=0.014,
 
 
 def _write_portfolio(path: Path, positions: list[dict]) -> None:
+    # GG-536: T1 counts CONFIRMED_FILLED rows only. These tests exercise the analysis math, not
+    # fill status, so every position gets an id and a CONFIRMED_FILLED sidecar row beside the ledger.
+    for i, p in enumerate(positions):
+        p.setdefault("position_id", f"t-{path.name}-{i}")
     path.write_text(json.dumps({"bankroll_usd": 1000.0, "closed_positions": positions}))
+    (path.parent / "t1_mlb_fill_status.jsonl").write_text(
+        "".join(json.dumps({"position_id": p["position_id"], "fill_class": "CONFIRMED_FILLED"}) + "\n"
+                for p in positions))
 
 
 def _write_t4_ledger(path: Path, rows: list[dict]) -> None:
@@ -439,8 +446,18 @@ class TestT1RegressionAnchor:
     anchor's job is only to prove direction-aware correctness (GG-100) stays
     correct on raw history, independent of the epoch-provenance filter."""
 
-    def test_t1_band_reproduces_direction_aware_verdict(self):
-        by_band = load_pool_by_band(FROZEN_T1_ANCHOR)
+    def test_t1_band_reproduces_direction_aware_verdict(self, tmp_path):
+        # GG-536: the frozen raw history predates the fill sidecar; mark every row
+        # CONFIRMED_FILLED in a tmp copy so the anchor still tests the math only.
+        raw = json.loads(Path(FROZEN_T1_ANCHOR).read_text())
+        for i, p in enumerate(raw["closed_positions"]):
+            p.setdefault("position_id", f"anchor-{i}")
+        anchor = tmp_path / "portfolio.json"
+        anchor.write_text(json.dumps(raw))
+        (tmp_path / "t1_mlb_fill_status.jsonl").write_text(
+            "".join(json.dumps({"position_id": p["position_id"], "fill_class": "CONFIRMED_FILLED"}) + "\n"
+                    for p in raw["closed_positions"]))
+        by_band = load_pool_by_band(anchor)
         t1 = by_band["T1"]
         assert len(t1) >= MIN_N
         positions = to_mlb_positions(t1)
@@ -663,3 +680,32 @@ class TestRunAllCells:
         key = f"{MarketType.MLB_PLAYER_PROP_HITS.value}:T4M-PROJ"
         assert key in results
         assert results[key]["clean_n"] == MIN_N
+
+
+# ── GG-536: T1 execution evidence = CONFIRMED_FILLED only ───────────────────────
+
+class TestT1ConfirmedFilledOnly:
+    def test_unfilled_t1_rows_excluded_but_kept_for_calibration(self, tmp_path):
+        from run_band_monitor import T1_CALIBRATION_KEY, label_t1_basis
+        pos = [_pos_as_dict(f"KXMLBHIT-T{i}") for i in range(3)]
+        for i, p in enumerate(pos):
+            p["position_id"] = f"p{i}"
+        pf = tmp_path / "portfolio.json"
+        pf.write_text(json.dumps({"bankroll_usd": 1000.0, "closed_positions": pos}))
+        (tmp_path / "t1_mlb_fill_status.jsonl").write_text(
+            json.dumps({"position_id": "p0", "fill_class": "CONFIRMED_FILLED"}) + "\n"
+            + json.dumps({"position_id": "p1", "fill_class": "UNFILLED"}) + "\n")
+        by_band = load_pool_by_band(pf)
+        assert len(by_band["T1"]) == 1                      # execution evidence
+        assert len(by_band[T1_CALIBRATION_KEY]) == 3        # calibration record, nothing rewritten
+        res: dict = {}
+        label_t1_basis(res, by_band)
+        assert res["calibration_all_rows_n"] == 3
+        assert "CONFIRMED_FILLED" in res["basis"]
+        assert "not execution evidence" in res["calibration_all_rows_label"]
+
+    def test_no_sidecar_means_zero_execution_rows(self, tmp_path):
+        pf = tmp_path / "portfolio.json"
+        pf.write_text(json.dumps({"bankroll_usd": 1000.0,
+                                  "closed_positions": [_pos_as_dict("KXMLBHIT-X")]}))
+        assert load_pool_by_band(pf)["T1"] == []
