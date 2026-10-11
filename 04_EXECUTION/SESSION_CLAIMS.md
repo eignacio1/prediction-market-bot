@@ -849,3 +849,4 @@
 | 2026-10-11T17:08:32Z | T-805 | CLOSED — merge confirmed, HEAD (43a46d8) is ancestor of origin/main — W67.1 NBA points SHADOW + NFL injury cron landed (#223, #226); B1 37->40, B4 1->2 |
 | 2026-10-11T17:11:05Z | T-810 | MERGED: NO — branch `session/20261011T154246Z-w67-2-forward-test-day1` awaiting merge — W67.2 Part B landed: demo-listing skip before arm assignment + shadow-cell flat stakes (uuid id fix); Part A awaits 10-12 data. (commit `6897a3c`) |
 | 2026-10-11T17:11:19Z | T-810 | CLOSED — merge confirmed, HEAD (758d569) is ancestor of origin/main — W67.2 Part B landed; Part A pending 10-12 data |
+| 2026-10-11T19:11:26Z | T-816..T-818, GG-582..GG-583 | W68.1 MEDIUM - MLB data back on public repo; CI restored; Actions status in scan. PURPOSE: PLUMBING (keeps 16 MLB cells logging) |
