@@ -8,6 +8,8 @@ Type=simple
 User=root
 WorkingDirectory=/opt/prediction-market-bot
 EnvironmentFile=/opt/prediction-market-bot/.env
+# ADR-0072 / W66.2 forward-test switches (repo-mirrored; '-' = optional so deleting the file is a clean OFF)
+EnvironmentFile=-/opt/prediction-market-bot/deploy/demo_fill.env
 Environment=BOT_ENV=paper
 Environment=BOT_C4_ACTIVE=true
 Environment=PYTHONPATH=/opt/prediction-market-bot/src

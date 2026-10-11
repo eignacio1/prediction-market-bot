@@ -225,3 +225,50 @@ def test_default_stake_is_adr0050_flat(monkeypatch):
     sfs.maybe_place(_row(), c)
     from prediction_market_bot.run_t4_mlb_live import measurement_stake_and_stratum
     assert c.submit_order.call_args.kwargs["size_usd"] == measurement_stake_and_stratum(0.40)[0]
+
+
+# ---- W66.2: persisted cancel sweeper + repo-mirrored switch config --------------------------------
+def test_sweeper_finishes_cancel_after_process_exit(tmp_path):
+    """The cron T1 process writes cancel_scheduled then exits (daemon Timer never fires); the sweeper,
+    in another process, cancels it once due and logs the outcome."""
+    import time
+    pol.append_log({"event": "cancel_scheduled", "order_id": "O9", "position_id": "p9", "ticker": "T",
+                    "cancel_after_s": 60, "due_ts": time.time() - 1})
+    c = MagicMock()
+    c.cancel_order.return_value = (True, {"status": "canceled"})
+    assert pol.sweep_overdue(c) == 1
+    c.cancel_order.assert_called_once_with("O9")
+    assert [e["event"] for e in _events(tmp_path)][-1] == "cancel_ok"
+    assert pol.sweep_overdue(c) == 0  # already finished; never cancelled twice
+
+
+def test_sweeper_waits_until_due_and_records_failure(tmp_path):
+    import time
+    pol.append_log({"event": "cancel_scheduled", "order_id": "O8", "position_id": "p8", "ticker": "T",
+                    "cancel_after_s": 60, "due_ts": time.time() + 600})
+    c = MagicMock()
+    c.cancel_order.return_value = (False, {"error": "filled"})
+    assert pol.sweep_overdue(c) == 0
+    assert pol.sweep_overdue(c, now_ts=time.time() + 700) == 1
+    assert _events(tmp_path)[-1]["event"] == "cancel_failed"
+
+
+def test_sweeper_overdue_pending_detects_work(tmp_path):
+    sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+    import demo_cancel_sweeper as sw
+    assert sw.overdue_pending() is False
+    pol.append_log({"event": "cancel_scheduled", "order_id": "O7", "position_id": "p", "ticker": "T", "due_ts": 1})
+    assert sw.overdue_pending() is True
+    pol.append_log({"event": "cancel_ok", "order_id": "O7"})
+    assert sw.overdue_pending() is False
+
+
+def test_repo_mirrored_config_carries_registered_parameters():
+    cfg = {}
+    for line in (Path(__file__).parent.parent / "deploy" / "demo_fill.env").read_text().splitlines():
+        if line.strip() and not line.startswith("#"):
+            k, v = line.split("=", 1)
+            cfg[k] = v
+    assert cfg == {"DEMO_FILL_PLACEMENT_RULE": "book_anchor_cancel", "SHADOW_FLAT_STAKE": "on",
+                   "DEMO_FILL_CANCEL_AFTER_S": "60", "DEMO_FILL_MAX_MID_GAP": "0.05",
+                   "DEMO_FILL_ASSIGN_SHARE": "0.5", "DEMO_FILL_SEED": "w64-2"}
