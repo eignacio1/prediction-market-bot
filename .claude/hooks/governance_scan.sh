@@ -488,6 +488,43 @@ print(f'{(datetime.now(timezone.utc) - dt).total_seconds()/3600:.1f}')" 2>/dev/n
     fi
 fi
 
+# --- GitHub Actions status (W68.1 / GG-582) ---
+# 2026-10-11 17:48Z GitHub stopped starting jobs ($0 budget on a private repo). MLB Games Cache Sync and MLB Features
+# Sync are the only route around statsapi's 406 to the VPS, and the shadow runner refuses a games-cache stamp older
+# than 26h -- so a silent Actions stall becomes a dark MLB data feed ~26h later with no other alarm. This prints
+# visibility, last run per workflow, and flags any run that never started a step (the billing-refusal signature).
+echo ""
+echo "GITHUB ACTIONS STATUS (W68.1 — feed for MLB games cache / features):"
+python3 - <<'PYEOF' 2>/dev/null || echo "  UNAVAILABLE -- gh missing, unauthenticated, or offline"
+import json, subprocess, sys
+from datetime import datetime, timezone
+R = "eignacio1/prediction-market-bot"
+def gh(*a):
+    return json.loads(subprocess.check_output(["gh", "api", *a], text=True, timeout=20))
+repo = gh(f"repos/{R}")
+vis = repo.get("visibility", "?")
+print(f"  visibility={vis}" + ("" if vis == "public" else "  *** PRIVATE: hosted minutes are capped; scheduled feeds may be refused ***"))
+wfs = gh(f"repos/{R}/actions/workflows?per_page=50")["workflows"]
+now = datetime.now(timezone.utc)
+for w in sorted(wfs, key=lambda x: x["name"]):
+    if w["path"].startswith("dynamic/") or w["state"] != "active":
+        continue
+    runs = gh(f"repos/{R}/actions/workflows/{w['id']}/runs?per_page=5&exclude_pull_requests=true")["workflow_runs"]
+    if not runs:
+        print(f"  {w['name']}: no runs")
+        continue
+    last = runs[0]
+    age_h = (now - datetime.fromisoformat(last["created_at"].replace("Z", "+00:00"))).total_seconds() / 3600
+    flag = ""
+    if last["conclusion"] == "failure":
+        jobs = gh(f"repos/{R}/actions/runs/{last['id']}/jobs")["jobs"]
+        if not jobs or any(not j.get("steps") for j in jobs):
+            flag = "  *** REFUSED/never started a step (billing or runner-capacity) ***"
+        else:
+            flag = "  (ran and failed)"
+    print(f"  {w['name']}: last={last['conclusion'] or last['status']} ({last['event']}, {age_h:.1f}h ago){flag}")
+PYEOF
+
 # --- Sample adequacy: clean_n vs n* per band (T-323/T-338, GG-004) ---
 # n* is the variance-derived sample needed for 95% power to distinguish
 # edge>0 from edge=0 (one-sided, alpha=0.05) — not the flat 30/150/500
