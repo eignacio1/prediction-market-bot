@@ -29,7 +29,8 @@
       "starter",
       "injur",
       "lineup",
-      "roster"
+      "roster",
+      "qb_"
     ],
     "venue": [
       "is_home",
@@ -109,6 +110,16 @@
       "meta": "models/nfl_pregame_v1.json",
       "features_key": "feature_names",
       "declared_classes": [
+        "team"
+      ]
+    },
+    {
+      "id": "nfl_qb_challenger_v1",
+      "arm": "NFL game markets (W65.3 QB challenger, projected-starter QB term)",
+      "meta": "models/nfl_qb_challenger_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "personnel",
         "team"
       ]
     },
