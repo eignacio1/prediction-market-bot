@@ -57,6 +57,10 @@ SPECS = {
                                     "hourly smoke-test cron (:57) writes whenever a preseason game is in window"),
     "nba_shadow": ArmSpec("nba_shadow", "NBA regular-season shadow", 12, 1,
                           "T1 6h / T2 hourly / T3 10-min crons, same shape as MLB/NFL"),
+    "nba_player_points_shadow": ArmSpec("nba_player_points_shadow", "NBA player points shadow", 12, 1,
+                                        "W67.1: EXP-039 points arm (T1 6h / T2 hourly / T3 10-min crons). Its rows share "
+                                        "the NBA_*.jsonl glob with the game-market arm, so only its own "
+                                        "NBA_NBA_PLAYER_POINTS_*.jsonl files can show it is dead on its own"),
     "t1_mlb": ArmSpec("t1_mlb", "T1 MLB paper pipeline", 30, 0,
                       "the T1 pipeline runs once a day (11:00Z PIPE-05, 18:45Z PIPE-06pre); 30h = one missed "
                       "daily run plus slack"),
@@ -259,6 +263,8 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             lambda: last_ts_in_files(sorted(p for p in (repo / "data" / "shadow" / "nhl").glob("NHL_*.jsonl")), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(sorted(pre.glob("NBA_*.jsonl")), until=now)),
         arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(sorted(led.glob("NBA_*.jsonl")), until=now)),
+        arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),
+            lambda: last_ts_in_files(sorted(led.glob("NBA_NBA_PLAYER_POINTS_*.jsonl")), until=now)),
         arm("t1_mlb", mlb_starts_fn, lambda: _t1_last(logs, now)),
         arm("t4_mlb", mlb_starts_fn, lambda: last_ts_in_files([logs / "t4_mlb_cycle_log.jsonl"], nbytes=262144, until=now)),
     ]
