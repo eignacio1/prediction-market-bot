@@ -645,6 +645,15 @@ class PaperTrader:
             if self._kalshi and self._kalshi.has_signing_key() and kalshi_ticker:
                 side = direction.lower()  # "yes" or "no"
                 submit_mid = mid_price
+                if _fill_policy.is_enabled():
+                    # W67.2/GG-564: arm-blind pre-check, BEFORE assignment. An unlisted demo
+                    # ticker would 404; skip it identically for both arms, never order.
+                    why = _fill_policy.listing_skip_reason(self._kalshi, kalshi_ticker)
+                    if why:
+                        _fill_policy.append_log({"event": "skip", "reason": why,
+                                                 "position_id": pos["position_id"],
+                                                 "ticker": kalshi_ticker})
+                        return True, {}
                 policy_on = _fill_policy.is_enabled() and _fill_policy.assigned(pos["position_id"])
                 if policy_on:
                     # W64.2/ADR-0072: book-anchored price (R2). A skip places NO order and

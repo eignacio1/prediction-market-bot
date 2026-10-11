@@ -1173,6 +1173,19 @@ class KalshiMarketClient:
             bid, ask = bid / 100.0, ask / 100.0
         return True, {"yes_bid": bid, "yes_ask": ask}
 
+    def is_listed_on_demo(self, ticker: str) -> bool | None:
+        """W67.2/GG-564: is this ticker listed on the venue orders are routed to (demo under
+        BOT_ENV=paper)? Signed GET against the ORDER base URL, not the production price-discovery
+        URL ``get_market_book`` reads. True = 200; False = HTTP 404 (the demo venue lists only a
+        subset of production tickers, so an order here would 404); None = unknown (any other
+        failure) -- the caller must not treat unknown as listed."""
+        ok, data = self._get(f"/markets/{ticker}", authenticated=True)
+        if ok:
+            return True
+        if isinstance(data, dict) and data.get("error") == "HTTP 404":
+            return False
+        return None
+
     def _delete(self, path: str) -> tuple[bool, Any]:
         """Signed DELETE, single attempt (a cancel must not silently retry-loop)."""
         if not self._private_key:

@@ -43,6 +43,10 @@ def maybe_place(
     direction, edge = ("yes", ey) if ey >= en else ("no", en)
     if edge <= EDGE_GATE:
         return None  # arm's own gate not cleared: not an order candidate
+    why = pol.listing_skip_reason(client, ticker)  # W67.2/GG-564: arm-blind, before assignment
+    if why:
+        pol.append_log({"event": "shadow_skip", "reason": why, "row_id": rid})
+        return None
     if not pol.assigned(rid):
         pol.append_log({"event": "shadow_skip", "reason": "control_arm", "row_id": rid})
         return None

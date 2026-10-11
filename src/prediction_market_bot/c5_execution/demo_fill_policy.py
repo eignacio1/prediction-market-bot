@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 import threading
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,6 +43,10 @@ DEFAULT_MAX_MID_GAP = 0.05
 DEFAULT_SHARE = 1.0
 DEFAULT_SEED = "w64-2"
 DEFAULT_LOG = Path("logs/demo_fill_policy.jsonl")
+
+LISTING_TTL_ENV = "DEMO_LISTING_TTL_S"
+DEFAULT_LISTING_TTL_S = 300.0
+_LISTING_CACHE: dict[str, tuple[bool, float]] = {}  # ticker -> (listed, monotonic ts); unknown is never cached
 
 
 def is_enabled() -> bool:
@@ -81,6 +86,28 @@ def assigned(position_id: str) -> bool:
     seed = os.environ.get(SEED_ENV) or DEFAULT_SEED
     h = hashlib.sha256(f"{seed}|{position_id}".encode()).digest()
     return int.from_bytes(h[:8], "big") / 2**64 < share
+
+
+def listing_skip_reason(client: Any, ticker: str) -> Optional[str]:
+    """W67.2/GG-564. None = the ticker is listed on the demo venue (go on). Otherwise the skip
+    reason: ``not_listed_on_demo`` (404) or ``demo_listing_unknown`` (read failed -- fail closed,
+    never assume listed). Call BEFORE ``assigned``: the skip is arm-blind, so both arms lose the
+    same unlistable orders and E1 can be reported over all intended orders and demo-listed only.
+    Cached per ticker for DEMO_LISTING_TTL_S (a listing changes rarely within a game)."""
+    ttl = _float_env(LISTING_TTL_ENV, DEFAULT_LISTING_TTL_S)
+    hit = _LISTING_CACHE.get(ticker)
+    now = time.monotonic()
+    if hit is not None and now - hit[1] < ttl:
+        listed = hit[0]
+    else:
+        try:
+            listed = client.is_listed_on_demo(ticker)
+        except Exception:  # noqa: BLE001 - a failed read is a skip, never an order
+            listed = None
+        if listed is None:
+            return "demo_listing_unknown"
+        _LISTING_CACHE[ticker] = (listed, now)
+    return None if listed else "not_listed_on_demo"
 
 
 @dataclass
