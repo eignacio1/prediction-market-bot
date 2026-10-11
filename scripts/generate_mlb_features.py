@@ -132,7 +132,9 @@ def _batter_cache_path(season: int) -> Path:
 
 
 def _pitcher_cache_path(season: int) -> Path:
-    return CACHE_DIR / f"pitcher_logs_{season}.parquet"
+    # W67.3: logs for the regular-season starters only (season_type R); postseason-only SPs are
+    # fetched every run and never written here.
+    return CACHE_DIR / f"pitcher_logs_{season}_R.parquet"
 
 
 POSTSEASON_GAME_TYPES = "F,D,L,W"  # wild card, division, league champ., world series
@@ -158,7 +160,9 @@ def _games_cache_path(season: int) -> Path:
 
 
 def _starters_cache_path(season: int) -> Path:
-    return CACHE_DIR / f"starters_{season}.json"
+    # W67.3: regular-season dates only (immutable once the season ends). Postseason dates are
+    # fetched every run and never written here, so this file can be cached across runs.
+    return CACHE_DIR / f"starters_{season}_R.json"
 
 
 def _fetch_position_players(season: int) -> list[dict]:
@@ -365,6 +369,22 @@ def _load_or_fetch_starters(
     game_dates: list[str],
     client: MLBIngestionClient,
     session_id: str,
+    extra_dates: list[str] | None = None,
+) -> dict[int, dict]:
+    """Regular-season starters are cached; ``extra_dates`` (postseason) are fetched live, uncached."""
+    starters = _load_or_fetch_starters_cached(season, game_dates, client, session_id)
+    for gd in sorted(set(extra_dates or [])):
+        ok, extra = client.fetch_game_starters(str(gd), session_id=session_id)
+        if ok and extra:
+            starters.update(extra)
+    return starters
+
+
+def _load_or_fetch_starters_cached(
+    season: int,
+    game_dates: list[str],
+    client: MLBIngestionClient,
+    session_id: str,
 ) -> dict[int, dict]:
     cache = _starters_cache_path(season)
     if cache.exists():
@@ -387,6 +407,41 @@ def _load_or_fetch_starters(
 
 
 def _load_or_fetch_pitcher_logs(
+    season: int,
+    sp_ids: list[int],
+    reg_sp_ids: list[int],
+    client: MLBIngestionClient,
+    session_id: str,
+) -> pd.DataFrame:
+    return _merge_pitcher_logs(sp_ids, reg_sp_ids, season, client, session_id)
+
+
+def _merge_pitcher_logs(
+    sp_ids: list[int],
+    reg_sp_ids: list[int],
+    season: int,
+    client: MLBIngestionClient,
+    session_id: str,
+) -> pd.DataFrame:
+    """Cached regular-season-starter logs + live fetch of any other SP, in sorted-SP-id order."""
+    reg_df = _load_or_fetch_pitcher_logs_cached(season, reg_sp_ids, client, session_id)
+    extra_ids = [i for i in sp_ids if i not in set(reg_sp_ids)]
+    if not extra_ids:
+        return reg_df
+    print(f"  [FETCH] Pitcher logs {season}: {len(extra_ids)} postseason-only SPs (not cached)...")
+    ok, extra_df = client.fetch_pitcher_game_logs_bulk(player_ids=extra_ids, season=str(season), session_id=session_id)
+    if not ok:
+        print(f"    [WARN] Some pitcher fetches failed for season {season}.")
+    frames = [d for d in (reg_df, extra_df) if d is not None and not d.empty]
+    if not frames:
+        return pd.DataFrame()
+    df = pd.concat(frames, ignore_index=True)
+    rank = {pid: n for n, pid in enumerate(sorted(sp_ids))}
+    order = df["player_id"].map(lambda x: rank.get(int(x), len(rank)))
+    return df.iloc[order.argsort(kind="stable")].reset_index(drop=True)
+
+
+def _load_or_fetch_pitcher_logs_cached(
     season: int,
     sp_ids: list[int],
     client: MLBIngestionClient,
@@ -475,6 +530,7 @@ def main(
 
         # 2. Batter game logs
         batter_df = _load_or_fetch_batter_logs(season, players, client, session_id)
+        reg_dates = batter_df["game_date"].dropna().astype(str).unique().tolist() if not batter_df.empty else []
         if include_postseason:
             post_df = _load_or_fetch_batter_logs_post(season, players, client, session_id)
             if not post_df.empty:
@@ -506,19 +562,28 @@ def main(
         print(f"  [TSS] {len(team_store)} teams in store")
 
         # 4. Game starters (using unique dates from batter_df)
+        # W67.3: regular-season dates/SPs come from immutable caches; only postseason dates and
+        # postseason-only SPs are fetched each run. Output is identical to fetching everything.
         game_dates = batter_df["game_date"].dropna().astype(str).unique().tolist()
-        starters = _load_or_fetch_starters(season, game_dates, client, session_id)
+        reg_set = set(reg_dates)
+        post_dates = [d for d in game_dates if d not in reg_set]
+        starters = _load_or_fetch_starters(season, reg_dates, client, session_id, extra_dates=post_dates)
+        reg_starters = _load_or_fetch_starters_cached(season, reg_dates, client, session_id)
 
         # 5. SP IDs from starters → pitcher logs
-        sp_ids: list[int] = []
-        for info in starters.values():
-            for key in ("home_sp_id", "away_sp_id"):
-                sid = info.get(key)
-                if sid is not None:
-                    sp_ids.append(int(sid))
-        sp_ids = sorted(set(sp_ids))
+        def _sp_ids_of(d: dict) -> list[int]:
+            out: list[int] = []
+            for info in d.values():
+                for key in ("home_sp_id", "away_sp_id"):
+                    sid = info.get(key)
+                    if sid is not None:
+                        out.append(int(sid))
+            return sorted(set(out))
 
-        pitcher_df = _load_or_fetch_pitcher_logs(season, sp_ids, client, session_id)
+        sp_ids = _sp_ids_of(starters)
+        reg_sp_ids = _sp_ids_of(reg_starters)
+
+        pitcher_df = _load_or_fetch_pitcher_logs(season, sp_ids, reg_sp_ids, client, session_id)
         if not pitcher_df.empty:
             try:
                 assert_contract(
