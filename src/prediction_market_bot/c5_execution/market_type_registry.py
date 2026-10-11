@@ -808,6 +808,12 @@ for _market_type in _NBA_GAME_FAMILIES:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 
+# --- NBA player points (W65.1, EXP-039): T1/T2/T3 seeded NOT_IMPLEMENTED, flipped to SHADOW below ---
+# KXNBAPTS pre-game shadow only (evaluate-and-log). The pre-existing T4_IN_PLAY cell above stays DARK and untouched.
+for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+    _cells.append(MarketTypeCell(MarketType.NBA_PLAYER_POINTS, _band, CellStatus.NOT_IMPLEMENTED))
+
+
 MARKET_TYPE_REGISTRY: dict[CellKey, MarketTypeCell] = {
     (cell.market_type, cell.band): cell for cell in _cells
 }
@@ -933,6 +939,15 @@ _EXP037_MLB_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
 )
 for _mt, _bd in _EXP037_MLB_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
+
+
+# --- EXP-039 / W65.1: NBA player-points pre-game SHADOW cells ---
+# SHADOW is evaluate-and-log: no order, position, fill, stake or kelly_fraction. Runner:
+# scripts/run_nba_player_points_shadow.py (rows -> exp_output/PREGAME_SHADOW/NBA_NBA_PLAYER_POINTS_T[123].jsonl;
+# preseason rows -> exp_output/PREGAME_SHADOW_PRESEASON/, excluded from judged n).
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP039_NBA_PLAYER_POINTS_SHADOW_PREREGISTRATION_2026-10-09.md.
+for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+    promote_cell_status(MarketType.NBA_PLAYER_POINTS, _bd, CellStatus.SHADOW, superseding_reference="EXP-039")
 
 
 # ---------------------------------------------------------------------------

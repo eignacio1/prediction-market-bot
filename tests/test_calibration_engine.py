@@ -328,6 +328,19 @@ def test_nba_cells_listed_before_first_row_and_preseason_dir_never_read(tmp_path
     (tmp_path / "exp_output/PREGAME_SHADOW_PRESEASON/NBA_NBA_MONEYLINE_T1.jsonl").write_text('{"x":1}\n')
     res = ce.run(tmp_path)
     nba = [c for c in res["cells"] if c["sport"] == "NBA"]
-    assert len(nba) == 12 and all(c["rows"] == 0 and c["status"] == "SEALED" for c in nba)
-    assert {c["market_type"] for c in nba} == {"MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL"}
+    assert len(nba) == 15 and all(c["rows"] == 0 and c["status"] == "SEALED" for c in nba)
+    assert {c["market_type"] for c in nba} == {"MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL", "PLAYER_POINTS"}
     assert all("PRESEASON" not in c["source"] for c in nba)
+
+
+# ── W65.1: NBA player-points policy (EXP-039) ────────────────────────────────
+
+def test_nba_pts_policy_matches_exp039():
+    p = ce.PREREG["NBA_PTS"]
+    assert p.looks == (300, 800) and p.boot_b == 2000 and p.boot_seed == 20261009
+    assert p.unit == "player_game" and p.rules == "exp038" and p.mode == "sealed_until_look"
+
+
+def test_nba_pts_sealed_below_300_player_games():
+    out = ce.compute_scores(ce.PREREG["NBA_PTS"], "T1", _rows(299), {})
+    assert out["status"] == "SEALED" and out["status_text"] == "SEALED (299 of 300)"
