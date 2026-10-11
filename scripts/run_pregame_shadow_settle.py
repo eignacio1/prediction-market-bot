@@ -27,14 +27,14 @@ from prediction_market_bot.pregame_shadow.nfl_settlement import join_row  # noqa
 from prediction_market_bot.pregame_shadow.scoring import first_row_per_market  # noqa: E402
 
 
-def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict) -> dict:
+def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict, prefix: str = "NFL") -> dict:
     finals = {}
     for r in sched[sched.home_score.notna() & sched.away_score.notna()].itertuples():
         finals[(str(r.gameday), frozenset((r.home_team, r.away_team)))] = (
             r.home_team, r.away_team, float(r.home_score), float(r.away_score))
     out_dir = ledger_dir / "settled"
     counts: dict[str, int] = {}
-    for path in sorted(ledger_dir.glob("NFL_*_T[123].jsonl")):
+    for path in sorted(ledger_dir.glob(f"{prefix}_*_T[123].jsonl")):
         rows = [json.loads(x) for x in path.read_text().splitlines() if x.strip()]
         out_path = out_dir / path.name
         have = set()
@@ -112,6 +112,7 @@ def main(argv=None) -> int:
     ap.add_argument("--sport", choices=("nfl", "mlb"), default="nfl")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--ledger-dir", default=str(ROOT / "exp_output" / "PREGAME_SHADOW"))
+    ap.add_argument("--prefix", default="NFL", help="ledger file prefix (NFLQB for the W65.3 challenger)")
     ap.add_argument("--model", default=str(ROOT / "models" / "nfl_pregame_v1.json"))
     a = ap.parse_args(argv)
     if a.sport == "mlb":     # cache is kept fresh off-box (GitHub Actions sync); no network here
@@ -123,7 +124,7 @@ def main(argv=None) -> int:
         rps.refresh_cache(datetime.now(timezone.utc))
     sched = pd.read_parquet(rps.CACHE / "schedule_extended.parquet")
     clim = json.loads(Path(a.model).read_text())["climatology"]
-    print("settled_new:", settle(Path(a.ledger_dir), sched, clim))
+    print("settled_new:", settle(Path(a.ledger_dir), sched, clim, a.prefix))
     return 0
 
 

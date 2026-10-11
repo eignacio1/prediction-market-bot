@@ -54,6 +54,12 @@ PREREG: dict[str, Policy] = {
     "NFL": Policy("NFL", (60, 150), "sealed_until_look",
                   "EXP-037 NFL pre-registration (2026-10-02): first look judged n=60 settled games per cell, "
                   "second look 150; no scoring before judged n; models frozen"),
+    # W65.3: QB-shrunk challenger. JUDGED comparison is C2 (challenger vs Kalshi mid, EXP-037 rule: looks 60/150);
+    # C1 (challenger vs frozen) is descriptive only, never gated (addendum 2026-10-10 to the pre-registration).
+    "NFLQB": Policy("NFLQB", (60, 150), "sealed_until_look",
+                    "NFL QB-challenger pre-registration (ACCEPTED 2026-10-10) + addendum: judged cell is C2 vs the Kalshi "
+                    "mid under the EXP-037 rule (looks 60/150, same n and verdict rule as NFL); C1 vs frozen descriptive "
+                    "only; the earlier 984-game gate is withdrawn; models frozen"),
     "MLB": Policy("MLB", (150, 600), "sealed_until_look",
                   "EXP-037 MLB pre-registration (2026-10-02): 2026 postseason rows never scored (head-start, "
                   "counted only); judged looks use 2027 regular season only, n=150 then 600",
@@ -273,7 +279,7 @@ def load_schedule(repo: Path, sport: str) -> list[str] | None:
     """Dates (YYYY-MM-DD, one entry per scheduled regular-season game) from the sport's published
     schedule. None = no schedule published/available (never guessed)."""
     try:
-        if sport == "NFL":
+        if sport in ("NFL", "NFLQB"):
             d = json.loads((repo / "data/schedules/nfl_2026.json").read_text())
             return sorted(g["gameday"] for g in d["games"] if g.get("game_type", "REG") == "REG")
         if sport == "NBA":
@@ -391,6 +397,7 @@ def discover_cells(repo: Path) -> list[dict]:
     cells = []
     for sport, ledger_dir, settled_dir in (
         ("NFL", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
+        ("NFLQB", repo / "exp_output/PREGAME_SHADOW_NFLQB", repo / "exp_output/PREGAME_SHADOW_NFLQB/settled"),
         ("MLB", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
         ("NHL", repo / "data/shadow/nhl", repo / "data/shadow/nhl/settled"),
         ("NBA", repo / "exp_output/PREGAME_SHADOW", repo / "exp_output/PREGAME_SHADOW/settled"),
