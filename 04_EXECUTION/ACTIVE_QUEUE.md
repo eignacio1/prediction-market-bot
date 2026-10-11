@@ -156,7 +156,7 @@ path / ADR-0072 config; 66.3 = PR #217 (NBA points) + a new NFL injury-snapshot 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 66.1 | GitHub at $0: deploys on a VPS runner, MLB features in ~3 min | PLUMBING | ⬜ | — |
-| 66.2 | Why every demo order 404s (GG-560) -> canary -> forward test ON | EXECUTION E1/E2/E3 | ⬜ | — |
+| 66.2 | Why every demo order 404s (GG-560) -> canary -> forward test ON | EXECUTION E1/E2/E3 | ✅ DONE (PR #220) | switches ON demo-only, first orders pending next game; GG-536 shipped |
 | 66.3 | Land NBA player points (#217) + start NFL injury snapshots | BREADTH B4 1->2, B1 37->40; DEPTH (next NFL mechanism's data clock) | ⬜ | — |
 
 ### 66.1 — GitHub at $0: deploys on a VPS runner, MLB features in ~3 minutes

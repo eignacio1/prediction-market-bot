@@ -36,3 +36,32 @@ DELETE -> `reduced_by 1.00`; GET after cancel -> status `canceled`, fill_count 0
 
 **Consequence for E1:** t4-mlb needs no fix and no restart (nothing wrong with its writes). Roughly the share of its orders on tickers demo
 does not list (here 23 of 40 tickers) can never be accepted, so demo-fill statistics describe only the demo-listed subset. Registered as GG-564.
+
+## W66.2 Part B - forward test ON (2026-10-11)
+
+Gate met: the Part A canary placed AND cancelled (order 01a1299b..., `canceled`, fill_count 0).
+
+**Shipped (PR #220, merge dfc00e9):** `scripts/demo_cancel_sweeper.py` (cron, every minute, ~55 s loop, 10 s sweeps via
+`overdue_pending()` / `sweep_overdue()`; refuses unless BOT_ENV=paper + demo host; flock) so cancels survive process exit;
+`deploy/demo_fill.env` (rule `book_anchor_cancel`, `SHADOW_FLAT_STAKE=on`, N=60, gap 0.05, **share 0.5**, seed w64-2);
+`t4-mlb.service` `EnvironmentFile=-.../deploy/demo_fill.env`; T1 cron line exports the same file. Realized cancel delay is ~60-70 s.
+Turn off: delete/rename `deploy/demo_fill.env` (and restart t4-mlb), remove the W66.2 cron block.
+
+**GG-536 (same PR):** T1 MLB execution/G6 counts are CONFIRMED_FILLED only (`logs/t1_mlb_fill_status.jsonl`), labelled on
+`run_power_calc`, `run_band_monitor`, `governance_scan.sh`, web dashboard and terminal MLB dashboard; all-rows T1 kept as
+"calibration only - not execution evidence". No ledger row rewritten. Visual (hand-built narrative) HTML dashboard carries no T1 count; untouched.
+
+**Tests (local, GitHub $0):** 10 failed, 3950 passed, 44 skipped. The 10 are pyarrow env failures (test_fetch_mlb_game_history x3,
+test_t593 x1, test_t601 x6), unrelated and pre-existing locally. CI Deploy: t4-mlb restart decision `not_needed` (no imported file changed).
+
+**VPS rollout:** crontab backed up (`logs/crontab.bak.w66_2_*`), W66.2 block + T1 export installed; unit installed, daemon-reload,
+t4-mlb restarted 2026-10-11 ~14:3x UTC with no game live (MLB schedule: CWS final, next game 10-12 00:00Z).
+**Proof** `/proc/3213544/environ`: BOT_ENV=paper, DEMO_FILL_PLACEMENT_RULE=book_anchor_cancel, SHADOW_FLAT_STAKE=on,
+DEMO_FILL_CANCEL_AFTER_S=60, DEMO_FILL_MAX_MID_GAP=0.05, DEMO_FILL_ASSIGN_SHARE=0.5, DEMO_FILL_SEED=w64-2.
+
+**First orders:** none yet - no game live and `logs/demo_fill_policy.jsonl` does not exist. First look: next game (10-12 00:00Z) and the 11:00Z T1 run.
+Read arm assignment, skips by reason, cancels and cancel success rate from that log.
+
+**Findings (not fixed here):** (1) `SHADOW_FLAT_STAKE` is NOT inert in code - `make_on_row` is wired in run_{mlb,nba,}_pregame_shadow.py -
+but those cron lines do not load `demo_fill.env`, and editing them was outside this authorization, so shadow runners stay OFF.
+(2) GG-564 (demo lists a subset) still biases E1 denominators; stratify. (3) The summary's earlier "maybe_place uncalled" claim was wrong.

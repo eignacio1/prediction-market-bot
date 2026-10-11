@@ -1,6 +1,6 @@
 # ADR-0072 (DRAFT) — Demo-venue fills: order-placement rule
 
-**Status:** PROPOSED · **Switch:** OFF by default (`DEMO_FILL_PLACEMENT_RULE` unset = current behaviour) · **Date:** 2026-10-09 · **Wave:** 63.3
+**Status:** ACCEPTED (operator, 2026-10-10 19:13 PT; switched ON demo-only 2026-10-11, W66.2) · **Switch:** OFF by default (`DEMO_FILL_PLACEMENT_RULE` unset = current behaviour) · **Date:** 2026-10-09 · **Wave:** 63.3
 **Note:** number provisional; renumber at merge if ADR-0072 is claimed elsewhere. Nothing in this ADR is built or enabled.
 
 ## Design input (Part B evidence)
