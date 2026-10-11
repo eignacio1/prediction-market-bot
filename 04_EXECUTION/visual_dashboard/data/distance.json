@@ -1,0 +1,132 @@
+[
+ {
+  "code": "B1",
+  "pillar": "Breadth",
+  "measure": "Cells logging forecasts",
+  "have": 37,
+  "of": 104,
+  "now": "37 / 104",
+  "optimum": "The whole board registered and logging",
+  "moved": "none in Wave 64"
+ },
+ {
+  "code": "B2",
+  "pillar": "Breadth",
+  "measure": "Market families with a logging cell",
+  "have": 12,
+  "of": 18,
+  "now": "12 / 18",
+  "optimum": "18 / 18, with props and parlays registered",
+  "moved": "none in Wave 64"
+ },
+ {
+  "code": "B3",
+  "pillar": "Breadth",
+  "measure": "Execution bands with a logging cell",
+  "have": 4,
+  "of": 5,
+  "now": "4 of 5 (no T5)",
+  "optimum": "5 of 5, T4 sub-bands included",
+  "moved": "none in Wave 64"
+ },
+ {
+  "code": "B4",
+  "pillar": "Breadth",
+  "measure": "Props · parlay families logging",
+  "have": 1,
+  "of": null,
+  "now": "1 · 0",
+  "optimum": "The board's props and parlays",
+  "moved": "none in Wave 64"
+ },
+ {
+  "code": "D1",
+  "pillar": "Depth",
+  "measure": "Factor classes the pre-game models use",
+  "have": null,
+  "of": null,
+  "now": "No live model uses matchup, weather or qualitative inputs; NFL uses team stats only",
+  "optimum": "Every factor class at every pre-game arm",
+  "moved": "none yet (challenger live in 65.3)"
+ },
+ {
+  "code": "D2",
+  "pillar": "Depth",
+  "measure": "Largest pre-game feature set",
+  "have": 18,
+  "of": null,
+  "now": "18 (MLB player hits, 0 qualitative)",
+  "optimum": "Coverage of the factor classes, not a count",
+  "moved": "none"
+ },
+ {
+  "code": "D3",
+  "pillar": "Depth",
+  "measure": "Pre-registered challengers ready",
+  "have": 1,
+  "of": null,
+  "now": "1 (NFL QB-shrunk challenger, accepted 10-10)",
+  "optimum": "At least one per arm before its first look",
+  "moved": "+1 in Wave 64"
+ },
+ {
+  "code": "E1",
+  "pillar": "Execution",
+  "measure": "Demo orders actually filled",
+  "have": 251,
+  "of": 4722,
+  "now": "T4 166 / 4,237 = 3.9% · T1 85 / 485 = 17.5%",
+  "optimum": "Fills close to intended orders",
+  "moved": "fix accepted 10-10"
+ },
+ {
+  "code": "E2",
+  "pillar": "Execution",
+  "measure": "P&L per filled bet",
+  "have": null,
+  "of": null,
+  "now": "T4 −$0.26 · T1 −$1.50",
+  "optimum": "Positive, net of fees",
+  "moved": "fix accepted 10-10"
+ },
+ {
+  "code": "E3",
+  "pillar": "Execution",
+  "measure": "Win rate on fills vs non-fills",
+  "have": null,
+  "of": null,
+  "now": "T4 24.1% vs 48.7% · T1 28.9% vs 52.1%",
+  "optimum": "Fills at least as good as non-fills",
+  "moved": "fix accepted 10-10"
+ },
+ {
+  "code": "P1",
+  "pillar": "Proof",
+  "measure": "Cells at a scored look",
+  "have": 0,
+  "of": 45,
+  "now": "0 / 45",
+  "optimum": "Every cell judged at its pre-registered sample",
+  "moved": "none"
+ },
+ {
+  "code": "P2",
+  "pillar": "Proof",
+  "measure": "Verdicts issued",
+  "have": 0,
+  "of": null,
+  "now": "0",
+  "optimum": "A verdict per cell (a rigorous NO counts)",
+  "moved": "none"
+ },
+ {
+  "code": "P3",
+  "pillar": "Proof",
+  "measure": "Next look",
+  "have": null,
+  "of": null,
+  "now": "NFL, 2 Nov 2026 — ~91% likely “keep accruing”",
+  "optimum": "—",
+  "moved": "—"
+ }
+]

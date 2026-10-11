@@ -1,0 +1,24 @@
+[
+{
+"book": "T4M-PROJ (MLB player hits, in-play)",
+"filled": 166,
+"closed": 4237,
+"fill_rate": 0.03917866414916214,
+"pnl_per_fill": -0.26,
+"ci_lo": -0.45,
+"ci_hi": -0.07,
+"win_fill": 0.241,
+"win_nonfill": 0.487
+},
+{
+"book": "T1 MLB (player hits, pre-game)",
+"filled": 85,
+"closed": 485,
+"fill_rate": 0.17525773195876287,
+"pnl_per_fill": -1.5,
+"ci_lo": -3.67,
+"ci_hi": 0.63,
+"win_fill": 0.289,
+"win_nonfill": 0.521
+}
+]

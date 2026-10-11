@@ -1,0 +1,22 @@
+[
+ {
+  "date": "2026-10-11",
+  "event": "ADR-0072 forward test switched on (Wave 65.2) — cancel call verified on day one"
+ },
+ {
+  "date": "2026-10-12",
+  "event": "Weekly T4 ledger rebuild — first live test of the overwrite guard"
+ },
+ {
+  "date": "2026-10-20",
+  "event": "NBA opening night; NBA cells switch on ~21 Oct"
+ },
+ {
+  "date": "2026-11-02",
+  "event": "NFL first scored look (12 cells)"
+ },
+ {
+  "date": "2027-01-31",
+  "event": "Deadline to define the NBA second look (GG-529)"
+ }
+]

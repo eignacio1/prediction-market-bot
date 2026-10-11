@@ -1,0 +1,20 @@
+[
+ {
+  "item": "MLB winter",
+  "title": "What MLB does after the World Series",
+  "detail": "T4M-PROJ stakes already stop; T1 MLB stand down or idle all winter is your call.",
+  "when": "After the World Series"
+ },
+ {
+  "item": "GG-529",
+  "title": "NBA second look",
+  "detail": "EXP-038 says “n = 400 or 31 Jan, whichever first” but not what is scored on the date.",
+  "when": "Before 31 Jan 2027"
+ },
+ {
+  "item": "NBA model class",
+  "title": "ADR standing for the NBA models",
+  "detail": "EXP-038 (games) and EXP-039 (player points) run frozen models with no ADR for their model class. Not blocking: both log as shadow.",
+  "when": "Open, not urgent"
+ }
+]

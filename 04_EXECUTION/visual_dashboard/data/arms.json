@@ -1,0 +1,66 @@
+[
+ {
+  "arm": "NFL game markets",
+  "cells": 12,
+  "prereg": "EXP-037",
+  "status": "Logging",
+  "next_look": "2026-11-02",
+  "note": "15 of 60 games per cell; first look most likely “keep accruing”"
+ },
+ {
+  "arm": "NFL QB-shrunk challenger",
+  "cells": 2,
+  "prereg": "Accepted 10-10",
+  "status": "Ships in 65.3",
+  "next_look": "984 games (~3.6 seasons)",
+  "note": "Moneyline, beside the frozen NFL model; first live model using personnel"
+ },
+ {
+  "arm": "MLB postseason game markets",
+  "cells": 12,
+  "prereg": "EXP-037 MLB",
+  "status": "Logging",
+  "next_look": "2027 regular season",
+  "note": "Registered 9 Oct; postseason rows logged, not scored"
+ },
+ {
+  "arm": "NHL game markets",
+  "cells": 9,
+  "prereg": "EXP-036",
+  "status": "Logging",
+  "next_look": "Preliminary all 2026-27",
+  "note": "Judged sample not reachable this season"
+ },
+ {
+  "arm": "NBA game markets",
+  "cells": 12,
+  "prereg": "EXP-038",
+  "status": "Preseason",
+  "next_look": "150 games per cell",
+  "note": "Regular season from 20 Oct; cells switch on ~21 Oct"
+ },
+ {
+  "arm": "NBA player points (T1–T3)",
+  "cells": 3,
+  "prereg": "EXP-039",
+  "status": "Pre-registered",
+  "next_look": "After opening night",
+  "note": "Wiring carried to 65.1; must log from 20 Oct"
+ },
+ {
+  "arm": "MLB player hits (T1–T3)",
+  "cells": 3,
+  "prereg": "—",
+  "status": "Logging",
+  "next_look": "—",
+  "note": "Stops with the World Series"
+ },
+ {
+  "arm": "MLB player hits T4M-PROJ",
+  "cells": 1,
+  "prereg": "ADR-0050",
+  "status": "Active (demo stakes)",
+  "next_look": "—",
+  "note": "Stakes stop for every game after the 2026 World Series"
+ }
+]
