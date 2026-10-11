@@ -835,3 +835,4 @@
 | 2026-10-11T03:18:04Z | T-793 | CLOSED — merge confirmed, HEAD (bf47364) is ancestor of origin/main — W65.3 NFL QB challenger live in shadow |
 | 2026-10-11T03:39:50Z | T-790 | CLOSED — W65.2 BLOCKED at canary: Kalshi demo order writes 404 on every market (GG-560); ADR-0072 switches stay OFF. (commit `00f273a`) |
 | 2026-10-11T03:40:00Z | T-790 | CLOSED — merge confirmed, HEAD (64c3efb) is ancestor of origin/main — W65.2 BLOCKED at canary (GG-560); switches OFF |
+| 2026-10-11T06:13:19Z | T-796..T-798, GG-564..GG-565 | W66.2 MEDIUM - why demo orders 404 (GG-560), canary, forward test ON. PURPOSE: EXECUTION E1/E2/E3 (demo orders accepted and filling) |
