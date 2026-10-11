@@ -1,0 +1,17 @@
+{
+ "model_id": "nfl_qb_challenger_v1",
+ "artifact_sha256": "b3cb98647b6a72dbcfd82f4c76eb39e1e6132b2bb25c88e8c020d9afa02e354e",
+ "artifact_file_sha256": "fec8416989e9e20489279064359de22b0fa1b607bc766ca8d6e43e4a501943d4",
+ "frozen_at_utc": "2026-10-11T02:30:04+00:00",
+ "code_sha": "45f8de78fbbe061c48f24ac15f2370acebf6a276",
+ "input_schedule_sha256": "ad6f3274787e596a385290ec18fb59865460407befa78cea7c211e516f7ef3d0",
+ "input_team_stats_sha256": "bac91bb59a3482acae792e893f352a7d575448e646ed4a434edda11751665ff5",
+ "n_train": 2451,
+ "n_cal": 272,
+ "sigma_margin": 13.103328108525947,
+ "platt": {
+  "a": 1.0081538110452906,
+  "b": -0.010515091165524595
+ },
+ "preregistration": "12_EXPLORATORY/NFL_QB_SHRUNK_CHALLENGER_PREREGISTRATION_2026-10-09.md (ACCEPTED 2026-10-10)"
+}
