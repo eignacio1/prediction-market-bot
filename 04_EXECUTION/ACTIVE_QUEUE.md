@@ -155,9 +155,9 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 68.1 | MLB data without GitHub: games cache + features from the VPS | PLUMBING (keeps 16 MLB cells logging: B1) | ⬜ | — |
+| 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging: B1) | ⬜ | — |
 
-### 68.1 — MLB data without GitHub (fire NOW)
+### 68.1 — MLB data back on a public repo (fire NOW, after the visibility switch)
 
 ```
 COMMON RULES - WAVE 68 (read first; they bind this block)
@@ -204,31 +204,30 @@ COMMON RULES - WAVE 68 (read first; they bind this block)
 
 
 
-WAVE 68.1 - MLB DATA WITHOUT GITHUB. Repo: eignacio1/prediction-market-bot.
+WAVE 68.1 - MLB DATA BACK ON A PUBLIC REPO. Repo: eignacio1/prediction-market-bot.
 PURPOSE: PLUMBING - keep the 12 MLB game-market shadow cells and the 4 MLB player-hits cells logging for the rest of the
-postseason. If this fails, B1 drops by up to 16 cells within a day. Say PLUMBING in claim and handoff.
+postseason (B1 would lose up to 16 cells). Say PLUMBING in claim and handoff.
 
 WHY
-2026-10-11 17:48Z: GitHub Actions stopped starting jobs ("recent account payments have failed or your spending limit needs to
-be increased") - the operator's $0 budget, free minutes exhausted. Two workflows were the ONLY route around statsapi's 406 to
-the VPS: MLB Games Cache Sync (12:43 + 00:43 UTC; the MLB shadow runner refuses a games-cache stamp older than 26 h - last
-success 2026-10-11 06:25Z, so the 12 MLB game cells go silent ~2026-10-12 08:25Z) and MLB Features Sync (10:17 UTC, feeds T1
-MLB at 11:00 - last CSV pushed 2026-10-11 ~17:46Z). 67.3 measured statsapi people/* = 406 from the VPS IP with any headers.
-Nobody has measured whether /schedule, /game/{pk}/boxscore or /game/{pk}/feed/live answer the VPS. No paid service, no
-public repo, no GitHub runner - those are not covered. Authority: AUTHORIZATION - GITHUB $0 + 2026-10-11 amendment.
+2026-10-11 17:48Z GitHub Actions stopped starting jobs ($0 budget, free private-repo minutes gone). MLB Games Cache Sync and MLB
+Features Sync were the only route around statsapi's 406 to the VPS; the MLB shadow runner refuses a games-cache stamp older
+than 26 h (last success 06:25Z 10-11 -> silent ~08:25Z 10-12). Operator decision 2026-10-11 11:53 PT: make the repository
+PUBLIC (GitHub-hosted Actions minutes are free for public repositories). The window scanned all 2,957 commits for private keys,
+Kalshi key ids and GitHub/AWS/Anthropic/Slack tokens before the switch: none found. The operator flips the visibility himself
+(the window's token cannot write repo settings). Authority: AUTHORIZATION - GITHUB PUBLIC (ACTIVE_QUEUE.md).
 
-PART A - Games cache from the VPS (~30 min; deadline 2026-10-12 08:00Z)
-  1. From the VPS, one request each to statsapi /api/v1/schedule, /api/v1/game/{pk}/boxscore and /api/v1.1/game/{pk}/feed/live
-     (plain and with browser-like headers). Paste the status codes.
-  2. If /schedule answers: run scripts/sync_mlb_games_cache.sh (or its Python equivalent) from a NEW VPS cron line at the
-     workflow's minutes (12:43, 00:43), mirrored in deploy/; prove a fresh games-cache stamp and that the MLB shadow runner
-     accepts it. If nothing answers: say so in one line and stop Part A.
-PART B - Postseason features from the VPS (~45 min)
-  3. If boxscore or feed/live answers: build the postseason batter rows the generator needs from those per-game endpoints
-     (the 2026 regular season is final and already cached on the VPS or in the last pushed CSV's inputs); run the generator on
-     the VPS from a NEW cron line before 11:00 UTC; prove the CSV passes the unchanged data contract and equals a GitHub-built
-     CSV for the same date except run-metadata columns (use the 10-11 17:46Z CSV as the reference).
-  4. If no statsapi endpoint answers the VPS, stop and report exactly that; the window takes the next step to the operator.
+PART A - Confirm public, restore MLB data now (~30 min)
+  1. Confirm the repo reads visibility=public (gh api repos/eignacio1/prediction-market-bot). If it is still private, stop and
+     report - do not touch any setting.
+  2. Dispatch MLB Games Cache Sync, then MLB Features Sync. Prove both succeed, the VPS games-cache stamp is fresh, the MLB shadow
+     runner accepts it, and the feature CSV passes the data contract. Record the minutes each run took.
+  3. Second secret check on the PUBLIC tree: no secret in any workflow log or committed file (gitleaks or equivalent over full
+     history). Anything found: report it to the window at once; do not rewrite history.
+PART B - Put CI back, keep what now works (~30 min)
+  4. Restore tests.yml's pull_request + push-to-main triggers (from adce3be: concurrency cancel, skip PR-merge pushes, pip cache).
+     Keep the VPS-side deploy (67.3) as the deploy path; deploy.yml stays workflow_dispatch-only.
+  5. Add one governance-scan line: GitHub Actions status (public/private, last run conclusion per scheduled workflow, any run
+     refused for billing) so a stalled data feed is visible every session. Prove it prints.
 
 END OF BLOCK 68.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
@@ -818,6 +817,11 @@ What should reorder this, and what should stop it:
 > behaviour; changing scripts/generate_mlb_features.py to fetch postseason logs only for postseason players, proven
 > byte-identical. Not covered: any paid service or plan, making the repository public, changing the deploy restart policy.
 > Used by 66.1.
+
+> **AUTHORIZATION - GITHUB PUBLIC (operator, 2026-10-11 11:53 PT: "Fine fire it up - we'll make the github public").** Covers:
+> the operator switching the repository to public (the window's token cannot); dispatching the MLB data workflows; restoring
+> tests.yml's PR/push triggers; a governance-scan line for Actions status. Not covered: rewriting git history, any paid
+> service, changing secrets. Used by 68.1.
 
 > **AUTHORIZATION - DEMO CONFIG (strategic window, 2026-10-11, under the operator's standing rule of 2026-10-08: "Sandbox, paper
 > and demo actions are plumbing: handle them. Only real capital is mine.").** Covers: pre-checking the demo listing before a demo
