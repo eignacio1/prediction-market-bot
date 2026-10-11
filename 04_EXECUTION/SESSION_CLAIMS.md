@@ -833,3 +833,4 @@
 | 2026-10-11T02:25:43Z | T-783..T-785, GG-557..GG-558 | W65.1 MEDIUM - NBA player points live for opening night. PURPOSE: BREADTH B4 props 1->2, B1 37->40 |
 | 2026-10-11T02:26:03Z | T-793..T-795, GG-562..GG-563 | W65.3 MEDIUM - NFL QB challenger logging live. PURPOSE: DEPTH D1 nfl_pregame team->team+personnel (D3 stays 1; challenger ready->live) |
 | 2026-10-11T03:18:04Z | T-793 | CLOSED — merge confirmed, HEAD (bf47364) is ancestor of origin/main — W65.3 NFL QB challenger live in shadow |
+| 2026-10-11T03:39:50Z | T-790 | CLOSED — W65.2 BLOCKED at canary: Kalshi demo order writes 404 on every market (GG-560); ADR-0072 switches stay OFF. (commit `00f273a`) |
