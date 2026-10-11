@@ -203,6 +203,8 @@ def test_shadow_on_places_flat_stake_under_policy_row_untouched(monkeypatch, tmp
     kw = c.submit_order.call_args.kwargs
     assert kw["size_usd"] == 1.0 and kw["side"] == "yes" and kw["mid_price"] == 0.40
     assert any(e["event"] == "cancel_scheduled" for e in _events(tmp_path))
+    import uuid                                                 # W67.2: Kalshi rejects non-UUID ids (HTTP 400)
+    assert str(uuid.UUID(kw["client_order_id"])) == kw["client_order_id"]
 
 
 def test_shadow_below_gate_or_skip_places_nothing(monkeypatch):

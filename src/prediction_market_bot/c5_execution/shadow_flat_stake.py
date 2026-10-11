@@ -11,6 +11,7 @@ under today's stale-mid behaviour.
 from __future__ import annotations
 
 import os
+import uuid
 from typing import Any, Callable, Optional
 
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
@@ -60,7 +61,7 @@ def maybe_place(
         stake_fn = lambda e: measurement_stake_and_stratum(e)[0]  # noqa: E731
     stake = float(stake_fn(entry))
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
-                                mid_price=dec.mid_price, client_order_id=f"shadow-{rid}"[:64])
+                                mid_price=dec.mid_price, client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
     pol.append_log({"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
                     "stake_usd": stake, "price_yes": dec.mid_price, "error": order.error})
     if order.ok and order.order_id:
