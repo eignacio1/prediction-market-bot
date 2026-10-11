@@ -839,3 +839,4 @@
 | 2026-10-11T06:13:34Z | T-799..T-801, GG-566..GG-567 | W66.1 MEDIUM - GitHub at $0: deploys on VPS runner + MLB features postseason trim. PURPOSE: PLUMBING (deploys + MLB feature build survive all month on free minutes) |
 | 2026-10-11T06:13:51Z | T-802..T-804, GG-568..GG-569 | W66.3 MEDIUM - land NBA player points (#217) + NFL injury snapshots. PURPOSE: BREADTH B4 props 1->2, B1 37->40; DEPTH (NFL injury data clock) |
 | 2026-10-11T14:30:29Z | T-796 | CLOSED — merge confirmed, HEAD (b2c171a) is ancestor of origin/main — W66.2 DONE: forward test ON demo-only; PR #220; GG-536 T1 fills-only |
+| 2026-10-11T14:53:27Z | T-799 | CLOSED — W66.1 PARTIAL: postseason-only batter-log fetch shipped (features sync 22.5->17.5 min); VPS runner blocked by classifier; 2,000 min does not fit to 11-01 (commit `c44b515`) |

@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: T-799
+tier: MICRO
+timestamp: 2026-10-11T14:45:00Z
+commit: c44b515
+one_line_summary: W66.1 PARTIAL: postseason-only batter-log fetch shipped (features sync 22.5->17.5 min); VPS runner blocked by classifier; 2,000 min does not fit to 11-01
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (Actions minutes vs days to 11-01)
+gap_delta: MLB Features Sync wall-clock 22m02s -> 17m28s (Actions runs 38103196882, 38146914467); billable deploy minutes unchanged
+-->
+
 # SESSION HANDOFF — W66.1 GitHub at $0 (2026-10-11)
 
 PARTIAL | session/20261011T061317Z-w66-1-github-zero | PR #219 merged (squash 04295a4) | CI: Deploy to VPS success (t4-mlb restart: not_needed) | Part B shipped, Part A blocked on a permission refusal.
