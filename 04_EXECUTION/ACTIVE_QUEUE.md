@@ -126,6 +126,7 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 | 10-11 / 10-12 | ADR-0072 forward test switched on (65.2) — the cancel call is verified on a 1-contract demo canary first |
 | Mon 10-12 14:20 UTC | Weekly T4 resolved-ledger rebuild — first live test of the overwrite guard; also refreshes the T4 fill sidecar (61.1) |
 | Thu 10-15 | First NFL slate the QB challenger can log (65.3) |
+| ~10-19 | Free GitHub Actions minutes run out at the current burn unless 66.1 lands (deploys + MLB features stop) |
 | 10-20 / 10-21 | NBA opening night; NBA cells flip to SHADOW once valid rows exist |
 | ~11-02 | NFL first scored look — the project's first pre-registered edge verdict |
 | World Series end | T4M-PROJ stakes stop (61.1 gate); registry flip to DARK (later block); T1 MLB winter posture is your call |
@@ -394,6 +395,55 @@ Results doc: 12_EXPLORATORY/W64_1_nfl_qb_challenger_results.md (append "Live" se
 END OF BLOCK 65.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+
+### 66.1 — GitHub at $0: deploys on a VPS runner, MLB features in ~3 minutes (fires FIRST, as soon as any Wave 65 terminal frees up)
+
+```
+COMMON RULES - WAVE 66 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90. Two parts. Push after each part and update this block's row in
+  04_EXECUTION/ACTIVE_QUEUE.md. Stop at a pushed boundary and write the handoff. Never leave work unpushed.
+- Merge ONLY your own PRs. GitHub CI no longer runs the test suite on PRs (operator, 2026-10-10: $0 GitHub spend):
+  run `pytest tests/ -q` in your own session before every merge and paste the summary line in the PR.
+- Decisions in force: DECISION_LOG through 2026-10-10 incl. "not a cent on GitHub". Standing authorizations as in Wave 65.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree; claim immediately; real ID range.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No paid service of any kind.
+- The operator never runs plumbing. Never bypass a permission control.
+- PURPOSE: say PLUMBING in your claim and handoff (this block keeps every arm's data and code flowing; it moves no measure).
+- Every premise below is a claim to verify against data. Fixed = the running process / the next scheduled run shows it.
+- Report back: Status | branch @ SHA | PR + local pytest summary | minutes before -> after (per workflow, from the Actions
+  API) | operator decisions. Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W66_1.md.
+
+
+
+
+WAVE 66.1 - GITHUB AT $0. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING. Keep deploys and the MLB feature build running all month on the free 2,000 Actions minutes.
+
+WHY
+The account hit 1,806 of 2,000 free minutes on 10-10; the operator will not pay for more and has set (or will set) a $0
+budget, which BLOCKS Actions once the free minutes are gone. The window already cut what it safely could (604c7ca): tests
+run on demand only, MLB Features Sync once a day with the immutable regular-season caches restored. What is left still burns
+~20 min/day (deploy ~2 min per code push; features ~10 min/day, mostly ~650 postseason batter-log requests for every position
+player in the league) - about 9 days of headroom. If minutes run out, deploys stop and the MLB T1 + game-market shadow arms
+go stale mid-postseason. Measured split 10-01..10: tests 1,494 min, deploy 204, features 204 (DECISION_LOG 2026-10-10).
+Authority: AUTHORIZATION - GITHUB $0 (ACTIVE_QUEUE.md).
+
+PART A - Deploys on a self-hosted runner on the VPS (~45 min; self-hosted minutes are free)
+  1. Register a repo-scoped GitHub Actions runner on the VPS (registration token via the repo API), labels self-hosted,vps,
+     as its own non-root user under a systemd unit; check RAM headroom before and after (free -m) and keep it idle-light.
+  2. Move deploy.yml's two jobs (approval-path-tests, deploy) to runs-on: [self-hosted, vps]. Keep every step's behaviour
+     and the GG-432 restart policy byte-identical (the deploy job may keep ssh-ing to root@157.230.91.33 with the same key).
+  3. Prove it: one docs-only push and one code push deploy through the runner; the Actions API shows 0 billable minutes
+     for both; the restart decision is recorded as before.
+PART B - MLB features in ~3 minutes, same output (~40 min)
+  4. In scripts/generate_mlb_features.py, fetch postseason batter logs only for players who appear in a postseason game
+     (from the postseason completed-games / boxscore data the script already fetches), not every position player.
+  5. Prove the output is identical: run old and new once on the same day against the same caches; the feature CSV must be
+     byte-identical (or explain every differing row and stop). Then one scheduled/dispatched run: minutes before -> after.
+  6. Project Actions minutes to 11-01 from the new per-run figures and say plainly whether it fits under 2,000.
+
+END OF BLOCK 66.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
 
 ---
 
@@ -706,6 +756,13 @@ What should reorder this, and what should stop it:
 > **OPERATOR DIRECTIVE (2026-10-09 00:14 PT):** "I want to have MLB wired to full cus of the limited games left - the
 > translatebility should be mechanisms that we spent fucking months on with the MLB and should absolutely have already been
 > integrated in the NFL - when are we finally getting towards math work?" Used by 63.1 (MLB coverage) and 63.2 (NFL depth).
+
+> **AUTHORIZATION - GITHUB $0 (operator, 2026-10-10 20:49 PT: "I'm not spending a CENT on GitHub").** Covers: running the
+> test suite on demand only (terminals run it locally before merging); trimming scheduled workflows; registering a repo-scoped
+> self-hosted Actions runner on the VPS (own non-root user, systemd unit) and moving deploy.yml's jobs onto it with identical
+> behaviour; changing scripts/generate_mlb_features.py to fetch postseason logs only for postseason players, proven
+> byte-identical. Not covered: any paid service or plan, making the repository public, changing the deploy restart policy.
+> Used by 66.1.
 
 > **AUTHORIZATION - ADR-0072 ON (operator, 2026-10-10 19:13 PT, choosing "Accept, switch on (Recommended)").** Covers:
 > marking ADR-0072 and its forward-test pre-registration ACCEPTED; ONE canary demo order (1 contract, priced where it cannot
