@@ -72,3 +72,9 @@ def test_last_ts_respects_until_bound(tmp_path):
                            ["2026-10-08T01:43:00+00:00", "2026-10-09T06:07:00+00:00"]) + "\n")
     assert last_ts_in_files([p], until=NOW) == datetime(2026, 10, 8, 1, 43, tzinfo=timezone.utc)
     assert last_ts_in_files([p]) == datetime(2026, 10, 9, 6, 7, tzinfo=timezone.utc)
+
+
+def test_w67_1_nba_player_points_is_its_own_arm(tmp_path):
+    from prediction_market_bot.pregame_shadow import silent_arms as sa
+    keys = [i.spec.key for i in sa.load_inputs(tmp_path)]
+    assert "nba_player_points_shadow" in keys and "nba_shadow" in keys
