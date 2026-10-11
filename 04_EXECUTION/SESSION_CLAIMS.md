@@ -850,3 +850,4 @@
 | 2026-10-11T17:11:05Z | T-810 | MERGED: NO — branch `session/20261011T154246Z-w67-2-forward-test-day1` awaiting merge — W67.2 Part B landed: demo-listing skip before arm assignment + shadow-cell flat stakes (uuid id fix); Part A awaits 10-12 data. (commit `6897a3c`) |
 | 2026-10-11T17:11:19Z | T-810 | CLOSED — merge confirmed, HEAD (758d569) is ancestor of origin/main — W67.2 Part B landed; Part A pending 10-12 data |
 | 2026-10-11T19:11:26Z | T-816..T-818, GG-582..GG-583 | W68.1 MEDIUM - MLB data back on public repo; CI restored; Actions status in scan. PURPOSE: PLUMBING (keeps 16 MLB cells logging) |
+| 2026-10-11T19:11:41Z | T-819..T-820, GG-584..GG-585 | W68.3 MEDIUM - NFL totals venue+weather challenger (12_EXPLORATORY only). PURPOSE: DEPTH D1 (venue/weather factor class), D3 +1 if pre-registration earned |
