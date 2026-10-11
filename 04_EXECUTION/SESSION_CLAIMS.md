@@ -829,3 +829,4 @@
 | 2026-10-09T18:10:21Z | T-772 | CLOSED — W64.1 NFL QB-shrunk challenger beats frozen in backtest (Brier -0.0027, 6/7 seasons); PROPOSED pre-reg drafted, D3 0->1. (commit `4101d7b`) |
 | 2026-10-09T18:11:34Z | T-772 | CLOSED — merge confirmed, HEAD (53d4a5d) is ancestor of origin/main — W64.1 NFL QB-shrunk challenger; PROPOSED pre-reg, D3 0->1 |
 | 2026-10-09T18:20:16Z | T-780 | CLOSED — merge confirmed, HEAD (612bba3) is ancestor of origin/main — W64.2: placement rule + shadow stake merged #208 (414f05d), deployed, both switches OFF; pre-reg in ADR-0072 PROPOSED |
+| 2026-10-11T02:25:34Z | T-790..T-792, GG-560..GG-561 | W65.2 MEDIUM - demo-fill forward test ON + T1 fills-only counting (GG-536). PURPOSE: EXECUTION E1/E2/E3 (first treatment-arm and shadow-cell fills; forward-test clock starts) |
