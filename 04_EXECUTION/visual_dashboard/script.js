@@ -1,15 +1,15 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","37 / 104","the whole board","0 — NBA points not wired (65.1)"],
+  ["Breadth","B1","Cells logging / registered","37 / 104","the whole board","0 — NBA points built, unmerged (66.3)"],
   ["Breadth","B2","Families with a logging cell","12 / 18","18 / 18, props + parlays registered","0"],
   ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
   ["Breadth","B4","Props · parlay families logging","1 · 0","the board's props and parlays","0 — the 1 ends with the World Series"],
-  ["Depth","D1","Factor classes per pre-game model","NFL team only; nobody uses matchup, weather, qualitative","every class at every arm","0 — NFL personnel goes live in 65.3"],
+  ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); nobody uses matchup, weather, qualitative","every class at every arm","+ NFL personnel (65.3)"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
-  ["Depth","D3","Pre-registered challengers ready","1 (NFL QB-shrunk)","≥ 1 per arm before its first look","+1"],
-  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","0 — fix accepted 10-10"],
+  ["Depth","D3","Pre-registered challengers ready","1 (NFL QB-shrunk)","≥ 1 per arm before its first look","0 — the 1 is now live"],
+  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","0 — every demo order 404s (GG-560)"],
   ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","0"],
-  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — forward test ON in 65.2"],
+  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — blocked by GG-560"],
   ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
   ["Proof","P2","Verdicts issued","0","a verdict per cell (a NO counts)","0"],
   ["Proof","P3","Next look","NFL ~11-02 · ~91% \"keep accruing\"","—","—"],
@@ -70,18 +70,18 @@ const MXNOTE = {
 
 const ARMS = [
   ["NFL game markets",12,"Logging","good","EXP-037","~2026-11-02","15 of 60 games per cell; first look most likely \"keep accruing\""],
-  ["NFL QB-shrunk challenger",2,"Ships in 65.3","warn","accepted 10-10","with EXP-037 vs the market","Moneyline; first live NFL model that knows who plays"],
+  ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","with EXP-037 vs the market","Moneyline; first live NFL model that knows who plays (since 10-11)"],
   ["MLB postseason game markets",12,"Logging","good","EXP-037 MLB","2027 regular season","Postseason rows logged, not scored"],
   ["MLB player hits T1–T3",3,"Logging","good","—","—","Stops with the World Series"],
   ["MLB player hits T4M-PROJ",1,"Active · demo stakes","good","ADR-0050","—","Stakes stop for every game after the World Series"],
   ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Judged sample not reachable this season (GG-514)"],
   ["NBA game markets",12,"Preseason","warn","EXP-038","150 games per cell","Regular season from 10-20; cells flip ~10-21"],
-  ["NBA player points T1–T3",3,"Pre-registered","warn","EXP-039","after opening night","Model, runner and cron in 65.1 — must log from 10-20"],
+  ["NBA player points T1–T3",3,"Built, not landed","warn","EXP-039","after opening night","PR #217 open; 66.3 lands it — must log from 10-20"],
 ];
 const CAL = [
-  ["10-11 → 10-12","ADR-0072 forward test switched on (65.2), after a 1-contract demo canary verifies the cancel call"],
+  ["10-11 →","ADR-0072 forward test waits on demo order writes working again (GG-560, 66.2)"],
   ["Mon 10-12","Weekly T4 ledger rebuild — first live test of the overwrite guard"],
-  ["Thu 10-15","First NFL slate the QB challenger can log (65.3)"],
+  ["Thu 10-15","First NFL slate the QB challenger logs; first NFL injury snapshot due (66.3)"],
   ["Tue 10-20","NBA opening night — NBA game and player-points arms must be logging"],
   ["~11-02","NFL first scored look, 12 cells — the project's first pre-registered market verdict"],
   ["World Series end","T4M-PROJ stakes stop; MLB player hits stops producing rows; MLB winter posture is your call"],
@@ -109,8 +109,10 @@ const WAVES = [
    d:"MLB game-market cells SHADOW: <b>B1 25 → 37, B2 8 → 12</b>. Distance-to-optimum generated from data. <b>Fills are adversely selected</b>: orders rest 40–100 min at the model's price and fill when the market moves against them."},
   {w:"64", k:"hit", t:"The first depth challenger; the fix built.",
    d:"NFL QB-shrunk challenger beats frozen in backtest (<b>D3 0 → 1</b>) — but not the market. Fill fix (cancel after 60 s, price off the book) built OFF and pre-registered. NBA player points pre-registered; wiring carried. You accepted all three 10-10."},
-  {w:"65", k:"now", t:"NBA points live · forward test ON · NFL challenger logging.",
-   d:"Aimed at Breadth (B4 1 → 2, B1 37 → 40), Execution (first treatment fills) and Depth (NFL personnel in a live model)."},
+  {w:"65", k:"neg", t:"NFL learns who plays; every demo order 404s.",
+   d:"The NFL QB challenger is live in shadow (<b>D1: NFL team → team + personnel</b>). The forward test found <b>every demo order write returning 404</b> — the bot cannot place a demo order (GG-560). NBA points built in PR #217 but never merged. Breadth and Execution: three waves without a move."},
+  {w:"66", k:"now", t:"Fix demo orders · land NBA points · GitHub at $0.",
+   d:"Why every demo order 404s and, if fixable, the fill-fix forward test ON (E1–E3). NBA player points landed and proven before opening night (B4 1 → 2). NFL injury snapshots start. Deploys move to a free runner on the VPS."},
 ];
 
 const DESK = [

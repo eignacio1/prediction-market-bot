@@ -10,6 +10,250 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 65 prompts — archived 2026-10-11 ~06:30 UTC. 65.1 PARTIAL (PR #217 open, clean, unmerged: frozen NB+Platt artifact, runner, cron, registry 104->107; no handoff, no VPS proof -> 66.3). 65.2 BLOCKED (#210/#212/#214/#215/#216 canary; every demo order write 404s, GG-560; switches OFF -> 66.2). 65.3 DONE (#211/#213: NFL QB challenger live in shadow, D1 nfl team -> team+personnel; GG-562 STUB positions registered). Verbatim:
+
+### 65.1 — NBA player points live for opening night (64.3 Part B, carried)
+
+```
+COMMON RULES - WAVE 65 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-10 (incl. the expansion directive, Hard Rule 12, and the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, push, wait for CI green, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 65.2, inside AUTHORIZATION - ADR-0072 ON.
+  Demo only. No live-ledger row rewritten. No edit of an existing cron line (65.2's switch config is the one named
+  exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W65_<n>.md (docs-only push).
+
+
+
+
+WAVE 65.1 - NBA PLAYER POINTS LIVE FOR OPENING NIGHT (64.3 PART B, CARRIED). Repo: eignacio1/prediction-market-bot.
+PURPOSE: BREADTH B4 props families logging 1 -> 2 and B1 37 -> 40 (NBA_PLAYER_POINTS x T1/T2/T3 SHADOW, logging from the
+2026-27 regular season, opening night 2026-10-20). The registry denominator also rises by 3 (104 -> 107): report both. Pillar: BREADTH.
+
+WHY
+64.3 Part A landed (#204, #206): Kalshi survey, the decision to retrain as a NEW frozen artifact (the legacy target is unusable),
+EXP-039 pre-registered on main before any row, D1 manifest entry nba_player_points_v1. Part B (model, runner, cron, flip, proof)
+never ran. MLB player hits - the only props family logging - stops with the World Series, so without this B4 drops to 0 in about
+two weeks. Every regular-season night after 10-20 that is not logged is lost. Authority: AUTHORIZATION - STANDING: NEW
+PRE-REGISTERED SHADOW ARMS. Start from 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W64_3_nba_player_points_arm_results.md and EXP-039.
+
+PART A - Freeze the model, check capacity (~40 min)
+  1. Train the new frozen artifact ONCE, exactly as the Part A decision and EXP-039 state (data through 2025-26; no 2026-27 row,
+     preseason included, may touch it). Write its metadata: artifact hash, feature count, qualitative count, training seasons,
+     calibration method. Never refit it after this. If anything in EXP-039 disagrees with what the data allows, stop and report -
+     do not edit the pre-registration.
+  2. Capacity: VPS RAM headroom with every current job (free -m; the heaviest cron windows, incl. NBA game-market and NFL/NHL
+     shadow runs). Under 25% headroom: use AUTHORIZATION - VPS RESIZE before adding load. Otherwise say so with the numbers.
+     Push.
+PART B - Wire it, register it, prove it (~45 min)
+  3. Shadow runner for T1/T2/T3 on the EXP-038 pattern: preseason rows to the separate labelled ledger, regular-season rows to the
+     judged ledger; NEW cron lines off :00/:30 and the staggered minutes, in their own marked block, mirrored in deploy/.
+  4. Flip the 3 cells NOT_IMPLEMENTED -> SHADOW (EXP-039 is already on main). The calibration engine lists them (sealed below
+     judged n); the silent-arm check covers them; both dashboards show them.
+  5. Tests; PR; CI green; merge; record the deploy decision. Prove on the VPS: registry counts, cron lines installed, and a dry run
+     against the next preseason slate (preseason ends ~10-17) writing ONLY to the preseason ledger. Run
+     scripts/distance_to_optimum.py and paste the B1 and B4 lines.
+Results doc: append to 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W64_3_nba_player_points_arm_results.md (Part B section).
+
+END OF BLOCK 65.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 65.2 — Demo-fill forward test ON + T1 fills-only counting (GG-536)
+
+```
+COMMON RULES - WAVE 65 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-10 (incl. the expansion directive, Hard Rule 12, and the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, push, wait for CI green, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 65.2, inside AUTHORIZATION - ADR-0072 ON.
+  Demo only. No live-ledger row rewritten. No edit of an existing cron line (65.2's switch config is the one named
+  exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W65_<n>.md (docs-only push).
+
+
+
+
+WAVE 65.2 - DEMO-FILL FORWARD TEST ON + T1 FILLS-ONLY COUNTING (GG-536). Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1 (fills per book, now including SHADOW-cell flat-stake fills), E2, E3 - the forward-test clock starts and
+the first treatment-arm fills exist. Pillar: EXECUTION. Also closes GG-536 (labelling only; moves no measure by itself).
+
+WHY
+64.2 (#208) built R1 (cancel unfilled after 60 s) + R2 (price off the live book) and flat demo stakes on SHADOW cells, both OFF,
+and pre-registered a 50/50 forward test in ADR-0072. The operator accepted ADR-0072 2026-10-10 19:13 PT. The judged n is ~550
+fills per arm; if that is not reachable within 8 weeks the test is declared underpowered (ADR-0072). T4M-PROJ - the only book with
+demo order flow today - stops after the World Series, so the shadow-cell stakes (NFL, NHL, NBA, MLB postseason) are the volume
+source. The cancel call (DELETE /portfolio/events/orders/{id}) has never run against the demo API. Authority: AUTHORIZATION -
+ADR-0072 ON; AUTHORIZATION - GG-536.
+
+PART A - Verify the cancel path, then switch on (~45 min)
+  0. Read-only first: VPS at main; both switches unset in every running process (prove it); policy code present. Check the T1 MLB
+     runs since 2026-10-09: the 11:00Z run logged a data_contract_violation (ba_l10_shrunk unexpected; opp_sp_is_known, season,
+     b2b_flag dtypes). If T1 MLB is still failing, register a GG (it starves the T1 book of forward-test orders) - do not fix it here.
+  1. Canary: ONE demo limit order for 1 contract on a liquid open market, priced where it cannot fill, then cancel it through the
+     client's cancel_order; confirm by GET that the order is canceled. Log both calls. If the cancel fails: stop, register a GG,
+     leave both switches OFF, report - nothing else in this part runs.
+  2. ADR-0072 -> ACCEPTED (operator, 2026-10-10 19:13 PT; drop DRAFT from the name if the ADR convention requires it, renumber
+     only if 0072 is taken). DECISION_LOG append.
+  3. Switch ON through config that lives in the repo (deploy/ unit env or cron env, mirrored), never a hand edit only on the box:
+     DEMO_FILL_PLACEMENT_RULE=book_anchor_cancel and SHADOW_FLAT_STAKE=on, parameters exactly as registered (N=60 s, max mid gap
+     0.05, share 0.5, seed w64-2). Restart only under the idle-window rule (no MLB game live). Prove the RUNNING processes carry
+     both variables. Push.
+PART B - First orders under the switch, and GG-536 (~40 min)
+  4. After the first orders under the switch (a T4 cycle or a shadow run): the order log shows the arm assignment, skips with
+     reasons, scheduled cancels with outcomes; cancel success rate; nothing on ADR-0072's turn-off list has tripped. From the
+     first day's eligible-order rate, project fills per arm per week and say plainly whether ~550 per arm within 8 weeks is
+     reachable. Add one forward-test line to the governance scan and a panel on /project: per book and arm - orders, fills,
+     cancels, skips, against the judged n.
+  5. GG-536 (operator 2026-10-10: same rule as GG-527): T1 MLB execution and G6 claims count CONFIRMED_FILLED rows only, labelled
+     that way in the power calc, governance scan, band monitor and both dashboards, from the T1 fill sidecar 62.3 built
+     (logs/t1_mlb_fill_status.jsonl). No ledger row rewritten. GG-536 RESOLVED only when the running dashboard shows it.
+     PR; CI green; merge; record the deploy decision.
+Results doc: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W65_2_forward_test_on_results.md, updated per part.
+
+END OF BLOCK 65.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 65.3 — NFL QB challenger logging live
+
+```
+COMMON RULES - WAVE 65 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-10 (incl. the expansion directive, Hard Rule 12, and the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, push, wait for CI green, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 65.2, inside AUTHORIZATION - ADR-0072 ON.
+  Demo only. No live-ledger row rewritten. No edit of an existing cron line (65.2's switch config is the one named
+  exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W65_<n>.md (docs-only push).
+
+
+
+
+WAVE 65.3 - NFL QB CHALLENGER LOGGING LIVE. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D1 nfl_pregame team -> team + personnel (the first live NFL pre-game model that conditions on who plays), logging
+before the next NFL slate (Thursday 2026-10-15). D3 stays 1 (the challenger moves from "ready" to "live"; say so). Pillar: DEPTH.
+
+WHY
+64.1 (#205, #209): the QB-shrunk challenger (frozen EXP-037 recipe + EB-shrunk team rates + shrunk starting-QB EPA, 13 features)
+beat the frozen model in backtest (Brier -0.0027, 99.375% CI [-0.0050, -0.0006], 6 of 7 seasons; all of the gain is the QB term).
+The operator accepted 12_EXPLORATORY/NFL_QB_SHRUNK_CHALLENGER_PREREGISTRATION_2026-10-09.md on 2026-10-10 19:13 PT. Judged n is
+~984 games (~3.6 seasons): this is a better-model clock, not a near-term verdict, and the pre-registration expects nothing versus
+the market. Every NFL week it does not log is lost. Authority: AUTHORIZATION - NFL QB CHALLENGER SHADOW.
+
+PART A - Freeze and ship (~45 min)
+  0. Read-only: the Live Terminal showed 4 open "STUB" positions with model P 0.0000 in the archived NFL book (10-09). Where do they
+     come from? Register a GG if they are real rows; do not fix them here.
+  1. Pre-registration -> ACCEPTED (operator, 2026-10-10 19:13 PT), committed to wherever the calibration engine reads
+     pre-registrations (claim an EXP number if that is the convention), before the challenger's first row. Text unchanged except
+     the status line and the acceptance date.
+  2. Freeze the challenger once: fit on 2019-2025 exactly as the study did, hash the artifact, write its metadata. Features built
+     point-in-time from the same live data path the frozen NFL runner uses; the QB term uses the projected starter (the prior
+     game's starter), knowable before kickoff, flagged as projected.
+  3. Runner: the challenger's probability for the same games and the same T1 timing as the frozen EXP-037 rows, written to its own
+     ledger tagged challenger, never altering a frozen row. NEW cron line (do not edit the existing NFL line), off :00/:30 and the
+     staggered minutes, mirrored in deploy/. Push.
+PART B - Prove it and name the next mechanism (~35 min)
+  4. Tests incl. look-ahead; PR; CI green; merge; record the deploy decision. Prove on the VPS: a dry run against this week's slate
+     writes challenger rows paired to frozen rows by game; the calibration engine lists the challenger (sealed below 984); the
+     silent-arm check covers it.
+  5. D1 manifest: nfl_pregame live models now include personnel. Run scripts/distance_to_optimum.py and paste the D1 and D3 lines.
+  6. Next mechanism from the translation map is injury reports (QB-only first), which needs point-in-time snapshots that cannot be
+     backfilled. Check whether deploy/cron.drafts.conf T-601 (NFL pre-kickoff capture) already captures them; one paragraph: what
+     it captures, what is missing, and the smallest block that would start the snapshots. Do not build it.
+Results doc: 12_EXPLORATORY/W64_1_nfl_qb_challenger_results.md (append "Live" section) or a new W65_3 results doc.
+
+END OF BLOCK 65.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 64 prompts — archived 2026-10-11 ~02:30 UTC. 64.1 DONE (#205, #209: QB-shrunk challenger beats frozen in backtest, Brier -0.0027, 6/7 seasons; PROPOSED pre-reg; D3 0->1; operator accepted 2026-10-10). 64.2 DONE (#208: R1+R2 placement policy + shadow flat stakes, both OFF; forward test pre-registered in ADR-0072; operator accepted 2026-10-10). 64.3 PARTIAL (#204, #206: survey, retrain decision, EXP-039 pre-registered; Part B -> 65.1). Verbatim:
 
 ### 64.1 — The NFL deep challenger: QB-shrunk performance (63.2 Part B, carried)
