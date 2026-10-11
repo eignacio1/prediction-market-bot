@@ -68,8 +68,19 @@ on:
       - '01_SPEC/**'
   workflow_dispatch:
 
+# 2026-10-10 (strategic window, Actions-minutes budget): Test Suite was 78% of October's minutes (1,494 of ~1,926 in
+# 10 days, 190 runs x ~7.9 min). Three cuts, none of which removes a gate:
+#  - concurrency: a newer push to the same PR/branch cancels the superseded run (PR branches get merge-main pushes).
+#  - the push-to-main run is skipped when the pushed commit is a PR merge: the pull_request run already tested the
+#    merged result, and deploy.yml's approval-path-tests job still gates every deploy. Direct pushes to main still run.
+#  - pip cache keyed on the lockfile.
+concurrency:
+  group: tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Merge pull request')
     runs-on: ubuntu-latest
 
     steps:
@@ -79,6 +90,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
 
       - name: Install dependencies
         run: |
