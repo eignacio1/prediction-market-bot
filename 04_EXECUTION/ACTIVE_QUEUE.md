@@ -151,7 +151,7 @@ rebase right before merging; each merges only its own PRs. **Only 65.2 may place
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 65.1 | NBA player points live for opening night (64.3 Part B, carried) | BREADTH B4 props 1->2, B1 37->40 | ⬜ | — |
-| 65.2 | Demo-fill forward test ON + T1 fills-only counting (GG-536) | EXECUTION E1/E2/E3 (first treatment fills; shadow-cell fills) | ⬜ | — |
+| 65.2 | Demo-fill forward test ON + T1 fills-only counting (GG-536) | EXECUTION E1/E2/E3 (first treatment fills; shadow-cell fills) | 🟥 BLOCKED | Canary: demo order writes 404 on every market (GG-560); switches OFF; Part A steps 2-3 and Part B not started |
 | 65.3 | NFL QB challenger logging live | DEPTH D1 nfl team -> team+personnel | ✅ | #211/#213 merged; cron block live on VPS (:14 T1, 09:44Z settle); D1 shows nfl_qb_challenger_v1 personnel+team; first real rows after Thu 10-15 slate. T-601 injury capture not built (needs authorization) |
 
 ### 65.1 — NBA player points live for opening night (64.3 Part B, carried)

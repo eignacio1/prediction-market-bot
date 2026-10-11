@@ -3892,3 +3892,24 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 | Cross-references | GG-255, GG-291 |
 
 </details>
+
+### GG-560 — Kalshi DEMO order writes return HTTP 404 not_found for every order (bot and canary alike) as of 2026-10-11; W65.2 cancel path untestable, forward test cannot start
+
+**Status:** OPEN · **Severity:** HIGH
+
+**Current state (2026-10-11, W65.2):** 12/12 canary submits on distinct open markets (KXMLB* first) and 762 t4-mlb `kalshi_order_failed` events (KXMLBHIT-26OCT102000CWSCLE, 00:00-02:59Z) all returned `HTTP 404 {"error":{"code":"not_found","message":"not found"}}`. Reads work; shard-3 balance is $146.22 (not a collateral problem). Same signature family as GG-203. **Next:** operator/Kalshi-side decision; re-run `scripts/w65_2_cancel_canary.py` when order writes recover. Both ADR-0072 switches stay OFF until a 1-contract canary places AND cancels.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-560 |
+| Category | Execution-path dependency — the W65.2 stop rule (cancel must be proven before ON) cannot be satisfied because order placement itself fails. |
+| Evidence | Canary run 4 (VPS HEAD cd0f4b62, 2026-10-11T03:2xZ): 12 candidates, all 404. Earlier runs 1-3 failed on market selection (fixed in PRs #212/#214/#215/#216). Audit: KXMLBHIT-26OCT1020 failed 325/283/154 per hour, opened 0 on Kalshi. |
+| Disposition | Registered; switches OFF; no order was accepted, so no cancel was attempted. |
+| Source | W65.2 Part A step 1 |
+| Resolution | Not resolved. |
+| Cross-references | GG-203, GG-536, ADR-0072 |
+
+</details>
