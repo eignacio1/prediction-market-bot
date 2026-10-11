@@ -167,7 +167,7 @@ or change orders.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging) | 🟡 Part A done | Repo public; Games Cache + Features Sync (19:06Z) succeeded, VPS cache stamp 19:07:42Z accepted by runner, contract gate passed, gitleaks clean (4 false positives). Part B (CI triggers + scan line) next. |
+| 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging) | ✅ DONE | Part A: repo public, both MLB syncs green, VPS cache stamp accepted, gitleaks clean. Part B: #229 merged (06d53e3) — Test Suite triggers restored, Actions status in governance scan. Next scheduled feed: 00:43Z games cache. |
 | 68.2 | Stakes on every shadow arm (NBA, NHL) + the forward test reports itself | EXECUTION E1 (shadow-cell fills; arms reach judged n) | 🟡 Part A merged (PR #228 aba80af, local pytest 3990 passed). GG-570/571 stay OPEN: VPS cron install unverified (ssh read denied by classifier: `ssh prediction-market-vps "cd /opt/prediction-market-bot && git log --oneline -1 && crontab -l"`), NHL order unobserved. Part B next. | — |
 | 68.3 | The math: NFL totals - venue + weather challenger | DEPTH D1 (first live model with venue/weather), D3 | ✅ | NO: no arm beats frozen, CIs include zero; no pre-reg; next = train on observed 2015-25, serve forecast |
 
