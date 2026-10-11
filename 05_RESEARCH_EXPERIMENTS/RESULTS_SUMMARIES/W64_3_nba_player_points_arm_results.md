@@ -7,5 +7,10 @@
 - **D1 manifest:** `nba_player_points_v1` entry added (personnel/team/venue); meta file absent until Part B, so the generator reports UNAVAILABLE, not a count.
 - **Measure moved:** none (no cells flipped).
 
-## Part B — NOT STARTED
+## Part B (2026-10-11) — IN PROGRESS
+### Part A of 65.1: artifact + capacity
+- Frozen artifact trained once; record in `EXP039_ADDENDUM_FROZEN_ARTIFACT_2026-10-11.md` (file sha `20d7d16a…2438`, 10 features, 0 qualitative; held-out Brier 0.1108-class vs climatology, see addendum).
+- **VPS capacity (961 MB, 1 CPU, swap 2 GB):** at sample time 489 used / 472 available = 49% headroom (earlier sample 602 / 359 = 37%). Both above the 25% line, so no resize authorization. Heavy-window and dry-run peak RSS recorded below when measured.
+
+### Remaining Part B plan
 Train/freeze artifact + sha addendum, player-game store (ESPN box scores; stats.nba.com is 403 from VPS), forecaster/runner with separate preseason ledger, new staggered cron lines mirrored in `deploy/`, registry flip, calibration/silent-arm/dashboards, tests, VPS RAM check, deploy proof, generator B1/B4.

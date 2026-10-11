@@ -1,0 +1,8 @@
+# BEGIN EXP-039 NBA PLAYER POINTS PRESEASON
+# W65.1 -- NBA player-points PRESEASON pipeline smoke test (evaluate-and-log). Own marked block; edits no other crontab line.
+# AUTHORIZATION: standing shadow-cron authorization (OPERATOR, 2026-10-02 15:22 PT; NEW lines only).
+# Writes ONLY exp_output/PREGAME_SHADOW_PRESEASON/ (rows labelled season_phase=preseason, excluded_from_judged_n=true).
+# Never reads or writes the judged exp_output/PREGAME_SHADOW ledgers. No order, position, fill, stake or kelly.
+# Remove this block after opening night (2026-10-20). Minute :37 is unused by every other job (GG-477 stagger).
+37 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_player_points_shadow.py --preseason >> logs/nba_player_points_shadow_preseason.log 2>&1
+# END EXP-039 NBA PLAYER POINTS PRESEASON
