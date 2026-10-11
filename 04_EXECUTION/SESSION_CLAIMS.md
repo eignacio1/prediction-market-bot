@@ -831,3 +831,4 @@
 | 2026-10-09T18:20:16Z | T-780 | CLOSED — merge confirmed, HEAD (612bba3) is ancestor of origin/main — W64.2: placement rule + shadow stake merged #208 (414f05d), deployed, both switches OFF; pre-reg in ADR-0072 PROPOSED |
 | 2026-10-11T02:25:34Z | T-790..T-792, GG-560..GG-561 | W65.2 MEDIUM - demo-fill forward test ON + T1 fills-only counting (GG-536). PURPOSE: EXECUTION E1/E2/E3 (first treatment-arm and shadow-cell fills; forward-test clock starts) |
 | 2026-10-11T02:25:43Z | T-783..T-785, GG-557..GG-558 | W65.1 MEDIUM - NBA player points live for opening night. PURPOSE: BREADTH B4 props 1->2, B1 37->40 |
+| 2026-10-11T02:26:03Z | T-793..T-795, GG-562..GG-563 | W65.3 MEDIUM - NFL QB challenger logging live. PURPOSE: DEPTH D1 nfl_pregame team->team+personnel (D3 stays 1; challenger ready->live) |
