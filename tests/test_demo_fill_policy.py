@@ -27,6 +27,7 @@ def _clean_env(monkeypatch, tmp_path):
               sfs.SWITCH_ENV):
         monkeypatch.delenv(k, raising=False)
     monkeypatch.setenv(pol.LOG_ENV, str(tmp_path / "pol.jsonl"))
+    pol._LISTING_CACHE.clear()
 
 
 def _events(tmp_path):
@@ -43,6 +44,7 @@ def _client(bid=0.40, ask=0.44, ok=True):
                                               actual_cost_usd=0.8, status="resting",
                                               error="" if ok else "boom")
     c.cancel_order.return_value = (True, {})
+    c.is_listed_on_demo.return_value = True
     return c
 
 
@@ -272,3 +274,84 @@ def test_repo_mirrored_config_carries_registered_parameters():
     assert cfg == {"DEMO_FILL_PLACEMENT_RULE": "book_anchor_cancel", "SHADOW_FLAT_STAKE": "on",
                    "DEMO_FILL_CANCEL_AFTER_S": "60", "DEMO_FILL_MAX_MID_GAP": "0.05",
                    "DEMO_FILL_ASSIGN_SHARE": "0.5", "DEMO_FILL_SEED": "w64-2"}
+
+
+# ---- W67.2 / GG-564: skip tickers the demo venue does not list --------------------------
+def test_unlisted_ticker_is_logged_skip_no_order_even_for_control_arm(tmp_path, monkeypatch):
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    for share in ("1", "0"):                       # treatment arm AND control arm: identical
+        monkeypatch.setenv(pol.SHARE_ENV, share)
+        pol._LISTING_CACHE.clear()
+        c = _client(); c.is_listed_on_demo.return_value = False
+        ok, pos = _open(tmp_path, c)
+        assert ok and pos == {}
+        c.submit_order.assert_not_called()
+        c.get_market_book.assert_not_called()
+    skips = [e for e in _events(tmp_path) if e.get("reason") == "not_listed_on_demo"]
+    assert len(skips) == 2 and all(e["ticker"] == "KXMLBHIT-TEST" for e in skips)
+
+
+def test_unknown_listing_fails_closed(tmp_path, monkeypatch):
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    c = _client(); c.is_listed_on_demo.return_value = None
+    ok, pos = _open(tmp_path, c)
+    assert pos == {}
+    c.submit_order.assert_not_called()
+    assert any(e.get("reason") == "demo_listing_unknown" for e in _events(tmp_path))
+    assert "KXMLBHIT-TEST" not in pol._LISTING_CACHE        # unknown is never cached
+    c.is_listed_on_demo.side_effect = RuntimeError("x")
+    assert pol.listing_skip_reason(c, "T2") == "demo_listing_unknown"
+
+
+def test_listing_cached_within_ttl_and_refreshed_after(monkeypatch):
+    c = _client()
+    assert pol.listing_skip_reason(c, "T1") is None
+    assert pol.listing_skip_reason(c, "T1") is None
+    assert c.is_listed_on_demo.call_count == 1
+    monkeypatch.setenv(pol.LISTING_TTL_ENV, "0")
+    assert pol.listing_skip_reason(c, "T1") is None
+    assert c.is_listed_on_demo.call_count == 2
+
+
+def test_listing_check_inert_when_switch_off(tmp_path):
+    c = _client(); c.is_listed_on_demo.return_value = False
+    ok, pos = _open(tmp_path, c)                    # forward test OFF: today's behaviour, byte-identical
+    assert pos and c.submit_order.called
+    c.is_listed_on_demo.assert_not_called()
+
+
+def test_shadow_unlisted_ticker_skips_before_assignment(monkeypatch, tmp_path):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    c = _client(); c.is_listed_on_demo.return_value = False
+    assert sfs.maybe_place(_row(), c, lambda e: 1.0) is None
+    c.submit_order.assert_not_called(); c.get_market_book.assert_not_called()
+    ev = _events(tmp_path)
+    assert [e["reason"] for e in ev] == ["not_listed_on_demo"]      # no control_arm record: pre-assignment
+
+
+def test_client_is_listed_on_demo_maps_status(monkeypatch):
+    from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
+    k = KalshiMarketClient.__new__(KalshiMarketClient)
+    for resp, want in [((True, {}), True), ((False, {"error": "HTTP 404"}), False),
+                       ((False, {"error": "HTTP 500"}), None), ((False, {"error": "Connection failed"}), None)]:
+        monkeypatch.setattr(k, "_get", lambda *a, _r=resp, **kw: _r, raising=False)
+        assert k.is_listed_on_demo("X") is want
+
+
+def test_shadow_runner_cron_lines_load_demo_config_except_preseason_and_settle():
+    """W67.2: every T1/T2/T3 shadow runner line loads deploy/demo_fill.env (so SHADOW_FLAT_STAKE is
+    in effect); the NBA lines (EXP-038 credential-free guard) and the settle jobs never do."""
+    import re
+    run = re.compile(r"scripts/run_(pregame|mlb_pregame)_shadow\.py (--refresh )?--bands T[123]\b")
+    n = 0
+    for f in ("cron.conf", "cron_exp037_pregame_shadow.conf", "cron.nba_shadow"):
+        for line in (Path(__file__).parent.parent / "deploy" / f).read_text().splitlines():
+            if line.lstrip().startswith("#"):
+                continue
+            if run.search(line):
+                n += 1
+                assert "deploy/demo_fill.env" in line and ".env | xargs" in line, line
+            elif "--preseason" in line or "_settle.py" in line or "run_nba_pregame_shadow" in line:
+                assert "demo_fill.env" not in line, line
+    assert n == 6 + 6      # NFL+MLB only; NBA stays credential-free (test_nba_shadow_safety), see GG
