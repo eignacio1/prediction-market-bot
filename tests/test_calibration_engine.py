@@ -109,7 +109,7 @@ def test_run_is_read_only_and_nhl_joins_ledger(tmp_path):
         json.dumps({"run_id": "r", "market_ticker": f"M{i}", "outcome": 1}) + "\n" for i in range(3)))
     before = {p: p.read_bytes() for p in d.rglob("*.jsonl")}
     res = ce.run(tmp_path, NOW)
-    c = res["cells"][0]
+    c = next(x for x in res["cells"] if x["sport"] == "NHL")
     assert c["settled_games"] == 3 and c["status"] == "SEALED" and "scores" not in c
     assert before == {p: p.read_bytes() for p in d.rglob("*.jsonl")}
 
