@@ -26,6 +26,7 @@ from prediction_market_bot.pregame_shadow.nba_forecaster import NBAScheduleIndex
 from prediction_market_bot.pregame_shadow.nba_player_points_forecaster import (  # noqa: E402
     MARKET_TYPE, SERIES, NBAPlayerPointsForecaster, kickoff_for_event, parse_market_ticker)
 from prediction_market_bot.pregame_shadow.nba_player_points_model import NBAPlayerPointsModel  # noqa: E402
+from prediction_market_bot.c5_execution.shadow_flat_stake import make_on_row  # noqa: E402
 from prediction_market_bot.pregame_shadow.runner import run_once  # noqa: E402
 
 CELLS = [(MARKET_TYPE, SERIES)]
@@ -100,7 +101,8 @@ def main(argv=None) -> int:
                    kickoff_for=lambda ev: kickoff_for_event(index, ev), ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(), raw_filter=raw_filter,
                    only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None),
-                   ledger_extra=extra)   # no on_row: this arm has no demo-order path at all (ADR-0072 not extended)
+                   on_row=None if (a.preseason or a.dry_run) else make_on_row(ad),   # preseason/dry-run rows never stake
+                   ledger_extra=extra)
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", dict(res["written"]))
     print("skipped:", dict(res["skipped"]))

@@ -3,9 +3,9 @@
 # read-only Kalshi/NHL reads <=1 req/s, appends to data/shadow/nhl/ only. No .env, no order path
 # (tests/test_nhl_shadow_safety.py). Times UTC. Uses $PYTHON/$PROJ/$PYTHONPATH from the crontab header.
 0 9 * * *    cd $PROJ && $PYTHON scripts/nhl_backfill.py --seasons 2026 --refresh-schedule >> logs/nhl_shadow_cron.log 2>&1
-0 14 * * *   cd $PROJ && $PYTHON scripts/nhl_shadow_eval.py --band T1 --run-id T1-$(date -u +\%Y\%m\%dT\%H) >> logs/nhl_shadow_cron.log 2>&1
-4,34 15-23 * * * cd $PROJ && $PYTHON scripts/nhl_shadow_eval.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
-4,34 0-1 * * *   cd $PROJ && $PYTHON scripts/nhl_shadow_eval.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
-6,16,26,36,46,56 17-23 * * * cd $PROJ && $PYTHON scripts/nhl_shadow_eval.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
-6,16,26,36,46,56 0-2 * * *   cd $PROJ && $PYTHON scripts/nhl_shadow_eval.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+0 14 * * *   cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T1 --run-id T1-$(date -u +\%Y\%m\%dT\%H) >> logs/nhl_shadow_cron.log 2>&1
+4,34 15-23 * * * cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+4,34 0-1 * * *   cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+6,16,26,36,46,56 17-23 * * * cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
+6,16,26,36,46,56 0-2 * * *   cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\%Y\%m\%dT\%H\%M) >> logs/nhl_shadow_cron.log 2>&1
 15 * * * *   cd $PROJ && $PYTHON scripts/nhl_shadow_settle.py >> logs/nhl_shadow_cron.log 2>&1

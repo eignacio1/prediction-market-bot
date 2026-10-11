@@ -13,7 +13,8 @@ from prediction_market_bot.pregame_shadow.nba_player_points_settlement import jo
 ROOT = Path(__file__).resolve().parent.parent
 FORBIDDEN = ("submit_order", "open_position", "exit_position", "settle_position", "place_order", "PaperTrader",
              "kelly_fraction", "evaluate_forecast", "c4_risk_engine", "paper_trader", "venue_router",
-             "get_band_config", "make_on_row")
+             "get_band_config")
+STAKING_RUNNER = "run_nba_player_points_shadow.py"   # W68.2: the only script allowed the shadow-stake hook
 SCRIPTS = ("run_nba_player_points_shadow.py", "run_nba_player_points_shadow_settle.py",
            "nba_player_box_backfill.py", "train_nba_player_points.py")
 SRC = ("pregame_shadow/nba_player_points_forecaster.py", "pregame_shadow/nba_player_points_model.py",
@@ -32,6 +33,8 @@ def test_no_order_or_sizing_path():
         txt = f.read_text()
         for tok in FORBIDDEN:
             assert tok not in txt, f"{f.name} mentions {tok}"
+        if f.name != STAKING_RUNNER:
+            assert "make_on_row" not in txt, f"{f.name} mentions make_on_row"
 
 
 def test_cron_blocks_marked_and_scripts_only_player_points():
@@ -41,7 +44,11 @@ def test_cron_blocks_marked_and_scripts_only_player_points():
     assert PRE.rstrip().splitlines()[-1] == "# END EXP-039 NBA PLAYER POINTS PRESEASON"
     for j in _jobs(MAIN) + _jobs(PRE):
         assert re.search(r"scripts/(run_nba_player_points_shadow(_settle)?|nba_player_box_backfill)\.py", j), j
-        assert "kelly" not in j and ".env" not in j
+        assert "kelly" not in j
+        if re.search(r"run_nba_player_points_shadow\.py --bands T[123]\b", j):   # W68.2 demo-only staking lines
+            assert "deploy/demo_fill.env" in j and "BOT_ENV=paper" in j, j
+        else:
+            assert ".env" not in j, j
 
 
 def test_cron_minutes_off_00_30_and_no_duplicate_schedule():
