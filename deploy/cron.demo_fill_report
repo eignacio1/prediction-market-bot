@@ -1,0 +1,7 @@
+# BEGIN W68.2 DEMO-FILL-REPORT
+# ADR-0072 forward-test daily report (W68.2 Part B). NEW line; edits no existing line. 11:25 UTC, after the 11:00 T1 run.
+# Read-only against the Kalshi DEMO API (order fills, market results). Writes exp_output/FORWARD_TEST/ only. On a tripped
+# ADR-0072 turn-off condition it comments out the two switch lines in deploy/demo_fill.env and logs a turn_off event.
+# No order, position, fill, stake or kelly.
+25 11 * * * cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/demo_fill_forward_report.py >> logs/demo_fill_forward_report.log 2>&1
+# END W68.2 DEMO-FILL-REPORT

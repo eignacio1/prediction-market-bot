@@ -676,6 +676,23 @@ echo ""
 echo "LEDGER FIELD INTEGRITY (T-432 -- alarm-only, does not affect this hook's exit code):"
 python3 "$PROJECT/scripts/assert_ledger_invariants.py" 2>&1 | tail -20 || true
 
+# --- ADR-0072 forward test (W68.2 Part B): one line from the daily report JSON. Alarm-only; never gates this hook. ---
+echo ""
+python3 - "$PROJECT/exp_output/FORWARD_TEST/demo_fill_forward_report.json" <<'PYEOF' 2>&1 || true
+import json, sys
+try:
+    r = json.load(open(sys.argv[1]))
+except Exception:
+    print("FORWARD-TEST (ADR-0072): no report yet (scripts/demo_fill_forward_report.py, cron 11:25 UTC)")
+    raise SystemExit
+sys.path.insert(0, "scripts")
+try:
+    from demo_fill_forward_report import summary_line
+    print(summary_line(r))
+except Exception as e:
+    print(f"FORWARD-TEST (ADR-0072): report unreadable ({type(e).__name__})")
+PYEOF
+
 # --- Order-write parity check (GG-203/T-547 D5) ---
 # GG-203 sat undetected for 10 days (2026-08-15 through 2026-08-24): every
 # risk_eval_approved event was followed by a kalshi_order_failed event, a
