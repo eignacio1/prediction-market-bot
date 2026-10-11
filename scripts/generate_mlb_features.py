@@ -243,6 +243,43 @@ def _load_or_fetch_batter_logs(
     return df
 
 
+def _postseason_player_ids(season: int, client: MLBIngestionClient) -> set[int] | None:
+    """IDs of every player listed in a postseason game's boxscore (W66.1, Actions minutes at $0).
+
+    Fetching a postseason gameLog for every regular-season position player (~650 requests) returns
+    rows only for players who actually appeared in a postseason game. The boxscore roster of each
+    postseason game is a SUPERSET of those players (it includes bench players who never appeared,
+    whose gameLog would be empty), so restricting the fetch to it yields identical rows.
+    Returns None on any doubt (schedule failure, boxscore failure, no games) so the caller falls
+    back to the full player list -- the pre-W66.1 behaviour.
+    """
+    start, end = _postseason_date_range(season)
+    sched = client._get(
+        f"{MLB_BASE_URL}/api/v1/schedule",
+        params={"sportId": 1, "startDate": start, "endDate": end, "gameType": POSTSEASON_GAME_TYPES},
+    )
+    if sched is None:
+        return None
+    game_pks = [
+        g["gamePk"]
+        for block in sched.get("dates", [])
+        for g in block.get("games", [])
+        if g.get("gamePk") is not None
+    ]
+    if not game_pks:
+        return None
+    ids: set[int] = set()
+    for pk in game_pks:
+        box = client._get(f"{MLB_BASE_URL}/api/v1/game/{pk}/boxscore")
+        if box is None:
+            return None
+        for side in ("home", "away"):
+            for key in (box.get("teams", {}).get(side, {}).get("players") or {}):
+                if key.startswith("ID") and key[2:].isdigit():
+                    ids.add(int(key[2:]))
+    return ids
+
+
 def _load_or_fetch_batter_logs_post(
     season: int,
     players: list[dict],
@@ -254,9 +291,19 @@ def _load_or_fetch_batter_logs_post(
     if cache.exists():
         print(f"  [CACHE] Postseason batter logs {season}: hit")
         return pd.read_parquet(cache)
-    print(f"  [FETCH] Postseason batter logs {season} ({len(players)} players)...")
+    post_ids = _postseason_player_ids(season, client)
+    if post_ids is not None:
+        # Same order as the full list, so the concatenated frame is row-for-row what it was before.
+        fetch_players = [p for p in players if p["player_id"] in post_ids]
+        print(
+            f"  [FETCH] Postseason batter logs {season} "
+            f"({len(fetch_players)} of {len(players)} players appear in a postseason game)..."
+        )
+    else:
+        fetch_players = players
+        print(f"  [FETCH] Postseason batter logs {season} ({len(players)} players; boxscore filter unavailable)...")
     ok, df = client.fetch_batter_game_logs_bulk(
-        player_ids=[p["player_id"] for p in players],
+        player_ids=[p["player_id"] for p in fetch_players],
         season=str(season),
         season_type=POSTSEASON_GAME_TYPES,
         session_id=session_id,
