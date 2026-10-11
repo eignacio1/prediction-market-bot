@@ -48,6 +48,7 @@ class Policy:
     per_game_mean: bool = False                   # EXP-036: per-game score = mean over that game's strikes
     rules: str = "exp037"                         # decision-rule family: "exp037" (NFL/MLB) | "exp036" (NHL) | "exp038" (NBA)
     undefined: tuple[str, ...] = ()               # rules the pre-registration leaves open; the engine does NOT invent them
+    unit: str = "game"                            # judged-n unit: "game" | "player_game" (EXP-039: n counts player-games; the bootstrap cluster stays the game)
 
 
 PREREG: dict[str, Policy] = {
@@ -81,6 +82,17 @@ PREREG: dict[str, Policy] = {
                              "before 150): a cell below 150 stays sealed",
                              "ordering key for 'earliest N games': EXP-038 sec. 3 inherits EXP-037, whose addendum fixes "
                              "(start_time_utc, game_key); not restated in EXP-038 itself")),
+    # EXP-039 (W65.1) NBA player points. Differences from NBA game markets, all from the text: judged n counts
+    # PLAYER-GAMES (looks 300 / 800), bootstrap seed 20261009 (B=2000), cluster = the game; decision rules as EXP-038 sec. 5.
+    "NBA_PTS": Policy("NBA", (300, 800), "sealed_until_look",
+                      "EXP-039 NBA player-points pre-registration (2026-10-09): first look judged n=300 settled player-games "
+                      "per cell, second look 800; preseason excluded from judged n; seed 20261009; cluster = the game",
+                      boot_seed=20261009, rules="exp038", unit="player_game",
+                      undefined=("second look 'or 2027-01-31, whichever first': the date trigger names no rule for which "
+                                 "player-games are scored or at what n, so only the n=800 second look is released (as GG-529)",
+                                 "'judged on whatever n they reach' (T1, sec. 4) conflicts with 'no scoring before a cell "
+                                 "reaches its judged n': a cell below 300 stays sealed",
+                                 "ordering key for 'earliest N player-games': not stated; (start_time_utc, game_key, player_key) used")),
 }
 # Cells with no pre-registration fall through to counts only.
 NO_PREREG = Policy("-", (), "counts_only", "no pre-registration: counts only")
@@ -160,14 +172,20 @@ def _score_rows(policy: Policy, rows: list[dict]) -> dict:
     return out
 
 
-def _games_in_order(rows: list[dict]) -> list[str]:
+def _unit(policy: Policy, r: dict) -> str:
+    """The judged-n unit of a row: the game, or (EXP-039) the player-game. The bootstrap cluster is always game_key."""
+    return f"{r['game_key']}|{r.get('player_key', '')}" if policy.unit == "player_game" else r["game_key"]
+
+
+def _games_in_order(rows: list[dict], policy: Policy | None = None) -> list[str]:
     """Deterministic order of settled games: (scheduled start, game_key). Falls back to the game's first
     ledger timestamp only for a game with no start time. Ties break on game_key, never on arrival order."""
     first: dict[str, str] = {}
     for r in rows:
         k = str(r.get("start_time_utc") or r["ts_utc"])
-        if r["game_key"] not in first or k < first[r["game_key"]]:
-            first[r["game_key"]] = k
+        u = _unit(policy, r) if policy else r["game_key"]
+        if u not in first or k < first[u]:
+            first[u] = k
     return sorted(first, key=lambda g: (first[g], g))
 
 
@@ -229,7 +247,7 @@ def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open:
     named in it, forever: later or late-settling games never change a released look."""
     scored = first_row_per_unit(settled_rows)
     elig = [r for r in scored if eligible(policy, r)]
-    games = _games_in_order(elig)
+    games = _games_in_order(elig, policy)
     n_judged = len(games)
     status = cell_status(policy, band, n_judged, gg_open)
     out: dict[str, Any] = {"status": status, "status_text": status_text(policy, status, n_judged),
@@ -246,7 +264,7 @@ def compute_scores(policy: Policy, band: str, settled_rows: list[dict], gg_open:
     else:
         use_games = games[:look]
     use = set(use_games)
-    out["scores"] = _score_rows(policy, [r for r in elig if r["game_key"] in use])
+    out["scores"] = _score_rows(policy, [r for r in elig if _unit(policy, r) in use])
     out["scores_over_games"] = len(use)
     if status == STATUS_PRELIM:
         out["scores_label"] = f"PRELIMINARY (n={n_judged} of {policy.looks[0]})"
@@ -324,7 +342,7 @@ def project_first_look(policy: Policy, settled_rows: list[dict], now: datetime, 
     if not policy.looks:
         return {"date": None, "note": "no pre-registered look"}
     elig = [r for r in first_row_per_unit(settled_rows) if eligible(policy, r)]
-    n, target = len({r["game_key"] for r in elig}), policy.looks[0]
+    n, target = len({_unit(policy, r) for r in elig}), policy.looks[0]
     today = now.strftime("%Y-%m-%d")
     if n >= target:
         return {"date": None, "note": "first look reached", "method": "schedule"}
@@ -386,11 +404,14 @@ def gg_is_open(repo: Path, gg: str) -> bool:
         return True
 
 
-# EXP-038 sec. 1: the 12 NBA cells are listed from day one so counts show before the first regular-season row.
+PTS_CELLS = tuple(f"NBA_NBA_PLAYER_POINTS_{b}" for b in ("T1", "T2", "T3"))   # EXP-039: own policy, same NBA ledger dir
+
+# EXP-038 sec. 1: the 12 NBA game-market cells (+ the 3 EXP-039 player-points cells) are listed from day one so counts show before the first regular-season row.
 # Only the judged dir is read; PREGAME_SHADOW_PRESEASON is never discovered.
 EXPECTED_CELLS: dict[str, tuple[str, ...]] = {
     "NFLQB": ("NFLQB_NFL_MONEYLINE_T1",),     # listed (n=0) from the day the cron is installed, before its first row
-    "NBA": tuple(f"NBA_NBA_{mt}_{b}" for mt in ("MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL") for b in ("T1", "T2", "T3")),
+    "NBA": tuple(f"NBA_NBA_{mt}_{b}" for mt in ("MONEYLINE", "SPREAD", "GAME_TOTAL", "TEAM_TOTAL") for b in ("T1", "T2", "T3"))
+           + PTS_CELLS,
 }
 
 
@@ -412,7 +433,8 @@ def discover_cells(repo: Path) -> list[dict]:
             if sport != "NHL":
                 parts = parts[1:]                          # NFL_NFL_X / MLB_MLB_X -> drop doubled sport
             cells.append({"cell": stem, "sport": sport, "band": parts[-1], "market_type": "_".join(parts[1:-1]),
-                          "ledger": p, "settled": settled_dir / p.name})
+                          "ledger": p, "settled": settled_dir / p.name,
+                          "policy": "NBA_PTS" if stem in PTS_CELLS else sport})
     return cells
 
 
@@ -464,7 +486,7 @@ def persist_release(repo: Path, cell: dict, release: dict, now: datetime) -> Pat
 
 
 def evaluate_cell(cell: dict, repo: Path, now: datetime, gg_open: dict[str, bool], persist: bool = False) -> dict:
-    policy = policy_for(cell["sport"])
+    policy = policy_for(cell.get("policy", cell["sport"]))
     ledger_rows = _jsonl(cell["ledger"])
     settled = load_settled(cell)
     n_games_settled = len({r["game_key"] for r in first_row_per_unit(settled) if settled_schema.counts_toward_judged_n(r)})
