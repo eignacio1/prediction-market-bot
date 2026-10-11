@@ -52,9 +52,11 @@ def main(out_path: str) -> int:
         mk = data.get("markets", [])
         seen += len(mk)
         for m in mk:
+            if m.get("ticker", "").startswith("KXMV"):  # multivariate combos: not orderable like the bot's markets
+                continue
             okb, book = c.get_market_book(m.get("ticker", ""))
-            # a 1c YES bid cannot fill when the best ask is >= 5c; a live bid is not required
-            if okb and book["yes_ask"] >= 0.05:
+            # a 1c YES bid cannot fill when the best ask is >= 5c; a live two-sided book is required so the market is genuinely tradable
+            if okb and book["yes_bid"] > 0 and book["yes_ask"] >= 0.05:
                 pick = (m["ticker"], book)
                 break
         cursor = data.get("cursor", "")
