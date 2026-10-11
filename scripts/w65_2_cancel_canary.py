@@ -38,7 +38,7 @@ def main(out_path: str) -> int:
     def rec(step: str, ok, data) -> None:
         log.append({"ts": datetime.now(timezone.utc).isoformat(), "step": step, "ok": ok, "data": data})
 
-    pick = None
+    cands: list[tuple[str, dict]] = []
     cursor = ""
     seen = 0
     for _page in range(10):
@@ -52,31 +52,34 @@ def main(out_path: str) -> int:
         mk = data.get("markets", [])
         seen += len(mk)
         for m in mk:
-            if m.get("ticker", "").startswith("KXMV"):  # multivariate combos: not orderable like the bot's markets
-                continue
-            okb, book = c.get_market_book(m.get("ticker", ""))
-            # a 1c YES bid cannot fill when the best ask is >= 5c; a live two-sided book is required so the market is genuinely tradable
-            if okb and book["yes_bid"] > 0 and book["yes_ask"] >= 0.05:
-                pick = (m["ticker"], book)
+            if len(cands) >= 12:
                 break
+            okb, book = c.get_market_book(m.get("ticker", ""))
+            # a 1c YES bid cannot fill when the best ask is >= 5c; a live two-sided book is required
+            if okb and book["yes_bid"] > 0 and book["yes_ask"] >= 0.05:
+                cands.append((m["ticker"], book))
         cursor = data.get("cursor", "")
-        if pick or not cursor:
+        if len(cands) >= 12 or not cursor:
             break
-    rec("list_markets", True, {"seen": seen})
-    if not pick:
+    rec("list_markets", True, {"seen": seen, "candidates": len(cands)})
+    if not cands:
         rec("pick_market", False, "no liquid open market found")
         json.dump(log, open(out_path, "w"), indent=1)
         return 3
-    ticker, book = pick
-    rec("pick_market", True, {"ticker": ticker, **book})
-
-    # YES bid at 1c: far below best bid >= 10c, cannot cross or fill. size_usd=0.01 -> 1 contract.
-    order = c.submit_order(ticker=ticker, side="yes", size_usd=0.01, mid_price=0.01,
-                           client_order_id=f"w65-2-canary-{uuid.uuid4().hex[:12]}")
-    rec("submit_order", order.ok, {"order_id": order.order_id, "contracts": order.contracts,
-                                   "yes_price_cents": order.yes_price_cents, "status": order.status,
-                                   "error": order.error})
-    if not order.ok:
+    # prefer MLB (the family the bot has placed demo orders on); try candidates until one accepts the order
+    cands.sort(key=lambda t: not t[0].startswith("KXMLB"))
+    order = None
+    for ticker, book in cands:
+        rec("pick_market", True, {"ticker": ticker, **book})
+        # YES bid at 1c: far below best bid, cannot cross or fill. size_usd=0.01 -> 1 contract.
+        order = c.submit_order(ticker=ticker, side="yes", size_usd=0.01, mid_price=0.01,
+                               client_order_id=f"w65-2-canary-{uuid.uuid4().hex[:12]}")
+        rec("submit_order", order.ok, {"order_id": order.order_id, "contracts": order.contracts,
+                                       "yes_price_cents": order.yes_price_cents, "status": order.status,
+                                       "error": order.error})
+        if order.ok:
+            break
+    if not order or not order.ok:
         json.dump(log, open(out_path, "w"), indent=1)
         return 4
     okg, g1 = c._get(f"/portfolio/orders/{order.order_id}", authenticated=True)
