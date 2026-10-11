@@ -47,6 +47,9 @@ SPECS = {
                           "started in 12h had >=2 T1 runs and a T3 pass, so zero rows in 12h is a dead arm"),
     "nfl_shadow": ArmSpec("nfl_shadow", "NFL shadow", 12, 1,
                           "same T1 6h / T2 hourly / T3 10-min cron shape as the MLB shadow"),
+    "nfl_qb_challenger": ArmSpec("nfl_qb_challenger", "NFL QB challenger shadow", 12, 1,
+                                 "W65.3: T1 6h cron (staggered minute) on the same hours as the frozen NFL T1; "
+                                 "same KXNFLGAME games, so it must write whenever the frozen NFL arm does"),
     "nhl_shadow": ArmSpec("nhl_shadow", "NHL shadow", 12, 1,
                           "T1 daily 14:00Z, T2 every 30 min 15-01Z, T3 every 10 min 17-02Z: evening starts get "
                           "rows within the hour; 12h keeps a matinee start from false-alarming before T1 at 14Z"),
@@ -250,6 +253,8 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
     return [
         arm("mlb_shadow", mlb_starts_fn, lambda: last_ts_in_files(sorted(led.glob("MLB_*.jsonl")), until=now)),
         arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(sorted(led.glob("NFL_*.jsonl")), until=now)),
+        arm("nfl_qb_challenger", lambda: _nfl_starts(repo),
+            lambda: last_ts_in_files(sorted((repo / "exp_output" / "PREGAME_SHADOW_NFLQB").glob("NFLQB_*.jsonl")), until=now)),
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
             lambda: last_ts_in_files(sorted(p for p in (repo / "data" / "shadow" / "nhl").glob("NHL_*.jsonl")), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(sorted(pre.glob("NBA_*.jsonl")), until=now)),

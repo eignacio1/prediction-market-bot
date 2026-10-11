@@ -1,0 +1,512 @@
+<style>
+.cellbox.shd{background:var(--s1)}
+.dtab td.nowc{font-weight:600; color:var(--ink)}
+.gg td.k{white-space:nowrap}
+.pill-p{display:inline-block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; padding:1px 7px; border-radius:999px; border:1px solid var(--hair-2); color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="tt" id="tt"></div>
+
+<div class="shell">
+<!-- ============ RAIL ============ -->
+<nav class="rail">
+  <div class="brand">
+    <div class="mark"><span class="dot"></span><h1>Prediction Market Bot</h1></div>
+    <div class="sub">Visual Dashboard · Kalshi · MLB / NFL / NHL / NBA<br><span class="mono" style="font-size:10.5px">origin/main __SHA__ · __DATE__</span></div>
+  </div>
+
+  <div class="navgroup">
+    <div class="lbl">Position</div>
+    <a class="nv" href="#state"><span class="ic">◉</span>State of the system</a>
+    <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">13</span></a>
+    <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
+    <a class="nv" href="#evidence"><span class="ic">▤</span>Execution ledger</a>
+
+    <div class="lbl">Structure</div>
+    <a class="nv" href="#matrix"><span class="ic">▦</span>Cell matrix<span class="ct">104</span></a>
+    <a class="nv" href="#arms"><span class="ic">⏱</span>Arms &amp; clocks<span class="ct" id="nvArms"></span></a>
+    <a class="nv" href="#doctrine"><span class="ic">⟊</span>Band doctrine · C5</a>
+    <a class="nv" href="#pipeline"><span class="ic">⇥</span>Pipeline C1–C8</a>
+
+    <div class="lbl">Motion</div>
+    <a class="nv" href="#waves"><span class="ic">≣</span>Wave history<span class="ct" id="nvWaves"></span></a>
+    <a class="nv" href="#governance"><span class="ic">⚖</span>Governance<span class="ct">130</span></a>
+    <a class="nv" href="#assets"><span class="ic">⛁</span>Data assets</a>
+
+    <div class="lbl">Action</div>
+    <a class="nv" href="#desk"><span class="ic">✦</span>Your desk<span class="ct" id="nvDesk"></span></a>
+    <a class="nv" href="#rules"><span class="ic">⛒</span>Standing rules</a>
+  </div>
+</nav>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <div class="topbar">
+    <span class="crumb">Prediction Markets <b>/</b> Visual Dashboard</span>
+    <span class="chip info"><i></i>Wave 64 closed · 65 in flight</span>
+    <span class="spacer"></span>
+    <button class="btn" id="themeBtn">◐ Theme</button>
+  </div>
+
+  <div class="wrap">
+
+<!-- ============================================================ STATE -->
+<section id="state">
+  <div class="hero">
+    <div class="eyebrow">State of the system · 2026-10-10</div>
+    <h2>The board is up. The fills are broken. The first verdict is three weeks out.</h2>
+    <p>Since Wave 42 the project stopped polishing one cell and built the board: <strong>37 of 104 cells</strong>
+    now log pre-registered shadow forecasts across MLB, NFL and NHL, and NBA joins on opening night (10-20).
+    Execution was measured for the first time and it is the weakest link: on both demo books,
+    <strong>orders that fill lose</strong> — they rest at the model's price and fill when the market moves against
+    them. The fix (cancel after 60 s, price off the live book) was accepted 10-10 and its forward test switches on
+    in Wave 65. Depth got its first challenger — an NFL model that knows who the quarterback is — but it is a better
+    model, not an edge: on 2025's priced games the market still beat it. <strong>No cell has a verdict yet.</strong>
+    The first is NFL, ~2 Nov, and its own pre-registration expects "keep accruing".</p>
+    <div class="meta">
+      <span class="chip good"><i></i>37 / 104 cells logging</span>
+      <span class="chip crit"><i></i>Fills win 24% vs 49% for non-fills</span>
+      <span class="chip info"><i></i>ADR-0072 fill fix accepted 10-10</span>
+      <span class="chip warn"><i></i>0 cells at a scored look</span>
+      <span class="chip serious"><i></i>Props breadth = 1 family, ends with the World Series</span>
+      <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="tile" style="--accent:var(--s1)">
+      <div class="k">Breadth · cells logging</div>
+      <div class="v">37<small> / 104</small></div>
+      <div class="n">12 of 18 market families, 4 of 5 bands (no T5). +12 in Wave 63 (MLB game markets); 0 in Wave 64.</div>
+    </div>
+    <div class="tile" style="--accent:var(--warn)">
+      <div class="k">Depth · deepest pre-game model</div>
+      <div class="v">18<small> features</small></div>
+      <div class="n">MLB player hits, <b>0 qualitative</b>. No live model uses matchup, weather or qualitative inputs. 1 challenger ready (NFL QB).</div>
+    </div>
+    <div class="tile" style="--accent:var(--crit)">
+      <div class="k">Execution · orders filled</div>
+      <div class="v">251<small> / 4,722</small></div>
+      <div class="n">T4 3.9% · T1 17.5%. Fills lose −$0.26 (T4) and −$1.50 (T1) a bet. Adverse selection, measured (63.3).</div>
+    </div>
+    <div class="tile" style="--accent:var(--ink-3)">
+      <div class="k">Proof · cells at a scored look</div>
+      <div class="v">0<small> / 45</small></div>
+      <div class="n">Engine sealed below each cell's judged n. Next look: NFL 12 cells, ~2026-11-02, modal "keep accruing" (~91%).</div>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card">
+      <h3>What is proven</h3>
+      <div class="cap">Claims that survived a pre-registered test or a direct measurement.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li>The MLB pre-game tree beats <b>climatology</b> by ΔBrier +0.0052 over 1,414 games (EXP-028).</li>
+        <li>The NFL <b>QB-shrunk challenger beats the frozen model</b> in backtest: +0.0027, 1,852 games, 6 of 7 seasons (64.1).</li>
+        <li><b>Fills are adversely selected</b> on both demo books: settle − price −0.25 (T4) / −0.39 (T1) on fills vs +0.10 / +0.07 on non-fills.</li>
+        <li>Kalshi settlement books every resolved bet: <b>1,229 / 1,229</b> agree with the cross-check (59.2).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What is disproven</h3>
+      <div class="cap">Claims a pre-registered test or measurement killed.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li><b>MLB pre-game model vs market</b> — HARMFUL, CI excludes zero (EXP-029).</li>
+        <li><b>T4 latency thesis</b> — NOT SUPPORTED at the current feature set (T-569).</li>
+        <li><b>T4M-PROJ paper P&amp;L as trading evidence</b> — 94.5% of rows never filled; real fills lose (GG-527).</li>
+        <li><b>NFL recalibration and early-season shrinkage</b> — no improvement over frozen (61.3, 64.1).</li>
+        <li><b>"Player hits dark since 9-27"</b> — a window premise; the logs said otherwise (63.1).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What is unknown</h3>
+      <div class="cap">Not yet measured — not assumed either way.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li>Whether <b>any shadow cell beats its market</b> — 0 of 45 engine cells at judged n.</li>
+        <li>Whether <b>cancel-after-60 s + book pricing</b> stops the picking-off — needs ~550 fills per arm in 8 weeks.</li>
+        <li>Whether <b>props are looser than game markets</b> — NBA player points logs from 10-20 (65.1).</li>
+        <li>Whether <b>injury-report QB data</b> moves the NFL model — needs point-in-time snapshots never captured.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DISTANCE -->
+<section id="distance">
+  <div class="sechead"><h2>Distance to optimum</h2><span class="num">four pillars · 13 measures</span></div>
+  <p class="lede">The gap between the project and <strong>the bot at optimum</strong> — every live sport covering its
+  whole board, every band, each cell's edge found or ruled out — kept as numbers so a wave cannot call itself
+  progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
+  <div class="card">
+    <div class="tscroll"><table class="dtab">
+      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 64</th></tr></thead>
+      <tbody id="distBody"></tbody>
+    </table></div>
+  </div>
+  <div class="note warn" style="margin-top:14px"><b>Wave 64 moved one measure (D3 0 → 1).</b> Breadth and Execution
+  have now moved nothing for two waves running; Wave 65 is aimed at both — NBA player points (B4 1 → 2, B1 37 → 40)
+  and the fill fix's forward test (E1–E3). Source: <span class="mono">scripts/distance_to_optimum.py</span>, VPS run
+  2026-10-09 16:18 UTC, plus 64.1's D3 line.</div>
+</section>
+
+<!-- ============================================================ VERDICTS -->
+<section id="verdicts">
+  <div class="sechead"><h2>Verdict board</h2><span class="num" id="verdCount"></span></div>
+  <p class="lede">Every measured model effect, on one axis, in one unit
+  (<strong>ΔBrier — positive means the candidate is better</strong>). A bar crossing the zero line
+  means the data cannot tell the two apart. Exploratory rows are labelled; they are not pre-registered verdicts.</p>
+
+  <div class="card">
+    <h3>Measured effects with intervals</h3>
+    <div class="cap">Game-clustered bootstrap intervals (95%, or 99.375% where a multiplicity correction applied). Hover any row for the full figures.</div>
+    <div id="forestWrap"></div>
+    <div class="toolbar" style="margin:16px 0 0">
+      <button class="btn sm" id="tblBtn">▤ Table view</button>
+      <span style="font-size:11.4px;color:var(--ink-3)">Interval crossing zero = no detectable difference</span>
+    </div>
+    <div id="forestTable" class="hidden" style="margin-top:14px"></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>EXP-029 — still the only scored market verdict</h3>
+      <div class="cap">Frozen EXP-028 model vs the Kalshi KXMLBHIT market. Pre-registered, scored once behind a lock file.</div>
+      <dl class="kv">
+        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">HARMFUL</dd>
+        <dt>ΔBrier (market − model)</dt><dd>−0.00393 &nbsp;[−0.00629, −0.00152]</dd>
+        <dt>Brier — market / model</dt><dd>0.2238 / 0.2277</dd>
+        <dt>Test set</dt><dd>1,316 rows · 215 games</dd>
+      </dl>
+      <div class="note bad" style="margin-top:14px"><b>Why it lost.</b> The skill the model learned is time-symmetric
+      (backward placebo +0.00494 vs forward +0.00484): player role and playing time — exactly what a liquid market
+      has already priced. The model is not wrong about baseball; it is redundant to the venue.</div>
+    </div>
+
+    <div class="card">
+      <h3>NFL — where the next verdict comes from</h3>
+      <div class="cap">EXP-037: 12 shadow cells (moneyline, spread, total, team total × T1–T3), frozen team-rate model.</div>
+      <dl class="kv">
+        <dt>First scored look</dt><dd>~2026-11-02 &nbsp;(~11-09 if a game slips)</dd>
+        <dt>Games per cell then</dt><dd>60</dd>
+        <dt>Detectable at n=60</dt><dd>~0.038 Brier</dd>
+        <dt>Plausible edge</dt><dd>~0.008 Brier</dd>
+        <dt>Modal outcome</dt><dd style="color:var(--warn); font-weight:650">"keep accruing" (~91%)</dd>
+        <dt>2025, frozen vs mid</dt><dd>0.2182 vs <b>0.2115</b> (182 games)</dd>
+        <dt>2025, QB challenger vs mid</dt><dd>0.2221 vs <b>0.2115</b></dd>
+      </dl>
+      <div class="note warn" style="margin-top:14px"><b>Read it straight.</b> The first look is real but cannot see an
+      edge of the size we could plausibly have. The challenger improves the model mostly in weeks 1–4 and when the
+      starter changes; it does not beat the market. A verdict-sized change needs a bigger model upgrade — injury reports
+      are next — not more games.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ EVIDENCE -->
+<section id="evidence">
+  <div class="sechead"><h2>Execution ledger</h2><span class="num">fills only</span></div>
+  <p class="lede">A paper row and a filled order are different things. Since GG-527 (T4M-PROJ) and GG-536 (T1 MLB),
+  <strong>paper rows count as calibration evidence only; every execution, P&amp;L or G6 claim counts real demo fills.</strong>
+  On that count, both books lose — and we know why.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Orders vs fills — the two demo books</h3>
+      <div class="cap">Closed demo positions and how many actually filled on Kalshi's demo venue.</div>
+      <div id="funnel"></div>
+      <div class="note" style="margin-top:15px"><b>Every paper P&amp;L figure in the project's history is calibration
+      evidence at best.</b> T4M-PROJ's all-rows result was −$0.053 a bet with a CI spanning zero; restricted to real
+      fills it is −$0.26 with a CI that excludes zero.</div>
+    </div>
+
+    <div class="card">
+      <h3>Why fills lose (63.3)</h3>
+      <div class="cap">Read-only demo-venue order history; game-clustered 95% intervals.</div>
+      <dl class="kv">
+        <dt>Win rate, fills vs non-fills</dt><dd>T4 24.1% vs 48.7% · T1 28.9% vs 52.1%</dd>
+        <dt>Settle − price, fills</dt><dd>T4 −0.25 [−0.37, −0.11] · T1 −0.39 [−0.49, −0.28]</dd>
+        <dt>Settle − price, non-fills</dt><dd>T4 +0.10 · T1 +0.07</dd>
+        <dt>Median rest before fill</dt><dd>T4 2,276 s · T1 5,873 s</dd>
+        <dt>Fills within 60 s (T4)</dt><dd>win 35%, n=51 — the benign subset</dd>
+        <dt>P&amp;L per fill</dt><dd>T4 −$0.26 [−0.45, −0.07] · T1 −$1.50 [−3.67, +0.63]</dd>
+      </dl>
+      <div class="note warn" style="margin-top:15px"><b>The fix is accepted; the test starts now.</b> R1 cancels unfilled
+      orders after 60 s; R2 prices off the live book and skips one-sided books. Half of eligible orders get it (seeded),
+      half don't. Judged at ~550 fills per arm; declared underpowered if that is not reached in 8 weeks. The cancel call
+      is verified on a 1-contract demo canary first (65.2).</div>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile" style="--accent:var(--warn)"><div class="k">T1 MLB drawdown</div><div class="v">12.4%<small> / 20%</small></div><div class="n">Permanent kill line at 20% realized drawdown. Live Terminal, 10-09 18:05 UTC.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">T4M-PROJ drawdown</div><div class="v">11.5%<small> / 20%</small></div><div class="n">Flat demo measurement stakes; no stake for any game after the 2026 World Series (GG-527 c).</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Shadow cells with stakes</div><div class="v">0<small> → on</small></div><div class="n">Flat demo stakes on SHADOW cells (NFL, NHL, MLB, NBA) switch on with ADR-0072 — the forward test's volume source over winter.</div></div>
+    <div class="tile" style="--accent:var(--crit)"><div class="k">Old NFL paper book</div><div class="v">archived</div><div class="n">GG-490 retired it; the Live Terminal still showed 4 open STUB positions at p 0.0000 on 10-09 — 65.3 traces them.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ MATRIX -->
+<section id="matrix">
+  <div class="sechead"><h2>Cell matrix</h2><span class="num">18 market types × 12 bands · 104 cells</span></div>
+  <p class="lede">Read directly from <span class="mono">MARKET_TYPE_REGISTRY</span>. <strong>37 cells log</strong>
+  (1 ACTIVE, 36 SHADOW), 2 are BLOCKED, 1 is DARK and 64 are defined but not built — mostly in-play sub-bands
+  the horizon doctrine says must earn their speed first. Blank squares are not registered at all.</p>
+
+  <div class="card">
+    <div class="toolbar">
+      <input class="srch" id="mxSearch" placeholder="Filter market type or band…">
+      <button class="btn sm mxf on" data-f="all">All</button>
+      <button class="btn sm mxf" data-f="act">Active</button>
+      <button class="btn sm mxf" data-f="log">Logging</button>
+      <button class="btn sm mxf" data-f="blk">Blocked</button>
+    </div>
+    <div class="mx" id="mxHost"></div>
+    <div class="mxleg">
+      <span><b style="background:var(--good)"></b>ACTIVE</span>
+      <span><b style="background:var(--s1)"></b>SHADOW — evaluates and logs, no stake</span>
+      <span><b style="background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))"></b>Defined, not implemented</span>
+      <span><b style="background:var(--crit)"></b>BLOCKED</span>
+      <span><b style="background:var(--surface-3); border:1px solid var(--axis)"></b>DARK / frozen</span>
+      <span><b style="border:1px dashed var(--hair-2); background:transparent"></b>Not in registry</span>
+    </div>
+  </div>
+
+  <div class="note warn" style="margin-top:14px"><b>What changes next.</b> NBA's 12 game-market cells flip to SHADOW
+  ~10-21 once valid regular-season rows exist. NBA player points T1–T3 adds three more (65.1, registry 104 → 107).
+  After the World Series, MLB's in-play cell goes DARK by decision (GG-527 c) and the four MLB player-hits cells stop
+  producing rows — which is why props breadth falls to zero unless NBA points is live.</div>
+</section>
+
+<!-- ============================================================ ARMS -->
+<section id="arms">
+  <div class="sechead"><h2>Arms &amp; clocks</h2><span class="num">every evidence clock that is running</span></div>
+  <p class="lede">An arm is a sport's set of cells under one pre-registration, committed to main before its first
+  row. Nothing is scored below its judged sample; a rigorous NO is a result.</p>
+  <div class="card">
+    <div class="tscroll"><table>
+      <thead><tr><th>Arm</th><th class="num">Cells</th><th>Status</th><th>Pre-registration</th><th>Next look</th><th>Note</th></tr></thead>
+      <tbody id="armsBody"></tbody>
+    </table></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Calendar</h3>
+      <div class="cap">Dated events that change what this page says.</div>
+      <div class="tscroll"><table><tbody id="calBody"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>The efficiency gradient — still undecided</h3>
+      <div class="cap">CLAUDE.md § Market efficiency gradient; COVERAGE_TARGET_MATRIX.md.</div>
+      <div class="note" style="margin:0"><b>Breadth is moving toward the most-watched markets on the board</b> —
+      moneylines, spreads and totals — the opposite end of the gradient this strategy was designed to exploit.
+      Every game-market pre-registration writes "thinner edge expected" so the result is falsifiable. Whether to
+      accept thinner edge as the price of generality, or hold expansion to looser markets, is <b>your open call</b>.
+      Props (NBA points) is the first step back down the gradient.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DOCTRINE -->
+<section id="doctrine">
+  <div class="sechead"><h2>Band doctrine · criterion C5</h2><span class="num">ADR-0068 · PROPOSED</span></div>
+  <p class="lede"><strong>Decision-tree depth is governed by decision horizon, and a stripped tree must be paid for by a
+  measured execution advantage.</strong> A cell that is shallow without being fast is misfiled, not optimized.
+  Build sequencing (operator, 2026-09-30): <strong>pre-game first</strong>, then carry the granularity inward.</p>
+
+  <div class="grid g3">
+    <div class="tile" style="--accent:var(--good)"><div class="k">C5 pass</div><div class="v">2</div><div class="n">MLB player hits T1 and T2 — deep-enough trees at daily cadences, making no speed claim.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">C5 misfiled</div><div class="v">2</div><div class="n">T4M-PROJ (GG-320, HIGH) and MLB T3. Measured in Wave 42; not re-measured since.</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="k">New arms are pre-game</div><div class="v">36</div><div class="n">Every SHADOW cell added since Wave 42 is T1–T3 — the doctrine's own sequencing.</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>The cells that have been measured</h3>
+    <div class="cap">Cadence measured from cron and logs; tree depth counted as model inputs actually consumed by the run path. As of Wave 42.</div>
+    <div class="tscroll"><table>
+      <thead><tr><th>Cell</th><th>Horizon</th><th>Measured cadence</th><th>Tree depth</th><th>Verdict</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="k">mlb_player_prop_hits : T1</td><td>12–48 h</td><td>daily cron 11:00 UTC</td><td class="num">18 + threshold</td><td><span class="chip good"><i></i>PASS</span></td><td>Deep tree, once daily, no speed claim. Docs said 78 features; the model log says 18.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T2</td><td>same-day</td><td>daily cron 19:30 UTC</td><td class="num">4</td><td><span class="chip good"><i></i>PASS</span></td><td>Thin overlay at a same-day cadence; claims no latency advantage.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T3</td><td>pre-tip, SLA 300 s</td><td>every 15 min</td><td class="num">1 scalar</td><td><span class="chip warn"><i></i>MISFILED</span></td><td><span class="mono">price_drift</span> vs a threshold; no order path.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T4M-PROJ</td><td>in-play, SLA 45 s</td><td>median 70 s (p90 99 s)</td><td class="num">3 scalars</td><td><span class="chip crit"><i></i>MISFILED</span></td><td>GG-320 HIGH. Latency thesis NOT SUPPORTED (T-569); EXP-030 found a deeper tree indistinguishable.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============================================================ PIPELINE -->
+<section id="pipeline">
+  <div class="sechead"><h2>Pipeline</h2><span class="num">C1 → C8</span></div>
+  <p class="lede">Where a market observation becomes a decision, and where the chain breaks today.</p>
+  <div class="card">
+    <div class="pipe">
+      <div class="pnode"><div class="pc">C1</div><div class="pn">Ingest</div><div class="ps">Kalshi, nflverse, NHL, NBA; MLB built on GitHub Actions, off statsapi. Pre-2026 Kalshi history secured (GG-538).</div></div>
+      <div class="pnode hot"><div class="pc">C2 / C3</div><div class="pn">Features → Forecast</div><div class="ps">Shadow models for four sports. Deepest: 18 features, 0 qualitative. No matchup, weather or qualitative input anywhere.</div></div>
+      <div class="pnode"><div class="pc">C4</div><div class="pn">Risk</div><div class="ps"><span class="mono">kelly_fraction 0.0</span> on every band; flat demo stakes; stand-down after the World Series.</div></div>
+      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Fills adversely selected. R1 + R2 fix accepted 10-10; forward test ON in 65.2.</div></div>
+      <div class="pnode"><div class="pc">C6</div><div class="pn">Audit</div><div class="ps">Kalshi settlement is the resolution source (ADR-0071). Fill sidecars classify every order.</div></div>
+      <div class="pnode"><div class="pc">C7</div><div class="pn">Monitoring</div><div class="ps">Calibration engine sealed below judged n; silent-arm alarm; distance table every session.</div></div>
+      <div class="pnode"><div class="pc">C8</div><div class="pn">Dashboards</div><div class="ps">Live Terminal (what it places now) and this page (where the project stands).</div></div>
+    </div>
+    <div class="note bad" style="margin-top:6px"><b>Two thin links now, not one.</b> C2/C3 is still shallow — the
+    granularity bar (matchup, personnel, venue, weather, qualitative) is met nowhere. And C5 is measured broken:
+    the orders that fill are the ones about to lose. Wave 65 works both: the NFL challenger adds personnel; the
+    forward test tests the fill fix.</div>
+  </div>
+</section>
+
+<!-- ============================================================ WAVES -->
+<section id="waves">
+  <div class="sechead"><h2>Wave history</h2><span class="num" id="waveRange"></span></div>
+  <p class="lede">Three blocks per wave, fired concurrently against disjoint file surfaces. Each entry is what the wave
+  <strong>established</strong>, not what it attempted.</p>
+  <div class="card">
+    <div class="tl" id="tl"></div>
+  </div>
+</section>
+
+<!-- ============================================================ GOVERNANCE -->
+<section id="governance">
+  <div class="sechead"><h2>Governance</h2><span class="num">155 live gaps · 130 OPEN</span></div>
+  <p class="lede">The gap log is the project's memory of everything it noticed and did not fix. Wave 59 re-verified
+  it (176 → 131 OPEN) and retired resolved entries to an archive that only grows.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>OPEN gaps by severity</h3>
+      <div class="cap">130 OPEN of 155 live entries. Severity is self-assigned at registration; 21 carry none.</div>
+      <div class="bars" id="sevBars"></div>
+    </div>
+    <div class="card">
+      <h3>The ones that bite</h3>
+      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 65 does.</div>
+      <div class="tscroll"><table class="gg"><tbody>
+        <tr><td class="k">GG-166</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB resolver consumed a corrupted <span class="mono">game_date</span> (pre-Kalshi-settlement era).</td></tr>
+        <tr><td class="k">GG-170</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB Stats API date label unstable in near-real-time.</td></tr>
+        <tr><td class="k">GG-320</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4M-PROJ fails C5 — shallow without being fast.</td></tr>
+        <tr><td class="k">GG-441</td><td><span class="chip serious"><i></i>HIGH</span></td><td>Kill switch counts realized loss only; settled-but-unresolved stake is invisible.</td></tr>
+        <tr><td class="k">GG-046</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4 commercial validation never registered as its own hypothesis.</td></tr>
+        <tr><td class="k">GG-038</td><td><span class="chip serious"><i></i>HIGH</span></td><td>60 s kill-switch SLA is 12× too slow for continuous T4.</td></tr>
+      </tbody></table></div>
+      <div class="note" style="margin-top:12px">Both CRITICALs concern the old statsapi resolution path. Since ADR-0071,
+      resolution comes from Kalshi's own settlement; whether either can still touch new rows has not been re-checked.</div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Decision records</h3>
+      <div class="cap">ADRs record a decision. Counted from each ADR file's status line.</div>
+      <div class="tscroll"><table>
+        <thead><tr><th>Record</th><th>Status</th><th class="num">Count</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td class="k">ADR</td><td><span class="chip good"><i></i>ACCEPTED</span></td><td class="num">55</td><td>Latest: ADR-0070 (shadow arms), ADR-0071 (Kalshi settlement).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip warn"><i></i>PROPOSED</span></td><td class="num">9</td><td>Includes ADR-0067 (append-only log), ADR-0068 (band doctrine), ADR-0072 (fill fix — accepted 10-10, record updates in 65.2).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip mute"><i></i>DRAFT / PLACEHOLDER</span></td><td class="num">2</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Registered vs retired</h3>
+      <div class="cap">Every gap ever registered, and where it is now.</div>
+      <div class="bars" id="asymBars"></div>
+      <div class="note warn" style="margin-top:15px"><b>Retirement is real now.</b> 223 entries live in the archive,
+      moved verbatim. The 130 still OPEN are mostly MEDIUM/LOW history; only a handful gate current work.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ASSETS -->
+<section id="assets">
+  <div class="sechead"><h2>Data assets</h2><span class="num">what is on disk</span></div>
+  <p class="lede">The substrate. Two of these are clocks: data that can only be captured as it happens.</p>
+  <div class="grid g3">
+    <div class="card">
+      <h3>Kalshi price history</h3>
+      <div class="cap">Depth snapshots plus the pre-2026 archive.</div>
+      <dl class="kv">
+        <dt>Live archive</dt><dd>1.1 GB · ~1.82 M rows (last measured 09-30)</dd>
+        <dt>Pre-2026 history</dt><dd style="color:var(--good)">on the VPS, sha-verified (GG-538)</dd>
+        <dt>Used by</dt><dd>EXP-029, NFL 2025 market comparisons, fill markouts</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>MLB features</h3>
+      <div class="cap">Built daily on GitHub Actions — no longer on the VPS or statsapi.</div>
+      <dl class="kv">
+        <dt>Builder</dt><dd>GitHub Actions (57.1)</dd>
+        <dt>Postseason</dt><dd style="color:var(--good)">included (63.1)</dd>
+        <dt>Players matched</dt><dd>every game day 09-29 → 10-08</dd>
+        <dt>Open issue</dt><dd style="color:var(--warn)">T1 contract violation 10-09 11:00Z (65.2 checks)</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>NFL pre-kickoff capture</h3>
+      <div class="cap">QB, injuries, weather and referee state — obtainable only before kickoff.</div>
+      <dl class="kv">
+        <dt>Capture cron</dt><dd style="color:var(--crit)">still a draft (T-601)</dd>
+        <dt>Needed for</dt><dd>the next NFL mechanism: injury reports, QB-only first</dd>
+        <dt>Scoped in</dt><dd>65.3 step 6</dd>
+      </dl>
+      <div class="note bad" style="margin-top:12px; font-size:11.8px"><b>A weekly clock.</b> Every NFL week without a
+      capture permanently loses that week's pre-kickoff state.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DESK -->
+<section id="desk">
+  <div class="sechead"><h2>Your desk</h2><span class="num" id="deskCount"></span></div>
+  <p class="lede">Decided 10-10: <span class="chip good"><i></i>ADR-0072 on</span> <span class="chip good"><i></i>NFL challenger ships</span>
+  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 65 waits on what is left — but two carry dates.</p>
+  <div class="dk" id="deskList"></div>
+</section>
+
+<!-- ============================================================ RULES -->
+<section id="rules">
+  <div class="sechead"><h2>Standing rules</h2><span class="num">non-negotiable</span></div>
+  <p class="lede">Carried into every block prompt. Most were written the expensive way.</p>
+  <div class="grid g3">
+    <div class="card">
+      <h3>Capital &amp; control</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>No real capital until G6.</b> Demo venue only; <span class="mono">kelly_fraction</span> 0 on every band.</li>
+        <li><b>Never bypass a permission control.</b> Record the refusal and hand back.</li>
+        <li>No sizing change without an ADR.</li>
+        <li>An authorization exists only as a dated line in the queue — a table row is not one.</li>
+        <li>The operator never runs plumbing.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Evidence</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>Pre-registration on main before a cell's first row.</b></li>
+        <li>No score read below judged n; never relabel a verdict after seeing results.</li>
+        <li><b>Execution counts real fills only</b> (GG-527, GG-536).</li>
+        <li>Never manufacture a row, price or score to have something to measure.</li>
+        <li>Never recommend against a sport, band or family on one finding.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Operating</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>Purpose before work</b> (Hard Rule 12): name the measure a block moves, report what moved.</li>
+        <li>Three MEDIUM blocks a wave; 60-minute target, 90-minute ceiling.</li>
+        <li>Merge ≠ deploy ≠ activation — fixed means the running process has it.</li>
+        <li>Check every premise against logs and data before building on it.</li>
+        <li>t4-mlb restarts only when its code changed and no game is live.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div>
+  <footer>
+    <b style="color:var(--ink-2)">Visual Dashboard</b> — built at <span class="mono">origin/main __SHA__</span>, __DATE__,
+    by the strategic window. Registry, gap-log and ADR counts were derived by running code against the repository;
+    execution and verdict figures come from the cited wave results; drawdowns from the Live Terminal (10-09 18:05 UTC).
+    Anything not re-measured since an earlier wave says so. Static snapshot — rebuilt at each wave close.
+  </footer>
+</div>
+</div>

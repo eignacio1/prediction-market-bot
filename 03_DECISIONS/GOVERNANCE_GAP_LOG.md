@@ -3870,3 +3870,25 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 </details>
 
+
+### GG-562 — Archived NFL game-market paper book holds 4 OPEN positions entered by StubNFLForecastModel (not a trained model); two are past their game date and unresolved
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-10, W65.3 step 0, read-only):** `logs/paper_portfolio_t1_nfl_game_market.json` on the VPS (file last written 2026-10-07 01:56 UTC) has 4 positions, all `OPEN`, `size_usd` 1.0, `kalshi_order_status` `local_only`, entered 2026-09-29 05:36:39Z, `forecast_id` prefix `T1-NFLGM-PT-`. These are real ledger rows. They are what the Live Terminal showed as "STUB, model P 0.0000": `run_t1_nfl_game_market.py` carries `StubNFLForecastModel` with `PROVENANCE = "STUB (... NOT a trained model, GG-255)"`, and `logic_epoch.py` classifies that text as `EVIDENCE_STUB`. Game dates seen: 2026-10-08 (TB/DAL, past, still OPEN) and 2026-10-11 (CIN/MIA). Nothing was changed.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-562 |
+| Category | Ledger integrity / provenance |
+| What was found | The archived NFL book contains open positions whose probability came from a stub, so they carry no model information. At least one is past its game date and still unresolved, so the book is not being settled while archived. |
+| Why it matters | Low dollar impact ($1 each, local_only), but any dashboard figure that counts open NFL positions shows stub-sourced exposure as if modelled. Not evidence for any NFL claim; the real NFL evidence is the EXP-037 shadow ledger. |
+| Disposition | Registered only (Hard Rule 11; W65.3 step 0 said do not fix). Operator decision needed: leave archived and filter STUB from the Live Terminal, or resolve and close the 4 rows. |
+| Source | W65.3 step 0 (VPS read of `logs/paper_portfolio_t1_nfl_game_market.json`) |
+| Resolution | Not resolved. |
+| Cross-references | GG-255, GG-291 |
+
+</details>
