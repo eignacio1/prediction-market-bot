@@ -42,7 +42,7 @@ def main(out_path: str) -> int:
     cursor = ""
     seen = 0
     for _page in range(10):
-        params = {"status": "open", "limit": 200}
+        params = {"status": "open", "limit": 200, "mve_filter": "exclude"}
         if cursor:
             params["cursor"] = cursor
         ok, data = c._get("/markets", params=params)
