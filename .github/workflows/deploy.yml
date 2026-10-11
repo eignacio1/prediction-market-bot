@@ -53,18 +53,10 @@ name: Deploy to VPS
 # each one still running a full deploy+service-restart cycle for zero reason.
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - '03_DECISIONS/**'
-      - '04_EXECUTION/**'
-      - '11_MEMORY_HANDOFF/**'
-      - '00_ADMIN/**'
-      - '02_ARCHITECTURE_DESIGN/**'
-      - '05_RESEARCH_EXPERIMENTS/**'
-      - '07_TEST_VALIDATION_EVIDENCE/**'
-      - '08_MODEL_RISK_GOVERNANCE/**'
-      - '01_SPEC/**'
+  # W67.3 / T-813 (GitHub at $0): the push trigger is REMOVED. Deploys now run on the VPS itself:
+  # scripts/ops/vps_deploy.sh via cron every 5 min (deploy/cron.conf, BEGIN W67.3 VPS-DEPLOY) -- same
+  # approval-path gate, dirty-tree guard, deploy_restart_policy.py and t4-mlb rule, 0 Actions minutes.
+  # This workflow stays as a manual fallback (workflow_dispatch).
   workflow_dispatch:
 
 jobs:
