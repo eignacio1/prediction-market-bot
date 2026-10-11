@@ -164,7 +164,7 @@ a VPS deploy/feature cron. Only 67.2 may change order behaviour.
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 67.1 | Land NBA player points + NFL injury snapshots (66.3 carried) | BREADTH B1 37->40, B4 1->2; DEPTH (NFL injury data clock) | ⬜ | — |
-| 67.2 | Forward test, day one: read it, skip unlisted tickers, stakes on shadow cells | EXECUTION E1/E2/E3 | ⬜ | — |
+| 67.2 | Forward test, day one: read it, skip unlisted tickers, stakes on shadow cells | EXECUTION E1/E2/E3 | 🟡 Part B done | Listing skip + shadow stakes live (36 accepted shadow orders 17:00-17:10Z); Part A (read day one) waits for 10-12 data |
 | 67.3 | GitHub at $0 for real: deploys and MLB features off GitHub | PLUMBING | 🟨 Part A (PR #221) | VPS cron `vps_deploy.sh` live (every 5 min, flock, gate, GG-432 policy); deploy.yml push trigger removal pending proof. Part B: statsapi people/* returns 406 from the VPS IP (200 elsewhere), so the generator cannot run on the VPS; fallback = cache + postseason-only in Actions. |
 
 ### 67.1 — Land NBA player points + NFL injury snapshots (66.3 carried)

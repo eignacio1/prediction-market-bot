@@ -3933,3 +3933,45 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 | Cross-references | GG-203, GG-536, ADR-0072 |
 
 </details>
+
+### GG-570 — NBA shadow pregame cron lines are pinned credential-free (EXP-038), so SHADOW_FLAT_STAKE cannot reach NBA shadow cells without an operator decision
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-11, W67.2):** W67.2 wired `deploy/demo_fill.env` into the NFL and MLB shadow pregame cron lines only. The NBA lines (`run_nba_pregame_shadow.py --bands T1/T2/T3`) were left unchanged because `tests/test_nba_shadow_safety.py::test_cron_block_markers_and_scripts_only_nba` asserts they carry no `.env` and no kelly (the EXP-038 NBA shadow is deliberately credential-free). Loading demo_fill.env there would give those jobs order-placing credentials. NBA is also DARK/FROZEN per the standing directive, regular season starts ~2026-10-21. Operator decision needed: keep NBA shadow credential-free (no flat stakes on NBA shadow cells) or amend that guard by ADR/test change.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-570 |
+| Category | Coverage - shadow-cell stakes (E1/E2/E3 breadth) absent for NBA by design guard |
+| Evidence | Full-suite run on the first W67.2 attempt: 1 failed (test_nba_shadow_safety), caused by adding `.env` export to NBA lines; reverted. |
+| Disposition | Registered; NBA lines unchanged; operator decision. |
+| Source | W67.2 Part B step 4 |
+| Resolution | Not resolved. |
+| Cross-references | GG-564, ADR-0072, EXP-038 |
+
+</details>
+
+### GG-571 — NHL shadow evaluator (`scripts/nhl_shadow_eval.py`) is not wired to the shadow flat-stake hook, so NHL shadow cells never receive demo stakes
+
+**Status:** OPEN · **Severity:** LOW
+
+**Current state (2026-10-11, W67.2):** The NFL, MLB and NBA shadow runners call `make_on_row(ad)` so `SHADOW_FLAT_STAKE=on` can place a flat ADR-0050 demo stake on a shadow cell with net-of-fee edge > 0. `scripts/nhl_shadow_eval.py` has no on_row/stake wiring, so NHL shadow cells cannot be staked even with the switch on. Found while implementing W67.2 Part B step 4; not fixed in-session (Rule 11).
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-571 |
+| Category | Coverage - shadow-cell stakes absent for NHL |
+| Evidence | grep for make_on_row in scripts/: NFL, MLB, NBA runners only. |
+| Disposition | Registered; not fixed. |
+| Source | W67.2 Part B step 4 |
+| Resolution | Not resolved. |
+| Cross-references | GG-570, ADR-0072 |
+
+</details>
