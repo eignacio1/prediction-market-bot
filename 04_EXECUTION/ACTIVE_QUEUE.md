@@ -169,7 +169,7 @@ or change orders.
 |---|---|---|---|---|
 | 68.1 | MLB data back on a public repo; CI restored; Actions status in the scan | PLUMBING (keeps 16 MLB cells logging) | 🟡 Part A done | Repo public; Games Cache + Features Sync (19:06Z) succeeded, VPS cache stamp 19:07:42Z accepted by runner, contract gate passed, gitleaks clean (4 false positives). Part B (CI triggers + scan line) next. |
 | 68.2 | Stakes on every shadow arm (NBA, NHL) + the forward test reports itself | EXECUTION E1 (shadow-cell fills; arms reach judged n) | ⬜ | — |
-| 68.3 | The math: NFL totals - venue + weather challenger | DEPTH D1 (first live model with venue/weather), D3 | ⬜ | — |
+| 68.3 | The math: NFL totals - venue + weather challenger | DEPTH D1 (first live model with venue/weather), D3 | ✅ | NO: no arm beats frozen, CIs include zero; no pre-reg; next = train on observed 2015-25, serve forecast |
 
 ### 68.1 — MLB data back on a public repo; CI restored
 
@@ -415,7 +415,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|---|
 | 68.1 | MLB data on a public repo; CI back; Actions status in scan | PLUMBING | ⬜ | — |
 | 68.2 | Stakes on NBA + NHL shadow; forward test reports itself | E1 | ⬜ | — |
-| 68.3 | NFL totals: venue + weather challenger | D1, D3 | ⬜ | — |
+| 68.3 | NFL totals: venue + weather challenger | D1, D3 | ✅ | NO result; see W68_3 results doc |
 
 ### ✅ WAVE 67 — CLOSED 2026-10-11 ~19:15 UTC (verified on GitHub at `d358cd0`) · moved: **B1 37/104 → 40/107, B4 1 → 2** (first Breadth move in four waves); first shadow-cell demo orders accepted
 
