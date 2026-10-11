@@ -65,7 +65,7 @@ const CELLS = __CELLS__;
 const MXNOTE = {
   "MLB_PLAYER_PROP_HITS|T4M-PROJ":"The only ACTIVE cell. Flat demo stakes; real fills −$0.26 a bet; stakes stop after the World Series (GG-527 c). Fails C5 (GG-320).",
   "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt, daily 11:00 UTC. Paper rows are calibration only (GG-536).",
-  "NBA_PLAYER_POINTS|T4":"Legacy NBA book, frozen. T1–T3 cells arrive with 65.1 (EXP-039).",
+  "NBA_PLAYER_POINTS|T4":"T4 is DARK (legacy NBA book, frozen). T1–T3 are SHADOW cells (EXP-039, frozen NB+Platt artifact), logging only.",
 };
 
 const ARMS = [

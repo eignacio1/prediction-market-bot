@@ -14,3 +14,12 @@
 
 ### Remaining Part B plan
 Train/freeze artifact + sha addendum, player-game store (ESPN box scores; stats.nba.com is 403 from VPS), forecaster/runner with separate preseason ledger, new staggered cron lines mirrored in `deploy/`, registry flip, calibration/silent-arm/dashboards, tests, VPS RAM check, deploy proof, generator B1/B4.
+
+## Block 67.1 — landed and proven (2026-10-11)
+- **Landed:** PR #223 (merge `45d4896`); branch baseline and main baseline both 0 failures in the same environment (the 66.3 "11 failures" were environmental). #217 closed as superseded. Deploy job green; t4-mlb restarted (no MLB game live), active 16:35:05Z.
+- **VPS proof:** registry 107 cells, `NBA_NBA_PLAYER_POINTS_T1/T2/T3` = SHADOW (T4 DARK). Crons installed as additions only (backup `/root/crontab.pre_w67_1.bak`): box backfill `4 10`, T1 `21 4,10,16,22`, T2 `27 *`, T3 `14,24,44,54 *`, settle `35 10`, preseason smoke `37 *` (remove after opening night 2026-10-20).
+- **Calibration engine:** lists all three cells, SEALED 0 of 300 ("no published schedule available for this sport").
+- **Scoreboard (`distance_to_optimum.py`, VPS):** B1 `40 / 107` (was 37 / 104); B4 `2 · 0` (props families logging 1 -> 2).
+- **Silent-arm check: NOT covered at first.** `silent_arms.py` had no points arm; its rows share the `NBA_*.jsonl` glob with the game-market arm, so a dead points arm would have been masked. Fixed in a follow-up PR (own arm `nba_player_points_shadow`, glob `NBA_NBA_PLAYER_POINTS_*.jsonl`, 12 silent-arm tests pass). Also fixed a stale Visual Dashboard note ("T1-T3 arrive with 65.1").
+- **Honest gap:** the preseason dry run wrote **no rows** because Kalshi has 0 open KXNBAPTS markets; preseason-ledger isolation is proven by code/tests only, not by a row on disk. First row-level proof arrives when KXNBAPTS markets list.
+- **Live Terminal dashboard:** not proven to list the arm (it has no registry/arm view for it); not verified, handed back.
