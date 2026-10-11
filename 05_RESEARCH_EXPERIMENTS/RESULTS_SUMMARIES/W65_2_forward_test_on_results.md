@@ -12,3 +12,27 @@ No order was placed. Both switches remain OFF; steps 2-3 and Part B not started.
 
 ## Part A step 1 — canary, update (2026-10-11 ~03:20Z)
 The permission denial was resolved by shipping the canary via PR (#210, #212, #214, #215, #216) and running the plain repo script on the VPS. Runs 1-3 failed on market selection (bid threshold; combo KXMV markets, then 2000 combos listed before any real market; fixed with `mve_filter=exclude`). Run 4 (VPS HEAD cd0f4b62): 12 candidate markets (MLB first), every `POST /portfolio/events/orders` returned `HTTP 404 not_found`. t4-mlb itself shows the same: 325/283/154 `kalshi_order_failed` per hour for KXMLBHIT-26OCT102000CWSCLE (00:00-02:59Z). Reads work; shard-3 balance $146.22. **No order was accepted, so the cancel path remains unverified.** Per the stop rule: GG-560 registered, both switches OFF (unchanged), ADR-0072 not marked ACCEPTED-in-force, steps 2-3 and Part B not started. Next: re-run `scripts/w65_2_cancel_canary.py` when order writes recover.
+
+## W66.2 Part A — why demo orders 404 (GG-560): ROOT CAUSE FOUND, canary PASSES (2026-10-11 ~06:17Z)
+Claim T-796..T-798, GG-564..GG-565.
+
+**Premise corrected: demo order writes do NOT all 404.** Audit log `audit_mlb_t4.jsonl` on the VPS: t4-mlb had demo orders accepted
+(`paper_order_opened` with a `kalshi_order_id`) on every game day through the latest, 17 on 2026-10-10 (00:09:29Z-02:24:39Z, i.e. 10-11 UTC;
+players Murakami, Rocchio, Vargas, Adell, Montgomery). In the SAME game and window, 23 other tickers returned
+`HTTP 404 {"code":"not_found"}` (762 events). The 404 is per-market, not per-endpoint. No client, host, auth or payload change near the
+first 404s (plain `not_found` events begin 2026-08-28; `kalshi_client.py` last touched 2026-10-09 by the W64.2 placement policy, which is OFF).
+
+**Cause:** the Kalshi DEMO host lists only a subset of production's markets. Both documented demo hosts (`external-api.demo.kalshi.co`,
+`demo-api.kalshi.co`) return identical listings. Evidence, 2026-10-11:
+- game KXMLBHIT-26OCT102000CWSCLE: demo lists 18 tickers (CLE Rocchio/Adell/Ramirez, CWS Montgomery/Murakami/Vargas x thresholds 1-3), production lists 55.
+- `GET demo/markets/KXMLBHIT-26OCT102000CWSCLE-CWSCMEIDROTH10-1` -> 404; same ticker on production -> 200. Same for `CWSKTEEL8-1`.
+- The accepted bot orders were all on demo-listed players; the 404'd tickers are absent from demo.
+- 65.2's canary listed markets and read books from PRODUCTION (`_get` unauthenticated -> price-discovery URL) and submitted to demo, so
+  production-only tickers 404'd 12/12. A selection bug in the canary, not an order-write outage.
+
+**Canary, fixed (candidates now come from the demo listing, `authenticated=True`):** VPS HEAD 7f11b0a6 + patched script, 2026-10-11T06:16:33Z:
+POST /portfolio/events/orders on KXDEMOFUTHOURLY-26OCT11H07-UP, 1 contract @ 1c YES -> accepted (order 01a1299b-19e8-7715-8795-09ae94337432);
+DELETE -> `reduced_by 1.00`; GET after cancel -> status `canceled`, fill_count 0. Verdict true. (One GET immediately after create returned 404 - read-after-write lag, harmless.)
+
+**Consequence for E1:** t4-mlb needs no fix and no restart (nothing wrong with its writes). Roughly the share of its orders on tickers demo
+does not list (here 23 of 40 tickers) can never be accepted, so demo-fill statistics describe only the demo-listed subset. Registered as GG-564.
