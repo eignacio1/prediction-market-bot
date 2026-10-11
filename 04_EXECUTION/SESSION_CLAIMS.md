@@ -842,3 +842,4 @@
 | 2026-10-11T14:53:27Z | T-799 | CLOSED — W66.1 PARTIAL: postseason-only batter-log fetch shipped (features sync 22.5->17.5 min); VPS runner blocked by classifier; 2,000 min does not fit to 11-01 (commit `c44b515`) |
 | 2026-10-11T14:54:44Z | T-799 | CLOSED — merge confirmed, HEAD (a237306) is ancestor of origin/main — W66.1 PARTIAL: Part B shipped (PR #219), Part A blocked on runner-install refusal |
 | 2026-10-11T15:43:16Z | T-810..T-812, GG-570..GG-571 | W67.2 MEDIUM - forward test day one, skip unlisted demo tickers, shadow-cell stakes. PURPOSE: EXECUTION E1/E2/E3 (accepted+filled demo orders per book/arm incl. shadow) |
+| 2026-10-11T15:43:49Z | T-813..T-815, GG-572..GG-573 | W67.3 MEDIUM - GitHub at $0 for real: VPS-side deploy + MLB features off GitHub. PURPOSE: PLUMBING (deploys + MLB feature build survive to 11-01 on free minutes) |
