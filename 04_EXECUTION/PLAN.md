@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-11T14:45:00Z (T-799 — W66.1 PARTIAL: postseason-only batter-log fetch shipped (features sync 22.5->17.5 min); VPS runner blocked by classifier; 2,000 min does not fit to 11-01) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261011T1445Z_W66_1.md` for full session detail.
+**Last reviewed:** 2026-10-11T16:45:00Z (T-805 — W67.1 landed NBA player-points SHADOW arm (PR #223) + NFL injury-snapshot cron; B1 37->40, B4 1->2; silent-arm gap fixed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261011T1645Z_W67_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
