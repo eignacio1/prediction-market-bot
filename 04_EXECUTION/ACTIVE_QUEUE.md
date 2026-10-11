@@ -184,7 +184,7 @@ COMMON RULES - WAVE 66 (read first; they bind this block)
 - GITHUB $0 (operator 2026-10-10): CI no longer runs the test suite. Before EVERY merge run `pytest tests/ -q` in your own
   session and paste the summary line in the PR. Never re-enable a workflow trigger or add a paid service.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
+  branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
 - No order, position, fill, stake size or kelly_fraction change - EXCEPT block 66.2, inside AUTHORIZATION - ADR-0072 ON.
@@ -260,7 +260,7 @@ COMMON RULES - WAVE 66 (read first; they bind this block)
 - GITHUB $0 (operator 2026-10-10): CI no longer runs the test suite. Before EVERY merge run `pytest tests/ -q` in your own
   session and paste the summary line in the PR. Never re-enable a workflow trigger or add a paid service.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
+  branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
 - No order, position, fill, stake size or kelly_fraction change - EXCEPT block 66.2, inside AUTHORIZATION - ADR-0072 ON.
@@ -340,7 +340,7 @@ COMMON RULES - WAVE 66 (read first; they bind this block)
 - GITHUB $0 (operator 2026-10-10): CI no longer runs the test suite. Before EVERY merge run `pytest tests/ -q` in your own
   session and paste the summary line in the PR. Never re-enable a workflow trigger or add a paid service.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, push, wait for CI green, merge.
+  branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
 - No order, position, fill, stake size or kelly_fraction change - EXCEPT block 66.2, inside AUTHORIZATION - ADR-0072 ON.
