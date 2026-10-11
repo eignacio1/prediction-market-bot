@@ -11,7 +11,18 @@ import time
 import uuid
 from datetime import datetime, timezone
 
-from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, _kalshi_base_url
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO / "src"))
+os.environ["BOT_ENV"] = "paper"
+if os.environ.get("BOT_ENV", "").lower() == "live":
+    sys.exit(2)
+from prediction_market_bot import t4_fill_status as tf  # noqa: E402
+
+tf._load_dotenv_if_needed(REPO / ".env")
+os.environ["BOT_ENV"] = "paper"  # .env must not flip the host
+from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient, _kalshi_base_url  # noqa: E402
 
 
 def main(out_path: str) -> int:
