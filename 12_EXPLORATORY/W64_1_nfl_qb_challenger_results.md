@@ -25,3 +25,15 @@ Rolling origin 2019-2025 (n=1852); frozen arm reproduces W61.3's 2025 Brier: 0.2
 - **Draft pre-registration:** `NFL_QB_SHRUNK_CHALLENGER_PREREGISTRATION_2026-10-09.md` (Status PROPOSED, awaiting operator).
 - **Next mechanism if this is rejected or fails live:** injury-report QB-only (mechanism 3), needing a point-in-time snapshot source.
 - Added after the plan froze (descriptive only): `per_game_sd` per arm in results.json, used to size n.
+
+## Live (W65.3, 2026-10-10)
+
+**Shipped (PR #211, merged d0352246; follow-up PR #213):** frozen challenger `models/nfl_qb_challenger_v1.json` (13 features: the 11 frozen features with EB shrinkage K=2, plus `qb_epa_h`/`qb_epa_a`; ridge lambda=100; train 2015-2024, cal 2025; QB term = projected starter, i.e. the prior game's starter, flagged `qb_source="projected_prior_game_starter"`). Runner `scripts/run_nfl_qb_challenger_shadow.py` writes `exp_output/PREGAME_SHADOW_NFLQB/NFLQB_NFL_MONEYLINE_T1.jsonl`, a separate ledger tagged challenger, never touching frozen rows. New cron block `W65.3 NFLQB` (T1 at :14 of the 6-hourly hours, settle 09:44Z), installed on the VPS, mirrored in `deploy/cron_exp037_pregame_shadow.conf`. No existing cron line edited. No sizing, order or stake path touched.
+
+**VPS dry run:** 26 challenger rows, 24 markets paired to frozen first rows (12 games); the one unpaired game was just entering the T1 window. Calibration engine (`PREREG`, `discover_cells`, `EXPECTED_CELLS`) and `silent_arms.SPECS` list the challenger; the cell shows at n=0 before its first row.
+
+**Judgment rule (addendum):** the "~984 games" gate is withdrawn. Judged comparison is C2 (challenger vs Kalshi mid, EXP-037 rule, looks 60/150, ~2026-11-02). C1 (vs frozen) is descriptive only. Expect "keep accruing" or "no edge": on 2025's 182 priced games challenger 0.2221 vs frozen 0.2182 vs mid 0.2115.
+
+**D1:** `distance_to_optimum.py` now reads `nfl_qb_challenger_v1: personnel, team` (the `qb_` keyword classifies as personnel). The frozen `nfl_pregame_v1` is still `team`. D3 stays 1.
+
+**Step 6 — injury reports (QB-only), not built.** T-601 (`deploy/cron.drafts.conf`, still commented out and not authorized) runs `scripts/nfl_prekickoff_capture.py`, which snapshots nflverse schedule and team-stats extended fields (roof, surface, home/away QB id, coaches, plus referee/temp/wind) 80-120 min before each kickoff cluster, append-only and hash-idempotent. The captured `home_qb_id`/`away_qb_id` are the announced starters, not injury-report status, so it gives no questionable/doubtful/out designations and no practice-participation history. Missing: a point-in-time injury-report source (nflverse `injuries` table) captured on the same cadence. Smallest block: the T-601 cron lines uncommented under an operator authorization, plus one added `capture_injuries` call in `nfl_prekickoff_capture.py` filtered to `position == "QB"`, appended to the same store with the same hash idempotency.
