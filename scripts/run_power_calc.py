@@ -54,6 +54,7 @@ from run_band_monitor import (   # noqa: E402
     DEFAULT_PORTFOLIO,
     DEFAULT_T4_LEDGER,
     load_pool_by_band,
+    label_t1_basis,
     load_t4_ledger,
     load_t4_ledger_execution,
     filter_clean,
@@ -303,6 +304,8 @@ def run_all_bands(portfolio_path: Path, t4_ledger_path: Path,
     by_band = load_pool_by_band(portfolio_path)
     for band in BOOK_BANDS:
         results[band] = analyze_band_power(band, by_band.get(band, []), alpha, power)
+        if band == "T1":
+            label_t1_basis(results[band], by_band)
     # GG-527: G6 counting for T4M-PROJ uses CONFIRMED_FILLED rows only.
     t4_recs = load_t4_ledger_execution(t4_ledger_path)
     results["T4M-PROJ"] = analyze_band_power("T4M-PROJ", t4_recs, alpha, power)
@@ -398,6 +401,14 @@ def _persist_cell_measurement(market_type: MarketType, band: str, res: dict) -> 
 # ── reporting ────────────────────────────────────────────────────────────────────
 
 def _fmt_band(r: dict) -> str:
+    out = _fmt_band_core(r)
+    if r.get("basis"):
+        out += (f"\n    basis: {r['basis']}; all-rows n={r.get('calibration_all_rows_n')} "
+                f"({r.get('calibration_all_rows_label')})")
+    return out
+
+
+def _fmt_band_core(r: dict) -> str:
     band = r["band"]
     if r["status"] == "INSUFFICIENT_DATA":
         return f"[{band}] clean_n={r['clean_n']} (raw_n={r['raw_n']}) — {r['reason']}"

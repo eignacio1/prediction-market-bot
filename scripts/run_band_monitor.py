@@ -129,6 +129,7 @@ from prediction_market_bot.c7_monitoring.monitor import SystemMonitor       # no
 
 MIN_N = 30  # ab_harness.py band-level floor (GG-098: no acting on ~11 bets)
 BOOK_BANDS = ("T1", "T2", "T3")
+T1_CALIBRATION_KEY = "T1_ALL_ROWS_CALIBRATION"  # GG-536: all-rows T1, never an execution count
 
 DEFAULT_PORTFOLIO = Path("logs/.vps_portfolio_cache_mlb.json")
 DEFAULT_T4_LEDGER = Path("logs/t4_mlb_resolved_ledger.jsonl")
@@ -159,7 +160,20 @@ def load_pool_by_band(portfolio_path: Path) -> dict[str, list[dict]]:
             untagged.append(r)
     if untagged:
         by_band["UNTAGGED"] = untagged
+    # GG-536: T1 MLB execution/G6 counting is CONFIRMED_FILLED only, per the sidecar beside the
+    # ledger. Unclassified rows are NOT counted. All-rows T1 stays available as calibration only.
+    from prediction_market_bot import t4_fill_status as tfs
+    sidecar = Path(portfolio_path).parent / "t1_mlb_fill_status.jsonl"
+    by_band[T1_CALIBRATION_KEY] = list(by_band["T1"])
+    by_band["T1"] = tfs.filter_confirmed_filled(by_band["T1"], tfs.load_fill_status(sidecar))
     return by_band
+
+
+def label_t1_basis(res: dict, by_band: dict[str, list[dict]]) -> None:
+    """Stamp the GG-536 basis + calibration-only all-rows count on a T1 result."""
+    res["basis"] = "CONFIRMED_FILLED only (GG-536 execution evidence)"
+    res["calibration_all_rows_n"] = len(by_band.get(T1_CALIBRATION_KEY, []))
+    res["calibration_all_rows_label"] = "calibration only - not execution evidence"
 
 
 def load_t4_ledger_execution(path: Path, sidecar: Path | None = None) -> list[dict]:
@@ -336,6 +350,8 @@ def run_all_bands(
     by_band = load_pool_by_band(portfolio_path)
     for band in BOOK_BANDS:
         results[band] = analyze_band(band, by_band.get(band, []), bins, boot, seed, alpha)
+        if band == "T1":
+            label_t1_basis(results[band], by_band)
     if "UNTAGGED" in by_band:
         results["UNTAGGED"] = analyze_band("UNTAGGED", by_band["UNTAGGED"], bins, boot, seed, alpha)
 
@@ -525,6 +541,9 @@ def _print_report(results: dict[str, dict]) -> None:
         bm = r["brier_murphy"]
         alarm = " *** ANTI_PREDICTIVE WARNING ***" if r["anti_predictive_alarm"] else ""
         print(f"\n[{band}] clean_n={r['clean_n']}  (raw_n={r['raw_n']}){alarm}")
+        if r.get("basis"):
+            print(f"  basis: {r['basis']}; all-rows n={r.get('calibration_all_rows_n')} "
+                  f"({r.get('calibration_all_rows_label')})")
         print(f"  edge_monotonicity: {mono['verdict']}  "
               f"(fisher_p={mono.get('fisher_pvalue', float('nan')):.4f}, "
               f"n_pos_edge={mono.get('n_pos_edge')}, n_neg_edge={mono.get('n_neg_edge')}, "
