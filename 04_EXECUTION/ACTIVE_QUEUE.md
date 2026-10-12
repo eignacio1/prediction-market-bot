@@ -409,13 +409,13 @@ END OF BLOCK 68.3. If you cannot see this line, the prompt reached you truncated
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 68 — ISSUED 2026-10-11 ~19:15 UTC · three MEDIUM blocks
+### ✅ WAVE 68 — CLOSED 2026-10-12 ~23:30 UTC (verified on GitHub at `fdbf6c1`) · moved: no pillar measure; MLB feeds restored; D1 venue/weather tested — NO
 
-| # | Block | PURPOSE | Status | Outcome |
-|---|---|---|---|---|
-| 68.1 | MLB data on a public repo; CI back; Actions status in scan | PLUMBING | ⬜ | — |
-| 68.2 | Stakes on NBA + NHL shadow; forward test reports itself | E1 | ⬜ | — |
-| 68.3 | NFL totals: venue + weather challenger | D1, D3 | ✅ | NO result; see W68_3 results doc |
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 68.1 | MLB data on a public repo; CI back | ✅ | #229: both MLB feeds green (games-cache stamp 19:07:42Z accepted by the runner; CSV 19:12Z passes contract); gitleaks 2,845 commits: 4 false positives, no secrets; Test Suite triggers restored; GITHUB ACTIONS STATUS line in the governance scan. Scheduled runs not yet observed. Post-Game Resolve / TSS Daily Sync last ran ~75 days ago (not investigated) |
+| 68.2 | Stakes on NBA + NHL shadow; forward test reports itself | 🟨 merged, not activated | #228 (demo-only guard, demo_fill.env on NBA/NHL lines) + #231 (daily report 11:25 UTC, scan line, /project panel). **The terminal's ssh read of the VPS was refused by its auto-mode classifier** — nothing verified running; no report read. GG-586 (shadow control arm places no order → no verdict possible), GG-587 (turn-off edits a tracked file → trips the deploy guard) |
+| 68.3 | NFL totals venue + weather challenger | ✅ NO | No arm beats frozen; every CI includes zero; no pre-registration. Next: train on observed weather 2015–25, serve forecast |
 
 ### ✅ WAVE 67 — CLOSED 2026-10-11 ~19:15 UTC (verified on GitHub at `d358cd0`) · moved: **B1 37/104 → 40/107, B4 1 → 2** (first Breadth move in four waves); first shadow-cell demo orders accepted
 
@@ -745,6 +745,13 @@ What should reorder this, and what should stop it:
 > behaviour; changing scripts/generate_mlb_features.py to fetch postseason logs only for postseason players, proven
 > byte-identical. Not covered: any paid service or plan, making the repository public, changing the deploy restart policy.
 > Used by 66.1.
+
+> **STANDING RULE - PERMISSIONS PRE-FLIGHT (operator, 2026-10-12 16:24 PT: "These blocks need to get the permissions before they
+> actually run so they can fire off accordingly").** Every block lists, under PERMISSIONS, each command class it needs (VPS read,
+> VPS cron install, service restart, PR/merge, demo order). The window issues a block only when each is covered by (a) an allow
+> rule the operator has put in the terminals' Claude Code settings (auto mode drops `Bash(*)`; narrow rules survive it) and
+> (b) a dated authorization line here. A refused action stops the block at once with the exact command; a block is never DONE on
+> "merged" - DONE means the running process or cron was read back over ssh.
 
 > **AUTHORIZATION - GITHUB PUBLIC (operator, 2026-10-11 11:53 PT: "Fine fire it up - we'll make the github public").** Covers:
 > the operator switching the repository to public (the window's token cannot); dispatching the MLB data workflows; restoring
