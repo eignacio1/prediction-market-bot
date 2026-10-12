@@ -3,7 +3,7 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = d358cd0` (2026-10-11 ~12:15 PT, Wave 67 close). PRs, CI and results docs read from GitHub; VPS facts are the Wave 61 terminals' reports (this window has no SSH).
+**Verified against:** `origin/main = fdbf6c1` (2026-10-12 ~16:30 PT, Wave 68 close). PRs, CI and results docs read from GitHub; VPS facts are the Wave 61 terminals' reports (this window has no SSH).
 
 | Fact | Value |
 |---|---|
@@ -19,7 +19,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 67 closed, Wave 68 issued, 2026-10-11 ~12:15 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 68 closed, Wave 69 issued, 2026-10-12 ~17:00 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
