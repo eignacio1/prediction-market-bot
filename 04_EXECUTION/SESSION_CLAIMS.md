@@ -855,3 +855,4 @@
 | 2026-10-11T23:02:32Z | T-819 | CLOSED — merge confirmed, HEAD (ca0a72e) is ancestor of origin/main — W68.3 NFL totals venue+weather challenger: NO; no pre-registration |
 | 2026-10-11T23:03:00Z | T-816..T-818 | CLOSED — merge confirmed, HEAD (f8b390d) is ancestor of origin/main — W68.1 MLB feed restored on public repo; tests.yml triggers + GH Actions gov-scan line merged (#229, 06d53e3); close 8c45a46 |
 | 2026-10-12T23:52:35Z | T-824..T-826, GG-588..GG-589 | W69.2 MEDIUM - NBA opening night end to end (10-20). PURPOSE: BREADTH B1 (12 NBA game cells EXP-038 + 3 player-points EXP-039 logging regular-season rows from 10-20, no hand steps) |
+| 2026-10-12T23:53:03Z | T-830..T-832, GG-595..GG-596 | W69.1 MEDIUM - activate+read back merged forward-test; control arm on shadow cells (GG-586/587 exist). PURPOSE: EXECUTION E1/E2/E3 (first forward-test numbers per book/arm) |
