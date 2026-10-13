@@ -5,3 +5,4 @@
 * It is not running live yet. Wiring it in needs a server deploy from you and should wait until the opening-night work is clear of the same code. Until it runs live, no results count.
 * Data caveat: injury reports for Jan–Apr 2026 couldn't be found, so the test used partial data.
 * No real money at risk; nothing changed in trading.
+- PLUMBING-hook-timeout (auto): Governance scan hook split into 0.03s cached wrapper + full scan to beat the 30s hook timeout (PR #235, awaiting merge).
