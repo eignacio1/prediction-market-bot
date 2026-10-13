@@ -4005,3 +4005,15 @@ W69.3 (2026-10-12) found no official NBA injury-report PDFs retrievable for Jan�
 **Status:** OPEN · **Severity:** HIGH
 
 The EXP-040 artifact is frozen (sha256 `c47cbac7…8527`) and `NBAPlayerPointsMinutesModel` exists, but no forecaster, runner, registry cell, runtime injury-report fetch, or VPS deploy exists. Until a shadow row carrying the sha is logged before its game, no row counts toward the pre-registration. Deferred because it touches the EXP-039 runner that W69.2 is working on for NBA opening night and requires a VPS deploy outside this session's permissions. Needs its own claim and an operator deploy step.
+
+### GG-588 — KXNBATEAMTOTAL has never listed and the archive cannot date last season's KXNBAPTS listing, so 3 NBA_TEAM_TOTAL cells (and possibly the 10-20 player-points cells) may stay at zero rows
+
+**Status:** OPEN · **Severity:** LOW
+
+W69.2 Part A (2026-10-12): the Kalshi series list shows KXNBAGAME/SPREAD/TOTAL, but KXNBATEAMTOTAL has never listed in any archive. This season's preseason KXNBAPTS markets existed only 10-05 to 10-09 and are closed; the price archive holds no last-season KXNBAPTS data, so it cannot say when they listed. Runners handle an empty board without error, and NBA_TEAM_TOTAL cells only flip on a valid row (nba_cell_autoflip), so nothing is claimed that the data does not support. Action: read the 10-20/10-21 ledgers; if TEAM_TOTAL is still empty after ~2 weeks, mark those cells with a measured-date ruling via ADR rather than leave them NOT_IMPLEMENTED indefinitely.
+
+### GG-589 — remove_nba_preseason_cron.py ignored the EXP-039 preseason cron block (it would have run forever)
+
+**Status:** RESOLVED · **Severity:** LOW
+
+W62.3's retire script stripped only the EXP-038 PRESEASON block. Fixed W69.2 (#232): `--auto` mode strips both preseason blocks and its own retire block, date-guarded (>= 2026-10-21 10:00 UTC), idempotent, crontab-only (the VPS git tree is not touched). Installed on the VPS crontab 2026-10-13 (`50 13 * * *`, no-op read back before the guard). Verify: after 10-21 the crontab holds no `W69.2 NBA PRESEASON RETIRE` or `PRESEASON` markers.
