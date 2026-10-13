@@ -167,7 +167,7 @@ on a refusal. Surfaces: 69.1 = demo-fill config, shadow runners, forward-test re
 |---|---|---|---|---|
 | 69.1 | Activate + read back everything merged; give shadow cells a control arm | EXECUTION E1/E2/E3 (first forward-test numbers) | ⬜ | — |
 | 69.2 | NBA opening night end to end (10-20) | BREADTH B1 (15 NBA cells actually logging) | ⬜ | — |
-| 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | ⬜ | — |
+| 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | 🟡 Part A done (plan frozen, parser/fetcher/features/tests/study.py pushed); Part B NEXT: finish injury-PDF fetch (cached off-box, 2-hourly grid), run study.py once | W69.3 branch |
 
 ### 69.1 — Activate + read back everything merged; a control arm for shadow cells
 
