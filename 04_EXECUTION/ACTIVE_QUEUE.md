@@ -166,7 +166,7 @@ on a refusal. Surfaces: 69.1 = demo-fill config, shadow runners, forward-test re
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 69.1 | Activate + read back everything merged; give shadow cells a control arm | EXECUTION E1/E2/E3 (first forward-test numbers) | ⬜ | — |
-| 69.2 | NBA opening night end to end (10-20) | BREADTH B1 (15 NBA cells actually logging) | ⬜ | — |
+| 69.2 | NBA opening night end to end (10-20) | BREADTH B1 (15 NBA cells actually logging) | ✅ DONE (automation) | PR #232 @ 83c97c0; autoflip + date-guarded retire crons live; B1 40/107 moves from 10-21 on valid rows |
 | 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | 🟡 EXP-040 ACCEPTED 2026-10-13T00:15:02Z; NEXT: freeze artifact + wire shadow logging beside EXP-039 before 10-20 | W69_3_nba_points_minutes_results.md |
 
 ### 69.1 — Activate + read back everything merged; a control arm for shadow cells
@@ -446,7 +446,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
 | 69.1 | Activate + read back; shadow control arm (GG-586/587) | E1–E3 | ⬜ | — |
-| 69.2 | NBA opening night end to end | B1 | ⬜ | — |
+| 69.2 | NBA opening night end to end | B1 | ✅ DONE (automation) | measure moves from 10-21 |
 | 69.3 | NBA points projected-minutes challenger | D1, D3 | ⬜ | — |
 
 ### ✅ WAVE 68 — CLOSED 2026-10-12 ~23:30 UTC (verified on GitHub at `fdbf6c1`) · moved: no pillar measure; MLB feeds restored; D1 venue/weather tested — NO
