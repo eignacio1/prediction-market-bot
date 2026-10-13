@@ -750,7 +750,7 @@ python3 "$PROJECT/scripts/gg203_order_write_detector.py" 2>&1 | tail -20 || true
 # usually absent, which prints "cannot check", not an alarm).
 echo ""
 echo "SILENT ARMS (W62.1 -- games in window with zero rows written; alarm-only):"
-PYTHONPATH="$PROJECT/src" python3 -m prediction_market_bot.pregame_shadow.silent_arms 2>&1 | tail -12 || true
+PYTHONPATH="$PROJECT/src" python3 -m prediction_market_bot.pregame_shadow.silent_arms 2>&1 | tail -14 || true
 
 # --- Distance to optimum, computed (W63.3 / Hard Rule 12) ---
 # Every measure (B1-B4, D1-D3, E1-E3, P1-P3) derived from its source of truth, with source path + as-of. Missing inputs print

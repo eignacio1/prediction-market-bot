@@ -1,0 +1,7 @@
+# BEGIN W71.2 NBA PLAYERS 2026 REFRESH
+# W71.2 / GG-621: re-creates data/raw/nba/players_2026.json (2025-26 player box scores) if absent; resumable, a no-op once complete.
+# EXP-039/EXP-040 early-season rows read it; the daily 10:04 job only refreshes season 2027. Without this a rebuilt box starves both arms silently.
+# AUTHORIZATION: standing shadow-cron authorization (NEW lines only, 2026-10-02). Public read-only, <=2 req/s; writes data/raw/nba/ only. No order, stake or kelly.
+# Edits no existing crontab line. Minute :18 is unused by every other job. Weekly, Sundays 11:18 UTC.
+18 11 * * 0 cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_player_box_backfill.py --seasons 2026 >> logs/nba_players_2026_refresh.log 2>&1
+# END W71.2 NBA PLAYERS 2026 REFRESH

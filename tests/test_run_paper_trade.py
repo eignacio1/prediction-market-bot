@@ -26,3 +26,28 @@ class TestTickerToGameDate:
         assert runner._ticker_to_game_date(
             "KXNBAUNKNOWNSERIES-26JUN05NYKSAS-JT27.5"
         ) is None
+
+
+class TestFrozenBookGuard:
+    """GG-630 / W71.2: the old NBA paper book is frozen; main() must return before any
+    venue client, trader or market fetch is touched."""
+
+    def test_constant_is_frozen(self):
+        assert runner.NBA_BOOK_FROZEN is True
+
+    def test_main_returns_before_any_order_path(self, monkeypatch, tmp_path, capsys):
+        monkeypatch.setattr(runner, "LOG_DIR", tmp_path)
+
+        def _boom(*a, **k):
+            raise AssertionError("order path reached while book is frozen")
+
+        monkeypatch.setattr(runner.KalshiMarketClient, "from_env", _boom)
+        monkeypatch.setattr(runner, "PaperTrader", _boom)
+        assert runner.main() is None
+        out = capsys.readouterr().out
+        assert out.count("FROZEN") == 1 and "GG-630" in out
+        assert not (tmp_path / "paper_portfolio.json").exists()
+
+    def test_guard_off_when_unfrozen(self, monkeypatch):
+        monkeypatch.setattr(runner, "NBA_BOOK_FROZEN", False)
+        assert runner._frozen_book_guard() is False
