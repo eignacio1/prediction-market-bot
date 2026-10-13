@@ -871,3 +871,4 @@
 | 2026-10-13T01:58:58Z | T-853 | CLOSED — merge confirmed, HEAD (9bedb1e) is ancestor of origin/main — W70.1 PARTIAL - see handoff |
 | 2026-10-13T02:32:39Z | T-850 | CLOSED — W70.2 PARTIAL - EXP-040 wired beside EXP-039 + deployed (d940bf46); 0 rows until KXNBAPTS lists; GG-620/621 (commit `8ac012b`) |
 | 2026-10-13T02:32:52Z | T-850 | CLOSED — merge confirmed, HEAD (8ac012b) is ancestor of origin/main — W70.2 PARTIAL - EXP-040 wired + deployed d940bf46; 0 rows until KXNBAPTS lists |
+| 2026-10-13T23:34:35Z | T-870..T-872, GG-640..GG-641 | W71.3 MEDIUM - NBA games availability challenger (12_EXPLORATORY). PURPOSE: DEPTH D1 (team -> team+personnel), D3 +1 only if pre-reg earned |
