@@ -34,7 +34,7 @@ class CellLedger:
                         self._keys.add((r["run_id"], r["market_ticker"]))
         return self._keys
 
-    def append(self, row: dict) -> bool:
+    def append(self, row: dict, row_extra: dict | None = None) -> bool:
         missing = [f for f in ROW_FIELDS if f not in row]
         if missing:
             raise ValueError(f"ledger row missing fields: {missing}")
@@ -44,6 +44,6 @@ class CellLedger:
             return False
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a") as fh:
-            fh.write(json.dumps({**{f: row[f] for f in ROW_FIELDS}, **self.extra}, sort_keys=False) + "\n")
+            fh.write(json.dumps({**{f: row[f] for f in ROW_FIELDS}, **self.extra, **(row_extra or {})}, sort_keys=False) + "\n")
         keys.add(k)
         return True
