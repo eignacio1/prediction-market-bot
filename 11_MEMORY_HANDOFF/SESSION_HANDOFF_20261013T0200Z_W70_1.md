@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: T-853
+tier: STANDARD
+timestamp: 2026-10-13T02:00:00Z
+commit: 7bffdce
+one_line_summary: W70.1 PARTIAL - GG-596 fix merged+deployed; re-arm withheld (real MLB-HIT cancel fails, GG-623); NFL +0.39 not edge (GG-624)
+gg_touched: GG-623, GG-624
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E1/E2/E3
+gap_delta: none (switches still OFF; no new fills measured)
+-->
+
 # SESSION HANDOFF - W70.1 (T-853..T-855) - re-arm forward test; NFL fill audit
 
 vision_pillar: EXECUTION
