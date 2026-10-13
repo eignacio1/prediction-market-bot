@@ -2140,3 +2140,10 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - Window correction: 69.1 and the 69.3 digest handed demo-only steps (re-arm switches; VPS deploy) to the operator as decisions. Under the operator's standing rule these are plumbing; Wave 70's common rules now say so explicitly and 70.1/70.2 do them.
 - Permissions pre-flight: the block-pasted authorization line does not work — the terminals' classifier refused to edit `.claude/settings.local.json` in 69.1 and 69.2 (Self-Modification), as it refused the window on 10-12. Allow list moved to `scripts/operator_grant_permissions.py`, which the operator runs himself once (`!` prefix). Blocks no longer attempt the settings edit.
 - Wave 70: 70.1 EXECUTION (GG-596 fix, re-arm, control-arm read-back, NFL +0.39 fill-timing audit), 70.2 DEPTH (EXP-040 logging before 10-20), 70.3 PLUMBING (main green, main tree pulled, Post-Game Resolve / TSS workflows dark ~75 days).
+
+## 2026-10-13 — W70.3 (T-860): main green; TSS Daily Sync retired; Post-Game Resolve kept paused, GG-630 registered
+
+- Main red since 0d3063e: 4 hook tests still read the pre-#235 `governance_scan.sh` (now the cached wrapper) and 2 W69.3 `12_EXPLORATORY` files wrote outside `_fence.safe_out`. Fixed in #239 (tests target `governance_scan_full.sh`, plus a wrapper <2s/cached-output test; the W69.3 scripts now write via `safe_out`; frozen EXP-040 artifact untouched). Full suite 4017 passed locally; PR CI green.
+- The two "dark ~75 days" workflows were paused on purpose (T-399, 2026-07-29), not broken. Retired `tss_daily_sync.yml`: redundant, the VPS cron `run_t140_check.py` (17:25 UTC) rebuilds `team_stats_cache` daily and succeeds (read 2026-10-12). Kept `post_game_resolve.yml` paused: nothing proves the VPS can resolve NBA positions (GG-013) once KXNBAPTS reopens 2026-10-20; registered GG-630, not fixed here.
+- Main tree (`Prediction Markets/`) left unchanged: dirty (regenerated `OPERATOR_CONSOLE.md`, untracked files) and behind origin/main; it already contains the wrapper and `governance_scan_full.sh` and prints "[cached governance scan".
+- Purpose: PLUMBING (no pillar measure moved).

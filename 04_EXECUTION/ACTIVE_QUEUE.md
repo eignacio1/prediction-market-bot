@@ -171,7 +171,7 @@ runner + EXP-040 wiring; 70.3 = failing tests, hook tests, scheduled workflows. 
 |---|---|---|---|---|
 | 70.1 | Re-arm the forward test (GG-596) and audit the NFL fills | EXECUTION E1/E2/E3 | ⬜ | — |
 | 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | ⬜ | — |
-| 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ⬜ | — |
+| 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ✅ DONE | #239 merged (main green: hook + exploratory tests fixed); TSS workflow retired; Post-Game Resolve stays paused, GG-630 (verify VPS NBA resolve before 10-20); main tree dirty, left alone |
 
 ### 70.1 — Re-arm the forward test (GG-596) and audit the NFL fills
 
