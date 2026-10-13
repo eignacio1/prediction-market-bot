@@ -862,3 +862,4 @@
 | 2026-10-13T00:19:30Z | PLUMBING-hook-timeout | MERGED: NO — branch `hook-timeout-fix2` awaiting merge — Governance scan hook split into 0.03s cached wrapper + full scan to beat the 30s hook timeout (PR #235, awaiting merge). (commit `5d8fd75`) |
 | 2026-10-13T00:31:45Z | PLUMBING-hook-timeout | CLOSED — merge confirmed, HEAD (0d3063e) is ancestor of origin/main — Governance scan hook split into cached wrapper + full scan; PR #235 merged |
 | 2026-10-13T00:46:18Z | T-830 | CLOSED — W69.1 forward-test read back on box; shadow control arm + untracked turn-off override merged; GG-596 blocks re-arm. (commit `42e50a7`) |
+| 2026-10-13T00:48:18Z | T-824..T-826 | CLOSED — merge confirmed, HEAD (0b3850d) is ancestor of origin/main — W69.2 NBA opening night automation (autoflip + preseason retire crons) deployed; PR #232 merged; B1 40/107 unchanged until 10-21 |
