@@ -3993,3 +3993,15 @@ W68.2 stakes only treatment-arm SHADOW rows; the control arm places no order, so
 **Status:** OPEN · **Severity:** MEDIUM
 
 First on-box forward report (W69.1, 2026-10-13T00:09Z) tripped `cancel_fail_rate_gt_10pct_in_a_day` at rate 1.0. Cells: MLB treatment 0 ok / 380 failed; NFL 906 ok / 229 failed (79.8% ok). The logged failures are `HTTP 404 not_found` on the cancel call (`unfilled_after_N` 17, `sweep_overdue` 383): the order was already terminal (filled/expired) when the cancel arrived, so cancel never had anything to cancel. NFL shows the cancel path works on resting orders. The metric conflates "already terminal" with "cancel API failed". Fix: classify 404 as `already_terminal`, exclude it from the failure rate, report it separately. Not fixed in W69.1 (Hard Rule 11). Until fixed the turn-off can re-trip on every report run. Found by W69.1.
+
+### GG-610 — EXP-040 injury-report history has no coverage for Jan–Apr 2026
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W69.3 (2026-10-12) found no official NBA injury-report PDFs retrievable for Jan–Apr 2026, so fold-B test coverage of the `minutes_inj` arm is ~34% and the rest is scored with `inj_missing=1`. The EXP-040 result is therefore a lower bound on the injury feature's value and its test fold is partly a `minutes_box` evaluation. Not fixed in-session (Rule 11). Remedy: locate an alternate archive for the gap window, or accept and state the coverage in any EXP-040 verdict.
+
+### GG-611 — EXP-040 live shadow logging not wired or deployed
+
+**Status:** OPEN · **Severity:** HIGH
+
+The EXP-040 artifact is frozen (sha256 `c47cbac7…8527`) and `NBAPlayerPointsMinutesModel` exists, but no forecaster, runner, registry cell, runtime injury-report fetch, or VPS deploy exists. Until a shadow row carrying the sha is logged before its game, no row counts toward the pre-registration. Deferred because it touches the EXP-039 runner that W69.2 is working on for NBA opening night and requires a VPS deploy outside this session's permissions. Needs its own claim and an operator deploy step.
