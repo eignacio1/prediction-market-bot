@@ -950,6 +950,37 @@ for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand
     promote_cell_status(MarketType.NBA_PLAYER_POINTS, _bd, CellStatus.SHADOW, superseding_reference="EXP-039")
 
 
+# --- EXP-038 / W69.2: NBA game cells, flipped to SHADOW by evidence, not by hand ---
+# scripts/nba_cell_autoflip.py (daily cron) appends a record to NBA_PROMOTIONS_FILE only after a cell holds >=1 valid
+# regular-season row (same predicate as scripts/w59_3_nba_flip_check.py). This loader applies those records at import.
+# Fail-safe: a missing/corrupt file or a record naming anything but an NBA game cell leaves the cell NOT_IMPLEMENTED.
+_NBA_AUTOFLIP_TYPES = {"nba_moneyline", "nba_spread", "nba_game_total", "nba_team_total"}
+
+
+def _apply_nba_game_promotions() -> None:
+    import json
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[3] / "exp_output" / "PREGAME_SHADOW" / "nba_promotions.jsonl"
+    try:
+        lines = path.read_text().splitlines()
+    except OSError:
+        return
+    for line in lines:
+        try:
+            rec = json.loads(line)
+            mt, bd = MarketType(rec["market_type"]), ExecutionBand[rec["band"]]
+            if mt.value not in _NBA_AUTOFLIP_TYPES or rec.get("superseding_reference") != "EXP-038":
+                continue
+            if MARKET_TYPE_REGISTRY[(mt, bd)].status is CellStatus.NOT_IMPLEMENTED:
+                promote_cell_status(mt, bd, CellStatus.SHADOW, superseding_reference="EXP-038")
+        except (ValueError, KeyError, TypeError):
+            continue
+
+
+_apply_nba_game_promotions()
+
+
 # ---------------------------------------------------------------------------
 # Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
 # ---------------------------------------------------------------------------

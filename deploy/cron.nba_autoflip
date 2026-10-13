@@ -1,0 +1,5 @@
+# BEGIN W69.2 NBA AUTOFLIP
+# W69.2 / EXP-038: flips NBA game cells NOT_IMPLEMENTED -> SHADOW once a cell holds >=1 valid regular-season row (no-op before 2026-10-20).
+# AUTHORIZATION: standing shadow-cron authorization (NEW lines only). Reads exp_output/PREGAME_SHADOW, appends nba_promotions.jsonl. No order, stake or kelly.
+40 12 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_cell_autoflip.py >> logs/nba_autoflip.log 2>&1
+# END W69.2 NBA AUTOFLIP
