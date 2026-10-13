@@ -526,6 +526,13 @@ REPORT: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md -
 END OF BLOCK 71.H1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+*Add-ins pasted by the operator into the H1 terminal, 2026-10-13 ~16:55 PT (recorded for provenance):* (1) skill map per lane -
+data:validate-data on judged ledgers, /security-review + engineering:code-review on orders/failure handling,
+engineering:deploy-checklist + /pregame (read-only) on the VPS, engineering:architecture + system-design, tech-debt +
+testing-strategy for the punch list. (2) Lane L6 DEPLOYMENT, audited not executed: vps_deploy.sh, deploy_restart_policy.py,
+box vs origin/main, env/secrets on the box. (3) CRITICAL finding to register: `.claude/commands/vps.md` is the May provisioning
+script - running it replaces the live crontab, overwrites the model and pins old deps; propose retiring it.
+
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
