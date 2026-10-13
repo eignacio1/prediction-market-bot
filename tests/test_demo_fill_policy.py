@@ -389,3 +389,31 @@ def test_demo_host_guard_refuses_production_and_unknown(monkeypatch):
             raise AssertionError("client touched on production host")
     row = {"run_id": "r", "market_ticker": "T", "mid": 0.5, "e_net_yes_k007": 0.1, "e_net_no_k007": -0.1}
     assert sfs.maybe_place(row, Boom()) is None
+
+
+# ---- W69.1 / GG-586: SHADOW control arm places a plain model-mid order ------------------
+def test_shadow_control_arm_places_model_mid_no_cancel_no_book_read(monkeypatch, tmp_path):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.SHARE_ENV, "0")                      # everything is control
+    c = _client()
+    row = _row()
+    res = sfs.maybe_place(row, c, lambda e: 1.0)
+    assert res and res["ok"]
+    c.get_market_book.assert_not_called()                       # no book anchoring
+    assert c.submit_order.call_args.kwargs["mid_price"] == float(row["mid"])
+    ev = _events(tmp_path)
+    assert [e["event"] for e in ev] == ["shadow_order"] and ev[0]["arm"] == "control"
+    assert not any(e["event"] == "cancel_scheduled" for e in ev)   # no cancel
+
+
+def test_shadow_arm_split_follows_same_hash_and_share(monkeypatch, tmp_path):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.SHARE_ENV, "0.5")
+    rid = f"{_row().get('run_id')}|{_row().get('market_ticker')}"
+    want = "treatment" if pol.assigned(rid) else "control"
+    c = _client()
+    sfs.maybe_place(_row(), c, lambda e: 1.0)
+    orders = [e for e in _events(tmp_path) if e["event"] == "shadow_order"]
+    assert orders and orders[0]["arm"] == want

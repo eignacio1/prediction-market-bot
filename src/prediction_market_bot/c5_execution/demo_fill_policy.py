@@ -49,8 +49,37 @@ DEFAULT_LISTING_TTL_S = 300.0
 _LISTING_CACHE: dict[str, tuple[bool, float]] = {}  # ticker -> (listed, monotonic ts); unknown is never cached
 
 
+OVERRIDE_FILE_ENV = "DEMO_FILL_OVERRIDE_FILE"
+OVERRIDE_NAME = "demo_fill.override.env"
+
+
+def override_path() -> Path:
+    """W69.1/GG-587: untracked, git-ignored override the turn-off writes. Read LAST: a key present
+    here beats the tracked deploy/demo_fill.env and the process environment."""
+    return Path(os.environ.get(OVERRIDE_FILE_ENV) or Path(__file__).resolve().parents[3] / "deploy" / OVERRIDE_NAME)
+
+
+def read_override() -> dict[str, str]:
+    try:
+        text = override_path().read_text()
+    except OSError:
+        return {}
+    out: dict[str, str] = {}
+    for line in text.splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            out[k.strip()] = v.strip()
+    return out
+
+
+def switch_value(name: str) -> str:
+    """Effective value of a switch: override file (if it sets the key) else the environment."""
+    ov = read_override()
+    return (ov[name] if name in ov else os.environ.get(name, "")).strip()
+
+
 def is_enabled() -> bool:
-    return os.environ.get(SWITCH_ENV, "").strip() == SWITCH_ON_VALUE
+    return switch_value(SWITCH_ENV) == SWITCH_ON_VALUE
 
 
 def _float_env(name: str, default: float) -> float:

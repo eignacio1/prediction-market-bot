@@ -79,3 +79,30 @@ def test_report_cron_line_is_new_demo_only_and_mirrored():
     (line,) = [l for l in frag.splitlines() if l and not l.startswith("#")]
     assert line.startswith("25 11 * * * ") and "BOT_ENV=paper" in line and "scripts/demo_fill_forward_report.py" in line
     assert ".env" not in line.replace("demo_fill.env", "")  # no prod credentials loaded by this job
+
+
+# ---- W69.1 / GG-587: turn-off goes through an untracked override, tracked config untouched ----
+def test_turn_off_writes_untracked_override_and_leaves_tracked_env_byte_identical(tmp_path, monkeypatch):
+    from prediction_market_bot.c5_execution import demo_fill_policy as pol
+    from prediction_market_bot.c5_execution import shadow_flat_stake as sfs
+    env = tmp_path / "demo_fill.env"
+    body = "DEMO_FILL_PLACEMENT_RULE=book_anchor_cancel\nSHADOW_FLAT_STAKE=on\nDEMO_FILL_SEED=w64-2\n"
+    env.write_text(body)
+    monkeypatch.setenv(pol.OVERRIDE_FILE_ENV, str(tmp_path / "demo_fill.override.env"))
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    assert pol.is_enabled() and sfs.is_enabled()
+    trips = [{"condition": "cancel_fail_rate_gt_10pct_in_a_day"}]
+    assert rpt.turn_off(trips, NOW, env) is True
+    assert env.read_text() == body                                   # tracked file never edited
+    assert (tmp_path / "demo_fill.override.env").exists()
+    assert not rpt.switches_active(env)
+    assert not pol.is_enabled() and not sfs.is_enabled()             # policy reads the override last
+    (tmp_path / "demo_fill.override.env").unlink()                   # deleting it re-enables
+    assert rpt.switches_active(env) and pol.is_enabled() and sfs.is_enabled()
+
+
+def test_override_file_is_git_ignored():
+    from pathlib import Path
+    gi = (Path(__file__).parent.parent / ".gitignore").read_text().splitlines()
+    assert "deploy/demo_fill.override.env" in gi

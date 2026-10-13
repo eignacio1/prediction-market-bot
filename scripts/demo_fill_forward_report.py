@@ -6,8 +6,8 @@ shadow = SHADOW-cell flat stakes) and sport, per arm: orders, skips by reason, c
 cancel success rate, fills, win rate on fills, settle minus price on fills, and fills per week projected
 against the ADR-0072 judged n (~550 per arm in 8 weeks).
 
-It also checks the ADR-0072 turn-off conditions. A tripped condition comments out the two switch lines
-in deploy/demo_fill.env (the repo config the crons load) and logs a `turn_off` event. Output:
+It also checks the ADR-0072 turn-off conditions. A tripped condition writes both switches as `off` to the untracked
+deploy/demo_fill.override.env (read last by the policy; GG-587) and logs a `turn_off` event. Output:
 exp_output/FORWARD_TEST/demo_fill_forward_report.json, plus one summary line on stdout.
 
 Honest gaps (reported as such, never guessed): the 30-minute markout condition needs candle data this
@@ -139,7 +139,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     day_skip: dict[str, Counter] = defaultdict(Counter)
     for r in events:
         ev, ts = r.get("event"), _ts(r)
-        key = (book_of(r), sport_of(ticker_of(r)))
+        arm = "control" if (ev == "shadow_order" and r.get("arm") == "control") else "treatment"
+        key = (book_of(r), sport_of(ticker_of(r)), arm)
         c = cells[key]
         if c["first_ts"] is None or ts < c["first_ts"]:
             c["first_ts"] = ts
@@ -172,7 +173,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             c[ev] += 1
             day_cancel[day][ev] += 1
     cell_out = []
-    for (book, sport), c in sorted(cells.items()):
+    for (book, sport, arm), c in sorted(cells.items()):
         if c["first_ts"] is None:
             continue
         rows = [fills_for(oid, tk) for oid, tk in c["fill_orders"]] if fills_for else []
@@ -183,7 +184,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         days = max((now - c["first_ts"]).total_seconds() / 86400.0, 1.0)
         per_week = len(filled) / days * 7.0 if fills_for else None
         cell_out.append({
-            "book": book, "sport": sport, "arm": "treatment",
+            "book": book, "sport": sport, "arm": arm,
             "orders": c["orders"], "rejected": c["rejected"],
             "skips_by_reason": dict(c["skips"]), "control_arm_skips": c["control_skips"],
             "cancels": {"scheduled": c["cancel_scheduled"], "ok": c["cancel_ok"], "failed": c["cancel_failed"],
@@ -197,7 +198,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "projected_fills_8wk": None if per_week is None else per_week * WEEKS,
             "on_pace_for_550_in_8wk": None if per_week is None else per_week * WEEKS >= JUDGED_N,
             "observed_days": round(days, 2),
-            "control_note": ("SHADOW control arm places no order by design: treatment-minus-control is not formable from fills"
+            "control_note": ("SHADOW control arm (W69.1/GG-586): model-mid order, no cancel; treatment-minus-control formable from fills"
                              if book == "shadow" else "paper control orders are not in this log"),
         })
     # ---- ADR-0072 turn-off conditions ----
@@ -225,25 +226,40 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note}
 
 
+def _override_for(env_path: Path) -> Path:
+    return env_path.with_name("demo_fill.override.env")
+
+
 def switches_active(env_path: Path = ENV_FILE) -> bool:
+    """Effective state: a switch is active when the tracked config sets it AND the untracked
+    override (W69.1/GG-587) does not set that key to ``off``."""
     if not env_path.exists():
         return False
+    ov = {}
+    try:
+        for l in _override_for(env_path).read_text().splitlines():
+            if "=" in l and not l.lstrip().startswith("#"):
+                k, v = l.split("=", 1)
+                ov[k.strip()] = v.strip()
+    except OSError:
+        pass
     return any(l.split("=", 1)[0].strip() in SWITCH_KEYS and not l.lstrip().startswith("#")
+               and ov.get(l.split("=", 1)[0].strip(), "x") != "off"
                for l in env_path.read_text().splitlines() if "=" in l)
 
 
 def turn_off(trips: list[dict], now: datetime, env_path: Path = ENV_FILE, log: Optional[Callable[[dict], None]] = None) -> bool:
-    """Comment out the two switch lines in the repo config. Idempotent. Returns True if it changed the file."""
+    """W69.1/GG-587: write ``<switch>=off`` to the untracked, git-ignored deploy/demo_fill.override.env,
+    which the policy reads last. The tracked demo_fill.env is NOT touched, so the VPS tree stays clean and
+    vps_deploy.sh's dirty-tree guard never trips. Idempotent. Returns True if it changed the override."""
     if not trips or not switches_active(env_path):
         return False
     why = ",".join(t["condition"] for t in trips)
-    lines = []
-    for l in env_path.read_text().splitlines():
-        key = l.split("=", 1)[0].strip()
-        lines.append(f"# TURNED OFF {now.isoformat()} by demo_fill_forward_report ({why}): {l}" if key in SWITCH_KEYS and not l.lstrip().startswith("#") else l)
-    env_path.write_text("\n".join(lines) + "\n")
+    _override_for(env_path).write_text(
+        f"# TURNED OFF {now.isoformat()} by demo_fill_forward_report ({why}). Delete this file to re-enable.\n"
+        + "".join(f"{k}=off\n" for k in SWITCH_KEYS))
     if log:
-        log({"event": "turn_off", "conditions": [t["condition"] for t in trips], "env_file": str(env_path)})
+        log({"event": "turn_off", "conditions": [t["condition"] for t in trips], "env_file": str(_override_for(env_path))})
     return True
 
 

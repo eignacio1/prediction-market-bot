@@ -166,3 +166,6 @@ Thumbs.db
 # permission grants, not project content; settings.json (project-shared) stays
 # tracked) ---
 .claude/settings.local.json
+
+# W69.1/GG-587: untracked turn-off override written by demo_fill_forward_report
+deploy/demo_fill.override.env
