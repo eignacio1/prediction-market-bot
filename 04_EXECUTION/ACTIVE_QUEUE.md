@@ -167,7 +167,7 @@ on a refusal. Surfaces: 69.1 = demo-fill config, shadow runners, forward-test re
 |---|---|---|---|---|
 | 69.1 | Activate + read back everything merged; give shadow cells a control arm | EXECUTION E1/E2/E3 (first forward-test numbers) | ⬜ | — |
 | 69.2 | NBA opening night end to end (10-20) | BREADTH B1 (15 NBA cells actually logging) | ⬜ | — |
-| 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | 🟡 DONE-PROPOSED: strike-15 rule met (|Δ|<=0.001), 2026 injury coverage 34%; EXP-040-P awaits operator acceptance | W69_3_nba_points_minutes_results.md |
+| 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | 🟡 EXP-040 ACCEPTED 2026-10-13T00:15:02Z; NEXT: freeze artifact + wire shadow logging beside EXP-039 before 10-20 | W69_3_nba_points_minutes_results.md |
 
 ### 69.1 — Activate + read back everything merged; a control arm for shadow cells
 
