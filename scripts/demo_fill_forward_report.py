@@ -123,17 +123,30 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
     return rec
 
 
+TERMINAL_STATUSES = ("executed", "filled", "canceled", "cancelled", "expired")
+
+
+def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], dict]]) -> bool:
+    """GG-596: a logged cancel_failed whose response was HTTP 404 is already_terminal when the order's
+    current status (one GET, cached) is terminal. Without a lookup it stays a failure (unverified)."""
+    resp = r.get("response")
+    if fills_for is None or not (isinstance(resp, dict) and str(resp.get("error")) == "HTTP 404"):
+        return False
+    st = fills_for(r.get("order_id"), ticker_of(r))
+    return str(st.get("status") or "").lower() in TERMINAL_STATUSES
+
+
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
                  window_note: str = "") -> dict:
     cells: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
         "orders": 0, "rejected": 0, "skips": Counter(), "control_skips": 0,
-        "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "no_outcome": 0,
+        "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "cancel_already_terminal": 0, "no_outcome": 0,
         "fill_orders": [], "first_ts": None})
     outcome: dict[str, str] = {}
     sched: dict[str, tuple[datetime, str, str]] = {}
     for r in events:
         ev = r.get("event")
-        if ev in ("cancel_ok", "cancel_failed"):
+        if ev in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
             outcome[r.get("order_id")] = ev
     day_cancel: dict[str, Counter] = defaultdict(Counter)
     day_skip: dict[str, Counter] = defaultdict(Counter)
@@ -169,7 +182,9 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             oid = r.get("order_id")
             if oid not in outcome and (now - ts).total_seconds() > NO_OUTCOME_S:
                 c["no_outcome"] += 1
-        elif ev in ("cancel_ok", "cancel_failed"):
+        elif ev in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
+            if ev == "cancel_failed" and _historical_404_terminal(r, fills_for):
+                ev = "cancel_already_terminal"  # GG-596: pre-fix rows; the order was already terminal
             c[ev] += 1
             day_cancel[day][ev] += 1
     cell_out = []
@@ -188,6 +203,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "orders": c["orders"], "rejected": c["rejected"],
             "skips_by_reason": dict(c["skips"]), "control_arm_skips": c["control_skips"],
             "cancels": {"scheduled": c["cancel_scheduled"], "ok": c["cancel_ok"], "failed": c["cancel_failed"],
+                        "already_terminal": c["cancel_already_terminal"],
                         "no_outcome_over_15m": c["no_outcome"]},
             "cancel_success_rate": (c["cancel_ok"] / attempts) if attempts else None,
             "fills": len(filled) if fills_for else None,

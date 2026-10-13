@@ -45,7 +45,7 @@ def overdue_pending(now_ts: float | None = None) -> bool:
             continue
         if r.get("event") == "cancel_scheduled":
             sched[r["order_id"]] = r.get("due_ts", 0)
-        elif r.get("event") in ("cancel_ok", "cancel_failed"):
+        elif r.get("event") in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
             done.add(r.get("order_id"))
     return any(o not in done for o in sched)
 

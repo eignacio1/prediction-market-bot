@@ -179,11 +179,37 @@ def schedule_cancel(client: Any, order_id: str, position_id: str, ticker: str) -
     return t
 
 
+TERMINAL_ORDER_STATUSES = frozenset({"executed", "filled", "canceled", "cancelled", "expired"})
+CANCEL_DONE_EVENTS = ("cancel_ok", "cancel_failed", "cancel_already_terminal")
+
+
+def _already_terminal_status(client: Any, order_id: str, data: Any) -> Optional[str]:
+    """GG-596: a cancel answered HTTP 404 on an order that is already filled/canceled/expired is not a
+    failure. Only a 404 whose follow-up GET shows a terminal status qualifies; anything else (other
+    error, GET failed, order still resting) stays a failure. Returns the terminal status or None."""
+    if not (isinstance(data, dict) and str(data.get("error")) == "HTTP 404"):
+        return None
+    try:
+        ok, od = client.get_order(order_id)
+    except Exception:  # noqa: BLE001 - a failed GET leaves the cancel classified as failed
+        return None
+    if not ok or not isinstance(od, dict):
+        return None
+    status = str((od.get("order", od) or {}).get("status") or "").lower()
+    return status if status in TERMINAL_ORDER_STATUSES else None
+
+
 def cancel_now(client: Any, order_id: str, position_id: str, ticker: str, reason: str) -> bool:
     try:
         ok, data = client.cancel_order(order_id)
     except Exception as e:  # noqa: BLE001 - a cancel failure is logged, never raised into the order path
         ok, data = False, {"error": type(e).__name__, "detail": str(e)}
+    if not ok:
+        terminal = _already_terminal_status(client, order_id, data)
+        if terminal:
+            append_log({"event": "cancel_already_terminal", "order_id": order_id, "position_id": position_id,
+                        "ticker": ticker, "reason": reason, "order_status": terminal, "response": data})
+            return True
     append_log({"event": "cancel_ok" if ok else "cancel_failed", "order_id": order_id,
                 "position_id": position_id, "ticker": ticker, "reason": reason, "response": data})
     return ok
@@ -205,7 +231,7 @@ def sweep_overdue(client: Any, now_ts: Optional[float] = None) -> int:
             continue
         if r.get("event") == "cancel_scheduled":
             sched[r["order_id"]] = r
-        elif r.get("event") in ("cancel_ok", "cancel_failed"):
+        elif r.get("event") in CANCEL_DONE_EVENTS:
             done.add(r.get("order_id"))
     n = 0
     for oid, r in sched.items():
