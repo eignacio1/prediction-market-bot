@@ -10,6 +10,255 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 70 prompts — archived 2026-10-13 ~03:00 UTC. 70.1 PARTIAL (#237: GG-596 fix merged + deployed; re-arm withheld — 8 real paper KXMLBHIT cancel failures, 404 while resting then 503 (GG-623); NFL audit: 0 post-kickoff fills, +0.398 on ~4 correlated games, not E2 evidence (GG-624)). 70.2 PARTIAL (#238/#241: EXP-040 wired beside EXP-039, deployed d940bf46, 0 rows until KXNBAPTS lists; GG-620 coverage was a URL rename; GG-621 2026 box scores hand-backfilled). 70.3 DONE (#239 main green; #240 TSS Daily Sync retired; Post-Game Resolve paused, GG-630). Verbatim:
+
+## ⬛ NOW — Wave 70 · issued 2026-10-13 ~01:15 UTC (10-12 ~18:15 PT) · three MEDIUM blocks · paste all three in parallel
+
+Wave 69 verified (Sequencing track). This wave's rule: **turn the forward test back on and make its numbers trustworthy;
+get the NBA points challenger logging before opening night; make main green.** Every demo-only step is done by the block,
+not handed back. Surfaces: 70.1 = demo-fill report/turn-off, VPS switches, forward-test read-back; 70.2 = NBA player-points
+runner + EXP-040 wiring; 70.3 = failing tests, hook tests, scheduled workflows. Only 70.1 may change order behaviour.
+
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 70.1 | Re-arm the forward test (GG-596) and audit the NFL fills | EXECUTION E1/E2/E3 | ⬜ | — |
+| 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | 🟨 PARTIAL | #238 + #241 merged, VPS d940bf46 read back. Arm validated by harness (12/12 forecasts, sha + injury fields); no ledger rows until KXNBAPTS markets list. GG-620/621 |
+| 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ✅ DONE | #239 merged (main green: hook + exploratory tests fixed); TSS workflow retired; Post-Game Resolve stays paused, GG-630 (verify VPS NBA resolve before 10-20); main tree dirty, left alone |
+
+### 70.1 — Re-arm the forward test (GG-596) and audit the NFL fills
+
+```
+COMMON RULES - WAVE 70 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+
+WAVE 70.1 - RE-ARM THE FORWARD TEST; AUDIT THE NFL FILLS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - forward-test numbers that are on, gradable (control arm live) and trustworthy. Pillar: EXECUTION.
+PERMISSIONS: VPS read (ssh), delete of the untracked deploy/demo_fill.override.env on the VPS (re-arm), PR/merge, demo orders
+under ADR-0072, read-only Kalshi DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG.
+
+WHY
+69.1 read the first numbers on the box (W65_2_forward_test_on_results.md, "Read-back 10-13"): paper/MLB 17 orders 5 fills
++0.07; shadow/MLB 363/75 -0.20; shadow/NFL 1,135/231 +0.39. The turn-off then tripped on cancel_fail_rate 1.0 - every
+"failed" cancel was HTTP 404 on an order already terminal (GG-596) - so both switches are OFF and the GG-586 control arm has
+never placed an order. Separately, +0.39 settle-minus-price on 231 NFL fills is too good to take at face value: a pre-game
+order that rests into or past kickoff and fills against a moved book would look exactly like this.
+
+PART A - Fix and re-arm (~35 min)
+  1. GG-596: a cancel returning 404 is classified by a GET of the order: filled / canceled / expired = already_terminal (not a
+     failure). Only a non-404 error, or a 404 whose GET still shows resting, counts toward cancel_fail_rate. Tests with the
+     real 404 body. Re-run the report over the existing days: the turn-off no longer trips on 10-13. PR, merge, read back.
+  2. Re-arm (demo only, plumbing - do it): delete /opt/prediction-market-bot/deploy/demo_fill.override.env; read back
+     is_enabled() True for both switches from the running loaders and that the tracked tree is clean.
+PART B - Read back + audit (~45 min)
+  3. After the next scheduled shadow runs (NHL plays nightly; NFL Thu 10-15): the control arm (GG-586) has placed orders on
+     SHADOW cells, both arms appear in the report, same assignment hash/share. Close GG-586/570/571 only on that read-back.
+  4. NFL fill audit, all 231+ fills: fill time vs order time vs kickoff vs settlement. Split settle-minus-price by
+     fill-before-kickoff / after-kickoff. If any fill lands after kickoff on a pre-game order, register a GG, cancel such
+     orders at kickoff (demo), exclude them from E2 in the report (labelled), and say so in the results doc. Also split all
+     books by GG-564 listing status.
+  5. Confirm the governance-scan forward-test line and the /project panel match the report.
+Results doc: W65_2_forward_test_on_results.md (new section "Read-back W70.1").
+
+END OF BLOCK 70.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 70.2 — EXP-040 logging beside EXP-039 before 10-20 (GG-611)
+
+```
+COMMON RULES - WAVE 70 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+
+WAVE 70.2 - EXP-040 SHADOW LOGGING BEFORE NBA OPENING NIGHT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D3 (the accepted challenger actually logging) and D1 (personnel/availability on an NBA arm). Pillar: DEPTH.
+PERMISSIONS: VPS read (ssh), NEW cron line only if the runner cannot carry it, PR/merge. No order, no stake.
+Authority: new pre-registered shadow arms (2026-10-08); shadow-evaluation cron jobs, NEW lines only (2026-10-02).
+
+WHY
+69.3 pre-registered EXP-040 (NBA player points >=15, projected minutes + injury), the operator accepted it 2026-10-13T00:15Z,
+and the artifact is frozen (sha256 c47cbac7...). No row counts until a logged row carries that sha (GG-611, HIGH). Opening
+night is 10-20; a challenger that starts late loses judged games it can never get back. The 69.3 handoff's "needs a server
+deploy from you" is wrong - deploys are the VPS cron (vps_deploy.sh); this block does it.
+
+PART A - Wire (~45 min)
+  1. Read 05_RESEARCH_EXPERIMENTS/EXP040_* and 12_EXPLORATORY/W69_3_nba_points_minutes_results.md. Build the forecaster from
+     the frozen artifact (refuse to run if the sha differs), the runtime injury fetch (point-in-time, same parser), and the
+     arm in the EXP-039 runner so each run logs EXP-039 and EXP-040 rows side by side, strike 15 only, with artifact sha,
+     injury-snapshot time and minutes projection on every EXP-040 row. Registry: the challenger as the pre-registration says
+     (cell or challenger record) - do not invent a cell the pre-registration does not name.
+  2. Tests: sha guard, no look-ahead (injury snapshot <= evaluation time), row schema, EXP-039 rows unchanged byte-for-byte.
+PART B - Deploy + read back (~35 min)
+  3. Merge; confirm the VPS deploy picked it up (HEAD, the runner's import path). If NBA preseason games remain, run the arm
+     once against the preseason board writing ONLY to the preseason ledger and read the rows back (sha present, injury time
+     present). If none remain, a dry run that prints rows without writing.
+  4. Silent-arm alarm and both dashboards list EXP-040. GG-610 (Jan-Apr 2026 injury coverage 34%) stays a stated caveat.
+Results doc: 12_EXPLORATORY/W69_3_nba_points_minutes_results.md (new section "Wired W70.2").
+
+END OF BLOCK 70.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 70.3 — Main green + the main tree current + 75-day-dark workflows
+
+```
+COMMON RULES - WAVE 70 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+
+WAVE 70.3 - MAIN GREEN; MAIN TREE CURRENT; THE DARK WORKFLOWS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (says so plainly). CI red on main hides the next real regression; a stale main tree means every terminal
+runs an old governance scan. Pillar: none.
+PERMISSIONS: PR/merge, gh api reads, git in the main tree (fast-forward only). No VPS writes. No order.
+
+WHY
+Main has been red since 0d3063e (run 38327393913): 6 failed / 4,036 passed. Four are hook tests (test_block_exists_in_hook,
+test_nonzero_debt_prints_loud_warning_and_exits_zero, test_zero_debt_prints_clean_line_and_exits_zero,
+test_block_never_fails_the_scan_even_with_unparseable_output) still reading .claude/hooks/governance_scan.sh after #235
+moved the full scan to governance_scan_full.sh. Two are test_exploratory_file_is_isolated[fetch_injury_reports.py] and
+[study.py5] from #233 (W69.3's 12_EXPLORATORY files import outside the fence). Separately, Post-Game Resolve and TSS Daily
+Sync have not run for ~75 days (68.1 found it; never investigated).
+
+PART A - Green (~35 min)
+  1. Point the four hook tests at governance_scan_full.sh (and add one test that the wrapper returns in <2s and prints the
+     cached scan). Fix the two isolation failures in the W69.3 files (move the shared import behind the fence or into
+     12_EXPLORATORY), without changing the frozen EXP-040 artifact or its sha. PR; CI green on main; read the run.
+  2. The operator's main tree (/Users/earlignacio/Documents/Claude/Projects/Prediction Markets) is what settings.json's hook
+     runs. If it is clean and on main: git pull --ff-only, and confirm .claude/hooks/governance_scan_full.sh exists there and
+     the wrapper prints "[cached governance scan". If it is dirty or diverged: change nothing, report what is there.
+PART B - The dark workflows (~35 min)
+  3. Post-Game Resolve and TSS Daily Sync: read their YAML and last runs (gh api). For each: is its job now done elsewhere
+     (VPS cron, ADR-0071 settlement)? If yes, say where, and retire the workflow (PR, DECISION_LOG). If no, what has been
+     missing for 75 days and does it touch any book or verdict? Register a GG for anything that does; do not fix it here.
+Results: in the handoff.
+
+END OF BLOCK 70.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 69 prompts — archived 2026-10-13 ~01:00 UTC. 69.1 PARTIAL (#234: GG-586 control arm + GG-587 untracked override merged and deployed; first forward-test numbers read on the box; turn-off tripped on GG-596 (404 = already terminal), switches OFF; settings edit refused). 69.2 DONE (#232: NBA autoflip + date-guarded preseason retire, crons live; settings edit refused). 69.3 DONE (#233: EXP-040 accepted, artifact c47cbac7 frozen; shadow wiring not done, GG-611). Verbatim:
 
 ## ⬛ NOW — Wave 69 · issued 2026-10-13 ~00:00 UTC (10-12 ~17:00 PT) · three MEDIUM blocks · paste all three in parallel

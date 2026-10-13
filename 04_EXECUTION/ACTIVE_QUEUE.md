@@ -3,11 +3,11 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = ca727a3` (2026-10-12 ~18:00 PT, Wave 69 close). PRs, CI and results docs read from GitHub; VPS facts are the Wave 69 terminals' on-box reads (this window has no SSH).
+**Verified against:** `origin/main = a6ad39a` (2026-10-12 ~20:00 PT, Wave 70 close; main CI green). PRs, CI and results docs read from GitHub; VPS facts are the Wave 70 terminals' on-box reads (this window has no SSH).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Claimed through **GG-611** · **T-842** · **ADR-0072** · **EXP-040** · gap log **140 OPEN** (governance scan, 10-13) |
+| Highest GG / T / ADR / EXP | Claimed through **GG-631** (registered to GG-630) · **T-862** · **ADR-0072** · **EXP-040** |
 | Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
 | Shadow arms | **NFL** 12 cells logging, first look projected **2026-11-02**. **MLB postseason** armed and logging (judged n starts 2027). **NHL** 9 cells logging; judged n unreachable this season (GG-514); no NHL T3 score may be read (GG-401). **NBA** preseason rows to a separate labelled ledger; regular season 10-20, cells flip ~10-21. |
@@ -19,7 +19,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 69 closed, Wave 70 issued, 2026-10-12 ~18:15 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 70 closed, Wave 71 issued, 2026-10-12 ~20:15 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -38,7 +38,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
-| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.39** (settle − price on fills; W69.1 on-box) | ~550 fills/arm in 8 weeks | **first numbers (W69)**; switches still OFF: GG-596 fixed (#237) but 8 real MLB-HIT cancel failures keep the trip (GG-623); NFL +0.39 audited: 0 post-kickoff fills, ~4 correlated games, not evidence (GG-624) - W70.1 PARTIAL |
+| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **OFF** since 10-13: 8 real paper MLB-HIT cancel failures (GG-623) hold every book off → 71.1 |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
@@ -51,6 +51,12 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 70 (10-12), in one line:** the bright number didn't survive scrutiny — NFL's +0.39 a fill is real fills before kickoff,
+but on about four games whose bets settle together, so it is not evidence. The cancel "failures" were mostly bookkeeping,
+except 8 that are real: t4-mlb's cancel on MLB player hits fails while the order is still resting, and because the turn-off
+is global, those 8 keep the whole forward test off. EXP-040 is deployed and waits for NBA points markets to list. Main is
+green. **No measure moved** — first wave since 68; Wave 71 is built so all three blocks move one.
 
 **Wave 69 (10-12), in one line:** the forward test produced its first real numbers on the box, NBA opening night is automated
 end to end, and the second depth challenger (NBA points, projected minutes) is accepted and frozen. Then the test switched
@@ -160,23 +166,24 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 70 · issued 2026-10-13 ~01:15 UTC (10-12 ~18:15 PT) · three MEDIUM blocks · paste all three in parallel
+## ⬛ NOW — Wave 71 · issued 2026-10-13 ~03:15 UTC (10-12 ~20:15 PT) · three MEDIUM blocks · paste all three in parallel
 
-Wave 69 verified (Sequencing track). This wave's rule: **turn the forward test back on and make its numbers trustworthy;
-get the NBA points challenger logging before opening night; make main green.** Every demo-only step is done by the block,
-not handed back. Surfaces: 70.1 = demo-fill report/turn-off, VPS switches, forward-test read-back; 70.2 = NBA player-points
-runner + EXP-040 wiring; 70.3 = failing tests, hook tests, scheduled workflows. Only 70.1 may change order behaviour.
+Wave 70 verified (Sequencing track). **Wave 70 moved no measure** (E unchanged — switches still off; D3 deployed, 0 rows;
+main green is plumbing). One wave is not drift; two is. This wave's rule: **turn the forward test on for real, make NBA
+opening night (10-20) safe end to end, and open the next depth class on NBA games.** Surfaces: 71.1 = demo cancel path +
+forward-test switches; 71.2 = old NBA pipeline, NBA data on the VPS, scan write path; 71.3 = 12_EXPLORATORY only.
+Only 71.1 may change order behaviour.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 70.1 | Re-arm the forward test (GG-596) and audit the NFL fills | EXECUTION E1/E2/E3 | ⬜ | — |
-| 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | 🟨 PARTIAL | #238 + #241 merged, VPS d940bf46 read back. Arm validated by harness (12/12 forecasts, sha + injury fields); no ledger rows until KXNBAPTS markets list. GG-620/621 |
-| 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ✅ DONE | #239 merged (main green: hook + exploratory tests fixed); TSS workflow retired; Post-Game Resolve stays paused, GG-630 (verify VPS NBA resolve before 10-20); main tree dirty, left alone |
+| 71.1 | Fix the MLB-HIT cancel path (GG-623); turn the forward test on | EXECUTION E1/E2/E3 | ⬜ | — |
+| 71.2 | NBA opening night: nothing writes where it shouldn't, nothing starves | BREADTH B1 (protects +12 game cells, 3 + 1 points arms from 10-20) | ⬜ | — |
+| 71.3 | NBA game markets: availability challenger (full injury coverage) | DEPTH D1 (NBA games: team → team + personnel), D3 | ⬜ | — |
 
-### 70.1 — Re-arm the forward test (GG-596) and audit the NFL fills
+### 71.1 — Fix the MLB-HIT cancel path (GG-623); turn the forward test on
 
 ```
-COMMON RULES - WAVE 70 (read first; they bind this block)
+COMMON RULES - WAVE 71 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -206,11 +213,14 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 71.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (71.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
 - PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
   under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
   gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
@@ -219,43 +229,44 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W71_<n>.md (docs-only push).
 
-WAVE 70.1 - RE-ARM THE FORWARD TEST; AUDIT THE NFL FILLS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION E1/E2/E3 - forward-test numbers that are on, gradable (control arm live) and trustworthy. Pillar: EXECUTION.
-PERMISSIONS: VPS read (ssh), delete of the untracked deploy/demo_fill.override.env on the VPS (re-arm), PR/merge, demo orders
-under ADR-0072, read-only Kalshi DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG.
+WAVE 71.1 - FIX THE MLB-HIT CANCEL PATH; TURN THE FORWARD TEST ON. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - the forward test running on every book with both arms. Pillar: EXECUTION.
+PERMISSIONS: VPS read (ssh), demo cancels of the bot's own resting demo orders, delete of the untracked
+deploy/demo_fill.override.env (re-arm), idle-window t4-mlb restart if the fix is in its imports, PR/merge, demo orders under
+ADR-0072, read-only Kalshi DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; IDLE-WINDOW SERVICE RESTARTS.
 
 WHY
-69.1 read the first numbers on the box (W65_2_forward_test_on_results.md, "Read-back 10-13"): paper/MLB 17 orders 5 fills
-+0.07; shadow/MLB 363/75 -0.20; shadow/NFL 1,135/231 +0.39. The turn-off then tripped on cancel_fail_rate 1.0 - every
-"failed" cancel was HTTP 404 on an order already terminal (GG-596) - so both switches are OFF and the GG-586 control arm has
-never placed an order. Separately, +0.39 settle-minus-price on 231 NFL fills is too good to take at face value: a pre-game
-order that rests into or past kickoff and fills against a moved book would look exactly like this.
+70.1 fixed the 404 artifact (GG-596, #237) but the turn-off still trips on 8 REAL failures: paper KXMLBHIT cancels from t4-mlb
+returned 404 while a GET showed the order resting, then 503 on retry (GG-623). 7 paper orders are still resting on demo. NFL
+cancels "via the same path" succeeded 906 times, so the difference is in t4-mlb's cancel, not in Kalshi. The turn-off is
+global: one book's broken cancel holds the WHOLE forward test (NFL, NHL, NBA shadow too) off, and the control arm (GG-586) has
+never placed an order. MLB-HIT markets end with the World Series - this has days, not weeks.
 
-PART A - Fix and re-arm (~35 min)
-  1. GG-596: a cancel returning 404 is classified by a GET of the order: filled / canceled / expired = already_terminal (not a
-     failure). Only a non-404 error, or a 404 whose GET still shows resting, counts toward cancel_fail_rate. Tests with the
-     real 404 body. Re-run the report over the existing days: the turn-off no longer trips on 10-13. PR, merge, read back.
-  2. Re-arm (demo only, plumbing - do it): delete /opt/prediction-market-bot/deploy/demo_fill.override.env; read back
-     is_enabled() True for both switches from the running loaders and that the tracked tree is clean.
-PART B - Read back + audit (~45 min)
-  3. After the next scheduled shadow runs (NHL plays nightly; NFL Thu 10-15): the control arm (GG-586) has placed orders on
-     SHADOW cells, both arms appear in the report, same assignment hash/share. Close GG-586/570/571 only on that read-back.
-  4. NFL fill audit, all 231+ fills: fill time vs order time vs kickoff vs settlement. Split settle-minus-price by
-     fill-before-kickoff / after-kickoff. If any fill lands after kickoff on a pre-game order, register a GG, cancel such
-     orders at kickoff (demo), exclude them from E2 in the report (labelled), and say so in the results doc. Also split all
-     books by GG-564 listing status.
-  5. Confirm the governance-scan forward-test line and the /project panel match the report.
-Results doc: W65_2_forward_test_on_results.md (new section "Read-back W70.1").
+PART A - Root cause + fix (~45 min)
+  1. Compare, field by field, the cancel request t4-mlb sends (process config, EnvironmentFile, client instance, base URL,
+     key/subaccount, order id vs client_order_id, path) with the shadow runners' cancel that succeeds. kalshi_client.py flags
+     cancel_order UNVERIFIED - verify it against the demo API. Reproduce with one of the 7 resting orders (read-only GET first).
+  2. Fix the cause, tests that pin the exact request, PR, merge, deploy (idle-window restart if t4-mlb imports changed).
+     Cancel the 7 resting paper orders through the fixed path and read back canceled.
+  3. If the cause is a demo outage you cannot fix (503 persists on every client): record it with timestamps, and do NOT
+     change the turn-off's scope yourself - that is a pre-registration change; write one line for the operator with your
+     recommendation and stop Part B.
+PART B - Turn it on and read it back (~40 min)
+  4. Re-run the report: the turn-off no longer trips. Re-arm (plumbing - do it): delete the override; is_enabled() True.
+  5. After the next NHL night (and the NFL 10-15 slate if inside the window): both arms placed orders on SHADOW cells, same
+     hash/share; report per book/sport/arm; GG-564 listing-status split; the scan line and /project panel match the report.
+     Close GG-586/570/571/623 only on that read-back.
+Results doc: W65_2_forward_test_on_results.md (new section "Read-back W71.1").
 
-END OF BLOCK 70.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 71.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 70.2 — EXP-040 logging beside EXP-039 before 10-20 (GG-611)
+### 71.2 — NBA opening night: nothing writes where it shouldn't, nothing starves
 
 ```
-COMMON RULES - WAVE 70 (read first; they bind this block)
+COMMON RULES - WAVE 71 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -285,11 +296,14 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 71.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (71.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
 - PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
   under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
   gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
@@ -298,40 +312,42 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W71_<n>.md (docs-only push).
 
-WAVE 70.2 - EXP-040 SHADOW LOGGING BEFORE NBA OPENING NIGHT. Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH D3 (the accepted challenger actually logging) and D1 (personnel/availability on an NBA arm). Pillar: DEPTH.
-PERMISSIONS: VPS read (ssh), NEW cron line only if the runner cannot carry it, PR/merge. No order, no stake.
-Authority: new pre-registered shadow arms (2026-10-08); shadow-evaluation cron jobs, NEW lines only (2026-10-02).
+WAVE 71.2 - NBA OPENING NIGHT (10-20) SAFE END TO END. Repo: eignacio1/prediction-market-bot.
+PURPOSE: BREADTH B1 - protect the move 69.2 built: 12 NBA game cells flip on 10-21, EXP-039 (3 cells) + EXP-040 log points rows.
+Pillar: BREADTH. PERMISSIONS: VPS read (ssh), PR/merge, NEW cron line only. No order, no stake, no edit of an existing cron line.
+Authority: shadow-evaluation cron jobs, NEW lines only (2026-10-02).
 
 WHY
-69.3 pre-registered EXP-040 (NBA player points >=15, projected minutes + injury), the operator accepted it 2026-10-13T00:15Z,
-and the artifact is frozen (sha256 c47cbac7...). No row counts until a logged row carries that sha (GG-611, HIGH). Opening
-night is 10-20; a challenger that starts late loses judged games it can never get back. The 69.3 handoff's "needs a server
-deploy from you" is wrong - deploys are the VPS cron (vps_deploy.sh); this block does it.
+Three things can break 10-20 quietly. (1) GG-630: the OLD NBA paper crons (run_paper_trade.py, run_resolve.py) are still live
+on the VPS. The old NBA book is FROZEN (ADR-0035/0037; CLAUDE.md dual-ledger) - when NBA markets list they could write into a
+frozen book, and nothing proves resolve works. Enforcing the freeze is implementing a standing decision, not a new one.
+(2) GG-621: EXP-039/040 early-season rows depend on players_2026.json, hand-backfilled on the VPS and in no deploy or check -
+a rebuild or a new box silently starves both arms. (3) The governance scan rewrites tracked 03_DECISIONS/OPERATOR_CONSOLE.md
+every 10 minutes in the operator's main tree, so that tree is always dirty and a future pull of that file will fail.
 
-PART A - Wire (~45 min)
-  1. Read 05_RESEARCH_EXPERIMENTS/EXP040_* and 12_EXPLORATORY/W69_3_nba_points_minutes_results.md. Build the forecaster from
-     the frozen artifact (refuse to run if the sha differs), the runtime injury fetch (point-in-time, same parser), and the
-     arm in the EXP-039 runner so each run logs EXP-039 and EXP-040 rows side by side, strike 15 only, with artifact sha,
-     injury-snapshot time and minutes projection on every EXP-040 row. Registry: the challenger as the pre-registration says
-     (cell or challenger record) - do not invent a cell the pre-registration does not name.
-  2. Tests: sha guard, no look-ahead (injury snapshot <= evaluation time), row schema, EXP-039 rows unchanged byte-for-byte.
-PART B - Deploy + read back (~35 min)
-  3. Merge; confirm the VPS deploy picked it up (HEAD, the runner's import path). If NBA preseason games remain, run the arm
-     once against the preseason board writing ONLY to the preseason ledger and read the rows back (sha present, injury time
-     present). If none remain, a dry run that prints rows without writing.
-  4. Silent-arm alarm and both dashboards list EXP-040. GG-610 (Jan-Apr 2026 injury coverage 34%) stays a stated caveat.
-Results doc: 12_EXPLORATORY/W69_3_nba_points_minutes_results.md (new section "Wired W70.2").
+PART A - Freeze + data (~45 min)
+  1. GG-630: read run_paper_trade.py / run_resolve.py and their cron lines. Put a freeze guard in CODE (not a cron edit):
+     refuse to open a position in the frozen NBA book, log one line, exit 0. run_resolve may still settle anything already open
+     (0 open today - confirm). Tests. PR, merge, read back on the box with a dry run.
+  2. GG-621: make players_2026.json reproducible - the backfill runs from the deploy/bootstrap path (or the daily cron gains
+     --seasons 2026 2027 via a NEW line), plus a check in the silent-arm/scan output that the file exists with >1,000 rows.
+PART B - Rehearsal + scan (~40 min)
+  3. Dress rehearsal on the box, no writes to judged ledgers: run each 10-20 path once in dry-run against the current
+     (preseason or empty) board - EXP-038 game runner, EXP-039+040 points runner, nba_cell_autoflip, preseason retire - and
+     paste what each would do on 10-20. Anything that would error or write nothing: fix it now.
+  4. The scan writes OPERATOR_CONSOLE output to a git-ignored path (or the console is generated only in CI/worktrees), so the
+     main tree stays clean. Tests. Note it in the handoff for the operator's main tree.
+Results: 11_MEMORY_HANDOFF handoff + a "10-20 rehearsal" section in the 69.2 results/handoff doc you find for EXP-038/039.
 
-END OF BLOCK 70.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 71.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 70.3 — Main green + the main tree current + 75-day-dark workflows
+### 71.3 — NBA game markets: availability challenger (full injury coverage)
 
 ```
-COMMON RULES - WAVE 70 (read first; they bind this block)
+COMMON RULES - WAVE 71 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -361,11 +377,14 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 71.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (71.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
 - PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
   under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
   gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
@@ -374,48 +393,56 @@ COMMON RULES - WAVE 70 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W71_<n>.md (docs-only push).
 
-WAVE 70.3 - MAIN GREEN; MAIN TREE CURRENT; THE DARK WORKFLOWS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING (says so plainly). CI red on main hides the next real regression; a stale main tree means every terminal
-runs an old governance scan. Pillar: none.
-PERMISSIONS: PR/merge, gh api reads, git in the main tree (fast-forward only). No VPS writes. No order.
+WAVE 71.3 - NBA GAME MARKETS: A PERSONNEL/AVAILABILITY CHALLENGER. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D1 (NBA games condition on team only today -> team + personnel) and D3 (+1 only if a pre-registration is
+earned and accepted). Pillar: DEPTH. PERMISSIONS: none on the VPS; 12_EXPLORATORY only, plus a PROPOSED pre-registration.
+No registry, runner, ledger or cron change.
 
 WHY
-Main has been red since 0d3063e (run 38327393913): 6 failed / 4,036 passed. Four are hook tests (test_block_exists_in_hook,
-test_nonzero_debt_prints_loud_warning_and_exits_zero, test_zero_debt_prints_clean_line_and_exits_zero,
-test_block_never_fails_the_scan_even_with_unparseable_output) still reading .claude/hooks/governance_scan.sh after #235
-moved the full scan to governance_scan_full.sh. Two are test_exploratory_file_is_isolated[fetch_injury_reports.py] and
-[study.py5] from #233 (W69.3's 12_EXPLORATORY files import outside the fence). Separately, Post-Game Resolve and TSS Daily
-Sync have not run for ~75 days (68.1 found it; never investigated).
+The 12 NBA game cells (EXP-038, frozen) know only team strength. The injury feed 69.3/70.2 built for NBA points now exists,
+and GG-620 found the "34% coverage" was a URL rename (2025-12-22), not missing data - full coverage is fetchable. Who is out
+is the largest single thing a pre-game NBA line moves on. The cells' first look is 150 games/cell, months away: a challenger
+pre-registered now gets its own judged clock from opening night. Expect thinner edge vs the market than vs frozen; write
+that into any pre-registration.
 
-PART A - Green (~35 min)
-  1. Point the four hook tests at governance_scan_full.sh (and add one test that the wrapper returns in <2s and prints the
-     cached scan). Fix the two isolation failures in the W69.3 files (move the shared import behind the fence or into
-     12_EXPLORATORY), without changing the frozen EXP-040 artifact or its sha. PR; CI green on main; read the run.
-  2. The operator's main tree (/Users/earlignacio/Documents/Claude/Projects/Prediction Markets) is what settings.json's hook
-     runs. If it is clean and on main: git pull --ff-only, and confirm .claude/hooks/governance_scan_full.sh exists there and
-     the wrapper prints "[cached governance scan". If it is dirty or diverged: change nothing, report what is there.
-PART B - The dark workflows (~35 min)
-  3. Post-Game Resolve and TSS Daily Sync: read their YAML and last runs (gh api). For each: is its job now done elsewhere
-     (VPS cron, ADR-0071 settlement)? If yes, say where, and retire the workflow (PR, DECISION_LOG). If no, what has been
-     missing for 75 days and does it touch any book or verdict? Register a GG for anything that does; do not fix it here.
-Results: in the handoff.
+PART A - Data + plan frozen before fitting (~35 min)
+  1. Re-fetch 2025-26 injury reports across the rename (GG-620) with the existing parser; report coverage by month.
+  2. Write the plan in 12_EXPLORATORY BEFORE any fit: feature (minutes-weighted availability lost, per team, point-in-time
+     from the last report before the evaluation slot), model class (frozen EXP-038 + the feature, same fit procedure),
+     seasons, splits, metric (ΔBrier vs frozen with CI; market comparison where Kalshi mids exist, reported never judged).
+     Commit the plan.
+PART B - Fit once + verdict (~45 min)
+  3. Fit once, rolling origin, no look-ahead tests. Report ΔBrier vs frozen per cell family (moneyline, spread, total) with
+     CI, and vs market where priced. One run; no tuning after seeing results.
+  4. If it beats frozen with a CI excluding zero on a family: write a PROPOSED pre-registration (EXP-0xx; strike/family named,
+     judged n, modal outcome, "thinner edge vs market expected") for the operator to accept - one line in the handoff. If not:
+     a NO with the numbers, and D1 stays. Either is a result.
+Results doc: 12_EXPLORATORY/<date>_nba_games_availability/results.md.
 
-END OF BLOCK 70.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 71.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 70 — ISSUED 2026-10-13 ~01:15 UTC · three MEDIUM blocks · demo actions done by the blocks, not handed back
+### ⏳ WAVE 71 — ISSUED 2026-10-13 ~03:15 UTC · three MEDIUM blocks · W70 moved no measure — 71 must
 
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
-| 70.1 | Re-arm forward test (GG-596); NFL fill audit | E1–E3 | ⬜ | — |
-| 70.2 | EXP-040 logging beside EXP-039 (GG-611) | D3, D1 | 🟨 | Wired, deployed; first rows at first KXNBAPTS board |
-| 70.3 | Main green; main tree current; dark workflows | PLUMBING | ⬜ | — |
+| 71.1 | Fix MLB-HIT cancel path (GG-623); forward test on | E1–E3 | ⬜ | — |
+| 71.2 | NBA opening night safe end to end (GG-630/621) | B1 | ⬜ | — |
+| 71.3 | NBA games availability challenger | D1, D3 | ⬜ | — |
+
+### ✅ WAVE 70 — CLOSED 2026-10-13 ~03:00 UTC (verified on GitHub at `a6ad39a`, main CI green) · moved: **no measure** (E unchanged, switches off; D3 2 deployed, 0 rows); main green
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 70.1 | Re-arm forward test; NFL fill audit | 🟨 PARTIAL | #237: GG-596 fixed + deployed — shadow MLB 360 / NFL 229 "failures" were already terminal. Re-arm withheld: **8 real paper KXMLBHIT cancel failures** (404 while resting, then 503; GG-623); 7 orders still resting. NFL audit: **0 post-kickoff fills**, all immediate taker crosses, +0.398 on 137 settled fills — **~4 correlated games, not E2 evidence** (GG-624) |
+| 70.2 | EXP-040 logging beside EXP-039 | 🟨 PARTIAL | #238/#241: wired + deployed (d940bf46), harness 12/12 with sha + injury fields; 0 rows until KXNBAPTS lists. GG-620 (34% coverage was a URL rename), GG-621 (2026 box scores hand-backfilled, in no deploy) |
+| 70.3 | Main green; dark workflows | ✅ | #239 main green; #240 TSS Daily Sync retired (VPS cron does it); Post-Game Resolve paused on purpose since 7-29 — old NBA crons still live (GG-630) |
 
 ### ✅ WAVE 69 — CLOSED 2026-10-13 ~01:00 UTC (verified on GitHub at `ca727a3`) · moved: **E1–E3 first forward-test numbers** (one day; not yet meaningful); D3 1 → 2 (EXP-040 accepted, frozen, not yet logging); B1 unmoved until 10-21
 

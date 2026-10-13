@@ -2159,3 +2159,9 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - #238 was merged with CI red on 6 pre-existing, unrelated failures (same 6 as prior main run); #241 merged green. t4-mlb stayed active, not restarted (pregame_shadow is not imported by it).
 - Finding: injury PDF URL rename 2025-12-22 explains GG-610's 34% coverage (GG-620). VPS lacked 2026 player box scores; backfilled by hand (GG-621).
 - Pre-registered modal outcome unchanged. Purpose: DEPTH D3/D1.
+
+## 2026-10-13 — Wave 70 closed (verified at a6ad39a, main CI green); Wave 71 issued
+
+- Wave 70: 70.1 PARTIAL (#237 GG-596 fixed; re-arm withheld on 8 real paper KXMLBHIT cancel failures, GG-623; NFL +0.398 on ~4 correlated games ruled non-evidence, GG-624), 70.2 PARTIAL (#238/#241 EXP-040 wired + deployed, 0 rows until KXNBAPTS lists; GG-620/621), 70.3 DONE (#239 main green; #240 TSS Daily Sync retired; GG-630). No distance measure moved.
+- Window rulings on the handoffs' "operator decisions": (1) 70.1 "re-arm anyway or fix GG-623 first" — fix first; a choice between demo fixes is plumbing, not an operator call. (2) 70.3 GG-630 "confirm the old NBA paper pipeline should run on 10-20" — the old NBA book is frozen by standing decision (ADR-0035/0037); 71.2 enforces the freeze with a code guard. Neither went to the operator. Wave 71 common rules now say which changes do go to him (pre-registration, frozen artifact/book, real capital).
+- Wave 71: 71.1 EXECUTION (GG-623 root cause, re-arm, control-arm read-back), 71.2 BREADTH (NBA 10-20 safe: frozen-book guard, players_2026 reproducible, dry-run rehearsal, scan stops dirtying the main tree), 71.3 DEPTH (NBA game-market availability challenger on full injury coverage; pre-registration only if earned).
