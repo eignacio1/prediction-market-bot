@@ -78,3 +78,34 @@ def test_w67_1_nba_player_points_is_its_own_arm(tmp_path):
     from prediction_market_bot.pregame_shadow import silent_arms as sa
     keys = [i.spec.key for i in sa.load_inputs(tmp_path)]
     assert "nba_player_points_shadow" in keys and "nba_shadow" in keys
+
+
+class TestDataPrereqs:
+    """GG-621 / W71.2: players_2026.json must exist with >1,000 games or EXP-039/040 starve silently."""
+
+    def _write(self, tmp_path, n):
+        import json
+        p = tmp_path / "data" / "raw" / "nba"
+        p.mkdir(parents=True)
+        (p / "players_2026.json").write_text(json.dumps({"season": 2026, "games": {str(i): {} for i in range(n)}}))
+
+    def test_missing(self, tmp_path):
+        from prediction_market_bot.pregame_shadow.silent_arms import data_prereqs
+        assert data_prereqs(tmp_path)[0]["status"] == "missing"
+
+    def test_thin(self, tmp_path):
+        from prediction_market_bot.pregame_shadow.silent_arms import data_prereqs
+        self._write(tmp_path, 1000)
+        assert data_prereqs(tmp_path)[0]["status"] == "thin"
+
+    def test_ok(self, tmp_path):
+        from prediction_market_bot.pregame_shadow.silent_arms import data_prereqs
+        self._write(tmp_path, 1231)
+        d = data_prereqs(tmp_path)[0]
+        assert d["status"] == "ok" and d["rows"] == 1231
+
+    def test_unreadable(self, tmp_path):
+        from prediction_market_bot.pregame_shadow.silent_arms import data_prereqs
+        self._write(tmp_path, 1)
+        (tmp_path / "data/raw/nba/players_2026.json").write_text("{not json")
+        assert data_prereqs(tmp_path)[0]["status"] == "unreadable"

@@ -185,9 +185,29 @@ def _impute(X: np.ndarray, medians: np.ndarray) -> np.ndarray:
     return X
 
 
+# GG-630 / W71.2: the old NBA paper book is FROZEN (ADR-0035/ADR-0037). This pipeline fetches
+# live KXNBAPTS markets and would open positions in that book once the 2026-27 season lists.
+# Enforced in code, not in cron: no order path is reachable while the constant is True.
+# Un-freezing requires a superseding ADR, not an edit of this line alone.
+NBA_BOOK_FROZEN = True
+
+
+def _frozen_book_guard() -> bool:
+    """True when this run must not open positions (frozen NBA book). Logs one line."""
+    if not NBA_BOOK_FROZEN:
+        return False
+    print("[PIPE-03] FROZEN: old NBA paper book is frozen (ADR-0035/0037, GG-630) - "
+          "no positions opened. Exiting 0.")
+    return True
+
+
 def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     logger = AuditLogger(LOG_DIR / "audit.jsonl", min_severity="INFO")
+    if _frozen_book_guard():
+        logger.info("PIPE-03", "frozen_book_refused",
+                    payload={"session_id": SESSION_ID, "game_date": GAME_DATE, "gg": "GG-630"})
+        return
 
     # Kalshi client — loads RSA key if VENUE_PRIVATE_KEY_PATH is set (ADR-0008)
     try:

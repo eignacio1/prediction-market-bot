@@ -276,9 +276,37 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
     ]
 
 
+# GG-621 / W71.2: static inputs an arm silently starves without. A missing file writes no error anywhere - the arm
+# just logs nothing - so the file's existence and size are checked here, independent of any game being in window.
+DATA_PREREQS = (
+    ("nba_player_box_2026", "data/raw/nba/players_2026.json", "games", 1000,
+     "EXP-039/EXP-040 early-season rows (restore: scripts/nba_player_box_backfill.py --seasons 2026)"),
+)
+
+
+def data_prereqs(repo: Path) -> list[dict]:
+    out = []
+    for key, rel, field, min_rows, why in DATA_PREREQS:
+        p = Path(repo) / rel
+        rows, status = 0, "missing"
+        if p.exists():
+            try:
+                d = json.loads(p.read_text())
+                rows = len(d.get(field, {})) if isinstance(d, dict) else 0
+                status = "ok" if rows > min_rows else "thin"
+            except (OSError, ValueError):
+                status = "unreadable"
+        text = (f"{key}: {rel} {status} ({rows} {field}, need >{min_rows}) - {why}"
+                if status != "ok" else f"{key}: {rel} ok ({rows} {field})")
+        out.append({"key": key, "path": rel, "status": status, "rows": rows, "min_rows": min_rows, "text": text})
+    return out
+
+
 def compute(repo: Path, logs: Optional[Path] = None, now: Optional[datetime] = None) -> dict:
     now = _aware(now or datetime.now(timezone.utc))
-    return silent_arms(load_inputs(repo, logs, now), now)
+    res = silent_arms(load_inputs(repo, logs, now), now)
+    res["data_prereqs"] = data_prereqs(repo)
+    return res
 
 
 def compute_isolated(repo: Path, logs: Optional[Path] = None, timeout: int = 40) -> dict:
@@ -313,3 +341,5 @@ if __name__ == "__main__":   # `python -m prediction_market_bot.pregame_shadow.s
     else:
         for a in res["arms"]:
             print(f"[{a['status'].upper():7}] {a['text']}")
+        for d in res.get("data_prereqs", []):
+            print(f"[{('OK' if d['status'] == 'ok' else 'MISSING' if d['status'] == 'missing' else 'THIN'):7}] {d['text']}")
