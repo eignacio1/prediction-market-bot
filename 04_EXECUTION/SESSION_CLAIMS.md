@@ -874,3 +874,4 @@
 | 2026-10-13T23:34:35Z | T-870..T-872, GG-640..GG-641 | W71.3 MEDIUM - NBA games availability challenger (12_EXPLORATORY). PURPOSE: DEPTH D1 (team -> team+personnel), D3 +1 only if pre-reg earned |
 | 2026-10-13T23:35:31Z | T-890..T-893, GG-650..GG-651 | W71.2 MEDIUM - NBA opening night safe end to end (freeze old NBA crons, players_2026 repro, rehearsal, scan write path). PURPOSE: BREADTH B1 (protects +12 NBA game cells + EXP-039/040 rows from 10-20) |
 | 2026-10-13T23:35:58Z | T-880..T-882, GG-645..GG-647 | W71.1 STANDARD - fix MLB-HIT cancel path (GG-623) + turn forward test on. PURPOSE: EXECUTION E1/E2/E3 |
+| 2026-10-13T23:54:30Z | T-900..T-902, GG-660..GG-679 | W71.H1 LARGE - full code hygiene audit, read-only on code. PURPOSE: PLUMBING (no pillar; protects PROOF/EXECUTION data trust) |
