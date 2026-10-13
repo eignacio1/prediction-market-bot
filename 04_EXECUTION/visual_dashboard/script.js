@@ -79,6 +79,7 @@ const ARMS = [
   ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Judged sample not reachable this season (GG-514)"],
   ["NBA game markets",12,"Preseason","warn","EXP-038","150 games per cell","Regular season from 10-20; cells flip ~10-21"],
   ["NBA player points T1–T3",3,"Logging","good","EXP-039","after opening night","Live since 10-11 (67.1); regular-season rows from 10-20"],
+  ["NBA player points ≥15 + minutes/injury",1,"Logging","good","EXP-040","n=300 player-games","Wired 70.2: shadow, beside EXP-039; rows from first KXNBAPTS board; GG-610 caveat"],
 ];
 const CAL = [
   ["10-12 00:00Z","First fill-fix forward-test orders (MLB game); 67.2 reads day one"],
