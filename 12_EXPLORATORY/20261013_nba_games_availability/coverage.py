@@ -21,7 +21,9 @@ for s in (2023, 2024, 2025, 2026):
         r[1] += F.snapshot(old, st) is not None
         r[2] += F.snapshot(merged, st) is not None
 out = {m: {"games": a, "before": b, "after": c} for m, (a, b, c) in sorted(res.items())}
-(HERE / "coverage.json").write_text(json.dumps(out, indent=1))
+sys.path.insert(0, str(HERE.parent))
+from _fence import safe_out
+safe_out(HERE / "coverage.json").write_text(json.dumps(out, indent=1))
 print("month   games  before(W69.3)  after(GG-620 fix)")
 for m, v in out.items():
     if m >= "2025-10":
