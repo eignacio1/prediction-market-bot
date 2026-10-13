@@ -2122,3 +2122,7 @@ Decision: a daily demo-only report (cron 25 11 * * *) computes per book/sport/ar
 
 ### 2026-10-13 — W69.3: EXP-040 accepted (operator)
 Operator accepted PROPOSED EXP-040-P (NBA player points ≥15 projected-minutes+injury challenger), judged vs market, strike 15 only. Pre-registration: `05_RESEARCH_EXPERIMENTS/EXP040_NBA_PLAYER_POINTS_MINUTES_PREREGISTRATION_2026-10-12.md`. Artifact freeze and shadow wiring not yet done; no row counts until then. Evidence: tiny Brier gain (≤0.001), 2026 injury coverage 34%.
+
+## 2026-10-12 — EXP-040 artifact frozen (W69.3)
+
+Frozen `models/nba_player_points_minutes_v1.json` sha256 `c47cbac7378f160f2ed1cd31807663193cd4ce92df5ed00da6ed253ec3548527` (train 2023-24, calibrate 2025, strike 15 only). Shadow wiring deferred as GG-611 (W69.2 collision risk, VPS deploy forbidden by permissions); injury-history gap registered as GG-610. No row counts until wiring lands.
