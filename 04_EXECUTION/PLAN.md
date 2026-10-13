@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-13T02:00:00Z (T-853 — W70.1 PARTIAL - GG-596 fix merged+deployed; re-arm withheld (real MLB-HIT cancel fails, GG-623); NFL +0.39 not edge (GG-624)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261013T0200Z_W70_1.md` for full session detail.
+**Last reviewed:** 2026-10-13T02:35:00Z (T-850 — W70.2 PARTIAL - EXP-040 wired beside EXP-039 + deployed (d940bf46); 0 rows until KXNBAPTS lists; GG-620/621) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261013_W70_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

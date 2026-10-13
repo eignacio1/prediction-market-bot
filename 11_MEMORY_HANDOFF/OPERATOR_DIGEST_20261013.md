@@ -12,3 +12,10 @@
 - The switch is still off on purpose: 8 real cancels on MLB hit orders genuinely failed (the demo exchange returned errors), so turning it back on would just trip again. Demo money only; nothing real at risk.
 - The NFL "+0.39 per fill" is not proof of anything: no fills happened after kickoff, but it comes from about 4 correlated games.
 - Your call: re-arm anyway, or diagnose the MLB cancel problem first (recommended).
+
+## W70.2 - NBA points challenger switched on (shadow only)
+- The second NBA points model (minutes + injuries) now runs next to the first one on the server. It only records forecasts. No orders, no money.
+- It has recorded nothing yet: Kalshi has not listed the NBA points markets. The first rows should appear around opening night (10-20).
+- Found why injury data looked 34% complete: the league renamed its report files in December. Live fetch fixed. The old study still uses the incomplete data.
+- The server was also missing last season's player stats, so both NBA points models would have stayed silent. Fixed by hand; not yet automatic.
+- Real money at risk: zero.
