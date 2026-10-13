@@ -30,3 +30,17 @@ Rule: ≥1 strike with corrected CI excluding zero favourably, favourable in bot
 
 ## Next mechanism if the operator declines
 Fix the 2026 report coverage (source gap) and re-test the injury increment over `minutes_box` as the single pre-specified contrast; or switch to a true starter/lineup feed.
+
+## Wired W70.2 (2026-10-12/13)
+
+**What was wired (PR #238, merged; VPS HEAD 62443040 read back over ssh).** `NBAPlayerPointsMinutesForecaster` is built from `models/nba_player_points_minutes_v1.json` and refuses to construct unless sha256 == `c47cbac7...548527`. Runtime point-in-time injury fetch (`c1_signal_ingestion/nba_injury_reports.py`): same ET 2-hourly grid as the study, slot <= min(now, tip-4h), asserted in code; none available -> `inj_missing=1`. The arm runs inside `scripts/run_nba_player_points_shadow.py` after EXP-039 (existing cron lines, no new cron), strike 15 only, ledger `exp_output/PREGAME_SHADOW_EXP040/NBAMIN_*.jsonl` (preseason dir in preseason mode). Every row carries `artifact_sha256`, `injury_snapshot`, `injury_snapshot_utc`, `mean_points` and the minutes features. EXP-039 rows are byte-identical (`row_extra` default is empty; tested). No stake, order or kelly change; EXP-040 does not stake. Silent-arm spec and D1 manifest entry added. Tests: `tests/test_exp040_minutes_arm.py`.
+
+**Finding: GG-610's "34% coverage" is a URL problem.** The league renamed the injury PDFs on 2025-12-22 (`..._{HH}_{MM}{AM|PM}.pdf`, every 15 min); the old name returns 403 after that date. PR #241 fixes the live fetch only (`url_for`, User-Agent header, `pypdf` dependency). The study code and its coverage figure are untouched; a re-test of the injury increment with full 2026 coverage is now possible and is the "next mechanism" above.
+
+**Finding: VPS had no 2025-26 player box scores,** so EXP-039 and EXP-040 would have logged nothing. Backfilled `data/raw/nba/players_2026.json` (1231 box scores). The 2026 store is static; the daily cron only refreshes 2027.
+
+**Read-back.** Direct forecaster harness on the VPS against the real schedule: 12 of 12 forecasts carried the artifact sha and injury fields (injury time null: no report published). No ledger rows exist yet: no KXNBAPTS markets are open, so the preseason run and dry runs wrote nothing.
+
+**Caveats.** Preseason has no published injury reports, so preseason rows will have `inj_missing=1`. `min_rank` is degenerate early (21-day rotation window empty). Parser quirk ("og" for OG Anunoby) is only partly covered by the token-subset fallback. 2027 store is empty, so early-season rows lean on 2025-26 history. Merge of #238 went in with CI red on 6 pre-existing, unrelated failures (same 6 as the prior main run).
+
+**Pre-registered modal outcome unchanged:** edge vs market negative to zero; first look n=300 player-games.
