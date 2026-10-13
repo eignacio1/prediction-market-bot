@@ -38,7 +38,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
-| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.39** (settle − price on fills; W69.1 on-box) | ~550 fills/arm in 8 weeks | **first numbers (W69)**; switches OFF on GG-596 → 70.1 re-arms; NFL +0.39 audited before it is believed |
+| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.39** (settle − price on fills; W69.1 on-box) | ~550 fills/arm in 8 weeks | **first numbers (W69)**; switches still OFF: GG-596 fixed (#237) but 8 real MLB-HIT cancel failures keep the trip (GG-623); NFL +0.39 audited: 0 post-kickoff fills, ~4 correlated games, not evidence (GG-624) - W70.1 PARTIAL |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |

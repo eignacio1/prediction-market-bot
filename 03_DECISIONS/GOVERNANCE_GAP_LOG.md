@@ -4023,3 +4023,15 @@ W62.3's retire script stripped only the EXP-038 PRESEASON block. Fixed W69.2 (#2
 **Status:** OPEN · **Severity:** MEDIUM
 
 W70.3 (T-860) investigated the "dark ~75 days" workflows. Not an accident: T-399 (2026-07-29) deliberately commented out the `schedule:` of `post_game_resolve.yml` and `tss_daily_sync.yml` because the old NBA book was dark; last scheduled success 2026-07-28. State read 2026-10-12: VPS crons for the old NBA pipeline are LIVE (`run_pregame.py` 17:55/01:25, `run_paper_trade.py` 18:00/01:30 `PAPER_YES_ONLY`, `run_resolve.py` 06:00). `paper_early_cron.log` = "No KXNBAPTS markets available"; `resolve_cron.log` = 0 open positions. Nothing is stuck today. Risk: when KXNBAPTS markets return (2026-10-20) `run_paper_trade.py` can open positions in the old NBA paper book, and resolving them was moved to GitHub Actions in June 2026 (Session 44) because `nba_api` was 403-blocked from the VPS (GG-013). Unverified: whether the VPS `run_resolve.py` can still resolve (the T-140 `build_tss_cache.py` runs fine on the VPS daily, so the block may be gone, but resolve uses other endpoints). If it cannot, positions sit open and NBA book drawdown reads go stale. Touches the old NBA paper book only (frozen per ADR-0035/37), not MLB. Not fixed here. Before 2026-10-20: (a) confirm VPS `run_resolve.py` can reach its data endpoint, or (b) uncomment the `schedule:` in `post_game_resolve.yml`, or (c) confirm the old NBA `run_paper_trade.py` crons are meant to stay on. The 2026-27 NBA arm (EXP-038) is shadow-only and does not depend on this.
+
+### GG-623 — Demo MLB cancels genuinely fail on resting KXMLBHIT orders (404 then 503); forward-test turn-off still tripped after the GG-596 fix
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W70.1 (T-853), 2026-10-13. After PR #237 (404 + GET terminal = already_terminal) the cancel_fail_rate trip persists: 8 paper/MLB KXMLBHIT cancels logged 404 while the order GET shows `resting` on an `active` market; retried manually, all return HTTP 503. NFL cancels through the same `cancel_order` path succeed (906). `cancel_order`'s path is still flagged UNVERIFIED. Switches stay OFF; override file left in place. Open: is MLB-HIT cancel unsupported on demo, or demo flakiness; until resolved the treatment arm cannot guarantee its cancel.
+
+### GG-624 — NFL shadow fills' settle-minus-price (+0.39) rests on ~4 correlated games; must not be cited as E2
+
+**Status:** OPEN · **Severity:** LOW
+
+W70.1 (T-853) audit: 0 of 231 fills after kickoff, so no timing artifact. But all fills are YES-side taker crosses on ladder rungs of totals/spreads that resolve together; first-fill-per-position +0.394 on 58 settled positions across 4 settled games (BUFLAR pending). Report E2 for NFL only with game-clustered CIs.

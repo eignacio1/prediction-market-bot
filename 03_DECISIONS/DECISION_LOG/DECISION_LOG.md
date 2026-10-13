@@ -2147,3 +2147,9 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - The two "dark ~75 days" workflows were paused on purpose (T-399, 2026-07-29), not broken. Retired `tss_daily_sync.yml`: redundant, the VPS cron `run_t140_check.py` (17:25 UTC) rebuilds `team_stats_cache` daily and succeeds (read 2026-10-12). Kept `post_game_resolve.yml` paused: nothing proves the VPS can resolve NBA positions (GG-013) once KXNBAPTS reopens 2026-10-20; registered GG-630, not fixed here.
 - Main tree (`Prediction Markets/`) left unchanged: dirty (regenerated `OPERATOR_CONSOLE.md`, untracked files) and behind origin/main; it already contains the wrapper and `governance_scan_full.sh` and prints "[cached governance scan".
 - Purpose: PLUMBING (no pillar measure moved).
+
+## 2026-10-13 - W70.1 (T-853): GG-596 fix merged; re-arm withheld
+- #237 merged (normal squash, after #239 turned main green). A 404 on cancel is already_terminal only if a GET shows a terminal status; verified for 360 shadow-MLB and 229 NFL cancels.
+- Re-arm NOT performed: the trip is still real for 8 paper KXMLBHIT cancels (resting + 404/503) - GG-623. Override file untouched.
+- NFL fill audit: 0 post-kickoff fills; +0.39 not evidence of edge (GG-624).
+- Purpose: EXECUTION E1/E2/E3 - no measure moved.
