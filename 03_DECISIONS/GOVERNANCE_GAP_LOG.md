@@ -4042,6 +4042,18 @@ W70.2 (T-850), 2026-10-13. `data/raw/nba/players_2026.json` was missing on the V
 
 W70.1 (T-853), 2026-10-13. After PR #237 (404 + GET terminal = already_terminal) the cancel_fail_rate trip persists: 8 paper/MLB KXMLBHIT cancels logged 404 while the order GET shows `resting` on an `active` market; retried manually, all return HTTP 503. NFL cancels through the same `cancel_order` path succeed (906). `cancel_order`'s path is still flagged UNVERIFIED. Switches stay OFF; override file left in place. Open: is MLB-HIT cancel unsupported on demo, or demo flakiness; until resolved the treatment arm cannot guarantee its cancel.
 
+### GG-645 — Kalshi cancel defaulted to exchange shard 0; MLB orders live on shard 3, so every MLB cancel 404'd (root cause of GG-623)
+
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+W71.1 (T-880), 2026-10-13. Root cause of GG-623, not a demo outage. `DELETE /portfolio/events/orders/{id}` with neither `exchange_index` nor `market_ticker` defaults to shard 0 (docs: cancel-order-v2). All MLB-family demo orders (HIT/TOTAL/SPREAD/TEAMTOTAL) have `exchange_index` 3 on GET; NFL are 0/None. Repro on the VPS against demo: 1c bids on KXMLBTOTAL and KXMLBHIT, GET resting (xi=3), DELETE 404 persistently (not a lag race), v1 path 410; DELETE `?market_ticker=<ticker>` returned 200 `reduced_by 1.00` and GET read back `canceled` on 4 of 4. Fix: PR #243 (`cancel_order(..., market_ticker=)`, `cancel_now` passes the ticker; tests pin URL, params and signed path), deployed to VPS `b9812c8d`, t4-mlb restarted 2026-10-13T23:58Z (idle). Every MLB cancel before this left its order resting until the exchange canceled it at market close, so MLB paper rows were exposed to fills for hours, not 60s. Closes fully on the first MLB night with `cancel_ok` on KXMLB* in `demo_fill_policy.jsonl`.
+
+### GG-646 — Forward-test report excuses late exchange-cancels as already_terminal, so it passes on a broken cancel path
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.1 (T-881), 2026-10-13. `demo_fill_forward_report._historical_404_terminal` treats a logged 404 as `already_terminal` if the order is terminal when the report runs. The 8 MLB failures were exchange-canceled at market close, hours after the failed 60s cancel, so the report showed cancel_fail_rate 0.0 and "none tripped" while cancels were still broken. The check should require the terminal status to predate the cancel attempt (fill/cancel `last_update_time` <= attempt ts + small slack). Not changed here: turn-off scope is fixed by the block. Interim guard: read `cancel_ok` counts on MLB families directly (GG-645 closure criterion).
+
 ### GG-624 — NFL shadow fills' settle-minus-price (+0.39) rests on ~4 correlated games; must not be cited as E2
 
 **Status:** OPEN · **Severity:** LOW

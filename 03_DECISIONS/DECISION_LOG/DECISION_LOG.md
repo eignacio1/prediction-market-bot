@@ -2170,3 +2170,8 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 
 - Operator: "send one terminal to do a full hygiene scope on our code ... make sure we're structurally sound before I turn on another terminal to do forensics." Issued as 71.H1 beside Wave 71 (an operator-requested fourth terminal; the three-block wave ceiling is unchanged for waves the window plans).
 - Read-only on code because three Wave 71 blocks are changing it; every defect is registered as a GG with evidence, none fixed (Hard Rule 11). LARGE by operator request (90 / 120 min). Output: HYGIENE_AUDIT_20261013.md with a SOUND / SOUND WITH ISSUES / NOT SOUND verdict for the forensics pass.
+
+## 2026-10-13 — W71.1: MLB cancel 404 root cause = Kalshi shard routing; forward test re-armed
+- Cause (GG-645): cancel DELETE defaults to exchange shard 0; MLB-family demo orders are on shard 3. Fix: pass `market_ticker` (auto-route). PR #243 merged, deployed b9812c8d, t4-mlb restarted idle 23:58Z. Verified on demo: 4/4 canary orders 200 then `canceled`.
+- Re-armed ADR-0072 forward test by deleting `deploy/demo_fill.override.env` on the VPS; `is_enabled()` True under the service environment. No parameter, stake, kelly or scope change.
+- Weakness registered, not fixed (GG-646): the report's already_terminal rule excused exchange cancels at close, so its "none tripped" does not prove the cancel path. GG-586/570/571/623 stay OPEN pending the NHL/MLB read-back.
