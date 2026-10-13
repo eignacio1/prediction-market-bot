@@ -3,11 +3,11 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = fdbf6c1` (2026-10-12 ~16:30 PT, Wave 68 close). PRs, CI and results docs read from GitHub; VPS facts are the Wave 61 terminals' reports (this window has no SSH).
+**Verified against:** `origin/main = ca727a3` (2026-10-12 ~18:00 PT, Wave 69 close). PRs, CI and results docs read from GitHub; VPS facts are the Wave 69 terminals' on-box reads (this window has no SSH).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Claimed through **GG-535** (registered: GG-532; GG-533 reserved, unregistered) · **T-755** · **ADR-0071** · **EXP-038** · gap log **129 OPEN** (parity 153 = 153, no duplicate ids) |
+| Highest GG / T / ADR / EXP | Claimed through **GG-611** · **T-842** · **ADR-0072** · **EXP-040** · gap log **140 OPEN** (governance scan, 10-13) |
 | Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
 | Shadow arms | **NFL** 12 cells logging, first look projected **2026-11-02**. **MLB postseason** armed and logging (judged n starts 2027). **NHL** 9 cells logging; judged n unreachable this season (GG-514); no NHL T3 score may be read (GG-401). **NBA** preseason rows to a separate labelled ledger; regular season 10-20, cells flip ~10-21. |
@@ -19,7 +19,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 68 closed, Wave 69 issued, 2026-10-12 ~17:00 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 69 closed, Wave 70 issued, 2026-10-12 ~18:15 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -34,10 +34,11 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | | B4 props · parlays families logging | **2 · 0** | the board | **+1** (NBA player points) |
 | **DEPTH** | D1 factor classes per pre-game model | MLB player hits: personnel, team, venue · MLB games: personnel, team · **NFL: team + personnel** (QB challenger, live in shadow 10-11) · NHL: personnel, team, venue · NBA: team. **No live model uses matchup, weather or qualitative.** | every class at every pre-game arm | 0 |
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage of classes, not a count | 0 |
-| | D3 pre-registered challengers ready | **1** (NFL QB-shrunk, moneyline; accepted 10-10) | ≥ 1 per arm before its first look | 0 (the 1 is now live) |
+| | D3 pre-registered challengers ready | **2** (NFL QB-shrunk, live; NBA points EXP-040, accepted + frozen 10-13, logging from 70.2) | ≥ 1 per arm before its first look | **+1** (W69.3) |
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
-| | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 — forward test ON; first orders 10-12 00:00Z |
+| | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
+| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.39** (settle − price on fills; W69.1 on-box) | ~550 fills/arm in 8 weeks | **first numbers (W69)**; switches OFF on GG-596 → 70.1 re-arms; NFL +0.39 audited before it is believed |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
@@ -50,6 +51,12 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 69 (10-12), in one line:** the forward test produced its first real numbers on the box, NBA opening night is automated
+end to end, and the second depth challenger (NBA points, projected minutes) is accepted and frozen. Then the test switched
+itself off: its turn-off counted "order already finished" (HTTP 404) as a failed cancel. The block handed the re-arm back to
+you; it is demo plumbing, and 70.1 does it. NFL's +0.39 a fill is too good to believe before checking when those fills
+happened — 70.1 checks. Main is red (6 tests, two merges) — 70.3.
 
 **Wave 67 (10-11), in one line:** Breadth moved for the first time in four waves — NBA player points is live (40 of 107 cells
 logging, 2 props families) — shadow cells placed their first accepted demo orders, and NFL injury reports are now captured
@@ -139,11 +146,8 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 
 | Date | What happens |
 |---|---|
-| 10-12 00:00Z | First forward-test orders (MLB game); 67.2 reads day one |
-| Mon 10-12 14:20 UTC | Weekly T4 resolved-ledger rebuild — first live test of the overwrite guard; also refreshes the T4 fill sidecar (61.1) |
 | Thu 10-15 | First NFL slate the QB challenger logs (live since 65.3); first injury snapshot due (66.3) |
-| ~10-19 | Free GitHub Actions minutes run out at the current burn unless 66.1 lands (deploys + MLB features stop) |
-| 10-20 / 10-21 | NBA opening night; NBA cells flip to SHADOW once valid rows exist |
+| 10-20 / 10-21 | NBA opening night; 12 game cells flip to SHADOW on valid rows (69.2 automation); EXP-039 + EXP-040 points rows begin |
 | ~11-02 | NFL first scored look — the project's first pre-registered edge verdict |
 | World Series end | T4M-PROJ stakes stop (61.1 gate); registry flip to DARK (later block); T1 MLB winter posture is your call |
 | before 2027-01-31 | Define EXP-038's date-triggered second look (GG-529) |
@@ -156,23 +160,23 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 69 · issued 2026-10-13 ~00:00 UTC (10-12 ~17:00 PT) · three MEDIUM blocks · paste all three in parallel
+## ⬛ NOW — Wave 70 · issued 2026-10-13 ~01:15 UTC (10-12 ~18:15 PT) · three MEDIUM blocks · paste all three in parallel
 
-Wave 68 verified (Sequencing track). This wave's rule: **finish what is merged, prove it on the box, and land the two things
-NBA opening night (10-20) needs.** Every block carries its PERMISSIONS and the operator's authorization line, so nothing stalls
-on a refusal. Surfaces: 69.1 = demo-fill config, shadow runners, forward-test report, deploy guard; 69.2 = NBA arms on the VPS
-(read-only checks + new cron lines if missing); 69.3 = 12_EXPLORATORY + a pre-registration. Only 69.1 may change order behaviour.
+Wave 69 verified (Sequencing track). This wave's rule: **turn the forward test back on and make its numbers trustworthy;
+get the NBA points challenger logging before opening night; make main green.** Every demo-only step is done by the block,
+not handed back. Surfaces: 70.1 = demo-fill report/turn-off, VPS switches, forward-test read-back; 70.2 = NBA player-points
+runner + EXP-040 wiring; 70.3 = failing tests, hook tests, scheduled workflows. Only 70.1 may change order behaviour.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 69.1 | Activate + read back everything merged; give shadow cells a control arm | EXECUTION E1/E2/E3 (first forward-test numbers) | 🟨 PARTIAL | Box activated, first numbers read; GG-587 closed on read-back; GG-586 merged, live read-back needs switches re-armed (operator); turn-off tripped on GG-596 artifact |
-| 69.2 | NBA opening night end to end (10-20) | BREADTH B1 (15 NBA cells actually logging) | ✅ DONE (automation) | PR #232 @ 83c97c0; autoflip + date-guarded retire crons live; B1 40/107 moves from 10-21 on valid rows |
-| 69.3 | NBA player points: projected-minutes challenger, pre-registered before 10-20 | DEPTH D1 (personnel/availability on NBA), D3 | 🟡 EXP-040 ACCEPTED 2026-10-13T00:15:02Z; NEXT: freeze artifact + wire shadow logging beside EXP-039 before 10-20 | W69_3_nba_points_minutes_results.md |
+| 70.1 | Re-arm the forward test (GG-596) and audit the NFL fills | EXECUTION E1/E2/E3 | ⬜ | — |
+| 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | ⬜ | — |
+| 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ⬜ | — |
 
-### 69.1 — Activate + read back everything merged; a control arm for shadow cells
+### 70.1 — Re-arm the forward test (GG-596) and audit the NFL fills
 
 ```
-COMMON RULES - WAVE 69 (read first; they bind this block)
+COMMON RULES - WAVE 70 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -182,7 +186,7 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-12 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -192,16 +196,18 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
   collides, re-claim; never reuse.
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR again (public repo). Never add a paid service.
-- PERMISSIONS (standing rule, operator 2026-10-12): STEP 0 of every block adds the operator's pre-approved allow rules (the
-  OPERATOR AUTHORIZATION line in the block) to .claude/settings.local.json in the MAIN tree (untracked; idempotent - the same
-  list in every block). If any listed command is still refused, record the exact command, skip only that step, and report it.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
   DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 69.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (69.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -213,55 +219,43 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W69_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
 
-
-
-
-
-
-
-
-OPERATOR AUTHORIZATION (Earl, pasting this block): I authorize adding these narrow allow rules to .claude/settings.local.json in
-the main tree (keep everything already there): Bash(ssh prediction-market-vps *), Bash(scp * prediction-market-vps:*),
-Bash(scp prediction-market-vps:* *), Bash(gh pr *), Bash(gh api *), Bash(gh run *), Bash(gh workflow *), Bash(git fetch *),
-Bash(git pull *), Bash(git push *), Bash(git commit *), Bash(git add *), Bash(git rebase *), Bash(git merge *),
-Bash(git checkout *), Bash(git switch *), Bash(git worktree *), Bash(git status *), Bash(git log *), Bash(git diff *),
-Bash(pytest *), Bash(python3 -m pytest *), Bash(python3 scripts/*), Bash(bash scripts/*), Bash(scripts/new_session_worktree.sh *),
-Bash(scripts/claim_session.sh *), Bash(bash .claude/hooks/*).
-
-WAVE 69.1 - ACTIVATE AND READ BACK EVERYTHING MERGED; A CONTROL ARM FOR SHADOW CELLS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION E1/E2/E3 - the forward test's first real numbers, per book and sport, read from the box. Pillar: EXECUTION.
-PERMISSIONS: VPS read (ssh), VPS crontab read/edit of the shadow lines' env loading only, idle-window t4-mlb restart, PR/merge,
-demo orders under ADR-0072. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; IDLE-WINDOW SERVICE RESTARTS.
+WAVE 70.1 - RE-ARM THE FORWARD TEST; AUDIT THE NFL FILLS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - forward-test numbers that are on, gradable (control arm live) and trustworthy. Pillar: EXECUTION.
+PERMISSIONS: VPS read (ssh), delete of the untracked deploy/demo_fill.override.env on the VPS (re-arm), PR/merge, demo orders
+under ADR-0072, read-only Kalshi DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG.
 
 WHY
-68.2 merged NBA/NHL shadow stakes (#228) and a daily forward-test report (#231, cron 11:25 UTC) but could not read the VPS
-(classifier refused ssh), so nothing is proven running and no forward-test number has been read. Two defects stop the test
-being gradable: GG-586 - on SHADOW cells the control arm places no order, so treatment-minus-control cannot be formed; GG-587 -
-the turn-off path edits a tracked file (deploy/demo_fill.env) on the VPS, which trips vps_deploy.sh's dirty-tree guard.
+69.1 read the first numbers on the box (W65_2_forward_test_on_results.md, "Read-back 10-13"): paper/MLB 17 orders 5 fills
++0.07; shadow/MLB 363/75 -0.20; shadow/NFL 1,135/231 +0.39. The turn-off then tripped on cancel_fail_rate 1.0 - every
+"failed" cancel was HTTP 404 on an order already terminal (GG-596) - so both switches are OFF and the GG-586 control arm has
+never placed an order. Separately, +0.39 settle-minus-price on 231 NFL fills is too good to take at face value: a pre-game
+order that rests into or past kickoff and fills against a moved book would look exactly like this.
 
-PART A - Read back (~35 min)
-  0. Permissions as in COMMON RULES.
-  1. Over ssh: VPS HEAD == origin/main; crontab carries demo_fill.env on the NFL, MLB, NHL and NBA shadow lines and the 11:25
-     report line; t4-mlb environ carries the ADR-0072 variables. Anything missing: deploy/fix it now and read it back.
-  2. Run scripts/demo_fill_forward_report.py on the VPS and paste its output: per book and sport, per arm - orders, skips by reason,
-     cancels and outcomes, cancel success, fills, win rate on fills, settle minus price on fills; turn-off conditions; fills per arm
-     per week vs ~550 in 8 weeks. Confirm the governance-scan line and the /project panel show the same numbers.
-PART B - Make the shadow test gradable (~45 min)
-  3. GG-586: on SHADOW cells the control arm places the order exactly as control does for MLB (model-mid limit, no cancel, no
-     book anchoring); treatment applies R1+R2. Same assignment hash and share. Tests; PR; merge; read back on the box.
-  4. GG-587: the turn-off sets the switches through an untracked override (e.g. deploy/demo_fill.override.env, git-ignored)
-     that the loaders read last, so vps_deploy.sh's guard never trips; tests; read back. Close GG-586/587/570/571 only on read-back.
-Results doc: W65_2_forward_test_on_results.md ("Read-back 10-13").
+PART A - Fix and re-arm (~35 min)
+  1. GG-596: a cancel returning 404 is classified by a GET of the order: filled / canceled / expired = already_terminal (not a
+     failure). Only a non-404 error, or a 404 whose GET still shows resting, counts toward cancel_fail_rate. Tests with the
+     real 404 body. Re-run the report over the existing days: the turn-off no longer trips on 10-13. PR, merge, read back.
+  2. Re-arm (demo only, plumbing - do it): delete /opt/prediction-market-bot/deploy/demo_fill.override.env; read back
+     is_enabled() True for both switches from the running loaders and that the tracked tree is clean.
+PART B - Read back + audit (~45 min)
+  3. After the next scheduled shadow runs (NHL plays nightly; NFL Thu 10-15): the control arm (GG-586) has placed orders on
+     SHADOW cells, both arms appear in the report, same assignment hash/share. Close GG-586/570/571 only on that read-back.
+  4. NFL fill audit, all 231+ fills: fill time vs order time vs kickoff vs settlement. Split settle-minus-price by
+     fill-before-kickoff / after-kickoff. If any fill lands after kickoff on a pre-game order, register a GG, cancel such
+     orders at kickoff (demo), exclude them from E2 in the report (labelled), and say so in the results doc. Also split all
+     books by GG-564 listing status.
+  5. Confirm the governance-scan forward-test line and the /project panel match the report.
+Results doc: W65_2_forward_test_on_results.md (new section "Read-back W70.1").
 
-END OF BLOCK 69.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 70.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 69.2 — NBA opening night end to end (10-20)
+### 70.2 — EXP-040 logging beside EXP-039 before 10-20 (GG-611)
 
 ```
-COMMON RULES - WAVE 69 (read first; they bind this block)
+COMMON RULES - WAVE 70 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -271,7 +265,7 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-12 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -281,16 +275,18 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
   collides, re-claim; never reuse.
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR again (public repo). Never add a paid service.
-- PERMISSIONS (standing rule, operator 2026-10-12): STEP 0 of every block adds the operator's pre-approved allow rules (the
-  OPERATOR AUTHORIZATION line in the block) to .claude/settings.local.json in the MAIN tree (untracked; idempotent - the same
-  list in every block). If any listed command is still refused, record the exact command, skip only that step, and report it.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
   DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 69.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (69.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -302,54 +298,40 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W69_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
 
-
-
-
-
-
-
-
-OPERATOR AUTHORIZATION (Earl, pasting this block): I authorize adding these narrow allow rules to .claude/settings.local.json in
-the main tree (keep everything already there): Bash(ssh prediction-market-vps *), Bash(scp * prediction-market-vps:*),
-Bash(scp prediction-market-vps:* *), Bash(gh pr *), Bash(gh api *), Bash(gh run *), Bash(gh workflow *), Bash(git fetch *),
-Bash(git pull *), Bash(git push *), Bash(git commit *), Bash(git add *), Bash(git rebase *), Bash(git merge *),
-Bash(git checkout *), Bash(git switch *), Bash(git worktree *), Bash(git status *), Bash(git log *), Bash(git diff *),
-Bash(pytest *), Bash(python3 -m pytest *), Bash(python3 scripts/*), Bash(bash scripts/*), Bash(scripts/new_session_worktree.sh *),
-Bash(scripts/claim_session.sh *), Bash(bash .claude/hooks/*).
-
-WAVE 69.2 - NBA OPENING NIGHT END TO END. Repo: eignacio1/prediction-market-bot.
-PURPOSE: BREADTH B1 - the 12 NBA game-market cells (EXP-038) and 3 player-points cells (EXP-039) logging regular-season rows from
-2026-10-20, with nothing left to do by hand on the night. Pillar: BREADTH.
-PERMISSIONS: VPS read (ssh), NEW cron lines (only if missing), PR/merge. No order, no stake change (69.1 owns stakes).
-Authority: AUTHORIZATION - STANDING: NEW PRE-REGISTERED SHADOW ARMS; SHADOW-EVALUATION CRON JOBS.
+WAVE 70.2 - EXP-040 SHADOW LOGGING BEFORE NBA OPENING NIGHT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D3 (the accepted challenger actually logging) and D1 (personnel/availability on an NBA arm). Pillar: DEPTH.
+PERMISSIONS: VPS read (ssh), NEW cron line only if the runner cannot carry it, PR/merge. No order, no stake.
+Authority: new pre-registered shadow arms (2026-10-08); shadow-evaluation cron jobs, NEW lines only (2026-10-02).
 
 WHY
-The NBA game arm has been armed since Wave 58 and flips its cells to SHADOW ~10-21 once valid rows exist; the player-points arm
-landed 10-11 (67.1) but its preseason dry run wrote 0 rows (no KXNBAPTS markets were open). Nothing has yet been proven against a
-real NBA slate on the box, and opening night is the first.
+69.3 pre-registered EXP-040 (NBA player points >=15, projected minutes + injury), the operator accepted it 2026-10-13T00:15Z,
+and the artifact is frozen (sha256 c47cbac7...). No row counts until a logged row carries that sha (GG-611, HIGH). Opening
+night is 10-20; a challenger that starts late loses judged games it can never get back. The 69.3 handoff's "needs a server
+deploy from you" is wrong - deploys are the VPS cron (vps_deploy.sh); this block does it.
 
-PART A - Rehearse on the box (~45 min)
-  0. Permissions as in COMMON RULES.
-  1. Over ssh: both arms' cron lines present; the season-state switch (preseason -> regular season) keys on the date, not on a
-     manual step; the preseason ledger and the judged ledger are separate files. Run both runners against the last preseason
-     slate available (or a fixture of the 10-20 slate) and show rows going ONLY to the preseason ledger before 10-20.
-  2. Kalshi: list the NBA game series and KXNBAPTS markets open now; if player-points markets for 10-20 are not listed yet, say
-     when they listed last season (from the archive) - the runner must not error on an empty board.
-PART B - The flip, made automatic (~35 min)
-  3. The NBA game cells' NOT_IMPLEMENTED -> SHADOW flip (62.3 tooling) runs by itself once valid regular-season rows exist (a
-     NEW cron line or the runner itself), with the pre-registration already on main; silent-arm check and both dashboards list
-     all 15 NBA cells. Tests; PR; merge; read back on the box.
-  4. Remove the preseason smoke cron after 10-20 only by an automatic date guard (no hand step). Paste the generator's B1.
+PART A - Wire (~45 min)
+  1. Read 05_RESEARCH_EXPERIMENTS/EXP040_* and 12_EXPLORATORY/W69_3_nba_points_minutes_results.md. Build the forecaster from
+     the frozen artifact (refuse to run if the sha differs), the runtime injury fetch (point-in-time, same parser), and the
+     arm in the EXP-039 runner so each run logs EXP-039 and EXP-040 rows side by side, strike 15 only, with artifact sha,
+     injury-snapshot time and minutes projection on every EXP-040 row. Registry: the challenger as the pre-registration says
+     (cell or challenger record) - do not invent a cell the pre-registration does not name.
+  2. Tests: sha guard, no look-ahead (injury snapshot <= evaluation time), row schema, EXP-039 rows unchanged byte-for-byte.
+PART B - Deploy + read back (~35 min)
+  3. Merge; confirm the VPS deploy picked it up (HEAD, the runner's import path). If NBA preseason games remain, run the arm
+     once against the preseason board writing ONLY to the preseason ledger and read the rows back (sha present, injury time
+     present). If none remain, a dry run that prints rows without writing.
+  4. Silent-arm alarm and both dashboards list EXP-040. GG-610 (Jan-Apr 2026 injury coverage 34%) stays a stated caveat.
+Results doc: 12_EXPLORATORY/W69_3_nba_points_minutes_results.md (new section "Wired W70.2").
 
-END OF BLOCK 69.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 70.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 69.3 — NBA player points: a projected-minutes challenger, pre-registered before 10-20
+### 70.3 — Main green + the main tree current + 75-day-dark workflows
 
 ```
-COMMON RULES - WAVE 69 (read first; they bind this block)
+COMMON RULES - WAVE 70 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -359,7 +341,7 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-12 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -369,16 +351,18 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
   collides, re-claim; never reuse.
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR again (public repo). Never add a paid service.
-- PERMISSIONS (standing rule, operator 2026-10-12): STEP 0 of every block adds the operator's pre-approved allow rules (the
-  OPERATOR AUTHORIZATION line in the block) to .claude/settings.local.json in the MAIN tree (untracked; idempotent - the same
-  list in every block). If any listed command is still refused, record the exact command, skip only that step, and report it.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
   DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
 - PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 69.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (69.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 70.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (70.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -390,64 +374,57 @@ COMMON RULES - WAVE 69 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W69_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W70_<n>.md (docs-only push).
 
-
-
-
-
-
-
-
-OPERATOR AUTHORIZATION (Earl, pasting this block): I authorize adding these narrow allow rules to .claude/settings.local.json in
-the main tree (keep everything already there): Bash(ssh prediction-market-vps *), Bash(scp * prediction-market-vps:*),
-Bash(scp prediction-market-vps:* *), Bash(gh pr *), Bash(gh api *), Bash(gh run *), Bash(gh workflow *), Bash(git fetch *),
-Bash(git pull *), Bash(git push *), Bash(git commit *), Bash(git add *), Bash(git rebase *), Bash(git merge *),
-Bash(git checkout *), Bash(git switch *), Bash(git worktree *), Bash(git status *), Bash(git log *), Bash(git diff *),
-Bash(pytest *), Bash(python3 -m pytest *), Bash(python3 scripts/*), Bash(bash scripts/*), Bash(scripts/new_session_worktree.sh *),
-Bash(scripts/claim_session.sh *), Bash(bash .claude/hooks/*).
-
-WAVE 69.3 - NBA PLAYER POINTS: A PROJECTED-MINUTES CHALLENGER, PRE-REGISTERED BEFORE 10-20. Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH D1 - the first NBA model conditioning on availability (who plays and how much); D3 +1 if it earns a
-pre-registration. Player props sit lower on the efficiency gradient than game markets. Pillar: DEPTH. 12_EXPLORATORY only until
-the pre-registration is accepted.
-PERMISSIONS: PR/merge, local scripts and tests. No VPS write, no cron, no order.
+WAVE 70.3 - MAIN GREEN; MAIN TREE CURRENT; THE DARK WORKFLOWS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (says so plainly). CI red on main hides the next real regression; a stale main tree means every terminal
+runs an old governance scan. Pillar: none.
+PERMISSIONS: PR/merge, gh api reads, git in the main tree (fast-forward only). No VPS writes. No order.
 
 WHY
-EXP-039's frozen player-points model (67.1) has no availability input. Points are minutes times scoring rate; minutes move with
-injuries, rest and rotation, which are reported before tip (NBA injury report). A challenger must be pre-registered BEFORE its
-first row, so it has to exist before 10-20 or it loses opening week.
+Main has been red since 0d3063e (run 38327393913): 6 failed / 4,036 passed. Four are hook tests (test_block_exists_in_hook,
+test_nonzero_debt_prints_loud_warning_and_exits_zero, test_zero_debt_prints_clean_line_and_exits_zero,
+test_block_never_fails_the_scan_even_with_unparseable_output) still reading .claude/hooks/governance_scan.sh after #235
+moved the full scan to governance_scan_full.sh. Two are test_exploratory_file_is_isolated[fetch_injury_reports.py] and
+[study.py5] from #233 (W69.3's 12_EXPLORATORY files import outside the fence). Separately, Post-Game Resolve and TSS Daily
+Sync have not run for ~75 days (68.1 found it; never investigated).
 
-PART A - Plan + point-in-time features (~45 min)
-  0. Permissions as in COMMON RULES.
-  1. Study README written BEFORE fitting: challenger = EXP-039's frozen inputs + projected minutes (recent minutes, shrunk; starter
-     flag; teammate-out adjustment from the official injury report as known before tip; rest/back-to-back). Data source for
-     past injury reports at point in time (name it; if none is free and point-in-time, say so and use only box-score-derived
-     minutes features). Seasons, rolling origin, multiplicity m (count NBA challengers ever tested), corrected CI.
-  2. Build features with look-ahead tests. Push.
-PART B - Evaluate once; pre-register or say no (~40 min)
-  3. Brier vs the frozen EXP-039 model per threshold, player-game clustered bootstrap, corrected CI; vs the Kalshi KXNBAPTS mid
-     where archived history exists - reported.
-  4. Corrected CI excludes zero: PROPOSED pre-registration judged against the MARKET (not vs frozen), expected modal outcome stated,
-     logging from 10-20 beside EXP-039 once accepted. Otherwise: NO, plainly, and the next mechanism.
-Results doc: 12_EXPLORATORY/W69_3_nba_points_minutes_results.md.
+PART A - Green (~35 min)
+  1. Point the four hook tests at governance_scan_full.sh (and add one test that the wrapper returns in <2s and prints the
+     cached scan). Fix the two isolation failures in the W69.3 files (move the shared import behind the fence or into
+     12_EXPLORATORY), without changing the frozen EXP-040 artifact or its sha. PR; CI green on main; read the run.
+  2. The operator's main tree (/Users/earlignacio/Documents/Claude/Projects/Prediction Markets) is what settings.json's hook
+     runs. If it is clean and on main: git pull --ff-only, and confirm .claude/hooks/governance_scan_full.sh exists there and
+     the wrapper prints "[cached governance scan". If it is dirty or diverged: change nothing, report what is there.
+PART B - The dark workflows (~35 min)
+  3. Post-Game Resolve and TSS Daily Sync: read their YAML and last runs (gh api). For each: is its job now done elsewhere
+     (VPS cron, ADR-0071 settlement)? If yes, say where, and retire the workflow (PR, DECISION_LOG). If no, what has been
+     missing for 75 days and does it touch any book or verdict? Register a GG for anything that does; do not fix it here.
+Results: in the handoff.
 
-END OF BLOCK 69.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 70.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
-
----
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 69 — ISSUED 2026-10-13 ~00:00 UTC · three MEDIUM blocks · permissions pre-cleared in each block
+### ⏳ WAVE 70 — ISSUED 2026-10-13 ~01:15 UTC · three MEDIUM blocks · demo actions done by the blocks, not handed back
 
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
-| 69.1 | Activate + read back; shadow control arm (GG-586/587) | E1–E3 | ⬜ | — |
-| 69.2 | NBA opening night end to end | B1 | ✅ DONE (automation) | measure moves from 10-21 |
-| 69.3 | NBA points projected-minutes challenger | D1, D3 | ⬜ | — |
+| 70.1 | Re-arm forward test (GG-596); NFL fill audit | E1–E3 | ⬜ | — |
+| 70.2 | EXP-040 logging beside EXP-039 (GG-611) | D3, D1 | ⬜ | — |
+| 70.3 | Main green; main tree current; dark workflows | PLUMBING | ⬜ | — |
+
+### ✅ WAVE 69 — CLOSED 2026-10-13 ~01:00 UTC (verified on GitHub at `ca727a3`) · moved: **E1–E3 first forward-test numbers** (one day; not yet meaningful); D3 1 → 2 (EXP-040 accepted, frozen, not yet logging); B1 unmoved until 10-21
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 69.1 | Activate + read back; shadow control arm | 🟨 PARTIAL | #234: GG-586 control arm + GG-587 untracked override merged and deployed (VPS f9ab37de); crontab loads demo_fill.env on all shadow lines + 11:25 report. First numbers: paper/MLB 17 orders 5 fills +0.07 · shadow/MLB 363/75 −0.20 · shadow/NFL 1,135/231 **+0.39** (audit in 70.1). Turn-off tripped on GG-596 (404 = already terminal) → switches OFF; control arm never placed. Settings edit refused |
+| 69.2 | NBA opening night end to end | ✅ | #232: autoflip (12 game cells flip on first valid regular-season rows, from 10-21) + date-guarded preseason retire; 2 cron blocks appended, read back as no-ops before their dates. GG-588 (KXNBATEAMTOTAL never listed). Settings edit refused |
+| 69.3 | NBA points projected-minutes challenger | ✅ | #233: EXP-040 accepted 10-13T00:15Z (strike 15 only; ΔBrier −0.00047, CI −0.00079..−0.00015; worse at 25), artifact c47cbac7 frozen. Not logging (GG-611 → 70.2). GG-610: Jan–Apr 2026 injury coverage 34% |
+| — | Hook timeout fix | ✅ | #235: governance scan = cached wrapper + background full scan. Broke 4 hook tests → main red (→ 70.3) |
 
 ### ✅ WAVE 68 — CLOSED 2026-10-12 ~23:30 UTC (verified on GitHub at `fdbf6c1`) · moved: no pillar measure; MLB feeds restored; D1 venue/weather tested — NO
 
@@ -792,6 +769,11 @@ What should reorder this, and what should stop it:
 > rule the operator has put in the terminals' Claude Code settings (auto mode drops `Bash(*)`; narrow rules survive it) and
 > (b) a dated authorization line here. A refused action stops the block at once with the exact command; a block is never DONE on
 > "merged" - DONE means the running process or cron was read back over ssh.
+>
+> *Amendment, window 2026-10-13:* (a) cannot come from a block. In 69.1 and 69.2 the terminal's classifier refused to write
+> `.claude/settings.local.json` even with the operator's line pasted (Self-Modification) — correctly: Claude may not grant itself
+> permissions. The allow list now lives in `scripts/operator_grant_permissions.py`; the operator runs it once (`!` prefix in any
+> terminal, so it runs as him). Until he does, refused commands are recorded and skipped, never worked around.
 
 > **AUTHORIZATION - GITHUB PUBLIC (operator, 2026-10-11 11:53 PT: "Fine fire it up - we'll make the github public").** Covers:
 > the operator switching the repository to public (the window's token cannot); dispatching the MLB data workflows; restoring
