@@ -27,6 +27,8 @@ dependencies = [
     # so they are lower-bound only, not pins. Neither affects model output.
     "pyarrow>=16.1.0",
     "nba_api>=1.5.0",
+    # W70.2: EXP-040 injury-report PDF parser; VPS venv installs by hand (deploy does not pip install)
+    "pypdf>=4.0.0",
 ]
 
 [project.optional-dependencies]

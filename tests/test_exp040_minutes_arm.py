@@ -75,3 +75,10 @@ def test_row_extra_default_is_byte_identical(tmp_path):
 def test_strike_15_only():
     from prediction_market_bot.pregame_shadow.nba_player_points_minutes_model import REGISTERED_STRIKES
     assert REGISTERED_STRIKES == (15,)
+
+
+def test_url_format_switches_on_2025_12_22():
+    from prediction_market_bot.c1_signal_ingestion.nba_injury_reports import url_for
+    assert url_for("2025-12-21", 7, "PM").endswith("Injury-Report_2025-12-21_07PM.pdf")
+    assert url_for("2025-12-22", 7, "PM").endswith("Injury-Report_2025-12-22_07_30PM.pdf")
+    assert url_for("2026-10-21", 11, "AM").endswith("Injury-Report_2026-10-21_11_30AM.pdf")
