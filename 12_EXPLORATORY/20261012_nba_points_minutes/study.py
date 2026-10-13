@@ -94,12 +94,9 @@ def main():
         pf = np.array([mod.p_at_least(r, k) for r in ter])
         out["frozen_check"][str(k)] = {"brier_frozen": float(np.mean((pf - y) ** 2)),
                                        "brier_ctrl_refit": float(np.mean((Pc[k] - y) ** 2))}
-    try:
-        from _fence import safe_out
-        dest = safe_out(Path(HERE) / "results.json")
-    except Exception:
-        dest = Path(HERE) / "results.json"
-    Path(dest).write_text(json.dumps(out, indent=1))
+    from _fence import safe_out
+    dest = safe_out(Path(HERE) / "results.json")
+    dest.write_text(json.dumps(out, indent=1))
     print(json.dumps(out, indent=1))
 
 

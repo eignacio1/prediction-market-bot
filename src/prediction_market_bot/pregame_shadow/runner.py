@@ -31,7 +31,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              raw_filter: Optional[Callable[[dict], bool]] = None,
              only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None,
              kickoff_miss_reason: Optional[Callable[[str], str]] = None,
-             on_row: Optional[Callable[[dict], None]] = None) -> dict:
+             on_row: Optional[Callable[[dict], None]] = None,
+             row_extra_for: Optional[Callable[[str], dict]] = None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -81,7 +82,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
-            if led.append(row):
+            if led.append(row, row_extra_for(tkr) if row_extra_for else None):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:

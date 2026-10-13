@@ -61,6 +61,10 @@ SPECS = {
                                         "W67.1: EXP-039 points arm (T1 6h / T2 hourly / T3 10-min crons). Its rows share "
                                         "the NBA_*.jsonl glob with the game-market arm, so only its own "
                                         "NBA_NBA_PLAYER_POINTS_*.jsonl files can show it is dead on its own"),
+    "nba_player_points_minutes_shadow": ArmSpec(
+        "nba_player_points_minutes_shadow", "NBA player points minutes+injury challenger (EXP-040)", 12, 1,
+        "W70.2: EXP-040 rides the EXP-039 runner (same T1/T2/T3 crons), strike 15 only, own NBAMIN_*.jsonl ledgers; "
+        "silent while EXP-039 writes means the challenger arm itself is dead (runner exits rc 3 and prints EXP-040 ARM FAILED)"),
     "t1_mlb": ArmSpec("t1_mlb", "T1 MLB paper pipeline", 30, 0,
                       "the T1 pipeline runs once a day (11:00Z PIPE-05, 18:45Z PIPE-06pre); 30h = one missed "
                       "daily run plus slack"),
@@ -265,6 +269,8 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(sorted(led.glob("NBA_*.jsonl")), until=now)),
         arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),
             lambda: last_ts_in_files(sorted(led.glob("NBA_NBA_PLAYER_POINTS_*.jsonl")), until=now)),
+        arm("nba_player_points_minutes_shadow", lambda: _nba_starts(repo, 2),
+            lambda: last_ts_in_files(sorted((repo / "exp_output" / "PREGAME_SHADOW_EXP040").glob("NBAMIN_*.jsonl")), until=now)),
         arm("t1_mlb", mlb_starts_fn, lambda: _t1_last(logs, now)),
         arm("t4_mlb", mlb_starts_fn, lambda: last_ts_in_files([logs / "t4_mlb_cycle_log.jsonl"], nbytes=262144, until=now)),
     ]
