@@ -18,7 +18,9 @@ STAKING_RUNNER = "run_nba_player_points_shadow.py"   # W68.2: the only script al
 SCRIPTS = ("run_nba_player_points_shadow.py", "run_nba_player_points_shadow_settle.py",
            "nba_player_box_backfill.py", "train_nba_player_points.py")
 SRC = ("pregame_shadow/nba_player_points_forecaster.py", "pregame_shadow/nba_player_points_model.py",
-       "pregame_shadow/nba_player_points_settlement.py")
+       "pregame_shadow/nba_player_points_settlement.py",
+       "pregame_shadow/nba_player_points_minutes_forecaster.py", "pregame_shadow/nba_player_points_minutes_model.py",
+       "c1_signal_ingestion/nba_injury_reports.py", "c1_signal_ingestion/nba_minutes_features.py")
 MAIN = (ROOT / "deploy" / "cron.nba_player_points_shadow").read_text()
 PRE = (ROOT / "deploy" / "cron.nba_player_points_shadow_preseason").read_text()
 

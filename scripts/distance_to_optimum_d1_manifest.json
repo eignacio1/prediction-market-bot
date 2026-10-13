@@ -153,6 +153,17 @@
         "team",
         "venue"
       ]
+    },
+    {
+      "id": "nba_player_points_minutes_v1",
+      "arm": "NBA player points minutes+injury challenger (EXP-040, strike 15)",
+      "meta": "models/nba_player_points_minutes_v1.json",
+      "features_key": "feature_names",
+      "declared_classes": [
+        "personnel",
+        "team",
+        "venue"
+      ]
     }
   ]
 }
