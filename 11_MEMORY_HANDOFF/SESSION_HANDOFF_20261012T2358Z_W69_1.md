@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: T-830
+tier: STANDARD
+timestamp: 2026-10-13T00:50:00Z
+commit: 42e50a7
+one_line_summary: W69.1 forward-test read back on box; shadow control arm + untracked turn-off override merged; GG-596 blocks re-arm.
+gg_touched: GG-586, GG-587, GG-596
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E1, E2, E3
+gap_delta: first on-box forward-test numbers paper/MLB, shadow/MLB, shadow/NFL (demo_fill_forward_report @ 42e50a7); switches OFF pending GG-596
+-->
+
 # SESSION HANDOFF W69.1 (replaces earlier BLOCKED version)
 
 Status: PARTIAL | branch session/20261012T235158Z-w69-1-forward-readback | PR #234 merged (squash), CI on PR green; main-branch run 38327393913 has 6 failures in other sessions' files (NBA-minutes exploratory isolation x2, governance-scan hook tests x4: #233/#235), none touch this PR.

@@ -861,3 +861,4 @@
 | 2026-10-13T00:27:16Z | T-840 | CLOSED — merge confirmed, HEAD (d419cda) is ancestor of origin/main — W69.3 EXP-040 challenger accepted, artifact frozen, wiring open (GG-611) |
 | 2026-10-13T00:19:30Z | PLUMBING-hook-timeout | MERGED: NO — branch `hook-timeout-fix2` awaiting merge — Governance scan hook split into 0.03s cached wrapper + full scan to beat the 30s hook timeout (PR #235, awaiting merge). (commit `5d8fd75`) |
 | 2026-10-13T00:31:45Z | PLUMBING-hook-timeout | CLOSED — merge confirmed, HEAD (0d3063e) is ancestor of origin/main — Governance scan hook split into cached wrapper + full scan; PR #235 merged |
+| 2026-10-13T00:46:18Z | T-830 | CLOSED — W69.1 forward-test read back on box; shadow control arm + untracked turn-off override merged; GG-596 blocks re-arm. (commit `42e50a7`) |
