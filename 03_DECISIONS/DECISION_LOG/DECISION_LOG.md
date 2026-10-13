@@ -2153,3 +2153,9 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - Re-arm NOT performed: the trip is still real for 8 paper KXMLBHIT cancels (resting + 404/503) - GG-623. Override file untouched.
 - NFL fill audit: 0 post-kickoff fills; +0.39 not evidence of edge (GG-624).
 - Purpose: EXECUTION E1/E2/E3 - no measure moved.
+
+## 2026-10-13 — W70.2: EXP-040 wired beside EXP-039 (shadow)
+- EXP-040 arm runs inside the EXP-039 runner (no new cron), strike 15 only, ledger `PREGAME_SHADOW_EXP040/NBAMIN_*`, sha-guarded to c47cbac7. No stake/kelly change. PRs #238, #241.
+- #238 was merged with CI red on 6 pre-existing, unrelated failures (same 6 as prior main run); #241 merged green. t4-mlb stayed active, not restarted (pregame_shadow is not imported by it).
+- Finding: injury PDF URL rename 2025-12-22 explains GG-610's 34% coverage (GG-620). VPS lacked 2026 player box scores; backfilled by hand (GG-621).
+- Pre-registered modal outcome unchanged. Purpose: DEPTH D3/D1.

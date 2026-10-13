@@ -170,7 +170,7 @@ runner + EXP-040 wiring; 70.3 = failing tests, hook tests, scheduled workflows. 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 70.1 | Re-arm the forward test (GG-596) and audit the NFL fills | EXECUTION E1/E2/E3 | ⬜ | — |
-| 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | ⬜ | — |
+| 70.2 | EXP-040 logging beside EXP-039 before 10-20 (GG-611) | DEPTH D3 (challenger live), D1 (availability on NBA) | 🟨 PARTIAL | #238 + #241 merged, VPS d940bf46 read back. Arm validated by harness (12/12 forecasts, sha + injury fields); no ledger rows until KXNBAPTS markets list. GG-620/621 |
 | 70.3 | Main green + the main tree current + 75-day-dark workflows | PLUMBING | ✅ DONE | #239 merged (main green: hook + exploratory tests fixed); TSS workflow retired; Post-Game Resolve stays paused, GG-630 (verify VPS NBA resolve before 10-20); main tree dirty, left alone |
 
 ### 70.1 — Re-arm the forward test (GG-596) and audit the NFL fills
@@ -414,7 +414,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
 | 70.1 | Re-arm forward test (GG-596); NFL fill audit | E1–E3 | ⬜ | — |
-| 70.2 | EXP-040 logging beside EXP-039 (GG-611) | D3, D1 | ⬜ | — |
+| 70.2 | EXP-040 logging beside EXP-039 (GG-611) | D3, D1 | 🟨 | Wired, deployed; first rows at first KXNBAPTS board |
 | 70.3 | Main green; main tree current; dark workflows | PLUMBING | ⬜ | — |
 
 ### ✅ WAVE 69 — CLOSED 2026-10-13 ~01:00 UTC (verified on GitHub at `ca727a3`) · moved: **E1–E3 first forward-test numbers** (one day; not yet meaningful); D3 1 → 2 (EXP-040 accepted, frozen, not yet logging); B1 unmoved until 10-21
