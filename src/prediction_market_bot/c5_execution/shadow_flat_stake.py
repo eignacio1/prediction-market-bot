@@ -21,7 +21,7 @@ EDGE_GATE = 0.0  # the shadow arm's own gate: net-of-fee (k007) edge > 0
 
 
 def is_enabled() -> bool:
-    return os.environ.get(SWITCH_ENV, "").strip() == "on" and pol.is_enabled()
+    return pol.switch_value(SWITCH_ENV) == "on" and pol.is_enabled()
 
 
 def demo_host_ok() -> bool:
@@ -64,24 +64,28 @@ def maybe_place(
     if why:
         pol.append_log({"event": "shadow_skip", "reason": why, "row_id": rid})
         return None
-    if not pol.assigned(rid):
-        pol.append_log({"event": "shadow_skip", "reason": "control_arm", "row_id": rid})
-        return None
-    dec = pol.decide(client, ticker, direction, float(mid), rid)
-    if dec.action != "SUBMIT":
-        pol.append_log({"event": "shadow_skip", "reason": dec.reason, "row_id": rid, "meta": dec.meta})
-        return None
-    entry = dec.mid_price if direction == "yes" else 1.0 - dec.mid_price
+    treatment = pol.assigned(rid)
+    if treatment:
+        dec = pol.decide(client, ticker, direction, float(mid), rid)
+        if dec.action != "SUBMIT":
+            pol.append_log({"event": "shadow_skip", "reason": dec.reason, "row_id": rid, "meta": dec.meta})
+            return None
+        price_yes = dec.mid_price
+    else:
+        # W69.1/GG-586: the CONTROL arm places the order exactly as control does for MLB:
+        # model-mid limit, no book read, no anchoring, no cancel. Same assignment hash and share.
+        price_yes = float(mid)
+    entry = price_yes if direction == "yes" else 1.0 - price_yes
     if stake_fn is None:  # ADR-0050 flat measurement stake (lazy: heavy module)
         from prediction_market_bot.run_t4_mlb_live import measurement_stake_and_stratum
         stake_fn = lambda e: measurement_stake_and_stratum(e)[0]  # noqa: E731
     stake = float(stake_fn(entry))
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
-                                mid_price=dec.mid_price, client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
+                                mid_price=price_yes, client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
     pol.append_log({"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
-                    "stake_usd": stake, "price_yes": dec.mid_price, "side": direction,
-                    "ticker": ticker, "error": order.error})
-    if order.ok and order.order_id:
+                    "stake_usd": stake, "price_yes": price_yes, "side": direction,
+                    "ticker": ticker, "error": order.error, "arm": "treatment" if treatment else "control"})
+    if treatment and order.ok and order.order_id:
         pol.schedule_cancel(client, order.order_id, rid, ticker)
     return {"order_id": order.order_id, "ok": order.ok}
 
