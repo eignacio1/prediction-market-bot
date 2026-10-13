@@ -18,7 +18,7 @@ from prediction_market_bot.pregame_shadow.nfl_model import _phi  # noqa: E402
 
 LAMBDA, SEED, B = 100.0, 71303, 20000
 OFFSETS = [-6.0, -3.0, 0.0, 3.0, 6.0]
-FOLDS = {"A": dict(train=lambda s: s <= 2023, cal=2024, test=2025), "B": dict(train=lambda s: s <= 2024, cal=2025, test=2026)}
+FOLDS = {"A": dict(train=lambda s: 2016 <= s <= 2023, cal=2024, test=2025), "B": dict(train=lambda s: 2016 <= s <= 2024, cal=2025, test=2026)}
 FAMS = ["moneyline", "spread", "total"]
 RAW_G = HERE.parents[1].parent / "nba_raw"
 RAW_P = HERE.parents[1].parent / "_w65_data"
