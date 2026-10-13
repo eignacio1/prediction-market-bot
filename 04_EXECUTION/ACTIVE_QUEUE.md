@@ -424,6 +424,108 @@ Results doc: 12_EXPLORATORY/<date>_nba_games_availability/results.md.
 END OF BLOCK 71.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### 71.H1 — OUT-OF-WAVE (operator, 2026-10-13 16:52 PT): full code hygiene audit, before forensics
+
+```
+COMMON RULES - WAVE 71 (read first; they bind this block; H1 OVERRIDES below take precedence)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 71.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (71.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W71_H1.md (docs-only push).
+
+H1 OVERRIDES (this block only):
+- SIZE: LARGE by operator request - target 90 minutes, hard ceiling 120. If the whole audit will not fit, finish Part A,
+  push the partial report, and name what is left as H2.
+- READ-ONLY ON CODE. Three Wave 71 blocks are changing code right now. You change NO file under src/, scripts/, tests/,
+  deploy/, .github/ or .claude/. Your only writes: the report, GG registrations, your queue row, DECISION_LOG, handoff.
+  Hard Rule 11: every defect found is REGISTERED (GG) with evidence and a proposed fix - never fixed here.
+- Tools: install audit tools into a throwaway venv in your worktree only (pip; never add them to pyproject; $0). No VPS
+  writes; ssh is read-only (crontab -l, ls, cat, systemctl status).
+
+WAVE 71.H1 - FULL CODE HYGIENE AUDIT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (says so). The operator wants to know the code is structurally sound before a forensics pass relies on
+what it logs. Deliverable: one ranked report with a verdict. Pillar: none - but every finding names the pillar it would
+corrupt if wrong (a broken order path corrupts EXECUTION; a broken ledger write corrupts PROOF).
+
+PART A - Mechanical sweep (~40 min). Run each; paste the summary counts; triage every HIGH by hand (true / false positive):
+  1. Lint + errors: ruff check (default + F, E9, B, S rule sets) over src/ scripts/ tests/.
+  2. Security: bandit -r src scripts (severity >= medium); pip-audit on the installed deps; grep for secrets / API keys /
+     private-key material outside the vault/env protocol (NFR-05); confirm no prod Kalshi base URL is reachable from an order
+     write while ADR-0072 is demo-only.
+  3. Dead code + duplication: vulture (min-confidence 80) on src/; list scripts/ one-offs (t4xx_*, w6x_*, run_t*_diag*) with
+     last commit date and whether any cron/workflow/test references them.
+  4. Complexity: radon cc -nc src (grade C or worse) - name the 10 worst functions and whether they sit on the order, risk or
+     ledger path.
+  5. Types: mypy on c4_risk_engine, c5_execution, pregame_shadow (ignore-missing-imports) - errors only on those paths.
+  6. Tests: full suite with coverage (pytest-cov) - coverage % for c4_risk_engine, c5_execution, pregame_shadow, ledger code;
+     every skipped/xfail test and why; any test that asserts nothing.
+  7. The repo's own checks: the /hygiene command, Step 2 stub scan, scripts/assert_ledger_invariants.py, gg_id_uniqueness_check,
+     check_register_parity.py. Paste outputs.
+PART B - Judgment review (~50 min). Use every review method available in your session - the /hygiene and /security-review
+commands, the engineering code-review / tech-debt / testing-strategy / architecture skills if listed, and parallel
+read-only subagents, one per lane below. Say which ran and which were not available. Lanes, money-path first:
+  L1 Orders: kalshi_client (cancel_order is flagged UNVERIFIED - GG-623 is 71.1's, do not duplicate), demo_fill_policy,
+     paper_trader, the sweeper: can any path place a real-money order? Is kelly_fraction 0 enforced in code, not just config?
+     Kill switch <= 60s (NFR-03) - is it actually wired for every running process (t4-mlb, shadow runners)?
+  L2 Ledgers + data: every JSON/JSONL write - atomic (tmp + rename)? append-only where the rules say so? two crons writing
+     one file? UTC vs local time; point-in-time / look-ahead guards on every pre-game feature.
+  L3 Failure handling: bare except, except-pass, `|| true`, swallowed HTTP errors, retries without limits - list each on a
+     path that feeds a ledger, an order or a verdict (these are how arms go silent).
+  L4 Config + VPS surface (read-only ssh): live crontab vs deploy/ mirror (drift), systemd units, env files, what runs as
+     root, log rotation / disk.
+  L5 Architecture: does C4-C8 stay sport-agnostic in practice (CLAUDE.md claim)? registry vs runners vs silent-arm specs -
+     any cell logged by a runner but not registered, or registered with no runner?
+REPORT: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md -
+  VERDICT line first: SOUND / SOUND WITH ISSUES / NOT SOUND for a forensics pass to trust the logged data, with the reason.
+  Then findings ranked CRITICAL > HIGH > MEDIUM > LOW: file:line, evidence (command + output), pillar it would corrupt,
+  proposed fix, GG id. Then "Not checked" (explicit). Then a punch list sized into MEDIUM blocks for the next wave.
+  Plain-English summary (5 lines) at the top for the operator.
+
+END OF BLOCK 71.H1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
@@ -435,6 +537,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 71.1 | Fix MLB-HIT cancel path (GG-623); forward test on | E1–E3 | ⬜ | — |
 | 71.2 | NBA opening night safe end to end (GG-630/621) | B1 | ⬜ | — |
 | 71.3 | NBA games availability challenger | D1, D3 | ⬜ | — |
+| 71.H1 | OUT-OF-WAVE (operator): full code hygiene audit, read-only | PLUMBING | ⬜ | — |
 
 ### ✅ WAVE 70 — CLOSED 2026-10-13 ~03:00 UTC (verified on GitHub at `a6ad39a`, main CI green) · moved: **no measure** (E unchanged, switches off; D3 2 deployed, 0 rows); main green
 
