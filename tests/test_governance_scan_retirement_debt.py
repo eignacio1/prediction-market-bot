@@ -1,6 +1,6 @@
 """
 Tests for the "Retirement debt" warn-only block added to
-.claude/hooks/governance_scan.sh (T-570, Deliverable 2, 2026-09-23).
+.claude/hooks/governance_scan_full.sh (T-570, Deliverable 2, 2026-09-23).
 
 These tests extract the actual block out of the live hook script (so a future
 edit to the block is exercised by these tests, not a hand-copied duplicate of
@@ -14,7 +14,8 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-HOOK = ROOT / ".claude" / "hooks" / "governance_scan.sh"
+HOOK = ROOT / ".claude" / "hooks" / "governance_scan_full.sh"  # full scan; governance_scan.sh is the cached wrapper (#235)
+WRAPPER = ROOT / ".claude" / "hooks" / "governance_scan.sh"
 
 START_MARKER = 'RETIREMENT_DEBT_OUT=$(python3'
 END_MARKER = "\nfi\n"
@@ -74,3 +75,25 @@ def test_block_never_fails_the_scan_even_with_unparseable_output():
     result = _run_block("some unexpected output with no matching line\n")
     assert result.returncode == 0
     assert "Retirement debt: 0 resolved-class gaps sitting unarchived" in result.stdout
+
+
+def test_wrapper_returns_fast_and_prints_cached_scan(tmp_path):
+    """#235: governance_scan.sh must return in <2s (hook timeout 30s) and print the cached scan, never run the full one inline."""
+    import shutil
+    import time
+
+    proj = tmp_path / "proj"
+    (proj / ".claude" / "hooks").mkdir(parents=True)
+    (proj / "03_DECISIONS").mkdir()
+    (proj / "03_DECISIONS" / "GOVERNANCE_GAP_LOG.md").write_text("")
+    (proj / "logs").mkdir()
+    (proj / "logs" / ".governance_scan_last.txt").write_text("CACHED-SCAN-SENTINEL\n")
+    shutil.copy(WRAPPER, proj / ".claude" / "hooks" / "governance_scan.sh")
+    # a slow stand-in for the full scan: if the wrapper ran it inline, the timing assertion would fail
+    (proj / ".claude" / "hooks" / "governance_scan_full.sh").write_text("sleep 5\necho FULL\n")
+    t0 = time.monotonic()
+    r = subprocess.run(["bash", str(proj / ".claude" / "hooks" / "governance_scan.sh")], capture_output=True, text=True, timeout=30)
+    elapsed = time.monotonic() - t0
+    assert r.returncode == 0
+    assert "[cached governance scan" in r.stdout and "CACHED-SCAN-SENTINEL" in r.stdout
+    assert elapsed < 2.0, elapsed
