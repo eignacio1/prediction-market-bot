@@ -1,0 +1,4 @@
+# BEGIN W69.2 NBA PRESEASON RETIRE
+# Removes both NBA PRESEASON blocks from the live crontab (and this block) once now >= 2026-10-21 10:00 UTC; no-op before; idempotent. Crontab only.
+50 13 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/remove_nba_preseason_cron.py --auto >> logs/nba_preseason_retire.log 2>&1
+# END W69.2 NBA PRESEASON RETIRE
