@@ -869,3 +869,5 @@
 | 2026-10-13T01:54:23Z | T-860 | CLOSED — merge confirmed, HEAD (5b5c693) is ancestor of origin/main — W70.3 main green (#239) + TSS retired, GG-630 registered (#240); PLUMBING |
 | 2026-10-13T01:58:44Z | T-853 | CLOSED — W70.1 PARTIAL - GG-596 fix merged+deployed; re-arm withheld (real MLB-HIT cancel fails, GG-623); NFL +0.39 not edge (GG-624) (commit `7bffdce`) |
 | 2026-10-13T01:58:58Z | T-853 | CLOSED — merge confirmed, HEAD (9bedb1e) is ancestor of origin/main — W70.1 PARTIAL - see handoff |
+| 2026-10-13T02:32:39Z | T-850 | CLOSED — W70.2 PARTIAL - EXP-040 wired beside EXP-039 + deployed (d940bf46); 0 rows until KXNBAPTS lists; GG-620/621 (commit `8ac012b`) |
+| 2026-10-13T02:32:52Z | T-850 | CLOSED — merge confirmed, HEAD (8ac012b) is ancestor of origin/main — W70.2 PARTIAL - EXP-040 wired + deployed d940bf46; 0 rows until KXNBAPTS lists |
