@@ -860,3 +860,4 @@
 | 2026-10-13T00:26:36Z | T-840 | MERGED: NO — branch `session/20261012T235159Z-w69-3-nba-minutes` awaiting merge — W69.3 EXP-040 NBA points projected-minutes challenger beat control at strike 15; accepted, artifact frozen, wiring open (GG-611) (commit `de39fcd`) |
 | 2026-10-13T00:27:16Z | T-840 | CLOSED — merge confirmed, HEAD (d419cda) is ancestor of origin/main — W69.3 EXP-040 challenger accepted, artifact frozen, wiring open (GG-611) |
 | 2026-10-13T00:19:30Z | PLUMBING-hook-timeout | MERGED: NO — branch `hook-timeout-fix2` awaiting merge — Governance scan hook split into 0.03s cached wrapper + full scan to beat the 30s hook timeout (PR #235, awaiting merge). (commit `5d8fd75`) |
+| 2026-10-13T00:31:45Z | PLUMBING-hook-timeout | CLOSED — merge confirmed, HEAD (0d3063e) is ancestor of origin/main — Governance scan hook split into cached wrapper + full scan; PR #235 merged |
