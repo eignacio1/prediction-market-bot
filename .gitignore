@@ -169,3 +169,6 @@ Thumbs.db
 
 # W69.1/GG-587: untracked turn-off override written by demo_fill_forward_report
 deploy/demo_fill.override.env
+
+# W71.2: scan-generated console copy for the main checkout
+.scan_output/
