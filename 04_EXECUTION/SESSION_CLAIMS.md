@@ -873,3 +873,4 @@
 | 2026-10-13T02:32:52Z | T-850 | CLOSED — merge confirmed, HEAD (8ac012b) is ancestor of origin/main — W70.2 PARTIAL - EXP-040 wired + deployed d940bf46; 0 rows until KXNBAPTS lists |
 | 2026-10-13T23:34:35Z | T-870..T-872, GG-640..GG-641 | W71.3 MEDIUM - NBA games availability challenger (12_EXPLORATORY). PURPOSE: DEPTH D1 (team -> team+personnel), D3 +1 only if pre-reg earned |
 | 2026-10-13T23:35:31Z | T-890..T-893, GG-650..GG-651 | W71.2 MEDIUM - NBA opening night safe end to end (freeze old NBA crons, players_2026 repro, rehearsal, scan write path). PURPOSE: BREADTH B1 (protects +12 NBA game cells + EXP-039/040 rows from 10-20) |
+| 2026-10-13T23:35:58Z | T-880..T-882, GG-645..GG-647 | W71.1 STANDARD - fix MLB-HIT cancel path (GG-623) + turn forward test on. PURPOSE: EXECUTION E1/E2/E3 |
