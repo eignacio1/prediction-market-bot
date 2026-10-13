@@ -129,7 +129,7 @@ def test_cancel_after_n_fires(monkeypatch, tmp_path):
     c = _client()
     t = pol.schedule_cancel(c, "OID9", "POS1", "TK")
     t.join(2)
-    c.cancel_order.assert_called_once_with("OID9")
+    c.cancel_order.assert_called_once_with("OID9", market_ticker="TK")
     assert [e["event"] for e in _events(tmp_path)] == ["cancel_scheduled", "cancel_ok"]
 
 
@@ -148,7 +148,7 @@ def test_sweep_overdue_finishes_orphaned_cancels(monkeypatch, tmp_path):
                     "due_ts": 100.0})
     pol.append_log({"event": "cancel_ok", "order_id": "B"})
     assert pol.sweep_overdue(c, now_ts=200.0) == 1
-    c.cancel_order.assert_called_once_with("A")
+    c.cancel_order.assert_called_once_with("A", market_ticker="T")
 
 
 # ---- assignment ------------------------------------------------------------------------
@@ -241,7 +241,7 @@ def test_sweeper_finishes_cancel_after_process_exit(tmp_path):
     c = MagicMock()
     c.cancel_order.return_value = (True, {"status": "canceled"})
     assert pol.sweep_overdue(c) == 1
-    c.cancel_order.assert_called_once_with("O9")
+    c.cancel_order.assert_called_once_with("O9", market_ticker="T")
     assert [e["event"] for e in _events(tmp_path)][-1] == "cancel_ok"
     assert pol.sweep_overdue(c) == 0  # already finished; never cancelled twice
 

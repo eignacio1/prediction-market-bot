@@ -921,3 +921,44 @@ class TestFetchGameMarkets:
         snapshot = GameMarketSnapshot(fetched_at="2026-09-07T00:00:00.000Z", markets=[m1, m2])
         result = snapshot.for_event("KXNFLGAME-26SEP21NYGLAR")
         assert result == [m1]
+
+
+class TestCancelOrderRequest:
+    """GG-623/W71.1: pin the exact cancel request. Kalshi shards orders by exchange_index; a DELETE
+    with neither exchange_index nor market_ticker defaults to shard 0 and 404s for MLB (shard 3)."""
+
+    def _client(self, monkeypatch):
+        monkeypatch.setenv("BOT_ENV", "paper")
+        client = TestTransientRetry()._make_client()
+        client._private_key = MagicMock()
+        return client
+
+    def _cancel(self, client, **kw):
+        seen = {}
+
+        def fake_delete(url, headers=None, params=None, timeout=None):
+            seen.update(url=url, params=params)
+            resp = MagicMock()
+            resp.status_code = 200
+            resp.content = b"{}"
+            resp.json.return_value = {"order_id": "OID", "reduced_by": "1.00"}
+            return resp
+
+        client._session.delete = fake_delete
+        with patch("prediction_market_bot.c5_execution.kalshi_client._auth_headers", return_value={}) as ah:
+            result = client.cancel_order("OID", **kw)
+        return result, seen, ah
+
+    def test_cancel_sends_market_ticker_query_param(self, monkeypatch):
+        (ok, _), seen, _ = self._cancel(self._client(monkeypatch), market_ticker="KXMLBHIT-26OCT132000CLETB-X-1")
+        assert ok is True
+        assert seen["url"].endswith("/portfolio/events/orders/OID")
+        assert seen["params"] == {"market_ticker": "KXMLBHIT-26OCT132000CLETB-X-1"}
+
+    def test_signature_covers_path_only_not_query(self, monkeypatch):
+        _, _, ah = self._cancel(self._client(monkeypatch), market_ticker="T")
+        assert ah.call_args.args[3] == "/trade-api/v2/portfolio/events/orders/OID"
+
+    def test_cancel_without_ticker_sends_no_params(self, monkeypatch):
+        _, seen, _ = self._cancel(self._client(monkeypatch))
+        assert seen["params"] is None

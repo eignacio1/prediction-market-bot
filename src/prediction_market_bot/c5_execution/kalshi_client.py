@@ -1186,7 +1186,7 @@ class KalshiMarketClient:
             return False
         return None
 
-    def _delete(self, path: str) -> tuple[bool, Any]:
+    def _delete(self, path: str, params: dict[str, Any] | None = None) -> tuple[bool, Any]:
         """Signed DELETE, single attempt (a cancel must not silently retry-loop)."""
         if not self._private_key:
             return False, {"error": "RSA private key not loaded"}
@@ -1194,17 +1194,23 @@ class KalshiMarketClient:
         full_path = f"/trade-api/v2{path}"
         try:
             headers = _auth_headers(self._key_id, self._private_key, "DELETE", full_path)
-            r = self._session.delete(url, headers=headers, timeout=REQUEST_TIMEOUT_S)
+            r = self._session.delete(url, headers=headers, params=params, timeout=REQUEST_TIMEOUT_S)
             if r.status_code in (200, 201, 204):
                 return True, (r.json() if r.content else {})
             return False, {"error": f"HTTP {r.status_code}", "body": r.text[:300]}
         except Exception as e:
             return False, {"error": type(e).__name__, "detail": str(e)}
 
-    def cancel_order(self, order_id: str) -> tuple[bool, dict[str, Any]]:
-        """Cancel a resting order. UNVERIFIED against the live demo API (W64.2): the v2
-        path below follows the submit path's convention; first ON day must confirm it."""
-        return self._delete(f"/portfolio/events/orders/{order_id}")
+    def cancel_order(self, order_id: str, market_ticker: str | None = None) -> tuple[bool, dict[str, Any]]:
+        """Cancel a resting order (DELETE /portfolio/events/orders/{id}).
+
+        GG-623/W71.1: Kalshi shards orders by exchange_index. Without `exchange_index` or
+        `market_ticker` the DELETE defaults to shard 0, so an order on another shard answers
+        HTTP 404 not_found while the order is plainly resting (every MLB-family demo order sits on
+        shard 3; NFL/NHL on 0). `market_ticker` makes the exchange auto-route to the right shard.
+        The query string is not part of the signed path."""
+        params = {"market_ticker": market_ticker} if market_ticker else None
+        return self._delete(f"/portfolio/events/orders/{order_id}", params=params)
 
     def get_order(self, order_id: str) -> tuple[bool, Any]:
         """Authenticated GET of one order (status / fill counts)."""

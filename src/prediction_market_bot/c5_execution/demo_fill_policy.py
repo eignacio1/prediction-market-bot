@@ -201,7 +201,7 @@ def _already_terminal_status(client: Any, order_id: str, data: Any) -> Optional[
 
 def cancel_now(client: Any, order_id: str, position_id: str, ticker: str, reason: str) -> bool:
     try:
-        ok, data = client.cancel_order(order_id)
+        ok, data = client.cancel_order(order_id, market_ticker=ticker or None)
     except Exception as e:  # noqa: BLE001 - a cancel failure is logged, never raised into the order path
         ok, data = False, {"error": type(e).__name__, "detail": str(e)}
     if not ok:
