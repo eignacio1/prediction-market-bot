@@ -178,7 +178,7 @@ Only 71.1 may change order behaviour.
 |---|---|---|---|---|
 | 71.1 | Fix the MLB-HIT cancel path (GG-623); turn the forward test on | EXECUTION E1/E2/E3 | ⬜ | — |
 | 71.2 | NBA opening night: nothing writes where it shouldn't, nothing starves | BREADTH B1 (protects +12 game cells, 3 + 1 points arms from 10-20) | 🟡 Part A DONE (#242 c035c581): old NBA book frozen in code (GG-630) + players_2026 weekly cron + silent-arm data check (GG-621), read back on box. Part B (rehearsal, scan write path) next | T-890 |
-| 71.3 | NBA game markets: availability challenger (full injury coverage) | DEPTH D1 (NBA games: team → team + personnel), D3 | ⬜ | — |
+| 71.3 | NBA game markets: availability challenger (full injury coverage) | DEPTH D1 (NBA games: team → team + personnel), D3 | ✅ DONE (NO) | Coverage 33.9% → 96.4%; availability challenger does NOT beat frozen on moneyline/spread/total (pooled CIs include 0); D1/D3 unchanged; see 12_EXPLORATORY/20261013_nba_games_availability/results.md |
 
 ### 71.1 — Fix the MLB-HIT cancel path (GG-623); turn the forward test on
 
