@@ -417,3 +417,29 @@ def test_shadow_arm_split_follows_same_hash_and_share(monkeypatch, tmp_path):
     sfs.maybe_place(_row(), c, lambda e: 1.0)
     orders = [e for e in _events(tmp_path) if e["event"] == "shadow_order"]
     assert orders and orders[0]["arm"] == want
+
+
+_REAL_404 = {"error": "HTTP 404", "body": '{"error":{"code":"not_found","message":"not found","service":"exchange"}}'}
+
+
+@pytest.mark.parametrize("status", ["executed", "canceled", "expired"])
+def test_cancel_404_on_terminal_order_is_already_terminal_not_failure(tmp_path, status):
+    """GG-596: real 404 body + GET showing a terminal order -> not a failure."""
+    c = _client()
+    c.cancel_order.return_value = (False, _REAL_404)
+    c.get_order.return_value = (True, {"order": {"status": status}})
+    assert pol.cancel_now(c, "O", "P", "T", "unfilled_after_N") is True
+    e = _events(tmp_path)[-1]
+    assert e["event"] == "cancel_already_terminal" and e["order_status"] == status
+
+
+def test_cancel_404_but_still_resting_or_get_failed_stays_failure(tmp_path):
+    c = _client()
+    c.cancel_order.return_value = (False, _REAL_404)
+    c.get_order.return_value = (True, {"order": {"status": "resting"}})
+    assert pol.cancel_now(c, "O", "P", "T", "x") is False
+    c.get_order.return_value = (False, {"error": "HTTP 500"})
+    assert pol.cancel_now(c, "O2", "P", "T", "x") is False
+    c.cancel_order.return_value = (False, {"error": "HTTP 500", "body": ""})
+    assert pol.cancel_now(c, "O3", "P", "T", "x") is False
+    assert [e["event"] for e in _events(tmp_path)] == ["cancel_failed"] * 3

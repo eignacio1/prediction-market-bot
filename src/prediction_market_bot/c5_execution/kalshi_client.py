@@ -1206,6 +1206,10 @@ class KalshiMarketClient:
         path below follows the submit path's convention; first ON day must confirm it."""
         return self._delete(f"/portfolio/events/orders/{order_id}")
 
+    def get_order(self, order_id: str) -> tuple[bool, Any]:
+        """Authenticated GET of one order (status / fill counts)."""
+        return self._get(f"/portfolio/orders/{order_id}", authenticated=True)
+
 
 def _utc_now() -> str:
     return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"

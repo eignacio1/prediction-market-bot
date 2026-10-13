@@ -106,3 +106,23 @@ def test_override_file_is_git_ignored():
     from pathlib import Path
     gi = (Path(__file__).parent.parent / ".gitignore").read_text().splitlines()
     assert "deploy/demo_fill.override.env" in gi
+
+
+def test_historical_404_cancel_failed_reclassified_via_order_status(tmp_path):
+    """GG-596: pre-fix cancel_failed rows with HTTP 404 on terminal orders do not trip the turn-off."""
+    events = []
+    for i in range(5):
+        tk = "KXMLBHIT-X"
+        events.append(ev(60 + i, event="cancel_scheduled", order_id=f"p{i}", position_id=f"pid{i}", ticker=tk))
+        events.append(ev(59 + i, event="cancel_failed", order_id=f"p{i}", position_id=f"pid{i}", ticker=tk,
+                         response={"error": "HTTP 404", "body": "nf"}))
+    rep = rpt.build_report(events, NOW, lambda oid, tk: {"status": "canceled", "fills": 0})
+    assert rep["tripped"] == []
+    cells = [c for c in rep["cells"] if c["cancels"]["scheduled"]]
+    assert cells[0]["cancels"]["already_terminal"] == 5 and cells[0]["cancels"]["failed"] == 0
+    # no lookup available -> cannot prove terminal -> stays a failure
+    rep2 = rpt.build_report(events, NOW, None)
+    assert [t["condition"] for t in rep2["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
+    # resting orders with a 404 stay failures
+    rep3 = rpt.build_report(events, NOW, lambda oid, tk: {"status": "resting", "fills": 0})
+    assert rep3["tripped"]
