@@ -16,7 +16,9 @@ from typing import Callable, Optional
 
 from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import et_date, et_midnight_utc
 
-URL = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{d}_{h:02d}{ap}.pdf"
+URL = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{d}_{h:02d}{ap}.pdf"          # through 2025-12-21
+URL_V2 = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{d}_{h:02d}_{m}{ap}.pdf"   # from 2025-12-22 (W70.2)
+V2_FROM = "2025-12-22"
 SLOTS = [(11, "AM"), (1, "PM"), (3, "PM"), (5, "PM"), (7, "PM")]     # 11:30 13:30 15:30 17:30 19:30 ET
 LEAD = timedelta(hours=4)
 _ROW = re.compile(r"(\S[^,\n]*?,\s+\S.*?)\s{3,}(Out|Doubtful|Questionable|Probable|Available)\b")
@@ -56,8 +58,17 @@ def slot_key(h: int, ap: str) -> str:
     return f"{(h % 12) + (12 if ap == 'PM' else 0):02d}:30"
 
 
+def url_for(d, h: int, ap: str) -> str:
+    """The league renamed the files on 2025-12-22 (hour_minute stamps, 15-min cadence): the old name 403s after that
+    date, which is why the study's Jan-Apr 2026 coverage was 34% (GG-610). Same 2-hourly grid either way."""
+    if str(d) >= V2_FROM:
+        return URL_V2.format(d=d, h=h, m=slot_key(h, ap).split(":")[1], ap=ap)
+    return URL.format(d=d, h=h, ap=ap)
+
+
 def _http_get(url: str) -> bytes:
-    with urllib.request.urlopen(url, timeout=30) as r:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as r:
         return r.read()
 
 
@@ -77,7 +88,7 @@ class InjurySnapshots:
             res = json.loads(fp.read_text())
         else:
             try:
-                data = self._fetch(URL.format(d=key[0], h=h, ap=ap))
+                data = self._fetch(url_for(key[0], h, ap))
             except Exception:           # not published (yet) / network: leave uncached, fall back to earlier slot
                 data = None
             if data is not None:
