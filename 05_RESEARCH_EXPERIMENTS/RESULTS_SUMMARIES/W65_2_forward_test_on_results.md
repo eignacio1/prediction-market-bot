@@ -65,3 +65,24 @@ Read arm assignment, skips by reason, cancels and cancel success rate from that 
 **Findings (not fixed here):** (1) `SHADOW_FLAT_STAKE` is NOT inert in code - `make_on_row` is wired in run_{mlb,nba,}_pregame_shadow.py -
 but those cron lines do not load `demo_fill.env`, and editing them was outside this authorization, so shadow runners stay OFF.
 (2) GG-564 (demo lists a subset) still biases E1 denominators; stratify. (3) The summary's earlier "maybe_place uncalled" claim was wrong.
+
+## Read-back 10-13 (W69.1, 2026-10-13T00:09Z-00:37Z, run on the VPS)
+
+Box: HEAD == origin/main at the time of read (then f9ab37de after deploy). Crontab: NFL/MLB/NHL(`run_nhl_shadow_staked.py`)/NBA shadow lines now load `deploy/demo_fill.env`; 11:25 report line installed (backup `/root/crontab.bak.w69_1`). t4-mlb loads `demo_fill.env` via `EnvironmentFile` (read by unit config, not process environ).
+
+First forward-test numbers (treatment arm only; no shadow control orders existed yet):
+
+| book/sport | orders | fills | settle-minus-price on fills |
+|---|---|---|---|
+| paper/MLB | 17 (18 at 00:37Z) | 5 | +0.07 |
+| shadow/MLB | 363 | 75 | -0.20 (-0.12 by 00:37Z) |
+| shadow/NFL | 1135 | 231 | +0.39 |
+| shadow/NHL, shadow/NBA | no events yet (lines just installed) | - | - |
+
+Cancels: MLB paper 0 ok / 17 failed; shadow MLB 0 / 363; NFL 906 ok / 229 failed (79.8%). Failure body in every sampled case: `HTTP 404 not_found` (`unfilled_after_N` 17, `sweep_overdue` 383) = order already terminal at cancel time.
+
+Turn-off: `cancel_fail_rate_gt_10pct_in_a_day` TRIPPED (rate 1.0, worst day 2026-10-13 = 10 minutes old). It is a classification artifact, not a cancel-API failure: GG-596. The trip auto-disabled both switches. Fills/week vs ~550 in 8 weeks, win rate on fills and per-reason skip counts are in `exp_output/FORWARD_TEST/demo_fill_forward_report.json` on the box; only 1 day observed, so pace is NOT yet meaningful.
+
+Not done: governance-scan line and /project panel were not compared with these numbers.
+
+GG-586 (shadow control arm, model-mid order, no cancel, no book read; same hash/share; report splits arms): merged in PR #234, 4 new tests, deployed. NOT read back live: switches are OFF, so no control-arm order has been placed. GG-587 (untracked git-ignored `deploy/demo_fill.override.env`, read last by the policy): merged, deployed, READ BACK on box (tracked env says `on`, override wins, `is_enabled()` False, tree has no tracked modifications).

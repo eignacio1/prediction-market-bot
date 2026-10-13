@@ -1,17 +1,19 @@
-# Session Handoff - W69.1 (2026-10-12 ~23:58 UTC) - BLOCKED
+# SESSION HANDOFF W69.1 (replaces earlier BLOCKED version)
 
-Status: BLOCKED | claim T-830..T-832, GG-595..GG-596 | no code changed | MEASURE MOVED: none (EXECUTION E1/E2/E3 - no forward-test number read)
+Status: PARTIAL | branch session/20261012T235158Z-w69-1-forward-readback | PR #234 merged (squash), CI on PR green; main-branch run 38327393913 has 6 failures in other sessions' files (NBA-minutes exploratory isolation x2, governance-scan hook tests x4: #233/#235), none touch this PR.
+Result: box activated and read back; first forward-test numbers collected; GG-587 closed on read-back; GG-586 merged but not live-read-back.
+vision_pillar: EXECUTION | gap_measure: forward-test E1/E2/E3 readable per book/sport/arm from the box | gap_delta: treatment-arm numbers now exist for paper/MLB, shadow/MLB, shadow/NFL; control arm for shadow cells exists in code; turn-off no longer dirties the tree.
+MEASURE MOVED: yes (first on-box numbers). Order behaviour changed only for shadow control arm (demo, switches currently OFF).
 
-vision_pillar: EXECUTION | gap_measure: E1/E2/E3 forward-test numbers per book/arm | gap_delta: none (unread)
+## What happened
+- Crontab fixed (NHL staked runner + demo_fill.env loading on NHL/NBA lines, 11:25 report line); backup /root/crontab.bak.w69_1.
+- My manual report run tripped ADR-0072 turn-off (cancel_fail_rate 1.0 on a 10-minute-old UTC day). Cause: cancel returns 404 on already-terminal orders and the report counts that as failure (GG-596). Both switches are now OFF through the untracked override on the VPS; tracked demo_fill.env restored clean.
+- GG-586/587 implemented, tested (72 related tests), merged, deployed (VPS HEAD f9ab37de).
 
-## Refusals (exact)
-1. STEP 0: appending the 27 allow rules to `.claude/settings.local.json` (python3 heredoc editing the JSON) -> denied by auto-mode classifier, reason "Self-Modification". Not worked around. Existing rules already cover ssh prediction-market-vps *, git *, gh pr *, python3 *, scp *.
-2. Part A step 1: `ssh prediction-market-vps 'cd /opt/prediction-market-bot && git rev-parse HEAD; crontab -l | grep demo_fill...; /proc/<t4-mlb pid>/environ ...'` -> denied, reason "Production Reads". Same refusal class as 68.2.
+## Operator decisions needed
+1. Re-arm the demo switches? Delete /opt/prediction-market-bot/deploy/demo_fill.override.env on the VPS. Recommended only after GG-596 is fixed, otherwise the report re-trips and turns them off again on the next 11:25 run.
+2. GG-596 (classify 404 as already_terminal) is the next undone part; GG-586/570/571 stay OPEN until a live read-back with switches on.
+3. Six failing tests on main from #233/#235 belong to those sessions.
 
 ## Not done
-- Part A (VPS HEAD, crontab demo_fill.env lines, t4-mlb environ, forward report output): not read.
-- Part B (GG-586 control arm on shadow cells, GG-587 untracked override file): not started. Both change demo order behaviour and require an on-box read-back to close; building/merging unverified was judged worse than waiting.
-- GG-586/587/570/571 remain open.
-
-## Next undone part
-Part A, then Part B. Operator: either allow `Bash(ssh prediction-market-vps *)` reads for the classifier (production reads), or run Part A's read yourself with `! ssh prediction-market-vps ...`.
+Governance-scan line and /project panel comparison with report numbers.
