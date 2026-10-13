@@ -91,7 +91,7 @@ def main(out_path: str) -> int:
         return 4
     okg, g1 = c._get(f"/portfolio/orders/{order.order_id}", authenticated=True)
     rec("get_before_cancel", okg, g1)
-    okc, dc = c.cancel_order(order.order_id)
+    okc, dc = c.cancel_order(order.order_id, market_ticker=ticker)
     rec("cancel_order", okc, dc)
     time.sleep(2)
     okg2, g2 = c._get(f"/portfolio/orders/{order.order_id}", authenticated=True)
