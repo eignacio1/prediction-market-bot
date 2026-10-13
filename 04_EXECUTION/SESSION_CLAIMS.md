@@ -858,3 +858,4 @@
 | 2026-10-12T23:53:03Z | T-830..T-832, GG-595..GG-596 | W69.1 MEDIUM - activate+read back merged forward-test; control arm on shadow cells (GG-586/587 exist). PURPOSE: EXECUTION E1/E2/E3 (first forward-test numbers per book/arm) |
 | 2026-10-12T23:53:25Z | T-840..T-842, GG-610..GG-611 | W69.3 MEDIUM - NBA player points projected-minutes challenger (12_EXPLORATORY). PURPOSE: DEPTH D1 (availability on NBA), D3 +1 if pre-registration earned |
 | 2026-10-13T00:26:36Z | T-840 | MERGED: NO — branch `session/20261012T235159Z-w69-3-nba-minutes` awaiting merge — W69.3 EXP-040 NBA points projected-minutes challenger beat control at strike 15; accepted, artifact frozen, wiring open (GG-611) (commit `de39fcd`) |
+| 2026-10-13T00:27:16Z | T-840 | CLOSED — merge confirmed, HEAD (d419cda) is ancestor of origin/main — W69.3 EXP-040 challenger accepted, artifact frozen, wiring open (GG-611) |
