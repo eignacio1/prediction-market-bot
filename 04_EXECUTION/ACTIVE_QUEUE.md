@@ -177,7 +177,7 @@ Only 71.1 may change order behaviour.
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 71.1 | Fix the MLB-HIT cancel path (GG-623); turn the forward test on | EXECUTION E1/E2/E3 | 🟨 Part A done (root cause GG-645: shard routing; PR #243 deployed, t4-mlb restarted 2026-10-13T23:58Z); forward test RE-ARMED 2026-10-13 (override deleted, is_enabled True). Read-back after next NHL/MLB night pending; GG-586/570/571/623 stay OPEN until then | — |
-| 71.2 | NBA opening night: nothing writes where it shouldn't, nothing starves | BREADTH B1 (protects +12 game cells, 3 + 1 points arms from 10-20) | 🟡 Part A DONE (#242 c035c581): old NBA book frozen in code (GG-630) + players_2026 weekly cron + silent-arm data check (GG-621), read back on box. Part B (rehearsal, scan write path) next | T-890 |
+| 71.2 | NBA opening night: nothing writes where it shouldn't, nothing starves | BREADTH B1 (protects +12 game cells, 3 + 1 points arms from 10-20) | ✅ DONE (Part B #245 c8e6feb: 10-20 rehearsal clean, scan console to git-ignored path; spread/total/points write 0 until Kalshi lists them). Part A (#242 c035c581): old NBA book frozen in code (GG-630) + players_2026 weekly cron + silent-arm data check (GG-621), read back on box. | T-890 |
 | 71.3 | NBA game markets: availability challenger (full injury coverage) | DEPTH D1 (NBA games: team → team + personnel), D3 | ✅ DONE (NO) | Coverage 33.9% → 96.4%; availability challenger does NOT beat frozen on moneyline/spread/total (pooled CIs include 0); D1/D3 unchanged; see 12_EXPLORATORY/20261013_nba_games_availability/results.md |
 
 ### 71.1 — Fix the MLB-HIT cancel path (GG-623); turn the forward test on
