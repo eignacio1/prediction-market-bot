@@ -878,3 +878,4 @@
 | 2026-10-14T00:29:53Z | T-890 | CLOSED — merge confirmed, HEAD (ec654c1) is ancestor of origin/main — W71.2 DONE - NBA opening night rehearsal, freeze guard, scan console path |
 | 2026-10-14T00:30:02Z | T-900..T-902 | CLOSED — merge confirmed, HEAD (20685ef) is ancestor of origin/main — W71.H1 hygiene audit PARTIAL (PLUMBING): report + GG-660..677 on main 20685ef; tests/coverage/ledger-invariants carried to H2 |
 | 2026-10-14T00:30:25Z | T-880 | CLOSED — W71.1: MLB cancel path fixed (Kalshi shard routing via market_ticker, PR #243), forward test re-armed; read-back pending game night (commit `fcd1714`) |
+| 2026-10-14T00:30:57Z | W71.3 | CLOSED — W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged. (commit `3b4a7b1`) |

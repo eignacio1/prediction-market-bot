@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-13T23:59:00Z (T-890 — W71.2 DONE - old NBA book frozen in code (GG-630), players_2026 reproducible + scan alarm (GG-621), 10-20 rehearsal run, scan no longer dirties main tree) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261013_W71_2.md` for full session detail.
+**Last reviewed:** 2026-10-14T01:00:00Z (W71.3 — W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0100Z_W71_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: W71.3
+tier: MICRO
+timestamp: 2026-10-14T01:00:00Z
+commit: 3b4a7b1
+one_line_summary: W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D1, D3
+gap_delta: none (D1 team-only unchanged; D3 +0). Source: 12_EXPLORATORY/20261013_nba_games_availability/results.md
+-->
+
 # SESSION_HANDOFF — W71.3 NBA game markets: availability challenger
 
 ```
