@@ -888,3 +888,4 @@
 | 2026-10-14T01:53:41Z | T-930 | CLOSED — merge confirmed, HEAD (d4abe22) is ancestor of origin/main — W72.1: read-back done; guards merged #252; t4-mlb restart pending idle window |
 | 2026-10-14T04:34:58Z | W72.2 | CLOSED — W72.2 crash-safe ledgers (#248) + /vps retired + box .env 600 shipped; t4-mlb restarted 02:53Z, GG-663/664/672 closed (commit `1c1104f`) |
 | 2026-10-14T04:35:40Z | W72.2 | CLOSED — merge confirmed, HEAD (e6a4a29) is ancestor of origin/main — CLOSED — ledger safety shipped, GG-660/662/663/664/672 resolved |
+| 2026-10-14T23:44:48Z | T-950..T-952, GG-720..GG-724 | W73.3 MEDIUM - NFL engine simulation scaffold (ADR-0073 stage 1), 12_EXPLORATORY only. PURPOSE: DEPTH D4 (NFL whole board from one engine - scaffold stage) |
