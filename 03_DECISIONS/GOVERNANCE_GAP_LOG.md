@@ -4058,7 +4058,9 @@ W71.1 (T-880), 2026-10-13. Root cause of GG-623, not a demo outage. `DELETE /por
 
 ### GG-646 — Forward-test report excuses late exchange-cancels as already_terminal, so it passes on a broken cancel path
 
-**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W72.1 read-back 2026-10-14T01:52Z:** PR #246 (8740c0b) is in the VPS checkout (dfc16388 contains it; `TERMINAL_SLACK_S` present in scripts/demo_fill_forward_report.py). The report is a cron script, so the running job uses it on its next spawn.
 
 W72.1 fix: `_historical_404_terminal` requires order `last_update_time` <= cancel attempt ts + 30s; missing timestamp stays a failure. Tests added. RESOLVED once the VPS checkout carries it (merge != deploy).
 
@@ -4112,19 +4114,25 @@ W71.H1 L1. paper_trader.py:360,975,1064,1152,1206 call `self._save()` without ch
 
 ### GG-665 — kelly_fraction is read from the forecast dict (default 0.25) and never cross-checked against BAND_CONFIGS (ADR-0048 zero not enforced in risk.py)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+**W72.1 read-back 2026-10-14T01:52Z:** band-sourced kelly in risk.py (`_band_kelly_fraction`). PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
 W71.H1 L1. `c4_risk_engine/risk.py:166` `kelly_frac = float(fc.get('kelly_fraction', self._kelly_fraction))`; execution_bands.py holds 0.0 but band validators enforce 0.0 only for NFL/NHL T4. Any caller that omits or mis-sets the key sizes at 0.25. Pillar EXECUTION. Fix: clamp to min(forecast, BAND_CONFIGS[band].kelly_fraction) and test. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-666 — No host/env assertion on order writes: BOT_ENV=live plus credentials reaches prod through the same submit_order
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+**W72.1 read-back 2026-10-14T01:52Z:** `_order_write_host_refusal` on `_post`/`_delete`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
 W71.H1 L1 / A2. `kalshi_client.py:106-130` maps live->prod; `_post` (553-575) and `submit_order` (1048-1157) assert nothing. Protection is entry-point guards plus per-unit `BOT_ENV=paper`; cron lines rely on `export $(grep -v '^#' .env | xargs)` so a line without an inline prefix inherits .env (per-line coverage of deploy/cron.conf:110 and 496-567 NOT verified). No prod URL is reachable today from a configured entry point. Fix: refuse prod host in submit_order unless an ADR-gated env flag is set; test it; script a check that every cron line carries BOT_ENV. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-667 — NFR-03 kill switch not wired to shadow runners or shadow_flat_stake.maybe_place; t4-mlb poll is 45s
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+**W72.1 read-back 2026-10-14T01:52Z:** `kill_switch_state.halt_reason` checked in `shadow_flat_stake.maybe_place`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
 W71.H1 L1. t4-mlb honours KILL_SWITCH_PATH only at loop top (worst case ~45s + cycle). run_nba_pregame_shadow, run_nhl_shadow_staked, run_pregame_shadow, run_nba_player_points_shadow are cron one-shots with no kill-switch or BOT_ENV check; `shadow_flat_stake.maybe_place` calls `client.submit_order` directly, bypassing C4. Pillar EXECUTION. Fix: shared kill-switch helper checked before every order. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
