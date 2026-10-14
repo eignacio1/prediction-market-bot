@@ -544,7 +544,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 71.1 | Fix MLB-HIT cancel path (GG-623); forward test on | E1–E3 | ⬜ | — |
 | 71.2 | NBA opening night safe end to end (GG-630/621) | B1 | ⬜ | — |
 | 71.3 | NBA games availability challenger | D1, D3 | ⬜ | — |
-| 71.H1 | OUT-OF-WAVE (operator): full code hygiene audit, read-only | PLUMBING | ⬜ | — |
+| 71.H1 | OUT-OF-WAVE (operator): full code hygiene audit, read-only | PLUMBING | 🟡 PARTIAL | Report `HYGIENE_AUDIT_20261013.md`: SOUND WITH ISSUES; GG-660..677 registered (1 CRITICAL, 3 HIGH); test+coverage run and Not-checked list carried to H2 |
 
 ### ✅ WAVE 70 — CLOSED 2026-10-13 ~03:00 UTC (verified on GitHub at `a6ad39a`, main CI green) · moved: **no measure** (E unchanged, switches off; D3 2 deployed, 0 rows); main green
 

@@ -4059,3 +4059,111 @@ W71.1 (T-881), 2026-10-13. `demo_fill_forward_report._historical_404_terminal` t
 **Status:** OPEN · **Severity:** LOW
 
 W70.1 (T-853) audit: 0 of 231 fills after kickoff, so no timing artifact. But all fills are YES-side taker crosses on ladder rungs of totals/spreads that resolve together; first-fill-per-position +0.394 on 58 settled positions across 4 settled games (BUFLAR pending). Report E2 for NFL only with game-clustered CIs.
+
+### GG-660 — `.claude/commands/vps.md` is the 2026-05 provisioning script; running it today would duplicate every cron job, overwrite the production model and pin stale deps
+
+**Status:** OPEN · **Severity:** CRITICAL
+
+W71.H1 L6. File last committed 2026-05-31 (149 lines). Step 7: `crontab -l > /tmp/existing_cron; cat deploy/cron.conf >> /tmp/existing_cron; crontab /tmp/existing_cron` APPENDS the mirror to the live crontab, so all ~62 live jobs (incl. `vps_deploy.sh`) would run twice and every shadow arm would write each row twice (operator's description said 'replaces'; the file actually appends and duplicates; the harm is the same class). Step 4 `scp models/prod_model.joblib models/prod_model_meta.json` overwrites the box model with whatever is local. Step 3 pins `scikit-learn==1.8.0` and installs `requirements-base.txt` (unpinned `nba_api>=1.5.0`). Step 5/verify text ('3 jobs', BOT_C4_ACTIVE must be absent, Python 3.11) is false against the live box (70 cron lines, py3.12 venv, BOT_C4_ACTIVE=true). Not run; not edited. Pillar corrupted: BREADTH/PROOF (double rows), EXECUTION. Proposed fix: move to `.claude/commands/_archive/vps_provisioning_2026-05.md` with a 'DO NOT RUN' header; replace `/vps` with a read-only `/deploy-audit` command (box HEAD vs origin, cron mirror diff, process age vs HEAD, perms). See report L6. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-661 — Running t4-mlb (the only ACTIVE cell) is stale: restart policy skips on live games and never retries
+
+**Status:** OPEN · **Severity:** HIGH
+
+W71.H1 L6. Box t4-mlb pid 3223742 started 2026-10-11 16:35Z; three deploys on 2026-10-13 (00:33, 01:48, 23:53Z) returned `skip_live_game` for changed imports demo_fill_policy.py, market_type_registry.py, kalshi_client.py (GG-623 cancel fix). `deploy_restart_policy.py`/`vps_deploy.sh` keep no pending-restart marker; MLB is 'live' (Warmup/In Progress) ~12h/day so the window is rare. Merge != deploy != activation. Pillar: EXECUTION (E1-E3). Fix: persist `pending_t4_restart` in /var/lib/pmbot-deploy, restart at first no-live-game tick, alarm if marker age >12h; write HEAD sha at t4-mlb startup and compare. One-off manual restart is an operator decision (not done here). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-662 — VPS `.env` (VENUE_API_KEY, key path) and `.env.bak.20260915T055650Z` are mode 644, owner a foreign uid
+
+**Status:** OPEN · **Severity:** HIGH
+
+W71.H1 L4. `ls -l` on box: .env 644 uid 501; .env.bak.* 644. PEM itself is 600 root. Single-user box with one listener (sshd), so exposure is low but the invariant (vps.md says chmod 600) is violated and a stale copy exists. Also unknown whether the key is demo or prod (one variable name). Pillar: PLUMBING (security). Fix: chmod 600 + chown root, remove .env.bak.*, add perms assert to healthcheck, operator to confirm key is demo. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-663 — paper_trader ledger save is non-atomic and a corrupt/torn read silently re-initialises or overwrites the book
+
+**Status:** OPEN · **Severity:** HIGH
+
+W71.H1 L1/L2. `c5_execution/paper_trader.py:346` `self._path.write_text(json.dumps(...))` (no tmp+os.replace, no fsync); `_load_or_init` 200-210 `except Exception: pass` -> fresh INITIAL_BANKROLL state; `_reload_locked` 318-327 swallows a parse failure then the next `_save` clobbers a concurrent writer's appends. Readers (dashboard.py:210) take no lock. Atomic pattern already exists in scripts/backfill_logic_epoch.py:127. Pillar: EXECUTION/PROOF (E1/E2 come from this file). Fix: tmp+fsync+os.replace; on parse failure quarantine file as .corrupt-<ts>, log CRITICAL, raise. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-664 — paper_trader `_save()` return value ignored at five call sites
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L1. paper_trader.py:360,975,1064,1152,1206 call `self._save()` without checking the bool (717/723/823 do). `_save` catches OSError and returns False, so a failed write after an order is placed leaves exchange and ledger diverged. Pillar EXECUTION. Fix: check, raise, audit-log. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-665 — kelly_fraction is read from the forecast dict (default 0.25) and never cross-checked against BAND_CONFIGS (ADR-0048 zero not enforced in risk.py)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L1. `c4_risk_engine/risk.py:166` `kelly_frac = float(fc.get('kelly_fraction', self._kelly_fraction))`; execution_bands.py holds 0.0 but band validators enforce 0.0 only for NFL/NHL T4. Any caller that omits or mis-sets the key sizes at 0.25. Pillar EXECUTION. Fix: clamp to min(forecast, BAND_CONFIGS[band].kelly_fraction) and test. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-666 — No host/env assertion on order writes: BOT_ENV=live plus credentials reaches prod through the same submit_order
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L1 / A2. `kalshi_client.py:106-130` maps live->prod; `_post` (553-575) and `submit_order` (1048-1157) assert nothing. Protection is entry-point guards plus per-unit `BOT_ENV=paper`; cron lines rely on `export $(grep -v '^#' .env | xargs)` so a line without an inline prefix inherits .env (per-line coverage of deploy/cron.conf:110 and 496-567 NOT verified). No prod URL is reachable today from a configured entry point. Fix: refuse prod host in submit_order unless an ADR-gated env flag is set; test it; script a check that every cron line carries BOT_ENV. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-667 — NFR-03 kill switch not wired to shadow runners or shadow_flat_stake.maybe_place; t4-mlb poll is 45s
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L1. t4-mlb honours KILL_SWITCH_PATH only at loop top (worst case ~45s + cycle). run_nba_pregame_shadow, run_nhl_shadow_staked, run_pregame_shadow, run_nba_player_points_shadow are cron one-shots with no kill-switch or BOT_ENV check; `shadow_flat_stake.maybe_place` calls `client.submit_order` directly, bypassing C4. Pillar EXECUTION. Fix: shared kill-switch helper checked before every order. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-668 — Deploy failures are log-only: fetch fail exits 0, gate-red and dirty-tree aborts raise no alarm, no rollback path
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L6. scripts/ops/vps_deploy.sh L137/160-182. 2026-10-13 00:18/00:23/00:28Z three ticks aborted `dirty_tree_abort` because tracked `deploy/demo_fill.env` was modified on the box by demo_fill_forward_report auto-off; nobody was alerted. Gate is 2 test files (13 tests). No documented rollback (ff-only refuses backwards). Fix: status file + age alarm in governance_scan; untrack or gitignore the tool-written env file; add `deploy_rollback.sh <sha>`. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-669 — Daily healthcheck.sh is permanently red and encodes Phase-0 invariants that are now false
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L4. logs/health.log: 133x 'BOT_C4_ACTIVE is set - must be unset', 23x 'Python 3.11 w/ OpenSSL 3.x not found', 23x Kalshi API empty. Real state: BOT_C4_ACTIVE=true by design. A permanently red check is ignored. Fix: rewrite for current invariants (C4 only in t4 units, kelly 0, key perms, disk, cron-vs-mirror, process age vs HEAD). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-670 — No log rotation or disk alarm on the VPS (logs 1.9G, exp_output 2.6G, journal 1.1G; disk 51%)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L4. audit_mlb_t4.jsonl 700MB, edge_decisions 259MB, cycle_log 228MB, 8518 files in logs/; no app logrotate entry. Fix: logrotate copytruncate for *_cron.log, monthly archive for audit jsonl, 80% disk alarm; never rotate ledgers without epoch-aware tooling. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-671 — Local-time `date.today()` used where UTC is documented (correct only because the VPS is UTC)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L2. run_t4_mlb_live.py:1921,1969 (comment says UTC), 531, 570, 2051; paper_trader.py:150 `_today()`; run_resolve_mlb.py:592; run_t4_live.py:102/486/831; market_type_registry.py:1080 naive `datetime.utcnow()`. VPS `date` = UTC. Any Mac run or TZ change mis-keys game_date and the daily-loss reset. game_date meaning also differs by sport (UTC date MLB T4, ET NBA, gameday NFL); related GG-170. Fix: one `utc_today()` helper, tz-aware halted_at. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-672 — Shadow ledger `_load` raises on one torn line (arm goes silent) and dedup is per-process with no lock
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L2. pregame_shadow/ledger.py: append-only and idempotent on (run_id, market_ticker) (good) but `_load` json.loads every line with no try; no flock/fsync. Same pattern: pregame_shadow/runner.py:90 `except Exception: pass` around on_row observer. Fix: tolerate and quarantine an unparseable trailing line; flock around append; log observer failures. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-673 — Kalshi fee formula hand-inlined at 7+ src sites and ~12 scripts copies
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L5. `0.07*mid*(1-mid)` in run_mlb_paper_trade.py:915, run_paper_trade.py:589, run_t2_mlb_sameday.py:450, run_mlb_pregame.py:434, run_pregame.py:369, run_t4_mlb_live.py:1459, run_t4_live.py:666; separate pregame_shadow/fees.py:13-17. Realised cost: GG-119/122 fee-sign bugs. Pillar EXECUTION/PROOF (E2, net edge). Fix: one `c5_execution/fees.py` plus a parity test. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-674 — Sport defaults and registry dependence: venue layer defaults to NBA, C7 drift baselines NBA/MLB only, NBA registry cells flip from a mutable data file at import
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L5. venue_adapter.py:105,173,375,510 and venue_router.py:132 `sport='NBA'` default, Polymarket tag hardcoded 'nba'; monitor.py:17-18,80-83 default NBA Brier/ECE baselines for NFL/NHL; market_type_registry.py ~957-980 reads exp_output/PREGAME_SHADOW/nba_promotions.jsonl at import (non-hermetic; B1 undercounts until flip on 2026-10-20); c3_forecasting/nhl_pregame.py:43 imports pregame_shadow.contract (layering inverted). Fix: required sport, baselines keyed (sport, band), explicit dated promotion, move contract to c3. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-675 — demo_fill_policy swallows audit-row write errors and never retries a failed cancel
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W71.H1 L1. demo_fill_policy.py append_log `except OSError: pass` drops E1/E3 evidence rows silently; CANCEL_DONE_EVENTS includes cancel_failed so a failed cancel is not retried and the order may rest (GG-623 covers the 404 cause, not this design). kalshi_client.py:897-915 pagination returns a partial board as ok=True on a mid-page failure. Fix: stderr log plus counter alarm; bounded cancel retry; return ok=False on partial. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-676 — deploy/cron.conf mirror drifts from the live crontab (run_mlb_pregame 22:45 live vs 18:45 mirror); crontab is installed by hand
+
+**Status:** OPEN · **Severity:** LOW
+
+W71.H1 L6. 69/70 lines match. Nothing applies the mirror, so drift is silent. Fix: cron-diff in governance_scan; correct the mirror. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-677 — Hygiene/CI findings: /hygiene command stale, ruff F-class and swallow sites, unpinned deps, root-run services, legacy NBA run_t4_live cron outside restart policy
+
+**Status:** OPEN · **Severity:** LOW
+
+W71.H1 A+L4. /hygiene expects FeatureStore.FEATURE_VERSION (absent), baseline 329 tests, 5 bands (22 defined), models/prod_model.joblib (gitignored). requirements-base.txt unpinned (`nba_api>=1.5.0`) so pip-audit cannot run on it. Services run as root (t4-mlb no hardening); ufw inactive. Dead t4-mlb.timer. Legacy run_t4_live.py cron (BOT_C4_ACTIVE=true) outside the restart policy; verify GG-630 freeze. Swallow sites: scripts/nhl_shadow_eval.py:166, distance_to_optimum.py:47 (verdict/measure scripts), run_mlb_dashboard.py:199 (only bare except). Full list in report. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.

@@ -2175,3 +2175,8 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - Cause (GG-645): cancel DELETE defaults to exchange shard 0; MLB-family demo orders are on shard 3. Fix: pass `market_ticker` (auto-route). PR #243 merged, deployed b9812c8d, t4-mlb restarted idle 23:58Z. Verified on demo: 4/4 canary orders 200 then `canceled`.
 - Re-armed ADR-0072 forward test by deleting `deploy/demo_fill.override.env` on the VPS; `is_enabled()` True under the service environment. No parameter, stake, kelly or scope change.
 - Weakness registered, not fixed (GG-646): the report's already_terminal rule excused exchange cancels at close, so its "none tripped" does not prove the cancel path. GG-586/570/571/623 stay OPEN pending the NHL/MLB read-back.
+
+## 2026-10-13 — W71.H1 full code hygiene audit (PLUMBING, read-only)
+- Verdict SOUND WITH ISSUES. Report: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md. GG-660..GG-677 registered, nothing fixed (Hard Rule 11).
+- GG-660 (CRITICAL): `.claude/commands/vps.md` APPENDS deploy/cron.conf to the live crontab (duplicates every job) rather than replacing it as the operator's brief said; model scp and old dep pins confirmed. Not run, not edited.
+- Test suite + coverage under py3.11 not finished at push; carried to H2 with the Not-checked list.
