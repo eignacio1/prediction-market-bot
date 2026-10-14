@@ -60,6 +60,10 @@ fi
 
 # 6. .env + VENUE_API_KEY
 if [ -f "$PROJ/.env" ]; then
+    # GG-662: the venue key lives here; mode must be 600, and no .env.bak* copies may linger.
+    ENV_MODE=$(stat -c '%a' "$PROJ/.env" 2>/dev/null || stat -f '%Lp' "$PROJ/.env")
+    if [ "$ENV_MODE" = "600" ]; then pass ".env mode 600"; else fail ".env mode $ENV_MODE (expected 600)"; fi
+    if ls "$PROJ"/.env.bak* >/dev/null 2>&1; then fail ".env backup copy present ($(ls "$PROJ"/.env.bak* | tr '\n' ' '))"; else pass "no .env.bak* copies"; fi
     source "$PROJ/.env" 2>/dev/null || true
     if [ -n "${VENUE_API_KEY:-}" ] && [ "$VENUE_API_KEY" != "REPLACE_WITH_YOUR_KALSHI_READ_ONLY_KEY" ]; then
         pass "VENUE_API_KEY set (${#VENUE_API_KEY} chars)"

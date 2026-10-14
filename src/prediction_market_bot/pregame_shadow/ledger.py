@@ -6,7 +6,10 @@ exp_output/PREGAME_SHADOW and is injectable for tests.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+
+from prediction_market_bot.atomic_io import alarm
 
 DEFAULT_DIR = Path("exp_output") / "PREGAME_SHADOW"
 ROW_FIELDS = (
@@ -28,10 +31,17 @@ class CellLedger:
         if self._keys is None:
             self._keys = set()
             if self.path.exists():
-                for line in self.path.read_text().splitlines():
-                    if line.strip():
+                lines = self.path.read_text().splitlines()
+                for i, line in enumerate(lines):
+                    if not line.strip():
+                        continue
+                    try:
                         r = json.loads(line)
                         self._keys.add((r["run_id"], r["market_ticker"]))
+                    except (ValueError, KeyError, TypeError) as e:
+                        # GG-672: one torn line (crash mid-append) must not take the whole arm down.
+                        # Rows are never rewritten here; the line is skipped for dedup and alarmed.
+                        alarm(f"{self.path}:{i + 1}: unparseable shadow-ledger line skipped ({e!r})")
         return self._keys
 
     def append(self, row: dict, row_extra: dict | None = None) -> bool:
@@ -44,6 +54,13 @@ class CellLedger:
             return False
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a") as fh:
+            if fh.tell() > 0:
+                with self.path.open("rb") as rh:
+                    rh.seek(-1, os.SEEK_END)
+                    if rh.read(1) != b"\n":
+                        fh.write("\n")  # GG-672: terminate a torn trailing line so the new row stays parseable
             fh.write(json.dumps({**{f: row[f] for f in ROW_FIELDS}, **self.extra, **(row_extra or {})}, sort_keys=False) + "\n")
+            fh.flush()
+            os.fsync(fh.fileno())
         keys.add(k)
         return True
