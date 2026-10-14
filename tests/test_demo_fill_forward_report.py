@@ -38,7 +38,8 @@ def test_counts_skips_cancels_and_fills():
     assert c["cancel_success_rate"] == 1.0 and c["cancels"]["no_outcome_over_15m"] == 1  # o2 never got one
 
 
-def test_cancel_failure_rate_trips_and_turn_off_edits_repo_config(tmp_path):
+def test_cancel_failure_rate_trips_and_turn_off_edits_repo_config(tmp_path, monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(days=3))
     events = []
     for i in range(5):
         events.append(ev(60 + i, event="cancel_scheduled", order_id=f"p{i}", position_id=f"pid{i}", ticker="KXMLBHIT-X"))
@@ -108,7 +109,8 @@ def test_override_file_is_git_ignored():
     assert "deploy/demo_fill.override.env" in gi
 
 
-def test_historical_404_cancel_failed_reclassified_via_order_status(tmp_path):
+def test_historical_404_cancel_failed_reclassified_via_order_status(tmp_path, monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(days=3))
     """GG-596: pre-fix cancel_failed rows with HTTP 404 on terminal orders do not trip the turn-off."""
     events = []
     for i in range(5):
@@ -154,3 +156,23 @@ def test_listing_skips_never_trip_skip_rate_turn_off():
 def test_policy_skips_still_trip_skip_rate_turn_off():
     rep = rpt.build_report(_three_days("book_one_sided"), NOW, None)
     assert [t["condition"] for t in rep["tripped"]] == ["skip_rate_gt_90pct_three_days"]
+
+
+def _cancel_events(failed, ok, base_min):
+    evs = []
+    for i in range(failed + ok):
+        evs.append(ev(base_min + i, event="cancel_failed" if i < failed else "cancel_ok", order_id=f"c{base_min}{i}",
+                      position_id=f"q{base_min}{i}", ticker="KXMLBHIT-X"))
+    return evs
+
+
+def test_pre_fix_cancel_failures_do_not_trip_turn_off(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
+    evs = _cancel_events(8, 0, 600) + _cancel_events(0, 10, 10)  # 8/8 failed before the epoch, 10/10 ok after
+    assert rpt.build_report(evs, NOW, None)["tripped"] == []
+
+
+def test_post_fix_cancel_failures_still_trip(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
+    rep = rpt.build_report(_cancel_events(3, 7, 10), NOW, None)
+    assert [t["condition"] for t in rep["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
