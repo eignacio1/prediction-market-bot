@@ -2203,3 +2203,8 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - GG-661/668/669 resolved by PR #247 (ab3d6fff). `scripts/ops/deploy_truth.py`: pending-restart marker, deploy status file, service-SHA-vs-HEAD staleness (>6h alarms) in governance scan and /project. `deploy/healthcheck.sh` rewritten (demo-only, kelly 0 on T1_MULTI_DAY/T4M_PROJ per ADR-0048, modes, cron arms, services, deploy truth).
 - Box read-back 2026-10-14: HEAD ab3d6fff, t4-mlb verdict not_needed (active, runs HEAD code), deploy_status.json noop ok, healthcheck HEALTHY 0/0. No order/stake/kelly/cron-line change.
 - Note: reactivating sizing via a superseding ADR will turn healthcheck check 4 red by design; the ADR must update it.
+
+## 2026-10-14 — W72.2 ledger safety / retire /vps / box secrets (PLUMBING)
+- #248 (e90ece4): shared `atomic_io` (tmp+fsync+replace); paper_trader quarantines unreadable ledger and halts (LedgerCorruptError), `_save` raises LedgerWriteError; shadow ledger skips torn line with alarm. `/vps` archived DO-NOT-RUN; `/deploy-audit` read-only added. healthcheck .env-600 assertion already landed via W72.3 (took theirs on conflict).
+- Box: `.env` 644→600, `.env.bak.*` deleted, demo-key authenticated GET 200 (BOT_ENV=paper). Operator main tree: OPERATOR_CONSOLE.md (only mod) checked out.
+- t4-mlb restart decision: skip_live_game (CLE@TB in progress). GG-663/664/672 stay OPEN until t4-mlb restarts and the running process is read back. Follow-up candidates (not fixed, Hard Rule 11): other `write_text` state writers e.g. `c1_signal_ingestion/validators.py:397`.

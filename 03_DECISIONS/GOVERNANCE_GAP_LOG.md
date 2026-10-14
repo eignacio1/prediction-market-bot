@@ -4072,7 +4072,9 @@ W70.1 (T-853) audit: 0 of 231 fills after kickoff, so no timing artifact. But al
 
 ### GG-660 — `.claude/commands/vps.md` is the 2026-05 provisioning script; running it today would duplicate every cron job, overwrite the production model and pin stale deps
 
-**Status:** OPEN · **Severity:** CRITICAL
+**Status:** RESOLVED · **Severity:** CRITICAL
+
+*W72.2 (#248, e90ece4, 2026-10-14): `/vps` archived to `.claude/commands/_archive/vps_DO_NOT_RUN.md` with DO-NOT-RUN header; read-only `/deploy-audit` added. Read-back: file present on box at HEAD cb1bb104.*
 
 W71.H1 L6. File last committed 2026-05-31 (149 lines). Step 7: `crontab -l > /tmp/existing_cron; cat deploy/cron.conf >> /tmp/existing_cron; crontab /tmp/existing_cron` APPENDS the mirror to the live crontab, so all ~62 live jobs (incl. `vps_deploy.sh`) would run twice and every shadow arm would write each row twice (operator's description said 'replaces'; the file actually appends and duplicates; the harm is the same class). Step 4 `scp models/prod_model.joblib models/prod_model_meta.json` overwrites the box model with whatever is local. Step 3 pins `scikit-learn==1.8.0` and installs `requirements-base.txt` (unpinned `nba_api>=1.5.0`). Step 5/verify text ('3 jobs', BOT_C4_ACTIVE must be absent, Python 3.11) is false against the live box (70 cron lines, py3.12 venv, BOT_C4_ACTIVE=true). Not run; not edited. Pillar corrupted: BREADTH/PROOF (double rows), EXECUTION. Proposed fix: move to `.claude/commands/_archive/vps_provisioning_2026-05.md` with a 'DO NOT RUN' header; replace `/vps` with a read-only `/deploy-audit` command (box HEAD vs origin, cron mirror diff, process age vs HEAD, perms). See report L6. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
@@ -4086,7 +4088,9 @@ W71.H1 L6. Box t4-mlb pid 3223742 started 2026-10-11 16:35Z; three deploys on 20
 
 ### GG-662 — VPS `.env` (VENUE_API_KEY, key path) and `.env.bak.20260915T055650Z` are mode 644, owner a foreign uid
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+*W72.2 (2026-10-14): box `.env` chmod 600 (read back `stat` = 600; `ls -la .env*` = `.env` + `.env.example` only), `.env.bak.20260915T055650Z` deleted, key authenticates on DEMO (GET /portfolio/balance HTTP 200, key not printed). Healthcheck mode-600 assertion is W72.3 GG-669 (`deploy/healthcheck.sh`). Note `.env` owner is still foreign uid 501 — not changed.*
 
 W71.H1 L4. `ls -l` on box: .env 644 uid 501; .env.bak.* 644. PEM itself is 600 root. Single-user box with one listener (sshd), so exposure is low but the invariant (vps.md says chmod 600) is violated and a stale copy exists. Also unknown whether the key is demo or prod (one variable name). Pillar: PLUMBING (security). Fix: chmod 600 + chown root, remove .env.bak.*, add perms assert to healthcheck, operator to confirm key is demo. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
@@ -4094,11 +4098,15 @@ W71.H1 L4. `ls -l` on box: .env 644 uid 501; .env.bak.* 644. PEM itself is 600 r
 
 **Status:** OPEN · **Severity:** HIGH
 
+*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
+
 W71.H1 L1/L2. `c5_execution/paper_trader.py:346` `self._path.write_text(json.dumps(...))` (no tmp+os.replace, no fsync); `_load_or_init` 200-210 `except Exception: pass` -> fresh INITIAL_BANKROLL state; `_reload_locked` 318-327 swallows a parse failure then the next `_save` clobbers a concurrent writer's appends. Readers (dashboard.py:210) take no lock. Atomic pattern already exists in scripts/backfill_logic_epoch.py:127. Pillar: EXECUTION/PROOF (E1/E2 come from this file). Fix: tmp+fsync+os.replace; on parse failure quarantine file as .corrupt-<ts>, log CRITICAL, raise. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-664 — paper_trader `_save()` return value ignored at five call sites
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
 
 W71.H1 L1. paper_trader.py:360,975,1064,1152,1206 call `self._save()` without checking the bool (717/723/823 do). `_save` catches OSError and returns False, so a failed write after an order is placed leaves exchange and ledger diverged. Pillar EXECUTION. Fix: check, raise, audit-log. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
@@ -4151,6 +4159,8 @@ W71.H1 L2. run_t4_mlb_live.py:1921,1969 (comment says UTC), 531, 570, 2051; pape
 ### GG-672 — Shadow ledger `_load` raises on one torn line (arm goes silent) and dedup is per-process with no lock
 
 **Status:** OPEN · **Severity:** MEDIUM
+
+*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
 
 W71.H1 L2. pregame_shadow/ledger.py: append-only and idempotent on (run_id, market_ticker) (good) but `_load` json.loads every line with no try; no flock/fsync. Same pattern: pregame_shadow/runner.py:90 `except Exception: pass` around on_row observer. Fix: tolerate and quarantine an unparseable trailing line; flock around append; log observer failures. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 

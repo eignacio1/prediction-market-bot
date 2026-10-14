@@ -190,7 +190,7 @@ Only 72.1 may change order behaviour.
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 72.1 | Forward-test read-back + order-path guards | EXECUTION E1/E2/E3 (first per-book, per-arm numbers) | ⬜ | — |
-| 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | ⬜ | — |
+| 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | 🟡 PARTIAL | #248 e90ece4 merged+on box; GG-660/662 closed; GG-663/664/672 await t4-mlb restart read-back (skip_live_game) |
 | 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | 🟡 Part A DONE | GG-661/668/669 merged (#247), read back on box; Part B (ledger validation, look-ahead tests) in progress |
 
 ### 72.1 — Forward-test read-back + order-path guards
@@ -443,7 +443,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
 | 72.1 | Forward-test read-back; order-path guards | E1–E3 | ⬜ | — |
-| 72.2 | Ledger safety; retire /vps; lock box secrets | PLUMBING | ⬜ | — |
+| 72.2 | Ledger safety; retire /vps; lock box secrets | PLUMBING | 🟡 PARTIAL | #248 merged; GG-660/662 closed; 663/664/672 await t4-mlb restart |
 | 72.3 | Deploy truthfulness; audit remainder | PLUMBING | ⬜ | — |
 
 ### ✅ WAVE 71 — CLOSED 2026-10-14 ~00:35 UTC (verified on GitHub at `c816f18`, main CI green) · moved: **no measure yet** (second wave running) — forward test re-armed 10-13 23:58Z, E moves at tonight's read-back; D1 NO; B1 protected for 10-21
