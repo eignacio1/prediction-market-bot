@@ -875,3 +875,4 @@
 | 2026-10-13T23:35:31Z | T-890..T-893, GG-650..GG-651 | W71.2 MEDIUM - NBA opening night safe end to end (freeze old NBA crons, players_2026 repro, rehearsal, scan write path). PURPOSE: BREADTH B1 (protects +12 NBA game cells + EXP-039/040 rows from 10-20) |
 | 2026-10-13T23:35:58Z | T-880..T-882, GG-645..GG-647 | W71.1 STANDARD - fix MLB-HIT cancel path (GG-623) + turn forward test on. PURPOSE: EXECUTION E1/E2/E3 |
 | 2026-10-13T23:54:30Z | T-900..T-902, GG-660..GG-679 | W71.H1 LARGE - full code hygiene audit, read-only on code. PURPOSE: PLUMBING (no pillar; protects PROOF/EXECUTION data trust) |
+| 2026-10-14T00:29:53Z | T-890 | CLOSED — merge confirmed, HEAD (ec654c1) is ancestor of origin/main — W71.2 DONE - NBA opening night rehearsal, freeze guard, scan console path |
