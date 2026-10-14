@@ -887,3 +887,4 @@
 | 2026-10-14T01:44:12Z | T-920 | CLOSED — merge confirmed, HEAD (46a719d) is ancestor of origin/main — W72.3 closed |
 | 2026-10-14T01:53:41Z | T-930 | CLOSED — merge confirmed, HEAD (d4abe22) is ancestor of origin/main — W72.1: read-back done; guards merged #252; t4-mlb restart pending idle window |
 | 2026-10-14T04:34:58Z | W72.2 | CLOSED — W72.2 crash-safe ledgers (#248) + /vps retired + box .env 600 shipped; t4-mlb restarted 02:53Z, GG-663/664/672 closed (commit `1c1104f`) |
+| 2026-10-14T04:35:40Z | W72.2 | CLOSED — merge confirmed, HEAD (e6a4a29) is ancestor of origin/main — CLOSED — ledger safety shipped, GG-660/662/663/664/672 resolved |
