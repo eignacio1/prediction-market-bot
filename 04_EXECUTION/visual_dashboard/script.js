@@ -1,15 +1,15 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","40 / 107","the whole board","0 — 71.2 makes the 10-21 flip safe"],
+  ["Breadth","B1","Cells logging / registered","40 / 107","the whole board","0 — 10-21 flip rehearsed, frozen NBA book locked (71.2)"],
   ["Breadth","B2","Families with a logging cell","13 / 18","18 / 18, props + parlays registered","0"],
   ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
   ["Breadth","B4","Props · parlay families logging","2 · 0","the board's props and parlays","0"],
-  ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); NBA points minutes + injury accepted, not yet logging; nobody uses matchup, weather, qualitative","every class at every arm","0 — 71.3 tests availability on NBA game markets"],
+  ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); NBA points minutes + injury accepted, not yet logging; nobody uses matchup, weather, qualitative","every class at every arm","0 — availability on NBA games: NO (71.3)"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
   ["Depth","D3","Pre-registered challengers ready","2 (NFL QB-shrunk, live · NBA points EXP-040, frozen)","≥ 1 per arm before its first look","0 — EXP-040 deployed, 0 rows until NBA points markets list"],
-  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","forward test OFF: 8 real MLB-HIT cancel failures (GG-623) → 71.1"],
+  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","forward test ON again 10-13 (cancel shard bug fixed); read-back after tonight"],
   ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","NFL +0.398 audited: before kickoff, but ~4 correlated games — not evidence"],
-  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — switches OFF"],
+  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — switches back ON 10-13 23:58Z"],
   ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
   ["Proof","P2","Verdicts issued","0","a verdict per cell (a NO counts)","0"],
   ["Proof","P3","Next look","NFL ~11-02 · ~91% \"keep accruing\"","—","—"],
@@ -124,8 +124,8 @@ const WAVES = [
    d:"First on-box forward-test numbers: <b>NFL shadow 231 fills of 1,135, +0.39 a fill</b> (too good — audited in 70); MLB shadow −0.20. NBA cells flip themselves from 10-21. NBA points challenger EXP-040 accepted + frozen (<b>D3 1 → 2</b>). Then the test switched itself off on a miscounted cancel (GG-596)."},
   {w:"70", k:"neg", t:"The good number didn't survive; the test stays off.",
    d:"NFL +0.39 a fill: real, before kickoff — but ~4 games that settle together, so <b>not evidence</b>. 8 real MLB-HIT cancel failures keep the whole forward test off (GG-623). EXP-040 deployed, waiting for markets. Main green. <b>No measure moved.</b>"},
-  {w:"71", k:"now", t:"Forward test on · NBA 10-20 safe · availability on NBA games.",
-   d:"Fix t4-mlb's cancel and re-arm with both arms (E1–E3); stop the frozen NBA book from writing and rehearse opening night (B1); test who-is-out on the 12 NBA game cells (D1)."},
+  {w:"71", k:"neg", t:"Forward test back on; second wave without a measure.",
+   d:"Cancels were going to the wrong exchange shard — fixed, <b>forward test ON</b>. NBA 10-20 rehearsed; frozen book locked. Who-is-out on NBA games: <b>NO</b>. Hygiene audit: <b>SOUND WITH ISSUES</b> (18 gaps; /vps dangerous; paper ledger not crash-safe). <b>No measure moved — two waves running.</b>"},
 ];
 
 const DESK = [
