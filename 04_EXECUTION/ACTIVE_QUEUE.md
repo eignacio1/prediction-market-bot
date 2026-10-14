@@ -40,6 +40,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
 | | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **ON again since 10-13 23:58Z** — cancel fixed (shard routing, GG-645); both-arm read-back after tonight's games |
+| | Forward test (ADR-0072), W72.1 read-back 2026-10-14T00:44Z (since re-arm 10-13 23:58Z) | **cancels work: 12 real `cancel_ok` on KXMLB*, 0 failed · control arm placing: 13 MLB + 23 NHL orders, 4 control fills · 0 post-re-arm orders settled, so E2/E3 not yet readable** (source: `W65_2_forward_test_on_results.md` "Read-back W72.1") | settled fills on both arms | first post-fix cancels and control fills; E2/E3 unchanged |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
