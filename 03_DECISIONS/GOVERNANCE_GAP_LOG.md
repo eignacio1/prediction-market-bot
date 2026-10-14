@@ -4098,7 +4098,9 @@ W71.H1 L4. `ls -l` on box: .env 644 uid 501; .env.bak.* 644. PEM itself is 600 r
 
 ### GG-663 — paper_trader ledger save is non-atomic and a corrupt/torn read silently re-initialises or overwrites the book
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
 
 *W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
 
@@ -4106,7 +4108,9 @@ W71.H1 L1/L2. `c5_execution/paper_trader.py:346` `self._path.write_text(json.dum
 
 ### GG-664 — paper_trader `_save()` return value ignored at five call sites
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
 
 *W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
 
@@ -4166,7 +4170,9 @@ W71.H1 L2. run_t4_mlb_live.py:1921,1969 (comment says UTC), 531, 570, 2051; pape
 
 ### GG-672 — Shadow ledger `_load` raises on one torn line (arm goes silent) and dedup is per-process with no lock
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
 
 *W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
 

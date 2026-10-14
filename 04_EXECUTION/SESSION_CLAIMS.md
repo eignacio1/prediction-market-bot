@@ -886,3 +886,4 @@
 | 2026-10-14T01:44:02Z | T-920 | CLOSED — W72.3 closed: deploy truth machine-checked (GG-661/668/669); ledger and point-in-time audit finds no leak; GG-690/691 opened. (commit `8b1fb3b`) |
 | 2026-10-14T01:44:12Z | T-920 | CLOSED — merge confirmed, HEAD (46a719d) is ancestor of origin/main — W72.3 closed |
 | 2026-10-14T01:53:41Z | T-930 | CLOSED — merge confirmed, HEAD (d4abe22) is ancestor of origin/main — W72.1: read-back done; guards merged #252; t4-mlb restart pending idle window |
+| 2026-10-14T04:34:58Z | W72.2 | CLOSED — W72.2 crash-safe ledgers (#248) + /vps retired + box .env 600 shipped; t4-mlb restarted 02:53Z, GG-663/664/672 closed (commit `1c1104f`) |

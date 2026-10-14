@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-14T02:00:00Z (T-930 — W72.1: forward-test read-back done (cancels work, control arm placing, nothing settled); GG-646 fixed; order-path guards GG-665/666/667 merged, t4-mlb restart pending idle window.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0200Z_W72_1.md` for full session detail.
+**Last reviewed:** 2026-10-14T01:55:00Z (W72.2 — W72.2 crash-safe ledgers (#248) + /vps retired + box .env 600 shipped; t4-mlb restarted 02:53Z, GG-663/664/672 closed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0130Z_W72_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
