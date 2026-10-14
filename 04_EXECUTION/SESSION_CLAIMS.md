@@ -885,3 +885,4 @@
 | 2026-10-14T00:43:37Z | T-930..T-932, GG-700..GG-704 | W72.1 MEDIUM - forward-test read-back + order-path guards (GG-646/665/666/667). PURPOSE: EXECUTION E1/E2/E3 (first per-book per-arm fill numbers) |
 | 2026-10-14T01:44:02Z | T-920 | CLOSED — W72.3 closed: deploy truth machine-checked (GG-661/668/669); ledger and point-in-time audit finds no leak; GG-690/691 opened. (commit `8b1fb3b`) |
 | 2026-10-14T01:44:12Z | T-920 | CLOSED — merge confirmed, HEAD (46a719d) is ancestor of origin/main — W72.3 closed |
+| 2026-10-14T01:53:41Z | T-930 | CLOSED — merge confirmed, HEAD (d4abe22) is ancestor of origin/main — W72.1: read-back done; guards merged #252; t4-mlb restart pending idle window |
