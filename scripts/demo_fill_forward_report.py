@@ -35,6 +35,8 @@ OUT = REPO / "exp_output" / "FORWARD_TEST" / "demo_fill_forward_report.json"
 SWITCH_KEYS = ("DEMO_FILL_PLACEMENT_RULE", "SHADOW_FLAT_STAKE")
 CANCEL_FAIL_MAX = 0.10
 SKIP_RATE_MAX = 0.90
+# ADR-0072 addendum 2026-10-14 (operator): listing skips are demo-catalog gaps (GG-564), not placement-rule skips.
+LISTING_SKIP_REASONS = frozenset({"not_listed_on_demo"})
 NO_OUTCOME_S = 15 * 60
 
 SPORTS = (("KXMLB", "MLB"), ("KXNBA", "NBA"), ("KXNHL", "NHL"), ("KXNFL", "NFL"))
@@ -189,6 +191,9 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             reason = str(r.get("reason"))
             if reason == "control_arm":
                 c["control_skips"] += 1
+            elif reason in LISTING_SKIP_REASONS:
+                c["skips"][reason] += 1
+                day_skip[day]["listing_skips"] += 1
             else:
                 c["skips"][reason] += 1
                 day_skip[day]["skips"] += 1
@@ -247,6 +252,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     rates = [day_skip[d]["skips"] / (day_skip[d]["skips"] + day_skip[d]["orders"]) for d in sk_days
              if day_skip[d]["skips"] + day_skip[d]["orders"] > 0]
     checks["skip_rate_gt_90pct_three_days"] = {"days": sk_days, "rates": rates,
+                                               "scope": "policy skips only; listing skips reported separately",
+                                               "listing_skips_by_day": {d: day_skip[d]["listing_skips"] for d in sk_days},
                                                "tripped": len(sk_days) == 3 and len(rates) == 3 and all(x > SKIP_RATE_MAX for x in rates)}
     n_no = sum(x["cancels"]["no_outcome_over_15m"] for x in cell_out)
     checks["scheduled_cancel_no_outcome_15m"] = {"count": n_no, "tripped": n_no > 0}

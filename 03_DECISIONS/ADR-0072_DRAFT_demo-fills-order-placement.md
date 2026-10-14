@@ -45,3 +45,7 @@ Accept this ADR and the forward-test pre-registration below, so the operator may
 
 ## Caveats
 Demo book is thin/one-sided: venue-mid coverage is small (T1 n=6, T4 n=13 filled). Never-filled markouts from submit (+0.18 to +0.30) mostly reflect limit-to-book distance, not information, and are not used for the verdict. Never-filled orders are mostly ledger-derived (order GETs 404 for 301 of 551 sampled); ledger-limit vs order-limit matched 1 of 2 checked.
+
+## Addendum 2026-10-14 (W73.1) - scope of the skip-rate turn-off condition
+
+Operator, 2026-10-14, asked whether the skip-rate turn-off should count only the placement rule's own skips; answer: "Yes, amend". The condition "skip rate > 90% on each of three consecutive days" therefore counts **policy skips only** (book one-sided, mid gap above threshold, and any other reason raised by the placement rule). `not_listed_on_demo` skips (Kalshi demo does not carry the production ticker, GG-564) are a demo-catalog gap, not a placement-rule outcome: they are reported separately per day in the report (`listing_skips_by_day`) and never count toward the turn-off, in numerator or denominator. `control_arm` skips remain excluded as before. All other turn-off conditions are unchanged. Implemented in `scripts/demo_fill_forward_report.py` (`LISTING_SKIP_REASONS`), tests in `tests/test_demo_fill_forward_report.py`.
