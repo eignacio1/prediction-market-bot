@@ -129,6 +129,25 @@ def _kalshi_base_url() -> str:
     )
 
 
+# GG-666/W72.1: order-write path host guard. No ADR authorising live capital exists, so this is
+# None; a future accepted ADR sets it to its id AND the operator exports KALSHI_LIVE_CAPITAL_ADR
+# with the same id. Both must agree, otherwise any non-demo host is refused.
+LIVE_CAPITAL_ADR: str | None = None
+
+
+def _order_write_host_refusal() -> str | None:
+    """Return a refusal reason if order writes (POST/DELETE) must not go to the resolved host."""
+    try:
+        base = _kalshi_base_url()
+    except ValueError as e:
+        return f"unrecognised BOT_ENV: {e}"
+    if base == _KALSHI_DEMO_BASE_URL:
+        return None
+    if LIVE_CAPITAL_ADR and os.environ.get("KALSHI_LIVE_CAPITAL_ADR") == LIVE_CAPITAL_ADR:
+        return None
+    return f"non-demo host {base} refused: no accepted live-capital ADR (GG-666)"
+
+
 def _price_discovery_url() -> str:
     """Market data (prices, quotes, status) — always production regardless of BOT_ENV.
 
@@ -555,6 +574,9 @@ class KalshiMarketClient:
         if not self._private_key:
             return False, {"error": "RSA private key not loaded — set VENUE_PRIVATE_KEY_PATH"}
 
+        refusal = _order_write_host_refusal()
+        if refusal:
+            return False, {"error": "host_refused", "detail": refusal}
         url = f"{_kalshi_base_url()}{path}"
         full_path = f"/trade-api/v2{path}"
 
@@ -1190,6 +1212,9 @@ class KalshiMarketClient:
         """Signed DELETE, single attempt (a cancel must not silently retry-loop)."""
         if not self._private_key:
             return False, {"error": "RSA private key not loaded"}
+        refusal = _order_write_host_refusal()
+        if refusal:
+            return False, {"error": "host_refused", "detail": refusal}
         url = f"{_kalshi_base_url()}{path}"
         full_path = f"/trade-api/v2{path}"
         try:

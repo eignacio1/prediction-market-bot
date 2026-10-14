@@ -469,13 +469,31 @@ class TestFixedStakeMeasurement:
     def test_fixed_stake_none_preserves_kelly_path(self):
         """fixed_stake_usd=None (the default) must leave Kelly-derived
         sizing bit-for-bit unchanged for non-T4 callers."""
+        import dataclasses
+        from prediction_market_bot import execution_bands as eb
         fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
-        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+        fc["execution_band"] = "T1_MULTI_DAY"
+        # GG-665: kelly comes from BAND_CONFIGS (0.0 today, ADR-0048) — give the band a test fraction.
+        t1 = eb.BAND_CONFIGS[eb.ExecutionBand.T1_MULTI_DAY]
+        bands = {**eb.BAND_CONFIGS, eb.ExecutionBand.T1_MULTI_DAY: dataclasses.replace(t1, kelly_fraction=0.10)}
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}), patch.object(eb, "BAND_CONFIGS", bands):
             engine = _make_engine(bankroll=10_000.0, kelly_fraction=DEFAULT_KELLY_FRACTION)
             _, result = engine.evaluate_forecast(fc)
         assert result["approval_status"] == STATUS_APPROVED
         assert result["sizing_mode"] == "kelly"
         assert result["approved_size"] != 1.00
+
+    @pytest.mark.unit
+    def test_forecast_dict_kelly_cannot_raise_sizing(self):
+        """GG-665: fc['kelly_fraction'] is ignored; band config (0.0) governs."""
+        fc = _make_forecast(p_estimate=0.65, market_implied_prob=0.50, edge=0.15, direction="YES")
+        fc["kelly_fraction"] = 0.9
+        fc["execution_band"] = "T1_MULTI_DAY"
+        with patch.dict(os.environ, {"BOT_C4_ACTIVE": "true"}):
+            engine = _make_engine(bankroll=10_000.0, kelly_fraction=DEFAULT_KELLY_FRACTION)
+            _, result = engine.evaluate_forecast(fc)
+        assert result["approval_status"] != STATUS_APPROVED
+        assert result["rejection_reason"] == "kelly_size_zero"
 
 
 # ---------------------------------------------------------------------------

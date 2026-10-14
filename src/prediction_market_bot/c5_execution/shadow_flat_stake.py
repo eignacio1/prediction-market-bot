@@ -15,6 +15,7 @@ import uuid
 from typing import Any, Callable, Optional
 
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
+from prediction_market_bot.c5_execution import kill_switch_state as ksw
 
 SWITCH_ENV = "SHADOW_FLAT_STAKE"
 EDGE_GATE = 0.0  # the shadow arm's own gate: net-of-fee (k007) edge > 0
@@ -49,6 +50,11 @@ def maybe_place(
         return None
     if not demo_host_ok():
         pol.append_log({"event": "shadow_skip", "reason": "production_host_refused",
+                        "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
+        return None
+    halted = ksw.halt_reason()  # GG-667: same NFR-03 flag state the C4/T4 paths honour
+    if halted:
+        pol.append_log({"event": "shadow_skip", "reason": "kill_switch_halted", "meta": halted,
                         "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
         return None
     ticker = row.get("market_ticker")
