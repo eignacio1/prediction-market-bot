@@ -67,6 +67,10 @@ if [ -f "$ENVF" ]; then
         600|400) pass ".env mode $MODE" ;;
         *)       fail ".env mode $MODE (must be 600/400: it holds the API key id and key path)" ;;
     esac
+    # GG-662: a lingering .env.bak* copy duplicates the secret outside the locked file (names only are printed)
+    BAKS=""
+    for f in "$PROJ"/.env.bak*; do [ -e "$f" ] && BAKS="$BAKS $(basename "$f")"; done
+    if [ -n "$BAKS" ]; then fail ".env backup copy present:$BAKS (delete it)"; else pass "no .env.bak* copies"; fi
     # source in a subshell and print only derived flags: secrets never reach output
     BOT_ENV_VAL="$(set -a; . "$ENVF" >/dev/null 2>&1; echo "${BOT_ENV:-unset}")"
     KEY_SET="$(set -a; . "$ENVF" >/dev/null 2>&1; if [ -n "${VENUE_API_KEY:-}" ] && [ "${VENUE_API_KEY}" != "REPLACE_WITH_YOUR_KALSHI_READ_ONLY_KEY" ]; then echo yes; else echo no; fi)"

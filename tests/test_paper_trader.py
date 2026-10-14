@@ -447,12 +447,29 @@ class TestFailedKalshiOrderRouting:
         assert trader.get_state()["rejected_positions"] == []
 
 
+_CAP = 100
+
+
 class TestRejectedPositionsBounded:
     """GG-271: rejected_positions must never grow unbounded. 25,243 entries /
     29.27MB observed live 2026-09-11 (88.9% of the file), growing ~1,000-
     1,200/day and accelerating -- the root cause of the GG-269/270/272/273
     outage chain. _save() now truncates to the most recent
-    MAX_REJECTED_POSITIONS entries on every call, regardless of caller."""
+    _CAP entries on every call, regardless of caller.
+
+    The cap is patched down to _CAP: each save rewrites the whole state, so
+    the production cap (2000) made these ~4 min each. The bound logic is
+    identical at any cap; the production value is asserted separately.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _small_cap(self, monkeypatch):
+        import prediction_market_bot.c5_execution.paper_trader as pt
+        monkeypatch.setattr(pt, "MAX_REJECTED_POSITIONS", _CAP)
+
+    @pytest.mark.unit
+    def test_production_cap_value(self):
+        assert MAX_REJECTED_POSITIONS == 2000
 
     @pytest.mark.unit
     def test_sustained_rejection_volume_stays_bounded(self, tmp_path):
@@ -467,7 +484,7 @@ class TestRejectedPositionsBounded:
         )
         trader = PaperTrader(tmp_path / "p.json", _make_logger(), kalshi_client=client)
 
-        n_rejections = MAX_REJECTED_POSITIONS + 500  # sustained volume, well past the cap
+        n_rejections = _CAP + 50  # sustained volume, well past the cap
         with patch("prediction_market_bot.c5_execution.paper_trader.time.sleep"):
             for _ in range(n_rejections):
                 trader.open_position(
@@ -479,8 +496,8 @@ class TestRejectedPositionsBounded:
                 )
 
         rejected = trader.get_state()["rejected_positions"]
-        assert len(rejected) == MAX_REJECTED_POSITIONS, (
-            f"expected the ring buffer to cap at {MAX_REJECTED_POSITIONS} "
+        assert len(rejected) == _CAP, (
+            f"expected the ring buffer to cap at {_CAP} "
             f"after {n_rejections} rejections, got {len(rejected)}"
         )
         # Drop-oldest semantics: the buffer holds the most recent entries.
@@ -492,7 +509,7 @@ class TestRejectedPositionsBounded:
         # The bound is enforced on-disk too, not just in-memory.
         import json
         on_disk = json.loads((tmp_path / "p.json").read_text())
-        assert len(on_disk["rejected_positions"]) == MAX_REJECTED_POSITIONS
+        assert len(on_disk["rejected_positions"]) == _CAP
 
     @pytest.mark.unit
     def test_bound_does_not_touch_open_or_closed_positions(self, tmp_path):
@@ -523,7 +540,7 @@ class TestRejectedPositionsBounded:
         )
         trader._kalshi = fail_client
         with patch("prediction_market_bot.c5_execution.paper_trader.time.sleep"):
-            for _ in range(MAX_REJECTED_POSITIONS + 250):
+            for _ in range(_CAP + 25):
                 trader.open_position(
                     approval=_make_approval(0.595, "YES"),
                     player_name="Rejected", player_id=2,
@@ -535,7 +552,7 @@ class TestRejectedPositionsBounded:
         state = trader.get_state()
         assert len(state["open_positions"]) == 1
         assert state["open_positions"][0]["player_name"] == "Kept Open"
-        assert len(state["rejected_positions"]) == MAX_REJECTED_POSITIONS
+        assert len(state["rejected_positions"]) == _CAP
 
 
 # ---------------------------------------------------------------------------
