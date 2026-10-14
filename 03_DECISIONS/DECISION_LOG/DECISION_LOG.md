@@ -2197,3 +2197,9 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - Operator: "Do you see what I'm trying to get to? at the SCALE that I'm trying to build for?" ... "I had thought that was explicit early on in the project - but apparently not. Wire it into our core docs - the project needs to reverberate this convo and read it back to me when I call for it."
 - Wired: `03_DECISIONS/ADR-0073_sport-engine-doctrine.md` (full record incl. his words); `CLAUDE.md` § "The scale — one deep engine per sport" under the north star; distance-table definition change: new DEPTH measure **D4** (engine stage per live sport) — dated edit per the table's own rule; `.claude/commands/vision.md` (`/vision` reads it back); claude.ai Project doc `claude/NORTH_STAR_AND_DISTANCE_TO_OPTIMUM.md`; project memory.
 - Consequence: every wave carries a DEPTH lane until each live sport has its engine; Wave 73 starts the NFL engine as the template (Syndicate32 taxonomy → free sources → event-level data layer → first factor class vs frozen).
+
+## 2026-10-14 — W72.3 Part A: deploy truthfulness (PLUMBING)
+
+- GG-661/668/669 resolved by PR #247 (ab3d6fff). `scripts/ops/deploy_truth.py`: pending-restart marker, deploy status file, service-SHA-vs-HEAD staleness (>6h alarms) in governance scan and /project. `deploy/healthcheck.sh` rewritten (demo-only, kelly 0 on T1_MULTI_DAY/T4M_PROJ per ADR-0048, modes, cron arms, services, deploy truth).
+- Box read-back 2026-10-14: HEAD ab3d6fff, t4-mlb verdict not_needed (active, runs HEAD code), deploy_status.json noop ok, healthcheck HEALTHY 0/0. No order/stake/kelly/cron-line change.
+- Note: reactivating sizing via a superseding ADR will turn healthcheck check 4 red by design; the ADR must update it.

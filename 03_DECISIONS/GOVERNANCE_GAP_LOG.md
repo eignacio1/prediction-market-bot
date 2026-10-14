@@ -4078,7 +4078,9 @@ W71.H1 L6. File last committed 2026-05-31 (149 lines). Step 7: `crontab -l > /tm
 
 ### GG-661 — Running t4-mlb (the only ACTIVE cell) is stale: restart policy skips on live games and never retries
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**W72.3 resolution:** RESOLVED (W72.3, PR #247 ab3d6fff): skipped t4-mlb restart writes a pending marker retried each tick; deploy_truth.py check alarms on service code SHA >6h behind box HEAD (governance scan + /project). Read back on box 2026-10-14T01:13Z.
 
 W71.H1 L6. Box t4-mlb pid 3223742 started 2026-10-11 16:35Z; three deploys on 2026-10-13 (00:33, 01:48, 23:53Z) returned `skip_live_game` for changed imports demo_fill_policy.py, market_type_registry.py, kalshi_client.py (GG-623 cancel fix). `deploy_restart_policy.py`/`vps_deploy.sh` keep no pending-restart marker; MLB is 'live' (Warmup/In Progress) ~12h/day so the window is rare. Merge != deploy != activation. Pillar: EXECUTION (E1-E3). Fix: persist `pending_t4_restart` in /var/lib/pmbot-deploy, restart at first no-live-game tick, alarm if marker age >12h; write HEAD sha at t4-mlb startup and compare. One-off manual restart is an operator decision (not done here). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
@@ -4120,13 +4122,17 @@ W71.H1 L1. t4-mlb honours KILL_SWITCH_PATH only at loop top (worst case ~45s + c
 
 ### GG-668 — Deploy failures are log-only: fetch fail exits 0, gate-red and dirty-tree aborts raise no alarm, no rollback path
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W72.3 resolution:** RESOLVED (W72.3, PR #247): every deploy outcome writes /var/lib/pmbot-deploy/deploy_status.json read by scan + /project; env-file half already fixed by GG-587. Rollback path not built (out of scope).
 
 W71.H1 L6. scripts/ops/vps_deploy.sh L137/160-182. 2026-10-13 00:18/00:23/00:28Z three ticks aborted `dirty_tree_abort` because tracked `deploy/demo_fill.env` was modified on the box by demo_fill_forward_report auto-off; nobody was alerted. Gate is 2 test files (13 tests). No documented rollback (ff-only refuses backwards). Fix: status file + age alarm in governance_scan; untrack or gitignore the tool-written env file; add `deploy_rollback.sh <sha>`. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-669 — Daily healthcheck.sh is permanently red and encodes Phase-0 invariants that are now false
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W72.3 resolution:** RESOLVED (W72.3, PR #247): healthcheck.sh rewritten to current invariants, 14 tests; ran on box 2026-10-14T01:17Z: HEALTHY 0 faults 0 warnings.
 
 W71.H1 L4. logs/health.log: 133x 'BOT_C4_ACTIVE is set - must be unset', 23x 'Python 3.11 w/ OpenSSL 3.x not found', 23x Kalshi API empty. Real state: BOT_C4_ACTIVE=true by design. A permanently red check is ignored. Fix: rewrite for current invariants (C4 only in t4 units, kelly 0, key perms, disk, cron-vs-mirror, process age vs HEAD). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 

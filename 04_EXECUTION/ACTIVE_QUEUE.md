@@ -191,7 +191,7 @@ Only 72.1 may change order behaviour.
 |---|---|---|---|---|
 | 72.1 | Forward-test read-back + order-path guards | EXECUTION E1/E2/E3 (first per-book, per-arm numbers) | ⬜ | — |
 | 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | ⬜ | — |
-| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | ⬜ | — |
+| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | 🟡 Part A DONE | GG-661/668/669 merged (#247), read back on box; Part B (ledger validation, look-ahead tests) in progress |
 
 ### 72.1 — Forward-test read-back + order-path guards
 
