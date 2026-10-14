@@ -890,3 +890,4 @@
 | 2026-10-14T04:35:40Z | W72.2 | CLOSED — merge confirmed, HEAD (e6a4a29) is ancestor of origin/main — CLOSED — ledger safety shipped, GG-660/662/663/664/672 resolved |
 | 2026-10-14T23:44:48Z | T-950..T-952, GG-720..GG-724 | W73.3 MEDIUM - NFL engine simulation scaffold (ADR-0073 stage 1), 12_EXPLORATORY only. PURPOSE: DEPTH D4 (NFL whole board from one engine - scaffold stage) |
 | 2026-10-14T23:44:56Z | T-940..T-942, GG-710..GG-714 | W73.1 MEDIUM - turn-off scope amend (ADR-0072), NBA demo staked runner, first settled E2/E3. PURPOSE: EXECUTION E1/E2/E3 |
+| 2026-10-14T23:45:23Z | T-960..T-962, GG-730..GG-739 | W73.2 MEDIUM - NFL engine data layer (ADR-0073 stage 1): factor taxonomy + event store. PURPOSE: DEPTH D4 (NFL none -> data layer), D1 |
