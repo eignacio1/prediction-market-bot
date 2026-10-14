@@ -35,13 +35,19 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **DEPTH** | D1 factor classes per pre-game model | MLB player hits: personnel, team, venue · MLB games: personnel, team · **NFL: team + personnel** (QB challenger, live in shadow 10-11) · NHL: personnel, team, venue · NBA: team. **No live model uses matchup, weather or qualitative.** | every class at every pre-game arm | 0 |
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage of classes, not a count | 0 |
 | | D3 pre-registered challengers ready | **2** (NFL QB-shrunk, live; NBA points EXP-040, accepted + frozen 10-13, logging from 70.2) | ≥ 1 per arm before its first look | **+1** (W69.3) |
+| | **D4 engine stage per live sport** (ADR-0073, added 10-13) | **none** — no sport has an event-level data layer feeding one engine; every cell runs its own thin model | each live sport: event-level data → factor classes point-in-time → whole board priced from one engine | new measure; Wave 73 starts NFL as the template |
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
 | | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **ON again since 10-13 23:58Z** — cancel fixed (shard routing, GG-645); both-arm read-back after tonight's games |
+| | Forward test (ADR-0072), W72.1 read-back 2026-10-14T00:44Z (since re-arm 10-13 23:58Z) | **cancels work: 12 real `cancel_ok` on KXMLB*, 0 failed · control arm placing: 13 MLB + 23 NHL orders, 4 control fills · 0 post-re-arm orders settled, so E2/E3 not yet readable** (source: `W65_2_forward_test_on_results.md` "Read-back W72.1") | settled fills on both arms | first post-fix cancels and control fills; E2/E3 unchanged |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
+
+**The scale (ADR-0073, operator 2026-10-13):** one deep engine per sport at Syndicate32-level granularity or deeper, pricing
+the whole board from one simulation; the data layer is the work, free sources first; a DEPTH lane in every wave until each live
+sport has its engine; NFL first as the template. Read back with `/vision`. Full text: `CLAUDE.md` § "The scale", ADR-0073.
 
 **Rule (operator, 2026-10-09: "perfection isn't a dream, it's a protocol"):** every block, session and review states before it starts
 which measure it is meant to move, and reports at close what moved and by how much — or says PLUMBING in plain words. Two waves in a

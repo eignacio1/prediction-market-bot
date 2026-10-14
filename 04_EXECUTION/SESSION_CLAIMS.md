@@ -881,3 +881,5 @@
 | 2026-10-14T00:30:57Z | W71.3 | CLOSED — W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged. (commit `3b4a7b1`) |
 | 2026-10-14T00:31:16Z | W71.3 | CLOSED — merge confirmed, HEAD (8aeb725) is ancestor of origin/main — NBA availability challenger NO; D1 unchanged |
 | 2026-10-14T00:41:49Z | T-910..T-912, GG-680..GG-681 | W72.2 MEDIUM - ledger crash-safety (GG-663/664/672), retire /vps (GG-660), box .env perms (GG-662). PURPOSE: PLUMBING (protects PROOF/EXECUTION data) |
+| 2026-10-14T00:43:02Z | T-920..T-922, GG-690..GG-699 | W72.3 MEDIUM - deploy truthfulness (GG-661/668/669) + audit remainder (ledger invariants, point-in-time features). PURPOSE: PLUMBING (no pillar; protects PROOF/EXECUTION data trust) |
+| 2026-10-14T00:43:37Z | T-930..T-932, GG-700..GG-704 | W72.1 MEDIUM - forward-test read-back + order-path guards (GG-646/665/666/667). PURPOSE: EXECUTION E1/E2/E3 (first per-book per-arm fill numbers) |

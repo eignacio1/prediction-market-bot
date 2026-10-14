@@ -3957,7 +3957,9 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-571 — NHL shadow evaluator (`scripts/nhl_shadow_eval.py`) is not wired to the shadow flat-stake hook, so NHL shadow cells never receive demo stakes
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+W72.1 read-back 2026-10-14T00:44Z: NHL shadow cells are staked via `scripts/run_nhl_shadow_staked.py` (cron installed; 44 NHL shadow_order events since re-arm). The unwired `nhl_shadow_eval.py` is no longer the stake path.
 
 **Current state (2026-10-11, W67.2):** The NFL, MLB and NBA shadow runners call `make_on_row(ad)` so `SHADOW_FLAT_STAKE=on` can place a flat ADR-0050 demo stake on a shadow cell with net-of-fee edge > 0. `scripts/nhl_shadow_eval.py` has no on_row/stake wiring, so NHL shadow cells cannot be staked even with the switch on. Found while implementing W67.2 Part B step 4; not fixed in-session (Rule 11).
 
@@ -3978,7 +3980,9 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-586 — ADR-0072 shadow cells have no control-arm order, so the treatment-minus-control verdict cannot be formed
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W72.1 read-back 2026-10-14T00:44Z: control arm places model-mid orders on shadow cells (13 MLB, 23 NHL since re-arm; 4 control fills), report splits arms. Treatment-minus-control now formable once fills settle.
 
 W68.2 stakes only treatment-arm SHADOW rows; the control arm places no order, so the markout/fill comparison ADR-0072 names has no control fills on shadow cells. Needs an operator/ADR decision (control arm places a plain order, or the verdict is judged on treatment-only absolute measures). Found by T-821 (W68.2).
 
@@ -4038,19 +4042,25 @@ W70.2 (T-850), 2026-10-13. `data/raw/nba/players_2026.json` was missing on the V
 
 ### GG-623 — Demo MLB cancels genuinely fail on resting KXMLBHIT orders (404 then 503); forward-test turn-off still tripped after the GG-596 fix
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W72.1 read-back 2026-10-14T00:44Z: root cause was GG-645; since re-arm 12 real cancel_ok on KXMLB*, 0 cancel_failed.
 
 W70.1 (T-853), 2026-10-13. After PR #237 (404 + GET terminal = already_terminal) the cancel_fail_rate trip persists: 8 paper/MLB KXMLBHIT cancels logged 404 while the order GET shows `resting` on an `active` market; retried manually, all return HTTP 503. NFL cancels through the same `cancel_order` path succeed (906). `cancel_order`'s path is still flagged UNVERIFIED. Switches stay OFF; override file left in place. Open: is MLB-HIT cancel unsupported on demo, or demo flakiness; until resolved the treatment arm cannot guarantee its cancel.
 
 ### GG-645 — Kalshi cancel defaulted to exchange shard 0; MLB orders live on shard 3, so every MLB cancel 404'd (root cause of GG-623)
 
-**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W72.1 read-back 2026-10-14T00:44Z: running forward test shows 12 cancel_ok on KXMLB* (4 unfilled_after_N, 8 sweep_overdue), 0 failed; NHL 20 ok.
 
 W71.1 (T-880), 2026-10-13. Root cause of GG-623, not a demo outage. `DELETE /portfolio/events/orders/{id}` with neither `exchange_index` nor `market_ticker` defaults to shard 0 (docs: cancel-order-v2). All MLB-family demo orders (HIT/TOTAL/SPREAD/TEAMTOTAL) have `exchange_index` 3 on GET; NFL are 0/None. Repro on the VPS against demo: 1c bids on KXMLBTOTAL and KXMLBHIT, GET resting (xi=3), DELETE 404 persistently (not a lag race), v1 path 410; DELETE `?market_ticker=<ticker>` returned 200 `reduced_by 1.00` and GET read back `canceled` on 4 of 4. Fix: PR #243 (`cancel_order(..., market_ticker=)`, `cancel_now` passes the ticker; tests pin URL, params and signed path), deployed to VPS `b9812c8d`, t4-mlb restarted 2026-10-13T23:58Z (idle). Every MLB cancel before this left its order resting until the exchange canceled it at market close, so MLB paper rows were exposed to fills for hours, not 60s. Closes fully on the first MLB night with `cancel_ok` on KXMLB* in `demo_fill_policy.jsonl`.
 
 ### GG-646 — Forward-test report excuses late exchange-cancels as already_terminal, so it passes on a broken cancel path
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+W72.1 fix: `_historical_404_terminal` requires order `last_update_time` <= cancel attempt ts + 30s; missing timestamp stays a failure. Tests added. RESOLVED once the VPS checkout carries it (merge != deploy).
 
 W71.1 (T-881), 2026-10-13. `demo_fill_forward_report._historical_404_terminal` treats a logged 404 as `already_terminal` if the order is terminal when the report runs. The 8 MLB failures were exchange-canceled at market close, hours after the failed 60s cancel, so the report showed cancel_fail_rate 0.0 and "none tripped" while cancels were still broken. The check should require the terminal status to predate the cancel attempt (fill/cancel `last_update_time` <= attempt ts + small slack). Not changed here: turn-off scope is fixed by the block. Interim guard: read `cancel_ok` counts on MLB families directly (GG-645 closure criterion).
 

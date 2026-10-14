@@ -116,13 +116,21 @@ def test_historical_404_cancel_failed_reclassified_via_order_status(tmp_path):
         events.append(ev(60 + i, event="cancel_scheduled", order_id=f"p{i}", position_id=f"pid{i}", ticker=tk))
         events.append(ev(59 + i, event="cancel_failed", order_id=f"p{i}", position_id=f"pid{i}", ticker=tk,
                          response={"error": "HTTP 404", "body": "nf"}))
-    rep = rpt.build_report(events, NOW, lambda oid, tk: {"status": "canceled", "fills": 0})
+    early = (NOW - timedelta(minutes=120)).isoformat()  # terminal before every attempt
+    rep = rpt.build_report(events, NOW, lambda oid, tk: {"status": "canceled", "fills": 0, "last_update": early})
     assert rep["tripped"] == []
     cells = [c for c in rep["cells"] if c["cancels"]["scheduled"]]
     assert cells[0]["cancels"]["already_terminal"] == 5 and cells[0]["cancels"]["failed"] == 0
     # no lookup available -> cannot prove terminal -> stays a failure
     rep2 = rpt.build_report(events, NOW, None)
     assert [t["condition"] for t in rep2["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
+    # GG-646: terminal only AFTER the attempt (exchange cancel at market close) stays a failure
+    late = (NOW - timedelta(minutes=10)).isoformat()
+    rep4 = rpt.build_report(events, NOW, lambda oid, tk: {"status": "canceled", "fills": 0, "last_update": late})
+    assert [x["condition"] for x in rep4["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
+    # terminal status with no timestamp is unverified -> failure
+    rep5 = rpt.build_report(events, NOW, lambda oid, tk: {"status": "canceled", "fills": 0})
+    assert rep5["tripped"]
     # resting orders with a 404 stay failures
     rep3 = rpt.build_report(events, NOW, lambda oid, tk: {"status": "resting", "fills": 0})
     assert rep3["tripped"]

@@ -48,7 +48,7 @@ If the methodology works — if a systematically calibrated probabilistic model 
 | Pillar | Measures |
 |---|---|
 | BREADTH | **B1** registered cells logging (ACTIVE + SHADOW) / registered cells · **B2** market families with a logging cell / registered families · **B3** execution bands with a logging cell (of five, T4 sub-bands named) · **B4** props families and parlay families logging |
-| DEPTH | **D1** which granularity-bar factor classes (matchup, personnel/availability, team, venue, weather/conditions, qualitative) each live pre-game model conditions on · **D2** largest pre-game feature set and its qualitative count · **D3** pre-registered challengers ready, per arm |
+| DEPTH | **D1** which granularity-bar factor classes (matchup, personnel/availability, team, venue, weather/conditions, qualitative) each live pre-game model conditions on · **D2** largest pre-game feature set and its qualitative count · **D3** pre-registered challengers ready, per arm · **D4** (added 2026-10-13, ADR-0073) per live sport, the engine's stage: event-level data layer · factor classes built point-in-time · whole board priced from one engine |
 | EXECUTION | **E1** demo orders actually filled / closed positions, per book · **E2** P&L per *filled* bet, per book · **E3** win rate on fills vs non-fills (adverse selection) |
 | PROOF | **P1** cells at a scored look / logging cells · **P2** verdicts issued · **P3** the next look and its pre-registered modal outcome |
 
@@ -62,6 +62,17 @@ How this binds work (Hard Rule 12):
 - Before proposing work, name the pillar it moves and whether a weaker pillar has a cheaper move available. The live pillar scoreboard is the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md` — this file does not track state.
 - No pillar loosens the guardrails: no real capital, `kelly_fraction` 0, a pre-registration committed before a cell's first row, no score read below judged n (expansion directive, 2026-10-08).
 - The generality-vs-edge tension in "Market efficiency gradient" below remains an **open operator decision**; this subsection does not resolve it. BREADTH into efficient markets proceeds with "thinner edge expected" written into each pre-registration, so the result is falsifiable.
+
+### The scale — one deep engine per sport (ADR-0073, operator 2026-10-13: "I had thought that was explicit early on in the project - but apparently not")
+
+*Read this aloud to the operator when he asks for the vision, the scale or the bar (`/vision`). Full record: ADR-0073.*
+
+- **The bar:** Syndicate32-level granularity (syndicate32.com, NFL — cited as a bar, not an endorsement) or deeper, for **every** sport the bot trades, automated, feeding a machine that prices every line. "There's a clear bar that we aren't even remotely close to getting to."
+- **The unit of depth is the sport, not the cell.** One deep engine per sport: finest event-level data (NFL plays, NBA possessions, NHL shots, MLB pitches) → every factor class built once, point-in-time (player, unit, scheme/coverage, matchup, availability, rest, venue, weather, officials, coaching, qualitative) → every market family and band reads from it. Thin cell-specific models are scaffolding until the engine beats them.
+- **One engine prices the whole board:** a game simulation's joint distribution yields moneyline, spread, total, team totals, props and parlays consistently — parlay correlations included.
+- **The data layer is the work.** Rebuild from free sources first ($0; "not bouta pay $20 for something that we can get without it"); a factor only a paid source has is a registered gap.
+- **Depth has a continuous lane** in every wave until each live sport has its engine. NFL first, as the template; NBA next; then NHL, MLB.
+- Measured by **D4** below. Guardrails unchanged; generality-vs-edge still the operator's open call.
 
 ---
 
