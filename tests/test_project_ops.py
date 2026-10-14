@@ -217,3 +217,17 @@ def test_old_error_in_log_does_not_mask_a_clean_latest_run(tmp_path):
     _touch(tmp_path / "logs/paper_mlb_cron.log", body, age_h=3)
     r = [x for x in po.sec_operations(tmp_path, NOW)["rows"] if x["source"].endswith("paper_mlb_cron.log")][0]
     assert r["state"] == "ok" and r["last_success"]
+
+
+def test_services_deploy_truth_row_alarm_and_ok(tmp_path):
+    def fake(alarm):
+        def run(argv):
+            if argv[-1] == "check" and "deploy_truth.py" in " ".join(argv):
+                return ("DEPLOY TRUTH:\n  OK deploy status: deployed\n" +
+                        ("  ALARM t4-mlb runs abc, box HEAD def: 1 file(s)\n" if alarm else "  OK t4-mlb runs box HEAD code\n"))
+            return _fake_run(argv)
+        return run
+    r = {x["label"]: x for x in po.sec_services(tmp_path, NOW, fake(True))["rows"]}
+    assert r["Deploy truth (W72.3)"]["state"] == "bad" and "t4-mlb runs abc" in r["Deploy truth (W72.3)"]["value"]
+    r = {x["label"]: x for x in po.sec_services(tmp_path, NOW, fake(False))["rows"]}
+    assert r["Deploy truth (W72.3)"]["state"] == "ok"

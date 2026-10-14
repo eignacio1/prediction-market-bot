@@ -15,9 +15,10 @@
 #                    restart pmbot-web-dashboard always, t4-mlb only if the policy says so ->
 #                    verify HEAD + ActiveEnterTimestamp.
 #
-# Not changed: the restart policy, the dirty-tree roots, the gate. Not added: any
-# pending-restart retry (a skipped t4-mlb restart is still picked up by the next
-# deploy that changes a t4-mlb file outside a live game, exactly as before).
+# W72.3 (GG-661/GG-668): a skipped t4-mlb restart writes a pending marker (scripts/ops/deploy_truth.py)
+# and every tick retries it, so the restart fires at the first no-live-game tick instead of waiting for
+# an unrelated deploy. Every outcome also writes $STATE_DIR/deploy_status.json, which the governance scan
+# reads (alarm, not log-only). Not changed: the restart policy rules, dirty-tree roots, the gate.
 #
 # Idempotent and lock-protected (flock). A red gate records the rejected SHA so the
 # same commit is not re-tested every 5 minutes; a new commit on main re-arms it.
@@ -59,6 +60,28 @@ rec = {"ts": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:
 with open(path, "a", encoding="utf-8") as fh:
     fh.write(json.dumps(rec) + "\n")
 PY
+  "$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" --state-dir "$STATE_DIR" status \
+    --outcome "$1" --detail "${5:-}" >/dev/null 2>&1 || true
+}
+
+retry_pending_t4() {  # GG-661: restart t4-mlb once no game is live, if an earlier restart was skipped
+  [ -f "$STATE_DIR/t4_pending_restart.json" ] || return 0
+  local out verdict head
+  out="$(mktemp)"; head="$(git rev-parse HEAD)"
+  GITHUB_OUTPUT="$out" python3 scripts/deploy_restart_policy.py --pending >> "$LOG" 2>&1 || true
+  verdict="$(sed -n 's/^verdict=//p' "$out" | tail -1)"; rm -f "$out"
+  if [ "$verdict" = "restart" ]; then
+    if "$SYSTEMCTL" restart t4-mlb >> "$LOG" 2>&1; then
+      rm -f "$STATE_DIR/t4_pending_restart.json"
+      log "pending t4-mlb restart done at ${head:0:8}"
+      record pending_restart_done "$head" "$head" restart "t4-mlb restarted by pending-restart retry"
+    else
+      log "ERROR: pending t4-mlb restart failed"; record restart_failed "$head" "$head" restart "t4-mlb pending retry"
+    fi
+  else
+    "$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" --state-dir "$STATE_DIR" marker set \
+      --verdict "${verdict:-policy_failed}" --sha "$head" --reason "pending retry still blocked" >/dev/null 2>&1 || true
+  fi
 }
 
 is_docs_only() {  # stdin: changed paths, one per line. exit 0 iff every path is under a docs root
@@ -134,12 +157,20 @@ main() {
 
   cd "$PROJ" || exit 1
   local TMO=""; command -v timeout >/dev/null 2>&1 && TMO="timeout 90"   # absent on macOS test runs
-  $TMO git fetch -q "$REMOTE_NAME" "$REMOTE_BRANCH" 2>>"$LOG" || { log "fetch failed; will retry next tick"; exit 0; }
+  $TMO git fetch -q "$REMOTE_NAME" "$REMOTE_BRANCH" 2>>"$LOG" || {
+    log "fetch failed; will retry next tick"; "$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" --state-dir "$STATE_DIR" status \
+      --outcome fetch_failed --detail "git fetch failed" >/dev/null 2>&1 || true; exit 0; }
+  retry_pending_t4
 
   local before after
   before="$(git rev-parse HEAD)"
   after="$(git rev-parse "$REMOTE_REF")"
-  [ "$before" = "$after" ] && exit 0
+  if [ "$before" = "$after" ]; then
+    # quiet tick: refresh the status file (keeps last_ok fresh) without a decision record
+    "$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" --state-dir "$STATE_DIR" status \
+      --outcome noop >/dev/null 2>&1 || true
+    exit 0
+  fi
   # Local is ahead of / diverged from origin: never deploy backwards.
   if ! git merge-base --is-ancestor "$before" "$after"; then
     log "HEAD $before is not an ancestor of $REMOTE_REF $after; refusing to deploy"
@@ -177,6 +208,11 @@ main() {
 
   services="pmbot-web-dashboard"
   [ "$restart" = "true" ] && services="t4-mlb $services"
+  local TRUTH=("$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" --state-dir "$STATE_DIR")
+  case "$verdict" in
+    skip_live_game|skip_game_state_unknown|policy_failed)
+      "${TRUTH[@]}" marker set --verdict "$verdict" --sha "$after" --reason "restart skipped at deploy ${after:0:8}" >/dev/null 2>&1 || true ;;
+  esac
   log "t4-mlb restart decision: ${verdict}; restarting: ${services}"
   # shellcheck disable=SC2086
   "$SYSTEMCTL" restart $services >> "$LOG" 2>&1 || { log "ERROR: systemctl restart failed"; record restart_failed "$before" "$after" "$verdict" "$services"; exit 1; }
@@ -191,6 +227,7 @@ main() {
       rc=1
     fi
   done
+  [ "$restart" = "true" ] && [ $rc -eq 0 ] && "${TRUTH[@]}" marker clear >/dev/null 2>&1
   log "deploy done: HEAD $(git log -1 --oneline) rc=$rc"
   record "$([ $rc -eq 0 ] && echo deployed || echo verify_failed)" "$before" "$after" "$verdict" "$services"
   exit $rc

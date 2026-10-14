@@ -488,6 +488,23 @@ print(f'{(datetime.now(timezone.utc) - dt).total_seconds()/3600:.1f}')" 2>/dev/n
     fi
 fi
 
+# --- Deploy truth (W72.3 / GG-661, GG-668): merge != deploy != activation, as an alarm ---
+# Runs scripts/ops/deploy_truth.py ON the box: deploy status file (a failed deploy is an alarm, not a log line),
+# t4-mlb pending-restart marker, and per running service whether the code it executes is older than box HEAD
+# for files it uses (> 6h = ALARM). READ-ONLY; alarm-only.
+echo ""
+echo "DEPLOY TRUTH (W72.3 -- deploy status / pending restart / service code vs box HEAD; alarm-only):"
+DT_OUT=$(ssh -o ConnectTimeout=3 -o BatchMode=yes prediction-market-vps \
+    "cd /opt/prediction-market-bot && python3 scripts/ops/deploy_truth.py check" 2>/dev/null)
+if [ -z "$DT_OUT" ]; then
+    echo "  UNKNOWN -- VPS unreachable, or scripts/ops/deploy_truth.py not deployed there yet"
+else
+    echo "$DT_OUT"
+    if echo "$DT_OUT" | grep -q "ALARM"; then
+        echo "  *** DEPLOY TRUTH ALARM: something merged is not what is running. Diagnose before trusting any 'deployed' claim. ***"
+    fi
+fi
+
 # --- GitHub Actions status (W68.1 / GG-582) ---
 # 2026-10-11 17:48Z GitHub stopped starting jobs ($0 budget on a private repo). MLB Games Cache Sync and MLB Features
 # Sync are the only route around statsapi's 406 to the VPS, and the shadow runner refuses a games-cache stamp older
