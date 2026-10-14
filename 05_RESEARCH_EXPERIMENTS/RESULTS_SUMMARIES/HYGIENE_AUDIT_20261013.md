@@ -100,3 +100,14 @@ Testing-strategy gaps: `risk.py::_evaluate_forecast_impl` (complexity 44) and `r
 1. Confirm `.env` VENUE_API_KEY is a demo key.
 2. Manual `systemctl restart t4-mlb` in an idle window to pick up the GG-623 cancel fix (not done here).
 3. Approve M-C: retire `/vps`.
+
+## H2 remainder (W72.3 Part B, 2026-10-14)
+Read-only copies of the VPS ledgers were pulled into the worktree `logs/vps_ro/` (gitignored, never committed): 3 paper portfolios (MLB T1, MLB T4, NFL game market), T4 resolved ledger, T4 outcome store, PREGAME_SHADOW / _NFLQB / _PRESEASON, `data/shadow`, and the W65.2 forward-test report.
+
+**Ledger invariants** (`assert_ledger_invariants.py`, alarm-only): 16 violations in 48 runs, all one assertion (L, T1, enum). All 16 are `outcome=CANCELLED`, a stale enum, not corruption (GG-691). 24 band/cell assertion pairs were NOT EVALUATED because 3,495 records have no market_type (GG-690). Assertions G and K are clean on the 3,311 tagged T4M-PROJ rows. Nothing was run against GG-170's assertion A epoch-12 rate here; not a new finding.
+
+**Data validation** (96,199 JSONL rows over 80 shadow/ledger files, plus 5,622 closed portfolio positions): 0 duplicate rows, 0 unparseable lines, 0 duplicate position_id or (player, ticker, entered_at), 0 resolved_at before entered_at, 0 closed positions lacking resolved_at, 0 out-of-range model_p or entry mid price, 0 tz-naive timestamps, 0 WIN/LOSS rows whose pnl sign disagrees. Limit: the shadow-file price and timestamp checks matched by field name; where a file used other names they were skipped, so "0" there means none found among known names, not proven absent.
+
+**Point-in-time features** (`tests/test_point_in_time_features.py`, 7 tests, pass): corrupting a game's own row and every later row leaves MLB rolling features (`_compute_rolling_batter_features`, games 3/10/24) bit-identical; shuffled input is re-sorted, not leaked; NFL `team_rates`, `projected_starter`, `qb_epa` and league means ignore rows dated on/after the as-of date. Positive controls (perturbing a prior game) move the features, so the tests cannot pass vacuously. Not tested: same-date doubleheaders for MLB (sorted by game_date only, so order within a date is unspecified).
+
+**Verdict re-stated:** no look-ahead found in either feature path; no data corruption found in the judged ledgers. Two data-quality gaps registered (GG-690, GG-691), none fixed here.

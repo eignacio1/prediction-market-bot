@@ -4193,3 +4193,15 @@ W71.H1 L6. 69/70 lines match. Nothing applies the mirror, so drift is silent. Fi
 **Status:** OPEN · **Severity:** LOW
 
 W71.H1 A+L4. /hygiene expects FeatureStore.FEATURE_VERSION (absent), baseline 329 tests, 5 bands (22 defined), models/prod_model.joblib (gitignored). requirements-base.txt unpinned (`nba_api>=1.5.0`) so pip-audit cannot run on it. Services run as root (t4-mlb no hardening); ufw inactive. Dead t4-mlb.timer. Legacy run_t4_live.py cron (BOT_C4_ACTIVE=true) outside the restart policy; verify GG-630 freeze. Swallow sites: scripts/nhl_shadow_eval.py:166, distance_to_optimum.py:47 (verdict/measure scripts), run_mlb_dashboard.py:199 (only bare except). Full list in report. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
+
+### GG-690 — 3,495 MLB ledger records carry no market_type, so cell-scoped invariants (G, K, I2, J2) report NO_FORMULA for them
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W72.3 Part B. `assert_ledger_invariants.py` on read-only VPS copies (2026-10-14): `paper_portfolio_mlb` (485 closed) has market_type None on all 485; `paper_portfolio_mlb_t4` has None on 2,994 of 4,297 (1,311 tagged `mlb_player_prop_hits`). Invariants group these under UNKNOWN_MARKET_TYPE and evaluate 0 of 4 cell assertions, so the fee/edge formulas were never checked on 3,495 rows. Likely legacy rows from before the registry; unconfirmed. Register-only: no backfill (live-ledger rewrite is out of scope). Fix options for a later block: a read-only derivation from ticker prefix (KXMLBHIT) inside the invariants script, not a ledger edit.
+
+### GG-691 — Invariant L's outcome enum omits CANCELLED, so 16 legitimate T1 rows are reported as violations
+
+**Status:** OPEN · **Severity:** LOW
+
+W72.3 Part B. Assertion L (`actual_hits_outcome_status_enums`, band T1) flags 16 of 499 (3.21%), epochs 1/3/7/8, all `outcome=CANCELLED`; the allowed set is ['LOSS','WIN']. `paper_portfolio_mlb` has exactly 16 CANCELLED closed rows, so this is a stale enum, not data corruption. Left alone while the 16 stay as noise in the alarm count, which hides any real L violation. Fix: add CANCELLED to the allowed set and assert CANCELLED rows have pnl == 0, in a later block.
