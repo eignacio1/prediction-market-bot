@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -225,9 +226,29 @@ def sec_services(repo: Path, now: datetime, run: Run = default_run) -> dict:
                      "state": "ok" if same else "warn"})
     else:
         rows.append({"label": "VPS HEAD vs origin/main", "source": "git rev-parse", "value": None, "state": "nodata"})
-    rows.append({"label": "Last deploy's t4-mlb restart decision", "source": "GitHub Deploy job summary (GG-432)",
-                 "value": None, "state": "nodata",
-                 "note": "recorded only in the GitHub job summary; the VPS keeps no copy"})
+    # W72.3 (GG-661/GG-668): deploy status, pending t4-mlb restart, service code vs box HEAD (alarm > 6h)
+    dt_out = run([sys.executable, str(repo / "scripts" / "ops" / "deploy_truth.py"), "--proj", str(repo), "check"])
+    if dt_out is None:
+        rows.append({"label": "Deploy truth (W72.3)", "source": "scripts/ops/deploy_truth.py check", "value": None,
+                     "state": "nodata"})
+    else:
+        lines = [ln.strip() for ln in dt_out.splitlines() if ln.strip().split(" ", 1)[0] in ("OK", "ALARM", "UNKNOWN")]
+        alarms = [ln for ln in lines if ln.startswith("ALARM")]
+        rows.append({"label": "Deploy truth (W72.3)", "source": "scripts/ops/deploy_truth.py check",
+                     "value": (" | ".join(a[6:] for a in alarms) if alarms else
+                               f"{len(lines)} check(s) OK -- services run the code on the box"),
+                     "state": "bad" if alarms else ("warn" if any(ln.startswith("UNKNOWN") for ln in lines) else "ok")})
+    last = None
+    try:
+        for ln in (repo / "logs" / "vps_deploy_decisions.jsonl").read_text().splitlines():
+            rec = json.loads(ln)
+            if rec.get("t4_mlb_verdict") not in (None, "", "none", "not_applicable"):
+                last = rec
+    except (OSError, ValueError):
+        pass
+    rows.append({"label": "Last deploy's t4-mlb restart decision", "source": "logs/vps_deploy_decisions.jsonl (GG-432)",
+                 "value": (f"{last['t4_mlb_verdict']} at {last['ts']} ({str(last.get('after', ''))[:7]})" if last else None),
+                 "state": "ok" if last else "nodata"})
     # the unconfirmable decision row must not drag the strip amber on its own
     return {"source": "systemctl · journalctl -k · git", "as_of": _iso(now), "rows": rows,
             "status": _worst([r["state"] for r in rows[:-1]])}
