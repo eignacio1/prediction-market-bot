@@ -880,3 +880,4 @@
 | 2026-10-14T00:30:25Z | T-880 | CLOSED — W71.1: MLB cancel path fixed (Kalshi shard routing via market_ticker, PR #243), forward test re-armed; read-back pending game night (commit `fcd1714`) |
 | 2026-10-14T00:30:57Z | W71.3 | CLOSED — W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged. (commit `3b4a7b1`) |
 | 2026-10-14T00:31:16Z | W71.3 | CLOSED — merge confirmed, HEAD (8aeb725) is ancestor of origin/main — NBA availability challenger NO; D1 unchanged |
+| 2026-10-14T00:41:49Z | T-910..T-912, GG-680..GG-681 | W72.2 MEDIUM - ledger crash-safety (GG-663/664/672), retire /vps (GG-660), box .env perms (GG-662). PURPOSE: PLUMBING (protects PROOF/EXECUTION data) |
