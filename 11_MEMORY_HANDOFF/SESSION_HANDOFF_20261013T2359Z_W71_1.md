@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: T-880
+tier: STANDARD
+timestamp: 2026-10-14T00:35:00Z
+commit: fcd1714
+one_line_summary: W71.1: MLB cancel path fixed (Kalshi shard routing via market_ticker, PR #243), forward test re-armed; read-back pending game night
+gg_touched: GG-645, GG-646, GG-623
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E1
+gap_delta: none
+-->
+
 # SESSION_HANDOFF W71.1 — 2026-10-13
 vision_pillar: EXECUTION
 gap_measure: E1 (demo orders actually filled / closed), enabling E2/E3
@@ -10,3 +24,12 @@ gap_delta: no measured movement yet. Unblocked the loop: MLB cancel path fixed (
 - Part B step 5 read-back: after tonight's NHL games (and MLB CLE-TB game 2026-10-14 00:00Z), confirm both arms placed on SHADOW cells with same hash/share, per book/sport/arm with GG-564 split, scan line and /project panel match; confirm `cancel_ok` on KXMLB* families. Then close GG-586/570/571/623/645.
 - GG-646: report excuses late exchange-cancels; fix `_historical_404_terminal` to require terminal before the attempt.
 - Add "Read-back W71.1" to W65_2_forward_test_on_results.md at that time.
+
+## Strategic Decisions This Session
+None beyond DECISION_LOG 2026-10-13 W71.1 entry (GG-646 registered, not fixed).
+
+## One thing pending
+Part B read-back after tonight's NHL/MLB games: both arms on SHADOW cells, same hash/share, `cancel_ok` on KXMLB* in `logs/demo_fill_policy.jsonl`; then close GG-586/570/571/623/645.
+
+## Resume
+`scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"`
