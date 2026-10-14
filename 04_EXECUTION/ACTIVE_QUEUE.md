@@ -191,7 +191,7 @@ Only 72.1 may change order behaviour.
 |---|---|---|---|---|
 | 72.1 | Forward-test read-back + order-path guards | EXECUTION E1/E2/E3 (first per-book, per-arm numbers) | ⬜ | — |
 | 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | 🟡 PARTIAL | #248 e90ece4 merged+on box; GG-660/662 closed; GG-663/664/672 await t4-mlb restart read-back (skip_live_game) |
-| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | 🟡 Part A DONE | GG-661/668/669 merged (#247), read back on box; Part B (ledger validation, look-ahead tests) in progress |
+| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | ✅ DONE | Part A #247, Part B #249 merged; box at 10e34368, t4-mlb not_needed. No look-ahead in MLB/NFL features (7 tests); ledgers clean; GG-690/691 registered |
 
 ### 72.1 — Forward-test read-back + order-path guards
 

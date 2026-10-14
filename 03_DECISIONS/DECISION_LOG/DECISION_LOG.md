@@ -2208,3 +2208,6 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - #248 (e90ece4): shared `atomic_io` (tmp+fsync+replace); paper_trader quarantines unreadable ledger and halts (LedgerCorruptError), `_save` raises LedgerWriteError; shadow ledger skips torn line with alarm. `/vps` archived DO-NOT-RUN; `/deploy-audit` read-only added. healthcheck .env-600 assertion already landed via W72.3 (took theirs on conflict).
 - Box: `.env` 644→600, `.env.bak.*` deleted, demo-key authenticated GET 200 (BOT_ENV=paper). Operator main tree: OPERATOR_CONSOLE.md (only mod) checked out.
 - t4-mlb restart decision: skip_live_game (CLE@TB in progress). GG-663/664/672 stay OPEN until t4-mlb restarts and the running process is read back. Follow-up candidates (not fixed, Hard Rule 11): other `write_text` state writers e.g. `c1_signal_ingestion/validators.py:397`.
+
+## 2026-10-14 — W72.3 Part B closed (PLUMBING)
+Read-only ledger audit and point-in-time feature tests (PR #249, box at 10e34368). No look-ahead found in MLB rolling or NFL QB features; no duplicates, impossible prices, settle-before-entry or tz-naive rows in the judged ledgers. Registered GG-690 (3,495 rows without market_type, cell invariants not evaluated) and GG-691 (invariant L enum omits CANCELLED, 16 false violations). Nothing fixed, no ledger row touched.
