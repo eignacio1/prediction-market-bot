@@ -17,6 +17,7 @@ import pytest
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts" / "ops" / "vps_deploy.sh"
 POLICY = REPO / "scripts" / "deploy_restart_policy.py"
+TRUTH = REPO / "scripts" / "ops" / "deploy_truth.py"
 
 pytestmark = pytest.mark.skipif(shutil.which("bash") is None, reason="needs bash")
 
@@ -45,6 +46,8 @@ def rig(tmp_path):
     _git(tmp_path, "clone", "-q", str(origin), str(work))
     (work / "scripts").mkdir()
     shutil.copy(POLICY, work / "scripts" / "deploy_restart_policy.py")
+    (work / "scripts" / "ops").mkdir()
+    shutil.copy(TRUTH, work / "scripts" / "ops" / "deploy_truth.py")
     (work / "src" / "prediction_market_bot").mkdir(parents=True)
     (work / "src" / "prediction_market_bot" / "run_t4_mlb_live.py").write_text("")
     (work / "04_EXECUTION").mkdir()
@@ -123,3 +126,76 @@ def test_dirty_tracked_file_outside_cron_roots_blocks_the_pull(rig):
     _commit(rig["work"], "04_EXECUTION/Q2.md", "new")
     assert rig["run"]().returncode == 1
     assert [d["outcome"] for d in rig["decisions"]()] == ["dirty_tree_abort"]
+
+
+# ---- W72.3 (GG-661 / GG-668) -------------------------------------------------------------------
+STUB_POLICY = (
+    "import os, sys\n"
+    "v = os.environ.get('STUB_VERDICT', 'not_needed')\n"
+    "open(os.environ['GITHUB_OUTPUT'], 'a').write(f'restart_t4={str(v == \"restart\").lower()}\\nverdict={v}\\n')\n"
+)
+
+
+def _status(rig):
+    f = rig["state"] / "deploy_status.json"
+    return json.loads(f.read_text()) if f.exists() else {}
+
+
+def test_quiet_tick_writes_ok_status(rig):
+    assert rig["run"]().returncode == 0
+    st = _status(rig)
+    assert st["outcome"] == "noop" and st["ok"] is True
+
+
+def test_gate_red_status_is_an_alarm_state_not_just_a_log_line(rig):
+    _commit(rig["work"], "src/prediction_market_bot/other.py", "x = 1\n")
+    rig["run"](PMBOT_GATE_CMD="false")
+    st = _status(rig)
+    assert st["outcome"] == "gate_red" and st["ok"] is False and st["fail_since"]
+    chk = subprocess.run([sys.executable, str(TRUTH), "--proj", str(rig["proj"]), "--state-dir", str(rig["state"]),
+                          "--systemctl", "false", "check"], capture_output=True, text=True)
+    assert "ALARM deploy gate_red" in chk.stdout
+
+
+def test_dirty_tree_abort_status_is_failing(rig):
+    (rig["proj"] / "04_EXECUTION" / "Q.md").write_text("hand edit on the box")
+    _commit(rig["work"], "04_EXECUTION/Q2.md", "new")
+    rig["run"]()
+    assert _status(rig)["outcome"] == "dirty_tree_abort" and _status(rig)["ok"] is False
+
+
+@pytest.mark.parametrize("verdict", ["skip_live_game", "skip_game_state_unknown"])
+def test_skipped_t4_restart_writes_pending_marker_and_retry_fires_when_clear(rig, verdict):
+    _commit(rig["work"], "scripts/deploy_restart_policy.py", STUB_POLICY)
+    rig["run"](STUB_VERDICT=verdict)                       # rc depends on GNU date; the marker is the point
+    marker = rig["state"] / "t4_pending_restart.json"
+    assert marker.exists() and json.loads(marker.read_text())["verdict"] == verdict
+    log = rig["sysctl_log"].read_text().splitlines() if rig["sysctl_log"].exists() else []
+    assert not any(l.startswith("restart") and "t4-mlb" in l for l in log)
+    # next tick, a game is still live: stays pending, original `since` kept, still no t4 restart
+    since = json.loads(marker.read_text())["since"]
+    rig["run"](STUB_VERDICT="skip_live_game")
+    assert json.loads(marker.read_text())["since"] == since
+    # next tick, no live game: t4-mlb restarts, marker cleared, decision recorded
+    rig["run"](STUB_VERDICT="restart")
+    log = rig["sysctl_log"].read_text().splitlines()
+    assert "restart t4-mlb" in log
+    assert not marker.exists()
+    assert rig["decisions"]()[-1]["outcome"] == "pending_restart_done"
+
+
+def test_no_marker_means_no_retry(rig):
+    rig["run"](STUB_VERDICT="restart")
+    assert not rig["sysctl_log"].exists()
+
+
+def test_policy_pending_flag_ignores_changed_files():
+    sys.path.insert(0, str(REPO / "scripts"))
+    try:
+        import deploy_restart_policy as p
+    finally:
+        sys.path.pop(0)
+    v, _ = p.decide(None, set(), {"dates": []})
+    assert v == p.RESTART
+    v, _ = p.decide(None, set(), {"dates": [{"games": [{"status": {"abstractGameState": "Live"}, "teams": {}}]}]})
+    assert v == p.SKIP_LIVE

@@ -163,10 +163,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--before", default="")
     ap.add_argument("--after", default="")
     ap.add_argument("--repo", default=".")
+    ap.add_argument("--pending", action="store_true",
+                    help="retry a previously skipped restart (GG-661): code is already pulled, only the "
+                         "live-game check decides")
     args = ap.parse_args(argv)
     repo = Path(args.repo).resolve()
     closure = import_closure(repo)
-    changed = changed_files(repo, args.before, args.after)
+    changed = None if args.pending else changed_files(repo, args.before, args.after)
     schedule = None
     if changed is None or set(changed) & closure:
         schedule = fetch_schedule()
