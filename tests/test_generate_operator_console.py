@@ -295,3 +295,19 @@ class TestClosedWaveFences:
             "no fences here\n"
         )
         assert goc.closed_wave_fences(q) == []
+
+
+class TestResolveOut:
+    """W71.2: scan must not dirty the operator's main tree."""
+
+    def test_main_checkout_writes_ignored_path(self):
+        assert goc.resolve_out(env={}, in_worktree=False) == goc.SCAN_OUT
+
+    def test_worktree_writes_tracked_path(self):
+        assert goc.resolve_out(env={}, in_worktree=True) == goc.OUT
+
+    def test_ci_writes_tracked_path(self):
+        assert goc.resolve_out(env={"CI": "true"}, in_worktree=False) == goc.OUT
+
+    def test_override(self, tmp_path):
+        assert goc.resolve_out(env={"CONSOLE_OUT": str(tmp_path / "x.md")}, in_worktree=False) == tmp_path / "x.md"

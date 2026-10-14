@@ -39,6 +39,29 @@ from pathlib import Path
 
 GGL = Path("03_DECISIONS/GOVERNANCE_GAP_LOG.md")
 OUT = Path("03_DECISIONS/OPERATOR_CONSOLE.md")
+# W71.2: the tracked console is only (re)generated in CI or a linked worktree. A plain run in the
+# operator's main checkout writes a git-ignored copy so the scan never dirties the tree.
+SCAN_OUT = Path(".scan_output/OPERATOR_CONSOLE.md")
+
+
+def _in_linked_worktree() -> bool:
+    try:
+        g = subprocess.run(["git", "rev-parse", "--git-dir"], capture_output=True, text=True, check=True).stdout.strip()
+        c = subprocess.run(["git", "rev-parse", "--git-common-dir"], capture_output=True, text=True, check=True).stdout.strip()
+        return Path(g).resolve() != Path(c).resolve()
+    except (subprocess.CalledProcessError, OSError):
+        return False
+
+
+def resolve_out(env=None, in_worktree=None) -> Path:
+    """Tracked path in CI / linked worktrees; git-ignored SCAN_OUT in the main checkout."""
+    import os
+    env = os.environ if env is None else env
+    if env.get("CONSOLE_OUT"):
+        return Path(env["CONSOLE_OUT"])
+    if env.get("CI") or (_in_linked_worktree() if in_worktree is None else in_worktree):
+        return OUT
+    return SCAN_OUT
 CLAIMS = Path("04_EXECUTION/SESSION_CLAIMS.md")
 
 HEADER_RE = re.compile(r"^### (GG-\d+) — (.+)$", re.M)
@@ -504,8 +527,10 @@ def main():
     )
     lines.append("")
 
-    OUT.write_text("\n".join(lines) + "\n")
-    print(f"Wrote {OUT}: retirement_debt={retirement_n} "
+    out = resolve_out()
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n")
+    print(f"Wrote {out}: retirement_debt={retirement_n} "
           f"blocked={len(buckets['blocked'])} broken={len(buckets['broken'])} "
           f"accruing={len(buckets['accruing'])} total={len(entries)}", file=sys.stderr)
     if unspecified_n:

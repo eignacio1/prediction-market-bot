@@ -23,3 +23,16 @@ Train/freeze artifact + sha addendum, player-game store (ESPN box scores; stats.
 - **Silent-arm check: NOT covered at first.** `silent_arms.py` had no points arm; its rows share the `NBA_*.jsonl` glob with the game-market arm, so a dead points arm would have been masked. Fixed in a follow-up PR (own arm `nba_player_points_shadow`, glob `NBA_NBA_PLAYER_POINTS_*.jsonl`, 12 silent-arm tests pass). Also fixed a stale Visual Dashboard note ("T1-T3 arrive with 65.1").
 - **Honest gap:** the preseason dry run wrote **no rows** because Kalshi has 0 open KXNBAPTS markets; preseason-ledger isolation is proven by code/tests only, not by a row on disk. First row-level proof arrives when KXNBAPTS markets list.
 - **Live Terminal dashboard:** not proven to list the arm (it has no registry/arm view for it); not verified, handed back.
+
+## 10-20 rehearsal (W71.2, 2026-10-13, read on the box, `--dry-run` = throwaway ledger, no judged writes)
+
+| Path | Command (VPS, `venv/bin/python`) | What it does on 10-20 |
+|---|---|---|
+| EXP-038 game runner | `run_nba_pregame_shadow.py --bands T1/T2/T3 --dry-run --now 2026-10-20T..` | Writes NBA_MONEYLINE rows only (T2 at 15:00Z wrote 2, T3 at 22:30Z wrote 2). NBA_SPREAD / NBA_GAME_TOTAL: 0 rows. NBA_TEAM_TOTAL: 0 markets listed. |
+| EXP-039 + EXP-040 points runner | `run_nba_player_points_shadow.py --dry-run --now 2026-10-20T15:00Z / 23:20Z` | Runs clean, writes nothing: `KXNBAPTS` has 0 listed markets today (also KXNBAREB / KXNBAAST). |
+| `nba_cell_autoflip` | `--ledger-dir <tmp> --out <tmp> --today 2026-10-21` | `0 new promotion(s)` (empty tmp ledger; flips only on the first valid regular-season row). |
+| preseason retire | `remove_nba_preseason_cron.py --auto --crontab-file <copy>` | `--now 10-20T12:00Z`: no-op. `--now 10-21T11:00Z`: removes 3 blocks (backup written). Live crontab untouched (still 6 preseason lines). |
+
+**Diagnosis of the spread/total `no_kickoff` skips: not a code bug.** Kalshi lists KXNBASPREAD / KXNBATOTAL only for the 5 same-day *preseason* games (10-13); the regular-season schedule index (`season_type=2`) correctly has no kickoff for them. KXNBAGAME already lists 10-20 (3 games resolve a kickoff). Spread, total and points markets are expected to list close to game day.
+
+**Risk carried to opening night (cannot be fixed in code):** if Kalshi lists 10-20 spread/total/points markets late, they enter via the T2/T3 windows only (T1 is 12-48h). The T1 hourly-ish cron (`11 */6`) will not see them. Cells flip on the first valid row regardless of band; first look is the 10-20 evening scan (`silent_arms`).
