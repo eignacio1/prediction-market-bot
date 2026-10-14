@@ -3,11 +3,11 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = a6ad39a` (2026-10-12 ~20:00 PT, Wave 70 close; main CI green). PRs, CI and results docs read from GitHub; VPS facts are the Wave 70 terminals' on-box reads (this window has no SSH).
+**Verified against:** `origin/main = c816f18` (2026-10-13 ~17:35 PT, Wave 71 close; main CI green). PRs, CI and results docs read from GitHub; VPS facts are the Wave 71 terminals' on-box reads (this window has no SSH).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Claimed through **GG-631** (registered to GG-630) · **T-862** · **ADR-0072** · **EXP-040** |
+| Highest GG / T / ADR / EXP | Registered to **GG-677** · **T-902** · **ADR-0072** · **EXP-040** |
 | Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
 | Shadow arms | **NFL** 12 cells logging, first look projected **2026-11-02**. **MLB postseason** armed and logging (judged n starts 2027). **NHL** 9 cells logging; judged n unreachable this season (GG-514); no NHL T3 score may be read (GG-401). **NBA** preseason rows to a separate labelled ledger; regular season 10-20, cells flip ~10-21. |
@@ -19,7 +19,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 70 closed, Wave 71 issued, 2026-10-12 ~20:15 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 71 closed, 2026-10-13 ~17:35 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -38,7 +38,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
-| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **OFF** since 10-13: 8 real paper MLB-HIT cancel failures (GG-623) hold every book off → 71.1 |
+| | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **ON again since 10-13 23:58Z** — cancel fixed (shard routing, GG-645); both-arm read-back after tonight's games |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
@@ -51,6 +51,12 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 71 (10-13), in one line:** the cancel bug was one wrong address — cancels went to the exchange's shard 0 while
+MLB orders live on shard 3 — and with that fixed the forward test is back on. NBA opening night is rehearsed and the
+frozen book can't take bets. Who-is-out did not improve the NBA game model (a clean NO). The hygiene audit says SOUND WITH
+ISSUES: no real-money path, but the paper ledger isn't crash-safe and the old `/vps` command would double every cron job.
+**Second wave in a row with no measure moved — that is drift by our own rule**, though E is one game night from moving.
 
 **Wave 70 (10-12), in one line:** the bright number didn't survive scrutiny — NFL's +0.39 a fill is real fills before kickoff,
 but on about four games whose bets settle together, so it is not evidence. The cancel "failures" were mostly bookkeeping,
@@ -537,14 +543,14 @@ script - running it replaces the live crontab, overwrites the model and pins old
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 71 — ISSUED 2026-10-13 ~03:15 UTC · three MEDIUM blocks · W70 moved no measure — 71 must
+### ✅ WAVE 71 — CLOSED 2026-10-14 ~00:35 UTC (verified on GitHub at `c816f18`, main CI green) · moved: **no measure yet** (second wave running) — forward test re-armed 10-13 23:58Z, E moves at tonight's read-back; D1 NO; B1 protected for 10-21
 
-| # | Block | PURPOSE | Status | Outcome |
-|---|---|---|---|---|
-| 71.1 | Fix MLB-HIT cancel path (GG-623); forward test on | E1–E3 | ⬜ | — |
-| 71.2 | NBA opening night safe end to end (GG-630/621) | B1 | ⬜ | — |
-| 71.3 | NBA games availability challenger | D1, D3 | ⬜ | — |
-| 71.H1 | OUT-OF-WAVE (operator): full code hygiene audit, read-only | PLUMBING | 🟡 PARTIAL | Report `HYGIENE_AUDIT_20261013.md`: SOUND WITH ISSUES; GG-660..677 registered (1 CRITICAL, 3 HIGH); test+coverage run and Not-checked list carried to H2 |
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 71.1 | MLB-HIT cancel path; forward test on | 🟨 Part A ✅, read-back pending | #243: root cause = cancel DELETE routed to shard 0, MLB orders on shard 3; fix passes `market_ticker`; VPS b9812c8d, t4-mlb restarted 23:58Z (idle); demo canary 4/4 canceled; override deleted, `is_enabled()` True. **Forward test ON.** Read-back of both arms after tonight's NHL/MLB games still owed. GG-645 (cause), GG-646 (report excuses late cancels) |
+| 71.2 | NBA opening night safe | ✅ | #242/#245: old NBA book refuses to open positions (GG-630); players_2026 weekly refresh + scan alarm (GG-621); 10-20 rehearsal ran clean (spread/total/points markets not listed yet — not a bug); scan no longer dirties the main tree |
+| 71.3 | NBA games availability challenger | ✅ NO | #244: injury coverage 33.9% → 96.4%; plan frozen first; fit once (first run invalid — 2015 leaked into train — disclosed and redone): ΔBrier ML −0.00165, spread −0.00181, total −0.00017, every CI spans 0. No pre-registration. D1 stays team-only |
+| 71.H1 | Code hygiene audit (operator) | 🟨 PARTIAL | **SOUND WITH ISSUES**; 18 GGs (GG-660..677): CRITICAL `/vps` (GG-660); HIGH stale t4-mlb restarts (GG-661, mechanism), box `.env` world-readable (GG-662), paper ledger not crash-safe (GG-663). No real-money path found today; protection is entry-point guards (GG-666). Skills in the add-in were covered by direct review, not invoked. H2 remainder: live ledger invariants, mlb_features look-ahead, pip-audit |
 
 ### ✅ WAVE 70 — CLOSED 2026-10-13 ~03:00 UTC (verified on GitHub at `a6ad39a`, main CI green) · moved: **no measure** (E unchanged, switches off; D3 2 deployed, 0 rows); main green
 

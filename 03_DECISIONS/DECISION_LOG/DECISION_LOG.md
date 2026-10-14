@@ -2180,3 +2180,9 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 - Verdict SOUND WITH ISSUES. Report: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md. GG-660..GG-677 registered, nothing fixed (Hard Rule 11).
 - GG-660 (CRITICAL): `.claude/commands/vps.md` APPENDS deploy/cron.conf to the live crontab (duplicates every job) rather than replacing it as the operator's brief said; model scp and old dep pins confirmed. Not run, not edited.
 - Test suite + coverage under py3.11 not finished at push; carried to H2 with the Not-checked list.
+
+## 2026-10-13 — Wave 71 closed (verified at c816f18, main CI green)
+
+- 71.1 Part A DONE (#243 cancel shard routing, GG-645; forward test re-armed 23:58Z; read-back pending), 71.2 DONE (#242/#245), 71.3 DONE result NO (#244), 71.H1 PARTIAL (SOUND WITH ISSUES; GG-660..677).
+- Drift flag (Hard Rule 12 / north star): Waves 70 and 71 moved no distance measure. Stated to the operator unprompted.
+- Window rulings on 71.H1's three "operator decisions": (1) whether the box `.env` key is demo is a fact a block can verify against the demo API — plumbing; (2) the t4-mlb restart was done by 71.1 at 23:58Z; (3) retiring `/vps` is plumbing — the window approves it. None goes to the operator. 71.2's "run git checkout on OPERATOR_CONSOLE.md" goes to the next block that touches the main tree, not to the operator.
