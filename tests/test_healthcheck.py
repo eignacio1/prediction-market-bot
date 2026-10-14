@@ -86,6 +86,14 @@ def test_env_mode_open_is_red(rig):
     assert rc == 1 and ".env mode 644" in out
 
 
+def test_env_bak_copy_is_red_and_secret_not_echoed(rig):
+    (rig[0] / ".env.bak.20260915T055650Z").write_text("BOT_ENV=paper\nVENUE_API_KEY=abc123\n")
+    os.chmod(rig[0] / ".env.bak.20260915T055650Z", 0o600)
+    rc, out = run(rig)
+    assert rc == 1 and ".env.bak.20260915T055650Z" in out
+    assert "abc123" not in out
+
+
 def test_env_secret_not_echoed(rig):
     rc, out = run(rig)
     assert "abc123" not in out
