@@ -97,3 +97,24 @@ The report now classifies a 404 as already_terminal only when a GET of the order
 **Interpretation:** the +0.39 is not a timing artifact but is not evidence of edge either: effective n is ~4 games, and ladder rungs on one game's totals/spreads resolve together (within-game correlation). Do not cite it as E2. Registered as GG-624.
 
 **Part B3 / B5 - not done this session.** The switches are still OFF, so the control arm (GG-586) has placed no SHADOW orders; GG-586/570/571 stay open. NHL nightly / NFL Thu 10-15 runs have not happened. Governance-scan line and /project panel not compared. GG-564 listing-status split not done (E1 remains unstratified).
+
+## Read-back W72.1 (2026-10-14T00:44Z, UTC; source: `scripts/demo_fill_forward_report.py --no-act` on the VPS, log sliced at ts >= 2026-10-13T23:58, 320 events)
+
+Switches: `book_anchor_cancel` + `SHADOW_FLAT_STAKE=on`, no override file, no turn-off tripped. Report run read-only (`--no-act`).
+
+| since re-arm | orders | cancel ok / already_terminal / failed | fills (settled) |
+|---|---|---|---|
+| paper/MLB treatment | 4 (138 skips `not_listed_on_demo`) | 4 / 0 / 0 | 0 (0) |
+| shadow/MLB treatment | 9 (2 `not_listed_on_demo`) | 8 / 1 / 0 | 1 (0) |
+| shadow/MLB **control** | 13 | n/a (no cancel by design) | 3 (0) |
+| shadow/NHL treatment | 21 (46 `not_listed_on_demo`) | 20 / 1 / 0 | 1 (0) |
+| shadow/NHL **control** | 23 | n/a | 1 (0) |
+
+- **Cancel path (GG-645/623): proven live.** 12 real `cancel_ok` on KXMLB* (4 `unfilled_after_N`, 8 `sweep_overdue`), 0 `cancel_failed`; 20 on KXNHL. Pre-fix, MLB was 0 ok / 17+363 failed.
+- **Control arm (GG-586): placing.** 13 MLB + 23 NHL model-mid orders, same hash/share; control fills 3 MLB, 1 NHL.
+- **No post-re-arm order has settled**, so win rate on fills and settle-minus-price cannot be read yet: E2/E3 are unchanged. Cumulative-since-day-one cells (pre-fix classification, not re-arm numbers): paper/MLB 5/26 fills +0.07; shadow/MLB 76/372, -0.06; shadow/NFL 231/1,135, +0.40 (GG-624: ~4 correlated games, not E2).
+- **GG-564 listing split:** paper/MLB 4 orders vs 138 `not_listed_on_demo` skips (2.8% of attempts reach demo); shadow/MLB 9 vs 2; shadow/NHL 21 vs 46. E1 describes the demo-listed subset only.
+- **Pace vs ~550 fills per arm in 8 weeks** (report projection, ~1 day of data, treat as order-of-magnitude): paper/MLB 17/wk (not on pace), shadow/MLB 230/wk, NFL 692/wk (both on pace), NHL 7/wk (not on pace).
+- **Skip-rate turn-off watch:** daily skip rates 0.2% / 56.3% / 98.6% (10-11/12/13). The condition needs three consecutive days > 90%; today alone is over. If 10-14 and 10-15 stay above 90% it trips. That is the paper/MLB `not_listed_on_demo` share (GG-564), not a fault.
+- **Not done:** governance-scan line and /project panel were not compared with these numbers in this read-back.
+- **GG-646 fixed** in `scripts/demo_fill_forward_report.py`: a 404 counts as `already_terminal` only if the order's `last_update_time` is at or before the cancel attempt plus 30s; missing or unparseable timestamp stays a failure.

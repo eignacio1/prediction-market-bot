@@ -110,7 +110,8 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
         fills = float(order.get("fill_count_fp") or order.get("fill_count") or 0)
     except (TypeError, ValueError):
         fills = 0.0
-    rec: dict[str, Any] = {"status": order.get("status"), "fills": fills, "side": side, "price": price, "settled": False}
+    rec: dict[str, Any] = {"status": order.get("status"), "fills": fills, "side": side, "price": price, "settled": False,
+                           "last_update": order.get("last_update_time")}
     if fills > 0:
         mok, mdata = client._get(f"/markets/{ticker}")
         m = (mdata.get("market", mdata) if mok and isinstance(mdata, dict) else {}) or {}
@@ -126,14 +127,32 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
 TERMINAL_STATUSES = ("executed", "filled", "canceled", "cancelled", "expired")
 
 
+TERMINAL_SLACK_S = 30
+
+
 def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], dict]]) -> bool:
-    """GG-596: a logged cancel_failed whose response was HTTP 404 is already_terminal when the order's
-    current status (one GET, cached) is terminal. Without a lookup it stays a failure (unverified)."""
+    """GG-596/GG-646: a logged cancel_failed whose response was HTTP 404 is already_terminal only when the
+    order was terminal BEFORE the cancel attempt (last_update_time <= attempt ts + slack). An order that was
+    exchange-canceled at market close hours after a failed 60s cancel is a real failure. No lookup, no
+    timestamp, or an unparseable one stays a failure (unverified)."""
     resp = r.get("response")
     if fills_for is None or not (isinstance(resp, dict) and str(resp.get("error")) == "HTTP 404"):
         return False
     st = fills_for(r.get("order_id"), ticker_of(r))
-    return str(st.get("status") or "").lower() in TERMINAL_STATUSES
+    if str(st.get("status") or "").lower() not in TERMINAL_STATUSES:
+        return False
+    attempt = _ts(r)
+    try:
+        terminal_at = datetime.fromisoformat(str(st.get("last_update")).replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if attempt is None:
+        return False
+    if terminal_at.tzinfo is None:
+        terminal_at = terminal_at.replace(tzinfo=timezone.utc)
+    if attempt.tzinfo is None:
+        attempt = attempt.replace(tzinfo=timezone.utc)
+    return terminal_at <= attempt + timedelta(seconds=TERMINAL_SLACK_S)
 
 
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
