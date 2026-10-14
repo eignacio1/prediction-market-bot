@@ -134,3 +134,23 @@ def test_historical_404_cancel_failed_reclassified_via_order_status(tmp_path):
     # resting orders with a 404 stay failures
     rep3 = rpt.build_report(events, NOW, lambda oid, tk: {"status": "resting", "fills": 0})
     assert rep3["tripped"]
+
+
+def _three_days(reason):
+    evs = []
+    for d in (1, 2, 3):
+        for i in range(10):
+            evs.append(ev(d * 1440 + i, event="skip", reason=reason, position_id=f"p{d}{i}", ticker="KXMLBHIT-X"))
+    return evs
+
+
+def test_listing_skips_never_trip_skip_rate_turn_off():
+    rep = rpt.build_report(_three_days("not_listed_on_demo"), NOW, None)
+    assert rep["tripped"] == []
+    chk = rep["turn_off_checks"]["skip_rate_gt_90pct_three_days"]
+    assert not chk["tripped"] and sum(chk["listing_skips_by_day"].values()) == 30
+
+
+def test_policy_skips_still_trip_skip_rate_turn_off():
+    rep = rpt.build_report(_three_days("book_one_sided"), NOW, None)
+    assert [t["condition"] for t in rep["tripped"]] == ["skip_rate_gt_90pct_three_days"]
