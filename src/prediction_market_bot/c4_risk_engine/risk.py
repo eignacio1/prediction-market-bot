@@ -163,6 +163,29 @@ def _is_gate_open() -> bool:
     return os.environ.get(_GATE_ENV_VAR, "").lower() in ("true", "1", "yes")
 
 
+def _band_kelly_fraction(fc: dict[str, Any], instance_default: float) -> float:
+    """GG-665/W72.1: kelly_fraction comes from BAND_CONFIGS, never from the forecast dict.
+
+    The band is read from fc["execution_band"] (enum name or value, e.g. "T1_MULTI_DAY" / "T1").
+    The result is clamped to the band's configured value and to the instance default; an
+    unresolvable band falls back to the engine's own constructor fraction, so a caller
+    cannot raise sizing by writing a number into the forecast.
+    """
+    from prediction_market_bot.execution_bands import BAND_CONFIGS, ExecutionBand
+
+    raw = fc.get("execution_band")
+    cap = None
+    for band in ExecutionBand:
+        if raw in (band.name, band.value, band):
+            cfg = BAND_CONFIGS.get(band)
+            if cfg is not None:
+                cap = float(cfg.kelly_fraction)
+            break
+    if cap is None:
+        cap = float(instance_default)  # engine-configured (RiskEngine ctor), never forecast-supplied
+    return max(0.0, min(cap, float(instance_default)))
+
+
 def _compute_kelly_size(
     p_estimate: float,
     market_implied_prob: float,
@@ -723,7 +746,7 @@ class RiskEngine:
                 approved_size = float(fixed_stake_usd)
                 sizing_mode = "fixed_measurement"
             else:
-                kelly_frac = float(fc.get("kelly_fraction", self._kelly_fraction))
+                kelly_frac = _band_kelly_fraction(fc, self._kelly_fraction)
                 approved_size = _compute_kelly_size(
                     p_estimate=p_effective,
                     market_implied_prob=mip_effective,
