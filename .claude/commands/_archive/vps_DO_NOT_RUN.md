@@ -1,3 +1,8 @@
+> **DO NOT RUN. ARCHIVED 2026-10-14 (W72.2, GG-660).** This is the May-2026 first-time provisioning script. Run today it
+> would APPEND `deploy/cron.conf` to the live crontab (every job, incl. `vps_deploy.sh`, runs twice; shadow arms write
+> every row twice), `scp` the model over the box's model, and pin old deps. Kept for history only. Use `/deploy-audit`
+> (read-only) to check the box; deploys happen via `vps_deploy.sh` on push to main.
+
 # /vps — VPS Deployment / Re-Deployment (T-059 ✅ COMPLETE 2026-05-29)
 
 **Current VPS:** `157.230.91.33` — DigitalOcean NYC3, Ubuntu 24.04, Python 3.12, sklearn 1.8.0. Use this guide for re-deployment, new-droplet migration, or model pushes. Read `deploy/DEPLOYMENT_GUIDE.md` in full before starting.

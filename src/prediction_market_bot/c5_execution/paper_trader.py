@@ -59,6 +59,9 @@ except ImportError:  # pragma: no cover - non-POSIX fallback
 
 import pandas as pd
 
+from prediction_market_bot.atomic_io import (
+    LedgerCorruptError, LedgerWriteError, alarm, atomic_write_json, quarantine,
+)
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c5_execution import demo_fill_policy as _fill_policy
 from prediction_market_bot.c5_execution.market_type_registry import MarketType
@@ -200,13 +203,18 @@ class PaperTrader:
 
     def _load_or_init(self) -> dict[str, Any]:
         if self._path.exists():
+            # GG-663: a read error must never fall through to a fresh state (that would overwrite
+            # the evidence on the next _save). Quarantine the file and halt this writer.
             try:
                 state = json.loads(self._path.read_text())
-                # GG-079/T-234: files written before this bucket existed lack the key.
-                state.setdefault("rejected_positions", [])
-                return state
-            except Exception:
-                pass
+                if not isinstance(state, dict):
+                    raise ValueError("ledger root is not an object")
+            except (OSError, ValueError) as e:
+                quarantine(self._path, repr(e))
+                raise LedgerCorruptError(f"{self._path}: unreadable ledger quarantined: {e!r}") from e
+            # GG-079/T-234: files written before this bucket existed lack the key.
+            state.setdefault("rejected_positions", [])
+            return state
         return {
             "bankroll_usd": INITIAL_BANKROLL_USD,
             "initial_bankroll_usd": INITIAL_BANKROLL_USD,
@@ -320,11 +328,16 @@ class PaperTrader:
         """Re-read the latest committed state from disk. Call only while holding
         _file_lock so a concurrent writer's appends are not lost on save."""
         if self._path.exists():
+            # GG-663: never keep a stale in-memory state over an unreadable file and save it back.
             try:
-                self._state = json.loads(self._path.read_text())
-                self._state.setdefault("rejected_positions", [])
-            except Exception:
-                pass
+                state = json.loads(self._path.read_text())
+                if not isinstance(state, dict):
+                    raise ValueError("ledger root is not an object")
+            except (OSError, ValueError) as e:
+                quarantine(self._path, repr(e))
+                raise LedgerCorruptError(f"{self._path}: unreadable ledger quarantined: {e!r}") from e
+            state.setdefault("rejected_positions", [])
+            self._state = state
 
     def _save(self) -> bool:
         try:
@@ -343,10 +356,12 @@ class PaperTrader:
             rejected = self._state.get("rejected_positions")
             if isinstance(rejected, list) and len(rejected) > MAX_REJECTED_POSITIONS:
                 self._state["rejected_positions"] = rejected[-MAX_REJECTED_POSITIONS:]
-            self._path.write_text(json.dumps(self._state, indent=2))
+            atomic_write_json(self._path, self._state)
             return True
-        except OSError:
-            return False
+        except OSError as e:
+            # GG-664: a failed save means the mutation is NOT on disk; callers must not proceed as if it were.
+            alarm(f"{self._path}: save failed: {e!r}")
+            raise LedgerWriteError(f"{self._path}: save failed: {e!r}") from e
 
     def ensure_persisted(self) -> None:
         """Write the portfolio file if it does not yet exist.
