@@ -19,3 +19,6 @@
 - Found why injury data looked 34% complete: the league renamed its report files in December. Live fetch fixed. The old study still uses the incomplete data.
 - The server was also missing last season's player stats, so both NBA points models would have stayed silent. Fixed by hand; not yet automatic.
 - Real money at risk: zero.
+
+## W71.2 — NBA opening night prep (BREADTH)
+The old NBA paper book is now blocked in code from placing anything, and the player-stats file the NBA model needs rebuilds itself weekly with an alarm if it goes missing. I rehearsed every opening-night job (10-20) on the server: nothing errored. Only moneylines will log until Kalshi lists spreads, totals and player points, which it hasn't yet. Also, the daily check no longer dirties your working copy: run `git checkout -- 03_DECISIONS/OPERATOR_CONSOLE.md` once. No real money at risk, no decisions needed.

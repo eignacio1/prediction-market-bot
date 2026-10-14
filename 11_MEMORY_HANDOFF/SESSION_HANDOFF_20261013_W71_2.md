@@ -2,7 +2,7 @@
 task_id: T-890
 tier: MEDIUM
 timestamp: 2026-10-13T23:59:00Z
-commit: see PR
+commit: e68c925
 one_line_summary: W71.2 DONE - old NBA book frozen in code (GG-630), players_2026 reproducible + scan alarm (GG-621), 10-20 rehearsal run, scan no longer dirties main tree
 gg_touched: GG-630, GG-621
 adr_touched: none
