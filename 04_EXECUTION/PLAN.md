@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-14T01:00:00Z (W71.3 — W71.3 NBA availability challenger does not beat frozen EXP-038 on any family; result NO, D1 unchanged.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0100Z_W71_3.md` for full session detail.
+**Last reviewed:** 2026-10-14T01:55:00Z (T-920 — W72.3 closed: deploy truth machine-checked (GG-661/668/669); ledger and point-in-time audit finds no leak; GG-690/691 opened.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0145Z_W72_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

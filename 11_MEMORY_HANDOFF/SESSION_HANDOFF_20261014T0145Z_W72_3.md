@@ -1,3 +1,17 @@
+<!-- session-meta
+task_id: T-920
+tier: STANDARD
+timestamp: 2026-10-14T01:55:00Z
+commit: 8b1fb3b
+one_line_summary: W72.3 closed: deploy truth machine-checked (GG-661/668/669); ledger and point-in-time audit finds no leak; GG-690/691 opened.
+gg_touched: GG-661, GG-668, GG-669, GG-690, GG-691
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING
+gap_delta: none
+-->
+
 # SESSION HANDOFF W72.3 (2026-10-14)
 
 vision_pillar: PLUMBING
