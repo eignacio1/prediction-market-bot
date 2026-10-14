@@ -3,7 +3,7 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = c816f18` (2026-10-13 ~17:35 PT, Wave 71 close; main CI green). PRs, CI and results docs read from GitHub; VPS facts are the Wave 71 terminals' on-box reads (this window has no SSH).
+**Verified against:** `origin/main = b6af6c3` (2026-10-14 ~16:40 PT, Wave 72 close; main CI green). VPS facts are the Wave 72 terminals' on-box reads.
 
 | Fact | Value |
 |---|---|
@@ -19,7 +19,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 71 closed, 2026-10-13 ~17:35 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 72 closed, Wave 73 issued, 2026-10-14 ~16:45 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -57,6 +57,11 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 72 (10-13 → 10-14), in one line:** the foundation is fixed — ledgers survive a crash, deploys prove the running code is
+current, the order path itself refuses real money, and `/vps` is retired. The forward test is live with both arms and cancels
+work (0 failures); nothing has settled yet. The data audit found no look-ahead and no corrupt rows. Drift ends here: E1 has
+per-arm counts. You amended the skip-rate turn-off and gave NBA a staked runner (10-14).
 
 **Wave 71 (10-13), in one line:** the cancel bug was one wrong address — cancels went to the exchange's shard 0 while
 MLB orders live on shard 3 — and with that fixed the forward test is back on. NBA opening night is rehearsed and the
@@ -178,25 +183,25 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 72 · issued 2026-10-14 ~00:50 UTC (10-13 ~17:50 PT) · three MEDIUM blocks · paste all three in parallel
+## ⬛ NOW — Wave 73 · issued 2026-10-14 ~23:45 UTC (16:45 PT) · three MEDIUM blocks · paste all three in parallel
 
-Wave 71 verified (Sequencing track). **Waves 70 and 71 moved no measure: drift.** Operator direction 2026-10-13 17:38 PT:
-**foundation first, then turn Syndicate32 inside out** (the NFL granularity bar; free data, no $20 subscription). So this wave
-does two things: E finally moves (72.1), and the foundation the 71.H1 audit found weak is fixed before anyone builds on the
-data (72.2, 72.3). Wave 73 is the Syndicate32 teardown. Surfaces: 72.1 = forward-test report, order-path guards; 72.2 =
-paper/shadow ledger writers, .claude/commands, box .env; 72.3 = vps_deploy.sh / restart policy, read-only data validation.
-Only 72.1 may change order behaviour.
+Wave 72 verified (Sequencing track). The foundation is in: crash-safe ledgers, deploys that prove themselves, order-path
+guards in the running process, the forward test live with both arms. **This wave starts the NFL engine (ADR-0073)** —
+the template for every sport — and keeps Execution moving. Surfaces: 73.1 = forward-test report/turn-off, NBA staked runner;
+73.2 = new NFL event data layer (C1/C2 + a GitHub Actions build); 73.3 = 12_EXPLORATORY/nfl_engine only. Only 73.1 may change
+order behaviour. 73.2 and 73.3 meet at one interface (team/unit ratings in, game distribution out) - agree it from the
+`INTERFACE.md` 73.3 writes first; neither waits on the other's data.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 72.1 | Forward-test read-back + order-path guards | EXECUTION E1/E2/E3 (first per-book, per-arm numbers) | 🟡 PARTIAL (merged #246, #252; VPS checkout carries both) | Part A read-back done, GG-586/623/645/571/646 closed; Part B guards (GG-665/666/667) merged, t4-mlb still on old code until idle-window restart; E2/E3 not readable (nothing settled) |
-| 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | ✅ DONE | #248 e90ece4 merged+on box; GG-660/662/663/664/672 closed; t4-mlb restarted 02:53Z read back |
-| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | ✅ DONE | Part A #247, Part B #249 merged; box at 10e34368, t4-mlb not_needed. No look-ahead in MLB/NFL features (7 tests); ledgers clean; GG-690/691 registered |
+| 73.1 | Turn-off addendum, NBA staked runner, first settled E2/E3 | EXECUTION E1/E2/E3 | ⬜ | — |
+| 73.2 | NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer | DEPTH D4 (NFL: none → data layer), D1 | ⬜ | — |
+| 73.3 | NFL engine stage 1: one game simulation prices ML, spread and total | DEPTH D4 (NFL: → board priced from one engine, scaffold) | ⬜ | — |
 
-### 72.1 — Forward-test read-back + order-path guards
+### 73.1 — Turn-off addendum, NBA staked runner, first settled E2/E3
 
 ```
-COMMON RULES - WAVE 72 (read first; they bind this block)
+COMMON RULES - WAVE 73 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -206,7 +211,7 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -226,8 +231,8 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -242,40 +247,44 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
 
-WAVE 72.1 - FORWARD-TEST READ-BACK; ORDER-PATH GUARDS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION E1/E2/E3 - first per-book, per-arm forward-test numbers with both arms live. Pillar: EXECUTION.
-PERMISSIONS: VPS read (ssh), PR/merge, idle-window t4-mlb restart if a guard touches its imports, read-only Kalshi DEMO
-GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; IDLE-WINDOW SERVICE RESTARTS.
+WAVE 73.1 - TURN-OFF ADDENDUM; NBA STAKED RUNNER; FIRST SETTLED E2/E3. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - keep the forward test on, add NBA from opening night, read the first settled numbers.
+PERMISSIONS: VPS read (ssh), NEW cron line for the NBA staked runner, PR/merge, demo orders under ADR-0072, read-only Kalshi
+DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; operator decisions 2026-10-14 16:4x PT (below).
+
+OPERATOR DECISIONS (2026-10-14, in this window): (1) "Yes, amend": the skip-rate turn-off counts only the placement rule's own
+skips (book one-sided, mid gap); not_listed_on_demo skips are reported separately and never count (GG-564). (2) "Yes, separate
+runner": NBA gets its own demo-only staked runner, like run_nhl_shadow_staked.py; the EXP-038 / EXP-039 / EXP-040 forecasting
+cron lines stay credential-free and unchanged (GG-570).
 
 WHY
-71.1 fixed the cancel (GG-645: DELETE went to shard 0, MLB orders sit on shard 3) and re-armed the test 10-13 23:58Z. Nothing
-has been read back. Two waves have moved no measure; this block exists to move E. The 71.H1 audit found the real-money
-protection is entry-point guards only (GG-666), kelly read from the forecast dict not BAND_CONFIGS (GG-665), and no kill
-switch on the shadow runners (GG-667).
+72.1's read-back: cancels work (12 cancel_ok on KXMLB*, 0 failed), the control arm places, nothing post-re-arm has settled.
+Daily skip rates 0.2% / 56.3% / 98.6% (10-11/12/13), almost all paper/MLB not_listed_on_demo (2.8% of attempts reach demo):
+if 10-14 and 10-15 also exceed 90%, the turn-off trips and the test goes dark again ~10-16. NBA opens 10-20 with no stakes.
 
-PART A - Read back and report (~40 min)
-  1. Over ssh: the forward-test report since 23:58Z. Per book/sport/arm: orders, fills, cancels (cancel_ok on KXMLB*), skips
-     by reason, win rate on fills, settle-minus-price on fills, fills per arm per week vs ~550/8 weeks. The control arm (GG-586)
-     has placed SHADOW-cell orders, same hash/share. GG-564 listing-status split. Scan line + /project panel match.
-     Close GG-586/570/571/623/645 only on this read-back.
-  2. GG-646: `_historical_404_terminal` must require terminal status BEFORE the cancel attempt; tests; PR, merge, read back.
-  3. Write the numbers into the DISTANCE table's E rows (source + timestamp) and W65_2 results "Read-back W72.1".
-PART B - Guards (~45 min)
-  4. GG-666: the order-write path itself refuses a non-demo host unless an explicit live-capital flag set by an accepted ADR
-     exists (none does) - assertion in kalshi_client submit/post, tests both ways.
-  5. GG-665: risk.py takes kelly_fraction from BAND_CONFIGS (clamped; 0 everywhere today), never from the forecast dict.
-  6. GG-667: the shadow stake path checks the same kill-switch state as C4 before placing; one shared helper. Tests.
-  PR, merge, deploy; read back the running processes carry the guards.
+PART A - Before the next 11:25 UTC report run (~40 min)
+  1. Dated addendum to ADR-0072 (append, quoting the operator's choice): skip-rate turn-off scope = policy skips only.
+     Implement in demo_fill_forward_report.py; tests (listing skips never trip; policy skips still do). PR, merge, read back
+     with --no-act on the box that the condition no longer trips on 10-13/10-14 data.
+  2. GG-665/666/667: t4-mlb restarted 02:53:06Z after 8b1fb3b reached the box - confirm the running process's code SHA
+     carries the guards (72.3's SHA check), then RESOLVE them.
+PART B - NBA stakes + numbers (~45 min)
+  3. scripts/run_nba_shadow_staked.py (mirror run_nhl_shadow_staked.py): reads the NBA shadow ledger rows already written,
+     places demo stakes per ADR-0072 assignment, never touches EXP-038/039/040 lines; NEW cron line; dry run on the box now,
+     first live read-back 10-20/21. Update test_nba_shadow_safety to pin the separation. Close GG-570 on the 10-21 read-back.
+  4. Re-run the report: every post-re-arm order that has settled -> per book/sport/arm fills, win rate on fills,
+     settle-minus-price, E3 fills vs non-fills, control vs treatment. Write the E rows of the DISTANCE table (source + time).
+Results doc: W65_2_forward_test_on_results.md, "Read-back W73.1".
 
-END OF BLOCK 72.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 73.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 72.2 — Data you can trust, a box you can't wreck
+### 73.2 — NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer
 
 ```
-COMMON RULES - WAVE 72 (read first; they bind this block)
+COMMON RULES - WAVE 73 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -285,7 +294,7 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -305,8 +314,8 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -321,42 +330,44 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
 
-WAVE 72.2 - LEDGER SAFETY; RETIRE /vps; LOCK THE BOX SECRETS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING - the forensics pass and every verdict read these files; they must survive a crash. Pillar: none (protects
-PROOF and EXECUTION data). PERMISSIONS: VPS read (ssh); VPS file-permission change and delete of the .env backup named below;
-PR/merge; git in the operator's main tree (one checkout of a generated file). No order, no stake, no cron edit.
+WAVE 73.2 - NFL ENGINE, DATA LAYER (ADR-0073 stage 1). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D4 (NFL engine stage: none -> event-level data layer built) and D1 (factor classes now buildable). Pillar:
+DEPTH. PERMISSIONS: PR/merge; a NEW GitHub Actions workflow (public repo - free) or VPS cron line for the build; no order, no
+stake, no change to any running arm. Read ADR-0073 and CLAUDE.md § "The scale" first.
 
 WHY
-71.H1 (HYGIENE_AUDIT_20261013.md): the paper ledger writer is not crash-safe - write_text with no tmp+rename and
-`except Exception: pass` that starts a fresh state on a read error (GG-663, paper_trader.py:200-210, 318-327, 346); _save()
-returns ignored (GG-664); shadow ledger _load raises on one torn line (GG-672). `/vps` would append the cron mirror to the live
-crontab - every job twice - and overwrite the model (GG-660, CRITICAL). The box .env holding the venue key is mode 644, with a
-644 backup (GG-662). The window approved retiring /vps; these are plumbing, not operator decisions.
+ADR-0073: one deep engine per sport, NFL first as the template; the data layer is the work; free sources first, no paid
+service. The bar is Syndicate32 (opponent-adjusted unit profiles; QB vs man/zone/specific coverages per dropback; matchup
+comparisons across passing, rushing, protection, pressure, coverage, special teams, injuries, play callers, penalties, rest,
+home field; fair values vs market). Our NFL models condition on team + QB only.
 
-PART A - Ledgers (~50 min)
-  1. One shared atomic_write_json / atomic_append helper (tmp + fsync + os.replace); paper_trader and every ledger writer the
-     audit listed use it. A read error quarantines the file (renamed, alarmed) and halts that writer - never a fresh state.
-     _save() failures raise. Shadow _load skips a torn trailing line with an alarm instead of raising.
-  2. Tests: crash mid-write leaves the old file intact; torn last line; corrupt file -> quarantine + halt. PR, merge, deploy,
-     read back that the running writers use the helper (no service restart while an MLB game is live).
-PART B - /vps + secrets (~30 min)
-  3. Move .claude/commands/vps.md to an archive path with a DO-NOT-RUN header; replace it with a read-only /deploy-audit
-     command (the L6 checklist from the audit: box HEAD vs origin/main, restart-policy log, crontab vs mirror, env perms).
-  4. On the box: chmod 600 the .env, delete .env.bak.20260915T055650Z, and verify the key is a DEMO key by a read-only
-     authenticated GET against the demo API (record pass/fail, never print the key). healthcheck asserts mode 600.
-  5. Operator main tree: if 03_DECISIONS/OPERATOR_CONSOLE.md is the only modification, git checkout -- it (71.2 moved the
-     scan's output out of the tracked file). Anything else modified: change nothing, report.
-Close GG-660/662/663/664/672 only on read-back.
+RULES FOR THE TEARDOWN: public pages only - no login, no membership, no paywalled content, no scraping behind it. Its factor
+list is a target to rebuild from free data, never its numbers.
 
-END OF BLOCK 72.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+PART A - Taxonomy + source map (~35 min)
+  1. Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md: every factor class Syndicate32 shows publicly (and any the
+     granularity bar in CLAUDE.md names that it lacks: weather, officials, coaching), each mapped to a FREE source and field
+     (nflverse play-by-play/EPA, participation, FTN charting - coverage man/zone, pressure - snap counts, injuries, schedules/
+     rest, officials, weather), first season available, point-in-time availability (when the field exists relative to
+     kickoff), and GAP where no free source has it (registered as a GG, never bought).
+PART B - Event-level store (~50 min)
+  2. One reproducible build of the NFL event store: plays + participation + charting + snaps + injuries + schedule, seasons
+     from the earliest each source covers through 2025 plus the current season to date, keyed (game_id, play_id) and
+     (season, week, team, player), with an as_of timestamp per row. Built where minutes are free (Actions on the public repo,
+     like MLB features) - raw data git-ignored, a manifest (row counts, hashes, source versions) committed.
+  3. Point-in-time contract + tests: a query "as of kickoff of game G" can never return a row from G or later (positive
+     control included). Row-count and null checks per source per season.
+  Results doc: 02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md (what is built, coverage by season, gaps). D4 line for NFL.
+
+END OF BLOCK 73.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 72.3 — Deploys that tell the truth + the audit's remainder
+### 73.3 — NFL engine stage 1: one game simulation prices ML, spread and total
 
 ```
-COMMON RULES - WAVE 72 (read first; they bind this block)
+COMMON RULES - WAVE 73 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -366,7 +377,7 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
   acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
   evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
   restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
@@ -386,8 +397,8 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
-  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
   are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
 - Never bypass a permission control: record the exact command and refusal, hand back.
@@ -402,49 +413,55 @@ COMMON RULES - WAVE 72 (read first; they bind this block)
 - A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
 
-WAVE 72.3 - DEPLOY TRUTHFULNESS; FINISH THE AUDIT. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING - "merge != deploy != activation" made checkable by a machine, and the data checks 71.H1 could not run.
-Pillar: none. PERMISSIONS: VPS read (ssh); PR/merge; NEW cron line only; read-only copies of VPS ledgers into your worktree
-(never committed). No order, no stake, no edit of an existing cron line.
+WAVE 73.3 - NFL ENGINE, THE SIMULATION SCAFFOLD (ADR-0073 stage 1). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D4 (NFL: whole board priced from one engine - scaffold stage). Pillar: DEPTH. PERMISSIONS: 12_EXPLORATORY only
+(12_EXPLORATORY/nfl_engine/) + a doc in 02_ARCHITECTURE_DESIGN/NFL_ENGINE/. No registry, runner, ledger or cron change.
+Read ADR-0073 and CLAUDE.md § "The scale" first.
 
 WHY
-71.H1 found deploys skip restarts during live games and never retry, so t4-mlb ran pre-fix code with nothing flagging it
-(GG-661); vps_deploy.sh failures are log-only, 3 dirty_tree_abort ticks on 10-13 from a tool rewriting tracked
-deploy/demo_fill.env (GG-668); healthcheck.sh is red every day against stale invariants, so nobody reads it (GG-669). And
-the audit could not check the live ledgers (its invariant run had no data - a 0 that means nothing) or the MLB feature
-builder's rolling windows, the likeliest look-ahead spot.
+ADR-0073 point 3: one engine outputs the joint distribution of a game, so moneyline, spread, total (and later team totals,
+props, parlays) come from one model and stay consistent. Today each NFL family has its own frozen model. Build the engine's
+skeleton now with the inputs we already have (team + QB, the frozen and QB-shrunk models' inputs); 73.2's data layer feeds it
+richer factors from Wave 74.
 
-PART A - Deploy truth (~45 min)
-  1. GG-661: a skipped restart writes a pending-restart marker; the policy restarts at the first no-live-game tick; every
-     running service's code SHA is compared with box HEAD and an age > 6h mismatch alarms in the scan and /project.
-  2. GG-668: deploy failures write a status file the scan reads (alarm, not log-only); the tool-written env file becomes
-     untracked/generated so the dirty-tree guard stops tripping.
-  3. GG-669: rewrite healthcheck.sh against today's invariants (current crons, services, demo-only, kelly 0, file modes); it
-     is green when healthy and red only on a real fault. Tests. PR, merge, read back.
-PART B - The audit's remainder (~40 min)
-  4. Pull read-only copies of every judged ledger (shadow arms, T4 resolved, T1 MLB, forward-test report) into the worktree;
-     run assert_ledger_invariants.py and a data validation pass (data:validate-data if listed): duplicates, nulls, impossible
-     prices, settle-before-entry, timezones. Report counts; register a GG per real violation.
-  5. c2_feature_store/mlb_features.py rolling windows (ba_l10 etc.): prove point-in-time with a test that a game's features
-     never include that game or later; same check on nfl_qb_features. Register, don't fix, if it fails.
-Results: append "H2 remainder" to HYGIENE_AUDIT_20261013.md with the verdict re-stated.
+PART A - Interface + design (~30 min)
+  1. Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md FIRST and push it (73.2 reads it): inputs = per-team, per-unit
+     ratings as of kickoff (offense/defense pass/rush, special teams, QB) + game context (home, rest, weather slot); output =
+     a sampled joint distribution of (home score, away score) and drive-level events; every market price derived from it.
+  2. Plan frozen before any fit (12_EXPLORATORY/nfl_engine/PLAN.md): model class (drive-level or possession Monte Carlo, or a
+     bivariate score model - choose and justify), training seasons, rolling-origin test seasons, metrics.
+PART B - Build + backtest once (~55 min)
+  3. Fit once on the current inputs; price ML, spread and total for every test-season game from the same simulation.
+  4. Report per family: Brier vs the frozen per-family models (ΔBrier with CI), calibration, and the consistency check the
+     per-family models cannot pass (implied P(win) vs P(cover 0) vs score distribution agree). Market comparison where Kalshi
+     or archived mids exist - reported, never judged. A NO is a result: the scaffold's job is to beat or match the per-family
+     models on equal inputs, so richer inputs then go into one place.
+Results: 12_EXPLORATORY/nfl_engine/results.md; D4 line for NFL.
 
-END OF BLOCK 72.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 73.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 72 — ISSUED 2026-10-14 ~00:50 UTC · three MEDIUM blocks · foundation before the Syndicate32 teardown (Wave 73)
+### ⏳ WAVE 73 — ISSUED 2026-10-14 ~23:45 UTC · three MEDIUM blocks · the NFL engine starts (ADR-0073)
 
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
-| 72.1 | Forward-test read-back; order-path guards | E1–E3 | ⬜ | — |
-| 72.2 | Ledger safety; retire /vps; lock box secrets | PLUMBING | ✅ DONE | #248 merged; GG-660/662/663/664/672 closed; t4-mlb restarted 02:53Z |
-| 72.3 | Deploy truthfulness; audit remainder | PLUMBING | ⬜ | — |
+| 73.1 | Turn-off addendum; NBA staked runner; first settled E2/E3 | E1–E3 | ⬜ | — |
+| 73.2 | NFL engine: taxonomy → free sources → event data layer | D4, D1 | ⬜ | — |
+| 73.3 | NFL engine: one simulation prices ML/spread/total | D4 | ⬜ | — |
+
+### ✅ WAVE 72 — CLOSED 2026-10-14 ~23:40 UTC (verified on GitHub at `b6af6c3`, main CI green) · moved: **E1 per-arm counts first recorded** (0 settled yet); foundation fixed
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 72.1 | Forward-test read-back; order-path guards | ✅ | #246/#252. Since re-arm: paper/MLB 4 orders (138 not-listed skips), shadow/MLB 9 treatment + 13 control, shadow/NHL 21 + 23; fills 0/1/3/1/1; **0 cancel failures**, 12 cancel_ok on KXMLB*; nothing settled. GG-586/623/645/571/646 closed. Guards: live-host refusal (GG-666), kelly from BAND_CONFIGS (GG-665), kill switch on shadow stakes (GG-667) — in t4-mlb after its 02:53Z restart. Skip-rate turn-off at risk from not-listed skips → operator amended 10-14 |
+| 72.2 | Ledger safety; retire /vps; box secrets | ✅ | #248/#250/#251: atomic writes + quarantine-and-halt + tolerant shadow load (GG-663/664/672, all state/cache writers GG-680); /vps archived DO-NOT-RUN, /deploy-audit replaces it (GG-660); box .env 600, backup deleted, key verified demo (GG-662) |
+| 72.3 | Deploy truth; audit remainder | ✅ | #247/#249: pending-restart marker + running-SHA alarm (GG-661), deploy status file (GG-668), healthcheck rewritten — HEALTHY 0 faults (GG-669). Ledger audit: 0 duplicates / bad prices / tz-naive / settle-before-entry; 16 invariant hits = one stale enum (GG-691); 3,495 rows without market_type (GG-690). Point-in-time: 7 tests pass with positive controls — no look-ahead found |
 
 ### ✅ WAVE 71 — CLOSED 2026-10-14 ~00:35 UTC (verified on GitHub at `c816f18`, main CI green) · moved: **no measure yet** (second wave running) — forward test re-armed 10-13 23:58Z, E moves at tonight's read-back; D1 NO; B1 protected for 10-21
 

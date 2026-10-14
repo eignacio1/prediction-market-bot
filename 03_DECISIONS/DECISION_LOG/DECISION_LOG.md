@@ -2211,3 +2211,10 @@ Decision: `scripts/nba_cell_autoflip.py` (daily 12:40 UTC cron, no-op before 202
 
 ## 2026-10-14 — W72.3 Part B closed (PLUMBING)
 Read-only ledger audit and point-in-time feature tests (PR #249, box at 10e34368). No look-ahead found in MLB rolling or NFL QB features; no duplicates, impossible prices, settle-before-entry or tz-naive rows in the judged ledgers. Registered GG-690 (3,495 rows without market_type, cell invariants not evaluated) and GG-691 (invariant L enum omits CANCELLED, 16 false violations). Nothing fixed, no ledger row touched.
+
+## 2026-10-14 ~16:45 PT — Wave 72 closed (verified at b6af6c3); two operator decisions; Wave 73 issued
+
+- Wave 72: 72.1 DONE (#246/#252), 72.2 DONE (#248/#250/#251), 72.3 DONE (#247/#249). E1 per-arm counts first recorded; 0 post-re-arm orders settled.
+- OPERATOR DECISION (pre-registration amendment, ADR-0072): "Yes, amend" — the skip-rate turn-off ("skip rate > 90% for three days") counts only the placement rule's own skips; `not_listed_on_demo` skips (GG-564) are reported separately and never count. Reason given to him: the condition exists to catch an inert policy, and ~97% of paper MLB-HIT attempts are skipped because the demo venue does not list the market. 73.1 appends the dated addendum to ADR-0072.
+- OPERATOR DECISION (GG-570): "Yes, separate runner" — NBA shadow cells get a separate demo-only staked runner (mirroring run_nhl_shadow_staked.py); the EXP-038/039/040 forecasting cron lines stay credential-free and unchanged.
+- Wave 73: 73.1 EXECUTION (addendum, NBA staked runner, first settled E2/E3), 73.2 + 73.3 DEPTH D4 — the NFL engine per ADR-0073 (taxonomy → free sources → event-level data layer; simulation scaffold pricing ML/spread/total from one distribution). Syndicate32 teardown limited to public pages; no login, membership or paywalled content.

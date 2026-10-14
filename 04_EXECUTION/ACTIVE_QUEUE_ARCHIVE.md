@@ -10,6 +10,266 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 72 prompts — archived 2026-10-14 ~23:45 UTC. 72.1 DONE (#246/#252: read-back — cancels work, control arm placing, 0 settled; GG-646 fixed; guards GG-665/666/667 live after t4-mlb restart 02:53Z). 72.2 DONE (#248/#250/#251: crash-safe ledgers, /vps retired, box .env 600 + demo key verified). 72.3 DONE (#247/#249: deploy truth machine-checked; ledger + point-in-time audit clean bar GG-690/691). Verbatim:
+
+## ⬛ NOW — Wave 72 · issued 2026-10-14 ~00:50 UTC (10-13 ~17:50 PT) · three MEDIUM blocks · paste all three in parallel
+
+Wave 71 verified (Sequencing track). **Waves 70 and 71 moved no measure: drift.** Operator direction 2026-10-13 17:38 PT:
+**foundation first, then turn Syndicate32 inside out** (the NFL granularity bar; free data, no $20 subscription). So this wave
+does two things: E finally moves (72.1), and the foundation the 71.H1 audit found weak is fixed before anyone builds on the
+data (72.2, 72.3). Wave 73 is the Syndicate32 teardown. Surfaces: 72.1 = forward-test report, order-path guards; 72.2 =
+paper/shadow ledger writers, .claude/commands, box .env; 72.3 = vps_deploy.sh / restart policy, read-only data validation.
+Only 72.1 may change order behaviour.
+
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 72.1 | Forward-test read-back + order-path guards | EXECUTION E1/E2/E3 (first per-book, per-arm numbers) | 🟡 PARTIAL (merged #246, #252; VPS checkout carries both) | Part A read-back done, GG-586/623/645/571/646 closed; Part B guards (GG-665/666/667) merged, t4-mlb still on old code until idle-window restart; E2/E3 not readable (nothing settled) |
+| 72.2 | Data you can trust, a box you can't wreck | PLUMBING (protects PROOF/EXECUTION data) | ✅ DONE | #248 e90ece4 merged+on box; GG-660/662/663/664/672 closed; t4-mlb restarted 02:53Z read back |
+| 72.3 | Deploys that tell the truth + the audit's remainder | PLUMBING (merge = deploy = activation, provably) | ✅ DONE | Part A #247, Part B #249 merged; box at 10e34368, t4-mlb not_needed. No look-ahead in MLB/NFL features (7 tests); ledgers clean; GG-690/691 registered |
+
+### 72.1 — Forward-test read-back + order-path guards
+
+```
+COMMON RULES - WAVE 72 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+
+WAVE 72.1 - FORWARD-TEST READ-BACK; ORDER-PATH GUARDS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - first per-book, per-arm forward-test numbers with both arms live. Pillar: EXECUTION.
+PERMISSIONS: VPS read (ssh), PR/merge, idle-window t4-mlb restart if a guard touches its imports, read-only Kalshi DEMO
+GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; IDLE-WINDOW SERVICE RESTARTS.
+
+WHY
+71.1 fixed the cancel (GG-645: DELETE went to shard 0, MLB orders sit on shard 3) and re-armed the test 10-13 23:58Z. Nothing
+has been read back. Two waves have moved no measure; this block exists to move E. The 71.H1 audit found the real-money
+protection is entry-point guards only (GG-666), kelly read from the forecast dict not BAND_CONFIGS (GG-665), and no kill
+switch on the shadow runners (GG-667).
+
+PART A - Read back and report (~40 min)
+  1. Over ssh: the forward-test report since 23:58Z. Per book/sport/arm: orders, fills, cancels (cancel_ok on KXMLB*), skips
+     by reason, win rate on fills, settle-minus-price on fills, fills per arm per week vs ~550/8 weeks. The control arm (GG-586)
+     has placed SHADOW-cell orders, same hash/share. GG-564 listing-status split. Scan line + /project panel match.
+     Close GG-586/570/571/623/645 only on this read-back.
+  2. GG-646: `_historical_404_terminal` must require terminal status BEFORE the cancel attempt; tests; PR, merge, read back.
+  3. Write the numbers into the DISTANCE table's E rows (source + timestamp) and W65_2 results "Read-back W72.1".
+PART B - Guards (~45 min)
+  4. GG-666: the order-write path itself refuses a non-demo host unless an explicit live-capital flag set by an accepted ADR
+     exists (none does) - assertion in kalshi_client submit/post, tests both ways.
+  5. GG-665: risk.py takes kelly_fraction from BAND_CONFIGS (clamped; 0 everywhere today), never from the forecast dict.
+  6. GG-667: the shadow stake path checks the same kill-switch state as C4 before placing; one shared helper. Tests.
+  PR, merge, deploy; read back the running processes carry the guards.
+
+END OF BLOCK 72.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 72.2 — Data you can trust, a box you can't wreck
+
+```
+COMMON RULES - WAVE 72 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+
+WAVE 72.2 - LEDGER SAFETY; RETIRE /vps; LOCK THE BOX SECRETS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - the forensics pass and every verdict read these files; they must survive a crash. Pillar: none (protects
+PROOF and EXECUTION data). PERMISSIONS: VPS read (ssh); VPS file-permission change and delete of the .env backup named below;
+PR/merge; git in the operator's main tree (one checkout of a generated file). No order, no stake, no cron edit.
+
+WHY
+71.H1 (HYGIENE_AUDIT_20261013.md): the paper ledger writer is not crash-safe - write_text with no tmp+rename and
+`except Exception: pass` that starts a fresh state on a read error (GG-663, paper_trader.py:200-210, 318-327, 346); _save()
+returns ignored (GG-664); shadow ledger _load raises on one torn line (GG-672). `/vps` would append the cron mirror to the live
+crontab - every job twice - and overwrite the model (GG-660, CRITICAL). The box .env holding the venue key is mode 644, with a
+644 backup (GG-662). The window approved retiring /vps; these are plumbing, not operator decisions.
+
+PART A - Ledgers (~50 min)
+  1. One shared atomic_write_json / atomic_append helper (tmp + fsync + os.replace); paper_trader and every ledger writer the
+     audit listed use it. A read error quarantines the file (renamed, alarmed) and halts that writer - never a fresh state.
+     _save() failures raise. Shadow _load skips a torn trailing line with an alarm instead of raising.
+  2. Tests: crash mid-write leaves the old file intact; torn last line; corrupt file -> quarantine + halt. PR, merge, deploy,
+     read back that the running writers use the helper (no service restart while an MLB game is live).
+PART B - /vps + secrets (~30 min)
+  3. Move .claude/commands/vps.md to an archive path with a DO-NOT-RUN header; replace it with a read-only /deploy-audit
+     command (the L6 checklist from the audit: box HEAD vs origin/main, restart-policy log, crontab vs mirror, env perms).
+  4. On the box: chmod 600 the .env, delete .env.bak.20260915T055650Z, and verify the key is a DEMO key by a read-only
+     authenticated GET against the demo API (record pass/fail, never print the key). healthcheck asserts mode 600.
+  5. Operator main tree: if 03_DECISIONS/OPERATOR_CONSOLE.md is the only modification, git checkout -- it (71.2 moved the
+     scan's output out of the tracked file). Anything else modified: change nothing, report.
+Close GG-660/662/663/664/672 only on read-back.
+
+END OF BLOCK 72.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 72.3 — Deploys that tell the truth + the audit's remainder
+
+```
+COMMON RULES - WAVE 72 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-13 (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 72.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (72.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W72_<n>.md (docs-only push).
+
+WAVE 72.3 - DEPLOY TRUTHFULNESS; FINISH THE AUDIT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - "merge != deploy != activation" made checkable by a machine, and the data checks 71.H1 could not run.
+Pillar: none. PERMISSIONS: VPS read (ssh); PR/merge; NEW cron line only; read-only copies of VPS ledgers into your worktree
+(never committed). No order, no stake, no edit of an existing cron line.
+
+WHY
+71.H1 found deploys skip restarts during live games and never retry, so t4-mlb ran pre-fix code with nothing flagging it
+(GG-661); vps_deploy.sh failures are log-only, 3 dirty_tree_abort ticks on 10-13 from a tool rewriting tracked
+deploy/demo_fill.env (GG-668); healthcheck.sh is red every day against stale invariants, so nobody reads it (GG-669). And
+the audit could not check the live ledgers (its invariant run had no data - a 0 that means nothing) or the MLB feature
+builder's rolling windows, the likeliest look-ahead spot.
+
+PART A - Deploy truth (~45 min)
+  1. GG-661: a skipped restart writes a pending-restart marker; the policy restarts at the first no-live-game tick; every
+     running service's code SHA is compared with box HEAD and an age > 6h mismatch alarms in the scan and /project.
+  2. GG-668: deploy failures write a status file the scan reads (alarm, not log-only); the tool-written env file becomes
+     untracked/generated so the dirty-tree guard stops tripping.
+  3. GG-669: rewrite healthcheck.sh against today's invariants (current crons, services, demo-only, kelly 0, file modes); it
+     is green when healthy and red only on a real fault. Tests. PR, merge, read back.
+PART B - The audit's remainder (~40 min)
+  4. Pull read-only copies of every judged ledger (shadow arms, T4 resolved, T1 MLB, forward-test report) into the worktree;
+     run assert_ledger_invariants.py and a data validation pass (data:validate-data if listed): duplicates, nulls, impossible
+     prices, settle-before-entry, timezones. Report counts; register a GG per real violation.
+  5. c2_feature_store/mlb_features.py rolling windows (ba_l10 etc.): prove point-in-time with a test that a game's features
+     never include that game or later; same check on nfl_qb_features. Register, don't fix, if it fails.
+Results: append "H2 remainder" to HYGIENE_AUDIT_20261013.md with the verdict re-stated.
+
+END OF BLOCK 72.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 71 prompts (incl. out-of-wave 71.H1) — archived 2026-10-14 ~00:45 UTC. 71.1 Part A DONE (#243 cancel shard routing GG-645; forward test ON 23:58Z; read-back owed). 71.2 DONE (#242/#245). 71.3 DONE, result NO (#244). 71.H1 PARTIAL: SOUND WITH ISSUES, GG-660..677. Verbatim:
 
 ## ⬛ NOW — Wave 71 · issued 2026-10-13 ~03:15 UTC (10-12 ~20:15 PT) · three MEDIUM blocks · paste all three in parallel
