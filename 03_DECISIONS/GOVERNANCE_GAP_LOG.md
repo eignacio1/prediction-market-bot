@@ -4205,3 +4205,17 @@ W72.3 Part B. `assert_ledger_invariants.py` on read-only VPS copies (2026-10-14)
 **Status:** OPEN · **Severity:** LOW
 
 W72.3 Part B. Assertion L (`actual_hits_outcome_status_enums`, band T1) flags 16 of 499 (3.21%), epochs 1/3/7/8, all `outcome=CANCELLED`; the allowed set is ['LOSS','WIN']. `paper_portfolio_mlb` has exactly 16 CANCELLED closed rows, so this is a stale enum, not data corruption. Left alone while the 16 stay as noise in the alarm count, which hides any real L violation. Fix: add CANCELLED to the allowed set and assert CANCELLED rows have pnl == 0, in a later block.
+
+### GG-680 — Remaining non-atomic state/cache writers in src/ and scripts/ (W72.2 follow-up audit)
+
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+W72.2 follow-up audit (2026-10-13) of `write_text` / `open("w")` / `json.dump` on durable state read back later. CONVERTED to `prediction_market_bot.atomic_io` (tests: `tests/test_atomic_state_writers.py`): `reset_paper_portfolio.py:78` (portfolio reset, state); `c1_signal_ingestion/validators.py:397` (`_save_row_count`, contract row-count state); `nba_ingest.py:125` and `nba_player_ingest.py:90` (raw stores, previously tmp+replace without fsync); `nhl_ingest.py:215,234` (boxscore + schedule raw store; a torn file made `load_games` raise on every later run); `nba_injury_reports.py:97` (cache, torn file raises on next `json.loads`); `run_pregame.py:311` (TEAM_STATS_CACHE read by PIPE-03); `pregame_shadow/calibration_engine.py:484` (`persist_release`, write-once look manifest: a torn file would be skipped by the reader yet block rewrite via `if p.exists()`).
+
+LEFT OPEN (not converted, by design or risk):
+- READ-SIDE policy: `validators._load_state` returns `{}` on JSONDecodeError/OSError (silent reset of row-count baseline); `nba/nhl` raw-store loaders raise on a torn file (now only reachable from pre-fix files). Quarantine+halt not applied: needs an owner decision on whether these gate trading. `calibration_engine` reader skips ValueError manifests (now unreachable from new writes).
+- Frozen/one-shot artifacts: `train_and_save_model.py:200` META_PATH, `scripts/train_*`, `freeze_nfl_qb_challenger.py`, `nhl_train.py`, `nfl_ingestion.py:550` capture manifest (timestamped, write-once, not gating).
+- Script caches (offline, re-derivable): `scripts/generate_mlb_features.py:216,404`, `scripts/run_t367_ab_window_repull.py:122`, `scripts/build_tss_cache.py:116`.
+- Risky one-off live-ledger rewrites, not touched: `scripts/t477_dryrun_epoch12_repair.py:189`, `scripts/t437_task3_rederive_outcomes.py:224`, `scripts/correct_t4_game_dates.py:133`.
+- Not state: `tag_locked_pairs_t4_mlb.py:117` (writes a `.tagged.json` copy), `replay_harness_t427.py:210` (tmpdir), `c5_execution/paper_trader.py:319` (lock file), `run_t4_mlb_live.py:394` (log handle), `analytics/clean_dataset.py:241` (CSV output), report writers in `run_exp0xx.py`, `run_t2_*`, `run_t3_*`, `run_*_paper_trade.py`, `run_sensitivity_tests.py`.
+Pillar: PLUMBING. Closes when the read-side policy for validators/raw stores is decided.

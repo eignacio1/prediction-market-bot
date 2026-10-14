@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from prediction_market_bot.atomic_io import atomic_write_json
 
 from prediction_market_bot.pregame_shadow import scoring, settled_schema
 
@@ -481,7 +482,7 @@ def persist_release(repo: Path, cell: dict, release: dict, now: datetime) -> Pat
     if p.exists():
         return None
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps({**release, "cell": cell["cell"], "released_at": now.strftime("%Y-%m-%dT%H:%M:%SZ")}, indent=1))
+    atomic_write_json(p, {**release, "cell": cell["cell"], "released_at": now.strftime("%Y-%m-%dT%H:%M:%SZ")}, indent=1)
     return p
 
 

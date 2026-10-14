@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Optional
+from prediction_market_bot.atomic_io import atomic_write_text
 
 BASE = "https://api-web.nhle.com/v1"
 RAW_DIR = Path("data/raw/nhl")
@@ -212,7 +213,7 @@ def fetch_boxscore(game_id: int, throttle: Throttle, root: Path = RAW_DIR,
         raise
     wrapper = {"fetched_at_utc": utcnow().isoformat(), "payload": payload}
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(wrapper))
+    atomic_write_text(p, json.dumps(wrapper))
     return wrapper
 
 
@@ -231,7 +232,7 @@ def load_games(root: Path = RAW_DIR) -> list[dict]:
 def save_schedule(season: int, games: dict[int, dict], root: Path = RAW_DIR) -> Path:
     p = root / "schedule" / f"{season}.json"
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps({"fetched_at_utc": utcnow().isoformat(), "games": list(games.values())}))
+    atomic_write_text(p, json.dumps({"fetched_at_utc": utcnow().isoformat(), "games": list(games.values())}))
     return p
 
 

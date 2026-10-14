@@ -16,6 +16,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from prediction_market_bot.atomic_io import atomic_write_json
 
 LOG_DIR = Path("logs")
 PORTFOLIO_PATH = LOG_DIR / "paper_portfolio.json"
@@ -75,7 +76,7 @@ def main() -> None:
     }
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(fresh, indent=2))
+    atomic_write_json(path, fresh, indent=2)
     print(f"\nPortfolio reset to ${INITIAL_BANKROLL:.2f} at {path}")
     print("G6 counter reset: 0/30 resolved bets. Clean slate begins Finals G2.")
 

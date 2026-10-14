@@ -13,6 +13,7 @@ import urllib.request
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Callable, Optional
+from prediction_market_bot.atomic_io import atomic_write_text
 
 from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import et_date, et_midnight_utc
 
@@ -94,7 +95,7 @@ class InjurySnapshots:
             if data is not None:
                 res = self._parse(data)
                 self.dir.mkdir(parents=True, exist_ok=True)
-                fp.write_text(json.dumps(res, sort_keys=True))
+                atomic_write_text(fp, json.dumps(res, sort_keys=True))
         self._mem[key] = res
         return res
 
