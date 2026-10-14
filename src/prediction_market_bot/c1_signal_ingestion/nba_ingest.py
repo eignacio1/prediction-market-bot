@@ -18,6 +18,7 @@ import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional
+from prediction_market_bot.atomic_io import atomic_write_text
 
 BASE = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 RAW_DIR = Path("data/raw/nba")
@@ -121,9 +122,7 @@ def load_season(season: int, root: Path = RAW_DIR) -> dict[str, Any]:
 def save_season(store: dict[str, Any], root: Path = RAW_DIR) -> None:
     root.mkdir(parents=True, exist_ok=True)
     p = season_path(store["season"], root)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(store, sort_keys=True))
-    tmp.replace(p)
+    atomic_write_text(p, json.dumps(store, sort_keys=True))
 
 
 def season_dates(season: int) -> list[date]:

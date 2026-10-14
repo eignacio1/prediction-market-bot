@@ -35,6 +35,7 @@ How to run:
 from __future__ import annotations
 
 import json
+from prediction_market_bot.atomic_io import atomic_write_text
 import os
 import sys
 import uuid
@@ -308,7 +309,7 @@ def main() -> None:
                         session_id=SESSION_ID, snapshot_id=SNAPSHOT_ID)
             # Cache for PIPE-03 (runs ~5 min after PIPE-02)
             try:
-                TEAM_STATS_CACHE.write_text(json.dumps(store.to_cache_dict()))
+                atomic_write_text(TEAM_STATS_CACHE, json.dumps(store.to_cache_dict()))
                 print(f"[TSS] Cache written: {TEAM_STATS_CACHE}")
             except Exception as _ce:
                 logger.warning(COMPONENT, "team_stats_cache_write_failed",

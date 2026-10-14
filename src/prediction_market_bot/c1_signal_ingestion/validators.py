@@ -77,6 +77,7 @@ from typing import Any
 import pandas as pd
 
 from prediction_market_bot.c1_signal_ingestion.data_contracts import SourceContract
+from prediction_market_bot.atomic_io import atomic_write_json
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 _DEFAULT_STATE_PATH = Path("data/data_contracts_state.json")
@@ -394,7 +395,7 @@ def _save_row_count(source_id: str, row_count: int, state_path: Path = _DEFAULT_
     state = _load_state(state_path)
     state[source_id] = {"row_count": row_count, "updated_at": _utc_now_iso()}
     state_path.parent.mkdir(parents=True, exist_ok=True)
-    state_path.write_text(json.dumps(state, indent=2))
+    atomic_write_json(state_path, state, indent=2)
 
 
 # ---------------------------------------------------------------------------

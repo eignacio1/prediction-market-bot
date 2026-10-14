@@ -17,6 +17,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
+from prediction_market_bot.atomic_io import atomic_write_text
 
 from prediction_market_bot.c1_signal_ingestion import nba_ingest as N
 
@@ -86,9 +87,7 @@ def load_players(season: int, root: Path = N.RAW_DIR) -> dict[str, Any]:
 def save_players(store: dict[str, Any], root: Path = N.RAW_DIR) -> None:
     root.mkdir(parents=True, exist_ok=True)
     p = players_path(store["season"], root)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(store, sort_keys=True))
-    tmp.replace(p)
+    atomic_write_text(p, json.dumps(store, sort_keys=True))
 
 
 def backfill_players(season: int, th: N.Throttle, root: Path = N.RAW_DIR, fetch: Callable = fetch_summary,
