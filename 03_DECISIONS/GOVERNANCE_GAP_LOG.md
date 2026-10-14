@@ -2021,6 +2021,36 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 </details>
 
+### GG-730 — nflverse pbp_participation has no 2026 file: current-season coverage, pressure and personnel unavailable
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W73.2 Part A (2026-10-14). The `pbp_participation` release (read 2026-10-14) lists 2016-2025 and `_old_2023` only. It is the only free source of `defense_man_zone_type`, `defense_coverage_type`, `was_pressure`, `time_to_throw`, `offense/defense_personnel`. 2026 features for coverage/pressure/personnel cannot be built from it; FTN 2026 (blitzers, rushers, motion) and pbp-derived features partly substitute. Re-check the release at each data-layer build; close when a 2026 file appears.
+
+### GG-731 — No free table of NFL offensive/defensive coordinators or the actual play caller
+
+**Status:** OPEN · **Severity:** LOW
+
+W73.2 Part A (2026-10-14). Syndicate32 shows play callers as a matchup factor. nflverse `games` has `home_coach`/`away_coach` (head coach) only. Registered as a GAP, not bought (ADR-0073 point 4).
+
+### GG-732 — nflverse injuries and officials carry no publication timestamp
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W73.2 Part A (2026-10-14). `injuries_*` is keyed by (season, week, team, gsis_id) with no report time; `officials` has no assignment time. Point-in-time use is by a conservative week rule (FACTOR_TAXONOMY GAP-3), enforced and tested in the W73.2 store. A true as-of timestamp needs our own dated snapshots going forward.
+
+### GG-733 — nflverse games.parquet lines are closing values in a rolling, overwritten file, not as-of-kickoff snapshots
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W73.2 Part A (2026-10-14). `games.parquet` (schedules tag) updates in place (2026-10-14T23:36Z). `spread_line`, `total_line`, moneylines are final values: usable as a market comparison, never as a model input. W73.2 snapshots the file per build so 2026 lines become point-in-time from now on.
+
+### GG-734 — No free historical weather FORECAST archive confirmed; stored temp/wind are at-game values
+
+**Status:** OPEN · **Severity:** LOW
+
+W73.2 Part A (2026-10-14). `games.temp`/`wind` (fill 0.74 in 2018, 0.38 in 2022, 0.67 in 2025; roofed games null) and `pbp.weather` are recorded at game time, not forecasts available before kickoff. Treated as a labelled leakage-risk feature until a forecast source is verified. Candidate sources are unverified.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

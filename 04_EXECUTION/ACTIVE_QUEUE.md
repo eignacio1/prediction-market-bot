@@ -195,7 +195,7 @@ order behaviour. 73.2 and 73.3 meet at one interface (team/unit ratings in, game
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 73.1 | Turn-off addendum, NBA staked runner, first settled E2/E3 | EXECUTION E1/E2/E3 | ⬜ | — |
-| 73.2 | NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer | DEPTH D4 (NFL: none → data layer), D1 | ⬜ | — |
+| 73.2 | NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer | DEPTH D4 (NFL: none → data layer), D1 | 🟨 Part A done | FACTOR_TAXONOMY.md pushed: 20 classes mapped to free nflverse fields; 5 gaps GG-730..734 (participation has no 2026 file). Part B (event store) next. |
 | 73.3 | NFL engine stage 1: one game simulation prices ML, spread and total | DEPTH D4 (NFL: → board priced from one engine, scaffold) | ⬜ | — |
 
 ### 73.1 — Turn-off addendum, NBA staked runner, first settled E2/E3
@@ -452,7 +452,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | PURPOSE | Status | Outcome |
 |---|---|---|---|---|
 | 73.1 | Turn-off addendum; NBA staked runner; first settled E2/E3 | E1–E3 | ⬜ | — |
-| 73.2 | NFL engine: taxonomy → free sources → event data layer | D4, D1 | ⬜ | — |
+| 73.2 | NFL engine: taxonomy → free sources → event data layer | D4, D1 | 🟨 Part A done | FACTOR_TAXONOMY.md pushed: 20 classes mapped to free nflverse fields; 5 gaps GG-730..734 (participation has no 2026 file). Part B (event store) next. |
 | 73.3 | NFL engine: one simulation prices ML/spread/total | D4 | ⬜ | — |
 
 ### ✅ WAVE 72 — CLOSED 2026-10-14 ~23:40 UTC (verified on GitHub at `b6af6c3`, main CI green) · moved: **E1 per-arm counts first recorded** (0 settled yet); foundation fixed
