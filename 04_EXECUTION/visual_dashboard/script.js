@@ -7,9 +7,9 @@ const DIST = [
   ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); NBA points minutes + injury accepted, not yet logging; nobody uses matchup, weather, qualitative","every class at every arm","0 — availability on NBA games: NO (71.3)"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
   ["Depth","D3","Pre-registered challengers ready","2 (NFL QB-shrunk, live · NBA points EXP-040, frozen)","≥ 1 per arm before its first look","0 — EXP-040 deployed, 0 rows until NBA points markets list"],
-  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","forward test ON again 10-13 (cancel shard bug fixed); read-back after tonight"],
+  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","since re-arm: 0 cancel failures; fills 0/1/3/1/1 per arm, none settled yet"],
   ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","NFL +0.398 audited: before kickoff, but ~4 correlated games — not evidence"],
-  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — switches back ON 10-13 23:58Z"],
+  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — first settled numbers in 73.1"],
   ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
   ["Proof","P2","Verdicts issued","0","a verdict per cell (a NO counts)","0"],
   ["Proof","P3","Next look","NFL ~11-02 · ~91% \"keep accruing\"","—","—"],
@@ -126,6 +126,10 @@ const WAVES = [
    d:"NFL +0.39 a fill: real, before kickoff — but ~4 games that settle together, so <b>not evidence</b>. 8 real MLB-HIT cancel failures keep the whole forward test off (GG-623). EXP-040 deployed, waiting for markets. Main green. <b>No measure moved.</b>"},
   {w:"71", k:"neg", t:"Forward test back on; second wave without a measure.",
    d:"Cancels were going to the wrong exchange shard — fixed, <b>forward test ON</b>. NBA 10-20 rehearsed; frozen book locked. Who-is-out on NBA games: <b>NO</b>. Hygiene audit: <b>SOUND WITH ISSUES</b> (18 gaps; /vps dangerous; paper ledger not crash-safe). <b>No measure moved — two waves running.</b>"},
+  {w:"72", k:"hit", t:"The foundation, fixed.",
+   d:"Crash-safe ledgers; deploys prove the running code; the order path itself refuses real money; /vps retired; box secrets locked. Forward test live with both arms, <b>0 cancel failures</b>. No look-ahead found. You amended the turn-off and staked NBA."},
+  {w:"73", k:"now", t:"The NFL engine starts.",
+   d:"Syndicate32's factor list rebuilt from free data into an event-level store; one game simulation pricing moneyline, spread and total (<b>D4</b>). First settled forward-test numbers; NBA staked from opening night (E)."},
 ];
 
 const DESK = [
