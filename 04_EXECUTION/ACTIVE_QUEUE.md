@@ -3,11 +3,11 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = d1034c14` + this window's push (2026-10-14 ~22:00 PT, Wave 75 issue). VPS facts are the Wave 73 terminals' and B74-A Session 1's on-box reads.
+**Verified against:** `origin/main = 836a90cc` (2026-10-14 ~23:10 PT, Wave 75 close; main CI on the last code merge 3c4535e running at check time). VPS facts are the Wave 75 terminals' on-box reads.
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Registered to **GG-766** · **T-979** · **ADR-0075** · **EXP-040** |
+| Highest GG / T / ADR / EXP | Registered to **GG-801** (claims reserve to GG-834) · **T-1012** · **ADR-0075** · **EXP-040** |
 | Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
 | Surface (ADR-0074) | **75 live components** (registry 2026-10-14: 76 incl. 1 paused) · 75 unreviewed · **21 with no alarm** (GG-743) · budget not yet computed live (B74-A). Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
@@ -20,7 +20,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 75 issued, 2026-10-14 ~22:00 PT (ADR-0075 accepted, D5 added); B74-A Session 1 on main (SOUND WITH ISSUES); Session 2 NOT started (its terminal closed when Session 1 ended) - leads Wave 76.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 75 closed and Wave 76 issued, 2026-10-14 ~23:10 PT; B74-A Session 2 runs as 76.4.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -36,8 +36,8 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **DEPTH** | D1 factor classes per pre-game model | MLB player hits: personnel, team, venue · MLB games: personnel, team · **NFL: team + personnel** (QB challenger, live in shadow 10-11) · NHL: personnel, team, venue · NBA: team. **No live model uses matchup, weather or qualitative.** | every class at every pre-game arm | 0 |
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage of classes, not a count | 0 |
 | | D3 pre-registered challengers ready | **2** (NFL QB-shrunk, live; NBA points EXP-040, accepted + frozen 10-13, logging from 70.2) | ≥ 1 per arm before its first look | **+1** (W69.3) |
-| | **D4 engine stage per live sport** (ADR-0073, added 10-13) | **NFL: event-level data layer + simulation scaffold (parity, not better)** · NBA, NHL, MLB: none | each live sport: event-level data → factor classes point-in-time → whole board priced from one engine | **NFL none → stage 1** (W73.2/73.3) |
-| | **D5 betting architecture per live sport** (ADR-0075, added 10-14) | **Window hand count, provisional until 75.3's generator:** (a) components scaffolded at the ADR-0075 bar, of 8: **NFL ~1** (decision trees: the W73.3 engine) · NBA, NHL, MLB 0 — structural tensions and seat interface held nothing anywhere. (b) NFL, of 20 taxonomy classes: 15 aggregatable from free data (73.2), applied ~2 (team, QB, in live models) | each sport: 8 of 8 components; every factor class applied | **new** — Wave 75 targets (a) NFL/NBA +3 each, (b) NFL +1 |
+| | **D4 engine stage per live sport** (ADR-0073) | **NFL: event-level data layer + engine scaffold + factor classes point-in-time (F5/F6, W75.2)** · NBA, NHL, MLB: none (`distance_to_optimum.py`, 2026-10-15) | each live sport: event-level data → factor classes point-in-time → whole board priced from one engine | **NFL: + factor classes point-in-time** (W75.2) |
+| | **D5 betting architecture per live sport** (ADR-0075) | **(a) components scaffolded + tested, of 8: NFL 5** (decision trees, cluster designs, cross-reference compatibility, structural tensions, seat interface) · **NBA 3** (cluster designs, structural tensions, seat interface) · NHL 0 · MLB 0. **(b) seat factors by stage: NFL 5 aggregated / 2 interpreted / 6 applied of 16 · NBA 0 / 2 / 4 of 8** · NHL, MLB stubs. Applied ≠ gain: NFL F5/F6 applied with **no gain** (W75.2). Source: `scripts/distance_to_optimum.py` @ 836a90cc, 2026-10-15 | each sport: 8 of 8; every factor class applied | **(a) NFL ~1 → 5, NBA 0 → 3; (b) generated for the first time** (W75.1–75.3) |
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
@@ -68,6 +68,12 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 75 (10-14), in one line:** ADR-0075's foundations are in. PAM has one schema for every sport (NBA ported losslessly, an NFL
+receiver classifier whose types hold year to year), seat files map every NFL and NBA cell to what a sports eye reads, tension
+registers name where the architecture strains, and D4/D5 are computed, not hand-written. NFL coverage went through the full
+chain to a price and added nothing (habit is a trait, efficiency against it is noise) — the third factor in a row to price at
+parity. The NFL book closes (4 → 0 stale positions). The kill switch is one switch in code; the drill on the box is 76.1.
 
 **Wave 73 (10-14), in one line:** the NFL engine exists — Syndicate32's factor list mapped to free data, a 27-season
 play-level store with a no-look-ahead contract, and a simulation that prices the whole NFL board from one draw (as good as
@@ -195,49 +201,47 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 ~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 · ~~ADR-0072~~ accepted 10-10 · ~~NFL QB challenger~~ accepted 10-10 · ~~T1 MLB counting (GG-536)~~ decided 10-10 · NBA model-class ADR standing (EXP-038/039; not blocking) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
 gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
 unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
-(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · PAM deep-tier working method (75.1 proposes).
+(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md).
 
 ---
 
-## ⬛ NOW — Wave 75 · issued 2026-10-15 ~05:00 UTC (10-14 ~22:00 PT) · FIVE MEDIUM blocks (operator 22:06 PT: "I'm fine running 5 terms at one time right now") · paste all five in parallel
+## ⬛ NOW — Wave 76 · written 2026-10-15 ~06:10 UTC, pushed and issued 2026-10-15 ~23:50 UTC (16:50 PT) · four MEDIUM/LARGE blocks · paste all four in parallel
 
-Wave 73 verified (Sequencing track); B74-A Session 1 (the hygiene audit) is on main, and Session 2 (registry live + both
-dashboards) is running in its own terminal. **This wave starts ADR-0075** (accepted 10-14 21:55 PT): edge means the betting
-architecture at play-level granularity, and each factor runs aggregation → interpretation → application. Three foundations:
-PAM's shared core (75.1), one factor class taken all the way to a price at play-level granularity (75.2), and the two
-components nothing held, seat interface and structural tensions, plus D4/D5 computed rather than hand-written (75.3). Added at
-the operator's call (22:06 PT): the audit's two HIGHs, one kill switch (75.4) and the NFL book closing (75.5).
+Wave 75 verified on GitHub (Sequencing track). **This wave:** finish the kill switch on the box and read why the fill fix
+barely fills (76.1), take a second NFL factor class through the chain, chosen so it can add something the ratings don't
+already hold (76.2), make every ledger writer crash- and race-safe (76.3), and put the runtime map on both dashboards with live
+alarms (76.4 — B74-A Session 2, the 4th terminal you asked for at 22:17 PT).
 
-**Pushback.** The strongest reason not to run this as planned: **75.4 changes how every order path halts, while the forward
-test and t4-mlb are live.** A kill switch done wrong either halts everything or fails open. It is guarded by aliases (old flag
-names keep working until every reader moves), restarts only in an idle window, and is DONE only on a passed live drill on the
-box. Second: five terminals at once means rebase churn on the shared docs; each block edits
-only its own row. Third: there is no 2026 participation file (GAP-1), so 75.2 may find current-season data cannot reach a
-price. If so, it says so, and that is the first structural tension. The audit's two HIGHs (GG-745, GG-746) were in the first
-draft's pushback; the operator added 75.4/75.5 for them at 22:06 PT.
+**Pushback.** The strongest reason not to run this as planned is the DEPTH lane. Three factor tests in a row have come back
+with no gain: NFL venue/weather (W68.3), NBA availability (W71.3) and NFL coverage (W75.2). 75.2 found why. A defense's coverage
+habit is a stable trait, but how well offenses do against it is noise, and whatever is real already sits inside the team
+ratings and the market price. So 76.2 must pick a factor the season-long ratings cannot already contain, and it must say up
+front why. If that also comes back with no gain on game markets, the next DEPTH move should aim at thinner markets (team
+totals, props), not a fifth game-market factor. That is a strategic call, and I will bring it to you then. Second: 76.1's drill
+halts every demo order path for about a minute, so it runs only in an idle window.
 
-**Surface.** **0 running components added** by any of the five: no cron line, service or workflow (75.4's canary is a CI test; 75.5's alarm is a new invariant in a script the scan already runs). 75.2 reads the existing weekly NFL event-store
-build. The live surface budget is unknown until B74-A Session 2 computes it. GG-753: the registry cannot see the box yet, 75/75
-entries are unreviewed, and 21 have no alarm. No block in this wave may add a running component either way.
+**Surface.** **0 running components added.** 76.4 reviews the existing 76 entries and adds staleness alarms inside the scan,
+not as new jobs. The window cannot ssh, so the live red signals are unknown until 76.4 computes the surface budget for the
+first time. Hygiene reds still open: GG-747/748 (ledger, 76.3), GG-749/750 (swallowed failures, queued), GG-752 (deploy has
+no rollback, queued).
 
-**Dependencies.** None between blocks. 75.1 (PAM) and 75.2 (NFL factor) share no file or input, and 75.2 does not use PAM.
-75.3's generator counts only what is on main when it runs and never guesses the other blocks' paths (the window adds them at
-wave close). **75.4 and 75.5 split the order/settlement code:** 75.4 owns the halt check, C7 and the order-placing runners; 75.5
-owns settlement modules, the NFL resolve path and assert_ledger_invariants.py; neither edits paper_trader.py's booking or the
-other's files. **None touches B74-A Session 2's files** (the runtime registry, governance_scan*.sh, either dashboard, deploy/).
+**Dependencies.** None between blocks. **76.1** owns the kill-switch read-back and drill, and
+`scripts/demo_fill_forward_report.py`. **76.2** writes only `12_EXPLORATORY/nfl_engine/` and tests. **76.3** owns the ledger
+writers (`atomic_io`, `CellLedger`, the four scripts in GG-748) and never edits the forward-test report. **76.4** alone edits
+the runtime registry/map, `governance_scan*.sh`, both dashboards and the Visual Dashboard builder. No block's merge or input
+waits on another's.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | ✅ DONE (PR #259 merged cdb9795; CI pass; no Deploy job, no running component) | Core + lossless NBA v4 port + NFL 9-group taxonomy + WR mass classifier (247 recs, primary retained 54-60% YoY vs ~31% chance) + DEEP_TIER proposal; D5(a) NFL 0→1, NBA 0→1 |
-| 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | ✅ DONE (PR #263 merged 3c4535e; CI pass; no Deploy job, no running component) | ADD-IN applied; F5/F6 aggregated+interpreted+APPLIED via ML/spread/total/team total; result INERT (MATCHES, no gain; beta unstable) 
-| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
-| 75.4 | One kill switch for every order path (GG-745 HIGH) | EXECUTION: order paths honouring one switch, of all (drill on the box) | 🟡 Part A merged | PR #264 @ ce32e14; 1/6 → 6/6 in code; Part B (deploy read-back + drill) pending; GG-745 OPEN |
-| 75.5 | The NFL book closes (GG-746 HIGH, GG-751, GG-763a) | EXECUTION E2 / PROOF: NFL positions open past game end + 24 h, 4 → 0 | ✅ DONE | PR #262 @ 7ab0c75; 4 → 0 (box, 2026-10-15); GG-746/751 resolved |
+| 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | ⬜ | |
+| 76.2 | NFL engine: a second factor class the ratings can't already hold | DEPTH D5(b) NFL applied +1 (6 → 7 of 16 seat factors) | ⬜ | |
+| 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | ⬜ | |
+| 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | ⬜ | |
 
-### 75.1 — PAM core: one Player Attribute Matrix for every engine
+### 76.1 — Kill switch proven on the box; why the fill fix barely fills
 
 ```
-COMMON RULES - WAVE 75 (read first; they bind this block)
+COMMON RULES - WAVE 76 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -247,7 +251,7 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 21:55 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
   (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
   application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
   "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
@@ -260,8 +264,10 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- B74-A Session 2 runs in parallel: do NOT edit RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
-  .claude/hooks/governance_scan*.sh, either dashboard (web or 04_EXECUTION/visual_dashboard/), or deploy/.
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
   again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
   is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
@@ -294,78 +300,49 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
   its factor list is a target, never its numbers.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W75_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
 
-WAVE 75.1 - PAM CORE: ONE PLAYER ATTRIBUTE MATRIX FOR EVERY ENGINE (ADR-0075 section 3). Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH D5(a) - cluster designs: no shared scaffold -> core schema + store + point-in-time read path, NBA v4 ported,
-NFL taxonomy v0 + a first mass-tier classifier (NFL 0 -> 1, NBA 0 -> 1). Pillar: DEPTH.
-PERMISSIONS: new code under src/prediction_market_bot/pam/ + tests/, data under qualitative_data/pam/, docs under
-02_ARCHITECTURE_DESIGN/PAM/. No live model, runner, experiment script, registry cell, cron or ledger change.
-Read first: ADR-0075 (accepted), qualitative_data/pam_v4/SCHEMA.md and Player_Attribute_Matrix_v4.docx (archetype names,
-modifier thresholds), EXP-007/008 (05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/RESULTS_INDEX.md), CLAUDE.md section "The scale", 02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md.
+WAVE 76.1 - KILL SWITCH PROVEN ON THE BOX; WHY THE FILL FIX BARELY FILLS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION - (a) order paths that halt on the one switch IN THE RUNNING PROCESSES (6/6 in code after W75.4 -> 6/6
+running, proven by a drill); (b) E1 per book/sport/arm since the re-arm, and the projected date each forward-test arm reaches
+its judged n. Pillar: EXECUTION.
+PERMISSIONS: ssh, idle-window restarts (standing), touching and removing the kill-switch flag on the box (demo plumbing),
+scripts/demo_fill_forward_report.py + tests, read-only Kalshi DEMO GETs. Do NOT change ADR-0072's placement rule, an arm
+assignment or any pre-registered quantity - that goes to the operator. Do not edit ledger writers (76.3) or B74-A files (76.4).
+Read first: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_4_kill_switch.md, SESSION_HANDOFF_20261015_0600_W75_4.md, ADR-0072
+(and its addenda), W65_2_forward_test_on_results.md ("Read-back W73.1"), HYGIENE_AUDIT_20261015.md GG-754.
 
 WHY
-Operator, 2026-10-14: "we're gonna start piping in the PAM into the NFL, NBA, MLB and NHL (starting with NFL and NBA) - this
-is going to be a portion of our Syndicate32 bridging - it needs to stay dynamic enough that we can port it easily and do mass
-application but we'll keep it substantive for when it matters most." And: "the deep PAM tier will be a multi layer effort
-between me and you (Claude). right now - we just need to get the ball rolling on at least building it out foundationally."
-Today PAM (DS-01) is NBA-only: 15 archetypes + modifiers, ~50 hand-classified players in two CSVs, read only by experiment
-scripts.
+W75.4 put one halt check inside submit_order (1/6 -> 6/6 order paths in code, PR #264) but stopped before Part B: the running
+processes and the live drill are unproven, so GG-745 is still OPEN. The handoff waited for an operator "go" - a demo drill is
+plumbing, not his. Separately, W73.1's read-back: anchored (treatment) orders fill 1 of 48 NHL orders (2%) against control's 29
+of 54 (54%); MLB 2/20 vs 5/29; NFL 3/28 vs 11/28. ADR-0072 needs ~550 fills per arm. If the treatment arm cannot get there, the
+test cannot answer its own question.
 
-PART A - The core (~45 min)
-  1. 02_ARCHITECTURE_DESIGN/PAM/CORE_SCHEMA.md + code: one sport-agnostic record - sport; player_id plus an id map to each
-     source; archetype mix (weighted hybrid, any number of archetypes, weights sum to 1); modifiers (named, each with its
-     threshold and evidence); effective_from / effective_until (QTI-01/02); tier (mass | deep); classified_by (human | rule |
-     model, with version); confidence; basis (seasons, sources). One store: versioned, append-only snapshots - a new
-     classification supersedes, never overwrites. One read path: pam_as_of(sport, player_id, as_of) -> record or None.
-  2. Tests: point-in-time (a classification effective after as_of is never returned - positive control included),
-     weights validated, supersession, round-trip.
-  3. Port NBA v4: both QS CSVs -> core records, LOSSLESS (round-trip test against the CSVs). Archetype names and modifier
-     definitions from the docx go into a sport taxonomy file (qualitative_data/pam/nba/). The experiment scripts keep
-     reading the old CSVs - do not rewire them.
-PART B - NFL taxonomy v0 + the mass tier's first classifier (~45 min)
-  4. 02_ARCHITECTURE_DESIGN/PAM/NFL_TAXONOMY.md: archetypes per position group (QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S),
-     each defined by signals measurable in the free NFL event store (participation routes/alignment, FTN charting, snaps,
-     PFR). Every archetype names its signals and their source; one that needs a non-free source is a GAP (GG).
-  5. Mass tier, ONE position group (WR or CB - pick the one the free data describes best, and say why): a rule- or
-     cluster-based classifier over 2023-2025, point-in-time per season, written through the core store as tier = mass.
-     Report archetype counts, year-over-year stability (trait or noise), and 5 named examples a football eye can check.
-     Stage reached: aggregated / interpreted. Not applied - no price path in this block.
-  6. 02_ARCHITECTURE_DESIGN/PAM/DEEP_TIER.md, one page: a PROPOSED working method for the operator + Claude deep tier
-     (which players qualify - e.g. starters on the highest-volume cells; what the layers are; how a deep record supersedes
-     a mass one). Proposal only. Put it to the operator as ONE line at the end - the method is his to set.
-Results: 02_ARCHITECTURE_DESIGN/PAM/README.md (what exists, per sport, per tier; the D5 line).
+PART A - Kill switch on the running processes (~40 min)
+  1. Read the Deploy job summaries for ce32e14 onward and every order-placing process's running-code SHA (72.3's check). If
+     t4-mlb skipped its restart (game live), restart it at the next idle window (standing authorization) and read back.
+  2. Drill on DEMO, in an idle window: touch the global flag; confirm every running order path logs a halt and places nothing
+     within 60 s; confirm a band flag halts only its band; remove the flags; confirm they resume. Paste the log lines with
+     timings. Record C7 kill_switch_drill_result. Resolve GG-745 only on a pass.
+PART B - The fill fix's numbers, and whether it can finish (~45 min)
+  3. GG-754 first (it can re-trip the turn-off): epoch-gate no_outcome, atomic writes at :306 and :369. Tests.
+  4. Re-run the report on everything settled since the 10-13 re-arm: per book / sport / arm - orders, fills, fill rate,
+     settled fills, win rate on fills, settle-minus-price, E3 fills vs non-fills. Write the E rows of the DISTANCE table
+     (source + time).
+  5. Projection: at each arm's observed fill rate and the remaining schedule (NHL, NFL, NBA from 10-20; MLB ends with the World
+     Series), the date each arm reaches its judged n - or "not this season". If the treatment arm cannot reach it, write the
+     options (e.g. a different anchor offset, a longer resting window, a pooled-sport judged n) with what each costs the test's
+     validity, and put ONE line to the operator with your recommendation. Do not change the rule yourself.
+Results: W65_2_forward_test_on_results.md, "Read-back W76.1"; W75_4_kill_switch.md, "Drill".
 
-END OF BLOCK 75.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 76.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 75.2 — NFL engine stage 2: one factor class at play-level granularity, end to end (rescoped 22:10 PT)
-
-**ADD-IN for the 75.2 terminal already running the ORIGINAL prompt (issued 22:15 PT) — paste into that terminal:**
+### 76.2 — NFL engine: a second factor class the ratings can't already hold
 
 ```
-ADD-IN 75.2 (operator, 2026-10-14 22:06 PT) - read before your next step; it overrides the original prompt where they differ.
-The operator: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". The Cover 6
-question shows the GRANULARITY the project expects; it is NOT the deliverable. The deliverable is the chain - aggregation,
-interpretation, application - run once on one factor class at that granularity, built so every later class plugs in the
-same way.
-1. Keep what you have built. Coverage shell / man-zone vs offensive personnel and motion (F5/F6) is a valid first factor
-   class - stay on it unless you have found it cannot reach a price; then say why and switch to pressure vs protection.
-2. Stop spending time on the literal pieces: "motioned to the boundary" gets one line (GAP registered if no free field holds
-   motion direction) and nothing more. The 2025 "top defenses" table stays only as one illustration in the results.
-3. Build the aggregation as a REUSABLE factor builder: event store + as_of -> per-team / per-unit values, point-in-time, with
-   volume and success, shrunk, opponent-adjusted. The next factor class must plug into the same builder.
-4. Part B as written, with "the matchup term" read as "the factor's term in the rate layer". GG-756 / GG-757 unchanged.
-5. Results doc states: the class chosen and why, what it says (trait or noise), what it means, the price path and its test,
-   the stage reached.
-6. Update your row in ACTIVE_QUEUE.md (75.2) with "ADD-IN applied" in your next docs push.
-```
-
-The rescoped block below is for a fresh terminal only.
-
-
-```
-COMMON RULES - WAVE 75 (read first; they bind this block)
+COMMON RULES - WAVE 76 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -375,7 +352,7 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 21:55 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
   (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
   application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
   "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
@@ -388,8 +365,10 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- B74-A Session 2 runs in parallel: do NOT edit RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
-  .claude/hooks/governance_scan*.sh, either dashboard (web or 04_EXECUTION/visual_dashboard/), or deploy/.
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
   again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
   is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
@@ -422,58 +401,46 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
   its factor list is a target, never its numbers.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W75_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
 
-WAVE 75.2 - NFL ENGINE STAGE 2: ONE FACTOR CLASS AT PLAY-LEVEL GRANULARITY, END TO END (ADR-0075 section 1). Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH D5(b) - the first NFL factor class at ADR-0075 granularity taken to APPLIED (+1); D4 NFL - factor classes
-built point-in-time 0 -> 1. Pillar: DEPTH.
-PERMISSIONS: 12_EXPLORATORY/nfl_engine/ (+ its tests moved into tests/), a doc in 02_ARCHITECTURE_DESIGN/NFL_ENGINE/. No
-registry, runner, ledger, cron or live-model change. Read first: ADR-0075, ADR-0073, NFL_ENGINE/INTERFACE.md, DATA_LAYER.md,
-FACTOR_TAXONOMY.md (F5, F6, GAP-1), 12_EXPLORATORY/nfl_engine/results.md, HYGIENE_AUDIT_20261015.md (GG-756, GG-757).
+WAVE 76.2 - NFL ENGINE: A SECOND FACTOR CLASS THE RATINGS CAN'T ALREADY HOLD (ADR-0075). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D5(b) - a second NFL factor class taken to APPLIED (seat file NFL: 6 -> 7 applied of 16; the window records it).
+Pillar: DEPTH.
+PERMISSIONS: 12_EXPLORATORY/nfl_engine/ + tests/. No registry, runner, ledger, cron or live-model change.
+Read first: 12_EXPLORATORY/nfl_engine/results_stage2.md (the template and why it came out inert), factors.py (FactorSpec,
+play table) and rate_layer.py (Factor protocol), PLAN.md, 02_ARCHITECTURE_DESIGN/SEATS/NFL_SEAT.md, TENSIONS/nfl.toml,
+FACTOR_TAXONOMY.md, ADR-0075.
 
 WHY
-Operator, 2026-10-14: "If I ask you what teams runs the most cover 6 against 3 wide out sets that's motioned to the boundary,
-matched with volume and success rate - then I ask you to tell me what it means - you better be able to tell me. but that's
-not even the hardest part. data aggregation > data interpretation > data application. Whats the hardest? I'll make it easy -
-data application is the basic question: cool info, so what? ... THAT is the level of granularity I expect."
-And, 22:06 PT: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". The Cover 6
-question shows the GRANULARITY; it is not the deliverable. The deliverable is the chain - aggregation, interpretation,
-application - run once on one factor class at that granularity, built so every later class plugs in the same way.
-The NFL engine (W73.3) prices the board from team + QB only, at parity with the frozen models, and its rating layer is still
-the frozen ridge (GG-756).
+Operator, 2026-10-14: "data aggregation > data interpretation > data application ... data application is the basic question:
+cool info, so what? it's a never ending race". W75.2 ran the chain on coverage x personnel x motion and found the reason it
+priced to no gain: how often a defense shows a shell is a stable trait, but how offenses do against it is noise, and the real
+part already lives in season-long team EPA - which the engine's rating layer already uses. Three game-market factor tests in a
+row have now returned no gain (W68.3, W71.3, W75.2). A factor can only add to the price if it carries information the
+season-to-date ratings cannot contain.
 
-PART A - Aggregation + interpretation (~40 min)
-  1. Pick ONE factor class from FACTOR_TAXONOMY at play-level granularity and say why in three lines. Natural first
-     candidates: scheme vs personnel (coverage shell / man-zone against offensive personnel and motion, F5/F6) or pressure vs
-     protection. Choose on: free coverage across seasons, a plausible path to points, and what GAP-1 (no 2026 participation
-     file) leaves usable for the current season.
-  2. Build it as a REUSABLE factor builder: event store + as_of -> per-team / per-unit values, point-in-time, with volume and
-     success (EPA/play, success rate), small samples shrunk, opponent-adjusted. The next factor class must plug into the same
-     builder. Any field the class needs that no free source holds is a GAP (GG) - never inferred.
-  3. INTERPRETATION: is it a stable trait or noise (split-half and year-over-year correlation), and what it means for the
-     opponent - plain words, numbers shown. Include one worked query at the operator's level of granularity as an
-     illustration (a team-by-team table with volume and success), not as the deliverable. Push this as its own results
-     section before Part B.
-PART B - Application (~50 min)
-  4. The engine's rate layer takes factors through ONE sport-neutral interface that matches INTERFACE.md (GG-756), and
-     test_engine.py moves into the suite so it runs on every push (GG-757).
-  5. Plan addendum FROZEN BEFORE any fit (12_EXPLORATORY/nfl_engine/PLAN.md): the factor's term in the rate layer (how the
-     two sides' as-of values become an expected-points adjustment), rolling-origin seasons, metric = ΔBrier per family vs
-     engine v0 with CI. Say how the term handles 2026 games given GAP-1, and whether that alone blocks application this season.
-  6. Fit once; price ML / spread / total / team totals from the same simulation; report ΔBrier per family, calibration, and
-     the market comparison where archived mids exist (reported, never judged). A NO is a result - the stage reached is
-     still applied-and-tested.
-Results: 12_EXPLORATORY/nfl_engine/results_stage2.md - the class chosen and why, what it says, what it means, the price path
-and its test, the stage reached. Do NOT create a separate factor-stage list: 75.3 builds the seat files that hold stages;
-the window records yours at wave close.
+PART A - Choose for orthogonality, then aggregate + interpret (~40 min)
+  1. Choose ONE class and argue it in five lines, on one test: what does it know about THIS game that season-to-date team EPA
+     cannot? Candidates: week-to-week personnel availability beyond the QB (OL / edge / CB starters out, from the point-in-time
+     injury reports 66.3 captures and snap shares - a change the rolling ratings lag), or pressure vs protection measured as
+     this week's matchup of one unit against the other. Measure the orthogonality before fitting: correlation of the factor
+     with the rating layer's inputs on past seasons. If it is mostly the same information, pick the other candidate.
+  2. Build it as a new FactorSpec / Factor on the existing builder (no second builder). Point-in-time, shrunk, opponent-adjusted.
+  3. Interpretation: trait or noise, and what it means for the price - plain words, numbers.
+PART B - Application (~45 min)
+  4. Plan addendum FROZEN before any fit (PLAN.md): the term, rolling-origin seasons, metric = ΔBrier per family vs engine v0
+     AND vs v0 + F5/F6, with CIs; report team totals separately (the family where a unit-level factor should bite first).
+  5. Fit once; price every family from the same simulation; market comparison where archived mids exist (reported, never
+     judged). A NO is a result. State the stage reached and the result.
+Results: 12_EXPLORATORY/nfl_engine/results_stage3.md. Do not edit the seat files; the window records the stage at wave close.
 
-END OF BLOCK 75.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 76.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 75.3 — Seat interface + structural tensions opened; D4/D5 generated
+### 76.3 — Every ledger writer atomic and locked; the 34-row gap reconciled
 
 ```
-COMMON RULES - WAVE 75 (read first; they bind this block)
+COMMON RULES - WAVE 76 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -483,7 +450,7 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 21:55 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
   (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
   application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
   "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
@@ -496,8 +463,10 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- B74-A Session 2 runs in parallel: do NOT edit RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
-  .claude/hooks/governance_scan*.sh, either dashboard (web or 04_EXECUTION/visual_dashboard/), or deploy/.
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
   again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
   is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
@@ -530,57 +499,43 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
   its factor list is a target, never its numbers.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W75_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
 
-WAVE 75.3 - SEAT INTERFACE + STRUCTURAL TENSIONS OPENED; D4/D5 GENERATED (ADR-0075 section 2). Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH D5(a) - seat interface and structural tensions, 0 -> scaffolded for NFL and NBA (+2 components each); D4 and
-D5 computed by scripts/distance_to_optimum.py instead of hand-written in the sitrep. Pillar: DEPTH.
-PERMISSIONS: docs/data in 02_ARCHITECTURE_DESIGN/SEATS/ and 02_ARCHITECTURE_DESIGN/TENSIONS/, a manifest
-02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml, scripts/distance_to_optimum.py + its tests, one step in
-.claude/commands/strategic-handoff.md. Read first: ADR-0075 (section 2 is the component inventory), ADR-0073,
-src/prediction_market_bot/c5_execution/market_type_registry.py, NFL_ENGINE/FACTOR_TAXONOMY.md + INTERFACE.md,
-HYGIENE_AUDIT_20261015.md, 04_EXECUTION/WINDOW_ERROR_LOG.md.
+WAVE 76.3 - EVERY LEDGER WRITER ATOMIC AND LOCKED; THE 34-ROW GAP RECONCILED (GG-748, GG-747, GG-764). Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF integrity - every verdict reads these ledgers. Measures: writers of live ledgers that bypass atomic_io (4 -> 0);
+CellLedger.append safe across processes (no -> yes, tested with concurrent writers); T4 closed vs resolved gap (34 -> 0 or each
+row explained). Pillar: PROOF.
+PERMISSIONS: src/prediction_market_bot/ledger (atomic_io) and pregame_shadow CellLedger, the four scripts named in GG-748,
+the read-side validators named in GG-764, tests/. A correction to a live ledger is a new labelled row with its reason - never a
+hand edit of an existing row. Do not edit scripts/demo_fill_forward_report.py (76.1), the kill-switch code, or B74-A files (76.4).
+Read first: HYGIENE_AUDIT_20261015.md (GG-747, GG-748, GG-764 and the L2 lane), the W72.2 crash-safety work (GG-663/680).
 
 WHY
-Operator, 2026-10-14: "structural tensions: where the architecture strains, seat interface: deep mapping of sports-eyes to
-cells. ... i assumed that was already piped into the project - if it hasn't then we need to open up the scaffolding to get
-those built." Nothing in the repo held either (ADR-0075 inventory). D4 is hand-written in the sitrep and D5 has no generator.
+B74-A Session 1 (10-15): four scripts rewrite the live T4 ledger non-atomically (correct_t4_game_dates.py:133,
+gg271_bound_t4_rejected_positions.py:149, replay_harness_t427.py:210, tag_locked_pairs_t4_mlb.py:116); CellLedger.append has
+no cross-process lock, and more runners now append to shared ledgers each wave; the T4 portfolio shows 4,309 closed vs 4,275
+resolved (34 unexplained). A verdict read from a ledger that two writers can corrupt is not a verdict.
 
-PART A - Seat interface (~45 min)
-  1. One seat file per sport, NFL and NBA first (02_ARCHITECTURE_DESIGN/SEATS/nfl.toml with a rendered NFL_SEAT.md; same for
-     NBA). For EVERY registered cell of that sport (market family x band, from the registry): what a sports-knowledgeable eye
-     reads to price that market - e.g. an NFL total: pace, pass rate over expectation, red-zone efficiency, kicker, wind,
-     officials' flag rate, injuries on both lines. Each factor carries: its factor class (FACTOR_TAXONOMY id for NFL), free
-     source + field or GAP, the engine slot that consumes it (INTERFACE.md) or none, and its stage (aggregated / interpreted /
-     applied), set ONLY from evidence on main - a factor is applied only if a tested price path exists, and the entry cites it.
-  2. Tests: every registered NFL and NBA cell has a seat entry; every stage claim cites a file that exists. MLB and NHL get
-     stub files listing their cells with factors empty, so the gap is visible rather than absent.
-  3. The seat files are v0 drafts that a football or basketball eye will correct - say so at the top. The operator reads
-     them when he chooses; that is not a blocker.
-PART B - Structural tensions + the generator (~45 min)
-  4. A tension register per engine (02_ARCHITECTURE_DESIGN/TENSIONS/nfl.toml with a render; NBA too): every place the
-     betting architecture strains, seeded from evidence, each with where, evidence (file / GG), the pillar it hurts, and
-     what would relieve it. Seed at least: GAP-1 (no 2026 participation file, so current-season coverage cannot reach a
-     price); the engine at parity with the per-family models, its rating layer still the frozen ridge (GG-756); cells no
-     engine serves; the forward test's treatment arm filling 1 vs control's 29 (73.1); fills losing while non-fills win (E3);
-     NFL positions not closing (GG-746); factors that stop at interpretation; any working definition in ADR-0075 section 2
-     the evidence strains.
-  5. ARCHITECTURE_COMPONENTS.toml: per sport x the eight components, the scaffold's path + its test, or none.
-     distance_to_optimum.py computes D4 (per sport, from engine artifacts on main) and D5 ((a) components whose scaffold
-     path and test exist on main; (b) factor counts by stage from the seat files). It counts only what exists on main when
-     it runs - never a pending entry. Do not guess paths for 75.1 / 75.2 work in flight; the window adds those at wave close.
-     Tests.
-  6. .claude/commands/strategic-handoff.md: add one step - review each engine's tension register at wave close
-     (ADR-0075). If the classifier refuses the edit, record it and skip only that step.
-Results: 02_ARCHITECTURE_DESIGN/SEATS/README.md and TENSIONS/README.md; paste the generator's D4 and D5 lines per sport.
+PART A - Writers (~45 min)
+  1. Route the four scripts through atomic_io (or retire any that is one-off history - say which, with evidence it no longer
+     runs). Pattern sweep (Hard Rule 13): grep src/ scripts/ for every other open(...,"w")/write_text on a path under logs/ or
+     a ledger, and fix or register each.
+  2. CellLedger.append: a cross-process lock (flock) and a test that runs concurrent writers and checks no row is lost or torn.
+     Note: runners importing CellLedger pick this up on their next cron run; read back one run on the box.
+PART B - Read side and the gap (~40 min)
+  3. GG-764: the read-side holes (assert_ledger_invariants.py:145, validators.py:379, run_t4_mlb_live.py:1175) - a torn or
+     partial row is reported, never silently skipped. Tests.
+  4. GG-747: reconcile the 34 rows on read-only copies from the box - each explained (which path closed it without resolving)
+     and, where a row is wrong, a labelled correction row through the normal path. Say whether any judged count changes.
+Results: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W76_3_ledger_integrity.md.
 
-END OF BLOCK 75.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+END OF BLOCK 76.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 75.4 — One kill switch for every order path (GG-745, HIGH)
+### 76.4 — The runtime map goes live and visible (B74-A Session 2)
 
 ```
-COMMON RULES - WAVE 75 (read first; they bind this block)
+COMMON RULES - WAVE 76 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
   re-verify things this prompt states as verified unless your work depends on them.
@@ -590,7 +545,7 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
   summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 21:55 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
   (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
   application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
   "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
@@ -603,8 +558,10 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- B74-A Session 2 runs in parallel: do NOT edit RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
-  .claude/hooks/governance_scan*.sh, either dashboard (web or 04_EXECUTION/visual_dashboard/), or deploy/.
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
   again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
   is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
@@ -637,158 +594,56 @@ COMMON RULES - WAVE 75 (read first; they bind this block)
   its factor list is a target, never its numbers.
 - Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W75_<n>.md (docs-only push).
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
 
-B75.4 OVERRIDE of the common rules (this block only): you MAY change how order paths HALT - the kill-switch check, the flag
-C7 writes, and the code that reads it. You may NOT change what an order is: price, size, side, ticker, stake or kelly. Demo
-only. A merge that changes a file t4-mlb imports restarts it only in an idle window (GG-432): read back that the RUNNING
-process carries the change (running-code SHA, 72.3's check) before calling it DONE.
+B76.4 OVERRIDE of the common rules (this block only): SIZE LARGE by operator request - target 90 minutes, ceiling 120, two
+parts. This is B74-A SESSION 2. Session 1 (the audit) is DONE and on main (7950e43, HYGIENE_AUDIT_20261015.md) - do not
+redo it. ssh is read-only except: restarting pmbot-web-dashboard (standing authorization) and deploying through the normal
+merge path. Never run /_archive:vps_DO_NOT_RUN or deploy by hand.
 
-WAVE 75.4 - ONE KILL SWITCH FOR EVERY ORDER PATH (GG-745, HIGH). Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION - safety precondition for E1-E3 and for any future capital: one switch halts every order path within 60 s
-(NFR-03). Measure: order paths honouring the one switch, of all order paths (before -> after, counted from code + the
-running processes). Pillar: EXECUTION (PLUMBING in support).
-PERMISSIONS: src/ order and monitoring code, the runners that place demo orders, tests/. No new cron, service or workflow -
-the canary is a test in CI, not a running job. Do not touch B74-A Session 2's files (registry, governance scan, dashboards,
-deploy/) or 75.5's (settlement modules, the NFL resolve path, assert_ledger_invariants.py).
-Read first: HYGIENE_AUDIT_20261015.md (GG-745 and the L1 lane), CLAUDE.md Hard Rule 6 (kill switch <= 60 s), ADR-0074.
-
-WHY
-B74-A Session 1 (10-15): "The kill switch is split: touch the wrong flag file and the main order placer never notices, and
-the NFL/T1 path has no check at all." run_t4_mlb_live.py:290 watches only t4_mlb_kill_switch.flag; run_t4_live another;
-shadow_flat_stake.maybe_place:55 globs *kill_switch*.flag; C7 is_kill_switch_active writes no flag; paper_trader.py:685 has
-no halt check. No flag has ever been touched on the box. A kill switch that has never fired is unproven.
-
-PART A - One switch (~45 min)
-  1. Inventory EVERY path that can submit a demo order (grep submit_order / create_order / every runner on the crontab and in
-     systemd: t4-mlb, T1 paper, shadow staked runners for NFL / NHL / NBA / MLB postseason, the ADR-0072 forward test).
-     Table: path, what it checks today, which flag. Verify against the box crontab and systemd, not just the repo.
-  2. One shared halt_reason() (global flag + per-band flag, so a band-level kill halts only that band and the system-level
-     kill halts everything - CLAUDE.md "Execution timing"). It is checked INSIDE the single order-submission function every
-     path goes through, so a new runner cannot skip it. C7's is_kill_switch_active writes the global flag. Old flag names
-     keep working (read as aliases) until every reader is moved - nothing goes dark mid-change.
-  3. Tests: every path in the inventory refuses an order when the global flag exists; a band flag halts only its band; an
-     order is refused within one loop of the flag appearing.
-PART B - Prove it on the box (~40 min)
-  4. Merge; let the deploy restart services in an idle window; read back the running-code SHA of every order-placing process.
-  5. Live drill on DEMO, inside an idle window (no game live for the processes affected): touch the global flag, confirm every
-     running order path logs a halt and places nothing within 60 s, remove the flag, confirm they resume. Paste the log lines
-     and timings. If a game window makes a drill unsafe for the forward test's sample, run it at the next idle window and
-     say so - do not skip it.
-  6. Record the drill in C7's kill_switch_drill_result event. Resolve GG-745 only on a passed drill on the running processes.
-Results: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_4_kill_switch.md (inventory before/after, drill log, timings).
-
-END OF BLOCK 75.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
-```
-
-### 75.5 — The NFL book closes (GG-746 HIGH, GG-751, GG-763a)
-
-```
-COMMON RULES - WAVE 75 (read first; they bind this block)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
-  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
-  re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
-  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
-  Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 21:55 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
-  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
-  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
-  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
-  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
-  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
-  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
-  collides, re-claim; never reuse.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
-  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- B74-A Session 2 runs in parallel: do NOT edit RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
-  .claude/hooks/governance_scan*.sh, either dashboard (web or 04_EXECUTION/visual_dashboard/), or deploy/.
-- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
-  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
-  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
-  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
-- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
-  only real capital is his.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, re-run the suite, push, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
-  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
-  are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
-  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
-  operator - as one line, with your recommendation, after the rest of the block is done.
-- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
-  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
-  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
-  measure, say so and stop rather than doing adjacent work.
-- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
-  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
-  market). Quote the operator's words, never compress them (window error W16).
-- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
-  fixed) and surface_delta: (0 this wave).
-- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
-- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
-  its factor list is a target, never its numbers.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
-  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W75_<n>.md (docs-only push).
-
-B75.5 OVERRIDE of the common rules (this block only): you MAY close paper/demo positions through the project's normal
-settlement path (ADR-0071: Kalshi's own settlement is the resolution source). That is a booking, not a rewrite: never edit
-an existing ledger row by hand; a correction is a new, labelled row with its reason. No order placement.
-
-WAVE 75.5 - THE NFL BOOK CLOSES (GG-746 HIGH, with GG-751 and GG-763a). Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION E2 / PROOF - a fill that never settles cannot count; NFL's first scored look is ~11-02. Measure: NFL
-positions open past game end + 24 h (4 -> 0), and the settlement result typed so "no result" is never read as "not final yet".
-Pillar: EXECUTION / PROOF.
-PERMISSIONS: the NFL resolve / settlement path (scripts/run_pregame_shadow_settle.py and what it calls, the settlement
-modules), scripts/assert_ledger_invariants.py (the alarm), tests/. No new cron, service or workflow. Do not touch
-paper_trader.py, kalshi_client.py, the kill-switch code (75.4), or B74-A Session 2's files - if the fix needs one of them,
-register a GG and hand back.
-Read first: HYGIENE_AUDIT_20261015.md (GG-746, GG-751, GG-763), ADR-0071, the NFL pre-registration (what counts as a settled row
-for the 11-02 look).
+WAVE 76.4 - THE RUNTIME MAP GOES LIVE AND VISIBLE (B74-A Session 2; ADR-0074; GG-742, GG-743, GG-753). Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (ADR-0074) - the operator SEES what runs, whether it is alive and who owns it. Measures: registry entries
+reviewed against the box 0/76 -> 76/76; live components with no alarm 21 -> 0 (or a written reason each); SURFACE BUDGET
+GREEN/RED computed live and shown on both dashboards. Pillar: PLUMBING.
+PERMISSIONS: 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
+.claude/hooks/governance_scan*.sh, the web dashboard (/ and /project), scripts/build_visual_dashboard_html.py and
+04_EXECUTION/visual_dashboard/, tests/. Do not touch the kill-switch code or the forward-test report (76.1), ledger writers
+(76.3) or 12_EXPLORATORY (76.2).
+Read first: ADR-0074, CLAUDE.md Hard Rules 13-15, HYGIENE_AUDIT_20261015.md (GG-742, GG-743, GG-753 and the L4/L6 lanes),
+02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md, 04_EXECUTION/WINDOW_ERROR_LOG.md.
 
 WHY
-B74-A Session 1 (10-15): "Four NFL moneyline positions are still open days after their games ended, so the NFL book is not
-closing the loop" - POS-BC7EBF8BB9, POS-5606773C7E (CIN-MIA 10-11), POS-0EED4809E1, POS-515DEC8556 (TB-DAL 10-08). And
-GG-751: settlement returns None both when a game is not final and when the lookup failed (nfl_settlement.py:41,
-nba_settlement.py:44, mlb_settlement.py:32-53, nfl_espn_results.py:78) - so a broken lookup looks like patience.
+Operator, 2026-10-14: "I want this wired into the visual dashboard AND live terminal. I don't just want this in the background
+- I want to see it." The registry exists (ADR-0074) but reads only the repo, never the box (GG-753): a live cron line
+(45 22 * * * run_mlb_pregame.py) is unregistered, one registered entry is not installed, the script crashes on python3.9, 75/75
+entries are unreviewed and 21 have no alarm (GG-743). Wave 75 changed running code (one kill switch, the NFL book's recurring
+sweep) - review against the box as it is now.
 
-PART A - Why they are open, and close them (~40 min)
-  1. Trace each of the four on the box: order, fill, Kalshi settlement status (read-only DEMO GET), what the resolver did each
-     night since (logs). Name the root cause in one line.
-  2. Fix the root cause, then book the four through the normal path. Verify every other NFL position, and the NHL and MLB
-     postseason books, for the same failure (pattern sweep, Hard Rule 13) - list what you found.
-  3. Check whether the four rows affect the 11-02 look's sample under the NFL pre-registration. If closing them would change
-     a pre-registered count or rule, stop at that point and put it to the operator as one line with your recommendation.
-PART B - Never again silent (~40 min)
-  4. GG-751: settlement returns a typed result (FINAL with outcome / NOT_FINAL / LOOKUP_FAILED with reason) in all four
-     modules; callers treat LOOKUP_FAILED as an alarm, not a wait. Tests per sport.
-  5. GG-763a: NFL ties - read what the pre-registration says (y = 0.5 or void) and make the code match it; if it is silent,
-     register it for the operator rather than choosing.
-  6. Alarm: a new invariant in assert_ledger_invariants.py - any position open more than 24 h after its game's scheduled end
-     (all books). The governance scan already runs it every session, so it is seen without touching the scan.
-  Merge; read back on the box that the resolver ran and the four are closed. Resolve GG-746/751 only then.
-Results: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_5_nfl_book_closes.md.
-
-END OF BLOCK 75.5. If you cannot see this line, the prompt reached you truncated: stop and report it.
+PART C - The runtime map goes live (~50 min)
+  7. Review every registry entry against the box (crontab -l, systemd, workflows): accurate purpose, pillar, writes, alarm;
+     reviewed = true. Installed but unmirrored -> GG. Mirrored but not installed -> paused/retired with reason. Close GG-742.
+  8. GG-743: give each no-alarm component an alarm or a written reason it needs none; build the cheap ones as staleness checks
+     on its `writes` paths.
+  9. governance_scan_full.sh prints a RUNTIME block: registry check, surface counts, live columns (last-write age per
+     component, running-code SHA vs box HEAD per service), and SURFACE BUDGET: GREEN or RED with reasons (healthcheck faults,
+     silent arm whose sport had games, running SHA > 6h behind HEAD, registry check failing). One cached ssh round trip.
+PART D - Visible on both dashboards (~40 min)
+ 10. Web dashboard /project: a "Process integrity" panel - surface (live / no alarm / unreviewed), SURFACE BUDGET GREEN/RED
+     with reasons, the runtime map with live columns (stale rows red), window-error tally. Same data the scan computes.
+ 11. Live Terminal (/): a compact strip - SURFACE BUDGET chip, count of components stale or with no alarm, and any red
+     component by name (like the SILENT ARM rows). Phone width checked (390px, no horizontal scroll).
+ 12. The operator's standalone Visual Dashboard already has the static section (scripts/build_visual_dashboard_html.py,
+     04_EXECUTION/visual_dashboard/): add the live columns there too if the scan writes them to a file the builder can read.
+ Tests; PR; merge; deploy; restart pmbot-web-dashboard (standing authorization); read both pages back over ssh/curl and paste
+ what they show. Handoff with pattern_sweep and surface_delta.
+END OF BLOCK 76.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
 
 ### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
 
-**Status (2026-10-14 22:16 PT): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Session 2 (Parts C+D) NOT started - the terminal closed when Session 1 ended. **OPERATOR, 22:17 PT: "save the hygiene follow-up for me, i don't want to forget it. we'll add it as a 4th terminal window for the next wave." → Wave 76 = three blocks + B74-A Session 2 as the 4th terminal,** after 75.4 lands so the registry review sees the unified kill switch. Wave 75's "do not touch B74-A Session 2's files" rule stays in force anyway - it keeps those files clear for it.**
+**Status (2026-10-14 22:16 PT): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Session 2 (Parts C+D) NOT started - the terminal closed when Session 1 ended. **→ ISSUED as Wave 76.4 (2026-10-15 ~06:10 UTC), the 4th terminal the operator asked for at 22:17 PT. Paste 76.4 from the NOW section, not this backlog copy.** Wave 75's "do not touch B74-A Session 2's files" rule stays in force anyway - it keeps those files clear for it.**
 
 ```
 COMMON RULES - BACKLOG BLOCK B74-A (read first; they bind this block; B74-A OVERRIDES below take precedence)
@@ -920,17 +775,24 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 75 — ISSUED 2026-10-15 ~05:00 UTC · five blocks (operator 22:06 PT) · ADR-0075 foundations (DEPTH) + the audit's two HIGHs (EXECUTION/PROOF) · alongside B74-A Session 2
+### ⏳ WAVE 76 — ISSUED 2026-10-15 ~23:50 UTC (written 06:10, push blocked 17 h — W19) · four blocks (B74-A Session 2 as the 4th, operator 22:17 PT)
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 75.1 | PAM core: one Player Attribute Matrix for every engine | ⬜ | |
-| 75.2 | NFL engine stage 2: the operator's question, end to end | ✅ PR #263 merged 3c4535e | ADD-IN applied; F5/F6 applied, inert (MATCHES, no gain) |
-| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
-| 75.4 | One kill switch for every order path (GG-745) | ⬜ | |
-| 75.5 | The NFL book closes (GG-746/751/763a) | ⬜ | |
-| B74-A | Hygiene re-audit + runtime map live and visible | ⚠️ | Session 1 on main (7950e43): SOUND WITH ISSUES, GG-745..766. **Session 2 (registry live + dashboards) not started** — its terminal closed with Session 1 (operator 22:16 PT); **Wave 76's 4th terminal (operator 22:17 PT)**, after 75.4 changes the order-placing runners |
+| 76.1 | Kill switch proven on the box; why the fill fix barely fills | ⬜ | |
+| 76.2 | NFL engine: a second factor class the ratings can't already hold | ⬜ | |
+| 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | ⬜ | |
+| 76.4 | The runtime map goes live and visible (B74-A Session 2) | ⬜ | |
 
+### ✅ WAVE 75 — CLOSED 2026-10-15 ~06:00 UTC (verified on GitHub at `836a90cc`) · five blocks (operator 22:06 PT) · moved: **D5(a) NFL ~1 → 5, NBA 0 → 3; D5(b) generated; D4 NFL + factor classes point-in-time; NFL stale positions 4 → 0**
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 75.1 | PAM core | ✅ | #259: sport-agnostic schema + append-only store + `pam_as_of`; NBA v4 ported losslessly (100 records, round-trip tested); NFL 9-group taxonomy; WR mass tier 2023–25 (247 records; primary archetype kept 54–60% year to year vs ~31% chance); DEEP_TIER proposal → your call |
+| 75.2 | NFL engine stage 2 (ran on the original prompt + add-in) | ✅ | #263: reusable factor builder + one Factor protocol; F5/F6 aggregated → interpreted → **applied: no gain** (shell habit a trait, efficiency against it noise). Motion direction is not in free data (GG-800). Engine tests now in CI (GG-757) |
+| 75.3 | Seat interface + structural tensions; D4/D5 generated | ✅ | #260/#261: NFL and NBA seat files (MLB/NHL stubs), tension registers, component manifest, generator. Flagged: registry says NBA game cells not implemented while the code dispatches them (NBA-T1) — checked before 10-20 |
+| 75.4 | One kill switch | 🟡 Part A | #264: one halt check inside `submit_order`, global + band flags, legacy aliases; 1/6 → 6/6 order paths in code. **Drill on the box not run → 76.1.** GG-745 open |
+| 75.5 | NFL book closes | ✅ | #262: 4 stale NFL positions booked (box, 10-15), recurring sweep, typed settlement results in 4 modules, open-past-game-end invariant; GG-746/751 resolved |
 
 ### ✅ WAVE 73 — CLOSED 2026-10-15 ~01:00 UTC (verified on GitHub at `39569c5`, main CI green) · moved: **D4 NFL none → data layer + simulation scaffold**, D1 NFL 20 factor classes mapped (15 buildable free), E1 first post-re-arm settled fills (NHL)
 
@@ -1270,7 +1132,7 @@ in every wave; Pushback / Surface / Dependencies lines on every wave.
 |---|---|---|
 | **75** | *Does the architecture have its foundations, and do the switches and books hold?* PAM core; one factor class to a price; seat interface + structural tensions; D4/D5 generated; one kill switch; the NFL book closes. | DEPTH · EXECUTION · PROOF |
 | **76** | *Does the fill fix work, and can you see what runs?* Three blocks **+ B74-A Session 2 as the 4th terminal (operator 22:17 PT: "i don't want to forget it")** — registry reads the box, alarms, both dashboards. (GG-745/746 pulled into 75.) The treatment arm's under-fill read (1 vs 29) and, if the pre-registration needs changing, put to the operator; audit MEDIUMs on the order/ledger path (GG-748 atomic writers, GG-749/750 swallowed failures). DEPTH lane: second NFL factor class through the same builder. | EXECUTION · PROOF · DEPTH |
-| **77** | *Does NBA get its engine?* NBA opening night read back (10-20/21, GG-570); NBA engine stage 1: possession-level data layer + PAM NBA mass tier; NFL engine keeps its lane. | DEPTH · BREADTH |
+| **77** | *Does NBA get its engine?* Before 10-20: NBA-T1 (registry says game cells not implemented, code dispatches them) checked against the flip automation; then opening night read back (10-20/21, GG-570); audit queue: GG-749/750 swallowed failures, GG-752 deploy rollback, stray-branch sweep (137 landed branches); NBA engine stage 1: possession-level data layer + PAM NBA mass tier; NFL engine keeps its lane. | DEPTH · BREADTH |
 | **78** | *Is the NFL first look ready to be read?* Release-path dry run for 11-02; filtering layer fed by the engine's confidence (ADR-0075 filtering); temporal evolution: as-of tendency features with stability tests. | PROOF · DEPTH |
 | **79** | *What did MLB teach us?* After the World Series: MLB idle for live betting; retrospective of the architecture, execution post-mortem, first PAM port tested on known outcomes. | DEPTH · EXECUTION |
 | **80** | *The first verdict.* NFL scored look (11-02, or ~11-09 if a game slips); momentum looping (Strategy J) price-path features from the archive, tested as a filter. | PROOF · DEPTH |

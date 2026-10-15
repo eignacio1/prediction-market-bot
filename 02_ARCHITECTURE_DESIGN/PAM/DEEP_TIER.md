@@ -2,6 +2,12 @@
 
 **Status:** PROPOSAL, not adopted. Written W75.1 2026-10-14. Nothing here is built.
 
+**OPERATOR ANSWER, 2026-10-15 16:46 PT (window recorded):** "No - deep PAM tier needs to be substantially deeper than that, even
+foundationally. I want RB's, TEs, OL, and core defenders in that tier. We don't need to get to that anytime soon anyway."
+→ The ~100-player QB + top-2 WR start below is **rejected**. The deep tier, even at its foundation, covers QBs, WRs, **RBs, TEs,
+OL and core defenders**. Not scheduled soon; the mass tier and the core come first. The layers and supersession rules below are
+unchanged; the "who qualifies" paragraph is superseded by this scope.
+
 > Operator, 2026-10-14: "the deep PAM tier will be a multi layer effort between me and you (Claude). right now - we just need to get the ball rolling on at least building it out foundationally."
 
 **Who qualifies.** A player is deep-tier when a model's price depends materially on the label *and* the mass label is weak or contested: starters whose mass weights are near-ties (top weight < 0.6), role changes (trade, injury return, scheme change), and the few players a market is built on (QBs, the top WR/RB/EDGE per team). Target set is small and named, not "everyone"; start with one sport (NBA already has 50 deep records) and the team-prop-relevant NFL players.

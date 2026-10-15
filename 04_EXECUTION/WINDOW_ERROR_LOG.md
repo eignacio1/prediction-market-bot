@@ -43,6 +43,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W16 | 2026-10-14 | 74→75 | Reduced "we're going with edge" to "generality is no longer a reason to build; expected edge is" and wrote that into CLAUDE.md. He meant a comprehensive betting architecture at play-level granularity (aggregation > interpretation > application). | His core directive diluted in the canonical file for ~10 minutes. | Operator | REDUCED | Quote the operator's own words into canonical docs; restate, never compress, until he confirms the restatement |
 | W17 | 2026-10-14 | 75 | Wrote 75.2 around the operator's Cover 6 question as the literal deliverable (answer it for 2025, register a GAP for boundary motion). He gave it as an illustration of granularity: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". | 75.2 rescoped before it ran; one operator correction. | Operator | LITERAL | An operator example shows the bar, not the spec: blocks build the general capability and use his example only as an illustration, unless he says it is the requirement |
 | W18 | 2026-10-14 | 75 | Wrote "B74-A Session 2 is running" into Wave 75's surface, dependencies and sequencing rows from the operator's earlier "still firing" remark, without checking SESSION_CLAIMS.md (no Session 2 claim existed). | Wave 75's dependency lines were written around a terminal that did not exist; operator corrected it. | Operator | UNVERIFIED | Before describing a terminal as running, check SESSION_CLAIMS.md for its claim |
+| W19 | 2026-10-15 | 76 | When the shell's safety check timed out, left Wave 76 unpushed, told the operator to hold pasting until the push landed, and relied on a scheduled retry that only reached the session 17 h later. | Wave 76 sat unissued ~17 h; no terminal ran. | Window, on the retry | PROCESS | A failed push is retried in the same turn until it lands or the turn ends; the operator is never told to wait on a retry the window cannot confirm will fire |
 
 ## Pattern tally (update at every handoff)
 
@@ -56,5 +57,5 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | COLLISION | 2 | W13 (10-14) |
 | SCOPE | 1 | W11 |
 | REDUCED | 1 | W16 (10-14) |
-| PROCESS | 1 | W5 |
+| PROCESS | 2 | W19 (10-15) |
 | LITERAL | 1 | W17 (10-14) |

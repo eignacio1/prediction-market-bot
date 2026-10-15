@@ -2313,3 +2313,18 @@ Operator, verbatim: "we're gonna start piping in the PAM into the NFL, NBA, MLB 
 | 2026-10-15 | W75.4 | One kill switch (GG-745). Global `logs/kill_switch.flag` plus per-band flags; legacy `t4_mlb_kill_switch.flag`/`t4_kill_switch.flag` kept as band aliases. Check lives inside `KalshiMarketClient.submit_order`, before the key check, so every order path honours it. Fail-closed: unlabeled callers, unrecognised flag names, unreadable dir all halt. C7 trip writes the global flag; drills do not; reset clears only a C7-written flag. Behaviour change: legacy `t4_kill_switch.flag` now halts only band `t4`, no longer the shadow staker. Tests isolate the flag dir via autouse conftest fixture (`PMBOT_KILL_SWITCH_DIR`). Part A merged (#264, ce32e14); GG-745 stays OPEN until the Part B drill passes on running processes. |
 
 | 2026-10-15 | W75.2 | NFL factor chain run once on F5/F6 (coverage x personnel), built reusable (FactorSpec + sport-neutral Factor rate layer). Plan frozen before fit. One fit priced ML/spread/total/team total; MATCHES everywhere, no gain; beta unstable. Reported as a null on improvement, not a pass. Cover-6/motion example treated as illustration per ADD-IN; motion direction is GAP (GG-800). |
+
+## 2026-10-15 ~06:10 UTC (10-14 23:10 PT) — Wave 75 closed; Wave 76 issued; ADR-0075 stage ladder clarified (window)
+
+- Wave 75 verified on GitHub: 75.1/75.2/75.3/75.5 DONE, 75.4 PART A (drill pending, carried to 76.1). D5(a) NFL 5/8, NBA 3/8; D5(b) generated; NFL stale positions 4 -> 0.
+- Window recorded 75.1 (PAM) and 75.2 (F5/F6 applied; one Factor protocol) in ARCHITECTURE_COMPONENTS.toml and the NFL seat file at wave close, as 75.3's block specified; fixed the manifest's NFL decision-trees test path (moved to tests/ by 75.2).
+- 75.3 raised that the stage ladder "cannot express a tested-and-rejected factor". Window reading, not a change to ADR-0075: stage records how far the chain reached; the outcome is a separate field. ADR-0075 already says a factor must reach "a stated path from the fact to a price, tested against the market", and the 75.2 prompt said "A NO is a result - the stage reached is still applied-and-tested". Seat entries now carry `result =` beside `stage =`. If the operator reads it differently, it changes.
+- 75.4's handoff waited on an operator "go" for the demo kill-switch drill: demo plumbing, not his (operator rule); 76.1 runs it.
+- Wave 76: four blocks (operator 22:17 PT: B74-A Session 2 as the 4th terminal). DEPTH lane aimed at a factor orthogonal to season-to-date ratings after three game-market factor tests returned no gain; if it also returns no gain, the window brings the thinner-markets question to the operator.
+
+## 2026-10-15 16:46 PT — PAM deep tier scope: much deeper than proposed; Wave 76 issued
+
+Operator, verbatim: "No - deep PAM tier needs to be substantially deeper than that, even foundationally. I want RB's, TEs, OL, and core defenders in that tier. We don't need to get to that anytime soon anyway. Give me the next wave"
+
+- 75.1's proposed start (NFL starting QBs + top-2 WRs, ~100 players, batches of 10) rejected. Deep tier scope, even foundationally: QBs, WRs, RBs, TEs, OL and core defenders. Not scheduled soon; core + mass tier first. Recorded in 02_ARCHITECTURE_DESIGN/PAM/DEEP_TIER.md.
+- Wave 76 (written 06:10 UTC) pushed and issued now; the push had been blocked ~17 h by shell safety-check timeouts (window error W19).
